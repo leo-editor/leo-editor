@@ -5482,7 +5482,8 @@ if hasattr(w,'leo_selection') and w.leo_selection:
         wrapper.setSelectionRange(start,end)
     except Exception:
         pass
-#@+node:ekr.20110510071925.14583: *3* Fixed focus problems with QCompleter
+#@+node:ekr.20110509064011.14558: *3* Finished the QCompleter
+#@+node:ekr.20110510071925.14583: *4* Fixed focus problems with QCompleter
 @nocolor-node
 
 - Calling QCompleter.hide rather than QCompleter.deleteLater
@@ -5497,8 +5498,8 @@ if hasattr(w,'leo_selection') and w.leo_selection:
 prevents c.idle_focus_helper from attempting (and failing)
 to force the focus to the body pane.  This pattern isn't
 actually needed.
-#@+node:ekr.20081121105001.479: *4* Dialogs & panels (qtGui)
-#@+node:ekr.20081122170423.1: *5* alert (qtGui)
+#@+node:ekr.20081121105001.479: *5* Dialogs & panels (qtGui)
+#@+node:ekr.20081122170423.1: *6* alert (qtGui)
 def alert (self,c,message):
 
     if g.unitTesting: return
@@ -5512,7 +5513,7 @@ def alert (self,c,message):
     c.in_qt_dialog = True
     d.exec_()
     c.in_qt_dialog = False
-#@+node:ekr.20081121105001.480: *5* makeFilter
+#@+node:ekr.20081121105001.480: *6* makeFilter
 def makeFilter (self,filetypes):
 
     '''Return the Qt-style dialog filter from filetypes list.'''
@@ -5520,7 +5521,7 @@ def makeFilter (self,filetypes):
     filters = ['%s (%s)' % (z) for z in filetypes]
 
     return ';;'.join(filters)
-#@+node:tbrown.20100421115534.17325: *5* runAskOkCancelStringDialog
+#@+node:tbrown.20100421115534.17325: *6* runAskOkCancelStringDialog
 def runAskOkCancelStringDialog(self,c,title,message):
 
     """Create and run askOkCancelString dialog ."""
@@ -5532,7 +5533,7 @@ def runAskOkCancelStringDialog(self,c,title,message):
         return None
 
     return txt
-#@+node:tbrown.20100421115534.17324: *5* runAskOkCancelNumberDialog
+#@+node:tbrown.20100421115534.17324: *6* runAskOkCancelNumberDialog
 def runAskOkCancelNumberDialog(self,c,title,message):
 
     """Create and run askOkCancelNumber dialog ."""
@@ -5544,7 +5545,7 @@ def runAskOkCancelNumberDialog(self,c,title,message):
         return None
 
     return n
-#@+node:ekr.20081121105001.482: *5* qtGui panels
+#@+node:ekr.20081121105001.482: *6* qtGui panels
 def createComparePanel(self,c):
 
     """Create a qt color picker panel."""
@@ -5563,7 +5564,7 @@ def createLeoFrame(self,title):
 def createSpellTab(self,c,spellHandler,tabName):
     return leoQtSpellTab(c,spellHandler,tabName)
 
-#@+node:ekr.20081121105001.483: *5* runAboutLeoDialog
+#@+node:ekr.20081121105001.483: *6* runAboutLeoDialog
 def runAboutLeoDialog(self,c,version,theCopyright,url,email):
 
     """Create and run a qt About Leo dialog."""
@@ -5581,7 +5582,7 @@ def runAboutLeoDialog(self,c,version,theCopyright,url,email):
     c.in_qt_dialog = True
     d.exec_()
     c.in_qt_dialog = False
-#@+node:ekr.20081121105001.484: *5* runAskLeoIDDialog
+#@+node:ekr.20081121105001.484: *6* runAskLeoIDDialog
 def runAskLeoIDDialog(self):
 
     """Create and run a dialog to get g.app.LeoID."""
@@ -5599,7 +5600,7 @@ def runAskLeoIDDialog(self):
     title = 'Enter Leo id'
     s,ok = QtGui.QInputDialog.getText(parent,title,message)
     return g.u(s)
-#@+node:ekr.20081121105001.485: *5* runAskOkDialog
+#@+node:ekr.20081121105001.485: *6* runAskOkDialog
 def runAskOkDialog(self,c,title,message=None,text="Ok"):
 
     """Create and run a qt an askOK dialog ."""
@@ -5617,7 +5618,7 @@ def runAskOkDialog(self,c,title,message=None,text="Ok"):
     d.exec_()
     c.in_qt_dialog = False
 
-#@+node:tbrown.20100912184720.12469: *5* runAskDateTimeDialog
+#@+node:tbrown.20100912184720.12469: *6* runAskDateTimeDialog
 def runAskDateTimeDialog(self, c, title, 
     message='Select Date/Time', init=None, step_min={}):
     """Create and run a qt date/time selection dialog.
@@ -5696,7 +5697,7 @@ def runAskDateTimeDialog(self, c, title,
         return None
     else:
         return d.dt.dateTime().toPyDateTime()
-#@+node:ekr.20081121105001.486: *5* runAskYesNoCancelDialog
+#@+node:ekr.20081121105001.486: *6* runAskYesNoCancelDialog
 def runAskYesNoCancelDialog(self,c,title,
     message=None,
     yesMessage="&Yes",noMessage="&No",defaultButton="Yes"
@@ -5726,7 +5727,7 @@ def runAskYesNoCancelDialog(self,c,title,
     elif val == 1: val = 'no'
     else:          val = 'cancel'
     return val
-#@+node:ekr.20081121105001.487: *5* runAskYesNoDialog
+#@+node:ekr.20081121105001.487: *6* runAskYesNoDialog
 def runAskYesNoDialog(self,c,title,message=None):
 
     """Create and run an askYesNo dialog."""
@@ -5747,7 +5748,7 @@ def runAskYesNoDialog(self,c,title,message=None):
     c.in_qt_dialog = False
     return g.choose(val == 0,'yes','no')
 
-#@+node:ekr.20101111103251.3821: *5* runOpenDirectoryDialog (qtGui)
+#@+node:ekr.20101111103251.3821: *6* runOpenDirectoryDialog (qtGui)
 def runOpenDirectoryDialog(self,title,startdir):
 
     """Create and run an Qt open directory dialog ."""
@@ -5755,7 +5756,7 @@ def runOpenDirectoryDialog(self,title,startdir):
     parent = None
     s = QtGui.QFileDialog.getExistingDirectory (parent,title,startdir)
     return g.u(s)
-#@+node:ekr.20081121105001.488: *5* runOpenFileDialog
+#@+node:ekr.20081121105001.488: *6* runOpenFileDialog
 def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False, startpath = None):
 
     """Create and run an Qt open file dialog ."""
@@ -5772,7 +5773,7 @@ def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False, s
     else:
         s = QtGui.QFileDialog.getOpenFileName(parent,title,startpath,filter)
         return g.u(s)
-#@+node:ekr.20090722094828.3653: *5* runPropertiesDialog (qtGui)
+#@+node:ekr.20090722094828.3653: *6* runPropertiesDialog (qtGui)
 def runPropertiesDialog(self,
     title='Properties',data={}, callback=None, buttons=None):
 
@@ -5786,7 +5787,7 @@ def runPropertiesDialog(self,
     # d = propertiesDialog(title,data)
     # result = d.run()
     # return result
-#@+node:ekr.20081121105001.489: *5* runSaveFileDialog
+#@+node:ekr.20081121105001.489: *6* runSaveFileDialog
 def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultextension=''):
 
     """Create and run an Qt save file dialog ."""
@@ -5795,7 +5796,7 @@ def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultexten
     filter_ = self.makeFilter(filetypes)
     s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter_)
     return g.u(s)
-#@+node:ekr.20081121105001.490: *5* runScrolledMessageDialog
+#@+node:ekr.20081121105001.490: *6* runScrolledMessageDialog
 def runScrolledMessageDialog (self,short_title= '',title='Message', label= '',msg='',c=None, **kw):
 
     if g.unitTesting: return None
@@ -5816,13 +5817,13 @@ def runScrolledMessageDialog (self,short_title= '',title='Message', label= '',ms
         << no dialog error >>
 
     << emergency fallback >>
-#@+node:leohag.20081205043707.12: *6* << no c error>>
+#@+node:leohag.20081205043707.12: *7* << no c error>>
 g.es_print_error('%s\n%s\n\t%s' % (
     "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
     "as a keyword argument",
     g.callers()
 ))
-#@+node:leohag.20081205043707.14: *6* << load scrolledmessage plugin >>
+#@+node:leohag.20081205043707.14: *7* << load scrolledmessage plugin >>
 pc = g.app.pluginsController
 sm = pc.getPluginModule('scrolledmessage')
 
@@ -5831,11 +5832,11 @@ if not sm:
     if sm:
         g.es('scrolledmessage plugin loaded.', color='blue')
         sm.onCreate('tag',{'c':c})
-#@+node:leohag.20081205043707.11: *6* << no dialog error >>
+#@+node:leohag.20081205043707.11: *7* << no dialog error >>
 g.es_print_error(
     'No handler for the "scrolledMessage" hook.\n\t%s' % (
         g.callers()))
-#@+node:leohag.20081205043707.13: *6* << emergency fallback >>
+#@+node:leohag.20081205043707.13: *7* << emergency fallback >>
 b = QtGui.QMessageBox
 d = b(None) # c.frame.top)
 d.setWindowFlags(QtCore.Qt.Dialog) # That is, not a fixed size dialog.
@@ -5847,7 +5848,7 @@ yes = d.addButton('Ok',b.YesRole)
 c.in_qt_dialog = True
 d.exec_()
 c.in_qt_dialog = False
-#@+node:ekr.20081121105001.491: *4* Focus (qtGui)
+#@+node:ekr.20081121105001.491: *5* Focus (qtGui)
 def get_focus(self,c=None):
 
     """Returns the widget that has focus."""
@@ -5878,7 +5879,7 @@ def set_focus(self,c,w):
     if w:
         if trace: print('qtGui.set_focus',gui.widget_name(w),w,g.callers(2))
         w.setFocus()
-#@+node:ekr.20081121105001.522: *4*  Focus (leoQtBaseTextWidget)
+#@+node:ekr.20081121105001.522: *5*  Focus (leoQtBaseTextWidget)
 def getFocus(self):
 
     # g.trace('leoQtBody',self.widget,g.callers(4))
@@ -5903,301 +5904,6 @@ def setFocus (self):
     # Call the base class
     assert isinstance(self.widget,QtGui.QTextBrowser) or isinstance(self.widget,QtGui.QLineEdit),self.widget
     QtGui.QTextBrowser.setFocus(self.widget)
-#@+node:ekr.20110509064011.14558: *3* Finished the QCompleter
-#@+node:ekr.20110325185230.14518: *4* Auto completion (LeoQTextBrowser)
-#@+node:ekr.20110513104728.14452: *5* class LeoQListWidget(QListWidget)
-class LeoQListWidget(QtGui.QListWidget):
-            
-    @others
-#@+node:ekr.20110513144933.14531: *6* ctor (LeoQListWidget)
-def __init__(self,c):
-    
-
-    QtGui.QListWidget.__init__(self)
-    
-    # Make this window a modal window.
-    # self.setWindowModality(QtCore.Qt.WindowModal)
-
-    if 0:
-        # embed the window in a splitter.
-        splitter2 = c.frame.top.splitter_2
-        splitter2.insertWidget(1,self)
-
-    # Inject the ivars
-    self.leo_w = c.frame.body.bodyCtrl.widget
-        # A LeoQTextBrowser, a subclass of QtGui.QTextBrowser.
-    self.leo_c = c
-    
-    # A weird hack.
-    self.leo_geom_set = False # When true, self.geom returns global coords!
-    
-    self.connect(self,QtCore.SIGNAL(
-        "itemClicked(QListWidgetItem *)"),self.select_callback)
-#@+node:ekr.20110514231951.14490: *6* closeEvent
-def closeEvent(self,event):
-    
-    '''Kill completion and close the window.'''
-    
-    self.leo_c.k.autoCompleter.abort()
-#@+node:ekr.20110513144933.14526: *6* end_completer
-def end_completer(self):
-
-    # g.trace('(LeoQListWidget)')
-
-    c = self.leo_c
-    c.in_qt_dialog = False
-
-    # This is important: it clears the autocompletion state.
-    c.k.keyboardQuit(event=None,hideTabs=False)
-        # hideTabs = False prevents a recursive call here.
-        
-    c.bodyWantsFocusNow()
-    
-    self.deleteLater()
-#@+node:ekr.20110325185230.14516: *6* keyPressEvent (LeoQListWidget)
-def keyPressEvent(self,event):
-    
-    '''Handle a key event from QListWidget.'''
-    
-    trace = False and not g.unitTesting
-    c = self.leo_c
-    w = c.frame.body.bodyCtrl
-    qt = QtCore.Qt
-    key = event.key()
-    
-    if event.modifiers() != qt.NoModifier and not event.text():
-        # A modifier key on it's own.
-        pass
-    elif key in (qt.Key_Up,qt.Key_Down):
-        QtGui.QListWidget.keyPressEvent(self,event)
-    elif key == qt.Key_Tab:
-        if trace: g.trace('<tab>')
-        pass
-    elif key in (qt.Key_Enter,qt.Key_Return):
-        if trace: g.trace('<return>')
-        self.select_callback()
-    else:
-        # Pass all other keys to the autocompleter via the event filter.
-        w.ev_filter.eventFilter(obj=self,event=event)
-#@+node:ekr.20110513144933.14524: *6* select_callback
-def select_callback(self):  
-
-    '''Called when user selects an item in the QListWidget.'''
-
-    trace = False and not g.unitTesting
-    c = self.leo_c ; w = c.frame.body
-
-    # Replace the tail of the prefix with the completion.
-    completion = self.currentItem().text()
-    prefix = c.k.autoCompleter.get_autocompleter_prefix()
-    
-    parts = prefix.split('.')
-    if len(parts) > 1:
-        tail = parts[-1]
-    else:
-        tail = prefix
-        
-    if trace: g.trace('prefix',repr(prefix),'tail',repr(tail),'completion',repr(completion))
-
-    if tail != completion:
-        j = w.getInsertPoint()
-        i = j - len(tail)
-        w.delete(i,j)
-        w.insert(i,completion)
-        j = i+len(completion)
-        c.setChanged(True)
-        w.setInsertPoint(j)
-        c.frame.body.onBodyChanged('Typing')
-
-    self.end_completer()
-#@+node:ekr.20110514134640.14522: *6* set_position (LeoQListWidget)
-def set_position (self,c):
-    
-    trace = False and not g.unitTesting
-    w = self.leo_w
-    
-    def glob(obj,pt):
-        '''Convert pt from obj's local coordinates to global coordinates.'''
-        return obj.mapToGlobal(pt)
-    
-    vp = self.viewport()
-    r = w.cursorRect()
-    geom = self.geometry() # In viewport coordinates.
-        
-    gr_topLeft = glob(w,r.topLeft())
-    
-    # As a workaround to the setGeometry bug,
-    # The window is destroyed instead of being hidden.
-    assert not self.leo_geom_set
-        
-    # This code illustrates the bug...
-    # if self.leo_geom_set:
-        # # Unbelievable: geom is now in *global* coords.
-        # gg_topLeft = geom.topLeft()
-    # else:
-        # # Per documentation, geom in local (viewport) coords.
-        # gg_topLeft = glob(vp,geom.topLeft())
-    
-    gg_topLeft = glob(vp,geom.topLeft())
-
-    delta_x = gr_topLeft.x() - gg_topLeft.x() 
-    delta_y = gr_topLeft.y() - gg_topLeft.y()
-    
-    # These offset are reasonable.
-    # Perhaps they should depend on font size.
-    x_offset,y_offset = 10,60
-    
-    # Compute the new geometry, setting the size by hand.
-    geom2_topLeft = QtCore.QPoint(
-        geom.x()+delta_x+x_offset,
-        geom.y()+delta_y+y_offset)
-
-    geom2_size = QtCore.QSize(400,100)
-
-    geom2 = QtCore.QRect(geom2_topLeft,geom2_size)
-            
-    # These assert's fail once offsets are added.
-    if x_offset == 0 and y_offset == 0:
-        if self.leo_geom_set:
-            assert geom2.topLeft() == glob(w,r.topLeft()),'geom.topLeft: %s, geom2.topLeft: %s' % (
-                geom2.topLeft(),glob(w,r.topLeft()))
-        else:
-            assert glob(vp,geom2.topLeft()) == glob(w,r.topLeft()),'geom.topLeft: %s, geom2.topLeft: %s' % (
-                glob(vp,geom2.topLeft()),glob(w,r.topLeft()))
-
-    self.setGeometry(geom2)
-    self.leo_geom_set = True
-
-    if trace:
-        g.trace(self,
-            # '\n viewport:',vp,
-            # '\n size:    ',geom.size(),
-            '\n delta_x',delta_x,
-            '\n delta_y',delta_y,
-            '\n r:     ',r.x(),r.y(),         glob(w,r.topLeft()),
-            '\n geom:  ',geom.x(),geom.y(),   glob(vp,geom.topLeft()),
-            '\n geom2: ',geom2.x(),geom2.y(), glob(vp,geom2.topLeft()),
-        )
-#@+node:ekr.20110513144933.14528: *6* show_completions
-def show_completions(self,aList):
-    
-    '''Set the QListView contents to aList.'''
-    
-    # g.trace('(qc) len(aList)',len(aList))
-
-    self.clear()
-    self.addItems(aList)
-    self.setCurrentRow(0)
-    self.activateWindow()
-    self.setFocus()
-#@+node:ekr.20110325185230.14521: *5* init_completer (LeoQTextBrowser)
-def init_completer(self,options):
-    
-    '''Connect a QCompleter.'''
-    
-    trace = False and not g.unitTesting
-    c = self.leo_c ; k = c.k
-    
-    if trace:
-        g.trace('(LeoQTextBrowser) len(options): %s' % (len(options)))
-    
-    # if hasattr(self,'leo_qc') and self.leo_qc:
-        # qc = self.leo_qc
-    # else:
-        # self.leo_qc = qc = self.LeoQListWidget(c)
-        
-    assert not hasattr(self,'leo_qc')
-    self.leo_qc = qc = self.LeoQListWidget(c)
-        
-    # Move the window near the body pane's cursor.
-    qc.set_position(c)
-
-    # Show the initial completions.
-    c.in_qt_dialog = True
-    qc.show()
-    qc.activateWindow()
-    c.widgetWantsFocusNow(qc)
-    qc.show_completions(options)
-    return qc
-#@+node:ekr.20110325185230.14524: *5* redirections to LeoQListWidget
-def end_completer(self):
-    
-    if hasattr(self,'leo_qc'):
-        self.leo_qc.end_completer()
-        delattr(self,'leo_qc')
-
-def show_completions(self,aList):
-    
-    if hasattr(self,'leo_qc'):
-        self.leo_qc.show_completions(aList)
-#@+node:ekr.20110514134640.14522: *4* set_position (LeoQListWidget)
-def set_position (self,c):
-    
-    trace = False and not g.unitTesting
-    w = self.leo_w
-    
-    def glob(obj,pt):
-        '''Convert pt from obj's local coordinates to global coordinates.'''
-        return obj.mapToGlobal(pt)
-    
-    vp = self.viewport()
-    r = w.cursorRect()
-    geom = self.geometry() # In viewport coordinates.
-        
-    gr_topLeft = glob(w,r.topLeft())
-    
-    # As a workaround to the setGeometry bug,
-    # The window is destroyed instead of being hidden.
-    assert not self.leo_geom_set
-        
-    # This code illustrates the bug...
-    # if self.leo_geom_set:
-        # # Unbelievable: geom is now in *global* coords.
-        # gg_topLeft = geom.topLeft()
-    # else:
-        # # Per documentation, geom in local (viewport) coords.
-        # gg_topLeft = glob(vp,geom.topLeft())
-    
-    gg_topLeft = glob(vp,geom.topLeft())
-
-    delta_x = gr_topLeft.x() - gg_topLeft.x() 
-    delta_y = gr_topLeft.y() - gg_topLeft.y()
-    
-    # These offset are reasonable.
-    # Perhaps they should depend on font size.
-    x_offset,y_offset = 10,60
-    
-    # Compute the new geometry, setting the size by hand.
-    geom2_topLeft = QtCore.QPoint(
-        geom.x()+delta_x+x_offset,
-        geom.y()+delta_y+y_offset)
-
-    geom2_size = QtCore.QSize(400,100)
-
-    geom2 = QtCore.QRect(geom2_topLeft,geom2_size)
-            
-    # These assert's fail once offsets are added.
-    if x_offset == 0 and y_offset == 0:
-        if self.leo_geom_set:
-            assert geom2.topLeft() == glob(w,r.topLeft()),'geom.topLeft: %s, geom2.topLeft: %s' % (
-                geom2.topLeft(),glob(w,r.topLeft()))
-        else:
-            assert glob(vp,geom2.topLeft()) == glob(w,r.topLeft()),'geom.topLeft: %s, geom2.topLeft: %s' % (
-                glob(vp,geom2.topLeft()),glob(w,r.topLeft()))
-
-    self.setGeometry(geom2)
-    self.leo_geom_set = True
-
-    if trace:
-        g.trace(self,
-            # '\n viewport:',vp,
-            # '\n size:    ',geom.size(),
-            '\n delta_x',delta_x,
-            '\n delta_y',delta_y,
-            '\n r:     ',r.x(),r.y(),         glob(w,r.topLeft()),
-            '\n geom:  ',geom.x(),geom.y(),   glob(vp,geom.topLeft()),
-            '\n geom2: ',geom2.x(),geom2.y(), glob(vp,geom2.topLeft()),
-        )
 #@+node:ekr.20110325185230.14517: ** Unused code
 #@+node:vivainio.20091223153142.4072: *3* Completer (qtBody)
 def showCompleter(self, alternatives, selected_cb):
