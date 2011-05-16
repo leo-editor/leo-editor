@@ -125,7 +125,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             
 
             QtGui.QListWidget.__init__(self)
-            
+            self.setWindowFlags(QtCore.Qt.Popup | self.windowFlags())
             # Make this window a modal window.
             # self.setWindowModality(QtCore.Qt.WindowModal)
 
