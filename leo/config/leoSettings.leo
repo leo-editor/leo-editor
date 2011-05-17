@@ -442,11 +442,13 @@
 <v t="ekr.20060112090844"><vh>@shortcuts Emacs: F-M</vh></v>
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
+<v t="ekr.20110517093705.14574"><vh>@shortcuts shift-f-keys</vh></v>
 </v>
 <v t="ekr.20060110141538.1"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
+<v t="ekr.20110517093705.14572"><vh>@shortcuts shift-f-keys</vh></v>
 </v>
 </v>
 <v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
@@ -4351,6 +4353,7 @@ back-word                           = Alt-b
 back-word                           = Control-Left
 back-word-extend-selection          = None
 backward-delete-char                = Delete
+backward-delete-char                = Shift-Delete
 backward-kill-paragraph             = None
 backward-kill-sentence              = None
 backward-kill-word                  = Alt-Delete
@@ -4909,6 +4912,7 @@ insert-headline-time                = None         # Removed Shift-Ctrl-H: not u
 insert-newline                      = Control-o
 insert-node                         = Ctrl-I
 insert-node                         = Insert
+insert-node                         = Shift-Insert
 insert-parentheses                  = Alt-parenleft
 insert-register                     = None
 inverse-add-global-abbrev           = None
@@ -6262,6 +6266,7 @@ goto-next-clone             = Alt-N
 insert-child                = Ctrl-Insert
 insert-node                 = Ctrl-I
 insert-node                 = Insert
+insert-node                 = Shift-Insert
 mark                        = Ctrl-M
 move-outline-down           = Ctrl-D
 move-outline-left           = Ctrl-L
@@ -6272,11 +6277,13 @@ promote                     = Ctrl-{
 promote                     = Ctrl-[</t>
 <t tx="ekr.20060925060533.4">add-comments                        = Ctrl-parenleft
 backward-delete-char                = BackSpace
+backward-delete-char                = Shift-BackSpace
 backward-delete-word                = Ctrl-BackSpace
 backward-kill-word                  = Alt-BackSpace
 copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-c
 cut-text                            = Ctrl-x
 delete-char                         = Delete
+delete-char                         = Shift-Delete
 delete-comments                     = Ctrl-parenright
 delete-comments                     = Shift-Ctrl-0
 delete-word                         = Ctrl-Delete
@@ -8077,6 +8084,32 @@ False: show completions in Leo's Completions tab.
 <t tx="ekr.20110510071925.14590">True: use codewise completions.
 False: use leo-specific completions.</t>
 <t tx="ekr.20110512085854.14461">True: Automatically extend the completed text to the longest common prefix of all completions.</t>
+<t tx="ekr.20110517093705.14572">do-nothing = Shift-F1
+do-nothing = Shift-F2
+do-nothing = Shift-F3
+do-nothing = Shift-F4
+do-nothing = Shift-F5
+do-nothing = Shift-F6
+do-nothing = Shift-F7
+do-nothing = Shift-F8
+do-nothing = Shift-F9
+do-nothing = Shift-F10
+do-nothing = Shift-F11
+do-nothing = Shift-F12
+</t>
+<t tx="ekr.20110517093705.14574">do-nothing = Shift-F1
+do-nothing = Shift-F2
+do-nothing = Shift-F3
+do-nothing = Shift-F4
+do-nothing = Shift-F5
+do-nothing = Shift-F6
+do-nothing = Shift-F7
+do-nothing = Shift-F8
+do-nothing = Shift-F9
+do-nothing = Shift-F10
+do-nothing = Shift-F11
+do-nothing = Shift-F12
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

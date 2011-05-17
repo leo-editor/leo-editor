@@ -8689,9 +8689,11 @@ class leoQtEventFilter(QtCore.QObject):
             'Home','End','Tab',
             'Up','Down','Left','Right',
             'Next','Prior', # 2010/01/10: Allow Shift-PageUp and Shift-PageDn.
-            # Dubious...
-            # 'Backspace','Delete','Ins',
-            # 'F1',...'F12',
+            # 2011/05/17: Fix bug 681797.
+            # There is nothing 'dubious' about these provided that they are bound.
+            # If they are not bound, then weird characters will be inserted.
+            'Delete','Ins','Backspace',
+            'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
         )
 
         # Convert '&' to 'ampersand', etc.
