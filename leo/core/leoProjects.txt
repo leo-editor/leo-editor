@@ -6175,7 +6175,7 @@ def handleMiniBindings (self,event,state,stroke):
                         return False # Let getArg handle it.
                     elif b.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True)
+                        k.keyboardQuit(event) ### ,hideTabs=True)
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocus() # New in Leo 4.5.
@@ -7210,6 +7210,360 @@ def outerUpdate (self):
     c.requestedIconify = ''
 
     # g.trace('after')
+#@+node:ekr.20110517093705.14577: *4* Fixed bug 783617: Can't enter text directly in the Find panel
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/
+
+After experimentation I have chosen simply to disable the Find/Change text areas
+so that they are merely status indicators. Unlike the check boxes, which *are*
+functional, it is basically pointless to type text into these areas. In the
+absence of buttons that would execute various find/change commands, the user
+must *still* do Ctrl-F.
+
+BTW, the Tk Text boxes *are* functional, in the sense that they do update the
+default find/change strings when the user types text into them. However, to make
+this work, any in-progress minibuffer command must be aborted, so once again
+typing into these boxes is pointless.
+
+In other words, the Tk code should work like the Qt code. I'm not going to do
+this because the Tk code is on its way out.
+
+Happily, Leo's core remained unchanged. This is important because the Qt code is
+horribly complex. After Tk is gone, significant simplifications can be made. But
+I'm not going to do that now...
+#@+node:ekr.20110517093705.14578: *4* Fixed bug 681797: Shift-Delete not working in Qt
+@nocolor-node
+
+
+https://bugs.launchpad.net/leo-editor/+bug/681797
+
+Without bindings, typing these characters inserts strange character. The
+solution was to add default bindings for these keys in leoSettings.leo.
+#@+node:ekr.20110517102011.14578: *4* Fixed qcompleter bug
+@nocolor-node
+
+What I did:
+    
+- Define k.autoCompleteForceKey in k.initSpecialIvars.
+- Test for k.autoCompleteForceKey (auto-complete-force) in auto_completer_state_handler.
+- auto_completer_state_handler ignores all other non-plain keys.
+- ac.calltip now selects the calltip.
+- Corrected a but in ac.exit that disabled restoration of selections.
+#@+node:ekr.20110517102011.14580: *5*   report
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dad31c2f22f02206/ea70954e4c53aae1#ea70954e4c53aae1
+
+I've tried combo from the screenshot, iow: c.frame.to and then
+pressing ctrl-space. Pop-up dialog is shown and I can select one
+entry, let's say 'top'.
+
+However, let's assume, I did select wrong one, so I delete 'p' leaving
+me with the same 'c.frame.to', wanting to select another option, then
+ctrl-space gives following exception:
+
+exception executing command
+Traceback (most recent call last):
+  File "/usr/home/gour/repos/bzr/leo-editor/leo/core/leoCommands.py", line 404, in doCommand
+    val = command(event)
+  File "/usr/home/gour/repos/bzr/leo-editor/leo/core/leoKeys.py", line 175, in autoCompleteForce
+    return self.autoComplete(event,force=True)
+  File "/usr/home/gour/repos/bzr/leo-editor/leo/core/leoKeys.py", line 165, in autoComplete
+    self.start(event)
+  File "/usr/home/gour/repos/bzr/leo-editor/leo/core/leoKeys.py", line 988, in start
+    self.init_qcompleter(event)
+  File "/usr/home/gour/repos/bzr/leo-editor/leo/core/leoKeys.py", line 836, in init_qcompleter
+    self.qcompleter = w.init_completer(options)
+  File "/usr/home/gour/repos/bzr/leo-editor/leo/plugins/qtGui.py", line 321, in init_completer
+    assert not hasattr(self,'leo_qc')
+AssertionError 
+#@+node:ekr.20110517102011.14581: *5*  keyHandler methods...
+#@+node:ekr.20061031131434.79: *6* << define internal ivars >>
+self.abbreviationsDict = {} # Abbreviations created by @alias nodes.
+
+# Previously defined bindings.
+self.bindingsDict = {}
+    # Keys are Tk key names, values are lists of g.bunch(pane,func,commandName)
+# Previously defined binding tags.
+self.bindtagsDict = {}
+    # Keys are strings (the tag), values are 'True'
+self.masterBindingsDict = {}
+    # Keys are scope names: 'all','text',etc. or mode names.
+    # Values are dicts: keys are strokes, values are g.bunch(commandName,func,pane,stroke)
+self.masterGuiBindingsDict = {}
+    # Keys are strokes; value is True;
+
+# Special bindings for k.fullCommand.
+self.mb_copyKey = None
+self.mb_pasteKey = None
+self.mb_cutKey = None
+self.mb_help = False
+
+# Keys whose bindings are computed by initSpecialIvars.
+self.abortAllModesKey = None
+self.autoCompleteForceKey = None
+self.fullCommandKey = None
+self.universalArgKey = None
+
+# Keepting track of the characters in the mini-buffer.
+self.arg_completion = True
+self.mb_event = None
+self.mb_history = []
+self.mb_prefix = ''
+self.mb_tabListPrefix = ''
+self.mb_tabList = []
+self.mb_tabListIndex = -1
+self.mb_prompt = ''
+
+self.func = None
+self.previous = []
+self.stroke = None
+
+# For onIdleTime
+self.idleCount = 0
+
+# For modes
+self.afterGetArgState = None
+self.argTabList = []
+self.getArgEscapes = []
+self.modeBindingsDict = {}
+self.modeWidget = None
+self.silentMode = False
+
+# The actual values are set later in k.finishCreate.
+self.command_mode_bg_color = 'white'
+self.command_mode_fg_color = 'black'
+self.insert_mode_bg_color = 'white'
+self.insert_mode_fg_color = 'black'
+self.overwrite_mode_bg_color = 'white'
+self.overwrite_mode_fg_color = 'black'
+#@+node:ekr.20061031131434.101: *6* initSpecialIvars
+def initSpecialIvars (self):
+
+    '''Set ivars for special keystrokes from previously-existing bindings.'''
+
+    k = self ; c = k.c
+    trace = False or c.config.getBool('trace_bindings_verbose')
+    warn  = c.config.getBool('warn_about_missing_settings')
+
+    for ivar,commandName in (
+        ('fullCommandKey',  'full-command'),
+        ('abortAllModesKey','keyboard-quit'),
+        ('universalArgKey', 'universal-argument'),
+        ('autoCompleteForceKey','auto-complete-force'),
+    ):
+        junk, bunchList = c.config.getShortcut(commandName)
+        bunchList = bunchList or [] ; found = False
+        for pane in ('text','all'):
+            for bunch in bunchList:
+                if bunch.pane == pane:
+                    stroke = k.strokeFromSetting(bunch.val)
+                    if trace: g.trace(commandName,stroke)
+                    setattr(k,ivar,stroke) ; found = True ;break
+        if not found and warn:
+            g.trace('no setting for %s' % commandName)
+#@+node:ekr.20061031131434.130: *6* keyboardQuit
+def keyboardQuit (self,event,inAutoCompleter=False):
+    ### ,hideTabs=True,setDefaultStatus=True):
+
+    '''This method clears the state and the minibuffer label.
+
+    k.endCommand handles all other end-of-command chores.'''
+
+    k = self ; c = k.c
+
+    if g.app.quitting:
+        return
+
+    if not inAutoCompleter:
+        k.autoCompleter.exit()
+    
+    # Completely clear the mode.
+    c.frame.log.deleteTab('Mode')
+    c.frame.log.hideTab('Completion')
+    if k.inputModeName:
+        k.endMode(event)
+
+    # Complete clear the state.
+    k.state.kind = None
+    k.state.n = None
+
+    k.clearState()
+    k.resetLabel()
+
+    c.endEditing()
+    c.bodyWantsFocus()
+
+    if True: ### setDefaultStatus:
+        # At present, only the auto-completer suppresses this.
+        k.setDefaultInputState()
+        k.showStateAndMode()
+#@+node:ekr.20061031131434.11: *5* auto_completer_state_handler
+def auto_completer_state_handler (self,event):
+
+    trace = False and not g.app.unitTesting
+    c = self.c ; k = self.k ; gui = g.app.gui
+    tag = 'auto-complete' ; state = k.getState(tag)
+    ch = gui.eventChar(event)
+    keysym = gui.eventKeysym(event)
+    stroke = gui.eventStroke(event)
+    is_plain = k.isPlainKey(stroke)
+
+    if trace: g.trace('state: %s, ch: %s, keysym: %s, stroke: %s' % (
+        state,repr(ch),repr(keysym),repr(stroke)))
+
+    if state == 0:
+        c.frame.log.clearTab(self.tabName)
+        common_prefix,prefix,tabList = self.compute_completion_list()
+        if tabList:
+            k.setState(tag,1,handler=self.auto_completer_state_handler)
+        else:
+            if trace: g.trace('abort: not tabList')
+            self.exit()
+    elif keysym == 'Return':
+        self.exit()
+    elif keysym == 'Escape':
+        self.exit()
+    elif keysym == 'Tab':
+        self.doTabCompletion()
+    elif keysym in ('\b','BackSpace'):
+        self.do_backspace()
+    elif keysym == '.':
+        self.insert_string('.')
+        self.compute_completion_list()
+    elif keysym == '?':
+        self.info()
+    elif keysym == '!':
+        # Toggle between verbose and brief listing.
+        self.verbose = not self.verbose
+        kind = g.choose(self.verbose,'ON','OFF')
+        c.frame.putStatusLine('verbose completions %s' % (
+            kind),color='red')
+        self.compute_completion_list()
+    elif ch == 'Down' and hasattr(self,'onDown'):
+        self.onDown()
+    elif ch == 'Up' and hasattr(self,'onUp'):
+        self.onUp()
+    elif is_plain and ch and ch in string.printable:
+        self.insert_general_char(ch,keysym)
+    else:
+        if stroke == k.autoCompleteForceKey:
+            # This is probably redundant because completions will exist.
+            # However, it doesn't hurt, and it may be useful rarely.
+            if trace: g.trace('auto-complete-force',repr(stroke))
+            common_prefix,prefix,tabList = self.compute_completion_list()
+            if tabList:
+                self.show_completion_list(common_prefix,prefix,tabList)
+            else:
+                g.es('No completions',color='blue')
+                self.exit()
+            return
+        else:
+            if trace: g.trace('ignore non plain key',repr(stroke))
+            return 'do-standard-keys'
+#@+node:ekr.20061031131434.20: *5* calltip & helpers
+def calltip (self):
+    
+    '''Show the calltips for the present prefix.
+    ch is '(' if the user has just typed it.
+    '''
+
+    trace = False and not g.unitTesting
+
+    c = self.c
+    obj,prefix = self.get_object()
+    
+    if obj:
+        self.calltip_success(prefix,obj)
+    else:
+        self.calltip_fail(prefix)
+        
+    self.exit()
+
+    # c.frame.clearStatusLine()
+    # c.widgetWantsFocusNow(self.w)
+#@+node:ekr.20110512090917.14468: *6* calltip_fail
+def calltip_fail(self,prefix):
+    
+    '''Evaluation of prefix failed.'''
+    
+   
+    if not g.unitTesting:
+        g.es('eval failed for "%s"' % repr(prefix))
+
+    self.insert_string('(')
+#@+node:ekr.20110512090917.14469: *6* calltip_success
+def calltip_success(self,prefix,obj):
+    
+    trace = False and not g.unitTesting
+    
+    try:
+        # Get the parenthesized argument list.
+        s1,s2,s3,s4 = inspect.getargspec(obj)
+        s = inspect.formatargspec(s1,s2,s3,s4)
+        if trace: g.trace(obj,repr(s))
+    except Exception:
+        if trace: g.trace('inspect failed. obj: %s' % (obj))
+        self.insert_string('(')
+        return
+
+    # Clean s and insert it.
+    if g.match(s,1,'self,'):
+        s = s[0] + s[6:].strip()
+    elif g.match_word(s,1,'self'):
+        s = s[0] + s[5:].strip()
+
+    self.insert_string(s,select=True)
+#@+node:ekr.20110512212836.14469: *5* exit
+def exit (self):
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(g.callers())
+
+    c = self.c
+    w = self.w or c.frame.body.bodyCtrl
+    
+    if trace: g.trace(g.callers())
+    
+    c.k.keyboardQuit(event=None,inAutoCompleter=True)
+        # Suppress call to ac.exit inside keyboardQuit.
+    
+    if self.use_qcompleter:
+        self.qw.end_completer()
+    else:
+        for name in (self.tabName,'Modules','Info'):
+            c.frame.log.deleteTab(name)
+        
+    # Restore the selection range that may have been destroyed by changing tabs.
+    c.widgetWantsFocusNow(w)
+    i,j = w.getSelectionRange()
+    w.setSelectionRange(i,j,insert=j)
+    
+    # Was in finish.
+    c.frame.body.onBodyChanged('Typing')
+    c.recolor()
+
+finish = exit
+abort = exit
+#@+node:ekr.20061031131434.31: *5* insert_string
+def insert_string (self,s,select=False):
+
+    '''Insert s at the insertion point.'''
+
+    c = self.c ; w = self.w
+    
+    c.widgetWantsFocusNow(w)
+    i = w.getInsertPoint()
+    w.insert(i,s)
+    if select:
+        j = i + len(s)
+        w.setSelectionRange(i,j,insert=j)
+   
+    c.frame.body.onBodyChanged('Typing')
+    
+    if self.use_qcompleter:
+        c.widgetWantsFocusNow(self.qw)
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()
@@ -9450,6 +9804,7 @@ def initSpecialIvars (self):
         ('fullCommandKey',  'full-command'),
         ('abortAllModesKey','keyboard-quit'),
         ('universalArgKey', 'universal-argument'),
+        ('autoCompleteForceKey','auto-complete-force'),
     ):
         junk, bunchList = c.config.getShortcut(commandName)
         bunchList = bunchList or [] ; found = False
@@ -11554,7 +11909,7 @@ def handleMiniBindings (self,event,state,stroke):
                         return False # Let getArg handle it.
                     elif b.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True)
+                        k.keyboardQuit(event) ### ,hideTabs=True)
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocus() # New in Leo 4.5.
@@ -11993,7 +12348,9 @@ self.mb_pasteKey = None
 self.mb_cutKey = None
 self.mb_help = False
 
+# Keys whose bindings are computed by initSpecialIvars.
 self.abortAllModesKey = None
+self.autoCompleteForceKey = None
 self.fullCommandKey = None
 self.universalArgKey = None
 

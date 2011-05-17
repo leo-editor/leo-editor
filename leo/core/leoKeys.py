@@ -245,25 +245,19 @@ class AutoCompleterClass:
             s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
             g.es(s,color='red')
     #@+node:ekr.20061031131434.16: *3* Helpers
-    #@+node:ekr.20110512212836.14469: *4* abort, exit & finish
-    #@+node:ekr.20061031131434.17: *5* abort
-    def abort (self):
-
-        k = self.k
-        
-        k.keyboardQuit(event=None,setDefaultStatus=False)
-            # Stay in the present input state.
-        
-        if 0: # keyoardQuit calls k.autocompleter.exit.
-            self.exit(restore=True)
-    #@+node:ekr.20110512212836.14470: *5* exit
-    def exit (self,restore=False): # Called from keyboard-quit.
+    #@+node:ekr.20110512212836.14469: *4* exit
+    def exit (self):
 
         trace = False and not g.unitTesting
-        if trace: g.trace('restore: %s' % (restore),g.callers())
+        if trace: g.trace(g.callers())
 
-        k = self ; c = k.c 
+        c = self.c
         w = self.w or c.frame.body.bodyCtrl
+        
+        if trace: g.trace(g.callers())
+        
+        c.k.keyboardQuit(event=None,inAutoCompleter=True)
+            # Suppress call to ac.exit inside keyboardQuit.
         
         if self.use_qcompleter:
             self.qw.end_completer()
@@ -274,20 +268,14 @@ class AutoCompleterClass:
         # Restore the selection range that may have been destroyed by changing tabs.
         c.widgetWantsFocusNow(w)
         i,j = w.getSelectionRange()
-        w.setSelectionRange(j,j,insert=j)
-    #@+node:ekr.20061031131434.34: *5* finish
-    def finish (self):
-
-        c = self.c ; k = c.k
-
-        k.keyboardQuit(event=None,setDefaultStatus=False)
-            # Stay in the present input state.
-
-        for name in (self.tabName,'Modules','Info'):
-            c.frame.log.deleteTab(name)
-
+        w.setSelectionRange(i,j,insert=j)
+        
+        # Was in finish.
         c.frame.body.onBodyChanged('Typing')
         c.recolor()
+
+    finish = exit
+    abort = exit
     #@+node:ekr.20061031131434.18: *4* append/begin/popTabName
     def appendTabName (self,word):
 
@@ -369,9 +357,11 @@ class AutoCompleterClass:
         tag = 'auto-complete' ; state = k.getState(tag)
         ch = gui.eventChar(event)
         keysym = gui.eventKeysym(event)
+        stroke = gui.eventStroke(event)
+        is_plain = k.isPlainKey(stroke)
 
-        if trace: g.trace('state: %s, ch: %s, keysym: %s' % (
-            state,repr(ch),repr(keysym)))
+        if trace: g.trace('state: %s, ch: %s, keysym: %s, stroke: %s' % (
+            state,repr(ch),repr(keysym),repr(stroke)))
 
         if state == 0:
             c.frame.log.clearTab(self.tabName)
@@ -379,11 +369,12 @@ class AutoCompleterClass:
             if tabList:
                 k.setState(tag,1,handler=self.auto_completer_state_handler)
             else:
-                self.abort()
-        elif keysym in (' ','Return'):
-            self.finish()
+                if trace: g.trace('abort: not tabList')
+                self.exit()
+        elif keysym == 'Return':
+            self.exit()
         elif keysym == 'Escape':
-            self.abort()
+            self.exit()
         elif keysym == 'Tab':
             self.doTabCompletion()
         elif keysym in ('\b','BackSpace'):
@@ -404,11 +395,23 @@ class AutoCompleterClass:
             self.onDown()
         elif ch == 'Up' and hasattr(self,'onUp'):
             self.onUp()
-        elif ch and ch in string.printable:
+        elif is_plain and ch and ch in string.printable:
             self.insert_general_char(ch,keysym)
         else:
-            # if trace: g.trace('ignore',repr(ch))
-            return 'do-standard-keys'
+            if stroke == k.autoCompleteForceKey:
+                # This is probably redundant because completions will exist.
+                # However, it doesn't hurt, and it may be useful rarely.
+                if trace: g.trace('auto-complete-force',repr(stroke))
+                common_prefix,prefix,tabList = self.compute_completion_list()
+                if tabList:
+                    self.show_completion_list(common_prefix,prefix,tabList)
+                else:
+                    g.es('No completions',color='blue')
+                    self.exit()
+                return
+            else:
+                if trace: g.trace('ignore non plain key',repr(stroke))
+                return 'do-standard-keys'
     #@+node:ekr.20061031131434.20: *4* calltip & helpers
     def calltip (self):
         
@@ -426,9 +429,10 @@ class AutoCompleterClass:
         else:
             self.calltip_fail(prefix)
             
-        self.finish()
-        c.frame.clearStatusLine()
-        c.widgetWantsFocusNow(self.w)
+        self.exit()
+
+        # c.frame.clearStatusLine()
+        # c.widgetWantsFocusNow(self.w)
     #@+node:ekr.20110512090917.14468: *5* calltip_fail
     def calltip_fail(self,prefix):
         
@@ -460,7 +464,7 @@ class AutoCompleterClass:
         elif g.match_word(s,1,'self'):
             s = s[0] + s[5:].strip()
 
-        self.insert_string(s)
+        self.insert_string(s,select=True)
     #@+node:ekr.20061031131434.28: *4* compute_completion_list & helper
     def compute_completion_list (self):
 
@@ -530,19 +534,19 @@ class AutoCompleterClass:
         
         i = w.getInsertPoint()
         if i <= 0:
-            self.abort()
+            self.exit()
             return
 
         w.delete(i-1,i)
         w.setInsertPoint(i-1)
         
         if i <= 1:
-            self.abort()
+            self.exit()
         else:
             # Update the list. Abort if there is no prefix.
             common_prefix,prefix,tabList = self.compute_completion_list()
             if not prefix:
-                self.abort()
+                self.exit()
     #@+node:ekr.20110510133719.14548: *4* do_qcompleter_tab
     def do_qcompleter_tab(self,prefix,options):
         
@@ -837,7 +841,7 @@ class AutoCompleterClass:
             self.auto_completer_state_handler(event)
         else:
             g.es('No completions',color='blue')
-            self.abort()
+            self.exit()
     #@+node:ekr.20110511133940.14552: *4* init_tabcompleter
     def init_tabcompleter (self,event=None):
         
@@ -852,7 +856,7 @@ class AutoCompleterClass:
             self.auto_completer_state_handler(event)
         else:
             g.es('No completions',color='blue')
-            self.abort()
+            self.exit()
     #@+node:ekr.20061031131434.39: *4* insert_general_char
     def insert_general_char (self,ch,keysym):
 
@@ -864,6 +868,7 @@ class AutoCompleterClass:
         if g.isWordChar(ch):
             self.insert_string(ch)
             common_prefix,prefix,aList = self.compute_completion_list()
+            if trace: g.trace('ch',repr(ch),'prefix',repr(prefix),'len(aList)',len(aList))
             if not aList:
                 if 0: # Annoying. Let the user type "by hand".
                     # Delete the character we just inserted.
@@ -875,21 +880,25 @@ class AutoCompleterClass:
                 w.insert(ins,extend)
         else:
             if ch == '(' and k.enable_calltips:
-                # This calls self.finish if the '(' is valid.
+                # This calls self.exit if the '(' is valid.
                 self.calltip()
             else:
+                if trace: g.trace('ch',repr(ch),'calling finish')
                 self.insert_string(ch)
-                self.finish()
+                self.exit()
     #@+node:ekr.20061031131434.31: *4* insert_string
-    def insert_string (self,s):
+    def insert_string (self,s,select=False):
 
         '''Insert s at the insertion point.'''
 
         c = self.c ; w = self.w
         
         c.widgetWantsFocusNow(w)
-        j = w.getInsertPoint()
-        w.insert(j,s)
+        i = w.getInsertPoint()
+        w.insert(i,s)
+        if select:
+            j = i + len(s)
+            w.setSelectionRange(i,j,insert=j)
        
         c.frame.body.onBodyChanged('Typing')
         
@@ -1107,7 +1116,9 @@ class keyHandlerClass:
         self.mb_cutKey = None
         self.mb_help = False
 
+        # Keys whose bindings are computed by initSpecialIvars.
         self.abortAllModesKey = None
+        self.autoCompleteForceKey = None
         self.fullCommandKey = None
         self.universalArgKey = None
 
@@ -1782,6 +1793,7 @@ class keyHandlerClass:
             ('fullCommandKey',  'full-command'),
             ('abortAllModesKey','keyboard-quit'),
             ('universalArgKey', 'universal-argument'),
+            ('autoCompleteForceKey','auto-complete-force'),
         ):
             junk, bunchList = c.config.getShortcut(commandName)
             bunchList = bunchList or [] ; found = False
@@ -2697,7 +2709,8 @@ class keyHandlerClass:
             k.mb_tabListPrefix = k.getLabel()
         return 'break'
     #@+node:ekr.20061031131434.130: *4* keyboardQuit
-    def keyboardQuit (self,event,hideTabs=True,setDefaultStatus=True):
+    def keyboardQuit (self,event,inAutoCompleter=False):
+        ### ,hideTabs=True,setDefaultStatus=True):
 
         '''This method clears the state and the minibuffer label.
 
@@ -2708,12 +2721,12 @@ class keyHandlerClass:
         if g.app.quitting:
             return
 
-        if hideTabs:
+        if not inAutoCompleter:
             k.autoCompleter.exit()
-            c.frame.log.deleteTab('Mode')
-            c.frame.log.hideTab('Completion')
-
+        
         # Completely clear the mode.
+        c.frame.log.deleteTab('Mode')
+        c.frame.log.hideTab('Completion')
         if k.inputModeName:
             k.endMode(event)
 
@@ -2727,7 +2740,7 @@ class keyHandlerClass:
         c.endEditing()
         c.bodyWantsFocus()
 
-        if setDefaultStatus:
+        if True: ### setDefaultStatus:
             # At present, only the auto-completer suppresses this.
             k.setDefaultInputState()
             k.showStateAndMode()
@@ -3046,7 +3059,7 @@ class keyHandlerClass:
                             return False # Let getArg handle it.
                         elif b.commandName not in k.singleLineCommandList:
                             if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                            k.keyboardQuit(event,hideTabs=True)
+                            k.keyboardQuit(event) ### ,hideTabs=True)
                         else:
                             if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                             c.minibufferWantsFocus() # New in Leo 4.5.
@@ -3144,7 +3157,7 @@ class keyHandlerClass:
         # A click outside the minibuffer terminates any state.
         if k.inState() and w != c.frame.miniBufferWidget:
             if not c.widget_name(w).startswith('log'):
-                k.keyboardQuit(event,hideTabs=False)
+                k.keyboardQuit(event) ### ,hideTabs=False)
                 # k.endMode(event) # Less drastic than keyboard-quit.
                 w and c.widgetWantsFocusNow(w)
                 if trace: g.trace('inState: break')

@@ -312,13 +312,14 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
         if trace:
             g.trace('(LeoQTextBrowser) len(options): %s' % (len(options)))
-        
-        # if hasattr(self,'leo_qc') and self.leo_qc:
-            # qc = self.leo_qc
-        # else:
-            # self.leo_qc = qc = self.LeoQListWidget(c)
             
-        assert not hasattr(self,'leo_qc')
+        if hasattr(self,'leo_qc'):
+            # This can happen when the user types ctrl-space (auto-completer-force).
+            qc = self.leo_qc
+            qc.hide()
+            qc.deleteLater()
+            if trace: g.trace('deleting qc')
+            
         self.leo_qc = qc = self.LeoQListWidget(c)
             
         # Move the window near the body pane's cursor.

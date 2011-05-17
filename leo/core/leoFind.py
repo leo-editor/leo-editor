@@ -1367,7 +1367,7 @@ class leoFind:
         # Among other things, this allows Leo to search for a single trailing space.
         s = self.find_ctrl.getAllText()
         s = g.toUnicode(s)
-        if trace: g.trace('find',repr(s))
+        if trace: g.trace('find',repr(s),self.find_ctrl)
         if s and s[-1] in ('\r','\n'):
             s = s[:-1]
         self.find_text = s
