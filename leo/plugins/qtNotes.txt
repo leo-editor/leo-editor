@@ -801,10 +801,21 @@ def createLabel (self,parent,name,label):
     w.setText(self.tr(label))
     return w
 #@+node:ekr.20090424085523.40: *7* createLineEdit
-def createLineEdit (self,parent,name):
-
+def createLineEdit (self,parent,callback,name):
+    
+    c = self.leo_c
+        
     w = QtGui.QLineEdit(parent)
+
     w.setObjectName(name)
+    
+    def callback_wrapper(w=w):
+        callback(w)
+
+    w.connect(w,QtCore.SIGNAL("editingFinished()"),callback_wrapper)
+    
+    # g.trace(name,w)
+
     return w
 #@+node:ekr.20090427060355.11: *7* createRadioButton
 def createRadioButton (self,parent,name,label):
@@ -869,24 +880,34 @@ def createTreeWidget (self,parent,name):
     w.setHeaderHidden(False)
     self.setName(w,name)
     return w
-#@+node:ekr.20090426183711.12: *6* log tabs
+#@+node:ekr.20090426183711.12: *6* log tabs (DynamicWindow)
 #@+node:ekr.20090424085523.38: *7* createFindTab
 def createFindTab (self,parent):
 
-    grid = self.createGrid(parent,'findGrid',margin=10,spacing=2)
+    grid = self.createGrid(parent,'findGrid',margin=10,spacing=20)
+    
+    show_text_boxes = False
 
-    # Labels.
-    lab2 = self.createLabel(parent,'findLabel','Find:')
-    lab3 = self.createLabel(parent,'changeLabel','Change:')
-    grid.addWidget(lab2,0,0)
-    grid.addWidget(lab3,1,0)
+    if show_text_boxes: # Labels.
+        lab2 = self.createLabel(parent,'findLabel','Find:')
+        lab3 = self.createLabel(parent,'changeLabel','Change:')
+        grid.addWidget(lab2,0,0)
+        grid.addWidget(lab3,1,0)
+    else:
+        lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
+        grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
+        
+    # Always create the text boxes, but use an empty parent if we don't show them.
+    if not show_text_boxes:
+        parent = None
+        
+    findPattern = self.createLineEdit(parent,self.onFindTabChanged,'findPattern')
+    findChange  = self.createLineEdit(parent,self.onChangeTabChanged,'findChange')
 
-    # Text areas.
-    findPattern = self.createLineEdit(parent,'findPattern')
-    findChange  = self.createLineEdit(parent,'findChange')
-    grid.addWidget(findPattern,0,1)
-    grid.addWidget(findChange,1,1)
-
+    if show_text_boxes: # Text areas.
+        grid.addWidget(findPattern,0,1)
+        grid.addWidget(findChange,1,1)
+    
     # Check boxes and radio buttons.
     # Radio buttons are mutually exclusive because they have the same parent.
     def mungeName(name):
@@ -914,8 +935,21 @@ def createFindTab (self,parent):
         func = g.choose(kind=='box',
             self.createCheckBox,self.createRadioButton)
         w = func(parent,name,label)
+        if not show_text_boxes:
+            row -= 1
+        # Does not work.
+        # w.setMinimumHeight(20)
         grid.addWidget(w,row,col)
+        # Does not work.
+        # grid.setRowMinimumHeight(row,30)
         setattr(self,name,w)
+        # g.trace(name,row,col)
+
+    row = 8-1
+    w = QtGui.QWidget()
+    grid.addWidget(w,row,0)
+    grid.addWidget(w,row,1)
+    grid.setRowStretch(row,100)
 
     # Official ivars (in addition to setattr ivars).
     self.findPattern = findPattern
@@ -983,6 +1017,25 @@ def createSpellTab (self,parent):
     self.spellGrid = grid
     self.leo_spell_listBox = listBox # Must exist
     self.leo_spell_label = lab # Must exist (!!)
+#@+node:ekr.20110516132611.14443: *7* callbacks
+def onChangeTabChanged (self,w):
+    
+    c = self.leo_c
+    sc = c.searchCommands
+    
+    # sc.change_ctrl
+    g.trace(sc.findTabHandler,sc.findTabHandler.change_ctrl,repr(w.text()))
+    
+    sc.findTabHandler.update_ivars()
+
+def onFindTabChanged (self,w):
+    
+    c = self.leo_c
+    sc = c.searchCommands
+
+    g.trace(sc.findTabHandler,sc.findTabHandler.find_ctrl,repr(w.text()))
+    
+    sc.findTabHandler.update_ivars()
 #@+node:ekr.20090426183711.13: *6* utils
 #@+node:ekr.20090426083450.13: *7* setName
 def setName (self,widget,name):

@@ -2,9 +2,15 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110509064011.14554: ** First
+#@+node:ekr.20110516132611.14439: *3* Gui stuff
+#@+node:ekr.20110516132611.14441: *4* Make sure *all* widgets have key bindings
+#@+node:ekr.20110513020157.14484: *4* Make sure the log pane doesn't scroll horizontally
+# Is this related to the autocompleter?
+#@+node:ekr.20110513020157.14483: *4* Do we need c.idle_focus_helper?
+#@+node:ekr.20110516132611.14440: *4* Fix find panel
+#@+node:ekr.20110516132611.14437: *4* Option to have viewrendered plugins auto-collapse the pane
+#@+node:ekr.20090907080624.6081: *4* Fix bug: spell checker should check headlines
 #@+node:ekr.20110502085000.6113: *3* URGENT: FAQ entry re cross-file clones
-#@+node:ekr.20110513020157.14484: *3* Make sure the log pane doesn't scroll horizontally
-#@+node:ekr.20110513020157.14483: *3* Do we need c.idle_focus_helper?
 #@+node:ekr.20110427135155.14306: *3* New file format
 #@+node:ekr.20110414164347.6082: *4* Reference for json stuff
 #@+node:ekr.20031218072017.1997: *5* scanGnx
@@ -848,23 +854,21 @@ The <at-file-attributes> element may be contained in the
     
 In other words, we use the graphml <attr> element, extended with the
 gnx attribute, to represent all the uA's in the descendants of @file nodes.
-#@+node:ekr.20110511133940.14562: *3* Fix codewise crash
-@nocolor-node
-
-This may be a unix-only problem, or it might not happen at all...
-    
-    InterfaceError: Error binding parameter 0 - probably unsupported type.
---------------------
-  line 703:             c.execute('select name, class, file, searchpattern from function where name like (?)',(
-* line 704:                 prefix + '%',))
-  line 705: 
-  line 706:         return [(name, pat, klassid, fileid) for name, klassid, fileid, pat in c]
-
-
-#@+node:ekr.20110201125110.12551: ** Next
 #@+node:ekr.20110414065052.6100: *3* Treat gnx's as strings: don't parse them
 http://mail.google.com/mail/#inbox/12f3d4950fbabeea
-#@+node:ekr.20090907080624.6081: *3* Fix bug: spell checker should check headlines
+#@+node:ekr.20090724081340.5987: *3* Improve recursive import script and @auto
+@nocolor-node
+
+Instead of adding an @ignore directive, it might be better
+to change @auto to @@auto.
+
+Should @auto be more lenient with C files?
+
+Improve the recursive import script.
+    - Minimize the path names
+    - Option to include/exclude the @auto itself
+
+#@+node:ekr.20110516132611.14438: ** Deprecate Tk
 #@+node:ekr.20090131200406.11: *3* Remove remaining tk-isms from Leo's core
 @nocolor-node
 
@@ -1850,18 +1854,6 @@ Make all plugins gui-independent.
 http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
 
 @color
-#@+node:ekr.20090724081340.5987: *4* Improve recursive import script and @auto
-@nocolor-node
-
-Instead of adding an @ignore directive, it might be better
-to change @auto to @@auto.
-
-Should @auto be more lenient with C files?
-
-Improve the recursive import script.
-    - Minimize the path names
-    - Option to include/exclude the @auto itself
-
 #@+node:ekr.20071001052501: *4* Versioning for nodes
 @nocolor
 

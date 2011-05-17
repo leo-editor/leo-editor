@@ -860,23 +860,29 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
 
         self.baseClassName='leoQLineEditWidget'
 
-        # g.trace('leoQLineEditWidget',id(widget),g.callers(5))
+        # g.trace('(leoQLineEditWidget):widget',name,widget)
 
-        self.setConfig()
-        self.setFontFromConfig()
-        self.setColorFromConfig()
+        # self.setConfig()
+        # self.setFontFromConfig()
+        # self.setColorFromConfig()
+    #@+node:ekr.20110516132611.14444: *5* __repr__
+    def __repr__ (self):
+        
+        return '<leoQLineEditWidget: widget: %s' % (self.widget)
+        
+    __str__ = __repr__
     #@+node:ekr.20081121105001.547: *5* setFontFromConfig
-    def setFontFromConfig (self,w=None):
+    # def setFontFromConfig (self,w=None):
 
-        '''Set the font in the widget w (a body editor).'''
+        # '''Set the font in the widget w (a body editor).'''
     #@+node:ekr.20081121105001.548: *5* setColorFromConfig
-    def setColorFromConfig (self,w=None):
+    # def setColorFromConfig (self,w=None):
 
-        '''Set the font in the widget w (a body editor).'''
+        # '''Set the font in the widget w (a body editor).'''
     #@+node:ekr.20081121105001.549: *5* setConfig
-    def setConfig (self):
+    # def setConfig (self):
 
-        pass
+        # pass
     #@+node:ekr.20081121105001.550: *4* Widget-specific overrides (QLineEdit)
     #@+node:ekr.20081121105001.551: *5* getAllText
     def getAllText(self):
@@ -1645,18 +1651,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 # Define all other text classes, in any order.
 
 #@+others
-#@+node:ekr.20081121105001.593: *3* class findTextWrapper
-class findTextWrapper (leoQLineEditWidget):
-
-    '''A class representing the find/change edit widgets.'''
-
-    def __init__ (self,widget,name,c=None):
-        # Init the base class.
-        leoQLineEditWidget.__init__(self,widget,name,c=c)
-        self.tabWidget = None
-
-    def setTabWidget (self,widget):
-        self.tabWidget = widget
 #@+node:ekr.20081121105001.559: *3* class leoQScintilla
 class leoQScintillaWidget (leoQtBaseTextWidget):
 
@@ -2435,10 +2429,21 @@ class DynamicWindow(QtGui.QMainWindow):
         w.setText(self.tr(label))
         return w
     #@+node:ekr.20090424085523.40: *6* createLineEdit
-    def createLineEdit (self,parent,name):
-
+    def createLineEdit (self,parent,callback,name):
+        
+        c = self.leo_c
+            
         w = QtGui.QLineEdit(parent)
+
         w.setObjectName(name)
+        
+        def callback_wrapper(w=w):
+            callback(w)
+
+        w.connect(w,QtCore.SIGNAL("editingFinished()"),callback_wrapper)
+        
+        # g.trace(name,w)
+
         return w
     #@+node:ekr.20090427060355.11: *6* createRadioButton
     def createRadioButton (self,parent,name,label):
@@ -2503,24 +2508,34 @@ class DynamicWindow(QtGui.QMainWindow):
         w.setHeaderHidden(False)
         self.setName(w,name)
         return w
-    #@+node:ekr.20090426183711.12: *5* log tabs
+    #@+node:ekr.20090426183711.12: *5* log tabs (DynamicWindow)
     #@+node:ekr.20090424085523.38: *6* createFindTab
     def createFindTab (self,parent):
 
-        grid = self.createGrid(parent,'findGrid',margin=10,spacing=2)
+        grid = self.createGrid(parent,'findGrid',margin=10,spacing=20)
+        
+        show_text_boxes = False
 
-        # Labels.
-        lab2 = self.createLabel(parent,'findLabel','Find:')
-        lab3 = self.createLabel(parent,'changeLabel','Change:')
-        grid.addWidget(lab2,0,0)
-        grid.addWidget(lab3,1,0)
+        if show_text_boxes: # Labels.
+            lab2 = self.createLabel(parent,'findLabel','Find:')
+            lab3 = self.createLabel(parent,'changeLabel','Change:')
+            grid.addWidget(lab2,0,0)
+            grid.addWidget(lab3,1,0)
+        else:
+            lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
+            grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
+            
+        # Always create the text boxes, but use an empty parent if we don't show them.
+        if not show_text_boxes:
+            parent = None
+            
+        findPattern = self.createLineEdit(parent,self.onFindTabChanged,'findPattern')
+        findChange  = self.createLineEdit(parent,self.onChangeTabChanged,'findChange')
 
-        # Text areas.
-        findPattern = self.createLineEdit(parent,'findPattern')
-        findChange  = self.createLineEdit(parent,'findChange')
-        grid.addWidget(findPattern,0,1)
-        grid.addWidget(findChange,1,1)
-
+        if show_text_boxes: # Text areas.
+            grid.addWidget(findPattern,0,1)
+            grid.addWidget(findChange,1,1)
+        
         # Check boxes and radio buttons.
         # Radio buttons are mutually exclusive because they have the same parent.
         def mungeName(name):
@@ -2548,8 +2563,21 @@ class DynamicWindow(QtGui.QMainWindow):
             func = g.choose(kind=='box',
                 self.createCheckBox,self.createRadioButton)
             w = func(parent,name,label)
+            if not show_text_boxes:
+                row -= 1
+            # Does not work.
+            # w.setMinimumHeight(20)
             grid.addWidget(w,row,col)
+            # Does not work.
+            # grid.setRowMinimumHeight(row,30)
             setattr(self,name,w)
+            # g.trace(name,row,col)
+
+        row = 8-1
+        w = QtGui.QWidget()
+        grid.addWidget(w,row,0)
+        grid.addWidget(w,row,1)
+        grid.setRowStretch(row,100)
 
         # Official ivars (in addition to setattr ivars).
         self.findPattern = findPattern
@@ -2617,6 +2645,25 @@ class DynamicWindow(QtGui.QMainWindow):
         self.spellGrid = grid
         self.leo_spell_listBox = listBox # Must exist
         self.leo_spell_label = lab # Must exist (!!)
+    #@+node:ekr.20110516132611.14443: *6* callbacks
+    def onChangeTabChanged (self,w):
+        
+        c = self.leo_c
+        sc = c.searchCommands
+        
+        # sc.change_ctrl
+        g.trace(sc.findTabHandler,sc.findTabHandler.change_ctrl,repr(w.text()))
+        
+        sc.findTabHandler.update_ivars()
+
+    def onFindTabChanged (self,w):
+        
+        c = self.leo_c
+        sc = c.searchCommands
+
+        g.trace(sc.findTabHandler,sc.findTabHandler.find_ctrl,repr(w.text()))
+        
+        sc.findTabHandler.update_ivars()
     #@+node:ekr.20090426183711.13: *5* utils
     #@+node:ekr.20090426083450.13: *6* setName
     def setName (self,widget,name):
@@ -3800,8 +3847,11 @@ class leoQtFindTab (leoFind.findTab):
         self.svarDict = {}
             # Keys are ivar names, values are svar objects.
 
+        # Keys are option names; values are <svars>.
         for ivar in self.intKeys:
             self.svarDict[ivar] = self.svar(owner,ivar)
+        
+        # g.trace(self.svarDict)
 
         # Add a hack for 'entire_outline' radio button.
         ivar = 'entire_outline'
@@ -3829,15 +3879,13 @@ class leoQtFindTab (leoFind.findTab):
 
         # Bind boxes to Window objects.
         self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
-        findWrapper   = findTextWrapper(w.findPattern,'find-widget',c)
-        changeWrapper = findTextWrapper(w.findChange,'change-widget',c)
-        if 0: # Not yet.
-            findWrapper.setTabWidget(changeWrapper)
-            findWrapper.setReturnCommand = None
-            changeWrapper.setTabWidget(findWrapper)
+        # findWrapper   = findTextWrapper(w.findPattern,'find-widget',c)
+        # changeWrapper = findTextWrapper(w.findChange,'change-widget',c)
+        findWidget   = leoQLineEditWidget(w.findPattern,'find-widget',c)
+        changeWidget = leoQLineEditWidget(w.findChange,'change-widget',c)
         data = (
-            ('find_ctrl',       findWrapper),
-            ('change_ctrl',     changeWrapper),
+            ('find_ctrl',       findWidget),
+            ('change_ctrl',     changeWidget),
             ('whole_word',      w.checkBoxWholeWord),
             ('ignore_case',     w.checkBoxIgnoreCase),
             ('wrap',            w.checkBoxWrapAround),
@@ -3887,6 +3935,7 @@ class leoQtFindTab (leoFind.findTab):
         for w,setting,defaultText in table:
             # w is a textWrapper object
             w.setAllText(c.config.getString(setting) or defaultText)
+
     #@+node:ekr.20081121105001.242: *6* initCheckBoxes
     def initCheckBoxes (self):
 
