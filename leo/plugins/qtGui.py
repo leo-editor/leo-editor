@@ -2429,7 +2429,7 @@ class DynamicWindow(QtGui.QMainWindow):
         w.setText(self.tr(label))
         return w
     #@+node:ekr.20090424085523.40: *6* createLineEdit
-    def createLineEdit (self,parent,callback,name):
+    def createLineEdit (self,parent,name):
         
         c = self.leo_c
             
@@ -2437,12 +2437,10 @@ class DynamicWindow(QtGui.QMainWindow):
 
         w.setObjectName(name)
         
-        def callback_wrapper(w=w):
-            callback(w)
+        # def callback_wrapper(w=w):
+            # callback(w)
 
-        w.connect(w,QtCore.SIGNAL("editingFinished()"),callback_wrapper)
-        
-        # g.trace(name,w)
+        # w.connect(w,QtCore.SIGNAL("editingFinished()"),callback_wrapper)
 
         return w
     #@+node:ekr.20090427060355.11: *6* createRadioButton
@@ -2529,8 +2527,8 @@ class DynamicWindow(QtGui.QMainWindow):
         if not show_text_boxes:
             parent = None
             
-        findPattern = self.createLineEdit(parent,self.onFindTabChanged,'findPattern')
-        findChange  = self.createLineEdit(parent,self.onChangeTabChanged,'findChange')
+        findPattern = self.createLineEdit(parent,'findPattern')
+        findChange  = self.createLineEdit(parent,'findChange')
 
         if show_text_boxes: # Text areas.
             grid.addWidget(findPattern,0,1)
@@ -2645,25 +2643,6 @@ class DynamicWindow(QtGui.QMainWindow):
         self.spellGrid = grid
         self.leo_spell_listBox = listBox # Must exist
         self.leo_spell_label = lab # Must exist (!!)
-    #@+node:ekr.20110516132611.14443: *6* callbacks
-    def onChangeTabChanged (self,w):
-        
-        c = self.leo_c
-        sc = c.searchCommands
-        
-        # sc.change_ctrl
-        g.trace(sc.findTabHandler,sc.findTabHandler.change_ctrl,repr(w.text()))
-        
-        sc.findTabHandler.update_ivars()
-
-    def onFindTabChanged (self,w):
-        
-        c = self.leo_c
-        sc = c.searchCommands
-
-        g.trace(sc.findTabHandler,sc.findTabHandler.find_ctrl,repr(w.text()))
-        
-        sc.findTabHandler.update_ivars()
     #@+node:ekr.20090426183711.13: *5* utils
     #@+node:ekr.20090426083450.13: *6* setName
     def setName (self,widget,name):

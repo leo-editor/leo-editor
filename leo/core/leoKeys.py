@@ -776,7 +776,7 @@ class AutoCompleterClass:
     def get_object (self):
         
         '''Return the object corresponding to the current prefix.'''
-        
+
         trace = False and not g.unitTesting
         
         common_prefix,prefix1,aList = self.compute_completion_list()
@@ -921,8 +921,11 @@ class AutoCompleterClass:
         May be overridden in subclasses.'''
 
         # print('autoCompleter.put',args,keys)
-
-        g.es(*args,**keys)
+        
+        if g.unitTesting:
+            pass
+        else:
+            g.es(*args,**keys)
     #@+node:ekr.20110511133940.14561: *4* show_completion_list & helpers
     def show_completion_list (self,common_prefix,prefix,tabList):
 

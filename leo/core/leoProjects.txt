@@ -5239,7 +5239,7 @@ def updateSettings (self,c,localFlag):
 #@+node:ekr.20060125093807: *5* searchWithPresentOptions
 def searchWithPresentOptions (self,event):
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     k = self.k ; tag = 'search-with-present-options'
     state = k.getState(tag)
 

@@ -7646,7 +7646,7 @@ class minibufferFind (baseEditCommandsClass):
     #@+node:ekr.20060125093807: *4* searchWithPresentOptions
     def searchWithPresentOptions (self,event):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         k = self.k ; tag = 'search-with-present-options'
         state = k.getState(tag)
 
