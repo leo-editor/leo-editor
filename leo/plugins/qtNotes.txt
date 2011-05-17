@@ -801,19 +801,13 @@ def createLabel (self,parent,name,label):
     w.setText(self.tr(label))
     return w
 #@+node:ekr.20090424085523.40: *7* createLineEdit
-def createLineEdit (self,parent,name):
+def createLineEdit (self,parent,name,disabled=True):
     
-    c = self.leo_c
-        
     w = QtGui.QLineEdit(parent)
-
     w.setObjectName(name)
-    
-    # def callback_wrapper(w=w):
-        # callback(w)
+    w.leo_disabled = disabled # Inject the ivar.
 
-    # w.connect(w,QtCore.SIGNAL("editingFinished()"),callback_wrapper)
-
+    # g.trace(disabled,w,g.callers())
     return w
 #@+node:ekr.20090427060355.11: *7* createRadioButton
 def createRadioButton (self,parent,name,label):
@@ -879,39 +873,32 @@ def createTreeWidget (self,parent,name):
     self.setName(w,name)
     return w
 #@+node:ekr.20090426183711.12: *6* log tabs (DynamicWindow)
-#@+node:ekr.20090424085523.38: *7* createFindTab
+#@+node:ekr.20090424085523.38: *7* createFindTab (DynamicWindow)
 def createFindTab (self,parent):
 
     grid = self.createGrid(parent,'findGrid',margin=10,spacing=20)
     
-    show_text_boxes = False
-
-    if show_text_boxes: # Labels.
-        lab2 = self.createLabel(parent,'findLabel','Find:')
-        lab3 = self.createLabel(parent,'changeLabel','Change:')
-        grid.addWidget(lab2,0,0)
-        grid.addWidget(lab3,1,0)
-    else:
-        lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
-        grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
-        
-    # Always create the text boxes, but use an empty parent if we don't show them.
-    if not show_text_boxes:
-        parent = None
-        
-    findPattern = self.createLineEdit(parent,'findPattern')
-    findChange  = self.createLineEdit(parent,'findChange')
-
-    if show_text_boxes: # Text areas.
-        grid.addWidget(findPattern,0,1)
-        grid.addWidget(findChange,1,1)
+    # Row 0: heading.
+    lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
+    grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
     
+    # Rows 1, 2: the find/change boxes, now disabled.
+    findPattern = self.createLineEdit(parent,'findPattern',disabled=True)
+    findChange  = self.createLineEdit(parent,'findChange',disabled=True)
+    lab2 = self.createLabel(parent,'findLabel','Find:')
+    lab3 = self.createLabel(parent,'changeLabel','Change:')
+    grid.addWidget(lab2,1,0)
+    grid.addWidget(lab3,2,0)
+    grid.addWidget(findPattern,1,1)
+    grid.addWidget(findChange,2,1)
+        
     # Check boxes and radio buttons.
     # Radio buttons are mutually exclusive because they have the same parent.
     def mungeName(name):
         # The value returned here is significant: it creates an ivar.
         return 'checkBox%s' % label.replace(' ','').replace('&','')
 
+    # Rows 3 through 8...
     table = (
         ('box', 'Whole &Word',      2,0),
         ('rb',  '&Entire Outline',  2,1),
@@ -928,30 +915,24 @@ def createFindTab (self,parent):
         # a,b,c,e,f,h,i,n,rs,w
 
     for kind,label,row,col in table:
-
         name = mungeName(label)
         func = g.choose(kind=='box',
             self.createCheckBox,self.createRadioButton)
         w = func(parent,name,label)
-        if not show_text_boxes:
-            row -= 1
-        # Does not work.
-        # w.setMinimumHeight(20)
-        grid.addWidget(w,row,col)
-        # Does not work.
-        # grid.setRowMinimumHeight(row,30)
+        grid.addWidget(w,row+1,col)
         setattr(self,name,w)
-        # g.trace(name,row,col)
 
-    row = 8-1
+    # Row 9: Widgets that take all additional vertical space.
     w = QtGui.QWidget()
-    grid.addWidget(w,row,0)
-    grid.addWidget(w,row,1)
-    grid.setRowStretch(row,100)
+    grid.addWidget(w,9,0)
+    grid.addWidget(w,9,1)
+    grid.setRowStretch(9,100)
 
     # Official ivars (in addition to setattr ivars).
     self.findPattern = findPattern
     self.findChange = findChange
+    # self.findLab = lab2
+    # self.changeLab = lab3
 #@+node:ekr.20090424085523.50: *7* createSpellTab
 def createSpellTab (self,parent):
 
@@ -6369,5 +6350,26 @@ def updateInjectedIvars (self,w,p):
     # g.trace(sc.findTabHandler,sc.findTabHandler.find_ctrl,repr(w.text()))
     
     # sc.findTabHandler.update_ivars()
+#@+node:ekr.20110517050520.14454: *3* createLeoFindLabel (not used)
+def createLeoFindLabel (self,parent,name,s1,s2):
+    
+    class LeoFindQLabel(QtGui.QLabel):
+        
+        def __init__ (self,parent,prefix):
+            QtGui.QLabel.__init__ (self,parent)
+            self.leo_prefix = prefix
+            
+        def setText(self,s):
+            QtGui.QLabel.setText(self,self.leo_prefix+s)
+            
+        # Support the high-level interface.
+        def getAllText(self):
+            return self.text()
+    
+    w = LeoFindQLabel(parent,s1)
+    
+    w.setObjectName(name)
+    w.setText(s2)
+    return w
 #@-all
 #@-leo

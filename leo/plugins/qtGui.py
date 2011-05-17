@@ -861,28 +861,12 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         self.baseClassName='leoQLineEditWidget'
 
         # g.trace('(leoQLineEditWidget):widget',name,widget)
-
-        # self.setConfig()
-        # self.setFontFromConfig()
-        # self.setColorFromConfig()
     #@+node:ekr.20110516132611.14444: *5* __repr__
     def __repr__ (self):
         
         return '<leoQLineEditWidget: widget: %s' % (self.widget)
         
     __str__ = __repr__
-    #@+node:ekr.20081121105001.547: *5* setFontFromConfig
-    # def setFontFromConfig (self,w=None):
-
-        # '''Set the font in the widget w (a body editor).'''
-    #@+node:ekr.20081121105001.548: *5* setColorFromConfig
-    # def setColorFromConfig (self,w=None):
-
-        # '''Set the font in the widget w (a body editor).'''
-    #@+node:ekr.20081121105001.549: *5* setConfig
-    # def setConfig (self):
-
-        # pass
     #@+node:ekr.20081121105001.550: *4* Widget-specific overrides (QLineEdit)
     #@+node:ekr.20081121105001.551: *5* getAllText
     def getAllText(self):
@@ -921,14 +905,23 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
 
     def seeInsertPoint (self):
         pass
-    #@+node:ekr.20081121105001.556: *5* setAllText
+    #@+node:ekr.20081121105001.556: *5* setAllText leoQLineEditWidget
     def setAllText(self,s,insert=None):
 
         w = self.widget
+        
+        disabled = hasattr(w,'leo_disabled') and w.leo_disabled
         i = g.choose(insert is None,0,insert)
+        
+        if disabled:
+            w.setEnabled(True)
+
         w.setText(s)
         if insert is not None:
             self.setSelectionRange(i,i,insert=i)
+            
+        if disabled:
+            w.setEnabled(False)
     #@+node:ekr.20081121105001.557: *5* setInsertPoint
     def setInsertPoint(self,i):
 
@@ -2429,19 +2422,13 @@ class DynamicWindow(QtGui.QMainWindow):
         w.setText(self.tr(label))
         return w
     #@+node:ekr.20090424085523.40: *6* createLineEdit
-    def createLineEdit (self,parent,name):
+    def createLineEdit (self,parent,name,disabled=True):
         
-        c = self.leo_c
-            
         w = QtGui.QLineEdit(parent)
-
         w.setObjectName(name)
-        
-        # def callback_wrapper(w=w):
-            # callback(w)
+        w.leo_disabled = disabled # Inject the ivar.
 
-        # w.connect(w,QtCore.SIGNAL("editingFinished()"),callback_wrapper)
-
+        # g.trace(disabled,w,g.callers())
         return w
     #@+node:ekr.20090427060355.11: *6* createRadioButton
     def createRadioButton (self,parent,name,label):
@@ -2507,39 +2494,32 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setName(w,name)
         return w
     #@+node:ekr.20090426183711.12: *5* log tabs (DynamicWindow)
-    #@+node:ekr.20090424085523.38: *6* createFindTab
+    #@+node:ekr.20090424085523.38: *6* createFindTab (DynamicWindow)
     def createFindTab (self,parent):
 
         grid = self.createGrid(parent,'findGrid',margin=10,spacing=20)
         
-        show_text_boxes = False
-
-        if show_text_boxes: # Labels.
-            lab2 = self.createLabel(parent,'findLabel','Find:')
-            lab3 = self.createLabel(parent,'changeLabel','Change:')
-            grid.addWidget(lab2,0,0)
-            grid.addWidget(lab3,1,0)
-        else:
-            lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
-            grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
-            
-        # Always create the text boxes, but use an empty parent if we don't show them.
-        if not show_text_boxes:
-            parent = None
-            
-        findPattern = self.createLineEdit(parent,'findPattern')
-        findChange  = self.createLineEdit(parent,'findChange')
-
-        if show_text_boxes: # Text areas.
-            grid.addWidget(findPattern,0,1)
-            grid.addWidget(findChange,1,1)
+        # Row 0: heading.
+        lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
+        grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
         
+        # Rows 1, 2: the find/change boxes, now disabled.
+        findPattern = self.createLineEdit(parent,'findPattern',disabled=True)
+        findChange  = self.createLineEdit(parent,'findChange',disabled=True)
+        lab2 = self.createLabel(parent,'findLabel','Find:')
+        lab3 = self.createLabel(parent,'changeLabel','Change:')
+        grid.addWidget(lab2,1,0)
+        grid.addWidget(lab3,2,0)
+        grid.addWidget(findPattern,1,1)
+        grid.addWidget(findChange,2,1)
+            
         # Check boxes and radio buttons.
         # Radio buttons are mutually exclusive because they have the same parent.
         def mungeName(name):
             # The value returned here is significant: it creates an ivar.
             return 'checkBox%s' % label.replace(' ','').replace('&','')
 
+        # Rows 3 through 8...
         table = (
             ('box', 'Whole &Word',      2,0),
             ('rb',  '&Entire Outline',  2,1),
@@ -2556,30 +2536,24 @@ class DynamicWindow(QtGui.QMainWindow):
             # a,b,c,e,f,h,i,n,rs,w
 
         for kind,label,row,col in table:
-
             name = mungeName(label)
             func = g.choose(kind=='box',
                 self.createCheckBox,self.createRadioButton)
             w = func(parent,name,label)
-            if not show_text_boxes:
-                row -= 1
-            # Does not work.
-            # w.setMinimumHeight(20)
-            grid.addWidget(w,row,col)
-            # Does not work.
-            # grid.setRowMinimumHeight(row,30)
+            grid.addWidget(w,row+1,col)
             setattr(self,name,w)
-            # g.trace(name,row,col)
 
-        row = 8-1
+        # Row 9: Widgets that take all additional vertical space.
         w = QtGui.QWidget()
-        grid.addWidget(w,row,0)
-        grid.addWidget(w,row,1)
-        grid.setRowStretch(row,100)
+        grid.addWidget(w,9,0)
+        grid.addWidget(w,9,1)
+        grid.setRowStretch(9,100)
 
         # Official ivars (in addition to setattr ivars).
         self.findPattern = findPattern
         self.findChange = findChange
+        # self.findLab = lab2
+        # self.changeLab = lab3
     #@+node:ekr.20090424085523.50: *6* createSpellTab
     def createSpellTab (self,parent):
 
@@ -3899,7 +3873,7 @@ class leoQtFindTab (leoFind.findTab):
                 svar.set(val)
 
             # g.trace(ivar,val)
-    #@+node:ekr.20081121105001.241: *6* initTextWidgets
+    #@+node:ekr.20081121105001.241: *6* initTextWidgets (qtFindTab)
     def initTextWidgets(self):
 
         '''Init the find/change text areas.'''
@@ -3914,7 +3888,6 @@ class leoQtFindTab (leoFind.findTab):
         for w,setting,defaultText in table:
             # w is a textWrapper object
             w.setAllText(c.config.getString(setting) or defaultText)
-
     #@+node:ekr.20081121105001.242: *6* initCheckBoxes
     def initCheckBoxes (self):
 
