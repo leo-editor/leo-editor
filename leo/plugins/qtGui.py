@@ -159,8 +159,8 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             c.in_qt_dialog = False
 
             # This is important: it clears the autocompletion state.
-            c.k.keyboardQuit(event=None,hideTabs=False)
-                # hideTabs = False prevents a recursive call here.
+            c.k.keyboardQuit(event=None,inAutoCompleter=True)
+                # inAutoCompleter = True prevents a recursive call here.
                 
             c.bodyWantsFocusNow()
             
@@ -312,13 +312,6 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         
         if trace:
             g.trace('(LeoQTextBrowser) len(options): %s' % (len(options)))
-            
-        if hasattr(self,'leo_qc'):
-            # This can happen when the user types ctrl-space (auto-completer-force).
-            qc = self.leo_qc
-            qc.hide()
-            qc.deleteLater()
-            if trace: g.trace('deleting qc')
             
         self.leo_qc = qc = self.LeoQListWidget(c)
             

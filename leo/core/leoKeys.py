@@ -883,7 +883,7 @@ class AutoCompleterClass:
                 # This calls self.exit if the '(' is valid.
                 self.calltip()
             else:
-                if trace: g.trace('ch',repr(ch),'calling finish')
+                if trace: g.trace('ch',repr(ch),'calling exit')
                 self.insert_string(ch)
                 self.exit()
     #@+node:ekr.20061031131434.31: *4* insert_string
@@ -903,7 +903,8 @@ class AutoCompleterClass:
         c.frame.body.onBodyChanged('Typing')
         
         if self.use_qcompleter:
-            c.widgetWantsFocusNow(self.qw)
+            # g.trace(self.qw.leo_qc)
+            c.widgetWantsFocusNow(self.qw.leo_qc)
     #@+node:ekr.20110314115639.14269: *4* is_leo_source_file
     def is_leo_source_file (self):
         

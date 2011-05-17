@@ -6,6 +6,9 @@
 #@+node:ekr.20110517093705.14575: *3* Fix qt bugs
 @nocolor-node
 
+** test.leo log pane is scrolled.
+    Look at enabled plugins.
+
 leo overrides minibuffer background color
 https://bugs.launchpad.net/leo-editor/+bug/323967
 
