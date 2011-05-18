@@ -10,8 +10,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070610174018"><vh>Startup</vh>
-<v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100580b000000302e312e352e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"
-expanded="ekr.20050404094627,"><vh>@file doc-startup.txt</vh></v>
+<v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100580b000000302e312e352e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"><vh>@file doc-startup.txt</vh></v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Files, including home page</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
@@ -19,8 +18,7 @@ expanded="ekr.20050404094627,"><vh>@file doc-startup.txt</vh></v>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@edit plugin_catalog.py</vh></v>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4274,ekr.20100808060203.4286,"><vh>@file html/front.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/front.html</vh></v>
 <v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
 <v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
