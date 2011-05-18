@@ -37,8 +37,53 @@ Actual work flow:
 - Test in a separate file: guarantees reload of all new code.
     "e" opens ekr.leo, my private test file.
     "t" opens test.leo, the public test file.
+#@+node:ekr.20110518103946.18184: *3* Fix headline coloring problems
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ee09fb2c2a5316f2/490fa7cddab36fab
+
+I have noticed recently an ugly combination of colors in headline while editing
+that was introduced by updating Leo. Background is very dark and text color is
+also dark so that it is quite unreadable. I haven't had enough time to inspect
+default settings till this morning. Today I realized that when I start editing
+headline with Ctrl+h (that is the usual way I use) both colors (background and
+foreground) are dark, but when I double click in headline I see colors from
+myLeosettings file.
+
+I am using:
+Leo 4.8 final, build 3752, November 26, 2010
+Python 2.6.6, qt version 4.7.0
+linux2
+bzr revno gives me 3904
+
+
+===========================
+
+Also I can't figure how to change color of "(" and ")" in actionscript language.
+I like dark background with the light text and that is the color scheme I have
+in myLeosettings. But "(" and ")" are black and that is not compatible with my
+dark background color.
+
+The only two colors in leoSettings (in syntax coloring nodes) that are black are
+'tab_color' and 'operator_color'. I have tried to change both of them but with
+no success. Leo sees my settings for tab_color and operator_color but those
+settings have no influence on "(" and ")" .
+
+In nodes where @language python is in effect "(" ")" are white, but in nodes
+with @language actionscript those characters become black and I can't find which
+setting I should change.
+
+====================================
+
+
+Today I have updated my Leo and with the revno 4001 the problem is still
+present. And also I haven't found answer on the question about configuring
+colors of parenthesis. I understand those questions are not so high priority but
+I am just asking again here in case they got forgotten. Vitalije.
 #@+node:ekr.20110518103946.18158: *3* Put Kent's Runwith class in scripts.leo, and contrib, etc.
 @nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b8e8fbf6d97fa9f2/a4537fafaf2442ba
 
 I've had endless problems with interpreter versioning, leading me to:
 
@@ -248,6 +293,108 @@ def get_jsonfile(self, fname='codehash'):
    return self.jsonfile
 
 
+
+#@+node:ekr.20110518103946.18179: *3* Add external/leosax.py to leoPyRef.leo
+http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
+
+Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
+#@+node:ekr.20110518103946.18180: *3* Investigate potentially serious MacOs bugs (TK)
+@nocolor-node
+
+Outline commands execute twice under OS X
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/2c86f8363c48dfa2/92bf6dd84c3dbb5e
+
+With OSX and Tk, some "Outline" commands execute twice when used called by a
+keyboard shortcut for me. This is incredibly unnerving for commands such as Cut
+Node, Paste Node, Delete Node or Paste Node as Clone. Using the commands from
+the menu bar works as expected. Strangely enough, Insert Node is not affected.
+
+I use OSX 10.6.6, python 2.6.1 and gui=tk
+
+=======
+
+Uncloseable modal window under OS X
+		
+[Click the star to watch this topic] 	
+	
+	  	2 messages - 1 new - Collapse all  - 
+Report discussion as spam
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/653838b2112b781b/cc4ab2919f5785cd
+
+I've been having trouble with an uncloseable modal Window under OS X that
+prompts: "myfilename already exists. Overwrite this file?"
+
+The options Yes, No and Cancel are displayed but not clickable and
+there is no title bar. No keyboard shortcuts I tried closed the
+window. The only possibility is to kill the python process running
+leo, losing all changes made...
+Strangely enough this window only appears from time to time, while
+most of the time  saving changes just overwrites without asking.
+I don't know what information to post about my environment. I use the
+standard OSX python install (2.6.1) and launch leo with "./
+launchLeo.py --gui=tk".
+#@+node:ekr.20110518103946.18181: *3* Allow Leo settings to change qt-stylesheets
+@nocolor-node
+
+Are color-settings gui-toolkit dependent?
+
+In my ~/.leo/myLeoSettings.leo I changed @settings->Colors-> @color body_text_selection_foreground_color = black
+(the value before was `white`).
+
+Unfortunately the foreground of the selected text still is white, at least if I use the qt gui (which is default on my system and which I like more).
+
+So my questions:
+
+Are the color-settings gui-toolkit dependent?
+
+How (or where) can I change the colors used for qt?
+
+Is there a way to print the settings files (with full path) which leo reads on startup?
+(I think this would help to prevent confusion in the various ways to specify settings for new users.)
+
+=====================================
+
+
+At last I see what is going on.  The selection colors are set in the node:
+
+@data qt-gui-plugin-style-sheet
+
+Apparently the selection colors can *only* be set there: it looks like
+the separate @color settings for selections do not work.
+
+This is quite a mess.  It arose because originally I did not realize
+that it was possible to use "mini" stylesheets to set individual
+selector dynamically.  When I made the discovery, I supported some,
+but not all settings.
+
+Of course, I should support all settings.  I'll see what I can do...
+#@+node:ekr.20110518103946.18182: *3* Call os.chdir when executing scripts
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ea31ed2e0518866/3667f707b99ee9e3
+
+On Sat, Mar 19, 2011 at 11:43 AM, Ville M. Vainio <vivainio@gmail.com> wrote:
+> On Fri, Mar 18, 2011 at 3:38 PM, Terry Brown <terry_n_brown@yahoo.com> wrote:
+>
+>> Should os.chdir() be called to set the current directory to match any
+>> @path directives in effect at the current node when a script is run or
+>> a button pushed?  Seems this would be useful.
+>
+> I have wished this quite often. As it stands, current working
+> directory is unspecified which is not desirable.
+
+It may be unspecified, but your proposal would change it :-)
+
+However, you and Terry have convinced me that it is worth doing on an
+experimental basis.
+#@+node:ekr.20110518103946.18183: *3* Fix mod_http plugin
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/196d37a58bb2dd80/ca526f0be4101f09
+
+Was support for this removed from Leo's core?
 
 #@+node:ekr.20110509064011.14554: ** First
 #@+node:ekr.20110502085000.6113: *3* URGENT: FAQ entry re cross-file clones
