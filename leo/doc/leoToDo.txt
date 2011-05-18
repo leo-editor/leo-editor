@@ -2,7 +2,27 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110518082415.14438: ** Action items
-#@+node:ekr.20110518103946.18182: *3* Call os.chdir when executing scripts
+#@+node:ekr.20101024062147.6024: *3* *0 bug 622819: Ctrl-Shift movement is incorrect
+@nocolor-node
+
+Has this been fixed??
+
+Ctrl-Shift movement (back-word-extend-selection, forward-word-extend-selection)
+is incorrect when there is an existing selection, which was created by some
+method other than Ctrl-Shift movement.
+
+Expected behavior: it should extend/contract the existing selection
+
+Actual behavior: it creates a new selection from the cursor position
+
+======
+
+This is a minor bug, but hard to fix because Leo doesn't always distinguish
+between the point and the mark.
+
+The fix would be in extendHelper, called from moveToHelper.
+#@+node:ekr.20110502085000.6113: *3* *0 FAQ entry re cross-file clones
+#@+node:ekr.20110518103946.18182: *3* *1 Call os.chdir when executing scripts
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/4ea31ed2e0518866/3667f707b99ee9e3
@@ -21,100 +41,7 @@ It may be unspecified, but your proposal would change it :-)
 
 However, you and Terry have convinced me that it is worth doing on an
 experimental basis.
-#@+node:ekr.20110518103946.18184: *3* Fix headline coloring problems
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ee09fb2c2a5316f2/490fa7cddab36fab
-
-I have noticed recently an ugly combination of colors in headline while editing
-that was introduced by updating Leo. Background is very dark and text color is
-also dark so that it is quite unreadable. I haven't had enough time to inspect
-default settings till this morning. Today I realized that when I start editing
-headline with Ctrl+h (that is the usual way I use) both colors (background and
-foreground) are dark, but when I double click in headline I see colors from
-myLeosettings file.
-
-I am using:
-Leo 4.8 final, build 3752, November 26, 2010
-Python 2.6.6, qt version 4.7.0
-linux2
-bzr revno gives me 3904
-
-
-===========================
-
-Also I can't figure how to change color of "(" and ")" in actionscript language.
-I like dark background with the light text and that is the color scheme I have
-in myLeosettings. But "(" and ")" are black and that is not compatible with my
-dark background color.
-
-The only two colors in leoSettings (in syntax coloring nodes) that are black are
-'tab_color' and 'operator_color'. I have tried to change both of them but with
-no success. Leo sees my settings for tab_color and operator_color but those
-settings have no influence on "(" and ")" .
-
-In nodes where @language python is in effect "(" ")" are white, but in nodes
-with @language actionscript those characters become black and I can't find which
-setting I should change.
-
-====================================
-
-
-Today I have updated my Leo and with the revno 4001 the problem is still
-present. And also I haven't found answer on the question about configuring
-colors of parenthesis. I understand those questions are not so high priority but
-I am just asking again here in case they got forgotten. Vitalije.
-#@+node:ekr.20110518103946.18179: *3* Add external/leosax.py to leoPyRef.leo
-http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
-
-Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
-#@+node:ekr.20110518103946.18180: *3* Investigate potentially serious MacOs bugs (TK)
-@nocolor-node
-
-Outline commands execute twice under OS X
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/2c86f8363c48dfa2/92bf6dd84c3dbb5e
-
-With OSX and Tk, some "Outline" commands execute twice when used called by a
-keyboard shortcut for me. This is incredibly unnerving for commands such as Cut
-Node, Paste Node, Delete Node or Paste Node as Clone. Using the commands from
-the menu bar works as expected. Strangely enough, Insert Node is not affected.
-
-I use OSX 10.6.6, python 2.6.1 and gui=tk
-
-=======
-
-Uncloseable modal window under OS X
-		
-[Click the star to watch this topic] 	
-	
-	  	2 messages - 1 new - Collapse all  - 
-Report discussion as spam
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/653838b2112b781b/cc4ab2919f5785cd
-
-I've been having trouble with an uncloseable modal Window under OS X that
-prompts: "myfilename already exists. Overwrite this file?"
-
-The options Yes, No and Cancel are displayed but not clickable and
-there is no title bar. No keyboard shortcuts I tried closed the
-window. The only possibility is to kill the python process running
-leo, losing all changes made...
-Strangely enough this window only appears from time to time, while
-most of the time  saving changes just overwrites without asking.
-I don't know what information to post about my environment. I use the
-standard OSX python install (2.6.1) and launch leo with "./
-launchLeo.py --gui=tk".
-#@+node:ekr.20110518103946.18183: *3* Fix mod_http plugin
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/196d37a58bb2dd80/ca526f0be4101f09
-
-Was support for this removed from Leo's core?
-
-#@+node:ekr.20110509064011.14554: ** First
-#@+node:ekr.20110502085000.6113: *3* URGENT: FAQ entry re cross-file clones
-#@+node:ekr.20110517093705.14575: *3* Fix qt bugs
+#@+node:ekr.20110517093705.14575: *3* *1 Fix qt bugs
 @nocolor-node
 
 ** test.leo log pane is scrolled.
@@ -145,28 +72,461 @@ https://bugs.launchpad.net/leo-editor/+bug/766747
 
 PgUp/PgDown should scroll the body, not the tree
 https://bugs.launchpad.net/leo-editor/+bug/394309 
-#@+node:ekr.20110518022449.6071: *3* Are orphan nodes handled correctly?
+#@+node:ekr.20080806054207.3: *4* Auto scroll outline pane if headline would become invisible
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/76789df8aac08c70
+
+When using leo as outliner, I often use only node headlines to write
+down some data. If the headline string is too long, the cursor goes
+beyond the visible area. When modifying a node headline, is it
+possible to make leo to auto-scroll, so the cursor is always visible? 
+#@+node:ekr.20080727122007.1: *4* Allow user to set background colors of nodes
+What uA should be used to specify node colors?
+
+if the foreground / background color API uses uAs,
+would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
+#@+node:ekr.20100223133351.5998: *4* show-invisibles doesn't work for blank lines
+#@+node:ekr.20081208102356.1: *4* Threading colorizer doesn't handle multiple body editors
 @nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/861a0d156b16090f
+http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
 
-The document said that orphan children would be
-> saved in leo file (see 'orphan node' description at
-> http://webpages.charter.net/edreamleo/glossary.html for example).
+> Tk only colorizes one body editor, and if you delete that editor it
+> colorizes no editor.
 
-Orphan nodes prevent external files from being written.
+Thanks for this report.  This is a problem, never noticed until now,
+with the threading colorizer.  A workaround is to disable the
+threading colorizer plugin. 
+#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
+#@+node:ekr.20110427135155.14306: *3* *1 New file format
+@language rest
 
-> I found, although they were saved in leo file (I checked the xml file), but they didn't appear in outline pane if I closed and reloaded the leo file. The same for named children nodes which were not referenced in parent file node.
+Minimal changes:
 
-It's best if you correct the problem before closing the .leo file.
-But there may be a (recently-created) bug here.
+- Add namespace declaration.
 
-> Is the behavior a bug or expected behavior?
+- Add "created by Leo" comment.
 
-I'm not sure.  There is some complicated code involved and the
-recently-added caching code may be causing mischief.
-#@+node:ekr.20090907080624.6081: *3* Fix bug: spell checker should check headlines
-#@+node:ekr.20110427135155.14306: *3* New file format
+- <attr> solves pickle problem.
+#@+node:ekr.20110414065052.6100: *4* ** Treat gnx's as strings: don't parse them
+http://mail.google.com/mail/#inbox/12f3d4950fbabeea
+#@+node:ekr.20110421132230.6107: *4* File format
+@language rest
+@pagewidth 65
+
+Here is the latest version, with the graphml stuff removed.
+
+This draft is intended to reflect our recent discussions, with no
+new invention from me. All comments and corrections welcome.
+
+This draft covers only Leo's xml format, but it may be adapted
+for use as a json file format.
+
+Recent changes
+==============
+
+- Removed graphml stuff, including leo: prefixes.
+
+- Used "key" in <attr> elements (and "type" in <edge> elements.)
+
+First lines
+===========
+
+Leo file will start with the following::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo_file file_format="3"
+        xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+        
+
+No session data
+===============
+
+There will be no <globals>, <preferences> or
+<find_panel_settings> elements. All such "session data" will be
+restored from the cache, or from defaults if caching is disabled.
+
+**Important**: there is no representation of expansion state or
+the currently selected node anywhere in the .leo file.
+Eliminating these data is contingent on having Leo work well with
+caching disabled.
+
+Note: marks are more than session data. They must appear
+somewhere within <node> elements.
+
+
+Summary of format
+=================
+
+.leo files will have the following form, with similar indentation::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo_file file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+    <graph>
+    <nodes>
+        <!-- marked attribute appears only if the vnode is marked -->
+        <node id="gnx"> 
+            <head>headline text</head>
+            <attr key="marked">1</attr>
+            <!-- uA's... -->
+            <!-- format="string" is the default -->
+            <attr key="a">a string</attr>
+            <attr key="b" format="json">a json string</attr>
+            <attr key="c" format="pickle">a pickled string</attr>
+            <attr key="d" format="binhex">a binhexed string</attr>
+            ...
+            <body>body text</body>
+        </node>
+        ...
+        <!-- @file nodes contain a <data> package -->
+        <node id="gnx">
+            <head>@file x.py</head>
+            ...
+            <at-file-attributes>
+                <attr>key="ua-name"
+                    format="(empty)/json/pickle/binhex"
+                    gnx="gnx">value
+                </attr>
+                ...
+            </at-file-attributes>
+        </node>
+        ...
+    </nodes>
+    <edges>
+        <edge type="child" from="gnx" to="gnx"</edge>
+        ...
+    </edges>
+    </graph>
+    </leo_file>
+
+<attr> elements
+===============
+
+<attr> elements will one of the following forms::
+
+    <attr key="a">a unicode string</attr>
+    <attr key="b" format="json">a json string</attr>
+    <attr key="c" format="pickle">a json string</attr>
+    <attr key="d" format="binhex">a binhexed string</attr>
+    
+That is, the value will be a string by default.
+
+uA's that start with "binhex_" will use the binhex format. This
+prefix must be retained in the type field, so the read code can
+restore them.
+
+If the value is not a string, and there is no "binhex_" prefix,
+the write code will use format="json" if json.dumps succeeds, and
+will use format="pickle" otherwise.
+
+No <attr> element will be written if both json.dumps and
+pickle.dumps fail. Attribute failures will create a warning for
+the plugin developer.
+
+<edge> elements
+===============
+
+<edge> elements will have the form::
+
+    <edge type="child" from="gnx" to="gnx"/>
+    
+Leo will use type="child" to represent Leo's official edges.
+Plugins are free to define any type except "child". Examples::
+
+    <edge type="undirected" from="gnx" to="gnx"/>
+    <edge type="bidirectional" from="gnx" to="gnx"/>
+    <edge type="backlink" from="gnx" to="gnx"/>
+    <edge type="myPlugin" from="gnx" to="gnx"/>
+    
+Descendant attributes in @file trees
+====================================
+
+Descendants of @file nodes do not appear in .leo files. Thus,
+important data must be stored in the so-called hidden machinery:
+attributes of the @file node.
+
+The <at-file-attributes> element may be contained in the
+<node> element for @file nodes::
+
+    <at-file-attributes>
+        <attr>key="ua-name"
+            format="(empty)/json/pickle/binhex"
+            gnx="gnx">value
+        </attr>
+        ...
+    </at-file-attributes>
+    
+In other words, we use the graphml <attr> element, extended with the
+gnx attribute, to represent all the uA's in the descendants of @file nodes.
+#@+node:ekr.20110419083918.6104: *4* File format, v3 graphml
+@language rest
+@pagewidth 65
+
+This draft is intended to reflect our recent discussions, with no
+new invention from me. All comments and corrections welcome.
+
+The draft is also intended to be compatible with graphml.
+
+This draft covers only Leo's xml format, but it may be adapted
+for use as a json file format.
+
+I am willing to change "type" to "key" in <edge> elements if that
+would be preferable.
+
+Recent changes
+==============
+
+- Added <graphml> element defining the default namespace.
+
+- Defined the leo namespace for leo-only elements.
+    - Renamed <leo_file> to <leo:outline>
+    - Renamed <descendant-attributes> to <leo:at-file-attributes>
+
+- Used <leo:at-file-attributes> for marks, removing the special case.
+
+- Enclosed <leo:descendant-attributes> in a (graphml) <data> element.
+
+- Changed the format of the "marked" attribute to be a string-valued attribute.
+
+First lines
+===========
+
+Leo file will start with the following::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo:file file_format="3"
+        xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+    <graphml xmlns="http://graphml.graphdrawing.org/xmlns"/>
+        
+
+No session data
+===============
+
+There will be no <globals>, <preferences> or
+<find_panel_settings> elements. All such "session data" will be
+restored from the cache, or from defaults if caching is disabled.
+
+**Important**: there is no representation of expansion state or
+the currently selected node anywhere in the .leo file.
+Eliminating these data is contingent on having Leo work well with
+caching disabled.
+
+Note: marks are more than session data. They must appear
+somewhere within <node> elements.
+
+
+Summary of format
+=================
+
+.leo files will have the following form, with similar indentation::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo:outline file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+    <graphml xmlns="http://graphml.graphdrawing.org/xmlns"/>
+    <graph>
+    <nodes>
+        <!-- marked attribute appears only if the vnode is marked -->
+        <node id="gnx"> 
+            <head>headline text</head>
+            <attr key="marked">1</attr>
+            <!-- uA's... -->
+            <!-- format="string" is the default -->
+            <attr key="a">a string</attr>
+            <attr key="b" format="json">a json string</attr>
+            <attr key="c" format="pickle">a pickled string</attr>
+            <attr key="d" format="binhex">a binhexed string</attr>
+            ...
+            <body>body text</body>
+        </node>
+        ...
+        <!-- @file nodes contain a <data> package -->
+        <node id="gnx">
+            <head>@file x.py</head>
+            ...
+            <data>
+                <leo:at-file-attributes>
+                    <attr>key="ua-name"
+                        format="(empty)/json/pickle/binhex"
+                        gnx="gnx">value
+                    </attr>
+                    ...
+                </leo:at-file-attributes>
+            </data>
+        </node>
+        ...
+    </nodes>
+    <edges>
+        <edge type="child" from="gnx" to="gnx"</edge>
+        ...
+    </edges>
+    </graph>
+    </graphml>
+    </leo:outline>
+
+<attr> elements
+===============
+
+<attr> elements will one of the following forms::
+
+    <attr key="a">a unicode string</attr>
+    <attr key="b" format="json">a json string</attr>
+    <attr key="c" format="pickle">a json string</attr>
+    <attr key="d" format="binhex">a binhexed string</attr>
+    
+That is, the value will be a string by default.
+
+uA's that start with "binhex_" will use the binhex format. This
+prefix must be retained in the type field, so the read code can
+restore them.
+
+If the value is not a string, and there is no "binhex_" prefix,
+the write code will use format="json" if json.dumps succeeds, and
+will use format="pickle" otherwise.
+
+No <attr> element will be written if both json.dumps and
+pickle.dumps fail. Attribute failures will create a warning for
+the plugin developer.
+
+<edge> elements
+===============
+
+<edge> elements will have the form::
+
+    <edge type="child" from="gnx" to="gnx"/>
+    
+Leo will use type="child" to represent Leo's official edges.
+Plugins are free to define any type except "child". Examples::
+
+    <edge type="undirected" from="gnx" to="gnx"/>
+    <edge type="bidirectional" from="gnx" to="gnx"/>
+    <edge type="backlink" from="gnx" to="gnx"/>
+    <edge type="myPlugin" from="gnx" to="gnx"/>
+    
+Descendant attributes in @file trees
+====================================
+
+Descendants of @file nodes do not appear in .leo files. Thus,
+important data must be stored in the so-called hidden machinery:
+attributes of the @file node.
+
+The <leo:at-file-attributes> element may be contained in the
+<node> element for @file nodes. For compatibility with graphml,
+it will enclosed in a data element::
+    
+    <data>
+        <leo:at-file-attributes>
+            <attr>key="ua-name"
+                format="(empty)/json/pickle/binhex"
+                gnx="gnx">value
+            </attr>
+            ...
+        </leo:at-file-attributes>
+    </data>
+    
+In other words, we use the graphml <attr> element, extended with the
+gnx attribute, to represent all the uA's in the descendants of @file nodes.
+#@+node:ekr.20110415173840.6098: *4* new uA's
+#@+node:ekr.20040701065235.2: *5* putDescendentAttributes
+def putDescendentAttributes (self,p):
+
+    nodeIndices = g.app.nodeIndices
+
+    # Create lists of all tnodes whose vnodes are marked or expanded.
+    marks = [] ; expanded = []
+    for p in p.subtree():
+        v = p.v
+        if p.isMarked() and p.v not in marks:
+            marks.append(v)
+        if p.hasChildren() and p.isExpanded() and v not in expanded:
+            expanded.append(v)
+
+    result = []
+    for theList,tag in ((marks,"marks"),(expanded,"expanded")):
+        if theList:
+            sList = []
+            for v in theList:
+                sList.append("%s," % nodeIndices.toString(v.fileIndex))
+            s = ''.join(sList)
+            # g.trace(tag,[str(p.h) for p in theList])
+            result.append('\n%s="%s"' % (tag,s))
+
+    return ''.join(result)
+#@+node:ekr.20080805071954.2: *5* putDescendentVnodeUas
+def putDescendentVnodeUas (self,p):
+
+    '''Return the a uA field for descendent vnode attributes,
+    suitable for reconstituting uA's for anonymous vnodes.'''
+
+    trace = False
+    if trace: g.trace(p.h)
+
+    # Create aList of tuples (p,v) having a valid unknownAttributes dict.
+    # Create dictionary: keys are vnodes, values are corresonding archived positions.
+    pDict = {} ; aList = []
+    for p2 in p.self_and_subtree():
+        if hasattr(p2.v,"unknownAttributes"):
+            aList.append((p2.copy(),p2.v),)
+            pDict[p2.v] = p2.archivedPosition(root_p=p)
+
+    # Create aList of pairs (v,d) where d contains only pickleable entries.
+    if aList: aList = self.createUaList(aList)
+    if not aList: return ''
+
+    # Create d, an enclosing dict to hold all the inner dicts.
+    d = {}
+    for v,d2 in aList:
+        aList2 = [str(z) for z in pDict.get(v)]
+        # g.trace(aList2)
+        key = '.'.join(aList2)
+        d[key]=d2
+
+    if trace: g.trace(p.h,g.dictToString(d))
+
+    # Pickle and hexlify d
+    return d and self.pickle(
+        torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
+#@+node:EKR.20040526202501: *5* putUnknownAttributes
+def putUnknownAttributes (self,torv):
+
+    """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
+
+    attrDict = torv.unknownAttributes
+    if type(attrDict) != type({}):
+        g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
+        return ''
+    else:
+        val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
+        # g.trace(torv,attrDict)
+        return val
+#@+node:ekr.20090130114732.6: *5* v.u Property
+def __get_u(self):
+    v = self
+    if not hasattr(v,'unknownAttributes'):
+        v.unknownAttributes = {}
+    return v.unknownAttributes
+
+def __set_u(self,val):
+    v = self
+    if val is None:
+        if hasattr(v,'unknownAttributes'):
+            delattr(v,'unknownAttributes')
+    elif type(val) == type({}):
+        v.unknownAttributes = val
+    else:
+        raise ValueError
+
+u = property(
+    __get_u, __set_u,
+    doc = "vnode unknownAttribute property")
 #@+node:ekr.20110414164347.6082: *4* Reference for json stuff
 #@+node:ekr.20031218072017.1997: *5* scanGnx
 def scanGnx (self,s,i):
@@ -593,539 +953,318 @@ def archivedPositionToPosition (self,s):
             p.moveToFirstChild()
             # g.trace('level',level,'index',aList[level],p.h)
     return p
-#@+node:ekr.20110415173840.6098: *4* new uA's
-#@+node:ekr.20040701065235.2: *5* putDescendentAttributes
-def putDescendentAttributes (self,p):
+#@+node:ekr.20090218115025.3: *4* Why are attributes pickled by default?
+@nocolor-node
 
-    nodeIndices = g.app.nodeIndices
+http://groups.google.com/group/leo-editor/browse_thread/thread/326a221f4c698f7a
 
-    # Create lists of all tnodes whose vnodes are marked or expanded.
-    marks = [] ; expanded = []
-    for p in p.subtree():
-        v = p.v
-        if p.isMarked() and p.v not in marks:
-            marks.append(v)
-        if p.hasChildren() and p.isExpanded() and v not in expanded:
-            expanded.append(v)
+> On Wed, Feb 18, 2009 at 12:12 PM, Kent Tenney <ktenney@gmail.com> wrote:
+>>
+>> Currently, Leo pickles the value of unknown attributes unless
+>> the name starts with 'str_'
+>>
+>> Running the following code in node 'UA'
+>>
+>> p = c.currentPosition()
+>> p.v.u = {'hello':'world', 'str_hello':'world'}
+>>
+>> results in the following in the .leo file:
+>>
+>> <v t="ktenney.20090218114928.367" str_hello="world"
+>> hello="5505776f726c6471002e"><vh>UA</vh></v>
+>>
+>> I think this is surprising, Python-centric and contrary to the
+>> spirit of Leo as a flexible data management platform.
+>
+> I suppose your point is that you can't create an arbitrarily named attribute
+> with a string value. Does that create a real problem?
 
-    result = []
-    for theList,tag in ((marks,"marks"),(expanded,"expanded")):
-        if theList:
-            sList = []
-            for v in theList:
-                sList.append("%s," % nodeIndices.toString(v.fileIndex))
-            s = ''.join(sList)
-            # g.trace(tag,[str(p.h) for p in theList])
-            result.append('\n%s="%s"' % (tag,s))
+It requires a translation layer, either to (un)munge the name or
+(un)pickle. Real problem?
 
-    return ''.join(result)
-#@+node:ekr.20080805071954.2: *5* putDescendentVnodeUas
-def putDescendentVnodeUas (self,p):
+Let's say each time I think 'I can use UAs to store that' I change
+my mind when I realize my values will be in a pickle. (I really don't
+want to name all my attributes str_xxx)
 
-    '''Return the a uA field for descendent vnode attributes,
-    suitable for reconstituting uA's for anonymous vnodes.'''
+> As far as being Python-centric, can you suggest any other way of converting
+> arbitrary data to a text string?
 
-    trace = False
-    if trace: g.trace(p.h)
+How is it done in any other XML file?
+I've not used XML for arbitrary data, but it probably can be done.
 
-    # Create aList of tuples (p,v) having a valid unknownAttributes dict.
-    # Create dictionary: keys are vnodes, values are corresonding archived positions.
-    pDict = {} ; aList = []
-    for p2 in p.self_and_subtree():
-        if hasattr(p2.v,"unknownAttributes"):
-            aList.append((p2.copy(),p2.v),)
-            pDict[p2.v] = p2.archivedPosition(root_p=p)
+> Why would that way be better than pickle?
 
-    # Create aList of pairs (v,d) where d contains only pickleable entries.
-    if aList: aList = self.createUaList(aList)
-    if not aList: return ''
+My suspicion is that UAs would be used more for
+storing text and numbers (as seems common for XML files)
+than Python data objects.
 
-    # Create d, an enclosing dict to hold all the inner dicts.
-    d = {}
-    for v,d2 in aList:
-        aList2 = [str(z) for z in pDict.get(v)]
-        # g.trace(aList2)
-        key = '.'.join(aList2)
-        d[key]=d2
+Does Leo use UAs to store pickles?
 
-    if trace: g.trace(p.h,g.dictToString(d))
+I'm sure pickling capability is great, but I'm not convinced
+it should be the _default._
 
-    # Pickle and hexlify d
-    return d and self.pickle(
-        torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
-#@+node:EKR.20040526202501: *5* putUnknownAttributes
-def putUnknownAttributes (self,torv):
+No big deal.
+#@+node:ekr.20071001052501: *3* *1 Versioning for nodes
+@nocolor
 
-    """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
+One feature I have not seen in SCS system is something which might be called
+"history compression": I might be interested in having both version 5 and 6
+in my source tree, when the current version is 7, but I am not really interested
+in the 2000 steps which transformed 5 into 6 (just suggested this feature to
+the bazaar people). This happens actually quite often to me, since I use the
+SCS as a back-up system, saving many (uninteresting) intermediate steps while
+implementing a new feature.
+#@+node:ekr.20110518103946.18184: *3* *2 Fix headline coloring problems
+@nocolor-node
 
-    attrDict = torv.unknownAttributes
-    if type(attrDict) != type({}):
-        g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
-        return ''
-    else:
-        val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
-        # g.trace(torv,attrDict)
-        return val
-#@+node:ekr.20090130114732.6: *5* v.u Property
-def __get_u(self):
-    v = self
-    if not hasattr(v,'unknownAttributes'):
-        v.unknownAttributes = {}
-    return v.unknownAttributes
+http://groups.google.com/group/leo-editor/browse_thread/thread/ee09fb2c2a5316f2/490fa7cddab36fab
 
-def __set_u(self,val):
-    v = self
-    if val is None:
-        if hasattr(v,'unknownAttributes'):
-            delattr(v,'unknownAttributes')
-    elif type(val) == type({}):
-        v.unknownAttributes = val
-    else:
-        raise ValueError
+I have noticed recently an ugly combination of colors in headline while editing
+that was introduced by updating Leo. Background is very dark and text color is
+also dark so that it is quite unreadable. I haven't had enough time to inspect
+default settings till this morning. Today I realized that when I start editing
+headline with Ctrl+h (that is the usual way I use) both colors (background and
+foreground) are dark, but when I double click in headline I see colors from
+myLeosettings file.
 
-u = property(
-    __get_u, __set_u,
-    doc = "vnode unknownAttribute property")
-#@+node:ekr.20110419083918.6104: *4* File format, v3 graphml
-@language rest
-@pagewidth 65
-
-This draft is intended to reflect our recent discussions, with no
-new invention from me. All comments and corrections welcome.
-
-The draft is also intended to be compatible with graphml.
-
-This draft covers only Leo's xml format, but it may be adapted
-for use as a json file format.
-
-I am willing to change "type" to "key" in <edge> elements if that
-would be preferable.
-
-Recent changes
-==============
-
-- Added <graphml> element defining the default namespace.
-
-- Defined the leo namespace for leo-only elements.
-    - Renamed <leo_file> to <leo:outline>
-    - Renamed <descendant-attributes> to <leo:at-file-attributes>
-
-- Used <leo:at-file-attributes> for marks, removing the special case.
-
-- Enclosed <leo:descendant-attributes> in a (graphml) <data> element.
-
-- Changed the format of the "marked" attribute to be a string-valued attribute.
-
-First lines
-===========
-
-Leo file will start with the following::
-
-    <?xml version="1.0" encoding="utf-8"?>
-    <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-    <leo:file file_format="3"
-        xmlns:leo="http://www.leo-editor.org/2011/leo"/>
-    <graphml xmlns="http://graphml.graphdrawing.org/xmlns"/>
-        
-
-No session data
-===============
-
-There will be no <globals>, <preferences> or
-<find_panel_settings> elements. All such "session data" will be
-restored from the cache, or from defaults if caching is disabled.
-
-**Important**: there is no representation of expansion state or
-the currently selected node anywhere in the .leo file.
-Eliminating these data is contingent on having Leo work well with
-caching disabled.
-
-Note: marks are more than session data. They must appear
-somewhere within <node> elements.
+I am using:
+Leo 4.8 final, build 3752, November 26, 2010
+Python 2.6.6, qt version 4.7.0
+linux2
+bzr revno gives me 3904
 
 
-Summary of format
-=================
+===========================
 
-.leo files will have the following form, with similar indentation::
+Also I can't figure how to change color of "(" and ")" in actionscript language.
+I like dark background with the light text and that is the color scheme I have
+in myLeosettings. But "(" and ")" are black and that is not compatible with my
+dark background color.
 
-    <?xml version="1.0" encoding="utf-8"?>
-    <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-    <leo:outline file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
-    <graphml xmlns="http://graphml.graphdrawing.org/xmlns"/>
-    <graph>
-    <nodes>
-        <!-- marked attribute appears only if the vnode is marked -->
-        <node id="gnx"> 
-            <head>headline text</head>
-            <attr key="marked">1</attr>
-            <!-- uA's... -->
-            <!-- format="string" is the default -->
-            <attr key="a">a string</attr>
-            <attr key="b" format="json">a json string</attr>
-            <attr key="c" format="pickle">a pickled string</attr>
-            <attr key="d" format="binhex">a binhexed string</attr>
-            ...
-            <body>body text</body>
-        </node>
-        ...
-        <!-- @file nodes contain a <data> package -->
-        <node id="gnx">
-            <head>@file x.py</head>
-            ...
-            <data>
-                <leo:at-file-attributes>
-                    <attr>key="ua-name"
-                        format="(empty)/json/pickle/binhex"
-                        gnx="gnx">value
-                    </attr>
-                    ...
-                </leo:at-file-attributes>
-            </data>
-        </node>
-        ...
-    </nodes>
-    <edges>
-        <edge type="child" from="gnx" to="gnx"</edge>
-        ...
-    </edges>
-    </graph>
-    </graphml>
-    </leo:outline>
+The only two colors in leoSettings (in syntax coloring nodes) that are black are
+'tab_color' and 'operator_color'. I have tried to change both of them but with
+no success. Leo sees my settings for tab_color and operator_color but those
+settings have no influence on "(" and ")" .
 
-<attr> elements
-===============
+In nodes where @language python is in effect "(" ")" are white, but in nodes
+with @language actionscript those characters become black and I can't find which
+setting I should change.
 
-<attr> elements will one of the following forms::
-
-    <attr key="a">a unicode string</attr>
-    <attr key="b" format="json">a json string</attr>
-    <attr key="c" format="pickle">a json string</attr>
-    <attr key="d" format="binhex">a binhexed string</attr>
-    
-That is, the value will be a string by default.
-
-uA's that start with "binhex_" will use the binhex format. This
-prefix must be retained in the type field, so the read code can
-restore them.
-
-If the value is not a string, and there is no "binhex_" prefix,
-the write code will use format="json" if json.dumps succeeds, and
-will use format="pickle" otherwise.
-
-No <attr> element will be written if both json.dumps and
-pickle.dumps fail. Attribute failures will create a warning for
-the plugin developer.
-
-<edge> elements
-===============
-
-<edge> elements will have the form::
-
-    <edge type="child" from="gnx" to="gnx"/>
-    
-Leo will use type="child" to represent Leo's official edges.
-Plugins are free to define any type except "child". Examples::
-
-    <edge type="undirected" from="gnx" to="gnx"/>
-    <edge type="bidirectional" from="gnx" to="gnx"/>
-    <edge type="backlink" from="gnx" to="gnx"/>
-    <edge type="myPlugin" from="gnx" to="gnx"/>
-    
-Descendant attributes in @file trees
 ====================================
 
-Descendants of @file nodes do not appear in .leo files. Thus,
-important data must be stored in the so-called hidden machinery:
-attributes of the @file node.
 
-The <leo:at-file-attributes> element may be contained in the
-<node> element for @file nodes. For compatibility with graphml,
-it will enclosed in a data element::
-    
-    <data>
-        <leo:at-file-attributes>
-            <attr>key="ua-name"
-                format="(empty)/json/pickle/binhex"
-                gnx="gnx">value
-            </attr>
-            ...
-        </leo:at-file-attributes>
-    </data>
-    
-In other words, we use the graphml <attr> element, extended with the
-gnx attribute, to represent all the uA's in the descendants of @file nodes.
-#@+node:ekr.20110421132230.6107: *4* File format
-@language rest
-@pagewidth 65
-
-Here is the latest version, with the graphml stuff removed.
-
-This draft is intended to reflect our recent discussions, with no
-new invention from me. All comments and corrections welcome.
-
-This draft covers only Leo's xml format, but it may be adapted
-for use as a json file format.
-
-Recent changes
-==============
-
-- Removed graphml stuff, including leo: prefixes.
-
-- Used "key" in <attr> elements (and "type" in <edge> elements.)
-
-First lines
-===========
-
-Leo file will start with the following::
-
-    <?xml version="1.0" encoding="utf-8"?>
-    <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-    <leo_file file_format="3"
-        xmlns:leo="http://www.leo-editor.org/2011/leo"/>
-        
-
-No session data
-===============
-
-There will be no <globals>, <preferences> or
-<find_panel_settings> elements. All such "session data" will be
-restored from the cache, or from defaults if caching is disabled.
-
-**Important**: there is no representation of expansion state or
-the currently selected node anywhere in the .leo file.
-Eliminating these data is contingent on having Leo work well with
-caching disabled.
-
-Note: marks are more than session data. They must appear
-somewhere within <node> elements.
-
-
-Summary of format
-=================
-
-.leo files will have the following form, with similar indentation::
-
-    <?xml version="1.0" encoding="utf-8"?>
-    <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-    <leo_file file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
-    <graph>
-    <nodes>
-        <!-- marked attribute appears only if the vnode is marked -->
-        <node id="gnx"> 
-            <head>headline text</head>
-            <attr key="marked">1</attr>
-            <!-- uA's... -->
-            <!-- format="string" is the default -->
-            <attr key="a">a string</attr>
-            <attr key="b" format="json">a json string</attr>
-            <attr key="c" format="pickle">a pickled string</attr>
-            <attr key="d" format="binhex">a binhexed string</attr>
-            ...
-            <body>body text</body>
-        </node>
-        ...
-        <!-- @file nodes contain a <data> package -->
-        <node id="gnx">
-            <head>@file x.py</head>
-            ...
-            <at-file-attributes>
-                <attr>key="ua-name"
-                    format="(empty)/json/pickle/binhex"
-                    gnx="gnx">value
-                </attr>
-                ...
-            </at-file-attributes>
-        </node>
-        ...
-    </nodes>
-    <edges>
-        <edge type="child" from="gnx" to="gnx"</edge>
-        ...
-    </edges>
-    </graph>
-    </leo_file>
-
-<attr> elements
-===============
-
-<attr> elements will one of the following forms::
-
-    <attr key="a">a unicode string</attr>
-    <attr key="b" format="json">a json string</attr>
-    <attr key="c" format="pickle">a json string</attr>
-    <attr key="d" format="binhex">a binhexed string</attr>
-    
-That is, the value will be a string by default.
-
-uA's that start with "binhex_" will use the binhex format. This
-prefix must be retained in the type field, so the read code can
-restore them.
-
-If the value is not a string, and there is no "binhex_" prefix,
-the write code will use format="json" if json.dumps succeeds, and
-will use format="pickle" otherwise.
-
-No <attr> element will be written if both json.dumps and
-pickle.dumps fail. Attribute failures will create a warning for
-the plugin developer.
-
-<edge> elements
-===============
-
-<edge> elements will have the form::
-
-    <edge type="child" from="gnx" to="gnx"/>
-    
-Leo will use type="child" to represent Leo's official edges.
-Plugins are free to define any type except "child". Examples::
-
-    <edge type="undirected" from="gnx" to="gnx"/>
-    <edge type="bidirectional" from="gnx" to="gnx"/>
-    <edge type="backlink" from="gnx" to="gnx"/>
-    <edge type="myPlugin" from="gnx" to="gnx"/>
-    
-Descendant attributes in @file trees
-====================================
-
-Descendants of @file nodes do not appear in .leo files. Thus,
-important data must be stored in the so-called hidden machinery:
-attributes of the @file node.
-
-The <at-file-attributes> element may be contained in the
-<node> element for @file nodes::
-
-    <at-file-attributes>
-        <attr>key="ua-name"
-            format="(empty)/json/pickle/binhex"
-            gnx="gnx">value
-        </attr>
-        ...
-    </at-file-attributes>
-    
-In other words, we use the graphml <attr> element, extended with the
-gnx attribute, to represent all the uA's in the descendants of @file nodes.
-#@+node:ekr.20110414065052.6100: *3* Treat gnx's as strings: don't parse them
-http://mail.google.com/mail/#inbox/12f3d4950fbabeea
-#@+node:ekr.20090724081340.5987: *3* Improve recursive import script and @auto
+Today I have updated my Leo and with the revno 4001 the problem is still
+present. And also I haven't found answer on the question about configuring
+colors of parenthesis. I understand those questions are not so high priority but
+I am just asking again here in case they got forgotten. Vitalije.
+#@+node:ekr.20101118113953.5844: *3* *2 Use new reformatParagraph code
 @nocolor-node
 
-Instead of adding an @ignore directive, it might be better
-to change @auto to @@auto.
+The following code (untested), changed x(c,...) to c.x(...)
 
-Should @auto be more lenient with C files?
+It may be good to put c.findBoundParagraph as a child node.
 
-Improve the recursive import script.
-    - Minimize the path names
-    - Option to include/exclude the @auto itself
+It should be easy to debug: the only change should be to the top-level
+reformatParagraph node.
 
-#@+node:ekr.20101024062147.6024: *3* bug 622819: Ctrl-Shift movement is incorrect
-@nocolor-node
+Unit tests will have to change because the new code moves the cursor to the next
+paragraph only if the present paragraph has not actually been changed.
+#@+node:ekr.20101118113953.5839: *4* reformatParagraph & helpers
+def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
 
-Has this been fixed??
+    """Reformat a text paragraph
 
-Ctrl-Shift movement (back-word-extend-selection, forward-word-extend-selection)
-is incorrect when there is an existing selection, which was created by some
-method other than Ctrl-Shift movement.
+    Wraps the concatenated text to present page width setting. Leading tabs are
+    sized to present tab width setting. First and second line of original text is
+    used to determine leading whitespace in reformatted text. Hanging indentation
+    is honored.
 
-Expected behavior: it should extend/contract the existing selection
+    Paragraph is bound by start of body, end of body and blank lines. Paragraph is
+    selected by position of current insertion cursor.
 
-Actual behavior: it creates a new selection from the cursor position
+"""
 
-======
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
 
-This is a minor bug, but hard to fix because Leo doesn't always distinguish
-between the point and the mark.
+    if g.app.batchMode:
+        c.notValidInBatchMode("xxx")
+        return
 
-The fix would be in extendHelper, called from moveToHelper.
-#@+node:ekr.20101124124316.5841: *3* Rename flatten command
-@nocolor-node
+    if body.hasTextSelection():
+        i,j = w.getSelectionRange()
+        w.setInsertPoint(i)
 
-https://bugs.launchpad.net/leo-editor/+bug/626587
+    oldSel,oldYview,original,pageWidth,tabWidth = c.rp_get_args()
+    head,lines,tail = c.findBoundParagraph()
+    if lines:
+        indents,leading_ws = c.rp_get_leading_ws(lines,tabWidth)
+        result = c.rp_wrap_all_lines(indents,leading_ws,lines,pageWidth)
+        c.rp_reformat(head,oldSel,oldYview,original,result,tail,undoType)
+#@+node:ekr.20101118113953.5840: *5* rp_get_args
+def rp_get_args (self):
 
-I ask that you please look at this from the newbie perspective that I
-have.
+    '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
 
-If the menu choice said Flatten Selected Outline, or even Flatten
-Selected Node, then I would have understood immediately what would
-happen on its execution. But the menu choice says neither of these -- it
-says Flatten Outline. That gives me a different expectation of what it
-will do.
-#@+node:ekr.20100827114047.5895: ** Bugs
-#@+node:ekr.20101024062147.5994: *3* Minor
-#@+node:ekr.20110111100539.12257: *4* Fix end-of-line problem (MacOS)
-# Apparently, ctrl-e is not passed to Leo at all.
-#@+node:ekr.20110111100539.12258: *5* Report
-@nocolor-node
+    c = self ; body = c.frame.body ;  w = body.bodyCtrl
 
-http://mail.google.com/mail/#inbox/12c5646c646a90d2
+    d = c.scanAllDirectives()
+    pageWidth = d.get("pagewidth")
+    tabWidth  = d.get("tabwidth")
 
-I expect C-e to go to end-of-line, but C-e works as the next line.
-Alt-x and check end-of-line and I get the following result.
+    original = w.getAllText()
+    oldSel =  w.getSelectionRange()
+    oldYview = body.getYScrollPosition()
 
-I use Mac OS X 10.6.5, newest Leo, and Python/Qt.
+    return oldSel,oldYview,original,pageWidth,tabWidth
+#@+node:ekr.20101118113953.5841: *5* rp_get_leading_ws
+def rp_get_leading_ws (self,lines,tabWidth):
 
-Leo 4.8 rc1, build 3715, November 15, 2010
-Python 2.6.1, qt version 4.7.0
-darwin
+    '''Compute and return indents and leading_ws.'''
 
-I remember I could use C-e, but it doesn't work anymore even after I
-reinstall the Leo.
+    c = self
 
-As I explained in this post - http://groups.google.com/group/leo-editor/browse_thread/thread/1ee0b35b4f76c999
-After having @bool swap_mac_keys = True, I can use C-e.
+    indents = [0,0]
+    leading_ws = ["",""]
 
-C-a move the cursor to the start of line, but C-e seems to move the
-cursor the first of the next line, which is the end of last line + 1.
-If the line is the final one, C-e moves the cursor to the end of line
-as there's no next line.
+    for i in (0,1):
+        if i < len(lines):
+            # Use the original, non-optimized leading whitespace.
+            leading_ws[i] = ws = g.get_leading_ws(lines[i])
+            indents[i] = g.computeWidth(ws,tabWidth)
 
-#@+node:ekr.20100109094541.6232: *5* within lines
-def beginningOfLine (self,event):
-    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
-    self.moveWithinLineHelper(event,'start-line',extend=False)
+    indents[1] = max(indents)
 
-def beginningOfLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the start of the line.'''
-    self.moveWithinLineHelper(event,'start-line',extend=True)
+    if len(lines) == 1:
+        leading_ws[1] = leading_ws[0]
 
-def endOfLine (self,event):
-    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
-    self.moveWithinLineHelper(event,'end-line',extend=False)
+    return indents,leading_ws
+#@+node:ekr.20101118113953.5842: *5* rp_reformat
+def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
 
-def endOfLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the end of the line.'''
-    self.moveWithinLineHelper(event,'end-line',extend=True)
-#@+node:ekr.20100109094541.6231: *5* moveWithinLineHelper
-def moveWithinLineHelper (self,event,spot,extend):
+    '''Reformat the body and update the selection.'''
 
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
+    s = w.getAllText()
 
-    # g.trace(hasattr(w,'leoMoveCursorHelper'))
+    # This destroys recoloring.
+    junk, ins = body.setSelectionAreas(head,result,tail)
 
-    if hasattr(w,'leoMoveCursorHelper'):
-        extend = extend or self.extendMode
-        w.leoMoveCursorHelper(kind=spot,extend=extend)
-        w.seeInsertPoint()
-        c.frame.updateStatusLine()
+    changed = original != head + result + tail
+    if changed:
+        # 2010/11/16: stay in the paragraph.
+        body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
     else:
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        i,j = g.getLine(s,ins)
-        if spot == 'start-line':
-            self.moveToHelper(event,i,extend=extend)
-        elif spot == 'end-line':
-            # if g.match(s,i-1,'\n'): i -= 1
-            self.moveToHelper(event,j,extend=extend)
-        else:
-            g.trace('can not happen: bad spot: %s' % spot)
-#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
-#@+node:ekr.20100522090453.5912: *4* Fix bugs with @verbatim, @raw and @end_raw
+        # Advance to the next paragraph.
+        ins += 1 # Move past the selection.
+        while ins < len(s):
+            i,j = g.getLine(s,ins)
+            line = s[i:j]
+            # 2010/11/16: it's annoying, imo, to treat @ lines differently.
+            if line.isspace(): ### or line.startswith('@'):
+                ins = j+1
+            else:
+                ins = i ; break
+
+        # setSelectionAreas has destroyed the coloring.
+        c.recolor()
+
+    w.setSelectionRange(ins,ins,insert=ins)
+    w.see(ins)
+#@+node:ekr.20101118113953.5843: *5* rp_wrap_all_lines
+def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
+
+    '''compute the result of wrapping all lines.'''
+
+    trailingNL = lines and lines[-1].endswith('\n')
+    lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
+
+    # Wrap the lines, decreasing the page width by indent.
+    result = g.wrap_lines(lines,
+        pageWidth-indents[1],
+        pageWidth-indents[0])
+
+    # prefix with the leading whitespace, if any
+    paddedResult = []
+    paddedResult.append(leading_ws[0] + result[0])
+    for line in result[1:]:
+        paddedResult.append(leading_ws[1] + line)
+
+    # Convert the result to a string.
+    result = '\n'.join(paddedResult)
+    if trailingNL: result = result + '\n'
+
+    return result
+#@+node:ekr.20110518022449.6071: *3* Are orphan nodes handled correctly?
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/861a0d156b16090f
+
+The document said that orphan children would be
+> saved in leo file (see 'orphan node' description at
+> http://webpages.charter.net/edreamleo/glossary.html for example).
+
+Orphan nodes prevent external files from being written.
+
+> I found, although they were saved in leo file (I checked the xml file), but they didn't appear in outline pane if I closed and reloaded the leo file. The same for named children nodes which were not referenced in parent file node.
+
+It's best if you correct the problem before closing the .leo file.
+But there may be a (recently-created) bug here.
+
+> Is the behavior a bug or expected behavior?
+
+I'm not sure.  There is some complicated code involved and the
+recently-added caching code may be causing mischief.
+#@+node:ekr.20110518103946.18183: *3* Fix mod_http plugin
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/196d37a58bb2dd80/ca526f0be4101f09
+
+Was support for this removed from Leo's core?
+
+#@+node:ekr.20110518103946.18180: *3* Investigate potentially serious MacOs bugs (TK)
+@nocolor-node
+
+Outline commands execute twice under OS X
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/2c86f8363c48dfa2/92bf6dd84c3dbb5e
+
+With OSX and Tk, some "Outline" commands execute twice when used called by a
+keyboard shortcut for me. This is incredibly unnerving for commands such as Cut
+Node, Paste Node, Delete Node or Paste Node as Clone. Using the commands from
+the menu bar works as expected. Strangely enough, Insert Node is not affected.
+
+I use OSX 10.6.6, python 2.6.1 and gui=tk
+
+=======
+
+Uncloseable modal window under OS X
+		
+[Click the star to watch this topic] 	
+	
+	  	2 messages - 1 new - Collapse all  - 
+Report discussion as spam
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/653838b2112b781b/cc4ab2919f5785cd
+
+I've been having trouble with an uncloseable modal Window under OS X that
+prompts: "myfilename already exists. Overwrite this file?"
+
+The options Yes, No and Cancel are displayed but not clickable and
+there is no title bar. No keyboard shortcuts I tried closed the
+window. The only possibility is to kill the python process running
+leo, losing all changes made...
+Strangely enough this window only appears from time to time, while
+most of the time  saving changes just overwrites without asking.
+I don't know what information to post about my environment. I use the
+standard OSX python install (2.6.1) and launch leo with "./
+launchLeo.py --gui=tk".
+#@+node:ekr.20110518140548.19115: ** Next
+#@+node:ekr.20110518103946.18179: *3* * Add external/leosax.py to leoPyRef.leo
+http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
+
+Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
+#@+node:ekr.20090907080624.6081: *3* * Fix bug: spell checker should check headlines
+#@+node:ekr.20100522090453.5912: *3* Fix bugs with @verbatim, @raw and @end_raw
 @nocolor-node
 
 > In the @file family of derived files (@thin, @nosent, etc.)  (i.e.,
@@ -1152,22 +1291,563 @@ looks like a sentinel but isn't "verbatim".
 2. Leo does appear to read @raw and @end_raw properly in @thin files,
 but Leo improperly issues the (red) log message,
 converting @file format in @thin test_verbatim_sentinel.py
-#@+node:ekr.20100223133351.5998: *4* show-invisibles doesn't work for blank lines
-#@+node:ekr.20081208102356.1: *4* Threading colorizer doesn't handle multiple body editors
+#@+node:ekr.20110111100539.12257: *3* Fix end-of-line problem (MacOS)
+# Apparently, ctrl-e is not passed to Leo at all.
+#@+node:ekr.20110111100539.12258: *4* Report
 @nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
+http://mail.google.com/mail/#inbox/12c5646c646a90d2
 
-> Tk only colorizes one body editor, and if you delete that editor it
-> colorizes no editor.
+I expect C-e to go to end-of-line, but C-e works as the next line.
+Alt-x and check end-of-line and I get the following result.
 
-Thanks for this report.  This is a problem, never noticed until now,
-with the threading colorizer.  A workaround is to disable the
-threading colorizer plugin. 
-#@+node:ekr.20080421140032.1: *4* Fix multiple controllers problem in all plugins
+I use Mac OS X 10.6.5, newest Leo, and Python/Qt.
+
+Leo 4.8 rc1, build 3715, November 15, 2010
+Python 2.6.1, qt version 4.7.0
+darwin
+
+I remember I could use C-e, but it doesn't work anymore even after I
+reinstall the Leo.
+
+As I explained in this post - http://groups.google.com/group/leo-editor/browse_thread/thread/1ee0b35b4f76c999
+After having @bool swap_mac_keys = True, I can use C-e.
+
+C-a move the cursor to the start of line, but C-e seems to move the
+cursor the first of the next line, which is the end of last line + 1.
+If the line is the final one, C-e moves the cursor to the end of line
+as there's no next line.
+
+#@+node:ekr.20100109094541.6232: *4* within lines
+def beginningOfLine (self,event):
+    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
+    self.moveWithinLineHelper(event,'start-line',extend=False)
+
+def beginningOfLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the start of the line.'''
+    self.moveWithinLineHelper(event,'start-line',extend=True)
+
+def endOfLine (self,event):
+    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
+    self.moveWithinLineHelper(event,'end-line',extend=False)
+
+def endOfLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the end of the line.'''
+    self.moveWithinLineHelper(event,'end-line',extend=True)
+#@+node:ekr.20100109094541.6231: *4* moveWithinLineHelper
+def moveWithinLineHelper (self,event,spot,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    # g.trace(hasattr(w,'leoMoveCursorHelper'))
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(kind=spot,extend=extend)
+        w.seeInsertPoint()
+        c.frame.updateStatusLine()
+    else:
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i,j = g.getLine(s,ins)
+        if spot == 'start-line':
+            self.moveToHelper(event,i,extend=extend)
+        elif spot == 'end-line':
+            # if g.match(s,i-1,'\n'): i -= 1
+            self.moveToHelper(event,j,extend=extend)
+        else:
+            g.trace('can not happen: bad spot: %s' % spot)
+#@+node:ekr.20080421140032.1: *3* Fix multiple controllers problem in all plugins
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
+#@+node:ekr.20101124124316.5841: *3* Rename flatten command
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/626587
+
+I ask that you please look at this from the newbie perspective that I
+have.
+
+If the menu choice said Flatten Selected Outline, or even Flatten
+Selected Node, then I would have understood immediately what would
+happen on its execution. But the menu choice says neither of these -- it
+says Flatten Outline. That gives me a different expectation of what it
+will do.
+#@+node:ekr.20101116100300.5827: *3* Write script file to temp file if @bool write_script_file is False
+@nocolor-node
+
+It's important that g.pdb get the sources for *all* Leo scripts.
+
+Postings:
+
+When @bool write_script_file is True the execute-script file uses
+execfile (or its Python 3k equivalent) to execute scripts.
+
+This allows g.pdb (or pudb) to know the text of Leo scripts!
+
+I want to emphasize here how important this change is.  After 4.8 final I'll add code to use a temp file to hold sources if 
+@bool write_script_file is False.
+
+In the meantime, I strongly urge all script writers to set @bool write_script_file = True.
+
+Depending on your installation, especially on *nix, the default location for the file may be a problem.  In that case, set
+@string script_file_path to some convenient place, say in your home directory.
+#@+node:ekr.20110514231951.14492: ** Docs
+#@+node:ekr.20110518082415.14439: *3* Document highlights of my workflow
+@language rest
+
+This thread will discuss the workflow I use to develop Leo. The intention is to
+help present and potential developers use Leo effectively. This thread will be
+pre-writing for a section of the users guide.
+
+This is a continuation of the thread:
+http://groups.google.com/group/leo-editor/browse_thread/thread/4494324d21bd0bde/adf6d565c90e175c
+
+Overview
+=======
+
+Here is the big picture:
+
+* Develop in an outline containing all of Leo's source files. Close this outline
+ rarely: this keeps the code I am using stable while I'm hacking the code.
+
+* Test in a *separate* .leo file, say test.leo. In fact, I often test in a
+  private file, ekr.leo, so that test.leo doesn't get continually updated on bzr
+  with trivial changes.
+
+These two points are covered in a bit more detail in the FAQ:
+
+http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
+
+Additional tips:
+
+A. Avoid using the mouse whenever possible.  For example, use alt-tab to switch between windows.
+
+B. Always develop Leo in a console.  This allows me to see the output of g.trace.
+
+Speaking of g.trace, I hardly ever use 'print' because g.trace prints the name
+of the function or method in which it appears. The typical pattern for enabling
+traces is:
+
+    trace = True and not g.unitTesting
+    if trace: g.trace(whatever)
+
+This pattern is especially useful when a method contains multiple calls to g.trace.
+
+C. I use scripts to open particular Leo files. These are batch files on Windows,
+   and aliases on Linux, but invoking them is the same on either platform:
+
+all: opens all my main development files using the qt-tabs gui: leoPy.leo,
+     leoGuiPlugins.leo, leoPlugins.leo, leoSettings.leo, myLeoSettings.leo and
+     LeoDocs.leo.
+
+t: opens test.leo.
+
+e: opens ekr.leo.  I use this file for private testing.
+
+d: opens LeoDocs.leo.
+
+s: opens LeoPy.leo.
+
+plugins: opens leoPlugins.leo.
+
+gui: opens leoGui.leo.
+
+u: opens unitTest.leo.
+
+These run Leo with Python 3.x. There are similar scripts, ending in 2, that run
+Leo with Python 2.x. For example, u2 opens unitTest.leo with Python 2.x.
+
+Similarly, the tk prefix uses the Tk gui: utk opens unitTest.leo with --gui=tk
+(and Python 2.x since the tk gui only works with Python 2.x)
+
+Thus, to run a test, I alt-tab to an available console window, then type 'e' or
+'t' or 'e2' or 't2'.
+
+D. Use clones to focus attention on the task at hand.  For more details, see:
+
+E.  For thousand of example of my programming style, see leoPy.leo and leoGuiPlugins.leo.
+
+http://webpages.charter.net/edreamleo/intro.html#clones-views
+
+The projects section in leoPy.leo contains many examples of using clones to
+create view nodes. I typically delete the clones in the views shortly before a
+release.
+
+That's about all for code-level tips.  Here are some administrative tips:
+
+A.  Use postings as pre-writing for documentation.
+
+I don't mind blabbing on and on about Leo because all my posts become
+pre-writing for Leo's documentation. I simply copy posts to nodes in the
+"documentation to-do" section. At release time, I edit these nodes and put them
+in Leo's main documentation or the release notes. This posting is an example.
+
+B. Never rely on memory.
+
+A project like this contains thousands and thousands of details. Everything
+eventually goes into a Leo node somewhere. If it doesn't it surely *will* be
+forgotten.
+
+C. Do easy items first. This keeps to-do lists short, which in turn helps keep
+energy high.
+#@+node:ekr.20110514134640.14520: *3* Doc: summary of autocompleter (do not delete)
+@language rest
+
+There has been a lot of work on autocompletion recently. Here, I'll summarize
+the present status and indicate future directions.
+
+Terminology: the *legacy* (aka tabbed) autocompleter shows completions in Leo's
+tabbed pane. The *new* (aka qcompleter) autocompleter shows completions in or
+near the body pane.
+
+Appearance
+==========
+
+There is little change to the legacy completer, except that no text is
+highlighted in the body pane during completion. This is calmer than before.
+Furthermore, there is no longer any need for highlighting, because when the user
+types a backspace the legacy completer now simply deletes a single character
+instead of the highlighted text.
+
+One more minor change: the legacy completer now *does* insert characters that do
+not match the start of any possible completion. This is an experimental feature,
+but it might play well with using codewise completions as a fallback to
+leo-related completions.
+
+The appearance of the qcompleter is in flux. Previously, the QCompleter ctor
+created a wretched-looking window in or near the body pane. The present code
+creates a new temporary splitter above the body pane. It looks good, but has the
+unpleasant effect of shifting the body pane done.
+
+The consensus seems to be that the completion window should float near the
+to-be-completed text, without obscuring it. I'll do this immediately.
+
+Function and design
+===================
+
+Both the legacy and new completer now work *exactly* the same way, because they
+both use the AutoCompleterClass to compute the list of completions.
+
+In other words, the qcompleter code in qtGui.py deals *only* with gui- related
+matters. All policy matters are delegated to AutoCompleterClass.
+
+All completion-related code is stateless, or as stateless as possible. In
+practice, this means that ac.compute_completion_list must be called on every
+keystroke. That's not a problem: it is extremely fast.
+
+Yesterday I realized that the strict "stateless" requirement means that the
+"intermediate" completions must be entered into the body pane while completion
+is active. This might be a debatable user-interface choice. It works well as a
+visual cue when using the tabbed completer: indeed, the tabbed completer would
+be difficult to use without this cue.
+
+The situation is slightly different with the qcompleter. Adding code before the
+user accepts the completion might be considered an "advanced" feature. However,
+it does have two important advantages, especially when "chaining" across
+periods: it indicates the status of the chaining and it limits what must appear
+in the qcompleter window.
+
+It would be possible *not* to add the intermediate text into the body pane when
+using the qcompleter, but that would have the following disadvantages:
+
+- It would require internal state somewhere, probably in AutoCompleterClass.
+
+- It would require that the complete prefix be visible in the qcompleter window.
+
+For these reasons, I would prefer to have the code remains stateless for both
+the legacy and new completers.
+
+Codewise completions
+====================
+
+I agree with Ville that the @bool use_codewise setting should be eliminated, or
+at the very least made the default. The problem with eliminating the setting
+completely is that it might give incorrect results if c, g and p do not mean
+what they mean in Leo. Perhaps this is not worth worrying about. In any case,
+the codewise completions should be used whenever the eval-oriented approach
+fails.
+
+The present codewise-oriented completions appear to work well. In large part,
+this is due to adding the global "self." completions to all class-related
+completions (kind == 'class' in ac.get_codewise_completions). This looks like a
+really good hack, and it eliminates the need for the ContextSniffer class.
+
+Performance
+===========
+
+Performance of leo-related completions is *much* better than before. The old
+code used Python's inspect module and was horribly complex. The new code uses
+eval and is perfectly straightforward.
+
+The present codewise-related code caches completions for all previously-seen
+prefixes. This dramatically speeds up backspacing. Global caching is possible
+because completions depend *only* one the present prefix, *not* on the presently
+selected node. If ContextSniffer were used, completions would depend on the
+selected node and caching would likely be impractical.
+
+Despite these improvements, the performance of codewise-oriented completions is
+now noticeably slower than leo-related completions.
+
+The present qcompleter code avoids the QCompleter class entirely. This
+dramatically speeds up completions and simplifies the code in qtGui.py.
+
+Future directions
+=============
+
+Appearance-related issues will soon be completely resolved. When that happens I
+shall consider autocompletion to be "complete enough".
+
+I am completely happy with the leo-oriented completions. I'm not looking for
+anything better :-)
+
+Falling back to codewise-completions when leo-related completions fail may have
+some promise. In fact, the slowness of computing the codewise-oriented
+completions in that case might be a subtle clue that something is amiss :-) We
+shall see. In any case, it's a small point with no global implications.
+
+The "final frontier" is, as it has always been, improving codewise completions.
+As always, this is an open-ended project. The question are, how much AI is
+reasonable, and how can performance be improved? Having said that, I am pleased
+with ac.get_codewise_completions. It, and its helpers, guess_class and clean,
+are relatively straightforward.
+
+I have always considered the codewise completions (or whatever replaces them) to
+be the "hard part". There is still a sense in which this is true, but perhaps as
+a practical matter Ville was correct in calling this week's work the hard part
+:-)
+
+In any case, the codewise completions work surprisingly well. For example, it
+suggests all parts of the chain c.frame.body.bodyCtrl.widget except the bodyCtrl
+part, and after I type the bodyCtrl part by hand the codewise completer does
+suggest widget.
+
+This is all a bit of a hack. The codewise completer suggests far more
+completions than are actually valid. Happily, these extra suggestions cause no
+pain: typing just a few letters of the next part of the chain quickly removes
+most extraneous completions.
+
+The performance and flexibility of the codewise completer are greater concerns.
+Now that leo-related completions are so fast, the slower speed of the codewise
+completer is just a bit annoying. Caching helps somewhat, but not enough.
+
+By "flexibility" I mean that the user must run ctags periodically to update
+completions. One could imagine Leo doing this automatically from time to time,
+but such a project would not be trivial.
+
+Summary
+=======
+
+User interface issues are nearly resolved: I'll make the qcompleter float today.
+
+Performance of Leo completions are excellent; codewise completions not bad.
+
+Improving codewise completions would be an interesting project, but not urgent.
+#@+node:ekr.20110514134640.14521: *3* Doc: the new completion caching scheme (do not delete)
+@language rest
+
+QQQ
+The completer should calculate all possible completions at that time. now, as
+you enter letters b a r, (to get foo.bar), completions should not be calculated
+- rather, the original completion list calculated earlier should be pruned
+according to the letters typed.
+QQQ
+
+The change was elegant: see ac.get_cached_options. This method cuts back the
+prefix until it finds a cached prefix. ac.compute_completion_list then uses this
+(perhaps-way-too-long-list) as a starting point, and computes the final
+completion list by calling g.itemsMatchingPrefixInList.
+
+This may not be absolutely the fastest way, but it is much simpler and more
+robust than attempting to do "prefix AI" based on comparing old and new
+prefixes. Furthermore, this scheme is completely independent of the how
+completions are actually computed. The autocompleter now caches options lists,
+regardless of whether using eval or codewise.
+
+And in most cases the scheme is extremely fast: calls to get_completions replace
+calls to g.itemsMatchingPrefixInList. However, for short prefixes, the list that
+g.g.itemsMatchingPrefixInList scans can have thousands of items. Scanning large
+lists can't be helped in any case for short prefixes.
+
+Happily, the new scheme is still *completely* stateless: the completionDict does
+*not* define state (it is valid everywhere) and no state variables had to be
+added.
+
+In short, the new caching scheme is much better than before, and it probably is
+close to optimal in most situations.
+#@+node:ekr.20101129095441.5963: *3* Improve screenshots page
+#@+node:ekr.20110518103946.18157: ** Maybe
+#@+node:ekr.20101104191857.5820: *3* Idea: presentation tool
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
+
+Ville:
+
+Create one QWebView window, zoom it in to have large fonts.
+
+Create @button that converts current node containing restructuredtext to html,
+and pushes that html to QWebView.
+
+Voila', instant presentation tool. The webview window would be on projector, and
+leo would be in your private computer. You can easily edit the text, or find new
+interesting slides to present in privacy of your own screen.
+
+#@+node:ekr.20090724081340.5987: *3* Improve recursive import script and @auto
+@nocolor-node
+
+Instead of adding an @ignore directive, it might be better
+to change @auto to @@auto.
+
+Should @auto be more lenient with C files?
+
+Improve the recursive import script.
+    - Minimize the path names
+    - Option to include/exclude the @auto itself
+
+#@+node:ekr.20090601083544.6067: *3* Make all commands available to all commanders
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/a83082cec5ad3df8
+
+QQQ (Ville)
+So to create command you would do
+
+import leoPlugins
+
+def mycmd(c,p, event):
+  print c,p
+
+leoPlugins.expose_command('my-command', mycmd)
+leoPlugins.expose_button('press-this',mycmd)
+
+[EKR: I would rather use g.app.exposeCommand, g.app.exposeButton].
+
+These would be available on *all* new commanders, and the current
+commander as well (for easy testing). Plugins would not have to
+contain more code than what is presented above.
+
+The idea is to have a global command dict, [EKR: g.app.commandsDict]
+and global button dict.
+There is one after-create-frame handler that introduces all the
+entries in this dict to the commander command dict.
+QQQ
+
+============
+
+
+QQQ
+g.app.global_commands_dict, which gets copied to c on commander
+creation. it's rev 1889, you'll note that it's a simple
+implementation. I didn't add g.button yet. An example:
+
+@g.command('bookmark')
+def bookmark(event):
+    c = event.get('c')
+    p = c.currentPosition()
+    bookmarks.append(p.gnx)
+    g.es('bookmarked') 
+QQQ
+#@+node:ekr.20090714085914.5994: *3* New commands
+#@+node:ekr.20071004120359.2: *4* Do expand-region-abbrevs from
+See: regionalExpandAbbrev.
+#@+node:ekr.20090402072059.2: *4* clone-find-all-once
+@
+
+First do a normal clone-find-all for the word "clone". Then click the script
+button and do it again. Notice that children of previously found nodes don't get
+added again in the modified version.
+#@+node:ekr.20090402072059.4: *5* @@@button my clone find all
+import leo.core.leoFind as leoFind 
+
+def new_find_all(self):
+    << do some initial stuff >>
+
+
+    while 1:
+        pos, newpos = self.findNextMatch()
+        if pos is None: break
+
+        if count % 10 == 0 and count > 0:
+            g.es("still searching, matches found: ", count)
+
+        << Skip node if it's a child of a previously found node >>
+
+        count += 1
+
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if not self.clone_find_all:
+            self.printLine(line,allFlag=True)
+        if self.clone_find_all and self.p.v.t not in clones:
+            # g.trace(self.p.v.t,self.p.h)
+            if not clones:
+                undoData = u.beforeInsertNode(c.p)
+                << create the found node >>
+            clones.append(self.p.v.t)
+            positions.append(self.p)
+            << create a clone of p under the find node >>
+
+    if self.clone_find_all and clones:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        c.selectPosition(found)
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw()
+    g.es("found",count,"matches")
+
+
+leoFind.leoFind.findAll = new_find_all
+
+c.executeMinibufferCommand("clone-find-all") 
+#@+node:ekr.20090402072059.5: *6* << do some initial stuff >>
+g.es("findAll..., self: ", self)
+
+c = self.c ; w = self.s_ctrl ; u = c.undoer
+undoType = 'Clone Find All'
+if not self.checkArgs():
+    return
+self.initInHeadline()
+if self.clone_find_all:
+    self.p = None # Restore will select the root position.
+data = self.save()
+self.initBatchCommands()
+count = 0 ; clones = []; positions = []
+#@+node:ekr.20090402072059.6: *6* << create the found node >>
+oldRoot = c.rootPosition()
+found = oldRoot.insertAfter()
+found.moveToRoot(oldRoot)
+c.setHeadString(found,'Found: ' + self.find_text)
+c.setRootPosition() # New in Leo 4.5.
+#@+node:ekr.20090402072059.7: *6* << create a clone of p under the find node >>
+q = self.p.clone()
+q.moveToLastChildOf(found)
+#@+node:ekr.20090402072059.8: *6* << Skip node if it's a child of a previously found node >>
+<< def: is a child of b >>
+
+is_child_of_previous = False
+for previously_found in positions:
+    if is_a_child_of_b(self.p, previously_found):
+        is_child_of_previous = True
+        break
+
+if is_child_of_previous:
+    continue
+#@+node:ekr.20090402072059.9: *7* << def: is a child of b >>
+
+def is_a_child_of_b(a, b):
+    for child in b.children_iter():
+        if a.t == child.t:
+            return True
+        if is_a_child_of_b(a, child):
+            return True
+    return False
+#@+node:ekr.20100108101415.6196: *4* insert-tab commands
+insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
 #@+node:ekr.20101024062147.5996: *3* Wishlist
 #@+node:ekr.20080922115725.1: *4* Finish @shadow
 # Allow block comments in private shadow files.
@@ -1541,683 +2221,6 @@ I'd also like
 as often there's more docs on a class in the __init__ than the class docstring.
 
 I think that's really all we're talking about, some @settings to test during import.
-#@+node:ekr.20110514231951.14492: ** Docs
-#@+node:ekr.20110518082415.14439: *3* Document highlights of my workflow
-@language rest
-
-This thread will discuss the workflow I use to develop Leo. The intention is to
-help present and potential developers use Leo effectively. This thread will be
-pre-writing for a section of the users guide.
-
-This is a continuation of the thread:
-http://groups.google.com/group/leo-editor/browse_thread/thread/4494324d21bd0bde/adf6d565c90e175c
-
-Overview
-=======
-
-Here is the big picture:
-
-* Develop in an outline containing all of Leo's source files. Close this outline
- rarely: this keeps the code I am using stable while I'm hacking the code.
-
-* Test in a *separate* .leo file, say test.leo. In fact, I often test in a
-  private file, ekr.leo, so that test.leo doesn't get continually updated on bzr
-  with trivial changes.
-
-These two points are covered in a bit more detail in the FAQ:
-
-http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
-
-Additional tips:
-
-A. Avoid using the mouse whenever possible.  For example, use alt-tab to switch between windows.
-
-B. Always develop Leo in a console.  This allows me to see the output of g.trace.
-
-Speaking of g.trace, I hardly ever use 'print' because g.trace prints the name
-of the function or method in which it appears. The typical pattern for enabling
-traces is:
-
-    trace = True and not g.unitTesting
-    if trace: g.trace(whatever)
-
-This pattern is especially useful when a method contains multiple calls to g.trace.
-
-C. I use scripts to open particular Leo files. These are batch files on Windows,
-   and aliases on Linux, but invoking them is the same on either platform:
-
-all: opens all my main development files using the qt-tabs gui: leoPy.leo,
-     leoGuiPlugins.leo, leoPlugins.leo, leoSettings.leo, myLeoSettings.leo and
-     LeoDocs.leo.
-
-t: opens test.leo.
-
-e: opens ekr.leo.  I use this file for private testing.
-
-d: opens LeoDocs.leo.
-
-s: opens LeoPy.leo.
-
-plugins: opens leoPlugins.leo.
-
-gui: opens leoGui.leo.
-
-u: opens unitTest.leo.
-
-These run Leo with Python 3.x. There are similar scripts, ending in 2, that run
-Leo with Python 2.x. For example, u2 opens unitTest.leo with Python 2.x.
-
-Similarly, the tk prefix uses the Tk gui: utk opens unitTest.leo with --gui=tk
-(and Python 2.x since the tk gui only works with Python 2.x)
-
-Thus, to run a test, I alt-tab to an available console window, then type 'e' or
-'t' or 'e2' or 't2'.
-
-D. Use clones to focus attention on the task at hand.  For more details, see:
-
-E.  For thousand of example of my programming style, see leoPy.leo and leoGuiPlugins.leo.
-
-http://webpages.charter.net/edreamleo/intro.html#clones-views
-
-The projects section in leoPy.leo contains many examples of using clones to
-create view nodes. I typically delete the clones in the views shortly before a
-release.
-
-That's about all for code-level tips.  Here are some administrative tips:
-
-A.  Use postings as pre-writing for documentation.
-
-I don't mind blabbing on and on about Leo because all my posts become
-pre-writing for Leo's documentation. I simply copy posts to nodes in the
-"documentation to-do" section. At release time, I edit these nodes and put them
-in Leo's main documentation or the release notes. This posting is an example.
-
-B. Never rely on memory.
-
-A project like this contains thousands and thousands of details. Everything
-eventually goes into a Leo node somewhere. If it doesn't it surely *will* be
-forgotten.
-
-C. Do easy items first. This keeps to-do lists short, which in turn helps keep
-energy high.
-#@+node:ekr.20110514134640.14520: *3* Doc: summary of autocompleter (do not delete)
-@language rest
-
-There has been a lot of work on autocompletion recently. Here, I'll summarize
-the present status and indicate future directions.
-
-Terminology: the *legacy* (aka tabbed) autocompleter shows completions in Leo's
-tabbed pane. The *new* (aka qcompleter) autocompleter shows completions in or
-near the body pane.
-
-Appearance
-==========
-
-There is little change to the legacy completer, except that no text is
-highlighted in the body pane during completion. This is calmer than before.
-Furthermore, there is no longer any need for highlighting, because when the user
-types a backspace the legacy completer now simply deletes a single character
-instead of the highlighted text.
-
-One more minor change: the legacy completer now *does* insert characters that do
-not match the start of any possible completion. This is an experimental feature,
-but it might play well with using codewise completions as a fallback to
-leo-related completions.
-
-The appearance of the qcompleter is in flux. Previously, the QCompleter ctor
-created a wretched-looking window in or near the body pane. The present code
-creates a new temporary splitter above the body pane. It looks good, but has the
-unpleasant effect of shifting the body pane done.
-
-The consensus seems to be that the completion window should float near the
-to-be-completed text, without obscuring it. I'll do this immediately.
-
-Function and design
-===================
-
-Both the legacy and new completer now work *exactly* the same way, because they
-both use the AutoCompleterClass to compute the list of completions.
-
-In other words, the qcompleter code in qtGui.py deals *only* with gui- related
-matters. All policy matters are delegated to AutoCompleterClass.
-
-All completion-related code is stateless, or as stateless as possible. In
-practice, this means that ac.compute_completion_list must be called on every
-keystroke. That's not a problem: it is extremely fast.
-
-Yesterday I realized that the strict "stateless" requirement means that the
-"intermediate" completions must be entered into the body pane while completion
-is active. This might be a debatable user-interface choice. It works well as a
-visual cue when using the tabbed completer: indeed, the tabbed completer would
-be difficult to use without this cue.
-
-The situation is slightly different with the qcompleter. Adding code before the
-user accepts the completion might be considered an "advanced" feature. However,
-it does have two important advantages, especially when "chaining" across
-periods: it indicates the status of the chaining and it limits what must appear
-in the qcompleter window.
-
-It would be possible *not* to add the intermediate text into the body pane when
-using the qcompleter, but that would have the following disadvantages:
-
-- It would require internal state somewhere, probably in AutoCompleterClass.
-
-- It would require that the complete prefix be visible in the qcompleter window.
-
-For these reasons, I would prefer to have the code remains stateless for both
-the legacy and new completers.
-
-Codewise completions
-====================
-
-I agree with Ville that the @bool use_codewise setting should be eliminated, or
-at the very least made the default. The problem with eliminating the setting
-completely is that it might give incorrect results if c, g and p do not mean
-what they mean in Leo. Perhaps this is not worth worrying about. In any case,
-the codewise completions should be used whenever the eval-oriented approach
-fails.
-
-The present codewise-oriented completions appear to work well. In large part,
-this is due to adding the global "self." completions to all class-related
-completions (kind == 'class' in ac.get_codewise_completions). This looks like a
-really good hack, and it eliminates the need for the ContextSniffer class.
-
-Performance
-===========
-
-Performance of leo-related completions is *much* better than before. The old
-code used Python's inspect module and was horribly complex. The new code uses
-eval and is perfectly straightforward.
-
-The present codewise-related code caches completions for all previously-seen
-prefixes. This dramatically speeds up backspacing. Global caching is possible
-because completions depend *only* one the present prefix, *not* on the presently
-selected node. If ContextSniffer were used, completions would depend on the
-selected node and caching would likely be impractical.
-
-Despite these improvements, the performance of codewise-oriented completions is
-now noticeably slower than leo-related completions.
-
-The present qcompleter code avoids the QCompleter class entirely. This
-dramatically speeds up completions and simplifies the code in qtGui.py.
-
-Future directions
-=============
-
-Appearance-related issues will soon be completely resolved. When that happens I
-shall consider autocompletion to be "complete enough".
-
-I am completely happy with the leo-oriented completions. I'm not looking for
-anything better :-)
-
-Falling back to codewise-completions when leo-related completions fail may have
-some promise. In fact, the slowness of computing the codewise-oriented
-completions in that case might be a subtle clue that something is amiss :-) We
-shall see. In any case, it's a small point with no global implications.
-
-The "final frontier" is, as it has always been, improving codewise completions.
-As always, this is an open-ended project. The question are, how much AI is
-reasonable, and how can performance be improved? Having said that, I am pleased
-with ac.get_codewise_completions. It, and its helpers, guess_class and clean,
-are relatively straightforward.
-
-I have always considered the codewise completions (or whatever replaces them) to
-be the "hard part". There is still a sense in which this is true, but perhaps as
-a practical matter Ville was correct in calling this week's work the hard part
-:-)
-
-In any case, the codewise completions work surprisingly well. For example, it
-suggests all parts of the chain c.frame.body.bodyCtrl.widget except the bodyCtrl
-part, and after I type the bodyCtrl part by hand the codewise completer does
-suggest widget.
-
-This is all a bit of a hack. The codewise completer suggests far more
-completions than are actually valid. Happily, these extra suggestions cause no
-pain: typing just a few letters of the next part of the chain quickly removes
-most extraneous completions.
-
-The performance and flexibility of the codewise completer are greater concerns.
-Now that leo-related completions are so fast, the slower speed of the codewise
-completer is just a bit annoying. Caching helps somewhat, but not enough.
-
-By "flexibility" I mean that the user must run ctags periodically to update
-completions. One could imagine Leo doing this automatically from time to time,
-but such a project would not be trivial.
-
-Summary
-=======
-
-User interface issues are nearly resolved: I'll make the qcompleter float today.
-
-Performance of Leo completions are excellent; codewise completions not bad.
-
-Improving codewise completions would be an interesting project, but not urgent.
-#@+node:ekr.20110514134640.14521: *3* Doc: the new completion caching scheme (do not delete)
-@language rest
-
-QQQ
-The completer should calculate all possible completions at that time. now, as
-you enter letters b a r, (to get foo.bar), completions should not be calculated
-- rather, the original completion list calculated earlier should be pruned
-according to the letters typed.
-QQQ
-
-The change was elegant: see ac.get_cached_options. This method cuts back the
-prefix until it finds a cached prefix. ac.compute_completion_list then uses this
-(perhaps-way-too-long-list) as a starting point, and computes the final
-completion list by calling g.itemsMatchingPrefixInList.
-
-This may not be absolutely the fastest way, but it is much simpler and more
-robust than attempting to do "prefix AI" based on comparing old and new
-prefixes. Furthermore, this scheme is completely independent of the how
-completions are actually computed. The autocompleter now caches options lists,
-regardless of whether using eval or codewise.
-
-And in most cases the scheme is extremely fast: calls to get_completions replace
-calls to g.itemsMatchingPrefixInList. However, for short prefixes, the list that
-g.g.itemsMatchingPrefixInList scans can have thousands of items. Scanning large
-lists can't be helped in any case for short prefixes.
-
-Happily, the new scheme is still *completely* stateless: the completionDict does
-*not* define state (it is valid everywhere) and no state variables had to be
-added.
-
-In short, the new caching scheme is much better than before, and it probably is
-close to optimal in most situations.
-#@+node:ekr.20101129095441.5963: *3* Improve screenshots page
-#@+node:ekr.20110518103946.18157: ** Features for 4.9
-#@+node:ekr.20071001052501: *3* Versioning for nodes
-@nocolor
-
-One feature I have not seen in SCS system is something which might be called
-"history compression": I might be interested in having both version 5 and 6
-in my source tree, when the current version is 7, but I am not really interested
-in the 2000 steps which transformed 5 into 6 (just suggested this feature to
-the bazaar people). This happens actually quite often to me, since I use the
-SCS as a back-up system, saving many (uninteresting) intermediate steps while
-implementing a new feature.
-#@+node:ekr.20101118113953.5844: *3* Use new reformatParagraph code
-@nocolor-node
-
-The following code (untested), changed x(c,...) to c.x(...)
-
-It may be good to put c.findBoundParagraph as a child node.
-
-It should be easy to debug: the only change should be to the top-level
-reformatParagraph node.
-
-Unit tests will have to change because the new code moves the cursor to the next
-paragraph only if the present paragraph has not actually been changed.
-#@+node:ekr.20101118113953.5839: *4* reformatParagraph & helpers
-def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
-
-    """Reformat a text paragraph
-
-    Wraps the concatenated text to present page width setting. Leading tabs are
-    sized to present tab width setting. First and second line of original text is
-    used to determine leading whitespace in reformatted text. Hanging indentation
-    is honored.
-
-    Paragraph is bound by start of body, end of body and blank lines. Paragraph is
-    selected by position of current insertion cursor.
-
-"""
-
-    c = self ; body = c.frame.body ; w = body.bodyCtrl
-
-    if g.app.batchMode:
-        c.notValidInBatchMode("xxx")
-        return
-
-    if body.hasTextSelection():
-        i,j = w.getSelectionRange()
-        w.setInsertPoint(i)
-
-    oldSel,oldYview,original,pageWidth,tabWidth = c.rp_get_args()
-    head,lines,tail = c.findBoundParagraph()
-    if lines:
-        indents,leading_ws = c.rp_get_leading_ws(lines,tabWidth)
-        result = c.rp_wrap_all_lines(indents,leading_ws,lines,pageWidth)
-        c.rp_reformat(head,oldSel,oldYview,original,result,tail,undoType)
-#@+node:ekr.20101118113953.5840: *5* rp_get_args
-def rp_get_args (self):
-
-    '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
-
-    c = self ; body = c.frame.body ;  w = body.bodyCtrl
-
-    d = c.scanAllDirectives()
-    pageWidth = d.get("pagewidth")
-    tabWidth  = d.get("tabwidth")
-
-    original = w.getAllText()
-    oldSel =  w.getSelectionRange()
-    oldYview = body.getYScrollPosition()
-
-    return oldSel,oldYview,original,pageWidth,tabWidth
-#@+node:ekr.20101118113953.5841: *5* rp_get_leading_ws
-def rp_get_leading_ws (self,lines,tabWidth):
-
-    '''Compute and return indents and leading_ws.'''
-
-    c = self
-
-    indents = [0,0]
-    leading_ws = ["",""]
-
-    for i in (0,1):
-        if i < len(lines):
-            # Use the original, non-optimized leading whitespace.
-            leading_ws[i] = ws = g.get_leading_ws(lines[i])
-            indents[i] = g.computeWidth(ws,tabWidth)
-
-    indents[1] = max(indents)
-
-    if len(lines) == 1:
-        leading_ws[1] = leading_ws[0]
-
-    return indents,leading_ws
-#@+node:ekr.20101118113953.5842: *5* rp_reformat
-def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
-
-    '''Reformat the body and update the selection.'''
-
-    c = self ; body = c.frame.body ; w = body.bodyCtrl
-    s = w.getAllText()
-
-    # This destroys recoloring.
-    junk, ins = body.setSelectionAreas(head,result,tail)
-
-    changed = original != head + result + tail
-    if changed:
-        # 2010/11/16: stay in the paragraph.
-        body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
-    else:
-        # Advance to the next paragraph.
-        ins += 1 # Move past the selection.
-        while ins < len(s):
-            i,j = g.getLine(s,ins)
-            line = s[i:j]
-            # 2010/11/16: it's annoying, imo, to treat @ lines differently.
-            if line.isspace(): ### or line.startswith('@'):
-                ins = j+1
-            else:
-                ins = i ; break
-
-        # setSelectionAreas has destroyed the coloring.
-        c.recolor()
-
-    w.setSelectionRange(ins,ins,insert=ins)
-    w.see(ins)
-#@+node:ekr.20101118113953.5843: *5* rp_wrap_all_lines
-def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
-
-    '''compute the result of wrapping all lines.'''
-
-    trailingNL = lines and lines[-1].endswith('\n')
-    lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
-
-    # Wrap the lines, decreasing the page width by indent.
-    result = g.wrap_lines(lines,
-        pageWidth-indents[1],
-        pageWidth-indents[0])
-
-    # prefix with the leading whitespace, if any
-    paddedResult = []
-    paddedResult.append(leading_ws[0] + result[0])
-    for line in result[1:]:
-        paddedResult.append(leading_ws[1] + line)
-
-    # Convert the result to a string.
-    result = '\n'.join(paddedResult)
-    if trailingNL: result = result + '\n'
-
-    return result
-#@+node:ekr.20100827095120.5861: *3* Improve format of .leo files?
-http://groups.google.com/group/leo-editor/browse_thread/thread/be5052957b21ad97
-
-Maybe for Leo 4.9.
-#@+node:ekr.20090218115025.3: *4* Why are attributes pickled by default?
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/326a221f4c698f7a
-
-> On Wed, Feb 18, 2009 at 12:12 PM, Kent Tenney <ktenney@gmail.com> wrote:
->>
->> Currently, Leo pickles the value of unknown attributes unless
->> the name starts with 'str_'
->>
->> Running the following code in node 'UA'
->>
->> p = c.currentPosition()
->> p.v.u = {'hello':'world', 'str_hello':'world'}
->>
->> results in the following in the .leo file:
->>
->> <v t="ktenney.20090218114928.367" str_hello="world"
->> hello="5505776f726c6471002e"><vh>UA</vh></v>
->>
->> I think this is surprising, Python-centric and contrary to the
->> spirit of Leo as a flexible data management platform.
->
-> I suppose your point is that you can't create an arbitrarily named attribute
-> with a string value. Does that create a real problem?
-
-It requires a translation layer, either to (un)munge the name or
-(un)pickle. Real problem?
-
-Let's say each time I think 'I can use UAs to store that' I change
-my mind when I realize my values will be in a pickle. (I really don't
-want to name all my attributes str_xxx)
-
-> As far as being Python-centric, can you suggest any other way of converting
-> arbitrary data to a text string?
-
-How is it done in any other XML file?
-I've not used XML for arbitrary data, but it probably can be done.
-
-> Why would that way be better than pickle?
-
-My suspicion is that UAs would be used more for
-storing text and numbers (as seems common for XML files)
-than Python data objects.
-
-Does Leo use UAs to store pickles?
-
-I'm sure pickling capability is great, but I'm not convinced
-it should be the _default._
-
-No big deal.
-#@+node:ekr.20080727122007.1: *3* Allow user to set background colors of nodes
-What uA should be used to specify node colors?
-
-if the foreground / background color API uses uAs,
-would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
-#@+node:ekr.20101116100300.5827: *3* Write script file to temp file if @bool write_script_file is False
-@nocolor-node
-
-It's important that g.pdb get the sources for *all* Leo scripts.
-
-Postings:
-
-When @bool write_script_file is True the execute-script file uses
-execfile (or its Python 3k equivalent) to execute scripts.
-
-This allows g.pdb (or pudb) to know the text of Leo scripts!
-
-I want to emphasize here how important this change is.  After 4.8 final I'll add code to use a temp file to hold sources if 
-@bool write_script_file is False.
-
-In the meantime, I strongly urge all script writers to set @bool write_script_file = True.
-
-Depending on your installation, especially on *nix, the default location for the file may be a problem.  In that case, set
-@string script_file_path to some convenient place, say in your home directory.
-#@+node:ekr.20090714085914.5994: *3* New commands
-#@+node:ekr.20071004120359.2: *4* Do expand-region-abbrevs from
-See: regionalExpandAbbrev.
-#@+node:ekr.20090402072059.2: *4* clone-find-all-once
-@
-
-First do a normal clone-find-all for the word "clone". Then click the script
-button and do it again. Notice that children of previously found nodes don't get
-added again in the modified version.
-#@+node:ekr.20090402072059.4: *5* @@@button my clone find all
-import leo.core.leoFind as leoFind 
-
-def new_find_all(self):
-    << do some initial stuff >>
-
-
-    while 1:
-        pos, newpos = self.findNextMatch()
-        if pos is None: break
-
-        if count % 10 == 0 and count > 0:
-            g.es("still searching, matches found: ", count)
-
-        << Skip node if it's a child of a previously found node >>
-
-        count += 1
-
-        s = w.getAllText()
-        i,j = g.getLine(s,pos)
-        line = s[i:j]
-        if not self.clone_find_all:
-            self.printLine(line,allFlag=True)
-        if self.clone_find_all and self.p.v.t not in clones:
-            # g.trace(self.p.v.t,self.p.h)
-            if not clones:
-                undoData = u.beforeInsertNode(c.p)
-                << create the found node >>
-            clones.append(self.p.v.t)
-            positions.append(self.p)
-            << create a clone of p under the find node >>
-
-    if self.clone_find_all and clones:
-        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
-        c.selectPosition(found)
-        c.setChanged(True)
-
-    self.restore(data)
-    c.redraw()
-    g.es("found",count,"matches")
-
-
-leoFind.leoFind.findAll = new_find_all
-
-c.executeMinibufferCommand("clone-find-all") 
-#@+node:ekr.20090402072059.5: *6* << do some initial stuff >>
-g.es("findAll..., self: ", self)
-
-c = self.c ; w = self.s_ctrl ; u = c.undoer
-undoType = 'Clone Find All'
-if not self.checkArgs():
-    return
-self.initInHeadline()
-if self.clone_find_all:
-    self.p = None # Restore will select the root position.
-data = self.save()
-self.initBatchCommands()
-count = 0 ; clones = []; positions = []
-#@+node:ekr.20090402072059.6: *6* << create the found node >>
-oldRoot = c.rootPosition()
-found = oldRoot.insertAfter()
-found.moveToRoot(oldRoot)
-c.setHeadString(found,'Found: ' + self.find_text)
-c.setRootPosition() # New in Leo 4.5.
-#@+node:ekr.20090402072059.7: *6* << create a clone of p under the find node >>
-q = self.p.clone()
-q.moveToLastChildOf(found)
-#@+node:ekr.20090402072059.8: *6* << Skip node if it's a child of a previously found node >>
-<< def: is a child of b >>
-
-is_child_of_previous = False
-for previously_found in positions:
-    if is_a_child_of_b(self.p, previously_found):
-        is_child_of_previous = True
-        break
-
-if is_child_of_previous:
-    continue
-#@+node:ekr.20090402072059.9: *7* << def: is a child of b >>
-
-def is_a_child_of_b(a, b):
-    for child in b.children_iter():
-        if a.t == child.t:
-            return True
-        if is_a_child_of_b(a, child):
-            return True
-    return False
-#@+node:ekr.20100108101415.6196: *4* insert-tab commands
-insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
-#@+node:ekr.20090601083544.6067: *4* Make all commands available to all commanders
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/a83082cec5ad3df8
-
-QQQ (Ville)
-So to create command you would do
-
-import leoPlugins
-
-def mycmd(c,p, event):
-  print c,p
-
-leoPlugins.expose_command('my-command', mycmd)
-leoPlugins.expose_button('press-this',mycmd)
-
-[EKR: I would rather use g.app.exposeCommand, g.app.exposeButton].
-
-These would be available on *all* new commanders, and the current
-commander as well (for easy testing). Plugins would not have to
-contain more code than what is presented above.
-
-The idea is to have a global command dict, [EKR: g.app.commandsDict]
-and global button dict.
-There is one after-create-frame handler that introduces all the
-entries in this dict to the commander command dict.
-QQQ
-
-============
-
-
-QQQ
-g.app.global_commands_dict, which gets copied to c on commander
-creation. it's rev 1889, you'll note that it's a simple
-implementation. I didn't add g.button yet. An example:
-
-@g.command('bookmark')
-def bookmark(event):
-    c = event.get('c')
-    p = c.currentPosition()
-    bookmarks.append(p.gnx)
-    g.es('bookmarked') 
-QQQ
-#@+node:ekr.20101104191857.5820: *3* Idea: presentation tool
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
-
-Ville:
-
-Create one QWebView window, zoom it in to have large fonts.
-
-Create @button that converts current node containing restructuredtext to html,
-and pushes that html to QWebView.
-
-Voila', instant presentation tool. The webview window would be on projector, and
-leo would be in your private computer. You can easily edit the text, or find new
-interesting slides to present in privacy of your own screen.
-
-#@+node:ekr.20080806054207.3: *3* Auto scroll outline pane if headline would become invisible
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/76789df8aac08c70
-
-When using leo as outliner, I often use only node headlines to write
-down some data. If the headline string is too long, the cursor goes
-beyond the visible area. When modifying a node headline, is it
-possible to make leo to auto-scroll, so the cursor is always visible? 
 #@+node:ekr.20110518103946.18156: ** Leo 4.10: deprecate Tk
 #@+node:ekr.20100521090440.5890: *3* Cleanups
 #@+node:ekr.20100223123910.5930: *4* recentFilesController
