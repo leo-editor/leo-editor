@@ -9191,6 +9191,55 @@ http://diigo.com/0dw79
 
 (Fixed) Embedding Leo with the leoBridge module — Leo v4.8 documentation
 http://diigo.com/0dw77
+#@+node:ekr.20110518103946.18181: *4* Clarification: we can not allow Leo settings to change qt-stylesheets
+@nocolor-node
+
+Are color-settings gui-toolkit dependent?
+
+In my ~/.leo/myLeoSettings.leo I changed @settings->Colors-> @color body_text_selection_foreground_color = black
+(the value before was `white`).
+
+Unfortunately the foreground of the selected text still is white, at least if I use the qt gui (which is default on my system and which I like more).
+
+So my questions:
+
+Are the color-settings gui-toolkit dependent?
+
+How (or where) can I change the colors used for qt?
+
+Is there a way to print the settings files (with full path) which leo reads on startup?
+(I think this would help to prevent confusion in the various ways to specify settings for new users.)
+
+=====================================
+
+
+At last I see what is going on.  The selection colors are set in the node:
+
+@data qt-gui-plugin-style-sheet
+
+Apparently the selection colors can *only* be set there: it looks like
+the separate @color settings for selections do not work.
+
+This is quite a mess.  It arose because originally I did not realize
+that it was possible to use "mini" stylesheets to set individual
+selector dynamically.  When I made the discovery, I supported some,
+but not all settings.
+
+Of course, I should support all settings.  I'll see what I can do...
+#@+node:ekr.20110518140548.18148: *5* Response
+@nocolor-node
+
+After further reflection, there does not seem to be much that can be done.
+
+Suppose, for example, that Leo converts an @setting node to a mini
+stylesheet.  (In fact, Leo sometimes does do this, in other contexts.)
+ We now have a conundrum: which should take precedence: the @data
+qt-gui-plugin-style-sheet setting or the @color
+body_text_selection_foreground_color setting?
+
+Rather than open that can of worms, the best solution seems to be to
+declare that yes, some settings *are* gui dependent.  Use @data
+qt-gui-plugin-style-sheet to set those settings.
 #@+node:ekr.20101218103123.5931: *3* Features
 #@+node:ekr.20101127152442.5915: *4* Improved handling of @url nodes
 @nocolor
@@ -12646,5 +12695,214 @@ What I did:
 - Added auto_tab_complete setting.
 
 - Removed @bool use_codewise setting.
+#@+node:ekr.20110518103946.18158: *4* Put Kent's Runwith class in scripts.leo and contrib
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b8e8fbf6d97fa9f2/a4537fafaf2442ba
+
+#@+node:ekr.20110518140548.18150: *5* Description
+@nocolor-node
+
+This code contributed by Kent Tenney.
+
+See http://groups.google.com/group/leo-editor/browse_thread/thread/b8e8fbf6d97fa9f2/a4537fafaf2442ba
+
+I've had endless problems with interpreter versioning, leading me create the
+Runwith class. It writes a file to disk, makes it executable, runs it, captures
+exitcode, err and output, removes the files, provides reports.
+
+This provides complete decoupling from Leo.
+
+I have run-bash and run-python buttons in Leo which run the node
+contents as shell or python.
+
+I'm liking it a lot.
+
+I'm currently extending it to provide command line sugar:
+
+$ rw ln -s /home/ktenney/work/src/project/bin/myscript
+/home/ktenney/bin --makelink.sh--
+
+The "rw" script executes the command, and creates the script makelink.sh
+
+The following is Outline -> Copy Node version of the Runwith class
+
+It does some data gathering which probably don't apply: hashes of the code,
+hostname, timestamps. These get stored in json.
+#@+node:ekr.20110518140548.18161: *5* class Runwith
+class Runwith(object):
+   """Generate and manage scripts.
+
+   >>> import getatdata
+
+   """
+   import tempfile
+   import os
+   import platform
+   import json
+   import md5
+   import time
+   import subprocess
+   @others
+#@+node:ekr.20110518140548.18162: *6* __init__
+def __init__(self, interpreter, code,
+            cleanup=True, autorun=True,
+            ):
+   """Init a Runwith object, will run ``code`` using ``interpreter``
+
+   >>> import getatdata
+   >>> rw = getatdata.Runwith('/bin/bash', 'ls -la /tmp')
+   >>> rw.get_runfile()
+   '/tmp/...
+
+   >>> rw.get_runfile('/tmp/listing')
+   '/tmp/listing'
+
+   """
+
+   self.interpreter = interpreter
+   self.code = code
+   self._normalize_code()
+   self.cleanup = cleanup
+   self.fbase = self.tempfile.mktemp()
+   self.runfile = self.fbase + '.run'
+   self.outfile = self.fbase + '.out'
+   self.errfile = self.fbase + '.err'
+   self.jsonfile = self.fbase + '.json'
+   self.fileset = [self.outfile, self.errfile, self.runfile, self.jsonfile]
+   self.hostname = platform.node()
+   if autorun:
+       self.run()
+
+#@+node:ekr.20110518140548.18163: *6* _prepare_run
+def _prepare_run(self):
+   """
+   """
+
+   self.hashbang = "#!" + self.interpreter
+   contents = self.hashbang + "\n" + self.code + "\n"
+   with file(self.runfile, 'w') as f:
+       f.write(self.hashbang + '\n' + self.code + '\n')
+       f.close()
+       self.os.chmod(self.runfile, 0500)
+#@+node:ekr.20110518140548.18164: *6* _prepare_jsonfile
+def _prepare_jsonfile(self):
+   """
+   """
+
+   with file(self.jsonfile, 'w') as f:
+       f.write(self.json_data)
+#@+node:ekr.20110518140548.18165: *6* _normalize_code
+def _normalize_code(self):
+   """Normalize the spacing in a command line.
+
+   We don't want whitespace variations to result in different hashes for
+   the same command.
+   """
+
+   # don't try to normalize scripts
+   fixed_code = self.code.strip()
+   if '\n' in fixed_code:
+       self.multiline = True
+
+   else:
+       self.multiline = False
+       # normalize the command line
+       chunks = self.code.split()
+       fixed_code = ' '.join(chunks)
+
+   self.code = fixed_code
+
+   code_hash_obj = self.md5.md5(fixed_code)
+   self.codehash = code_hash_obj.hexdigest()
+#@+node:ekr.20110518140548.18166: *6* run
+def run(self):
+   """Do it.
+
+   """
+
+   #create output files for writing
+   outfile = file(self.outfile, 'w')
+   errfile = file(self.errfile, 'w')
+   self._prepare_run()
+   self.begintime = self.time.time()
+   self.exitcode = self.subprocess.Popen(self.runfile, shell=True,
+                             stdout=outfile, stderr=errfile).wait()
+   self.endtime = self.time.time()
+   outfile = file(self.outfile)
+   errfile = file(self.errfile)
+   self.out = outfile.read()
+   self.err = errfile.read()
+   outfile.close()
+   errfile.close()
+   self._report()
+   if self.cleanup:
+       self._cleanup()
+#@+node:ekr.20110518140548.18167: *6* _report
+def _report(self):
+   """
+   """
+
+   rundict = {'exitcode':self.exitcode,
+              'stdout':self.out, 'stderr':self.err}
+   rundict['code'] = self.code
+   rundict['hashbang'] = self.hashbang
+   rundict['hostname'] = self.hostname
+   rundict['codehash'] = self.codehash
+   humantime = self.time.ctime(self.endtime)
+   timestamps = {'begintime':self.begintime, 'endtime':self.endtime,
+                 'humantime':humantime}
+   rundict['timestamps'] = timestamps
+
+   self.rundict = rundict
+   self.json_data = self.json.dumps(rundict)
+
+#@+node:ekr.20110518140548.18168: *6* _cleanup
+def _cleanup(self):
+   """Remove files.
+
+   """
+
+   for f in self.fileset:
+       if os.path.exists(f):
+           os.remove(f)
+#@+node:ekr.20110518140548.18169: *6* get_runfile
+def get_runfile(self, fname=None):
+   """Create the executable and return it's filename.
+   """
+
+   if fname is not None:
+       self.runfile = fname
+
+   if fname is not self.runfile:
+       self._prepare_run()
+
+   return self.runfile
+
+
+
+#@+node:ekr.20110518140548.18170: *6* get_jsonfile
+def get_jsonfile(self, fname='codehash'):
+   """Create the json file and return it's filename.
+   """
+
+   if fname is not None:
+       if fname is 'codehash':
+           # name according to the code and run timestamp
+           hash = self.codehash
+           ts = str(self.rundict['timestamps']['begintime'])
+           jsonfile = hash + "-" + ts + ".json"
+
+       else:
+           # use the tempfile name
+           jsonfile = fname
+
+   dest_dir = self.os.path.dirname(self.fbase)
+   self.jsonfile = os.path.join(dest_dir, jsonfile)
+   self._prepare_jsonfile()
+   return self.jsonfile
+
+
+
 #@-all
 #@-leo
