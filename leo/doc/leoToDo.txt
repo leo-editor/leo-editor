@@ -2,42 +2,25 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110518082415.14438: ** Action items
-#@+node:ekr.20110518082415.14439: *3* Post highlight of my workflow
-@language rest
+#@+node:ekr.20110518103946.18182: *3* Call os.chdir when executing scripts
+@nocolor-node
 
-Discuss here:
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ea31ed2e0518866/3667f707b99ee9e3
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/4494324d21bd0bde/adf6d565c90e175c
-
-This will be pre-writing for a section of the users guide.
-
-#@+node:ekr.20110518082415.14441: *4* Request
->> I wonder how could I write about your workflow which I don't know in
->> details :-)
+On Sat, Mar 19, 2011 at 11:43 AM, Ville M. Vainio <vivainio@gmail.com> wrote:
+> On Fri, Mar 18, 2011 at 3:38 PM, Terry Brown <terry_n_brown@yahoo.com> wrote:
 >
-> Ok.  I'll put the highlights here, and then we can see how useful they are.
+>> Should os.chdir() be called to set the current directory to match any
+>> @path directives in effect at the current node when a script is run or
+>> a button pushed?  Seems this would be useful.
 >
->> I can attempt writing a mini-FAQ that would be developer oriented. I
->> write the questions, comments for the questions (not answers to the
->> quesions, because I don't know them!), the FAQ gets reviewed,
->
-> Good idea.  Let's do it in this thread.
-#@+node:ekr.20110518082415.14442: *4* Notes
-Adminstrivia:
+> I have wished this quite often. As it stands, current working
+> directory is unspecified which is not desirable.
 
-- Action items list.
-- Don't rely on memory.
-- Keep inbox short.
-- Do easy items first to keep to-do lists short.
+It may be unspecified, but your proposal would change it :-)
 
-Actual work flow:
-
-- Don't use the mouse: Alt-tab.
-- Keep all source files open.
-    "all" script opens all major files using qt-tabs gui.
-- Test in a separate file: guarantees reload of all new code.
-    "e" opens ekr.leo, my private test file.
-    "t" opens test.leo, the public test file.
+However, you and Terry have convinced me that it is worth doing on an
+experimental basis.
 #@+node:ekr.20110518103946.18184: *3* Fix headline coloring problems
 @nocolor-node
 
@@ -122,25 +105,6 @@ most of the time  saving changes just overwrites without asking.
 I don't know what information to post about my environment. I use the
 standard OSX python install (2.6.1) and launch leo with "./
 launchLeo.py --gui=tk".
-#@+node:ekr.20110518103946.18182: *3* Call os.chdir when executing scripts
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ea31ed2e0518866/3667f707b99ee9e3
-
-On Sat, Mar 19, 2011 at 11:43 AM, Ville M. Vainio <vivainio@gmail.com> wrote:
-> On Fri, Mar 18, 2011 at 3:38 PM, Terry Brown <terry_n_brown@yahoo.com> wrote:
->
->> Should os.chdir() be called to set the current directory to match any
->> @path directives in effect at the current node when a script is run or
->> a button pushed?  Seems this would be useful.
->
-> I have wished this quite often. As it stands, current working
-> directory is unspecified which is not desirable.
-
-It may be unspecified, but your proposal would change it :-)
-
-However, you and Terry have convinced me that it is worth doing on an
-experimental basis.
 #@+node:ekr.20110518103946.18183: *3* Fix mod_http plugin
 @nocolor-node
 
@@ -1578,6 +1542,104 @@ as often there's more docs on a class in the __init__ than the class docstring.
 
 I think that's really all we're talking about, some @settings to test during import.
 #@+node:ekr.20110514231951.14492: ** Docs
+#@+node:ekr.20110518082415.14439: *3* Document highlights of my workflow
+@language rest
+
+This thread will discuss the workflow I use to develop Leo. The intention is to
+help present and potential developers use Leo effectively. This thread will be
+pre-writing for a section of the users guide.
+
+This is a continuation of the thread:
+http://groups.google.com/group/leo-editor/browse_thread/thread/4494324d21bd0bde/adf6d565c90e175c
+
+Overview
+=======
+
+Here is the big picture:
+
+* Develop in an outline containing all of Leo's source files. Close this outline
+ rarely: this keeps the code I am using stable while I'm hacking the code.
+
+* Test in a *separate* .leo file, say test.leo. In fact, I often test in a
+  private file, ekr.leo, so that test.leo doesn't get continually updated on bzr
+  with trivial changes.
+
+These two points are covered in a bit more detail in the FAQ:
+
+http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
+
+Additional tips:
+
+A. Avoid using the mouse whenever possible.  For example, use alt-tab to switch between windows.
+
+B. Always develop Leo in a console.  This allows me to see the output of g.trace.
+
+Speaking of g.trace, I hardly ever use 'print' because g.trace prints the name
+of the function or method in which it appears. The typical pattern for enabling
+traces is:
+
+    trace = True and not g.unitTesting
+    if trace: g.trace(whatever)
+
+This pattern is especially useful when a method contains multiple calls to g.trace.
+
+C. I use scripts to open particular Leo files. These are batch files on Windows,
+   and aliases on Linux, but invoking them is the same on either platform:
+
+all: opens all my main development files using the qt-tabs gui: leoPy.leo,
+     leoGuiPlugins.leo, leoPlugins.leo, leoSettings.leo, myLeoSettings.leo and
+     LeoDocs.leo.
+
+t: opens test.leo.
+
+e: opens ekr.leo.  I use this file for private testing.
+
+d: opens LeoDocs.leo.
+
+s: opens LeoPy.leo.
+
+plugins: opens leoPlugins.leo.
+
+gui: opens leoGui.leo.
+
+u: opens unitTest.leo.
+
+These run Leo with Python 3.x. There are similar scripts, ending in 2, that run
+Leo with Python 2.x. For example, u2 opens unitTest.leo with Python 2.x.
+
+Similarly, the tk prefix uses the Tk gui: utk opens unitTest.leo with --gui=tk
+(and Python 2.x since the tk gui only works with Python 2.x)
+
+Thus, to run a test, I alt-tab to an available console window, then type 'e' or
+'t' or 'e2' or 't2'.
+
+D. Use clones to focus attention on the task at hand.  For more details, see:
+
+E.  For thousand of example of my programming style, see leoPy.leo and leoGuiPlugins.leo.
+
+http://webpages.charter.net/edreamleo/intro.html#clones-views
+
+The projects section in leoPy.leo contains many examples of using clones to
+create view nodes. I typically delete the clones in the views shortly before a
+release.
+
+That's about all for code-level tips.  Here are some administrative tips:
+
+A.  Use postings as pre-writing for documentation.
+
+I don't mind blabbing on and on about Leo because all my posts become
+pre-writing for Leo's documentation. I simply copy posts to nodes in the
+"documentation to-do" section. At release time, I edit these nodes and put them
+in Leo's main documentation or the release notes. This posting is an example.
+
+B. Never rely on memory.
+
+A project like this contains thousands and thousands of details. Everything
+eventually goes into a Leo node somewhere. If it doesn't it surely *will* be
+forgotten.
+
+C. Do easy items first. This keeps to-do lists short, which in turn helps keep
+energy high.
 #@+node:ekr.20110514134640.14520: *3* Doc: summary of autocompleter (do not delete)
 @language rest
 
