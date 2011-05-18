@@ -143,7 +143,9 @@ else:
     else:
         # Ask to be removed.
         g.app.scriptDict['removeMe'] = True
-#@+node:ekr.20101118091038.5398: *3* @button reformat @key=Ctrl-Shift-P
+#@+node:ekr.20101118091038.5398: *3* @button reformat
+# Ctrl-shift-p is Leo's regular reformat-paragraph command.
+
 @others
 
 reformatParagraph (c)
