@@ -1493,6 +1493,35 @@ forgotten.
 
 C. Do easy items first. This keeps to-do lists short, which in turn helps keep
 energy high.
+
+
+============================
+
+> Do you also have any bzr specific gotchas that you plan to add to this
+> section?
+
+I use the following batch files related to bzr:
+
+b: short for bzr
+bs: short for bzr status
+tr: short for cd <path to trunk>
+main: short for cd <path to copy of trunk>
+
+The "main" (copy) of the trunk is purely for handling bzr conflicts.
+If one happens I do this:
+
+main
+b pull
+b merge ../trunk
+b c -m "my commit message"
+b push
+
+If the merge goes well (it usually does), I do:
+
+tr
+b pull
+
+This suffices to resolve the conflict.
 #@+node:ekr.20110514134640.14520: *3* Doc: summary of autocompleter (do not delete)
 @language rest
 
