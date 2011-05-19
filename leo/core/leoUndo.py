@@ -137,8 +137,6 @@ class undoer:
 
         u = self
 
-        # g.trace(g.callers(5))
-
         u.p = None # The position/node being operated upon for undo and redo.
 
         for ivar in u.optionalIvars:
@@ -229,26 +227,6 @@ class undoer:
 
             # Recalculate the menu labels.
             u.setUndoTypes()
-    #@+node:ekr.20110519074734.6096: *4* putIvarsToVnode (new)
-    def putIvarsToVnode(self,p):
-
-        trace = False and not g.unitTesting
-        u = self ; v = p.v
-        
-        assert self.per_node_undo
-
-        bunch = g.bunch()
-        
-        for key in self.optionalIvars:
-            bunch[key] = getattr(u,key)
-            
-        # Put these ivars by hand.
-        for key in ('bead','beads','undoType',):
-            bunch[key] = getattr(u,key)
-            
-        v.undo_info = bunch
-            
-        if trace: g.trace('****',v.h,bunch.bead)
     #@+node:ekr.20050126081529: *4* recognizeStartOfTypingWord
     def recognizeStartOfTypingWord (self,
         old_lines,old_row,old_col,old_ch, 
@@ -304,17 +282,6 @@ class undoer:
             setattr(u,key,val)
             if key not in u.optionalIvars:
                 u.optionalIvars.append(key)
-    #@+node:ekr.20110519074734.6095: *4* setIvarsFromVnode (new)
-    def setIvarsFromVnode(self,p):
-
-        u = self ; v = p.v
-        
-        assert self.per_node_undo
-        
-        u.clearUndoState()
-
-        if hasattr(v,'undo_info'):
-            u.setIvarsFromBunch(v.undo_info)
     #@+node:ekr.20031218072017.3614: *4* setRedoType
     # These routines update both the ivar and the menu label.
     def setRedoType (self,theType):
@@ -366,7 +333,7 @@ class undoer:
     #@+node:ekr.20031218072017.3616: *4* setUndoTypes
     def setUndoTypes (self):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         u = self
 
         # Set the undo type and undo menu label.
@@ -1020,7 +987,7 @@ class undoer:
         u = self
 
         return u.undoMenuLabel != "Can't Undo"
-    #@+node:ekr.20031218072017.3609: *4* clearUndoState (changed)
+    #@+node:ekr.20031218072017.3609: *4* clearUndoState
     def clearUndoState (self):
 
         """Clears then entire Undo state.
@@ -1043,7 +1010,7 @@ class undoer:
         if menu:
             frame.menu.enableMenu(menu,u.redoMenuLabel,u.canRedo())
             frame.menu.enableMenu(menu,u.undoMenuLabel,u.canUndo())
-    #@+node:ekr.20110519074734.6094: *4* onSelect
+    #@+node:ekr.20110519074734.6094: *4* onSelect & helpers (new)
     def onSelect (self,old_p,p):
         
         trace = False and not g.unitTesting
@@ -1058,6 +1025,37 @@ class undoer:
 
             u.setIvarsFromVnode(p)
             u.setUndoTypes()
+    #@+node:ekr.20110519074734.6096: *5* putIvarsToVnode (new)
+    def putIvarsToVnode(self,p):
+
+        trace = False and not g.unitTesting
+        u = self ; v = p.v
+        
+        assert self.per_node_undo
+
+        bunch = g.bunch()
+        
+        for key in self.optionalIvars:
+            bunch[key] = getattr(u,key)
+            
+        # Put these ivars by hand.
+        for key in ('bead','beads','undoType',):
+            bunch[key] = getattr(u,key)
+            
+        v.undo_info = bunch
+            
+        if trace: g.trace('****',v.h,bunch.bead)
+    #@+node:ekr.20110519074734.6095: *5* setIvarsFromVnode (new)
+    def setIvarsFromVnode(self,p):
+
+        u = self ; v = p.v
+        
+        assert self.per_node_undo
+        
+        u.clearUndoState()
+
+        if hasattr(v,'undo_info'):
+            u.setIvarsFromBunch(v.undo_info)
     #@+node:ekr.20031218072017.1490: *4* setUndoTypingParams (changed)
     def setUndoTypingParams (self,p,undo_type,oldText,newText,oldSel,newSel,oldYview=None):
 

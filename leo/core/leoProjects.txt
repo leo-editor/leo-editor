@@ -12898,5 +12898,400 @@ def get_jsonfile(self, fname='codehash'):
 
 
 
+#@+node:ekr.20110519074734.6091: *4* Added first draft of per-node undo
+@nocolor-node
+
+What I did:
+    
+- Added the per_node_undo ivar.
+- Inserted call to u.onSelect in leoTree.select.
+- onSelect calls setIvarsFromVnode and putIvarsToTnode.
+- setUndoTypingParams calls putIvarsToVnode.
+
+That's all!
+#@+node:ekr.20031218072017.3606: *5* undo.__init__
+def __init__ (self,c):
+
+    self.c = c
+    self.debug = False # True: enable debugging code in new undo scheme.
+    self.debug_print = False # True: enable print statements in debug code.
+
+    self.granularity = c.config.getString('undo_granularity')
+    if self.granularity: self.granularity = self.granularity.lower()
+    if self.granularity not in ('node','line','word','char'):
+        self.granularity = 'line'
+    # g.trace('undoer',self.granularity)
+
+    self.max_undo_stack_size = c.config.getInt('max_undo_stack_size') or 0
+
+    # Statistics comparing old and new ways (only if self.debug is on).
+    self.new_mem = 0
+    self.old_mem = 0
+
+    # State ivars...
+    self.beads = [] # List of undo nodes.
+    self.bead = -1 # Index of the present bead: -1:len(beads)
+    self.undoType = "Can't Undo"
+
+    # These must be set here, _not_ in clearUndoState.
+    self.redoMenuLabel = "Can't Redo"
+    self.undoMenuLabel = "Can't Undo"
+    self.realRedoMenuLabel = "Can't Redo"
+    self.realUndoMenuLabel = "Can't Undo"
+    self.undoing = False # True if executing an Undo command.
+    self.redoing = False # True if executing a Redo command.
+    
+    self.per_node_undo = False # True: v may contain undo_info ivar.
+
+    # New in 4.2...
+    self.optionalIvars = []
+
+    # Set the following ivars to keep pylint happy.
+    self.afterTree = None
+    self.beforeTree = None
+    self.children = None
+    self.dirtyVnodeList = None
+    self.followingSibs = None
+    self.kind = None
+    self.newBack = None
+    self.newBody = None
+    self.newChanged = None
+    self.newChildren = None
+    self.newHead = None
+    self.newMarked = None
+    self.newN = None
+    self.newP = None
+    self.newParent = None
+    self.newParent_v = None
+    self.newRecentFiles = None
+    self.newTree = None
+    self.oldBack = None
+    self.oldBody = None
+    self.oldChanged = None
+    self.oldChildren = None
+    self.oldHead = None
+    self.oldMarked = None
+    self.oldN = None
+    self.oldParent = None
+    self.oldParent_v = None
+    self.oldRecentFiles = None
+    self.oldTree = None
+    self.pasteAsClone = None
+    self.sortChildren = None
+
+def redoHelper(self):
+    pass
+
+def undoHelper(self):
+    pass
+#@+node:ekr.20110519074734.6094: *5* onSelect & helpers (new)
+def onSelect (self,old_p,p):
+    
+    trace = False and not g.unitTesting
+    u = self
+    
+    if trace: g.trace(old_p and old_p.h,p.h)
+
+    if u.per_node_undo:
+        
+        if old_p and u.beads:
+            u.putIvarsToVnode(old_p)
+
+        u.setIvarsFromVnode(p)
+        u.setUndoTypes()
+#@+node:ekr.20110519074734.6096: *6* putIvarsToVnode (new)
+def putIvarsToVnode(self,p):
+
+    trace = False and not g.unitTesting
+    u = self ; v = p.v
+    
+    assert self.per_node_undo
+
+    bunch = g.bunch()
+    
+    for key in self.optionalIvars:
+        bunch[key] = getattr(u,key)
+        
+    # Put these ivars by hand.
+    for key in ('bead','beads','undoType',):
+        bunch[key] = getattr(u,key)
+        
+    v.undo_info = bunch
+        
+    if trace: g.trace('****',v.h,bunch.bead)
+#@+node:ekr.20110519074734.6095: *6* setIvarsFromVnode (new)
+def setIvarsFromVnode(self,p):
+
+    u = self ; v = p.v
+    
+    assert self.per_node_undo
+    
+    u.clearUndoState()
+
+    if hasattr(v,'undo_info'):
+        u.setIvarsFromBunch(v.undo_info)
+#@+node:ekr.20031218072017.1490: *5* setUndoTypingParams (changed)
+def setUndoTypingParams (self,p,undo_type,oldText,newText,oldSel,newSel,oldYview=None):
+
+    '''Save enough information so a typing operation can be undone and redone.
+
+    Do nothing when called from the undo/redo logic because the Undo and Redo commands merely reset the bead pointer.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    u = self ; c = u.c
+    << return if there is nothing to do >>
+    if trace: g.trace(undo_type,oldSel,newSel)
+    << init the undo params >>
+    << compute leading, middle & trailing  lines >>
+    << save undo text info >>
+    << save the selection and scrolling position >>
+    << adjust the undo stack, clearing all forward entries >>
+    
+    if u.per_node_undo:
+        u.putIvarsToVnode(p)
+        
+    return bunch # Never used.
+#@+node:ekr.20040324061854: *6* << return if there is nothing to do >>
+if u.redoing or u.undoing:
+    return None
+
+if undo_type == None:
+    return None
+
+if undo_type == "Can't Undo":
+    u.clearUndoState()
+    u.setUndoTypes() # Must still recalculate the menu labels.
+    return None
+
+if oldText == newText:
+    # g.trace("no change")
+    u.setUndoTypes() # Must still recalculate the menu labels.
+    return None
+#@+node:ekr.20040324061854.1: *6* << init the undo params >>
+# Clear all optional params.
+# for ivar in u.optionalIvars:
+    # setattr(u,ivar,None)
+u.clearOptionalIvars()
+
+# Set the params.
+u.undoType = undo_type
+u.p = p.copy()
+#@+node:ekr.20031218072017.1491: *6* << compute leading, middle & trailing  lines >>
+@ Incremental undo typing is similar to incremental syntax coloring. We compute
+the number of leading and trailing lines that match, and save both the old and
+new middle lines. NB: the number of old and new middle lines may be different.
+@c
+
+old_lines = oldText.split('\n')
+new_lines = newText.split('\n')
+new_len = len(new_lines)
+old_len = len(old_lines)
+min_len = min(old_len,new_len)
+
+i = 0
+while i < min_len:
+    if old_lines[i] != new_lines[i]:
+        break
+    i += 1
+leading = i
+
+if leading == new_len:
+    # This happens when we remove lines from the end.
+    # The new text is simply the leading lines from the old text.
+    trailing = 0
+else:
+    i = 0
+    while i < min_len - leading:
+        if old_lines[old_len-i-1] != new_lines[new_len-i-1]:
+            break
+        i += 1
+    trailing = i
+
+# NB: the number of old and new middle lines may be different.
+if trailing == 0:
+    old_middle_lines = old_lines[leading:]
+    new_middle_lines = new_lines[leading:]
+else:
+    old_middle_lines = old_lines[leading:-trailing]
+    new_middle_lines = new_lines[leading:-trailing]
+
+# Remember how many trailing newlines in the old and new text.
+i = len(oldText) - 1 ; old_newlines = 0
+while i >= 0 and oldText[i] == '\n':
+    old_newlines += 1
+    i -= 1
+
+i = len(newText) - 1 ; new_newlines = 0
+while i >= 0 and newText[i] == '\n':
+    new_newlines += 1
+    i -= 1
+
+if trace and verbose:
+    g.pr("lead,trail",leading,trailing)
+    g.pr("old mid,nls:",len(old_middle_lines),old_newlines,oldText)
+    g.pr("new mid,nls:",len(new_middle_lines),new_newlines,newText)
+    #g.pr("lead,trail:",leading,trailing)
+    #g.pr("old mid:",old_middle_lines)
+    #g.pr("new mid:",new_middle_lines)
+    g.pr("---------------------")
+#@+node:ekr.20031218072017.1492: *6* << save undo text info >>
+@ This is the start of the incremental undo algorithm.
+
+We must save enough info to do _both_ of the following:
+
+Undo: Given newText, recreate oldText.
+Redo: Given oldText, recreate oldText.
+
+The "given" texts for the undo and redo routines are simply p.b.
+@c
+
+if u.debug:
+    # Remember the complete text for comparisons...
+    u.oldText = oldText
+    u.newText = newText
+    # Compute statistics comparing old and new ways...
+    # The old doesn't often store the old text, so don't count it here.
+    u.old_mem += len(newText)
+    s1 = '\n'.join(old_middle_lines)
+    s2 = '\n'.join(new_middle_lines)
+    u.new_mem += len(s1) + len(s2)
+else:
+    u.oldText = None
+    u.newText = None
+
+u.leading = leading
+u.trailing = trailing
+u.oldMiddleLines = old_middle_lines
+u.newMiddleLines = new_middle_lines
+u.oldNewlines = old_newlines
+u.newNewlines = new_newlines
+#@+node:ekr.20040324061854.2: *6* << save the selection and scrolling position >>
+# Remember the selection.
+u.oldSel = oldSel
+u.newSel = newSel
+
+# Remember the scrolling position.
+if oldYview:
+    u.yview = oldYview
+else:
+    u.yview = c.frame.body.getYScrollPosition()
+#@+node:ekr.20040324061854.3: *6* << adjust the undo stack, clearing all forward entries >>
+@ New in Leo 4.3. Instead of creating a new bead on every character, we
+may adjust the top bead:
+
+word granularity: adjust the top bead if the typing would continue the word.
+line granularity: adjust the top bead if the typing is on the same line.
+node granularity: adjust the top bead if the typing is anywhere on the same node.
+@c
+
+granularity = u.granularity
+
+old_d = u.peekBead(u.bead)
+old_p = old_d and old_d.get('p')
+
+<< set newBead if we can't share the previous bead >>
+
+if newBead:
+    # Push params on undo stack, clearing all forward entries.
+    bunch = g.Bunch(
+        p = p.copy(),
+        kind='typing',
+        undoType = undo_type,
+        undoHelper=u.undoTyping,
+        redoHelper=u.redoTyping,
+        oldText=u.oldText,
+        oldSel=u.oldSel,
+        oldNewlines=u.oldNewlines,
+        oldMiddleLines=u.oldMiddleLines,
+    )
+    u.pushBead(bunch)
+else:
+    bunch = old_d
+
+bunch.dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+
+# Bug fix: Leo 4.4.6: always add p to the list.
+bunch.dirtyVnodeList.append(p.copy())
+bunch.leading=u.leading
+bunch.trailing= u.trailing
+bunch.newNewlines=u.newNewlines
+bunch.newMiddleLines=u.newMiddleLines
+bunch.newSel=u.newSel
+bunch.newText=u.newText
+bunch.yview=u.yview
+#@+node:ekr.20050125220613: *7* << set newBead if we can't share the previous bead >>
+@ We must set newBead to True if undo_type is not 'Typing' so that commands that
+get treated like typing (by updateBodyPane and onBodyChanged) don't get lumped
+with 'real' typing.
+@c
+# g.trace(granularity)
+if (
+    not old_d or not old_p or
+    old_p.v != p.v or
+    old_d.get('kind') != 'typing' or
+    old_d.get('undoType') != 'Typing' or
+    undo_type != 'Typing'
+):
+    newBead = True # We can't share the previous node.
+elif granularity == 'char':
+    newBead = True # This was the old way.
+elif granularity == 'node':
+    newBead = False # Always replace previous bead.
+else:
+    assert granularity in ('line','word')
+    # Replace the previous bead if only the middle lines have changed.
+    newBead = (
+        old_d.get('leading',0)  != u.leading or 
+        old_d.get('trailing',0) != u.trailing
+    )
+    if granularity == 'word' and not newBead:
+        # Protect the method that may be changed by the user
+        try:
+            << set newBead if the change does not continue a word >>
+        except Exception:
+            if 0:
+                g.trace('old_lines',old_lines)
+                g.trace('new_lines',new_lines)
+            g.trace('Unexpected exception...',color='blue')
+            g.es_exception()
+            newBead = True
+#@+node:ekr.20050125203937: *8* << set newBead if the change does not continue a word >>
+old_start,old_end = oldSel
+new_start,new_end = newSel
+# g.trace('new_start',new_start,'old_start',old_start)
+if old_start != old_end or new_start != new_end:
+    # The new and old characters are not contiguous.
+    newBead = True
+else:
+    # 2011/04/01: Patch by Sam Hartsfield
+    old_row,old_col = g.convertPythonIndexToRowCol(oldText,old_start)
+    new_row,new_col = g.convertPythonIndexToRowCol(newText,new_start)
+    old_lines = g.splitLines(oldText)
+    new_lines = g.splitLines(newText)
+    # g.trace('old',old_row,old_col,len(old_lines))
+    # g.trace('new',new_row,new_col,len(new_lines))
+    # Recognize backspace, del, etc. as contiguous.
+    if old_row != new_row or abs(old_col- new_col) != 1:
+        # The new and old characters are not contiguous.
+        newBead = True
+    elif old_col == 0 or new_col == 0:
+        pass # We have just inserted a line.
+    else:
+        # 2011/04/01: Patch by Sam Hartsfield
+        old_s = old_lines[old_row]
+        new_s = new_lines[new_row]
+        # New in 4.3b2:
+        # Guard against invalid oldSel or newSel params.
+        if old_col-1 >= len(old_s) or new_col-1 >= len(new_s):
+            newBead = True
+        else:
+            # g.trace(new_col,len(new_s),repr(new_s))
+            old_ch = old_s[old_col-1]
+            new_ch = new_s[new_col-1]
+            # g.trace(repr(old_ch),repr(new_ch))
+            newBead = self.recognizeStartOfTypingWord(
+                old_lines,old_row,old_col,old_ch,
+                new_lines,new_row,new_col,new_ch)
 #@-all
 #@-leo
