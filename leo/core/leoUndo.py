@@ -50,7 +50,8 @@
 #@-<< How Leo implements unlimited undo >>
 
 import leo.core.leoGlobals as g
-# import string
+
+per_node_undo = True
 
 #@+others
 #@+node:ekr.20031218072017.3605: ** class undoer
@@ -1268,7 +1269,7 @@ class undoer:
         bunch.yview=u.yview
         #@-<< adjust the undo stack, clearing all forward entries >>
         return bunch
-    #@+node:ekr.20031218072017.2030: *3* redo & helpers...
+    #@+node:ekr.20031218072017.2030: *3* redo
     def redo (self,event=None):
 
         '''Redo the operation undone by the last undo.'''
@@ -1313,6 +1314,7 @@ class undoer:
         u.redoing = False
         u.bead += 1
         u.setUndoTypes()
+    #@+node:ekr.20110519074734.6092: *3* redo helpers
     #@+node:ekr.20050424170219: *4* redoClearRecentFiles
     def redoClearRecentFiles (self):
 
@@ -1590,7 +1592,7 @@ class undoer:
         if u.yview:
             c.bodyWantsFocus()
             c.frame.body.setYScrollPosition(u.yview)
-    #@+node:ekr.20031218072017.2039: *3* undo & helpers...
+    #@+node:ekr.20031218072017.2039: *3* undo
     def undo (self,event=None):
 
         """Undo the operation described by the undo parameters."""
@@ -1633,6 +1635,7 @@ class undoer:
         u.undoing = False
         u.bead -= 1
         u.setUndoTypes()
+    #@+node:ekr.20110519074734.6093: *3* undo helpers
     #@+node:ekr.20050424170219.1: *4* undoClearRecentFiles
     def undoClearRecentFiles (self):
 
