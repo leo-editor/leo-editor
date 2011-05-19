@@ -6924,10 +6924,7 @@ if self.use_chapters:
         # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
 
 c.treeFocusHelper() # 2010/12/14
-### if self.stayInTree:
-    # c.treeWantsFocus()
-# else:
-    # c.bodyWantsFocus()
+c.undoer.onSelect(old_p,p)
 #@+node:ekr.20070615131604: *5* class nodeHistory
 class nodeHistory:
 
@@ -9001,10 +8998,7 @@ if self.use_chapters:
         # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
 
 c.treeFocusHelper() # 2010/12/14
-### if self.stayInTree:
-    # c.treeWantsFocus()
-# else:
-    # c.bodyWantsFocus()
+c.undoer.onSelect(old_p,p)
 #@+node:ekr.20090608081524.6109: *6* setBodyTextAfterSelect
 def setBodyTextAfterSelect (self,p,old_p):
 

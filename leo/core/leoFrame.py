@@ -2544,10 +2544,7 @@ class leoTree:
                 # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
 
         c.treeFocusHelper() # 2010/12/14
-        ### if self.stayInTree:
-            # c.treeWantsFocus()
-        # else:
-            # c.bodyWantsFocus()
+        c.undoer.onSelect(old_p,p)
         #@-<< set the current node >>
         c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
         c.frame.updateStatusLine() # New in Leo 4.4.1.

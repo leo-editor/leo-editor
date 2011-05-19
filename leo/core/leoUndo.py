@@ -51,14 +51,12 @@
 
 import leo.core.leoGlobals as g
 
-per_node_undo = True
-
 #@+others
 #@+node:ekr.20031218072017.3605: ** class undoer
 class undoer:
     """A class that implements unlimited undo and redo."""
     #@+others
-    #@+node:ekr.20031218072017.3606: *3* undo.__init__ & clearIvars
+    #@+node:ekr.20031218072017.3606: *3* undo.__init__
     def __init__ (self,c):
 
         self.c = c
@@ -78,7 +76,10 @@ class undoer:
         self.old_mem = 0
 
         # State ivars...
+        self.beads = [] # List of undo nodes.
+        self.bead = -1 # Index of the present bead: -1:len(beads)
         self.undoType = "Can't Undo"
+
         # These must be set here, _not_ in clearUndoState.
         self.redoMenuLabel = "Can't Redo"
         self.undoMenuLabel = "Can't Undo"
@@ -86,6 +87,8 @@ class undoer:
         self.realUndoMenuLabel = "Can't Undo"
         self.undoing = False # True if executing an Undo command.
         self.redoing = False # True if executing a Redo command.
+        
+        self.per_node_undo = False # True: v may contain undo_info ivar.
 
         # New in 4.2...
         self.optionalIvars = []
@@ -128,8 +131,9 @@ class undoer:
 
     def undoHelper(self):
         pass
-    #@+node:ekr.20031218072017.3607: *4* clearIvars
-    def clearIvars (self):
+    #@+node:ekr.20050416092908.1: *3* Internal helpers
+    #@+node:ekr.20031218072017.3607: *4* clearOptionalIvars
+    def clearOptionalIvars (self):
 
         u = self
 
@@ -139,7 +143,6 @@ class undoer:
 
         for ivar in u.optionalIvars:
             setattr(u,ivar,None)
-    #@+node:ekr.20050416092908.1: *3* Internal helpers
     #@+node:ekr.20060127052111.1: *4* cutStack
     def cutStack (self):
 
@@ -198,13 +201,15 @@ class undoer:
         return bunch
     #@+node:EKR.20040526150818.1: *4* peekBead
     def peekBead (self,n):
+        
+        # g.trace(repr(n),g.callers())
 
         u = self
+        
         if n < 0 or n >= len(u.beads):
             return None
-        bunch = u.beads[n]
-        # g.trace(n,len(u.beads),bunch)
-        return bunch
+        else:
+            return u.beads[n]
     #@+node:ekr.20060127113243: *4* pushBead
     def pushBead (self,bunch):
 
@@ -224,26 +229,26 @@ class undoer:
 
             # Recalculate the menu labels.
             u.setUndoTypes()
-    #@+node:ekr.20060127070008: *4* setIvarsFromBunch
-    def setIvarsFromBunch (self,bunch):
+    #@+node:ekr.20110519074734.6096: *4* putIvarsToVnode (new)
+    def putIvarsToVnode(self,p):
 
-        u = self
+        trace = False and not g.unitTesting
+        u = self ; v = p.v
+        
+        assert self.per_node_undo
 
-        u.clearIvars()
-
-        if 0: # Debugging.
-            g.pr('-' * 40)
-            for key in sorted(bunch):
-                g.trace(key,bunch.get(key))
-            g.pr('-' * 20)
-
-        # bunch is not a dict, so bunch.keys() is required.
-        for key in list(bunch.keys()): 
-            val = bunch.get(key)
-            # g.trace(key,val)
-            setattr(u,key,val)
-            if key not in u.optionalIvars:
-                u.optionalIvars.append(key)
+        bunch = g.bunch()
+        
+        for key in self.optionalIvars:
+            bunch[key] = getattr(u,key)
+            
+        # Put these ivars by hand.
+        for key in ('bead','beads','undoType',):
+            bunch[key] = getattr(u,key)
+            
+        v.undo_info = bunch
+            
+        if trace: g.trace('****',v.h,bunch.bead)
     #@+node:ekr.20050126081529: *4* recognizeStartOfTypingWord
     def recognizeStartOfTypingWord (self,
         old_lines,old_row,old_col,old_ch, 
@@ -279,6 +284,37 @@ class undoer:
             return name
         else:
             return "Undo " + name
+    #@+node:ekr.20060127070008: *4* setIvarsFromBunch
+    def setIvarsFromBunch (self,bunch):
+
+        u = self
+
+        u.clearOptionalIvars()
+
+        if 0: # Debugging.
+            g.pr('-' * 40)
+            for key in sorted(bunch):
+                g.trace(key,bunch.get(key))
+            g.pr('-' * 20)
+
+        # bunch is not a dict, so bunch.keys() is required.
+        for key in list(bunch.keys()): 
+            val = bunch.get(key)
+            # g.trace(key,val)
+            setattr(u,key,val)
+            if key not in u.optionalIvars:
+                u.optionalIvars.append(key)
+    #@+node:ekr.20110519074734.6095: *4* setIvarsFromVnode (new)
+    def setIvarsFromVnode(self,p):
+
+        u = self ; v = p.v
+        
+        assert self.per_node_undo
+        
+        u.clearUndoState()
+
+        if hasattr(v,'undo_info'):
+            u.setIvarsFromBunch(v.undo_info)
     #@+node:ekr.20031218072017.3614: *4* setRedoType
     # These routines update both the ivar and the menu label.
     def setRedoType (self,theType):
@@ -330,12 +366,12 @@ class undoer:
     #@+node:ekr.20031218072017.3616: *4* setUndoTypes
     def setUndoTypes (self):
 
+        trace = True and not g.unitTesting
         u = self
-
-        # g.trace(g.callers(7))
 
         # Set the undo type and undo menu label.
         bunch = u.peekBead(u.bead)
+        
         if bunch:
             # g.trace(u.bead,len(u.beads),bunch.undoType)
             u.setUndoType(bunch.undoType)
@@ -345,12 +381,15 @@ class undoer:
 
         # Set only the redo menu label.
         bunch = u.peekBead(u.bead+1)
+
         if bunch:
             u.setRedoType(bunch.undoType)
         else:
             u.setRedoType("Can't Redo")
 
         u.cutStack()
+        
+        if trace: g.trace(u.bead,u.undoMenuLabel,u.redoMenuLabel)
     #@+node:EKR.20040530121329: *4* u.restoreTree & helpers
     def restoreTree (self,treeInfo):
 
@@ -981,7 +1020,7 @@ class undoer:
         u = self
 
         return u.undoMenuLabel != "Can't Undo"
-    #@+node:ekr.20031218072017.3609: *4* clearUndoState
+    #@+node:ekr.20031218072017.3609: *4* clearUndoState (changed)
     def clearUndoState (self):
 
         """Clears then entire Undo state.
@@ -989,11 +1028,12 @@ class undoer:
         All non-undoable commands should call this method."""
 
         u = self
+        u.clearOptionalIvars() # Do this first.
         u.setRedoType("Can't Redo")
         u.setUndoType("Can't Undo")
         u.beads = [] # List of undo nodes.
         u.bead = -1 # Index of the present bead: -1:len(beads)
-        u.clearIvars()
+        
     #@+node:ekr.20031218072017.3611: *4* enableMenuItems
     def enableMenuItems (self):
 
@@ -1003,16 +1043,31 @@ class undoer:
         if menu:
             frame.menu.enableMenu(menu,u.redoMenuLabel,u.canRedo())
             frame.menu.enableMenu(menu,u.undoMenuLabel,u.canUndo())
-    #@+node:ekr.20031218072017.1490: *4* setUndoTypingParams
+    #@+node:ekr.20110519074734.6094: *4* onSelect
+    def onSelect (self,old_p,p):
+        
+        trace = False and not g.unitTesting
+        u = self
+        
+        if trace: g.trace(old_p and old_p.h,p.h)
+
+        if u.per_node_undo:
+            
+            if old_p and u.beads:
+                u.putIvarsToVnode(old_p)
+
+            u.setIvarsFromVnode(p)
+            u.setUndoTypes()
+    #@+node:ekr.20031218072017.1490: *4* setUndoTypingParams (changed)
     def setUndoTypingParams (self,p,undo_type,oldText,newText,oldSel,newSel,oldYview=None):
 
         '''Save enough information so a typing operation can be undone and redone.
 
         Do nothing when called from the undo/redo logic because the Undo and Redo commands merely reset the bead pointer.'''
 
-        u = self ; c = u.c
-        trace = False and not g.unitTesting # Can cause unit tests to fail.
+        trace = False and not g.unitTesting
         verbose = False
+        u = self ; c = u.c
         #@+<< return if there is nothing to do >>
         #@+node:ekr.20040324061854: *5* << return if there is nothing to do >>
         if u.redoing or u.undoing:
@@ -1031,12 +1086,13 @@ class undoer:
             u.setUndoTypes() # Must still recalculate the menu labels.
             return None
         #@-<< return if there is nothing to do >>
-        if trace: g.trace(undo_type,oldSel,newSel,g.callers(5))
+        if trace: g.trace(undo_type,oldSel,newSel)
         #@+<< init the undo params >>
         #@+node:ekr.20040324061854.1: *5* << init the undo params >>
         # Clear all optional params.
-        for ivar in u.optionalIvars:
-            setattr(u,ivar,None)
+        # for ivar in u.optionalIvars:
+            # setattr(u,ivar,None)
+        u.clearOptionalIvars()
 
         # Set the params.
         u.undoType = undo_type
@@ -1268,7 +1324,11 @@ class undoer:
         bunch.newText=u.newText
         bunch.yview=u.yview
         #@-<< adjust the undo stack, clearing all forward entries >>
-        return bunch
+        
+        if u.per_node_undo:
+            u.putIvarsToVnode(p)
+            
+        return bunch # Never used.
     #@+node:ekr.20031218072017.2030: *3* redo
     def redo (self,event=None):
 
@@ -1277,23 +1337,30 @@ class undoer:
         trace = False and not g.unitTesting
         u = self ; c = u.c
         w = c.frame.body.bodyCtrl
+        
+        if not c.p:
+            if trace: g.trace('no current position')
+            return
 
         if not u.canRedo():
             if trace: g.trace('cant redo',u.undoMenuLabel,u.redoMenuLabel)
             return
+            
         if not u.getBead(u.bead+1):
-            g.trace('no bead') ; return
-        if not c.p:
-            g.trace('no current position') ; return
+            if trace: g.trace('no bead')
+            return
 
         if trace: g.trace(u.dumpBead(u.bead))
 
         u.redoing = True 
         u.groupCount = 0
-
         c.endEditing()
-        if u.redoHelper: u.redoHelper()
-        else: g.trace('no redo helper for %s %s' % (u.kind,u.undoType))
+        if u.redoHelper:
+            u.redoHelper()
+        else:
+            g.trace('no redo helper for %s %s' % (u.kind,u.undoType))
+            
+        # Redraw and recolor.
         c.frame.body.updateEditors() # New in Leo 4.4.8.
         if 0: # Don't do this: it interferes with selection ranges.
             # This strange code forces a recomputation of the root position.
@@ -1301,14 +1368,14 @@ class undoer:
         else:
             c.setCurrentPosition(c.p)
         if u.newChanged is None: u.newChanged = True
-        c.setChanged(u.newChanged) # 2009/12/21
-        # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
+        c.setChanged(u.newChanged)
+
+        # Redrawing *must* be done here before setting u.undoing to False.
         i,j = w.getSelectionRange()
         ins = w.getInsertPoint()
         c.redraw()
         c.recolor()
         c.bodyWantsFocus()
-        # g.trace(i,j,ins)
         w.setSelectionRange(i,j,insert=ins)
         w.seeInsertPoint()
         u.redoing = False
@@ -1600,22 +1667,32 @@ class undoer:
         trace = False and not g.unitTesting
         u = self ; c = u.c
         w = c.frame.body.bodyCtrl
+        
+        if not c.p:
+            return g.trace('no current position')
+        
+        if u.per_node_undo: # 2011/05/19
+            u.setIvarsFromVnode()
+
         if not u.canUndo():
             if trace: g.trace('cant undo',u.undoMenuLabel,u.redoMenuLabel)
             return
+
         if not u.getBead(u.bead):
-            g.trace('no bead') ; return
-        if not c.p:
-            g.trace('no current position') ; return
+            if trace: g.trace('no bead')
+            return
 
         if trace: g.trace(u.dumpBead(u.bead))
 
         u.undoing = True
         u.groupCount = 0
-
         c.endEditing()
-        if u.undoHelper: u.undoHelper()
-        else: g.trace('no undo helper for %s %s' % (u.kind,u.undoType))
+        if u.undoHelper:
+            u.undoHelper()
+        else:
+            g.trace('no undo helper for %s %s' % (u.kind,u.undoType))
+            
+        # Redraw and recolor.
         c.frame.body.updateEditors() # New in Leo 4.4.8.
         if 0: # Don't do this: it interferes with selection ranges.
             # This strange code forces a recomputation of the root position.
@@ -1623,8 +1700,9 @@ class undoer:
         else:
             c.setCurrentPosition(c.p)
         if u.oldChanged is None: u.oldChanged = True
-        c.setChanged(u.oldChanged) # 2009/12/21
-        # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
+        c.setChanged(u.oldChanged)
+        
+        # Redrawing *must* be done here before setting u.undoing to False.
         i,j = w.getSelectionRange()
         ins = w.getInsertPoint()
         c.redraw()
@@ -2006,6 +2084,9 @@ class nullUndoer (undoer):
         return False
 
     def enableMenuItems (self):
+        pass
+        
+    def onSelect(self,p):
         pass
 
     def setUndoTypingParams (self,p,undo_type,oldText,newText,oldSel,newSel,oldYview=None):
