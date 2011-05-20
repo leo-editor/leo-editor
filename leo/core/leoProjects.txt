@@ -13372,5 +13372,14 @@ else:
             newBead = self.recognizeStartOfTypingWord(
                 old_lines,old_row,old_col,old_ch,
                 new_lines,new_row,new_col,new_ch)
+#@+node:ekr.20110520051220.18185: *4* Added patch to g.wrap_lines from José Rojas Echenique
+It regularizes the number of spaces after periods.
+
+The fill-paragraph command and sentence spacing
+http://groups.google.com/group/leo-editor/browse_thread/thread/1171df34dce14431
+
+http://en.wikipedia.org/wiki/Sentence_spacing
+
+Changed several unit tests for reformat-paragraph so they pass.
 #@-all
 #@-leo

@@ -959,7 +959,7 @@ def stripPathCruft (path):
 
     # We want a *relative* path, not an absolute path.
     return path
-#@+node:ekr.20031218072017.3100: *3* wrap_lines
+#@+node:ekr.20110520051220.18181: *3* g.wrap_lines (new)
 #@+at
 # Important note: this routine need not deal with leading whitespace.
 # Instead, the caller should simply reduce pageWidth by the width of
@@ -983,6 +983,24 @@ def wrap_lines (lines,pageWidth,firstLineWidth=None):
         firstLineWidth = 10
     outputLineWidth = firstLineWidth
 
+    # Sentence spacing
+    #@+<< determine sentence spacing >>
+    #@+node:ekr.20110520051220.18182: *4* << determine sentence spacing >>
+    oneSpace = 0
+    twoSpaces = 0
+
+    for l in lines:
+        two = l.count('.  ')
+        oneAndTwo = l.count('. ')
+        twoSpaces += two
+        oneSpace += oneAndTwo - two
+
+    if oneSpace >= twoSpaces:
+        sentenceSpace = ' '
+    else:
+        sentenceSpace = '  '
+    #@-<< determine sentence spacing >>
+    
     # g.trace(lines)
     result = [] # The lines of the result.
     line = "" # The line being formed.  It never ends in whitespace.
@@ -998,29 +1016,33 @@ def wrap_lines (lines,pageWidth,firstLineWidth=None):
             # not one character less
             # 
             wordLen = len(word)
-            if len(line) > 0 and wordLen > 0: wordLen += len(" ")
+            if word.endswith('.') or word.endswith('?') or word.endswith('!'):
+                space = sentenceSpace
+            else:
+                space = ' '
+            if len(line) > 0 and wordLen > 0: wordLen += len(space)
             if wordLen + len(line) <= outputLineWidth:
                 if wordLen > 0:
                     #@+<< place blank and word on the present line >>
-                    #@+node:ekr.20031218072017.3101: *4* << place blank and word on the present line >>
+                    #@+node:ekr.20110520051220.18183: *4* << place blank and word on the present line >>
                     if len(line) == 0:
                         # Just add the word to the start of the line.
                         line = word
                     else:
                         # Add the word, preceeded by a blank.
-                        line = " ".join([line,word]) # DTHEIN 18-JAN-2004: better syntax
+                        line = space[:1].join([line,word+space[1:]]) # DTHEIN 18-JAN-2004: better syntax
                     #@-<< place blank and word on the present line >>
                 else: pass # discard the trailing whitespace.
             else:
                 #@+<< place word on a new line >>
-                #@+node:ekr.20031218072017.3102: *4* << place word on a new line >>
+                #@+node:ekr.20110520051220.18184: *4* << place word on a new line >>
                 # End the previous line.
                 if len(line) > 0:
                     result.append(line)
                     outputLineWidth = pageWidth # DTHEIN 3-NOV-2002: width for remaining lines
 
                 # Discard the whitespace and put the word on a new line.
-                line = word
+                line = word + space[1:]
 
                 # Careful: the word may be longer than pageWidth.
                 if len(line) > pageWidth: # DTHEIN 18-JAN-2004: line can equal pagewidth

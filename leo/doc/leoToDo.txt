@@ -2,8 +2,8 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110518082415.14438: ** Action items
-#@+node:ekr.20110502085000.6113: *3* *0 FAQ entry re cross-file clones
-#@+node:ekr.20110518103946.18182: *3* *1 Call os.chdir when executing scripts
+#@+node:ekr.20110502085000.6113: *3* * FAQ entry re cross-file clones
+#@+node:ekr.20110518103946.18182: *3* * Call os.chdir when executing scripts
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/4ea31ed2e0518866/3667f707b99ee9e3
@@ -22,7 +22,7 @@ It may be unspecified, but your proposal would change it :-)
 
 However, you and Terry have convinced me that it is worth doing on an
 experimental basis.
-#@+node:ekr.20110517093705.14575: *3* *1 Fix qt bugs
+#@+node:ekr.20110517093705.14575: *3* * Fix qt bugs
 @nocolor-node
 
 ** test.leo log pane is scrolled.
@@ -80,7 +80,7 @@ Thanks for this report.  This is a problem, never noticed until now,
 with the threading colorizer.  A workaround is to disable the
 threading colorizer plugin. 
 #@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
-#@+node:ekr.20110427135155.14306: *3* *1 New file format
+#@+node:ekr.20110427135155.14306: *3* * New file format
 @language rest
 
 Minimal changes:
@@ -985,17 +985,7 @@ I'm sure pickling capability is great, but I'm not convinced
 it should be the _default._
 
 No big deal.
-#@+node:ekr.20071001052501: *3* *1 Versioning for nodes
-@nocolor
-
-One feature I have not seen in SCS system is something which might be called
-"history compression": I might be interested in having both version 5 and 6
-in my source tree, when the current version is 7, but I am not really interested
-in the 2000 steps which transformed 5 into 6 (just suggested this feature to
-the bazaar people). This happens actually quite often to me, since I use the
-SCS as a back-up system, saving many (uninteresting) intermediate steps while
-implementing a new feature.
-#@+node:ekr.20110518103946.18184: *3* *2 Fix headline coloring problems
+#@+node:ekr.20110518103946.18184: *3* * Fix headline coloring problems
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/ee09fb2c2a5316f2/490fa7cddab36fab
@@ -1038,7 +1028,7 @@ Today I have updated my Leo and with the revno 4001 the problem is still
 present. And also I haven't found answer on the question about configuring
 colors of parenthesis. I understand those questions are not so high priority but
 I am just asking again here in case they got forgotten. Vitalije.
-#@+node:ekr.20101118113953.5844: *3* *2 Use new reformatParagraph code
+#@+node:ekr.20101118113953.5844: *3* * Use new reformatParagraph code
 @nocolor-node
 
 The following code (untested), changed x(c,...) to c.x(...)
@@ -1239,6 +1229,16 @@ most of the time  saving changes just overwrites without asking.
 I don't know what information to post about my environment. I use the
 standard OSX python install (2.6.1) and launch leo with "./
 launchLeo.py --gui=tk".
+#@+node:ekr.20071001052501: *3* Versioning for nodes
+@nocolor
+
+One feature I have not seen in SCS system is something which might be called
+"history compression": I might be interested in having both version 5 and 6
+in my source tree, when the current version is 7, but I am not really interested
+in the 2000 steps which transformed 5 into 6 (just suggested this feature to
+the bazaar people). This happens actually quite often to me, since I use the
+SCS as a back-up system, saving many (uninteresting) intermediate steps while
+implementing a new feature.
 #@+node:ekr.20110518140548.19115: ** Next
 #@+node:ekr.20110518103946.18179: *3* * Add external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893

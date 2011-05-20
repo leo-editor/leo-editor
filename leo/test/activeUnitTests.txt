@@ -7683,10 +7683,10 @@ import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 #@+node:ekr.20110118082508.3745: *7* work
 Honor this line that has a hanging
-  indentation, please. Hanging
+  indentation, please.  Hanging
   indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
+  all kinds.  But it is tricky to get
+  right. 
 
 Next paragraph.
 #@+node:ekr.20110118082508.3746: *7* before sel= 1.0,1.0
@@ -7696,10 +7696,10 @@ Honor this line that has a hanging indentation, please.  Hanging
 Next paragraph.
 #@+node:ekr.20110118082508.3747: *7* after sel= 7.0,7.0
 Honor this line that has a hanging
-  indentation, please. Hanging
+  indentation, please.  Hanging
   indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
+  all kinds.  But it is tricky to get
+  right. 
 
 Next paragraph.
 #@+node:ekr.20110118082508.3748: *6* @test reformat-paragraph simple hanging indent 2
@@ -7707,10 +7707,10 @@ import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 #@+node:ekr.20110118082508.3754: *7* work
 Honor this line that has a hanging
-  indentation, please. Hanging
+  indentation, please.  Hanging
   indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
+  all kinds.  But it is tricky to get
+  right. 
 
 Next paragraph.
 #@+node:ekr.20110118082508.3755: *7* before sel=2.0,2.0
@@ -7721,10 +7721,10 @@ Honor this line that has
 Next paragraph.
 #@+node:ekr.20110118082508.3756: *7* after sel=7.0,7.0
 Honor this line that has a hanging
-  indentation, please. Hanging
+  indentation, please.  Hanging
   indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
+  all kinds.  But it is tricky to get
+  right. 
 
 Next paragraph.
 #@+node:ekr.20110118082508.3757: *6* @test reformat-paragraph simple hanging indent 3
@@ -7732,10 +7732,10 @@ import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 #@+node:ekr.20110118082508.3763: *7* work
 Honor this line that has a hanging
-  indentation, please. Hanging
+  indentation, please.  Hanging
   indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
+  all kinds.  But it is tricky to get
+  right. 
 
 Next Paragraph.
 #@+node:ekr.20110118082508.3764: *7* before sel=1.0,1.0
@@ -7749,10 +7749,10 @@ Honor this line that
 Next Paragraph.
 #@+node:ekr.20110118082508.3765: *7* after sel=7.0,7.0
 Honor this line that has a hanging
-  indentation, please. Hanging
+  indentation, please.  Hanging
   indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
+  all kinds.  But it is tricky to get
+  right. 
 
 Next Paragraph.
 #@+node:ekr.20110118082508.3766: *6* @test reformat-paragraph paragraph 1 of 3
@@ -7984,8 +7984,8 @@ Last paragraph.
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 #@+node:ekr.20110118082508.3799: *7* work
-This paragraph leads of this test. It is
-the "lead" paragraph.
+This paragraph leads of this test.  It
+is the "lead" paragraph. 
 
   1. This is item 
      number 1.  It is the first item in the list.
@@ -8014,8 +8014,8 @@ paragraph.
 This paragraph ends the test.  It is the "final"
 paragraph.
 #@+node:ekr.20110118082508.3803: *7* after sel=4.0,4.0
-This paragraph leads of this test. It is
-the "lead" paragraph.
+This paragraph leads of this test.  It
+is the "lead" paragraph. 
 
   1. This is item 
      number 1.  It is the first item in the list.
@@ -8188,8 +8188,8 @@ the "lead" paragraph.
   3. This is item number 3. It is the
      third item in the list.
 
-This paragraph ends the test. It is the
-"final" paragraph.
+This paragraph ends the test.  It is the
+"final" paragraph. 
 #@+node:ekr.20110118082508.3834: *7* before sel=13.0,13.0
 This paragraph leads of this test. It is
 the "lead" paragraph.
@@ -8218,8 +8218,8 @@ the "lead" paragraph.
   3. This is item number 3. It is the
      third item in the list.
 
-This paragraph ends the test. It is the
-"final" paragraph.
+This paragraph ends the test.  It is the
+"final" paragraph. 
 #@+node:ekr.20061101121602.306: *5* @test remove-blank-lines
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
