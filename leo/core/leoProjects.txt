@@ -13381,5 +13381,232 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/1171df34dce14431
 http://en.wikipedia.org/wiki/Sentence_spacing
 
 Changed several unit tests for reformat-paragraph so they pass.
+#@+node:ekr.20110520051220.18186: *4* Problems with per-node undo
+@language rest
+
+Per-node undo: impossible. Node versioning: possible.
+http://groups.google.com/group/leo-editor/browse_thread/thread/e9348fbe22f547ad
+
+Here I shall discuss the design difficulties in supporting per-node undo. As I
+said earlier, the code itself is clean, but as we shall see it sweeps too much
+under the rug.
+
+To state my conclusion first: local undo is likely impossible. Otoh, node
+versioning, which aims at recreating only the text (headline or body) of nodes,
+is quite feasible.
+
+There are two interrelated difficulties with local undo. The first is serious,
+the second is fatal.
+
+1. Per-node undo is not sufficient. We need *both* a global undo and a local undo.
+
+The user must be able to choose which is desired. Naturally, this leads to
+increased complexity in a frequently-used feature. This kind of change is always
+problematic.
+
+Furthermore, there are (or would be) grave difficulties in correlating local and
+global undo operations. However, we can ignore these difficulties because the
+next problem is intractable.
+
+2. Per-node undo is invalid.
+
+In effect, the present per-node undo partitions all actions by vnode. There is
+no global undo at all. That is, each vnode has its *own* undo stack.
+
+Alas, in general it is invalid to treat operations this way. For example,
+suppose a local undo stack contains an entry for move-outline-up command. When
+executed in a *global* context (that is, with a global undo stack), the Leo
+outline is guaranteed to be in a state in which this undo operation is valid.
+
+But the operation may not be valid when the undo entry appears in a *local*
+context. To see this, suppose the global stack contains a promote or demote
+operation. This operation affects children, but this operation does *not* appear
+in the local undo stack for the children. Thus, a node may have a prior sibling
+in a global context (after a series of global undos), but might *not* have such
+a sibling after a series of local undos.
+
+This is a show-stopper.
+#@+node:ekr.20101118113953.5844: *4* Use new reformatParagraph code
+#@+node:ekr.20101118113953.5839: *5* reformatParagraph & helpers (new)
+def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
+
+    """Reformat a text paragraph
+
+    Wraps the concatenated text to present page width setting. Leading tabs are
+    sized to present tab width setting. First and second line of original text is
+    used to determine leading whitespace in reformatted text. Hanging indentation
+    is honored.
+
+    Paragraph is bound by start of body, end of body and blank lines. Paragraph is
+    selected by position of current insertion cursor.
+
+"""
+
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("xxx")
+        return
+
+    if body.hasTextSelection():
+        i,j = w.getSelectionRange()
+        w.setInsertPoint(i)
+
+    oldSel,oldYview,original,pageWidth,tabWidth = c.rp_get_args()
+    head,lines,tail = c.findBoundParagraph()
+    if lines:
+        indents,leading_ws = c.rp_get_leading_ws(lines,tabWidth)
+        result = c.rp_wrap_all_lines(indents,leading_ws,lines,pageWidth)
+        c.rp_reformat(head,oldSel,oldYview,original,result,tail,undoType)
+#@+node:ekr.20031218072017.1825: *6* c.findBoundParagraph
+def findBoundParagraph (self,event=None):
+
+    c = self
+    head,ins,tail = c.frame.body.getInsertLines()
+
+    if not ins or ins.isspace() or ins[0] == '@':
+        return None,None,None
+
+    head_lines = g.splitLines(head)
+    tail_lines = g.splitLines(tail)
+
+    if 0:
+        << trace head_lines, ins, tail_lines >>
+
+    # Scan backwards.
+    i = len(head_lines)
+    while i > 0:
+        i -= 1
+        line = head_lines[i]
+        if len(line) == 0 or line.isspace() or line[0] == '@':
+            i += 1 ; break
+
+    pre_para_lines = head_lines[:i]
+    para_head_lines = head_lines[i:]
+
+    # Scan forwards.
+    i = 0
+    for line in tail_lines:
+        if not line or line.isspace() or line.startswith('@'):
+            break
+        i += 1
+
+    para_tail_lines = tail_lines[:i]
+    post_para_lines = tail_lines[i:]
+
+    head = g.joinLines(pre_para_lines)
+    result = para_head_lines 
+    result.extend([ins])
+    result.extend(para_tail_lines)
+    tail = g.joinLines(post_para_lines)
+
+    return head,result,tail # string, list, string
+#@+node:ekr.20031218072017.1826: *7* << trace head_lines, ins, tail_lines >>
+if 0:
+    g.pr("\nhead_lines")
+    for line in head_lines:
+        g.pr(line)
+    g.pr("\nins", ins)
+    g.pr("\ntail_lines")
+    for line in tail_lines:
+        g.pr(line)
+else:
+    g.es_print("head_lines: ",head_lines)
+    g.es_print("ins: ",ins)
+    g.es_print("tail_lines: ",tail_lines)
+#@+node:ekr.20101118113953.5840: *6* rp_get_args
+def rp_get_args (self):
+
+    '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
+
+    c = self ; body = c.frame.body ;  w = body.bodyCtrl
+
+    d = c.scanAllDirectives()
+    pageWidth = d.get("pagewidth")
+    tabWidth  = d.get("tabwidth")
+
+    original = w.getAllText()
+    oldSel =  w.getSelectionRange()
+    oldYview = body.getYScrollPosition()
+
+    return oldSel,oldYview,original,pageWidth,tabWidth
+#@+node:ekr.20101118113953.5841: *6* rp_get_leading_ws
+def rp_get_leading_ws (self,lines,tabWidth):
+
+    '''Compute and return indents and leading_ws.'''
+
+    c = self
+
+    indents = [0,0]
+    leading_ws = ["",""]
+
+    for i in (0,1):
+        if i < len(lines):
+            # Use the original, non-optimized leading whitespace.
+            leading_ws[i] = ws = g.get_leading_ws(lines[i])
+            indents[i] = g.computeWidth(ws,tabWidth)
+
+    indents[1] = max(indents)
+
+    if len(lines) == 1:
+        leading_ws[1] = leading_ws[0]
+
+    return indents,leading_ws
+#@+node:ekr.20101118113953.5842: *6* rp_reformat
+def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
+
+    '''Reformat the body and update the selection.'''
+
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
+    s = w.getAllText()
+
+    # This destroys recoloring.
+    junk, ins = body.setSelectionAreas(head,result,tail)
+
+    changed = original != head + result + tail
+    if changed:
+        # 2010/11/16: stay in the paragraph.
+        body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
+    else:
+        # Advance to the next paragraph.
+        ins += 1 # Move past the selection.
+        while ins < len(s):
+            i,j = g.getLine(s,ins)
+            line = s[i:j]
+            # 2010/11/16: it's annoying, imo, to treat @ lines differently.
+            if line.isspace(): ### or line.startswith('@'):
+                ins = j+1
+            else:
+                ins = i ; break
+
+        # setSelectionAreas has destroyed the coloring.
+        c.recolor()
+
+    w.setSelectionRange(ins,ins,insert=ins)
+    w.see(ins)
+#@+node:ekr.20101118113953.5843: *6* rp_wrap_all_lines
+def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
+
+    '''compute the result of wrapping all lines.'''
+
+    trailingNL = lines and lines[-1].endswith('\n')
+    lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
+
+    # Wrap the lines, decreasing the page width by indent.
+    result = g.wrap_lines(lines,
+        pageWidth-indents[1],
+        pageWidth-indents[0])
+
+    # prefix with the leading whitespace, if any
+    paddedResult = []
+    paddedResult.append(leading_ws[0] + result[0])
+    for line in result[1:]:
+        paddedResult.append(leading_ws[1] + line)
+
+    # Convert the result to a string.
+    result = '\n'.join(paddedResult)
+    if trailingNL: result = result + '\n'
+
+    return result
 #@-all
 #@-leo

@@ -2786,63 +2786,6 @@ class baseCommands (object):
         c = self
         c.openLeoSettings()
     #@+node:ekr.20031218072017.2884: *5* Edit Body submenu
-    #@+node:ekr.20031218072017.1825: *6* c.findBoundParagraph
-    def findBoundParagraph (self,event=None):
-
-        c = self
-        head,ins,tail = c.frame.body.getInsertLines()
-
-        if not ins or ins.isspace() or ins[0] == '@':
-            return None,None,None
-
-        head_lines = g.splitLines(head)
-        tail_lines = g.splitLines(tail)
-
-        if 0:
-            #@+<< trace head_lines, ins, tail_lines >>
-            #@+node:ekr.20031218072017.1826: *7* << trace head_lines, ins, tail_lines >>
-            if 0:
-                g.pr("\nhead_lines")
-                for line in head_lines:
-                    g.pr(line)
-                g.pr("\nins", ins)
-                g.pr("\ntail_lines")
-                for line in tail_lines:
-                    g.pr(line)
-            else:
-                g.es_print("head_lines: ",head_lines)
-                g.es_print("ins: ",ins)
-                g.es_print("tail_lines: ",tail_lines)
-            #@-<< trace head_lines, ins, tail_lines >>
-
-        # Scan backwards.
-        i = len(head_lines)
-        while i > 0:
-            i -= 1
-            line = head_lines[i]
-            if len(line) == 0 or line.isspace() or line[0] == '@':
-                i += 1 ; break
-
-        pre_para_lines = head_lines[:i]
-        para_head_lines = head_lines[i:]
-
-        # Scan forwards.
-        i = 0
-        for line in tail_lines:
-            if not line or line.isspace() or line.startswith('@'):
-                break
-            i += 1
-
-        para_tail_lines = tail_lines[:i]
-        post_para_lines = tail_lines[i:]
-
-        head = g.joinLines(pre_para_lines)
-        result = para_head_lines 
-        result.extend([ins])
-        result.extend(para_tail_lines)
-        tail = g.joinLines(post_para_lines)
-
-        return head,result,tail # string, list, string
     #@+node:ekr.20031218072017.1827: *6* c.findMatchingBracket, helper and test
     def findMatchingBracket (self,event=None):
 
@@ -3452,19 +3395,20 @@ class baseCommands (object):
             g.es_exception() # Probably a bad format string in leoSettings.leo.
             s = time.strftime(default_format,time.gmtime())
         return s
-    #@+node:ekr.20031218072017.1833: *6* reformatParagraph
+    #@+node:ekr.20101118113953.5839: *6* reformatParagraph & helpers (new)
     def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
 
-        """Reformat a text paragraph in a Tk.Text widget
+        """Reformat a text paragraph
 
-    Wraps the concatenated text to present page width setting. Leading tabs are
-    sized to present tab width setting. First and second line of original text is
-    used to determine leading whitespace in reformatted text. Hanging indentation
-    is honored.
+        Wraps the concatenated text to present page width setting. Leading tabs are
+        sized to present tab width setting. First and second line of original text is
+        used to determine leading whitespace in reformatted text. Hanging indentation
+        is honored.
 
-    Paragraph is bound by start of body, end of body, blank lines, and lines
-    starting with "@". Paragraph is selected by position of current insertion
-    cursor."""
+        Paragraph is bound by start of body, end of body and blank lines. Paragraph is
+        selected by position of current insertion cursor.
+
+    """
 
         c = self ; body = c.frame.body ; w = body.bodyCtrl
 
@@ -3476,80 +3420,163 @@ class baseCommands (object):
             i,j = w.getSelectionRange()
             w.setInsertPoint(i)
 
-        #@+<< compute vars for reformatParagraph >>
-        #@+node:ekr.20031218072017.1834: *7* << compute vars for reformatParagraph >>
-        theDict = c.scanAllDirectives()
-        pageWidth = theDict.get("pagewidth")
-        tabWidth  = theDict.get("tabwidth")
+        oldSel,oldYview,original,pageWidth,tabWidth = c.rp_get_args()
+        head,lines,tail = c.findBoundParagraph()
+        if lines:
+            indents,leading_ws = c.rp_get_leading_ws(lines,tabWidth)
+            result = c.rp_wrap_all_lines(indents,leading_ws,lines,pageWidth)
+            c.rp_reformat(head,oldSel,oldYview,original,result,tail,undoType)
+    #@+node:ekr.20031218072017.1825: *7* c.findBoundParagraph
+    def findBoundParagraph (self,event=None):
+
+        c = self
+        head,ins,tail = c.frame.body.getInsertLines()
+
+        if not ins or ins.isspace() or ins[0] == '@':
+            return None,None,None
+
+        head_lines = g.splitLines(head)
+        tail_lines = g.splitLines(tail)
+
+        if 0:
+            #@+<< trace head_lines, ins, tail_lines >>
+            #@+node:ekr.20031218072017.1826: *8* << trace head_lines, ins, tail_lines >>
+            if 0:
+                g.pr("\nhead_lines")
+                for line in head_lines:
+                    g.pr(line)
+                g.pr("\nins", ins)
+                g.pr("\ntail_lines")
+                for line in tail_lines:
+                    g.pr(line)
+            else:
+                g.es_print("head_lines: ",head_lines)
+                g.es_print("ins: ",ins)
+                g.es_print("tail_lines: ",tail_lines)
+            #@-<< trace head_lines, ins, tail_lines >>
+
+        # Scan backwards.
+        i = len(head_lines)
+        while i > 0:
+            i -= 1
+            line = head_lines[i]
+            if len(line) == 0 or line.isspace() or line[0] == '@':
+                i += 1 ; break
+
+        pre_para_lines = head_lines[:i]
+        para_head_lines = head_lines[i:]
+
+        # Scan forwards.
+        i = 0
+        for line in tail_lines:
+            if not line or line.isspace() or line.startswith('@'):
+                break
+            i += 1
+
+        para_tail_lines = tail_lines[:i]
+        post_para_lines = tail_lines[i:]
+
+        head = g.joinLines(pre_para_lines)
+        result = para_head_lines 
+        result.extend([ins])
+        result.extend(para_tail_lines)
+        tail = g.joinLines(post_para_lines)
+
+        return head,result,tail # string, list, string
+    #@+node:ekr.20101118113953.5840: *7* rp_get_args
+    def rp_get_args (self):
+
+        '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
+
+        c = self ; body = c.frame.body ;  w = body.bodyCtrl
+
+        d = c.scanAllDirectives()
+        pageWidth = d.get("pagewidth")
+        tabWidth  = d.get("tabwidth")
 
         original = w.getAllText()
         oldSel =  w.getSelectionRange()
         oldYview = body.getYScrollPosition()
 
-        head,lines,tail = c.findBoundParagraph()
-        #@-<< compute vars for reformatParagraph >>
-        if lines:
-            #@+<< compute the leading whitespace >>
-            #@+node:ekr.20031218072017.1835: *7* << compute the leading whitespace >>
-            indents = [0,0] ; leading_ws = ["",""]
+        return oldSel,oldYview,original,pageWidth,tabWidth
+    #@+node:ekr.20101118113953.5841: *7* rp_get_leading_ws
+    def rp_get_leading_ws (self,lines,tabWidth):
 
-            for i in (0,1):
-                if i < len(lines):
-                    # Use the original, non-optimized leading whitespace.
-                    leading_ws[i] = ws = g.get_leading_ws(lines[i])
-                    indents[i] = g.computeWidth(ws,tabWidth)
+        '''Compute and return indents and leading_ws.'''
 
-            indents[1] = max(indents)
-            if len(lines) == 1:
-                leading_ws[1] = leading_ws[0]
-            #@-<< compute the leading whitespace >>
-            #@+<< compute the result of wrapping all lines >>
-            #@+node:ekr.20031218072017.1836: *7* << compute the result of wrapping all lines >>
-            trailingNL = True ### lines and lines[-1].endswith('\n')
-            lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
+        c = self
 
-            # Wrap the lines, decreasing the page width by indent.
-            result = g.wrap_lines(lines,
-                pageWidth-indents[1],
-                pageWidth-indents[0])
+        indents = [0,0]
+        leading_ws = ["",""]
 
-            # prefix with the leading whitespace, if any
-            paddedResult = []
-            paddedResult.append(leading_ws[0] + result[0])
-            for line in result[1:]:
-                paddedResult.append(leading_ws[1] + line)
+        for i in (0,1):
+            if i < len(lines):
+                # Use the original, non-optimized leading whitespace.
+                leading_ws[i] = ws = g.get_leading_ws(lines[i])
+                indents[i] = g.computeWidth(ws,tabWidth)
 
-            # Convert the result to a string.
-            result = '\n'.join(paddedResult)
-            if trailingNL: result = result + '\n'
-            #@-<< compute the result of wrapping all lines >>
-            #@+<< update the body, selection & undo state >>
-            #@+node:ekr.20031218072017.1837: *7* << update the body, selection & undo state >>
-            # This destroys recoloring.
-            junk, ins = body.setSelectionAreas(head,result,tail)
+        indents[1] = max(indents)
 
+        if len(lines) == 1:
+            leading_ws[1] = leading_ws[0]
+
+        return indents,leading_ws
+    #@+node:ekr.20101118113953.5842: *7* rp_reformat
+    def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
+
+        '''Reformat the body and update the selection.'''
+
+        c = self ; body = c.frame.body ; w = body.bodyCtrl
+        s = w.getAllText()
+
+        # This destroys recoloring.
+        junk, ins = body.setSelectionAreas(head,result,tail)
+
+        changed = original != head + result + tail
+        if changed:
+            # 2010/11/16: stay in the paragraph.
+            body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
+        else:
             # Advance to the next paragraph.
-            s = w.getAllText()
             ins += 1 # Move past the selection.
             while ins < len(s):
                 i,j = g.getLine(s,ins)
                 line = s[i:j]
-                if line.startswith('@') or line.isspace():
+                # 2010/11/16: it's annoying, imo, to treat @ lines differently.
+                if line.isspace(): ### or line.startswith('@'):
                     ins = j+1
                 else:
                     ins = i ; break
 
-            changed = original != head + result + tail
-            if changed:
-                body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
-            else:
-                # We must always recolor, even if the text has not changed,
-                # because setSelectionAreas above destroys the coloring.
-                c.recolor()
+            # setSelectionAreas has destroyed the coloring.
+            c.recolor()
 
-            w.setSelectionRange(ins,ins,insert=ins)
-            w.see(ins)
-            #@-<< update the body, selection & undo state >>
+        w.setSelectionRange(ins,ins,insert=ins)
+        w.see(ins)
+    #@+node:ekr.20101118113953.5843: *7* rp_wrap_all_lines
+    def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
+
+        '''compute the result of wrapping all lines.'''
+
+        trailingNL = lines and lines[-1].endswith('\n')
+        lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
+
+        # Wrap the lines, decreasing the page width by indent.
+        result = g.wrap_lines(lines,
+            pageWidth-indents[1],
+            pageWidth-indents[0])
+
+        # prefix with the leading whitespace, if any
+        paddedResult = []
+        paddedResult.append(leading_ws[0] + result[0])
+        for line in result[1:]:
+            paddedResult.append(leading_ws[1] + line)
+
+        # Convert the result to a string.
+        result = '\n'.join(paddedResult)
+        if trailingNL: result = result + '\n'
+
+        return result
     #@+node:ekr.20031218072017.1838: *6* updateBodyPane (handles changeNodeContents)
     def updateBodyPane (self,head,middle,tail,undoType,oldSel,oldYview):
 

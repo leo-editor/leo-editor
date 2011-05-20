@@ -4565,29 +4565,100 @@ def getExternalCompletions (self,s,p=None,language='python'):
     theObject,tabList = self.theObject,self.tabList
     self.exit() # Not called from the autocompleter itself.
     return theObject,tabList
-#@+node:ekr.20110517102011.14579: *3* from AutoCompleterClass
-#@+node:ekr.20061031131434.17: *4* abort
-def abort (self):
+#@+node:ekr.20031218072017.1833: *3* reformatParagraph (old)
+def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
 
-    k = self.k
-    
-    k.keyboardQuit(event=None) ###,setDefaultStatus=False)
-    
-    if 0: # keyoardQuit calls k.autocompleter.exit.
-        self.exit(restore=True)
-#@+node:ekr.20061031131434.34: *4* finish
-def finish (self):
+    """Reformat a text paragraph in a Tk.Text widget
 
-    c = self.c ; k = c.k
+Wraps the concatenated text to present page width setting. Leading tabs are
+sized to present tab width setting. First and second line of original text is
+used to determine leading whitespace in reformatted text. Hanging indentation
+is honored.
 
-    k.keyboardQuit(event=None,setDefaultStatus=False)
-        # Stay in the present input state.
+Paragraph is bound by start of body, end of body, blank lines, and lines
+starting with "@". Paragraph is selected by position of current insertion
+cursor."""
 
-    for name in (self.tabName,'Modules','Info'):
-        c.frame.log.deleteTab(name)
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
 
-    c.frame.body.onBodyChanged('Typing')
+    if g.app.batchMode:
+        c.notValidInBatchMode("xxx")
+        return
+
+    if body.hasTextSelection():
+        i,j = w.getSelectionRange()
+        w.setInsertPoint(i)
+
+    << compute vars for reformatParagraph >>
+    if lines:
+        << compute the leading whitespace >>
+        << compute the result of wrapping all lines >>
+        << update the body, selection & undo state >>
+#@+node:ekr.20031218072017.1834: *4* << compute vars for reformatParagraph >>
+theDict = c.scanAllDirectives()
+pageWidth = theDict.get("pagewidth")
+tabWidth  = theDict.get("tabwidth")
+
+original = w.getAllText()
+oldSel =  w.getSelectionRange()
+oldYview = body.getYScrollPosition()
+
+head,lines,tail = c.findBoundParagraph()
+#@+node:ekr.20031218072017.1835: *4* << compute the leading whitespace >>
+indents = [0,0] ; leading_ws = ["",""]
+
+for i in (0,1):
+    if i < len(lines):
+        # Use the original, non-optimized leading whitespace.
+        leading_ws[i] = ws = g.get_leading_ws(lines[i])
+        indents[i] = g.computeWidth(ws,tabWidth)
+
+indents[1] = max(indents)
+if len(lines) == 1:
+    leading_ws[1] = leading_ws[0]
+#@+node:ekr.20031218072017.1836: *4* << compute the result of wrapping all lines >>
+trailingNL = True ### lines and lines[-1].endswith('\n')
+lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
+
+# Wrap the lines, decreasing the page width by indent.
+result = g.wrap_lines(lines,
+    pageWidth-indents[1],
+    pageWidth-indents[0])
+
+# prefix with the leading whitespace, if any
+paddedResult = []
+paddedResult.append(leading_ws[0] + result[0])
+for line in result[1:]:
+    paddedResult.append(leading_ws[1] + line)
+
+# Convert the result to a string.
+result = '\n'.join(paddedResult)
+if trailingNL: result = result + '\n'
+#@+node:ekr.20031218072017.1837: *4* << update the body, selection & undo state >>
+# This destroys recoloring.
+junk, ins = body.setSelectionAreas(head,result,tail)
+
+# Advance to the next paragraph.
+s = w.getAllText()
+ins += 1 # Move past the selection.
+while ins < len(s):
+    i,j = g.getLine(s,ins)
+    line = s[i:j]
+    if line.startswith('@') or line.isspace():
+        ins = j+1
+    else:
+        ins = i ; break
+
+changed = original != head + result + tail
+if changed:
+    body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
+else:
+    # We must always recolor, even if the text has not changed,
+    # because setSelectionAreas above destroys the coloring.
     c.recolor()
+
+w.setSelectionRange(ins,ins,insert=ins)
+w.see(ins)
 #@+node:ekr.20101127152442.5878: ** Url's
 @color
 
