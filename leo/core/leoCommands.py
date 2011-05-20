@@ -1850,7 +1850,7 @@ class baseCommands (object):
 
         fileName = g.app.gui.runSaveFileDialog(
             initialfile="flat.txt",
-            title="Flatten Outline",
+            title="Flatten Selected Outline",
             filetypes=filetypes,
             defaultextension=".txt")
         c.bringToFront()

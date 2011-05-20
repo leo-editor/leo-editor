@@ -522,9 +522,9 @@
 </v>
 <v t="ekr.20070925144534.40"><vh>@menu &amp;Export...</vh>
 <v t="ekr.20070925144534.41"><vh>@item *export-&amp;headlines</vh></v>
+<v t="ekr.20070925144534.44"><vh>@item flatten-outline</vh></v>
 <v t="ekr.20070925144534.42"><vh>@item *outline-to-&amp;cweb</vh></v>
 <v t="ekr.20070925144534.43"><vh>@item *outline-to-&amp;noweb</vh></v>
-<v t="ekr.20070925144534.44"><vh>@item *&amp;flatten-outline</vh></v>
 <v t="ekr.20070925144534.45"><vh>@item *&amp;remove-sentinels</vh></v>
 <v t="ekr.20070925144534.46"><vh>@item *&amp;weave</vh></v>
 </v>
@@ -7028,7 +7028,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.426"></t>
 <t tx="ekr.20070925144534.427"></t>
 <t tx="ekr.20070925144534.43"></t>
-<t tx="ekr.20070925144534.44"></t>
+<t tx="ekr.20070925144534.44">&amp;Flatten Selected Outline</t>
 <t tx="ekr.20070925144534.45"></t>
 <t tx="ekr.20070925144534.46"></t>
 <t tx="ekr.20070925144534.47">E&amp;xit</t>
