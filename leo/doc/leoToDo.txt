@@ -1,8 +1,32 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20110518082415.14438: ** Action items
-#@+node:ekr.20110502085000.6113: *3* * FAQ entry re cross-file clones
+#@+node:ekr.20110520051220.18187: ** 4.9 a1
+#@+node:ekr.20080727122007.1: *3* * Allow user to set background colors of nodes
+What uA should be used to specify node colors?
+
+if the foreground / background color API uses uAs,
+would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
+#@+node:ekr.20110518022449.6071: *3* * Are orphan nodes handled correctly?
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/861a0d156b16090f
+
+The document said that orphan children would be
+> saved in leo file (see 'orphan node' description at
+> http://webpages.charter.net/edreamleo/glossary.html for example).
+
+Orphan nodes prevent external files from being written.
+
+> I found, although they were saved in leo file (I checked the xml file), but they didn't appear in outline pane if I closed and reloaded the leo file. The same for named children nodes which were not referenced in parent file node.
+
+It's best if you correct the problem before closing the .leo file.
+But there may be a (recently-created) bug here.
+
+> Is the behavior a bug or expected behavior?
+
+I'm not sure.  There is some complicated code involved and the
+recently-added caching code may be causing mischief.
 #@+node:ekr.20110518103946.18182: *3* * Call os.chdir when executing scripts
 @nocolor-node
 
@@ -22,7 +46,50 @@ It may be unspecified, but your proposal would change it :-)
 
 However, you and Terry have convinced me that it is worth doing on an
 experimental basis.
-#@+node:ekr.20110517093705.14575: *3* * Fix qt bugs
+#@+node:ekr.20110518103946.18184: *3* * Fix headline coloring problems
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ee09fb2c2a5316f2/490fa7cddab36fab
+
+I have noticed recently an ugly combination of colors in headline while editing
+that was introduced by updating Leo. Background is very dark and text color is
+also dark so that it is quite unreadable. I haven't had enough time to inspect
+default settings till this morning. Today I realized that when I start editing
+headline with Ctrl+h (that is the usual way I use) both colors (background and
+foreground) are dark, but when I double click in headline I see colors from
+myLeosettings file.
+
+I am using:
+Leo 4.8 final, build 3752, November 26, 2010
+Python 2.6.6, qt version 4.7.0
+linux2
+bzr revno gives me 3904
+
+
+===========================
+
+Also I can't figure how to change color of "(" and ")" in actionscript language.
+I like dark background with the light text and that is the color scheme I have
+in myLeosettings. But "(" and ")" are black and that is not compatible with my
+dark background color.
+
+The only two colors in leoSettings (in syntax coloring nodes) that are black are
+'tab_color' and 'operator_color'. I have tried to change both of them but with
+no success. Leo sees my settings for tab_color and operator_color but those
+settings have no influence on "(" and ")" .
+
+In nodes where @language python is in effect "(" ")" are white, but in nodes
+with @language actionscript those characters become black and I can't find which
+setting I should change.
+
+====================================
+
+
+Today I have updated my Leo and with the revno 4001 the problem is still
+present. And also I haven't found answer on the question about configuring
+colors of parenthesis. I understand those questions are not so high priority but
+I am just asking again here in case they got forgotten. Vitalije.
+#@+node:ekr.20110517093705.14575: *3* * Fix qt bugs (as many as possible, the rest for b1)
 @nocolor-node
 
 ** test.leo log pane is scrolled.
@@ -62,13 +129,54 @@ When using leo as outliner, I often use only node headlines to write
 down some data. If the headline string is too long, the cursor goes
 beyond the visible area. When modifying a node headline, is it
 possible to make leo to auto-scroll, so the cursor is always visible? 
-#@+node:ekr.20080727122007.1: *4* Allow user to set background colors of nodes
-What uA should be used to specify node colors?
-
-if the foreground / background color API uses uAs,
-would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
 #@+node:ekr.20100223133351.5998: *4* show-invisibles doesn't work for blank lines
-#@+node:ekr.20081208102356.1: *4* Threading colorizer doesn't handle multiple body editors
+#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
+#@+node:ekr.20110518103946.18183: *3* Fix mod_http plugin
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/196d37a58bb2dd80/ca526f0be4101f09
+
+Was support for this removed from Leo's core?
+
+#@+node:ekr.20110518103946.18180: *3* Investigate potentially serious MacOs bugs (TK)
+@nocolor-node
+
+Outline commands execute twice under OS X
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/2c86f8363c48dfa2/92bf6dd84c3dbb5e
+
+With OSX and Tk, some "Outline" commands execute twice when used called by a
+keyboard shortcut for me. This is incredibly unnerving for commands such as Cut
+Node, Paste Node, Delete Node or Paste Node as Clone. Using the commands from
+the menu bar works as expected. Strangely enough, Insert Node is not affected.
+
+I use OSX 10.6.6, python 2.6.1 and gui=tk
+
+=======
+
+Uncloseable modal window under OS X
+		
+[Click the star to watch this topic] 	
+	
+	  	2 messages - 1 new - Collapse all  - 
+Report discussion as spam
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/653838b2112b781b/cc4ab2919f5785cd
+
+I've been having trouble with an uncloseable modal Window under OS X that
+prompts: "myfilename already exists. Overwrite this file?"
+
+The options Yes, No and Cancel are displayed but not clickable and
+there is no title bar. No keyboard shortcuts I tried closed the
+window. The only possibility is to kill the python process running
+leo, losing all changes made...
+Strangely enough this window only appears from time to time, while
+most of the time  saving changes just overwrites without asking.
+I don't know what information to post about my environment. I use the
+standard OSX python install (2.6.1) and launch leo with "./
+launchLeo.py --gui=tk".
+#@+node:ekr.20110520051220.18188: ** 4.9 b1
+#@+node:ekr.20081208102356.1: *3* Threading colorizer doesn't handle multiple body editors
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
@@ -79,8 +187,121 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
 Thanks for this report.  This is a problem, never noticed until now,
 with the threading colorizer.  A workaround is to disable the
 threading colorizer plugin. 
-#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
-#@+node:ekr.20110427135155.14306: *3* * New file format
+#@+node:ekr.20090907080624.6081: *3* Fix bug: spell checker should check headlines
+#@+node:ekr.20100522090453.5912: *3* Fix bugs with @verbatim, @raw and @end_raw
+@nocolor-node
+
+> In the @file family of derived files (@thin, @nosent, etc.)  (i.e.,
+> not @root), you can prevent any interpretation of the immediately
+> following line with the "@verbatim" directive
+
+This is not true, although it might appear to be true.
+
+There is an @verbatim *sentinel*, but no @verbatim *directive*.
+
+For example, I have just verified that the following does not work:
+
+@verbatim
+<< undefined ref >>
+
+@raw and @end_raw do work as described.
+
+There appear to be several bugs in this area:
+
+1. Leo probably should warn that @verbatim does not exist as a
+directive, although technically Leo is supposed to write anything that
+looks like a sentinel but isn't "verbatim".
+
+2. Leo does appear to read @raw and @end_raw properly in @thin files,
+but Leo improperly issues the (red) log message,
+converting @file format in @thin test_verbatim_sentinel.py
+#@+node:ekr.20110111100539.12257: *3* Fix end-of-line problem (MacOS)
+# Apparently, ctrl-e is not passed to Leo at all.
+#@+node:ekr.20110111100539.12258: *4* Report
+@nocolor-node
+
+http://mail.google.com/mail/#inbox/12c5646c646a90d2
+
+I expect C-e to go to end-of-line, but C-e works as the next line.
+Alt-x and check end-of-line and I get the following result.
+
+I use Mac OS X 10.6.5, newest Leo, and Python/Qt.
+
+Leo 4.8 rc1, build 3715, November 15, 2010
+Python 2.6.1, qt version 4.7.0
+darwin
+
+I remember I could use C-e, but it doesn't work anymore even after I
+reinstall the Leo.
+
+As I explained in this post - http://groups.google.com/group/leo-editor/browse_thread/thread/1ee0b35b4f76c999
+After having @bool swap_mac_keys = True, I can use C-e.
+
+C-a move the cursor to the start of line, but C-e seems to move the
+cursor the first of the next line, which is the end of last line + 1.
+If the line is the final one, C-e moves the cursor to the end of line
+as there's no next line.
+
+#@+node:ekr.20100109094541.6232: *4* within lines
+def beginningOfLine (self,event):
+    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
+    self.moveWithinLineHelper(event,'start-line',extend=False)
+
+def beginningOfLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the start of the line.'''
+    self.moveWithinLineHelper(event,'start-line',extend=True)
+
+def endOfLine (self,event):
+    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
+    self.moveWithinLineHelper(event,'end-line',extend=False)
+
+def endOfLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the end of the line.'''
+    self.moveWithinLineHelper(event,'end-line',extend=True)
+#@+node:ekr.20100109094541.6231: *4* moveWithinLineHelper
+def moveWithinLineHelper (self,event,spot,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    # g.trace(hasattr(w,'leoMoveCursorHelper'))
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(kind=spot,extend=extend)
+        w.seeInsertPoint()
+        c.frame.updateStatusLine()
+    else:
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i,j = g.getLine(s,ins)
+        if spot == 'start-line':
+            self.moveToHelper(event,i,extend=extend)
+        elif spot == 'end-line':
+            # if g.match(s,i-1,'\n'): i -= 1
+            self.moveToHelper(event,j,extend=extend)
+        else:
+            g.trace('can not happen: bad spot: %s' % spot)
+#@+node:ekr.20101116100300.5827: *3* Write script file to temp file if @bool write_script_file is False
+@nocolor-node
+
+It's important that g.pdb get the sources for *all* Leo scripts.
+
+Postings:
+
+When @bool write_script_file is True the execute-script file uses
+execfile (or its Python 3k equivalent) to execute scripts.
+
+This allows g.pdb (or pudb) to know the text of Leo scripts!
+
+I want to emphasize here how important this change is.  After 4.8 final I'll add code to use a temp file to hold sources if 
+@bool write_script_file is False.
+
+In the meantime, I strongly urge all script writers to set @bool write_script_file = True.
+
+Depending on your installation, especially on *nix, the default location for the file may be a problem.  In that case, set
+@string script_file_path to some convenient place, say in your home directory.
+#@+node:ekr.20110427135155.14306: *3* New file format
 @language rest
 
 Minimal changes:
@@ -985,113 +1206,7 @@ I'm sure pickling capability is great, but I'm not convinced
 it should be the _default._
 
 No big deal.
-#@+node:ekr.20110518103946.18184: *3* * Fix headline coloring problems
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ee09fb2c2a5316f2/490fa7cddab36fab
-
-I have noticed recently an ugly combination of colors in headline while editing
-that was introduced by updating Leo. Background is very dark and text color is
-also dark so that it is quite unreadable. I haven't had enough time to inspect
-default settings till this morning. Today I realized that when I start editing
-headline with Ctrl+h (that is the usual way I use) both colors (background and
-foreground) are dark, but when I double click in headline I see colors from
-myLeosettings file.
-
-I am using:
-Leo 4.8 final, build 3752, November 26, 2010
-Python 2.6.6, qt version 4.7.0
-linux2
-bzr revno gives me 3904
-
-
-===========================
-
-Also I can't figure how to change color of "(" and ")" in actionscript language.
-I like dark background with the light text and that is the color scheme I have
-in myLeosettings. But "(" and ")" are black and that is not compatible with my
-dark background color.
-
-The only two colors in leoSettings (in syntax coloring nodes) that are black are
-'tab_color' and 'operator_color'. I have tried to change both of them but with
-no success. Leo sees my settings for tab_color and operator_color but those
-settings have no influence on "(" and ")" .
-
-In nodes where @language python is in effect "(" ")" are white, but in nodes
-with @language actionscript those characters become black and I can't find which
-setting I should change.
-
-====================================
-
-
-Today I have updated my Leo and with the revno 4001 the problem is still
-present. And also I haven't found answer on the question about configuring
-colors of parenthesis. I understand those questions are not so high priority but
-I am just asking again here in case they got forgotten. Vitalije.
-#@+node:ekr.20110518022449.6071: *3* Are orphan nodes handled correctly?
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/861a0d156b16090f
-
-The document said that orphan children would be
-> saved in leo file (see 'orphan node' description at
-> http://webpages.charter.net/edreamleo/glossary.html for example).
-
-Orphan nodes prevent external files from being written.
-
-> I found, although they were saved in leo file (I checked the xml file), but they didn't appear in outline pane if I closed and reloaded the leo file. The same for named children nodes which were not referenced in parent file node.
-
-It's best if you correct the problem before closing the .leo file.
-But there may be a (recently-created) bug here.
-
-> Is the behavior a bug or expected behavior?
-
-I'm not sure.  There is some complicated code involved and the
-recently-added caching code may be causing mischief.
-#@+node:ekr.20110518103946.18183: *3* Fix mod_http plugin
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/196d37a58bb2dd80/ca526f0be4101f09
-
-Was support for this removed from Leo's core?
-
-#@+node:ekr.20110518103946.18180: *3* Investigate potentially serious MacOs bugs (TK)
-@nocolor-node
-
-Outline commands execute twice under OS X
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/2c86f8363c48dfa2/92bf6dd84c3dbb5e
-
-With OSX and Tk, some "Outline" commands execute twice when used called by a
-keyboard shortcut for me. This is incredibly unnerving for commands such as Cut
-Node, Paste Node, Delete Node or Paste Node as Clone. Using the commands from
-the menu bar works as expected. Strangely enough, Insert Node is not affected.
-
-I use OSX 10.6.6, python 2.6.1 and gui=tk
-
-=======
-
-Uncloseable modal window under OS X
-		
-[Click the star to watch this topic] 	
-	
-	  	2 messages - 1 new - Collapse all  - 
-Report discussion as spam
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/653838b2112b781b/cc4ab2919f5785cd
-
-I've been having trouble with an uncloseable modal Window under OS X that
-prompts: "myfilename already exists. Overwrite this file?"
-
-The options Yes, No and Cancel are displayed but not clickable and
-there is no title bar. No keyboard shortcuts I tried closed the
-window. The only possibility is to kill the python process running
-leo, losing all changes made...
-Strangely enough this window only appears from time to time, while
-most of the time  saving changes just overwrites without asking.
-I don't know what information to post about my environment. I use the
-standard OSX python install (2.6.1) and launch leo with "./
-launchLeo.py --gui=tk".
+#@+node:ekr.20110520051220.18189: ** 4.9 Maybe
 #@+node:ekr.20071001052501: *3* Versioning for nodes
 @nocolor
 
@@ -1102,143 +1217,15 @@ in the 2000 steps which transformed 5 into 6 (just suggested this feature to
 the bazaar people). This happens actually quite often to me, since I use the
 SCS as a back-up system, saving many (uninteresting) intermediate steps while
 implementing a new feature.
-#@+node:ekr.20110518140548.19115: ** Next
-#@+node:ekr.20110518103946.18179: *3* * Add external/leosax.py to leoPyRef.leo
+#@+node:ekr.20110518103946.18179: *3* Add external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
 
 Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
-#@+node:ekr.20090907080624.6081: *3* * Fix bug: spell checker should check headlines
-#@+node:ekr.20100522090453.5912: *3* Fix bugs with @verbatim, @raw and @end_raw
-@nocolor-node
-
-> In the @file family of derived files (@thin, @nosent, etc.)  (i.e.,
-> not @root), you can prevent any interpretation of the immediately
-> following line with the "@verbatim" directive
-
-This is not true, although it might appear to be true.
-
-There is an @verbatim *sentinel*, but no @verbatim *directive*.
-
-For example, I have just verified that the following does not work:
-
-@verbatim
-<< undefined ref >>
-
-@raw and @end_raw do work as described.
-
-There appear to be several bugs in this area:
-
-1. Leo probably should warn that @verbatim does not exist as a
-directive, although technically Leo is supposed to write anything that
-looks like a sentinel but isn't "verbatim".
-
-2. Leo does appear to read @raw and @end_raw properly in @thin files,
-but Leo improperly issues the (red) log message,
-converting @file format in @thin test_verbatim_sentinel.py
-#@+node:ekr.20110111100539.12257: *3* Fix end-of-line problem (MacOS)
-# Apparently, ctrl-e is not passed to Leo at all.
-#@+node:ekr.20110111100539.12258: *4* Report
-@nocolor-node
-
-http://mail.google.com/mail/#inbox/12c5646c646a90d2
-
-I expect C-e to go to end-of-line, but C-e works as the next line.
-Alt-x and check end-of-line and I get the following result.
-
-I use Mac OS X 10.6.5, newest Leo, and Python/Qt.
-
-Leo 4.8 rc1, build 3715, November 15, 2010
-Python 2.6.1, qt version 4.7.0
-darwin
-
-I remember I could use C-e, but it doesn't work anymore even after I
-reinstall the Leo.
-
-As I explained in this post - http://groups.google.com/group/leo-editor/browse_thread/thread/1ee0b35b4f76c999
-After having @bool swap_mac_keys = True, I can use C-e.
-
-C-a move the cursor to the start of line, but C-e seems to move the
-cursor the first of the next line, which is the end of last line + 1.
-If the line is the final one, C-e moves the cursor to the end of line
-as there's no next line.
-
-#@+node:ekr.20100109094541.6232: *4* within lines
-def beginningOfLine (self,event):
-    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
-    self.moveWithinLineHelper(event,'start-line',extend=False)
-
-def beginningOfLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the start of the line.'''
-    self.moveWithinLineHelper(event,'start-line',extend=True)
-
-def endOfLine (self,event):
-    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
-    self.moveWithinLineHelper(event,'end-line',extend=False)
-
-def endOfLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the end of the line.'''
-    self.moveWithinLineHelper(event,'end-line',extend=True)
-#@+node:ekr.20100109094541.6231: *4* moveWithinLineHelper
-def moveWithinLineHelper (self,event,spot,extend):
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-
-    # g.trace(hasattr(w,'leoMoveCursorHelper'))
-
-    if hasattr(w,'leoMoveCursorHelper'):
-        extend = extend or self.extendMode
-        w.leoMoveCursorHelper(kind=spot,extend=extend)
-        w.seeInsertPoint()
-        c.frame.updateStatusLine()
-    else:
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        i,j = g.getLine(s,ins)
-        if spot == 'start-line':
-            self.moveToHelper(event,i,extend=extend)
-        elif spot == 'end-line':
-            # if g.match(s,i-1,'\n'): i -= 1
-            self.moveToHelper(event,j,extend=extend)
-        else:
-            g.trace('can not happen: bad spot: %s' % spot)
 #@+node:ekr.20080421140032.1: *3* Fix multiple controllers problem in all plugins
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
-#@+node:ekr.20101124124316.5841: *3* Rename flatten command
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/626587
-
-I ask that you please look at this from the newbie perspective that I
-have.
-
-If the menu choice said Flatten Selected Outline, or even Flatten
-Selected Node, then I would have understood immediately what would
-happen on its execution. But the menu choice says neither of these -- it
-says Flatten Outline. That gives me a different expectation of what it
-will do.
-#@+node:ekr.20101116100300.5827: *3* Write script file to temp file if @bool write_script_file is False
-@nocolor-node
-
-It's important that g.pdb get the sources for *all* Leo scripts.
-
-Postings:
-
-When @bool write_script_file is True the execute-script file uses
-execfile (or its Python 3k equivalent) to execute scripts.
-
-This allows g.pdb (or pudb) to know the text of Leo scripts!
-
-I want to emphasize here how important this change is.  After 4.8 final I'll add code to use a temp file to hold sources if 
-@bool write_script_file is False.
-
-In the meantime, I strongly urge all script writers to set @bool write_script_file = True.
-
-Depending on your installation, especially on *nix, the default location for the file may be a problem.  In that case, set
-@string script_file_path to some convenient place, say in your home directory.
-#@+node:ekr.20110514231951.14492: ** Docs
+#@+node:ekr.20110514231951.14492: ** 4.9 Docs
 #@+node:ekr.20110518082415.14439: *3* Document highlights of my workflow
 @language rest
 
