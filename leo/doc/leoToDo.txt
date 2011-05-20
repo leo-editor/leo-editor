@@ -2,12 +2,13 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110520051220.18187: ** 4.9 a1
-#@+node:ekr.20080727122007.1: *3* * Allow user to set background colors of nodes
+#@+node:ekr.20110520051220.18197: *3* * Action items
+#@+node:ekr.20080727122007.1: *4* Allow user to set background colors of nodes
 What uA should be used to specify node colors?
 
 if the foreground / background color API uses uAs,
 would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
-#@+node:ekr.20110518022449.6071: *3* * Are orphan nodes handled correctly?
+#@+node:ekr.20110518022449.6071: *4* Are orphan nodes handled correctly?
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/861a0d156b16090f
@@ -27,7 +28,7 @@ But there may be a (recently-created) bug here.
 
 I'm not sure.  There is some complicated code involved and the
 recently-added caching code may be causing mischief.
-#@+node:ekr.20110518103946.18182: *3* * Call os.chdir when executing scripts
+#@+node:ekr.20110518103946.18182: *4* Call os.chdir when executing scripts
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/4ea31ed2e0518866/3667f707b99ee9e3
@@ -46,7 +47,7 @@ It may be unspecified, but your proposal would change it :-)
 
 However, you and Terry have convinced me that it is worth doing on an
 experimental basis.
-#@+node:ekr.20110518103946.18184: *3* * Fix headline coloring problems
+#@+node:ekr.20110518103946.18184: *4* Fix headline coloring problems
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/ee09fb2c2a5316f2/490fa7cddab36fab
@@ -89,56 +90,14 @@ Today I have updated my Leo and with the revno 4001 the problem is still
 present. And also I haven't found answer on the question about configuring
 colors of parenthesis. I understand those questions are not so high priority but
 I am just asking again here in case they got forgotten. Vitalije.
-#@+node:ekr.20110517093705.14575: *3* * Fix qt bugs (as many as possible, the rest for b1)
-@nocolor-node
-
-** test.leo log pane is scrolled.
-    Look at enabled plugins.
-
-leo overrides minibuffer background color
-https://bugs.launchpad.net/leo-editor/+bug/323967
-
-Enter Headline Edit Mode when current node is the default
-https://bugs.launchpad.net/leo-editor/+bug/701188
-
-Shortcuts don't work in most Log frame tabs
-https://bugs.launchpad.net/leo-editor/+bug/701261
-
-    ** Make sure *all* widgets have bindings.
-    *  Do we need c.idle_focus_helper?
-
-rst 3 button in contextmenu throws an error
-https://bugs.launchpad.net/leo-editor/+bug/751976
-
-viewrendered.py behaviour
-https://bugs.launchpad.net/leo-editor/+bug/755206
-
-    *Option to have viewrendered plugins auto-collapse the pane
-
-fill-para doesn't respect setting from set-fill-column
-https://bugs.launchpad.net/leo-editor/+bug/766747
-
-PgUp/PgDown should scroll the body, not the tree
-https://bugs.launchpad.net/leo-editor/+bug/394309 
-#@+node:ekr.20080806054207.3: *4* Auto scroll outline pane if headline would become invisible
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/76789df8aac08c70
-
-When using leo as outliner, I often use only node headlines to write
-down some data. If the headline string is too long, the cursor goes
-beyond the visible area. When modifying a node headline, is it
-possible to make leo to auto-scroll, so the cursor is always visible? 
-#@+node:ekr.20100223133351.5998: *4* show-invisibles doesn't work for blank lines
-#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
-#@+node:ekr.20110518103946.18183: *3* Fix mod_http plugin
+#@+node:ekr.20110518103946.18183: *4* Fix mod_http plugin
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/196d37a58bb2dd80/ca526f0be4101f09
 
 Was support for this removed from Leo's core?
 
-#@+node:ekr.20110518103946.18180: *3* Investigate potentially serious MacOs bugs (TK)
+#@+node:ekr.20110518103946.18180: *4* Investigate potentially serious MacOs bugs (TK)
 @nocolor-node
 
 Outline commands execute twice under OS X
@@ -175,6 +134,45 @@ most of the time  saving changes just overwrites without asking.
 I don't know what information to post about my environment. I use the
 standard OSX python install (2.6.1) and launch leo with "./
 launchLeo.py --gui=tk".
+#@+node:ekr.20110520051220.18198: *4* Add namespace and Leo comment lines to .leo files
+#@+node:ekr.20110520051220.18196: *3* * Fix all high-priority bugs
+#@+node:ekr.20110520051220.18195: *4* Make sure log pane doesn't scroll horizontally
+@nocolor-node
+
+This is too annoying to ignore
+#@+node:ekr.20110517093705.14575: *3* Fix 6 qt bugs (as many as possible, the rest for b1)
+@nocolor-node
+
+leo overrides minibuffer background color
+https://bugs.launchpad.net/leo-editor/+bug/323967
+
+Shortcuts don't work in most Log frame tabs
+https://bugs.launchpad.net/leo-editor/+bug/701261
+
+    ** Make sure *all* widgets have bindings.
+    *  Do we need c.idle_focus_helper?
+
+viewrendered.py behaviour
+https://bugs.launchpad.net/leo-editor/+bug/755206
+
+    *Option to have viewrendered plugins auto-collapse the pane
+
+fill-para doesn't respect setting from set-fill-column
+https://bugs.launchpad.net/leo-editor/+bug/766747
+
+PgUp/PgDown should scroll the body, not the tree
+https://bugs.launchpad.net/leo-editor/+bug/394309 
+#@+node:ekr.20080806054207.3: *4* Auto scroll outline pane if headline would become invisible
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/76789df8aac08c70
+
+When using leo as outliner, I often use only node headlines to write
+down some data. If the headline string is too long, the cursor goes
+beyond the visible area. When modifying a node headline, is it
+possible to make leo to auto-scroll, so the cursor is always visible? 
+#@+node:ekr.20100223133351.5998: *4* show-invisibles doesn't work for blank lines
+#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
 #@+node:ekr.20110520051220.18188: ** 4.9 b1
 #@+node:ekr.20081208102356.1: *3* Threading colorizer doesn't handle multiple body editors
 @nocolor-node
@@ -301,14 +299,8 @@ In the meantime, I strongly urge all script writers to set @bool write_script_fi
 
 Depending on your installation, especially on *nix, the default location for the file may be a problem.  In that case, set
 @string script_file_path to some convenient place, say in your home directory.
-#@+node:ekr.20110427135155.14306: *3* New file format
+#@+node:ekr.20110427135155.14306: *3* Add <attr> elements to .leo files
 @language rest
-
-Minimal changes:
-
-- Add namespace declaration.
-
-- Add "created by Leo" comment.
 
 - <attr> solves pickle problem.
 #@+node:ekr.20110414065052.6100: *4* ** Treat gnx's as strings: don't parse them
