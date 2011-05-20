@@ -7562,6 +7562,85 @@ def insert_string (self,s,select=False):
     if self.use_qcompleter:
         # g.trace(self.qw.leo_qc)
         c.widgetWantsFocusNow(self.qw.leo_qc)
+#@+node:ekr.20101024062147.6024: *4* Fixed bug 622819: Ctrl-Shift movement is incorrect
+@nocolor-node
+
+Ctrl-Shift movement (back-word-extend-selection, forward-word-extend-selection)
+is incorrect when there is an existing selection, which was created by some
+method other than Ctrl-Shift movement.
+
+Expected behavior: it should extend/contract the existing selection
+
+Actual behavior: it creates a new selection from the cursor position
+
+The fix was new code in extendHelper.
+#@+node:ekr.20060113130510: *5* extendHelper
+def extendHelper (self,w,extend,spot,upOrDown=False):
+    '''Handle the details of extending the selection.
+    This method is called for all cursor moves.
+
+    extend: Clear the selection unless this is True.
+    spot:   The *new* insert point.
+    '''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; p = c.p
+    extend = extend or self.extendMode
+
+    ins = w.getInsertPoint()
+    i,j = w.getSelectionRange()
+    if trace: g.trace(
+        'extend',extend,'ins',ins,'sel=',i,j,
+        'spot=',spot,'moveSpot',self.moveSpot)
+
+    # Reset the move spot if needed.
+    if self.moveSpot is None or p.v != self.moveSpotNode:
+        if trace: g.trace('no spot')
+        self.setMoveCol(w,g.choose(extend,ins,spot)) # sets self.moveSpot.
+    elif extend:
+        # 2011/05/20: Fix bug 622819
+        # Ctrl-Shift movement is incorrect when there is an unexpected selection.
+        if i == j:
+            if trace: g.trace('extend and no sel')
+            self.setMoveCol(w,ins) # sets self.moveSpot.
+        elif self.moveSpot in (i,j) and self.moveSpot != ins:
+            if trace and verbose: g.trace('extend and movespot matches')
+            pass # The bug fix, part 1.
+        else:
+            # The bug fix, part 2.
+            # Set the moveCol to the *not* insert point.
+            if ins == i: k = j
+            elif ins == j: k = i
+            else: k = ins
+            if trace: g.trace('extend and unexpected spot',k)
+            self.setMoveCol(w,k) # sets self.moveSpot.
+    else:
+        if upOrDown:
+            s = w.getAllText()
+            i2,j2 = g.getLine(s,spot)
+            line = s[i2:j2]
+            row,col = g.convertPythonIndexToRowCol(s,spot)
+            if True: # was j2 < len(s)-1:
+                n = min(self.moveCol,max(0,len(line)-1))
+            else:
+                n = min(self.moveCol,max(0,len(line))) # A tricky boundary.
+            # g.trace('using moveCol',self.moveCol,'line',repr(line),'n',n)
+            spot = g.convertRowColToPythonIndex(s,row,n)
+        else:  # Plain move forward or back.
+            # g.trace('plain forward/back move')
+            self.setMoveCol(w,spot) # sets self.moveSpot.
+
+    if extend:
+        if spot < self.moveSpot:
+            w.setSelectionRange(spot,self.moveSpot,insert=spot)
+        else:
+            w.setSelectionRange(self.moveSpot,spot,insert=spot)
+    else:
+        w.setSelectionRange(spot,spot,insert=spot)
+
+    w.seeInsertPoint()
+    c.frame.updateStatusLine()
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()

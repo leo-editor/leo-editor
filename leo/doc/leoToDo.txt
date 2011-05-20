@@ -2,25 +2,6 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110518082415.14438: ** Action items
-#@+node:ekr.20101024062147.6024: *3* *0 bug 622819: Ctrl-Shift movement is incorrect
-@nocolor-node
-
-Has this been fixed??
-
-Ctrl-Shift movement (back-word-extend-selection, forward-word-extend-selection)
-is incorrect when there is an existing selection, which was created by some
-method other than Ctrl-Shift movement.
-
-Expected behavior: it should extend/contract the existing selection
-
-Actual behavior: it creates a new selection from the cursor position
-
-======
-
-This is a minor bug, but hard to fix because Leo doesn't always distinguish
-between the point and the mark.
-
-The fix would be in extendHelper, called from moveToHelper.
 #@+node:ekr.20110502085000.6113: *3* *0 FAQ entry re cross-file clones
 #@+node:ekr.20110518103946.18182: *3* *1 Call os.chdir when executing scripts
 @nocolor-node

@@ -3466,6 +3466,7 @@ class editCommandsClass (baseEditCommandsClass):
         '''
 
         trace = False and not g.unitTesting
+        verbose = False
         c = self.c ; p = c.p
         extend = extend or self.extendMode
 
@@ -3480,9 +3481,22 @@ class editCommandsClass (baseEditCommandsClass):
             if trace: g.trace('no spot')
             self.setMoveCol(w,g.choose(extend,ins,spot)) # sets self.moveSpot.
         elif extend:
-            if i == j or self.moveSpot not in (i,j):
-                if trace: g.trace('extend and spot not in sel')
+            # 2011/05/20: Fix bug 622819
+            # Ctrl-Shift movement is incorrect when there is an unexpected selection.
+            if i == j:
+                if trace: g.trace('extend and no sel')
                 self.setMoveCol(w,ins) # sets self.moveSpot.
+            elif self.moveSpot in (i,j) and self.moveSpot != ins:
+                if trace and verbose: g.trace('extend and movespot matches')
+                pass # The bug fix, part 1.
+            else:
+                # The bug fix, part 2.
+                # Set the moveCol to the *not* insert point.
+                if ins == i: k = j
+                elif ins == j: k = i
+                else: k = ins
+                if trace: g.trace('extend and unexpected spot',k)
+                self.setMoveCol(w,k) # sets self.moveSpot.
         else:
             if upOrDown:
                 s = w.getAllText()
