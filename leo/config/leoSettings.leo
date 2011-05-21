@@ -7876,7 +7876,16 @@ QLineEdit#editorLabel {
     margin: 2px;
 }
 
-/* The mini-buffer */
+/* The mini-buffer
+
+**Important**: Because Leo changes the color of the minibuffer dynamically,
+stylesheets can not be used. Instead, set the desired colors using one of the
+following settings, with defaults as shown::
+
+    @color minibuffer-background-color = lightblue
+    @color minibuffer-error-color = red
+    @color minibuffer-warning-color = lightgrey
+*/
 QLineEdit#lineEdit {
     selection-color: white;
     selection-background-color: lightgrey;

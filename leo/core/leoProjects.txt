@@ -7657,6 +7657,23 @@ https://bugs.launchpad.net/leo-editor/+bug/751976
 
 I was not able to fix this button.  Instead, I merely disabled it.
 http://groups.google.com/group/leo-editor/browse_thread/thread/8e67595ef156dba0
+#@+node:ekr.20110521142955.18163: *4* Resolved bug 323967: leo overrides minibuffer background color
+@nocolor-node
+
+> Setting background-color on QLineEdit#lineEdit in the Qt stylesheet works, the
+selected color is initially visible, but leo overrides the color during init.
+The color should be set in the style sheet instead.
+
+Technically, this bug is invalid. However, I'll add comments to data
+qt-gui-plugin-style-sheet explaining what is going on.
+
+Because Leo changes the color of the minibuffer dynamically, stylesheets can not
+be used. Instead, set the desired colors using one of the following settings,
+with defaults as shown:
+
+    @color minibuffer-background-color = lightblue
+    @color minibuffer-error-color = red
+    @color minibuffer-warning-color = lightgrey
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()

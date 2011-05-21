@@ -2,28 +2,12 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110520051220.18187: ** 4.9 a1
-#@+node:ekr.20110520051220.18197: *3* * Action items: 7
-#@+node:ekr.20110518103946.18184: *4* * Fix headline coloring problems
+#@+node:ekr.20110520051220.18197: *3* * Action items: 6
+#@+node:ekr.20110521142955.18151: *4* * Fix actionscript colors for ( and )
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/ee09fb2c2a5316f2/490fa7cddab36fab
 
-I have noticed recently an ugly combination of colors in headline while editing
-that was introduced by updating Leo. Background is very dark and text color is
-also dark so that it is quite unreadable. I haven't had enough time to inspect
-default settings till this morning. Today I realized that when I start editing
-headline with Ctrl+h (that is the usual way I use) both colors (background and
-foreground) are dark, but when I double click in headline I see colors from
-myLeosettings file.
-
-I am using:
-Leo 4.8 final, build 3752, November 26, 2010
-Python 2.6.6, qt version 4.7.0
-linux2
-bzr revno gives me 3904
-
-
-===========================
 
 Also I can't figure how to change color of "(" and ")" in actionscript language.
 I like dark background with the light text and that is the color scheme I have
@@ -38,14 +22,6 @@ settings have no influence on "(" and ")" .
 In nodes where @language python is in effect "(" ")" are white, but in nodes
 with @language actionscript those characters become black and I can't find which
 setting I should change.
-
-====================================
-
-
-Today I have updated my Leo and with the revno 4001 the problem is still
-present. And also I haven't found answer on the question about configuring
-colors of parenthesis. I understand those questions are not so high priority but
-I am just asking again here in case they got forgotten. Vitalije.
 #@+node:ekr.20110518022449.6071: *4* * Are orphan nodes handled correctly?
 @nocolor-node
 
@@ -85,18 +61,6 @@ It may be unspecified, but your proposal would change it :-)
 
 However, you and Terry have convinced me that it is worth doing on an
 experimental basis.
-#@+node:ekr.20080727122007.1: *4* Allow user to set background colors of nodes
-What uA should be used to specify node colors?
-
-if the foreground / background color API uses uAs,
-would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
-#@+node:ekr.20110518103946.18183: *4* Fix mod_http plugin
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/196d37a58bb2dd80/ca526f0be4101f09
-
-Was support for this removed from Leo's core?
-
 #@+node:ekr.20110518103946.18180: *4* Investigate potentially serious MacOs bugs (TK)
 @nocolor-node
 
@@ -134,6 +98,18 @@ most of the time  saving changes just overwrites without asking.
 I don't know what information to post about my environment. I use the
 standard OSX python install (2.6.1) and launch leo with "./
 launchLeo.py --gui=tk".
+#@+node:ekr.20110518103946.18183: *4* Fix mod_http plugin
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/196d37a58bb2dd80/ca526f0be4101f09
+
+Was support for this removed from Leo's core?
+
+#@+node:ekr.20080727122007.1: *4* Allow user to set background colors of nodes?
+What uA should be used to specify node colors?
+
+if the foreground / background color API uses uAs,
+would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
 #@+node:ekr.20110520051220.18196: *3* * Fix all high-priority bugs
 #@+node:ekr.20110520051220.18195: *4* Make sure log pane doesn't scroll horizontally
 @nocolor-node

@@ -747,7 +747,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if e:
                 # Create a wrapper widget for Leo's core.
                 w = self.getWrapper(e,item)
-                if trace: g.trace(e,p and p.h,g.callers())
+                if trace: g.trace('objectName',repr(e.objectName()),e,p and p.h,g.callers())
                 return w
             else:
                 # This is not an error

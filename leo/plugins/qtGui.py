@@ -1958,6 +1958,8 @@ class leoQtMinibuffer (leoQLineEditWidget):
         w.installEventFilter(self.ev_filter)
 
     def setBackgroundColor(self,color):
+        # Called from k.setLabelGrey & k.setLabelBlue.
+        # g.trace(color,g.callers())
         self.widget.setStyleSheet('background-color:%s' % color)
 
     def setForegroundColor(self,color):
@@ -6756,6 +6758,8 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         e = w.itemWidget(item,0)
         e.setObjectName('headline')
         self.connectEditorWidget(e,item)
+        
+        if trace: g.trace(e)
 
         return e
     #@+node:ekr.20090124174652.103: *6* createTreeItem
@@ -6842,12 +6846,13 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         '''Return headlineWrapper that wraps e (a QLineEdit).'''
 
         trace = False and not g.unitTesting
+        verbose = False
         c = self.c
         
         if e:
             wrapper = self.editWidgetsDict.get(e)
             if wrapper:
-                if trace: g.trace('old wrapper',e,wrapper,g.callers())
+                if trace and verbose: g.trace('old wrapper',e,wrapper)
             else:
                 if item:
                     # 2011/02/12: item can be None.
