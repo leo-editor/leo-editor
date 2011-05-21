@@ -2,63 +2,6 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110520051220.18187: ** 4.9 a1
-#@+node:ekr.20110520051220.18194: *3* * First
-# These are trivial to do.
-#@+node:ekr.20110502085000.6113: *4* FAQ: why doesn't Leo support cross-file clones?
-@language rest 
-
-Cross-file clones are cloned nodes in one outline that refer to data in another
-outline. This is a frequently requested feature. For example::
-
-    I would absolutely love to have the leo files in different project
-    directories, and a "master" leo file to rule them all.
-    
-However, cross-file clones will never be a part of Leo. Indeed, cross-file
-clones would violate the principle that data should be defined and managed in
-exactly one place. Just as human managers would not willingly accept shared
-responsibility for even a single line of code, every piece of Leonine data
-should be the responsibility of one and *only* one .leo file.
-
-The problem fundamental. If the *same* (cloned) data were "owned" by two
-different Leo files we would have a classic "multiple update problem" for the
-data. Each outline could change the data in incompatible ways, and whichever
-outline changed the data last would "win."
-
-To make such a scheme workable and safe, one would have to devise a scheme that
-would keep the data in "component" .leo files consistent even when the component
-.leo files changed "randomly", without the "master" .leo file being in *any* way
-in "control" of the changes. Good luck :-)
-
-Let us be clear: it's no good having a scheme that works *most* of the time, it
-must work *all* the time, even with unexpected or even pathological file
-updates. If it doesn't you are asking for, and will eventually get, catastrophic
-data loss, without being aware of the loss for an arbitrarily long period of
-time. Even with a source code control system this would be an intolerable
-situation.
-#@+node:ekr.20110520051220.18204: *4* FAQ: what are the alternatives to cross-file clones?
-@language rest
-
-Happily, there are several possible workaround.
-
-=======
-
-
-Imo, the qttabs gui is the proper starting point for further work.
-For example, I have a *script* called "all", which loads all my most
-commonly-used .leo files on startup.
-
-True, this does not allow for cross-file clones, but that's exactly
-the point: every .leo file is responsible for it's own data.
-
-The only new feature that I want at present is the ability to search
-in all the open files.  This is not entirely trivial code, but it's
-certainly doable.
-
-The only other task is to create a FAQ entry explaining, once again,
-why having every piece of data be the responsibility of exactly one
-.leo file is important, and why allowing multiple .leo files to
-control a (clone of) a datum is a bad idea.  I've just made this an
-urgent item. 
 #@+node:ekr.20110520051220.18197: *3* * Action items: 7
 #@+node:ekr.20080727122007.1: *4* Allow user to set background colors of nodes
 What uA should be used to specify node colors?
