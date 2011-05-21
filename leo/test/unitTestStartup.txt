@@ -137,6 +137,11 @@ import leoTest
 leoTest.doTests(c,all=False)
 c.selectPosition(p)
 #@+node:ekr.20041121151002: ** @settings
+#@+node:ekr.20110521073115.3494: *3* colorizer colors
+#@+node:ekr.20110521073115.3495: *4* @color keyword3_color = orange
+builtins, including cython builtins
+#@+node:ekr.20110521073115.3496: *4* @color keyword4_color = pink
+cython keywords
 #@+node:ekr.20090629104856.4992: *3* @@bool big_outline_pane = True
 #@+node:ekr.20070303143846.1: *3* @@enabled-plugins
 # Plugin_manager.py needs plugins_menu.py
@@ -187,21 +192,6 @@ False:
 #@+node:ekr.20050328101834.1: *4* @bool http_active = False
 #@+node:ekr.20050328101834.2: *4* @int  port = 8080
 #@+node:ekr.20050328101834.3: *4* @string rst_http_attributename = ''
-#@+node:ekr.20070303143951: *3* unused
-#@+node:ekr.20051018071924: *4* @@color log_pane_Completion_tab_background_color = yellow
-
-#@+node:ekr.20060325072919: *4* @@ifgui tkinter
-#@+node:ekr.20060325072919.1: *5* @bool test_tkinter_setting = True
-#@+node:ekr.20060325072919.2: *4* @@ifgui wxWindows
-#@+node:ekr.20060325072919.3: *5* @bool test_wxWindows_setting = True
-#@+node:ekr.20050104095950: *4* @@shortcutsEqualSizedPanes
-# Switch EqualSizedPanes and ExecuteScript
-
-# EqualSizedPanes = Ctrl+E
-# ExecuteScript = Alt+Ctrl+E
-# Exit = alt-ctrl-Z
-
-# paste-text = Alt-Ctrl-V
 #@+node:ekr.20070515150433: ** @chapters
 #@+node:ekr.20070611081718: *3* @chapter unitTestChapter
 #@+node:ekr.20070611081718.1: *4* unitTestChapter node 1

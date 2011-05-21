@@ -26,9 +26,7 @@ attributesDictDict = {
 cython_main_keywords_dict = {
 
     # Additional cython keywords....
-
-    # Note: the colorizer's setKeywords method computes the set of letters in keywords.
-    # Thus, nothing needs to be done here to support the "except?" keyword.
+    # The colorizer computes word chars, so "except?" is handled correctly.
     "by": "keyword4",
     "cdef": "keyword4",
     "cimport": "keyword4",
@@ -67,6 +65,7 @@ cython_main_keywords_dict = {
     "void": "keyword3",
 
     # Normal Python keywords, the same as in python.py...
+    # except that conflicts with cython keywords have been removed.
     "ArithmeticError": "keyword3",
     "AssertionError": "keyword3",
     "AttributeError": "keyword3",
@@ -248,7 +247,7 @@ cython_main_keywords_dict = {
     "def": "keyword1",
     "del": "keyword1",
     "delattr": "keyword2",
-    "dict": "keyword2",
+    # "dict": "keyword2",
     "dir": "keyword2",
     "divmod": "keyword2",
     "elif": "keyword1",
@@ -261,7 +260,7 @@ cython_main_keywords_dict = {
     "file": "keyword2",
     "filter": "keyword2",
     "finally": "keyword1",
-    "float": "keyword2",
+    # "float": "keyword2",
     "for": "keyword1",
     "from": "keyword1",
     "getattr": "keyword2",
@@ -275,7 +274,7 @@ cython_main_keywords_dict = {
     "import": "keyword1",
     "in": "keyword1",
     "input": "keyword2",
-    "int": "keyword2",
+    # "int": "keyword2",
     "intern": "keyword2",
     "is": "keyword1",
     "isinstance": "keyword2",
@@ -283,14 +282,14 @@ cython_main_keywords_dict = {
     "iter": "keyword2",
     "lambda": "keyword1",
     "len": "keyword2",
-    "list": "keyword2",
+    # "list": "keyword2",
     "locals": "keyword2",
-    "long": "keyword2",
+    # "long": "keyword2",
     "map": "keyword2",
     "max": "keyword2",
     "min": "keyword2",
     "not": "keyword1",
-    "object": "keyword2",
+    # "object": "keyword2",
     "oct": "keyword2",
     "open": "keyword2",
     "or": "keyword1",
@@ -298,7 +297,7 @@ cython_main_keywords_dict = {
     "pass": "keyword1",
     "pow": "keyword2",
     "print": "keyword1",
-    "property": "keyword2",
+    # "property": "keyword2",
     "raise": "keyword1",
     "range": "keyword2",
     "raw_input": "keyword2",
@@ -542,4 +541,3 @@ rulesDictDict = {
 
 # Import dict for cython mode.
 importDict = {}
-

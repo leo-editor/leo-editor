@@ -1105,7 +1105,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="13"></t>
+<t tx="ekr.20070416075121" str_leo_pos="14"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8783,13 +8783,25 @@ timer.start(0)
 <t tx="ekr.20110512225930.2456"></t>
 <t tx="ekr.20110521072459.2459">@language cython
 
-
+# Cython keywords: use @color keyword4_color to specify color
 by cdef cimport cpdef ctypedef enum except?
-                    extern gil include nogil property public
-                    readonly struct union DEF IF ELIF ELSE
-                    
+extern gil include nogil property public
+readonly struct union DEF IF ELIF ELSE
+                
+# Cython types: colorized with like builtins.
+# Use @color keyword4_color to specify color.
 NULL bint char dict double float int list
-long object Py_ssize_t short size_t void</t>
+long object Py_ssize_t short size_t void
+
+def spam() except?:
+    pass
+
+try:
+    pass
+except:
+    pass
+except Exception:
+    pass</t>
 <t tx="ekr.20110521072459.2463"></t>
 <t tx="ekr.20110521072459.2464">builtins, including cython builtins</t>
 <t tx="ekr.20110521072459.2465">cython keywords</t>

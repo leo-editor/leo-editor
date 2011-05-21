@@ -9629,7 +9629,7 @@ class jEditColorizer:
         # if trace: g.trace(name,list(self.modes.keys()))
         bunch = self.modes.get(rulesetName)
         if bunch:
-            if trace: g.trace('found',language,rulesetName,g.callers(2))
+            if trace: g.trace('found',language,rulesetName)
             self.initModeFromBunch(bunch)
             return True
         else:
@@ -9656,6 +9656,7 @@ class jEditColorizer:
                     properties      = {},
                     rulesDict       = {},
                     rulesetName     = rulesetName,
+                    word_chars      = self.word_chars, # 2011/05/21
                 )
                 if trace: g.trace('***** No colorizer file: %s.py' % language)
                 self.rulesetName = rulesetName
@@ -9682,6 +9683,7 @@ class jEditColorizer:
                 properties      = self.properties,
                 rulesDict       = self.rulesDict,
                 rulesetName     = self.rulesetName,
+                word_chars      = self.word_chars, # 2011/05/21
             )
             # Do this after 'officially' initing the mode, to limit recursion.
             self.addImportedRules(mode,self.rulesDict,rulesetName)
@@ -9788,6 +9790,7 @@ class jEditColorizer:
         self.properties     = bunch.properties
         self.rulesDict      = bunch.rulesDict
         self.rulesetName    = bunch.rulesetName
+        self.word_chars     = bunch.word_chars # 2011/05/21
 
         # State stuff.
         # h = self.highlighter

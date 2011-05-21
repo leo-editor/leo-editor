@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.63">
+	<global_window_position top="206" left="466" height="808" width="1294"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -95,7 +95,8 @@
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e372e31332e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e372e31352e3671057d71065808000000616e6e6f7461746571077d7108735807000000302e342e302e3571097d710a5808000000616e6e6f74617465710b7d710c735807000000302e372e392e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e372e31332e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e372e31352e3671057d71065808000000616e6e6f7461746571077d7108735807000000302e342e302e3571097d710a5808000000616e6e6f74617465710b7d710c735807000000302e372e392e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"
+expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20090529141856.4731,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4772,ekr.20090529141856.4774,ekr.20090529141856.4734,ekr.20100219080213.5365,ekr.20090529141856.4736,ekr.20090529141856.4780,ekr.20090529141856.4784,ekr.20071113194424.1,ekr.20040802071519,ekr.20080501121449.1,ekr.20081001094920.2,ekr.20100131171342.5610,ekr.20091219122958.5066,ekr.20090529115704.4396,ekr.20100131171342.5612,ekr.20040712101754.37,ekr.20040712101754.38,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -366,15 +367,15 @@ if not g.os_path_exists(s):
     g.pr('created chinese file')
     
 </t>
-<t tx="ekr.20070217065840">@nocolor
+<t tx="ekr.20070217065840">@nocolor-node
+
 @
 To make unit tests, do the following:
     
 - Use the make-test script (Alt-5) to create a suboutline for a unit test.
 - Put text in the before node, selected desired text, then do the do-before script (Alt-6).
 - Execute the command, then do the do-after script (Alt-7).
-
-@color</t>
+</t>
 <t tx="ekr.20070217065840.1">try:
     p1 = p.insertAfter()
     c.setHeadString(p1,'@test ')
@@ -500,7 +501,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935"></t>
+<t tx="ekr.20070417092935" str_leo_pos="5,0"></t>
 <t tx="ekr.20071113140035">fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src','leoPy.leo'))
 flag,frame2 = g.openWithFileName(fileName,old_c=None,enableLog=False)
 c.frame.bringToFront()
