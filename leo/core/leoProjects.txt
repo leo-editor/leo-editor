@@ -13830,5 +13830,26 @@ for reasons I don't fully understand, but are not really surprising.
 
 Furthermore, doing this on a prototype basis in c.doCommand showed
 that this is a bad idea.
+#@+node:ekr.20110520051220.18198: *4* Added namespace and Leo comment lines to .leo files
+# This is the easy part of the new file format.
+#@+node:ekr.20031218072017.1246: *5* putProlog
+def putProlog (self):
+
+    c = self.c
+
+    self.putXMLLine()
+    
+    # Put "created by Leo" line.
+    self.put('<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->')
+    self.put_nl()
+
+    if c.config.stylesheet or c.frame.stylesheet:
+        self.putStyleSheetLine()
+
+    # Put the <leo_file> element.
+    # New in Leo 4.9: this element contains a namespace.
+    self.put('<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >')
+    # self.put("<leo_file>")
+    self.put_nl()
 #@-all
 #@-leo
