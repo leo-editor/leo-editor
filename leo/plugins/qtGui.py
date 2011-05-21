@@ -3492,7 +3492,7 @@ class leoQtBody (leoFrame.leoBody):
 
         '''select w.leo_chapter.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c ; cc = c.chapterController
 
         if hasattr(w,'leo_chapter') and w.leo_chapter:
@@ -4053,7 +4053,7 @@ class leoQtFindTab (leoFind.findTab):
     #@+node:ekr.20081121105001.247: *5* setOption
     def setOption (self,ivar,val):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace: g.trace(ivar,val)
 
         if ivar in self.intKeys:

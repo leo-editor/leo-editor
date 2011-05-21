@@ -4750,7 +4750,7 @@ def switchToChapter (self,w):
 
     '''select w.leo_chapter.'''
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     c = self.c ; cc = c.chapterController
 
     if hasattr(w,'leo_chapter') and w.leo_chapter:
@@ -6206,7 +6206,7 @@ def getOption (self,ivar):
 #@+node:ekr.20081121105001.247: *6* setOption
 def setOption (self,ivar,val):
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     if trace: g.trace(ivar,val)
 
     if ivar in self.intKeys:
@@ -6591,6 +6591,48 @@ def initModeFromBunch (self,bunch):
 
     # g.trace(self.rulesetName)
 
+#@+node:ekr.20110521082034.18166: *3* Tried and failed to select headline automatically
+#@+node:ekr.20090124174652.53: *4* afterSelectHint (nativeTree)
+def afterSelectHint (self,p,old_p):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    self.selecting = False
+
+    if self.busy():
+        self.error('afterSelectHint busy!: %s' % self.busy())
+
+    if not p:
+        return self.error('no p')
+
+    if p != c.currentPosition():
+        return self.error('p is not c.currentPosition()')
+
+    # We don't redraw during unit testing: an important speedup.
+    if c.expandAllAncestors(p) and not g.unitTesting:
+        self.full_redraw(p)
+    else:
+        c.outerUpdate() # Bring the tree up to date.
+        item = self.setItemForCurrentPosition(scroll=False)
+        
+        # if item and p and p.h == 'newHeadline':
+            # e = self.createTreeEditorForItem(item)
+            # c.outerUpdate()
+            # g.trace(repr(e))
+
+        # if item and p and p.h == 'newHeadline':
+            # tree = self.treeWidget
+            # e = tree.itemWidget(item,0) # A QLineEdit.
+            # if trace: g.trace('should edit',repr(e))
+            # if not e:
+                # tree.editItem(item)
+                # # e = tree.itemWidget(item,0) # A QLineEdit.
+                # e = self.createTreeEditorForItem(item)
+                # e.setFocus()
+                # s = e.text()
+                # e.setSelection(0,len(s))
+                # g.trace('force edit',e,p and p.h)
 #@+node:ekr.20110325185230.14517: ** Unused code
 #@+node:vivainio.20091223153142.4072: *3* Completer (qtBody)
 def showCompleter(self, alternatives, selected_cb):

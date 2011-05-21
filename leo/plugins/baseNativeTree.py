@@ -697,14 +697,30 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if p != c.currentPosition():
             return self.error('p is not c.currentPosition()')
 
-        if trace: g.trace(p.h)
-
         # We don't redraw during unit testing: an important speedup.
         if c.expandAllAncestors(p) and not g.unitTesting:
             self.full_redraw(p)
         else:
             c.outerUpdate() # Bring the tree up to date.
-            self.setItemForCurrentPosition(scroll=False)
+            item = self.setItemForCurrentPosition(scroll=False)
+            
+            # if item and p and p.h == 'newHeadline':
+                # e = self.createTreeEditorForItem(item)
+                # c.outerUpdate()
+                # g.trace(repr(e))
+
+            # if item and p and p.h == 'newHeadline':
+                # tree = self.treeWidget
+                # e = tree.itemWidget(item,0) # A QLineEdit.
+                # if trace: g.trace('should edit',repr(e))
+                # if not e:
+                    # tree.editItem(item)
+                    # # e = tree.itemWidget(item,0) # A QLineEdit.
+                    # e = self.createTreeEditorForItem(item)
+                    # e.setFocus()
+                    # s = e.text()
+                    # e.setSelection(0,len(s))
+                    # g.trace('force edit',e,p and p.h)
     #@+node:ekr.20090124174652.54: *3* beforeSelectHint (nativeTree)
     def beforeSelectHint (self,p,old_p):
 
@@ -746,7 +762,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         """Start editing p's headline."""
 
-        trace = False ; verbose = False
+        trace = False and not g.unitTesting
         if self.busy(): return
         c = self.c
         c.outerUpdate()
@@ -763,7 +779,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # A nice hack: just set the focus request.
         if e: c.requestedFocusWidget = e
         
-        if trace: g.trace(e,wrapper)
+        if trace: g.trace(e,wrapper,g.callers())
         return e,wrapper # 2011/02/12
     #@+node:ekr.20090124174652.57: *3* editPosition (nativeTree)
     def editPosition(self):
@@ -879,12 +895,15 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 # This generates gui events, so we must use a lockout.
                 if trace and verbose: g.trace('setCurrentItem',self.traceItem(item),p.h)
                 self.setCurrentItemHelper(item)
+                    # Just calls self.setCurrentItem(item)
                 if scroll:
                     if trace: g.trace(self.traceItem(item))
                     self.scrollToItem(item)
             finally:
                 self.selecting = False
 
+        # if trace: g.trace('item',repr(item))
+        if not item: g.trace('*** no item')
         return item
     #@+node:ekr.20090124174652.60: *3* setHeadline (nativeTree)
     def setHeadline (self,p,s):

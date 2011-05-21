@@ -4,9 +4,6 @@
 #@+node:ekr.20110520051220.18187: ** 4.9 a1
 #@+node:ekr.20110520051220.18194: *3* * First
 # These are trivial to do.
-#@+node:ekr.20110520051220.18192: *4* Enter Headline Edit Mode when headline is "newHeadline"
-Enter Headline Edit Mode when current node is the default
-https://bugs.launchpad.net/leo-editor/+bug/701188
 #@+node:ekr.20110502085000.6113: *4* FAQ: why doesn't Leo support cross-file clones?
 @language rest 
 
