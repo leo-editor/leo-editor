@@ -2,7 +2,70 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110520051220.18187: ** 4.9 a1
-#@+node:ekr.20110520051220.18197: *3* * Action items
+#@+node:ekr.20110520051220.18194: *3* * First
+# These are trivial to do.
+#@+node:ekr.20110520051220.18191: *4* Fix rst button bug
+rst 3 button in contextmenu throws an error
+https://bugs.launchpad.net/leo-editor/+bug/751976
+#@+node:ekr.20110520051220.18192: *4* Enter Headline Edit Mode when headline is "newHeadline"
+Enter Headline Edit Mode when current node is the default
+https://bugs.launchpad.net/leo-editor/+bug/701188
+#@+node:ekr.20110502085000.6113: *4* FAQ: why doesn't Leo support cross-file clones?
+@language rest 
+
+Cross-file clones are cloned nodes in one outline that refer to data in another
+outline. This is a frequently requested feature. For example::
+
+    I would absolutely love to have the leo files in different project
+    directories, and a "master" leo file to rule them all.
+    
+However, cross-file clones will never be a part of Leo. Indeed, cross-file
+clones would violate the principle that data should be defined and managed in
+exactly one place. Just as human managers would not willingly accept shared
+responsibility for even a single line of code, every piece of Leonine data
+should be the responsibility of one and *only* one .leo file.
+
+The problem fundamental. If the *same* (cloned) data were "owned" by two
+different Leo files we would have a classic "multiple update problem" for the
+data. Each outline could change the data in incompatible ways, and whichever
+outline changed the data last would "win."
+
+To make such a scheme workable and safe, one would have to devise a scheme that
+would keep the data in "component" .leo files consistent even when the component
+.leo files changed "randomly", without the "master" .leo file being in *any* way
+in "control" of the changes. Good luck :-)
+
+Let us be clear: it's no good having a scheme that works *most* of the time, it
+must work *all* the time, even with unexpected or even pathological file
+updates. If it doesn't you are asking for, and will eventually get, catastrophic
+data loss, without being aware of the loss for an arbitrarily long period of
+time. Even with a source code control system this would be an intolerable
+situation.
+#@+node:ekr.20110520051220.18204: *4* FAQ: what are the alternatives to cross-file clones?
+@language rest
+
+Happily, there are several possible workaround.
+
+=======
+
+
+Imo, the qttabs gui is the proper starting point for further work.
+For example, I have a *script* called "all", which loads all my most
+commonly-used .leo files on startup.
+
+True, this does not allow for cross-file clones, but that's exactly
+the point: every .leo file is responsible for it's own data.
+
+The only new feature that I want at present is the ability to search
+in all the open files.  This is not entirely trivial code, but it's
+certainly doable.
+
+The only other task is to create a FAQ entry explaining, once again,
+why having every piece of data be the responsibility of exactly one
+.leo file is important, and why allowing multiple .leo files to
+control a (clone of) a datum is a bad idea.  I've just made this an
+urgent item. 
+#@+node:ekr.20110520051220.18197: *3* * Action items: 7
 #@+node:ekr.20080727122007.1: *4* Allow user to set background colors of nodes
 What uA should be used to specify node colors?
 
@@ -140,7 +203,7 @@ launchLeo.py --gui=tk".
 @nocolor-node
 
 This is too annoying to ignore
-#@+node:ekr.20110517093705.14575: *3* Fix 6 qt bugs (as many as possible, the rest for b1)
+#@+node:ekr.20110517093705.14575: *3* Fix qt bugs: 6 (as many as possible, the rest for b1)
 @nocolor-node
 
 leo overrides minibuffer background color
@@ -282,6 +345,10 @@ def moveWithinLineHelper (self,event,spot,extend):
         else:
             g.trace('can not happen: bad spot: %s' % spot)
 #@+node:ekr.20110520051220.18200: *3* Fix all gui-related bugs
+#@+node:ekr.20110520051220.18203: *3* * Cross-tab search
+@language rest
+
+This would be a substitute for cross-file clones.
 #@+node:ekr.20101116100300.5827: *3* Write script file to temp file if @bool write_script_file is False
 @nocolor-node
 
