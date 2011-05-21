@@ -13621,5 +13621,187 @@ def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
     if trailingNL: result = result + '\n'
 
     return result
+#@+node:ekr.20110521065021.18163: *4* Added support for cython
+#@+node:ekr.20031218072017.368: *5* << define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM_", # Use the REM hack.
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "cython"        : "#",
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "haskell"       : "--_ {-_ _-}",
+    "haxe"          : "//",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lisp"          : ";", # EKR: 2010/09/29
+    "lua"           : "--",  # ddm 13/02/06
+    "nsi"           : ";", # EKR: 2010/10/27
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "rest"          : ".._",
+    "rst"           : ".._",
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--',
+        # For unknown extensions in @shadow files.
+    "vim"           : "\"",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "cython"        : "pyd",
+    "cython"        : "pyi",
+    "cython"        : "pyx",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f90",
+    "haskell"       : "hs",
+    "haxe"          : "hx",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "nsi"           : "nsi", # EKR: 2010/10/27
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    # "rst"           : "rst", # caught by pylint.
+    "rst"           : "rest",
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vim"           : "vim",
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+    "xslt"          : "xsl",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "hs"    : "haskell",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nsi"   : "nsi", # EKR: 2010/10/27
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "pyd"   : "cython",
+    "pyi"   : "cython",
+    "pyx"   : "cython",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+    "w"     : "cweb",
+    "xml"   : "xml",
+    "xsl"   : "xslt",
+    "hx"    : "haxe",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran90',
+    'hx'    : 'none',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nsi'   : 'none', # Leo 4.8.
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+
+self.global_commands_dict = {}
 #@-all
 #@-leo
