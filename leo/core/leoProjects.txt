@@ -13811,5 +13811,16 @@ self.extra_extension_dict = {
 }
 
 self.global_commands_dict = {}
+#@+node:ekr.20110520051220.18192: *4* A bad idea: auto-edit nodes whose headline is "newHeadline"
+@nocolor-node
+
+Enter Headline Edit Mode when current node is the default
+https://bugs.launchpad.net/leo-editor/+bug/701188
+
+This seems to be impossible to do in the Qt gui code,
+for reasons I don't fully understand, but are not really surprising.
+
+Furthermore, doing this on a prototype basis in c.doCommand showed
+that this is a bad idea.
 #@-all
 #@-leo
