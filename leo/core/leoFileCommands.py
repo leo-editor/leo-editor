@@ -1680,11 +1680,19 @@ class baseFileCommands:
         c = self.c
 
         self.putXMLLine()
+        
+        # Put "created by Leo" line.
+        self.put('<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->')
+        self.put_nl()
 
         if c.config.stylesheet or c.frame.stylesheet:
             self.putStyleSheetLine()
 
-        self.put("<leo_file>") ; self.put_nl()
+        # Put the <leo_file> element.
+        # New in Leo 4.9: this element contains a namespace.
+        self.put('<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >')
+        # self.put("<leo_file>")
+        self.put_nl()
     #@+node:ekr.20031218072017.1248: *4* putStyleSheetLine
     def putStyleSheetLine (self):
 
