@@ -23,6 +23,10 @@
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 </v>
+<v t="ekr.20110521072459.2463"><vh>colorizer colors</vh>
+<v t="ekr.20110521072459.2464"><vh>@color keyword3_color = orange</vh></v>
+<v t="ekr.20110521072459.2465"><vh>@color keyword4_color = pink</vh></v>
+</v>
 <v t="ekr.20100118190256.2015"><vh>Files &amp; directories</vh>
 <v t="ekr.20101009105505.2295"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
@@ -675,6 +679,8 @@
 <v t="ekr.20110325142240.2508"><vh>AutoCompleter test script</vh></v>
 <v t="ekr.20110510093130.2434"><vh>AutoCompletion test area</vh></v>
 <v t="ekr.20110511140347.2445"><vh>QTimer</vh></v>
+<v t="ekr.20110521072459.2463"></v>
+<v t="ekr.20110521072459.2459"><vh>cython tests</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1099,7 +1105,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="1,3"></t>
+<t tx="ekr.20070416075121" str_leo_pos="13"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8775,5 +8781,17 @@ timer.start(0)
 </t>
 <t tx="ekr.20110512085154.2447"></t>
 <t tx="ekr.20110512225930.2456"></t>
+<t tx="ekr.20110521072459.2459">@language cython
+
+
+by cdef cimport cpdef ctypedef enum except?
+                    extern gil include nogil property public
+                    readonly struct union DEF IF ELIF ELSE
+                    
+NULL bint char dict double float int list
+long object Py_ssize_t short size_t void</t>
+<t tx="ekr.20110521072459.2463"></t>
+<t tx="ekr.20110521072459.2464">builtins, including cython builtins</t>
+<t tx="ekr.20110521072459.2465">cython keywords</t>
 </tnodes>
 </leo_file>

@@ -151,6 +151,7 @@ class LeoApp:
             "cpp"           : "// /* */",# C++.
             "css"           : "/* */", # 4/1/04
             "cweb"          : "@q@ @>", # Use the "cweb hack"
+            "cython"        : "#",
             "elisp"         : ";",
             "forth"         : "\\_ _(_ _)", # Use the "REM hack"
             "fortran"       : "C",
@@ -201,6 +202,9 @@ class LeoApp:
             "cpp"           : "cpp",
             "css"           : "css", # 4/1/04
             "cweb"          : "w",
+            "cython"        : "pyd",
+            "cython"        : "pyi",
+            "cython"        : "pyx",
             "elisp"         : "el",
             "forth"         : "forth",
             "fortran"       : "f",
@@ -268,6 +272,9 @@ class LeoApp:
             "pod"   : "perlpod", # 11/7/05
             "php"   : "php",
             "py"    : "python",
+            "pyd"   : "cython",
+            "pyi"   : "cython",
+            "pyx"   : "cython",
             "sql"   : "plsql", # qt02537 2005-05-27
             "r"     : "rebol",
             "rb"    : "ruby", # thyrsus 2008-11-05
