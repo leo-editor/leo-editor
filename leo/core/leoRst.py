@@ -492,6 +492,8 @@ class rstCommands:
         ext is the docutils extention: it's useful for scripts and unit tests.
         '''
 
+        trace = False and not g.unitTesting
+        if trace: g.trace(p.h)
         self.preprocessTree(p)
         found = False ; self.stringOutput = ''
         p = p.copy() ; after= p.nodeAfterTree()
@@ -500,6 +502,7 @@ class rstCommands:
             if g.match_word(h,0,"@rst"):
                 fn = h[4:].strip()
                 if ((fn and fn[0] != '-') or (toString and not fn)):
+                    if trace: g.trace('found: %s',p.h)
                     found = True
                     self.write_rst_tree(p,ext,fn,toString=toString,justOneFile=justOneFile)
                     self.scanAllOptions(p) # Restore the top-level verbose setting.

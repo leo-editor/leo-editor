@@ -277,11 +277,6 @@ def replaceCodeBlockDirectives (self,lines):
 
     return result
 #@+node:ekr.20110317080650.14388: ** Unused code
-#@+node:leohag.20081207032616.23: *3* afterDrawHandler (not used from scrolledmessage)
-# def afterDrawHandler():
-
-    # pass
-    #if self.ui.actionFollowOutline
 #@+node:leohag.20081203143921.18: *3* show (not used from scrolledmessage)
 def show(self):
     

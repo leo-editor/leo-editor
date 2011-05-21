@@ -1,6 +1,6 @@
 
 #@+leo-ver=5-thin
-#@+node:leohag.20081204085551.1: * @file scrolledmessage.py
+#@+node:ekr.20101104190737.5629: * @file scrolledmessage.py
 #@@first
 
 #@+<< docstring >>
@@ -207,7 +207,7 @@ class ScrolledMessageController(object):
             if k not in keywords:
                 keywords[k] = v 
 
-        #g.trace(keywords)
+        # g.trace(keywords)
         self.updateDialog(keywords)
 
         return keywords
@@ -488,24 +488,35 @@ class ScrolledMessageDialog(object):
     def doActionAbout(self, checked):
 
         pass
-    #@+node:leohag.20081207032616.24: *4* RST3
-    def doActionRST3(self, checked):
+    #@+node:leohag.20081207032616.24: *4* doActionRST3
+    def doActionRST3(self,checked):
+        
+        # This is connected in leo\plugins\ScrolledMessage.ui
+        
+        if 0: # original code:
+            
+            pc = g.app.pluginsController
+            rst3 = pc.getPluginModule('rst3')
 
-        pc = g.app.pluginsController
-        rst3 = pc.getPluginModule('rst3')
+            if not rst3:
+                rst3 = pc.loadOnePlugin('rst3',verbose=True)
+                if rst3:
+                    g.es('rst3 loaded')
+                    rst3.onCreate('tag',{'c':self.c})
 
-        if not rst3:
-            rst3 = pc.loadOnePlugin('rst3',verbose=True)
             if rst3:
-                g.es('rst3 loaded')
-                rst3.onCreate('tag',{'c':self.c})
+                controller = rst3.controllers.get(self.c)
+                if controller:
+                    g.doHook('scrolledMessage', c=self.c, msg='loading..', flags='text')
+                    p,s = controller.writeNodeToString(ext='.html')
+                    g.doHook('scrolledMessage', c=self.c, msg=s, flags='html')
+        
+        if 0: # New code, doesn't work.
 
-        if rst3:
-            controller = rst3.controllers.get(self.c)
-            if controller:
-                g.doHook('scrolledMessage', c=self.c, msg='loading..', flags='text')
-                p,s = controller.writeNodeToString(ext='.html')
-                g.doHook('scrolledMessage', c=self.c, msg=s, flags='html')
+            c = self.c
+            g.doHook('scrolledMessage',c=c, msg='loading..',flags='text')
+            p,s = c.rstCommands.writeNodeToString(ext='.html')
+            g.doHook('scrolledMessage',c=c,msg=s,flags='html')
     #@+node:ekr.20110319081254.14463: *3* Callbacks
     #@+node:leohag.20081203205020.1: *4* closeMe
     def closeMe(self, visible):

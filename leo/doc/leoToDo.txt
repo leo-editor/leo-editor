@@ -4,9 +4,6 @@
 #@+node:ekr.20110520051220.18187: ** 4.9 a1
 #@+node:ekr.20110520051220.18194: *3* * First
 # These are trivial to do.
-#@+node:ekr.20110520051220.18191: *4* Fix rst button bug
-rst 3 button in contextmenu throws an error
-https://bugs.launchpad.net/leo-editor/+bug/751976
 #@+node:ekr.20110520051220.18192: *4* Enter Headline Edit Mode when headline is "newHeadline"
 Enter Headline Edit Mode when current node is the default
 https://bugs.launchpad.net/leo-editor/+bug/701188
