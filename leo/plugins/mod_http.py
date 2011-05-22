@@ -74,8 +74,6 @@ else:
     import StringIO # Python 2.x
     StringIO = StringIO.StringIO
     BytesIO = io.BytesIO
-    
-print('mod_http imports: StringIO: %s' % (StringIO))
 
 if g.isPython3:
     import urllib.parse as urlparse
