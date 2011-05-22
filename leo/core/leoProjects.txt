@@ -8025,6 +8025,7 @@ def executeScript(self,event=None,args=None,p=None,script=None,
             # g.pr('*** script',script)
             try:
                 p = c.p
+                if p: c.setCurrentDirectoryFromContext(p)
                 d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
                 if define_name: d['__name__'] = define_name
                 if namespace: d.update(namespace)
@@ -8068,6 +8069,25 @@ def redirectScriptOutput (self):
 
         g.redirectStdout() # Redirect stdout
         g.redirectStderr() # Redirect stderr
+#@+node:ekr.20110522121957.18230: *7* setCurrentDirectoryFromContext
+def setCurrentDirectoryFromContext(self,p):
+    
+    trace = False and not g.unitTesting
+    c = self
+    
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    
+    curDir = g.os_path_abspath(os.getcwd())
+
+    # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
+    
+    if path and path != curDir:
+        if trace: g.trace('calling os.chdir(%s)' % (path))
+        try:
+            os.chdir(path)
+        except Exception:
+            pass
 #@+node:EKR.20040627100424: *7* unredirectScriptOutput
 def unredirectScriptOutput (self):
 
@@ -13876,5 +13896,200 @@ def putProlog (self):
     self.put('<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >')
     # self.put("<leo_file>")
     self.put_nl()
+#@+node:ekr.20110518103946.18182: *4* Call os.chdir when executing scripts
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ea31ed2e0518866/3667f707b99ee9e3
+
+Call os.chdir() to set the current directory to match any @path directives in
+effect at the current node when a script is run or a button pushed?
+
+Ville and Terry have convinced me that it is worth doing on an experimental
+basis.
+
+
+**Note**: only the scripts_menu plugin calls g.executeScript.
+#@+node:ekr.20031218072017.3138: *5* g.executeScript
+def executeScript (name):
+
+    """Execute a script whose short python file name is given.
+
+    This is called only from the scripts_menu plugin."""
+
+    mod_name,ext = g.os_path_splitext(name)
+    theFile = None
+    try:
+        # This code is in effect an import or a reload.
+        # This allows the user to modify scripts without leaving Leo.
+        import imp
+        theFile,filename,description = imp.find_module(mod_name)
+        imp.load_module(mod_name,theFile,filename,description)
+    except Exception:
+        g.es("exception executing",name,color="red")
+        g.es_exception()
+
+    if theFile:
+        theFile.close()
+#@+node:ekr.20031218072017.2140: *5* c.executeScript & helpers
+def executeScript(self,event=None,args=None,p=None,script=None,
+    useSelectedText=True,define_g=True,define_name='__main__',silent=False,
+    namespace=None):
+
+    """This executes body text as a Python script.
+
+    We execute the selected text, or the entire body text if no text is selected."""
+
+    c = self ; script1 = script
+    writeScriptFile = c.config.getBool('write_script_file')
+    if not script:
+        script = g.getScript(c,p,useSelectedText=useSelectedText)
+    self.redirectScriptOutput()
+    try:
+        oldLog = g.app.log # 2011/01/19
+        log = c.frame.log
+        g.app.log = log
+        if script.strip():
+            sys.path.insert(0,c.frame.openDirectory)
+            script += '\n' # Make sure we end the script properly.
+            # g.pr('*** script',script)
+            try:
+                p = c.p
+                if p: c.setCurrentDirectoryFromContext(p)
+                d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
+                if define_name: d['__name__'] = define_name
+                if namespace: d.update(namespace)
+                if args:
+                    # g.trace('setting sys.argv',args)
+                    sys.argv = args
+                # A kludge: reset c.inCommand here to handle the case where we *never* return.
+                # (This can happen when there are multiple event loops.)
+                # This does not prevent zombie windows if the script puts up a dialog...
+                c.inCommand = False
+                if writeScriptFile:
+                    scriptFile = self.writeScriptFile(script)
+                    if g.isPython3:
+                        exec(compile(script,scriptFile,'exec'),d)
+                    else:
+                        execfile(scriptFile,d)
+                else:
+                    exec(script,d)
+                if 0: # This message switches panes, and can be disruptive.
+                    if not script1 and not silent:
+                        # Careful: the script may have changed the log tab.
+                        tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+                        g.es("end of script",color="purple",tabName=tabName)
+            except Exception:
+                g.handleScriptException(c,p,script,script1)
+            del sys.path[0]
+        else:
+            tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+            g.es("no script selected",color="blue",tabName=tabName)
+    finally:
+        g.app.log = oldLog # 2011/01/19
+        self.unredirectScriptOutput()
+#@+node:ekr.20031218072017.2143: *6* redirectScriptOutput
+def redirectScriptOutput (self):
+
+    c = self
+
+    # g.trace('original')
+
+    if c.config.redirect_execute_script_output_to_log_pane:
+
+        g.redirectStdout() # Redirect stdout
+        g.redirectStderr() # Redirect stderr
+#@+node:ekr.20110522121957.18230: *6* setCurrentDirectoryFromContext
+def setCurrentDirectoryFromContext(self,p):
+    
+    trace = False and not g.unitTesting
+    c = self
+    
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    
+    curDir = g.os_path_abspath(os.getcwd())
+
+    # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
+    
+    if path and path != curDir:
+        if trace: g.trace('calling os.chdir(%s)' % (path))
+        try:
+            os.chdir(path)
+        except Exception:
+            pass
+#@+node:EKR.20040627100424: *6* unredirectScriptOutput
+def unredirectScriptOutput (self):
+
+    c = self
+
+    # g.trace('original')
+
+    if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+
+        g.restoreStderr()
+        g.restoreStdout()
+#@+node:ekr.20070115135502: *6* writeScriptFile (changed)
+def writeScriptFile (self,script):
+
+    trace = False and not g.unitTesting
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script_file_path')
+    if path:
+        isAbsPath = os.path.isabs(path)
+        driveSpec, path = os.path.splitdrive(path)
+        parts = path.split('/')
+        # xxx bad idea, loadDir is often read only!
+        path = g.app.loadDir
+        if isAbsPath:
+            # make the first element absolute
+            parts[0] = driveSpec + os.sep + parts[0]
+        allParts = [path] + parts
+        path = c.os_path_finalize_join(*allParts)
+    else:
+        path = c.os_path_finalize_join(
+            g.app.homeLeoDir,'scriptFile.py')
+
+    if trace: g.trace(path)                
+
+    # Write the file.
+    try:
+        if g.isPython3:
+            # Use the default encoding.
+            f = open(path,encoding='utf-8',mode='w')
+        else:
+            f = open(path,'w')
+        s = script
+        if not g.isPython3: # 2010/08/27
+            s = g.toEncodedString(s,reportErrors=True)
+        f.write(s)
+        f.close()
+    except Exception:
+        g.es_exception()
+        g.es("Failed to write script to %s" % path)
+        # g.es("Check your configuration of script_file_path, currently %s" %
+            # c.config.getString('script_file_path'))
+        path = None
+
+    return path
+#@+node:ekr.20110522121957.18230: *5* setCurrentDirectoryFromContext
+def setCurrentDirectoryFromContext(self,p):
+    
+    trace = False and not g.unitTesting
+    c = self
+    
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    
+    curDir = g.os_path_abspath(os.getcwd())
+
+    # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
+    
+    if path and path != curDir:
+        if trace: g.trace('calling os.chdir(%s)' % (path))
+        try:
+            os.chdir(path)
+        except Exception:
+            pass
 #@-all
 #@-leo

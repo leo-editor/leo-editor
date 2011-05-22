@@ -2,26 +2,7 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110520051220.18187: ** 4.9 a1
-#@+node:ekr.20110520051220.18197: *3* * Action items: 6
-#@+node:ekr.20110518103946.18182: *4* * Call os.chdir when executing scripts
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ea31ed2e0518866/3667f707b99ee9e3
-
-On Sat, Mar 19, 2011 at 11:43 AM, Ville M. Vainio <vivainio@gmail.com> wrote:
-> On Fri, Mar 18, 2011 at 3:38 PM, Terry Brown <terry_n_brown@yahoo.com> wrote:
->
->> Should os.chdir() be called to set the current directory to match any
->> @path directives in effect at the current node when a script is run or
->> a button pushed?  Seems this would be useful.
->
-> I have wished this quite often. As it stands, current working
-> directory is unspecified which is not desirable.
-
-It may be unspecified, but your proposal would change it :-)
-
-However, you and Terry have convinced me that it is worth doing on an
-experimental basis.
+#@+node:ekr.20110520051220.18197: *3* * Action items: 3
 #@+node:ekr.20110518022449.6071: *4* * Are orphan nodes handled correctly?
 @nocolor-node
 
@@ -86,11 +67,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/196d37a58bb2dd80/
 
 Was support for this removed from Leo's core?
 
-#@+node:ekr.20080727122007.1: *4* Allow user to set background colors of nodes?
-What uA should be used to specify node colors?
-
-if the foreground / background color API uses uAs,
-would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
+#@+node:ekr.20110522121957.18231: *4* Don't select opening ( in calltips)
 #@+node:ekr.20110520051220.18196: *3* * Fix all high-priority bugs
 #@+node:ekr.20110520051220.18195: *4* Make sure log pane doesn't scroll horizontally
 @nocolor-node

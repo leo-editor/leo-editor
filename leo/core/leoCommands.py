@@ -2101,6 +2101,7 @@ class baseCommands (object):
                 # g.pr('*** script',script)
                 try:
                     p = c.p
+                    if p: c.setCurrentDirectoryFromContext(p)
                     d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
                     if define_name: d['__name__'] = define_name
                     if namespace: d.update(namespace)
@@ -2144,6 +2145,25 @@ class baseCommands (object):
 
             g.redirectStdout() # Redirect stdout
             g.redirectStderr() # Redirect stderr
+    #@+node:ekr.20110522121957.18230: *7* setCurrentDirectoryFromContext
+    def setCurrentDirectoryFromContext(self,p):
+        
+        trace = False and not g.unitTesting
+        c = self
+        
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        
+        curDir = g.os_path_abspath(os.getcwd())
+
+        # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
+        
+        if path and path != curDir:
+            if trace: g.trace('calling os.chdir(%s)' % (path))
+            try:
+                os.chdir(path)
+            except Exception:
+                pass
     #@+node:EKR.20040627100424: *7* unredirectScriptOutput
     def unredirectScriptOutput (self):
 
