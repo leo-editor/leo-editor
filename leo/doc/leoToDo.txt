@@ -1,9 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20110520051220.18187: ** 4.9 a1
-#@+node:ekr.20110520051220.18197: *3* * Action items: 3
-#@+node:ekr.20110518022449.6071: *4* * Are orphan nodes handled correctly?
+#@+node:ekr.20110520051220.18187: ** To do: 4.9 a1/b1
+#@+node:ekr.20110520051220.18197: *3* * Action items
+#@+node:ekr.20110518022449.6071: *4* Are orphan nodes handled correctly?
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/861a0d156b16090f
@@ -14,7 +14,9 @@ The document said that orphan children would be
 
 Orphan nodes prevent external files from being written.
 
-> I found, although they were saved in leo file (I checked the xml file), but they didn't appear in outline pane if I closed and reloaded the leo file. The same for named children nodes which were not referenced in parent file node.
+> I found, although they were saved in leo file (I checked the xml file), but
+they didn't appear in outline pane if I closed and reloaded the leo file. The
+same for named children nodes which were not referenced in parent file node.
 
 It's best if you correct the problem before closing the .leo file.
 But there may be a (recently-created) bug here.
@@ -60,23 +62,8 @@ most of the time  saving changes just overwrites without asking.
 I don't know what information to post about my environment. I use the
 standard OSX python install (2.6.1) and launch leo with "./
 launchLeo.py --gui=tk".
-#@+node:ekr.20110518103946.18183: *4* Fix mod_http plugin
+#@+node:ekr.20110522121957.18232: *4* Key binding problems
 @nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/196d37a58bb2dd80/ca526f0be4101f09
-
-Was support for this removed from Leo's core?
-
-#@+node:ekr.20110520051220.18196: *3* * Fix all high-priority bugs
-#@+node:ekr.20110520051220.18195: *4* Make sure log pane doesn't scroll horizontally
-@nocolor-node
-
-This is too annoying to ignore
-#@+node:ekr.20110517093705.14575: *3* Fix qt bugs: 6 (as many as possible, the rest for b1)
-@nocolor-node
-
-leo overrides minibuffer background color
-https://bugs.launchpad.net/leo-editor/+bug/323967
 
 Shortcuts don't work in most Log frame tabs
 https://bugs.launchpad.net/leo-editor/+bug/701261
@@ -84,16 +71,56 @@ https://bugs.launchpad.net/leo-editor/+bug/701261
     ** Make sure *all* widgets have bindings.
     *  Do we need c.idle_focus_helper?
 
+PgUp/PgDown should scroll the body, not the tree
+https://bugs.launchpad.net/leo-editor/+bug/394309 
+#@+node:ekr.20110522121957.18235: *4* Log pane is scrolling for Python 2.x
+# Example: e2.bat.
+#@+node:ekr.20110517093705.14575: *3* Bugs: before a1
+# As many as possible before the first release(a1).
+# All must be fixed before the second release(b1)
+
+
+#@+node:ekr.20110520051220.18203: *4* * Cross-tab search
+@language rest
+
+This would be a substitute for cross-file clones.
+#@+node:ekr.20110520051220.18196: *4* * Fix all high-priority bugs
+#@+node:ekr.20110522121957.18233: *4* viewrendered.py
+@nocolor-node
+
 viewrendered.py behaviour
 https://bugs.launchpad.net/leo-editor/+bug/755206
 
     *Option to have viewrendered plugins auto-collapse the pane
+#@+node:ekr.20110520051220.18199: *3* Bugs: before b1
+# These must be fixed before the second release(b1).
+#@+node:ekr.20110522121957.18234: *4* fill-para doesn't respect setting from set-fill-column
+@nocolor-node
 
 fill-para doesn't respect setting from set-fill-column
 https://bugs.launchpad.net/leo-editor/+bug/766747
 
-PgUp/PgDown should scroll the body, not the tree
-https://bugs.launchpad.net/leo-editor/+bug/394309 
+#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
+#@+node:ekr.20101116100300.5827: *4* Write script file to temp file if @bool write_script_file is False
+@nocolor-node
+
+It's important that g.pdb get the sources for *all* Leo scripts.
+
+Postings:
+
+When @bool write_script_file is True the execute-script file uses
+execfile (or its Python 3k equivalent) to execute scripts.
+
+This allows g.pdb (or pudb) to know the text of Leo scripts!
+
+I want to emphasize here how important this change is.  After 4.8 final I'll add code to use a temp file to hold sources if 
+@bool write_script_file is False.
+
+In the meantime, I strongly urge all script writers to set @bool write_script_file = True.
+
+Depending on your installation, especially on *nix, the default location for the file may be a problem.  In that case, set
+@string script_file_path to some convenient place, say in your home directory.
+#@+node:ekr.20100223133351.5998: *4* show-invisibles doesn't work for blank lines
 #@+node:ekr.20080806054207.3: *4* Auto scroll outline pane if headline would become invisible
 @nocolor
 
@@ -103,10 +130,6 @@ When using leo as outliner, I often use only node headlines to write
 down some data. If the headline string is too long, the cursor goes
 beyond the visible area. When modifying a node headline, is it
 possible to make leo to auto-scroll, so the cursor is always visible? 
-#@+node:ekr.20100223133351.5998: *4* show-invisibles doesn't work for blank lines
-#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
-#@+node:ekr.20110520051220.18188: ** 4.9 b1
-#@+node:ekr.20110520051220.18199: *3* Fix all medium and higher priority bugs
 #@+node:ekr.20081208102356.1: *4* Threading colorizer doesn't handle multiple body editors
 @nocolor-node
 
@@ -213,30 +236,7 @@ def moveWithinLineHelper (self,event,spot,extend):
             self.moveToHelper(event,j,extend=extend)
         else:
             g.trace('can not happen: bad spot: %s' % spot)
-#@+node:ekr.20110520051220.18200: *3* Fix all gui-related bugs
-#@+node:ekr.20110520051220.18203: *3* * Cross-tab search
-@language rest
-
-This would be a substitute for cross-file clones.
-#@+node:ekr.20101116100300.5827: *3* Write script file to temp file if @bool write_script_file is False
-@nocolor-node
-
-It's important that g.pdb get the sources for *all* Leo scripts.
-
-Postings:
-
-When @bool write_script_file is True the execute-script file uses
-execfile (or its Python 3k equivalent) to execute scripts.
-
-This allows g.pdb (or pudb) to know the text of Leo scripts!
-
-I want to emphasize here how important this change is.  After 4.8 final I'll add code to use a temp file to hold sources if 
-@bool write_script_file is False.
-
-In the meantime, I strongly urge all script writers to set @bool write_script_file = True.
-
-Depending on your installation, especially on *nix, the default location for the file may be a problem.  In that case, set
-@string script_file_path to some convenient place, say in your home directory.
+#@+node:ekr.20110520051220.18189: ** 4.9 Maybe
 #@+node:ekr.20110427135155.14306: *3* Add <attr> elements to .leo files
 @language rest
 
@@ -1136,7 +1136,6 @@ I'm sure pickling capability is great, but I'm not convinced
 it should be the _default._
 
 No big deal.
-#@+node:ekr.20110520051220.18189: ** 4.9 Maybe
 #@+node:ekr.20071001052501: *3* Versioning for nodes
 @nocolor
 

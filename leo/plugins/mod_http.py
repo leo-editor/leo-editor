@@ -57,15 +57,23 @@ if g.isPython3:
     import configparser as ConfigParser
 else:
     import ConfigParser
-
+    
+if g.isPython3:
+    import http.server
+    SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
+else:
+    import SimpleHTTPServer
+    SimpleHTTPRequestHandler = SimpleHTTPServer.SimpleHTTPRequestHandler
+    
 if g.isPython3:
     import io
-    from io import StringIO as StringIOClass
     StringIO = io.StringIO
+    BytesIO = io.BytesIO
 else:
-    import cStringIO
-    StringIO = cStringIO.StringIO
-    from StringIO import StringIO as StringIOClass
+    import StringIO # Python 2.x
+    import io.BytesIO as BytesIO
+    
+print('mod_http imports: StringIO: %s' % (StringIO))
 
 if g.isPython3:
     import urllib.parse as urlparse
@@ -77,7 +85,6 @@ import os
 import posixpath
 import select
 import shutil
-import SimpleHTTPServer
 import socket
 import sys
 import time
@@ -116,16 +123,19 @@ class config:
     rst2_http_attributename = 'rst_http_attribute'
 #@-<< config >>
 #@+others
-#@+node:ekr.20060830091349: ** init
+#@+node:ekr.20110522152535.18250: ** top-level
+#@+node:ekr.20060830091349: *3* init
 def init ():
 
     g.registerHandler("open2", onFileOpen)
     g.plugin_signon(__name__)
 
     return True
-#@+node:bwmulder.20050326191345.1: ** onFileOpen
+#@+node:bwmulder.20050326191345.1: *3* onFileOpen
 def onFileOpen(tag, keywords):
     c = keywords.get("new_c")
+    
+    # g.trace('c',repr(c))
 
     wasactive = config.http_active
     getConfiguration(c)
@@ -138,6 +148,43 @@ def onFileOpen(tag, keywords):
 
         g.es("http serving enabled on port %s, version %s" % (
             config.http_port, __version__), color="purple")
+#@+node:ekr.20110522152535.18252: *3* escape
+def escape(s):
+
+    s = s.replace('&', "&amp;")
+    s = s.replace('<', "&lt;")
+    s = s.replace('>', "&gt;")
+
+    # is there a more elegant way to do this?
+    # Replaces blanks with &nbsp; id they are in
+    # the beginning of the line.
+    lines = s.split('\n')
+    result = []
+    blank = chr(32)
+    for line in lines:
+        if line.startswith(blank):
+            resultchars = []
+            startline = True
+            for char in line:
+                if char == blank:
+                    if startline:
+                        resultchars.append('&nbsp;')
+                    else:
+                        resultchars.append(' ')
+                else:
+                    startline = False
+                    resultchars.append(char)
+            result.append(''.join(resultchars))
+        else:
+            result.append(line)
+    s = '\n'.join(result)
+
+    s = s.replace('\n', '<br />')
+    s = s.replace(chr(9), '&nbsp;&nbsp;&nbsp;&nbsp;')
+    # 8/9/2007
+    # s = g.toEncodedString(s,encoding=browser_encoding,reportErrors=False)
+    # StringIO.write(self, s)
+    return s
 #@+node:bwmulder.20050322132919: ** rst_related
 #@+node:bwmulder.20050322134325: *3* reconstruct_html_from_attrs
 def reconstruct_html_from_attrs(attrs, how_much_to_ignore=0):
@@ -192,10 +239,14 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
         self.buffer = []
     #@+node:EKR.20040517080250.6: *3* write
     def write(self,data):
+        
         self.buffer.append(data)
     #@+node:EKR.20040517080250.7: *3* initiate_sending
     def initiate_sending(self):
-        self.out_buffer = ''.join(self.buffer)
+        
+        ### Create a bytes string.
+        aList = [g.toEncodedString(z) for z in self.buffer]
+        self.out_buffer = b''.join(aList)
         del self.buffer
         self.set_socket(self.socket, None)
         self.socket.setblocking(0)
@@ -210,6 +261,7 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
         pass
     #@+node:EKR.20040517080250.9: *3* writable
     def writable(self):
+
         result = (not self.connected) or len(self.out_buffer)
         if not result:
             sockets_to_close.append(self)
@@ -225,51 +277,6 @@ class noLeoNodePath(Exception):
     Most likely a reference to a picture.
     """
     pass
-#@+node:EKR.20040517080250.11: ** class escaped_StringIO
-class escaped_StringIO(StringIOClass):
-    #@+others
-    #@+node:EKR.20040517080250.12: *3* write_escaped
-    def write_escaped(self, s):
-        s = s.replace('&', "&amp;")
-        s = s.replace('<', "&lt;")
-        s = s.replace('>', "&gt;")
-
-        # is there a more elegant way to do this?
-        # Replaces blanks with &nbsp; id they are in
-        # the beginning of the line.
-        lines = s.split('\n')
-        result = []
-        blank = chr(32)
-        for line in lines:
-            if line.startswith(blank):
-                resultchars = []
-                startline = True
-                for char in line:
-                    if char == blank:
-                        if startline:
-                            resultchars.append('&nbsp;')
-                        else:
-                            resultchars.append(' ')
-                    else:
-                        startline = False
-                        resultchars.append(char)
-                result.append(''.join(resultchars))
-            else:
-                result.append(line)
-        s = '\n'.join(result)
-
-        s = s.replace('\n', '<br />')
-        s = s.replace(chr(9), '&nbsp;&nbsp;&nbsp;&nbsp;')
-        # 8/9/2007
-        s = g.toEncodedString(s,encoding=browser_encoding,reportErrors=False)
-        StringIO.write(self, s)
-    #@+node:ekr.20070809085322: *3* write
-    def write (self,str):
-
-        str = g.toEncodedString(str,encoding=browser_encoding,reportErrors=False)
-        # g.trace('str',str)
-        return StringIO.write(self,str)
-    #@-others
 #@+node:EKR.20040517080250.20: ** class leo_interface
 class leo_interface(object):
     #@+others
@@ -325,7 +332,7 @@ class leo_interface(object):
         if children:
             f.write("\n<h2>")
             f.write("Children of ")
-            f.write_escaped(nodename)
+            f.write(escape(nodename))
             f.write("</h2>\n")
             f.write("<ol>\n")
             for child in children:
@@ -335,8 +342,9 @@ class leo_interface(object):
             f.write("</ol>\n")
     #@+node:EKR.20040517080250.22: *3* create_href
     def create_href(self, href, text, f):
+
         f.write('<a href="%s">' % href)
-        f.write_escaped(text)
+        f.write(escape(text))
         f.write("</a>\n")
 
     #@+node:bwmulder.20050319134815: *3* create_leo_h_reference
@@ -366,36 +374,35 @@ class leo_interface(object):
         else:
             headString, bodyString = "Top level", ""
             format_info = None
-        f = escaped_StringIO()
-        write, write_escaped = f.write, f.write_escaped
-        write("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+        f = StringIO()
+        f.write("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
     <html> 
     <head> 
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
     <title>""")
-        write_escaped(window.shortFileName() + ":" + headString)
-        write("</title>\n</head>\n<body>\n")
+        f.write(escape(window.shortFileName() + ":" + headString))
+        f.write("</title>\n</head>\n<body>\n")
         # write navigation
         self.add_leo_links(window, node, f)
         # write path
         self.write_path(node, f)
-        write("<hr />\n") # horizontal rule
+        f.write("<hr />\n") # horizontal rule
         # f.write('<span style="font-family: monospace;">')
         if format_info:
-            write("<p>\n")
+            f.write("<p>\n")
             html_lines = reconstruct_html_from_attrs(format_info, 3)
             for line in html_lines:
-                write(line)
-            write("\n</p>\n")
+                f.write(line)
+            f.write("\n</p>\n")
         else:
             if (bodyString):
-                write("<p>\n")
-            write_escaped(bodyString)
+                f.write("<p>\n")
+            f.write(escape(bodyString))
             if (bodyString):
-               write("\n</p>\n")
+               f.write("\n</p>\n")
         # f.write("</span>\n")
-        write("\n</body>\n</html>\n")
+        f.write("\n</body>\n</html>\n")
         return f
     #@+node:EKR.20040517080250.25: *3* get_leo_nameparts
     def get_leo_nameparts(self, node):
@@ -466,23 +473,22 @@ class leo_interface(object):
         """
 
         """
-        f = escaped_StringIO()
-        write, write_escaped = f.write, f.write_escaped
-        write("<title>ROOT for LEO HTTP plugin</title>\n")
-        write("<h2>Windowlist</h2>\n")
-        write("<hr />\n") # horizontal rule
-        write("<ul>\n")
+        f = StringIO()
+        f.write("<title>ROOT for LEO HTTP plugin</title>\n")
+        f.write("<h2>Windowlist</h2>\n")
+        f.write("<hr />\n") # horizontal rule
+        f.write("<ul>\n")
         a = g.app # get the singleton application instance.
         windows = a.windowList # get the list of all open frames.
         for w in windows:
-            write("<li>")
+            f.write("<li>")
             shortfilename = w.shortFileName()
-            write('<a href="%s">' % shortfilename)
-            write("file name: %s" % shortfilename)
-            write("</a>\n")
-            write("</li>")
-        write("</ul>\n")
-        write("<hr />\n")
+            f.write('<a href="%s">' % shortfilename)
+            f.write("file name: %s" % shortfilename)
+            f.write("</a>\n")
+            f.write("</li>")
+        f.write("</ul>\n")
+        f.write("<hr />\n")
         return f
     #@+node:bwmulder.20050319135316: *3* node_reference
     def node_reference(self, vnode):
@@ -561,6 +567,7 @@ class leo_interface(object):
         return path.split('/')
     #@+node:EKR.20040517080250.28: *3* write_path
     def write_path(self, node, f):
+
         result = []
         while node:
             result.append(node.h)
@@ -572,33 +579,42 @@ class leo_interface(object):
                 result2 = ' / '.join(result2)
                 f.write("<p>\n")
                 f.write("<br />\n")
-                f.write_escaped(result2)
+                f.write(escape(result2))
                 f.write("<br />\n")
                 f.write("</p>\n")
             f.write("<h2>")
-            f.write_escaped(result[-1])
+            f.write(escape(result[-1]))
             f.write("</h2>\n")
     #@-others
 #@+node:EKR.20040517080250.13: ** class RequestHandler
 class RequestHandler(
-    leo_interface
-    ,asynchat.async_chat,
-    SimpleHTTPServer.SimpleHTTPRequestHandler
-    ):
+    leo_interface,
+    asynchat.async_chat,
+    SimpleHTTPRequestHandler
+):
     #@+others
     #@+node:EKR.20040517080250.14: *3* __init__
     def __init__(self,conn,addr,server):
+        
         asynchat.async_chat.__init__(self,conn)
+
         self.client_address=addr
         self.connection=conn
         self.server=server
+        
         self.wfile = delayedSocketStream(self.socket)
-        # sets the terminator : when it is received, this means that the
-        # http request is complete ; control will be passed to
-        # self.found_terminator
-        self.set_terminator ('\r\n\r\n')
-        self.buffer=StringIO()
-        self.found_terminator=self.handle_request_line
+        
+        # Sets the terminator. When it is received, this means that the
+        # http request is complete, control will be passed to self.found_terminator
+        self.term = g.toEncodedString('\r\n\r\n')
+        self.set_terminator(self.term)
+
+        self.buffer = BytesIO() ###
+        
+        ### Set self.use_encoding and self.encoding.
+        ### This is used by asyn_chat.
+        self.use_encoding = True
+        self.encoding = 'utf-8'
     #@+node:EKR.20040517080250.15: *3* copyfile
     def copyfile(self, source, outputfile):
         """Copy all data between two file objects.
@@ -613,6 +629,7 @@ class RequestHandler(
         -- note however that this the default server uses this
         to copy binary data as well.
          """
+
         shutil.copyfileobj(source, outputfile, length=255)
     #@+node:EKR.20040517080250.16: *3* log_message
     def log_message(self, format, *args):
@@ -638,32 +655,42 @@ class RequestHandler(
         g.es(message)
     #@+node:EKR.20040517080250.17: *3* collect_incoming_data
     def collect_incoming_data(self,data):
+
         """Collects the data arriving on the connexion"""
+        
         self.buffer.write(data)
     #@+node:EKR.20040517080250.18: *3* prepare_POST
     def prepare_POST(self):
+        
         """Prepare to read the request body"""
+
         bytesToRead = int(self.headers.getheader('content-length'))
+        
         # set terminator to length (will read bytesToRead bytes)
         self.set_terminator(bytesToRead)
         self.buffer=StringIO()
+
         # control will be passed to a new found_terminator
         self.found_terminator=self.handle_post_data
     #@+node:EKR.20040517080250.19: *3* handle_post_data
     def handle_post_data(self):
         """Called when a POST request body has been read"""
+
         self.rfile=StringIO(self.buffer.getvalue())
         self.do_POST()
         self.finish()
     #@+node:EKR.20040517080250.31: *3* do_GET
     def do_GET(self):
         """Begins serving a GET request"""
+
         # nothing more to do before handle_data()
         self.handle_data()
     #@+node:EKR.20040517080250.32: *3* do_POST
     def do_POST(self):
+        
         """Begins serving a POST request. The request data must be readable
          on a file-like object called self.rfile"""
+
         ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
         length = int(self.headers.getheader('content-length'))
         if ctype == 'multipart/form-data':
@@ -682,34 +709,43 @@ class RequestHandler(
         self.handle_data()
     #@+node:EKR.20040517080250.33: *3* query
     def query(self,parsedQuery):
+        
         """Returns the QUERY dictionary, similar to the result of cgi.parse_qs
          except that :
          - if the key ends with [], returns the value (a Python list)
          - if not, returns a string, empty if the list is empty, or with the
          first value in the list"""
+
         res={}
         for item in parsedQuery.keys():
             value=parsedQuery[item] # a Python list
             if item.endswith("[]"):
-                    res[item[:-2]]=value
+                res[item[:-2]]=value
             else:
-                    if len(value)==0:
-                        res[item]=''
-                    else:
-                        res[item]=value[0]
+                if len(value)==0:
+                    res[item]=''
+                else:
+                    res[item]=value[0]
         return res
     #@+node:EKR.20040517080250.34: *3* handle_data
     def handle_data(self):
         """Class to override"""
+
         f = self.send_head()
         if f:
             self.copyfile(f, self.wfile)
-    #@+node:EKR.20040517080250.35: *3* handle_request_line
+    #@+node:ekr.20110522152535.18254: *3* handle_read_event (NEW)
+    def handle_read_event (self):
+        
+        '''Over-ride SimpleHTTPRequestHandler.handle_read_event.'''
+
+        asynchat.async_chat.handle_read_event(self)
+    #@+node:EKR.20040517080250.35: *3* handle_request_line (aka found_terminator)
     def handle_request_line(self):
         """Called when the http request line and headers have been received"""
 
         # prepare attributes needed in parse_request()
-        self.rfile=StringIO(self.buffer.getvalue())
+        self.rfile=BytesIO(self.buffer.getvalue())
         self.raw_requestline=self.rfile.readline()
         self.parse_request()
 
@@ -724,17 +760,24 @@ class RequestHandler(
             # if method is GET or HEAD, call do_GET or do_HEAD and finish
             method="do_"+self.command
             if hasattr(self,method):
-                    getattr(self,method)()
-                    self.finish()
+                f = getattr(self,method)
+                f()
+                self.finish()
         elif self.command=="POST":
             # if method is POST, call prepare_POST, don't finish before
             self.prepare_POST()
         else:
             self.send_error(501, "Unsupported method (%s)" %self.command)
+    #@+node:ekr.20110522152535.18256: *3* found_terminator
+    def found_terminator (self):
+        
+        self.handle_request_line()
     #@+node:EKR.20040517080250.36: *3* finish
     def finish(self):
+
         """Reset terminator (required after POST method), then close"""
-        self.set_terminator ('\r\n\r\n')
+
+        self.set_terminator (self.term)
         self.wfile.initiate_sending()
         # self.close()
     #@-others
@@ -744,9 +787,11 @@ class Server(asyncore.dispatcher):
     #@+others
     #@+node:EKR.20040517080250.38: *3* __init__
     def __init__ (self, ip, port,handler):
+
         self.ip = ip
         self.port = port
         self.handler=handler
+
         asyncore.dispatcher.__init__ (self)
         self.create_socket (socket.AF_INET, socket.SOCK_STREAM)
 
@@ -757,6 +802,7 @@ class Server(asyncore.dispatcher):
         self.listen (1024)
     #@+node:EKR.20040517080250.39: *3* handle_accept
     def handle_accept (self):
+        
         try:
             conn, addr = self.accept()
         except socket.error:
@@ -765,6 +811,7 @@ class Server(asyncore.dispatcher):
         except TypeError:
             self.log_info ('warning: server accept() threw EWOULDBLOCK', 'warning')
             return
+
         # creates an instance of the handler class to handle the request/response
         # on the incoming connexion
         self.handler(conn,addr,self)
@@ -834,29 +881,35 @@ def plugin_wrapper(tag, keywords):
 #@+node:EKR.20040517080250.46: ** asynchore_overrides
 #@+node:EKR.20040517080250.47: *3* a_read
 def a_read(obj):
+
     try:
         obj.handle_read_event()
     except asyncore.ExitNow:
         raise
     except:
+        # g.trace('error')
         obj.handle_error()
-
-
 #@+node:EKR.20040517080250.48: ** getConfiguration
 def getConfiguration(c):
 
     """Called when the user opens a new file."""
 
+    # timeout.
     newtimeout = c.config.getInt("http_timeout")
     if newtimeout is not None:
         config.http_timeout = newtimeout  / 1000.0
+    
+    # port.
     newport = c.config.getInt("http_port") 
     if newport:
         config.port = newport
+
+    # active.
     newactive = c.config.getBool("http_active")
-    # g.trace('http',newactive)
     if newactive is not None:
         config.http_active = newactive
+
+    # attribute name.
     new_rst2_http_attributename = c.config.getString("rst2_http_attributename")
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
