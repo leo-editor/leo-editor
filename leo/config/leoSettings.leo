@@ -7876,6 +7876,18 @@ QLineEdit#editorLabel {
     margin: 2px;
 }
 
+/* The text "Minibuffer" in the minibuffer aread.
+
+Do not overide QLabel directly.  It is used for dialog text.
+*/
+
+QLabel#minibufferLabel {
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; 
+    font-style: normal;
+}
+
 /* The mini-buffer
 
 **Important**: Because Leo changes the color of the minibuffer dynamically,

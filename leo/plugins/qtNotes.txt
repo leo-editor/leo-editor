@@ -26,16 +26,6 @@ def cascade (self,event=None):
                 x = 10 + delta ; y = 40 + delta
                 delta += 10
 #@+node:ekr.20100223114506.3698: *3* Should leoQtMenu.index do something?
-#@+node:ekr.20081215162017.4: *3* Allow coloring of script buttons
-@nocolor-node
-
-Use @string qt-button-color = lightSteelBlue
-
-The following does *not* work in @data qt-gui-plugin-style-sheet::
-
-    QPushButton {
-        background-color: red;
-    }
 #@+node:ekr.20081124094918.1: *3* Fix problems with scim
 @nocolor-node
 
@@ -6633,6 +6623,139 @@ def afterSelectHint (self,p,old_p):
                 # s = e.text()
                 # e.setSelection(0,len(s))
                 # g.trace('force edit',e,p and p.h)
+#@+node:ekr.20110521142955.18149: *3* Investigated headline coloring problems
+@nocolor-node
+
+- double-clicking calls createTreeEditorForItem.
+    ** This works.
+
+- ctrl-h --> edit_widget --> getTreeEditorForItem
+    self.headlineWrapper = leoFrame.baseTextWidget
+    ** This does not work.
+#@+node:ekr.20110521142955.18150: *4* report
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ee09fb2c2a5316f2/490fa7cddab36fab
+
+I have noticed recently an ugly combination of colors in headline while editing
+that was introduced by updating Leo. Background is very dark and text color is
+also dark so that it is quite unreadable. I haven't had enough time to inspect
+default settings till this morning. 
+
+When I start editing headline with Ctrl+h (that is the usual way I use) both
+colors (background and foreground) are dark, but when I double click in headline
+I see colors from myLeosettings file.
+
+I am using:
+Leo 4.8 final, build 3752, November 26, 2010
+Python 2.6.6, qt version 4.7.0
+linux2
+bzr revno gives me 3904
+#@+node:ekr.20090124174652.106: *4* getTreeEditorForItem (leoQtTree)
+def getTreeEditorForItem(self,item):
+
+    '''Return the edit widget if it exists.
+    Do *not* create one if it does not exist.'''
+
+    w = self.treeWidget
+    e = w.itemWidget(item,0)
+    return e
+#@+node:ekr.20090124174652.104: *4* createTreeEditorForItem (leoQtTree)
+def createTreeEditorForItem(self,item):
+
+    trace = False and not g.unitTesting
+
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+    e = w.itemWidget(item,0)
+    e.setObjectName('headline')
+    self.connectEditorWidget(e,item)
+    
+    if trace: g.trace(e)
+
+    return e
+#@+node:ekr.20090124174652.55: *4* edit_widget (nativeTree)
+def edit_widget (self,p):
+
+    """Returns the edit widget for position p."""
+
+    trace = False and not g.unitTesting
+    verbose = True
+
+    c = self.c
+    item = self.position2item(p)
+    if item:
+        e = self.getTreeEditorForItem(item)
+        if e:
+            # Create a wrapper widget for Leo's core.
+            w = self.getWrapper(e,item)
+            if trace: g.trace('objectName',repr(e.objectName()),e,p and p.h,g.callers())
+            return w
+        else:
+            # This is not an error
+            # But warning: calling this method twice might not work!
+            if trace and verbose: g.trace('no e for %s' % (p))
+            return None
+    else:
+        if trace and verbose: self.error('no item for %s' % (p))
+        return None
+#@+node:ekr.20090124174652.41: *4* onItemDoubleClicked (nativeTree)
+def onItemDoubleClicked (self,item,col):
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item),g.callers(4))
+
+    try:
+        self.selecting = True
+
+        e = self.createTreeEditorForItem(item)
+        if not e: g.trace('*** no e')
+
+        p = self.item2position(item)
+        if p:
+            event = None
+            g.doHook("icondclick1",c=c,p=p,v=p,event=event)
+            c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+        else:
+            g.trace('*** no p')
+
+        c.outerUpdate()
+    finally:
+        self.selecting = False
+#@+node:ekr.20090602083443.3817: *4* getWrapper (leoQtTree)
+def getWrapper (self,e,item):
+
+    '''Return headlineWrapper that wraps e (a QLineEdit).'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c
+    
+    if e:
+        wrapper = self.editWidgetsDict.get(e)
+        if wrapper:
+            if trace and verbose: g.trace('old wrapper',e,wrapper)
+        else:
+            if item:
+                # 2011/02/12: item can be None.
+                wrapper = self.headlineWrapper(c,item,name='head',widget=e)
+                if trace: g.trace('new wrapper',e,wrapper,g.callers())
+                self.editWidgetsDict[e] = wrapper
+            else:
+                if trace: g.trace('no item and no wrapper',
+                    e,self.editWidgetsDict)
+        return wrapper
+    else:
+        g.trace('no e')
+        return None
 #@+node:ekr.20110325185230.14517: ** Unused code
 #@+node:vivainio.20091223153142.4072: *3* Completer (qtBody)
 def showCompleter(self, alternatives, selected_cb):
