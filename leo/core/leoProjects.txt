@@ -7485,9 +7485,6 @@ def calltip (self):
         self.calltip_fail(prefix)
         
     self.exit()
-
-    # c.frame.clearStatusLine()
-    # c.widgetWantsFocusNow(self.w)
 #@+node:ekr.20110512090917.14468: *6* calltip_fail
 def calltip_fail(self,prefix):
     
@@ -7513,12 +7510,15 @@ def calltip_success(self,prefix,obj):
         self.insert_string('(')
         return
 
-    # Clean s and insert it.
+    # Clean s and insert it: don't include the opening "(".
     if g.match(s,1,'self,'):
-        s = s[0] + s[6:].strip()
+        s = s[6:].strip()
     elif g.match_word(s,1,'self'):
-        s = s[0] + s[5:].strip()
+        s = s[5:].strip()
+    else:
+        s = s[1:].strip()
 
+    self.insert_string("(",select=False)
     self.insert_string(s,select=True)
 #@+node:ekr.20110512212836.14469: *5* exit
 def exit (self):
@@ -14091,5 +14091,31 @@ def setCurrentDirectoryFromContext(self,p):
             os.chdir(path)
         except Exception:
             pass
+#@+node:ekr.20110522121957.18231: *4* Don't select opening ( in calltips
+#@+node:ekr.20110512090917.14469: *5* calltip_success
+def calltip_success(self,prefix,obj):
+    
+    trace = False and not g.unitTesting
+    
+    try:
+        # Get the parenthesized argument list.
+        s1,s2,s3,s4 = inspect.getargspec(obj)
+        s = inspect.formatargspec(s1,s2,s3,s4)
+        if trace: g.trace(obj,repr(s))
+    except Exception:
+        if trace: g.trace('inspect failed. obj: %s' % (obj))
+        self.insert_string('(')
+        return
+
+    # Clean s and insert it: don't include the opening "(".
+    if g.match(s,1,'self,'):
+        s = s[6:].strip()
+    elif g.match_word(s,1,'self'):
+        s = s[5:].strip()
+    else:
+        s = s[1:].strip()
+
+    self.insert_string("(",select=False)
+    self.insert_string(s,select=True)
 #@-all
 #@-leo

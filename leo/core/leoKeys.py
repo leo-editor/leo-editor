@@ -430,9 +430,6 @@ class AutoCompleterClass:
             self.calltip_fail(prefix)
             
         self.exit()
-
-        # c.frame.clearStatusLine()
-        # c.widgetWantsFocusNow(self.w)
     #@+node:ekr.20110512090917.14468: *5* calltip_fail
     def calltip_fail(self,prefix):
         
@@ -458,12 +455,15 @@ class AutoCompleterClass:
             self.insert_string('(')
             return
 
-        # Clean s and insert it.
+        # Clean s and insert it: don't include the opening "(".
         if g.match(s,1,'self,'):
-            s = s[0] + s[6:].strip()
+            s = s[6:].strip()
         elif g.match_word(s,1,'self'):
-            s = s[0] + s[5:].strip()
+            s = s[5:].strip()
+        else:
+            s = s[1:].strip()
 
+        self.insert_string("(",select=False)
         self.insert_string(s,select=True)
     #@+node:ekr.20061031131434.28: *4* compute_completion_list & helper
     def compute_completion_list (self):

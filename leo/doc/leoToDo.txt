@@ -67,7 +67,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/196d37a58bb2dd80/
 
 Was support for this removed from Leo's core?
 
-#@+node:ekr.20110522121957.18231: *4* Don't select opening ( in calltips)
 #@+node:ekr.20110520051220.18196: *3* * Fix all high-priority bugs
 #@+node:ekr.20110520051220.18195: *4* Make sure log pane doesn't scroll horizontally
 @nocolor-node
