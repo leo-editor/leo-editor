@@ -14117,5 +14117,9 @@ def calltip_success(self,prefix,obj):
 
     self.insert_string("(",select=False)
     self.insert_string(s,select=True)
+#@+node:ekr.20110518103946.18183: *4* Fixed mod_http plugin
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/196d37a58bb2dd80/ca526f0be4101f09
 #@-all
 #@-leo

@@ -70,8 +70,10 @@ if g.isPython3:
     StringIO = io.StringIO
     BytesIO = io.BytesIO
 else:
+    import io
     import StringIO # Python 2.x
-    import io.BytesIO as BytesIO
+    StringIO = StringIO.StringIO
+    BytesIO = io.BytesIO
     
 print('mod_http imports: StringIO: %s' % (StringIO))
 
