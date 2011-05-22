@@ -3,25 +3,6 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** 4.9 a1
 #@+node:ekr.20110520051220.18197: *3* * Action items: 6
-#@+node:ekr.20110521142955.18151: *4* * Fix actionscript colors for ( and )
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ee09fb2c2a5316f2/490fa7cddab36fab
-
-
-Also I can't figure how to change color of "(" and ")" in actionscript language.
-I like dark background with the light text and that is the color scheme I have
-in myLeosettings. But "(" and ")" are black and that is not compatible with my
-dark background color.
-
-The only two colors in leoSettings (in syntax coloring nodes) that are black are
-'tab_color' and 'operator_color'. I have tried to change both of them but with
-no success. Leo sees my settings for tab_color and operator_color but those
-settings have no influence on "(" and ")" .
-
-In nodes where @language python is in effect "(" ")" are white, but in nodes
-with @language actionscript those characters become black and I can't find which
-setting I should change.
 #@+node:ekr.20110518103946.18182: *4* * Call os.chdir when executing scripts
 @nocolor-node
 

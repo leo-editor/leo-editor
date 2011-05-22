@@ -691,6 +691,7 @@ def actionscript_rule2(colorer, s, i):
         delegate="",exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
+# Used to color "("
 def actionscript_rule3(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
@@ -700,12 +701,14 @@ def actionscript_rule4(colorer, s, i):
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="", exclude_match=False)
 
+# Used to color ")".  2011/05/22: change kind to "operator". Also changed actionscript.xml.
 def actionscript_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=")",
+    return colorer.match_seq(s, i, kind="operator", seq=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
+# Used to color "(".  2011/05/22: change kind to "operator". Also changed actionscript.xml.
 def actionscript_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="(",
+    return colorer.match_seq(s, i, kind="operator", seq="(",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def actionscript_rule7(colorer, s, i):
