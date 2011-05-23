@@ -496,6 +496,13 @@ class atFile:
         if not fileName:
             at.error("Missing file name.  Restoring @file tree from .leo file.")
             return False
+        # Fix bug 760531: always mark the root as read, even if there was an error.
+        root.v.at_read = True
+        # Bug fix 2011/05/23: Restore orphan trees from the outline.
+        if root.isOrphan():
+            g.es("reading:",root.h)
+            g.warning('The outline contains an orphan node!\nRetaining the outline')
+            return False
         at.initReadIvars(root,fileName,
             importFileName=importFileName,atShadow=atShadow)
         at.fromString = fromString
@@ -510,7 +517,6 @@ class atFile:
         else:
             g.trace('No inputFile')
             return False
-        root.v.at_read = True # Remember that we have read this file.
 
         # Get the file from the cache if possible.
         if fromString:

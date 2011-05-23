@@ -4893,7 +4893,7 @@ elif hasattr(v,"unknownAttributes"):
         # g.trace("clearing str_leo_pos",v)
         del d['str_leo_pos']
         v.unknownAttributes = d
-#@+node:ekr.20040324082713: *7* << Append unKnownAttributes to attrs>> fc.put
+#@+node:ekr.20040324082713: *7* << Append unKnownAttributes to attrs>>
 # v.unknownAttributes are now put in <t> elements.
 
 if p.hasChildren() and not forceWrite and not self.usingClipboard:
@@ -4901,10 +4901,11 @@ if p.hasChildren() and not forceWrite and not self.usingClipboard:
     if not isAuto: # Bug fix: 2008/8/7.
         attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
         attrs.append(self.putDescendentAttributes(p))
-#@+node:ekr.20040702085529: *7* << issue informational messages >>
-if isOrphan and isThin:
-    g.es("writing erroneous:",p.h,color="blue")
-    p.clearOrphan()
+#@+node:ekr.20040702085529: *7* << issue informational messages >> (changed)
+if 0: # It's strange to clear the orphan bit.
+    if isOrphan and (isFile or isThin):
+        g.es("writing erroneous:",p.h,color="blue")
+        p.clearOrphan()
 #@+node:ekr.20031218072017.1579: *6* putVnodes
 def putVnodes (self):
 
@@ -5029,7 +5030,7 @@ elif hasattr(v,"unknownAttributes"):
         # g.trace("clearing str_leo_pos",v)
         del d['str_leo_pos']
         v.unknownAttributes = d
-#@+node:ekr.20040324082713: *6* << Append unKnownAttributes to attrs>> fc.put
+#@+node:ekr.20040324082713: *6* << Append unKnownAttributes to attrs>>
 # v.unknownAttributes are now put in <t> elements.
 
 if p.hasChildren() and not forceWrite and not self.usingClipboard:
@@ -5037,10 +5038,11 @@ if p.hasChildren() and not forceWrite and not self.usingClipboard:
     if not isAuto: # Bug fix: 2008/8/7.
         attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
         attrs.append(self.putDescendentAttributes(p))
-#@+node:ekr.20040702085529: *6* << issue informational messages >>
-if isOrphan and isThin:
-    g.es("writing erroneous:",p.h,color="blue")
-    p.clearOrphan()
+#@+node:ekr.20040702085529: *6* << issue informational messages >> (changed)
+if 0: # It's strange to clear the orphan bit.
+    if isOrphan and (isFile or isThin):
+        g.es("writing erroneous:",p.h,color="blue")
+        p.clearOrphan()
 #@+node:ekr.20110228083015.14114: *4* fixed bug in g.printGcAll
 @nocolor-node
 

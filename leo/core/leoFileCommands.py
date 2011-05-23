@@ -1837,7 +1837,7 @@ class baseFileCommands:
                 v.unknownAttributes = d
         #@-<< Append attribute bits to attrs >>
         #@+<< Append unKnownAttributes to attrs >>
-        #@+node:ekr.20040324082713: *5* << Append unKnownAttributes to attrs>> fc.put
+        #@+node:ekr.20040324082713: *5* << Append unKnownAttributes to attrs>>
         # v.unknownAttributes are now put in <t> elements.
 
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
@@ -1856,10 +1856,11 @@ class baseFileCommands:
             # The string catentation is faster than repeated calls to fc.put.
             if not self.usingClipboard:
                 #@+<< issue informational messages >>
-                #@+node:ekr.20040702085529: *5* << issue informational messages >>
-                if isOrphan and isThin:
-                    g.es("writing erroneous:",p.h,color="blue")
-                    p.clearOrphan()
+                #@+node:ekr.20040702085529: *5* << issue informational messages >> (changed)
+                if 0: # It's strange to clear the orphan bit.
+                    if isOrphan and (isFile or isThin):
+                        g.es("writing erroneous:",p.h,color="blue")
+                        p.clearOrphan()
                 #@-<< issue informational messages >>
             # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
             if p.hasChildren() and (forceWrite or self.usingClipboard):
