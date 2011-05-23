@@ -7,55 +7,6 @@
 # All must be fixed before the second release(b1)
 
 
-#@+node:ekr.20110522203356.18251: *4* * Bug 735938:file assosiasion crash
-@nocolor-node
-
-High priority
-
-https://bugs.launchpad.net/leo-editor/+bug/735938
-
-Yesterday I installed the new version of leo. I changed the path to leo and
-wanted to associate .leo file with leo. I ran the commands:
-
-> ftype LeoFile=C:\Python26\python.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" "%*"
-> assoc .leo=LeoFile
-
-But when I tried to start .leo file from console it gave me an error:
-
--------------------------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\Python26\Lib\site-packages\leo\leo\core\leoGlobals.py", line 3497, in
- os_path_dirname
-    path = g.toUnicodeFileEncoding(path)
-  File "C:\Python26\Lib\site-packages\leo\leo\core\leoGlobals.py", line 3727, in
- toUnicodeFileEncoding
-    if path: path = path.replace('\\', os.sep)
-AttributeError: 'tuple' object has no attribute 'replace'
-
---------------------------------------------------------------------------------------
-I added pprint.pprint(path) before the erroneous code. It printed many strings, but at the end
-gave this:
-
-u'C:\\Python26\\Lib\\site-packages\\leo\\leo\\config\\.leoRecentFiles.txt'
-u'C:\\Python26\\Lib\\site-packages\\leo\\leo\\config\\.leoRecentFiles.txt'
-(None, None)
-
-Seems to be that nasty tuple at the end.
-
-After I tried adding the code:
-
-if isinstance(path, str):
- if path: path = path.replace('\\', os.sep)
-
-It gave a new error:
--------------------------------------------------------------------------------------
-  File "C:\Python26\Lib\site-packages\leo\leo\core\leoGlobals.py", line 4730, in
- toUnicode
-    s = f(s,encoding,'replace')
-TypeError: coercing to Unicode: need string or buffer, tuple found
--------------------------------------------------------------------------------------
-
-How did this tuple emerge?
 #@+node:ekr.20110522203356.18252: *4* * Bug 568452:file local @settings ignored if file opened from command line with absolute path
 @nocolor-node
 

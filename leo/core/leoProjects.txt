@@ -8404,6 +8404,240 @@ if 0: # It's strange to clear the orphan bit.
     if isOrphan and (isFile or isThin):
         g.es("writing erroneous:",p.h,color="blue")
         p.clearOrphan()
+#@+node:ekr.20110522203356.18251: *4* Investigated bug 735938:file association crash
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/735938
+#@+node:ekr.20110523120944.18189: *5* Report 1
+@nocolor-node
+
+Yesterday I installed the new version of leo. I changed the path to leo and
+wanted to associate .leo file with leo. I ran the commands:
+
+> ftype LeoFile=C:\Python26\python.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" "%*"
+> assoc .leo=LeoFile
+
+But when I tried to start .leo file from console it gave me an error:
+
+-------------------------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Python26\Lib\site-packages\leo\leo\core\leoGlobals.py", line 3497, in
+ os_path_dirname
+    path = g.toUnicodeFileEncoding(path)
+  File "C:\Python26\Lib\site-packages\leo\leo\core\leoGlobals.py", line 3727, in
+ toUnicodeFileEncoding
+    if path: path = path.replace('\\', os.sep)
+AttributeError: 'tuple' object has no attribute 'replace'
+
+--------------------------------------------------------------------------------------
+I added pprint.pprint(path) before the erroneous code. It printed many strings, but at the end
+gave this:
+
+u'C:\\Python26\\Lib\\site-packages\\leo\\leo\\config\\.leoRecentFiles.txt'
+u'C:\\Python26\\Lib\\site-packages\\leo\\leo\\config\\.leoRecentFiles.txt'
+(None, None)
+
+Seems to be that nasty tuple at the end.
+
+After I tried adding the code:
+
+if isinstance(path, str):
+ if path: path = path.replace('\\', os.sep)
+
+It gave a new error:
+-------------------------------------------------------------------------------------
+  File "C:\Python26\Lib\site-packages\leo\leo\core\leoGlobals.py", line 4730, in
+ toUnicode
+    s = f(s,encoding,'replace')
+TypeError: coercing to Unicode: need string or buffer, tuple found
+-------------------------------------------------------------------------------------
+
+How did this tuple emerge?
+#@+node:ekr.20110523120944.18188: *5* Report 2
+@nocolor-node
+
+Traceback (most recent call last):
+  File "C:\Python26\Lib\site-packages\leo\launchLeo.py", line 8, in <module>
+    leo.core.runLeo.run()
+  File "C:\Python26\Lib\site-packages\leo\leo\core\runLeo.py", line 121, in run
+    files,options = doPrePluginsInit(fileName,pymacs)
+  File "C:\Python26\Lib\site-packages\leo\leo\core\runLeo.py", line 139, in doPrePluginsInit
+    g.computeStandardDirectories()
+  File "C:\Python26\Lib\site-packages\leo\leo\core\leoGlobals.py", line 169, in computeStandardDirectories
+    g.app.loadDir = g.computeLoadDir()
+  File "C:\Python26\Lib\site-packages\leo\leo\core\leoGlobals.py", line 275, in computeLoadDir
+    path = g.os_path_finalize(path)
+  File "C:\Python26\Lib\site-packages\leo\leo\core\leoGlobals.py", line 3568, in os_path_finalize
+    path = g.os_path_expanduser(path)
+  File "C:\Python26\Lib\site-packages\leo\leo\core\leoGlobals.py", line 3553, in os_path_expanduser
+    result = os.path.normpath(os.path.expanduser(path))
+  File "C:\Python26\lib\ntpath.py", line 279, in expanduser
+    if path[:1] != '~':
+TypeError: 'NoneType' object is unsubscriptable
+#@+node:ekr.20080921060401.13: *5* os_path_expanduser
+def os_path_expanduser(path):
+
+    """wrap os.path.expanduser"""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    result = os.path.normpath(os.path.expanduser(path))
+
+    return result
+#@+node:ekr.20050328133444: *5* g.computeStandardDirectories & helpers
+def computeStandardDirectories():
+
+    '''Set g.app.loadDir, g.app.homeDir, g.app.homeLeoDir and g.app.globalConfigDir.'''
+
+    g.app.loadDir = g.computeLoadDir()
+    g.app.leoDir = g.computeLeoDir()
+    g.app.homeDir = g.computeHomeDir()
+
+    g.app.homeLeoDir = homeLeoDir = g.os_path_finalize(
+        g.os_path_join(g.app.homeDir,'.leo'))
+
+    if not g.os_path_exists(homeLeoDir):
+        g.makeAllNonExistentDirectories(homeLeoDir,force=True)
+
+    g.app.extensionsDir = g.os_path_finalize(
+        g.os_path_join(g.app.loadDir,'..','extensions'))
+
+    g.app.globalConfigDir = g.computeGlobalConfigDir()
+
+    g.app.testDir = g.os_path_finalize(
+        g.os_path_join(g.app.loadDir,'..','test'))
+
+    g.app.user_xresources_path = g.os_path_join(
+        g.app.homeDir,'.leo_xresources')
+#@+node:ekr.20041117155521: *6* computeGlobalConfigDir
+def computeGlobalConfigDir():
+
+    import leo.core.leoGlobals as g
+
+    # To avoid pylint complaints that sys.leo_config_directory does not exist.
+    leo_config_dir = (
+        hasattr(sys,'leo_config_directory') and
+        getattr(sys,'leo_config_directory'))
+
+    if leo_config_dir:
+        theDir = leo_config_dir
+    else:
+        theDir = g.os_path_join(g.app.loadDir,"..","config")
+
+    if theDir:
+        theDir = g.os_path_finalize(theDir)
+
+    if (
+        not theDir or
+        not g.os_path_exists(theDir) or
+        not g.os_path_isdir(theDir)
+    ):
+        theDir = None
+
+    return theDir
+#@+node:ekr.20041117151301: *6* computeHomeDir
+def computeHomeDir():
+
+    """Returns the user's home directory."""
+
+    import leo.core.leoGlobals as g
+
+    home = os.path.expanduser("~")
+        # Windows searches the HOME, HOMEPATH and HOMEDRIVE environment vars, then gives up.
+
+    if home and len(home) > 1 and home[0]=='%' and home[-1]=='%':
+        # Get the indirect reference to the true home.
+        home = os.getenv(home[1:-1],default=None)
+
+    if home:
+        # Important: This returns the _working_ directory if home is None!
+        # This was the source of the 4.3 .leoID.txt problems.
+        home = g.os_path_finalize(home)
+        if (
+            not g.os_path_exists(home) or
+            not g.os_path_isdir(home)
+        ):
+            home = None
+
+    return home
+#@+node:ekr.20060416113431: *6* computeLeoDir
+def computeLeoDir ():
+
+    loadDir = g.app.loadDir
+    theDir = g.os_path_dirname(loadDir)
+
+    # xxx remove this, we don't want to have this in sys.path
+    if theDir not in sys.path:
+        sys.path.append(theDir)
+
+    return theDir
+#@+node:ekr.20031218072017.1937: *6* computeLoadDir
+def computeLoadDir():
+
+    """Returns the directory containing leo.py."""
+
+    import leo.core.leoGlobals as g
+    import sys
+
+    try:
+        # Fix a hangnail: on Windows the drive letter returned by
+        # __file__ is randomly upper or lower case!
+        # The made for an ugly recent files list.
+        path = g.__file__ # was leo.__file__
+        g.trace(repr(path))
+        if path:
+            # Possible fix for bug 735938:
+            # Do the following only if path exists.
+            << resolve symlinks >>
+            if sys.platform=='win32':
+                if len(path) > 2 and path[1]==':':
+                    # Convert the drive name to upper case.
+                    path = path[0].upper() + path[1:]
+        
+            
+            path = g.os_path_finalize(path)
+            loadDir = g.os_path_dirname(path)
+        else: loadDir = None
+
+        if (
+            not loadDir or
+            not g.os_path_exists(loadDir) or
+            not g.os_path_isdir(loadDir)
+        ):
+            loadDir = os.getcwd()
+            # From Marc-Antoine Parent.
+            if loadDir.endswith("Contents/Resources"):
+                loadDir += "/leo/plugins"
+            else:
+                g.pr("Exception getting load directory")
+        loadDir = g.os_path_finalize(loadDir)
+        # g.es("load dir:",loadDir,color="blue")
+        return loadDir
+    except:
+        g.pr("Exception getting load directory")
+        raise
+#@+node:ville.20090703102253.6160: *7* << resolve symlinks >>
+if path.endswith('pyc'):
+    srcfile = path[:-1]
+    if os.path.islink(srcfile):
+        path = os.path.realpath(srcfile)    
+#@+node:dan.20080410121257.1: *6* computeMachineName
+def computeMachineName():
+    """Returns the name of the current machine, i.e, HOSTNAME"""
+    try:
+        import os
+        name = os.getenv('HOSTNAME')
+        if not name:
+            name = os.getenv('COMPUTERNAME')
+        if not name:
+            import socket
+            name = socket.gethostname()
+    except Exception:
+        name = ''
+
+    # g.trace(name)
+
+    return name
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()

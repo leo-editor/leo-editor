@@ -262,19 +262,24 @@ def computeLoadDir():
         # __file__ is randomly upper or lower case!
         # The made for an ugly recent files list.
         path = g.__file__ # was leo.__file__
-        #@+<< resolve symlinks >>
-        #@+node:ville.20090703102253.6160: *6* << resolve symlinks >>
-        if path.endswith('pyc'):
-            srcfile = path[:-1]
-            if os.path.islink(srcfile):
-                path = os.path.realpath(srcfile)    
-        #@-<< resolve symlinks >>
-        if sys.platform=='win32':
-            if len(path) > 2 and path[1]==':':
-                # Convert the drive name to upper case.
-                path = path[0].upper() + path[1:]
-        path = g.os_path_finalize(path)
+        g.trace(repr(path))
         if path:
+            # Possible fix for bug 735938:
+            # Do the following only if path exists.
+            #@+<< resolve symlinks >>
+            #@+node:ville.20090703102253.6160: *6* << resolve symlinks >>
+            if path.endswith('pyc'):
+                srcfile = path[:-1]
+                if os.path.islink(srcfile):
+                    path = os.path.realpath(srcfile)    
+            #@-<< resolve symlinks >>
+            if sys.platform=='win32':
+                if len(path) > 2 and path[1]==':':
+                    # Convert the drive name to upper case.
+                    path = path[0].upper() + path[1:]
+        
+            
+            path = g.os_path_finalize(path)
             loadDir = g.os_path_dirname(path)
         else: loadDir = None
 
