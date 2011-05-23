@@ -46,7 +46,7 @@ Leo requires `Python`_. Leo will work on any platform that supports Python 2.6 o
 above, including Python 3.0 and above. 
 
 Leo also requires either the Qt or Tk widget set. Qt is strongly recommended. In
-particular, Tk does not work with Python 3k.
+particular, Tk does not work with Python 3k.  **Tk is no longer supported on MacOS.**
 
 To enable spell checking, you must install the `PyEnchant`_ package.
 
@@ -67,6 +67,8 @@ the binary PyQt installer.
 Special care may be needed to install PyQt on MacOS. See `Installing Leo on
 MacOS X`_ below.
 .. @+node:ekr.20100731112744.7272: *4* Installing Tk
+**Important**: Leo no longer works with Tk on MacOS.
+
 When using Tk, you must install Tk 8.4 or later. As explained later in this
 section, the Tk version of Leo does not work with Python 3.0 or later.
 
@@ -172,6 +174,8 @@ Now you are ready to `run Leo`_.
 .. @+node:ekr.20100731112744.7275: *4* Installing Leo on MacOS X
 Here is how to install Leo on MacOS 10.5 (Leopard):
 
+**Important**: Leo no longer works with Tk on MacOS.
+
 1. MacOS 10.5 comes with Python pre-installed.
 
    See http://www.python.org/download/mac/ and
@@ -193,15 +197,11 @@ Here is how to install Leo on MacOS 10.5 (Leopard):
     bzr branch lp:leo-editor
     cd leo-editor
 
-4. You can run the tk version of Leo as follows::
-
-    python launchLeo.py --gui=tk
-
-5. If you already have Qt and PyQt installed, you can run the qt version of Leo as follows::
+4. If you already have Qt and PyQt installed, you can run the qt version of Leo as follows::
 
     python launchLeo.py --gui=qt
 
-6. If you don't have Qt or PyQt installed, you will have to install Qt and PyQt
+5. If you don't have Qt or PyQt installed, you will have to install Qt and PyQt
     from sources. There does not seem to be any pre-built binaries.
 
     A: You may need to install XCode from http://developer.apple.com/mac/

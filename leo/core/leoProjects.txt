@@ -14123,5 +14123,39 @@ def calltip_success(self,prefix,obj):
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/196d37a58bb2dd80/ca526f0be4101f09
+#@+node:ekr.20110518103946.18180: *4* Leo is no longer supported for Tk on MacOS
+@nocolor-node
+
+The following two bugs are critical, and yet do not seem worth fixing.
+
+Outline commands execute twice under OS X
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/2c86f8363c48dfa2/5a78221010366231
+
+With OSX and Tk, some "Outline" commands execute twice when used called by a
+keyboard shortcut for me. This is incredibly unnerving for commands such as Cut
+Node, Paste Node, Delete Node or Paste Node as Clone. Using the commands from
+the menu bar works as expected. Strangely enough, Insert Node is not affected.
+
+I use OSX 10.6.6, python 2.6.1 and gui=tk
+
+=======
+
+Uncloseable modal window under OS X
+		
+http://groups.google.com/group/leo-editor/browse_thread/thread/653838b2112b781b/cc4ab2919f5785cd
+
+I've been having trouble with an uncloseable modal Window under OS X that
+prompts: "myfilename already exists. Overwrite this file?"
+
+The options Yes, No and Cancel are displayed but not clickable and
+there is no title bar. No keyboard shortcuts I tried closed the
+window. The only possibility is to kill the python process running
+leo, losing all changes made...
+Strangely enough this window only appears from time to time, while
+most of the time  saving changes just overwrites without asking.
+I don't know what information to post about my environment. I use the
+standard OSX python install (2.6.1) and launch leo with "./
+launchLeo.py --gui=tk".
 #@-all
 #@-leo
