@@ -262,7 +262,7 @@ def computeLoadDir():
         # __file__ is randomly upper or lower case!
         # The made for an ugly recent files list.
         path = g.__file__ # was leo.__file__
-        g.trace(repr(path))
+        # g.trace(repr(path))
         if path:
             # Possible fix for bug 735938:
             # Do the following only if path exists.

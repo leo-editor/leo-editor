@@ -1855,7 +1855,7 @@ class configClass:
         '''Read settings from one file of the standard settings files.'''
 
         trace = False and not g.unitTesting
-        verbose = verbose or trace
+        verbose = verbose
         giveMessage = (verbose and not g.app.unitTesting and
             not self.silent and not g.app.batchMode)
         def message(s):
@@ -1907,6 +1907,7 @@ class configClass:
     def defineSettingsTable (self,fileName,localConfigFile):
 
         trace = False and not g.unitTesting
+        verbose = False
 
         global_table = (
             (self.globalConfigFile,False),
@@ -1933,7 +1934,7 @@ class configClass:
                     (localConfigFile,False),
                     (myLocalConfigFile,False),
                 )
-                if trace:
+                if trace and verbose:
                     g.trace('localConfigFile:  ',localConfigFile)
                     g.trace('myLocalConfigFile:',myLocalConfigFile)
         
@@ -1944,14 +1945,14 @@ class configClass:
 
         seen = [] ; table = []
         for path,localFlag in table1:
-            if trace: g.trace('exists',g.os_path_exists(path),path)
+            if trace and verbose: g.trace('exists',g.os_path_exists(path),path)
             if path and g.os_path_exists(path):
                 # Make sure we mark files seen no matter how they are specified.
                 path = g.os_path_realpath(g.os_path_finalize(path))
                 if path.lower() not in seen:
                     seen.append(path.lower())
                     table.append((path,localFlag),)
-        if trace: g.trace(repr(fileName),table)
+        if trace: g.trace(repr(fileName),'table:',g.listToString(table))
         return table
     #@+node:ekr.20041117085625: *5* openSettingsFile
     def openSettingsFile (self,path):
@@ -2009,6 +2010,8 @@ class configClass:
 
         parser = settingsTreeParser(c,localFlag)
         d = parser.traverse()
+        
+        # g.trace(c.shortFileName(),len(list(d.keys())))
 
         return d
     #@+node:ekr.20050424114937.1: *3* Reading and writing .leoRecentFiles.txt (g.app.config)

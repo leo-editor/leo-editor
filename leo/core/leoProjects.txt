@@ -5108,7 +5108,7 @@ def readSettingsFiles (self,fileName,verbose=True):
     '''Read settings from one file of the standard settings files.'''
 
     trace = False and not g.unitTesting
-    verbose = verbose or trace
+    verbose = verbose
     giveMessage = (verbose and not g.app.unitTesting and
         not self.silent and not g.app.batchMode)
     def message(s):
@@ -5160,6 +5160,7 @@ def getLocalConfigFile (self,fileName):
 def defineSettingsTable (self,fileName,localConfigFile):
 
     trace = False and not g.unitTesting
+    verbose = False
 
     global_table = (
         (self.globalConfigFile,False),
@@ -5186,7 +5187,7 @@ def defineSettingsTable (self,fileName,localConfigFile):
                 (localConfigFile,False),
                 (myLocalConfigFile,False),
             )
-            if trace:
+            if trace and verbose:
                 g.trace('localConfigFile:  ',localConfigFile)
                 g.trace('myLocalConfigFile:',myLocalConfigFile)
     
@@ -5197,14 +5198,14 @@ def defineSettingsTable (self,fileName,localConfigFile):
 
     seen = [] ; table = []
     for path,localFlag in table1:
-        if trace: g.trace('exists',g.os_path_exists(path),path)
+        if trace and verbose: g.trace('exists',g.os_path_exists(path),path)
         if path and g.os_path_exists(path):
             # Make sure we mark files seen no matter how they are specified.
             path = g.os_path_realpath(g.os_path_finalize(path))
             if path.lower() not in seen:
                 seen.append(path.lower())
                 table.append((path,localFlag),)
-    if trace: g.trace(repr(fileName),table)
+    if trace: g.trace(repr(fileName),'table:',g.listToString(table))
     return table
 #@+node:ekr.20041117085625: *6* openSettingsFile
 def openSettingsFile (self,path):
@@ -8408,6 +8409,8 @@ if 0: # It's strange to clear the orphan bit.
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/735938
+
+This is a minor problem: the recommended way of starting Leo on Windows is with a batch file.
 #@+node:ekr.20110523120944.18189: *5* Report 1
 @nocolor-node
 
@@ -8584,7 +8587,7 @@ def computeLoadDir():
         # __file__ is randomly upper or lower case!
         # The made for an ugly recent files list.
         path = g.__file__ # was leo.__file__
-        g.trace(repr(path))
+        # g.trace(repr(path))
         if path:
             # Possible fix for bug 735938:
             # Do the following only if path exists.
@@ -8638,6 +8641,554 @@ def computeMachineName():
     # g.trace(name)
 
     return name
+#@+node:ekr.20110522203356.18252: *4* Investigated Bug 568452:file local @settings ignored if file opened from command line with absolute path
+@nocolor-node
+
+I don't believe that the diagnosis given in the report is valid.
+
+To determine what is going on, enable the trace in readSettings.
+#@+node:ekr.20110523130519.18189: *5* Report
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/568452
+
+Given
+
+  LEOPATH=/home/tbrown/Desktop/Package/leo/bzr/leo.repo/trunk
+  HOME=/tmp python $LEOPATH/launchLeo.py foo/bar.leo
+
+@settings in bar.leo are honored., but with
+
+  HOME=/tmp python $LEOPATH/launchLeo.py /home/tbrown/Desktop/leotest/foo/bar.leo
+
+(i.e. absolute path to same file), they're ignored.
+
+(LEOPATH has nothing to do with anything here, just trying to make the example more clear)
+
+==========================
+
+Still seeing this, don't know why I thought it was fixed.
+
+with the attached del.leo in $HOME/.leo
+
+cd $HOME/.leo
+python /home/tbrown/Desktop/Package/leo/bzr/leo.repo/trunk/launchLeo.py /home/tbrown/.leo/del.leo
+
+-> icon bar is at top and running g.es(c.config.getString('qt-toolbar-location')) in 'test' node reports top
+
+vs.
+
+cd $HOME/.leo
+python /home/tbrown/Desktop/Package/leo/bzr/leo.repo/trunk/launchLeo.py del.leo
+
+-> icon bar is at left and running g.es(c.config.getString('qt-toolbar-location')) in 'test' node reports left
+
+only difference is on the command line, '/home/tbrown/.leo/del.leo' vs. 'del.leo'
+
+cd $HOME and '.leo/del.leo' also works, so it seems to be the absoluteness of the path which is making it not read the config.
+
+
+====================
+
+In case you don't know '2>&1', it means 'redirect stderr to the same
+place as stdout'.
+
+  python launchLeo.py del.leo >relative.log 2>&1
+
+test script correctly reports 'left', tool bar correctly positioned
+
+  python launchLeo.py $PWD/del.leo >absolute.log 2>&1
+
+test script incorrectly reports 'top', tool bar incorrectly (although
+consistently) positioned
+
+md5sum *log
+
+218398d7c0594365ba0589541a302ad0 absolute.log
+218398d7c0594365ba0589541a302ad0 relative.log
+
+So, absolute vs. relative makes no difference in the console output,
+which is:
+
+trunk> cat relative.log
+*** isPython3: False
+Leo 4.8 final, build 3752, November 26, 2010
+Python 2.6.5, qt version 4.6.2
+linux2
+reading settings in /mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/trunk/leo/config/leoSettings.leo
+reading settings in /mnt/usr1/usr1/home/tbrown/.leo/myLeoSettings.leo
+reading settings in /mnt/usr1/usr1/home/tbrown/.leo/mothLeoSettings.leo
+reading settings in /mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/trunk/del.leo
+Warning: shortcut conflict for <Ctrl+O>
+            leoscreen-run-text in all from register-command
+                  open-outline in all from leosettings.leo
+Warning: shortcut conflict for <Ctrl+M>
+               leoscreen-other in all from register-command
+                          mark in all from leosettings.leo
+Warning: shortcut conflict for <Ctrl+P>
+            leoscreen-get-line in all from register-command
+        repeat-complex-command in all from leosettings.leo
+Warning: shortcut conflict for <Ctrl+B>
+             quickmove_jump_to in all from register-command
+                execute-script in all from leosettings.leo
+createMenuEntries No inverse for makeallbuttonsherepermanent
+createMenuEntries No inverse for clearallpermanentbuttonshere
+wrote recent file: /home/tbrown/.leo/.leoRecentFiles.txt
+
+The log pane is similar:
+
+Leo Log Window
+Leo 4.8 final, build 3752, November 26, 2010
+Python 2.6.5, qt version 4.6.2
+linux2
+setting leoID from os.getenv('USER'): 'tbrown'
+load dir: /mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/trunk/leo/core
+global config dir: /mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/trunk/leo/config
+home dir: /home/tbrown
+reading settings in /mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/trunk/leo/config/leoSettings.leo
+reading settings in /mnt/usr1/usr1/home/tbrown/.leo/myLeoSettings.leo
+reading settings in /mnt/usr1/usr1/home/tbrown/.leo/mothLeoSettings.leo
+reading settings in /mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/trunk/del.leo
+reading: /home/tbrown/Desktop/Package/leo/bzr/leo.repo/trunk/del.leo
+local @command press-me
+Warning: shortcut conflict for <Ctrl+O>
+            leoscreen-run-text in all from register-command
+                  open-outline in all from leosettings.leo
+Warning: shortcut conflict for <Ctrl+M>
+               leoscreen-other in all from register-command
+                          mark in all from leosettings.leo
+Warning: shortcut conflict for <Ctrl+P>
+            leoscreen-get-line in all from register-com...
+#@+node:ekr.20031218072017.2145: *5* os.path wrappers (leoGlobals.py)
+@ Note: all these methods return Unicode strings. It is up to the user to
+convert to an encoded string as needed, say when opening a file.
+#@+node:ekr.20031218072017.2146: *6* os_path_abspath
+def os_path_abspath(path):
+
+    """Convert a path to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.abspath(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+#@+node:ekr.20031218072017.2147: *6* os_path_basename
+def os_path_basename(path):
+
+    """Return the second half of the pair returned by split(path)."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.basename(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+#@+node:ekr.20031218072017.2148: *6* os_path_dirname
+def os_path_dirname(path):
+
+    """Return the first half of the pair returned by split(path)."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.dirname(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+#@+node:ekr.20031218072017.2149: *6* os_path_exists
+def os_path_exists(path):
+
+    """Return True if path exists."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.exists(path)
+#@+node:ekr.20080922124033.6: *6* os_path_expandExpression
+def os_path_expandExpression (s,**keys):
+
+    '''Expand {{anExpression}} in c's context.'''
+
+    trace = False
+    s1 = s
+    c = keys.get('c')
+    if not c:
+        g.trace('can not happen: no c',g.callers())
+        return s
+
+    if not s: return ''
+
+    i = s.find('{{')
+    j = s.find('}}')
+    if -1 < i < j:
+        exp = s[i+2:j].strip()
+        if exp:
+            try:
+                import os
+                import sys
+                p = c.p
+                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
+                val = eval(exp,d)
+                s = s[:i] + str(val) + s[j+2:]
+            except Exception:
+                g.trace(g.callers())
+                g.es_exception(full=True, c=c, color='red')
+
+        if trace: g.trace(s1,s)
+    return s
+#@+node:ekr.20080921060401.13: *6* os_path_expanduser
+def os_path_expanduser(path):
+
+    """wrap os.path.expanduser"""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    result = os.path.normpath(os.path.expanduser(path))
+
+    return result
+#@+node:ekr.20080921060401.14: *6* g.os_path_finalize & os_path_finalize_join
+def os_path_finalize (path,**keys):
+
+    '''
+    Expand '~', then return os.path.normpath, os.path.abspath of the path.
+
+    There is no corresponding os.path method'''
+
+    c = keys.get('c')
+
+    if c: path = g.os_path_expandExpression(path,**keys)
+
+    path = g.os_path_expanduser(path)
+
+    return os.path.normpath(os.path.abspath(path))
+
+def os_path_finalize_join (*args,**keys):
+
+    '''Do os.path.join(*args), then finalize the result.'''
+
+    c = keys.get('c')
+
+    if c:
+        args = [g.os_path_expandExpression(path,**keys)
+            for path in args if path]
+
+    return os.path.normpath(os.path.abspath(
+        g.os_path_join(*args,**keys))) # Handles expanduser
+#@+node:ekr.20031218072017.2150: *6* os_path_getmtime
+def os_path_getmtime(path):
+
+    """Return the modification time of path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.getmtime(path)
+#@+node:ekr.20080729142651.2: *6* os_path_getsize
+def os_path_getsize (path):
+
+    '''Return the size of path.'''
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.getsize(path)
+#@+node:ekr.20031218072017.2151: *6* os_path_isabs
+def os_path_isabs(path):
+
+    """Return True if path is an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isabs(path)
+#@+node:ekr.20031218072017.2152: *6* os_path_isdir
+def os_path_isdir(path):
+
+    """Return True if the path is a directory."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isdir(path)
+#@+node:ekr.20031218072017.2153: *6* os_path_isfile
+def os_path_isfile(path):
+
+    """Return True if path is a file."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isfile(path)
+#@+node:ekr.20031218072017.2154: *6* os_path_join
+def os_path_join(*args,**keys):
+
+    trace = False and not g.unitTesting
+    c = keys.get('c')
+
+    uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
+
+    if trace: g.trace('1',uargs)
+
+    # Note:  This is exactly the same convention as used by getBaseDirectory.
+    if uargs and uargs[0] == '!!':
+        uargs[0] = g.app.loadDir
+    elif uargs and uargs[0] == '.':
+        c = keys.get('c')
+        if c and c.openDirectory:
+            uargs[0] = c.openDirectory
+            # g.trace(c.openDirectory)
+
+    uargs = [g.os_path_expanduser(z) for z in uargs if z]
+
+    if trace: g.trace('2',uargs)
+
+    path = os.path.join(*uargs)
+
+    if trace: g.trace('3',path)
+
+    # May not be needed on some Pythons.
+    path = g.toUnicodeFileEncoding(path)
+    return path
+#@+node:ekr.20031218072017.2156: *6* os_path_normcase
+def os_path_normcase(path):
+
+    """Normalize the path's case."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.normcase(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+#@+node:ekr.20031218072017.2157: *6* os_path_normpath
+def os_path_normpath(path):
+
+    """Normalize the path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.normpath(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+#@+node:ekr.20080605064555.2: *6* os_path_realpath
+def os_path_realpath(path):
+
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.realpath(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+#@+node:ekr.20031218072017.2158: *6* os_path_split
+def os_path_split(path):
+
+    path = g.toUnicodeFileEncoding(path)
+
+    head,tail = os.path.split(path)
+
+    head = g.toUnicodeFileEncoding(head)
+    tail = g.toUnicodeFileEncoding(tail)
+
+    return head,tail
+#@+node:ekr.20031218072017.2159: *6* os_path_splitext
+def os_path_splitext(path):
+
+    path = g.toUnicodeFileEncoding(path)
+
+    head,tail = os.path.splitext(path)
+
+    head = g.toUnicodeFileEncoding(head)
+    tail = g.toUnicodeFileEncoding(tail)
+
+    return head,tail
+#@+node:ekr.20090829140232.6036: *6* os_startfile
+def os_startfile(fname):
+    if sys.platform.startswith('win'):
+        os.startfile(fname)
+    elif sys.platform == 'darwin':
+        # From Marc-Antoine Parent.
+        try:
+            subprocess.call(['open', fname])
+        except OSError:
+            pass # There may be a spurious "Interrupted system call"
+        except ImportError:
+            os.system("open '%s'" % (fname,))
+    else:
+        os.system('xdg-open ' + fname)
+#@+node:ekr.20031218072017.2160: *6* toUnicodeFileEncoding
+def toUnicodeFileEncoding(path):
+
+    if path: path = path.replace('\\', os.sep)
+
+    # Yes, this is correct.  All os_path_x functions return Unicode strings.
+    return g.toUnicode(path)
+#@+node:ekr.20041120064303: *5* readSettingsFiles & helpers (g.app.config)
+def readSettingsFiles (self,fileName,verbose=True):
+
+    '''Read settings from one file of the standard settings files.'''
+
+    trace = False and not g.unitTesting
+    verbose = verbose
+    giveMessage = (verbose and not g.app.unitTesting and
+        not self.silent and not g.app.batchMode)
+    def message(s):
+        # This occurs early in startup, so use the following.
+        if not g.isPython3:
+            s = g.toEncodedString(s,'ascii')
+        g.es_print(s,color='blue')
+    self.write_recent_files_as_needed = False # Will be set later.
+    localConfigFile = self.getLocalConfigFile(fileName)
+    if trace: g.trace(fileName,localConfigFile)
+    table = self.defineSettingsTable(fileName,localConfigFile)
+    for path,localFlag in table:
+        assert path and g.os_path_exists(path)
+        isZipped = path and zipfile.is_zipfile(path)
+        isLeo = isZipped or path.endswith('.leo')
+        if isLeo:
+            c = self.openSettingsFile(path)
+            if c:
+                if giveMessage:
+                    message('reading settings in %s' % path)
+                self.updateSettings(c,localFlag)
+                g.app.destroyWindow(c.frame)
+                self.write_recent_files_as_needed = c.config.getBool(
+                    'write_recent_files_as_needed')
+            else:
+                if giveMessage:
+                    message('error reading settings in %s' % path)
+
+    self.readRecentFiles(localConfigFile)
+    self.inited = True
+    self.setIvarsFromSettings(None)
+#@+node:ekr.20101021041958.6008: *6* getLocalConfigFile
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
+
+def getLocalConfigFile (self,fileName):
+
+    if not fileName:
+        return None
+
+    theDir = g.os_path_dirname(fileName)
+    path = g.os_path_join(theDir,'leoSettings.leo')
+
+    if g.os_path_exists(path):
+        return path
+    else:
+        return None
+#@+node:ekr.20101021041958.6004: *6* defineSettingsTable
+def defineSettingsTable (self,fileName,localConfigFile):
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    global_table = (
+        (self.globalConfigFile,False),
+        (self.homeFile,False),
+        # (localConfigFile,False),
+        (self.myGlobalConfigFile,False),
+        (self.myHomeConfigFile,False),
+        (self.machineConfigFile,False),
+        # (myLocalConfigFile,False),
+        # New in Leo 4.6: the -c file is in *addition* to other config files.
+        (g.app.oneConfigFilename,False),
+    )
+
+    if fileName:
+        if fileName.lower().endswith('leosettings.leo'):
+            # 2011/02/28: don't read leoSettings.leo or myLeoSetings.leo twice.
+            # This allows myLeoSettings.leo to take precedence.
+            table1 = []
+        else:
+            path = g.os_path_finalize(fileName)
+            theDir = g.os_path_dirname(fileName)
+            myLocalConfigFile = g.os_path_join(theDir,'myLeoSettings.leo')
+            local_table = (
+                (localConfigFile,False),
+                (myLocalConfigFile,False),
+            )
+            if trace and verbose:
+                g.trace('localConfigFile:  ',localConfigFile)
+                g.trace('myLocalConfigFile:',myLocalConfigFile)
+    
+            table1 = [z for z in local_table if z not in global_table]
+            table1.append((path,True),)
+    else:
+        table1 = global_table
+
+    seen = [] ; table = []
+    for path,localFlag in table1:
+        if trace and verbose: g.trace('exists',g.os_path_exists(path),path)
+        if path and g.os_path_exists(path):
+            # Make sure we mark files seen no matter how they are specified.
+            path = g.os_path_realpath(g.os_path_finalize(path))
+            if path.lower() not in seen:
+                seen.append(path.lower())
+                table.append((path,localFlag),)
+    if trace: g.trace(repr(fileName),'table:',g.listToString(table))
+    return table
+#@+node:ekr.20041117085625: *6* openSettingsFile
+def openSettingsFile (self,path):
+
+    theFile,isZipped = g.openLeoOrZipFile(path)
+    if not theFile: return None
+
+    # Similar to g.openWithFileName except it uses a null gui.
+    # Changing g.app.gui here is a major hack.
+    oldGui = g.app.gui
+    g.app.gui = leoGui.nullGui("nullGui")
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=path,relativeFileName=None,
+        initEditCommanders=False,updateRecentFiles=False)
+    frame.log.enable(False)
+    g.app.lockLog()
+    ok = frame.c.fileCommands.open(
+        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+    g.app.unlockLog()
+    c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
+    g.app.gui = oldGui
+    return ok and c
+#@+node:ekr.20051013161232: *6* updateSettings
+def updateSettings (self,c,localFlag):
+
+    # g.trace(localFlag,c)
+
+    d = self.readSettings(c,localFlag)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and list(d.keys()))
+#@+node:ekr.20041117083857.1: *5* g.app.config.readSettings
+# Called to read all leoSettings.leo files.
+# Also called when opening an .leo file to read @settings tree.
+
+def readSettings (self,c,localFlag):
+
+    """Read settings from a file that may contain an @settings tree."""
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('localFlag: %5s %s' % (localFlag, c and c.shortFileName()))
+
+    # Create a settings dict for c for set()
+    if c and self.localOptionsDict.get(c.hash()) is None:
+        self.localOptionsDict[c.hash()] = {}
+
+    parser = settingsTreeParser(c,localFlag)
+    d = parser.traverse()
+    
+    # g.trace(c.shortFileName(),len(list(d.keys())))
+
+    return d
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()
@@ -11306,7 +11857,7 @@ def readSettingsFiles (self,fileName,verbose=True):
     '''Read settings from one file of the standard settings files.'''
 
     trace = False and not g.unitTesting
-    verbose = verbose or trace
+    verbose = verbose
     giveMessage = (verbose and not g.app.unitTesting and
         not self.silent and not g.app.batchMode)
     def message(s):
@@ -11358,6 +11909,7 @@ def getLocalConfigFile (self,fileName):
 def defineSettingsTable (self,fileName,localConfigFile):
 
     trace = False and not g.unitTesting
+    verbose = False
 
     global_table = (
         (self.globalConfigFile,False),
@@ -11384,7 +11936,7 @@ def defineSettingsTable (self,fileName,localConfigFile):
                 (localConfigFile,False),
                 (myLocalConfigFile,False),
             )
-            if trace:
+            if trace and verbose:
                 g.trace('localConfigFile:  ',localConfigFile)
                 g.trace('myLocalConfigFile:',myLocalConfigFile)
     
@@ -11395,14 +11947,14 @@ def defineSettingsTable (self,fileName,localConfigFile):
 
     seen = [] ; table = []
     for path,localFlag in table1:
-        if trace: g.trace('exists',g.os_path_exists(path),path)
+        if trace and verbose: g.trace('exists',g.os_path_exists(path),path)
         if path and g.os_path_exists(path):
             # Make sure we mark files seen no matter how they are specified.
             path = g.os_path_realpath(g.os_path_finalize(path))
             if path.lower() not in seen:
                 seen.append(path.lower())
                 table.append((path,localFlag),)
-    if trace: g.trace(repr(fileName),table)
+    if trace: g.trace(repr(fileName),'table:',g.listToString(table))
     return table
 #@+node:ekr.20041117085625: *7* openSettingsFile
 def openSettingsFile (self,path):
@@ -11460,6 +12012,8 @@ def readSettings (self,c,localFlag):
 
     parser = settingsTreeParser(c,localFlag)
     d = parser.traverse()
+    
+    # g.trace(c.shortFileName(),len(list(d.keys())))
 
     return d
 #@+node:ekr.20041120105609: *6* doShortcuts (ParserBaseClass)
@@ -12217,7 +12771,7 @@ def readSettingsFiles (self,fileName,verbose=True):
     '''Read settings from one file of the standard settings files.'''
 
     trace = False and not g.unitTesting
-    verbose = verbose or trace
+    verbose = verbose
     giveMessage = (verbose and not g.app.unitTesting and
         not self.silent and not g.app.batchMode)
     def message(s):
@@ -12269,6 +12823,7 @@ def getLocalConfigFile (self,fileName):
 def defineSettingsTable (self,fileName,localConfigFile):
 
     trace = False and not g.unitTesting
+    verbose = False
 
     global_table = (
         (self.globalConfigFile,False),
@@ -12295,7 +12850,7 @@ def defineSettingsTable (self,fileName,localConfigFile):
                 (localConfigFile,False),
                 (myLocalConfigFile,False),
             )
-            if trace:
+            if trace and verbose:
                 g.trace('localConfigFile:  ',localConfigFile)
                 g.trace('myLocalConfigFile:',myLocalConfigFile)
     
@@ -12306,14 +12861,14 @@ def defineSettingsTable (self,fileName,localConfigFile):
 
     seen = [] ; table = []
     for path,localFlag in table1:
-        if trace: g.trace('exists',g.os_path_exists(path),path)
+        if trace and verbose: g.trace('exists',g.os_path_exists(path),path)
         if path and g.os_path_exists(path):
             # Make sure we mark files seen no matter how they are specified.
             path = g.os_path_realpath(g.os_path_finalize(path))
             if path.lower() not in seen:
                 seen.append(path.lower())
                 table.append((path,localFlag),)
-    if trace: g.trace(repr(fileName),table)
+    if trace: g.trace(repr(fileName),'table:',g.listToString(table))
     return table
 #@+node:ekr.20041117085625: *6* openSettingsFile
 def openSettingsFile (self,path):
