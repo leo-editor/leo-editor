@@ -10957,7 +10957,7 @@ class jEditColorizer:
                 g.trace('%2s %s' % (n,s))
             if callers: g.trace(g.callers())
 
-        if s.strip():
+        if s.strip() or self.showInvisibles:
             self.mainLoop(n,s)
         else:
             self.setState(n) # Required

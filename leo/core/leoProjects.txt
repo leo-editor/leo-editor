@@ -9189,6 +9189,8 @@ def readSettings (self,c,localFlag):
     # g.trace(c.shortFileName(),len(list(d.keys())))
 
     return d
+#@+node:ekr.20110523130519.19137: *4* Fixed bug: show-invisibles now correctly shows blank lines
+# recolor must test self.showInvisibles.
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()
