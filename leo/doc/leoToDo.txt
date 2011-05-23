@@ -73,8 +73,6 @@ https://bugs.launchpad.net/leo-editor/+bug/701261
 
 PgUp/PgDown should scroll the body, not the tree
 https://bugs.launchpad.net/leo-editor/+bug/394309 
-#@+node:ekr.20110522121957.18235: *4* Log pane is scrolling for Python 2.x
-# Example: e2.bat.
 #@+node:ekr.20110517093705.14575: *3* Bugs: before a1
 # As many as possible before the first release(a1).
 # All must be fixed before the second release(b1)
@@ -100,7 +98,6 @@ https://bugs.launchpad.net/leo-editor/+bug/755206
 fill-para doesn't respect setting from set-fill-column
 https://bugs.launchpad.net/leo-editor/+bug/766747
 
-#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
 #@+node:ekr.20101116100300.5827: *4* Write script file to temp file if @bool write_script_file is False
 @nocolor-node
 
@@ -121,6 +118,7 @@ In the meantime, I strongly urge all script writers to set @bool write_script_fi
 Depending on your installation, especially on *nix, the default location for the file may be a problem.  In that case, set
 @string script_file_path to some convenient place, say in your home directory.
 #@+node:ekr.20100223133351.5998: *4* show-invisibles doesn't work for blank lines
+#@+node:ekr.20101021101942.6011: *4* Window size not honored when opened from menu
 #@+node:ekr.20080806054207.3: *4* Auto scroll outline pane if headline would become invisible
 @nocolor
 

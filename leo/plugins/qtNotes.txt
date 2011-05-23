@@ -6756,6 +6756,527 @@ def getWrapper (self,e,item):
     else:
         g.trace('no e')
         return None
+#@+node:ekr.20110522203356.18249: *3* qtLog.put sets horizonal scrolling to zero
+@nocolor-node
+
+This is a workaround to a glitch (Python 2.x only),
+but in fact it's generally useful.
+#@+node:ekr.20081121105001.318: *4* class leoQtLog
+class leoQtLog (leoFrame.leoLog):
+
+    """A class that represents the log pane of a Qt window."""
+
+    @others
+#@+node:ekr.20081121105001.319: *5* qtLog Birth
+#@+node:ekr.20081121105001.320: *6* qtLog.__init__
+def __init__ (self,frame,parentFrame):
+
+    # g.trace("leoQtLog")
+
+    # Call the base class constructor and calls createControl.
+    leoFrame.leoLog.__init__(self,frame,parentFrame)
+
+    self.c = c = frame.c # Also set in the base constructor, but we need it here.
+    self.logCtrl = None # The text area for log messages.
+
+    self.contentsDict = {} # Keys are tab names.  Values are widgets.
+    self.eventFilters = [] # Apparently needed to make filters work!
+    self.logDict = {} # Keys are tab names text widgets.  Values are the widgets.
+    self.menu = None # A menu that pops up on right clicks in the hull or in tabs.
+
+    self.tabWidget = tw = c.frame.top.ui.tabWidget
+        # The Qt.TabWidget that holds all the tabs.
+    self.wrap = g.choose(c.config.getBool('log_pane_wraps'),True,False)
+
+    # g.trace('qtLog.__init__',self.tabWidget)
+
+    if 0: # Not needed to make onActivateEvent work.
+        # Works only for .tabWidget, *not* the individual tabs!
+        theFilter = leoQtEventFilter(c,w=tw,tag='tabWidget')
+        tw.installEventFilter(theFilter)
+
+    self.setFontFromConfig()
+    self.setColorFromConfig()
+#@+node:ekr.20081121105001.321: *6* qtLog.finishCreate
+def finishCreate (self):
+
+    c = self.c ; log = self ; w = self.tabWidget
+
+    # Remove unneeded tabs.
+    for name in ('Tab 1','Page'):
+        for i in range(w.count()):
+            if name == w.tabText(i):
+                w.removeTab(i)
+                break
+
+    # Rename the 'Tab 2' tab to 'Find'.
+    for i in range(w.count()):
+        if w.tabText(i) in ('Find','Tab 2'):
+            w.setTabText(i,'Find')
+            self.contentsDict['Find'] = w.currentWidget()
+            break
+
+    # Create the log tab as the leftmost tab.
+    # log.selectTab('Log')
+    log.createTab('Log')
+    logWidget = self.contentsDict.get('Log')
+    logWidget.setWordWrapMode(
+        g.choose(self.wrap,
+            QtGui.QTextOption.WordWrap,
+            QtGui.QTextOption.NoWrap))
+
+    for i in range(w.count()):
+        if w.tabText(i) == 'Log':
+            w.removeTab(i)
+    w.insertTab(0,logWidget,'Log')
+
+    c.searchCommands.openFindTab(show=False)
+    c.spellCommands.openSpellTab()
+#@+node:ekr.20090627090950.3716: *6* qtLog.getName
+def getName (self):
+    return 'log' # Required for proper pane bindings.
+#@+node:ekr.20081121105001.322: *5* Do nothings (logCtrl)
+#@+node:ekr.20081121105001.323: *6* Config
+# These will probably be replaced by style sheets.
+
+def configureBorder(self,border):               pass
+def configureFont(self,font):                   pass
+def getFontConfig (self):                       pass
+def setColorFromConfig (self):                  pass
+def SetWidgetFontFromConfig (self,logCtrl=None): pass
+def saveAllState (self):                        pass
+def restoreAllState (self,d):                   pass
+#@+node:ekr.20081121105001.324: *6* Focus & update
+def onActivateLog (self,event=None):    pass
+def hasFocus (self):                    return None
+def forceLogUpdate (self,s):            pass
+#@+node:ekr.20090627090950.3717: *5* High-level interface (qtLog)
+# Part 1: Corresponding to mustBeDefinedInSubclasses.
+def appendText(self,s):             self.logCtrl.appendText(s)
+def delete(self,i,j=None):          self.logCtrl.delete(i,j)
+def insert(self,i,s):               self.logCtrl.insert(i,s)
+def get(self,i,j):                  return self.logCtrl.get(i,j)
+def getAllText(self):               return self.logCtrl.getAllText()
+def getFocus(self):                 return self.logCtrl.getFocus()
+def getInsertPoint(self):           return self.logCtrl.getInsertPoint()
+def getSelectedText(self):          return self.logCtrl.getSelectedText()
+def getSelectionRange (self):       return self.logCtrl.getSelectionRange()
+def getYScrollPosition (self):      return self.logCtrl.getYScrollPosition()
+def hasSelection(self):             return self.logCtrl.hasSelection()
+def scrollLines(self,n):            self.logCtrl.scrollLines(n)
+def see(self,i):                    self.logCtrl.see(i)
+def seeInsertPoint (self):          self.logCtrl.seeInsertPoint()
+def setAllText (self,s):            self.logCtrl.setAllText(s)
+def setBackgroundColor(self,color): self.logCtrl.setBackgroundColor(color)
+def setFocus(self):                 self.logCtrl.setFocus()
+set_focus = setFocus
+def setForegroundColor(self,color): self.logCtrl.setForegroundColor(color)
+def setInsertPoint(self,pos):       self.logCtrl.setInsertPoint(pos)
+def setSelectionRange(self,*args,**keys):
+    self.logCtrl.setSelectionRange(*args,**keys)
+def setYScrollPosition (self,i):    self.logCtrl.setYScrollPosition(i)
+
+# Part 2: corresponding to mustBeDefinedInBaseClass.
+def clipboard_append(self,s):       self.logCtrl.clipboard_append(s)
+def clipboard_clear (self):         self.logCtrl.clipboard_clear()
+def onChar (self,event):            self.logCtrl.onChar(event)
+
+# Part 3: do-nothings in mayBeDefinedInSubclasses.
+def bind (self,kind,*args,**keys):          pass
+def getWidth (self):                        return 0
+def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+    pass
+def indexIsVisible (self,i):                return False
+    # Code will loop if this returns True forever.
+def mark_set(self,markName,i):              pass
+def setWidth (self,width):                  pass
+def tag_add(self,tagName,i,j=None,*args):   pass
+def tag_config (self,colorName,**keys):     pass
+def tag_configure (self,colorName,**keys):  pass
+def tag_delete (self,tagName,*args,**keys): pass
+def tag_names (self, *args):                return []
+def tag_ranges(self,tagName):               return tuple()
+def tag_remove(self,tagName,i,j=None,*args):pass
+def update (self,*args,**keys):             pass
+def update_idletasks (self,*args,**keys):   pass
+def xyToPythonIndex (self,x,y):             return 0
+def yview (self,*args):                     return 0,0
+
+# Part 4: corresponding to mayBeDefinedInSubclasses.
+def deleteTextSelection (self):         self.logCtrl.deleteTextSelection ()
+def event_generate(self,stroke):        pass
+def replace (self,i,j,s):               self.logCtrl.replace (i,j,s)
+def rowColToGuiIndex (self,s,row,col):  return self.logCtrl.rowColToGuiIndex(s,row,col)
+def selectAllText (self,insert=None):   self.logCtrl.selectAllText(insert)
+def toPythonIndex (self,index):         return self.logCtrl.toPythonIndex(index)
+toGuiIndex = toPythonIndex
+def toPythonIndexRowCol(self,index):    return self.logCtrl.toPythonIndexRowCol(index)
+#@+node:ekr.20081121105001.325: *5* put & putnl (qtLog)
+#@+node:ekr.20081121105001.326: *6* put (qtLog)
+# All output to the log stream eventually comes here.
+def put (self,s,color=None,tabName='Log'):
+
+    c = self.c
+    if g.app.quitting or not c or not c.exists:
+        print('qtGui.log.put fails',repr(s))
+        return
+
+    if color:
+        color = leoColor.getColor(color,'black')
+    else:
+        color = leoColor.getColor('black')
+
+    self.selectTab(tabName or 'Log')
+
+    # Note: this must be done after the call to selectTab.
+    w = self.logCtrl.widget # w is a QTextBrowser
+
+    if w:
+        sb = w.horizontalScrollBar()
+        pos = sb.sliderPosition()
+        # g.trace(pos,sb,g.callers())
+        s=s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        if not self.wrap: # 2010/02/21: Use &nbsp; only when not wrapping!
+            s = s.replace(' ','&nbsp;')
+        s = s.rstrip().replace('\n','<br>')
+        s = '<font color="%s">%s</font>' % (color,s)
+        w.append(s)
+        w.moveCursor(QtGui.QTextCursor.End)
+        sb.setSliderPosition(0) # Force the slider to the initial position.
+    else:
+        # put s to logWaiting and print s
+        g.app.logWaiting.append((s,color),)
+        if g.isUnicode(s):
+            s = g.toEncodedString(s,"ascii")
+        print(s)
+#@+node:ekr.20081121105001.327: *6* putnl
+def putnl (self,tabName='Log'):
+
+    if g.app.quitting:
+        return
+
+    if tabName:
+        self.selectTab(tabName)
+
+    w = self.logCtrl.widget
+    if w:
+        sb = w.horizontalScrollBar()
+        pos = sb.sliderPosition()
+        # Not needed!
+            # contents = w.toHtml()
+            # w.setHtml(contents + '\n')
+        w.moveCursor(QtGui.QTextCursor.End)
+        sb.setSliderPosition(pos)
+        w.repaint() # Slow, but essential.
+    else:
+        # put s to logWaiting and print  a newline
+        g.app.logWaiting.append(('\n','black'),)
+#@+node:ekr.20081121105001.328: *5* Tab (qtLog)
+#@+node:ekr.20081121105001.329: *6* clearTab
+def clearTab (self,tabName,wrap='none'):
+
+    w = self.logDict.get(tabName)
+    if w:
+        w.clear() # w is a QTextBrowser.
+#@+node:ekr.20081121105001.330: *6* createTab
+def createTab (self,tabName,widget=None,wrap='none'):
+    """ Create a new tab in tab widget
+
+    if widget is None, Create a QTextBrowser,
+    suitable for log functionality.
+    """
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(tabName,g.callers(4))
+
+    c = self.c ; w = self.tabWidget
+
+    # Important. Not called during startup.
+
+    if widget is None:
+        # widget = QtGui.QTextBrowser()
+        widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
+        contents = leoQTextEditWidget(widget=widget,name='log',c=c)
+        widget.leo_log_wrapper = contents # Inject an ivar.
+        if trace: g.trace('** creating',tabName,contents,widget,'\n',g.callers(9))
+        # widget.setWordWrapMode(QtGui.QTextOption.NoWrap)
+        widget.setWordWrapMode(
+            g.choose(self.wrap,
+                QtGui.QTextOption.WordWrap,
+                QtGui.QTextOption.NoWrap))
+
+        widget.setReadOnly(False) # Allow edits.
+        self.logDict[tabName] = widget
+        if tabName == 'Log':
+            self.logCtrl = contents
+            widget.setObjectName('log-widget')
+            theFilter = leoQtEventFilter(c,w=self,tag='log')
+            self.eventFilters.append(theFilter) # Needed!
+            widget.installEventFilter(theFilter)
+        self.contentsDict[tabName] = widget
+        w.addTab(widget,tabName)
+    else:
+        contents = widget
+        # Bug fix: 2009/10/06
+        widget.leo_log_wrapper = contents # Inject an ivar.
+        # if trace: g.trace('** using',tabName,contents)
+        self.contentsDict[tabName] = contents
+        w.addTab(contents,tabName)
+
+    return contents
+#@+node:ekr.20081121105001.331: *6* cycleTabFocus
+def cycleTabFocus (self,event=None,stop_w = None):
+
+    '''Cycle keyboard focus between the tabs in the log pane.'''
+
+    c = self.c ; w = self.tabWidget
+
+    i = w.currentIndex()
+    i += 1
+    if i >= w.count():
+        i = 0
+
+    tabName = w.tabText(i)
+    w.setCurrentIndex(i)
+    log = self.logDict.get(tabName)
+    if log: self.logCtrl = log.leo_log_wrapper
+
+#@+node:ekr.20081121105001.332: *6* deleteTab
+def deleteTab (self,tabName,force=False):
+
+    c = self.c ; w = self.tabWidget
+
+    if force or tabName not in ('Log','Find','Spell'):
+        for i in range(w.count()):
+            if tabName == w.tabText(i):
+                w.removeTab(i)
+                break
+
+    self.selectTab('Log')
+    c.invalidateFocus()
+    c.bodyWantsFocus()
+#@+node:ekr.20081121105001.333: *6* hideTab
+def hideTab (self,tabName):
+
+    self.selectTab('Log')
+#@+node:ekr.20081121105001.334: *6* numberOfVisibleTabs
+def numberOfVisibleTabs (self):
+
+    return len([val for val in self.frameDict.values() if val != None])
+#@+node:ekr.20081121105001.335: *6* selectTab & helper
+def selectTab (self,tabName,createText=True,widget=None,wrap='none'):
+
+    '''Create the tab if necessary and make it active.'''
+
+    c = self.c ; w = self.tabWidget ; trace = False
+
+    ok = self.selectHelper(tabName,createText)
+    if ok: return
+
+    self.createTab(tabName,widget=widget,wrap=wrap)
+    self.selectHelper(tabName,createText)
+
+#@+node:ekr.20081121105001.336: *7* selectHelper
+def selectHelper (self,tabName,createText):
+
+    w = self.tabWidget
+
+    for i in range(w.count()):
+        if tabName == w.tabText(i):
+            w.setCurrentIndex(i)
+            if createText and tabName not in ('Spell','Find',):
+                self.logCtrl = w.widget(i).leo_log_wrapper
+                # g.trace('**setting',self.logCtrl)
+            if tabName == 'Spell':
+                # the base class uses this as a flag to see if
+                # the spell system needs initing
+                self.frameDict['Spell'] = w.widget(i)
+            return True
+    else:
+        return False
+#@+node:ekr.20081121105001.337: *5* qtLog color tab stuff
+def createColorPicker (self,tabName):
+
+    g.es('color picker not ready for qt',color='blue')
+#@+node:ekr.20081121105001.341: *5* qtLog font tab stuff
+#@+node:ekr.20081121105001.342: *6* createFontPicker
+def createFontPicker (self,tabName):
+
+    log = self
+    QFont = QtGui.QFont
+    font,ok = QtGui.QFontDialog.getFont()
+    if not (font and ok): return
+
+    style = font.style()
+    table = (
+        (QFont.StyleNormal,'normal'),
+        (QFont.StyleItalic,'italic'),
+        (QFont.StyleOblique,'oblique'))
+    for val,name in table:
+        if style == val:
+            style = name ; break
+    else: style = ''
+
+    weight = font.weight()
+    table = (
+        (QFont.Light,'light'),
+        (QFont.Normal,'normal'),
+        (QFont.DemiBold,'demibold'),
+        (QFont.Bold	,'bold'),
+        (QFont.Black,'black'))
+    for val,name in table:
+        if weight == val:
+            weight = name ; break
+    else: weight = ''
+
+    table = (
+        ('family',str(font.family())),
+        ('size  ',font.pointSize()),
+        ('style ',style),
+        ('weight',weight),
+    )
+
+    for key,val in table:
+        if val:
+            g.es(key,val,tabName='Fonts')
+#@+node:ekr.20081121105001.350: *6* createBindings (fontPicker)
+def createBindings (self):
+
+    c = self.c ; k = c.k
+
+    # table = (
+        # ('<Button-1>',  k.masterClickHandler),
+        # ('<Double-1>',  k.masterClickHandler),
+        # ('<Button-3>',  k.masterClickHandler),
+        # ('<Double-3>',  k.masterClickHandler),
+        # ('<Key>',       k.masterKeyHandler),
+        # ("<Escape>",    self.hideFontTab),
+    # )
+
+    # w = self.sampleWidget
+    # for event, callback in table:
+        # c.bind(w,event,callback)
+
+    # k.completeAllBindingsForWidget(w)
+#@+node:ekr.20081121105001.351: *6* getFont
+def getFont(self,family=None,size=12,slant='roman',weight='normal'):
+
+    return g.app.config.defaultFont
+#@+node:ekr.20081121105001.352: *6* setFont
+def setFont(self,familyBox,sizeEntry,slantBox,weightBox,label):
+
+    pass
+
+    # d = {}
+    # for box,key in (
+        # (familyBox, 'family'),
+        # (None,      'size'),
+        # (slantBox,  'slant'),
+        # (weightBox, 'weight'),
+    # ):
+        # if box: val = box.get()
+        # else:
+            # val = sizeEntry.get().strip() or ''
+            # try: int(val)
+            # except ValueError: val = None
+        # if val and val.lower() not in ('none','<none>',):
+            # d[key] = val
+
+    # family=d.get('family',None)
+    # size=d.get('size',12)
+    # weight=d.get('weight','normal')
+    # slant=d.get('slant','roman')
+    # font = self.getFont(family,size,slant,weight)
+    # label.configure(font=font)
+#@+node:ekr.20081121105001.353: *6* hideFontTab
+def hideFontTab (self,event=None):
+
+    c = self.c
+    c.frame.log.selectTab('Log')
+    c.bodyWantsFocus()
+#@+node:ekr.20081121105001.330: *4* createTab
+def createTab (self,tabName,widget=None,wrap='none'):
+    """ Create a new tab in tab widget
+
+    if widget is None, Create a QTextBrowser,
+    suitable for log functionality.
+    """
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(tabName,g.callers(4))
+
+    c = self.c ; w = self.tabWidget
+
+    # Important. Not called during startup.
+
+    if widget is None:
+        # widget = QtGui.QTextBrowser()
+        widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
+        contents = leoQTextEditWidget(widget=widget,name='log',c=c)
+        widget.leo_log_wrapper = contents # Inject an ivar.
+        if trace: g.trace('** creating',tabName,contents,widget,'\n',g.callers(9))
+        # widget.setWordWrapMode(QtGui.QTextOption.NoWrap)
+        widget.setWordWrapMode(
+            g.choose(self.wrap,
+                QtGui.QTextOption.WordWrap,
+                QtGui.QTextOption.NoWrap))
+
+        widget.setReadOnly(False) # Allow edits.
+        self.logDict[tabName] = widget
+        if tabName == 'Log':
+            self.logCtrl = contents
+            widget.setObjectName('log-widget')
+            theFilter = leoQtEventFilter(c,w=self,tag='log')
+            self.eventFilters.append(theFilter) # Needed!
+            widget.installEventFilter(theFilter)
+        self.contentsDict[tabName] = widget
+        w.addTab(widget,tabName)
+    else:
+        contents = widget
+        # Bug fix: 2009/10/06
+        widget.leo_log_wrapper = contents # Inject an ivar.
+        # if trace: g.trace('** using',tabName,contents)
+        self.contentsDict[tabName] = contents
+        w.addTab(contents,tabName)
+
+    return contents
+#@+node:ekr.20081121105001.326: *4* put (qtLog)
+# All output to the log stream eventually comes here.
+def put (self,s,color=None,tabName='Log'):
+
+    c = self.c
+    if g.app.quitting or not c or not c.exists:
+        print('qtGui.log.put fails',repr(s))
+        return
+
+    if color:
+        color = leoColor.getColor(color,'black')
+    else:
+        color = leoColor.getColor('black')
+
+    self.selectTab(tabName or 'Log')
+
+    # Note: this must be done after the call to selectTab.
+    w = self.logCtrl.widget # w is a QTextBrowser
+
+    if w:
+        sb = w.horizontalScrollBar()
+        pos = sb.sliderPosition()
+        # g.trace(pos,sb,g.callers())
+        s=s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        if not self.wrap: # 2010/02/21: Use &nbsp; only when not wrapping!
+            s = s.replace(' ','&nbsp;')
+        s = s.rstrip().replace('\n','<br>')
+        s = '<font color="%s">%s</font>' % (color,s)
+        w.append(s)
+        w.moveCursor(QtGui.QTextCursor.End)
+        sb.setSliderPosition(0) # Force the slider to the initial position.
+    else:
+        # put s to logWaiting and print s
+        g.app.logWaiting.append((s,color),)
+        if g.isUnicode(s):
+            s = g.toEncodedString(s,"ascii")
+        print(s)
 #@+node:ekr.20110325185230.14517: ** Unused code
 #@+node:vivainio.20091223153142.4072: *3* Completer (qtBody)
 def showCompleter(self, alternatives, selected_cb):

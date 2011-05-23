@@ -5313,16 +5313,14 @@ class leoQtLog (leoFrame.leoLog):
             color = leoColor.getColor('black')
 
         self.selectTab(tabName or 'Log')
-        # print('qtLog.put',tabName,'%3s' % (len(s)),self.logCtrl)
 
         # Note: this must be done after the call to selectTab.
         w = self.logCtrl.widget # w is a QTextBrowser
 
-        # print('qtGui.log.put',bool(w),repr(s))
-
         if w:
             sb = w.horizontalScrollBar()
             pos = sb.sliderPosition()
+            # g.trace(pos,sb,g.callers())
             s=s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
             if not self.wrap: # 2010/02/21: Use &nbsp; only when not wrapping!
                 s = s.replace(' ','&nbsp;')
@@ -5330,7 +5328,7 @@ class leoQtLog (leoFrame.leoLog):
             s = '<font color="%s">%s</font>' % (color,s)
             w.append(s)
             w.moveCursor(QtGui.QTextCursor.End)
-            sb.setSliderPosition(pos)
+            sb.setSliderPosition(0) # Force the slider to the initial position.
         else:
             # put s to logWaiting and print s
             g.app.logWaiting.append((s,color),)

@@ -7682,6 +7682,8 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/ee09fb2c2a5316f2/
 These are now colored with the "operator" setting, for example:
     
     @color operator_color = red
+#@+node:ekr.20110522121957.18235: *4* Fixed horizontal scroll glitch in log pane (Python 2.x)
+Example: e2.bat.  A workaround is in qtLog.put.
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()
