@@ -218,6 +218,11 @@ def get_tag(xml_node, attrib=None):
             # don't break here, this loop also updates NSMAP for later
     return name
     
+#@+node:ekr.20110523130519.18190: ** def init
+def init ():
+    
+    # Suppresses a warning from leoPlugins.py.
+    return True
 #@+node:tbrown.20110428102237.20329: ** leo2xml
 @g.command('leo2xml')
 def leo2xml(event):
