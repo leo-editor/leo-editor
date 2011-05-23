@@ -7686,6 +7686,724 @@ These are now colored with the "operator" setting, for example:
     @color operator_color = red
 #@+node:ekr.20110522121957.18235: *4* Fixed horizontal scroll glitch in log pane (Python 2.x)
 Example: e2.bat.  A workaround is in qtLog.put.
+#@+node:ekr.20110522203356.18250: *4* Fixed Bug 760531:Spurious overwrite warnings
+@nocolor-node
+
+High-priority bug
+
+https://bugs.launchpad.net/leo-editor/+bug/760531
+
+Ville:
+    
+I get this error way too often compared to the amount of cases when
+it's actually useful (I think Leo uses wrong logic here, but didn't
+check): 
+
+=====
+
+Matt Wilkie
+
+I don't know if it's related, but I get warning about overwriting an
+existing file when I create a new @file node and the file does not
+already exist (leo is creating the file):
+
+1. insert node, edit headline to "@file deleteme.py"
+2. [ctrl]-[s]
+3. add some text to "@file deleteme.py" body pane
+4. [ctrl]-[s], message pops up:
+
+---------------------------
+Overwrite existing file?
+#@+node:ekr.20041005105605.21: *5* at.read & helpers
+def read(self,root,importFileName=None,
+    fromString=None,atShadow=False,force=False
+):
+
+    """Read an @thin or @file tree."""
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(root.h)
+    at = self ; c = at.c
+    fileName = at.initFileName(fromString,importFileName,root)
+    if not fileName:
+        at.error("Missing file name.  Restoring @file tree from .leo file.")
+        return False
+    # Fix bug 760531: always mark the root as read, even if there was an error.
+    root.v.at_read = True
+    # Bug fix 2011/05/23: Restore orphan trees from the outline.
+    if root.isOrphan():
+        g.es("reading:",root.h)
+        g.warning('The outline contains an orphan node!\nRetaining the outline')
+        return False
+    at.initReadIvars(root,fileName,
+        importFileName=importFileName,atShadow=atShadow)
+    at.fromString = fromString
+    if at.errors:
+        if trace: g.trace('Init error')
+        return False
+    fileName = at.openFileForReading(fromString=fromString)
+    if fileName and at.inputFile:
+        c.setFileTimeStamp(fileName)
+    elif fromString: # 2010/09/02.
+        pass
+    else:
+        g.trace('No inputFile')
+        return False
+
+    # Get the file from the cache if possible.
+    if fromString:
+        s,loaded,fileKey = fromString,False,None
+    else:
+        s,loaded,fileKey = c.cacher.readFile(fileName,root)
+    # Never read an external file with file-like sentinels from the cache.
+    isFileLike = loaded and at.isFileLike(s)
+    if not loaded or isFileLike:
+        # if trace: g.trace('file-like file',fileName)
+        force = True # Disable caching.
+    if loaded and not force:
+        if trace: g.trace('in cache',fileName)
+        at.inputFile.close()
+        root.clearDirty()
+        return True
+    if not g.unitTesting:
+        g.es("reading:",root.h)
+    if isFileLike:
+        if g.unitTesting:
+            if 0: print("converting @file format in",root.h)
+            g.app.unitTestDict['read-convert']=True
+        else:
+            g.es("converting @file format in",root.h,color='red')
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+        # Sets the following ivars:
+            # at.default_directory
+            # at.encoding
+            # at.explicitLineEnding
+            # at.language
+            # at.output_newline
+            # at.page_width
+            # at.tab_width
+
+    if trace: g.trace(fileName)
+    thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        at.deleteUnvisitedNodes(root)
+        at.deleteTnodeList(root)
+    if at.errors == 0 and not at.importing:
+        # Used by mod_labels plugin.
+        at.copyAllTempBodyStringsToVnodes(root,thinFile)
+    at.deleteAllTempBodyStrings()
+    if isFileLike and at.errors == 0: # Old-style sentinels.
+        # 2010/02/24: Make the root @file node dirty so it will
+        # be written automatically when saving the file.
+        # Do *not* set the orphan bit here!
+        root.clearOrphan()
+        root.setDirty()
+        c.setChanged(True) # Essential, to keep dirty bit set.
+    elif at.errors > 0:
+        # 2010/10/22: Dirty bits are *always* cleared.
+        # Only the orphan bit is preserved.
+        root.setDirty()
+        root.setOrphan()
+        c.setChanged(True)
+    else:
+        root.clearOrphan()
+    if at.errors == 0 and not isFileLike and not fromString:
+        c.cacher.writeFile(root,fileKey)
+
+    if trace: g.trace('at.errors',at.errors)
+    return at.errors == 0
+#@+node:ekr.20041005105605.25: *6* at.deleteAllTempBodyStrings
+def deleteAllTempBodyStrings(self):
+
+    for v in self.c.all_unique_nodes():
+        if hasattr(v,"tempBodyString"):
+            delattr(v,"tempBodyString")
+        if hasattr(v,"tempBodyList"):
+            delattr(v,"tempBodyList")
+#@+node:ekr.20100122130101.6174: *6* at.deleteTnodeList
+def deleteTnodeList (self,p): # atFile method.
+
+    '''Remove p's tnodeList.'''
+
+    v = p.v
+
+    if hasattr(v,"tnodeList"):
+
+        if False: # Not an error, but a useful trace.
+            s = "deleting tnodeList for " + repr(v)
+            g.es_print(s,color="blue")
+
+        delattr(v,"tnodeList")
+        v._p_changed = True
+#@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes & helpers
+def deleteUnvisitedNodes (self,root):
+
+    '''Delete unvisited nodes in root's subtree, not including root.
+
+    Actually, instead of deleting the nodes, we move them to be children of the
+    'Resurrected Nodes' r.
+    '''
+
+    at = self
+
+    if not root.hasChildren():
+        return
+
+    # Carefully set up the arguments.
+    aList = [z.copy() for z in root.subtree() if not z.isVisited()]
+    if not aList: return
+
+    r = at.createResurrectedNodesNode()
+    assert r not in aList
+    callback=at.defineResurrectedNodeCallback(r,root)
+
+    # Now move the nodes.
+    root.firstChild().deletePositionsInList(aList,callback)
+#@+node:ekr.20100803073751.5817: *7* createResurrectedNodesNode
+def createResurrectedNodesNode(self):
+
+    '''Create a 'Resurrected Nodes' node as the last top-level node.'''
+
+    at = self ; c = at.c ; tag = 'Resurrected Nodes'
+
+    # Find the last top-level node.
+    last = c.rootPosition()
+    while last.hasNext():
+        last.moveToNext()
+
+    if last.h == tag:
+        # The 'Resurrected Nodes' node already exists.
+        p = last
+    else:
+        # Create the 'Resurrected Nodes' node after 'last'.
+        p = last.insertAfter()
+        p.setHeadString(tag)
+
+    p.expand()
+    return p
+#@+node:ekr.20100803073751.5818: *7* defineResurrectedNodeCallback
+def defineResurrectedNodeCallback (self,r,root):
+
+    '''Define a callback that moves node p as r's last child.'''
+
+    def callback(p,r=r.copy(),root=root):
+
+        '''The resurrected nodes callback.'''
+
+        child = r.insertAsLastChild()
+        child.h = 'From %s' % root.h
+        p.moveToLastChildOf(child)
+
+        if g.unitTesting:
+            # g.trace(p.h,r.h)
+            pass 
+        else:
+            g.es('resurrected node:',p.h,color='red')
+            g.es('in file:',root.h,color='blue')
+
+    return callback
+
+
+#@+node:ekr.20041005105605.22: *6* at.initFileName
+def initFileName (self,fromString,importFileName,root):
+
+    if fromString:
+        fileName = "<string-file>"
+    elif importFileName:
+        fileName = importFileName
+    elif root.isAnyAtFileNode():
+        fileName = root.anyAtFileNodeName()
+    else:
+        fileName = None
+
+    return fileName
+#@+node:ekr.20100224050618.11547: *6* at.isFileLike
+def isFileLike (self,s):
+
+    '''Return True if s has file-like sentinels.'''
+
+    trace = False and not g.unitTesting
+    at = self ; tag = "@+leo"
+    s = g.toUnicode(s)
+    i = s.find(tag)
+    if i == -1:
+        if trace: g.trace('found: False',repr(s))
+        return True # Don't use the cashe.
+    else:
+        j,k = g.getLine(s,i)
+        line = s[j:k]
+        valid,new_df,start,end,isThin = \
+            at.parseLeoSentinel(line)
+        if trace: g.trace('found: True isThin:',
+            isThin,repr(line))
+        return not isThin
+#@+node:ekr.20090712050729.6017: *5* promptForDangerousWrite
+def promptForDangerousWrite (self,fileName,kind):
+
+    c = self.c
+
+    if g.app.unitTesting:
+        val = g.app.unitTestDict.get('promptForDangerousWrite')
+        return val in (None,True)
+
+    # g.trace(timeStamp, timeStamp2)
+    message = '%s %s\n%s\n%s' % (
+        kind, fileName,
+        g.tr('already exists.'),
+        g.tr('Overwrite this file?'))
+
+    ok = g.app.gui.runAskYesNoCancelDialog(c,
+        title = 'Overwrite existing file?',
+        message = message)
+
+    return ok == 'yes'
+#@+node:ekr.20110518022449.6071: *4* Fixed important bug involving orphan nodes
+@nocolor-node
+
+This was an important bug.  It's been around for a very long time.
+
+What I did:
+    
+- putVnode no longer clears the orphan bit.
+
+- at.read issues a warning and does not read the external file if the orphan bit is set.
+#@+node:ekr.20110522203356.18260: *5* Report
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/861a0d156b16090f
+
+The document said that orphan children would be saved in leo file. See 'orphan
+node' description at http://webpages.charter.net/edreamleo/glossary.html for
+example.
+
+I found, although they were saved in leo file (I checked the xml file), but
+they didn't appear in outline pane if I closed and reloaded the leo file. The
+same for named children nodes which were not referenced in parent file node.
+
+Is the behavior a bug or expected behavior?
+
+Here is the entry in the glossary::
+    
+Orphan node
+
+    A node that would not be copied to a external file. Orphan nodes can arise
+    because an @file tree has no @others or @all directives. Sections that are
+    defined but not used also create orphan nodes.
+
+    Leo issues a warning when attempting to write an @file tree containing
+    orphan nodes, and does not save the external file. No information is lost;
+    Leo saves the information in the @file tree in the .leo file. Leo will load
+    the @file tree from the .leo file the next time Leo opens the .leo file.
+#@+node:ekr.20041005105605.26: *5* at.readAll
+def readAll(self,root,partialFlag=False):
+
+    """Scan vnodes, looking for @<file> nodes to read."""
+
+    use_tracer = False
+    if use_tracer: tt = g.startTracer()
+
+    at = self ; c = at.c
+    force = partialFlag
+    if partialFlag:
+        # Capture the current headline only if
+        # we aren't doing the initial read.
+        c.endEditing() 
+    anyRead = False
+    p = root.copy()
+
+    scanned_tnodes = set()
+
+    if partialFlag: after = p.nodeAfterTree()    
+    else: after = c.nullPosition()
+
+    while p and p != after:
+        gnx = p.gnx
+        #skip clones
+        if gnx in scanned_tnodes:
+            p.moveToNodeAfterTree()
+            continue
+        scanned_tnodes.add(gnx)
+
+        if not p.h.startswith('@'):
+            p.moveToThreadNext()
+        elif p.isAtIgnoreNode():
+            p.moveToNodeAfterTree()
+        elif p.isAtThinFileNode():
+            anyRead = True
+            at.read(p,force=force)
+            p.moveToNodeAfterTree()
+        elif p.isAtAutoNode():
+            fileName = p.atAutoNodeName()
+            at.readOneAtAutoNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtEditNode():
+            fileName = p.atEditNodeName()
+            at.readOneAtEditNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtShadowFileNode():
+            fileName = p.atShadowFileNodeName()
+            at.readOneAtShadowNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtFileNode():
+            anyRead = True
+            wasOrphan = p.isOrphan()
+            ok = at.read(p,force=force)
+            if wasOrphan and not partialFlag and not ok:
+                # Remind the user to fix the problem.
+                # However, the dirty bit gets cleared.
+                p.setDirty() # Expensive, but it can't be helped.
+                p.setOrphan() # 2010/10/22: the dirty bit gets cleared.
+                c.setChanged(True)
+            p.moveToNodeAfterTree()
+        else:
+            # 2010/7/28: set v.at_read bit if the @asis or @nosent
+            # **node** exists.  We'll prompt for dangerous writes
+            # if a) this bit is clear and b) the file exists.
+            if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+                p.v.at_read = True # Remember that we have seen this node.
+            p.moveToThreadNext()
+
+    # 2010/10/22: Preserve the orphan bits: the dirty bits will be cleared!
+    ### Clear all orphan bits.
+    #for v in c.all_unique_nodes():
+    #    v.clearOrphan()
+
+    if partialFlag and not anyRead:
+        g.es("no @<file> nodes in the selected tree")
+
+    if use_tracer: tt.stop()
+#@+node:ekr.20041005105605.21: *5* at.read & helpers
+def read(self,root,importFileName=None,
+    fromString=None,atShadow=False,force=False
+):
+
+    """Read an @thin or @file tree."""
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(root.h)
+    at = self ; c = at.c
+    fileName = at.initFileName(fromString,importFileName,root)
+    if not fileName:
+        at.error("Missing file name.  Restoring @file tree from .leo file.")
+        return False
+    # Fix bug 760531: always mark the root as read, even if there was an error.
+    root.v.at_read = True
+    # Bug fix 2011/05/23: Restore orphan trees from the outline.
+    if root.isOrphan():
+        g.es("reading:",root.h)
+        g.warning('The outline contains an orphan node!\nRetaining the outline')
+        return False
+    at.initReadIvars(root,fileName,
+        importFileName=importFileName,atShadow=atShadow)
+    at.fromString = fromString
+    if at.errors:
+        if trace: g.trace('Init error')
+        return False
+    fileName = at.openFileForReading(fromString=fromString)
+    if fileName and at.inputFile:
+        c.setFileTimeStamp(fileName)
+    elif fromString: # 2010/09/02.
+        pass
+    else:
+        g.trace('No inputFile')
+        return False
+
+    # Get the file from the cache if possible.
+    if fromString:
+        s,loaded,fileKey = fromString,False,None
+    else:
+        s,loaded,fileKey = c.cacher.readFile(fileName,root)
+    # Never read an external file with file-like sentinels from the cache.
+    isFileLike = loaded and at.isFileLike(s)
+    if not loaded or isFileLike:
+        # if trace: g.trace('file-like file',fileName)
+        force = True # Disable caching.
+    if loaded and not force:
+        if trace: g.trace('in cache',fileName)
+        at.inputFile.close()
+        root.clearDirty()
+        return True
+    if not g.unitTesting:
+        g.es("reading:",root.h)
+    if isFileLike:
+        if g.unitTesting:
+            if 0: print("converting @file format in",root.h)
+            g.app.unitTestDict['read-convert']=True
+        else:
+            g.es("converting @file format in",root.h,color='red')
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+        # Sets the following ivars:
+            # at.default_directory
+            # at.encoding
+            # at.explicitLineEnding
+            # at.language
+            # at.output_newline
+            # at.page_width
+            # at.tab_width
+
+    if trace: g.trace(fileName)
+    thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        at.deleteUnvisitedNodes(root)
+        at.deleteTnodeList(root)
+    if at.errors == 0 and not at.importing:
+        # Used by mod_labels plugin.
+        at.copyAllTempBodyStringsToVnodes(root,thinFile)
+    at.deleteAllTempBodyStrings()
+    if isFileLike and at.errors == 0: # Old-style sentinels.
+        # 2010/02/24: Make the root @file node dirty so it will
+        # be written automatically when saving the file.
+        # Do *not* set the orphan bit here!
+        root.clearOrphan()
+        root.setDirty()
+        c.setChanged(True) # Essential, to keep dirty bit set.
+    elif at.errors > 0:
+        # 2010/10/22: Dirty bits are *always* cleared.
+        # Only the orphan bit is preserved.
+        root.setDirty()
+        root.setOrphan()
+        c.setChanged(True)
+    else:
+        root.clearOrphan()
+    if at.errors == 0 and not isFileLike and not fromString:
+        c.cacher.writeFile(root,fileKey)
+
+    if trace: g.trace('at.errors',at.errors)
+    return at.errors == 0
+#@+node:ekr.20041005105605.25: *6* at.deleteAllTempBodyStrings
+def deleteAllTempBodyStrings(self):
+
+    for v in self.c.all_unique_nodes():
+        if hasattr(v,"tempBodyString"):
+            delattr(v,"tempBodyString")
+        if hasattr(v,"tempBodyList"):
+            delattr(v,"tempBodyList")
+#@+node:ekr.20100122130101.6174: *6* at.deleteTnodeList
+def deleteTnodeList (self,p): # atFile method.
+
+    '''Remove p's tnodeList.'''
+
+    v = p.v
+
+    if hasattr(v,"tnodeList"):
+
+        if False: # Not an error, but a useful trace.
+            s = "deleting tnodeList for " + repr(v)
+            g.es_print(s,color="blue")
+
+        delattr(v,"tnodeList")
+        v._p_changed = True
+#@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes & helpers
+def deleteUnvisitedNodes (self,root):
+
+    '''Delete unvisited nodes in root's subtree, not including root.
+
+    Actually, instead of deleting the nodes, we move them to be children of the
+    'Resurrected Nodes' r.
+    '''
+
+    at = self
+
+    if not root.hasChildren():
+        return
+
+    # Carefully set up the arguments.
+    aList = [z.copy() for z in root.subtree() if not z.isVisited()]
+    if not aList: return
+
+    r = at.createResurrectedNodesNode()
+    assert r not in aList
+    callback=at.defineResurrectedNodeCallback(r,root)
+
+    # Now move the nodes.
+    root.firstChild().deletePositionsInList(aList,callback)
+#@+node:ekr.20100803073751.5817: *7* createResurrectedNodesNode
+def createResurrectedNodesNode(self):
+
+    '''Create a 'Resurrected Nodes' node as the last top-level node.'''
+
+    at = self ; c = at.c ; tag = 'Resurrected Nodes'
+
+    # Find the last top-level node.
+    last = c.rootPosition()
+    while last.hasNext():
+        last.moveToNext()
+
+    if last.h == tag:
+        # The 'Resurrected Nodes' node already exists.
+        p = last
+    else:
+        # Create the 'Resurrected Nodes' node after 'last'.
+        p = last.insertAfter()
+        p.setHeadString(tag)
+
+    p.expand()
+    return p
+#@+node:ekr.20100803073751.5818: *7* defineResurrectedNodeCallback
+def defineResurrectedNodeCallback (self,r,root):
+
+    '''Define a callback that moves node p as r's last child.'''
+
+    def callback(p,r=r.copy(),root=root):
+
+        '''The resurrected nodes callback.'''
+
+        child = r.insertAsLastChild()
+        child.h = 'From %s' % root.h
+        p.moveToLastChildOf(child)
+
+        if g.unitTesting:
+            # g.trace(p.h,r.h)
+            pass 
+        else:
+            g.es('resurrected node:',p.h,color='red')
+            g.es('in file:',root.h,color='blue')
+
+    return callback
+
+
+#@+node:ekr.20041005105605.22: *6* at.initFileName
+def initFileName (self,fromString,importFileName,root):
+
+    if fromString:
+        fileName = "<string-file>"
+    elif importFileName:
+        fileName = importFileName
+    elif root.isAnyAtFileNode():
+        fileName = root.anyAtFileNodeName()
+    else:
+        fileName = None
+
+    return fileName
+#@+node:ekr.20100224050618.11547: *6* at.isFileLike
+def isFileLike (self,s):
+
+    '''Return True if s has file-like sentinels.'''
+
+    trace = False and not g.unitTesting
+    at = self ; tag = "@+leo"
+    s = g.toUnicode(s)
+    i = s.find(tag)
+    if i == -1:
+        if trace: g.trace('found: False',repr(s))
+        return True # Don't use the cashe.
+    else:
+        j,k = g.getLine(s,i)
+        line = s[j:k]
+        valid,new_df,start,end,isThin = \
+            at.parseLeoSentinel(line)
+        if trace: g.trace('found: True isThin:',
+            isThin,repr(line))
+        return not isThin
+#@+node:ekr.20031218072017.1863: *5* putVnode
+def putVnode (self,p,isIgnore=False):
+
+    """Write a <v> element corresponding to a vnode."""
+
+    fc = self ; c = fc.c ; v = p.v
+    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+    isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
+        # 2010/09/02: @edit nodes must not have children.
+        # If they do, the entire tree is written to the outline.
+    isFile   = p.isAtFileNode()
+    isShadow = p.isAtShadowFileNode()
+    isThin   = p.isAtThinFileNode()
+    isOrphan = p.isOrphan()
+    if not isIgnore: isIgnore = p.isAtIgnoreNode()
+
+    # 2010/10/22: force writes of orphan @edit, @auto and @shadow trees.
+    if   isIgnore: forceWrite = True      # Always write full @ignore trees.
+    elif isAuto:   forceWrite = isOrphan  # Force write of orphan @auto trees.
+    elif isEdit:   forceWrite = isOrphan  # Force write of orphan @edit trees.
+    elif isFile:   forceWrite = isOrphan  # Force write of orphan @file trees.
+    elif isShadow: forceWrite = isOrphan  # Force write of @shadow trees.
+    elif isThin:   forceWrite = isOrphan  # Force write of  orphan @thin trees.
+    else:          forceWrite = True      # Write all other @<file> trees.
+
+    << Set gnx = vnode index >>
+    attrs = []
+    << Append attribute bits to attrs >>
+    << Append unKnownAttributes to attrs >>
+    attrs = ''.join(attrs)
+    v_head = '<v t="%s"%s>' % (gnx,attrs)
+    if gnx in fc.vnodesDict:
+        fc.put(v_head+'</v>\n')
+    else:
+        fc.vnodesDict[gnx]=True
+        v_head += '<vh>%s</vh>' % (xml.sax.saxutils.escape(p.v.headString()or''))
+        # The string catentation is faster than repeated calls to fc.put.
+        if not self.usingClipboard:
+            << issue informational messages >>
+        # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
+        if p.hasChildren() and (forceWrite or self.usingClipboard):
+            fc.put('%s\n' % v_head)
+            # This optimization eliminates all "recursive" copies.
+            p.moveToFirstChild()
+            while 1:
+                fc.putVnode(p,isIgnore)
+                if p.hasNext(): p.moveToNext()
+                else:           break
+            p.moveToParent() # Restore p in the caller.
+            fc.put('</v>\n')
+        else:
+            fc.put('%s</v>\n' % v_head) # Call put only once.
+#@+node:ekr.20031218072017.1864: *6* << Set gnx = vnode index >>
+gnx = g.app.nodeIndices.toString(v.fileIndex)
+
+if forceWrite or self.usingClipboard:
+    v.setWriteBit() # 4.2: Indicate we wrote the body text.
+#@+node:ekr.20031218072017.1865: *6* << Append attribute bits to attrs >>
+# These string catenations are benign because they rarely happen.
+attr = ""
+# New in Leo 4.5: support fixed .leo files.
+if not c.fixed:
+    if v.isExpanded() and v.hasChildren() and c.putBitsFlag:
+        attr += "E"
+    if v.isMarked():   attr += "M"
+    if v.isOrphan():   attr += "O"
+    if attr:
+        attrs.append(' a="%s"' % attr)
+
+# Put the archived *current* position in the *root* positions <v> element.
+if p == self.rootPosition:
+    aList = [str(z) for z in self.currentPosition.archivedPosition()]
+    d = v.u
+    str_pos = ','.join(aList)
+    if d.get('str_leo_pos'):
+        del d['str_leo_pos']
+    # Don't write the current position if we can cache it. 
+    if g.enableDB and c.mFileName:
+        c.cacher.setCachedStringPosition(str_pos)
+    elif c.fixed:
+        pass
+    else:
+        d['str_leo_pos'] = str_pos
+    v.u = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
+#@+node:ekr.20040324082713: *6* << Append unKnownAttributes to attrs>>
+# v.unknownAttributes are now put in <t> elements.
+
+if p.hasChildren() and not forceWrite and not self.usingClipboard:
+    # We put the entire tree when using the clipboard, so no need for this.
+    if not isAuto: # Bug fix: 2008/8/7.
+        attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
+        attrs.append(self.putDescendentAttributes(p))
+#@+node:ekr.20040702085529: *6* << issue informational messages >> (changed)
+if 0: # It's strange to clear the orphan bit.
+    if isOrphan and (isFile or isThin):
+        g.es("writing erroneous:",p.h,color="blue")
+        p.clearOrphan()
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()

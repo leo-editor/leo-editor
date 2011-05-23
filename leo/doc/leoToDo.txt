@@ -170,13 +170,6 @@ Warning: shortcut conflict for <Ctrl+M>
                           mark in all from leosettings.leo
 Warning: shortcut conflict for <Ctrl+P>
             leoscreen-get-line in all from register-com...
-#@+node:ekr.20110522203356.18253: *4* Do as many medium severity bugs as possible
-@nocolor-node
-
-Most should take an hour or less.
-
-It may be good to fix *all* of these for the first release.  If so, it can be called b1.
-#@+node:ekr.20110522203356.18256: *4* Do as many "before b2" bugs as possible
 #@+node:ekr.20110522121957.18232: *4* Key binding problems
 @nocolor-node
 
@@ -201,6 +194,13 @@ https://bugs.launchpad.net/leo-editor/+bug/755206
 @language rest
 
 This would be a substitute for cross-file clones.
+#@+node:ekr.20110522203356.18253: *4* Do as many medium severity bugs as possible
+@nocolor-node
+
+Most should take an hour or less.
+
+It may be good to fix *all* of these for the first release.  If so, it can be called b1.
+#@+node:ekr.20110522203356.18256: *4* Do as many "before b2" bugs as possible
 #@+node:ekr.20110520051220.18199: *3* Before b2
 # These must be fixed before the second release(b1).
 #@+node:ekr.20110522203356.18255: *4* Bugs
