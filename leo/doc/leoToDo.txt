@@ -1,12 +1,34 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20110520051220.18187: ** To do: 4.9 a1/b1
+#@+node:ekr.20110520051220.18187: ** To do: 4.9 b1
 #@+node:ekr.20110517093705.14575: *3* Before a1
 # As many as possible before the first release(a1).
 # All must be fixed before the second release(b1)
 
 
+#@+node:ekr.20110518022449.6071: *4* * Are orphan nodes handled correctly?
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/861a0d156b16090f
+
+The document said that orphan children would be
+> saved in leo file (see 'orphan node' description at
+> http://webpages.charter.net/edreamleo/glossary.html for example).
+
+Orphan nodes prevent external files from being written.
+
+> I found, although they were saved in leo file (I checked the xml file), but
+they didn't appear in outline pane if I closed and reloaded the leo file. The
+same for named children nodes which were not referenced in parent file node.
+
+It's best if you correct the problem before closing the .leo file.
+But there may be a (recently-created) bug here.
+
+> Is the behavior a bug or expected behavior?
+
+I'm not sure.  There is some complicated code involved and the
+recently-added caching code may be causing mischief.
 #@+node:ekr.20110522203356.18250: *4* * Bug 760531:Spurious "x has been modified outside of Leo. Overwrite this file?"
 @nocolor-node
 
@@ -204,7 +226,7 @@ Warning: shortcut conflict for <Ctrl+P>
 Most should take an hour or less.
 
 It may be good to fix *all* of these for the first release.  If so, it can be called b1.
-#@+node:ekr.20110522203356.18256: *4* Do as many (before b1) bugs as possible
+#@+node:ekr.20110522203356.18256: *4* Do as many "before b2" bugs as possible
 #@+node:ekr.20110522121957.18232: *4* Key binding problems
 @nocolor-node
 
@@ -216,18 +238,20 @@ https://bugs.launchpad.net/leo-editor/+bug/701261
 
 PgUp/PgDown should scroll the body, not the tree
 https://bugs.launchpad.net/leo-editor/+bug/394309 
-#@+node:ekr.20110522121957.18233: *4* Auto-collapse option for viewrendered pane
+#@+node:ekr.20110522203356.18257: *4* Application menus disappear on MacOS with qttabs gui
+#@+node:ekr.20110522203356.18258: *4* Important new features
+#@+node:ekr.20110522121957.18233: *5* Auto-collapse option for viewrendered pane
 @nocolor-node
 
 viewrendered.py behaviour
 https://bugs.launchpad.net/leo-editor/+bug/755206
 
 *Option to have viewrendered plugins auto-collapse the pane
-#@+node:ekr.20110520051220.18203: *4* Cross-tab search
+#@+node:ekr.20110520051220.18203: *5* Cross-tab search
 @language rest
 
 This would be a substitute for cross-file clones.
-#@+node:ekr.20110520051220.18199: *3* Before b1
+#@+node:ekr.20110520051220.18199: *3* Before b2
 # These must be fixed before the second release(b1).
 #@+node:ekr.20110522203356.18255: *4* Bugs
 #@+node:ekr.20090907080624.6081: *5* Fix bug: spell checker should check headlines
@@ -338,7 +362,7 @@ def moveWithinLineHelper (self,event,spot,extend):
             self.moveToHelper(event,j,extend=extend)
         else:
             g.trace('can not happen: bad spot: %s' % spot)
-#@+node:ekr.20110522203356.18254: *4* New features
+#@+node:ekr.20110522203356.18254: *4* Minor new features
 #@+node:ekr.20110522121957.18234: *5* fill-para doesn't respect setting from set-fill-column
 @nocolor-node
 
