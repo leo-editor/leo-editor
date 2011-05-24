@@ -1521,6 +1521,42 @@ Last line: no newline
 Line 1
 
 Last line: no newline
+#@+node:ekr.20110524120515.3489: *4* @test @raw
+import leo.core.leoTest as leoTest
+
+leoTest.runAtFileTest(c,p)
+#@+node:ekr.20110524120515.3490: *5* #@file
+# before
+
+@raw
+
+@c
+
+<< ref >>
+
+@end_raw
+
+#after
+#@+node:ekr.20110524120515.3491: *5* Output
+#@verbatim
+#@+leo-ver=5
+#@verbatim
+#@+node:#@file
+# before
+
+#@verbatim
+#@@raw
+
+@c
+
+<< ref >>
+
+#@verbatim
+#@@end_raw
+
+#after
+#@verbatim
+#@-leo
 #@+node:ekr.20090704085350.5018: *4* @test @shadow: shape of tree
 h = '@shadow ../test/unittest/at-shadow-test.py'
 p = g.findNodeAnywhere(c,h)

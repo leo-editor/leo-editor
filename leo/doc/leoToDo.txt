@@ -3,7 +3,7 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20110523130519.18201: *4* Qt gui bugs: 5
+#@+node:ekr.20110523130519.18201: *4* Qt gui bugs: 6
 #@+node:ekr.20110523130519.18193: *5* Bug 527717: Qt gui should enable/disable menu items
 @nocolor-node
 
@@ -57,6 +57,10 @@ https://bugs.launchpad.net/leo-editor/+bug/590740
 <ctl-b>
 log pane shows traceback
 focus is now on node "@auto-rst /tmp/foo.rst"
+#@+node:ekr.20110522203356.18257: *5* Bug 784922: No application menus appear on OSX
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/784922
 #@+node:ekr.20110523201030.18285: *4* Features: 2
 #@+node:ekr.20110522121957.18233: *5* * Feature: (Bug 755206) Auto-collapse option for viewrendered pane
 @nocolor-node
@@ -524,7 +528,6 @@ def moveWithinLineHelper (self,event,spot,extend):
             self.moveToHelper(event,j,extend=extend)
         else:
             g.trace('can not happen: bad spot: %s' % spot)
-#@+node:ekr.20110522203356.18257: *5* Bug: Application menus disappear on MacOS with qttabs gui
 #@+node:ekr.20110427135155.14306: *4* Add <attr> elements to .leo files
 @language rest
 

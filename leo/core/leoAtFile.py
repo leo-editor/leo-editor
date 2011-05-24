@@ -3522,6 +3522,14 @@ class atFile:
                             at.putCodeLine(s,i)
                     else:
                         at.putDocLine(s,i)
+            elif at.raw:
+                if kind == at.endRawDirective:
+                    at.raw = False
+                    at.putSentinel("@@end_raw")
+                    i = g.skip_line(s,i)
+                else:
+                    # Fix bug 784920: @raw mode does not ignore directives 
+                    at.putCodeLine(s,i)
             elif kind in (at.docDirective,at.atDirective):
                 assert not at.pending,'putBody at.pending'
                 if not inCode: # Bug fix 12/31/04: handle adjacent doc parts.
@@ -3546,9 +3554,11 @@ class atFile:
                 at.raw = True
                 at.putSentinel("@@raw")
             elif kind == at.endRawDirective:
-                at.raw = False
-                at.putSentinel("@@end_raw")
-                i = g.skip_line(s,i)
+                # Fix bug 784920: @raw mode does not ignore directives 
+                at.error('unmatched @end_raw directive: %s' % p.h)
+                # at.raw = False
+                # at.putSentinel("@@end_raw")
+                # i = g.skip_line(s,i)
             elif kind == at.startVerbatim:
                 # Fix bug 778204: @verbatim not a valid Leo directive.
                 if g.unitTesting:
