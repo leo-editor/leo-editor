@@ -3052,6 +3052,7 @@ def write (self,root,
                 << set dirty and orphan bits >>
                 g.es("not written:",at.outputFileName)
             else:
+                root.v.at_read = True # 2011/05/24.
                 at.replaceTargetFileIfDifferent(root)
                     # Sets/clears dirty and orphan bits.
 
@@ -16080,5 +16081,167 @@ a patch if one appears.
 Use a temp file to hold sources if @bool write_script_file is False.
 
 This is a bad idea.  The existing settings are good enough.
+#@+node:ekr.20110523130519.18196: *4* Fixed Bug 745824: @doc duplicates comment delims in html files 
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/745824e
+
+In the new sentinels scheme @doc parts written with block comment delims must
+handled differently. This is done in the new at.massageAtDocPart method.
+
+
+#@+node:ekr.20110523201030.18289: *5* Report
+@nocolor-node
+
+Since v4.8 notice the following:
+
+@file node using @language html
+
+Using @doc (or simply @ ) in these nodes properly writes the comment delimiters
+(<!-- and -->) surrounding the @doc block on file save. However, on file open,
+when Leo reads the @files, it raises the following error:
+
+uncached read node changed NodeHeadline
+
+and an entry is made in Recovered Nodes section. If not reverted back to the old
+version (manually), a new file save command will insert additional comment
+delimiters which then don't work (<!-- <1-- and --> -->).
+
+May be related to https://bugs.launchpad.net/leo-editor/+bug/683867 The nodes
+affected for me were all clones, but not across different @files, all within
+distinct files.
+#@+node:ekr.20110523201030.18287: *5* Changed
+#@+node:ekr.20041005105605.98: *6* at.readEndOthers
+def readEndOthers (self,unused_s,unused_i):
+
+    """Read an @-others sentinel."""
+
+    at = self
+
+    at.popSentinelStack(at.endOthers)
+
+    if at.readVersion5:
+        # g.trace(at.readVersion5,repr(at.docOut))
+        # Terminate the *previous* doc part if it exists.
+        if at.docOut:
+            s = ''.join(at.docOut)
+            s = at.massageAtDocPart(s) # 2011/05/24
+            at.appendToOut(s)
+            at.docOut = []
+            at.inCode = True
+
+        # Restore the node continain the @others directive.
+        # *Never* terminate new-sentinel nodes until the post-pass.
+        at.raw = False # End raw mode.
+        at.v = at.endSentinelNodeStack.pop()
+        at.indent = at.endSentinelIndentStack.pop()
+        oldLevel = len(at.thinNodeStack)
+        newLevel = at.endSentinelLevelStack.pop()
+        at.changeLevel(oldLevel,newLevel)
+#@+node:ekr.20041005105605.106: *6* at.readDirective (@@)
+def readDirective (self,s,i):
+
+    """Read an @@sentinel."""
+
+    trace = False and not g.unitTesting
+    at = self
+    assert g.match(s,i,"@"),'missing @@ sentinel'
+        # The first '@' has already been eaten.
+
+    if trace: g.trace(repr(s[i:]))
+        # g.trace(g.get_line(s,i))
+
+    if g.match_word(s,i,"@raw"):
+        at.raw = True
+    elif g.match_word(s,i,"@end_raw"):
+        at.raw = False
+
+    e = at.endSentinelComment
+    s2 = s[i:]
+    if len(e) > 0:
+        k = s.rfind(e,i)
+        if k != -1:
+            s2 = s[i:k] + '\n'
+
+    start = at.startSentinelComment
+    if start and len(start) > 0 and start[-1] == '@':
+        s2 = s2.replace('@@','@')
+
+    if 0: # New in 4.2.1: never change comment delims here...
+        if g.match_word(s,i,"@language"):
+            << handle @language >>
+        elif g.match_word(s,i,"@comment"):
+            << handle @comment >>
+
+    # An @c ends the doc part when using new sentinels.
+    if at.readVersion5 and s2 in ('@c','@c\n','@code','@code\n'):
+        if at.docOut:
+            s = ''.join(at.docOut)
+            s = at.massageAtDocPart(s) # 2011/05/24
+            at.appendToOut(s)
+            at.docOut = []
+        at.inCode = True # End the doc part.
+
+    at.appendToOut(s2)
+#@+node:ekr.20041005105605.107: *7* << handle @language >>
+# Skip the keyword and whitespace.
+i += len("@language")
+i = g.skip_ws(s,i)
+j = g.skip_c_id(s,i)
+language = s[i:j]
+
+delim1,delim2,delim3 = g.set_delims_from_language(language)
+
+if trace:
+    g.trace(g.get_line(s,i))
+    g.trace(delim1,delim2,delim3)
+
+# Returns a tuple (single,start,end) of comment delims
+if delim1:
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
+else:
+    line = g.get_line(s,i)
+    g.es("ignoring bad @language sentinel:",line,color="red")
+#@+node:ekr.20041005105605.108: *7* << handle @comment >>
+j = g.skip_line(s,i)
+line = s[i:j]
+delim1,delim2,delim3 = g.set_delims_from_string(line)
+
+#g.trace(g.get_line(s,i))
+#g.trace(delim1,delim2,delim3)
+
+# Returns a tuple (single,start,end) of comment delims
+if delim1:
+    self.startSentinelComment = delim1
+    self.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    self.startSentinelComment = delim2
+    self.endSentinelComment = delim3
+else:
+    line = g.get_line(s,i)
+    g.es("ignoring bad @comment sentinel:",line,color="red")
+#@+node:ekr.20110523201030.18288: *6* at.massageAtDocPart (new)
+def massageAtDocPart (self,s):
+    
+    '''Compute the final @doc part when block comments are used.'''
+    
+    at = self
+    
+    if at.endSentinelComment:
+        ok1 = s.startswith(at.startSentinelComment+'\n')
+        ok2 = s.endswith(at.endSentinelComment+'\n')
+        if ok1 and ok2:
+            n1 = len(at.startSentinelComment)
+            n2 = len(at.endSentinelComment)
+            s = s[n1+1:-(n2+1)]
+        else:
+            at.error('invalid @doc part...\n%s' % repr(s))
+            
+    # g.trace(repr(s))
+    return s
 #@-all
 #@-leo

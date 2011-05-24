@@ -1752,9 +1752,12 @@ class atFile:
         at.popSentinelStack(at.endOthers)
 
         if at.readVersion5:
+            # g.trace(at.readVersion5,repr(at.docOut))
             # Terminate the *previous* doc part if it exists.
             if at.docOut:
-                at.appendToOut(''.join(at.docOut))
+                s = ''.join(at.docOut)
+                s = at.massageAtDocPart(s) # 2011/05/24
+                at.appendToOut(s)
                 at.docOut = []
                 at.inCode = True
 
@@ -1766,7 +1769,6 @@ class atFile:
             oldLevel = len(at.thinNodeStack)
             newLevel = at.endSentinelLevelStack.pop()
             at.changeLevel(oldLevel,newLevel)
-
     #@+node:ekr.20100625140824.5968: *6* at.readEndRef
     def readEndRef (self,unused_s,unused_i):
 
@@ -2020,7 +2022,9 @@ class atFile:
         # An @c ends the doc part when using new sentinels.
         if at.readVersion5 and s2 in ('@c','@c\n','@code','@code\n'):
             if at.docOut:
-                at.appendToOut(''.join(at.docOut))
+                s = ''.join(at.docOut)
+                s = at.massageAtDocPart(s) # 2011/05/24
+                at.appendToOut(s)
                 at.docOut = []
             at.inCode = True # End the doc part.
 
@@ -2107,6 +2111,25 @@ class atFile:
                 [at.sentinelName(z) for z in at.endSentinelStack],
                 g.callers(4)))
             at.badEndSentinel(expectedKind)
+    #@+node:ekr.20110523201030.18288: *5* at.massageAtDocPart (new)
+    def massageAtDocPart (self,s):
+        
+        '''Compute the final @doc part when block comments are used.'''
+        
+        at = self
+        
+        if at.endSentinelComment:
+            ok1 = s.startswith(at.startSentinelComment+'\n')
+            ok2 = s.endswith(at.endSentinelComment+'\n')
+            if ok1 and ok2:
+                n1 = len(at.startSentinelComment)
+                n2 = len(at.endSentinelComment)
+                s = s[n1+1:-(n2+1)]
+            else:
+                at.error('invalid @doc part...\n%s' % repr(s))
+                
+        # g.trace(repr(s))
+        return s
     #@+node:ekr.20041005105605.114: *4* at.sentinelKind4 & helper (read logic)
     def sentinelKind4(self,s):
 
@@ -2896,6 +2919,7 @@ class atFile:
                     #@-<< set dirty and orphan bits >>
                     g.es("not written:",at.outputFileName)
                 else:
+                    root.v.at_read = True # 2011/05/24.
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
 

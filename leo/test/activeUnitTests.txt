@@ -1708,6 +1708,18 @@ assert not at.isFileLike(s2),'fail2'
 #@+node:ekr.20071113143844.5: *4* @test at.isSignificantTree
 assert c.atFileCommands.isSignificantTree(p)
 
+#@+node:ekr.20110524091618.3488: *4* @test at.massageDocPart
+at = c.atFileCommands
+
+# A mininimal test.
+
+at.startSentinelComment = '<!--'
+at.endSentinelComment = '-->'
+
+s1 = '<!--\nline 2.\n-->\n'
+s2 = at.massageAtDocPart(s1)
+
+assert s2 == 'line 2.\n',repr(s2)
 #@+node:ekr.20090529115704.4562: *4* @test at.open/closeStringFile
 at = c.atFileCommands
 
