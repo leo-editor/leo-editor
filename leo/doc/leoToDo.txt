@@ -151,19 +151,8 @@ looks like a sentinel but isn't "verbatim".
 2. Leo does appear to read @raw and @end_raw properly in @thin files,
 but Leo improperly issues the (red) log message,
 converting @file format in @thin test_verbatim_sentinel.py
-#@+node:ekr.20110523192055.18280: *3* Minor bugs: 2
-#@+node:ekr.20110522121957.18234: *4* Bug 766747: fill-para doesn't respect setting from set-fill-column
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/766747
-
-Even if you Alt-X set-fill-column 65, fill-para still wraps at col. 80.
-
-turns out fill-paragraph uses the page width set by the @pagewidth directive
-(which maybe has an initial value from a @setting). So that's ok, but it's still
-confusing having set-fill-column set a different value, used only be center-line
-and another method.
-#@+node:ekr.20110522121957.18233: *4* Bug 755206: Auto-collapse option for viewrendered pane
+#@+node:ekr.20110523201030.18285: *3* Features: 2
+#@+node:ekr.20110522121957.18233: *4* * Feature: (Bug 755206) Auto-collapse option for viewrendered pane
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/755206
@@ -181,7 +170,7 @@ displaying the text information about the plugin and the phonon media player has
 stopped working. This is back to the established behaviour of the Plugins
 button; providing information about the plugin. How do I restore the
 viewrendered functionality?
-#@+node:ekr.20110520051220.18203: *3* * Feature: Cross-tab search
+#@+node:ekr.20110520051220.18203: *4* * Feature: Cross-tab search
 @language rest
 
 This would be a substitute for cross-file clones.

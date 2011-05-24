@@ -5416,6 +5416,8 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.150: *5* @test center-line
+@pagewidth 70 # Required for unit test.
+
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 #@+node:ekr.20061101121602.151: *6* work
@@ -5452,6 +5454,8 @@ StormReady helps community leaders and emergency managers strengthen local safet
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.154: *5* @test center-region
+@pagewidth 70 # Required for unit test.
+
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 #@+node:ekr.20061101121602.155: *6* work

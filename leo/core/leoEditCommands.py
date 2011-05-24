@@ -1483,7 +1483,9 @@ class editCommandsClass (baseEditCommandsClass):
         self.ccolumn = '0'   # For comment column functions.
         self.extendMode = False # True: all cursor move commands extend the selection.
         self.fillPrefix = '' # For fill prefix functions.
-        self.fillColumn = 70 # For line centering.
+        self.fillColumn = 0 # For line centering.
+            # Set by the set-fill-column command.
+            # If zero, @pagewidth value is used.
         self.moveSpotNode = None # A vnode.
         self.moveSpot = None # For retaining preferred column when moving up or down.
         self.moveCol = None # For retaining preferred column when moving up or down.
@@ -2144,16 +2146,22 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Centers line within current fill column'''
 
-        k = self.k ; w = self.editWidget(event)
+        c,k,w = self.c,self.k,self.editWidget(event)
         if not w: return
+        
+        if self.fillColumn > 0:
+            fillColumn = self.fillColumn
+        else:
+            d = c.scanAllDirectives()
+            fillColumn = d.get("pagewidth")
 
         s = w.getAllText()
         i,j = g.getLine(s,w.getInsertPoint())
         line = s [i:j].strip()
-        if not line or len(line) >= self.fillColumn: return
+        if not line or len(line) >= fillColumn: return
 
         self.beginCommand(undoType='center-line')
-        n = (self.fillColumn-len(line)) / 2
+        n = (fillColumn-len(line)) / 2
         ws = ' ' * n
         k = g.skip_ws(s,i)
         if k > i: w.delete(i,k-i)
@@ -2172,7 +2180,8 @@ class editCommandsClass (baseEditCommandsClass):
         else:
             k.clearState()
             try:
-                n = int(k.arg)
+                # Bug fix: 2011/05/23: set the fillColumn ivar!
+                self.fillColumn = n = int(k.arg)
                 k.setLabelGrey('fill column is: %d' % n)
                 k.commandName = 'set-fill-column %d' % n
             except ValueError:
@@ -2182,13 +2191,19 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Centers the selected text within the fill column'''
 
-        k = self.k ; w = self.editWidget(event)
+        c,k,w = self.c,self.k,self.editWidget(event)
         if not w: return
 
         s = w.getAllText()
         sel_1, sel_2 = w.getSelectionRange()
         ind, junk = g.getLine(s,sel_1)
         junk, end = g.getLine(s,sel_2)
+        
+        if self.fillColumn > 0:
+            fillColumn = self.fillColumn
+        else:
+            d = c.scanAllDirectives()
+            fillColumn = d.get("pagewidth")
 
         self.beginCommand(undoType='center-region')
 
@@ -2198,10 +2213,10 @@ class editCommandsClass (baseEditCommandsClass):
             i, j = g.getLine(s,ind)
             line = s [i:j].strip()
             # g.trace(len(line),repr(line))
-            if len(line) >= self.fillColumn:
+            if len(line) >= fillColumn:
                 ind = j
             else:
-                n = int((self.fillColumn-len(line))/2)
+                n = int((fillColumn-len(line))/2)
                 inserted += n
                 k = g.skip_ws(s,i)
                 if k > i: w.delete(i,k-i)

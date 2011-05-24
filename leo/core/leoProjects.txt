@@ -9191,6 +9191,372 @@ def readSettings (self,c,localFlag):
     return d
 #@+node:ekr.20110523130519.19137: *4* Fixed bug: show-invisibles now correctly shows blank lines
 # recolor must test self.showInvisibles.
+#@+node:ekr.20110522121957.18234: *4* Fixed bug 766747: fill-paragraph doesn't respect setting from set-fill-column
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/766747
+
+The fill-paragraph, center-line and center-region now all use the fill column
+if it has been explicitly set (and greater than zero). Otherwise, these commands
+use the @pagewidth value.
+
+Previously, the fill-paragraph command used the page width set by the @pagewidth
+directive, or an initial value from a @setting if no @pagewidth directive was in
+effect.
+#@+node:ekr.20101118113953.5839: *5* c.reformatParagraph & helpers
+def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
+
+    """Reformat a text paragraph
+
+    Wraps the concatenated text to present page width setting. Leading tabs are
+    sized to present tab width setting. First and second line of original text is
+    used to determine leading whitespace in reformatted text. Hanging indentation
+    is honored.
+
+    Paragraph is bound by start of body, end of body and blank lines. Paragraph is
+    selected by position of current insertion cursor.
+
+"""
+
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("xxx")
+        return
+
+    if body.hasTextSelection():
+        i,j = w.getSelectionRange()
+        w.setInsertPoint(i)
+
+    oldSel,oldYview,original,pageWidth,tabWidth = c.rp_get_args()
+    head,lines,tail = c.findBoundParagraph()
+    if lines:
+        indents,leading_ws = c.rp_get_leading_ws(lines,tabWidth)
+        result = c.rp_wrap_all_lines(indents,leading_ws,lines,pageWidth)
+        c.rp_reformat(head,oldSel,oldYview,original,result,tail,undoType)
+#@+node:ekr.20031218072017.1825: *6* c.findBoundParagraph
+def findBoundParagraph (self,event=None):
+
+    c = self
+    head,ins,tail = c.frame.body.getInsertLines()
+
+    if not ins or ins.isspace() or ins[0] == '@':
+        return None,None,None
+
+    head_lines = g.splitLines(head)
+    tail_lines = g.splitLines(tail)
+
+    if 0:
+        << trace head_lines, ins, tail_lines >>
+
+    # Scan backwards.
+    i = len(head_lines)
+    while i > 0:
+        i -= 1
+        line = head_lines[i]
+        if len(line) == 0 or line.isspace() or line[0] == '@':
+            i += 1 ; break
+
+    pre_para_lines = head_lines[:i]
+    para_head_lines = head_lines[i:]
+
+    # Scan forwards.
+    i = 0
+    for line in tail_lines:
+        if not line or line.isspace() or line.startswith('@'):
+            break
+        i += 1
+
+    para_tail_lines = tail_lines[:i]
+    post_para_lines = tail_lines[i:]
+
+    head = g.joinLines(pre_para_lines)
+    result = para_head_lines 
+    result.extend([ins])
+    result.extend(para_tail_lines)
+    tail = g.joinLines(post_para_lines)
+
+    return head,result,tail # string, list, string
+#@+node:ekr.20031218072017.1826: *7* << trace head_lines, ins, tail_lines >>
+if 0:
+    g.pr("\nhead_lines")
+    for line in head_lines:
+        g.pr(line)
+    g.pr("\nins", ins)
+    g.pr("\ntail_lines")
+    for line in tail_lines:
+        g.pr(line)
+else:
+    g.es_print("head_lines: ",head_lines)
+    g.es_print("ins: ",ins)
+    g.es_print("tail_lines: ",tail_lines)
+#@+node:ekr.20101118113953.5840: *6* rp_get_args
+def rp_get_args (self):
+
+    '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
+
+    c = self ; body = c.frame.body ;  w = body.bodyCtrl
+
+    d = c.scanAllDirectives()
+
+    if c.editCommands.fillColumn > 0:
+        pageWidth = c.editCommands.fillColumn
+    else:
+        pageWidth = d.get("pagewidth")
+        
+    tabWidth  = d.get("tabwidth")
+    original = w.getAllText()
+    oldSel =  w.getSelectionRange()
+    oldYview = body.getYScrollPosition()
+
+    return oldSel,oldYview,original,pageWidth,tabWidth
+#@+node:ekr.20101118113953.5841: *6* rp_get_leading_ws
+def rp_get_leading_ws (self,lines,tabWidth):
+
+    '''Compute and return indents and leading_ws.'''
+
+    c = self
+
+    indents = [0,0]
+    leading_ws = ["",""]
+
+    for i in (0,1):
+        if i < len(lines):
+            # Use the original, non-optimized leading whitespace.
+            leading_ws[i] = ws = g.get_leading_ws(lines[i])
+            indents[i] = g.computeWidth(ws,tabWidth)
+
+    indents[1] = max(indents)
+
+    if len(lines) == 1:
+        leading_ws[1] = leading_ws[0]
+
+    return indents,leading_ws
+#@+node:ekr.20101118113953.5842: *6* rp_reformat
+def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
+
+    '''Reformat the body and update the selection.'''
+
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
+    s = w.getAllText()
+
+    # This destroys recoloring.
+    junk, ins = body.setSelectionAreas(head,result,tail)
+
+    changed = original != head + result + tail
+    if changed:
+        # 2010/11/16: stay in the paragraph.
+        body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
+    else:
+        # Advance to the next paragraph.
+        ins += 1 # Move past the selection.
+        while ins < len(s):
+            i,j = g.getLine(s,ins)
+            line = s[i:j]
+            # 2010/11/16: it's annoying, imo, to treat @ lines differently.
+            if line.isspace(): ### or line.startswith('@'):
+                ins = j+1
+            else:
+                ins = i ; break
+
+        # setSelectionAreas has destroyed the coloring.
+        c.recolor()
+
+    w.setSelectionRange(ins,ins,insert=ins)
+    w.see(ins)
+#@+node:ekr.20101118113953.5843: *6* rp_wrap_all_lines
+def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
+
+    '''compute the result of wrapping all lines.'''
+
+    trailingNL = lines and lines[-1].endswith('\n')
+    lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
+
+    # Wrap the lines, decreasing the page width by indent.
+    result = g.wrap_lines(lines,
+        pageWidth-indents[1],
+        pageWidth-indents[0])
+
+    # prefix with the leading whitespace, if any
+    paddedResult = []
+    paddedResult.append(leading_ws[0] + result[0])
+    for line in result[1:]:
+        paddedResult.append(leading_ws[1] + line)
+
+    # Convert the result to a string.
+    result = '\n'.join(paddedResult)
+    if trailingNL: result = result + '\n'
+
+    return result
+#@+node:ekr.20050920084036.54: *5*  ctor (editCommandsClass)
+def __init__ (self,c):
+
+    baseEditCommandsClass.__init__(self,c) # init the base class.
+
+    self.ccolumn = '0'   # For comment column functions.
+    self.extendMode = False # True: all cursor move commands extend the selection.
+    self.fillPrefix = '' # For fill prefix functions.
+    self.fillColumn = 0 # For line centering.
+        # Set by the set-fill-column command.
+        # If zero, @pagewidth value is used.
+    self.moveSpotNode = None # A vnode.
+    self.moveSpot = None # For retaining preferred column when moving up or down.
+    self.moveCol = None # For retaining preferred column when moving up or down.
+    self.sampleWidget = None # Created later.
+    self.swapSpots = []
+    self._useRegex = False # For replace-string
+    self.w = None # For use by state handlers.
+
+    # Settings...
+    cf = c.config
+    self.autocompleteBrackets   = cf.getBool('autocomplete-brackets')
+    self.bracketsFlashBg        = cf.getColor('flash-brackets-background-color')
+    self.bracketsFlashCount     = cf.getInt('flash-brackets-count')
+    self.bracketsFlashDelay     = cf.getInt('flash-brackets-delay')
+    self.bracketsFlashFg        = cf.getColor('flash-brackets-foreground-color')
+    self.flashMatchingBrackets  = cf.getBool('flash-matching-brackets')
+    self.smartAutoIndent        = cf.getBool('smart_auto_indent')
+    self.openBracketsList       = cf.getString('open_flash_brackets')  or '([{'
+    self.closeBracketsList      = cf.getString('close_flash_brackets') or ')]}'
+
+    self.initBracketMatcher(c)
+#@+node:ekr.20050920084036.103: *5* fillParagraph
+def fillParagraph( self, event ):
+
+    '''Fill the selected paragraph'''
+
+    w = self.editWidget(event)
+    if not w: return
+
+    # Clear the selection range.
+    i,j = w.getSelectionRange()
+    w.setSelectionRange(i,i,insert=i)
+
+    self.c.reformatParagraph(event)
+#@+node:ekr.20050920084036.66: *5* fill column and centering
+@
+These methods are currently just used in tandem to center the line or region within the fill column.
+for example, dependent upon the fill column, this text:
+
+cats
+raaaaaaaaaaaats
+mats
+zaaaaaaaaap
+
+may look like
+
+                                 cats
+                           raaaaaaaaaaaats
+                                 mats
+                             zaaaaaaaaap
+
+after an center-region command via Alt-x.
+@c
+
+@others
+#@+node:ekr.20050920084036.67: *6* centerLine
+def centerLine (self,event):
+
+    '''Centers line within current fill column'''
+
+    c,k,w = self.c,self.k,self.editWidget(event)
+    if not w: return
+    
+    if self.fillColumn > 0:
+        fillColumn = self.fillColumn
+    else:
+        d = c.scanAllDirectives()
+        fillColumn = d.get("pagewidth")
+
+    s = w.getAllText()
+    i,j = g.getLine(s,w.getInsertPoint())
+    line = s [i:j].strip()
+    if not line or len(line) >= fillColumn: return
+
+    self.beginCommand(undoType='center-line')
+    n = (fillColumn-len(line)) / 2
+    ws = ' ' * n
+    k = g.skip_ws(s,i)
+    if k > i: w.delete(i,k-i)
+    w.insert(i,ws)
+    self.endCommand(changed=True,setLabel=True)
+#@+node:ekr.20050920084036.68: *6* setFillColumn
+def setFillColumn (self,event):
+
+    '''Set the fill column used by the center-line and center-region commands.'''
+
+    k = self.k ; state = k.getState('set-fill-column')
+
+    if state == 0:
+        k.setLabelBlue('Set Fill Column: ')
+        k.getArg(event,'set-fill-column',1,self.setFillColumn)
+    else:
+        k.clearState()
+        try:
+            # Bug fix: 2011/05/23: set the fillColumn ivar!
+            self.fillColumn = n = int(k.arg)
+            k.setLabelGrey('fill column is: %d' % n)
+            k.commandName = 'set-fill-column %d' % n
+        except ValueError:
+            k.resetLabel()
+#@+node:ekr.20050920084036.69: *6* centerRegion
+def centerRegion (self,event):
+
+    '''Centers the selected text within the fill column'''
+
+    c,k,w = self.c,self.k,self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    sel_1, sel_2 = w.getSelectionRange()
+    ind, junk = g.getLine(s,sel_1)
+    junk, end = g.getLine(s,sel_2)
+    
+    if self.fillColumn > 0:
+        fillColumn = self.fillColumn
+    else:
+        d = c.scanAllDirectives()
+        fillColumn = d.get("pagewidth")
+
+    self.beginCommand(undoType='center-region')
+
+    inserted = 0
+    while ind < end:
+        s = w.getAllText()
+        i, j = g.getLine(s,ind)
+        line = s [i:j].strip()
+        # g.trace(len(line),repr(line))
+        if len(line) >= fillColumn:
+            ind = j
+        else:
+            n = int((fillColumn-len(line))/2)
+            inserted += n
+            k = g.skip_ws(s,i)
+            if k > i: w.delete(i,k-i)
+            w.insert(i,' '*n)
+            ind = j + n-(k-i)
+
+    w.setSelectionRange(sel_1,sel_2+inserted)
+
+    self.endCommand(changed=True,setLabel=True)
+#@+node:ekr.20050920084036.70: *6* setFillPrefix
+def setFillPrefix( self, event ):
+
+    '''Make the selected text the fill prefix.'''
+
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    i,j = w.getSelectionRange()
+    self.fillPrefix = s[i:j]
+#@+node:ekr.20050920084036.71: *6* _addPrefix
+def _addPrefix (self,ntxt):
+
+    ntxt = ntxt.split('.')
+    ntxt = map(lambda a: self.fillPrefix+a,ntxt)
+    ntxt = '.'.join(ntxt)
+    return ntxt
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()
@@ -15014,7 +15380,7 @@ a sibling after a series of local undos.
 
 This is a show-stopper.
 #@+node:ekr.20101118113953.5844: *4* Use new reformatParagraph code
-#@+node:ekr.20101118113953.5839: *5* reformatParagraph & helpers (new)
+#@+node:ekr.20101118113953.5839: *5* c.reformatParagraph & helpers
 def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
 
     """Reformat a text paragraph
@@ -15109,9 +15475,13 @@ def rp_get_args (self):
     c = self ; body = c.frame.body ;  w = body.bodyCtrl
 
     d = c.scanAllDirectives()
-    pageWidth = d.get("pagewidth")
-    tabWidth  = d.get("tabwidth")
 
+    if c.editCommands.fillColumn > 0:
+        pageWidth = c.editCommands.fillColumn
+    else:
+        pageWidth = d.get("pagewidth")
+        
+    tabWidth  = d.get("tabwidth")
     original = w.getAllText()
     oldSel =  w.getSelectionRange()
     oldYview = body.getYScrollPosition()

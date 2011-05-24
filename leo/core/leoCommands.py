@@ -3415,7 +3415,7 @@ class baseCommands (object):
             g.es_exception() # Probably a bad format string in leoSettings.leo.
             s = time.strftime(default_format,time.gmtime())
         return s
-    #@+node:ekr.20101118113953.5839: *6* reformatParagraph & helpers (new)
+    #@+node:ekr.20101118113953.5839: *6* c.reformatParagraph & helpers
     def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
 
         """Reformat a text paragraph
@@ -3511,9 +3511,13 @@ class baseCommands (object):
         c = self ; body = c.frame.body ;  w = body.bodyCtrl
 
         d = c.scanAllDirectives()
-        pageWidth = d.get("pagewidth")
-        tabWidth  = d.get("tabwidth")
 
+        if c.editCommands.fillColumn > 0:
+            pageWidth = c.editCommands.fillColumn
+        else:
+            pageWidth = d.get("pagewidth")
+            
+        tabWidth  = d.get("tabwidth")
         original = w.getAllText()
         oldSel =  w.getSelectionRange()
         oldYview = body.getYScrollPosition()
