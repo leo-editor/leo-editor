@@ -2,16 +2,17 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
-#@+node:ekr.20110523130519.18201: *3* Qt gui bugs: 5
-#@+node:ekr.20110523130519.18193: *4* Bug 527717: Qt gui should enable/disable menu items
+#@+node:ekr.20110523201030.18291: *3* b1
+#@+node:ekr.20110523130519.18201: *4* Qt gui bugs: 5
+#@+node:ekr.20110523130519.18193: *5* Bug 527717: Qt gui should enable/disable menu items
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/527717
-#@+node:ekr.20110523130519.18191: *4* Bug 580328: c.frame.toggleSplitDirection() doesn't preserve existing ratio 
+#@+node:ekr.20110523130519.18191: *5* Bug 580328: c.frame.toggleSplitDirection() doesn't preserve existing ratio 
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/580328
-#@+node:ekr.20110523130519.18199: *4* Bug 581031: Scrollbar position is not preserved when c.frame.toggleSplitDirection() is executed
+#@+node:ekr.20110523130519.18199: *5* Bug 581031: Scrollbar position is not preserved when c.frame.toggleSplitDirection() is executed
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/581031
@@ -25,7 +26,7 @@ I think c.frame.toggleSplitDirection() must be enhanced with code logic that
 checks if some node from the visible area is selected and makes sure the tree
 pane is scrolled properly to keep that node visible after the split orientation
 change.
-#@+node:ekr.20110522121957.18232: *4* Bug 701261 & bug 583955: Key binding problems
+#@+node:ekr.20110522121957.18232: *5* Bug 701261 & bug 583955: Key binding problems
 @nocolor-node
 
 Shortcuts don't work in most Log frame tabs
@@ -42,7 +43,7 @@ key bindings in Find Panel need some love
 - inconsistent shortcuts for options, some use [Alt-*], others [Alt-*][space]
 (perhaps nothing can be done here, but it does make the user experience more
 awkward)
-#@+node:ekr.20110523130519.18195: *4* Bug 590740: <ctl-b> in subnode of @auto-rst changes focus 
+#@+node:ekr.20110523130519.18195: *5* Bug 590740: <ctl-b> in subnode of @auto-rst changes focus 
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/590740
@@ -56,12 +57,12 @@ https://bugs.launchpad.net/leo-editor/+bug/590740
 <ctl-b>
 log pane shows traceback
 focus is now on node "@auto-rst /tmp/foo.rst"
-#@+node:ekr.20110523130519.18202: *3* Directive-related bugs: 2
-#@+node:ekr.20110523130519.18194: *4* Bug 583878: Leo should warn about @comment/@delims clashes
+#@+node:ekr.20110523130519.18202: *4* Directive-related bugs: 2
+#@+node:ekr.20110523130519.18194: *5* Bug 583878: Leo should warn about @comment/@delims clashes
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/583878
-#@+node:ekr.20110523130519.18197: *4* Bug 778204: @verbatim not forbidden in editor pane 
+#@+node:ekr.20110523130519.18197: *5* Bug 778204: @verbatim not forbidden in editor pane 
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/778204
@@ -93,7 +94,7 @@ than an actual bug in Leo. :-)
 
 Still, it would be nice if Leo were to deal with the situation more gracefully
 than it currently does.
-#@+node:ekr.20100522090453.5912: *5* Fix bugs with @verbatim, @raw and @end_raw
+#@+node:ekr.20100522090453.5912: *6* Fix bugs with @verbatim, @raw and @end_raw
 @nocolor-node
 
 > In the @file family of derived files (@thin, @nosent, etc.)  (i.e.,
@@ -120,8 +121,8 @@ looks like a sentinel but isn't "verbatim".
 2. Leo does appear to read @raw and @end_raw properly in @thin files,
 but Leo improperly issues the (red) log message,
 converting @file format in @thin test_verbatim_sentinel.py
-#@+node:ekr.20110523201030.18285: *3* Features: 2
-#@+node:ekr.20110522121957.18233: *4* * Feature: (Bug 755206) Auto-collapse option for viewrendered pane
+#@+node:ekr.20110523201030.18285: *4* Features: 2
+#@+node:ekr.20110522121957.18233: *5* * Feature: (Bug 755206) Auto-collapse option for viewrendered pane
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/755206
@@ -139,125 +140,17 @@ displaying the text information about the plugin and the phonon media player has
 stopped working. This is back to the established behaviour of the Plugins
 button; providing information about the plugin. How do I restore the
 viewrendered functionality?
-#@+node:ekr.20110520051220.18203: *4* * Feature: Cross-tab search
+#@+node:ekr.20110520051220.18203: *5* * Feature: Cross-tab search
 @language rest
 
 This would be a substitute for cross-file clones.
-#@+node:ekr.20110522203356.18255: *3* Maybe: 5
-#@+node:ekr.20090907080624.6081: *4* * Bug: spell checker should check headlines
-Low priority
-#@+node:ekr.20110111100539.12257: *4* Fix end-of-line problem (MacOS)
-# Apparently, ctrl-e is not passed to Leo at all.
-#@+node:ekr.20110111100539.12258: *5* Report
+#@+node:ekr.20080421140032.1: *4* Fix multiple controllers problem in all plugins
 @nocolor-node
 
-http://mail.google.com/mail/#inbox/12c5646c646a90d2
-
-I expect C-e to go to end-of-line, but C-e works as the next line.
-Alt-x and check end-of-line and I get the following result.
-
-I use Mac OS X 10.6.5, newest Leo, and Python/Qt.
-
-Leo 4.8 rc1, build 3715, November 15, 2010
-Python 2.6.1, qt version 4.7.0
-darwin
-
-I remember I could use C-e, but it doesn't work anymore even after I
-reinstall the Leo.
-
-As I explained in this post - http://groups.google.com/group/leo-editor/browse_thread/thread/1ee0b35b4f76c999
-After having @bool swap_mac_keys = True, I can use C-e.
-
-C-a move the cursor to the start of line, but C-e seems to move the
-cursor the first of the next line, which is the end of last line + 1.
-If the line is the final one, C-e moves the cursor to the end of line
-as there's no next line.
-
-#@+node:ekr.20100109094541.6232: *5* within lines
-def beginningOfLine (self,event):
-    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
-    self.moveWithinLineHelper(event,'start-line',extend=False)
-
-def beginningOfLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the start of the line.'''
-    self.moveWithinLineHelper(event,'start-line',extend=True)
-
-def endOfLine (self,event):
-    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
-    self.moveWithinLineHelper(event,'end-line',extend=False)
-
-def endOfLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the end of the line.'''
-    self.moveWithinLineHelper(event,'end-line',extend=True)
-#@+node:ekr.20100109094541.6231: *5* moveWithinLineHelper
-def moveWithinLineHelper (self,event,spot,extend):
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-
-    # g.trace(hasattr(w,'leoMoveCursorHelper'))
-
-    if hasattr(w,'leoMoveCursorHelper'):
-        extend = extend or self.extendMode
-        w.leoMoveCursorHelper(kind=spot,extend=extend)
-        w.seeInsertPoint()
-        c.frame.updateStatusLine()
-    else:
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        i,j = g.getLine(s,ins)
-        if spot == 'start-line':
-            self.moveToHelper(event,i,extend=extend)
-        elif spot == 'end-line':
-            # if g.match(s,i-1,'\n'): i -= 1
-            self.moveToHelper(event,j,extend=extend)
-        else:
-            g.trace('can not happen: bad spot: %s' % spot)
-#@+node:ekr.20081208102356.1: *4* (Tk) Threading colorizer doesn't handle multiple body editors
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
-
-> Tk only colorizes one body editor, and if you delete that editor it
-> colorizes no editor.
-
-Thanks for this report.  This is a problem, never noticed until now,
-with the threading colorizer.  A workaround is to disable the
-threading colorizer plugin. 
-#@+node:ekr.20110522203356.18257: *4* Bug: Application menus disappear on MacOS with qttabs gui
-#@+node:ekr.20110523130519.19219: *4* Bug 525004: bash code not colored properly
-@nocolor-node
-
-This is not going to be easy to fix.  match_mark_previous/following do not seem to do anything.
-
-It looks like a rewrite of leo\modes\shell.py may be needed.
-#@+node:ekr.20110523130519.19220: *5* Report
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/525004
-
-This is basically a copy/paste from
-http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
-
-Consider the following code snippet:
-
---- cut here ---
-@language shell
-
-FOO_BAR='foo bar'
-FOO1_BAR1='foo1 bar1'
-
-echo $FOO_BAR*
-echo $FOO_BAR-$FOO1_BAR1
---- cut here ---
-
-The variable names in the last two lines are not highlighted
-correctly. This becomes clear if the first line is replaced with #!/
-bin/bash and this code is opened in vim/scite. I've tried only these
-two editors, they highlight the variable names correctly.
-#@+node:ekr.20110514231951.14492: *3* Docs
-#@+node:ekr.20110523201030.18284: *4* Make sure MacOS users are told to use --gui=qt
-#@+node:ekr.20110518082415.14439: *4* Document highlights of my workflow
+http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
+#@+node:ekr.20110514231951.14492: *4* Docs
+#@+node:ekr.20110523201030.18284: *5* Make sure MacOS users are told to use --gui=qt
+#@+node:ekr.20110518082415.14439: *5* Document highlights of my workflow
 @language rest
 
 This thread will discuss the workflow I use to develop Leo. The intention is to
@@ -384,7 +277,7 @@ tr
 b pull
 
 This suffices to resolve the conflict.
-#@+node:ekr.20110514134640.14520: *4* Doc: summary of autocompleter (do not delete)
+#@+node:ekr.20110514134640.14520: *5* Doc: summary of autocompleter (do not delete)
 @language rest
 
 There has been a lot of work on autocompletion recently. Here, I'll summarize
@@ -536,7 +429,7 @@ User interface issues are nearly resolved: I'll make the qcompleter float today.
 Performance of Leo completions are excellent; codewise completions not bad.
 
 Improving codewise completions would be an interesting project, but not urgent.
-#@+node:ekr.20110514134640.14521: *4* Doc: the new completion caching scheme (do not delete)
+#@+node:ekr.20110514134640.14521: *5* Doc: the new completion caching scheme (do not delete)
 @language rest
 
 QQQ
@@ -568,15 +461,39 @@ added.
 
 In short, the new caching scheme is much better than before, and it probably is
 close to optimal in most situations.
-#@+node:ekr.20101129095441.5963: *4* Improve screenshots page
-#@+node:ekr.20110520051220.18189: ** 4.9 Maybe
-#@+node:ekr.20110427135155.14306: *3* Add <attr> elements to .leo files
+#@+node:ekr.20101129095441.5963: *5* Improve screenshots page
+#@+node:ekr.20110516132611.14438: *3* b2
+#@+node:ekr.20110523201030.18290: *4* Deprecate Tk
+#@+node:ekr.20090131200406.11: *5* Remove remaining tk-isms from Leo's core
+@nocolor-node
+
+Eliminate all tk-indices from leoEditCommands.py
+
+These are marked with ###
+
+(found) wordend, wordstart
+(found) lineend, linestart
+(found) sel.first, sel.last
+(found) w.insert, w.delete
+#@+node:ekr.20110125142807.17269: *5* Rewrite all tk plugins
+#@+node:ekr.20081208102356.1: *5* Won't fix: (Tk) Threading colorizer doesn't handle multiple body editors
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
+
+> Tk only colorizes one body editor, and if you delete that editor it
+> colorizes no editor.
+
+Thanks for this report.  This is a problem, never noticed until now,
+with the threading colorizer.  A workaround is to disable the
+threading colorizer plugin. 
+#@+node:ekr.20110427135155.14306: *4* Add <attr> elements to .leo files
 @language rest
 
 - <attr> solves pickle problem.
-#@+node:ekr.20110414065052.6100: *4* ** Treat gnx's as strings: don't parse them
+#@+node:ekr.20110414065052.6100: *5* ** Treat gnx's as strings: don't parse them
 http://mail.google.com/mail/#inbox/12f3d4950fbabeea
-#@+node:ekr.20110421132230.6107: *4* File format
+#@+node:ekr.20110421132230.6107: *5* File format
 @language rest
 @pagewidth 65
 
@@ -728,7 +645,7 @@ The <at-file-attributes> element may be contained in the
     
 In other words, we use the graphml <attr> element, extended with the
 gnx attribute, to represent all the uA's in the descendants of @file nodes.
-#@+node:ekr.20110419083918.6104: *4* File format, v3 graphml
+#@+node:ekr.20110419083918.6104: *5* File format, v3 graphml
 @language rest
 @pagewidth 65
 
@@ -899,8 +816,8 @@ it will enclosed in a data element::
     
 In other words, we use the graphml <attr> element, extended with the
 gnx attribute, to represent all the uA's in the descendants of @file nodes.
-#@+node:ekr.20110415173840.6098: *4* new uA's
-#@+node:ekr.20040701065235.2: *5* putDescendentAttributes
+#@+node:ekr.20110415173840.6098: *5* new uA's
+#@+node:ekr.20040701065235.2: *6* putDescendentAttributes
 def putDescendentAttributes (self,p):
 
     nodeIndices = g.app.nodeIndices
@@ -925,7 +842,7 @@ def putDescendentAttributes (self,p):
             result.append('\n%s="%s"' % (tag,s))
 
     return ''.join(result)
-#@+node:ekr.20080805071954.2: *5* putDescendentVnodeUas
+#@+node:ekr.20080805071954.2: *6* putDescendentVnodeUas
 def putDescendentVnodeUas (self,p):
 
     '''Return the a uA field for descendent vnode attributes,
@@ -959,7 +876,7 @@ def putDescendentVnodeUas (self,p):
     # Pickle and hexlify d
     return d and self.pickle(
         torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
-#@+node:EKR.20040526202501: *5* putUnknownAttributes
+#@+node:EKR.20040526202501: *6* putUnknownAttributes
 def putUnknownAttributes (self,torv):
 
     """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
@@ -972,7 +889,7 @@ def putUnknownAttributes (self,torv):
         val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
         # g.trace(torv,attrDict)
         return val
-#@+node:ekr.20090130114732.6: *5* v.u Property
+#@+node:ekr.20090130114732.6: *6* v.u Property
 def __get_u(self):
     v = self
     if not hasattr(v,'unknownAttributes'):
@@ -992,8 +909,8 @@ def __set_u(self,val):
 u = property(
     __get_u, __set_u,
     doc = "vnode unknownAttribute property")
-#@+node:ekr.20110414164347.6082: *4* Reference for json stuff
-#@+node:ekr.20031218072017.1997: *5* scanGnx
+#@+node:ekr.20110414164347.6082: *5* Reference for json stuff
+#@+node:ekr.20031218072017.1997: *6* scanGnx
 def scanGnx (self,s,i):
 
     """Create a gnx from its string representation"""
@@ -1019,8 +936,8 @@ def scanGnx (self,s,i):
         except Exception: pass
 
     return theId,t,n
-#@+node:ekr.20060919104530: *5* Sax (reading)
-#@+node:ekr.20090525144314.6526: *6* cleanSaxInputString
+#@+node:ekr.20060919104530: *6* Sax (reading)
+#@+node:ekr.20090525144314.6526: *7* cleanSaxInputString
 def cleanSaxInputString(self,s):
 
     '''Clean control characters from s.
@@ -1045,7 +962,7 @@ def cleanSaxInputString(self,s):
     return s.translate(transtable)
 
 # for i in range(32): print i,repr(chr(i))
-#@+node:ekr.20060919110638.5: *6* fc.createSaxChildren & helpers
+#@+node:ekr.20060919110638.5: *7* fc.createSaxChildren & helpers
 def createSaxChildren (self, sax_node, parent_v):
 
     c = self.c
@@ -1073,7 +990,7 @@ def createSaxChildren (self, sax_node, parent_v):
             'len(child.parents)',len(child.parents))
 
     return children
-#@+node:ekr.20060919110638.7: *7* fc.createSaxVnode & helpers
+#@+node:ekr.20060919110638.7: *8* fc.createSaxVnode & helpers
 def createSaxVnode (self,sax_node,parent_v,v=None):
 
     c = self.c
@@ -1112,7 +1029,7 @@ def createSaxVnode (self,sax_node,parent_v,v=None):
     self.handleTnodeSaxAttributes(sax_node,v)
 
     return v
-#@+node:ekr.20060919110638.8: *8* handleTnodeSaxAttributes
+#@+node:ekr.20060919110638.8: *9* handleTnodeSaxAttributes
 def handleTnodeSaxAttributes (self,sax_node,v):
 
     trace = False and not g.unitTesting
@@ -1129,7 +1046,7 @@ def handleTnodeSaxAttributes (self,sax_node,v):
     if aDict:
         if trace: g.trace('uA',v,list(aDict.keys()))
         v.unknownAttributes = aDict
-#@+node:ekr.20061004053644: *8* handleVnodeSaxAttributes
+#@+node:ekr.20061004053644: *9* handleVnodeSaxAttributes
 # The native attributes of <v> elements are a, t, vtag, tnodeList,
 # marks, expanded, and descendentTnodeUnknownAttributes.
 # New in Leo 4.5: added descendentVnodeUnknownAttributes to native attributes.
@@ -1199,7 +1116,7 @@ def handleVnodeSaxAttributes (self,sax_node,v):
     if aDict:
         # if trace: g.trace('uA',v,aDict)
         v.unknownAttributes = aDict
-#@+node:ekr.20060919110638.2: *6* dumpSaxTree
+#@+node:ekr.20060919110638.2: *7* dumpSaxTree
 def dumpSaxTree (self,root,dummy):
 
     if not root:
@@ -1209,7 +1126,7 @@ def dumpSaxTree (self,root,dummy):
         root.dump()
     for child in root.children:
         self.dumpSaxTree(child,dummy=False)
-#@+node:ekr.20061003093021: *6* getSaxUa
+#@+node:ekr.20061003093021: *7* getSaxUa
 def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
 
     """Parse an unknown attribute in a <v> or <t> element.
@@ -1255,7 +1172,7 @@ def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
     except (pickle.UnpicklingError,ImportError,AttributeError,ValueError):
         g.trace('can not unpickle %s=%s' % (attr,val))
         return val
-#@+node:ekr.20060919110638.14: *6* parse_leo_file
+#@+node:ekr.20060919110638.14: *7* parse_leo_file
 def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 
     c = self.c
@@ -1296,7 +1213,7 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
         sax_node = None
 
     return sax_node
-#@+node:ekr.20060919110638.3: *6* readSaxFile
+#@+node:ekr.20060919110638.3: *7* readSaxFile
 def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
 
     dump = False and not g.unitTesting
@@ -1317,7 +1234,7 @@ def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None
         return v
     else:
         return None
-#@+node:ekr.20060919110638.11: *6* resolveTnodeLists
+#@+node:ekr.20060919110638.11: *7* resolveTnodeLists
 def resolveTnodeLists (self):
 
     trace = False and not g.unitTesting
@@ -1339,7 +1256,7 @@ def resolveTnodeLists (self):
                 p.v.tnodeList = result
                 # g.trace('*** tnodeList for',p.h,result)
             delattr(p.v,'tempTnodeList')
-#@+node:ekr.20080805132422.3: *6* resolveArchivedPosition  (New in Leo 4.5)
+#@+node:ekr.20080805132422.3: *7* resolveArchivedPosition  (New in Leo 4.5)
 def resolveArchivedPosition(self,archivedPosition,root_v):
 
     '''Return a vnode corresponding to the archived position relative to root node root_v.'''
@@ -1371,7 +1288,7 @@ def resolveArchivedPosition(self,archivedPosition,root_v):
             return oops('bad index="%s", len(children)="%s"' % (n,len(children)))
 
     return last_v
-#@+node:ekr.20060919110638.13: *6* setPositionsFromVnodes & helper (sax read)
+#@+node:ekr.20060919110638.13: *7* setPositionsFromVnodes & helper (sax read)
 def setPositionsFromVnodes (self):
 
     trace = False and not g.unitTesting
@@ -1391,7 +1308,7 @@ def setPositionsFromVnodes (self):
         current = self.archivedPositionToPosition(str_pos)
 
     c.setCurrentPosition(current or c.rootPosition())
-#@+node:ekr.20061006104837.1: *7* archivedPositionToPosition
+#@+node:ekr.20061006104837.1: *8* archivedPositionToPosition
 def archivedPositionToPosition (self,s):
 
     c = self.c
@@ -1418,7 +1335,7 @@ def archivedPositionToPosition (self,s):
             p.moveToFirstChild()
             # g.trace('level',level,'index',aList[level],p.h)
     return p
-#@+node:ekr.20090218115025.3: *4* Why are attributes pickled by default?
+#@+node:ekr.20090218115025.3: *5* Why are attributes pickled by default?
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/326a221f4c698f7a
@@ -1469,106 +1386,16 @@ I'm sure pickling capability is great, but I'm not convinced
 it should be the _default._
 
 No big deal.
-#@+node:ekr.20071001052501: *3* Versioning for nodes
-@nocolor
-
-One feature I have not seen in SCS system is something which might be called
-"history compression": I might be interested in having both version 5 and 6
-in my source tree, when the current version is 7, but I am not really interested
-in the 2000 steps which transformed 5 into 6 (just suggested this feature to
-the bazaar people). This happens actually quite often to me, since I use the
-SCS as a back-up system, saving many (uninteresting) intermediate steps while
-implementing a new feature.
-#@+node:ekr.20110518103946.18179: *3* Add external/leosax.py to leoPyRef.leo
-http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
-
-Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
-#@+node:ekr.20080421140032.1: *3* Fix multiple controllers problem in all plugins
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
-#@+node:ekr.20110518103946.18157: ** Maybe
-#@+node:ekr.20101104191857.5820: *3* Idea: presentation tool
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
-
-Ville:
-
-Create one QWebView window, zoom it in to have large fonts.
-
-Create @button that converts current node containing restructuredtext to html,
-and pushes that html to QWebView.
-
-Voila', instant presentation tool. The webview window would be on projector, and
-leo would be in your private computer. You can easily edit the text, or find new
-interesting slides to present in privacy of your own screen.
-
-#@+node:ekr.20090724081340.5987: *3* Improve recursive import script and @auto
-@nocolor-node
-
-Instead of adding an @ignore directive, it might be better
-to change @auto to @@auto.
-
-Should @auto be more lenient with C files?
-
-Improve the recursive import script.
-    - Minimize the path names
-    - Option to include/exclude the @auto itself
-
-#@+node:ekr.20090601083544.6067: *3* Make all commands available to all commanders
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/a83082cec5ad3df8
-
-QQQ (Ville)
-So to create command you would do
-
-import leoPlugins
-
-def mycmd(c,p, event):
-  print c,p
-
-leoPlugins.expose_command('my-command', mycmd)
-leoPlugins.expose_button('press-this',mycmd)
-
-[EKR: I would rather use g.app.exposeCommand, g.app.exposeButton].
-
-These would be available on *all* new commanders, and the current
-commander as well (for easy testing). Plugins would not have to
-contain more code than what is presented above.
-
-The idea is to have a global command dict, [EKR: g.app.commandsDict]
-and global button dict.
-There is one after-create-frame handler that introduces all the
-entries in this dict to the commander command dict.
-QQQ
-
-============
-
-
-QQQ
-g.app.global_commands_dict, which gets copied to c on commander
-creation. it's rev 1889, you'll note that it's a simple
-implementation. I didn't add g.button yet. An example:
-
-@g.command('bookmark')
-def bookmark(event):
-    c = event.get('c')
-    p = c.currentPosition()
-    bookmarks.append(p.gnx)
-    g.es('bookmarked') 
-QQQ
-#@+node:ekr.20090714085914.5994: *3* New commands
-#@+node:ekr.20071004120359.2: *4* Do expand-region-abbrevs from
+#@+node:ekr.20090714085914.5994: *4* New commands
+#@+node:ekr.20071004120359.2: *5* Do expand-region-abbrevs from
 See: regionalExpandAbbrev.
-#@+node:ekr.20090402072059.2: *4* clone-find-all-once
+#@+node:ekr.20090402072059.2: *5* clone-find-all-once
 @
 
 First do a normal clone-find-all for the word "clone". Then click the script
 button and do it again. Notice that children of previously found nodes don't get
 added again in the modified version.
-#@+node:ekr.20090402072059.4: *5* @@@button my clone find all
+#@+node:ekr.20090402072059.4: *6* @@@button my clone find all
 import leo.core.leoFind as leoFind 
 
 def new_find_all(self):
@@ -1613,7 +1440,7 @@ def new_find_all(self):
 leoFind.leoFind.findAll = new_find_all
 
 c.executeMinibufferCommand("clone-find-all") 
-#@+node:ekr.20090402072059.5: *6* << do some initial stuff >>
+#@+node:ekr.20090402072059.5: *7* << do some initial stuff >>
 g.es("findAll..., self: ", self)
 
 c = self.c ; w = self.s_ctrl ; u = c.undoer
@@ -1626,16 +1453,16 @@ if self.clone_find_all:
 data = self.save()
 self.initBatchCommands()
 count = 0 ; clones = []; positions = []
-#@+node:ekr.20090402072059.6: *6* << create the found node >>
+#@+node:ekr.20090402072059.6: *7* << create the found node >>
 oldRoot = c.rootPosition()
 found = oldRoot.insertAfter()
 found.moveToRoot(oldRoot)
 c.setHeadString(found,'Found: ' + self.find_text)
 c.setRootPosition() # New in Leo 4.5.
-#@+node:ekr.20090402072059.7: *6* << create a clone of p under the find node >>
+#@+node:ekr.20090402072059.7: *7* << create a clone of p under the find node >>
 q = self.p.clone()
 q.moveToLastChildOf(found)
-#@+node:ekr.20090402072059.8: *6* << Skip node if it's a child of a previously found node >>
+#@+node:ekr.20090402072059.8: *7* << Skip node if it's a child of a previously found node >>
 << def: is a child of b >>
 
 is_child_of_previous = False
@@ -1646,7 +1473,7 @@ for previously_found in positions:
 
 if is_child_of_previous:
     continue
-#@+node:ekr.20090402072059.9: *7* << def: is a child of b >>
+#@+node:ekr.20090402072059.9: *8* << def: is a child of b >>
 
 def is_a_child_of_b(a, b):
     for child in b.children_iter():
@@ -1655,610 +1482,176 @@ def is_a_child_of_b(a, b):
         if is_a_child_of_b(a, child):
             return True
     return False
-#@+node:ekr.20100108101415.6196: *4* insert-tab commands
+#@+node:ekr.20100108101415.6196: *5* insert-tab commands
 insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
-#@+node:ekr.20101024062147.5996: *3* Wishlist
-#@+node:ekr.20080922115725.1: *4* Finish @shadow
-# Allow block comments in private shadow files.
-# Compute delims using the private shadow file, not the file extension!
-# Can @shadow mark externally changed nodes?
-#@+node:ekr.20081004102201.2: *5* Log file for @shadow
+#@+node:ekr.20110523130519.19219: *4* Bug 525004: bash code not colored properly
 @nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
+This is not going to be easy to fix.  match_mark_previous/following do not seem to do anything.
 
-How about a shadow.log file which Leo told what it thought of the relationship
-between the node, file and shadow? It might provide useful clues.
-#@+node:ekr.20081001062423.1: *5* Can @shadow mark externally changed nodes?
-@nocolor
+It looks like a rewrite of leo\modes\shell.py may be needed.
+#@+node:ekr.20110523130519.19220: *5* Report
+@nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
+https://bugs.launchpad.net/leo-editor/+bug/525004
 
-@color
-#@+node:ekr.20080708094444.38: *6* x.propagate_changed_lines
-def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+This is basically a copy/paste from
+http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
 
-    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+Consider the following code snippet:
 
-    We compare the old and new public lines, create diffs and
-    propagate the diffs to the new private lines, copying sentinels as well.
+--- cut here ---
+@language shell
 
-    We have two invariants:
-    1. We *never* delete any sentinels.
-       New at 2010/01/07: Replacements preserve sentinel locations.
-    2. Insertions that happen at the boundary between nodes will be put at
-       the end of a node.  However, insertions must always be done within sentinels.
-    '''
+FOO_BAR='foo bar'
+FOO1_BAR1='foo1 bar1'
 
-    trace = False and g.unitTesting
-    verbose = True
-    x = self
-    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
-    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+echo $FOO_BAR*
+echo $FOO_BAR-$FOO1_BAR1
+--- cut here ---
 
-    << init vars >>
-    << define print_tags >>
+The variable names in the last two lines are not highlighted
+correctly. This becomes clear if the first line is replaced with #!/
+bin/bash and this code is opened in vim/scite. I've tried only these
+two editors, they highlight the variable names correctly.
+#@+node:ekr.20110522203356.18255: *4* Maybe
+#@+node:ekr.20090907080624.6081: *5* * Bug: spell checker should check headlines
+Low priority
+#@+node:ekr.20090601083544.6067: *5* Make all commands available to all commanders
+@nocolor-node
 
-    delim1,delim2 = marker.getDelims()
-    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
-    prev_old_j = 0 ; prev_new_j = 0
+http://groups.google.com/group/leo-editor/browse_thread/thread/a83082cec5ad3df8
 
-    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+QQQ (Ville)
+So to create command you would do
 
-        << About this loop >>
+import leoPlugins
 
-        # Verify that SequenceMatcher never leaves gaps.
-        if old_i != prev_old_j: # assert old_i == prev_old_j
-            x.error('can not happen: gap in old: %s %s' % (old_i,prev_old_j))
-        if new_i != prev_new_j: # assert new_i == prev_new_j
-            x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
+def mycmd(c,p, event):
+  print c,p
 
-        << Handle the opcode >>
+leoPlugins.expose_command('my-command', mycmd)
+leoPlugins.expose_button('press-this',mycmd)
 
-        # Remember the ends of the previous tag ranges.
-        prev_old_j = old_j
-        prev_new_j = new_j
+[EKR: I would rather use g.app.exposeCommand, g.app.exposeButton].
 
-    # Copy all unwritten sentinels.
-    self.copy_sentinels(
-        old_private_lines_rdr,
-        new_private_lines_wtr,
-        marker,
-        limit = old_private_lines_rdr.size())
+These would be available on *all* new commanders, and the current
+commander as well (for easy testing). Plugins would not have to
+contain more code than what is presented above.
 
-    # Get the result.
-    result = new_private_lines_wtr.getlines()
-    if 1:
-        << do final correctness check>>
-    return result
-#@+node:ekr.20080708094444.40: *7* << init vars >>
-new_private_lines_wtr = self.sourcewriter(self)
-# collects the contents of the new file.
+The idea is to have a global command dict, [EKR: g.app.commandsDict]
+and global button dict.
+There is one after-create-frame handler that introduces all the
+entries in this dict to the commander command dict.
+QQQ
 
-new_public_lines_rdr = self.sourcereader(self,new_public_lines)
-    # Contains the changed source code.
-
-old_public_lines_rdr = self.sourcereader(self,old_public_lines)
-    # this is compared to new_public_lines_rdr to find out the changes.
-
-old_private_lines_rdr = self.sourcereader(self,old_private_lines) # lines_with_sentinels)
-    # This is the file which is currently produced by Leo, with sentinels.
-
-# Check that all ranges returned by get_opcodes() are contiguous
-old_old_j, old_i2_modified_lines = -1,-1
-
-tag = old_i = old_j = new_i = new_j = None
-#@+node:ekr.20080708094444.39: *7* << define print_tags >>
-def print_tags(tag, old_i, old_j, new_i, new_j, message):
-
-    sep1 = '=' * 10 ; sep2 = '-' * 20
-
-    g.pr('\n',sep1,message,sep1,p and p.h)
-
-    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
-
-    g.pr('\n',sep2)
-
-    table = (
-        (old_private_lines_rdr,'old private lines'),
-        (old_public_lines_rdr,'old public lines'),
-        (new_public_lines_rdr,'new public lines'),
-        (new_private_lines_wtr,'new private lines'),
-    )
-
-    for f,tag in table:
-        f.dump(tag)
-        g.pr(sep2)
+============
 
 
-#@+node:ekr.20080708192807.2: *7* << about this loop >>
-@ This loop writes all output lines using a single writer:
-new_private_lines_wtr.
+QQQ
+g.app.global_commands_dict, which gets copied to c on commander
+creation. it's rev 1889, you'll note that it's a simple
+implementation. I didn't add g.button yet. An example:
 
-The output lines come from two, and *only* two readers:
+@g.command('bookmark')
+def bookmark(event):
+    c = event.get('c')
+    p = c.currentPosition()
+    bookmarks.append(p.gnx)
+    g.es('bookmarked') 
+QQQ
+#@+node:ekr.20110111100539.12257: *5* Fix end-of-line problem (MacOS)
+# Apparently, ctrl-e is not passed to Leo at all.
+#@+node:ekr.20110111100539.12258: *6* Report
+@nocolor-node
 
-1. old_private_lines_rdr delivers the complete original sources. All
-   sentinels and unchanged regular lines come from this reader.
+http://mail.google.com/mail/#inbox/12c5646c646a90d2
 
-2. new_public_lines_rdr delivers the new, changed sources. All inserted or
-   replacement text comes from this reader.
+I expect C-e to go to end-of-line, but C-e works as the next line.
+Alt-x and check end-of-line and I get the following result.
 
-Each time through the loop, the following are true:
+I use Mac OS X 10.6.5, newest Leo, and Python/Qt.
 
-- old_i is the index into old_public_lines of the start of the present
-  SequenceMatcher opcode.
+Leo 4.8 rc1, build 3715, November 15, 2010
+Python 2.6.1, qt version 4.7.0
+darwin
 
-- mapping[old_i] is the index into old_private_lines of the start of
-  the same opcode.
+I remember I could use C-e, but it doesn't work anymore even after I
+reinstall the Leo.
 
-At the start of the loop, the call to copy_sentinels effectively skips
-(deletes) all previously unwritten non-sentinel lines in
-old_private_lines_rdr whose index is less than mapping[old_i].
+As I explained in this post - http://groups.google.com/group/leo-editor/browse_thread/thread/1ee0b35b4f76c999
+After having @bool swap_mac_keys = True, I can use C-e.
 
-As a result, the opcode handlers do not need to delete elements from
-the old_private_lines_rdr explicitly. This explains why opcode
-handlers for the 'insert' and 'delete' opcodes are identical.
-#@+node:ekr.20080708192807.5: *7* << Handle the opcode >>
-# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
-# In this special case, we must do the insert before the sentinels.
-limit=mapping[old_i]
+C-a move the cursor to the start of line, but C-e seems to move the
+cursor the first of the next line, which is the end of last line + 1.
+If the line is the final one, C-e moves the cursor to the end of line
+as there's no next line.
 
-if trace: g.trace('tag',tag,'old_i',old_i,'limit',limit)
+#@+node:ekr.20100109094541.6232: *6* within lines
+def beginningOfLine (self,event):
+    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
+    self.moveWithinLineHelper(event,'start-line',extend=False)
 
-if tag == 'equal':
-    # Copy sentinels up to the limit = mapping[old_i]
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+def beginningOfLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the start of the line.'''
+    self.moveWithinLineHelper(event,'start-line',extend=True)
 
-    # Copy all lines (including sentinels) from the old private file to the new private file.
-    start = old_private_lines_rdr.index() # Only used for tag.
-    while old_private_lines_rdr.index() <= mapping[old_j-1]:
-        line = old_private_lines_rdr.get()
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (
-            tag,start,mapping[old_j-1]))
+def endOfLine (self,event):
+    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
+    self.moveWithinLineHelper(event,'end-line',extend=False)
 
-    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
-    new_public_lines_rdr.sync(new_j)
+def endOfLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the end of the line.'''
+    self.moveWithinLineHelper(event,'end-line',extend=True)
+#@+node:ekr.20100109094541.6231: *6* moveWithinLineHelper
+def moveWithinLineHelper (self,event,spot,extend):
 
-elif tag == 'insert':
-    if limit < old_private_lines_rdr.size():
-        self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Copy lines from new_public_lines_rdr up to new_j.
-    start = new_public_lines_rdr.index() # Only used for tag.
-    while new_public_lines_rdr.index() < new_j:
-        line = new_public_lines_rdr.get()
-        if marker.isSentinel(line):
-            new_private_lines_wtr.put(
-                '%s@verbatim%s\n' % (delim1,delim2),
-                tag='%s %s:%s' % ('new sent',start,new_j))
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
 
-elif tag == 'replace':
-    # This case is new: it was the same as the 'insert' case.
-    start = old_private_lines_rdr.index() # Only used for tag.
-    while (
-        old_private_lines_rdr.index() <= mapping[old_j-1]
-        and new_public_lines_rdr.index() <  new_j
-            # 2010/10/22: the replacement lines can be shorter.
-    ):
-        old_line = old_private_lines_rdr.get()
-        if marker.isSentinel(old_line):
-            # Important: this should work for @verbatim sentinels
-            # because the next line will also be replaced.
-            new_private_lines_wtr.put(old_line,tag='%s %s:%s' % (
-                'replace: copy sentinel',start,new_j))
+    # g.trace(hasattr(w,'leoMoveCursorHelper'))
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(kind=spot,extend=extend)
+        w.seeInsertPoint()
+        c.frame.updateStatusLine()
+    else:
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i,j = g.getLine(s,ins)
+        if spot == 'start-line':
+            self.moveToHelper(event,i,extend=extend)
+        elif spot == 'end-line':
+            # if g.match(s,i-1,'\n'): i -= 1
+            self.moveToHelper(event,j,extend=extend)
         else:
-            new_line = new_public_lines_rdr.get()
-            new_private_lines_wtr.put(new_line,tag='%s %s:%s' % (
-                'replace: new line',start,new_j))
-
-    # 2010/10/22: The replacement lines can be longer: same as 'insert' code above.
-    while new_public_lines_rdr.index() < new_j:
-        line = new_public_lines_rdr.get()
-        if marker.isSentinel(line):
-            new_private_lines_wtr.put(
-                '%s@verbatim%s\n' % (delim1,delim2),
-                tag='%s %s:%s' % ('new sent',start,new_j))
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-
-elif tag=='delete':
-    # Copy sentinels up to the limit = mapping[old_i]
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-    # Leave new_public_lines_rdr unchanged.
-
-else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
-
-if trace and verbose:
-    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
-#@+node:ekr.20080708094444.45: *7* << do final correctness check >>
-t_sourcelines, t_sentinel_lines = self.separate_sentinels(
-    new_private_lines_wtr.lines, marker)
-
-self.check_the_final_output(
-    new_private_lines   = result,
-    new_public_lines    = new_public_lines,
-    sentinel_lines      = t_sentinel_lines,
-    marker              = marker)
-#@+node:ekr.20090402072059.13: *5* Create a general mechanism for aux (shadow, _db) files
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ec30df3f1db8db3
-
-On Sat, Mar 28, 2009 at 3:24 AM, VR <viktor.ransmayr@gmail.com> wrote:
-
-
-    When I tried to de-install Leo-4.6b1 I succeeded, but the program
-    reported that 5 directories
-    were not removed.
-
-    Three of the directories where
-
-    1) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\config
-    2) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\doc
-    3) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\plugins
-
-    [containing]
-
-
-    a) .leoSettings.leo_db
-    b) .leoDocs.leo_db
-    c) .leo_shadow
-    d) .leoPluginsRef.leo_db
-
-
-Thanks for this report. I think it is important, and needs a good solution.
-
-I dislike all these files being sprayed around the file system. I'd like to see
-these files placed somewhere the ~/.leo directory. Is there a reason why this
-would be a bad idea?
-
-Similarly, we might also prefer to have shadow files place in, say,
-~/.leo/shadow_files.
-
-In both cases, I think we want to create files that indicate their location.
-Either that, or mirror their location in (subdirectories) ~/.leo. In other
-words, this is a general problem, and it would be good to have a robust, general
-solution.
-#@+node:ekr.20100131161507.6303: *4* Unit tests that all commands have docstrings
-# Just make the test.  It doesn't have to pass.
-#@+node:ekr.20100826110728.5839: *4* Relocating .leo_shadow directories
-@nocolor-node
-
-2008
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/b738e3f8d164f9fc
-
-May 10, 2010
-
-Kent
-
-I think there could be quite a bit of interest in moving
-the shadow files to their own tree, avoiding what might
-be considered 'pollution' of a tree of files in @shadow nodes.
-
-Edward has said that this would add a lot of complexity to Leo.
-
-It seems that a VCS back end for Leo might simplify the
-task of arbitrary shadow file location, as well as adding
-versioning capability.
-
-
-Those of us old enough to remember the Groucho Marx show will know what I am ...
-
-bogomil
- to me
-
-In order to relocate .leo_shadow directories in home dir, I have made
-the following changes leoShadow.py:
-1. Introduce new setting 'shadow_in_home_dir':
-   x.ctor:
-     ...
-     self.shadow_prefix = c.config.getString('shadow_prefix') or ''
-
-=>  self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir')
-or False
-    ...
-
-2. Make the following line:
-   x.shadowDirName and shadowPathName:
-      ...
-      fileDir = g.os_path_dirname(filename)
-
-=>   if self.shadow_in_home_dir:
-        fileDir = "//".join([baseDir, fileDir.replace(':','%')])
-
-In this way I keep .leo_shadow dirs in a tree and it is ok if the user
-reorgs the original tree.
-
-=====================
-Edward K. Ream
- to bogomil
-
-Thanks for these suggestions.  I'll try them soon.
-
-A few minor comments about the code.
-
->  self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir') or False
-
-This works (because c.config.getBool returns None if the setting does
-not exist). Thus, the "or False" part merely replaces None by False.
-I prefer the following:
-
-self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir',default=False)
-
->   if self.shadow_in_home_dir:
->         fileDir = "//".join([baseDir, fileDir.replace(':','%')])
-
-This looks like a Windows-only solution because of ':'.  It might fail
-in strange ways on other platforms.
-#@+node:ekr.20100830120622.5829: *4* Fix python import problems
-@nocolor-node
-
-> > Hmm, I guess that would be more clear, although I think I'd like an option
-to include it in the following def to avoid
-
-> > Decoration
-> > index
-> > Decoration
-> > add_user
->
-> Sure.  Decorations must always be part of a definition.
-
-Well, personally I'd like to have them included in the definition, but I think
-Kent's preference for a separate node is reasonable to. If your function and
-hence definition node is called "pluralize", and it's decorated with something
-like "@authenticate_user", you may never check the innocent looking pluralize
-definition to find out what on earth's triggering the mysterious network
-database call. And this isn't a completely specious example, authentication may
-have been added to stop pluralize being used in a user existence detection
-exploit or something. OTOH in well behaved code like CherryPy apps you don't
-want a separate node for every @cherrypy.expose.
-
-Bottom line is I think we're asking for a set of @settings to fine tune python
-import behavior:
-
-@python_import_interdef = previous | next | own_node | ai
-@python_import_decoration = next | own_node
-
-I'm not sure I believe the AI option is possible / practical, and am not asking
-for it, just listing it :-)
-
-I'd also like
-
-@python_import_init_in_class_node = true | false
-
-as often there's more docs on a class in the __init__ than the class docstring.
-
-I think that's really all we're talking about, some @settings to test during import.
-#@+node:ekr.20110518103946.18156: ** Leo 4.10: deprecate Tk
-#@+node:ekr.20100521090440.5890: *3* Cleanups
-#@+node:ekr.20100223123910.5930: *4* recentFilesController
-@
-The present operation of recent files is surprising.
-
-Recent files should be a global list, managed by a single controller.
-#@+node:ekr.20100219083854.5615: *4* Improve caching
-#@+node:ekr.20100209160132.5770: *5* cache notes
-@nocolor-node
-
-Top-level folder are direct subfolders of .leo/db.
-Top-level folders represent file *locations* not file contents.
-Exception: the top-level "globals" folder represents minor data.
-
-Only two files are ever needed in a top-level folder:
-
-contents_<key>: the contents of the file.
-data_<key>: a dict representing the "minor data" of the file:
-    <globals> element stuff, expansion bits, etc.
-
-We write contents_<key> only once.
-By definition, its contents never changes, since the contents generates the key.
-We can write data_<key> as many times as we like.
-
-To do:
-- Simplify or even eliminate the path-manipulation code in PickleShareDB.
-- Use g.makeAllNonExistentDirectories to make top-level directories.
-- Clear cache should clear all top-level directories.
-#@+node:ekr.20100209114432.5751: *6* Cache expansion bits
-# Simplify the structure of the cache: put more into the "minor" files.
-#@+node:ekr.20100211095442.6201: *5* cache notes 2
-@nocolor-node
-
-1. Memory does leak, and that's not ok with me.  And I want just two
-files per top-level directory.
-
-2. Strange things can happen with caching, as just happened to me when
-I restored qtui_generate.py mistakenly deleted from leo/test.  There
-is an @auto node for this file in qtGui.py, and I got improper 'can
-not open' messages for this file.
-
-3. It is troubling that the present caching scheme does not use the
-full path to a file, only the basename.  This means that two identical
-files in two different places will use the same cache entries.  I've
-been wondering for the last several days about whether this could
-cause problems.  I don't know for sure, but I am uncomfortable.
-
-4. I want the clear-cache and clear-all-caches commands to do what
-they say: get rid of everything.  Among other things, this is good for
-debugging and recovering from cache problems.
-
-#@+node:ekr.20100223075705.5635: *5* Don't write expansion bits
-#@+node:ekr.20100210163813.5748: *5* Caching buglets?
-@nocolor-node
-
-This is a recent bug, but imo it has uncovered some other caching buglets. These
-buglets are not big enough to delay Leo 4.7, but the new caching scheme would
-ensure they never bite.
-
-1. The code that computes what I have been calling the top-level directory is dubious::
-
-    dbdirname = join(g.app.homeLeoDir,'db',
-            '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
-
-The problem is that bname is only the base name of the cached file, not a name
-(or key) that depends on the full path. Thus, two copies of the same file in the
-same place will be cached in the same directory. Is this ominous?
-
-2. It's not clear what caching to do with the save-to command.
-#@+node:ekr.20100225102636.5627: *5* Use the string returned by cacher
-# It should be possible to avoid duplicate reads.
-#@+node:ekr.20080628095358.1: *4* Make each Leo command a class
-http://groups.google.com/group/leo-editor/browse_thread/thread/5688ed9aaa39be2e#
-
+            g.trace('can not happen: bad spot: %s' % spot)
+#@+node:ekr.20110522203356.18257: *5* Bug: Application menus disappear on MacOS with qttabs gui
+#@+node:ekr.20071001052501: *5* Versioning for nodes
 @nocolor
 
-The main difficulty I see in the migration is creating the tables in the getPublicCommands methods in the various classes in leoEditCommands.py.  At present, these tables associate command names (strings) with corresponding methods.  The form of getPublicCommands is always:
+One feature I have not seen in SCS system is something which might be called
+"history compression": I might be interested in having both version 5 and 6
+in my source tree, when the current version is 7, but I am not really interested
+in the 2000 steps which transformed 5 into 6 (just suggested this feature to
+the bazaar people). This happens actually quite often to me, since I use the
+SCS as a back-up system, saving many (uninteresting) intermediate steps while
+implementing a new feature.
+#@+node:ekr.20110518103946.18179: *5* Add external/leosax.py to leoPyRef.leo
+http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
 
-def getPublicCommands (self):
-  return {
-    'command-name1': self.methodName1,
-    'command-name2': self.methodName2,
-    ...
-  }
-
-Thinking out loud, let's see whether the migration can be done easily.  We would change the entry:
-
-    'command-name1': self.methodNameN,
-
-to:
-
-    'command-name1': self.classNameN(self),
-
-That is, the table creates an instance of the class by calling the class's ctor, with self (the container object) as the ctor's only argument.  To make this work, all we need to do is give the class a __call__ method whose signature matches the signature of methodNameN, that is, the signature used to call methods previously.
-
-Well, isn't this nice.  We can transition gradually, as needed.  No need *ever* to do a mass migration.  It should be easy to verify this scheme with one or two examples.  Please report your experiences if you decide to play around with this.
-
-Edward
-
-P.S.  I think it would be good style to append "Class" to the name of each command class. This makes it clear that self.myCommandClass(self) is a ctor.
-#@+node:ekr.20101119030344.5838: *5* script to turn all commands into @g.command nodes
-'''Add @g.command(command_name) before all commands.'''
-
-@others
-
-import os ; os.system('cls')
-
-d = c.commandsDict
-f_dict = find_all_defs(c)
-
-result1, result2 = [],[]
-for f_name in sorted(f_dict): # These are function names, not command name.
-    c_name = c.k.inverseCommandsDict.get(f_name) # Get the emacs command name.
-    if c_name:
-        f = d.get(c_name) # f is the function name that defines a command.
-        if f:
-            d_name = f.__name__
-            s = repr(f)
-            tag = '<bound method '
-            if s.startswith(tag): s = s[len(tag):]
-            i = s.find(' of ')
-            if i > -1: s = s[:i]
-            aList = [p.h for i,p in f_dict.get(d_name,[])]
-            if len(aList) == 1:
-                result1.append((d_name,s,aList),)
-            else:
-                result2.append((d_name,s,aList),)
-
-print('----- duplicate commands -----\n')
-for d_name,s,aList in result2:
-    print('%s: %s\n%s %s\n' % (d_name,s,len(aList),aList))
-
-print('----- unambiguous commands -----\n')
-for d_name,s,aList in result1:
-    print('%40s %s' % (d_name,aList[0]))
-
-if 0:
-    for name in sorted(d):
-        f = d.get(name)
-        f_name = f.__name__
-        # name is the minibuffer command name, f_name is the function name.
-        i,p = find(c,command,f_name)
-        adjust(c,f_name,i,p)
-#@+node:ekr.20061031131434.3: *6* << about key dicts >>
-@nocolor
-@
-ivars:
-
-c.commandsDict:
-    Keys are emacs command names; values are functions f.
-
-k.inverseCommandsDict:
-    Keys are f.__name__; values are emacs command names.
-
-k.bindingsDict:
-    Keys are shortcuts; values are *lists* of g.bunch(func,name,warningGiven)
-
-k.masterBindingsDict:
-    Keys are scope names: 'all','text',etc. or mode names.
-    Values are dicts:  keys are strokes, values are g.Bunch(commandName,func,pane,stroke)
-
-k.masterGuiBindingsDict:
-    Keys are strokes; value is a list of widgets for which stroke is bound.
-
-k.settingsNameDict:
-    Keys are lowercase settings; values are 'real' Tk key specifiers.
-    Important: this table has no inverse.
-
-not an ivar (computed by k.computeInverseBindingDict):
-
-inverseBindingDict
-    Keys are emacs command names; values are *lists* of shortcuts.
-#@+node:ekr.20101119030344.5841: *6* find_all_defs
-def find_all_defs (c):
-
-    '''Return a dict containing all function defs.
-
-    Keys are function names, values are lists of (i,p) pairs.'''
-
-    # To do: consider only files that actually generate commands?
-    d = {}
-    suppress = ('__init__',)
-    for p in c.all_unique_positions():
-        done,i,s = False,0,p.b
-        while not done and i < len(s):
-            progress = i
-            i = i1 = s.find('def',i)
-            if i == -1:
-                done = True ; break
-            i += 3 # Assures progress.
-            if not g.match_word(s,i-3,'def'): continue
-            j = g.skip_ws(s,i)
-            if j == i: continue
-            i = j
-            j = g.skip_id(s,i,chars='_')
-            if j == i: continue
-            name = s[i:j]
-            if name not in suppress:
-                aList = d.get(name,[])
-                aList.append((i1,p.copy()),)
-                d[name] = aList
-            # g.trace('%30s %s' % (name,p.h))
-            i = j
-            assert progress < i
-    return d
-#@+node:ekr.20101119030344.5839: *6* find
-def find (c,command,f_name):
-
-    g.trace('%30s %s' % (command,f_name))
-
-    for p in c.all_unique_nodes():
-        s = p.b
-        i = s.find('def %s' % f_name)
-#@+node:ekr.20101119030344.5840: *6* adjust
-def adjust(f,i,p):
-    pass
-#@+node:ekr.20080923200153.1: *4* Support scan-directives hook again?
-# This affects the add_directives plugin.
-# Also, the color_markup plugin doesn't work with the threading colorizer.
-#@+node:ekr.20100206074650.5844: *3* Features
-#@+node:ekr.20090811141250.5955: *4*  Most important features
+Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
+#@+node:ekr.20110518103946.18156: ** Leo 4.10
+# At present, there is nothing in this release that is particularly important.
+#@+node:ekr.20090811141250.5955: *3* Most important features
 @ Important: There is another features list for 4.9.
-#@+node:ekr.20090801103907.6018: *5* Add entries to global dicts for more languages
+#@+node:ekr.20090801103907.6018: *4* Add entries to global dicts for more languages
 http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
 
 Especially languages in leo/modes.
-#@+node:ekr.20090816125009.5993: *6* @url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
-#@+node:ekr.20090814190307.5983: *6* print all modes/*.py files
+#@+node:ekr.20090816125009.5993: *5* @url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+#@+node:ekr.20090814190307.5983: *5* print all modes/*.py files
 import glob
 
 theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
@@ -2454,7 +1847,7 @@ xml.py
 xsl.py
 zpt.py
 __init__.py
-#@+node:ekr.20090601083544.6051: *5* Add expand_noweb_references for rst3 plugin
+#@+node:ekr.20090601083544.6051: *4* Add expand_noweb_references for rst3 plugin
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
@@ -2469,7 +1862,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
 - When expand_noweb_references is True, definitions (typically clones)
   must be descendants of the referencing node (in the @rst tree)
-#@+node:ekr.20090601083544.6052: *6* post
+#@+node:ekr.20090601083544.6052: *5* post
 @nocolor-node
 
 I want to write the documentation for the source program in a @rst3 subtree. In
@@ -2483,7 +1876,7 @@ Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
 get to this work, I should have <<code fragment>> under the @rst3 subtree as
 well, but this is then also treated as @rst3 input (which in this case, is not
 what I want).
-#@+node:ekr.20080918164844.12: *5* Improve headline navigation
+#@+node:ekr.20080918164844.12: *4* Improve headline navigation
 @nocolor
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/bce1065d9a332fcd
@@ -2514,9 +1907,9 @@ of the
    * Typical use case is the way you usually start deleting a set of items.
 You move to the first item and start cutting repeatedly. This wont work with
 the current behaviour. 
-#@+node:ekr.20101004092958.5914: *5* Write treepad scanner
+#@+node:ekr.20101004092958.5914: *4* Write treepad scanner
 @ treepad.py is from the treepad website
-#@+node:ekr.20101004092958.5939: *6* treepad.py
+#@+node:ekr.20101004092958.5939: *5* treepad.py
 @first #! /usr/local/bin/python
 
 # treepad.py
@@ -2527,7 +1920,7 @@ the current behaviour.
 if __name__ == '__main__':
     Main().Run()
 
-#@+node:ekr.20101004092958.5940: *7* treepad declarations
+#@+node:ekr.20101004092958.5940: *6* treepad declarations
 import sys, os, re, string
 
 # constants
@@ -2535,10 +1928,10 @@ VERSION = "<Treepad version 2.7>"
 
 # regexes
 END_RE = re.compile(r'^<end node> ([^ ]+)$')
-#@+node:ekr.20101004092958.5941: *7* class Node
+#@+node:ekr.20101004092958.5941: *6* class Node
 class Node:
     @others
-#@+node:ekr.20101004092958.5942: *8* __init__
+#@+node:ekr.20101004092958.5942: *7* __init__
 def __init__(self):
     self.title    = ""
     self.level    = 0
@@ -2546,19 +1939,19 @@ def __init__(self):
     self.children = []
     self.parent   = None
     self.end      = ""
-#@+node:ekr.20101004092958.5943: *8* __str__
+#@+node:ekr.20101004092958.5943: *7* __str__
 def __str__(self):
     return "%s/%d" % (self.title, self.level)
-#@+node:ekr.20101004092958.5944: *8* addchild
+#@+node:ekr.20101004092958.5944: *7* addchild
 def addchild(self, node):
     assert self.level == node.level-1 and node.parent is None
     node.parent = self
     self.children.append( node )
-#@+node:ekr.20101004092958.5945: *8* findparent
+#@+node:ekr.20101004092958.5945: *7* findparent
 def findparent(self, node):
     if self.level == (node.level-1): return self
     return self.parent.findparent(node)
-#@+node:ekr.20101004092958.5946: *8* writenode
+#@+node:ekr.20101004092958.5946: *7* writenode
 def writenode(self, fp):
     fp.write("dt=Text\n")
     fp.write("<node>\n")
@@ -2567,28 +1960,28 @@ def writenode(self, fp):
     for line in self.article:
         fp.write("%s\n" % line)
     fp.write("<end node> %s\n" % self.end)
-#@+node:ekr.20101004092958.5947: *8* writetree
+#@+node:ekr.20101004092958.5947: *7* writetree
 def writetree(self, fp):
     self.writenode(fp)
     for node in self.children:
         node.writetree(fp)
 
-#@+node:ekr.20101004092958.5948: *7* class NodeReader
+#@+node:ekr.20101004092958.5948: *6* class NodeReader
 class NodeReader:
     @others
-#@+node:ekr.20101004092958.5949: *8* __init__
+#@+node:ekr.20101004092958.5949: *7* __init__
 def __init__(self, fname, fp):
     self.fname    = fname
     self.fp       = fp
-#@+node:ekr.20101004092958.5950: *8* expect
+#@+node:ekr.20101004092958.5950: *7* expect
 def expect(self, text, line=None):
     if line is None:
         line = self.fp.readline().strip()
     assert line == text, "expected " + line + " == " + text
-#@+node:ekr.20101004092958.5951: *8* readstart
+#@+node:ekr.20101004092958.5951: *7* readstart
 def readstart(self):
     self.expect(VERSION)
-#@+node:ekr.20101004092958.5952: *8* readnode
+#@+node:ekr.20101004092958.5952: *7* readnode
 def readnode(self):
     line = self.fp.readline()
     if line is None:
@@ -2610,16 +2003,16 @@ def readnode(self):
         node.article.append( line.strip() )
     return node
 
-#@+node:ekr.20101004092958.5953: *7* class TreeReader
+#@+node:ekr.20101004092958.5953: *6* class TreeReader
 class TreeReader:
     @others
-#@+node:ekr.20101004092958.5954: *8* __init__
+#@+node:ekr.20101004092958.5954: *7* __init__
 def __init__(self, fname, fp=None):
     if fp is None: fp = open(fname, 'r')
     self.nodereader = NodeReader(fname, fp)
     self.root = None
     self.prev = None
-#@+node:ekr.20101004092958.5955: *8* add
+#@+node:ekr.20101004092958.5955: *7* add
 def add(self, node):
     if self.prev is None:
         assert node.level == 0
@@ -2629,7 +2022,7 @@ def add(self, node):
         parent = self.prev.findparent(node)
         parent.addchild( node )
     self.prev = node
-#@+node:ekr.20101004092958.5956: *8* read
+#@+node:ekr.20101004092958.5956: *7* read
 def read(self):
     self.nodereader.readstart()
     prev = None
@@ -2638,34 +2031,35 @@ def read(self):
         if node is None: break
         self.add(node)
 
-#@+node:ekr.20101004092958.5957: *7* class TreeWriter
+#@+node:ekr.20101004092958.5957: *6* class TreeWriter
 class TreeWriter:
     @others
-#@+node:ekr.20101004092958.5958: *8* __init__
+#@+node:ekr.20101004092958.5958: *7* __init__
 def __init__(self, fname, fp=None):
     if fp is None: fp = open(fname, 'w')
     self.fname = fname
     self.fp    = fp
-#@+node:ekr.20101004092958.5959: *8* write
+#@+node:ekr.20101004092958.5959: *7* write
 def write(self, root):
     self.fp.write("%s\n" % VERSION)
     root.writetree(self.fp)
 
-#@+node:ekr.20101004092958.5960: *7* class Main
+#@+node:ekr.20101004092958.5960: *6* class Main
 class Main:
     @others
-#@+node:ekr.20101004092958.5961: *8* __init__
+#@+node:ekr.20101004092958.5961: *7* __init__
 def __init__(self):
     self.infile  = sys.argv[1]
     self.outfile = sys.argv[2]
     self.reader  = TreeReader(self.infile)
     self.writer  = TreeWriter(self.outfile)
-#@+node:ekr.20101004092958.5962: *8* Run
+#@+node:ekr.20101004092958.5962: *7* Run
 
 def Run(self):
     self.reader.read()
     self.writer.write(self.reader.root)
 
+#@+node:ekr.20100206074650.5844: *3* Other Features
 #@+node:ekr.20101125041212.5845: *4* Small improvements
 @nocolor-node
 
@@ -3175,18 +2569,627 @@ The paste-text command does not work within an @mode node.  Leo's
 delete-node does not copy node to clipboard:
 A copy-node command is issued to copy the node to the clipboard
 followed by the delete-node command.
-#@+node:ekr.20110516132611.14438: *3* Deprecate Tk
-#@+node:ekr.20090131200406.11: *4* Remove remaining tk-isms from Leo's core
+#@+node:ekr.20110518103946.18157: *3* Maybe
+#@+node:ekr.20100521090440.5890: *4* Cleanups
+# These are hardly worth doing.
+#@+node:ekr.20100223123910.5930: *5* recentFilesController
+@
+The present operation of recent files is surprising.
+
+Recent files should be a global list, managed by a single controller.
+#@+node:ekr.20100219083854.5615: *5* Improve caching
+#@+node:ekr.20100209160132.5770: *6* cache notes
 @nocolor-node
 
-Eliminate all tk-indices from leoEditCommands.py
+Top-level folder are direct subfolders of .leo/db.
+Top-level folders represent file *locations* not file contents.
+Exception: the top-level "globals" folder represents minor data.
 
-These are marked with ###
+Only two files are ever needed in a top-level folder:
 
-(found) wordend, wordstart
-(found) lineend, linestart
-(found) sel.first, sel.last
-(found) w.insert, w.delete
-#@+node:ekr.20110125142807.17269: *4* Rewrite all tk plugins
+contents_<key>: the contents of the file.
+data_<key>: a dict representing the "minor data" of the file:
+    <globals> element stuff, expansion bits, etc.
+
+We write contents_<key> only once.
+By definition, its contents never changes, since the contents generates the key.
+We can write data_<key> as many times as we like.
+
+To do:
+- Simplify or even eliminate the path-manipulation code in PickleShareDB.
+- Use g.makeAllNonExistentDirectories to make top-level directories.
+- Clear cache should clear all top-level directories.
+#@+node:ekr.20100209114432.5751: *7* Cache expansion bits
+# Simplify the structure of the cache: put more into the "minor" files.
+#@+node:ekr.20100211095442.6201: *6* cache notes 2
+@nocolor-node
+
+1. Memory does leak, and that's not ok with me.  And I want just two
+files per top-level directory.
+
+2. Strange things can happen with caching, as just happened to me when
+I restored qtui_generate.py mistakenly deleted from leo/test.  There
+is an @auto node for this file in qtGui.py, and I got improper 'can
+not open' messages for this file.
+
+3. It is troubling that the present caching scheme does not use the
+full path to a file, only the basename.  This means that two identical
+files in two different places will use the same cache entries.  I've
+been wondering for the last several days about whether this could
+cause problems.  I don't know for sure, but I am uncomfortable.
+
+4. I want the clear-cache and clear-all-caches commands to do what
+they say: get rid of everything.  Among other things, this is good for
+debugging and recovering from cache problems.
+
+#@+node:ekr.20100223075705.5635: *6* Don't write expansion bits
+#@+node:ekr.20100210163813.5748: *6* Caching buglets?
+@nocolor-node
+
+This is a recent bug, but imo it has uncovered some other caching buglets. These
+buglets are not big enough to delay Leo 4.7, but the new caching scheme would
+ensure they never bite.
+
+1. The code that computes what I have been calling the top-level directory is dubious::
+
+    dbdirname = join(g.app.homeLeoDir,'db',
+            '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
+
+The problem is that bname is only the base name of the cached file, not a name
+(or key) that depends on the full path. Thus, two copies of the same file in the
+same place will be cached in the same directory. Is this ominous?
+
+2. It's not clear what caching to do with the save-to command.
+#@+node:ekr.20100225102636.5627: *6* Use the string returned by cacher
+# It should be possible to avoid duplicate reads.
+#@+node:ekr.20080628095358.1: *5* Make each Leo command a class
+http://groups.google.com/group/leo-editor/browse_thread/thread/5688ed9aaa39be2e#
+
+@nocolor
+
+The main difficulty I see in the migration is creating the tables in the getPublicCommands methods in the various classes in leoEditCommands.py.  At present, these tables associate command names (strings) with corresponding methods.  The form of getPublicCommands is always:
+
+def getPublicCommands (self):
+  return {
+    'command-name1': self.methodName1,
+    'command-name2': self.methodName2,
+    ...
+  }
+
+Thinking out loud, let's see whether the migration can be done easily.  We would change the entry:
+
+    'command-name1': self.methodNameN,
+
+to:
+
+    'command-name1': self.classNameN(self),
+
+That is, the table creates an instance of the class by calling the class's ctor, with self (the container object) as the ctor's only argument.  To make this work, all we need to do is give the class a __call__ method whose signature matches the signature of methodNameN, that is, the signature used to call methods previously.
+
+Well, isn't this nice.  We can transition gradually, as needed.  No need *ever* to do a mass migration.  It should be easy to verify this scheme with one or two examples.  Please report your experiences if you decide to play around with this.
+
+Edward
+
+P.S.  I think it would be good style to append "Class" to the name of each command class. This makes it clear that self.myCommandClass(self) is a ctor.
+#@+node:ekr.20101119030344.5838: *6* script to turn all commands into @g.command nodes
+'''Add @g.command(command_name) before all commands.'''
+
+@others
+
+import os ; os.system('cls')
+
+d = c.commandsDict
+f_dict = find_all_defs(c)
+
+result1, result2 = [],[]
+for f_name in sorted(f_dict): # These are function names, not command name.
+    c_name = c.k.inverseCommandsDict.get(f_name) # Get the emacs command name.
+    if c_name:
+        f = d.get(c_name) # f is the function name that defines a command.
+        if f:
+            d_name = f.__name__
+            s = repr(f)
+            tag = '<bound method '
+            if s.startswith(tag): s = s[len(tag):]
+            i = s.find(' of ')
+            if i > -1: s = s[:i]
+            aList = [p.h for i,p in f_dict.get(d_name,[])]
+            if len(aList) == 1:
+                result1.append((d_name,s,aList),)
+            else:
+                result2.append((d_name,s,aList),)
+
+print('----- duplicate commands -----\n')
+for d_name,s,aList in result2:
+    print('%s: %s\n%s %s\n' % (d_name,s,len(aList),aList))
+
+print('----- unambiguous commands -----\n')
+for d_name,s,aList in result1:
+    print('%40s %s' % (d_name,aList[0]))
+
+if 0:
+    for name in sorted(d):
+        f = d.get(name)
+        f_name = f.__name__
+        # name is the minibuffer command name, f_name is the function name.
+        i,p = find(c,command,f_name)
+        adjust(c,f_name,i,p)
+#@+node:ekr.20061031131434.3: *7* << about key dicts >>
+@nocolor
+@
+ivars:
+
+c.commandsDict:
+    Keys are emacs command names; values are functions f.
+
+k.inverseCommandsDict:
+    Keys are f.__name__; values are emacs command names.
+
+k.bindingsDict:
+    Keys are shortcuts; values are *lists* of g.bunch(func,name,warningGiven)
+
+k.masterBindingsDict:
+    Keys are scope names: 'all','text',etc. or mode names.
+    Values are dicts:  keys are strokes, values are g.Bunch(commandName,func,pane,stroke)
+
+k.masterGuiBindingsDict:
+    Keys are strokes; value is a list of widgets for which stroke is bound.
+
+k.settingsNameDict:
+    Keys are lowercase settings; values are 'real' Tk key specifiers.
+    Important: this table has no inverse.
+
+not an ivar (computed by k.computeInverseBindingDict):
+
+inverseBindingDict
+    Keys are emacs command names; values are *lists* of shortcuts.
+#@+node:ekr.20101119030344.5841: *7* find_all_defs
+def find_all_defs (c):
+
+    '''Return a dict containing all function defs.
+
+    Keys are function names, values are lists of (i,p) pairs.'''
+
+    # To do: consider only files that actually generate commands?
+    d = {}
+    suppress = ('__init__',)
+    for p in c.all_unique_positions():
+        done,i,s = False,0,p.b
+        while not done and i < len(s):
+            progress = i
+            i = i1 = s.find('def',i)
+            if i == -1:
+                done = True ; break
+            i += 3 # Assures progress.
+            if not g.match_word(s,i-3,'def'): continue
+            j = g.skip_ws(s,i)
+            if j == i: continue
+            i = j
+            j = g.skip_id(s,i,chars='_')
+            if j == i: continue
+            name = s[i:j]
+            if name not in suppress:
+                aList = d.get(name,[])
+                aList.append((i1,p.copy()),)
+                d[name] = aList
+            # g.trace('%30s %s' % (name,p.h))
+            i = j
+            assert progress < i
+    return d
+#@+node:ekr.20101119030344.5839: *7* find
+def find (c,command,f_name):
+
+    g.trace('%30s %s' % (command,f_name))
+
+    for p in c.all_unique_nodes():
+        s = p.b
+        i = s.find('def %s' % f_name)
+#@+node:ekr.20101119030344.5840: *7* adjust
+def adjust(f,i,p):
+    pass
+#@+node:ekr.20080923200153.1: *5* Support scan-directives hook again?
+# This affects the add_directives plugin.
+# Also, the color_markup plugin doesn't work with the threading colorizer.
+#@+node:ekr.20101104191857.5820: *4* Idea: presentation tool
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
+
+Ville:
+
+Create one QWebView window, zoom it in to have large fonts.
+
+Create @button that converts current node containing restructuredtext to html,
+and pushes that html to QWebView.
+
+Voila', instant presentation tool. The webview window would be on projector, and
+leo would be in your private computer. You can easily edit the text, or find new
+interesting slides to present in privacy of your own screen.
+
+#@+node:ekr.20090724081340.5987: *4* Improve recursive import script and @auto
+@nocolor-node
+
+Instead of adding an @ignore directive, it might be better
+to change @auto to @@auto.
+
+Should @auto be more lenient with C files?
+
+Improve the recursive import script.
+    - Minimize the path names
+    - Option to include/exclude the @auto itself
+
+#@+node:ekr.20101024062147.5996: *4* Wishlist
+#@+node:ekr.20080922115725.1: *5* Finish @shadow
+# Allow block comments in private shadow files.
+# Compute delims using the private shadow file, not the file extension!
+# Can @shadow mark externally changed nodes?
+#@+node:ekr.20081004102201.2: *6* Log file for @shadow
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
+
+How about a shadow.log file which Leo told what it thought of the relationship
+between the node, file and shadow? It might provide useful clues.
+#@+node:ekr.20081001062423.1: *6* Can @shadow mark externally changed nodes?
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
+
+@color
+#@+node:ekr.20080708094444.38: *7* x.propagate_changed_lines
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+       New at 2010/01/07: Replacements preserve sentinel locations.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    trace = False and g.unitTesting
+    verbose = True
+    x = self
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    delim1,delim2 = marker.getDelims()
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old: %s %s' % (old_i,prev_old_j))
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,
+        new_private_lines_wtr,
+        marker,
+        limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40: *8* << init vars >>
+new_private_lines_wtr = self.sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = self.sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = self.sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = self.sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
+#@+node:ekr.20080708094444.39: *8* << define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.h)
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@+node:ekr.20080708192807.2: *8* << about this loop >>
+@ This loop writes all output lines using a single writer:
+new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present
+  SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of
+  the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips
+(deletes) all previously unwritten non-sentinel lines in
+old_private_lines_rdr whose index is less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from
+the old_private_lines_rdr explicitly. This explains why opcode
+handlers for the 'insert' and 'delete' opcodes are identical.
+#@+node:ekr.20080708192807.5: *8* << Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace('tag',tag,'old_i',old_i,'limit',limit)
+
+if tag == 'equal':
+    # Copy sentinels up to the limit = mapping[old_i]
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index() # Only used for tag.
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (
+            tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag == 'insert':
+    if limit < old_private_lines_rdr.size():
+        self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index() # Only used for tag.
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if marker.isSentinel(line):
+            new_private_lines_wtr.put(
+                '%s@verbatim%s\n' % (delim1,delim2),
+                tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag == 'replace':
+    # This case is new: it was the same as the 'insert' case.
+    start = old_private_lines_rdr.index() # Only used for tag.
+    while (
+        old_private_lines_rdr.index() <= mapping[old_j-1]
+        and new_public_lines_rdr.index() <  new_j
+            # 2010/10/22: the replacement lines can be shorter.
+    ):
+        old_line = old_private_lines_rdr.get()
+        if marker.isSentinel(old_line):
+            # Important: this should work for @verbatim sentinels
+            # because the next line will also be replaced.
+            new_private_lines_wtr.put(old_line,tag='%s %s:%s' % (
+                'replace: copy sentinel',start,new_j))
+        else:
+            new_line = new_public_lines_rdr.get()
+            new_private_lines_wtr.put(new_line,tag='%s %s:%s' % (
+                'replace: new line',start,new_j))
+
+    # 2010/10/22: The replacement lines can be longer: same as 'insert' code above.
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if marker.isSentinel(line):
+            new_private_lines_wtr.put(
+                '%s@verbatim%s\n' % (delim1,delim2),
+                tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # Copy sentinels up to the limit = mapping[old_i]
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+    # Leave new_public_lines_rdr unchanged.
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@+node:ekr.20080708094444.45: *8* << do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@+node:ekr.20090402072059.13: *6* Create a general mechanism for aux (shadow, _db) files
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ec30df3f1db8db3
+
+On Sat, Mar 28, 2009 at 3:24 AM, VR <viktor.ransmayr@gmail.com> wrote:
+
+
+    When I tried to de-install Leo-4.6b1 I succeeded, but the program
+    reported that 5 directories
+    were not removed.
+
+    Three of the directories where
+
+    1) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\config
+    2) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\doc
+    3) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\plugins
+
+    [containing]
+
+
+    a) .leoSettings.leo_db
+    b) .leoDocs.leo_db
+    c) .leo_shadow
+    d) .leoPluginsRef.leo_db
+
+
+Thanks for this report. I think it is important, and needs a good solution.
+
+I dislike all these files being sprayed around the file system. I'd like to see
+these files placed somewhere the ~/.leo directory. Is there a reason why this
+would be a bad idea?
+
+Similarly, we might also prefer to have shadow files place in, say,
+~/.leo/shadow_files.
+
+In both cases, I think we want to create files that indicate their location.
+Either that, or mirror their location in (subdirectories) ~/.leo. In other
+words, this is a general problem, and it would be good to have a robust, general
+solution.
+#@+node:ekr.20100131161507.6303: *5* Unit tests that all commands have docstrings
+# Just make the test.  It doesn't have to pass.
+#@+node:ekr.20100826110728.5839: *5* Relocating .leo_shadow directories
+@nocolor-node
+
+2008
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b738e3f8d164f9fc
+
+May 10, 2010
+
+Kent
+
+I think there could be quite a bit of interest in moving
+the shadow files to their own tree, avoiding what might
+be considered 'pollution' of a tree of files in @shadow nodes.
+
+Edward has said that this would add a lot of complexity to Leo.
+
+It seems that a VCS back end for Leo might simplify the
+task of arbitrary shadow file location, as well as adding
+versioning capability.
+
+
+Those of us old enough to remember the Groucho Marx show will know what I am ...
+
+bogomil
+ to me
+
+In order to relocate .leo_shadow directories in home dir, I have made
+the following changes leoShadow.py:
+1. Introduce new setting 'shadow_in_home_dir':
+   x.ctor:
+     ...
+     self.shadow_prefix = c.config.getString('shadow_prefix') or ''
+
+=>  self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir')
+or False
+    ...
+
+2. Make the following line:
+   x.shadowDirName and shadowPathName:
+      ...
+      fileDir = g.os_path_dirname(filename)
+
+=>   if self.shadow_in_home_dir:
+        fileDir = "//".join([baseDir, fileDir.replace(':','%')])
+
+In this way I keep .leo_shadow dirs in a tree and it is ok if the user
+reorgs the original tree.
+
+=====================
+Edward K. Ream
+ to bogomil
+
+Thanks for these suggestions.  I'll try them soon.
+
+A few minor comments about the code.
+
+>  self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir') or False
+
+This works (because c.config.getBool returns None if the setting does
+not exist). Thus, the "or False" part merely replaces None by False.
+I prefer the following:
+
+self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir',default=False)
+
+>   if self.shadow_in_home_dir:
+>         fileDir = "//".join([baseDir, fileDir.replace(':','%')])
+
+This looks like a Windows-only solution because of ':'.  It might fail
+in strange ways on other platforms.
+#@+node:ekr.20100830120622.5829: *5* Fix python import problems
+@nocolor-node
+
+> > Hmm, I guess that would be more clear, although I think I'd like an option
+to include it in the following def to avoid
+
+> > Decoration
+> > index
+> > Decoration
+> > add_user
+>
+> Sure.  Decorations must always be part of a definition.
+
+Well, personally I'd like to have them included in the definition, but I think
+Kent's preference for a separate node is reasonable to. If your function and
+hence definition node is called "pluralize", and it's decorated with something
+like "@authenticate_user", you may never check the innocent looking pluralize
+definition to find out what on earth's triggering the mysterious network
+database call. And this isn't a completely specious example, authentication may
+have been added to stop pluralize being used in a user existence detection
+exploit or something. OTOH in well behaved code like CherryPy apps you don't
+want a separate node for every @cherrypy.expose.
+
+Bottom line is I think we're asking for a set of @settings to fine tune python
+import behavior:
+
+@python_import_interdef = previous | next | own_node | ai
+@python_import_decoration = next | own_node
+
+I'm not sure I believe the AI option is possible / practical, and am not asking
+for it, just listing it :-)
+
+I'd also like
+
+@python_import_init_in_class_node = true | false
+
+as often there's more docs on a class in the __init__ than the class docstring.
+
+I think that's really all we're talking about, some @settings to test during import.
 #@-all
 #@-leo
