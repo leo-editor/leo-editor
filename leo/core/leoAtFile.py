@@ -3466,6 +3466,8 @@ class atFile:
 
         trace = False and not g.unitTesting
         at = self
+        at_comment_seen,at_delims_seen,at_warning_given=False,False,False
+            # 2011/05/25: warn if a node contains both @comment and @delims.
 
         # New in 4.3 b2: get s from fromString if possible.
         s = g.choose(fromString,fromString,p.b)
@@ -3554,10 +3556,17 @@ class atFile:
                 next_i = g.skip_line(s,i)
                 at.os(s[i:next_i])
             elif kind == at.miscDirective:
-                # g.trace('miscDirective')
+                # Fix bug 583878: Leo should warn about @comment/@delims clashes.
+                if g.match_word(s,i,'@comment'):
+                    at_comment_seen = True
+                elif g.match_word(s,i,'@delims'):
+                    at_delims_seen = True
+                if at_comment_seen and at_delims_seen and not at_warning_given:
+                    at_warning_given = True
+                    at.error('@comment and @delims in node %s' % p.h)
                 at.putDirective(s,i)
             else:
-                assert 0,'putBody: unknown directive'
+                at.error('putBody: can not happen: unknown directive kind: %s' % kind)
             #@-<< handle line at s[i] >>
             i = next_i
         if not inCode:
