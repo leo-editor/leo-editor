@@ -2366,10 +2366,6 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setName(w,name)
         w.setText(self.tr(label))
         return w
-    #@+node:ekr.20090426083450.10: *6* createContainer (to do)
-    def createContainer (self,parent):
-
-        pass
     #@+node:ekr.20090426083450.11: *6* createFrame
     def createFrame (self,parent,name,
         hPolicy=None,vPolicy=None,
@@ -2862,32 +2858,6 @@ class leoQtBody (leoFrame.leoBody):
 
         '''(qtBody) Create gui-dependent bindings.
         These are *not* made in nullBody instances.'''
-
-        # frame = self.frame ; c = self.c ; k = c.k
-        # if not w: w = self.widget
-
-        # c.bind(w,'<Key>', k.masterKeyHandler)
-
-        # table = [
-            # ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
-            # ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
-            # ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
-            # ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
-            # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
-        # ]
-
-        # table2 = (
-            # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
-        # )
-
-        # if c.config.getBool('allow_middle_button_paste'):
-            # table.extend(table2)
-
-        # for kind,func,handler in table:
-            # def bodyClickCallback(event,handler=handler,func=func):
-                # return handler(event,func)
-
-            # c.bind(w,kind,bodyClickCallback)
     #@+node:ekr.20081121105001.209: *6* get_name
     def getName (self):
 
@@ -2925,11 +2895,7 @@ class leoQtBody (leoFrame.leoBody):
     def setForegroundColorHelper (self,colorName,obj):
         
         # obj is a QTextEdit or QTextBrowser.
-        
-        # return ### Does not work, and interferes with setBackgroundColor.
-        
         trace = False and not g.unitTesting
-        
         if not colorName: return
 
         styleSheet = 'QTextEdit#richTextEdit { color: %s; }' % (
@@ -4538,27 +4504,17 @@ class leoQtFrame (leoFrame.leoFrame):
                     #   shortcut=shortcut,func=atButtonCallback,
                     #   pane='button',verbose=verbose)
         #@-others
-    #@+node:ekr.20081121105001.275: *4* Minibuffer methods
+    #@+node:ekr.20081121105001.275: *4* Minibuffer methods (to be deleted)
     #@+node:ekr.20081121105001.276: *5* showMinibuffer
     def showMinibuffer (self):
 
         '''Make the minibuffer visible.'''
-
-        # frame = self
-
-        # if not frame.minibufferVisible:
-            # frame.minibufferFrame.pack(side='bottom',fill='x')
-            # frame.minibufferVisible = True
     #@+node:ekr.20081121105001.277: *5* hideMinibuffer
     def hideMinibuffer (self):
 
         '''Hide the minibuffer.'''
-
-        # frame = self
-
-        # if frame.minibufferVisible:
-            # frame.minibufferFrame.pack_forget()
-            # frame.minibufferVisible = False
+        
+        pass
     #@+node:ekr.20081121105001.278: *5* f.setMinibufferBindings
     def setMinibufferBindings (self):
 
@@ -5222,7 +5178,7 @@ class leoQtLog (leoFrame.leoLog):
     def getName (self):
         return 'log' # Required for proper pane bindings.
     #@+node:ekr.20081121105001.322: *4* Do nothings (logCtrl)
-    #@+node:ekr.20081121105001.323: *5* Config
+    #@+node:ekr.20081121105001.323: *5* Config (logCtrl)
     # These will probably be replaced by style sheets.
 
     def configureBorder(self,border):               pass
@@ -6319,11 +6275,6 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         '''Parse md.text() into (fn,s)'''
 
         fn = ''
-
-        # g.trace(type(md.text()))
-        # s = unicode(md.text())
-            # Safe: md.text() is a QString.
-            # But not Python 3.x compatible.
         s = g.u(md.text())
 
         if s:
@@ -6379,10 +6330,10 @@ class leoQtSpellTab:
         #self.createBindings()
 
         self.fillbox([])
-    #@+node:ekr.20081121105001.381: *4* createBindings TO DO
+    #@+node:ekr.20081121105001.381: *4* createBindings (leoQtSpellTab)
     def createBindings (self):
         pass
-    #@+node:ekr.20081121105001.382: *4* createFrame (to be done in Qt designer)
+    #@+node:ekr.20081121105001.382: *4* createFrame (leoQtSpellTabl)
     def createFrame (self):
         pass
 
