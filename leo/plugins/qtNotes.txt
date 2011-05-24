@@ -739,10 +739,6 @@ def createCheckBox (self,parent,name,label):
     self.setName(w,name)
     w.setText(self.tr(label))
     return w
-#@+node:ekr.20090426083450.10: *7* createContainer (to do)
-def createContainer (self,parent):
-
-    pass
 #@+node:ekr.20090426083450.11: *7* createFrame
 def createFrame (self,parent,name,
     hPolicy=None,vPolicy=None,
@@ -4863,32 +4859,6 @@ def createBindings (self,w=None):
 
     '''(qtBody) Create gui-dependent bindings.
     These are *not* made in nullBody instances.'''
-
-    # frame = self.frame ; c = self.c ; k = c.k
-    # if not w: w = self.widget
-
-    # c.bind(w,'<Key>', k.masterKeyHandler)
-
-    # table = [
-        # ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
-        # ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
-        # ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
-        # ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
-        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
-    # ]
-
-    # table2 = (
-        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
-    # )
-
-    # if c.config.getBool('allow_middle_button_paste'):
-        # table.extend(table2)
-
-    # for kind,func,handler in table:
-        # def bodyClickCallback(event,handler=handler,func=func):
-            # return handler(event,func)
-
-        # c.bind(w,kind,bodyClickCallback)
 #@+node:ekr.20081121105001.209: *5* get_name
 def getName (self):
 
@@ -5284,32 +5254,6 @@ def createBindings (self,w=None):
 
     '''(qtBody) Create gui-dependent bindings.
     These are *not* made in nullBody instances.'''
-
-    # frame = self.frame ; c = self.c ; k = c.k
-    # if not w: w = self.widget
-
-    # c.bind(w,'<Key>', k.masterKeyHandler)
-
-    # table = [
-        # ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
-        # ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
-        # ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
-        # ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
-        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
-    # ]
-
-    # table2 = (
-        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
-    # )
-
-    # if c.config.getBool('allow_middle_button_paste'):
-        # table.extend(table2)
-
-    # for kind,func,handler in table:
-        # def bodyClickCallback(event,handler=handler,func=func):
-            # return handler(event,func)
-
-        # c.bind(w,kind,bodyClickCallback)
 #@+node:ekr.20081121105001.209: *5* get_name
 def getName (self):
 
@@ -6836,7 +6780,7 @@ def finishCreate (self):
 def getName (self):
     return 'log' # Required for proper pane bindings.
 #@+node:ekr.20081121105001.322: *5* Do nothings (logCtrl)
-#@+node:ekr.20081121105001.323: *6* Config
+#@+node:ekr.20081121105001.323: *6* Config (logCtrl)
 # These will probably be replaced by style sheets.
 
 def configureBorder(self,border):               pass
@@ -7277,6 +7221,75 @@ def put (self,s,color=None,tabName='Log'):
         if g.isUnicode(s):
             s = g.toEncodedString(s,"ascii")
         print(s)
+#@+node:ekr.20110523201030.18298: *3* Fixed bug 527717: Qt gui should enable/disable menu items
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/527717
+#@+node:ekr.20081121105001.469: *4* class qtMenuWrapper (QMenu,leoQtMenu)
+class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
+        
+    @others
+#@+node:ekr.20110524141405.18368: *5* ctor and __repr__
+def __init__ (self,c,frame,parent):
+
+    assert c
+    assert frame
+    QtGui.QMenu.__init__(self,parent)
+    leoQtMenu.__init__(self,frame)
+    # g.trace(self)
+    
+    if not parent:
+        self.connect(self,QtCore.SIGNAL(
+            "aboutToShow ()"),self.onAboutToShow)
+
+def __repr__(self):
+
+    return '<qtMenuWrapper %s>' % self.leo_label or 'unlabeled'
+#@+node:ekr.20110524141405.18367: *5* onAboutToShow
+def onAboutToShow(self,*args,**keys):
+    
+    name = self.leo_label
+    if name:
+        name = name.replace('&','').lower()
+        # g.trace(name)
+        
+        # Call the base-class updaters in leoMenu.py.
+        if name == 'file':
+            self.updateFileMenu()
+        elif name == 'edit':
+            self.updateEditMenu()
+        elif name == 'outline':
+            self.updateOutlineMenu()
+#@+node:ekr.20081121105001.375: *4* disable/enableMenu (leoQtMenu)
+def disableMenu (self,menu,name):
+    self.enableMenu(menu,name,False)
+
+def enableMenu (self,menu,name,val):
+    
+    '''Enable or disable the item in the menu with the given name.'''
+
+    if menu and name:
+        val = bool(val)
+        # g.trace('%5s %s %s' % (val,name,menu))
+        for action in menu.actions():
+            s = action.text().replace('&','')
+            if s.startswith(name):
+                action.setEnabled(val)
+                break
+        else:
+            if 0: g.trace('not found:',name)
+#@+node:ekr.20110524141405.18369: *4* hasFocus (qtBody)
+def hasFocus(self):
+    
+    '''Return True if the body has focus.'''
+    
+    # Always returning True is good enough for leoMenu.updateEditMenu.
+    return True
+    
+    # Doesn't work: the focus is already in the menu!
+    # w = g.app.gui.get_focus()
+    # g.trace(w,self.widget.widget)
+    # return w == self.widget.widget
 #@+node:ekr.20110325185230.14517: ** Unused code
 #@+node:vivainio.20091223153142.4072: *3* Completer (qtBody)
 def showCompleter(self, alternatives, selected_cb):

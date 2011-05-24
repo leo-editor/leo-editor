@@ -3,11 +3,7 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20110523130519.18201: *4* Qt gui bugs: 6
-#@+node:ekr.20110523130519.18193: *5* Bug 527717: Qt gui should enable/disable menu items
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/527717
+#@+node:ekr.20110523130519.18201: *4* Qt gui bugs: 5
 #@+node:ekr.20110523130519.18191: *5* Bug 580328: c.frame.toggleSplitDirection() doesn't preserve existing ratio 
 @nocolor-node
 
@@ -61,6 +57,10 @@ focus is now on node "@auto-rst /tmp/foo.rst"
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/784922
+#@+node:ekr.20080421140032.1: *4* Fix multiple controllers problem in all plugins
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
 #@+node:ekr.20110523201030.18285: *4* Features: 2
 #@+node:ekr.20110522121957.18233: *5* * Feature: (Bug 755206) Auto-collapse option for viewrendered pane
 @nocolor-node
@@ -84,10 +84,6 @@ viewrendered functionality?
 @language rest
 
 This would be a substitute for cross-file clones.
-#@+node:ekr.20080421140032.1: *4* Fix multiple controllers problem in all plugins
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
 #@+node:ekr.20110514231951.14492: *4* Docs
 #@+node:ekr.20110523201030.18284: *5* Make sure MacOS users are told to use --gui=qt
 #@+node:ekr.20110518082415.14439: *5* Document highlights of my workflow

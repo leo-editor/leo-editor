@@ -2980,6 +2980,18 @@ class leoQtBody (leoFrame.leoBody):
     def toPythonIndex (self,index):         return self.widget.toPythonIndex(index)
     toGuiIndex = toPythonIndex
     def toPythonIndexRowCol(self,index):    return self.widget.toPythonIndexRowCol(index)
+    #@+node:ekr.20110524141405.18369: *4* hasFocus (qtBody)
+    def hasFocus(self):
+        
+        '''Return True if the body has focus.'''
+        
+        # Always returning True is good enough for leoMenu.updateEditMenu.
+        return True
+        
+        # Doesn't work: the focus is already in the menu!
+        # w = g.app.gui.get_focus()
+        # g.trace(w,self.widget.widget)
+        # return w == self.widget.widget
     #@+node:ekr.20081121105001.212: *4* Editors (qtBody)
     #@+node:ekr.20081121105001.215: *5* entries
     #@+node:ekr.20081121105001.216: *6* addEditor & helper (qtBody)
@@ -5550,6 +5562,7 @@ class leoQtMenu (leoMenu.leoMenu):
         # Init the base class.
         leoMenu.leoMenu.__init__(self,frame)
 
+        # called from createMenuFromConfigList,createNewMenu,new_menu,qtMenuWrapper.ctor.
         # g.pr('leoQtMenu.__init__',g.callers(4))
 
         self.frame = frame
@@ -5577,6 +5590,9 @@ class leoQtMenu (leoMenu.leoMenu):
         """Wrapper for the Tkinter add_cascade menu method.
 
         Adds a submenu to the parent menu, or the menubar."""
+        
+        # menu and parent are a qtMenuWrappers.
+        # g.trace(label,parent)
 
         c = self.c ; leoFrame = c.frame
         n = underline
@@ -5587,7 +5603,7 @@ class leoQtMenu (leoMenu.leoMenu):
         menu.leo_label = label
 
         if parent:
-            parent.addMenu(menu)
+            parent.addMenu(menu) # QMenu.addMenu.
         else:
             self.menuBar.addMenu(menu)
 
@@ -5743,41 +5759,24 @@ class leoQtMenu (leoMenu.leoMenu):
                 label,menu,underline=amp_index)
 
         return menu
-    #@+node:ekr.20081121105001.374: *6* disableMenu
+    #@+node:ekr.20081121105001.375: *6* disable/enableMenu (leoQtMenu)
     def disableMenu (self,menu,name):
-
-        if not menu:
-            return
-
-        # try:
-            # menu.entryconfig(name,state="disabled")
-        # except: 
-            # try:
-                # realName = self.getRealMenuName(name)
-                # realName = realName.replace("&","")
-                # menu.entryconfig(realName,state="disabled")
-            # except:
-                # g.pr("disableMenu menu,name:",menu,name)
-                # g.es_exception()
-    #@+node:ekr.20081121105001.375: *6* enableMenu
-    # Fail gracefully if the item name does not exist.
+        self.enableMenu(menu,name,False)
 
     def enableMenu (self,menu,name,val):
+        
+        '''Enable or disable the item in the menu with the given name.'''
 
-        if not menu:
-            return
-
-        # state = g.choose(val,"normal","disabled")
-        # try:
-            # menu.entryconfig(name,state=state)
-        # except:
-            # try:
-                # realName = self.getRealMenuName(name)
-                # realName = realName.replace("&","")
-                # menu.entryconfig(realName,state=state)
-            # except:
-                # g.pr("enableMenu menu,name,val:",menu,name,val)
-                # g.es_exception()
+        if menu and name:
+            val = bool(val)
+            # g.trace('%5s %s %s' % (val,name,menu))
+            for action in menu.actions():
+                s = action.text().replace('&','')
+                if s.startswith(name):
+                    action.setEnabled(val)
+                    break
+            else:
+                if 0: g.trace('not found:',name)
     #@+node:ekr.20081121105001.376: *6* getMenuLabel
     def getMenuLabel (self,menu,name):
 
@@ -5816,6 +5815,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         c = self.c
         menu = self.getMenu(menuName)
+        g.trace(menuName,menu)
         if menu:
             top = c.frame.top.ui
             pos = menu.pos() # Doesn't do any good.
@@ -7132,17 +7132,40 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     #@-others
 #@+node:ekr.20081121105001.469: *3* class qtMenuWrapper (QMenu,leoQtMenu)
 class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
-
+        
+    #@+others
+    #@+node:ekr.20110524141405.18368: *4* ctor and __repr__
     def __init__ (self,c,frame,parent):
 
         assert c
         assert frame
         QtGui.QMenu.__init__(self,parent)
         leoQtMenu.__init__(self,frame)
+        # g.trace(self)
+        
+        if not parent:
+            self.connect(self,QtCore.SIGNAL(
+                "aboutToShow ()"),self.onAboutToShow)
 
     def __repr__(self):
 
         return '<qtMenuWrapper %s>' % self.leo_label or 'unlabeled'
+    #@+node:ekr.20110524141405.18367: *4* onAboutToShow
+    def onAboutToShow(self,*args,**keys):
+        
+        name = self.leo_label
+        if name:
+            name = name.replace('&','').lower()
+            # g.trace(name)
+            
+            # Call the base-class updaters in leoMenu.py.
+            if name == 'file':
+                self.updateFileMenu()
+            elif name == 'edit':
+                self.updateEditMenu()
+            elif name == 'outline':
+                self.updateOutlineMenu()
+    #@-others
 #@+node:ekr.20081121105001.470: *3* class qtSearchWidget
 class qtSearchWidget:
 
