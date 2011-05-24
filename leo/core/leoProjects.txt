@@ -15668,5 +15668,47 @@ most of the time  saving changes just overwrites without asking.
 I don't know what information to post about my environment. I use the
 standard OSX python install (2.6.1) and launch leo with "./
 launchLeo.py --gui=tk".
+#@+node:ekr.20080806054207.3: *4* Rejected: Auto scroll outline pane
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/76789df8aac08c70
+
+When using leo as outliner, I often use only node headlines to write
+down some data. If the headline string is too long, the cursor goes
+beyond the visible area. When modifying a node headline, is it
+possible to make leo to auto-scroll, so the cursor is always visible?
+
+I'm not going to do this.  You can use the scroll-outline-right/left commands.
+#@+node:ekr.20110523130519.18192: *4* Now a wishlist: Bug 394309: PgUp/PgDown should scroll the body, not the tree
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/394309
+
+This is followup to
+
+https://bugs.launchpad.net/bugs/384336
+
+Currently, pgup/pgdown move the scroll bar on tree widget, but don't move the
+selection. This is very annoying when you have scrolled to a position and start
+moving to alt+up/alt+down (it nudges back to the original position and starts
+moving from there).
+
+Since the old "default" behaviour can't be easily implemented, I suggest
+another, better use for the pgup/pgdn navigation keys while in tree pane: use
+them to scroll up/down the body, *but* retain the focus in tree. This allows you
+to browse the body text while remaining in the tree.
+
+EKR: I'm going to mark this (once again) as a wish-list item. There is no real
+bug involved and the feature is both a bit too cute for my taste.
+
+Having said that, this feature request could be called a preference. I'll accept
+a patch if one appears.
+
+#@+node:ekr.20101116100300.5827: *4* Rejected: Write script file to temp file if @bool write_script_file is False
+@nocolor-node
+
+Use a temp file to hold sources if @bool write_script_file is False.
+
+This is a bad idea.  The existing settings are good enough.
 #@-all
 #@-leo

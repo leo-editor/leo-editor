@@ -2,35 +2,16 @@
 #@+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
-#@+node:ekr.20110522203356.18253: *3* Bugs
-#@+node:ekr.20110523130519.18201: *4* Qt gui bugs: 6
-#@+node:ekr.20110523130519.18192: *5* Bug 394309: PgUp/PgDown should scroll the body, not the tree
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/394309
-
-This is followup to
-
-https://bugs.launchpad.net/bugs/384336
-
-Currently, pgup/pgdown move the scroll bar on tree widget, but don't move the
-selection. This is very annoying when you have scrolled to a position and start
-moving to alt+up/alt+down (it nudges back to the original position and starts
-moving from there).
-
-Since the old "default" behaviour can't be easily implemented, I suggest
-another, better use for the pgup/pgdn navigation keys while in tree pane: use
-them to scroll up/down the body, *but* retain the focus in tree. This allows you
-to browse the body text while remaining in the tree.
-#@+node:ekr.20110523130519.18193: *5* Bug 527717: Qt gui should enable/disable menu items
+#@+node:ekr.20110523130519.18201: *3* Qt gui bugs: 5
+#@+node:ekr.20110523130519.18193: *4* Bug 527717: Qt gui should enable/disable menu items
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/527717
-#@+node:ekr.20110523130519.18191: *5* Bug 580328: c.frame.toggleSplitDirection() doesn't preserve existing ratio 
+#@+node:ekr.20110523130519.18191: *4* Bug 580328: c.frame.toggleSplitDirection() doesn't preserve existing ratio 
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/580328
-#@+node:ekr.20110523130519.18199: *5* Bug 581031: Scrollbar position is not preserved when c.frame.toggleSplitDirection() is executed
+#@+node:ekr.20110523130519.18199: *4* Bug 581031: Scrollbar position is not preserved when c.frame.toggleSplitDirection() is executed
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/581031
@@ -44,7 +25,7 @@ I think c.frame.toggleSplitDirection() must be enhanced with code logic that
 checks if some node from the visible area is selected and makes sure the tree
 pane is scrolled properly to keep that node visible after the split orientation
 change.
-#@+node:ekr.20110522121957.18232: *5* Bug 701261 & bug 583955: Key binding problems
+#@+node:ekr.20110522121957.18232: *4* Bug 701261 & bug 583955: Key binding problems
 @nocolor-node
 
 Shortcuts don't work in most Log frame tabs
@@ -61,7 +42,7 @@ key bindings in Find Panel need some love
 - inconsistent shortcuts for options, some use [Alt-*], others [Alt-*][space]
 (perhaps nothing can be done here, but it does make the user experience more
 awkward)
-#@+node:ekr.20110523130519.18195: *5* Bug 590740: <ctl-b> in subnode of @auto-rst changes focus 
+#@+node:ekr.20110523130519.18195: *4* Bug 590740: <ctl-b> in subnode of @auto-rst changes focus 
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/590740
@@ -75,12 +56,12 @@ https://bugs.launchpad.net/leo-editor/+bug/590740
 <ctl-b>
 log pane shows traceback
 focus is now on node "@auto-rst /tmp/foo.rst"
-#@+node:ekr.20110523130519.18202: *4* File/directive/command bugs: 5
-#@+node:ekr.20110523130519.18194: *5* Bug 583878: Leo should warn about @comment/@delims clashes
+#@+node:ekr.20110523130519.18202: *3* File-related bugs: 3
+#@+node:ekr.20110523130519.18194: *4* Bug 583878: Leo should warn about @comment/@delims clashes
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/583878
-#@+node:ekr.20110523130519.18196: *5* Bug 745824: @doc duplicates comment delims in html files 
+#@+node:ekr.20110523130519.18196: *4* Bug 745824: @doc duplicates comment delims in html files 
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/745824
@@ -111,7 +92,7 @@ Sounds related to https://bugs.launchpad.net/leo-editor/+bug/683867
 That's possible. The nodes affected for me were all clones, but not across
 different @files, all within distinct files. The odd thing for me was that I
 never saw this with v4.7.
-#@+node:ekr.20110523130519.18197: *5* Bug 778204: @verbatim not forbidden in editor pane 
+#@+node:ekr.20110523130519.18197: *4* Bug 778204: @verbatim not forbidden in editor pane 
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/778204
@@ -143,7 +124,7 @@ than an actual bug in Leo. :-)
 
 Still, it would be nice if Leo were to deal with the situation more gracefully
 than it currently does.
-#@+node:ekr.20100522090453.5912: *6* Fix bugs with @verbatim, @raw and @end_raw
+#@+node:ekr.20100522090453.5912: *5* Fix bugs with @verbatim, @raw and @end_raw
 @nocolor-node
 
 > In the @file family of derived files (@thin, @nosent, etc.)  (i.e.,
@@ -170,7 +151,8 @@ looks like a sentinel but isn't "verbatim".
 2. Leo does appear to read @raw and @end_raw properly in @thin files,
 but Leo improperly issues the (red) log message,
 converting @file format in @thin test_verbatim_sentinel.py
-#@+node:ekr.20110522121957.18234: *5* Bug 766747: fill-para doesn't respect setting from set-fill-column
+#@+node:ekr.20110523192055.18280: *3* Minor bugs: 2
+#@+node:ekr.20110522121957.18234: *4* Bug 766747: fill-para doesn't respect setting from set-fill-column
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/766747
@@ -181,32 +163,7 @@ turns out fill-paragraph uses the page width set by the @pagewidth directive
 (which maybe has an initial value from a @setting). So that's ok, but it's still
 confusing having set-fill-column set a different value, used only be center-line
 and another method.
-#@+node:ekr.20110523130519.18203: *4* Other bugs: 3
-#@+node:ekr.20110523130519.18198: *5* Bug 525004: bash code not colored properly
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/525004
-
-This is basically a copy/paste from
-http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
-
-Consider the following code snippet:
-
---- cut here ---
-@language shell
-
-FOO_BAR='foo bar'
-FOO1_BAR1='foo1 bar1'
-
-echo $FOO_BAR*
-echo $FOO_BAR-$FOO1_BAR1
---- cut here ---
-
-The variable names in the last two lines are not highlighted
-correctly. This becomes clear if the first line is replaced with #!/
-bin/bash and this code is opened in vim/scite. I've tried only these
-two editors, they highlight the variable names correctly.
-#@+node:ekr.20110522121957.18233: *5* Bug 755206: Auto-collapse option for viewrendered pane
+#@+node:ekr.20110522121957.18233: *4* Bug 755206: Auto-collapse option for viewrendered pane
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/755206
@@ -224,12 +181,16 @@ displaying the text information about the plugin and the phonon media player has
 stopped working. This is back to the established behaviour of the Plugins
 button; providing information about the plugin. How do I restore the
 viewrendered functionality?
-#@+node:ekr.20090907080624.6081: *5* Bug: spell checker should check headlines
+#@+node:ekr.20110520051220.18203: *3* * Feature: Cross-tab search
+@language rest
+
+This would be a substitute for cross-file clones.
+#@+node:ekr.20110522203356.18255: *3* Maybe: 5
+#@+node:ekr.20090907080624.6081: *4* * Bug: spell checker should check headlines
 Low priority
-#@+node:ekr.20110522203356.18255: *4* Maybe: MacOS/Tk bugs: 3
-#@+node:ekr.20110111100539.12257: *5* Fix end-of-line problem (MacOS)
+#@+node:ekr.20110111100539.12257: *4* Fix end-of-line problem (MacOS)
 # Apparently, ctrl-e is not passed to Leo at all.
-#@+node:ekr.20110111100539.12258: *6* Report
+#@+node:ekr.20110111100539.12258: *5* Report
 @nocolor-node
 
 http://mail.google.com/mail/#inbox/12c5646c646a90d2
@@ -254,7 +215,7 @@ cursor the first of the next line, which is the end of last line + 1.
 If the line is the final one, C-e moves the cursor to the end of line
 as there's no next line.
 
-#@+node:ekr.20100109094541.6232: *6* within lines
+#@+node:ekr.20100109094541.6232: *5* within lines
 def beginningOfLine (self,event):
     '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
     self.moveWithinLineHelper(event,'start-line',extend=False)
@@ -270,7 +231,7 @@ def endOfLine (self,event):
 def endOfLineExtendSelection (self,event):
     '''Extend the selection by moving the cursor to the end of the line.'''
     self.moveWithinLineHelper(event,'end-line',extend=True)
-#@+node:ekr.20100109094541.6231: *6* moveWithinLineHelper
+#@+node:ekr.20100109094541.6231: *5* moveWithinLineHelper
 def moveWithinLineHelper (self,event,spot,extend):
 
     c = self.c ; w = self.editWidget(event)
@@ -294,7 +255,7 @@ def moveWithinLineHelper (self,event,spot,extend):
             self.moveToHelper(event,j,extend=extend)
         else:
             g.trace('can not happen: bad spot: %s' % spot)
-#@+node:ekr.20081208102356.1: *5* (Tk) Threading colorizer doesn't handle multiple body editors
+#@+node:ekr.20081208102356.1: *4* (Tk) Threading colorizer doesn't handle multiple body editors
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
@@ -305,40 +266,37 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
 Thanks for this report.  This is a problem, never noticed until now,
 with the threading colorizer.  A workaround is to disable the
 threading colorizer plugin. 
-#@+node:ekr.20110522203356.18257: *5* Bug: Application menus disappear on MacOS with qttabs gui
-#@+node:ekr.20110523130519.18200: *3* Features: 3
-#@+node:ekr.20110520051220.18203: *4* * Cross-tab search
-@language rest
-
-This would be a substitute for cross-file clones.
-#@+node:ekr.20080806054207.3: *4* Auto scroll outline pane if headline would become invisible
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/76789df8aac08c70
-
-When using leo as outliner, I often use only node headlines to write
-down some data. If the headline string is too long, the cursor goes
-beyond the visible area. When modifying a node headline, is it
-possible to make leo to auto-scroll, so the cursor is always visible? 
-#@+node:ekr.20101116100300.5827: *4* Write script file to temp file if @bool write_script_file is False
+#@+node:ekr.20110522203356.18257: *4* Bug: Application menus disappear on MacOS with qttabs gui
+#@+node:ekr.20110523130519.19219: *4* Bug 525004: bash code not colored properly
 @nocolor-node
 
-It's important that g.pdb get the sources for *all* Leo scripts.
+This is not going to be easy to fix.  match_mark_previous/following do not seem to do anything.
 
-Postings:
+It looks like a rewrite of leo\modes\shell.py may be needed.
+#@+node:ekr.20110523130519.19220: *5* Report
+@nocolor-node
 
-When @bool write_script_file is True the execute-script file uses
-execfile (or its Python 3k equivalent) to execute scripts.
+https://bugs.launchpad.net/leo-editor/+bug/525004
 
-This allows g.pdb (or pudb) to know the text of Leo scripts!
+This is basically a copy/paste from
+http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
 
-I want to emphasize here how important this change is.  After 4.8 final I'll add code to use a temp file to hold sources if 
-@bool write_script_file is False.
+Consider the following code snippet:
 
-In the meantime, I strongly urge all script writers to set @bool write_script_file = True.
+--- cut here ---
+@language shell
 
-Depending on your installation, especially on *nix, the default location for the file may be a problem.  In that case, set
-@string script_file_path to some convenient place, say in your home directory.
+FOO_BAR='foo bar'
+FOO1_BAR1='foo1 bar1'
+
+echo $FOO_BAR*
+echo $FOO_BAR-$FOO1_BAR1
+--- cut here ---
+
+The variable names in the last two lines are not highlighted
+correctly. This becomes clear if the first line is replaced with #!/
+bin/bash and this code is opened in vim/scite. I've tried only these
+two editors, they highlight the variable names correctly.
 #@+node:ekr.20110520051220.18189: ** 4.9 Maybe
 #@+node:ekr.20110427135155.14306: *3* Add <attr> elements to .leo files
 @language rest

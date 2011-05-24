@@ -6423,15 +6423,14 @@ I set this option to False because it is too easy form me to type Shift-whatever
       as specified by the @string relative_path_base_directory setting.
       
 False: Do not call os.chdir(base) when handing a relative path.</t>
-<t tx="ekr.20070115134125">True: The execute script command writes the script to be executed to a file,
-      then executes the script using Python's execFile function.
-      The script_file_path setting specifies the path to this file.
+<t tx="ekr.20070115134125">True: (Recommended) The execute script command writes the script to be executed
+      to a file, then executes the script using Python's execFile function. The
+      script_file_path setting specifies the path to this file.
       
 False (legacy): The execute script command uses Python's exec command to execute the script. </t>
 <t tx="ekr.20070115134125.1">The path to the file to be written by the execute-script command.
 
 The default path is home/.leo/scriptFile.py if no path is given.
-It is *not* recommended to enable this setting.
   
 Notes:
     
