@@ -3,65 +3,6 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20110523130519.18197: *4* Bug 778204: @verbatim not forbidden in editor pane 
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/778204
-
-wanted to have Leo to output a raw line of text with <<>>'s in it, so I guessed
-that a sentinel called @verbatim right before it would cause it to output this
-without complaining, and lo it worked! Unfortunately what I didn't realize is
-that @verbatim is a user-allowed directive but rather a sentinel, so Leo would
-actually write this out and then *silently strip the @verbatim out when it read
-the file back in*! This meant that if I modified something else in the file, I
-would now see it complain that there was no section called whatever random text
-was inside the <<>>'s even though I thought I had used the @verbatim command to
-fix that. It took me a few iterations of this to realize that this was simply
-the way Leo worked. I assumed that it was a bug in Leo and switched to
-@raw/@end_raw around the code. Only just now did I finally look through the
-source code and find out that actually @verbatim was never supposed to be used
-this way in the first place.
-
-So in short, it might be nice if Leo kept an eye out for @verbatim and warned
-noisily if it saw it rather than failing silently in the manner I experienced.
-
-======
-
-Oops, by source code I really meant the documentation; it was only when I looked
-at the docs that I realized that I had stumbled upon an internal thing that was
-never meant to be used by an end user rather than an advertised feature ---
-i.e., the trouble I was encountering was the result of my own cleverness rather
-than an actual bug in Leo. :-)
-
-Still, it would be nice if Leo were to deal with the situation more gracefully
-than it currently does.
-#@+node:ekr.20100522090453.5912: *5* Fix bugs with @verbatim, @raw and @end_raw
-@nocolor-node
-
-> In the @file family of derived files (@thin, @nosent, etc.)  (i.e.,
-> not @root), you can prevent any interpretation of the immediately
-> following line with the "@verbatim" directive
-
-This is not true, although it might appear to be true.
-
-There is an @verbatim *sentinel*, but no @verbatim *directive*.
-
-For example, I have just verified that the following does not work:
-
-@verbatim
-<< undefined ref >>
-
-@raw and @end_raw do work as described.
-
-There appear to be several bugs in this area:
-
-1. Leo probably should warn that @verbatim does not exist as a
-directive, although technically Leo is supposed to write anything that
-looks like a sentinel but isn't "verbatim".
-
-2. Leo does appear to read @raw and @end_raw properly in @thin files,
-but Leo improperly issues the (red) log message,
-converting @file format in @thin test_verbatim_sentinel.py
 #@+node:ekr.20110523130519.18201: *4* Qt gui bugs: 5
 #@+node:ekr.20110523130519.18193: *5* Bug 527717: Qt gui should enable/disable menu items
 @nocolor-node

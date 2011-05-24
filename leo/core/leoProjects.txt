@@ -3277,11 +3277,19 @@ elif kind == at.endRawDirective:
     at.putSentinel("@@end_raw")
     i = g.skip_line(s,i)
 elif kind == at.startVerbatim:
-    at.putSentinel("@verbatim")
-    at.putIndent(at.indent)
-    i = next_i
-    next_i = g.skip_line(s,i)
-    at.os(s[i:next_i])
+    # Fix bug 778204: @verbatim not a valid Leo directive.
+    if g.unitTesting:
+        # A hack: unit tests for @shadow use @verbatim as a kind of directive.
+        pass
+    else:
+        g.trace(at.atShadow)
+        at.error('@verbatim is not a Leo directive: %s' % p.h)
+    if 0: # Old code.  This is wrong: @verbatim is not a directive!
+        at.putSentinel("@verbatim")
+        at.putIndent(at.indent)
+        i = next_i
+        next_i = g.skip_line(s,i)
+        at.os(s[i:next_i])
 elif kind == at.miscDirective:
     # Fix bug 583878: Leo should warn about @comment/@delims clashes.
     if g.match_word(s,i,'@comment'):
@@ -9681,11 +9689,337 @@ elif kind == at.endRawDirective:
     at.putSentinel("@@end_raw")
     i = g.skip_line(s,i)
 elif kind == at.startVerbatim:
-    at.putSentinel("@verbatim")
-    at.putIndent(at.indent)
-    i = next_i
-    next_i = g.skip_line(s,i)
-    at.os(s[i:next_i])
+    # Fix bug 778204: @verbatim not a valid Leo directive.
+    if g.unitTesting:
+        # A hack: unit tests for @shadow use @verbatim as a kind of directive.
+        pass
+    else:
+        g.trace(at.atShadow)
+        at.error('@verbatim is not a Leo directive: %s' % p.h)
+    if 0: # Old code.  This is wrong: @verbatim is not a directive!
+        at.putSentinel("@verbatim")
+        at.putIndent(at.indent)
+        i = next_i
+        next_i = g.skip_line(s,i)
+        at.os(s[i:next_i])
+elif kind == at.miscDirective:
+    # Fix bug 583878: Leo should warn about @comment/@delims clashes.
+    if g.match_word(s,i,'@comment'):
+        at_comment_seen = True
+    elif g.match_word(s,i,'@delims'):
+        at_delims_seen = True
+    if at_comment_seen and at_delims_seen and not at_warning_given:
+        at_warning_given = True
+        at.error('@comment and @delims in node %s' % p.h)
+    at.putDirective(s,i)
+else:
+    at.error('putBody: can not happen: unknown directive kind: %s' % kind)
+#@+node:ekr.20110523130519.18197: *4* Fixed bug 778204: @verbatim not forbidden in body text
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/778204
+
+Leo now generates an error for sentinels that look like @verbatim.
+#@+node:ekr.20080709062932.2: *5* atShadowTestCase
+class atShadowTestCase (unittest.TestCase):
+
+    '''Support @shadow-test nodes.
+
+    These nodes should have two descendant nodes: 'before' and 'after'.
+
+    '''
+
+    @others
+
+#@+node:ekr.20080709062932.6: *6* __init__
+def __init__ (self,c,p,shadowController,lax,trace=False):
+
+     # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.lax = lax
+    self.p = p.copy()
+    self.shadowController=shadowController
+
+    # Hard value for now.
+    delims = '#','',''
+    self.marker = shadowController.markerClass(delims)
+
+    # For teardown...
+    self.ok = True
+#@+node:ekr.20080709062932.7: *6*  fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+#@+node:ekr.20080709062932.8: *6* setUp & helpers
+def setUp (self):
+
+    c = self.c ; p = self.p ; x = self.shadowController
+
+    old = self.findNode (c,p,'old')
+    new = self.findNode (c,p,'new')
+
+    self.old_private_lines = self.makePrivateLines(old)
+    self.new_private_lines = self.makePrivateLines(new)
+
+    self.old_public_lines = self.makePublicLines(self.old_private_lines)
+    self.new_public_lines = self.makePublicLines(self.new_private_lines)
+
+    # We must change node:new to node:old
+    self.expected_private_lines = self.mungePrivateLines(self.new_private_lines,'node:new','node:old')
+
+#@+node:ekr.20080709062932.19: *7* findNode
+def findNode(self,c,p,headline):
+    p = g.findNodeInTree(c,p,headline)
+    if not p:
+        g.es_print('can not find',headline)
+        assert False
+    return p
+#@+node:ekr.20080709062932.20: *7* createSentinelNode
+def createSentinelNode (self,root,p):
+
+    '''Write p's tree to a string, as if to a file.'''
+
+    h = p.h
+    p2 = root.insertAsLastChild()
+    p2.setHeadString(h + '-sentinels')
+    return p2
+
+#@+node:ekr.20080709062932.21: *7* makePrivateLines
+def makePrivateLines (self,p):
+
+    c = self.c ; at = c.atFileCommands
+
+    at.write (p,
+        nosentinels = False,
+        thinFile = False,  # Debatable.
+        scriptWrite = True,
+        toString = True)
+
+    s = at.stringOutput
+    return g.splitLines(s)
+#@+node:ekr.20080709062932.22: *7* makePublicLines
+def makePublicLines (self,lines):
+
+    x = self.shadowController
+
+    lines,mapping = x.strip_sentinels_with_map(lines,self.marker)
+
+    return lines
+#@+node:ekr.20080709062932.23: *7* mungePrivateLines
+def mungePrivateLines (self,lines,find,replace):
+
+    x = self.shadowController ; marker = self.marker
+
+    i = 0 ; n = len(lines) ; results = []
+    while i < n:
+        line = lines[i]
+        if marker.isSentinel(line):
+            new_line = line.replace(find,replace)
+            results.append(new_line)
+            if marker.isVerbatimSentinel(line):
+                i += 1
+                if i < len(lines):
+                    line = lines[i]
+                    results.append(line)
+                else:
+                    x.verbatim_error()
+        else:
+            results.append(line)
+        i += 1
+
+    return results
+#@+node:ekr.20080709062932.9: *6* tearDown
+def tearDown (self):
+
+    pass
+
+    # No change is made to the outline.
+    # self.c.redraw()
+#@+node:ekr.20080709062932.10: *6* runTest (atShadowTestCase)
+def runTest (self,define_g = True):
+
+    x = self.shadowController
+    p = self.p.copy()
+
+    results = x.propagate_changed_lines(
+        self.new_public_lines,self.old_private_lines,self.marker,p=p)
+
+    if not self.lax and results != self.expected_private_lines:
+
+        # g.pr('%s\natShadowTestCase.runTest:failure\n%s' % ('*' * 40,p.h))
+        g.pr(p.h)
+
+        for aList,tag in (
+            (results,'results'),
+            (self.expected_private_lines,'expected_private_lines')
+        ):
+            g.pr('%s...' % tag)
+            for i, line in enumerate(aList):
+                g.pr('%3s %s' % (i,repr(line)))
+            g.pr('-' * 40)
+
+        assert results == self.expected_private_lines
+
+    assert self.ok
+    return self.ok
+#@+node:ekr.20080709062932.11: *6* shortDescription
+def shortDescription (self):
+
+    return self.p and self.p.h or '@test-shadow: no self.p'
+#@+node:ekr.20100522090453.5912: *5* Fix bugs with @verbatim, @raw and @end_raw
+@nocolor-node
+
+> In the @file family of derived files (@thin, @nosent, etc.)  (i.e.,
+> not @root), you can prevent any interpretation of the immediately
+> following line with the "@verbatim" directive
+
+This is not true, although it might appear to be true.
+
+There is an @verbatim *sentinel*, but no @verbatim *directive*.
+
+For example, I have just verified that the following does not work:
+
+@verbatim
+<< undefined ref >>
+
+@raw and @end_raw do work as described.
+
+There appear to be several bugs in this area:
+
+1. Leo probably should warn that @verbatim does not exist as a
+directive, although technically Leo is supposed to write anything that
+looks like a sentinel but isn't "verbatim".
+
+2. Leo does appear to read @raw and @end_raw properly in @thin files,
+but Leo improperly issues the (red) log message,
+converting @file format in @thin test_verbatim_sentinel.py
+#@+node:ekr.20041005105605.161: *5* at.putBody
+# oneNodeOnly is no longer used, but it might be used in the future?
+
+def putBody(self,p,oneNodeOnly=False,fromString=''):
+
+    """ Generate the body enclosed in sentinel lines."""
+
+    trace = False and not g.unitTesting
+    at = self
+    at_comment_seen,at_delims_seen,at_warning_given=False,False,False
+        # 2011/05/25: warn if a node contains both @comment and @delims.
+
+    # New in 4.3 b2: get s from fromString if possible.
+    s = g.choose(fromString,fromString,p.b)
+
+    p.v.setVisited()
+    if trace: g.trace('visit',p.h)
+        # Make sure v is never expanded again.
+        # Suppress orphans check.
+    if not at.thinFile:
+        p.v.setWriteBit() # Mark the vnode to be written.
+    if not at.thinFile and not s: return
+
+    inCode = True
+    << Make sure all lines end in a newline >>
+    at.raw = False # 2007/07/04: Bug fix exposed by new sentinels.
+    i = 0
+    while i < len(s):
+        next_i = g.skip_line(s,i)
+        assert next_i > i,'putBody'
+        kind = at.directiveKind4(s,i)
+        << handle line at s[i] >>
+        i = next_i
+    if not inCode:
+        at.putEndDocLine()
+
+    if not trailingNewlineFlag:
+        if at.writeVersion5:
+            if at.sentinels:
+                pass # Never write @nonl
+            elif at.atAuto and not at.atEdit:
+                at.onl() # 2010/08/01: bug fix: ensure newline here.
+        else:
+            if at.sentinels:
+                at.putSentinel("@nonl")
+            elif at.atAuto and not at.atEdit:
+                # Ensure all @auto nodes end in a newline!
+                at.onl()
+#@+node:ekr.20041005105605.162: *6* << Make sure all lines end in a newline >>
+@ If we add a trailing newline, we'll generate an @nonl sentinel below.
+
+- We always ensure a newline in @file and @thin trees.
+- This code is not used used in @asis trees.
+- New in Leo 4.4.3 b1: We add a newline in @nosent trees unless
+  @bool force_newlines_in_at_nosent_bodies = False
+@c
+
+if s:
+    trailingNewlineFlag = s[-1] == '\n'
+    if not trailingNewlineFlag:
+        if (at.sentinels or 
+            (not at.atAuto and at.force_newlines_in_at_nosent_bodies)
+        ):
+            # g.trace('Added newline',repr(s))
+            s = s + '\n'
+else:
+    trailingNewlineFlag = True # don't need to generate an @nonl
+#@+node:ekr.20041005105605.163: *6* << handle line at s[i] >> (putBody)
+if trace: g.trace(kind,repr(s[i:next_i]))
+
+if kind == at.noDirective:
+    if not oneNodeOnly:
+        if inCode:
+            hasRef,n1,n2 = at.findSectionName(s,i)
+            if hasRef and not at.raw:
+                at.putRefLine(s,i,n1,n2,p)
+            else:
+                at.putCodeLine(s,i)
+        else:
+            at.putDocLine(s,i)
+elif kind in (at.docDirective,at.atDirective):
+    assert not at.pending,'putBody at.pending'
+    if not inCode: # Bug fix 12/31/04: handle adjacent doc parts.
+        at.putEndDocLine() 
+    at.putStartDocLine(s,i,kind)
+    inCode = False
+elif kind in (at.cDirective,at.codeDirective):
+    # Only @c and @code end a doc part.
+    if not inCode:
+        at.putEndDocLine() 
+    at.putDirective(s,i)
+    inCode = True
+elif kind == at.allDirective:
+    if not oneNodeOnly:
+        if inCode: at.putAtAllLine(s,i,p)
+        else: at.putDocLine(s,i)
+elif kind == at.othersDirective:
+    if not oneNodeOnly:
+        if inCode: at.putAtOthersLine(s,i,p)
+        else: at.putDocLine(s,i)
+elif kind == at.rawDirective:
+    at.raw = True
+    at.putSentinel("@@raw")
+elif kind == at.endRawDirective:
+    at.raw = False
+    at.putSentinel("@@end_raw")
+    i = g.skip_line(s,i)
+elif kind == at.startVerbatim:
+    # Fix bug 778204: @verbatim not a valid Leo directive.
+    if g.unitTesting:
+        # A hack: unit tests for @shadow use @verbatim as a kind of directive.
+        pass
+    else:
+        g.trace(at.atShadow)
+        at.error('@verbatim is not a Leo directive: %s' % p.h)
+    if 0: # Old code.  This is wrong: @verbatim is not a directive!
+        at.putSentinel("@verbatim")
+        at.putIndent(at.indent)
+        i = next_i
+        next_i = g.skip_line(s,i)
+        at.os(s[i:next_i])
 elif kind == at.miscDirective:
     # Fix bug 583878: Leo should warn about @comment/@delims clashes.
     if g.match_word(s,i,'@comment'):

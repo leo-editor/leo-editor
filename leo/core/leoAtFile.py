@@ -3550,11 +3550,19 @@ class atFile:
                 at.putSentinel("@@end_raw")
                 i = g.skip_line(s,i)
             elif kind == at.startVerbatim:
-                at.putSentinel("@verbatim")
-                at.putIndent(at.indent)
-                i = next_i
-                next_i = g.skip_line(s,i)
-                at.os(s[i:next_i])
+                # Fix bug 778204: @verbatim not a valid Leo directive.
+                if g.unitTesting:
+                    # A hack: unit tests for @shadow use @verbatim as a kind of directive.
+                    pass
+                else:
+                    g.trace(at.atShadow)
+                    at.error('@verbatim is not a Leo directive: %s' % p.h)
+                if 0: # Old code.  This is wrong: @verbatim is not a directive!
+                    at.putSentinel("@verbatim")
+                    at.putIndent(at.indent)
+                    i = next_i
+                    next_i = g.skip_line(s,i)
+                    at.os(s[i:next_i])
             elif kind == at.miscDirective:
                 # Fix bug 583878: Leo should warn about @comment/@delims clashes.
                 if g.match_word(s,i,'@comment'):
