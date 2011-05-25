@@ -4660,8 +4660,6 @@ class leoQtFrame (leoFrame.leoFrame):
 
         f.divideLeoSplitter(self.splitVerticalFlag,ratio)
         f.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
-
-        # g.trace(ratio,c)
     #@+node:leohag.20081208130321.12: *5* divideLeoSplitter
     # Divides the main or secondary splitter, using the key invariant.
     def divideLeoSplitter (self, verticalFlag, frac):
@@ -5030,17 +5028,64 @@ class leoQtFrame (leoFrame.leoFrame):
 
         '''Toggle the split direction in the present Leo window.'''
 
-        f = self ; top = f.top
-
-        for w in (top.splitter,top.splitter_2):
+        trace = False and not g.unitTesting
+        c,f = self.c,self
+        
+        if trace: g.trace('*'*20)
+            
+        def getRatio(w):
+            sizes = w.sizes()
+            if len(sizes) == 2:
+                size1,size2 = sizes
+                ratio = float(size1)/float(size1+size2)
+                if trace: g.trace(
+                    '   ratio: %0.2f, size1: %3s, size2: %3s, total: %4s, w: %s' % (
+                    ratio,size1,size2,size1+size2,w))
+                return ratio
+            else:
+                if trace: g.trace('oops: len(sizes)',len(sizes),'default 0.5')
+                return float(0.5)
+                
+        def getNewSizes(sizes,ratio):
+            size1,size2 = sizes
+            total = size1+size2
+            size1 = int(float(ratio)*float(total))
+            size2 = total - size1
+            if trace: g.trace(
+                'ratio: %0.2f, size1: %3s, size2: %3s, total: %4s' % (
+                ratio,size1,size2,total))
+            return [size1,size2]
+        
+        # Compute the actual ratios before reorienting.
+        w1,w2 = f.top.splitter, f.top.splitter_2
+        r1 = getRatio(w1)
+        r2 = getRatio(w2)
+        f.ratio,f.secondary_ratio = r1,r2
+        
+        # Remember the sizes before reorienting.
+        sizes1 = w1.sizes()
+        sizes2 = w2.sizes()
+        
+        # Reorient the splitters.
+        for w in (f.top.splitter,f.top.splitter_2):
             w.setOrientation(
                 g.choose(w.orientation() == QtCore.Qt.Horizontal,
                     QtCore.Qt.Vertical,QtCore.Qt.Horizontal))
-
-        # The key invariant: self.splitVerticalFlag
+                    
+        # Fix bug 580328: toggleSplitDirection doesn't preserve existing ratio.
+        if len(sizes1) == 2 and len(sizes2) == 2:
+            w1.setSizes(getNewSizes(sizes1,r1))
+            w2.setSizes(getNewSizes(sizes2,r2))
+            
+        # Maintain the key invariant: self.splitVerticalFlag
         # tells the alignment of the main splitter.
         f.splitVerticalFlag = not f.splitVerticalFlag
-        f.reconfigurePanes()
+        
+        # Fix bug 581031: Scrollbar position is not preserved.
+        # This is better than adjust the scroll value directy.
+        c.frame.tree.setItemForCurrentPosition(scroll=True)
+        w = c.frame.body.bodyCtrl.widget
+        w.ensureCursorVisible()
     #@+node:ekr.20081121105001.312: *6* resizeToScreen
     def resizeToScreen (self,event=None):
 

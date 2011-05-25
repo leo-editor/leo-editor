@@ -10416,6 +10416,18 @@ def hasSelection (self):
         return first != last
     else:
         return False
+#@+node:ekr.20110525072142.18354: *4* Fixed bug 580328: c.frame.toggleSplitDirection() doesn't preserve existing ratio 
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/580328
+
+#@+node:ekr.20110525072142.18356: *4* Fixed bug 581031: Scrollbar position is not preserved when c.frame.toggleSplitDirection() is executed
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/581031
+
+toggleSplitDirection new ensures that both the selected outline node *and* the
+cursor in the body pane are visible.
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()

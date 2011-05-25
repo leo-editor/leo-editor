@@ -3,25 +3,7 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20110523130519.18201: *4* Qt gui bugs: 5
-#@+node:ekr.20110523130519.18191: *5* Bug 580328: c.frame.toggleSplitDirection() doesn't preserve existing ratio 
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/580328
-#@+node:ekr.20110523130519.18199: *5* Bug 581031: Scrollbar position is not preserved when c.frame.toggleSplitDirection() is executed
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/581031
-
-I'm noticing that when c.frame.toggleSplitDirection() is executed, the scrollbar
-is always at the top of the tree pane. As consequence, having a selected node in
-the visible area and executing c.frame.toggleSplitDirection() may lead to that
-node becoming invisible after the split direction is changed.
-
-I think c.frame.toggleSplitDirection() must be enhanced with code logic that
-checks if some node from the visible area is selected and makes sure the tree
-pane is scrolled properly to keep that node visible after the split orientation
-change.
+#@+node:ekr.20110523130519.18201: *4* First: 4
 #@+node:ekr.20110522121957.18232: *5* Bug 701261 & bug 583955: Key binding problems
 @nocolor-node
 
@@ -57,12 +39,7 @@ focus is now on node "@auto-rst /tmp/foo.rst"
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/784922
-#@+node:ekr.20080421140032.1: *4* Fix multiple controllers problem in all plugins
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
-#@+node:ekr.20110523201030.18285: *4* Features: 2
-#@+node:ekr.20110522121957.18233: *5* * Feature: (Bug 755206) Auto-collapse option for viewrendered pane
+#@+node:ekr.20110522121957.18233: *5* Feature: (Bug 755206) Auto-collapse option for viewrendered pane
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/755206
@@ -80,10 +57,148 @@ displaying the text information about the plugin and the phonon media player has
 stopped working. This is back to the established behaviour of the Plugins
 button; providing information about the plugin. How do I restore the
 viewrendered functionality?
-#@+node:ekr.20110520051220.18203: *5* * Feature: Cross-tab search
+#@+node:ekr.20110524141405.18379: *4* Next: 4
+# These may be delayed until b2.
+#@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
+@nocolor-node
+
+This is not going to be easy to fix.  match_mark_previous/following do not seem to do anything.
+
+It looks like a rewrite of leo\modes\shell.py may be needed.
+#@+node:ekr.20110523130519.19220: *6* Report
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/525004
+
+This is basically a copy/paste from
+http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
+
+Consider the following code snippet:
+
+--- cut here ---
+@language shell
+
+FOO_BAR='foo bar'
+FOO1_BAR1='foo1 bar1'
+
+echo $FOO_BAR*
+echo $FOO_BAR-$FOO1_BAR1
+--- cut here ---
+
+The variable names in the last two lines are not highlighted
+correctly. This becomes clear if the first line is replaced with #!/
+bin/bash and this code is opened in vim/scite. I've tried only these
+two editors, they highlight the variable names correctly.
+#@+node:ekr.20110520051220.18203: *5* Cross-tab search
 @language rest
 
 This would be a substitute for cross-file clones.
+#@+node:ekr.20080421140032.1: *5* Fix multiple controllers problem in all plugins
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
+#@+node:ekr.20090907080624.6081: *5* Bug: spell checker should check headlines
+Low priority
+#@+node:ekr.20090714085914.5994: *4* New commands: 4
+# These may be delayed until b2.
+#@+node:ekr.20110524141405.18370: *5* Get macros working well
+#@+node:ekr.20071004120359.2: *5* Do expand-region-abbrevs from
+See: regionalExpandAbbrev.
+#@+node:ekr.20090402072059.2: *5* clone-find-all-once
+@
+
+First do a normal clone-find-all for the word "clone". Then click the script
+button and do it again. Notice that children of previously found nodes don't get
+added again in the modified version.
+#@+node:ekr.20090402072059.4: *6* @@@button my clone find all
+import leo.core.leoFind as leoFind 
+
+def new_find_all(self):
+    << do some initial stuff >>
+
+
+    while 1:
+        pos, newpos = self.findNextMatch()
+        if pos is None: break
+
+        if count % 10 == 0 and count > 0:
+            g.es("still searching, matches found: ", count)
+
+        << Skip node if it's a child of a previously found node >>
+
+        count += 1
+
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if not self.clone_find_all:
+            self.printLine(line,allFlag=True)
+        if self.clone_find_all and self.p.v.t not in clones:
+            # g.trace(self.p.v.t,self.p.h)
+            if not clones:
+                undoData = u.beforeInsertNode(c.p)
+                << create the found node >>
+            clones.append(self.p.v.t)
+            positions.append(self.p)
+            << create a clone of p under the find node >>
+
+    if self.clone_find_all and clones:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        c.selectPosition(found)
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw()
+    g.es("found",count,"matches")
+
+
+leoFind.leoFind.findAll = new_find_all
+
+c.executeMinibufferCommand("clone-find-all") 
+#@+node:ekr.20090402072059.5: *7* << do some initial stuff >>
+g.es("findAll..., self: ", self)
+
+c = self.c ; w = self.s_ctrl ; u = c.undoer
+undoType = 'Clone Find All'
+if not self.checkArgs():
+    return
+self.initInHeadline()
+if self.clone_find_all:
+    self.p = None # Restore will select the root position.
+data = self.save()
+self.initBatchCommands()
+count = 0 ; clones = []; positions = []
+#@+node:ekr.20090402072059.6: *7* << create the found node >>
+oldRoot = c.rootPosition()
+found = oldRoot.insertAfter()
+found.moveToRoot(oldRoot)
+c.setHeadString(found,'Found: ' + self.find_text)
+c.setRootPosition() # New in Leo 4.5.
+#@+node:ekr.20090402072059.7: *7* << create a clone of p under the find node >>
+q = self.p.clone()
+q.moveToLastChildOf(found)
+#@+node:ekr.20090402072059.8: *7* << Skip node if it's a child of a previously found node >>
+<< def: is a child of b >>
+
+is_child_of_previous = False
+for previously_found in positions:
+    if is_a_child_of_b(self.p, previously_found):
+        is_child_of_previous = True
+        break
+
+if is_child_of_previous:
+    continue
+#@+node:ekr.20090402072059.9: *8* << def: is a child of b >>
+
+def is_a_child_of_b(a, b):
+    for child in b.children_iter():
+        if a.t == child.t:
+            return True
+        if is_a_child_of_b(a, child):
+            return True
+    return False
+#@+node:ekr.20100108101415.6196: *5* insert-tab commands
+insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
 #@+node:ekr.20110514231951.14492: *4* Docs
 #@+node:ekr.20110523201030.18284: *5* Make sure MacOS users are told to use --gui=qt
 #@+node:ekr.20110518082415.14439: *5* Document highlights of my workflow
@@ -423,107 +538,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
 Thanks for this report.  This is a problem, never noticed until now,
 with the threading colorizer.  A workaround is to disable the
 threading colorizer plugin. 
-#@+node:ekr.20110523201030.18293: *4* Fix *all* remaining significant bugs
-It would be foolish to delay fixing bugs any longer.
-#@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
-@nocolor-node
-
-This is not going to be easy to fix.  match_mark_previous/following do not seem to do anything.
-
-It looks like a rewrite of leo\modes\shell.py may be needed.
-#@+node:ekr.20110523130519.19220: *6* Report
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/525004
-
-This is basically a copy/paste from
-http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
-
-Consider the following code snippet:
-
---- cut here ---
-@language shell
-
-FOO_BAR='foo bar'
-FOO1_BAR1='foo1 bar1'
-
-echo $FOO_BAR*
-echo $FOO_BAR-$FOO1_BAR1
---- cut here ---
-
-The variable names in the last two lines are not highlighted
-correctly. This becomes clear if the first line is replaced with #!/
-bin/bash and this code is opened in vim/scite. I've tried only these
-two editors, they highlight the variable names correctly.
-#@+node:ekr.20090907080624.6081: *5* Bug: spell checker should check headlines
-Low priority
-#@+node:ekr.20110111100539.12257: *5* Fix end-of-line problem (MacOS)
-# Apparently, ctrl-e is not passed to Leo at all.
-#@+node:ekr.20110111100539.12258: *6* Report
-@nocolor-node
-
-http://mail.google.com/mail/#inbox/12c5646c646a90d2
-
-I expect C-e to go to end-of-line, but C-e works as the next line.
-Alt-x and check end-of-line and I get the following result.
-
-I use Mac OS X 10.6.5, newest Leo, and Python/Qt.
-
-Leo 4.8 rc1, build 3715, November 15, 2010
-Python 2.6.1, qt version 4.7.0
-darwin
-
-I remember I could use C-e, but it doesn't work anymore even after I
-reinstall the Leo.
-
-As I explained in this post - http://groups.google.com/group/leo-editor/browse_thread/thread/1ee0b35b4f76c999
-After having @bool swap_mac_keys = True, I can use C-e.
-
-C-a move the cursor to the start of line, but C-e seems to move the
-cursor the first of the next line, which is the end of last line + 1.
-If the line is the final one, C-e moves the cursor to the end of line
-as there's no next line.
-
-#@+node:ekr.20100109094541.6232: *6* within lines
-def beginningOfLine (self,event):
-    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
-    self.moveWithinLineHelper(event,'start-line',extend=False)
-
-def beginningOfLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the start of the line.'''
-    self.moveWithinLineHelper(event,'start-line',extend=True)
-
-def endOfLine (self,event):
-    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
-    self.moveWithinLineHelper(event,'end-line',extend=False)
-
-def endOfLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the end of the line.'''
-    self.moveWithinLineHelper(event,'end-line',extend=True)
-#@+node:ekr.20100109094541.6231: *6* moveWithinLineHelper
-def moveWithinLineHelper (self,event,spot,extend):
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-
-    # g.trace(hasattr(w,'leoMoveCursorHelper'))
-
-    if hasattr(w,'leoMoveCursorHelper'):
-        extend = extend or self.extendMode
-        w.leoMoveCursorHelper(kind=spot,extend=extend)
-        w.seeInsertPoint()
-        c.frame.updateStatusLine()
-    else:
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        i,j = g.getLine(s,ins)
-        if spot == 'start-line':
-            self.moveToHelper(event,i,extend=extend)
-        elif spot == 'end-line':
-            # if g.match(s,i-1,'\n'): i -= 1
-            self.moveToHelper(event,j,extend=extend)
-        else:
-            g.trace('can not happen: bad spot: %s' % spot)
 #@+node:ekr.20110427135155.14306: *4* Add <attr> elements to .leo files
 @language rest
 
@@ -1423,106 +1437,7 @@ I'm sure pickling capability is great, but I'm not convinced
 it should be the _default._
 
 No big deal.
-#@+node:ekr.20090714085914.5994: *4* New commands
-#@+node:ekr.20071004120359.2: *5* Do expand-region-abbrevs from
-See: regionalExpandAbbrev.
-#@+node:ekr.20090402072059.2: *5* clone-find-all-once
-@
-
-First do a normal clone-find-all for the word "clone". Then click the script
-button and do it again. Notice that children of previously found nodes don't get
-added again in the modified version.
-#@+node:ekr.20090402072059.4: *6* @@@button my clone find all
-import leo.core.leoFind as leoFind 
-
-def new_find_all(self):
-    << do some initial stuff >>
-
-
-    while 1:
-        pos, newpos = self.findNextMatch()
-        if pos is None: break
-
-        if count % 10 == 0 and count > 0:
-            g.es("still searching, matches found: ", count)
-
-        << Skip node if it's a child of a previously found node >>
-
-        count += 1
-
-        s = w.getAllText()
-        i,j = g.getLine(s,pos)
-        line = s[i:j]
-        if not self.clone_find_all:
-            self.printLine(line,allFlag=True)
-        if self.clone_find_all and self.p.v.t not in clones:
-            # g.trace(self.p.v.t,self.p.h)
-            if not clones:
-                undoData = u.beforeInsertNode(c.p)
-                << create the found node >>
-            clones.append(self.p.v.t)
-            positions.append(self.p)
-            << create a clone of p under the find node >>
-
-    if self.clone_find_all and clones:
-        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
-        c.selectPosition(found)
-        c.setChanged(True)
-
-    self.restore(data)
-    c.redraw()
-    g.es("found",count,"matches")
-
-
-leoFind.leoFind.findAll = new_find_all
-
-c.executeMinibufferCommand("clone-find-all") 
-#@+node:ekr.20090402072059.5: *7* << do some initial stuff >>
-g.es("findAll..., self: ", self)
-
-c = self.c ; w = self.s_ctrl ; u = c.undoer
-undoType = 'Clone Find All'
-if not self.checkArgs():
-    return
-self.initInHeadline()
-if self.clone_find_all:
-    self.p = None # Restore will select the root position.
-data = self.save()
-self.initBatchCommands()
-count = 0 ; clones = []; positions = []
-#@+node:ekr.20090402072059.6: *7* << create the found node >>
-oldRoot = c.rootPosition()
-found = oldRoot.insertAfter()
-found.moveToRoot(oldRoot)
-c.setHeadString(found,'Found: ' + self.find_text)
-c.setRootPosition() # New in Leo 4.5.
-#@+node:ekr.20090402072059.7: *7* << create a clone of p under the find node >>
-q = self.p.clone()
-q.moveToLastChildOf(found)
-#@+node:ekr.20090402072059.8: *7* << Skip node if it's a child of a previously found node >>
-<< def: is a child of b >>
-
-is_child_of_previous = False
-for previously_found in positions:
-    if is_a_child_of_b(self.p, previously_found):
-        is_child_of_previous = True
-        break
-
-if is_child_of_previous:
-    continue
-#@+node:ekr.20090402072059.9: *8* << def: is a child of b >>
-
-def is_a_child_of_b(a, b):
-    for child in b.children_iter():
-        if a.t == child.t:
-            return True
-        if is_a_child_of_b(a, child):
-            return True
-    return False
-#@+node:ekr.20100108101415.6196: *5* insert-tab commands
-insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
-#@+node:ekr.20110522203356.18255: *4* Maybe
-#@+node:ekr.20090601083544.6067: *5* Make all commands available to all commanders
+#@+node:ekr.20090601083544.6067: *4* Make all commands available to all commanders
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/a83082cec5ad3df8
@@ -1565,6 +1480,78 @@ def bookmark(event):
     bookmarks.append(p.gnx)
     g.es('bookmarked') 
 QQQ
+#@+node:ekr.20110522203356.18255: *4* Maybe
+#@+node:ekr.20110111100539.12257: *5* Fix end-of-line problem (MacOS)
+@nocolor-node
+
+Apparently, ctrl-e is not passed to Leo at all.
+
+This probably can't be fixed.
+#@+node:ekr.20110111100539.12258: *6* Report
+@nocolor-node
+
+http://mail.google.com/mail/#inbox/12c5646c646a90d2
+
+I expect C-e to go to end-of-line, but C-e works as the next line.
+Alt-x and check end-of-line and I get the following result.
+
+I use Mac OS X 10.6.5, newest Leo, and Python/Qt.
+
+Leo 4.8 rc1, build 3715, November 15, 2010
+Python 2.6.1, qt version 4.7.0
+darwin
+
+I remember I could use C-e, but it doesn't work anymore even after I
+reinstall the Leo.
+
+As I explained in this post - http://groups.google.com/group/leo-editor/browse_thread/thread/1ee0b35b4f76c999
+After having @bool swap_mac_keys = True, I can use C-e.
+
+C-a move the cursor to the start of line, but C-e seems to move the
+cursor the first of the next line, which is the end of last line + 1.
+If the line is the final one, C-e moves the cursor to the end of line
+as there's no next line.
+
+#@+node:ekr.20100109094541.6232: *6* within lines
+def beginningOfLine (self,event):
+    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
+    self.moveWithinLineHelper(event,'start-line',extend=False)
+
+def beginningOfLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the start of the line.'''
+    self.moveWithinLineHelper(event,'start-line',extend=True)
+
+def endOfLine (self,event):
+    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
+    self.moveWithinLineHelper(event,'end-line',extend=False)
+
+def endOfLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the end of the line.'''
+    self.moveWithinLineHelper(event,'end-line',extend=True)
+#@+node:ekr.20100109094541.6231: *6* moveWithinLineHelper
+def moveWithinLineHelper (self,event,spot,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    # g.trace(hasattr(w,'leoMoveCursorHelper'))
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(kind=spot,extend=extend)
+        w.seeInsertPoint()
+        c.frame.updateStatusLine()
+    else:
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i,j = g.getLine(s,ins)
+        if spot == 'start-line':
+            self.moveToHelper(event,i,extend=extend)
+        elif spot == 'end-line':
+            # if g.match(s,i-1,'\n'): i -= 1
+            self.moveToHelper(event,j,extend=extend)
+        else:
+            g.trace('can not happen: bad spot: %s' % spot)
 #@+node:ekr.20071001052501: *5* Versioning for nodes
 @nocolor
 
