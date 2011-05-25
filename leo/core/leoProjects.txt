@@ -10428,6 +10428,12 @@ https://bugs.launchpad.net/leo-editor/+bug/581031
 
 toggleSplitDirection new ensures that both the selected outline node *and* the
 cursor in the body pane are visible.
+#@+node:ekr.20110523130519.18195: *4* Investigated bug 590740: <ctl-b> in subnode of @auto-rst changes focus 
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/590740
+
+This works for me.  In any case, it would be a very minor problem.
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()

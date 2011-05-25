@@ -3,7 +3,8 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20110523130519.18201: *4* First: 4
+#@+node:ekr.20110523130519.18201: *4* First: 3
+# These must be completed before b1.
 #@+node:ekr.20110522121957.18232: *5* Bug 701261 & bug 583955: Key binding problems
 @nocolor-node
 
@@ -21,20 +22,6 @@ key bindings in Find Panel need some love
 - inconsistent shortcuts for options, some use [Alt-*], others [Alt-*][space]
 (perhaps nothing can be done here, but it does make the user experience more
 awkward)
-#@+node:ekr.20110523130519.18195: *5* Bug 590740: <ctl-b> in subnode of @auto-rst changes focus 
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/590740
-
-@auto-rst /tmp/foo.rst
- \
-  Node with code
-  -from China import silk-
-
-"Node with code" is focused
-<ctl-b>
-log pane shows traceback
-focus is now on node "@auto-rst /tmp/foo.rst"
 #@+node:ekr.20110522203356.18257: *5* Bug 784922: No application menus appear on OSX
 @nocolor-node
 
@@ -57,49 +44,7 @@ displaying the text information about the plugin and the phonon media player has
 stopped working. This is back to the established behaviour of the Plugins
 button; providing information about the plugin. How do I restore the
 viewrendered functionality?
-#@+node:ekr.20110524141405.18379: *4* Next: 4
-# These may be delayed until b2.
-#@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
-@nocolor-node
-
-This is not going to be easy to fix.  match_mark_previous/following do not seem to do anything.
-
-It looks like a rewrite of leo\modes\shell.py may be needed.
-#@+node:ekr.20110523130519.19220: *6* Report
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/525004
-
-This is basically a copy/paste from
-http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
-
-Consider the following code snippet:
-
---- cut here ---
-@language shell
-
-FOO_BAR='foo bar'
-FOO1_BAR1='foo1 bar1'
-
-echo $FOO_BAR*
-echo $FOO_BAR-$FOO1_BAR1
---- cut here ---
-
-The variable names in the last two lines are not highlighted
-correctly. This becomes clear if the first line is replaced with #!/
-bin/bash and this code is opened in vim/scite. I've tried only these
-two editors, they highlight the variable names correctly.
-#@+node:ekr.20110520051220.18203: *5* Cross-tab search
-@language rest
-
-This would be a substitute for cross-file clones.
-#@+node:ekr.20080421140032.1: *5* Fix multiple controllers problem in all plugins
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
-#@+node:ekr.20090907080624.6081: *5* Bug: spell checker should check headlines
-Low priority
-#@+node:ekr.20090714085914.5994: *4* New commands: 4
+#@+node:ekr.20090714085914.5994: *4* Easy: 4
 # These may be delayed until b2.
 #@+node:ekr.20110524141405.18370: *5* Get macros working well
 #@+node:ekr.20071004120359.2: *5* Do expand-region-abbrevs from
@@ -199,6 +144,48 @@ def is_a_child_of_b(a, b):
     return False
 #@+node:ekr.20100108101415.6196: *5* insert-tab commands
 insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
+#@+node:ekr.20110524141405.18379: *4* More difficult: 4
+# These may be delayed until b2.
+#@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
+@nocolor-node
+
+This is not going to be easy to fix.  match_mark_previous/following do not seem to do anything.
+
+It looks like a rewrite of leo\modes\shell.py may be needed.
+#@+node:ekr.20110523130519.19220: *6* Report
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/525004
+
+This is basically a copy/paste from
+http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
+
+Consider the following code snippet:
+
+--- cut here ---
+@language shell
+
+FOO_BAR='foo bar'
+FOO1_BAR1='foo1 bar1'
+
+echo $FOO_BAR*
+echo $FOO_BAR-$FOO1_BAR1
+--- cut here ---
+
+The variable names in the last two lines are not highlighted
+correctly. This becomes clear if the first line is replaced with #!/
+bin/bash and this code is opened in vim/scite. I've tried only these
+two editors, they highlight the variable names correctly.
+#@+node:ekr.20110520051220.18203: *5* Cross-tab search
+@language rest
+
+This would be a substitute for cross-file clones.
+#@+node:ekr.20080421140032.1: *5* Fix multiple controllers problem in all plugins
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
+#@+node:ekr.20090907080624.6081: *5* Bug: spell checker should check headlines
+Low priority
 #@+node:ekr.20110514231951.14492: *4* Docs
 #@+node:ekr.20110523201030.18284: *5* Make sure MacOS users are told to use --gui=qt
 #@+node:ekr.20110518082415.14439: *5* Document highlights of my workflow
