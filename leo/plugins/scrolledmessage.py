@@ -1,6 +1,6 @@
 
 #@+leo-ver=5-thin
-#@+node:ekr.20101104190737.5629: * @file scrolledmessage.py
+#@+node:leohag.20081204085551.1: * @file scrolledmessage.py
 #@@first
 
 #@+<< docstring >>
@@ -258,7 +258,7 @@ class ScrolledMessageDialog(object):
         self.c = c = parent.c
         self.dock = None
         self.parent = parent
-        self.ui = None
+        self.leo_ui = None
         # g.trace('(ScrolledMessageDialog)',kw)
         
         pc = hasattr(c,'viewrendered') and c.viewrendered
@@ -271,11 +271,11 @@ class ScrolledMessageDialog(object):
             return
         
         top = c.frame.top
-        self.ui = self.getGui()(self)
+        self.leo_ui = self.getGui()(self)
         self.createMenuBar()
         self.dock = dock = QtGui.QDockWidget("Scrolled Message Dialog",top)
         dock.setAllowedAreas(Qt.AllDockWidgetAreas)
-        dock.setWidget(self.ui)
+        dock.setWidget(self.leo_ui)
         dock.resize(400, 500)
         top.addDockWidget(Qt.RightDockWidgetArea,dock)
         dock.setFloating(False)
@@ -287,17 +287,17 @@ class ScrolledMessageDialog(object):
         self.chkBtnChanged(silent=True)
 
         self.updateDialog(kw)
-        self.ui.show()
+        self.leo_ui.show()
     #@+node:leohag.20081206052547.34: *4* createMenuBar & helper
     def createMenuBar(self):
 
-        self.menubar = mb = QtGui.QMenuBar(self.ui)
+        self.menubar = mb = QtGui.QMenuBar(self.leo_ui)
 
         for title, subMenu in self.menuList:
             menu = self.createSubMenu(mb, title, subMenu)
             mb.addMenu(menu)
 
-        self.ui.leo_menubar_frame.layout().insertWidget(0, mb)
+        self.leo_ui.leo_menubar_frame.layout().insertWidget(0, mb)
         mb.show()
 
     #@+node:leohag.20081206052547.13: *5* createSubMenu
@@ -314,7 +314,7 @@ class ScrolledMessageDialog(object):
             elif subTitle:
                 #< < find and bind action >>
 
-                action = getattr(self.ui, 'action%s'%subTitle, None)
+                action = getattr(self.leo_ui, 'action%s'%subTitle, None)
                 if action:
                     method = getattr(self, 'doAction%s'%subTitle, None)
                     if method: 
@@ -328,7 +328,7 @@ class ScrolledMessageDialog(object):
     def findChkControls(self):
         
         s = 'leo_chk_'; n = len(s)
-        for k, v in self.ui.__dict__.items():
+        for k, v in self.leo_ui.__dict__.items():
             if k.startswith(s):
                 self.controls[k[n:]] = v
 
@@ -379,12 +379,12 @@ class ScrolledMessageDialog(object):
     #@+node:leohag.20081206052547.19: *5* _print
     def _print(self, printer):
 
-        self.ui.leo_webView.print_(printer)
+        self.leo_ui.leo_webView.print_(printer)
 
     #@+node:leohag.20081206052547.21: *5* PageSetup
     def doActionPageSetup(self, checked):
 
-        dialog = QtGui.QPageSetupDialog(getGlobalPrinter(), self.ui)
+        dialog = QtGui.QPageSetupDialog(getGlobalPrinter(), self.leo_ui)
 
         c.in_qt_dialog = True
         dialog.exec_()
@@ -396,7 +396,7 @@ class ScrolledMessageDialog(object):
     #@+node:leohag.20081206052547.24: *5* PrintDialog
     def doActionPrintDialog(self, checked):
 
-        d = QtGui.QPrintDialog(getGlobalPrinter(),self.ui)
+        d = QtGui.QPrintDialog(getGlobalPrinter(),self.leo_ui)
         
         c.in_qt_dialog = True
         val = d.exec_()
@@ -407,7 +407,7 @@ class ScrolledMessageDialog(object):
     #@+node:leohag.20081206052547.23: *5* PrintPreview
     def doActionPrintPreview(self, checked):
 
-        d = QtGui.QPrintPreviewDialog(getGlobalPrinter(),self.ui)
+        d = QtGui.QPrintPreviewDialog(getGlobalPrinter(),self.leo_ui)
         d.connect(dialog, QtCore.SIGNAL('paintRequested(QPrinter*)'), self._print )
         
         c.in_qt_dialog = True
@@ -443,9 +443,9 @@ class ScrolledMessageDialog(object):
         </body></html>
         """
         #@-<< define msg >>
-        node = self.ui.actionOutlineThisNode.isChecked()
-        self._includeBody = self.ui.actionOutlineIncludeBody.isChecked()
-        self._expandFollowsTree  = self.ui.actionOutlineExpandFollowsTree.isChecked()
+        node = self.leo_ui.actionOutlineThisNode.isChecked()
+        self._includeBody = self.leo_ui.actionOutlineIncludeBody.isChecked()
+        self._expandFollowsTree  = self.leo_ui.actionOutlineExpandFollowsTree.isChecked()
 
         html = []
         html.append('<ol>')
@@ -541,7 +541,7 @@ class ScrolledMessageDialog(object):
     def showMessage(self, show=True):
 
         s = self.convertMessage()
-        self.ui.leo_webView.setHtml(s)
+        self.leo_ui.leo_webView.setHtml(s)
 
         if show and self.dock:
             self.dock.show()
@@ -634,7 +634,7 @@ class ScrolledMessageDialog(object):
         self.setControlsFromFlags()
 
         # update label
-        w = self.ui.leo_topLabel
+        w = self.leo_ui.leo_topLabel
         if self.label:
             w.setText(self.label)
             w.show()

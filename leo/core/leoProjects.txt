@@ -10416,7 +10416,7 @@ def hasSelection (self):
         return first != last
     else:
         return False
-#@+node:ekr.20110525072142.18354: *4* Fixed bug 580328: c.frame.toggleSplitDirection() doesn't preserve existing ratio 
+#@+node:ekr.20110525072142.18354: *4* Fixed bug 580328: c.frame.toggleSplitDirection() doesn't preserve existing ratio
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/580328
@@ -10428,7 +10428,7 @@ https://bugs.launchpad.net/leo-editor/+bug/581031
 
 toggleSplitDirection new ensures that both the selected outline node *and* the
 cursor in the body pane are visible.
-#@+node:ekr.20110523130519.18195: *4* Investigated bug 590740: <ctl-b> in subnode of @auto-rst changes focus 
+#@+node:ekr.20110523130519.18195: *4* Investigated bug 590740: <ctl-b> in subnode of @auto-rst changes focus
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/590740
@@ -10708,7 +10708,7 @@ def save (self,event=None):
             c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
                 # Bug fix in 4.4b2.
             if g.app.qt_use_tabs and hasattr(c.frame,'top'):
-                c.frame.top.master.setTabName(c,c.mFileName)
+                c.frame.top.leo_master.setTabName(c,c.mFileName)
             c.fileCommands.save(c.mFileName)
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
@@ -10740,7 +10740,7 @@ def setChanged (self,changedFlag):
                 v.clearDirty()
 
     if g.app.qt_use_tabs and hasattr(c.frame,'top'):
-        c.frame.top.master.setChanged(c,changedFlag)
+        c.frame.top.leo_master.setChanged(c,changedFlag)
 
     s = c.frame.getTitle()
     if len(s) > 2:
@@ -10783,7 +10783,7 @@ def saveAs (self,event=None):
             # Bug fix in 4.4b2.
         # Calls c.setChanged(False) if no error.
         if g.app.qt_use_tabs and hasattr(c.frame,'top'):
-            c.frame.top.master.setTabName(c,c.mFileName)
+            c.frame.top.leo_master.setTabName(c,c.mFileName)
         c.fileCommands.saveAs(c.mFileName)
         c.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
@@ -14257,7 +14257,7 @@ def save (self,event=None):
             c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
                 # Bug fix in 4.4b2.
             if g.app.qt_use_tabs and hasattr(c.frame,'top'):
-                c.frame.top.master.setTabName(c,c.mFileName)
+                c.frame.top.leo_master.setTabName(c,c.mFileName)
             c.fileCommands.save(c.mFileName)
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
@@ -14329,7 +14329,7 @@ def setChanged (self,changedFlag):
                 v.clearDirty()
 
     if g.app.qt_use_tabs and hasattr(c.frame,'top'):
-        c.frame.top.master.setChanged(c,changedFlag)
+        c.frame.top.leo_master.setChanged(c,changedFlag)
 
     s = c.frame.getTitle()
     if len(s) > 2:

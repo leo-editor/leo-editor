@@ -5,7 +5,7 @@
 #@+node:ekr.20110523201030.18291: *3* b1
 #@+node:ekr.20110523130519.18201: *4* First: 2
 # These must be completed before b1.
-#@+node:ekr.20110522121957.18232: *5* Bug 701261 & bug 583955: Key binding problems
+#@+node:ekr.20110522121957.18232: *5* * Bug 701261 & bug 583955: Key binding problems
 @nocolor-node
 
 Shortcuts don't work in most Log frame tabs
@@ -22,13 +22,26 @@ key bindings in Find Panel need some love
 - inconsistent shortcuts for options, some use [Alt-*], others [Alt-*][space]
 (perhaps nothing can be done here, but it does make the user experience more
 awkward)
-#@+node:ekr.20110522203356.18257: *5* Bug 784922: No application menus appear on OSX
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/784922
 #@+node:ekr.20090714085914.5994: *4* Easy: 5
 # These may be delayed until b2.
-#@+node:ekr.20110524141405.18370: *5* Get macros working well
+#@+node:ekr.20110522121957.18233: *5* Feature: (Bug 755206) Auto-collapse option for viewrendered pane
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/755206
+
+*Option to have viewrendered plugins auto-collapse the pane
+
+The behaviour of viewrendered.py plugin has changed. prior to this using leo
+build (3963 I think 'added forgotten icon') if I selected Plugins>viewrendered
+the plugin information would display in the rendering pane. Then I could select
+an @movie or @image node to play music or view images. I thought his was an
+intended change with the introduction of view rendered.py plugin.
+
+However with build 3967 selecting Plugins>(any-plugin).py has reverted to just
+displaying the text information about the plugin and the phonon media player has
+stopped working. This is back to the established behaviour of the Plugins
+button; providing information about the plugin. How do I restore the
+viewrendered functionality?
 #@+node:ekr.20071004120359.2: *5* Do expand-region-abbrevs from
 See: regionalExpandAbbrev.
 #@+node:ekr.20090402072059.2: *5* clone-find-all-once
@@ -126,24 +139,7 @@ def is_a_child_of_b(a, b):
     return False
 #@+node:ekr.20100108101415.6196: *5* insert-tab commands
 insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
-#@+node:ekr.20110522121957.18233: *5* Feature: (Bug 755206) Auto-collapse option for viewrendered pane
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/755206
-
-*Option to have viewrendered plugins auto-collapse the pane
-
-The behaviour of viewrendered.py plugin has changed. prior to this using leo
-build (3963 I think 'added forgotten icon') if I selected Plugins>viewrendered
-the plugin information would display in the rendering pane. Then I could select
-an @movie or @image node to play music or view images. I thought his was an
-intended change with the introduction of view rendered.py plugin.
-
-However with build 3967 selecting Plugins>(any-plugin).py has reverted to just
-displaying the text information about the plugin and the phonon media player has
-stopped working. This is back to the established behaviour of the Plugins
-button; providing information about the plugin. How do I restore the
-viewrendered functionality?
+#@+node:ekr.20110524141405.18370: *5* Get macros working well
 #@+node:ekr.20110524141405.18379: *4* More difficult: 4
 # These may be delayed until b2.
 #@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly

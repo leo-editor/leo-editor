@@ -1301,7 +1301,7 @@ class baseCommands (object):
                 c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
                     # Bug fix in 4.4b2.
                 if g.app.qt_use_tabs and hasattr(c.frame,'top'):
-                    c.frame.top.master.setTabName(c,c.mFileName)
+                    c.frame.top.leo_master.setTabName(c,c.mFileName)
                 c.fileCommands.save(c.mFileName)
                 c.updateRecentFiles(c.mFileName)
                 g.chdir(c.mFileName)
@@ -1364,7 +1364,7 @@ class baseCommands (object):
                 # Bug fix in 4.4b2.
             # Calls c.setChanged(False) if no error.
             if g.app.qt_use_tabs and hasattr(c.frame,'top'):
-                c.frame.top.master.setTabName(c,c.mFileName)
+                c.frame.top.leo_master.setTabName(c,c.mFileName)
             c.fileCommands.saveAs(c.mFileName)
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
@@ -7266,7 +7266,7 @@ class baseCommands (object):
                     v.clearDirty()
 
         if g.app.qt_use_tabs and hasattr(c.frame,'top'):
-            c.frame.top.master.setChanged(c,changedFlag)
+            c.frame.top.leo_master.setChanged(c,changedFlag)
 
         s = c.frame.getTitle()
         if len(s) > 2:
