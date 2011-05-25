@@ -16,7 +16,7 @@
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20110510110227.2439"><vh>Autocompleter settings</vh>
 <v t="ekr.20110512085154.2447"><vh>@bool auto_tab_complete = True</vh></v>
-<v t="ekr.20110511061102.5232"><vh>@bool enable_autocompleter_initially = True</vh></v>
+<v t="ekr.20110511061102.5232"><vh>@bool enable_autocompleter_initially = False</vh></v>
 <v t="ekr.20110512225930.2456"><vh>@bool enable_calltips_initially = False</vh></v>
 <v t="ekr.20110510110227.2440"><vh>@bool use_qcompleter = True</vh></v>
 </v>
@@ -201,7 +201,6 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20110510110227.2439"></v>
 <v t="ekr.20090309064612.3"><vh>New features</vh>
 <v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
@@ -624,7 +623,7 @@
 </v>
 <v t="ekr.20110325144059.2350"><vh>main</vh></v>
 </v>
-</v>
+<v t="ekr.20110525093203.2470"><vh>json stuff</vh>
 <v t="ekr.20110414094917.2423"><vh>@json-outline</vh></v>
 <v t="ekr.20110414094917.2424"><vh>@input-tree</vh>
 <v t="ekr.20110414094917.2425"><vh>child1</vh>
@@ -676,12 +675,10 @@
 </v>
 </v>
 </v>
+</v>
 <v t="ekr.20110416065515.2437"><vh>jinja2</vh></v>
-<v t="ekr.20110325142240.2508"><vh>AutoCompleter test script</vh></v>
-<v t="ekr.20110510093130.2434"><vh>AutoCompletion test area</vh></v>
 <v t="ekr.20110511140347.2445"><vh>QTimer</vh></v>
-<v t="ekr.20110521072459.2463"></v>
-<v t="ekr.20110521072459.2459"><vh>cython tests</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1106,7 +1103,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="14"></t>
+<t tx="ekr.20070416075121" str_leo_pos="4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7886,15 +7883,6 @@ if 0:
      &lt;/g&gt;
    &lt;/g&gt;
 &lt;/svg&gt;</t>
-<t tx="ekr.20110325142240.2508"># Put the cursor at the end for testing.
-w = c.frame.body
-s = w.getAllText()
-w.setInsertPoint(len(s))
-
-# The penultimate step before removing this test completely.
-c.k.autoCompleter.init_qcompleter()
-
-# Testing area: c.frame.body.bodyCtrl</t>
 <t tx="ekr.20110325142419.2337"># This has been superceded by Autocompleter test node in this file.
 
 from PyQt4 import QtGui, QtCore
@@ -8756,8 +8744,7 @@ t = Template('Hello {{ name }}!')
 s = t.render(name='Edward K. Ream')
 print(s)
 </t>
-<t tx="ekr.20110510093130.2434"></t>
-<t tx="ekr.20110510110227.2439">c.</t>
+<t tx="ekr.20110510110227.2439"></t>
 <t tx="ekr.20110510110227.2440"></t>
 <t tx="ekr.20110511061102.5232">True:  enable autocompletion initially.
 False: disable autocomopletion initially.
@@ -8782,29 +8769,9 @@ timer.start(0)
 </t>
 <t tx="ekr.20110512085154.2447"></t>
 <t tx="ekr.20110512225930.2456"></t>
-<t tx="ekr.20110521072459.2459">@language cython
-
-# Cython keywords: use @color keyword4_color to specify color
-by cdef cimport cpdef ctypedef enum except?
-extern gil include nogil property public
-readonly struct union DEF IF ELIF ELSE
-                
-# Cython types: colorized with like builtins.
-# Use @color keyword4_color to specify color.
-NULL bint char dict double float int list
-long object Py_ssize_t short size_t void
-
-def spam() except?:
-    pass
-
-try:
-    pass
-except:
-    pass
-except Exception:
-    pass</t>
 <t tx="ekr.20110521072459.2463"></t>
 <t tx="ekr.20110521072459.2464">builtins, including cython builtins</t>
 <t tx="ekr.20110521072459.2465">cython keywords</t>
+<t tx="ekr.20110525093203.2470"></t>
 </tnodes>
 </leo_file>
