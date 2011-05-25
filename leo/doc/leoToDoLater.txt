@@ -1,54 +1,436 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20060207133601: * @file ../doc/leoToDoLater.txt
 #@+all
-#@+node:ekr.20060824110846: ** Colorizing
-#@+node:ekr.20060813121814: *3* Add colorizer files for cweb, rapidq
-#@+node:ekr.20060824103837: *4* Notes
+#@+node:ekr.20110525112110.18399: ** Minor
+@nocolor-node
+
+None of these commands seems particular important.
+
+I have no particular commitment interest in doing any of them.
+#@+node:ekr.20100521090440.5890: *3* Cleanups
+# These are hardly worth doing.
+#@+node:ekr.20100223123910.5930: *4* recentFilesController
+@
+The present operation of recent files is surprising.
+
+Recent files should be a global list, managed by a single controller.
+#@+node:ekr.20100219083854.5615: *4* Improve caching
+#@+node:ekr.20100209160132.5770: *5* cache notes
+@nocolor-node
+
+Top-level folder are direct subfolders of .leo/db.
+Top-level folders represent file *locations* not file contents.
+Exception: the top-level "globals" folder represents minor data.
+
+Only two files are ever needed in a top-level folder:
+
+contents_<key>: the contents of the file.
+data_<key>: a dict representing the "minor data" of the file:
+    <globals> element stuff, expansion bits, etc.
+
+We write contents_<key> only once.
+By definition, its contents never changes, since the contents generates the key.
+We can write data_<key> as many times as we like.
+
+To do:
+- Simplify or even eliminate the path-manipulation code in PickleShareDB.
+- Use g.makeAllNonExistentDirectories to make top-level directories.
+- Clear cache should clear all top-level directories.
+#@+node:ekr.20100209114432.5751: *6* Cache expansion bits
+# Simplify the structure of the cache: put more into the "minor" files.
+#@+node:ekr.20100211095442.6201: *5* cache notes 2
+@nocolor-node
+
+1. Memory does leak, and that's not ok with me.  And I want just two
+files per top-level directory.
+
+2. Strange things can happen with caching, as just happened to me when
+I restored qtui_generate.py mistakenly deleted from leo/test.  There
+is an @auto node for this file in qtGui.py, and I got improper 'can
+not open' messages for this file.
+
+3. It is troubling that the present caching scheme does not use the
+full path to a file, only the basename.  This means that two identical
+files in two different places will use the same cache entries.  I've
+been wondering for the last several days about whether this could
+cause problems.  I don't know for sure, but I am uncomfortable.
+
+4. I want the clear-cache and clear-all-caches commands to do what
+they say: get rid of everything.  Among other things, this is good for
+debugging and recovering from cache problems.
+
+#@+node:ekr.20100223075705.5635: *5* Don't write expansion bits
+#@+node:ekr.20100210163813.5748: *5* Caching buglets?
+@nocolor-node
+
+This is a recent bug, but imo it has uncovered some other caching buglets. These
+buglets are not big enough to delay Leo 4.7, but the new caching scheme would
+ensure they never bite.
+
+1. The code that computes what I have been calling the top-level directory is dubious::
+
+    dbdirname = join(g.app.homeLeoDir,'db',
+            '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
+
+The problem is that bname is only the base name of the cached file, not a name
+(or key) that depends on the full path. Thus, two copies of the same file in the
+same place will be cached in the same directory. Is this ominous?
+
+2. It's not clear what caching to do with the save-to command.
+#@+node:ekr.20100225102636.5627: *5* Use the string returned by cacher
+# It should be possible to avoid duplicate reads.
+#@+node:ekr.20080628095358.1: *4* Make each Leo command a class
+http://groups.google.com/group/leo-editor/browse_thread/thread/5688ed9aaa39be2e#
+
 @nocolor
 
-Renamed pl-sql.* to plsql.* (This required rerunning jEdit2py.)
+The main difficulty I see in the migration is creating the tables in the getPublicCommands methods in the various classes in leoEditCommands.py.  At present, these tables associate command names (strings) with corresponding methods.  The form of getPublicCommands is always:
 
-Forth is going to be a problem, because keywords can be extensible.
-Perhaps the user should be responsible for updating forth.xml.
-#@+node:ekr.20060227142119: ** Drawing, printing and rendering
-#@+node:ekr.20060822162521: *3* Make headlines scroll
-Limit the with of the headline to the width of the outline pane.
-#@+node:ekr.20050512031131: *3* Use global_log_window_position to specify outline/log ratio?
-#@+node:ekr.20060227123536: *3* Tiddlywiki and related comments about rendering body text
+def getPublicCommands (self):
+  return {
+    'command-name1': self.methodName1,
+    'command-name2': self.methodName2,
+    ...
+  }
+
+Thinking out loud, let's see whether the migration can be done easily.  We would change the entry:
+
+    'command-name1': self.methodNameN,
+
+to:
+
+    'command-name1': self.classNameN(self),
+
+That is, the table creates an instance of the class by calling the class's ctor, with self (the container object) as the ctor's only argument.  To make this work, all we need to do is give the class a __call__ method whose signature matches the signature of methodNameN, that is, the signature used to call methods previously.
+
+Well, isn't this nice.  We can transition gradually, as needed.  No need *ever* to do a mass migration.  It should be easy to verify this scheme with one or two examples.  Please report your experiences if you decide to play around with this.
+
+Edward
+
+P.S.  I think it would be good style to append "Class" to the name of each command class. This makes it clear that self.myCommandClass(self) is a ctor.
+#@+node:ekr.20101119030344.5838: *5* script to turn all commands into @g.command nodes
+'''Add @g.command(command_name) before all commands.'''
+
+@others
+
+import os ; os.system('cls')
+
+d = c.commandsDict
+f_dict = find_all_defs(c)
+
+result1, result2 = [],[]
+for f_name in sorted(f_dict): # These are function names, not command name.
+    c_name = c.k.inverseCommandsDict.get(f_name) # Get the emacs command name.
+    if c_name:
+        f = d.get(c_name) # f is the function name that defines a command.
+        if f:
+            d_name = f.__name__
+            s = repr(f)
+            tag = '<bound method '
+            if s.startswith(tag): s = s[len(tag):]
+            i = s.find(' of ')
+            if i > -1: s = s[:i]
+            aList = [p.h for i,p in f_dict.get(d_name,[])]
+            if len(aList) == 1:
+                result1.append((d_name,s,aList),)
+            else:
+                result2.append((d_name,s,aList),)
+
+print('----- duplicate commands -----\n')
+for d_name,s,aList in result2:
+    print('%s: %s\n%s %s\n' % (d_name,s,len(aList),aList))
+
+print('----- unambiguous commands -----\n')
+for d_name,s,aList in result1:
+    print('%40s %s' % (d_name,aList[0]))
+
+if 0:
+    for name in sorted(d):
+        f = d.get(name)
+        f_name = f.__name__
+        # name is the minibuffer command name, f_name is the function name.
+        i,p = find(c,command,f_name)
+        adjust(c,f_name,i,p)
+#@+node:ekr.20061031131434.3: *6* << about key dicts >>
 @nocolor
-http://sourceforge.net/forum/message.php?msg_id=3578252
-By: bwmulder
+@
+ivars:
 
-I have been thinking for a while that it ought to be possible to somehow  to
-unite Leo with wiki features (my thinking is still vague at this point).
+c.commandsDict:
+    Keys are emacs command names; values are functions f.
 
-If you look at systems like Tiddlywiki (http://www.tiddlywiki.com/) you will
-find that they already pretty much provide all the formatting features mentioned
-in the article.
+k.inverseCommandsDict:
+    Keys are f.__name__; values are emacs command names.
 
-MoinMoin, another wiki (http://moinmoin.wikiwikiweb.de), has started to use
-a graphical interface for editing in the latest version.
+k.bindingsDict:
+    Keys are shortcuts; values are *lists* of g.bunch(func,name,warningGiven)
 
-Maybe Leo can be split up into three components:
+k.masterBindingsDict:
+    Keys are scope names: 'all','text',etc. or mode names.
+    Values are dicts:  keys are strokes, values are g.Bunch(commandName,func,pane,stroke)
 
-1. A storage component is responsible for storing nodes. Currently, this is
-just memory, but databases like shelve, Zope or sqllite should also be possible.
+k.masterGuiBindingsDict:
+    Keys are strokes; value is a list of widgets for which stroke is bound.
 
-2. The control component is responsible for converting from the internal format
-to external files which can be processed by existing compilers, searching within
-a document, and the like.
+k.settingsNameDict:
+    Keys are lowercase settings; values are 'real' Tk key specifiers.
+    Important: this table has no inverse.
 
-3. A display component is responsible for interfacing with the user. If can
-be TK, but it can also be something like the Tiddlywiki interface, which immediately
-shows the formatting applied to text.
+not an ivar (computed by k.computeInverseBindingDict):
 
-I don't know much about javascript, so I would have to learn more about this
-language before doing anything in this direction.
+inverseBindingDict
+    Keys are emacs command names; values are *lists* of shortcuts.
+#@+node:ekr.20101119030344.5841: *6* find_all_defs
+def find_all_defs (c):
 
-As an intermediate step, maybe we could allow mixing RST processing with regular
-program text.  Leo would produce two documents out of a source file: a version
-for the compiler in plain ascii, and an HTML file for reading the source.
-#@+node:ekr.20050127110221: *3* Printing & flash
+    '''Return a dict containing all function defs.
+
+    Keys are function names, values are lists of (i,p) pairs.'''
+
+    # To do: consider only files that actually generate commands?
+    d = {}
+    suppress = ('__init__',)
+    for p in c.all_unique_positions():
+        done,i,s = False,0,p.b
+        while not done and i < len(s):
+            progress = i
+            i = i1 = s.find('def',i)
+            if i == -1:
+                done = True ; break
+            i += 3 # Assures progress.
+            if not g.match_word(s,i-3,'def'): continue
+            j = g.skip_ws(s,i)
+            if j == i: continue
+            i = j
+            j = g.skip_id(s,i,chars='_')
+            if j == i: continue
+            name = s[i:j]
+            if name not in suppress:
+                aList = d.get(name,[])
+                aList.append((i1,p.copy()),)
+                d[name] = aList
+            # g.trace('%30s %s' % (name,p.h))
+            i = j
+            assert progress < i
+    return d
+#@+node:ekr.20101119030344.5839: *6* find
+def find (c,command,f_name):
+
+    g.trace('%30s %s' % (command,f_name))
+
+    for p in c.all_unique_nodes():
+        s = p.b
+        i = s.find('def %s' % f_name)
+#@+node:ekr.20101119030344.5840: *6* adjust
+def adjust(f,i,p):
+    pass
+#@+node:ekr.20080923200153.1: *4* Support scan-directives hook again?
+# This affects the add_directives plugin.
+# Also, the color_markup plugin doesn't work with the threading colorizer.
+#@+node:ekr.20041228091154: *3* Commands
+#@+node:ekr.20110525112110.18398: *4* Minor
+#@+node:ekr.20061011111007: *5* @bool autoload_most_recent_leo_file
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=3957908
+
+> Is there a setting for autmoatically loading most recent file or files.
+
+@color
+#@+node:ekr.20041022083005.2: *5* add a Stop button for find/change
+#@+node:ekr.20041219162724: *5* Add dialog to insert recent directories
+http://sourceforge.net/forum/message.php?msg_id=2903742
+By: nobody
+
+In the multifile plugin there is an option to insert a directory string.  I
+use it alot for the @path directive.  What happens is that when executed a FileDialog
+opens up and the user selects the directory he wants to use as a directory string.
+When chosen the directory string is inserted into the text editor.
+
+The good of this:
+1. It makes using path simpler, you dont have to type out the directory path
+yourself, just use the tkFileDialog to select it and have Leo insert the string.
+For long directories this saves a lot of typing.
+
+simple, short and quite helpful.  Thoughts? :)
+
+-----------
+
+Time to create a directory class??
+
+#@+node:ekr.20041130123243: *5* Clear Undo command
+@killcolor
+
+http://sourceforge.net/forum/message.php?msg_id=2859273
+e
+
+theres a config option to clear undo on save.
+can that be a menu choice as well? 
+clear undo now.
+enable clear undo on save.
+moot as it will be with the new config options
+and any undo changes on the table.
+maybe there is a single point to involke clear 
+undo that could be run from a button?
+
+with py2.3 after allot of small edits on an open leo after a few hours gc can
+hit unexpectedly and last several minutes
+and return at any time lasting several more minutes.
+I think its gc related because the memory use and disk grinding demanding I
+free up memory or kill python.
+
+I have no idea if undo is the cause,
+ just guessing.
+using cvs of last week. I just updated, 
+will let you know if it happens again.
+(new error reporting jump to error is great)
+
+usually I don't edit in the same process that long.
+I have run scripts from leo that run 6, 12 
+or 24 hours no problem. 
+maybe I can turn on some internals reporting and
+get some feedback on whats going on from python if it happens again. 
+or run the gc script before and after.
+
+ win98 128meg w/maxmem memory defrager that works well.
+but I go from 50% free to 10% when this starts happening.
+I haven't noticed this problem yet in py2.4, and it is peppier,
+but don't use py2.4 enough. it doesn't happen every day.
+I reboot at least once a day for various reasons.
+so it isn't that either. 
+you do need to reboot and or exit python once it starts.
+this was never an issue with py2.2 and Leo 4.1 or less with only 64 megs.
+I don't really have any other long running python processes to compare to Leo. 
+can't say what it is.
+Aha, progress. 
+this started sometime early in 4.2 or late 4.1
+but I can still be persuaded something in my 
+local system is to blame, some install or dll update. or script, psyco or plugin
+related.
+
+nonwithstanding, I should be taking better advantage Moore's law in my CPU and
+memory.
+I only notice this when I'm running the same leo over a few hours of constant
+editing and running scrips.
+and when I exit python and restart leo everything returns to normal.
+more a supporting anomaly report 
+than a bug report or feature request.
+#@+node:ekr.20031218072017.790: *5* Import dialog improvements
+@nocolor
+
+Other options I though would be really handy:
+
+1. Use an existing node as a source also
+
+2. Use an node from another Leo file.. I am not sure what the syntax for that
+would be exactly
+
+3. From a URL.. this would be really cool. People could post outlines not only
+as existing Leo xml files, but as text files or even dynamic scripts. The code
+to handle these would presumably need to deal with http:// intelligently. But
+that's easy in Python. Rebol is great at that too.
+
+4. Other XML file with valid filepaths in them.
+That's probably a much bigger project like Leo 3.10  
+
+Jason
+#@+node:ekr.20060227124411: *5* Import/export from wiki's
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3583737
+By: Offray
+
+I was previously thinking in the relation between Leo and Wikis, and I think
+that may be a thing that would help to make Leo more visible in Wiki space could
+be if Leo can export/import to/from a Wiki (something limilar to th @file or
+@url directives). Let me explain a little better the scenary where this idea
+come.
+
+We have a local wiki for colombian Free Software Community related issues, and
+I have used Leo for writing the migration scripts from Mediawiki to MoinMoin
+(wich I think is more flexible and extensible that the popular wiki behind
+wikipedia). I was probing also the idea of a Wiki like environment for solving
+colaborative problems, so I was posting the scripts I made on Leo in a Wiki
+page, and republishing them in the moment they changed. This keeps me pasting
+all the time the script and in some moments I was thinking what about if someone
+make a change in the Wiki page. Would be nice then to have the same capability
+to detect and sincronize that change as Leo make with the hard disk files.
+
+But this doesnt end here. Another Wiki-Leo interaction is to use outlines as
+a way to organice Wiki content. For example "= Title =" in a Wiki would be a
+Outline Node in Leo and "== Subtitle ==" Would become a outline subnode all
+arranged in the proper hierarchy.
+
+Somekind of Wisiwyg display would be nice, but this must be a plugin or something
+like that, so Leo could become a "Layered" front end to some kind of data.
+
+About and article on Wikipedia. That would be nice, but I'm a little tired of
+fighting with some wikipedians ignorance on certain matters combined with power
+(a pretty bad combination). I think that a Wiki page is nice because its live
+comes from the community knowledge, but I'm not interested in that fighting,
+so I have made a Leo wiki page in our local Wiki:
+
+http://www.el-directorio.org:8080/Leo
+
+and when I have enough knowledge about Leo (and time) I hope to start making
+contribs in the spanish documentation (for the moment I'm only workind in the
+evangelism here).
+#@+node:ekr.20031218072017.748: *5* Import/Export to yaml
+Need a good yaml parser first: I don't want to write another parser by hand.
+#@+node:ekr.20031218072017.800: *5* Improve extract section command
+Read and respond to this message at: 
+https://sourceforge.net/forum/message.php?msg_id=1858824
+By: gilshwartz
+Open discusstion
+
+Currently Extract Section is only available if the first line in a selection
+is a section name <<x>>. I would like to propose a few enhancements I think
+should be useful, while I believe most of the code is already implemented in
+Leo.
+
+1. If the first line in a selection is not <<x>>, than Extract Section WILL
+make a section name from the first line (or a version of it, see below), leave
+the section name in the body, create a new node with that section name, and
+will copy the selection including the first line to the new node.
+
+Rational: this is useful when selecting a function or a class. Thus the section
+name becomes the function or the class definition. The section name can either
+be the full first line, or, knowing the language, Leo can make a nice section
+name like it does in import, e.g. "function foo", or "class bar", without the
+parameters list.
+
+2. Even better, when Extract Section is called WITHOUT a selection it will look
+for the first function/class definition before the cursor's position and will
+either use it as a selection and do 1 above, or just mark it as selection, which
+will enable 1 above upon a second Extract Section.
+
+Rational: Leo does it beautifully in import and when a node's code starts to
+build it is most convenient. Also, I think a variation on this was recently
+asked by another user.
+
+3. Add an option Merge Section, which when called from a named section will
+merge it back to all the sections containing it.
+
+Rational: make it easy (together with 2) to create/delete sections until the
+sections picture of a new code becomes clear.
+
+Gil
+
+--
+
+Read and respond to this message at: 
+https://sourceforge.net/forum/message.php?msg_id=1859516
+By: nobody
+
+Simpler & more intutive:
+Mark text, select from menu - 'extract section', this presents a dialog box
+in which you fill in the section name. It is too much work to type <<name>>
+then select the whole thing...
+
+As an enhancement, the dialog can show the first line of the selection as the
+default section name, which obviously can be changed.
+
+- Rajiv Bhagwat
+#@+node:ekr.20050127110221: *5* Printing & flash
 @killcolor
 https://sourceforge.net/forum/message.php?msg_id=2962825
 By: jasonic
@@ -168,282 +550,8 @@ to aid printing woudl go a long way. Thesse scripts anyone coiuld be called
 by onayone given a Leo Outline, accessing a navabr button. PRINT MENU or list.
 Or they can just insert the appropriate script  into an outline giving finer
 grained print control on the fly.
-#@+node:EKR.20040512082621: *3* HTML widgets
-#@+node:EKR.20040512082621.1: *4* htmllib.tcl
-http://sourceforge.net/forum/message.php?msg_id=2565345
-By: nobody
-
-I just met a nice TCL-based html help viewer bundled with the evaluation version
-of Fujitsu-Siemens OpenFT for Unix (see
-fujitsu-siemens.com/products/software/openseas/openft.html)
-
-It is based on a TCL library htmllib.tcl, written by Stephen Uhler in 1995 while
-working in Sun's TCL group.Iit seemts that this lib is owned by Sun and i'm
-not certain about license. It is freely downloadable, anyway.
-
-The usage is really simple -- you have to create a text widget, a string variable
-containing html text and a link callback, then feed all three to the library
-routine. It should be not hard pythonize this process.
-
-see http://www.usenix.org/publications/login/1999-8/features/tclsh.html,
-ftp://ftp.scriptics.com/pub/tcl/misc/html_library-0.3.tar.gz
-or just google for htmllib.tcl
-#@+node:ekr.20031218072017.729: *4* HTML rendering in Leo's body pane
-#@+node:ekr.20031218072017.731: *5* HTML plugin: opml
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=2283466
-By: billp9619
-
-FYI
-I played around with opml a while back and it seemed very versatile.
-
-It basically consists of an xml file of nested outline tags similiar to v-nodes
-in leo xml. This then works with an xsl stylesheet that displays the outline
-in a browser with scripted outline manipulation. (Uses div tags for this
-display.)
-
-What I discovered is that any html can make up the outline nodes , even forms,
-etc. which collapse with the outline interaction. Just that the angle brackets
-in the html must be escaped as is done within leo t nodes in .leo xml.
-
-Actually, it would be interesting to see an addin that just passes leo nodes
-to opml and then pops into the default browser. Also keep in mind that javascript
-has an eval() statement that can be passed any script as a string. The leo text
-box could be a form textarea box except that then there is no way to emulate
-syntax coloring. Alternatively, this could be a floating window wrappiing node
-text in html/body. (if nothing else, just destroy/close the window and reinitialize).
-Maybe the images used in the opml could have javascript events like onclick()
-to trigger refreshing leo text box from the t-nodes stored in an array or in
-hidden form boxes.
-
-Of course the effect of the stylesheet could be done via python script if no
-xslt in the receiving browser. The minimal html and script might be just boilerplate
-output.
-
-regards,
-bill p
-#@+node:ekr.20041228092223: *3* Play with wiki markup
-http://sourceforge.net/forum/message.php?msg_id=2205285
-From: Rich
-
-Color ''and'' italic/bold characters with @markup. One thing I'd like to
-''not'' see are the markup characters in @file-nosent files.  "~~red:NOTE:~~"
-does nothing for readability in plain text.
-#@+node:ekr.20041201084142: *3* Add convenience methods to change individual headlines color directly
-@killcolor
-
-http://sourceforge.net/forum/message.php?msg_id=2877106
-
-By: Paul Paterson - paulpaterson
-RE: Can I color the headline text ?  
-2004-12-01 08:01
-
-The cleo plugin makes a permanent change to the headline appearance (using node attributes) while the footprints plugin makes a temporary change in the current session. Footprints was derived from cleo, although you might not be able to tell from looking at it! 
-
-Cleo: http://sourceforge.net/forum/message.php?msg_id=2617221 
-
-Footprints: http://sourceforge.net/forum/message.php?msg_id=2813450 
-
-Between the two of them there should be enough information to help you achieve what you want. 
-
-It is possible to do pretty much anything you want but you will have to provide the infrastructure yourself because Leo doesn't natively support it.  
-#@+node:ekr.20041228091154: ** Commands
-#@+node:ekr.20061021131443: *3* Emacs support
-#@+node:ekr.20060628103226.3: *4* Make sure repeat counts work on basic editing commands
-#@+node:ekr.20060628094329.2: *4* Test/Fix macros
-#@+node:ekr.20060628103226.2: *4* Alt-x handlers should add to lossage
-#@+node:ekr.20060123091352: *4* Incremental search in switch-to-buffer
-#@+node:ekr.20060116090428: *4* Expand 'point' so it indicates node as well as text location
-#@+node:ekr.20051021074728: *4* Space completion
-#@+node:ekr.20051110155735.1: *3* Improve Spell tab
-@nocolor
-
-- Per-pane key bindings. (arrows, etc.)
-- Try default fonts for spell buttons.
-- Select the first entry.
-
-@color
-#@+node:ekr.20061006165447: *3* Let import commands decide what kind of import to do
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3940843
-By: ktenney
-
->the distiction between importing 'foreign' text files and importing derived
-files created by Leo.
-
-Couldn't Leo make this distinction by looking at
-the file being imported? If so, I think it should.
-
-This could eliminate a lot of confusion IMO, if
-I want to bring a file into a node, just
-'import' it, and the right thing happens.
-
-An emergency measure could be available in a 
-'File Special' menu.
-#@+node:ekr.20041022083833.1: *3* Easy
-#@+node:ekr.20040315060557: *4* Declone command
-By: nobody ( Nobody/Anonymous ) 
- having a declone() method for vnodes?   
-2004-03-15 04:36  
-
- hi,
-
-Ive had a use for a declone() method in vnodes recently. Have you ever thought about adding a method that declones a clone? This would entail:
-
-1. Making a clone node a normal node.
-
-I can see this happening when cutting a node and pasting a node that is a clone. But there doesn't seem to be a dedicated function to do the operation. :)  
-#@+node:ekr.20041219162724: *4* Add dialog to insert recent directories
-http://sourceforge.net/forum/message.php?msg_id=2903742
-By: nobody
-
-In the multifile plugin there is an option to insert a directory string.  I
-use it alot for the @path directive.  What happens is that when executed a FileDialog
-opens up and the user selects the directory he wants to use as a directory string.
-When chosen the directory string is inserted into the text editor.
-
-The good of this:
-1. It makes using path simpler, you dont have to type out the directory path
-yourself, just use the tkFileDialog to select it and have Leo insert the string.
-For long directories this saves a lot of typing.
-
-simple, short and quite helpful.  Thoughts? :)
-
------------
-
-Time to create a directory class??
-
-#@+node:ekr.20031218072017.800: *4* Improve extract section command
-Read and respond to this message at: 
-https://sourceforge.net/forum/message.php?msg_id=1858824
-By: gilshwartz
-Open discusstion
-
-Currently Extract Section is only available if the first line in a selection
-is a section name <<x>>. I would like to propose a few enhancements I think
-should be useful, while I believe most of the code is already implemented in
-Leo.
-
-1. If the first line in a selection is not <<x>>, than Extract Section WILL
-make a section name from the first line (or a version of it, see below), leave
-the section name in the body, create a new node with that section name, and
-will copy the selection including the first line to the new node.
-
-Rational: this is useful when selecting a function or a class. Thus the section
-name becomes the function or the class definition. The section name can either
-be the full first line, or, knowing the language, Leo can make a nice section
-name like it does in import, e.g. "function foo", or "class bar", without the
-parameters list.
-
-2. Even better, when Extract Section is called WITHOUT a selection it will look
-for the first function/class definition before the cursor's position and will
-either use it as a selection and do 1 above, or just mark it as selection, which
-will enable 1 above upon a second Extract Section.
-
-Rational: Leo does it beautifully in import and when a node's code starts to
-build it is most convenient. Also, I think a variation on this was recently
-asked by another user.
-
-3. Add an option Merge Section, which when called from a named section will
-merge it back to all the sections containing it.
-
-Rational: make it easy (together with 2) to create/delete sections until the
-sections picture of a new code becomes clear.
-
-Gil
-
---
-
-Read and respond to this message at: 
-https://sourceforge.net/forum/message.php?msg_id=1859516
-By: nobody
-
-Simpler & more intutive:
-Mark text, select from menu - 'extract section', this presents a dialog box
-in which you fill in the section name. It is too much work to type <<name>>
-then select the whole thing...
-
-As an enhancement, the dialog can show the first line of the selection as the
-default section name, which obviously can be changed.
-
-- Rajiv Bhagwat
-#@+node:ekr.20041130123243: *4* Clear Undo command
-@killcolor
-
-http://sourceforge.net/forum/message.php?msg_id=2859273
-e
-
-theres a config option to clear undo on save.
-can that be a menu choice as well? 
-clear undo now.
-enable clear undo on save.
-moot as it will be with the new config options
-and any undo changes on the table.
-maybe there is a single point to involke clear 
-undo that could be run from a button?
-
-with py2.3 after allot of small edits on an open leo after a few hours gc can
-hit unexpectedly and last several minutes
-and return at any time lasting several more minutes.
-I think its gc related because the memory use and disk grinding demanding I
-free up memory or kill python.
-
-I have no idea if undo is the cause,
- just guessing.
-using cvs of last week. I just updated, 
-will let you know if it happens again.
-(new error reporting jump to error is great)
-
-usually I don't edit in the same process that long.
-I have run scripts from leo that run 6, 12 
-or 24 hours no problem. 
-maybe I can turn on some internals reporting and
-get some feedback on whats going on from python if it happens again. 
-or run the gc script before and after.
-
- win98 128meg w/maxmem memory defrager that works well.
-but I go from 50% free to 10% when this starts happening.
-I haven't noticed this problem yet in py2.4, and it is peppier,
-but don't use py2.4 enough. it doesn't happen every day.
-I reboot at least once a day for various reasons.
-so it isn't that either. 
-you do need to reboot and or exit python once it starts.
-this was never an issue with py2.2 and Leo 4.1 or less with only 64 megs.
-I don't really have any other long running python processes to compare to Leo. 
-can't say what it is.
-Aha, progress. 
-this started sometime early in 4.2 or late 4.1
-but I can still be persuaded something in my 
-local system is to blame, some install or dll update. or script, psyco or plugin
-related.
-
-nonwithstanding, I should be taking better advantage Moore's law in my CPU and
-memory.
-I only notice this when I'm running the same leo over a few hours of constant
-editing and running scrips.
-and when I exit python and restart leo everything returns to normal.
-more a supporting anomaly report 
-than a bug report or feature request.
-#@+node:ekr.20031218072017.790: *4* Import dialog improvements
-@nocolor
-
-Other options I though would be really handy:
-
-1. Use an existing node as a source also
-
-2. Use an node from another Leo file.. I am not sure what the syntax for that
-would be exactly
-
-3. From a URL.. this would be really cool. People could post outlines not only
-as existing Leo xml files, but as text files or even dynamic scripts. The code
-to handle these would presumably need to deal with http:// intelligently. But
-that's easy in Python. Rebol is great at that too.
-
-4. Other XML file with valid filepaths in them.
-That's probably a much bigger project like Leo 3.10  
-
-Jason
-#@+node:ekr.20031218072017.807: *4* Put up file dialog on empty @url, etc.
+#@+node:ekr.20101116104701.5828: *5* promote-child-body
+#@+node:ekr.20031218072017.807: *5* Put up file dialog on empty @url, etc.
 @nocolor
 
 Open Discussion
@@ -463,54 +571,9 @@ probably be specified in some guidelines for writing new plugins -see e.g. the
 jedit plugin guidelines).
 
 Davide
-#@+node:ekr.20040217153407: *4* User customizeable tangling and untangling
-@template plugin does some (most?) of this.
-#@+node:ekr.20040329094003: *3* Apply patch command
-#@+node:ekr.20031218072017.748: *3* Import/Export to yaml
-Need a good yaml parser first: I don't want to write another parser by hand.
-#@+node:ekr.20041016134312.2: *3* Standard Weave command
+#@+node:ekr.20041016134312.2: *5* Standard Weave command
 Use noweb and TeX, or maybe Pyx.
-#@+node:ekr.20060227124411: *3* Import/export from wiki's
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3583737
-By: Offray
-
-I was previously thinking in the relation between Leo and Wikis, and I think
-that may be a thing that would help to make Leo more visible in Wiki space could
-be if Leo can export/import to/from a Wiki (something limilar to th @file or
-@url directives). Let me explain a little better the scenary where this idea
-come.
-
-We have a local wiki for colombian Free Software Community related issues, and
-I have used Leo for writing the migration scripts from Mediawiki to MoinMoin
-(wich I think is more flexible and extensible that the popular wiki behind
-wikipedia). I was probing also the idea of a Wiki like environment for solving
-colaborative problems, so I was posting the scripts I made on Leo in a Wiki
-page, and republishing them in the moment they changed. This keeps me pasting
-all the time the script and in some moments I was thinking what about if someone
-make a change in the Wiki page. Would be nice then to have the same capability
-to detect and sincronize that change as Leo make with the hard disk files.
-
-But this doesnt end here. Another Wiki-Leo interaction is to use outlines as
-a way to organice Wiki content. For example "= Title =" in a Wiki would be a
-Outline Node in Leo and "== Subtitle ==" Would become a outline subnode all
-arranged in the proper hierarchy.
-
-Somekind of Wisiwyg display would be nice, but this must be a plugin or something
-like that, so Leo could become a "Layered" front end to some kind of data.
-
-About and article on Wikipedia. That would be nice, but I'm a little tired of
-fighting with some wikipedians ignorance on certain matters combined with power
-(a pretty bad combination). I think that a Wiki page is nice because its live
-comes from the community knowledge, but I'm not interested in that fighting,
-so I have made a Leo wiki page in our local Wiki:
-
-http://www.el-directorio.org:8080/Leo
-
-and when I have enough knowledge about Leo (and time) I hope to start making
-contribs in the spanish documentation (for the moment I'm only workind in the
-evangelism here).
-#@+node:ekr.20060227131611: *3* Two ideas from Kent
+#@+node:ekr.20060227131611: *5* Two ideas from Kent
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3593116
 By: ktenney
@@ -550,43 +613,23 @@ I think this holds lots of promise.
 
 Thanks,
 Kent
-#@+node:ekr.20061011111007: *3* @bool autoload_most_recent_leo_file
-@nocolor
-
-http://sourceforge.net/forum/message.php?msg_id=3957908
-
-> Is there a setting for autmoatically loading most recent file or files.
-
-@color
-#@+node:ekr.20041022083226: ** Directives
-#@+node:ekr.20031218072017.833: *3* Use @file extension by default if no @language
-@nocolor
-
-Open discussion
-By: jasonic ( Jason Cunliffe ) 
- use of @language   
-2003-07-16 03:40  
-
-I am wondering why Leo does not default to just use the file suffix in @file nodes, instead of obliging @language line in in the body pane 
-
-For example any @file ending with a suffix as defined in the language extensions could just default to use those. 
-
-".py" for python 
-".r" for rebol 
-".as" for actionscript etc.. 
-
-Should anyone need to over-ride those, they could use @language.
-#@+node:ekr.20041016134312.1: *3* Allow multiple @language directives in a single node
+#@+node:ekr.20110525112110.18397: *4* Minor Emacs support
+#@+node:ekr.20060628103226.2: *5* Alt-x handlers should add to lossage
+#@+node:ekr.20060123091352: *5* Incremental search in switch-to-buffer
+#@+node:ekr.20060116090428: *5* Expand 'point' so it indicates node as well as text location
+#@+node:ekr.20051021074728: *5* Space completion
+#@+node:ekr.20041022083226: *3* Directives
+#@+node:ekr.20041016134312.1: *4* Allow multiple @language directives in a single node
 @killcolor
 
 Treat @language like @color: ambiguous nodes (nodes containing more than one
 @language directive) should not affect descendent nodes.
-#@+node:ekr.20031218072017.805: *3* Allow other section delims besides << and >>
+#@+node:ekr.20031218072017.805: *4* Allow other section delims besides << and >>
 Maybe the section operator could be customizable, 
 I personally prefer the wiki way [[name of section]]. 
 
 @setlink-tag [[ ]] 
-#@+node:ekr.20031218072017.745: *3* @@first <n>
+#@+node:ekr.20031218072017.745: *4* @@first <n>
 @nocolor
 
 Hate to break into the grand design discussions, but here's a hopefully small thing. If you need to place a good sized copyright statement at the top of your files, LEO doesn't handle this case very cleanly. As I'm sure you're aware, you wind up with a matching number of @@first lines for each leading line in your source. 
@@ -683,7 +726,7 @@ Type tag instead? So one '@@first 5' could represent all 5 of the above @@first 
 Thanks. 
 
 - ordinarius 
-#@+node:ekr.20031218072017.795: *3* Metatags
+#@+node:ekr.20031218072017.795: *4* Metatags
 @nocolor
 
 By: nobody ( Nobody/Anonymous ) 
@@ -698,17 +741,22 @@ Here are some features I'd like to see:
 
 There are quite a few of these now.  It would be good to generalize:
 - Register @node type.
-#@+node:ekr.20041130104552: *3* (Support bird-track programs/comments?)
+#@+node:ekr.20041130104552: *4* (Support bird-track programs/comments?)
 @killcolor
 
 By: Guenther Enthaler - genthaler
 RE: Haskell support  
 2004-11-18 22:55
 
-There's a literate programming mode in Haskell (and in a number of other functional programming languages such as Clean & Curry), where the program is in a comment, usually where the line starts with ">" (bird track style, I think it's called), and the comments/documentation are freeform. It would be difficult but cool if Leo could support it, if only because the sentinels in the derived files wouldn't make whole file look so busy. 
+There's a literate programming mode in Haskell (and in a number of other
+functional programming languages such as Clean & Curry), where the program is in
+a comment, usually where the line starts with ">" (bird track style, I think
+it's called), and the comments/documentation are freeform. It would be difficult
+but cool if Leo could support it, if only because the sentinels in the derived
+files wouldn't make whole file look so busy.
 
 Günther 
-#@+node:ekr.20031218072017.797: *3* Allow @file http & @file ftp
+#@+node:ekr.20031218072017.797: *4* Allow @file http & @file ftp
 @nocolor
 
 I'd like to see leo's @file can be extended to cover more protocols, like REBOL's "read" does. 
@@ -724,7 +772,7 @@ while we are at it, what about xmlrpc/soap?
 should there be new directive, like @source ?
 
 @color
-#@+node:ekr.20031218072017.810: *4* Remote access Scott Powell
+#@+node:ekr.20031218072017.810: *5* Remote access Scott Powell
 I will wait. Here's clarification, when you're ready for it:
 
 All of my projects are stored on remote computers, and accessed via FTP. 
@@ -744,47 +792,471 @@ consideration.
 
 Scott Powell
 CEO, Dev Designs
-#@+node:ekr.20060527184335: ** Gui
-#@+node:ekr.20031218072017.793: *3* Keep right panes constant when tiling horizontally (Tix)
-This is done automatically now!  I may have to use configure events.
-
-> When I have the 'split mode' set to display tree and log on left, and viewpane
-on right, I sometimes need to increase the width of the window.
-
-When I do the resize, the tree/log panes grow in proportion. I don't know about
-others, but I'd much prefer if the tree/log panes stayed at the same width,
-and only the view pane grew.
-#@+node:ekr.20060213151918: *3* Add baloons
-#@+node:ekr.20060212125650: *4* createBalloon
-def createBalloon (tab,sv):
-
-    'Create a balloon for a widget.' ''
-
-    balloon = Pmw.Balloon(tab,initwait=100)
-    balloon.bind(tab,'')
-    hull = balloon.component('hull')
-    def blockExpose (event):
-        if sv.get() == '':
-             hull.withdraw()
-    hull.bind('<Expose>',blockExpose,'+')
-    balloon._label.configure(textvariable=sv)
-#@+node:ekr.20060116083043.1: *3* Add context-menus on nodes or text
-#@+node:ekr.20051207130144: *3* Investigate Tk DnD
+#@+node:ekr.20081119132758.2: *4* Support @ifgui in settings trees
+#@+node:ekr.20110525112110.18401: *3* Docs
+#@+node:ekr.20070521105645: *4* Improve api docs with epydoc?
 @nocolor
-https://sourceforge.net/forum/message.php?msg_id=3460955
-By: nobody
+http://sourceforge.net/forum/message.php?msg_id=4319363
+By: ktenney
 
-I found this link:
-http://www.8ung.at/klappnase/TkinterDnD/TkinterDnD.html
-TkinterDnD
+I think there is room for improvement in documenting Leo's
+API, making it easier to write these kind of scripts.
+I'm not sure of the best way to do that.
 
-so if Edward is interested in adding drag and drop support for regular leo,
-this might be a path to do so.  It looks like an active project.
+Epydoc seems to be the most active project in this realm.
+http://epydoc.sourceforge.net/epydoc.html
+#@+node:ekr.20090131200406.15: *3* File features
+#@+node:ekr.20080311135649.2: *4* Allow different .leo formats
+@nocolor
 
-leouser
-#@+node:ekr.20051207130144.1: *4* @url http://www.8ung.at/klappnase/TkinterDnD/TkinterDnD.html
-#@+node:ekr.20050509085713: ** Installer
-#@+node:ekr.20050328093147.1: *3* Report: improving installer
+On Tue, Mar 11, 2008 at 7:03 AM, Kent Tenney <kten...@gmail.com> wrote:
+
+> On 3/11/08, derwisch <johannes.hues...@med.uni-heidelberg.de> wrote:
+
+> >  On 11 Mrz., 08:03, "Ville M. Vainio" <vivai...@gmail.com> wrote:
+> >  > It could also be argued that
+
+> >  > - Referring to previous cloned vnodes explicitly in XML does not
+> >  > necessarily obscure DAG - it follows the "do not repeat yourself"
+> rule
+> >  > - It will speed up reading
+> >  > - Wouldn't it be better for preserving the integrity of the XML file?
+
+> > I would lean towards this line of argumentation. A couple of days I
+> >  had my Leo extension destroy the Leo ODM file (which was still valid
+> >  according to Leo, but unreadable wrt the extension and broken uAs). I
+> >  resorted to editing the Leo file with Emacs, and was quite surprised
+> >  to see that the headStrings were attributes of vnodes.
+
+> I'll chime in with my pet peeve re: .leo file structure::
+
+> I think that putting the headstrings on vnodes and body strings on tnodes
+> obscures the informational content of the .leo file, and makes the .leo
+> file
+> format less attractive as a generalized solution to the problem of how to
+> manage head/body pairs which live in a hierarchal structure.
+
+> Thanks,
+> Kent
+
+> >  I think that
+> >  editing the file might have been a bit easier if there had been no
+> >  such redundancy. But this is more a feeling rather than a qualified
+> >  opinion.
+
+Thanks for all these comments.  I'll respond to them all here.
+
+Clearly, we should be using a standard xml parser to read .leo files.
+
+My present thoughts:
+
+- I personally like human-readable headlines in <v> elements.
+
+- I am open to putting headlines in <t> elements, as an indication that
+tnodes do indeed contain headlines and body text.
+
+- I am willing to consider only writing shared subtrees once.
+
+Oh! (An Aha)  All these are preferences.  We can allow any combination of
+these provided that headlines appear somewhere.
+
+So that's clean.  This will happen in Leo 4.5. 
+#@+node:ekr.20061002093442: *4* Add opml support to new,open, save commands
+#@+node:ekr.20071003104917: *4* Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
+#@+node:ekr.20080626081829.2: *4* Allow headline comments for @nosent files
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/eb718b4c6d478ac0
+
+I'm just getting started learning how to use Leo. Now, I'd like to use
+it for some of my projects, but there's no chance that I can convert
+everyone at work to using it, so putting sentinel-filled files in our
+repository is out of the question. At the same time, my code looks
+awfully bare without sentinels because the documentation ends up in
+the section names, not the comments!
+
+So, I was wondering if there's a convenient way to pull the section
+names into a comment at the start of each section?
+
+===============
+
+Interesting question.  Am I correct in assuming you are using @nosent trees
+to generate your files?  If so, it would be easy to add support for the
+following options:
+
+@bool write_section_comments_in_at_nosent_trees
+@bool write_node_name_comments_in_at_nosent_trees
+
+The first would write a sentinel consisting of only the section name;
+the second would write a sentinel consisting only of the node's headline
+(for nodes whose headline is not a section name).
+
+These seem like they would be useful additions.  One can even imagine
+corresponding Leo directives so that the comments could be turned on or off
+within an @nosent tree.
+
+What do you think?
+
+=====================
+
+> Interesting question.  Am I correct in assuming you are using @nosent trees
+> to generate your files?  If so, it would be easy to add support for the
+> following options:
+
+> @bool write_section_comments_in_at_nosent_trees
+> @bool write_node_name_comments_in_at_nosent_trees
+
+> The first would write a sentinel consisting of only the section name;
+> the second would write a sentinel consisting only of the node's headline
+> (for nodes whose headline is not a section name).
+
+> These seem like they would be useful additions.  One can even imagine
+> corresponding Leo directives so that the comments could be turned on or off
+> within an @nosent tree.
+
+That sounds like an excellent solution. Particularly the last bit --
+if you could turn section-comments on and off as required, it would
+become very convenient to use Leo to produce source that is intended
+to also be read by non Leo users. 
+#@+node:ekr.20080919085541.3: *4* Use sqlite data base as an alternative representation for .leo files
+http://groups.google.com/group/leo-editor/browse_thread/thread/dff0c165e2211691
+#@+node:ekr.20080922115725.1: *4* Finish @shadow
+# Allow block comments in private shadow files.
+# Compute delims using the private shadow file, not the file extension!
+# Can @shadow mark externally changed nodes?
+#@+node:ekr.20081004102201.2: *5* Log file for @shadow
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
+
+How about a shadow.log file which Leo told what it thought of the relationship
+between the node, file and shadow? It might provide useful clues.
+#@+node:ekr.20081001062423.1: *5* Can @shadow mark externally changed nodes?
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
+
+@color
+#@+node:ekr.20080708094444.38: *6* x.propagate_changed_lines
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+       New at 2010/01/07: Replacements preserve sentinel locations.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    trace = False and g.unitTesting
+    verbose = True
+    x = self
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    delim1,delim2 = marker.getDelims()
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old: %s %s' % (old_i,prev_old_j))
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,
+        new_private_lines_wtr,
+        marker,
+        limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40: *7* << init vars >>
+new_private_lines_wtr = self.sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = self.sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = self.sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = self.sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
+#@+node:ekr.20080708094444.39: *7* << define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.h)
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@+node:ekr.20080708192807.2: *7* << about this loop >>
+@ This loop writes all output lines using a single writer:
+new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present
+  SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of
+  the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips
+(deletes) all previously unwritten non-sentinel lines in
+old_private_lines_rdr whose index is less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from
+the old_private_lines_rdr explicitly. This explains why opcode
+handlers for the 'insert' and 'delete' opcodes are identical.
+#@+node:ekr.20080708192807.5: *7* << Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace('tag',tag,'old_i',old_i,'limit',limit)
+
+if tag == 'equal':
+    # Copy sentinels up to the limit = mapping[old_i]
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index() # Only used for tag.
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (
+            tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag == 'insert':
+    if limit < old_private_lines_rdr.size():
+        self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index() # Only used for tag.
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if marker.isSentinel(line):
+            new_private_lines_wtr.put(
+                '%s@verbatim%s\n' % (delim1,delim2),
+                tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag == 'replace':
+    # This case is new: it was the same as the 'insert' case.
+    start = old_private_lines_rdr.index() # Only used for tag.
+    while (
+        old_private_lines_rdr.index() <= mapping[old_j-1]
+        and new_public_lines_rdr.index() <  new_j
+            # 2010/10/22: the replacement lines can be shorter.
+    ):
+        old_line = old_private_lines_rdr.get()
+        if marker.isSentinel(old_line):
+            # Important: this should work for @verbatim sentinels
+            # because the next line will also be replaced.
+            new_private_lines_wtr.put(old_line,tag='%s %s:%s' % (
+                'replace: copy sentinel',start,new_j))
+        else:
+            new_line = new_public_lines_rdr.get()
+            new_private_lines_wtr.put(new_line,tag='%s %s:%s' % (
+                'replace: new line',start,new_j))
+
+    # 2010/10/22: The replacement lines can be longer: same as 'insert' code above.
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if marker.isSentinel(line):
+            new_private_lines_wtr.put(
+                '%s@verbatim%s\n' % (delim1,delim2),
+                tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # Copy sentinels up to the limit = mapping[old_i]
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+    # Leave new_public_lines_rdr unchanged.
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@+node:ekr.20080708094444.45: *7* << do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@+node:ekr.20090402072059.13: *5* Create a general mechanism for aux (shadow, _db) files
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ec30df3f1db8db3
+
+On Sat, Mar 28, 2009 at 3:24 AM, VR <viktor.ransmayr@gmail.com> wrote:
+
+
+    When I tried to de-install Leo-4.6b1 I succeeded, but the program
+    reported that 5 directories
+    were not removed.
+
+    Three of the directories where
+
+    1) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\config
+    2) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\doc
+    3) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\plugins
+
+    [containing]
+
+
+    a) .leoSettings.leo_db
+    b) .leoDocs.leo_db
+    c) .leo_shadow
+    d) .leoPluginsRef.leo_db
+
+
+Thanks for this report. I think it is important, and needs a good solution.
+
+I dislike all these files being sprayed around the file system. I'd like to see
+these files placed somewhere the ~/.leo directory. Is there a reason why this
+would be a bad idea?
+
+Similarly, we might also prefer to have shadow files place in, say,
+~/.leo/shadow_files.
+
+In both cases, I think we want to create files that indicate their location.
+Either that, or mirror their location in (subdirectories) ~/.leo. In other
+words, this is a general problem, and it would be good to have a robust, general
+solution.
+#@+node:ekr.20100826110728.5839: *5* Relocating .leo_shadow directories
+@nocolor-node
+
+2008
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b738e3f8d164f9fc
+
+May 10, 2010
+
+Kent
+
+I think there could be quite a bit of interest in moving
+the shadow files to their own tree, avoiding what might
+be considered 'pollution' of a tree of files in @shadow nodes.
+
+Edward has said that this would add a lot of complexity to Leo.
+
+It seems that a VCS back end for Leo might simplify the
+task of arbitrary shadow file location, as well as adding
+versioning capability.
+
+
+Those of us old enough to remember the Groucho Marx show will know what I am ...
+
+bogomil
+ to me
+
+In order to relocate .leo_shadow directories in home dir, I have made
+the following changes leoShadow.py:
+1. Introduce new setting 'shadow_in_home_dir':
+   x.ctor:
+     ...
+     self.shadow_prefix = c.config.getString('shadow_prefix') or ''
+
+=>  self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir')
+or False
+    ...
+
+2. Make the following line:
+   x.shadowDirName and shadowPathName:
+      ...
+      fileDir = g.os_path_dirname(filename)
+
+=>   if self.shadow_in_home_dir:
+        fileDir = "//".join([baseDir, fileDir.replace(':','%')])
+
+In this way I keep .leo_shadow dirs in a tree and it is ok if the user
+reorgs the original tree.
+
+=====================
+Edward K. Ream
+ to bogomil
+
+Thanks for these suggestions.  I'll try them soon.
+
+A few minor comments about the code.
+
+>  self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir') or False
+
+This works (because c.config.getBool returns None if the setting does
+not exist). Thus, the "or False" part merely replaces None by False.
+I prefer the following:
+
+self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir',default=False)
+
+>   if self.shadow_in_home_dir:
+>         fileDir = "//".join([baseDir, fileDir.replace(':','%')])
+
+This looks like a Windows-only solution because of ':'.  It might fail
+in strange ways on other platforms.
+#@+node:ekr.20060527184335: *3* Gui
+#@+node:ekr.20060824110846: *4* Add colorizing for cweb, rapidq
+#@+node:ekr.20060213151918: *4* Add baloons
+#@+node:ekr.20050509085713: *3* Installer
+#@+node:ekr.20050328093147.1: *4* Report: improving installer
 @killcolor
 http://sourceforge.net/forum/message.php?msg_id=3064212
 By: djsg
@@ -871,7 +1343,7 @@ Let me know what you think. I won't be able to start work for a week or so,
 so there's no rush.
 
 -- David
-#@+node:ekr.20070929125944: *3* Emulate Orange's download philosophy
+#@+node:ekr.20070929125944: *4* Emulate Orange's download philosophy
 @nocolor
 
 http://sourceforge.net/forum/message.php?msg_id=4543089
@@ -887,151 +1359,365 @@ Leo should copy this download philosophy.
 
 
 
-#@+node:ekr.20041228085245: ** Options & settings
-#@+node:ekr.20031218072017.740: *3* Disallow writes outside a "top-level" folder
-1. Warn when creating _any_ new file.
+#@+node:ekr.20110525112110.18400: *3* Testing
+#@+node:ekr.20100131161507.6303: *4* Unit tests that all commands have docstrings
+# Just make the test.  It doesn't have to pass.
+#@+node:ekr.20100828074347.5827: *3* Vim bindings: abandoned
+@nocolor-node
 
-2. Warn when rewriting any file that was not read properly.
+This is probably as far as we can go without supporting vim's underlying data model.
 
-This prevents "hijacking" an already existing file.
-#@+node:ekr.20040311022923: *3* Make sentinel name in @-node optional
-#@+node:ekr.20080807111553.1: ** Scripting
-#@+node:ekr.20031218072017.753: *3* Emacs comint-mode:  The improved Execute Script command does most of this
+http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
+#@+node:ekr.20110202111105.15438: *4* Handling vim modes
+#@+node:ekr.20061031131434.123: *5* set-xxx-State
+def setCommandState (self,event):
+    '''Enter the 'command' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('command')
+    # This command is also valid in headlines.
+    # k.c.bodyWantsFocus()
+    k.showStateAndMode()
+
+def setInsertState (self,event):
+    '''Enter the 'insert' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('insert')
+    # This command is also valid in headlines.
+    # k.c.bodyWantsFocus()
+    k.showStateAndMode()
+
+def setOverwriteState (self,event):
+    '''Enter the 'overwrite' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('overwrite')
+    # This command is also valid in headlines.
+    # k.c.bodyWantsFocus()
+    k.showStateAndMode()
+#@+node:ekr.20061031131434.133: *5* setInputState
+def setInputState (self,state):
+
+    k = self
+    k.unboundKeyAction = state
+
+
+
+#@+node:ekr.20110202111105.15433: *4* Vim settings
+#@+node:ekr.20110202111105.15434: *5* @strings [command,insert, overwrite] top_level_unbound_key_action = command
 @nocolor
 
-Michael Manti
-mmanti@mac.com
+This setting determines the initial binding for otherwise-unbound keystrokes
+when no mode is in effect.  Note: the keyboard-quit command exits all modes.
 
-P.S. I think a feature that could make Leo *the* IDE for developing in 
-interpreted languages is something like the (X)Emacs comint-mode.el for 
-interacting with the shell and interpreters.
+The valid values are::
 
-comint-mode.el serves as the basis for interactive modes for a number of
-languages--OCaml, Haskell, SML, among them. It allows for editing expressions in
-one buffer and triggering their evaluation in another buffer that has an
-interpreter running in it, along with entering commands in the interpreter
-buffer and moving back and forth through the history of their evaluation.
+command:  Leo ignores the key (like Vim).
+insert:  Leo inserts the key at the cursor (like Emacs)
+overwrite: Leo replaces the character at the cursor.
+#@+node:ekr.20110202111105.15435: *5* @bool stayInTreeAfterEditHeadline = True
+This allows the newline character to switch from the outline pane to the body pane.
+#@+node:ekr.20110202111105.15436: *5* @bool outline_pane_has_initial_focus = True
+True:  Outline gets focus when a new window is opened.
+False: Body pane gets focus when a new window is opened.
+#@+node:ekr.20110202111105.15437: *5* @bool stayInTreeAfterSelect = True
+True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
 
-Imagine being able to highlight a node in Leo, and have all the code in it and
-its children evaluated in an interpreter running in a separate window or pane,
-much as Leo can open a Python shell now. Users of those languages could build
-plug-ins specific to their language atop that layer, and the @language directive
-could activate that. I think that would be very cool.
-#@+node:ekr.20070627151457: *3* --runCommand option
-@
+If this is False it will be harder to use the arrow keys in the headline.
+    
+False: (Legacy) Selecting an outline node transfers focus to the body pane.
+#@+node:ekr.20110202094848.12569: *4* Notes
+#@+node:ekr.20100521090440.5887: *5* Generalize minibuffer code
+@language python
+@color
 
---runCommand "leo-command-name" runs the command at idle-time after loading the file.
+#Just playing with part of a template system, the (partial) mock up for "range()" is:
 
-I am not going to do this: this, in conjunction with @command nodes, is a big security hole, equivalent to @script.
+def tabStopNaming (event=None):
 
-The only safe thing would be to disallow user-defined commands from being executed by --runCommand, but then what is the point of --runCommand.
-#@+node:ekr.20041228092223.4: ** Windows
-#@+node:ekr.20050108051818: *3* Add hyperlinks for url's
-@killcolor
+  stateName = 'naming'
+  k = c.k
+  state = k.getState(stateName)
 
-http://sourceforge.net/forum/message.php?msg_id=2928436
-By: jasonic
+  help = ('start-value -- optional, -> fill-in or tab eliminate.  ',
+           'end-value -- required, -> fill-in.  ',
+           'step -- optional, ->fill-in or tab to eliminate.  ')
+  tabStop = ('start-value', 'end-value', 'step')
 
-> I really do want and need to be able to embed basic links throughout out my Leo outlines in a natural 2005 fashion. 
+  if state == 0:
+      k.setLabelBlue(help[0],protect=True)
+      k.getArg(event,stateName,1,tabStopNaming)
+      # g.es('does this ever executed?') # yes, imediately!
+  else:
+      k.clearState()
+      g.es_print('%s : %s' % (tabStop[0], k.arg))
+      k.setLabelBlue('')
 
-This should be fairly easy to do.
+tabStopNaming()
 
-At present, the use_hyperlinks configuration option controls whether Leo generates 'live' hyperlinks for section names.  I don't enable this be default because I dislike jumping around the outline.  Instead, I use clones.
-
-The code to do these kinds of hyperlinks is pretty straightforward.  There is a little code in the colorizer and callbacks in the leoTkinterTree, iirc.
-
-Supporting hyperlinks to urls would be similar.  They could appear in the following situations:
-
-- Anywhere where @language plain is in effect.
-- In comments where @language (a programming language) is in effect.
-- Anywhere (except in comments?) where @language html is in effect.
-
-This would make a straightforward plugin.  Mind you, this should be in Leo's core, but a plugin would get my attention :-)  Perhaps the reason I haven't done this is that I keep thinking a generalized syntax colorer is near ;-)
-
-Edward
-#@+node:ekr.20041022083005.2: *3* add a Stop button for find/change
-#@+node:ekr.20040908104644: *3* Leo splash screen
-To create a splash screen:
-
-- Draw the screen.
-- Erase the screen with self.after(5000, self.destroy)
-#@+node:ekr.20040908221501: *4* @url http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/120687
-#@+node:ekr.20041228084143: ** Maybe never
-#@+node:ekr.20070426092031: *3* Consider another way to compute home directory
 @nocolor
-http://sourceforge.net/forum/message.php?msg_id=4281562
-By: ktenney
 
-I don't know if this is a resolved issue, here's another approach,
-looks like a good one.
+=====================================================
+This is hardwired for the first parameter.  Things I need to expand
+this:
 
-email link
-http://murl.se/24201
+1. put in a variable that cycles through the tabStops
 
-python.org os.path doc
-http://murl.se/24202
+2. In this mock up, you are entering the parameters in the minibuffer,
+a more advanced version would collect each keypress and put it in the
+body at the current tabStop, a tab would finalize the entry and
+advance to the next stop, no text other than the 'help', ends up in
+the minibuffer.
 
->>> import os
->>> lin_key, win_key = "home", "Documents"
->>> homedir = os.path.expanduser('~')
->>> if os.name == 'nt': os_key = win_key
->>> if os.name == 'posix': os_key = lin_key
->>> print homedir.find(os_key) > -1
-True
+Sinc I'm only modifying existing code without real understanding of
+what Leo is doing, andy guidance would be appreciated.
 
-#@+node:ekr.20060930110925: *3* Fix arrow keys (if possible)
-Up/down arrow keys should move straight up/down, but this is difficult with Tk.
-Still the present way is very bad.
-#@+node:ekr.20041022070154: *3* (options for setting working directory during startup)
-#@+node:ekr.20041022070154.1: *4* Request & response
-@killcolor
+Tom
 
-http://sourceforge.net/forum/message.php?msg_id=2815599
-By: Antonio Pala
+=======================
 
-All plugins I have tried (notably @run and the @rst variants) have their working
-directory set to my home directory, regardless of the position of the Leo file
-and all @path directives. This renders most of them useless, since I would have
-to use absolute pathnames. Is this the way they were meant to work, or is there
-a bug somewhere? Or maybe I have missed some configuration parameter?
+Generalizing the minibuffer code would be a good thing to do.  I
+suppose we could define some kind of language that would create, or
+rather simulate, hand-written code.  In a sense, @mode nodes are
+intended to do this also.
 
-I am using Leo 4.2 with Python 2.3 on Linux.
-
-> All plugins I have tried (notably @run and the @rst variants) have their working directory set to my home directory, regardless of the position of the Leo file and all @path directives.
-
-Directory issues are different on different platforms.
-
-I would welcome specific proposals for setting directories during startup.  Early in the startup process Leo sets g.app.loadDir to the directory from which Leo was loaded.  Plugins can use this directory to set the working directory as they choose.
-
-@path directives will have no effect on plugins:  they are loaded before the outline.
-
-> This renders most [plugins] useless, since I would have to use absolute pathnames.
-
-No, it means you might have to add a few lines of code to your plugin to make it work just as you would like it to work.
-
-> Is this the way they were meant to work?
-
-I don't have much control over how plugins were "meant" to work.  However, an improved plugin manager might have facilities for setting the working directory.
-
-This is a non-trivial issue;   Leo uses and sets paths in many places in the code.  It seems dubious to have plugins change the working directory at random times.  Perhaps an option that inits the working directory would be good.  The new config system will allow per-outline options as well as global option. I believe such options could be loaded before plugins.
+As I look at leoKeys.py again I'll keep this example in the back of my
+mind as something that it would be good to support more easily.
 
 Edward
-#@+node:ekr.20051104051733: *3* Make Focus-in in minibuffer widget equivalent to Alt-x
-FocusIn does nothing for Label widgets.
+#@+node:ekr.20100210102224.5744: *5* Design
+@nocolor-node
 
-http://sourceforge.net/forum/message.php?msg_id=3412640
-By: btheado
+Requirements:
+    - Existing bindings must still be valid.
+    - But @mode does not have to remain.
 
-Currently clicking on the minibuffer and typing text has no effect.  Kinda confusing
-until the Alt-x binding I discovered that Alt-x is the way to access the minibuffer
-command mode.
+Think data:
+    - Drive binding by tables.
+    *** Design these tables first.
+    - Table design should be flixible.
+      It can change without affecting user.
 
-It would be nice if the <FocusIn> binding on the minibuffer widget were equivilent
-to Alt-x.
+keySequence class?
+    - Represents a sequence of keystrokes.
+
+bufferMode class?
+    - Might encapsulate directives, etc.
+
+bindHelper class?
+    - Would mediate various aspects of binding.
+    - c.bindHelper or k.bindHelper?
+#@+node:ekr.20100113075303.6270: *4* Vim problems
+#@+node:ekr.20100112051224.6229: *5* Binding Arrow keys (fixed?)
+@nocolor-node
+
+Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
+commands or @mode nodes have no effect.
+#@+node:ekr.20100112051224.6239: *5* Displaying mode help
+@nocolor-node
+
+The "--> mode-help" command has the following issues related to the
+display of the "Help" tab:
+
+1. Key label always capitalized.
+
+Vim commands are mapped to both lower-case and upper-case keys but always appear
+mapped to upper-case keys within the "Help" tab.
+
+2. Layout of tab's contents.
+
+To improve readability and better support narrow tab cards, display the mode's
+label without the "enter-" and "-mode" text and place the key label before the
+mode label.
+
+For example, the following entries would change from::
+    enter-vi-delete-line-mode d
+    enter-vi-delete-to-begin-of-word-mode b
+to::
+    d : vi-delete-line
+    b : vi-delete-to-begin-of-word
+#@+node:ekr.20100112051224.6225: *5* Repeat last cursor movement command
+@nocolor-node
+
+Support the ';' key: repeat the last "To character" or "Find character" command.
+#@+node:ekr.20100113075303.6271: *5* Need mode-oriented bindings
+@nocolor-node
+
+Mapping a number to a command or an @mode node works but can not be used as it
+prevents the number from being entered as text while in Vi's insert state.
+
+Binding 'bksp' key to back-char to move back a character in command mode
+prevents 'bksp' from deleting characters in text edit mode.
+#@+node:ekr.20080616110054.2: *5* Support vim dot command
+@nocolor-node
+
+The ability to repeat the last editing related command by pressing the period
+key is not supported and there is no workaround in place.
+
+Binding keys within nodes:
+
+Some commands can be "easily" repeated by having the command's mode
+bind itself to the period key.  This is not currently working.  
+
+Support commands requesting input:
+
+Add companion commands that reuse input.  For example, a zap-to-
+character-again command could exist which will reuse the key entered
+in the last zap-to-character command.  With this support, the mode
+that performs the initial command would assign the period key to a
+companion mode that is identical to the initial mode but with the zap-
+to-character command replaced by the zap-to-character-again command.
+
+Commands requiring companion commands are:
+  zap-to-character
+  find-character
+  backward-find-character
+  (Any others?)
+
+Notes:
+
+- The copy of the character should be saved somewhere that does NOT affect the
+  contents of the clipboard.
+
+- The same or a separate storage location can be used for all commands to retain
+  a copy of the character entered by the user. It doesn't matter since only the
+  last command is assigned to the period key to be re-executed.
+#@+node:ekr.20100112051224.6238: *5* Some commands do not work in headline
+@nocolor-node
+
+Leo functions exist which unconditionally set focus to the body pane
+regardless of the active pane.
+
+For example, bracket matching commands ("%" key) do not work within
+a node's headline text.  Instead, the command is performed on the
+node's body text.
+
+Using the "undo" command (key 'u') to undo a change to a node's headline text
+only works correctly after another node has been selected. It appears that
+changes made to a node's headline text are not recorded in Leo's change history
+until the edited node has lost focus.
+#@+node:ekr.20100113075303.6272: *5* Argument handling
+#@+node:ekr.20100112051224.6222: *6* Commands requesting user input
+@nocolor-node
+
+Commands requesting user input must be the last command executed within an @mode
+node. This prevents the implementation of commands such as "yank to <character>"
+that requires a "copy to clipboard" operation after the "find-character"
+command.
+
+======
+
+Maybe we just need more commands...
+#@+node:ekr.20100112051224.6226: *6* Range prefix to commands/objects (k.getArgs)
+@nocolor-node
+
+The ability to specify a numeric range prefix is not supported. For example,
+entering "3dd" will not delete the next three lines and "20G" will not move the
+cursor to the 20th line in the file.
+
+The ability to specify a numeric range prefix to an object is not supported. For
+example, the "d2fx" command should Delete up to and including the 2nd Found "x"
+character.
+#@+node:ekr.20100112051224.6223: *5* Editing node headlines using @mode nodes
+@nocolor-node
+
+Commands modifying or selecting headline text do not work correctly within a
+@mode node.
+
+This eliminates accurate implementation of vi's delete/change/substitute/yank
+object commands. As a workaround, the commands are currently written to only
+select the text. The user must perform the subsequent delete, change,
+substitute, and yank.
+#@+node:ekr.20100112051224.6237: *5* Fix forward and backward by sentences
+@nocolor-node
+
+Leo's sentence related functions:
+
+- do not stop at empty lines.
+- do not skip periods within words.
+- do not stop at sentences ending in non-periods.
+- do not stop at the end or beginning of the buffer.
+
+Note: see forwardSentenceHelper and backSentenceHelper functions.
+#@+node:ekr.20100112051224.6246: *5* Missing commands/features
+#@+node:ekr.20100112051224.6232: *6* Toggle case command (easy)
+@nocolor-node
+
+Leo provides support for switching to upper or lower case but no method exists
+to toggle between cases (used by Vi's "~" command).
+
+#@+node:ekr.20100112051224.6233: *6* Replace current character command
+@nocolor-node
+
+Vi's "r" command allows user to replace the current character with the next
+entered character.
+#@+node:ekr.20100112051224.6234: *6* Move current line (to screen position)
+@nocolor-node
+
+Vi has a collection of "z<movement>" commands that will move the
+current line to the top, middle, and bottom of the screen.  They are
+not supported in Leo.
+#@+node:ekr.20100112051224.6235: *6* Move body text up/down
+@nocolor-node
+
+Vi maps keys to scroll the text up/down one line and by half the
+number of visible lines.  Leo does not support this.
+
+#@+node:ekr.20110202094848.12568: *6* Named marks
+@nocolor-node
+
+Having worked with Tk text canvases more that Qt, there still seem to
+be things that it had that have to be worked around as the Qt people
+just haven't seen the need for.
+
+One is the block cursor, I giving Leo Vim like functionality, it would
+be nice if one where supported, theses new kids just don't understand
+something so primitive I guess.
+
+Another is named marks, in Vim you can store a number of cursor
+locations, and recall them to jump around in your code.  This was also
+useful in filling out templates as each stop could be given a name
+mark.  This helped make filling out a template easier as you weren't
+stuck in a linear filling in the blanks in a set order, template stops
+where linked in rings, you could jump from the last stop back to the
+first and make and changes you wanted on a second go round.  Gravity
+of marks made things easier to inspect to determine what stops where
+used and which ones were being bypassed.
+
+As these things had an actual presence in the text buffer, it going to
+be a little harder to come up with a reasonable work around.
+
+Tom
+#@+node:ekr.20110115062009.6025: *5* Commands that work differently in Vim
+#@+node:ekr.20100112051224.6236: *6* Two kinds of words
+Vi supports two types of words in its commands:
+
+1. Words that consist of only a subset of the character set and
+2. words that consist of all characters except the space and tab characters.
+
+Leo's always considers a word to consist of a subset of characters
+although some word related commands include different characters
+than others.
+#@+node:ekr.20090629183608.8446: *6* Copy/paste/yank/delete
+Yank vs. Yank:
+Vi's "yank" commands copy the selected text TO the clipboard.
+Leo's "yank" commands insert text FROM the clipboard.
+
+copy-text in modes:
+Leo's copy-text command does not work within a mode.  As a result,
+all "copy to clipboard" capability is being implemented using the
+kill-<object> command followed by Leo's "yank" command to put the
+text back.
+
+paste-text in modes:
+The paste-text command does not work within an @mode node.  Leo's
+"yank" command is used instead.
+
+delete-node does not copy node to clipboard:
+A copy-node command is issued to copy the node to the clipboard
+followed by the delete-node command.
 #@+node:ekr.20040123102724: ** Can't or won't
-#@+node:ekr.20100128094926.6222: *3*  port pmw to py3k
-Pmw should be deprecated.
-#@+node:ekr.20080822065427.3: *3* Create desktop icon or start menu item
 #@+node:ekr.20080815174457.5: *3* Consider deleting private shadow files
 @nocolor
 
@@ -1046,98 +1732,6 @@ Answer:
 My second thought is that this is too dangerous--shadow files might
 turn out to be useful emergency backups.  I would prefer to have Leo
 mess with the file system as little as possible.
-#@+node:ekr.20060329102951: *3* @ref
-@nocolor
-
-The graph world is a better solution.
-#@+node:ekr.20060329102951.1: *4* My summary post
-http://sourceforge.net/forum/message.php?msg_id=3598136
-
-> It appears that @ref nodes introduce a flexibility that can not be simulated (at all?) with clones.  
-
-Now that something like @ref appears necessary, it is so much easier to see how @ref is useful :-) 
-
-1. @ref is an explicit link (arc) that creates the links of a general graph structure explictily. 
-
-The simplest cycle is: 
-
-- root 
-..- a 
-.... - @ref b 
-..- b 
-.... - @ref a 
-
-This is not possible with clones! No more mumbling about being able to represent such links in uA's! 
-
-2. @ref allows users to compose documents from 'atomic' pieces of text properly. That is, adding a 'virtual' child to a piece of text does not add it to all other uses of that text in (possibly unrelated) documents. This vastly increases the flexibility of rst3 plugin. 
-
-I suspect other essential uses of @ref will appear. I am sure we can declare the 'post-leo LP tool' project a great success already :-) 
-
-Edward 
-#@+node:ekr.20060329102951.2: *4* Reply
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3650005
-By: itsme213
-
-Imho ...
-
-There will not be any "arbitrary graph" from @ref. Instead there is a forest
-of trees, and across trees, some nodes are same_as some other nodes (caused
-by @ref). same_as is transitive. Quite likely the roots of all trees are same_as.
-There may need to be some rules to ensure things make structural sense. Children
-of a node are just that -- children of that node.
-
-There will be a totally separate Merge node whose children will be the union
-of the children of all the nodes it merges. A Merge node is, itself, the ordinary child of some
-node.
-
-Tree traversals will be tree traversals.
-
-Hope that did not muddy the waters even more ... 
-#@+node:ekr.20040220110030: *3* Change cursor when caps lock is down
-@nocolor
-
-http://sourceforge.net/forum/message.php?msg_id=2431552
-By: nobody
-
-From: Rich
-
- I just got nipped twice by the following effect: the Caps-Lock key is ON, but
-because the LED is on the Caps-Lock key, it is hidden behind my hand. I hit
-Ctrl-x, expecting to cut my selection, but the entire node is cut.
-
-   I know there's a problem with tk and the shift key status, so I'm wondering
-if it would be possible to change the shape of the cursor when the Caps-Lock
-is ON (preferrably a big red flashing blot 8-), or otherwise show that Caps-Lock
-is active ( "CAPS" on a status line, for instance).
-
-  Another way: I don't know if this goes against an "anti-modalism rule," but
-only allowing Ctrl-Shift-x|c|v in the outline pane would also be acceptable
-to me.
-#@+node:ekr.20031218072017.743: *3* Note window for each node
-http://sourceforge.net/forum/message.php?msg_id=2205285
-From: Rich
-
-I envision a short window at the bottom of the edit window that could hold notes
-and comments about the code, such as "Test this harder" or "Find a better way of
-phrasing this". This is currently available in uSoft Office and the Eclipse IDE
-(http://www.eclipse.org). Perhaps a numeric reference, such as "<<1>>" could be
-used.
-#@+node:ekr.20060610193837: *3* open python window does not appear to work on Solaris
-@nocolor
-
-http://sourceforge.net/forum/message.php?msg_id=3771068
-By: leouser
-
-The open python window does not appear to work on Solaris.
-
-http://sourceforge.net/forum/message.php?msg_id=3771167
-By: nobody
-
-from what I could see it looked like it was trying to start the shell up with
-a location that pointed to a nonexistent path.
-
-@color
 #@+node:ekr.20040216054459: *3* @h @f @endh and @endf directives
 @nocolor
 
@@ -1179,26 +1773,38 @@ of a "components" node up in the leo outline. Typical Example:
 
 a, b, and c are clones and the @file node contains @others.
 
-As you see, I proceed that way because in older programming languages or in lower level languages, the order of components such as procs, declarations, etc as an importance. It also has the implication that << and >> brackets are irrelevant in my way of using leo.
+As you see, I proceed that way because in older programming languages or in
+lower level languages, the order of components such as procs, declarations, etc
+as an importance. It also has the implication that << and >> brackets are
+irrelevant in my way of using leo.
 
-Now, my feature that I looked for in the doc but could not find (so i suggest it here in case no one had any need of this before) is that when used in the BODY of a node part of an "@file" the @h and @endh would define a chunk of text in the body, you've guessed it, to be added before _each_ children node and ONLY children no grandchildren or any deeper. But It could also be used INSIDE the body of a children to define headers or footers for IT'S OWN direct children.
+Now, my feature that I looked for in the doc but could not find (so i suggest it
+here in case no one had any need of this before) is that when used in the BODY
+of a node part of an "@file" the @h and @endh would define a chunk of text in
+the body, you've guessed it, to be added before _each_ children node and ONLY
+children no grandchildren or any deeper. But It could also be used INSIDE the
+body of a children to define headers or footers for IT'S OWN direct children.
 
-so, eehh, do you see the relevance of such a feature? Have i explained it clearly? maybe this would help:
+so, eehh, do you see the relevance of such a feature? Have i explained it
+clearly? maybe this would help:'
+
 CONST baba=2 AS INTEGER
 CONST bebe=7 AS INTEGER
 CONST zaza=5 AS INTEGER
 CONST bobo=1 AS INTEGER
 ... the beginning and end of each of those "parts-of-a-program" is the same for a potential lot of lines... 
 
-To Be Precise :
-It's just really for adding something at end or beginning of a direct children of a node part of an @file in the tangling process. 
+To Be Precise : It's just really for adding something at end or beginning of a
+direct children of a node part of an @file in the tangling process.
 
 Is this feature already implemented but i have not found it? I'm pretty sure it easy to implement... what do you people think of this?
 Thanks 
 --
 k
 
-p.s. I'm the guy who proposed that in the untangling process, a clone would not be updated by it's _Last-Instance-Found_ in the @file beeing untangled, but instead updated by the _Last-Modified-One-Found_ in the @file... :)
+p.s. I'm the guy who proposed that in the untangling process, a clone would not
+be updated by it's _Last-Instance-Found_ in the @file beeing untangled, but
+instead updated by the _Last-Modified-One-Found_ in the @file... :)
 
 (ooouuuuhh that would be slick...)  
 
@@ -1209,115 +1815,93 @@ By: ksejlod ( Peter Barrel )
  The tree i tried to draw in ascii did not came out the way i did it,
 sourceforge "eated" leading spaces sorry a, b and c are children of their "+"
 node just above them . -- k
-#@+node:ekr.20040329185649: *3* Known Bugs: can't be fixed or can wait
-#@+node:ekr.20031218072017.663: *4* Bug: can't be fixed
-#@+node:ekr.20031218072017.664: *5* Cut/paste bug on X windows (waiting for help)
-@nocolor
+#@+node:ekr.20100830120622.5829: *3* Fix python import problems
+@nocolor-node
 
-Under X Window system, when text is selected, it is automatically entered into a buffer and can be pasted with the middle button of the mouse.
+> > Hmm, I guess that would be more clear, although I think I'd like an option
+to include it in the following def to avoid
 
-In Leo, when this is done, the text is rendered in right place, but it doesn't stick unless some key is pressed after pasting. That is, if I leave the node in question without pressing any key after pressing the middle button, the pasted text is gone when I come back to that node.
+> > Decoration
+> > index
+> > Decoration
+> > add_user
+>
+> Sure.  Decorations must always be part of a definition.
 
-Doing copy and paste works normally when done through the edit menu.
+Well, personally I'd like to have them included in the definition, but I think
+Kent's preference for a separate node is reasonable to. If your function and
+hence definition node is called "pluralize", and it's decorated with something
+like "@authenticate_user", you may never check the innocent looking pluralize
+definition to find out what on earth's triggering the mysterious network
+database call. And this isn't a completely specious example, authentication may
+have been added to stop pluralize being used in a user existence detection
+exploit or something. OTOH in well behaved code like CherryPy apps you don't
+want a separate node for every @cherrypy.expose.
 
-@color
-#@+node:ekr.20031218072017.665: *6* (Cut & Paste ) (Middle-button bug reported by Timo)
-#@+node:ekr.20031218072017.666: *7*  Paste bug report
-@nocolor
+Bottom line is I think we're asking for a set of @settings to fine tune python
+import behavior:
 
-By: riotnrrrd ( Timo Honkasalo ) 
- Pasted text doesn't stick   
-2002-11-01 13:38  
-System: Linux 
+@python_import_interdef = previous | next | own_node | ai
+@python_import_decoration = next | own_node
 
-Under X Window system, when text is selected, it is automatically entered into a buffer and can be pasted with the middle button of the mouse. 
+I'm not sure I believe the AI option is possible / practical, and am not asking
+for it, just listing it :-)
 
-In Leo, when this is done, the text is rendered in right place, but it doesn't stick unless some key is pressed after pasting. That is, if I leave the node in question without pressing any key after pressing the middle button, the pasted text is gone when I come back to that node. 
+I'd also like
 
-Doing copy and paste works normally when done through the edit menu. 
+@python_import_init_in_class_node = true | false
 
--------------------
+as often there's more docs on a class in the __init__ than the class docstring.
 
-I also found out that if you do an extra "click" on the control key, it will
-stick from then on.
+I think that's really all we're talking about, some @settings to test during import.
+#@+node:ekr.20040329185649: *3* Known Bugs: won't be fixed
+#@+node:ekr.20031218072017.670: *4* Possible webbrowser bug
+@nocolor-node
 
-If your text should have color in it, you can see that right before you "click",
-the text has no color and the color back on right after you click the control.
+(In Linux) The home page and online tutorial options in the menu only work
+properly if Mozilla window is already open. If not, a Mozilla window opens, but
+with empty page and url field.
+#@+node:ekr.20050202073944: *4* Mac bugs
+#@+node:ekr.20050201175325.2: *5* Can't delete script buttons
+#@+node:ekr.20050201175325.1: *5* Icon buttons are not colored, nor do they have square borders, etc.
+#@+node:ekr.20110111100539.12257: *5* Fix end-of-line problem (MacOS)
+@nocolor-node
 
-It maybe a clue to someone, but seems strange to me. 
-#@+node:ekr.20031218072017.667: *7*  Test
-abc bbb bbbxyz bbb
-#@+node:ekr.20031218072017.668: *6* Automatic select & Paste bug (Linux?)
-@nocolor
+Apparently, ctrl-e is not passed to Leo at all.
 
-Bumping the thread because the bug still persists. 
+This probably can't be fixed.
+#@+node:ekr.20110111100539.12258: *6* Report
+@nocolor-node
 
-I've also noticed that the automatic select'n'paste doesn't work between nodes. That is, I can select text and paste a copy of it in the same node with middle button, but if I change click to another node, the paste buffer is erased. The automatic pasting works between Leo and other applications, however, and I can paste between nodes if I copy the selection to buffer by CTR-C. 
+http://mail.google.com/mail/#inbox/12c5646c646a90d2
 
-Maybe this is related to the non-sticking bug?
+I expect C-e to go to end-of-line, but C-e works as the next line.
+Alt-x and check end-of-line and I get the following result.
 
-----
+I use Mac OS X 10.6.5, newest Leo, and Python/Qt.
 
-This may be a Linux-only bug related to the control-v workaround.
-#@+node:ekr.20050514171429: *5* Glitch pasting into headlines
+Leo 4.8 rc1, build 3715, November 15, 2010
+Python 2.6.1, qt version 4.7.0
+darwin
 
-@killcolor
+I remember I could use C-e, but it doesn't work anymore even after I
+reinstall the Leo.
 
-http://sourceforge.net/forum/message.php?msg_id=3152036
-By: ngirard
+As I explained in this post - http://groups.google.com/group/leo-editor/browse_thread/thread/1ee0b35b4f76c999
+After having @bool swap_mac_keys = True, I can use C-e.
 
-Hi again,
+C-a move the cursor to the start of line, but C-e seems to move the
+cursor the first of the next line, which is the end of last line + 1.
+If the line is the final one, C-e moves the cursor to the end of line
+as there's no next line.
 
-Leo has IMHO a slight inconsistency as when a new node is created and has to
-be given a name.
+#@+node:ekr.20031218072017.673: *4* Tk bugs
+@nocolor-node
 
-When the new node is created, the string "NewHeadline" appears and is selected.
-Then there are 2 ways of setting a new name:
-
-1. by typing the new name character by character using the keyboard. This way,
-"NewHeadline" disappears as the first character of the new name is typed. Here
-the implicit idea is that "NewHeadline" is very unlikely to be the final node
-name -- which makes sense to me ;-)
-
-2. by pasting the contents of the clipboard, with Ctrl-v. This way, "NewHeadline"
-*remains* and the contents of the clipboard is appended to it.
-
-
-I find leo's behaviour in case #2 inconsistent with #1 and suggest that the
-first approach should be preferred.
-
-Cheers,
-Nicolas
-
-
-______________________________________________________________________
-You are receiving this email because you elected to monitor this forum.
-To stop monitoring this forum, login to SourceForge.net and visit: 
-https://sourceforge.net/forum/unmonitor.php?forum_id=10226
-
-#@+node:ekr.20031218072017.669: *5* Linux-only Bugs
-These may indicate problems with Tk on Linux.  I can not reproduce them on XP.
-#@+node:ekr.20031218072017.670: *6* Possible webbrowser bug
-(In Linux) The home page and online tutorial options in the menu only work properly if Mozilla window is already open. If not, a Mozilla window opens, but with empty page and url field. 
-#@+node:ekr.20031218072017.671: *6* Fix horiz scrollbar bug when tiling horizontally
-When in 'vertical split' mode (with viewpane on right, and tree pane over log pane on left), the horixontal scrollbar at bottom of screen is at full width, despite the fact that not all of the tree pane area is displayed. 
-
-Another way of saying this - I narrow the tree and log panes, to the extent that the display of tree node headings is truncated. But the horizontal scrollbar at the bottom doesn't contract, and doesn't allow me to horizontally scroll the tree pane to expose the rest of the node headings. 
-#@+node:ekr.20031218072017.672: *6* Control-V doesn't work on Linux
-This has been and continues to be a known issue with Tk. Has been logged as a bug; no response from the Tk folks. 
-
-Here is a link to the Tk bug report: 
-
-http://sourceforge.net/tracker/?func=detail&aid=605277&group_id=12997&atid=112997 
-
-Note the work-around/patch in the followup post at the bottom of that page. Commenting out some statements in text.tcl removes the problem. 
-#@+node:ekr.20050202073944: *5* Mac bugs
-#@+node:ekr.20050201175325.2: *6* Can't delete script buttons
-#@+node:ekr.20050201175325.1: *6* Icon buttons are not colored, nor do they have square borders, etc.
-#@+node:ekr.20050202052911.1: *6* Find Text in Find Panel gets focus only if it contains text
-#@+node:ekr.20031218072017.673: *5* Tk bugs
 The following bugs can not be fixed because they are Tk bugs.
-#@+node:ekr.20041201071145: *6* Tk Freezes on debean when libtk is compiled with thread support
+
+These bugs are becoming moot: Tk will soon be deprecated.
+#@+node:ekr.20041201071145: *5* Tk Freezes on debean when libtk is compiled with thread support
 http://sourceforge.net/forum/message.php?msg_id=2876797
 By: skal
 
@@ -1333,8 +1917,8 @@ This is a known bug in debian bugtrack:
 http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=171353 
 
 Skal
-#@+node:EKR.20040523192553: *6* (Crash when pasting large text into headlines)
-#@+node:EKR.20040606104355: *7* Report
+#@+node:EKR.20040523192553: *5* (Crash when pasting large text into headlines)
+#@+node:EKR.20040606104355: *6* Report
 @nocolor
 
 From: <eltronic@juno.com>
@@ -1383,16 +1967,16 @@ Subject: fatal bug in Leo headline handling
 > 
 > 
 > e
-#@+node:ekr.20031218072017.674: *6* Caps lock affects keyboard shortcuts on Windows
+#@+node:ekr.20031218072017.674: *5* Caps lock affects keyboard shortcuts on Windows
 Using leo under Windows, the keyboard shortcuts seem to use the "Caps Lock" state in determining the shift state when executing a shortcut.   For example, if the caps-lock key is on, then Ctrl-X is interpreted as Shift-Ctrl-X and cuts a node rather than selected text, and Shift-Ctrl-X is interpreted as Ctrl-X and cuts text.
-#@+node:ekr.20031218072017.675: *6* Tree problems
+#@+node:ekr.20031218072017.675: *5* Tree problems
 1. The border of the tree control is gray, and it is overwritten with large headlines.  This may be a Tk or Tkinter bug.
 
 2. Adding trailing whitespace to a line in body text does not set the file-dirty mark.  This can never cause a derived file to become "out-of-synch" because the read code does not compare body text.
 
 Apparently there is no way to fix this glitch because of holes in Tk's event mechanism.  Specifically, tree.idle_body_key has no way to tell directly what keystroke caused it to be entered.
-#@+node:ekr.20031218072017.676: *6* Control-T can't be overridden in canvas text.
-#@+node:ekr.20031218072017.677: *6* (Alt-ctrl = Alt)
+#@+node:ekr.20031218072017.676: *5* Control-T can't be overridden in canvas text.
+#@+node:ekr.20031218072017.677: *5* (Alt-ctrl = Alt)
 @nocolor
 
 Read and respond to this message at: 
@@ -1489,8 +2073,8 @@ end up at the next upper node etc...
 
 - Josef
 
-#@+node:ekr.20031218072017.718: *6* (tab bug)
-#@+node:ekr.20040117092727: *7* This is definitely a Tk bug
+#@+node:ekr.20031218072017.718: *5* (tab bug)
+#@+node:ekr.20040117092727: *6* This is definitely a Tk bug
 By: dthein ( Dave Hein ) 
  RE: BUG: Non-leading tabs not working properl   
 2004-01-17 14:40  
@@ -1504,7 +2088,7 @@ More details on this page, along with a patch for an earlier version.
 http://www.qs.co.nz/Tcl/TkTabs.html
 
 The Tk folks fixed a bug I reported with Ctrl-V behavior, but it took about a year for them to get to it. I don't have high expectations with this problem either, but I'll probably put together a patch for some of the recent version of Tk and submit the patches and bug report.  
-#@+node:ekr.20040118090055: *7* Patch and bug report
+#@+node:ekr.20040118090055: *6* Patch and bug report
 https://sourceforge.net/forum/message.php?msg_id=2380238
 By: dthein
 
@@ -1531,7 +2115,7 @@ or note-taking ... this fix really helped my sanity when making those tables
 inside Leo.
 
 Dave Hein
-#@+node:ekr.20031218072017.719: *7* Report
+#@+node:ekr.20031218072017.719: *6* Report
 @nocolor
 
 Read and respond to this message at: 
@@ -1540,7 +2124,7 @@ By: dspeed
 Open Discussion
 
 -- Tabs are not expanded correctly in .c files, when language in preferences is set to c, and when the tabs occur in the middle of a line. The tabs are expanded as spaces until the next tab location is reached, then the tabs are expanded correctly. 
-#@+node:ekr.20040105070023.5: *7* Report 2
+#@+node:ekr.20040105070023.5: *6* Report 2
 Leo 4.1 rc3, build 1.62 , December 19, 2003
 Python 2.3.0, Tk 8.4.2
 Linux 2.4.22-21mdkenterprise
@@ -1573,9 +2157,9 @@ Here is the two-tab \t\t behavior.
 I hope this is a Leo bug and not a Tk bug. 
 
 Dave Hein 
-#@+node:ekr.20031218072017.720: *7* Minimal test
+#@+node:ekr.20031218072017.720: *6* Minimal test
 This is a test line.
-#@+node:ekr.20031218072017.721: *7* Test File for Non Expanding Tabs
+#@+node:ekr.20031218072017.721: *6* Test File for Non Expanding Tabs
 This is a test line.
 put the text insertion point in the space between 'a' and 'test' above. Enter 3 tabs in a row and watch it not work.
 
@@ -1588,25 +2172,41 @@ Pyton 2.2.2, Tk 8.3.2
 reading d:\test.leo
 
 
-#@+node:ekr.20040129133809.8: *5* top node not saved
+#@+node:ekr.20031218072017.672: *5* Control-V doesn't work on Linux
+@nocolor-node
+
+This has been and continues to be a known issue with Tk. Has been logged as a bug; no response from the Tk folks. 
+
+Here is a link to the Tk bug report: 
+
+http://sourceforge.net/tracker/?func=detail&aid=605277&group_id=12997&atid=112997 
+
+Note the work-around/patch in the followup post at the bottom of that page. Commenting out some statements in text.tcl removes the problem. 
+#@+node:ekr.20040220110030: *5* Change cursor when caps lock is down
 @nocolor
 
-When opening a .leo file Leo selects the correct node but it is no longer the top most node in the window.
+http://sourceforge.net/forum/message.php?msg_id=2431552
+By: nobody
 
-What I did:
+From: Rich
 
-- Eliminated entries like a="":  This happened because Leo no longer writes clone bits.
+ I just got nipped twice by the following effect: the Caps-Lock key is ON, but
+because the LED is on the Caps-Lock key, it is hidden behind my hand. I hit
+Ctrl-x, expecting to cut my selection, but the entire node is cut.
 
-- Made sure Leo writes a="T" entries.  However, Leo really can't use this easily.
+   I know there's a problem with tk and the shift key status, so I'm wondering
+if it would be possible to change the shape of the cursor when the Caps-Lock
+is ON (preferrably a big red flashing blot 8-), or otherwise show that Caps-Lock
+is active ( "CAPS" on a status line, for instance).
 
-Another possibility would be to save the scrolling state, but that is very gui-dependent.
-#@+node:ekr.20040105064959: *4* Bugs: can wait
-@nocolor
-#@+node:ekr.20040115165036: *5* bug in xml doc parts (hard to fix?)
+  Another way: I don't know if this goes against an "anti-modalism rule," but
+only allowing Ctrl-Shift-x|c|v in the outline pane would also be acceptable
+to me.
+#@+node:ekr.20040115165036: *4* bug in xml doc parts (hard to fix?)
 @language html
 @ignore
 @color
-#@+node:ekr.20040115165036.1: *6* Demo XML comment bug
+#@+node:ekr.20040115165036.1: *5* Demo XML comment bug
 @ 
 This document demonstrates what appears to be a bug in Leo 4.1 rc3, build 1.62 of December 19, 2003.
 
@@ -1614,7 +2214,7 @@ It has manifested when Leo is executed under Python 2.3.3, Tk 8.4.3 under Window
 
 In brief, derived XML files are not well-formed with respect to comments under some conditions.  Comments can wind up nested, which looks okay to humans but not to XML parsers.
 @c
-#@+node:ekr.20040115165036.3: *6* @file xmlcommentbug.xml
+#@+node:ekr.20040115165036.3: *5* @file xmlcommentbug.xml
 @first
 @language HTML
 <HiMom>
@@ -1633,7 +2233,7 @@ This comment is well-formed, seemingly because its content does not begin on the
 same line as the at-sign.
 @c
 </HiMom>
-#@+node:ekr.20040115165036.4: *6* xmlcommentbug.xml
+#@+node:ekr.20040115165036.4: *5* xmlcommentbug.xml
 <?xml version='1.0'?>
 <!--@+leo-ver=4-->
 <!--@+node:@file xmlcommentbug.xml-->
@@ -1665,159 +2265,5 @@ the same line as the at-sign.
 <!--@nonl-->
 <!--@-node:@file xmlcommentbug.xml-->
 <!--@-leo-->
-#@+node:ekr.20040125114453: *5* Import bug?control-alt-f of python code misalloctes code (waiting for answer)
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=2391076
-By: thyrsus
-
-There is a lot of correct intepretation going on, but there are some errors.
-As an example, the anaconda code, in text.py, contains the following lines.
-I'll use periods for leading whitespace, the two characters ^I for leading tabs,
-and a $ to indicate a newline:
-
-class WaitWindow:
-def pop(self):
-    self.screen.popWindow()
-    self.screen.refresh()
-
-def __init__(self, screen, title, text):
-    self.screen = screen
-    width = 40
-    if (len(text) < width): width = len(text)
-
-    t = TextboxReflowed(width, text)
-
-    g = GridForm(self.screen, title, 1, 1)
-    g.add(t, 0, 0)
-    g.draw()
-    self.screen.refresh()
-
-
-After importing file text.py, I get three associated nodes like so:
-
-[class WaitWindow]
-.|
-.+-[pop]
-.|
-.+-[__init__]
-
-However, the contents of the nodes are off.  In node [class WaitWindow] the
-text is
-
-class WaitWindow:
-@others
-    self.screen = screen
-    width = 40
-    if (len(text) < width): width = len(text)
-
-    t = TextboxReflowed(width, text)
-    g = GridForm(self.screen, title, 1, 1)
-    g.add(t, 0, 0)
-    g.draw()
-    self.screen.refresh()
-
-Node [pop] contains the text
-
-def pop(self):
-
-Node [__init__] contains the text
-
-self.screen.popWindow()
-self.screen.refresh()
-
-def __init__(self, screen, title, text):
-
-This anaconda code is being correctly interpreted by the python 1.5 interpreter.
-I'm too green with python to pronounce on whether the formatting is conventional.
-I don't consider this a bug a major problem, but it should probably be addressed
-before we start touting Leo for large collections of existing code.
-
-This is my first experience importing python; in the past I've imported perl
-code, and Leo gave me just one big @file node, and I was on my own to better
-structure it.  Given the perversity of perl syntax ("Nothing but perl can parse
-Perl." - Tom Christiansen), that's probably the right thing to do.  It's a judgement
-call for whomever wants to take responsibility for the python importer as to
-whether that may be the right thing to do for python.
-#@+node:ekr.20040129133809.5: *5* Expand/contract may not work after drag (works for me)
-sometimes after a drag of a node, 
-then the expand/contract doesnt work.
-click or menu has no effect.
-in an open leo
-maybe it is ok after you save the file
-other times only fix is to exit & restart.
-#@+node:ekr.20040217153407.1: *3* Unify @root and @file
-@nocolor
-
-- There is no way to unify the syntax: a different syntax is needed to specify sections that may appear in pieces.
-
-- I have little interest in this project, even if a better read logic for @root derived files might make automatic untangling possible.
-#@+node:ekr.20060228072202: *3* New undoer
-#@+node:ekr.20060201161901.2: *4* @url http://sourceforge.net/forum/message.php?msg_id=3332355
-@nocolor
-
-By: Edward K. Ream - edream RE: Dividing The Undo: doing w/o v.uA 2005-09-09
-   14:17 > If we can open up how [Leo] reads xml, it may make it simpler to
-   start developing a stash scheme.
-
-I agree that reading xml more properly would be A Good Thing (tm). As we shall
-see, however, it is not the main issue.
-
-> DOM seems like a good path to start out on.
-
-This is not the path I would have chosen. The new colorizer at in leoPlugins.leo
-at:
-
-Plugins-->Experimental/unfinished-->New colorizer-->@thin __jEdit_colorizer__.py
-
-uses sax. I like the light-weight approach. I would rather do a bit more work in
-the initial parsing and create the data structures myself then relying on DOM.
-
-But parsing is irrelevant. The problem is the design of *thin* derived files and
-the code that reads such files. Let us consider how we can "do without"
-v.unknownAttributes in thin derived files. I **shall not** change the format of
-thin derived files, so some trickery is required. The first step is read this
-section of Leo's new docs:
-
-http://webpages.charter.net/edreamleo/customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
-/> The key here is the so-called 'hidden machinery'. This is an essential
-feature of the code that reads and writes thin derived files and it **will not**
-change. **Note**: Leo has two sets of read code: the code that reads .leo files
-has no trouble whatever recreating vnodes. It is only vnodes in thin derived
-files that may not have attributes.
-
-**Important**: for @thin trees (in the outline) Leo saves *only* the <v> element
-corresponding to the @thin node itself. It is this <v> element that contains the
-'hidden machinery'. Don't even think about having Leo write the whole tree of
-<v> elements: the 4.0 read code is made possible because these <v> elements do
-*not* exist. This eliminates all the error 'recovery' schemes that can not, if
-fact, be robust enough.
-
-So the only real alternative is to add uA's sufficient to recreate elements in
-the *reconstituted* vnodes that Leo creates in the leoAtFile read logic.
-Happily, we can do this as follows. When writing, a plugin (or an extended Leo)
-would 'piggyback' the vnode attributes in the corresponding
-**t**.unknownAttributes field. When reading, the plugin (or Leo) would put the
-vnode attributes "where they belong" in the appropriate vnode. We associate a
-'vnode traversal index' with each vnode. This is simply how many previous "same"
-vnodes appeared in the traversal before getting to the desired vnode. Something
-like this::
-
-vx = {} # traversal indices for vnodes. for p in c.all_positions(): ....n =
-vx.get(p.v.t,0) # n is the traversal index for vnode p.v. ....vx[p.v.t] = n+1 #
-bump the index for the next v such that v.t == p.v.t
-
-We store attributes for vnode v in v.t.unknownAttributes, along with the
-traversal index. The read code uses the traversal index to copy vnode attributes
-from t.unknownAttributes to v.unknownAttrutes. Rather than forcing each plugin
-to do this, Leo should probably have support for this in the leoFileCommands
-read/write code. In short, the t.unknownAttributes machinery suffices in theory,
-and in practice a bit of support code would be good.
-
-Glad you asked :-) . I have been willing to live without v.uA's in thin derived
-files. I never thought much about this until you asked, but necessity is the
-mother... So this is good. A way exists to treat all vnodes as first-class
-citizens.
-
-Edward
 #@-all
 #@-leo
