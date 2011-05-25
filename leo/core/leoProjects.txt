@@ -10434,6 +10434,66 @@ cursor in the body pane are visible.
 https://bugs.launchpad.net/leo-editor/+bug/590740
 
 This works for me.  In any case, it would be a very minor problem.
+#@+node:ekr.20110525072142.18357: *4* auto-rst gives spurious overwrite message
+#@+node:ekr.20070806141607: *5* at.writeOneAtAutoNode & helpers
+def writeOneAtAutoNode(self,p,toString,force):
+
+    '''Write p, an @auto node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy()
+
+    fileName = p.atAutoNodeName()
+    if not fileName and not toString: return False
+
+    at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+    exists = g.os_path_exists(fileName)
+    if not toString and exists and not hasattr(root.v,'at_read') and exists:
+        # Prompt if writing a new @auto node would overwrite the existing file.
+        ok = self.promptForDangerousWrite(fileName,kind='@auto')
+        if not ok:
+            g.es("not written:",fileName)
+            return
+            
+    # Create the attribute for all clones.
+    root.v.at_read = True
+    
+    # This code is similar to code in at.write.
+    c.endEditing() # Capture the current headline.
+    at.targetFileName = g.choose(toString,"<string-file>",fileName)
+
+    at.initWriteIvars(root,at.targetFileName,
+        atAuto=True,
+        nosentinels=True,thinFile=False,scriptWrite=False,
+        toString=toString)
+
+    ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
+    isAtAutoRst = root.isAtAutoRstNode()
+    if ok:
+        if isAtAutoRst:
+            ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
+            if not ok2: at.errors += 1
+        else:
+            at.writeOpenFile(root,nosentinels=True,toString=toString)
+        at.closeWriteFile() # Sets stringOutput if toString is True.
+        # g.trace('at.errors',at.errors)
+        if at.errors == 0:
+            # g.trace('toString',toString,'force',force,'isAtAutoRst',isAtAutoRst)
+            at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
+                # Sets/clears dirty and orphan bits.
+        else:
+            g.es("not written:",fileName)
+            root.setDirty() # New in Leo 4.4.8.
+            root.setOrphan() # 2010/10/22.
+
+    elif not toString:
+        root.setDirty() # Make _sure_ we try to rewrite this file.
+        root.setOrphan() # 2010/10/22.
+        g.es("not written:",fileName)
+
+    return ok
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()
