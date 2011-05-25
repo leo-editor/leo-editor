@@ -3092,23 +3092,13 @@ class atFile:
         if not toString and exists and not hasattr(root.v,'at_read') and exists:
             # Prompt if writing a new @auto node would overwrite the existing file.
             ok = self.promptForDangerousWrite(fileName,kind='@auto')
-            if ok:
-                root.v.at_read = True # Create the attribute for all clones.
-            else:
+            if not ok:
                 g.es("not written:",fileName)
                 return
-
-        # Prompt if writing a new @auto node would overwrite an existing file.
-        if (not toString and not hasattr(p.v,'at_read') and
-            g.os_path_exists(fileName)
-        ):
-            ok = self.promptForDangerousWrite(fileName,kind='@auto')
-            if ok:
-                p.v.at_read = True # Create the attribute
-            else:
-                g.es("not written:",fileName)
-                return False
-
+                
+        # Create the attribute for all clones.
+        root.v.at_read = True
+        
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
         at.targetFileName = g.choose(toString,"<string-file>",fileName)
