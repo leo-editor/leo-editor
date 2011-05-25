@@ -7472,7 +7472,10 @@ class leoQtGui(leoGui.leoGui):
         self.bodyTextWidget  = leoQtBaseTextWidget
         self.plainTextWidget = leoQtBaseTextWidget
         self.iconimages = {} # Image cache set by getIconImage().
-        self.mGuiName = 'qt'  
+        self.mGuiName = 'qt'
+        
+        # Put up the splash screen()
+        self.splashScreen = self.createSplashScreen()
 
         if g.app.qt_use_tabs:    
             self.frameFactory = TabbedFrameFactory()
@@ -7483,6 +7486,23 @@ class leoQtGui(leoGui.leoGui):
 
         # Use the base class
         return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
+    #@+node:ekr.20110525112110.18410: *5* createSplashScreen (qtGui)
+    def createSplashScreen (self):
+        
+        fn = g.os_path_finalize_join(
+            g.app.loadDir,'..','Icons','SplashScreen.jpg')
+            
+        if g.os_path_exists(fn):
+            qt = QtCore.Qt
+            pm = QtGui.QPixmap(fn)
+            splash = QtGui.QSplashScreen(pm,(qt.SplashScreen | qt.WindowStaysOnTopHint))
+            splash.show()
+            return splash
+        else:
+            # g.trace('not found',fn)
+            return None
+        
+            
     #@+node:ekr.20090123150451.11: *5* onActivateEvent (qtGui)
     # Called from eventFilter
 
@@ -7535,9 +7555,14 @@ class leoQtGui(leoGui.leoGui):
     def runMainLoop(self):
 
         '''Start the Qt main loop.'''
-        
-        # g.trace(self.script,g.app.log)
 
+        if hasattr(g.app.gui,'splashScreen'):
+            splash =  g.app.gui.splashScreen
+            if splash:
+                splash.hide()
+                splash.deleteLater()
+                g.app.gui.splashScreen = None
+        
         if self.script:
             log = g.app.log
             if log:

@@ -2682,7 +2682,7 @@ ic.run(
     svg_fn=svg_fn, # Optional: Name of working svg file.
     template_fn=template_fn, # Optional: Name of template svg file.
 )
-#@+node:ekr.20101127152442.5917: ** 4.9 a1
+#@+node:ekr.20101127152442.5917: ** 4.9 b1
 #@+node:ekr.20101218101041.8570: *3* Bugs
 #@+node:ekr.20101218101041.5922: *4* Fixed bug 682561: pyenchant install problem
 #@+node:ekr.20101218101041.5923: *5* Report
@@ -10494,6 +10494,21 @@ def writeOneAtAutoNode(self,p,toString,force):
         g.es("not written:",fileName)
 
     return ok
+#@+node:ekr.20110525112110.18406: *4* Investigated bug 784922: No application menus appear on OSX
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/784922
+
+After several hours of work it appears that nothing can be done:
+this is a Qt bug.  The loss of menu is a direct result of the call to
+tabw.addTab in TabbedFrameFactory.createFrame.
+
+What I did:
+    
+* Renamed ivars to avoid clashes with ivars in the base class:
+    - changed self.master to self.leo_master.
+    - changed self.menubar to self.leo_menubar.
+    - changed self.ui to self.leo_ui.
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()
@@ -13806,6 +13821,7 @@ def createGui(pymacs,options):
             g.app.createDefaultGui(__file__)
     else:
         createSpecialGui(gui,pymacs,script,windowFlag)
+
 
 #@+node:ekr.20080921060401.4: *6* createSpecialGui
 def createSpecialGui(gui,pymacs,script,windowFlag):
@@ -17179,5 +17195,7 @@ def massageAtDocPart (self,s):
             
     # g.trace(repr(s))
     return s
+#@+node:ekr.20110525181446.18336: *4* Added a splash screen (Qt only)
+To disable, remove leo\Icons\SplashScreen.jpg.
 #@-all
 #@-leo

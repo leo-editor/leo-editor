@@ -50,7 +50,7 @@ keyboard I get:
 
 - the problem with the ñ character (reported previously too) is only
 present in the qt plugin (both with and without scintilla)
-#@+node:ekr.20110119065600.3895: ** Leo 4.9 devel
+#@+node:ekr.20110119065600.3895: ** Leo 4.9 b1
 #@+node:ekr.20110117083659.3792: *3* Allow multiple @language directives
 @nocolor-node
 
@@ -1157,7 +1157,10 @@ def __init__ (self):
     self.bodyTextWidget  = leoQtBaseTextWidget
     self.plainTextWidget = leoQtBaseTextWidget
     self.iconimages = {} # Image cache set by getIconImage().
-    self.mGuiName = 'qt'  
+    self.mGuiName = 'qt'
+    
+    # Put up the splash screen()
+    self.splashScreen = self.createSplashScreen()
 
     if g.app.qt_use_tabs:    
         self.frameFactory = TabbedFrameFactory()
@@ -7299,6 +7302,922 @@ def hasFocus(self):
     # w = g.app.gui.get_focus()
     # g.trace(w,self.widget.widget)
     # return w == self.widget.widget
+#@+node:ekr.20110525112110.18409: *3* Added a Qt splash screen
+#@+node:ekr.20081121105001.472: *4* class leoQtGui
+class leoQtGui(leoGui.leoGui):
+
+    '''A class implementing Leo's Qt gui.'''
+
+    @others
+#@+node:ekr.20081121105001.473: *5*   Birth & death (qtGui)
+#@+node:ekr.20081121105001.474: *6*  qtGui.__init__
+def __init__ (self):
+
+    # Initialize the base class.
+    leoGui.leoGui.__init__(self,'qt')
+
+    self.qtApp = app = QtGui.QApplication(sys.argv)
+    self.bodyTextWidget  = leoQtBaseTextWidget
+    self.plainTextWidget = leoQtBaseTextWidget
+    self.iconimages = {} # Image cache set by getIconImage().
+    self.mGuiName = 'qt'
+    
+    # Put up the splash screen()
+    self.splashScreen = self.createSplashScreen()
+
+    if g.app.qt_use_tabs:    
+        self.frameFactory = TabbedFrameFactory()
+    else:
+        self.frameFactory = SDIFrameFactory()
+#@+node:ekr.20081121105001.475: *6* createKeyHandlerClass (qtGui)
+def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
+
+    # Use the base class
+    return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
+#@+node:ekr.20110525112110.18410: *6* createSplashScreen (qtGui)
+def createSplashScreen (self):
+    
+    fn = g.os_path_finalize_join(
+        g.app.loadDir,'..','Icons','SplashScreen.jpg')
+        
+    if g.os_path_exists(fn):
+        qt = QtCore.Qt
+        pm = QtGui.QPixmap(fn)
+        splash = QtGui.QSplashScreen(pm,(qt.SplashScreen | qt.WindowStaysOnTopHint))
+        splash.show()
+        return splash
+    else:
+        # g.trace('not found',fn)
+        return None
+    
+        
+#@+node:ekr.20090123150451.11: *6* onActivateEvent (qtGui)
+# Called from eventFilter
+
+def onActivateEvent (self,event,c,obj,tag):
+
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
+
+    # This is called several times for each window activation.
+    # We only need to set the focus once.
+
+    trace = False and not g.unitTesting
+
+    if c.exists and tag == 'body':
+        if trace: g.trace(tag,c)
+        c.bodyWantsFocusNow()
+        ### c.outerUpdate() # Required because this is an event handler.
+        g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
+#@+node:ekr.20090320101733.16: *6* onDeactiveEvent (qtGui)
+def onDeactivateEvent (self,event,c,obj,tag):
+
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
+
+    trace = False and not g.unitTesting
+
+    # This is called several times for each window activation.
+    # Save the headline only once.
+
+    if c.exists and tag.startswith('tree'):
+        if trace: g.trace(tag,c)
+        c.endEditing()
+        g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
+#@+node:ville.20090314101331.2: *6* IPython embedding & mainloop
+def embed_ipython(self):
+    import IPython.ipapi
+
+    oargv = sys.argv
+    # no c
+    #args = c.config.getString('ipython_argv')
+    args = None
+    if args is None:
+        argv = ['leo.py', '-p', 'sh']   
+    sys.argv = argv         
+    ses = IPython.ipapi.make_session()
+    sys.argv = oargv
+    # Does not return until IPython closes! IPython runs the leo mainloop
+    ses.mainloop()    
+#@+node:ekr.20081121105001.476: *6* runMainLoop (qtGui)
+def runMainLoop(self):
+
+    '''Start the Qt main loop.'''
+
+    if hasattr(g.app.gui,'splashScreen'):
+        splash =  g.app.gui.splashScreen
+        if splash:
+            splash.hide()
+            splash.deleteLater()
+            g.app.gui.splashScreen = None
+    
+    if self.script:
+        log = g.app.log
+        if log:
+            g.pr('Start of batch script...\n')
+            log.c.executeScript(script=self.script)
+            g.pr('End of batch script')
+        else:
+            g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
+    else:
+        if g.app.useIpython:
+            self.embed_ipython()
+            sys.exit(0)
+
+        sys.exit(self.qtApp.exec_())
+#@+node:ekr.20081121105001.477: *6* destroySelf
+def destroySelf (self):
+    QtCore.pyqtRemoveInputHook()
+    self.qtApp.exit()
+#@+node:ekr.20081121105001.183: *5* Clipboard (qtGui)
+def replaceClipboardWith (self,s):
+
+    '''Replace the clipboard with the string s.'''
+
+    trace = False and not g.unitTesting
+    cb = self.qtApp.clipboard()
+    if cb:
+        # cb.clear()  # unnecessary, breaks on some Qt versions
+        s = g.toUnicode(s)
+        QtGui.QApplication.processEvents()
+        cb.setText(s)
+        QtGui.QApplication.processEvents()
+        if trace: g.trace(len(s),type(s))
+    else:
+        g.trace('no clipboard!')
+
+def getTextFromClipboard (self):
+
+    '''Get a unicode string from the clipboard.'''
+
+    trace = False and not g.unitTesting
+    cb = self.qtApp.clipboard()
+    if cb:
+        QtGui.QApplication.processEvents()
+        s = cb.text()
+        if trace: g.trace (len(s),type(s))
+        s = g.app.gui.toUnicode(s)
+            # Same as g.u(s), but with error handling.
+        return s
+    else:
+        g.trace('no clipboard!')
+        return ''
+#@+node:ekr.20081121105001.478: *5* Do nothings
+def color (self,color):
+    return None
+
+def createRootWindow(self):
+    pass
+
+def killGui(self,exitFlag=True):
+    """Destroy a gui and terminate Leo if exitFlag is True."""
+
+def killPopupMenu(self):
+    pass
+
+def recreateRootWindow(self):
+    """Create the hidden root window of a gui
+    after a previous gui has terminated with killGui(False)."""
+
+
+#@+node:ekr.20081121105001.479: *5* Dialogs & panels (qtGui)
+#@+node:ekr.20081122170423.1: *6* alert (qtGui)
+def alert (self,c,message):
+
+    if g.unitTesting: return
+
+    b = QtGui.QMessageBox
+    d = b(None)
+    d.setWindowTitle('Alert')
+    d.setText(message)
+    d.setIcon(b.Warning)
+    yes = d.addButton('Ok',b.YesRole)
+    c.in_qt_dialog = True
+    d.exec_()
+    c.in_qt_dialog = False
+#@+node:ekr.20081121105001.480: *6* makeFilter
+def makeFilter (self,filetypes):
+
+    '''Return the Qt-style dialog filter from filetypes list.'''
+
+    filters = ['%s (%s)' % (z) for z in filetypes]
+
+    return ';;'.join(filters)
+#@+node:tbrown.20100421115534.17325: *6* runAskOkCancelStringDialog
+def runAskOkCancelStringDialog(self,c,title,message):
+
+    """Create and run askOkCancelString dialog ."""
+
+    if g.unitTesting: return None
+
+    txt,ok = QtGui.QInputDialog.getText(None, title, message)
+    if not ok:
+        return None
+
+    return txt
+#@+node:tbrown.20100421115534.17324: *6* runAskOkCancelNumberDialog
+def runAskOkCancelNumberDialog(self,c,title,message):
+
+    """Create and run askOkCancelNumber dialog ."""
+
+    if g.unitTesting: return None
+
+    n,ok = QtGui.QInputDialog.getDouble(None, title, message)
+    if not ok:
+        return None
+
+    return n
+#@+node:ekr.20081121105001.482: *6* qtGui panels
+def createComparePanel(self,c):
+
+    """Create a qt color picker panel."""
+    return None # This window is optional.
+    # return leoQtComparePanel(c)
+
+def createFindTab (self,c,parentFrame):
+    """Create a qt find tab in the indicated frame."""
+    return leoQtFindTab(c,parentFrame)
+
+def createLeoFrame(self,title):
+    """Create a new Leo frame."""
+    gui = self
+    return leoQtFrame(title,gui)
+
+def createSpellTab(self,c,spellHandler,tabName):
+    return leoQtSpellTab(c,spellHandler,tabName)
+
+#@+node:ekr.20081121105001.483: *6* runAboutLeoDialog
+def runAboutLeoDialog(self,c,version,theCopyright,url,email):
+
+    """Create and run a qt About Leo dialog."""
+
+    if g.unitTesting: return None
+
+    b = QtGui.QMessageBox
+    d = b(c.frame.top)
+
+    d.setText('%s\n%s\n%s\n%s' % (
+        version,theCopyright,url,email))
+    d.setIcon(b.Information)
+    yes = d.addButton('Ok',b.YesRole)
+    d.setDefaultButton(yes)
+    c.in_qt_dialog = True
+    d.exec_()
+    c.in_qt_dialog = False
+#@+node:ekr.20081121105001.484: *6* runAskLeoIDDialog
+def runAskLeoIDDialog(self):
+
+    """Create and run a dialog to get g.app.LeoID."""
+
+    if g.unitTesting: return None
+
+    message = (
+        "leoID.txt not found\n\n" +
+        "Please enter an id that identifies you uniquely.\n" +
+        "Your cvs/bzr login name is a good choice.\n\n" +
+        "Leo uses this id to uniquely identify nodes.\n\n" +
+        "Your id must contain only letters and numbers\n" +
+        "and must be at least 3 characters in length.")
+    parent = None
+    title = 'Enter Leo id'
+    s,ok = QtGui.QInputDialog.getText(parent,title,message)
+    return g.u(s)
+#@+node:ekr.20081121105001.485: *6* runAskOkDialog
+def runAskOkDialog(self,c,title,message=None,text="Ok"):
+
+    """Create and run a qt an askOK dialog ."""
+
+    if g.unitTesting: return None
+
+    b = QtGui.QMessageBox
+    d = b(c.frame.top)
+
+    d.setWindowTitle(title)
+    if message: d.setText(message)
+    d.setIcon(b.Information)
+    yes = d.addButton(text,b.YesRole)
+    c.in_qt_dialog = True
+    d.exec_()
+    c.in_qt_dialog = False
+
+#@+node:tbrown.20100912184720.12469: *6* runAskDateTimeDialog
+def runAskDateTimeDialog(self, c, title, 
+    message='Select Date/Time', init=None, step_min={}):
+    """Create and run a qt date/time selection dialog.
+
+    init - a datetime, default now
+    step_min - a dict, keys are QtGui.QDateTimeEdit Sections, like
+      QtGui.QDateTimeEdit.MinuteSection, and values are integers,
+      the minimum amount that section of the date/time changes
+      when you roll the mouse wheel.
+
+    E.g. (5 minute increments in minute field):
+
+        print g.app.gui.runAskDateTimeDialog(c, 'When?',
+          message="When is it?",
+          step_min={QtGui.QDateTimeEdit.MinuteSection: 5})
+
+    """
+
+    class DateTimeEditStepped(QtGui.QDateTimeEdit):
+        """QDateTimeEdit which allows you to set minimum steps on fields, e.g.
+          DateTimeEditStepped(parent, {QtGui.QDateTimeEdit.MinuteSection: 5})
+        for a minimum 5 minute increment on the minute field.
+        """
+        def __init__(self, parent=None, init=None, step_min={}):
+
+            self.step_min = step_min
+            if init:
+                QtGui.QDateTimeEdit.__init__(self, init, parent)
+            else:
+                QtGui.QDateTimeEdit.__init__(self, parent)
+
+        def stepBy(self, step):
+            cs = self.currentSection()
+            if cs in self.step_min and abs(step) < self.step_min[cs]:
+                step = self.step_min[cs] if step > 0 else -self.step_min[cs]
+            QtGui.QDateTimeEdit.stepBy(self, step)
+
+    class Calendar(QtGui.QDialog):
+        def __init__(self, parent=None, message='Select Date/Time',
+            init=None, step_min={}):
+            QtGui.QDialog.__init__(self, parent)
+
+            layout = QtGui.QVBoxLayout()
+            self.setLayout(layout)
+
+            layout.addWidget(QtGui.QLabel(message))
+
+            self.dt = DateTimeEditStepped(init=init, step_min=step_min)
+            self.dt.setCalendarPopup(True)
+            layout.addWidget(self.dt)
+
+            buttonBox = QtGui.QDialogButtonBox(
+            QtGui.QDialogButtonBox.Ok
+                | QtGui.QDialogButtonBox.Cancel)
+            layout.addWidget(buttonBox)
+
+            self.connect(buttonBox, QtCore.SIGNAL("accepted()"),
+                self, QtCore.SLOT("accept()"))
+            self.connect(buttonBox, QtCore.SIGNAL("rejected()"),
+                self, QtCore.SLOT("reject()"))
+
+    if g.unitTesting: return None
+
+    b = Calendar
+    if not init:
+        init = datetime.datetime.now()
+    d = b(c.frame.top, message=message, init=init, step_min=step_min)
+
+    d.setWindowTitle(title)
+    
+    c.in_qt_dialog = True
+    val = d.exec_()
+    c.in_qt_dialog = False
+
+    if val != d.Accepted:
+        return None
+    else:
+        return d.dt.dateTime().toPyDateTime()
+#@+node:ekr.20081121105001.486: *6* runAskYesNoCancelDialog
+def runAskYesNoCancelDialog(self,c,title,
+    message=None,
+    yesMessage="&Yes",noMessage="&No",defaultButton="Yes"
+):
+
+    """Create and run an askYesNo dialog."""
+
+    if g.unitTesting: return None
+
+    b = QtGui.QMessageBox
+
+    d = b(c.frame.top)
+    if message: d.setText(message)
+    d.setIcon(b.Warning)
+    d.setWindowTitle(title)
+    yes    = d.addButton(yesMessage,b.YesRole)
+    no     = d.addButton(noMessage,b.NoRole)
+    cancel = d.addButton(b.Cancel)
+    if   defaultButton == "Yes": d.setDefaultButton(yes)
+    elif defaultButton == "No": d.setDefaultButton(no)
+    else: d.setDefaultButton(cancel)
+    c.in_qt_dialog = True
+    val = d.exec_()
+    c.in_qt_dialog = False
+
+    if   val == 0: val = 'yes'
+    elif val == 1: val = 'no'
+    else:          val = 'cancel'
+    return val
+#@+node:ekr.20081121105001.487: *6* runAskYesNoDialog
+def runAskYesNoDialog(self,c,title,message=None):
+
+    """Create and run an askYesNo dialog."""
+
+    if g.unitTesting: return None
+
+    b = QtGui.QMessageBox
+    d = b(c.frame.top)
+
+    d.setWindowTitle(title)
+    if message: d.setText(message)
+    d.setIcon(b.Information)
+    yes = d.addButton('&Yes',b.YesRole)
+    no  = d.addButton('&No',b.NoRole)
+    d.setDefaultButton(yes)
+    c.in_qt_dialog = True
+    val = d.exec_()
+    c.in_qt_dialog = False
+    return g.choose(val == 0,'yes','no')
+
+#@+node:ekr.20101111103251.3821: *6* runOpenDirectoryDialog (qtGui)
+def runOpenDirectoryDialog(self,title,startdir):
+
+    """Create and run an Qt open directory dialog ."""
+
+    parent = None
+    s = QtGui.QFileDialog.getExistingDirectory (parent,title,startdir)
+    return g.u(s)
+#@+node:ekr.20081121105001.488: *6* runOpenFileDialog
+def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False, startpath = None):
+
+    """Create and run an Qt open file dialog ."""
+
+    if startpath is None:
+        startpath = os.curdir
+        
+    parent = None
+    filter = self.makeFilter(filetypes)
+
+    if multiple:
+        lst = QtGui.QFileDialog.getOpenFileNames(parent,title,startpath,filter)
+        return [g.u(s) for s in lst]
+    else:
+        s = QtGui.QFileDialog.getOpenFileName(parent,title,startpath,filter)
+        return g.u(s)
+#@+node:ekr.20090722094828.3653: *6* runPropertiesDialog (qtGui)
+def runPropertiesDialog(self,
+    title='Properties',data={}, callback=None, buttons=None):
+
+    """Dispay a modal TkPropertiesDialog"""
+
+    # g.trace(data)
+    g.es_print('Properties menu not supported for Qt gui',color='blue')
+    result = 'Cancel'
+    return result,data
+
+    # d = propertiesDialog(title,data)
+    # result = d.run()
+    # return result
+#@+node:ekr.20081121105001.489: *6* runSaveFileDialog
+def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultextension=''):
+
+    """Create and run an Qt save file dialog ."""
+
+    parent = None
+    filter_ = self.makeFilter(filetypes)
+    s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter_)
+    return g.u(s)
+#@+node:ekr.20081121105001.490: *6* runScrolledMessageDialog
+def runScrolledMessageDialog (self,short_title= '',title='Message', label= '',msg='',c=None, **kw):
+
+    if g.unitTesting: return None
+
+    def send(title=title, label=label, msg=msg, c=c, kw=kw):
+        return g.doHook('scrolledMessage',
+            short_title=short_title,title=title,
+            label=label, msg=msg,c=c, **kw)
+
+    if not c or not c.exists:
+        << no c error>>
+    else:        
+        retval = send()
+        if retval: return retval
+        << load scrolledmessage plugin >>
+        retval = send()
+        if retval: return retval
+        << no dialog error >>
+
+    << emergency fallback >>
+#@+node:leohag.20081205043707.12: *7* << no c error>>
+g.es_print_error('%s\n%s\n\t%s' % (
+    "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
+    "as a keyword argument",
+    g.callers()
+))
+#@+node:leohag.20081205043707.14: *7* << load scrolledmessage plugin >>
+pc = g.app.pluginsController
+sm = pc.getPluginModule('scrolledmessage')
+
+if not sm:
+    sm = pc.loadOnePlugin('leo.plugins.scrolledmessage',verbose=True)
+    if sm:
+        g.es('scrolledmessage plugin loaded.', color='blue')
+        sm.onCreate('tag',{'c':c})
+#@+node:leohag.20081205043707.11: *7* << no dialog error >>
+g.es_print_error(
+    'No handler for the "scrolledMessage" hook.\n\t%s' % (
+        g.callers()))
+#@+node:leohag.20081205043707.13: *7* << emergency fallback >>
+b = QtGui.QMessageBox
+d = b(None) # c.frame.top)
+d.setWindowFlags(QtCore.Qt.Dialog) # That is, not a fixed size dialog.
+
+d.setWindowTitle(title)
+if msg: d.setText(msg)
+d.setIcon(b.Information)
+yes = d.addButton('Ok',b.YesRole)
+c.in_qt_dialog = True
+d.exec_()
+c.in_qt_dialog = False
+#@+node:ekr.20081121105001.491: *5* Focus (qtGui)
+def get_focus(self,c=None):
+
+    """Returns the widget that has focus."""
+    
+    trace = False and not g.unitTesting
+    verbose = False
+    app = QtGui.QApplication
+    w = app.focusWidget() ### or app.activeWindow()
+    if w and isinstance(w,LeoQTextBrowser):
+        has_w = hasattr(w,'leo_wrapper') and w.leo_wrapper
+        if has_w:
+            if trace: g.trace(w)
+        elif c:
+            # Kludge: DynamicWindow creates the body pane
+            # with wrapper = None, so return the leoQtBody.
+            w = c.frame.body
+
+    if trace: g.trace('***',w,g.callers())
+    return w
+
+def set_focus(self,c,w):
+
+    """Put the focus on the widget."""
+
+    trace = False and not g.unitTesting
+    gui = self
+
+    if w:
+        if trace: print('qtGui.set_focus',gui.widget_name(w),w,g.callers(2))
+        w.setFocus()
+#@+node:ekr.20081121105001.492: *5* Font
+#@+node:ekr.20081121105001.493: *6* qtGui.getFontFromParams
+def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
+
+    try: size = int(size)
+    except Exception: size = 0
+    if size < 1: size = defaultSize
+
+    d = {
+        'black':QtGui.QFont.Black,
+        'bold':QtGui.QFont.Bold,
+        'demibold':QtGui.QFont.DemiBold,
+        'light':QtGui.QFont.Light,
+        'normal':QtGui.QFont.Normal,
+    }
+    weight_val = d.get(weight.lower(),QtGui.QFont.Normal)
+    italic = slant == 'italic'
+
+    if not family:
+        family = g.app.config.defaultFontFamily
+    if not family:
+        family = 'DejaVu Sans Mono'
+
+    try:
+        font = QtGui.QFont(family,size,weight_val,italic)
+        # g.trace(family,size,slant,weight,'returns',font)
+        return font
+    except:
+        g.es("exception setting font",g.callers(4))
+        g.es("","family,size,slant,weight:","",family,"",size,"",slant,"",weight)
+        # g.es_exception() # This just confuses people.
+        return g.app.config.defaultFont
+#@+node:ekr.20081121105001.494: *5* getFullVersion
+def getFullVersion (self):
+
+    try:
+        qtLevel = 'version %s' % QtCore.QT_VERSION_STR
+    except Exception:
+        # g.es_exception()
+        qtLevel = '<qtLevel>'
+
+    return 'qt %s' % (qtLevel)
+#@+node:ekr.20081121105001.495: *5* Icons
+#@+node:ekr.20081121105001.496: *6* attachLeoIcon (qtGui)
+def attachLeoIcon (self,window):
+
+    """Attach a Leo icon to the window."""
+
+    #icon = self.getIconImage('leoApp.ico')
+
+    #window.setWindowIcon(icon)
+    window.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
+    #window.setLeoWindowIcon()
+#@+node:ekr.20081121105001.497: *6* getIconImage (qtGui)
+def getIconImage (self,name):
+
+    '''Load the icon and return it.'''
+
+    trace = False and not g.unitTesting
+
+    # Return the image from the cache if possible.
+    if name in self.iconimages:
+        image = self.iconimages.get(name)
+        if trace and not name.startswith('box'):
+            g.trace('cached',id(image),name)
+        return image
+    try:
+        fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
+
+        if 0: # Not needed: use QTreeWidget.setIconsize.
+            pixmap = QtGui.QPixmap()
+            pixmap.load(fullname)
+            image = QtGui.QIcon(pixmap)
+        else:
+            image = QtGui.QIcon(fullname)
+
+        self.iconimages[name] = image
+        if trace: g.trace('new',id(image),name)
+        return image
+
+    except Exception:
+        g.es("exception loading:",fullname)
+        g.es_exception()
+        return None
+#@+node:tbrown.20081229204443.10: *6* getImageImage
+def getImageImage (self,name):
+
+    '''Load the image and return it.'''
+
+    try:
+        fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
+
+        pixmap = QtGui.QPixmap()
+        pixmap.load(fullname)
+
+        return pixmap
+
+    except Exception:
+        g.es("exception loading:",fullname)
+        g.es_exception()
+        return None
+#@+node:ekr.20081123003126.2: *6* getTreeImage (test)
+def getTreeImage (self,c,path):
+
+    image = QtGui.QPixmap(path)
+
+    if image.height() > 0 and image.width() > 0:
+        return image,image.height()
+    else:
+        return None,None
+#@+node:ekr.20081121105001.498: *5* Idle Time
+#@+node:ekr.20081121105001.499: *6* qtGui.setIdleTimeHook & setIdleTimeHookAfterDelay
+timer = None
+
+def setIdleTimeHook (self,idleTimeHookHandler):
+
+    # if self.root:
+        # self.root.after_idle(idleTimeHookHandler)
+
+    if not self.timer:
+        self.timer = timer = QtCore.QTimer()
+
+        def timerCallBack(self=self,handler=idleTimeHookHandler):
+            # g.trace(self,idleTimeHookHandler)
+            idleTimeHookHandler()
+
+        timer.connect(timer,QtCore.SIGNAL("timeout()"),timerCallBack)
+
+        # To make your application perform idle processing, use a QTimer with 0 timeout.
+        # More advanced idle processing schemes can be achieved using processEvents().
+        timer.start(1000)
+
+setIdleTimeHookAfterDelay = setIdleTimeHook
+#@+node:ekr.20110511133940.14547: *6* qtGui.runAtIdle
+def runAtIdle (self,aFunc):
+    
+    
+    '''This can not be called in some contexts.'''
+    
+    timer = QtCore.QTimer()
+    timer.setSingleShot(True)
+    
+    # print('runAtIdle',aFunc)
+
+    def atIdleCallBack(aFunc=aFunc):
+        # print('atIdleCallBack')
+        aFunc()
+
+    timer.connect(timer,QtCore.SIGNAL("timeout()"),atIdleCallBack)
+
+    # To make your application perform idle processing, use a QTimer with 0 timeout.
+    timer.start(0)
+#@+node:ekr.20081121105001.501: *5* isTextWidget
+def isTextWidget (self,w):
+
+    '''Return True if w is a Text widget suitable for text-oriented commands.'''
+
+    if not w: return False
+
+    val = (
+        isinstance(w,leoFrame.baseTextWidget) or
+        isinstance(w,leoQtBody) or
+        isinstance(w,leoQtLog) or
+        isinstance(w,leoQtBaseTextWidget)
+    )
+
+    # g.trace(val,w)
+
+    return val
+
+#@+node:ekr.20090406111739.14: *5* Style Sheets
+#@+node:ekr.20090406111739.13: *6* setStyleSetting (qtGui)
+def setStyleSetting(self,w,widgetKind,selector,val):
+
+    '''Set the styleSheet for w to
+       "%s { %s: %s; }  % (widgetKind,selector,val)"
+    '''
+
+    s = '%s { %s: %s; }' % (widgetKind,selector,val)
+
+    try:
+        w.setStyleSheet(s)
+    except Exception:
+        g.es_print('bad style sheet: %s' % s)
+        g.es_exception()
+#@+node:ekr.20090406111739.12: *6* setWidgetColor (qtGui)
+badWidgetColors = []
+
+def setWidgetColor (self,w,widgetKind,selector,colorName):
+
+    if not colorName: return
+
+    # g.trace(widgetKind,selector,colorName,g.callers(4))
+
+    # A bit of a hack: Qt color names do not end with a digit.
+    # Remove them to avoid annoying qt color warnings.
+    if colorName[-1].isdigit():
+        colorName = colorName[:-1]
+
+    if colorName in self.badWidgetColors:
+        pass
+    elif QtGui.QColor(colorName).isValid():
+        g.app.gui.setStyleSetting(w,widgetKind,selector,colorName)
+    else:
+        self.badWidgetColors.append(colorName)
+        g.es_print('bad widget color %s for %s' % (
+            colorName,widgetKind),color='blue')
+#@+node:ekr.20081121105001.502: *5* toUnicode (qtGui)
+def toUnicode (self,s):
+
+    try:
+        s = g.u(s)
+        return s
+    except Exception:
+        g.trace('*** Unicode Error: bugs possible')
+        # The mass update omitted the encoding param.
+        return g.toUnicode(s,reportErrors='replace')
+#@+node:ekr.20081121105001.503: *5* widget_name (qtGui)
+def widget_name (self,w):
+
+    # First try the widget's getName method.
+    if not 'w':
+        name = '<no widget>'
+    elif hasattr(w,'getName'):
+        name = w.getName()
+    elif hasattr(w,'objectName'):
+        name = str(w.objectName())
+    elif hasattr(w,'_name'):
+        name = w._name
+    else:
+        name = repr(w)
+
+    # g.trace(id(w),name)
+    return name
+#@+node:ekr.20081121105001.504: *5* makeScriptButton (to do)
+def makeScriptButton (self,c,
+    args=None,
+    p=None, # A node containing the script.
+    script=None, # The script itself.
+    buttonText=None,
+    balloonText='Script Button',
+    shortcut=None,bg='LightSteelBlue1',
+    define_g=True,define_name='__main__',silent=False, # Passed on to c.executeScript.
+):
+
+    '''Create a script button for the script in node p.
+    The button's text defaults to p.headString'''
+
+    k = c.k
+    if p and not buttonText: buttonText = p.h.strip()
+    if not buttonText: buttonText = 'Unnamed Script Button'
+    << create the button b >>
+    << define the callbacks for b >>
+    b.configure(command=executeScriptCallback)
+    c.bind(b,'<3>',deleteButtonCallback)
+    if shortcut:
+        << bind the shortcut to executeScriptCallback >>
+    << create press-buttonText-button command >>
+#@+node:ekr.20081121105001.505: *6* << create the button b >>
+iconBar = c.frame.getIconBarObject()
+b = iconBar.add(text=buttonText)
+#@+node:ekr.20081121105001.506: *6* << define the callbacks for b >>
+def deleteButtonCallback(event=None,b=b,c=c):
+    if b: b.pack_forget()
+    c.bodyWantsFocus()
+
+def executeScriptCallback (event=None,
+    b=b,c=c,buttonText=buttonText,p=p and p.copy(),script=script):
+
+    if c.disableCommandsMessage:
+        g.es('',c.disableCommandsMessage,color='blue')
+    else:
+        g.app.scriptDict = {}
+        c.executeScript(args=args,p=p,script=script,
+        define_g= define_g,define_name=define_name,silent=silent)
+        # Remove the button if the script asks to be removed.
+        if g.app.scriptDict.get('removeMe'):
+            g.es("removing","'%s'" % (buttonText),"button at its request")
+            b.pack_forget()
+    # Do not assume the script will want to remain in this commander.
+#@+node:ekr.20081121105001.507: *6* << bind the shortcut to executeScriptCallback >>
+func = executeScriptCallback
+shortcut = k.canonicalizeShortcut(shortcut)
+ok = k.bindKey ('button', shortcut,func,buttonText)
+if ok:
+    g.es_print('bound @button',buttonText,'to',shortcut,color='blue')
+#@+node:ekr.20081121105001.508: *6* << create press-buttonText-button command >>
+aList = [g.choose(ch.isalnum(),ch,'-') for ch in buttonText]
+
+buttonCommandName = ''.join(aList)
+buttonCommandName = buttonCommandName.replace('--','-')
+buttonCommandName = 'press-%s-button' % buttonCommandName.lower()
+
+# This will use any shortcut defined in an @shortcuts node.
+k.registerCommand(buttonCommandName,None,executeScriptCallback,pane='button',verbose=False)
+#@+node:ekr.20081121105001.474: *4*  qtGui.__init__
+def __init__ (self):
+
+    # Initialize the base class.
+    leoGui.leoGui.__init__(self,'qt')
+
+    self.qtApp = app = QtGui.QApplication(sys.argv)
+    self.bodyTextWidget  = leoQtBaseTextWidget
+    self.plainTextWidget = leoQtBaseTextWidget
+    self.iconimages = {} # Image cache set by getIconImage().
+    self.mGuiName = 'qt'
+    
+    # Put up the splash screen()
+    self.splashScreen = self.createSplashScreen()
+
+    if g.app.qt_use_tabs:    
+        self.frameFactory = TabbedFrameFactory()
+    else:
+        self.frameFactory = SDIFrameFactory()
+#@+node:ekr.20081121105001.476: *4* runMainLoop (qtGui)
+def runMainLoop(self):
+
+    '''Start the Qt main loop.'''
+
+    if hasattr(g.app.gui,'splashScreen'):
+        splash =  g.app.gui.splashScreen
+        if splash:
+            splash.hide()
+            splash.deleteLater()
+            g.app.gui.splashScreen = None
+    
+    if self.script:
+        log = g.app.log
+        if log:
+            g.pr('Start of batch script...\n')
+            log.c.executeScript(script=self.script)
+            g.pr('End of batch script')
+        else:
+            g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
+    else:
+        if g.app.useIpython:
+            self.embed_ipython()
+            sys.exit(0)
+
+        sys.exit(self.qtApp.exec_())
+#@+node:ekr.20110525112110.18410: *4* createSplashScreen (qtGui)
+def createSplashScreen (self):
+    
+    fn = g.os_path_finalize_join(
+        g.app.loadDir,'..','Icons','SplashScreen.jpg')
+        
+    if g.os_path_exists(fn):
+        qt = QtCore.Qt
+        pm = QtGui.QPixmap(fn)
+        splash = QtGui.QSplashScreen(pm,(qt.SplashScreen | qt.WindowStaysOnTopHint))
+        splash.show()
+        return splash
+    else:
+        # g.trace('not found',fn)
+        return None
+    
+        
 #@+node:ekr.20110325185230.14517: ** Unused code
 #@+node:vivainio.20091223153142.4072: *3* Completer (qtBody)
 def showCompleter(self, alternatives, selected_cb):
