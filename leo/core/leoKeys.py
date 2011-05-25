@@ -833,14 +833,16 @@ class AutoCompleterClass:
 
         if trace: g.trace('prefix: %s, len(options): %s' % (repr(prefix),len(options)))
         
-        self.qw = w = self.c.frame.body.bodyCtrl.widget
-            # A LeoQTextBrowser.
+        w = self.c.frame.body.bodyCtrl.widget
+            # A LeoQTextBrowser.  May be none for unit tests.
 
-        if options:
+        if w and options:
+            self.qw = w
             self.qcompleter = w.init_completer(options)
             self.auto_completer_state_handler(event)
         else:
-            g.es('No completions',color='blue')
+            if not g.unitTesting:
+                g.es('No completions',color='blue')
             self.exit()
     #@+node:ekr.20110511133940.14552: *4* init_tabcompleter
     def init_tabcompleter (self,event=None):
