@@ -4,17 +4,6 @@
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
 #@+node:ekr.20110525112110.18404: *4* Required for b1: 5
-#@+node:ekr.20110522121957.18232: *5* Bug 701261 & bug 583955: Key binding problems
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/701261
-https://bugs.launchpad.net/leo-editor/+bug/583955
-
-* Make sure all widgets have bindings.
-
-- no keyboard method to swing focus away from the options panel
-
-- inconsistent shortcuts for options, some use [Alt-*], others [Alt-*][space]
 #@+node:ekr.20110522121957.18233: *5* Feature: (Bug 755206) Auto-collapse option for viewrendered pane
 @nocolor-node
 
@@ -127,6 +116,7 @@ def is_a_child_of_b(a, b):
     return False
 #@+node:ekr.20110525112110.18394: *5* Fix failing unit tests on Linux
 #@+node:ekr.20110526064139.18333: *5* Do we need c.idle_focus_helper?
+#@+node:ekr.20110526064139.18329: *5* Find non-copyrighted image
 #@+node:ekr.20110524141405.18379: *4* More difficult: 5
 # These may be delayed until b2.
 #@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly

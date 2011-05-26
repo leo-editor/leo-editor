@@ -10509,6 +10509,18 @@ What I did:
     - changed self.master to self.leo_master.
     - changed self.menubar to self.leo_menubar.
     - changed self.ui to self.leo_ui.
+#@+node:ekr.20110526083709.18341: *4* Closed bugs 701261 & 583955: Key binding problems
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/701261
+https://bugs.launchpad.net/leo-editor/+bug/583955
+
+No changes needed.
+
+- Make sure all widgets have bindings: they do.
+    
+- no keyboard method to swing focus away from the options panel:
+  Invalid: ctrl-g works.
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()
