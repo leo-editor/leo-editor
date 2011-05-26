@@ -892,7 +892,8 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081121105001.554: *5* hasSelection
     def hasSelection(self):
 
-        return self.widget.hasSelection()
+        # 2011/05/26: was hasSelection.
+        return self.widget.hasSelectedText()
     #@+node:ekr.20081121105001.555: *5* see & seeInsertPoint
     def see(self,i):
         pass
