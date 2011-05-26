@@ -1233,11 +1233,13 @@ class baseFileCommands:
             g.es_exception()
             return None
 
-
         # New in 4.3: leave string attributes starting with 'str_' alone.
-        if attr.startswith('str_') and type(val) == type(''):
-            # g.trace(attr,val)
-            return val
+        if attr.startswith('str_'):
+            if type(val) == type(''):
+                return val
+            elif type(val) == type(b''):
+                # 2011/05/26.
+                return g.toUnicode(val)
 
         # New in 4.3: convert attributes starting with 'b64_' using the base64 conversion.
         if 0: # Not ready yet.
