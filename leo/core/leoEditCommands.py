@@ -130,7 +130,7 @@ class baseEditCommandsClass:
             else:
                 k.resetLabel()
     #@+node:ekr.20061007105001: *3* editWidget (baseEditCommandsClass)
-    def editWidget (self,event):
+    def editWidget (self,event,forceFocus=True):
 
         c = self.c ; w = event and event.widget
 
@@ -142,7 +142,7 @@ class baseEditCommandsClass:
         else:
             self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
 
-        if self.w:
+        if self.w and forceFocus:
             c.widgetWantsFocusNow(self.w)
 
         return self.w
@@ -316,7 +316,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
             'dabbrev-expands':              self.dynamicExpansion,
 
             # Static...
-            'abbrev-mode':                  self.toggleAbbrevMode,
+            'toggle-abbrev-mode':           self.toggleAbbrevMode,
             'add-global-abbrev':            self.addAbbreviation,
             # 'expand-region-abbrevs':        self.regionalExpandAbbrev,
             'inverse-add-global-abbrev':    self.addInverseAbbreviation,
@@ -327,7 +327,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         }
     #@+node:ekr.20100901080826.6155: *3*  Entry point
     #@+node:ekr.20050920084036.27: *4* expandAbbrev
-    def expandAbbrev (self,event):
+    def expandAbbrev (self,event,stroke):
 
         '''Not a command.  Called from k.masterCommand to expand
         abbreviations in event.widget.
@@ -336,10 +336,31 @@ class abbrevCommandsClass (baseEditCommandsClass):
         '''
 
         trace = False and not g.unitTesting
-        k = self.k ; c = self.c ; ch = event.char.strip()
-        w = self.editWidget(event)
-        if not w: return
-        if w.hasSelection(): return
+        k = self.k ; c = self.c
+        ch = event.char
+        w = self.editWidget(event,forceFocus=False)
+        if not w: return False
+        if w.hasSelection(): return False
+        if stroke=='BackSpace': return False
+        d = {'Return':'\n','Tab':'\t','space':' ','underscore':'_'}
+        if stroke:
+            ch = d.get(stroke,stroke)
+            if len(ch) > 1:
+                if (stroke.find('Ctrl+') > -1 or
+                    stroke.find('Alt+') > -1 or
+                    stroke.find('Meta+') > -1
+                ):
+                    ch = ''
+                else:
+                    ch = event.char
+        else:
+            ch = event.char
+            
+        if trace: g.trace('event.char',repr(event.char),'ch',repr(ch),'stroke',repr(stroke))
+
+        if len(ch) != 1 or (len(ch) == 1 and ch.isalpha()):
+            # Normal chars other special chars abort abbreviations.
+            return False
 
         # Get the text and insert point.
         s = w.getAllText()
@@ -353,13 +374,24 @@ class abbrevCommandsClass (baseEditCommandsClass):
             i -= 1
         i += 1
         word = s[i:j].strip()
-        if ch: word = word + ch
+        ### if ch: word = word + ch
         if trace: g.trace(i,j,repr(word))
-        if not word: return
+        if not word: return False
 
+        # First, look up the word without ch.
         val,tag = self.abbrevs.get(word,(None,None))
         if trace: g.trace(word,val,tag)
+        
         if val:
+            # Add ch to the result.
+            if ch: val = val + ch
+        else:
+            # Look up the word with ch.
+            if ch and not val:
+                val,tag = self.abbrevs.get(word+ch,(None,None))
+                if trace: g.trace(word+ch,val,tag)
+        if val:
+            if trace: g.trace('**inserting',repr(val))
             oldSel = j,j
             c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
             if i != j: w.delete(i,j)

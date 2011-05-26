@@ -9241,7 +9241,7 @@ ed = c.editCommands
     # 'toggle-split-direction'),
 
 table = (
-    (k,'abbrevOn','abbrev-mode'),
+    (k,'abbrevOn','toggle-abbrev-mode'),
     (k,'enable_autocompleter','toggle-autocompleter'),
     (k,'enable_calltips','toggle-calltips'),
     (ed,'extendMode','toggle-extend-mode'),

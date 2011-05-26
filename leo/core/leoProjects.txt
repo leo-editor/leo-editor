@@ -5868,8 +5868,8 @@ def masterCommand (self,event,func,stroke,commandName=None):
             pass
         return 'break'
 
-    if k.abbrevOn and ch == ' ':
-        expanded = c.abbrevCommands.expandAbbrev(event)
+    if k.abbrevOn:
+        expanded = c.abbrevCommands.expandAbbrev(event,stroke)
         if expanded: return 'break'
 
     if func: # Func is an argument.
@@ -17197,5 +17197,288 @@ def massageAtDocPart (self,s):
     return s
 #@+node:ekr.20110525181446.18336: *4* Added a splash screen (Qt only)
 To disable, remove leo\Icons\SplashScreen.jpg.
+#@+node:ekr.20110525112110.18395: *4* Improved expansion of abbreviations
+@nocolor-node
+
+Abbreviations are checked any time a non-word character is typed.
+
+In particular, newlines trigger abbreviations, which I find very helpful,
+although I did then have to remove newlines from my abbreviations.
+
+Control sequences do not trigger expansions.
+
+Renamed the 'abbrev-mode' to 'toggle-abbrev-mode'.
+#@+node:ekr.20061007105001: *5* editWidget (baseEditCommandsClass)
+def editWidget (self,event,forceFocus=True):
+
+    c = self.c ; w = event and event.widget
+
+    # g.trace(w,g.app.gui.isTextWidget(w))
+
+    # New in Leo 4.5: single-line editing commands apply to minibuffer widget.
+    if w and g.app.gui.isTextWidget(w):
+        self.w = w
+    else:
+        self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
+
+    if self.w and forceFocus:
+        c.widgetWantsFocusNow(self.w)
+
+    return self.w
+#@+node:ekr.20061031131434.105: *5* masterCommand & helpers
+def masterCommand (self,event,func,stroke,commandName=None):
+
+    '''This is the central dispatching method.
+    All commands and keystrokes pass through here.'''
+
+    k = self ; c = k.c ; gui = g.app.gui
+    trace = (False or k.traceMasterCommand) and not g.unitTesting
+    verbose = False
+    traceGC = False
+    if traceGC: g.printNewObjects('masterCom 1')
+
+    c.setLog()
+    c.startRedrawCount = c.frame.tree.redrawCount
+    k.stroke = stroke # Set this global for general use.
+    keysym = gui.eventKeysym(event)
+    ch = gui.eventChar(event)
+    w = gui.eventWidget(event)
+    state = event and hasattr(event,'state') and event.state or 0
+    k.func = func
+    k.funcReturn = None # For unit testing.
+    commandName = commandName or func and func.__name__ or '<no function>'
+    << define specialKeysyms >>
+    special = keysym in specialKeysyms
+    interesting = func is not None
+    inserted = not special
+
+    if trace: #  and interesting:
+        g.trace(
+            'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),'keysym:',repr(keysym),
+            'w:',w and c.widget_name(w),'func:',func and func.__name__
+        )
+
+    if inserted:
+        # g.trace(stroke,keysym)
+        << add character to history >>
+
+    # We *must not* interfere with the global state in the macro class.
+    if c.macroCommands.recordingMacro:
+        c.macroCommands.startKbdMacro(event)
+        return 'break'
+
+    # g.trace(stroke,k.abortAllModesKey)
+
+    if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
+        k.keyboardQuit(event)
+        k.endCommand(event,commandName)
+        return 'break'
+
+    if special: # Don't pass these on.
+        return 'break' 
+
+    if 0: # *** This is now handled by k.masterKeyHandler.
+        if k.inState():
+            val = k.callStateFunction(event) # Calls end-command.
+            if val != 'do-func': return 'break'
+            g.trace('Executing key outside of mode')
+
+    if k.regx.iter:
+        try:
+            k.regXKey = keysym
+            k.regx.iter.next() # EKR: next() may throw StopIteration.
+        except StopIteration:
+            pass
+        return 'break'
+
+    if k.abbrevOn:
+        expanded = c.abbrevCommands.expandAbbrev(event,stroke)
+        if expanded: return 'break'
+
+    if func: # Func is an argument.
+        if commandName == 'propagate-key-event':
+            # Do *nothing* with the event.
+            return k.propagateKeyEvent(event)
+        elif commandName.startswith('specialCallback'):
+            # The callback function will call c.doCommand
+            if trace: g.trace('calling specialCallback for',commandName)
+            # if commandName != 'repeat-complex-command': # 2010/01/11
+                # k.mb_history.insert(0,commandName)
+            val = func(event)
+            # k.simulateCommand uses k.funcReturn.
+            k.funcReturn = k.funcReturn or val # For unit tests.
+        else:
+            # Call c.doCommand directly
+            if trace: g.trace('calling command directly',commandName)
+            # if commandName != 'repeat-complex-command': # 2010/01/11
+                # k.mb_history.insert(0,commandName)
+            # if commandName == 'select-all': g.pdb()
+            c.doCommand(func,commandName,event=event)
+        if c.exists:
+            k.endCommand(event,commandName)
+            c.frame.updateStatusLine()
+        if traceGC: g.printNewObjects('masterCom 2')
+        return 'break'
+    elif k.inState():
+        return 'break' #Ignore unbound keys in a state.
+    else:
+        if traceGC: g.printNewObjects('masterCom 3')
+        val = k.handleDefaultChar(event,stroke)
+        if c.exists:
+            c.frame.updateStatusLine()
+        if traceGC: g.printNewObjects('masterCom 4')
+        return val
+#@+node:ekr.20061031131434.106: *6* << define specialKeysyms >>
+specialKeysyms = (
+    'Alt_L','Alt_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Caps_Lock','Control_L','Control_R',
+    'Num_Lock',
+    'Shift_L','Shift_R',
+)
+#@+node:ekr.20061031131434.107: *6* << add character to history >>
+if stroke or len(ch) > 0:
+    if len(keyHandlerClass.lossage) > 99:
+        keyHandlerClass.lossage.pop()
+
+    # This looks like a memory leak, but isn't.
+    keyHandlerClass.lossage.insert(0,(ch,stroke),)
+#@+node:ekr.20061031131434.109: *6* callKeystrokeFunction (not used)
+def callKeystrokeFunction (self,event):
+
+    '''Handle a quick keystroke function.
+    Return the function or None.'''
+
+    k = self
+    numberOfArgs, func = k.keystrokeFunctionDict [k.stroke]
+
+    if func:
+        func(event)
+        commandName = k.inverseCommandsDict.get(func) # Get the emacs command name.
+        k.endCommand(event,commandName)
+
+    return func
+#@+node:ekr.20061031131434.110: *6* k.handleDefaultChar
+def handleDefaultChar(self,event,stroke):
+    k = self ; c = k.c
+    w = event and event.widget
+    name = c.widget_name(w)
+    trace = False and not g.unitTesting
+
+    if trace: g.trace('widget_name',name,'stroke',stroke)
+
+    if (stroke and
+        not stroke.startswith('Alt+Ctrl') and
+        not self.enable_alt_ctrl_bindings and
+        (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
+    ):
+        if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+        return 'break'
+
+    if name.startswith('body'):
+        action = k.unboundKeyAction
+        if action in ('insert','overwrite'):
+            c.editCommands.selfInsertCommand(event,action=action)
+        else: # Ignore the key
+            if trace: g.trace('ignoring',stroke)
+        return 'break'
+    elif name.startswith('head'):
+        c.frame.tree.onHeadlineKey(event)
+        return 'break'
+    elif name.startswith('canvas'):
+        if not stroke: # Not exactly right, but it seems to be good enough.
+            c.onCanvasKey(event) # New in Leo 4.4.2
+        return 'break'
+    elif name.startswith('log'):
+        if g.app.gui.guiName() == 'tkinter':
+            return None
+        else:
+            i = w.logCtrl.getInsertPoint()
+            if not stroke:
+                stroke = event.stroke # 2010/05/04.
+            if stroke.lower() == 'return': stroke = '\n'
+            elif stroke.lower() == 'tab': stroke = '\t'
+            elif stroke.lower() == 'backspace': stroke = '\b'
+            elif stroke.lower() == 'period': stroke = '.'
+            w.logCtrl.insert(i,stroke)
+
+            return None
+    else:
+        # Let the widget handle the event.
+        # ch = event and event.char ; g.trace('to tk:',name,repr(stroke))
+        return None
+#@+node:ekr.20050920084036.27: *5* expandAbbrev
+def expandAbbrev (self,event,stroke):
+
+    '''Not a command.  Called from k.masterCommand to expand
+    abbreviations in event.widget.
+
+    Words start with '@'.
+    '''
+
+    trace = False and not g.unitTesting
+    k = self.k ; c = self.c
+    ch = event.char
+    w = self.editWidget(event,forceFocus=False)
+    if not w: return False
+    if w.hasSelection(): return False
+    if stroke=='BackSpace': return False
+    d = {'Return':'\n','Tab':'\t','space':' ','underscore':'_'}
+    if stroke:
+        ch = d.get(stroke,stroke)
+        if len(ch) > 1:
+            if (stroke.find('Ctrl+') > -1 or
+                stroke.find('Alt+') > -1 or
+                stroke.find('Meta+') > -1
+            ):
+                ch = ''
+            else:
+                ch = event.char
+    else:
+        ch = event.char
+        
+    if trace: g.trace('event.char',repr(event.char),'ch',repr(ch),'stroke',repr(stroke))
+
+    if len(ch) != 1 or (len(ch) == 1 and ch.isalpha()):
+        # Normal chars other special chars abort abbreviations.
+        return False
+
+    # Get the text and insert point.
+    s = w.getAllText()
+    i = i1 = w.getInsertPoint()
+
+    # Find the word to the left of the insert point.
+    j = i ; i -= 1
+    while 0 <= i < len(s) and g.isWordChar(s[i]):
+        i -= 1
+    if 0 <= i < len(s) and s[i] == '@':
+        i -= 1
+    i += 1
+    word = s[i:j].strip()
+    ### if ch: word = word + ch
+    if trace: g.trace(i,j,repr(word))
+    if not word: return False
+
+    # First, look up the word without ch.
+    val,tag = self.abbrevs.get(word,(None,None))
+    if trace: g.trace(word,val,tag)
+    
+    if val:
+        # Add ch to the result.
+        if ch: val = val + ch
+    else:
+        # Look up the word with ch.
+        if ch and not val:
+            val,tag = self.abbrevs.get(word+ch,(None,None))
+            if trace: g.trace(word+ch,val,tag)
+    if val:
+        if trace: g.trace('**inserting',repr(val))
+        oldSel = j,j
+        c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
+        if i != j: w.delete(i,j)
+        w.insert(i,val)
+        c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
+
+    return val is not None
 #@-all
 #@-leo

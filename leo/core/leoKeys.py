@@ -2047,8 +2047,8 @@ class keyHandlerClass:
                 pass
             return 'break'
 
-        if k.abbrevOn and ch == ' ':
-            expanded = c.abbrevCommands.expandAbbrev(event)
+        if k.abbrevOn:
+            expanded = c.abbrevCommands.expandAbbrev(event,stroke)
             if expanded: return 'break'
 
         if func: # Func is an argument.

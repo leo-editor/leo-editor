@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.45" body_secondary_ratio="0.58">
-	<global_window_position top="118" left="549" height="887" width="1157"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="131" left="476" height="809" width="855"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -25,8 +25,8 @@
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 </v>
 <v t="ekr.20110521072459.2463"><vh>colorizer colors</vh>
-<v t="ekr.20110521072459.2464"><vh>@color keyword3_color = orange</vh></v>
-<v t="ekr.20110521072459.2465"><vh>@color keyword4_color = pink</vh></v>
+<v t="ekr.20110521072459.2464"><vh>@@color keyword3_color = orange</vh></v>
+<v t="ekr.20110521072459.2465"><vh>@@color keyword4_color = pink</vh></v>
 </v>
 <v t="ekr.20100118190256.2015"><vh>Files &amp; directories</vh>
 <v t="ekr.20101009105505.2295"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
@@ -1103,7 +1103,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="4"></t>
+<t tx="ekr.20070416075121" str_leo_pos="0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -7223,7 +7223,8 @@ for start,path in table:
 leoKeys.AutoCompleterScanner(c).scan()
 </t>
 <t tx="ekr.20101004104134.2346"></t>
-<t tx="ekr.20101004104134.2347"></t>
+<t tx="ekr.20101004104134.2347">
+</t>
 <t tx="ekr.20101004104134.2348"></t>
 <t tx="ekr.20101009105505.2295">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
