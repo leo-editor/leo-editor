@@ -127,7 +127,7 @@ def is_a_child_of_b(a, b):
     return False
 #@+node:ekr.20110525112110.18394: *5* Fix failing unit tests on Linux
 #@+node:ekr.20110526064139.18333: *5* Do we need c.idle_focus_helper?
-#@+node:ekr.20110524141405.18379: *4* More difficult: 4
+#@+node:ekr.20110524141405.18379: *4* More difficult: 5
 # These may be delayed until b2.
 #@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
 @nocolor-node
@@ -169,6 +169,49 @@ This would be a substitute for cross-file clones.
 http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
 #@+node:ekr.20090907080624.6081: *5* Bug: spell checker should check headlines
 Low priority
+#@+node:ekr.20090601083544.6067: *5* Make all commands available to all commanders
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/a83082cec5ad3df8
+
+QQQ (Ville)
+So to create command you would do
+
+import leoPlugins
+
+def mycmd(c,p, event):
+  print c,p
+
+leoPlugins.expose_command('my-command', mycmd)
+leoPlugins.expose_button('press-this',mycmd)
+
+[EKR: I would rather use g.app.exposeCommand, g.app.exposeButton].
+
+These would be available on *all* new commanders, and the current
+commander as well (for easy testing). Plugins would not have to
+contain more code than what is presented above.
+
+The idea is to have a global command dict, [EKR: g.app.commandsDict]
+and global button dict.
+There is one after-create-frame handler that introduces all the
+entries in this dict to the commander command dict.
+QQQ
+
+============
+
+
+QQQ
+g.app.global_commands_dict, which gets copied to c on commander
+creation. it's rev 1889, you'll note that it's a simple
+implementation. I didn't add g.button yet. An example:
+
+@g.command('bookmark')
+def bookmark(event):
+    c = event.get('c')
+    p = c.currentPosition()
+    bookmarks.append(p.gnx)
+    g.es('bookmarked') 
+QQQ
 #@+node:ekr.20110514231951.14492: *4* Docs: 4
 #@+node:ekr.20110523201030.18284: *5* Make sure MacOS users are told to use --gui=qt
 @nocolor-node
@@ -487,7 +530,7 @@ added.
 
 In short, the new caching scheme is much better than before, and it probably is
 close to optimal in most situations.
-#@+node:ekr.20110516132611.14438: *3* b2
+#@+node:ekr.20110516132611.14438: *3* b2 The last biggish projects: 3
 #@+node:ekr.20110523201030.18290: *4* Deprecate Tk
 #@+node:ekr.20090131200406.11: *5* Remove remaining tk-isms from Leo's core
 @nocolor-node
@@ -501,17 +544,44 @@ These are marked with ###
 (found) sel.first, sel.last
 (found) w.insert, w.delete
 #@+node:ekr.20110125142807.17269: *5* Rewrite all tk plugins
-#@+node:ekr.20081208102356.1: *5* Won't fix: (Tk) Threading colorizer doesn't handle multiple body editors
+#@+node:ekr.20110526083709.18337: *4* Simplify Key handling
 @nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
+As part of killing Tk I shall simplify how Leo's Qt gui reports keys to the
+core.  The general design will be as follows:
 
-> Tk only colorizes one body editor, and if you delete that editor it
-> colorizes no editor.
+1. The leoKeyEvent class will be strengthened. The following improvements will be done
+   in leoKeyEvent or its precursors in eventFilter.
 
-Thanks for this report.  This is a problem, never noticed until now,
-with the threading colorizer.  A workaround is to disable the
-threading colorizer plugin. 
+2. There will be several "invariants" that the core will depend on:
+
+A. event.ch will be empty except for characters that will, by default, be
+   inserted into body text. This includes all printable ascii characters and any
+   unicode characters, but does *not* include any ctrl/alt/meta characters.
+
+**Important**: there may be (will be) clashes between some unicode characters
+and alt/ctrl/meta characters.  I know of no way to "guess" what is meant, so all
+such characters, or at least all such characters with Leo bindings, will be
+treated as non-printable. 
+
+B. event.ch will contain the *actual character* represented by the event. In
+   particular, it will contain '\t', not 'Tab', '\n', not 'Return', '.', not
+   'period', etc., etc.
+
+C. event.stroke will contain the "standard" spelling of the key. As before,
+   k.masterKeyHandler will use the stroke to determine the binding in effect for
+   the key. There will be no substantial changes to k.masterKeyHandler, except
+   as required by invariant B.
+
+The effect of these invariants is that Leo's core will not have to do AI to
+determine what character an event refers to.  If event.ch is non-empty, the
+character can be inserted (modulo any plain-key bindings).  Otherwise, the
+stroke tells everything there is to be known about the key event. 
+
+For example, k.isPlainKey will become trivial, or better, unnecessary.
+
+None of this can be done easily while Tk exists.  After the work is done, the
+work will become a new "standard" that future gui's can implement. 
 #@+node:ekr.20110427135155.14306: *4* Add <attr> elements to .leo files
 @language rest
 
@@ -1411,58 +1481,12 @@ I'm sure pickling capability is great, but I'm not convinced
 it should be the _default._
 
 No big deal.
-#@+node:ekr.20090601083544.6067: *4* Make all commands available to all commanders
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/a83082cec5ad3df8
-
-QQQ (Ville)
-So to create command you would do
-
-import leoPlugins
-
-def mycmd(c,p, event):
-  print c,p
-
-leoPlugins.expose_command('my-command', mycmd)
-leoPlugins.expose_button('press-this',mycmd)
-
-[EKR: I would rather use g.app.exposeCommand, g.app.exposeButton].
-
-These would be available on *all* new commanders, and the current
-commander as well (for easy testing). Plugins would not have to
-contain more code than what is presented above.
-
-The idea is to have a global command dict, [EKR: g.app.commandsDict]
-and global button dict.
-There is one after-create-frame handler that introduces all the
-entries in this dict to the commander command dict.
-QQQ
-
-============
-
-
-QQQ
-g.app.global_commands_dict, which gets copied to c on commander
-creation. it's rev 1889, you'll note that it's a simple
-implementation. I didn't add g.button yet. An example:
-
-@g.command('bookmark')
-def bookmark(event):
-    c = event.get('c')
-    p = c.currentPosition()
-    bookmarks.append(p.gnx)
-    g.es('bookmarked') 
-QQQ
-#@+node:ekr.20110518103946.18179: *4* Add external/leosax.py to leoPyRef.leo
-http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
-
-Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
-#@+node:ekr.20101129095441.5963: *4* Improve screenshots page
 #@+node:ekr.20110518103946.18156: *3* rc1: completing Leo
 @nocolor-node
 
 These could be delayed until 4.10, but I would rather not.
+
+Instead, they may be moved forward to b2.
 #@+node:ekr.20110525112110.18396: *4* Most important features: 7
 # These are the only items that I think are particularly important.
 #@+node:ekr.20051110155735.1: *5* Improve Spell tab
@@ -2049,5 +2073,12 @@ language before doing anything in this direction.
 As an intermediate step, maybe we could allow mixing RST processing with regular
 program text.  Leo would produce two documents out of a source file: a version
 for the compiler in plain ascii, and an HTML file for reading the source.
+#@+node:ekr.20110526083709.18338: *3* misc: 2
+# These can be done at any time, or not at all
+#@+node:ekr.20110518103946.18179: *4* Add external/leosax.py to leoPyRef.leo
+http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
+
+Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
+#@+node:ekr.20101129095441.5963: *4* Improve screenshots page
 #@-all
 #@-leo

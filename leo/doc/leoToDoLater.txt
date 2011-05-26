@@ -1901,6 +1901,17 @@ as there's no next line.
 The following bugs can not be fixed because they are Tk bugs.
 
 These bugs are becoming moot: Tk will soon be deprecated.
+#@+node:ekr.20081208102356.1: *5* Threading colorizer doesn't handle multiple body editors
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
+
+> Tk only colorizes one body editor, and if you delete that editor it
+> colorizes no editor.
+
+Thanks for this report.  This is a problem, never noticed until now,
+with the threading colorizer.  A workaround is to disable the
+threading colorizer plugin. 
 #@+node:ekr.20041201071145: *5* Tk Freezes on debean when libtk is compiled with thread support
 http://sourceforge.net/forum/message.php?msg_id=2876797
 By: skal
