@@ -3,7 +3,92 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20110526234609.18385: *4* First
+#@+node:ekr.20110526234609.18385: *4* First: 4
+#@+node:ekr.20110125142807.17269: *5* Rewrite all tk plugins
+@nocolor-node
+
+Is it time to retire tk?
+http://groups.google.com/group/leo-editor/browse_thread/thread/f0c4847d1630505d/1d477dfa09d67b1f
+
+What Tk plugins must be ported to Qt?
+http://groups.google.com/group/leo-editor/browse_thread/thread/16c6fb46a4f84b8c/e5c88a19eba99e68
+
+Feb 2, 2011
+Viktor R: detect_urls.py (Completed)
+#@+node:ekr.20110526234609.18387: *6* Posting
+@nocolor-node
+
+I would like to remove support for Tk asap.  Before doing that, I want to make
+sure that nobody will lose the functionality of a Tk plugin that has no
+counterpart in Qt. 
+
+Therefore, it is important that you tell me now if moving to Qt would
+inconvenience you in this regard. True, Tk plugins can be ported to Qt later if
+necessary, but I'd like to make the translation as painless as possible. So if
+you use Tk, please let me know now if you use any Tk plugin that has no
+counterpart in Qt.
+
+In February of this year there was a thread called "What Tk plugins must be ported to Qt?"
+http://groups.google.com/group/leo-editor/browse_thread/thread/16c6fb46a4f84b8c/e5c88a19eba99e68
+
+At that time, only the detect_urls plugin was mentioned, and that functionality
+has been moved into the Qt colorizer.
+
+A short script produces this list of @file nodes in the "zz Tk only plugins"
+section of leoPlugins.leo:
+
+ConceptualSort.py
+Library.py
+UASearch.py
+URLloader.py
+UniversalScrolling.py  # Certainly not needed in Qt.
+autotrees.py
+base64Packager.py
+cleo.py
+color_markup.py
+fastGotoNode.py
+footprints.py
+graphed.py
+groupOperations.py
+hoist.py
+image.py # obsolete
+leoupdate.py
+mod_labels.py
+nav_buttons.py
+newButtons.py
+nodebar.py
+nodenavigator.py
+old_plugin_manager.py # Will not be ported
+open_with.py # Not needed
+pie_menus.py
+rClick.py # Not needed.
+rowcol.py # Not needed.
+scheduler.py
+searchbar.py
+searchbox.py
+shortcut_button.py 
+table.py
+templates.py
+threading_colorizer.py
+toolbar.py
+trees\doc.py
+trees\news.py
+trees\pluginsManager.txt
+trees\remote.py
+trees\rss.py
+trees\test.py
+xcc_nodes.py
+
+Notes
+
+The only plugins that catch my eye are: autotrees.py, base64Packager.py,
+color_markup.py and templates.py.
+
+I would prefer not to port color_markup.py. It doesn't seem worth the trouble.
+Porting base64Packager.py should be straightforward, if anyone cares.
+
+autotrees.py and templates.py seems the most interesting. They shouldn't be too
+difficult to do.
 #@+node:ekr.20110524141405.18370: *5* Get macros working well
 How should they work?
 #@+node:ekr.20090402072059.2: *5* Improve the clone-find-all command
@@ -128,6 +213,7 @@ The variable names in the last two lines are not highlighted
 correctly. This becomes clear if the first line is replaced with #!/
 bin/bash and this code is opened in vim/scite. I've tried only these
 two editors, they highlight the variable names correctly.
+#@+node:ekr.20110526234609.18386: *4* Next 2:
 #@+node:ekr.20110520051220.18203: *5* Cross-tab search
 @language rest
 
@@ -1367,7 +1453,6 @@ These are marked with ###
 (found) lineend, linestart
 (found) sel.first, sel.last
 (found) w.insert, w.delete
-#@+node:ekr.20110125142807.17269: *5* Rewrite all tk plugins
 #@+node:ekr.20110526083709.18337: *4* Simplify Key handling
 @nocolor-node
 
@@ -1427,8 +1512,6 @@ Templates section of the leoPlugins.
 The onCreate method gets called every time *any* new commander is created
 therefore the plugin controllers get recreated for *every* commander *every*
 time a new commander is created.
-#@+node:ekr.20090907080624.6081: *5* Spell checker should check headlines
-Low priority
 #@+node:ekr.20090601083544.6067: *5* Make all commands available to all commanders
 @nocolor-node
 
@@ -1472,8 +1555,9 @@ def bookmark(event):
     bookmarks.append(p.gnx)
     g.es('bookmarked') 
 QQQ
-#@+node:ekr.20110525112110.18396: *4* Most important features: 7
+#@+node:ekr.20110525112110.18396: *4* Most important features: 8
 # These are the only items that I think are particularly important.
+#@+node:ekr.20090907080624.6081: *5* Spell checker should check headlines
 #@+node:ekr.20051110155735.1: *5* Improve Spell tab
 @nocolor
 
