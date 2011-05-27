@@ -3,12 +3,15 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20090402072059.2: *4* Improve the clone-find-all command
+#@+node:ekr.20110526234609.18385: *4* First
+#@+node:ekr.20110524141405.18370: *5* Get macros working well
+How should they work?
+#@+node:ekr.20090402072059.2: *5* Improve the clone-find-all command
 @nocolor-node
 
 Notice that children of previously found nodes don't get added again in the
 modified version.
-#@+node:ekr.20090402072059.4: *5* @@@button my clone find all
+#@+node:ekr.20090402072059.4: *6* @@@button my clone find all
 import leo.core.leoFind as leoFind 
 
 def new_find_all(self):
@@ -53,7 +56,7 @@ def new_find_all(self):
 leoFind.leoFind.findAll = new_find_all
 
 c.executeMinibufferCommand("clone-find-all") 
-#@+node:ekr.20090402072059.5: *6* << do some initial stuff >>
+#@+node:ekr.20090402072059.5: *7* << do some initial stuff >>
 g.es("findAll..., self: ", self)
 
 c = self.c ; w = self.s_ctrl ; u = c.undoer
@@ -66,16 +69,16 @@ if self.clone_find_all:
 data = self.save()
 self.initBatchCommands()
 count = 0 ; clones = []; positions = []
-#@+node:ekr.20090402072059.6: *6* << create the found node >>
+#@+node:ekr.20090402072059.6: *7* << create the found node >>
 oldRoot = c.rootPosition()
 found = oldRoot.insertAfter()
 found.moveToRoot(oldRoot)
 c.setHeadString(found,'Found: ' + self.find_text)
 c.setRootPosition() # New in Leo 4.5.
-#@+node:ekr.20090402072059.7: *6* << create a clone of p under the find node >>
+#@+node:ekr.20090402072059.7: *7* << create a clone of p under the find node >>
 q = self.p.clone()
 q.moveToLastChildOf(found)
-#@+node:ekr.20090402072059.8: *6* << Skip node if it's a child of a previously found node >>
+#@+node:ekr.20090402072059.8: *7* << Skip node if it's a child of a previously found node >>
 << def: is a child of b >>
 
 is_child_of_previous = False
@@ -86,7 +89,7 @@ for previously_found in positions:
 
 if is_child_of_previous:
     continue
-#@+node:ekr.20090402072059.9: *7* << def: is a child of b >>
+#@+node:ekr.20090402072059.9: *8* << def: is a child of b >>
 
 def is_a_child_of_b(a, b):
     for child in b.children_iter():
@@ -95,12 +98,6 @@ def is_a_child_of_b(a, b):
         if is_a_child_of_b(a, child):
             return True
     return False
-#@+node:ekr.20110524141405.18379: *4* Harder: 6
-@nocolor-node
-
-These are a bit more difficult.
-
-These may be delayed until b2.
 #@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
 @nocolor-node
 
@@ -135,55 +132,6 @@ two editors, they highlight the variable names correctly.
 @language rest
 
 This would be a substitute for cross-file clones.
-#@+node:ekr.20080421140032.1: *5* Fix multiple controllers problem in all plugins
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
-#@+node:ekr.20090907080624.6081: *5* Bug: spell checker should check headlines
-Low priority
-#@+node:ekr.20090601083544.6067: *5* Make all commands available to all commanders
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/a83082cec5ad3df8
-
-QQQ (Ville)
-So to create command you would do
-
-import leoPlugins
-
-def mycmd(c,p, event):
-  print c,p
-
-leoPlugins.expose_command('my-command', mycmd)
-leoPlugins.expose_button('press-this',mycmd)
-
-[EKR: I would rather use g.app.exposeCommand, g.app.exposeButton].
-
-These would be available on *all* new commanders, and the current
-commander as well (for easy testing). Plugins would not have to
-contain more code than what is presented above.
-
-The idea is to have a global command dict, [EKR: g.app.commandsDict]
-and global button dict.
-There is one after-create-frame handler that introduces all the
-entries in this dict to the commander command dict.
-QQQ
-
-============
-
-
-QQQ
-g.app.global_commands_dict, which gets copied to c on commander
-creation. it's rev 1889, you'll note that it's a simple
-implementation. I didn't add g.button yet. An example:
-
-@g.command('bookmark')
-def bookmark(event):
-    c = event.get('c')
-    p = c.currentPosition()
-    bookmarks.append(p.gnx)
-    g.es('bookmarked') 
-QQQ
 #@+node:ekr.20110427135155.14306: *5* Add <attr> elements to .leo files
 @language rest
 
@@ -1464,6 +1412,66 @@ work will become a new "standard" that future gui's can implement.
 These could be delayed until 4.10, but I would rather not.
 
 Instead, they may be moved forward to b2.
+#@+node:ekr.20110524141405.18379: *4* Minor Bugs
+@nocolor-node
+
+These are a bit more difficult and may be delayed until b2.
+#@+node:ekr.20080421140032.1: *5* Fix multiple controllers problem in all plugins
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
+
+There is a problem with the onClick model for plugins, as described in the
+Templates section of the leoPlugins.
+
+The onCreate method gets called every time *any* new commander is created
+therefore the plugin controllers get recreated for *every* commander *every*
+time a new commander is created.
+#@+node:ekr.20090907080624.6081: *5* Spell checker should check headlines
+Low priority
+#@+node:ekr.20090601083544.6067: *5* Make all commands available to all commanders
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/a83082cec5ad3df8
+
+QQQ (Ville)
+So to create command you would do
+
+import leoPlugins
+
+def mycmd(c,p, event):
+  print c,p
+
+leoPlugins.expose_command('my-command', mycmd)
+leoPlugins.expose_button('press-this',mycmd)
+
+[EKR: I would rather use g.app.exposeCommand, g.app.exposeButton].
+
+These would be available on *all* new commanders, and the current
+commander as well (for easy testing). Plugins would not have to
+contain more code than what is presented above.
+
+The idea is to have a global command dict, [EKR: g.app.commandsDict]
+and global button dict.
+There is one after-create-frame handler that introduces all the
+entries in this dict to the commander command dict.
+QQQ
+
+============
+
+
+QQQ
+g.app.global_commands_dict, which gets copied to c on commander
+creation. it's rev 1889, you'll note that it's a simple
+implementation. I didn't add g.button yet. An example:
+
+@g.command('bookmark')
+def bookmark(event):
+    c = event.get('c')
+    p = c.currentPosition()
+    bookmarks.append(p.gnx)
+    g.es('bookmarked') 
+QQQ
 #@+node:ekr.20110525112110.18396: *4* Most important features: 7
 # These are the only items that I think are particularly important.
 #@+node:ekr.20051110155735.1: *5* Improve Spell tab
@@ -1724,7 +1732,6 @@ its children evaluated in an interpreter running in a separate window or pane,
 much as Leo can open a Python shell now. Users of those languages could build
 plug-ins specific to their language atop that layer, and the @language directive
 could activate that. I think that would be very cool.
-#@+node:ekr.20110524141405.18370: *5* * Get macros working well
 #@+node:ekr.20060628103226.3: *5* Make sure repeat counts work on basic editing commands
 #@+node:ekr.20071004120359.2: *5* expand-region-abbrev
 @nocolor-node

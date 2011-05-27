@@ -5821,7 +5821,7 @@ class leoQtMenu (leoMenu.leoMenu):
             val = bool(val)
             # g.trace('%5s %s %s' % (val,name,menu))
             for action in menu.actions():
-                s = action.text().replace('&','')
+                s = g.toUnicode(action.text()).replace('&','')
                 if s.startswith(name):
                     action.setEnabled(val)
                     break
