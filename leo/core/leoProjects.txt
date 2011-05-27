@@ -10523,6 +10523,55 @@ No changes needed.
     
 - no keyboard method to swing focus away from the options panel:
   Invalid: ctrl-g works.
+#@+node:ekr.20110526064139.18330: *4* Fixed bug in getSaxUa
+#@+node:ekr.20061003093021: *5* getSaxUa
+def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
+
+    """Parse an unknown attribute in a <v> or <t> element.
+    The unknown tag has been pickled and hexlify'd.
+    """
+
+    try:
+        # val = str(val)
+        val = g.toEncodedString(val) # 2011/02/22.
+    except Exception:
+        g.es_print('unexpected exception converting hexlified string to string')
+        g.es_exception()
+        return None
+
+    # New in 4.3: leave string attributes starting with 'str_' alone.
+    if attr.startswith('str_'):
+        if type(val) == type(''):
+            return val
+        elif type(val) == type(b''):
+            # 2011/05/26.
+            return g.toUnicode(val)
+
+    # New in 4.3: convert attributes starting with 'b64_' using the base64 conversion.
+    if 0: # Not ready yet.
+        if attr.startswith('b64_'):
+            try: pass
+            except Exception: pass
+
+    try:
+        binString = binascii.unhexlify(val) # Throws a TypeError if val is not a hex string.
+    except Exception:
+        # Python 2.x throws TypeError
+        # Python 3.x throws binascii.Error
+        # Assume that Leo 4.1 wrote the attribute.
+        if g.unitTesting:
+            assert kind == 'raw','unit test failed: kind=' % repr(kind)
+        else:
+            g.trace('can not unhexlify %s=%s' % (attr,val))
+        return val
+    try:
+        # No change needed to support protocols.
+        val2 = pickle.loads(binString)
+        # g.trace('v.3 val:',val2)
+        return val2
+    except (pickle.UnpicklingError,ImportError,AttributeError,ValueError):
+        g.trace('can not unpickle %s=%s' % (attr,val))
+        return val
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()
@@ -17494,5 +17543,14 @@ def expandAbbrev (self,event,stroke):
         c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
 
     return val is not None
+#@+node:ekr.20110522121957.18233: *4* Many improvements and fixes to viewrendered plugin
+@nocolor-node
+
+This also fixes the following bug.
+https://bugs.launchpad.net/leo-editor/+bug/755206
+
+* Added support for @bool view-rendered-auto-create.
+
+* Fixed numerous bugs, and made the code more robust.
 #@-all
 #@-leo

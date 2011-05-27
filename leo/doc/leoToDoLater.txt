@@ -614,7 +614,6 @@ I think this holds lots of promise.
 Thanks,
 Kent
 #@+node:ekr.20110525112110.18397: *4* Minor Emacs support
-#@+node:ekr.20060628103226.2: *5* Alt-x handlers should add to lossage
 #@+node:ekr.20060123091352: *5* Incremental search in switch-to-buffer
 #@+node:ekr.20060116090428: *5* Expand 'point' so it indicates node as well as text location
 #@+node:ekr.20051021074728: *5* Space completion

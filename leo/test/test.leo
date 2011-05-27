@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="131" left="476" height="809" width="855"/>
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.50">
+	<global_window_position top="131" left="476" height="837" width="1350"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -62,6 +62,7 @@
 </v>
 <v t="ekr.20110321213552.2500"><vh>viewrendered settings</vh>
 <v t="ekr.20110321213552.2497"><vh>@bool view-rendered-auto-create = False</vh></v>
+<v t="ekr.20110526180653.2467"><vh>@bool view-rendered-auto-hide = True</vh></v>
 <v t="ekr.20110321213552.2499"><vh>@bool scrolledmessage_use_viewrendered = True</vh></v>
 </v>
 </v>
@@ -201,6 +202,8 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
+<v t="ekr.20071025193940"></v>
+<v t="ekr.20110321213552.2500"></v>
 <v t="ekr.20090309064612.3"><vh>New features</vh>
 <v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
@@ -591,26 +594,6 @@
 <v t="ekr.20101103135707.2439"><vh>@@button move head to prev</vh></v>
 <v t="ekr.20101103170034.2445"><vh>@@button move tail to next</vh></v>
 <v t="ekr.20110127090822.2451"><vh>dump k.bindingsDict</vh></v>
-<v t="ekr.20110320203616.2489"><vh>viewrendered examples</vh>
-<v t="ekr.20110321012354.2495"><vh>@button pause-play</vh></v>
-<v t="ekr.20110321012354.2496"><vh>@button toggle-renderer</vh></v>
-<v t="ekr.20110321073942.2490"><vh>@button lock-unlock-renderer</vh></v>
-<v t="ekr.20110321213439.2495"><vh>@button update-renderer</vh></v>
-<v t="ekr.20110320203616.2491"><vh>rst test</vh></v>
-<v t="ekr.20110320203616.2492"><vh>docstring test</vh></v>
-<v t="ekr.20110321213552.2501"><vh>Movies...</vh>
-<v t="ekr.20101014040509.2311"><vh>@movie Horse movie</vh></v>
-<v t="ekr.20101014040509.2312"><vh>@movie Gayane Ballet</vh></v>
-</v>
-<v t="ekr.20110320203616.2493"><vh>@html Leo's home page</vh></v>
-<v t="ekr.20110320203616.2497"><vh>@networkx my network</vh></v>
-<v t="ekr.20110321010339.2496"><vh>@svg bubbles.svg</vh></v>
-<v t="ekr.20110322101711.2507"><vh>@svg bubbles sources</vh></v>
-<v t="ekr.20101014040509.2310"><vh>@image lioness</vh></v>
-<v t="ekr.20101014040509.2313"><vh>@url weather</vh></v>
-<v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
-<v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
-</v>
 <v t="ekr.20110325142419.2337"><vh>QCompleter example</vh>
 <v t="ekr.20110325142419.2338"><vh>class DictionaryCompleter(QCompleter)</vh></v>
 <v t="ekr.20110325142419.2339"><vh>class CompletionTextEdit(QTextEdit)</vh>
@@ -678,6 +661,26 @@
 </v>
 <v t="ekr.20110416065515.2437"><vh>jinja2</vh></v>
 <v t="ekr.20110511140347.2445"><vh>QTimer</vh></v>
+</v>
+<v t="ekr.20110320203616.2489"><vh>viewrendered examples</vh>
+<v t="ekr.20110526180653.2468"><vh>viewrendered buttons</vh>
+<v t="ekr.20110321012354.2495"><vh>@button pause-play</vh></v>
+<v t="ekr.20110321012354.2496"><vh>@button toggle-renderer</vh></v>
+<v t="ekr.20110321073942.2490"><vh>@button lock-unlock-renderer</vh></v>
+<v t="ekr.20110321213439.2495"><vh>@button update-renderer</vh></v>
+</v>
+<v t="ekr.20110320203616.2491"><vh>rst test</vh></v>
+<v t="ekr.20110320203616.2492"><vh>docstring test</vh></v>
+<v t="ekr.20101014040509.2311"><vh>@movie Horse movie</vh></v>
+<v t="ekr.20101014040509.2312"><vh>@movie Gayane Ballet</vh></v>
+<v t="ekr.20110320203616.2493"><vh>@html Leo's home page</vh></v>
+<v t="ekr.20110320203616.2497"><vh>@networkx my network</vh></v>
+<v t="ekr.20110321010339.2496"><vh>@svg bubbles.svg</vh></v>
+<v t="ekr.20110322101711.2507"><vh>@svg bubbles sources</vh></v>
+<v t="ekr.20101014040509.2310"><vh>@image lioness</vh></v>
+<v t="ekr.20101014040509.2313"><vh>@url weather</vh></v>
+<v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
+<v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1103,7 +1106,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="2,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -1689,7 +1692,7 @@ nav_qt.py
 plugins_menu.py
 quicksearch.py
 scrolledmessage.py
-UNL.py
+# UNL.py # moved to core.
 # free_layout.py
 viewrendered.py
 
@@ -7667,7 +7670,6 @@ if 0:
 <t tx="ekr.20110321213552.2497"># This should be done only for selected files.</t>
 <t tx="ekr.20110321213552.2499"></t>
 <t tx="ekr.20110321213552.2500"></t>
-<t tx="ekr.20110321213552.2501"></t>
 <t tx="ekr.20110322101711.2507">@nocolor-node
 &lt;?xml version="1.0" standalone="no"?&gt;
 &lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd"&gt;
@@ -8774,5 +8776,7 @@ timer.start(0)
 <t tx="ekr.20110521072459.2464">builtins, including cython builtins</t>
 <t tx="ekr.20110521072459.2465">cython keywords</t>
 <t tx="ekr.20110525093203.2470"></t>
+<t tx="ekr.20110526180653.2467"></t>
+<t tx="ekr.20110526180653.2468"></t>
 </tnodes>
 </leo_file>
