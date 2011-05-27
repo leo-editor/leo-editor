@@ -4521,17 +4521,7 @@ class leoQtFrame (leoFrame.leoFrame):
                     #   shortcut=shortcut,func=atButtonCallback,
                     #   pane='button',verbose=verbose)
         #@-others
-    #@+node:ekr.20081121105001.275: *4* Minibuffer methods (to be deleted)
-    #@+node:ekr.20081121105001.276: *5* showMinibuffer
-    def showMinibuffer (self):
-
-        '''Make the minibuffer visible.'''
-    #@+node:ekr.20081121105001.277: *5* hideMinibuffer
-    def hideMinibuffer (self):
-
-        '''Hide the minibuffer.'''
-        
-        pass
+    #@+node:ekr.20081121105001.275: *4* Minibuffer methods (Qt)
     #@+node:ekr.20081121105001.278: *5* f.setMinibufferBindings
     def setMinibufferBindings (self):
 

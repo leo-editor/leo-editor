@@ -4,18 +4,6 @@
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
 #@+node:ekr.20110526234609.18385: *4* First (easy): 4
-#@+node:ekr.20051104051733: *5* Make Focus-in in minibuffer widget equivalent to Alt-x
-FocusIn does nothing for Label widgets.
-
-http://sourceforge.net/forum/message.php?msg_id=3412640
-By: btheado
-
-Currently clicking on the minibuffer and typing text has no effect.  Kinda confusing
-until the Alt-x binding I discovered that Alt-x is the way to access the minibuffer
-command mode.
-
-It would be nice if the <FocusIn> binding on the minibuffer widget were equivilent
-to Alt-x.
 #@+node:ekr.20110527084258.18379: *5* Create commands get and set uA's
 #@+node:ekr.20090402072059.2: *5* Improve the clone-find-all command
 @nocolor-node

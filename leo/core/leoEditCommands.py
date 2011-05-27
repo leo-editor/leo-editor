@@ -5909,7 +5909,7 @@ class keyHandlerCommandsClass (baseEditCommandsClass):
                 'enable-calltips':          k.autoCompleter.enableCalltips,
                 'exit-named-mode':          k.exitNamedMode,
                 'full-command':             k.fullCommand, # For menu.
-                'hide-mini-buffer':         k.hideMinibuffer,
+                # 'hide-mini-buffer':         k.hideMinibuffer,
                 'mode-help':                k.modeHelp,
                 'negative-argument':        k.negativeArgument,
                 'number-command':           k.numberCommand,
@@ -5933,10 +5933,10 @@ class keyHandlerCommandsClass (baseEditCommandsClass):
                 'set-overwrite-state':      k.setOverwriteState,
                 'show-calltips':            k.autoCompleter.showCalltips,
                 'show-calltips-force':      k.autoCompleter.showCalltipsForce,
-                'show-mini-buffer':         k.showMinibuffer,
+                # 'show-mini-buffer':         k.showMinibuffer,
                 'toggle-autocompleter':     k.autoCompleter.toggleAutocompleter,
                 'toggle-calltips':          k.autoCompleter.toggleCalltips,
-                'toggle-mini-buffer':       k.toggleMinibuffer,
+                #'toggle-mini-buffer':       k.toggleMinibuffer,
                 'toggle-input-state':       k.toggleInputState,
                 'universal-argument':       k.universalArgument,
             }

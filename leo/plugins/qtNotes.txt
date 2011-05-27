@@ -8689,5 +8689,15 @@ def createLeoFindLabel (self,parent,name,s1,s2):
     w.setObjectName(name)
     w.setText(s2)
     return w
+#@+node:ekr.20081121105001.277: *3* hideMinibuffer
+def hideMinibuffer (self):
+
+    '''Hide the minibuffer.'''
+    
+    pass
+#@+node:ekr.20081121105001.276: *3* showMinibuffer
+def showMinibuffer (self):
+
+    '''Make the minibuffer visible.'''
 #@-all
 #@-leo

@@ -2289,29 +2289,6 @@ class keyHandlerClass:
         k = self
         k.setLabelBlue('Digit Argument: ',protect=True)
         k.universalDispatcher(event)
-    #@+node:ekr.20061031131434.116: *4* k.show/hide/toggleMinibuffer
-    def hideMinibuffer (self,event):
-        '''Hide the minibuffer.'''
-        k = self ; c = k.c
-        c.frame.hideMinibuffer()
-        g.es('minibuffer hidden',color='red')
-        for commandName in ('show-mini-buffer','toggle-mini-buffer'):
-            shortcut = k.getShortcutForCommandName(commandName)
-            if shortcut:
-                g.es('',commandName,'is bound to:',shortcut)
-
-    def showMinibuffer (self,event):
-        '''Show the minibuffer.'''
-        k = self ; c = k.c
-        c.frame.showMinibuffer()
-
-    def toggleMinibuffer (self,event):
-        '''Show or hide the minibuffer.'''
-        k = self ; c = k.c
-        if c.frame.minibufferVisible:
-            k.hideMinibuffer(event)
-        else:
-            k.showMinibuffer(event)
     #@+node:ekr.20070613133500: *4* k.menuCommandKey
     def menuCommandKey (self,event=None):
 
