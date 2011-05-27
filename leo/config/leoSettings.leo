@@ -6498,6 +6498,7 @@ quicksearch.py
 # UNL.py # moved to core, 20110220 TNB
 contextmenu.py
 nav_qt.py
+stickynotes.py
 
 # The plugins manager plugin does not
 # understand @enabled-plugins nodes.
