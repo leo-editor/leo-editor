@@ -1979,8 +1979,9 @@ class leoQtMinibuffer (leoQLineEditWidget):
         #@-<< define focusInEvent & focusOutEvent >>
         
         # Monkey-patch the event handlers
-        w.focusInEvent = focusInEvent
-        w.focusOutEvent = focusOutEvent
+        if 0: # Not ready yet.
+            w.focusInEvent = focusInEvent
+            w.focusOutEvent = focusOutEvent
 
     def setBackgroundColor(self,color):
         # Called from k.setLabelGrey & k.setLabelBlue.
