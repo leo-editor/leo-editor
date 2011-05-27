@@ -47,8 +47,10 @@ __version__ = "0.30"
 #@+node:tbrown.20090119215428.6: ** init
 def init():
 
-    if g.app.gui.guiName() != "qt":
-        print('todo.py plugin not loading because gui is not Qt')
+    name = g.app.gui.guiName()
+    if name != "qt":
+        if name != 'nullGui':
+            print('todo.py plugin not loading because gui is not Qt')
         return False
 
     g.registerHandler('after-create-leo-frame',onCreate)
