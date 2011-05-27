@@ -3,8 +3,32 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20110526234609.18385: *4* First (easy): 4
-#@+node:ekr.20110527084258.18379: *5* Create commands get and set uA's
+#@+node:ekr.20110526234609.18385: *4* First (easy): 2
+#@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
+#@+node:ekr.20110523130519.19220: *6* Report
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/525004
+
+This is basically a copy/paste from
+http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
+
+Consider the following code snippet:
+
+--- cut here ---
+@language shell
+
+FOO_BAR='foo bar'
+FOO1_BAR1='foo1 bar1'
+
+echo $FOO_BAR*
+echo $FOO_BAR-$FOO1_BAR1
+--- cut here ---
+
+The variable names in the last two lines are not highlighted
+correctly. This becomes clear if the first line is replaced with #!/
+bin/bash and this code is opened in vim/scite. I've tried only these
+two editors, they highlight the variable names correctly.
 #@+node:ekr.20090402072059.2: *5* Improve the clone-find-all command
 @nocolor-node
 
@@ -97,36 +121,6 @@ def is_a_child_of_b(a, b):
         if is_a_child_of_b(a, child):
             return True
     return False
-#@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
-@nocolor-node
-
-This is not going to be easy to fix.  match_mark_previous/following do not seem to do anything.
-
-It looks like a rewrite of leo\modes\shell.py may be needed.
-#@+node:ekr.20110523130519.19220: *6* Report
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/525004
-
-This is basically a copy/paste from
-http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
-
-Consider the following code snippet:
-
---- cut here ---
-@language shell
-
-FOO_BAR='foo bar'
-FOO1_BAR1='foo1 bar1'
-
-echo $FOO_BAR*
-echo $FOO_BAR-$FOO1_BAR1
---- cut here ---
-
-The variable names in the last two lines are not highlighted
-correctly. This becomes clear if the first line is replaced with #!/
-bin/bash and this code is opened in vim/scite. I've tried only these
-two editors, they highlight the variable names correctly.
 #@+node:ekr.20110523201030.18290: *4* Kill Tk
 #@+node:ekr.20110527084258.18373: *5* Remove tk command-line options & related startup code
 #@+node:ekr.20110125142807.17269: *5* Rewrite all tk plugins
@@ -226,7 +220,7 @@ These are marked with ###
 (found) sel.first, sel.last
 (found) w.insert, w.delete
 #@+node:ekr.20110527084258.18372: *5* Remove Pmw and Gato from extensions folder
-#@+node:ekr.20110527084258.18380: *4* Improvements I want
+#@+node:ekr.20110527084258.18380: *4* Improvements I want: 3
 #@+node:ekr.20110524141405.18370: *5* Get macros working well
 How should they work?
 #@+node:ekr.20110520051220.18203: *5* Cross-tab search

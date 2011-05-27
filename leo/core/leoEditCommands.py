@@ -1582,8 +1582,10 @@ class editCommandsClass (baseEditCommandsClass):
             'clean-all-lines':                      self.cleanAllLines,
             'clean-lines':                          self.cleanLines,
             'clear-all-caches':                     self.clearAllCaches,
+            'clear-all-uas':                        self.clearAllUas,
             'clear-cache':                          self.clearCache,
             'clear-extend-mode':                    self.clearExtendMode,
+            'clear-node-uas':                       self.clearNodeUas,
             'clear-selected-text':                  self.clearSelectedText,
             'click-click-box':                      self.clickClickBox,
             'click-headline':                       self.clickHeadline,
@@ -1681,6 +1683,8 @@ class editCommandsClass (baseEditCommandsClass):
             'next-line-extend-selection':           self.nextLineExtendSelection,
             'previous-line':                        self.prevLine,
             'previous-line-extend-selection':       self.prevLineExtendSelection,
+            'print-all-uas':                        self.printAllUas,
+            'print-node-uas':                       self.printUas,
             'remove-blank-lines':                   self.removeBlankLines,
             'remove-space-from-lines':              self.removeSpaceFromLines,
             'remove-tab-from-lines':                self.removeTabFromLines,
@@ -1707,6 +1711,7 @@ class editCommandsClass (baseEditCommandsClass):
             'set-fill-column':                      self.setFillColumn,
             'set-fill-prefix':                      self.setFillPrefix,
             #'set-mark-command':                    self.setRegion,
+            'set-ua':                               self.setUa,
             'show-colors':                          self.showColors,
             'show-fonts':                           self.showFonts,
             'simulate-begin-drag':                  self.simulateBeginDrag,
@@ -4069,6 +4074,14 @@ class editCommandsClass (baseEditCommandsClass):
 
         w.setInsertPoint(ins) # Restore the original insert point.
         self.moveToHelper(event,i,extend)
+    #@+node:ekr.20061111223516: *4* selectAllText (leoEditCommands)
+    def selectAllText (self,event):
+
+        c = self.c 
+
+        w = self.editWidget(event)
+        if w:
+            return w.selectAllText()
     #@+node:ekr.20050920084036.131: *4* sentences & helpers
     def backSentence (self,event):
         '''Move the cursor to the previous sentence.'''
@@ -4996,14 +5009,67 @@ class editCommandsClass (baseEditCommandsClass):
         w.setSelectionRange(n,n,insert=n)
 
         self.endCommand(changed=True,setLabel=True)
-    #@+node:ekr.20061111223516: *3* selectAllText (leoEditCommands)
-    def selectAllText (self,event):
+    #@+node:ekr.20110527105255.18384: *3* uA's (leoEditCommands)
+    #@+node:ekr.20110527105255.18387: *4* clearNodeUas & clearAllUas
+    def clearNodeUas (self,event=None):
+        
+        '''Clear the uA's in the selected vnode.'''
+        
+        if self.c.p:
+            self.c.p.v.u = {}
+        
+    def clearAllUas (self,event=None):
+        
+        '''Clear all uAs in the entire outline.'''
 
-        c = self.c 
+        for v in self.c.all_unique_nodes():
+            v.u = {}
+    #@+node:ekr.20110527105255.18385: *4* printUas & printAllUas
+    def printAllUas (self,event=None):
+        
+        g.es_print('Dump of uAs...')
+        for v in self.c.all_unique_nodes():
+            if v.u:
+                self.printUas(v=v)
 
-        w = self.editWidget(event)
-        if w:
-            return w.selectAllText()
+    def printUas (self,event=None,v=None):
+        
+        c = self.c
+        if v: d,h = v.u,v.h
+        else: d,h = c.p.v.u,c.p.h
+        g.es_print(h)
+        keys = list(d.keys())
+        keys.sort()
+        n = 4
+        for key in keys:
+            n = max(len(key),n)
+        for key in keys:
+            pad = ' '*(len(key)-n)
+            g.es_print('    %s%s: %s' % (pad,key,d.get(key)))
+    #@+node:ekr.20110527105255.18386: *4* setUa
+    def setUa (self,event):
+        
+        c,k = self.c,self.k
+        tag = 'set-ua' ; state = k.getState(tag)
+        if state == 0:
+            w = self.editWidget(event) # sets self.w
+            if w:
+                k.setLabelBlue('Set uA: ',protect=True)
+                k.getArg(event,tag,1,self.setUa)
+        elif state == 1:
+            self.uaName = k.arg
+            s = 'Set uA: %s To: ' % (self.uaName)
+            k.setLabelBlue(s,protect=True)
+            k.getArg(event,tag,2,self.setUa,completion=False,prefix=s)
+        else:
+            assert state == 2,state
+            val = k.arg
+            d = c.p.v.u
+            d[self.uaName] = val
+            self.printUas()
+            k.clearState()
+            k.resetLabel()
+            k.showStateAndMode()
     #@-others
 #@+node:ekr.20050920084036.161: ** editFileCommandsClass
 class editFileCommandsClass (baseEditCommandsClass):

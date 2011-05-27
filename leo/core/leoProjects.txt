@@ -18264,5 +18264,332 @@ http://sourceforge.net/forum/message.php?msg_id=3412640
 Clicking in the minibuffer now is equivalent to alt-x, provided that the minibuffer is not in use.
 
 A focus-out event in the minibuffer is equivalent to ctrl-g.
+#@+node:ekr.20110527084258.18379: *4* Created ua commands
+#@+node:ekr.20050920084036.55: *5*  getPublicCommands (editCommandsClass)
+def getPublicCommands (self):        
+
+    c = self.c
+
+    return {
+        'activate-cmds-menu':                   self.activateCmdsMenu,
+        'activate-edit-menu':                   self.activateEditMenu,
+        'activate-file-menu':                   self.activateFileMenu,
+        'activate-help-menu':                   self.activateHelpMenu,
+        'activate-outline-menu':                self.activateOutlineMenu,
+        'activate-plugins-menu':                self.activatePluginsMenu,
+        'activate-window-menu':                 self.activateWindowMenu,
+        'add-editor':                           c.frame.body and c.frame.body.addEditor,
+        'add-space-to-lines':                   self.addSpaceToLines,
+        'add-tab-to-lines':                     self.addTabToLines, 
+        'back-to-indentation':                  self.backToIndentation,
+        'back-to-home':                         self.backToHome,
+        'back-char':                            self.backCharacter,
+        'back-char-extend-selection':           self.backCharacterExtendSelection,
+        'back-page':                            self.backPage,
+        'back-page-extend-selection':           self.backPageExtendSelection,
+        'back-paragraph':                       self.backwardParagraph,
+        'back-paragraph-extend-selection':      self.backwardParagraphExtendSelection,
+        'back-sentence':                        self.backSentence,
+        'back-sentence-extend-selection':       self.backSentenceExtendSelection,
+        'back-word':                            self.backwardWord,
+        'back-word-extend-selection':           self.backwardWordExtendSelection,
+        'backward-delete-char':                 self.backwardDeleteCharacter,
+        'backward-delete-word':                 self.backwardDeleteWord,
+        'backward-kill-paragraph':              self.backwardKillParagraph,
+        'backward-find-character':              self.backwardFindCharacter,
+        'backward-find-character-extend-selection': self.backwardFindCharacterExtendSelection,
+        'beginning-of-buffer':                  self.beginningOfBuffer,
+        'beginning-of-buffer-extend-selection': self.beginningOfBufferExtendSelection,
+        'beginning-of-line':                    self.beginningOfLine,
+        'beginning-of-line-extend-selection':   self.beginningOfLineExtendSelection,
+        'capitalize-word':                      self.capitalizeWord,
+        'center-line':                          self.centerLine,
+        'center-region':                        self.centerRegion,
+        'clean-all-lines':                      self.cleanAllLines,
+        'clean-lines':                          self.cleanLines,
+        'clear-all-caches':                     self.clearAllCaches,
+        'clear-all-uas':                        self.clearAllUas,
+        'clear-cache':                          self.clearCache,
+        'clear-extend-mode':                    self.clearExtendMode,
+        'clear-node-uas':                       self.clearNodeUas,
+        'clear-selected-text':                  self.clearSelectedText,
+        'click-click-box':                      self.clickClickBox,
+        'click-headline':                       self.clickHeadline,
+        'click-icon-box':                       self.clickIconBox,
+        'clone-marked':                         c.cloneMarked,
+        'contract-body-pane':                   c.frame.contractBodyPane,
+        'contract-log-pane':                    c.frame.contractLogPane,
+        'contract-outline-pane':                c.frame.contractOutlinePane,
+        'contract-pane':                        c.frame.contractPane,
+        'count-region':                         self.countRegion,
+        'cycle-focus':                          self.cycleFocus,
+        'cycle-all-focus':                      self.cycleAllFocus,
+        'cycle-editor-focus':                   c.frame.body.cycleEditorFocus,
+        # 'delete-all-icons':                   self.deleteAllIcons,
+        'delete-char':                          self.deleteNextChar,
+        'delete-editor':                        c.frame.body.deleteEditor,
+        'delete-first-icon':                    self.deleteFirstIcon,
+        'delete-indentation':                   self.deleteIndentation,
+        'delete-last-icon':                     self.deleteLastIcon,
+        'delete-node-icons':                    self.deleteNodeIcons,
+        'delete-spaces':                        self.deleteSpaces,
+        'delete-word':                          self.deleteWord,
+        'do-nothing':                           self.doNothing,
+        'downcase-region':                      self.downCaseRegion,
+        'downcase-word':                        self.downCaseWord,
+        'double-click-headline':                self.doubleClickHeadline,
+        'double-click-icon-box':                self.doubleClickIconBox,
+        'end-of-buffer':                        self.endOfBuffer,
+        'end-of-buffer-extend-selection':       self.endOfBufferExtendSelection,
+        'end-of-line':                          self.endOfLine,
+        'end-of-line-extend-selection':         self.endOfLineExtendSelection,
+        'escape':                               self.watchEscape,
+        'eval-expression':                      self.evalExpression,
+        'exchange-point-mark':                  self.exchangePointMark,
+        'expand-body-pane':                     c.frame.expandBodyPane,
+        'expand-log-pane':                      c.frame.expandLogPane,
+        'expand-outline-pane':                  c.frame.expandOutlinePane,
+        'expand-pane':                          c.frame.expandPane,
+        'extend-to-line':                       self.extendToLine,
+        'extend-to-paragraph':                  self.extendToParagraph,
+        'extend-to-sentence':                   self.extendToSentence,
+        'extend-to-word':                       self.extendToWord,
+        'fill-paragraph':                       self.fillParagraph,
+        'fill-region':                          self.fillRegion,
+        'fill-region-as-paragraph':             self.fillRegionAsParagraph,
+        'find-character':                       self.findCharacter,
+        'find-character-extend-selection':      self.findCharacterExtendSelection,
+        'find-word':                            self.findWord,
+        'find-word-in-line':                    self.findWordInLine,
+        'flush-lines':                          self.flushLines,
+        'focus-to-body':                        self.focusToBody,
+        'focus-to-log':                         self.focusToLog,
+        'focus-to-minibuffer':                  self.focusToMinibuffer,
+        'focus-to-tree':                        self.focusToTree,
+        'forward-char':                         self.forwardCharacter,
+        'forward-char-extend-selection':        self.forwardCharacterExtendSelection,
+        'forward-page':                         self.forwardPage,
+        'forward-page-extend-selection':        self.forwardPageExtendSelection,
+        'forward-paragraph':                    self.forwardParagraph,
+        'forward-paragraph-extend-selection':   self.forwardParagraphExtendSelection,
+        'forward-sentence':                     self.forwardSentence,
+        'forward-sentence-extend-selection':    self.forwardSentenceExtendSelection,
+        'forward-end-word':                     self.forwardEndWord, # New in Leo 4.4.2.
+        'forward-end-word-extend-selection':    self.forwardEndWordExtendSelection, # New in Leo 4.4.2.
+        'forward-word':                         self.forwardWord,
+        'forward-word-extend-selection':        self.forwardWordExtendSelection,
+        'fully-expand-body-pane':               c.frame.fullyExpandBodyPane,
+        'fully-expand-log-pane':                c.frame.fullyExpandLogPane,
+        'fully-expand-pane':                    c.frame.fullyExpandPane,
+        'fully-expand-outline-pane':            c.frame.fullyExpandOutlinePane,
+        'goto-char':                            self.gotoCharacter,
+        'goto-global-line':                     self.gotoGlobalLine,
+        'goto-line':                            self.gotoLine,
+        'hide-body-pane':                       c.frame.hideBodyPane,
+        'hide-log-pane':                        c.frame.hideLogPane,
+        'hide-pane':                            c.frame.hidePane,
+        'hide-outline-pane':                    c.frame.hideOutlinePane,
+        'how-many':                             self.howMany,
+        # Use indentBody in leoCommands.py
+        'indent-relative':                      self.indentRelative,
+        'indent-rigidly':                       self.tabIndentRegion,
+        'indent-to-comment-column':             self.indentToCommentColumn,
+        'insert-icon':                          self.insertIcon,
+        'insert-newline':                       self.insertNewline,
+        'insert-parentheses':                   self.insertParentheses,
+        'keep-lines':                           self.keepLines,
+        'kill-paragraph':                       self.killParagraph,
+        'line-number':                          self.lineNumber,
+        'move-lines-down':                      self.moveLinesDown,
+        'move-lines-up':                        self.moveLinesUp,
+        'move-past-close':                      self.movePastClose,
+        'move-past-close-extend-selection':     self.movePastCloseExtendSelection,
+        'newline-and-indent':                   self.insertNewLineAndTab,
+        'next-line':                            self.nextLine,
+        'next-line-extend-selection':           self.nextLineExtendSelection,
+        'previous-line':                        self.prevLine,
+        'previous-line-extend-selection':       self.prevLineExtendSelection,
+        'print-all-uas':                        self.printAllUas,
+        'print-node-uas':                       self.printUas,
+        'remove-blank-lines':                   self.removeBlankLines,
+        'remove-space-from-lines':              self.removeSpaceFromLines,
+        'remove-tab-from-lines':                self.removeTabFromLines,
+        'reverse-region':                       self.reverseRegion,
+        'reverse-sort-lines':                   self.reverseSortLines,
+        'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,
+        'scroll-down-half-page':                self.scrollDownHalfPage,                
+        'scroll-down-line':                     self.scrollDownLine,
+        'scroll-down-page':                     self.scrollDownPage,
+        'scroll-outline-down-line':             self.scrollOutlineDownLine,
+        'scroll-outline-down-page':             self.scrollOutlineDownPage,
+        'scroll-outline-left':                  self.scrollOutlineLeft,
+        'scroll-outline-right':                 self.scrollOutlineRight,
+        'scroll-outline-up-line':               self.scrollOutlineUpLine,
+        'scroll-outline-up-page':               self.scrollOutlineUpPage,
+        'scroll-up-half-page':                  self.scrollUpHalfPage,                        
+        'scroll-up-line':                       self.scrollUpLine,
+        'scroll-up-page':                       self.scrollUpPage,
+        'select-all':                           self.selectAllText,
+        # Exists, but can not be executed via the minibuffer.
+        # 'self-insert-command':                self.selfInsertCommand,
+        'set-comment-column':                   self.setCommentColumn,
+        'set-extend-mode':                      self.setExtendMode,
+        'set-fill-column':                      self.setFillColumn,
+        'set-fill-prefix':                      self.setFillPrefix,
+        #'set-mark-command':                    self.setRegion,
+        'set-ua':                               self.setUa,
+        'show-colors':                          self.showColors,
+        'show-fonts':                           self.showFonts,
+        'simulate-begin-drag':                  self.simulateBeginDrag,
+        'simulate-end-drag':                    self.simulateEndDrag,
+        'sort-columns':                         self.sortColumns,
+        'sort-fields':                          self.sortFields,
+        'sort-lines':                           self.sortLines,
+        'sort-lines-ignoring-case':             self.sortLinesIgnoringCase,
+        'split-line':                           self.splitLine,
+        'tabify':                               self.tabify,
+        'toggle-extend-mode':                   self.toggleExtendMode,
+        'transpose-chars':                      self.transposeCharacters,
+        'transpose-lines':                      self.transposeLines,
+        'transpose-words':                      self.transposeWords,
+        'untabify':                             self.untabify,
+        'upcase-region':                        self.upCaseRegion,
+        'upcase-word':                          self.upCaseWord,
+        'view-lossage':                         self.viewLossage,
+        'what-line':                            self.whatLine,
+    }
+#@+node:ekr.20061031131434.128: *5* getArg
+def getArg (self,event,
+    returnKind=None,returnState=None,handler=None,
+    prefix=None,tabList=[],completion=True,oneCharacter=False,
+    stroke=None, # New in 4.4.1.
+    useMinibuffer=True # New in 4.4.1
+):
+
+    '''Accumulate an argument until the user hits return (or control-g).
+    Enter the given return state when done.
+    The prefix does not form the arg.  The prefix defaults to the k.getLabel().
+    '''
+
+    k = self ; c = k.c ; gui  = g.app.gui
+    trace = (False or (c.config.getBool('trace_modes')) and not g.app.unitTesting)
+    state = k.getState('getArg')
+    keysym = gui.eventKeysym(event)
+    if trace: g.trace(
+        'state',state,'keysym',repr(keysym),'stroke',repr(stroke),
+        'escapes',k.getArgEscapes,
+        'completion',state==0 and completion or state!=0 and k.arg_completion)
+    if state == 0:
+        k.arg = ''
+        << init altX vars >>
+        # Set the states.
+        bodyCtrl = c.frame.body.bodyCtrl
+        c.widgetWantsFocus(bodyCtrl)
+        k.afterGetArgState=returnKind,returnState,handler
+        k.setState('getArg',1,k.getArg)
+        k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
+        if useMinibuffer: c.minibufferWantsFocus()
+    elif keysym == 'Escape':
+        k.keyboardQuit(event)
+    elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+        if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
+        if k.oneCharacterArg:
+            k.arg = event.char
+        else:
+            k.arg = k.getLabel(ignorePrompt=True)
+        kind,n,handler = k.afterGetArgState
+        if kind: k.setState(kind,n,handler)
+        c.frame.log.deleteTab('Completion')
+        trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
+        if handler: handler(event)
+    elif keysym in('Tab','\t'):
+        k.doTabCompletion(k.argTabList,k.arg_completion)
+    elif keysym in('BackSpace','\b'): # 2010/02/20: Test for \b also.
+        k.doBackSpace(k.argTabList,k.arg_completion)
+        c.minibufferWantsFocus()
+    elif k.isFKey(stroke):
+        pass
+        # 2011/03/01: ignore F-keys. Ignoring all except plain keys would kill unicode searches.
+    else:
+        # Clear the list, any other character besides tab indicates that a new prefix is in effect.
+        k.mb_tabList = []
+        k.updateLabel(event)
+        k.mb_tabListPrefix = k.getLabel()
+    return 'break'
+#@+node:ekr.20061031131434.129: *6* << init altX vars >>
+k.argSelectedText = c.frame.body.bodyCtrl.getSelectedText()
+    # 2010/09/01: remember the selected text for abbreviations.
+k.argTabList = tabList and tabList[:] or []
+k.arg_completion = completion
+# g.trace('completion',completion,'tabList',tabList)
+
+k.mb_prefix = prefix or k.getLabel()
+k.mb_prompt = prefix or ''
+k.mb_tabList = []
+
+# Clear the list: any non-tab indicates that a new prefix is in effect.
+k.mb_tabListPrefix = k.getLabel()
+k.oneCharacterArg = oneCharacter
+#@+node:ekr.20110527105255.18384: *5* uA's (leoEditCommands)
+#@+node:ekr.20110527105255.18387: *6* clearNodeUas & clearAllUas
+def clearNodeUas (self,event=None):
+    
+    '''Clear the uA's in the selected vnode.'''
+    
+    if self.c.p:
+        self.c.p.v.u = {}
+    
+def clearAllUas (self,event=None):
+    
+    '''Clear all uAs in the entire outline.'''
+
+    for v in self.c.all_unique_nodes():
+        v.u = {}
+#@+node:ekr.20110527105255.18385: *6* printUas & printAllUas
+def printAllUas (self,event=None):
+    
+    g.es_print('Dump of uAs...')
+    for v in self.c.all_unique_nodes():
+        if v.u:
+            self.printUas(v=v)
+
+def printUas (self,event=None,v=None):
+    
+    c = self.c
+    if v: d,h = v.u,v.h
+    else: d,h = c.p.v.u,c.p.h
+    g.es_print(h)
+    keys = list(d.keys())
+    keys.sort()
+    n = 4
+    for key in keys:
+        n = max(len(key),n)
+    for key in keys:
+        pad = ' '*(len(key)-n)
+        g.es_print('    %s%s: %s' % (pad,key,d.get(key)))
+#@+node:ekr.20110527105255.18386: *6* setUa
+def setUa (self,event):
+    
+    c,k = self.c,self.k
+    tag = 'set-ua' ; state = k.getState(tag)
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if w:
+            k.setLabelBlue('Set uA: ',protect=True)
+            k.getArg(event,tag,1,self.setUa)
+    elif state == 1:
+        self.uaName = k.arg
+        s = 'Set uA: %s To: ' % (self.uaName)
+        k.setLabelBlue(s,protect=True)
+        k.getArg(event,tag,2,self.setUa,completion=False,prefix=s)
+    else:
+        assert state == 2,state
+        val = k.arg
+        d = c.p.v.u
+        d[self.uaName] = val
+        self.printUas()
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
 #@-all
 #@-leo
