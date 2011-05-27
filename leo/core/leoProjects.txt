@@ -18256,5 +18256,13 @@ def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
     if trailingNL: result = result + '\n'
 
     return result
+#@+node:ekr.20051104051733: *4* Handle focus-in/out events in the minibuffer
+@nocolor-node
+
+http://sourceforge.net/forum/message.php?msg_id=3412640
+
+Clicking in the minibuffer now is equivalent to alt-x, provided that the minibuffer is not in use.
+
+A focus-out event in the minibuffer is equivalent to ctrl-g.
 #@-all
 #@-leo

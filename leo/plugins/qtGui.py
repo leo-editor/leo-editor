@@ -1952,11 +1952,35 @@ class leoQtMinibuffer (leoQLineEditWidget):
     def __init__ (self,c):
         self.c = c
         w = c.frame.top.leo_ui.lineEdit # QLineEdit
+        # g.trace('(leoQtMinibuffer)',w)
+        
         # Init the base class.
         leoQLineEditWidget.__init__(self,widget=w,name='minibuffer',c=c)
 
         self.ev_filter = leoQtEventFilter(c,w=self,tag='minibuffer')
         w.installEventFilter(self.ev_filter)
+        
+        #@+<< define focusInEvent & focusOutEvent >>
+        #@+node:ekr.20110527105255.18383: *4* << define focusInEvent & focusOutEvent >>
+        def focusInEvent(event,c=c,w=w):
+            '''Handle a focus-in event in the minibuffer.'''
+            k = c.k
+            QtGui.QLineEdit.focusInEvent(w,event)
+            # g.trace('state',k.state.kind,k.state.n)
+            if not k.state.kind:
+                event2 = leoKeyEvent(event=None,
+                    c=c,w=c.frame.body.bodyCtrl,ch='',tkKey='',stroke='')
+                k.fullCommand(event2)
+                
+        def focusOutEvent(event,c=c,w=w):
+            '''Handle a focus-in event in the minibuffer.'''
+            QtGui.QLineEdit.focusOutEvent(w,event)
+            c.k.keyboardQuit(event, inAutoCompleter=False)
+        #@-<< define focusInEvent & focusOutEvent >>
+        
+        # Monkey-patch the event handlers
+        w.focusInEvent = focusInEvent
+        w.focusOutEvent = focusOutEvent
 
     def setBackgroundColor(self,color):
         # Called from k.setLabelGrey & k.setLabelBlue.
