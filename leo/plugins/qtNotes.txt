@@ -8296,7 +8296,7 @@ class leoQtMinibuffer (leoQLineEditWidget):
 
     def setForegroundColor(self,color):
         pass
-#@+node:ekr.20110527140605.18359: *6* << define mouseReleaseEvent >> (leoQLineEditWidget)
+#@+node:ekr.20110527140605.18359: *6* << define mouseReleaseEvent >> (leoQtMinibuffer)
 def mouseReleaseEvent (event,c=c,w=w):
     
     '''Override QLineEdit.mouseReleaseEvent.

@@ -1979,7 +1979,7 @@ class leoQtMinibuffer (leoQLineEditWidget):
     
         # Monkey-patch the event handlers
         #@+<< define mouseReleaseEvent >>
-        #@+node:ekr.20110527140605.18359: *4* << define mouseReleaseEvent >> (leoQLineEditWidget)
+        #@+node:ekr.20110527140605.18359: *4* << define mouseReleaseEvent >> (leoQtMinibuffer)
         def mouseReleaseEvent (event,c=c,w=w):
             
             '''Override QLineEdit.mouseReleaseEvent.
