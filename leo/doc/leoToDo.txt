@@ -1442,6 +1442,15 @@ In short, the new caching scheme is much better than before, and it probably is
 close to optimal in most situations.
 #@+node:ekr.20110516132611.14438: *3* b2: Kill Tk and simplify key handling
 #@+node:ekr.20110523201030.18290: *4* Deprecate Tk
+@nocolor-node
+
+1. Remove Tk command-line options.
+
+2. Move all Tk plugins into the contrib branch. Ditto for the Gato and Pmw stuff
+   in the extensions folder. This will substantially reduce the size of the Leo
+   distro.
+
+3. Remove all Tk-isms from Leo's core.
 #@+node:ekr.20090131200406.11: *5* Remove remaining tk-isms from Leo's core
 @nocolor-node
 

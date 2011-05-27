@@ -7476,7 +7476,12 @@ class leoQtGui(leoGui.leoGui):
         self.mGuiName = 'qt'
         
         # Put up the splash screen()
-        self.splashScreen = self.createSplashScreen()
+        if (g.app.use_splash_screen and
+            not g.app.batchMode and
+            not g.app.silentMode and
+            not g.unitTesting
+        ):
+            self.splashScreen = self.createSplashScreen()
 
         if g.app.qt_use_tabs:    
             self.frameFactory = TabbedFrameFactory()
@@ -7557,12 +7562,13 @@ class leoQtGui(leoGui.leoGui):
 
         '''Start the Qt main loop.'''
 
-        if hasattr(g.app.gui,'splashScreen'):
-            splash =  g.app.gui.splashScreen
-            if splash:
-                splash.hide()
-                splash.deleteLater()
-                g.app.gui.splashScreen = None
+        if g.app.use_splash_screen:
+            if hasattr(g.app.gui,'splashScreen'):
+                splash =  g.app.gui.splashScreen
+                if splash:
+                    splash.hide()
+                    splash.deleteLater()
+                    g.app.gui.splashScreen = None
         
         if self.script:
             log = g.app.log

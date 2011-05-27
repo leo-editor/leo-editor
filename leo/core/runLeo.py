@@ -139,6 +139,8 @@ def doPrePluginsInit(fileName,pymacs):
     trace = False
     g.computeStandardDirectories()
     adjustSysPath()
+    
+    # Scan the options as early as possible.
     options = scanOptions()
 
     # Post-process the options.
@@ -171,6 +173,8 @@ def doPrePluginsInit(fileName,pymacs):
             g.app.config.readSettingsFiles(fn,verbose=True)
 
     g.app.setGlobalDb()
+    
+    # Create the gui after reading options and settings.
     createGui(pymacs,options)
 
     # if no gui specified on command line, and qt not installed
@@ -204,6 +208,7 @@ def createGui(pymacs,options):
             g.app.createDefaultGui(__file__)
     else:
         createSpecialGui(gui,pymacs,script,windowFlag)
+
 
 #@+node:ekr.20080921060401.4: *4* createSpecialGui
 def createSpecialGui(gui,pymacs,script,windowFlag):
@@ -334,6 +339,8 @@ def scanOptions():
         help = 'enable ipython support')
     add('--no-cache',     action="store_true",dest='no_cache',
         help = 'disable reading of cached files')
+    add('--no-splash',    action="store_true",dest='no_splash_screen',
+        help = 'disable the splash screen')
     add('--silent',       action="store_true",dest="silent",
         help = 'disable all log messages')
     add('--screen-shot',  dest='screenshot_fn',
@@ -411,6 +418,10 @@ def scanOptions():
     if options.no_cache:
         print('scanOptions: disabling caching')
         g.enableDB = False
+        
+    # --no-splash
+    # g.trace('--no-splash',options.no_splash_screen)
+    g.app.use_splash_screen = not options.no_splash_screen
 
     # --screen-shot=fn
     screenshot_fn = options.screenshot_fn

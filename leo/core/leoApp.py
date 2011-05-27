@@ -120,6 +120,7 @@ class LeoApp:
         self.use_psyco = False
             # Can't be a config param because it is used
             # before config module can be inited.
+        self.use_splash_screen = True
         self.user_xresources_path = None # Resource file for Tk/tcl.
         self.windowList = []
             # Global list of all frames.  Does not include hidden root window.
