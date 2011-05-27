@@ -125,7 +125,10 @@ Settings
   The background color the rendering pane when rendering text.
 
 - ``@bool view-rendered-auto-create = False``
-  When True, this plugin will create and show the rendering pane when Leo opens an outline.
+  When True, show the rendering pane when Leo opens an outline.
+  
+- ``@bool view-rendered-auto-hide = False``
+  When True, hide the rendering pane for text-only renderings.
 
 - ``@string view-rendered-default-kind = rst``
   The default kind of rendering.  One of (big,rst,html)
@@ -362,9 +365,9 @@ class ViewRenderedController:
         self.kind = 'rst' # in self.dispatch_dict.keys()
         self.length = 0 # The length of previous p.b.
         self.locked = False
-        self.s = ''
+        self.s = '' # The plugin's docstring to be rendered temporarily.
         self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
-        self.sizes = [] # Sizes of splitter panes.
+        self.sizes = [] # Saved splitter sizes.
         self.splitter = None # The free_layout splitter containing the rendering pane.
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.svg_class = QtSvg.QSvgWidget
@@ -376,6 +379,7 @@ class ViewRenderedController:
         # User-options:
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
         self.auto_create  = c.config.getBool('view-rendered-auto-create',False)
+        self.auto_hide    = c.config.getBool('view-rendered-auto-hide',False)
         self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
         self.scrolled_message_use_viewrendered = c.config.getBool('scrolledmessage_use_viewrendered',True)
         
@@ -460,23 +464,78 @@ class ViewRenderedController:
     def unlock (self):
         g.note('rendering pane unlocked')
         self.locked = False
-    #@+node:ekr.20110317080650.14384: *3* show & hide
+    #@+node:ekr.20110317080650.14384: *3* show & hide & helper
     def hide (self):
         
+        trace = False and not g.unitTesting
         pc = self
-        pc.deactivate()
-        pc.sizes = pc.splitter.sizes()
-        pc.w.hide()
+        if pc.auto_hide:
+            sizes = pc.splitter.sizes()
+            new_sizes = self.validSizes(sizes,'hide')
+            if new_sizes: pc.sizes = new_sizes
+        else:
+            pc.deactivate()
+        if pc.w:
+            pc.w.hide()
+        else:
+            g.trace('** no pc.w')
         
     def show (self):
         
+        trace = False and not g.unitTesting
         pc = self
-        pc.activate()
-        pc.update(tag='view',keywords={'c':pc.c})
-        if pc.sizes:
-            pc.splitter.setSizes(pc.sizes)
+
+        # First, show the pane so sizes will be valid.
         pc.w.show()
-            # This doesn't work well when Playing sounds.
+            
+        if pc.auto_hide:
+            new_sizes = self.validSizes(pc.sizes,'show-saved')
+            if new_sizes:
+                pc.splitter.setSizes(new_sizes)
+                return
+                
+        sizes = pc.splitter.sizes()
+        new_sizes = self.validSizes(sizes,'show')
+        if new_sizes:
+            pc.splitter.setSizes(new_sizes)
+            return
+            
+        total = sum(sizes)
+        if total:
+            if trace: g.trace('Setting sizes',total/2)
+            pc.splitter.setSizes([total/2,total/2])
+        else:
+            if trace: g.trace('** empty sizes!')
+    #@+node:ekr.20110526131737.18370: *4* validSizes
+    def validSizes (self,sizes,tag):
+        
+        trace = False and not g.unitTesting
+
+        if len(sizes) == 2:
+            if sizes[0] and sizes[1]:
+                result = sizes
+                kind = 'valid'
+            elif sizes[0] or sizes[1]:
+                total = sizes[0] + sizes[1]
+                if tag == 'hide':
+                    # Important: don't change the saved size here!
+                    result = []
+                    kind = 'invalid'
+                else:
+                    kind = '** average'
+                    result = [total/2,total/2]
+            else:
+                result = []
+                kind = 'empty'
+        elif len(sizes) == 3 and sizes[0] and sizes[1] and not sizes[2]:
+            result = [sizes[0],sizes[1]]
+            kind = 'truncated'
+        else:
+            result = []
+            kind = 'invalid'
+            
+        if trace: g.trace(repr(tag),repr(kind),sizes)
+        return result
     #@+node:ekr.20110319143920.14466: *3* underline
     def underline (self,s):
         
@@ -487,6 +546,7 @@ class ViewRenderedController:
     #@+node:ekr.20101112195628.5426: *3* update & helpers
     def update(self,tag,keywords):
         
+        trace = False and not g.unitTesting
         pc = self ; c = pc.c ; p = c.p ; w = pc.w
         force = keywords.get('force')
         s, val = pc.must_update(keywords)
@@ -498,22 +558,31 @@ class ViewRenderedController:
                     pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
             # g.trace('no update')
             return
-        
+            
         # Suppress updates until we change nodes.
         pc.node_changed = pc.gnx != p.v.gnx
         pc.gnx = p.v.gnx
         pc.length = len(p.b) # Use p.b, not s.
-        
-        # Remove Leo directives.
-        s = pc.remove_directives(s)
 
-        # Dispatch based on the computed kind.
-        kind = pc.get_kind(p)
-        f = pc.dispatch_dict.get(kind)
-        if not f:
-            g.trace('no handler for kind: %s' % kind)
-            f = pc.update_rst
-        f(s,keywords)
+        if pc.s:
+            if trace: g.trace('docstring',len(pc.s))
+            # A plugin docstring.
+            s = pc.s
+            pc.s = None
+            keywords['force']=True
+            pc.update_rst(s,keywords)
+        else:
+            # Remove Leo directives.
+            s = pc.remove_directives(s)
+            # Dispatch based on the computed kind.
+            kind = pc.get_kind(p)
+            f = pc.dispatch_dict.get(kind)
+            if f:
+                if trace: g.trace(f.__name__)
+            else:
+                g.trace('no handler for kind: %s' % kind)
+                f = pc.update_rst
+            f(s,keywords)
     #@+node:ekr.20110320120020.14486: *4* embed_widget & helper
     def embed_widget (self,w,delete_callback=None,opaque_resize=True):
         
@@ -577,18 +646,27 @@ class ViewRenderedController:
         
         '''Return True if we must update the rendering pane.'''
         
+        trace = False and not g.unitTesting
+        verbose = False
         pc = self ; c = pc.c ; p = c.p
         
         if c != keywords.get('c') or not pc.active or pc.locked or g.unitTesting:
+            if trace: g.trace('not active')
             return None,False
         
         if pc.s:
             s = pc.s
-            pc.s = None
+            if trace: g.trace('self.s exists',len(s))
             return s,True
         else:
             s = p.b
-            val = pc.gnx != p.v.gnx or len(s) != pc.length
+            val = pc.gnx != p.v.gnx
+            if val:
+                if trace: g.trace('changed node')
+                return s,val
+            val = len(s) != pc.length
+            if val:
+                if trace: g.trace('text changed')
             return s,val
 
             # try:
@@ -628,6 +706,7 @@ class ViewRenderedController:
         
         pc = self
         
+        pc.show()
         w = pc.ensure_text_widget()
         w.setReadOnly(False)
         w.setHtml(s)
@@ -654,6 +733,7 @@ class ViewRenderedController:
     </html>
     ''' % (path)
 
+        pc.show()
         w.setReadOnly(False)
         w.setHtml(template)
         w.setReadOnly(True)
@@ -689,21 +769,54 @@ class ViewRenderedController:
 
             pc.embed_widget(vp,delete_callback=delete_callback)
 
+        pc.show()
         vp = pc.vp
         vp.load(phonon.MediaSource(path))
         vp.play()
     #@+node:ekr.20110320120020.14484: *4* update_networkx
     def update_networkx (self,s,keywords):
         
-        w = self.ensure_text_widget()
+        pc = self
+        w = pc.ensure_text_widget()
         w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
+        pc.show()
     #@+node:ekr.20110320120020.14477: *4* update_rst
     def update_rst (self,s,keywords):
         
+        trace = False and not g.unitTesting
         pc = self ; c = pc.c ;  p = c.p
         s = s.strip().strip('"""').strip("'''").strip()
+        isHtml = s.startswith('<') and not s.startswith('<<')
+        force = keywords.get('force')
         
-        if got_docutils and (not s.startswith('<') or s.startswith('<<')):
+        if force or isHtml:
+            show = True
+            language = 'forced rest'
+        else:
+            aList = g.get_directives_dict_list(p)
+            d = g.scanAtCommentAndAtLanguageDirectives(aList)
+            if d:
+                language = d.get('language')
+                show = language=='rest'
+            else:
+                language = '<no language>'
+                show = False
+
+        if trace: g.trace('language',language,'isHtml',isHtml,'force',force,'show',show)
+        
+        # Do this regardless of whether we show the widget or not.
+        w = pc.ensure_text_widget()
+        assert pc.w
+        
+        if show:
+            pc.show()
+        else:
+            if pc.auto_hide:
+                pc.hide()
+            return
+        
+        if got_docutils and not isHtml: ### (not s.startswith('<') or s.startswith('<<')):
+            # Not html: convert to html.
             path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
             if not os.path.isdir(path):
                 path = os.path.dirname(path)
@@ -717,14 +830,13 @@ class ViewRenderedController:
                     pc.title = None
                 s = publish_string(s,writer_name='html')
                 s = g.toUnicode(s) # 2011/03/15
+                show = True
             except SystemMessage as sm:
                 # g.trace(sm,sm.args)
                 msg = sm.args[0]
                 if 'SEVERE' in msg or 'FATAL' in msg:
                     s = 'RST error:\n%s\n\n%s' % (msg,s)
-                    
-        w = pc.ensure_text_widget()
-        
+
         sb = w.verticalScrollBar()
         if sb:
             d = pc.scrollbar_pos_dict
@@ -765,12 +877,14 @@ class ViewRenderedController:
             # Assume it is the svg (xml) source.
             s = g.adjustTripleString(s,pc.c.tab_width).strip() # Sensitive to leading blank lines.
             s = g.toEncodedString(s)
+            pc.show()
             w.load(s)
             w.show()
         else:
             # Get a filename from the headline or body text.
             ok,path = pc.get_fn(s,'@svg')
             if ok:
+                pc.show()
                 w.load(path)
                 w.show()
     #@+node:ekr.20110321005148.14537: *4* update_url
@@ -779,6 +893,7 @@ class ViewRenderedController:
         pc = self
         
         w = pc.ensure_text_widget()
+        pc.show()
         
         if 1:
             w.setPlainText('')
@@ -794,7 +909,7 @@ class ViewRenderedController:
         # w.setHtml(s)
         # w.setReadOnly(True)
     #@+node:ekr.20110322031455.5765: *4* utils for update helpers...
-    #@+node:ekr.20110322031455.5764: *5* ensure_text_class
+    #@+node:ekr.20110322031455.5764: *5* ensure_text_widget
     def ensure_text_widget (self):
         
         '''Swap a text widget into the rendering pane if necessary.'''
@@ -811,7 +926,8 @@ class ViewRenderedController:
     #@+node:ekr.20110320233639.5776: *5* get_fn
     def get_fn (self,s,tag):
         
-        p = self.c.p
+        pc = self
+        p = pc.c.p
         fn = s or p.h[len(tag):]
         fn = fn.strip()
         path = g.os_path_finalize_join(g.app.loadDir,fn)
@@ -843,7 +959,8 @@ class ViewRenderedController:
     #@+node:ekr.20110322031455.5763: *5* must_change_widget
     def must_change_widget (self,widget_class):
         
-        return not self.w or self.w.__class__ != widget_class
+        pc = self
+        return not pc.w or pc.w.__class__ != widget_class
     #@+node:ekr.20110320120020.14485: *5* remove_directives
     def remove_directives (self,s):
         
@@ -864,11 +981,15 @@ class ViewRenderedController:
         pc = self
         pc.kind = kind
         
-        # g.trace(kind,len(s))
+        # g.trace(kind,s and len(s))
         
         pc.embed_renderer()
         pc.s = s
         pc.title = title
+        
+        pc.activate()
+        pc.update(tag='view',keywords={'c':pc.c})
+            # May set pc.w.
         pc.show()
 
         # if big:
@@ -879,6 +1000,8 @@ class ViewRenderedController:
         '''Use the free_layout plugin to embed self.w in a splitter.'''
         
         pc = self ; c = pc.c
+        
+        # g.trace(pc.splitter,pc.w)
         
         if pc.splitter:
             return
