@@ -381,7 +381,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.widget = widget
         self.c = c or self.widget.leo_c
 
-        # g.trace('leoQtBaseTextWidget',name)
+        # g.trace('leoQtBaseTextWidget',name,self.widget)
 
         # Init the base class.
         leoFrame.baseTextWidget.__init__(
@@ -411,7 +411,26 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 QtCore.SIGNAL("textChanged()"),self.onTextChanged)
 
             self.widget.connect(self.widget,
-                QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
+                QtCore.SIGNAL("cursorPositionChanged()"),self.onCursorPositionChanged)
+                
+        if name in ('body','log'):
+            # Monkey patch the event handler.
+            #@+<< define mouseReleaseEvent >>
+            #@+node:ekr.20110527140605.18370: *6* << define mouseReleaseEvent >> (leoQtBaseTextWidget)
+            def mouseReleaseEvent (event,c=c,w=widget):
+                
+                '''Override QLineEdit.mouseReleaseEvent.
+                
+                Simulate alt-x if we are not in an input state.'''
+                
+                QtGui.QTextBrowser.mouseReleaseEvent(w,event)
+                    # Call the base class method.
+
+                c.k.keyboardQuit(event)
+
+                
+            #@-<< define mouseReleaseEvent >>
+            self.widget.mouseReleaseEvent = mouseReleaseEvent
 
         self.injectIvars(c)
     #@+node:ekr.20081121105001.519: *5* injectIvars
@@ -441,18 +460,16 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20081121105001.520: *4*  Do nothings
     def bind (self,stroke,command,**keys):
         pass # eventFilter handles all keys.
-    #@+node:ekr.20090629160050.3737: *4* Mouse events
-    # These are overrides of the base-class events.
-
-    #@+node:ekr.20081208041503.499: *5* onClick (qtText)
-    def onClick(self,event=None):
+    #@+node:ekr.20090629160050.3737: *4* signals (leoQtBaseTextWidget)
+    #@+node:ekr.20081208041503.499: *5* onCursorPositionChanged (leoQtBaseTextWidget)
+    def onCursorPositionChanged(self,event=None):
 
         trace = False and not g.unitTesting
 
         c = self.c
         name = c.widget_name(self)
 
-        if trace: g.trace(self,name,g.callers(5))
+        if trace: g.trace('(leoQtBaseTextWidget)',name,g.callers())
 
         if name.startswith('body'):
             if hasattr(c.frame,'statusLine'):
@@ -1959,29 +1976,30 @@ class leoQtMinibuffer (leoQLineEditWidget):
 
         self.ev_filter = leoQtEventFilter(c,w=self,tag='minibuffer')
         w.installEventFilter(self.ev_filter)
-        
-        #@+<< define focusInEvent & focusOutEvent >>
-        #@+node:ekr.20110527105255.18383: *4* << define focusInEvent & focusOutEvent >>
-        def focusInEvent(event,c=c,w=w):
-            '''Handle a focus-in event in the minibuffer.'''
+    
+        # Monkey-patch the event handlers
+        #@+<< define mouseReleaseEvent >>
+        #@+node:ekr.20110527140605.18359: *4* << define mouseReleaseEvent >> (leoQLineEditWidget)
+        def mouseReleaseEvent (event,c=c,w=w):
+            
+            '''Override QLineEdit.mouseReleaseEvent.
+            
+            Simulate alt-x if we are not in an input state.'''
+
             k = c.k
-            QtGui.QLineEdit.focusInEvent(w,event)
+            QtGui.QLineEdit.mouseReleaseEvent(w,event)
+                # Call the base class method.
+
             # g.trace('state',k.state.kind,k.state.n)
+
             if not k.state.kind:
                 event2 = leoKeyEvent(event=None,
                     c=c,w=c.frame.body.bodyCtrl,ch='',tkKey='',stroke='')
                 k.fullCommand(event2)
-                
-        def focusOutEvent(event,c=c,w=w):
-            '''Handle a focus-in event in the minibuffer.'''
-            QtGui.QLineEdit.focusOutEvent(w,event)
-            c.k.keyboardQuit(event, inAutoCompleter=False)
-        #@-<< define focusInEvent & focusOutEvent >>
-        
-        # Monkey-patch the event handlers
-        if 0: # Not ready yet.
-            w.focusInEvent = focusInEvent
-            w.focusOutEvent = focusOutEvent
+            
+            
+        #@-<< define mouseReleaseEvent >>
+        w.mouseReleaseEvent = mouseReleaseEvent
 
     def setBackgroundColor(self,color):
         # Called from k.setLabelGrey & k.setLabelBlue.
@@ -5892,7 +5910,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         return None
     #@-others
-#@+node:ekr.20100830205422.3714: *3* class LeoQTreeWidget
+#@+node:ekr.20100830205422.3714: *3* class LeoQTreeWidget (QTreeWidget)
 class LeoQTreeWidget(QtGui.QTreeWidget):
 
     # To do: Generate @auto or @file nodes when appropriate.
@@ -6540,7 +6558,8 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         # Components.
         self.headlineWrapper = leoQtHeadlineWidget # This is a class.
         self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
-
+            # w is a LeoQTreeWidget, a subclass of QTreeWidget.
+        
         # g.trace('leoQtTree',w)
 
         if 0: # Drag and drop
@@ -6604,7 +6623,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         w.connect(self.treeWidget, QtCore.SIGNAL(
                 "customContextMenuRequested(QPoint)"),
-            self.onContextMenu)    
+            self.onContextMenu)
 
         self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
         tw.installEventFilter(self.ev_filter)

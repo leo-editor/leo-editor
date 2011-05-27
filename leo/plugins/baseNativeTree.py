@@ -513,7 +513,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             self.error('no p')
 
         c.outerUpdate()
-    #@+node:ekr.20090812211903.3641: *3* onItemClicked (nativeTree) (New in Leo 4.7)
+    #@+node:ekr.20090812211903.3641: *3* onItemClicked (nativeTree)
     def onItemClicked (self,item,col):
 
         trace = False and not g.unitTesting
@@ -539,6 +539,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             else:
                 g.trace('*** no p')
 
+            # 2011/05/27: click here is like ctrl-g.
+            c.k.keyboardQuit(event=None,setFocus=False)
             c.outerUpdate()
         finally:
             self.selecting = False

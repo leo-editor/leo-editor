@@ -7402,20 +7402,22 @@ def initSpecialIvars (self):
         if not found and warn:
             g.trace('no setting for %s' % commandName)
 #@+node:ekr.20061031131434.130: *6* keyboardQuit
-def keyboardQuit (self,event,inAutoCompleter=False):
-    ### ,hideTabs=True,setDefaultStatus=True):
+def keyboardQuit (self,event,setFocus=True):
+        ### inAutoCompleter=False,
 
     '''This method clears the state and the minibuffer label.
 
     k.endCommand handles all other end-of-command chores.'''
 
     k = self ; c = k.c
+    
+    # g.trace(g.callers(6))
 
     if g.app.quitting:
         return
 
-    if not inAutoCompleter:
-        k.autoCompleter.exit()
+    # if not inAutoCompleter:
+        # k.autoCompleter.exit()
     
     # Completely clear the mode.
     c.frame.log.deleteTab('Mode')
@@ -7430,13 +7432,13 @@ def keyboardQuit (self,event,inAutoCompleter=False):
     k.clearState()
     k.resetLabel()
 
-    c.endEditing()
-    c.bodyWantsFocus()
+    if setFocus:
+        c.endEditing()
+        c.bodyWantsFocus()
 
-    if True: ### setDefaultStatus:
-        # At present, only the auto-completer suppresses this.
-        k.setDefaultInputState()
-        k.showStateAndMode()
+    # At present, only the auto-completer suppresses this.
+    k.setDefaultInputState()
+    k.showStateAndMode()
 #@+node:ekr.20061031131434.11: *5* auto_completer_state_handler
 def auto_completer_state_handler (self,event):
 
@@ -7564,7 +7566,8 @@ def exit (self):
     
     if trace: g.trace(g.callers())
     
-    c.k.keyboardQuit(event=None,inAutoCompleter=True)
+    c.k.keyboardQuit(event=None)
+        ### ,inAutoCompleter=True)
         # Suppress call to ac.exit inside keyboardQuit.
     
     if self.use_qcompleter:
@@ -18256,14 +18259,6 @@ def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
     if trailingNL: result = result + '\n'
 
     return result
-#@+node:ekr.20051104051733: *4* Handle focus-in/out events in the minibuffer
-@nocolor-node
-
-http://sourceforge.net/forum/message.php?msg_id=3412640
-
-Clicking in the minibuffer now is equivalent to alt-x, provided that the minibuffer is not in use.
-
-A focus-out event in the minibuffer is equivalent to ctrl-g.
 #@+node:ekr.20110527084258.18379: *4* Created ua commands
 #@+node:ekr.20050920084036.55: *5*  getPublicCommands (editCommandsClass)
 def getPublicCommands (self):        
@@ -18591,5 +18586,77 @@ def setUa (self,event):
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
+#@+node:ekr.20051104051733: *4* Handle click events like alt-x or ctrl-g
+@nocolor-node
+
+http://sourceforge.net/forum/message.php?msg_id=3412640
+
+Clicking in the minibuffer now is equivalent to alt-x, provided that the minibuffer is not in use.
+
+Clicking most places outside the minibuffer is equivalent to ctrl-g.
+
+Catching clicks is much safer than catching focus events.
+
+What I did:
+    
+leoKeys.py:
+    
+- Removed the inAutoCompleter arg to k.keyboardQuit.
+  This should be safe because k.keyboardQuit no longer calls k.autoCompleter.exit.
+    
+baseNativeTree.py:
+    
+- Call k.keyboardQuit at end of onItemClicked.
+
+qtGui.py:
+    
+- Monkeypatched QLineEdit.mouseReleaseEvent in ctor for leoQtMinibuffer.  
+
+- Renamed leoQtBaseTextWidget.onClick to onCursorPositionChanged.
+
+- Monkey patched QTextBrowser.mouseReleaseEvent in ctor for leoQtBaseTextWidget
+
+To undo this, if it doesn't turn out well:
+    
+- Remove the call to k.fullCommand or k.keyboardQuit in the two mouseReleaseEvent methods.
+- Remove the call to k.keyboardQuit in baseNativeTree.onItemClicked.
+#@+node:ekr.20061031131434.130: *5* keyboardQuit
+def keyboardQuit (self,event,setFocus=True):
+        ### inAutoCompleter=False,
+
+    '''This method clears the state and the minibuffer label.
+
+    k.endCommand handles all other end-of-command chores.'''
+
+    k = self ; c = k.c
+    
+    # g.trace(g.callers(6))
+
+    if g.app.quitting:
+        return
+
+    # if not inAutoCompleter:
+        # k.autoCompleter.exit()
+    
+    # Completely clear the mode.
+    c.frame.log.deleteTab('Mode')
+    c.frame.log.hideTab('Completion')
+    if k.inputModeName:
+        k.endMode(event)
+
+    # Complete clear the state.
+    k.state.kind = None
+    k.state.n = None
+
+    k.clearState()
+    k.resetLabel()
+
+    if setFocus:
+        c.endEditing()
+        c.bodyWantsFocus()
+
+    # At present, only the auto-completer suppresses this.
+    k.setDefaultInputState()
+    k.showStateAndMode()
 #@-all
 #@-leo

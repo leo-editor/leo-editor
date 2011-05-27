@@ -256,7 +256,8 @@ class AutoCompleterClass:
         
         if trace: g.trace(g.callers())
         
-        c.k.keyboardQuit(event=None,inAutoCompleter=True)
+        c.k.keyboardQuit(event=None)
+            ### ,inAutoCompleter=True)
             # Suppress call to ac.exit inside keyboardQuit.
         
         if self.use_qcompleter:
@@ -2689,20 +2690,22 @@ class keyHandlerClass:
             k.mb_tabListPrefix = k.getLabel()
         return 'break'
     #@+node:ekr.20061031131434.130: *4* keyboardQuit
-    def keyboardQuit (self,event,inAutoCompleter=False):
-        ### ,hideTabs=True,setDefaultStatus=True):
+    def keyboardQuit (self,event,setFocus=True):
+            ### inAutoCompleter=False,
 
         '''This method clears the state and the minibuffer label.
 
         k.endCommand handles all other end-of-command chores.'''
 
         k = self ; c = k.c
+        
+        # g.trace(g.callers(6))
 
         if g.app.quitting:
             return
 
-        if not inAutoCompleter:
-            k.autoCompleter.exit()
+        # if not inAutoCompleter:
+            # k.autoCompleter.exit()
         
         # Completely clear the mode.
         c.frame.log.deleteTab('Mode')
@@ -2717,13 +2720,13 @@ class keyHandlerClass:
         k.clearState()
         k.resetLabel()
 
-        c.endEditing()
-        c.bodyWantsFocus()
+        if setFocus:
+            c.endEditing()
+            c.bodyWantsFocus()
 
-        if True: ### setDefaultStatus:
-            # At present, only the auto-completer suppresses this.
-            k.setDefaultInputState()
-            k.showStateAndMode()
+        # At present, only the auto-completer suppresses this.
+        k.setDefaultInputState()
+        k.showStateAndMode()
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
     def registerCommand (self,commandName,shortcut,func,
         pane='all',verbose=False, wrap=True):
