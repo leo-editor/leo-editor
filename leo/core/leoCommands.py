@@ -3576,7 +3576,9 @@ class baseCommands (object):
             c.recolor()
 
         w.setSelectionRange(ins,ins,insert=ins)
-        w.see(ins)
+        
+        # Make the next line visible: this is a big improvement.
+        w.see(ins+5)
     #@+node:ekr.20101118113953.5843: *7* rp_wrap_all_lines
     def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
 
