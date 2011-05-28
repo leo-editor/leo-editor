@@ -541,6 +541,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
             # 2011/05/27: click here is like ctrl-g.
             c.k.keyboardQuit(event=None,setFocus=False)
+            c.treeWantsFocus() # 2011/05/08: Focus must stay in the tree!
             c.outerUpdate()
         finally:
             self.selecting = False
