@@ -192,6 +192,7 @@ class LeoApp:
             "xslt"          : "<!-- -->",
         }
 
+        # Used only by c.getOpenWithExt.
         self.language_extension_dict = {
             # Keys are languages, values are extensions.
             "ada"           : "ada",
