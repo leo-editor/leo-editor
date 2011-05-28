@@ -6178,14 +6178,20 @@ def getPaneBinding (self,stroke,w):
             d = k.masterBindingsDict.get(key,{})
             if trace and verbose:
                 # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-                g.trace('key: %7s name: %6s key: %10s in keys: %s' %
+                g.trace('key: %7s name: %6s stroke: %10s in keys: %s' %
                     (key,name,stroke,stroke in d))
                 # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
             if d:
                 b = d.get(stroke)
                 if b:
-                    if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                    return b
+                    table = ('previous-line','next-line',)
+                    if key == 'text' and name == 'head' and b.commandName in table:
+                        if trace: g.trace('***** special case',b.commandName)
+                        pass
+                    else:
+                        if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
+                            key,name,repr(b.stroke),b.commandName))
+                        return b
 #@+node:ekr.20061031131434.152: *6* handleMiniBindings
 def handleMiniBindings (self,event,state,stroke):
 
@@ -15048,14 +15054,20 @@ def getPaneBinding (self,stroke,w):
             d = k.masterBindingsDict.get(key,{})
             if trace and verbose:
                 # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-                g.trace('key: %7s name: %6s key: %10s in keys: %s' %
+                g.trace('key: %7s name: %6s stroke: %10s in keys: %s' %
                     (key,name,stroke,stroke in d))
                 # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
             if d:
                 b = d.get(stroke)
                 if b:
-                    if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                    return b
+                    table = ('previous-line','next-line',)
+                    if key == 'text' and name == 'head' and b.commandName in table:
+                        if trace: g.trace('***** special case',b.commandName)
+                        pass
+                    else:
+                        if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
+                            key,name,repr(b.stroke),b.commandName))
+                        return b
 #@+node:ekr.20061031131434.152: *7* handleMiniBindings
 def handleMiniBindings (self,event,state,stroke):
 
@@ -18764,5 +18776,67 @@ def createCloneFindAllNode(self):
     found.moveToRoot(oldRoot)
     c.setHeadString(found,'Found: ' + self.find_text)
     return found
+#@+node:ekr.20110528034751.18275: *4* Allow *plain* arrow keys in editing headline mode
+@nocolor-node
+
+In effect, the Up/Down keys should work just like Alt-Up/Down:
+they should move to the next/prev node and should put the focus in the tree.
+
+The fix was a beautiful/ugly hack in g.getPaneBinding.
+
+Also selectVisNext/Back now call c.endEditing() if there is no next/previous node,
+so an arrow "out of" editing mode actually always ends the editing.
+
+#@+node:ekr.20091230094319.6240: *5* getPaneBinding
+def getPaneBinding (self,stroke,w):
+
+    trace = False and not g.unitTesting
+    verbose = True
+    k = self ; w_name = k.c.widget_name(w)
+    # keyStatesTuple = ('command','insert','overwrite')
+    state = k.unboundKeyAction
+
+    if trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
+        'isTextWidget(w)',g.app.gui.isTextWidget(w))
+
+    for key,name in (
+        # Order here is similar to bindtags order.
+        ('command',None),
+        ('insert',None),
+        ('overwrite',None),
+        ('button',None),
+        ('body','body'),
+        ('text','head'), # Important: text bindings in head before tree bindings.
+        ('tree','head'),
+        ('tree','canvas'),
+        ('log', 'log'),
+        ('text','log'),
+        ('text',None),
+        ('all',None),
+    ):
+        if (
+            # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+            name and w_name.startswith(name) or
+            key in ('command','insert','overwrite') and state == key or # 2010/02/09
+            key in ('text','all') and g.app.gui.isTextWidget(w) or
+            key in ('button','all')
+        ):
+            d = k.masterBindingsDict.get(key,{})
+            if trace and verbose:
+                # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+                g.trace('key: %7s name: %6s stroke: %10s in keys: %s' %
+                    (key,name,stroke,stroke in d))
+                # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
+            if d:
+                b = d.get(stroke)
+                if b:
+                    table = ('previous-line','next-line',)
+                    if key == 'text' and name == 'head' and b.commandName in table:
+                        if trace: g.trace('***** special case',b.commandName)
+                        pass
+                    else:
+                        if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
+                            key,name,repr(b.stroke),b.commandName))
+                        return b
 #@-all
 #@-leo

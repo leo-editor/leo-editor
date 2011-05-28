@@ -5877,7 +5877,9 @@ class baseCommands (object):
 
         c = self ; p = c.p
         if not p: return
-        if not c.canSelectVisBack(): return
+        if not c.canSelectVisBack():
+            c.endEditing() # 2011/05/28: A special case.
+            return
 
         p.moveToVisBack(c)
 
@@ -5890,7 +5892,9 @@ class baseCommands (object):
 
         c = self ; p = c.p
         if not p: return
-        if not c.canSelectVisNext(): return
+        if not c.canSelectVisNext():
+            c.endEditing() # 2011/05/28: A special case.
+            return
 
         p.moveToVisNext(c)
         c.treeSelectHelper(p)

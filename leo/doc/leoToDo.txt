@@ -3,7 +3,7 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20110527225107.18350: *4* First: 4
+#@+node:ekr.20110527225107.18350: *4* First: 3
 #@+node:ekr.20100108101415.6196: *5* insert-tab commands
 @nocolor-node
 
@@ -239,7 +239,6 @@ The variable names in the last two lines are not highlighted
 correctly. This becomes clear if the first line is replaced with #!/
 bin/bash and this code is opened in vim/scite. I've tried only these
 two editors, they highlight the variable names correctly.
-#@+node:ekr.20110528034751.18275: *5* Allow *plain* arrow keys in editing headline mode
 #@+node:ekr.20110527225107.18353: *4* Next: 6
 #@+node:ekr.20110528034751.18271: *5* Put apropos text using viewrendered plugin
 #@+node:ekr.20090131200406.11: *5* Remove remaining tk-isms from Leo's core

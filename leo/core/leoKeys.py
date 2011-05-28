@@ -3006,14 +3006,20 @@ class keyHandlerClass:
                 d = k.masterBindingsDict.get(key,{})
                 if trace and verbose:
                     # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-                    g.trace('key: %7s name: %6s key: %10s in keys: %s' %
+                    g.trace('key: %7s name: %6s stroke: %10s in keys: %s' %
                         (key,name,stroke,stroke in d))
                     # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
                 if d:
                     b = d.get(stroke)
                     if b:
-                        if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                        return b
+                        table = ('previous-line','next-line',)
+                        if key == 'text' and name == 'head' and b.commandName in table:
+                            if trace: g.trace('***** special case',b.commandName)
+                            pass
+                        else:
+                            if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
+                                key,name,repr(b.stroke),b.commandName))
+                            return b
     #@+node:ekr.20061031131434.152: *5* handleMiniBindings
     def handleMiniBindings (self,event,state,stroke):
 
