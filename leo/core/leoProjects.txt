@@ -4220,7 +4220,7 @@ if shortcut:
 #@+node:ekr.20061031131434.92: *6* << remove previous conflicting definitions from bunchList >>
 # b is the bunch for the new binding.
 
-### This warning should never happen with the new code in makeBindingsFromCommandsDict.
+# This warning should never happen with the new code in makeBindingsFromCommandsDict.
 
 if not modeFlag and self.warn_about_redefined_shortcuts:
     
@@ -6050,7 +6050,7 @@ if event:
 w = event.widget
 char = event.char
 keysym = event.keysym
-stroke = event.stroke ### 2010/10/18
+stroke = event.stroke
 if stroke and not keysym:
     event.keysym = keysym = stroke
 
@@ -6222,7 +6222,7 @@ def handleMiniBindings (self,event,state,stroke):
                         return False # Let getArg handle it.
                     elif b.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event) ### ,hideTabs=True)
+                        k.keyboardQuit(event)
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocus() # New in Leo 4.5.
@@ -7575,8 +7575,6 @@ def exit (self):
     if trace: g.trace(g.callers())
     
     c.k.keyboardQuit(event=None)
-        ### ,inAutoCompleter=True)
-        # Suppress call to ac.exit inside keyboardQuit.
     
     if self.use_qcompleter:
         self.qw.end_completer()
@@ -8109,7 +8107,6 @@ def readAll(self,root,partialFlag=False):
             p.moveToThreadNext()
 
     # 2010/10/22: Preserve the orphan bits: the dirty bits will be cleared!
-    ### Clear all orphan bits.
     #for v in c.all_unique_nodes():
     #    v.clearOrphan()
 
@@ -9395,7 +9392,7 @@ def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
             i,j = g.getLine(s,ins)
             line = s[i:j]
             # 2010/11/16: it's annoying, imo, to treat @ lines differently.
-            if line.isspace(): ### or line.startswith('@'):
+            if line.isspace():
                 ins = j+1
             else:
                 ins = i ; break
@@ -11673,7 +11670,7 @@ def showStateColors (self,inOutline,w):
 
     if hasattr(w,'setEditorColors'):
         # Note: fg color has no effect on Qt at present.
-        w.setEditorColors(bg=bg,fg=fg) ### Was body.
+        w.setEditorColors(bg=bg,fg=fg)
     else:
         try:
             w.configure(bg=bg,fg=fg)
@@ -12794,7 +12791,7 @@ if shortcut:
 #@+node:ekr.20061031131434.92: *7* << remove previous conflicting definitions from bunchList >>
 # b is the bunch for the new binding.
 
-### This warning should never happen with the new code in makeBindingsFromCommandsDict.
+# This warning should never happen with the new code in makeBindingsFromCommandsDict.
 
 if not modeFlag and self.warn_about_redefined_shortcuts:
     
@@ -13017,33 +13014,18 @@ def makeBindingsFromCommandsDict (self):
             d2 [stroke] = aList
 
     # Step 3: make the bindings.
-    if 1: # New code
-        for stroke in sorted(d2):
-            aList = d2.get(stroke)
-            # if stroke == 'Ctrl+q': g.trace('***',stroke,aList)
-            for bunch in aList:
-                commandName = bunch.commandName
-                command = c.commandsDict.get(commandName)
-                _hash = bunch.get('_hash') # 2011/02/10
-                pane = bunch.pane
-                if trace and not _hash:
-                    g.trace('**** no hash for',commandName)
-                if stroke and not pane.endswith('-mode'):
-                    k.bindKey(pane,stroke,command,commandName,_hash=_hash)
-    else: ### old code
-        d = c.commandsDict
-        for commandName in sorted(d):
-            command = d.get(commandName)
-            key, bunchList = c.config.getShortcut(commandName)
-            # if commandName in ('full-command'): g.trace(key,bunchList)
-            for bunch in bunchList:
-                accel = bunch.val ; pane = bunch.pane
-                _hash = bunch.get('_hash') # 2011/02/10
-                if trace and not _hash: g.trace('**** no hash for',commandName)
-                # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
-                if accel and not pane.endswith('-mode'):
-                    shortcut = k.shortcutFromSetting(accel)
-                    k.bindKey(pane,shortcut,command,commandName,_hash=_hash)
+    for stroke in sorted(d2):
+        aList = d2.get(stroke)
+        # if stroke == 'Ctrl+q': g.trace('***',stroke,aList)
+        for bunch in aList:
+            commandName = bunch.commandName
+            command = c.commandsDict.get(commandName)
+            _hash = bunch.get('_hash') # 2011/02/10
+            pane = bunch.pane
+            if trace and not _hash:
+                g.trace('**** no hash for',commandName)
+            if stroke and not pane.endswith('-mode'):
+                k.bindKey(pane,stroke,command,commandName,_hash=_hash)
 
     # g.trace(g.listToString(sorted(k.bindingsDict))
     # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
@@ -13697,7 +13679,7 @@ if shortcut:
 #@+node:ekr.20061031131434.92: *7* << remove previous conflicting definitions from bunchList >>
 # b is the bunch for the new binding.
 
-### This warning should never happen with the new code in makeBindingsFromCommandsDict.
+# This warning should never happen with the new code in makeBindingsFromCommandsDict.
 
 if not modeFlag and self.warn_about_redefined_shortcuts:
     
@@ -13821,33 +13803,18 @@ def makeBindingsFromCommandsDict (self):
             d2 [stroke] = aList
 
     # Step 3: make the bindings.
-    if 1: # New code
-        for stroke in sorted(d2):
-            aList = d2.get(stroke)
-            # if stroke == 'Ctrl+q': g.trace('***',stroke,aList)
-            for bunch in aList:
-                commandName = bunch.commandName
-                command = c.commandsDict.get(commandName)
-                _hash = bunch.get('_hash') # 2011/02/10
-                pane = bunch.pane
-                if trace and not _hash:
-                    g.trace('**** no hash for',commandName)
-                if stroke and not pane.endswith('-mode'):
-                    k.bindKey(pane,stroke,command,commandName,_hash=_hash)
-    else: ### old code
-        d = c.commandsDict
-        for commandName in sorted(d):
-            command = d.get(commandName)
-            key, bunchList = c.config.getShortcut(commandName)
-            # if commandName in ('full-command'): g.trace(key,bunchList)
-            for bunch in bunchList:
-                accel = bunch.val ; pane = bunch.pane
-                _hash = bunch.get('_hash') # 2011/02/10
-                if trace and not _hash: g.trace('**** no hash for',commandName)
-                # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
-                if accel and not pane.endswith('-mode'):
-                    shortcut = k.shortcutFromSetting(accel)
-                    k.bindKey(pane,shortcut,command,commandName,_hash=_hash)
+    for stroke in sorted(d2):
+        aList = d2.get(stroke)
+        # if stroke == 'Ctrl+q': g.trace('***',stroke,aList)
+        for bunch in aList:
+            commandName = bunch.commandName
+            command = c.commandsDict.get(commandName)
+            _hash = bunch.get('_hash') # 2011/02/10
+            pane = bunch.pane
+            if trace and not _hash:
+                g.trace('**** no hash for',commandName)
+            if stroke and not pane.endswith('-mode'):
+                k.bindKey(pane,stroke,command,commandName,_hash=_hash)
 
     # g.trace(g.listToString(sorted(k.bindingsDict))
     # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
@@ -14591,33 +14558,18 @@ def makeBindingsFromCommandsDict (self):
             d2 [stroke] = aList
 
     # Step 3: make the bindings.
-    if 1: # New code
-        for stroke in sorted(d2):
-            aList = d2.get(stroke)
-            # if stroke == 'Ctrl+q': g.trace('***',stroke,aList)
-            for bunch in aList:
-                commandName = bunch.commandName
-                command = c.commandsDict.get(commandName)
-                _hash = bunch.get('_hash') # 2011/02/10
-                pane = bunch.pane
-                if trace and not _hash:
-                    g.trace('**** no hash for',commandName)
-                if stroke and not pane.endswith('-mode'):
-                    k.bindKey(pane,stroke,command,commandName,_hash=_hash)
-    else: ### old code
-        d = c.commandsDict
-        for commandName in sorted(d):
-            command = d.get(commandName)
-            key, bunchList = c.config.getShortcut(commandName)
-            # if commandName in ('full-command'): g.trace(key,bunchList)
-            for bunch in bunchList:
-                accel = bunch.val ; pane = bunch.pane
-                _hash = bunch.get('_hash') # 2011/02/10
-                if trace and not _hash: g.trace('**** no hash for',commandName)
-                # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
-                if accel and not pane.endswith('-mode'):
-                    shortcut = k.shortcutFromSetting(accel)
-                    k.bindKey(pane,shortcut,command,commandName,_hash=_hash)
+    for stroke in sorted(d2):
+        aList = d2.get(stroke)
+        # if stroke == 'Ctrl+q': g.trace('***',stroke,aList)
+        for bunch in aList:
+            commandName = bunch.commandName
+            command = c.commandsDict.get(commandName)
+            _hash = bunch.get('_hash') # 2011/02/10
+            pane = bunch.pane
+            if trace and not _hash:
+                g.trace('**** no hash for',commandName)
+            if stroke and not pane.endswith('-mode'):
+                k.bindKey(pane,stroke,command,commandName,_hash=_hash)
 
     # g.trace(g.listToString(sorted(k.bindingsDict))
     # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
@@ -14712,7 +14664,7 @@ if shortcut:
 #@+node:ekr.20061031131434.92: *7* << remove previous conflicting definitions from bunchList >>
 # b is the bunch for the new binding.
 
-### This warning should never happen with the new code in makeBindingsFromCommandsDict.
+# This warning should never happen with the new code in makeBindingsFromCommandsDict.
 
 if not modeFlag and self.warn_about_redefined_shortcuts:
     
@@ -14926,7 +14878,7 @@ if event:
 w = event.widget
 char = event.char
 keysym = event.keysym
-stroke = event.stroke ### 2010/10/18
+stroke = event.stroke
 if stroke and not keysym:
     event.keysym = keysym = stroke
 
@@ -15098,7 +15050,7 @@ def handleMiniBindings (self,event,state,stroke):
                         return False # Let getArg handle it.
                     elif b.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event) ### ,hideTabs=True)
+                        k.keyboardQuit(event)
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocus() # New in Leo 4.5.
@@ -15276,7 +15228,7 @@ def showStateColors (self,inOutline,w):
 
     if hasattr(w,'setEditorColors'):
         # Note: fg color has no effect on Qt at present.
-        w.setEditorColors(bg=bg,fg=fg) ### Was body.
+        w.setEditorColors(bg=bg,fg=fg)
     else:
         try:
             w.configure(bg=bg,fg=fg)
@@ -15300,8 +15252,6 @@ def editHeadline (self,event=None):
         # k.setDefaultInputState()
         k.setEditingState()
         k.showStateAndMode(w=wrapper)
-
-    #### tree.editLabel(c.p)
 #@+node:ekr.20110209093958.15411: *7* setEditingState
 def setEditingState (self):
 
@@ -15341,8 +15291,6 @@ def editHeadline (self,event=None):
         # k.setDefaultInputState()
         k.setEditingState()
         k.showStateAndMode(w=wrapper)
-
-    #### tree.editLabel(c.p)
 #@+node:ekr.20061031131434.192: *7* showStateAndMode
 def showStateAndMode(self,w=None,prompt=None):
 
@@ -15434,7 +15382,7 @@ def showStateColors (self,inOutline,w):
 
     if hasattr(w,'setEditorColors'):
         # Note: fg color has no effect on Qt at present.
-        w.setEditorColors(bg=bg,fg=fg) ### Was body.
+        w.setEditorColors(bg=bg,fg=fg)
     else:
         try:
             w.configure(bg=bg,fg=fg)
@@ -15694,7 +15642,7 @@ if shortcut:
 #@+node:ekr.20061031131434.92: *8* << remove previous conflicting definitions from bunchList >>
 # b is the bunch for the new binding.
 
-### This warning should never happen with the new code in makeBindingsFromCommandsDict.
+# This warning should never happen with the new code in makeBindingsFromCommandsDict.
 
 if not modeFlag and self.warn_about_redefined_shortcuts:
     
@@ -15748,33 +15696,18 @@ def makeBindingsFromCommandsDict (self):
             d2 [stroke] = aList
 
     # Step 3: make the bindings.
-    if 1: # New code
-        for stroke in sorted(d2):
-            aList = d2.get(stroke)
-            # if stroke == 'Ctrl+q': g.trace('***',stroke,aList)
-            for bunch in aList:
-                commandName = bunch.commandName
-                command = c.commandsDict.get(commandName)
-                _hash = bunch.get('_hash') # 2011/02/10
-                pane = bunch.pane
-                if trace and not _hash:
-                    g.trace('**** no hash for',commandName)
-                if stroke and not pane.endswith('-mode'):
-                    k.bindKey(pane,stroke,command,commandName,_hash=_hash)
-    else: ### old code
-        d = c.commandsDict
-        for commandName in sorted(d):
-            command = d.get(commandName)
-            key, bunchList = c.config.getShortcut(commandName)
-            # if commandName in ('full-command'): g.trace(key,bunchList)
-            for bunch in bunchList:
-                accel = bunch.val ; pane = bunch.pane
-                _hash = bunch.get('_hash') # 2011/02/10
-                if trace and not _hash: g.trace('**** no hash for',commandName)
-                # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
-                if accel and not pane.endswith('-mode'):
-                    shortcut = k.shortcutFromSetting(accel)
-                    k.bindKey(pane,shortcut,command,commandName,_hash=_hash)
+    for stroke in sorted(d2):
+        aList = d2.get(stroke)
+        # if stroke == 'Ctrl+q': g.trace('***',stroke,aList)
+        for bunch in aList:
+            commandName = bunch.commandName
+            command = c.commandsDict.get(commandName)
+            _hash = bunch.get('_hash') # 2011/02/10
+            pane = bunch.pane
+            if trace and not _hash:
+                g.trace('**** no hash for',commandName)
+            if stroke and not pane.endswith('-mode'):
+                k.bindKey(pane,stroke,command,commandName,_hash=_hash)
 
     # g.trace(g.listToString(sorted(k.bindingsDict))
     # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
@@ -16644,7 +16577,7 @@ def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
             i,j = g.getLine(s,ins)
             line = s[i:j]
             # 2010/11/16: it's annoying, imo, to treat @ lines differently.
-            if line.isspace(): ### or line.startswith('@'):
+            if line.isspace():
                 ins = j+1
             else:
                 ins = i ; break
@@ -18092,7 +18025,6 @@ def expandAbbrev (self,event,stroke):
         i -= 1
     i += 1
     word = s[i:j].strip()
-    ### if ch: word = word + ch
     if trace: g.trace(i,j,repr(word))
     if not word: return False
 
@@ -18281,7 +18213,7 @@ def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
             i,j = g.getLine(s,ins)
             line = s[i:j]
             # 2010/11/16: it's annoying, imo, to treat @ lines differently.
-            if line.isspace(): ### or line.startswith('@'):
+            if line.isspace():
                 ins = j+1
             else:
                 ins = i ; break

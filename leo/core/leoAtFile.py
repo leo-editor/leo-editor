@@ -778,7 +778,6 @@ class atFile:
                 p.moveToThreadNext()
 
         # 2010/10/22: Preserve the orphan bits: the dirty bits will be cleared!
-        ### Clear all orphan bits.
         #for v in c.all_unique_nodes():
         #    v.clearOrphan()
 

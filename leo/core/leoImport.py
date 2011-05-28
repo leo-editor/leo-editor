@@ -3818,7 +3818,7 @@ class pythonScanner (baseScannerClass):
         This allows the "if __name__ == '__main__' hack
         to appear at the top level.'''
 
-        return i ### A rewrite may be needed.
+        return i # A rewrite is needed.
 
         # Comment this out to keep pylint happy.
 

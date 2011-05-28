@@ -374,7 +374,6 @@ class abbrevCommandsClass (baseEditCommandsClass):
             i -= 1
         i += 1
         word = s[i:j].strip()
-        ### if ch: word = word + ch
         if trace: g.trace(i,j,repr(word))
         if not word: return False
 
@@ -2565,7 +2564,7 @@ class editCommandsClass (baseEditCommandsClass):
             c.setChanged(True)
             c.redraw_after_icons_changed()
     #@+node:ekr.20071114092622: *4* deleteIconByName
-    def deleteIconByName (self,t,name,relPath): ### t not used.
+    def deleteIconByName (self,t,name,relPath): # t not used.
         """for use by the right-click remove icon callback"""
         c = self.c ; p = c.p
 
@@ -5260,7 +5259,7 @@ class editFileCommandsClass (baseEditCommandsClass):
         s2,e = g.readFileIntoString(fn2)
         if s2 is None: return
 
-        ### self.switchToBuffer(event,"*diff* of ( %s , %s )" % (name,name2))
+        # self.switchToBuffer(event,"*diff* of ( %s , %s )" % (name,name2))
         data = difflib.ndiff(s1,s2)
         idata = []
         for z in data:

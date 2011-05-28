@@ -1777,12 +1777,7 @@ class leoFrame:
             c.notValidInBatchMode("End Edit Headline")
         else:
             c.endEditing()
-            # g.trace('setting focus')
-            c.treeEditFocusHelper() # 2010/12/14
-            ### if c.stayInTreeAfterEdit:
-                # c.treeWantsFocus()
-            # else:
-                # c.bodyWantsFocus()
+            c.treeEditFocusHelper()
 
             if k and not c.stayInTreeAfterEdit:
                 k.setDefaultInputState()
@@ -2104,7 +2099,6 @@ class leoTree:
 
         # Define these here to keep pylint happy.
         self.canvas = None
-        ### self.stayInTree = True
         self.trace_select = None
     #@+node:ekr.20081005065934.7: *4* leoTree.mustBeDefined
     # List of methods that must be defined either in the base class or a subclass.
@@ -2245,11 +2239,7 @@ class leoTree:
                 dirtyVnodeList=dirtyVnodeList)
         if changed:
             c.redraw_after_head_changed()
-            c.treeEditFocusHelper() # 2010/12/14
-            ### if self.stayInTree:
-                # c.treeWantsFocus()
-            # else:
-                # c.bodyWantsFocus()
+            c.treeEditFocusHelper()
         else:
             c.frame.tree.setSelectedLabelState(p)
 
@@ -3020,7 +3010,6 @@ class nullTree (leoTree):
         self.fontName = None
         self.canvas = None
         self.redrawCount = 0
-        ### self.stayInTree = True
         self.trace_edit = False
         self.trace_select = False
         self.updateCount = 0

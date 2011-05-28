@@ -925,10 +925,6 @@ class baseCommands (object):
         # openWithFileName sets focus if ok.
         if not ok:
             c.initialFocusHelper()
-            ### if c.outlineHasInitialFocus:
-                # c.treeWantsFocus()
-            # else:
-                # c.bodyWantsFocus()
     #@+node:ekr.20090212054250.9: *7* c.createNodeFromExternalFile
     def createNodeFromExternalFile(self,fn):
 
@@ -3567,7 +3563,7 @@ class baseCommands (object):
                 i,j = g.getLine(s,ins)
                 line = s[i:j]
                 # 2010/11/16: it's annoying, imo, to treat @ lines differently.
-                if line.isspace(): ### or line.startswith('@'):
+                if line.isspace():
                     ins = j+1
                 else:
                     ins = i ; break
@@ -3659,8 +3655,6 @@ class baseCommands (object):
             # k.setDefaultInputState()
             k.setEditingState()
             k.showStateAndMode(w=wrapper)
-
-        #### tree.editLabel(c.p)
     #@+node:ekr.20031218072017.2290: *6* toggleAngleBrackets
     def toggleAngleBrackets (self,event=None):
 
@@ -6591,27 +6585,19 @@ class baseCommands (object):
         c = self
         c.request_focus(w)
         c.outerUpdate()
-        # Re-request widget so we don't use the body by default.
-        #### c.request_focus(w)
 
-    if 1: # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
-        def bodyWantsFocusNow(self):
-            c = self ; body = c.frame.body
-            c.widgetWantsFocusNow(body and body.bodyCtrl)
+    # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
+    def bodyWantsFocusNow(self):
+        c = self ; body = c.frame.body
+        c.widgetWantsFocusNow(body and body.bodyCtrl)
 
-        def logWantsFocusNow(self):
-            c = self ; log = c.frame.log
-            c.widgetWantsFocusNow(log and log.logCtrl)
+    def logWantsFocusNow(self):
+        c = self ; log = c.frame.log
+        c.widgetWantsFocusNow(log and log.logCtrl)
 
-        def treeWantsFocusNow(self):
-            c = self ; tree = c.frame.tree
-            c.widgetWantsFocusNow(tree and tree.canvas)
-
-    else: # Previously, all other FocusNow methods just made a request.
-        bodyWantsFocusNow = bodyWantsFocus
-        logWantsFocusNow = logWantsFocus
-        ### minibufferWantsFocusNow = minibufferWantsFocus
-        treeWantsFocusNow = treeWantsFocus
+    def treeWantsFocusNow(self):
+        c = self ; tree = c.frame.tree
+        c.widgetWantsFocusNow(tree and tree.canvas)
     #@+node:ekr.20031218072017.2955: *3* Enabling Menu Items
     #@+node:ekr.20040323172420: *4* Slow routines: no longer used
     #@+node:ekr.20031218072017.2966: *5* canGoToNextDirtyHeadline (slow)

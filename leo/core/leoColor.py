@@ -2244,7 +2244,6 @@ class colorizer:
                 m1.extend(m2) # m1 now contains all old and new middle lines.
                 if m1:
                     for s in m1:
-                        ### s = g.toUnicode(s)
                         i = g.skip_ws(s,0)
                         if g.match_word(s,i,"@color") or g.match_word(s,i,"@nocolor"):
                             leading_lines = 0
@@ -2347,8 +2346,6 @@ class colorizer:
     def colorizeLine (self,s,state):
 
         # g.pr("line,inc,state,s:",self.line_index,self.incremental,state,s)
-
-        ### s = g.toUnicode(s)
 
         if self.incremental:
             self.removeTagsFromLine()

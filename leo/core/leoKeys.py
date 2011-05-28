@@ -257,8 +257,6 @@ class AutoCompleterClass:
         if trace: g.trace(g.callers())
         
         c.k.keyboardQuit(event=None)
-            ### ,inAutoCompleter=True)
-            # Suppress call to ac.exit inside keyboardQuit.
         
         if self.use_qcompleter:
             self.qw.end_completer()
@@ -621,7 +619,7 @@ class AutoCompleterClass:
         trace = False and not g.unitTesting
         c = self.c
 
-        m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", prefix) ### was head.lstrip())
+        m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", prefix)
         if m:
             varname = m.group(1)
             ivar = m.group(3)
@@ -640,7 +638,7 @@ class AutoCompleterClass:
             aList2 = prefix.split('.')
             if aList2:
                 func = aList2[-1]
-                hits = self.lookup_functions(func) ### Was s
+                hits = self.lookup_functions(func)
             else:
                 hits = []
 
@@ -725,13 +723,13 @@ class AutoCompleterClass:
         hits = [z.split(None,1) for z in aList if z.strip()]
         return self.clean(hits)
 
-    def lookup_methods(self,aList,prefix): ### prefix not used, only aList[0] used.
+    def lookup_methods(self,aList,prefix): # prefix not used, only aList[0] used.
         
         aList = codewise.cmd_members([aList[0]])
         hits = [z.split(None,1) for z in aList if z.strip()]
         return self.clean(hits)
 
-    def lookup_modules (self,aList,prefix): ### prefix not used, only aList[0] used.
+    def lookup_modules (self,aList,prefix): # prefix not used, only aList[0] used.
         
         aList = codewise.cmd_functions([aList[0]])
         hits = [z.split(None,1) for z in aList if z.strip()]
@@ -1606,7 +1604,7 @@ class keyHandlerClass:
             #@+node:ekr.20061031131434.92: *5* << remove previous conflicting definitions from bunchList >>
             # b is the bunch for the new binding.
 
-            ### This warning should never happen with the new code in makeBindingsFromCommandsDict.
+            # This warning should never happen with the new code in makeBindingsFromCommandsDict.
 
             if not modeFlag and self.warn_about_redefined_shortcuts:
                 
@@ -1842,33 +1840,18 @@ class keyHandlerClass:
                 d2 [stroke] = aList
 
         # Step 3: make the bindings.
-        if 1: # New code
-            for stroke in sorted(d2):
-                aList = d2.get(stroke)
-                # if stroke == 'Ctrl+q': g.trace('***',stroke,aList)
-                for bunch in aList:
-                    commandName = bunch.commandName
-                    command = c.commandsDict.get(commandName)
-                    _hash = bunch.get('_hash') # 2011/02/10
-                    pane = bunch.pane
-                    if trace and not _hash:
-                        g.trace('**** no hash for',commandName)
-                    if stroke and not pane.endswith('-mode'):
-                        k.bindKey(pane,stroke,command,commandName,_hash=_hash)
-        else: ### old code
-            d = c.commandsDict
-            for commandName in sorted(d):
-                command = d.get(commandName)
-                key, bunchList = c.config.getShortcut(commandName)
-                # if commandName in ('full-command'): g.trace(key,bunchList)
-                for bunch in bunchList:
-                    accel = bunch.val ; pane = bunch.pane
-                    _hash = bunch.get('_hash') # 2011/02/10
-                    if trace and not _hash: g.trace('**** no hash for',commandName)
-                    # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
-                    if accel and not pane.endswith('-mode'):
-                        shortcut = k.shortcutFromSetting(accel)
-                        k.bindKey(pane,shortcut,command,commandName,_hash=_hash)
+        for stroke in sorted(d2):
+            aList = d2.get(stroke)
+            # if stroke == 'Ctrl+q': g.trace('***',stroke,aList)
+            for bunch in aList:
+                commandName = bunch.commandName
+                command = c.commandsDict.get(commandName)
+                _hash = bunch.get('_hash') # 2011/02/10
+                pane = bunch.pane
+                if trace and not _hash:
+                    g.trace('**** no hash for',commandName)
+                if stroke and not pane.endswith('-mode'):
+                    k.bindKey(pane,stroke,command,commandName,_hash=_hash)
 
         # g.trace(g.listToString(sorted(k.bindingsDict))
         # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
@@ -2831,7 +2814,7 @@ class keyHandlerClass:
         w = event.widget
         char = event.char
         keysym = event.keysym
-        stroke = event.stroke ### 2010/10/18
+        stroke = event.stroke
         if stroke and not keysym:
             event.keysym = keysym = stroke
 
@@ -3050,7 +3033,7 @@ class keyHandlerClass:
                             return False # Let getArg handle it.
                         elif b.commandName not in k.singleLineCommandList:
                             if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                            k.keyboardQuit(event) ### ,hideTabs=True)
+                            k.keyboardQuit(event)
                         else:
                             if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                             c.minibufferWantsFocus() # New in Leo 4.5.
@@ -3148,7 +3131,7 @@ class keyHandlerClass:
         # A click outside the minibuffer terminates any state.
         if k.inState() and w != c.frame.miniBufferWidget:
             if not c.widget_name(w).startswith('log'):
-                k.keyboardQuit(event) ### ,hideTabs=False)
+                k.keyboardQuit(event)
                 # k.endMode(event) # Less drastic than keyboard-quit.
                 w and c.widgetWantsFocusNow(w)
                 if trace: g.trace('inState: break')
@@ -4247,7 +4230,7 @@ class keyHandlerClass:
 
         if hasattr(w,'setEditorColors'):
             # Note: fg color has no effect on Qt at present.
-            w.setEditorColors(bg=bg,fg=fg) ### Was body.
+            w.setEditorColors(bg=bg,fg=fg)
         else:
             try:
                 w.configure(bg=bg,fg=fg)

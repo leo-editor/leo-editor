@@ -2379,10 +2379,6 @@ def finishOpen(c):
     if k:
         k.setDefaultInputState()
     c.initialFocusHelper()
-    ### if c.outlineHasInitialFocus:
-        # c.treeWantsFocus()
-    # else:
-        # c.bodyWantsFocus()
     if k:
         k.showStateAndMode()
     c.frame.initCompleteHint()

@@ -106,8 +106,6 @@ class chapterController:
         if fromChapter.name == 'main' and g.match_word(p.h,0,'@chapter'):
             return cc.error('can not clone @chapter node')
 
-        # g.trace('from',fromChapter.name,'to',toChapter)
-
         # Open the group undo.
         c.undoer.beforeChangeGroup(toChapter.root,undoType)
         # Do the clone.  c.clone handles the inner undo.
@@ -117,8 +115,6 @@ class chapterController:
         if toChapter.name == 'main':
             clone.moveAfter(toChapter.p)
         else:
-            # parent = cc.getChapterNode(toChapter.name) ####
-            # clone.moveToLastChildOf(parent)
             clone.moveToLastChildOf(toChapter.root)
         u.afterMoveNode(clone,'Move Node',undoData2,dirtyVnodeList=[])
         c.redraw(clone)
