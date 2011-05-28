@@ -3,103 +3,11 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20110527225107.18350: *4* First: 5
+#@+node:ekr.20110527225107.18350: *4* First: 4
 #@+node:ekr.20100108101415.6196: *5* insert-tab commands
 @nocolor-node
 
 insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
-#@+node:ekr.20090402072059.2: *5* Improve the clone-find-all command
-@nocolor-node
-
-Notice that children of previously found nodes don't get added again in the
-modified version.
-#@+node:ekr.20090402072059.4: *6* @@@button my clone find all
-import leo.core.leoFind as leoFind 
-
-def new_find_all(self):
-    << do some initial stuff >>
-
-
-    while 1:
-        pos, newpos = self.findNextMatch()
-        if pos is None: break
-
-        if count % 10 == 0 and count > 0:
-            g.es("still searching, matches found: ", count)
-
-        << Skip node if it's a child of a previously found node >>
-
-        count += 1
-
-        s = w.getAllText()
-        i,j = g.getLine(s,pos)
-        line = s[i:j]
-        if not self.clone_find_all:
-            self.printLine(line,allFlag=True)
-        if self.clone_find_all and self.p.v.t not in clones:
-            # g.trace(self.p.v.t,self.p.h)
-            if not clones:
-                undoData = u.beforeInsertNode(c.p)
-                << create the found node >>
-            clones.append(self.p.v.t)
-            positions.append(self.p)
-            << create a clone of p under the find node >>
-
-    if self.clone_find_all and clones:
-        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
-        c.selectPosition(found)
-        c.setChanged(True)
-
-    self.restore(data)
-    c.redraw()
-    g.es("found",count,"matches")
-
-
-leoFind.leoFind.findAll = new_find_all
-
-c.executeMinibufferCommand("clone-find-all") 
-#@+node:ekr.20090402072059.5: *7* << do some initial stuff >>
-g.es("findAll..., self: ", self)
-
-c = self.c ; w = self.s_ctrl ; u = c.undoer
-undoType = 'Clone Find All'
-if not self.checkArgs():
-    return
-self.initInHeadline()
-if self.clone_find_all:
-    self.p = None # Restore will select the root position.
-data = self.save()
-self.initBatchCommands()
-count = 0 ; clones = []; positions = []
-#@+node:ekr.20090402072059.6: *7* << create the found node >>
-oldRoot = c.rootPosition()
-found = oldRoot.insertAfter()
-found.moveToRoot(oldRoot)
-c.setHeadString(found,'Found: ' + self.find_text)
-c.setRootPosition() # New in Leo 4.5.
-#@+node:ekr.20090402072059.7: *7* << create a clone of p under the find node >>
-q = self.p.clone()
-q.moveToLastChildOf(found)
-#@+node:ekr.20090402072059.8: *7* << Skip node if it's a child of a previously found node >>
-<< def: is a child of b >>
-
-is_child_of_previous = False
-for previously_found in positions:
-    if is_a_child_of_b(self.p, previously_found):
-        is_child_of_previous = True
-        break
-
-if is_child_of_previous:
-    continue
-#@+node:ekr.20090402072059.9: *8* << def: is a child of b >>
-
-def is_a_child_of_b(a, b):
-    for child in b.children_iter():
-        if a.t == child.t:
-            return True
-        if is_a_child_of_b(a, child):
-            return True
-    return False
 #@+node:ekr.20090801103907.6018: *5* Add entries to global dicts for more languages
 @nocolor-node
 

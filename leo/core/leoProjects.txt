@@ -18706,5 +18706,63 @@ def keyboardQuit (self,event,setFocus=True):
     # At present, only the auto-completer suppresses this.
     k.setDefaultInputState()
     k.showStateAndMode()
+#@+node:ekr.20090402072059.2: *4* Improved the clone-find-all command
+@nocolor-node
+
+The descendants of previously found (cloned) nodes don't get added again.
+#@+node:ekr.20031218072017.3073: *5* findAll & helper
+def findAll(self):
+
+    c = self.c ; w = self.s_ctrl ; u = c.undoer
+    undoType = 'Clone Find All'
+    if not self.checkArgs():
+        return
+    self.initInHeadline()
+    if self.clone_find_all:
+        self.p = None # Restore will select the root position.
+    data = self.save()
+    self.initBatchCommands()
+    skip = {} # Nodes that should be skipped.
+        # Keys are vnodes, values not important.
+    count,found = 0,None
+    while 1:
+        pos, newpos = self.findNextMatch() # sets self.p.
+        if pos is None: break
+        if self.clone_find_all and self.p.v in skip:
+            continue
+        count += 1
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if self.clone_find_all:
+            if not skip:
+                undoData = u.beforeInsertNode(c.p)
+                found = self.createCloneFindAllNode()
+            # Don't look at the node or it's descendants.
+            for p2 in self.p.self_and_subtree():
+                skip[p2.v] = True
+            # Create a clone of self.p under the find node.
+            p2 = self.p.clone()
+            p2.moveToLastChildOf(found)
+        else:
+            self.printLine(line,allFlag=True)
+
+    if self.clone_find_all and skip:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        c.selectPosition(found)
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw()
+    g.es("found",count,"matches")
+#@+node:ekr.20051113110735: *6* createCloneFindAllNode
+def createCloneFindAllNode(self):
+    
+    c = self.c
+    oldRoot = c.rootPosition()
+    found = oldRoot.insertAfter()
+    found.moveToRoot(oldRoot)
+    c.setHeadString(found,'Found: ' + self.find_text)
+    return found
 #@-all
 #@-leo

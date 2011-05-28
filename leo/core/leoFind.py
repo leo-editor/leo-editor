@@ -627,7 +627,7 @@ class leoFind:
             g.es("exception executing find script")
             g.es_exception(full=False)
             g.app.searchDict["continue"] = False # 2/1/04
-    #@+node:ekr.20031218072017.3073: *4* findAll
+    #@+node:ekr.20031218072017.3073: *4* findAll & helper
     def findAll(self):
 
         c = self.c ; w = self.s_ctrl ; u = c.undoer
@@ -639,36 +639,32 @@ class leoFind:
             self.p = None # Restore will select the root position.
         data = self.save()
         self.initBatchCommands()
-        count = 0 ; clones = []
+        skip = {} # Nodes that should be skipped.
+            # Keys are vnodes, values not important.
+        count,found = 0,None
         while 1:
-            pos, newpos = self.findNextMatch()
+            pos, newpos = self.findNextMatch() # sets self.p.
             if pos is None: break
+            if self.clone_find_all and self.p.v in skip:
+                continue
             count += 1
             s = w.getAllText()
             i,j = g.getLine(s,pos)
             line = s[i:j]
-            if not self.clone_find_all:
-                self.printLine(line,allFlag=True)
-            if self.clone_find_all and self.p.v not in clones:
-                # g.trace(self.p.v,self.p.h)
-                if not clones:
+            if self.clone_find_all:
+                if not skip:
                     undoData = u.beforeInsertNode(c.p)
-                    #@+<< create the found node >>
-                    #@+node:ekr.20051113110735: *5* << create the found node >>
-                    oldRoot = c.rootPosition()
-                    found = oldRoot.insertAfter()
-                    found.moveToRoot(oldRoot)
-                    c.setHeadString(found,'Found: ' + self.find_text)
-                    # c.setRootPosition() # New in Leo 4.5.
-                    #@-<< create the found node >>
-                clones.append(self.p.v)
-                #@+<< create a clone of p under the find node >>
-                #@+node:ekr.20051113110851: *5* << create a clone of p under the find node >>
-                q = self.p.clone()
-                q.moveToLastChildOf(found)
-                #@-<< create a clone of p under the find node >>
+                    found = self.createCloneFindAllNode()
+                # Don't look at the node or it's descendants.
+                for p2 in self.p.self_and_subtree():
+                    skip[p2.v] = True
+                # Create a clone of self.p under the find node.
+                p2 = self.p.clone()
+                p2.moveToLastChildOf(found)
+            else:
+                self.printLine(line,allFlag=True)
 
-        if self.clone_find_all and clones:
+        if self.clone_find_all and skip:
             u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
             c.selectPosition(found)
             c.setChanged(True)
@@ -676,6 +672,15 @@ class leoFind:
         self.restore(data)
         c.redraw()
         g.es("found",count,"matches")
+    #@+node:ekr.20051113110735: *5* createCloneFindAllNode
+    def createCloneFindAllNode(self):
+        
+        c = self.c
+        oldRoot = c.rootPosition()
+        found = oldRoot.insertAfter()
+        found.moveToRoot(oldRoot)
+        c.setHeadString(found,'Found: ' + self.find_text)
+        return found
     #@+node:ekr.20031218072017.3074: *4* findNext
     def findNext(self,initFlag=True):
 
