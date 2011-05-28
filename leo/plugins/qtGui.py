@@ -5447,6 +5447,8 @@ class leoQtLog (leoFrame.leoLog):
             if tabName == 'Log':
                 self.logCtrl = contents
                 widget.setObjectName('log-widget')
+            if True: # 2011/05/28.
+                # Set binding on all text widgets.
                 theFilter = leoQtEventFilter(c,w=self,tag='log')
                 self.eventFilters.append(theFilter) # Needed!
                 widget.installEventFilter(theFilter)

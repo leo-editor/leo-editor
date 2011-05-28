@@ -10621,6 +10621,8 @@ def keyboardQuit (self,event,setFocus=True):
     # At present, only the auto-completer suppresses this.
     k.setDefaultInputState()
     k.showStateAndMode()
+#@+node:ekr.20110528051918.18328: *4* Added bindings to all text widgets in the tab frame
+ 
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()

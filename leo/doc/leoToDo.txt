@@ -3,7 +3,11 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20110527225107.18350: *4* First: 4
+#@+node:ekr.20110527225107.18350: *4* First: 5
+#@+node:ekr.20100108101415.6196: *5* insert-tab commands
+@nocolor-node
+
+insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
 #@+node:ekr.20090402072059.2: *5* Improve the clone-find-all command
 @nocolor-node
 
