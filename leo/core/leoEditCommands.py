@@ -1667,9 +1667,11 @@ class editCommandsClass (baseEditCommandsClass):
             'indent-relative':                      self.indentRelative,
             'indent-rigidly':                       self.tabIndentRegion,
             'indent-to-comment-column':             self.indentToCommentColumn,
+            'insert-hard-tab':                      self.insertHardTab,
             'insert-icon':                          self.insertIcon,
             'insert-newline':                       self.insertNewline,
             'insert-parentheses':                   self.insertParentheses,
+            'insert-soft-tab':                      self.insertSoftTab,
             'keep-lines':                           self.keepLines,
             'kill-paragraph':                       self.killParagraph,
             'line-number':                          self.lineNumber,
@@ -3009,6 +3011,30 @@ class editCommandsClass (baseEditCommandsClass):
             w.setAllText(s)
             w.setInsertPoint(w1)
             self.endCommand(changed=True,setLabel=True)
+    #@+node:ekr.20110528103005.18328: *4* insertHardTab
+    def insertHardTab(self,event):
+        
+        '''Insert one hard tab.'''
+        
+        c = self.c ; k = c.k
+        w = self.editWidget(event) ; p = c.p
+        if not w: return
+
+        assert g.app.gui.isTextWidget(w)
+        name = c.widget_name(w)
+        if name.startswith('head'): return
+        
+        d = c.scanAllDirectives(p)
+        n = abs(d.get("tabwidth",c.tab_width))
+        ins = w.getInsertPoint()
+
+        self.beginCommand(undoType='insert-hard-tab')
+
+        w.insert(ins,'\t')
+        ins += 1
+        w.setSelectionRange(ins,ins,insert=ins)
+        
+        self.endCommand()
     #@+node:ekr.20050920084036.138: *4* insertNewLine
     def insertNewLine (self,event):
 
@@ -3034,7 +3060,7 @@ class editCommandsClass (baseEditCommandsClass):
         self.endCommand()
 
     insertNewline = insertNewLine
-    #@+node:ekr.20050920084036.86: *4* insertNewLineAndTab (changed)
+    #@+node:ekr.20050920084036.86: *4* insertNewLineAndTab
     def insertNewLineAndTab (self,event):
 
         '''Insert a newline and tab at the cursor.'''
@@ -3072,6 +3098,31 @@ class editCommandsClass (baseEditCommandsClass):
         w.setInsertPoint(i+1)
 
         self.endCommand(changed=True,setLabel=False)
+    #@+node:ekr.20110528103005.18329: *4* insertSoftTab
+    def insertSoftTab (self,event):
+        
+        '''Insert spaces equivalent to one tab.'''
+        
+        c = self.c ; k = c.k
+        w = self.editWidget(event) ; p = c.p
+        if not w: return
+
+        assert g.app.gui.isTextWidget(w)
+        name = c.widget_name(w)
+        if name.startswith('head'): return
+        
+        d = c.scanAllDirectives(p)
+        n = abs(d.get("tabwidth",c.tab_width))
+        ins = w.getInsertPoint()
+
+        self.beginCommand(undoType='insert-soft-tab')
+        
+        w.insert(ins,' ' * n)
+        ins += n
+        w.setSelectionRange(ins,ins,insert=ins)
+        
+        self.endCommand()
+
     #@+node:ekr.20050920084036.141: *4* removeBlankLines
     def removeBlankLines (self,event):
 
