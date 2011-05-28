@@ -426,6 +426,11 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 QtGui.QTextBrowser.mouseReleaseEvent(w,event)
                     # Call the base class method.
 
+                # Open the url on a control-click.
+                if QtCore.Qt.ControlModifier & event.modifiers():
+                    event = {'c':self.c}
+                    openURL(event) # A module-level function.
+
                 # 2011/05/28: Do *not* change the focus!
                 # This would rip focus away from tab panes.
                 c.k.keyboardQuit(event,setFocus=False)

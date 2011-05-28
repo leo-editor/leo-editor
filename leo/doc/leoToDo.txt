@@ -8,16 +8,37 @@
 @nocolor-node
 
 insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
+#@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
+#@+node:ekr.20110523130519.19220: *6* Report
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/525004
+
+This is basically a copy/paste from
+http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
+
+Consider the following code snippet:
+
+--- cut here ---
+@language shell
+
+FOO_BAR='foo bar'
+FOO1_BAR1='foo1 bar1'
+
+echo $FOO_BAR*
+echo $FOO_BAR-$FOO1_BAR1
+--- cut here ---
+
+The variable names in the last two lines are not highlighted
+correctly. This becomes clear if the first line is replaced with #!/
+bin/bash and this code is opened in vim/scite. I've tried only these
+two editors, they highlight the variable names correctly.
 #@+node:ekr.20090801103907.6018: *5* Add entries to global dicts for more languages
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
 
 Especially languages in leo/modes.
-
-Could a script do this?
-
-#@+node:ekr.20090816125009.5993: *6* @url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
 #@+node:ekr.20090814190307.5983: *6* Script to print all modes/*.py files
 import glob
 
@@ -214,31 +235,6 @@ xml.py
 xsl.py
 zpt.py
 __init__.py
-#@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
-#@+node:ekr.20110523130519.19220: *6* Report
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/525004
-
-This is basically a copy/paste from
-http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
-
-Consider the following code snippet:
-
---- cut here ---
-@language shell
-
-FOO_BAR='foo bar'
-FOO1_BAR1='foo1 bar1'
-
-echo $FOO_BAR*
-echo $FOO_BAR-$FOO1_BAR1
---- cut here ---
-
-The variable names in the last two lines are not highlighted
-correctly. This becomes clear if the first line is replaced with #!/
-bin/bash and this code is opened in vim/scite. I've tried only these
-two editors, they highlight the variable names correctly.
 #@+node:ekr.20110527225107.18353: *4* Next: 6
 #@+node:ekr.20110528034751.18271: *5* Put apropos text using viewrendered plugin
 #@+node:ekr.20090131200406.11: *5* Remove remaining tk-isms from Leo's core
