@@ -3,107 +3,12 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20110527084258.18380: *4* First: 3
-# Only these are required for B1.
-#@+node:ekr.20090402072059.2: *5* Improve the clone-find-all command
+#@+node:ekr.20110527084258.18380: *4* Bugs & missing features: 8
 @nocolor-node
 
-Notice that children of previously found nodes don't get added again in the
-modified version.
-#@+node:ekr.20090402072059.4: *6* @@@button my clone find all
-import leo.core.leoFind as leoFind 
+Only these are required for B1.
 
-def new_find_all(self):
-    << do some initial stuff >>
-
-
-    while 1:
-        pos, newpos = self.findNextMatch()
-        if pos is None: break
-
-        if count % 10 == 0 and count > 0:
-            g.es("still searching, matches found: ", count)
-
-        << Skip node if it's a child of a previously found node >>
-
-        count += 1
-
-        s = w.getAllText()
-        i,j = g.getLine(s,pos)
-        line = s[i:j]
-        if not self.clone_find_all:
-            self.printLine(line,allFlag=True)
-        if self.clone_find_all and self.p.v.t not in clones:
-            # g.trace(self.p.v.t,self.p.h)
-            if not clones:
-                undoData = u.beforeInsertNode(c.p)
-                << create the found node >>
-            clones.append(self.p.v.t)
-            positions.append(self.p)
-            << create a clone of p under the find node >>
-
-    if self.clone_find_all and clones:
-        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
-        c.selectPosition(found)
-        c.setChanged(True)
-
-    self.restore(data)
-    c.redraw()
-    g.es("found",count,"matches")
-
-
-leoFind.leoFind.findAll = new_find_all
-
-c.executeMinibufferCommand("clone-find-all") 
-#@+node:ekr.20090402072059.5: *7* << do some initial stuff >>
-g.es("findAll..., self: ", self)
-
-c = self.c ; w = self.s_ctrl ; u = c.undoer
-undoType = 'Clone Find All'
-if not self.checkArgs():
-    return
-self.initInHeadline()
-if self.clone_find_all:
-    self.p = None # Restore will select the root position.
-data = self.save()
-self.initBatchCommands()
-count = 0 ; clones = []; positions = []
-#@+node:ekr.20090402072059.6: *7* << create the found node >>
-oldRoot = c.rootPosition()
-found = oldRoot.insertAfter()
-found.moveToRoot(oldRoot)
-c.setHeadString(found,'Found: ' + self.find_text)
-c.setRootPosition() # New in Leo 4.5.
-#@+node:ekr.20090402072059.7: *7* << create a clone of p under the find node >>
-q = self.p.clone()
-q.moveToLastChildOf(found)
-#@+node:ekr.20090402072059.8: *7* << Skip node if it's a child of a previously found node >>
-<< def: is a child of b >>
-
-is_child_of_previous = False
-for previously_found in positions:
-    if is_a_child_of_b(self.p, previously_found):
-        is_child_of_previous = True
-        break
-
-if is_child_of_previous:
-    continue
-#@+node:ekr.20090402072059.9: *8* << def: is a child of b >>
-
-def is_a_child_of_b(a, b):
-    for child in b.children_iter():
-        if a.t == child.t:
-            return True
-        if is_a_child_of_b(a, child):
-            return True
-    return False
-#@+node:ekr.20100108101415.6196: *5* insert-tab commands
-@nocolor-node
-
-It's intolerable to delay these any longer.
-
-
-insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
+People have a right to expect that all of these will be fixed.
 #@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
 #@+node:ekr.20110523130519.19220: *6* Report
 @nocolor-node
@@ -129,54 +34,13 @@ The variable names in the last two lines are not highlighted
 correctly. This becomes clear if the first line is replaced with #!/
 bin/bash and this code is opened in vim/scite. I've tried only these
 two editors, they highlight the variable names correctly.
-#@+node:ekr.20110527140605.18358: *4* Next: 4
-#@+node:ekr.20061006165447: *5* Let import commands decide what kind of import to do
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3940843
-By: ktenney
-
->the distiction between importing 'foreign' text files and importing derived
-files created by Leo.
-
-Couldn't Leo make this distinction by looking at
-the file being imported? If so, I think it should.
-
-This could eliminate a lot of confusion IMO, if
-I want to bring a file into a node, just
-'import' it, and the right thing happens.
-
-An emergency measure could be available in a 
-'File Special' menu.
-#@+node:ekr.20101124145006.5842: *5* Unify extract commands
+#@+node:ekr.20100108101415.6196: *5* insert-tab commands
 @nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/679614fdd6a76a81#
+It's intolerable to delay these any longer.
 
-I think this should be combined with extract-section (ctrl-shift-x), so that
 
-- if the first line of selection is << foo >>, it created a node with
-headline << foo >>
-
-- If the  first line is def foo, create a node with headline foo
-
-- Extend as appropriate.
-#@+node:ekr.20031218072017.833: *5* Use @file extension by default if no @language
-@nocolor
-
-Open discussion
-By: jasonic ( Jason Cunliffe ) 
- use of @language   
-2003-07-16 03:40  
-
-I am wondering why Leo does not default to just use the file suffix in @file nodes, instead of obliging @language line in in the body pane 
-
-For example any @file ending with a suffix as defined in the language extensions could just default to use those. 
-
-".py" for python 
-".r" for rebol 
-".as" for actionscript etc.. 
-
-Should anyone need to over-ride those, they could use @language.
+insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
 #@+node:ekr.20090801103907.6018: *5* Add entries to global dicts for more languages
 @nocolor-node
 
@@ -383,126 +247,41 @@ xml.py
 xsl.py
 zpt.py
 __init__.py
-#@+node:ekr.20110527140605.18357: *4* Bigger improvements: 3
-# Somewhat bigger projects.  Not necessary for B1.
 #@+node:ekr.20110524141405.18370: *5* Get macros working well
 How should they work?
-#@+node:ekr.20040329094003: *5* Apply patch command
-#@+node:ekr.20110520051220.18203: *5* Cross-tab search
-@language rest
+#@+node:ekr.20110527182640.18356: *5* Improve tab navigation
+* Ctrl-Shift-tab moves backwards.
 
-This would be a substitute for cross-file clones.
-#@+node:ekr.20031218072017.753: *5* (Maybe) Emacs comint-mode:  The improved Execute Script command does most of this
-@nocolor
-
-Michael Manti
-mmanti@mac.com
-
-P.S. I think a feature that could make Leo *the* IDE for developing in 
-interpreted languages is something like the (X)Emacs comint-mode.el for 
-interacting with the shell and interpreters.
-
-comint-mode.el serves as the basis for interactive modes for a number of
-languages--OCaml, Haskell, SML, among them. It allows for editing expressions in
-one buffer and triggering their evaluation in another buffer that has an
-interpreter running in it, along with entering commands in the interpreter
-buffer and moving back and forth through the history of their evaluation.
-
-Imagine being able to highlight a node in Leo, and have all the code in it and
-its children evaluated in an interpreter running in a separate window or pane,
-much as Leo can open a Python shell now. Users of those languages could build
-plug-ins specific to their language atop that layer, and the @language directive
-could activate that. I think that would be very cool.
-#@+node:ekr.20110523201030.18290: *4* Kill Tk
-# Start with converting plugins, if people want them converted.
-
-# This can easily be moved to b2.
-#@+node:ekr.20110527084258.18373: *5* Remove tk command-line options & related startup code
-#@+node:ekr.20110125142807.17269: *5* Rewrite all tk plugins
+* Goto named tab.
+#@+node:ekr.20090601083544.6051: *5* Add expand_noweb_references for rst3 plugin
 @nocolor-node
 
-Is it time to retire tk?
-http://groups.google.com/group/leo-editor/browse_thread/thread/f0c4847d1630505d/1d477dfa09d67b1f
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
-What Tk plugins must be ported to Qt?
-http://groups.google.com/group/leo-editor/browse_thread/thread/16c6fb46a4f84b8c/e5c88a19eba99e68
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
 
-Feb 2, 2011
-Viktor R: detect_urls.py (Completed)
-#@+node:ekr.20110526234609.18387: *6* Posting
+- Add support for the following options:
+    - expand_noweb_references: default False for compatibility.
+    - ignore_noweb definitions: default False for compatibility.
+
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
+#@+node:ekr.20090601083544.6052: *6* post
 @nocolor-node
 
-I would like to remove support for Tk asap.  Before doing that, I want to make
-sure that nobody will lose the functionality of a Tk plugin that has no
-counterpart in Qt. 
+I want to write the documentation for the source program in a @rst3 subtree. In
+this @rst3 subtree I want to refer to fragments of the program, like:
 
-Therefore, it is important that you tell me now if moving to Qt would
-inconvenience you in this regard. True, Tk plugins can be ported to Qt later if
-necessary, but I'd like to make the translation as painless as possible. So if
-you use Tk, please let me know now if you use any Tk plugin that has no
-counterpart in Qt.
+In the following code fragment::
 
-In February of this year there was a thread called "What Tk plugins must be ported to Qt?"
-http://groups.google.com/group/leo-editor/browse_thread/thread/16c6fb46a4f84b8c/e5c88a19eba99e68
+  <<code fragment>>
 
-At that time, only the detect_urls plugin was mentioned, and that functionality
-has been moved into the Qt colorizer.
-
-A short script produces this list of @file nodes in the "zz Tk only plugins"
-section of leoPlugins.leo:
-
-ConceptualSort.py
-Library.py
-UASearch.py
-URLloader.py
-UniversalScrolling.py  # Certainly not needed in Qt.
-autotrees.py
-base64Packager.py
-cleo.py
-color_markup.py
-fastGotoNode.py
-footprints.py
-graphed.py
-groupOperations.py
-hoist.py
-image.py # obsolete
-leoupdate.py
-mod_labels.py
-nav_buttons.py
-newButtons.py
-nodebar.py
-nodenavigator.py
-old_plugin_manager.py # Will not be ported
-open_with.py # Not needed
-pie_menus.py
-rClick.py # Not needed.
-rowcol.py # Not needed.
-scheduler.py
-searchbar.py
-searchbox.py
-shortcut_button.py 
-table.py
-templates.py
-threading_colorizer.py
-toolbar.py
-trees\doc.py
-trees\news.py
-trees\pluginsManager.txt
-trees\remote.py
-trees\rss.py
-trees\test.py
-xcc_nodes.py
-
-Notes
-
-The only plugins that catch my eye are: autotrees.py, base64Packager.py,
-color_markup.py and templates.py.
-
-I would prefer not to port color_markup.py. It doesn't seem worth the trouble.
-Porting base64Packager.py should be straightforward, if anyone cares.
-
-autotrees.py and templates.py seems the most interesting. They shouldn't be too
-difficult to do.
+Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
+get to this work, I should have <<code fragment>> under the @rst3 subtree as
+well, but this is then also treated as @rst3 input (which in this case, is not
+what I want).
 #@+node:ekr.20090131200406.11: *5* Remove remaining tk-isms from Leo's core
 @nocolor-node
 
@@ -514,11 +293,17 @@ These are marked with ###
 (found) lineend, linestart
 (found) sel.first, sel.last
 (found) w.insert, w.delete
-#@+node:ekr.20110527084258.18372: *5* Remove Pmw and Gato from extensions folder
-#@+node:ekr.20110526083709.18342: *4* Distribution: 2
+#@+node:ekr.20110527140605.18356: *5* Emacs key-related: 2
+#@+node:ekr.20060628103226.3: *6* Make sure repeat counts work on basic editing commands
+#@+node:ekr.20060628103226.2: *6* Alt-x handlers should add to lossage
+#@+node:ekr.20110526083709.18342: *4* Distribution: 3
 #@+node:ekr.20110525112110.18394: *5* Fix failing unit tests on Linux
 #@+node:ekr.20110526064139.18329: *5* Find non-copyrighted image
-#@+node:ekr.20110514231951.14492: *4* Docs: 4
+#@+node:ekr.20110518103946.18179: *5* Add external/leosax.py to leoPyRef.leo
+http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
+
+Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
+#@+node:ekr.20110514231951.14492: *4* Docs: 5
 #@+node:ekr.20110523201030.18284: *5* Make sure MacOS users are told to use --gui=qt
 @nocolor-node
 
@@ -836,8 +621,106 @@ added.
 
 In short, the new caching scheme is much better than before, and it probably is
 close to optimal in most situations.
-#@+node:ekr.20110516132611.14438: *3* b2
-#@+node:ekr.20110526083709.18337: *4* Simplify Key handling
+#@+node:ekr.20101129095441.5963: *5* Improve screenshots page
+#@+node:ekr.20110527182640.18358: *4* Improvements: 3
+@nocolor-node
+
+Significant improvements, but not urgent.
+
+These will likely be delayed until B2.
+#@+node:ekr.20110523201030.18290: *5* Kill Tk
+@nocolor-node
+
+This could be called a vague improvement, but it may simplify the core enough to
+be a bug fix.
+#@+node:ekr.20110527084258.18373: *6* Remove tk command-line options & related startup code
+#@+node:ekr.20110125142807.17269: *6* Rewrite all tk plugins
+@nocolor-node
+
+Is it time to retire tk?
+http://groups.google.com/group/leo-editor/browse_thread/thread/f0c4847d1630505d/1d477dfa09d67b1f
+
+What Tk plugins must be ported to Qt?
+http://groups.google.com/group/leo-editor/browse_thread/thread/16c6fb46a4f84b8c/e5c88a19eba99e68
+
+Feb 2, 2011
+Viktor R: detect_urls.py (Completed)
+#@+node:ekr.20110526234609.18387: *7* Posting
+@nocolor-node
+
+I would like to remove support for Tk asap.  Before doing that, I want to make
+sure that nobody will lose the functionality of a Tk plugin that has no
+counterpart in Qt. 
+
+Therefore, it is important that you tell me now if moving to Qt would
+inconvenience you in this regard. True, Tk plugins can be ported to Qt later if
+necessary, but I'd like to make the translation as painless as possible. So if
+you use Tk, please let me know now if you use any Tk plugin that has no
+counterpart in Qt.
+
+In February of this year there was a thread called "What Tk plugins must be ported to Qt?"
+http://groups.google.com/group/leo-editor/browse_thread/thread/16c6fb46a4f84b8c/e5c88a19eba99e68
+
+At that time, only the detect_urls plugin was mentioned, and that functionality
+has been moved into the Qt colorizer.
+
+A short script produces this list of @file nodes in the "zz Tk only plugins"
+section of leoPlugins.leo:
+
+ConceptualSort.py
+Library.py
+UASearch.py
+URLloader.py
+UniversalScrolling.py  # Certainly not needed in Qt.
+autotrees.py
+base64Packager.py
+cleo.py
+color_markup.py
+fastGotoNode.py
+footprints.py
+graphed.py
+groupOperations.py
+hoist.py
+image.py # obsolete
+leoupdate.py
+mod_labels.py
+nav_buttons.py
+newButtons.py
+nodebar.py
+nodenavigator.py
+old_plugin_manager.py # Will not be ported
+open_with.py # Not needed
+pie_menus.py
+rClick.py # Not needed.
+rowcol.py # Not needed.
+scheduler.py
+searchbar.py
+searchbox.py
+shortcut_button.py 
+table.py
+templates.py
+threading_colorizer.py
+toolbar.py
+trees\doc.py
+trees\news.py
+trees\pluginsManager.txt
+trees\remote.py
+trees\rss.py
+trees\test.py
+xcc_nodes.py
+
+Notes
+
+The only plugins that catch my eye are: autotrees.py, base64Packager.py,
+color_markup.py and templates.py.
+
+I would prefer not to port color_markup.py. It doesn't seem worth the trouble.
+Porting base64Packager.py should be straightforward, if anyone cares.
+
+autotrees.py and templates.py seems the most interesting. They shouldn't be too
+difficult to do.
+#@+node:ekr.20110527084258.18372: *6* Remove Pmw and Gato from extensions folder
+#@+node:ekr.20110526083709.18337: *5* Simplify Key handling
 @nocolor-node
 
 As part of killing Tk I shall simplify how Leo's Qt gui reports keys to the
@@ -875,10 +758,11 @@ For example, k.isPlainKey will become trivial, or better, unnecessary.
 
 None of this can be done easily while Tk exists.  After the work is done, the
 work will become a new "standard" that future gui's can implement. 
-#@+node:ekr.20110527140605.18356: *5* Emacs key-related
-#@+node:ekr.20060628103226.3: *6* Make sure repeat counts work on basic editing commands
-#@+node:ekr.20060628103226.2: *6* Alt-x handlers should add to lossage
-#@+node:ekr.20110527084258.18378: *4* New file format
+#@+node:ekr.20110527182640.18357: *6* Add KeyStroke class
+@nocolor-node
+
+Internally, everything will either be a unicode character or a KeyStroke object.
+#@+node:ekr.20110527084258.18378: *5* New file format
 @nocolor-node
 
 Stuff that got left out:
@@ -886,21 +770,21 @@ Stuff that got left out:
 - Use uuid's?
 
 - Remove spaces from user names.
-#@+node:ekr.20110427135155.14306: *5* Add <attr> elements to .leo files
+#@+node:ekr.20110427135155.14306: *6* Add <attr> elements to .leo files
 @language rest
 
 - <attr> solves pickle problem.
-#@+node:ekr.20110414065052.6100: *5* * Treat gnx's as strings: don't parse them
+#@+node:ekr.20110414065052.6100: *6* * Treat gnx's as strings: don't parse them
 @nocolor-node
 
 http://mail.google.com/mail/#inbox/12f3d4950fbabeea
-#@+node:ekr.20101123131018.5842: *5* * Don't save expansion bits in uA if not saving expansion bits
+#@+node:ekr.20101123131018.5842: *6* * Don't save expansion bits in uA if not saving expansion bits
 @nocolor-node
 
 @bool put_expansion_bits_in_leo_files = False
 
 It's illogical to save bits in uA's if they aren't save in in the <v> elements.
-#@+node:ekr.20110421132230.6107: *5* File format, v3 draft 4
+#@+node:ekr.20110421132230.6107: *6* File format, v3 draft 4
 @language rest
 @pagewidth 65
 
@@ -1056,7 +940,7 @@ The <at-file-attributes> element may be contained in the
     
 In other words, we use the graphml <attr> element, extended with the
 gnx attribute, to represent all the uA's in the descendants of @file nodes.
-#@+node:ekr.20110419083918.6104: *5* File format, v3 graphml
+#@+node:ekr.20110419083918.6104: *6* File format, v3 graphml
 @language rest
 @pagewidth 65
 
@@ -1227,8 +1111,8 @@ it will enclosed in a data element::
     
 In other words, we use the graphml <attr> element, extended with the
 gnx attribute, to represent all the uA's in the descendants of @file nodes.
-#@+node:ekr.20110415173840.6098: *5* new uA's
-#@+node:ekr.20040701065235.2: *6* putDescendentAttributes
+#@+node:ekr.20110415173840.6098: *6* new uA's
+#@+node:ekr.20040701065235.2: *7* putDescendentAttributes
 def putDescendentAttributes (self,p):
 
     nodeIndices = g.app.nodeIndices
@@ -1253,7 +1137,7 @@ def putDescendentAttributes (self,p):
             result.append('\n%s="%s"' % (tag,s))
 
     return ''.join(result)
-#@+node:ekr.20080805071954.2: *6* putDescendentVnodeUas
+#@+node:ekr.20080805071954.2: *7* putDescendentVnodeUas
 def putDescendentVnodeUas (self,p):
 
     '''Return the a uA field for descendent vnode attributes,
@@ -1287,7 +1171,7 @@ def putDescendentVnodeUas (self,p):
     # Pickle and hexlify d
     return d and self.pickle(
         torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
-#@+node:EKR.20040526202501: *6* putUnknownAttributes
+#@+node:EKR.20040526202501: *7* putUnknownAttributes
 def putUnknownAttributes (self,torv):
 
     """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
@@ -1300,7 +1184,7 @@ def putUnknownAttributes (self,torv):
         val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
         # g.trace(torv,attrDict)
         return val
-#@+node:ekr.20090130114732.6: *6* v.u Property
+#@+node:ekr.20090130114732.6: *7* v.u Property
 def __get_u(self):
     v = self
     if not hasattr(v,'unknownAttributes'):
@@ -1320,8 +1204,8 @@ def __set_u(self,val):
 u = property(
     __get_u, __set_u,
     doc = "vnode unknownAttribute property")
-#@+node:ekr.20110414164347.6082: *5* Reference for json stuff
-#@+node:ekr.20031218072017.1997: *6* scanGnx
+#@+node:ekr.20110414164347.6082: *6* Reference for json stuff
+#@+node:ekr.20031218072017.1997: *7* scanGnx
 def scanGnx (self,s,i):
 
     """Create a gnx from its string representation"""
@@ -1347,8 +1231,8 @@ def scanGnx (self,s,i):
         except Exception: pass
 
     return theId,t,n
-#@+node:ekr.20060919104530: *6* Sax (reading)
-#@+node:ekr.20090525144314.6526: *7* cleanSaxInputString
+#@+node:ekr.20060919104530: *7* Sax (reading)
+#@+node:ekr.20090525144314.6526: *8* cleanSaxInputString
 def cleanSaxInputString(self,s):
 
     '''Clean control characters from s.
@@ -1373,7 +1257,7 @@ def cleanSaxInputString(self,s):
     return s.translate(transtable)
 
 # for i in range(32): print i,repr(chr(i))
-#@+node:ekr.20060919110638.5: *7* fc.createSaxChildren & helpers
+#@+node:ekr.20060919110638.5: *8* fc.createSaxChildren & helpers
 def createSaxChildren (self, sax_node, parent_v):
 
     c = self.c
@@ -1401,7 +1285,7 @@ def createSaxChildren (self, sax_node, parent_v):
             'len(child.parents)',len(child.parents))
 
     return children
-#@+node:ekr.20060919110638.7: *8* fc.createSaxVnode & helpers
+#@+node:ekr.20060919110638.7: *9* fc.createSaxVnode & helpers
 def createSaxVnode (self,sax_node,parent_v,v=None):
 
     c = self.c
@@ -1440,7 +1324,7 @@ def createSaxVnode (self,sax_node,parent_v,v=None):
     self.handleTnodeSaxAttributes(sax_node,v)
 
     return v
-#@+node:ekr.20060919110638.8: *9* handleTnodeSaxAttributes
+#@+node:ekr.20060919110638.8: *10* handleTnodeSaxAttributes
 def handleTnodeSaxAttributes (self,sax_node,v):
 
     trace = False and not g.unitTesting
@@ -1457,7 +1341,7 @@ def handleTnodeSaxAttributes (self,sax_node,v):
     if aDict:
         if trace: g.trace('uA',v,list(aDict.keys()))
         v.unknownAttributes = aDict
-#@+node:ekr.20061004053644: *9* handleVnodeSaxAttributes
+#@+node:ekr.20061004053644: *10* handleVnodeSaxAttributes
 # The native attributes of <v> elements are a, t, vtag, tnodeList,
 # marks, expanded, and descendentTnodeUnknownAttributes.
 # New in Leo 4.5: added descendentVnodeUnknownAttributes to native attributes.
@@ -1527,7 +1411,7 @@ def handleVnodeSaxAttributes (self,sax_node,v):
     if aDict:
         # if trace: g.trace('uA',v,aDict)
         v.unknownAttributes = aDict
-#@+node:ekr.20060919110638.2: *7* dumpSaxTree
+#@+node:ekr.20060919110638.2: *8* dumpSaxTree
 def dumpSaxTree (self,root,dummy):
 
     if not root:
@@ -1537,7 +1421,7 @@ def dumpSaxTree (self,root,dummy):
         root.dump()
     for child in root.children:
         self.dumpSaxTree(child,dummy=False)
-#@+node:ekr.20061003093021: *7* getSaxUa
+#@+node:ekr.20061003093021: *8* getSaxUa
 def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
 
     """Parse an unknown attribute in a <v> or <t> element.
@@ -1585,7 +1469,7 @@ def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
     except (pickle.UnpicklingError,ImportError,AttributeError,ValueError):
         g.trace('can not unpickle %s=%s' % (attr,val))
         return val
-#@+node:ekr.20060919110638.14: *7* parse_leo_file
+#@+node:ekr.20060919110638.14: *8* parse_leo_file
 def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 
     c = self.c
@@ -1626,7 +1510,7 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
         sax_node = None
 
     return sax_node
-#@+node:ekr.20060919110638.3: *7* readSaxFile
+#@+node:ekr.20060919110638.3: *8* readSaxFile
 def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
 
     dump = False and not g.unitTesting
@@ -1647,7 +1531,7 @@ def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None
         return v
     else:
         return None
-#@+node:ekr.20060919110638.11: *7* resolveTnodeLists
+#@+node:ekr.20060919110638.11: *8* resolveTnodeLists
 def resolveTnodeLists (self):
 
     trace = False and not g.unitTesting
@@ -1669,7 +1553,7 @@ def resolveTnodeLists (self):
                 p.v.tnodeList = result
                 # g.trace('*** tnodeList for',p.h,result)
             delattr(p.v,'tempTnodeList')
-#@+node:ekr.20080805132422.3: *7* resolveArchivedPosition  (New in Leo 4.5)
+#@+node:ekr.20080805132422.3: *8* resolveArchivedPosition  (New in Leo 4.5)
 def resolveArchivedPosition(self,archivedPosition,root_v):
 
     '''Return a vnode corresponding to the archived position relative to root node root_v.'''
@@ -1701,7 +1585,7 @@ def resolveArchivedPosition(self,archivedPosition,root_v):
             return oops('bad index="%s", len(children)="%s"' % (n,len(children)))
 
     return last_v
-#@+node:ekr.20060919110638.13: *7* setPositionsFromVnodes & helper (sax read)
+#@+node:ekr.20060919110638.13: *8* setPositionsFromVnodes & helper (sax read)
 def setPositionsFromVnodes (self):
 
     trace = False and not g.unitTesting
@@ -1721,7 +1605,7 @@ def setPositionsFromVnodes (self):
         current = self.archivedPositionToPosition(str_pos)
 
     c.setCurrentPosition(current or c.rootPosition())
-#@+node:ekr.20061006104837.1: *8* archivedPositionToPosition
+#@+node:ekr.20061006104837.1: *9* archivedPositionToPosition
 def archivedPositionToPosition (self,s):
 
     c = self.c
@@ -1748,7 +1632,7 @@ def archivedPositionToPosition (self,s):
             p.moveToFirstChild()
             # g.trace('level',level,'index',aList[level],p.h)
     return p
-#@+node:ekr.20090218115025.3: *5* Why are attributes pickled by default?
+#@+node:ekr.20090218115025.3: *6* Why are attributes pickled by default?
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/326a221f4c698f7a
@@ -1799,41 +1683,149 @@ I'm sure pickling capability is great, but I'm not convinced
 it should be the _default._
 
 No big deal.
-#@+node:ekr.20090601083544.6051: *4* Add expand_noweb_references for rst3 plugin
+#@+node:ekr.20110527140605.18358: *4* Vague improvements
+# None of these is worth delaying any release.
+#@+node:ekr.20110527182640.18354: *5* Improve commands: 8
+#@+node:ekr.20090402072059.2: *6* Improve the clone-find-all command
 @nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
+Notice that children of previously found nodes don't get added again in the
+modified version.
+#@+node:ekr.20090402072059.4: *7* @@@button my clone find all
+import leo.core.leoFind as leoFind 
 
-> What would work for me is if named sections in a @rst subtree
-> would work exactly as they work for other derived files: they
-> get inserted at the place where they are referenced.
+def new_find_all(self):
+    << do some initial stuff >>
 
-- Add support for the following options:
-    - expand_noweb_references: default False for compatibility.
-    - ignore_noweb definitions: default False for compatibility.
 
-- When expand_noweb_references is True, definitions (typically clones)
-  must be descendants of the referencing node (in the @rst tree)
-#@+node:ekr.20090601083544.6052: *5* post
+    while 1:
+        pos, newpos = self.findNextMatch()
+        if pos is None: break
+
+        if count % 10 == 0 and count > 0:
+            g.es("still searching, matches found: ", count)
+
+        << Skip node if it's a child of a previously found node >>
+
+        count += 1
+
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if not self.clone_find_all:
+            self.printLine(line,allFlag=True)
+        if self.clone_find_all and self.p.v.t not in clones:
+            # g.trace(self.p.v.t,self.p.h)
+            if not clones:
+                undoData = u.beforeInsertNode(c.p)
+                << create the found node >>
+            clones.append(self.p.v.t)
+            positions.append(self.p)
+            << create a clone of p under the find node >>
+
+    if self.clone_find_all and clones:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        c.selectPosition(found)
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw()
+    g.es("found",count,"matches")
+
+
+leoFind.leoFind.findAll = new_find_all
+
+c.executeMinibufferCommand("clone-find-all") 
+#@+node:ekr.20090402072059.5: *8* << do some initial stuff >>
+g.es("findAll..., self: ", self)
+
+c = self.c ; w = self.s_ctrl ; u = c.undoer
+undoType = 'Clone Find All'
+if not self.checkArgs():
+    return
+self.initInHeadline()
+if self.clone_find_all:
+    self.p = None # Restore will select the root position.
+data = self.save()
+self.initBatchCommands()
+count = 0 ; clones = []; positions = []
+#@+node:ekr.20090402072059.6: *8* << create the found node >>
+oldRoot = c.rootPosition()
+found = oldRoot.insertAfter()
+found.moveToRoot(oldRoot)
+c.setHeadString(found,'Found: ' + self.find_text)
+c.setRootPosition() # New in Leo 4.5.
+#@+node:ekr.20090402072059.7: *8* << create a clone of p under the find node >>
+q = self.p.clone()
+q.moveToLastChildOf(found)
+#@+node:ekr.20090402072059.8: *8* << Skip node if it's a child of a previously found node >>
+<< def: is a child of b >>
+
+is_child_of_previous = False
+for previously_found in positions:
+    if is_a_child_of_b(self.p, previously_found):
+        is_child_of_previous = True
+        break
+
+if is_child_of_previous:
+    continue
+#@+node:ekr.20090402072059.9: *9* << def: is a child of b >>
+
+def is_a_child_of_b(a, b):
+    for child in b.children_iter():
+        if a.t == child.t:
+            return True
+        if is_a_child_of_b(a, child):
+            return True
+    return False
+#@+node:ekr.20061006165447: *6* Let import commands decide what kind of import to do
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3940843
+By: ktenney
+
+>the distiction between importing 'foreign' text files and importing derived
+files created by Leo.
+
+Couldn't Leo make this distinction by looking at
+the file being imported? If so, I think it should.
+
+This could eliminate a lot of confusion IMO, if
+I want to bring a file into a node, just
+'import' it, and the right thing happens.
+
+An emergency measure could be available in a 
+'File Special' menu.
+#@+node:ekr.20101124145006.5842: *6* Unify extract commands
 @nocolor-node
 
-I want to write the documentation for the source program in a @rst3 subtree. In
-this @rst3 subtree I want to refer to fragments of the program, like:
+http://groups.google.com/group/leo-editor/browse_thread/thread/679614fdd6a76a81#
 
-In the following code fragment::
+I think this should be combined with extract-section (ctrl-shift-x), so that
 
-  <<code fragment>>
+- if the first line of selection is << foo >>, it created a node with
+headline << foo >>
 
-Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
-get to this work, I should have <<code fragment>> under the @rst3 subtree as
-well, but this is then also treated as @rst3 input (which in this case, is not
-what I want).
-#@+node:ekr.20110518103946.18156: *3* rc1: completing Leo
-#@+node:ekr.20110524141405.18379: *4* Minor Bugs: 3
-@nocolor-node
+- If the  first line is def foo, create a node with headline foo
 
-These are a bit more difficult and may be delayed until b2.
-#@+node:ekr.20051110155735.1: *5* Improve Spell tab & spell checker
+- Extend as appropriate.
+#@+node:ekr.20031218072017.833: *6* Use @file extension by default if no @language
+@nocolor
+
+Open discussion
+By: jasonic ( Jason Cunliffe ) 
+ use of @language   
+2003-07-16 03:40  
+
+I am wondering why Leo does not default to just use the file suffix in @file nodes, instead of obliging @language line in in the body pane 
+
+For example any @file ending with a suffix as defined in the language extensions could just default to use those. 
+
+".py" for python 
+".r" for rebol 
+".as" for actionscript etc.. 
+
+Should anyone need to over-ride those, they could use @language.
+#@+node:ekr.20051110155735.1: *6* Improve Spell tab & spell checker
 @nocolor
 
 - Per-pane key bindings. (arrows, etc.)
@@ -1841,8 +1833,8 @@ These are a bit more difficult and may be delayed until b2.
 - Select the first entry.
 
 @color
-#@+node:ekr.20090907080624.6081: *6* Spell checker should check headlines
-#@+node:ekr.20080421140032.1: *5* Fix multiple controllers problem in all plugins
+#@+node:ekr.20090907080624.6081: *7* Spell checker should check headlines
+#@+node:ekr.20080421140032.1: *6* Fix multiple controllers problem in all plugins
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
@@ -1853,7 +1845,7 @@ Templates section of the leoPlugins.
 The onCreate method gets called every time *any* new commander is created
 therefore the plugin controllers get recreated for *every* commander *every*
 time a new commander is created.
-#@+node:ekr.20090601083544.6067: *5* Make all commands available to all commanders
+#@+node:ekr.20090601083544.6067: *6* Make all commands available to all commanders
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/a83082cec5ad3df8
@@ -1896,13 +1888,63 @@ def bookmark(event):
     bookmarks.append(p.gnx)
     g.es('bookmarked') 
 QQQ
-#@+node:ekr.20101125041212.5845: *4* Features: 3
+#@+node:ekr.20090724081340.5987: *6* Improve recursive import script and @auto
 @nocolor-node
 
-To be done early in the release cycle.
-#@+node:ekr.20101004092958.5914: *5* Write treepad scanner
+Instead of adding an @ignore directive, it might be better
+to change @auto to @@auto.
+
+Should @auto be more lenient with C files?
+
+Improve the recursive import script.
+    - Minimize the path names
+    - Option to include/exclude the @auto itself
+
+#@+node:ekr.20110527182640.18355: *5* New commands & features: 5
+#@+node:ekr.20040329094003: *6* Apply patch command
+#@+node:ekr.20071004120359.2: *6* (maybe) expand-region-abbrev
+@nocolor-node
+
+See: regionalExpandAbbrev.
+
+You may wish to expand an abbrev with a prefix attached; for example, if `cnst'
+expands into `construction', you might want to use it to enter `reconstruction'.
+It does not work to type recnst, because that is not necessarily a defined
+abbrev. What you can do is use the command M-' (abbrev-prefix-mark) in between
+the prefix `re' and the abbrev `cnst'. First, insert `re'. Then type M-'; this
+inserts a hyphen in the buffer to indicate that it has done its work. Then
+insert the abbrev `cnst'; the buffer now contains `re-cnst'. Now insert a
+non-word character to expand the abbrev `cnst' into `construction'. This
+expansion step also deletes the hyphen that indicated M-' had been used. The
+result is the desired `reconstruction'.
+
+If you actually want the text of the abbrev in the buffer, rather than its
+expansion, you can accomplish this by inserting the following punctuation with
+C-q. Thus, foo C-q , leaves `foo,' in the buffer.
+#@+node:ekr.20031218072017.753: *6* (Maybe) Emacs comint-mode:  The improved Execute Script command does most of this
+@nocolor
+
+Michael Manti
+mmanti@mac.com
+
+P.S. I think a feature that could make Leo *the* IDE for developing in 
+interpreted languages is something like the (X)Emacs comint-mode.el for 
+interacting with the shell and interpreters.
+
+comint-mode.el serves as the basis for interactive modes for a number of
+languages--OCaml, Haskell, SML, among them. It allows for editing expressions in
+one buffer and triggering their evaluation in another buffer that has an
+interpreter running in it, along with entering commands in the interpreter
+buffer and moving back and forth through the history of their evaluation.
+
+Imagine being able to highlight a node in Leo, and have all the code in it and
+its children evaluated in an interpreter running in a separate window or pane,
+much as Leo can open a Python shell now. Users of those languages could build
+plug-ins specific to their language atop that layer, and the @language directive
+could activate that. I think that would be very cool.
+#@+node:ekr.20101004092958.5914: *6* Write treepad scanner
 @ treepad.py is from the treepad website
-#@+node:ekr.20101004092958.5939: *6* treepad.py
+#@+node:ekr.20101004092958.5939: *7* treepad.py
 @first #! /usr/local/bin/python
 
 # treepad.py
@@ -1913,7 +1955,7 @@ To be done early in the release cycle.
 if __name__ == '__main__':
     Main().Run()
 
-#@+node:ekr.20101004092958.5940: *7* treepad declarations
+#@+node:ekr.20101004092958.5940: *8* treepad declarations
 import sys, os, re, string
 
 # constants
@@ -1921,10 +1963,10 @@ VERSION = "<Treepad version 2.7>"
 
 # regexes
 END_RE = re.compile(r'^<end node> ([^ ]+)$')
-#@+node:ekr.20101004092958.5941: *7* class Node
+#@+node:ekr.20101004092958.5941: *8* class Node
 class Node:
     @others
-#@+node:ekr.20101004092958.5942: *8* __init__
+#@+node:ekr.20101004092958.5942: *9* __init__
 def __init__(self):
     self.title    = ""
     self.level    = 0
@@ -1932,19 +1974,19 @@ def __init__(self):
     self.children = []
     self.parent   = None
     self.end      = ""
-#@+node:ekr.20101004092958.5943: *8* __str__
+#@+node:ekr.20101004092958.5943: *9* __str__
 def __str__(self):
     return "%s/%d" % (self.title, self.level)
-#@+node:ekr.20101004092958.5944: *8* addchild
+#@+node:ekr.20101004092958.5944: *9* addchild
 def addchild(self, node):
     assert self.level == node.level-1 and node.parent is None
     node.parent = self
     self.children.append( node )
-#@+node:ekr.20101004092958.5945: *8* findparent
+#@+node:ekr.20101004092958.5945: *9* findparent
 def findparent(self, node):
     if self.level == (node.level-1): return self
     return self.parent.findparent(node)
-#@+node:ekr.20101004092958.5946: *8* writenode
+#@+node:ekr.20101004092958.5946: *9* writenode
 def writenode(self, fp):
     fp.write("dt=Text\n")
     fp.write("<node>\n")
@@ -1953,28 +1995,28 @@ def writenode(self, fp):
     for line in self.article:
         fp.write("%s\n" % line)
     fp.write("<end node> %s\n" % self.end)
-#@+node:ekr.20101004092958.5947: *8* writetree
+#@+node:ekr.20101004092958.5947: *9* writetree
 def writetree(self, fp):
     self.writenode(fp)
     for node in self.children:
         node.writetree(fp)
 
-#@+node:ekr.20101004092958.5948: *7* class NodeReader
+#@+node:ekr.20101004092958.5948: *8* class NodeReader
 class NodeReader:
     @others
-#@+node:ekr.20101004092958.5949: *8* __init__
+#@+node:ekr.20101004092958.5949: *9* __init__
 def __init__(self, fname, fp):
     self.fname    = fname
     self.fp       = fp
-#@+node:ekr.20101004092958.5950: *8* expect
+#@+node:ekr.20101004092958.5950: *9* expect
 def expect(self, text, line=None):
     if line is None:
         line = self.fp.readline().strip()
     assert line == text, "expected " + line + " == " + text
-#@+node:ekr.20101004092958.5951: *8* readstart
+#@+node:ekr.20101004092958.5951: *9* readstart
 def readstart(self):
     self.expect(VERSION)
-#@+node:ekr.20101004092958.5952: *8* readnode
+#@+node:ekr.20101004092958.5952: *9* readnode
 def readnode(self):
     line = self.fp.readline()
     if line is None:
@@ -1996,16 +2038,16 @@ def readnode(self):
         node.article.append( line.strip() )
     return node
 
-#@+node:ekr.20101004092958.5953: *7* class TreeReader
+#@+node:ekr.20101004092958.5953: *8* class TreeReader
 class TreeReader:
     @others
-#@+node:ekr.20101004092958.5954: *8* __init__
+#@+node:ekr.20101004092958.5954: *9* __init__
 def __init__(self, fname, fp=None):
     if fp is None: fp = open(fname, 'r')
     self.nodereader = NodeReader(fname, fp)
     self.root = None
     self.prev = None
-#@+node:ekr.20101004092958.5955: *8* add
+#@+node:ekr.20101004092958.5955: *9* add
 def add(self, node):
     if self.prev is None:
         assert node.level == 0
@@ -2015,7 +2057,7 @@ def add(self, node):
         parent = self.prev.findparent(node)
         parent.addchild( node )
     self.prev = node
-#@+node:ekr.20101004092958.5956: *8* read
+#@+node:ekr.20101004092958.5956: *9* read
 def read(self):
     self.nodereader.readstart()
     prev = None
@@ -2024,67 +2066,40 @@ def read(self):
         if node is None: break
         self.add(node)
 
-#@+node:ekr.20101004092958.5957: *7* class TreeWriter
+#@+node:ekr.20101004092958.5957: *8* class TreeWriter
 class TreeWriter:
     @others
-#@+node:ekr.20101004092958.5958: *8* __init__
+#@+node:ekr.20101004092958.5958: *9* __init__
 def __init__(self, fname, fp=None):
     if fp is None: fp = open(fname, 'w')
     self.fname = fname
     self.fp    = fp
-#@+node:ekr.20101004092958.5959: *8* write
+#@+node:ekr.20101004092958.5959: *9* write
 def write(self, root):
     self.fp.write("%s\n" % VERSION)
     root.writetree(self.fp)
 
-#@+node:ekr.20101004092958.5960: *7* class Main
+#@+node:ekr.20101004092958.5960: *8* class Main
 class Main:
     @others
-#@+node:ekr.20101004092958.5961: *8* __init__
+#@+node:ekr.20101004092958.5961: *9* __init__
 def __init__(self):
     self.infile  = sys.argv[1]
     self.outfile = sys.argv[2]
     self.reader  = TreeReader(self.infile)
     self.writer  = TreeWriter(self.outfile)
-#@+node:ekr.20101004092958.5962: *8* Run
+#@+node:ekr.20101004092958.5962: *9* Run
 
 def Run(self):
     self.reader.read()
     self.writer.write(self.reader.root)
 
-#@+node:ekr.20090724081340.5987: *5* Improve recursive import script and @auto
-@nocolor-node
+#@+node:ekr.20110520051220.18203: *6* Cross-tab search
+@language rest
 
-Instead of adding an @ignore directive, it might be better
-to change @auto to @@auto.
-
-Should @auto be more lenient with C files?
-
-Improve the recursive import script.
-    - Minimize the path names
-    - Option to include/exclude the @auto itself
-
-#@+node:ekr.20071004120359.2: *5* (maybe) expand-region-abbrev
-@nocolor-node
-
-See: regionalExpandAbbrev.
-
-You may wish to expand an abbrev with a prefix attached; for example, if `cnst'
-expands into `construction', you might want to use it to enter `reconstruction'.
-It does not work to type recnst, because that is not necessarily a defined
-abbrev. What you can do is use the command M-' (abbrev-prefix-mark) in between
-the prefix `re' and the abbrev `cnst'. First, insert `re'. Then type M-'; this
-inserts a hyphen in the buffer to indicate that it has done its work. Then
-insert the abbrev `cnst'; the buffer now contains `re-cnst'. Now insert a
-non-word character to expand the abbrev `cnst' into `construction'. This
-expansion step also deletes the hyphen that indicated M-' had been used. The
-result is the desired `reconstruction'.
-
-If you actually want the text of the abbrev in the buffer, rather than its
-expansion, you can accomplish this by inserting the following punctuation with
-C-q. Thus, foo C-q , leaves `foo,' in the buffer.
-#@+node:ekr.20110525112110.18402: *4* Ideas: 4
-#@+node:ekr.20071001052501: *5* Versioning for nodes
+This would be a substitute for cross-file clones.
+#@+node:ekr.20110525112110.18402: *5* Ideas: 4
+#@+node:ekr.20071001052501: *6* Versioning for nodes
 @nocolor
 
 One feature I have not seen in SCS system is something which might be called
@@ -2094,7 +2109,7 @@ in the 2000 steps which transformed 5 into 6 (just suggested this feature to
 the bazaar people). This happens actually quite often to me, since I use the
 SCS as a back-up system, saving many (uninteresting) intermediate steps while
 implementing a new feature.
-#@+node:ekr.20101104191857.5820: *5* QWebView makes Leo a presentation tool
+#@+node:ekr.20101104191857.5820: *6* QWebView makes Leo a presentation tool
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
@@ -2110,8 +2125,8 @@ Voila', instant presentation tool. The webview window would be on projector, and
 leo would be in your private computer. You can easily edit the text, or find new
 interesting slides to present in privacy of your own screen.
 
-#@+node:ekr.20080802070659.11: *5* Make node attributes visible, and supported by Leo's core
-#@+node:ekr.20060227123536: *5* Tiddlywiki and related comments about rendering body text (Mulder)
+#@+node:ekr.20080802070659.11: *6* Make node attributes visible, and supported by Leo's core
+#@+node:ekr.20060227123536: *6* Tiddlywiki and related comments about rendering body text (Mulder)
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3578252
 By: bwmulder
@@ -2145,13 +2160,6 @@ language before doing anything in this direction.
 As an intermediate step, maybe we could allow mixing RST processing with regular
 program text.  Leo would produce two documents out of a source file: a version
 for the compiler in plain ascii, and an HTML file for reading the source.
-#@+node:ekr.20110526083709.18338: *3* misc: 2
-# These can be done at any time, or not at all
-#@+node:ekr.20110518103946.18179: *4* Add external/leosax.py to leoPyRef.leo
-http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
-
-Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
-#@+node:ekr.20101129095441.5963: *4* Improve screenshots page
 #@+node:ekr.20110527084258.18374: *3* Summary of the Ashland sprint
 @nocolor-node
 
