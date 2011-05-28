@@ -7158,8 +7158,7 @@ def idle_focus_helper (self,tag,keys):
     
     '''An idle-tme handler that ensures that focus is *somewhere*.'''
     
-    trace = False and not g.unitTesting
-    verbose = True
+    trace = False and not g.unitTesting ; verbose = False
     
     c = self
     assert tag == 'idle'
