@@ -7543,10 +7543,10 @@ class leoQtGui(leoGui.leoGui):
                 pm = QtGui.QPixmap(fn)
                 splash = QtGui.QSplashScreen(pm,(qt.SplashScreen | qt.WindowStaysOnTopHint))
                 splash.show()
-                g.trace('found',fn)
+                # g.trace('found',fn)
                 break
             else:
-                g.trace('not found',fn)
+                # g.trace('not found',fn)
                 splash = None
         
         return splash

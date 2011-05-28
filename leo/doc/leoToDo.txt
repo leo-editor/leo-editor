@@ -403,9 +403,8 @@ For example any @file ending with a suffix as defined in the language extensions
 ".as" for actionscript etc.. 
 
 Should anyone need to over-ride those, they could use @language.
-#@+node:ekr.20110526083709.18342: *4* Distribution: 3
+#@+node:ekr.20110526083709.18342: *4* Distribution: 2
 #@+node:ekr.20110525112110.18394: *5* Fix failing unit tests on Linux
-#@+node:ekr.20110526064139.18329: *5* Find non-copyrighted image
 #@+node:ekr.20110518103946.18179: *5* Add external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
 
