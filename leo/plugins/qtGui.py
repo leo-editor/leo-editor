@@ -7531,20 +7531,25 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20110525112110.18410: *5* createSplashScreen (qtGui)
     def createSplashScreen (self):
         
-        fn = g.os_path_finalize_join(
-            g.app.loadDir,'..','Icons','SplashScreen.jpg')
-            
-        if g.os_path_exists(fn):
-            qt = QtCore.Qt
-            pm = QtGui.QPixmap(fn)
-            splash = QtGui.QSplashScreen(pm,(qt.SplashScreen | qt.WindowStaysOnTopHint))
-            splash.show()
-            return splash
-        else:
-            # g.trace('not found',fn)
-            return None
+        for name in (
+            'SplashScreen.jpg',
+            'SplashScreen.png',
+            'SplashScreen.ico',
+        ):
+            fn = g.os_path_finalize_join(g.app.loadDir,'..','Icons',name)
+                
+            if g.os_path_exists(fn):
+                qt = QtCore.Qt
+                pm = QtGui.QPixmap(fn)
+                splash = QtGui.QSplashScreen(pm,(qt.SplashScreen | qt.WindowStaysOnTopHint))
+                splash.show()
+                g.trace('found',fn)
+                break
+            else:
+                g.trace('not found',fn)
+                splash = None
         
-            
+        return splash
     #@+node:ekr.20090123150451.11: *5* onActivateEvent (qtGui)
     # Called from eventFilter
 
