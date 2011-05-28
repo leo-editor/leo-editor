@@ -3,7 +3,220 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20110527225107.18350: *4* First: 3
+#@+node:ekr.20090801103907.6018: *4* Add entries to global dicts for more languages
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+
+Especially languages in leo/modes.
+#@+node:ekr.20031218072017.368: *5* << define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM_", # Use the REM hack.
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "cython"        : "#",
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "haskell"       : "--_ {-_ _-}",
+    "haxe"          : "//",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lisp"          : ";", # EKR: 2010/09/29
+    "lua"           : "--",  # ddm 13/02/06
+    "nsi"           : ";", # EKR: 2010/10/27
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "rest"          : ".._",
+    "rst"           : ".._",
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--',
+        # For unknown extensions in @shadow files.
+    "vim"           : "\"",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "cython"        : "pyd",
+    "cython"        : "pyi",
+    "cython"        : "pyx",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f90",
+    "haskell"       : "hs",
+    "haxe"          : "hx",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "nsi"           : "nsi", # EKR: 2010/10/27
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    # "rst"           : "rst", # caught by pylint.
+    "rst"           : "rest",
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vim"           : "vim",
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+    "xslt"          : "xsl",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "hs"    : "haskell",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nsi"   : "nsi", # EKR: 2010/10/27
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "pyd"   : "cython",
+    "pyi"   : "cython",
+    "pyx"   : "cython",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+    "w"     : "cweb",
+    "xml"   : "xml",
+    "xsl"   : "xslt",
+    "hx"    : "haxe",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran90',
+    'hx'    : 'none',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nsi'   : 'none', # Leo 4.8.
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+
+self.global_commands_dict = {}
+#@+node:ekr.20110528103005.18319: *5* Script to global data structures from in modes/*.py files
+import glob
+import imp
+
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
+aList = glob.glob(theDir)
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes')
+
+print('-'*40)
+for z in aList:
+    name = g.os_path_basename(z)
+    name2 = name[:-3]
+    if name.startswith('__'): continue
+    try:
+        theFile, pathname, description = imp.find_module(name2,[theDir])
+        m = imp.load_module(name2, theFile, pathname, description)
+    except Exception:
+        g.es_exception()
+        m = None
+    if m:
+        aList = [m.properties.get(z)
+            for z in ('lineComment','commentStart','commentEnd')
+                if m.properties.get(z)]
+        print('%-20s : "%s",' % (
+            '"%s"' % (name),
+            ' '.join(aList)))
+#@+node:ekr.20110527225107.18350: *4* First: 2
 #@+node:ekr.20100108101415.6196: *5* insert-tab commands
 @nocolor-node
 
@@ -33,208 +246,6 @@ The variable names in the last two lines are not highlighted
 correctly. This becomes clear if the first line is replaced with #!/
 bin/bash and this code is opened in vim/scite. I've tried only these
 two editors, they highlight the variable names correctly.
-#@+node:ekr.20090801103907.6018: *5* Add entries to global dicts for more languages
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
-
-Especially languages in leo/modes.
-#@+node:ekr.20090814190307.5983: *6* Script to print all modes/*.py files
-import glob
-
-theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
-
-aList = glob.glob(theDir)
-
-for z in aList:
-    print g.os_path_basename(z)
-
-@
-Exist:
-
-    "ada"   : "ada",
-    "adb"   : "ada",
-    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
-    "as"    : "actionscript",
-    "bas"   : "rapidq",
-    "bat"   : "batch",
-    "c"     : "c",
-    "cfg"   : "config",
-    "cpp"   : "cpp",
-    "css"   : "css",
-    "el"    : "elisp",
-    "forth" : "forth",
-    "f"     : "fortran",
-    "f90"   : "fortran90",
-    "h"     : "c",
-    "html"  : "html",
-    "ini"   : "ini",
-    "java"  : "java",
-    "ksh"   : "kshell", # Leo 4.5.1.
-    "lua"   : "lua",  # ddm 13/02/06
-    "nw"    : "noweb",
-    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
-    "p"     : "pascal",
-    "pl"    : "perl",   # 11/7/05
-    "pod"   : "perlpod", # 11/7/05
-    "php"   : "php",
-    "py"    : "python",
-    "sql"   : "plsql", # qt02537 2005-05-27
-    "r"     : "rebol",
-    "rb"    : "ruby", # thyrsus 2008-11-05
-    "rest"  : "rst",
-    "rst"   : "rst",
-    "sh"    : "shell",
-    "tex"   : "tex",
-    "txt"   : "plain",
-    "tcl"   : "tcltk",
-    "vim"   : "vim",
-"w"     : "cweb",
-"xml"   : "xml",
-"xsl"   : "xslt",
-
-Add first:
-
-
-ada95.py
-antlr.py
-apacheconf.py
-apdl.py
-applescript.py
-asp.py
-aspect_j.py
-assembly_macro32.py
-assembly_mcs51.py
-assembly_parrot.py
-assembly_r2000.py
-assembly_x86.py
-awk.py
-b.py
-batch.py
-bbj.py
-bcel.py
-bibtex.py
-c.py
-chill.py
-cobol.py
-coldfusion.py
-cplusplus.py
-csharp.py
-css.py
-cvs_commit.py
-d.py
-doxygen.py
-dsssl.py
-eiffel.py
-embperl.py
-erlang.py
-factor.py
-forth.py
-fortran.py
-fortran90.py
-foxpro.py
-freemarker.py
-gettext.py
-groovy.py
-haskell.py
-hex.py
-html.py
-i4gl.py
-icon.py
-idl.py
-inform.py
-ini.py
-inno_setup.py
-interlis.py
-io.py
-java.py
-javascript.py
-jcl.py
-jhtml.py
-jmk.py
-jsp.py
-latex.py
-lilypond.py
-lisp.py
-lotos.py
-lua.py
-mail.py
-makefile.py
-maple.py
-matlab.py
-ml.py
-modula3.py
-moin.py
-mqsc.py
-netrexx.py
-nqc.py
-nsis2.py
-objective_c.py
-objectrexx.py
-occam.py
-omnimark.py
-pascal.py
-patch.py
-perl.py
-php.py
-phpsection.py
-pike.py
-pl1.py
-plain.py
-plsql.py
-pop11.py
-postscript.py
-povray.py
-powerdynamo.py
-progress.py
-prolog.py
-props.py
-psp.py
-ptl.py
-pvwave.py
-pyrex.py
-python.py
-r.py
-rebol.py
-redcode.py
-relax_ng_compact.py
-rest.py
-rhtml.py
-rib.py
-rpmspec.py
-rtf.py
-ruby.py
-rview.py
-sas.py
-scheme.py
-sdl_pr.py
-sgml.py
-shell.py
-shellscript.py
-shtml.py
-smalltalk.py
-smi_mib.py
-splus.py
-sqr.py
-squidconf.py
-ssharp.py
-svn_commit.py
-swig.py
-tcl.py
-tex.py
-texinfo.py
-text.py
-tpl.py
-tsql.py
-uscript.py
-vbscript.py
-velocity.py
-verilog.py
-vhdl.py
-xml.py
-xsl.py
-zpt.py
-__init__.py
 #@+node:ekr.20110527225107.18353: *4* Next: 6
 #@+node:ekr.20110528034751.18271: *5* Put apropos text using viewrendered plugin
 #@+node:ekr.20090131200406.11: *5* Remove remaining tk-isms from Leo's core
