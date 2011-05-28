@@ -18779,14 +18779,22 @@ def createCloneFindAllNode(self):
 #@+node:ekr.20110528034751.18275: *4* Allow *plain* arrow keys in editing headline mode
 @nocolor-node
 
-In effect, the Up/Down keys should work just like Alt-Up/Down:
-they should move to the next/prev node and should put the focus in the tree.
+If you type a *plain* up/down arrow key while editing a headline, Leo will act
+as if you had typed the corresponding *alt*- arrow key. That is, Leo will end
+editing of the headline and go to the next previous node. Leo will end editing
+even if there is no next/ previous node, which is convenient.
 
-The fix was a beautiful/ugly hack in g.getPaneBinding.
+Actually, the code to do this does not depend in any way on the actual key
+bindings.  It should work whatever is bound to goto-prev/next- visible
+commands. 
+
+The code to make it work is pretty ugly, but I have little doubt that we will
+all instantly fall in love with it. I have.
+
+The fix was a a hack in g.getPaneBinding.
 
 Also selectVisNext/Back now call c.endEditing() if there is no next/previous node,
 so an arrow "out of" editing mode actually always ends the editing.
-
 #@+node:ekr.20091230094319.6240: *5* getPaneBinding
 def getPaneBinding (self,stroke,w):
 
