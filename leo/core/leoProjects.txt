@@ -7158,7 +7158,8 @@ def idle_focus_helper (self,tag,keys):
     
     '''An idle-tme handler that ensures that focus is *somewhere*.'''
     
-    trace = False and not g.unitTesting ; verbose = False
+    trace = False and not g.unitTesting
+    verbose = True
     
     c = self
     assert tag == 'idle'
@@ -7403,15 +7404,15 @@ def initSpecialIvars (self):
             g.trace('no setting for %s' % commandName)
 #@+node:ekr.20061031131434.130: *6* keyboardQuit
 def keyboardQuit (self,event,setFocus=True):
-        ### inAutoCompleter=False,
 
     '''This method clears the state and the minibuffer label.
 
     k.endCommand handles all other end-of-command chores.'''
 
+    trace = False and not g.unitTesting
     k = self ; c = k.c
     
-    # g.trace(g.callers(6))
+    if trace: g.trace(g.callers())
 
     if g.app.quitting:
         return
@@ -7420,8 +7421,10 @@ def keyboardQuit (self,event,setFocus=True):
         # k.autoCompleter.exit()
     
     # Completely clear the mode.
-    c.frame.log.deleteTab('Mode')
-    c.frame.log.hideTab('Completion')
+    if setFocus:
+        c.frame.log.deleteTab('Mode')
+        c.frame.log.hideTab('Completion')
+
     if k.inputModeName:
         k.endMode(event)
 
@@ -10577,6 +10580,48 @@ def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
     except (pickle.UnpicklingError,ImportError,AttributeError,ValueError):
         g.trace('can not unpickle %s=%s' % (attr,val))
         return val
+#@+node:ekr.20110528044139.18275: *4* Fixed recent blunder: Focus got yanked away from some tabs
+Binding, Commands
+#@+node:ekr.20061031131434.130: *5* keyboardQuit
+def keyboardQuit (self,event,setFocus=True):
+
+    '''This method clears the state and the minibuffer label.
+
+    k.endCommand handles all other end-of-command chores.'''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    
+    if trace: g.trace(g.callers())
+
+    if g.app.quitting:
+        return
+
+    # if not inAutoCompleter:
+        # k.autoCompleter.exit()
+    
+    # Completely clear the mode.
+    if setFocus:
+        c.frame.log.deleteTab('Mode')
+        c.frame.log.hideTab('Completion')
+
+    if k.inputModeName:
+        k.endMode(event)
+
+    # Complete clear the state.
+    k.state.kind = None
+    k.state.n = None
+
+    k.clearState()
+    k.resetLabel()
+
+    if setFocus:
+        c.endEditing()
+        c.bodyWantsFocus()
+
+    # At present, only the auto-completer suppresses this.
+    k.setDefaultInputState()
+    k.showStateAndMode()
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()
@@ -18622,15 +18667,15 @@ To undo this, if it doesn't turn out well:
 - Remove the call to k.keyboardQuit in baseNativeTree.onItemClicked.
 #@+node:ekr.20061031131434.130: *5* keyboardQuit
 def keyboardQuit (self,event,setFocus=True):
-        ### inAutoCompleter=False,
 
     '''This method clears the state and the minibuffer label.
 
     k.endCommand handles all other end-of-command chores.'''
 
+    trace = False and not g.unitTesting
     k = self ; c = k.c
     
-    # g.trace(g.callers(6))
+    if trace: g.trace(g.callers())
 
     if g.app.quitting:
         return
@@ -18639,8 +18684,10 @@ def keyboardQuit (self,event,setFocus=True):
         # k.autoCompleter.exit()
     
     # Completely clear the mode.
-    c.frame.log.deleteTab('Mode')
-    c.frame.log.hideTab('Completion')
+    if setFocus:
+        c.frame.log.deleteTab('Mode')
+        c.frame.log.hideTab('Completion')
+
     if k.inputModeName:
         k.endMode(event)
 

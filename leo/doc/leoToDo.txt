@@ -3,23 +3,13 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20110527084258.18380: *4* Bugs & missing features: 6
-@nocolor-node
-
-Must be done for b1.
-
-People have a right to expect that all of these will be fixed.
-#@+node:ekr.20110527225107.18350: *5* First: 6
-#@+node:ekr.20100108101415.6196: *6* insert-tab commands
-@nocolor-node
-
-insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
-#@+node:ekr.20090402072059.2: *6* Improve the clone-find-all command
+#@+node:ekr.20110527225107.18350: *4* First: 4
+#@+node:ekr.20090402072059.2: *5* Improve the clone-find-all command
 @nocolor-node
 
 Notice that children of previously found nodes don't get added again in the
 modified version.
-#@+node:ekr.20090402072059.4: *7* @@@button my clone find all
+#@+node:ekr.20090402072059.4: *6* @@@button my clone find all
 import leo.core.leoFind as leoFind 
 
 def new_find_all(self):
@@ -64,7 +54,7 @@ def new_find_all(self):
 leoFind.leoFind.findAll = new_find_all
 
 c.executeMinibufferCommand("clone-find-all") 
-#@+node:ekr.20090402072059.5: *8* << do some initial stuff >>
+#@+node:ekr.20090402072059.5: *7* << do some initial stuff >>
 g.es("findAll..., self: ", self)
 
 c = self.c ; w = self.s_ctrl ; u = c.undoer
@@ -77,16 +67,16 @@ if self.clone_find_all:
 data = self.save()
 self.initBatchCommands()
 count = 0 ; clones = []; positions = []
-#@+node:ekr.20090402072059.6: *8* << create the found node >>
+#@+node:ekr.20090402072059.6: *7* << create the found node >>
 oldRoot = c.rootPosition()
 found = oldRoot.insertAfter()
 found.moveToRoot(oldRoot)
 c.setHeadString(found,'Found: ' + self.find_text)
 c.setRootPosition() # New in Leo 4.5.
-#@+node:ekr.20090402072059.7: *8* << create a clone of p under the find node >>
+#@+node:ekr.20090402072059.7: *7* << create a clone of p under the find node >>
 q = self.p.clone()
 q.moveToLastChildOf(found)
-#@+node:ekr.20090402072059.8: *8* << Skip node if it's a child of a previously found node >>
+#@+node:ekr.20090402072059.8: *7* << Skip node if it's a child of a previously found node >>
 << def: is a child of b >>
 
 is_child_of_previous = False
@@ -97,7 +87,7 @@ for previously_found in positions:
 
 if is_child_of_previous:
     continue
-#@+node:ekr.20090402072059.9: *9* << def: is a child of b >>
+#@+node:ekr.20090402072059.9: *8* << def: is a child of b >>
 
 def is_a_child_of_b(a, b):
     for child in b.children_iter():
@@ -106,7 +96,7 @@ def is_a_child_of_b(a, b):
         if is_a_child_of_b(a, child):
             return True
     return False
-#@+node:ekr.20090801103907.6018: *6* Add entries to global dicts for more languages
+#@+node:ekr.20090801103907.6018: *5* Add entries to global dicts for more languages
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
@@ -115,8 +105,8 @@ Especially languages in leo/modes.
 
 Could a script do this?
 
-#@+node:ekr.20090816125009.5993: *7* @url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
-#@+node:ekr.20090814190307.5983: *7* Script to print all modes/*.py files
+#@+node:ekr.20090816125009.5993: *6* @url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+#@+node:ekr.20090814190307.5983: *6* Script to print all modes/*.py files
 import glob
 
 theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
@@ -312,8 +302,8 @@ xml.py
 xsl.py
 zpt.py
 __init__.py
-#@+node:ekr.20110523130519.19219: *6* Bug 525004: bash code not colored properly
-#@+node:ekr.20110523130519.19220: *7* Report
+#@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
+#@+node:ekr.20110523130519.19220: *6* Report
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/525004
@@ -337,12 +327,10 @@ The variable names in the last two lines are not highlighted
 correctly. This becomes clear if the first line is replaced with #!/
 bin/bash and this code is opened in vim/scite. I've tried only these
 two editors, they highlight the variable names correctly.
-#@+node:ekr.20110524141405.18370: *6* Get macros working well
-
-#@+node:ekr.20110528034751.18275: *6* Allow *plain* arrow keys in editing headline mode
-#@+node:ekr.20110527225107.18353: *5* Next: 6
-#@+node:ekr.20110528034751.18271: *6* Put apropos text using viewrendered plugin
-#@+node:ekr.20090131200406.11: *6* Remove remaining tk-isms from Leo's core
+#@+node:ekr.20110528034751.18275: *5* Allow *plain* arrow keys in editing headline mode
+#@+node:ekr.20110527225107.18353: *4* Next: 6
+#@+node:ekr.20110528034751.18271: *5* Put apropos text using viewrendered plugin
+#@+node:ekr.20090131200406.11: *5* Remove remaining tk-isms from Leo's core
 @nocolor-node
 
 Eliminate all tk-indices from leoEditCommands.py
@@ -353,7 +341,7 @@ These are marked with ###
 (found) lineend, linestart
 (found) sel.first, sel.last
 (found) w.insert, w.delete
-#@+node:ekr.20080421140032.1: *6* Fix multiple controllers problem in all plugins
+#@+node:ekr.20080421140032.1: *5* Fix multiple controllers problem in all plugins
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
@@ -364,7 +352,7 @@ Templates section of the leoPlugins.
 The onCreate method gets called every time *any* new commander is created
 therefore the plugin controllers get recreated for *every* commander *every*
 time a new commander is created.
-#@+node:ekr.20061006165447: *6* Let import commands decide what kind of import to do
+#@+node:ekr.20061006165447: *5* Let import commands decide what kind of import to do
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3940843
 By: ktenney
@@ -381,7 +369,7 @@ I want to bring a file into a node, just
 
 An emergency measure could be available in a 
 'File Special' menu.
-#@+node:ekr.20101124145006.5842: *6* Unify extract commands
+#@+node:ekr.20101124145006.5842: *5* Unify extract commands
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/679614fdd6a76a81#
@@ -394,7 +382,7 @@ headline << foo >>
 - If the  first line is def foo, create a node with headline foo
 
 - Extend as appropriate.
-#@+node:ekr.20031218072017.833: *6* Use @file extension by default if no @language
+#@+node:ekr.20031218072017.833: *5* Use @file extension by default if no @language
 @nocolor
 
 Open discussion
@@ -418,7 +406,7 @@ Should anyone need to over-ride those, they could use @language.
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
 
 Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
-#@+node:ekr.20110514231951.14492: *4* Docs: 5
+#@+node:ekr.20110514231951.14492: *4* Docs: 6
 #@+node:ekr.20110523201030.18284: *5* Make sure MacOS users are told to use --gui=qt
 @nocolor-node
 
@@ -1926,6 +1914,11 @@ Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
 get to this work, I should have <<code fragment>> under the @rst3 subtree as
 well, but this is then also treated as @rst3 input (which in this case, is not
 what I want).
+#@+node:ekr.20110524141405.18370: *4* Get macros working well
+@nocolor-node
+
+This may depend on simplified key handling.
+#@+node:ekr.20110528034751.18278: *5* Add apropos-macros
 #@+node:ekr.20040329094003: *4* Apply patch command
 Useful.
 #@+node:ekr.20110527225107.18351: *3* Vague

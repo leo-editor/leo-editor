@@ -426,9 +426,9 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 QtGui.QTextBrowser.mouseReleaseEvent(w,event)
                     # Call the base class method.
 
-                c.k.keyboardQuit(event)
-
-                
+                # 2011/05/28: Do *not* change the focus!
+                # This would rip focus away from tab panes.
+                c.k.keyboardQuit(event,setFocus=False)
             #@-<< define mouseReleaseEvent >>
             self.widget.mouseReleaseEvent = mouseReleaseEvent
 

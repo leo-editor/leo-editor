@@ -8372,9 +8372,9 @@ def mouseReleaseEvent (event,c=c,w=widget):
     QtGui.QTextBrowser.mouseReleaseEvent(w,event)
         # Call the base class method.
 
-    c.k.keyboardQuit(event)
-
-    
+    # 2011/05/28: Do *not* change the focus!
+    # This would rip focus away from tab panes.
+    c.k.keyboardQuit(event,setFocus=False)
 #@+node:ekr.20090629160050.3737: *5* signals (leoQtBaseTextWidget)
 #@+node:ekr.20081208041503.499: *6* onCursorPositionChanged (leoQtBaseTextWidget)
 def onCursorPositionChanged(self,event=None):

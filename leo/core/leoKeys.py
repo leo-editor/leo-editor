@@ -2691,15 +2691,15 @@ class keyHandlerClass:
         return 'break'
     #@+node:ekr.20061031131434.130: *4* keyboardQuit
     def keyboardQuit (self,event,setFocus=True):
-            ### inAutoCompleter=False,
 
         '''This method clears the state and the minibuffer label.
 
         k.endCommand handles all other end-of-command chores.'''
 
+        trace = False and not g.unitTesting
         k = self ; c = k.c
         
-        # g.trace(g.callers(6))
+        if trace: g.trace(g.callers())
 
         if g.app.quitting:
             return
@@ -2708,8 +2708,10 @@ class keyHandlerClass:
             # k.autoCompleter.exit()
         
         # Completely clear the mode.
-        c.frame.log.deleteTab('Mode')
-        c.frame.log.hideTab('Completion')
+        if setFocus:
+            c.frame.log.deleteTab('Mode')
+            c.frame.log.hideTab('Completion')
+
         if k.inputModeName:
             k.endMode(event)
 
