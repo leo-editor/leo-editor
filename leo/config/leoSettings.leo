@@ -7293,7 +7293,7 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 800
 50
 50</t>
-<t tx="ekr.20080510072134.2">cycle-focus                         = None # Ctrl-tab
+<t tx="ekr.20080510072134.2">cycle-focus                         = Ctrl-tab
 cycle-all-focus                     = Ctrl-Shift-tab
 
 back-word                           = Ctrl-LtArrow
