@@ -9043,17 +9043,20 @@ class leoQtColorizer:
         pass
     #@+node:ekr.20090226105328.12: *4* scanColorDirectives (leoQtColorizer)
     def scanColorDirectives(self,p):
+        
+        '''Set self.language based on the directives in p's tree.'''
 
         trace = False and not g.unitTesting
-
-        p = p.copy() ; c = self.c
-        if c == None: return # self.c may be None for testing.
-
-        self.language = language = c.target_language
+        c = self.c
+        if c == None: return None # self.c may be None for testing.
+        
+        p,p2 = p.copy(),p.copy() 
+        self.language = None
         self.rootMode = None # None, "code" or "doc"
 
         for p in p.self_and_parents():
             theDict = g.get_directives_dict(p)
+            # if trace: g.trace(p.h,theDict)
             #@+<< Test for @language >>
             #@+node:ekr.20090226105328.13: *5* << Test for @language >>
             if 'language' in theDict:
@@ -9076,8 +9079,23 @@ class leoQtColorizer:
                     doc = c.config.at_root_bodies_start_in_doc_mode
                     self.rootMode = g.choose(doc,"doc","code")
             #@-<< Test for @root, @root-doc or @root-code >>
-
-        if trace: g.trace(self.language,g.callers(4))
+            
+        # 2011/05/28: If no language, get the language from any @<file> node.
+        if self.language:
+             if trace: g.trace('found @language %s' % (self.language))
+        else:
+            p = p2.copy()
+            for p in p.self_and_parents():
+                if p.isAnyAtFileNode():
+                    name = p.anyAtFileNodeName()
+                    junk,ext = g.os_path_splitext(name)
+                    ext = ext[1:] # strip the leading .
+                    self.language = g.app.extension_dict.get(ext)
+                    if trace: g.trace('found extension',p.h,ext,self.language)
+                    break
+        if not self.language:
+            if trace: g.trace('using default',c.target_language)
+            self.language = c.target_language
 
         return self.language # For use by external routines.
     #@+node:ekr.20090216070256.11: *4* setHighlighter

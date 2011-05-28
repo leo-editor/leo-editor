@@ -3,25 +3,8 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20110527225107.18350: *4* First: 5
-#@+node:ekr.20031218072017.833: *5* * Use @file extension by default if no @language
-@nocolor
-
-By: jasonic ( Jason Cunliffe ) 
- use of @language   
-2003-07-16 03:40  
-
-I am wondering why Leo does not default to just use the file suffix in @file
-nodes, instead of obliging @language line in in the body pane
-
-For example any @file ending with a suffix as defined in the language extensions
-could just default to use those.
-
-".py" for python 
-".r" for rebol 
-".as" for actionscript etc.. 
-
-Should anyone need to over-ride those, they could use @language.
+#@+node:ekr.20110527225107.18350: *4* First: 3
+# These are true bug fixes or true missing features.
 #@+node:ekr.20100108101415.6196: *5* * insert-tab commands
 @nocolor-node
 
@@ -51,7 +34,6 @@ The variable names in the last two lines are not highlighted
 correctly. This becomes clear if the first line is replaced with #!/
 bin/bash and this code is opened in vim/scite. I've tried only these
 two editors, they highlight the variable names correctly.
-#@+node:ekr.20110528034751.18271: *5* Put apropos text using viewrendered plugin
 #@+node:ekr.20090131200406.11: *5* Remove remaining tk-isms from Leo's core
 @nocolor-node
 
@@ -65,7 +47,50 @@ These are marked with ###
 (found) lineend, linestart
 (found) sel.first, sel.last
 (found) w.insert, w.delete
-#@+node:ekr.20090801103907.6018: *5* Add entries to global dicts for more languages
+#@+node:ekr.20110527225107.18353: *4* Next: 5
+#@+node:ekr.20110528034751.18271: *5* Put apropos text using viewrendered plugin
+#@+node:ekr.20101124145006.5842: *5* Unify extract commands
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/679614fdd6a76a81#
+
+I think this should be combined with extract-section (ctrl-shift-x), so that
+
+- if the first line of selection is << foo >>, it created a node with
+headline << foo >>
+
+- If the  first line is def foo, create a node with headline foo
+
+- Extend as appropriate.
+#@+node:ekr.20080421140032.1: *5* Fix multiple controllers problem in all plugins
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
+
+There is a problem with the onClick model for plugins, as described in the
+Templates section of the leoPlugins.
+
+The onCreate method gets called every time *any* new commander is created
+therefore the plugin controllers get recreated for *every* commander *every*
+time a new commander is created.
+#@+node:ekr.20061006165447: *5* Let import commands decide what kind of import to do
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3940843
+By: ktenney
+
+>the distiction between importing 'foreign' text files and importing derived
+files created by Leo.
+
+Couldn't Leo make this distinction by looking at
+the file being imported? If so, I think it should.
+
+This could eliminate a lot of confusion IMO, if
+I want to bring a file into a node, just
+'import' it, and the right thing happens.
+
+An emergency measure could be available in a 
+'File Special' menu.
+#@+node:ekr.20090801103907.6018: *5* Add entries to global dicts for more languages (waiting for requests)
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
@@ -73,6 +98,8 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
 Especially languages in leo/modes.
 
 ** Only c.getOpenWithExt uses app.language_extension_dict.
+
+I'll wait until I get requests for particular language.
 #@+node:ekr.20110528103005.18323: *6* Found: extension_dict
 #@+node:ekr.20080819075811.13: *7* adjustTargetLanguage
 def adjustTargetLanguage (self,fn):
@@ -441,49 +468,6 @@ print('%s total languages' % len(aList))
 print('%s new languages' % (len(list(computed.keys())) - len(known_keys)))
 print('%s mismatches' % mismatches)
 print('%s known language: %s' % (len(known_keys),known_keys))
-#@+node:ekr.20110527225107.18353: *4* Next: 3
-# These seem like low priority items.
-#@+node:ekr.20101124145006.5842: *5* Unify extract commands
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/679614fdd6a76a81#
-
-I think this should be combined with extract-section (ctrl-shift-x), so that
-
-- if the first line of selection is << foo >>, it created a node with
-headline << foo >>
-
-- If the  first line is def foo, create a node with headline foo
-
-- Extend as appropriate.
-#@+node:ekr.20080421140032.1: *5* Fix multiple controllers problem in all plugins
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
-
-There is a problem with the onClick model for plugins, as described in the
-Templates section of the leoPlugins.
-
-The onCreate method gets called every time *any* new commander is created
-therefore the plugin controllers get recreated for *every* commander *every*
-time a new commander is created.
-#@+node:ekr.20061006165447: *5* Let import commands decide what kind of import to do
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3940843
-By: ktenney
-
->the distiction between importing 'foreign' text files and importing derived
-files created by Leo.
-
-Couldn't Leo make this distinction by looking at
-the file being imported? If so, I think it should.
-
-This could eliminate a lot of confusion IMO, if
-I want to bring a file into a node, just
-'import' it, and the right thing happens.
-
-An emergency measure could be available in a 
-'File Special' menu.
 #@+node:ekr.20110526083709.18342: *4* Distribution: 2
 #@+node:ekr.20110525112110.18394: *5* Fix failing unit tests on Linux
 #@+node:ekr.20110518103946.18179: *5* Add external/leosax.py to leoPyRef.leo

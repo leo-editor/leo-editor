@@ -18780,5 +18780,17 @@ def getPaneBinding (self,stroke,w):
                         if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
                             key,name,repr(b.stroke),b.commandName))
                         return b
+#@+node:ekr.20031218072017.833: *4* Use @file extension by default if no @language
+@nocolor
+
+"use of @language", by Jason Cunliffe, 2003-07-16 03:40  
+
+I am wondering why Leo does not default to just use the file suffix in @file
+nodes, instead of obliging @language line in in the body pane. Should anyone
+need to over-ride those, they could use @language.
+
+This should have been done 8 years ago!
+
+The fix was confined to leoQtColorizer.scanColorDirectives.
 #@-all
 #@-leo
