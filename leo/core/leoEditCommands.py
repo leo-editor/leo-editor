@@ -4929,15 +4929,6 @@ class editCommandsClass (baseEditCommandsClass):
 
         self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20050920084036.121: *3* swap/transpose...
-    #@+node:ekr.20060529184652: *4* swapHelper
-    def swapHelper (self,w,find,ftext,lind,ltext):
-
-        w.delete(find,'%s wordend' % find) ###
-        w.insert(find,ltext)
-        w.delete(lind,'%s wordend' % lind)
-        w.insert(lind,ftext)
-        self.swapSpots.pop()
-        self.swapSpots.pop()
     #@+node:ekr.20050920084036.122: *4* transposeLines
     def transposeLines (self,event):
 
@@ -4970,7 +4961,7 @@ class editCommandsClass (baseEditCommandsClass):
             w.setInsertPoint(j-1)
 
         self.endCommand(changed=True,setLabel=True)
-    #@+node:ekr.20050920084036.123: *4* swapWords
+    #@+node:ekr.20050920084036.123: *4* swapWords & helper
     def swapWords (self,event,swapspots):
 
         '''Transpose the word at the cursor with the preceding word.'''
@@ -5000,6 +4991,15 @@ class editCommandsClass (baseEditCommandsClass):
             swapspots.append(i)
 
         self.endCommand(changed=True,setLabel=True)
+    #@+node:ekr.20060529184652: *5* swapHelper
+    def swapHelper (self,w,find,ftext,lind,ltext):
+
+        w.delete(find,'%s wordend' % find) ###
+        w.insert(find,ltext)
+        w.delete(lind,'%s wordend' % lind)
+        w.insert(lind,ftext)
+        self.swapSpots.pop()
+        self.swapSpots.pop()
     #@+node:ekr.20060529184652.1: *4* transposeWords (doesn't work)
     def transposeWords (self,event):
 
@@ -7176,11 +7176,13 @@ class registerCommandsClass (baseEditCommandsClass):
 
         '''Prompt for a register name and append the selected text to the register's contents.'''
 
-        c = self.c ; k = self.k ; state = k.getState('append-to-reg')
+        c = self.c ; k = self.k
+        tag = 'append-to-register' ; state = k.getState(tag)
 
         if state == 0:
-            k.setLabelBlue('Append to register: ',protect=True)
-            k.setState('append-to-reg',1,self.appendToRegister)
+            k.commandName = tag
+            k.setLabelBlue('Append to Register: ',protect=True)
+            k.setState(tag,1,self.appendToRegister)
         else:
             k.clearState()
             if self.checkBodySelection():
@@ -7189,10 +7191,7 @@ class registerCommandsClass (baseEditCommandsClass):
                     c.bodyWantsFocus()
                     key = event.keysym.lower()
                     val = self.registers.get(key,'')
-                    try:
-                        val = val + w.get('sel.first','sel.last') ###
-                    except Exception:
-                        pass
+                    val = val + w.getSelectedText()
                     self.registers[key] = val
                     k.setLabelGrey('Register %s = %s' % (key,repr(val)))
                 else:
@@ -7203,11 +7202,13 @@ class registerCommandsClass (baseEditCommandsClass):
 
         '''Prompt for a register name and prepend the selected text to the register's contents.'''
 
-        c = self.c ; k = self.k ; state = k.getState('prepend-to-reg')
+        c = self.c ; k = self.k
+        tag = 'prepend-to-register' ; state = k.getState(tag)
 
         if state == 0:
-            k.setLabelBlue('Prepend to register: ',protect=True)
-            k.setState('prepend-to-reg',1,self.prependToRegister)
+            k.commandName = tag
+            k.setLabelBlue('Prepend to Register: ',protect=True)
+            k.setState(tag,1,self.prependToRegister)
         else:
             k.clearState()
             if self.checkBodySelection():
@@ -7216,10 +7217,11 @@ class registerCommandsClass (baseEditCommandsClass):
                     c.bodyWantsFocus()
                     key = event.keysym.lower()
                     val = self.registers.get(key,'')
-                    try:
-                        val = w.get('sel.first','sel.last') + val ###
-                    except Exception:
-                        pass
+                    val = w.getSelectedText() + val
+                    # try:
+                        # val = w.get('sel.first','sel.last') + val ###
+                    # except Exception:
+                        # pass
                     self.registers[key] = val
                     k.setLabelGrey('Register %s = %s' % (key,repr(val)))
                 else:
@@ -7261,12 +7263,13 @@ class registerCommandsClass (baseEditCommandsClass):
 
         '''Prompt for a register name and append the selected text to the register's contents.'''
 
-        c = self.c ; k = self.k ; state = k.getState('copy-to-reg')
+        c = self.c ; k = self.k
+        tag = 'copy-to-register' ; state = k.getState(tag)
 
         if state == 0:
-            k.commandName = 'copy-to-register'
-            k.setLabelBlue('Copy to register: ',protect=True)
-            k.setState('copy-to-reg',1,self.copyToRegister)
+            k.commandName = tag
+            k.setLabelBlue('Copy to Register: ',protect=True)
+            k.setState(tag,1,self.copyToRegister)
         else:
             k.clearState()
             if self.checkBodySelection():
@@ -7274,11 +7277,7 @@ class registerCommandsClass (baseEditCommandsClass):
                     key = event.keysym.lower()
                     w = c.frame.body.bodyCtrl
                     c.bodyWantsFocus()
-                    try:
-                        val = w.get('sel.first','sel.last') ###
-                    except Exception:
-                        g.es_exception()
-                        val = ''
+                    val = w.getSelectedText()
                     self.registers[key] = val
                     k.setLabelGrey('Register %s = %s' % (key,repr(val)))
                 else:
