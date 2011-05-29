@@ -1,5 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120072650.6089: * @file leoProjects.txt
+#@@language python # Override the default .txt coloring.
 #@+all
 #@+node:ekr.20101127152442.5916: ** Testing
 #@+node:ekr.20101115092550.5825: *3* Pylint reports
