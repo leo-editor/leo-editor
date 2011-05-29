@@ -800,6 +800,8 @@ class AutoCompleterClass:
             obj = eval(safe_prefix,d)
         except AttributeError:
             obj = None
+        except NameError:
+            obj = None
         except SyntaxError:
             obj = None
         except Exception:
