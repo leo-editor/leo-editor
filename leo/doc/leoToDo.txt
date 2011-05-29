@@ -3,12 +3,11 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
+@language rest
 #@+node:ekr.20110527225107.18353: *4* Bugs: 2
 # None of these items is urgent.
 #@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
 #@+node:ekr.20110523130519.19220: *6* Report
-@nocolor-node
-
 https://bugs.launchpad.net/leo-editor/+bug/525004
 
 This is basically a copy/paste from
@@ -31,8 +30,6 @@ correctly. This becomes clear if the first line is replaced with #!/
 bin/bash and this code is opened in vim/scite. I've tried only these
 two editors, they highlight the variable names correctly.
 #@+node:ekr.20080421140032.1: *5* Bug: Fix multiple controllers problem in all plugins
-@nocolor-node
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
 
 There is a problem with the onClick model for plugins, as described in the
@@ -41,11 +38,18 @@ Templates section of the leoPlugins.
 The onCreate method gets called every time *any* new commander is created
 therefore the plugin controllers get recreated for *every* commander *every*
 time a new commander is created.
+#@+node:ekr.20110529115328.18240: *5* Fix forward and backward by sentences
+Leo's sentence related functions:
+
+- do not stop at empty lines.
+- do not skip periods within words.
+- do not stop at sentences ending in non-periods.
+- do not stop at the end or beginning of the buffer.
+
+Note: see forwardSentenceHelper and backSentenceHelper functions.
 #@+node:ekr.20110528180209.18237: *4* Improvements: 4
 #@+node:ekr.20110528034751.18271: *5* Put apropos text using viewrendered plugin
 #@+node:ekr.20101124145006.5842: *5* Unify extract commands
-@nocolor-node
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/679614fdd6a76a81#
 
 I think this should be combined with extract-section (ctrl-shift-x), so that
@@ -74,8 +78,6 @@ I want to bring a file into a node, just
 An emergency measure could be available in a 
 'File Special' menu.
 #@+node:ekr.20090801103907.6018: *5* Add entries to global dicts for more languages (waiting for requests)
-@nocolor-node
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
 
 Especially languages in leo/modes.
@@ -459,8 +461,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
 Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
 #@+node:ekr.20110514231951.14492: *4* Docs: 6
 #@+node:ekr.20110523201030.18284: *5* Make sure MacOS users are told to use --gui=qt
-@nocolor-node
-
 There is no obvious way of fixing the "disappearing menu" bug.
 
 Users that have to choose to do without tabs, or to do without menus :-)
@@ -777,12 +777,8 @@ In short, the new caching scheme is much better than before, and it probably is
 close to optimal in most situations.
 #@+node:ekr.20101129095441.5963: *5* Improve screenshots page
 #@+node:ekr.20110527182640.18358: *3* b2
-@nocolor-node
-
 Interesting, but not urgent.
 #@+node:ekr.20110527084258.18374: *4*  Summary of the Ashland sprint
-@nocolor-node
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/9b1dbebd56d50e14/d5a690127ddad38e
  
 "Sprint" isn't really the correct term.  We wrote no code.  Instead,
@@ -860,15 +856,11 @@ mature state.
 
 Kent, Terry, did I omit anything?  Misstate anything? 
 #@+node:ekr.20110528034751.18270: *5* Notes
-@nocolor-node
-
 - Viewrendered @html is a good way to learn/debug .css.
 
 - Study blender interface.
 #@+node:ekr.20110527084258.18377: *4* Ashland to-do items
 #@+node:ekr.20110528034751.18272: *5* Support for tabifying Leo's core panes
-@nocolor-node
-
 Collaborate with Terry.
 
 A. Place separate body editors in free_layout areas. This should *easy* to
@@ -882,14 +874,10 @@ C. Labels for panes.
 #@+node:ekr.20110528034751.18273: *5* Global search in Nav plugin?
 #@+node:ekr.20110528034751.18274: *5* Treat .cfg as .ini for importing
 #@+node:ekr.20110523201030.18290: *4* Kill Tk
-@nocolor-node
-
 This could be called a vague improvement, but it may simplify the core enough to
 be a bug fix.
 #@+node:ekr.20110527084258.18373: *5* Remove tk command-line options & related startup code
 #@+node:ekr.20110125142807.17269: *5* Rewrite all tk plugins
-@nocolor-node
-
 Is it time to retire tk?
 http://groups.google.com/group/leo-editor/browse_thread/thread/f0c4847d1630505d/1d477dfa09d67b1f
 
@@ -899,8 +887,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/16c6fb46a4f84b8c/
 Feb 2, 2011
 Viktor R: detect_urls.py (Completed)
 #@+node:ekr.20110526234609.18387: *6* Posting
-@nocolor-node
-
 I would like to remove support for Tk asap.  Before doing that, I want to make
 sure that nobody will lose the functionality of a Tk plugin that has no
 counterpart in Qt. 
@@ -974,8 +960,6 @@ autotrees.py and templates.py seems the most interesting. They shouldn't be too
 difficult to do.
 #@+node:ekr.20110527084258.18372: *5* Remove Pmw and Gato from extensions folder
 #@+node:ekr.20110526083709.18337: *4* Simplify Key handling
-@nocolor-node
-
 As part of killing Tk I shall simplify how Leo's Qt gui reports keys to the
 core.  The general design will be as follows:
 
@@ -1012,12 +996,8 @@ For example, k.isPlainKey will become trivial, or better, unnecessary.
 None of this can be done easily while Tk exists.  After the work is done, the
 work will become a new "standard" that future gui's can implement. 
 #@+node:ekr.20110527182640.18357: *5* Add KeyStroke class
-@nocolor-node
-
 Internally, everything will either be a unicode character or a KeyStroke object.
 #@+node:ekr.20110527084258.18378: *4* New file format
-@nocolor-node
-
 Stuff that got left out:
     
 - Use uuid's?
@@ -1028,12 +1008,8 @@ Stuff that got left out:
 
 - <attr> solves pickle problem.
 #@+node:ekr.20110414065052.6100: *5* * Treat gnx's as strings: don't parse them
-@nocolor-node
-
 http://mail.google.com/mail/#inbox/12f3d4950fbabeea
 #@+node:ekr.20101123131018.5842: *5* * Don't save expansion bits in uA if not saving expansion bits
-@nocolor-node
-
 @bool put_expansion_bits_in_leo_files = False
 
 It's illogical to save bits in uA's if they aren't save in in the <v> elements.
@@ -1886,8 +1862,6 @@ def archivedPositionToPosition (self,s):
             # g.trace('level',level,'index',aList[level],p.h)
     return p
 #@+node:ekr.20090218115025.3: *5* Why are attributes pickled by default?
-@nocolor-node
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/326a221f4c698f7a
 
 > On Wed, Feb 18, 2009 at 12:12 PM, Kent Tenney <ktenney@gmail.com> wrote:
@@ -1937,8 +1911,6 @@ it should be the _default._
 
 No big deal.
 #@+node:ekr.20090601083544.6051: *4* Add expand_noweb_references for rst3 plugin
-@nocolor-node
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
 > What would work for me is if named sections in a @rst subtree
@@ -1952,8 +1924,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 - When expand_noweb_references is True, definitions (typically clones)
   must be descendants of the referencing node (in the @rst tree)
 #@+node:ekr.20090601083544.6052: *5* post
-@nocolor-node
-
 I want to write the documentation for the source program in a @rst3 subtree. In
 this @rst3 subtree I want to refer to fragments of the program, like:
 
@@ -1966,56 +1936,16 @@ get to this work, I should have <<code fragment>> under the @rst3 subtree as
 well, but this is then also treated as @rst3 input (which in this case, is not
 what I want).
 #@+node:ekr.20110524141405.18370: *4* Get macros working well
-@nocolor-node
-
 This may depend on simplified key handling.
 #@+node:ekr.20110528034751.18278: *5* Add apropos-macros
 #@+node:ekr.20040329094003: *4* Apply patch command
 Useful.
-#@+node:ekr.20110529104352.18248: *4* Complete k.universalDispatche
-#@+node:ekr.20110529104352.18249: *4* Complete number-to-register command
 #@+node:ekr.20110527225107.18351: *3* Vague
-#@+node:ekr.20110527225107.18352: *4* Maybe: 8
-#@+node:ekr.20090724081340.5987: *5* Improve recursive import script and @auto
-@nocolor-node
-
-Instead of adding an @ignore directive, it might be better
-to change @auto to @@auto.
-
-Should @auto be more lenient with C files?
-
-Improve the recursive import script.
-    - Minimize the path names
-    - Option to include/exclude the @auto itself
-
-#@+node:ekr.20051110155735.1: *5* Improve Spell tab & spell checker
-@nocolor
-
-- Per-pane key bindings. (arrows, etc.)
-- Try default fonts for spell buttons.
-- Select the first entry.
-
-@color
-#@+node:ekr.20090907080624.6081: *6* Spell checker should check headlines
-#@+node:ekr.20071004120359.2: *5* expand-region-abbrev
-@nocolor-node
-
-See: regionalExpandAbbrev.
-
-You may wish to expand an abbrev with a prefix attached; for example, if `cnst'
-expands into `construction', you might want to use it to enter `reconstruction'.
-It does not work to type recnst, because that is not necessarily a defined
-abbrev. What you can do is use the command M-' (abbrev-prefix-mark) in between
-the prefix `re' and the abbrev `cnst'. First, insert `re'. Then type M-'; this
-inserts a hyphen in the buffer to indicate that it has done its work. Then
-insert the abbrev `cnst'; the buffer now contains `re-cnst'. Now insert a
-non-word character to expand the abbrev `cnst' into `construction'. This
-expansion step also deletes the hyphen that indicated M-' had been used. The
-result is the desired `reconstruction'.
-
-If you actually want the text of the abbrev in the buffer, rather than its
-expansion, you can accomplish this by inserting the following punctuation with
-C-q. Thus, foo C-q , leaves `foo,' in the buffer.
+#@+node:ekr.20110529115328.18238: *4* Emacs related: 6
+I'll do these if and and only if somebody asks for them.
+#@+node:ekr.20060628103226.2: *5* Alt-x handlers should add to lossage
+#@+node:ekr.20110529104352.18248: *5* Complete k.universalDispatche
+#@+node:ekr.20110529104352.18249: *5* Complete number-to-register command
 #@+node:ekr.20031218072017.753: *5* Emacs comint-mode
 @nocolor
 
@@ -2039,6 +1969,44 @@ its children evaluated in an interpreter running in a separate window or pane,
 much as Leo can open a Python shell now. Users of those languages could build
 plug-ins specific to their language atop that layer, and the @language directive
 could activate that. I think that would be very cool.
+#@+node:ekr.20071004120359.2: *5* expand-region-abbrev
+See: regionalExpandAbbrev.
+
+You may wish to expand an abbrev with a prefix attached; for example, if `cnst'
+expands into `construction', you might want to use it to enter `reconstruction'.
+It does not work to type recnst, because that is not necessarily a defined
+abbrev. What you can do is use the command M-' (abbrev-prefix-mark) in between
+the prefix `re' and the abbrev `cnst'. First, insert `re'. Then type M-'; this
+inserts a hyphen in the buffer to indicate that it has done its work. Then
+insert the abbrev `cnst'; the buffer now contains `re-cnst'. Now insert a
+non-word character to expand the abbrev `cnst' into `construction'. This
+expansion step also deletes the hyphen that indicated M-' had been used. The
+result is the desired `reconstruction'.
+
+If you actually want the text of the abbrev in the buffer, rather than its
+expansion, you can accomplish this by inserting the following punctuation with
+C-q. Thus, foo C-q , leaves `foo,' in the buffer.
+#@+node:ekr.20060628103226.3: *5* Make sure repeat counts work on basic editing commands
+#@+node:ekr.20110527225107.18352: *4* Maybe: 8
+#@+node:ekr.20090724081340.5987: *5* Improve recursive import script and @auto
+Instead of adding an @ignore directive, it might be better
+to change @auto to @@auto.
+
+Should @auto be more lenient with C files?
+
+Improve the recursive import script.
+    - Minimize the path names
+    - Option to include/exclude the @auto itself
+
+#@+node:ekr.20051110155735.1: *5* Improve Spell tab & spell checker
+@nocolor
+
+- Per-pane key bindings. (arrows, etc.)
+- Try default fonts for spell buttons.
+- Select the first entry.
+
+@color
+#@+node:ekr.20090907080624.6081: *6* Spell checker should check headlines
 #@+node:ekr.20101004092958.5914: *5* Write treepad scanner
 @ treepad.py is from the treepad website
 #@+node:ekr.20101004092958.5939: *6* treepad.py
@@ -2195,18 +2163,6 @@ def Run(self):
 @language rest
 
 This would be a substitute for cross-file clones.
-#@+node:ekr.20060628103226.2: *5* Alt-x handlers should add to lossage
-@nocolor-node
-
-This is important only if it affects macros.  It does not.
-
-Nobody is asking for this.
-#@+node:ekr.20060628103226.3: *5* Make sure repeat counts work on basic editing commands
-@nocolor-node
-
-This is important only if it affects macros.  It does not.
-
-Nobody is asking for this.
 #@+node:ekr.20110525112110.18402: *4* Ideas: 4
 #@+node:ekr.20071001052501: *5* Versioning for nodes
 @nocolor
@@ -2219,8 +2175,6 @@ the bazaar people). This happens actually quite often to me, since I use the
 SCS as a back-up system, saving many (uninteresting) intermediate steps while
 implementing a new feature.
 #@+node:ekr.20101104191857.5820: *5* QWebView makes Leo a presentation tool
-@nocolor-node
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
 
 Ville:

@@ -2,8 +2,6 @@
 #@+node:ekr.20060207133601: * @file ../doc/leoToDoLater.txt
 #@+all
 #@+node:ekr.20110525112110.18399: ** Minor
-@nocolor-node
-
 None of these commands seems particular important.
 
 I have no particular commitment interest in doing any of them.
@@ -16,8 +14,6 @@ The present operation of recent files is surprising.
 Recent files should be a global list, managed by a single controller.
 #@+node:ekr.20100219083854.5615: *4* Improve caching
 #@+node:ekr.20100209160132.5770: *5* cache notes
-@nocolor-node
-
 Top-level folder are direct subfolders of .leo/db.
 Top-level folders represent file *locations* not file contents.
 Exception: the top-level "globals" folder represents minor data.
@@ -39,8 +35,6 @@ To do:
 #@+node:ekr.20100209114432.5751: *6* Cache expansion bits
 # Simplify the structure of the cache: put more into the "minor" files.
 #@+node:ekr.20100211095442.6201: *5* cache notes 2
-@nocolor-node
-
 1. Memory does leak, and that's not ok with me.  And I want just two
 files per top-level directory.
 
@@ -61,8 +55,6 @@ debugging and recovering from cache problems.
 
 #@+node:ekr.20100223075705.5635: *5* Don't write expansion bits
 #@+node:ekr.20100210163813.5748: *5* Caching buglets?
-@nocolor-node
-
 This is a recent bug, but imo it has uncovered some other caching buglets. These
 buglets are not big enough to delay Leo 4.7, but the new caching scheme would
 ensure they never bite.
@@ -925,8 +917,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/dff0c165e2211691
 # Compute delims using the private shadow file, not the file extension!
 # Can @shadow mark externally changed nodes?
 #@+node:ekr.20081004102201.2: *5* Log file for @shadow
-@nocolor-node
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
 
 How about a shadow.log file which Leo told what it thought of the relationship
@@ -1142,8 +1132,6 @@ self.check_the_final_output(
     sentinel_lines      = t_sentinel_lines,
     marker              = marker)
 #@+node:ekr.20090402072059.13: *5* Create a general mechanism for aux (shadow, _db) files
-@nocolor-node
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/4ec30df3f1db8db3
 
 On Sat, Mar 28, 2009 at 3:24 AM, VR <viktor.ransmayr@gmail.com> wrote:
@@ -1182,8 +1170,6 @@ Either that, or mirror their location in (subdirectories) ~/.leo. In other
 words, this is a general problem, and it would be good to have a robust, general
 solution.
 #@+node:ekr.20100826110728.5839: *5* Relocating .leo_shadow directories
-@nocolor-node
-
 2008
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/b738e3f8d164f9fc
@@ -1362,8 +1348,6 @@ Leo should copy this download philosophy.
 #@+node:ekr.20100131161507.6303: *4* Unit tests that all commands have docstrings
 # Just make the test.  It doesn't have to pass.
 #@+node:ekr.20100828074347.5827: *3* Vim bindings: abandoned
-@nocolor-node
-
 This is probably as far as we can go without supporting vim's underlying data model.
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
@@ -1486,8 +1470,6 @@ mind as something that it would be good to support more easily.
 
 Edward
 #@+node:ekr.20100210102224.5744: *5* Design
-@nocolor-node
-
 Requirements:
     - Existing bindings must still be valid.
     - But @mode does not have to remain.
@@ -1509,13 +1491,9 @@ bindHelper class?
     - c.bindHelper or k.bindHelper?
 #@+node:ekr.20100113075303.6270: *4* Vim problems
 #@+node:ekr.20100112051224.6229: *5* Binding Arrow keys (fixed?)
-@nocolor-node
-
 Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
 commands or @mode nodes have no effect.
 #@+node:ekr.20100112051224.6239: *5* Displaying mode help
-@nocolor-node
-
 The "--> mode-help" command has the following issues related to the
 display of the "Help" tab:
 
@@ -1537,20 +1515,14 @@ to::
     d : vi-delete-line
     b : vi-delete-to-begin-of-word
 #@+node:ekr.20100112051224.6225: *5* Repeat last cursor movement command
-@nocolor-node
-
 Support the ';' key: repeat the last "To character" or "Find character" command.
 #@+node:ekr.20100113075303.6271: *5* Need mode-oriented bindings
-@nocolor-node
-
 Mapping a number to a command or an @mode node works but can not be used as it
 prevents the number from being entered as text while in Vi's insert state.
 
 Binding 'bksp' key to back-char to move back a character in command mode
 prevents 'bksp' from deleting characters in text edit mode.
 #@+node:ekr.20080616110054.2: *5* Support vim dot command
-@nocolor-node
-
 The ability to repeat the last editing related command by pressing the period
 key is not supported and there is no workaround in place.
 
@@ -1583,8 +1555,6 @@ Notes:
   a copy of the character entered by the user. It doesn't matter since only the
   last command is assigned to the period key to be re-executed.
 #@+node:ekr.20100112051224.6238: *5* Some commands do not work in headline
-@nocolor-node
-
 Leo functions exist which unconditionally set focus to the body pane
 regardless of the active pane.
 
@@ -1598,8 +1568,6 @@ changes made to a node's headline text are not recorded in Leo's change history
 until the edited node has lost focus.
 #@+node:ekr.20100113075303.6272: *5* Argument handling
 #@+node:ekr.20100112051224.6222: *6* Commands requesting user input
-@nocolor-node
-
 Commands requesting user input must be the last command executed within an @mode
 node. This prevents the implementation of commands such as "yank to <character>"
 that requires a "copy to clipboard" operation after the "find-character"
@@ -1609,8 +1577,6 @@ command.
 
 Maybe we just need more commands...
 #@+node:ekr.20100112051224.6226: *6* Range prefix to commands/objects (k.getArgs)
-@nocolor-node
-
 The ability to specify a numeric range prefix is not supported. For example,
 entering "3dd" will not delete the next three lines and "20G" will not move the
 cursor to the 20th line in the file.
@@ -1619,8 +1585,6 @@ The ability to specify a numeric range prefix to an object is not supported. For
 example, the "d2fx" command should Delete up to and including the 2nd Found "x"
 character.
 #@+node:ekr.20100112051224.6223: *5* Editing node headlines using @mode nodes
-@nocolor-node
-
 Commands modifying or selecting headline text do not work correctly within a
 @mode node.
 
@@ -1629,8 +1593,6 @@ object commands. As a workaround, the commands are currently written to only
 select the text. The user must perform the subsequent delete, change,
 substitute, and yank.
 #@+node:ekr.20100112051224.6237: *5* Fix forward and backward by sentences
-@nocolor-node
-
 Leo's sentence related functions:
 
 - do not stop at empty lines.
@@ -1641,31 +1603,21 @@ Leo's sentence related functions:
 Note: see forwardSentenceHelper and backSentenceHelper functions.
 #@+node:ekr.20100112051224.6246: *5* Missing commands/features
 #@+node:ekr.20100112051224.6232: *6* Toggle case command (easy)
-@nocolor-node
-
 Leo provides support for switching to upper or lower case but no method exists
 to toggle between cases (used by Vi's "~" command).
 
 #@+node:ekr.20100112051224.6233: *6* Replace current character command
-@nocolor-node
-
 Vi's "r" command allows user to replace the current character with the next
 entered character.
 #@+node:ekr.20100112051224.6234: *6* Move current line (to screen position)
-@nocolor-node
-
 Vi has a collection of "z<movement>" commands that will move the
 current line to the top, middle, and bottom of the screen.  They are
 not supported in Leo.
 #@+node:ekr.20100112051224.6235: *6* Move body text up/down
-@nocolor-node
-
 Vi maps keys to scroll the text up/down one line and by half the
 number of visible lines.  Leo does not support this.
 
 #@+node:ekr.20110202094848.12568: *6* Named marks
-@nocolor-node
-
 Having worked with Tk text canvases more that Qt, there still seem to
 be things that it had that have to be worked around as the Qt people
 just haven't seen the need for.
@@ -1815,8 +1767,6 @@ By: ksejlod ( Peter Barrel )
 sourceforge "eated" leading spaces sorry a, b and c are children of their "+"
 node just above them . -- k
 #@+node:ekr.20100830120622.5829: *3* Fix python import problems
-@nocolor-node
-
 > > Hmm, I guess that would be more clear, although I think I'd like an option
 to include it in the following def to avoid
 
@@ -1855,8 +1805,6 @@ as often there's more docs on a class in the __init__ than the class docstring.
 I think that's really all we're talking about, some @settings to test during import.
 #@+node:ekr.20040329185649: *3* Known Bugs: won't be fixed
 #@+node:ekr.20031218072017.670: *4* Possible webbrowser bug
-@nocolor-node
-
 (In Linux) The home page and online tutorial options in the menu only work
 properly if Mozilla window is already open. If not, a Mozilla window opens, but
 with empty page and url field.
@@ -1864,14 +1812,10 @@ with empty page and url field.
 #@+node:ekr.20050201175325.2: *5* Can't delete script buttons
 #@+node:ekr.20050201175325.1: *5* Icon buttons are not colored, nor do they have square borders, etc.
 #@+node:ekr.20110111100539.12257: *5* Fix end-of-line problem (MacOS)
-@nocolor-node
-
 Apparently, ctrl-e is not passed to Leo at all.
 
 This probably can't be fixed.
 #@+node:ekr.20110111100539.12258: *6* Report
-@nocolor-node
-
 http://mail.google.com/mail/#inbox/12c5646c646a90d2
 
 I expect C-e to go to end-of-line, but C-e works as the next line.
@@ -1895,14 +1839,10 @@ If the line is the final one, C-e moves the cursor to the end of line
 as there's no next line.
 
 #@+node:ekr.20031218072017.673: *4* Tk bugs
-@nocolor-node
-
 The following bugs can not be fixed because they are Tk bugs.
 
 These bugs are becoming moot: Tk will soon be deprecated.
 #@+node:ekr.20081208102356.1: *5* Threading colorizer doesn't handle multiple body editors
-@nocolor-node
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
 
 > Tk only colorizes one body editor, and if you delete that editor it
@@ -2183,9 +2123,8 @@ reading d:\test.leo
 
 
 #@+node:ekr.20031218072017.672: *5* Control-V doesn't work on Linux
-@nocolor-node
-
-This has been and continues to be a known issue with Tk. Has been logged as a bug; no response from the Tk folks. 
+This has been and continues to be a known issue with Tk. Has been logged as a
+bug; no response from the Tk folks.
 
 Here is a link to the Tk bug report: 
 
