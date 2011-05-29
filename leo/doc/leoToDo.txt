@@ -3,8 +3,142 @@
 #@+all
 #@+node:ekr.20110520051220.18187: ** To do: 4.9
 #@+node:ekr.20110523201030.18291: *3* b1
-#@+node:ekr.20110527225107.18350: *4* First: 2
-# These are true bug fixes or true missing features.
+#@+node:ekr.20110527225107.18353: *4* Bugs: 3
+# None of these items is urgent.
+#@+node:ekr.20090131200406.11: *5* Bug: Remove remaining tk-isms from Leo's core
+@nocolor-node
+
+These are real bugs: they prevent emacs commands from working.
+
+Eliminate all tk-indices from leoEditCommands.py
+
+These are marked with ###
+
+(found) wordend, wordstart
+(found) lineend, linestart
+(found) sel.first, sel.last
+#@+node:ekr.20110529090332.18239: *6* Found: ###
+#@+node:ekr.20060529184652: *7* swapHelper
+def swapHelper (self,w,find,ftext,lind,ltext):
+
+    w.delete(find,'%s wordend' % find) ###
+    w.insert(find,ltext)
+    w.delete(lind,'%s wordend' % lind)
+    w.insert(lind,ftext)
+    self.swapSpots.pop()
+    self.swapSpots.pop()
+#@+node:ekr.20050920084036.123: *7* swapWords
+def swapWords (self,event,swapspots):
+
+    '''Transpose the word at the cursor with the preceding word.'''
+
+    w = self.editWidget(event)
+    if not w: return
+    if g.app.gui.guiName() != 'tkinter':
+        return g.es('swap-words command not ready yet',color='blue')
+
+    s = w.getAllText()
+
+    ### txt = w.get('insert wordstart','insert wordend') ###
+    txt = ''
+    if not txt: return
+
+    i = w.index('insert wordstart') ###
+
+    self.beginCommand(undoType='swap-words')
+
+    if len(swapspots):
+        if i > swapspots[1]:
+            self.swapHelper(w,i,txt,swapspots[1],swapspots[0])
+        elif i < swapspots[1]:
+            self.swapHelper(w,swapspots[1],swapspots[0],i,txt)
+    else:
+        swapspots.append(txt)
+        swapspots.append(i)
+
+    self.endCommand(changed=True,setLabel=True)
+#@+node:ekr.20050920084036.238: *7* appendToRegister
+def appendToRegister (self,event):
+
+    '''Prompt for a register name and append the selected text to the register's contents.'''
+
+    c = self.c ; k = self.k ; state = k.getState('append-to-reg')
+
+    if state == 0:
+        k.setLabelBlue('Append to register: ',protect=True)
+        k.setState('append-to-reg',1,self.appendToRegister)
+    else:
+        k.clearState()
+        if self.checkBodySelection():
+            if event.keysym.isalpha():
+                w = c.frame.body.bodyCtrl
+                c.bodyWantsFocus()
+                key = event.keysym.lower()
+                val = self.registers.get(key,'')
+                try:
+                    val = val + w.get('sel.first','sel.last') ###
+                except Exception:
+                    pass
+                self.registers[key] = val
+                k.setLabelGrey('Register %s = %s' % (key,repr(val)))
+            else:
+                k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+#@+node:ekr.20050920084036.237: *7* prependToRegister
+def prependToRegister (self,event):
+
+    '''Prompt for a register name and prepend the selected text to the register's contents.'''
+
+    c = self.c ; k = self.k ; state = k.getState('prepend-to-reg')
+
+    if state == 0:
+        k.setLabelBlue('Prepend to register: ',protect=True)
+        k.setState('prepend-to-reg',1,self.prependToRegister)
+    else:
+        k.clearState()
+        if self.checkBodySelection():
+            if event.keysym.isalpha():
+                w = c.frame.body.bodyCtrl
+                c.bodyWantsFocus()
+                key = event.keysym.lower()
+                val = self.registers.get(key,'')
+                try:
+                    val = w.get('sel.first','sel.last') + val ###
+                except Exception:
+                    pass
+                self.registers[key] = val
+                k.setLabelGrey('Register %s = %s' % (key,repr(val)))
+            else:
+                k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+#@+node:ekr.20050920084036.240: *7* copyToRegister
+def copyToRegister (self,event):
+
+    '''Prompt for a register name and append the selected text to the register's contents.'''
+
+    c = self.c ; k = self.k ; state = k.getState('copy-to-reg')
+
+    if state == 0:
+        k.commandName = 'copy-to-register'
+        k.setLabelBlue('Copy to register: ',protect=True)
+        k.setState('copy-to-reg',1,self.copyToRegister)
+    else:
+        k.clearState()
+        if self.checkBodySelection():
+            if event.keysym.isalpha():
+                key = event.keysym.lower()
+                w = c.frame.body.bodyCtrl
+                c.bodyWantsFocus()
+                try:
+                    val = w.get('sel.first','sel.last') ###
+                except Exception:
+                    g.es_exception()
+                    val = ''
+                self.registers[key] = val
+                k.setLabelGrey('Register %s = %s' % (key,repr(val)))
+            else:
+                k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
 #@+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
 #@+node:ekr.20110523130519.19220: *6* Report
 @nocolor-node
@@ -30,20 +164,18 @@ The variable names in the last two lines are not highlighted
 correctly. This becomes clear if the first line is replaced with #!/
 bin/bash and this code is opened in vim/scite. I've tried only these
 two editors, they highlight the variable names correctly.
-#@+node:ekr.20090131200406.11: *5* Remove remaining tk-isms from Leo's core
+#@+node:ekr.20080421140032.1: *5* Bug: Fix multiple controllers problem in all plugins
 @nocolor-node
 
-These could be called real bugs.
+http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
 
-Eliminate all tk-indices from leoEditCommands.py
+There is a problem with the onClick model for plugins, as described in the
+Templates section of the leoPlugins.
 
-These are marked with ###
-
-(found) wordend, wordstart
-(found) lineend, linestart
-(found) sel.first, sel.last
-(found) w.insert, w.delete
-#@+node:ekr.20110527225107.18353: *4* Next: 5
+The onCreate method gets called every time *any* new commander is created
+therefore the plugin controllers get recreated for *every* commander *every*
+time a new commander is created.
+#@+node:ekr.20110528180209.18237: *4* Improvements: 4
 #@+node:ekr.20110528034751.18271: *5* Put apropos text using viewrendered plugin
 #@+node:ekr.20101124145006.5842: *5* Unify extract commands
 @nocolor-node
@@ -58,17 +190,6 @@ headline << foo >>
 - If the  first line is def foo, create a node with headline foo
 
 - Extend as appropriate.
-#@+node:ekr.20080421140032.1: *5* Fix multiple controllers problem in all plugins
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
-
-There is a problem with the onClick model for plugins, as described in the
-Templates section of the leoPlugins.
-
-The onCreate method gets called every time *any* new commander is created
-therefore the plugin controllers get recreated for *every* commander *every*
-time a new commander is created.
 #@+node:ekr.20061006165447: *5* Let import commands decide what kind of import to do
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3940843

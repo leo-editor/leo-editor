@@ -19042,5 +19042,6 @@ def insertHardTab(self,event):
     w.setSelectionRange(ins,ins,insert=ins)
     
     self.endCommand()
+#@+node:ekr.20110529090332.18240: *4* clone-find-all pattern now defaults to find text
 #@-all
 #@-leo

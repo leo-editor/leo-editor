@@ -7577,7 +7577,7 @@ class minibufferFind (baseEditCommandsClass):
 
         h = self.finder ; w = h.find_ctrl
 
-        # g.trace(pattern,g.callers(4))
+        # g.trace(pattern)
 
         s = g.toUnicode(pattern)
 
@@ -7646,8 +7646,9 @@ class minibufferFind (baseEditCommandsClass):
             w = self.editWidget(event) # sets self.w
             if not w: return
             self.setupArgs(forward=None,regexp=None,word=None)
-            k.setLabelBlue('Clone Find All: ',protect=True)
-            k.getArg(event,tag,1,self.cloneFindAll)
+            # 2011/05/29: Init the pattern from the search pattern.
+            self.stateZeroHelper(
+                event,tag,'Clone Find All: ',self.cloneFindAll)
         else:
             k.clearState()
             k.resetLabel()

@@ -2399,19 +2399,6 @@ Exit the PuTTY Key Generator (PUTTYGEN).
 Key data sync to hosts from the SourceForge.net site occurs on regular
 intervals. Your key data will be synchronized to the designated servers (either
 shell and CVS, or the Compile Farm) after a short delay.
-#@+node:ekr.20060208112908.1: *5* How to check out leo from SourceForge
-The Tortoise cvs params:
-
-:ext:edream@cvs.sourceforge.net:/cvsroot/leo
-
-That is...
-
-Protocol: pserver
-Server: cvs.sourceforge.net
-Repository folder: /cvsroot/leo
-User name: your cvs name
-
-### :pserver:anonymous@cvs.sourceforge.net:/cvsroot/leo
 #@+node:ekr.20031218072017.366: *5* How to add and remove files from CVS repository
 use the command line option in the admin menu to do the following:
 
@@ -4617,7 +4604,7 @@ indents[1] = max(indents)
 if len(lines) == 1:
     leading_ws[1] = leading_ws[0]
 #@+node:ekr.20031218072017.1836: *4* << compute the result of wrapping all lines >>
-trailingNL = True ### lines and lines[-1].endswith('\n')
+trailingNL = True
 lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
 
 # Wrap the lines, decreasing the page width by indent.
