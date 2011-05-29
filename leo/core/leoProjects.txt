@@ -7533,8 +7533,9 @@ def calltip_fail(self,prefix):
     
     '''Evaluation of prefix failed.'''
     
-   
-    if not g.unitTesting:
+    trace = False and not g.unitTesting
+
+    if trace:
         g.es('eval failed for "%s"' % repr(prefix))
 
     self.insert_string('(')
@@ -19043,5 +19044,100 @@ def insertHardTab(self,event):
     
     self.endCommand()
 #@+node:ekr.20110529090332.18240: *4* clone-find-all pattern now defaults to find text
+#@+node:ekr.20090131200406.11: *4* Removed remaining tk-isms from Leo's core
+@nocolor-node
+
+These were real bugs: they prevent emacs commands from working.
+
+Eliminated all tk-indices from leoEditCommands.py:
+    
+- Replaced sel.start,sel.end with w.getSelectedText() in
+  append/copy/prepend-to-register commands.
+  
+- Completely rewrote transposeWords
+#@+node:ekr.20060116074839.2: *5* extend-to-word
+def extendToWord (self,event,direction='forward',select=True):
+
+    '''Compute the word at the cursor. Select it if select arg is True.'''
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText() ; n = len(s)
+    i = w.getInsertPoint()
+
+    if direction == 'forward':
+        while i < n and not g.isWordChar(s[i]):
+            i += 1
+    else:
+        while 0 <= i < n and not g.isWordChar(s[i]):
+            i -= 1
+
+    while 0 <= i < n and g.isWordChar(s[i]):
+        i -= 1
+    i += 1
+    i1 = i
+
+    # Move to the end of the word.
+    while 0 <= i < n and g.isWordChar(s[i]):
+        i += 1
+
+    if select:
+        w.setSelectionRange(i1,i)
+        
+    return i1,i
+#@+node:ekr.20060529184652.1: *5* transposeWords
+def transposeWords (self,event):
+
+    '''Transpose the word at the cursor with the preceding or following word.'''
+
+    trace = False and not g.unitTesting
+    w = self.editWidget(event)
+    if not w: return
+
+    self.beginCommand(undoType='transpose-words')
+    
+    s = w.getAllText()
+    i1,j1 = self.extendToWord(event,direction='back',select=False)
+    s1 = s[i1:j1]
+    if trace: g.trace(i1,j1,s1)
+    if i1 > j1: i1,j1 = j1,i1
+    
+    # First, search backward.
+    k = i1-1
+    while k >= 0 and s[k].isspace():
+        k -= 1
+    changed = k > 0
+    if changed:
+        ws = s[k+1:i1]
+        if trace: g.trace(repr(ws))
+        w.setInsertPoint(k+1)
+        i2,j2 = self.extendToWord(event,direction='back',select=False)
+        s2 = s[i2:j2]
+        if trace: g.trace(i2,j2,repr(s2))
+        s3 = s[:i2] + s1 + ws + s2 + s[j1:]
+        w.setAllText(s3)
+        if trace: g.trace(s3)
+        w.setSelectionRange(j1,j1,insert=j1)
+    else:
+        # Next search forward.
+        k = j1+1
+        while k < len(s) and s[k].isspace():
+            k += 1
+        changed = k < len(s)
+        if changed:
+            ws = s[j1:k]
+            if trace: g.trace(repr(ws))
+            w.setInsertPoint(k+1)
+            i2,j2 = self.extendToWord(event,direction='forward',select=False)
+            s2 = s[i2:j2]
+            if trace: g.trace(i2,j2,repr(s2))
+            s3 = s[:i1] + s2 + ws + s1 + s[j2:]
+            w.setAllText(s3)
+            if trace: g.trace(s3)
+            w.setSelectionRange(j1,j1,insert=j1)
+
+    self.endCommand(changed=changed,setLabel=True)
 #@-all
 #@-leo

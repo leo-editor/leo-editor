@@ -434,8 +434,9 @@ class AutoCompleterClass:
         
         '''Evaluation of prefix failed.'''
         
-       
-        if not g.unitTesting:
+        trace = False and not g.unitTesting
+
+        if trace:
             g.es('eval failed for "%s"' % repr(prefix))
 
         self.insert_string('(')

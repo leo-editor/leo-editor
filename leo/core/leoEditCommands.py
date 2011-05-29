@@ -3912,9 +3912,9 @@ class editCommandsClass (baseEditCommandsClass):
 
         w.setSelectionRange(i1,i2)
     #@+node:ekr.20060116074839.2: *4* extend-to-word
-    def extendToWord (self,event,direction='forward'):
+    def extendToWord (self,event,direction='forward',select=True):
 
-        '''Select the word at the cursor.'''
+        '''Compute the word at the cursor. Select it if select arg is True.'''
 
         c = self.c
         w = self.editWidget(event)
@@ -3939,9 +3939,10 @@ class editCommandsClass (baseEditCommandsClass):
         while 0 <= i < n and g.isWordChar(s[i]):
             i += 1
 
-        w.setSelectionRange(i1,i)
-
-
+        if select:
+            w.setSelectionRange(i1,i)
+            
+        return i1,i
     #@+node:ekr.20050920084036.140: *4* movePastClose & helper
     def movePastClose (self,event):
         '''Move the cursor past the closing parenthesis.'''
@@ -4961,56 +4962,58 @@ class editCommandsClass (baseEditCommandsClass):
             w.setInsertPoint(j-1)
 
         self.endCommand(changed=True,setLabel=True)
-    #@+node:ekr.20050920084036.123: *4* swapWords & helper
-    def swapWords (self,event,swapspots):
-
-        '''Transpose the word at the cursor with the preceding word.'''
-
-        w = self.editWidget(event)
-        if not w: return
-        if g.app.gui.guiName() != 'tkinter':
-            return g.es('swap-words command not ready yet',color='blue')
-
-        s = w.getAllText()
-
-        ### txt = w.get('insert wordstart','insert wordend') ###
-        txt = ''
-        if not txt: return
-
-        i = w.index('insert wordstart') ###
-
-        self.beginCommand(undoType='swap-words')
-
-        if len(swapspots):
-            if i > swapspots[1]:
-                self.swapHelper(w,i,txt,swapspots[1],swapspots[0])
-            elif i < swapspots[1]:
-                self.swapHelper(w,swapspots[1],swapspots[0],i,txt)
-        else:
-            swapspots.append(txt)
-            swapspots.append(i)
-
-        self.endCommand(changed=True,setLabel=True)
-    #@+node:ekr.20060529184652: *5* swapHelper
-    def swapHelper (self,w,find,ftext,lind,ltext):
-
-        w.delete(find,'%s wordend' % find) ###
-        w.insert(find,ltext)
-        w.delete(lind,'%s wordend' % lind)
-        w.insert(lind,ftext)
-        self.swapSpots.pop()
-        self.swapSpots.pop()
-    #@+node:ekr.20060529184652.1: *4* transposeWords (doesn't work)
+    #@+node:ekr.20060529184652.1: *4* transposeWords
     def transposeWords (self,event):
 
-        '''Transpose the word at the cursor with the preceding word.'''
+        '''Transpose the word at the cursor with the preceding or following word.'''
 
+        trace = False and not g.unitTesting
         w = self.editWidget(event)
         if not w: return
 
         self.beginCommand(undoType='transpose-words')
-        self.swapWords(event,self.swapSpots)
-        self.endCommand(changed=True,setLabel=True)
+        
+        s = w.getAllText()
+        i1,j1 = self.extendToWord(event,direction='back',select=False)
+        s1 = s[i1:j1]
+        if trace: g.trace(i1,j1,s1)
+        if i1 > j1: i1,j1 = j1,i1
+        
+        # First, search backward.
+        k = i1-1
+        while k >= 0 and s[k].isspace():
+            k -= 1
+        changed = k > 0
+        if changed:
+            ws = s[k+1:i1]
+            if trace: g.trace(repr(ws))
+            w.setInsertPoint(k+1)
+            i2,j2 = self.extendToWord(event,direction='back',select=False)
+            s2 = s[i2:j2]
+            if trace: g.trace(i2,j2,repr(s2))
+            s3 = s[:i2] + s1 + ws + s2 + s[j1:]
+            w.setAllText(s3)
+            if trace: g.trace(s3)
+            w.setSelectionRange(j1,j1,insert=j1)
+        else:
+            # Next search forward.
+            k = j1+1
+            while k < len(s) and s[k].isspace():
+                k += 1
+            changed = k < len(s)
+            if changed:
+                ws = s[j1:k]
+                if trace: g.trace(repr(ws))
+                w.setInsertPoint(k+1)
+                i2,j2 = self.extendToWord(event,direction='forward',select=False)
+                s2 = s[i2:j2]
+                if trace: g.trace(i2,j2,repr(s2))
+                s3 = s[:i1] + s2 + ws + s1 + s[j2:]
+                w.setAllText(s3)
+                if trace: g.trace(s3)
+                w.setSelectionRange(j1,j1,insert=j1)
+
+        self.endCommand(changed=changed,setLabel=True)
     #@+node:ekr.20050920084036.124: *4* swapCharacters & transeposeCharacters
     def swapCharacters (self,event):
 
@@ -7218,10 +7221,6 @@ class registerCommandsClass (baseEditCommandsClass):
                     key = event.keysym.lower()
                     val = self.registers.get(key,'')
                     val = w.getSelectedText() + val
-                    # try:
-                        # val = w.get('sel.first','sel.last') + val ###
-                    # except Exception:
-                        # pass
                     self.registers[key] = val
                     k.setLabelGrey('Register %s = %s' % (key,repr(val)))
                 else:

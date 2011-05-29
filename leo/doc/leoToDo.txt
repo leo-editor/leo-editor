@@ -1972,6 +1972,8 @@ This may depend on simplified key handling.
 #@+node:ekr.20110528034751.18278: *5* Add apropos-macros
 #@+node:ekr.20040329094003: *4* Apply patch command
 Useful.
+#@+node:ekr.20110529104352.18248: *4* Complete k.universalDispatche
+#@+node:ekr.20110529104352.18249: *4* Complete number-to-register command
 #@+node:ekr.20110527225107.18351: *3* Vague
 #@+node:ekr.20110527225107.18352: *4* Maybe: 8
 #@+node:ekr.20090724081340.5987: *5* Improve recursive import script and @auto
