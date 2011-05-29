@@ -1335,136 +1335,20 @@ Leo should copy this download philosophy.
 .. @+node:ekr.20110525112110.18400: *3* Testing
 .. @+node:ekr.20100131161507.6303: *4* Unit tests that all commands have docstrings
 # Just make the test.  It doesn't have to pass.
-.. @+node:ekr.20100828074347.5827: *3* Vim bindings: abandoned
+.. @+node:ekr.20100828074347.5827: ** Vim bindings
+@language rest
+
 This is probably as far as we can go without supporting vim's underlying data model.
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
-.. @+node:ekr.20110202111105.15438: *4* Handling vim modes
-.. @+node:ekr.20061031131434.123: *5* set-xxx-State
-def setCommandState (self,event):
-    '''Enter the 'command' editing state.'''
-    # g.trace(g.callers())
-    k = self
-    k.setInputState('command')
-    # This command is also valid in headlines.
-    # k.c.bodyWantsFocus()
-    k.showStateAndMode()
-
-def setInsertState (self,event):
-    '''Enter the 'insert' editing state.'''
-    # g.trace(g.callers())
-    k = self
-    k.setInputState('insert')
-    # This command is also valid in headlines.
-    # k.c.bodyWantsFocus()
-    k.showStateAndMode()
-
-def setOverwriteState (self,event):
-    '''Enter the 'overwrite' editing state.'''
-    # g.trace(g.callers())
-    k = self
-    k.setInputState('overwrite')
-    # This command is also valid in headlines.
-    # k.c.bodyWantsFocus()
-    k.showStateAndMode()
-.. @+node:ekr.20061031131434.133: *5* setInputState
-def setInputState (self,state):
-
-    k = self
-    k.unboundKeyAction = state
-
-
-
-.. @+node:ekr.20110202111105.15433: *4* Vim settings
-.. @+node:ekr.20110202111105.15434: *5* @strings [command,insert, overwrite] top_level_unbound_key_action = command
-@nocolor
-
-This setting determines the initial binding for otherwise-unbound keystrokes
-when no mode is in effect.  Note: the keyboard-quit command exits all modes.
-
-The valid values are::
-
-command:  Leo ignores the key (like Vim).
-insert:  Leo inserts the key at the cursor (like Emacs)
-overwrite: Leo replaces the character at the cursor.
-.. @+node:ekr.20110202111105.15435: *5* @bool stayInTreeAfterEditHeadline = True
-This allows the newline character to switch from the outline pane to the body pane.
-.. @+node:ekr.20110202111105.15436: *5* @bool outline_pane_has_initial_focus = True
-True:  Outline gets focus when a new window is opened.
-False: Body pane gets focus when a new window is opened.
-.. @+node:ekr.20110202111105.15437: *5* @bool stayInTreeAfterSelect = True
-True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
-
-If this is False it will be harder to use the arrow keys in the headline.
-    
-False: (Legacy) Selecting an outline node transfers focus to the body pane.
-.. @+node:ekr.20110202094848.12569: *4* Notes
-.. @+node:ekr.20100521090440.5887: *5* Generalize minibuffer code
-@language python
-@color
-
-#Just playing with part of a template system, the (partial) mock up for "range()" is:
-
-def tabStopNaming (event=None):
-
-  stateName = 'naming'
-  k = c.k
-  state = k.getState(stateName)
-
-  help = ('start-value -- optional, -> fill-in or tab eliminate.  ',
-           'end-value -- required, -> fill-in.  ',
-           'step -- optional, ->fill-in or tab to eliminate.  ')
-  tabStop = ('start-value', 'end-value', 'step')
-
-  if state == 0:
-      k.setLabelBlue(help[0],protect=True)
-      k.getArg(event,stateName,1,tabStopNaming)
-      # g.es('does this ever executed?') # yes, imediately!
-  else:
-      k.clearState()
-      g.es_print('%s : %s' % (tabStop[0], k.arg))
-      k.setLabelBlue('')
-
-tabStopNaming()
-
-@nocolor
-
-=====================================================
-This is hardwired for the first parameter.  Things I need to expand
-this:
-
-1. put in a variable that cycles through the tabStops
-
-2. In this mock up, you are entering the parameters in the minibuffer,
-a more advanced version would collect each keypress and put it in the
-body at the current tabStop, a tab would finalize the entry and
-advance to the next stop, no text other than the 'help', ends up in
-the minibuffer.
-
-Sinc I'm only modifying existing code without real understanding of
-what Leo is doing, andy guidance would be appreciated.
-
-Tom
-
-=======================
-
-Generalizing the minibuffer code would be a good thing to do.  I
-suppose we could define some kind of language that would create, or
-rather simulate, hand-written code.  In a sense, @mode nodes are
-intended to do this also.
-
-As I look at leoKeys.py again I'll keep this example in the back of my
-mind as something that it would be good to support more easily.
-
-Edward
-.. @+node:ekr.20100210102224.5744: *5* Design
+.. @+node:ekr.20100210102224.5744: *3* Design
 Requirements:
     - Existing bindings must still be valid.
     - But @mode does not have to remain.
 
 Think data:
     - Drive binding by tables.
-    *** Design these tables first.
+    * Design these tables first.
     - Table design should be flixible.
       It can change without affecting user.
 
@@ -1477,11 +1361,9 @@ bufferMode class?
 bindHelper class?
     - Would mediate various aspects of binding.
     - c.bindHelper or k.bindHelper?
-.. @+node:ekr.20100113075303.6270: *4* Vim problems
-.. @+node:ekr.20100112051224.6229: *5* Binding Arrow keys (fixed?)
-Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
-commands or @mode nodes have no effect.
-.. @+node:ekr.20100112051224.6239: *5* Displaying mode help
+.. @+node:ekr.20100113075303.6270: *3* Vim problems
+# None of these is easily solvable in Leo's present environment.
+.. @+node:ekr.20100112051224.6239: *4* Displaying mode help
 The "--> mode-help" command has the following issues related to the
 display of the "Help" tab:
 
@@ -1502,15 +1384,15 @@ For example, the following entries would change from::
 to::
     d : vi-delete-line
     b : vi-delete-to-begin-of-word
-.. @+node:ekr.20100112051224.6225: *5* Repeat last cursor movement command
+.. @+node:ekr.20100112051224.6225: *4* Repeat last cursor movement command
 Support the ';' key: repeat the last "To character" or "Find character" command.
-.. @+node:ekr.20100113075303.6271: *5* Need mode-oriented bindings
+.. @+node:ekr.20100113075303.6271: *4* Need mode-oriented bindings
 Mapping a number to a command or an @mode node works but can not be used as it
 prevents the number from being entered as text while in Vi's insert state.
 
 Binding 'bksp' key to back-char to move back a character in command mode
 prevents 'bksp' from deleting characters in text edit mode.
-.. @+node:ekr.20080616110054.2: *5* Support vim dot command
+.. @+node:ekr.20080616110054.2: *4* Support vim dot command
 The ability to repeat the last editing related command by pressing the period
 key is not supported and there is no workaround in place.
 
@@ -1542,7 +1424,7 @@ Notes:
 - The same or a separate storage location can be used for all commands to retain
   a copy of the character entered by the user. It doesn't matter since only the
   last command is assigned to the period key to be re-executed.
-.. @+node:ekr.20100112051224.6238: *5* Some commands do not work in headline
+.. @+node:ekr.20100112051224.6238: *4* Some commands do not work in headline
 Leo functions exist which unconditionally set focus to the body pane
 regardless of the active pane.
 
@@ -1554,8 +1436,7 @@ Using the "undo" command (key 'u') to undo a change to a node's headline text
 only works correctly after another node has been selected. It appears that
 changes made to a node's headline text are not recorded in Leo's change history
 until the edited node has lost focus.
-.. @+node:ekr.20100113075303.6272: *5* Argument handling
-.. @+node:ekr.20100112051224.6222: *6* Commands requesting user input
+.. @+node:ekr.20100112051224.6222: *4* Commands requesting user input
 Commands requesting user input must be the last command executed within an @mode
 node. This prevents the implementation of commands such as "yank to <character>"
 that requires a "copy to clipboard" operation after the "find-character"
@@ -1564,15 +1445,7 @@ command.
 ======
 
 Maybe we just need more commands...
-.. @+node:ekr.20100112051224.6226: *6* Range prefix to commands/objects (k.getArgs)
-The ability to specify a numeric range prefix is not supported. For example,
-entering "3dd" will not delete the next three lines and "20G" will not move the
-cursor to the 20th line in the file.
-
-The ability to specify a numeric range prefix to an object is not supported. For
-example, the "d2fx" command should Delete up to and including the 2nd Found "x"
-character.
-.. @+node:ekr.20100112051224.6223: *5* Editing node headlines using @mode nodes
+.. @+node:ekr.20100112051224.6223: *4* Editing node headlines using @mode nodes
 Commands modifying or selecting headline text do not work correctly within a
 @mode node.
 
@@ -1580,32 +1453,16 @@ This eliminates accurate implementation of vi's delete/change/substitute/yank
 object commands. As a workaround, the commands are currently written to only
 select the text. The user must perform the subsequent delete, change,
 substitute, and yank.
-.. @+node:ekr.20100112051224.6237: *5* Fix forward and backward by sentences
-Leo's sentence related functions:
-
-- do not stop at empty lines.
-- do not skip periods within words.
-- do not stop at sentences ending in non-periods.
-- do not stop at the end or beginning of the buffer.
-
-Note: see forwardSentenceHelper and backSentenceHelper functions.
-.. @+node:ekr.20100112051224.6246: *5* Missing commands/features
-.. @+node:ekr.20100112051224.6232: *6* Toggle case command (easy)
-Leo provides support for switching to upper or lower case but no method exists
-to toggle between cases (used by Vi's "~" command).
-
-.. @+node:ekr.20100112051224.6233: *6* Replace current character command
-Vi's "r" command allows user to replace the current character with the next
-entered character.
-.. @+node:ekr.20100112051224.6234: *6* Move current line (to screen position)
+.. @+node:ekr.20100112051224.6246: *4* Missing commands/features
+.. @+node:ekr.20100112051224.6234: *5* Move current line (to screen position)
 Vi has a collection of "z<movement>" commands that will move the
 current line to the top, middle, and bottom of the screen.  They are
 not supported in Leo.
-.. @+node:ekr.20100112051224.6235: *6* Move body text up/down
+.. @+node:ekr.20100112051224.6235: *5* Move body text up/down
 Vi maps keys to scroll the text up/down one line and by half the
 number of visible lines.  Leo does not support this.
 
-.. @+node:ekr.20110202094848.12568: *6* Named marks
+.. @+node:ekr.20110529115328.18247: *5* Block cursor
 Having worked with Tk text canvases more that Qt, there still seem to
 be things that it had that have to be worked around as the Qt people
 just haven't seen the need for.
@@ -1613,7 +1470,7 @@ just haven't seen the need for.
 One is the block cursor, I giving Leo Vim like functionality, it would
 be nice if one where supported, theses new kids just don't understand
 something so primitive I guess.
-
+.. @+node:ekr.20110202094848.12568: *5* Named marks
 Another is named marks, in Vim you can store a number of cursor
 locations, and recall them to jump around in your code.  This was also
 useful in filling out templates as each stop could be given a name
@@ -1626,10 +1483,8 @@ used and which ones were being bypassed.
 
 As these things had an actual presence in the text buffer, it going to
 be a little harder to come up with a reasonable work around.
-
-Tom
-.. @+node:ekr.20110115062009.6025: *5* Commands that work differently in Vim
-.. @+node:ekr.20100112051224.6236: *6* Two kinds of words
+.. @+node:ekr.20110115062009.6025: *4* Commands that work differently in Vim
+.. @+node:ekr.20100112051224.6236: *5* Two kinds of words
 Vi supports two types of words in its commands:
 
 1. Words that consist of only a subset of the character set and
@@ -1638,7 +1493,7 @@ Vi supports two types of words in its commands:
 Leo's always considers a word to consist of a subset of characters
 although some word related commands include different characters
 than others.
-.. @+node:ekr.20090629183608.8446: *6* Copy/paste/yank/delete
+.. @+node:ekr.20090629183608.8446: *5* Copy/paste/yank/delete
 Yank vs. Yank:
 Vi's "yank" commands copy the selected text TO the clipboard.
 Leo's "yank" commands insert text FROM the clipboard.
@@ -1656,6 +1511,58 @@ The paste-text command does not work within an @mode node.  Leo's
 delete-node does not copy node to clipboard:
 A copy-node command is issued to copy the node to the clipboard
 followed by the delete-node command.
+.. @+node:ekr.20100521090440.5887: *3* Generalize minibuffer code
+@nocolor-node
+
+From Tom L
+
+This is hardwired for the first parameter.  Things I need to expand
+this:
+
+1. put in a variable that cycles through the tabStops
+
+2. In this mock up, you are entering the parameters in the minibuffer,
+a more advanced version would collect each keypress and put it in the
+body at the current tabStop, a tab would finalize the entry and
+advance to the next stop, no text other than the 'help', ends up in
+the minibuffer.
+
+Sinc I'm only modifying existing code without real understanding of
+what Leo is doing, any guidance would be appreciated.
+
+Tom
+.. @+node:ekr.20110529115328.18254: *4* EKR notes
+@language rest
+
+The general idea is to make it easier to prompt for series of values.
+
+This might be important in the vim project, but it is not worth doing outside the vim project.
+.. @+node:ekr.20110529115328.18253: *4* code
+@language python
+
+#Just playing with part of a template system, the (partial) mock up for "range()" is:
+
+def tabStopNaming (event=None):
+
+  stateName = 'naming'
+  k = c.k
+  state = k.getState(stateName)
+
+  help = ('start-value -- optional, -> fill-in or tab eliminate.  ',
+           'end-value -- required, -> fill-in.  ',
+           'step -- optional, ->fill-in or tab to eliminate.  ')
+  tabStop = ('start-value', 'end-value', 'step')
+
+  if state == 0:
+      k.setLabelBlue(help[0],protect=True)
+      k.getArg(event,stateName,1,tabStopNaming)
+      # g.es('does this ever executed?') # yes, imediately!
+  else:
+      k.clearState()
+      g.es_print('%s : %s' % (tabStop[0], k.arg))
+      k.setLabelBlue('')
+
+tabStopNaming()
 .. @+node:ekr.20040123102724: ** Can't or won't
 .. @+node:ekr.20080815174457.5: *3* Consider deleting private shadow files
 @nocolor

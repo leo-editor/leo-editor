@@ -7,10 +7,16 @@
 @language rest
 .. @+node:ekr.20110523201030.18291: *3* b1
 @language rest
-.. @+node:ekr.20110527225107.18353: *4* Bugs: 3
-# None of these items is urgent.
-.. @+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
-.. @+node:ekr.20110523130519.19220: *6* Report
+.. @+node:ekr.20110529115328.18242: *4* Post re emacs commands
+@nocolor-node
+ 
+Does anyone use repeat counts?
+
+Does anyone care about universal args and other emacs-minutia?
+
+Would anyone care if I removed number-command-n commands?
+.. @+node:ekr.20110523130519.19219: *4* Bug 525004: bash code not colored properly
+.. @+node:ekr.20110523130519.19220: *5* Report
 https://bugs.launchpad.net/leo-editor/+bug/525004
 
 This is basically a copy/paste from
@@ -32,24 +38,8 @@ The variable names in the last two lines are not highlighted
 correctly. This becomes clear if the first line is replaced with #!/
 bin/bash and this code is opened in vim/scite. I've tried only these
 two editors, they highlight the variable names correctly.
-.. @+node:ekr.20080421140032.1: *5* Bug: Fix multiple controllers problem in all plugins
-http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
-
-There is a problem with the onClick model for plugins, as described in the
-Templates section of the leoPlugins.
-
-The onCreate method gets called every time *any* new commander is created
-therefore the plugin controllers get recreated for *every* commander *every*
-time a new commander is created.
-.. @+node:ekr.20110529115328.18240: *5* Fix forward and backward by sentences
-Leo's sentence related functions:
-
-- do not stop at empty lines.
-- do not skip periods within words.
-- do not stop at sentences ending in non-periods.
-- do not stop at the end or beginning of the buffer.
-
-Note: see forwardSentenceHelper and backSentenceHelper functions.
+.. @+node:ekr.20110529115328.18251: *4* Support multiple @language directives in a single node
+This is more important now...
 .. @+node:ekr.20110528180209.18237: *4* Improvements: 4
 .. @+node:ekr.20110528034751.18271: *5* Put apropos text using viewrendered plugin
 .. @+node:ekr.20101124145006.5842: *5* Unify extract commands
@@ -456,6 +446,98 @@ print('%s total languages' % len(aList))
 print('%s new languages' % (len(list(computed.keys())) - len(known_keys)))
 print('%s mismatches' % mismatches)
 print('%s known language: %s' % (len(known_keys),known_keys))
+.. @+node:ekr.20110529115328.18246: *4* Solvable vim-related problems: 3
+.. @+node:ekr.20100112051224.6233: *5* Replace current character command
+Vi's "r" command allows user to replace the current character with the next
+entered character.
+.. @+node:ekr.20100112051224.6232: *5* Toggle case command (easy)
+Leo provides support for switching to upper or lower case but no method exists
+to toggle between cases (used by Vi's "~" command).
+
+.. @+node:ekr.20110529115328.18240: *5* Fix forward and backward by sentences
+@nocolor-node
+
+
+Leo's sentence related functions:
+
+- do not stop at empty lines.
+- do not skip periods within words.
+- do not stop at sentences ending in non-periods.
+- do not stop at the end or beginning of the buffer.
+
+Note: see forwardSentenceHelper and backSentenceHelper functions.
+.. @+node:ekr.20050920084036.131: *6* sentences & helpers
+def backSentence (self,event):
+    '''Move the cursor to the previous sentence.'''
+    self.backSentenceHelper(event,extend=False)
+
+def backSentenceExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the previous sentence.'''
+    self.backSentenceHelper(event,extend=True)
+
+def forwardSentence (self,event):
+    '''Move the cursor to the next sentence.'''
+    self.forwardSentenceHelper(event,extend=False)
+
+def forwardSentenceExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the next sentence.'''
+    self.forwardSentenceHelper(event,extend=True)
+.. @+node:ekr.20051213094517: *7* backSentenceHelper
+def backSentenceHelper (self,event,extend):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    s = w.getAllText()
+    i = w.getInsertPoint()
+
+    # To do:
+    # - Stop at empty lines.
+    # - Skip periods within words.
+    # - Stop at sentences ending in non-periods.
+
+    while i >= 0:
+        if s[i] == '.': break
+        i -= 1
+    else: return
+
+    j = i-1
+    while j >= 0:
+        if s[j] == '.':
+            j += 1 ; break
+        j -= 1
+    else: j = 0
+
+    while j < i and s[j].isspace():
+        j += 1
+
+    if j < i:
+        self.moveToHelper(event,j,extend)
+.. @+node:ekr.20050920084036.137: *7* forwardSentenceHelper
+def forwardSentenceHelper (self,event,extend):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    
+    # To do:
+    # - Stop at empty lines.
+    # - Skip periods within words.
+    # - Stop at sentences ending in non-periods.
+    
+    # Naive.
+    i = s.find('.',ins) + 1
+    
+    
+    i = min(i,len(s))
+    self.moveToHelper(event,i,extend)
 .. @+node:ekr.20110526083709.18342: *4* Distribution: 2
 .. @+node:ekr.20110525112110.18394: *5* Fix failing unit tests on Linux
 .. @+node:ekr.20110518103946.18179: *5* Add external/leosax.py to leoPyRef.leo
@@ -1943,13 +2025,25 @@ what I want).
 .. @+node:ekr.20110524141405.18370: *4* Get macros working well
 This may depend on simplified key handling.
 .. @+node:ekr.20110528034751.18278: *5* Add apropos-macros
+.. @+node:ekr.20060628103226.2: *5* Alt-x handlers should add to lossage
+Probably useful as part of macro handling.
 .. @+node:ekr.20040329094003: *4* Apply patch command
 Useful.
+.. @+node:ekr.20100112051224.6226: *4* Vim-related: Range prefix to commands/objects (k.getArgs)
+The ability to specify a numeric range prefix is not supported. For example,
+entering "3dd" will not delete the next three lines and "20G" will not move the
+cursor to the 20th line in the file.
+
+The ability to specify a numeric range prefix to an object is not supported. For
+example, the "d2fx" command should Delete up to and including the 2nd Found "x"
+character.
 .. @+node:ekr.20110527225107.18351: *3* Vague
 @language rest
-.. @+node:ekr.20110529115328.18238: *4* Emacs related: 6
+
+**Important**: These items are not scheduled for any release. They will be done
+only if there are specific requests for them.
+.. @+node:ekr.20110529115328.18238: *4* Emacs related: 5
 I'll do these if and and only if somebody asks for them.
-.. @+node:ekr.20060628103226.2: *5* Alt-x handlers should add to lossage
 .. @+node:ekr.20110529104352.18248: *5* Complete k.universalDispatche
 .. @+node:ekr.20110529104352.18249: *5* Complete number-to-register command
 .. @+node:ekr.20031218072017.753: *5* Emacs comint-mode
@@ -1993,7 +2087,7 @@ If you actually want the text of the abbrev in the buffer, rather than its
 expansion, you can accomplish this by inserting the following punctuation with
 C-q. Thus, foo C-q , leaves `foo,' in the buffer.
 .. @+node:ekr.20060628103226.3: *5* Make sure repeat counts work on basic editing commands
-.. @+node:ekr.20110527225107.18352: *4* Maybe: 4
+.. @+node:ekr.20110527225107.18352: *4* Maybe: 5
 .. @+node:ekr.20090724081340.5987: *5* Improve recursive import script and @auto
 Instead of adding an @ignore directive, it might be better
 to change @auto to @@auto.

@@ -304,20 +304,28 @@ class LeoPluginsController:
     #@+node:ekr.20100909065501.5952: *3* Event handlers
     #@+node:ekr.20100908125007.6016: *4* callTagHandler
     def callTagHandler (self,bunch,tag,keywords):
+        
+        trace = False and not g.unitTesting
+        traceIdle = False
 
         handler = bunch.fn ; moduleName = bunch.moduleName
-
-        # if tag != 'idle': g.pr('callTagHandler',tag,keywords.get('c'))
+        
+        if trace and (traceIdle or tag != 'idle'):
+            c = keywords.get('c')
+            name = moduleName ; tag2 = 'leo.plugins.'
+            if name.startswith(tag2): name = name[len(tag2):]
+            g.trace('c: %s %23s : %s . %s' % (
+                c and c.shortFileName() or '<no c>',
+                tag,handler.__name__,name))
 
         # Make sure the new commander exists.
-        if True: # tag == 'idle':
-            for key in ('c','new_c'):
-                c = keywords.get(key)
-                if c:
-                    # Make sure c exists and has a frame.
-                    if not c.exists or not hasattr(c,'frame'):
-                        # g.pr('skipping tag %s: c does not exist or does not have a frame.' % tag)
-                        return None
+        for key in ('c','new_c'):
+            c = keywords.get(key)
+            if c:
+                # Make sure c exists and has a frame.
+                if not c.exists or not hasattr(c,'frame'):
+                    # g.pr('skipping tag %s: c does not exist or does not have a frame.' % tag)
+                    return None
 
         # Calls to registerHandler from inside the handler belong to moduleName.
         self.loadingModuleNameStack.append(moduleName)
@@ -335,9 +343,15 @@ class LeoPluginsController:
         """Execute all handlers for a given tag, in alphabetical order.
 
         All exceptions are caught by the caller, doHook."""
+        
+        trace = False and not g.unitTesting
+        traceIdle = False
 
         if g.app.killed:
             return None
+            
+        if trace and (traceIdle or tag != 'idle'):
+            g.trace(tag)
 
         if tag in self.handlers:
             bunches = self.handlers.get(tag)
@@ -361,6 +375,8 @@ class LeoPluginsController:
 
         if g.app.killed:
             return
+            
+        trace = True and not g.unitTesting
 
         if tag in ('start1','open0'):
             self.loadHandlers(tag,keywords)
@@ -500,7 +516,8 @@ class LeoPluginsController:
     #@+node:ekr.20100908125007.6024: *4* loadOnePlugin
     def loadOnePlugin (self,moduleOrFileName,tag='open0',verbose=False):
 
-        trace = False # and not g.unitTesting
+        trace = False and not g.unitTesting
+        verbose = False or verbose
 
         if moduleOrFileName.startswith('@'):
             if trace: g.trace('ignoring Leo directive')
@@ -512,7 +529,7 @@ class LeoPluginsController:
 
         if self.isLoaded(moduleName):
             module = self.loadedModules.get(moduleName)
-            if trace or verbose:
+            if trace and verbose:
                 g.trace('plugin',moduleName,'already loaded',color="blue")
             return module
 
@@ -588,7 +605,7 @@ class LeoPluginsController:
             pass
         elif result:
             if trace or verbose:
-                g.trace('loaded plugin:',moduleName,color="blue")
+                g.trace('loaded',moduleName,color="blue")
         else:
             if trace or self.warn_on_failure or (verbose and not g.app.initing):
                 if trace or tag == 'open0':

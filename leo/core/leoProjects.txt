@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120072650.6089: * @file leoProjects.txt
 #@@language python # Override the default .txt coloring.
+
 #@+all
 #@+node:ekr.20101127152442.5916: ** Testing
 #@+node:ekr.20101115092550.5825: *3* Pylint reports
@@ -10628,6 +10629,248 @@ def keyboardQuit (self,event,setFocus=True):
     k.showStateAndMode()
 #@+node:ekr.20110528051918.18328: *4* Added bindings to all text widgets in the tab frame
  
+#@+node:ekr.20080421140032.1: *4* Already fixed:  multiple controllers problem in all plugins
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
+
+The onCreate method gets called every time *any* new commander is created
+therefore the plugin controllers get recreated for *every* commander *every*
+time a new commander is created.
+
+Better traces in callTagHandler and loadOnePlugin indicate that this issue no longer exists.
+#@+node:ekr.20100909065501.5952: *5* Event handlers
+#@+node:ekr.20100908125007.6016: *6* callTagHandler
+def callTagHandler (self,bunch,tag,keywords):
+    
+    trace = False and not g.unitTesting
+    traceIdle = False
+
+    handler = bunch.fn ; moduleName = bunch.moduleName
+    
+    if trace and (traceIdle or tag != 'idle'):
+        c = keywords.get('c')
+        name = moduleName ; tag2 = 'leo.plugins.'
+        if name.startswith(tag2): name = name[len(tag2):]
+        g.trace('c: %s %23s : %s . %s' % (
+            c and c.shortFileName() or '<no c>',
+            tag,handler.__name__,name))
+
+    # Make sure the new commander exists.
+    for key in ('c','new_c'):
+        c = keywords.get(key)
+        if c:
+            # Make sure c exists and has a frame.
+            if not c.exists or not hasattr(c,'frame'):
+                # g.pr('skipping tag %s: c does not exist or does not have a frame.' % tag)
+                return None
+
+    # Calls to registerHandler from inside the handler belong to moduleName.
+    self.loadingModuleNameStack.append(moduleName)
+    try:
+        result = handler(tag,keywords)
+    except:
+        g.es("hook failed: %s, %s, %s" % (tag, handler, moduleName))
+        g.es_exception()
+        result = None
+    self.loadingModuleNameStack.pop()
+    return result
+#@+node:ekr.20100908125007.6017: *6* doHandlersForTag
+def doHandlersForTag (self,tag,keywords):
+
+    """Execute all handlers for a given tag, in alphabetical order.
+
+    All exceptions are caught by the caller, doHook."""
+    
+    trace = False and not g.unitTesting
+    traceIdle = False
+
+    if g.app.killed:
+        return None
+        
+    if trace and (traceIdle or tag != 'idle'):
+        g.trace(tag)
+
+    if tag in self.handlers:
+        bunches = self.handlers.get(tag)
+        # Execute hooks in some random order.
+        # Return if one of them returns a non-None result.
+        for bunch in bunches:
+            val = self.callTagHandler(bunch,tag,keywords)
+            if val is not None:
+                return val
+
+    if 'all' in self.handlers:
+        bunches = self.handlers.get('all')
+        for bunch in bunches:
+            self.callTagHandler(bunch,tag,keywords)
+
+    return None
+#@+node:ekr.20100908125007.6018: *6* doPlugins
+# This is the default g.app.hookFunction.
+
+def doPlugins(self,tag,keywords):
+
+    if g.app.killed:
+        return
+        
+    trace = True and not g.unitTesting
+
+    if tag in ('start1','open0'):
+        self.loadHandlers(tag,keywords)
+
+    return self.doHandlersForTag(tag,keywords)
+#@+node:ekr.20100909065501.5953: *5* Load & unload
+#@+node:ekr.20100908125007.6022: *6* loadHandlers
+def loadHandlers(self,tag,keys):
+
+    """Load all enabled plugins from the plugins directory"""
+
+    def pr (*args,**keys):
+        if not g.app.unitTesting:
+            g.es_print(*args,**keys)
+
+    s = g.app.config.getEnabledPlugins()
+    if not s: return
+
+    if tag == 'open0' and not g.app.silentMode and not g.app.batchMode:
+        if 0:
+            s2 = '@enabled-plugins found in %s' % (
+                g.app.config.enabledPluginsFileName)
+            g.es_print(s2,color='blue')
+            # g.trace(keys,g.callers())
+
+    for plugin in s.splitlines():
+        if plugin.strip() and not plugin.lstrip().startswith('#'):
+            self.loadOnePlugin(plugin.strip(), tag = tag)
+#@+node:ekr.20100908125007.6024: *6* loadOnePlugin
+def loadOnePlugin (self,moduleOrFileName,tag='open0',verbose=False):
+
+    trace = False and not g.unitTesting
+    verbose = False or verbose
+
+    if moduleOrFileName.startswith('@'):
+        if trace: g.trace('ignoring Leo directive')
+        return None
+            # Return None, not False, to keep pylint happy.
+            # Allow Leo directives in @enabled-plugins nodes.
+
+    moduleName = self.regularizeName(moduleOrFileName)
+
+    if self.isLoaded(moduleName):
+        module = self.loadedModules.get(moduleName)
+        if trace and verbose:
+            g.trace('plugin',moduleName,'already loaded',color="blue")
+        return module
+
+    assert g.app.loadDir
+
+    moduleName = g.toUnicode(moduleName)
+
+    # This import will typically result in calls to registerHandler.
+    # if the plugin does _not_ use the init top-level function.
+    self.loadingModuleNameStack.append(moduleName)
+
+    try:
+        toplevel = __import__(moduleName)
+        # need to look up through sys.modules, __import__ returns toplevel package
+        result = sys.modules[moduleName]
+
+    except g.UiTypeException:
+        if not g.unitTesting and not g.app.batchMode:
+            g.es_print('Plugin %s does not support %s gui' % (
+                moduleName,g.app.gui.guiName()))
+        result = None
+
+    except ImportError:
+        if trace or tag == 'open0': # Just give the warning once.
+            g.es_print('error importing plugin:',moduleName,color='red')
+            g.es_exception()
+        result = None
+
+    except Exception as e:
+        g.es_print('exception importing plugin ' + moduleName,color='red')
+        g.es_exception()
+        result = None
+
+    self.loadingModuleNameStack.pop()
+
+    if result:
+        self.signonModule = result # for self.plugin_signon.
+        self.loadingModuleNameStack.append(moduleName)
+
+        if tag == 'unit-test-load':
+            pass # Keep the result, but do no more.
+        elif hasattr(result,'init'):
+            try:
+                # Indicate success only if init_result is True.
+                init_result = result.init()
+                if init_result not in (True,False):
+                    g.error('%s.init did not return a bool' % (moduleName))
+                if init_result:
+                    self.loadedModules[moduleName] = result
+                    self.loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
+                else:
+                    if verbose and not g.app.initing:
+                        g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
+                    result = None
+            except Exception:
+                g.es_print('exception loading plugin',color='red')
+                g.es_exception()
+                result = None
+        else:
+            # No top-level init function.
+            # Guess that the module was loaded correctly,
+            # but do *not* load the plugin if we are unit testing.
+
+            if g.app.unitTesting:
+                result = None
+                self.loadedModules[moduleName] = None
+            else:
+                g.trace('no init()',moduleName)
+                self.loadedModules[moduleName] = result
+        self.loadingModuleNameStack.pop()
+
+    if g.app.batchMode or g.app.inBridge: # or g.unitTesting
+        pass
+    elif result:
+        if trace or verbose:
+            g.trace('loaded',moduleName,color="blue")
+    else:
+        if trace or self.warn_on_failure or (verbose and not g.app.initing):
+            if trace or tag == 'open0':
+                g.trace('can not load enabled plugin:',moduleName,color="red")
+
+    return result
+#@+node:ekr.20031218072017.1318: *6* plugin_signon
+def plugin_signon(self,module_name,verbose=False):
+
+    # This is called from as the result of the imports
+    # in self.loadOnePlugin
+
+    m = self.signonModule
+
+    if verbose:
+        g.es('',"...%s.py v%s: %s" % (
+            m.__name__, m.__version__, g.plugin_date(m)))
+
+        g.pr(m.__name__, m.__version__)
+
+    self.signonModule = None # Prevent double signons.
+#@+node:ekr.20100908125007.6030: *6* unloadOnePlugin
+def unloadOnePlugin (self,moduleOrFileName,verbose=False):
+
+    moduleName = self.regularizeName(moduleOrFileName)
+
+    if self.isLoaded(moduleName):
+        if verbose:
+            g.pr('unloading',moduleName)
+        del self.loadedModules[moduleName]
+
+    for tag in self.handlers:
+        bunches = self.handlers.get(tag)
+        bunches = [bunch for bunch in bunches if bunch.moduleName != moduleName]
+        self.handlers[tag] = bunches
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()

@@ -4160,6 +4160,11 @@ class editCommandsClass (baseEditCommandsClass):
         s = w.getAllText()
         i = w.getInsertPoint()
 
+        # To do:
+        # - Stop at empty lines.
+        # - Skip periods within words.
+        # - Stop at sentences ending in non-periods.
+
         while i >= 0:
             if s[i] == '.': break
             i -= 1
@@ -4188,7 +4193,16 @@ class editCommandsClass (baseEditCommandsClass):
 
         s = w.getAllText()
         ins = w.getInsertPoint()
+        
+        # To do:
+        # - Stop at empty lines.
+        # - Skip periods within words.
+        # - Stop at sentences ending in non-periods.
+        
+        # Naive.
         i = s.find('.',ins) + 1
+        
+        
         i = min(i,len(s))
         self.moveToHelper(event,i,extend)
     #@+node:ekr.20100109094541.6232: *4* within lines
