@@ -19580,5 +19580,11 @@ self.extra_extension_dict = {
 }
 
 self.global_commands_dict = {}
+#@+node:ekr.20110529115328.18251: *4* Support multiple @language directives in a single node
+@nocolor-node
+
+Ironically, this is more important now that @language directives are optional.
+#@+node:ekr.20110530063322.18338: *4* Properly handle @language directives for unknown languages
+The @language color directive itself is not colored.
 #@-all
 #@-leo

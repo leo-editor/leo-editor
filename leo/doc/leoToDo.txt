@@ -7,8 +7,9 @@
 @language rest
 .. @+node:ekr.20110523201030.18291: *3* b1
 @language rest
-.. @+node:ekr.20110523130519.19219: *4* Bug 525004: bash code not colored properly
-.. @+node:ekr.20110523130519.19220: *5* Report
+.. @+node:ekr.20110530063322.18332: *4* Bugs: 5
+.. @+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
+.. @+node:ekr.20110523130519.19220: *6* Report
 https://bugs.launchpad.net/leo-editor/+bug/525004
 
 This is basically a copy/paste from
@@ -30,18 +31,17 @@ The variable names in the last two lines are not highlighted
 correctly. This becomes clear if the first line is replaced with #!/
 bin/bash and this code is opened in vim/scite. I've tried only these
 two editors, they highlight the variable names correctly.
-.. @+node:ekr.20110529115328.18251: *4* Support multiple @language directives in a single node
-Ironically, this is more important now that @language directives are optional.
-.. @+node:ekr.20110529115328.18246: *4* Solvable vim-related problems: 3
+.. @+node:ekr.20110530063322.18333: *5* scala not colored properly
+.. @+node:ekr.20110529115328.18246: *5* Solvable vim-related problems: 3
 # These are bugs, since Tom L wanted them.
-.. @+node:ekr.20100112051224.6233: *5* Replace current character command
+.. @+node:ekr.20100112051224.6233: *6* Replace current character command
 Vi's "r" command allows user to replace the current character with the next
 entered character.
-.. @+node:ekr.20100112051224.6232: *5* Toggle case command (easy)
+.. @+node:ekr.20100112051224.6232: *6* Toggle case command (easy)
 Leo provides support for switching to upper or lower case but no method exists
 to toggle between cases (used by Vi's "~" command).
 
-.. @+node:ekr.20110529115328.18240: *5* Fix forward and backward by sentences
+.. @+node:ekr.20110529115328.18240: *6* Fix forward and backward by sentences
 @nocolor-node
 
 
@@ -53,7 +53,7 @@ Leo's sentence related functions:
 - do not stop at the end or beginning of the buffer.
 
 Note: see forwardSentenceHelper and backSentenceHelper functions.
-.. @+node:ekr.20050920084036.131: *6* sentences & helpers
+.. @+node:ekr.20050920084036.131: *7* sentences & helpers
 def backSentence (self,event):
     '''Move the cursor to the previous sentence.'''
     self.backSentenceHelper(event,extend=False)
@@ -69,7 +69,7 @@ def forwardSentence (self,event):
 def forwardSentenceExtendSelection (self,event):
     '''Extend the selection by moving the cursor to the next sentence.'''
     self.forwardSentenceHelper(event,extend=True)
-.. @+node:ekr.20051213094517: *7* backSentenceHelper
+.. @+node:ekr.20051213094517: *8* backSentenceHelper
 def backSentenceHelper (self,event,extend):
 
     c = self.c
@@ -102,7 +102,7 @@ def backSentenceHelper (self,event,extend):
 
     if j < i:
         self.moveToHelper(event,j,extend)
-.. @+node:ekr.20050920084036.137: *7* forwardSentenceHelper
+.. @+node:ekr.20050920084036.137: *8* forwardSentenceHelper
 def forwardSentenceHelper (self,event,extend):
 
     c = self.c
@@ -862,7 +862,8 @@ close to optimal in most situations.
 @language rest
 
 Interesting, but not urgent.
-.. @+node:ekr.20110527084258.18374: *4*  Summary of the Ashland sprint
+.. @+node:ekr.20110527084258.18377: *4* Ashland to-do items: 3
+.. @+node:ekr.20110527084258.18374: *5*  Summary of the Ashland sprint
 http://groups.google.com/group/leo-editor/browse_thread/thread/9b1dbebd56d50e14/d5a690127ddad38e
  
 "Sprint" isn't really the correct term.  We wrote no code.  Instead,
@@ -939,11 +940,11 @@ or a week or two at most.  The conclusion is that Leo has reached a
 mature state.
 
 Kent, Terry, did I omit anything?  Misstate anything? 
-.. @+node:ekr.20110528034751.18270: *5* Notes
+.. @+node:ekr.20110528034751.18270: *6* Notes
 - Viewrendered @html is a good way to learn/debug .css.
 
 - Study blender interface.
-.. @+node:ekr.20110527084258.18377: *4* Ashland to-do items
+.. @+node:ekr.20110528034751.18273: *5* Global search in Nav plugin?
 .. @+node:ekr.20110528034751.18272: *5* Support for tabifying Leo's core panes
 Collaborate with Terry.
 
@@ -955,11 +956,8 @@ B. Allow any pane to be "tabified" (placed in a tab in the Log pane) and
    "untabified." There are a few details to be handled, but nothing major.
    
 C. Labels for panes.
-.. @+node:ekr.20110528034751.18273: *5* Global search in Nav plugin?
 .. @+node:ekr.20110528034751.18274: *5* Treat .cfg as .ini for importing
 .. @+node:ekr.20110523201030.18290: *4* Kill Tk
-This could be called a vague improvement, but it may simplify the core enough to
-be a bug fix.
 .. @+node:ekr.20110527084258.18373: *5* Remove tk command-line options & related startup code
 .. @+node:ekr.20110125142807.17269: *5* Rewrite all tk plugins
 Is it time to retire tk?
@@ -2039,6 +2037,8 @@ character.
 
 **Important**: These items are not scheduled for any release. They will be done
 only if there are specific requests for them.
+
+Eventually, all these items will move to the dreaded to-do-later list.
 .. @+node:ekr.20110529115328.18238: *4* Emacs related: 5
 I'll do these if and and only if somebody asks for them.
 .. @+node:ekr.20110529104352.18248: *5* Complete k.universalDispatche

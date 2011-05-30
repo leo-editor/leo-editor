@@ -3892,6 +3892,22 @@ please ask for help on Leo's help forum:
 -------------
 
 |back| |leo| |next|
+#@+node:ekr.20110529215703.3494: *4* @test colorizer scala
+p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+#@+node:ekr.20110529215703.3495: *5* scala
+@language scala
+
+/* A comment */
+
+object HelloWorld {
+    def main(args: Array[String]) {
+      println("Hello, world!")
+    }
+  }
 #@+node:ekr.20090615053403.4937: *4* @test colorizer shell
 p = c.p.firstChild()
 

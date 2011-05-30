@@ -58,7 +58,8 @@ Added match_at_language.
 #@+node:ekr.20110117083659.3791: *4* match_at_language
 def match_at_language (self,s,i):
 
-    if self.trace_leo_matches: g.trace(i,repr(s))
+    trace = (False or self.trace_leo_matches) and not g.unitTesting
+    if trace: g.trace(i,repr(s))
 
     seq = '@language'
 
@@ -71,11 +72,9 @@ def match_at_language (self,s,i):
         k = g.skip_c_id(s,j)
         name = s[j:k]
         ok = self.init_mode(name)
-        # g.trace(ok,name)
+        if trace: g.trace(ok,name)
         if ok:
             self.colorRangeWithTag(s,i,k,'leoKeyword')
-        else:
-            self.colorRangeWithTag(s,i,j,'leoKeyword')
         self.clearState()
         return k - i
     else:
@@ -2060,6 +2059,7 @@ def __init__(self,c,colorizer,highlighter,w):
     self.prev = None # The previous token.
     self.fonts = {} # Keys are config names.  Values are actual fonts.
     self.keywords = {} # Keys are keywords, values are 0..5.
+    self.language_name = None # The name of the language for the current mode.
     self.last_language = None # The language for which configuration tags are valid.
     self.modes = {} # Keys are languages, values are modes.
     self.mode = None # The mode object for the present language.
@@ -2449,9 +2449,14 @@ def init_mode (self,name):
     # if trace: g.trace(name,list(self.modes.keys()))
     bunch = self.modes.get(rulesetName)
     if bunch:
-        if trace: g.trace('found',language,rulesetName)
-        self.initModeFromBunch(bunch)
-        return True
+        if bunch.language == 'unknown-language':
+            if trace: g.trace('found unknown language')
+            return False
+        else:
+            if trace: g.trace('found',language,rulesetName)
+            self.initModeFromBunch(bunch)
+            self.language_name = language # 2011/05/30
+            return True
     else:
         if trace: g.trace(language,rulesetName)
         path = g.os_path_join(g.app.loadDir,'..','modes')
@@ -2471,7 +2476,7 @@ def init_mode (self,name):
                 attributesDict  = {},
                 defaultColor    = None,
                 keywordsDict    = {},
-                language        = language,
+                language        = 'unknown-language', ### language,
                 mode            = mode,
                 properties      = {},
                 rulesDict       = {},
@@ -2480,6 +2485,7 @@ def init_mode (self,name):
             )
             if trace: g.trace('***** No colorizer file: %s.py' % language)
             self.rulesetName = rulesetName
+            self.language_name = 'unknown-language'
             return False
         self.colorizer.language = language
         self.rulesetName = rulesetName
@@ -2515,6 +2521,9 @@ def init_mode (self,name):
             self.init_mode(initialDelegate)
             language2,rulesetName2 = self.nameToRulesetName(initialDelegate)
             self.modes[rulesetName] = self.modes.get(rulesetName2)
+            self.language_name = language2  # 2011/05/30
+        else:
+            self.language_name = language  # 2011/05/30
         return True
 #@+node:ekr.20090614134853.3707: *7* nameToRulesetName
 def nameToRulesetName (self,name):
@@ -2743,7 +2752,8 @@ def match_at_color (self,s,i):
 #@+node:ekr.20110117083659.3791: *7* match_at_language
 def match_at_language (self,s,i):
 
-    if self.trace_leo_matches: g.trace(i,repr(s))
+    trace = (False or self.trace_leo_matches) and not g.unitTesting
+    if trace: g.trace(i,repr(s))
 
     seq = '@language'
 
@@ -2756,11 +2766,9 @@ def match_at_language (self,s,i):
         k = g.skip_c_id(s,j)
         name = s[j:k]
         ok = self.init_mode(name)
-        # g.trace(ok,name)
+        if trace: g.trace(ok,name)
         if ok:
             self.colorRangeWithTag(s,i,k,'leoKeyword')
-        else:
-            self.colorRangeWithTag(s,i,j,'leoKeyword')
         self.clearState()
         return k - i
     else:
@@ -3672,7 +3680,7 @@ def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
         bunch = self.modeStack.pop()
         self.initModeFromBunch(bunch)
     elif not exclude_match:
-        if trace: g.trace(tag,s,i,j)
+        if trace: g.trace(self.language_name,tag,s,i,j)
         self.setTag(tag,s,i,j)
         
     if tag != 'url':
@@ -3889,6 +3897,7 @@ def __init__(self,c,colorizer,highlighter,w):
     self.prev = None # The previous token.
     self.fonts = {} # Keys are config names.  Values are actual fonts.
     self.keywords = {} # Keys are keywords, values are 0..5.
+    self.language_name = None # The name of the language for the current mode.
     self.last_language = None # The language for which configuration tags are valid.
     self.modes = {} # Keys are languages, values are modes.
     self.mode = None # The mode object for the present language.
@@ -6319,9 +6328,14 @@ def init_mode (self,name):
     # if trace: g.trace(name,list(self.modes.keys()))
     bunch = self.modes.get(rulesetName)
     if bunch:
-        if trace: g.trace('found',language,rulesetName)
-        self.initModeFromBunch(bunch)
-        return True
+        if bunch.language == 'unknown-language':
+            if trace: g.trace('found unknown language')
+            return False
+        else:
+            if trace: g.trace('found',language,rulesetName)
+            self.initModeFromBunch(bunch)
+            self.language_name = language # 2011/05/30
+            return True
     else:
         if trace: g.trace(language,rulesetName)
         path = g.os_path_join(g.app.loadDir,'..','modes')
@@ -6341,7 +6355,7 @@ def init_mode (self,name):
                 attributesDict  = {},
                 defaultColor    = None,
                 keywordsDict    = {},
-                language        = language,
+                language        = 'unknown-language', ### language,
                 mode            = mode,
                 properties      = {},
                 rulesDict       = {},
@@ -6350,6 +6364,7 @@ def init_mode (self,name):
             )
             if trace: g.trace('***** No colorizer file: %s.py' % language)
             self.rulesetName = rulesetName
+            self.language_name = 'unknown-language'
             return False
         self.colorizer.language = language
         self.rulesetName = rulesetName
@@ -6385,6 +6400,9 @@ def init_mode (self,name):
             self.init_mode(initialDelegate)
             language2,rulesetName2 = self.nameToRulesetName(initialDelegate)
             self.modes[rulesetName] = self.modes.get(rulesetName2)
+            self.language_name = language2  # 2011/05/30
+        else:
+            self.language_name = language  # 2011/05/30
         return True
 #@+node:ekr.20090614134853.3707: *5* nameToRulesetName
 def nameToRulesetName (self,name):
@@ -8458,5 +8476,572 @@ def createTab (self,tabName,widget=None,wrap='none'):
         w.addTab(contents,tabName)
 
     return contents
+#@+node:ekr.20110530063322.18334: *3* Support multiple @language directives
+@nocolor-node
+
+What I did:
+    
+- Added findLanguageDirectives and use it to detect ambiguous @language directives.
+  It is important to leave @language-related scanners in Leo's core unchanged.
+  
+  This is all that was necessary.
+  
+- Added self.language_name ivar for traces.
+  
+#@+node:ekr.20090226105328.12: *4* scanColorDirectives (leoQtColorizer) & helper
+def scanColorDirectives(self,p):
+    
+    '''Set self.language based on the directives in p's tree.'''
+
+    trace = False and not g.unitTesting
+    c = self.c
+    if c == None: return None # self.c may be None for testing.
+    
+    root = p.copy()
+    self.language = None
+    self.rootMode = None # None, "code" or "doc"
+
+    for p in root.self_and_parents():
+        theDict = g.get_directives_dict(p)
+        # if trace: g.trace(p.h,theDict)
+        << Test for @language >>
+        << Test for @root, @root-doc or @root-code >>
+        
+    # 2011/05/28: If no language, get the language from any @<file> node.
+    if self.language:
+         if trace: g.trace('found @language %s' % (self.language))
+    else:
+        for p in root.self_and_parents():
+            if p.isAnyAtFileNode():
+                name = p.anyAtFileNodeName()
+                junk,ext = g.os_path_splitext(name)
+                ext = ext[1:] # strip the leading .
+                self.language = g.app.extension_dict.get(ext)
+                if trace: g.trace('found extension',p.h,ext,self.language)
+                break
+    if not self.language:
+        if trace: g.trace('using default',c.target_language)
+        self.language = c.target_language
+
+    return self.language # For use by external routines.
+#@+node:ekr.20110530063322.18337: *5* findLanguageDirectives
+def findLanguageDirectives (self,p):
+
+    '''Scan p's body text for @language directives.
+
+    Return a list of languages.'''
+    
+    # Speed not very important: called only for nodes containing @language directives.
+    trace = False and not g.unitTesting
+    aList = []
+    for s in g.splitLines(p.b):
+        if g.match_word(s,0,'@language'):
+            i = len('@language')
+            i = g.skip_ws(s,i)
+            j = g.skip_id(s,i)
+            if j > i:
+                word = s[i:j]
+                aList.append(word)
+
+    if trace: g.trace(aList)
+    return aList
+#@+node:ekr.20090226105328.13: *5* << Test for @language >>
+if 'language' in theDict:
+    s = theDict["language"]
+    i = g.skip_ws(s,0)
+    j = g.skip_c_id(s,i)
+    aList = self.findLanguageDirectives(p)
+    if p == root or len(aList) == 1:
+        # In the root node, we use the first @language directive,
+        # no matter how many @language directives the root node contains.
+        # In ancestor nodes, only unambiguous @language directives
+        # set self.language.
+        self.language = s[i:j].lower()
+        break
+#@+node:ekr.20090226105328.14: *5* << Test for @root, @root-doc or @root-code >>
+if 'root' in theDict and not self.rootMode:
+
+    s = theDict["root"]
+    if g.match_word(s,0,"@root-code"):
+        self.rootMode = "code"
+    elif g.match_word(s,0,"@root-doc"):
+        self.rootMode = "doc"
+    else:
+        doc = c.config.at_root_bodies_start_in_doc_mode
+        self.rootMode = g.choose(doc,"doc","code")
+#@+node:ekr.20090614134853.3706: *4* init_mode & helpers
+def init_mode (self,name):
+
+    '''Name may be a language name or a delegate name.'''
+
+    trace = False and not g.unitTesting
+    if not name: return False
+    h = self.highlighter
+    language,rulesetName = self.nameToRulesetName(name)
+    # if trace: g.trace(name,list(self.modes.keys()))
+    bunch = self.modes.get(rulesetName)
+    if bunch:
+        if bunch.language == 'unknown-language':
+            if trace: g.trace('found unknown language')
+            return False
+        else:
+            if trace: g.trace('found',language,rulesetName)
+            self.initModeFromBunch(bunch)
+            self.language_name = language # 2011/05/30
+            return True
+    else:
+        if trace: g.trace(language,rulesetName)
+        path = g.os_path_join(g.app.loadDir,'..','modes')
+        # Bug fix: 2008/2/10: Don't try to import a non-existent language.
+        fileName = g.os_path_join(path,'%s.py' % (language))
+        if g.os_path_exists(fileName):
+            mode = g.importFromPath (language,path)
+        else: mode = None
+
+        if mode:
+            # A hack to give modes/forth.py access to c.
+            if hasattr(mode,'pre_init_mode'):
+                mode.pre_init_mode(self.c)
+        else:
+            # Create a dummy bunch to limit recursion.
+            self.modes [rulesetName] = self.modeBunch = g.Bunch(
+                attributesDict  = {},
+                defaultColor    = None,
+                keywordsDict    = {},
+                language        = 'unknown-language', ### language,
+                mode            = mode,
+                properties      = {},
+                rulesDict       = {},
+                rulesetName     = rulesetName,
+                word_chars      = self.word_chars, # 2011/05/21
+            )
+            if trace: g.trace('***** No colorizer file: %s.py' % language)
+            self.rulesetName = rulesetName
+            self.language_name = 'unknown-language'
+            return False
+        self.colorizer.language = language
+        self.rulesetName = rulesetName
+        self.properties = hasattr(mode,'properties') and mode.properties or {}
+        self.keywordsDict = hasattr(mode,'keywordsDictDict') and mode.keywordsDictDict.get(rulesetName,{}) or {}
+        self.setKeywords()
+        self.attributesDict = hasattr(mode,'attributesDictDict') and mode.attributesDictDict.get(rulesetName) or {}
+        # g.trace('*******',rulesetName,self.attributesDict)
+        self.setModeAttributes()
+        self.rulesDict = hasattr(mode,'rulesDictDict') and mode.rulesDictDict.get(rulesetName) or {}
+        self.addLeoRules(self.rulesDict)
+
+        self.defaultColor = 'null'
+        self.mode = mode
+        self.modes [rulesetName] = self.modeBunch = g.Bunch(
+            attributesDict  = self.attributesDict,
+            defaultColor    = self.defaultColor,
+            keywordsDict    = self.keywordsDict,
+            language        = self.colorizer.language,
+            mode            = self.mode,
+            properties      = self.properties,
+            rulesDict       = self.rulesDict,
+            rulesetName     = self.rulesetName,
+            word_chars      = self.word_chars, # 2011/05/21
+        )
+        # Do this after 'officially' initing the mode, to limit recursion.
+        self.addImportedRules(mode,self.rulesDict,rulesetName)
+        self.updateDelimsTables()
+        initialDelegate = self.properties.get('initialModeDelegate')
+        if initialDelegate:
+            if trace: g.trace('initialDelegate',initialDelegate)
+            # Replace the original mode by the delegate mode.
+            self.init_mode(initialDelegate)
+            language2,rulesetName2 = self.nameToRulesetName(initialDelegate)
+            self.modes[rulesetName] = self.modes.get(rulesetName2)
+            self.language_name = language2  # 2011/05/30
+        else:
+            self.language_name = language  # 2011/05/30
+        return True
+#@+node:ekr.20090614134853.3707: *5* nameToRulesetName
+def nameToRulesetName (self,name):
+
+    '''Compute language and rulesetName from name, which is either a language or a delegate name.'''
+
+    if not name: return ''
+
+    i = name.find('::')
+    if i == -1:
+        language = name
+        rulesetName = '%s_main' % (language)
+    else:
+        language = name[:i]
+        delegate = name[i+2:]
+        rulesetName = self.munge('%s_%s' % (language,delegate))
+
+    # if rulesetName == 'php_main': rulesetName = 'php_php'
+
+    # g.trace(name,language,rulesetName)
+    return language,rulesetName
+#@+node:ekr.20090614134853.3708: *5* setKeywords
+def setKeywords (self):
+
+    '''Initialize the keywords for the present language.
+
+     Set self.word_chars ivar to string.letters + string.digits
+     plus any other character appearing in any keyword.'''
+
+    # Add any new user keywords to leoKeywordsDict.
+    d = self.keywordsDict
+    keys = list(d.keys())
+    for s in g.globalDirectiveList:
+        key = '@' + s
+        if key not in keys:
+            d [key] = 'leoKeyword'
+
+    # Create a temporary chars list.  It will be converted to a dict later.
+    chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
+
+    for key in list(d.keys()):
+        for ch in key:
+            if ch not in chars:
+                chars.append(g.toUnicode(ch))
+
+    # jEdit2Py now does this check, so this isn't really needed.
+    # But it is needed for forth.py.
+    for ch in (' ', '\t'):
+        if ch in chars:
+            # g.es_print('removing %s from word_chars' % (repr(ch)))
+            chars.remove(ch)
+
+    # g.trace(self.colorizer.language,[str(z) for z in chars])
+
+    # Convert chars to a dict for faster access.
+    self.word_chars = {}
+    for z in chars:
+        self.word_chars[z] = z
+#@+node:ekr.20090614134853.3709: *5* setModeAttributes
+def setModeAttributes (self):
+
+    '''Set the ivars from self.attributesDict,
+    converting 'true'/'false' to True and False.'''
+
+    d = self.attributesDict
+    aList = (
+        ('default',         'null'),
+	    ('digit_re',        ''),
+        ('escape',          ''), # New in Leo 4.4.2.
+	    ('highlight_digits',True),
+	    ('ignore_case',     True),
+	    ('no_word_sep',     ''),
+    )
+
+    # g.trace(d)
+
+    for key, default in aList:
+        val = d.get(key,default)
+        if val in ('true','True'): val = True
+        if val in ('false','False'): val = False
+        setattr(self,key,val)
+        # g.trace(key,val)
+#@+node:ekr.20090614134853.3710: *5* initModeFromBunch
+def initModeFromBunch (self,bunch):
+
+    self.modeBunch = bunch
+    self.attributesDict = bunch.attributesDict
+    self.setModeAttributes()
+    self.defaultColor   = bunch.defaultColor
+    self.keywordsDict   = bunch.keywordsDict
+    self.colorizer.language = bunch.language
+    self.mode           = bunch.mode
+    self.properties     = bunch.properties
+    self.rulesDict      = bunch.rulesDict
+    self.rulesetName    = bunch.rulesetName
+    self.word_chars     = bunch.word_chars # 2011/05/21
+
+    # State stuff.
+    # h = self.highlighter
+    # h.setCurrentBlockState(bunch.currentState)
+    # self.nextState      = bunch.nextState
+    # self.restartDict    = bunch.restartDict
+    # self.stateDict      = bunch.stateDict
+    # self.stateNameDict  = bunch.stateNameDict
+
+    # self.clearState()
+
+    # g.trace(self.rulesetName)
+
+#@+node:ekr.20090614134853.3711: *5* updateDelimsTables
+def updateDelimsTables (self):
+
+    '''Update g.app.language_delims_dict if no entry for the language exists.'''
+
+    d = self.properties
+    lineComment = d.get('lineComment')
+    startComment = d.get('commentStart')
+    endComment = d.get('commentEnd')
+
+    if lineComment and startComment and endComment:
+        delims = '%s %s %s' % (lineComment,startComment,endComment)
+    elif startComment and endComment:
+        delims = '%s %s' % (startComment,endComment)
+    elif lineComment:
+        delims = '%s' % lineComment
+    else:
+        delims = None
+
+    if delims:
+        d = g.app.language_delims_dict
+        if not d.get(self.colorizer.language):
+            d [self.colorizer.language] = delims
+            # g.trace(self.colorizer.language,'delims:',repr(delims))
+#@+node:ekr.20110529115328.18245: *3* Do full recolor after changing @language
+@nocolor-node
+
+What I did:
+    
+- match_at_language only colors @language if the language is correct.
+
+- init_mode now sets language = 'unknown-language' for dummy nodes,
+  and returns false when initing an unknown language later.
+  
+#@+node:ekr.20090614134853.3706: *4* init_mode & helpers
+def init_mode (self,name):
+
+    '''Name may be a language name or a delegate name.'''
+
+    trace = False and not g.unitTesting
+    if not name: return False
+    h = self.highlighter
+    language,rulesetName = self.nameToRulesetName(name)
+    # if trace: g.trace(name,list(self.modes.keys()))
+    bunch = self.modes.get(rulesetName)
+    if bunch:
+        if bunch.language == 'unknown-language':
+            if trace: g.trace('found unknown language')
+            return False
+        else:
+            if trace: g.trace('found',language,rulesetName)
+            self.initModeFromBunch(bunch)
+            self.language_name = language # 2011/05/30
+            return True
+    else:
+        if trace: g.trace(language,rulesetName)
+        path = g.os_path_join(g.app.loadDir,'..','modes')
+        # Bug fix: 2008/2/10: Don't try to import a non-existent language.
+        fileName = g.os_path_join(path,'%s.py' % (language))
+        if g.os_path_exists(fileName):
+            mode = g.importFromPath (language,path)
+        else: mode = None
+
+        if mode:
+            # A hack to give modes/forth.py access to c.
+            if hasattr(mode,'pre_init_mode'):
+                mode.pre_init_mode(self.c)
+        else:
+            # Create a dummy bunch to limit recursion.
+            self.modes [rulesetName] = self.modeBunch = g.Bunch(
+                attributesDict  = {},
+                defaultColor    = None,
+                keywordsDict    = {},
+                language        = 'unknown-language', ### language,
+                mode            = mode,
+                properties      = {},
+                rulesDict       = {},
+                rulesetName     = rulesetName,
+                word_chars      = self.word_chars, # 2011/05/21
+            )
+            if trace: g.trace('***** No colorizer file: %s.py' % language)
+            self.rulesetName = rulesetName
+            self.language_name = 'unknown-language'
+            return False
+        self.colorizer.language = language
+        self.rulesetName = rulesetName
+        self.properties = hasattr(mode,'properties') and mode.properties or {}
+        self.keywordsDict = hasattr(mode,'keywordsDictDict') and mode.keywordsDictDict.get(rulesetName,{}) or {}
+        self.setKeywords()
+        self.attributesDict = hasattr(mode,'attributesDictDict') and mode.attributesDictDict.get(rulesetName) or {}
+        # g.trace('*******',rulesetName,self.attributesDict)
+        self.setModeAttributes()
+        self.rulesDict = hasattr(mode,'rulesDictDict') and mode.rulesDictDict.get(rulesetName) or {}
+        self.addLeoRules(self.rulesDict)
+
+        self.defaultColor = 'null'
+        self.mode = mode
+        self.modes [rulesetName] = self.modeBunch = g.Bunch(
+            attributesDict  = self.attributesDict,
+            defaultColor    = self.defaultColor,
+            keywordsDict    = self.keywordsDict,
+            language        = self.colorizer.language,
+            mode            = self.mode,
+            properties      = self.properties,
+            rulesDict       = self.rulesDict,
+            rulesetName     = self.rulesetName,
+            word_chars      = self.word_chars, # 2011/05/21
+        )
+        # Do this after 'officially' initing the mode, to limit recursion.
+        self.addImportedRules(mode,self.rulesDict,rulesetName)
+        self.updateDelimsTables()
+        initialDelegate = self.properties.get('initialModeDelegate')
+        if initialDelegate:
+            if trace: g.trace('initialDelegate',initialDelegate)
+            # Replace the original mode by the delegate mode.
+            self.init_mode(initialDelegate)
+            language2,rulesetName2 = self.nameToRulesetName(initialDelegate)
+            self.modes[rulesetName] = self.modes.get(rulesetName2)
+            self.language_name = language2  # 2011/05/30
+        else:
+            self.language_name = language  # 2011/05/30
+        return True
+#@+node:ekr.20090614134853.3707: *5* nameToRulesetName
+def nameToRulesetName (self,name):
+
+    '''Compute language and rulesetName from name, which is either a language or a delegate name.'''
+
+    if not name: return ''
+
+    i = name.find('::')
+    if i == -1:
+        language = name
+        rulesetName = '%s_main' % (language)
+    else:
+        language = name[:i]
+        delegate = name[i+2:]
+        rulesetName = self.munge('%s_%s' % (language,delegate))
+
+    # if rulesetName == 'php_main': rulesetName = 'php_php'
+
+    # g.trace(name,language,rulesetName)
+    return language,rulesetName
+#@+node:ekr.20090614134853.3708: *5* setKeywords
+def setKeywords (self):
+
+    '''Initialize the keywords for the present language.
+
+     Set self.word_chars ivar to string.letters + string.digits
+     plus any other character appearing in any keyword.'''
+
+    # Add any new user keywords to leoKeywordsDict.
+    d = self.keywordsDict
+    keys = list(d.keys())
+    for s in g.globalDirectiveList:
+        key = '@' + s
+        if key not in keys:
+            d [key] = 'leoKeyword'
+
+    # Create a temporary chars list.  It will be converted to a dict later.
+    chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
+
+    for key in list(d.keys()):
+        for ch in key:
+            if ch not in chars:
+                chars.append(g.toUnicode(ch))
+
+    # jEdit2Py now does this check, so this isn't really needed.
+    # But it is needed for forth.py.
+    for ch in (' ', '\t'):
+        if ch in chars:
+            # g.es_print('removing %s from word_chars' % (repr(ch)))
+            chars.remove(ch)
+
+    # g.trace(self.colorizer.language,[str(z) for z in chars])
+
+    # Convert chars to a dict for faster access.
+    self.word_chars = {}
+    for z in chars:
+        self.word_chars[z] = z
+#@+node:ekr.20090614134853.3709: *5* setModeAttributes
+def setModeAttributes (self):
+
+    '''Set the ivars from self.attributesDict,
+    converting 'true'/'false' to True and False.'''
+
+    d = self.attributesDict
+    aList = (
+        ('default',         'null'),
+	    ('digit_re',        ''),
+        ('escape',          ''), # New in Leo 4.4.2.
+	    ('highlight_digits',True),
+	    ('ignore_case',     True),
+	    ('no_word_sep',     ''),
+    )
+
+    # g.trace(d)
+
+    for key, default in aList:
+        val = d.get(key,default)
+        if val in ('true','True'): val = True
+        if val in ('false','False'): val = False
+        setattr(self,key,val)
+        # g.trace(key,val)
+#@+node:ekr.20090614134853.3710: *5* initModeFromBunch
+def initModeFromBunch (self,bunch):
+
+    self.modeBunch = bunch
+    self.attributesDict = bunch.attributesDict
+    self.setModeAttributes()
+    self.defaultColor   = bunch.defaultColor
+    self.keywordsDict   = bunch.keywordsDict
+    self.colorizer.language = bunch.language
+    self.mode           = bunch.mode
+    self.properties     = bunch.properties
+    self.rulesDict      = bunch.rulesDict
+    self.rulesetName    = bunch.rulesetName
+    self.word_chars     = bunch.word_chars # 2011/05/21
+
+    # State stuff.
+    # h = self.highlighter
+    # h.setCurrentBlockState(bunch.currentState)
+    # self.nextState      = bunch.nextState
+    # self.restartDict    = bunch.restartDict
+    # self.stateDict      = bunch.stateDict
+    # self.stateNameDict  = bunch.stateNameDict
+
+    # self.clearState()
+
+    # g.trace(self.rulesetName)
+
+#@+node:ekr.20090614134853.3711: *5* updateDelimsTables
+def updateDelimsTables (self):
+
+    '''Update g.app.language_delims_dict if no entry for the language exists.'''
+
+    d = self.properties
+    lineComment = d.get('lineComment')
+    startComment = d.get('commentStart')
+    endComment = d.get('commentEnd')
+
+    if lineComment and startComment and endComment:
+        delims = '%s %s %s' % (lineComment,startComment,endComment)
+    elif startComment and endComment:
+        delims = '%s %s' % (startComment,endComment)
+    elif lineComment:
+        delims = '%s' % lineComment
+    else:
+        delims = None
+
+    if delims:
+        d = g.app.language_delims_dict
+        if not d.get(self.colorizer.language):
+            d [self.colorizer.language] = delims
+            # g.trace(self.colorizer.language,'delims:',repr(delims))
+#@+node:ekr.20110117083659.3791: *4* match_at_language
+def match_at_language (self,s,i):
+
+    trace = (False or self.trace_leo_matches) and not g.unitTesting
+    if trace: g.trace(i,repr(s))
+
+    seq = '@language'
+
+    # Only matches at start of line.
+    if i != 0: return 0
+
+    if g.match_word(s,i,seq):
+        j = i + len(seq)
+        j = g.skip_ws(s,j)
+        k = g.skip_c_id(s,j)
+        name = s[j:k]
+        ok = self.init_mode(name)
+        if trace: g.trace(ok,name)
+        if ok:
+            self.colorRangeWithTag(s,i,k,'leoKeyword')
+        self.clearState()
+        return k - i
+    else:
+        return 0
 #@-all
 #@-leo

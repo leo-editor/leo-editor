@@ -9006,7 +9006,7 @@ class leoQtColorizer:
             oldLanguage = self.language
             oldFlag = self.flag
             self.updateSyntaxColorer(p) # sets self.flag.
-            if trace: g.trace(self.flag,p.h)
+            if trace: g.trace(self.flag,p.h,self.language,oldLanguage)
             # if self.flag and (oldLanguage != self.language or not incremental):
             if oldFlag != self.flag or oldLanguage != self.language or not incremental:
                 self.highlighter.rehighlight(p)
@@ -9041,7 +9041,7 @@ class leoQtColorizer:
 
     def kill (self):
         pass
-    #@+node:ekr.20090226105328.12: *4* scanColorDirectives (leoQtColorizer)
+    #@+node:ekr.20090226105328.12: *4* scanColorDirectives (leoQtColorizer) & helper
     def scanColorDirectives(self,p):
         
         '''Set self.language based on the directives in p's tree.'''
@@ -9050,11 +9050,11 @@ class leoQtColorizer:
         c = self.c
         if c == None: return None # self.c may be None for testing.
         
-        p,p2 = p.copy(),p.copy() 
+        root = p.copy()
         self.language = None
         self.rootMode = None # None, "code" or "doc"
 
-        for p in p.self_and_parents():
+        for p in root.self_and_parents():
             theDict = g.get_directives_dict(p)
             # if trace: g.trace(p.h,theDict)
             #@+<< Test for @language >>
@@ -9063,8 +9063,14 @@ class leoQtColorizer:
                 s = theDict["language"]
                 i = g.skip_ws(s,0)
                 j = g.skip_c_id(s,i)
-                self.language = s[i:j].lower()
-                break
+                aList = self.findLanguageDirectives(p)
+                if p == root or len(aList) == 1:
+                    # In the root node, we use the first @language directive,
+                    # no matter how many @language directives the root node contains.
+                    # In ancestor nodes, only unambiguous @language directives
+                    # set self.language.
+                    self.language = s[i:j].lower()
+                    break
             #@-<< Test for @language >>
             #@+<< Test for @root, @root-doc or @root-code >>
             #@+node:ekr.20090226105328.14: *5* << Test for @root, @root-doc or @root-code >>
@@ -9084,8 +9090,7 @@ class leoQtColorizer:
         if self.language:
              if trace: g.trace('found @language %s' % (self.language))
         else:
-            p = p2.copy()
-            for p in p.self_and_parents():
+            for p in root.self_and_parents():
                 if p.isAnyAtFileNode():
                     name = p.anyAtFileNodeName()
                     junk,ext = g.os_path_splitext(name)
@@ -9098,6 +9103,27 @@ class leoQtColorizer:
             self.language = c.target_language
 
         return self.language # For use by external routines.
+    #@+node:ekr.20110530063322.18337: *5* findLanguageDirectives
+    def findLanguageDirectives (self,p):
+
+        '''Scan p's body text for @language directives.
+
+        Return a list of languages.'''
+        
+        # Speed not very important: called only for nodes containing @language directives.
+        trace = False and not g.unitTesting
+        aList = []
+        for s in g.splitLines(p.b):
+            if g.match_word(s,0,'@language'):
+                i = len('@language')
+                i = g.skip_ws(s,i)
+                j = g.skip_id(s,i)
+                if j > i:
+                    word = s[i:j]
+                    aList.append(word)
+
+        if trace: g.trace(aList)
+        return aList
     #@+node:ekr.20090216070256.11: *4* setHighlighter
     def setHighlighter (self,p):
 
@@ -9248,11 +9274,13 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         '''Override base rehighlight method'''
 
         trace = False and not g.unitTesting
+        verbose = False
         c = self.c ; tree = c.frame.tree
         self.w = c.frame.body.bodyCtrl.widget
         s = p.b
         self.colorer.init(p,s)
         n = self.colorer.recolorCount
+        
         if trace: g.trace(p.h)
 
         # Call the base class method, but *only*
@@ -9266,9 +9294,9 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
             finally:
                 c.frame.tree.selecting = old_selecting
 
-        if trace:
-            g.trace('%s calls to recolor' % (
-                self.colorer.recolorCount-n))
+        if trace and verbose:
+            g.trace('%s %s calls to recolor' % (
+                p.h,self.colorer.recolorCount-n))
     #@-others
 #@+node:ekr.20090614134853.3637: *3* class jeditColorizer
 # This is c.frame.body.colorizer.highlighter.colorer
@@ -9362,6 +9390,7 @@ class jEditColorizer:
         self.prev = None # The previous token.
         self.fonts = {} # Keys are config names.  Values are actual fonts.
         self.keywords = {} # Keys are keywords, values are 0..5.
+        self.language_name = None # The name of the language for the current mode.
         self.last_language = None # The language for which configuration tags are valid.
         self.modes = {} # Keys are languages, values are modes.
         self.mode = None # The mode object for the present language.
@@ -9751,9 +9780,14 @@ class jEditColorizer:
         # if trace: g.trace(name,list(self.modes.keys()))
         bunch = self.modes.get(rulesetName)
         if bunch:
-            if trace: g.trace('found',language,rulesetName)
-            self.initModeFromBunch(bunch)
-            return True
+            if bunch.language == 'unknown-language':
+                if trace: g.trace('found unknown language')
+                return False
+            else:
+                if trace: g.trace('found',language,rulesetName)
+                self.initModeFromBunch(bunch)
+                self.language_name = language # 2011/05/30
+                return True
         else:
             if trace: g.trace(language,rulesetName)
             path = g.os_path_join(g.app.loadDir,'..','modes')
@@ -9773,7 +9807,7 @@ class jEditColorizer:
                     attributesDict  = {},
                     defaultColor    = None,
                     keywordsDict    = {},
-                    language        = language,
+                    language        = 'unknown-language', ### language,
                     mode            = mode,
                     properties      = {},
                     rulesDict       = {},
@@ -9782,6 +9816,7 @@ class jEditColorizer:
                 )
                 if trace: g.trace('***** No colorizer file: %s.py' % language)
                 self.rulesetName = rulesetName
+                self.language_name = 'unknown-language'
                 return False
             self.colorizer.language = language
             self.rulesetName = rulesetName
@@ -9817,6 +9852,9 @@ class jEditColorizer:
                 self.init_mode(initialDelegate)
                 language2,rulesetName2 = self.nameToRulesetName(initialDelegate)
                 self.modes[rulesetName] = self.modes.get(rulesetName2)
+                self.language_name = language2  # 2011/05/30
+            else:
+                self.language_name = language  # 2011/05/30
             return True
     #@+node:ekr.20090614134853.3707: *6* nameToRulesetName
     def nameToRulesetName (self,name):
@@ -10045,7 +10083,8 @@ class jEditColorizer:
     #@+node:ekr.20110117083659.3791: *6* match_at_language
     def match_at_language (self,s,i):
 
-        if self.trace_leo_matches: g.trace(i,repr(s))
+        trace = (False or self.trace_leo_matches) and not g.unitTesting
+        if trace: g.trace(i,repr(s))
 
         seq = '@language'
 
@@ -10058,11 +10097,9 @@ class jEditColorizer:
             k = g.skip_c_id(s,j)
             name = s[j:k]
             ok = self.init_mode(name)
-            # g.trace(ok,name)
+            if trace: g.trace(ok,name)
             if ok:
                 self.colorRangeWithTag(s,i,k,'leoKeyword')
-            else:
-                self.colorRangeWithTag(s,i,j,'leoKeyword')
             self.clearState()
             return k - i
         else:
@@ -10975,7 +11012,7 @@ class jEditColorizer:
             bunch = self.modeStack.pop()
             self.initModeFromBunch(bunch)
         elif not exclude_match:
-            if trace: g.trace(tag,s,i,j)
+            if trace: g.trace(self.language_name,tag,s,i,j)
             self.setTag(tag,s,i,j)
             
         if tag != 'url':
