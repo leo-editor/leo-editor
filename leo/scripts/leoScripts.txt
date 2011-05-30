@@ -10521,16 +10521,17 @@ opt_print_elements = False
 
 @others
 
-print '-'*40
+print('-'*40)
 for path1 in files:
     if 1:
         if path1 in errors:
-            print 'skipping %s' % path1 ; continue
+            print('skipping %s' % path1)
+            continue
     path2 = path1[:-3] + 'py'
     try:
         convert (c,path1,path2)
     except Exception:
-        print 'Exception creating', path2
+        print('Exception creating', path2)
         g.es_exception()
 
 g.es_print('done')
@@ -10563,16 +10564,16 @@ theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','modes'))
 fixed = ['antlr','applescript','apacheconf','bibtex','cil','pl1','shell','shellscript','ssharp','text']
 errors = [] # 'cil',] # End keyword not matched by start.
 errors = [r'%s\%s.xml' % (theDir,s) for s in errors]
-# for s in errors: print s
-if 0: # A a list of files.
-    files = [r'%s\%s.xml' % (theDir,s) for s in ('perl',)] # 'rest','perl',
+# for s in errors: print(s)
+if 1: # A a list of files.
+    files = [r'%s\%s.xml' % (theDir,s) for s in ('scala',)] # 'rest','perl',
 elif 1: # translate all files.
     files = glob.glob(g.os_path_abspath(g.os_path_join(theDir,'*.xml')))
 elif 1: # error files
     files = [g.os_path_abspath(g.os_path_join(theDir,s)) for s in errors]
 else: # translate two representative files.
     files = [g.os_path_abspath(g.os_path_join(theDir,s)) for s in ('python','php')]
-# for s in files: print s
+# for s in files: print(s)
 #@+node:ekr.20060824111500.113: *5* top-level
 #@+node:ekr.20060824111500.114: *6* convert
 def convert (c,inputFileName,outputFileName):
@@ -10585,7 +10586,7 @@ def convert (c,inputFileName,outputFileName):
 
     if mode:
         try:
-            f = file(outputFileName,'w')
+            f = open(outputFileName,'w')
         except IOError:
             g.trace('can not create %s' % outputFileName)
             return
@@ -10720,7 +10721,10 @@ def escapeString (self,s):
 
     '''Return string s enclosed in double quotes.'''
 
-    if type(s) == type([]): s = ''.join(s)
+    if type(s) == type([]):
+        s = ''.join(s)
+        
+    s = g.toUnicode(s)
 
     # Order is important: escape backspaces first.
     return '"%s"' % s.replace('\\','\\\\').replace('"','\\"').replace('\t','\\t')
@@ -10771,7 +10775,9 @@ def putDict (self,name,theDict,escape=True):
 
     esc = self.escapeString
     esc2 = g.choose(escape,self.escapeString,lambda a: a)
-    keys = theDict.keys() ; keys.sort()
+    keys = list(theDict.keys())
+    keys = [g.toUnicode(z) for z in keys]
+    keys.sort()
     s = ''.join(['\t%s: %s,\n' % (esc(key),esc2(theDict.get(key))) for key in keys])
     if s: s = '\n' + s
     self.put('%s = {%s}\n\n' % (name,s))
@@ -10779,7 +10785,9 @@ def putDict (self,name,theDict,escape=True):
 def putDictOfLists (self,name,theDict,strings=False):
 
     esc = self.escapeString
-    keys = theDict.keys() ; keys.sort()
+    keys = list(theDict.keys())
+    keys = [g.toUnicode(z) for z in keys]
+    keys.sort()
     theList = []
     for key in keys:
         if strings:
@@ -10820,8 +10828,10 @@ def putKeywordsData (self):
     for ruleset in self.rulesets:
 
         prefix = '%s_%s' % (self.modeName,ruleset.name)
+        prefix = g.toUnicode(prefix)
 
         ignore_case = ruleset.attributes.get('ignore_case',False)
+        ignore_case = g.toUnicode(ignore_case)
         # g.trace(ignore_case)
 
         self.put('# Keywords dict for %s ruleset.\n' % (prefix))
@@ -10829,9 +10839,10 @@ def putKeywordsData (self):
         for rule in ruleset.rules:
             if rule.name == 'keywords':
                 d = rule.keywordsDict
-                for key in d.keys():
+                for key in list(d.keys()):
+                    key = g.toUnicode(key)
                     if not key.strip():
-                        del d [key]
+                        if key in d: del d [key]
                     elif key.find(' ') != -1 or key.find('\t') != -1:
                         del d [key]
                         g.es_print('Warning: ignoring keyword containing whitespace: %s' % (
@@ -10839,9 +10850,10 @@ def putKeywordsData (self):
                     elif ignore_case: # New in 4.4.1 final.
                         # Downcase all keys.
                         val = d.get(key)
+                        val = g.toUnicode(val)
                         key2 = key.lower()
                         if key2 != key:
-                            del d[key]
+                            if key in d: del d[key]
                         d[key2] = val
                 break
         else: d = {}
@@ -11186,16 +11198,19 @@ def putRules (self):
 def write (self,theFile,language):
 
     # Compute all the letters that can occur in a keyword.
-    self.keywordChars = [ch for ch in string.letters + string.digits + '@']
+    self.keywordChars = [ch for ch in string.ascii_letters + string.digits + '@']
     for ruleset in self.rulesets:
         for rule in ruleset.rules:
             d = rule.keywordsDict
-            for key in d.keys():
+            for key in list(d.keys()):
+                key = g.toUnicode(key)
                 for ch in key:
                     if ch not in self.keywordChars and ch not in (' ','\t','\n'):
                         self.keywordChars.append(ch)
-    self.keywordChars = ''.join(self.keywordChars)
+        
     # g.trace('keywordChars',repr(self.keywordChars))
+    self.keywordChars = ''.join(self.keywordChars)
+    
 
     self.outputFile = theFile
     self.put('# Leo colorizer control file for %s mode.\n' % language)
@@ -11219,7 +11234,7 @@ def printRulesetAttributes (self,ruleset,tag=None):
 
 def printAttributesHelper (self,kind,attrs):
 
-    print '%-15s' % (kind),'attrs:',attrs
+    print('%-15s' % (kind),'attrs:',attrs)
 #@+node:ekr.20060824111500.146: *7* printProperty
 def printProperty (self,theProperty):
 
@@ -11232,24 +11247,25 @@ def printRule (self,rule):
 
     # A rule is a g.Bunch.
     if rule.name == 'keywords':
-        print '%-15s' % ('rule:keywords'),
+        print('%-15s' % ('rule:keywords')) ## ,
         d = rule.keywordsDict
         d2 = {}
         for key in d:
             val = d.get(key)
             d2 [val] = d2.get(val,0) + 1
-        keys = d2.keys() ; keys.sort()
+        keys = list(d2.keys())
+        keys.sort()
         for key in keys:
-            print '%s: %d' % (key,d2.get(key)),
-        print
+            print('%s: %d' % (key,d2.get(key))) ## ,
+        print()
     else:
         d = rule.attributes
         d2 = rule.contents
         if d or d2:
-            print '%-15s' % ('rule:'+rule.name),
-            if d:  print 'attrs:',d,
-            if d2: print 'contents:',d2,
-            print
+            print('%-15s' % ('rule:'+rule.name)) ## ,
+            if d:  print('attrs:',d) ## ,
+            if d2: print('contents:',d2) ## ,
+            print()
 #@+node:ekr.20060824111500.148: *7* printRuleset
 def printRuleset (self,ruleset,tag):
 
@@ -11261,12 +11277,12 @@ def printRuleset (self,ruleset,tag):
 def printSummary (self,printStats=True):
 
     if printStats:
-        print '-' * 10, 'mode statistics'
-        print 'elements',self.numberOfElements
-        print 'errors',self.numberOfErrors
-        print 'mode attributes',self.numberOfAttributes
-        print 'property attributes',self.numberOfPropertyAttributes
-        print 'rule attributes',self.numberOfRuleAttributes
+        print('-' * 10, 'mode statistics')
+        print('elements',self.numberOfElements)
+        print('errors',self.numberOfErrors)
+        print('mode attributes',self.numberOfAttributes)
+        print('property attributes',self.numberOfPropertyAttributes)
+        print('rule attributes',self.numberOfRuleAttributes)
 
     self.printModeAttributes()
 
@@ -11314,7 +11330,7 @@ def doContent (self,elementName,content):
     elif self.rule:
         d = self.rule.contents
         s = d.get(name,'')
-        d [name] = s + content
+        d [name] = s + g.toUnicode(content)
         self.contents = d
 #@+node:ekr.20060824111500.152: *6* endElement
 def endElement (self,elementName):
@@ -11602,31 +11618,31 @@ def clean(self,s):
 #@+node:ekr.20060824111500.168: *7* error
 def error (self, message):
 
-    print
-    print
-    print 'XML error: %s' % (message)
-    print
+    print()
+    print()
+    print('XML error: %s' % (message))
+    print()
 
     self.errors += 1
 #@+node:ekr.20060824111500.169: *7* printStartElement
 def printStartElement(self,name,attrs):
 
     if attrs.getLength() > 0:
-        print '<%s %s>' % (
+        print('<%s %s>' % (
             self.clean(name).strip(),
-            self.attrsToString(attrs,sep=' ')),
+            self.attrsToString(attrs,sep=' '))) ## ,
     else:
-        print '<%s>' % (self.clean(name).strip()),
+        print('<%s>' % (self.clean(name).strip())) ## ,
 
     if name.lower() in self.newLineAfterStartElement:
-        print
+        print()
 #@+node:ekr.20060824111500.170: *7* printSummary
 def printSummary (self):
 
-    print 'Summary...'
-    print '-' * 10, 'non- mode statistics'
-    print 'modes',len(self.modes)
-    print 'elements', self.numberOfElements
+    print('Summary...')
+    print('-' * 10, 'non- mode statistics')
+    print('modes',len(self.modes))
+    print('elements', self.numberOfElements)
 #@+node:ekr.20060824111500.171: *6* sax over-rides
 #@+node:ekr.20060824111500.172: *7*  Do nothing...
 #@+node:ekr.20060824111500.173: *8* other methods
@@ -11665,9 +11681,9 @@ def characters(self,content):
     elementName = self.elementStack and self.elementStack[-1].lower() or '<no element name>'
 
     if self.printAllElements:
-        print content,
+        print(content) ## ,
     elif self.printCharacters and content and elementName not in self.suppressContent:
-        print 'content:',elementName,repr(content)
+        print('content:',elementName,repr(content))
 
     if self.mode:
         self.mode.doContent(elementName,content)
@@ -11707,7 +11723,7 @@ def doStartElement (self,elementName,attrs):
         self.mode.startElement(elementName)
         for bunch in self.attrsToList(attrs):
             if self.printAttributes:
-                print 'attr:',elementName,bunch.name,'=',bunch.val
+                print('attr:',elementName,bunch.name,'=',bunch.val)
             self.mode.doAttribute(bunch.name,bunch.val)
     else:
         self.error('Start element appears outside of Mode:%s' % elementName)
@@ -11717,7 +11733,7 @@ def doStartElement (self,elementName,attrs):
 def doEndElement (self,elementName):
 
     if self.printAllElements or elementName.lower() in self.printElements:
-        print '</' + self.clean(elementName).strip() + '>'
+        print('</' + self.clean(elementName).strip() + '>')
 
     if elementName.lower() == 'mode':
         if opt_print_summary: self.mode.printSummary()
