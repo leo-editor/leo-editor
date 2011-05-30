@@ -18654,6 +18654,7 @@ def getPublicCommands (self):
         'remove-blank-lines':                   self.removeBlankLines,
         'remove-space-from-lines':              self.removeSpaceFromLines,
         'remove-tab-from-lines':                self.removeTabFromLines,
+        'replace-current-character':            self.replaceCurrentCharacter,
         'reverse-region':                       self.reverseRegion,
         'reverse-sort-lines':                   self.reverseSortLines,
         'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,
@@ -19200,6 +19201,7 @@ def getPublicCommands (self):
         'remove-blank-lines':                   self.removeBlankLines,
         'remove-space-from-lines':              self.removeSpaceFromLines,
         'remove-tab-from-lines':                self.removeTabFromLines,
+        'replace-current-character':            self.replaceCurrentCharacter,
         'reverse-region':                       self.reverseRegion,
         'reverse-sort-lines':                   self.reverseSortLines,
         'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,
@@ -19584,7 +19586,24 @@ self.global_commands_dict = {}
 @nocolor-node
 
 Ironically, this is more important now that @language directives are optional.
+
+Leo correctly colors nodes containing more than one @language directives.
+
+As with @color directives, only unambiguous @language directives affect the default coloring of descendant nodes.
 #@+node:ekr.20110530063322.18338: *4* Properly handle @language directives for unknown languages
-The @language color directive itself is not colored.
+@nocolor-node
+
+Leo ignores (and does not color) @language directive for unknown languages.
+
+In effect, Leo completely recolors nodes when you change @language directives by
+typing.
+#@+node:ekr.20100112051224.6233: *4* Added replace-current-character command
+@nocolor-node
+
+Vi's "r" command allows user to replace the current character with the next
+entered character.
+
+The replace-current-character replaces the character to the left of the cursor,
+or replaces the selection range if there is one.
 #@-all
 #@-leo

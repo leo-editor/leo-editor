@@ -7,7 +7,7 @@
 @language rest
 .. @+node:ekr.20110523201030.18291: *3* b1
 @language rest
-.. @+node:ekr.20110530063322.18332: *4* Bugs: 5
+.. @+node:ekr.20110530063322.18332: *4* Syntax-color bugs: 2
 .. @+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
 .. @+node:ekr.20110523130519.19220: *6* Report
 https://bugs.launchpad.net/leo-editor/+bug/525004
@@ -32,100 +32,7 @@ correctly. This becomes clear if the first line is replaced with #!/
 bin/bash and this code is opened in vim/scite. I've tried only these
 two editors, they highlight the variable names correctly.
 .. @+node:ekr.20110530063322.18333: *5* scala not colored properly
-.. @+node:ekr.20110529115328.18246: *5* Solvable vim-related problems: 3
-# These are bugs, since Tom L wanted them.
-.. @+node:ekr.20100112051224.6233: *6* Replace current character command
-Vi's "r" command allows user to replace the current character with the next
-entered character.
-.. @+node:ekr.20100112051224.6232: *6* Toggle case command (easy)
-Leo provides support for switching to upper or lower case but no method exists
-to toggle between cases (used by Vi's "~" command).
-
-.. @+node:ekr.20110529115328.18240: *6* Fix forward and backward by sentences
-@nocolor-node
-
-
-Leo's sentence related functions:
-
-- do not stop at empty lines.
-- do not skip periods within words.
-- do not stop at sentences ending in non-periods.
-- do not stop at the end or beginning of the buffer.
-
-Note: see forwardSentenceHelper and backSentenceHelper functions.
-.. @+node:ekr.20050920084036.131: *7* sentences & helpers
-def backSentence (self,event):
-    '''Move the cursor to the previous sentence.'''
-    self.backSentenceHelper(event,extend=False)
-
-def backSentenceExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the previous sentence.'''
-    self.backSentenceHelper(event,extend=True)
-
-def forwardSentence (self,event):
-    '''Move the cursor to the next sentence.'''
-    self.forwardSentenceHelper(event,extend=False)
-
-def forwardSentenceExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the next sentence.'''
-    self.forwardSentenceHelper(event,extend=True)
-.. @+node:ekr.20051213094517: *8* backSentenceHelper
-def backSentenceHelper (self,event,extend):
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-    s = w.getAllText()
-    i = w.getInsertPoint()
-
-    # To do:
-    # - Stop at empty lines.
-    # - Skip periods within words.
-    # - Stop at sentences ending in non-periods.
-
-    while i >= 0:
-        if s[i] == '.': break
-        i -= 1
-    else: return
-
-    j = i-1
-    while j >= 0:
-        if s[j] == '.':
-            j += 1 ; break
-        j -= 1
-    else: j = 0
-
-    while j < i and s[j].isspace():
-        j += 1
-
-    if j < i:
-        self.moveToHelper(event,j,extend)
-.. @+node:ekr.20050920084036.137: *8* forwardSentenceHelper
-def forwardSentenceHelper (self,event,extend):
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    
-    # To do:
-    # - Stop at empty lines.
-    # - Skip periods within words.
-    # - Stop at sentences ending in non-periods.
-    
-    # Naive.
-    i = s.find('.',ins) + 1
-    
-    
-    i = min(i,len(s))
-    self.moveToHelper(event,i,extend)
-.. @+node:ekr.20110528180209.18237: *4* Improvements: 4
+.. @+node:ekr.20110528180209.18237: *4* Improvements: 3
 # Can be delayed until b2, but they would be better in b1.
 .. @+node:ekr.20110528034751.18271: *5* Put apropos text using viewrendered plugin
 .. @+node:ekr.20101124145006.5842: *5* Unify extract commands
@@ -156,385 +63,6 @@ I want to bring a file into a node, just
 
 An emergency measure could be available in a 
 'File Special' menu.
-.. @+node:ekr.20090801103907.6018: *5* Add entries to global dicts for more languages (waiting for requests)
-http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
-
-Especially languages in leo/modes.
-
-** Only c.getOpenWithExt uses app.language_extension_dict.
-
-I'll wait until I get requests for particular language.
-.. @+node:ekr.20110528103005.18323: *6* Found: extension_dict
-.. @+node:ekr.20080819075811.13: *7* adjustTargetLanguage
-def adjustTargetLanguage (self,fn):
-
-    """Use the language implied by fn's extension if
-    there is a conflict between it and c.target_language."""
-
-    at = self ; c = at.c
-
-    if c.target_language:
-        junk,target_ext = g.os_path_splitext(fn)  
-    else:
-        target_ext = ''
-
-    junk,ext = g.os_path_splitext(fn)
-
-    if ext:
-        if ext.startswith('.'): ext = ext[1:]
-
-        language = g.app.extension_dict.get(ext)
-        if language:
-            c.target_language = language
-        else:
-            # An unknown language.
-            pass # Use the default language, **not** 'unknown_language'
-.. @+node:ekr.20090212054250.9: *7* c.createNodeFromExternalFile
-def createNodeFromExternalFile(self,fn):
-
-    '''Read the file into a node.
-    Return None, indicating that c.open should set focus.'''
-
-    c = self
-
-    s,e = g.readFileIntoString(fn)
-    if s is None: return
-    head,ext = g.os_path_splitext(fn)
-    if ext.startswith('.'): ext = ext[1:]
-    language = g.app.extension_dict.get(ext)
-    if language:
-        prefix = '@color\n@language %s\n\n' % language
-    else:
-        prefix = '@killcolor\n\n'
-    p2 = c.insertHeadline(op_name='Open File', as_child=False)
-    p2.h = '@edit %s' % fn # g.shortFileName(fn)
-    p2.b = prefix + s
-    w = c.frame.body.bodyCtrl
-    if w: w.setInsertPoint(0)
-    c.redraw()
-    c.recolor()
-.. @+node:ekr.20031218072017.2824: *7* c.getOpenWithExt
-def getOpenWithExt (self,p,ext):
-
-    trace = False and not g.app.unitTesting
-    c = self
-
-    if not ext:
-        # if node is part of @<file> tree, get ext from file name
-        for p2 in p.self_and_parents():
-            if p2.isAnyAtFileNode():
-                fn = p2.h.split(None,1)[1]
-                ext = g.os_path_splitext(fn)[1]
-                if trace: g.trace('found node:',ext,p2.h)
-                break
-
-    if not ext:
-        theDict = c.scanAllDirectives()
-        language = theDict.get('language')
-        ext = g.app.language_extension_dict.get(language)
-        if trace: g.trace('found directive',language,ext)
-
-    if not ext:
-        ext = '.txt'
-        if trace: g.trace('use default (.txt)')
-
-    if ext[0] != '.':
-        ext = '.'+ext
-
-    return ext
-.. @+node:EKR.20040504150046.4: *7* g.comment_delims_from_extension
-def comment_delims_from_extension(filename):
-
-    """
-    Return the comment delims corresponding to the filename's extension.
-
-    >>> import leo.core.leoGlobals as g
-    >>> g.comment_delims_from_extension(".py")
-    ('#', '', '')
-
-    >>> g.comment_delims_from_extension(".c")
-    ('//', '/*', '*/')
-
-    >>> g.comment_delims_from_extension(".html")
-    ('', '<!--', '-->')
-
-    """
-
-    if filename.startswith('.'):
-        # Python 2.6 changes how splitext works.
-        root,ext = None,filename
-    else:
-        root, ext = os.path.splitext(filename)
-    if ext == '.tmp':
-        root, ext = os.path.splitext(root)
-
-    language = g.app.extension_dict.get(ext[1:])
-    if ext:
-        return g.set_delims_from_language(language)
-    else:
-        g.trace("unknown extension: %s, filename: %s, root: %s" % (
-            repr(ext),repr(filename),repr(root)))
-        return '','',''
-.. @+node:ekr.20080811174246.1: *7* languageForExtension
-def languageForExtension (self,ext):
-
-    '''Return the language corresponding to the extension ext.'''
-
-    unknown = 'unknown_language'
-
-    if ext.startswith('.'): ext = ext[1:]
-
-    if ext:
-        z = g.app.extra_extension_dict.get(ext)
-        if z not in (None,'none','None'):
-            language = z
-        else:
-            language = g.app.extension_dict.get(ext)
-        if language in (None,'none','None'):
-            language = unknown
-    else:
-        language = unknown
-
-    # g.trace(ext,repr(language))
-
-    # Return the language even if there is no colorizer mode for it.
-    return language
-.. @+node:ekr.20031218072017.368: *6* << define global data structures >> (leoApp.py)
-# Internally, lower case is used for all language names.
-self.language_delims_dict = {
-    # Keys are languages, values are 1,2 or 3-tuples of delims.
-    "ada"           : "--",
-    "batch"         : "REM_", # Use the REM hack.
-    "actionscript"  : "// /* */", #jason 2003-07-03
-    "autohotkey"    : "; /* */", #TL - AutoHotkey language
-    "c"             : "// /* */", # C, C++ or objective C.
-    "config"        : "#", # Leo 4.5.1
-    "csharp"        : "// /* */", # C#
-    "cpp"           : "// /* */",# C++.
-    "css"           : "/* */", # 4/1/04
-    "cweb"          : "@q@ @>", # Use the "cweb hack"
-    "cython"        : "#",
-    "elisp"         : ";",
-    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
-    "fortran"       : "C",
-    "fortran90"     : "!",
-    "haskell"       : "--_ {-_ _-}",
-    "haxe"          : "//",
-    "html"          : "<!-- -->",
-    "ini"           : ";",
-    "java"          : "// /* */",
-    "kshell"        : "#", # Leo 4.5.1.
-    "latex"         : "%",
-    "lisp"          : ";", # EKR: 2010/09/29
-    "lua"           : "--",  # ddm 13/02/06
-    "nsi"           : ";", # EKR: 2010/10/27
-    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
-    "pascal"        : "// { }",
-    "perl"          : "#",
-    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-    "php"           : "// /* */", # 6/23/07: was "//",
-    "plain"         : "#", # We must pick something.
-    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
-    "python"        : "#",
-    "rapidq"        : "'", # fil 2004-march-11
-    "rebol"         : ";",  # jason 2003-07-03
-    "rest"          : ".._",
-    "rst"           : ".._",
-    "ruby"          : "#",  # thyrsus 2008-11-05
-    "scala"         : "// /* */",
-    "shell"         : "#",  # shell scripts
-    "tcltk"         : "#",
-    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
-    "unknown"       : "#", # Set when @comment is seen.
-    "unknown_language" : '#--unknown-language--',
-        # For unknown extensions in @shadow files.
-    "vim"           : "\"",
-    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "<!-- -->",
-    "xslt"          : "<!-- -->",
-}
-
-# Used only by c.getOpenWithExt.
-self.language_extension_dict = {
-    # Keys are languages, values are extensions.
-    "ada"           : "ada",
-    "actionscript"  : "as", #jason 2003-07-03
-    "autohotkey"    : "ahk", #TL - AutoHotkey language
-    "batch"         : "bat", # Leo 4.5.1.
-    "c"             : "c",
-    "config"        : "cfg",
-    "cpp"           : "cpp",
-    "css"           : "css", # 4/1/04
-    "cweb"          : "w",
-    "cython"        : "pyd",
-    "cython"        : "pyi",
-    "cython"        : "pyx",
-    "elisp"         : "el",
-    "forth"         : "forth",
-    "fortran"       : "f",
-    "fortran90"     : "f90",
-    "haskell"       : "hs",
-    "haxe"          : "hx",
-    "html"          : "html",
-    "ini"           : "ini",
-    "java"          : "java",
-    "kshell"        : "ksh", # Leo 4.5.1.
-    "latex"         : "tex", # 1/8/04
-    "lua"           : "lua",  # ddm 13/02/06
-    "nsi"           : "nsi", # EKR: 2010/10/27
-    "noweb"         : "nw",
-    "pascal"        : "p",
-    "perl"          : "pl",      # 11/7/05
-    "perlpod"       : "pod",  # 11/7/05
-    "php"           : "php",
-    "plain"         : "txt",
-    "python"        : "py",
-    "plsql"         : "sql", # qt02537 2005-05-27
-    "rapidq"        : "bas", # fil 2004-march-11
-    "rebol"         : "r",    # jason 2003-07-03
-    # "rst"           : "rst", # caught by pylint.
-    "rst"           : "rest",
-    "ruby"          : "rb",   # thyrsus 2008-11-05
-    "scala"         : "scala",
-    "shell"         : "sh",   # DS 4/1/04
-    "tex"           : "tex",
-    "tcltk"         : "tcl",
-    "unknown"       : "txt", # Set when @comment is seen.
-    "vim"           : "vim",
-    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "xml",
-    "xslt"          : "xsl",
-}
-
-self.extension_dict = {
-    # Keys are extensions, values are languages.
-    "ada"   : "ada",
-    "adb"   : "ada",
-    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
-    "as"    : "actionscript",
-    "bas"   : "rapidq",
-    "bat"   : "batch",
-    "c"     : "c",
-    "cfg"   : "config",
-    "cpp"   : "cpp",
-    "css"   : "css",
-    "el"    : "elisp",
-    "forth" : "forth",
-    "f"     : "fortran",
-    "f90"   : "fortran90",
-    "h"     : "c",
-    "html"  : "html",
-    "hs"    : "haskell",
-    "ini"   : "ini",
-    "java"  : "java",
-    "ksh"   : "kshell", # Leo 4.5.1.
-    "lua"   : "lua",  # ddm 13/02/06
-    "nsi"   : "nsi", # EKR: 2010/10/27
-    "nw"    : "noweb",
-    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
-    "p"     : "pascal",
-    "pl"    : "perl",   # 11/7/05
-    "pod"   : "perlpod", # 11/7/05
-    "php"   : "php",
-    "py"    : "python",
-    "pyd"   : "cython",
-    "pyi"   : "cython",
-    "pyx"   : "cython",
-    "sql"   : "plsql", # qt02537 2005-05-27
-    "r"     : "rebol",
-    "rb"    : "ruby", # thyrsus 2008-11-05
-    "rest"  : "rst",
-    "rst"   : "rst",
-    "scala" : "scala",
-    "sh"    : "shell",
-    "tex"   : "tex",
-    "txt"   : "plain",
-    "tcl"   : "tcltk",
-    "vim"   : "vim",
-    "w"     : "cweb",
-    "xml"   : "xml",
-    "xsl"   : "xslt",
-    "hx"    : "haxe",
-}
-
-# Extra language extensions, used to associate extensions with mode files.
-# Used by importCommands.languageForExtension.
-# Keys are extensions, values are corresponding mode file (without .py)
-# A value of 'none' is a signal to unit tests that no extension file exists.
-self.extra_extension_dict = {
-    'actionscript': 'actionscript',
-    'ada'   : 'ada95',
-    'adb'   : 'none', # ada??
-    'awk'   : 'awk',
-    'bas'   : 'none', # rapidq
-    'bat'   : 'none', # batch
-    'cfg'   : 'none', # Leo 4.5.1
-    'cpp'   : 'c',
-    'el'    : 'lisp',
-    'f'     : 'fortran90',
-    'hx'    : 'none',
-    'ksh'   : 'none', # Leo 4.5.1
-    'nsi'   : 'none', # Leo 4.8.
-    'nw'    : 'none', # noweb.
-    'otl'   : 'none', # vimoutline.
-    'pod'   : 'perl',
-    'tcl'   : 'tcl',
-    'unknown_language': 'none',
-    'w'     : 'none', # cweb
-}
-
-self.global_commands_dict = {}
-.. @+node:ekr.20110528103005.18319: *6* Script to global data structures from in modes/*.py files
-import glob
-import imp
-
-theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
-aList = glob.glob(theDir)
-theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes')
-
-print('-'*40,len(aList))
-known_keys = list(g.app.language_delims_dict.keys())
-known_keys.sort()
-known = []
-computed = {}
-for z in aList:
-    name = g.os_path_basename(z)
-    name2 = name[:-3]
-    if name2.startswith('__'): continue
-    # if name2 in known_keys:
-        # known.append(name)
-        # continue
-    try:
-        theFile, pathname, description = imp.find_module(name2,[theDir])
-        m = imp.load_module(name2, theFile, pathname, description)
-    except Exception:
-        g.es_exception()
-        m = None
-    if m:
-        aList2 = [m.properties.get(z)
-            for z in ('lineComment','commentStart','commentEnd')
-                if m.properties.get(z)]
-        print('%-20s : "%s",' % (
-            '"%s"' % (name2),
-            ' '.join(aList2)))
-        computed[name2] = ' '.join(aList2)
-mismatches = 0
-for z in known_keys:
-    val = g.app.language_delims_dict.get(z)
-    val2 = computed.get(z)
-    if not val:
-        print('oops: no val',z)
-    elif not val2:
-        print('oops: no val2',z)
-    elif val != val2:
-        mismatches += 1
-        print('mismatch for %s' % z)
-        print(repr(val))
-        print(repr(val2))
-print('%s total languages' % len(aList))
-print('%s new languages' % (len(list(computed.keys())) - len(known_keys)))
-print('%s mismatches' % mismatches)
-print('%s known language: %s' % (len(known_keys),known_keys))
 .. @+node:ekr.20110526083709.18342: *4* Distribution: 2
 .. @+node:ekr.20110525112110.18394: *5* Fix failing unit tests on Linux
 .. @+node:ekr.20110518103946.18179: *5* Add external/leosax.py to leoPyRef.leo
@@ -2032,6 +1560,385 @@ cursor to the 20th line in the file.
 The ability to specify a numeric range prefix to an object is not supported. For
 example, the "d2fx" command should Delete up to and including the 2nd Found "x"
 character.
+.. @+node:ekr.20090801103907.6018: *4* Add entries to global dicts for more languages (waiting for requests)
+http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+
+Especially languages in leo/modes.
+
+** Only c.getOpenWithExt uses app.language_extension_dict.
+
+I'll wait until I get requests for particular language.
+.. @+node:ekr.20110528103005.18323: *5* Found: extension_dict
+.. @+node:ekr.20080819075811.13: *6* adjustTargetLanguage
+def adjustTargetLanguage (self,fn):
+
+    """Use the language implied by fn's extension if
+    there is a conflict between it and c.target_language."""
+
+    at = self ; c = at.c
+
+    if c.target_language:
+        junk,target_ext = g.os_path_splitext(fn)  
+    else:
+        target_ext = ''
+
+    junk,ext = g.os_path_splitext(fn)
+
+    if ext:
+        if ext.startswith('.'): ext = ext[1:]
+
+        language = g.app.extension_dict.get(ext)
+        if language:
+            c.target_language = language
+        else:
+            # An unknown language.
+            pass # Use the default language, **not** 'unknown_language'
+.. @+node:ekr.20090212054250.9: *6* c.createNodeFromExternalFile
+def createNodeFromExternalFile(self,fn):
+
+    '''Read the file into a node.
+    Return None, indicating that c.open should set focus.'''
+
+    c = self
+
+    s,e = g.readFileIntoString(fn)
+    if s is None: return
+    head,ext = g.os_path_splitext(fn)
+    if ext.startswith('.'): ext = ext[1:]
+    language = g.app.extension_dict.get(ext)
+    if language:
+        prefix = '@color\n@language %s\n\n' % language
+    else:
+        prefix = '@killcolor\n\n'
+    p2 = c.insertHeadline(op_name='Open File', as_child=False)
+    p2.h = '@edit %s' % fn # g.shortFileName(fn)
+    p2.b = prefix + s
+    w = c.frame.body.bodyCtrl
+    if w: w.setInsertPoint(0)
+    c.redraw()
+    c.recolor()
+.. @+node:ekr.20031218072017.2824: *6* c.getOpenWithExt
+def getOpenWithExt (self,p,ext):
+
+    trace = False and not g.app.unitTesting
+    c = self
+
+    if not ext:
+        # if node is part of @<file> tree, get ext from file name
+        for p2 in p.self_and_parents():
+            if p2.isAnyAtFileNode():
+                fn = p2.h.split(None,1)[1]
+                ext = g.os_path_splitext(fn)[1]
+                if trace: g.trace('found node:',ext,p2.h)
+                break
+
+    if not ext:
+        theDict = c.scanAllDirectives()
+        language = theDict.get('language')
+        ext = g.app.language_extension_dict.get(language)
+        if trace: g.trace('found directive',language,ext)
+
+    if not ext:
+        ext = '.txt'
+        if trace: g.trace('use default (.txt)')
+
+    if ext[0] != '.':
+        ext = '.'+ext
+
+    return ext
+.. @+node:EKR.20040504150046.4: *6* g.comment_delims_from_extension
+def comment_delims_from_extension(filename):
+
+    """
+    Return the comment delims corresponding to the filename's extension.
+
+    >>> import leo.core.leoGlobals as g
+    >>> g.comment_delims_from_extension(".py")
+    ('#', '', '')
+
+    >>> g.comment_delims_from_extension(".c")
+    ('//', '/*', '*/')
+
+    >>> g.comment_delims_from_extension(".html")
+    ('', '<!--', '-->')
+
+    """
+
+    if filename.startswith('.'):
+        # Python 2.6 changes how splitext works.
+        root,ext = None,filename
+    else:
+        root, ext = os.path.splitext(filename)
+    if ext == '.tmp':
+        root, ext = os.path.splitext(root)
+
+    language = g.app.extension_dict.get(ext[1:])
+    if ext:
+        return g.set_delims_from_language(language)
+    else:
+        g.trace("unknown extension: %s, filename: %s, root: %s" % (
+            repr(ext),repr(filename),repr(root)))
+        return '','',''
+.. @+node:ekr.20080811174246.1: *6* languageForExtension
+def languageForExtension (self,ext):
+
+    '''Return the language corresponding to the extension ext.'''
+
+    unknown = 'unknown_language'
+
+    if ext.startswith('.'): ext = ext[1:]
+
+    if ext:
+        z = g.app.extra_extension_dict.get(ext)
+        if z not in (None,'none','None'):
+            language = z
+        else:
+            language = g.app.extension_dict.get(ext)
+        if language in (None,'none','None'):
+            language = unknown
+    else:
+        language = unknown
+
+    # g.trace(ext,repr(language))
+
+    # Return the language even if there is no colorizer mode for it.
+    return language
+.. @+node:ekr.20031218072017.368: *5* << define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM_", # Use the REM hack.
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "cython"        : "#",
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "haskell"       : "--_ {-_ _-}",
+    "haxe"          : "//",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lisp"          : ";", # EKR: 2010/09/29
+    "lua"           : "--",  # ddm 13/02/06
+    "nsi"           : ";", # EKR: 2010/10/27
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "rest"          : ".._",
+    "rst"           : ".._",
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "scala"         : "// /* */",
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--',
+        # For unknown extensions in @shadow files.
+    "vim"           : "\"",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
+}
+
+# Used only by c.getOpenWithExt.
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "cython"        : "pyd",
+    "cython"        : "pyi",
+    "cython"        : "pyx",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f90",
+    "haskell"       : "hs",
+    "haxe"          : "hx",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "nsi"           : "nsi", # EKR: 2010/10/27
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    # "rst"           : "rst", # caught by pylint.
+    "rst"           : "rest",
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "scala"         : "scala",
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vim"           : "vim",
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+    "xslt"          : "xsl",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "hs"    : "haskell",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nsi"   : "nsi", # EKR: 2010/10/27
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "pyd"   : "cython",
+    "pyi"   : "cython",
+    "pyx"   : "cython",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "scala" : "scala",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+    "w"     : "cweb",
+    "xml"   : "xml",
+    "xsl"   : "xslt",
+    "hx"    : "haxe",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran90',
+    'hx'    : 'none',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nsi'   : 'none', # Leo 4.8.
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+
+self.global_commands_dict = {}
+.. @+node:ekr.20110528103005.18319: *5* Script to global data structures from in modes/*.py files
+import glob
+import imp
+
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
+aList = glob.glob(theDir)
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes')
+
+print('-'*40,len(aList))
+known_keys = list(g.app.language_delims_dict.keys())
+known_keys.sort()
+known = []
+computed = {}
+for z in aList:
+    name = g.os_path_basename(z)
+    name2 = name[:-3]
+    if name2.startswith('__'): continue
+    # if name2 in known_keys:
+        # known.append(name)
+        # continue
+    try:
+        theFile, pathname, description = imp.find_module(name2,[theDir])
+        m = imp.load_module(name2, theFile, pathname, description)
+    except Exception:
+        g.es_exception()
+        m = None
+    if m:
+        aList2 = [m.properties.get(z)
+            for z in ('lineComment','commentStart','commentEnd')
+                if m.properties.get(z)]
+        print('%-20s : "%s",' % (
+            '"%s"' % (name2),
+            ' '.join(aList2)))
+        computed[name2] = ' '.join(aList2)
+mismatches = 0
+for z in known_keys:
+    val = g.app.language_delims_dict.get(z)
+    val2 = computed.get(z)
+    if not val:
+        print('oops: no val',z)
+    elif not val2:
+        print('oops: no val2',z)
+    elif val != val2:
+        mismatches += 1
+        print('mismatch for %s' % z)
+        print(repr(val))
+        print(repr(val2))
+print('%s total languages' % len(aList))
+print('%s new languages' % (len(list(computed.keys())) - len(known_keys)))
+print('%s mismatches' % mismatches)
+print('%s known language: %s' % (len(known_keys),known_keys))
 .. @+node:ekr.20110527225107.18351: *3* Vague
 @language rest
 

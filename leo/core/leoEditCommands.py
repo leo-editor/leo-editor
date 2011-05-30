@@ -1689,6 +1689,7 @@ class editCommandsClass (baseEditCommandsClass):
             'remove-blank-lines':                   self.removeBlankLines,
             'remove-space-from-lines':              self.removeSpaceFromLines,
             'remove-tab-from-lines':                self.removeTabFromLines,
+            'replace-current-character':            self.replaceCurrentCharacter,
             'reverse-region':                       self.reverseRegion,
             'reverse-sort-lines':                   self.reverseSortLines,
             'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,
@@ -3145,6 +3146,34 @@ class editCommandsClass (baseEditCommandsClass):
         if changed:
             oldSel = None ; undoType = 'remove-blank-lines'
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
+    #@+node:ekr.20110530082209.18248: *4* replaceCurrentCharacter
+    def replaceCurrentCharacter (self,event):
+
+        c = self.c ; k = self.k ; tag = 'replace-current-character'
+        state = k.getState(tag)
+
+        if state == 0:
+            w = self.editWidget(event) # sets self.w
+            if w:
+                k.setLabelBlue('Replace Character: ',protect=True)
+                k.getArg(event,tag,1,self.replaceCurrentCharacter)
+        else:
+            w = self.w
+            ch = k.arg
+            if ch:
+                i,j = w.getSelectionRange()
+                if i > j: i,j = j,i
+                # Use raw insert/delete to retain the coloring.
+                if i == j:
+                    i = max(0,i-1)
+                    w.delete(i)
+                else:
+                    w.delete(i,j)
+                w.insert(i,ch)
+                w.setInsertPoint(i+1)
+            k.clearState()
+            k.resetLabel()
+            k.showStateAndMode()
     #@+node:ekr.20051125080855: *4* selfInsertCommand, helpers
     def selfInsertCommand(self,event,action='insert'):
 
