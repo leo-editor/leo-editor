@@ -180,6 +180,7 @@ class LeoApp:
             "rest"          : ".._",
             "rst"           : ".._",
             "ruby"          : "#",  # thyrsus 2008-11-05
+            "scala"         : "// /* */",
             "shell"         : "#",  # shell scripts
             "tcltk"         : "#",
             "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
@@ -233,6 +234,7 @@ class LeoApp:
             # "rst"           : "rst", # caught by pylint.
             "rst"           : "rest",
             "ruby"          : "rb",   # thyrsus 2008-11-05
+            "scala"         : "scala",
             "shell"         : "sh",   # DS 4/1/04
             "tex"           : "tex",
             "tcltk"         : "tcl",
@@ -282,6 +284,7 @@ class LeoApp:
             "rb"    : "ruby", # thyrsus 2008-11-05
             "rest"  : "rst",
             "rst"   : "rst",
+            "scala" : "scala",
             "sh"    : "shell",
             "tex"   : "tex",
             "txt"   : "plain",

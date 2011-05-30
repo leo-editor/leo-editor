@@ -7,14 +7,6 @@
 @language rest
 .. @+node:ekr.20110523201030.18291: *3* b1
 @language rest
-.. @+node:ekr.20110529115328.18242: *4* Post re emacs commands
-@nocolor-node
- 
-Does anyone use repeat counts?
-
-Does anyone care about universal args and other emacs-minutia?
-
-Would anyone care if I removed number-command-n commands?
 .. @+node:ekr.20110523130519.19219: *4* Bug 525004: bash code not colored properly
 .. @+node:ekr.20110523130519.19220: *5* Report
 https://bugs.launchpad.net/leo-editor/+bug/525004
@@ -39,8 +31,102 @@ correctly. This becomes clear if the first line is replaced with #!/
 bin/bash and this code is opened in vim/scite. I've tried only these
 two editors, they highlight the variable names correctly.
 .. @+node:ekr.20110529115328.18251: *4* Support multiple @language directives in a single node
-This is more important now...
+Ironically, this is more important now that @language directives are optional.
+.. @+node:ekr.20110529115328.18246: *4* Solvable vim-related problems: 3
+# These are bugs, since Tom L wanted them.
+.. @+node:ekr.20100112051224.6233: *5* Replace current character command
+Vi's "r" command allows user to replace the current character with the next
+entered character.
+.. @+node:ekr.20100112051224.6232: *5* Toggle case command (easy)
+Leo provides support for switching to upper or lower case but no method exists
+to toggle between cases (used by Vi's "~" command).
+
+.. @+node:ekr.20110529115328.18240: *5* Fix forward and backward by sentences
+@nocolor-node
+
+
+Leo's sentence related functions:
+
+- do not stop at empty lines.
+- do not skip periods within words.
+- do not stop at sentences ending in non-periods.
+- do not stop at the end or beginning of the buffer.
+
+Note: see forwardSentenceHelper and backSentenceHelper functions.
+.. @+node:ekr.20050920084036.131: *6* sentences & helpers
+def backSentence (self,event):
+    '''Move the cursor to the previous sentence.'''
+    self.backSentenceHelper(event,extend=False)
+
+def backSentenceExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the previous sentence.'''
+    self.backSentenceHelper(event,extend=True)
+
+def forwardSentence (self,event):
+    '''Move the cursor to the next sentence.'''
+    self.forwardSentenceHelper(event,extend=False)
+
+def forwardSentenceExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the next sentence.'''
+    self.forwardSentenceHelper(event,extend=True)
+.. @+node:ekr.20051213094517: *7* backSentenceHelper
+def backSentenceHelper (self,event,extend):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    s = w.getAllText()
+    i = w.getInsertPoint()
+
+    # To do:
+    # - Stop at empty lines.
+    # - Skip periods within words.
+    # - Stop at sentences ending in non-periods.
+
+    while i >= 0:
+        if s[i] == '.': break
+        i -= 1
+    else: return
+
+    j = i-1
+    while j >= 0:
+        if s[j] == '.':
+            j += 1 ; break
+        j -= 1
+    else: j = 0
+
+    while j < i and s[j].isspace():
+        j += 1
+
+    if j < i:
+        self.moveToHelper(event,j,extend)
+.. @+node:ekr.20050920084036.137: *7* forwardSentenceHelper
+def forwardSentenceHelper (self,event,extend):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    
+    # To do:
+    # - Stop at empty lines.
+    # - Skip periods within words.
+    # - Stop at sentences ending in non-periods.
+    
+    # Naive.
+    i = s.find('.',ins) + 1
+    
+    
+    i = min(i,len(s))
+    self.moveToHelper(event,i,extend)
 .. @+node:ekr.20110528180209.18237: *4* Improvements: 4
+# Can be delayed until b2, but they would be better in b1.
 .. @+node:ekr.20110528034751.18271: *5* Put apropos text using viewrendered plugin
 .. @+node:ekr.20101124145006.5842: *5* Unify extract commands
 http://groups.google.com/group/leo-editor/browse_thread/thread/679614fdd6a76a81#
@@ -255,6 +341,7 @@ self.language_delims_dict = {
     "rest"          : ".._",
     "rst"           : ".._",
     "ruby"          : "#",  # thyrsus 2008-11-05
+    "scala"         : "// /* */",
     "shell"         : "#",  # shell scripts
     "tcltk"         : "#",
     "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
@@ -308,6 +395,7 @@ self.language_extension_dict = {
     # "rst"           : "rst", # caught by pylint.
     "rst"           : "rest",
     "ruby"          : "rb",   # thyrsus 2008-11-05
+    "scala"         : "scala",
     "shell"         : "sh",   # DS 4/1/04
     "tex"           : "tex",
     "tcltk"         : "tcl",
@@ -357,6 +445,7 @@ self.extension_dict = {
     "rb"    : "ruby", # thyrsus 2008-11-05
     "rest"  : "rst",
     "rst"   : "rst",
+    "scala" : "scala",
     "sh"    : "shell",
     "tex"   : "tex",
     "txt"   : "plain",
@@ -446,98 +535,6 @@ print('%s total languages' % len(aList))
 print('%s new languages' % (len(list(computed.keys())) - len(known_keys)))
 print('%s mismatches' % mismatches)
 print('%s known language: %s' % (len(known_keys),known_keys))
-.. @+node:ekr.20110529115328.18246: *4* Solvable vim-related problems: 3
-.. @+node:ekr.20100112051224.6233: *5* Replace current character command
-Vi's "r" command allows user to replace the current character with the next
-entered character.
-.. @+node:ekr.20100112051224.6232: *5* Toggle case command (easy)
-Leo provides support for switching to upper or lower case but no method exists
-to toggle between cases (used by Vi's "~" command).
-
-.. @+node:ekr.20110529115328.18240: *5* Fix forward and backward by sentences
-@nocolor-node
-
-
-Leo's sentence related functions:
-
-- do not stop at empty lines.
-- do not skip periods within words.
-- do not stop at sentences ending in non-periods.
-- do not stop at the end or beginning of the buffer.
-
-Note: see forwardSentenceHelper and backSentenceHelper functions.
-.. @+node:ekr.20050920084036.131: *6* sentences & helpers
-def backSentence (self,event):
-    '''Move the cursor to the previous sentence.'''
-    self.backSentenceHelper(event,extend=False)
-
-def backSentenceExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the previous sentence.'''
-    self.backSentenceHelper(event,extend=True)
-
-def forwardSentence (self,event):
-    '''Move the cursor to the next sentence.'''
-    self.forwardSentenceHelper(event,extend=False)
-
-def forwardSentenceExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the next sentence.'''
-    self.forwardSentenceHelper(event,extend=True)
-.. @+node:ekr.20051213094517: *7* backSentenceHelper
-def backSentenceHelper (self,event,extend):
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-    s = w.getAllText()
-    i = w.getInsertPoint()
-
-    # To do:
-    # - Stop at empty lines.
-    # - Skip periods within words.
-    # - Stop at sentences ending in non-periods.
-
-    while i >= 0:
-        if s[i] == '.': break
-        i -= 1
-    else: return
-
-    j = i-1
-    while j >= 0:
-        if s[j] == '.':
-            j += 1 ; break
-        j -= 1
-    else: j = 0
-
-    while j < i and s[j].isspace():
-        j += 1
-
-    if j < i:
-        self.moveToHelper(event,j,extend)
-.. @+node:ekr.20050920084036.137: *7* forwardSentenceHelper
-def forwardSentenceHelper (self,event,extend):
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    
-    # To do:
-    # - Stop at empty lines.
-    # - Skip periods within words.
-    # - Stop at sentences ending in non-periods.
-    
-    # Naive.
-    i = s.find('.',ins) + 1
-    
-    
-    i = min(i,len(s))
-    self.moveToHelper(event,i,extend)
 .. @+node:ekr.20110526083709.18342: *4* Distribution: 2
 .. @+node:ekr.20110525112110.18394: *5* Fix failing unit tests on Linux
 .. @+node:ekr.20110518103946.18179: *5* Add external/leosax.py to leoPyRef.leo
