@@ -543,9 +543,7 @@
 <v t="ekr.20070925144534.56"><vh>@item select-all</vh></v>
 <v t="ekr.20070925144534.57"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.58"><vh>@menu Edit &amp;Body...</vh>
-<v t="ekr.20070925144534.59"><vh>@item *extract-&amp;section</vh></v>
 <v t="ekr.20070925144534.60"><vh>@item *extract-&amp;names</vh></v>
-<v t="ekr.20101114064731.8352"><vh>@item *extract-p&amp;ython-method</vh></v>
 <v t="ekr.20070925144534.61"><vh>@item *&amp;extract</vh></v>
 <v t="ekr.20070925144534.62"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.63"><vh>@item *convert-all-b&amp;lanks</vh></v>
@@ -4447,8 +4445,8 @@ export-headlines                    = None
 extend-to-paragraph                 = Alt-h
 extract                             = Shift-Ctrl-D
 extract-names                       = Shift-Ctrl-N
-extract-python-method               = None
-extract-section                     = Shift-Ctrl-E</t>
+# extract-python-method               = None
+# extract-section                     = Shift-Ctrl-E</t>
 <t tx="ekr.20051007200824">@nocolor
 
 This node contains sets of key bindings and settings.
@@ -4800,8 +4798,8 @@ extend-to-sentence                  = None
 extend-to-word                      = None
 extract                             = None
 extract-names                       = None
-extract-python-method               = None
-extract-section                     = None
+# extract-python-method               = None
+# extract-section                     = None
 </t>
 <t tx="ekr.20060104093101">@nocolor
 
@@ -6261,8 +6259,8 @@ expand-next-level           = None
 expand-node                 = Alt-]
 extract                     = Shift-Ctrl-D
 extract-names               = Shift-Ctrl-N
-extract-python-method       = None
-extract-section             = Shift-Ctrl-S  # Shift-Ctrl-E: end-of-line-extend-selection
+# extract-python-method       = None
+# extract-section             = Shift-Ctrl-S
 goto-next-clone             = Alt-N
 insert-child                = Ctrl-Insert
 insert-node                 = Ctrl-I
@@ -7046,7 +7044,6 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.56">Select &amp;All</t>
 <t tx="ekr.20070925144534.57"></t>
 <t tx="ekr.20070925144534.58"></t>
-<t tx="ekr.20070925144534.59"></t>
 <t tx="ekr.20070925144534.6">&amp;Close</t>
 <t tx="ekr.20070925144534.60"></t>
 <t tx="ekr.20070925144534.61"></t>
@@ -8093,7 +8090,6 @@ False: (Good for files like unitTest.leo)
     be expanded when Leo opens an outline.</t>
 <t tx="ekr.20101104191857.8345">True:  put non-definition code in separate nodes.
 False: put trailing non-definition code at the start of the next node.</t>
-<t tx="ekr.20101114064731.8352"></t>
 <t tx="ekr.20110209093958.15416"></t>
 <t tx="ekr.20110406082808.18152"></t>
 <t tx="ekr.20110406082808.18153"></t>

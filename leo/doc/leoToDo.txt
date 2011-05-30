@@ -7,18 +7,7 @@
 @language rest
 .. @+node:ekr.20110523201030.18291: *3* b1
 @language rest
-.. @+node:ekr.20110528180209.18237: *4* Improvements: 3
-.. @+node:ekr.20101124145006.5842: *5* Unify extract commands
-http://groups.google.com/group/leo-editor/browse_thread/thread/679614fdd6a76a81#
-
-I think this should be combined with extract-section (ctrl-shift-x), so that
-
-- if the first line of selection is << foo >>, it created a node with
-headline << foo >>
-
-- If the  first line is def foo, create a node with headline foo
-
-- Extend as appropriate.
+.. @+node:ekr.20110528180209.18237: *4* Improvements: 2
 .. @+node:ekr.20061006165447: *5* Let import commands decide what kind of import to do
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3940843
@@ -119,12 +108,11 @@ def forwardSentenceHelper (self,event,extend):
     
     i = min(i,len(s))
     self.moveToHelper(event,i,extend)
-.. @+node:ekr.20110530063322.18332: *4* Minor bugs: 2
-@nocolor-node
+.. @+node:ekr.20110530063322.18332: *4* Colorizer bugs: 2
+There are bugs re the match_mark_previous/following pattern matchers.
 
-The syntax-coloring bugs probably require complete rewrites of modes/scala.py and modes/shell.py.
-
-These could be delayed until b2.
+The proper thing to do is fix those matchers.  I'll attempt a fix for b1, but
+the final code may be delayed until b2. 
 .. @+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
 .. @+node:ekr.20110523130519.19220: *6* Report
 https://bugs.launchpad.net/leo-editor/+bug/525004

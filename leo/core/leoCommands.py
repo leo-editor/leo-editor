@@ -3077,132 +3077,97 @@ class baseCommands (object):
         if changed:
             result = ''.join(result)
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
-    #@+node:ekr.20031218072017.1706: *6* extract
+    #@+node:ekr.20110530124245.18238: *6* c.extract...
+    #@+node:ekr.20110530124245.18239: *7* extract & helpers
     def extract (self,event=None):
 
-        '''Create child node from the elected body text, deleting all selected text.
-        The text must start with a section reference.  This becomes the new child's headline.
-        The body text of the new child node contains all selected lines that follow the section reference line.'''
-
-        c = self ; u = c.undoer ; undoType = 'Extract'
-        current = c.p
-        head,lines,tail,oldSel,oldYview = self.getBodyLines()
-        if lines:
-            headline = lines[0].strip()
-            del lines[0]
-        if not lines:
-            if not g.unitTesting:
-                g.es("nothing follows section name",color="blue")
-            return
-
-        # Remove leading whitespace from all body lines.
-        junk, ws = g.skip_leading_ws_with_indent(lines[0],0,c.tab_width)
-        strippedLines = [g.removeLeadingWhitespace(line,ws,c.tab_width)
-            for line in lines]
-        newBody = ''.join(strippedLines)
-        if head: head = head.rstrip()
-
-        u.beforeChangeGroup(current,undoType)
-        if 1: # In group...
-            undoData = u.beforeInsertNode(current)
-            p = c.createLastChildNode(current,headline,newBody)
-            u.afterInsertNode(p,undoType,undoData)
-            c.updateBodyPane(head+'\n',None,tail,undoType=undoType,oldSel=None,oldYview=oldYview)
-        u.afterChangeGroup(current,undoType=undoType)
-        c.redraw(p)
-    #@+node:ekr.20101114064731.5828: *6* extractPythonMethod
-    def extractPythonMethod (self,event=None):
-
-        '''Create child node from the elected body text, deleting all selected text.
-        The text must start with Python def statement This becomes the new child's
-        headline. The body text of the new child node contains all selected lines
+        '''Create child node from the selected body text.
+            
+        1. If the selection starts with a section reference, the section name become
+           the child's headline. All following lines become the child's body text.
+           The section reference line remains in the original body text.
+           
+        2. If the selection looks like a Python class or definition line, the
+           class/function/method name becmes child's headline and all selected lines
+           become the child's body text.
+           
+        3. Otherwise, the first line becomes the child's headline, and all selected
+           lines become the child's body text.
         '''
 
-        c = self ; u = c.undoer ; undoType = 'extract-python-method'
-        current = c.p
+        c,current,u,undoType = self,self.p,self.undoer,'Extract'
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
-        if lines:
-            h = lines[0].strip()
-            # Set h to the function name.
-            if h.startswith('def'):
-                h = h[3:].strip()
-                i = h.find('(')
-                if i > -1:
-                    h = h[:i].strip()
-            else:
-                if not g.unitTesting:
-                    g.note("no def line")
-                return
-        else:
-            if not g.unitTesting:
-                g.note("no lines")
-            return
-
-        # Remove leading whitespace from all body lines.
+        if not lines: return # Nothing selected.
+        
+        # Remove leading whitespace.
         junk, ws = g.skip_leading_ws_with_indent(lines[0],0,c.tab_width)
-        strippedLines = [g.removeLeadingWhitespace(line,ws,c.tab_width)
-            for line in lines]
-        newBody = ''.join(strippedLines)
-        if head: head = head.rstrip()
-
-        u.beforeChangeGroup(current,undoType)
-        if 1: # In group...
-            undoData = u.beforeInsertNode(current)
-            p = c.createLastChildNode(current,h,newBody)
-            u.afterInsertNode(p,undoType,undoData)
-            c.updateBodyPane(head+'\n',None,tail,undoType=undoType,oldSel=None,oldYview=oldYview)
-        u.afterChangeGroup(current,undoType=undoType)
-        c.redraw(p)
-    #@+node:ekr.20031218072017.1708: *6* extractSection
-    def extractSection (self,event=None):
-
-        '''Create a section definition node from the selected body text.
-        The text must start with a section reference.  This becomes the new child's headline.
-        The body text of the new child node contains all selected lines that follow the section reference line.'''
-
-        c = self ; u = c.undoer ; undoType='Extract Section'
-        current = c.p
-        head,lines,tail,oldSel,oldYview = self.getBodyLines()
-        if not lines: return
-
-        line1 = '\n' + lines[0]
-        headline = lines[0].strip() ; del lines[0]
-        #@+<< Set headline for extractSection >>
-        #@+node:ekr.20031218072017.1709: *7* << Set headline for extractSection >>
-        if len(headline) < 5:
-            oops = True
+        lines = [g.removeLeadingWhitespace(s,ws,c.tab_width) for s in lines]
+        
+        h = lines[0].strip()
+        ref_h = c.extractRef(h).strip()
+        def_h = c.extractDef(h).strip()
+        if ref_h:
+            h,b,middle = ref_h,lines[1:],lines[0]
+        elif def_h:
+            h,b,middle = def_h,lines,''
         else:
-            head1 = headline[0:2] == '<<'
-            head2 = headline[0:2] == '@<'
-            tail1 = headline[-2:] == '>>'
-            tail2 = headline[-2:] == '@>'
-            oops = not (head1 and tail1) and not (head2 and tail2)
-
-        if oops:
-            g.es("selected text should start with a section name",color="blue")
-            return
-        #@-<< Set headline for extractSection >>
-        if not lines:
-            if not g.unitTesting:
-                g.es("nothing follows section name",color="blue")
-            return
-
-        # Remove leading whitespace from all body lines.
-        junk, ws = g.skip_leading_ws_with_indent(lines[0],0,c.tab_width)
-        strippedLines = [g.removeLeadingWhitespace(line,ws,c.tab_width)
-            for line in lines]
-        newBody = ''.join(strippedLines)
-        if head: head = head.rstrip()
-
+            h,b,middle = lines[0].strip(),lines[1:],''
+            
         u.beforeChangeGroup(current,undoType)
-        if 1: # In group...
-            undoData = u.beforeInsertNode(current)
-            p = c.createLastChildNode(current,headline,newBody)
-            u.afterInsertNode(p,undoType,undoData)
-            c.updateBodyPane(head+line1,None,tail,undoType=undoType,oldSel=None,oldYview=oldYview)
+
+        undoData = u.beforeInsertNode(current)
+        p = c.createLastChildNode(current,h,''.join(b))
+        u.afterInsertNode(p,undoType,undoData)
+        c.updateBodyPane(head,middle,tail,
+            undoType=undoType,oldSel=None,oldYview=oldYview)
+            
         u.afterChangeGroup(current,undoType=undoType)
-        c.redraw(p)
-    #@+node:ekr.20031218072017.1710: *6* extractSectionNames
+        p.parent().expand()
+        c.redraw(p.parent()) # A bit more convenient than p.
+        c.bodyWantsFocus()
+        
+    # Compatibility
+    extractSection = extract
+    extractPythonMethod = extract
+    #@+node:ekr.20110530124245.18241: *8* extractDef
+    def extractDef (self, s):
+        
+        '''Return the defined function/method name if
+        s looks like Python def or class line.
+        '''
+        
+        s = s.strip()
+        
+        for tag in ('def','class'):
+            if s.startswith(tag):
+                i = g.skip_ws(s,len(tag))
+                j = g.skip_id(s,i,chars='_')
+                if j > i:
+                    name = s[i:j]
+                    if tag == 'class':
+                        return name
+                    else:
+                        k = g.skip_ws(s,j)
+                        if g.match(s,k,'('):
+                            return name
+        return ''
+    #@+node:ekr.20110530124245.18242: *8* extractRef
+    def extractRef (self, s):
+        
+        '''Return s if it starts with a section name.'''
+
+        i = s.find('<<')
+        j = s.find('>>')
+        if -1 < i < j:
+            return s
+            
+        i = s.find('@<')
+        j = s.find('@>')
+        if -1 < i < j:
+            return s
+        
+        return ''
+    #@+node:ekr.20031218072017.1710: *7* extractSectionNames
     def extractSectionNames(self,event=None):
 
         '''Create child nodes for every section reference in the selected text.
@@ -3219,7 +3184,7 @@ class baseCommands (object):
             found = False
             for s in lines:
                 #@+<< Find the next section name >>
-                #@+node:ekr.20031218072017.1711: *7* << Find the next section name >>
+                #@+node:ekr.20031218072017.1711: *8* << Find the next section name >>
                 head1 = s.find("<<")
                 if head1 > -1:
                     head2 = s.find(">>",head1)

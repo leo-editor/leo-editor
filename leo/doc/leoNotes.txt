@@ -4591,6 +4591,131 @@ def swapHelper (self,w,find,ftext,lind,ltext):
 
     self.swapSpots.pop()
     self.swapSpots.pop()
+#@+node:ekr.20110530124245.18240: *3* Old extract commands
+#@+node:ekr.20031218072017.1706: *4* extract (OLD)
+def extract (self,event=None):
+
+    '''Create child node from the selected body text, deleting all selected text.
+    The text must start with a section reference.  This becomes the new child's headline.
+    The body text of the new child node contains all selected lines that follow the section reference line.'''
+
+    c = self ; u = c.undoer ; undoType = 'Extract'
+    current = c.p
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    if lines:
+        headline = lines[0].strip()
+        del lines[0]
+    if not lines:
+        if not g.unitTesting:
+            g.es("nothing follows section name",color="blue")
+        return
+
+    # Remove leading whitespace from all body lines.
+    junk, ws = g.skip_leading_ws_with_indent(lines[0],0,c.tab_width)
+    strippedLines = [g.removeLeadingWhitespace(line,ws,c.tab_width)
+        for line in lines]
+    newBody = ''.join(strippedLines)
+    if head: head = head.rstrip()
+
+    u.beforeChangeGroup(current,undoType)
+    if 1: # In group...
+        undoData = u.beforeInsertNode(current)
+        p = c.createLastChildNode(current,headline,newBody)
+        u.afterInsertNode(p,undoType,undoData)
+        c.updateBodyPane(head+'\n',None,tail,undoType=undoType,oldSel=None,oldYview=oldYview)
+    u.afterChangeGroup(current,undoType=undoType)
+    c.redraw(p)
+#@+node:ekr.20101114064731.5828: *4* extractPythonMethod
+def extractPythonMethod (self,event=None):
+
+    '''Create child node from the selected body text, deleting all selected text.
+    The text must start with Python def statement This becomes the new child's
+    headline. The body text of the new child node contains all selected lines
+    '''
+
+    c = self ; u = c.undoer ; undoType = 'extract-python-method'
+    current = c.p
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    if lines:
+        h = lines[0].strip()
+        # Set h to the function name.
+        if h.startswith('def'):
+            h = h[3:].strip()
+            i = h.find('(')
+            if i > -1:
+                h = h[:i].strip()
+        else:
+            if not g.unitTesting:
+                g.note("no def line")
+            return
+    else:
+        if not g.unitTesting:
+            g.note("no lines")
+        return
+
+    # Remove leading whitespace from all body lines.
+    junk, ws = g.skip_leading_ws_with_indent(lines[0],0,c.tab_width)
+    strippedLines = [g.removeLeadingWhitespace(line,ws,c.tab_width)
+        for line in lines]
+    newBody = ''.join(strippedLines)
+    if head: head = head.rstrip()
+
+    u.beforeChangeGroup(current,undoType)
+    if 1: # In group...
+        undoData = u.beforeInsertNode(current)
+        p = c.createLastChildNode(current,h,newBody)
+        u.afterInsertNode(p,undoType,undoData)
+        c.updateBodyPane(head+'\n',None,tail,undoType=undoType,oldSel=None,oldYview=oldYview)
+    u.afterChangeGroup(current,undoType=undoType)
+    c.redraw(p)
+#@+node:ekr.20031218072017.1708: *4* extractSection
+def extractSection (self,event=None):
+
+    '''Create a section definition node from the selected body text.
+    The text must start with a section reference.  This becomes the new child's headline.
+    The body text of the new child node contains all selected lines that follow the section reference line.'''
+
+    c = self ; u = c.undoer ; undoType='Extract Section'
+    current = c.p
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    if not lines: return
+
+    line1 = '\n' + lines[0]
+    headline = lines[0].strip() ; del lines[0]
+    << Set headline for extractSection >>
+    if not lines:
+        if not g.unitTesting:
+            g.es("nothing follows section name",color="blue")
+        return
+
+    # Remove leading whitespace from all body lines.
+    junk, ws = g.skip_leading_ws_with_indent(lines[0],0,c.tab_width)
+    strippedLines = [g.removeLeadingWhitespace(line,ws,c.tab_width)
+        for line in lines]
+    newBody = ''.join(strippedLines)
+    if head: head = head.rstrip()
+
+    u.beforeChangeGroup(current,undoType)
+    if 1: # In group...
+        undoData = u.beforeInsertNode(current)
+        p = c.createLastChildNode(current,headline,newBody)
+        u.afterInsertNode(p,undoType,undoData)
+        c.updateBodyPane(head+line1,None,tail,undoType=undoType,oldSel=None,oldYview=oldYview)
+    u.afterChangeGroup(current,undoType=undoType)
+    c.redraw(p)
+#@+node:ekr.20031218072017.1709: *5* << Set headline for extractSection >>
+if len(headline) < 5:
+    oops = True
+else:
+    head1 = headline[0:2] == '<<'
+    head2 = headline[0:2] == '@<'
+    tail1 = headline[-2:] == '>>'
+    tail2 = headline[-2:] == '@>'
+    oops = not (head1 and tail1) and not (head2 and tail2)
+
+if oops:
+    g.es("selected text should start with a section name",color="blue")
+    return
 #@+node:ekr.20101127152442.5878: ** Url's
 @color
 

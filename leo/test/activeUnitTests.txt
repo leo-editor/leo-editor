@@ -17570,6 +17570,7 @@ sec line 3
 after
 #@+node:ekr.20050417201845.2: *7* after
 before
+<< section >>
 after
 #@+node:ekr.20050417201845.3: *8* << section >> @nonl
 sec line 1
@@ -17606,7 +17607,7 @@ sec line 3
 after
 #@+node:ekr.20050518070927.2: *7* after
 before
-    << section >>
+<< section >>
 after
 #@+node:ekr.20050518070927.3: *8* << section >> @nonl
 sec line 1

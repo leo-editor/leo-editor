@@ -6748,8 +6748,8 @@ d = {
     'export-headlines':             c.exportHeadlines,
     'extract':                      c.extract,
     'extract-names':                c.extractSectionNames,
-    'extract-python-method':        c.extractPythonMethod,
-    'extract-section':              c.extractSection,
+    # 'extract-python-method':        c.extractPythonMethod,
+    # 'extract-section':              c.extractSection,
     'find-next-clone':              c.findNextClone,
     'flatten-outline':              c.flattenOutline,
     'go-back':                      c.goPrevVisitedNode,
@@ -20443,5 +20443,348 @@ def putApropos (self,s):
         smc.createDialog(kw=kw)
     else:
         g.es(s)
+#@+node:ekr.20101124145006.5842: *4* Unified extract commands
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/679614fdd6a76a81#
+
+Here is the docstring for the new, generalize, extract command:
+
+Create child node from the selected body text.
+    
+1. If the selection starts with a section reference, the section name become the
+   child's headline. All following lines become the child's body text. The
+   section reference line remains in the original body text.
+   
+2. If the selection looks like a Python class or definition line, the
+   class/function/method name becmes child's headline and all selected lines
+   become the child's body text.
+   
+3. Otherwise, the first line becomes the child's headline, and all selected
+   lines become the child's body text.
+
+Note that the extract-section-names command remains.
+
+The extract-section and extract-python-method commands are gone.
+
+@language python
+#@+node:ekr.20050920084036.189: *5* << define dictionary d of names and Leo commands >>
+c = self.c ; f = c.frame
+
+d = {
+    'abort-edit-headline':          f.abortEditLabelCommand,
+    'about-leo':                    c.about,
+    'add-comments':                 c.addComments,     
+    'beautify':                     c.beautifyPythonCode,
+    'beautify-all':                 c.beautifyAllPythonCode,
+    'beautify-tree':                c.beautifyPythonTree,
+    'cascade-windows':              f.cascade,
+    # 'check-all-python-code':      c.checkAllPythonCode,
+    'check-derived-file':           c.atFileCommands.checkDerivedFile,
+    'check-leo-file':               c.fileCommands.checkLeoFile,
+    'check-outline':                c.checkOutline,
+    # 'check-python-code':          c.checkPythonCode,
+    'clean-recent-files':           c.cleanRecentFiles,
+    'clear-recent-files':           c.clearRecentFiles,
+    'clone-node':                   c.clone,
+    'close-window':                 c.close,
+    'contract-all':                 c.contractAllHeadlines,
+    'contract-all-other-nodes':     c.contractAllOtherNodes,
+    'contract-node':                c.contractNode,
+    'contract-or-go-left':          c.contractNodeOrGoToParent,
+    'contract-parent':              c.contractParent,
+    'convert-all-blanks':           c.convertAllBlanks,
+    'convert-all-tabs':             c.convertAllTabs,
+    'convert-blanks':               c.convertBlanks,
+    'convert-tabs':                 c.convertTabs,
+    'copy-node':                    c.copyOutline,
+    'copy-text':                    f.copyText,
+    'cut-node':                     c.cutOutline,
+    'cut-text':                     f.cutText,
+    'de-hoist':                     c.dehoist,
+    'delete-comments':              c.deleteComments,
+    'delete-node':                  c.deleteOutline,
+    'demote':                       c.demote,
+    'dump-outline':                 c.dumpOutline,
+    'edit-headline':                c.editHeadline,
+    'end-edit-headline':            f.endEditLabelCommand,
+    'equal-sized-panes':            f.equalSizedPanes,
+    'execute-script':               c.executeScript,
+    'exit-leo':                     g.app.onQuit,
+    'expand-all':                   c.expandAllHeadlines,
+    'expand-all-subheads':          c.expandAllSubheads,
+        # Fixes bug 604037 Status of expandAllSubheads
+    'expand-ancestors-only':        c.expandOnlyAncestorsOfNode,
+    'expand-and-go-right':          c.expandNodeAndGoToFirstChild,
+    'expand-next-level':            c.expandNextLevel,
+    'expand-node':                  c.expandNode,
+    'expand-or-go-right':           c.expandNodeOrGoToFirstChild,
+    'expand-prev-level':            c.expandPrevLevel,
+    'expand-to-level-1':            c.expandLevel1,
+    'expand-to-level-2':            c.expandLevel2,
+    'expand-to-level-3':            c.expandLevel3,
+    'expand-to-level-4':            c.expandLevel4,
+    'expand-to-level-5':            c.expandLevel5,
+    'expand-to-level-6':            c.expandLevel6,
+    'expand-to-level-7':            c.expandLevel7,
+    'expand-to-level-8':            c.expandLevel8,
+    'expand-to-level-9':            c.expandLevel9,
+    'export-headlines':             c.exportHeadlines,
+    'extract':                      c.extract,
+    'extract-names':                c.extractSectionNames,
+    # 'extract-python-method':        c.extractPythonMethod,
+    # 'extract-section':              c.extractSection,
+    'find-next-clone':              c.findNextClone,
+    'flatten-outline':              c.flattenOutline,
+    'go-back':                      c.goPrevVisitedNode,
+    'go-forward':                   c.goNextVisitedNode,
+    'goto-first-node':              c.goToFirstNode,
+    'goto-first-sibling':           c.goToFirstSibling,
+    'goto-first-visible-node':      c.goToFirstVisibleNode,
+    'goto-last-node':               c.goToLastNode,
+    'goto-last-sibling':            c.goToLastSibling,
+    'goto-last-visible-node':       c.goToLastVisibleNode,
+    'goto-next-changed':            c.goToNextDirtyHeadline,
+    'goto-next-clone':              c.goToNextClone,
+    'goto-next-history-node':       c.goToNextHistory,
+    'goto-next-marked':             c.goToNextMarkedHeadline,
+    'goto-next-node':               c.selectThreadNext,
+    'goto-next-sibling':            c.goToNextSibling,
+    'goto-next-visible':            c.selectVisNext,
+    'goto-parent':                  c.goToParent,
+    'goto-prev-history-node':       c.goToPrevHistory,
+    'goto-prev-node':               c.selectThreadBack,
+    'goto-prev-sibling':            c.goToPrevSibling,
+    'goto-prev-visible':            c.selectVisBack,
+    'hide-invisibles':              c.hideInvisibles,
+    'hoist':                        c.hoist,
+    'import-at-file':               c.importAtFile,
+    'import-at-root':               c.importAtRoot,
+    'import-cweb-files':            c.importCWEBFiles,
+    'import-derived-file':          c.importDerivedFile,
+    'import-flattened-outline':     c.importFlattenedOutline,
+    'import-noweb-files':           c.importNowebFiles,
+    'indent-region':                c.indentBody,
+    'insert-body-time':             c.insertBodyTime,
+    'insert-child':                 c.insertChild,
+    'insert-headline-time':         f.insertHeadlineTime,
+    'insert-node':                  c.insertHeadline,
+    'mark':                         c.markHeadline,
+    'mark-changed-items':           c.markChangedHeadlines,
+    # 'mark-changed-roots':           c.markChangedRoots,
+    # 'mark-clones':                c.markClones,
+    'mark-subheads':                c.markSubheads,
+    'match-brackets':               c.findMatchingBracket,
+    'minimize-all':                 f.minimizeAll,
+    'move-outline-down':            c.moveOutlineDown,
+    'move-outline-left':            c.moveOutlineLeft,
+    'move-outline-right':           c.moveOutlineRight,
+    'move-outline-up':              c.moveOutlineUp,
+    'new':                          c.new,
+    'open-compare-window':          c.openCompareWindow,
+    'open-find-dialog':             c.showFindPanel, # Deprecated.
+    'open-leoDocs-leo':             c.leoDocumentation,
+    'open-leoPlugins-leo':          c.openLeoPlugins,
+    'open-leoSettings-leo':         c.openLeoSettings,
+    'open-myLeoSettings-leo':       c.openMyLeoSettings,
+    'open-offline-tutorial':        f.leoHelp,
+    'open-online-home':             c.leoHome,
+    'open-online-tutorial':         c.leoTutorial,
+    'open-outline':                 c.open,
+    'open-python-window':           c.openPythonWindow,
+    'open-quickstart-leo':          c.leoQuickStart,
+    'open-scripts-leo':             c.openLeoScripts,
+    'open-users-guide':             c.leoUsersGuide,
+    'open-with':                    c.openWith,
+    'outline-to-cweb':              c.outlineToCWEB,
+    'outline-to-noweb':             c.outlineToNoweb,
+    'paste-node':                   c.pasteOutline,
+    'paste-retaining-clones':       c.pasteOutlineRetainingClones,
+    'paste-text':                   f.pasteText,
+    'pretty-print-all-python-code': c.prettyPrintAllPythonCode,
+    'pretty-print-python-code':     c.prettyPrintPythonCode,
+    'promote':                      c.promote,
+    'read-at-auto-nodes':           c.readAtAutoNodes,
+    'read-at-file-nodes':           c.readAtFileNodes,
+    'read-at-shadow-nodes':         c.readAtShadowNodes,
+    'read-file-into-node':          c.readFileIntoNode,
+    'read-outline-only':            c.readOutlineOnly,
+    'redo':                         c.undoer.redo,
+    'reformat-paragraph':           c.reformatParagraph,
+    'remove-sentinels':             c.removeSentinels,
+    'resize-to-screen':             f.resizeToScreen,
+    'revert':                       c.revert,
+    'save-all':                     c.saveAll,
+    'save-file':                    c.save,
+    'save-file-as':                 c.saveAs,
+    'save-file-as-unzipped':        c.saveAsUnzipped,
+    'save-file-as-zipped':          c.saveAsZipped,
+    'save-file-to':                 c.saveTo,
+    'set-colors':                   c.colorPanel,
+    'set-font':                     c.fontPanel,
+    'settings':                     c.preferences,
+    'show-invisibles':              c.showInvisibles,
+    'sort-children':                c.sortChildren,
+    'sort-recent-files':            c.sortRecentFiles,
+    'sort-siblings':                c.sortSiblings,
+    'tangle':                       c.tangle,
+    'tangle-all':                   c.tangleAll,
+    'tangle-marked':                c.tangleMarked,
+    'toggle-active-pane':           f.toggleActivePane,
+    'toggle-angle-brackets':        c.toggleAngleBrackets,
+    'toggle-invisibles':            c.toggleShowInvisibles,
+    'toggle-sparse-move':           c.toggleSparseMove,
+    'toggle-split-direction':       f.toggleSplitDirection,
+    'undo':                         c.undoer.undo,
+    'unindent-region':              c.dedentBody,
+    'unmark-all':                   c.unmarkAll,
+    'untangle':                     c.untangle,
+    'untangle-all':                 c.untangleAll,
+    'untangle-marked':              c.untangleMarked,
+    'weave':                        c.weave,
+    'write-at-auto-nodes':          c.atFileCommands.writeAtAutoNodes,
+    'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
+    'write-at-shadow-nodes':        c.fileCommands.writeAtShadowNodes,
+    'write-dirty-at-auto-nodes':    c.atFileCommands.writeDirtyAtAutoNodes,
+    'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,
+    'write-dirty-at-shadow-nodes':  c.fileCommands.writeDirtyAtShadowNodes,
+    'write-file-from-node':         c.writeFileFromNode,
+    'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
+    'write-outline-only':           c.fileCommands.writeOutlineOnly,
+}
+#@+node:ekr.20110530124245.18238: *5* c.extract...
+#@+node:ekr.20110530124245.18239: *6* extract & helpers
+def extract (self,event=None):
+
+    '''Create child node from the selected body text.
+        
+    1. If the selection starts with a section reference, the section name become
+       the child's headline. All following lines become the child's body text.
+       The section reference line remains in the original body text.
+       
+    2. If the selection looks like a Python class or definition line, the
+       class/function/method name becmes child's headline and all selected lines
+       become the child's body text.
+       
+    3. Otherwise, the first line becomes the child's headline, and all selected
+       lines become the child's body text.
+    '''
+
+    c,current,u,undoType = self,self.p,self.undoer,'Extract'
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    if not lines: return # Nothing selected.
+    
+    # Remove leading whitespace.
+    junk, ws = g.skip_leading_ws_with_indent(lines[0],0,c.tab_width)
+    lines = [g.removeLeadingWhitespace(s,ws,c.tab_width) for s in lines]
+    
+    h = lines[0].strip()
+    ref_h = c.extractRef(h).strip()
+    def_h = c.extractDef(h).strip()
+    if ref_h:
+        h,b,middle = ref_h,lines[1:],lines[0]
+    elif def_h:
+        h,b,middle = def_h,lines,''
+    else:
+        h,b,middle = lines[0].strip(),lines[1:],''
+        
+    u.beforeChangeGroup(current,undoType)
+
+    undoData = u.beforeInsertNode(current)
+    p = c.createLastChildNode(current,h,''.join(b))
+    u.afterInsertNode(p,undoType,undoData)
+    c.updateBodyPane(head,middle,tail,
+        undoType=undoType,oldSel=None,oldYview=oldYview)
+        
+    u.afterChangeGroup(current,undoType=undoType)
+    p.parent().expand()
+    c.redraw(p.parent()) # A bit more convenient than p.
+    c.bodyWantsFocus()
+    
+# Compatibility
+extractSection = extract
+extractPythonMethod = extract
+#@+node:ekr.20110530124245.18241: *7* extractDef
+def extractDef (self, s):
+    
+    '''Return the defined function/method name if
+    s looks like Python def or class line.
+    '''
+    
+    s = s.strip()
+    
+    for tag in ('def','class'):
+        if s.startswith(tag):
+            i = g.skip_ws(s,len(tag))
+            j = g.skip_id(s,i,chars='_')
+            if j > i:
+                name = s[i:j]
+                if tag == 'class':
+                    return name
+                else:
+                    k = g.skip_ws(s,j)
+                    if g.match(s,k,'('):
+                        return name
+    return ''
+#@+node:ekr.20110530124245.18242: *7* extractRef
+def extractRef (self, s):
+    
+    '''Return s if it starts with a section name.'''
+
+    i = s.find('<<')
+    j = s.find('>>')
+    if -1 < i < j:
+        return s
+        
+    i = s.find('@<')
+    j = s.find('@>')
+    if -1 < i < j:
+        return s
+    
+    return ''
+#@+node:ekr.20031218072017.1710: *6* extractSectionNames
+def extractSectionNames(self,event=None):
+
+    '''Create child nodes for every section reference in the selected text.
+    The headline of each new child node is the section reference.
+    The body of each child node is empty.'''
+
+    c = self ; u = c.undoer ; undoType = 'Extract Section Names'
+    body = c.frame.body ; current = c.p
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    if not lines: return
+
+    u.beforeChangeGroup(current,undoType)
+    if 1: # In group...
+        found = False
+        for s in lines:
+            << Find the next section name >>
+            if name:
+                undoData = u.beforeInsertNode(current)
+                p = self.createLastChildNode(current,name,None)
+                u.afterInsertNode(p,undoType,undoData)
+                found = True
+        c.validateOutline()
+        if not found:
+            g.es("selected text should contain one or more section names",color="blue")
+    u.afterChangeGroup(current,undoType)
+    c.redraw(p)
+
+    # Restore the selection.
+    body.setSelectionRange(oldSel)
+    body.setFocus()
+#@+node:ekr.20031218072017.1711: *7* << Find the next section name >>
+head1 = s.find("<<")
+if head1 > -1:
+    head2 = s.find(">>",head1)
+else:
+    head1 = s.find("@<")
+    if head1 > -1:
+        head2 = s.find("@>",head1)
+
+if head1 == -1 or head2 == -1 or head1 > head2:
+    name = None
+else:
+    name = s[head1:head2+2]
 #@-all
 #@-leo
