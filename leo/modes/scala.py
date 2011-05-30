@@ -114,10 +114,12 @@ scala_main_keywords_dict = {}
 
 # Keywords dict for scala_primary ruleset.
 scala_primary_keywords_dict = {
-	"\t  ": "",
-	"\n": "",
-	"    ": "",
-	"      ": "",
+
+### EKR
+#	"\t  ": "",
+#	"\n": "",
+#	"    ": "",
+#	"      ": "",
 	"=": "",
 	">": "",
 	"Actor": "",
@@ -244,9 +246,9 @@ scala_pattern_keywords_dict = {}
 
 # Keywords dict for scala_scaladoc ruleset.
 scala_scaladoc_keywords_dict = {
-	"\n": "",
-	"    ": "",
-	"      ": "",
+#	"\n": "",
+#	"    ": "",
+#	"      ": "",
 	"@access": "",
 	"@access": "",
 	"@author": "",
@@ -356,6 +358,7 @@ keywordsDictDict = {
 # Rules for scala_main ruleset.
 
 def scala_rule0(colorer, s, i):
+    g.trace(i)
     return colorer.match_mark_following(s, i, kind="label", pattern="@",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
 

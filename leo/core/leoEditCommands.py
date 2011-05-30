@@ -399,133 +399,136 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         return val is not None
     #@+node:ekr.20100901080826.5850: *3* aproposAbbreviations
-    #@@pagewidth 45
-
     def aproposAbbreviations (self,event=None):
+        
+        '''Prints a discussion of abbreviations.'''
+        
+        #@+<< define s >>
+        #@+node:ekr.20110530082209.18251: *4* << define s >>
+        # @pagewidth 45
+        #@@language rest
 
-        s = '''\
+        s = '''
+        apropos-abbreviations
+        =====================
 
-    apropos-abbreviations
-    =====================
+        When abbreviation mode is on (abbrev-mode
+        toggles this mode) Leo will expand
+        abbreviations as you type. Type the name of
+        an abbreviation, followed by a space. As soon
+        as you type the space, Leo will replace the
+        name by the abbreviations value. You can undo
+        the replacement as usual.
 
-    When abbreviation mode is on (abbrev-mode
-    toggles this mode) Leo will expand
-    abbreviations as you type. Type the name of
-    an abbreviation, followed by a space. As soon
-    as you type the space, Leo will replace the
-    name by the abbreviations value. You can undo
-    the replacement as usual.
+        Note that defining any abbreviation
+        automatically turns on abbreviation mode.
 
-    Note that defining any abbreviation
-    automatically turns on abbreviation mode.
+        The add-global-abbreviation command
+        (<alt-x>add-gl<tab><return>) takes the
+        selected text as the replacement value of the
+        abbreviation. The minibuffer prompts you for
+        the name of the abbreviation.
 
-    The add-global-abbreviation command
-    (<alt-x>add-gl<tab><return>) takes the
-    selected text as the replacement value of the
-    abbreviation. The minibuffer prompts you for
-    the name of the abbreviation.
+        Settings
+        ========
 
-    Settings
-    ========
+        As usual, the following settings have effect
+        only in @settings trees:
 
-    As usual, the following settings have effect
-    only in @settings trees:
+        @bool enable-abbreviations (default: False)
 
-    @bool enable-abbreviations (default: False)
+        When true, enables substitution of
+        abbreviations.
 
-    When true, enables substitution of
-    abbreviations.
+        @data global-abbreviations
+        @data abbreviations
 
-    @data global-abbreviations
-    @data abbreviations
+        In both cases, body text contains lines of
+        the form::
 
-    In both cases, body text contains lines of
-    the form::
+           name=value
 
-       name=value
+        name is the abbreviation name, value is the
+        substituted text. Whitespace is ignore around
+        the name, but is significant in the value.
+        Abbreviation names may contain only
+        alphabetic characters, but may start with the
+        '@' sign.
 
-    name is the abbreviation name, value is the
-    substituted text. Whitespace is ignore around
-    the name, but is significant in the value.
-    Abbreviation names may contain only
-    alphabetic characters, but may start with the
-    '@' sign.
+        By *convention* @data global-abbreviations
+        setting should be defined in
+        myLeoSettings.leo, while @data abbreviations
+        should be defined in other .leo files.
+        Regardless of where they are defined,
+        abbreviations in @data abbreviation nodes
+        will override settings (with the same name)
+        in @data global-abbreviations nodes.
 
-    By *convention* @data global-abbreviations
-    setting should be defined in
-    myLeoSettings.leo, while @data abbreviations
-    should be defined in other .leo files.
-    Regardless of where they are defined,
-    abbreviations in @data abbreviation nodes
-    will override settings (with the same name)
-    in @data global-abbreviations nodes.
+        Commands
+        ========
 
-    Commands
-    ========
+        apropos-abbreviations
 
-    apropos-abbreviations
+        Prints this summary.
 
-    Prints this summary.
+        dabbrev-completion
 
-    dabbrev-completion
+        Insert the common prefix of all dynamic
+        abbreviations matching the present word.
+        Similar C-M-/ in Emacs.
 
-    Insert the common prefix of all dynamic
-    abbreviations matching the present word.
-    Similar C-M-/ in Emacs.
+        dabbrev-expands
 
-    dabbrev-expands
+        Expand the word in the buffer before point as
+        a dynamic abbrev, by searching in the buffer
+        for words starting with that abbreviation
+        (dabbrev-expand). Similar to M-/ in Emacs
 
-    Expand the word in the buffer before point as
-    a dynamic abbrev, by searching in the buffer
-    for words starting with that abbreviation
-    (dabbrev-expand). Similar to M-/ in Emacs
+        abbrev-mode
 
-    abbrev-mode
+        Toggles abbreviation mode. Abbreviations are
+        only active when this mode is on.
 
-    Toggles abbreviation mode. Abbreviations are
-    only active when this mode is on.
+        add-global-abbrev
 
-    add-global-abbrev
+        Adds an abbreviation for the selected text.
+        The minibuffer prompts for the abbreviation
+        name.
 
-    Adds an abbreviation for the selected text.
-    The minibuffer prompts for the abbreviation
-    name.
+        inverse-add-global-abbrev
 
-    inverse-add-global-abbrev
+        Adds an abbreviation. The selected text is
+        the abbreviation name. The minibuffer prompts
+        for the value of the abbreviation.
 
-    Adds an abbreviation. The selected text is
-    the abbreviation name. The minibuffer prompts
-    for the value of the abbreviation.
+        kill-all-abbrevs
 
-    kill-all-abbrevs
+        Removes all abbreviations.
 
-    Removes all abbreviations.
+        list-abbrevs
 
-    list-abbrevs
+        Lists all active abbreviations.
 
-    Lists all active abbreviations.
+        read-abbrev-file
 
-    read-abbrev-file
+        Read an external file containing
+        abbreviations.
 
-    Read an external file containing
-    abbreviations.
+        write-abbrev-file
 
-    write-abbrev-file
+        Writes abbreviations to an external file.
 
-    Writes abbreviations to an external file.
+        Scripting
+        =========
 
-    Scripting
-    =========
+        Leo scripts may read abbreviations from a file with::
 
-    Leo scripts may read abbreviations from a file with::
+            c.abbrevCommands.readAbbreviationsFromFile(fn)
 
-        c.abbrevCommands.readAbbreviationsFromFile(fn)
+        '''
+        #@-<< define s >>
 
-    '''
-
-        if not g.app.unitTesting:
-            g.es(g.adjustTripleString(s.rstrip(),
-                self.c.tab_width))
+        self.c.putApropos(s)
     #@+node:ekr.20050920084036.58: *3* dynamic abbreviation...
     #@+node:ekr.20050920084036.60: *4* dynamicCompletion
     def dynamicCompletion (self,event=None):
@@ -5584,204 +5587,201 @@ class helpCommandsClass (baseEditCommandsClass):
 
         return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data])
     #@+node:ekr.20060226131603.1: *3* aproposAutocompletion
-    # @pagewidth 40
-
     def aproposAutocompletion (self,event=None):
 
         '''Prints a discussion of autocompletion.'''
+        
+        #@+<< define s >>
+        #@+node:ekr.20110530082209.18252: *4* << define s >>
+        # @pagewidth 40
+        #@@language rest
 
-        c = self.c ; s = '''
+        s = '''
+        This documentation describes both
+        autocompletion and calltips.
 
-    This documentation describes both
-    autocompletion and calltips.
+        Typing a period when @language python is
+        in effect starts autocompletion. Typing
+        '(' during autocompletion shows the
+        calltip. Typing Return or Control-g
+        (keyboard-quit) exits autocompletion or
+        calltips.
 
-    Typing a period when @language python is
-    in effect starts autocompletion. Typing
-    '(' during autocompletion shows the
-    calltip. Typing Return or Control-g
-    (keyboard-quit) exits autocompletion or
-    calltips.
+        === Autocompletion
 
-    === Autocompletion
+        Autocompletion shows what may follow a
+        period in code. For example, after
+        typing g. Leo will show a list of all
+        the global functions in leoGlobals.py.
+        Autocompletion works much like tab
+        completion in the minibuffer. Unlike the
+        minibuffer, the presently selected
+        completion appears directly in the body
+        pane.
 
-    Autocompletion shows what may follow a
-    period in code. For example, after
-    typing g. Leo will show a list of all
-    the global functions in leoGlobals.py.
-    Autocompletion works much like tab
-    completion in the minibuffer. Unlike the
-    minibuffer, the presently selected
-    completion appears directly in the body
-    pane.
+        A leading period brings up 'Autocomplete
+        Modules'. (The period goes away.) You
+        can also get any module by typing its
+        name. If more than 25 items would appear
+        in the Autocompleter tab, Leo shows only
+        the valid starting characters. At this
+        point, typing an exclamation mark shows
+        the complete list. Thereafter, typing
+        further exclamation marks toggles
+        between full and abbreviated modes.
 
-    A leading period brings up 'Autocomplete
-    Modules'. (The period goes away.) You
-    can also get any module by typing its
-    name. If more than 25 items would appear
-    in the Autocompleter tab, Leo shows only
-    the valid starting characters. At this
-    point, typing an exclamation mark shows
-    the complete list. Thereafter, typing
-    further exclamation marks toggles
-    between full and abbreviated modes.
+        If x is a list 'x.!' shows all its
+        elements, and if x is a Python
+        dictionary, 'x.!' shows list(x.keys()).
+        For example, 'sys.modules.!' Again,
+        further exclamation marks toggles
+        between full and abbreviated modes.
 
-    If x is a list 'x.!' shows all its
-    elements, and if x is a Python
-    dictionary, 'x.!' shows list(x.keys()).
-    For example, 'sys.modules.!' Again,
-    further exclamation marks toggles
-    between full and abbreviated modes.
+        During autocompletion, typing a question
+        mark shows the docstring for the object.
+        For example: 'g.app?' shows the
+        docstring for g.app. This doesn't work
+        (yet) directly for Python globals, but
+        '__builtin__.f?' does. Example:
+        '__builtin__.pow?' shows the docstring
+        for pow.
 
-    During autocompletion, typing a question
-    mark shows the docstring for the object.
-    For example: 'g.app?' shows the
-    docstring for g.app. This doesn't work
-    (yet) directly for Python globals, but
-    '__builtin__.f?' does. Example:
-    '__builtin__.pow?' shows the docstring
-    for pow.
+        Autocompletion works in the Find tab;
+        you can use <Tab> to cycle through the
+        choices. The 'Completion' tab appears
+        while you are doing this; the Find tab
+        reappears once the completion is
+        finished.
 
-    Autocompletion works in the Find tab;
-    you can use <Tab> to cycle through the
-    choices. The 'Completion' tab appears
-    while you are doing this; the Find tab
-    reappears once the completion is
-    finished.
+        === Calltips
 
-    === Calltips
+        Calltips appear after you type an open
+        parenthesis in code. Calltips shows the
+        expected arguments to a function or
+        method. Calltips work for any Python
+        function or method, including Python's
+        global function. Examples:
 
-    Calltips appear after you type an open
-    parenthesis in code. Calltips shows the
-    expected arguments to a function or
-    method. Calltips work for any Python
-    function or method, including Python's
-    global function. Examples:
+        a) g.toUnicode(
+           gives:
+           g.toUnicode(s,encoding, reportErrors=False
 
-    a) g.toUnicode(
-       gives:
-       g.toUnicode(s,encoding, reportErrors=False
+        b) c.widgetWantsFocusNow
+           gives:
+           c.widgetWantsFocusNow(w
 
-    b) c.widgetWantsFocusNow
-       gives:
-       c.widgetWantsFocusNow(w
+        c) reduce(
+           gives:
+           reduce(function, sequence[,initial]) -> value
 
-    c) reduce(
-       gives:
-       reduce(function, sequence[,initial]) -> value
+        The calltips appear directly in the text
+        and the argument list is highlighted so
+        you can just type to replace it. The
+        calltips appear also in the status line
+        for reference after you have started to
+        replace the args.
 
-    The calltips appear directly in the text
-    and the argument list is highlighted so
-    you can just type to replace it. The
-    calltips appear also in the status line
-    for reference after you have started to
-    replace the args.
+        Options
 
-    Options
+        Both autocompletion and calltips are
+        initially enabled or disabled by the
+        enable_autocompleter_initially and
+        enable_calltips_initially settings in
+        leoSettings.leo. You may enable or
+        disable these features at any time with
+        these commands: enable-autocompleter,
+        enable-calltips, disable-autocompleter
+        and disable-calltips. '''
+        #@-<< define s >>
 
-    Both autocompletion and calltips are
-    initially enabled or disabled by the
-    enable_autocompleter_initially and
-    enable_calltips_initially settings in
-    leoSettings.leo. You may enable or
-    disable these features at any time with
-    these commands: enable-autocompleter,
-    enable-calltips, disable-autocompleter
-    and disable-calltips. '''
-
-        if not g.app.unitTesting:
-            # Remove indentation from indentation of this function.
-            s = g.adjustTripleString(s,c.tab_width)
-            g.es('',s)
+        self.c.putApropos(s)
     #@+node:ekr.20060205170335: *3* aproposBindings
-    # @pagewidth 40
-
     def aproposBindings (self,event=None):
 
         '''Prints a discussion of keyboard bindings.'''
+        
+        #@+<< define s >>
+        #@+node:ekr.20110530082209.18253: *4* << define s >>
+        # @pagewidth 40
+        #@@language rest
 
-        c = self.c
         s = '''
+        A shortcut specification has the form:
 
-    A shortcut specification has the form:
+        command-name = shortcutSpecifier
 
-    command-name = shortcutSpecifier
+        or
 
-    or
+        command-name ! pane = shortcutSpecifier
 
-    command-name ! pane = shortcutSpecifier
+        The first form creates a binding for all
+        panes except the minibuffer. The second
+        form creates a binding for one or more
+        panes. The possible values for 'pane'
+        are:
 
-    The first form creates a binding for all
-    panes except the minibuffer. The second
-    form creates a binding for one or more
-    panes. The possible values for 'pane'
-    are:
+        pane    bound panes
+        ----    -----------
+        all     body,log,tree
+        body    body
+        log     log
+        mini    minibuffer
+        text    body,log
+        tree    tree
 
-    pane    bound panes
-    ----    -----------
-    all     body,log,tree
-    body    body
-    log     log
-    mini    minibuffer
-    text    body,log
-    tree    tree
+        You may use None as the specifier.
+        Otherwise, a shortcut specifier consists
+        of a head followed by a tail. The head
+        may be empty, or may be a concatenation
+        of the following: (All entries in each
+        row are equivalent).
 
-    You may use None as the specifier.
-    Otherwise, a shortcut specifier consists
-    of a head followed by a tail. The head
-    may be empty, or may be a concatenation
-    of the following: (All entries in each
-    row are equivalent).
+        Shift+ Shift-
+        Alt+ or Alt-
+        Control+, Control-, Ctrl+ or Ctrl-
 
-    Shift+ Shift-
-    Alt+ or Alt-
-    Control+, Control-, Ctrl+ or Ctrl-
+        Notes:
 
-    Notes:
+        1. The case of plain letters is significant:
+           a is not A.
 
-    1. The case of plain letters is significant:
-       a is not A.
+        2. The Shift- (or Shift+) prefix can be
+           applied *only* to letters or
+           multi-letter tails. Leo will ignore
+           (with a warning) the shift prefix
+           applied to other single letters,
+           e.g., Ctrl-Shift-(
 
-    2. The Shift- (or Shift+) prefix can be
-       applied *only* to letters or
-       multi-letter tails. Leo will ignore
-       (with a warning) the shift prefix
-       applied to other single letters,
-       e.g., Ctrl-Shift-(
+        3. The case of letters prefixed by
+           Ctrl-, Alt-, Key- or Shift- is *not*
+           significant.
 
-    3. The case of letters prefixed by
-       Ctrl-, Alt-, Key- or Shift- is *not*
-       significant.
+        The following table illustrates these
+        rules. In each row, the first entry is
+        the key (for k.bindingsDict) and the
+        other entries are equivalents that the
+        user may specify in leoSettings.leo:
 
-    The following table illustrates these
-    rules. In each row, the first entry is
-    the key (for k.bindingsDict) and the
-    other entries are equivalents that the
-    user may specify in leoSettings.leo:
+        a, Key-a, Key-A
+        A, Shift-A
+        Alt-a, Alt-A
+        Alt-A, Alt-Shift-a, Alt-Shift-A
+        Ctrl-a, Ctrl-A
+        Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+        !, Key-!,Key-exclam,exclam
+        '''
+        #@-<< define s >>
 
-    a, Key-a, Key-A
-    A, Shift-A
-    Alt-a, Alt-A
-    Alt-A, Alt-Shift-a, Alt-Shift-A
-    Ctrl-a, Ctrl-A
-    Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
-    !, Key-!,Key-exclam,exclam
-    '''
-
-        s = g.adjustTripleString(s,c.tab_width)
-            # Remove indentation from indentation of this function.
-
-        if not g.app.unitTesting:
-            g.es('',s)
+        self.c.putApropos(s)
     #@+node:ekr.20070501092655: *3* aproposDebuggingCommands
     def aproposDebuggingCommands (self,event=None):
 
         '''Prints a discussion of of Leo's debugging commands.'''
 
-        c = self.c
-
         #@+<< define s >>
         #@+node:ekr.20070501092655.1: *4* << define s >>
         # @pagewidth 40
+        #@@language rest
 
         s = '''
         The following commands are useful for debugging:
@@ -5804,21 +5804,16 @@ class helpCommandsClass (baseEditCommandsClass):
         '''
         #@-<< define s >>
 
-        # Remove indentation from s: a workaround of a Leo bug.
-        s = g.adjustTripleString(s,c.tab_width)
-
-        if not g.app.unitTesting:
-            g.es('',s)
+        self.c.putApropos(s)
     #@+node:ekr.20060205170335.1: *3* aproposFindCommands
     def aproposFindCommands (self, event=None):
 
         '''Prints a discussion of of Leo's find commands.'''
 
-        c = self.c
-
         #@+<< define s >>
         #@+node:ekr.20060209082023.1: *4* << define s >>
-        #@@pagewidth 40
+        # @pagewidth 40
+        #@@language rest
 
         s = '''
         Note: all bindings shown are the default
@@ -5900,23 +5895,23 @@ class helpCommandsClass (baseEditCommandsClass):
         You may bind these commands to keys or
         toggle these options in a mode.
 
-        These commands toggle checkboxes:
+        These commands toggle checkboxes::
 
-        toggle-find-ignore-case-option
-        toggle-find-in-body-option
-        toggle-find-in-headline-option
-        toggle-find-mark-changes-option
-        toggle-find-mark-finds-option
-        toggle-find-regex-option
-        toggle-find-reverse-option
-        toggle-find-word-option
-        toggle-find-wrap-around-option
+            toggle-find-ignore-case-option
+            toggle-find-in-body-option
+            toggle-find-in-headline-option
+            toggle-find-mark-changes-option
+            toggle-find-mark-finds-option
+            toggle-find-regex-option
+            toggle-find-reverse-option
+            toggle-find-word-option
+            toggle-find-wrap-around-option
 
-        These commands set radio buttons:
+        These commands set radio buttons::
 
-        set-find-everywhere,
-        set-find-node-only, and
-        set-find-suboutline-only.
+            set-find-everywhere,
+            set-find-node-only, and
+            set-find-suboutline-only.
 
         enter-find-options-mode (Ctrl-Shift-F)
 
@@ -6016,23 +6011,19 @@ class helpCommandsClass (baseEditCommandsClass):
 
         === Incremental search commands
 
-        Here are Leo's incremental find commands:
+        Here are Leo's incremental find commands::
 
-        isearch-backward (Alt-R)
-        isearch-backward-regexp
-        isearch-forward (Alt-S)
-        isearch-forward-regexp
+            isearch-backward (Alt-R)
+            isearch-backward-regexp
+            isearch-forward (Alt-S)
+            isearch-forward-regexp
 
         You may use backspace to backtrack. To
         repeat an incremental search, type the
         shortcut for that command again.'''
         #@-<< define s >>
 
-        # Remove indentation from s: a workaround of a Leo bug.
-        s = g.adjustTripleString(s,c.tab_width)
-
-        if not g.app.unitTesting:
-            g.es('',s)
+        self.c.putApropos(s)
     #@+node:ekr.20060602154458: *3* pythonHelp
     def pythonHelp (self,event=None):
 

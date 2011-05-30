@@ -803,6 +803,24 @@ class baseCommands (object):
     p = property(
         __get_p, # No setter.
         doc = "commander current position property")
+    #@+node:ekr.20110530082209.18250: *3* c.putApropos
+    def putApropos (self,s):
+        
+        c = self
+        
+        if g.unitTesting:
+            return
+            
+        s = g.adjustTripleString(s.rstrip(),c.tab_width)
+        pc = g.app.pluginsController
+        sm = pc.loadOnePlugin('scrolledmessage.py')
+
+        if sm:
+            smc = sm.controllers.get(c)
+            kw = {'msg':s,'name':'Apropos','short_title':''}
+            smc.createDialog(kw=kw)
+        else:
+            g.es(s)
     #@+node:bobjack.20080509080123.2: *3* c.universalCallback
     def universalCallback(self, function):
 

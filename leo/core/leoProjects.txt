@@ -19854,5 +19854,594 @@ def caseHelper (self,event,way,undoType):
         w.setSelectionRange(i,j,insert=ins)
 
     self.endCommand(changed=changed,setLabel=True)
+#@+node:ekr.20110528034751.18271: *4* Apropos commands now print in a separate area if possible
+@nocolor-node
+
+The commands use the scrolledmessage plugin if possible, which in turn uses the
+viewrendered plugin by default.
+
+This makes the apropos messages much more visible.
+#@+node:ekr.20100901080826.5850: *5* aproposAbbreviations
+def aproposAbbreviations (self,event=None):
+    
+    '''Prints a discussion of abbreviations.'''
+    
+    << define s >>
+
+    self.c.putApropos(s)
+#@+node:ekr.20110530082209.18251: *6* << define s >>
+# @pagewidth 45
+@language rest
+
+s = '''
+apropos-abbreviations
+=====================
+
+When abbreviation mode is on (abbrev-mode
+toggles this mode) Leo will expand
+abbreviations as you type. Type the name of
+an abbreviation, followed by a space. As soon
+as you type the space, Leo will replace the
+name by the abbreviations value. You can undo
+the replacement as usual.
+
+Note that defining any abbreviation
+automatically turns on abbreviation mode.
+
+The add-global-abbreviation command
+(<alt-x>add-gl<tab><return>) takes the
+selected text as the replacement value of the
+abbreviation. The minibuffer prompts you for
+the name of the abbreviation.
+
+Settings
+========
+
+As usual, the following settings have effect
+only in @settings trees:
+
+@bool enable-abbreviations (default: False)
+
+When true, enables substitution of
+abbreviations.
+
+@data global-abbreviations
+@data abbreviations
+
+In both cases, body text contains lines of
+the form::
+
+   name=value
+
+name is the abbreviation name, value is the
+substituted text. Whitespace is ignore around
+the name, but is significant in the value.
+Abbreviation names may contain only
+alphabetic characters, but may start with the
+'@' sign.
+
+By *convention* @data global-abbreviations
+setting should be defined in
+myLeoSettings.leo, while @data abbreviations
+should be defined in other .leo files.
+Regardless of where they are defined,
+abbreviations in @data abbreviation nodes
+will override settings (with the same name)
+in @data global-abbreviations nodes.
+
+Commands
+========
+
+apropos-abbreviations
+
+Prints this summary.
+
+dabbrev-completion
+
+Insert the common prefix of all dynamic
+abbreviations matching the present word.
+Similar C-M-/ in Emacs.
+
+dabbrev-expands
+
+Expand the word in the buffer before point as
+a dynamic abbrev, by searching in the buffer
+for words starting with that abbreviation
+(dabbrev-expand). Similar to M-/ in Emacs
+
+abbrev-mode
+
+Toggles abbreviation mode. Abbreviations are
+only active when this mode is on.
+
+add-global-abbrev
+
+Adds an abbreviation for the selected text.
+The minibuffer prompts for the abbreviation
+name.
+
+inverse-add-global-abbrev
+
+Adds an abbreviation. The selected text is
+the abbreviation name. The minibuffer prompts
+for the value of the abbreviation.
+
+kill-all-abbrevs
+
+Removes all abbreviations.
+
+list-abbrevs
+
+Lists all active abbreviations.
+
+read-abbrev-file
+
+Read an external file containing
+abbreviations.
+
+write-abbrev-file
+
+Writes abbreviations to an external file.
+
+Scripting
+=========
+
+Leo scripts may read abbreviations from a file with::
+
+    c.abbrevCommands.readAbbreviationsFromFile(fn)
+
+'''
+#@+node:ekr.20060226131603.1: *5* aproposAutocompletion
+def aproposAutocompletion (self,event=None):
+
+    '''Prints a discussion of autocompletion.'''
+    
+    << define s >>
+
+    self.c.putApropos(s)
+#@+node:ekr.20110530082209.18252: *6* << define s >>
+# @pagewidth 40
+@language rest
+
+s = '''
+This documentation describes both
+autocompletion and calltips.
+
+Typing a period when @language python is
+in effect starts autocompletion. Typing
+'(' during autocompletion shows the
+calltip. Typing Return or Control-g
+(keyboard-quit) exits autocompletion or
+calltips.
+
+=== Autocompletion
+
+Autocompletion shows what may follow a
+period in code. For example, after
+typing g. Leo will show a list of all
+the global functions in leoGlobals.py.
+Autocompletion works much like tab
+completion in the minibuffer. Unlike the
+minibuffer, the presently selected
+completion appears directly in the body
+pane.
+
+A leading period brings up 'Autocomplete
+Modules'. (The period goes away.) You
+can also get any module by typing its
+name. If more than 25 items would appear
+in the Autocompleter tab, Leo shows only
+the valid starting characters. At this
+point, typing an exclamation mark shows
+the complete list. Thereafter, typing
+further exclamation marks toggles
+between full and abbreviated modes.
+
+If x is a list 'x.!' shows all its
+elements, and if x is a Python
+dictionary, 'x.!' shows list(x.keys()).
+For example, 'sys.modules.!' Again,
+further exclamation marks toggles
+between full and abbreviated modes.
+
+During autocompletion, typing a question
+mark shows the docstring for the object.
+For example: 'g.app?' shows the
+docstring for g.app. This doesn't work
+(yet) directly for Python globals, but
+'__builtin__.f?' does. Example:
+'__builtin__.pow?' shows the docstring
+for pow.
+
+Autocompletion works in the Find tab;
+you can use <Tab> to cycle through the
+choices. The 'Completion' tab appears
+while you are doing this; the Find tab
+reappears once the completion is
+finished.
+
+=== Calltips
+
+Calltips appear after you type an open
+parenthesis in code. Calltips shows the
+expected arguments to a function or
+method. Calltips work for any Python
+function or method, including Python's
+global function. Examples:
+
+a) g.toUnicode(
+   gives:
+   g.toUnicode(s,encoding, reportErrors=False
+
+b) c.widgetWantsFocusNow
+   gives:
+   c.widgetWantsFocusNow(w
+
+c) reduce(
+   gives:
+   reduce(function, sequence[,initial]) -> value
+
+The calltips appear directly in the text
+and the argument list is highlighted so
+you can just type to replace it. The
+calltips appear also in the status line
+for reference after you have started to
+replace the args.
+
+Options
+
+Both autocompletion and calltips are
+initially enabled or disabled by the
+enable_autocompleter_initially and
+enable_calltips_initially settings in
+leoSettings.leo. You may enable or
+disable these features at any time with
+these commands: enable-autocompleter,
+enable-calltips, disable-autocompleter
+and disable-calltips. '''
+#@+node:ekr.20060205170335: *5* aproposBindings
+def aproposBindings (self,event=None):
+
+    '''Prints a discussion of keyboard bindings.'''
+    
+    << define s >>
+
+    self.c.putApropos(s)
+#@+node:ekr.20110530082209.18253: *6* << define s >>
+# @pagewidth 40
+@language rest
+
+s = '''
+A shortcut specification has the form:
+
+command-name = shortcutSpecifier
+
+or
+
+command-name ! pane = shortcutSpecifier
+
+The first form creates a binding for all
+panes except the minibuffer. The second
+form creates a binding for one or more
+panes. The possible values for 'pane'
+are:
+
+pane    bound panes
+----    -----------
+all     body,log,tree
+body    body
+log     log
+mini    minibuffer
+text    body,log
+tree    tree
+
+You may use None as the specifier.
+Otherwise, a shortcut specifier consists
+of a head followed by a tail. The head
+may be empty, or may be a concatenation
+of the following: (All entries in each
+row are equivalent).
+
+Shift+ Shift-
+Alt+ or Alt-
+Control+, Control-, Ctrl+ or Ctrl-
+
+Notes:
+
+1. The case of plain letters is significant:
+   a is not A.
+
+2. The Shift- (or Shift+) prefix can be
+   applied *only* to letters or
+   multi-letter tails. Leo will ignore
+   (with a warning) the shift prefix
+   applied to other single letters,
+   e.g., Ctrl-Shift-(
+
+3. The case of letters prefixed by
+   Ctrl-, Alt-, Key- or Shift- is *not*
+   significant.
+
+The following table illustrates these
+rules. In each row, the first entry is
+the key (for k.bindingsDict) and the
+other entries are equivalents that the
+user may specify in leoSettings.leo:
+
+a, Key-a, Key-A
+A, Shift-A
+Alt-a, Alt-A
+Alt-A, Alt-Shift-a, Alt-Shift-A
+Ctrl-a, Ctrl-A
+Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+!, Key-!,Key-exclam,exclam
+'''
+#@+node:ekr.20070501092655: *5* aproposDebuggingCommands
+def aproposDebuggingCommands (self,event=None):
+
+    '''Prints a discussion of of Leo's debugging commands.'''
+
+    << define s >>
+
+    self.c.putApropos(s)
+#@+node:ekr.20070501092655.1: *6* << define s >>
+# @pagewidth 40
+@language rest
+
+s = '''
+The following commands are useful for debugging:
+
+collect-garbage:   Invoke the garbage collector.
+debug:             Start an external debugger in another process.
+disable-gc-trace:  Disable tracing of the garbage collector.
+dump-all-objects:  Print a summary of all existing Python objects.
+dump-new-objects:  Print a summary of all newly-created Python objects.
+enable-gc-trace:   Enable tracing of the garbage collector.
+free-tree-widgets: Free all widgets used in Leo's outline pane.
+print-focus:       Print information about the requested focus.
+print-stats:       Print statistics about existing Python objects.
+print-gc-summary:  Print a brief summary of all Python objects.
+run-unit-tests:    Run unit tests in the presently selected tree.
+verbose-dump-objects: Print a more verbose listing of all existing Python objects.
+
+Leo also has many debugging settings that enable and disable traces.
+For details, see the node: @settings-->Debugging in leoSettings.leo.
+'''
+#@+node:ekr.20060205170335.1: *5* aproposFindCommands
+def aproposFindCommands (self, event=None):
+
+    '''Prints a discussion of of Leo's find commands.'''
+
+    << define s >>
+
+    self.c.putApropos(s)
+#@+node:ekr.20060209082023.1: *6* << define s >>
+# @pagewidth 40
+@language rest
+
+s = '''
+Note: all bindings shown are the default
+bindings for these commands. You may
+change any of these bindings using
+@shortcuts nodes in leoSettings.leo.
+
+=== Settings
+
+leoSettings.leo now contains several
+settings related to the Find tab:
+
+@bool show_only_find_tab_options = True
+
+  When True (recommended), the Find tab
+  does not show the 'Find', 'Change',
+  'Change, Then Find', 'Find All' and
+  'Change All' buttons.
+
+@bool minibufferSearchesShowFindTab = True
+
+  When True, Leo shows the Find tab when
+  executing most of the commands
+  discussed below.
+
+=== Basic find commands
+
+open-find-tab
+
+  Makes the Find tab visible. The Find
+  tab does **not** need to be visible to
+  execute any search command discussed
+  below.
+
+hide-find-tab
+
+  Hides the Find tab, but retains all
+  the present settings.
+
+search-with-present-options (Ctrl-F)
+
+  Prompts for a search string. Typing
+  the <Return> key puts the search
+  string in the Find tab and executes a
+  search based on all the settings in
+  the Find tab. This is a recommended
+  default search command.
+
+show-search-options
+
+  Shows the present search options in
+  the status line. This command also
+  makes the Find tab visible.
+
+find-next (F3)
+
+  Like search-with-present-options,
+  except that it uses the search string
+  in the find-tab. Recommended as the
+  default 'search again' command.
+
+find-previous (F2)
+
+  Repeats the command specified by the
+  Find tab, but in reverse.
+
+find-again
+
+  Like find-next if a search pattern is
+  not '<find pattern here>'. Otherwise,
+  like search-with-present-options.
+
+=== Setting find options
+
+Several minibuffer commands toggle the
+checkboxes and radio buttons in the Find
+tab, and thus affect the operation of
+the search-with-present-options command.
+You may bind these commands to keys or
+toggle these options in a mode.
+
+These commands toggle checkboxes::
+
+    toggle-find-ignore-case-option
+    toggle-find-in-body-option
+    toggle-find-in-headline-option
+    toggle-find-mark-changes-option
+    toggle-find-mark-finds-option
+    toggle-find-regex-option
+    toggle-find-reverse-option
+    toggle-find-word-option
+    toggle-find-wrap-around-option
+
+These commands set radio buttons::
+
+    set-find-everywhere,
+    set-find-node-only, and
+    set-find-suboutline-only.
+
+enter-find-options-mode (Ctrl-Shift-F)
+
+enters a mode in which you may change
+all checkboxes and radio buttons in the
+Find tab with plain keys. As always, you
+can use the mode-help (Tab) command to
+see a list of key bindings in effect for
+the mode.
+
+=== Search commands with side effects
+
+The following commands set an option in
+the Find tab, then work exactly like the
+search-with-present-options command.
+
+- search-backward and search-forward set
+  the 'Whole Word' checkbox to False.
+
+- word-search-backward and
+  word-search-forward set the 'Whole
+  Word' checkbox to True.
+
+- re-search-forward and re-search-backward
+  set the 'Regexp' checkbox to True.
+
+=== Find all commands
+
+find-all
+
+  Prints all matches in the log pane.
+
+clone-find-all
+
+  Replaces the previous 'Clone Find'
+  checkbox. It prints all matches in the
+  log pane, and creates a node at the
+  beginning of the outline containing
+  clones of all nodes containing the
+  'find' string. Only one clone is made
+  of each node, regardless of how many
+  clones the node has, or of how many
+  matches are found in each node.
+
+Note: the radio buttons in the Find tab
+(Entire Outline, Suboutline Only and
+Node only) control how much of the
+outline is affected by the find-all and
+clone-find-all commands.
+
+=== Search and replace commands
+
+replace-string
+
+  Prompts for a search string. Type
+  <Return> to end the search string. The
+  command will then prompt for the
+  replacement string. Typing a second
+  <Return> key will place both strings
+  in the Find tab and executes a
+  **find** command, that is,
+  search-with-present-options.
+
+So the only difference between
+replace-string and
+search-with-present-options is that
+replace-string has the side effect of
+setting 'change' string in the Find tab.
+However, this is an extremely useful
+side effect, because of the following
+commands...
+
+change (Ctrl-=)
+
+  Replaces the selected text with the
+  'change' text in the Find tab.
+
+change-then-find (Ctrl--)
+
+  Replaces the selected text with the
+  'change' text in the Find tab, then
+  executes the find command again.
+
+find-next, change and change-then-find
+can simulate any kind of query-replace
+command.
+
+change-all
+
+  Changes all occurrences of the 'find'
+  text with the 'change' text.
+  Important: the radio buttons in the
+  Find tab (Entire Outline, Suboutline
+  Only and Node only) control how much
+  of the outline is affected by this
+  command.
+
+=== Incremental search commands
+
+Here are Leo's incremental find commands::
+
+    isearch-backward (Alt-R)
+    isearch-backward-regexp
+    isearch-forward (Alt-S)
+    isearch-forward-regexp
+
+You may use backspace to backtrack. To
+repeat an incremental search, type the
+shortcut for that command again.'''
+#@+node:ekr.20110530082209.18250: *5* c.putApropos
+def putApropos (self,s):
+    
+    c = self
+    
+    if g.unitTesting:
+        return
+        
+    s = g.adjustTripleString(s.rstrip(),c.tab_width)
+    pc = g.app.pluginsController
+    sm = pc.loadOnePlugin('scrolledmessage.py')
+
+    if sm:
+        smc = sm.controllers.get(c)
+        kw = {'msg':s,'name':'Apropos','short_title':''}
+        smc.createDialog(kw=kw)
+    else:
+        g.es(s)
 #@-all
 #@-leo

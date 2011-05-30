@@ -503,7 +503,10 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             self.widget,g.callers(3))
         
         # Call the base class
-        assert isinstance(self.widget,QtGui.QTextBrowser) or isinstance(self.widget,QtGui.QLineEdit),self.widget
+        assert (
+            isinstance(self.widget,QtGui.QTextBrowser) or
+            isinstance(self.widget,QtGui.QLineEdit) or
+            isinstance(self.widget,QtQui.QTextEdit)),self.widget
         QtGui.QTextBrowser.setFocus(self.widget)
     #@+node:ekr.20081121105001.523: *5*  Indices
     #@+node:ekr.20090320101733.13: *6* toPythonIndex
@@ -11030,7 +11033,9 @@ class jEditColorizer:
         '''Colorize string s, starting in state n.'''
 
         trace = False and not g.unitTesting
-        traceMatch = True ; traceState = True ; verbose = True
+        traceMatch = True
+        traceState = False
+        verbose = True
 
         if trace and traceState: g.trace('** start',self.showState(n),s)
 

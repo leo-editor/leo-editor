@@ -7,34 +7,7 @@
 @language rest
 .. @+node:ekr.20110523201030.18291: *3* b1
 @language rest
-.. @+node:ekr.20110530063322.18332: *4* Syntax-color bugs: 2
-.. @+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
-.. @+node:ekr.20110523130519.19220: *6* Report
-https://bugs.launchpad.net/leo-editor/+bug/525004
-
-This is basically a copy/paste from
-http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
-
-Consider the following code snippet:
-
---- cut here ---
-@language shell
-
-FOO_BAR='foo bar'
-FOO1_BAR1='foo1 bar1'
-
-echo $FOO_BAR*
-echo $FOO_BAR-$FOO1_BAR1
---- cut here ---
-
-The variable names in the last two lines are not highlighted
-correctly. This becomes clear if the first line is replaced with #!/
-bin/bash and this code is opened in vim/scite. I've tried only these
-two editors, they highlight the variable names correctly.
-.. @+node:ekr.20110530063322.18333: *5* scala not colored properly
 .. @+node:ekr.20110528180209.18237: *4* Improvements: 3
-# Can be delayed until b2, but they would be better in b1.
-.. @+node:ekr.20110528034751.18271: *5* Put apropos text using viewrendered plugin
 .. @+node:ekr.20101124145006.5842: *5* Unify extract commands
 http://groups.google.com/group/leo-editor/browse_thread/thread/679614fdd6a76a81#
 
@@ -63,6 +36,119 @@ I want to bring a file into a node, just
 
 An emergency measure could be available in a 
 'File Special' menu.
+.. @+node:ekr.20110529115328.18240: *5* Fix forward and backward by sentences
+@nocolor-node
+
+Leo's sentence related functions:
+
+- do not stop at empty lines.
+- do not skip periods within words.
+- do not stop at sentences ending in non-periods.
+- do not stop at the end or beginning of the buffer.
+
+Note: see forwardSentenceHelper and backSentenceHelper functions.
+.. @+node:ekr.20050920084036.131: *6* sentences & helpers
+def backSentence (self,event):
+    '''Move the cursor to the previous sentence.'''
+    self.backSentenceHelper(event,extend=False)
+
+def backSentenceExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the previous sentence.'''
+    self.backSentenceHelper(event,extend=True)
+
+def forwardSentence (self,event):
+    '''Move the cursor to the next sentence.'''
+    self.forwardSentenceHelper(event,extend=False)
+
+def forwardSentenceExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the next sentence.'''
+    self.forwardSentenceHelper(event,extend=True)
+.. @+node:ekr.20051213094517: *7* backSentenceHelper
+def backSentenceHelper (self,event,extend):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    s = w.getAllText()
+    i = w.getInsertPoint()
+
+    # To do:
+    # - Stop at empty lines.
+    # - Skip periods within words.
+    # - Stop at sentences ending in non-periods.
+
+    while i >= 0:
+        if s[i] == '.': break
+        i -= 1
+    else: return
+
+    j = i-1
+    while j >= 0:
+        if s[j] == '.':
+            j += 1 ; break
+        j -= 1
+    else: j = 0
+
+    while j < i and s[j].isspace():
+        j += 1
+
+    if j < i:
+        self.moveToHelper(event,j,extend)
+.. @+node:ekr.20050920084036.137: *7* forwardSentenceHelper
+def forwardSentenceHelper (self,event,extend):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    
+    # To do:
+    # - Stop at empty lines.
+    # - Skip periods within words.
+    # - Stop at sentences ending in non-periods.
+    
+    # Naive.
+    i = s.find('.',ins) + 1
+    
+    
+    i = min(i,len(s))
+    self.moveToHelper(event,i,extend)
+.. @+node:ekr.20110530063322.18332: *4* Minor bugs: 2
+@nocolor-node
+
+The syntax-coloring bugs probably require complete rewrites of modes/scala.py and modes/shell.py.
+
+These could be delayed until b2.
+.. @+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
+.. @+node:ekr.20110523130519.19220: *6* Report
+https://bugs.launchpad.net/leo-editor/+bug/525004
+
+This is basically a copy/paste from
+http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
+
+Consider the following code snippet:
+
+--- cut here ---
+@language shell
+
+FOO_BAR='foo bar'
+FOO1_BAR1='foo1 bar1'
+
+echo $FOO_BAR*
+echo $FOO_BAR-$FOO1_BAR1
+--- cut here ---
+
+The variable names in the last two lines are not highlighted
+correctly. This becomes clear if the first line is replaced with #!/
+bin/bash and this code is opened in vim/scite. I've tried only these
+two editors, they highlight the variable names correctly.
+.. @+node:ekr.20110530063322.18333: *5* scala not colored properly
 .. @+node:ekr.20110526083709.18342: *4* Distribution: 2
 .. @+node:ekr.20110525112110.18394: *5* Fix failing unit tests on Linux
 .. @+node:ekr.20110518103946.18179: *5* Add external/leosax.py to leoPyRef.leo
