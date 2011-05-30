@@ -4716,6 +4716,154 @@ else:
 if oops:
     g.es("selected text should start with a section name",color="blue")
     return
+#@+node:ekr.20110530124245.18243: *3* No longer used leoCommands file import dialogs
+#@+node:ekr.20031218072017.2853: *4* importAtFile
+def importAtFile (self,event=None):
+
+    '''Import one or more external files, creating @file trees.'''
+
+    c = self
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import To @file",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importFilesCommand(names,"@file")
+#@+node:ekr.20031218072017.2852: *4* importAtRoot
+def importAtRoot (self,event=None):
+
+    '''Import one or more external files, creating @root trees.'''
+
+    c = self
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import To @root",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importFilesCommand (names,"@root")
+#@+node:ekr.20031218072017.2854: *4* importCWEBFiles
+def importCWEBFiles (self,event=None):
+
+    '''Import one or more external CWEB files, creating @file trees.'''
+
+    c = self
+
+    filetypes = [
+        ("CWEB files", "*.w"),
+        ("Text files", "*.txt"),
+        ("All files", "*")]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import CWEB Files",
+        filetypes=filetypes,
+        defaultextension=".w",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importWebCommand(names,"cweb")
+#@+node:ekr.20031218072017.1809: *4* importDerivedFile
+def importDerivedFile (self,event=None):
+
+    """Create a new outline from a 4.0 derived file."""
+
+    c = self ; p = c.p
+    c.endEditing()
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import Derived File",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importDerivedFiles(parent=p,paths=names)
+#@+node:ekr.20031218072017.2855: *4* importFlattenedOutline
+def importFlattenedOutline (self,event=None):
+
+    '''Import an external created by the flatten-outline command.'''
+
+    c = self
+
+    types = [("Text files","*.txt"), ("All files","*")]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import MORE Text",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importFlattenedOutline(names)
+#@+node:ekr.20031218072017.2856: *4* importNowebFiles
+def importNowebFiles (self,event=None):
+
+    '''Import one or more external noweb files, creating @file trees.'''
+
+    c = self
+
+    filetypes = [
+        ("Noweb files", "*.nw"),
+        ("Text files", "*.txt"),
+        ("All files", "*")]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import Noweb Files",
+        filetypes=filetypes,
+        defaultextension=".nw",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importWebCommand(names,"noweb")
 #@+node:ekr.20101127152442.5878: ** Url's
 @color
 

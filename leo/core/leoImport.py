@@ -832,7 +832,7 @@ class leoImportCommands (scanUtility):
             self.encoding = 'utf-8'
 
         # g.trace(self.encoding)
-    #@+node:ekr.20031218072017.3209: *3* Import
+    #@+node:ekr.20031218072017.3209: *3* Import (leoImport)
     #@+node:ekr.20031218072017.3210: *4* createOutline (leoImport)
     def createOutline (self,fileName,parent,
         atAuto=False,atShadow=False,s=None,ext=None):
@@ -1143,7 +1143,8 @@ class leoImportCommands (scanUtility):
             c.setChanged(True)
             u.afterInsertNode(p,'Import',undoData)
         else:
-            g.es("not a valid MORE file",fileName)
+            if not g.unitTesting:
+                g.es("not a valid MORE file",fileName)
     #@+node:ekr.20031218072017.3222: *5* moreHeadlineLevel
     # return the headline level of s,or -1 if the string is not a MORE headline.
     def moreHeadlineLevel (self,s):

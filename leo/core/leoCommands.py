@@ -876,6 +876,92 @@ class baseCommands (object):
     #@+node:ekr.20031218072017.2818: *3* Command handlers...
     #@+node:ekr.20031218072017.2819: *4* File Menu
     #@+node:ekr.20031218072017.2820: *5* top level (file menu)
+    #@+node:ekr.20031218072017.2833: *6* c.close
+    def close (self,event=None):
+
+        '''Close the Leo window, prompting to save it if it has been changed.'''
+
+        g.app.closeLeoWindow(self.frame)
+    #@+node:ekr.20110530124245.18245: *6* c.importAnyFile & helper
+    def importAnyFile (self,event=None):
+
+        '''Import one or more files.'''
+
+        c = self ; ic = c.importCommands
+
+        types = [
+            ("All files","*"),
+            ("C/C++ files","*.c"),
+            ("C/C++ files","*.cpp"),
+            ("C/C++ files","*.h"),
+            ("C/C++ files","*.hpp"),
+            ("Java files","*.java"),
+            ("Lua files", "*.lua"),
+            ("Pascal files","*.pas"),
+            ("Python files","*.py") ]
+
+        names = g.app.gui.runOpenFileDialog(
+            title="Import File",
+            filetypes=types,
+            defaultextension=".py",
+            multiple=True)
+        c.bringToFront()
+
+        if not names:
+            return
+            
+        g.chdir(names[0])
+        
+        # New in Leo 4.9: choose the type of import based on the extension.
+        
+        derived = [z for z in names if c.looksLikeDerivedFile(z)]
+        others = [ z for z in names if not z in derived]
+        
+        if derived:
+            ic.importDerivedFiles(parent=c.p,paths=derived)
+        
+        for fn in others:
+            junk,ext = g.os_path_splitext(fn)
+            if ext.startswith('.'): ext = ext[1:]
+        
+            if ext in ('cw','cweb'):
+                ic.importWebCommand([fn],"cweb")
+            elif ext in ('nw','noweb'):
+                ic.importWebCommand([fn],"noweb")
+            elif ext == 'txt':
+                ic.importFlattenedOutline([fn])
+            else:
+                ic.importFilesCommand([fn],"@file")
+                
+            # No longer supported.
+            # c.importCommands.importFilesCommand (names,"@root")
+            
+    # Compatibility
+    importAtFile = importAnyFile
+    importAtRoot = importAnyFile
+    importCWEBFiles = importAnyFile
+    importDerivedFile = importAnyFile
+    importFlattenedOutline = importAnyFile
+    importNowebFiles = importAnyFile
+    #@+node:ekr.20110530124245.18248: *7* c.looksLikeDerivedFile
+    def looksLikeDerivedFile (self,fn):
+        
+        '''Return True if fn names a file that looks like an
+        external file written by Leo.'''
+        
+        c = self
+        
+        try:
+            f = open(fn,'r')
+        except IOError:
+            return False
+            
+        s = f.read()
+        f.close()
+        
+        val = s.find('@+leo-ver=') > -1
+        # g.trace(val,fn)
+        return val
     #@+node:ekr.20031218072017.1623: *6* c.new
     def new (self,event=None,gui=None):
 
@@ -1270,12 +1356,6 @@ class baseCommands (object):
         path = g.os_path_join(td,fn)
 
         return path
-    #@+node:ekr.20031218072017.2833: *6* c.close
-    def close (self,event=None):
-
-        '''Close the Leo window, prompting to save it if it has been changed.'''
-
-        g.app.closeLeoWindow(self.frame)
     #@+node:ekr.20031218072017.2834: *6* c.save
     def save (self,event=None):
 
@@ -1392,28 +1472,6 @@ class baseCommands (object):
             p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
         else:
             c.treeWantsFocus()
-    #@+node:ekr.20070413045221: *6* saveAsUnzipped & saveAsZipped
-    def saveAsUnzipped (self,event=None):
-
-        '''Save a Leo outline to a file with a new filename,
-        ensuring that the file is not compressed.'''
-        self.saveAsZippedHelper(False)
-
-    def saveAsZipped (self,event=None):
-
-        '''Save a Leo outline to a file with a new filename,
-        ensuring that the file is compressed.'''
-        self.saveAsZippedHelper(True)
-
-    def saveAsZippedHelper (self,isZipped):
-
-        c = self
-        oldZipped = c.isZipped
-        c.isZipped = isZipped
-        try:
-            c.saveAs()
-        finally:
-            c.isZipped = oldZipped
     #@+node:ekr.20031218072017.2836: *6* c.saveTo
     def saveTo (self,event=None):
 
@@ -1485,6 +1543,28 @@ class baseCommands (object):
             g.app.destroyWindow(c.frame)
         else:
             c.mFileName = fileName
+    #@+node:ekr.20070413045221: *6* saveAsUnzipped & saveAsZipped
+    def saveAsUnzipped (self,event=None):
+
+        '''Save a Leo outline to a file with a new filename,
+        ensuring that the file is not compressed.'''
+        self.saveAsZippedHelper(False)
+
+    def saveAsZipped (self,event=None):
+
+        '''Save a Leo outline to a file with a new filename,
+        ensuring that the file is compressed.'''
+        self.saveAsZippedHelper(True)
+
+    def saveAsZippedHelper (self,isZipped):
+
+        c = self
+        oldZipped = c.isZipped
+        c.isZipped = isZipped
+        try:
+            c.saveAs()
+        finally:
+            c.isZipped = oldZipped
     #@+node:ekr.20031218072017.2079: *5* Recent Files submenu & allies
     #@+node:ekr.20031218072017.2080: *6* clearRecentFiles
     def clearRecentFiles (self,event=None):
@@ -1714,34 +1794,6 @@ class baseCommands (object):
         c.atFileCommands.readAtShadowNodes(p)
         u.afterChangeTree(p,'Read @shadow Nodes',undoData)
         c.redraw() 
-    #@+node:ekr.20031218072017.1809: *6* importDerivedFile
-    def importDerivedFile (self,event=None):
-
-        """Create a new outline from a 4.0 derived file."""
-
-        c = self ; p = c.p
-        c.endEditing()
-
-        types = [
-            ("All files","*"),
-            ("C/C++ files","*.c"),
-            ("C/C++ files","*.cpp"),
-            ("C/C++ files","*.h"),
-            ("C/C++ files","*.hpp"),
-            ("Java files","*.java"),
-            ("Lua files", "*.lua"),
-            ("Pascal files","*.pas"),
-            ("Python files","*.py") ]
-
-        names = g.app.gui.runOpenFileDialog(
-            title="Import Derived File",
-            filetypes=types,
-            defaultextension=".py",
-            multiple=True)
-
-        if names:
-            g.chdir(names[0])
-            c.importCommands.importDerivedFiles(parent=p,paths=names)
     #@+node:ekr.20070915142635: *6* writeFileFromNode (changed)
     def writeFileFromNode (self,event=None):
 
@@ -1831,7 +1883,7 @@ class baseCommands (object):
         c = self
         c.tangleCommands.untangle()
         c.undoer.clearUndoState()
-    #@+node:ekr.20031218072017.2849: *5* Import&Export submenu
+    #@+node:ekr.20031218072017.2849: *5* Export submenu
     #@+node:ekr.20031218072017.2850: *6* exportHeadlines
     def exportHeadlines (self,event=None):
 
@@ -1873,125 +1925,6 @@ class baseCommands (object):
             g.setGlobalOpenDir(fileName)
             g.chdir(fileName)
             c.importCommands.flattenOutline(fileName)
-    #@+node:ekr.20031218072017.2852: *6* importAtRoot
-    def importAtRoot (self,event=None):
-
-        '''Import one or more external files, creating @root trees.'''
-
-        c = self
-
-        types = [
-            ("All files","*"),
-            ("C/C++ files","*.c"),
-            ("C/C++ files","*.cpp"),
-            ("C/C++ files","*.h"),
-            ("C/C++ files","*.hpp"),
-            ("Java files","*.java"),
-            ("Lua files", "*.lua"),
-            ("Pascal files","*.pas"),
-            ("Python files","*.py") ]
-
-        names = g.app.gui.runOpenFileDialog(
-            title="Import To @root",
-            filetypes=types,
-            defaultextension=".py",
-            multiple=True)
-        c.bringToFront()
-
-        if names:
-            g.chdir(names[0])
-            c.importCommands.importFilesCommand (names,"@root")
-    #@+node:ekr.20031218072017.2853: *6* importAtFile
-    def importAtFile (self,event=None):
-
-        '''Import one or more external files, creating @file trees.'''
-
-        c = self
-
-        types = [
-            ("All files","*"),
-            ("C/C++ files","*.c"),
-            ("C/C++ files","*.cpp"),
-            ("C/C++ files","*.h"),
-            ("C/C++ files","*.hpp"),
-            ("Java files","*.java"),
-            ("Lua files", "*.lua"),
-            ("Pascal files","*.pas"),
-            ("Python files","*.py") ]
-
-        names = g.app.gui.runOpenFileDialog(
-            title="Import To @file",
-            filetypes=types,
-            defaultextension=".py",
-            multiple=True)
-        c.bringToFront()
-
-        if names:
-            g.chdir(names[0])
-            c.importCommands.importFilesCommand(names,"@file")
-    #@+node:ekr.20031218072017.2854: *6* importCWEBFiles
-    def importCWEBFiles (self,event=None):
-
-        '''Import one or more external CWEB files, creating @file trees.'''
-
-        c = self
-
-        filetypes = [
-            ("CWEB files", "*.w"),
-            ("Text files", "*.txt"),
-            ("All files", "*")]
-
-        names = g.app.gui.runOpenFileDialog(
-            title="Import CWEB Files",
-            filetypes=filetypes,
-            defaultextension=".w",
-            multiple=True)
-        c.bringToFront()
-
-        if names:
-            g.chdir(names[0])
-            c.importCommands.importWebCommand(names,"cweb")
-    #@+node:ekr.20031218072017.2855: *6* importFlattenedOutline
-    def importFlattenedOutline (self,event=None):
-
-        '''Import an external created by the flatten-outline command.'''
-
-        c = self
-
-        types = [("Text files","*.txt"), ("All files","*")]
-
-        names = g.app.gui.runOpenFileDialog(
-            title="Import MORE Text",
-            filetypes=types,
-            defaultextension=".py",
-            multiple=True)
-        c.bringToFront()
-
-        if names:
-            g.chdir(names[0])
-            c.importCommands.importFlattenedOutline(names)
-    #@+node:ekr.20031218072017.2856: *6* importNowebFiles
-    def importNowebFiles (self,event=None):
-
-        '''Import one or more external noweb files, creating @file trees.'''
-
-        c = self
-
-        filetypes = [
-            ("Noweb files", "*.nw"),
-            ("Text files", "*.txt"),
-            ("All files", "*")]
-
-        names = g.app.gui.runOpenFileDialog(
-            title="Import Noweb Files",
-            filetypes=filetypes,
-            defaultextension=".nw",
-            multiple=True)
-        c.bringToFront()
-
-        if names:
-            g.chdir(names[0])
-            c.importCommands.importWebCommand(names,"noweb")
     #@+node:ekr.20031218072017.2857: *6* outlineToCWEB
     def outlineToCWEB (self,event=None):
 

@@ -7,25 +7,7 @@
 @language rest
 .. @+node:ekr.20110523201030.18291: *3* b1
 @language rest
-.. @+node:ekr.20110528180209.18237: *4* Improvements: 2
-.. @+node:ekr.20061006165447: *5* Let import commands decide what kind of import to do
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3940843
-By: ktenney
-
->the distiction between importing 'foreign' text files and importing derived
-files created by Leo.
-
-Couldn't Leo make this distinction by looking at
-the file being imported? If so, I think it should.
-
-This could eliminate a lot of confusion IMO, if
-I want to bring a file into a node, just
-'import' it, and the right thing happens.
-
-An emergency measure could be available in a 
-'File Special' menu.
-.. @+node:ekr.20110529115328.18240: *5* Fix forward and backward by sentences
+.. @+node:ekr.20110529115328.18240: *4* Improve forward and backward by sentences
 @nocolor-node
 
 Leo's sentence related functions:
@@ -36,7 +18,7 @@ Leo's sentence related functions:
 - do not stop at the end or beginning of the buffer.
 
 Note: see forwardSentenceHelper and backSentenceHelper functions.
-.. @+node:ekr.20050920084036.131: *6* sentences & helpers
+.. @+node:ekr.20050920084036.131: *5* sentences & helpers
 def backSentence (self,event):
     '''Move the cursor to the previous sentence.'''
     self.backSentenceHelper(event,extend=False)
@@ -52,7 +34,7 @@ def forwardSentence (self,event):
 def forwardSentenceExtendSelection (self,event):
     '''Extend the selection by moving the cursor to the next sentence.'''
     self.forwardSentenceHelper(event,extend=True)
-.. @+node:ekr.20051213094517: *7* backSentenceHelper
+.. @+node:ekr.20051213094517: *6* backSentenceHelper
 def backSentenceHelper (self,event,extend):
 
     c = self.c
@@ -85,7 +67,7 @@ def backSentenceHelper (self,event,extend):
 
     if j < i:
         self.moveToHelper(event,j,extend)
-.. @+node:ekr.20050920084036.137: *7* forwardSentenceHelper
+.. @+node:ekr.20050920084036.137: *6* forwardSentenceHelper
 def forwardSentenceHelper (self,event,extend):
 
     c = self.c
