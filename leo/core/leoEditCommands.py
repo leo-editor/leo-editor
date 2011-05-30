@@ -1725,6 +1725,7 @@ class editCommandsClass (baseEditCommandsClass):
             'split-line':                           self.splitLine,
             'tabify':                               self.tabify,
             'toggle-extend-mode':                   self.toggleExtendMode,
+            'toggle-case-region':                   self.toggleCaseRegion,
             'transpose-chars':                      self.transposeCharacters,
             'transpose-lines':                      self.transposeLines,
             'transpose-words':                      self.transposeWords,
@@ -4585,6 +4586,10 @@ class editCommandsClass (baseEditCommandsClass):
     def downCaseRegion (self,event):
         '''Convert all characters in the selected text to lower case.'''
         self.caseHelper(event,'low','downcase-region')
+        
+    def toggleCaseRegion (self,event):
+        '''Toggle the case of all characters in the selected text.'''
+        self.caseHelper(event,'toggle','toggle-case-region')
 
     def upCaseRegion (self,event):
         '''Convert all characters in the selected text to UPPER CASE.'''
@@ -4600,7 +4605,17 @@ class editCommandsClass (baseEditCommandsClass):
         s = w.getAllText()
         i,j = w.getSelectionRange()
         ins = w.getInsertPoint()
-        sel = g.choose(way=='low',s[i:j].lower(),s[i:j].upper())
+        
+        # sel = g.choose(way=='low',s[i:j].lower(),s[i:j].upper())
+        s2 = s[i:j]
+        if way == 'low':
+            sel = s2.lower()
+        elif way == 'up':
+            sel = s2.upper()
+        else:
+            assert way == 'toggle'
+            sel = s2.swapcase()
+        
         s2 = s[:i] + sel + s[j:]
         # g.trace('sel',repr(sel),'s2',repr(s2))
         changed = s2 != s
