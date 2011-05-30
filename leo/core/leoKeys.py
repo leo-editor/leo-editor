@@ -2689,9 +2689,10 @@ class keyHandlerClass:
 
         if g.app.quitting:
             return
-
-        # if not inAutoCompleter:
-            # k.autoCompleter.exit()
+            
+        # 2011/05/30: We may be called from Qt event handlers.
+        # Make sure to end editing!
+        c.endEditing() 
         
         # Completely clear the mode.
         if setFocus:
@@ -2709,7 +2710,6 @@ class keyHandlerClass:
         k.resetLabel()
 
         if setFocus:
-            c.endEditing()
             c.bodyWantsFocus()
 
         # At present, only the auto-completer suppresses this.
