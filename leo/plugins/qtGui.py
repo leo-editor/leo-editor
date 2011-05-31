@@ -10995,6 +10995,7 @@ class jEditColorizer:
         This is called whenever a pattern matcher succeed.'''
 
         trace = False and not g.unitTesting
+            # A superb trace: enable this first to see what gets colored.
 
         # Pattern matcher may set the .flag ivar.
         if self.colorizer.killColorFlag or not self.colorizer.flag:
