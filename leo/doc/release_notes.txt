@@ -15769,7 +15769,8 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
-#@+node:ekr.20110531155858.20436: *4* Leo is no longer supported for Tk on MacOS
+#@+node:ekr.20110531155858.20539: *4* Deprecated/removed features
+#@+node:ekr.20110531155858.20436: *5* Leo is no longer supported for Tk on MacOS
 The following two bugs are critical, and yet do not seem worth fixing.
 
 Outline commands execute twice under OS X
@@ -15801,7 +15802,51 @@ most of the time  saving changes just overwrites without asking.
 I don't know what information to post about my environment. I use the
 standard OSX python install (2.6.1) and launch leo with "./
 launchLeo.py --gui=tk".
-#@+node:ekr.20110531155858.19830: *4* Bugs
+#@+node:ekr.20110531155858.20235: *5* Removed show/hide/toggle minibuffer commands
+#@+node:ekr.20110531155858.20411: *5* Problems with per-node undo
+Per-node undo: impossible. Node versioning: possible.
+http://groups.google.com/group/leo-editor/browse_thread/thread/e9348fbe22f547ad
+
+Here I shall discuss the design difficulties in supporting per-node undo. As I
+said earlier, the code itself is clean, but as we shall see it sweeps too much
+under the rug.
+
+To state my conclusion first: local undo is likely impossible. Otoh, node
+versioning, which aims at recreating only the text (headline or body) of nodes,
+is quite feasible.
+
+There are two interrelated difficulties with local undo. The first is serious,
+the second is fatal.
+
+1. Per-node undo is not sufficient. We need *both* a global undo and a local undo.
+
+The user must be able to choose which is desired. Naturally, this leads to
+increased complexity in a frequently-used feature. This kind of change is always
+problematic.
+
+Furthermore, there are (or would be) grave difficulties in correlating local and
+global undo operations. However, we can ignore these difficulties because the
+next problem is intractable.
+
+2. Per-node undo is invalid.
+
+In effect, the present per-node undo partitions all actions by vnode. There is
+no global undo at all. That is, each vnode has its *own* undo stack.
+
+Alas, in general it is invalid to treat operations this way. For example,
+suppose a local undo stack contains an entry for move-outline-up command. When
+executed in a *global* context (that is, with a global undo stack), the Leo
+outline is guaranteed to be in a state in which this undo operation is valid.
+
+But the operation may not be valid when the undo entry appears in a *local*
+context. To see this, suppose the global stack contains a promote or demote
+operation. This operation affects children, but this operation does *not* appear
+in the local undo stack for the children. Thus, a node may have a prior sibling
+in a global context (after a series of global undos), but might *not* have such
+a sibling after a series of local undos.
+
+This is a show-stopper.
+#@+node:ekr.20110531155858.19830: *4* Minor Bugs: 45+
 #@+node:ekr.20110531155858.19831: *5* Fixed bug 682561: pyenchant install problem
 #@+node:ekr.20110531155858.19846: *5* Don't change user's lines!
 Leo no longer wraps @doc lines.
@@ -15879,97 +15924,10 @@ Python 2.6.6, qt version 4.7.0
 linux2
 
 #@+node:ekr.20110531155858.19939: *5* Fixed bug: ignore f-keys in find/replace patterns
-#@+node:ekr.20110531155858.19972: *5* Fixed bugs in moveLinesUp/Down
-def moveLinesDown (self,event):
-
-    '''Move all lines containing any selected text down one line,
-    moving to the next node if the lines are the last lines of the body.'''
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-
-    s = w.getAllText()
-    sel_1,sel_2 = w.getSelectionRange()
-    insert_pt = w.getInsertPoint() # 2011/04/01
-    i,junk = g.getLine(s,sel_1)
-    i2,j   = g.getLine(s,sel_2)
-    lines  = s[i:j]
-
-    # Select from start of the first line to the *start* of the last line.
-    # This prevents selection creep.
-    n = i2-i
-    # g.trace('moveLinesDown:',repr('%s[[%s|%s|%s]]%s' % (
-    #    s[i-20:i], s[i:sel_1], s[sel_1:sel_2], s[sel_2:j], s[j:j+20])))
-
-    self.beginCommand(undoType='move-lines-down')
-    changed = False
-    try:
-        if j < len(s):
-            next_i,next_j = g.getLine(s,j) # 2011/04/01: was j+1
-            next_line = s[next_i:next_j]
-            n2 = next_j-next_i
-            w.delete(i,next_j)
-            if next_line.endswith('\n'):
-                # Simply swap positions with next line
-                new_lines = next_line+lines
-            else:
-                # Last line of the body to be moved up doesn't end in a newline
-                # while we have to remove the newline from the line above moving down.
-                new_lines = next_line+'\n'+lines[:-1]
-                n2 += 1
-            w.insert(i,new_lines)
-            w.setSelectionRange(sel_1+n2,sel_2+n2,insert=insert_pt+n2)
-            changed = True
-    finally:
-       self.endCommand(changed=changed,setLabel=True)
-
-#@verbatim
-#@+node:ekr.20060417183606.1: *4* moveLinesUp
-
-def moveLinesUp (self,event):
-
-    '''Move all lines containing any selected text up one line,
-    moving to the previous node as needed.'''
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-
-    s = w.getAllText()
-    sel_1,sel_2 = w.getSelectionRange()
-    insert_pt = w.getInsertPoint() # 2011/04/01     
-    i,junk = g.getLine(s,sel_1)
-    i2,j   = g.getLine(s,sel_2)
-    lines  = s[i:j]
-    n = i2-i
-    # g.trace('moveLinesUp:',repr('%s[[%s|%s|%s]]%s' % (
-    #    s[max(0,i-20):i], s[i:sel_1], s[sel_1:sel_2], s[sel_2:j], s[j:j+20])))
-
-    self.beginCommand(undoType='move-lines-up')
-    changed = False
-    try:
-        if i>0:
-            prev_i,prev_j = g.getLine(s,i-1)
-            prev_line = s[prev_i:prev_j]
-            n2 = prev_j - prev_i
-            w.delete(prev_i,j)
-            if lines.endswith('\n'):
-                # Simply swap positions with next line
-                new_lines = lines+prev_line
-            else:
-                # Lines to be moved up don't end in a newline while the
-                # previous line going down needs its newline taken off.
-                new_lines = lines+'\n'+prev_line[:-1]
-            w.insert(prev_i,new_lines)
-            w.setSelectionRange(sel_1-n2,sel_2-n2,insert=insert_pt-n2)
-            changed = True
-    finally:
-        self.endCommand(changed=changed,setLabel=True)
 #@+node:ekr.20110531155858.19976: *5* c.bringToFront now activates the window
 #@+node:ekr.20110531155858.19979: *5* Fixed nav_qt plutin
 #@+node:ekr.20110531155858.19996: *5* Fixed completer focus problem
 #@+node:ekr.20110531155858.20001: *5* Fixed bug 783617: Can't enter text directly in the Find panel
-@nocolor-node
-
 https://bugs.launchpad.net/leo-editor/+bug/
 
 After experimentation I have chosen simply to disable the Find/Change text areas
@@ -16405,8 +16363,6 @@ No changes needed.
 - no keyboard method to swing focus away from the options panel:
   Invalid: ctrl-g works.
 #@+node:ekr.20110531155858.20149: *5* Fixed bug in getSaxUa
-#@+node:ekr.20110531155858.20151: *5* Fixed recent blunder: Focus got yanked away from some tabs
-Binding, Commands
 #@+node:ekr.20110531155858.20153: *5* Added bindings to all text widgets in the tab frame
  
 #@+node:ekr.20110531155858.20154: *5* Already fixed:  multiple controllers problem in all plugins
@@ -16475,15 +16431,7 @@ two editors, they highlight the variable names correctly.
 @nocolor-node
 
 This fixes the most annoying hangnail remaining in Leo.
-#@+node:ekr.20110531155858.20167: *4* Code & cleanup
-#@+node:ekr.20110531155858.20168: *5* Eliminated _rootPosition
-Also made c.findRootPosition() an alias for c.rootPosition()
-#@+node:ekr.20110531155858.20176: *5* Investigated eliminating hasattr
-It's probably not worthwhile to try to eliminate these.
-#@+node:ekr.20110531155858.20228: *5* Use c.alert rather than g.alert
-#@+node:ekr.20110531155858.20234: *5* Menus & dialogs say "Flatten Selected Outline"
-@nocolor-node
-
+#@+node:ekr.20110531155858.20234: *5* Menus & dialogs now say "Flatten Selected Outline"
 https://bugs.launchpad.net/leo-editor/+bug/626587
 
 I ask that you please look at this from the newbie perspective that I
@@ -16494,108 +16442,6 @@ Selected Node, then I would have understood immediately what would
 happen on its execution. But the menu choice says neither of these -- it
 says Flatten Outline. That gives me a different expectation of what it
 will do.
-#@+node:ekr.20110531155858.20235: *5* Removed show/hide/toggle minibuffer commands
-#@+node:ekr.20110531155858.20237: *4* Docs
-#@+node:ekr.20110531155858.20238: *5* Creating minimal outlines
-@language python
-
-import leo.core.leoGui as leoGui
-nullGui = leoGui.nullGui("nullGui")
-c2,frame = g.app.newLeoCommanderAndFrame(
-        fileName=None,gui=nullGui)
-c2.frame.createFirstTreeNode()
-for p in c2.all_positions():
-    g.es(p.h)
-#@+node:ekr.20110531155858.20244: *5* Clarification: we can not allow Leo settings to change qt-stylesheets
-Are color-settings gui-toolkit dependent?
-
-In my ~/.leo/myLeoSettings.leo I changed @settings->Colors-> @color body_text_selection_foreground_color = black
-(the value before was `white`).
-
-Unfortunately the foreground of the selected text still is white, at least if I use the qt gui (which is default on my system and which I like more).
-
-So my questions:
-
-Are the color-settings gui-toolkit dependent?
-
-How (or where) can I change the colors used for qt?
-
-Is there a way to print the settings files (with full path) which leo reads on startup?
-(I think this would help to prevent confusion in the various ways to specify settings for new users.)
-
-=====================================
-
-At last I see what is going on.  The selection colors are set in the node:
-
-@data qt-gui-plugin-style-sheet
-
-Apparently the selection colors can *only* be set there: it looks like
-the separate @color settings for selections do not work.
-
-This is quite a mess.  It arose because originally I did not realize
-that it was possible to use "mini" stylesheets to set individual
-selector dynamically.  When I made the discovery, I supported some,
-but not all settings.
-
-Of course, I should support all settings.  I'll see what I can do...
-#@+node:ekr.20110531155858.20245: *6* Response
-@nocolor-node
-
-After further reflection, there does not seem to be much that can be done.
-
-Suppose, for example, that Leo converts an @setting node to a mini
-stylesheet.  (In fact, Leo sometimes does do this, in other contexts.)
- We now have a conundrum: which should take precedence: the @data
-qt-gui-plugin-style-sheet setting or the @color
-body_text_selection_foreground_color setting?
-
-Rather than open that can of worms, the best solution seems to be to
-declare that yes, some settings *are* gui dependent.  Use @data
-qt-gui-plugin-style-sheet to set those settings.
-#@+node:ekr.20110531155858.20535: *4* Notes
-#@+node:ekr.20110531155858.20411: *5* Problems with per-node undo
-Per-node undo: impossible. Node versioning: possible.
-http://groups.google.com/group/leo-editor/browse_thread/thread/e9348fbe22f547ad
-
-Here I shall discuss the design difficulties in supporting per-node undo. As I
-said earlier, the code itself is clean, but as we shall see it sweeps too much
-under the rug.
-
-To state my conclusion first: local undo is likely impossible. Otoh, node
-versioning, which aims at recreating only the text (headline or body) of nodes,
-is quite feasible.
-
-There are two interrelated difficulties with local undo. The first is serious,
-the second is fatal.
-
-1. Per-node undo is not sufficient. We need *both* a global undo and a local undo.
-
-The user must be able to choose which is desired. Naturally, this leads to
-increased complexity in a frequently-used feature. This kind of change is always
-problematic.
-
-Furthermore, there are (or would be) grave difficulties in correlating local and
-global undo operations. However, we can ignore these difficulties because the
-next problem is intractable.
-
-2. Per-node undo is invalid.
-
-In effect, the present per-node undo partitions all actions by vnode. There is
-no global undo at all. That is, each vnode has its *own* undo stack.
-
-Alas, in general it is invalid to treat operations this way. For example,
-suppose a local undo stack contains an entry for move-outline-up command. When
-executed in a *global* context (that is, with a global undo stack), the Leo
-outline is guaranteed to be in a state in which this undo operation is valid.
-
-But the operation may not be valid when the undo entry appears in a *local*
-context. To see this, suppose the global stack contains a promote or demote
-operation. This operation affects children, but this operation does *not* appear
-in the local undo stack for the children. Thus, a node may have a prior sibling
-in a global context (after a series of global undos), but might *not* have such
-a sibling after a series of local undos.
-
-This is a show-stopper.
 #@+node:ekr.20110531155858.20246: *4* Features
 #@+node:ekr.20110531155858.20247: *5* Improved handling of @url nodes
 The new rule is simple: if the body text contains any text the first line of the

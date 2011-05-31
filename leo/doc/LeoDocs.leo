@@ -150,8 +150,17 @@ expanded="ekr.20100817101952.4313,"><vh>@file installing.txt</vh></v>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"
-expanded="edream.110203163054.63,ekr.20110531155858.19246,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
+</v>
+<v t="ekr.20110531155858.20557"><vh>Docs TO DO: 6</vh>
+<v t="ekr.20110531155858.20558"><vh>Make sure MacOS users are told to use --gui=qt</vh></v>
+<v t="ekr.20110531155858.20559"><vh>Document highlights of my workflow</vh></v>
+<v t="ekr.20110531155858.20560"><vh>Doc: summary of autocompleter (do not delete)</vh></v>
+<v t="ekr.20110531155858.20561"><vh>Doc: the new completion caching scheme (do not delete)</vh></v>
+<v t="ekr.20110531155858.20563"><vh>Creating minimal outlines</vh></v>
+<v t="ekr.20110531155858.20564"><vh>Clarification: we can not allow Leo settings to change qt-stylesheets</vh>
+<v t="ekr.20110531155858.20565"><vh>Response</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -314,6 +323,378 @@ Important files:
 - leo_toc.html.txt contains a list of all file to be included.
 </t>
 <t tx="ekr.20101112045055.5065">http://www.greygreen.org/tmp/plugins.html</t>
+<t tx="ekr.20110531155858.20557"></t>
+<t tx="ekr.20110531155858.20558">There is no obvious way of fixing the "disappearing menu" bug.
+
+Users that have to choose to do without tabs, or to do without menus :-)
+</t>
+<t tx="ekr.20110531155858.20559">@language rest
+
+This thread will discuss the workflow I use to develop Leo. The intention is to
+help present and potential developers use Leo effectively. This thread will be
+pre-writing for a section of the users guide.
+
+This is a continuation of the thread:
+http://groups.google.com/group/leo-editor/browse_thread/thread/4494324d21bd0bde/adf6d565c90e175c
+
+Overview
+=======
+
+Here is the big picture:
+
+* Develop in an outline containing all of Leo's source files. Close this outline
+ rarely: this keeps the code I am using stable while I'm hacking the code.
+
+* Test in a *separate* .leo file, say test.leo. In fact, I often test in a
+  private file, ekr.leo, so that test.leo doesn't get continually updated on bzr
+  with trivial changes.
+
+These two points are covered in a bit more detail in the FAQ:
+
+http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
+
+Additional tips:
+
+A. Avoid using the mouse whenever possible.  For example, use alt-tab to switch between windows.
+
+B. Always develop Leo in a console.  This allows me to see the output of g.trace.
+
+Speaking of g.trace, I hardly ever use 'print' because g.trace prints the name
+of the function or method in which it appears. The typical pattern for enabling
+traces is:
+
+    trace = True and not g.unitTesting
+    if trace: g.trace(whatever)
+
+This pattern is especially useful when a method contains multiple calls to g.trace.
+
+C. I use scripts to open particular Leo files. These are batch files on Windows,
+   and aliases on Linux, but invoking them is the same on either platform:
+
+all: opens all my main development files using the qt-tabs gui: leoPy.leo,
+     leoGuiPlugins.leo, leoPlugins.leo, leoSettings.leo, myLeoSettings.leo and
+     LeoDocs.leo.
+
+t: opens test.leo.
+
+e: opens ekr.leo.  I use this file for private testing.
+
+d: opens LeoDocs.leo.
+
+s: opens LeoPy.leo.
+
+plugins: opens leoPlugins.leo.
+
+gui: opens leoGui.leo.
+
+u: opens unitTest.leo.
+
+These run Leo with Python 3.x. There are similar scripts, ending in 2, that run
+Leo with Python 2.x. For example, u2 opens unitTest.leo with Python 2.x.
+
+Similarly, the tk prefix uses the Tk gui: utk opens unitTest.leo with --gui=tk
+(and Python 2.x since the tk gui only works with Python 2.x)
+
+Thus, to run a test, I alt-tab to an available console window, then type 'e' or
+'t' or 'e2' or 't2'.
+
+D. Use clones to focus attention on the task at hand.  For more details, see:
+
+E.  For thousand of example of my programming style, see leoPy.leo and leoGuiPlugins.leo.
+
+http://webpages.charter.net/edreamleo/intro.html#clones-views
+
+The projects section in leoPy.leo contains many examples of using clones to
+create view nodes. I typically delete the clones in the views shortly before a
+release.
+
+That's about all for code-level tips.  Here are some administrative tips:
+
+A.  Use postings as pre-writing for documentation.
+
+I don't mind blabbing on and on about Leo because all my posts become
+pre-writing for Leo's documentation. I simply copy posts to nodes in the
+"documentation to-do" section. At release time, I edit these nodes and put them
+in Leo's main documentation or the release notes. This posting is an example.
+
+B. Never rely on memory.
+
+A project like this contains thousands and thousands of details. Everything
+eventually goes into a Leo node somewhere. If it doesn't it surely *will* be
+forgotten.
+
+C. Do easy items first. This keeps to-do lists short, which in turn helps keep
+energy high.
+
+
+============================
+
+&gt; Do you also have any bzr specific gotchas that you plan to add to this
+&gt; section?
+
+I use the following batch files related to bzr:
+
+b: short for bzr
+bs: short for bzr status
+tr: short for cd &lt;path to trunk&gt;
+main: short for cd &lt;path to copy of trunk&gt;
+
+The "main" (copy) of the trunk is purely for handling bzr conflicts.
+If one happens I do this:
+
+main
+b pull
+b merge ../trunk
+b c -m "my commit message"
+b push
+
+If the merge goes well (it usually does), I do:
+
+tr
+b pull
+
+This suffices to resolve the conflict.
+</t>
+<t tx="ekr.20110531155858.20560">@language rest
+
+There has been a lot of work on autocompletion recently. Here, I'll summarize
+the present status and indicate future directions.
+
+Terminology: the *legacy* (aka tabbed) autocompleter shows completions in Leo's
+tabbed pane. The *new* (aka qcompleter) autocompleter shows completions in or
+near the body pane.
+
+Appearance
+==========
+
+There is little change to the legacy completer, except that no text is
+highlighted in the body pane during completion. This is calmer than before.
+Furthermore, there is no longer any need for highlighting, because when the user
+types a backspace the legacy completer now simply deletes a single character
+instead of the highlighted text.
+
+One more minor change: the legacy completer now *does* insert characters that do
+not match the start of any possible completion. This is an experimental feature,
+but it might play well with using codewise completions as a fallback to
+leo-related completions.
+
+The appearance of the qcompleter is in flux. Previously, the QCompleter ctor
+created a wretched-looking window in or near the body pane. The present code
+creates a new temporary splitter above the body pane. It looks good, but has the
+unpleasant effect of shifting the body pane done.
+
+The consensus seems to be that the completion window should float near the
+to-be-completed text, without obscuring it. I'll do this immediately.
+
+Function and design
+===================
+
+Both the legacy and new completer now work *exactly* the same way, because they
+both use the AutoCompleterClass to compute the list of completions.
+
+In other words, the qcompleter code in qtGui.py deals *only* with gui- related
+matters. All policy matters are delegated to AutoCompleterClass.
+
+All completion-related code is stateless, or as stateless as possible. In
+practice, this means that ac.compute_completion_list must be called on every
+keystroke. That's not a problem: it is extremely fast.
+
+Yesterday I realized that the strict "stateless" requirement means that the
+"intermediate" completions must be entered into the body pane while completion
+is active. This might be a debatable user-interface choice. It works well as a
+visual cue when using the tabbed completer: indeed, the tabbed completer would
+be difficult to use without this cue.
+
+The situation is slightly different with the qcompleter. Adding code before the
+user accepts the completion might be considered an "advanced" feature. However,
+it does have two important advantages, especially when "chaining" across
+periods: it indicates the status of the chaining and it limits what must appear
+in the qcompleter window.
+
+It would be possible *not* to add the intermediate text into the body pane when
+using the qcompleter, but that would have the following disadvantages:
+
+- It would require internal state somewhere, probably in AutoCompleterClass.
+
+- It would require that the complete prefix be visible in the qcompleter window.
+
+For these reasons, I would prefer to have the code remains stateless for both
+the legacy and new completers.
+
+Codewise completions
+====================
+
+I agree with Ville that the @bool use_codewise setting should be eliminated, or
+at the very least made the default. The problem with eliminating the setting
+completely is that it might give incorrect results if c, g and p do not mean
+what they mean in Leo. Perhaps this is not worth worrying about. In any case,
+the codewise completions should be used whenever the eval-oriented approach
+fails.
+
+The present codewise-oriented completions appear to work well. In large part,
+this is due to adding the global "self." completions to all class-related
+completions (kind == 'class' in ac.get_codewise_completions). This looks like a
+really good hack, and it eliminates the need for the ContextSniffer class.
+
+Performance
+===========
+
+Performance of leo-related completions is *much* better than before. The old
+code used Python's inspect module and was horribly complex. The new code uses
+eval and is perfectly straightforward.
+
+The present codewise-related code caches completions for all previously-seen
+prefixes. This dramatically speeds up backspacing. Global caching is possible
+because completions depend *only* one the present prefix, *not* on the presently
+selected node. If ContextSniffer were used, completions would depend on the
+selected node and caching would likely be impractical.
+
+Despite these improvements, the performance of codewise-oriented completions is
+now noticeably slower than leo-related completions.
+
+The present qcompleter code avoids the QCompleter class entirely. This
+dramatically speeds up completions and simplifies the code in qtGui.py.
+
+Future directions
+=============
+
+Appearance-related issues will soon be completely resolved. When that happens I
+shall consider autocompletion to be "complete enough".
+
+I am completely happy with the leo-oriented completions. I'm not looking for
+anything better :-)
+
+Falling back to codewise-completions when leo-related completions fail may have
+some promise. In fact, the slowness of computing the codewise-oriented
+completions in that case might be a subtle clue that something is amiss :-) We
+shall see. In any case, it's a small point with no global implications.
+
+The "final frontier" is, as it has always been, improving codewise completions.
+As always, this is an open-ended project. The question are, how much AI is
+reasonable, and how can performance be improved? Having said that, I am pleased
+with ac.get_codewise_completions. It, and its helpers, guess_class and clean,
+are relatively straightforward.
+
+I have always considered the codewise completions (or whatever replaces them) to
+be the "hard part". There is still a sense in which this is true, but perhaps as
+a practical matter Ville was correct in calling this week's work the hard part
+:-)
+
+In any case, the codewise completions work surprisingly well. For example, it
+suggests all parts of the chain c.frame.body.bodyCtrl.widget except the bodyCtrl
+part, and after I type the bodyCtrl part by hand the codewise completer does
+suggest widget.
+
+This is all a bit of a hack. The codewise completer suggests far more
+completions than are actually valid. Happily, these extra suggestions cause no
+pain: typing just a few letters of the next part of the chain quickly removes
+most extraneous completions.
+
+The performance and flexibility of the codewise completer are greater concerns.
+Now that leo-related completions are so fast, the slower speed of the codewise
+completer is just a bit annoying. Caching helps somewhat, but not enough.
+
+By "flexibility" I mean that the user must run ctags periodically to update
+completions. One could imagine Leo doing this automatically from time to time,
+but such a project would not be trivial.
+
+Summary
+=======
+
+User interface issues are nearly resolved: I'll make the qcompleter float today.
+
+Performance of Leo completions are excellent; codewise completions not bad.
+
+Improving codewise completions would be an interesting project, but not urgent.
+</t>
+<t tx="ekr.20110531155858.20561">@language rest
+
+QQQ
+The completer should calculate all possible completions at that time. now, as
+you enter letters b a r, (to get foo.bar), completions should not be calculated
+- rather, the original completion list calculated earlier should be pruned
+according to the letters typed.
+QQQ
+
+The change was elegant: see ac.get_cached_options. This method cuts back the
+prefix until it finds a cached prefix. ac.compute_completion_list then uses this
+(perhaps-way-too-long-list) as a starting point, and computes the final
+completion list by calling g.itemsMatchingPrefixInList.
+
+This may not be absolutely the fastest way, but it is much simpler and more
+robust than attempting to do "prefix AI" based on comparing old and new
+prefixes. Furthermore, this scheme is completely independent of the how
+completions are actually computed. The autocompleter now caches options lists,
+regardless of whether using eval or codewise.
+
+And in most cases the scheme is extremely fast: calls to get_completions replace
+calls to g.itemsMatchingPrefixInList. However, for short prefixes, the list that
+g.g.itemsMatchingPrefixInList scans can have thousands of items. Scanning large
+lists can't be helped in any case for short prefixes.
+
+Happily, the new scheme is still *completely* stateless: the completionDict does
+*not* define state (it is valid everywhere) and no state variables had to be
+added.
+
+In short, the new caching scheme is much better than before, and it probably is
+close to optimal in most situations.
+</t>
+<t tx="ekr.20110531155858.20563">@language python
+
+import leo.core.leoGui as leoGui
+nullGui = leoGui.nullGui("nullGui")
+c2,frame = g.app.newLeoCommanderAndFrame(
+        fileName=None,gui=nullGui)
+c2.frame.createFirstTreeNode()
+for p in c2.all_positions():
+    g.es(p.h)
+</t>
+<t tx="ekr.20110531155858.20564">Are color-settings gui-toolkit dependent?
+
+In my ~/.leo/myLeoSettings.leo I changed @settings-&gt;Colors-&gt; @color body_text_selection_foreground_color = black
+(the value before was `white`).
+
+Unfortunately the foreground of the selected text still is white, at least if I use the qt gui (which is default on my system and which I like more).
+
+So my questions:
+
+Are the color-settings gui-toolkit dependent?
+
+How (or where) can I change the colors used for qt?
+
+Is there a way to print the settings files (with full path) which leo reads on startup?
+(I think this would help to prevent confusion in the various ways to specify settings for new users.)
+
+=====================================
+
+At last I see what is going on.  The selection colors are set in the node:
+
+@data qt-gui-plugin-style-sheet
+
+Apparently the selection colors can *only* be set there: it looks like
+the separate @color settings for selections do not work.
+
+This is quite a mess.  It arose because originally I did not realize
+that it was possible to use "mini" stylesheets to set individual
+selector dynamically.  When I made the discovery, I supported some,
+but not all settings.
+
+Of course, I should support all settings.  I'll see what I can do...
+</t>
+<t tx="ekr.20110531155858.20565">@nocolor-node
+
+After further reflection, there does not seem to be much that can be done.
+
+Suppose, for example, that Leo converts an @setting node to a mini
+stylesheet.  (In fact, Leo sometimes does do this, in other contexts.)
+ We now have a conundrum: which should take precedence: the @data
+qt-gui-plugin-style-sheet setting or the @color
+body_text_selection_foreground_color setting?
+
+Rather than open that can of worms, the best solution seems to be to
+declare that yes, some settings *are* gui dependent.  Use @data
+qt-gui-plugin-style-sheet to set those settings.
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
