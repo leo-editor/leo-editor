@@ -36,7 +36,7 @@
 <v t="ekr.20051110111150"
 expanded="ekr.20040713123617.1,ekr.20050220091046,ekr.20060824111500.108,ekr.20060824111500.117,ekr.20060824111500.120,ekr.20051110105027.3,"><vh>@thin leoScripts.txt</vh></v>
 </v>
-<v t="edward.20081226095234.1"><vh>@button lispCall @key=alt+6</vh>
+<v t="edward.20081226095234.1"><vh>@@button lispCall @key=alt+6</vh>
 <v t="edward.20081226095234.2"><vh>ctor</vh></v>
 <v t="edward.20081226101808.1"><vh>run &amp; helpers</vh>
 <v t="edward.20081227122708.3"><vh>findCalls</vh></v>

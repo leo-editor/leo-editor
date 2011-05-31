@@ -8,7 +8,6 @@
 .. @+node:ekr.20110523201030.18291: *3* b1
 @language rest
 .. @+node:ekr.20110531105534.19247: *4* Adding an @language directive does not force a recoloring
-.. @+node:ekr.20110530063322.18333: *4* scala not colored properly
 .. @+node:ekr.20110514231951.14492: *4* Docs: 6
 .. @+node:ekr.20110523201030.18284: *5* Make sure MacOS users are told to use --gui=qt
 There is no obvious way of fixing the "disappearing menu" bug.
@@ -1885,6 +1884,7 @@ print('%s total languages' % len(aList))
 print('%s new languages' % (len(list(computed.keys())) - len(known_keys)))
 print('%s mismatches' % mismatches)
 print('%s known language: %s' % (len(known_keys),known_keys))
+.. @+node:ekr.20110530063322.18333: *4* scala not colored properly
 .. @+node:ekr.20110527225107.18351: *3* Vague
 @language rest
 
