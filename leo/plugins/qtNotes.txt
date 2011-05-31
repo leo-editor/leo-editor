@@ -1253,6 +1253,8 @@ def createSplitterComponents (self):
 
     f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
     f.resizePanesToRatio(f.ratio,f.secondary_ratio)
+
+    # g.trace(f.ratio,f.secondary_ratio)
 #@+node:ekr.20100101104934.3658: *5* createFrame (TabbedFrameFactory)
 def createFrame(self, leoFrame):
 
@@ -9048,5 +9050,1241 @@ def match_at_language (self,s,i):
         return k - i
     else:
         return 0
+#@+node:ekr.20110531061818.18232: *3* Investigated split-orientation problem
+#@+node:ekr.20081121105001.249: *4* class leoQtFrame
+class leoQtFrame (leoFrame.leoFrame):
+
+    """A class that represents a Leo window rendered in qt."""
+
+    @others
+#@+node:ekr.20081121105001.250: *5*  Birth & Death (qtFrame)
+#@+node:ekr.20081121105001.251: *6* __init__ (qtFrame)
+def __init__(self,title,gui):
+
+    # Init the base class.
+    leoFrame.leoFrame.__init__(self,gui)
+
+    self.title = title
+    self.initComplete = False # Set by initCompleteHint().
+    leoFrame.leoFrame.instances += 1 # Increment the class var.
+
+    self.c = None # Set in finishCreate.
+    self.iconBarClass = self.qtIconBarClass
+    self.statusLineClass = self.qtStatusLineClass
+    self.iconBar = None
+
+    self.trace_status_line = None # Set in finishCreate.
+
+    << set the leoQtFrame ivars >>
+
+    self.minibufferVisible = True
+#@+node:ekr.20081121105001.252: *7* << set the leoQtFrame ivars >> (removed frame.bodyCtrl ivar)
+# "Official ivars created in createLeoFrame and its allies.
+self.bar1 = None
+self.bar2 = None
+self.body = None
+self.f1 = self.f2 = None
+self.findPanel = None # Inited when first opened.
+self.iconBarComponentName = 'iconBar'
+self.iconFrame = None 
+self.log = None
+self.canvas = None
+self.outerFrame = None
+self.statusFrame = None
+self.statusLineComponentName = 'statusLine'
+self.statusText = None 
+self.statusLabel = None 
+self.top = None # This will be a class Window object.
+self.tree = None
+# self.treeBar = None # Replaced by injected frame.canvas.leo_treeBar.
+
+# Used by event handlers...
+self.controlKeyIsDown = False # For control-drags
+self.draggedItem = None
+self.isActive = True
+self.redrawCount = 0
+self.wantedWidget = None
+self.wantedCallbackScheduled = False
+self.scrollWay = None
+#@+node:ekr.20081121105001.253: *6* __repr__ (qtFrame)
+def __repr__ (self):
+
+    return "<leoQtFrame: %s>" % self.title
+#@+node:ekr.20081121105001.254: *6* qtFrame.finishCreate & helpers
+# Called from newLeoCommanderAndFrame
+
+def finishCreate (self,c):
+
+    f = self ; f.c = c
+
+    # g.trace('(qtFrame)')
+
+    # self.bigTree         = c.config.getBool('big_outline_pane')
+    self.trace_status_line = c.config.getBool('trace_status_line')
+    self.use_chapters      = c.config.getBool('use_chapters')
+    self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
+
+    # returns DynamicWindow
+    f.top = g.app.gui.frameFactory.createFrame(f)
+    # g.trace('(leoQtFrame)',f.top)
+
+    # hiding would remove flicker, but doesn't work with all
+    # window managers
+
+    f.createIconBar() # A base class method.
+    f.createSplitterComponents()
+    cc = c.chapterController
+    # g.trace(cc,cc.findChaptersNode())
+    if 0: # 2010/06/17: Now done in cc.createChaptersNode.
+        if f.use_chapters and f.use_chapter_tabs: # and cc and cc.findChaptersNode():
+            cc.tt = leoQtTreeTab(c,f.iconBar)
+    f.createStatusLine() # A base class method.
+    f.createFirstTreeNode() # Call the base-class method.
+    f.menu = leoQtMenu(f)
+    #### c.setLog()
+    g.app.windowList.append(f)
+    f.miniBufferWidget = leoQtMinibuffer(c)
+    c.bodyWantsFocus()
+#@+node:ekr.20081121105001.255: *7* createSplitterComponents (qtFrame)
+def createSplitterComponents (self):
+
+    f = self ; c = f.c
+
+    f.tree  = leoQtTree(c,f)
+    f.log   = leoQtLog(f,None)
+    f.body  = leoQtBody(f,None)
+
+    if f.use_chapters:
+        c.chapterController = cc = leoChapters.chapterController(c)
+
+    f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
+    f.resizePanesToRatio(f.ratio,f.secondary_ratio)
+
+    # g.trace(f.ratio,f.secondary_ratio)
+#@+node:ekr.20081121105001.256: *6* initCompleteHint
+def initCompleteHint (self):
+
+    '''A kludge: called to enable text changed events.'''
+
+    self.initComplete = True
+    # g.trace(self.c)
+#@+node:ekr.20081121105001.257: *6* Destroying the qtFrame
+#@+node:ekr.20081121105001.258: *7* destroyAllObjects
+def destroyAllObjects (self):
+
+    """Clear all links to objects in a Leo window."""
+
+    frame = self ; c = self.c
+
+    # g.printGcAll()
+
+    # Do this first.
+    << clear all vnodes in the tree >>
+
+    if 1:
+        # Destroy all ivars in subcommanders.
+        g.clearAllIvars(c.atFileCommands)
+        if c.chapterController: # New in Leo 4.4.3 b1.
+            g.clearAllIvars(c.chapterController)
+        g.clearAllIvars(c.fileCommands)
+        g.clearAllIvars(c.keyHandler) # New in Leo 4.4.3 b1.
+        g.clearAllIvars(c.importCommands)
+        g.clearAllIvars(c.tangleCommands)
+        g.clearAllIvars(c.undoer)
+        g.clearAllIvars(c)
+    if 0: # No need.
+        tree = frame.tree ; body = self.body
+        g.clearAllIvars(body.colorizer)
+        g.clearAllIvars(body)
+        g.clearAllIvars(tree)
+
+#@+node:ekr.20081121105001.259: *8* << clear all vnodes in the tree>>
+vList = [z for z in c.all_unique_nodes()]
+
+for v in vList:
+    g.clearAllIvars(v)
+
+vList = [] # Remove these references immediately.
+#@+node:ekr.20081121105001.260: *7* destroySelf (qtFrame)
+def destroySelf (self):
+
+    # Remember these: we are about to destroy all of our ivars!
+    c,top = self.c,self.top 
+
+    g.app.gui.frameFactory.deleteFrame(top)
+    # Indicate that the commander is no longer valid.
+    c.exists = False
+
+    if 0: # We can't do this unless we unhook the event filter.
+        # Destroys all the objects of the commander.
+        self.destroyAllObjects()
+
+    c.exists = False # Make sure this one ivar has not been destroyed.
+
+    # g.trace('qtFrame',c,g.callers(4))
+    top.close()
+
+
+#@+node:ekr.20081121105001.261: *5* class qtStatusLineClass (qtFrame)
+class qtStatusLineClass:
+
+    '''A class representing the status line.'''
+
+    @others
+#@+node:ekr.20081121105001.262: *6* ctor
+def __init__ (self,c,parentFrame):
+
+    self.c = c
+    self.statusBar = c.frame.top.statusBar
+    self.lastFcol= 0
+    self.lastRow = 0
+    self.lastCol = 0
+
+    # Create the text widgets.
+    self.textWidget1 = w1 = QtGui.QLineEdit(self.statusBar)
+    self.textWidget2 = w2 = QtGui.QLineEdit(self.statusBar)
+    w1.setObjectName('status1')
+    w2.setObjectName('status2')
+    self.statusBar.addWidget(w1,True)
+    self.statusBar.addWidget(w2,True)
+    self.put('')
+    self.update()
+    c.frame.top.setStyleSheets()
+#@+node:ekr.20081121105001.263: *6*  do-nothings
+def disable (self,background=None): pass
+def enable(self,background="white"):pass
+def getFrame (self):                return None
+def isEnabled(self):                return True
+def onActivate (self,event=None):   pass
+def pack (self):                    pass
+def setBindings (self):             pass
+def unpack (self):                  pass
+
+hide = unpack
+show = pack
+
+#@+node:ekr.20081121105001.264: *6* clear, get & put/1
+def clear (self):
+    self.put('')
+
+def get (self):
+    return self.textWidget2.text()
+
+def put(self,s,color=None):
+    self.put_helper(s,self.textWidget2)
+
+def put1(self,s,color=None):
+    self.put_helper(s,self.textWidget1)
+
+def put_helper(self,s,w):
+    w.setText(s)
+#@+node:ekr.20081121105001.265: *6* update
+def update (self):
+    if g.app.killed: return
+
+    c = self.c ; body = c.frame.body
+
+    # te is a QTextEdit.
+    # 2010/02/19: Fix bug 525090
+    # An added editor window doesn't display line/col
+    if not hasattr(body.bodyCtrl,'widget'): return
+    te = body.bodyCtrl.widget # was body.widget.widget
+    cr = te.textCursor()
+    bl = cr.block()
+
+    col = cr.columnNumber()
+    row = bl.blockNumber() + 1
+    line = bl.text()
+
+    if col > 0:
+        s2 = line[0:col]        
+        col = g.computeWidth (s2,c.tab_width)
+    fcol = col + c.currentPosition().textOffset()
+
+    # g.trace('fcol',fcol,'te',id(te),g.callers(2))
+    # g.trace('c.frame.body.bodyCtrl',body.bodyCtrl)
+
+    self.put1(
+        "line: %d, col: %d, fcol: %d" % (row,col,fcol))
+    self.lastRow = row
+    self.lastCol = col
+    self.lastFcol = fcol
+#@+node:ekr.20081121105001.266: *5* class qtIconBarClass
+class qtIconBarClass:
+
+    '''A class representing the singleton Icon bar'''
+
+    @others
+#@+node:ekr.20081121105001.267: *6*  ctor
+def __init__ (self,c,parentFrame):
+
+    # g.trace('(qtIconBarClass)')
+
+    self.c = c
+    self.chapterController = None
+    self.parentFrame = parentFrame
+    self.toolbar = self
+    self.w = c.frame.top.iconBar # A QToolBar.
+    self.actions = []
+
+    # Options
+    self.buttonColor = c.config.getString('qt-button-color')
+
+    # g.app.iconWidgetCount = 0
+#@+node:ekr.20081121105001.268: *6*  do-nothings
+def addRow(self,height=None):   pass
+def getFrame (self):            return None
+def getNewFrame (self):         return None
+def pack (self):                pass
+def unpack (self):              pass
+
+hide = unpack
+show = pack
+#@+node:ekr.20081121105001.269: *6* add
+def add(self,*args,**keys):
+
+    '''Add a button to the icon bar.'''
+
+    c = self.c
+    command = keys.get('command')
+    text = keys.get('text')
+    # able to specify low-level QAction directly (QPushButton not forced)
+    qaction = keys.get('qaction')
+
+    if not text and not qaction:
+        g.es('bad toolbar item')
+
+    bg = keys.get('bg') or self.toolbar.buttonColor
+
+    # imagefile = keys.get('imagefile')
+    # image = keys.get('image')
+
+    class leoIconBarButton (QtGui.QWidgetAction):
+        def __init__ (self,parent,text,toolbar):
+            QtGui.QWidgetAction.__init__(self,parent)
+            self.button = None # set below
+            self.text = text
+            self.toolbar = toolbar
+        def createWidget (self,parent):
+            # g.trace('leoIconBarButton',self.toolbar.buttonColor)
+            self.button = b = QtGui.QPushButton(self.text,parent)
+            g.app.gui.setWidgetColor(b,
+                widgetKind='QPushButton',
+                selector='background-color',
+                colorName = bg)
+            return b
+
+    if qaction is None:
+        action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
+    else:
+        action = qaction
+
+    self.w.addAction(action)
+
+    self.actions.append(action)
+    b = self.w.widgetForAction(action)
+
+    b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+    def delete_callback(action=action,):
+        self.w.removeAction(action)
+
+    b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
+
+    b.addAction(rb)
+    rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
+
+    if command:
+        def button_callback(c=c,command=command):
+            # g.trace('command',command.__name__)
+            val = command()
+            if c.exists:
+                # c.bodyWantsFocus()
+                c.outerUpdate()
+            return val
+
+        self.w.connect(b,
+            QtCore.SIGNAL("clicked()"),
+            button_callback)
+
+    return action
+#@+node:ekr.20081121105001.270: *6* addRowIfNeeded
+def addRowIfNeeded (self):
+
+    '''Add a new icon row if there are too many widgets.'''
+
+    # n = g.app.iconWidgetCount
+
+    # if n >= self.widgets_per_row:
+        # g.app.iconWidgetCount = 0
+        # self.addRow()
+
+    # g.app.iconWidgetCount += 1
+#@+node:ekr.20081121105001.271: *6* addWidget
+def addWidget (self,w):
+
+    self.w.addWidget(w)
+#@+node:ekr.20081121105001.272: *6* clear
+def clear(self):
+
+    """Destroy all the widgets in the icon bar"""
+
+    self.w.clear()
+    self.actions = []
+
+    g.app.iconWidgetCount = 0
+#@+node:ekr.20100618162506.3716: *6* createChaptersIcon
+def createChaptersIcon(self):
+
+    # g.trace('(qtIconBarClass)')
+
+    c = self.c
+    cc = c.chapterController
+    f = c.frame
+
+    if f.use_chapters and f.use_chapter_tabs: # and cc and cc.findChaptersNode():
+        cc.tt = leoQtTreeTab(c,f.iconBar)
+#@+node:ekr.20081121105001.273: *6* deleteButton
+def deleteButton (self,w):
+    """ w is button """
+
+    #g.trace(w, '##')    
+
+    self.w.removeAction(w)
+
+    self.c.bodyWantsFocus()
+    self.c.outerUpdate()
+#@+node:ekr.20081121105001.274: *6* setCommandForButton
+def setCommandForButton(self,button,command):
+
+    if command:
+        # button is a leoIconBarButton.
+        QtCore.QObject.connect(button.button,
+            QtCore.SIGNAL("clicked()"),command)
+
+        if not hasattr(command, 'p'):
+            # can get here from @buttons in the current outline, in which
+            # case p exists, or from @buttons in @settings elsewhere, in
+            # which case it doesn't
+
+            return
+
+        # 20100518 - TNB command is instance of callable class with
+        #   a c and p attribute, so we can add a context menu item...
+        def goto_command(command = command):
+            command.c.selectPosition(command.p)
+            command.c.redraw()
+        b = button.button
+        b.goto_script = gts = QtGui.QAction('Goto Script', b)
+        b.addAction(gts)
+        gts.connect(gts, QtCore.SIGNAL("triggered()"), goto_command)
+
+        # 20100519 - TNB also, scan @button's following sibs and childs
+        #   for @rclick nodes
+        rclicks = []
+        if '@others' not in command.p.b:
+            rclicks.extend([i.copy() for i in command.p.children()
+              if i.h.startswith('@rclick ')])
+        for i in command.p.following_siblings():
+            if i.h.startswith('@rclick '):
+                rclicks.append(i.copy())
+            else:
+                break
+
+        if rclicks:
+            b.setText(unicode(b.text())+(command.c.config.getString('mod_scripting_subtext') or ''))
+
+        for rclick in rclicks:
+
+            def cb(event=None, ctrl=command.controller, p=rclick, 
+                   c=command.c, b=command.b, t=rclick.h[8:]):
+                ctrl.executeScriptFromButton(p,b,t)
+                if c.exists:
+                    c.outerUpdate()
+
+            rc = QtGui.QAction(rclick.h[8:], b)
+            rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
+            b.insertAction(b.actions()[-2], rc)  # insert rc before Remove Button
+
+            # k.registerCommand(buttonText.lower(),
+            #   shortcut=shortcut,func=atButtonCallback,
+            #   pane='button',verbose=verbose)
+#@+node:ekr.20081121105001.275: *5* Minibuffer methods (Qt)
+#@+node:ekr.20081121105001.278: *6* f.setMinibufferBindings
+def setMinibufferBindings (self):
+
+    '''Create bindings for the minibuffer..'''
+
+    pass
+#@+node:ekr.20081121105001.279: *5* Configuration (qtFrame)
+#@+node:ekr.20081121105001.280: *6* configureBar (qtFrame)
+def configureBar (self,bar,verticalFlag):
+
+    c = self.c
+
+    # Get configuration settings.
+    w = c.config.getInt("split_bar_width")
+    if not w or w < 1: w = 7
+    relief = c.config.get("split_bar_relief","relief")
+    if not relief: relief = "flat"
+    color = c.config.getColor("split_bar_color")
+    if not color: color = "LightSteelBlue2"
+
+    try:
+        if verticalFlag:
+            # Panes arranged vertically; horizontal splitter bar
+            bar.configure(relief=relief,height=w,bg=color,cursor="sb_v_double_arrow")
+        else:
+            # Panes arranged horizontally; vertical splitter bar
+            bar.configure(relief=relief,width=w,bg=color,cursor="sb_h_double_arrow")
+    except: # Could be a user error. Use all defaults
+        g.es("exception in user configuration for splitbar")
+        g.es_exception()
+        if verticalFlag:
+            # Panes arranged vertically; horizontal splitter bar
+            bar.configure(height=7,cursor="sb_v_double_arrow")
+        else:
+            # Panes arranged horizontally; vertical splitter bar
+            bar.configure(width=7,cursor="sb_h_double_arrow")
+#@+node:ekr.20081121105001.281: *6* configureBarsFromConfig (qtFrame)
+def configureBarsFromConfig (self):
+
+    c = self.c
+
+    w = c.config.getInt("split_bar_width")
+    if not w or w < 1: w = 7
+
+    relief = c.config.get("split_bar_relief","relief")
+    if not relief or relief == "": relief = "flat"
+
+    color = c.config.getColor("split_bar_color")
+    if not color or color == "": color = "LightSteelBlue2"
+
+    if self.splitVerticalFlag:
+        bar1,bar2=self.bar1,self.bar2
+    else:
+        bar1,bar2=self.bar2,self.bar1
+
+    try:
+        bar1.configure(relief=relief,height=w,bg=color)
+        bar2.configure(relief=relief,width=w,bg=color)
+    except: # Could be a user error.
+        g.es("exception in user configuration for splitbar")
+        g.es_exception()
+#@+node:ekr.20081121105001.282: *6* reconfigureFromConfig (qtFrame)
+def reconfigureFromConfig (self):
+
+    frame = self ; c = frame.c
+
+    frame.tree.setFontFromConfig()
+    frame.configureBarsFromConfig()
+
+    frame.body.setFontFromConfig()
+    frame.body.setColorFromConfig()
+
+    frame.setTabWidth(c.tab_width)
+    frame.log.setFontFromConfig()
+    frame.log.setColorFromConfig()
+
+    c.redraw()
+#@+node:ekr.20081121105001.283: *6* setInitialWindowGeometry (qtFrame)
+def setInitialWindowGeometry(self):
+
+    """Set the position and size of the frame to config params."""
+
+    c = self.c
+
+    h = c.config.getInt("initial_window_height") or 500
+    w = c.config.getInt("initial_window_width") or 600
+    x = c.config.getInt("initial_window_left") or 10
+    y = c.config.getInt("initial_window_top") or 10
+
+    # g.trace(h,w,x,y)
+
+    if h and w and x and y:
+        self.setTopGeometry(w,h,x,y)
+#@+node:ekr.20081121105001.284: *6* setTabWidth (qtFrame)
+def setTabWidth (self, w):
+
+    # A do-nothing because tab width is set automatically.
+    pass
+
+#@+node:ekr.20081121105001.285: *6* setWrap (qtFrame)
+def setWrap (self,p):
+
+    self.c.frame.body.setWrap(p)
+#@+node:ekr.20081121105001.286: *6* reconfigurePanes (qtFrame)
+def reconfigurePanes (self):
+
+    f = self ; c = f.c
+
+    if f.splitVerticalFlag:
+        r = c.config.getRatio("initial_vertical_ratio")
+        if r == None or r < 0.0 or r > 1.0: r = 0.5
+        r2 = c.config.getRatio("initial_vertical_secondary_ratio")
+        if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
+    else:
+        r = c.config.getRatio("initial_horizontal_ratio")
+        if r == None or r < 0.0 or r > 1.0: r = 0.3
+        r2 = c.config.getRatio("initial_horizontal_secondary_ratio")
+        if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
+
+    f.ratio,f.secondary_ratio = r,r2
+    f.resizePanesToRatio(r,r2)
+#@+node:ekr.20081121105001.287: *6* resizePanesToRatio (qtFrame)
+def resizePanesToRatio(self,ratio,ratio2):
+
+    trace = False and not g.unitTesting
+
+    f = self ; c = self.c
+
+    if trace: g.trace('%5s, %0.2f %0.2f' % (
+        self.splitVerticalFlag,ratio,ratio2),g.callers(4))
+
+    f.divideLeoSplitter(self.splitVerticalFlag,ratio)
+    f.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
+#@+node:leohag.20081208130321.12: *6* divideLeoSplitter
+# Divides the main or secondary splitter, using the key invariant.
+def divideLeoSplitter (self, verticalFlag, frac):
+
+    # g.trace(verticalFlag,frac)
+
+    if self.splitVerticalFlag == verticalFlag:
+        self.divideLeoSplitter1(frac,verticalFlag)
+        self.ratio = frac # Ratio of body pane to tree pane.
+    else:
+        self.divideLeoSplitter2(frac,verticalFlag)
+        self.secondary_ratio = frac # Ratio of tree pane to log pane.
+
+# Divides the main splitter.
+def divideLeoSplitter1 (self, frac, verticalFlag): 
+    self.divideAnySplitter(frac, self.top.splitter_2 )
+
+# Divides the secondary splitter.
+def divideLeoSplitter2 (self, frac, verticalFlag): 
+    self.divideAnySplitter (frac, self.top.leo_ui.splitter)
+
+#@+node:leohag.20081208130321.13: *6* divideAnySplitter
+# This is the general-purpose placer for splitters.
+# It is the only general-purpose splitter code in Leo.
+
+def divideAnySplitter (self,frac,splitter):
+
+    sizes = splitter.sizes()
+
+    if len(sizes)!=2:
+        g.trace('%s widget(s) in %s' % (len(sizes),id(splitter)))
+        return
+
+    if frac > 1 or frac < 0:
+        g.trace('split ratio [%s] out of range 0 <= frac <= 1'%frac)
+
+    s1, s2 = sizes
+    s = s1+s2
+    s1 = int(s * frac + 0.5)
+    s2 = s - s1 
+
+    splitter.setSizes([s1,s2])
+#@+node:ekr.20081121105001.288: *5* Event handlers (qtFrame)
+#@+node:ekr.20081121105001.289: *6* frame.OnCloseLeoEvent
+# Called from quit logic and when user closes the window.
+# Returns True if the close happened.
+
+def OnCloseLeoEvent(self):
+
+    f = self ; c = f.c
+
+    if c.inCommand:
+        # g.trace('requesting window close')
+        c.requestCloseWindow = True
+    else:
+        g.app.closeLeoWindow(self)
+#@+node:ekr.20081121105001.290: *6* frame.OnControlKeyUp/Down
+def OnControlKeyDown (self,event=None):
+
+    self.controlKeyIsDown = True
+
+def OnControlKeyUp (self,event=None):
+
+    self.controlKeyIsDown = False
+#@+node:ekr.20081121105001.291: *6* OnActivateBody (qtFrame)
+def OnActivateBody (self,event=None):
+
+    pass
+#@+node:ekr.20081121105001.292: *6* OnActivateLeoEvent, OnDeactivateLeoEvent
+def OnActivateLeoEvent(self,event=None):
+
+    '''Handle a click anywhere in the Leo window.'''
+
+    self.c.setLog()
+
+def OnDeactivateLeoEvent(self,event=None):
+
+    pass # This causes problems on the Mac.
+#@+node:ekr.20081121105001.293: *6* OnActivateTree
+def OnActivateTree (self,event=None):
+
+    pass
+#@+node:ekr.20081121105001.294: *6* OnBodyClick, OnBodyRClick (not used)
+# At present, these are not called,
+# but they could be called by LeoQTextBrowser.
+
+def OnBodyClick (self,event=None):
+
+    try:
+        c = self.c ; p = c.currentPosition()
+        if g.doHook("bodyclick1",c=c,p=p,v=p,event=event):
+            g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
+            return 'break'
+        else:
+            self.OnActivateBody(event=event)
+            c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
+            g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
+    except:
+        g.es_event_exception("bodyclick")
+
+def OnBodyRClick(self,event=None):
+
+    try:
+        c = self.c ; p = c.currentPosition()
+        if g.doHook("bodyrclick1",c=c,p=p,v=p,event=event):
+            g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
+            return 'break'
+        else:
+            c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
+            g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
+    except:
+        g.es_event_exception("iconrclick")
+#@+node:ekr.20081121105001.295: *6* OnBodyDoubleClick (Events) (not used)
+# Not called
+
+def OnBodyDoubleClick (self,event=None):
+
+    try:
+        c = self.c ; p = c.currentPosition()
+        if event and not g.doHook("bodydclick1",c=c,p=p,v=p,event=event):
+            c.editCommands.extendToWord(event) # Handles unicode properly.
+            c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
+        g.doHook("bodydclick2",c=c,p=p,v=p,event=event)
+    except:
+        g.es_event_exception("bodydclick")
+
+    return "break" # Restore this to handle proper double-click logic.
+#@+node:ekr.20081121105001.296: *5* Gui-dependent commands
+#@+node:ekr.20081121105001.297: *6* Minibuffer commands... (qtFrame)
+#@+node:ekr.20081121105001.298: *7* contractPane
+def contractPane (self,event=None):
+
+    '''Contract the selected pane.'''
+
+    f = self ; c = f.c
+
+    w = c.get_requested_focus() or g.app.gui.get_focus(c)
+    wname = c.widget_name(w)
+
+    # g.trace(wname)
+    if not w: return
+
+    if wname.startswith('body'):
+        f.contractBodyPane()
+        c.bodyWantsFocus()
+    elif wname.startswith('log'):
+        f.contractLogPane()
+        c.logWantsFocus()
+    else:
+        for z in ('head','canvas','tree'):
+            if wname.startswith(z):
+                f.contractOutlinePane()
+                c.treeWantsFocus()
+                break
+#@+node:ekr.20081121105001.299: *7* expandPane
+def expandPane (self,event=None):
+
+    '''Expand the selected pane.'''
+
+    f = self ; c = f.c
+
+    w = c.get_requested_focus() or g.app.gui.get_focus(c)
+    wname = c.widget_name(w)
+
+    # g.trace(wname)
+    if not w: return
+
+    if wname.startswith('body'):
+        f.expandBodyPane()
+        c.bodyWantsFocus()
+    elif wname.startswith('log'):
+        f.expandLogPane()
+        c.logWantsFocus()
+    else:
+        for z in ('head','canvas','tree'):
+            if wname.startswith(z):
+                f.expandOutlinePane()
+                c.treeWantsFocus()
+                break
+#@+node:ekr.20081121105001.300: *7* fullyExpandPane
+def fullyExpandPane (self,event=None):
+
+    '''Fully expand the selected pane.'''
+
+    f = self ; c = f.c
+
+    w = c.get_requested_focus() or g.app.gui.get_focus(c)
+    wname = c.widget_name(w)
+
+    # g.trace(wname)
+    if not w: return
+
+    if wname.startswith('body'):
+        f.fullyExpandBodyPane()
+        c.treeWantsFocus()
+    elif wname.startswith('log'):
+        f.fullyExpandLogPane()
+        c.bodyWantsFocus()
+    else:
+        for z in ('head','canvas','tree'):
+            if wname.startswith(z):
+                f.fullyExpandOutlinePane()
+                c.bodyWantsFocus()
+                break
+#@+node:ekr.20081121105001.301: *7* hidePane
+def hidePane (self,event=None):
+
+    '''Completely contract the selected pane.'''
+
+    f = self ; c = f.c
+
+    w = c.get_requested_focus() or g.app.gui.get_focus(c)
+    wname = c.widget_name(w)
+
+    # g.trace(wname)
+    if not w: return
+
+    if wname.startswith('body'):
+        f.hideBodyPane()
+        c.treeWantsFocus()
+    elif wname.startswith('log'):
+        f.hideLogPane()
+        c.bodyWantsFocus()
+    else:
+        for z in ('head','canvas','tree'):
+            if wname.startswith(z):
+                f.hideOutlinePane()
+                c.bodyWantsFocus()
+                break
+#@+node:ekr.20081121105001.302: *7* expand/contract/hide...Pane
+@ The first arg to divideLeoSplitter means the following:
+
+    f.splitVerticalFlag: use the primary   (tree/body) ratio.
+not f.splitVerticalFlag: use the secondary (tree/log) ratio.
+@c
+
+def contractBodyPane (self,event=None):
+    '''Contract the body pane.'''
+    f = self ; r = min(1.0,f.ratio+0.1)
+    f.divideLeoSplitter(f.splitVerticalFlag,r)
+
+def contractLogPane (self,event=None):
+    '''Contract the log pane.'''
+    f = self ; r = min(1.0,f.secondary_ratio+0.1) # 2010/02/23: was f.ratio
+    f.divideLeoSplitter(not f.splitVerticalFlag,r)
+
+def contractOutlinePane (self,event=None):
+    '''Contract the outline pane.'''
+    f = self ; r = max(0.0,f.ratio-0.1)
+    f.divideLeoSplitter(f.splitVerticalFlag,r)
+
+def expandBodyPane (self,event=None):
+    '''Expand the body pane.'''
+    self.contractOutlinePane()
+
+def expandLogPane(self,event=None):
+    '''Expand the log pane.'''
+    f = self ; r = max(0.0,f.secondary_ratio-0.1) # 2010/02/23: was f.ratio
+    f.divideLeoSplitter(not f.splitVerticalFlag,r)
+
+def expandOutlinePane (self,event=None):
+    '''Expand the outline pane.'''
+    self.contractBodyPane()
+#@+node:ekr.20081121105001.303: *7* fullyExpand/hide...Pane
+def fullyExpandBodyPane (self,event=None):
+    '''Fully expand the body pane.'''
+    f = self
+    f.divideLeoSplitter(f.splitVerticalFlag,0.0)
+
+def fullyExpandLogPane (self,event=None):
+    '''Fully expand the log pane.'''
+    f = self
+    f.divideLeoSplitter(not f.splitVerticalFlag,0.0)
+
+def fullyExpandOutlinePane (self,event=None):
+    '''Fully expand the outline pane.'''
+    f = self
+    f.divideLeoSplitter(f.splitVerticalFlag,1.0)
+
+def hideBodyPane (self,event=None):
+    '''Completely contract the body pane.'''
+    f = self
+    f.divideLeoSplitter(f.splitVerticalFlag,1.0)
+
+def hideLogPane (self,event=None):
+    '''Completely contract the log pane.'''
+    f = self
+    f.divideLeoSplitter(not f.splitVerticalFlag,1.0)
+
+def hideOutlinePane (self,event=None):
+    '''Completely contract the outline pane.'''
+    f = self
+    f.divideLeoSplitter(f.splitVerticalFlag,0.0)
+#@+node:ekr.20081121105001.304: *6* Window Menu...
+#@+node:ekr.20081121105001.305: *7* toggleActivePane (qtFrame)
+def toggleActivePane (self,event=None):
+
+    '''Toggle the focus between the outline and body panes.'''
+
+    frame = self ; c = frame.c
+    w = c.get_focus()
+    w_name = g.app.gui.widget_name(w)
+    
+    # g.trace(w,w_name)
+
+    if w_name in ('canvas','tree','treeWidget'):
+        c.endEditing()
+        c.bodyWantsFocus()
+    else:
+        c.treeWantsFocus()
+
+    # if w == frame.body.bodyCtrl.widget:
+        # c.treeWantsFocus()
+    # else:
+        # c.endEditing()
+        # c.bodyWantsFocus()
+#@+node:ekr.20081121105001.306: *7* cascade
+def cascade (self,event=None):
+
+    '''Cascade all Leo windows.'''
+
+    x,y,delta = 50,50,50
+    for frame in g.app.windowList:
+
+        w = frame and frame.top
+        if w:
+            r = w.geometry() # a Qt.Rect
+            w.setGeometry(x,y,r.width(),r.height())
+
+            # Compute the new offsets.
+            x += 30 ; y += 30
+            if x > 200:
+                x = 10 + delta ; y = 40 + delta
+                delta += 10
+#@+node:ekr.20081121105001.307: *7* equalSizedPanes
+def equalSizedPanes (self,event=None):
+
+    '''Make the outline and body panes have the same size.'''
+
+    frame = self
+    frame.resizePanesToRatio(0.5,frame.secondary_ratio)
+#@+node:ekr.20081121105001.308: *7* hideLogWindow
+def hideLogWindow (self,event=None):
+
+    frame = self
+
+    frame.divideLeoSplitter2(0.99, not frame.splitVerticalFlag)
+#@+node:ekr.20081121105001.309: *7* minimizeAll
+def minimizeAll (self,event=None):
+
+    '''Minimize all Leo's windows.'''
+
+    self.minimize(g.app.pythonFrame)
+    for frame in g.app.windowList:
+        self.minimize(frame)
+        self.minimize(frame.findPanel)
+
+def minimize(self,frame):
+
+    w = frame and frame.top
+
+    if w:
+        w.setWindowState(QtCore.Qt.WindowMinimized)
+#@+node:ekr.20081121105001.310: *7* toggleSplitDirection (qtFrame)
+def toggleSplitDirection (self,event=None):
+
+    '''Toggle the split direction in the present Leo window.'''
+
+    trace = False and not g.unitTesting
+    c,f = self.c,self
+    
+    if trace: g.trace('*'*20)
+        
+    def getRatio(w):
+        sizes = w.sizes()
+        if len(sizes) == 2:
+            size1,size2 = sizes
+            ratio = float(size1)/float(size1+size2)
+            if trace: g.trace(
+                '   ratio: %0.2f, size1: %3s, size2: %3s, total: %4s, w: %s' % (
+                ratio,size1,size2,size1+size2,w))
+            return ratio
+        else:
+            if trace: g.trace('oops: len(sizes)',len(sizes),'default 0.5')
+            return float(0.5)
+            
+    def getNewSizes(sizes,ratio):
+        size1,size2 = sizes
+        total = size1+size2
+        size1 = int(float(ratio)*float(total))
+        size2 = total - size1
+        if trace: g.trace(
+            'ratio: %0.2f, size1: %3s, size2: %3s, total: %4s' % (
+            ratio,size1,size2,total))
+        return [size1,size2]
+    
+    # Compute the actual ratios before reorienting.
+    w1,w2 = f.top.splitter, f.top.splitter_2
+    r1 = getRatio(w1)
+    r2 = getRatio(w2)
+    f.ratio,f.secondary_ratio = r1,r2
+    
+    # Remember the sizes before reorienting.
+    sizes1 = w1.sizes()
+    sizes2 = w2.sizes()
+    
+    # Reorient the splitters.
+    for w in (f.top.splitter,f.top.splitter_2):
+        w.setOrientation(
+            g.choose(w.orientation() == QtCore.Qt.Horizontal,
+                QtCore.Qt.Vertical,QtCore.Qt.Horizontal))
+                
+    # Fix bug 580328: toggleSplitDirection doesn't preserve existing ratio.
+    if len(sizes1) == 2 and len(sizes2) == 2:
+        w1.setSizes(getNewSizes(sizes1,r1))
+        w2.setSizes(getNewSizes(sizes2,r2))
+        
+    # Maintain the key invariant: self.splitVerticalFlag
+    # tells the alignment of the main splitter.
+    f.splitVerticalFlag = not f.splitVerticalFlag
+    
+    # Fix bug 581031: Scrollbar position is not preserved.
+    # This is better than adjust the scroll value directy.
+    c.frame.tree.setItemForCurrentPosition(scroll=True)
+    w = c.frame.body.bodyCtrl.widget
+    w.ensureCursorVisible()
+#@+node:ekr.20081121105001.312: *7* resizeToScreen
+def resizeToScreen (self,event=None):
+
+    '''Resize the Leo window so it fill the entire screen.'''
+
+    top = self.top
+#@+node:ekr.20081121105001.313: *6* Help Menu...
+#@+node:ekr.20081121105001.314: *7* leoHelp
+def leoHelp (self,event=None):
+
+    '''Open Leo's offline tutorial.'''
+
+    frame = self ; c = frame.c
+
+    theFile = g.os_path_join(g.app.loadDir,"..","doc","sbooks.chm")
+
+    if g.os_path_exists(theFile):
+        os.startfile(theFile)
+    else:
+        answer = g.app.gui.runAskYesNoDialog(c,
+            "Download Tutorial?",
+            "Download tutorial (sbooks.chm) from SourceForge?")
+
+        if answer == "yes":
+            try:
+                url = "http://prdownloads.sourceforge.net/leo/sbooks.chm?download"
+                import webbrowser
+                os.chdir(g.app.loadDir)
+                webbrowser.open_new(url)
+            except:
+                if 0:
+                    g.es("exception downloading","sbooks.chm")
+                    g.es_exception()
+#@+node:ekr.20081121105001.317: *5* Qt bindings... (qtFrame)
+def bringToFront (self):
+    self.lift()
+def deiconify (self):
+    if self.top.isMinimized(): # Bug fix: 400739.
+        self.lift()
+def getFocus(self):
+    return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
+def get_window_info(self):
+    if hasattr(self.top,'leo_master') and self.top.leo_master:
+        f = self.top.leo_master
+    else:
+        f = self.top
+    rect = f.geometry()
+    topLeft = rect.topLeft()
+    x,y = topLeft.x(),topLeft.y()
+    w,h = rect.width(),rect.height()
+    # g.trace(w,h,x,y)
+    return w,h,x,y
+def iconify(self):
+    self.top.showMinimized()
+def lift (self):
+    # g.trace(self.c,'\n',g.callers(9))
+    if self.top.isMinimized(): # Bug 379141
+        self.top.showNormal()
+    self.top.activateWindow()
+    self.top.raise_()
+def update (self):
+    pass
+def getTitle (self):
+    s = g.u(self.top.windowTitle())
+    # g.trace('(qtFrame)',repr(s))
+    return s
+def setTitle (self,s):
+    # g.trace('(qtFrame)',repr(s))
+    self.top.setWindowTitle(s)
+def setTopGeometry(self,w,h,x,y,adjustSize=True):
+    # self.top is a DynamicWindow.
+    # g.trace('(qtFrame)',x,y,w,h,self.top)
+    self.top.setGeometry(QtCore.QRect(x,y,w,h))
+#@+node:ekr.20081121105001.287: *4* resizePanesToRatio (qtFrame)
+def resizePanesToRatio(self,ratio,ratio2):
+
+    trace = False and not g.unitTesting
+
+    f = self ; c = self.c
+
+    if trace: g.trace('%5s, %0.2f %0.2f' % (
+        self.splitVerticalFlag,ratio,ratio2),g.callers(4))
+
+    f.divideLeoSplitter(self.splitVerticalFlag,ratio)
+    f.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
+#@+node:ekr.20081121105001.286: *4* reconfigurePanes (qtFrame)
+def reconfigurePanes (self):
+
+    f = self ; c = f.c
+
+    if f.splitVerticalFlag:
+        r = c.config.getRatio("initial_vertical_ratio")
+        if r == None or r < 0.0 or r > 1.0: r = 0.5
+        r2 = c.config.getRatio("initial_vertical_secondary_ratio")
+        if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
+    else:
+        r = c.config.getRatio("initial_horizontal_ratio")
+        if r == None or r < 0.0 or r > 1.0: r = 0.3
+        r2 = c.config.getRatio("initial_horizontal_secondary_ratio")
+        if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
+
+    f.ratio,f.secondary_ratio = r,r2
+    f.resizePanesToRatio(r,r2)
+#@+node:ekr.20081121105001.310: *4* toggleSplitDirection (qtFrame)
+def toggleSplitDirection (self,event=None):
+
+    '''Toggle the split direction in the present Leo window.'''
+
+    trace = False and not g.unitTesting
+    c,f = self.c,self
+    
+    if trace: g.trace('*'*20)
+        
+    def getRatio(w):
+        sizes = w.sizes()
+        if len(sizes) == 2:
+            size1,size2 = sizes
+            ratio = float(size1)/float(size1+size2)
+            if trace: g.trace(
+                '   ratio: %0.2f, size1: %3s, size2: %3s, total: %4s, w: %s' % (
+                ratio,size1,size2,size1+size2,w))
+            return ratio
+        else:
+            if trace: g.trace('oops: len(sizes)',len(sizes),'default 0.5')
+            return float(0.5)
+            
+    def getNewSizes(sizes,ratio):
+        size1,size2 = sizes
+        total = size1+size2
+        size1 = int(float(ratio)*float(total))
+        size2 = total - size1
+        if trace: g.trace(
+            'ratio: %0.2f, size1: %3s, size2: %3s, total: %4s' % (
+            ratio,size1,size2,total))
+        return [size1,size2]
+    
+    # Compute the actual ratios before reorienting.
+    w1,w2 = f.top.splitter, f.top.splitter_2
+    r1 = getRatio(w1)
+    r2 = getRatio(w2)
+    f.ratio,f.secondary_ratio = r1,r2
+    
+    # Remember the sizes before reorienting.
+    sizes1 = w1.sizes()
+    sizes2 = w2.sizes()
+    
+    # Reorient the splitters.
+    for w in (f.top.splitter,f.top.splitter_2):
+        w.setOrientation(
+            g.choose(w.orientation() == QtCore.Qt.Horizontal,
+                QtCore.Qt.Vertical,QtCore.Qt.Horizontal))
+                
+    # Fix bug 580328: toggleSplitDirection doesn't preserve existing ratio.
+    if len(sizes1) == 2 and len(sizes2) == 2:
+        w1.setSizes(getNewSizes(sizes1,r1))
+        w2.setSizes(getNewSizes(sizes2,r2))
+        
+    # Maintain the key invariant: self.splitVerticalFlag
+    # tells the alignment of the main splitter.
+    f.splitVerticalFlag = not f.splitVerticalFlag
+    
+    # Fix bug 581031: Scrollbar position is not preserved.
+    # This is better than adjust the scroll value directy.
+    c.frame.tree.setItemForCurrentPosition(scroll=True)
+    w = c.frame.body.bodyCtrl.widget
+    w.ensureCursorVisible()
+#@+node:ekr.20081121105001.254: *4* qtFrame.finishCreate & helpers
+# Called from newLeoCommanderAndFrame
+
+def finishCreate (self,c):
+
+    f = self ; f.c = c
+
+    # g.trace('(qtFrame)')
+
+    # self.bigTree         = c.config.getBool('big_outline_pane')
+    self.trace_status_line = c.config.getBool('trace_status_line')
+    self.use_chapters      = c.config.getBool('use_chapters')
+    self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
+
+    # returns DynamicWindow
+    f.top = g.app.gui.frameFactory.createFrame(f)
+    # g.trace('(leoQtFrame)',f.top)
+
+    # hiding would remove flicker, but doesn't work with all
+    # window managers
+
+    f.createIconBar() # A base class method.
+    f.createSplitterComponents()
+    cc = c.chapterController
+    # g.trace(cc,cc.findChaptersNode())
+    if 0: # 2010/06/17: Now done in cc.createChaptersNode.
+        if f.use_chapters and f.use_chapter_tabs: # and cc and cc.findChaptersNode():
+            cc.tt = leoQtTreeTab(c,f.iconBar)
+    f.createStatusLine() # A base class method.
+    f.createFirstTreeNode() # Call the base-class method.
+    f.menu = leoQtMenu(f)
+    #### c.setLog()
+    g.app.windowList.append(f)
+    f.miniBufferWidget = leoQtMinibuffer(c)
+    c.bodyWantsFocus()
+#@+node:ekr.20081121105001.255: *5* createSplitterComponents (qtFrame)
+def createSplitterComponents (self):
+
+    f = self ; c = f.c
+
+    f.tree  = leoQtTree(c,f)
+    f.log   = leoQtLog(f,None)
+    f.body  = leoQtBody(f,None)
+
+    if f.use_chapters:
+        c.chapterController = cc = leoChapters.chapterController(c)
+
+    f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
+    f.resizePanesToRatio(f.ratio,f.secondary_ratio)
+
+    # g.trace(f.ratio,f.secondary_ratio)
 #@-all
 #@-leo

@@ -7686,11 +7686,13 @@ def extendHelper (self,w,extend,spot,upOrDown=False):
             self.setMoveCol(w,spot) # sets self.moveSpot.
 
     if extend:
+        if trace: g.trace('range',spot,self.moveSpot)
         if spot < self.moveSpot:
             w.setSelectionRange(spot,self.moveSpot,insert=spot)
         else:
             w.setSelectionRange(self.moveSpot,spot,insert=spot)
     else:
+        if trace: g.trace('insert point',spot)
         w.setSelectionRange(spot,spot,insert=spot)
 
     w.seeInsertPoint()
@@ -10872,6 +10874,19 @@ def unloadOnePlugin (self,moduleOrFileName,verbose=False):
         bunches = self.handlers.get(tag)
         bunches = [bunch for bunch in bunches if bunch.moduleName != moduleName]
         self.handlers[tag] = bunches
+#@+node:ekr.20110531061818.18231: *4* Investigated toggle-split-direction problem
+Works for me on Linux and Windows 7 with either qt gui.
+
+I've found one minor issue related to "split directions". 
+
+If the Tk variant of Leo (current trunk) is started with python2, the initial
+split direction is set properly (i.e. tree and log panes on left, body on right
+- the layout which I personally prefer).
+
+But if python3 and Qt variant is used, the default(?) layout having tree and log
+panes above the body one are wrongly provided.
+
+And python3/qttabs has the same issue too.
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()
@@ -21114,5 +21129,264 @@ def looksLikeDerivedFile (self,fn):
     val = s.find('@+leo-ver=') > -1
     # g.trace(val,fn)
     return val
+#@+node:ekr.20110529115328.18240: *4* Improved forward and backward by sentences
+@nocolor-node
+
+Leo's sentence related functions:
+
+- do not stop at empty lines.
+- do not skip periods within words.
+- do not stop at sentences ending in non-periods.
+- do not stop at the end or beginning of the buffer.
+
+Note: see forwardSentenceHelper and backSentenceHelper functions.
+#@+node:ekr.20051218170358: *5*  general helpers
+#@+node:ekr.20060113130510: *6* extendHelper
+def extendHelper (self,w,extend,spot,upOrDown=False):
+    '''Handle the details of extending the selection.
+    This method is called for all cursor moves.
+
+    extend: Clear the selection unless this is True.
+    spot:   The *new* insert point.
+    '''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; p = c.p
+    extend = extend or self.extendMode
+
+    ins = w.getInsertPoint()
+    i,j = w.getSelectionRange()
+    if trace: g.trace(
+        'extend',extend,'ins',ins,'sel=',i,j,
+        'spot=',spot,'moveSpot',self.moveSpot)
+
+    # Reset the move spot if needed.
+    if self.moveSpot is None or p.v != self.moveSpotNode:
+        if trace: g.trace('no spot')
+        self.setMoveCol(w,g.choose(extend,ins,spot)) # sets self.moveSpot.
+    elif extend:
+        # 2011/05/20: Fix bug 622819
+        # Ctrl-Shift movement is incorrect when there is an unexpected selection.
+        if i == j:
+            if trace: g.trace('extend and no sel')
+            self.setMoveCol(w,ins) # sets self.moveSpot.
+        elif self.moveSpot in (i,j) and self.moveSpot != ins:
+            if trace and verbose: g.trace('extend and movespot matches')
+            pass # The bug fix, part 1.
+        else:
+            # The bug fix, part 2.
+            # Set the moveCol to the *not* insert point.
+            if ins == i: k = j
+            elif ins == j: k = i
+            else: k = ins
+            if trace: g.trace('extend and unexpected spot',k)
+            self.setMoveCol(w,k) # sets self.moveSpot.
+    else:
+        if upOrDown:
+            s = w.getAllText()
+            i2,j2 = g.getLine(s,spot)
+            line = s[i2:j2]
+            row,col = g.convertPythonIndexToRowCol(s,spot)
+            if True: # was j2 < len(s)-1:
+                n = min(self.moveCol,max(0,len(line)-1))
+            else:
+                n = min(self.moveCol,max(0,len(line))) # A tricky boundary.
+            # g.trace('using moveCol',self.moveCol,'line',repr(line),'n',n)
+            spot = g.convertRowColToPythonIndex(s,row,n)
+        else:  # Plain move forward or back.
+            # g.trace('plain forward/back move')
+            self.setMoveCol(w,spot) # sets self.moveSpot.
+
+    if extend:
+        if trace: g.trace('range',spot,self.moveSpot)
+        if spot < self.moveSpot:
+            w.setSelectionRange(spot,self.moveSpot,insert=spot)
+        else:
+            w.setSelectionRange(self.moveSpot,spot,insert=spot)
+    else:
+        if trace: g.trace('insert point',spot)
+        w.setSelectionRange(spot,spot,insert=spot)
+
+    w.seeInsertPoint()
+    c.frame.updateStatusLine()
+#@+node:ekr.20051218122116: *6* moveToHelper
+def moveToHelper (self,event,spot,extend):
+
+    '''Common helper method for commands the move the cursor
+    in a way that can be described by a Tk Text expression.'''
+
+    c = self.c ; k = c.k ; w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+
+    # Put the request in the proper range.
+    if c.widget_name(w).startswith('mini'):
+        i,j = k.getEditableTextRange()
+        if   spot < i: spot = i
+        elif spot > j: spot = j
+
+    self.extendHelper(w,extend,spot,upOrDown=False)
+#@+node:ekr.20060209095101: *6* setMoveCol
+def setMoveCol (self,w,spot):
+
+    '''Set the column to which an up or down arrow will attempt to move.'''
+
+    c = self.c ; p = c.p
+
+    i,row,col = w.toPythonIndexRowCol(spot)
+
+    self.moveSpot = i
+    self.moveCol = col
+    self.moveSpotNode = p.v
+
+    # g.trace('moveSpot',i)
+#@+node:ekr.20050920084036.131: *5* sentences & helpers
+def backSentence (self,event):
+    '''Move the cursor to the previous sentence.'''
+    self.backSentenceHelper(event,extend=False)
+
+def backSentenceExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the previous sentence.'''
+    self.backSentenceHelper(event,extend=True)
+
+def forwardSentence (self,event):
+    '''Move the cursor to the next sentence.'''
+    self.forwardSentenceHelper(event,extend=False)
+
+def forwardSentenceExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the next sentence.'''
+    self.forwardSentenceHelper(event,extend=True)
+#@+node:ekr.20051213094517: *6* backSentenceHelper
+def backSentenceHelper (self,event,extend):
+
+    trace = True and not g.unitTesting
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+
+    # Find the starting point of the scan.
+    i = ins
+    i -= 1 # Ensure some progress.
+    if i < 0:
+        return
+        
+    # Tricky.
+    if s[i] == '.':
+        i -= 1
+    while i >= 0 and s[i] in ' \n':
+        i -= 1
+    if i >= ins:
+        i -= 1
+    if i >= len(s):
+        i -= 1
+    if i <= 0:
+        return
+    if s[i] == '.':
+        i -= 1
+
+    # Scan backwards to the end of the paragraph.
+    # Stop at empty lines.
+    # Skip periods within words.
+    # Stop at sentences ending in non-periods.
+    end = False
+    while not end and i >= 0:
+        progress = i
+        if s[i] == '.':
+            # Skip periods surrounded by letters/numbers
+            if i > 0 and s[i-1].isalnum() and s[i+1].isalnum():
+                i -= 1
+            else:
+                i += 1
+                while i < len(s) and s[i] in ' \n':
+                    i += 1
+                i -= 1
+                break
+        elif s[i] == '\n':
+            j = i-1
+            while j >= 0:
+                if s[j] == '\n':
+                    # Don't include first newline.
+                    end = True ; break # found blank line.
+                elif s[j] == ' ':
+                    j -= 1
+                else:
+                    i -= 1 ; break # no blank line found.
+            else:
+                # No blank line found.
+                i -= 1
+        else:
+            i -= 1
+        assert end or progress > i
+    i += 1
+
+    if i < ins:
+        self.moveToHelper(event,i,extend)
+#@+node:ekr.20050920084036.137: *6* forwardSentenceHelper
+def forwardSentenceHelper (self,event,extend):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    if ins >= len(s): return
+
+    # Find the starting point of the scan.
+    i = ins
+    if i+1 < len(s) and s[i+1] == '.':
+        i += 1
+    if s[i] == '.':
+        i += 1
+    else:
+        while i < len(s) and s[i] in ' \n':
+            i += 1
+        i -= 1
+    if i <= ins:
+        i += 1
+    if i >= len(s):
+        return
+
+    # Scan forward to the end of the paragraph.
+    # Stop at empty lines.
+    # Skip periods within words.
+    # Stop at sentences ending in non-periods.
+    end = False
+    while not end and i < len(s):
+        progress = i
+        if s[i] == '.':
+            # Skip periods surrounded by letters/numbers
+            if 0 < i < len(s) and s[i-1].isalnum() and s[i+1].isalnum():
+                i += 1
+            else:
+                i += 1 ; break # Include the paragraph.
+        elif s[i] == '\n':
+            j = i+1
+            while j < len(s):
+                if s[j] == '\n':
+                    # Don't include first newline.
+                    end = True ; break # found blank line.
+                elif s[j] == ' ':
+                    j += 1
+                else:
+                    i += 1 ; break # no blank line found.
+            else:
+                # No blank line found.
+                i += 1
+        else:
+            i += 1
+        assert end or progress < i
+    
+    i = min(i,len(s))
+    if i > ins:
+        self.moveToHelper(event,i,extend)
 #@-all
 #@-leo

@@ -3650,11 +3650,13 @@ class editCommandsClass (baseEditCommandsClass):
                 self.setMoveCol(w,spot) # sets self.moveSpot.
 
         if extend:
+            if trace: g.trace('range',spot,self.moveSpot)
             if spot < self.moveSpot:
                 w.setSelectionRange(spot,self.moveSpot,insert=spot)
             else:
                 w.setSelectionRange(self.moveSpot,spot,insert=spot)
         else:
+            if trace: g.trace('insert point',spot)
             w.setSelectionRange(spot,spot,insert=spot)
 
         w.seeInsertPoint()
@@ -4186,36 +4188,72 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051213094517: *5* backSentenceHelper
     def backSentenceHelper (self,event,extend):
 
+        trace = True and not g.unitTesting
         c = self.c
         w = self.editWidget(event)
         if not w: return
 
         c.widgetWantsFocusNow(w)
         s = w.getAllText()
-        i = w.getInsertPoint()
+        ins = w.getInsertPoint()
 
-        # To do:
-        # - Stop at empty lines.
-        # - Skip periods within words.
-        # - Stop at sentences ending in non-periods.
-
-        while i >= 0:
-            if s[i] == '.': break
+        # Find the starting point of the scan.
+        i = ins
+        i -= 1 # Ensure some progress.
+        if i < 0:
+            return
+            
+        # Tricky.
+        if s[i] == '.':
             i -= 1
-        else: return
+        while i >= 0 and s[i] in ' \n':
+            i -= 1
+        if i >= ins:
+            i -= 1
+        if i >= len(s):
+            i -= 1
+        if i <= 0:
+            return
+        if s[i] == '.':
+            i -= 1
 
-        j = i-1
-        while j >= 0:
-            if s[j] == '.':
-                j += 1 ; break
-            j -= 1
-        else: j = 0
+        # Scan backwards to the end of the paragraph.
+        # Stop at empty lines.
+        # Skip periods within words.
+        # Stop at sentences ending in non-periods.
+        end = False
+        while not end and i >= 0:
+            progress = i
+            if s[i] == '.':
+                # Skip periods surrounded by letters/numbers
+                if i > 0 and s[i-1].isalnum() and s[i+1].isalnum():
+                    i -= 1
+                else:
+                    i += 1
+                    while i < len(s) and s[i] in ' \n':
+                        i += 1
+                    i -= 1
+                    break
+            elif s[i] == '\n':
+                j = i-1
+                while j >= 0:
+                    if s[j] == '\n':
+                        # Don't include first newline.
+                        end = True ; break # found blank line.
+                    elif s[j] == ' ':
+                        j -= 1
+                    else:
+                        i -= 1 ; break # no blank line found.
+                else:
+                    # No blank line found.
+                    i -= 1
+            else:
+                i -= 1
+            assert end or progress > i
+        i += 1
 
-        while j < i and s[j].isspace():
-            j += 1
-
-        if j < i:
-            self.moveToHelper(event,j,extend)
+        if i < ins:
+            self.moveToHelper(event,i,extend)
     #@+node:ekr.20050920084036.137: *5* forwardSentenceHelper
     def forwardSentenceHelper (self,event,extend):
 
@@ -4227,18 +4265,56 @@ class editCommandsClass (baseEditCommandsClass):
 
         s = w.getAllText()
         ins = w.getInsertPoint()
-        
-        # To do:
-        # - Stop at empty lines.
-        # - Skip periods within words.
-        # - Stop at sentences ending in non-periods.
-        
-        # Naive.
-        i = s.find('.',ins) + 1
-        
+        if ins >= len(s): return
+
+        # Find the starting point of the scan.
+        i = ins
+        if i+1 < len(s) and s[i+1] == '.':
+            i += 1
+        if s[i] == '.':
+            i += 1
+        else:
+            while i < len(s) and s[i] in ' \n':
+                i += 1
+            i -= 1
+        if i <= ins:
+            i += 1
+        if i >= len(s):
+            return
+
+        # Scan forward to the end of the paragraph.
+        # Stop at empty lines.
+        # Skip periods within words.
+        # Stop at sentences ending in non-periods.
+        end = False
+        while not end and i < len(s):
+            progress = i
+            if s[i] == '.':
+                # Skip periods surrounded by letters/numbers
+                if 0 < i < len(s) and s[i-1].isalnum() and s[i+1].isalnum():
+                    i += 1
+                else:
+                    i += 1 ; break # Include the paragraph.
+            elif s[i] == '\n':
+                j = i+1
+                while j < len(s):
+                    if s[j] == '\n':
+                        # Don't include first newline.
+                        end = True ; break # found blank line.
+                    elif s[j] == ' ':
+                        j += 1
+                    else:
+                        i += 1 ; break # no blank line found.
+                else:
+                    # No blank line found.
+                    i += 1
+            else:
+                i += 1
+            assert end or progress < i
         
         i = min(i,len(s))
-        self.moveToHelper(event,i,extend)
+        if i > ins:
+            self.moveToHelper(event,i,extend)
     #@+node:ekr.20100109094541.6232: *4* within lines
     def beginningOfLine (self,event):
         '''Move the cursor to the start of the line, extending the selection if in extend mode.'''

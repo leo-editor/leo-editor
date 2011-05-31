@@ -7,90 +7,7 @@
 @language rest
 .. @+node:ekr.20110523201030.18291: *3* b1
 @language rest
-.. @+node:ekr.20110529115328.18240: *4* Improve forward and backward by sentences
-@nocolor-node
-
-Leo's sentence related functions:
-
-- do not stop at empty lines.
-- do not skip periods within words.
-- do not stop at sentences ending in non-periods.
-- do not stop at the end or beginning of the buffer.
-
-Note: see forwardSentenceHelper and backSentenceHelper functions.
-.. @+node:ekr.20050920084036.131: *5* sentences & helpers
-def backSentence (self,event):
-    '''Move the cursor to the previous sentence.'''
-    self.backSentenceHelper(event,extend=False)
-
-def backSentenceExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the previous sentence.'''
-    self.backSentenceHelper(event,extend=True)
-
-def forwardSentence (self,event):
-    '''Move the cursor to the next sentence.'''
-    self.forwardSentenceHelper(event,extend=False)
-
-def forwardSentenceExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the next sentence.'''
-    self.forwardSentenceHelper(event,extend=True)
-.. @+node:ekr.20051213094517: *6* backSentenceHelper
-def backSentenceHelper (self,event,extend):
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-    s = w.getAllText()
-    i = w.getInsertPoint()
-
-    # To do:
-    # - Stop at empty lines.
-    # - Skip periods within words.
-    # - Stop at sentences ending in non-periods.
-
-    while i >= 0:
-        if s[i] == '.': break
-        i -= 1
-    else: return
-
-    j = i-1
-    while j >= 0:
-        if s[j] == '.':
-            j += 1 ; break
-        j -= 1
-    else: j = 0
-
-    while j < i and s[j].isspace():
-        j += 1
-
-    if j < i:
-        self.moveToHelper(event,j,extend)
-.. @+node:ekr.20050920084036.137: *6* forwardSentenceHelper
-def forwardSentenceHelper (self,event,extend):
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    
-    # To do:
-    # - Stop at empty lines.
-    # - Skip periods within words.
-    # - Stop at sentences ending in non-periods.
-    
-    # Naive.
-    i = s.find('.',ins) + 1
-    
-    
-    i = min(i,len(s))
-    self.moveToHelper(event,i,extend)
-.. @+node:ekr.20110530063322.18332: *4* Colorizer bugs: 2
+.. @+node:ekr.20110530063322.18332: *4* Fix colorizer bugs
 There are bugs re the match_mark_previous/following pattern matchers.
 
 The proper thing to do is fix those matchers.  I'll attempt a fix for b1, but
@@ -119,12 +36,6 @@ correctly. This becomes clear if the first line is replaced with #!/
 bin/bash and this code is opened in vim/scite. I've tried only these
 two editors, they highlight the variable names correctly.
 .. @+node:ekr.20110530063322.18333: *5* scala not colored properly
-.. @+node:ekr.20110526083709.18342: *4* Distribution: 2
-.. @+node:ekr.20110525112110.18394: *5* Fix failing unit tests on Linux
-.. @+node:ekr.20110518103946.18179: *5* Add external/leosax.py to leoPyRef.leo
-http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
-
-Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
 .. @+node:ekr.20110514231951.14492: *4* Docs: 6
 .. @+node:ekr.20110523201030.18284: *5* Make sure MacOS users are told to use --gui=qt
 There is no obvious way of fixing the "disappearing menu" bug.
@@ -442,6 +353,12 @@ added.
 In short, the new caching scheme is much better than before, and it probably is
 close to optimal in most situations.
 .. @+node:ekr.20101129095441.5963: *5* Improve screenshots page
+.. @+node:ekr.20110526083709.18342: *4* Distribution: 2
+.. @+node:ekr.20110525112110.18394: *5* Fix failing unit tests on Linux
+.. @+node:ekr.20110518103946.18179: *5* Add external/leosax.py to leoPyRef.leo
+http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
+
+Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
 .. @+node:ekr.20110527182640.18358: *3* b2
 @language rest
 

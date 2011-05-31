@@ -4221,6 +4221,8 @@ class leoQtFrame (leoFrame.leoFrame):
 
         f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
         f.resizePanesToRatio(f.ratio,f.secondary_ratio)
+
+        # g.trace(f.ratio,f.secondary_ratio)
     #@+node:ekr.20081121105001.256: *5* initCompleteHint
     def initCompleteHint (self):
 
