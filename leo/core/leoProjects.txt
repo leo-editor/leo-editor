@@ -19875,8 +19875,9 @@ def aproposAbbreviations (self,event=None):
 @language rest
 
 s = '''
-apropos-abbreviations
-=====================
+#####################
+About Abbreviations
+#####################
 
 When abbreviation mode is on (abbrev-mode
 toggles this mode) Leo will expand
@@ -20005,6 +20006,10 @@ def aproposAutocompletion (self,event=None):
 @language rest
 
 s = '''
+#################################
+About Autocompletion and Calltips
+#################################
+
 This documentation describes both
 autocompletion and calltips.
 
@@ -20015,7 +20020,8 @@ calltip. Typing Return or Control-g
 (keyboard-quit) exits autocompletion or
 calltips.
 
-=== Autocompletion
+Autocompletion
+==============
 
 Autocompletion shows what may follow a
 period in code. For example, after
@@ -20061,7 +20067,8 @@ while you are doing this; the Find tab
 reappears once the completion is
 finished.
 
-=== Calltips
+Calltips
+========
 
 Calltips appear after you type an open
 parenthesis in code. Calltips shows the
@@ -20090,6 +20097,7 @@ for reference after you have started to
 replace the args.
 
 Options
+=======
 
 Both autocompletion and calltips are
 initially enabled or disabled by the
@@ -20113,6 +20121,10 @@ def aproposBindings (self,event=None):
 @language rest
 
 s = '''
+##################
+About Key Bindings
+##################
+
 A shortcut specification has the form:
 
 command-name = shortcutSpecifier
@@ -20127,25 +20139,27 @@ form creates a binding for one or more
 panes. The possible values for 'pane'
 are:
 
+====    ===============
 pane    bound panes
-----    -----------
+====    ===============
 all     body,log,tree
 body    body
 log     log
 mini    minibuffer
 text    body,log
 tree    tree
+====    ===============
 
 You may use None as the specifier.
 Otherwise, a shortcut specifier consists
 of a head followed by a tail. The head
 may be empty, or may be a concatenation
 of the following: (All entries in each
-row are equivalent).
+row are equivalent)::
 
-Shift+ Shift-
-Alt+ or Alt-
-Control+, Control-, Ctrl+ or Ctrl-
+    Shift+ Shift-
+    Alt+ or Alt-
+    Control+, Control-, Ctrl+ or Ctrl-
 
 Notes:
 
@@ -20167,15 +20181,16 @@ The following table illustrates these
 rules. In each row, the first entry is
 the key (for k.bindingsDict) and the
 other entries are equivalents that the
-user may specify in leoSettings.leo:
+user may specify in leoSettings.leo::
 
-a, Key-a, Key-A
-A, Shift-A
-Alt-a, Alt-A
-Alt-A, Alt-Shift-a, Alt-Shift-A
-Ctrl-a, Ctrl-A
-Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
-!, Key-!,Key-exclam,exclam
+    a, Key-a, Key-A
+    A, Shift-A
+    Alt-a, Alt-A
+    Alt-A, Alt-Shift-a, Alt-Shift-A
+    Ctrl-a, Ctrl-A
+    Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+    !, Key-!,Key-exclam,exclam
+
 '''
 #@+node:ekr.20070501092655: *5* aproposDebuggingCommands
 def aproposDebuggingCommands (self,event=None):
@@ -20190,21 +20205,25 @@ def aproposDebuggingCommands (self,event=None):
 @language rest
 
 s = '''
-The following commands are useful for debugging:
+########################
+About Debugging Commands
+########################
 
-collect-garbage:   Invoke the garbage collector.
-debug:             Start an external debugger in another process.
-disable-gc-trace:  Disable tracing of the garbage collector.
-dump-all-objects:  Print a summary of all existing Python objects.
-dump-new-objects:  Print a summary of all newly-created Python objects.
-enable-gc-trace:   Enable tracing of the garbage collector.
-free-tree-widgets: Free all widgets used in Leo's outline pane.
-print-focus:       Print information about the requested focus.
-print-stats:       Print statistics about existing Python objects.
-print-gc-summary:  Print a brief summary of all Python objects.
-run-unit-tests:    Run unit tests in the presently selected tree.
-verbose-dump-objects: Print a more verbose listing of all existing Python objects.
+The following commands are useful for debugging::
 
+    collect-garbage:   Invoke the garbage collector.
+    debug:             Start an external debugger in another process.
+    disable-gc-trace:  Disable tracing of the garbage collector.
+    dump-all-objects:  Print a summary of all existing Python objects.
+    dump-new-objects:  Print a summary of all newly-created Python objects.
+    enable-gc-trace:   Enable tracing of the garbage collector.
+    free-tree-widgets: Free all widgets used in Leo's outline pane.
+    print-focus:       Print information about the requested focus.
+    print-stats:       Print statistics about existing Python objects.
+    print-gc-summary:  Print a brief summary of all Python objects.
+    run-unit-tests:    Run unit tests in the presently selected tree.
+    verbose-dump-objects: Print a more verbose listing of all existing Python objects.
+    
 Leo also has many debugging settings that enable and disable traces.
 For details, see the node: @settings-->Debugging in leoSettings.leo.
 '''
@@ -20221,12 +20240,17 @@ def aproposFindCommands (self, event=None):
 @language rest
 
 s = '''
+###################
+About Find Commands
+###################
+
 Note: all bindings shown are the default
 bindings for these commands. You may
 change any of these bindings using
 @shortcuts nodes in leoSettings.leo.
 
-=== Settings
+Settings
+========
 
 leoSettings.leo now contains several
 settings related to the Find tab:
@@ -20244,7 +20268,8 @@ settings related to the Find tab:
   executing most of the commands
   discussed below.
 
-=== Basic find commands
+Basic find commands
+===================
 
 open-find-tab
 
@@ -20291,7 +20316,8 @@ find-again
   not '<find pattern here>'. Otherwise,
   like search-with-present-options.
 
-=== Setting find options
+Setting find options
+====================
 
 Several minibuffer commands toggle the
 checkboxes and radio buttons in the Find
@@ -20327,7 +20353,8 @@ can use the mode-help (Tab) command to
 see a list of key bindings in effect for
 the mode.
 
-=== Search commands with side effects
+Search commands with side effects
+=================================
 
 The following commands set an option in
 the Find tab, then work exactly like the
@@ -20343,7 +20370,8 @@ search-with-present-options command.
 - re-search-forward and re-search-backward
   set the 'Regexp' checkbox to True.
 
-=== Find all commands
+Find all commands
+=================
 
 find-all
 
@@ -20367,7 +20395,8 @@ Node only) control how much of the
 outline is affected by the find-all and
 clone-find-all commands.
 
-=== Search and replace commands
+Search and replace commands
+===========================
 
 replace-string
 
@@ -20414,7 +20443,8 @@ change-all
   of the outline is affected by this
   command.
 
-=== Incremental search commands
+Incremental search commands
+===========================
 
 Here are Leo's incremental find commands::
 
@@ -20440,8 +20470,16 @@ def putApropos (self,s):
 
     if sm:
         smc = sm.controllers.get(c)
-        kw = {'msg':s,'name':'Apropos','short_title':''}
+        # For the proper keywords, see the docstring for scrolledmessage.py.
+        kw = {
+            'flags':'rst',
+            'label':'',
+            'msg':s,
+            'name':'Apropos',
+            'short_title':'',
+            'title':''}
         smc.createDialog(kw=kw)
+        c.bodyWantsFocus()
     else:
         g.es(s)
 #@+node:ekr.20101124145006.5842: *4* Unified extract commands

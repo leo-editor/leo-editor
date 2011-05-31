@@ -817,8 +817,16 @@ class baseCommands (object):
 
         if sm:
             smc = sm.controllers.get(c)
-            kw = {'msg':s,'name':'Apropos','short_title':''}
+            # For the proper keywords, see the docstring for scrolledmessage.py.
+            kw = {
+                'flags':'rst',
+                'label':'',
+                'msg':s,
+                'name':'Apropos',
+                'short_title':'',
+                'title':''}
             smc.createDialog(kw=kw)
+            c.bodyWantsFocus()
         else:
             g.es(s)
     #@+node:bobjack.20080509080123.2: *3* c.universalCallback

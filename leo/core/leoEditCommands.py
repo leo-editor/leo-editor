@@ -409,8 +409,9 @@ class abbrevCommandsClass (baseEditCommandsClass):
         #@@language rest
 
         s = '''
-        apropos-abbreviations
-        =====================
+        #####################
+        About Abbreviations
+        #####################
 
         When abbreviation mode is on (abbrev-mode
         toggles this mode) Leo will expand
@@ -5597,6 +5598,10 @@ class helpCommandsClass (baseEditCommandsClass):
         #@@language rest
 
         s = '''
+        #################################
+        About Autocompletion and Calltips
+        #################################
+
         This documentation describes both
         autocompletion and calltips.
 
@@ -5607,7 +5612,8 @@ class helpCommandsClass (baseEditCommandsClass):
         (keyboard-quit) exits autocompletion or
         calltips.
 
-        === Autocompletion
+        Autocompletion
+        ==============
 
         Autocompletion shows what may follow a
         period in code. For example, after
@@ -5653,7 +5659,8 @@ class helpCommandsClass (baseEditCommandsClass):
         reappears once the completion is
         finished.
 
-        === Calltips
+        Calltips
+        ========
 
         Calltips appear after you type an open
         parenthesis in code. Calltips shows the
@@ -5682,6 +5689,7 @@ class helpCommandsClass (baseEditCommandsClass):
         replace the args.
 
         Options
+        =======
 
         Both autocompletion and calltips are
         initially enabled or disabled by the
@@ -5706,6 +5714,10 @@ class helpCommandsClass (baseEditCommandsClass):
         #@@language rest
 
         s = '''
+        ##################
+        About Key Bindings
+        ##################
+
         A shortcut specification has the form:
 
         command-name = shortcutSpecifier
@@ -5720,25 +5732,27 @@ class helpCommandsClass (baseEditCommandsClass):
         panes. The possible values for 'pane'
         are:
 
+        ====    ===============
         pane    bound panes
-        ----    -----------
+        ====    ===============
         all     body,log,tree
         body    body
         log     log
         mini    minibuffer
         text    body,log
         tree    tree
+        ====    ===============
 
         You may use None as the specifier.
         Otherwise, a shortcut specifier consists
         of a head followed by a tail. The head
         may be empty, or may be a concatenation
         of the following: (All entries in each
-        row are equivalent).
+        row are equivalent)::
 
-        Shift+ Shift-
-        Alt+ or Alt-
-        Control+, Control-, Ctrl+ or Ctrl-
+            Shift+ Shift-
+            Alt+ or Alt-
+            Control+, Control-, Ctrl+ or Ctrl-
 
         Notes:
 
@@ -5760,15 +5774,16 @@ class helpCommandsClass (baseEditCommandsClass):
         rules. In each row, the first entry is
         the key (for k.bindingsDict) and the
         other entries are equivalents that the
-        user may specify in leoSettings.leo:
+        user may specify in leoSettings.leo::
 
-        a, Key-a, Key-A
-        A, Shift-A
-        Alt-a, Alt-A
-        Alt-A, Alt-Shift-a, Alt-Shift-A
-        Ctrl-a, Ctrl-A
-        Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
-        !, Key-!,Key-exclam,exclam
+            a, Key-a, Key-A
+            A, Shift-A
+            Alt-a, Alt-A
+            Alt-A, Alt-Shift-a, Alt-Shift-A
+            Ctrl-a, Ctrl-A
+            Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+            !, Key-!,Key-exclam,exclam
+
         '''
         #@-<< define s >>
 
@@ -5784,21 +5799,25 @@ class helpCommandsClass (baseEditCommandsClass):
         #@@language rest
 
         s = '''
-        The following commands are useful for debugging:
+        ########################
+        About Debugging Commands
+        ########################
 
-        collect-garbage:   Invoke the garbage collector.
-        debug:             Start an external debugger in another process.
-        disable-gc-trace:  Disable tracing of the garbage collector.
-        dump-all-objects:  Print a summary of all existing Python objects.
-        dump-new-objects:  Print a summary of all newly-created Python objects.
-        enable-gc-trace:   Enable tracing of the garbage collector.
-        free-tree-widgets: Free all widgets used in Leo's outline pane.
-        print-focus:       Print information about the requested focus.
-        print-stats:       Print statistics about existing Python objects.
-        print-gc-summary:  Print a brief summary of all Python objects.
-        run-unit-tests:    Run unit tests in the presently selected tree.
-        verbose-dump-objects: Print a more verbose listing of all existing Python objects.
+        The following commands are useful for debugging::
 
+            collect-garbage:   Invoke the garbage collector.
+            debug:             Start an external debugger in another process.
+            disable-gc-trace:  Disable tracing of the garbage collector.
+            dump-all-objects:  Print a summary of all existing Python objects.
+            dump-new-objects:  Print a summary of all newly-created Python objects.
+            enable-gc-trace:   Enable tracing of the garbage collector.
+            free-tree-widgets: Free all widgets used in Leo's outline pane.
+            print-focus:       Print information about the requested focus.
+            print-stats:       Print statistics about existing Python objects.
+            print-gc-summary:  Print a brief summary of all Python objects.
+            run-unit-tests:    Run unit tests in the presently selected tree.
+            verbose-dump-objects: Print a more verbose listing of all existing Python objects.
+            
         Leo also has many debugging settings that enable and disable traces.
         For details, see the node: @settings-->Debugging in leoSettings.leo.
         '''
@@ -5816,12 +5835,17 @@ class helpCommandsClass (baseEditCommandsClass):
         #@@language rest
 
         s = '''
+        ###################
+        About Find Commands
+        ###################
+
         Note: all bindings shown are the default
         bindings for these commands. You may
         change any of these bindings using
         @shortcuts nodes in leoSettings.leo.
 
-        === Settings
+        Settings
+        ========
 
         leoSettings.leo now contains several
         settings related to the Find tab:
@@ -5839,7 +5863,8 @@ class helpCommandsClass (baseEditCommandsClass):
           executing most of the commands
           discussed below.
 
-        === Basic find commands
+        Basic find commands
+        ===================
 
         open-find-tab
 
@@ -5886,7 +5911,8 @@ class helpCommandsClass (baseEditCommandsClass):
           not '<find pattern here>'. Otherwise,
           like search-with-present-options.
 
-        === Setting find options
+        Setting find options
+        ====================
 
         Several minibuffer commands toggle the
         checkboxes and radio buttons in the Find
@@ -5922,7 +5948,8 @@ class helpCommandsClass (baseEditCommandsClass):
         see a list of key bindings in effect for
         the mode.
 
-        === Search commands with side effects
+        Search commands with side effects
+        =================================
 
         The following commands set an option in
         the Find tab, then work exactly like the
@@ -5938,7 +5965,8 @@ class helpCommandsClass (baseEditCommandsClass):
         - re-search-forward and re-search-backward
           set the 'Regexp' checkbox to True.
 
-        === Find all commands
+        Find all commands
+        =================
 
         find-all
 
@@ -5962,7 +5990,8 @@ class helpCommandsClass (baseEditCommandsClass):
         outline is affected by the find-all and
         clone-find-all commands.
 
-        === Search and replace commands
+        Search and replace commands
+        ===========================
 
         replace-string
 
@@ -6009,7 +6038,8 @@ class helpCommandsClass (baseEditCommandsClass):
           of the outline is affected by this
           command.
 
-        === Incremental search commands
+        Incremental search commands
+        ===========================
 
         Here are Leo's incremental find commands::
 
