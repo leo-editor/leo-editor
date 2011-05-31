@@ -817,6 +817,8 @@ class baseCommands (object):
 
         if sm:
             smc = sm.controllers.get(c)
+            if not smc:
+                sm.controllers[c] = smc = sm.ScrolledMessageController(c) 
             # For the proper keywords, see the docstring for scrolledmessage.py.
             kw = {
                 'flags':'rst',
