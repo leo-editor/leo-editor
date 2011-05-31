@@ -7,7 +7,6 @@
 @language rest
 .. @+node:ekr.20110523201030.18291: *3* b1
 @language rest
-.. @+node:ekr.20110531105534.19247: *4* Adding an @language directive does not force a recoloring
 .. @+node:ekr.20110514231951.14492: *4* Docs: 6
 .. @+node:ekr.20110523201030.18284: *5* Make sure MacOS users are told to use --gui=qt
 There is no obvious way of fixing the "disappearing menu" bug.

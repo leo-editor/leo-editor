@@ -8985,7 +8985,9 @@ class leoQtColorizer:
         self.flag = True # Per-node enable/disable flag.
         self.killColorFlag = False
         self.language = 'python' # set by scanColorDirectives.
+        self.languageList = [] # List of color directives in the node the determines it.
         self.max_chars_to_colorize = c.config.getInt('qt_max_colorized_chars') or 0
+        self.oldLanguageList = []
         self.showInvisibles = False # 2010/1/2
 
         # Step 2: create the highlighter.
@@ -9008,12 +9010,17 @@ class leoQtColorizer:
         if len(p.b) > self.max_chars_to_colorize > 0:
             self.flag = False
         elif self.enabled:
-            oldLanguage = self.language
             oldFlag = self.flag
-            self.updateSyntaxColorer(p) # sets self.flag.
-            if trace: g.trace(self.flag,p.h,self.language,oldLanguage)
-            # if self.flag and (oldLanguage != self.language or not incremental):
-            if oldFlag != self.flag or oldLanguage != self.language or not incremental:
+            self.updateSyntaxColorer(p)
+                # sets self.flag and self.language and self.languageList.
+            if trace:
+                g.trace('old: %s, new: %s, %s' % (
+                    self.oldLanguageList,self.languageList,repr(p.h)))
+            if (oldFlag != self.flag or
+                self.oldLanguageList != self.languageList or
+                not incremental
+            ):
+                self.oldLanguageList = self.languageList[:]
                 self.highlighter.rehighlight(p)
 
         return "ok" # For unit testing.
@@ -9069,12 +9076,13 @@ class leoQtColorizer:
                 i = g.skip_ws(s,0)
                 j = g.skip_c_id(s,i)
                 aList = self.findLanguageDirectives(p)
+                # In the root node, we use the first (valid) @language directive,
+                # no matter how many @language directives the root node contains.
+                # In ancestor nodes, only unambiguous @language directives
+                # set self.language.
                 if p == root or len(aList) == 1:
-                    # In the root node, we use the first @language directive,
-                    # no matter how many @language directives the root node contains.
-                    # In ancestor nodes, only unambiguous @language directives
-                    # set self.language.
-                    self.language = s[i:j].lower()
+                    self.languageList = aList
+                    self.language = aList and aList[0] or []
                     break
             #@-<< Test for @language >>
             #@+<< Test for @root, @root-doc or @root-code >>
@@ -9111,7 +9119,7 @@ class leoQtColorizer:
     #@+node:ekr.20110530063322.18337: *5* findLanguageDirectives
     def findLanguageDirectives (self,p):
 
-        '''Scan p's body text for @language directives.
+        '''Scan p's body text for *valid* @language directives.
 
         Return a list of languages.'''
         
@@ -9125,16 +9133,24 @@ class leoQtColorizer:
                 j = g.skip_id(s,i)
                 if j > i:
                     word = s[i:j]
-                    aList.append(word)
+                    if self.isValidLanguage(word):
+                        aList.append(word)
+                    else:
+                        if trace:g.trace('invalid',word)
 
         if trace: g.trace(aList)
         return aList
+    #@+node:ekr.20110531125201.19243: *5* isValidLanguage
+    def isValidLanguage (self,language):
+        
+        fn = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
+        return g.os_path_exists(fn)
     #@+node:ekr.20090216070256.11: *4* setHighlighter
+    # Called *only* from leoTree.setBodyTextAfterSelect
+
     def setHighlighter (self,p):
 
         trace = False and not g.unitTesting
-        if trace: g.trace(p.h,g.callers(4))
-
         c = self.c
 
         if self.enabled:
@@ -9148,7 +9164,8 @@ class leoQtColorizer:
         else:
             self.highlighter.rehighlight(p) # Do a full recolor (to black)
 
-        # g.trace(flag,p.h)
+        if trace: g.trace('enabled: %s flag: %s %s' % (
+            self.enabled,self.flag,p.h),g.callers())
     #@+node:ekr.20081205131308.24: *4* updateSyntaxColorer
     def updateSyntaxColorer (self,p):
 
@@ -9160,7 +9177,7 @@ class leoQtColorizer:
         else:
             # self.flag is True unless an unambiguous @nocolor is seen.
             self.flag = self.useSyntaxColoring(p)
-            self.scanColorDirectives(p)
+            self.scanColorDirectives(p) # Sets self.language
 
         if trace: g.trace(self.flag,len(p.b),self.language,p.h,g.callers(5))
         return self.flag
@@ -11049,14 +11066,19 @@ class jEditColorizer:
     #@+node:ekr.20090614134853.3754: *4* mainLoop & restart
     def mainLoop(self,n,s):
 
-        '''Colorize string s, starting in state n.'''
+        '''Colorize a *single* line s, starting in state n.'''
 
         trace = False and not g.unitTesting
-        traceMatch = True
+        traceMatch = False
         traceState = False
-        verbose = True
-
-        if trace and traceState: g.trace('** start',self.showState(n),s)
+        verbose = False
+        
+        if trace:
+            if traceState:
+                g.trace('** start',self.showState(n),repr(s))
+            else:
+                g.trace(self.language_name,repr(s)) # ,g.callers(6))
+                    # Called from recolor.
 
         i = 0
         if n > -1:
@@ -11114,10 +11136,10 @@ class jEditColorizer:
     #@+node:ekr.20090614134853.3753: *4* recolor
     def recolor (self,s):
 
-        '''Recolor line s.'''
+        '''Recolor a *single* line, s.'''
 
         trace = False and not g.unitTesting
-        callers = False ; line = True ; state = False
+        callers = False ; line = True ; state = True
 
         # Update the counts.
         self.recolorCount += 1
@@ -11132,10 +11154,12 @@ class jEditColorizer:
         n = self.prevState() # The state at the end of the previous line.
         if trace:
             if line and state:
-                g.trace('%2s %-50s %s' % (n,self.showState(n),s))
+                g.trace('%2s %s %s' % (n,self.showState(n),repr(s)))
             elif line:
-                g.trace('%2s %s' % (n,s))
-            if callers: g.trace(g.callers())
+                g.trace('%2s %s' % (n,repr(s)))
+            if callers:
+                # Called from colorize:rehightlight,highlightBlock
+                g.trace(g.callers())
 
         if s.strip() or self.showInvisibles:
             self.mainLoop(n,s)

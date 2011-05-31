@@ -6575,7 +6575,7 @@ def moveLinesUp (self,event):
 def outerUpdate (self):
 
     trace = False and not g.unitTesting
-    verbose = True ; traceFocus = True
+    verbose = False ; traceFocus = False
     c = self ; aList = []
     if not c.exists or not c.k:
         return
@@ -6585,7 +6585,7 @@ def outerUpdate (self):
     c.requestRedrawFlag = False
     
     if trace and (verbose or aList):
-        g.trace('**start') # ,g.callers(2))
+        g.trace('**start',g.callers(5))
     
     if c.requestBringToFront:
         if hasattr(c.frame,'bringToFront'):
@@ -7199,7 +7199,7 @@ def idle_focus_helper (self,tag,keys):
 def outerUpdate (self):
 
     trace = False and not g.unitTesting
-    verbose = True ; traceFocus = True
+    verbose = False ; traceFocus = False
     c = self ; aList = []
     if not c.exists or not c.k:
         return
@@ -7209,7 +7209,7 @@ def outerUpdate (self):
     c.requestRedrawFlag = False
     
     if trace and (verbose or aList):
-        g.trace('**start') # ,g.callers(2))
+        g.trace('**start',g.callers(5))
     
     if c.requestBringToFront:
         if hasattr(c.frame,'bringToFront'):
@@ -10928,6 +10928,10 @@ The variable names in the last two lines are not highlighted
 correctly. This becomes clear if the first line is replaced with #!/
 bin/bash and this code is opened in vim/scite. I've tried only these
 two editors, they highlight the variable names correctly.
+#@+node:ekr.20110531105534.19247: *4* Changing @language directives now forces a recoloring
+@nocolor-node
+
+This fixes the most annoying hangnail remaining in Leo.
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()

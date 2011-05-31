@@ -3714,14 +3714,19 @@ def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
 #@+node:ekr.20090614134853.3754: *5* mainLoop & restart
 def mainLoop(self,n,s):
 
-    '''Colorize string s, starting in state n.'''
+    '''Colorize a *single* line s, starting in state n.'''
 
     trace = False and not g.unitTesting
-    traceMatch = True
+    traceMatch = False
     traceState = False
-    verbose = True
-
-    if trace and traceState: g.trace('** start',self.showState(n),s)
+    verbose = False
+    
+    if trace:
+        if traceState:
+            g.trace('** start',self.showState(n),repr(s))
+        else:
+            g.trace(self.language_name,repr(s)) # ,g.callers(6))
+                # Called from recolor.
 
     i = 0
     if n > -1:
@@ -3779,10 +3784,10 @@ def restart (self,n,s,traceMatch):
 #@+node:ekr.20090614134853.3753: *5* recolor
 def recolor (self,s):
 
-    '''Recolor line s.'''
+    '''Recolor a *single* line, s.'''
 
     trace = False and not g.unitTesting
-    callers = False ; line = True ; state = False
+    callers = False ; line = True ; state = True
 
     # Update the counts.
     self.recolorCount += 1
@@ -3797,10 +3802,12 @@ def recolor (self,s):
     n = self.prevState() # The state at the end of the previous line.
     if trace:
         if line and state:
-            g.trace('%2s %-50s %s' % (n,self.showState(n),s))
+            g.trace('%2s %s %s' % (n,self.showState(n),repr(s)))
         elif line:
-            g.trace('%2s %s' % (n,s))
-        if callers: g.trace(g.callers())
+            g.trace('%2s %s' % (n,repr(s)))
+        if callers:
+            # Called from colorize:rehightlight,highlightBlock
+            g.trace(g.callers())
 
     if s.strip() or self.showInvisibles:
         self.mainLoop(n,s)
@@ -8550,10 +8557,35 @@ def scanColorDirectives(self,p):
         self.language = c.target_language
 
     return self.language # For use by external routines.
+#@+node:ekr.20090226105328.13: *5* << Test for @language >>
+if 'language' in theDict:
+    s = theDict["language"]
+    i = g.skip_ws(s,0)
+    j = g.skip_c_id(s,i)
+    aList = self.findLanguageDirectives(p)
+    # In the root node, we use the first (valid) @language directive,
+    # no matter how many @language directives the root node contains.
+    # In ancestor nodes, only unambiguous @language directives
+    # set self.language.
+    if p == root or len(aList) == 1:
+        self.languageList = aList
+        self.language = aList and aList[0] or []
+        break
+#@+node:ekr.20090226105328.14: *5* << Test for @root, @root-doc or @root-code >>
+if 'root' in theDict and not self.rootMode:
+
+    s = theDict["root"]
+    if g.match_word(s,0,"@root-code"):
+        self.rootMode = "code"
+    elif g.match_word(s,0,"@root-doc"):
+        self.rootMode = "doc"
+    else:
+        doc = c.config.at_root_bodies_start_in_doc_mode
+        self.rootMode = g.choose(doc,"doc","code")
 #@+node:ekr.20110530063322.18337: *5* findLanguageDirectives
 def findLanguageDirectives (self,p):
 
-    '''Scan p's body text for @language directives.
+    '''Scan p's body text for *valid* @language directives.
 
     Return a list of languages.'''
     
@@ -8567,34 +8599,18 @@ def findLanguageDirectives (self,p):
             j = g.skip_id(s,i)
             if j > i:
                 word = s[i:j]
-                aList.append(word)
+                if self.isValidLanguage(word):
+                    aList.append(word)
+                else:
+                    if trace:g.trace('invalid',word)
 
     if trace: g.trace(aList)
     return aList
-#@+node:ekr.20090226105328.13: *5* << Test for @language >>
-if 'language' in theDict:
-    s = theDict["language"]
-    i = g.skip_ws(s,0)
-    j = g.skip_c_id(s,i)
-    aList = self.findLanguageDirectives(p)
-    if p == root or len(aList) == 1:
-        # In the root node, we use the first @language directive,
-        # no matter how many @language directives the root node contains.
-        # In ancestor nodes, only unambiguous @language directives
-        # set self.language.
-        self.language = s[i:j].lower()
-        break
-#@+node:ekr.20090226105328.14: *5* << Test for @root, @root-doc or @root-code >>
-if 'root' in theDict and not self.rootMode:
-
-    s = theDict["root"]
-    if g.match_word(s,0,"@root-code"):
-        self.rootMode = "code"
-    elif g.match_word(s,0,"@root-doc"):
-        self.rootMode = "doc"
-    else:
-        doc = c.config.at_root_bodies_start_in_doc_mode
-        self.rootMode = g.choose(doc,"doc","code")
+#@+node:ekr.20110531125201.19243: *5* isValidLanguage
+def isValidLanguage (self,language):
+    
+    fn = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
+    return g.os_path_exists(fn)
 #@+node:ekr.20090614134853.3706: *4* init_mode & helpers
 def init_mode (self,name):
 

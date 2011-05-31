@@ -6309,7 +6309,7 @@ class baseCommands (object):
     def outerUpdate (self):
 
         trace = False and not g.unitTesting
-        verbose = True ; traceFocus = True
+        verbose = False ; traceFocus = False
         c = self ; aList = []
         if not c.exists or not c.k:
             return
@@ -6319,7 +6319,7 @@ class baseCommands (object):
         c.requestRedrawFlag = False
         
         if trace and (verbose or aList):
-            g.trace('**start') # ,g.callers(2))
+            g.trace('**start',g.callers(5))
         
         if c.requestBringToFront:
             if hasattr(c.frame,'bringToFront'):
