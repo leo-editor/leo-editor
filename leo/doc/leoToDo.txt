@@ -7,35 +7,8 @@
 @language rest
 .. @+node:ekr.20110523201030.18291: *3* b1
 @language rest
-.. @+node:ekr.20110530063322.18332: *4* Fix colorizer bugs
-There are bugs re the match_mark_previous/following pattern matchers.
-
-The proper thing to do is fix those matchers.  I'll attempt a fix for b1, but
-the final code may be delayed until b2. 
-.. @+node:ekr.20110523130519.19219: *5* Bug 525004: bash code not colored properly
-.. @+node:ekr.20110523130519.19220: *6* Report
-https://bugs.launchpad.net/leo-editor/+bug/525004
-
-This is basically a copy/paste from
-http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
-
-Consider the following code snippet:
-
---- cut here ---
-@language shell
-
-FOO_BAR='foo bar'
-FOO1_BAR1='foo1 bar1'
-
-echo $FOO_BAR*
-echo $FOO_BAR-$FOO1_BAR1
---- cut here ---
-
-The variable names in the last two lines are not highlighted
-correctly. This becomes clear if the first line is replaced with #!/
-bin/bash and this code is opened in vim/scite. I've tried only these
-two editors, they highlight the variable names correctly.
-.. @+node:ekr.20110530063322.18333: *5* scala not colored properly
+.. @+node:ekr.20110531105534.19247: *4* Adding an @language directive does not force a recoloring
+.. @+node:ekr.20110530063322.18333: *4* scala not colored properly
 .. @+node:ekr.20110514231951.14492: *4* Docs: 6
 .. @+node:ekr.20110523201030.18284: *5* Make sure MacOS users are told to use --gui=qt
 There is no obvious way of fixing the "disappearing menu" bug.

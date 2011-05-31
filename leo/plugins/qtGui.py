@@ -9379,7 +9379,9 @@ class jEditColorizer:
         self.tagCount = 0
         self.trace = False or c.config.getBool('trace_colorizer')
         self.trace_leo_matches = False
-        self.trace_match_flag = False # (Useful) True: trace all matching methods.
+        self.trace_match_flag = False
+            # True: trace all matching methods.
+            # This isn't so useful now that colorRangeWithTag shows g.callers(2).
         self.verbose = False
         # Profiling...
         self.recolorCount = 0 # Total calls to recolor
@@ -10504,9 +10506,10 @@ class jEditColorizer:
 
         '''Succeed if s[i:] matches pattern.'''
 
+        trace = (True or self.verbose) and not g.unitTesting
         if not self.allow_mark_prev: return 0
 
-        if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]))
+        # if trace: g.trace(g.callers(1),i,repr(s[i:i+20]))
 
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
@@ -10516,14 +10519,18 @@ class jEditColorizer:
 
         if g.match(s,i,pattern):
             j = i + len(pattern)
-            self.colorRangeWithTag(s,i,j,kind,exclude_match=exclude_match)
+            # self.colorRangeWithTag(s,i,j,kind,exclude_match=exclude_match)
             k = self.getNextToken(s,j)
+            # 2011/05/31: Do not match *anything* unless there is a token following.
             if k > j:
+                self.colorRangeWithTag(s,i,j,kind,exclude_match=exclude_match)
                 self.colorRangeWithTag(s,j,k,kind,exclude_match=False)
                 j = k
-            self.prev = (i,j,kind)
-            self.trace_match(kind,s,i,j)
-            return j - i
+                self.prev = (i,j,kind)
+                self.trace_match(kind,s,i,j)
+                return j - i
+            else:
+                return 0
         else:
             return 0
     #@+node:ekr.20090614134853.3732: *6* getNextToken
@@ -10533,11 +10540,15 @@ class jEditColorizer:
 
         The jEdit docs are not clear about what a 'token' is, but experiments with jEdit
         show that token means a word, as defined by word_chars.'''
+        
+        # 2011/05/31: Might we extend the concept of token?
+        # If s[i] is not a word char, should we return just it?
 
         while i < len(s) and s[i] in self.word_chars:
             i += 1
 
-        return min(len(s),i+1)
+        # 2011/05/31: was i+1
+        return min(len(s),i)
     #@+node:ekr.20090614134853.3733: *5* match_mark_previous
     def match_mark_previous (self,s,i,
         kind='',pattern='',
@@ -10991,11 +11002,13 @@ class jEditColorizer:
             return
 
         if delegate:
-            if trace: g.trace('delegate %-12s %3s %3s %10s %s' % (
-                delegate,i,j,tag,s[i:j])) # ,g.callers(2))
+            if trace:
+                s2 = g.choose(len(repr(s[i:j])) <= 20,repr(s[i:j]),repr(s[i:i+17-2]+'...'))
+                g.trace('%25s %3s %3s %-20s %s' % (
+                    ('%s.%s' % (delegate,tag)),i,j,s2,g.callers(2)))
+            # self.setTag(tag,s,i,j) # 2011/05/31: Do the initial color.
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
-            # Color everything now, using the same indices as the caller.
             while 0 <= i < j and i < len(s):
                 progress = i
                 assert j >= 0,j
@@ -11017,7 +11030,10 @@ class jEditColorizer:
             bunch = self.modeStack.pop()
             self.initModeFromBunch(bunch)
         elif not exclude_match:
-            if trace: g.trace(self.language_name,tag,s,i,j)
+            if trace:
+                s2 = g.choose(len(repr(s[i:j])) <= 20,repr(s[i:j]),repr(s[i:i+17-2]+'...'))
+                g.trace('%25s %3s %3s %-20s %s' % (
+                    ('%s.%s' % (self.language_name,tag)),i,j,s2,g.callers(2)))
             self.setTag(tag,s,i,j)
             
         if tag != 'url':

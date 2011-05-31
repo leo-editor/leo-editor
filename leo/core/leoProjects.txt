@@ -10887,6 +10887,47 @@ But if python3 and Qt variant is used, the default(?) layout having tree and log
 panes above the body one are wrongly provided.
 
 And python3/qttabs has the same issue too.
+#@+node:ekr.20110523130519.19219: *4* Fixed bug 525004: bash code not colored properly
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/525004
+
+This is basically a copy/paste from
+http://groups.google.com/group/leo-editor/browse_thread/thread/c4b5bd43a9a203f9#
+
+What I did:
+
+1. Fixed an off-by-one error in getNextToken. This was causing the havoc in the shell coloring.
+
+2. match_mark_following now does *nothing* (fails) if there is no next token.
+   This is a major change, and it allows more rules to match in the shell
+   colorer.
+   
+3. Improved the tracing of colorRangeWithTag by adding g.callers(2) and by
+   showing delegat names more clearly. Tracing is no so good that there is not
+   much need for any other tracing.
+   
+report
+======
+
+Consider the following code snippet:
+
+--- cut here ---
+@language shell
+
+FOO_BAR='foo bar'
+FOO1_BAR1='foo1 bar1'
+
+echo $FOO_BAR*
+echo $FOO_BAR-$FOO1_BAR1
+--- cut here ---
+
+@language rest
+
+The variable names in the last two lines are not highlighted
+correctly. This becomes clear if the first line is replaced with #!/
+bin/bash and this code is opened in vim/scite. I've tried only these
+two editors, they highlight the variable names correctly.
 #@+node:ekr.20110304061301.14034: *3* Code & cleanup
 #@+node:ekr.20110303210002.14033: *4* Eliminated _rootPosition
 Also made c.findRootPosition() an alias for c.rootPosition()
