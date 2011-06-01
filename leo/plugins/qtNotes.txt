@@ -4262,20 +4262,20 @@ def initAfterLoad (self):
 #@+node:ekr.20090812211903.3641: *4* onItemClicked (nativeTree)
 def onItemClicked (self,item,col):
 
-    trace = False and not g.unitTesting
-    verbose = False
+    # This is called after an item is selected.
+    trace = False and not g.unitTesting ; verbose = False
 
     if self.busy(): return
 
     c = self.c
-
-    if trace: g.trace(col,self.traceItem(item),g.callers(4))
-
+    # if trace: g.trace(self.traceItem(item),g.callers(4))
     try:
         self.selecting = True
-
         p = self.item2position(item)
         if p:
+            auto_edit = self.prev_v == p.v
+            if trace: g.trace('auto_edit',auto_edit,p.h)
+            self.prev_v = p.v
             event = None
             g.doHook("iconclick1",c=c,p=p,v=p,event=event)
             # if c.positionExists(p): c.selectPosition(p) # 2011/03/07
@@ -4283,12 +4283,17 @@ def onItemClicked (self,item,col):
             #@ c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
             g.doHook("iconclick2",c=c,p=p,v=p,event=event)
         else:
+            auto_edit = None
             g.trace('*** no p')
 
         # 2011/05/27: click here is like ctrl-g.
         c.k.keyboardQuit(event=None,setFocus=False)
         c.treeWantsFocus() # 2011/05/08: Focus must stay in the tree!
         c.outerUpdate()
+        # 2011/06/01: A second *single* click on a selected node
+        # enters editing state.
+        if auto_edit:
+            e = self.createTreeEditorForItem(item)
     finally:
         self.selecting = False
 #@+node:ekr.20090124174652.43: *4* onTreeSelect (nativeTree)
@@ -6613,6 +6618,8 @@ def afterSelectHint (self,p,old_p):
 
     if p != c.currentPosition():
         return self.error('p is not c.currentPosition()')
+    
+    if trace: g.trace(c.p.h,g.callers())
 
     # We don't redraw during unit testing: an important speedup.
     if c.expandAllAncestors(p) and not g.unitTesting:
@@ -6620,24 +6627,6 @@ def afterSelectHint (self,p,old_p):
     else:
         c.outerUpdate() # Bring the tree up to date.
         item = self.setItemForCurrentPosition(scroll=False)
-        
-        # if item and p and p.h == 'newHeadline':
-            # e = self.createTreeEditorForItem(item)
-            # c.outerUpdate()
-            # g.trace(repr(e))
-
-        # if item and p and p.h == 'newHeadline':
-            # tree = self.treeWidget
-            # e = tree.itemWidget(item,0) # A QLineEdit.
-            # if trace: g.trace('should edit',repr(e))
-            # if not e:
-                # tree.editItem(item)
-                # # e = tree.itemWidget(item,0) # A QLineEdit.
-                # e = self.createTreeEditorForItem(item)
-                # e.setFocus()
-                # s = e.text()
-                # e.setSelection(0,len(s))
-                # g.trace('force edit',e,p and p.h)
 #@+node:ekr.20110521142955.18149: *3* Investigated headline coloring problems
 @nocolor-node
 
@@ -8308,20 +8297,20 @@ def createSplashScreen (self):
 #@+node:ekr.20090812211903.3641: *5* onItemClicked (nativeTree)
 def onItemClicked (self,item,col):
 
-    trace = False and not g.unitTesting
-    verbose = False
+    # This is called after an item is selected.
+    trace = False and not g.unitTesting ; verbose = False
 
     if self.busy(): return
 
     c = self.c
-
-    if trace: g.trace(col,self.traceItem(item),g.callers(4))
-
+    # if trace: g.trace(self.traceItem(item),g.callers(4))
     try:
         self.selecting = True
-
         p = self.item2position(item)
         if p:
+            auto_edit = self.prev_v == p.v
+            if trace: g.trace('auto_edit',auto_edit,p.h)
+            self.prev_v = p.v
             event = None
             g.doHook("iconclick1",c=c,p=p,v=p,event=event)
             # if c.positionExists(p): c.selectPosition(p) # 2011/03/07
@@ -8329,12 +8318,17 @@ def onItemClicked (self,item,col):
             #@ c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
             g.doHook("iconclick2",c=c,p=p,v=p,event=event)
         else:
+            auto_edit = None
             g.trace('*** no p')
 
         # 2011/05/27: click here is like ctrl-g.
         c.k.keyboardQuit(event=None,setFocus=False)
         c.treeWantsFocus() # 2011/05/08: Focus must stay in the tree!
         c.outerUpdate()
+        # 2011/06/01: A second *single* click on a selected node
+        # enters editing state.
+        if auto_edit:
+            e = self.createTreeEditorForItem(item)
     finally:
         self.selecting = False
 #@+node:ekr.20110527140605.18372: *4* Minibuffer
@@ -12912,5 +12906,46 @@ def isValidLanguage (self,language):
     
     fn = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
     return g.os_path_exists(fn)
+#@+node:ekr.20110601080718.19340: *3* Single-click on selected headline edits the headline
+@nocolor-node
+
+Only onItemClick changed.
+#@+node:ekr.20090812211903.3641: *4* onItemClicked (nativeTree)
+def onItemClicked (self,item,col):
+
+    # This is called after an item is selected.
+    trace = False and not g.unitTesting ; verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+    # if trace: g.trace(self.traceItem(item),g.callers(4))
+    try:
+        self.selecting = True
+        p = self.item2position(item)
+        if p:
+            auto_edit = self.prev_v == p.v
+            if trace: g.trace('auto_edit',auto_edit,p.h)
+            self.prev_v = p.v
+            event = None
+            g.doHook("iconclick1",c=c,p=p,v=p,event=event)
+            # if c.positionExists(p): c.selectPosition(p) # 2011/03/07
+#@verbatim
+            #@ c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("iconclick2",c=c,p=p,v=p,event=event)
+        else:
+            auto_edit = None
+            g.trace('*** no p')
+
+        # 2011/05/27: click here is like ctrl-g.
+        c.k.keyboardQuit(event=None,setFocus=False)
+        c.treeWantsFocus() # 2011/05/08: Focus must stay in the tree!
+        c.outerUpdate()
+        # 2011/06/01: A second *single* click on a selected node
+        # enters editing state.
+        if auto_edit:
+            e = self.createTreeEditorForItem(item)
+    finally:
+        self.selecting = False
 #@-all
 #@-leo

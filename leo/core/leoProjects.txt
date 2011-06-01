@@ -21435,5 +21435,6 @@ def forwardSentenceHelper (self,event,extend):
     i = min(i,len(s))
     if i > ins:
         self.moveToHelper(event,i,extend)
+#@+node:ekr.20110601080718.19341: *4* A single click on an already-selected tree node edits the headline
 #@-all
 #@-leo
