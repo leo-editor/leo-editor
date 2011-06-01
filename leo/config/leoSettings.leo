@@ -1486,6 +1486,7 @@
 </v>
 <v t="ekr.20070224073109.1"></v>
 <v t="ekr.20060603215208"></v>
+<v t="ekr.20081018053140.12"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -7914,7 +7915,7 @@ QPushButton {
 }
 
 /*
-    You may set colors for individul buttons by name.
+    You may set colors for individual buttons by name.
     To get a list of button names, enable tracing for
     the qtIconBarClass.add method in qtGui.py.
 */
