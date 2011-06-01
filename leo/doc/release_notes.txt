@@ -15805,137 +15805,153 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
     
 - The import-at-root command is no longer supported.
 #@+node:ekr.20110531155858.19830: *4* Bugs fixed
-#@+node:ekr.20110531155858.19831: *5* Fixed bug 682561: pyenchant install problem
-#@+node:ekr.20110531155858.19851: *5* Fix bug 690260: g.es sends to wrong tabbed pane
-#@+node:ekr.20110531155858.19853: *5* Fixed goto-global-line problems
-#@+node:ekr.20110531155858.19877: *5* Restore postions of non-tabbed windows
-#@+node:ekr.20110531155858.19888: *5* Fixed Python 3.2 ua problems
-#@+node:ekr.20110531155858.19894: *5* Fixed bug in p._adjustPostionBeforeUnlink and simplified code
-#@+node:ekr.20110531155858.19901: *5* Fixed crash in archivedPositionToPosition
-#@+node:ekr.20110531155858.19903: *5* Fixed top-level uA's
-There was a misspelling of 'unknownAttributes' in putVnode.
+- Fixed bug 682561: pyenchant install problem.
 
-Report: The uA for the first top level node in the outline is cleared on save
-and by some copy paste op.s etc.
-#@+node:ekr.20110531155858.19932: *5* mod_autosave plugin no longer registers redundant idle-time handlers
-#@+node:ekr.20110531155858.19939: *5* Fixed bug: ignore f-keys in find/replace patterns
-#@+node:ekr.20110531155858.19976: *5* c.bringToFront now activates the window
-#@+node:ekr.20110531155858.19979: *5* Fixed nav_qt plutin
-#@+node:ekr.20110531155858.19996: *5* Fixed completer focus problem
-#@+node:ekr.20110531155858.20001: *5* Fixed bug 783617: Can't enter text directly in the Find panel
-https://bugs.launchpad.net/leo-editor/+bug/783617
-#@+node:ekr.20110531155858.20002: *5* Fixed bug 681797: Shift-Delete not working in Qt
-https://bugs.launchpad.net/leo-editor/+bug/681797
-#@+node:ekr.20110531155858.20015: *5* Fixed bug 622819: Ctrl-Shift movement is incorrect
-https://bugs.launchpad.net/leo-editor/+bug/622819
+- Fix bug 690260: g.es sends to wrong tabbed pane.
 
-Ctrl-Shift movement (back-word-extend-selection, forward-word-extend-selection)
-is incorrect when there is an existing selection, which was created by some
-method other than Ctrl-Shift movement.
+- Fixed goto-global-line problems.
 
-Expected behavior: it should extend/contract the existing selection
+- Restore postions of non-tabbed windows.
 
-Actual behavior: it creates a new selection from the cursor position
-#@+node:ekr.20110531155858.20017: *5* Disabled the rst button
-rst 3 button in contextmenu throws an error
-https://bugs.launchpad.net/leo-editor/+bug/751976
+- Fixed Python 3.2 ua problems.
 
-I was not able to fix this button.  Instead, I merely disabled it.
-http://groups.google.com/group/leo-editor/browse_thread/thread/8e67595ef156dba0
-#@+node:ekr.20110531155858.20018: *5* Resolved bug 323967: leo overrides minibuffer background color
-> Setting background-color on QLineEdit#lineEdit in the Qt stylesheet works, the
-selected color is initially visible, but leo overrides the color during init.
-The color should be set in the style sheet instead.
+- Fixed bug in p._adjustPostionBeforeUnlink and simplified code.
 
-Technically, this bug is invalid. However, I'll add comments to data
-qt-gui-plugin-style-sheet explaining what is going on.
+- Fixed crash in archivedPositionToPosition.
 
-Because Leo changes the color of the minibuffer dynamically, stylesheets can not
-be used. Instead, set the desired colors using one of the following settings,
-with defaults as shown:
+- Fixed top-level uA's. There was a misspelling of 'unknownAttributes' in
+  putVnode. This caused the uA for the first top level node in the outline to be
+  cleared on save and by some copy paste ops.
 
-    @color minibuffer-background-color = lightblue
-    @color minibuffer-error-color = red
-    @color minibuffer-warning-color = lightgrey
-#@+node:ekr.20110531155858.20019: *5* Fixed actionscript colors for parens
-http://groups.google.com/group/leo-editor/browse_thread/thread/ee09fb2c2a5316f2/490fa7cddab36fab
+- mod_autosave plugin no longer registers redundant idle-time handlers.
 
-These are now colored with the "operator" setting, for example:
+- Fixed bug: Leo now ignores f-keys in find/replace patterns.
+
+- c.bringToFront now activates the window.
+
+- Fixed nav_qt plutin.
+
+- Fixed completer focus problems.
+
+- Fixed bug 783617: Can't enter text directly in the Find panel
+
+  https://bugs.launchpad.net/leo-editor/+bug/783617
+
+- Fixed bug 681797: Shift-Delete not working in Qt
+
+  https://bugs.launchpad.net/leo-editor/+bug/681797
+
+- Fixed bug 622819: Ctrl-Shift movement is incorrect
+
+  https://bugs.launchpad.net/leo-editor/+bug/622819
+
+  Ctrl-Shift movement (back-word-extend-selection, forward-word-extend-selection)
+  was incorrect when there is an existing selection, which was created by some
+  method other than Ctrl-Shift movement.
+
+- Disabled the rst button in the contextmenu.
+
+- Resolved bug 323967: leo overrides minibuffer background color.
+
+  https://bugs.launchpad.net/leo-editor/+bug/323967
+
+- Fixed actionscript colors for parens.
+
+  http://groups.google.com/group/leo-editor/browse_thread/thread/ee09fb2c2a5316f2/490fa7cddab36fab
+
+- Fixed horizontal scroll glitch in log pane (Python 2.x).
+
+- Fixed Bug 760531:Spurious overwrite warnings.
+
+  https://bugs.launchpad.net/leo-editor/+bug/760531
+
+- Fixed important bug involving orphan nodes
+
+  http://groups.google.com/group/leo-editor/browse_thread/thread/861a0d156b16090f
+
+  This was an important bug. It's been around for a very long time. What I did:
+        
+    - putVnode no longer clears the orphan bit.
     
-    @color operator_color = red
-#@+node:ekr.20110531155858.20020: *5* Fixed horizontal scroll glitch in log pane (Python 2.x)
-#@+node:ekr.20110531155858.20021: *5* Fixed Bug 760531:Spurious overwrite warnings
-https://bugs.launchpad.net/leo-editor/+bug/760531
-#@+node:ekr.20110531155858.20031: *5* Fixed important bug involving orphan nodes
-http://groups.google.com/group/leo-editor/browse_thread/thread/861a0d156b16090f
+    - at.read issues a warning and does not read the external file if the orphan bit is set.
 
-This was an important bug.  It's been around for a very long time.
+- Fixed bug: show-invisibles now correctly shows blank lines.
 
-What I did:
-    
-- putVnode no longer clears the orphan bit.
+- Fixed bug 766747: fill-paragraph doesn't respect setting from set-fill-column.
 
-- at.read issues a warning and does not read the external file if the orphan bit is set.
-#@+node:ekr.20110531155858.20087: *5* Fixed bug: show-invisibles now correctly shows blank lines
-#@+node:ekr.20110531155858.20088: *5* Fixed bug 766747: fill-paragraph doesn't respect setting from set-fill-column
-https://bugs.launchpad.net/leo-editor/+bug/766747
+  https://bugs.launchpad.net/leo-editor/+bug/766747
 
-The fill-paragraph, center-line and center-region now all use the fill column
-if it has been explicitly set (and greater than zero). Otherwise, these commands
-use the @pagewidth value.
+  The fill-paragraph, center-line and center-region now all use the fill column
+  if it has been explicitly set (and greater than zero). Otherwise, these
+  commands use the @pagewidth value. Previously, the fill-paragraph command used
+  the page width set by the @pagewidth directive, or an initial value from a
+  @setting if no @pagewidth directive was in effect.
 
-Previously, the fill-paragraph command used the page width set by the @pagewidth
-directive, or an initial value from a @setting if no @pagewidth directive was in
-effect.
-#@+node:ekr.20110531155858.20104: *5* Fixed bug 583878: Leo should warn about @comment/@delims clashes
-https://bugs.launchpad.net/leo-editor/+bug/583878
+- Fixed bug 583878: Leo should warn about @comment/@delims clashes.
 
-Leo now warns when a node contains both @comment and @delims directives.
-#@+node:ekr.20110531155858.20108: *5* Fixed bug 778204: @verbatim not forbidden in body text
-https://bugs.launchpad.net/leo-editor/+bug/778204
+  https://bugs.launchpad.net/leo-editor/+bug/583878
 
-Leo now generates an error for sentinels that look like @verbatim.
-#@+node:ekr.20110531155858.20125: *5* Fixed bug 784920: @raw mode does not ignore directives
-https://bugs.launchpad.net/leo-editor/+bug/784920
-#@+node:ekr.20110531155858.20129: *5* Fixed bug 527717: Qt gui should enable/disable menu items
-https://bugs.launchpad.net/leo-editor/+bug/527717
-#@+node:ekr.20110531155858.20142: *5* Fixed bug 580328: c.frame.toggleSplitDirection() doesn't preserve existing ratio
-https://bugs.launchpad.net/leo-editor/+bug/580328
+  Leo now warns when a node contains both @comment and @delims directives.
 
-#@+node:ekr.20110531155858.20143: *5* Fixed bug 581031: Scrollbar position is not preserved when c.frame.toggleSplitDirection() is executed
+- Fixed bug 778204: @verbatim not forbidden in body text.
+
+  https://bugs.launchpad.net/leo-editor/+bug/778204
+
+  Leo now generates an error for sentinels that look like @verbatim.
+
+- Fixed bug 784920: @raw mode does not ignore directives.
+
+  https://bugs.launchpad.net/leo-editor/+bug/784920
+
+- Fixed bug 527717: Qt gui should enable/disable menu items.
+
+  https://bugs.launchpad.net/leo-editor/+bug/527717
+
+- Fixed bug 580328: c.frame.toggleSplitDirection() doesn't preserve existing ratio.
+
+  https://bugs.launchpad.net/leo-editor/+bug/580328
+
+- Fixed bug 581031: Scrollbar position is not preserved when
+  c.frame.toggleSplitDirection() is executed.
+
 https://bugs.launchpad.net/leo-editor/+bug/581031
 
-toggleSplitDirection new ensures that both the selected outline node *and* the
-cursor in the body pane are visible.
-#@+node:ekr.20110531155858.20145: *5* Fixed bug: auto-rst gives spurious overwrite message
-#@+node:ekr.20110531155858.20153: *5* Added bindings to all text widgets in the tab frame
-#@+node:ekr.20110531155858.20165: *5* Fixed bug 525004: bash code not colored properly
-https://bugs.launchpad.net/leo-editor/+bug/525004
+  toggleSplitDirection new ensures that both the selected outline node *and* the
+  cursor in the body pane are visible.
 
-What I did:
+- Fixed bug: auto-rst gives spurious overwrite message.
 
-1. Fixed an off-by-one error in getNextToken. This was causing the havoc in the shell coloring.
+- Added bindings to all text widgets in the tab frame.
 
-2. match_mark_following now does *nothing* (fails) if there is no next token.
-   This is a major change, and it allows more rules to match in the shell
-   colorer.
-   
-3. Improved the tracing of colorRangeWithTag by adding g.callers(2) and by
-   showing delegate names more clearly. Tracing is no so good that there is not
-   much need for any other tracing.
-#@+node:ekr.20110531155858.20166: *5* Changing @language directives now forces a recoloring
-This fixes the most annoying hangnail remaining in Leo.
-#@+node:ekr.20110531155858.20234: *5* Menus & dialogs now say "Flatten Selected Outline"
-https://bugs.launchpad.net/leo-editor/+bug/626587
-#@+node:ekr.20110531155858.20492: *5* Removed remaining tk-isms from Leo's core
-These were real bugs: they prevent emacs commands from working.
+- Fixed bug 525004: bash code not colored properly.
 
-Eliminated all tk-indices from leoEditCommands.py:
+    https://bugs.launchpad.net/leo-editor/+bug/525004
+
+
+    1. Fixed an off-by-one error in getNextToken. This was causing the havoc in
+       the shell coloring.
     
-- Replaced sel.start,sel.end with w.getSelectedText() in
-  append/copy/prepend-to-register commands.
-  
-- Completely rewrote transposeWords
+    2. match_mark_following now does *nothing* (fails) if there is no next token.
+       This is a major change, and it allows more rules to match in the shell
+       colorer.
+       
+    3. Improved the tracing of colorRangeWithTag by adding g.callers(2) and by
+       showing delegate names more clearly. Tracing is no so good that there is not
+       much need for any other tracing.
+
+- Changing @language directives now forces a recoloring.
+
+  This fixed the most annoying hangnail remaining in Leo.
+
+- Menus & dialogs now say "Flatten Selected Outline".
+
+https://bugs.launchpad.net/leo-editor/+bug/626587
+
+- Removed remaining tk-isms from Leo's core.
+
+  These were real bugs: they prevent emacs commands from working.
+
+  Completely rewrote transposeWords.
 #@+node:ekr.20110531155858.20246: *4* New and improved features
 #@+node:ekr.20110601105631.19384: *5* Colorizing
 #@+node:ekr.20110531155858.20497: *6* * Support multiple @language directives in a single node
