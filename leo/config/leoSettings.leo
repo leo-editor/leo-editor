@@ -7906,6 +7906,24 @@ QLineEdit#status2 {
     border-style: solid;
     border-color: darkgrey;
 }
+
+/* Default colors for icons in the icon area. */
+QPushButton {
+    background-color: #CAE1FF; /* lightSteelBlue1 */
+    /* border: none; /* Needed to make background-color "stick" */
+}
+
+/*
+    You may set colors for individul buttons by name.
+    To get a list of button names, enable tracing for
+    the qtIconBarClass.add method in qtGui.py.
+*/
+
+/* Colors for the "script-button" button. */
+QPushButton#script-button-button {
+    background-color: #ffffcc;
+    /* border: none; /* Needed to make background-color "stick" */
+}
 </t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.</t>
