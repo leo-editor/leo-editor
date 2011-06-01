@@ -35,6 +35,40 @@ What's New in Leo
 .. _`Leo and Emacs`:        emacs.html
 
 
+.. @+node:ekr.20110601105631.19349: *3* Leo 4.9 (what's new)
+@language rest
+
+.. @+node:ekr.20110601105631.19354: *4* Deprecated/removed features
+- Leo no longer supports the Tk Gui.
+
+- Removed show/hide/toggle minibuffer commands. The minibuffer is an essential
+  part of Leo.
+.. @+node:ekr.20110601105631.19360: *4* Bugs fixed
+- Fixed an important bug involving orphan nodes. Leo now never saves an external
+  file containing orphan nodes. This ensures that all the information in the
+  external file will, in fact, be saved in the .leo file.
+
+- Almost 40 bugs have been fixed.  Most were minor.
+  For a complete list, see the release notes.
+  
+.. @+node:ekr.20110601105631.19388: *4* New commands
+- Added the replace-current-character command. It replaces the character to the
+  left of the cursor, or replaces the selection range if there is one.
+
+- Added toggle-case-region command.
+
+- Added save-all command. It saves all changed windows.
+
+- Added insert-hard/sof-tab commands.
+
+- Added commands to manage uA's::
+
+    clear-all-uas
+    clear-node-uas
+    print-all-uas
+    print-node-uas
+    set-ua
+
 .. @+node:ekr.20101025080245.5805: *3* Leo 4.8
 .. @+node:ekr.20101025080245.6077: *4* New sentinels
 .. _`simplest possible`: http://groups.google.com/group/leo-editor/browse_thread/thread/8b659c96720afd53/628a09779ca9e8c6

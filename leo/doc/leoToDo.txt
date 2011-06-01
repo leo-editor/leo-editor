@@ -1088,6 +1088,29 @@ cursor to the 20th line in the file.
 The ability to specify a numeric range prefix to an object is not supported. For
 example, the "d2fx" command should Delete up to and including the 2nd Found "x"
 character.
+.. @+node:ekr.20110601105631.19373: *6* Simple vim bindings
+.. @+node:ekr.20110601105631.19374: *7* Cursors
+Vi normally uses two different "current character" designators depending on the
+current state.
+
+Insert state:
+
+In the Insert state, a vertical bar is placed between two characters to indicate
+where the next key will be inserted. Leo's cursor is of this type.
+
+Command state: 
+
+In the Command state, vi expects that the cursor is highlighting a current
+character and provides commands to enter the insert state or paste text either
+before or after that current character. Leo's vi emulation currently does not
+support a "current character" cursor. As a result, inserting and pasting before
+or after is replaced by inserting or pasting "at" the current cursor location.
+For example, the 'i' and 'a' command are both mapped to enter the insert state
+at the current cursor location.
+.. @+node:ekr.20110601105631.19375: *7* Enter insert mode after ctrl-h
+.. @+node:ekr.20110601105631.19376: *7* Colorize headline text depending on state
+.. @+node:ekr.20110601105631.19377: *7* colon destroys alt-x binding
+This project reorganizes makeBindingFromCommandsDict
 .. @+node:ekr.20110530063322.18333: *5* scala not colored properly
 .. @+node:ekr.20110518103946.18179: *5* Add external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893

@@ -5459,7 +5459,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/1171df34dce14431
 http://en.wikipedia.org/wiki/Sentence_spacing
 
 Changed several unit tests for reformat-paragraph so they pass.
-#@+node:ekr.20110520051220.18186: *4* Problems with per-node undo
+#@+node:ekr.20110520051220.18186: *4* Problems with per-node undo (Do not delete)
 Per-node undo: impossible. Node versioning: possible.
 http://groups.google.com/group/leo-editor/browse_thread/thread/e9348fbe22f547ad
 
