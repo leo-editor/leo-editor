@@ -8988,6 +8988,7 @@ class leoQtColorizer:
         self.languageList = [] # List of color directives in the node the determines it.
         self.max_chars_to_colorize = c.config.getInt('qt_max_colorized_chars') or 0
         self.oldLanguageList = []
+        self.oldV = None
         self.showInvisibles = False # 2010/1/2
 
         # Step 2: create the highlighter.
@@ -9003,7 +9004,7 @@ class leoQtColorizer:
 
         '''The main colorizer entry point.'''
 
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting ; verbose = False
 
         self.count += 1 # For unit testing.
 
@@ -9013,14 +9014,17 @@ class leoQtColorizer:
             oldFlag = self.flag
             self.updateSyntaxColorer(p)
                 # sets self.flag and self.language and self.languageList.
-            if trace:
+            if trace and verbose:
                 g.trace('old: %s, new: %s, %s' % (
                     self.oldLanguageList,self.languageList,repr(p.h)))
             if (oldFlag != self.flag or
+                self.oldV != p.v or
                 self.oldLanguageList != self.languageList or
                 not incremental
             ):
+                if trace: g.trace('** calling rehighlight **')
                 self.oldLanguageList = self.languageList[:]
+                self.oldV = p.v
                 self.highlighter.rehighlight(p)
 
         return "ok" # For unit testing.
