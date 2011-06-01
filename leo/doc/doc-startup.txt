@@ -38,19 +38,6 @@ for p in root.subtree_iter():
 
 body = '\n'.join(body)
 root.setBodyString(body)
-#@+node:ekr.20101025080245.6075: *4* @@button promote-child-bodies
-'''Copy the body text of all children to the parent's body text.'''
-
-# Great for creating what's new nodes.
-result = [p.b]
-b = c.undoer.beforeChangeNodeContents(p)
-for child in p.children():
-    if child.b:
-        result.append('\n- %s\n\n%s\n' % (child.h,child.b))
-    else:
-        result.append('\n- %s\n\n' % (child.h))
-p.b = ''.join(result)
-c.undoer.afterChangeNodeContents(p,'promote-child-bodies',b)
 #@+node:ekr.20091112060950.6677: *4* @@button Remove newlines
 s = p.bodyString()
 
@@ -143,6 +130,19 @@ else:
     else:
         # Ask to be removed.
         g.app.scriptDict['removeMe'] = True
+#@+node:ekr.20101025080245.6075: *3* @button promote-bodies
+'''Copy the body text of all descendants to the parent's body text.'''
+
+# Great for creating what's new nodes.
+result = [p.b]
+b = c.undoer.beforeChangeNodeContents(p)
+for child in p.subtree():
+    if child.b:
+        result.append('\n- %s\n\n%s\n' % (child.h,child.b))
+    else:
+        result.append('\n- %s\n\n' % (child.h))
+p.b = ''.join(result)
+c.undoer.afterChangeNodeContents(p,'promote-child-bodies',b)
 #@+node:ekr.20101118091038.5398: *3* @button reformat
 # Ctrl-shift-p is Leo's regular reformat-paragraph command.
 
@@ -1033,4 +1033,6 @@ def run(self):
 
 
 #@-all
+
+#@@language python
 #@-leo

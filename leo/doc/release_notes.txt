@@ -15759,7 +15759,7 @@ http://webpages.charter.net/edreamleo/intro.html
 The highlights of Leo 4.9:
 --------------------------
 
-- Leo no longer supports the Tk gui: the Qt gui now supports
+- Leo no longer supports the Tk gui: the Qt gui now has
   all essential features of Tk and Tk-only plugins.
 
 - A large number of "fit-and-finish" bugs fixed.
@@ -15801,6 +15801,8 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
     
     @string selected-background-color
     @string selected-command-background-color
+    
+- The import-at-root command is no longer supported.
 #@+node:ekr.20110531155858.19830: *4* Bugs fixed
 #@+node:ekr.20110531155858.19831: *5* Fixed bug 682561: pyenchant install problem
 #@+node:ekr.20110531155858.19851: *5* Fix bug 690260: g.es sends to wrong tabbed pane
@@ -15956,6 +15958,9 @@ Leo ignores (and does not color) @language directive for unknown languages.
 
 In effect, Leo completely recolors nodes when you change @language directives by
 typing.
+#@+node:ekr.20110601105631.19478: *5* Command-line arguments
+The --no-splash command-line option suppresses the splash screen. Leo puts up no
+splash screen when the --silent or --script command-line options are given.
 #@+node:ekr.20110601105631.19380: *5* Gui
 #@+node:ekr.20110531155858.20484: *6* * Allow *plain* up/down arrow keys in editing headline mode
 If you type a *plain* up/down arrow key while editing a headline, Leo will act
@@ -16156,8 +16161,6 @@ https://bugs.launchpad.net/leo-editor/+bug/755206
 http://groups.google.com/group/leo-editor/browse_thread/thread/b8e8fbf6d97fa9f2/a4537fafaf2442ba
 
 #@+node:ekr.20110531155858.20385: *7* Description
-@nocolor-node
-
 This code contributed by Kent Tenney.
 
 See http://groups.google.com/group/leo-editor/browse_thread/thread/b8e8fbf6d97fa9f2/a4537fafaf2442ba
