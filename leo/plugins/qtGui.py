@@ -4409,6 +4409,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
             '''Add a button to the icon bar.'''
 
+            trace = False and not g.unitTesting
             c = self.c
             command = keys.get('command')
             text = keys.get('text')
@@ -4432,21 +4433,31 @@ class leoQtFrame (leoFrame.leoFrame):
                 def createWidget (self,parent):
                     # g.trace('leoIconBarButton',self.toolbar.buttonColor)
                     self.button = b = QtGui.QPushButton(self.text,parent)
-                    g.app.gui.setWidgetColor(b,
-                        widgetKind='QPushButton',
-                        selector='background-color',
-                        colorName = bg)
+                    
+                    if 0: # 2011/06/01: don't set the color.  Use the stylesheet instead.
+                        g.app.gui.setWidgetColor(b,
+                            widgetKind='QPushButton',
+                            selector='background-color',
+                            colorName = bg,
+                        )
                     return b
 
             if qaction is None:
                 action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
+                button_name = text
             else:
                 action = qaction
+                button_name = action.text()
 
             self.w.addAction(action)
-
             self.actions.append(action)
             b = self.w.widgetForAction(action)
+            
+            # Set the button's object name so we can use the stylesheet to color it.
+            if not button_name: button_name = 'unnamed'
+            button_name = button_name + '-button'
+            b.setObjectName(button_name)
+            if trace: g.trace(button_name)
 
             b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 

@@ -1,6 +1,6 @@
 
 #@+leo-ver=5-thin
-#@+node:leohag.20081204085551.1: * @file scrolledmessage.py
+#@+node:ekr.20101104190737.5629: * @file scrolledmessage.py
 #@@first
 
 #@+<< docstring >>
