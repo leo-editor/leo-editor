@@ -1725,6 +1725,7 @@ class leoFrame:
             if i != j:
                 w.delete(i,j)
             w.insert(i,s)
+            w.see(i+len(s) + 2) # 2011/06/01
 
             if wname.startswith('body'):
                 c.frame.body.forceFullRecolor()

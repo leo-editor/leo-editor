@@ -4292,7 +4292,7 @@ def onItemClicked (self,item,col):
         c.outerUpdate()
         # 2011/06/01: A second *single* click on a selected node
         # enters editing state.
-        if auto_edit:
+        if auto_edit and self.auto_edit:
             e = self.createTreeEditorForItem(item)
     finally:
         self.selecting = False
@@ -8327,7 +8327,7 @@ def onItemClicked (self,item,col):
         c.outerUpdate()
         # 2011/06/01: A second *single* click on a selected node
         # enters editing state.
-        if auto_edit:
+        if auto_edit and self.auto_edit:
             e = self.createTreeEditorForItem(item)
     finally:
         self.selecting = False
@@ -12943,9 +12943,89 @@ def onItemClicked (self,item,col):
         c.outerUpdate()
         # 2011/06/01: A second *single* click on a selected node
         # enters editing state.
-        if auto_edit:
+        if auto_edit and self.auto_edit:
             e = self.createTreeEditorForItem(item)
     finally:
         self.selecting = False
+#@+node:ekr.20110601065314.19427: *3* Set button colors in stylesheet
+#@+node:ekr.20081121105001.269: *4* add
+def add(self,*args,**keys):
+
+    '''Add a button to the icon bar.'''
+
+    trace = False and not g.unitTesting
+    c = self.c
+    command = keys.get('command')
+    text = keys.get('text')
+    # able to specify low-level QAction directly (QPushButton not forced)
+    qaction = keys.get('qaction')
+
+    if not text and not qaction:
+        g.es('bad toolbar item')
+
+    bg = keys.get('bg') or self.toolbar.buttonColor
+
+    # imagefile = keys.get('imagefile')
+    # image = keys.get('image')
+
+    class leoIconBarButton (QtGui.QWidgetAction):
+        def __init__ (self,parent,text,toolbar):
+            QtGui.QWidgetAction.__init__(self,parent)
+            self.button = None # set below
+            self.text = text
+            self.toolbar = toolbar
+        def createWidget (self,parent):
+            # g.trace('leoIconBarButton',self.toolbar.buttonColor)
+            self.button = b = QtGui.QPushButton(self.text,parent)
+            
+            if 0: # 2011/06/01: don't set the color.  Use the stylesheet instead.
+                g.app.gui.setWidgetColor(b,
+                    widgetKind='QPushButton',
+                    selector='background-color',
+                    colorName = bg,
+                )
+            return b
+
+    if qaction is None:
+        action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
+        button_name = text
+    else:
+        action = qaction
+        button_name = action.text()
+
+    self.w.addAction(action)
+    self.actions.append(action)
+    b = self.w.widgetForAction(action)
+    
+    # Set the button's object name so we can use the stylesheet to color it.
+    if not button_name: button_name = 'unnamed'
+    button_name = button_name + '-button'
+    b.setObjectName(button_name)
+    if trace: g.trace(button_name)
+
+    b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+    def delete_callback(action=action,):
+        self.w.removeAction(action)
+
+    b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
+
+    b.addAction(rb)
+    rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
+
+    if command:
+        def button_callback(c=c,command=command):
+            # g.trace('command',command.__name__)
+            val = command()
+            if c.exists:
+                # c.bodyWantsFocus()
+                c.outerUpdate()
+            return val
+
+        self.w.connect(b,
+            QtCore.SIGNAL("clicked()"),
+            button_callback)
+
+    return action
 #@-all
 #@-leo

@@ -1280,6 +1280,7 @@
 <v t="ekr.20041119034357.65"><vh>@int initial_window_width = 800</vh></v>
 </v>
 <v t="ekr.20041119034357.54"><vh>Outline pane options</vh>
+<v t="ekr.20110601103939.19339"><vh>@bool single_click_auto_edits_headline = False</vh></v>
 <v t="ekr.20041119050749.3"><vh>@bool allow_clone_drags = False</vh></v>
 <v t="ekr.20061030092620"><vh>@bool center_selected_tree_node = True</vh></v>
 <v t="ekr.20041119050749.4"><vh>@bool enable_drag_messages = False</vh></v>
@@ -8137,6 +8138,7 @@ do-nothing = Shift-F11
 do-nothing = Shift-F12
 </t>
 <t tx="ekr.20110530124245.18246">&amp;Import File</t>
+<t tx="ekr.20110601103939.19339">True: A *single* click in an already selected node begins editing of the headline.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

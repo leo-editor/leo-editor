@@ -35,6 +35,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # Components.
         self.c = c
         self.canvas = self # An official ivar used by Leo's core.
+        
+        # Configuration.
+        self.auto_edit = c.config.getBool('single_click_auto_edits_headline',False)
 
         # Subclasses should define headline wrappers to
         # be a subclass of leoFrame.baseTextWidget.
@@ -546,7 +549,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             c.outerUpdate()
             # 2011/06/01: A second *single* click on a selected node
             # enters editing state.
-            if auto_edit:
+            if auto_edit and self.auto_edit:
                 e = self.createTreeEditorForItem(item)
         finally:
             self.selecting = False

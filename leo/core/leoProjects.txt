@@ -21436,5 +21436,66 @@ def forwardSentenceHelper (self,event,extend):
     if i > ins:
         self.moveToHelper(event,i,extend)
 #@+node:ekr.20110601080718.19341: *4* A single click on an already-selected tree node edits the headline
+#@+node:ekr.20110601103111.19344: *4* Fixed scrolling problem after pasting at end of long text
+#@+node:ekr.20070130115927.7: *5* leoFrame.pasteText
+def pasteText (self,event=None,middleButton=False):
+
+    '''Paste the clipboard into a widget.
+    If middleButton is True, support x-windows middle-mouse-button easter-egg.'''
+
+    trace = False
+    f = self ; c = f.c ; w = event and event.widget
+    if trace: g.trace(w)
+    if not w or not g.app.gui.isTextWidget(w): return
+
+    wname = c.widget_name(w)
+    i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
+    oldText = w.getAllText()
+
+    if middleButton and c.k.previousSelection is not None:
+        start,end = c.k.previousSelection
+        s = w.getAllText()
+        s = s[start:end]
+        c.k.previousSelection = None
+    else:
+        s = s1 = g.app.gui.getTextFromClipboard()
+
+    s = g.toUnicode(s)
+
+    # g.trace('pasteText','wname',wname,'s',s,g.callers())
+
+    singleLine = wname.startswith('head') or wname.startswith('minibuffer')
+
+    if singleLine:
+        # Strip trailing newlines so the truncation doesn't cause confusion.
+        while s and s [ -1] in ('\n','\r'):
+            s = s [: -1]
+
+    try:
+        # Update the widget.
+        if i != j:
+            w.delete(i,j)
+        w.insert(i,s)
+        w.see(i+len(s) + 2) # 2011/06/01
+
+        if wname.startswith('body'):
+            c.frame.body.forceFullRecolor()
+            c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
+        elif singleLine:
+            s = w.getAllText()
+            while s and s [ -1] in ('\n','\r'):
+                s = s [: -1]
+            if wname.startswith('head'):
+                # The headline is not officially changed yet.
+                # p.initHeadString(s)
+                width = f.tree.headWidth(p=None,s=s)
+                w.setWidth(width)
+        else: pass
+    except Exception:
+        pass # Tk sometimes throws weird exceptions here.
+
+    return 'break' # Essential
+
+OnPasteFromMenu = pasteText
 #@-all
 #@-leo
