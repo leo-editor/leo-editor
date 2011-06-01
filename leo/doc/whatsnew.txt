@@ -59,24 +59,6 @@ What's New in Leo
     @string selected-command-background-color
     
 - The import-at-root command is no longer supported.
-.. @+node:ekr.20110601105631.19388: *4* New commands
-- Added the replace-current-character command. It replaces the character to the
-  left of the cursor, or replaces the selection range if there is one.
-
-- Added toggle-case-region command.
-
-- Added save-all command. It saves all changed windows.
-
-- Added insert-hard/soft-tab commands.
-
-- Added commands to manage uA's::
-
-    clear-all-uas
-    clear-node-uas
-    print-all-uas
-    print-node-uas
-    set-ua
-
 .. @+node:ekr.20110601105631.19434: *4* New and improved features
 .. @+node:ekr.20110601105631.19435: *5* Colorizing
 - Support multiple @language directives in a single node

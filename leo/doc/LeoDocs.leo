@@ -150,7 +150,7 @@
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"
-expanded="ekr.20110531155858.20246,ekr.20110601105631.19383,ekr.20110531155858.20384,"><vh>@file release_notes.txt</vh></v>
+expanded="ekr.20110531155858.19246,ekr.20110601105631.19381,ekr.20110601105631.19383,ekr.20110531155858.20384,"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20110531155858.20557"><vh>Docs TO DO: 6</vh>
 <v t="ekr.20110531155858.20558"><vh>Make sure MacOS users are told to use --gui=qt</vh></v>
@@ -165,7 +165,6 @@ expanded="ekr.20110531155858.20246,ekr.20110601105631.19383,ekr.20110531155858.2
 <v t="ekr.20110601105631.19349"><vh>Leo 4.9 (what's new)</vh>
 <v t="ekr.20110601105631.19360"><vh>Bugs fixed</vh></v>
 <v t="ekr.20110601105631.19484"><vh>Deprecated/removed features</vh></v>
-<v t="ekr.20110601105631.19388"><vh>New commands</vh></v>
 <v t="ekr.20110601105631.19434"><vh>New and improved features</vh>
 <v t="ekr.20110601105631.19435"><vh>Colorizing</vh></v>
 <v t="ekr.20110601105631.19480"><vh>Command-line arguments &amp; settings</vh></v>
@@ -1267,24 +1266,6 @@ qt-gui-plugin-style-sheet to set those settings.
 <t tx="ekr.20110601105631.19383"></t>
 <t tx="ekr.20110601105631.19384"></t>
 <t tx="ekr.20110601105631.19385"></t>
-<t tx="ekr.20110601105631.19388">- Added the replace-current-character command. It replaces the character to the
-  left of the cursor, or replaces the selection range if there is one.
-
-- Added toggle-case-region command.
-
-- Added save-all command. It saves all changed windows.
-
-- Added insert-hard/soft-tab commands.
-
-- Added commands to manage uA's::
-
-    clear-all-uas
-    clear-node-uas
-    print-all-uas
-    print-node-uas
-    set-ua
-
-</t>
 <t tx="ekr.20110601105631.19434"></t>
 <t tx="ekr.20110601105631.19435">- Support multiple @language directives in a single node
   As with @color directives, only unambiguous @language directives affect the
