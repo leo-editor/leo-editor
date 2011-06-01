@@ -417,13 +417,19 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # Monkey patch the event handler.
             #@+<< define mouseReleaseEvent >>
             #@+node:ekr.20110527140605.18370: *6* << define mouseReleaseEvent >> (leoQtBaseTextWidget)
-            def mouseReleaseEvent (event,c=c,w=widget):
+            def mouseReleaseEvent (*args,**keys): ### event,c=c,w=widget):
                 
                 '''Override QLineEdit.mouseReleaseEvent.
                 
                 Simulate alt-x if we are not in an input state.'''
                 
-                QtGui.QTextBrowser.mouseReleaseEvent(w,event)
+                # g.trace(w,event)
+                g.trace(args,keys)
+                return ###
+                
+                # 2011/06/01: The arguments pass to the function are
+                # different in Python2 vs. Python3!
+                QtGui.QTextBrowser.mouseReleaseEvent(*args,**keys) ### w,event)
                     # Call the base class method.
 
                 # Open the url on a control-click.
@@ -433,7 +439,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
                 # 2011/05/28: Do *not* change the focus!
                 # This would rip focus away from tab panes.
-                c.k.keyboardQuit(event,setFocus=False)
+                c.k.keyboardQuit(event=None,setFocus=False)
             #@-<< define mouseReleaseEvent >>
             self.widget.mouseReleaseEvent = mouseReleaseEvent
 
