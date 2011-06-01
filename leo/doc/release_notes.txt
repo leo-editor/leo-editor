@@ -15770,7 +15770,7 @@ The highlights of Leo 4.9:
 
 - The scrolledmessage plugin can now use the rendering pane.
 
-- Leo uses an @file node's extension by default if ther is no @language
+- Leo uses an @file node's extension by default if there is no @language
   directive in effect.
   
 - Unified extract and import commands.
@@ -15921,7 +15921,7 @@ What I did:
    colorer.
    
 3. Improved the tracing of colorRangeWithTag by adding g.callers(2) and by
-   showing delegat names more clearly. Tracing is no so good that there is not
+   showing delegate names more clearly. Tracing is no so good that there is not
    much need for any other tracing.
 #@+node:ekr.20110531155858.20166: *5* Changing @language directives now forces a recoloring
 This fixes the most annoying hangnail remaining in Leo.
@@ -16016,7 +16016,7 @@ Create child node from the selected body text.
    section reference line remains in the original body text.
    
 2. If the selection looks like a Python class or definition line, the
-   class/function/method name becmes child's headline and all selected lines
+   class/function/method name becomes child's headline and all selected lines
    become the child's body text.
    
 3. Otherwise, the first line becomes the child's headline, and all selected
@@ -16040,7 +16040,7 @@ The import-file command replaces all the following commands:
     
 Leo chooses one of the above commands as follows.  First, if the file looks like
 an external file that Leo wrote, the command works like import-derived-file command.
-Othewise, the file's extension determines the importer:
+Otherwise, the file's extension determines the importer:
     
     .cw, .cweb:     import-cweb-files
     .nw, .noweb:    import-noweb-files
@@ -16106,7 +16106,7 @@ The print-bindings command now shows were bindings came from
 
 - Added save-all command. It saves all changed windows.
 
-- Added insert-hard/sof-tab commands.
+- Added insert-hard/soft-tab commands.
 
 - Added commands to manage uA's::
 

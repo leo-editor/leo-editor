@@ -149,7 +149,8 @@
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"
+expanded="ekr.20110531155858.20246,ekr.20110601105631.19383,ekr.20110531155858.20384,"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20110531155858.20557"><vh>Docs TO DO: 6</vh>
 <v t="ekr.20110531155858.20558"><vh>Make sure MacOS users are told to use --gui=qt</vh></v>
@@ -460,7 +461,7 @@ The highlights of Leo 4.9:
 
 - The scrolledmessage plugin can now use the rendering pane.
 
-- Leo uses an @file node's extension by default if ther is no @language
+- Leo uses an @file node's extension by default if there is no @language
   directive in effect.
   
 - Unified extract and import commands.
@@ -598,7 +599,7 @@ What I did:
    colorer.
    
 3. Improved the tracing of colorRangeWithTag by adding g.callers(2) and by
-   showing delegat names more clearly. Tracing is no so good that there is not
+   showing delegate names more clearly. Tracing is no so good that there is not
    much need for any other tracing.
 </t>
 <t tx="ekr.20110531155858.20166">This fixes the most annoying hangnail remaining in Leo.
@@ -802,7 +803,7 @@ Create child node from the selected body text.
    section reference line remains in the original body text.
    
 2. If the selection looks like a Python class or definition line, the
-   class/function/method name becmes child's headline and all selected lines
+   class/function/method name becomes child's headline and all selected lines
    become the child's body text.
    
 3. Otherwise, the first line becomes the child's headline, and all selected
@@ -826,7 +827,7 @@ The import-file command replaces all the following commands:
     
 Leo chooses one of the above commands as follows.  First, if the file looks like
 an external file that Leo wrote, the command works like import-derived-file command.
-Othewise, the file's extension determines the importer:
+Otherwise, the file's extension determines the importer:
     
     .cw, .cweb:     import-cweb-files
     .nw, .noweb:    import-noweb-files
@@ -1248,7 +1249,7 @@ qt-gui-plugin-style-sheet to set those settings.
 
 - Added save-all command. It saves all changed windows.
 
-- Added insert-hard/sof-tab commands.
+- Added insert-hard/soft-tab commands.
 
 - Added commands to manage uA's::
 
@@ -1273,7 +1274,7 @@ qt-gui-plugin-style-sheet to set those settings.
 
 - Added save-all command. It saves all changed windows.
 
-- Added insert-hard/sof-tab commands.
+- Added insert-hard/soft-tab commands.
 
 - Added commands to manage uA's::
 
@@ -1336,7 +1337,7 @@ Enabled only if @bool single_click_auto_edits_headline = True.
 
 - Added save-all command. It saves all changed windows.
 
-- Added insert-hard/sof-tab commands.
+- Added insert-hard/soft-tab commands.
 
 - Added commands to manage uA's::
 
@@ -1364,7 +1365,7 @@ Enabled only if @bool single_click_auto_edits_headline = True.
 </t>
 <t tx="ekr.20110601105631.19473">- Added namespace arg in c.executeScript
 
-- Put Kent Tenney's Runwith class in scripts.leo and contrib
+- Put Kent Tenney's Runwith class in scripts.leo and contrib.
 
   http://groups.google.com/group/leo-editor/browse_thread/thread/b8e8fbf6d97fa9f2/a4537fafaf2442ba
 
@@ -1405,7 +1406,7 @@ splash screen when the --silent or --script command-line options are given.
        section reference line remains in the original body text.
        
     2. If the selection looks like a Python class or definition line, the
-       class/function/method name becmes child's headline and all selected lines
+       class/function/method name becomes child's headline and all selected lines
        become the child's body text.
        
     3. Otherwise, the first line becomes the child's headline, and all selected
@@ -1426,7 +1427,7 @@ The extract-section and extract-python-method commands are gone.
     
   Leo chooses one of the above commands as follows.  First, if the file looks
   like an external file that Leo wrote, the command works like
-  import-derived-file command.  Othewise, the file's extension determines the
+  import-derived-file command.  Otherwise, the file's extension determines the
   importer::
         
         .cw, .cweb:     import-cweb-files

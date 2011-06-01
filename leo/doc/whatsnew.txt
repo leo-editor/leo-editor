@@ -67,7 +67,7 @@ What's New in Leo
 
 - Added save-all command. It saves all changed windows.
 
-- Added insert-hard/sof-tab commands.
+- Added insert-hard/soft-tab commands.
 
 - Added commands to manage uA's::
 
@@ -149,7 +149,7 @@ Enabled only if @bool single_click_auto_edits_headline = True.
        section reference line remains in the original body text.
        
     2. If the selection looks like a Python class or definition line, the
-       class/function/method name becmes child's headline and all selected lines
+       class/function/method name becomes child's headline and all selected lines
        become the child's body text.
        
     3. Otherwise, the first line becomes the child's headline, and all selected
@@ -170,7 +170,7 @@ The extract-section and extract-python-method commands are gone.
     
   Leo chooses one of the above commands as follows.  First, if the file looks
   like an external file that Leo wrote, the command works like
-  import-derived-file command.  Othewise, the file's extension determines the
+  import-derived-file command.  Otherwise, the file's extension determines the
   importer::
         
         .cw, .cweb:     import-cweb-files
@@ -218,7 +218,7 @@ The extract-section and extract-python-method commands are gone.
 
 - Added save-all command. It saves all changed windows.
 
-- Added insert-hard/sof-tab commands.
+- Added insert-hard/soft-tab commands.
 
 - Added commands to manage uA's::
 
@@ -246,7 +246,7 @@ The extract-section and extract-python-method commands are gone.
 .. @+node:ekr.20110601105631.19473: *5* Scripting
 - Added namespace arg in c.executeScript
 
-- Put Kent Tenney's Runwith class in scripts.leo and contrib
+- Put Kent Tenney's Runwith class in scripts.leo and contrib.
 
   http://groups.google.com/group/leo-editor/browse_thread/thread/b8e8fbf6d97fa9f2/a4537fafaf2442ba
 
