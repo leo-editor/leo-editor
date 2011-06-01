@@ -15792,7 +15792,8 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 #@+node:ekr.20110601105631.19359: *4* Deprecated/removed features
-- Leo no longer supports the Tk Gui.
+- Leo no longer supports the Tk gui. The Qt gui now does everything
+  the Tk gui did, and more, and better.
 
 - Removed show/hide/toggle minibuffer commands. The minibuffer is an essential
   part of Leo.

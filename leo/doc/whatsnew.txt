@@ -47,7 +47,8 @@ What's New in Leo
   For a complete list, see the release notes.
   
 .. @+node:ekr.20110601105631.19484: *4* Deprecated/removed features
-- Leo no longer supports the Tk Gui.
+- Leo no longer supports the Tk gui. The Qt gui now does everything
+  the Tk gui did, and more, and better.
 
 - Removed show/hide/toggle minibuffer commands. The minibuffer is an essential
   part of Leo.
