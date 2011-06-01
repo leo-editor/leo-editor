@@ -544,7 +544,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 g.trace('*** no p')
 
             # 2011/05/27: click here is like ctrl-g.
-            c.k.keyboardQuit(event=None,setFocus=False)
+            c.k.keyboardQuit(setFocus=False)
             c.treeWantsFocus() # 2011/05/08: Focus must stay in the tree!
             c.outerUpdate()
             # 2011/06/01: A second *single* click on a selected node

@@ -256,7 +256,7 @@ class AutoCompleterClass:
         
         if trace: g.trace(g.callers())
         
-        c.k.keyboardQuit(event=None)
+        c.k.keyboardQuit()
         
         if self.use_qcompleter:
             self.qw.end_completer()
@@ -2013,7 +2013,7 @@ class keyHandlerClass:
         # g.trace(stroke,k.abortAllModesKey)
 
         if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
-            k.keyboardQuit(event)
+            k.keyboardQuit()
             k.endCommand(commandName)
             return 'break'
 
@@ -2160,7 +2160,7 @@ class keyHandlerClass:
         elif keysym == 'Ins' or k.isFKey(keysym):
             pass
         elif keysym == 'Escape':
-            k.keyboardQuit(event)
+            k.keyboardQuit()
         elif keysym == 'Return':
             if trace and verbose: g.trace('***Return')
             c.frame.log.deleteTab('Completion')
@@ -2224,7 +2224,7 @@ class keyHandlerClass:
                 if trace: g.trace('*** tab completion')
                 k.doTabCompletion(list(c.commandsDict.keys()))
             else: # Annoying.
-                k.keyboardQuit(event)
+                k.keyboardQuit()
                 k.setLabel('Command does not exist: %s' % commandName)
                 c.bodyWantsFocus()
     #@+node:ekr.20061031131434.113: *4* k.endCommand
@@ -2497,7 +2497,7 @@ class keyHandlerClass:
             return 'break'
         else:
             # g.trace('oops')
-            return k.keyboardQuit(event)
+            return k.keyboardQuit()
     #@+node:ekr.20061031131434.123: *4* set-xxx-State
     def setCommandState (self,event):
         '''Enter the 'command' editing state.'''
@@ -2649,7 +2649,7 @@ class keyHandlerClass:
             k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
             if useMinibuffer: c.minibufferWantsFocus()
         elif keysym == 'Escape':
-            k.keyboardQuit(event)
+            k.keyboardQuit()
         elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
             if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
             if k.oneCharacterArg:
@@ -2676,7 +2676,7 @@ class keyHandlerClass:
             k.mb_tabListPrefix = k.getLabel()
         return 'break'
     #@+node:ekr.20061031131434.130: *4* keyboardQuit
-    def keyboardQuit (self,event,setFocus=True):
+    def keyboardQuit (self,event=None,setFocus=True):
 
         '''This method clears the state and the minibuffer label.
 
@@ -2700,7 +2700,7 @@ class keyHandlerClass:
             c.frame.log.hideTab('Completion')
 
         if k.inputModeName:
-            k.endMode(event)
+            k.endMode()
 
         # Complete clear the state.
         k.state.kind = None
@@ -2944,7 +2944,7 @@ class keyHandlerClass:
                 # New in Leo 4.5: unbound keys end mode.
                 # if trace: g.trace('unbound key ends mode',stroke,state)
                 g.warning('unbound key ends mode',stroke) # 2011/02/02
-                k.endMode(event)
+                k.endMode()
                 return False,None
         else:
             # New in 4.4b4.
@@ -3036,7 +3036,7 @@ class keyHandlerClass:
                             return False # Let getArg handle it.
                         elif b.commandName not in k.singleLineCommandList:
                             if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                            k.keyboardQuit(event)
+                            k.keyboardQuit()
                         else:
                             if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                             c.minibufferWantsFocus() # New in Leo 4.5.
@@ -3134,8 +3134,8 @@ class keyHandlerClass:
         # A click outside the minibuffer terminates any state.
         if k.inState() and w != c.frame.miniBufferWidget:
             if not c.widget_name(w).startswith('log'):
-                k.keyboardQuit(event)
-                # k.endMode(event) # Less drastic than keyboard-quit.
+                k.keyboardQuit()
+                # k.endMode() # Less drastic than keyboard-quit.
                 w and c.widgetWantsFocusNow(w)
                 if trace: g.trace('inState: break')
                 return 'break'
@@ -3425,7 +3425,7 @@ class keyHandlerClass:
                         stroke=stroke)
                     k.masterBindingsDict [ modeName ] = d2
     #@+node:ekr.20061031131434.159: *4* endMode
-    def endMode(self,event):
+    def endMode(self):
 
         k = self ; c = k.c
 
@@ -3449,12 +3449,12 @@ class keyHandlerClass:
         c.inCommand = False # Allow inner commands in the mode.
         k.generalModeHandler(event,modeName=modeName)
     #@+node:ekr.20061031131434.161: *4* exitNamedMode
-    def exitNamedMode (self,event):
+    def exitNamedMode (self,event=None):
 
         k = self
 
         if k.inState():
-            k.endMode(event)
+            k.endMode()
 
         k.showStateAndMode()
     #@+node:ekr.20061031131434.162: *4* generalModeHandler
@@ -3490,7 +3490,7 @@ class keyHandlerClass:
                 func(event)
             else:
                 savedModeName = k.inputModeName # Remember this: it may be cleared.
-                self.endMode(event)
+                self.endMode()
                 if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
                 # New in 4.4.1 b1: pass an event describing the original widget.
                 if event:
@@ -4322,7 +4322,7 @@ class keyHandlerClass:
             keysym = gui.eventKeysym(event)
             # g.trace(state,keysym)
             if keysym == 'Escape':
-                k.keyboardQuit(event)
+                k.keyboardQuit()
             elif keysym == k.universalArgKey:
                 k.repeatCount = k.repeatCount * 4
             elif keysym.isdigit() or keysym == '-':
@@ -4342,7 +4342,7 @@ class keyHandlerClass:
                 k.clearState()
                 event = k.dispatchEvent
                 k.executeNTimes(event,n,stroke=keysym)
-                k.keyboardQuit(event)
+                k.keyboardQuit()
                 # k.clearState()
                 # k.setLabelGrey()
                 if 0: # Not ready yet.

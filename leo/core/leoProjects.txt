@@ -5534,5 +5534,114 @@ for reasons I don't fully understand, but are not really surprising.
 
 Furthermore, doing this on a prototype basis in c.doCommand showed
 that this is a bad idea.
+#@+node:ekr.20110601170617.19317: *3* Recent
+#@+node:ekr.20110601161208.19307: *4* Removed event args from several keyHandler methods
+@nocolor-node
+
+- Removed event arg entirely from k.endMode and k.endCommand.
+
+- Made the event optional in k.exitNamedMode and k.keyboardQuit.
+
+The event args are unnecessary and confusing.
+#@+node:ekr.20061031131434.161: *5* exitNamedMode
+def exitNamedMode (self,event=None):
+
+    k = self
+
+    if k.inState():
+        k.endMode()
+
+    k.showStateAndMode()
+#@+node:ekr.20061031131434.159: *5* endMode
+def endMode(self):
+
+    k = self ; c = k.c
+
+    w = g.app.gui.get_focus(c)
+    if w:
+        c.frame.log.deleteTab('Mode') # Changes focus to the body pane
+
+    k.endCommand(k.stroke)
+    k.inputModeName = None
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode() # Restores focus.
+
+    if w:
+        c.widgetWantsFocusNow(w)
+#@+node:ekr.20061031131434.130: *5* keyboardQuit
+def keyboardQuit (self,event=None,setFocus=True):
+
+    '''This method clears the state and the minibuffer label.
+
+    k.endCommand handles all other end-of-command chores.'''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    
+    if trace: g.trace(g.callers())
+
+    if g.app.quitting:
+        return
+        
+    # 2011/05/30: We may be called from Qt event handlers.
+    # Make sure to end editing!
+    c.endEditing() 
+    
+    # Completely clear the mode.
+    if setFocus:
+        c.frame.log.deleteTab('Mode')
+        c.frame.log.hideTab('Completion')
+
+    if k.inputModeName:
+        k.endMode()
+
+    # Complete clear the state.
+    k.state.kind = None
+    k.state.n = None
+
+    k.clearState()
+    k.resetLabel()
+
+    if setFocus:
+        c.bodyWantsFocus()
+
+    # At present, only the auto-completer suppresses this.
+    k.setDefaultInputState()
+    k.showStateAndMode()
+#@+node:ekr.20061031131434.113: *5* k.endCommand
+def endCommand (self,commandName):
+
+    '''Make sure Leo updates the widget following a command.
+
+    Never changes the minibuffer label: individual commands must do that.
+    '''
+
+    k = self ; c = k.c
+    # The command may have closed the window.
+    if g.app.quitting or not c.exists: return
+
+    # Set the best possible undoType: prefer explicit commandName to k.commandName.
+    commandName = commandName or k.commandName or ''
+    k.commandName = k.commandName or commandName or ''
+    if commandName:
+        bodyCtrl = c.frame.body.bodyCtrl
+        if not k.inState():
+            k.commandName = None
+
+            # Do the import here to break a circular dependency at the top level.
+            import leo.core.leoEditCommands as leoEditCommands
+            leoEditCommands.initAllEditCommanders(c)
+            try:
+                bodyCtrl.tag_delete('color')
+                bodyCtrl.tag_delete('color1')
+            except Exception:
+                pass
+        if 0: # Do *not* call this by default.  It interferes with undo.
+            c.frame.body.onBodyChanged(undoType='Typing')
+        if k.newMinibufferWidget:
+            c.widgetWantsFocusNow(k.newMinibufferWidget)
+            # g.pr('endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers())
+            k.newMinibufferWidget = None
 #@-all
 #@-leo

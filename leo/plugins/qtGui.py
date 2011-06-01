@@ -159,7 +159,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             c.in_qt_dialog = False
 
             # This is important: it clears the autocompletion state.
-            c.k.keyboardQuit(event=None,inAutoCompleter=True)
+            c.k.keyboardQuit() ### inAutoCompleter=True)
                 # inAutoCompleter = True prevents a recursive call here.
                 
             c.bodyWantsFocusNow()
@@ -417,29 +417,33 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # Monkey patch the event handler.
             #@+<< define mouseReleaseEvent >>
             #@+node:ekr.20110527140605.18370: *6* << define mouseReleaseEvent >> (leoQtBaseTextWidget)
-            def mouseReleaseEvent (*args,**keys): ### event,c=c,w=widget):
+            def mouseReleaseEvent (*args,**keys):
                 
                 '''Override QLineEdit.mouseReleaseEvent.
                 
                 Simulate alt-x if we are not in an input state.'''
                 
-                # g.trace(w,event)
-                g.trace(args,keys)
-                return ###
+                # g.trace(args,keys)
                 
-                # 2011/06/01: The arguments pass to the function are
-                # different in Python2 vs. Python3!
-                QtGui.QTextBrowser.mouseReleaseEvent(*args,**keys) ### w,event)
-                    # Call the base class method.
+                # Call the base class method.
+                if len(args) == 1:
+                    event = args[0]
+                    QtGui.QTextBrowser.mouseReleaseEvent(widget,event)
+                elif len(args) == 2:
+                    event = args[1]
+                    QtGui.QTextBrowser.mouseReleaseEvent(*args)
+                else:
+                    g.trace('can not happen')
+                    return
 
                 # Open the url on a control-click.
                 if QtCore.Qt.ControlModifier & event.modifiers():
-                    event = {'c':self.c}
+                    event = {'c':c}
                     openURL(event) # A module-level function.
 
                 # 2011/05/28: Do *not* change the focus!
                 # This would rip focus away from tab panes.
-                c.k.keyboardQuit(event=None,setFocus=False)
+                c.k.keyboardQuit(setFocus=False)
             #@-<< define mouseReleaseEvent >>
             self.widget.mouseReleaseEvent = mouseReleaseEvent
 

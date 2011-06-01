@@ -203,11 +203,11 @@ class baseEditCommandsClass:
 
         return r1+1,r2,r3+1,r4
     #@+node:ekr.20051002090441: *4* keyboardQuit
-    def keyboardQuit (self,event):
+    def keyboardQuit (self,event=None):
 
         '''Clear the state and the minibuffer label.'''
 
-        return self.k.keyboardQuit(event)
+        return self.k.keyboardQuit()
     #@-others
 #@-<< define class baseEditCommandsClass >>
 
@@ -760,13 +760,13 @@ class abbrevCommandsClass (baseEditCommandsClass):
         except IOError:
             g.es('can not open',fileName)
     #@+node:ekr.20050920084036.23: *4* toggleAbbrevMode
-    def toggleAbbrevMode (self,event):
+    def toggleAbbrevMode (self,event=None):
 
         '''Toggle abbreviation mode.'''
 
         k = self.k
         k.abbrevOn = not k.abbrevOn
-        k.keyboardQuit(event)
+        k.keyboardQuit()
         # k.setLabel('Abbreviations are ' + g.choose(k.abbrevOn,'On','Off'))
         if not g.unitTesting and not g.app.batchMode:
             g.es('Abbreviations are ' + g.choose(k.abbrevOn,'on','off'))
@@ -2120,7 +2120,7 @@ class editCommandsClass (baseEditCommandsClass):
                 k.setState('escape','esc esc')
                 k.setLabel('Esc Esc -')
             elif event.keysym not in ('Shift_L','Shift_R'):
-                k.keyboardQuit(event)
+                k.keyboardQuit()
     #@+node:ekr.20050920084036.64: *4* escEvaluate (Revise)
     def escEvaluate (self,event):
 
@@ -2141,7 +2141,7 @@ class editCommandsClass (baseEditCommandsClass):
                 w.insert(i,result)
                 ok = True
             finally:
-                k.keyboardQuit(event)
+                k.keyboardQuit()
                 if not ok:
                     k.setLabel('Error: Invalid Expression')
         else:
@@ -3503,7 +3503,7 @@ class editCommandsClass (baseEditCommandsClass):
         i = w.getInsertPoint()
         row,col = g.convertPythonIndexToRowCol(s,i)
 
-        k.keyboardQuit(event)
+        k.keyboardQuit()
         k.setLabel("Line %s" % row)
     #@+node:ekr.20050920084036.88: *3* line...
     #@+node:ekr.20050920084036.90: *4* flushLines
@@ -5427,7 +5427,7 @@ class editFileCommandsClass (baseEditCommandsClass):
             k.setLabelBlue('%s%s%s' % (prefix,os.getcwd(),os.sep))
             k.getArg(event,'delete_file',1,self.deleteFile,prefix=prefix)
         else:
-            k.keyboardQuit(event)
+            k.keyboardQuit()
             k.clearState()
             try:
                 os.remove(k.arg)
@@ -5498,7 +5498,7 @@ class editFileCommandsClass (baseEditCommandsClass):
             k.setLabelBlue('%s%s%s' % (prefix,os.getcwd(),os.sep))
             k.getArg(event,'make_directory',1,self.makeDirectory,prefix=prefix)
         else:
-            k.keyboardQuit(event)
+            k.keyboardQuit()
             k.clearState()
             try:
                 os.mkdir(k.arg)
@@ -5537,7 +5537,7 @@ class editFileCommandsClass (baseEditCommandsClass):
             k.setLabelBlue('%s%s%s' % (prefix,os.getcwd(),os.sep))
             k.getArg(event,'remove_directory',1,self.removeDirectory,prefix=prefix)
         else:
-            k.keyboardQuit(event)
+            k.keyboardQuit()
             k.clearState()
             try:
                 os.rmdir(k.arg)
