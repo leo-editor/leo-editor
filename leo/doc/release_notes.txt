@@ -17044,5 +17044,7 @@ The import-at-root command is no longer supported.
 Leo's sentence related functions now stop at empty lines, skip periods within
 words, stop at sentences ending in non-periods and stop at the end or beginning
 of the buffer.
+#@+node:ekr.20110601105631.19343: *5* A single click on an already-selected tree node edits the headline
+Enabled only if @bool single_click_auto_edits_headline = True.
 #@-all
 #@-leo
