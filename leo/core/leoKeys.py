@@ -2014,7 +2014,7 @@ class keyHandlerClass:
 
         if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
             k.keyboardQuit(event)
-            k.endCommand(event,commandName)
+            k.endCommand(commandName)
             return 'break'
 
         if special: # Don't pass these on.
@@ -2058,7 +2058,7 @@ class keyHandlerClass:
                 # if commandName == 'select-all': g.pdb()
                 c.doCommand(func,commandName,event=event)
             if c.exists:
-                k.endCommand(event,commandName)
+                k.endCommand(commandName)
                 c.frame.updateStatusLine()
             if traceGC: g.printNewObjects('masterCom 2')
             return 'break'
@@ -2083,7 +2083,7 @@ class keyHandlerClass:
         if func:
             func(event)
             commandName = k.inverseCommandsDict.get(func) # Get the emacs command name.
-            k.endCommand(event,commandName)
+            k.endCommand(commandName)
 
         return func
     #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
@@ -2218,7 +2218,7 @@ class keyHandlerClass:
             else:
                 c.widgetWantsFocusNow(event.widget) # Important, so cut-text works, e.g.
                 func(event)
-            k.endCommand(event,commandName)
+            k.endCommand(commandName)
         else:
             if 1: # Useful.
                 if trace: g.trace('*** tab completion')
@@ -2228,7 +2228,7 @@ class keyHandlerClass:
                 k.setLabel('Command does not exist: %s' % commandName)
                 c.bodyWantsFocus()
     #@+node:ekr.20061031131434.113: *4* k.endCommand
-    def endCommand (self,event,commandName):
+    def endCommand (self,commandName):
 
         '''Make sure Leo updates the widget following a command.
 
@@ -2902,7 +2902,7 @@ class keyHandlerClass:
             elif k.state.handler:
                 val = k.state.handler(event)
                 if val != 'continue':
-                    k.endCommand(event,k.commandName)
+                    k.endCommand(k.commandName)
             else:
                 g.es_print('no state function for',k.state.kind,color='red')
 
@@ -3433,7 +3433,7 @@ class keyHandlerClass:
         if w:
             c.frame.log.deleteTab('Mode') # Changes focus to the body pane
 
-        k.endCommand(event,k.stroke)
+        k.endCommand(k.stroke)
         k.inputModeName = None
         k.clearState()
         k.resetLabel()
