@@ -49,23 +49,6 @@ else:
 import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 
-# try:
-    # # import PyQt4.Qt as Qt # Loads all modules of Qt.
-    # # import qt_main # Contains Ui_MainWindow class
-    # import PyQt4.QtCore as QtCore
-    # import PyQt4.QtGui as QtGui
-# except ImportError:
-    # QtCore = None
-
-# if QtCore is None:
-    # try: # Attempt Python 3000 imports
-        # from PyQt4 import QtCore
-        # from PyQt4 import QtGui
-    # except ImportError:
-        # QtCore = None
-        # # print('\nqtGui.py: can not import Qt\nUse "launchLeo.py --gui=tk" to force Tk')
-        # raise
-
 try:
     import leo.plugins.nested_splitter as nested_splitter
     splitter_class = nested_splitter.NestedSplitter
@@ -75,16 +58,6 @@ try:
 except ImportError:
     print('Can not import nested_splitter')
     splitter_class = QtGui.QSplitter
-
-# remove scintilla dep for now    
-if 0:    
-    try:
-        from PyQt4 import Qsci
-    except ImportError:
-        QtCore = None
-        print('\nqtGui.py: can not import scintilla for Qt')
-        print('\nqtGui.py: qt-scintilla may be a separate package on your system')
-        print('\nqtGui.py: e.g. "python-qscintilla2" or similar\n')
 #@-<< qt imports >>
 #@+<< define text widget classes >>
 #@+node:ekr.20081121105001.515: **  << define text widget classes >>
