@@ -43,12 +43,13 @@ What's New in Leo
   file containing orphan nodes. This ensures that all the information in the
   external file will, in fact, be saved in the .leo file.
 
-- Almost 40 bugs have been fixed.  Most were minor.
-  For a complete list, see the release notes.
+- Almost 40 minor bugs have been fixed. For details, see the release notes.
+
+- Fixed mod_http plugin
   
 .. @+node:ekr.20110601105631.19484: *4* Deprecated/removed features
 - Leo no longer supports the Tk gui. The Qt gui now does everything
-  the Tk gui did, and more, and better.
+  the Tk gui did and better.
 
 - Removed show/hide/toggle minibuffer commands. The minibuffer is an essential
   part of Leo.
@@ -60,6 +61,269 @@ What's New in Leo
     
 - The import-at-root command is no longer supported.
 .. @+node:ekr.20110601105631.19434: *4* New and improved features
+.. @+node:ekr.20110601105631.19481: *5* Major improvements
+- Use @file extension by default if there is no @language directive in effect.
+  This is oh so useful.
+
+- Unified extract commands.  This command creates a child node from the selected
+  body text as follows:
+    
+    1. If the selection starts with a section reference, the section name become the
+       child's headline. All following lines become the child's body text. The
+       section reference line remains in the original body text.
+       
+    2. If the selection looks like a Python class or definition line, the
+       class/function/method name becomes child's headline and all selected lines
+       become the child's body text.
+       
+    3. Otherwise, the first line becomes the child's headline, and all selected
+       lines become the child's body text.
+
+    Note that the extract-section-names command remains.
+    The extract-section and extract-python-method commands are gone.
+
+- The import-file commands replaces all the following commands::
+    
+    import-at-file                    
+    import-cweb-files         
+    import-derived-file       
+    import-flattened-outline      
+    import-noweb-files
+    
+  Leo chooses one of the above commands as follows.  First, if the file looks
+  like an external file that Leo wrote, the command works like
+  import-derived-file command.  Otherwise, the file's extension determines the
+  importer::
+        
+        .cw, .cweb:     import-cweb-files
+        .nw, .noweb:    import-noweb-files
+        .txt:           import-flattened-outline
+        all others:     import-at-file
+    
+  The import-at-root command is no longer supported.
+.. @+node:ekr.20110602091552.16899: *6* Completed Leo's autocompleter
+Terminology: the *legacy* (aka tabbed) autocompleter shows completions in Leo's
+tabbed pane. The *new* (aka qcompleter) autocompleter shows completions in or
+near the body pane.
+
+Appearance
+==========
+
+There is little change to the legacy completer, except that no text is
+highlighted in the body pane during completion. This is calmer than before.
+Furthermore, there is no longer any need for highlighting, because when the user
+types a backspace the legacy completer now simply deletes a single character
+instead of the highlighted text.
+
+One minor change: the legacy completer now *does* insert characters that do
+not match the start of any possible completion. This is an experimental feature,
+but it might play well with using codewise completions as a fallback to
+leo-related completions.
+
+Function and design
+===================
+
+Both the legacy and new completer now work *exactly* the same way, because they
+both use the AutoCompleterClass to compute the list of completions.
+
+The strict "stateless" requirement means that the "intermediate" completions
+must be entered into the body pane while completion is active. It works well as
+a visual cue when using the tabbed completer: indeed, the tabbed completer would
+be difficult to use without this cue.
+
+The situation is slightly different with the qcompleter. Adding code before the
+user accepts the completion might be considered an "advanced" feature. However,
+it does have two important advantages, especially when "chaining" across
+periods: it indicates the status of the chaining and it limits what must appear
+in the qcompleter window.
+
+Codewise completions
+====================
+
+The codewise-oriented completions appear to work well. In large part,
+this is due to adding the global "self." completions to all class-related
+completions (kind == 'class' in ac.get_codewise_completions). This looks like a
+really good hack, and it eliminates the need for the ContextSniffer class.
+
+Performance
+===========
+
+Performance of leo-related completions is *much* better than before. The old
+code used Python's inspect module and was horribly complex. The new code uses
+eval and is perfectly straightforward.
+
+The present codewise-related code caches completions for all previously-seen
+prefixes. This dramatically speeds up backspacing. Global caching is possible
+because completions depend *only* one the present prefix, *not* on the presently
+selected node. If ContextSniffer were used, completions would depend on the
+selected node and caching would likely be impractical.
+
+Despite these improvements, the performance of codewise-oriented completions is
+noticeably slower than leo-related completions. Now that leo-related completions
+are so fast, the slower speed of the codewise completer is just a bit annoying.
+Caching helps somewhat, but not enough.
+
+Performance notes
+=================
+
+The ac.get_cached_options cuts back the prefix until it finds a cached prefix.
+ac.compute_completion_list then uses this (perhaps-way-too-long-list) as a
+starting point, and computes the final completion list by calling
+g.itemsMatchingPrefixInList.
+
+This may not be absolutely the fastest way, but it is much simpler and more
+robust than attempting to do "prefix AI" based on comparing old and new
+prefixes. Furthermore, this scheme is completely independent of the how
+completions are actually computed. The autocompleter now caches options lists,
+regardless of whether using eval or codewise.
+
+In most cases the scheme is extremely fast: calls to get_completions replace
+calls to g.itemsMatchingPrefixInList. However, for short prefixes, the list that
+g.g.itemsMatchingPrefixInList scans can have thousands of items. Scanning large
+lists can't be helped in any case for short prefixes.
+
+Happily, the new scheme is still *completely* stateless: the completionDict does
+*not* define state (it is valid everywhere) and no state variables had to be
+added. In short, the new caching scheme is much better than before, and it
+probably is close to optimal in most situations.
+.. @+node:ekr.20110602091552.16898: *6* Greatly improved the viewrendered plugin
+The viewrendered plugin reates a window for *live* rendering of images, movies,
+sounds, rst, html, etc. 
+
+Commands
+========
+
+viewrendered.py creates the following (``Alt-X``) commands:
+
+``viewrendered (abbreviated vr)``
+    Opens a new rendering window.
+    
+    By default, the rendering pane renders body text as reStructuredText, with
+    all Leo directives removed. However, if the body text starts with ``<``
+    (after removing directives), the body text is rendered as html.
+    
+    **Important**: The default rendering just described does not apply to nodes
+    whose headlines begin with @image, @html, @movie, @networkx, @svg and @url.
+    See the section called **Special Renderings** below.
+
+    Rendering sets the process current directory (os.chdir()) to the path
+    to the node being rendered, to allow relative paths to work in ``.. image::`` directives.
+
+``hide-rendering-pane``
+    Makes the rendering pane invisible, but does not destroy it.
+
+``lock-unlock-rendering-pane``
+    Toggles the locked state of the rendering pane. When unlocked (the initial
+    state), the rendering pane renders the contents of the presently selected
+    node. When locked, the rendering pane does not change when other nodes are
+    selected. This is useful for playing movies in the rendering pane.
+    
+``pause-play-movie``
+    This command has effect only if the rendering pane is presently showing a movie.
+    It pauses the movie if playing, or resumes the movie if paused.
+
+``show-rendering-pane``
+    Makes the rendering pane visible.
+
+``toggle-rendering-pane``
+    Shows the rendering pane if invisible, otherwise hides it.
+    
+``update-rendering-pane``
+    Forces an update of the rendering pane. This is especially useful for
+    @graphics-script nodes: such nodes are update automatically only when
+    selected, not when the body text changes.
+    
+Rendering reStructuredText
+==========================
+
+For example, both::
+
+    Heading
+    -------
+
+    `This` is **really** a line of text.
+
+and::
+
+    <h1>Heading<h1>
+
+    <tt>This</tt> is <b>really</b> a line of text.
+
+will look something like:
+
+    **Heading**
+
+    `This` is **really** a line of text.
+    
+**Important**: reStructuredText errors and warnings will appear in red in the rendering pane.
+
+Special renderings
+===================
+
+This plugin renders @image, @html, @movie, @networkx, @svg and @url nodes in
+special ways.
+
+For @image, @movie and @svg nodes, either the headline or the first line of body
+text may contain a filename.  If relative, the filename is resolved relative to
+Leo's load directory. 
+
+- ``@graphics-script`` executes the script in the body text in a context containing
+  two predefined variables:
+      
+    - gs is the QGraphicsScene for the rendering pane.
+    - gv is the QGraphicsView for the rendering pane.
+    
+  Using these variables, the script in the body text may create graphics to the
+  rendering pane.
+
+- ``@image`` renders the file as an image.
+
+
+- ``@html`` renders the body text as html.
+
+
+- ``@movie`` plays the file as a movie.  @movie also works for music files.
+
+- ``@networkx`` is non-functional at present.  It is intended to
+  render the body text as a networkx graph.
+  See http://networkx.lanl.gov/
+
+
+- ``@svg`` renders the file as a (possibly animated!) svg (Scalable Vector Image).
+  See http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
+  **Note**: if the first character of the body text is ``<`` after removing Leo directives,
+  the contents of body pane is taken to be an svg image.
+
+- ``@url`` is non-functional at present.
+
+Settings
+========
+
+- ``@color rendering-pane-background-color = white``
+  The background color the rendering pane when rendering text.
+
+- ``@bool view-rendered-auto-create = False``
+  When True, show the rendering pane when Leo opens an outline.
+  
+- ``@bool view-rendered-auto-hide = False``
+  When True, hide the rendering pane for text-only renderings.
+
+- ``@string view-rendered-default-kind = rst``
+  The default kind of rendering.  One of (big,rst,html)
+
+- ``@bool scrolledmessage_use_viewrendered = True``
+  When True the scrolledmessage dialog will use the rendering pane,
+  creating it as needed.  In particular, the plugins_menu plugin
+  will show plugin docstrings in the rendering pane.
+  
+Acknowledgments
+================
+
+Terry Brown created this initial version of this plugin,
+and the free_layout and NestedSplitter plugins used by viewrendered.
+
+Edward K. Ream generalized this plugin and added communication and coordination
+between the free_layout, NestedSplitter and viewrendered plugins.
 .. @+node:ekr.20110601105631.19435: *5* Colorizing
 - Support multiple @language directives in a single node
   As with @color directives, only unambiguous @language directives affect the
@@ -126,49 +390,6 @@ Enabled only if @bool single_click_auto_edits_headline = True.
 - The first loaded file sets tabbed gui size
 
 - Enter insert mode after ctrl-h.  This is a vim-related improvement.
-.. @+node:ekr.20110601105631.19481: *5* Major improvements to commands
-- Use @file extension by default if there is no @language directive in effect.
-  This is oh so useful.
-
-- Completed work on Leo's autocompleter
-
-- Unified extract commands.  This command creates a child node from the selected
-  body text as follows:
-    
-    1. If the selection starts with a section reference, the section name become the
-       child's headline. All following lines become the child's body text. The
-       section reference line remains in the original body text.
-       
-    2. If the selection looks like a Python class or definition line, the
-       class/function/method name becomes child's headline and all selected lines
-       become the child's body text.
-       
-    3. Otherwise, the first line becomes the child's headline, and all selected
-       lines become the child's body text.
-
-    Note that the extract-section-names command remains.
-
-The extract-section and extract-python-method commands are gone.
-
-- The import-file commands replaces all the following commands::
-    
-    import-at-file                    
-    import-cweb-files         
-    import-derived-file       
-    import-flattened-outline      
-    import-noweb-files
-    
-  Leo chooses one of the above commands as follows.  First, if the file looks
-  like an external file that Leo wrote, the command works like
-  import-derived-file command.  Otherwise, the file's extension determines the
-  importer::
-        
-        .cw, .cweb:     import-cweb-files
-        .nw, .noweb:    import-noweb-files
-        .txt:           import-flattened-outline
-        all others:     import-at-file
-    
-  The import-at-root command is no longer supported.
 .. @+node:ekr.20110601105631.19482: *5* Improved commands
 - Improved the clone-find-all command. The descendants of previously found
   (cloned) nodes don't get added again. The clone-find-all pattern now defaults
@@ -220,9 +441,7 @@ The extract-section and extract-python-method commands are gone.
     
 - Renamed the 'abbrev-mode' to 'toggle-abbrev-mode'.
 .. @+node:ekr.20110601105631.19470: *5* Plugins
-- Many improvements and fixes to viewrendered plugin.
 
-- Fixed mod_http plugin
 .. @+node:ekr.20110601105631.19473: *5* Scripting
 .. _`Runwith class`: http://groups.google.com/group/leo-editor/browse_thread/thread/b8e8fbf6d97fa9f2/a4537fafaf2442ba
 

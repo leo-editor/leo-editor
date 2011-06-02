@@ -4352,5 +4352,26 @@ def endCommand (self,commandName):
 - Removed Tk plugins from pylint-leo.py
 
 - Changed return "break" & return "continue" to return.
+#@+node:ekr.20110602072258.16953: *4* Removed Tk-only settings
+rclick_show_help
+cleo_*
+
+headline_text_unselected_foreground_color
+headline_text_unselected_background_color
+
+headline_text_selected_foreground_color
+headline_text_selected_background_color
+
+headline_text_selected_highlight_color
+
+fastgotonode_*
+
+library_*
+
+template_path
+
+open_with_*
+
+shortcut_button_data
 #@-all
 #@-leo
