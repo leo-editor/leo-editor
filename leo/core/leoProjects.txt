@@ -4342,5 +4342,15 @@ def endCommand (self,commandName):
             c.widgetWantsFocusNow(k.newMinibufferWidget)
             # g.pr('endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers())
             k.newMinibufferWidget = None
+#@+node:ekr.20110601213117.19168: *4* Killed Tk
+@nocolor-node
+
+- Removed tkinter from leoPlugins.leo
+
+- Removed Tkinter stuff from unitTest.leo.
+    
+- Removed Tk plugins from pylint-leo.py
+
+- Changed return "break" & return "continue" to return.
 #@-all
 #@-leo

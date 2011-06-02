@@ -50,6 +50,11 @@ import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 
 try:
+    from PyQt4 import Qsci
+except ImportError:
+    Qsci = None
+
+try:
     import leo.plugins.nested_splitter as nested_splitter
     splitter_class = nested_splitter.NestedSplitter
     # disable special behavior, turned back on by associated plugin,
