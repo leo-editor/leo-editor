@@ -149,7 +149,6 @@
 <v t="ekr.20060606085536.1"><vh>@color overwrite_mode_fg_color = black</vh></v>
 <v t="ekr.20080511041907.1"><vh>@color unselected_body_bg_color = #ffffef</vh></v>
 <v t="ekr.20080511041907.2"><vh>@color unselected_body_fg_color = black</vh></v>
-<v t="ekr.20090406071640.19"><vh>@@color unselected-background-color = #f2fdff</vh></v>
 </v>
 <v t="ekr.20041119051246.1"><vh>Outline pane colors (Tk only)</vh>
 <v t="ekr.20041119051246.2"><vh>@@color headline_text_unselected_background_color = #ffffec</vh></v>
@@ -7884,7 +7883,6 @@ print ('done')
 </t>
 <t tx="ekr.20090203134354.2"></t>
 <t tx="ekr.20090213065933.11"></t>
-<t tx="ekr.20090406071640.19">A kind of blue</t>
 <t tx="ekr.20090408091222.1"># These are needed because Qt reports Ctrl-( as Ctrl-Shift-9, etc.
 
 add-comments        = Ctrl-Shift-9  # Ctrl-parenleft
