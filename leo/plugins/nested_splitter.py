@@ -278,7 +278,6 @@ class NestedSplitter(QtGui.QSplitter):
             # parent set by insertWidget() below
             old = self
             pos = layout.indexOf(old)
-            ### layout.insertWidget(pos,new)
             new.addWidget(old)
             if not w:
                 w = NestedSplitterChoice(new)

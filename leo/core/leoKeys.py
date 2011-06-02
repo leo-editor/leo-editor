@@ -2117,9 +2117,6 @@ class keyHandlerClass:
                 c.onCanvasKey(event) # New in Leo 4.4.2
             return 'break'
         elif name.startswith('log'):
-            ### if g.app.gui.guiName() == 'tkinter':
-                # return None
-            # else:
             i = w.logCtrl.getInsertPoint()
             if not stroke:
                 stroke = event.stroke # 2010/05/04.

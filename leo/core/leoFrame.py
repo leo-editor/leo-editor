@@ -2503,18 +2503,6 @@ class leoTree:
             frame.setWrap(p)
             self.setBodyTextAfterSelect(p,old_p)
             #@-<< select the new node >>
-            ### All this code is gone now.
-            # if p and p != old_p: # Suppress duplicate call.
-                # try: # may fail during initialization.
-                    # # p is NOT c.p here!
-                    # if 0: # Interferes with new colorizer.
-                        # self.canvas.update_idletasks()
-                        # self.scrollTo(p)
-                    # ### if scroll and g.app.gui.guiName() == 'tkinter':
-                        # # def scrollCallback(self=self,p=p):
-                            # # self.scrollTo(p)
-                        # # self.canvas.after(100,scrollCallback)
-                # except Exception: pass
             c.nodeHistory.update(p) # Remember this position.
         c.setCurrentPosition(p)
         #@+<< set the current node >>

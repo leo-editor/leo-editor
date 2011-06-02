@@ -16,17 +16,6 @@ import os
 import sys
 import traceback
 
-###
-# try:
-    # import Tkinter ; Tkinter.wantobjects = 0
-        # # An ugly hack for Tk/Tkinter 8.5
-        # # See http://sourceforge.net/forum/message.php?msg_id=4078577
-# except ImportError:
-    # try:
-        # import tkinter ; tkinter.wantobject = 0
-    # except ImportError:
-        # pass
-
 path = os.getcwd()
 if path not in sys.path:
     # print('appending %s to sys.path' % path)
@@ -177,11 +166,6 @@ def doPrePluginsInit(fileName,pymacs):
     
     # Create the gui after reading options and settings.
     createGui(pymacs,options)
-
-    # if no gui specified on command line, and qt not installed
-    # set options['gui'] to 'tk' to match reality
-    ### if g.app.guiArgName == 'tk':
-    ###    options['gui'] = 'tk'
 
     # We can't print the signon until we know the gui.
     g.app.computeSignon() # Set app.signon/signon2 for commanders.

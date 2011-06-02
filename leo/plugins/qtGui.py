@@ -136,9 +136,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             c.in_qt_dialog = False
 
             # This is important: it clears the autocompletion state.
-            c.k.keyboardQuit() ### inAutoCompleter=True)
-                # inAutoCompleter = True prevents a recursive call here.
-                
+            c.k.keyboardQuit()
             c.bodyWantsFocusNow()
             
             self.deleteLater()
@@ -1974,7 +1972,7 @@ class leoQtMinibuffer (leoQLineEditWidget):
         # Monkey-patch the event handlers
         #@+<< define mouseReleaseEvent >>
         #@+node:ekr.20110527140605.18359: *4* << define mouseReleaseEvent >> (leoQtMinibuffer)
-        def mouseReleaseEvent (*args,**keys): ### event,c=c,w=w):
+        def mouseReleaseEvent (*args,**keys):
             
             '''Override QLineEdit.mouseReleaseEvent.
             
@@ -4200,7 +4198,6 @@ class leoQtFrame (leoFrame.leoFrame):
         f.createStatusLine() # A base class method.
         f.createFirstTreeNode() # Call the base-class method.
         f.menu = leoQtMenu(f)
-        #### c.setLog()
         g.app.windowList.append(f)
         f.miniBufferWidget = leoQtMinibuffer(c)
         c.bodyWantsFocus()
@@ -8060,7 +8057,7 @@ class leoQtGui(leoGui.leoGui):
         trace = False and not g.unitTesting
         verbose = False
         app = QtGui.QApplication
-        w = app.focusWidget() ### or app.activeWindow()
+        w = app.focusWidget()
         if w and isinstance(w,LeoQTextBrowser):
             has_w = hasattr(w,'leo_wrapper') and w.leo_wrapper
             if has_w:
@@ -8651,7 +8648,7 @@ class leoQtEventFilter(QtCore.QObject):
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
             if ignore:
                 override = False
-            ### This is extremely bad.  At present, it is needed to handle tab properly.
+            # This is extremely bad.  At present, it is needed to handle tab properly.
             elif self.isSpecialOverride(tkKey,ch):
                 override = True
             elif k.inState():
@@ -9843,7 +9840,7 @@ class jEditColorizer:
                     attributesDict  = {},
                     defaultColor    = None,
                     keywordsDict    = {},
-                    language        = 'unknown-language', ### language,
+                    language        = 'unknown-language',
                     mode            = mode,
                     properties      = {},
                     rulesDict       = {},

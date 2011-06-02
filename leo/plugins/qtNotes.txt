@@ -1235,7 +1235,6 @@ def finishCreate (self,c):
     f.createStatusLine() # A base class method.
     f.createFirstTreeNode() # Call the base-class method.
     f.menu = leoQtMenu(f)
-    #### c.setLog()
     g.app.windowList.append(f)
     f.miniBufferWidget = leoQtMinibuffer(c)
     c.bodyWantsFocus()
@@ -2480,7 +2479,7 @@ def init_mode (self,name):
                 attributesDict  = {},
                 defaultColor    = None,
                 keywordsDict    = {},
-                language        = 'unknown-language', ### language,
+                language        = 'unknown-language',
                 mode            = mode,
                 properties      = {},
                 rulesDict       = {},
@@ -5870,7 +5869,7 @@ def get_focus(self,c=None):
     trace = False and not g.unitTesting
     verbose = False
     app = QtGui.QApplication
-    w = app.focusWidget() ### or app.activeWindow()
+    w = app.focusWidget()
     if w and isinstance(w,LeoQTextBrowser):
         has_w = hasattr(w,'leo_wrapper') and w.leo_wrapper
         if has_w:
@@ -6393,7 +6392,7 @@ def init_mode (self,name):
                 attributesDict  = {},
                 defaultColor    = None,
                 keywordsDict    = {},
-                language        = 'unknown-language', ### language,
+                language        = 'unknown-language',
                 mode            = mode,
                 properties      = {},
                 rulesDict       = {},
@@ -7901,7 +7900,7 @@ def get_focus(self,c=None):
     trace = False and not g.unitTesting
     verbose = False
     app = QtGui.QApplication
-    w = app.focusWidget() ### or app.activeWindow()
+    w = app.focusWidget()
     if w and isinstance(w,LeoQTextBrowser):
         has_w = hasattr(w,'leo_wrapper') and w.leo_wrapper
         if has_w:
@@ -8358,7 +8357,7 @@ class leoQtMinibuffer (leoQLineEditWidget):
     def setForegroundColor(self,color):
         pass
 #@+node:ekr.20110527140605.18359: *6* << define mouseReleaseEvent >> (leoQtMinibuffer)
-def mouseReleaseEvent (*args,**keys): ### event,c=c,w=w):
+def mouseReleaseEvent (*args,**keys):
     
     '''Override QLineEdit.mouseReleaseEvent.
     
@@ -8665,7 +8664,7 @@ def init_mode (self,name):
                 attributesDict  = {},
                 defaultColor    = None,
                 keywordsDict    = {},
-                language        = 'unknown-language', ### language,
+                language        = 'unknown-language',
                 mode            = mode,
                 properties      = {},
                 rulesDict       = {},
@@ -8895,7 +8894,7 @@ def init_mode (self,name):
                 attributesDict  = {},
                 defaultColor    = None,
                 keywordsDict    = {},
-                language        = 'unknown-language', ### language,
+                language        = 'unknown-language',
                 mode            = mode,
                 properties      = {},
                 rulesDict       = {},
@@ -9191,7 +9190,6 @@ def finishCreate (self,c):
     f.createStatusLine() # A base class method.
     f.createFirstTreeNode() # Call the base-class method.
     f.menu = leoQtMenu(f)
-    #### c.setLog()
     g.app.windowList.append(f)
     f.miniBufferWidget = leoQtMinibuffer(c)
     c.bodyWantsFocus()
@@ -10327,7 +10325,6 @@ def finishCreate (self,c):
     f.createStatusLine() # A base class method.
     f.createFirstTreeNode() # Call the base-class method.
     f.menu = leoQtMenu(f)
-    #### c.setLog()
     g.app.windowList.append(f)
     f.miniBufferWidget = leoQtMinibuffer(c)
     c.bodyWantsFocus()
@@ -11257,7 +11254,7 @@ def init_mode (self,name):
                 attributesDict  = {},
                 defaultColor    = None,
                 keywordsDict    = {},
-                language        = 'unknown-language', ### language,
+                language        = 'unknown-language',
                 mode            = mode,
                 properties      = {},
                 rulesDict       = {},
