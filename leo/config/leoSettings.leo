@@ -151,16 +151,16 @@
 <v t="ekr.20080511041907.2"><vh>@color unselected_body_fg_color = black</vh></v>
 <v t="ekr.20090406071640.19"><vh>@@color unselected-background-color = #f2fdff</vh></v>
 </v>
-<v t="ekr.20041119051246.1"><vh>Outline pane colors</vh>
-<v t="ekr.20041119051246.2"><vh>@color headline_text_unselected_background_color = #ffffec</vh></v>
-<v t="ekr.20041119050749.6"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
-<v t="ekr.20041119051246.3"><vh>@color headline_text_selected_background_color = #dbdbdb</vh></v>
-<v t="ekr.20041119050749.7"><vh>@color headline_text_selected_foreground_color = None</vh></v>
-<v t="ekr.20041119051901"><vh>@color headline_text_editing_background_color = None</vh></v>
-<v t="ekr.20041119050749.8"><vh>@color headline_text_editing_foreground_color = None</vh></v>
-<v t="ekr.20041119050749.9"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
-<v t="ekr.20041119051901.1"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
-<v t="ekr.20041119050749.12"><vh>@color outline_pane_background_color = #ffffec</vh></v>
+<v t="ekr.20041119051246.1"><vh>Outline pane colors (Tk only)</vh>
+<v t="ekr.20041119051246.2"><vh>@@color headline_text_unselected_background_color = #ffffec</vh></v>
+<v t="ekr.20041119050749.6"><vh>@@color headline_text_unselected_foreground_color = None</vh></v>
+<v t="ekr.20041119051246.3"><vh>@@color headline_text_selected_background_color = #dbdbdb</vh></v>
+<v t="ekr.20041119050749.7"><vh>@@color headline_text_selected_foreground_color = None</vh></v>
+<v t="ekr.20041119051901"><vh>@@color headline_text_editing_background_color = None</vh></v>
+<v t="ekr.20041119050749.8"><vh>@@color headline_text_editing_foreground_color = None</vh></v>
+<v t="ekr.20041119050749.9"><vh>@@color headline_text_editing_selection_foreground_color = None</vh></v>
+<v t="ekr.20041119051901.1"><vh>@@color headline_text_editing_selection_background_color = None</vh></v>
+<v t="ekr.20041119050749.12"><vh>@@color outline_pane_background_color = #ffffec</vh></v>
 </v>
 <v t="ekr.20100313080341.8368"><vh>Minibuffer background colors</vh>
 <v t="ekr.20100313080341.8369"><vh>@color minibuffer-background-color = lightblue</vh></v>
@@ -1068,18 +1068,6 @@
 <v t="tbrown.20110430104941.30247"><vh>backlink</vh>
 <v t="tbrown.20110430104941.30250"><vh>@int backlink_name_levels = 0</vh></v>
 </v>
-<v t="ekr.20080328105334.1"><vh>cleo</vh>
-<v t="ekr.20080602174756.1"><vh>@bool cleo_color_ignore = True</vh></v>
-<v t="ekr.20080328105334.2"><vh>@color cleo_color_prog_green =</vh></v>
-<v t="ekr.20080328105334.3"><vh>@color cleo_color_prog_red =</vh></v>
-<v t="ekr.20080328105334.4"><vh>@data cleo_color_file_node_list</vh></v>
-<v t="ekr.20080328105334.8"><vh>@float cleo_prog_extra = 4</vh></v>
-<v t="ekr.20080328105334.6"><vh>@float cleo_time_init = 1.0</vh></v>
-<v t="ekr.20080328105334.7"><vh>@int cleo_prog_scale = 1</vh></v>
-<v t="ekr.20080328105334.5"><vh>@int cleo_prog_width = 18</vh></v>
-<v t="ekr.20080328105334.9"><vh>@string cleo_time_name = days</vh></v>
-<v t="tbrown.20090430112929.1"><vh>@string cleo_icon_path = cleo</vh></v>
-</v>
 <v t="ekr.20060807103220"><vh>datenodes plugin</vh>
 <v t="ekr.20060807103220.1"><vh>@string datenodes_body_text = To do...</vh></v>
 <v t="ekr.20060807103220.2"><vh>@string datenodes_day_node_headline = %Y-%m-%d</vh></v>
@@ -1092,16 +1080,6 @@
 <v t="ekr.20060807103220.9"><vh>@string datenodes_year_node_year_headline = %Y</vh></v>
 <v t="ekr.20060807103220.10"><vh>@bool datenodes_year_node_omit_saturdays = True</vh></v>
 <v t="ekr.20060807103220.11"><vh>@bool datenodes_year_node_omit_sundays = True</vh></v>
-</v>
-<v t="ekr.20060111091324"><vh>fastgotonode plugin</vh>
-<v t="ekr.20060111091324.1"><vh>@bool fastgotonode_useKeyBinding = True</vh></v>
-<v t="ekr.20060111091324.2"><vh>@string fastgotonode_binding =  Shift-space</vh></v>
-</v>
-<v t="ekr.20060109115046"><vh>library plugin</vh>
-<v t="ekr.20060109115046.1"><vh>@bool library_verbose = True</vh></v>
-<v t="ekr.20060109115046.2"><vh>@string library_lib = default</vh></v>
-<v t="ekr.20060109115046.3"><vh>@string library_lib0 = default/library.dbm</vh></v>
-<v t="ekr.20060109121753"><vh>@string library_lib1 = default/libraryS.dbm</vh></v>
 </v>
 <v t="TL.20090225102340.33"><vh>nodeActions plugin</vh>
 <v t="TL.20090225102340.34"><vh>@bool nodeActions_save_atFile_nodes = False</vh></v>
@@ -1205,9 +1183,6 @@
 <v t="ekr.20060930111325.7"><vh>@bool scripting-create-run-script-button = False</vh></v>
 <v t="ekr.20060930112030"><vh>@bool scripting-create-script-button-button = True</vh></v>
 <v t="ekr.20060930111325.1"><vh>@int scripting-max-button-size = 18</vh></v>
-</v>
-<v t="bobjack.20080614084120.3"><vh>shortcut _button plugin</vh>
-<v t="bobjack.20080614084120.5"><vh>@data shortcut_button_data</vh></v>
 </v>
 <v t="ekr.20051123100536.1"><vh>vim plugin</vh>
 <v t="ekr.20051123100536.2"><vh>@@string vim_cmd = c:\Program Files\vim\vim63\gvim --servername LEO</vh></v>
@@ -3599,39 +3574,6 @@ cycle-editor-focus   = j   #Vim goes to window below current window
 delete-editor        = c   #Close current window (if more than one)
 delete-editor        = q   #Close current window (if more than one)
 </t>
-<t tx="bobjack.20080614084120.3"></t>
-<t tx="bobjack.20080614084120.5"># The name of the iconBar to which the buttons should initially be placed
-# This is ignored unless the toolbar.py plugin is enabled
-
-iconbar = 
-
-
-# An icon to be used in place of text if the toolbar.py plugin is enabled
-# The PIL module must also be availiable for icons to be visible
-# Value may be a full path or a path relative to leo/icons or leave empty for text only 
-
-icon = 
-
-
-# The colors to be used for the 'shortcut' button
-
-master-fg = 
-master-bg = 
-
-
-# The colors to be used for the buttons generated by the 'shortcut' button
-
-slave-fg = 
-slave-bg = 
-
-
-# The rClick menu to use for the 'shortcut' button and generated buttons
-# These will be ignored unless both rClick.py and tooblar.py plugins are enabled
-
-master-menu = 
-slave-menu = 
-
-</t>
 <t tx="edward.20081129091117.12">horizontal: body pane to the right
 vertical: body pane on the botton</t>
 <t tx="ekr.20041119034357.1">@nocolor
@@ -4804,11 +4746,6 @@ This file contains 6 sets of key bindings and settings.
 - The *inactive* sets should be children of this node.
 
 @color</t>
-<t tx="ekr.20060109115046"></t>
-<t tx="ekr.20060109115046.1">True: turns on extra feedback</t>
-<t tx="ekr.20060109115046.2"></t>
-<t tx="ekr.20060109115046.3"></t>
-<t tx="ekr.20060109121753"></t>
 <t tx="ekr.20060110141538">@color</t>
 <t tx="ekr.20060110141538.1">@color
 @
@@ -4824,18 +4761,6 @@ that actually have bindings.
 warnings about duplicate bindings.
 
 - The Check Bindings script only checks for missing bindings in this set.</t>
-<t tx="ekr.20060111091324"></t>
-<t tx="ekr.20060111091324.1">If this setting is True, the ``fastgotonode_binding`` setting should be a
-Keyspecifier that does not conflict with any key binding in leoSettings.leo.
-
-If this setting is False, the ``fastgotonode_binding`` setting should be some
-other event specifier, typically 'Button-3'.</t>
-<t tx="ekr.20060111091324.2"># The binding used to invoke the popup menu.
-# Some possibilities:
-
-Shift-space  # Control-space conflicts with an Emacs binding.
-Button-3
-Double-Button-3 # Useful if you also have the rClick plugin enabled.</t>
 <t tx="ekr.20060112090844">fill-paragraph                      = Alt-q
 fill-region                         = None
 fill-region-as-paragraph            = None
@@ -7256,23 +7181,6 @@ Valid values are (case is ignored):
 
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
-<t tx="ekr.20080328105334.1"></t>
-<t tx="ekr.20080328105334.2">The colour used instead of green in progress bars</t>
-<t tx="ekr.20080328105334.3">The colour used instead of red in progress bars</t>
-<t tx="ekr.20080328105334.4"># list of @file node types to color.
-# Uncomment these to enable coloring for these kinds of nodes.
-@asis
-@auto
-@file
-@thin
-</t>
-<t tx="ekr.20080328105334.5">The base width of progress bars, in pixels.</t>
-<t tx="ekr.20080328105334.6">The default number of time units.</t>
-<t tx="ekr.20080328105334.7">0: no progress bars
-1: unscaled progress bars
-2: scaled progress bars</t>
-<t tx="ekr.20080328105334.8">pixels per time unit to add to width of scaled progress bars</t>
-<t tx="ekr.20080328105334.9">The name of time unit (e.g. days, weeks, hours)</t>
 <t tx="ekr.20080412115752.1"># Must be four entries: width,height,left,top.
 # Put this in myLeoSettings.leo, **not** in individual .leo files.
 # This setting has no effect unless @bool fixed_window = True
@@ -7634,7 +7542,6 @@ right clicks in the body pane.
 <t tx="ekr.20080515053412.7"></t>
 <t tx="ekr.20080515053412.8"></t>
 <t tx="ekr.20080515053412.9">Indent</t>
-<t tx="ekr.20080602174756.1"></t>
 <t tx="ekr.20080703071815.3"></t>
 <t tx="ekr.20080703111151.12"># bold words in forth
 
@@ -8156,8 +8063,6 @@ but you can still see where things come from before you load them.
 False: don't use submenus for multiple path entries, unless recent_files_group
 is true (and recent_files_omit_directories is False)
 </t>
-<t tx="tbrown.20090430112929.1">path to cleo icons relative to Leo icon dir
-e.g. cleo or cleo/small</t>
 <t tx="tbrown.20091129085043.11789"></t>
 <t tx="tbrown.20091129085043.11790">file type (auto, shadow, etc.) without the '@', to use when
 loading files</t>
