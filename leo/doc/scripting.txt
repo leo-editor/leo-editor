@@ -1093,5 +1093,16 @@ For example, the following modifies the cleo.py plugin after Leo has completed l
 Attempting to modify c.cleo.prikey immediately in the @script gives an
 AttributeError as c has no .cleo when the @script is executed. Deferring it by
 using registerHandler() avoids the problem.
+.. @+node:ekr.20110531155858.20563: *4* Creating minimal outlines
+The following script will create a minimal Leo outline::
+
+    import leo.core.leoGui as leoGui
+    nullGui = leoGui.nullGui("nullGui")
+    c2,frame = g.app.newLeoCommanderAndFrame(fileName=None,gui=nullGui)
+    c2.frame.createFirstTreeNode()
+    
+    # Test that the script works.
+    for p in c2.all_positions():
+        g.es(p.h)
 .. @-all
 .. @-leo

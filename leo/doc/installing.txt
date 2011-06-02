@@ -22,6 +22,8 @@
 Installing Leo
 ################
 
+.. _`Leo's help forum`: http://groups.google.com/group/leo-editor
+
 .. index:: Installing Leo
 
 This chapter tells how to install and run Leo.
@@ -64,27 +66,8 @@ The version of PyQt that you download must match your installed Python version.
 Remember that Leo requires Python 2.6 or later, or Python 3.0 or later. Now run
 the binary PyQt installer.
 
-Special care may be needed to install PyQt on MacOS. See `Installing Leo on
-MacOS X`_ below.
-.. @+node:ekr.20100731112744.7272: *4* Installing Tk
-**Important**: Leo no longer works with Tk on MacOS.
-
-When using Tk, you must install Tk 8.4 or later. As explained later in this
-section, the Tk version of Leo does not work with Python 3.0 or later.
-
-Some installations of Python have Tk pre-installed. If yours doesn't, download
-it from: http://tcl.activestate.com/software/tcltk/
-
-Follow the installation instructions. **Warning**: When building Tcl on Linux,
-do **not** specify "--enable-threads". Only use Tcl with the default "threads
-not enabled" case.
-
-Leo uses `Pmw`_ (Python Mega Widgets). Leo's extensions folder contains a copy
-of Pmw for use if needed. Leo first tries to import Pmw normally. If that
-fails, Leo will use the version of Pmw in the extensions folder.
-
-At present, Pmw does not work with Python 3.0, which means that you can not use
-the Tk gui with Leo when using Python 3.0.
+Special care may be needed to install PyQt on MacOS. You must use the qt gui,
+not the qttabs gui.
 .. @+node:ekr.20100731112744.7281: *4* Installing PyEnchant
 You must install the PyEnchant package if you want to use Leo's Spell tab.
 Download and install the PyEnchant package from

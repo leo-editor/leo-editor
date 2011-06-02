@@ -16053,12 +16053,9 @@ The present codewise-related code caches completions for all previously-seen
 prefixes. This dramatically speeds up backspacing. Global caching is possible
 because completions depend *only* one the present prefix, *not* on the presently
 selected node. If ContextSniffer were used, completions would depend on the
-selected node and caching would likely be impractical.
-
-Despite these improvements, the performance of codewise-oriented completions is
-noticeably slower than leo-related completions. Now that leo-related completions
-are so fast, the slower speed of the codewise completer is just a bit annoying.
-Caching helps somewhat, but not enough.
+selected node and caching would likely be impractical. Despite these
+improvements, the performance of codewise-oriented completions is noticeably
+slower than leo-related completions.
 
 Performance notes
 =================
@@ -16223,252 +16220,113 @@ and the free_layout and NestedSplitter plugins used by viewrendered.
 Edward K. Ream generalized this plugin and added communication and coordination
 between the free_layout, NestedSplitter and viewrendered plugins.
 #@+node:ekr.20110531155858.20246: *4* New and improved features
-#@+node:ekr.20110601105631.19384: *5* Colorizing
-#@+node:ekr.20110531155858.20497: *6* * Support multiple @language directives in a single node
-Ironically, this is more important now that @language directives are optional.
+#@+node:ekr.20110602091552.16907: *5* Colorizing improvements
+- Support multiple @language directives in a single node
+  As with @color directives, only unambiguous @language directives affect the
+  default coloring of descendant nodes.
 
-Leo correctly colors nodes containing more than one @language directives.
+- Colorize url's in the body text. You can open url's by control-clicking on
+  them, or by using the open-url command.
 
-As with @color directives, only unambiguous @language directives affect the
-default coloring of descendant nodes.
-#@+node:ekr.20110531155858.20381: *6* Colorize url's in the qt gui
-How did we ever live without this?
+- Added support for cython colorizing
 
-You can open url's by control-clicking on them, or by using the open-url command.
-#@+node:ekr.20110531155858.20420: *6* Added support for cython colorizing
-#@+node:ekr.20110531155858.20495: *6* Added support for scala language
-The language name is "scala", the extension is ".scala"
+- Leo ignores (and does not color) @language directive for unknown languages.
 
-The comments are "// /* */" (just like C++ and Java).
-#@+node:ekr.20110531155858.20498: *6* Properly handle @language directives for unknown languages
-Leo ignores (and does not color) @language directive for unknown languages.
+- Leo completely recolors nodes when you change @language directives by typing.
+#@+node:ekr.20110602091552.16909: *5* New command-line arguments & settings
+- The --no-splash command-line option suppresses the splash screen.
+  Leo puts up no splash screen when the --silent
+  or --script command-line options are given.
 
-In effect, Leo completely recolors nodes when you change @language directives by
-typing.
-#@+node:ekr.20110601105631.19478: *5* Command-line arguments
-The --no-splash command-line option suppresses the splash screen. Leo puts up no
-splash screen when the --silent or --script command-line options are given.
-#@+node:ekr.20110601105631.19380: *5* Gui
-#@+node:ekr.20110531155858.20484: *6* * Allow *plain* up/down arrow keys in editing headline mode
-If you type a *plain* up/down arrow key while editing a headline, Leo will act
-as if you had typed the corresponding *alt*- arrow key. That is, Leo will end
-editing of the headline and go to the next previous node. Leo will end editing
-even if there is no next/ previous node, which is convenient.
-#@+node:ekr.20110601105631.19343: *6* A single click on an already-selected tree node edits the headline
-Enabled only if @bool single_click_auto_edits_headline = True.
-#@+node:ekr.20110531155858.20448: *6* Added a splash screen
-The --no-splash command-line option suppresses the splash screen.  In addition,
-Leo puts up no splash screen when the --silent or --script command-line options
-are given. 
-
-To change the splash screen, replace leo\Icons\SplashScreen.jpg with another image.
-
-#@+node:ekr.20110531155858.20503: *6* Apropos commands now print in a separate area if possible
-The commands use the scrolledmessage plugin if possible, which in turn uses the
-viewrendered plugin by default.
-
-This makes the apropos messages much more visible.
-#@+node:ekr.20110531155858.20479: *6* Handle click events like alt-x or ctrl-g
-http://sourceforge.net/forum/message.php?msg_id=3412640
-
-Clicking in the minibuffer now is equivalent to alt-x, provided that the minibuffer is not in use.
-
-Clicking most places outside the minibuffer is equivalent to ctrl-g.
-
-Catching clicks is much safer than catching focus events.
-#@+node:ekr.20110531155858.20252: *6* The first loaded file sets tabbed gui size
-#@+node:ekr.20110531155858.20334: *6* Vim-related improvements
-- Enter insert mode after ctrl-h.
-#@+node:ekr.20110601105631.19381: *5* Commands
-#@+node:ekr.20110531155858.20486: *6* * Use @file extension by default if no @language
-This should have been done 8 years ago!  It is oh so useful.
-#@+node:ekr.20110531155858.20383: *6* * Completed work on Leo's autocompleter
-What I did:
+- Added @bool view-rendered-auto-create setting.
     
 - Added @bool use_qcompleter setting.
+
 - Added auto_tab_complete setting.
+
 - Removed @bool use_codewise setting.
-#@+node:ekr.20110531155858.20515: *6* * Unified extract commands
-@language rest
+#@+node:ekr.20110602091552.16913: *5* Gui improvements
+- If you type a *plain* up/down arrow key while editing a headline, Leo will act
+  as if you had typed the corresponding *alt*- arrow key. That is, Leo will end
+  editing of the headline and go to the next previous node. Leo will end editing
+  even if there is no next/ previous node, which is convenient.
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/679614fdd6a76a81#
+- A single click on an already-selected tree node edits the headline
 
-Here is the docstring for the new, generalize, extract command:
+Enabled only if @bool single_click_auto_edits_headline = True.
 
-Create child node from the selected body text.
-    
-1. If the selection starts with a section reference, the section name become the
-   child's headline. All following lines become the child's body text. The
-   section reference line remains in the original body text.
-   
-2. If the selection looks like a Python class or definition line, the
-   class/function/method name becomes child's headline and all selected lines
-   become the child's body text.
-   
-3. Otherwise, the first line becomes the child's headline, and all selected
-   lines become the child's body text.
+- Added a splash screen
 
-Note that the extract-section-names command remains.
+  The --no-splash command-line option suppresses the splash screen. In addition,
+  Leo puts up no splash screen when the --silent or --script command-line
+  options are given. To change the splash screen, replace
+  leo\Icons\SplashScreen.jpg with another image.
 
-The extract-section and extract-python-method commands are gone.
+- The apropos commands now print in a separate area if possible. The commands use
+  the scrolledmessage plugin if possible, which in turn uses the viewrendered
+  plugin by default. This makes the apropos messages much more visible.
 
-@language python
-#@+node:ekr.20110531155858.20523: *6* * The import-file commands replace all other import commands
-http://sourceforge.net/forum/message.php?msg_id=3940843
+- Handle click events like alt-x or ctrl-g Clicking in the minibuffer now is
+  equivalent to alt-x, provided that the minibuffer is not in use. Clicking most
+  places outside the minibuffer is equivalent to ctrl-g. Catching clicks is much
+  safer than catching focus events.
 
-The import-file command replaces all the following commands:
-    
-    import-at-file                    
-    import-cweb-files         
-    import-derived-file       
-    import-flattened-outline      
-    import-noweb-files
-    
-Leo chooses one of the above commands as follows.  First, if the file looks like
-an external file that Leo wrote, the command works like import-derived-file command.
-Otherwise, the file's extension determines the importer:
-    
-    .cw, .cweb:     import-cweb-files
-    .nw, .noweb:    import-noweb-files
-    .txt:           import-flattened-outline
-    all others:     import-at-file
+- The first loaded file sets tabbed gui size
 
-The import-at-root command is no longer supported.
-#@+node:ekr.20110601105631.19385: *6* Improved commands
-#@+node:ekr.20110531155858.20410: *7* Added patch to g.wrap_lines from José Rojas Echenique
-It regularizes the number of spaces after periods.
+- Enter insert mode after ctrl-h.  This is a vim-related improvement.
+#@+node:ekr.20110602091552.16915: *5* Improved commands
+- Improved the clone-find-all command. The descendants of previously found
+  (cloned) nodes don't get added again. The clone-find-all pattern now defaults
+  to find text.
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/1171df34dce14431
-#@+node:ekr.20110531155858.20454: *7* Improved expansion of abbreviations
-Abbreviations are checked any time a non-word character is typed.
+- Improved the forward and backward by sentences commands Leo's sentence related
+  functions now stop at empty lines, skip periods within words, stop at
+  sentences ending in non-periods and stop at the end or beginning of the
+  buffer.
 
-In particular, newlines trigger abbreviations, which I find very helpful,
-although I did then have to remove newlines from my abbreviations.
+- Improved the print-bindings command; it now shows were bindings came from.
 
-Control sequences do not trigger expansions.
+- Improved the reformat-paragraph command. The command detects paragraphs more
+  reliably. The next line is now visible, which is a big improvement.
 
-Renamed the 'abbrev-mode' to 'toggle-abbrev-mode'.
-#@+node:ekr.20110531155858.20247: *7* Improved handling of @url nodes
-The new rule is simple: if the body text contains any text the first line of the
-body text is taken to be the url. There is no longer any need to put '--' in the
-headline.
+- Added patch to g.wrap_lines from José Rojas Echenique
+  It regularizes the number of spaces after periods.
 
-More importantly, you can put anything you like in the body text following the
-first line. Other url's, notes, even .. graphics:: directives for the
-viewrendered plugin.
+- Improved expansion of abbreviations. Abbreviations are checked any time a
+  non-word character is typed. In particular, newlines trigger abbreviations,
+  which I find very helpful, although I did then have to remove newlines from my
+  abbreviations. Control sequences do not trigger expansions.
 
-These improvements allow Leo to be what it should have been a long time ago: the
-world's best organizer of url's.
+- Improved handling of @url nodes. The new rule is simple: if the body text
+  contains any text the first line of the body text is taken to be the url.
+  There is no longer any need to put '--' in the headline. More importantly, you
+  can put anything you like in the body text following the first line. Other
+  url's, notes, even .. graphics:: directives for the viewrendered plugin.
 
-@color
+- Improved the clean-all-lines command. It is now much faster and has better
+  feedback.
+#@+node:ekr.20110602091552.16911: *5* File handling improvements
+- Added namespace and Leo comment lines to .leo files
 
-My typical usage is::
+- Leo opens leoSettings.leo only once
 
-    @url fizbatz: short description of fizbatz (headline)
-    http://fizbatz.org (body text)
-    @language rest
-    Why I care about fizbatz.
-#@+node:ekr.20110531155858.20249: *7* Improved the clean-all-lines command
-It is now much faster and has better feedback.
-#@+node:ekr.20110531155858.20481: *7* Improved the clone-find-all command
-- The descendants of previously found (cloned) nodes don't get added again.
+- Fixed Bug 745824: @doc duplicates comment delims in html files
+  https://bugs.launchpad.net/leo-editor/+bug/745824e
+  
+- Leo no longer wraps @doc lines. This ensures that Leo does not change files
+  unnecessarily.
+#@+node:ekr.20110602091552.16917: *5* Scripting improvements
+.. _`Runwith class`: http://groups.google.com/group/leo-editor/browse_thread/thread/b8e8fbf6d97fa9f2/a4537fafaf2442ba
 
-- clone-find-all pattern now defaults to find text.
-#@+node:ekr.20110531155858.20527: *7* Improved the forward and backward by sentences commands
-Leo's sentence related functions now stop at empty lines, skip periods within
-words, stop at sentences ending in non-periods and stop at the end or beginning
-of the buffer.
-#@+node:ekr.20110531155858.20268: *7* Improved the print-bindings command
-The print-bindings command now shows were bindings came from
-#@+node:ekr.20110531155858.20412: *7* Improved the reformat-paragraph command
-- The command detects paragraphs more reliably.
+- Added namespace arg in c.executeScript
 
-- The next line is now visible, which is a big improvement.
-#@+node:ekr.20110601105631.19378: *6* New commands
-- Added the replace-current-character command. It replaces the character to the
-  left of the cursor, or replaces the selection range if there is one.
+- Put Kent Tenney's `Runwith class`_ in scripts.leo and contrib.
 
-- Added toggle-case-region command.
+  Kent writes, "I've had endless problems with interpreter versioning, leading
+  me create the Runwith class. It writes a file to disk, makes it executable,
+  runs it, captures exitcode, err and output, removes the files, provides
+  reports. This provides complete decoupling from Leo."
 
-- Added save-all command. It saves all changed windows.
-
-- Added insert-hard/soft-tab commands.
-
-- Added commands to manage uA's::
-
-    clear-all-uas
-    clear-node-uas
-    print-all-uas
-    print-node-uas
-    set-ua
-
-#@+node:ekr.20110601105631.19382: *5* File handling
-#@+node:ekr.20110531155858.20423: *6* * Added namespace and Leo comment lines to .leo files
-This is the easy part of the new file format.
-#@+node:ekr.20110531155858.20313: *6* Leo opens leoSettings.leo only once
-#@+node:ekr.20110531155858.20440: *6* Fixed Bug 745824: @doc duplicates comment delims in html files
-https://bugs.launchpad.net/leo-editor/+bug/745824e
-
-In the new sentinels scheme @doc parts written with block comment delims must
-handled differently. This is done in the new at.massageAtDocPart method.
-
-
-#@+node:ekr.20110531155858.20441: *7* Report
-Since v4.8 notice the following:
-
-@file node using @language html
-
-Using @doc (or simply @ ) in these nodes properly writes the comment delimiters
-(<!-- and -->) surrounding the @doc block on file save. However, on file open,
-when Leo reads the @files, it raises the following error:
-
-uncached read node changed NodeHeadline
-
-and an entry is made in Recovered Nodes section. If not reverted back to the old
-version (manually), a new file save command will insert additional comment
-delimiters which then don't work (<!-- <1-- and --> -->).
-
-May be related to https://bugs.launchpad.net/leo-editor/+bug/683867 The nodes
-affected for me were all clones, but not across different @files, all within
-distinct files.
-#@+node:ekr.20110601105631.19362: *6* Leo no longer wraps @doc lines
-This ensures that Leo does not change files unnecessarily.
-#@+node:ekr.20110601105631.19383: *5* Scripting
-#@+node:ekr.20110531155858.20382: *6* Added namespace arg in c.executeScript
-#@+node:ekr.20110531155858.20384: *6* Put Kent's Runwith class in scripts.leo and contrib
-http://groups.google.com/group/leo-editor/browse_thread/thread/b8e8fbf6d97fa9f2/a4537fafaf2442ba
-
-#@+node:ekr.20110531155858.20385: *7* Description
-This code contributed by Kent Tenney.
-
-See http://groups.google.com/group/leo-editor/browse_thread/thread/b8e8fbf6d97fa9f2/a4537fafaf2442ba
-
-I've had endless problems with interpreter versioning, leading me create the
-Runwith class. It writes a file to disk, makes it executable, runs it, captures
-exitcode, err and output, removes the files, provides reports.
-
-This provides complete decoupling from Leo.
-
-I have run-bash and run-python buttons in Leo which run the node
-contents as shell or python.
-
-I'm liking it a lot.
-
-I'm currently extending it to provide command line sugar:
-
-$ rw ln -s /home/ktenney/work/src/project/bin/myscript
-/home/ktenney/bin --makelink.sh--
-
-The "rw" script executes the command, and creates the script makelink.sh
-
-The following is Outline -> Copy Node version of the Runwith class
-
-It does some data gathering which probably don't apply: hashes of the code,
-hostname, timestamps. These get stored in json.
-#@+node:ekr.20110531155858.20425: *6* Call os.chdir when executing scripts
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ea31ed2e0518866/3667f707b99ee9e3
-
-Call os.chdir() to set the current directory to match any @path directives in
-effect at the current node when a script is run or a button pushed?
+- Call os.chdir when executing scripts.
 #@-all
 #@-leo

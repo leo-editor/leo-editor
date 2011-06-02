@@ -291,6 +291,119 @@ updates. If it doesn't you are asking for, and will eventually get, catastrophic
 data loss, without being aware of the loss for an arbitrarily long period of
 time. Even with a source code control system this would be an intolerable
 situation.
+.. @+node:ekr.20110531155858.20559: *4* How does EKR (Leo's developer) use Leo?
+.. _`This FAQ entry`: http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
+.. _`about clones and views`: http://webpages.charter.net/edreamleo/intro.html#clones-views
+
+Here is the workflow I use to develop Leo. The intention is to help
+present and potential developers use Leo effectively.
+
+Overview
+========
+
+- Develop in an outline containing all of Leo's source files. Close this outline
+  rarely: this keeps the code I am using stable while I'm hacking the code.
+
+- Test in a *separate* .leo file, say test.leo. In fact, I often test in a
+  private file, ekr.leo, so that test.leo doesn't get continually updated on bzr
+  with trivial changes.
+
+These two points are covered in a bit more detail in `This FAQ entry`_.
+
+Additional tips
+===============
+
+A. Avoid using the mouse whenever possible. For example, use alt-tab to switch
+between windows.
+
+B. Always develop Leo in a console. This allows you to see the output of g.trace.
+
+Speaking of g.trace, I hardly ever use 'print' because g.trace prints the name
+of the function or method in which it appears. The typical pattern for enabling
+traces is::
+
+    trace = True and not g.unitTesting
+    if trace: g.trace(whatever)
+
+This pattern is especially useful when a method contains multiple calls to
+g.trace.
+
+C. I use scripts to open particular Leo files. These are batch files on Windows,
+   and aliases on Linux, but invoking them is the same on either platform::
+
+    all:     opens all my main development files using the qt-tabs gui.
+    t:       opens test.leo.
+    e:       opens ekr.leo.  I use this file for private testing.
+    d:       opens LeoDocs.leo.
+    s:       opens LeoPy.leo.
+    plugins: opens leoPlugins.leo.
+    gui:     opens leoGui.leo.
+    u:       opens unitTest.leo.
+
+  These run Leo with Python 3.x. There are similar scripts, ending in 2, that run
+  Leo with Python 2.x. For example, u2 opens unitTest.leo with Python 2.x.
+  Thus, to run a test, I alt-tab to an available console window, then type 'e' or
+  't' or 'u' or, if I want Python 2.x, 'e2' or 't2' or 'u2'.
+
+D. Use clones to focus attention on the task at hand.
+   For more details, see `about clones and views`_.
+
+E. For thousand of example of my programming style, see leoPy.leo and
+   leoGuiPlugins.leo. The projects section in leoPy.leo contains many examples
+   of using clones to create view nodes. I typically delete the clones in the
+   views shortly before a release.
+
+Writing documentation
+=====================
+
+- Use postings as pre-writing for documentation.
+
+  I don't mind blabbing on and on about Leo because all my posts become
+  pre-writing for Leo's documentation. I simply copy posts to nodes in the
+  "documentation to-do" section. At release time, I edit these nodes and put
+  them in Leo's main documentation or the release notes. This posting is an
+  example.
+  
+- Use the vr command to debug reStructuredText documentation. The viewrendered
+   pane updates as you type. This makes Leo a killer app for rST.
+   
+Administrative tips
+===================
+
+- Never rely on memory.
+
+   A project like this contains thousands and thousands of details. Everything
+   eventually goes into a Leo node somewhere. If it doesn't it surely *will* be
+   forgotten.
+
+- Do easy items first.
+   
+   This keeps to-do lists short, which keeps energy high.
+
+Tips for using bzr
+==================
+
+I use the following batch files related to bzr::
+
+    b:      short for bzr
+    b c:    short for bzr commit
+    bs:     short for bzr status
+    tr:     short for cd <path to trunk>
+    main:   short for cd <path to copy of trunk>
+
+The "main" (copy) of the trunk is purely for handling bzr conflicts.
+If one happens I do this::
+
+    main
+    b pull
+    b merge ../trunk
+    b c -m "my commit message"
+    b push
+
+If the merge goes well (it usually does), I do this to resolve the conflict::
+
+    tr
+    b pull
 .. @+node:ekr.20101025080245.6084: *3* Leo in Shared environments
 .. @+node:ekr.20050830115714.12: *4* How should I use Leo with bzr/git/hg/svn/cvs?
 Using @file trees can eliminate most problems with using Leo in cooperative
@@ -568,6 +681,25 @@ using the node in leoSettings.leo called::
     @data qt-gui-plugin-style-sheet
 
 As usual, you will probably want to put this node in your myLeoSettings.leo file.
+.. @+node:ekr.20110531155858.20564: *4* How do I set selection colors?
+You set selection colors in the following settings node::
+
+    @data qt-gui-plugin-style-sheet
+    
+.. @+node:ekr.20110531155858.20565: *5* Response
+@nocolor-node
+
+After further reflection, there does not seem to be much that can be done.
+
+Suppose, for example, that Leo converts an @setting node to a mini
+stylesheet.  (In fact, Leo sometimes does do this, in other contexts.)
+ We now have a conundrum: which should take precedence: the @data
+qt-gui-plugin-style-sheet setting or the @color
+body_text_selection_foreground_color setting?
+
+Rather than open that can of worms, the best solution seems to be to
+declare that yes, some settings *are* gui dependent.  Use @data
+qt-gui-plugin-style-sheet to set those settings.
 .. @+node:ekr.20050830115714.118: *3* Tips and techniques
 .. @+node:ekr.20080527063511.1: *4* What is an easy way to profile code?
 I had a need to figure out why a part of some python code I had written
