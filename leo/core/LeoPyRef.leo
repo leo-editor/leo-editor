@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
 <?xml-stylesheet ekr_test?>
-<leo_file>
+<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
 	<global_window_position top="50" left="50" height="500" width="700"/>
@@ -92,11 +93,11 @@
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
 </v>
 <v t="ekr.20090802181029.5989"><vh>Startup &amp; external files</vh>
+<v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
 <v t="ekr.20100120092047.6087"><vh>@file ../external/ipy_leo.py</vh></v>
 <v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
-<v t="ekr.20031218072017.2605"><vh>@file runLeo.py </vh></v>
-<v t="ekr.20110310091639.14254"
-expanded="ekr.20110310091639.14295,ekr.20110310091639.14294,"><vh>@file ../external/codewise.py</vh></v>
+<v t="ekr.20031218072017.2605"
+expanded="ekr.20090519143741.5915,"><vh>@file runLeo.py </vh></v>
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
@@ -109,8 +110,7 @@ expanded="ekr.20110310091639.14295,ekr.20110310091639.14294,"><vh>@file ../exter
 <v t="ekr.20041117062700"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@file leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31342e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31332e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
@@ -124,6 +124,7 @@ expanded="ekr.20110310091639.14295,ekr.20110310091639.14294,"><vh>@file ../exter
 <v t="ekr.20031218072017.3625"><vh>Gui Base classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
 <v t="ekr.20031218072017.3630"><vh>@file leoCompare.py</vh></v>
+<v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
 <v t="ekr.20031218072017.3655"><vh>@file leoFrame.py</vh></v>
 <v t="ekr.20031218072017.3719"><vh>@file leoGui.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
@@ -178,44 +179,77 @@ c.frame.tree            The tree pane.
 </t>
 <t tx="ekr.20050721093241">@nocolor
 
-The following are notes for anyone who is interested in writing alternate gui's for Leo.
+The following are notes for anyone who is interested in writing
+alternate gui's for Leo.
 
 Rule 1: Leo's core is (or should be) free of gui-specific code.
 
-Core code calls 'gui wrapper methods' defined by gui-specific classes.  The base classes for these gui-specific classes are in the node Code--&gt;Gui Base classes.
+Core code calls 'gui wrapper methods' defined by gui-specific classes.
+The base classes for these gui-specific classes are in the node
+Code--&gt;Gui Base classes.
 
-Rule 2: Gui-specific code should be localized.  
+Rule 2: Gui-specific code should be localized.
 
-The @file nodes contained in the node 'Code--&gt;Gui Tkinter classes' in leoPy.leo contain all of Leo's Tkinter-specific code.  Gui plugins would typically put all similar code in a single file.
+The @file nodes contained in the node 'Code--&gt;Gui Tkinter classes' in
+leoPy.leo contain all of Leo's Tkinter-specific code. Gui plugins
+would typically put all similar code in a single file.
 
 Rule 3: Gui-specific code can call gui methods directly.
 
 There are no restrictions about the code in the gui-specific classes.
 
-Rule 4:  Gui-specific classes must implement the 'gui wrapper methods' specified in the gui base classes.
+Rule 4: Gui-specific classes must implement the 'gui wrapper methods'
+specified in the gui base classes.
 
-This is the way that gui-specific classes provide gui-specific services to Leo's core.
+This is the way that gui-specific classes provide gui-specific
+services to Leo's core.
 
-The alternative would be to implement all gui-specific commands directly in the gui-specific code.  But this would be much more work than needed.  For example, only a few gui-specific wrappers are needed to implement all commands that deal with body text.  Implementing each of these commands 'from scratch' would duplicate a lot of code unnecessarily.
+The alternative would be to implement all gui-specific commands
+directly in the gui-specific code.  But this would be much more work
+than needed.  For example, only a few gui-specific wrappers are needed
+to implement all commands that deal with body text.  Implementing each
+of these commands 'from scratch' would duplicate a lot of code
+unnecessarily. 
 
 Using the gui wrapper methods is a bit messy for two reasons:
 
-1.  It requires defining enough wrappers (both in the base gui classes and subclasses) so that all gui-specific services needed by Leo's core are available.   Adding a wrapper to a gui base class involves adding it to all gui-specific subclasses.  It's easy to forget to add a wrapper.  The gui base class defines all wrappers as a function that just calls oops().  This prints a warning that the wrapper should be defined in a subclass.
+1. It requires defining enough wrappers (both in the base gui classes
+   and subclasses) so that all gui-specific services needed by Leo's
+   core are available.  Adding a wrapper to a gui base class involves
+   adding it to all gui-specific subclasses.  It's easy to forget to
+   add a wrapper.  The gui base class defines all wrappers as a
+   function that just calls oops().  This prints a warning that the
+   wrapper should be defined in a subclass. 
 
-2. The original wrappers assumed Tkinter-like indices.  Wrappers that were defined later assume Python indices (see Rule 5 below).   The newer style wrappers that use Python indices have 'Python' in their name.   Having two sets of wrappers is one of the ugliest features of the present code.  I find it hard to remember which wrappers exist and what exactly they do :-)
+2. The original wrappers assumed Tkinter-like indices.  Wrappers that
+   were defined later assume Python indices (see Rule 5 below).  The
+   newer style wrappers that use Python indices have 'Python' in their
+   name.  Having two sets of wrappers is one of the ugliest features
+   of the present code.  I find it hard to remember which wrappers
+   exist and what exactly they do :-)
 
-Rule 5:  Leo's core should use Python indices, not gui-specific indices.
+Rule 5: Leo's core should use Python indices, not gui-specific
+indices.
 
 Leo's core mostly follows this rule: there may be a few exceptions.
 
-A Python index is an int that runs from 0 (beginning of text) to len(s) (end of text s).  That is, there are exactly len(s) + 1 valid indices.  In contrast, Tkinter indices run from "1.0" to "x.y" where text s has x lines and where the length of the last line is y-1. 
+A Python index is an int that runs from 0 (beginning of text) to
+len(s) (end of text s).  That is, there are exactly len(s) + 1 valid
+indices.  In contrast, Tkinter indices run from "1.0" to "x.y" where
+text s has x lines and where the length of the last line is y-1. 
 
-Two (recently written) functions in leoGlobals.py support conversions from Python indices to the row/column indices used by Tkinter.
+Two (recently written) functions in leoGlobals.py support conversions
+from Python indices to the row/column indices used by Tkinter.
 
-- g.convertPythonIndexToRowCol converts a Python index to a row/column index used by Tkinter.
+- g.convertPythonIndexToRowCol converts a Python index to a row/column
+  index used by Tkinter.
+  
 - g.convertRowColToPythonIndex does the reverse.
 
-Important:  the first Tkinter index is '1.0', not '0.0', but the row returned by g.convertPythonIndexToRowCol is zero based, so the code that actually creates Tkinter indices from row/col must add 1 to the row.  Similar remarks apply when going in the reverse direction.
+Important: the first Tkinter index is '1.0', not '0.0', but the row
+returned by g.convertPythonIndexToRowCol is zero based, so the code
+that actually creates Tkinter indices from row/col must add 1 to the
+row.  Similar remarks apply when going in the reverse direction. 
 </t>
 <t tx="ekr.20051031040240"></t>
 <t tx="ekr.20060531093331">@
