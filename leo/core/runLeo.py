@@ -376,7 +376,7 @@ def scanOptions():
         if gui == 'qttabs':
             gui = g.app.guiArgName = 'qt'
             g.app.qt_use_tabs = True
-        elif gui in ('curses','qt','null'): # 'wx','tk',
+        elif gui in ('curses','qt','null'):
             g.app.guiArgName = gui
             g.app.qt_use_tabs = False
         else:

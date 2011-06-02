@@ -463,6 +463,7 @@ class baseTextWidget:
 
         w = self
 
+        ### Huh?
         # Translate tk colors to wx colors.
         d = { 'lightgrey': 'light grey', 'lightblue': 'leo blue',}
 
@@ -484,6 +485,7 @@ class baseTextWidget:
 
         w = self
 
+        ### Huh?
         # Translate tk colors to wx colors.
         d = { 'lightgrey': 'light grey', 'lightblue': 'leo blue',}
 
@@ -1720,7 +1722,7 @@ class leoFrame:
             while s and s [ -1] in ('\n','\r'):
                 s = s [: -1]
 
-        try:
+        if 1: # Was a try.
             # Update the widget.
             if i != j:
                 w.delete(i,j)
@@ -1740,8 +1742,6 @@ class leoFrame:
                     width = f.tree.headWidth(p=None,s=s)
                     w.setWidth(width)
             else: pass
-        except Exception:
-            pass # Tk sometimes throws weird exceptions here.
 
         return 'break' # Essential
 
@@ -2085,8 +2085,8 @@ class leoTree:
         self.c = frame.c
 
         self.edit_text_dict = {}
-            # New in 3.12: keys vnodes, values are edit_widget (Tk.Text widgets)
-            # New in 4.2: keys are vnodes, values are pairs (p,Tk.Text).
+            # New in 3.12: keys vnodes, values are edit_widgets.
+            # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
 
         # Debugging.
         self.redrawCount = 0

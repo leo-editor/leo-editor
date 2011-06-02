@@ -56,7 +56,7 @@ class leoMenu:
     #@+node:ekr.20031218072017.3777: *4* updateAllMenus
     def updateAllMenus (self):
 
-        """The Tk "postcommand" callback called when a click happens in any menu.
+        """A callback called when a click happens in any menu.
 
         Updates (enables or disables) all menu items."""
 
