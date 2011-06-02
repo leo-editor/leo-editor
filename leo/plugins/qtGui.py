@@ -404,7 +404,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 # Call the base class method.
                 if len(args) == 1:
                     event = args[0]
-                    QtGui.QTextBrowser.mouseReleaseEvent(widget,event)
+                    QtGui.QTextBrowser.mouseReleaseEvent(widget,event) # widget is unbound.
                 elif len(args) == 2:
                     event = args[1]
                     QtGui.QTextBrowser.mouseReleaseEvent(*args)
@@ -1974,24 +1974,35 @@ class leoQtMinibuffer (leoQLineEditWidget):
         # Monkey-patch the event handlers
         #@+<< define mouseReleaseEvent >>
         #@+node:ekr.20110527140605.18359: *4* << define mouseReleaseEvent >> (leoQtMinibuffer)
-        def mouseReleaseEvent (event,c=c,w=w):
+        def mouseReleaseEvent (*args,**keys): ### event,c=c,w=w):
             
             '''Override QLineEdit.mouseReleaseEvent.
             
             Simulate alt-x if we are not in an input state.'''
-
+            
+            # Important: c and w must be unbound here.
             k = c.k
-            QtGui.QLineEdit.mouseReleaseEvent(w,event)
-                # Call the base class method.
+            
+            # g.trace(args,keys)
+            
+            # Call the base class method.
+            if len(args) == 1:
+                event = args[0]
+                QtGui.QLineEdit.mouseReleaseEvent(w,event)
+                
+            elif len(args) == 2:
+                event = args[1]
+                #QtGui.QTextBrowser.mouseReleaseEvent(*args)
+                QtGui.QLineEdit.mouseReleaseEvent(*args)
+            else:
+                g.trace('can not happen')
+                return
 
             # g.trace('state',k.state.kind,k.state.n)
-
             if not k.state.kind:
                 event2 = leoKeyEvent(event=None,
                     c=c,w=c.frame.body.bodyCtrl,ch='',tkKey='',stroke='')
                 k.fullCommand(event2)
-            
-            
         #@-<< define mouseReleaseEvent >>
         w.mouseReleaseEvent = mouseReleaseEvent
 
