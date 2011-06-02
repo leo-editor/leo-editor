@@ -82,24 +82,26 @@ def getPluginsTable ():
     )
 #@+node:ekr.20100221142603.5643: ** getTkPass
 def getTkPass():
+    
+    return []
 
-    return (
-        'EditAttributes','Library',
-        'URLloader','UniversalScrolling','UASearch',
-        'autotrees','chapter_hoist','cleo','dump_globals',
-        'expfolder','geotag','graphed','groupOperations',
-        'hoist','import_cisco_config',
-        'keybindings','leoupdate',
-        'maximizeNewWindows', 'mnplugins','mod_labels',
-        'mod_read_dir_outline','mod_tempfname','multifile',
-        'newButtons','nodeActions','nodenavigator',
-        'open_with','pie_menus','pluginsTest',
-        'read_only_nodes','rClick',
-        'scheduler','searchbar','searchbox','shortcut_button',
-        'script_io_to_body',
-        'templates','textnode','tkGui','toolbar',
-        'xcc_nodes',
-    )
+    # return (
+        # 'EditAttributes','Library',
+        # 'URLloader','UniversalScrolling','UASearch',
+        # 'autotrees','chapter_hoist','cleo','dump_globals',
+        # 'expfolder','geotag','graphed','groupOperations',
+        # 'hoist','import_cisco_config',
+        # 'keybindings','leoupdate',
+        # 'maximizeNewWindows', 'mnplugins','mod_labels',
+        # 'mod_read_dir_outline','mod_tempfname','multifile',
+        # 'newButtons','nodeActions','nodenavigator',
+        # 'open_with','pie_menus','pluginsTest',
+        # 'read_only_nodes','rClick',
+        # 'scheduler','searchbar','searchbox','shortcut_button',
+        # 'script_io_to_body',
+        # 'templates','textnode','tkGui','toolbar',
+        # 'xcc_nodes',
+    # )
 #@+node:ekr.20100221142603.5644: ** run
 # Important: I changed lint.py:Run.__init__ so pylint can handle more than one file.
 # From: sys.exit(self.linter.msg_status)
@@ -159,7 +161,7 @@ guiPluginsTable = (
 
 recentPluginsList = (
     # 'screenshots',
-    # 'tkGui','codewisecompleter',
+    # 'codewisecompleter',
     # 'baseNativeTree','contextmenu',
     # 'mod_scripting','plugins_menu','projectwizard',
     # 'trace_gc_plugin',
@@ -175,7 +177,6 @@ tables_table = (
     # (recentPluginsList,'plugins'),
     (coreList,'core'),
     (guiPluginsTable,'plugins'),
-    # (tkPass,'plugins'),
     # (passList,'plugins'),
     # (externalList,'external'),
     # (pluginsTable,'plugins'),

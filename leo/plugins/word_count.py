@@ -23,7 +23,6 @@ activate the command.
 # 0.92 - Created line count routine
 # 0.91 - Created word count routine
 # 0.90 - Created initial plug-in framework
-# 1.1 - Load this plugin only if the Tkinter is in effect.
 # 1.2: The plugin now is gui independent.
 #@-<< version history >>
 

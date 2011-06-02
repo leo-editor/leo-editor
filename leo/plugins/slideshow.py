@@ -43,7 +43,6 @@ __version__ = '0.4'
 # a) c.currentPosition changes and
 # b) @slideshow nodes inserted or deleted.
 # 0.3 EKR:
-# - Removed Tkinter import.
 # - next-slide and prev-slide now work more intuitively when current position changes.
 # 0.4 EKR: Support @ignore nodes in all commands.
 #@-<< version history >>

@@ -64,11 +64,13 @@ __plugin_priority__
 import leo.core.leoGlobals as g
 
 # **Important**: this plugin is gui-independent.
-if g.app.gui.guiName() == 'tkinter':
-    if g.isPython3:
-        Tk = None
-    else:
-        Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=False)
+
+###
+# if g.app.gui.guiName() == 'tkinter':
+    # if g.isPython3:
+        # Tk = None
+    # else:
+        # Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=False)
 
 if g.isPython3:
     import configparser as ConfigParser
@@ -202,15 +204,16 @@ def init ():
     if not g.app.gui:
         g.app.createDefaultGui()
 
-    if g.app.gui.guiName() not in ("tkinter",'qt'):
+    if g.app.gui.guiName() not in ('qt','qttabs',):
         return False
 
     g.registerHandler("create-optional-menus",createPluginsMenu)
     g.plugin_signon(__name__)
 
-    if g.app.gui.guiName() == 'tkinter':
-        g.app.gui.runPropertiesDialog = runPropertiesDialog
-        g.app.gui.runScrolledMessageDialog = runScrolledMessageDialog
+    ###
+    # if g.app.gui.guiName() == 'tkinter':
+        # g.app.gui.runPropertiesDialog = runPropertiesDialog
+        # g.app.gui.runScrolledMessageDialog = runScrolledMessageDialog
 
     return True
 #@+node:pap.20050305152751: ** class PluginDatabase

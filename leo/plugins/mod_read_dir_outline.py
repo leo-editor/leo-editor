@@ -40,7 +40,6 @@ __version__ = '2.0'
 # 
 #     - Created typical init and onCreate functions.
 #     - Created language global.
-#     - Use g.importExtension to import Tkinter
 #     - Changed true/false to True/False.
 #     - Used g.os_path functions to support Unicode properly.
 #     - Added '@first # -*- coding: utf-8 -*-' to suppress deprecation warning.

@@ -108,12 +108,12 @@ def onIdle (tag,keywords):
         # 2010/11/16: disable autosave unless focus is in the body or Tree.
         w = c.get_focus()
         guiName = g.app.gui.guiName()
-        if guiName == 'qt':
+        if guiName in ('qt','qttabs'):
             bodyWidget = c.frame.body
             treeWidget = c.frame.tree.treeWidget # QtGui.
-        elif guiName == 'tkinter':
-            treeWidget = c.frame.tree.canvas
-            bodyWidget = c.frame.body.bodyCtrl
+        ### elif guiName == 'tkinter':
+            # treeWidget = c.frame.tree.canvas
+            # bodyWidget = c.frame.body.bodyCtrl
         else:
             return # Only Qt and Tk gui's are supported.
         isBody = w == bodyWidget

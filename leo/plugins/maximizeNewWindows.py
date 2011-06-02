@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:Dmitry.20101128013501.1256: * @thin maximizeNewWindows.py
+#@+node:ekr.20040915073259.1: * @file maximizeNewWindows.py
 """Maximizes all new windows."""
 
 #@@language python
@@ -46,9 +46,9 @@ def maximize_window(tag, keywords):
 
     if c and c.exists and c.frame and not c.frame.isNullFrame:
         gui = g.app.gui.guiName()
-        if gui == 'qt':
+        if gui in ('qt','qttabs'):
             c.frame.top.showMaximized()
-        elif gui == 'tkinter':
-            c.frame.resizeToScreen()
+        # elif gui == 'tkinter':
+            # c.frame.resizeToScreen()
 #@-others
 #@-leo

@@ -159,13 +159,14 @@ def init ():
     if g.app.gui is None:
         # g.app.createTkGui(__file__)
         g.app.createQtGui(__file__)
-    else:
-        if g.app.gui.guiName() == 'tkinter':
-            global Pmw
-            Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True)
+    ###
+    # else:
+        # if g.app.gui.guiName() == 'tkinter':
+            # global Pmw
+            # Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True)
 
     # This plugin is now gui-independent.            
-    ok = g.app.gui and g.app.gui.guiName() in ('qt','tkinter','wxPython','nullGui')
+    ok = g.app.gui and g.app.gui.guiName() in ('qt','qttabs','nullGui')
 
     if ok:
         sc = 'ScriptingControllerClass'
@@ -674,10 +675,11 @@ class scriptingController:
 
         'Create a balloon for a widget.'
 
-        if self.gui.guiName() == 'tkinter':
-            balloon = Pmw.Balloon(w,initwait=100)
-            if w and balloon:
-                balloon.bind(w,label)
+        ### 
+        # if self.gui.guiName() == 'tkinter':
+            # balloon = Pmw.Balloon(w,initwait=100)
+            # if w and balloon:
+                # balloon.bind(w,label)
     #@+node:ekr.20060328125248.17: *4* createIconButton
     def createIconButton (self,text,command,shortcut,statusLine,bg):
 
@@ -717,9 +719,10 @@ class scriptingController:
         def deleteButtonCallback(event=None,self=self,b=b):
             self.deleteButton(b, event=event)
 
-        if self.gui.guiName() == 'tkinter':
-            # Bind right-clicks to deleteButton.
-            c.bind(b,'<3>',deleteButtonCallback)
+        ###
+        # if self.gui.guiName() == 'tkinter':
+            # # Bind right-clicks to deleteButton.
+            # c.bind(b,'<3>',deleteButtonCallback)
 
         # Register the delete-x-button command.
         deleteCommandName= 'delete-%s-button' % commandName

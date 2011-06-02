@@ -38,7 +38,6 @@ __version__ = '0.9'
 # v 0.4 EKR:
 # - Disable the command lockout logic for the start-ipython command.
 # - (In leoSettings.leo): add shortcuts for ipython commands.
-# - The init top-level function now requires the tkinter gui.
 # 
 # v 0.5 VMV & EKR:  Added leoInterfaceResults.__getattr__.
 # 

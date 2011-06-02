@@ -81,7 +81,6 @@ __version__ = '0.6'
 # 
 # 0.4 EKR:
 #     - Added init function.
-#     - Use g.importExtension to import Tkinter.
 # 0.5 EKR:
 #     - Remove 'start2' hook & haveseen dict.
 #     - Use keywords.get('c') instead of g.top().

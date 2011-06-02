@@ -515,7 +515,7 @@ class atFile:
         elif fromString: # 2010/09/02.
             pass
         else:
-            g.trace('No inputFile')
+            if trace: g.trace('No inputFile')
             return False
 
         # Get the file from the cache if possible.
