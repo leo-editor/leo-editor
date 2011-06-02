@@ -1039,7 +1039,6 @@ class keyHandlerClass:
     def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
 
         '''Create a key handler for c.
-        c.frame.miniBufferWidget is a Tk.Label.
 
         useGlobalRegisters and useGlobalKillbuffer indicate whether to use
         global (class vars) or per-instance (ivars) for kill buffers and registers.'''
@@ -1300,7 +1299,7 @@ class keyHandlerClass:
 
     #@+at
     # The following are not translated, so what appears in the menu is the
-    # same as what is passed to Tk. Case is significant. Note: the Tk
+    # same as what is passed to the gui. Case is significant. Note: the Tk
     # documentation states that not all of these may be available on all
     # platforms.
     # 
@@ -2118,22 +2117,20 @@ class keyHandlerClass:
                 c.onCanvasKey(event) # New in Leo 4.4.2
             return 'break'
         elif name.startswith('log'):
-            if g.app.gui.guiName() == 'tkinter':
-                return None
-            else:
-                i = w.logCtrl.getInsertPoint()
-                if not stroke:
-                    stroke = event.stroke # 2010/05/04.
-                if stroke.lower() == 'return': stroke = '\n'
-                elif stroke.lower() == 'tab': stroke = '\t'
-                elif stroke.lower() == 'backspace': stroke = '\b'
-                elif stroke.lower() == 'period': stroke = '.'
-                w.logCtrl.insert(i,stroke)
-
-                return None
+            ### if g.app.gui.guiName() == 'tkinter':
+                # return None
+            # else:
+            i = w.logCtrl.getInsertPoint()
+            if not stroke:
+                stroke = event.stroke # 2010/05/04.
+            if stroke.lower() == 'return': stroke = '\n'
+            elif stroke.lower() == 'tab': stroke = '\t'
+            elif stroke.lower() == 'backspace': stroke = '\b'
+            elif stroke.lower() == 'period': stroke = '.'
+            w.logCtrl.insert(i,stroke)
+            return None
         else:
             # Let the widget handle the event.
-            # ch = event and event.char ; g.trace('to tk:',name,repr(stroke))
             return None
     #@+node:ekr.20061031131434.111: *4* fullCommand (alt-x) & helper
     def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpHandler=None):

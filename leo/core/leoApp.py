@@ -389,25 +389,25 @@ class LeoApp:
 
         if argName == 'qt':
             app.createQtGui(fileName,verbose=verbose)
-            if not app.gui:
-                print('Can not create Qt gui: trying Tk gui')
-                argName = app.guiArgName = 'tk'
-                g.app.qt_use_tabs = False
-                app.createTkGui(fileName,verbose=verbose)
-        elif argName == 'tk':
-            app.createTkGui(fileName,verbose=verbose)
-            if not app.gui:
-                print('Can not create Tk gui: trying Qt gui')
-                argName = app.guiArgName = 'qt'
-                g.app.qt_use_tabs = False
-                app.createQtGui(fileName,verbose=verbose)
+            # if not app.gui:
+                # print('Can not create Qt gui: trying Tk gui')
+                # argName = app.guiArgName = 'tk'
+                # g.app.qt_use_tabs = False
+                # app.createTkGui(fileName,verbose=verbose)
+        # elif argName == 'tk':
+            # app.createTkGui(fileName,verbose=verbose)
+            # if not app.gui:
+                # print('Can not create Tk gui: trying Qt gui')
+                # argName = app.guiArgName = 'qt'
+                # g.app.qt_use_tabs = False
+                # app.createQtGui(fileName,verbose=verbose)
         elif argName == 'null':
             app.createNullGui()
         elif argName == 'curses':
             app.createCursesGui()
 
         if not app.gui:
-            print('Leo requires either Tk or Qt to be installed.')
+            print('Leo requires Qt to be installed.')
     #@+node:ekr.20090202191501.5: *3* app.createNullGui
     def createNullGui (self):
 
@@ -458,28 +458,6 @@ class LeoApp:
             qtGui.init()
             if app.gui and fileName and verbose:
                 print('qtGui created in %s' % fileName)
-    #@+node:ekr.20031218072017.2610: *3* app.createTkGui
-    def createTkGui (self,fileName='',verbose=False):
-
-        """A convenience routines for plugins to 
-        create the default Tk gui class."""
-
-        app = self
-
-        try:
-            import tkinter as Tk
-        except ImportError:
-            try:
-                import Tkinter as Tk
-            except ImportError:
-                Tk = None
-
-        Pmw = g.importExtension('Pmw',pluginName='startup',verbose=False)
-
-        if Tk and Pmw:
-            app.pluginsController.loadOnePlugin('leo.plugins.tkGui',verbose=verbose)
-            if app.gui and fileName and verbose:
-                print('tkGui created in %s' % fileName)
     #@+node:ekr.20090126063121.3: *3* app.createWxGui
     def createWxGui (self,fileName='',verbose=False):
 
@@ -577,10 +555,6 @@ class LeoApp:
             # even after the following code.
 
         if g.app.afterHandler:
-            # TK bug: This appears to have no effect, at least on Windows.
-            # print("finishQuit: cancelling",g.app.afterHandler)
-            if g.app.gui and g.app.gui.guiName() == "tkinter":
-                self.root.after_cancel(g.app.afterHandler)
             g.app.afterHandler = None
     #@+node:ekr.20031218072017.2616: ** app.forceShutdown
     def forceShutdown (self):
@@ -742,7 +716,7 @@ class LeoApp:
         #@+node:ekr.20031218072017.1981: *3* << put up a dialog requiring a valid id >>
         # New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
         if g.app.gui is None:
-            # # Create the Qt gui if it exists, otherwise the Tk gui.
+            # Create the Qt gui if it exists.
             g.app.createDefaultGui(fileName='g.app.setLeoId',verbose=True)
 
         if g.app.gui is None: # Neither gui could be created: this should never happen.

@@ -122,27 +122,6 @@ if not enableDB:
     print('** leoGlobals.py: caching disabled')
 
 #@+others
-#@+node:ekr.20050328133058: ** g.createStandAloneTkApp
-# This must be defined in leoGlobals: g.app.gui doesn't exist yet.
-
-def createStandAloneTkApp(pluginName=''):
-
-    '''Create a Tk version of the g.app object for 'stand-alone' plugins.'''
-
-    if not g.app:
-        # Important: these references do not make Leo's core gui-dependent.
-        # In other words, this function is called only when Tkinter should be the gui.
-        import Tkinter as Tk
-        Pmw = g.importExtension('Pmw',pluginName=pluginName,verbose=True)
-        if Tk and Pmw:
-            import leo.core.leoApp as leoApp
-            import leo.core.leoGui as leoGui
-            g.app = leoApp.LeoApp()
-            g.app.root = Tk.Tk()
-            Pmw.initialise(g.app.root)
-            g.app.gui = leoGui.nullGui('<stand-alone app gui>')
-            g.computeStandardDirectories()
-    return g.app
 #@+node:ekr.20031218072017.3095: ** Checking Leo Files...
 #@+node:ekr.20031218072017.822: *3* createTopologyList
 def createTopologyList (c,root=None,useHeadlines=False):
@@ -5388,12 +5367,6 @@ def getLine (s,i):
     # g.trace('i,j,k',i,j,k,repr(s[j:k]))
     return j,k
 #@+node:ekr.20041219095213: *3* import wrappers
-#@+at
-# 1/6/05: The problem with Tkinter is that imp.load_module is equivalent
-# to reload.
-# 
-# The solutions is easy: simply return sys.modules.get(moduleName) if
-# moduleName is in sys.modules!
 #@+node:ekr.20040917061619: *4* g.cantImport
 def cantImport (moduleName,pluginName=None,verbose=True):
 
@@ -5407,8 +5380,8 @@ def cantImport (moduleName,pluginName=None,verbose=True):
     elif g.unitTesting:
         # print s
         return
-    elif g.app.gui.guiName() == 'tkinter' and moduleName in ('Tkinter','Pmw'):
-        return
+    # elif g.app.gui.guiName() == 'tkinter' and moduleName in ('Tkinter','Pmw'):
+        # return
     else:
         g.es_print('',s,color="blue")
 
@@ -5488,125 +5461,6 @@ def importExtension (moduleName,pluginName=None,verbose=False,required=False):
         g.pr("Warning: plugin '%s' failed to import '%s'" % (pluginName, moduleName))
 
     return module
-#@+node:ekr.20060329083657: *5* cantImportDialog & helpers
-def cantImportDialog (pluginName,moduleName):
-
-    '''Attempt to show a Tk dialog if an import fails.
-    Yes, this is a small Tk dependency, but it can't be helped.'''
-
-    message = '''
-%s requires the %s module.
-Official distributions contain this module in Leo's extensions folder,
-but this module may be missing if you get Leo from cvs.
-''' % (pluginName,moduleName)
-
-    if g.app.killed:
-        return
-
-    if g.app.unitTesting:
-        g.pr('g.importExtension: can not import %s' % moduleName)
-        return
-
-    # Requires minimal further imports.
-    try:
-        import Tkinter as Tk
-        root = g.app.root or Tk.Tk()
-        title = 'Can not import %s' % moduleName
-        top = createDialogFrame(Tk,root,title,message)
-        root.wait_window(top)
-    except ImportError:
-        g.pr('Can not import %s' % moduleName)
-        g.pr('Can not import Tkinter')
-        g.pr('Leo must now exit')
-        g.pr(g.callers())
-#@+node:ekr.20060329083310.1: *6* createDialogFrame
-def createDialogFrame(Tk,root,title,message):
-
-    """Create the Tk.Toplevel widget for a leoTkinterDialog."""
-
-    top = Tk.Toplevel(root)
-    top.title(title)
-
-    def onKey(event,top=top):
-        if event.char.lower() in ('\n','\r'):
-            top.destroy()
-    top.bind("<Key>",onKey)
-
-    f = Tk.Frame(top)
-    f.pack(side="top",expand=1,fill="both")
-
-    label = Tk.Label(f,text=message)
-    label.pack(pady=10)
-
-    def okButton(top=top):
-        top.destroy()
-
-    buttons = {"text":'OK',"command":okButton,"default":True}, # Singleton tuple.
-    createDialogButtons(Tk,top,buttons)
-
-    center(top)
-    top.lift()
-    top.focus_force()
-
-    if not g.app.unitTesting: # Attach the icon at idle time.
-        def attachIconCallback(top=top):
-            g.app.gui.attachLeoIcon(top)
-        top.after_idle(attachIconCallback)
-
-    return top
-#@+node:ekr.20060329083310.2: *6* createDialogButtons
-def createDialogButtons (Tk,top,buttons):
-
-    """Create a row of buttons.
-
-    buttons is a list of dictionaries containing the properties of each button."""
-
-    f = Tk.Frame(top)
-    f.pack(side="top",padx=30)
-
-    for d in buttons:
-        text = d.get("text","<missing button name>")
-        isDefault = d.get("default",False)
-        underline = d.get("underline",0)
-        command = d.get("command",None)
-        bd = g.choose(isDefault,4,2)
-
-        b = Tk.Button(f,width=6,text=text,bd=bd,underline=underline,command=command)
-        b.pack(side="left",padx=5,pady=10)
-#@+node:ekr.20060329085417.1: *6* center
-def center(top):
-
-    """Center the dialog on the screen.
-
-    WARNING: Call this routine _after_ creating a dialog.
-    (This routine inhibits the grid and pack geometry managers.)"""
-
-    sw = top.winfo_screenwidth()
-    sh = top.winfo_screenheight()
-    w,h,x,y = g.get_window_info(top)
-
-    # Set the new window coordinates, leaving w and h unchanged.
-    x = (sw - w)/2
-    y = (sh - h)/2
-    top.geometry("%dx%d%+d%+d" % (w,h,x,y))
-
-    return w,h,x,y
-#@+node:ekr.20060329085612: *6* get_window_info
-# WARNING: Call this routine _after_ creating a dialog.
-# (This routine inhibits the grid and pack geometry managers.)
-
-def get_window_info (top):
-
-    # This is an emergency measure: this call is NOT a major Tk-dependency.
-    top.update_idletasks() # Required to get proper info.
-
-    # Get the information about top and the screen.
-    geom = top.geometry() # geom = "WidthxHeight+XOffset+YOffset"
-    dim,x,y = geom.split('+')
-    w,h = dim.split('x')
-    w,h,x,y = int(w),int(h),int(x),int(y)
-
-    return w,h,x,y
 #@+node:ekr.20031218072017.2278: *4* g.importFromPath
 def importFromPath (name,path,pluginName=None,verbose=False):
 

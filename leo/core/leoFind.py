@@ -1674,34 +1674,6 @@ class nullFindTab (findTab):
     def createButtons (self):
 
         '''Create two columns of buttons.'''
-
-        # # Create the alignment panes.
-        # buttons  = Tk.Frame(outer,background=bg)
-        # buttons1 = Tk.Frame(buttons,bd=1,background=bg)
-        # buttons2 = Tk.Frame(buttons,bd=1,background=bg)
-        # buttons.pack(side='top',expand=1)
-        # buttons1.pack(side='left')
-        # buttons2.pack(side='right')
-
-        # width = 15 ; defaultText = 'Find' ; buttons = []
-
-        # for text,boxKind,frame,callback in (
-            # # Column 1...
-            # ('Find','button',buttons1,self.findButtonCallback),
-            # ('Find All','button',buttons1,self.findAllButton),
-            # # Column 2...
-            # ('Change','button',buttons2,self.changeButton),
-            # ('Change, Then Find','button',buttons2,self.changeThenFindButton),
-            # ('Change All','button',buttons2,self.changeAllButton),
-        # ):
-            # w = underlinedTkButton(boxKind,frame,
-                # text=text,command=callback)
-            # buttons.append(w)
-            # if text == defaultText:
-                # w.button.configure(width=width-1,bd=4)
-            # elif boxKind != 'check':
-                # w.button.configure(width=width)
-            # w.button.pack(side='top',anchor='w',pady=2,padx=2)
     #@+node:ekr.20070302090616.8: *3* class svar (nullFindTab)
     class svar:
         '''A class like Tk's IntVar and StringVar classes.'''

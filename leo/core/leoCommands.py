@@ -4088,7 +4088,6 @@ class Commands (object):
         Remove any tnodeLists."""
 
         c = self ; count = 1 ; errors = 0
-        isTkinter = g.app.gui and g.app.gui.guiName() == "tkinter"
 
         if full and not unittest:
             g.es("all tests enabled: this may take awhile",color="blue")

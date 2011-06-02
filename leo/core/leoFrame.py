@@ -2428,7 +2428,7 @@ class leoTree:
 
         '''Select a node.
         Never redraws outline, but may change coloring of individual headlines.
-        The scroll argument is used by tk to suppress scrolling while dragging.'''
+        The scroll argument is used by the gui to suppress scrolling while dragging.'''
 
         if g.app.killed or self.tree_select_lockout: return None
 
@@ -2503,23 +2503,19 @@ class leoTree:
             frame.setWrap(p)
             self.setBodyTextAfterSelect(p,old_p)
             #@-<< select the new node >>
-            if p and p != old_p: # Suppress duplicate call.
-                try: # may fail during initialization.
-                    # p is NOT c.p here!
-                    if 0: # Interferes with new colorizer.
-                        self.canvas.update_idletasks()
-                        self.scrollTo(p)
-                    if scroll and g.app.gui.guiName() == 'tkinter':
-                        def scrollCallback(self=self,p=p):
-                            self.scrollTo(p)
-                        self.canvas.after(100,scrollCallback)
-                except Exception: pass
-            # 2010/08/01: (qt only) update history when body text gets focus.
-            # This is done in qtGui.py: onFocusIn.
-            # 2011/04/02: Undo the change in rev 3194:
-            # I have absolutely no idea what I was thinking about.
-            if True: # g.app.gui.guiName() != 'qt':
-                c.nodeHistory.update(p) # Remember this position.
+            ### All this code is gone now.
+            # if p and p != old_p: # Suppress duplicate call.
+                # try: # may fail during initialization.
+                    # # p is NOT c.p here!
+                    # if 0: # Interferes with new colorizer.
+                        # self.canvas.update_idletasks()
+                        # self.scrollTo(p)
+                    # ### if scroll and g.app.gui.guiName() == 'tkinter':
+                        # # def scrollCallback(self=self,p=p):
+                            # # self.scrollTo(p)
+                        # # self.canvas.after(100,scrollCallback)
+                # except Exception: pass
+            c.nodeHistory.update(p) # Remember this position.
         c.setCurrentPosition(p)
         #@+<< set the current node >>
         #@+node:ekr.20040803072955.133: *5* << set the current node >>

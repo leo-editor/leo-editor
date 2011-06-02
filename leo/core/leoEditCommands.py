@@ -7629,22 +7629,10 @@ class minibufferFind (baseEditCommandsClass):
 
         c = self.c ; w = event and event.widget
         bodyCtrl = self.c.frame.body and self.c.frame.body.bodyCtrl
-
-        # g.trace('isText',g.app.gui.isTextWidget(w),'w',w,g.app.gui.widget_name(w))
-
-        if g.app.gui.guiName() == 'tkinter':
-
-            # New in Leo 4.5: single-line editing commands apply to minibuffer widget.
-            if w and g.app.gui.isTextWidget(w):
-                self.w = w
-            else:
-                self.w = bodyCtrl
-            if self.w and forceFocus:
-                c.widgetWantsFocusNow(self.w)
-        else:
-            # Do not cache a pointer to a headline!
-            # It will die when the minibuffer is selected.
-            self.w = bodyCtrl
+         
+        # Do not cache a pointer to a headline!
+        # It will die when the minibuffer is selected.
+        self.w = bodyCtrl
 
         return self.w
     #@+node:ekr.20060124140114: *4*  Options (minibufferFind)

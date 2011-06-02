@@ -16,15 +16,16 @@ import os
 import sys
 import traceback
 
-try:
-    import Tkinter ; Tkinter.wantobjects = 0
-        # An ugly hack for Tk/Tkinter 8.5
-        # See http://sourceforge.net/forum/message.php?msg_id=4078577
-except ImportError:
-    try:
-        import tkinter ; tkinter.wantobject = 0
-    except ImportError:
-        pass
+###
+# try:
+    # import Tkinter ; Tkinter.wantobjects = 0
+        # # An ugly hack for Tk/Tkinter 8.5
+        # # See http://sourceforge.net/forum/message.php?msg_id=4078577
+# except ImportError:
+    # try:
+        # import tkinter ; tkinter.wantobject = 0
+    # except ImportError:
+        # pass
 
 path = os.getcwd()
 if path not in sys.path:
@@ -179,8 +180,8 @@ def doPrePluginsInit(fileName,pymacs):
 
     # if no gui specified on command line, and qt not installed
     # set options['gui'] to 'tk' to match reality
-    if g.app.guiArgName == 'tk':
-        options['gui'] = 'tk'
+    ### if g.app.guiArgName == 'tk':
+    ###    options['gui'] = 'tk'
 
     # We can't print the signon until we know the gui.
     g.app.computeSignon() # Set app.signon/signon2 for commanders.
@@ -328,9 +329,9 @@ def scanOptions():
     add('-f', '--file',   dest="fileName",
         help = 'load a file at startup')
     add('--gui',
-        help = 'gui to use (qt/tk/qttabs)')
+        help = 'gui to use (qt/qttabs)')
     add('--minimized',    action="store_true",
-        help = 'start minimized (Qt only)')
+        help = 'start minimized')
     add('--maximized',    action="store_true",
         help = 'start maximized (Qt only)')
     add('--fullscreen',   action="store_true",
@@ -391,7 +392,7 @@ def scanOptions():
         if gui == 'qttabs':
             gui = g.app.guiArgName = 'qt'
             g.app.qt_use_tabs = True
-        elif gui in ('curses','tk','qt','null'): # 'wx',
+        elif gui in ('curses','qt','null'): # 'wx','tk',
             g.app.guiArgName = gui
             g.app.qt_use_tabs = False
         else:
@@ -655,7 +656,7 @@ def make_screen_shot(fn):
     if g.app.gui.guiName() == 'qt':
         m = g.loadOnePlugin('screenshots')
         m.make_screen_shot(fn)
-#@+node:ekr.20031218072017.1936: *3* isValidPython
+#@+node:ekr.20031218072017.1936: *3* isValidPython & emergency (Tk) dialog class
 def isValidPython():
 
     if sys.platform == 'cli':
