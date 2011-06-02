@@ -848,7 +848,7 @@ class leoBody:
             c.frame.body.bodyCtrl = w2
             # g.pr('***',g.app.gui.widget_name(w2),id(w2))
 
-        return 'break'
+        return # (for Tk) 'break'
     #@+node:ekr.20060528113806: *6* deleteEditor
     def deleteEditor (self,event=None):
 
@@ -957,7 +957,7 @@ class leoBody:
 
         if not w.leo_p:
             g.trace('no w.leo_p') 
-            return 'break'
+            return # (for Tk) 'break'
 
         if trace:
             g.trace('==1',id(w),
@@ -975,7 +975,7 @@ class leoBody:
 
         if not self.ensurePositionExists(w):
             g.trace('***** no position editor!')
-            return 'break'
+            return # (for Tk) 'break'
 
         if trace:
             g.trace('==2',id(w),
@@ -1008,7 +1008,7 @@ class leoBody:
                 pass
         #@-<< restore the selection, insertion point and the scrollbar >>
         c.bodyWantsFocus()
-        return 'break'
+        return # (for Tk) 'break'
     #@+node:ekr.20060528131618: *6* updateEditors
     # Called from addEditor and assignPositionToEditor
 
@@ -1743,7 +1743,7 @@ class leoFrame:
                     w.setWidth(width)
             else: pass
 
-        return 'break' # Essential
+        return # (for Tk) 'break' # Essential
 
     OnPasteFromMenu = pasteText
     #@+node:ekr.20061016071937: *5* OnPaste (To support middle-button paste)
@@ -2261,7 +2261,7 @@ class leoTree:
             # g.trace(repr(ch),g.callers())
             self.updateHead(event,w)
 
-        return 'break' # Required
+        return # (for Tk) 'break' # Required
     #@+node:ekr.20051026083544.2: *5* updateHead
     def updateHead (self,event,w):
 
@@ -2397,7 +2397,7 @@ class leoTree:
                 g.handleUrlInUrlNode(url, c=c, p=p)
             g.doHook("@url2",c=c,p=p,v=p)
 
-        return 'break' # 11/19/06
+        return # (for Tk) 'break' # 11/19/06
     #@+node:ekr.20081005065934.8: *3* May be defined in subclasses
     # These are new in Leo 4.6.
 
@@ -2535,7 +2535,7 @@ class leoTree:
         g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
 
-        return 'break' # Supresses unwanted selection.
+        return # (for Tk) 'break' # Supresses unwanted selection.
     #@+node:ekr.20090608081524.6109: *4* setBodyTextAfterSelect
     def setBodyTextAfterSelect (self,p,old_p):
 

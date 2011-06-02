@@ -383,13 +383,13 @@ class Commands (object):
         # The presence of this message disables all commands.
         if c.disableCommandsMessage:
             g.es(c.disableCommandsMessage,color='blue')
-            return 'break' # Inhibit all other handlers.
+            return # (for Tk) 'break' # Inhibit all other handlers.
 
         if c.exists and c.inCommand and not g.unitTesting:
             # g.trace('inCommand',c)
             g.app.commandInterruptFlag = True
             g.es('ignoring command: already executing a command.',color='red')
-            return 'break'
+            return # (for Tk) 'break'
 
         g.app.commandInterruptFlag = False
 
@@ -427,7 +427,7 @@ class Commands (object):
             p = c.p
             g.doHook("command2",c=c,p=p,v=p,label=label)
 
-        return "break" # Inhibit all other handlers.
+        return # (for Tk) "break" # Inhibit all other handlers.
     #@+node:ekr.20110510052422.14618: *3* c.alert
     def alert(self,message):
         
@@ -1095,7 +1095,7 @@ class Commands (object):
             g.es('unexpected exception in c.openWith')
             g.es_exception()
 
-        return 'break'
+        return # (for Tk) 'break'
     #@+node:ekr.20031218072017.2824: *7* c.getOpenWithExt
     def getOpenWithExt (self,p,ext):
 

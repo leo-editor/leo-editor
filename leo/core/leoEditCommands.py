@@ -3188,7 +3188,7 @@ class editCommandsClass (baseEditCommandsClass):
         trace = False and not g.unitTesting # or c.config.getBool('trace_masterCommand')
         verbose = True
         w = self.editWidget(event)
-        if not w: return 'break'
+        if not w: return # (for Tk) 'break'
         #@+<< set local vars >>
         #@+node:ekr.20061103114242: *5* << set local vars >>
         c = self.c
@@ -3211,7 +3211,7 @@ class editCommandsClass (baseEditCommandsClass):
         #@-<< set local vars >>
         if trace: g.trace('ch',repr(ch),'keysym',repr(keysym)) # ,'stroke',repr(stroke))
         if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
-            return "break" # The hook claims to have handled the event.
+            return # (for Tk) "break" # The hook claims to have handled the event.
         if ch == '\t':
             self.updateTab(p,w)
         elif ch == '\b':
@@ -3233,7 +3233,7 @@ class editCommandsClass (baseEditCommandsClass):
             if inBrackets and self.flashMatchingBrackets:
                 self.flashMatchingBracketsHelper(w,i,ch)               
         else:
-            return 'break' # This method *always* returns 'break'
+            return # (for Tk) 'break' # This method *always* returns 'break'
 
         # Set the column for up and down keys.
         spot = w.getInsertPoint()
@@ -3250,7 +3250,7 @@ class editCommandsClass (baseEditCommandsClass):
                 oldSel=oldSel,oldText=oldText,oldYview=None)
 
         g.doHook("bodykey2",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType)
-        return 'break'
+        return # (for Tk) 'break'
     #@+node:ekr.20090213065933.14: *5* doPlainTab
     def doPlainTab(self,s,i,tab_width,w):
 

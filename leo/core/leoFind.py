@@ -1110,7 +1110,7 @@ class leoFind:
         if g.app.gui.isTextWidget(w):
             w.selectAllText()
 
-        return "break"
+        return # (for Tk) "break"
     #@+node:ekr.20031218072017.3082: *3* Initing & finalizing
     #@+node:ekr.20031218072017.3083: *4* checkArgs
     def checkArgs (self):
@@ -1418,7 +1418,7 @@ class findTab (leoFind):
     def findButtonCallback(self,event=None):
 
         self.findButton()
-        return 'break'
+        return # (for Tk) 'break'
     #@+node:ekr.20051020120306.25: *4* hideTab
     def hideTab (self,event=None):
 

@@ -752,7 +752,7 @@ http://python.org/download/
 
                         self.okButton()
 
-                        return "break"
+                        return # (for Tk) "break"
                     #@+node:ekr.20080822065427.16: *5* run
                     def run (self):
 

@@ -145,7 +145,7 @@ class AutoCompleterClass:
         
         if not state in ('insert','overwrite'):
             if trace: g.trace('not in insert/overwrite mode')
-            return 'break'
+            return # (for Tk) 'break'
 
         # First, handle the invocation character as usual.
         if not force:
@@ -156,7 +156,7 @@ class AutoCompleterClass:
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
             if trace: g.trace('not body')
-            return 'break'
+            return # (for Tk) 'break'
 
         self.language = g.scanForAtLanguage(c,c.p)
         if w and self.language == 'python' and (k.enable_autocompleter or force):
@@ -166,7 +166,7 @@ class AutoCompleterClass:
         else:
             if trace: g.trace('not enabled')
 
-        return 'break'
+        return # (for Tk) 'break'
     #@+node:ekr.20061031131434.10: *4* autoCompleteForce
     def autoCompleteForce (self,event=None):
 
@@ -221,7 +221,7 @@ class AutoCompleterClass:
             # Just insert the invocation character as usual.
             k.masterCommand(event,func=None,stroke=None,commandName=None)
 
-        return 'break'
+        return # (for Tk) 'break'
     #@+node:ekr.20061031131434.14: *4* showCalltipsForce
     def showCalltipsForce (self,event=None):
 
@@ -2007,22 +2007,22 @@ class keyHandlerClass:
         # We *must not* interfere with the global state in the macro class.
         if c.macroCommands.recordingMacro:
             c.macroCommands.startKbdMacro(event)
-            return 'break'
+            return # (for Tk) 'break'
 
         # g.trace(stroke,k.abortAllModesKey)
 
         if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
             k.keyboardQuit()
             k.endCommand(commandName)
-            return 'break'
+            return # (for Tk) 'break'
 
         if special: # Don't pass these on.
-            return 'break' 
+            return # (for Tk) 'break' 
 
         if 0: # *** This is now handled by k.masterKeyHandler.
             if k.inState():
                 val = k.callStateFunction(event) # Calls end-command.
-                if val != 'do-func': return 'break'
+                if val != 'do-func': return # (for Tk) 'break'
                 g.trace('Executing key outside of mode')
 
         if k.regx.iter:
@@ -2031,11 +2031,11 @@ class keyHandlerClass:
                 k.regx.iter.next() # EKR: next() may throw StopIteration.
             except StopIteration:
                 pass
-            return 'break'
+            return # (for Tk) 'break'
 
         if k.abbrevOn:
             expanded = c.abbrevCommands.expandAbbrev(event,stroke)
-            if expanded: return 'break'
+            if expanded: return # (for Tk) 'break'
 
         if func: # Func is an argument.
             if commandName == 'propagate-key-event':
@@ -2060,9 +2060,9 @@ class keyHandlerClass:
                 k.endCommand(commandName)
                 c.frame.updateStatusLine()
             if traceGC: g.printNewObjects('masterCom 2')
-            return 'break'
+            return # (for Tk) 'break'
         elif k.inState():
-            return 'break' #Ignore unbound keys in a state.
+            return # (for Tk) 'break' #Ignore unbound keys in a state.
         else:
             if traceGC: g.printNewObjects('masterCom 3')
             val = k.handleDefaultChar(event,stroke)
@@ -2100,7 +2100,7 @@ class keyHandlerClass:
             (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
         ):
             if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
-            return 'break'
+            return # (for Tk) 'break'
 
         if name.startswith('body'):
             action = k.unboundKeyAction
@@ -2108,14 +2108,14 @@ class keyHandlerClass:
                 c.editCommands.selfInsertCommand(event,action=action)
             else: # Ignore the key
                 if trace: g.trace('ignoring',stroke)
-            return 'break'
+            return # (for Tk) 'break'
         elif name.startswith('head'):
             c.frame.tree.onHeadlineKey(event)
-            return 'break'
+            return # (for Tk) 'break'
         elif name.startswith('canvas'):
             if not stroke: # Not exactly right, but it seems to be good enough.
                 c.onCanvasKey(event) # New in Leo 4.4.2
-            return 'break'
+            return # (for Tk) 'break'
         elif name.startswith('log'):
             i = w.logCtrl.getInsertPoint()
             if not stroke:
@@ -2125,10 +2125,10 @@ class keyHandlerClass:
             elif stroke.lower() == 'backspace': stroke = '\b'
             elif stroke.lower() == 'period': stroke = '.'
             w.logCtrl.insert(i,stroke)
-            return None
+            return # None
         else:
             # Let the widget handle the event.
-            return None
+            return # None
     #@+node:ekr.20061031131434.111: *4* fullCommand (alt-x) & helper
     def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpHandler=None):
 
@@ -2188,7 +2188,7 @@ class keyHandlerClass:
             c.minibufferWantsFocus()
             # g.trace('new prefix',k.mb_tabListPrefix)
 
-        return 'break'
+        return # (for Tk) 'break'
     #@+node:ekr.20061031131434.112: *5* callAltXFunction
     def callAltXFunction (self,event):
 
@@ -2296,14 +2296,14 @@ class keyHandlerClass:
             if func:
                 func(event)
 
-        return 'break'
+        return # (for Tk) 'break'
     #@+node:ekr.20061031131434.118: *4* numberCommand
     def numberCommand (self,event,stroke,number):
 
         k = self ; k.stroke = stroke ; w = event.widget
         k.universalDispatcher(event)
         g.app.gui.event_generate(w,'<Key>',keysym=number)
-        return 'break'
+        return # (for Tk) 'break'
 
     def numberCommand0 (self,event):
         '''Execute command number 0.'''
@@ -2474,7 +2474,7 @@ class keyHandlerClass:
             k.setLabelBlue("Redo: %s" % str(k.mb_history[0]))
         else:
             g.es('no previous command',color='blue')
-        return 'break'
+        return # (for Tk) 'break'
 
     def repeatComplexCommandHelper (self,event):
 
@@ -2488,7 +2488,7 @@ class keyHandlerClass:
             k.resetLabel()
             k.clearState() # Bug fix.
             c.commandsDict [last](event)
-            return 'break'
+            return # (for Tk) 'break'
         else:
             # g.trace('oops')
             return k.keyboardQuit()
@@ -2668,7 +2668,7 @@ class keyHandlerClass:
             k.mb_tabList = []
             k.updateLabel(event)
             k.mb_tabListPrefix = k.getLabel()
-        return 'break'
+        return # (for Tk) 'break'
     #@+node:ekr.20061031131434.130: *4* keyboardQuit
     def keyboardQuit (self,event=None,setFocus=True):
 
@@ -2846,11 +2846,9 @@ class keyHandlerClass:
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
             if c.macroCommands.recordingMacro:
                 c.macroCommands.endKbdMacro()
-                return 'break'
+                return # (for Tk) 'break'
             else:
                 return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
-                
-        # if stroke == 'Tab': g.pdb()
 
         if k.inState():
             if trace: g.trace('   state %-10s %s' % (stroke,state))
@@ -3079,11 +3077,11 @@ class keyHandlerClass:
             if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
                 c.onCanvasKey(event)
             if trace: g.trace('ignoring unbound character in command mode',stroke)
-            return 'break'
+            return # (for Tk) 'break'
 
         elif k.isFKey(stroke):
             if trace: g.trace('ignoring F-key',stroke)
-            return 'break'
+            return # (for Tk) 'break'
 
         elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
             # insert/overwrite normal character.  <Return> is *not* a normal character.
@@ -3095,11 +3093,11 @@ class keyHandlerClass:
         ):
             # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
             if trace: g.trace('ignoring unbound Alt/Ctrl key',stroke,keysym)
-            return 'break'
+            return # (for Tk) 'break'
 
         elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
             if trace: g.trace('ignoring unbound non-ascii key',repr(stroke))
-            return 'break'
+            return # (for Tk) 'break'
 
         elif (
             keysym and keysym.find('Escape') != -1 or
@@ -3107,7 +3105,7 @@ class keyHandlerClass:
         ):
             # Never insert escape or insert characters.
             if trace: g.trace('ignore Escape/Ignore',stroke)
-            return 'break'
+            return # (for Tk) 'break'
 
         else:
             if trace: g.trace('no func',stroke)
@@ -3132,7 +3130,7 @@ class keyHandlerClass:
                 # k.endMode() # Less drastic than keyboard-quit.
                 w and c.widgetWantsFocusNow(w)
                 if trace: g.trace('inState: break')
-                return 'break'
+                return # (for Tk) 'break'
 
         # Update the selection point immediately for updateStatusLine.
         k.previousSelection = None
@@ -3146,7 +3144,7 @@ class keyHandlerClass:
                 w.setSelectionRange(x,x,insert=x)
             else:
                 if trace: g.trace('2: break')
-                return 'break'
+                return # (for Tk) 'break'
         if event and func:
             if trace: g.trace(func.__name__)
             val = func(event) # Don't even *think* of overriding this.
@@ -3158,7 +3156,7 @@ class keyHandlerClass:
             c.frame.tree.OnDeactivate()
             c.widgetWantsFocusNow(w)
             if trace: g.trace('end: None')
-            return None
+            return # None
 
     masterClick3Handler = masterClickHandler
     masterDoubleClick3Handler = masterClickHandler
@@ -3180,7 +3178,7 @@ class keyHandlerClass:
             s = w.getAllText()
             start,end = g.getWord(s,i)
             w.setSelectionRange(start,end)
-            return 'break'
+            return # (for Tk) 'break'
     #@+node:ekr.20061031131434.155: *4* masterMenuHandler
     def masterMenuHandler (self,stroke,func,commandName):
 
@@ -3470,7 +3468,7 @@ class keyHandlerClass:
             k.setState(modeName,1,handler=k.generalModeHandler)
             self.initMode(event,modeName)
             # Careful: k.initMode can execute commands that will destroy a commander.
-            if g.app.quitting or not c.exists: return 'break'
+            if g.app.quitting or not c.exists: return # (for Tk) 'break'
             if not k.silentMode:
                 if c.config.getBool('showHelpWhenEnteringModes'):
                     k.modeHelp(event)
@@ -3478,7 +3476,7 @@ class keyHandlerClass:
                     c.frame.log.hideTab('Mode')
         elif not func:
             g.trace('No func: improper key binding')
-            return 'break'
+            return # (for Tk) 'break'
         else:
             if commandName == 'mode-help':
                 func(event)
@@ -3494,7 +3492,7 @@ class keyHandlerClass:
                 if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
                 func(event)
                 if g.app.quitting or not c.exists:
-                    return 'break'
+                    return # (for Tk) 'break'
                 if nextMode in (None,'none'):
                     # Do *not* clear k.inputModeName or the focus here.
                     # func may have put us in *another* mode.
@@ -3508,9 +3506,9 @@ class keyHandlerClass:
                     k.silentMode = False # All silent modes must do --> set-silent-mode.
                     self.initMode(event,nextMode) # Enter another mode.
                     # Careful: k.initMode can execute commands that will destroy a commander.
-                    if g.app.quitting or not c.exists: return 'break'
+                    if g.app.quitting or not c.exists: return # (for Tk) 'break'
 
-        return 'break'
+        return # (for Tk) 'break'
     #@+node:ekr.20061031131434.163: *4* initMode
     def initMode (self,event,modeName):
 
@@ -3587,7 +3585,7 @@ class keyHandlerClass:
         if not k.silentMode:
             c.minibufferWantsFocus()
 
-        return 'break'
+        return # (for Tk) 'break'
     #@+node:ekr.20061031131434.166: *5* modeHelpHelper
     def modeHelpHelper (self,d):
 
@@ -3715,7 +3713,7 @@ class keyHandlerClass:
             c.minibufferWantsFocus()
         else:
             k.doFileNameChar(event)
-        return 'break'
+        return # (for Tk) 'break'
     #@+node:ekr.20061031131434.170: *5* k.doFileNameBackSpace
     def doFileNameBackSpace (self):
 
@@ -4348,7 +4346,7 @@ class keyHandlerClass:
         elif state == 2:
             k.doControlU(event,stroke)
 
-        return 'break'
+        return # (for Tk) 'break'
     #@+node:ekr.20061031131434.202: *4* executeNTimes
     def executeNTimes (self,event,n,stroke):
 
