@@ -15807,7 +15807,11 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 #@+node:ekr.20110531155858.19830: *4* Bugs fixed
 - Fixed bug 682561: pyenchant install problem.
 
+  https://bugs.launchpad.net/leo-editor/+bug/682561
+
 - Fix bug 690260: g.es sends to wrong tabbed pane.
+
+  https://bugs.launchpad.net/leo-editor/+bug/690260
 
 - Fixed goto-global-line problems.
 
@@ -15914,7 +15918,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 - Fixed bug 581031: Scrollbar position is not preserved when
   c.frame.toggleSplitDirection() is executed.
 
-https://bugs.launchpad.net/leo-editor/+bug/581031
+  https://bugs.launchpad.net/leo-editor/+bug/581031
 
   toggleSplitDirection new ensures that both the selected outline node *and* the
   cursor in the body pane are visible.
@@ -15945,7 +15949,7 @@ https://bugs.launchpad.net/leo-editor/+bug/581031
 
 - Menus & dialogs now say "Flatten Selected Outline".
 
-https://bugs.launchpad.net/leo-editor/+bug/626587
+  https://bugs.launchpad.net/leo-editor/+bug/626587
 
 - Removed remaining tk-isms from Leo's core.
 

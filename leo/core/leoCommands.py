@@ -53,8 +53,12 @@ import token    # for Check Python command
 
 #@+others
 #@+node:ekr.20041118104831: ** class commands
-class baseCommands (object):
-    """The base class for Leo's main commander."""
+# class baseCommands (object):
+    # """The base class for Leo's main commander."""
+    # @others
+
+class Commands (object):
+    """A class that implements most of Leo's commands."""
     #@+others
     #@+node:ekr.20031218072017.2811: *3*  c.Birth & death
     #@+node:ekr.20031218072017.2812: *4* c.__init__
@@ -3433,6 +3437,8 @@ class baseCommands (object):
         c = self ; body = c.frame.body ;  w = body.bodyCtrl
 
         d = c.scanAllDirectives()
+        
+        # g.trace(c.editCommands.fillColumn)
 
         if c.editCommands.fillColumn > 0:
             pageWidth = c.editCommands.fillColumn
@@ -7547,10 +7553,6 @@ class baseCommands (object):
         # g.trace('%20s' % (timeStamp),fn)
 
     #@-others
-
-class Commands (baseCommands):
-    """A class that implements most of Leo's commands."""
-    pass
 #@+node:ekr.20041118104831.1: ** class configSettings (leoCommands)
 class configSettings:
 

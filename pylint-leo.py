@@ -154,7 +154,7 @@ guiPluginsTable = (
     ('qtGui','E0611,W0221,W0233'),
         # E0611: No name 'xxx' in module 'urllib'
         # W0233: __init__ method from a non direct base class 'QDateTimeEdit' is called
-    ('tkGui','W0221,W0222'),
+    # ('tkGui','W0221,W0222'),
 )
 
 recentPluginsList = (
@@ -173,12 +173,12 @@ tables_table = (
     # (rpythonList,'core'),
     # (recentCoreList,'core'),
     # (recentPluginsList,'plugins'),
-    # (coreList,'core'),
-    # (guiPluginsTable,'plugins'),
+    (coreList,'core'),
+    (guiPluginsTable,'plugins'),
     # (tkPass,'plugins'),
     # (passList,'plugins'),
     # (externalList,'external'),
-    (pluginsTable,'plugins'),
+    # (pluginsTable,'plugins'),
 )
 
 for table,theDir in tables_table:

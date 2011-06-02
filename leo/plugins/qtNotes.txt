@@ -5919,7 +5919,7 @@ def setFocus (self):
     assert (
         isinstance(self.widget,QtGui.QTextBrowser) or
         isinstance(self.widget,QtGui.QLineEdit) or
-        isinstance(self.widget,QtQui.QTextEdit)),self.widget
+        isinstance(self.widget,QtGui.QTextEdit)),self.widget
     QtGui.QTextBrowser.setFocus(self.widget)
 #@+node:ekr.20110516132611.14442: *3* Disabled find/change text areas in find panel
 #@+node:ekr.20081121105001.235: *4* class leoQtFindTab (findTab)
@@ -8546,7 +8546,7 @@ def scanColorDirectives(self,p):
         
     # 2011/05/28: If no language, get the language from any @<file> node.
     if self.language:
-         if trace: g.trace('found @language %s' % (self.language))
+        if trace: g.trace('found @language %s' % (self.language))
     else:
         for p in root.self_and_parents():
             if p.isAnyAtFileNode():
@@ -10495,7 +10495,7 @@ def scanColorDirectives(self,p):
         
     # 2011/05/28: If no language, get the language from any @<file> node.
     if self.language:
-         if trace: g.trace('found @language %s' % (self.language))
+        if trace: g.trace('found @language %s' % (self.language))
     else:
         for p in root.self_and_parents():
             if p.isAnyAtFileNode():
@@ -12847,7 +12847,7 @@ def scanColorDirectives(self,p):
         
     # 2011/05/28: If no language, get the language from any @<file> node.
     if self.language:
-         if trace: g.trace('found @language %s' % (self.language))
+        if trace: g.trace('found @language %s' % (self.language))
     else:
         for p in root.self_and_parents():
             if p.isAnyAtFileNode():
@@ -13037,5 +13037,159 @@ def add(self,*args,**keys):
             button_callback)
 
     return action
+#@+node:ekr.20110601164458.19313: *3* Fixed weird monkey-patch bug in leoQtBaseTextWidget.mouseReleaseEvent
+#@+node:ekr.20090124174652.10: *4* __init__ (nativeTree)
+def __init__(self,c,frame):
+
+    # Init the base class.
+    leoFrame.leoTree.__init__(self,frame)
+
+    # Components.
+    self.c = c
+    self.canvas = self # An official ivar used by Leo's core.
+    
+    # Configuration.
+    self.auto_edit = c.config.getBool('single_click_auto_edits_headline',False)
+
+    # Subclasses should define headline wrappers to
+    # be a subclass of leoFrame.baseTextWidget.
+    self.headlineWrapper = leoFrame.baseTextWidget
+
+    # Subclasses should define .treeWidget to be the underlying
+    # native tree widget.
+    self.treeWidget = None
+
+    # Widget independent status ivars...
+    self.contracting = False
+    self.dragging = False
+    self.expanding = False
+    self.prev_v = None
+    self.redrawing = False
+    self.redrawCount = 0 # Count for debugging.
+    self.revertHeadline = None # Previous headline text for abortEditLabel.
+    self.selecting = False
+
+    # Debugging...
+    self.nodeDrawCount = 0
+    self.traceCallersFlag = False # Enable traceCallers method.
+
+    # Associating items with position and vnodes...
+    self.item2positionDict = {}
+    self.item2vnodeDict = {}
+    self.position2itemDict = {}
+    self.vnode2itemsDict = {} # values are lists of items.
+    self.editWidgetsDict = {} # keys are native edit widgets, values are wrappers.
+
+    self.setConfigIvars()
+    self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
+#@+node:ekr.20090812211903.3641: *4* onItemClicked (nativeTree)
+def onItemClicked (self,item,col):
+
+    # This is called after an item is selected.
+    trace = False and not g.unitTesting ; verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+    # if trace: g.trace(self.traceItem(item),g.callers(4))
+    try:
+        self.selecting = True
+        p = self.item2position(item)
+        if p:
+            auto_edit = self.prev_v == p.v
+            if trace: g.trace('auto_edit',auto_edit,p.h)
+            self.prev_v = p.v
+            event = None
+            g.doHook("iconclick1",c=c,p=p,v=p,event=event)
+            # if c.positionExists(p): c.selectPosition(p) # 2011/03/07
+#@verbatim
+            #@ c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("iconclick2",c=c,p=p,v=p,event=event)
+        else:
+            auto_edit = None
+            g.trace('*** no p')
+
+        # 2011/05/27: click here is like ctrl-g.
+        c.k.keyboardQuit(setFocus=False)
+        c.treeWantsFocus() # 2011/05/08: Focus must stay in the tree!
+        c.outerUpdate()
+        # 2011/06/01: A second *single* click on a selected node
+        # enters editing state.
+        if auto_edit and self.auto_edit:
+            e = self.createTreeEditorForItem(item)
+    finally:
+        self.selecting = False
+#@+node:ekr.20081121105001.518: *4* ctor (leoQtBaseTextWidget)
+def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
+
+    self.widget = widget
+    self.c = c or self.widget.leo_c
+
+    # g.trace('leoQtBaseTextWidget',name,self.widget)
+
+    # Init the base class.
+    leoFrame.baseTextWidget.__init__(
+        self,c,baseClassName='leoQtBaseTextWidget',
+        name=name,
+        widget=widget,
+        highLevelInterface=True)
+
+    # Init ivars.
+    self.changingText = False # A lockout for onTextChanged.
+    self.tags = {}
+    self.permanent = True # False if selecting the minibuffer will make the widget go away.
+    self.configDict = {} # Keys are tags, values are colors (names or values).
+    self.configUnderlineDict = {} # Keys are tags, values are True
+    self.useScintilla = False # This is used!
+
+    if not c: return # Can happen.
+
+    if name in ('body','rendering-pane-wrapper') or name.startswith('head'):
+        # g.trace('hooking up qt events',name)
+        # Hook up qt events.
+        self.ev_filter = leoQtEventFilter(c,w=self,tag=name)
+        self.widget.installEventFilter(self.ev_filter)
+
+    if name == 'body':
+        self.widget.connect(self.widget,
+            QtCore.SIGNAL("textChanged()"),self.onTextChanged)
+
+        self.widget.connect(self.widget,
+            QtCore.SIGNAL("cursorPositionChanged()"),self.onCursorPositionChanged)
+            
+    if name in ('body','log'):
+        # Monkey patch the event handler.
+        << define mouseReleaseEvent >>
+        self.widget.mouseReleaseEvent = mouseReleaseEvent
+
+    self.injectIvars(c)
+#@+node:ekr.20110527140605.18370: *5* << define mouseReleaseEvent >> (leoQtBaseTextWidget)
+def mouseReleaseEvent (*args,**keys):
+    
+    '''Override QLineEdit.mouseReleaseEvent.
+    
+    Simulate alt-x if we are not in an input state.'''
+    
+    # g.trace(args,keys)
+    
+    # Call the base class method.
+    if len(args) == 1:
+        event = args[0]
+        QtGui.QTextBrowser.mouseReleaseEvent(widget,event)
+    elif len(args) == 2:
+        event = args[1]
+        QtGui.QTextBrowser.mouseReleaseEvent(*args)
+    else:
+        g.trace('can not happen')
+        return
+
+    # Open the url on a control-click.
+    if QtCore.Qt.ControlModifier & event.modifiers():
+        event = {'c':c}
+        openURL(event) # A module-level function.
+
+    # 2011/05/28: Do *not* change the focus!
+    # This would rip focus away from tab panes.
+    c.k.keyboardQuit(setFocus=False)
 #@-all
 #@-leo

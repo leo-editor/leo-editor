@@ -3624,7 +3624,7 @@ class editCommandsClass (baseEditCommandsClass):
                 self.setMoveCol(w,ins) # sets self.moveSpot.
             elif self.moveSpot in (i,j) and self.moveSpot != ins:
                 if trace and verbose: g.trace('extend and movespot matches')
-                pass # The bug fix, part 1.
+                # The bug fix, part 1.
             else:
                 # The bug fix, part 2.
                 # Set the moveCol to the *not* insert point.
@@ -7618,7 +7618,7 @@ class minibufferFind (baseEditCommandsClass):
         # g.trace('replaceStringShortcut',s)
         self.replaceStringShortcut = s
     #@+node:ekr.20090126063121.1: *4* editWidget (minibufferFind)
-    def editWidget (self,event):
+    def editWidget (self,event,forceFocus=True):
 
         '''An override of baseEditCommands.editWidget
 
@@ -7639,7 +7639,7 @@ class minibufferFind (baseEditCommandsClass):
                 self.w = w
             else:
                 self.w = bodyCtrl
-            if self.w:
+            if self.w and forceFocus:
                 c.widgetWantsFocusNow(self.w)
         else:
             # Do not cache a pointer to a headline!

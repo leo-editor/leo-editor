@@ -1044,7 +1044,8 @@ class undoer:
             
         v.undo_info = bunch
             
-        if trace: g.trace('****',v.h,bunch.bead)
+        if trace: g.trace('****',v.h,getattr(bunch,'bead'))
+            # Use getattr to keep pylint happy.
     #@+node:ekr.20110519074734.6095: *5* setIvarsFromVnode (new)
     def setIvarsFromVnode(self,p):
 
@@ -1670,7 +1671,7 @@ class undoer:
             return g.trace('no current position')
         
         if u.per_node_undo: # 2011/05/19
-            u.setIvarsFromVnode()
+            u.setIvarsFromVnode(c.p)
 
         if not u.canUndo():
             if trace: g.trace('cant undo',u.undoMenuLabel,u.redoMenuLabel)
@@ -2084,7 +2085,7 @@ class nullUndoer (undoer):
     def enableMenuItems (self):
         pass
         
-    def onSelect(self,p):
+    def onSelect(self,old_p,p):
         pass
 
     def setUndoTypingParams (self,p,undo_type,oldText,newText,oldSel,newSel,oldYview=None):

@@ -701,7 +701,7 @@ class AutoCompleterClass:
         if varname == 'p':
             return 'class',['position']
         if varname == 'c':
-            return 'class',['baseCommands']
+            return 'class',['Commands']
         if varname == 'self':
             # Return the nearest enclosing class.
             for p in c.p.parents():

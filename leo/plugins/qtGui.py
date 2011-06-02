@@ -45,22 +45,26 @@ if g.isPython3:
 else:
     import urllib2 as urllib
     import urlparse
+    
+import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
 
-try:
-    # import PyQt4.Qt as Qt # Loads all modules of Qt.
-    # import qt_main # Contains Ui_MainWindow class
-    import PyQt4.QtCore as QtCore
-    import PyQt4.QtGui as QtGui
-except ImportError:
-    QtCore = None
+# try:
+    # # import PyQt4.Qt as Qt # Loads all modules of Qt.
+    # # import qt_main # Contains Ui_MainWindow class
+    # import PyQt4.QtCore as QtCore
+    # import PyQt4.QtGui as QtGui
+# except ImportError:
+    # QtCore = None
 
-if QtCore is None:
-    try: # Attempt Python 3000 imports
-        from PyQt4 import QtCore
-    except ImportError:
-        QtCore = None
-        print('\nqtGui.py: can not import Qt\nUse "launchLeo.py --gui=tk" to force Tk')
-        raise
+# if QtCore is None:
+    # try: # Attempt Python 3000 imports
+        # from PyQt4 import QtCore
+        # from PyQt4 import QtGui
+    # except ImportError:
+        # QtCore = None
+        # # print('\nqtGui.py: can not import Qt\nUse "launchLeo.py --gui=tk" to force Tk')
+        # raise
 
 try:
     import leo.plugins.nested_splitter as nested_splitter
@@ -183,7 +187,6 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
                 QtGui.QListWidget.keyPressEvent(self,event)
             elif key == qt.Key_Tab:
                 if trace: g.trace('<tab>')
-                pass
             elif key in (qt.Key_Enter,qt.Key_Return):
                 if trace: g.trace('<return>')
                 self.select_callback()
@@ -516,7 +519,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         assert (
             isinstance(self.widget,QtGui.QTextBrowser) or
             isinstance(self.widget,QtGui.QLineEdit) or
-            isinstance(self.widget,QtQui.QTextEdit)),self.widget
+            isinstance(self.widget,QtGui.QTextEdit)),self.widget
         QtGui.QTextBrowser.setFocus(self.widget)
     #@+node:ekr.20081121105001.523: *5*  Indices
     #@+node:ekr.20090320101733.13: *6* toPythonIndex
@@ -9126,7 +9129,7 @@ class leoQtColorizer:
             
         # 2011/05/28: If no language, get the language from any @<file> node.
         if self.language:
-             if trace: g.trace('found @language %s' % (self.language))
+            if trace: g.trace('found @language %s' % (self.language))
         else:
             for p in root.self_and_parents():
                 if p.isAnyAtFileNode():

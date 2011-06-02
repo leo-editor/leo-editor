@@ -319,7 +319,7 @@ class CodewiseController:
         if varname == 'p':
             return ['position']
         if varname == 'c':
-            return ['baseCommands']
+            return ['Commands']
         if varname == 'self':
             # Return the nearest enclosing class.
             for par in p.parents():

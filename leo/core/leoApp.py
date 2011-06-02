@@ -205,9 +205,9 @@ class LeoApp:
             "cpp"           : "cpp",
             "css"           : "css", # 4/1/04
             "cweb"          : "w",
-            "cython"        : "pyd",
-            "cython"        : "pyi",
-            "cython"        : "pyx",
+            #"cython"        : "pyd",
+            #"cython"        : "pyi",
+            "cython"        : "pyx", # Only one extension is valid at present.
             "elisp"         : "el",
             "forth"         : "forth",
             "fortran"       : "f",
