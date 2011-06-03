@@ -953,6 +953,9 @@ class AutoCompleterClass:
         else:
             tabList = self.get_summary_list(header,tabList)
             
+        if g.unitTesting:
+            return
+            
         if self.use_qcompleter:
             # Put the completions in the QListView.
             self.qw.show_completions(tabList)
