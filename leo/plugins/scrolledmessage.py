@@ -557,9 +557,9 @@ class ScrolledMessageDialog(object):
         s = self.msg
         f = self.controlFlags
         if f['html']:
-            if f['rst']:
+            if f.get('rst'):
                 s = self.rstToHtml(s)
-            if f['text']:
+            elif f.get('text'):
                 s = self.textToHtml(s)
         else:
             s = self.textToHtml(s)
