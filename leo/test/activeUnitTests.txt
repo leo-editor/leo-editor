@@ -13290,6 +13290,7 @@ def run(self):
     assert html,'html'
     # Kludge: disregard version of docutils.
     html = html.replace('Docutils 0.6','Docutils 0.8')
+    html = html.replace('Docutils 0.7','Docutils 0.8')
     if expected.hasChildren():
         child1 = expected.firstChild()
         child2 = expected.firstChild().next()
