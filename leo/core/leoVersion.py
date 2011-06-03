@@ -10,7 +10,16 @@
 #@@language python
 #@@tabwidth -4
 
-build = 3752
+build = 4248
 date = "June 3, 2011"
 version = "4.9 beta 1"
+
+#@+at The following bzr command reports the buil automatically
+#     
+#     bzr version-info --custom --template="build={revno}\ndate={date}\n"
+#     
+# The output is::
+#     
+#     build=4248
+#     date=2011-06-03 09:18:47 -0500
 #@-leo
