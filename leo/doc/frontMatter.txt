@@ -139,7 +139,7 @@ to be the same as the MIT license, namely that Leo is absolutely free, even for
 commercial use, including resale. There is no GNU-like "copyleft" restriction.
 This license is compatible with the GPL.
 
-**Copyright 1997-2010 by Edward K. Ream. All Rights Reserved.**
+**Copyright 1997-2011 by Edward K. Ream. All Rights Reserved.**
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

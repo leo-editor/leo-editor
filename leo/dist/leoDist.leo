@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
 <?xml-stylesheet ekr_test?>
-<leo_file>
+<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
 	<global_window_position top="50" left="50" height="500" width="700"/>
@@ -27,6 +28,7 @@
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
 <v t="ekr.20101115090518.1494"><vh>Leo 4.8 final</vh></v>
+<v t="ekr.20110603112852.1505"><vh>Leo 4.9 b1</vh></v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
@@ -35,7 +37,6 @@
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
 <v t="EKR.20040519090846.5"><vh>Windows installation</vh></v>
-<v t="EKR.20040519090846.6"><vh>MacOS installation</vh></v>
 <v t="ekr.20080825083632.263"><vh>Running Leo</vh></v>
 </v>
 <v t="EKR.20040519090846.1"><vh>@asis ../../LICENSE.TXT</vh></v>
@@ -90,11 +91,11 @@
 
 1. Search for ##version
 
-2. Search for this suffix: -final.
+2. Search for this suffix: -b1.
 
 3. Search for copyright
 
-    Latest copyright date: 2010.
+    Latest copyright date: 2011.
 
     Note: install.txt file embeds a copyright message in the nsi installer.</t>
 <t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the MIT
@@ -103,7 +104,7 @@ for commercial use (including resale). There is no GNU-like "copyleft"
 restriction. The Open Source Initiative board has voted to certify the
 MIT license as Open Source. This license is compatible with the GPL.
 
-Copyright (c) 1997-2010 by Edward K. Ream. All Rights Reserved.
+Copyright (c) 1997-2011 by Edward K. Ream. All Rights Reserved.
 
 Permission to use, copy, modify, and distribute this software and its
 documentation for any purpose and without fee is hereby granted,
@@ -126,15 +127,10 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 <t tx="EKR.20040519090846.3">System requirements
 -------------------
 
-Leo requires Python 2.6 or above (including Python 3.x) and tcl/tk 8.4 or above.
-Leo will also work with PyQt instead of tcl/tk.
+Leo requires Python 2.6 or above (including Python 3.x) and PyQt.
 
 	Download Python from http://python.org/ 
-	Download tcl/Tk from http://tcl.activestate.com/software/tcltk/
     Download PyQt from http://www.riverbankcomputing.co.uk/news
-
-Warning: When building Tcl on Linux, do not specify "--enable-threads" .
-Only use Tcl with the default "threads not enabled" case.
 </t>
 <t tx="EKR.20040519090846.4">
 Installing the leo.py on Linux
@@ -157,7 +153,7 @@ Installing Leo on Windows
 There are now two ways to install Leo on Windows:
     
 1. Use the single-click executable installer, named something like
-   LeoSetup-4.7.1-final.exe
+   LeoSetup-4.9-b1.exe
 
 2. Leo is distributed as a .zip file.
    To install Leo from the .zip file:
@@ -176,75 +172,9 @@ There are now two ways to install Leo on Windows:
 
     Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
 </t>
-<t tx="EKR.20040519090846.6">
-Installing leo.py on MacOs
---------------------------
-
-Leo works reliably only on MacOS X 10.3 and above.
-
-For the latest discussion of how to install Leo with PyQt, see
-http://groups.google.com/group/leo-editor/browse_thread/thread/2bae897436d3d70e/20d8b94ac3371074?lnk=gst&amp;q=macos#20d8b94ac3371074
-
-To run Leo on Macintosh OS X 10.3 (There will be slight changes for later versions of Mac Os X):
-
-1) Download and install "MacPython 2.3 for Panther addons".
-
-Python is already included in OS X 10.3 so only the addons are necessary
-
-	http://www.cwi.nl/~jack/macpython.html
-
-2) Download and install TclTkAqua.
-
-	http://tcltkaqua.sourceforge.net/
-
-3) Run the PackageManager found in /Applications/MacPython-2.3 and  
-install "_tkinter-2.3-binary" by clicking on the package in the list  
-and clicking the [Install:] button with "Install dependencies" checked
-
-4)  Install Leo.  There are two ways to do this.
-
-a)  The NEW way: Download Leo-version-number.pkg from
-
-    http://leo.sourceforge.net/
-
-Double-click Leo.pkg to install the Leo folder. I recommend that you install Leo
-in your home directory.
-
-b) The OLD way: Download Leo-version-number.zip:
-
-	http://leo.sourceforge.net/
-
-Unzip the contents into the desired directory by double-clicking the downloaded file.
-
-5) Run Leo by control-clicking on /path_to_unzipped_dir/leo/core/leo.py and open
-with PythonLauncher.
-
-6) It is a good idea to set PythonLauncher as the default program to  
-open python scripts by clicking on "leo.py", choosing Get Info from the  
-Finder's File menu, and selecting "PythonLauncher" as the default  
-program to "Open With:"
-
-By clicking the "Change All..." button, all python scripts will be  
-opened with PythonLauncher.
-
-8) (optional) Download and install Pmw. (Leo now contains Pmw in the extensions folder).
-
-    http://pmw.sourceforge.net/
-
-Pmw must be installed in order to use the Settings panel.
-
-Drag the downloaded gzip file into
-
-/System/Library/Frameworks/Python.framework/Versions/2.3/lib/python2.3/site-packages
-
-Double click on it to unzip and untar the file into a folder to make it
-available to Python
-
-Thanks to Randall Voth for these instructions.
-</t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.8-final
+Version: 4.9-b1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -258,37 +188,41 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.8 final                               November 26, 2010
+<t tx="EKR.20040519090846.9">Leo 4.9 b1                              June 3, 2011
 
-Leo 4.8 final is now available at:
+Leo 4.9 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
-The highlights of Leo 4.8:
+The highlights of Leo 4.9:
 --------------------------
 
-- Leo now uses the simplest possible sentinel lines in external files.
-  External files with sentinels now look like Emacs org-mode files.
-- Leo Qt gui now supports Drag and Drop.
-  This was one of the most frequently requested features.
-- Improved abbreviation commands.
-  You now define abbreviations in Leo settings nodes, not external files.
-- @url nodes may contain url's in body text.
-  This allows headlines to contain summaries: very useful.
-- Leo now uses PyEnchant to check spelling.
-- Leo can now open multiple files from the command line.
-- Leo's ancient Tangle and Untangle commands are now deprecated.
-  This will help newbies how to learn Leo.
-- Leo now shows "Resurrected" and "Recovered" nodes.
-  These protect data and show how data have changed.
-  These fix several long-standing data-related problems.
-- A new "screenshots" plugin for creating slide shows with Leo.
-  I used this plugin to create Leo's introductory slide shows.
-- Improved autocompletion: Ctrl-space starts a one-time completion.
-- A better installer.
-- Many bug fixes.
+- Leo no longer supports the Tk gui: the Qt gui now has
+  all essential features of Tk and Tk-only plugins.
+
+- A large number of "fit-and-finish" bugs fixed.
+
+- Completed Leo's autocompleter.
+
+- The rendering pane can now display movies, html, svg images, etc.
+
+- The scrolledmessage plugin can now use the rendering pane.
+
+- Leo uses an @file node's extension by default if there is no @language
+  directive in effect.
+  
+- Unified extract and import commands.
+
+- Leo can now colorize multiple @language directives in a single node.
+
+- Plain up/down arrow keys in headline-editing mode select a new node.
+
+- New commands to insert, delete, change or print uA's.
+
+- Added namespace directive to .leo files.
+
 
 Links:
 ------
@@ -696,7 +630,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
         leo.zip.
 '''
 
-version = '4.8-final' ##version
+version = '4.9-b1' ##version
 
 &lt;&lt; includes &gt;&gt;
 
@@ -1098,6 +1032,50 @@ The highlights of Leo 4.8:
 - Improved autocompletion: Ctrl-space starts a one-time completion.
 - A better installer.
 - Many bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+</t>
+<t tx="ekr.20110603112852.1505">Leo 4.9 b1                              June 3, 2011
+
+Leo 4.9 beta 1 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.9:
+--------------------------
+
+- Leo no longer supports the Tk gui: the Qt gui now has
+  all essential features of Tk and Tk-only plugins.
+
+- A large number of "fit-and-finish" bugs fixed.
+
+- Completed Leo's autocompleter.
+
+- The rendering pane can now display movies, html, svg images, etc.
+
+- The scrolledmessage plugin can now use the rendering pane.
+
+- Leo uses an @file node's extension by default if there is no @language
+  directive in effect.
+  
+- Unified extract and import commands.
+
+- Leo can now colorize multiple @language directives in a single node.
+
+- Plain up/down arrow keys in headline-editing mode select a new node.
+
+- New commands to insert, delete, change or print uA's.
+
+- Added namespace directive to .leo files.
+
 
 Links:
 ------

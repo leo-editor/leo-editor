@@ -1,34 +1,38 @@
-Leo 4.8 final                               November 26, 2010
+Leo 4.9 b1                              June 3, 2011
 
-Leo 4.8 final is now available at:
+Leo 4.9 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
-The highlights of Leo 4.8:
+The highlights of Leo 4.9:
 --------------------------
 
-- Leo now uses the simplest possible sentinel lines in external files.
-  External files with sentinels now look like Emacs org-mode files.
-- Leo Qt gui now supports Drag and Drop.
-  This was one of the most frequently requested features.
-- Improved abbreviation commands.
-  You now define abbreviations in Leo settings nodes, not external files.
-- @url nodes may contain url's in body text.
-  This allows headlines to contain summaries: very useful.
-- Leo now uses PyEnchant to check spelling.
-- Leo can now open multiple files from the command line.
-- Leo's ancient Tangle and Untangle commands are now deprecated.
-  This will help newbies how to learn Leo.
-- Leo now shows "Resurrected" and "Recovered" nodes.
-  These protect data and show how data have changed.
-  These fix several long-standing data-related problems.
-- A new "screenshots" plugin for creating slide shows with Leo.
-  I used this plugin to create Leo's introductory slide shows.
-- Improved autocompletion: Ctrl-space starts a one-time completion.
-- A better installer.
-- Many bug fixes.
+- Leo no longer supports the Tk gui: the Qt gui now has
+  all essential features of Tk and Tk-only plugins.
+
+- A large number of "fit-and-finish" bugs fixed.
+
+- Completed Leo's autocompleter.
+
+- The rendering pane can now display movies, html, svg images, etc.
+
+- The scrolledmessage plugin can now use the rendering pane.
+
+- Leo uses an @file node's extension by default if there is no @language
+  directive in effect.
+  
+- Unified extract and import commands.
+
+- Leo can now colorize multiple @language directives in a single node.
+
+- Plain up/down arrow keys in headline-editing mode select a new node.
+
+- New commands to insert, delete, change or print uA's.
+
+- Added namespace directive to .leo files.
+
 
 Links:
 ------

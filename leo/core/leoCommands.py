@@ -5895,7 +5895,7 @@ class Commands (object):
         # Doing so would add unwanted leading tabs.
         version = g.app.signon + '\n\n'
         theCopyright = (
-            "Copyright 1999-2010 by Edward K. Ream\n" +
+            "Copyright 1999-2011 by Edward K. Ream\n" +
             "All Rights Reserved\n" +
             "Leo is distributed under the MIT License")
         url = "http://webpages.charter.net/edreamleo/front.html"
