@@ -6415,25 +6415,18 @@ plugins_menu.py
 leo_to_html.py
 mod_scripting.py
 quicksearch.py
-# UNL.py # moved to core, 20110220 TNB
+
 contextmenu.py
 nav_qt.py
 stickynotes.py
+# UNL.py # moved to core, 20110220 TNB
 
 # The plugins manager plugin does not
 # understand @enabled-plugins nodes.
 # plugin_manager.py
 
-# The rst3 plugin is no longer needed.
-# It's code has been moved to Leo's core
+# The rst3 plugin has been moved to Leo's core.
 # rst3.py
-
-# These plugins used to be enabled when using the tk plugin.
-# cleo.py
-# hoist.py
-# image.py
-# nav_buttons.py
-# threading_colorizer.py
 
 # All other plugins.
 # Order is important for enabled plugins that
