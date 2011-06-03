@@ -18,7 +18,7 @@ Leo screen shots
 
 .. |leoQtMainWindow| image:: screen-shots/leo-qt-main-window.JPG
 
-.. |leoTkMainWindow| image:: screen-shots/leo-tk-main-window.jpg
+.. .. |leoTkMainWindow| image:: screen-shots/leo-tk-main-window.jpg
 
 .. |leoQtMainWindowLinux| image:: screen-shots/leo-qt-main-window-linux.png
 
@@ -32,12 +32,7 @@ Below the body pane is the minibuffer.
 
 |leoQtMainWindow|
 
-Here is Leo's main window rendered with the Tk gui.
-Just as with the Qt gui, you may adjust font sizes, colors, et.
-
-|leoTkMainWindow|
-
-Here is Leo's find tab, rendered with the Tk gui.
+Here is Leo's find tab.
 All parts of the find tab can be controlled from the keyboard.
 
 |leoQtFindTab|
@@ -108,11 +103,9 @@ Leo's view has two parts:
 1. The classes in the tree 'Code-->Gui Base classes'.
    These are part of Leo's core.
 
-2. The classes in the tree 'Code-->Gui Tkinter classes'.
-   These are essentially a gui plugin.
+2. The classes in Leo's Qt gui, in qtGui.py.
 
 Leo's core consists of the Model, Controller and the gui base classes.
-
 
 II. Why Leo's core is gui-independent
 
@@ -136,12 +129,11 @@ is a very tricky business. Making it gui-independent is a big win.
 B. leoFind.py. Finds the next/previous matches, and dealing with an "idealized"
 find tab. Adapter classes exist in leoEditCommands.py.
 
-C. Autocompletion and minibuffer code in leoKeys.py. For comparison, look how
-simple leoTkinterKeys.py is.
+C. Autocompletion and minibuffer code in leoKeys.py.
 
 D. A generalized, gui-independent interface to Leo's body pane. The commands in
 leoEditCommands.py (part of the controller) use this interface (baseTextWidget)
-rather than calling Tk directly.
+rather than using gui widgets directly.
 
 **If you want to understand Leo's design, study Leo's base gui classes.**
 .. @+node:ekr.20090401113141.1: ** How to generate odt/rtf/pdf files
@@ -417,7 +409,7 @@ classes and data.
 
 4.  The leoFrame module defines the base leoFrame class for objects that create and manage
     the visual appearance of Leo’s windows and panes.
-    The **leoTkinterFrame** and **leoTkinterTree** modules contain subclasses of the base classes in the leoFrame module.
+    qtGui.py contains subclasses of the base classes in the leoFrame module.
     A frame (an instance of the leoFrame class, or a subclass)
     contains all the internal data needed to manage a Leo window.
     **c.frame** is the frame associated with commander c.
@@ -577,8 +569,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/d58333f2ebae2675#
 .. @+node:ekr.20101025080245.5753: *3* 8/2010
 .. @+node:ekr.20101025080245.5751: *4* @url leoscreen plugin
 http://www.mail-archive.com/leo-editor@googlegroups.com/msg11439.html
-.. @+node:ekr.20101025080245.5754: *4* @url time to retire tk? (design)
-http://groups.google.com/group/leo-editor/browse_thread/thread/c66f30b5d09d3411#
 .. @+node:ekr.20101025080245.5755: *4* @url simulating <<nodes>> in rst branches (design)
 http://groups.google.com/group/leo-editor/browse_thread/thread/8842b4878975e3f1#
 .. @+node:ekr.20101025080245.5756: *4* @url @auto import problems
@@ -651,11 +641,10 @@ organization, navigation, customization and scripting.
 
 ==Language==
 
-Leo is written in [[Python (programming language)|Python]] and uses two GUI
-toolkits, [[Tk (computing)|Tk]] and [[Qt (toolkit)|Qt]]. It is fully scriptable
-using Python and can be extended with plugins.
-In Leo, outlines are hierarchical data structures that people use to work with
-and manage text files—including code.
+Leo is written in [[Python (programming language)|Python]] and uses the [[Qt
+(toolkit)|Qt]]. It is fully scriptable using Python and can be extended with
+plugins. In Leo, outlines are hierarchical data structures that people use to
+work with and manage text files—including code.
 
 ==Trees, clones and views==
 

@@ -44,33 +44,33 @@ found in the Outline:Go To menu.
 As described in the tutorial, you can move about the outline by clicking on the
 headlines or using Alt+arrow keys.
 
-When using the Tk GUI and focus is in the outline Pane, you can move from
-node to node by typing the first letter of a headline. For example, typing 'a'
-will go to the next visible headline that starts with either 'a' or 'A',
-wrapping around to the start of the outline if needed. Typing an uppercase 'A'
-will go to the next headline that starts with 'a' or 'A', making the node
-visible (expanding its ancestors) if the node was not visible.
+..  When using the Tk GUI and focus is in the outline Pane, you can move from
+..  node to node by typing the first letter of a headline. For example, typing 'a'
+..  will go to the next visible headline that starts with either 'a' or 'A',
+..  wrapping around to the start of the outline if needed. Typing an uppercase 'A'
+..  will go to the next headline that starts with 'a' or 'A', making the node
+..  visible (expanding its ancestors) if the node was not visible.
 
-When keystrokes (in the outline pane) are typed 'close' together in time Leo
-first looks for prefix + ch, where ch is the character just typed and prefix is
-the previous match. The term 'close together' is defined in seconds by the setting: 
+..  When keystrokes (in the outline pane) are typed 'close' together in time Leo
+..  first looks for prefix + ch, where ch is the character just typed and prefix is
+..  the previous match. The term 'close together' is defined in seconds by the setting: 
 
-@float outline_nav_extend_delay = 2.0 
+..  @float outline_nav_extend_delay = 2.0 
 
-The outline nav search reverts to a single-character search if the extended
-search fails, so in fact the delay is not too significant. In practice
-everything works well without thinking about what is happening.
+..  The outline nav search reverts to a single-character search if the extended
+..  search fails, so in fact the delay is not too significant. In practice
+..  everything works well without thinking about what is happening.
 
-This character search navigation is not currently implemented for the Qt interface.
+..  This character search navigation is not currently implemented for the Qt interface.
 .. @+node:EKR.20040524104904.40: *4* Expanding & contracting nodes
 You can expand or contract a node by clicking in the tree view icon to the left
 of the headline. The icon in the Qt gui matches the native OS's tree view icon,
-i.e. for Mac's, a triangle pointing right or down; on Windows (also when using
-the Tk gui), a square containing a plus or minus. Expanding a node shows its
-immediate children; contracting a node hides all its children. The corresponding
-commands are ``expand-node`` and ``contract-node``. For more convenient
-navigation, there are ``expand-and-go-right`` and ``contract-or-go-up`` which
-are bound to Alt-Right and Alt-Left.
+i.e. for Mac's, a triangle pointing right or down; on Windows, a square
+containing a plus or minus. Expanding a node shows its immediate children;
+contracting a node hides all its children. The corresponding commands are
+``expand-node`` and ``contract-node``. For more convenient navigation, there are
+``expand-and-go-right`` and ``contract-or-go-up`` which are bound to Alt-Right
+and Alt-Left.
 
 The ``expand-all`` command expands every node in the outline. ``contract-all``
 contracts every node in the outline. Both commands are available in the
@@ -156,24 +156,16 @@ The ``goto-next-marked`` command selects the next marked node, if any; it is ava
 
 The ``mark`` command unmarks the selected headline if it is already marked.
 .. @+node:EKR.20040524104904.38: *4* Dragging nodes
-In the Tk GUI, you may drag a node (including all its descendants) from one place to another
-in an outline. To start a drag, press the main (left) mouse button while the
-cursor is over the icon for a node. The cursor will change to a hand icon. If
-you release the mouse button while the hand cursor is above the icon for another
+You may drag a node (including all its descendants) from one place to another in
+an outline. To start a drag, press the main (left) mouse button while the cursor
+is over the icon for a node. The cursor will change to a hand icon. If you
+release the mouse button while the hand cursor is above the icon for another
 node, Leo will move the dragged node after that node. If you release the mouse
 button when the hand cursor is not over an icon, Leo will leave the outline pane
 as it is. Leo scrolls the outline pane as the result of mouse-moved events, so
 to continue scrolling you must keep moving the mouse.
-
-This is not yet implemented in the (default) Qt GUI.
 .. @+node:sps.20100710110337.12188: *3* @rst-no-head Body Related
 .. @+node:EKR.20040524104904.39: *4* Editing body text
-The default features of Leo's body text derive from the Tk.Text widget,
-described at: http://www.tcl.tk/man/tcl8.3/TkCmd/text.htm Not all these features
-are found on all platforms.
-The following features are derived from the Tk Text widget. Some default
-behaviors have been changed because they conflict with other Leo features.
-
 -   Clicking mouse button 1 positions the insertion cursor just before the character
     underneath the mouse cursor, sets the input focus to this widget, and clears any
     selection in the widget. Dragging with mouse button 1 strokes out a selection
@@ -185,9 +177,6 @@ behaviors have been changed because they conflict with other Leo features.
 -   The ends of the selection can be adjusted by dragging with mouse button 1 while
     the Shift key is down; this will adjust the end of the selection that was
     nearest to the mouse cursor when button 1 was pressed. 
-
--   Tk GUI only: clicking mouse button 1 with the Control key down will reposition the insertion
-    cursor without affecting the selection. 
 
 -   If there is no selection, normal printing characters are inserted at the point of the insertion cursor. 
 
@@ -346,7 +335,6 @@ Associated settings:
 - The ``@bool use_chapters`` setting determines whether chapters are enabled.
 - The ``@bool use_chapter_tabs`` setting determines whether the chapters
   pop-up menu appears in the icon area. Choosing a chapter name from this list selects a chapter.
-  Currently, this works in Qt, but a bug in Tk prevents it from functioning correctly in that GUI.
 
 When chapters are enabled, the Cmds->Chapters menu shows all available chapter commands:
 

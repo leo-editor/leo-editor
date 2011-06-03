@@ -91,9 +91,8 @@ headline text, body text, and **user attributes**, uA's for short.
 Because Leo has unlimited Undo commands, Leo deletes vnodes only when a window
 closes. Leo deletes nodes indirectly using destroy methods. Several classes,
 including the vnode, leoFrame and leoTree classes, have destroy methods. destroy
-methods merely clear links so that Python's and Tkinter's reference counting
-mechanisms will eventually delete vnodes and other data when a window
-closes.
+methods merely clear links so that Python's reference counting mechanisms will
+eventually delete vnodes and other data when a window closes.
 
 Leo's XML file format uses **tx** and **t** attributes to associate <v> elements
 with <t> elements. <v> elements represent nodes. <t> elements represent the body
@@ -194,15 +193,15 @@ handled properly. The following principles govern the LeoFind class:
     setting the self.c, self.v, self.in_headline, self.wrapping and
     self.s_text ivars.
 
-Setting self.in_headline is tricky; we must be sure to retain the state of
-the outline pane until initialization is complete. Initializing the Find All and
+Setting self.in_headline is tricky; we must be sure to retain the state of the
+outline pane until initialization is complete. Initializing the Find All and
 Change All commands is much easier because such initialization does not depend
-on the state of the Leo window. Using Tk.Text widgets for both headlines and
-body text results in a huge simplification of the code.
+on the state of the Leo window. Using the same kind of text widget for both
+headlines and body text results in a huge simplification of the code.
 
 Indeed, the searching code does not know whether it is searching headline or
-body text. The search code knows only that self.s_text is a Tk.Text widget that
-contains the text to be searched or changed and the insert and sel Tk attributes
+body text. The search code knows only that self.s_text is a text widget that
+contains the text to be searched or changed and the insert and sel attributes
 of self.search_text indicate the range of text to be searched. Searching
 headline and body text simultaneously is complicated. The selectNextVnode()
 method handles the many details involved by setting self.s_text and its insert
@@ -228,7 +227,8 @@ safety we should assume the most restrictive encoding, namely "ascii". With this
 assumption, Leo's code can't throw an exception during these promotions provided
 that: 
 
-- All strings are converted to unicode when Leo reads files or gets text from Tk.Text widgets.
+- Leo converts all text to unicode when Leo reads files or gets text from
+  text widgets.
 
 - All string literals in Leo's code have only ascii characters.
 .. @+node:EKR.20040524104904.269: *3* Unlimited undo
@@ -257,12 +257,9 @@ I first came across it in the documentation for Apple's Yellow Box classes.
 leoKeys.py handles key bindings.
 There are two kinds of bindings, gui bindings and pane bindings.
 
-**Gui bindings** are the actual binding as seen by Tkinter (or whatever gui is in effect).
+**Gui bindings** are the actual binding as seen by  whatever gui is in effect.
 Leo binds every key that has a binding to k.masterKeyHander.
-For Tkinter, a *separate* binding must be made, rather than a single <Key> binding,
-because, alas, Tkinter key events provide insufficient enough information
-to tell what key actually caused the key event(!)
-This is a significant hole in Tkinter's event mechanism.
+
 
 At present Leo makes gui bindings in several places, all equivalent.
 Bindings are made to callbacks, all of which have this form::

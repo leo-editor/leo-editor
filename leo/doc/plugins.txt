@@ -327,9 +327,8 @@ xsltWithNodes.py
    Adds the Outline:XSLT menu containing XSLT-related commands.
 
 zenity_file_dialogs.py
-   Replaces the tk file dialogs on Linux with external
+   Replaces Leo's file dialogs on Linux with external
    calls to the zenity gtk dialog package.
-
 .. @+node:ekr.20101113063552.9528: *3* Gui-independent plugins
 .. @+node:ekr.20101113063552.9412: *4* Commands & directives
 .. @+node:ekr.20101113063552.9413: *5* add_directives.py
@@ -861,8 +860,6 @@ Enables two-way communication with VIM.
 
 It's recommended that you have gvim installed--the basic console vim is not recommended.
 
-**On Tk ui, the open_with plugin must be enabled for this plugin to work properly!**
-
 When properly installed, this plugin does the following:
 
 - By default, the plugin opens nodes on icondclick2 events.
@@ -893,17 +890,14 @@ When properly installed, this plugin does the following:
 
 To install this plugin do the following:
 
-1. Make sure to enable open_with plugin (if you are using Tk ui).
-
-2. On Windows, set the vim_cmd and vim_exe settings to the path to vim or gvim
+1. On Windows, set the vim_cmd and vim_exe settings to the path to vim or gvim
    as shown in leoSettings.leo. Alternatively, you can ensure that gvim.exe is
    on your PATH.
 
-3. If you are using Python 2.4 or above, that's all you need to do. Jim
+1. If you are using Python 2.4 or above, that's all you need to do. Jim
    Sizelove's new code will start vim automatically using Python's subprocess
    module. The subprocess module comes standard with Python 2.4. For Linux
    systems, Leo will use subprocess.py in Leo's extensions folder if necessary.
-
 .. @+node:ekr.20101113063552.9445: *5* xemacs.py
 Allows you to edit nodes in emacs/xemacs.
 
@@ -2290,7 +2284,7 @@ Sends all output to the log pane.
 Creates a Scripts menu for LeoPy.leo.
 
 .. @+node:ekr.20101113063552.9493: *5* zenity_file_dialogs.py
-Replaces the tk file dialogs on Linux with external
+Replaces the gui file dialogs on Linux with external
 calls to the zenity gtk dialog package.
 
 This plugin is more a proof of concept demo than
@@ -2298,7 +2292,7 @@ a useful tool.  The dialogs presented do not take
 filters and starting folders can not be specified.
 
 Despite this, some Linux users might prefer it to the
-tk dialogs.
+gui dialogs.
 
 .. @+node:ekr.20101113063552.9399: *3* Qt only plugins
 .. @+node:ekr.20101113063552.9400: *4* attrib_edit.py
@@ -2581,9 +2575,9 @@ empty the node, then paste it into the note.
 .. @+node:ekr.20101113063552.9409: *4* todo.py
 Provides to-do list and simple task management for leo (Qt only).
 
-This plugin is the Qt version of the Tk cleo plugin. This plugin adds time
-required, progress and priority settings for nodes. With the @project tag a
-branch can display progress and time required with dynamic hierarchical updates.
+This plugin adds time required, progress and priority settings for nodes. With
+the @project tag a branch can display progress and time required with dynamic
+hierarchical updates.
 
 For full documentation see:
 

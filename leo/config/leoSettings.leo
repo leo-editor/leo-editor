@@ -396,13 +396,6 @@
 <v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
 <v t="ekr.20041119050105.16"><vh>@bool suboutline_only = False</vh></v>
 </v>
-<v t="ekr.20041213105007"><vh>Fonts</vh>
-<v t="ekr.20041119034357.45"><vh>@font body text font</vh></v>
-<v t="ekr.20070919125633"><vh>@font button font</vh></v>
-<v t="ekr.20041213105508"><vh>@font log font</vh></v>
-<v t="ekr.20060702100257"><vh>@font menu text font</vh></v>
-<v t="ekr.20041119051246.4"><vh>@font outline font</vh></v>
-</v>
 <v t="ekr.20071214132254"><vh>Import options</vh>
 <v t="ekr.20101104191857.8345"><vh>@bool at_auto_separate_non_def_nodes = False</vh></v>
 <v t="ekr.20071214132254.1"><vh>@data import_xml_tags</vh></v>
@@ -3655,11 +3648,6 @@ False: use local time.</t>
 <t tx="ekr.20041119034357.44">True:  auto-indent aligns with open ({[ brackets
 
 False: auto-indent increases indentation by one tab for Python only.</t>
-<t tx="ekr.20041119034357.45">body_text_font_family = None
-body_text_font_size = None
-body_text_font_slant = None
-body_text_font_weight = None
-</t>
 <t tx="ekr.20041119034357.48">Foreground color of body text.
 
 Note: this setting can be overridden by the x_mode_fg_color settings.</t>
@@ -4107,11 +4095,6 @@ LavenderBlush1</t>
 <t tx="ekr.20041119051246.3">Background color of selected headline text that is not being edited.
 
 LavenderBlush2</t>
-<t tx="ekr.20041119051246.4">headline_text_font_family = None
-headline_text_font_size = None
-headline_text_font_slant = roman
-headline_text_font_weight = normal
-</t>
 <t tx="ekr.20041119051901">Background color of unselected headline text in a headline that is being edited.
 
 Foreground color must also be specified for either setting to take effect.</t>
@@ -4209,37 +4192,9 @@ Autments the settings parser and the dialog creator with scripts.</t>
 <t tx="ekr.20041120181045">A float value restricted to the range 0.0 to 1.0.</t>
 <t tx="ekr.20041122163623">When looking at @x, Leo converts to lower case and removes minus signs.
 Therefore, @if-platform and @ifPlatformare equivalent to @ifplatform.</t>
-<t tx="ekr.20041213105007">@nocolor
-@
-
-**Important** The following settings apply only to the Tk gui.
-
-For the Qt gui the settings are in the node @data qt-gui-plugin-style-sheet.
-
-Valid values:
-
-weight: bold, normal, None
-slant: roman, italic, None
-
-Use the show-fonts command to pick fonts, then copy the values shown by the show-fonts command to the values here.
-
-@c
-
-import sys ; print sys.platform
-</t>
 <t tx="ekr.20041213105007.1"></t>
 <t tx="ekr.20041213105007.2"></t>
 <t tx="ekr.20041213105007.3"></t>
-<t tx="ekr.20041213105508"># The font for the log pane. Default is default font for Tk.Text widgets.
-# Tk translates invalid font names to another font in a system-dependent way.
-# 
-# Default size is 12 for Linux, 9 otherwise.
-
-log_text_font_family = Courier
-log_text_font_size = 9
-log_text_font_slant = roman
-log_text_font_weight = normal
-</t>
 <t tx="ekr.20041213105954">Options that require pixel values can be any Python expression that yields an int.
 Warning: the number of pixels per inch varies...</t>
 <t tx="ekr.20041213105954.1"></t>
@@ -6041,10 +5996,6 @@ horizontal: pack body-pane editors horizontally.</t>
 <t tx="ekr.20060627121646.1"></t>
 <t tx="ekr.20060627121646.2">The number of times to flash matching brackets.</t>
 <t tx="ekr.20060627121646.3">One half the total cycle time of bracket flashes, in milliseconds.</t>
-<t tx="ekr.20060702100257">menu_text_font_family = None
-menu_text_font_size = None
-menu_text_font_slant = None
-menu_text_font_weight = None</t>
 <t tx="ekr.20060704090341"></t>
 <t tx="ekr.20060713101831"></t>
 <t tx="ekr.20060730101451"></t>
@@ -6577,11 +6528,6 @@ propagate-key-event = Alt-W
 <t tx="ekr.20070622214401"></t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
-<t tx="ekr.20070919125633">button_text_font_family = verdana
-button_text_font_size = 7
-button_text_font_slant = roman
-button_text_font_weight = bold
-</t>
 <t tx="ekr.20070925144534"></t>
 <t tx="ekr.20070925144534.1"></t>
 <t tx="ekr.20070925144534.10">Save As &amp;Zipped</t>

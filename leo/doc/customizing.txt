@@ -461,10 +461,6 @@ Here is how Leo associates uA's with <v> elements in .leo files:
 
 - Leo performs the usual xml escapes on these strings when reading or writing
   the unknownAttributes ivars.
-.. @+node:ekr.20050620150517: *3* Specifying Tk options using .leo_xresources
-Leo looks for a file called .leo_xresources in the users home directory. If
-found, Leo will pass that file to Tk's option_readfile method for the top
-widget. This allows users to set Tk options.
 .. @+node:ekr.20080310093038.4: *3* Translating Leo's menus and messages
 .. _gettext: http://docs.python.org/lib/module-gettext.html
 

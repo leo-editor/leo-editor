@@ -22,15 +22,11 @@
 Controlling Syntax Coloring
 ###########################
 
-This chapter discusses the settings to control Leo's syntax colorers.
-
-This chapter also discusses how to extend Leo's colorizers by creating xml
-language descriptions files and corresponding Python files. **Important**: this
-material is for those who want to support Leo's colorizing code. To use Leo's
-colorizers you only need to know about syntax-coloring settings.
-
-The colorizers discussed here are in the threading_colorizer plugin (Tk) and the
-qtGui plugin (Qt).
+This chapter discusses the settings to control Leo's syntax colorer. This
+chapter also discusses how to extend Leo's colorizer by creating xml language
+descriptions files and corresponding Python files. **Important**: this material
+is for those who want to support Leo's colorizing code. To use Leo's colorizers
+you only need to know about syntax-coloring settings.
 
 .. contents::
     :depth: 3
@@ -670,42 +666,5 @@ match_terminate succeeds if s[i:] contains at least at_char more characters.
 
 If successful, match_terminate colors at_char characters
 with the color specified by kind.
-.. @+node:ekr.20070724081553: *3* The threading_colorizer plugin
-This section contains code-level notes for the threading colorizer. You do not
-need to understand this material in order to use the threading colorizer.
-
-The threading_colorizer plugin uses a separate **helper thread** to compute the
-ranges of text that should be colored. **The helper thread must not contain any
-calls to Tk**. Tk is not thread safe--calling Tk in the helper thread will cause
-hard crashes in the Tk dll. However, the code in the helper thread is gui
-independent. The **main thread** contains all of Leo's code except for a helper
-thread. The main thread contains all calls to Tk, all entry points to the
-colorizer, and idleHandler, an idle-time handler.
-
-Only one helper thread is ever active at any one time. If a keystroke occurs
-while the helper thread is active, the colorizer code in the main thread sets
-the killFlag ivar and calls join to wait for the helper thread to terminate. The
-helper thread will terminate promptly because it looks at killFlag each time
-through its main loop. Using a separate helper thread allows the main thread to
-continue working while the helper thread computes. This allows Tk (in the main
-thread) to respond to events. This in turn allows the colorizer code in the main
-thread to kill the helper thread if it is still working.
-
-The helper thread runs to completion before the main thread
-uses any of its results. Thus, no thread locking is needed, an important
-simplification. Once the helper thread completes, the main thread computes the
-tags to be sent to Tk, and actually sends those tags. When the user is typing
-rapidly, the colorizer will ignore the results of all helper threads except the
-last.
-
-After the helper thread generates the list of all requested
-tags, the main thread uses a kind of sort-merge algorithm to compare the
-existing tags (obtained from Tk) with the requested tags. In many cases, the
-lists are the same and colorizer issues *no* calls to Tk. This is a sensational
-optimization.  It absolutely minimizes the load on Tk.
-
-When the 'interruptible' argument to the colorizer is False,
-no threading is used and the main thread completely colors the entire text. This
-must be done when multiple body editors are present.
 .. @-all
 .. @-leo

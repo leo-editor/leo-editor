@@ -47,12 +47,11 @@ please ask for help on `Leo's help forum`_.
 Leo requires `Python`_. Leo will work on any platform that supports Python 2.6 or
 above, including Python 3.0 and above. 
 
-Leo also requires either the Qt or Tk widget set. Qt is strongly recommended. In
-particular, Tk does not work with Python 3k.  **Tk is no longer supported on MacOS.**
+Leo also requires either the Qt widget set.
 
 To enable spell checking, you must install the `PyEnchant`_ package.
 
-The following sections describe how to install Python, Qt, Tk and PyEnchant.
+The following sections describe how to install Python, Qt and PyEnchant.
 .. @+node:ekr.20100817101952.4313: *3* Installing other packages
 .. @+node:ekr.20100731112744.7270: *4* Installing Python
 .. _`this page`: http://python.org
@@ -121,7 +120,7 @@ to be reviewed and merged to trunk.
 .. @+node:ekr.20100731112744.7276: *4* Installing Leo on Windows
 1. Install Python from http://www.python.org/download/releases/
 
-2. Install either Tk or Qt, as described above.
+2. Install Qt, as described above.
 
 3. Download and install Leo.
    Download the latest version of Leo (a .zip file) from `Leo's download page`_.
@@ -156,8 +155,6 @@ You can, instead, add the following link::
 Now you are ready to `run Leo`_.
 .. @+node:ekr.20100731112744.7275: *4* Installing Leo on MacOS X
 Here is how to install Leo on MacOS 10.5 (Leopard):
-
-**Important**: Leo no longer works with Tk on MacOS.
 
 1. MacOS 10.5 comes with Python pre-installed.
 
