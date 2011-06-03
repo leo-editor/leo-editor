@@ -624,7 +624,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
 </t>
 <t tx="ekr.20101027070126.1639">'''Make all variable Leo distribution files::
 
-        bzr-manifest.txt
+        ### bzr-manifest.txt
         leo\dist\nsi-install-files.txt
         leo\dist\nsi-uninstall-files.txt
         leo.zip.
@@ -951,6 +951,8 @@ def deleteTempFiles (self,lines):
 <t tx="ekr.20101105103524.1491">def make_manifest(self):
 
     '''Make bzr-manifest.txt.'''
+    
+    return ### Make this by hand.
 
     commands = (
         r'cls',
