@@ -1897,6 +1897,8 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
             self.setSelectionRange(i,i,insert=i)
     #@+node:ekr.20110212012742.15418: *5* setEditorColors (leoQtHeadlineWidget)
     def setEditorColors(self,bg,fg):
+        
+        # g.trace('(leoQtHeadlineWidget)',bg,g.callers())
      
         self.setBackgroundColorHelper(bg)
     #@+node:ekr.20110212012742.15420: *6* setBackgroundColorHelper (leoQtHeadlineWidget)
@@ -2924,7 +2926,7 @@ class leoQtBody (leoFrame.leoBody):
         
         obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
         
-        # g.trace(bg,fg,g.callers())
+        # g.trace('(leoQtBody)',bg,fg,g.callers())
         
         self.setForegroundColorHelper(fg,obj)
         self.setBackgroundColorHelper(bg,obj)
@@ -6812,11 +6814,11 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w.editItem(item)
         e = w.itemWidget(item,0)
         e.setObjectName('headline')
-        self.connectEditorWidget(e,item)
+        wrapper = self.connectEditorWidget(e,item)
         
-        if trace: g.trace(e)
+        if trace: g.trace(e,wrapper)
 
-        return e
+        return e,wrapper
     #@+node:ekr.20090124174652.103: *6* createTreeItem
     def createTreeItem(self,p,parent_item):
 

@@ -550,7 +550,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             # 2011/06/01: A second *single* click on a selected node
             # enters editing state.
             if auto_edit and self.auto_edit:
-                e = self.createTreeEditorForItem(item)
+                e,wrapper = self.createTreeEditorForItem(item)
         finally:
             self.selecting = False
     #@+node:ekr.20090124174652.41: *3* onItemDoubleClicked (nativeTree)
@@ -568,8 +568,11 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         try:
             self.selecting = True
 
-            e = self.createTreeEditorForItem(item)
-            if not e: g.trace('*** no e')
+            e,wrapper = self.createTreeEditorForItem(item)
+            if e:
+                wrapper.setEditorColors(c.k.insert_mode_bg_color,'(not used)')
+            else:
+                g.trace('*** no e')
 
             p = self.item2position(item)
             if p:
@@ -1010,6 +1013,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         '''Create an editor widget for the given tree item.'''
 
         self.oops()
+        return None,None
     #@+node:ekr.20090124174652.81: *4* getCurrentItem
     def getCurrentItem (self):
 
