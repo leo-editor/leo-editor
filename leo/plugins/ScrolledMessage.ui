@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>Form</class>
- <widget class="QWidget" name="Form" >
-  <property name="geometry" >
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,110 +10,110 @@
     <height>353</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
-   <property name="spacing" >
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
     <number>2</number>
    </property>
-   <property name="leftMargin" >
+   <property name="leftMargin">
     <number>2</number>
    </property>
-   <property name="topMargin" >
+   <property name="topMargin">
     <number>3</number>
    </property>
-   <property name="rightMargin" >
+   <property name="rightMargin">
     <number>3</number>
    </property>
-   <property name="bottomMargin" >
+   <property name="bottomMargin">
     <number>2</number>
    </property>
    <item>
-    <widget class="QFrame" name="leo_scrolledmessage_frame" >
-     <property name="frameShape" >
+    <widget class="QFrame" name="leo_scrolledmessage_frame">
+     <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
-     <property name="frameShadow" >
+     <property name="frameShadow">
       <enum>QFrame::Plain</enum>
      </property>
-     <layout class="QGridLayout" name="gridLayout" >
-      <property name="margin" >
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="margin">
        <number>0</number>
       </property>
-      <property name="spacing" >
+      <property name="spacing">
        <number>2</number>
       </property>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="leo_topLabel" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Minimum" hsizetype="MinimumExpanding" >
+      <item row="2" column="0">
+       <widget class="QLabel" name="leo_topLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="frameShape" >
+        <property name="frameShape">
          <enum>QFrame::Box</enum>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>TextLabel</string>
         </property>
-        <property name="scaledContents" >
+        <property name="scaledContents">
          <bool>false</bool>
         </property>
-        <property name="alignment" >
+        <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
-        <property name="margin" >
+        <property name="margin">
          <number>2</number>
         </property>
-        <property name="openExternalLinks" >
+        <property name="openExternalLinks">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" >
-       <widget class="QWebView" name="leo_webView" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Expanding" hsizetype="Ignored" >
+      <item row="3" column="0">
+       <widget class="QWebView" name="leo_webView">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="baseSize" >
+        <property name="baseSize">
          <size>
           <width>400</width>
           <height>600</height>
          </size>
         </property>
-        <property name="url" >
+        <property name="url">
          <url>
           <string>about:blank</string>
          </url>
         </property>
        </widget>
       </item>
-      <item row="0" column="0" >
-       <widget class="QFrame" name="leo_menubar_frame" >
-        <property name="frameShape" >
+      <item row="0" column="0">
+       <widget class="QFrame" name="leo_menubar_frame">
+        <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
         </property>
-        <property name="frameShadow" >
+        <property name="frameShadow">
          <enum>QFrame::Plain</enum>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2" >
-         <property name="spacing" >
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="spacing">
           <number>2</number>
          </property>
-         <property name="margin" >
+         <property name="margin">
           <number>0</number>
          </property>
          <item>
-          <spacer name="horizontalSpacer_2" >
-           <property name="orientation" >
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" stdset="0" >
+           <property name="sizeHint" stdset="0">
             <size>
              <width>328</width>
              <height>0</height>
@@ -121,48 +122,31 @@
           </spacer>
          </item>
          <item>
-          <widget class="QToolButton" name="leo_chk_rst" >
-           <property name="text" >
-            <string>rst</string>
-           </property>
-           <property name="checkable" >
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="leo_chk_html" >
-           <property name="text" >
+          <widget class="QToolButton" name="leo_chk_html">
+           <property name="text">
             <string>html</string>
            </property>
-           <property name="checkable" >
+           <property name="checkable">
             <bool>true</bool>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="leo_chk_text" >
-           <property name="text" >
+          <widget class="QToolButton" name="leo_chk_text">
+           <property name="text">
             <string>text</string>
            </property>
-           <property name="checkable" >
+           <property name="checkable">
             <bool>true</bool>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="leo_tool_rst3" >
-           <property name="text" >
-            <string>rst 3</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="leo_tool_close" >
-           <property name="text" >
+          <widget class="QToolButton" name="leo_tool_close">
+           <property name="text">
             <string>close</string>
            </property>
-           <property name="checkable" >
+           <property name="checkable">
             <bool>false</bool>
            </property>
           </widget>
@@ -170,9 +154,9 @@
         </layout>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="Line" name="line" >
-        <property name="orientation" >
+      <item row="1" column="0">
+       <widget class="Line" name="line">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
@@ -181,139 +165,107 @@
     </widget>
    </item>
   </layout>
-  <action name="actionSave" >
-   <property name="text" >
+  <action name="actionSave">
+   <property name="text">
     <string>Save</string>
    </property>
   </action>
-  <action name="actionPrint" >
-   <property name="text" >
+  <action name="actionPrint">
+   <property name="text">
     <string>Print</string>
    </property>
   </action>
-  <action name="actionAbout" >
-   <property name="text" >
+  <action name="actionAbout">
+   <property name="text">
     <string>About</string>
    </property>
   </action>
-  <action name="actionPageSetup" >
-   <property name="text" >
+  <action name="actionPageSetup">
+   <property name="text">
     <string>Page Setup</string>
    </property>
   </action>
-  <action name="actionPrintPreview" >
-   <property name="text" >
+  <action name="actionPrintPreview">
+   <property name="text">
     <string>Print Preview</string>
    </property>
   </action>
-  <action name="actionPrintDialog" >
-   <property name="text" >
+  <action name="actionPrintDialog">
+   <property name="text">
     <string>Print...</string>
    </property>
   </action>
-  <action name="actionOutlineShow" >
-   <property name="text" >
+  <action name="actionOutlineShow">
+   <property name="text">
     <string>Show Outline</string>
    </property>
   </action>
-  <action name="actionOutlineThisNode" >
-   <property name="checkable" >
+  <action name="actionOutlineThisNode">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked" >
+   <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Show Current Node Only</string>
    </property>
-   <property name="autoRepeat" >
+   <property name="autoRepeat">
     <bool>false</bool>
    </property>
   </action>
-  <action name="actionOutlineIncludeBody" >
-   <property name="checkable" >
+  <action name="actionOutlineIncludeBody">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked" >
+   <property name="checked">
     <bool>false</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Include Body Text </string>
    </property>
   </action>
-  <action name="actionOutlineExpandFollowsTree" >
-   <property name="checkable" >
+  <action name="actionOutlineExpandFollowsTree">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked" >
+   <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Expand Follows Tree</string>
    </property>
   </action>
-  <action name="actionRST3" >
-   <property name="text" >
+  <action name="actionRST3">
+   <property name="text">
     <string>rst 3</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Display @rs3 node as html </string>
    </property>
   </action>
  </widget>
- <layoutdefault spacing="6" margin="2" />
+ <layoutdefault spacing="6" margin="2"/>
  <customwidgets>
   <customwidget>
    <class>QWebView</class>
    <extends>QWidget</extends>
-   <header>PyQt4.QWebKit</header> <!-- Marc-Antoine Parent -->
+   <header>QtWebKit/QWebView</header>
   </customwidget>
  </customwidgets>
  <resources/>
  <connections>
-  <connection>
-   <sender>leo_tool_rst3</sender>
-   <signal>clicked()</signal>
-   <receiver>actionRST3</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>276</x>
-     <y>12</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>leo_chk_html</sender>
    <signal>clicked()</signal>
    <receiver>Form</receiver>
    <slot>chkBtnChanged()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>205</x>
      <y>12</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>167</x>
-     <y>176</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>leo_chk_rst</sender>
-   <signal>clicked()</signal>
-   <receiver>Form</receiver>
-   <slot>chkBtnChanged()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>173</x>
-     <y>12</y>
-    </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>167</x>
      <y>176</y>
     </hint>
@@ -325,11 +277,11 @@
    <receiver>Form</receiver>
    <slot>chkBtnChanged()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>240</x>
      <y>12</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>167</x>
      <y>176</y>
     </hint>
@@ -341,11 +293,11 @@
    <receiver>Form</receiver>
    <slot>close()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>314</x>
      <y>12</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>167</x>
      <y>176</y>
     </hint>
