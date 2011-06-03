@@ -630,6 +630,9 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
         leo.zip.
 '''
 
+### Important: it doesn't work to use os.system to generate bzr-manifest.txt.
+### Important: The install/uninstall files must be copied to the trunk directory.
+
 version = '4.9-b1' ##version
 
 &lt;&lt; includes &gt;&gt;
@@ -908,8 +911,11 @@ def deleteTempFiles (self,lines):
                 put('\n')
                 put('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
                 put('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
+                # Delete all files in any __pycache__ subdirectory.
+                put('Delete "$INSTDIR\\%s\\__pycache__\\*.pyc"\n' % (dir2))
             for fn in aList:
                 put('Delete "$INSTDIR\\%s\\%s"\n' % (dir2,fn))
+            
 
     # Part 3: Delete directories.
     reverseDirs = dirs[:]
@@ -920,6 +926,7 @@ def deleteTempFiles (self,lines):
         # Delete the directory even if it has files.
         if theDir and theDir != '**top':
             if not theDir.startswith('.bzr'):
+                put('RMDir "$INSTDIR\\%s\\__pycache__"\n' % (clean(theDir)))
                 put('RMDir "$INSTDIR\\%s"\n' % (clean(theDir)))
 
     # Delete the op-level folder.
