@@ -3,7 +3,6 @@ LICENSE.TXT
 Makefile
 PKG-INFO.TXT
 README.TXT
-erl_crash.dump
 launchLeo.py
 leo/
 leo/Icons/

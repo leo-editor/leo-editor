@@ -13173,5 +13173,105 @@ def mouseReleaseEvent (*args,**keys):
         event2 = leoKeyEvent(event=None,
             c=c,w=c.frame.body.bodyCtrl,ch='',tkKey='',stroke='')
         k.fullCommand(event2)
+#@+node:ekr.20110602133526.16782: ** Difference between ctrl-H and double-click
+#@+node:ekr.20090124174652.56: *3* editLabel (nativeTree)
+def editLabel (self,p,selectAll=False,selection=None):
+
+    """Start editing p's headline."""
+
+    trace = False and not g.unitTesting
+    if self.busy(): return
+    c = self.c
+    c.outerUpdate()
+        # Do any scheduled redraw.
+        # This won't do anything in the new redraw scheme.
+
+    item = self.position2item(p)
+    if item:
+        e,wrapper = self.editLabelHelper(item,selectAll,selection)
+    else:
+        e = None
+        self.error('no item for %s' % p)
+
+    # A nice hack: just set the focus request.
+    if e: c.requestedFocusWidget = e
+    
+    if trace: g.trace(e,wrapper,g.callers())
+    return e,wrapper # 2011/02/12
+#@+node:ekr.20090124174652.41: *3* onItemDoubleClicked (nativeTree)
+def onItemDoubleClicked (self,item,col):
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item),g.callers(4))
+
+    try:
+        self.selecting = True
+
+        e = self.createTreeEditorForItem(item)
+        if not e: g.trace('*** no e')
+
+        p = self.item2position(item)
+        if p:
+            event = None
+            g.doHook("icondclick1",c=c,p=p,v=p,event=event)
+            c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+        else:
+            g.trace('*** no p')
+
+        c.outerUpdate()
+    finally:
+        self.selecting = False
+#@+node:ekr.20090129062500.13: *3* editLabelHelper (leoQtTree)
+def editLabelHelper (self,item,selectAll=False,selection=None):
+
+    '''Called by nativeTree.editLabel to do
+    gui-specific stuff.'''
+
+    trace = False and not g.unitTesting
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+        # Generates focus-in event that tree doesn't report.
+    e = w.itemWidget(item,0) # A QLineEdit.
+
+    if e:
+        s = e.text() ; len_s = len(s)
+        if s == 'newHeadline': selectAll=True
+        if selection:
+            i,j,ins = selection
+            start,n = i,abs(i-j)
+                # Not right for backward searches.
+        elif selectAll: start,n,ins = 0,len_s,len_s
+        else:           start,n,ins = len_s,0,len_s
+        e.setObjectName('headline')
+        e.setSelection(start,n)
+        # e.setCursorPosition(ins) # Does not work.
+        e.setFocus()
+        wrapper = self.connectEditorWidget(e,item) # Hook up the widget.
+
+    if trace: g.trace(e,wrapper)
+    return e,wrapper # 2011/02/11
+#@+node:ekr.20090124174652.104: *3* createTreeEditorForItem (leoQtTree)
+def createTreeEditorForItem(self,item):
+
+    trace = False and not g.unitTesting
+
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+    e = w.itemWidget(item,0)
+    e.setObjectName('headline')
+    self.connectEditorWidget(e,item)
+    
+    if trace: g.trace(e)
+
+    return e
 #@-all
 #@-leo
