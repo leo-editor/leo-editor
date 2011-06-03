@@ -38,6 +38,6 @@ Links:
 ------
 Leo:      http://webpages.charter.net/edreamleo/front.html
 Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Download: http://sourceforge.net/projects/leo/files/
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
