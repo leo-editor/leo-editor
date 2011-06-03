@@ -161,19 +161,6 @@ as described at `How to install Leo on Windows`_.
 However you are installing Leo,
 be sure to `run Leo in a console window`_.
 because as a last resort Leo prints error messages to the console.
-.. @+node:ekr.20050830115714.75: *4* Leo is hanging on my Linux box.  What should I do?
-From: http://sourceforge.net/forum/message.php?msg_id=1685399
-
-When building Tcl on Linux, do not specify "--enable-threads"
-Only use Tcl with the default "threads not enabled" case.
-
-Here is how to build Tk without thread support:
-
-- Go to www.tcl.tk, and download the sources for Tcl and Tk.
-- Build those two pack's as is told in the "How to Compile Tcl Source Releases"
-- Go to www.python.org and download your favorite Python (2.3.5 for me).
-- Build it as is told on the download page.
-- Enjoy using Leo on Linux.
 .. @+node:ekr.20070623145346.1: *4* Running Python setup.py install from the leo directory doesn't work.  Why not?
 Leo's setup.py script is intended only to create source distributions. It can't
 be used to install Leo because Leo is not a Python package.
@@ -630,9 +617,9 @@ For example, the following script will add a new item at the end of the 'File' m
 
     c.frame.menu.createMenuItemsFromTable('File',table)
 
-Plugins can do anything that can be done with Tk using the menu returned by
-c.frame.menu.getMenu. For example, here is a script that adds a Test menu item
-after the 'Open With' menu item in the File menu::
+Plugins can do anything with menus using c.frame.menu.getMenu. For example, here
+is a script that adds a Test menu item after the 'Open With' menu item in the
+File menu::
 
     def callback(*args,**keys):
         g.trace()
@@ -675,7 +662,7 @@ You will find this ctor in the node::
 Note that this ivar can not be set using settings in leoSettings.leo because
 Leo uses g.app.use_psyco before processing configuration settings.
 .. @+node:ekr.20091105080104.9031: *4* How do I specify qt fonts?
-@font nodes only work with the Tk gui. When using the Qt gui, you specify fonts
+When using the Qt gui, you specify fonts
 using the node in leoSettings.leo called::
 
     @data qt-gui-plugin-style-sheet
@@ -988,40 +975,6 @@ Repeat steps 1 and 2 until all invalid characters are gone.
 Leo's extensions folder contains Pmw in official distributions, but not in the
 Cvs repository, so you won't be able to use a Leo in a sandbox unless you copy
 Pmw to the extensions folder or have Pmw otherwise available on Python's path.
-.. @+node:ekr.20050908113904: *4* Can I scroll the outline pane with the mouse wheel?
-This is a known bug in Tk that prevents this on Windows. The obvious Tk code
-causes a hard crash in the Python dll: it's the only time Leo has taken such a
-hard crash. The UniversalScrolling plugin is an attempt at a workaround.
-
-Scrolling with the mouse wheel may be possible on Linux. See the code in
-createTkTreeCanvas in leoTkinterFrame.py
-.. @+node:ekr.20050830115714.114: *4* Control-Shift backspace doesn't work.  What should I do?
-By Dave Hein: The cause of the keymapping problem is a issue with the X11
-keyboard mapping, not with Tk. If you have this problem on your system, issue
-the command::
-
-    xmodmap -pke 
-
-and look in the results for the line for keycode 22. I'll bet it shows something like::
-
-    keycode 22 = BackSpace Terminate_Server
-
-That second token ("Terminate_Server") is what is supposed to be mapped to
-Shift-Backspace. You want this second token to be either not present or to be
-BackSpace. To fix this, create a file (e.g. .Xmodmap) and give it the content::
-
-    keycode 22 = BackSpace
-
-then run the command::
-
-    xmodmap .Xmodmap
-
-This fixes the problem. On my system this also disables the ability to terminate
-the X server using Ctrl-Alt-BackSpace. This is because of some conflict with xdb
-(xdb is the newer keyboard mapping facility in XFree86; xmodmap is the old
-original X11 keyboard mapping facility). I'm still working on that. I'm also not
-able to get xmodmap to make this change during X11 startup (again because of
-conflicts with xdb). But I'm working on that as well.
 .. @+node:ekr.20050830115714.115: *4* Error messages from the rst3 plugin aren't helpful. What can I do?
 For the most part, docutils_ does a good job of reporting errors. docutils_ prints
 a message to the console and inserts an unmistakable error message in the
@@ -1103,29 +1056,6 @@ Leo does this so that you won't accidentally overwrite your files after importin
 Change the filename following @file (or @file) as desired,
 then remove the @ignore directive_.
 Saving the outline will then create the external file.
-.. @+node:edream.110203163054.61: *4* I don't see the Leo icon in Leo windows
-For versions of Leo before 4.0 and for versions of Python before 2.3,
-Leo will draw a Leo icon in Leo windows only if you have installed Fredrik Lundh's PIL and tkIcon packages.
-
--   Download PIL from http://www.pythonware.com/downloads/index.htm#pil
-
--   Download tkIcon from http://www.effbot.org/downloads/#tkIcon
-.. @+node:ekr.20061021164213.1: *4* Leo doesn't recognize commands with the caps-lock key down
-This is a known bug in Tk/Tkinter and there is no good workaround. Some
-keyboards allow you to disable the caps-lock key.
-.. @+node:ekr.20050830115714.75: *4* Leo is hanging on my Linux box.  What should I do?
-From: http://sourceforge.net/forum/message.php?msg_id=1685399
-
-When building Tcl on Linux, do not specify "--enable-threads"
-Only use Tcl with the default "threads not enabled" case.
-
-Here is how to build Tk without thread support:
-
-- Go to www.tcl.tk, and download the sources for Tcl and Tk.
-- Build those two pack's as is told in the "How to Compile Tcl Source Releases"
-- Go to www.python.org and download your favorite Python (2.3.5 for me).
-- Build it as is told on the download page.
-- Enjoy using Leo on Linux.
 .. @+node:ekr.20060323105214: *4* Leo's Recent Files menu doesn't work from a cvs shandbox.  What's going on?
 You must create .leoRecentFiles.txt in the config directory.
 .leoRecentFiles.txt is part of the standard releases but is not part of the cvs repository.
@@ -1182,13 +1112,6 @@ to be portable over the several computers/platforms I need to use them on, and
 makes testing scripts against multiple leo versions easy. It does mean that my
 scripts are not portable to other leo users but that is not likely to be a
 problem.
-.. @+node:ekr.20091105080104.11492: *4* Why don't @font nodes work with the Qt gui?
-@font nodes only work with the Tk gui. When using the Qt gui, you specify fonts
-using the node in leoSettings.leo called::
-
-    @data qt-gui-plugin-style-sheet
-
-As usual, you will probably want to put this node in your myLeoSettings.leo file.
 .. @+node:ekr.20101026082911.5538: *4* Why didn't Leo update my @shadow outline as expected?
 .. _`here`: atShadow.html#aha-boundary-cases-don-t-matter
 
@@ -1233,25 +1156,6 @@ new_leo_file_encoding
         <?xml version="1.0" encoding="UTF-8">
 
     The default is UTF-8 (upper case for compatibility for old versions of Leo).
-
-tk_encoding
-    The encoding that Leo uses to communicate with Tk text widgets.
-    You would typically use this setting only in an emergency.
-    The section called::
-
-        << set app.tkEncoding >>
-
-    in app.finishCreate sets this encoding as follows:
-
-    a) using the tk_encoding setting if it exists,
-    b) using locale.getpreferredencoding if it exists,
-       or the equivalent code in pre-python 2.3 versions,
-    c) using sys.getdefaultencoding
-    d) defaulting to "utf-8"
-
-    Neither b nor c are guaranteed to give a valid encoding in all systems,
-    and Leo will ignore invalid encodings returned from b or c.
-    Therefore, setting the tk_encoding setting may be needed.
 .. @+node:ekr.20060917130130: *4* I get weird results when defining unicode strings in scripts.  What is going on?
 Add the following to the start of your scripts::
 
@@ -1284,8 +1188,6 @@ You have two options:
 
 - Use the @encoding directive_ in an ancestor of the node_ selected when
   doing the Import command_ to specify the encoding of file to be imported.
-
-- Set the tk_encoding setting_ (see the previous answer) to the encoding you normally use.
 .. @+node:ekr.20071026055929.1: *4* Python's print statement shows 'byte hash' for unicode characters.  What can I do?
 First, you must change Python's default encoding to something other than 'ascii'.  To do this, put the following in your sitecustomize.py file in Python's Lib folder::
 

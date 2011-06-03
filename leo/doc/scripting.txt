@@ -112,7 +112,7 @@ To create a tab named 'Test' or make it visible if it already exists::
 
     c.frame.log.selectTab('Test')
 
-When first created, a tab contains a Tk.Text widget. To write to this widget,
+When first created, a tab contains a text widget. To write to this widget,
 add the tabName argument to g.es::
 
     g.es('Test',color='blue',tabName='Test')
@@ -730,7 +730,7 @@ Scripts can get or change the context of the body as follows::
   When the sort parameter is in effect, getSelectionRange
   ensures i <= j.
 
-- color is a tk color name, even when using the qt gui plugin.
+- color is a Tk color name, even when using the Gt gui.
 .. @+node:ekr.20040403173920.18: *4* Invoking commands from scripts
 Leo dispatches commands using c.doCommand,
 which calls the "command1" and "command2" hook routines for the given label.
@@ -868,12 +868,11 @@ The following creates a tab named test or make it visible if it already exists::
 
 g.es, g.enl, g.ecnl, g.ecnls write to the log tab specified by the optional
 tabName argument. The default for tabName is 'Log'. The put and putnl methods of
-the tkinterLog class also take an optional tabName argument which defaults to
+the gui's log class also take an optional tabName argument which defaults to
 'Log'.
 
-Plugins and scripts may call the
-c.frame.canvas.createCanvas method to create a log tab containing a Tk.Canvas
-widget. Here is an example script::
+Plugins and scripts may call the c.frame.canvas.createCanvas method to create a
+log tab containing a graphics widget. Here is an example script::
 
     log = c.frame.log ; tag = 'my-canvas'
     w = log.canvasDict.get(tag)

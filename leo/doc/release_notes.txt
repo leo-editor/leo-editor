@@ -974,7 +974,10 @@ This bug has been around for a long time.
 Leo makes sure that opened files or newly-created outlines fit entirely on the screen.  The Cascade commands leaves the sizes of windows unchanged: it merely ensures that the top left corner of a window is visible on the screen.
 #@+node:edream.120403174147.119: *7* Tested support for Unicode file & directory names
 #@+node:edream.120403174147.128: *7* Added code so @url nodes may open .leo files
-@ A problem: the new window gets put behind the old.  This is probably because Tk thinks that the mouse-down event should select then new window...
+@
+
+A problem: the new window gets put behind the old.  This is probably because Tk
+thinks that the mouse-down event should select then new window... 
 #@+node:edream.120403174147.56: *7* Fixed problems with @lineending platform
 #@+node:edream.120403174241: *6* Bugs fixed
 #@+node:edream.120403174147.30: *7* Fixed crasher in Apply Settings command
@@ -1004,13 +1007,23 @@ The fix was simple: call setUndoParams instead of setUndoTypingParams in batchCh
 #@+node:edream.120403180443.1: *5* Changes made in earlier 4.1 betas
 #@+node:edream.110603190234.1: *6* Code-level features
 #@+node:edream.110603190125.3: *7* Regression tests started
-The file test.leo in the test directory contains real regression tests for syntax coloring.   Regression testing scripts create regression tests dynamically from data in Leo's outline.  Very cool, very easy, very general.  In particular, regression tests may use temporary nodes in test.leo rather than creating separate Tk windows for testing.
+The file test.leo in the test directory contains real regression tests for
+syntax coloring.  Regression testing scripts create regression tests dynamically
+from data in Leo's outline.  Very cool, very easy, very general.  In particular,
+regression tests may use temporary nodes in test.leo rather than creating
+separate Tk windows for testing. 
 #@+node:edream.110603190125.4: *7* Code reorganized to support other guis
-The 4.1 code base has been reorganized to support gui's other than tkinter.  Leo's src directory contains several new source files.
+The 4.1 code base has been reorganized to support gui's other than tkinter.
+Leo's src directory contains several new source files.
 
-This reorg affects almost all plugins.  Considerably more work and testing will be done before 4.1 final.
+This reorg affects almost all plugins. Considerably more work and testing will
+be done before 4.1 final.
 
-The __wx_gui.py plugin is uses the newly reorganized code.  It is functional except for gui-dependent commands like Toggle-Split Direction.  WARNING: treat the this plugin with extreme caution until further notice.  The possibility exists that bugs in the code could cause body text to be cleared improperly when changing nodes.
+The __wx_gui.py plugin is uses the newly reorganized code.  It is functional
+except for gui-dependent commands like Toggle-Split Direction.  WARNING: treat
+the this plugin with extreme caution until further notice.  The possibility
+exists that bugs in the code could cause body text to be cleared improperly when
+changing nodes. 
 #@+node:edream.110303182253.39: *7* Made app.forceShutdown work in "idle" hook
 #@+node:edream.110603190404: *6* Fixed bugs
 #@+node:edream.110603190322.13: *7* Fixed bug involving 0x1a characters in body text.
@@ -1609,8 +1622,6 @@ Leo now generates no warnings with all significant tests enabled.  Some tests ha
 #@+node:EKR.20040628100535: *6* Fixed bugs
 @killcolor
 #@+node:EKR.20040628095213.3: *7* Made "end1" and "ilde"events work again
-@nocolor
-
 - Leo calls g.enableIdleTimeHook at end of startup code.
 	- This means that g.idleTimeHookHandler gets called periodically, even if no hooks have been defined.
 	- g.enableIdleTime hook now calls g.app.gui.setIdleTimeHook at most once.
@@ -1710,7 +1721,6 @@ The code is pretty fragile; it should handle either None or "", but in fact it r
 #@+node:EKR.20040628095213.52: *7* Allowed </leo_header> tag
 #@+node:EKR.20040628095213.109: *7* Replaced the word "Leo" with Leo icon in Find/Compare/Prefs windows
 http://sourceforge.net/forum/message.php?msg_id=2429098
-By: nobody
 
 The Leo icon can eliminate the need for the word Leo.
 

@@ -43,37 +43,6 @@ The conclusions are still valid today.
 .. _`Rst3 plugin`:          rstplugin3.html
 .. _`Scripting plugin`:     plugins.html#mod-scripting
 .. _`test buttons`:         scripting.html#test-and-suite-nodes
-.. @+node:EKR.20040524104904.259: *3* @rst-ignore Tk is the future of Leo
-The more I look at Tk, the more convinced I am that Python + Tk (aka Tkinter)
-is, by far, the best way to go with Leo. I now have Open Source code for tree
-widgets and splitter windows, and have intensely studied how to modify that code
-for use in Leo. It is clear, even at this early date, that this code will
-provide a very pleasant base on which to build Leo.
-
-The tree code is based on code in IDLE, the Python IDE. This code is simple,
-good and plenty fast enough. The tree code draws directly to a Tk canvas object.
-The look and feel matches Windows exactly. It would be trivial to use Mac
-triangle icons instead of the Windows plus and minus icons. It would also be
-trivial to modify the look and feel for Linux.
-
-The tree widget code solves several intractable problems with wxTreeCtrl.
-Moving nodes becomes trivial. Bugs in wxTreeCtrl involving editing and
-redrawing disappear. Using Python/Tk code simplifies the vnode class, and having
-access to the vnode class simplifies and speeds up the tree widget code. It will
-now be possible to bind keystrokes properly; this simply can not be done in
-wxWindows. The tree widget code shows just how trivial the Windows native
-tree control is. The Tk canvas is a splendid example of higher-level code being
-superior, in every way, to lower level code.
-
-Another big win comes from using the Tk text widget. This widget is
-extraordinarily powerful. The only text control that rivals it is the
-MacOS/Yellow Box text control. Indeed, the Tk text widget does everything that
-Leo could possibly want. One can even embed images in text.
-
-In short, using Tk for Leo will be fast enough and will greatly increase what is
-possible in Leo while at the same time greatly simplifying Leo's code. I am
-about to convert Leo from wxPython to Python + Tk.
-Edward K. Ream, November 4, 2001
 .. @+node:EKR.20040524104904.260: *3* Why I like Python
 I've known for a while that Python was interesting; I attended a Python
 conference last year and added Python support to Leo. But last week I got that
@@ -157,8 +126,8 @@ simple and elegant. Python allows me to express my intentions clearly and at the
 highest possible level.
 
 The only hope of making Leo all it can be is to use the best possible tools. I
-believe Python (possibly with Tkinter) will allow me to add, at long last, the
-new features that Leo should have.
+believe Python will allow me to add, at long last, the new features that Leo
+should have.
 
 Edward K. Ream, October 25, 2001.  P.S., September, 2005:
 

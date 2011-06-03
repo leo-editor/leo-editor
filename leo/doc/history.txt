@@ -275,9 +275,26 @@ general enough interest to put in Leo's Users Guide on the web. I am including
 this mass of detail here to indicate the complexities that were involved in
 designing Leo's simple-looking mechanisms.
 .. @+node:EKR.20040524104904.247: *4* Versions
-In May of 1999 I began work on the Borland version of Leo for Windows.  The Borland Delphi classes were a pleasure to use and free of bugs.  I redesigned Leo's file format for the Windows version of Leo;  the Yellow Box file format is a binary format that requires the Yellow Box runtime.  Fortunately, I choose to use XML for Leo's file format. I have Marc-Antoine Parent to thank for this decision; he urged me to use XML and patiently explained how to use XML properly.  However, there are two significant problems with the Borland version of Leo.  First, it works only on Windows.  Second, it can never be Open software, because it uses Borland's Delphi classes and a commercial syntax coloring component.
+In May of 1999 I began work on the Borland version of Leo for Windows.  The
+Borland Delphi classes were a pleasure to use and free of bugs.  I redesigned
+Leo's file format for the Windows version of Leo; the Yellow Box file format is
+a binary format that requires the Yellow Box runtime.  Fortunately, I choose to
+use XML for Leo's file format.  I have Marc-Antoine Parent to thank for this
+decision; he urged me to use XML and patiently explained how to use XML
+properly.  However, there are two significant problems with the Borland version
+of Leo.  First, it works only on Windows.  Second, it can never be Open
+software, because it uses Borland's Delphi classes and a commercial syntax
+coloring component. 
 
-In October of 2001 I began work on the leo.py, an Open Software version of leo.py, a version of Leo written in Python and Tk.  At last I have found the proper platform for Leo.  leo.py naturally supports scripting in Python.  The combination of Python and Tk is incredibly powerful, very easy to use, and truly cross platform.  I rewrote Leo in Python in about two months!  For the first time in my career I no longer am anxious while programming; it simply isn't possible to create bad bugs in Python.
+In October of 2001 I began work on the leo.py, an Open Software version of
+leo.py, a version of Leo written in Python and Tk.  At last I have found the
+proper platform for Leo.  leo.py naturally supports scripting in Python.  The
+combination of Python and Tk is incredibly powerful, very easy to use, and truly
+cross platform.  I rewrote Leo in Python in about two months!  For the first
+time in my career I no longer am anxious while programming; it simply isn't
+possible to create bad bugs in Python.
+
+Tk was officially retired in June 2011.
 .. @+node:EKR.20040524104904.248: *4* Designing @file trees
 The following sections give a pseudo-chronological list of the major Aha's
 involved in creating Leo2. These Aha's form the real design and theory of

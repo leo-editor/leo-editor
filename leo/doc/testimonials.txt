@@ -63,7 +63,7 @@ manipulation since VI and Emacs. -- David McNab
 
 "Leo is...a revolutionary step in the right direction for programming." -- Brian
 Takita
-.. @+node:ekr.20050830074815.2: *3* Leo is a showcase Python/Tkinter application
+.. @+node:ekr.20050830074815.2: *3* Leo is a showcase Python application
 "Thanks for a wonderful program – everybody should be using it! It blows the
 socks off that Java Mind mapping software that won project of the month a while
 back on sourceforge!" -- Derick van Niekerk.
@@ -75,8 +75,8 @@ back on sourceforge!" -- Derick van Niekerk.
 posted on the Daily Python page, but I usually yawn and come over to this forum
 to see what's cooking." -- Anon
 
-"Leo is the best Tkinter application ever written. It convinces me that Tkinter
-can really *do something*, and do [it] well." - Anon
+..  "Leo is the best Tkinter application ever written. It convinces me that Tkinter
+..  can really *do something*, and do [it] well." - Anon
 
 "What an original synthesis of different ideas, why can't other Open Source
 projects change the way I think?" -- Anon
@@ -369,9 +369,10 @@ Some other cool things about Leo which Word doesn't feature:
 version of Word will have true XML format, but not as easy to work with).
 One consequence of this is that Leo files can be transformed pretty easily
 to web pages with their outlining capability intact.
-2. Easy to add features since is programmed in Tk and open source. Maybe
+2. Easy to add features since is programmed in Python and open source. Maybe
 your average user can't start hacking on it, but a surprising amount can be
-tacked on by flipping through the Tk manual.
+tacked on...
+.. by flipping through the Tk manual.
 3. Free, opensource, multi-platform
 4. Leo is scriptable with Python. It should be possible to build a Tickler
 into Leo using Python scripting, for example.
