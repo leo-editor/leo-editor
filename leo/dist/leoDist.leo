@@ -1110,13 +1110,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 </t>
 <t tx="ekr.20110603171959.1505">@nocolor-node
 
-Improve make script:
-    
-- (done) Ensure Linux newlines in spellpyx.txt.
-
-- (done) Generate manifest file correctly.
-
-- (needed?) Either copy distribution files, or put them in the right place.</t>
+- Make sure uninstall removes all files from unit test directories.</t>
 <t tx="ekr.20110603171959.1506">def clean_spellpyx (self):
     
     fn = g.os_path_finalize_join(pluginsDir,'spellpyx.txt')
