@@ -11,8 +11,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070610174018"><vh>Startup</vh>
-<v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100580b000000302e312e362e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"
-expanded="ekr.20050407144417,"><vh>@file doc-startup.txt</vh></v>
+<v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100580b000000302e312e362e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"><vh>@file doc-startup.txt</vh></v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Files, including home page</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
@@ -140,8 +139,7 @@ expanded="ekr.20050407144417,"><vh>@file doc-startup.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
-<v t="ekr.20100805165051.7175"
-expanded="ekr.20101025080245.5791,ekr.20110601105631.19349,"><vh>@file whatsnew.txt</vh></v>
+<v t="ekr.20100805165051.7175"><vh>@file whatsnew.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
@@ -151,8 +149,7 @@ expanded="ekr.20101025080245.5791,ekr.20110601105631.19349,"><vh>@file whatsnew.
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"
-expanded="edream.110203163054.63,ekr.20110531155858.19246,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20110531155858.19246"><vh>4.9 Release notes</vh>
 <v t="ekr.20110601105631.19359"><vh>Deprecated/removed features</vh></v>
