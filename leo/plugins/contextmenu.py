@@ -175,7 +175,7 @@ def refresh_rclick(c,p, menu):
 
     fname = p.anyAtFileNodeName()
 
-    g.trace("at file node",fname)
+    #g.trace("at file node",fname)
     if not fname:
         return
 
