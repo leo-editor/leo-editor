@@ -61,6 +61,13 @@ What's New in Leo
     
 - The import-at-root command is no longer supported.
 .. @+node:ekr.20110601105631.19481: *4* Major improvements
+- Support multiple @language directives in a single node
+  As with @color directives, only unambiguous @language directives affect the
+  default coloring of descendant nodes.
+
+- Colorize url's in the body text. You can open url's by control-clicking on
+  them, or by using the open-url command.
+
 - Use @file extension by default if there is no @language directive in effect.
   This is oh so useful.
 
@@ -343,6 +350,9 @@ and the free_layout and NestedSplitter plugins used by viewrendered.
 - Added auto_tab_complete setting.
 
 - Removed @bool use_codewise setting.
+
+- You now may set icon button colors in the Qt stylesheet.
+
 .. @+node:ekr.20110601105631.19464: *5* File handling
 - Added namespace and Leo comment lines to .leo files
 
@@ -361,7 +371,7 @@ and the free_layout and NestedSplitter plugins used by viewrendered.
 
 - A single click on an already-selected tree node edits the headline
 
-Enabled only if @bool single_click_auto_edits_headline = True.
+  Enabled only if @bool single_click_auto_edits_headline = True.
 
 - Added a splash screen
 
@@ -382,6 +392,8 @@ Enabled only if @bool single_click_auto_edits_headline = True.
 - The first loaded file sets tabbed gui size
 
 - Enter insert mode after ctrl-h.  This is a vim-related improvement.
+
+- Disabled find/change text areas in find panel.  This reduces confusion.
 .. @+node:ekr.20110601105631.19482: *5* Improved commands
 - Improved the clone-find-all command. The descendants of previously found
   (cloned) nodes don't get added again. The clone-find-all pattern now defaults

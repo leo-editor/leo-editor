@@ -15755,7 +15755,7 @@ The installer now makes proper entries in the Windows start menu.
 #@+node:ekr.20101124102457.5227: *5* New in 4.8 final
 - Fixed key redefinition message.
 #@+node:edream.110203163054.63: ** Latest version
-#@+node:ekr.20110531155858.19246: *3* 4.9b1 (Release notes)
+#@+node:ekr.20110531155858.19246: *3* 4.9 Release notes
 @language rest
 
 Leo 4.9 b1                              June 3, 2011
@@ -15779,6 +15779,11 @@ The highlights of Leo 4.9:
 - The rendering pane can now display movies, html, svg images, etc.
 
 - The scrolledmessage plugin can now use the rendering pane.
+
+- Nodes may contain multiple @language directives.
+
+- Leo highlights URL's everywhere. Ctrl-click URL's opens them in your web
+  browser. 
 
 - Leo uses an @file node's extension by default if there is no @language
   directive in effect.
@@ -15814,7 +15819,8 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
     @string selected-command-background-color
     
 - The import-at-root command is no longer supported.
-#@+node:ekr.20110531155858.19830: *4* Bugs fixed
+#@+node:ekr.20110531155858.19830: *4* Bugs fixed in b1
+#@+node:ekr.20110604043410.17811: *5* Numbered bugs
 - Fixed bug 682561: pyenchant install problem.
 
   https://bugs.launchpad.net/leo-editor/+bug/682561
@@ -15822,30 +15828,6 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 - Fix bug 690260: g.es sends to wrong tabbed pane.
 
   https://bugs.launchpad.net/leo-editor/+bug/690260
-
-- Fixed goto-global-line problems.
-
-- Restore postions of non-tabbed windows.
-
-- Fixed Python 3.2 ua problems.
-
-- Fixed bug in p._adjustPostionBeforeUnlink and simplified code.
-
-- Fixed crash in archivedPositionToPosition.
-
-- Fixed top-level uA's. There was a misspelling of 'unknownAttributes' in
-  putVnode. This caused the uA for the first top level node in the outline to be
-  cleared on save and by some copy paste ops.
-
-- mod_autosave plugin no longer registers redundant idle-time handlers.
-
-- Fixed bug: Leo now ignores f-keys in find/replace patterns.
-
-- c.bringToFront now activates the window.
-
-- Fixed nav_qt plutin.
-
-- Fixed completer focus problems.
 
 - Fixed bug 783617: Can't enter text directly in the Find panel
 
@@ -15863,8 +15845,6 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
   was incorrect when there is an existing selection, which was created by some
   method other than Ctrl-Shift movement.
 
-- Disabled the rst button in the contextmenu.
-
 - Resolved bug 323967: leo overrides minibuffer background color.
 
   https://bugs.launchpad.net/leo-editor/+bug/323967
@@ -15872,8 +15852,6 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 - Fixed actionscript colors for parens.
 
   http://groups.google.com/group/leo-editor/browse_thread/thread/ee09fb2c2a5316f2/490fa7cddab36fab
-
-- Fixed horizontal scroll glitch in log pane (Python 2.x).
 
 - Fixed Bug 760531:Spurious overwrite warnings.
 
@@ -15933,14 +15911,10 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
   toggleSplitDirection new ensures that both the selected outline node *and* the
   cursor in the body pane are visible.
 
-- Fixed bug: auto-rst gives spurious overwrite message.
-
-- Added bindings to all text widgets in the tab frame.
 
 - Fixed bug 525004: bash code not colored properly.
 
     https://bugs.launchpad.net/leo-editor/+bug/525004
-
 
     1. Fixed an off-by-one error in getNextToken. This was causing the havoc in
        the shell coloring.
@@ -15949,26 +15923,75 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
        This is a major change, and it allows more rules to match in the shell
        colorer.
        
-    3. Improved the tracing of colorRangeWithTag by adding g.callers(2) and by
-       showing delegate names more clearly. Tracing is no so good that there is not
-       much need for any other tracing.
+- Fixed bug 626587: Menus & dialogs now say "Flatten Selected Outline".
 
-- Changing @language directives now forces a recoloring.
+  https://bugs.launchpad.net/leo-editor/+bug/626587
+#@+node:ekr.20110604043410.17812: *5* Other bugs
+** Changing @language directives now forces a recoloring.
 
   This fixed the most annoying hangnail remaining in Leo.
 
-- Menus & dialogs now say "Flatten Selected Outline".
-
-  https://bugs.launchpad.net/leo-editor/+bug/626587
-
-- Removed remaining tk-isms from Leo's core.
+** Removed remaining tk-isms from Leo's core.
 
   These were real bugs: they prevent emacs commands from working.
 
   Completely rewrote transposeWords.
   
-- Fixed mod_http plugin.
+** mod_autosave plugin no longer registers redundant idle-time handlers.
+
+** Fixed mod_http plugin.
+
+** Mark external file dirty when dragging node.
+
+- Disabled the rst button in the contextmenu.
+
+- Fixed horizontal scroll glitch in log pane (Python 2.x).
+  qtLog.put sets horizonal scrolling to zero.
+  This is a workaround to a glitch (Python 2.x only),
+  but in fact it's generally useful.
+
+- Fixed bug: auto-rst gives spurious overwrite message.
+
+- Added bindings to all text widgets in the tab frame.
+
+- Fixed goto-global-line problems.
+
+- Restore postions of non-tabbed windows.
+
+- Fixed Python 3.2 ua problems.
+
+- Fixed bug in p._adjustPostionBeforeUnlink and simplified code.
+
+- Fixed crash in archivedPositionToPosition.
+
+- Fixed top-level uA's. There was a misspelling of 'unknownAttributes' in
+  putVnode. This caused the uA for the first top level node in the outline to be
+  cleared on save and by some copy paste ops.
+
+- Fixed bug: Leo now ignores f-keys in find/replace patterns.
+
+- c.bringToFront now activates the window.
+
+- Fixed nav_qt plutin.
+
+- Fixed completer focus problems.
+
+- Fixed MacOS Command-C bug.
+
+- Fixed major problem with multiple body editors
+#@+node:ekr.20110604043410.17808: *4* Bugs fixed in b2
+- Double-clicking a headline now colorizers the headline exactly the same way as
+  when editing the headling with ctrl-H. This was a serious problem for those
+  with dark window-color schemes.
+  
+- The distribution script now ensures that leo\plugins\spellpyx.txt contains
+  Linux-style newlines. This prevents crashes in the PyEnchant spell checker.
 #@+node:ekr.20110602091552.16903: *4* Major improvements
+- Leo highlights URL's everywhere. Ctrl-click URL's opens them in your web
+  browser.
+  
+- Nodes may contain multiple @language directives.
+
 - Use @file extension by default if there is no @language directive in effect.
   This is oh so useful.
 
@@ -16238,7 +16261,7 @@ between the free_layout, NestedSplitter and viewrendered plugins.
 - Colorize url's in the body text. You can open url's by control-clicking on
   them, or by using the open-url command.
 
-- Added support for cython colorizing
+- Added support for cython colorizing.
 
 - Leo ignores (and does not color) @language directive for unknown languages.
 
@@ -16252,9 +16275,13 @@ between the free_layout, NestedSplitter and viewrendered plugins.
     
 - Added @bool use_qcompleter setting.
 
-- Added auto_tab_complete setting.
+- Added @bool auto_tab_complete setting.
+
+- Added @bool single_click_auto_edits_headline setting.
 
 - Removed @bool use_codewise setting.
+
+- You now may set icon button colors in the Qt stylesheet.
 #@+node:ekr.20110602091552.16913: *5* Gui improvements
 - If you type a *plain* up/down arrow key while editing a headline, Leo will act
   as if you had typed the corresponding *alt*- arrow key. That is, Leo will end
@@ -16262,8 +16289,7 @@ between the free_layout, NestedSplitter and viewrendered plugins.
   even if there is no next/ previous node, which is convenient.
 
 - A single click on an already-selected tree node edits the headline
-
-Enabled only if @bool single_click_auto_edits_headline = True.
+  Enabled only if @bool single_click_auto_edits_headline = True.
 
 - Added a splash screen
 
@@ -16284,6 +16310,8 @@ Enabled only if @bool single_click_auto_edits_headline = True.
 - The first loaded file sets tabbed gui size
 
 - Enter insert mode after ctrl-h.  This is a vim-related improvement.
+
+- Disabled find/change text areas in find panel.  This is less confusing.
 #@+node:ekr.20110602091552.16915: *5* Improved commands
 - Improved the clone-find-all command. The descendants of previously found
   (cloned) nodes don't get added again. The clone-find-all pattern now defaults
