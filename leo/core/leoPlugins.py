@@ -7,7 +7,7 @@
 #@@pagewidth 70
 
 import leo.core.leoGlobals as g
-import bisect
+# import bisect
 import sys
 
 #@+others
@@ -76,7 +76,10 @@ class CommandChainDispatcher:
 
     def add(self, func, priority=0):
         """ Add a func to the cmd chain with given priority """
-        bisect.insort(self.chain,(priority,func))
+        # Fails in Python 3: func is not orderable.
+        # bisect.insort(self.chain,(priority,func))
+        self.chain.append((priority,func),)
+        self.chain.sort(key=lambda z:z[0])
 
     def __iter__(self):
         """ Return all objects in chain.

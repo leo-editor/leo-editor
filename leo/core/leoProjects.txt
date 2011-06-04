@@ -4342,36 +4342,7 @@ def endCommand (self,commandName):
             c.widgetWantsFocusNow(k.newMinibufferWidget)
             # g.pr('endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers())
             k.newMinibufferWidget = None
-#@+node:ekr.20110601213117.19168: *4* Killed Tk
-@nocolor-node
-
-- Removed tkinter from leoPlugins.leo
-
-- Removed Tkinter stuff from unitTest.leo.
-    
-- Removed Tk plugins from pylint-leo.py
-
-- Changed return "break" & return "continue" to return.
-#@+node:ekr.20110602072258.16953: *4* Removed Tk-only settings
-rclick_show_help
-cleo_*
-
-headline_text_unselected_foreground_color
-headline_text_unselected_background_color
-
-headline_text_selected_foreground_color
-headline_text_selected_background_color
-
-headline_text_selected_highlight_color
-
-fastgotonode_*
-
-library_*
-
-template_path
-
-open_with_*
-
-shortcut_button_data
+#@+node:ekr.20110604043410.17813: ** 4.9 b2
+#@+node:ekr.20110528034751.18274: *3* Treat .cfg as .ini for importing
 #@-all
 #@-leo

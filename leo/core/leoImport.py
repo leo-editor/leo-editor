@@ -166,6 +166,7 @@ class leoImportCommands (scanUtility):
             '.c++':     self.scanCText,
             '.cpp':     self.scanCText,
             '.cxx':     self.scanCText,
+            '.cfg':     self.scanIniText,
             '.cs':      self.scanCSharpText,
             '.el':      self.scanElispText,
             '.htm':     self.scanXmlText,
