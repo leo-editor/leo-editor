@@ -168,6 +168,7 @@ SetOutPath $INSTDIR\leo\extensions
 File "C:\leo.repo\trunk\leo\extensions\__init__.py"
 File "C:\leo.repo\trunk\leo\extensions\asciidoc.py"
 File "C:\leo.repo\trunk\leo\extensions\colors.py"
+File "C:\leo.repo\trunk\leo\extensions\patch_11_01.py"
 File "C:\leo.repo\trunk\leo\extensions\testExtension.py"
 
 SetOutPath $INSTDIR\leo\external

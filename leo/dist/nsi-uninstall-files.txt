@@ -189,6 +189,7 @@ Delete "$INSTDIR\leo\extensions\__pycache__\*.pyc"
 Delete "$INSTDIR\leo\extensions\__init__.py"
 Delete "$INSTDIR\leo\extensions\asciidoc.py"
 Delete "$INSTDIR\leo\extensions\colors.py"
+Delete "$INSTDIR\leo\extensions\patch_11_01.py"
 Delete "$INSTDIR\leo\extensions\testExtension.py"
 
 Delete "$INSTDIR\leo\external\*.pyc"

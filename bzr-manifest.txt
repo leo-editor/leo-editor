@@ -1151,6 +1151,7 @@ leo/extensions/
 leo/extensions/__init__.py
 leo/extensions/asciidoc.py
 leo/extensions/colors.py
+leo/extensions/patch_11_01.py
 leo/extensions/testExtension.py
 leo/external/
 leo/external/__init__.py
