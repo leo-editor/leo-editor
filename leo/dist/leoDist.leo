@@ -58,6 +58,7 @@
 <v t="ekr.20101027070126.1643"><vh>class LeoMaker</vh>
 <v t="ekr.20101027070126.1662"><vh>run &amp; helpers</vh>
 <v t="ekr.20101105103524.1494"><vh>clean_manifest</vh></v>
+<v t="ekr.20110603171959.1506"><vh>clean_spellpyx</vh></v>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
 <v t="ekr.20101027070126.1663"><vh>directoryList</vh></v>
@@ -85,6 +86,7 @@
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
 <v t="ekr.20101027115225.1494"><vh>@thin nsi-boilerplate.txt</vh></v>
 </v>
+<v t="ekr.20110603171959.1505"><vh>To do</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@nocolor
@@ -518,6 +520,7 @@ SectionEnd
 import shutil
 import string
 import struct
+import subprocess
 import sys
 import time</t>
 <t tx="ekr.20090905082405.1490">def unlink (self,fn):
@@ -630,7 +633,6 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
         leo.zip.
 '''
 
-### Important: it doesn't work to use os.system to generate bzr-manifest.txt.
 ### Important: The install/uninstall files must be copied to the trunk directory.
 
 version = '4.9-b1' ##version
@@ -641,10 +643,11 @@ version = '4.9-b1' ##version
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 
 # First.
-bzrRoot = join('Lib','site-packages','Leo-%s' % (version))
+bzrRoot     = join('Lib','site-packages','Leo-%s' % (version))
     # Don't use abspath!
-distDir = abspath(join(g.app.loadDir,'..','dist'))
-rootDir = abspath(join(g.app.loadDir,'..','..')) # Same as top.
+distDir     = abspath(join(g.app.loadDir,'..','dist'))
+rootDir     = abspath(join(g.app.loadDir,'..','..')) # Same as top.
+pluginsDir  = abspath(join(g.app.loadDir,'..','plugins'))
 
 # Next.
 docDir =        abspath(join(g.app.loadDir,'..','doc'))
@@ -678,6 +681,7 @@ g.es_print('@button make-leo done')
 
     '''The top-level logic.'''
 
+    self.clean_spellpyx()
     self.make_manifest()
     files = self.clean_manifest()
 
@@ -940,10 +944,10 @@ def deleteTempFiles (self,lines):
 
     self.f.write(s)
 </t>
-<t tx="ekr.20101027070126.1679">def openFile (self,fn):
+<t tx="ekr.20101027070126.1679">def openFile (self,fn,mode='w'):
 
     try:
-        f = open(fn,'w')
+        f = open(fn,mode)
         return f
     except IOError:
         g.error('can not open',fn)
@@ -959,17 +963,22 @@ def deleteTempFiles (self,lines):
 
     '''Make bzr-manifest.txt.'''
     
-    return ### Make this by hand.
+    # make-leo-manifest.bat contains the following:
+    #   cls
+    #   cd c:\leo.repo\trunk
+    #   del bzr-manifest.txt
+    #   bzr ls -V -R &gt;bzr-manifest.txt
+    #   dir bzr-manifest.txt
 
     commands = (
-        r'cls',
-        r'cd %s' % (rootDir),
-        r'bzr ls -R &gt;bzr-manifest.txt'
+        (r'c:\Scripts\make-leo-manifest.bat',False),
+            # This helper script does all the work.
     )
 
-    for z in commands:
-        print('command: %s' % z)
-        os.system(z)
+    for command,shell in commands:
+        print('command: %s' % command)
+        proc = subprocess.Popen(command,shell=shell) # ,stderr=subprocess.PIPE)
+        proc.communicate()  # Wait for the process terminate.
 </t>
 <t tx="ekr.20101105103524.1493">def make_zip(self):
 
@@ -1093,6 +1102,28 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/projects/leo/files/
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+</t>
+<t tx="ekr.20110603171959.1505">@nocolor-node
+
+Improve make script:
+    
+- Ensure Linux newlines in spellpyx.txt.
+
+- Generate manifest file correctly.  os.system won't work: it doesn't wait.
+
+- Either copy distribution files, or put them in the right place.</t>
+<t tx="ekr.20110603171959.1506">def clean_spellpyx (self):
+    
+    fn = g.os_path_finalize_join(pluginsDir,'spellpyx.txt')
+    f = self.openFile(fn,mode='rb')
+    s = f.read()
+    f.close()
+    s2 = s.replace(b'\r',b'')
+    if s != s2:
+        g.es_print('cleaning',fn)
+        f = self.openFile(fn,mode='wb')
+        f.write(s2)
+        f.close()
 </t>
 </tnodes>
 </leo_file>
