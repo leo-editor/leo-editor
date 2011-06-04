@@ -337,7 +337,7 @@ Important files:
 Leo 4.9 b2                              June 4, 2011
 
 Leo 4.9 beta 2 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html

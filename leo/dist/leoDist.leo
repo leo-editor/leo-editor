@@ -193,7 +193,7 @@ Platform: Windows, Linux, Macintosh
 <t tx="EKR.20040519090846.9">Leo 4.9 b2                              June 4, 2011
 
 Leo 4.9 beta 2 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
@@ -572,7 +572,7 @@ Create a bzr tag **last**.
 @nocolor
 
 Create Release on SourceForge:
-    https://sourceforge.net/project/admin/explorer.php?group_id=3458
+    http://sourceforge.net/projects/leo/
 
 Announcements
 - Update version number on Leo's wikipedia site:
@@ -1021,7 +1021,7 @@ def deleteTempFiles (self,lines):
 <t tx="ekr.20101115090518.1494">Leo 4.8 final                               November 26, 2010
 
 Leo 4.8 final is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
