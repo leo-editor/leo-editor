@@ -7,6 +7,14 @@
 @language rest
 .. @+node:ekr.20110527182640.18358: *3* b2
 .. @+node:ekr.20110604043410.17851: *4* First
+.. @+node:ekr.20110604105549.5922: *5* print-license show license as rST
+.. @+node:ekr.20110604043410.17850: *5* topics to discuss
+@nocolor-node
+
+- <attr>
+
+- patch command
+
 .. @+node:ekr.20110524141405.18370: *5* Get macros working well
 .. @+node:ekr.20110528034751.18278: *6* Add apropos-macros
 .. @+node:ekr.20060628103226.2: *6* Alt-x handlers should add to lossage
@@ -36,14 +44,6 @@ Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
 get to this work, I should have <<code fragment>> under the @rst3 subtree as
 well, but this is then also treated as @rst3 input (which in this case, is not
 what I want).
-.. @+node:ekr.20110604043410.17849: *5* Fix crasher in plugin (linux)
-.. @+node:ekr.20110604043410.17850: *5* topics to discuss
-@nocolor-node
-
-- <attr>
-
-- patch command
-
 .. @+node:ekr.20110604043410.16733: *4* In a separate branch: 3
 .. @+node:ekr.20110526083709.18337: *5* Simplify Key handling
 @language rest
@@ -2601,7 +2601,7 @@ B. Allow any pane to be "tabified" (placed in a tab in the Log pane) and
    "untabified." There are a few details to be handled, but nothing major.
    
 C. Labels for panes.
-.. @+node:ekr.20110531190516.19365: *4* Minor/Maybe: 4 
+.. @+node:ekr.20110531190516.19365: *4* Minor/Maybe: 4
 @language rest
 
 .. @+node:ekr.20100112051224.6226: *5* Vim-related: Range prefix to commands/objects (k.getArgs)

@@ -4344,5 +4344,59 @@ def endCommand (self,commandName):
             k.newMinibufferWidget = None
 #@+node:ekr.20110604043410.17813: ** 4.9 b2
 #@+node:ekr.20110528034751.18274: *3* Treat .cfg as .ini for importing
+#@+node:ekr.20110604043410.17854: *3* Fixed crasher in graphcanvas plugin
+@nocolor-node
+
+The actual fix was in CommandChainDispatcher.add.
+#@+node:ekr.20100908125007.6033: *4* class CommandChainDispatcher
+class CommandChainDispatcher:
+    """ Dispatch calls to a chain of commands until some func can handle it
+
+    Usage: instantiate, execute "add" to add commands (with optional
+    priority), execute normally via f() calling mechanism.
+
+    """
+    def __init__(self,commands=None):
+        if commands is None:
+            self.chain = []
+        else:
+            self.chain = commands
+
+    def __call__(self,*args, **kw):
+        """ Command chain is called just like normal func. 
+
+        This will call all funcs in chain with the same args as were given to this
+        function, and return the result of first func that didn't raise
+        TryNext """
+
+        for prio,cmd in self.chain:
+            #print "prio",prio,"cmd",cmd #dbg
+            try:
+                ret = cmd(*args, **kw)
+                return ret
+            except TryNext as exc:
+                if exc.args or exc.kwargs:
+                    args = exc.args
+                    kw = exc.kwargs
+
+        # if no function will accept it, raise TryNext up to the caller
+        raise TryNext
+
+    def __str__(self):
+        return str(self.chain)
+
+    def add(self, func, priority=0):
+        """ Add a func to the cmd chain with given priority """
+        # Fails in Python 3: func is not orderable.
+        # bisect.insort(self.chain,(priority,func))
+        self.chain.append((priority,func),)
+        self.chain.sort(key=lambda z:z[0])
+
+    def __iter__(self):
+        """ Return all objects in chain.
+
+        Handy if the objects are not callable.
+        """
+        return iter(self.chain)
 #@-all
 #@-leo

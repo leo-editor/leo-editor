@@ -30,12 +30,6 @@
 <v t="ekr.20041001194357"><vh>@@button unit test</vh></v>
 <v t="ekr.20051025091355"><vh>@@button Spell</vh></v>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
-</v>
-</v>
-<v t="ekr.20061008055616"><vh>Scripts</vh>
-<v t="ekr.20051110111150"
-expanded="ekr.20040713123617.1,ekr.20050220091046,ekr.20060824111500.108,ekr.20060824111500.117,ekr.20060824111500.120,ekr.20051110105027.3,"><vh>@thin leoScripts.txt</vh></v>
-</v>
 <v t="edward.20081226095234.1"><vh>@@button lispCall @key=alt+6</vh>
 <v t="edward.20081226095234.2"><vh>ctor</vh></v>
 <v t="edward.20081226101808.1"><vh>run &amp; helpers</vh>
@@ -81,32 +75,6 @@ expanded="ekr.20040713123617.1,ekr.20050220091046,ekr.20060824111500.108,ekr.200
 <v t="edward.20081226101808.31"><vh>put_code_token</vh></v>
 </v>
 </v>
-</v>
-<v t="ville.20090508224531.9799"><vh>@@button git-dump</vh></v>
-<v t="ekr.20110328173745.3269"><vh>@scan_results</vh></v>
-<v t="ekr.20110328173745.3249"><vh>@button print g.es</vh>
-<v t="ekr.20110328173745.3250"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
-<v t="ekr.20110328173745.3251"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
-<v t="ekr.20110328173745.3252"><vh> ctor</vh></v>
-<v t="ekr.20110328173745.3253"><vh>error &amp; trace</vh></v>
-<v t="ekr.20110328173745.3254"><vh>main</vh></v>
-<v t="ekr.20110328173745.3255"><vh>munging...</vh>
-<v t="ekr.20110328173745.3256"><vh>mungeString</vh></v>
-<v t="ekr.20110328173745.3257"><vh>mungeHeadline</vh></v>
-<v t="ekr.20110328173745.3258"><vh>mungeStatements</vh></v>
-<v t="ekr.20110328173745.3259"><vh>stringize</vh></v>
-</v>
-<v t="ekr.20110328173745.3260"><vh>scan &amp; helpers</vh>
-<v t="ekr.20110328173745.3261"><vh>scanIdChain</vh></v>
-<v t="ekr.20110328173745.3262"><vh>scanNode</vh>
-<v t="ekr.20110328173745.3263"><vh>&lt;&lt; insert statements highlighting the @thin node &gt;&gt;</vh></v>
-<v t="ekr.20110328173745.3264"><vh>&lt;&lt; Insert a comment containing the headline &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20110328173745.3265"><vh>scanParens</vh></v>
-<v t="ekr.20110328173745.3266"><vh>scanStringArg</vh></v>
-</v>
-<v t="ekr.20110328173745.3267"><vh>setDecl</vh></v>
-<v t="ekr.20110328173745.3268"><vh>setToBeTranslated</vh></v>
 </v>
 <v t="ekr.20060824111500.108"><vh>@@button jEdit2Py</vh>
 <v t="ekr.20060824111500.109"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
@@ -195,8 +163,36 @@ expanded="ekr.20040713123617.1,ekr.20050220091046,ekr.20060824111500.108,ekr.200
 <v t="ekr.20060824111500.181"><vh>getMode</vh></v>
 </v>
 </v>
-<v t="ekr.20060824111500.126"></v>
-<v t="ekr.20060824111500.143"></v>
+<v t="ville.20090508224531.9799"><vh>@@button git-dump</vh></v>
+<v t="ekr.20110328173745.3249"><vh>@button print g.es</vh>
+<v t="ekr.20110328173745.3250"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20110328173745.3251"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
+<v t="ekr.20110328173745.3252"><vh> ctor</vh></v>
+<v t="ekr.20110328173745.3253"><vh>error &amp; trace</vh></v>
+<v t="ekr.20110328173745.3254"><vh>main</vh></v>
+<v t="ekr.20110328173745.3255"><vh>munging...</vh>
+<v t="ekr.20110328173745.3256"><vh>mungeString</vh></v>
+<v t="ekr.20110328173745.3257"><vh>mungeHeadline</vh></v>
+<v t="ekr.20110328173745.3258"><vh>mungeStatements</vh></v>
+<v t="ekr.20110328173745.3259"><vh>stringize</vh></v>
+</v>
+<v t="ekr.20110328173745.3260"><vh>scan &amp; helpers</vh>
+<v t="ekr.20110328173745.3261"><vh>scanIdChain</vh></v>
+<v t="ekr.20110328173745.3262"><vh>scanNode</vh>
+<v t="ekr.20110328173745.3263"><vh>&lt;&lt; insert statements highlighting the @thin node &gt;&gt;</vh></v>
+<v t="ekr.20110328173745.3264"><vh>&lt;&lt; Insert a comment containing the headline &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20110328173745.3265"><vh>scanParens</vh></v>
+<v t="ekr.20110328173745.3266"><vh>scanStringArg</vh></v>
+</v>
+<v t="ekr.20110328173745.3267"><vh>setDecl</vh></v>
+<v t="ekr.20110328173745.3268"><vh>setToBeTranslated</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20061008055616"><vh>Scripts</vh>
+<v t="ekr.20051110111150"><vh>@thin leoScripts.txt</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081226095234.1">'''Analyze external calls in lisp files.'''
@@ -2540,310 +2536,6 @@ self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))
     if (n % 2) == 1 and s not in self.toBeTranslated:
         self.toBeTranslated.append(s)
 </t>
-<t tx="ekr.20110328173745.3269">@ To be translated...
-
-%20s (%s)
-%3d %s
-%s %s
-'%s',
-***** Creating %s
-***** Wrote %s
-,
--
-.
-=
-Can not open
-Exception loading:
-Expecting @test, @suite or any @file node
-File %s is now shadowed
-Leo -&gt; HTML completed.
-Leo -&gt; RTF completed.
-Leo -&gt; RTF started...
-Outline in
-Output from test...
-Test done
-Warning: ignoring keyword containing whitespace: %s
-Wrote to file
-all timestamps cleared
-blanks precede leading tab:
-can not write
-cant find source2html install silvercity
-clean directory does not exist
-committed
-committing to
-convert: %s
-deleting tnodeList for
-dir:
-directory does not exist:
-do-after: not in @test tree
-do-before: not in a proper @test tree
-done
-equal (raw mode)
-equal (text mode)
-exception executing change script
-exception executing find script
-exception in importFiles script
-exception setting outline line height
-found
-found %d nodes
-found node with whitespace to clean
-get-node %s failed.
-get-node %s: %s
-get-tree failed: %s
-get-tree: %s
-head:
-htmlize malfunction?
-kind must be @file or @root:
-log:
-no @doc part found
-no @path set, unsupported lang or empty script
-no headline matches '%s'
-no selected text &amp; clipboard empty
-not found
-output
-pass 1: %d nodes converted
-pass 2: %d @file/@thin nodes set dirty
-put-node %s :%s
-renaming %s to %s
-running silvercity \n
-searched %s
-selection should be in @doc part
-test
-unexpected exception parsing %s
-writing tmpname
-wrote
-@c
-# Decls...
-color='red'
-newline=True
-tabName='Log'
-False = 'False'
-args = 'args'
-body2 = 'body2'
-cmd = 'cmd'
-count = 'count'
-dest = 'dest'
-dir = 'dir'
-f1_DOT_read_PARENS_ = 'f1.read()'
-f2_DOT_read_PARENS_ = 'f2.read()'
-fileName = 'fileName'
-filename = 'filename'
-flatroot = 'flatroot'
-fullname = 'fullname'
-g_DOT_app_DOT_root_DOT_tk_DOT_eval_LP_s_RP_ = 'g.app.root.tk.eval(s)'
-inputFileName = 'inputFileName'
-key = 'key'
-kind = 'kind'
-lang = 'lang'
-language = 'language'
-line_DOT_rstrip_PARENS_ = 'line.rstrip()'
-m = 'm'
-name = 'name'
-newname = 'newname'
-os_DOT_path_DOT_abspath_LP_titlename_RP_ = 'os.path.abspath(titlename)'
-out = 'out'
-outputName = 'outputName'
-p_DOT_h = 'p.h'
-p1_DOT_h = 'p1.h'
-params = 'params'
-path = 'path'
-po = 'po'
-po_DOT_gnx = 'po.gnx'
-py = 'py'
-repr_LP_key_RP_ = 'repr(key)'
-repr_LP_v_RP_ = 'repr(v)'
-s = 's'
-s1 = 's1'
-size = 'size'
-slant = 'slant'
-str_LP_shell_DOT_prefilter_LP_line_COMMA_None_RP__RP_ = 'str(shell.prefilter(line,None))'
-tmpfile = 'tmpfile'
-v = 'v'
-v_DOT_h = 'v.h'
-weight = 'weight'
-g.app.translateToUpperCase=True
-# ---- @thin leoScripts.txt
-g.es_print('','-------------------- @thin leoScripts.txt',color='red')
-# -- node Clean unused tnodeLists
-g.es("deleting tnodeList for " + `v`,color="blue")
-g.es(s)
-# -- node Clear all timestamps
-g.es("all timestamps cleared")
-# -- node @@button LeoToHtml
-g.es(" Leo -&gt; HTML completed.",color="turquoise4")
-# -- node @@button LeoToRtf
-g.es(" Leo -&gt; RTF started...",color="turquoise4")
-g.es(" Leo -&gt; RTF completed.",color="turquoise4")
-# -- node @@button shadow
-g.es( "renaming %s to %s" % (filename, newname))
-g.es("File %s is now shadowed" % filename)
-# -- node @@button git-dump
-g.es("committing to " + flatroot)
-g.es("committed")
-g.es(out)
-# g.es('Outline in ' + os.path.abspath(titlename))
-g.es('Outline in ' + os_DOT_path_DOT_abspath_LP_titlename_RP_)
-# -- node Find and replace all functions in leoGlobals.py
-g.es("'%s'," % name)
-g.es_print(s)
-g.es_print(s)
-# -- node prependNamesInTree
-# g.es("%3d %s" % (count,p.h))
-g.es("%3d %s" % (count,p_DOT_h))
-# -- node &lt; &lt; look for name followed by '(' &gt; &gt;
-g.es('.',newline=False)
-# -- node headfind
-g.es("found " + s)
-g.es(body2,color="orange")
-g.es("no headline matches '%s'" % (s),color="blue")
-g.es("no selected text &amp; clipboard empty",color="blue")
-# -- node find w.xxx
-# g.es('searched %s' % p1.h)
-g.es('searched %s' % p1_DOT_h)
-# -- node main
-g.es('done')
-# -- node &lt; &lt; insert statements highlighting the @thin node &gt; &gt;
-g.es_print('','%s %s',color='red')
-# -- node Check Changes
-g.es_print('='*40)
-g.es_print('%s %s' % ('-'*20,'must have a c arg'))
-g.es_print('%s %s' % ('-'*20,'these methods should not exist'))
-g.es_print('%s %s' % ('-'*20,'p methods should have no c arg'))
-g.es_print('%s %s' % ('-'*20,'v methods should have no c arg'))
-g.es_print('%s %s' % ('-'*20,'c methods should start with a position arg'))
-g.es_print('done')
-# -- node findFunctionCalls
-g.es_print('%20s (%s)' % (s1,args))
-# -- node Export to treepad
-g.es("Wrote to file " + fileName,color="blue")
-g.es("Can not open " + fileName,color="blue")
-# -- node htmlize
-# g.es('output', lang, p.h)
-g.es('output', lang, p_DOT_h)
-g.es('no @path set, unsupported lang or empty script',color='tomato')
-# g.es(lang, p.h)
-g.es(lang, p_DOT_h)
-g.es('htmlize malfunction?', color='tomato')
-# -- node &lt; &lt; colorize with silvercity &gt; &gt;
-g.es('writing tmpname', tmpfile )
-g.es('cant find source2html install silvercity')
-g.es('running silvercity \n', py + cmd + params )
-# -- node @@button jEdit2Py
-g.es_print('done')
-# -- node convert
-g.es_print('convert: %s' % (language))
-# -- node parse_jEdit_file
-g.es('unexpected exception parsing %s' % (inputFileName),color='red')
-# -- node putKeywordsData
-# g.es_print('Warning: ignoring keyword containing whitespace: %s' % (
-#                             repr(key)))
-g.es_print('Warning: ignoring keyword containing whitespace: %s' % (
-                            repr_LP_key_RP_))
-# -- node Recursive import script
-g.es("done",color="blue")
-# -- node importFiles
-g.es("kind must be @file or @root: " + kind)
-g.es("directory does not exist: " + dir)
-# -- node importDir
-g.es("dir: " + dir,color="blue")
-g.es("exception in importFiles script")
-# -- node run tcl
-# g.es(g.app.root.tk.eval(s))
-g.es(g_DOT_app_DOT_root_DOT_tk_DOT_eval_LP_s_RP_)
-# -- node @command do-before
-g.es_print('do-before: not in a proper @test tree')
-# -- node @command do-after
-g.es_print('do-after: not in @test tree')
-# -- node clean_file
-g.es('clean directory does not exist',path)
-g.es_print('wrote',fileName)
-g.es_print('can not write',fileName,color='red')
-# -- node @@button zodb-get-tree
-# g.es_print('get-tree: %s' % repr(v))
-g.es_print('get-tree: %s' % repr_LP_v_RP_)
-g.es_print('get-tree failed: %s' % fileName)
-# -- node @@button zodb-get-node
-# g.es_print('get-node %s: %s' % (key,repr(v)))
-g.es_print('get-node %s: %s' % (key,repr_LP_v_RP_))
-g.es_print('get-node %s failed.' % key)
-# -- node @@button zodb-put-node
-# g.es_print('put-node %s :%s' % (v.h,repr(v)))
-g.es_print('put-node %s :%s' % (v_DOT_h,repr_LP_v_RP_))
-# -- node Compare ignoring newlines
-# g.es("equal (raw mode)",f1.read()==f2.read())
-g.es("equal (raw mode)",f1_DOT_read_PARENS_==f2_DOT_read_PARENS_)
-# g.es("equal (text mode)",f1.read()==f2.read())
-g.es("equal (text mode)",f1_DOT_read_PARENS_==f2_DOT_read_PARENS_)
-# -- node Script to backup Outlook Express files
-g.es_print('***** Creating %s' % dest)
-g.es_print('***** Wrote %s' % outputName)
-# -- node doatest
-g.es('Expecting @test, @suite or any @file node',color='blue')
-g.es('Output from test...',color='blue')
-# g.es(line.rstrip())
-g.es(line_DOT_rstrip_PARENS_)
-g.es('Test done',color='blue')
-# -- node getImage
-g.es("Exception loading: " + fullname)
-# -- node getLineHeight
-g.es("exception setting outline line height")
-# -- node Ipython Shell
-g.es_print('-'*40)
-# g.es(str(shell.prefilter(line,None)))
-g.es(str_LP_shell_DOT_prefilter_LP_line_COMMA_None_RP__RP_)
-# -- node Setting Tk config values safely
-g.es(s,color='blue')
-g.es(s,color='blue')
-# -- node pos_to_archive, archive_to_pos
-# g.es('test' , po, po.gnx)
-g.es('test' , po, po_DOT_gnx)
-# -- node Count pages
-g.es(s)
-# -- node Count separate nodes
-g.es_print(s)
-g.es_print(s)
-# -- node Report newlines
-g.es(m)
-# -- node Show settings
-g.es("log:" + name + "," + `size` + "," + slant + "," + weight)
-g.es("head:" + name + "," + `size` + "," + slant + "," + weight)
-# ---- @thin tangle_done.py
-g.es_print('','-------------------- @thin tangle_done.py',color='red')
-# ---- @thin untangle_done.py
-g.es_print('','-------------------- @thin untangle_done.py',color='red')
-# -- node doFind...Script
-g.es("exception executing find script")
-# -- node doChange...Script
-g.es("exception executing change script")
-# -- node Find script
-# g.es("blanks precede leading tab: " + v.h)
-g.es("blanks precede leading tab: " + v_DOT_h)
-g.es("done",color="blue")
-# -- node Find script
-# g.es(v.h)
-g.es(v_DOT_h)
-g.es("found node with whitespace to clean")
-g.es("found %d nodes" % (count), color="blue")
-g.es("not found")
-# -- node Change script
-# g.es(v.h)
-g.es(v_DOT_h)
-g.es("found %d nodes" % (count), color="blue")
-g.es("done")
-# -- node Find script
-g.es("no @doc part found",color="blue")
-# -- node Change script
-g.es("selection should be in @doc part")
-# -- node Remove blank trailing lines
-# g.es(p.h)
-g.es(p_DOT_h)
-# -- node Set trailing ws script
-g.es_print('done')
-# -- node pass1
-g.es_print("pass 1: %d nodes converted" % count)
-# -- node pass2
-g.es_print("pass 2: %d @file/@thin nodes set dirty" % count)
-g.app.translateToUpperCase=False</t>
 <t tx="ville.20090508224531.9799">""" Dump nodes to ~/.leo/dump git repository.
 
 Before using this, you need to:

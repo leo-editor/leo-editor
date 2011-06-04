@@ -16,6 +16,8 @@
 </v>
 <v t="EKR.20040519091259"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
+<v t="ekr.20101115090518.1494"><vh>Leo 4.8 final</vh></v>
+<v t="ekr.20110603112852.1505"><vh>Leo 4.9 b2</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -27,8 +29,6 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
-<v t="ekr.20101115090518.1494"><vh>Leo 4.8 final</vh></v>
-<v t="ekr.20110603112852.1505"><vh>Leo 4.9 b1</vh></v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
@@ -93,7 +93,7 @@
 
 1. Search for ##version
 
-2. Search for this suffix: -b1.
+2. Search for this suffix: -b2.
 
 3. Search for copyright
 
@@ -155,7 +155,7 @@ Installing Leo on Windows
 There are now two ways to install Leo on Windows:
     
 1. Use the single-click executable installer, named something like
-   LeoSetup-4.9-b1.exe
+   LeoSetup-4.9-b2.exe
 
 2. Leo is distributed as a .zip file.
    To install Leo from the .zip file:
@@ -176,7 +176,7 @@ There are now two ways to install Leo on Windows:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.9-b1
+Version: 4.9-b2
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -235,10 +235,8 @@ Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 </t>
 <t tx="EKR.20040519091259">@pagewidth 70
-@killcolor
-
-We no longer use a separate announcement.
-Just use the readme.</t>
+@language rest
+</t>
 <t tx="EKR.20040519091259.1">4.4.5       setup: 547  zip: 379  2007-12-11
 4.4.4       setup: 856  zip: 539  2007-11-02
 4.4.3.1     setup: 1092 zip: 743  2007-7-03
@@ -581,12 +579,7 @@ Announcements
 - Register Leo at http://www.python.org/pypi?:action=submit_form
 - Twitter
 - My blog</t>
-<t tx="ekr.20101025095431.1517">@nocolor-node
-
-- Make the License look better.  It can be an .rtf file.
-
-- Add description sections.
-</t>
+<t tx="ekr.20101025095431.1517"></t>
 <t tx="ekr.20101025095431.1518">@nocolor-node
 
 On Sun, Oct 17, 2010 at 12:04 PM, David Szent-Györgyi
@@ -635,7 +628,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
 
 ### Important: The install/uninstall files must be copied to the trunk directory.
 
-version = '4.9-b1' ##version
+version = '4.9-b2' ##version
 
 &lt;&lt; includes &gt;&gt;
 
@@ -1059,9 +1052,9 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 </t>
-<t tx="ekr.20110603112852.1505">Leo 4.9 b1                              June 3, 2011
+<t tx="ekr.20110603112852.1505">Leo 4.9 b2                              June 4, 2011
 
-Leo 4.9 beta 1 is now available at:
+Leo 4.9 beta 2 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
@@ -1080,6 +1073,11 @@ The highlights of Leo 4.9:
 - The rendering pane can now display movies, html, svg images, etc.
 
 - The scrolledmessage plugin can now use the rendering pane.
+
+- Nodes may contain multiple @language directives.
+
+- Leo highlights URL's everywhere. Ctrl-click URL's opens them in your web
+  browser. 
 
 - Leo uses an @file node's extension by default if there is no @language
   directive in effect.
@@ -1102,16 +1100,17 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/projects/leo/files/
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+
 </t>
 <t tx="ekr.20110603171959.1505">@nocolor-node
 
 Improve make script:
     
-- Ensure Linux newlines in spellpyx.txt.
+- (done) Ensure Linux newlines in spellpyx.txt.
 
-- Generate manifest file correctly.  os.system won't work: it doesn't wait.
+- (done) Generate manifest file correctly.
 
-- Either copy distribution files, or put them in the right place.</t>
+- (needed?) Either copy distribution files, or put them in the right place.</t>
 <t tx="ekr.20110603171959.1506">def clean_spellpyx (self):
     
     fn = g.os_path_finalize_join(pluginsDir,'spellpyx.txt')

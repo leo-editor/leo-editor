@@ -47,6 +47,17 @@ What's New in Leo
 
 - Fixed mod_http plugin
   
+.. @+node:ekr.20110604105805.16766: *4* Bugs and features new in b2
+- Double-clicking a headline now colorizers the headline exactly the same way as
+  when editing the headling with ctrl-H. This was a serious problem for those
+  with dark window-color schemes.
+  
+- The distribution script now ensures that leo\plugins\spellpyx.txt contains
+  Linux-style newlines. This prevents crashes in the PyEnchant spell checker.
+  
+- Leo imports .cfg files just like .ini files.
+
+- Fixed crasher in graphcanvas plugin caused by a bug in CommandChainDispatcher.add.
 .. @+node:ekr.20110601105631.19484: *4* Deprecated/removed features
 - Leo no longer supports the Tk gui. The Qt gui now does everything
   the Tk gui did and better.

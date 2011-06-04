@@ -15758,9 +15758,9 @@ The installer now makes proper entries in the Windows start menu.
 #@+node:ekr.20110531155858.19246: *3* 4.9 Release notes
 @language rest
 
-Leo 4.9 b1                              June 3, 2011
+Leo 4.9 b2                              June 4, 2011
 
-Leo 4.9 beta 1 is now available at:
+Leo 4.9 beta 2 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
@@ -15979,13 +15979,19 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 - Fixed MacOS Command-C bug.
 
 - Fixed major problem with multiple body editors
-#@+node:ekr.20110604043410.17808: *4* Bugs fixed in b2
+#@+node:ekr.20110604043410.17808: *4* Bugs and features new in b2
 - Double-clicking a headline now colorizers the headline exactly the same way as
   when editing the headling with ctrl-H. This was a serious problem for those
   with dark window-color schemes.
   
 - The distribution script now ensures that leo\plugins\spellpyx.txt contains
   Linux-style newlines. This prevents crashes in the PyEnchant spell checker.
+  
+- Leo imports .cfg files just like .ini files.
+
+- Fixed crasher in graphcanvas plugin caused by a bug in CommandChainDispatcher.add.
+
+
 #@+node:ekr.20110602091552.16903: *4* Major improvements
 - Leo highlights URL's everywhere. Ctrl-click URL's opens them in your web
   browser.
