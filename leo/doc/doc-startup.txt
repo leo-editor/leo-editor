@@ -762,14 +762,14 @@ if changed:
     c.undoer.afterChangeTree(p,'remove-@url-final-output',b)
     c.redraw()
 #@+node:ekr.20050407144417: ** @settings
-#@+node:ekr.20100908122026.4443: *3* @enabled_plugins
+#@+node:ekr.20100908122026.4443: *3* @@enabled_plugins
 # Standard plugins
 mod_scripting.py
 nav_qt.py
 plugins_menu.py
 quicksearch.py
 scrolledmessage.py
-UNL.py
+# UNL.py
 
 # Other useful plugins
 # codewisecompleter.py
@@ -1032,7 +1032,7 @@ def run(self):
         g.error('no Plugins node')
 
 
-#@-all
 
-#@@language python
+@language python
+#@-all
 #@-leo
