@@ -1564,11 +1564,14 @@ class leoMenu:
                     self.destroyMenu(i)
     #@+node:ekr.20031218072017.4117: *4* defineMenuCallback
     def defineMenuCallback(self,command,name,minibufferCommand):
+        
+        c = self.c
 
         if minibufferCommand:
 
             # Create a dummy event as a signal to doCommand.
-            event = g.Bunch(keysym='',char='',widget='')
+            event = g.Bunch(keysym='',char='',stroke='',widget='')
+            c.check_event(event)
 
             # The first parameter must be event, and it must default to None.
             def minibufferMenuCallback(event=event,self=self,command=command,label=name):
@@ -1580,8 +1583,9 @@ class leoMenu:
         else:
 
             # The first parameter must be event, and it must default to None.
-            def legacyMenuCallback(event=None,self=self,command=command,label=name):
-                c = self.c
+            event = None
+            def legacyMenuCallback(event=event,self=self,command=command,label=name):
+                c.check_event(event)
                 return c.doCommand(command,label)
 
             return legacyMenuCallback

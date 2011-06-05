@@ -354,6 +354,9 @@ class AutoCompleterClass:
         trace = False and not g.app.unitTesting
         c = self.c ; k = self.k ; gui = g.app.gui
         tag = 'auto-complete' ; state = k.getState(tag)
+        
+        c.check_event(event)
+        
         ch = gui.eventChar(event)
         keysym = gui.eventKeysym(event)
         stroke = gui.eventStroke(event)
@@ -865,7 +868,7 @@ class AutoCompleterClass:
     def insert_general_char (self,ch,keysym):
 
         trace = False and not g.unitTesting
-        k = self.k ; w = self.w
+        c,k = self.c,self.k ; w = self.w
         
         if trace: g.trace(repr(ch))
 
@@ -1262,28 +1265,30 @@ class keyHandlerClass:
 
         k = self
 
-        # These names are used in Leo's core *regardless* of the gui actually in effect.
+        # These are the key names used in Leo's core *regardless* of the gui actually in effect.
         # The gui is responsible for translating gui-dependent keycodes into these values.
         k.tkNamesList = (
-            'BackSpace','Begin','Break',
-            'Caps_Lock','Clear',
-            'Delete','Down',
-            'End','Escape',
+            # Arrow keys.
+            'Left','Right','Up','Down',
+            # Page up/down keys.
+            'Next','Prior',
+            # Home end keys.
+            'Home','End'
+            # Modifier keys.
+            'Caps_Lock','Num_Lock',
+            # F-keys.
             'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
-            'Home',
-            'Left','Linefeed',
-            'Next','Num_Lock',
-            'Prior',
-            'Return','Right',
-            'Tab',
-            'Up',
-            # 'space',
+            # All others.
+            'Begin','Break','Clear','Delete','Escape',
+            # Dubious: these are ascii characters!
+            # But there is no harm in retaining these in Leo's core.
+            'BackSpace','Linefeed','Return','Tab',
         )
 
         # These keys settings that may be specied in leoSettings.leo.
         # Keys are lowercase, so that case is not significant *for these items only* in leoSettings.leo.
         k.settingsNameDict = {
-            'bksp'    : 'BackSpace',
+            'bksp'    : 'BackSpace', # Dubious: should be '\b'
             'dnarrow' : 'Down',
             'esc'     : 'Escape',
             'ltarrow' : 'Left',
@@ -1961,6 +1966,8 @@ class keyHandlerClass:
         verbose = False
         traceGC = False
         if traceGC: g.printNewObjects('masterCom 1')
+        
+        c.check_event(event)
 
         c.setLog()
         c.startRedrawCount = c.frame.tree.redrawCount
@@ -2137,6 +2144,9 @@ class keyHandlerClass:
         k = self ; c = k.c ; gui = g.app.gui
         state = k.getState('full-command')
         helpPrompt = 'Help for command: '
+        
+        c.check_event(event)
+        
         keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
         trace = False or c.config.getBool('trace_modes') ; verbose = True
         if trace: g.trace('state',state,keysym)
@@ -2300,9 +2310,14 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.118: *4* numberCommand
     def numberCommand (self,event,stroke,number):
 
-        k = self ; k.stroke = stroke ; w = event.widget
+        k = self ; c = self.c
+        k.stroke = stroke
+        w = event.widget
+        
+        c.check_event(event)
+
         k.universalDispatcher(event)
-        g.app.gui.event_generate(w,'<Key>',keysym=number)
+        g.app.gui.event_generate(c,w,'<Key>',keysym=number)
         return # (for Tk) 'break'
 
     def numberCommand0 (self,event):
@@ -2479,6 +2494,8 @@ class keyHandlerClass:
     def repeatComplexCommandHelper (self,event):
 
         k = self ; c = k.c ; gui = g.app.gui
+        
+        c.check_event(event)
 
         keysym = gui.eventKeysym(event)
         # g.trace('state',k.state.kind,'event',repr(event),g.callers())
@@ -2552,7 +2569,7 @@ class keyHandlerClass:
         if stroke and w:
             # g.trace(stroke)
             g.app.gui.set_focus(c,w)
-            g.app.gui.event_generate(w,stroke)
+            g.app.gui.event_generate(c,w,stroke)
         else:
             message = 'no shortcut for %s' % (commandName)
             if g.app.unitTesting:
@@ -2566,7 +2583,6 @@ class keyHandlerClass:
 
         commandName = commandName.strip()
         if not commandName: return
-
 
         aList = commandName.split(None)
         if len(aList) == 1:
@@ -2584,7 +2600,10 @@ class keyHandlerClass:
             if commandName.startswith('specialCallback'):
                 event = None # A legacy function.
             else: # Create a dummy event as a signal.
-                event = g.bunch(c=c,keysym='',char='',widget=None)
+                event = g.bunch(c=c,keysym='',char='',stroke='',widget=None)
+                
+            c.check_event(event)
+
             k.masterCommand(event,func,stroke)
             if c.exists:
                 return k.funcReturn
@@ -2612,6 +2631,9 @@ class keyHandlerClass:
         k = self ; c = k.c ; gui  = g.app.gui
         trace = (False or (c.config.getBool('trace_modes')) and not g.app.unitTesting)
         state = k.getState('getArg')
+        
+        c.check_event(event)
+
         keysym = gui.eventKeysym(event)
         if trace: g.trace(
             'state',state,'keysym',repr(keysym),'stroke',repr(stroke),
@@ -2799,11 +2821,13 @@ class keyHandlerClass:
     def masterKeyHandler (self,event,stroke=None):
 
         '''This is the handler for almost all key bindings.'''
+        
+        k,c = self,self.c ; gui = g.app.gui
+        
+        c.check_event(event)
 
         #@+<< define vars >>
         #@+node:ekr.20061031131434.147: *5* << define vars >>
-        k = self ; c = k.c ; gui = g.app.gui
-
         if event:
             # This is a leoGui base class event.
             event = gui.leoKeyEvent(event,c,stroke=stroke)
@@ -2838,6 +2862,7 @@ class keyHandlerClass:
         if keysym in special_keys:
             if trace and verbose: g.trace('keysym',keysym)
             return None
+        
         if traceGC: g.printNewObjects('masterKey 1')
         if trace and verbose: g.trace('stroke:',repr(stroke),'keysym:',
             repr(event.keysym),'ch:',repr(event.char),'state',state,'state2',k.unboundKeyAction)
@@ -3189,7 +3214,9 @@ class keyHandlerClass:
         # g.trace('stroke',stroke,'func',func and func.__name__,commandName,g.callers())
 
         # Create a minimal event for commands that require them.
-        event = g.Bunch(c=c,char='',keysym='',widget=w)
+        event = g.Bunch(c=c,char='',keysym='',stroke='',widget=w)
+        
+        c.check_event(event)
 
         if stroke:
             return k.masterKeyHandler(event,stroke=stroke)
@@ -3331,6 +3358,9 @@ class keyHandlerClass:
 
         trace = False or self.trace_minibuffer and not g.app.unitTesting
         k = self ; c = k.c ; w = self.w
+        
+        c.check_event(event)
+
         ch = (event and event.char) or ''
         keysym = (event and event.keysym) or ''
 
@@ -3677,6 +3707,9 @@ class keyHandlerClass:
         k = self ; c = k.c ; gui = g.app.gui
         tag = 'getFileName' ; state = k.getState(tag)
         tabName = 'Completion'
+        
+        c.check_event(event)
+
         keysym = gui.eventKeysym(event)
         # g.trace('state',state,'keysym',keysym)
         if state == 0:
@@ -4301,8 +4334,10 @@ class keyHandlerClass:
         # to make the individual command more convenient to use.
         #@-<< about repeat counts >>
 
-        k = self ; gui = g.app.gui
+        c,k = self.c,self ; gui = g.app.gui
         state = k.getState('u-arg')
+        
+        c.check_event(event)
 
         if state == 0:
             k.dispatchEvent = event
@@ -4375,7 +4410,7 @@ class keyHandlerClass:
                 # This does nothing for Qt gui.
                 w = event.widget
                 for z in range(n):
-                    g.app.gui.event_generate(w,'<Key>',keysym=event.keysym)
+                    g.app.gui.event_generate(c,w,'<Key>',keysym=event.keysym)
     #@+node:ekr.20061031131434.203: *4* doControlU
     def doControlU (self,event,stroke):
 

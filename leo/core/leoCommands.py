@@ -437,6 +437,27 @@ class Commands (object):
         if not g.unitTesting:
             g.es(message)
             g.app.gui.alert(c,message)
+    #@+node:ekr.20110605040658.17005: *3* c.check_event
+    def check_event (self,event):
+        
+        # assert not event or event.keysym == event.char,repr(event)
+        
+        if event:
+            if g.unitTesting:
+                # assert isinstance(event,leoKeyEvent)
+                    ### Will fail for g.bunches.
+                assert event.keysym == event.char,repr(event)
+                for ivar in ('char','keysym','stroke',): # 'stroke',
+                    assert hasattr(event,ivar),'event: %s, ivar: %s, callers: %s' % (
+                        event,ivar,g.callers())
+            else:
+                if event.keysym != event.char:
+                    g.trace('can not happen: keysym != event.char',
+                        repr(event.keysym),repr(event.char),event)
+                for ivar in ('char','keysym',): # 'stroke',
+                    if not hasattr(event,ivar):
+                        g.trace('can not happen: not hasattr(event,%s) event: %s' % (
+                            ivar,event))
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
@@ -666,7 +687,8 @@ class Commands (object):
         func = c.commandsDict.get(commandName)
 
         if func:
-            event = g.Bunch(c=c,char='',keysym=None,widget=c.frame.body.bodyCtrl)
+            event = g.Bunch(c=c,char='',keysym='',widget=c.frame.body.bodyCtrl)
+                #### Was keysym = None
             stroke = None
             k.masterCommand(event,func,stroke)
             return k.funcReturn
@@ -7405,6 +7427,7 @@ class Commands (object):
         if not event or not event.char or not event.keysym.isalnum():
             return
         c  = self ; p = c.p ; p1 = p.copy()
+        c.check_event(event)
         invisible = c.config.getBool('invisible_outline_navigation')
         ch = event.char
         allFlag = ch.isupper() and invisible # all is a global (!?)

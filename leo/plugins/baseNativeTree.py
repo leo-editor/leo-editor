@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20090124174652.7: * @file baseNativeTree.py
+#@+node:ekr.20110605121601.17863: * @file ../plugins/baseNativeTree.py
 #@@first
 
 '''Base classes for native tree widgets.'''
@@ -25,8 +25,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     callbacksInjected = False # A class var.
 
     #@+others
-    #@+node:ekr.20090124174652.9: **  Birth... (nativeTree)
-    #@+node:ekr.20090124174652.10: *3* __init__ (nativeTree)
+    #@+node:ekr.20110605121601.17864: **  Birth... (nativeTree)
+    #@+node:ekr.20110605121601.17865: *3* __init__ (nativeTree)
     def __init__(self,c,frame):
 
         # Init the base class.
@@ -70,13 +70,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         self.setConfigIvars()
         self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
-    #@+node:ekr.20090124174652.11: *3* get_name (nativeTree)
+    #@+node:ekr.20110605121601.17866: *3* get_name (nativeTree)
     def getName (self):
 
         name = 'canvas(tree)' # Must start with canvas.
 
         return name
-    #@+node:ekr.20090124174652.121: *3* Called from Leo's core
+    #@+node:ekr.20110605121601.17867: *3* Called from Leo's core
     def initAfterLoad (self):
         pass
 
@@ -87,7 +87,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def setCanvasBindings (self,canvas):
         '''Create master tree bindings.'''
         pass
-    #@+node:ekr.20090126120517.26: ** Debugging & tracing
+    #@+node:ekr.20110605121601.17868: ** Debugging & tracing
     def error (self,s):
         g.trace('*** %s' % (s),g.callers(8))
 
@@ -102,8 +102,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             return g.callers(5,excludeCaller=True)
         else:
             return '' 
-    #@+node:ekr.20090124174652.12: ** Config... (nativeTree)
-    #@+node:ekr.20090124174652.13: *3* do-nothin config methods
+    #@+node:ekr.20110605121601.17869: ** Config... (nativeTree)
+    #@+node:ekr.20110605121601.17870: *3* do-nothin config methods
     # These can be over-ridden if desired,
     # but they do not have to be over-ridden.
 
@@ -121,7 +121,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def setUnselectedHeadlineColors (self,p):   pass
 
     setNormalLabelState = setEditLabelState # For compatibility.
-    #@+node:ekr.20090124174652.14: *3* setConfigIvars
+    #@+node:ekr.20110605121601.17871: *3* setConfigIvars
     def setConfigIvars (self):
 
         c = self.c
@@ -132,8 +132,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             'select_all_text_when_editing_headlines')
         self.stayInTree     = c.config.getBool('stayInTreeAfterSelect')
         self.use_chapters   = c.config.getBool('use_chapters')
-    #@+node:ekr.20090124174652.15: ** Drawing... (nativeTree)
-    #@+node:ekr.20090124174652.17: *3* full_redraw & helpers
+    #@+node:ekr.20110605121601.17872: ** Drawing... (nativeTree)
+    #@+node:ekr.20110605121601.17873: *3* full_redraw & helpers
     # forceDraw not used. It is used in the Tk code.
 
     def full_redraw (self,p=None,scroll=True,forceDraw=False):
@@ -177,7 +177,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     # Compatibility
     redraw = full_redraw 
     redraw_now = full_redraw
-    #@+node:ekr.20090124174652.19: *4* drawChildren
+    #@+node:ekr.20110605121601.17874: *4* drawChildren
     def drawChildren (self,p,parent_item):
 
         trace = False and not g.unitTesting
@@ -204,7 +204,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 self.contractItem(parent_item)
         else:
             self.contractItem(parent_item)
-    #@+node:ekr.20090124174652.20: *4* drawNode
+    #@+node:ekr.20110605121601.17875: *4* drawNode
     def drawNode (self,p,parent_item):
 
         trace = False
@@ -225,7 +225,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if trace: g.trace(self.traceItem(item))
 
         return item
-    #@+node:ekr.20090129062500.12: *4* drawTopTree
+    #@+node:ekr.20110605121601.17876: *4* drawTopTree
     def drawTopTree (self,p):
         
         trace = False and not g.unitTesting
@@ -255,7 +255,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.setVScroll(vPos)
 
         self.repaint()
-    #@+node:ekr.20090124174652.21: *4* drawTree
+    #@+node:ekr.20110605121601.17877: *4* drawTree
     def drawTree (self,p,parent_item=None):
 
         # Draw the (visible) parent node.
@@ -263,7 +263,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         # Draw all the visible children.
         self.drawChildren(p,parent_item=item)
-    #@+node:ekr.20090124174652.22: *4* initData
+    #@+node:ekr.20110605121601.17878: *4* initData
     def initData (self):
 
         # g.trace('*****')
@@ -273,7 +273,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.position2itemDict = {}
         self.vnode2itemsDict = {}
         self.editWidgetsDict = {}
-    #@+node:ekr.20090124174652.23: *4* rememberItem
+    #@+node:ekr.20110605121601.17879: *4* rememberItem
     def rememberItem (self,p,item):
 
         trace = False and not g.unitTesting
@@ -297,7 +297,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         else:
             aList.append(item)
         d[v] = aList
-    #@+node:ekr.20090124174652.24: *3* redraw_after_contract
+    #@+node:ekr.20110605121601.17880: *3* redraw_after_contract
     def redraw_after_contract (self,p=None):
 
         trace = False and not g.unitTesting
@@ -315,12 +315,12 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             # We may have contracted a node that was not, in fact, visible.
             if trace: g.trace('***full redraw',p and p.h or '<no p>')
             self.full_redraw(scroll=False)
-    #@+node:ekr.20090124174652.25: *3* redraw_after_expand
+    #@+node:ekr.20110605121601.17881: *3* redraw_after_expand
     def redraw_after_expand (self,p=None):
 
         # Important, setting scrolling to False makes the problem *worse*
         self.full_redraw (p,scroll=True)
-    #@+node:ekr.20090124174652.26: *3* redraw_after_head_changed
+    #@+node:ekr.20110605121601.17882: *3* redraw_after_head_changed
     def redraw_after_head_changed (self):
 
         trace = False and not g.unitTesting
@@ -342,7 +342,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         # Bug fix: 2009/10/06
         self.redraw_after_icons_changed()
-    #@+node:ekr.20090124174652.27: *3* redraw_after_icons_changed
+    #@+node:ekr.20110605121601.17883: *3* redraw_after_icons_changed
     def redraw_after_icons_changed (self):
 
         trace = False and not g.unitTesting
@@ -364,7 +364,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 self.updateVisibleIcons(p)
         finally:
             self.redrawing = False
-    #@+node:ekr.20090124174652.28: *3* redraw_after_select
+    #@+node:ekr.20110605121601.17884: *3* redraw_after_select
     # Important: this can not replace before/afterSelectHint.
 
     def redraw_after_select (self,p=None):
@@ -388,8 +388,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         # c.redraw_after_select calls tree.select indirectly.
         # Do not call it again here.
-    #@+node:ekr.20090124174652.29: ** Event handlers... (nativeTree)
-    #@+node:ekr.20090129062500.10: *3* busy (nativeTree)
+    #@+node:ekr.20110605121601.17885: ** Event handlers... (nativeTree)
+    #@+node:ekr.20110605121601.17886: *3* busy (nativeTree)
     def busy (self):
 
         '''Return True (actually, a debugging string)
@@ -414,8 +414,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             g.trace(self.traceItem(item),kinds,g.callers(4))
 
         return kinds # Return the string for debugging
-    #@+node:ekr.20090124174652.30: *3* Click Box... (nativeTree)
-    #@+node:ekr.20090124174652.31: *4* onClickBoxClick
+    #@+node:ekr.20110605121601.17887: *3* Click Box... (nativeTree)
+    #@+node:ekr.20110605121601.17888: *4* onClickBoxClick
     def onClickBoxClick (self,event,p=None):
 
         if self.busy(): return
@@ -426,7 +426,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         g.doHook("boxclick2",c=c,p=p,v=p,event=event)
 
         c.outerUpdate()
-    #@+node:ekr.20090124174652.32: *4* onClickBoxRightClick
+    #@+node:ekr.20110605121601.17889: *4* onClickBoxRightClick
     def onClickBoxRightClick(self, event, p=None):
 
         if self.busy(): return
@@ -437,7 +437,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         g.doHook("boxrclick2",c=c,p=p,v=p,event=event)
 
         c.outerUpdate()
-    #@+node:ekr.20090124174652.33: *4* onPlusBoxRightClick
+    #@+node:ekr.20110605121601.17890: *4* onPlusBoxRightClick
     def onPlusBoxRightClick (self,event,p=None):
 
         if self.busy(): return
@@ -447,9 +447,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         g.doHook('rclick-popup',c=c,p=p,event=event,context_menu='plusbox')
 
         c.outerUpdate()
-    #@+node:ekr.20090124174652.35: *3* Icon Box... (nativeTree)
+    #@+node:ekr.20110605121601.17891: *3* Icon Box... (nativeTree)
     # For Qt, there seems to be no way to trigger these events.
-    #@+node:ekr.20090124174652.36: *4* onIconBoxClick
+    #@+node:ekr.20110605121601.17892: *4* onIconBoxClick
     def onIconBoxClick (self,event,p=None):
 
         g.trace(self.c.p)
@@ -462,7 +462,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         g.doHook("iconclick2",c=c,p=p,v=p,event=event)
 
         c.outerUpdate()
-    #@+node:ekr.20090124174652.37: *4* onIconBoxRightClick
+    #@+node:ekr.20110605121601.17893: *4* onIconBoxRightClick
     def onIconBoxRightClick (self,event,p=None):
 
         """Handle a right click in any outline widget."""
@@ -475,7 +475,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         g.doHook("iconrclick2",c=c,p=p,v=p,event=event)
 
         c.outerUpdate()
-    #@+node:ekr.20090124174652.38: *4* onIconBoxDoubleClick
+    #@+node:ekr.20110605121601.17894: *4* onIconBoxDoubleClick
     def onIconBoxDoubleClick (self,event,p=None):
 
         if self.busy(): return
@@ -490,7 +490,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         g.doHook("icondclick2",c=c,p=p,v=p,event=event)
 
         c.outerUpdate()
-    #@+node:ekr.20090124174652.40: *3* onItemCollapsed (nativeTree)
+    #@+node:ekr.20110605121601.17895: *3* onItemCollapsed (nativeTree)
     def onItemCollapsed (self,item):
 
         trace = False
@@ -516,7 +516,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             self.error('no p')
 
         c.outerUpdate()
-    #@+node:ekr.20090812211903.3641: *3* onItemClicked (nativeTree)
+    #@+node:ekr.20110605121601.17896: *3* onItemClicked (nativeTree)
     def onItemClicked (self,item,col):
 
         # This is called after an item is selected.
@@ -553,7 +553,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 e,wrapper = self.createTreeEditorForItem(item)
         finally:
             self.selecting = False
-    #@+node:ekr.20090124174652.41: *3* onItemDoubleClicked (nativeTree)
+    #@+node:ekr.20110605121601.17897: *3* onItemDoubleClicked (nativeTree)
     def onItemDoubleClicked (self,item,col):
 
         trace = False and not g.unitTesting
@@ -586,7 +586,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             c.outerUpdate()
         finally:
             self.selecting = False
-    #@+node:ekr.20090124174652.42: *3* onItemExpanded (nativeTree)
+    #@+node:ekr.20110605121601.17898: *3* onItemExpanded (nativeTree)
     def onItemExpanded (self,item):
 
         '''Handle and tree-expansion event.'''
@@ -616,7 +616,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             self.error('no p')
 
         c.outerUpdate()
-    #@+node:ekr.20090124174652.43: *3* onTreeSelect (nativeTree)
+    #@+node:ekr.20110605121601.17899: *3* onTreeSelect (nativeTree)
     def onTreeSelect(self):
 
         '''Select the proper position when a tree node is selected.'''
@@ -640,7 +640,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             self.error('no p for item: %s' % item)
 
         c.outerUpdate()
-    #@+node:ekr.20090124174652.45: *3* tree.OnPopup & allies (nativeTree)
+    #@+node:ekr.20110605121601.17900: *3* tree.OnPopup & allies (nativeTree)
     def OnPopup (self,p,event):
 
         """Handle right-clicks in the outline.
@@ -661,7 +661,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 self.showPopupMenu(event)
 
         return "break"
-    #@+node:ekr.20090124174652.46: *4* OnPopupFocusLost
+    #@+node:ekr.20110605121601.17901: *4* OnPopupFocusLost
     #@+at
     # On Linux we must do something special to make the popup menu "unpost" if the
     # mouse is clicked elsewhere. So we have to catch the <FocusOut> event and
@@ -680,21 +680,21 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         # self.popupMenu.unpost()
         pass
-    #@+node:ekr.20090124174652.47: *4* createPopupMenu
+    #@+node:ekr.20110605121601.17902: *4* createPopupMenu
     def createPopupMenu (self,event):
 
         '''This might be a placeholder for plugins.  Or not :-)'''
-    #@+node:ekr.20090124174652.49: *4* enablePopupMenuItems
+    #@+node:ekr.20110605121601.17903: *4* enablePopupMenuItems
     def enablePopupMenuItems (self,v,event):
 
         """Enable and disable items in the popup menu."""
 
-    #@+node:ekr.20090124174652.51: *4* showPopupMenu
+    #@+node:ekr.20110605121601.17904: *4* showPopupMenu
     def showPopupMenu (self,event):
 
         """Show a popup menu."""
-    #@+node:ekr.20090124174652.52: ** Selecting & editing... (nativeTree)
-    #@+node:ekr.20090124174652.53: *3* afterSelectHint (nativeTree)
+    #@+node:ekr.20110605121601.17905: ** Selecting & editing... (nativeTree)
+    #@+node:ekr.20110605121601.17906: *3* afterSelectHint (nativeTree)
     def afterSelectHint (self,p,old_p):
 
         trace = False and not g.unitTesting
@@ -719,7 +719,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         else:
             c.outerUpdate() # Bring the tree up to date.
             item = self.setItemForCurrentPosition(scroll=False)
-    #@+node:ekr.20090124174652.54: *3* beforeSelectHint (nativeTree)
+    #@+node:ekr.20110605121601.17907: *3* beforeSelectHint (nativeTree)
     def beforeSelectHint (self,p,old_p):
 
         trace = False and not g.unitTesting
@@ -733,7 +733,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # Disable onTextChanged.
         self.selecting = True
         self.prev_v = c.p.v
-    #@+node:ekr.20090124174652.55: *3* edit_widget (nativeTree)
+    #@+node:ekr.20110605121601.17908: *3* edit_widget (nativeTree)
     def edit_widget (self,p):
 
         """Returns the edit widget for position p."""
@@ -758,7 +758,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         else:
             if trace and verbose: self.error('no item for %s' % (p))
             return None
-    #@+node:ekr.20090124174652.56: *3* editLabel (nativeTree)
+    #@+node:ekr.20110605121601.17909: *3* editLabel (nativeTree)
     def editLabel (self,p,selectAll=False,selection=None):
 
         """Start editing p's headline."""
@@ -782,13 +782,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         
         if trace: g.trace(e,wrapper,g.callers())
         return e,wrapper # 2011/02/12
-    #@+node:ekr.20090124174652.57: *3* editPosition (nativeTree)
+    #@+node:ekr.20110605121601.17910: *3* editPosition (nativeTree)
     def editPosition(self):
 
         c = self.c ; p = c.currentPosition()
         ew = self.edit_widget(p)
         return ew and p or None
-    #@+node:ekr.20090124174652.58: *3* endEditLabel (nativeTree)
+    #@+node:ekr.20110605121601.17911: *3* endEditLabel (nativeTree)
     def endEditLabel (self):
 
         '''Override leoTree.endEditLabel.
@@ -798,7 +798,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         c = self.c ; p = c.currentPosition()
 
         self.onHeadChanged(p)
-    #@+node:ekr.20090124174652.59: *3* onHeadChanged (nativeTree)
+    #@+node:ekr.20110605121601.17912: *3* onHeadChanged (nativeTree)
     # Tricky code: do not change without careful thought and testing.
 
     def onHeadChanged (self,p,undoType='Typing',s=None,e=None):
@@ -859,7 +859,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 c.bodyWantsFocus()
 
         c.outerUpdate()
-    #@+node:ekr.20090124174652.44: *3* setItemForCurrentPosition (nativeTree)
+    #@+node:ekr.20110605121601.17913: *3* setItemForCurrentPosition (nativeTree)
     def setItemForCurrentPosition (self,scroll=True):
 
         '''Select the item for c.currentPosition()'''
@@ -906,7 +906,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # if trace: g.trace('item',repr(item))
         if not item: g.trace('*** no item')
         return item
-    #@+node:ekr.20090124174652.60: *3* setHeadline (nativeTree)
+    #@+node:ekr.20110605121601.17914: *3* setHeadline (nativeTree)
     def setHeadline (self,p,s):
 
         '''Force the actual text of the headline widget to p.h.'''
@@ -931,13 +931,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 self.setItemText(item,s)
             else:
                 if trace: g.trace('*** failed. no item for %s' % p.h)
-    #@+node:ville.20090525205736.3928: *3* getSelectedPositions (nativeTree)
+    #@+node:ekr.20110605121601.17915: *3* getSelectedPositions (nativeTree)
     def getSelectedPositions(self):
         items = self.getSelectedItems()
         pl = leoNodes.poslist(self.item2position(it) for it in items)
         return pl
-    #@+node:ekr.20090124174652.78: ** Widget-dependent helpers
-    #@+node:ekr.20090125063447.10: *3* Drawing
+    #@+node:ekr.20110605121601.17916: ** Widget-dependent helpers
+    #@+node:ekr.20110605121601.17917: *3* Drawing
     # These must be overridden in subclasses
 
     def clear (self):
@@ -955,27 +955,27 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def repaint (self):
         '''Repaint the widget.'''
         self.oops()
-    #@+node:ekr.20090124174652.85: *3* Icons
-    #@+node:ekr.20090124174652.86: *4* drawIcon
+    #@+node:ekr.20110605121601.17918: *3* Icons
+    #@+node:ekr.20110605121601.17919: *4* drawIcon
     def drawIcon (self,p):
 
         '''Redraw the icon at p.'''
 
         self.oops()
-    #@+node:ekr.20090124174652.87: *4* getIcon
+    #@+node:ekr.20110605121601.17920: *4* getIcon
     def getIcon(self,p):
 
         '''Return the proper icon for position p.'''
 
         self.oops()
-    #@+node:ekr.20090124174652.88: *4* setItemIconHelper
+    #@+node:ekr.20110605121601.17921: *4* setItemIconHelper
     def setItemIconHelper (self,item,icon):
 
         '''Set the icon for the given item.'''
 
         self.oops()
-    #@+node:ekr.20090124174652.116: *3* Items
-    #@+node:ekr.20090125063447.12: *4* childIndexOfItem
+    #@+node:ekr.20110605121601.17922: *3* Items
+    #@+node:ekr.20110605121601.17923: *4* childIndexOfItem
     def childIndexOfItem (self,item):
 
         '''Return the child index of item in item's parent.'''
@@ -983,66 +983,66 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.oops()
 
         return 0
-    #@+node:ekr.20090125063447.13: *4* nthChildItem
+    #@+node:ekr.20110605121601.17924: *4* nthChildItem
     def nthChildItem (self,n,parent_item):
 
         '''Return the item that is the n'th child of parent_item'''
 
         self.oops()
 
-    #@+node:ekr.20090605075414.3821: *4* closeEditorHelper
+    #@+node:ekr.20110605121601.17925: *4* closeEditorHelper
     def closeEditorHelper (self,e,item):
 
         self.oops()
-    #@+node:ekr.20090125063447.11: *4* childItems
+    #@+node:ekr.20110605121601.17926: *4* childItems
     def childItems (self,parent_item):
 
         '''Return the list of child items of the parent item,
         or the top-level items if parent_item is None.'''
 
         self.oops()
-    #@+node:ekr.20090124174652.79: *4* createTreeItem
+    #@+node:ekr.20110605121601.17927: *4* createTreeItem
     def createTreeItem(self,p,parent_item):
 
         '''Create a tree item for position p whose parent tree item is given.'''
 
         self.oops()
-    #@+node:ekr.20090124174652.80: *4* createTreeEditorForItem
+    #@+node:ekr.20110605121601.17928: *4* createTreeEditorForItem
     def createTreeEditorForItem(self,item):
 
         '''Create an editor widget for the given tree item.'''
 
         self.oops()
         return None,None
-    #@+node:ekr.20090124174652.81: *4* getCurrentItem
+    #@+node:ekr.20110605121601.17929: *4* getCurrentItem
     def getCurrentItem (self):
 
         '''Return the currently selected tree item.'''
 
         self.oops()
-    #@+node:ekr.20090127141022.10: *4* getItemText
+    #@+node:ekr.20110605121601.17930: *4* getItemText
     def getItemText (self,item):
 
         '''Return the text of the item.'''
 
         self.oops()
-    #@+node:ekr.20090126120517.23: *4* getParentItem
+    #@+node:ekr.20110605121601.17931: *4* getParentItem
     def getParentItem (self,item):
 
         '''Return the parent of the given item.'''
 
         self.oops()
-    #@+node:ekr.20090605075414.3823: *4* getSelectedItems
+    #@+node:ekr.20110605121601.17932: *4* getSelectedItems
     def getSelectedItems(self):
 
         self.oops()
-    #@+node:ekr.20090603123442.3784: *4* getWrapper
+    #@+node:ekr.20110605121601.17933: *4* getWrapper
     def getWrapper (self,e,item):
 
         '''A do-nothing that can be over-ridden in subclasses.'''
 
         return e
-    #@+node:ekr.20090124174652.82: *4* getTreeEditorForItem
+    #@+node:ekr.20110605121601.17934: *4* getTreeEditorForItem
     def getTreeEditorForItem(self,item):
 
         '''Return the edit widget if it exists.
@@ -1050,30 +1050,30 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         Do *not* create one if it does not exist.'''
 
         self.oops()
-    #@+node:ekr.20090201080444.11: *4* scrollToItem
+    #@+node:ekr.20110605121601.17935: *4* scrollToItem
     def scrollToItem (self,item):
 
         self.oops()
-    #@+node:ekr.20090124174652.83: *4* setCurrentItemHelper
+    #@+node:ekr.20110605121601.17936: *4* setCurrentItemHelper
     def setCurrentItemHelper(self,item):
 
         '''Select the given item.'''
 
         self.oops()
-    #@+node:ekr.20090124174652.84: *4* setItemText
+    #@+node:ekr.20110605121601.17937: *4* setItemText
     def setItemText (self,item,s):
 
         '''Set the headline text for the given item.'''
 
         self.oops()
-    #@+node:ekr.20090129164840.11: *4* editLabelHelper
+    #@+node:ekr.20110605121601.17938: *4* editLabelHelper
     def editLabelHelper(self,item,selectAll=False,selection=None):
 
         '''Called by nativeTree.editLabel to do gui-specific stuff
         relating to editing a headline.'''
 
         self.oops()
-    #@+node:ekr.20090124174652.123: *3* Scroll bars
+    #@+node:ekr.20110605121601.17939: *3* Scroll bars
     def getScroll (self):
 
         '''Return the hPos,vPos for the tree's scrollbars.'''
@@ -1085,7 +1085,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
     def setVScroll (self,vPos):
         pass
-    #@+node:edward.20110330105340.3843: *3* wrapQLineEdit (nativeTree)
+    #@+node:ekr.20110605121601.17940: *3* wrapQLineEdit (nativeTree)
     def wrapQLineEdit (self,w):
         
         '''A wretched kludge for MacOs k.masterMenuHandler.'''
@@ -1099,9 +1099,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # g.trace(wrapper)
         return wrapper
             
-    #@+node:ekr.20090124174652.62: ** Widget-independent helpers
-    #@+node:ekr.20090124174652.63: *3* Associating items and positions
-    #@+node:ekr.20090124174652.64: *4* item dict getters
+    #@+node:ekr.20110605121601.17941: ** Widget-independent helpers
+    #@+node:ekr.20110605121601.17942: *3* Associating items and positions
+    #@+node:ekr.20110605121601.17943: *4* item dict getters
     def itemHash(self,item):
         return '%s at %s' % (repr(item),str(id(item)))
 
@@ -1125,7 +1125,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def isValidItem (self,item):
         itemHash = self.itemHash(item)
         return itemHash in self.item2vnodeDict # was item.
-    #@+node:ekr.20090124174652.71: *3* Focus (nativeTree)
+    #@+node:ekr.20110605121601.17944: *3* Focus (nativeTree)
     def getFocus(self):
 
         return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30
@@ -1139,8 +1139,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def setFocus (self):
 
         g.app.gui.set_focus(self.c,self.treeWidget)
-    #@+node:ekr.20090124174652.72: *3* Icons (nativeTree)
-    #@+node:ekr.20090124174652.73: *4* drawItemIcon
+    #@+node:ekr.20110605121601.17945: *3* Icons (nativeTree)
+    #@+node:ekr.20110605121601.17946: *4* drawItemIcon
     def drawItemIcon (self,p,item):
 
         '''Set the item's icon to p's icon.'''
@@ -1148,25 +1148,25 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         icon = self.getIcon(p)
         if icon:
             self.setItemIcon(item,icon)
-    #@+node:ekr.20090124174652.74: *4* getIconImage
+    #@+node:ekr.20110605121601.17947: *4* getIconImage
     def getIconImage(self,p):
 
         # User icons are not supported in the base class.
         return self.getStatusIconImage(p)
-    #@+node:ekr.20090701122113.3737: *4* getStatusIconImage
+    #@+node:ekr.20110605121601.17948: *4* getStatusIconImage
     def getStatusIconImage (self,p):
 
         val = p.v.computeIcon()
 
         return g.app.gui.getIconImage(
             "box%02d.GIF" % val)
-    #@+node:ekr.20090124174652.75: *4* getVnodeIcon
+    #@+node:ekr.20110605121601.17949: *4* getVnodeIcon
     def getVnodeIcon(self,p):
 
         '''Return the proper icon for position p.'''
 
         return self.getIcon(p)
-    #@+node:ekr.20090124174652.76: *4* setItemIcon (nativeTree)
+    #@+node:ekr.20110605121601.17950: *4* setItemIcon (nativeTree)
     def setItemIcon (self,item,icon):
 
         trace = False and not g.unitTesting
@@ -1184,7 +1184,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 g.trace('** item %s, valid: %s, icon: %s' % (
                     item and id(item) or '<no item>',valid,icon),
                     g.callers(4))
-    #@+node:ekr.20090124174652.113: *4* updateIcon (nativeTree)
+    #@+node:ekr.20110605121601.17951: *4* updateIcon (nativeTree)
     def updateIcon (self,p,force=False):
 
         '''Update p's icon.'''
@@ -1205,7 +1205,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         items = self.vnode2items(p.v)
         for item in items:
             self.setItemIcon(item,icon)
-    #@+node:ekr.20090124174652.114: *4* updateVisibleIcons (nativeTree)
+    #@+node:ekr.20110605121601.17952: *4* updateVisibleIcons (nativeTree)
     def updateVisibleIcons (self,p):
 
         '''Update the icon for p and the icons
@@ -1216,7 +1216,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if p.hasChildren() and p.isExpanded():
             for child in p.children():
                 self.updateVisibleIcons(child)
-    #@+node:ekr.20090124174652.77: *3* oops
+    #@+node:ekr.20110605121601.17953: *3* oops
     def oops(self):
 
         g.pr("leoTree oops: should be overridden in subclass",

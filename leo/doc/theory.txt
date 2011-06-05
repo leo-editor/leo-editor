@@ -252,14 +252,11 @@ create a new bead. The list of beads does not branch; all undoable operations
 newly created bead. I did not invent this model of unlimited undo.
 I first came across it in the documentation for Apple's Yellow Box classes.
 .. @+node:ekr.20060602142732: *3* Key bindings
-
-
 leoKeys.py handles key bindings.
 There are two kinds of bindings, gui bindings and pane bindings.
 
 **Gui bindings** are the actual binding as seen by  whatever gui is in effect.
 Leo binds every key that has a binding to k.masterKeyHander.
-
 
 At present Leo makes gui bindings in several places, all equivalent.
 Bindings are made to callbacks, all of which have this form::
@@ -273,13 +270,14 @@ It would be clearer to have a single place to make these bindings...
 In any case, the purpose of these callbacks is to capture the value of 'stroke' so
 that it can be passed to k.masterKeyHandler.
 This relieves k.masterKeyHandler of the impossible task of computing the stroke from the event.
+
 **Important**:  No function argument is ever passed to k.masterKeyHandler from these callbacks,
 because k.masterKeyHandler binds keys to command handlers as described next.
 
-**Pane bindings** are bindings represented by various Python dictionaries in the keyHandlerClass
-(see below).
-k.masterKeyHandler and its helpers use these dictionaries to call the proper command or mode handler.
-This logic is hairy, but it is completely separate from the gui binding logic.
+**Pane bindings** are bindings represented by various Python dictionaries in the
+keyHandlerClass (see below). k.masterKeyHandler and its helpers use these
+dictionaries to call the proper command or mode handler. This logic is hairy,
+but it is completely separate from the gui binding logic.
 
 Here are the dictionaries that k.masterKeyHandler uses:
 
