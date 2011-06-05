@@ -167,20 +167,24 @@ class baseTextWidget:
         # 'xyzzy', # to make test fail.
     )
     #@+node:ekr.20081031074455.6: *4* must be defined in base class
-    #@+node:ekr.20070228074312.2: *5* onChar
+    #@+node:ekr.20070228074312.2: *5* onChar (baseTextWidget)
     # Don't even think of using key up/down events.
     # They don't work reliably and don't support auto-repeat.
 
-    def onChar (self, event):
+    # Must be defined in subclasses.
 
-        c = self.c
-        keycode = event.GetKeyCode()
-        event.leoWidget = self
-        keysym = g.app.gui.eventKeysym(event)
-        #g.trace('text: keycode %3s keysym %s' % (keycode,keysym))
-        if keysym:
-            c.k.masterKeyHandler(event,stroke=keysym)
-            c.outerUpdate()
+    def onChar (self, event):
+        
+        g.trace('can not happen: must be defined in subclasses')
+
+        # c = self.c
+        # keycode = event.GetKeyCode()
+        # event.leoWidget = self
+        # keysym = g.app.gui.eventKeysym(event)
+        # #g.trace('text: keycode %3s keysym %s' % (keycode,keysym))
+        # if keysym:
+            # c.k.masterKeyHandler(event,stroke=keysym)
+            # c.outerUpdate()
     #@+node:ekr.20070228074312.12: *5* clipboard_clear & clipboard_append
     def clipboard_clear (self):
 
@@ -241,23 +245,34 @@ class baseTextWidget:
         i,j = self.getSelectionRange()
         self.delete(i,j)
     #@+node:ekr.20070228074312.15: *5* event_generate (baseTextWidget)
-    def event_generate(self,stroke):
+    # Called from leoGui.event_generate.
 
-        trace = False
-        w = self ; c = self.c ; char = stroke
+    #### This should be the default implementation in the gui base class.
 
+
+    def event_generate(self,stroke,keysym=None):
+        
+        # g.trace('can not happen: must be defined in subclasses')
+        # return
+
+        trace = False # and not g.unitTesting
+        w = self ; c = self.c
+        
         # Canonicalize the setting.
+        stroke1 = stroke ####
         stroke = c.k.shortcutFromSetting(stroke)
+        char = keysym or stroke1 ####
 
-        if trace: g.trace('baseTextWidget','char',char,'stroke',stroke,'w',w)
+        if trace: g.trace('(baseTextWidget)','char',repr(char),'stroke',repr(stroke),'w',w)
 
         class eventGenerateEvent:
-            def __init__ (self,c,w,char,keysym):
+            def __init__ (self,c,w,char,stroke):
                 self.c = c
                 self.char = char
-                self.keysym = keysym
+                self.keysym = char
+                self.stroke = stroke
                 self.leoWidget = w
-                self.widget = w
+                self.widget = self.w = w
 
         event = eventGenerateEvent(c,w,char,stroke)
         c.k.masterKeyHandler(event,stroke=stroke)

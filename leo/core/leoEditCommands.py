@@ -180,7 +180,9 @@ class baseEditCommandsClass:
     #@+node:ekr.20050920084036.250: *4* _checkIfRectangle
     def _checkIfRectangle (self,event):
 
-        k = self.k ; key = event.keysym.lower()
+        c,k = self.c,self.k ; key = event.keysym.lower()
+        
+        c.check_event(event)
 
         val = self.registers.get(key)
 
@@ -409,9 +411,9 @@ class abbrevCommandsClass (baseEditCommandsClass):
         #@@language rest
 
         s = '''
-        #####################
+        +++++++++++++++++++
         About Abbreviations
-        #####################
+        +++++++++++++++++++
 
         When abbreviation mode is on (abbrev-mode
         toggles this mode) Leo will expand
@@ -585,19 +587,22 @@ class abbrevCommandsClass (baseEditCommandsClass):
             c.undoer.afterChangeNodeContents(p,
                 command='dabbrev-expands',bunch=b,dirtyVnodeList=[])
         else:
-            self.dynamicExpandHelper(prefix,rlist,w)
-    #@+node:ekr.20070605110441: *5* dynamicExpandHelper
-    def dynamicExpandHelper (self,prefix=None,rlist=None,w=None):
+            self.dynamicExpandHelper(event,prefix,rlist,w)
+    #@+node:ekr.20070605110441: *5* dynamicExpandHelper (added event arg)
+    def dynamicExpandHelper (self,event,prefix=None,rlist=None,w=None):
 
-        k = self.k ; tag = 'dabbrev-expand'
+        c,k = self.c,self.k ; tag = 'dabbrev-expand'
         state = k.getState(tag)
+        
+        c.check_event(event)
 
         if state == 0:
             self.w = w
             if w:
-                names = rlist ; event = None
+                names = rlist
                 prefix2 = 'dabbrev-expand: '
                 k.setLabelBlue(prefix2+prefix,protect=True)
+                ### event = None
                 k.getArg(event,tag,1,self.dynamicExpandHelper,prefix=prefix2,tabList=names)
         else:
             k.clearState()
@@ -851,7 +856,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         if not w: return
 
         self.k.setLabelBlue('Append to buffer: ')
-        self.getBufferName(self.appendToBufferFinisher)
+        self.getBufferName(event,self.appendToBufferFinisher)
 
     def appendToBufferFinisher (self,name):
 
@@ -877,7 +882,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         if not w: return
 
         self.k.setLabelBlue('Copy to buffer: ')
-        self.getBufferName(self.copyToBufferFinisher)
+        self.getBufferName(event,self.copyToBufferFinisher)
 
     def copyToBufferFinisher (self,event,name):
 
@@ -901,7 +906,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         if not w: return
 
         self.k.setLabelBlue('Insert to buffer: ')
-        self.getBufferName(self.insertToBufferFinisher)
+        self.getBufferName(event,self.insertToBufferFinisher)
 
     def insertToBufferFinisher (self,event,name):
 
@@ -925,7 +930,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         if not w: return
 
         self.k.setLabelBlue('Kill buffer: ')
-        self.getBufferName(self.killBufferFinisher)
+        self.getBufferName(event,self.killBufferFinisher)
 
     def killBufferFinisher (self,name):
 
@@ -970,7 +975,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         if not w: return
 
         self.k.setLabelBlue('Prepend to buffer: ')
-        self.getBufferName(self.prependToBufferFinisher)
+        self.getBufferName(event,self.prependToBufferFinisher)
 
     def prependToBufferFinisher (self,event,name):
 
@@ -992,13 +997,13 @@ class bufferCommandsClass (baseEditCommandsClass):
         '''Rename a buffer, i.e., change a node's headline.'''
 
         self.k.setLabelBlue('Rename buffer from: ')
-        self.getBufferName(self.renameBufferFinisher1)
+        self.getBufferName(event,self.renameBufferFinisher1)
 
     def renameBufferFinisher1 (self,name):
 
         self.fromName = name
         self.k.setLabelBlue('Rename buffer from: %s to: ' % (name))
-        self.getBufferName(self.renameBufferFinisher2)
+        self.getBufferName(event,self.renameBufferFinisher2)
 
     def renameBufferFinisher2 (self,name):
 
@@ -1013,7 +1018,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         '''Select a buffer (node) by its name (headline).'''
 
         self.k.setLabelBlue('Switch to buffer: ')
-        self.getBufferName(self.switchToBufferFinisher)
+        self.getBufferName(event,self.switchToBufferFinisher)
 
     def switchToBufferFinisher (self,name):
 
@@ -1055,17 +1060,20 @@ class bufferCommandsClass (baseEditCommandsClass):
 
         g.trace("Can't happen",name)
         return None
-    #@+node:ekr.20050927093851: *4* getBufferName
-    def getBufferName (self,finisher):
+    #@+node:ekr.20050927093851: *4* getBufferName (added event arg)
+    def getBufferName (self,event,finisher):
 
         '''Get a buffer name into k.arg and call k.setState(kind,n,handler).'''
 
-        k = self.k ; c = k.c ; state = k.getState('getBufferName')
+        c,k = self.c,self.k ; state = k.getState('getBufferName')
+        
+        c.check_event(event)
 
         if state == 0:
             self.computeData()
             self.getBufferNameFinisher = finisher
-            prefix = k.getLabel() ; event = None
+            prefix = k.getLabel()
+            ### event = None
             k.getArg(event,'getBufferName',1,self.getBufferName,
                 prefix=prefix,tabList=self.nameList)
         else:
@@ -2097,7 +2105,9 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20050920084036.63: *4* watchEscape (Revise)
     def watchEscape (self,event):
 
-        k = self.k
+        c,k = self.c,self.k
+        
+        c.check_event(event)
 
         if not k.inState():
             k.setState('escape','start',handler=self.watchEscape)
@@ -2123,8 +2133,11 @@ class editCommandsClass (baseEditCommandsClass):
                 k.keyboardQuit()
     #@+node:ekr.20050920084036.64: *4* escEvaluate (Revise)
     def escEvaluate (self,event):
-
-        k = self.k
+        
+        c,k = self.c,self.k
+        
+        c.check_event(event)
+        
         w = self.editWidget(event)
         if not w: return
 
@@ -3186,12 +3199,15 @@ class editCommandsClass (baseEditCommandsClass):
         This is the default binding for all keys in the body pane.'''
 
         trace = False and not g.unitTesting # or c.config.getBool('trace_masterCommand')
+        
+        c,k = self.c,self.k
+        c.check_event(event)
+       
         verbose = True
         w = self.editWidget(event)
         if not w: return # (for Tk) 'break'
         #@+<< set local vars >>
         #@+node:ekr.20061103114242: *5* << set local vars >>
-        c = self.c
         p = c.p
         gui = g.app.gui
         ch = gui.eventChar(event)
@@ -3199,7 +3215,7 @@ class editCommandsClass (baseEditCommandsClass):
         # stroke = gui.eventStroke(event)
         if keysym == 'Return':
             ch = '\n' # This fixes the MacOS return bug.
-        if keysym == 'Tab': # Support for wx_alt_gui plugin.
+        if keysym == 'Tab':
             ch = '\t'
         name = c.widget_name(w)
         oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
@@ -5674,9 +5690,9 @@ class helpCommandsClass (baseEditCommandsClass):
         #@@language rest
 
         s = '''
-        #################################
+        +++++++++++++++++++++++++++++++++
         About Autocompletion and Calltips
-        #################################
+        +++++++++++++++++++++++++++++++++
 
         This documentation describes both
         autocompletion and calltips.
@@ -5790,9 +5806,9 @@ class helpCommandsClass (baseEditCommandsClass):
         #@@language rest
 
         s = '''
-        ##################
+        ++++++++++++++++++
         About Key Bindings
-        ##################
+        ++++++++++++++++++
 
         A shortcut specification has the form:
 
@@ -5875,9 +5891,9 @@ class helpCommandsClass (baseEditCommandsClass):
         #@@language rest
 
         s = '''
-        ########################
+        ++++++++++++++++++++++++
         About Debugging Commands
-        ########################
+        ++++++++++++++++++++++++
 
         The following commands are useful for debugging::
 
@@ -5911,9 +5927,9 @@ class helpCommandsClass (baseEditCommandsClass):
         #@@language rest
 
         s = '''
-        ###################
+        +++++++++++++++++++
         About Find Commands
-        ###################
+        +++++++++++++++++++
 
         Note: all bindings shown are the default
         bindings for these commands. You may
@@ -7337,6 +7353,8 @@ class registerCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = self.k
         tag = 'append-to-register' ; state = k.getState(tag)
+        
+        c.check_event(event)
 
         if state == 0:
             k.commandName = tag
@@ -7363,6 +7381,8 @@ class registerCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = self.k
         tag = 'prepend-to-register' ; state = k.getState(tag)
+        
+        c.check_event(event)
 
         if state == 0:
             k.commandName = tag
@@ -7389,6 +7409,8 @@ class registerCommandsClass (baseEditCommandsClass):
         text to the register's contents.'''
 
         c = self.c ; k = self.k ; state = k.getState('copy-rect-to-reg')
+        
+        c.check_event(event)
 
         if state == 0:
             w = self.editWidget(event) # sets self.w
@@ -7420,6 +7442,8 @@ class registerCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = self.k
         tag = 'copy-to-register' ; state = k.getState(tag)
+        
+        c.check_event(event)
 
         if state == 0:
             k.commandName = tag
@@ -7444,6 +7468,8 @@ class registerCommandsClass (baseEditCommandsClass):
         '''Prompt for a register name and increment its value if it has a numeric value.'''
 
         c = self.c ; k = self.k ; state = k.getState('increment-reg')
+        
+        c.check_event(event)
 
         if state == 0:
             k.setLabelBlue('Increment register: ',protect=True)
@@ -7470,6 +7496,8 @@ class registerCommandsClass (baseEditCommandsClass):
         '''Prompt for a register name and and insert the value of another register into its contents.'''
 
         c = self.c ; k = self.k ; state = k.getState('insert-reg')
+        
+        c.check_event(event)
 
         if state == 0:
             k.commandName = 'insert-register'
@@ -7500,6 +7528,8 @@ class registerCommandsClass (baseEditCommandsClass):
         '''Prompt for a register name and set the insert point to the value in its register.'''
 
         c = self.c ; k = self.k ; state = k.getState('jump-to-reg')
+        
+        c.check_event(event)
 
         if state == 0:
             k.setLabelBlue('Jump to register: ',protect=True)
@@ -7533,7 +7563,9 @@ class registerCommandsClass (baseEditCommandsClass):
 
     def numberToRegister (self,event):
 
-        k = self.k ; state = k.getState('number-to-reg')
+        c,k = self.c, self.k ; state = k.getState('number-to-reg')
+        
+        c.check_event(event)
 
         if state == 0:
             k.commandName = 'number-to-register'
@@ -7552,6 +7584,8 @@ class registerCommandsClass (baseEditCommandsClass):
         '''Prompt for a register name and put a value indicating the insert point in the register.'''
 
         c = self.c ; k = self.k ; state = k.getState('point-to-reg')
+        
+        c.check_event(event)
 
         if state == 0:
             k.commandName = 'point-to-register'
@@ -7575,6 +7609,8 @@ class registerCommandsClass (baseEditCommandsClass):
         '''Prompt for a register name and print its contents.'''
 
         c = self.c ; k = self.k ; state = k.getState('view-reg')
+        
+        
 
         if state == 0:
             k.commandName = 'view-register'
@@ -8444,6 +8480,7 @@ class searchCommandsClass (baseEditCommandsClass):
         else:
             g.es("not found","'%s'" % (pattern))
             event = g.Bunch(char='\b',keysym='\b',stroke='BackSpace')
+            c.check_event(event)
             k.updateLabel(event)
     #@+node:ekr.20050920084036.264: *5* iSearchStateHandler
     # Called from the state manager when the state is 'isearch'

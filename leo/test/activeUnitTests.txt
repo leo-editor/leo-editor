@@ -8096,7 +8096,7 @@ try:
     u = g.u('(pdq):\n')
     w.setInsertPoint(len(s))
     for char in u:
-        event = g.Bunch(widget=w,char=char,keysym=None)
+        event = g.Bunch(widget=w,char=char,keysym=char,stroke=char)
         ec.selfInsertCommand(event)
     result = w.getAllText()
     #g.trace('result',repr(result))
@@ -8118,7 +8118,7 @@ try:
     ec = c.editCommands ; w = c.frame.body.bodyCtrl
     s = w.getAllText()
     w.setSelectionRange(len(s)-9,len(s)-6)
-    event = g.Bunch(widget=w,char='\t',keysym=None)
+    event = g.Bunch(widget=w,char='\t',keysym='\t',stroke='Tab')
     ec.selfInsertCommand(event)
     result = w.getAllText()
     # print('result %s' % result)
@@ -8568,7 +8568,7 @@ ec = c.editCommands
 
 for direction in ('up','down'):
     for distance in ('line','page','half-page'):
-        event = g.Bunch(widget=c.frame.body.bodyCtrl)
+        event = g.Bunch(char=None,keysym=None,widget=c.frame.body.bodyCtrl)
         ec.scrollHelper(event,direction,distance)
 #@+node:ekr.20061104172236.4: *5* @test setMoveCol
 w = c.frame.body.bodyCtrl
@@ -9174,7 +9174,7 @@ def runEditCommandTest (c,p,inHeadline=False):
             c.setHeadString(work,'work')
 #@+node:ekr.20100131180007.5453: *4* @test dynamicExpandHelper
 # A totally wimpy test.
-c.abbrevCommands.dynamicExpandHelper(prefix='',rlist=None,w=None)
+c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',rlist=None,w=None)
 #@+node:ekr.20070306091949: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

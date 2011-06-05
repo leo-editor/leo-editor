@@ -317,24 +317,29 @@ class leoGui:
         """Return the window information."""
         self.oops()
     #@+node:ekr.20061031132907: *5* Events (leoGui)
-    def event_generate(self,w,kind,*args,**keys):
+    def event_generate(self,c,w,kind,*args,**keys):
         '''Generate an event.'''
         # g.trace('baseGui','kind',kind,'args,keys',*args,**keys)
         return w.event_generate(kind,*args,**keys)
+        # g.trace('can not happen: must be defined in subclasses')
 
     def eventChar (self,event,c=None):
         '''Return the char field of an event.'''
+        assert not event or event.keysym == event.char,repr(event) ####
         return event and event.char or ''
 
     def eventKeysym (self,event,c=None):
         '''Return the keysym value of an event.'''
+        assert not event or event.keysym == event.char,repr(event) ####
         return event and event.keysym
 
     def eventStroke (self,event,c=None):
+        assert not event or event.keysym == event.char,repr(event) ####
         return event and hasattr(event,'stroke') and event.stroke or ''
 
     def eventWidget (self,event,c=None):
         '''Return the widget field of an event.'''
+        assert not event or event.keysym == event.char,repr(event) ####
         return event and event.widget
 
     def eventXY (self,event,c=None):
