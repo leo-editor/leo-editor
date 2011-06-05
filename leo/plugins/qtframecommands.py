@@ -1,14 +1,14 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20100103094733.3709: * @file qtframecommands.py
+#@+node:ekr.20110605121601.17996: * @file ../plugins/qtframecommands.py
 #@+<< docstring >>
-#@+node:ekr.20100103094733.3710: ** << docstring >>
+#@+node:ekr.20110605121601.17997: ** << docstring >>
 ''' Various commands to manipulate GUI under qt
 '''
 #@-<< docstring >>
 
 __version__ = '0.0'
 #@+<< version history >>
-#@+node:ekr.20100103094733.3711: ** << version history >>
+#@+node:ekr.20110605121601.17998: ** << version history >>
 #@@killcolor
 #@+at
 # 
@@ -16,14 +16,14 @@ __version__ = '0.0'
 #@-<< version history >>
 
 #@+<< imports >>
-#@+node:ekr.20100103094733.3712: ** << imports >>
+#@+node:ekr.20110605121601.17999: ** << imports >>
 import leo.core.leoGlobals as g
 
 # Whatever other imports your plugins uses.
 #@-<< imports >>
 
 #@+others
-#@+node:ekr.20100103094733.3713: ** init
+#@+node:ekr.20110605121601.18000: ** init
 def init ():
 
     ok = True
@@ -40,7 +40,7 @@ def onSelect(tag,keywords):
     wdg = c.frame.top.leo_body_frame
     wdg.setWindowTitle(c.p.h)
 
-#@+node:ekr.20100103094733.3714: ** detach-editor-toggle
+#@+node:ekr.20110605121601.18001: ** detach-editor-toggle
 @g.command('detach-editor-toggle-max')
 def detach_editor_toggle_max(event):
     """ Detach editor, maximize """
