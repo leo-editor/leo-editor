@@ -2317,7 +2317,8 @@ class keyHandlerClass:
         c.check_event(event)
 
         k.universalDispatcher(event)
-        g.app.gui.event_generate(c,w,'<Key>',keysym=number)
+        g.app.gui.event_generate(c,chr(number),chr(number),w)
+            # w,'<Key>',keysym=number)
         return # (for Tk) 'break'
 
     def numberCommand0 (self,event):
@@ -2555,7 +2556,7 @@ class keyHandlerClass:
         k.setInputState(state)
         k.showStateAndMode()
     #@+node:ekr.20061031131434.125: *3* k.Externally visible helpers
-    #@+node:ekr.20061031131434.126: *4* manufactureKeyPressForCommandName
+    #@+node:ekr.20061031131434.126: *4* manufactureKeyPressForCommandName (changed)
     def manufactureKeyPressForCommandName (self,w,commandName):
 
         '''Implement a command by passing a keypress to the gui.'''
@@ -2569,7 +2570,7 @@ class keyHandlerClass:
         if stroke and w:
             # g.trace(stroke)
             g.app.gui.set_focus(c,w)
-            g.app.gui.event_generate(c,w,stroke)
+            g.app.gui.event_generate(c,None,stroke,w)
         else:
             message = 'no shortcut for %s' % (commandName)
             if g.app.unitTesting:
@@ -2600,7 +2601,8 @@ class keyHandlerClass:
             if commandName.startswith('specialCallback'):
                 event = None # A legacy function.
             else: # Create a dummy event as a signal.
-                event = g.bunch(c=c,keysym='',char='',stroke='',widget=None)
+                # event = g.bunch(c=c,keysym='',char='',stroke='',widget=None)
+                event = g.app.gui.create_key_event(c,None,None,None)
                 
             c.check_event(event)
 
@@ -2828,16 +2830,18 @@ class keyHandlerClass:
 
         #@+<< define vars >>
         #@+node:ekr.20061031131434.147: *5* << define vars >>
-        if event:
-            # This is a leoGui base class event.
-            event = gui.leoKeyEvent(event,c,stroke=stroke)
-
+        if 0: ####
+            if event:
+                # This is a leoGui base class event.
+                event = gui.leoKeyEvent(event,c,stroke=stroke)
+            
         w = event.widget
         char = event.char
-        keysym = event.keysym
+        keysym = char #### temporary.
+        #### keysym = event.keysym
         stroke = event.stroke
-        if stroke and not keysym:
-            event.keysym = keysym = stroke
+        #### if stroke and not keysym:
+        ####    event.keysym = keysym = stroke
 
         w_name = c.widget_name(w)
         state = k.state.kind
@@ -3214,7 +3218,8 @@ class keyHandlerClass:
         # g.trace('stroke',stroke,'func',func and func.__name__,commandName,g.callers())
 
         # Create a minimal event for commands that require them.
-        event = g.Bunch(c=c,char='',keysym='',stroke='',widget=w)
+        #event = g.Bunch(c=c,char='',keysym='',stroke='',widget=w)
+        event = g.app.gui.create_key_event(c,None,stroke,w)
         
         c.check_event(event)
 
@@ -3479,7 +3484,7 @@ class keyHandlerClass:
             k.endMode()
 
         k.showStateAndMode()
-    #@+node:ekr.20061031131434.162: *4* generalModeHandler
+    #@+node:ekr.20061031131434.162: *4* generalModeHandler (changed)
     def generalModeHandler (self,event,
         commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
 
@@ -3516,9 +3521,10 @@ class keyHandlerClass:
                 if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
                 # New in 4.4.1 b1: pass an event describing the original widget.
                 if event:
-                    event.widget = k.modeWidget
+                    event.w = event.widget = k.modeWidget
                 else:
-                    event = g.Bunch(widget = k.modeWidget)
+                    # event = g.Bunch(widget = k.modeWidget)
+                    event = g.app.gui.create_key_event(c,None,None,k.modeWidget)
                 if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
                 func(event)
                 if g.app.quitting or not c.exists:
@@ -3996,7 +4002,8 @@ class keyHandlerClass:
             last = fields and fields[-1]
             if not last:
                 if not g.app.menuWarningsGiven:
-                    g.pr("bad shortcut specifier:", s)
+                    g.pr("bad shortcut specifier:", repr(s),repr(setting))
+                    g.trace(g.callers())
                 return None
 
         if len(last) == 1:
@@ -4386,7 +4393,7 @@ class keyHandlerClass:
     def executeNTimes (self,event,n,stroke):
 
         trace = False and not g.unitTesting
-        k = self
+        c,k = self.c,self
 
         if stroke == k.fullCommandKey:
             for z in range(n):
@@ -4398,19 +4405,13 @@ class keyHandlerClass:
                 if trace: g.trace('repeat',n,'method',b.func.__name__,
                     'stroke',stroke,'widget',event.widget)
                 for z in range(n):
-                    # event = g.Bunch(
-                        # c = self.c,
-                        # widget = event.widget,
-                        # keysym = event.keysym,
-                        # stroke = event.stroke,
-                        # char = event.char,
-                    # )
-                    k.masterCommand(event,b.func,'<%s>' % stroke)
+                    event = g.app.gui.create_key_event(c,None,stroke,w)
+                    k.masterCommand(event,stroke) ### b.func,'<%s>' % stroke)
             else:
-                # This does nothing for Qt gui.
                 w = event.widget
                 for z in range(n):
-                    g.app.gui.event_generate(c,w,'<Key>',keysym=event.keysym)
+                    ### g.app.gui.event_generate(c,w,'<Key>',keysym=event.keysym)
+                    k.masterKeyHandler(event,stroke=event.stroke)
     #@+node:ekr.20061031131434.203: *4* doControlU
     def doControlU (self,event,stroke):
 

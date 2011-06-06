@@ -19,6 +19,36 @@ import leo.core.leoFind as leoFind # for nullFindTab.
 import leo.core.leoFrame as leoFrame # for nullGui.
 
 #@+others
+#@+node:ekr.20070228160107: ** class leoKeyEvent (leoGui) (Changed)
+class leoKeyEvent:
+
+    '''A gui-independent wrapper for gui events.'''
+    
+    #@+others
+    #@+node:ekr.20110605121601.18846: *3* ctor (leoKeyEvent)
+    def __init__ (self,c,char,stroke,w,x,y,x_root,y_root):
+        
+        self.c = c
+        self.char = char or ''
+        self.keysym = char or '' #### Temporary.
+        self.stroke = stroke or ''
+        self.w = self.widget = w
+        
+        # Optional ivars
+        self.x = x
+        self.y = y
+        # Support for fastGotoNode plugin
+        self.x_root = x_root
+        self.y_root = y_root
+
+        # self.actualEvent = event
+        # self.state  = hasattr(event,'state') and event.state or 0
+    #@-others
+
+    def __repr__ (self):
+
+        return 'leoKeyEvent: stroke: %s, char: %s, w: %s' % (
+            repr(self.stroke),repr(self.char),repr(self.w))
 #@+node:ekr.20031218072017.3720: ** class leoGui
 class leoGui:
 
@@ -152,6 +182,15 @@ class leoGui:
         #'setIdleTimeHookAfterDelay',   # optional
     )
     #@+node:ekr.20061109212618.1: *3* Must be defined only in base class
+    #@+node:ekr.20110605121601.18847: *4* create_key_event (leoGui) (new)
+    def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None):
+        
+        # if not char:
+            # char = stroke # The value before calling shortcutFromSetting.
+
+        stroke = c.k.shortcutFromSetting(stroke)
+
+        return leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
     #@+node:ekr.20031218072017.3740: *4* guiName
     def guiName(self):
 
@@ -164,6 +203,18 @@ class leoGui:
 
         self.script = script
         self.scriptFileName = scriptFileName
+    #@+node:ekr.20110605121601.18845: *4* event_generate (leoGui)
+    def event_generate(self,c,char,stroke,w):
+
+        event = self.create_key_event(c,char,stroke,w)
+        c.k.masterKeyHandler(event,stroke=event.stroke)
+        c.outerUpdate()
+
+    # def event_generate(self,c,w,kind,*args,**keys):
+        # '''Generate an event.'''
+        # # g.trace('baseGui','kind',kind,'args,keys',*args,**keys)
+        # return w.event_generate(kind,*args,**keys)
+        # # g.trace('can not happen: must be defined in subclasses')
     #@+node:ekr.20061109212618: *3* Must be defined in subclasses
     #@+node:ekr.20031218072017.3723: *4* app.gui create & destroy
     #@+node:ekr.20031218072017.3724: *5* createRootWindow
@@ -317,12 +368,6 @@ class leoGui:
         """Return the window information."""
         self.oops()
     #@+node:ekr.20061031132907: *5* Events (leoGui)
-    def event_generate(self,c,w,kind,*args,**keys):
-        '''Generate an event.'''
-        # g.trace('baseGui','kind',kind,'args,keys',*args,**keys)
-        return w.event_generate(kind,*args,**keys)
-        # g.trace('can not happen: must be defined in subclasses')
-
     def eventChar (self,event,c=None):
         '''Return the char field of an event.'''
         assert not event or event.keysym == event.char,repr(event) ####
@@ -413,43 +458,6 @@ class leoGui:
             return w._name
         else:
             return repr(w)
-    #@+node:ekr.20070228160107: *4* class leoKeyEvent (leoGui)
-    class leoKeyEvent:
-
-        '''A gui-independent wrapper for gui events.'''
-
-        def __init__ (self,event,c,stroke=None):
-
-            # g.trace('leoKeyEvent(leoGui)')
-            self.actualEvent = event
-            self.c      = c # Required to access c.k tables.
-            self.char   = hasattr(event,'char') and event.char or ''
-            self.keysym = hasattr(event,'keysym') and event.keysym or ''
-            self.state  = hasattr(event,'state') and event.state or 0
-            self.stroke = hasattr(event,'stroke') and event.stroke or ''
-            self.w      = hasattr(event,'widget') and event.widget or None
-            self.x      = hasattr(event,'x') and event.x or 0
-            self.y      = hasattr(event,'y') and event.y or 0
-            # Support for fastGotoNode plugin
-            self.x_root = hasattr(event,'x_root') and event.x_root or 0
-            self.y_root = hasattr(event,'y_root') and event.y_root or 0
-
-            if self.keysym and c.k:
-                # Translate keysyms for ascii characters to the character itself.
-                self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
-
-            if stroke and not self.stroke:
-                self.stroke = self.actualEvent.stroke = stroke
-
-            self.widget = self.w
-
-        def __repr__ (self):
-
-            if self.stroke:
-                return 'leoGui.leoKeyEvent: stroke: %s' % (repr(self.stroke))
-            else:
-                return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
-                    repr(self.char),repr(self.keysym))
     #@+node:ekr.20101028131948.5861: *4* killPopupMenu & postPopupMenu
     # These definitions keeps pylint happy.
 

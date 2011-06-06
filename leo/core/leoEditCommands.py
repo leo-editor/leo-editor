@@ -6944,8 +6944,9 @@ class macroCommandsClass (baseEditCommandsClass):
             for stroke in aList:
                 # Create a dummy event with just enough attribute
                 # to keep k.masterKeyHandler happy
-                actualEvent = g.Bunch(stroke=stroke,char=stroke,widget=w)
-                event = g.app.gui.leoKeyEvent(actualEvent,c)
+                # actualEvent = g.Bunch(stroke=stroke,char=stroke,widget=w)
+                # event = g.app.gui.leoKeyEvent(actualEvent,c)
+                event = g.app.gui.create_key_event(c,None,stroke,w)
                 macro.append(event)
             self.addToDoAltX(name,macro)
                 # sets self.namedMacros[name]=macro
@@ -8479,7 +8480,8 @@ class searchCommandsClass (baseEditCommandsClass):
             g.es("end of wrapped search")
         else:
             g.es("not found","'%s'" % (pattern))
-            event = g.Bunch(char='\b',keysym='\b',stroke='BackSpace')
+            # event = g.Bunch(char='\b',keysym='\b',stroke='BackSpace')
+            event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
             c.check_event(event)
             k.updateLabel(event)
     #@+node:ekr.20050920084036.264: *5* iSearchStateHandler

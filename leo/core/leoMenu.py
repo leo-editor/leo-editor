@@ -1570,7 +1570,8 @@ class leoMenu:
         if minibufferCommand:
 
             # Create a dummy event as a signal to doCommand.
-            event = g.Bunch(keysym='',char='',stroke='',widget='')
+            # event = g.Bunch(keysym='',char='',stroke='',widget='')
+            event = g.app.gui.create_key_event(c,None,None,None)
             c.check_event(event)
 
             # The first parameter must be event, and it must default to None.
@@ -1583,8 +1584,7 @@ class leoMenu:
         else:
 
             # The first parameter must be event, and it must default to None.
-            event = None
-            def legacyMenuCallback(event=event,self=self,command=command,label=name):
+            def legacyMenuCallback(event=None,self=self,command=command,label=name):
                 c.check_event(event)
                 return c.doCommand(command,label)
 

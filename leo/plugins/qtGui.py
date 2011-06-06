@@ -3006,7 +3006,7 @@ class leoQtBody (leoFrame.leoBody):
 
     # Part 3: do-nothings in mayBeDefinedInSubclasses.
     def bind (self,kind,*args,**keys):          return self.widget.bind(kind,*args,**keys)
-    def event_generate(self,stroke):            pass
+    # def event_generate(self,stroke):            pass
     def getWidth (self):                        return 0
     def mark_set(self,markName,i):              pass
     def setWidth (self,width):                  pass
@@ -5363,7 +5363,7 @@ class leoQtLog (leoFrame.leoLog):
 
     # Part 4: corresponding to mayBeDefinedInSubclasses.
     def deleteTextSelection (self):         self.logCtrl.deleteTextSelection ()
-    def event_generate(self,stroke):        pass
+    # def event_generate(self,stroke):        pass
     def replace (self,i,j,s):               self.logCtrl.replace (i,j,s)
     def rowColToGuiIndex (self,s,row,col):  return self.logCtrl.rowColToGuiIndex(s,row,col)
     def selectAllText (self,insert=None):   self.logCtrl.selectAllText(insert)
@@ -8423,73 +8423,11 @@ class QuickHeadlines:
 
 
 
-#@+node:ekr.20110605121601.18535: ** Key handling
-#@+node:ekr.20110605121601.18536: *3* class leoKeyEvent
-class leoKeyEvent:
-
-    '''A wrapper for wrapper for qt events.
-
-    This does *not* override leoGui.leoKeyevent because
-    it is a separate class, not member of leoQtGui.'''
-
-    def __init__ (self,event,c,w,ch,tkKey,stroke):
-
-        trace = False and not g.unitTesting
-
-        if trace: print(
-            'leoKeyEvent.__init__: ch: %s, tkKey: %s, stroke: %s' % (
-                repr(ch),repr(tkKey),repr(stroke)))
-
-        # Last minute-munges to keysym.
-        if tkKey in ('Return','Tab','Escape',): # 'Ins'
-            ch = tkKey
-        stroke = stroke.replace('\t','Tab')
-        tkKey = tkKey.replace('\t','Tab')
-
-        # Patch provided by resi147.
-        # See the thread: special characters in MacOSX, like '@'.
-        if sys.platform.startswith('darwin'):
-            darwinmap = {
-                'Alt-Key-5': '[',
-                'Alt-Key-6': ']',
-                'Alt-Key-7': '|',
-                'Alt-slash': '\\',
-                'Alt-Key-8': '{',
-                'Alt-Key-9': '}',
-                'Alt-e': '€',
-                'Alt-l': '@',
-            }
-            if tkKey in darwinmap:
-                tkKey = stroke = darwinmap[tkKey]
-
-        # The main ivars.
-        self.actualEvent = event
-        self.c      = c
-        self.char   = ch
-        self.keysym = ch
-        self.stroke = stroke
-        self.w = self.widget = w # A leoQtX object
-
-        # Auxiliary info.
-        self.x      = hasattr(event,'x') and event.x or 0
-        self.y      = hasattr(event,'y') and event.y or 0
-        # Support for fastGotoNode plugin
-        self.x_root = hasattr(event,'x_root') and event.x_root or 0
-        self.y_root = hasattr(event,'y_root') and event.y_root or 0
-
-        # g.trace('qt.leoKeyEvent: %s' % repr(self))
-
-    def __repr__ (self):
-
-        return 'qtGui.leoKeyEvent: stroke: %s' % (repr(self.stroke))
-
-        # return 'qtGui.leoKeyEvent: stroke: %s, char: %s, keysym: %s' % (
-            # repr(self.stroke),repr(self.char),repr(self.keysym))
-#@+node:ekr.20110605121601.18537: *3* class leoQtEventFilter
+#@+node:ekr.20110605121601.18537: ** class leoQtEventFilter
 class leoQtEventFilter(QtCore.QObject):
 
     #@+<< about internal bindings >>
-    #@+node:ekr.20110605121601.18538: *4* << about internal bindings >>
+    #@+node:ekr.20110605121601.18538: *3* << about internal bindings >>
     #@@nocolor-node
     #@+at
     # 
@@ -8523,7 +8461,7 @@ class leoQtEventFilter(QtCore.QObject):
     #@-<< about internal bindings >>
 
     #@+others
-    #@+node:ekr.20110605121601.18539: *4*  ctor
+    #@+node:ekr.20110605121601.18539: *3*  ctor
     def __init__(self,c,w,tag=''):
 
         # g.trace('leoQtEventFilter',tag,w)
@@ -8547,7 +8485,7 @@ class leoQtEventFilter(QtCore.QObject):
         # Support for ctagscompleter.py plugin.
         self.ctagscompleter_active = False
         self.ctagscompleter_onKey = None
-    #@+node:ekr.20110605121601.18540: *4* eventFilter
+    #@+node:ekr.20110605121601.18540: *3* eventFilter
     def eventFilter(self, obj, event):
 
         trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
@@ -8617,8 +8555,9 @@ class leoQtEventFilter(QtCore.QObject):
                     g.trace('bound',repr(stroke)) # repr(aList))
                 # g.trace('** using wrapper',self.w)
                 w = self.w # Pass the wrapper class, not the wrapped widget.
-                kev = leoKeyEvent(event,c,w,ch,tkKey,stroke)
-                ret = k.masterKeyHandler(kev,stroke=stroke)
+                ### event = leoKeyEvent(event,c,w,ch,tkKey,stroke)
+                event = self.create_key_event(event,c,w,ch,tkKey,stroke)
+                ret = k.masterKeyHandler(event,stroke=stroke)
                 c.outerUpdate()
             else:
                 if trace and traceKey and verbose:
@@ -8633,14 +8572,59 @@ class leoQtEventFilter(QtCore.QObject):
             self.traceEvent(obj,event,tkKey,override)
 
         return override
-    #@+node:ekr.20110605121601.18541: *4* isSpecialOverride (simplified)
+    #@+node:ekr.20110605195119.16937: *3* create_key_event (leoQtEventFilter) (new)
+    def create_key_event (self,event,c,w,ch,tkKey,stroke):
+
+        trace = False and not g.unitTesting
+
+        if trace: g.trace('ch: %s, tkKey: %s, stroke: %s' % (
+            repr(ch),repr(tkKey),repr(stroke)))
+
+        # Last minute-munges to keysym.
+        if tkKey in ('Return','Tab','Escape',): # 'Ins'
+            ch = tkKey
+        stroke = stroke.replace('\t','Tab')
+        tkKey = tkKey.replace('\t','Tab')
+
+        # Patch provided by resi147.
+        # See the thread: special characters in MacOSX, like '@'.
+        if sys.platform.startswith('darwin'):
+            darwinmap = {
+                'Alt-Key-5': '[',
+                'Alt-Key-6': ']',
+                'Alt-Key-7': '|',
+                'Alt-slash': '\\',
+                'Alt-Key-8': '{',
+                'Alt-Key-9': '}',
+                'Alt-e': '€',
+                'Alt-l': '@',
+            }
+            if tkKey in darwinmap:
+                tkKey = stroke = darwinmap[tkKey]
+                
+        char = ch
+        # Auxiliary info.
+        x      = hasattr(event,'x') and event.x or 0
+        y      = hasattr(event,'y') and event.y or 0
+        # Support for fastGotoNode plugin
+        x_root = hasattr(event,'x_root') and event.x_root or 0
+        y_root = hasattr(event,'y_root') and event.y_root or 0
+        
+        # Call the base class.
+        # return leoGui.leoGui.create_key_event(self,c,char,stroke,w,
+            # x=x,y=y,x_root=x_root,y_root=y_root)
+
+        return leoGui.leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
+
+        # g.trace('qt.leoKeyEvent: %s' % repr(self))
+    #@+node:ekr.20110605121601.18541: *3* isSpecialOverride (simplified)
     def isSpecialOverride (self,tkKey,ch):
 
         '''Return True if tkKey is a special Tk key name.
         '''
 
         return tkKey or ch in self.flashers
-    #@+node:ekr.20110605121601.18542: *4* toStroke (might change?)
+    #@+node:ekr.20110605121601.18542: *3* toStroke (might change?)
     def toStroke (self,tkKey,ch):
         
         '''Convert the official tkKey name to a stroke.'''
@@ -8673,7 +8657,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         if trace: g.trace('tkKey',tkKey,'-->',s)
         return s
-    #@+node:ekr.20110605121601.18543: *4* toTkKey & helpers (must not change!)
+    #@+node:ekr.20110605121601.18543: *3* toTkKey & helpers (must not change!)
     def toTkKey (self,event):
         
         '''Return tkKey,ch,ignore:
@@ -8696,7 +8680,7 @@ class leoQtEventFilter(QtCore.QObject):
             event,mods,keynum,text,toString,ch)
 
         return tkKey,ch,ignore
-    #@+node:ekr.20110605121601.18544: *5* qtKey
+    #@+node:ekr.20110605121601.18544: *4* qtKey
     def qtKey (self,event):
 
         '''Return the components of a Qt key event.
@@ -8753,7 +8737,7 @@ class leoQtEventFilter(QtCore.QObject):
                 keynum,repr(ch),mods,repr(toString)))
 
         return keynum,text,toString,ch
-    #@+node:ekr.20110605121601.18545: *5* qtMods
+    #@+node:ekr.20110605121601.18545: *4* qtMods
     def qtMods (self,event):
 
         '''Return the text version of the modifiers of the key event.'''
@@ -8788,7 +8772,7 @@ class leoQtEventFilter(QtCore.QObject):
         #g.trace(mods)
 
         return mods
-    #@+node:ekr.20110605121601.18546: *5* tkKey & helper
+    #@+node:ekr.20110605121601.18546: *4* tkKey & helper
     def tkKey (self,event,mods,keynum,text,toString,ch):
 
         '''Carefully convert the Qt key to a 
@@ -8841,7 +8825,7 @@ class leoQtEventFilter(QtCore.QObject):
         ignore = not ch # Essential
         ch = text or toString
         return tkKey,ch,ignore
-    #@+node:ekr.20110605121601.18547: *6* char2tkName
+    #@+node:ekr.20110605121601.18547: *5* char2tkName
     char2tkNameDict = {
         # Part 1: same as k.guiBindNamesDict
         "&" : "ampersand",
@@ -8907,7 +8891,7 @@ class leoQtEventFilter(QtCore.QObject):
         val = self.char2tkNameDict.get(ch)
         # g.trace(repr(ch),repr(val))
         return val
-    #@+node:ekr.20110605121601.18548: *4* traceEvent
+    #@+node:ekr.20110605121601.18548: *3* traceEvent
     def traceEvent (self,obj,event,tkKey,override):
 
         if g.unitTesting: return
@@ -8966,7 +8950,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         if traceAll and eventType not in ignore:
             g.trace('%3s:%s obj:%s' % (eventType,'unknown',obj))
-    #@+node:ekr.20110605121601.18549: *4* traceFocus
+    #@+node:ekr.20110605121601.18549: *3* traceFocus
     def traceFocus (self,eventType,obj):
 
         ev = QtCore.QEvent

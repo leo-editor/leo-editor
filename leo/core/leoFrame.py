@@ -154,7 +154,7 @@ class baseTextWidget:
         # mayBeDefinedInSubclasses.
         'delete',
         'deleteTextSelection',
-        'event_generate',
+        # 'event_generate',
     #     'getName()
     #     'GetName()
         'hasSelection',
@@ -245,38 +245,35 @@ class baseTextWidget:
         i,j = self.getSelectionRange()
         self.delete(i,j)
     #@+node:ekr.20070228074312.15: *5* event_generate (baseTextWidget)
-    # Called from leoGui.event_generate.
-
-    #### This should be the default implementation in the gui base class.
-
-
     def event_generate(self,stroke,keysym=None):
         
-        # g.trace('can not happen: must be defined in subclasses')
-        # return
+        g.trace('can not happen: must be defined in subclasses')
+        return
 
-        trace = False # and not g.unitTesting
-        w = self ; c = self.c
+        # trace = False # and not g.unitTesting
+        # w = self ; c = self.c
         
-        # Canonicalize the setting.
-        stroke1 = stroke ####
-        stroke = c.k.shortcutFromSetting(stroke)
-        char = keysym or stroke1 ####
+        # # Canonicalize the setting.
+        # stroke1 = stroke
+        # stroke = c.k.shortcutFromSetting(stroke)
+        # char = keysym or stroke1
 
-        if trace: g.trace('(baseTextWidget)','char',repr(char),'stroke',repr(stroke),'w',w)
+        # if trace: g.trace('(baseTextWidget)','char',repr(char),'stroke',repr(stroke),'w',w)
 
-        class eventGenerateEvent:
-            def __init__ (self,c,w,char,stroke):
-                self.c = c
-                self.char = char
-                self.keysym = char
-                self.stroke = stroke
-                self.leoWidget = w
-                self.widget = self.w = w
+        # class eventGenerateEvent:
+            # def __init__ (self,c,w,char,stroke):
+                # self.c = c
+                # self.char = char
+                # self.keysym = char
+                # self.stroke = stroke
+                # self.leoWidget = w
+                # self.widget = self.w = w
 
-        event = eventGenerateEvent(c,w,char,stroke)
-        c.k.masterKeyHandler(event,stroke=stroke)
-        c.outerUpdate()
+        # event = eventGenerateEvent(c,w,char,stroke)
+        
+        # event = g.app.gui.create_key_event(c,char,stroke,w)
+        # c.k.masterKeyHandler(event,stroke=stroke)
+        # c.outerUpdate()
     #@+node:ekr.20070228102413: *5* getName & GetName
     def GetName(self):
 

@@ -4552,318 +4552,92 @@ def getExternalCompletions (self,s,p=None,language='python'):
     theObject,tabList = self.theObject,self.tabList
     self.exit() # Not called from the autocompleter itself.
     return theObject,tabList
-#@+node:ekr.20050920084036.123: *3* swapWords (no longer used)
-def swapWords (self,event,swapspots):
+#@+node:ekr.20110605121601.18850: *3* ctor (leoKeyEvent) OLD
+def __init__ (self,event,c,stroke=None):
 
-    '''Transpose the word at the cursor with the preceding word.'''
+    # g.trace('leoKeyEvent(leoGui)')
+    self.actualEvent = event
+    self.c      = c # Required to access c.k tables.
+    self.char   = hasattr(event,'char') and event.char or ''
+    self.keysym = hasattr(event,'keysym') and event.keysym or ''
+    self.state  = hasattr(event,'state') and event.state or 0
+    self.stroke = hasattr(event,'stroke') and event.stroke or ''
+    self.w      = hasattr(event,'widget') and event.widget or None
+    self.x      = hasattr(event,'x') and event.x or 0
+    self.y      = hasattr(event,'y') and event.y or 0
+    # Support for fastGotoNode plugin
+    self.x_root = hasattr(event,'x_root') and event.x_root or 0
+    self.y_root = hasattr(event,'y_root') and event.y_root or 0
 
-    w = self.editWidget(event)
-    if not w: return
+    if self.keysym and c.k:
+        # Translate keysyms for ascii characters to the character itself.
+        self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
 
-    s = w.getAllText()
+    if stroke and not self.stroke:
+        self.stroke = self.actualEvent.stroke = stroke
 
-    ### txt = w.get('insert wordstart','insert wordend') ###
-    txt = ''
-    if not txt: return
+    self.widget = self.w
+#@+node:ekr.20110605121601.18536: *3* class leoKeyEvent (no longer used)
+# class leoKeyEvent:
 
-    i = w.index('insert wordstart') ###
+    # '''A wrapper for wrapper for qt events.
 
-    self.beginCommand(undoType='swap-words')
+    # This does *not* override leoGui.leoKeyevent because
+    # it is a separate class, not member of leoQtGui.'''
 
-    if len(swapspots):
-        if i > swapspots[1]:
-            self.swapHelper(w,i,txt,swapspots[1],swapspots[0])
-        elif i < swapspots[1]:
-            self.swapHelper(w,swapspots[1],swapspots[0],i,txt)
-    else:
-        swapspots.append(txt)
-        swapspots.append(i)
+    # def __init__ (self,event,c,w,ch,tkKey,stroke):
 
-    self.endCommand(changed=True,setLabel=True)
-#@+node:ekr.20060529184652: *3* swapHelper (to be deleted)
-def swapHelper (self,w,find,ftext,lind,ltext):
+        # trace = False and not g.unitTesting
 
-    w.delete(find,'%s wordend' % find) ###
-    w.insert(find,ltext)
+        # if trace: print(
+            # 'leoKeyEvent.__init__: ch: %s, tkKey: %s, stroke: %s' % (
+                # repr(ch),repr(tkKey),repr(stroke)))
 
-    w.delete(lind,'%s wordend' % lind) ###
-    w.insert(lind,ftext)
+        # # Last minute-munges to keysym.
+        # if tkKey in ('Return','Tab','Escape',): # 'Ins'
+            # ch = tkKey
+        # stroke = stroke.replace('\t','Tab')
+        # tkKey = tkKey.replace('\t','Tab')
 
-    self.swapSpots.pop()
-    self.swapSpots.pop()
-#@+node:ekr.20110530124245.18240: *3* Old extract commands
-#@+node:ekr.20031218072017.1706: *4* extract (OLD)
-def extract (self,event=None):
+        # # Patch provided by resi147.
+        # # See the thread: special characters in MacOSX, like '@'.
+        # if sys.platform.startswith('darwin'):
+            # darwinmap = {
+                # 'Alt-Key-5': '[',
+                # 'Alt-Key-6': ']',
+                # 'Alt-Key-7': '|',
+                # 'Alt-slash': '\\',
+                # 'Alt-Key-8': '{',
+                # 'Alt-Key-9': '}',
+                # 'Alt-e': '€',
+                # 'Alt-l': '@',
+            # }
+            # if tkKey in darwinmap:
+                # tkKey = stroke = darwinmap[tkKey]
 
-    '''Create child node from the selected body text, deleting all selected text.
-    The text must start with a section reference.  This becomes the new child's headline.
-    The body text of the new child node contains all selected lines that follow the section reference line.'''
+        # # The main ivars.
+        # self.actualEvent = event
+        # self.c      = c
+        # self.char   = ch
+        # self.keysym = ch
+        # self.stroke = stroke
+        # self.w = self.widget = w # A leoQtX object
 
-    c = self ; u = c.undoer ; undoType = 'Extract'
-    current = c.p
-    head,lines,tail,oldSel,oldYview = self.getBodyLines()
-    if lines:
-        headline = lines[0].strip()
-        del lines[0]
-    if not lines:
-        if not g.unitTesting:
-            g.es("nothing follows section name",color="blue")
-        return
+        # # Auxiliary info.
+        # self.x      = hasattr(event,'x') and event.x or 0
+        # self.y      = hasattr(event,'y') and event.y or 0
+        # # Support for fastGotoNode plugin
+        # self.x_root = hasattr(event,'x_root') and event.x_root or 0
+        # self.y_root = hasattr(event,'y_root') and event.y_root or 0
 
-    # Remove leading whitespace from all body lines.
-    junk, ws = g.skip_leading_ws_with_indent(lines[0],0,c.tab_width)
-    strippedLines = [g.removeLeadingWhitespace(line,ws,c.tab_width)
-        for line in lines]
-    newBody = ''.join(strippedLines)
-    if head: head = head.rstrip()
+        # # g.trace('qt.leoKeyEvent: %s' % repr(self))
 
-    u.beforeChangeGroup(current,undoType)
-    if 1: # In group...
-        undoData = u.beforeInsertNode(current)
-        p = c.createLastChildNode(current,headline,newBody)
-        u.afterInsertNode(p,undoType,undoData)
-        c.updateBodyPane(head+'\n',None,tail,undoType=undoType,oldSel=None,oldYview=oldYview)
-    u.afterChangeGroup(current,undoType=undoType)
-    c.redraw(p)
-#@+node:ekr.20101114064731.5828: *4* extractPythonMethod
-def extractPythonMethod (self,event=None):
+    # def __repr__ (self):
 
-    '''Create child node from the selected body text, deleting all selected text.
-    The text must start with Python def statement This becomes the new child's
-    headline. The body text of the new child node contains all selected lines
-    '''
+        # return 'qtGui.leoKeyEvent: stroke: %s' % (repr(self.stroke))
 
-    c = self ; u = c.undoer ; undoType = 'extract-python-method'
-    current = c.p
-    head,lines,tail,oldSel,oldYview = self.getBodyLines()
-    if lines:
-        h = lines[0].strip()
-        # Set h to the function name.
-        if h.startswith('def'):
-            h = h[3:].strip()
-            i = h.find('(')
-            if i > -1:
-                h = h[:i].strip()
-        else:
-            if not g.unitTesting:
-                g.note("no def line")
-            return
-    else:
-        if not g.unitTesting:
-            g.note("no lines")
-        return
-
-    # Remove leading whitespace from all body lines.
-    junk, ws = g.skip_leading_ws_with_indent(lines[0],0,c.tab_width)
-    strippedLines = [g.removeLeadingWhitespace(line,ws,c.tab_width)
-        for line in lines]
-    newBody = ''.join(strippedLines)
-    if head: head = head.rstrip()
-
-    u.beforeChangeGroup(current,undoType)
-    if 1: # In group...
-        undoData = u.beforeInsertNode(current)
-        p = c.createLastChildNode(current,h,newBody)
-        u.afterInsertNode(p,undoType,undoData)
-        c.updateBodyPane(head+'\n',None,tail,undoType=undoType,oldSel=None,oldYview=oldYview)
-    u.afterChangeGroup(current,undoType=undoType)
-    c.redraw(p)
-#@+node:ekr.20031218072017.1708: *4* extractSection
-def extractSection (self,event=None):
-
-    '''Create a section definition node from the selected body text.
-    The text must start with a section reference.  This becomes the new child's headline.
-    The body text of the new child node contains all selected lines that follow the section reference line.'''
-
-    c = self ; u = c.undoer ; undoType='Extract Section'
-    current = c.p
-    head,lines,tail,oldSel,oldYview = self.getBodyLines()
-    if not lines: return
-
-    line1 = '\n' + lines[0]
-    headline = lines[0].strip() ; del lines[0]
-    << Set headline for extractSection >>
-    if not lines:
-        if not g.unitTesting:
-            g.es("nothing follows section name",color="blue")
-        return
-
-    # Remove leading whitespace from all body lines.
-    junk, ws = g.skip_leading_ws_with_indent(lines[0],0,c.tab_width)
-    strippedLines = [g.removeLeadingWhitespace(line,ws,c.tab_width)
-        for line in lines]
-    newBody = ''.join(strippedLines)
-    if head: head = head.rstrip()
-
-    u.beforeChangeGroup(current,undoType)
-    if 1: # In group...
-        undoData = u.beforeInsertNode(current)
-        p = c.createLastChildNode(current,headline,newBody)
-        u.afterInsertNode(p,undoType,undoData)
-        c.updateBodyPane(head+line1,None,tail,undoType=undoType,oldSel=None,oldYview=oldYview)
-    u.afterChangeGroup(current,undoType=undoType)
-    c.redraw(p)
-#@+node:ekr.20031218072017.1709: *5* << Set headline for extractSection >>
-if len(headline) < 5:
-    oops = True
-else:
-    head1 = headline[0:2] == '<<'
-    head2 = headline[0:2] == '@<'
-    tail1 = headline[-2:] == '>>'
-    tail2 = headline[-2:] == '@>'
-    oops = not (head1 and tail1) and not (head2 and tail2)
-
-if oops:
-    g.es("selected text should start with a section name",color="blue")
-    return
-#@+node:ekr.20110530124245.18243: *3* No longer used leoCommands file import dialogs
-#@+node:ekr.20031218072017.2853: *4* importAtFile
-def importAtFile (self,event=None):
-
-    '''Import one or more external files, creating @file trees.'''
-
-    c = self
-
-    types = [
-        ("All files","*"),
-        ("C/C++ files","*.c"),
-        ("C/C++ files","*.cpp"),
-        ("C/C++ files","*.h"),
-        ("C/C++ files","*.hpp"),
-        ("Java files","*.java"),
-        ("Lua files", "*.lua"),
-        ("Pascal files","*.pas"),
-        ("Python files","*.py") ]
-
-    names = g.app.gui.runOpenFileDialog(
-        title="Import To @file",
-        filetypes=types,
-        defaultextension=".py",
-        multiple=True)
-    c.bringToFront()
-
-    if names:
-        g.chdir(names[0])
-        c.importCommands.importFilesCommand(names,"@file")
-#@+node:ekr.20031218072017.2852: *4* importAtRoot
-def importAtRoot (self,event=None):
-
-    '''Import one or more external files, creating @root trees.'''
-
-    c = self
-
-    types = [
-        ("All files","*"),
-        ("C/C++ files","*.c"),
-        ("C/C++ files","*.cpp"),
-        ("C/C++ files","*.h"),
-        ("C/C++ files","*.hpp"),
-        ("Java files","*.java"),
-        ("Lua files", "*.lua"),
-        ("Pascal files","*.pas"),
-        ("Python files","*.py") ]
-
-    names = g.app.gui.runOpenFileDialog(
-        title="Import To @root",
-        filetypes=types,
-        defaultextension=".py",
-        multiple=True)
-    c.bringToFront()
-
-    if names:
-        g.chdir(names[0])
-        c.importCommands.importFilesCommand (names,"@root")
-#@+node:ekr.20031218072017.2854: *4* importCWEBFiles
-def importCWEBFiles (self,event=None):
-
-    '''Import one or more external CWEB files, creating @file trees.'''
-
-    c = self
-
-    filetypes = [
-        ("CWEB files", "*.w"),
-        ("Text files", "*.txt"),
-        ("All files", "*")]
-
-    names = g.app.gui.runOpenFileDialog(
-        title="Import CWEB Files",
-        filetypes=filetypes,
-        defaultextension=".w",
-        multiple=True)
-    c.bringToFront()
-
-    if names:
-        g.chdir(names[0])
-        c.importCommands.importWebCommand(names,"cweb")
-#@+node:ekr.20031218072017.1809: *4* importDerivedFile
-def importDerivedFile (self,event=None):
-
-    """Create a new outline from a 4.0 derived file."""
-
-    c = self ; p = c.p
-    c.endEditing()
-
-    types = [
-        ("All files","*"),
-        ("C/C++ files","*.c"),
-        ("C/C++ files","*.cpp"),
-        ("C/C++ files","*.h"),
-        ("C/C++ files","*.hpp"),
-        ("Java files","*.java"),
-        ("Lua files", "*.lua"),
-        ("Pascal files","*.pas"),
-        ("Python files","*.py") ]
-
-    names = g.app.gui.runOpenFileDialog(
-        title="Import Derived File",
-        filetypes=types,
-        defaultextension=".py",
-        multiple=True)
-
-    if names:
-        g.chdir(names[0])
-        c.importCommands.importDerivedFiles(parent=p,paths=names)
-#@+node:ekr.20031218072017.2855: *4* importFlattenedOutline
-def importFlattenedOutline (self,event=None):
-
-    '''Import an external created by the flatten-outline command.'''
-
-    c = self
-
-    types = [("Text files","*.txt"), ("All files","*")]
-
-    names = g.app.gui.runOpenFileDialog(
-        title="Import MORE Text",
-        filetypes=types,
-        defaultextension=".py",
-        multiple=True)
-    c.bringToFront()
-
-    if names:
-        g.chdir(names[0])
-        c.importCommands.importFlattenedOutline(names)
-#@+node:ekr.20031218072017.2856: *4* importNowebFiles
-def importNowebFiles (self,event=None):
-
-    '''Import one or more external noweb files, creating @file trees.'''
-
-    c = self
-
-    filetypes = [
-        ("Noweb files", "*.nw"),
-        ("Text files", "*.txt"),
-        ("All files", "*")]
-
-    names = g.app.gui.runOpenFileDialog(
-        title="Import Noweb Files",
-        filetypes=filetypes,
-        defaultextension=".nw",
-        multiple=True)
-    c.bringToFront()
-
-    if names:
-        g.chdir(names[0])
-        c.importCommands.importWebCommand(names,"noweb")
+        # # return 'qtGui.leoKeyEvent: stroke: %s, char: %s, keysym: %s' % (
+            # # repr(self.stroke),repr(self.char),repr(self.keysym))
 #@+node:ekr.20101127152442.5878: ** Url's
 @color
 
