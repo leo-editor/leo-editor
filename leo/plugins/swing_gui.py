@@ -1731,20 +1731,6 @@ class leoSwingFrame (leoFrame.leoFrame):
         f = self ; c = f.c ; k = c.k ; w = f.miniBufferWidget
 
         if not c.useTextMinibuffer: return
-
-        # for kind,callback in (
-            # ('<Key>',           k.masterKeyHandler),
-            # ('<Button-1>',      k.masterClickHandler),
-            # ('<Button-3>',      k.masterClick3Handler),
-            # ('<Double-1>',      k.masterDoubleClickHandler),
-            # ('<Double-3>',      k.masterDoubleClick3Handler),
-        # ):
-            # w.bind(kind,callback)
-
-        # if 0:
-            # if sys.platform.startswith('win'):
-                # # Support Linux middle-button paste easter egg.
-                # w.bind("<Button-2>",frame.OnPaste)
     #@+node:ekr.20081121105001.704: *4* Configuration (swingFrame)
     #@+node:ekr.20081121105001.705: *5* configureBar (swingFrame)
     def configureBar (self,bar,verticalFlag):
@@ -2421,23 +2407,6 @@ class leoSwingBody (leoFrame.leoBody):
 
         '''(swingBody) Create gui-dependent bindings.
         These are *not* made in nullBody instances.'''
-
-        frame = self.frame ; c = self.c ; k = c.k
-        if not w: w = self.bodyCtrl
-
-        # w.bind('<Key>', k.masterKeyHandler)
-
-        # for kind,func,handler in (
-            # ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
-            # ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
-            # ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
-            # ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
-            # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
-        # ):
-            # def bodyClickCallback(event,handler=handler,func=func):
-                # return handler(event,func)
-
-            # w.bind(kind,bodyClickCallback)
     #@+node:ekr.20081121105001.750: *5* swingBody.createControl
     def createControl (self,parentFrame,p):
 
@@ -3951,30 +3920,8 @@ class leoSwingLog (leoFrame.leoLog):
         # return tabFrame
     #@+node:ekr.20081121105001.835: *5* setTabBindings
     def setTabBindings (self,tabName):
-
-        c = self.c ; k = c.k
-        # tab = self.nb.tab(tabName)
-        # w = self.textDict.get(tabName)
-
-        # # Send all event in the text area to the master handlers.
-        # for kind,handler in (
-            # ('<Key>',       k.masterKeyHandler),
-            # ('<Button-1>',  k.masterClickHandler),
-            # ('<Button-3>',  k.masterClick3Handler),
-        # ):
-            # w.bind(kind,handler)
-
-        # # Clicks in the tab area are harmless: use the old code.
-        # def tabMenuRightClickCallback(event,menu=self.menu):
-            # return self.onRightClick(event,menu)
-
-        # def tabMenuClickCallback(event,tabName=tabName):
-            # return self.onClick(event,tabName)
-
-        # tab.bind('<Button-1>',tabMenuClickCallback)
-        # tab.bind('<Button-3>',tabMenuRightClickCallback)
-
-        # k.completeAllBindingsForWidget(w)
+        
+        '''Set tab bindings'''
     #@+node:ekr.20081121105001.836: *5* Tab menu callbacks & helpers
     #@+node:ekr.20081121105001.837: *6* onRightClick & onClick
     def onRightClick (self,event,menu):
@@ -4250,23 +4197,25 @@ class leoSwingLog (leoFrame.leoLog):
         self.createBindings()
     #@+node:ekr.20081121105001.854: *5* createBindings (fontPicker)
     def createBindings (self):
+        
+        pass
 
-        c = self.c ; k = c.k
+        # c = self.c ; k = c.k
 
-        table = (
-            ('<Button-1>',  k.masterClickHandler),
-            ('<Double-1>',  k.masterClickHandler),
-            ('<Button-3>',  k.masterClickHandler),
-            ('<Double-3>',  k.masterClickHandler),
-            ('<Key>',       k.masterKeyHandler),
-            ("<Escape>",    self.hideFontTab),
-        )
+        # table = (
+            # ('<Button-1>',  k.masterClickHandler),
+            # ('<Double-1>',  k.masterClickHandler),
+            # ('<Button-3>',  k.masterClickHandler),
+            # ('<Double-3>',  k.masterClickHandler),
+            # ('<Key>',       k.masterKeyHandler),
+            # ("<Escape>",    self.hideFontTab),
+        # )
 
-        w = self.sampleWidget
-        for event, callback in table:
-            w.bind(event,callback)
+        # w = self.sampleWidget
+        # for event, callback in table:
+            # w.bind(event,callback)
 
-        k.completeAllBindingsForWidget(w)
+        # k.completeAllBindingsForWidget(w)
     #@+node:ekr.20081121105001.855: *5* getFont
     def getFont(self,family=None,size=12,slant='roman',weight='normal'):
 
@@ -5064,23 +5013,6 @@ class leoSwingTree (leoFrame.leoTree):
             #@+node:ekr.20081121105001.920: *6* << make bindings for a common binding widget >>
             self.bindingWidget = w = g.app.gui.plainTextWidget(
                 self.canvas,name='bindingWidget')
-
-            w.bind('<Key>',k.masterKeyHandler)
-
-            table = (
-                ('<Button-1>',       k.masterClickHandler,          tree.onHeadlineClick),
-                ('<Button-3>',       k.masterClick3Handler,         tree.onHeadlineRightClick),
-                ('<Double-Button-1>',k.masterDoubleClickHandler,    tree.onHeadlineClick),
-                ('<Double-Button-3>',k.masterDoubleClick3Handler,   tree.onHeadlineRightClick),
-            )
-
-            for a,handler,func in table:
-                def treeBindingCallback(event,handler=handler,func=func):
-                    # g.trace('func',func)
-                    return handler(event,func)
-                w.bind(a,treeBindingCallback)
-
-            ### self.textBindings = w.bindtags()
             #@-<< make bindings for a common binding widget >>
 
             tree.setCanvasBindings(canvas)
@@ -5092,44 +5024,7 @@ class leoSwingTree (leoFrame.leoTree):
     #@+node:ekr.20081121105001.921: *5* swingTree.setCanvasBindings
     def setCanvasBindings (self,canvas):
 
-        k = self.c.k
-
-        if 0: ###
-
-            canvas.bind('<Key>',k.masterKeyHandler)
-            canvas.bind('<Button-1>',self.onTreeClick)
-
-            #@+<< make bindings for tagged items on the canvas >>
-            #@+node:ekr.20081121105001.922: *6* << make bindings for tagged items on the canvas >>
-            where = g.choose(self.expanded_click_area,'clickBox','plusBox')
-
-            ###
-            # table = (
-                # (where,    '<Button-1>',self.onClickBoxClick),
-                # ('iconBox','<Button-1>',self.onIconBoxClick),
-                # ('iconBox','<Double-1>',self.onIconBoxDoubleClick),
-                # ('iconBox','<Button-3>',self.onIconBoxRightClick),
-                # ('iconBox','<Double-3>',self.onIconBoxRightClick),
-                # ('iconBox','<B1-Motion>',self.onDrag),
-                # ('iconBox','<Any-ButtonRelease-1>',self.onEndDrag),
-            # )
-            # for tag,event,callback in table:
-                # canvas.tag_bind(tag,event,callback)
-            #@-<< make bindings for tagged items on the canvas >>
-            #@+<< create baloon bindings for tagged items on the canvas >>
-            #@+node:ekr.20081121105001.923: *6* << create baloon bindings for tagged items on the canvas >>
-            if 0: # I find these very irritating.
-                for tag,text in (
-                    # ('plusBox','plusBox'),
-                    ('iconBox','Icon Box'),
-                    ('selectBox','Click to select'),
-                    ('clickBox','Click to expand or contract'),
-                    # ('textBox','Headline'),
-                ):
-                    # A fairly long wait is best.
-                    balloon = Pmw.Balloon(self.canvas,initwait=700)
-                    balloon.tagbind(self.canvas,tag,balloonHelp=text)
-            #@-<< create baloon bindings for tagged items on the canvas >>
+        pass
     #@+node:ekr.20081121105001.924: *4* Allocation...
     #@+node:ekr.20081121105001.925: *5* newBox
     def newBox (self,p,x,y,image):
