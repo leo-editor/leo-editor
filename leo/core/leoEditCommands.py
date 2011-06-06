@@ -180,7 +180,7 @@ class baseEditCommandsClass:
     #@+node:ekr.20050920084036.250: *4* _checkIfRectangle
     def _checkIfRectangle (self,event):
 
-        c,k = self.c,self.k ; key = event.keysym.lower()
+        c,k = self.c,self.k ; key = event.char.lower()
         
         c.check_event(event)
 
@@ -2119,7 +2119,7 @@ class editCommandsClass (baseEditCommandsClass):
             ch1, stroke1 = data1
             ch2, stroke2 = data2
 
-            if state == 'esc esc' and event.keysym == ':':
+            if state == 'esc esc' and event.char == ':':
                 self.evalExpression(event)
             elif state == 'evaluate':
                 self.escEvaluate(event)
@@ -2127,7 +2127,7 @@ class editCommandsClass (baseEditCommandsClass):
             elif stroke1 == 'Escape' and stroke2 == 'Escape':
                 k.setState('escape','esc esc')
                 k.setLabel('Esc Esc -')
-            elif event.keysym not in ('Shift_L','Shift_R'):
+            elif event.char not in ('Shift_L','Shift_R'):
                 k.keyboardQuit()
     #@+node:ekr.20050920084036.64: *4* escEvaluate (Revise)
     def escEvaluate (self,event):
@@ -2142,7 +2142,7 @@ class editCommandsClass (baseEditCommandsClass):
         if k.getLabel() == 'Eval:':
             k.setLabel('')
 
-        if event.keysym == 'Return':
+        if event.char == 'Return':
             expression = k.getLabel()
             try:
                 ok = False
@@ -3208,12 +3208,15 @@ class editCommandsClass (baseEditCommandsClass):
         #@+node:ekr.20061103114242: *5* << set local vars >>
         p = c.p
         gui = g.app.gui
-        ch = gui.eventChar(event)
-        keysym = gui.eventKeysym(event)
-        # stroke = gui.eventStroke(event)
-        if keysym == 'Return':
+        stroke = event and event.stroke or ''
+        ch = char = event and event.char or ''
+        ####ch = gui.eventChar(event)
+        ####keysym = gui.eventKeysym(event)
+        #### stroke = gui.eventStroke(event)
+
+        if char == 'Return':
             ch = '\n' # This fixes the MacOS return bug.
-        if keysym == 'Tab':
+        if char == 'Tab':
             ch = '\t'
         name = c.widget_name(w)
         oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
@@ -3223,7 +3226,7 @@ class editCommandsClass (baseEditCommandsClass):
         inBrackets = ch and g.toUnicode(ch) in brackets
         # if trace: g.trace(name,repr(ch),ch and ch in brackets)
         #@-<< set local vars >>
-        if trace: g.trace('ch',repr(ch),'keysym',repr(keysym)) # ,'stroke',repr(stroke))
+        if trace: g.trace('ch',repr(ch),'char',repr(char)) # ,'stroke',repr(stroke))
         if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
             return # (for Tk) "break" # The hook claims to have handled the event.
         if ch == '\t':
@@ -4772,7 +4775,8 @@ class editCommandsClass (baseEditCommandsClass):
         kind is in ('up/down-half-page/line/page)'''
 
         k = self.k ; c = k.c ; gui = g.app.gui
-        w = gui.eventWidget(event)
+        ## w = gui.eventWidget(event)
+        w = event.w
 
         if not w: return
 
@@ -4786,7 +4790,8 @@ class editCommandsClass (baseEditCommandsClass):
         #Scroll body pane up/down (direction) by page/half-page/line (distance)
         #Note: Currently moves cursor, scrolls if needed to keep cursor visible
         k = self.k ; c = k.c ; gui = g.app.gui
-        w = gui.eventWidget(event)
+        ## w = gui.eventWidget(event)
+        w = event.w
         if not w: return #  This does **not** require a text widget.
 
         if gui.isTextWidget(w):
@@ -7362,10 +7367,10 @@ class registerCommandsClass (baseEditCommandsClass):
         else:
             k.clearState()
             if self.checkBodySelection():
-                if event.keysym.isalpha():
+                if event.char.isalpha():
                     w = c.frame.body.bodyCtrl
                     c.bodyWantsFocus()
-                    key = event.keysym.lower()
+                    key = event.char.lower()
                     val = self.registers.get(key,'')
                     val = val + w.getSelectedText()
                     self.registers[key] = val
@@ -7390,10 +7395,10 @@ class registerCommandsClass (baseEditCommandsClass):
         else:
             k.clearState()
             if self.checkBodySelection():
-                if event.keysym.isalpha():
+                if event.char.isalpha():
                     w = c.frame.body.bodyCtrl
                     c.bodyWantsFocus()
-                    key = event.keysym.lower()
+                    key = event.char.lower()
                     val = self.registers.get(key,'')
                     val = w.getSelectedText() + val
                     self.registers[key] = val
@@ -7419,8 +7424,8 @@ class registerCommandsClass (baseEditCommandsClass):
             k.setState('copy-rect-to-reg',1,self.copyRectangleToRegister)
         elif self.checkBodySelection('No rectangle selected'):
             k.clearState()
-            if event.keysym.isalpha():
-                key = event.keysym.lower()
+            if event.char.isalpha():
+                key = event.char.lower()
                 w = self.w
                 c.widgetWantsFocusNow(w)
                 r1, r2, r3, r4 = self.getRectanglePoints(w)
@@ -7451,8 +7456,8 @@ class registerCommandsClass (baseEditCommandsClass):
         else:
             k.clearState()
             if self.checkBodySelection():
-                if event.keysym.isalpha():
-                    key = event.keysym.lower()
+                if event.char.isalpha():
+                    key = event.char.lower()
                     w = c.frame.body.bodyCtrl
                     c.bodyWantsFocus()
                     val = w.getSelectedText()
@@ -7477,8 +7482,8 @@ class registerCommandsClass (baseEditCommandsClass):
             k.clearState()
             if self._checkIfRectangle(event):
                 pass # Error message is in the label.
-            elif event.keysym.isalpha():
-                key = event.keysym.lower()
+            elif event.char.isalpha():
+                key = event.char.lower()
                 val = self.registers.get(key,0)
                 try:
                     val = str(int(val)+1)
@@ -7504,10 +7509,10 @@ class registerCommandsClass (baseEditCommandsClass):
             k.setState('insert-reg',1,self.insertRegister)
         else:
             k.clearState()
-            if event.keysym.isalpha():
+            if event.char.isalpha():
                 w = c.frame.body.bodyCtrl
                 c.bodyWantsFocus()
-                key = event.keysym.lower()
+                key = event.char.lower()
                 val = self.registers.get(key)
                 if val:
                     if type(val)==type([]):
@@ -7535,9 +7540,9 @@ class registerCommandsClass (baseEditCommandsClass):
             k.setState('jump-to-reg',1,self.jumpToRegister)
         else:
             k.clearState()
-            if event.keysym.isalpha():
+            if event.char.isalpha():
                 if self._checkIfRectangle(event): return
-                key = event.keysym.lower()
+                key = event.char.lower()
                 val = self.registers.get(key)
                 w = c.frame.body.bodyCtrl
                 c.bodyWantsFocus()
@@ -7572,8 +7577,8 @@ class registerCommandsClass (baseEditCommandsClass):
             k.setState('number-to-reg',1,self.numberToRegister)
         else:
             k.clearState()
-            if event.keysym.isalpha():
-                # self.registers[event.keysym.lower()] = str(0)
+            if event.char.isalpha():
+                # self.registers[event.char.lower()] = str(0)
                 k.setLabelGrey('number-to-register not ready yet.')
             else:
                 k.setLabelGrey('Register must be a letter')
@@ -7592,10 +7597,10 @@ class registerCommandsClass (baseEditCommandsClass):
             k.setState('point-to-reg',1,self.pointToRegister)
         else:
             k.clearState()
-            if event.keysym.isalpha():
+            if event.char.isalpha():
                 w = c.frame.body.bodyCtrl
                 c.bodyWantsFocus()
-                key = event.keysym.lower()
+                key = event.char.lower()
                 val = w.getInsertPoint()
                 self.registers[key] = val
                 k.setLabelGrey('Register %s = %s' % (key,repr(val)))
@@ -7617,8 +7622,8 @@ class registerCommandsClass (baseEditCommandsClass):
             k.setState('view-reg',1,self.viewRegister)
         else:
             k.clearState()
-            if event.keysym.isalpha():
-                key = event.keysym.lower()
+            if event.char.isalpha():
+                key = event.char.lower()
                 val = self.registers.get(key)
                 k.setLabelGrey('Register %s = %s' % (key,repr(val)))
             else:
@@ -8478,7 +8483,6 @@ class searchCommandsClass (baseEditCommandsClass):
             g.es("end of wrapped search")
         else:
             g.es("not found","'%s'" % (pattern))
-            # event = g.Bunch(char='\b',keysym='\b',stroke='BackSpace')
             event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
             c.check_event(event)
             k.updateLabel(event)

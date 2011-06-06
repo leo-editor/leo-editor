@@ -176,15 +176,6 @@ class baseTextWidget:
     def onChar (self, event):
         
         g.trace('can not happen: must be defined in subclasses')
-
-        # c = self.c
-        # keycode = event.GetKeyCode()
-        # event.leoWidget = self
-        # keysym = g.app.gui.eventKeysym(event)
-        # #g.trace('text: keycode %3s keysym %s' % (keycode,keysym))
-        # if keysym:
-            # c.k.masterKeyHandler(event,stroke=keysym)
-            # c.outerUpdate()
     #@+node:ekr.20070228074312.12: *5* clipboard_clear & clipboard_append
     def clipboard_clear (self):
 
@@ -249,31 +240,6 @@ class baseTextWidget:
         
         g.trace('can not happen: must be defined in subclasses')
         return
-
-        # trace = False # and not g.unitTesting
-        # w = self ; c = self.c
-        
-        # # Canonicalize the setting.
-        # stroke1 = stroke
-        # stroke = c.k.shortcutFromSetting(stroke)
-        # char = keysym or stroke1
-
-        # if trace: g.trace('(baseTextWidget)','char',repr(char),'stroke',repr(stroke),'w',w)
-
-        # class eventGenerateEvent:
-            # def __init__ (self,c,w,char,stroke):
-                # self.c = c
-                # self.char = char
-                # self.keysym = char
-                # self.stroke = stroke
-                # self.leoWidget = w
-                # self.widget = self.w = w
-
-        # event = eventGenerateEvent(c,w,char,stroke)
-        
-        # event = g.app.gui.create_key_event(c,char,stroke,w)
-        # c.k.masterKeyHandler(event,stroke=stroke)
-        # c.outerUpdate()
     #@+node:ekr.20070228102413: *5* getName & GetName
     def GetName(self):
 
@@ -1212,7 +1178,8 @@ class leoBody:
         if wname.startswith('body'):
             # A hack to support middle-button pastes: remember the previous selection.
             k.previousSelection = w.getSelectionRange()
-            x,y = g.app.gui.eventXY(event)
+            ## x,y = g.app.gui.eventXY(event)
+            x,y = event.x,event.y
             i = w.xyToPythonIndex(x,y)
             # g.trace(x,y,repr(i))
             w.setSelectionRange(i,i,insert=i)

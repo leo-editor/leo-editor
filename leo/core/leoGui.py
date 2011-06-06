@@ -30,7 +30,7 @@ class leoKeyEvent:
         
         self.c = c
         self.char = char or ''
-        self.keysym = char or '' ## Temporary.
+        ## self.keysym = char or '' ## Temporary.
         self.stroke = stroke or ''
         self.w = self.widget = w
         
@@ -152,10 +152,10 @@ class leoGui:
         'createRootWindow',
         'create_labeled_frame',
         'destroySelf',
-        'eventChar',
-        'eventKeysym',
+        #'eventChar',
+        #'eventKeysym',
         'eventWidget',
-        'eventXY',
+        # 'eventXY',
         # 'finishCreate', # optional.
         # 'getFontFromParams', # optional
         # 'getFullVersion', # optional.
@@ -163,7 +163,7 @@ class leoGui:
         'get_focus',
         'get_window_info',
         'isTextWidget',
-        'keysym',
+        # 'keysym',
         'killGui',
         # 'makeScriptButton', # optional
         'recreateRootWindow',
@@ -367,31 +367,6 @@ class leoGui:
     def get_window_info (self,window):
         """Return the window information."""
         self.oops()
-    #@+node:ekr.20061031132907: *5* Events (leoGui)
-    def eventChar (self,event,c=None):
-        '''Return the char field of an event.'''
-        assert not event or event.keysym == event.char,repr(event) ##
-        return event and event.char or ''
-
-    def eventKeysym (self,event,c=None):
-        '''Return the keysym value of an event.'''
-        assert not event or event.keysym == event.char,repr(event) ##
-        return event and event.keysym
-
-    def eventStroke (self,event,c=None):
-        assert not event or event.keysym == event.char,repr(event) ##
-        return event and hasattr(event,'stroke') and event.stroke or ''
-
-    def eventWidget (self,event,c=None):
-        '''Return the widget field of an event.'''
-        assert not event or event.keysym == event.char,repr(event) ##
-        return event and event.widget
-
-    def eventXY (self,event,c=None):
-        if event:
-            return event.x,event.y
-        else:
-            return 0,0
     #@+node:ekr.20070212145124: *5* getFullVersion
     def getFullVersion (self,c=None):
 

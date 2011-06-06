@@ -4638,6 +4638,31 @@ def __init__ (self,event,c,stroke=None):
 
         # # return 'qtGui.leoKeyEvent: stroke: %s, char: %s, keysym: %s' % (
             # # repr(self.stroke),repr(self.char),repr(self.keysym))
+#@+node:ekr.20061031132907: *3* Events (leoGui)
+# def eventChar (self,event,c=None):
+    # '''Return the char field of an event.'''
+    # assert not event or event.keysym == event.char,repr(event) ##
+    # return event and event.char or ''
+
+# def eventKeysym (self,event,c=None):
+    # '''Return the keysym value of an event.'''
+    # assert not event or event.keysym == event.char,repr(event) ##
+    # return event and event.keysym
+
+# def eventStroke (self,event,c=None):
+    # assert not event or event.keysym == event.char,repr(event) ##
+    # return event and hasattr(event,'stroke') and event.stroke or ''
+
+# def eventWidget (self,event,c=None):
+    # '''Return the widget field of an event.'''
+    # assert not event or event.keysym == event.char,repr(event) ##
+    # return event and event.widget
+
+# def eventXY (self,event,c=None):
+    # if event:
+        # return event.x,event.y
+    # else:
+        # return 0,0
 #@+node:ekr.20101127152442.5878: ** Url's
 @color
 

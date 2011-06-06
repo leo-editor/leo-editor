@@ -440,28 +440,18 @@ class Commands (object):
     #@+node:ekr.20110605040658.17005: *3* c.check_event
     def check_event (self,event):
         
-        # assert not event or event.keysym == event.char,repr(event)
-        
         import leo.core.leoGui as leoGui
         
         if event:
             if g.unitTesting:
                 assert isinstance(event,leoGui.leoKeyEvent),'event: %s, callers: %s' % (
                     repr(event),g.callers())
-                assert event.keysym == event.char,repr(event)
-                for ivar in ('char','keysym','stroke',): # 'stroke',
-                    assert hasattr(event,ivar),'event: %s, ivar: %s, callers: %s' % (
-                        event,ivar,g.callers())
+                assert hasattr(event,'char'),event
             else:
                 if not isinstance(event,leoGui.leoKeyEvent):
                     g.trace('can not happen: not leoKeyEvent: %s' % event)
-                if event.keysym != event.char:
-                    g.trace('can not happen: keysym != event.char',
-                        repr(event.keysym),repr(event.char),event)
-                for ivar in ('char','keysym',): # 'stroke',
-                    if not hasattr(event,ivar):
-                        g.trace('can not happen: not hasattr(event,%s) event: %s' % (
-                            ivar,event))
+                if not hasattr(event,'char'):
+                    g.trace('can not happen: not hasattr(event,"char")',event)
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
@@ -7426,7 +7416,7 @@ class Commands (object):
 
         # g.trace(event and event.char)
 
-        if not event or not event.char or not event.keysym.isalnum():
+        if not event or not event.char or not event.char.isalnum():
             return
         c  = self ; p = c.p ; p1 = p.copy()
         c.check_event(event)

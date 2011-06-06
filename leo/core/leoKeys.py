@@ -139,7 +139,8 @@ class AutoCompleterClass:
         trace = False and not g.unitTesting
         c = self.c ; k = self.k ; state = k.unboundKeyAction
         gui = g.app.gui
-        w = gui.eventWidget(event) or c.get_focus()
+        ## w = gui.eventWidget(event) or c.get_focus()
+        w = event.w or c.get_focus()
 
         self.force = force
         
@@ -209,7 +210,8 @@ class AutoCompleterClass:
         '''Show the calltips at the cursor.'''
 
         c = self.c ; k = c.k
-        w = g.app.gui.eventWidget(event)
+        ## w = g.app.gui.eventWidget(event)
+        w = event.w
         if not w: return
         is_headline = c.widget_name(w).startswith('head')
 
@@ -357,13 +359,15 @@ class AutoCompleterClass:
         
         c.check_event(event)
         
-        ch = gui.eventChar(event)
-        keysym = gui.eventKeysym(event)
-        stroke = gui.eventStroke(event)
+        #### ch = gui.eventChar(event)
+        #### keysym = gui.eventKeysym(event)
+        ####stroke = gui.eventStroke(event)
+        char = event and event.char or ''
+        stroke = event and event.stroke or ''
         is_plain = k.isPlainKey(stroke)
 
-        if trace: g.trace('state: %s, ch: %s, keysym: %s, stroke: %s' % (
-            state,repr(ch),repr(keysym),repr(stroke)))
+        if trace: g.trace('state: %s, char: %s, stroke: %s' % (
+            state,repr(char),repr(stroke)))
 
         if state == 0:
             c.frame.log.clearTab(self.tabName)
@@ -373,20 +377,20 @@ class AutoCompleterClass:
             else:
                 if trace: g.trace('abort: not tabList')
                 self.exit()
-        elif keysym == 'Return':
+        elif char == 'Return':
             self.exit()
-        elif keysym == 'Escape':
+        elif char == 'Escape':
             self.exit()
-        elif keysym == 'Tab':
+        elif char == 'Tab':
             self.doTabCompletion()
-        elif keysym in ('\b','BackSpace'):
+        elif char in ('\b','BackSpace'):
             self.do_backspace()
-        elif keysym == '.':
+        elif char == '.':
             self.insert_string('.')
             self.compute_completion_list()
-        elif keysym == '?':
+        elif char == '?':
             self.info()
-        elif keysym == '!':
+        elif char == '!':
             # Toggle between verbose and brief listing.
             self.verbose = not self.verbose
             kind = g.choose(self.verbose,'ON','OFF')
@@ -398,7 +402,7 @@ class AutoCompleterClass:
         elif ch == 'Up' and hasattr(self,'onUp'):
             self.onUp()
         elif is_plain and ch and ch in string.printable:
-            self.insert_general_char(ch,keysym)
+            self.insert_general_char(char)
         else:
             if stroke == k.autoCompleteForceKey:
                 # This is probably redundant because completions will exist.
@@ -865,7 +869,7 @@ class AutoCompleterClass:
             g.es('No completions',color='blue')
             self.exit()
     #@+node:ekr.20061031131434.39: *4* insert_general_char
-    def insert_general_char (self,ch,keysym):
+    def insert_general_char (self,ch):
 
         trace = False and not g.unitTesting
         c,k = self.c,self.k ; w = self.w
@@ -1972,9 +1976,11 @@ class keyHandlerClass:
         c.setLog()
         c.startRedrawCount = c.frame.tree.redrawCount
         k.stroke = stroke # Set this global for general use.
-        keysym = gui.eventKeysym(event)
-        ch = gui.eventChar(event)
-        w = gui.eventWidget(event)
+        ### keysym = gui.eventKeysym(event)
+        ### ch = gui.eventChar(event)
+        ### w = gui.eventWidget(event)
+        char = ch = event and event.char or ''
+        w = event.w
         state = event and hasattr(event,'state') and event.state or 0
         k.func = func
         k.funcReturn = None # For unit testing.
@@ -1989,18 +1995,17 @@ class keyHandlerClass:
             'Shift_L','Shift_R',
         )
         #@-<< define specialKeysyms >>
-        special = keysym in specialKeysyms
+        special = char in specialKeysyms
         interesting = func is not None
         inserted = not special
 
         if trace: #  and interesting:
             g.trace(
-                'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),'keysym:',repr(keysym),
+                'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),
                 'w:',w and c.widget_name(w),'func:',func and func.__name__
             )
 
         if inserted:
-            # g.trace(stroke,keysym)
             #@+<< add character to history >>
             #@+node:ekr.20061031131434.107: *5* << add character to history >>
             if stroke or len(ch) > 0:
@@ -2034,7 +2039,7 @@ class keyHandlerClass:
 
         if k.regx.iter:
             try:
-                k.regXKey = keysym
+                k.regXKey = char
                 k.regx.iter.next() # EKR: next() may throw StopIteration.
             except StopIteration:
                 pass
@@ -2147,9 +2152,10 @@ class keyHandlerClass:
         
         c.check_event(event)
         
-        keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
+        ### keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
+        char = ch = event and event.char or ''
         trace = False or c.config.getBool('trace_modes') ; verbose = True
-        if trace: g.trace('state',state,keysym)
+        if trace: g.trace('state',state,char)
         if state == 0:
             k.mb_event = event # Save the full event for later.
             k.setState('full-command',1,handler=k.fullCommand)
@@ -2161,11 +2167,11 @@ class keyHandlerClass:
             k.mb_help = help
             k.mb_helpHandler = helpHandler
             c.minibufferWantsFocus()
-        elif keysym == 'Ins' or k.isFKey(keysym):
+        elif char == 'Ins' or k.isFKey(char):
             pass
-        elif keysym == 'Escape':
+        elif char == 'Escape':
             k.keyboardQuit()
-        elif keysym == 'Return':
+        elif char == 'Return':
             if trace and verbose: g.trace('***Return')
             c.frame.log.deleteTab('Completion')
             if k.mb_help:
@@ -2176,11 +2182,11 @@ class keyHandlerClass:
                 if k.mb_helpHandler: k.mb_helpHandler(commandName)
             else:
                 k.callAltXFunction(k.mb_event)
-        elif keysym in ('Tab','\t'):
+        elif char in ('Tab','\t'):
             if trace and verbose: g.trace('***Tab')
             k.doTabCompletion(list(c.commandsDict.keys()))
             c.minibufferWantsFocus()
-        elif keysym == 'BackSpace':
+        elif char == 'BackSpace':
             if trace and verbose: g.trace('***BackSpace')
             k.doBackSpace(list(c.commandsDict.keys()))
             c.minibufferWantsFocus()
@@ -2318,7 +2324,6 @@ class keyHandlerClass:
 
         k.universalDispatcher(event)
         g.app.gui.event_generate(c,chr(number),chr(number),w)
-            # w,'<Key>',keysym=number)
         return # (for Tk) 'break'
 
     def numberCommand0 (self,event):
@@ -2498,9 +2503,10 @@ class keyHandlerClass:
         
         c.check_event(event)
 
-        keysym = gui.eventKeysym(event)
-        # g.trace('state',k.state.kind,'event',repr(event),g.callers())
-        if keysym == 'Return' and k.mb_history:
+        ### keysym = gui.eventKeysym(event)
+        char = event.char
+       
+        if char == 'Return' and k.mb_history:
         # if k.mb_history:
             last = k.mb_history [0]
             k.resetLabel()
@@ -2601,7 +2607,6 @@ class keyHandlerClass:
             if commandName.startswith('specialCallback'):
                 event = None # A legacy function.
             else: # Create a dummy event as a signal.
-                # event = g.bunch(c=c,keysym='',char='',stroke='',widget=None)
                 event = g.app.gui.create_key_event(c,None,None,None)
                 
             c.check_event(event)
@@ -2636,9 +2641,10 @@ class keyHandlerClass:
         
         c.check_event(event)
 
-        keysym = gui.eventKeysym(event)
+        ### keysym = gui.eventKeysym(event)
+        char = event and event.char or None
         if trace: g.trace(
-            'state',state,'keysym',repr(keysym),'stroke',repr(stroke),
+            'state',state,'char',repr(char),'stroke',repr(stroke),
             'escapes',k.getArgEscapes,
             'completion',state==0 and completion or state!=0 and k.arg_completion)
         if state == 0:
@@ -2666,9 +2672,9 @@ class keyHandlerClass:
             k.setState('getArg',1,k.getArg)
             k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
             if useMinibuffer: c.minibufferWantsFocus()
-        elif keysym == 'Escape':
+        elif char == 'Escape':
             k.keyboardQuit()
-        elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+        elif char == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
             if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
             if k.oneCharacterArg:
                 k.arg = event.char
@@ -2679,9 +2685,9 @@ class keyHandlerClass:
             c.frame.log.deleteTab('Completion')
             trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
             if handler: handler(event)
-        elif keysym in('Tab','\t'):
+        elif char in('Tab','\t'):
             k.doTabCompletion(k.argTabList,k.arg_completion)
-        elif keysym in('BackSpace','\b'): # 2010/02/20: Test for \b also.
+        elif char in('BackSpace','\b'): # 2010/02/20: Test for \b also.
             k.doBackSpace(k.argTabList,k.arg_completion)
             c.minibufferWantsFocus()
         elif k.isFKey(stroke):
@@ -2831,9 +2837,9 @@ class keyHandlerClass:
         #@+<< define vars >>
         #@+node:ekr.20061031131434.147: *5* << define vars >>
         w = event.widget
-        char = event.char
-        keysym = char ## temporary.
-        stroke = event.stroke
+        char = event and event.char or ''
+        ### keysym = char ## temporary.
+        stroke = event and event.stroke or ''
         w_name = c.widget_name(w)
         state = k.state.kind
 
@@ -2854,13 +2860,13 @@ class keyHandlerClass:
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
         verbose = True
 
-        if keysym in special_keys:
-            if trace and verbose: g.trace('keysym',keysym)
+        if char in special_keys:
+            if trace and verbose: g.trace('char',char)
             return None
         
         if traceGC: g.printNewObjects('masterKey 1')
-        if trace and verbose: g.trace('stroke:',repr(stroke),'keysym:',
-            repr(event.keysym),'ch:',repr(event.char),'state',state,'state2',k.unboundKeyAction)
+        if trace and verbose: g.trace('stroke:',repr(stroke),'char:',
+            repr(event.char),'ch:',repr(event.char),'state',state,'state2',k.unboundKeyAction)
 
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
@@ -2883,7 +2889,7 @@ class keyHandlerClass:
                 if trace: g.trace('autocomplete key',stroke)
             else:
                 if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
-                return k.handleUnboundKeys(event,char,keysym,stroke)
+                return k.handleUnboundKeys(event,char,stroke)
 
         # 2011/02/08: Use getPandBindings for *all* keys.
         b = k.getPaneBinding(stroke,w)
@@ -2894,11 +2900,14 @@ class keyHandlerClass:
         else:
             if traceGC: g.printNewObjects('masterKey 4')
             if trace: g.trace(' unbound',stroke)
-            return k.handleUnboundKeys(event,char,keysym,stroke)
+            return k.handleUnboundKeys(event,char,stroke)
     #@+node:ekr.20061031131434.108: *5* callStateFunction
     def callStateFunction (self,event):
 
-        k = self ; val = None ; ch = g.app.gui.eventChar(event)
+        k = self ; val = None 
+        
+        ## ch = g.app.gui.eventChar(event)
+        ch = event and event.char or ''
 
         # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
 
@@ -3077,7 +3086,7 @@ class keyHandlerClass:
                         return True
         return False
     #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
-    def handleUnboundKeys (self,event,char,keysym,stroke):
+    def handleUnboundKeys (self,event,char,stroke):
 
         trace = False and not g.unitTesting
         verbose = False
@@ -3086,8 +3095,8 @@ class keyHandlerClass:
         
         # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
 
-        if trace and verbose: g.trace('ch: %s keysym: %s stroke %s' % (
-            repr(event.char),repr(event.keysym),repr(stroke)))
+        if trace and verbose: g.trace('ch: %s, stroke %s' % (
+            repr(event.char),repr(stroke)))
 
         # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
 
@@ -3112,7 +3121,7 @@ class keyHandlerClass:
             (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
         ):
             # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
-            if trace: g.trace('ignoring unbound Alt/Ctrl key',stroke,keysym)
+            if trace: g.trace('ignoring unbound Alt/Ctrl key',stroke,char)
             return # (for Tk) 'break'
 
         elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
@@ -3120,7 +3129,7 @@ class keyHandlerClass:
             return # (for Tk) 'break'
 
         elif (
-            keysym and keysym.find('Escape') != -1 or
+            char and char.find('Escape') != -1 or
             stroke and stroke.find('Insert') != -1
         ):
             # Never insert escape or insert characters.
@@ -3157,7 +3166,8 @@ class keyHandlerClass:
         if wname.startswith('body'):
             c.frame.body.onClick(event) # New in Leo 4.4.2.
         elif wname.startswith('mini'):
-            x,y = gui.eventXY(event)
+            # x,y = gui.eventXY(event)
+            x,y = event.x,event.y
             x = w.xyToPythonIndex(x,y)
             i,j = k.getEditableTextRange()
             if i <= x <= j:
@@ -3193,7 +3203,8 @@ class keyHandlerClass:
             return func(event)
         else:
             gui = g.app.gui
-            x,y = gui.eventXY(event)
+            ## x,y = gui.eventXY(event)
+            x.y = event.x,event.y
             i = w.xyToPythonIndex(x,y)
             s = w.getAllText()
             start,end = g.getWord(s,i)
@@ -3205,11 +3216,9 @@ class keyHandlerClass:
         k = self ; c = k.c
         w = c.frame.getFocus()
 
-        # g.trace('focus',w)
         # g.trace('stroke',stroke,'func',func and func.__name__,commandName,g.callers())
 
         # Create a minimal event for commands that require them.
-        #event = g.Bunch(c=c,char='',keysym='',stroke='',widget=w)
         event = g.app.gui.create_key_event(c,None,stroke,w)
         
         c.check_event(event)
@@ -3357,10 +3366,10 @@ class keyHandlerClass:
         
         c.check_event(event)
 
-        ch = (event and event.char) or ''
-        keysym = (event and event.keysym) or ''
+        ch = char = (event and event.char) or ''
+        ### keysym = (event and event.keysym) or ''
 
-        trace and g.trace('ch',ch,'keysym',keysym,'k.stroke',k.stroke)
+        trace and g.trace('ch',ch,'k.stroke',k.stroke)
         # g.trace(g.callers())
 
         if ch and ch not in ('\n','\r'):
@@ -3707,8 +3716,9 @@ class keyHandlerClass:
         
         c.check_event(event)
 
-        keysym = gui.eventKeysym(event)
-        # g.trace('state',state,'keysym',keysym)
+        ### keysym = gui.eventKeysym(event)
+        char = event.char
+        # g.trace('state',state,'char',char)
         if state == 0:
             k.arg = ''
             #@+<< init altX vars >>
@@ -3730,15 +3740,15 @@ class keyHandlerClass:
             k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
             c.frame.log.clearTab(tabName)
             c.minibufferWantsFocus()
-        elif keysym == 'Return':
+        elif char == 'Return':
             k.arg = k.getLabel(ignorePrompt=True)
             handler = k.getFileNameHandler
             c.frame.log.deleteTab(tabName)
             if handler: handler(event)
-        elif keysym in ('Tab','\t'):
+        elif char in ('Tab','\t'):
             k.doFileNameTab()
             c.minibufferWantsFocus()
-        elif keysym == 'BackSpace':
+        elif char == 'BackSpace':
             k.doFileNameBackSpace() 
             c.minibufferWantsFocus()
         else:
@@ -4344,15 +4354,16 @@ class keyHandlerClass:
             k.repeatCount = 1
         elif state == 1:
             # stroke = k.stroke # Warning: k.stroke is always Alt-u
-            keysym = gui.eventKeysym(event)
-            # g.trace(state,keysym)
-            if keysym == 'Escape':
+            ### keysym = gui.eventKeysym(event)
+            char = event.char
+            # g.trace(state,char)
+            if char == 'Escape':
                 k.keyboardQuit()
-            elif keysym == k.universalArgKey:
+            elif char == k.universalArgKey:
                 k.repeatCount = k.repeatCount * 4
-            elif keysym.isdigit() or keysym == '-':
+            elif char.isdigit() or char == '-':
                 k.updateLabel(event)
-            elif keysym in (
+            elif char in (
                 'Alt_L','Alt_R',
                 'Control_L','Control_R',
                 'Meta_L','Meta_R',
@@ -4366,7 +4377,7 @@ class keyHandlerClass:
                 except ValueError:  n = 1
                 k.clearState()
                 event = k.dispatchEvent
-                k.executeNTimes(event,n,stroke=keysym)
+                k.executeNTimes(event,n,stroke=stroke) ##
                 k.keyboardQuit()
                 # k.clearState()
                 # k.setLabelGrey()
@@ -4406,7 +4417,8 @@ class keyHandlerClass:
     def doControlU (self,event,stroke):
 
         k = self ; c = k.c
-        ch = g.app.gui.eventChar(event)
+        ## ch = g.app.gui.eventChar(event)
+        ch = event and event.char or ''
 
         k.setLabelBlue('Control-u %s' % g.stripBrackets(stroke))
 

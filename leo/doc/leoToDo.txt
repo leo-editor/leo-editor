@@ -10,8 +10,6 @@
 @nocolor-node
 
 To do:
-    
-- Eliminate event.keysym from Leo's core: test only ev.char and ev.stroke.
 
 - Use only a single kev arg to k.masterKeyHandler.
    This simplifies the macro handling.
@@ -21,6 +19,8 @@ To do:
 - Improve/rewrite the theory of operation.
 
 Done:
+    
+- Eliminated event.keysym from Leo's core: test only ev.char and ev.stroke.
 
 - Replaced all dummy (g.bunch) events in Leo's core and in unitTest.leo.
     
@@ -342,7 +342,6 @@ def iSearch (self,again=False):
         g.es("end of wrapped search")
     else:
         g.es("not found","'%s'" % (pattern))
-        # event = g.Bunch(char='\b',keysym='\b',stroke='BackSpace')
         event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
         c.check_event(event)
         k.updateLabel(event)
@@ -381,13 +380,15 @@ def auto_completer_state_handler (self,event):
     
     c.check_event(event)
     
-    ch = gui.eventChar(event)
-    keysym = gui.eventKeysym(event)
-    stroke = gui.eventStroke(event)
+    #### ch = gui.eventChar(event)
+    #### keysym = gui.eventKeysym(event)
+    ####stroke = gui.eventStroke(event)
+    char = event and event.char or ''
+    stroke = event and event.stroke or ''
     is_plain = k.isPlainKey(stroke)
 
-    if trace: g.trace('state: %s, ch: %s, keysym: %s, stroke: %s' % (
-        state,repr(ch),repr(keysym),repr(stroke)))
+    if trace: g.trace('state: %s, char: %s, stroke: %s' % (
+        state,repr(char),repr(stroke)))
 
     if state == 0:
         c.frame.log.clearTab(self.tabName)
@@ -397,20 +398,20 @@ def auto_completer_state_handler (self,event):
         else:
             if trace: g.trace('abort: not tabList')
             self.exit()
-    elif keysym == 'Return':
+    elif char == 'Return':
         self.exit()
-    elif keysym == 'Escape':
+    elif char == 'Escape':
         self.exit()
-    elif keysym == 'Tab':
+    elif char == 'Tab':
         self.doTabCompletion()
-    elif keysym in ('\b','BackSpace'):
+    elif char in ('\b','BackSpace'):
         self.do_backspace()
-    elif keysym == '.':
+    elif char == '.':
         self.insert_string('.')
         self.compute_completion_list()
-    elif keysym == '?':
+    elif char == '?':
         self.info()
-    elif keysym == '!':
+    elif char == '!':
         # Toggle between verbose and brief listing.
         self.verbose = not self.verbose
         kind = g.choose(self.verbose,'ON','OFF')
@@ -422,7 +423,7 @@ def auto_completer_state_handler (self,event):
     elif ch == 'Up' and hasattr(self,'onUp'):
         self.onUp()
     elif is_plain and ch and ch in string.printable:
-        self.insert_general_char(ch,keysym)
+        self.insert_general_char(char)
     else:
         if stroke == k.autoCompleteForceKey:
             # This is probably redundant because completions will exist.
@@ -547,9 +548,10 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
     
     c.check_event(event)
     
-    keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
+    ### keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
+    char = ch = event and event.char or ''
     trace = False or c.config.getBool('trace_modes') ; verbose = True
-    if trace: g.trace('state',state,keysym)
+    if trace: g.trace('state',state,char)
     if state == 0:
         k.mb_event = event # Save the full event for later.
         k.setState('full-command',1,handler=k.fullCommand)
@@ -561,11 +563,11 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
         k.mb_help = help
         k.mb_helpHandler = helpHandler
         c.minibufferWantsFocus()
-    elif keysym == 'Ins' or k.isFKey(keysym):
+    elif char == 'Ins' or k.isFKey(char):
         pass
-    elif keysym == 'Escape':
+    elif char == 'Escape':
         k.keyboardQuit()
-    elif keysym == 'Return':
+    elif char == 'Return':
         if trace and verbose: g.trace('***Return')
         c.frame.log.deleteTab('Completion')
         if k.mb_help:
@@ -576,11 +578,11 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
             if k.mb_helpHandler: k.mb_helpHandler(commandName)
         else:
             k.callAltXFunction(k.mb_event)
-    elif keysym in ('Tab','\t'):
+    elif char in ('Tab','\t'):
         if trace and verbose: g.trace('***Tab')
         k.doTabCompletion(list(c.commandsDict.keys()))
         c.minibufferWantsFocus()
-    elif keysym == 'BackSpace':
+    elif char == 'BackSpace':
         if trace and verbose: g.trace('***BackSpace')
         k.doBackSpace(list(c.commandsDict.keys()))
         c.minibufferWantsFocus()
@@ -650,9 +652,10 @@ def getArg (self,event,
     
     c.check_event(event)
 
-    keysym = gui.eventKeysym(event)
+    ### keysym = gui.eventKeysym(event)
+    char = event and event.char or None
     if trace: g.trace(
-        'state',state,'keysym',repr(keysym),'stroke',repr(stroke),
+        'state',state,'char',repr(char),'stroke',repr(stroke),
         'escapes',k.getArgEscapes,
         'completion',state==0 and completion or state!=0 and k.arg_completion)
     if state == 0:
@@ -665,9 +668,9 @@ def getArg (self,event,
         k.setState('getArg',1,k.getArg)
         k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
         if useMinibuffer: c.minibufferWantsFocus()
-    elif keysym == 'Escape':
+    elif char == 'Escape':
         k.keyboardQuit()
-    elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+    elif char == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
         if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
         if k.oneCharacterArg:
             k.arg = event.char
@@ -678,9 +681,9 @@ def getArg (self,event,
         c.frame.log.deleteTab('Completion')
         trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
         if handler: handler(event)
-    elif keysym in('Tab','\t'):
+    elif char in('Tab','\t'):
         k.doTabCompletion(k.argTabList,k.arg_completion)
-    elif keysym in('BackSpace','\b'): # 2010/02/20: Test for \b also.
+    elif char in('BackSpace','\b'): # 2010/02/20: Test for \b also.
         k.doBackSpace(k.argTabList,k.arg_completion)
         c.minibufferWantsFocus()
     elif k.isFKey(stroke):
@@ -759,8 +762,9 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
     
     c.check_event(event)
 
-    keysym = gui.eventKeysym(event)
-    # g.trace('state',state,'keysym',keysym)
+    ### keysym = gui.eventKeysym(event)
+    char = event.char
+    # g.trace('state',state,'char',char)
     if state == 0:
         k.arg = ''
         << init altX vars >>
@@ -770,15 +774,15 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
         k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
         c.frame.log.clearTab(tabName)
         c.minibufferWantsFocus()
-    elif keysym == 'Return':
+    elif char == 'Return':
         k.arg = k.getLabel(ignorePrompt=True)
         handler = k.getFileNameHandler
         c.frame.log.deleteTab(tabName)
         if handler: handler(event)
-    elif keysym in ('Tab','\t'):
+    elif char in ('Tab','\t'):
         k.doFileNameTab()
         c.minibufferWantsFocus()
-    elif keysym == 'BackSpace':
+    elif char == 'BackSpace':
         k.doFileNameBackSpace() 
         c.minibufferWantsFocus()
     else:
@@ -1032,7 +1036,7 @@ def escEvaluate (self,event):
     if k.getLabel() == 'Eval:':
         k.setLabel('')
 
-    if event.keysym == 'Return':
+    if event.char == 'Return':
         expression = k.getLabel()
         try:
             ok = False
@@ -1050,12 +1054,15 @@ def escEvaluate (self,event):
 .. @+node:ekr.20061103114242: *8* << set local vars >>
 p = c.p
 gui = g.app.gui
-ch = gui.eventChar(event)
-keysym = gui.eventKeysym(event)
-# stroke = gui.eventStroke(event)
-if keysym == 'Return':
+stroke = event and event.stroke or ''
+ch = char = event and event.char or ''
+####ch = gui.eventChar(event)
+####keysym = gui.eventKeysym(event)
+#### stroke = gui.eventStroke(event)
+
+if char == 'Return':
     ch = '\n' # This fixes the MacOS return bug.
-if keysym == 'Tab':
+if char == 'Tab':
     ch = '\t'
 name = c.widget_name(w)
 oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
@@ -1151,13 +1158,15 @@ def auto_completer_state_handler (self,event):
     
     c.check_event(event)
     
-    ch = gui.eventChar(event)
-    keysym = gui.eventKeysym(event)
-    stroke = gui.eventStroke(event)
+    #### ch = gui.eventChar(event)
+    #### keysym = gui.eventKeysym(event)
+    ####stroke = gui.eventStroke(event)
+    char = event and event.char or ''
+    stroke = event and event.stroke or ''
     is_plain = k.isPlainKey(stroke)
 
-    if trace: g.trace('state: %s, ch: %s, keysym: %s, stroke: %s' % (
-        state,repr(ch),repr(keysym),repr(stroke)))
+    if trace: g.trace('state: %s, char: %s, stroke: %s' % (
+        state,repr(char),repr(stroke)))
 
     if state == 0:
         c.frame.log.clearTab(self.tabName)
@@ -1167,20 +1176,20 @@ def auto_completer_state_handler (self,event):
         else:
             if trace: g.trace('abort: not tabList')
             self.exit()
-    elif keysym == 'Return':
+    elif char == 'Return':
         self.exit()
-    elif keysym == 'Escape':
+    elif char == 'Escape':
         self.exit()
-    elif keysym == 'Tab':
+    elif char == 'Tab':
         self.doTabCompletion()
-    elif keysym in ('\b','BackSpace'):
+    elif char in ('\b','BackSpace'):
         self.do_backspace()
-    elif keysym == '.':
+    elif char == '.':
         self.insert_string('.')
         self.compute_completion_list()
-    elif keysym == '?':
+    elif char == '?':
         self.info()
-    elif keysym == '!':
+    elif char == '!':
         # Toggle between verbose and brief listing.
         self.verbose = not self.verbose
         kind = g.choose(self.verbose,'ON','OFF')
@@ -1192,7 +1201,7 @@ def auto_completer_state_handler (self,event):
     elif ch == 'Up' and hasattr(self,'onUp'):
         self.onUp()
     elif is_plain and ch and ch in string.printable:
-        self.insert_general_char(ch,keysym)
+        self.insert_general_char(char)
     else:
         if stroke == k.autoCompleteForceKey:
             # This is probably redundant because completions will exist.
@@ -1263,9 +1272,10 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
     
     c.check_event(event)
     
-    keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
+    ### keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
+    char = ch = event and event.char or ''
     trace = False or c.config.getBool('trace_modes') ; verbose = True
-    if trace: g.trace('state',state,keysym)
+    if trace: g.trace('state',state,char)
     if state == 0:
         k.mb_event = event # Save the full event for later.
         k.setState('full-command',1,handler=k.fullCommand)
@@ -1277,11 +1287,11 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
         k.mb_help = help
         k.mb_helpHandler = helpHandler
         c.minibufferWantsFocus()
-    elif keysym == 'Ins' or k.isFKey(keysym):
+    elif char == 'Ins' or k.isFKey(char):
         pass
-    elif keysym == 'Escape':
+    elif char == 'Escape':
         k.keyboardQuit()
-    elif keysym == 'Return':
+    elif char == 'Return':
         if trace and verbose: g.trace('***Return')
         c.frame.log.deleteTab('Completion')
         if k.mb_help:
@@ -1292,11 +1302,11 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
             if k.mb_helpHandler: k.mb_helpHandler(commandName)
         else:
             k.callAltXFunction(k.mb_event)
-    elif keysym in ('Tab','\t'):
+    elif char in ('Tab','\t'):
         if trace and verbose: g.trace('***Tab')
         k.doTabCompletion(list(c.commandsDict.keys()))
         c.minibufferWantsFocus()
-    elif keysym == 'BackSpace':
+    elif char == 'BackSpace':
         if trace and verbose: g.trace('***BackSpace')
         k.doBackSpace(list(c.commandsDict.keys()))
         c.minibufferWantsFocus()
@@ -1365,9 +1375,10 @@ def repeatComplexCommandHelper (self,event):
     
     c.check_event(event)
 
-    keysym = gui.eventKeysym(event)
-    # g.trace('state',k.state.kind,'event',repr(event),g.callers())
-    if keysym == 'Return' and k.mb_history:
+    ### keysym = gui.eventKeysym(event)
+    char = event.char
+   
+    if char == 'Return' and k.mb_history:
     # if k.mb_history:
         last = k.mb_history [0]
         k.resetLabel()
@@ -1396,9 +1407,10 @@ def getArg (self,event,
     
     c.check_event(event)
 
-    keysym = gui.eventKeysym(event)
+    ### keysym = gui.eventKeysym(event)
+    char = event and event.char or None
     if trace: g.trace(
-        'state',state,'keysym',repr(keysym),'stroke',repr(stroke),
+        'state',state,'char',repr(char),'stroke',repr(stroke),
         'escapes',k.getArgEscapes,
         'completion',state==0 and completion or state!=0 and k.arg_completion)
     if state == 0:
@@ -1411,9 +1423,9 @@ def getArg (self,event,
         k.setState('getArg',1,k.getArg)
         k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
         if useMinibuffer: c.minibufferWantsFocus()
-    elif keysym == 'Escape':
+    elif char == 'Escape':
         k.keyboardQuit()
-    elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+    elif char == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
         if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
         if k.oneCharacterArg:
             k.arg = event.char
@@ -1424,9 +1436,9 @@ def getArg (self,event,
         c.frame.log.deleteTab('Completion')
         trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
         if handler: handler(event)
-    elif keysym in('Tab','\t'):
+    elif char in('Tab','\t'):
         k.doTabCompletion(k.argTabList,k.arg_completion)
-    elif keysym in('BackSpace','\b'): # 2010/02/20: Test for \b also.
+    elif char in('BackSpace','\b'): # 2010/02/20: Test for \b also.
         k.doBackSpace(k.argTabList,k.arg_completion)
         c.minibufferWantsFocus()
     elif k.isFKey(stroke):
@@ -1505,8 +1517,9 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
     
     c.check_event(event)
 
-    keysym = gui.eventKeysym(event)
-    # g.trace('state',state,'keysym',keysym)
+    ### keysym = gui.eventKeysym(event)
+    char = event.char
+    # g.trace('state',state,'char',char)
     if state == 0:
         k.arg = ''
         << init altX vars >>
@@ -1516,15 +1529,15 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
         k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
         c.frame.log.clearTab(tabName)
         c.minibufferWantsFocus()
-    elif keysym == 'Return':
+    elif char == 'Return':
         k.arg = k.getLabel(ignorePrompt=True)
         handler = k.getFileNameHandler
         c.frame.log.deleteTab(tabName)
         if handler: handler(event)
-    elif keysym in ('Tab','\t'):
+    elif char in ('Tab','\t'):
         k.doFileNameTab()
         c.minibufferWantsFocus()
-    elif keysym == 'BackSpace':
+    elif char == 'BackSpace':
         k.doFileNameBackSpace() 
         c.minibufferWantsFocus()
     else:
@@ -1689,12 +1702,15 @@ def expandAbbrev (self,event,stroke):
 .. @+node:ekr.20061103114242: *8* << set local vars >>
 p = c.p
 gui = g.app.gui
-ch = gui.eventChar(event)
-keysym = gui.eventKeysym(event)
-# stroke = gui.eventStroke(event)
-if keysym == 'Return':
+stroke = event and event.stroke or ''
+ch = char = event and event.char or ''
+####ch = gui.eventChar(event)
+####keysym = gui.eventKeysym(event)
+#### stroke = gui.eventStroke(event)
+
+if char == 'Return':
     ch = '\n' # This fixes the MacOS return bug.
-if keysym == 'Tab':
+if char == 'Tab':
     ch = '\t'
 name = c.widget_name(w)
 oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
@@ -1726,13 +1742,15 @@ def auto_completer_state_handler (self,event):
     
     c.check_event(event)
     
-    ch = gui.eventChar(event)
-    keysym = gui.eventKeysym(event)
-    stroke = gui.eventStroke(event)
+    #### ch = gui.eventChar(event)
+    #### keysym = gui.eventKeysym(event)
+    ####stroke = gui.eventStroke(event)
+    char = event and event.char or ''
+    stroke = event and event.stroke or ''
     is_plain = k.isPlainKey(stroke)
 
-    if trace: g.trace('state: %s, ch: %s, keysym: %s, stroke: %s' % (
-        state,repr(ch),repr(keysym),repr(stroke)))
+    if trace: g.trace('state: %s, char: %s, stroke: %s' % (
+        state,repr(char),repr(stroke)))
 
     if state == 0:
         c.frame.log.clearTab(self.tabName)
@@ -1742,20 +1760,20 @@ def auto_completer_state_handler (self,event):
         else:
             if trace: g.trace('abort: not tabList')
             self.exit()
-    elif keysym == 'Return':
+    elif char == 'Return':
         self.exit()
-    elif keysym == 'Escape':
+    elif char == 'Escape':
         self.exit()
-    elif keysym == 'Tab':
+    elif char == 'Tab':
         self.doTabCompletion()
-    elif keysym in ('\b','BackSpace'):
+    elif char in ('\b','BackSpace'):
         self.do_backspace()
-    elif keysym == '.':
+    elif char == '.':
         self.insert_string('.')
         self.compute_completion_list()
-    elif keysym == '?':
+    elif char == '?':
         self.info()
-    elif keysym == '!':
+    elif char == '!':
         # Toggle between verbose and brief listing.
         self.verbose = not self.verbose
         kind = g.choose(self.verbose,'ON','OFF')
@@ -1767,7 +1785,7 @@ def auto_completer_state_handler (self,event):
     elif ch == 'Up' and hasattr(self,'onUp'):
         self.onUp()
     elif is_plain and ch and ch in string.printable:
-        self.insert_general_char(ch,keysym)
+        self.insert_general_char(char)
     else:
         if stroke == k.autoCompleteForceKey:
             # This is probably redundant because completions will exist.
@@ -1892,9 +1910,10 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
     
     c.check_event(event)
     
-    keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
+    ### keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
+    char = ch = event and event.char or ''
     trace = False or c.config.getBool('trace_modes') ; verbose = True
-    if trace: g.trace('state',state,keysym)
+    if trace: g.trace('state',state,char)
     if state == 0:
         k.mb_event = event # Save the full event for later.
         k.setState('full-command',1,handler=k.fullCommand)
@@ -1906,11 +1925,11 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
         k.mb_help = help
         k.mb_helpHandler = helpHandler
         c.minibufferWantsFocus()
-    elif keysym == 'Ins' or k.isFKey(keysym):
+    elif char == 'Ins' or k.isFKey(char):
         pass
-    elif keysym == 'Escape':
+    elif char == 'Escape':
         k.keyboardQuit()
-    elif keysym == 'Return':
+    elif char == 'Return':
         if trace and verbose: g.trace('***Return')
         c.frame.log.deleteTab('Completion')
         if k.mb_help:
@@ -1921,11 +1940,11 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
             if k.mb_helpHandler: k.mb_helpHandler(commandName)
         else:
             k.callAltXFunction(k.mb_event)
-    elif keysym in ('Tab','\t'):
+    elif char in ('Tab','\t'):
         if trace and verbose: g.trace('***Tab')
         k.doTabCompletion(list(c.commandsDict.keys()))
         c.minibufferWantsFocus()
-    elif keysym == 'BackSpace':
+    elif char == 'BackSpace':
         if trace and verbose: g.trace('***BackSpace')
         k.doBackSpace(list(c.commandsDict.keys()))
         c.minibufferWantsFocus()
@@ -1995,9 +2014,10 @@ def getArg (self,event,
     
     c.check_event(event)
 
-    keysym = gui.eventKeysym(event)
+    ### keysym = gui.eventKeysym(event)
+    char = event and event.char or None
     if trace: g.trace(
-        'state',state,'keysym',repr(keysym),'stroke',repr(stroke),
+        'state',state,'char',repr(char),'stroke',repr(stroke),
         'escapes',k.getArgEscapes,
         'completion',state==0 and completion or state!=0 and k.arg_completion)
     if state == 0:
@@ -2010,9 +2030,9 @@ def getArg (self,event,
         k.setState('getArg',1,k.getArg)
         k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
         if useMinibuffer: c.minibufferWantsFocus()
-    elif keysym == 'Escape':
+    elif char == 'Escape':
         k.keyboardQuit()
-    elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+    elif char == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
         if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
         if k.oneCharacterArg:
             k.arg = event.char
@@ -2023,9 +2043,9 @@ def getArg (self,event,
         c.frame.log.deleteTab('Completion')
         trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
         if handler: handler(event)
-    elif keysym in('Tab','\t'):
+    elif char in('Tab','\t'):
         k.doTabCompletion(k.argTabList,k.arg_completion)
-    elif keysym in('BackSpace','\b'): # 2010/02/20: Test for \b also.
+    elif char in('BackSpace','\b'): # 2010/02/20: Test for \b also.
         k.doBackSpace(k.argTabList,k.arg_completion)
         c.minibufferWantsFocus()
     elif k.isFKey(stroke):
@@ -2104,8 +2124,9 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
     
     c.check_event(event)
 
-    keysym = gui.eventKeysym(event)
-    # g.trace('state',state,'keysym',keysym)
+    ### keysym = gui.eventKeysym(event)
+    char = event.char
+    # g.trace('state',state,'char',char)
     if state == 0:
         k.arg = ''
         << init altX vars >>
@@ -2115,15 +2136,15 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
         k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
         c.frame.log.clearTab(tabName)
         c.minibufferWantsFocus()
-    elif keysym == 'Return':
+    elif char == 'Return':
         k.arg = k.getLabel(ignorePrompt=True)
         handler = k.getFileNameHandler
         c.frame.log.deleteTab(tabName)
         if handler: handler(event)
-    elif keysym in ('Tab','\t'):
+    elif char in ('Tab','\t'):
         k.doFileNameTab()
         c.minibufferWantsFocus()
-    elif keysym == 'BackSpace':
+    elif char == 'BackSpace':
         k.doFileNameBackSpace() 
         c.minibufferWantsFocus()
     else:
@@ -2608,26 +2629,27 @@ def masterCommand (self,event,func,stroke,commandName=None):
     c.setLog()
     c.startRedrawCount = c.frame.tree.redrawCount
     k.stroke = stroke # Set this global for general use.
-    keysym = gui.eventKeysym(event)
-    ch = gui.eventChar(event)
-    w = gui.eventWidget(event)
+    ### keysym = gui.eventKeysym(event)
+    ### ch = gui.eventChar(event)
+    ### w = gui.eventWidget(event)
+    char = ch = event and event.char or ''
+    w = event.w
     state = event and hasattr(event,'state') and event.state or 0
     k.func = func
     k.funcReturn = None # For unit testing.
     commandName = commandName or func and func.__name__ or '<no function>'
     << define specialKeysyms >>
-    special = keysym in specialKeysyms
+    special = char in specialKeysyms
     interesting = func is not None
     inserted = not special
 
     if trace: #  and interesting:
         g.trace(
-            'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),'keysym:',repr(keysym),
+            'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),
             'w:',w and c.widget_name(w),'func:',func and func.__name__
         )
 
     if inserted:
-        # g.trace(stroke,keysym)
         << add character to history >>
 
     # We *must not* interfere with the global state in the macro class.
@@ -2653,7 +2675,7 @@ def masterCommand (self,event,func,stroke,commandName=None):
 
     if k.regx.iter:
         try:
-            k.regXKey = keysym
+            k.regXKey = char
             k.regx.iter.next() # EKR: next() may throw StopIteration.
         except StopIteration:
             pass
@@ -2776,11 +2798,9 @@ def masterMenuHandler (self,stroke,func,commandName):
     k = self ; c = k.c
     w = c.frame.getFocus()
 
-    # g.trace('focus',w)
     # g.trace('stroke',stroke,'func',func and func.__name__,commandName,g.callers())
 
     # Create a minimal event for commands that require them.
-    #event = g.Bunch(c=c,char='',keysym='',stroke='',widget=w)
     event = g.app.gui.create_key_event(c,None,stroke,w)
     
     c.check_event(event)
@@ -2798,45 +2818,11 @@ def masterMenuHandler (self,stroke,func,commandName):
 def onChar (self, event):
     
     g.trace('can not happen: must be defined in subclasses')
-
-    # c = self.c
-    # keycode = event.GetKeyCode()
-    # event.leoWidget = self
-    # keysym = g.app.gui.eventKeysym(event)
-    # #g.trace('text: keycode %3s keysym %s' % (keycode,keysym))
-    # if keysym:
-        # c.k.masterKeyHandler(event,stroke=keysym)
-        # c.outerUpdate()
 .. @+node:ekr.20070228074312.15: *7* event_generate (baseTextWidget)
 def event_generate(self,stroke,keysym=None):
     
     g.trace('can not happen: must be defined in subclasses')
     return
-
-    # trace = False # and not g.unitTesting
-    # w = self ; c = self.c
-    
-    # # Canonicalize the setting.
-    # stroke1 = stroke
-    # stroke = c.k.shortcutFromSetting(stroke)
-    # char = keysym or stroke1
-
-    # if trace: g.trace('(baseTextWidget)','char',repr(char),'stroke',repr(stroke),'w',w)
-
-    # class eventGenerateEvent:
-        # def __init__ (self,c,w,char,stroke):
-            # self.c = c
-            # self.char = char
-            # self.keysym = char
-            # self.stroke = stroke
-            # self.leoWidget = w
-            # self.widget = self.w = w
-
-    # event = eventGenerateEvent(c,w,char,stroke)
-    
-    # event = g.app.gui.create_key_event(c,char,stroke,w)
-    # c.k.masterKeyHandler(event,stroke=stroke)
-    # c.outerUpdate()
 .. @+node:ekr.20110604182206.16768: *6* Found: \.getArg
 @nocolor-node
 
@@ -2890,9 +2876,10 @@ def getArg (self,event,
     
     c.check_event(event)
 
-    keysym = gui.eventKeysym(event)
+    ### keysym = gui.eventKeysym(event)
+    char = event and event.char or None
     if trace: g.trace(
-        'state',state,'keysym',repr(keysym),'stroke',repr(stroke),
+        'state',state,'char',repr(char),'stroke',repr(stroke),
         'escapes',k.getArgEscapes,
         'completion',state==0 and completion or state!=0 and k.arg_completion)
     if state == 0:
@@ -2905,9 +2892,9 @@ def getArg (self,event,
         k.setState('getArg',1,k.getArg)
         k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
         if useMinibuffer: c.minibufferWantsFocus()
-    elif keysym == 'Escape':
+    elif char == 'Escape':
         k.keyboardQuit()
-    elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+    elif char == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
         if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
         if k.oneCharacterArg:
             k.arg = event.char
@@ -2918,9 +2905,9 @@ def getArg (self,event,
         c.frame.log.deleteTab('Completion')
         trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
         if handler: handler(event)
-    elif keysym in('Tab','\t'):
+    elif char in('Tab','\t'):
         k.doTabCompletion(k.argTabList,k.arg_completion)
-    elif keysym in('BackSpace','\b'): # 2010/02/20: Test for \b also.
+    elif char in('BackSpace','\b'): # 2010/02/20: Test for \b also.
         k.doBackSpace(k.argTabList,k.arg_completion)
         c.minibufferWantsFocus()
     elif k.isFKey(stroke):
@@ -2999,8 +2986,9 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
     
     c.check_event(event)
 
-    keysym = gui.eventKeysym(event)
-    # g.trace('state',state,'keysym',keysym)
+    ### keysym = gui.eventKeysym(event)
+    char = event.char
+    # g.trace('state',state,'char',char)
     if state == 0:
         k.arg = ''
         << init altX vars >>
@@ -3010,15 +2998,15 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
         k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
         c.frame.log.clearTab(tabName)
         c.minibufferWantsFocus()
-    elif keysym == 'Return':
+    elif char == 'Return':
         k.arg = k.getLabel(ignorePrompt=True)
         handler = k.getFileNameHandler
         c.frame.log.deleteTab(tabName)
         if handler: handler(event)
-    elif keysym in ('Tab','\t'):
+    elif char in ('Tab','\t'):
         k.doFileNameTab()
         c.minibufferWantsFocus()
-    elif keysym == 'BackSpace':
+    elif char == 'BackSpace':
         k.doFileNameBackSpace() 
         c.minibufferWantsFocus()
     else:
@@ -4206,26 +4194,27 @@ def masterCommand (self,event,func,stroke,commandName=None):
     c.setLog()
     c.startRedrawCount = c.frame.tree.redrawCount
     k.stroke = stroke # Set this global for general use.
-    keysym = gui.eventKeysym(event)
-    ch = gui.eventChar(event)
-    w = gui.eventWidget(event)
+    ### keysym = gui.eventKeysym(event)
+    ### ch = gui.eventChar(event)
+    ### w = gui.eventWidget(event)
+    char = ch = event and event.char or ''
+    w = event.w
     state = event and hasattr(event,'state') and event.state or 0
     k.func = func
     k.funcReturn = None # For unit testing.
     commandName = commandName or func and func.__name__ or '<no function>'
     << define specialKeysyms >>
-    special = keysym in specialKeysyms
+    special = char in specialKeysyms
     interesting = func is not None
     inserted = not special
 
     if trace: #  and interesting:
         g.trace(
-            'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),'keysym:',repr(keysym),
+            'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),
             'w:',w and c.widget_name(w),'func:',func and func.__name__
         )
 
     if inserted:
-        # g.trace(stroke,keysym)
         << add character to history >>
 
     # We *must not* interfere with the global state in the macro class.
@@ -4251,7 +4240,7 @@ def masterCommand (self,event,func,stroke,commandName=None):
 
     if k.regx.iter:
         try:
-            k.regXKey = keysym
+            k.regXKey = char
             k.regx.iter.next() # EKR: next() may throw StopIteration.
         except StopIteration:
             pass
@@ -4374,11 +4363,9 @@ def masterMenuHandler (self,stroke,func,commandName):
     k = self ; c = k.c
     w = c.frame.getFocus()
 
-    # g.trace('focus',w)
     # g.trace('stroke',stroke,'func',func and func.__name__,commandName,g.callers())
 
     # Create a minimal event for commands that require them.
-    #event = g.Bunch(c=c,char='',keysym='',stroke='',widget=w)
     event = g.app.gui.create_key_event(c,None,stroke,w)
     
     c.check_event(event)
@@ -4396,15 +4383,6 @@ def masterMenuHandler (self,stroke,func,commandName):
 def onChar (self, event):
     
     g.trace('can not happen: must be defined in subclasses')
-
-    # c = self.c
-    # keycode = event.GetKeyCode()
-    # event.leoWidget = self
-    # keysym = g.app.gui.eventKeysym(event)
-    # #g.trace('text: keycode %3s keysym %s' % (keycode,keysym))
-    # if keysym:
-        # c.k.masterKeyHandler(event,stroke=keysym)
-        # c.outerUpdate()
 .. @+node:ekr.20051106040126: *7* c.executeMinibufferCommand
 def executeMinibufferCommand (self,commandName):
 
@@ -4428,7 +4406,7 @@ def onCanvasKey (self,event):
 
     # g.trace(event and event.char)
 
-    if not event or not event.char or not event.keysym.isalnum():
+    if not event or not event.char or not event.char.isalnum():
         return
     c  = self ; p = c.p ; p1 = p.copy()
     c.check_event(event)
@@ -4511,7 +4489,7 @@ def navHelper (self,p,ch,extend):
 .. @+node:ekr.20050920084036.250: *7* _checkIfRectangle
 def _checkIfRectangle (self,event):
 
-    c,k = self.c,self.k ; key = event.keysym.lower()
+    c,k = self.c,self.k ; key = event.char.lower()
     
     c.check_event(event)
 
@@ -4542,7 +4520,7 @@ def watchEscape (self,event):
         ch1, stroke1 = data1
         ch2, stroke2 = data2
 
-        if state == 'esc esc' and event.keysym == ':':
+        if state == 'esc esc' and event.char == ':':
             self.evalExpression(event)
         elif state == 'evaluate':
             self.escEvaluate(event)
@@ -4550,7 +4528,7 @@ def watchEscape (self,event):
         elif stroke1 == 'Escape' and stroke2 == 'Escape':
             k.setState('escape','esc esc')
             k.setLabel('Esc Esc -')
-        elif event.keysym not in ('Shift_L','Shift_R'):
+        elif event.char not in ('Shift_L','Shift_R'):
             k.keyboardQuit()
 .. @+node:ekr.20050920084036.64: *7* escEvaluate (Revise)
 def escEvaluate (self,event):
@@ -4565,7 +4543,7 @@ def escEvaluate (self,event):
     if k.getLabel() == 'Eval:':
         k.setLabel('')
 
-    if event.keysym == 'Return':
+    if event.char == 'Return':
         expression = k.getLabel()
         try:
             ok = False
@@ -4595,7 +4573,7 @@ def selfInsertCommand(self,event,action='insert'):
     w = self.editWidget(event)
     if not w: return # (for Tk) 'break'
     << set local vars >>
-    if trace: g.trace('ch',repr(ch),'keysym',repr(keysym)) # ,'stroke',repr(stroke))
+    if trace: g.trace('ch',repr(ch),'char',repr(char)) # ,'stroke',repr(stroke))
     if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
         return # (for Tk) "break" # The hook claims to have handled the event.
     if ch == '\t':
@@ -4640,12 +4618,15 @@ def selfInsertCommand(self,event,action='insert'):
 .. @+node:ekr.20061103114242: *8* << set local vars >>
 p = c.p
 gui = g.app.gui
-ch = gui.eventChar(event)
-keysym = gui.eventKeysym(event)
-# stroke = gui.eventStroke(event)
-if keysym == 'Return':
+stroke = event and event.stroke or ''
+ch = char = event and event.char or ''
+####ch = gui.eventChar(event)
+####keysym = gui.eventKeysym(event)
+#### stroke = gui.eventStroke(event)
+
+if char == 'Return':
     ch = '\n' # This fixes the MacOS return bug.
-if keysym == 'Tab':
+if char == 'Tab':
     ch = '\t'
 name = c.widget_name(w)
 oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
@@ -4859,10 +4840,10 @@ def appendToRegister (self,event):
     else:
         k.clearState()
         if self.checkBodySelection():
-            if event.keysym.isalpha():
+            if event.char.isalpha():
                 w = c.frame.body.bodyCtrl
                 c.bodyWantsFocus()
-                key = event.keysym.lower()
+                key = event.char.lower()
                 val = self.registers.get(key,'')
                 val = val + w.getSelectedText()
                 self.registers[key] = val
@@ -4887,10 +4868,10 @@ def prependToRegister (self,event):
     else:
         k.clearState()
         if self.checkBodySelection():
-            if event.keysym.isalpha():
+            if event.char.isalpha():
                 w = c.frame.body.bodyCtrl
                 c.bodyWantsFocus()
-                key = event.keysym.lower()
+                key = event.char.lower()
                 val = self.registers.get(key,'')
                 val = w.getSelectedText() + val
                 self.registers[key] = val
@@ -4916,8 +4897,8 @@ def copyRectangleToRegister (self,event):
         k.setState('copy-rect-to-reg',1,self.copyRectangleToRegister)
     elif self.checkBodySelection('No rectangle selected'):
         k.clearState()
-        if event.keysym.isalpha():
-            key = event.keysym.lower()
+        if event.char.isalpha():
+            key = event.char.lower()
             w = self.w
             c.widgetWantsFocusNow(w)
             r1, r2, r3, r4 = self.getRectanglePoints(w)
@@ -4948,8 +4929,8 @@ def copyToRegister (self,event):
     else:
         k.clearState()
         if self.checkBodySelection():
-            if event.keysym.isalpha():
-                key = event.keysym.lower()
+            if event.char.isalpha():
+                key = event.char.lower()
                 w = c.frame.body.bodyCtrl
                 c.bodyWantsFocus()
                 val = w.getSelectedText()
@@ -4974,8 +4955,8 @@ def incrementRegister (self,event):
         k.clearState()
         if self._checkIfRectangle(event):
             pass # Error message is in the label.
-        elif event.keysym.isalpha():
-            key = event.keysym.lower()
+        elif event.char.isalpha():
+            key = event.char.lower()
             val = self.registers.get(key,0)
             try:
                 val = str(int(val)+1)
@@ -5001,10 +4982,10 @@ def insertRegister (self,event):
         k.setState('insert-reg',1,self.insertRegister)
     else:
         k.clearState()
-        if event.keysym.isalpha():
+        if event.char.isalpha():
             w = c.frame.body.bodyCtrl
             c.bodyWantsFocus()
-            key = event.keysym.lower()
+            key = event.char.lower()
             val = self.registers.get(key)
             if val:
                 if type(val)==type([]):
@@ -5032,9 +5013,9 @@ def jumpToRegister (self,event):
         k.setState('jump-to-reg',1,self.jumpToRegister)
     else:
         k.clearState()
-        if event.keysym.isalpha():
+        if event.char.isalpha():
             if self._checkIfRectangle(event): return
-            key = event.keysym.lower()
+            key = event.char.lower()
             val = self.registers.get(key)
             w = c.frame.body.bodyCtrl
             c.bodyWantsFocus()
@@ -5069,8 +5050,8 @@ def numberToRegister (self,event):
         k.setState('number-to-reg',1,self.numberToRegister)
     else:
         k.clearState()
-        if event.keysym.isalpha():
-            # self.registers[event.keysym.lower()] = str(0)
+        if event.char.isalpha():
+            # self.registers[event.char.lower()] = str(0)
             k.setLabelGrey('number-to-register not ready yet.')
         else:
             k.setLabelGrey('Register must be a letter')
@@ -5089,10 +5070,10 @@ def pointToRegister (self,event):
         k.setState('point-to-reg',1,self.pointToRegister)
     else:
         k.clearState()
-        if event.keysym.isalpha():
+        if event.char.isalpha():
             w = c.frame.body.bodyCtrl
             c.bodyWantsFocus()
-            key = event.keysym.lower()
+            key = event.char.lower()
             val = w.getInsertPoint()
             self.registers[key] = val
             k.setLabelGrey('Register %s = %s' % (key,repr(val)))
@@ -5114,8 +5095,8 @@ def viewRegister (self,event):
         k.setState('view-reg',1,self.viewRegister)
     else:
         k.clearState()
-        if event.keysym.isalpha():
-            key = event.keysym.lower()
+        if event.char.isalpha():
+            key = event.char.lower()
             val = self.registers.get(key)
             k.setLabelGrey('Register %s = %s' % (key,repr(val)))
         else:
@@ -5170,7 +5151,6 @@ def iSearch (self,again=False):
         g.es("end of wrapped search")
     else:
         g.es("not found","'%s'" % (pattern))
-        # event = g.Bunch(char='\b',keysym='\b',stroke='BackSpace')
         event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
         c.check_event(event)
         k.updateLabel(event)
@@ -5183,13 +5163,15 @@ def auto_completer_state_handler (self,event):
     
     c.check_event(event)
     
-    ch = gui.eventChar(event)
-    keysym = gui.eventKeysym(event)
-    stroke = gui.eventStroke(event)
+    #### ch = gui.eventChar(event)
+    #### keysym = gui.eventKeysym(event)
+    ####stroke = gui.eventStroke(event)
+    char = event and event.char or ''
+    stroke = event and event.stroke or ''
     is_plain = k.isPlainKey(stroke)
 
-    if trace: g.trace('state: %s, ch: %s, keysym: %s, stroke: %s' % (
-        state,repr(ch),repr(keysym),repr(stroke)))
+    if trace: g.trace('state: %s, char: %s, stroke: %s' % (
+        state,repr(char),repr(stroke)))
 
     if state == 0:
         c.frame.log.clearTab(self.tabName)
@@ -5199,20 +5181,20 @@ def auto_completer_state_handler (self,event):
         else:
             if trace: g.trace('abort: not tabList')
             self.exit()
-    elif keysym == 'Return':
+    elif char == 'Return':
         self.exit()
-    elif keysym == 'Escape':
+    elif char == 'Escape':
         self.exit()
-    elif keysym == 'Tab':
+    elif char == 'Tab':
         self.doTabCompletion()
-    elif keysym in ('\b','BackSpace'):
+    elif char in ('\b','BackSpace'):
         self.do_backspace()
-    elif keysym == '.':
+    elif char == '.':
         self.insert_string('.')
         self.compute_completion_list()
-    elif keysym == '?':
+    elif char == '?':
         self.info()
-    elif keysym == '!':
+    elif char == '!':
         # Toggle between verbose and brief listing.
         self.verbose = not self.verbose
         kind = g.choose(self.verbose,'ON','OFF')
@@ -5224,7 +5206,7 @@ def auto_completer_state_handler (self,event):
     elif ch == 'Up' and hasattr(self,'onUp'):
         self.onUp()
     elif is_plain and ch and ch in string.printable:
-        self.insert_general_char(ch,keysym)
+        self.insert_general_char(char)
     else:
         if stroke == k.autoCompleteForceKey:
             # This is probably redundant because completions will exist.
@@ -5241,7 +5223,7 @@ def auto_completer_state_handler (self,event):
             if trace: g.trace('ignore non plain key',repr(stroke))
             return 'do-standard-keys'
 .. @+node:ekr.20061031131434.39: *7* insert_general_char
-def insert_general_char (self,ch,keysym):
+def insert_general_char (self,ch):
 
     trace = False and not g.unitTesting
     c,k = self.c,self.k ; w = self.w
@@ -5280,9 +5262,10 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
     
     c.check_event(event)
     
-    keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
+    ### keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
+    char = ch = event and event.char or ''
     trace = False or c.config.getBool('trace_modes') ; verbose = True
-    if trace: g.trace('state',state,keysym)
+    if trace: g.trace('state',state,char)
     if state == 0:
         k.mb_event = event # Save the full event for later.
         k.setState('full-command',1,handler=k.fullCommand)
@@ -5294,11 +5277,11 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
         k.mb_help = help
         k.mb_helpHandler = helpHandler
         c.minibufferWantsFocus()
-    elif keysym == 'Ins' or k.isFKey(keysym):
+    elif char == 'Ins' or k.isFKey(char):
         pass
-    elif keysym == 'Escape':
+    elif char == 'Escape':
         k.keyboardQuit()
-    elif keysym == 'Return':
+    elif char == 'Return':
         if trace and verbose: g.trace('***Return')
         c.frame.log.deleteTab('Completion')
         if k.mb_help:
@@ -5309,11 +5292,11 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
             if k.mb_helpHandler: k.mb_helpHandler(commandName)
         else:
             k.callAltXFunction(k.mb_event)
-    elif keysym in ('Tab','\t'):
+    elif char in ('Tab','\t'):
         if trace and verbose: g.trace('***Tab')
         k.doTabCompletion(list(c.commandsDict.keys()))
         c.minibufferWantsFocus()
-    elif keysym == 'BackSpace':
+    elif char == 'BackSpace':
         if trace and verbose: g.trace('***BackSpace')
         k.doBackSpace(list(c.commandsDict.keys()))
         c.minibufferWantsFocus()
@@ -5375,7 +5358,6 @@ def numberCommand (self,event,stroke,number):
 
     k.universalDispatcher(event)
     g.app.gui.event_generate(c,chr(number),chr(number),w)
-        # w,'<Key>',keysym=number)
     return # (for Tk) 'break'
 
 def numberCommand0 (self,event):
@@ -5435,9 +5417,10 @@ def repeatComplexCommandHelper (self,event):
     
     c.check_event(event)
 
-    keysym = gui.eventKeysym(event)
-    # g.trace('state',k.state.kind,'event',repr(event),g.callers())
-    if keysym == 'Return' and k.mb_history:
+    ### keysym = gui.eventKeysym(event)
+    char = event.char
+   
+    if char == 'Return' and k.mb_history:
     # if k.mb_history:
         last = k.mb_history [0]
         k.resetLabel()
@@ -5471,7 +5454,6 @@ def simulateCommand (self,commandName):
         if commandName.startswith('specialCallback'):
             event = None # A legacy function.
         else: # Create a dummy event as a signal.
-            # event = g.bunch(c=c,keysym='',char='',stroke='',widget=None)
             event = g.app.gui.create_key_event(c,None,None,None)
             
         c.check_event(event)
@@ -5506,9 +5488,10 @@ def getArg (self,event,
     
     c.check_event(event)
 
-    keysym = gui.eventKeysym(event)
+    ### keysym = gui.eventKeysym(event)
+    char = event and event.char or None
     if trace: g.trace(
-        'state',state,'keysym',repr(keysym),'stroke',repr(stroke),
+        'state',state,'char',repr(char),'stroke',repr(stroke),
         'escapes',k.getArgEscapes,
         'completion',state==0 and completion or state!=0 and k.arg_completion)
     if state == 0:
@@ -5521,9 +5504,9 @@ def getArg (self,event,
         k.setState('getArg',1,k.getArg)
         k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
         if useMinibuffer: c.minibufferWantsFocus()
-    elif keysym == 'Escape':
+    elif char == 'Escape':
         k.keyboardQuit()
-    elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+    elif char == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
         if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
         if k.oneCharacterArg:
             k.arg = event.char
@@ -5534,9 +5517,9 @@ def getArg (self,event,
         c.frame.log.deleteTab('Completion')
         trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
         if handler: handler(event)
-    elif keysym in('Tab','\t'):
+    elif char in('Tab','\t'):
         k.doTabCompletion(k.argTabList,k.arg_completion)
-    elif keysym in('BackSpace','\b'): # 2010/02/20: Test for \b also.
+    elif char in('BackSpace','\b'): # 2010/02/20: Test for \b also.
         k.doBackSpace(k.argTabList,k.arg_completion)
         c.minibufferWantsFocus()
     elif k.isFKey(stroke):
@@ -5578,13 +5561,13 @@ def masterKeyHandler (self,event,stroke=None):
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
     verbose = True
 
-    if keysym in special_keys:
-        if trace and verbose: g.trace('keysym',keysym)
+    if char in special_keys:
+        if trace and verbose: g.trace('char',char)
         return None
     
     if traceGC: g.printNewObjects('masterKey 1')
-    if trace and verbose: g.trace('stroke:',repr(stroke),'keysym:',
-        repr(event.keysym),'ch:',repr(event.char),'state',state,'state2',k.unboundKeyAction)
+    if trace and verbose: g.trace('stroke:',repr(stroke),'char:',
+        repr(event.char),'ch:',repr(event.char),'state',state,'state2',k.unboundKeyAction)
 
     # Handle keyboard-quit first.
     if k.abortAllModesKey and stroke == k.abortAllModesKey:
@@ -5607,7 +5590,7 @@ def masterKeyHandler (self,event,stroke=None):
             if trace: g.trace('autocomplete key',stroke)
         else:
             if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
-            return k.handleUnboundKeys(event,char,keysym,stroke)
+            return k.handleUnboundKeys(event,char,stroke)
 
     # 2011/02/08: Use getPandBindings for *all* keys.
     b = k.getPaneBinding(stroke,w)
@@ -5618,12 +5601,12 @@ def masterKeyHandler (self,event,stroke=None):
     else:
         if traceGC: g.printNewObjects('masterKey 4')
         if trace: g.trace(' unbound',stroke)
-        return k.handleUnboundKeys(event,char,keysym,stroke)
+        return k.handleUnboundKeys(event,char,stroke)
 .. @+node:ekr.20061031131434.147: *8* << define vars >>
 w = event.widget
-char = event.char
-keysym = char ## temporary.
-stroke = event.stroke
+char = event and event.char or ''
+### keysym = char ## temporary.
+stroke = event and event.stroke or ''
 w_name = c.widget_name(w)
 state = k.state.kind
 
@@ -5642,7 +5625,10 @@ isPlain =  k.isPlainKey(stroke)
 .. @+node:ekr.20061031131434.108: *8* callStateFunction
 def callStateFunction (self,event):
 
-    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+    k = self ; val = None 
+    
+    ## ch = g.app.gui.eventChar(event)
+    ch = event and event.char or ''
 
     # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
 
@@ -5821,7 +5807,7 @@ def isAutoCompleteChar (self,stroke):
                     return True
     return False
 .. @+node:ekr.20080510095819.1: *8* k.handleUnboundKeys
-def handleUnboundKeys (self,event,char,keysym,stroke):
+def handleUnboundKeys (self,event,char,stroke):
 
     trace = False and not g.unitTesting
     verbose = False
@@ -5830,8 +5816,8 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
     
     # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
 
-    if trace and verbose: g.trace('ch: %s keysym: %s stroke %s' % (
-        repr(event.char),repr(event.keysym),repr(stroke)))
+    if trace and verbose: g.trace('ch: %s, stroke %s' % (
+        repr(event.char),repr(stroke)))
 
     # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
 
@@ -5856,7 +5842,7 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
         (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
     ):
         # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
-        if trace: g.trace('ignoring unbound Alt/Ctrl key',stroke,keysym)
+        if trace: g.trace('ignoring unbound Alt/Ctrl key',stroke,char)
         return # (for Tk) 'break'
 
     elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
@@ -5864,7 +5850,7 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
         return # (for Tk) 'break'
 
     elif (
-        keysym and keysym.find('Escape') != -1 or
+        char and char.find('Escape') != -1 or
         stroke and stroke.find('Insert') != -1
     ):
         # Never insert escape or insert characters.
@@ -5885,10 +5871,10 @@ def updateLabel (self,event):
     
     c.check_event(event)
 
-    ch = (event and event.char) or ''
-    keysym = (event and event.keysym) or ''
+    ch = char = (event and event.char) or ''
+    ### keysym = (event and event.keysym) or ''
 
-    trace and g.trace('ch',ch,'keysym',keysym,'k.stroke',k.stroke)
+    trace and g.trace('ch',ch,'k.stroke',k.stroke)
     # g.trace(g.callers())
 
     if ch and ch not in ('\n','\r'):
@@ -5917,8 +5903,9 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
     
     c.check_event(event)
 
-    keysym = gui.eventKeysym(event)
-    # g.trace('state',state,'keysym',keysym)
+    ### keysym = gui.eventKeysym(event)
+    char = event.char
+    # g.trace('state',state,'char',char)
     if state == 0:
         k.arg = ''
         << init altX vars >>
@@ -5928,15 +5915,15 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
         k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
         c.frame.log.clearTab(tabName)
         c.minibufferWantsFocus()
-    elif keysym == 'Return':
+    elif char == 'Return':
         k.arg = k.getLabel(ignorePrompt=True)
         handler = k.getFileNameHandler
         c.frame.log.deleteTab(tabName)
         if handler: handler(event)
-    elif keysym in ('Tab','\t'):
+    elif char in ('Tab','\t'):
         k.doFileNameTab()
         c.minibufferWantsFocus()
-    elif keysym == 'BackSpace':
+    elif char == 'BackSpace':
         k.doFileNameBackSpace() 
         c.minibufferWantsFocus()
     else:
@@ -6044,15 +6031,16 @@ def universalDispatcher (self,event):
         k.repeatCount = 1
     elif state == 1:
         # stroke = k.stroke # Warning: k.stroke is always Alt-u
-        keysym = gui.eventKeysym(event)
-        # g.trace(state,keysym)
-        if keysym == 'Escape':
+        ### keysym = gui.eventKeysym(event)
+        char = event.char
+        # g.trace(state,char)
+        if char == 'Escape':
             k.keyboardQuit()
-        elif keysym == k.universalArgKey:
+        elif char == k.universalArgKey:
             k.repeatCount = k.repeatCount * 4
-        elif keysym.isdigit() or keysym == '-':
+        elif char.isdigit() or char == '-':
             k.updateLabel(event)
-        elif keysym in (
+        elif char in (
             'Alt_L','Alt_R',
             'Control_L','Control_R',
             'Meta_L','Meta_R',
@@ -6066,7 +6054,7 @@ def universalDispatcher (self,event):
             except ValueError:  n = 1
             k.clearState()
             event = k.dispatchEvent
-            k.executeNTimes(event,n,stroke=keysym)
+            k.executeNTimes(event,n,stroke=stroke) ##
             k.keyboardQuit()
             # k.clearState()
             # k.setLabelGrey()
@@ -6160,7 +6148,8 @@ def executeNTimes (self,event,n,stroke):
 def doControlU (self,event,stroke):
 
     k = self ; c = k.c
-    ch = g.app.gui.eventChar(event)
+    ## ch = g.app.gui.eventChar(event)
+    ch = event and event.char or ''
 
     k.setLabelBlue('Control-u %s' % g.stripBrackets(stroke))
 
@@ -6169,31 +6158,6 @@ def doControlU (self,event,stroke):
         k.resetLabel()
         c.macroCommands.startKbdMacro(event)
         c.macroCommands.callLastKeyboardMacro(event)
-.. @+node:ekr.20061031132907: *7* Events (leoGui)
-def eventChar (self,event,c=None):
-    '''Return the char field of an event.'''
-    assert not event or event.keysym == event.char,repr(event) ##
-    return event and event.char or ''
-
-def eventKeysym (self,event,c=None):
-    '''Return the keysym value of an event.'''
-    assert not event or event.keysym == event.char,repr(event) ##
-    return event and event.keysym
-
-def eventStroke (self,event,c=None):
-    assert not event or event.keysym == event.char,repr(event) ##
-    return event and hasattr(event,'stroke') and event.stroke or ''
-
-def eventWidget (self,event,c=None):
-    '''Return the widget field of an event.'''
-    assert not event or event.keysym == event.char,repr(event) ##
-    return event and event.widget
-
-def eventXY (self,event,c=None):
-    if event:
-        return event.x,event.y
-    else:
-        return 0,0
 .. @+node:ekr.20070228160107: *7* class leoKeyEvent (leoGui) (Changed)
 class leoKeyEvent:
 
@@ -6210,7 +6174,7 @@ def __init__ (self,c,char,stroke,w,x,y,x_root,y_root):
     
     self.c = c
     self.char = char or ''
-    self.keysym = char or '' ## Temporary.
+    ## self.keysym = char or '' ## Temporary.
     self.stroke = stroke or ''
     self.w = self.widget = w
     
@@ -6231,9 +6195,7 @@ def defineMenuCallback(self,command,name,minibufferCommand):
     if minibufferCommand:
 
         # Create a dummy event as a signal to doCommand.
-        # event = g.Bunch(keysym='',char='',stroke='',widget='')
         event = g.app.gui.create_key_event(c,None,None,None)
-        c.check_event(event)
 
         # The first parameter must be event, and it must default to None.
         def minibufferMenuCallback(event=event,self=self,command=command,label=name):
@@ -6262,7 +6224,6 @@ def numberCommand (self,event,stroke,number):
 
     k.universalDispatcher(event)
     g.app.gui.event_generate(c,chr(number),chr(number),w)
-        # w,'<Key>',keysym=number)
     return # (for Tk) 'break'
 
 def numberCommand0 (self,event):
@@ -6347,36 +6308,9 @@ def executeNTimes (self,event,n,stroke):
             w = event.widget
             for z in range(n):
                 k.masterKeyHandler(event,stroke=event.stroke)
-.. @+node:ekr.20061031132907: *7* Events (leoGui)
-def eventChar (self,event,c=None):
-    '''Return the char field of an event.'''
-    assert not event or event.keysym == event.char,repr(event) ##
-    return event and event.char or ''
-
-def eventKeysym (self,event,c=None):
-    '''Return the keysym value of an event.'''
-    assert not event or event.keysym == event.char,repr(event) ##
-    return event and event.keysym
-
-def eventStroke (self,event,c=None):
-    assert not event or event.keysym == event.char,repr(event) ##
-    return event and hasattr(event,'stroke') and event.stroke or ''
-
-def eventWidget (self,event,c=None):
-    '''Return the widget field of an event.'''
-    assert not event or event.keysym == event.char,repr(event) ##
-    return event and event.widget
-
-def eventXY (self,event,c=None):
-    if event:
-        return event.x,event.y
-    else:
-        return 0,0
 .. @+node:ekr.20110605195119.16939: *5* Changed...
 .. @+node:ekr.20110605040658.17005: *6* c.check_event
 def check_event (self,event):
-    
-    # assert not event or event.keysym == event.char,repr(event)
     
     import leo.core.leoGui as leoGui
     
@@ -6384,20 +6318,12 @@ def check_event (self,event):
         if g.unitTesting:
             assert isinstance(event,leoGui.leoKeyEvent),'event: %s, callers: %s' % (
                 repr(event),g.callers())
-            assert event.keysym == event.char,repr(event)
-            for ivar in ('char','keysym','stroke',): # 'stroke',
-                assert hasattr(event,ivar),'event: %s, ivar: %s, callers: %s' % (
-                    event,ivar,g.callers())
+            assert hasattr(event,'char'),event
         else:
             if not isinstance(event,leoGui.leoKeyEvent):
                 g.trace('can not happen: not leoKeyEvent: %s' % event)
-            if event.keysym != event.char:
-                g.trace('can not happen: keysym != event.char',
-                    repr(event.keysym),repr(event.char),event)
-            for ivar in ('char','keysym',): # 'stroke',
-                if not hasattr(event,ivar):
-                    g.trace('can not happen: not hasattr(event,%s) event: %s' % (
-                        ivar,event))
+            if not hasattr(event,'char'):
+                g.trace('can not happen: not hasattr(event,"char")',event)
 .. @+node:ekr.20070228160107: *6* class leoKeyEvent (leoGui) (Changed)
 class leoKeyEvent:
 
@@ -6414,7 +6340,7 @@ def __init__ (self,c,char,stroke,w,x,y,x_root,y_root):
     
     self.c = c
     self.char = char or ''
-    self.keysym = char or '' ## Temporary.
+    ## self.keysym = char or '' ## Temporary.
     self.stroke = stroke or ''
     self.w = self.widget = w
     
@@ -6581,7 +6507,7 @@ def create_key_event (self,event,c,w,ch,tkKey,stroke):
     if trace: g.trace('ch: %s, tkKey: %s, stroke: %s' % (
         repr(ch),repr(tkKey),repr(stroke)))
 
-    # Last minute-munges to keysym.
+    # Last minute-munges to char.
     if tkKey in ('Return','Tab','Escape',): # 'Ins'
         ch = tkKey
     stroke = stroke.replace('\t','Tab')
@@ -6977,7 +6903,7 @@ def create_key_event (self,event,c,w,ch,tkKey,stroke):
     if trace: g.trace('ch: %s, tkKey: %s, stroke: %s' % (
         repr(ch),repr(tkKey),repr(stroke)))
 
-    # Last minute-munges to keysym.
+    # Last minute-munges to char.
     if tkKey in ('Return','Tab','Escape',): # 'Ins'
         ch = tkKey
     stroke = stroke.replace('\t','Tab')
@@ -7075,7 +7001,8 @@ def generalModeHandler (self,event,
                 if g.app.quitting or not c.exists: return # (for Tk) 'break'
 
     return # (for Tk) 'break'
-.. @+node:ekr.20110604043410.17850: *4* topics to discuss
+.. @+node:ekr.20110606001347.16927: *4* Important: 3
+.. @+node:ekr.20110604043410.17850: *5* topics to discuss
 @nocolor-node
 
 - <attr>
@@ -7083,18 +7010,11 @@ def generalModeHandler (self,event,
 - patch command
 
 - macros
-.. @+node:ekr.20110605212009.16932: *4* Minor bugs: 5
-.. @+node:ekr.20110605065044.17008: *5* Fix chapters problems
-http://groups.google.com/group/leo-editor/browse_thread/thread/3f15a855ca38b26e
-
-.. @+node:ekr.20110604182206.16760: *5* alt-ctrl-keys abort the find command!
-.. @+node:ekr.20110604182206.16757: *5* regex word-only does not work
-.. @+node:ekr.20110604043410.16734: *5* Regularize command names
-For abbreviations, macros, registers, etc.
-
-Look for the getPublicCommands methods in leoEditCommands.py
-.. @+node:ekr.20110605121601.17012: *5* On Mac: change qttabs to qt
-.. @+node:ekr.20110527084258.18378: *4* New file format
+.. @+node:ekr.20110524141405.18370: *5* Get macros working well
+.. @+node:ekr.20110528034751.18278: *6* Add apropos-macros
+.. @+node:ekr.20060628103226.2: *6* Alt-x handlers should add to lossage
+Probably useful as part of macro handling.
+.. @+node:ekr.20110527084258.18378: *5* New file format
 @nocolor-node
 
 Stuff that got left out:
@@ -7102,17 +7022,17 @@ Stuff that got left out:
 - Use uuid's?
 
 - Remove spaces from user names.
-.. @+node:ekr.20110427135155.14306: *5* Add <attr> elements to .leo files
+.. @+node:ekr.20110427135155.14306: *6* Add <attr> elements to .leo files
 @language rest
 
 - <attr> solves pickle problem.
-.. @+node:ekr.20110414065052.6100: *5* * Treat gnx's as strings: don't parse them
+.. @+node:ekr.20110414065052.6100: *6* * Treat gnx's as strings: don't parse them
 http://mail.google.com/mail/#inbox/12f3d4950fbabeea
-.. @+node:ekr.20101123131018.5842: *5* * Don't save expansion bits in uA if not saving expansion bits
+.. @+node:ekr.20101123131018.5842: *6* * Don't save expansion bits in uA if not saving expansion bits
 @bool put_expansion_bits_in_leo_files = False
 
 It's illogical to save bits in uA's if they aren't save in in the <v> elements.
-.. @+node:ekr.20110421132230.6107: *5* File format, v3 draft 4
+.. @+node:ekr.20110421132230.6107: *6* File format, v3 draft 4
 @language rest
 @pagewidth 65
 
@@ -7268,7 +7188,7 @@ The <at-file-attributes> element may be contained in the
     
 In other words, we use the graphml <attr> element, extended with the
 gnx attribute, to represent all the uA's in the descendants of @file nodes.
-.. @+node:ekr.20110419083918.6104: *5* File format, v3 graphml
+.. @+node:ekr.20110419083918.6104: *6* File format, v3 graphml
 @language rest
 @pagewidth 65
 
@@ -7439,8 +7359,8 @@ it will enclosed in a data element::
     
 In other words, we use the graphml <attr> element, extended with the
 gnx attribute, to represent all the uA's in the descendants of @file nodes.
-.. @+node:ekr.20110415173840.6098: *5* new uA's
-.. @+node:ekr.20040701065235.2: *6* putDescendentAttributes
+.. @+node:ekr.20110415173840.6098: *6* new uA's
+.. @+node:ekr.20040701065235.2: *7* putDescendentAttributes
 def putDescendentAttributes (self,p):
 
     nodeIndices = g.app.nodeIndices
@@ -7465,7 +7385,7 @@ def putDescendentAttributes (self,p):
             result.append('\n%s="%s"' % (tag,s))
 
     return ''.join(result)
-.. @+node:ekr.20080805071954.2: *6* putDescendentVnodeUas
+.. @+node:ekr.20080805071954.2: *7* putDescendentVnodeUas
 def putDescendentVnodeUas (self,p):
 
     '''Return the a uA field for descendent vnode attributes,
@@ -7499,7 +7419,7 @@ def putDescendentVnodeUas (self,p):
     # Pickle and hexlify d
     return d and self.pickle(
         torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
-.. @+node:EKR.20040526202501: *6* putUnknownAttributes
+.. @+node:EKR.20040526202501: *7* putUnknownAttributes
 def putUnknownAttributes (self,torv):
 
     """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
@@ -7512,7 +7432,7 @@ def putUnknownAttributes (self,torv):
         val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
         # g.trace(torv,attrDict)
         return val
-.. @+node:ekr.20090130114732.6: *6* v.u Property
+.. @+node:ekr.20090130114732.6: *7* v.u Property
 def __get_u(self):
     v = self
     if not hasattr(v,'unknownAttributes'):
@@ -7532,8 +7452,8 @@ def __set_u(self,val):
 u = property(
     __get_u, __set_u,
     doc = "vnode unknownAttribute property")
-.. @+node:ekr.20110414164347.6082: *5* Reference for json stuff
-.. @+node:ekr.20031218072017.1997: *6* scanGnx
+.. @+node:ekr.20110414164347.6082: *6* Reference for json stuff
+.. @+node:ekr.20031218072017.1997: *7* scanGnx
 def scanGnx (self,s,i):
 
     """Create a gnx from its string representation"""
@@ -7559,8 +7479,8 @@ def scanGnx (self,s,i):
         except Exception: pass
 
     return theId,t,n
-.. @+node:ekr.20060919104530: *6* Sax (reading)
-.. @+node:ekr.20090525144314.6526: *7* cleanSaxInputString
+.. @+node:ekr.20060919104530: *7* Sax (reading)
+.. @+node:ekr.20090525144314.6526: *8* cleanSaxInputString
 def cleanSaxInputString(self,s):
 
     '''Clean control characters from s.
@@ -7585,7 +7505,7 @@ def cleanSaxInputString(self,s):
     return s.translate(transtable)
 
 # for i in range(32): print i,repr(chr(i))
-.. @+node:ekr.20060919110638.5: *7* fc.createSaxChildren & helpers
+.. @+node:ekr.20060919110638.5: *8* fc.createSaxChildren & helpers
 def createSaxChildren (self, sax_node, parent_v):
 
     c = self.c
@@ -7613,7 +7533,7 @@ def createSaxChildren (self, sax_node, parent_v):
             'len(child.parents)',len(child.parents))
 
     return children
-.. @+node:ekr.20060919110638.7: *8* fc.createSaxVnode & helpers
+.. @+node:ekr.20060919110638.7: *9* fc.createSaxVnode & helpers
 def createSaxVnode (self,sax_node,parent_v,v=None):
 
     c = self.c
@@ -7652,7 +7572,7 @@ def createSaxVnode (self,sax_node,parent_v,v=None):
     self.handleTnodeSaxAttributes(sax_node,v)
 
     return v
-.. @+node:ekr.20060919110638.8: *9* handleTnodeSaxAttributes
+.. @+node:ekr.20060919110638.8: *10* handleTnodeSaxAttributes
 def handleTnodeSaxAttributes (self,sax_node,v):
 
     trace = False and not g.unitTesting
@@ -7669,7 +7589,7 @@ def handleTnodeSaxAttributes (self,sax_node,v):
     if aDict:
         if trace: g.trace('uA',v,list(aDict.keys()))
         v.unknownAttributes = aDict
-.. @+node:ekr.20061004053644: *9* handleVnodeSaxAttributes
+.. @+node:ekr.20061004053644: *10* handleVnodeSaxAttributes
 # The native attributes of <v> elements are a, t, vtag, tnodeList,
 # marks, expanded, and descendentTnodeUnknownAttributes.
 # New in Leo 4.5: added descendentVnodeUnknownAttributes to native attributes.
@@ -7739,7 +7659,7 @@ def handleVnodeSaxAttributes (self,sax_node,v):
     if aDict:
         # if trace: g.trace('uA',v,aDict)
         v.unknownAttributes = aDict
-.. @+node:ekr.20060919110638.2: *7* dumpSaxTree
+.. @+node:ekr.20060919110638.2: *8* dumpSaxTree
 def dumpSaxTree (self,root,dummy):
 
     if not root:
@@ -7749,7 +7669,7 @@ def dumpSaxTree (self,root,dummy):
         root.dump()
     for child in root.children:
         self.dumpSaxTree(child,dummy=False)
-.. @+node:ekr.20061003093021: *7* getSaxUa
+.. @+node:ekr.20061003093021: *8* getSaxUa
 def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
 
     """Parse an unknown attribute in a <v> or <t> element.
@@ -7797,7 +7717,7 @@ def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
     except (pickle.UnpicklingError,ImportError,AttributeError,ValueError):
         g.trace('can not unpickle %s=%s' % (attr,val))
         return val
-.. @+node:ekr.20060919110638.14: *7* parse_leo_file
+.. @+node:ekr.20060919110638.14: *8* parse_leo_file
 def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 
     c = self.c
@@ -7838,7 +7758,7 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
         sax_node = None
 
     return sax_node
-.. @+node:ekr.20060919110638.3: *7* readSaxFile
+.. @+node:ekr.20060919110638.3: *8* readSaxFile
 def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
 
     dump = False and not g.unitTesting
@@ -7859,7 +7779,7 @@ def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None
         return v
     else:
         return None
-.. @+node:ekr.20060919110638.11: *7* resolveTnodeLists
+.. @+node:ekr.20060919110638.11: *8* resolveTnodeLists
 def resolveTnodeLists (self):
 
     trace = False and not g.unitTesting
@@ -7881,7 +7801,7 @@ def resolveTnodeLists (self):
                 p.v.tnodeList = result
                 # g.trace('*** tnodeList for',p.h,result)
             delattr(p.v,'tempTnodeList')
-.. @+node:ekr.20080805132422.3: *7* resolveArchivedPosition  (New in Leo 4.5)
+.. @+node:ekr.20080805132422.3: *8* resolveArchivedPosition  (New in Leo 4.5)
 def resolveArchivedPosition(self,archivedPosition,root_v):
 
     '''Return a vnode corresponding to the archived position relative to root node root_v.'''
@@ -7913,7 +7833,7 @@ def resolveArchivedPosition(self,archivedPosition,root_v):
             return oops('bad index="%s", len(children)="%s"' % (n,len(children)))
 
     return last_v
-.. @+node:ekr.20060919110638.13: *7* setPositionsFromVnodes & helper (sax read)
+.. @+node:ekr.20060919110638.13: *8* setPositionsFromVnodes & helper (sax read)
 def setPositionsFromVnodes (self):
 
     trace = False and not g.unitTesting
@@ -7933,7 +7853,7 @@ def setPositionsFromVnodes (self):
         current = self.archivedPositionToPosition(str_pos)
 
     c.setCurrentPosition(current or c.rootPosition())
-.. @+node:ekr.20061006104837.1: *8* archivedPositionToPosition
+.. @+node:ekr.20061006104837.1: *9* archivedPositionToPosition
 def archivedPositionToPosition (self,s):
 
     c = self.c
@@ -7960,7 +7880,7 @@ def archivedPositionToPosition (self,s):
             p.moveToFirstChild()
             # g.trace('level',level,'index',aList[level],p.h)
     return p
-.. @+node:ekr.20090218115025.3: *5* Why are attributes pickled by default?
+.. @+node:ekr.20090218115025.3: *6* Why are attributes pickled by default?
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/326a221f4c698f7a
@@ -8011,11 +7931,7 @@ I'm sure pickling capability is great, but I'm not convinced
 it should be the _default._
 
 No big deal.
-.. @+node:ekr.20110524141405.18370: *4* Get macros working well
-.. @+node:ekr.20110528034751.18278: *5* Add apropos-macros
-.. @+node:ekr.20060628103226.2: *5* Alt-x handlers should add to lossage
-Probably useful as part of macro handling.
-.. @+node:ekr.20090601083544.6051: *4* Add expand_noweb_references for rst3 plugin
+.. @+node:ekr.20090601083544.6051: *5* Add expand_noweb_references for rst3 plugin
 http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
 > What would work for me is if named sections in a @rst subtree
@@ -8028,7 +7944,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
 - When expand_noweb_references is True, definitions (typically clones)
   must be descendants of the referencing node (in the @rst tree)
-.. @+node:ekr.20090601083544.6052: *5* post
+.. @+node:ekr.20090601083544.6052: *6* post
 I want to write the documentation for the source program in a @rst3 subtree. In
 this @rst3 subtree I want to refer to fragments of the program, like:
 
@@ -8040,6 +7956,17 @@ Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
 get to this work, I should have <<code fragment>> under the @rst3 subtree as
 well, but this is then also treated as @rst3 input (which in this case, is not
 what I want).
+.. @+node:ekr.20110605212009.16932: *4* Minor bugs: 5
+.. @+node:ekr.20110605065044.17008: *5* Fix chapters problems
+http://groups.google.com/group/leo-editor/browse_thread/thread/3f15a855ca38b26e
+
+.. @+node:ekr.20110604182206.16760: *5* alt-ctrl-keys abort the find command!
+.. @+node:ekr.20110604182206.16757: *5* regex word-only does not work
+.. @+node:ekr.20110604043410.16734: *5* Regularize command names
+For abbreviations, macros, registers, etc.
+
+Look for the getPublicCommands methods in leoEditCommands.py
+.. @+node:ekr.20110605121601.17012: *5* On Mac: change qttabs to qt
 .. @+node:ekr.20040329094003: *4* Apply patch command
 .. @+node:ekr.20110604043410.17848: *5* Script
 import leo.extensions.patch_11_01 as patch

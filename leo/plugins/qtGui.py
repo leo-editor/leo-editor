@@ -8575,7 +8575,7 @@ class leoQtEventFilter(QtCore.QObject):
         if trace: g.trace('ch: %s, tkKey: %s, stroke: %s' % (
             repr(ch),repr(tkKey),repr(stroke)))
 
-        # Last minute-munges to keysym.
+        # Last minute-munges to char.
         if tkKey in ('Return','Tab','Escape',): # 'Ins'
             ch = tkKey
         stroke = stroke.replace('\t','Tab')
