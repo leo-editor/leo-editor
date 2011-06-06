@@ -460,24 +460,16 @@ class Commands (object):
         got = event.char
 
         if g.unitTesting:
-            if stroke in ('Ins','Delete',):
-                expected = event.char
-                    # disable the test for now.
-            elif stroke in ('Backspace','Linefeed','Return','Tab'):
-                expected = event.char
-                    # disable the test for now.
-            else:
-                expected = k.stroke2char(event.stroke)
-                    # Be more strict for unit testing.
+            expected = k.stroke2char(event.stroke)
+                # Be strict for unit testing.
+        elif trace or k.isPlainKey(stroke):
+            expected = k.stroke2char(event.stroke)
+                # Perform the full test.
         else:
-            if trace or k.isPlainKey(stroke):
-                expected = k.stroke2char(event.stroke)
-                    # Perform the full test.
-            else:
-                expected = event.char
-                    # disable the test.
-                    # We will use the (weird) key value for, say, Ctrl-s,
-                    # if there is no binding for Ctrl-s.
+            expected = event.char
+                # disable the test.
+                # We will use the (weird) key value for, say, Ctrl-s,
+                # if there is no binding for Ctrl-s.
                     
         test(isLeoKeyEvent,'not leo event: %s, callers: %s' % (
             repr(event),g.callers()))

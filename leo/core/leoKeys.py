@@ -4100,16 +4100,11 @@ class keyHandlerClass:
         for z in ('Alt','Ctrl','Command','Meta'):
             if s.find(z) != -1:            
                 return ''
-        
-        if 0: # Convert the gang of four:
-            d = { 'BackSpace':'\b','Lineend':'\r','Return':'\n','Tab':'\t' }
-            ch = d.get(s)
-            if d: return ch
-        else:
-            if s == 'Tab':
-                return '\t'
-            # if s == 'BackSpace':
-                # return '\b'
+                
+        # Special case the gang of four.
+        d = { 'BackSpace':'\b','Lineend':'\r','Return':'\n','Tab':'\t' }
+        ch = d.get(s)
+        if ch: return ch
                 
         # First, do the common translations.
         ch = k.guiBindNamesInverseDict.get(s)

@@ -6827,7 +6827,7 @@ c.goToLineNumber(c).showResults(
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
-#@+node:ekr.20100216142240.5371: *6* @test goto-global-line with @auto
+#@+node:ekr.20100216142240.5371: *6* @@test goto-global-line with @auto
 # The @auto node must be a child of this node
 # for findNodeAnywhere to succeed with Alt-6.
 fn = '../test/at-auto-unit-test.py'
@@ -8637,7 +8637,7 @@ try:
     w = c.frame.body.bodyCtrl
     w.setInsertPoint(2)
     c.outerUpdate() # This fixed the problem.
-    g.app.gui.event_generate(c,None,'Delete',w) # Calls c.outerUpdate()
+    g.app.gui.event_generate(c,'Delete','Delete',w) # Calls c.outerUpdate()
     assert p.b == s[:-1],'oops1: expected "AB", got %s' % p.b
     c.selectPosition(p.threadBack())
     c.selectPosition(p)
@@ -8677,7 +8677,7 @@ try:
     n = c.frame.tree.redrawCount
     w = c.frame.body.bodyCtrl
     w.setInsertPoint('end')
-    g.app.gui.event_generate(c,'BackSpace','BackSpace',w)
+    g.app.gui.event_generate(c,'\b','BackSpace',w)
     n2 = c.frame.tree.redrawCount
     assert n2 == n + 1,'too many or too few redraws: %d' % (n2-n)
 finally:
