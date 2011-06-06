@@ -11,16 +11,12 @@
 
 To do:
 
-** Remove state var in k.masterKeyHandler.
-
 - Use ascii event.char for gang of four: remove all special cases for them.
 
 - Test event.stroke throughout Leo's core.
 
 - Use only a single event arg to k.masterKeyHandler.
    This simplifies the macro handling.
-
-- Remove special casses for the gang of four.
 
 - Improve/rewrite the theory of operation.
 
@@ -2472,8 +2468,6 @@ def loadMacros (self,f):
         for stroke in aList:
             # Create a dummy event with just enough attribute
             # to keep k.masterKeyHandler happy
-            # actualEvent = g.Bunch(stroke=stroke,char=stroke,widget=w)
-            # event = g.app.gui.leoKeyEvent(actualEvent,c)
             event = g.app.gui.create_key_event(c,None,stroke,w)
             macro.append(event)
         self.addToDoAltX(name,macro)
@@ -2607,7 +2601,7 @@ def masterCommand (self,event,func,stroke,commandName=None):
 
     char = ch = event and event.char or ''
     w = event and event.w
-    state = event and hasattr(event,'state') and event.state or 0 ####
+
     k.func = func
     k.funcReturn = None # For unit testing.
     commandName = commandName or func and func.__name__ or '<no function>'
@@ -2616,11 +2610,10 @@ def masterCommand (self,event,func,stroke,commandName=None):
     interesting = func is not None
     inserted = not special
 
-    if trace: #  and interesting:
-        g.trace(
-            'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),
-            'w:',w and c.widget_name(w),'func:',func and func.__name__
-        )
+    if trace: # Useful.
+        g.trace('stroke: ',stroke,'ch:',repr(ch),
+            'w:',w and c.widget_name(w),
+            'func:',func and func.__name__)
 
     if inserted:
         << add character to history >>
@@ -2639,12 +2632,6 @@ def masterCommand (self,event,func,stroke,commandName=None):
 
     if special: # Don't pass these on.
         return # (for Tk) 'break' 
-
-    if 0: # *** This is now handled by k.masterKeyHandler.
-        if k.inState():
-            val = k.callStateFunction(event) # Calls end-command.
-            if val != 'do-func': return # (for Tk) 'break'
-            g.trace('Executing key outside of mode')
 
     if k.regx.iter:
         try:
@@ -4165,7 +4152,7 @@ def masterCommand (self,event,func,stroke,commandName=None):
 
     char = ch = event and event.char or ''
     w = event and event.w
-    state = event and hasattr(event,'state') and event.state or 0 ####
+
     k.func = func
     k.funcReturn = None # For unit testing.
     commandName = commandName or func and func.__name__ or '<no function>'
@@ -4174,11 +4161,10 @@ def masterCommand (self,event,func,stroke,commandName=None):
     interesting = func is not None
     inserted = not special
 
-    if trace: #  and interesting:
-        g.trace(
-            'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),
-            'w:',w and c.widget_name(w),'func:',func and func.__name__
-        )
+    if trace: # Useful.
+        g.trace('stroke: ',stroke,'ch:',repr(ch),
+            'w:',w and c.widget_name(w),
+            'func:',func and func.__name__)
 
     if inserted:
         << add character to history >>
@@ -4197,12 +4183,6 @@ def masterCommand (self,event,func,stroke,commandName=None):
 
     if special: # Don't pass these on.
         return # (for Tk) 'break' 
-
-    if 0: # *** This is now handled by k.masterKeyHandler.
-        if k.inState():
-            val = k.callStateFunction(event) # Calls end-command.
-            if val != 'do-func': return # (for Tk) 'break'
-            g.trace('Executing key outside of mode')
 
     if k.regx.iter:
         try:
@@ -6119,12 +6099,10 @@ def __init__ (self,c,char,stroke,w,x,y,x_root,y_root):
     # Optional ivars
     self.x = x
     self.y = y
+
     # Support for fastGotoNode plugin
     self.x_root = x_root
     self.y_root = y_root
-
-    # self.actualEvent = event
-    # self.state  = hasattr(event,'state') and event.state or 0
 .. @+node:ekr.20031218072017.4117: *7* defineMenuCallback
 def defineMenuCallback(self,command,name,minibufferCommand):
     
@@ -6318,12 +6296,10 @@ def __init__ (self,c,char,stroke,w,x,y,x_root,y_root):
     # Optional ivars
     self.x = x
     self.y = y
+
     # Support for fastGotoNode plugin
     self.x_root = x_root
     self.y_root = y_root
-
-    # self.actualEvent = event
-    # self.state  = hasattr(event,'state') and event.state or 0
 .. @+node:ekr.20110605121601.18537: *6* class leoQtEventFilter
 class leoQtEventFilter(QtCore.QObject):
 

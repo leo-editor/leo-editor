@@ -6940,8 +6940,6 @@ class macroCommandsClass (baseEditCommandsClass):
             for stroke in aList:
                 # Create a dummy event with just enough attribute
                 # to keep k.masterKeyHandler happy
-                # actualEvent = g.Bunch(stroke=stroke,char=stroke,widget=w)
-                # event = g.app.gui.leoKeyEvent(actualEvent,c)
                 event = g.app.gui.create_key_event(c,None,stroke,w)
                 macro.append(event)
             self.addToDoAltX(name,macro)

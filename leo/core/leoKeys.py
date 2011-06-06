@@ -1972,7 +1972,7 @@ class keyHandlerClass:
 
         char = ch = event and event.char or ''
         w = event and event.w
-        state = event and hasattr(event,'state') and event.state or 0 ####
+
         k.func = func
         k.funcReturn = None # For unit testing.
         commandName = commandName or func and func.__name__ or '<no function>'
@@ -1990,11 +1990,10 @@ class keyHandlerClass:
         interesting = func is not None
         inserted = not special
 
-        if trace: #  and interesting:
-            g.trace(
-                'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),
-                'w:',w and c.widget_name(w),'func:',func and func.__name__
-            )
+        if trace: # Useful.
+            g.trace('stroke: ',stroke,'ch:',repr(ch),
+                'w:',w and c.widget_name(w),
+                'func:',func and func.__name__)
 
         if inserted:
             #@+<< add character to history >>
@@ -2021,12 +2020,6 @@ class keyHandlerClass:
 
         if special: # Don't pass these on.
             return # (for Tk) 'break' 
-
-        if 0: # *** This is now handled by k.masterKeyHandler.
-            if k.inState():
-                val = k.callStateFunction(event) # Calls end-command.
-                if val != 'do-func': return # (for Tk) 'break'
-                g.trace('Executing key outside of mode')
 
         if k.regx.iter:
             try:

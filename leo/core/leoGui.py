@@ -36,12 +36,10 @@ class leoKeyEvent:
         # Optional ivars
         self.x = x
         self.y = y
+
         # Support for fastGotoNode plugin
         self.x_root = x_root
         self.y_root = y_root
-
-        # self.actualEvent = event
-        # self.state  = hasattr(event,'state') and event.state or 0
     #@-others
 
     def __repr__ (self):
