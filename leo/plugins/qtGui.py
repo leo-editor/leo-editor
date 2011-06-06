@@ -8576,8 +8576,11 @@ class leoQtEventFilter(QtCore.QObject):
             repr(ch),repr(tkKey),repr(stroke)))
 
         # Last minute-munges to char.
-        if tkKey in ('Return','Tab','Escape',): # 'Ins'
+        if tkKey in ('Return','Tab','Escape',
+            'Linefeed','BackSpace', ####
+        ): # 'Ins'
             ch = tkKey
+        
         stroke = stroke.replace('\t','Tab')
         tkKey = tkKey.replace('\t','Tab')
 

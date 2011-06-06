@@ -4079,6 +4079,67 @@ class keyHandlerClass:
             s = s[:-1]+'Space' # 2010/11/06
         # g.trace(stroke,s)
         return g.choose(brief,s,'<%s>' % s)
+    #@+node:ekr.20110606004638.16929: *4* k.stroke2char (new)
+    def stroke2char (self,stroke):
+        
+        '''Convert a stroke to an (insertable) char.
+        
+        This method allows Leo to use strokes everywhere.
+        
+        '''
+        
+        trace = False and not g.unitTesting
+        k = self ; s = stroke
+        
+        if not s:
+            return ''
+        
+        # Allow bare angle brackets for unit tests.
+        if s.startswith('<') and s.endswith('>'):
+            s = s[1:-1]
+            
+        if len(s) == 0:
+            return ''
+            
+        if len(s) == 1:
+            return s
+            
+        for z in ('Alt','Ctrl','Command','Meta'):
+            if s.find(z) != -1:            
+                return ''
+        
+        if 0: # Convert the gang of four:
+            d = { 'BackSpace':'\b','Lineend':'\r','Return':'\n','Tab':'\t' }
+            ch = d.get(s)
+            if d: return ch
+        else:
+            if s == 'Tab':
+                return '\t'
+            # if s == 'BackSpace':
+                # return '\b'
+                
+        # First, do the common translations.
+        ch = k.guiBindNamesInverseDict.get(s)
+        if ch:
+            if trace: g.trace(repr(stroke),repr(ch))
+            return ch
+        
+        # A much-simplified form of code in k.shortcutFromSetting.
+        shift = s.find('Shift+') > -1 or s.find('Shift-') > -1
+        s = s.replace('Shift+','').replace('Shift-','')
+        
+        last = s #  Everything should have been stripped.
+        
+        if len(s) == 1 and s.isalpha():
+            if shift:
+                s = last.upper()
+            else:
+                s = last.lower()
+        
+        val = g.choose(len(s)==1,s,'')
+
+        if trace: g.trace(repr(stroke),repr(val)) # 'shift',shift,
+        return val
     #@+node:ekr.20061031131434.193: *3* k.States
     #@+node:ekr.20061031131434.194: *4* clearState
     def clearState (self):

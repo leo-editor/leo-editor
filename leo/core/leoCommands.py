@@ -440,18 +440,52 @@ class Commands (object):
     #@+node:ekr.20110605040658.17005: *3* c.check_event
     def check_event (self,event):
         
+        trace = False and not g.unitTesting
+        c,k = self,self.k
+        
         import leo.core.leoGui as leoGui
         
-        if event:
-            if g.unitTesting:
-                assert isinstance(event,leoGui.leoKeyEvent),'event: %s, callers: %s' % (
-                    repr(event),g.callers())
-                assert hasattr(event,'char'),event
+        def test(val,message):
+            # g.trace(g.unitTesting)
+            if g.unitTesting and not trace:
+                assert val,message
             else:
-                if not isinstance(event,leoGui.leoKeyEvent):
-                    g.trace('can not happen: not leoKeyEvent: %s' % event)
-                if not hasattr(event,'char'):
-                    g.trace('can not happen: not hasattr(event,"char")',event)
+                if not val: print('check_event',message)
+        
+        if not event:
+            return
+            
+        isLeoKeyEvent = isinstance(event,leoGui.leoKeyEvent)
+        stroke = event.stroke
+        got = event.char
+
+        if g.unitTesting:
+            if stroke in ('Ins','Delete',):
+                 expected = event.char
+                    # disable the test for now.
+            elif stroke in ('Backspace','Linefeed','Return','Tab'):
+                expected = event.char
+                    # disable the test for now.
+            else:
+                expected = k.stroke2char(event.stroke)
+                    # Be more strict for unit testing.
+        else:
+            if trace or k.isPlainKey(stroke):
+                expected = k.stroke2char(event.stroke)
+                    # Perform the full test.
+            else:
+                expected = event.char
+                    # disable the test.
+                    # We will use the (weird) key value for, say, Ctrl-s,
+                    # if there is no binding for Ctrl-s.
+                    
+        test(isLeoKeyEvent,'not leo event: %s, callers: %s' % (
+            repr(event),g.callers()))
+
+        test(hasattr(event,'char'),'no char ivar: %s' % (event))
+
+        test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
+                repr(stroke),repr(expected),repr(got)))
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives

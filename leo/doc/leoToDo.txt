@@ -10,6 +10,8 @@
 @nocolor-node
 
 To do:
+    
+- Check that all event.ivar references are guarded.
 
 - Use only a single kev arg to k.masterKeyHandler.
    This simplifies the macro handling.
@@ -6216,22 +6218,56 @@ def executeNTimes (self,event,n,stroke):
             w = event.widget
             for z in range(n):
                 k.masterKeyHandler(event,stroke=event.stroke)
-.. @+node:ekr.20110605195119.16939: *5* Changed...
+.. @+node:ekr.20110605195119.16939: *5* Changed & new...
 .. @+node:ekr.20110605040658.17005: *6* c.check_event
 def check_event (self,event):
     
+    trace = False and not g.unitTesting
+    c,k = self,self.k
+    
     import leo.core.leoGui as leoGui
     
-    if event:
-        if g.unitTesting:
-            assert isinstance(event,leoGui.leoKeyEvent),'event: %s, callers: %s' % (
-                repr(event),g.callers())
-            assert hasattr(event,'char'),event
+    def test(val,message):
+        # g.trace(g.unitTesting)
+        if g.unitTesting and not trace:
+            assert val,message
         else:
-            if not isinstance(event,leoGui.leoKeyEvent):
-                g.trace('can not happen: not leoKeyEvent: %s' % event)
-            if not hasattr(event,'char'):
-                g.trace('can not happen: not hasattr(event,"char")',event)
+            if not val: print('check_event',message)
+    
+    if not event:
+        return
+        
+    isLeoKeyEvent = isinstance(event,leoGui.leoKeyEvent)
+    stroke = event.stroke
+    got = event.char
+
+    if g.unitTesting:
+        if stroke in ('Ins','Delete',):
+             expected = event.char
+                # disable the test for now.
+        elif stroke in ('Backspace','Linefeed','Return','Tab'):
+            expected = event.char
+                # disable the test for now.
+        else:
+            expected = k.stroke2char(event.stroke)
+                # Be more strict for unit testing.
+    else:
+        if trace or k.isPlainKey(stroke):
+            expected = k.stroke2char(event.stroke)
+                # Perform the full test.
+        else:
+            expected = event.char
+                # disable the test.
+                # We will use the (weird) key value for, say, Ctrl-s,
+                # if there is no binding for Ctrl-s.
+                
+    test(isLeoKeyEvent,'not leo event: %s, callers: %s' % (
+        repr(event),g.callers()))
+
+    test(hasattr(event,'char'),'no char ivar: %s' % (event))
+
+    test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
+            repr(stroke),repr(expected),repr(got)))
 .. @+node:ekr.20070228160107: *6* class leoKeyEvent (leoGui) (Changed)
 class leoKeyEvent:
 
@@ -6415,8 +6451,11 @@ def create_key_event (self,event,c,w,ch,tkKey,stroke):
         repr(ch),repr(tkKey),repr(stroke)))
 
     # Last minute-munges to char.
-    if tkKey in ('Return','Tab','Escape',): # 'Ins'
+    if tkKey in ('Return','Tab','Escape',
+        'Linefeed','BackSpace', ####
+    ): # 'Ins'
         ch = tkKey
+    
     stroke = stroke.replace('\t','Tab')
     tkKey = tkKey.replace('\t','Tab')
 
@@ -6811,8 +6850,11 @@ def create_key_event (self,event,c,w,ch,tkKey,stroke):
         repr(ch),repr(tkKey),repr(stroke)))
 
     # Last minute-munges to char.
-    if tkKey in ('Return','Tab','Escape',): # 'Ins'
+    if tkKey in ('Return','Tab','Escape',
+        'Linefeed','BackSpace', ####
+    ): # 'Ins'
         ch = tkKey
+    
     stroke = stroke.replace('\t','Tab')
     tkKey = tkKey.replace('\t','Tab')
 
@@ -6908,6 +6950,67 @@ def generalModeHandler (self,event,
                 if g.app.quitting or not c.exists: return # (for Tk) 'break'
 
     return # (for Tk) 'break'
+.. @+node:ekr.20110606004638.16929: *6* k.stroke2char (new)
+def stroke2char (self,stroke):
+    
+    '''Convert a stroke to an (insertable) char.
+    
+    This method allows Leo to use strokes everywhere.
+    
+    '''
+    
+    trace = False and not g.unitTesting
+    k = self ; s = stroke
+    
+    if not s:
+        return ''
+    
+    # Allow bare angle brackets for unit tests.
+    if s.startswith('<') and s.endswith('>'):
+        s = s[1:-1]
+        
+    if len(s) == 0:
+        return ''
+        
+    if len(s) == 1:
+        return s
+        
+    for z in ('Alt','Ctrl','Command','Meta'):
+        if s.find(z) != -1:            
+            return ''
+    
+    if 0: # Convert the gang of four:
+        d = { 'BackSpace':'\b','Lineend':'\r','Return':'\n','Tab':'\t' }
+        ch = d.get(s)
+        if d: return ch
+    else:
+        if s == 'Tab':
+            return '\t'
+        # if s == 'BackSpace':
+            # return '\b'
+            
+    # First, do the common translations.
+    ch = k.guiBindNamesInverseDict.get(s)
+    if ch:
+        if trace: g.trace(repr(stroke),repr(ch))
+        return ch
+    
+    # A much-simplified form of code in k.shortcutFromSetting.
+    shift = s.find('Shift+') > -1 or s.find('Shift-') > -1
+    s = s.replace('Shift+','').replace('Shift-','')
+    
+    last = s #  Everything should have been stripped.
+    
+    if len(s) == 1 and s.isalpha():
+        if shift:
+            s = last.upper()
+        else:
+            s = last.lower()
+    
+    val = g.choose(len(s)==1,s,'')
+
+    if trace: g.trace(repr(stroke),repr(val)) # 'shift',shift,
+    return val
 .. @+node:ekr.20110606001347.16927: *4* Important: 3
 .. @+node:ekr.20110604043410.17850: *5* topics to discuss
 @nocolor-node

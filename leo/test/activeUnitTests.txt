@@ -6605,8 +6605,17 @@ c.gotoLineNumber is called in just two ways:
 @language python
 @tabwidth -4
 @others
+@ignore
 #@+node:ekr.20100226073841.5346: *8* at_auto_child
 # The name of this node comes from the name of this function!
+def at_auto_child():
+    pass
+#@+node:ekr.20110606080926.4030: *8* at_auto_child
+def at_auto_child():
+    pass
+#@+node:ekr.20110606081108.4057: *8* # The name of this node comes from the name of this function!
+# The name of this node comes from the name of this function!
+#@+node:ekr.20110606081108.4058: *8* at_auto_child
 def at_auto_child():
     pass
 #@+node:ekr.20080904102243.2: *7* @file unittest/at-file-line-number-test.py
@@ -6627,7 +6636,7 @@ def child():
 @language python
 @tabwidth -4
 @others
-#@+node:ekr.20101220161343.6004: *8* child
+#@+node:ekr.20110606093654.4060: *8* child
 def child():
     pass
 #@+node:ekr.20080907123324.2: *7* @nosent unittest/at-nosent-line-number-test.py
@@ -6896,6 +6905,7 @@ for n,node,index in table:
 @tabwidth -4
 @others
 # last line
+@ignore
 #@+node:ekr.20100226073841.5348: *8* class child1
 class child1:
     @others
@@ -6913,6 +6923,34 @@ class child2:
 def child2_method1():
     pass
 #@+node:ekr.20100226073841.5353: *9* child2_method2
+def child2_method2():
+    pass
+#@+node:ekr.20110606080926.4035: *8* class child2
+class child2:
+    @others
+#@+node:ekr.20110606080926.4036: *9* child2_method1
+def child2_method1():
+    pass
+#@+node:ekr.20110606080926.4037: *9* child2_method2
+def child2_method2():
+    pass
+#@+node:ekr.20110606081108.4060: *8* class child1
+class child1:
+    @others
+    # After @others in child1.
+#@+node:ekr.20110606081108.4061: *9* child1_method1
+def child1_method1():
+    pass
+#@+node:ekr.20110606081108.4062: *9* child1_method2
+def child1_method2():
+    pass
+#@+node:ekr.20110606081108.4063: *8* class child2
+class child2:
+    @others
+#@+node:ekr.20110606081108.4064: *9* child2_method1
+def child2_method1():
+    pass
+#@+node:ekr.20110606081108.4065: *9* child2_method2
 def child2_method2():
     pass
 #@+node:ekr.20100212104817.5351: *5* @test help-for-command
@@ -8639,7 +8677,7 @@ try:
     n = c.frame.tree.redrawCount
     w = c.frame.body.bodyCtrl
     w.setInsertPoint('end')
-    g.app.gui.event_generate(c,'\b','BackSpace',w)
+    g.app.gui.event_generate(c,'BackSpace','BackSpace',w)
     n2 = c.frame.tree.redrawCount
     assert n2 == n + 1,'too many or too few redraws: %d' % (n2-n)
 finally:
@@ -8904,9 +8942,9 @@ if k.defaultUnboundKeyAction == 'insert':
     try:
         assert w
         w.setSelectionRange('end','end')
-        g.app.gui.event_generate(c,'X','X',w)
-        g.app.gui.event_generate(c,'Y','Y',w)
-        g.app.gui.event_generate(c,'Z','Z',w)
+        g.app.gui.event_generate(c,'X','Shift+X',w)
+        g.app.gui.event_generate(c,'Y','Shift+Y',w)
+        g.app.gui.event_generate(c,'Z','Shift+Z',w)
         g.app.gui.event_generate(c,'\n','Return',w)
         assert p.h == h + 'XYZ'
         k.manufactureKeyPressForCommandName(w,'undo')
@@ -8932,9 +8970,9 @@ if k.defaultUnboundKeyAction == 'insert':
         wName = g.app.gui.widget_name(w)
         assert wName.startswith('head'),'w.name:%s' % wName
         w.setSelectionRange('end','end')
-        g.app.gui.event_generate(c,'X','X',w)
-        g.app.gui.event_generate(c,'Y','Y',w)
-        g.app.gui.event_generate(c,'Z','Z',w)
+        g.app.gui.event_generate(c,'X','Shift+X',w)
+        g.app.gui.event_generate(c,'Y','Shift+Y',w)
+        g.app.gui.event_generate(c,'Z','Shift+Z',w)
         g.app.gui.event_generate(c,'\n','Return',w)
         assert p.h == h + 'XYZ',(
             'oops2: expected: %s, got: %s' % (
@@ -8995,9 +9033,9 @@ try:
     # assert w == w2 or hasattr(w,'widget') and w.widget == w2,'w: %s\nw2: %s' % (w,w2)
     w.setSelectionRange('end','end')
     n = w.getWidth()
-    g.app.gui.event_generate(c,'X','X',w)
-    g.app.gui.event_generate(c,'Y','Y',w)
-    g.app.gui.event_generate(c,'Z','Z',w)
+    g.app.gui.event_generate(c,'X','Shift+X',w)
+    g.app.gui.event_generate(c,'Y','Shift+Y',w)
+    g.app.gui.event_generate(c,'Z','Shift+Z',w)
     g.app.gui.event_generate(c,'\n','Return',w)
     w.update()
     assert w, 'fail 2'
