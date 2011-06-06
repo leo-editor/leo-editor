@@ -185,6 +185,9 @@ def createGui(pymacs,options):
 
     if g.app.gui:
         pass # initApp (setLeoID) created the gui.
+    # elif True:
+        # import leo.plugins.tkGui as tkGui
+        # tkGui.init()
     elif gui is None:
         if script and not windowFlag:
             # Always use null gui for scripts.

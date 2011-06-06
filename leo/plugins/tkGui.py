@@ -25,6 +25,10 @@ import leo.core.leoMenu as leoMenu
 import os
 import sys
 
+if g.isPython3:
+    print('tkGui.py: requires Python 2.x')
+    sys.exit()
+
 try:
     import tkFont
 except ImportError:
@@ -800,14 +804,14 @@ class tkinterGui(leoGui.leoGui):
         except:
             pass
 
-    #@+node:ekr.20081121110412.403: *3* class leoKeyEvent (tkGui)
-    class leoKeyEvent:
+    #@+node:ekr.20081121110412.403: *3* class leoTkKeyEvent (tkGui)
+    class leoTkKeyEvent:
 
-        '''A gui-independent wrapper for gui events.'''
+        '''A wrapper for Tk key events events.'''
 
         def __init__ (self,event,c,stroke=None):
 
-            # g.trace('leoKeyEvent(tkGui)')
+            g.trace('(leoTkKeyEvent) (tkGui)')
             self.actualEvent = event
             self.c      = c # Required to access c.k tables.
             self.char   = hasattr(event,'char') and event.char or ''

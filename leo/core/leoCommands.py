@@ -474,7 +474,7 @@ class Commands (object):
         test(isLeoKeyEvent,'not leo event: %s, callers: %s' % (
             repr(event),g.callers()))
 
-        test(hasattr(event,'char'),'no char ivar: %s' % (event))
+        # test(hasattr(event,'char'),'no char ivar: %s' % (event))
 
         test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
                 repr(stroke),repr(expected),repr(got)))
@@ -6231,6 +6231,13 @@ class Commands (object):
 
         def bindCallback(event,c=c,func=func,callers=callers):
             # g.trace('func',func.__name__)
+            
+            # A possible hook for the Tk gui.
+            # if hasattr(g.app.gui,'leoTkKeyEvent'):
+                # g.trace('creating wrapper event')
+                # stroke = keys.get('stroke','')  
+                # event = g.app.gui.leoTkKeyEvent(event,c,stroke=stroke)
+
             val = func(event)
             # Careful: func may destroy c.
             if c.exists: c.outerUpdate()
@@ -7224,7 +7231,7 @@ class Commands (object):
                 if v.isDirty():
                     v.clearDirty()
 
-        if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+        if g.app.gui.guiName().startswith('qt') and g.app.qt_use_tabs and hasattr(c.frame,'top'):
             c.frame.top.leo_master.setChanged(c,changedFlag)
 
         s = c.frame.getTitle()
