@@ -2003,7 +2003,8 @@ class keyHandlerClass:
         # We *must not* interfere with the global state in the macro class.
         if c.macroCommands.recordingMacro:
             c.macroCommands.startKbdMacro(event)
-            return # (for Tk) 'break'
+            # 2011/06/06: Show the key, if possible.
+            ### return # (for Tk) 'break'
 
         # g.trace(stroke,k.abortAllModesKey)
 
@@ -2124,15 +2125,19 @@ class keyHandlerClass:
 
         '''Handle 'full-command' (alt-x) mode.'''
 
+        trace = False or self.c.config.getBool('trace_modes') ; verbose = True
         k = self ; c = k.c ; gui = g.app.gui
+        recording = c.macroCommands.recordingMacro
         state = k.getState('full-command')
         helpPrompt = 'Help for command: '
-        
         c.check_event(event)
-        
         ch = char = event and event.char or ''
-        trace = False or c.config.getBool('trace_modes') ; verbose = True
-        if trace: g.trace('state',state,char)
+        if trace: g.trace('recording',recording,'state',state,char)
+        
+        # 2011/06/06: remember these events also.
+        if recording:
+            c.macroCommands.startKbdMacro(event)
+        
         if state == 0:
             k.mb_event = event # Save the full event for later.
             k.setState('full-command',1,handler=k.fullCommand)
@@ -2795,7 +2800,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.146: *4* masterKeyHandler & helpers
     master_key_count = 0
 
-    def masterKeyHandler (self,event): ###,stroke=None):
+    def masterKeyHandler (self,event):
 
         '''This is the handler for almost all key bindings.'''
         
@@ -3191,7 +3196,7 @@ class keyHandlerClass:
         c.check_event(event)
 
         if stroke:
-            return k.masterKeyHandler(event) ##,stroke=stroke)
+            return k.masterKeyHandler(event)
         else:
             return k.masterCommand(event,func,stroke,commandName)
     #@+node:ekr.20061031170011.3: *3* k.Minibuffer
@@ -4390,7 +4395,7 @@ class keyHandlerClass:
                 except ValueError:  n = 1
                 k.clearState()
                 event = k.dispatchEvent
-                k.executeNTimes(event,n,stroke=stroke) ##
+                k.executeNTimes(event,n)
                 k.keyboardQuit()
                 # k.clearState()
                 # k.setLabelGrey()
@@ -4405,13 +4410,13 @@ class keyHandlerClass:
 
         return # (for Tk) 'break'
     #@+node:ekr.20061031131434.202: *4* executeNTimes
-    def executeNTimes (self,event,n,stroke):
+    def executeNTimes (self,event,n):
 
         trace = False and not g.unitTesting
         c,k = self.c,self
         
         w = event and event.widget
-        stroke = stroke or ''
+        stroke = event and event.stroke or ''
 
         if stroke == k.fullCommandKey:
             for z in range(n):
@@ -4427,7 +4432,7 @@ class keyHandlerClass:
                     k.masterCommand(event,stroke)
             else:
                 for z in range(n):
-                    k.masterKeyHandler(event) ## ,stroke=stroke)
+                    k.masterKeyHandler(event)
     #@+node:ekr.20061031131434.203: *4* doControlU
     def doControlU (self,event,stroke):
 

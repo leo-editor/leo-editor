@@ -4664,6 +4664,84 @@ def __init__ (self,event,c,stroke=None):
         # return event.x,event.y
     # else:
         # return 0,0
+#@+node:ekr.20110606152005.16786: *3* From saveMacros
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile = None,
+        title='Save Macros',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    if not fileName: return
+
+    try:
+        f = open(fileName,'a+')
+        f.seek(0)
+        if f:
+            self.saveMacrosHelper(f)
+    except IOError:
+        g.es('can not create',fileName)
+#@+node:ekr.20050920084036.200: *3* saveMacrosHelper (not used)
+def saveMacrosHelper( self,f):
+
+    '''Saves all named macros.'''
+
+    # fname = f.name
+    # try:
+        # macros = pickle.load( f )
+    # except Exception:
+        # macros = {}
+    # f.close()
+
+    d = {}
+    for name in self.namedMacros:
+        macro = self.namedMacros.get(name)
+        # Just save the essential part of the event.
+        # It must be picklable.
+        aList = [event.stroke for event in macro]
+        g.trace(name,aList)
+        d[name] = aList
+        # f = open( fname, 'w' )
+        pickle.dump(d, f )
+        f.close()
+#@+node:ekr.20050920084036.196: *3* loadFile & helper
+def loadFile (self,event):
+
+    '''Loads macros from a file.'''
+
+    fileName = g.app.gui.runOpenFileDialog(
+        title = 'Open Macro File',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    if not fileName: return
+
+    try:
+        f = open(fileName)
+        self.loadMacros(f)
+    except IOError:
+        g.es('can not open',fileName)
+#@+node:ekr.20050920084036.197: *4* loadMacros
+def loadMacros (self,f):
+
+    '''Loads a macro file into the macros dictionary.'''
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+    try:
+        d = pickle.load(f)
+    except pickle.UnpicklingError:
+        g.es('error unpickling %s' % f.name)
+        return
+
+    # g.trace(f.name,d)
+
+    for name in d:
+        aList = d.get(name)
+        macro = []
+        for stroke in aList:
+            event = g.app.gui.create_key_event(c,None,stroke,w)
+            macro.append(event)
+        self.addToDoAltX(name,macro)
+            # sets self.namedMacros[name]=macro
 #@+node:ekr.20101127152442.5878: ** Url's
 @color
 

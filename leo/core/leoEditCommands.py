@@ -6815,11 +6815,13 @@ class macroCommandsClass (baseEditCommandsClass):
     def getPublicCommands (self):
 
         return {
-            'call-last-kbd-macro':  self.callLastKeyboardMacro,
+            'call-last-kbd-macro':  self.callLastKbdMacro,
             'call-kbd-macro':       self.callNamedMacro,
+            'end-kbd-macro':        self.endKbdMacro,
             'print-macros':         self.printMacros,
+            'print-last-macro':     self.printLastMacro,
             'name-last-kbd-macro':  self.nameLastKbdMacro,
-            'load-kbd-macros':      self.loadFile,
+            'load-kbd-macros':      self.loadMacros,
             'save-kbd-macros':      self.saveMacros,
             'start-kbd-macro':      self.startKbdMacro,
         }
@@ -6830,12 +6832,17 @@ class macroCommandsClass (baseEditCommandsClass):
 
         '''Adds macro to Alt-X commands.'''
 
+        trace = True and not g.unitTesting
         k= self ; c = k.c
+        
+        if trace:
+            g.trace('macro::%s' % (name))
+            for z in macro:
+                print(z.stroke)
+            print()
 
-        g.trace(name,macro)
-
-        if name in c.commandsDict:
-            return False
+        # if name in c.commandsDict:
+            # return False
 
         def func (event,macro=macro):
             return self.executeMacro(macro)
@@ -6843,10 +6850,10 @@ class macroCommandsClass (baseEditCommandsClass):
         c.commandsDict [name] = func
         self.namedMacros [name] = macro
         return True
-    #@+node:ekr.20050920084036.202: *3* callLastKeyboardMacro
+    #@+node:ekr.20050920084036.202: *3* callLastKbdMacro
     # Called from universal-command.
 
-    def callLastKeyboardMacro (self,event=None):
+    def callLastKbdMacro (self,event=None):
 
         '''Call the last recorded keyboard macro.'''
 
@@ -6901,49 +6908,97 @@ class macroCommandsClass (baseEditCommandsClass):
         c.bodyWantsFocus()
 
         for event in macro:
-            # New in Leo 4.6: macro entries are leoKeyEvents.
-            if event:
-                g.trace(event.stroke)
-                k.masterKeyHandler(event) ## ,stroke=event.stroke)
-    #@+node:ekr.20050920084036.196: *3* loadFile & helper
-    def loadFile (self,event):
+            g.trace(repr(event.stroke))
+            k.masterKeyHandler(event)
+    #@+node:ekr.20110606152005.16785: *3* getMacrosNode
+    def getMacrosNode (self):
 
-        '''Asks for a macro file name to load.'''
+        '''Return the position of the @chapters node.'''
 
-        fileName = g.app.gui.runOpenFileDialog(
-            title = 'Open Macro File',
-            filetypes = [("Text","*.txt"), ("All files","*")],
-            defaultextension = ".txt")
+        c = self.c
 
-        if not fileName: return
+        for p in c.all_unique_positions():
+            if p.h == '@macros':
+                return p
+                
+        # Not found.
+        for p in c.all_unique_positions():
+            if p.h == '@settings':
+                # Create as the last child of the @settings node.
+                p2 = p.insertAsLastChild()
+                break
+        else:
+            # Create as the root node.
+            oldRoot = c.rootPosition()
+            p2 = oldRoot.insertAfter()
+            p2.moveToRoot(oldRoot)
 
-        try:
-            f = open(fileName)
-            self.loadMacros(f)
-        except IOError:
-            g.es('can not open',fileName)
-    #@+node:ekr.20050920084036.197: *4* loadMacros
-    def loadMacros (self,f):
-
-        '''Loads a macro file into the macros dictionary.'''
-
-        c = self.c ; w = c.frame.body.bodyCtrl
-        try:
-            d = pickle.load(f)
-        except pickle.UnpicklingError:
-            g.es('error unpickling %s' % f.name)
-            return
-
-        # g.trace(f.name,d)
-
-        for name in d:
-            aList = d.get(name)
-            macro = []
-            for stroke in aList:
-                event = g.app.gui.create_key_event(c,None,stroke,w)
-                macro.append(event)
+        c.setHeadString(p2,'@macros')
+        g.es_print('Created: %s' % p2.h)
+        c.redraw()
+        return p2
+    #@+node:ekr.20110606152005.16788: *3* getWidgetName
+    def getWidgetName(self,obj):
+        
+        if not obj:
+            return ''
+        if hasattr(obj,'objectName'):
+            return obj.objectName()
+        if hasattr(obj,'widget'):
+            if hasattr(obj.widget,'objectName'):
+                return obj.widget.objectName()
+        return ''
+    #@+node:ekr.20110606152005.16787: *3* loadMacros
+    def loadMacros (self,event=None):
+        
+        c = self.c
+        create_event = g.app.gui.create_key_event
+        p = self.getMacrosNode()
+        
+        def oops(message):
+            g.trace(message)
+        
+        lines = g.splitLines(p.b)
+        i = 0
+        macro = [] ; name = None
+        while i < len(lines):
+            progress = i
+            s = lines[i].strip()
+            i += 1
+            
+            if s.startswith('::') and s.endswith('::'):
+                name = s[2:-2]
+                if name:
+                    macro = []
+                    while i < len(lines):
+                        s = lines[i].strip()
+                        g.trace(repr(name),repr(s))
+                        if s:
+                            # massage s to make it friendly.
+                            # stroke = c.k.strokeFromSetting(s)
+                            stroke=s
+                            char = c.k.stroke2char(stroke)
+                            w = c.frame.body.bodyCtrl
+                            macro.append(create_event(c,char,stroke,w))
+                            i += 1
+                        else: break
+                    # Create the entries.
+                    if macro:
+                        self.addToDoAltX(name,macro)
+                        macro = [] ; name = None
+                    else:
+                        oops('empty expansion for %s' % (name))
+            elif s:
+                if s.startswith('#') or s.startswith('@'):
+                    pass
+                else:
+                    oops('ignoring line: %s' % (repr(s)))
+            else: pass
+            assert progress < i
+            
+        # finish of the last macro.
+        if macro:
             self.addToDoAltX(name,macro)
-                # sets self.namedMacros[name]=macro
     #@+node:ekr.20050920084036.198: *3* nameLastKbdMacro
     def nameLastKbdMacro (self,event):
 
@@ -6959,70 +7014,61 @@ class macroCommandsClass (baseEditCommandsClass):
             name = k.arg
             self.addToDoAltX(name,self.lastMacro)
             k.setLabelGrey('Macro defined: %s' % name)
-    #@+node:ekr.20090201152408.1: *3* printMacros
+    #@+node:ekr.20090201152408.1: *3* printMacros & printLastMacro
     def printMacros (self,event=None):
+        
+        names = list(self.namedMacros.keys())
 
-        names = [z for z in self.namedMacros]
-        g.es(''.join(names),tabName='Macros')
-    #@+node:ekr.20050920084036.199: *3* saveMacros & helpers
+        if names:
+            names.sort()
+            print('macros',names)
+            # g.es('\n'.join(names),tabName='Macros')
+        else:
+            g.es('no macros')
+            
+    def printLastMacro (self,event=None):
+        
+        if self.lastMacro:
+            for event in self.lastMacro:
+                g.es(repr(event.stroke))
+    #@+node:ekr.20050920084036.199: *3* saveMacros
     def saveMacros (self,event=None):
 
-        '''Asks for a file name and saves it.'''
+        '''Store macros to the @macros node..'''
 
-        fileName = g.app.gui.runSaveFileDialog(
-            initialfile = None,
-            title='Save Macros',
-            filetypes = [("Text","*.txt"), ("All files","*")],
-            defaultextension = ".txt")
+        p = self.getMacrosNode()
+        
+        result = []
+        
+        g.trace(list(self.namedMacros.keys()))
 
-        if not fileName: return
-
-        try:
-            f = open(fileName,'a+')
-            f.seek(0)
-            if f:
-                self.saveMacrosHelper(f)
-        except IOError:
-            g.es('can not create',fileName)
-
-    #@+node:ekr.20050920084036.200: *4* saveMacrosHelper
-    def saveMacrosHelper( self,f):
-
-        '''Saves all named macros.'''
-
-        # fname = f.name
-        # try:
-            # macros = pickle.load( f )
-        # except Exception:
-            # macros = {}
-        # f.close()
-
-        d = {}
         for name in self.namedMacros:
             macro = self.namedMacros.get(name)
-            # Just save the essential part of the event.
-            # It must be picklable.
-            aList = [event.stroke for event in macro]
-            g.trace(name,aList)
-            d[name] = aList
-            # f = open( fname, 'w' )
-            pickle.dump(d, f )
-            f.close()
+            result.append('::%s::' % (name))
+            for event in macro:
+                w_name = self.getWidgetName(event.w)
+                result.append('%s::%s::%s' % (repr(event.char),event.stroke,w_name))
+            result.append('') # Blank line terminates
+            
+        p.b = '\n'.join(result)
+
     #@+node:ekr.20050920084036.204: *3* startKbdMacro
-    def startKbdMacro (self,event=None):
+    def startKbdMacro (self,event):
 
         '''Start recording a keyboard macro.'''
 
-        g.trace(self.recordingMacro)
-
+        trace = True and not g.unitTesting
         k = self.k
-
-        if not self.recordingMacro:
-            self.recordingMacro = True
-            k.setLabelBlue('Recording macro. ctrl-g to end...',protect=True)
+        
+        if event:
+            if self.recordingMacro:
+                if trace: g.trace('stroke',event.stroke)
+                self.macro.append(event)
+            else:
+                self.recordingMacro = True
+                k.setLabelBlue('Recording macro. ctrl-g to end...',protect=True)
         else:
-            g.trace(event)
-            self.macro.append(event)
+            g.trace('can not happen: no event')
     #@-others
 #@+node:ekr.20050920084036.221: ** rectangleCommandsClass
 class rectangleCommandsClass (baseEditCommandsClass):
@@ -8495,7 +8541,7 @@ class searchCommandsClass (baseEditCommandsClass):
         elif stroke.startswith('Ctrl+') or stroke.startswith('Alt+'):
             # End the search and execute the command.
             self.endSearch()
-            k.masterKeyHandler(event) ## ,stroke=stroke)
+            k.masterKeyHandler(event)
         else:
             if trace: g.trace('event',event)
             k.updateLabel(event)
