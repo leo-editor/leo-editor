@@ -360,8 +360,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         else:
             ch = event.char
             
-        if trace: g.trace(
-            'event.char',repr(event and event.char),'ch',repr(ch),'stroke',repr(stroke))
+        if trace: g.trace('ch',repr(ch),'stroke',repr(stroke))
 
         if len(ch) != 1 or (len(ch) == 1 and ch.isalpha()):
             # Normal chars other special chars abort abbreviations.
@@ -2105,6 +2104,8 @@ class editCommandsClass (baseEditCommandsClass):
 
         c,k = self.c,self.k
         
+        char = event and event.char or ''
+        
         if not k.inState():
             k.setState('escape','start',handler=self.watchEscape)
             k.setLabelBlue('Esc ')
@@ -2117,7 +2118,7 @@ class editCommandsClass (baseEditCommandsClass):
             ch1, stroke1 = data1
             ch2, stroke2 = data2
 
-            if state == 'esc esc' and event and event.char == ':':
+            if state == 'esc esc' and char == ':':
                 self.evalExpression(event)
             elif state == 'evaluate':
                 self.escEvaluate(event)
@@ -2125,7 +2126,7 @@ class editCommandsClass (baseEditCommandsClass):
             elif stroke1 == 'Escape' and stroke2 == 'Escape':
                 k.setState('escape','esc esc')
                 k.setLabel('Esc Esc -')
-            elif not event or event.char not in ('Shift_L','Shift_R'):
+            elif char not in ('Shift_L','Shift_R'):
                 k.keyboardQuit()
     #@+node:ekr.20050920084036.64: *4* escEvaluate (Revise)
     def escEvaluate (self,event):
