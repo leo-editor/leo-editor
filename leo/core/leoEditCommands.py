@@ -180,9 +180,9 @@ class baseEditCommandsClass:
     #@+node:ekr.20050920084036.250: *4* _checkIfRectangle
     def _checkIfRectangle (self,event):
 
-        c,k = self.c,self.k ; key = event.char.lower()
+        c,k = self.c,self.k
         
-        c.check_event(event)
+        key = event and event.char.lower() or ''
 
         val = self.registers.get(key)
 
@@ -594,8 +594,6 @@ class abbrevCommandsClass (baseEditCommandsClass):
         c,k = self.c,self.k ; tag = 'dabbrev-expand'
         state = k.getState(tag)
         
-        c.check_event(event)
-
         if state == 0:
             self.w = w
             if w:
@@ -1064,10 +1062,9 @@ class bufferCommandsClass (baseEditCommandsClass):
 
         '''Get a buffer name into k.arg and call k.setState(kind,n,handler).'''
 
-        c,k = self.c,self.k ; state = k.getState('getBufferName')
+        c,k = self.c,self.k
+        state = k.getState('getBufferName')
         
-        c.check_event(event)
-
         if state == 0:
             self.computeData()
             self.getBufferNameFinisher = finisher
@@ -2105,8 +2102,6 @@ class editCommandsClass (baseEditCommandsClass):
 
         c,k = self.c,self.k
         
-        c.check_event(event)
-
         if not k.inState():
             k.setState('escape','start',handler=self.watchEscape)
             k.setLabelBlue('Esc ')
@@ -2134,15 +2129,15 @@ class editCommandsClass (baseEditCommandsClass):
         
         c,k = self.c,self.k
         
-        c.check_event(event)
-        
         w = self.editWidget(event)
         if not w: return
+        
+        char = event and event.char or ''
 
         if k.getLabel() == 'Eval:':
             k.setLabel('')
 
-        if event.char == 'Return':
+        if char == 'Return':
             expression = k.getLabel()
             try:
                 ok = False
@@ -3199,7 +3194,6 @@ class editCommandsClass (baseEditCommandsClass):
         trace = False and not g.unitTesting # or c.config.getBool('trace_masterCommand')
         
         c,k = self.c,self.k
-        c.check_event(event)
        
         verbose = True
         w = self.editWidget(event)
@@ -7352,8 +7346,6 @@ class registerCommandsClass (baseEditCommandsClass):
         c = self.c ; k = self.k
         tag = 'append-to-register' ; state = k.getState(tag)
         
-        c.check_event(event)
-
         if state == 0:
             k.commandName = tag
             k.setLabelBlue('Append to Register: ',protect=True)
@@ -7380,8 +7372,6 @@ class registerCommandsClass (baseEditCommandsClass):
         c = self.c ; k = self.k
         tag = 'prepend-to-register' ; state = k.getState(tag)
         
-        c.check_event(event)
-
         if state == 0:
             k.commandName = tag
             k.setLabelBlue('Prepend to Register: ',protect=True)
@@ -7408,8 +7398,6 @@ class registerCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = self.k ; state = k.getState('copy-rect-to-reg')
         
-        c.check_event(event)
-
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if not w: return
@@ -7441,8 +7429,6 @@ class registerCommandsClass (baseEditCommandsClass):
         c = self.c ; k = self.k
         tag = 'copy-to-register' ; state = k.getState(tag)
         
-        c.check_event(event)
-
         if state == 0:
             k.commandName = tag
             k.setLabelBlue('Copy to Register: ',protect=True)
@@ -7467,8 +7453,6 @@ class registerCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = self.k ; state = k.getState('increment-reg')
         
-        c.check_event(event)
-
         if state == 0:
             k.setLabelBlue('Increment register: ',protect=True)
             k.setState('increment-reg',1,self.incrementRegister)
@@ -7495,8 +7479,6 @@ class registerCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = self.k ; state = k.getState('insert-reg')
         
-        c.check_event(event)
-
         if state == 0:
             k.commandName = 'insert-register'
             k.setLabelBlue('Insert register: ',protect=True)
@@ -7527,8 +7509,6 @@ class registerCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = self.k ; state = k.getState('jump-to-reg')
         
-        c.check_event(event)
-
         if state == 0:
             k.setLabelBlue('Jump to register: ',protect=True)
             k.setState('jump-to-reg',1,self.jumpToRegister)
@@ -7561,17 +7541,18 @@ class registerCommandsClass (baseEditCommandsClass):
 
     def numberToRegister (self,event):
 
-        c,k = self.c, self.k ; state = k.getState('number-to-reg')
+        c,k = self.c,self.k
+        state = k.getState('number-to-reg')
         
-        c.check_event(event)
-
+        char = event and event.char or ''
+        
         if state == 0:
             k.commandName = 'number-to-register'
             k.setLabelBlue('Number to register: ',protect=True)
             k.setState('number-to-reg',1,self.numberToRegister)
         else:
             k.clearState()
-            if event.char.isalpha():
+            if char.isalpha():
                 # self.registers[event.char.lower()] = str(0)
                 k.setLabelGrey('number-to-register not ready yet.')
             else:
@@ -7583,7 +7564,7 @@ class registerCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = self.k ; state = k.getState('point-to-reg')
         
-        c.check_event(event)
+        char = event and event.char or ''
 
         if state == 0:
             k.commandName = 'point-to-register'
@@ -7591,7 +7572,7 @@ class registerCommandsClass (baseEditCommandsClass):
             k.setState('point-to-reg',1,self.pointToRegister)
         else:
             k.clearState()
-            if event.char.isalpha():
+            if char.isalpha():
                 w = c.frame.body.bodyCtrl
                 c.bodyWantsFocus()
                 key = event.char.lower()
@@ -8478,7 +8459,6 @@ class searchCommandsClass (baseEditCommandsClass):
         else:
             g.es("not found","'%s'" % (pattern))
             event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
-            c.check_event(event)
             k.updateLabel(event)
     #@+node:ekr.20050920084036.264: *5* iSearchStateHandler
     # Called from the state manager when the state is 'isearch'

@@ -7419,9 +7419,9 @@ class Commands (object):
         if not event or not event.char or not event.char.isalnum():
             return
         c  = self ; p = c.p ; p1 = p.copy()
-        c.check_event(event)
+       
         invisible = c.config.getBool('invisible_outline_navigation')
-        ch = event.char
+        ch = event and event.char or ''
         allFlag = ch.isupper() and invisible # all is a global (!?)
         if not invisible: ch = ch.lower()
         found = False

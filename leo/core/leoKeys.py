@@ -355,9 +355,7 @@ class AutoCompleterClass:
         c = self.c ; k = self.k ; gui = g.app.gui
         tag = 'auto-complete' ; state = k.getState(tag)
         
-        c.check_event(event)
-
-        char = event and event.char or ''
+        ch = char = event and event.char or ''
         stroke = event and event.stroke or ''
         is_plain = k.isPlainKey(stroke)
 
@@ -2310,10 +2308,8 @@ class keyHandlerClass:
 
         k = self ; c = self.c
         k.stroke = stroke
-        w = event.widget
+        w = event and event.widget
         
-        c.check_event(event)
-
         k.universalDispatcher(event)
         g.app.gui.event_generate(c,chr(number),chr(number),w)
         return # (for Tk) 'break'
@@ -2493,12 +2489,9 @@ class keyHandlerClass:
 
         k = self ; c = k.c ; gui = g.app.gui
         
-        c.check_event(event)
-
         char = event and event.char or ''
        
         if char == 'Return' and k.mb_history:
-        # if k.mb_history:
             last = k.mb_history [0]
             k.resetLabel()
             k.clearState() # Bug fix.
@@ -2600,8 +2593,6 @@ class keyHandlerClass:
             else: # Create a dummy event as a signal.
                 event = g.app.gui.create_key_event(c,None,None,None)
                 
-            c.check_event(event)
-
             k.masterCommand(event,func,stroke)
             if c.exists:
                 return k.funcReturn
@@ -2633,6 +2624,7 @@ class keyHandlerClass:
         c.check_event(event)
 
         char = event and event.char or ''
+        
         if trace: g.trace(
             'state',state,'char',repr(char),'stroke',repr(stroke),
             'escapes',k.getArgEscapes,
@@ -3203,7 +3195,7 @@ class keyHandlerClass:
         k = self ; c = k.c
         w = c.frame.getFocus()
 
-        # g.trace('stroke',stroke,'func',func and func.__name__,commandName,g.callers())
+        # g.trace('stroke',stroke,'func',func and func.__name__,commandName)
 
         # Create a minimal event for commands that require them.
         event = g.app.gui.create_key_event(c,None,stroke,w)
@@ -3351,8 +3343,6 @@ class keyHandlerClass:
         trace = False or self.trace_minibuffer and not g.app.unitTesting
         k = self ; c = k.c ; w = self.w
         
-        c.check_event(event)
-
         ch = char = (event and event.char) or ''
 
         if trace: g.trace('ch',ch,'k.stroke',k.stroke)
@@ -3699,10 +3689,9 @@ class keyHandlerClass:
         tag = 'getFileName' ; state = k.getState(tag)
         tabName = 'Completion'
         
-        c.check_event(event)
-
         char = event and event.char or ''
         # g.trace('state',state,'char',char)
+
         if state == 0:
             k.arg = ''
             #@+<< init altX vars >>
@@ -4329,8 +4318,6 @@ class keyHandlerClass:
         c,k = self.c,self ; gui = g.app.gui
         state = k.getState('u-arg')
         
-        c.check_event(event)
-
         if state == 0:
             k.dispatchEvent = event
             # The call should set the label.

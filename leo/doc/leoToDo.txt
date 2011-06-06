@@ -343,7 +343,6 @@ def iSearch (self,again=False):
     else:
         g.es("not found","'%s'" % (pattern))
         event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
-        c.check_event(event)
         k.updateLabel(event)
 .. @+node:ekr.20050920084036.264: *8* iSearchStateHandler
 # Called from the state manager when the state is 'isearch'
@@ -378,9 +377,7 @@ def auto_completer_state_handler (self,event):
     c = self.c ; k = self.k ; gui = g.app.gui
     tag = 'auto-complete' ; state = k.getState(tag)
     
-    c.check_event(event)
-
-    char = event and event.char or ''
+    ch = char = event and event.char or ''
     stroke = event and event.stroke or ''
     is_plain = k.isPlainKey(stroke)
 
@@ -649,6 +646,7 @@ def getArg (self,event,
     c.check_event(event)
 
     char = event and event.char or ''
+    
     if trace: g.trace(
         'state',state,'char',repr(char),'stroke',repr(stroke),
         'escapes',k.getArgEscapes,
@@ -755,10 +753,9 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
     tag = 'getFileName' ; state = k.getState(tag)
     tabName = 'Completion'
     
-    c.check_event(event)
-
     char = event and event.char or ''
     # g.trace('state',state,'char',char)
+
     if state == 0:
         k.arg = ''
         << init altX vars >>
@@ -1022,15 +1019,15 @@ def escEvaluate (self,event):
     
     c,k = self.c,self.k
     
-    c.check_event(event)
-    
     w = self.editWidget(event)
     if not w: return
+    
+    char = event and event.char or ''
 
     if k.getLabel() == 'Eval:':
         k.setLabel('')
 
-    if event.char == 'Return':
+    if char == 'Return':
         expression = k.getLabel()
         try:
             ok = False
@@ -1147,9 +1144,7 @@ def auto_completer_state_handler (self,event):
     c = self.c ; k = self.k ; gui = g.app.gui
     tag = 'auto-complete' ; state = k.getState(tag)
     
-    c.check_event(event)
-
-    char = event and event.char or ''
+    ch = char = event and event.char or ''
     stroke = event and event.stroke or ''
     is_plain = k.isPlainKey(stroke)
 
@@ -1360,12 +1355,9 @@ def repeatComplexCommandHelper (self,event):
 
     k = self ; c = k.c ; gui = g.app.gui
     
-    c.check_event(event)
-
     char = event and event.char or ''
    
     if char == 'Return' and k.mb_history:
-    # if k.mb_history:
         last = k.mb_history [0]
         k.resetLabel()
         k.clearState() # Bug fix.
@@ -1394,6 +1386,7 @@ def getArg (self,event,
     c.check_event(event)
 
     char = event and event.char or ''
+    
     if trace: g.trace(
         'state',state,'char',repr(char),'stroke',repr(stroke),
         'escapes',k.getArgEscapes,
@@ -1500,10 +1493,9 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
     tag = 'getFileName' ; state = k.getState(tag)
     tabName = 'Completion'
     
-    c.check_event(event)
-
     char = event and event.char or ''
     # g.trace('state',state,'char',char)
+
     if state == 0:
         k.arg = ''
         << init altX vars >>
@@ -1721,9 +1713,7 @@ def auto_completer_state_handler (self,event):
     c = self.c ; k = self.k ; gui = g.app.gui
     tag = 'auto-complete' ; state = k.getState(tag)
     
-    c.check_event(event)
-
-    char = event and event.char or ''
+    ch = char = event and event.char or ''
     stroke = event and event.stroke or ''
     is_plain = k.isPlainKey(stroke)
 
@@ -1992,6 +1982,7 @@ def getArg (self,event,
     c.check_event(event)
 
     char = event and event.char or ''
+    
     if trace: g.trace(
         'state',state,'char',repr(char),'stroke',repr(stroke),
         'escapes',k.getArgEscapes,
@@ -2098,10 +2089,9 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
     tag = 'getFileName' ; state = k.getState(tag)
     tabName = 'Completion'
     
-    c.check_event(event)
-
     char = event and event.char or ''
     # g.trace('state',state,'char',char)
+
     if state == 0:
         k.arg = ''
         << init altX vars >>
@@ -2771,7 +2761,7 @@ def masterMenuHandler (self,stroke,func,commandName):
     k = self ; c = k.c
     w = c.frame.getFocus()
 
-    # g.trace('stroke',stroke,'func',func and func.__name__,commandName,g.callers())
+    # g.trace('stroke',stroke,'func',func and func.__name__,commandName)
 
     # Create a minimal event for commands that require them.
     event = g.app.gui.create_key_event(c,None,stroke,w)
@@ -2850,6 +2840,7 @@ def getArg (self,event,
     c.check_event(event)
 
     char = event and event.char or ''
+    
     if trace: g.trace(
         'state',state,'char',repr(char),'stroke',repr(stroke),
         'escapes',k.getArgEscapes,
@@ -2956,10 +2947,9 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
     tag = 'getFileName' ; state = k.getState(tag)
     tabName = 'Completion'
     
-    c.check_event(event)
-
     char = event and event.char or ''
     # g.trace('state',state,'char',char)
+
     if state == 0:
         k.arg = ''
         << init altX vars >>
@@ -3361,8 +3351,6 @@ def dynamicExpandHelper (self,event,prefix=None,rlist=None,w=None):
     c,k = self.c,self.k ; tag = 'dabbrev-expand'
     state = k.getState(tag)
     
-    c.check_event(event)
-
     if state == 0:
         self.w = w
         if w:
@@ -3435,10 +3423,9 @@ def getBufferName (self,event,finisher):
 
     '''Get a buffer name into k.arg and call k.setState(kind,n,handler).'''
 
-    c,k = self.c,self.k ; state = k.getState('getBufferName')
+    c,k = self.c,self.k
+    state = k.getState('getBufferName')
     
-    c.check_event(event)
-
     if state == 0:
         self.computeData()
         self.getBufferNameFinisher = finisher
@@ -4332,7 +4319,7 @@ def masterMenuHandler (self,stroke,func,commandName):
     k = self ; c = k.c
     w = c.frame.getFocus()
 
-    # g.trace('stroke',stroke,'func',func and func.__name__,commandName,g.callers())
+    # g.trace('stroke',stroke,'func',func and func.__name__,commandName)
 
     # Create a minimal event for commands that require them.
     event = g.app.gui.create_key_event(c,None,stroke,w)
@@ -4378,9 +4365,9 @@ def onCanvasKey (self,event):
     if not event or not event.char or not event.char.isalnum():
         return
     c  = self ; p = c.p ; p1 = p.copy()
-    c.check_event(event)
+   
     invisible = c.config.getBool('invisible_outline_navigation')
-    ch = event.char
+    ch = event and event.char or ''
     allFlag = ch.isupper() and invisible # all is a global (!?)
     if not invisible: ch = ch.lower()
     found = False
@@ -4458,9 +4445,9 @@ def navHelper (self,p,ch,extend):
 .. @+node:ekr.20050920084036.250: *7* _checkIfRectangle
 def _checkIfRectangle (self,event):
 
-    c,k = self.c,self.k ; key = event.char.lower()
+    c,k = self.c,self.k
     
-    c.check_event(event)
+    key = event and event.char.lower() or ''
 
     val = self.registers.get(key)
 
@@ -4475,8 +4462,6 @@ def watchEscape (self,event):
 
     c,k = self.c,self.k
     
-    c.check_event(event)
-
     if not k.inState():
         k.setState('escape','start',handler=self.watchEscape)
         k.setLabelBlue('Esc ')
@@ -4504,15 +4489,15 @@ def escEvaluate (self,event):
     
     c,k = self.c,self.k
     
-    c.check_event(event)
-    
     w = self.editWidget(event)
     if not w: return
+    
+    char = event and event.char or ''
 
     if k.getLabel() == 'Eval:':
         k.setLabel('')
 
-    if event.char == 'Return':
+    if char == 'Return':
         expression = k.getLabel()
         try:
             ok = False
@@ -4536,7 +4521,6 @@ def selfInsertCommand(self,event,action='insert'):
     trace = False and not g.unitTesting # or c.config.getBool('trace_masterCommand')
     
     c,k = self.c,self.k
-    c.check_event(event)
    
     verbose = True
     w = self.editWidget(event)
@@ -4797,8 +4781,6 @@ def appendToRegister (self,event):
     c = self.c ; k = self.k
     tag = 'append-to-register' ; state = k.getState(tag)
     
-    c.check_event(event)
-
     if state == 0:
         k.commandName = tag
         k.setLabelBlue('Append to Register: ',protect=True)
@@ -4825,8 +4807,6 @@ def prependToRegister (self,event):
     c = self.c ; k = self.k
     tag = 'prepend-to-register' ; state = k.getState(tag)
     
-    c.check_event(event)
-
     if state == 0:
         k.commandName = tag
         k.setLabelBlue('Prepend to Register: ',protect=True)
@@ -4853,8 +4833,6 @@ def copyRectangleToRegister (self,event):
 
     c = self.c ; k = self.k ; state = k.getState('copy-rect-to-reg')
     
-    c.check_event(event)
-
     if state == 0:
         w = self.editWidget(event) # sets self.w
         if not w: return
@@ -4886,8 +4864,6 @@ def copyToRegister (self,event):
     c = self.c ; k = self.k
     tag = 'copy-to-register' ; state = k.getState(tag)
     
-    c.check_event(event)
-
     if state == 0:
         k.commandName = tag
         k.setLabelBlue('Copy to Register: ',protect=True)
@@ -4912,8 +4888,6 @@ def incrementRegister (self,event):
 
     c = self.c ; k = self.k ; state = k.getState('increment-reg')
     
-    c.check_event(event)
-
     if state == 0:
         k.setLabelBlue('Increment register: ',protect=True)
         k.setState('increment-reg',1,self.incrementRegister)
@@ -4940,8 +4914,6 @@ def insertRegister (self,event):
 
     c = self.c ; k = self.k ; state = k.getState('insert-reg')
     
-    c.check_event(event)
-
     if state == 0:
         k.commandName = 'insert-register'
         k.setLabelBlue('Insert register: ',protect=True)
@@ -4972,8 +4944,6 @@ def jumpToRegister (self,event):
 
     c = self.c ; k = self.k ; state = k.getState('jump-to-reg')
     
-    c.check_event(event)
-
     if state == 0:
         k.setLabelBlue('Jump to register: ',protect=True)
         k.setState('jump-to-reg',1,self.jumpToRegister)
@@ -5006,17 +4976,18 @@ C-x r g reg
 
 def numberToRegister (self,event):
 
-    c,k = self.c, self.k ; state = k.getState('number-to-reg')
+    c,k = self.c,self.k
+    state = k.getState('number-to-reg')
     
-    c.check_event(event)
-
+    char = event and event.char or ''
+    
     if state == 0:
         k.commandName = 'number-to-register'
         k.setLabelBlue('Number to register: ',protect=True)
         k.setState('number-to-reg',1,self.numberToRegister)
     else:
         k.clearState()
-        if event.char.isalpha():
+        if char.isalpha():
             # self.registers[event.char.lower()] = str(0)
             k.setLabelGrey('number-to-register not ready yet.')
         else:
@@ -5028,7 +4999,7 @@ def pointToRegister (self,event):
 
     c = self.c ; k = self.k ; state = k.getState('point-to-reg')
     
-    c.check_event(event)
+    char = event and event.char or ''
 
     if state == 0:
         k.commandName = 'point-to-register'
@@ -5036,7 +5007,7 @@ def pointToRegister (self,event):
         k.setState('point-to-reg',1,self.pointToRegister)
     else:
         k.clearState()
-        if event.char.isalpha():
+        if char.isalpha():
             w = c.frame.body.bodyCtrl
             c.bodyWantsFocus()
             key = event.char.lower()
@@ -5118,7 +5089,6 @@ def iSearch (self,again=False):
     else:
         g.es("not found","'%s'" % (pattern))
         event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
-        c.check_event(event)
         k.updateLabel(event)
 .. @+node:ekr.20061031131434.11: *7* auto_completer_state_handler
 def auto_completer_state_handler (self,event):
@@ -5127,9 +5097,7 @@ def auto_completer_state_handler (self,event):
     c = self.c ; k = self.k ; gui = g.app.gui
     tag = 'auto-complete' ; state = k.getState(tag)
     
-    c.check_event(event)
-
-    char = event and event.char or ''
+    ch = char = event and event.char or ''
     stroke = event and event.stroke or ''
     is_plain = k.isPlainKey(stroke)
 
@@ -5314,10 +5282,8 @@ def numberCommand (self,event,stroke,number):
 
     k = self ; c = self.c
     k.stroke = stroke
-    w = event.widget
+    w = event and event.widget
     
-    c.check_event(event)
-
     k.universalDispatcher(event)
     g.app.gui.event_generate(c,chr(number),chr(number),w)
     return # (for Tk) 'break'
@@ -5377,12 +5343,9 @@ def repeatComplexCommandHelper (self,event):
 
     k = self ; c = k.c ; gui = g.app.gui
     
-    c.check_event(event)
-
     char = event and event.char or ''
    
     if char == 'Return' and k.mb_history:
-    # if k.mb_history:
         last = k.mb_history [0]
         k.resetLabel()
         k.clearState() # Bug fix.
@@ -5417,8 +5380,6 @@ def simulateCommand (self,commandName):
         else: # Create a dummy event as a signal.
             event = g.app.gui.create_key_event(c,None,None,None)
             
-        c.check_event(event)
-
         k.masterCommand(event,func,stroke)
         if c.exists:
             return k.funcReturn
@@ -5450,6 +5411,7 @@ def getArg (self,event,
     c.check_event(event)
 
     char = event and event.char or ''
+    
     if trace: g.trace(
         'state',state,'char',repr(char),'stroke',repr(stroke),
         'escapes',k.getArgEscapes,
@@ -5827,8 +5789,6 @@ def updateLabel (self,event):
     trace = False or self.trace_minibuffer and not g.app.unitTesting
     k = self ; c = k.c ; w = self.w
     
-    c.check_event(event)
-
     ch = char = (event and event.char) or ''
 
     if trace: g.trace('ch',ch,'k.stroke',k.stroke)
@@ -5857,10 +5817,9 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
     tag = 'getFileName' ; state = k.getState(tag)
     tabName = 'Completion'
     
-    c.check_event(event)
-
     char = event and event.char or ''
     # g.trace('state',state,'char',char)
+
     if state == 0:
         k.arg = ''
         << init altX vars >>
@@ -5977,8 +5936,6 @@ def universalDispatcher (self,event):
     c,k = self.c,self ; gui = g.app.gui
     state = k.getState('u-arg')
     
-    c.check_event(event)
-
     if state == 0:
         k.dispatchEvent = event
         # The call should set the label.
@@ -6171,10 +6128,8 @@ def numberCommand (self,event,stroke,number):
 
     k = self ; c = self.c
     k.stroke = stroke
-    w = event.widget
+    w = event and event.widget
     
-    c.check_event(event)
-
     k.universalDispatcher(event)
     g.app.gui.event_generate(c,chr(number),chr(number),w)
     return # (for Tk) 'break'
