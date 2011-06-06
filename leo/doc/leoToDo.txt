@@ -3410,7 +3410,6 @@ def dynamicExpandHelper (self,event,prefix=None,rlist=None,w=None):
             names = rlist
             prefix2 = 'dabbrev-expand: '
             k.setLabelBlue(prefix2+prefix,protect=True)
-            ### event = None
             k.getArg(event,tag,1,self.dynamicExpandHelper,prefix=prefix2,tabList=names)
     else:
         k.clearState()
@@ -3485,7 +3484,6 @@ def getBufferName (self,event,finisher):
         self.computeData()
         self.getBufferNameFinisher = finisher
         prefix = k.getLabel()
-        ### event = None
         k.getArg(event,'getBufferName',1,self.getBufferName,
             prefix=prefix,tabList=self.nameList)
     else:
@@ -4415,9 +4413,6 @@ def executeMinibufferCommand (self,commandName):
     func = c.commandsDict.get(commandName)
 
     if func:
-        # event = g.Bunch(c=c,char='',keysym='',widget=c.frame.body.bodyCtrl)
-            # #### Was keysym = None
-        # stroke = None
         event = g.app.gui.create_key_event(c,None,stroke,w)
         k.masterCommand(event,func,stroke)
         return k.funcReturn
@@ -5625,19 +5620,10 @@ def masterKeyHandler (self,event,stroke=None):
         if trace: g.trace(' unbound',stroke)
         return k.handleUnboundKeys(event,char,keysym,stroke)
 .. @+node:ekr.20061031131434.147: *8* << define vars >>
-if 0: ####
-    if event:
-        # This is a leoGui base class event.
-        event = gui.leoKeyEvent(event,c,stroke=stroke)
-    
 w = event.widget
 char = event.char
-keysym = char #### temporary.
-#### keysym = event.keysym
+keysym = char ## temporary.
 stroke = event.stroke
-#### if stroke and not keysym:
-####    event.keysym = keysym = stroke
-
 w_name = c.widget_name(w)
 state = k.state.kind
 
@@ -6165,11 +6151,10 @@ def executeNTimes (self,event,n,stroke):
                 'stroke',stroke,'widget',event.widget)
             for z in range(n):
                 event = g.app.gui.create_key_event(c,None,stroke,w)
-                k.masterCommand(event,stroke) ### b.func,'<%s>' % stroke)
+                k.masterCommand(event,stroke)
         else:
             w = event.widget
             for z in range(n):
-                ### g.app.gui.event_generate(c,w,'<Key>',keysym=event.keysym)
                 k.masterKeyHandler(event,stroke=event.stroke)
 .. @+node:ekr.20061031131434.203: *8* doControlU
 def doControlU (self,event,stroke):
@@ -6187,21 +6172,21 @@ def doControlU (self,event,stroke):
 .. @+node:ekr.20061031132907: *7* Events (leoGui)
 def eventChar (self,event,c=None):
     '''Return the char field of an event.'''
-    assert not event or event.keysym == event.char,repr(event) ####
+    assert not event or event.keysym == event.char,repr(event) ##
     return event and event.char or ''
 
 def eventKeysym (self,event,c=None):
     '''Return the keysym value of an event.'''
-    assert not event or event.keysym == event.char,repr(event) ####
+    assert not event or event.keysym == event.char,repr(event) ##
     return event and event.keysym
 
 def eventStroke (self,event,c=None):
-    assert not event or event.keysym == event.char,repr(event) ####
+    assert not event or event.keysym == event.char,repr(event) ##
     return event and hasattr(event,'stroke') and event.stroke or ''
 
 def eventWidget (self,event,c=None):
     '''Return the widget field of an event.'''
-    assert not event or event.keysym == event.char,repr(event) ####
+    assert not event or event.keysym == event.char,repr(event) ##
     return event and event.widget
 
 def eventXY (self,event,c=None):
@@ -6225,7 +6210,7 @@ def __init__ (self,c,char,stroke,w,x,y,x_root,y_root):
     
     self.c = c
     self.char = char or ''
-    self.keysym = char or '' #### Temporary.
+    self.keysym = char or '' ## Temporary.
     self.stroke = stroke or ''
     self.w = self.widget = w
     
@@ -6357,30 +6342,29 @@ def executeNTimes (self,event,n,stroke):
                 'stroke',stroke,'widget',event.widget)
             for z in range(n):
                 event = g.app.gui.create_key_event(c,None,stroke,w)
-                k.masterCommand(event,stroke) ### b.func,'<%s>' % stroke)
+                k.masterCommand(event,stroke)
         else:
             w = event.widget
             for z in range(n):
-                ### g.app.gui.event_generate(c,w,'<Key>',keysym=event.keysym)
                 k.masterKeyHandler(event,stroke=event.stroke)
 .. @+node:ekr.20061031132907: *7* Events (leoGui)
 def eventChar (self,event,c=None):
     '''Return the char field of an event.'''
-    assert not event or event.keysym == event.char,repr(event) ####
+    assert not event or event.keysym == event.char,repr(event) ##
     return event and event.char or ''
 
 def eventKeysym (self,event,c=None):
     '''Return the keysym value of an event.'''
-    assert not event or event.keysym == event.char,repr(event) ####
+    assert not event or event.keysym == event.char,repr(event) ##
     return event and event.keysym
 
 def eventStroke (self,event,c=None):
-    assert not event or event.keysym == event.char,repr(event) ####
+    assert not event or event.keysym == event.char,repr(event) ##
     return event and hasattr(event,'stroke') and event.stroke or ''
 
 def eventWidget (self,event,c=None):
     '''Return the widget field of an event.'''
-    assert not event or event.keysym == event.char,repr(event) ####
+    assert not event or event.keysym == event.char,repr(event) ##
     return event and event.widget
 
 def eventXY (self,event,c=None):
@@ -6400,7 +6384,6 @@ def check_event (self,event):
         if g.unitTesting:
             assert isinstance(event,leoGui.leoKeyEvent),'event: %s, callers: %s' % (
                 repr(event),g.callers())
-                ### Will fail for g.bunches.
             assert event.keysym == event.char,repr(event)
             for ivar in ('char','keysym','stroke',): # 'stroke',
                 assert hasattr(event,ivar),'event: %s, ivar: %s, callers: %s' % (
@@ -6431,7 +6414,7 @@ def __init__ (self,c,char,stroke,w,x,y,x_root,y_root):
     
     self.c = c
     self.char = char or ''
-    self.keysym = char or '' #### Temporary.
+    self.keysym = char or '' ## Temporary.
     self.stroke = stroke or ''
     self.w = self.widget = w
     
@@ -6573,9 +6556,7 @@ def eventFilter(self, obj, event):
         if override:
             if trace and traceKey and not ignore:
                 g.trace('bound',repr(stroke)) # repr(aList))
-            # g.trace('** using wrapper',self.w)
             w = self.w # Pass the wrapper class, not the wrapped widget.
-            ### event = leoKeyEvent(event,c,w,ch,tkKey,stroke)
             event = self.create_key_event(event,c,w,ch,tkKey,stroke)
             ret = k.masterKeyHandler(event,stroke=stroke)
             c.outerUpdate()
@@ -6637,32 +6618,20 @@ def create_key_event (self,event,c,w,ch,tkKey,stroke):
     return leoGui.leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
 
     # g.trace('qt.leoKeyEvent: %s' % repr(self))
-.. @+node:ekr.20110605121601.18541: *7* isSpecialOverride (simplified)
+.. @+node:ekr.20110605121601.18541: *7* isSpecialOverride
 def isSpecialOverride (self,tkKey,ch):
 
     '''Return True if tkKey is a special Tk key name.
     '''
 
     return tkKey or ch in self.flashers
-.. @+node:ekr.20110605121601.18542: *7* toStroke (might change?)
+.. @+node:ekr.20110605121601.18542: *7* toStroke
 def toStroke (self,tkKey,ch):
     
     '''Convert the official tkKey name to a stroke.'''
 
     trace = False and not g.unitTesting
     k = self.c.k ; s = tkKey
-
-    if 0: ### To be removed: there is no need for this!
-        special = ('Alt','Ctrl','Control',)
-        isSpecial = [True for z in special if s.find(z) > -1]
-    
-        if isSpecial:
-            pass # s = s.replace('Key-','')
-        else:
-            # Keep the Tk spellings for special keys.
-            ch2 = k.guiBindNamesDict.get(ch)
-            if trace: g.trace('ch',repr(ch),'ch2',repr(ch2))
-            if ch2: s = s.replace(ch,ch2)
 
     table = (
         ('Alt-','Alt+'),

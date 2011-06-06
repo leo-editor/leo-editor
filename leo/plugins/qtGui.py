@@ -4524,8 +4524,6 @@ class leoQtFrame (leoFrame.leoFrame):
         def deleteButton (self,w):
             """ w is button """
 
-            #g.trace(w, '##')    
-
             self.w.removeAction(w)
 
             self.c.bodyWantsFocus()
@@ -7589,7 +7587,6 @@ class leoQtGui(leoGui.leoGui):
 
         if c.exists and tag == 'body':
             c.bodyWantsFocusNow()
-            ### c.outerUpdate() # Required because this is an event handler.
             g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
     #@+node:ekr.20110605121601.18481: *5* onDeactiveEvent (qtGui)
     def onDeactivateEvent (self,event,c,obj,tag):
@@ -8553,9 +8550,7 @@ class leoQtEventFilter(QtCore.QObject):
             if override:
                 if trace and traceKey and not ignore:
                     g.trace('bound',repr(stroke)) # repr(aList))
-                # g.trace('** using wrapper',self.w)
                 w = self.w # Pass the wrapper class, not the wrapped widget.
-                ### event = leoKeyEvent(event,c,w,ch,tkKey,stroke)
                 event = self.create_key_event(event,c,w,ch,tkKey,stroke)
                 ret = k.masterKeyHandler(event,stroke=stroke)
                 c.outerUpdate()
@@ -8617,32 +8612,20 @@ class leoQtEventFilter(QtCore.QObject):
         return leoGui.leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
 
         # g.trace('qt.leoKeyEvent: %s' % repr(self))
-    #@+node:ekr.20110605121601.18541: *3* isSpecialOverride (simplified)
+    #@+node:ekr.20110605121601.18541: *3* isSpecialOverride
     def isSpecialOverride (self,tkKey,ch):
 
         '''Return True if tkKey is a special Tk key name.
         '''
 
         return tkKey or ch in self.flashers
-    #@+node:ekr.20110605121601.18542: *3* toStroke (might change?)
+    #@+node:ekr.20110605121601.18542: *3* toStroke
     def toStroke (self,tkKey,ch):
         
         '''Convert the official tkKey name to a stroke.'''
 
         trace = False and not g.unitTesting
         k = self.c.k ; s = tkKey
-
-        if 0: ### To be removed: there is no need for this!
-            special = ('Alt','Ctrl','Control',)
-            isSpecial = [True for z in special if s.find(z) > -1]
-        
-            if isSpecial:
-                pass # s = s.replace('Key-','')
-            else:
-                # Keep the Tk spellings for special keys.
-                ch2 = k.guiBindNamesDict.get(ch)
-                if trace: g.trace('ch',repr(ch),'ch2',repr(ch2))
-                if ch2: s = s.replace(ch,ch2)
 
         table = (
             ('Alt-','Alt+'),

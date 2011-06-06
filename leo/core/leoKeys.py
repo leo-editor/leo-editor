@@ -2830,19 +2830,10 @@ class keyHandlerClass:
 
         #@+<< define vars >>
         #@+node:ekr.20061031131434.147: *5* << define vars >>
-        if 0: ####
-            if event:
-                # This is a leoGui base class event.
-                event = gui.leoKeyEvent(event,c,stroke=stroke)
-            
         w = event.widget
         char = event.char
-        keysym = char #### temporary.
-        #### keysym = event.keysym
+        keysym = char ## temporary.
         stroke = event.stroke
-        #### if stroke and not keysym:
-        ####    event.keysym = keysym = stroke
-
         w_name = c.widget_name(w)
         state = k.state.kind
 
@@ -4406,11 +4397,10 @@ class keyHandlerClass:
                     'stroke',stroke,'widget',event.widget)
                 for z in range(n):
                     event = g.app.gui.create_key_event(c,None,stroke,w)
-                    k.masterCommand(event,stroke) ### b.func,'<%s>' % stroke)
+                    k.masterCommand(event,stroke)
             else:
                 w = event.widget
                 for z in range(n):
-                    ### g.app.gui.event_generate(c,w,'<Key>',keysym=event.keysym)
                     k.masterKeyHandler(event,stroke=event.stroke)
     #@+node:ekr.20061031131434.203: *4* doControlU
     def doControlU (self,event,stroke):

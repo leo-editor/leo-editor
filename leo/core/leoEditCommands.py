@@ -602,7 +602,6 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 names = rlist
                 prefix2 = 'dabbrev-expand: '
                 k.setLabelBlue(prefix2+prefix,protect=True)
-                ### event = None
                 k.getArg(event,tag,1,self.dynamicExpandHelper,prefix=prefix2,tabList=names)
         else:
             k.clearState()
@@ -1073,7 +1072,6 @@ class bufferCommandsClass (baseEditCommandsClass):
             self.computeData()
             self.getBufferNameFinisher = finisher
             prefix = k.getLabel()
-            ### event = None
             k.getArg(event,'getBufferName',1,self.getBufferName,
                 prefix=prefix,tabList=self.nameList)
         else:

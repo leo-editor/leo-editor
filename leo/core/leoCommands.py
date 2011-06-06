@@ -448,7 +448,6 @@ class Commands (object):
             if g.unitTesting:
                 assert isinstance(event,leoGui.leoKeyEvent),'event: %s, callers: %s' % (
                     repr(event),g.callers())
-                    ### Will fail for g.bunches.
                 assert event.keysym == event.char,repr(event)
                 for ivar in ('char','keysym','stroke',): # 'stroke',
                     assert hasattr(event,ivar),'event: %s, ivar: %s, callers: %s' % (
@@ -692,9 +691,6 @@ class Commands (object):
         func = c.commandsDict.get(commandName)
 
         if func:
-            # event = g.Bunch(c=c,char='',keysym='',widget=c.frame.body.bodyCtrl)
-                # #### Was keysym = None
-            # stroke = None
             event = g.app.gui.create_key_event(c,None,stroke,w)
             k.masterCommand(event,func,stroke)
             return k.funcReturn
