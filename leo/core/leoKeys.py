@@ -374,7 +374,7 @@ class AutoCompleterClass:
             self.exit()
         elif char == 'Escape':
             self.exit()
-        elif char == 'Tab':
+        elif char in ('\t','Tab'):
             self.doTabCompletion()
         elif char in ('\b','BackSpace'):
             self.do_backspace()
@@ -1904,7 +1904,7 @@ class keyHandlerClass:
 
         '''Make a master gui binding for stroke in pane w, or in all the standard widgets.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         k = self ; c = k.c ; f = c.frame
 
         bindStroke = k.tkbindingFromStroke(stroke)
@@ -2116,10 +2116,10 @@ class keyHandlerClass:
             i = w.logCtrl.getInsertPoint()
             if not stroke:
                 stroke = event and event.stroke
-            if stroke.lower() == 'return': stroke = '\n'
-            elif stroke.lower() == 'tab': stroke = '\t'
-            elif stroke.lower() == 'backspace': stroke = '\b'
-            elif stroke.lower() == 'period': stroke = '.'
+            if stroke in ('\n','Return'): stroke = '\n'
+            elif stroke in ('\t','Tab'): stroke = '\t'
+            elif stroke in ('\b','Backspace'): stroke = '\b'
+            elif stroke in ('.','Period','period'): stroke = '.'
             w.logCtrl.insert(i,stroke)
             return # None
         else:
@@ -2165,11 +2165,11 @@ class keyHandlerClass:
                 if k.mb_helpHandler: k.mb_helpHandler(commandName)
             else:
                 k.callAltXFunction(k.mb_event)
-        elif char in ('Tab','\t'):
+        elif char in ('\t','Tab'):
             if trace and verbose: g.trace('***Tab')
             k.doTabCompletion(list(c.commandsDict.keys()))
             c.minibufferWantsFocus()
-        elif char == 'BackSpace':
+        elif char in ('\b','BackSpace'):
             if trace and verbose: g.trace('***BackSpace')
             k.doBackSpace(list(c.commandsDict.keys()))
             c.minibufferWantsFocus()
@@ -2660,9 +2660,9 @@ class keyHandlerClass:
             c.frame.log.deleteTab('Completion')
             trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
             if handler: handler(event)
-        elif char in('Tab','\t'):
+        elif char in('\t','Tab'):
             k.doTabCompletion(k.argTabList,k.arg_completion)
-        elif char in('BackSpace','\b'): # 2010/02/20: Test for \b also.
+        elif char in ('\b','BackSpace'):
             k.doBackSpace(k.argTabList,k.arg_completion)
             c.minibufferWantsFocus()
         elif k.isFKey(stroke):
@@ -3009,9 +3009,9 @@ class keyHandlerClass:
 
         # Special case for bindings handled in k.getArg:
         if state in ('getArg','full-command'):
-            if stroke in ('BackSpace','Return','Tab','\t','Escape',):
+            if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
                 return False
-            if k.isFKey(stroke): # 2010/10/23.
+            if k.isFKey(stroke):
                 return False
 
         if not state.startswith('auto-'):
@@ -3384,7 +3384,7 @@ class keyHandlerClass:
 
         '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         k = self ; c = k.c
 
         for commandName in d:
@@ -3711,10 +3711,10 @@ class keyHandlerClass:
             handler = k.getFileNameHandler
             c.frame.log.deleteTab(tabName)
             if handler: handler(event)
-        elif char in ('Tab','\t'):
+        elif char in ('\t','Tab'):
             k.doFileNameTab()
             c.minibufferWantsFocus()
-        elif char == 'BackSpace':
+        elif char in ('\b','BackSpace'):
             k.doFileNameBackSpace() 
             c.minibufferWantsFocus()
         else:
@@ -4102,7 +4102,7 @@ class keyHandlerClass:
                 return ''
                 
         # Special case the gang of four.
-        d = { 'BackSpace':'\b','Lineend':'\r','Return':'\n','Tab':'\t' }
+        d = { 'BackSpace':'\b','Linefeed':'\r','Return':'\n','Tab':'\t' }
         ch = d.get(s)
         if ch: return ch
                 

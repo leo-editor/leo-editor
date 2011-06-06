@@ -345,7 +345,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         w = self.editWidget(event,forceFocus=False)
         if not w: return False
         if w.hasSelection(): return False
-        if stroke=='BackSpace': return False
+        if stroke in ('\b','BackSpace'): return False
         d = {'Return':'\n','Tab':'\t','space':' ','underscore':'_'}
         if stroke:
             ch = d.get(stroke,stroke)
@@ -3212,6 +3212,7 @@ class editCommandsClass (baseEditCommandsClass):
             ch = '\n' # This fixes the MacOS return bug.
         if ch == 'Tab':
             ch = '\t'
+
         name = c.widget_name(w)
         oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
         oldText = name.startswith('body') and p.b or ''
@@ -3500,7 +3501,7 @@ class editCommandsClass (baseEditCommandsClass):
         aList.reverse()
         for data in aList:
             ch,stroke = data
-            d = {' ':'Space','\t':'Tab','\b':'Backspace','\n':'Newline','\r':'Return'}
+            d = {' ':'Space','\t':'Tab','\b':'Backspace','\n':'Return','\r':'Linefeed'}
             g.es('',stroke or d.get(ch) or ch or 'None')
     #@+node:ekr.20050920084036.84: *4* whatLine
     def whatLine (self,event):
@@ -4200,7 +4201,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051213094517: *5* backSentenceHelper
     def backSentenceHelper (self,event,extend):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         w = self.editWidget(event)
         if not w: return
@@ -8488,11 +8489,11 @@ class searchCommandsClass (baseEditCommandsClass):
         if trace: g.trace('stroke',repr(stroke))
 
         # No need to recognize ctrl-z.
-        if stroke in ('Escape','Return'):
+        if stroke in ('Escape','\n','Return'):
             self.endSearch()
         elif stroke in self.iSearchStrokes:
             self.iSearch(again=True)
-        elif stroke == 'BackSpace':
+        elif stroke in ('\b','BackSpace'):
             k.updateLabel(event)
             self.iSearchBackspace()
         elif stroke.startswith('Ctrl+') or stroke.startswith('Alt+'):

@@ -4173,19 +4173,20 @@ else:
 def getUserResponse (self,event):
 
     w = self.editWidget(event)
-    if not w or not hasattr(event,'keysym'): return
+    char = event and event.char or ''
+    
+    if not w or not char return
 
-    # g.trace(event.keysym)
-    if event.keysym == 'y':
+    if char in ('Y','y'):
         self.doOneReplace(event)
         if not self.findNextMatch(event):
             self.quitSearch(event)
-    elif event.keysym in ('q','Return'):
+    elif char in ('Q','q','\n','Return'):
         self.quitSearch(event)
-    elif event.keysym == '!':
+    elif char == '!':
         while self.findNextMatch(event):
             self.doOneReplace(event)
-    elif event.keysym in ('n','Delete'):
+    elif char in ('N','n','Delete'):
         # Skip over the present match.
         i = w.getInsertPoint()
         w.setInsertPoint(i + len(self.qQ))
