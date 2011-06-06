@@ -139,8 +139,7 @@ class AutoCompleterClass:
         trace = False and not g.unitTesting
         c = self.c ; k = self.k ; state = k.unboundKeyAction
         gui = g.app.gui
-        ## w = gui.eventWidget(event) or c.get_focus()
-        w = event.w or c.get_focus()
+        w = event and event.w or c.get_focus()
 
         self.force = force
         
@@ -210,8 +209,7 @@ class AutoCompleterClass:
         '''Show the calltips at the cursor.'''
 
         c = self.c ; k = c.k
-        ## w = g.app.gui.eventWidget(event)
-        w = event.w
+        w = event and event.w
         if not w: return
         is_headline = c.widget_name(w).startswith('head')
 
@@ -358,10 +356,7 @@ class AutoCompleterClass:
         tag = 'auto-complete' ; state = k.getState(tag)
         
         c.check_event(event)
-        
-        #### ch = gui.eventChar(event)
-        #### keysym = gui.eventKeysym(event)
-        ####stroke = gui.eventStroke(event)
+
         char = event and event.char or ''
         stroke = event and event.stroke or ''
         is_plain = k.isPlainKey(stroke)
@@ -1976,11 +1971,9 @@ class keyHandlerClass:
         c.setLog()
         c.startRedrawCount = c.frame.tree.redrawCount
         k.stroke = stroke # Set this global for general use.
-        ### keysym = gui.eventKeysym(event)
-        ### ch = gui.eventChar(event)
-        ### w = gui.eventWidget(event)
+
         char = ch = event and event.char or ''
-        w = event.w
+        w = event and event.w
         state = event and hasattr(event,'state') and event.state or 0
         k.func = func
         k.funcReturn = None # For unit testing.
@@ -2152,8 +2145,7 @@ class keyHandlerClass:
         
         c.check_event(event)
         
-        ### keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
-        char = ch = event and event.char or ''
+        ch = char = event and event.char or ''
         trace = False or c.config.getBool('trace_modes') ; verbose = True
         if trace: g.trace('state',state,char)
         if state == 0:
@@ -2503,8 +2495,7 @@ class keyHandlerClass:
         
         c.check_event(event)
 
-        ### keysym = gui.eventKeysym(event)
-        char = event.char
+        char = event and event.char or ''
        
         if char == 'Return' and k.mb_history:
         # if k.mb_history:
@@ -2641,8 +2632,7 @@ class keyHandlerClass:
         
         c.check_event(event)
 
-        ### keysym = gui.eventKeysym(event)
-        char = event and event.char or None
+        char = event and event.char or ''
         if trace: g.trace(
             'state',state,'char',repr(char),'stroke',repr(stroke),
             'escapes',k.getArgEscapes,
@@ -2838,7 +2828,6 @@ class keyHandlerClass:
         #@+node:ekr.20061031131434.147: *5* << define vars >>
         w = event.widget
         char = event and event.char or ''
-        ### keysym = char ## temporary.
         stroke = event and event.stroke or ''
         w_name = c.widget_name(w)
         state = k.state.kind
@@ -2906,7 +2895,6 @@ class keyHandlerClass:
 
         k = self ; val = None 
         
-        ## ch = g.app.gui.eventChar(event)
         ch = event and event.char or ''
 
         # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
@@ -3203,8 +3191,7 @@ class keyHandlerClass:
             return func(event)
         else:
             gui = g.app.gui
-            ## x,y = gui.eventXY(event)
-            x.y = event.x,event.y
+            x.y = event and event.x,event and event.y
             i = w.xyToPythonIndex(x,y)
             s = w.getAllText()
             start,end = g.getWord(s,i)
@@ -3367,10 +3354,8 @@ class keyHandlerClass:
         c.check_event(event)
 
         ch = char = (event and event.char) or ''
-        ### keysym = (event and event.keysym) or ''
 
-        trace and g.trace('ch',ch,'k.stroke',k.stroke)
-        # g.trace(g.callers())
+        if trace: g.trace('ch',ch,'k.stroke',k.stroke)
 
         if ch and ch not in ('\n','\r'):
             c.widgetWantsFocusNow(w)
@@ -3716,8 +3701,7 @@ class keyHandlerClass:
         
         c.check_event(event)
 
-        ### keysym = gui.eventKeysym(event)
-        char = event.char
+        char = event and event.char or ''
         # g.trace('state',state,'char',char)
         if state == 0:
             k.arg = ''
@@ -4354,8 +4338,7 @@ class keyHandlerClass:
             k.repeatCount = 1
         elif state == 1:
             # stroke = k.stroke # Warning: k.stroke is always Alt-u
-            ### keysym = gui.eventKeysym(event)
-            char = event.char
+            char = event and event.char or ''
             # g.trace(state,char)
             if char == 'Escape':
                 k.keyboardQuit()
@@ -4417,7 +4400,7 @@ class keyHandlerClass:
     def doControlU (self,event,stroke):
 
         k = self ; c = k.c
-        ## ch = g.app.gui.eventChar(event)
+
         ch = event and event.char or ''
 
         k.setLabelBlue('Control-u %s' % g.stripBrackets(stroke))

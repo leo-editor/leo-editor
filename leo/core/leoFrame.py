@@ -1178,8 +1178,7 @@ class leoBody:
         if wname.startswith('body'):
             # A hack to support middle-button pastes: remember the previous selection.
             k.previousSelection = w.getSelectionRange()
-            ## x,y = g.app.gui.eventXY(event)
-            x,y = event.x,event.y
+            x,y = event and event.x,event and event.y
             i = w.xyToPythonIndex(x,y)
             # g.trace(x,y,repr(i))
             w.setSelectionRange(i,i,insert=i)

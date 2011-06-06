@@ -30,7 +30,6 @@ class leoKeyEvent:
         
         self.c = c
         self.char = char or ''
-        ## self.keysym = char or '' ## Temporary.
         self.stroke = stroke or ''
         self.w = self.widget = w
         

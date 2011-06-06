@@ -379,10 +379,7 @@ def auto_completer_state_handler (self,event):
     tag = 'auto-complete' ; state = k.getState(tag)
     
     c.check_event(event)
-    
-    #### ch = gui.eventChar(event)
-    #### keysym = gui.eventKeysym(event)
-    ####stroke = gui.eventStroke(event)
+
     char = event and event.char or ''
     stroke = event and event.stroke or ''
     is_plain = k.isPlainKey(stroke)
@@ -548,8 +545,7 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
     
     c.check_event(event)
     
-    ### keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
-    char = ch = event and event.char or ''
+    ch = char = event and event.char or ''
     trace = False or c.config.getBool('trace_modes') ; verbose = True
     if trace: g.trace('state',state,char)
     if state == 0:
@@ -652,8 +648,7 @@ def getArg (self,event,
     
     c.check_event(event)
 
-    ### keysym = gui.eventKeysym(event)
-    char = event and event.char or None
+    char = event and event.char or ''
     if trace: g.trace(
         'state',state,'char',repr(char),'stroke',repr(stroke),
         'escapes',k.getArgEscapes,
@@ -762,8 +757,7 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
     
     c.check_event(event)
 
-    ### keysym = gui.eventKeysym(event)
-    char = event.char
+    char = event and event.char or ''
     # g.trace('state',state,'char',char)
     if state == 0:
         k.arg = ''
@@ -1055,14 +1049,11 @@ def escEvaluate (self,event):
 p = c.p
 gui = g.app.gui
 stroke = event and event.stroke or ''
-ch = char = event and event.char or ''
-####ch = gui.eventChar(event)
-####keysym = gui.eventKeysym(event)
-#### stroke = gui.eventStroke(event)
+ch = event and event.char or ''
 
-if char == 'Return':
+if ch == 'Return':
     ch = '\n' # This fixes the MacOS return bug.
-if char == 'Tab':
+if ch == 'Tab':
     ch = '\t'
 name = c.widget_name(w)
 oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
@@ -1157,10 +1148,7 @@ def auto_completer_state_handler (self,event):
     tag = 'auto-complete' ; state = k.getState(tag)
     
     c.check_event(event)
-    
-    #### ch = gui.eventChar(event)
-    #### keysym = gui.eventKeysym(event)
-    ####stroke = gui.eventStroke(event)
+
     char = event and event.char or ''
     stroke = event and event.stroke or ''
     is_plain = k.isPlainKey(stroke)
@@ -1272,8 +1260,7 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
     
     c.check_event(event)
     
-    ### keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
-    char = ch = event and event.char or ''
+    ch = char = event and event.char or ''
     trace = False or c.config.getBool('trace_modes') ; verbose = True
     if trace: g.trace('state',state,char)
     if state == 0:
@@ -1375,8 +1362,7 @@ def repeatComplexCommandHelper (self,event):
     
     c.check_event(event)
 
-    ### keysym = gui.eventKeysym(event)
-    char = event.char
+    char = event and event.char or ''
    
     if char == 'Return' and k.mb_history:
     # if k.mb_history:
@@ -1407,8 +1393,7 @@ def getArg (self,event,
     
     c.check_event(event)
 
-    ### keysym = gui.eventKeysym(event)
-    char = event and event.char or None
+    char = event and event.char or ''
     if trace: g.trace(
         'state',state,'char',repr(char),'stroke',repr(stroke),
         'escapes',k.getArgEscapes,
@@ -1517,8 +1502,7 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
     
     c.check_event(event)
 
-    ### keysym = gui.eventKeysym(event)
-    char = event.char
+    char = event and event.char or ''
     # g.trace('state',state,'char',char)
     if state == 0:
         k.arg = ''
@@ -1703,14 +1687,11 @@ def expandAbbrev (self,event,stroke):
 p = c.p
 gui = g.app.gui
 stroke = event and event.stroke or ''
-ch = char = event and event.char or ''
-####ch = gui.eventChar(event)
-####keysym = gui.eventKeysym(event)
-#### stroke = gui.eventStroke(event)
+ch = event and event.char or ''
 
-if char == 'Return':
+if ch == 'Return':
     ch = '\n' # This fixes the MacOS return bug.
-if char == 'Tab':
+if ch == 'Tab':
     ch = '\t'
 name = c.widget_name(w)
 oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
@@ -1741,10 +1722,7 @@ def auto_completer_state_handler (self,event):
     tag = 'auto-complete' ; state = k.getState(tag)
     
     c.check_event(event)
-    
-    #### ch = gui.eventChar(event)
-    #### keysym = gui.eventKeysym(event)
-    ####stroke = gui.eventStroke(event)
+
     char = event and event.char or ''
     stroke = event and event.stroke or ''
     is_plain = k.isPlainKey(stroke)
@@ -1910,8 +1888,7 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
     
     c.check_event(event)
     
-    ### keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
-    char = ch = event and event.char or ''
+    ch = char = event and event.char or ''
     trace = False or c.config.getBool('trace_modes') ; verbose = True
     if trace: g.trace('state',state,char)
     if state == 0:
@@ -2014,8 +1991,7 @@ def getArg (self,event,
     
     c.check_event(event)
 
-    ### keysym = gui.eventKeysym(event)
-    char = event and event.char or None
+    char = event and event.char or ''
     if trace: g.trace(
         'state',state,'char',repr(char),'stroke',repr(stroke),
         'escapes',k.getArgEscapes,
@@ -2124,8 +2100,7 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
     
     c.check_event(event)
 
-    ### keysym = gui.eventKeysym(event)
-    char = event.char
+    char = event and event.char or ''
     # g.trace('state',state,'char',char)
     if state == 0:
         k.arg = ''
@@ -2629,11 +2604,9 @@ def masterCommand (self,event,func,stroke,commandName=None):
     c.setLog()
     c.startRedrawCount = c.frame.tree.redrawCount
     k.stroke = stroke # Set this global for general use.
-    ### keysym = gui.eventKeysym(event)
-    ### ch = gui.eventChar(event)
-    ### w = gui.eventWidget(event)
+
     char = ch = event and event.char or ''
-    w = event.w
+    w = event and event.w
     state = event and hasattr(event,'state') and event.state or 0
     k.func = func
     k.funcReturn = None # For unit testing.
@@ -2876,8 +2849,7 @@ def getArg (self,event,
     
     c.check_event(event)
 
-    ### keysym = gui.eventKeysym(event)
-    char = event and event.char or None
+    char = event and event.char or ''
     if trace: g.trace(
         'state',state,'char',repr(char),'stroke',repr(stroke),
         'escapes',k.getArgEscapes,
@@ -2986,8 +2958,7 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
     
     c.check_event(event)
 
-    ### keysym = gui.eventKeysym(event)
-    char = event.char
+    char = event and event.char or ''
     # g.trace('state',state,'char',char)
     if state == 0:
         k.arg = ''
@@ -4194,11 +4165,9 @@ def masterCommand (self,event,func,stroke,commandName=None):
     c.setLog()
     c.startRedrawCount = c.frame.tree.redrawCount
     k.stroke = stroke # Set this global for general use.
-    ### keysym = gui.eventKeysym(event)
-    ### ch = gui.eventChar(event)
-    ### w = gui.eventWidget(event)
+
     char = ch = event and event.char or ''
-    w = event.w
+    w = event and event.w
     state = event and hasattr(event,'state') and event.state or 0
     k.func = func
     k.funcReturn = None # For unit testing.
@@ -4573,7 +4542,7 @@ def selfInsertCommand(self,event,action='insert'):
     w = self.editWidget(event)
     if not w: return # (for Tk) 'break'
     << set local vars >>
-    if trace: g.trace('ch',repr(ch),'char',repr(char)) # ,'stroke',repr(stroke))
+    if trace: g.trace('ch',repr(ch),'stroke',stroke)
     if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
         return # (for Tk) "break" # The hook claims to have handled the event.
     if ch == '\t':
@@ -4619,14 +4588,11 @@ def selfInsertCommand(self,event,action='insert'):
 p = c.p
 gui = g.app.gui
 stroke = event and event.stroke or ''
-ch = char = event and event.char or ''
-####ch = gui.eventChar(event)
-####keysym = gui.eventKeysym(event)
-#### stroke = gui.eventStroke(event)
+ch = event and event.char or ''
 
-if char == 'Return':
+if ch == 'Return':
     ch = '\n' # This fixes the MacOS return bug.
-if char == 'Tab':
+if ch == 'Tab':
     ch = '\t'
 name = c.widget_name(w)
 oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
@@ -5162,10 +5128,7 @@ def auto_completer_state_handler (self,event):
     tag = 'auto-complete' ; state = k.getState(tag)
     
     c.check_event(event)
-    
-    #### ch = gui.eventChar(event)
-    #### keysym = gui.eventKeysym(event)
-    ####stroke = gui.eventStroke(event)
+
     char = event and event.char or ''
     stroke = event and event.stroke or ''
     is_plain = k.isPlainKey(stroke)
@@ -5262,8 +5225,7 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
     
     c.check_event(event)
     
-    ### keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
-    char = ch = event and event.char or ''
+    ch = char = event and event.char or ''
     trace = False or c.config.getBool('trace_modes') ; verbose = True
     if trace: g.trace('state',state,char)
     if state == 0:
@@ -5417,8 +5379,7 @@ def repeatComplexCommandHelper (self,event):
     
     c.check_event(event)
 
-    ### keysym = gui.eventKeysym(event)
-    char = event.char
+    char = event and event.char or ''
    
     if char == 'Return' and k.mb_history:
     # if k.mb_history:
@@ -5488,8 +5449,7 @@ def getArg (self,event,
     
     c.check_event(event)
 
-    ### keysym = gui.eventKeysym(event)
-    char = event and event.char or None
+    char = event and event.char or ''
     if trace: g.trace(
         'state',state,'char',repr(char),'stroke',repr(stroke),
         'escapes',k.getArgEscapes,
@@ -5605,7 +5565,6 @@ def masterKeyHandler (self,event,stroke=None):
 .. @+node:ekr.20061031131434.147: *8* << define vars >>
 w = event.widget
 char = event and event.char or ''
-### keysym = char ## temporary.
 stroke = event and event.stroke or ''
 w_name = c.widget_name(w)
 state = k.state.kind
@@ -5627,7 +5586,6 @@ def callStateFunction (self,event):
 
     k = self ; val = None 
     
-    ## ch = g.app.gui.eventChar(event)
     ch = event and event.char or ''
 
     # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
@@ -5872,10 +5830,8 @@ def updateLabel (self,event):
     c.check_event(event)
 
     ch = char = (event and event.char) or ''
-    ### keysym = (event and event.keysym) or ''
 
-    trace and g.trace('ch',ch,'k.stroke',k.stroke)
-    # g.trace(g.callers())
+    if trace: g.trace('ch',ch,'k.stroke',k.stroke)
 
     if ch and ch not in ('\n','\r'):
         c.widgetWantsFocusNow(w)
@@ -5903,8 +5859,7 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
     
     c.check_event(event)
 
-    ### keysym = gui.eventKeysym(event)
-    char = event.char
+    char = event and event.char or ''
     # g.trace('state',state,'char',char)
     if state == 0:
         k.arg = ''
@@ -6031,8 +5986,7 @@ def universalDispatcher (self,event):
         k.repeatCount = 1
     elif state == 1:
         # stroke = k.stroke # Warning: k.stroke is always Alt-u
-        ### keysym = gui.eventKeysym(event)
-        char = event.char
+        char = event and event.char or ''
         # g.trace(state,char)
         if char == 'Escape':
             k.keyboardQuit()
@@ -6148,7 +6102,7 @@ def executeNTimes (self,event,n,stroke):
 def doControlU (self,event,stroke):
 
     k = self ; c = k.c
-    ## ch = g.app.gui.eventChar(event)
+
     ch = event and event.char or ''
 
     k.setLabelBlue('Control-u %s' % g.stripBrackets(stroke))
@@ -6174,7 +6128,6 @@ def __init__ (self,c,char,stroke,w,x,y,x_root,y_root):
     
     self.c = c
     self.char = char or ''
-    ## self.keysym = char or '' ## Temporary.
     self.stroke = stroke or ''
     self.w = self.widget = w
     
@@ -6340,7 +6293,6 @@ def __init__ (self,c,char,stroke,w,x,y,x_root,y_root):
     
     self.c = c
     self.char = char or ''
-    ## self.keysym = char or '' ## Temporary.
     self.stroke = stroke or ''
     self.w = self.widget = w
     

@@ -3209,14 +3209,11 @@ class editCommandsClass (baseEditCommandsClass):
         p = c.p
         gui = g.app.gui
         stroke = event and event.stroke or ''
-        ch = char = event and event.char or ''
-        ####ch = gui.eventChar(event)
-        ####keysym = gui.eventKeysym(event)
-        #### stroke = gui.eventStroke(event)
+        ch = event and event.char or ''
 
-        if char == 'Return':
+        if ch == 'Return':
             ch = '\n' # This fixes the MacOS return bug.
-        if char == 'Tab':
+        if ch == 'Tab':
             ch = '\t'
         name = c.widget_name(w)
         oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
@@ -3226,7 +3223,7 @@ class editCommandsClass (baseEditCommandsClass):
         inBrackets = ch and g.toUnicode(ch) in brackets
         # if trace: g.trace(name,repr(ch),ch and ch in brackets)
         #@-<< set local vars >>
-        if trace: g.trace('ch',repr(ch),'char',repr(char)) # ,'stroke',repr(stroke))
+        if trace: g.trace('ch',repr(ch),'stroke',stroke)
         if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
             return # (for Tk) "break" # The hook claims to have handled the event.
         if ch == '\t':
@@ -4775,9 +4772,7 @@ class editCommandsClass (baseEditCommandsClass):
         kind is in ('up/down-half-page/line/page)'''
 
         k = self.k ; c = k.c ; gui = g.app.gui
-        ## w = gui.eventWidget(event)
-        w = event.w
-
+        w = event and event.w
         if not w: return
 
         if hasattr(w,'scrollDelegate'):
@@ -4790,8 +4785,7 @@ class editCommandsClass (baseEditCommandsClass):
         #Scroll body pane up/down (direction) by page/half-page/line (distance)
         #Note: Currently moves cursor, scrolls if needed to keep cursor visible
         k = self.k ; c = k.c ; gui = g.app.gui
-        ## w = gui.eventWidget(event)
-        w = event.w
+        w = event and event.w
         if not w: return #  This does **not** require a text widget.
 
         if gui.isTextWidget(w):
