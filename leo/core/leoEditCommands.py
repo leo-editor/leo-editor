@@ -78,7 +78,9 @@ class baseEditCommandsClass:
 
         '''Do the common processing at the start of each command.'''
 
-        return self.beginCommandHelper(ch=event.char,undoType=undoType,w=event.widget)
+        return self.beginCommandHelper(
+            ch=event and event.char or '',
+            undoType=undoType,w=event.widget)
     #@+node:ekr.20051215102349: *5* beingCommandHelper
     # New in Leo 4.4b4: calling beginCommand is valid for all widgets,
     # but does nothing unless we are in the body pane.
@@ -339,7 +341,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         trace = False and not g.unitTesting
         k = self.k ; c = self.c
-        ch = event.char
+        ch = event and event.char or ''
         w = self.editWidget(event,forceFocus=False)
         if not w: return False
         if w.hasSelection(): return False
@@ -354,11 +356,12 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 ):
                     ch = ''
                 else:
-                    ch = event.char
+                    ch = event and event.char or ''
         else:
             ch = event.char
             
-        if trace: g.trace('event.char',repr(event.char),'ch',repr(ch),'stroke',repr(stroke))
+        if trace: g.trace(
+            'event.char',repr(event and event.char),'ch',repr(ch),'stroke',repr(stroke))
 
         if len(ch) != 1 or (len(ch) == 1 and ch.isalpha()):
             # Normal chars other special chars abort abbreviations.
@@ -1860,7 +1863,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Cycle the keyboard focus between Leo's outline, body and log panes.'''
 
-        c = self.c ; k = c.k ; w = event.widget
+        c = self.c ; k = c.k ; w = event and event.widget
 
         body = c.frame.body.bodyCtrl
         log  = c.frame.log.logCtrl
@@ -2114,7 +2117,7 @@ class editCommandsClass (baseEditCommandsClass):
             ch1, stroke1 = data1
             ch2, stroke2 = data2
 
-            if state == 'esc esc' and event.char == ':':
+            if state == 'esc esc' and event and event.char == ':':
                 self.evalExpression(event)
             elif state == 'evaluate':
                 self.escEvaluate(event)
@@ -2122,7 +2125,7 @@ class editCommandsClass (baseEditCommandsClass):
             elif stroke1 == 'Escape' and stroke2 == 'Escape':
                 k.setState('escape','esc esc')
                 k.setLabel('Esc Esc -')
-            elif event.char not in ('Shift_L','Shift_R'):
+            elif not event or event.char not in ('Shift_L','Shift_R'):
                 k.keyboardQuit()
     #@+node:ekr.20050920084036.64: *4* escEvaluate (Revise)
     def escEvaluate (self,event):
@@ -3786,7 +3789,8 @@ class editCommandsClass (baseEditCommandsClass):
                     x,y,width,height = bbox
                     # bbox: x,y,width,height;  dlineinfo: x,y,width,height,offset
                     g.trace('gui_ins',gui_ins,'dlineinfo',w.dlineinfo(gui_ins),'bbox',bbox)
-                    g.trace('ins',ins,'row',row,'col',col,'event.x',event.x,'event.y',event.y)
+                    g.trace('ins',ins,'row',row,'col',col,
+                        'event.x',event and event.x,'event.y',event and event.y)
                     g.trace('subtracting line height',w.index('@%s,%s' % (x,y-height)))
                     g.trace('adding      line height',w.index('@%s,%s' % (x,y+height)))
             i,j = g.getLine(s,ins)
@@ -6896,8 +6900,9 @@ class macroCommandsClass (baseEditCommandsClass):
 
         for event in macro:
             # New in Leo 4.6: macro entries are leoKeyEvents.
-            g.trace(event.stroke)
-            k.masterKeyHandler(event,stroke=event.stroke)
+            if event:
+                g.trace(event.stroke)
+                k.masterKeyHandler(event,stroke=event.stroke)
     #@+node:ekr.20050920084036.196: *3* loadFile & helper
     def loadFile (self,event):
 
@@ -7346,6 +7351,8 @@ class registerCommandsClass (baseEditCommandsClass):
         c = self.c ; k = self.k
         tag = 'append-to-register' ; state = k.getState(tag)
         
+        char = event and event.char or ''
+        
         if state == 0:
             k.commandName = tag
             k.setLabelBlue('Append to Register: ',protect=True)
@@ -7353,10 +7360,10 @@ class registerCommandsClass (baseEditCommandsClass):
         else:
             k.clearState()
             if self.checkBodySelection():
-                if event.char.isalpha():
+                if char.isalpha():
                     w = c.frame.body.bodyCtrl
                     c.bodyWantsFocus()
-                    key = event.char.lower()
+                    key = char.lower()
                     val = self.registers.get(key,'')
                     val = val + w.getSelectedText()
                     self.registers[key] = val
@@ -7372,6 +7379,8 @@ class registerCommandsClass (baseEditCommandsClass):
         c = self.c ; k = self.k
         tag = 'prepend-to-register' ; state = k.getState(tag)
         
+        char = event and event.char or ''
+        
         if state == 0:
             k.commandName = tag
             k.setLabelBlue('Prepend to Register: ',protect=True)
@@ -7379,10 +7388,10 @@ class registerCommandsClass (baseEditCommandsClass):
         else:
             k.clearState()
             if self.checkBodySelection():
-                if event.char.isalpha():
+                if char.isalpha():
                     w = c.frame.body.bodyCtrl
                     c.bodyWantsFocus()
-                    key = event.char.lower()
+                    key = char.lower()
                     val = self.registers.get(key,'')
                     val = w.getSelectedText() + val
                     self.registers[key] = val
@@ -7398,6 +7407,8 @@ class registerCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = self.k ; state = k.getState('copy-rect-to-reg')
         
+        char = event and event.char or ''
+        
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if not w: return
@@ -7406,8 +7417,8 @@ class registerCommandsClass (baseEditCommandsClass):
             k.setState('copy-rect-to-reg',1,self.copyRectangleToRegister)
         elif self.checkBodySelection('No rectangle selected'):
             k.clearState()
-            if event.char.isalpha():
-                key = event.char.lower()
+            if char.isalpha():
+                key = char.lower()
                 w = self.w
                 c.widgetWantsFocusNow(w)
                 r1, r2, r3, r4 = self.getRectanglePoints(w)
@@ -7429,6 +7440,8 @@ class registerCommandsClass (baseEditCommandsClass):
         c = self.c ; k = self.k
         tag = 'copy-to-register' ; state = k.getState(tag)
         
+        char = event and event.char or ''
+        
         if state == 0:
             k.commandName = tag
             k.setLabelBlue('Copy to Register: ',protect=True)
@@ -7436,8 +7449,8 @@ class registerCommandsClass (baseEditCommandsClass):
         else:
             k.clearState()
             if self.checkBodySelection():
-                if event.char.isalpha():
-                    key = event.char.lower()
+                if char.isalpha():
+                    key = char.lower()
                     w = c.frame.body.bodyCtrl
                     c.bodyWantsFocus()
                     val = w.getSelectedText()
@@ -7453,6 +7466,8 @@ class registerCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = self.k ; state = k.getState('increment-reg')
         
+        char = event and event.char or ''
+        
         if state == 0:
             k.setLabelBlue('Increment register: ',protect=True)
             k.setState('increment-reg',1,self.incrementRegister)
@@ -7460,8 +7475,8 @@ class registerCommandsClass (baseEditCommandsClass):
             k.clearState()
             if self._checkIfRectangle(event):
                 pass # Error message is in the label.
-            elif event.char.isalpha():
-                key = event.char.lower()
+            elif char.isalpha():
+                key = char.lower()
                 val = self.registers.get(key,0)
                 try:
                     val = str(int(val)+1)
@@ -7479,16 +7494,18 @@ class registerCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = self.k ; state = k.getState('insert-reg')
         
+        char = event and event.char or ''
+        
         if state == 0:
             k.commandName = 'insert-register'
             k.setLabelBlue('Insert register: ',protect=True)
             k.setState('insert-reg',1,self.insertRegister)
         else:
             k.clearState()
-            if event.char.isalpha():
+            if char.isalpha():
                 w = c.frame.body.bodyCtrl
                 c.bodyWantsFocus()
-                key = event.char.lower()
+                key = char.lower()
                 val = self.registers.get(key)
                 if val:
                     if type(val)==type([]):
@@ -7509,14 +7526,16 @@ class registerCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = self.k ; state = k.getState('jump-to-reg')
         
+        char = event and event.char or ''
+        
         if state == 0:
             k.setLabelBlue('Jump to register: ',protect=True)
             k.setState('jump-to-reg',1,self.jumpToRegister)
         else:
             k.clearState()
-            if event.char.isalpha():
+            if char.isalpha():
                 if self._checkIfRectangle(event): return
-                key = event.char.lower()
+                key = char.lower()
                 val = self.registers.get(key)
                 w = c.frame.body.bodyCtrl
                 c.bodyWantsFocus()
@@ -7553,7 +7572,7 @@ class registerCommandsClass (baseEditCommandsClass):
         else:
             k.clearState()
             if char.isalpha():
-                # self.registers[event.char.lower()] = str(0)
+                # self.registers[char.lower()] = str(0)
                 k.setLabelGrey('number-to-register not ready yet.')
             else:
                 k.setLabelGrey('Register must be a letter')
@@ -7575,7 +7594,7 @@ class registerCommandsClass (baseEditCommandsClass):
             if char.isalpha():
                 w = c.frame.body.bodyCtrl
                 c.bodyWantsFocus()
-                key = event.char.lower()
+                key = char.lower()
                 val = w.getInsertPoint()
                 self.registers[key] = val
                 k.setLabelGrey('Register %s = %s' % (key,repr(val)))
@@ -7589,7 +7608,7 @@ class registerCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = self.k ; state = k.getState('view-reg')
         
-        
+        char = event and event.char or ''
 
         if state == 0:
             k.commandName = 'view-register'
@@ -7597,8 +7616,8 @@ class registerCommandsClass (baseEditCommandsClass):
             k.setState('view-reg',1,self.viewRegister)
         else:
             k.clearState()
-            if event.char.isalpha():
-                key = event.char.lower()
+            if char.isalpha():
+                key = char.lower()
                 val = self.registers.get(key)
                 k.setLabelGrey('Register %s = %s' % (key,repr(val)))
             else:
@@ -8467,7 +8486,7 @@ class searchCommandsClass (baseEditCommandsClass):
 
         trace = False and not g.unitTesting
         c = self.c ; k = self.k
-        stroke = event.stroke
+        stroke = event and event.stroke or ''
         if trace: g.trace('stroke',repr(stroke))
 
         # No need to recognize ctrl-z.

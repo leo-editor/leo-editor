@@ -208,12 +208,6 @@ class leoGui:
         event = self.create_key_event(c,char,stroke,w)
         c.k.masterKeyHandler(event,stroke=event.stroke)
         c.outerUpdate()
-
-    # def event_generate(self,c,w,kind,*args,**keys):
-        # '''Generate an event.'''
-        # # g.trace('baseGui','kind',kind,'args,keys',*args,**keys)
-        # return w.event_generate(kind,*args,**keys)
-        # # g.trace('can not happen: must be defined in subclasses')
     #@+node:ekr.20061109212618: *3* Must be defined in subclasses
     #@+node:ekr.20031218072017.3723: *4* app.gui create & destroy
     #@+node:ekr.20031218072017.3724: *5* createRootWindow

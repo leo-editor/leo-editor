@@ -1972,7 +1972,7 @@ class keyHandlerClass:
 
         char = ch = event and event.char or ''
         w = event and event.w
-        state = event and hasattr(event,'state') and event.state or 0
+        state = event and hasattr(event,'state') and event.state or 0 ####
         k.func = func
         k.funcReturn = None # For unit testing.
         commandName = commandName or func and func.__name__ or '<no function>'
@@ -2122,7 +2122,7 @@ class keyHandlerClass:
         elif name.startswith('log'):
             i = w.logCtrl.getInsertPoint()
             if not stroke:
-                stroke = event.stroke # 2010/05/04.
+                stroke = event and event.stroke
             if stroke.lower() == 'return': stroke = '\n'
             elif stroke.lower() == 'tab': stroke = '\t'
             elif stroke.lower() == 'backspace': stroke = '\b'
@@ -2205,18 +2205,18 @@ class keyHandlerClass:
         func = c.commandsDict.get(commandName)
         k.newMinibufferWidget = None
 
-        # g.trace(func and func.__name__,'mb_event',event.widget.widgetName)
+        # g.trace(func and func.__name__,'mb_event',event and event.widget.widgetName)
         if func:
             # These must be done *after* getting the command.
             k.clearState()
             k.resetLabel()
             if commandName != 'repeat-complex-command':
                 k.mb_history.insert(0,commandName)
-            w = event.widget
+            w = event and event.widget
             if hasattr(w,'permanent') and not w.permanent:
                 g.es('Can not execute commands from headlines')
             else:
-                c.widgetWantsFocusNow(event.widget) # Important, so cut-text works, e.g.
+                c.widgetWantsFocusNow(event and event.widget) # Important, so cut-text works, e.g.
                 func(event)
             k.endCommand(commandName)
         else:
@@ -2659,7 +2659,7 @@ class keyHandlerClass:
         elif char == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
             if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
             if k.oneCharacterArg:
-                k.arg = event.char
+                k.arg = char ##
             else:
                 k.arg = k.getLabel(ignorePrompt=True)
             kind,n,handler = k.afterGetArgState
@@ -2818,7 +2818,7 @@ class keyHandlerClass:
 
         #@+<< define vars >>
         #@+node:ekr.20061031131434.147: *5* << define vars >>
-        w = event.widget
+        w = event and event.widget
         char = event and event.char or ''
         stroke = event and event.stroke or ''
         w_name = c.widget_name(w)
@@ -2847,7 +2847,9 @@ class keyHandlerClass:
         
         if traceGC: g.printNewObjects('masterKey 1')
         if trace and verbose: g.trace('stroke:',repr(stroke),'char:',
-            repr(event.char),'ch:',repr(event.char),'state',state,'state2',k.unboundKeyAction)
+            repr(event and event.char),
+            'ch:',repr(event and event.char),
+            'state',state,'state2',k.unboundKeyAction)
 
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
@@ -3076,7 +3078,7 @@ class keyHandlerClass:
         # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
 
         if trace and verbose: g.trace('ch: %s, stroke %s' % (
-            repr(event.char),repr(stroke)))
+            repr(event and event.char),repr(stroke)))
 
         # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
 
@@ -3126,7 +3128,7 @@ class keyHandlerClass:
 
         k = self ; c = k.c ; gui = g.app.gui
         if not event: return
-        w = event.widget ; wname = c.widget_name(w)
+        w = event and event.widget ; wname = c.widget_name(w)
         trace = not g.app.unitTesting and (False or k.trace_masterClickHandler)
 
         if trace: g.trace(wname,func and func.__name__)
@@ -3147,7 +3149,7 @@ class keyHandlerClass:
             c.frame.body.onClick(event) # New in Leo 4.4.2.
         elif wname.startswith('mini'):
             # x,y = gui.eventXY(event)
-            x,y = event.x,event.y
+            x,y = event and event.x,event and event.y
             x = w.xyToPythonIndex(x,y)
             i,j = k.getEditableTextRange()
             if i <= x <= j:
@@ -3498,7 +3500,6 @@ class keyHandlerClass:
                 if event:
                     event.w = event.widget = k.modeWidget
                 else:
-                    # event = g.Bunch(widget = k.modeWidget)
                     event = g.app.gui.create_key_event(c,None,None,k.modeWidget)
                 if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
                 func(event)
@@ -4427,23 +4428,25 @@ class keyHandlerClass:
 
         trace = False and not g.unitTesting
         c,k = self.c,self
+        
+        w = event and event.widget
+        stroke = stroke or ''
 
         if stroke == k.fullCommandKey:
             for z in range(n):
                 k.fullCommand()
         else:
             stroke = g.stripBrackets(stroke)
-            b = k.getPaneBinding(stroke,event.widget)
+            b = k.getPaneBinding(stroke,event and event.widget)
             if b:
                 if trace: g.trace('repeat',n,'method',b.func.__name__,
-                    'stroke',stroke,'widget',event.widget)
+                    'stroke',stroke,'widget',w)
                 for z in range(n):
                     event = g.app.gui.create_key_event(c,None,stroke,w)
                     k.masterCommand(event,stroke)
             else:
-                w = event.widget
                 for z in range(n):
-                    k.masterKeyHandler(event,stroke=event.stroke)
+                    k.masterKeyHandler(event,stroke=stroke) ###
     #@+node:ekr.20061031131434.203: *4* doControlU
     def doControlU (self,event,stroke):
 

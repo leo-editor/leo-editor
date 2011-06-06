@@ -10,13 +10,17 @@
 @nocolor-node
 
 To do:
-    
-- Check that all event.ivar references are guarded.
 
-- Use only a single kev arg to k.masterKeyHandler.
+** Remove state var in k.masterKeyHandler.
+
+- Use ascii event.char for gang of four: remove all special cases for them.
+
+- Test event.stroke throughout Leo's core.
+
+- Use only a single event arg to k.masterKeyHandler.
    This simplifies the macro handling.
 
-? Leave BackSpace,LineFeed,Return and Tab alone?
+- Remove special casses for the gang of four.
 
 - Improve/rewrite the theory of operation.
 
@@ -220,7 +224,7 @@ def expandAbbrev (self,event,stroke):
 
     trace = False and not g.unitTesting
     k = self.k ; c = self.c
-    ch = event.char
+    ch = event and event.char or ''
     w = self.editWidget(event,forceFocus=False)
     if not w: return False
     if w.hasSelection(): return False
@@ -235,11 +239,12 @@ def expandAbbrev (self,event,stroke):
             ):
                 ch = ''
             else:
-                ch = event.char
+                ch = event and event.char or ''
     else:
         ch = event.char
         
-    if trace: g.trace('event.char',repr(event.char),'ch',repr(ch),'stroke',repr(stroke))
+    if trace: g.trace(
+        'event.char',repr(event and event.char),'ch',repr(ch),'stroke',repr(stroke))
 
     if len(ch) != 1 or (len(ch) == 1 and ch.isalpha()):
         # Normal chars other special chars abort abbreviations.
@@ -353,7 +358,7 @@ def iSearchStateHandler (self,event):
 
     trace = False and not g.unitTesting
     c = self.c ; k = self.k
-    stroke = event.stroke
+    stroke = event and event.stroke or ''
     if trace: g.trace('stroke',repr(stroke))
 
     # No need to recognize ctrl-z.
@@ -523,7 +528,7 @@ def handleDefaultChar(self,event,stroke):
     elif name.startswith('log'):
         i = w.logCtrl.getInsertPoint()
         if not stroke:
-            stroke = event.stroke # 2010/05/04.
+            stroke = event and event.stroke
         if stroke.lower() == 'return': stroke = '\n'
         elif stroke.lower() == 'tab': stroke = '\t'
         elif stroke.lower() == 'backspace': stroke = '\b'
@@ -606,18 +611,18 @@ def callAltXFunction (self,event):
     func = c.commandsDict.get(commandName)
     k.newMinibufferWidget = None
 
-    # g.trace(func and func.__name__,'mb_event',event.widget.widgetName)
+    # g.trace(func and func.__name__,'mb_event',event and event.widget.widgetName)
     if func:
         # These must be done *after* getting the command.
         k.clearState()
         k.resetLabel()
         if commandName != 'repeat-complex-command':
             k.mb_history.insert(0,commandName)
-        w = event.widget
+        w = event and event.widget
         if hasattr(w,'permanent') and not w.permanent:
             g.es('Can not execute commands from headlines')
         else:
-            c.widgetWantsFocusNow(event.widget) # Important, so cut-text works, e.g.
+            c.widgetWantsFocusNow(event and event.widget) # Important, so cut-text works, e.g.
             func(event)
         k.endCommand(commandName)
     else:
@@ -668,7 +673,7 @@ def getArg (self,event,
     elif char == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
         if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
         if k.oneCharacterArg:
-            k.arg = event.char
+            k.arg = char ##
         else:
             k.arg = k.getLabel(ignorePrompt=True)
         kind,n,handler = k.afterGetArgState
@@ -955,7 +960,7 @@ def expandAbbrev (self,event,stroke):
 
     trace = False and not g.unitTesting
     k = self.k ; c = self.c
-    ch = event.char
+    ch = event and event.char or ''
     w = self.editWidget(event,forceFocus=False)
     if not w: return False
     if w.hasSelection(): return False
@@ -970,11 +975,12 @@ def expandAbbrev (self,event,stroke):
             ):
                 ch = ''
             else:
-                ch = event.char
+                ch = event and event.char or ''
     else:
         ch = event.char
         
-    if trace: g.trace('event.char',repr(event.char),'ch',repr(ch),'stroke',repr(stroke))
+    if trace: g.trace(
+        'event.char',repr(event and event.char),'ch',repr(ch),'stroke',repr(stroke))
 
     if len(ch) != 1 or (len(ch) == 1 and ch.isalpha()):
         # Normal chars other special chars abort abbreviations.
@@ -1082,7 +1088,7 @@ def iSearchStateHandler (self,event):
 
     trace = False and not g.unitTesting
     c = self.c ; k = self.k
-    stroke = event.stroke
+    stroke = event and event.stroke or ''
     if trace: g.trace('stroke',repr(stroke))
 
     # No need to recognize ctrl-z.
@@ -1236,7 +1242,7 @@ def handleDefaultChar(self,event,stroke):
     elif name.startswith('log'):
         i = w.logCtrl.getInsertPoint()
         if not stroke:
-            stroke = event.stroke # 2010/05/04.
+            stroke = event and event.stroke
         if stroke.lower() == 'return': stroke = '\n'
         elif stroke.lower() == 'tab': stroke = '\t'
         elif stroke.lower() == 'backspace': stroke = '\b'
@@ -1319,18 +1325,18 @@ def callAltXFunction (self,event):
     func = c.commandsDict.get(commandName)
     k.newMinibufferWidget = None
 
-    # g.trace(func and func.__name__,'mb_event',event.widget.widgetName)
+    # g.trace(func and func.__name__,'mb_event',event and event.widget.widgetName)
     if func:
         # These must be done *after* getting the command.
         k.clearState()
         k.resetLabel()
         if commandName != 'repeat-complex-command':
             k.mb_history.insert(0,commandName)
-        w = event.widget
+        w = event and event.widget
         if hasattr(w,'permanent') and not w.permanent:
             g.es('Can not execute commands from headlines')
         else:
-            c.widgetWantsFocusNow(event.widget) # Important, so cut-text works, e.g.
+            c.widgetWantsFocusNow(event and event.widget) # Important, so cut-text works, e.g.
             func(event)
         k.endCommand(commandName)
     else:
@@ -1408,7 +1414,7 @@ def getArg (self,event,
     elif char == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
         if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
         if k.oneCharacterArg:
-            k.arg = event.char
+            k.arg = char ##
         else:
             k.arg = k.getLabel(ignorePrompt=True)
         kind,n,handler = k.afterGetArgState
@@ -1616,7 +1622,7 @@ def expandAbbrev (self,event,stroke):
 
     trace = False and not g.unitTesting
     k = self.k ; c = self.c
-    ch = event.char
+    ch = event and event.char or ''
     w = self.editWidget(event,forceFocus=False)
     if not w: return False
     if w.hasSelection(): return False
@@ -1631,11 +1637,12 @@ def expandAbbrev (self,event,stroke):
             ):
                 ch = ''
             else:
-                ch = event.char
+                ch = event and event.char or ''
     else:
         ch = event.char
         
-    if trace: g.trace('event.char',repr(event.char),'ch',repr(ch),'stroke',repr(stroke))
+    if trace: g.trace(
+        'event.char',repr(event and event.char),'ch',repr(ch),'stroke',repr(stroke))
 
     if len(ch) != 1 or (len(ch) == 1 and ch.isalpha()):
         # Normal chars other special chars abort abbreviations.
@@ -1859,7 +1866,7 @@ def handleDefaultChar(self,event,stroke):
     elif name.startswith('log'):
         i = w.logCtrl.getInsertPoint()
         if not stroke:
-            stroke = event.stroke # 2010/05/04.
+            stroke = event and event.stroke
         if stroke.lower() == 'return': stroke = '\n'
         elif stroke.lower() == 'tab': stroke = '\t'
         elif stroke.lower() == 'backspace': stroke = '\b'
@@ -1942,18 +1949,18 @@ def callAltXFunction (self,event):
     func = c.commandsDict.get(commandName)
     k.newMinibufferWidget = None
 
-    # g.trace(func and func.__name__,'mb_event',event.widget.widgetName)
+    # g.trace(func and func.__name__,'mb_event',event and event.widget.widgetName)
     if func:
         # These must be done *after* getting the command.
         k.clearState()
         k.resetLabel()
         if commandName != 'repeat-complex-command':
             k.mb_history.insert(0,commandName)
-        w = event.widget
+        w = event and event.widget
         if hasattr(w,'permanent') and not w.permanent:
             g.es('Can not execute commands from headlines')
         else:
-            c.widgetWantsFocusNow(event.widget) # Important, so cut-text works, e.g.
+            c.widgetWantsFocusNow(event and event.widget) # Important, so cut-text works, e.g.
             func(event)
         k.endCommand(commandName)
     else:
@@ -2004,7 +2011,7 @@ def getArg (self,event,
     elif char == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
         if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
         if k.oneCharacterArg:
-            k.arg = event.char
+            k.arg = char ##
         else:
             k.arg = k.getLabel(ignorePrompt=True)
         kind,n,handler = k.afterGetArgState
@@ -2442,8 +2449,9 @@ def executeMacro (self,macro):
 
     for event in macro:
         # New in Leo 4.6: macro entries are leoKeyEvents.
-        g.trace(event.stroke)
-        k.masterKeyHandler(event,stroke=event.stroke)
+        if event:
+            g.trace(event.stroke)
+            k.masterKeyHandler(event,stroke=event.stroke)
 .. @+node:ekr.20050920084036.197: *7* loadMacros
 def loadMacros (self,f):
 
@@ -2495,7 +2503,7 @@ def iSearchStateHandler (self,event):
 
     trace = False and not g.unitTesting
     c = self.c ; k = self.k
-    stroke = event.stroke
+    stroke = event and event.stroke or ''
     if trace: g.trace('stroke',repr(stroke))
 
     # No need to recognize ctrl-z.
@@ -2599,7 +2607,7 @@ def masterCommand (self,event,func,stroke,commandName=None):
 
     char = ch = event and event.char or ''
     w = event and event.w
-    state = event and hasattr(event,'state') and event.state or 0
+    state = event and hasattr(event,'state') and event.state or 0 ####
     k.func = func
     k.funcReturn = None # For unit testing.
     commandName = commandName or func and func.__name__ or '<no function>'
@@ -2747,7 +2755,7 @@ def handleDefaultChar(self,event,stroke):
     elif name.startswith('log'):
         i = w.logCtrl.getInsertPoint()
         if not stroke:
-            stroke = event.stroke # 2010/05/04.
+            stroke = event and event.stroke
         if stroke.lower() == 'return': stroke = '\n'
         elif stroke.lower() == 'tab': stroke = '\t'
         elif stroke.lower() == 'backspace': stroke = '\b'
@@ -2862,7 +2870,7 @@ def getArg (self,event,
     elif char == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
         if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
         if k.oneCharacterArg:
-            k.arg = event.char
+            k.arg = char ##
         else:
             k.arg = k.getLabel(ignorePrompt=True)
         kind,n,handler = k.afterGetArgState
@@ -4157,7 +4165,7 @@ def masterCommand (self,event,func,stroke,commandName=None):
 
     char = ch = event and event.char or ''
     w = event and event.w
-    state = event and hasattr(event,'state') and event.state or 0
+    state = event and hasattr(event,'state') and event.state or 0 ####
     k.func = func
     k.funcReturn = None # For unit testing.
     commandName = commandName or func and func.__name__ or '<no function>'
@@ -4305,7 +4313,7 @@ def handleDefaultChar(self,event,stroke):
     elif name.startswith('log'):
         i = w.logCtrl.getInsertPoint()
         if not stroke:
-            stroke = event.stroke # 2010/05/04.
+            stroke = event and event.stroke
         if stroke.lower() == 'return': stroke = '\n'
         elif stroke.lower() == 'tab': stroke = '\t'
         elif stroke.lower() == 'backspace': stroke = '\b'
@@ -4476,7 +4484,7 @@ def watchEscape (self,event):
         ch1, stroke1 = data1
         ch2, stroke2 = data2
 
-        if state == 'esc esc' and event.char == ':':
+        if state == 'esc esc' and event and event.char == ':':
             self.evalExpression(event)
         elif state == 'evaluate':
             self.escEvaluate(event)
@@ -4484,7 +4492,7 @@ def watchEscape (self,event):
         elif stroke1 == 'Escape' and stroke2 == 'Escape':
             k.setState('escape','esc esc')
             k.setLabel('Esc Esc -')
-        elif event.char not in ('Shift_L','Shift_R'):
+        elif not event or event.char not in ('Shift_L','Shift_R'):
             k.keyboardQuit()
 .. @+node:ekr.20050920084036.64: *7* escEvaluate (Revise)
 def escEvaluate (self,event):
@@ -4783,6 +4791,8 @@ def appendToRegister (self,event):
     c = self.c ; k = self.k
     tag = 'append-to-register' ; state = k.getState(tag)
     
+    char = event and event.char or ''
+    
     if state == 0:
         k.commandName = tag
         k.setLabelBlue('Append to Register: ',protect=True)
@@ -4790,10 +4800,10 @@ def appendToRegister (self,event):
     else:
         k.clearState()
         if self.checkBodySelection():
-            if event.char.isalpha():
+            if char.isalpha():
                 w = c.frame.body.bodyCtrl
                 c.bodyWantsFocus()
-                key = event.char.lower()
+                key = char.lower()
                 val = self.registers.get(key,'')
                 val = val + w.getSelectedText()
                 self.registers[key] = val
@@ -4809,6 +4819,8 @@ def prependToRegister (self,event):
     c = self.c ; k = self.k
     tag = 'prepend-to-register' ; state = k.getState(tag)
     
+    char = event and event.char or ''
+    
     if state == 0:
         k.commandName = tag
         k.setLabelBlue('Prepend to Register: ',protect=True)
@@ -4816,10 +4828,10 @@ def prependToRegister (self,event):
     else:
         k.clearState()
         if self.checkBodySelection():
-            if event.char.isalpha():
+            if char.isalpha():
                 w = c.frame.body.bodyCtrl
                 c.bodyWantsFocus()
-                key = event.char.lower()
+                key = char.lower()
                 val = self.registers.get(key,'')
                 val = w.getSelectedText() + val
                 self.registers[key] = val
@@ -4835,6 +4847,8 @@ def copyRectangleToRegister (self,event):
 
     c = self.c ; k = self.k ; state = k.getState('copy-rect-to-reg')
     
+    char = event and event.char or ''
+    
     if state == 0:
         w = self.editWidget(event) # sets self.w
         if not w: return
@@ -4843,8 +4857,8 @@ def copyRectangleToRegister (self,event):
         k.setState('copy-rect-to-reg',1,self.copyRectangleToRegister)
     elif self.checkBodySelection('No rectangle selected'):
         k.clearState()
-        if event.char.isalpha():
-            key = event.char.lower()
+        if char.isalpha():
+            key = char.lower()
             w = self.w
             c.widgetWantsFocusNow(w)
             r1, r2, r3, r4 = self.getRectanglePoints(w)
@@ -4866,6 +4880,8 @@ def copyToRegister (self,event):
     c = self.c ; k = self.k
     tag = 'copy-to-register' ; state = k.getState(tag)
     
+    char = event and event.char or ''
+    
     if state == 0:
         k.commandName = tag
         k.setLabelBlue('Copy to Register: ',protect=True)
@@ -4873,8 +4889,8 @@ def copyToRegister (self,event):
     else:
         k.clearState()
         if self.checkBodySelection():
-            if event.char.isalpha():
-                key = event.char.lower()
+            if char.isalpha():
+                key = char.lower()
                 w = c.frame.body.bodyCtrl
                 c.bodyWantsFocus()
                 val = w.getSelectedText()
@@ -4890,6 +4906,8 @@ def incrementRegister (self,event):
 
     c = self.c ; k = self.k ; state = k.getState('increment-reg')
     
+    char = event and event.char or ''
+    
     if state == 0:
         k.setLabelBlue('Increment register: ',protect=True)
         k.setState('increment-reg',1,self.incrementRegister)
@@ -4897,8 +4915,8 @@ def incrementRegister (self,event):
         k.clearState()
         if self._checkIfRectangle(event):
             pass # Error message is in the label.
-        elif event.char.isalpha():
-            key = event.char.lower()
+        elif char.isalpha():
+            key = char.lower()
             val = self.registers.get(key,0)
             try:
                 val = str(int(val)+1)
@@ -4916,16 +4934,18 @@ def insertRegister (self,event):
 
     c = self.c ; k = self.k ; state = k.getState('insert-reg')
     
+    char = event and event.char or ''
+    
     if state == 0:
         k.commandName = 'insert-register'
         k.setLabelBlue('Insert register: ',protect=True)
         k.setState('insert-reg',1,self.insertRegister)
     else:
         k.clearState()
-        if event.char.isalpha():
+        if char.isalpha():
             w = c.frame.body.bodyCtrl
             c.bodyWantsFocus()
-            key = event.char.lower()
+            key = char.lower()
             val = self.registers.get(key)
             if val:
                 if type(val)==type([]):
@@ -4946,14 +4966,16 @@ def jumpToRegister (self,event):
 
     c = self.c ; k = self.k ; state = k.getState('jump-to-reg')
     
+    char = event and event.char or ''
+    
     if state == 0:
         k.setLabelBlue('Jump to register: ',protect=True)
         k.setState('jump-to-reg',1,self.jumpToRegister)
     else:
         k.clearState()
-        if event.char.isalpha():
+        if char.isalpha():
             if self._checkIfRectangle(event): return
-            key = event.char.lower()
+            key = char.lower()
             val = self.registers.get(key)
             w = c.frame.body.bodyCtrl
             c.bodyWantsFocus()
@@ -4990,7 +5012,7 @@ def numberToRegister (self,event):
     else:
         k.clearState()
         if char.isalpha():
-            # self.registers[event.char.lower()] = str(0)
+            # self.registers[char.lower()] = str(0)
             k.setLabelGrey('number-to-register not ready yet.')
         else:
             k.setLabelGrey('Register must be a letter')
@@ -5012,7 +5034,7 @@ def pointToRegister (self,event):
         if char.isalpha():
             w = c.frame.body.bodyCtrl
             c.bodyWantsFocus()
-            key = event.char.lower()
+            key = char.lower()
             val = w.getInsertPoint()
             self.registers[key] = val
             k.setLabelGrey('Register %s = %s' % (key,repr(val)))
@@ -5026,7 +5048,7 @@ def viewRegister (self,event):
 
     c = self.c ; k = self.k ; state = k.getState('view-reg')
     
-    
+    char = event and event.char or ''
 
     if state == 0:
         k.commandName = 'view-register'
@@ -5034,8 +5056,8 @@ def viewRegister (self,event):
         k.setState('view-reg',1,self.viewRegister)
     else:
         k.clearState()
-        if event.char.isalpha():
-            key = event.char.lower()
+        if char.isalpha():
+            key = char.lower()
             val = self.registers.get(key)
             k.setLabelGrey('Register %s = %s' % (key,repr(val)))
         else:
@@ -5257,18 +5279,18 @@ def callAltXFunction (self,event):
     func = c.commandsDict.get(commandName)
     k.newMinibufferWidget = None
 
-    # g.trace(func and func.__name__,'mb_event',event.widget.widgetName)
+    # g.trace(func and func.__name__,'mb_event',event and event.widget.widgetName)
     if func:
         # These must be done *after* getting the command.
         k.clearState()
         k.resetLabel()
         if commandName != 'repeat-complex-command':
             k.mb_history.insert(0,commandName)
-        w = event.widget
+        w = event and event.widget
         if hasattr(w,'permanent') and not w.permanent:
             g.es('Can not execute commands from headlines')
         else:
-            c.widgetWantsFocusNow(event.widget) # Important, so cut-text works, e.g.
+            c.widgetWantsFocusNow(event and event.widget) # Important, so cut-text works, e.g.
             func(event)
         k.endCommand(commandName)
     else:
@@ -5433,7 +5455,7 @@ def getArg (self,event,
     elif char == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
         if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
         if k.oneCharacterArg:
-            k.arg = event.char
+            k.arg = char ##
         else:
             k.arg = k.getLabel(ignorePrompt=True)
         kind,n,handler = k.afterGetArgState
@@ -5491,7 +5513,9 @@ def masterKeyHandler (self,event,stroke=None):
     
     if traceGC: g.printNewObjects('masterKey 1')
     if trace and verbose: g.trace('stroke:',repr(stroke),'char:',
-        repr(event.char),'ch:',repr(event.char),'state',state,'state2',k.unboundKeyAction)
+        repr(event and event.char),
+        'ch:',repr(event and event.char),
+        'state',state,'state2',k.unboundKeyAction)
 
     # Handle keyboard-quit first.
     if k.abortAllModesKey and stroke == k.abortAllModesKey:
@@ -5527,7 +5551,7 @@ def masterKeyHandler (self,event,stroke=None):
         if trace: g.trace(' unbound',stroke)
         return k.handleUnboundKeys(event,char,stroke)
 .. @+node:ekr.20061031131434.147: *8* << define vars >>
-w = event.widget
+w = event and event.widget
 char = event and event.char or ''
 stroke = event and event.stroke or ''
 w_name = c.widget_name(w)
@@ -5739,7 +5763,7 @@ def handleUnboundKeys (self,event,char,stroke):
     # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
 
     if trace and verbose: g.trace('ch: %s, stroke %s' % (
-        repr(event.char),repr(stroke)))
+        repr(event and event.char),repr(stroke)))
 
     # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
 
@@ -6040,23 +6064,25 @@ def executeNTimes (self,event,n,stroke):
 
     trace = False and not g.unitTesting
     c,k = self.c,self
+    
+    w = event and event.widget
+    stroke = stroke or ''
 
     if stroke == k.fullCommandKey:
         for z in range(n):
             k.fullCommand()
     else:
         stroke = g.stripBrackets(stroke)
-        b = k.getPaneBinding(stroke,event.widget)
+        b = k.getPaneBinding(stroke,event and event.widget)
         if b:
             if trace: g.trace('repeat',n,'method',b.func.__name__,
-                'stroke',stroke,'widget',event.widget)
+                'stroke',stroke,'widget',w)
             for z in range(n):
                 event = g.app.gui.create_key_event(c,None,stroke,w)
                 k.masterCommand(event,stroke)
         else:
-            w = event.widget
             for z in range(n):
-                k.masterKeyHandler(event,stroke=event.stroke)
+                k.masterKeyHandler(event,stroke=stroke) ###
 .. @+node:ekr.20061031131434.203: *8* doControlU
 def doControlU (self,event,stroke):
 
@@ -6201,23 +6227,25 @@ def executeNTimes (self,event,n,stroke):
 
     trace = False and not g.unitTesting
     c,k = self.c,self
+    
+    w = event and event.widget
+    stroke = stroke or ''
 
     if stroke == k.fullCommandKey:
         for z in range(n):
             k.fullCommand()
     else:
         stroke = g.stripBrackets(stroke)
-        b = k.getPaneBinding(stroke,event.widget)
+        b = k.getPaneBinding(stroke,event and event.widget)
         if b:
             if trace: g.trace('repeat',n,'method',b.func.__name__,
-                'stroke',stroke,'widget',event.widget)
+                'stroke',stroke,'widget',w)
             for z in range(n):
                 event = g.app.gui.create_key_event(c,None,stroke,w)
                 k.masterCommand(event,stroke)
         else:
-            w = event.widget
             for z in range(n):
-                k.masterKeyHandler(event,stroke=event.stroke)
+                k.masterKeyHandler(event,stroke=stroke) ###
 .. @+node:ekr.20110605195119.16939: *5* Changed & new...
 .. @+node:ekr.20110605040658.17005: *6* c.check_event
 def check_event (self,event):
@@ -6928,7 +6956,6 @@ def generalModeHandler (self,event,
             if event:
                 event.w = event.widget = k.modeWidget
             else:
-                # event = g.Bunch(widget = k.modeWidget)
                 event = g.app.gui.create_key_event(c,None,None,k.modeWidget)
             if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
             func(event)
