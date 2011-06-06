@@ -8570,19 +8570,10 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20110605195119.16937: *3* create_key_event (leoQtEventFilter) (new)
     def create_key_event (self,event,c,w,ch,tkKey,stroke):
 
-        trace = False and not g.unitTesting
-
-        if trace: g.trace('ch: %s, tkKey: %s, stroke: %s' % (
-            repr(ch),repr(tkKey),repr(stroke)))
-
-        # Last minute-munges to char.
-        if tkKey in ('Return','Tab','Escape',
-            'Linefeed','BackSpace', ####
-        ): # 'Ins'
-            ch = tkKey
+        trace = False and not g.unitTesting ; verbose = True
         
-        stroke = stroke.replace('\t','Tab')
-        tkKey = tkKey.replace('\t','Tab')
+        if trace and verbose: g.trace('ch: %s, tkKey: %s, stroke: %s' % (
+            repr(ch),repr(tkKey),repr(stroke)))
 
         # Patch provided by resi147.
         # See the thread: special characters in MacOSX, like '@'.
@@ -8598,7 +8589,7 @@ class leoQtEventFilter(QtCore.QObject):
                 'Alt-l': '@',
             }
             if tkKey in darwinmap:
-                tkKey = stroke = darwinmap[tkKey]
+                stroke = darwinmap[tkKey]
                 
         char = ch
         # Auxiliary info.
@@ -8608,13 +8599,10 @@ class leoQtEventFilter(QtCore.QObject):
         x_root = hasattr(event,'x_root') and event.x_root or 0
         y_root = hasattr(event,'y_root') and event.y_root or 0
         
-        # Call the base class.
-        # return leoGui.leoGui.create_key_event(self,c,char,stroke,w,
-            # x=x,y=y,x_root=x_root,y_root=y_root)
+        if trace: g.trace('ch: %s, stroke: %s' % (
+            repr(ch),repr(stroke)))
 
         return leoGui.leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
-
-        # g.trace('qt.leoKeyEvent: %s' % repr(self))
     #@+node:ekr.20110605121601.18541: *3* isSpecialOverride
     def isSpecialOverride (self,tkKey,ch):
 
@@ -8866,8 +8854,8 @@ class leoQtEventFilter(QtCore.QObject):
         'Home':'Home',
         # 'Insert':'Insert',
         'Return':'Return',
-        # 'Tab':'Tab',
-        'Tab':'\t', # A hack for QLineEdit.
+        'Tab':'Tab',
+        ### 'Tab':'\t', # A hack for QLineEdit.
         # Unused: Break, Caps_Lock,Linefeed,Num_lock
     }
 
