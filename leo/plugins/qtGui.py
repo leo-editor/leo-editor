@@ -8570,10 +8570,14 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20110605195119.16937: *3* create_key_event (leoQtEventFilter) (new)
     def create_key_event (self,event,c,w,ch,tkKey,stroke):
 
-        trace = False and not g.unitTesting ; verbose = True
+        trace = True and not g.unitTesting ; verbose = True
         
         if trace and verbose: g.trace('ch: %s, tkKey: %s, stroke: %s' % (
             repr(ch),repr(tkKey),repr(stroke)))
+            
+        # A strange patch.
+        if stroke == 'Return':
+            ch = '\n'
 
         # Patch provided by resi147.
         # See the thread: special characters in MacOSX, like '@'.

@@ -2140,7 +2140,7 @@ class editCommandsClass (baseEditCommandsClass):
         if k.getLabel() == 'Eval:':
             k.setLabel('')
 
-        if char == 'Return':
+        if char in ('\n','Return'):
             expression = k.getLabel()
             try:
                 ok = False

@@ -370,7 +370,7 @@ class AutoCompleterClass:
             else:
                 if trace: g.trace('abort: not tabList')
                 self.exit()
-        elif char == 'Return':
+        elif char in ('\n','Return'):
             self.exit()
         elif char == 'Escape':
             self.exit()
@@ -2154,7 +2154,7 @@ class keyHandlerClass:
             pass
         elif char == 'Escape':
             k.keyboardQuit()
-        elif char == 'Return':
+        elif char in ('\n','Return'):
             if trace and verbose: g.trace('***Return')
             c.frame.log.deleteTab('Completion')
             if k.mb_help:
@@ -2484,7 +2484,7 @@ class keyHandlerClass:
         
         char = event and event.char or ''
        
-        if char == 'Return' and k.mb_history:
+        if char in ('\n','Return') and k.mb_history:
             last = k.mb_history [0]
             k.resetLabel()
             k.clearState() # Bug fix.
@@ -2649,7 +2649,7 @@ class keyHandlerClass:
             if useMinibuffer: c.minibufferWantsFocus()
         elif char == 'Escape':
             k.keyboardQuit()
-        elif char == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+        elif char in ('\n','Return',) or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
             if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
             if k.oneCharacterArg:
                 k.arg = char ##
@@ -2805,10 +2805,12 @@ class keyHandlerClass:
 
         '''This is the handler for almost all key bindings.'''
         
-        k,c = self,self.c ; gui = g.app.gui
+        trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+        traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+        verbose = True
         
+        k,c = self,self.c ; gui = g.app.gui
         c.check_event(event)
-
         #@+<< define vars >>
         #@+node:ekr.20061031131434.147: *5* << define vars >>
         w = event and event.widget
@@ -2830,9 +2832,6 @@ class keyHandlerClass:
 
         isPlain =  k.isPlainKey(stroke)
         #@-<< define vars >>
-        trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
-        traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-        verbose = True
 
         if char in special_keys:
             if trace and verbose: g.trace('char',char)
@@ -3707,7 +3706,7 @@ class keyHandlerClass:
             k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
             c.frame.log.clearTab(tabName)
             c.minibufferWantsFocus()
-        elif char == 'Return':
+        elif char in ('\n','Return'):
             k.arg = k.getLabel(ignorePrompt=True)
             handler = k.getFileNameHandler
             c.frame.log.deleteTab(tabName)

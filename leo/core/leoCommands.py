@@ -461,7 +461,7 @@ class Commands (object):
 
         if g.unitTesting:
             if stroke in ('Ins','Delete',):
-                 expected = event.char
+                expected = event.char
                     # disable the test for now.
             elif stroke in ('Backspace','Linefeed','Return','Tab'):
                 expected = event.char
@@ -715,8 +715,8 @@ class Commands (object):
         func = c.commandsDict.get(commandName)
 
         if func:
-            event = g.app.gui.create_key_event(c,None,stroke,w)
-            k.masterCommand(event,func,stroke)
+            event = g.app.gui.create_key_event(c,None,None,None)
+            k.masterCommand(event,func)
             return k.funcReturn
         else:
             g.error('no such command: %s %s' % (commandName,g.callers()))
