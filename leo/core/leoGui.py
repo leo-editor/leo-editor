@@ -204,7 +204,7 @@ class leoGui:
     def event_generate(self,c,char,stroke,w):
 
         event = self.create_key_event(c,char,stroke,w)
-        c.k.masterKeyHandler(event,stroke=event.stroke)
+        c.k.masterKeyHandler(event) ## ,stroke=event.stroke)
         c.outerUpdate()
     #@+node:ekr.20061109212618: *3* Must be defined in subclasses
     #@+node:ekr.20031218072017.3723: *4* app.gui create & destroy

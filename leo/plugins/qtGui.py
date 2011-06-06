@@ -5600,23 +5600,8 @@ class leoQtLog (leoFrame.leoLog):
                 g.es(key,val,tabName='Fonts')
     #@+node:ekr.20110605121601.18336: *5* createBindings (fontPicker)
     def createBindings (self):
-
-        c = self.c ; k = c.k
-
-        # table = (
-            # ('<Button-1>',  k.masterClickHandler),
-            # ('<Double-1>',  k.masterClickHandler),
-            # ('<Button-3>',  k.masterClickHandler),
-            # ('<Double-3>',  k.masterClickHandler),
-            # ('<Key>',       k.masterKeyHandler),
-            # ("<Escape>",    self.hideFontTab),
-        # )
-
-        # w = self.sampleWidget
-        # for event, callback in table:
-            # c.bind(w,event,callback)
-
-        # k.completeAllBindingsForWidget(w)
+        
+        pass
     #@+node:ekr.20110605121601.18337: *5* getFont
     def getFont(self,family=None,size=12,slant='roman',weight='normal'):
 
@@ -8552,7 +8537,7 @@ class leoQtEventFilter(QtCore.QObject):
                     g.trace('bound',repr(stroke)) # repr(aList))
                 w = self.w # Pass the wrapper class, not the wrapped widget.
                 event = self.create_key_event(event,c,w,ch,tkKey,stroke)
-                ret = k.masterKeyHandler(event,stroke=stroke)
+                ret = k.masterKeyHandler(event)
                 c.outerUpdate()
             else:
                 if trace and traceKey and verbose:

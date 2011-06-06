@@ -282,7 +282,7 @@ class textFrame(leoFrame.leoFrame):
     g.trace('char',repr(char),'stroke',repr(stroke))
 
     e = leoTypingEvent(c,w,char,stroke)
-    k.masterKeyHandler(event=e,stroke=key)
+    k.masterKeyHandler(event=e) ## ,stroke=key)
   #@+node:ekr.20081121105001.42: *3* update
   def update(self): pass
   def resizePanesToRatio(self, ratio, ratio2): pass # N/A

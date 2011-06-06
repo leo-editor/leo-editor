@@ -909,32 +909,8 @@ class wxFindTab (leoFind.findTab):
             # w.button.pack(side='top',anchor='w',pady=2,padx=2)
     #@+node:ekr.20090126093408.53: *5* createBindings (wsFindTab) TO DO
     def createBindings (self):
-
-        return ### not ready yet.
-
-        c = self.c ; k = c.k
-
-        def resetWrapCallback(event,self=self,k=k):
-            self.resetWrap(event)
-            return k.masterKeyHandler(event)
-
-        def findButtonBindingCallback(event=None,self=self):
-            self.findButton()
-            return 'break'
-
-        table = (
-            ('<Button-1>',  k.masterClickHandler),
-            ('<Double-1>',  k.masterClickHandler),
-            ('<Button-3>',  k.masterClickHandler),
-            ('<Double-3>',  k.masterClickHandler),
-            ('<Key>',       resetWrapCallback),
-            ('<Return>',    findButtonBindingCallback),
-            ("<Escape>",    self.hideTab),
-        )
-
-        for w in (self.find_ctrl,self.change_ctrl):
-            for event, callback in table:
-                w.bind(event,callback)
+        
+        pass
     #@+node:ekr.20090126093408.54: *5* Support for minibufferFind class (wxFindTab)
     # This is the same as the Tk code because we simulate Tk svars.
     #@+node:ekr.20090126093408.55: *6* getOption
@@ -1263,7 +1239,7 @@ class baseTextWidget (wx.EvtHandler,leoFrame.baseTextWidget):
         keysym = g.app.gui.eventKeysym(event)
         # if keysym: g.trace('base text: keysym:',repr(keysym))
         if keysym:
-            c.k.masterKeyHandler(event,stroke=keysym)
+            c.k.masterKeyHandler(event)
     #@+node:ekr.20090126093408.83: *5* oops
     def oops (self):
 
@@ -4064,7 +4040,7 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
             pass
             # g.trace('standard key',keysym)
         else:
-            c.k.masterKeyHandler(keyEvent,stroke=keysym)
+            c.k.masterKeyHandler(keyEvent)
             # keyEvent.Skip(False) # Try to kill the default key handling.
     #@+node:ekr.20090126093408.872: *6* onHeadlineKey
     # k.handleDefaultChar calls onHeadlineKey.

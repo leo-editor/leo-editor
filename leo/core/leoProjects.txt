@@ -4613,7 +4613,7 @@ def eventFilter(self, obj, event):
                 g.trace('bound',repr(stroke)) # repr(aList))
             w = self.w # Pass the wrapper class, not the wrapped widget.
             event = self.create_key_event(event,c,w,ch,tkKey,stroke)
-            ret = k.masterKeyHandler(event,stroke=stroke)
+            ret = k.masterKeyHandler(event)
             c.outerUpdate()
         else:
             if trace and traceKey and verbose:

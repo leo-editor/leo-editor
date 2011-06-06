@@ -1927,13 +1927,7 @@ class keyHandlerClass:
         # This is the only real key callback.
         def masterBindKeyCallback (event,k=k,stroke=stroke):
             # g.trace(stroke,event.w)
-            return k.masterKeyHandler(event,stroke=stroke)
-
-        if 0:
-            if stroke.lower().endswith('+s') or stroke.lower().endswith('-s'):
-                g.trace(sroke,widgets)
-            if stroke in ('s','S'):
-                g.trace(stroke,widgets)
+            return k.masterKeyHandler(event) # ,stroke=stroke)
 
         for w in widgets:
             if not w: continue
@@ -2801,7 +2795,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.146: *4* masterKeyHandler & helpers
     master_key_count = 0
 
-    def masterKeyHandler (self,event,stroke=None):
+    def masterKeyHandler (self,event): ###,stroke=None):
 
         '''This is the handler for almost all key bindings.'''
         
@@ -3197,7 +3191,7 @@ class keyHandlerClass:
         c.check_event(event)
 
         if stroke:
-            return k.masterKeyHandler(event,stroke=stroke)
+            return k.masterKeyHandler(event) ##,stroke=stroke)
         else:
             return k.masterCommand(event,func,stroke,commandName)
     #@+node:ekr.20061031170011.3: *3* k.Minibuffer
@@ -4433,7 +4427,7 @@ class keyHandlerClass:
                     k.masterCommand(event,stroke)
             else:
                 for z in range(n):
-                    k.masterKeyHandler(event,stroke=stroke) ###
+                    k.masterKeyHandler(event) ## ,stroke=stroke)
     #@+node:ekr.20061031131434.203: *4* doControlU
     def doControlU (self,event,stroke):
 

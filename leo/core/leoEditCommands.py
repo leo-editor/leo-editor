@@ -6904,7 +6904,7 @@ class macroCommandsClass (baseEditCommandsClass):
             # New in Leo 4.6: macro entries are leoKeyEvents.
             if event:
                 g.trace(event.stroke)
-                k.masterKeyHandler(event,stroke=event.stroke)
+                k.masterKeyHandler(event) ## ,stroke=event.stroke)
     #@+node:ekr.20050920084036.196: *3* loadFile & helper
     def loadFile (self,event):
 
@@ -6940,14 +6940,10 @@ class macroCommandsClass (baseEditCommandsClass):
             aList = d.get(name)
             macro = []
             for stroke in aList:
-                # Create a dummy event with just enough attribute
-                # to keep k.masterKeyHandler happy
                 event = g.app.gui.create_key_event(c,None,stroke,w)
                 macro.append(event)
             self.addToDoAltX(name,macro)
                 # sets self.namedMacros[name]=macro
-
-
     #@+node:ekr.20050920084036.198: *3* nameLastKbdMacro
     def nameLastKbdMacro (self,event):
 
@@ -7023,7 +7019,6 @@ class macroCommandsClass (baseEditCommandsClass):
 
         if not self.recordingMacro:
             self.recordingMacro = True
-                # A flag for k.masterCommandHandler & k.masterKeyHandler.
             k.setLabelBlue('Recording macro. ctrl-g to end...',protect=True)
         else:
             g.trace(event)
@@ -8500,7 +8495,7 @@ class searchCommandsClass (baseEditCommandsClass):
         elif stroke.startswith('Ctrl+') or stroke.startswith('Alt+'):
             # End the search and execute the command.
             self.endSearch()
-            k.masterKeyHandler(event,stroke=stroke)
+            k.masterKeyHandler(event) ## ,stroke=stroke)
         else:
             if trace: g.trace('event',event)
             k.updateLabel(event)
