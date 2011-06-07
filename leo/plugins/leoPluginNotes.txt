@@ -810,35 +810,21 @@ def update_rst (self,s,keywords):
     pc = self ; c = pc.c ;  p = c.p
     s = s.strip().strip('"""').strip("'''").strip()
     isHtml = s.startswith('<') and not s.startswith('<<')
-    force = keywords.get('force')
     
-    if force or isHtml:
-        show = True
-        language = 'forced rest'
-    else:
-        aList = g.get_directives_dict_list(p)
-        d = g.scanAtCommentAndAtLanguageDirectives(aList)
-        if d:
-            language = d.get('language')
-            show = language=='rest'
-        else:
-            language = '<no language>'
-            show = False
-
-    if trace: g.trace('language',language,'isHtml',isHtml,'force',force,'show',show)
+    if trace: g.trace('isHtml',isHtml)
     
     # Do this regardless of whether we show the widget or not.
     w = pc.ensure_text_widget()
     assert pc.w
     
-    if show:
+    if s:
         pc.show()
     else:
         if pc.auto_hide:
             pc.hide()
         return
     
-    if got_docutils and not isHtml: ### (not s.startswith('<') or s.startswith('<<')):
+    if got_docutils and not isHtml:
         # Not html: convert to html.
         path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
         if not os.path.isdir(path):
@@ -861,6 +847,7 @@ def update_rst (self,s,keywords):
                 s = 'RST error:\n%s\n\n%s' % (msg,s)
 
     sb = w.verticalScrollBar()
+
     if sb:
         d = pc.scrollbar_pos_dict
         if pc.node_changed:

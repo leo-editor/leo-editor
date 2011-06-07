@@ -552,17 +552,27 @@ class ScrolledMessageDialog(object):
         
         '''Return self.msg converted to html.'''
         
-        # g.trace(self.msg,g.callers())
+        g.trace(self.controlFlags)
 
         s = self.msg
+        
+        s = self.rstToHtml(s)
+        
         f = self.controlFlags
-        if f['html']:
-            if f.get('rst'):
-                s = self.rstToHtml(s)
-            elif f.get('text'):
-                s = self.textToHtml(s)
-        else:
+        
+        # Select rst by default; 'html' overrides 'text'
+        if f.get('html') or f.get('text'):
             s = self.textToHtml(s)
+        else:
+            s = self.rstToHtml(s)
+
+        # if f['html']:
+            # if f.get('rst'):
+                # s = self.rstToHtml(s)
+            # elif f.get('text'):
+                # s = self.textToHtml(s)
+        # else:
+            # s = self.textToHtml(s)
 
         return s
     #@+node:leohag.20081203143921.15: *5* rstToHtml
@@ -623,13 +633,15 @@ class ScrolledMessageDialog(object):
             flags.append('html')
 
         # update the ui check box controls
-        ff = self.controlFlags 
-
-        for flag in list(ff.keys()):
-            if flag in flags:
-                ff[flag] = True
-            else:
-                ff[flag] = False
+        
+        if 0: # don't check any flags at first.
+            ff = self.controlFlags 
+        
+            for flag in list(ff.keys()):
+                if flag in flags:
+                    ff[flag] = True
+                else:
+                    ff[flag] = False
 
         self.setControlsFromFlags()
 

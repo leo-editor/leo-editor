@@ -2021,16 +2021,12 @@ Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
 get to this work, I should have <<code fragment>> under the @rst3 subtree as
 well, but this is then also treated as @rst3 input (which in this case, is not
 what I want).
-.. @+node:ekr.20110605212009.16932: *4* Minor bugs: 5
+.. @+node:ekr.20110605212009.16932: *4* Minor bugs: 4
 .. @+node:ekr.20110605065044.17008: *5* Fix chapters problems
 http://groups.google.com/group/leo-editor/browse_thread/thread/3f15a855ca38b26e
 
 .. @+node:ekr.20110604182206.16760: *5* alt-ctrl-keys abort the find command!
 .. @+node:ekr.20110604182206.16757: *5* regex word-only does not work
-.. @+node:ekr.20110604043410.16734: *5* Regularize command names
-For abbreviations, macros, registers, etc.
-
-Look for the getPublicCommands methods in leoEditCommands.py
 .. @+node:ekr.20110605121601.17012: *5* On Mac: change qttabs to qt
 .. @+node:ekr.20040329094003: *4* Apply patch command
 .. @+node:ekr.20110604043410.17848: *5* Script

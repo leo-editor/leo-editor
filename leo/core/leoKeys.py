@@ -1946,180 +1946,6 @@ class keyHandlerClass:
 
                     if g.app.unitTesting: raise
     #@+node:ekr.20061031131434.104: *3* k.Dispatching
-    #@+node:ekr.20061031131434.105: *4* masterCommand & helpers
-    def masterCommand (self,event,func,stroke,commandName=None):
-
-        '''This is the central dispatching method.
-        All commands and keystrokes pass through here.'''
-
-        k = self ; c = k.c ; gui = g.app.gui
-        trace = (False or k.traceMasterCommand) and not g.unitTesting
-        verbose = False
-        traceGC = False
-        if traceGC: g.printNewObjects('masterCom 1')
-        
-        c.check_event(event)
-
-        c.setLog()
-        c.startRedrawCount = c.frame.tree.redrawCount
-        k.stroke = stroke # Set this global for general use.
-
-        char = ch = event and event.char or ''
-        w = event and event.w
-
-        k.func = func
-        k.funcReturn = None # For unit testing.
-        commandName = commandName or func and func.__name__ or '<no function>'
-        #@+<< define specialKeysyms >>
-        #@+node:ekr.20061031131434.106: *5* << define specialKeysyms >>
-        specialKeysyms = (
-            'Alt_L','Alt_R',
-            'Meta_L','Meta_R', # Meta support.
-            'Caps_Lock','Control_L','Control_R',
-            'Num_Lock',
-            'Shift_L','Shift_R',
-        )
-        #@-<< define specialKeysyms >>
-        special = char in specialKeysyms
-        interesting = func is not None
-        inserted = not special
-
-        if trace: # Useful.
-            g.trace('stroke: ',stroke,'ch:',repr(ch),
-                'w:',w and c.widget_name(w),
-                'func:',func and func.__name__)
-
-        if inserted:
-            #@+<< add character to history >>
-            #@+node:ekr.20061031131434.107: *5* << add character to history >>
-            if stroke or len(ch) > 0:
-                if len(keyHandlerClass.lossage) > 99:
-                    keyHandlerClass.lossage.pop()
-
-                # This looks like a memory leak, but isn't.
-                keyHandlerClass.lossage.insert(0,(ch,stroke),)
-            #@-<< add character to history >>
-
-        # We *must not* interfere with the global state in the macro class.
-        if c.macroCommands.recordingMacro:
-            c.macroCommands.startKbdMacro(event)
-            # 2011/06/06: Show the key, if possible.
-            ### return # (for Tk) 'break'
-
-        # g.trace(stroke,k.abortAllModesKey)
-
-        if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
-            k.keyboardQuit()
-            k.endCommand(commandName)
-            return # (for Tk) 'break'
-
-        if special: # Don't pass these on.
-            return # (for Tk) 'break' 
-
-        if k.regx.iter:
-            try:
-                k.regXKey = char
-                k.regx.iter.next() # EKR: next() may throw StopIteration.
-            except StopIteration:
-                pass
-            return # (for Tk) 'break'
-
-        if k.abbrevOn:
-            expanded = c.abbrevCommands.expandAbbrev(event,stroke)
-            if expanded: return # (for Tk) 'break'
-
-        if func: # Func is an argument.
-            if commandName == 'propagate-key-event':
-                # Do *nothing* with the event.
-                return k.propagateKeyEvent(event)
-            elif commandName.startswith('specialCallback'):
-                # The callback function will call c.doCommand
-                if trace: g.trace('calling specialCallback for',commandName)
-                # if commandName != 'repeat-complex-command': # 2010/01/11
-                    # k.mb_history.insert(0,commandName)
-                val = func(event)
-                # k.simulateCommand uses k.funcReturn.
-                k.funcReturn = k.funcReturn or val # For unit tests.
-            else:
-                # Call c.doCommand directly
-                if trace: g.trace('calling command directly',commandName)
-                # if commandName != 'repeat-complex-command': # 2010/01/11
-                    # k.mb_history.insert(0,commandName)
-                # if commandName == 'select-all': g.pdb()
-                c.doCommand(func,commandName,event=event)
-            if c.exists:
-                k.endCommand(commandName)
-                c.frame.updateStatusLine()
-            if traceGC: g.printNewObjects('masterCom 2')
-            return # (for Tk) 'break'
-        elif k.inState():
-            return # (for Tk) 'break' #Ignore unbound keys in a state.
-        else:
-            if traceGC: g.printNewObjects('masterCom 3')
-            val = k.handleDefaultChar(event,stroke)
-            if c.exists:
-                c.frame.updateStatusLine()
-            if traceGC: g.printNewObjects('masterCom 4')
-            return val
-    #@+node:ekr.20061031131434.109: *5* callKeystrokeFunction (not used)
-    def callKeystrokeFunction (self,event):
-
-        '''Handle a quick keystroke function.
-        Return the function or None.'''
-
-        k = self
-        numberOfArgs, func = k.keystrokeFunctionDict [k.stroke]
-
-        if func:
-            func(event)
-            commandName = k.inverseCommandsDict.get(func) # Get the emacs command name.
-            k.endCommand(commandName)
-
-        return func
-    #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
-    def handleDefaultChar(self,event,stroke):
-        k = self ; c = k.c
-        w = event and event.widget
-        name = c.widget_name(w)
-        trace = False and not g.unitTesting
-
-        if trace: g.trace('widget_name',name,'stroke',stroke)
-
-        if (stroke and
-            not stroke.startswith('Alt+Ctrl') and
-            not self.enable_alt_ctrl_bindings and
-            (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
-        ):
-            if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
-            return # (for Tk) 'break'
-
-        if name.startswith('body'):
-            action = k.unboundKeyAction
-            if action in ('insert','overwrite'):
-                c.editCommands.selfInsertCommand(event,action=action)
-            else: # Ignore the key
-                if trace: g.trace('ignoring',stroke)
-            return # (for Tk) 'break'
-        elif name.startswith('head'):
-            c.frame.tree.onHeadlineKey(event)
-            return # (for Tk) 'break'
-        elif name.startswith('canvas'):
-            if not stroke: # Not exactly right, but it seems to be good enough.
-                c.onCanvasKey(event) # New in Leo 4.4.2
-            return # (for Tk) 'break'
-        elif name.startswith('log'):
-            i = w.logCtrl.getInsertPoint()
-            if not stroke:
-                stroke = event and event.stroke
-            if stroke in ('\n','Return'): stroke = '\n'
-            elif stroke in ('\t','Tab'): stroke = '\t'
-            elif stroke in ('\b','Backspace'): stroke = '\b'
-            elif stroke in ('.','Period','period'): stroke = '.'
-            w.logCtrl.insert(i,stroke)
-            return # None
-        else:
-            # Let the widget handle the event.
-            return # None
     #@+node:ekr.20061031131434.111: *4* fullCommand (alt-x) & helper
     def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpHandler=None):
 
@@ -2585,7 +2411,7 @@ class keyHandlerClass:
             else: # Create a dummy event as a signal.
                 event = g.app.gui.create_key_event(c,None,None,None)
                 
-            k.masterCommand(event,func,stroke)
+            k.masterCommand(event,func,stroke,commandName=None)
             if c.exists:
                 return k.funcReturn
             else:
@@ -2801,6 +2627,250 @@ class keyHandlerClass:
                     b.func=func
                     d2[key2] = b
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
+    #@+node:ekr.20061031131434.153: *4* masterClickHandler
+    def masterClickHandler (self,event,func=None):
+
+        g.app.gui.killPopupMenu()
+
+        k = self ; c = k.c ; gui = g.app.gui
+        if not event: return
+        w = event and event.widget ; wname = c.widget_name(w)
+        trace = not g.app.unitTesting and (False or k.trace_masterClickHandler)
+
+        if trace: g.trace(wname,func and func.__name__)
+        # c.frame.body.colorizer.interrupt() # New in 4.4.1
+
+        # A click outside the minibuffer terminates any state.
+        if k.inState() and w != c.frame.miniBufferWidget:
+            if not c.widget_name(w).startswith('log'):
+                k.keyboardQuit()
+                # k.endMode() # Less drastic than keyboard-quit.
+                w and c.widgetWantsFocusNow(w)
+                if trace: g.trace('inState: break')
+                return # (for Tk) 'break'
+
+        # Update the selection point immediately for updateStatusLine.
+        k.previousSelection = None
+        if wname.startswith('body'):
+            c.frame.body.onClick(event) # New in Leo 4.4.2.
+        elif wname.startswith('mini'):
+            # x,y = gui.eventXY(event)
+            x,y = event and event.x,event and event.y
+            x = w.xyToPythonIndex(x,y)
+            i,j = k.getEditableTextRange()
+            if i <= x <= j:
+                w.setSelectionRange(x,x,insert=x)
+            else:
+                if trace: g.trace('2: break')
+                return # (for Tk) 'break'
+        if event and func:
+            if trace: g.trace(func.__name__)
+            val = func(event) # Don't even *think* of overriding this.
+            if trace: g.trace('val:',val,g.callers())
+            return val
+        else:
+            # All tree callbacks have a func, so we can't be in the tree.
+            # g.trace('*'*20,'auto-deactivate tree: %s' % wname)
+            c.frame.tree.OnDeactivate()
+            c.widgetWantsFocusNow(w)
+            if trace: g.trace('end: None')
+            return # None
+
+    masterClick3Handler = masterClickHandler
+    masterDoubleClick3Handler = masterClickHandler
+    #@+node:ekr.20061031131434.105: *4* masterCommand & helpers
+    def masterCommand (self,event,func,stroke,commandName=None):
+
+        '''This is the central dispatching method.
+        All commands and keystrokes pass through here.'''
+
+        k = self ; c = k.c ; gui = g.app.gui
+        trace = (False or k.traceMasterCommand) and not g.unitTesting
+        verbose = False
+        traceGC = False
+        if traceGC: g.printNewObjects('masterCom 1')
+        
+        c.check_event(event)
+
+        c.setLog()
+        c.startRedrawCount = c.frame.tree.redrawCount
+        k.stroke = stroke # Set this global for general use.
+
+        char = ch = event and event.char or ''
+        w = event and event.w
+
+        k.func = func
+        k.funcReturn = None # For unit testing.
+        commandName = commandName or func and func.__name__ or '<no function>'
+        #@+<< define specialKeysyms >>
+        #@+node:ekr.20061031131434.106: *5* << define specialKeysyms >>
+        specialKeysyms = (
+            'Alt_L','Alt_R',
+            'Meta_L','Meta_R', # Meta support.
+            'Caps_Lock','Control_L','Control_R',
+            'Num_Lock',
+            'Shift_L','Shift_R',
+        )
+        #@-<< define specialKeysyms >>
+        special = char in specialKeysyms
+        interesting = func is not None
+        inserted = not special
+
+        if trace: # Useful.
+            g.trace('stroke: ',stroke,'ch:',repr(ch),
+                'w:',w and c.widget_name(w),
+                'func:',func and func.__name__)
+
+        if inserted:
+            #@+<< add character to history >>
+            #@+node:ekr.20061031131434.107: *5* << add character to history >>
+            if stroke or len(ch) > 0:
+                if len(keyHandlerClass.lossage) > 99:
+                    keyHandlerClass.lossage.pop()
+
+                # This looks like a memory leak, but isn't.
+                keyHandlerClass.lossage.insert(0,(ch,stroke),)
+            #@-<< add character to history >>
+
+        # We *must not* interfere with the global state in the macro class.
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.startKbdMacro(event)
+            # 2011/06/06: Show the key, if possible.
+            ### return # (for Tk) 'break'
+
+        # g.trace(stroke,k.abortAllModesKey)
+
+        if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
+            k.keyboardQuit()
+            k.endCommand(commandName)
+            return # (for Tk) 'break'
+
+        if special: # Don't pass these on.
+            return # (for Tk) 'break' 
+
+        if k.regx.iter:
+            try:
+                k.regXKey = char
+                k.regx.iter.next() # EKR: next() may throw StopIteration.
+            except StopIteration:
+                pass
+            return # (for Tk) 'break'
+
+        if k.abbrevOn:
+            expanded = c.abbrevCommands.expandAbbrev(event,stroke)
+            if expanded: return # (for Tk) 'break'
+
+        if func: # Func is an argument.
+            if commandName == 'propagate-key-event':
+                # Do *nothing* with the event.
+                return k.propagateKeyEvent(event)
+            elif commandName.startswith('specialCallback'):
+                # The callback function will call c.doCommand
+                if trace: g.trace('calling specialCallback for',commandName)
+                # if commandName != 'repeat-complex-command': # 2010/01/11
+                    # k.mb_history.insert(0,commandName)
+                val = func(event)
+                # k.simulateCommand uses k.funcReturn.
+                k.funcReturn = k.funcReturn or val # For unit tests.
+            else:
+                # Call c.doCommand directly
+                if trace: g.trace('calling command directly',commandName)
+                # if commandName != 'repeat-complex-command': # 2010/01/11
+                    # k.mb_history.insert(0,commandName)
+                # if commandName == 'select-all': g.pdb()
+                c.doCommand(func,commandName,event=event)
+            if c.exists:
+                k.endCommand(commandName)
+                c.frame.updateStatusLine()
+            if traceGC: g.printNewObjects('masterCom 2')
+            return # (for Tk) 'break'
+        elif k.inState():
+            return # (for Tk) 'break' #Ignore unbound keys in a state.
+        else:
+            if traceGC: g.printNewObjects('masterCom 3')
+            val = k.handleDefaultChar(event,stroke)
+            if c.exists:
+                c.frame.updateStatusLine()
+            if traceGC: g.printNewObjects('masterCom 4')
+            return val
+    #@+node:ekr.20061031131434.109: *5* callKeystrokeFunction (not used)
+    def callKeystrokeFunction (self,event):
+
+        '''Handle a quick keystroke function.
+        Return the function or None.'''
+
+        k = self
+        numberOfArgs, func = k.keystrokeFunctionDict [k.stroke]
+
+        if func:
+            func(event)
+            commandName = k.inverseCommandsDict.get(func) # Get the emacs command name.
+            k.endCommand(commandName)
+
+        return func
+    #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
+    def handleDefaultChar(self,event,stroke):
+        k = self ; c = k.c
+        w = event and event.widget
+        name = c.widget_name(w)
+        trace = False and not g.unitTesting
+
+        if trace: g.trace('widget_name',name,'stroke',stroke)
+
+        if (stroke and
+            not stroke.startswith('Alt+Ctrl') and
+            not self.enable_alt_ctrl_bindings and
+            (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
+        ):
+            if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+            return # (for Tk) 'break'
+
+        if name.startswith('body'):
+            action = k.unboundKeyAction
+            if action in ('insert','overwrite'):
+                c.editCommands.selfInsertCommand(event,action=action)
+            else: # Ignore the key
+                if trace: g.trace('ignoring',stroke)
+            return # (for Tk) 'break'
+        elif name.startswith('head'):
+            c.frame.tree.onHeadlineKey(event)
+            return # (for Tk) 'break'
+        elif name.startswith('canvas'):
+            if not stroke: # Not exactly right, but it seems to be good enough.
+                c.onCanvasKey(event) # New in Leo 4.4.2
+            return # (for Tk) 'break'
+        elif name.startswith('log'):
+            i = w.logCtrl.getInsertPoint()
+            if not stroke:
+                stroke = event and event.stroke
+            if stroke in ('\n','Return'): stroke = '\n'
+            elif stroke in ('\t','Tab'): stroke = '\t'
+            elif stroke in ('\b','Backspace'): stroke = '\b'
+            elif stroke in ('.','Period','period'): stroke = '.'
+            w.logCtrl.insert(i,stroke)
+            return # None
+        else:
+            # Let the widget handle the event.
+            return # None
+    #@+node:ekr.20061031131434.154: *4* masterDoubleClickHandler
+    def masterDoubleClickHandler (self,event,func=None):
+
+        k = self ; c = k.c ; w = event and event.widget
+
+        if c.config.getBool('trace_masterClickHandler'):
+            g.trace(c.widget_name(w),func and func.__name__)
+
+        if event and func:
+            # Don't event *think* of overriding this.
+            return func(event)
+        else:
+            gui = g.app.gui
+            x.y = event and event.x,event and event.y
+            i = w.xyToPythonIndex(x,y)
+            s = w.getAllText()
+            start,end = g.getWord(s,i)
+            w.setSelectionRange(start,end)
+            return # (for Tk) 'break'
     #@+node:ekr.20061031131434.146: *4* masterKeyHandler & helpers
     master_key_count = 0
 
@@ -3116,76 +3186,6 @@ class keyHandlerClass:
         else:
             if trace: g.trace('no func',stroke)
             return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-    #@+node:ekr.20061031131434.153: *4* masterClickHandler
-    def masterClickHandler (self,event,func=None):
-
-        g.app.gui.killPopupMenu()
-
-        k = self ; c = k.c ; gui = g.app.gui
-        if not event: return
-        w = event and event.widget ; wname = c.widget_name(w)
-        trace = not g.app.unitTesting and (False or k.trace_masterClickHandler)
-
-        if trace: g.trace(wname,func and func.__name__)
-        # c.frame.body.colorizer.interrupt() # New in 4.4.1
-
-        # A click outside the minibuffer terminates any state.
-        if k.inState() and w != c.frame.miniBufferWidget:
-            if not c.widget_name(w).startswith('log'):
-                k.keyboardQuit()
-                # k.endMode() # Less drastic than keyboard-quit.
-                w and c.widgetWantsFocusNow(w)
-                if trace: g.trace('inState: break')
-                return # (for Tk) 'break'
-
-        # Update the selection point immediately for updateStatusLine.
-        k.previousSelection = None
-        if wname.startswith('body'):
-            c.frame.body.onClick(event) # New in Leo 4.4.2.
-        elif wname.startswith('mini'):
-            # x,y = gui.eventXY(event)
-            x,y = event and event.x,event and event.y
-            x = w.xyToPythonIndex(x,y)
-            i,j = k.getEditableTextRange()
-            if i <= x <= j:
-                w.setSelectionRange(x,x,insert=x)
-            else:
-                if trace: g.trace('2: break')
-                return # (for Tk) 'break'
-        if event and func:
-            if trace: g.trace(func.__name__)
-            val = func(event) # Don't even *think* of overriding this.
-            if trace: g.trace('val:',val,g.callers())
-            return val
-        else:
-            # All tree callbacks have a func, so we can't be in the tree.
-            # g.trace('*'*20,'auto-deactivate tree: %s' % wname)
-            c.frame.tree.OnDeactivate()
-            c.widgetWantsFocusNow(w)
-            if trace: g.trace('end: None')
-            return # None
-
-    masterClick3Handler = masterClickHandler
-    masterDoubleClick3Handler = masterClickHandler
-    #@+node:ekr.20061031131434.154: *4* masterDoubleClickHandler
-    def masterDoubleClickHandler (self,event,func=None):
-
-        k = self ; c = k.c ; w = event and event.widget
-
-        if c.config.getBool('trace_masterClickHandler'):
-            g.trace(c.widget_name(w),func and func.__name__)
-
-        if event and func:
-            # Don't event *think* of overriding this.
-            return func(event)
-        else:
-            gui = g.app.gui
-            x.y = event and event.x,event and event.y
-            i = w.xyToPythonIndex(x,y)
-            s = w.getAllText()
-            start,end = g.getWord(s,i)
-            w.setSelectionRange(start,end)
-            return # (for Tk) 'break'
     #@+node:ekr.20061031131434.155: *4* masterMenuHandler
     def masterMenuHandler (self,stroke,func,commandName):
 
@@ -4433,7 +4433,7 @@ class keyHandlerClass:
                     'stroke',stroke,'widget',w)
                 for z in range(n):
                     event = g.app.gui.create_key_event(c,None,stroke,w)
-                    k.masterCommand(event,stroke)
+                    k.masterCommand(event,func=b.func,stroke=stroke,commandName=None)
             else:
                 for z in range(n):
                     k.masterKeyHandler(event)

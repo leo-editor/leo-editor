@@ -6270,5 +6270,32 @@ def bind2 (self,w,pattern,func,*args,**keys):
         return val
 
     w.bind(pattern,bindCallback2,*args,**keys)
+#@+node:ekr.20110607114847.16562: *3* Changed names of commands so they have common prefixes
+@nocolor-node
+
+Any custom key bindings (none are bound by default) will have to change.
+
+The new prefixes are::
+
+    abbrev-     abbreviation commands
+    buffer-     buffer command
+    directory-  director commands
+    file-       file commands
+    gc-         garbage collection
+    macro-      macro expansion
+    rectangle-  rectangle commands
+    register    register commands
+    
+The already existing prefixes are::
+
+    apropos-    help
+    ddabrev-    dynamic abbreviations
+    find-       find commands
+    isearch-    incremental search
+    print-      print information
+    run-        run unit tests
+    toggle-     toggle settings
+    yank-       yank
+    
 #@-all
 #@-leo
