@@ -5537,30 +5537,6 @@ leading to around 500 deaths per year and nearly $14 billion in damage.
   helps arm America's communities with the communication and safety
 skills needed to save lives and property– before and during the event.
 StormReady helps community leaders and emergency managers strengthen local safety programs.
-#@+node:ekr.20070217071121.1: *5* @test clear-rectangle
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20070217071121.2: *6* work
-before
-aaa   bbb
-aaa   bbb
-aaa   bbb
-aaa   bbb
-after
-#@+node:ekr.20070217071121.3: *6* before sel=2.3,5.6
-before
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-after
-#@+node:ekr.20070217071121.4: *6* after sel=2.3,5.6
-before
-aaa   bbb
-aaa   bbb
-aaa   bbb
-aaa   bbb
-after
 #@+node:ekr.20061101121602.158: *5* @test clear-selected-text
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
@@ -5581,30 +5557,6 @@ first line
 line    line b
 line c
 last line
-#@+node:ekr.20070217071121.5: *5* @test close-rectangle
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20070217071121.6: *6* work
-before
-aaabbb
-aaabbb
-aaabbb
-aaabbb
-after
-#@+node:ekr.20070217071121.7: *6* before sel=2.3,5.6
-before
-aaa   bbb
-aaa   bbb
-aaa   bbb
-aaa   bbb
-after
-#@+node:ekr.20070217071121.8: *6* after sel=2.3,5.3
-before
-aaabbb
-aaabbb
-aaabbb
-aaabbb
-after
 #@+node:ekr.20061101121602.162: *5* @test count-region
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
@@ -5668,30 +5620,6 @@ last line
 first line
 line 1
 last line
-#@+node:ekr.20070217071121.9: *5* @test delete-rectangle
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20070217071121.10: *6* work
-before
-aaabbb
-aaabbb
-aaabbb
-aaabbb
-after
-#@+node:ekr.20070217071121.11: *6* before sel=2.3,5.6
-before
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-after
-#@+node:ekr.20070217071121.12: *6* after sel=2.3,5.3
-before
-aaabbb
-aaabbb
-aaabbb
-aaabbb
-after
 #@+node:ekr.20070131162935: *5* @test delete-spaces
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
@@ -7181,30 +7109,6 @@ StormReady communities are better prepared to save lives from the onslaught of
 severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?
-#@+node:ekr.20070217071121.17: *5* @test kill-rectangle
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20070217071121.18: *6* work
-before
-aaabbb
-aaabbb
-aaabbb
-aaabbb
-after
-#@+node:ekr.20070217071121.19: *6* before sel=2.3,5.6
-before
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-after
-#@+node:ekr.20070217071121.20: *6* after sel=5.3,5.3
-before
-aaabbb
-aaabbb
-aaabbb
-aaabbb
-after
 #@+node:ekr.20070131172706: *5* @test kill-sentence
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
@@ -7385,7 +7289,118 @@ b
 a
 
 b
-#@+node:ekr.20070217071121.13: *5* @test open-rectangle
+#@+node:ekr.20070315065849: *5* @test previous-line
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20070315065849.1: *6* work
+a
+
+b
+#@+node:ekr.20070315065849.2: *6* before sel=3.0,3.0
+a
+
+b
+#@+node:ekr.20070315065849.3: *6* after sel=2.0,2.0
+a
+
+b
+#@+node:ekr.20070217071121.1: *5* @test rectangle-clear
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20070217071121.2: *6* work
+before
+aaa   bbb
+aaa   bbb
+aaa   bbb
+aaa   bbb
+after
+#@+node:ekr.20070217071121.3: *6* before sel=2.3,5.6
+before
+aaaxxxbbb
+aaaxxxbbb
+aaaxxxbbb
+aaaxxxbbb
+after
+#@+node:ekr.20070217071121.4: *6* after sel=2.3,5.6
+before
+aaa   bbb
+aaa   bbb
+aaa   bbb
+aaa   bbb
+after
+#@+node:ekr.20070217071121.5: *5* @test rectangle-close
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20070217071121.6: *6* work
+before
+aaabbb
+aaabbb
+aaabbb
+aaabbb
+after
+#@+node:ekr.20070217071121.7: *6* before sel=2.3,5.6
+before
+aaa   bbb
+aaa   bbb
+aaa   bbb
+aaa   bbb
+after
+#@+node:ekr.20070217071121.8: *6* after sel=2.3,5.3
+before
+aaabbb
+aaabbb
+aaabbb
+aaabbb
+after
+#@+node:ekr.20070217071121.9: *5* @test rectangle-delete
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20070217071121.10: *6* work
+before
+aaabbb
+aaabbb
+aaabbb
+aaabbb
+after
+#@+node:ekr.20070217071121.11: *6* before sel=2.3,5.6
+before
+aaaxxxbbb
+aaaxxxbbb
+aaaxxxbbb
+aaaxxxbbb
+after
+#@+node:ekr.20070217071121.12: *6* after sel=2.3,5.3
+before
+aaabbb
+aaabbb
+aaabbb
+aaabbb
+after
+#@+node:ekr.20070217071121.17: *5* @test rectangle-kill
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20070217071121.18: *6* work
+before
+aaabbb
+aaabbb
+aaabbb
+aaabbb
+after
+#@+node:ekr.20070217071121.19: *6* before sel=2.3,5.6
+before
+aaaxxxbbb
+aaaxxxbbb
+aaaxxxbbb
+aaaxxxbbb
+after
+#@+node:ekr.20070217071121.20: *6* after sel=5.3,5.3
+before
+aaabbb
+aaabbb
+aaabbb
+aaabbb
+after
+#@+node:ekr.20070217071121.13: *5* @test rectangle-open
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 #@+node:ekr.20070217071121.14: *6* work
@@ -7409,21 +7424,528 @@ aaa   xxxbbb
 aaa   xxxbbb
 aaa   xxxbbb
 after
-#@+node:ekr.20070315065849: *5* @test previous-line
+#@+node:ekr.20070217071121.21: *5* @test rectangle-string
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20070315065849.1: *6* work
-a
+#@+node:ekr.20070217071121.22: *6* work
+before
+aaas...sbbb
+aaas...sbbb
+aaas...sbbb
+aaas...sbbb
+after
+#@+node:ekr.20070217071121.23: *6* before sel=2.3,5.6
+before
+aaaxxxbbb
+aaaxxxbbb
+aaaxxxbbb
+aaaxxxbbb
+after
+#@+node:ekr.20070217071121.24: *6* after sel=2.3,5.8
+before
+aaas...sbbb
+aaas...sbbb
+aaas...sbbb
+aaas...sbbb
+after
+#@+node:ekr.20070217071121.25: *5* @test rectangle-yank
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20070217071121.26: *6* work
+before
+aaaY1Ybbb
+aaaY2Ybbb
+aaaY3Ybbb
+aaaY4Ybbb
+after
+#@+node:ekr.20070217071121.28: *6* before sel=2.3,5.6
+before
+aaaxxxbbb
+aaaxxxbbb
+aaaxxxbbb
+aaaxxxbbb
+after
+#@+node:ekr.20070217071121.27: *6* after sel=2.3,5.6
+before
+aaaY1Ybbb
+aaaY2Ybbb
+aaaY3Ybbb
+aaaY4Ybbb
+after
+#@+node:ekr.20061101121602.306: *5* @test remove-blank-lines
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20061101121602.307: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.308: *6* before sel=1.0,9.0
+first line
 
-b
-#@+node:ekr.20070315065849.2: *6* before sel=3.0,3.0
-a
+line 1
+    line a
+        line b
 
-b
-#@+node:ekr.20070315065849.3: *6* after sel=2.0,2.0
-a
+line c
+last line
+#@+node:ekr.20061101121602.309: *6* after sel=1.0,6.9
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.310: *5* @test remove-space-from-lines
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20061101121602.311: *6* work
+first line
 
+line 1
+   line a
+       line b
+
+line c
+last line
+#@+node:ekr.20061101121602.312: *6* before sel=1.0,9.0
+first line
+
+line 1
+    line a
+        line b
+
+line c
+last line
+#@+node:ekr.20061101121602.313: *6* after sel=1.0,9.0
+first line
+
+line 1
+   line a
+       line b
+
+line c
+last line
+#@+node:ekr.20061101121602.314: *5* @test remove-tab-from-lines
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20061101121602.315: *6* work
+first line
+line 1
+line a
+    line b
+line c
+last line
+#@+node:ekr.20061101121602.316: *6* before sel=1.0,7.0
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.317: *6* after sel=1.0,7.0
+first line
+line 1
+line a
+    line b
+line c
+last line
+#@+node:ekr.20061101121602.318: *5* @test reverse-region
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20061101121602.319: *6* work
+
+last line
+line c
+        line b
+    line a
+line 1
+first line
+#@+node:ekr.20061101121602.320: *6* before sel=1.0,7.0
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.321: *6* after sel=7.10,7.10
+
+last line
+line c
+        line b
+    line a
+line 1
+first line
+#@+node:ekr.20071113081247: *5* @test reverse-sort-lines
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20071113081247.1: *6* work
+z
+x
+e
+d
+a
+#@+node:ekr.20071113081247.2: *6* before sel=1.0,5.1
+a
+d
+e
+z
+x
+#@+node:ekr.20071113081247.3: *6* after sel=1.0,5.1
+z
+x
+e
+d
+a
+#@+node:ekr.20071113082531: *5* @test reverse-sort-lines-ignoring-case
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20071113082531.1: *6* work
+z
+Y
+X
+c
 b
+A
+#@+node:ekr.20071113082531.2: *6* before sel=1.0,6.1
+c
+A
+z
+X
+Y
+b
+#@+node:ekr.20071113082531.3: *6* after sel=1.0,6.1
+z
+Y
+X
+c
+b
+A
+#@+node:ekr.20071113145804.4: *5* @test selfInsertCommand-1
+@first # -*- coding: utf-8 -*-
+@language python
+
+try:
+    ec = c.editCommands ; w = c.frame.body.bodyCtrl
+    s = w.getAllText()
+
+    # This strings tests unicode, paren matching, and auto-indentation.
+    u = g.u('(a\u00c9\u03a9B\u3045\u4e7cz):\n') # '(aÉΩBぅ乼cz):\n'
+    u = g.u('(pdq):\n')
+    w.setInsertPoint(len(s))
+    for char in u:
+        stroke = g.choose(char=='\n','Return',char)
+        event = g.app.gui.create_key_event(c,char,stroke,w)
+        ec.selfInsertCommand(event)
+    result = w.getAllText()
+    #g.trace('result',repr(result))
+    assert result.endswith('    '),'result:\n%s' % result
+    # Test of autocompleter.
+finally:
+    if 1:
+        w.setAllText(s)
+        p.setBodyString(s)
+        # g.trace(repr(s))
+        c.recolor()
+
+# end:
+#@+node:ekr.20071113145804.5: *5* @test selfInsertCommand-2 (replacing tabs)
+@language python
+@tabwidth -4
+
+try:
+    ec = c.editCommands ; w = c.frame.body.bodyCtrl
+    s = w.getAllText()
+    w.setSelectionRange(len(s)-9,len(s)-6)
+    event = g.app.gui.create_key_event(c,'\t','Tab',w)
+    ec.selfInsertCommand(event)
+    result = w.getAllText()
+    # print('result %s' % result)
+    assert result.endswith('\n    ###abcdef\n'),'result\n%s' % (repr(result))
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    c.recolor_now()
+
+###abcdef
+#@+node:ekr.20071007120750.6: *5* @test set-fill-prefix
+# xxxx.yyyy
+
+s = p.b
+w = c.frame.body.bodyCtrl
+w.setSelectionRange(2,11)
+c.editCommands.setFillPrefix(event=None)
+assert c.editCommands.fillPrefix == 'xxxx.yyyy'
+#@+node:ekr.20061101121602.322: *5* @test sort-columns
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20061101121602.323: *6* work
+        line b
+    line a
+first line
+last line
+line 1
+line c
+#@+node:ekr.20061101121602.324: *6* before sel=1.0,6.2
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.325: *6* after sel=1.0,7.0
+        line b
+    line a
+first line
+last line
+line 1
+line c
+#@+node:ekr.20061101121602.326: *5* @test sort-lines
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20061101121602.327: *6* work
+first line
+        line b
+    line a
+line 1
+line c
+last line
+#@+node:ekr.20061101121602.328: *6* before sel=2.0,5.6
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.329: *6* after sel=2.0,5.6
+first line
+        line b
+    line a
+line 1
+line c
+last line
+#@+node:ekr.20071113081247.8: *5* @test sort-lines-ignoring-case
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20071113081247.9: *6* work
+A
+B
+c
+x
+z
+#@+node:ekr.20071113081247.10: *6* before sel=1.0,5.1
+x
+z
+A
+c
+B
+#@+node:ekr.20071113081247.11: *6* after sel=1.0,5.1
+A
+B
+c
+x
+z
+#@+node:ekr.20100212104817.5346: *5* @test sort-recent-files (new)
+c.sortRecentFiles()
+#@+node:ekr.20100212104817.5347: *5* @test sort-siblings (new)
+child = p.firstChild()
+assert child.h == 'b','fail 1'
+try:
+    c.selectPosition(child)
+    c.sortSiblings()
+    c.redraw_now()
+    child = p.firstChild()
+    assert child.h == 'a'
+    child = child.next()
+    assert child.h == 'b'
+    child = child.next()
+    assert child.h == 'c'
+    assert not child.next()
+finally:
+    c.undoer.undo()
+    p.contract()
+    c.redraw(p)
+#@+node:ekr.20100212104817.5348: *6* b
+#@+node:ekr.20100212104817.5349: *6* a
+#@+node:ekr.20100212104817.5350: *6* c
+#@+node:ekr.20061101121602.330: *5* @test split-line
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20061101121602.331: *6* work
+first
+ line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.332: *6* before sel=1.5,1.5
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.333: *6* after sel=2.0,2.0
+first
+ line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.334: *5* @test tabify
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20061101121602.335: *6* work
+first line
+line 1
+	line a
+		line b
+line c
+last line
+#@+node:ekr.20061101121602.336: *6* before sel=1.0,7.0
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.337: *6* after sel=7.0,7.0
+first line
+line 1
+	line a
+		line b
+line c
+last line
+#@+node:ekr.20061101121602.338: *5* @test transpose-chars
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20061101121602.339: *6* work
+frist line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.340: *6* before sel=1.2,1.2
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.341: *6* after sel=1.2,1.2
+frist line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.342: *5* @test transpose-lines
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20061101121602.343: *6* work
+line 1
+first line
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.344: *6* before sel=2.2,2.2
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.345: *6* after sel=2.10,2.10
+line 1
+first line
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.346: *5* @test untabify
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+#@+node:ekr.20061101121602.347: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.348: *6* before sel=1.0,7.0
+first line
+line 1
+	line a
+		line b
+line c
+last line
+#@+node:ekr.20061101121602.349: *6* after sel=7.0,7.0
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.350: *5* @test upcase-region
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+assert g.app.unitTestDict.get('colorized')
+#@+node:ekr.20061101121602.351: *6* work
+Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+
+SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING TO AROUND 500 DEATHS PER YEAR AND NEARLY $14 BILLION IN DAMAGE. STORMREADY, A PROGRAM STARTED IN 1999 IN TULSA, OK, HELPS ARM AMERICA'S COMMUNITIES WITH THE COMMUNICATION AND SAFETY SKILLS NEEDED TO SAVE LIVES AND PROPERTY– BEFORE AND DURING THE EVENT. STORMREADY HELPS COMMUNITY LEADERS AND EMERGENCY MANAGERS STRENGTHEN LOCAL SAFETY PROGRAMS.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+#@+node:ekr.20061101121602.352: *6* before sel=3.0,4.0
+Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+
+Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+#@+node:ekr.20061101121602.353: *6* after sel=3.0,4.0
+Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+
+SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING TO AROUND 500 DEATHS PER YEAR AND NEARLY $14 BILLION IN DAMAGE. STORMREADY, A PROGRAM STARTED IN 1999 IN TULSA, OK, HELPS ARM AMERICA'S COMMUNITIES WITH THE COMMUNICATION AND SAFETY SKILLS NEEDED TO SAVE LIVES AND PROPERTY– BEFORE AND DURING THE EVENT. STORMREADY HELPS COMMUNITY LEADERS AND EMERGENCY MANAGERS STRENGTHEN LOCAL SAFETY PROGRAMS.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+#@+node:ekr.20061101121602.354: *5* @test upcase-word
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+assert g.app.unitTestDict.get('colorized')
+#@+node:ekr.20061101121602.355: *6* work
+first line
+line 1
+    LINE a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.356: *6* before sel=3.7,3.7
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.357: *6* after sel=3.7,3.7
+first line
+line 1
+    LINE a
+        line b
+line c
+last line
+#@+node:ekr.20081111084046.4: *5* @test zz restore the screen
+# This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
 #@+node:ekr.20110118082508.3729: *5* reformat-paragraph tests
 @language plain
 @pagewidth 40
@@ -7970,528 +8492,6 @@ the "lead" paragraph.
 
 This paragraph ends the test.  It is the
 "final" paragraph. 
-#@+node:ekr.20061101121602.306: *5* @test remove-blank-lines
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20061101121602.307: *6* work
-first line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.308: *6* before sel=1.0,9.0
-first line
-
-line 1
-    line a
-        line b
-
-line c
-last line
-#@+node:ekr.20061101121602.309: *6* after sel=1.0,6.9
-first line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.310: *5* @test remove-space-from-lines
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20061101121602.311: *6* work
-first line
-
-line 1
-   line a
-       line b
-
-line c
-last line
-#@+node:ekr.20061101121602.312: *6* before sel=1.0,9.0
-first line
-
-line 1
-    line a
-        line b
-
-line c
-last line
-#@+node:ekr.20061101121602.313: *6* after sel=1.0,9.0
-first line
-
-line 1
-   line a
-       line b
-
-line c
-last line
-#@+node:ekr.20061101121602.314: *5* @test remove-tab-from-lines
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20061101121602.315: *6* work
-first line
-line 1
-line a
-    line b
-line c
-last line
-#@+node:ekr.20061101121602.316: *6* before sel=1.0,7.0
-first line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.317: *6* after sel=1.0,7.0
-first line
-line 1
-line a
-    line b
-line c
-last line
-#@+node:ekr.20061101121602.318: *5* @test reverse-region
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20061101121602.319: *6* work
-
-last line
-line c
-        line b
-    line a
-line 1
-first line
-#@+node:ekr.20061101121602.320: *6* before sel=1.0,7.0
-first line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.321: *6* after sel=7.10,7.10
-
-last line
-line c
-        line b
-    line a
-line 1
-first line
-#@+node:ekr.20071113081247: *5* @test reverse-sort-lines
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20071113081247.1: *6* work
-z
-x
-e
-d
-a
-#@+node:ekr.20071113081247.2: *6* before sel=1.0,5.1
-a
-d
-e
-z
-x
-#@+node:ekr.20071113081247.3: *6* after sel=1.0,5.1
-z
-x
-e
-d
-a
-#@+node:ekr.20071113082531: *5* @test reverse-sort-lines-ignoring-case
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20071113082531.1: *6* work
-z
-Y
-X
-c
-b
-A
-#@+node:ekr.20071113082531.2: *6* before sel=1.0,6.1
-c
-A
-z
-X
-Y
-b
-#@+node:ekr.20071113082531.3: *6* after sel=1.0,6.1
-z
-Y
-X
-c
-b
-A
-#@+node:ekr.20071113145804.4: *5* @test selfInsertCommand-1
-@first # -*- coding: utf-8 -*-
-@language python
-
-try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-
-    # This strings tests unicode, paren matching, and auto-indentation.
-    u = g.u('(a\u00c9\u03a9B\u3045\u4e7cz):\n') # '(aÉΩBぅ乼cz):\n'
-    u = g.u('(pdq):\n')
-    w.setInsertPoint(len(s))
-    for char in u:
-        stroke = g.choose(char=='\n','Return',char)
-        event = g.app.gui.create_key_event(c,char,stroke,w)
-        ec.selfInsertCommand(event)
-    result = w.getAllText()
-    #g.trace('result',repr(result))
-    assert result.endswith('    '),'result:\n%s' % result
-    # Test of autocompleter.
-finally:
-    if 1:
-        w.setAllText(s)
-        p.setBodyString(s)
-        # g.trace(repr(s))
-        c.recolor()
-
-# end:
-#@+node:ekr.20071113145804.5: *5* @test selfInsertCommand-2 (replacing tabs)
-@language python
-@tabwidth -4
-
-try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    w.setSelectionRange(len(s)-9,len(s)-6)
-    event = g.app.gui.create_key_event(c,'\t','Tab',w)
-    ec.selfInsertCommand(event)
-    result = w.getAllText()
-    # print('result %s' % result)
-    assert result.endswith('\n    ###abcdef\n'),'result\n%s' % (repr(result))
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    c.recolor_now()
-
-###abcdef
-#@+node:ekr.20071007120750.6: *5* @test set-fill-prefix
-# xxxx.yyyy
-
-s = p.b
-w = c.frame.body.bodyCtrl
-w.setSelectionRange(2,11)
-c.editCommands.setFillPrefix(event=None)
-assert c.editCommands.fillPrefix == 'xxxx.yyyy'
-#@+node:ekr.20061101121602.322: *5* @test sort-columns
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20061101121602.323: *6* work
-        line b
-    line a
-first line
-last line
-line 1
-line c
-#@+node:ekr.20061101121602.324: *6* before sel=1.0,6.2
-first line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.325: *6* after sel=1.0,7.0
-        line b
-    line a
-first line
-last line
-line 1
-line c
-#@+node:ekr.20061101121602.326: *5* @test sort-lines
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20061101121602.327: *6* work
-first line
-        line b
-    line a
-line 1
-line c
-last line
-#@+node:ekr.20061101121602.328: *6* before sel=2.0,5.6
-first line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.329: *6* after sel=2.0,5.6
-first line
-        line b
-    line a
-line 1
-line c
-last line
-#@+node:ekr.20071113081247.8: *5* @test sort-lines-ignoring-case
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20071113081247.9: *6* work
-A
-B
-c
-x
-z
-#@+node:ekr.20071113081247.10: *6* before sel=1.0,5.1
-x
-z
-A
-c
-B
-#@+node:ekr.20071113081247.11: *6* after sel=1.0,5.1
-A
-B
-c
-x
-z
-#@+node:ekr.20100212104817.5346: *5* @test sort-recent-files (new)
-c.sortRecentFiles()
-#@+node:ekr.20100212104817.5347: *5* @test sort-siblings (new)
-child = p.firstChild()
-assert child.h == 'b','fail 1'
-try:
-    c.selectPosition(child)
-    c.sortSiblings()
-    c.redraw_now()
-    child = p.firstChild()
-    assert child.h == 'a'
-    child = child.next()
-    assert child.h == 'b'
-    child = child.next()
-    assert child.h == 'c'
-    assert not child.next()
-finally:
-    c.undoer.undo()
-    p.contract()
-    c.redraw(p)
-#@+node:ekr.20100212104817.5348: *6* b
-#@+node:ekr.20100212104817.5349: *6* a
-#@+node:ekr.20100212104817.5350: *6* c
-#@+node:ekr.20061101121602.330: *5* @test split-line
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20061101121602.331: *6* work
-first
- line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.332: *6* before sel=1.5,1.5
-first line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.333: *6* after sel=2.0,2.0
-first
- line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20070217071121.21: *5* @test string-rectangle
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20070217071121.22: *6* work
-before
-aaas...sbbb
-aaas...sbbb
-aaas...sbbb
-aaas...sbbb
-after
-#@+node:ekr.20070217071121.23: *6* before sel=2.3,5.6
-before
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-after
-#@+node:ekr.20070217071121.24: *6* after sel=2.3,5.8
-before
-aaas...sbbb
-aaas...sbbb
-aaas...sbbb
-aaas...sbbb
-after
-#@+node:ekr.20061101121602.334: *5* @test tabify
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20061101121602.335: *6* work
-first line
-line 1
-	line a
-		line b
-line c
-last line
-#@+node:ekr.20061101121602.336: *6* before sel=1.0,7.0
-first line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.337: *6* after sel=7.0,7.0
-first line
-line 1
-	line a
-		line b
-line c
-last line
-#@+node:ekr.20061101121602.338: *5* @test transpose-chars
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20061101121602.339: *6* work
-frist line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.340: *6* before sel=1.2,1.2
-first line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.341: *6* after sel=1.2,1.2
-frist line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.342: *5* @test transpose-lines
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20061101121602.343: *6* work
-line 1
-first line
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.344: *6* before sel=2.2,2.2
-first line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.345: *6* after sel=2.10,2.10
-line 1
-first line
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.346: *5* @test untabify
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20061101121602.347: *6* work
-first line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.348: *6* before sel=1.0,7.0
-first line
-line 1
-	line a
-		line b
-line c
-last line
-#@+node:ekr.20061101121602.349: *6* after sel=7.0,7.0
-first line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.350: *5* @test upcase-region
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-assert g.app.unitTestDict.get('colorized')
-#@+node:ekr.20061101121602.351: *6* work
-Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING TO AROUND 500 DEATHS PER YEAR AND NEARLY $14 BILLION IN DAMAGE. STORMREADY, A PROGRAM STARTED IN 1999 IN TULSA, OK, HELPS ARM AMERICA'S COMMUNITIES WITH THE COMMUNICATION AND SAFETY SKILLS NEEDED TO SAVE LIVES AND PROPERTY– BEFORE AND DURING THE EVENT. STORMREADY HELPS COMMUNITY LEADERS AND EMERGENCY MANAGERS STRENGTHEN LOCAL SAFETY PROGRAMS.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-#@+node:ekr.20061101121602.352: *6* before sel=3.0,4.0
-Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-#@+node:ekr.20061101121602.353: *6* after sel=3.0,4.0
-Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING TO AROUND 500 DEATHS PER YEAR AND NEARLY $14 BILLION IN DAMAGE. STORMREADY, A PROGRAM STARTED IN 1999 IN TULSA, OK, HELPS ARM AMERICA'S COMMUNITIES WITH THE COMMUNICATION AND SAFETY SKILLS NEEDED TO SAVE LIVES AND PROPERTY– BEFORE AND DURING THE EVENT. STORMREADY HELPS COMMUNITY LEADERS AND EMERGENCY MANAGERS STRENGTHEN LOCAL SAFETY PROGRAMS.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-#@+node:ekr.20061101121602.354: *5* @test upcase-word
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-assert g.app.unitTestDict.get('colorized')
-#@+node:ekr.20061101121602.355: *6* work
-first line
-line 1
-    LINE a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.356: *6* before sel=3.7,3.7
-first line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.357: *6* after sel=3.7,3.7
-first line
-line 1
-    LINE a
-        line b
-line c
-last line
-#@+node:ekr.20070217071121.25: *5* @test yank-rectangle
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
-#@+node:ekr.20070217071121.26: *6* work
-before
-aaaY1Ybbb
-aaaY2Ybbb
-aaaY3Ybbb
-aaaY4Ybbb
-after
-#@+node:ekr.20070217071121.28: *6* before sel=2.3,5.6
-before
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-after
-#@+node:ekr.20070217071121.27: *6* after sel=2.3,5.6
-before
-aaaY1Ybbb
-aaaY2Ybbb
-aaaY3Ybbb
-aaaY4Ybbb
-after
-#@+node:ekr.20081111084046.4: *5* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-
 #@+node:ekr.20061104172236.1: *4*  Function tests
 #@+node:ekr.20100902074747.5970: *5* @test addAbbrevHelper
 f = c.abbrevCommands.addAbbrevHelper

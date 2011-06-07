@@ -312,22 +312,22 @@ class abbrevCommandsClass (baseEditCommandsClass):
     def getPublicCommands (self):
 
         return {
-            'apropos-abbreviations':        self.aproposAbbreviations,
-            # 'expand-abbrev':              self.expandAbbrev, # Not a command.
+        
+            # Non-prefixed commands.
+            'toggle-abbrev-mode':   self.toggleAbbrevMode,
 
             # Dynamic...
-            'dabbrev-completion':           self.dynamicCompletion,
-            'dabbrev-expands':              self.dynamicExpansion,
+            'dabbrev-completion':   self.dynamicCompletion,
+            'dabbrev-expands':      self.dynamicExpansion,
 
             # Static...
-            'toggle-abbrev-mode':           self.toggleAbbrevMode,
-            'add-global-abbrev':            self.addAbbreviation,
-            # 'expand-region-abbrevs':        self.regionalExpandAbbrev,
-            'inverse-add-global-abbrev':    self.addInverseAbbreviation,
-            'kill-all-abbrevs':             self.killAllAbbrevs,
-            'list-abbrevs':                 self.listAbbrevs,
-            'read-abbrev-file':             self.readAbbreviations,
-            'write-abbrev-file':            self.writeAbbreviations,
+            'abbrev-add-global':        self.addAbbreviation,
+            # 'abbrev-expand-region':   self.regionalExpandAbbrev,
+            'abbrev-inverse-add-global':self.addInverseAbbreviation,
+            'abbrev-kill-all':          self.killAllAbbrevs,
+            'abbrev-list':              self.listAbbrevs,
+            'abbrev-read':              self.readAbbreviations,
+            'abbrev-write':             self.writeAbbreviations,
         }
     #@+node:ekr.20100901080826.6155: *3*  Entry point
     #@+node:ekr.20050920084036.27: *4* expandAbbrev
@@ -402,138 +402,6 @@ class abbrevCommandsClass (baseEditCommandsClass):
             c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
 
         return val is not None
-    #@+node:ekr.20100901080826.5850: *3* aproposAbbreviations
-    def aproposAbbreviations (self,event=None):
-        
-        '''Prints a discussion of abbreviations.'''
-        
-        #@+<< define s >>
-        #@+node:ekr.20110530082209.18251: *4* << define s >>
-        # @pagewidth 45
-        #@@language rest
-
-        s = '''
-        +++++++++++++++++++
-        About Abbreviations
-        +++++++++++++++++++
-
-        When abbreviation mode is on (abbrev-mode
-        toggles this mode) Leo will expand
-        abbreviations as you type. Type the name of
-        an abbreviation, followed by a space. As soon
-        as you type the space, Leo will replace the
-        name by the abbreviations value. You can undo
-        the replacement as usual.
-
-        Note that defining any abbreviation
-        automatically turns on abbreviation mode.
-
-        The add-global-abbreviation command
-        (<alt-x>add-gl<tab><return>) takes the
-        selected text as the replacement value of the
-        abbreviation. The minibuffer prompts you for
-        the name of the abbreviation.
-
-        Settings
-        ========
-
-        As usual, the following settings have effect
-        only in @settings trees:
-
-        @bool enable-abbreviations (default: False)
-
-        When true, enables substitution of
-        abbreviations.
-
-        @data global-abbreviations
-        @data abbreviations
-
-        In both cases, body text contains lines of
-        the form::
-
-           name=value
-
-        name is the abbreviation name, value is the
-        substituted text. Whitespace is ignore around
-        the name, but is significant in the value.
-        Abbreviation names may contain only
-        alphabetic characters, but may start with the
-        '@' sign.
-
-        By *convention* @data global-abbreviations
-        setting should be defined in
-        myLeoSettings.leo, while @data abbreviations
-        should be defined in other .leo files.
-        Regardless of where they are defined,
-        abbreviations in @data abbreviation nodes
-        will override settings (with the same name)
-        in @data global-abbreviations nodes.
-
-        Commands
-        ========
-
-        apropos-abbreviations
-
-        Prints this summary.
-
-        dabbrev-completion
-
-        Insert the common prefix of all dynamic
-        abbreviations matching the present word.
-        Similar C-M-/ in Emacs.
-
-        dabbrev-expands
-
-        Expand the word in the buffer before point as
-        a dynamic abbrev, by searching in the buffer
-        for words starting with that abbreviation
-        (dabbrev-expand). Similar to M-/ in Emacs
-
-        abbrev-mode
-
-        Toggles abbreviation mode. Abbreviations are
-        only active when this mode is on.
-
-        add-global-abbrev
-
-        Adds an abbreviation for the selected text.
-        The minibuffer prompts for the abbreviation
-        name.
-
-        inverse-add-global-abbrev
-
-        Adds an abbreviation. The selected text is
-        the abbreviation name. The minibuffer prompts
-        for the value of the abbreviation.
-
-        kill-all-abbrevs
-
-        Removes all abbreviations.
-
-        list-abbrevs
-
-        Lists all active abbreviations.
-
-        read-abbrev-file
-
-        Read an external file containing
-        abbreviations.
-
-        write-abbrev-file
-
-        Writes abbreviations to an external file.
-
-        Scripting
-        =========
-
-        Leo scripts may read abbreviations from a file with::
-
-            c.abbrevCommands.readAbbreviationsFromFile(fn)
-
-        '''
-        #@-<< define s >>
-
-        self.c.putApropos(s)
     #@+node:ekr.20050920084036.58: *3* dynamic abbreviation...
     #@+node:ekr.20050920084036.60: *4* dynamicCompletion
     def dynamicCompletion (self,event=None):
@@ -834,16 +702,16 @@ class bufferCommandsClass (baseEditCommandsClass):
         return {
 
             # These do not seem useful.
-                # 'copy-to-buffer':               self.copyToBuffer,
-                # 'insert-to-buffer':             self.insertToBuffer,
+                # 'copy-to-buffer':     self.copyToBuffer,
+                # 'insert-to-buffer':   self.insertToBuffer,
 
-            'append-to-buffer':             self.appendToBuffer,
-            'kill-buffer' :                 self.killBuffer,
-            'list-buffers' :                self.listBuffers,
-            'list-buffers-alphabetically':  self.listBuffersAlphabetically,
-            'prepend-to-buffer':            self.prependToBuffer,
-            'rename-buffer':                self.renameBuffer,
-            'switch-to-buffer':             self.switchToBuffer,
+            'buffer-append-to':             self.appendToBuffer,
+            'buffer-kill' :                 self.killBuffer,
+            'buffer-prepend-to-':           self.prependToBuffer,
+            'buffer-rename':                self.renameBuffer,
+            'buffer-switch-to':             self.switchToBuffer,
+            'buffers-list' :                self.listBuffers,
+            'buffers-list-alphabetically':  self.listBuffersAlphabetically,
         }
     #@+node:ekr.20050920084036.34: *3* Entry points
     #@+node:ekr.20050920084036.35: *4* appendToBuffer
@@ -1095,33 +963,18 @@ class chapterCommandsClass (baseEditCommandsClass):
 
         c = self.c ; cc = c.chapterController
 
-        # g.trace('cc',cc,g.callers())
-
         if cc:
-            if 1: # new names
-                return {
-                    'chapter-clone-node-to':    cc.cloneNodeToChapter,
-                    'chapter-convert-node-to':  cc.convertNodeToChapter,
-                    'chapter-copy-node-to':     cc.copyNodeToChapter,
-                    'chapter-create':           cc.createChapter,
-                    'chapter-create-from-node': cc.createChapterFromNode,
-                    'chapter-move-node-to':     cc.moveNodeToChapter,
-                    'chapter-remove':           cc.removeChapter,
-                    'chapter-rename':           cc.renameChapter,
-                    'chapter-select':           cc.selectChapter,
-                }
-            else:
-                return {
-                    'clone-node-to-chapter':    cc.cloneNodeToChapter,
-                    'convert-node-to-chapter':  cc.convertNodeToChapter,
-                    'copy-node-to-chapter':     cc.copyNodeToChapter,
-                    'create-chapter':           cc.createChapter,
-                    'create-chapter-from-node': cc.createChapterFromNode,
-                    'move-node-to-chapter':     cc.moveNodeToChapter,
-                    'remove-chapter':           cc.removeChapter,
-                    'rename-chapter':           cc.renameChapter,
-                    'select-chapter':           cc.selectChapter,
-                }
+            return {
+                'chapter-clone-node-to':    cc.cloneNodeToChapter,
+                'chapter-convert-node-to':  cc.convertNodeToChapter,
+                'chapter-copy-node-to':     cc.copyNodeToChapter,
+                'chapter-create':           cc.createChapter,
+                'chapter-create-from-node': cc.createChapterFromNode,
+                'chapter-move-node-to':     cc.moveNodeToChapter,
+                'chapter-remove':           cc.removeChapter,
+                'chapter-rename':           cc.renameChapter,
+                'chapter-select':           cc.selectChapter,
+            }
         else:
             return {}
     #@-others
@@ -1141,18 +994,23 @@ class controlCommandsClass (baseEditCommandsClass):
         k = self.c.k
 
         return {
-            'advertised-undo':              self.advertizedUndo,
-            'iconify-frame':                self.iconifyFrame, # Same as suspend.
-            'keyboard-quit':                k and k.keyboardQuit,
-            'save-buffers-kill-leo':        self.saveBuffersKillLeo,
-            'set-silent-mode':              self.setSilentMode,
-            # 'print-plugins':                self.printPlugins,
-            'print-plugin-handlers':        self.printPluginHandlers,
-            'print-plugins-info':           self.printPluginsInfo,
-            'shell-command':                self.shellCommand,
-            'shell-command-on-region':      self.shellCommandOnRegion,
-            'suspend':                      self.suspend,
-            'act-on-node':                  self.actOnNode
+
+            # Miscellaneous.
+            'advertised-undo':          self.advertizedUndo,
+            'iconify-frame':            self.iconifyFrame, # Same as suspend.
+            'keyboard-quit':            k and k.keyboardQuit,
+            'save-buffers-kill-leo':    self.saveBuffersKillLeo,
+            'set-silent-mode':          self.setSilentMode,
+            'suspend':                  self.suspend,
+            'act-on-node':              self.actOnNode,
+            
+            # Plugin info.
+            'print-plugin-handlers':    self.printPluginHandlers,
+            'print-plugins-info':       self.printPluginsInfo,
+            
+            # Shell commands.
+            'shell-command':            self.shellCommand,
+            'shell-command-on-region':  self.shellCommandOnRegion,
         }
     #@+node:ekr.20050922110030: *3* advertizedUndo
     def advertizedUndo (self,event):
@@ -1309,22 +1167,30 @@ class debugCommandsClass (baseEditCommandsClass):
     def getPublicCommands (self):
 
         return {
-            'collect-garbage':              self.collectGarbage,
-            'debug':                        self.debug,
-            'disable-gc-trace':             self.disableGcTrace,
-            'dump-all-objects':             self.dumpAllObjects,
-            'dump-new-objects':             self.dumpNewObjects,
-            'enable-gc-trace':              self.enableGcTrace,
-            'free-tree-widgets':            self.freeTreeWidgets,
-            'pdb':                          self.pdb,
-            'print-focus':                  self.printFocus,
-            'print-stats':                  self.printStats,
-            'print-gc-summary':             self.printGcSummary,
+            
+            # debugging.
+            'debug':        self.debug,
+            'pdb':          self.pdb,
+            'print-focus':  self.printFocus,
+            
+            # Tracing of garbase collecor.
+            'gc-collect-garbage':       self.collectGarbage,
+            'gc-dump-all-objects':      self.dumpAllObjects,
+            'gc-dump-new-objects':      self.dumpNewObjects,
+            'gc-dump-objects-verbose':  self.verboseDumpObjects,
+            'gc-print-summary':         self.printGcSummary,
+            'gc-trace-disable':         self.disableGcTrace,
+            'gc-trace-enable':          self.enableGcTrace,
+            
+            # Tk only.
+            # 'tk-free-tree-widgets':   self.freeTreeWidgets
+            # 'tk-print-stats':         self.printStats
+            
+            # Unit tests.
             'run-all-unit-tests':           self.runAllUnitTests, # The new way...
-            'run-unit-tests':               self.runUnitTests,
             'run-all-unit-tests-locally':   self.runAllUnitTestsLocally, # The old way...
+            'run-unit-tests':               self.runUnitTests,
             'run-unit-tests-locally':       self.runUnitTestsLocally,
-            'verbose-dump-objects':         self.verboseDumpObjects,
         }
     #@+node:ekr.20060205050659: *3* collectGarbage
     def collectGarbage (self,event=None):
@@ -5289,14 +5155,14 @@ class editFileCommandsClass (baseEditCommandsClass):
     def getPublicCommands (self):
 
         return {
-            'compare-leo-files':    self.compareLeoFiles,
-            'delete-file':          self.deleteFile,
-            'diff':                 self.diff, 
-            'insert-file':          self.insertFile,
-            'make-directory':       self.makeDirectory,
-            'open-outline-by-name': self.openOutlineByName,
-            'remove-directory':     self.removeDirectory,
-            'save-file':            self.saveFile
+            'directory-make':           self.makeDirectory,
+            'directory-remove':         self.removeDirectory,
+            'file-compare-leo-files':   self.compareLeoFiles,
+            'file-delete':              self.deleteFile,
+            'file-diff-files':          self.diff, 
+            'file-insert':              self.insertFile,
+            'file-open-by-name':        self.openOutlineByName,
+            'file-save':                self.saveFile
         }
     #@+node:ekr.20070920104110: *3* compareLeoFiles
     def compareLeoFiles (self,event):
@@ -5556,7 +5422,7 @@ class editFileCommandsClass (baseEditCommandsClass):
                 os.rmdir(k.arg)
                 k.setLabel('Removed: %s' % k.arg)
             except Exception:
-                k.setLabel('Not Remove: %s' % k.arg)
+                k.setLabel('Not Removed: %s' % k.arg)
     #@+node:ekr.20050920084036.170: *3* saveFile (changed)
     def saveFile (self,event):
 
@@ -5593,14 +5459,15 @@ class helpCommandsClass (baseEditCommandsClass):
     def getPublicCommands (self):
 
         return {
-            'help-for-minibuffer':      self.helpForMinibuffer,
-            'help-for-command':         self.helpForCommand,
+            'apropos-abbreviations':    self.aproposAbbreviations,
             'apropos-autocompletion':   self.aproposAutocompletion,
             'apropos-bindings':         self.aproposBindings,
             'apropos-debugging-commands': self.aproposDebuggingCommands,
             'apropos-find-commands':    self.aproposFindCommands,
+            'help-for-command':         self.helpForCommand,
+            'help-for-minibuffer':      self.helpForMinibuffer,
+            'help-for-python':          self.pythonHelp,
             'print-settings':           self.printSettings,
-            'python-help':              self.pythonHelp,
         }
     #@+node:ekr.20051014170754: *3* helpForMinibuffer
     def helpForMinibuffer (self,event=None):
@@ -5676,6 +5543,138 @@ class helpCommandsClass (baseEditCommandsClass):
             # key is a function that extracts args.
 
         return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data])
+    #@+node:ekr.20100901080826.5850: *3* aproposAbbreviations
+    def aproposAbbreviations (self,event=None):
+        
+        '''Prints a discussion of abbreviations.'''
+        
+        #@+<< define s >>
+        #@+node:ekr.20110530082209.18251: *4* << define s >>
+        # @pagewidth 45
+        #@@language rest
+
+        s = '''
+        +++++++++++++++++++
+        About Abbreviations
+        +++++++++++++++++++
+
+        When abbreviation mode is on (abbrev-mode
+        toggles this mode) Leo will expand
+        abbreviations as you type. Type the name of
+        an abbreviation, followed by a space. As soon
+        as you type the space, Leo will replace the
+        name by the abbreviations value. You can undo
+        the replacement as usual.
+
+        Note that defining any abbreviation
+        automatically turns on abbreviation mode.
+
+        The add-global-abbreviation command
+        (<alt-x>add-gl<tab><return>) takes the
+        selected text as the replacement value of the
+        abbreviation. The minibuffer prompts you for
+        the name of the abbreviation.
+
+        Settings
+        ========
+
+        As usual, the following settings have effect
+        only in @settings trees:
+
+        @bool enable-abbreviations (default: False)
+
+        When true, enables substitution of
+        abbreviations.
+
+        @data global-abbreviations
+        @data abbreviations
+
+        In both cases, body text contains lines of
+        the form::
+
+           name=value
+
+        name is the abbreviation name, value is the
+        substituted text. Whitespace is ignore around
+        the name, but is significant in the value.
+        Abbreviation names may contain only
+        alphabetic characters, but may start with the
+        '@' sign.
+
+        By *convention* @data global-abbreviations
+        setting should be defined in
+        myLeoSettings.leo, while @data abbreviations
+        should be defined in other .leo files.
+        Regardless of where they are defined,
+        abbreviations in @data abbreviation nodes
+        will override settings (with the same name)
+        in @data global-abbreviations nodes.
+
+        Commands
+        ========
+
+        apropos-abbreviations
+
+        Prints this summary.
+
+        dabbrev-completion
+
+        Insert the common prefix of all dynamic
+        abbreviations matching the present word.
+        Similar C-M-/ in Emacs.
+
+        dabbrev-expands
+
+        Expand the word in the buffer before point as
+        a dynamic abbrev, by searching in the buffer
+        for words starting with that abbreviation
+        (dabbrev-expand). Similar to M-/ in Emacs
+
+        abbrev-mode
+
+        Toggles abbreviation mode. Abbreviations are
+        only active when this mode is on.
+
+        add-global-abbrev
+
+        Adds an abbreviation for the selected text.
+        The minibuffer prompts for the abbreviation
+        name.
+
+        inverse-add-global-abbrev
+
+        Adds an abbreviation. The selected text is
+        the abbreviation name. The minibuffer prompts
+        for the value of the abbreviation.
+
+        kill-all-abbrevs
+
+        Removes all abbreviations.
+
+        list-abbrevs
+
+        Lists all active abbreviations.
+
+        read-abbrev-file
+
+        Read an external file containing
+        abbreviations.
+
+        write-abbrev-file
+
+        Writes abbreviations to an external file.
+
+        Scripting
+        =========
+
+        Leo scripts may read abbreviations from a file with::
+
+            c.abbrevCommands.readAbbreviationsFromFile(fn)
+
+        '''
+        #@-<< define s >>
+
+        self.c.putApropos(s)
     #@+node:ekr.20060226131603.1: *3* aproposAutocompletion
     def aproposAutocompletion (self,event=None):
 
@@ -6787,15 +6786,7 @@ class leoCommandsClass (baseEditCommandsClass):
 #@+node:ekr.20050920084036.190: ** macroCommandsClass
 class macroCommandsClass (baseEditCommandsClass):
 
-    '''Define the following commands:
-
-    call-kbd-macro
-    call-last-kbd-macro
-    load-kbd-macros
-    name-last-kbd-macro
-    print-macros
-    save-kbd-macros
-    start-kbd-macro
+    '''A class for recording, playing back, saving and restoring keyboard macros.
     '''
 
     #@+others
@@ -6815,15 +6806,15 @@ class macroCommandsClass (baseEditCommandsClass):
     def getPublicCommands (self):
 
         return {
-            'call-last-kbd-macro':  self.callLastKbdMacro,
-            'call-kbd-macro':       self.callNamedMacro,
-            'end-kbd-macro':        self.endKbdMacro,
-            'print-macros':         self.printMacros,
-            'print-last-macro':     self.printLastMacro,
-            'name-last-kbd-macro':  self.nameLastKbdMacro,
-            'load-kbd-macros':      self.loadMacros,
-            'save-kbd-macros':      self.saveMacros,
-            'start-kbd-macro':      self.startKbdMacro,
+            'macro-call':           self.callNamedMacro,
+            'macro-call-last':      self.callLastKbdMacro,
+            'macro-end-recording':  self.endKbdMacro,
+            'macro-load-all':       self.loadMacros,
+            'macro-name-last':      self.nameLastKbdMacro,
+            'macro-print-all':      self.printMacros,
+            'macro-print-last':     self.printLastMacro,
+            'macro-save-all':       self.saveMacros,
+            'macro-start-recording':self.startKbdMacro,
         }
     #@+node:ekr.20050920085536.15: *3* addToDoAltX (common helper)
     # Called from loadFile and nameLastKbdMacro.
@@ -7107,13 +7098,13 @@ class rectangleCommandsClass (baseEditCommandsClass):
     def getPublicCommands (self):
 
         return {
-            'clear-rectangle':  self.clearRectangle,
-            'close-rectangle':  self.closeRectangle,
-            'delete-rectangle': self.deleteRectangle,
-            'kill-rectangle':   self.killRectangle,
-            'open-rectangle':   self.openRectangle,
-            'string-rectangle': self.stringRectangle,
-            'yank-rectangle':   self.yankRectangle,
+            'rectangle-clear':  self.clearRectangle,
+            'rectangle-close':  self.closeRectangle,
+            'rectangle-delete': self.deleteRectangle,
+            'rectangle-kill':   self.killRectangle,
+            'rectangle-open':   self.openRectangle,
+            'rectangle-string': self.stringRectangle,
+            'rectangle-yank':   self.yankRectangle,
         }
     #@+node:ekr.20051215103053: *3* beginCommand & beginCommandWithEvent (rectangle)
     def beginCommand (self,undoType='Typing'):
@@ -7338,16 +7329,16 @@ class registerCommandsClass (baseEditCommandsClass):
     def getPublicCommands (self):
 
         return {
-            'append-to-register':           self.appendToRegister,
-            'copy-rectangle-to-register':   self.copyRectangleToRegister,
-            'copy-to-register':             self.copyToRegister,
-            'increment-register':           self.incrementRegister,
-            'insert-register':              self.insertRegister,
-            'jump-to-register':             self.jumpToRegister,
-            # 'number-to-register':           self.numberToRegister,
-            'point-to-register':            self.pointToRegister,
-            'prepend-to-register':          self.prependToRegister,
-            'view-register':                self.viewRegister,
+            'register-append-to':           self.appendToRegister,
+            'register-copy-rectangle-to':   self.copyRectangleToRegister,
+            'register-copy-to':             self.copyToRegister,
+            'register-increment':           self.incrementRegister,
+            'register-insert':              self.insertRegister,
+            'register-jump-to':             self.jumpToRegister,
+            # 'register-number-to':         self.numberToRegister,
+            'register-point-to':            self.pointToRegister,
+            'register-prepend-to':          self.prependToRegister,
+            'register-view':                self.viewRegister,
         }
     #@+node:ekr.20050920084036.252: *4* addRegisterItems
     def addRegisterItems( self ):
@@ -8163,18 +8154,18 @@ class searchCommandsClass (baseEditCommandsClass):
 
         return {
             'clone-find-all':                       self.cloneFindAll,
-            'find-clone-all':                       self.cloneFindAll, # Synonym.
-
-            'find-all':                             self.findAll,
-            'change-all':                           self.changeAll,
-
-            # Thin wrappers on Find tab
+            
             'change':                               self.findTabChange,
+            'change-all':                           self.changeAll,
             'change-then-find':                     self.findTabChangeThenFind,
+            
+            'find-all':                             self.findAll,
+            'find-clone-all':                       self.cloneFindAll, # Synonym.
             'find-next':                            self.findTabFindNext,
             'find-prev':                            self.findTabFindPrev,
 
-            'hide-find-tab':                        self.hideFindTab,
+            'find-tab-hide':                        self.hideFindTab, # new name
+            'find-tab-open':                        self.openFindTab, # new name
 
             'isearch-forward':                      self.isearchForward,
             'isearch-backward':                     self.isearchBackward,
@@ -8182,20 +8173,15 @@ class searchCommandsClass (baseEditCommandsClass):
             'isearch-backward-regexp':              self.isearchBackwardRegexp,
             'isearch-with-present-options':         self.isearchWithPresentOptions,
 
-            'open-find-tab':                        self.openFindTab,
-
             'replace-string':                       self.replaceString,
 
             're-search-forward':                    self.reSearchForward,
             're-search-backward':                   self.reSearchBackward,
 
             'search-again':                         self.findAgain,
-            # Uses existing search pattern.
-
             'search-forward':                       self.searchForward,
             'search-backward':                      self.searchBackward,
             'search-with-present-options':          self.searchWithPresentOptions,
-            # Prompts for search pattern.
 
             'set-find-everywhere':                  self.setFindScopeEveryWhere,
             'set-find-node-only':                   self.setFindScopeNodeOnly,
