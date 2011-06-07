@@ -6303,9 +6303,8 @@ The already existing prefixes are::
 #@+node:ekr.20110604182206.16760: *3* Fixed old bug: set-find-x commands no longer abort find commands
 @nocolor-node
 
-This is an old bug.  The fix is to add entries for set-find-everywhere,
-set-find-node-only' and set-find-suboutline-only in k.defineSingleLineCommands.
-The result is that k.handleMiniBindings does not end the mode. 
+The commands that switch find scope, set-find-xxx, no longer terminate the find
+command, if one is active.  This is an old bug, and it's good to fix it.
 #@+node:ekr.20061031131434.152: *4* handleMiniBindings
 def handleMiniBindings (self,event,state,stroke):
 
@@ -6446,5 +6445,17 @@ def defineSingleLineCommands (self):
         'insert-register',
         'prepend-to-register',
     ]
+#@+node:ekr.20110607140913.16576: *3* Fixed recent bugs in the viewrendered and scrolledmessage plugins
+@nocolor-node
+
+An earlier rev fixed a bug that effectively destroyed the viewrendered plugin.
+It was caused by the new convention that alleviates the need for many @language
+directives. The fix was simply to enable the update_rst method if the massaged
+p.b is not empty.
+
+ScrolledMessageDialog.convertMessage now renders rst by default, unless *either*
+the html or text button is pressed.  There really should be three radio buttons:
+text, html or rST, but that's a tiny interface glitch.  The actual bug however,
+was much more serious: rst was never being rendered. 
 #@-all
 #@-leo
