@@ -7026,6 +7026,7 @@ class Commands (object):
 
         """Return True if a position exists in c's tree"""
 
+        trace = True and not g.unitTesting
         c = self ; p = p.copy()
 
         # This code must be fast.
@@ -7251,7 +7252,7 @@ class Commands (object):
         Client code should use c.selectPosition instead."""
 
         trace = False and not g.unitTesting
-        c = self ; cc = c.chapterController
+        c = self ; cc = c.chapterController ### Oops, not used.
 
         if trace:
             c._currentCount += 1
@@ -7262,6 +7263,7 @@ class Commands (object):
 
         if p and not c.positionExists(p): # 2011/02/25:
             g.warning('Invalid position',p)
+            if trace: g.trace(g.callers())
             c._currentPosition = c.rootPosition()
             # g.trace('does not exists',p,'\n',g.callers())
             if g.unitTesting: assert False,p

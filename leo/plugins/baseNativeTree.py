@@ -774,7 +774,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if item:
             e,wrapper = self.editLabelHelper(item,selectAll,selection)
         else:
-            e = None
+            e,wrapper = None,None # 2011/06/07: define wrapper here too.
             self.error('no item for %s' % p)
 
         # A nice hack: just set the focus request.
