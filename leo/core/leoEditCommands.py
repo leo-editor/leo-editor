@@ -707,7 +707,7 @@ class bufferCommandsClass (baseEditCommandsClass):
 
             'buffer-append-to':             self.appendToBuffer,
             'buffer-kill' :                 self.killBuffer,
-            'buffer-prepend-to-':           self.prependToBuffer,
+            'buffer-prepend-to':            self.prependToBuffer,
             'buffer-rename':                self.renameBuffer,
             'buffer-switch-to':             self.switchToBuffer,
             'buffers-list' :                self.listBuffers,
