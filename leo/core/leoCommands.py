@@ -206,6 +206,7 @@ class Commands (object):
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
         
         trace = False and not g.unitTesting ; verbose = False
+        active = False
         
         c = self
         assert tag == 'idle'
@@ -232,7 +233,7 @@ class Commands (object):
                 g.trace(self.idle_focus_count,w)
         else:
             if trace: g.trace('%s no focus -> body' % (self.idle_focus_count))
-            c.bodyWantsFocusNow()
+            if active: c.bodyWantsFocusNow()
     #@+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad (self):
 
@@ -6359,7 +6360,7 @@ class Commands (object):
     def outerUpdate (self):
 
         trace = False and not g.unitTesting
-        verbose = False ; traceFocus = False
+        verbose = False ; traceFocus = True
         c = self ; aList = []
         if not c.exists or not c.k:
             return

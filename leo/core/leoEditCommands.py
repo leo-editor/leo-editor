@@ -113,9 +113,10 @@ class baseEditCommandsClass:
 
         '''Do the common processing at the end of each command.'''
 
+        trace =  False and not g.unitTesting
         c = self.c ; b = self.undoData ; k = self.k
 
-        # g.trace('changed',changed)
+        if trace: g.trace('changed',changed)
 
         if b and b.name.startswith('body') and changed:
             c.frame.body.onBodyChanged(undoType=b.undoType,

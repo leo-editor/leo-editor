@@ -1390,6 +1390,9 @@ class keyHandlerClass:
             'call-last-kbd-macro',
             # search commands
             # 'replace-string', # A special case so Shift-Ctrl-r will work after Ctrl-f.
+            'set-find-everywhere',              # 2011/06/07
+            'set-find-node-only',               # 2011/06/07
+            'set-find-suboutline-only',         # 2011/06/07
             'toggle-find-collapses_nodes',
             'toggle-find-ignore-case-option',
             'toggle-find-in-body-option',

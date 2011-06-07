@@ -6,25 +6,8 @@
 .. @+node:ekr.20110520051220.18187: ** To do: 4.9
 @language rest
 .. @+node:ekr.20110527182640.18358: *3* b3
-.. @+node:ekr.20110607054506.16790: *4* * Urgent: disable idle-time scrolling
-.. @+node:ekr.20110607054506.16791: *4* scrolledmessage plugin does not render rST properly
-.. @+node:ekr.20110606124445.16909: *4* Update key-handling theory of operation
-To do:
-
-- Use only a single event arg to k.masterKeyHandler.
-   This simplifies the macro handling.
-
-- Improve/rewrite the theory of operation.
-.. @+node:ekr.20110606001347.16927: *4* Important: 3
-.. @+node:ekr.20110604043410.17850: *5* topics to discuss
-@nocolor-node
-
-- <attr>
-
-- patch command
-
-- macros
-.. @+node:ekr.20110524141405.18370: *5* Get macros working well
+.. @+node:ekr.20110607140913.16575: *4* First: 3
+.. @+node:ekr.20110524141405.18370: *5* Finish macros
 @nocolor-node
 
 Creating macros::
@@ -1079,6 +1062,52 @@ k.mb_tabList = []
 # Clear the list: any non-tab indicates that a new prefix is in effect.
 k.mb_tabListPrefix = k.getLabel()
 k.oneCharacterArg = oneCharacter
+.. @+node:ekr.20110606124445.16909: *5* Update key-handling theory of operation
+.. @+node:ekr.20110605065044.17008: *5* Fix chapters problems
+http://groups.google.com/group/leo-editor/browse_thread/thread/3f15a855ca38b26e
+
+.. @+node:ekr.20110607054506.16790: *5* (Done) Disabled idle-focus-helper
+@nocolor-node
+
+
+Done: It does not affect the alt-ctrl-s bug, but it will be useful to see the traces.
+.. @+node:ekr.20110509064011.14563: *6* c.idle_focus_helper
+idle_focus_count = 0
+
+def idle_focus_helper (self,tag,keys):
+    
+    '''An idle-tme handler that ensures that focus is *somewhere*.'''
+    
+    trace = False and not g.unitTesting ; verbose = False
+    active = False
+    
+    c = self
+    assert tag == 'idle'
+
+    if g.app.unitTesting or keys.get('c') != c:
+        return
+        
+    self.idle_focus_count += 1
+        
+    if c.in_qt_dialog:
+        if trace and verbose: g.trace('in_qt_dialog')
+        return
+        
+    if c.idle_callback:
+        if trace: g.trace('calling c.idle_callback',c.idle_callback.__name__)
+        c.idle_callback()
+        c.idle_callback = None
+        return
+
+    w = g.app.gui.get_focus()
+
+    if w:
+        if trace and verbose:
+            g.trace(self.idle_focus_count,w)
+    else:
+        if trace: g.trace('%s no focus -> body' % (self.idle_focus_count))
+        if active: c.bodyWantsFocusNow()
+.. @+node:ekr.20110606001347.16927: *4* Important: 3
 .. @+node:ekr.20110527084258.18378: *5* New file format
 @nocolor-node
 
@@ -2021,15 +2050,8 @@ Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
 get to this work, I should have <<code fragment>> under the @rst3 subtree as
 well, but this is then also treated as @rst3 input (which in this case, is not
 what I want).
-.. @+node:ekr.20110605212009.16932: *4* Minor bugs: 4
-.. @+node:ekr.20110605065044.17008: *5* Fix chapters problems
-http://groups.google.com/group/leo-editor/browse_thread/thread/3f15a855ca38b26e
-
-.. @+node:ekr.20110604182206.16760: *5* alt-ctrl-keys abort the find command!
-.. @+node:ekr.20110604182206.16757: *5* regex word-only does not work
-.. @+node:ekr.20110605121601.17012: *5* On Mac: change qttabs to qt
-.. @+node:ekr.20040329094003: *4* Apply patch command
-.. @+node:ekr.20110604043410.17848: *5* Script
+.. @+node:ekr.20040329094003: *5* Apply patch command
+.. @+node:ekr.20110604043410.17848: *6* Script
 import leo.extensions.patch_11_01 as patch
 
 fn = 'xyzzy.patch'
@@ -2038,7 +2060,7 @@ if g.os_path_exists(fn):
     patch.fromfile(fn)
 else:
     g.es_print('not found:',fn)
-.. @+node:ekr.20110604043410.17824: *5* patch-11.01.py (study only)
+.. @+node:ekr.20110604043410.17824: *6* patch-11.01.py (study only)
 """ Patch utility to apply unified diffs
 
     Brute-force line-by-line non-recursive parsing 
@@ -2065,7 +2087,7 @@ __version__ = "11.01"
 
 if __name__ == "__main__":
   main()
-.. @+node:ekr.20110604043410.17843: *6* << imports >>
+.. @+node:ekr.20110604043410.17843: *7* << imports >>
 
 import copy
 import logging
@@ -2076,7 +2098,7 @@ import urllib2
 
 from os.path import exists, isfile, abspath
 from os import unlink
-.. @+node:ekr.20110604043410.17844: *6* << global data >>
+.. @+node:ekr.20110604043410.17844: *7* << global data >>
 # Logging is controlled by "python_patch" logger
 
 debugmode = False
@@ -2095,8 +2117,8 @@ logger.setLevel(logging.CRITICAL)
 DIFF = PLAIN = "plain"
 HG = MERCURIAL = "mercurial"
 SVN = SUBVERSION = "svn"
-.. @+node:ekr.20110604043410.17845: *6* top-level
-.. @+node:ekr.20110604043410.17826: *7* fromfile
+.. @+node:ekr.20110604043410.17845: *7* top-level
+.. @+node:ekr.20110604043410.17826: *8* fromfile
 def fromfile(filename):
   """ Parse patch file and return Patch() object
   """
@@ -2105,23 +2127,23 @@ def fromfile(filename):
   patch = Patch(fp)
   fp.close()
   return patch
-.. @+node:ekr.20110604043410.17827: *7* fromstring
+.. @+node:ekr.20110604043410.17827: *8* fromstring
 def fromstring(s):
   """ Parse text string and return Patch() object
   """
   return Patch( StringIO(s) )
-.. @+node:ekr.20110604043410.17828: *7* fromurl
+.. @+node:ekr.20110604043410.17828: *8* fromurl
 def fromurl(url):
   """ Read patch from URL
   """
   return Patch( urllib2.urlopen(url) )
-.. @+node:ekr.20110604043410.17829: *6* class Hunk
+.. @+node:ekr.20110604043410.17829: *7* class Hunk
 class Hunk(object):
 
   """ Parsed hunk data container (hunk starts with @@ -R +R @@) """
   
   @others
-.. @+node:ekr.20110604043410.17830: *7* __init__
+.. @+node:ekr.20110604043410.17830: *8* __init__
 def __init__(self):
 
   self.startsrc=None #: line count starts with 1
@@ -2130,11 +2152,11 @@ def __init__(self):
   self.linestgt=None
   self.invalid=False
   self.text=[]
-.. @+node:ekr.20110604043410.17831: *7* copy
+.. @+node:ekr.20110604043410.17831: *8* copy
 def copy(self):
   
   return copy.copy(self)
-.. @+node:ekr.20110604043410.17847: *7* apply
+.. @+node:ekr.20110604043410.17847: *8* apply
 #  def apply(self, estream):
 #    """ write hunk data into enumerable stream
 #        return strings one by one until hunk is
@@ -2144,11 +2166,11 @@ def copy(self):
 #        where lineno starts with 0
 #    """
 #    pass
-.. @+node:ekr.20110604043410.17832: *6* class Patch
+.. @+node:ekr.20110604043410.17832: *7* class Patch
 class Patch(object):
 
   @others
-.. @+node:ekr.20110604043410.17833: *7* __init__
+.. @+node:ekr.20110604043410.17833: *8* __init__
 def __init__(self, stream=None):
 
   # define Patch data members
@@ -2169,11 +2191,11 @@ def __init__(self, stream=None):
 
   if stream:
     self.parse(stream)
-.. @+node:ekr.20110604043410.17834: *7* copy
+.. @+node:ekr.20110604043410.17834: *8* copy
 def copy(self):
   
   return copy.copy(self)
-.. @+node:ekr.20110604043410.17835: *7* parse & helper class
+.. @+node:ekr.20110604043410.17835: *8* parse & helper class
 def parse(self, stream):
   """ parse unified diff """
   self.header = []
@@ -2417,7 +2439,7 @@ def parse(self, stream):
       debug("- %2d hunks for %s" % (len(self.hunks[nextfileno-1]), self.source[nextfileno-1]))
 
   debug("total files: %d  total hunks: %d" % (len(self.source), sum(len(hset) for hset in self.hunks)))
-.. @+node:ekr.20110604043410.17846: *8* class wrapumerate
+.. @+node:ekr.20110604043410.17846: *9* class wrapumerate
 class wrapumerate(enumerate):
   """Enumerate wrapper that uses boolean end of stream status instead of
   StopIteration exception, and properties to access line information.
@@ -2455,7 +2477,7 @@ class wrapumerate(enumerate):
   @property
   def lineno(self):
     return self._lineno
-.. @+node:ekr.20110604043410.17836: *7* apply
+.. @+node:ekr.20110604043410.17836: *8* apply
 def apply(self):
   """ apply parsed patch
       return True on success
@@ -2568,7 +2590,7 @@ def apply(self):
 
   # todo: check for premature eof
   return (errors == 0)
-.. @+node:ekr.20110604043410.17837: *7* can_patch
+.. @+node:ekr.20110604043410.17837: *8* can_patch
 def can_patch(self, filename):
   """ Check if specified filename can be patched. Returns None if file can
   not be found among source filenames. False if patch can not be applied
@@ -2580,7 +2602,7 @@ def can_patch(self, filename):
   if idx == None:
     return None
   return self._match_file_hunks(filename, self.hunks[idx])
-.. @+node:ekr.20110604043410.17838: *7* _match_file_hunks
+.. @+node:ekr.20110604043410.17838: *8* _match_file_hunks
 def _match_file_hunks(self, filepath, hunks):
   matched = True
   fp = open(abspath(filepath))
@@ -2619,7 +2641,7 @@ def _match_file_hunks(self, filepath, hunks):
 
   fp.close()
   return matched
-.. @+node:ekr.20110604043410.17839: *7* patch_stream
+.. @+node:ekr.20110604043410.17839: *8* patch_stream
 def patch_stream(self, instream, hunks):
   """ Generator that yields stream patched with hunks iterable
   
@@ -2678,7 +2700,7 @@ def patch_stream(self, instream, hunks):
    
   for line in instream:
     yield line
-.. @+node:ekr.20110604043410.17840: *7* write_hunks
+.. @+node:ekr.20110604043410.17840: *8* write_hunks
 def write_hunks(self, srcname, tgtname, hunks):
   src = open(srcname, "rb")
   tgt = open(tgtname, "wb")
@@ -2690,7 +2712,7 @@ def write_hunks(self, srcname, tgtname, hunks):
   tgt.close()
   src.close()
   return True
-.. @+node:ekr.20110604043410.17841: *7* _get_file_idx
+.. @+node:ekr.20110604043410.17841: *8* _get_file_idx
 def _get_file_idx(self, filename, source=None):
 
   """ Detect index of given filename within patch.
@@ -2711,7 +2733,7 @@ def _get_file_idx(self, filename, source=None):
         return i  
 
 
-.. @+node:ekr.20110604043410.17842: *6* main
+.. @+node:ekr.20110604043410.17842: *7* main
 def main():
   
   from optparse import OptionParser
@@ -2759,6 +2781,9 @@ def main():
 
   # todo: document and test line ends handling logic - patch.py detects proper line-endings
   #       for inserted hunks and issues a warning if patched file has incosistent line ends
+.. @+node:ekr.20110605212009.16932: *4* Minor bugs: 2
+.. @+node:ekr.20110604182206.16757: *5* regex word-only does not work
+.. @+node:ekr.20110605121601.17012: *5* On Mac: change qttabs to qt
 .. @+node:ekr.20110527084258.18377: *4* Ashland sprint: 2
 .. @+node:ekr.20110527084258.18374: *5*  Summary of the Ashland sprint
 http://groups.google.com/group/leo-editor/browse_thread/thread/9b1dbebd56d50e14/d5a690127ddad38e

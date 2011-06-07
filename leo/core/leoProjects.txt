@@ -1462,7 +1462,7 @@ def __init__ (self,c):
 def outerUpdate (self):
 
     trace = False and not g.unitTesting
-    verbose = False ; traceFocus = False
+    verbose = False ; traceFocus = True
     c = self ; aList = []
     if not c.exists or not c.k:
         return
@@ -1581,6 +1581,7 @@ def idle_focus_helper (self,tag,keys):
     '''An idle-tme handler that ensures that focus is *somewhere*.'''
     
     trace = False and not g.unitTesting ; verbose = False
+    active = False
     
     c = self
     assert tag == 'idle'
@@ -1607,12 +1608,12 @@ def idle_focus_helper (self,tag,keys):
             g.trace(self.idle_focus_count,w)
     else:
         if trace: g.trace('%s no focus -> body' % (self.idle_focus_count))
-        c.bodyWantsFocusNow()
+        if active: c.bodyWantsFocusNow()
 #@+node:ekr.20080514131122.20: *6* c.outerUpdate
 def outerUpdate (self):
 
     trace = False and not g.unitTesting
-    verbose = False ; traceFocus = False
+    verbose = False ; traceFocus = True
     c = self ; aList = []
     if not c.exists or not c.k:
         return
@@ -6297,5 +6298,153 @@ The already existing prefixes are::
     toggle-     toggle settings
     yank-       yank
     
+#@+node:ekr.20110607114847.16565: *3* Fixed crasher in k.masterCommand
+# The stroke arg is required.
+#@+node:ekr.20110604182206.16760: *3* Fixed old bug: set-find-x commands no longer abort find commands
+@nocolor-node
+
+This is an old bug.  The fix is to add entries for set-find-everywhere,
+set-find-node-only' and set-find-suboutline-only in k.defineSingleLineCommands.
+The result is that k.handleMiniBindings does not end the mode. 
+#@+node:ekr.20061031131434.152: *4* handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
+            return False
+        if k.isFKey(stroke):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName == 'replace-string' and state == 'getArg':
+                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
+                        return False # Let getArg handle it.
+                    elif b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit()
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocus() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@+node:ekr.20080509064108.6: *4* k.defineSingleLineCommands
+def defineSingleLineCommands (self):
+
+    k = self
+
+    # These commands can be executed in the minibuffer.
+    k.singleLineCommandList = [
+        # editCommandsClass
+        'back-to-indentation',
+        'back-to-home', # 2010/02/01
+        'back-char',
+        'back-char-extend-selection',
+        'back-word',
+        'back-word-extend-selection',
+        'backward-delete-char',
+        'backward-find-character',
+        'backward-find-character-extend-selection',
+        'beginning-of-line',
+        'beginning-of-line-extend-selection',
+        'capitalize-word',
+        'delete-char',
+        'delete-indentation',
+        'delete-spaces',
+        'downcase-word',
+        'end-of-line',
+        'end-of-line-extend-selection',
+        'escape',
+        'exchange-point-mark',
+        'extend-to-line',
+        'extend-to-word',
+        'find-character',
+        'find-character-extend-selection',
+        'find-word',
+        'find-word-in-line',
+        'forward-char',
+        'forward-char-extend-selection',
+        'forward-end-word',
+        'forward-end-word-extend-selection',
+        'forward-word',
+        'forward-word-extend-selection',
+        'insert-newline',
+        'insert-parentheses',
+        'move-past-close',
+        'move-past-close-extend-selection',
+        'newline-and-indent',
+        'select-all',
+        'transpose-chars',
+        'transpose-words',
+        'upcase-word',
+        # keyHandlerCommandsClass
+        # 'auto-complete',
+        'negative-argument',
+        'number-command',
+        'number-command-0',
+        'number-command-1',
+        'number-command-2',
+        'number-command-3',
+        'number-command-4',
+        'number-command-5',
+        'number-command-6',
+        'number-command-7',
+        'number-command-8',
+        'universal-argument',
+        # killBufferCommandsClass
+        'backward-kill-word',
+        'kill-line',
+        'kill-word',
+        'kill-ws',
+        'yank',
+        'yank-pop',
+        'zap-to-character',
+        # leoCommands
+        'cut-text',
+        'copy-text',
+        'paste-text',
+        # macroCommandsClass
+        'call-last-kbd-macro',
+        # search commands
+        # 'replace-string', # A special case so Shift-Ctrl-r will work after Ctrl-f.
+        'set-find-everywhere',              # 2011/06/07
+        'set-find-node-only',               # 2011/06/07
+        'set-find-suboutline-only',         # 2011/06/07
+        'toggle-find-collapses_nodes',
+        'toggle-find-ignore-case-option',
+        'toggle-find-in-body-option',
+        'toggle-find-in-headline-option',
+        'toggle-find-mark-changes-option',
+        'toggle-find-mark-finds-option',
+        'toggle-find-regex-option',
+        'toggle-find-reverse-option',
+        'toggle-find-word-option',
+        'toggle-find-wrap-around-option',
+        # registerCommandsClass
+        'append-to-register',
+        'copy-to-register',
+        'insert-register',
+        'prepend-to-register',
+    ]
 #@-all
 #@-leo
