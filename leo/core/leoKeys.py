@@ -1965,7 +1965,7 @@ class keyHandlerClass:
         
         # 2011/06/06: remember these events also.
         if recording:
-            c.macroCommands.startKbdMacro(event)
+            c.macroCommands.startrecordingMacro(event)
         
         if state == 0:
             k.mb_event = event # Save the full event for later.
@@ -2446,7 +2446,7 @@ class keyHandlerClass:
         
         # 2011/06/06: remember these events also.
         if c.macroCommands.recordingMacro and state > 0:
-            c.macroCommands.startKbdMacro(event)
+            c.macroCommands.startRecordingMacro(event)
 
         char = event and event.char or ''
         
@@ -2737,7 +2737,7 @@ class keyHandlerClass:
 
         # We *must not* interfere with the global state in the macro class.
         if c.macroCommands.recordingMacro:
-            c.macroCommands.startKbdMacro(event)
+            c.macroCommands.startRecordingMacro(event)
             # 2011/06/06: Show the key, if possible.
             ### return # (for Tk) 'break'
 
@@ -2922,7 +2922,7 @@ class keyHandlerClass:
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
             if c.macroCommands.recordingMacro:
-                c.macroCommands.endKbdMacro()
+                c.macroCommands.endMacro()
                 return # (for Tk) 'break'
             else:
                 return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')

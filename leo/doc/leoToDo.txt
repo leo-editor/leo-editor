@@ -6,11 +6,13 @@
 .. @+node:ekr.20110520051220.18187: ** To do: 4.9
 @language rest
 .. @+node:ekr.20110527182640.18358: *3* b3
-.. @+node:ekr.20110607140913.16575: *4* First: 2
-.. @+node:ekr.20110606124445.16909: *5* Update key-handling theory of operation
+.. @+node:ekr.20110607140913.16575: *4* First
 .. @+node:ekr.20110605065044.17008: *5* Fix chapters problems
 http://groups.google.com/group/leo-editor/browse_thread/thread/3f15a855ca38b26e
 
+.. @+node:ekr.20110607140913.16577: *5* Apropos macros
+.. @+node:ekr.20110606124445.16909: *5* Update key-handling theory of operation
+.. @+node:ekr.20110607140913.16578: *5* Make sure all keys contribute to lossage
 .. @+node:ekr.20110607054506.16790: *5* (Done) Disabled idle-focus-helper
 @nocolor-node
 

@@ -6457,5 +6457,11 @@ ScrolledMessageDialog.convertMessage now renders rst by default, unless *either*
 the html or text button is pressed.  There really should be three radio buttons:
 text, html or rST, but that's a tiny interface glitch.  The actual bug however,
 was much more serious: rst was never being rendered. 
+#@+node:ekr.20110524141405.18370: *3* Finished macros
+@nocolor-node
+
+The macro-load and macro-save are as simple as possible.
+
+No further work will be done on macros unless somebody really wants these commands.
 #@-all
 #@-leo

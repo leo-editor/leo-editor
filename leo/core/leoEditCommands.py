@@ -6801,51 +6801,26 @@ class macroCommandsClass (baseEditCommandsClass):
         self.macro = []
         self.namedMacros = {}
 
-        # Important: we must not interfere with k.state in startKbdMacro!
+        # Important: we must not interfere with k.state in startRecordingMacro!
         self.recordingMacro = False
     #@+node:ekr.20050920084036.192: *3*  getPublicCommands
     def getPublicCommands (self):
 
         return {
             'macro-call':           self.callNamedMacro,
-            'macro-call-last':      self.callLastKbdMacro,
-            'macro-end-recording':  self.endKbdMacro,
+            'macro-call-last':      self.callLastMacro,
+            'macro-end-recording':  self.endMacro,
             'macro-load-all':       self.loadMacros,
-            'macro-name-last':      self.nameLastKbdMacro,
+            'macro-name-last':      self.nameLastMacro,
             'macro-print-all':      self.printMacros,
             'macro-print-last':     self.printLastMacro,
             'macro-save-all':       self.saveMacros,
-            'macro-start-recording':self.startKbdMacro,
+            'macro-start-recording':self.startRecordingMacro,
         }
-    #@+node:ekr.20050920085536.15: *3* addToDoAltX (common helper)
-    # Called from loadFile and nameLastKbdMacro.
-
-    def addToDoAltX (self,name,macro):
-
-        '''Adds macro to Alt-X commands.'''
-
-        trace = True and not g.unitTesting
-        k= self ; c = k.c
-        
-        if trace:
-            g.trace('macro::%s' % (name))
-            for z in macro:
-                print(z.stroke)
-            print()
-
-        # if name in c.commandsDict:
-            # return False
-
-        def func (event,macro=macro):
-            return self.executeMacro(macro)
-
-        c.commandsDict [name] = func
-        self.namedMacros [name] = macro
-        return True
-    #@+node:ekr.20050920084036.202: *3* callLastKbdMacro
+    #@+node:ekr.20050920084036.202: *3* callLastMacro
     # Called from universal-command.
 
-    def callLastKbdMacro (self,event=None):
+    def callLastMacro (self,event=None):
 
         '''Call the last recorded keyboard macro.'''
 
@@ -6875,8 +6850,36 @@ class macroCommandsClass (baseEditCommandsClass):
                 g.es('no macro named %s' % k.arg)
             k.resetLabel()
 
-    #@+node:ekr.20050920084036.206: *3* endKbdMacro
-    def endKbdMacro (self,event=None):
+    #@+node:ekr.20050920085536.15: *3* completeMacroDef
+    # Called from loadFile and nameLastMacro.
+
+    def completeMacroDef (self,name,macro):
+
+        '''Add the macro to the list of macros,
+        and add the macro's name to c.commandsDict.
+        '''
+
+        trace = False and not g.unitTesting
+        k= self ; c = k.c
+        
+        if trace:
+            g.trace('macro::%s' % (name))
+            for event in macro:
+                print(event.stroke)
+            print()
+
+        def func (event,macro=macro):
+            return self.executeMacro(macro)
+
+        if name in c.commandsDict:
+            g.es_print('over-riding command: %s' % (name))
+        else:
+            g.es_print('loaded: %s' % (name))
+
+        c.commandsDict [name] = func
+        self.namedMacros [name] = macro
+    #@+node:ekr.20050920084036.206: *3* endMacro
+    def endMacro (self,event=None):
 
         '''Stop recording a keyboard macro.'''
 
@@ -6895,12 +6898,13 @@ class macroCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20050920084036.203: *3* executeMacro
     def executeMacro (self,macro):
 
+        trace = False and not g.unitTesting
         c = self.c ; k = self.k
 
         c.bodyWantsFocus()
 
         for event in macro:
-            g.trace(repr(event.stroke))
+            if trace: g.trace(repr(event))
             k.masterKeyHandler(event)
     #@+node:ekr.20110606152005.16785: *3* getMacrosNode
     def getMacrosNode (self):
@@ -6943,6 +6947,7 @@ class macroCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20110606152005.16787: *3* loadMacros
     def loadMacros (self,event=None):
         
+        trace = False and not g.unitTesting
         c = self.c
         create_event = g.app.gui.create_key_event
         p = self.getMacrosNode()
@@ -6964,10 +6969,8 @@ class macroCommandsClass (baseEditCommandsClass):
                     macro = []
                     while i < len(lines):
                         s = lines[i].strip()
-                        g.trace(repr(name),repr(s))
+                        if trace: g.trace(repr(name),repr(s))
                         if s:
-                            # massage s to make it friendly.
-                            # stroke = c.k.strokeFromSetting(s)
                             stroke=s
                             char = c.k.stroke2char(stroke)
                             w = c.frame.body.bodyCtrl
@@ -6976,7 +6979,7 @@ class macroCommandsClass (baseEditCommandsClass):
                         else: break
                     # Create the entries.
                     if macro:
-                        self.addToDoAltX(name,macro)
+                        self.completeMacroDef(name,macro)
                         macro = [] ; name = None
                     else:
                         oops('empty expansion for %s' % (name))
@@ -6990,9 +6993,9 @@ class macroCommandsClass (baseEditCommandsClass):
             
         # finish of the last macro.
         if macro:
-            self.addToDoAltX(name,macro)
-    #@+node:ekr.20050920084036.198: *3* nameLastKbdMacro
-    def nameLastKbdMacro (self,event):
+            self.completeMacroDef(name,macro)
+    #@+node:ekr.20050920084036.198: *3* nameLastMacro
+    def nameLastMacro (self,event):
 
         '''Prompt for the name to be given to the last recorded macro.'''
 
@@ -7000,11 +7003,11 @@ class macroCommandsClass (baseEditCommandsClass):
 
         if state == 0:
             k.setLabelBlue('Name of macro: ',protect=True)
-            k.getArg(event,'name-macro',1,self.nameLastKbdMacro)
+            k.getArg(event,'name-macro',1,self.nameLastMacro)
         else:
             k.clearState()
             name = k.arg
-            self.addToDoAltX(name,self.lastMacro)
+            self.completeMacroDef(name,self.lastMacro)
             k.setLabelGrey('Macro defined: %s' % name)
     #@+node:ekr.20090201152408.1: *3* printMacros & printLastMacro
     def printMacros (self,event=None):
@@ -7039,17 +7042,18 @@ class macroCommandsClass (baseEditCommandsClass):
             result.append('::%s::' % (name))
             for event in macro:
                 w_name = self.getWidgetName(event.w)
-                result.append('%s::%s::%s' % (repr(event.char),event.stroke,w_name))
+                # result.append('%s::%s::%s' % (repr(event.char),event.stroke,w_name))
+                result.append(event.stroke)
             result.append('') # Blank line terminates
             
         p.b = '\n'.join(result)
 
-    #@+node:ekr.20050920084036.204: *3* startKbdMacro
-    def startKbdMacro (self,event):
+    #@+node:ekr.20050920084036.204: *3* startRecordingMacro
+    def startRecordingMacro (self,event):
 
-        '''Start recording a keyboard macro.'''
+        '''Start recording or continue to record a macro.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         k = self.k
         
         if event:
