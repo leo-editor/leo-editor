@@ -2614,6 +2614,10 @@ class keyHandlerClass:
         state = k.getState('getArg')
         
         c.check_event(event)
+        
+        # 2011/06/06: remember these events also.
+        if c.macroCommands.recordingMacro and state > 0:
+            c.macroCommands.startKbdMacro(event)
 
         char = event and event.char or ''
         
