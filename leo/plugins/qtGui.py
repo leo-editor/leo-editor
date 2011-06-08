@@ -7029,6 +7029,7 @@ class leoQtTreeTab:
         self.cc = c.chapterController
         assert self.cc
         self.iconBar = iconBar
+        self.lockout = False # True: do not redraw.
         self.tabNames = []
             # The list of tab names. Changes when tabs are renamed.
         self.w = None # The QComboBox
@@ -7078,15 +7079,17 @@ class leoQtTreeTab:
     #@+node:ekr.20110605121601.18445: *5* tt.selectTab
     def selectTab (self,tabName):
 
-        tt = self
+        tt,c = self,self.c
 
         if tabName not in self.tabNames:
             tt.createTab(tabName)
-
-        tt.cc.selectChapterByName(tabName)
-        
-        self.c.redraw()
-        self.c.outerUpdate()
+            
+        # g.trace('lockout',tt.lockout,tabName,g.callers())
+            
+        if not tt.lockout:
+            tt.cc.selectChapterByName(tabName)
+            c.redraw()
+            c.outerUpdate()
     #@+node:ekr.20110605121601.18446: *5* tt.setTabLabel
     def setTabLabel (self,tabName):
 
@@ -8021,7 +8024,7 @@ class leoQtGui(leoGui.leoGui):
         # This is called several times for each window activation.
         # We only need to set the focus once.
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         if c.exists and tag == 'body':
             if trace: g.trace()
@@ -8034,7 +8037,7 @@ class leoQtGui(leoGui.leoGui):
         '''Put the focus in the body pane when the Leo window is
         activated, say as the result of an Alt-tab or click.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         # This is called several times for each window activation.
         # Save the headline only once.

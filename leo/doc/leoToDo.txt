@@ -23,8 +23,9 @@ def idle_focus_helper (self,tag,keys):
     
     '''An idle-tme handler that ensures that focus is *somewhere*.'''
     
-    trace = True and not g.unitTesting ; verbose = False
-    active = False
+    trace = True and not g.unitTesting
+    verbose = False # False: only print surprises.
+    active = False # True: actually change the focus.
     
     c = self
     assert tag == 'idle'
@@ -50,8 +51,10 @@ def idle_focus_helper (self,tag,keys):
         if trace and verbose:
             g.trace(self.idle_focus_count,w)
     elif g.app.gui.active: # Set by gui.onActivate/onDeactivate.
-        if trace: g.trace('%s no focus -> body' % (self.idle_focus_count))
-        if active: c.bodyWantsFocusNow()
+        if trace:
+            g.trace('%s no focus -> body' % (self.idle_focus_count))
+        if active:
+            c.bodyWantsFocusNow()
 .. @+node:ekr.20110606001347.16927: *4* Important: 3
 .. @+node:ekr.20110527084258.18378: *5* New file format
 @nocolor-node

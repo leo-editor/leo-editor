@@ -205,8 +205,9 @@ class Commands (object):
         
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
         
-        trace = True and not g.unitTesting ; verbose = False
-        active = False
+        trace = True and not g.unitTesting
+        verbose = False # False: only print surprises.
+        active = False # True: actually change the focus.
         
         c = self
         assert tag == 'idle'
@@ -232,8 +233,10 @@ class Commands (object):
             if trace and verbose:
                 g.trace(self.idle_focus_count,w)
         elif g.app.gui.active: # Set by gui.onActivate/onDeactivate.
-            if trace: g.trace('%s no focus -> body' % (self.idle_focus_count))
-            if active: c.bodyWantsFocusNow()
+            if trace:
+                g.trace('%s no focus -> body' % (self.idle_focus_count))
+            if active:
+                c.bodyWantsFocusNow()
     #@+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad (self):
 
@@ -3944,7 +3947,7 @@ class Commands (object):
             h = p.h
             if h.startswith(chapters):
                 if p.hasChildren():
-                    return cc.error('Can not delete @chapters node with children.')
+                    return cc.note('Can not delete @chapters node with children.')
             elif h.startswith(chapter):
                 name = h[len(chapter):].strip()
                 if name:
@@ -7269,13 +7272,10 @@ class Commands (object):
         if trace:
             c._currentCount += 1
             g.trace(c._currentCount,p)
-            
-        # Always recompute the root position.
-        # c.setRootPosition()
 
         if p and not c.positionExists(p): # 2011/02/25:
             c._currentPosition = c.rootPosition()
-            g.warning('(c.setCurrentPosition) Invalid position: %s, root: %s' % (
+            if trace: trace('Invalid position: %s, root: %s' % (
                 repr(p and p.h),
                 repr(c._currentPosition and c._currentPosition.h)),
                 g.callers())

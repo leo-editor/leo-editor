@@ -1580,8 +1580,9 @@ def idle_focus_helper (self,tag,keys):
     
     '''An idle-tme handler that ensures that focus is *somewhere*.'''
     
-    trace = True and not g.unitTesting ; verbose = False
-    active = False
+    trace = True and not g.unitTesting
+    verbose = False # False: only print surprises.
+    active = False # True: actually change the focus.
     
     c = self
     assert tag == 'idle'
@@ -1607,8 +1608,10 @@ def idle_focus_helper (self,tag,keys):
         if trace and verbose:
             g.trace(self.idle_focus_count,w)
     elif g.app.gui.active: # Set by gui.onActivate/onDeactivate.
-        if trace: g.trace('%s no focus -> body' % (self.idle_focus_count))
-        if active: c.bodyWantsFocusNow()
+        if trace:
+            g.trace('%s no focus -> body' % (self.idle_focus_count))
+        if active:
+            c.bodyWantsFocusNow()
 #@+node:ekr.20080514131122.20: *6* c.outerUpdate
 def outerUpdate (self):
 
@@ -2826,13 +2829,10 @@ def setCurrentPosition (self,p):
     if trace:
         c._currentCount += 1
         g.trace(c._currentCount,p)
-        
-    # Always recompute the root position.
-    # c.setRootPosition()
 
     if p and not c.positionExists(p): # 2011/02/25:
         c._currentPosition = c.rootPosition()
-        g.warning('(c.setCurrentPosition) Invalid position: %s, root: %s' % (
+        if trace: trace('Invalid position: %s, root: %s' % (
             repr(p and p.h),
             repr(c._currentPosition and c._currentPosition.h)),
             g.callers())

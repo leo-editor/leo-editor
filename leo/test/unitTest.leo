@@ -96,34 +96,12 @@
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e372e31332e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e372e31352e3671057d71065808000000616e6e6f7461746571077d7108735807000000302e342e302e3571097d710a5808000000616e6e6f74617465710b7d710c735807000000302e372e392e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e372e31362e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e372e31342e3371057d71065808000000616e6e6f7461746571077d7108735807000000302e342e302e3571097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31302e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"
 expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20090529141856.4731,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4772,ekr.20090529141856.4774,ekr.20090529141856.4734,ekr.20100219080213.5365,ekr.20090529141856.4736,ekr.20090529141856.4780,ekr.20090529141856.4784,ekr.20071113194424.1,ekr.20040802071519,ekr.20080501121449.1,ekr.20081001094920.2,ekr.20100131171342.5610,ekr.20091219122958.5066,ekr.20090529115704.4396,ekr.20100131171342.5612,ekr.20040712101754.37,ekr.20040712101754.38,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20110606113721.3474"><vh>Failing tests</vh>
-<v t="ekr.20100216142240.5371"><vh>@@test goto-global-line with @auto</vh>
-<v t="ekr.20100216142240.5372"><vh>@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20100226073841.5348"><vh>class child1</vh>
-<v t="ekr.20100226073841.5349"><vh>child1_method1</vh></v>
-<v t="ekr.20100226073841.5350"><vh>child1_method2</vh></v>
-</v>
-<v t="ekr.20100226073841.5351"><vh>class child2</vh>
-<v t="ekr.20100226073841.5352"><vh>child2_method1</vh></v>
-<v t="ekr.20100226073841.5353"><vh>child2_method2</vh></v>
-</v>
-<v t="ekr.20110606080926.4035"><vh>class child2</vh>
-<v t="ekr.20110606080926.4036"><vh>child2_method1</vh></v>
-<v t="ekr.20110606080926.4037"><vh>child2_method2</vh></v>
-</v>
-<v t="ekr.20110606081108.4060"><vh>class child1</vh>
-<v t="ekr.20110606081108.4061"><vh>child1_method1</vh></v>
-<v t="ekr.20110606081108.4062"><vh>child1_method2</vh></v>
-</v>
-<v t="ekr.20110606081108.4063"><vh>class child2</vh>
-<v t="ekr.20110606081108.4064"><vh>child2_method1</vh></v>
-<v t="ekr.20110606081108.4065"><vh>child2_method2</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20110608135658.3377"><vh>leoChapters</vh>
+<v t="ekr.20110608162543.3363"><vh>@test chapter-create/remove &amp; undo</vh></v>
+<v t="ekr.20110608162543.3365"><vh>@test chapter-rename &amp; undo</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -631,134 +609,37 @@ for p in c.all_unique_positions():
 
 s = "%d nodes" % count
 print s ; g.es(s)</t>
-<t tx="ekr.20100216142240.5371"># The @auto node must be a child of this node
-# for findNodeAnywhere to succeed with Alt-6.
-fn = '../test/at-auto-unit-test.py'
-root = g.findNodeAnywhere(c,'@auto %s' % (fn))
-assert root,'no root'
-
-child1 = root.firstChild()
-assert child1,'no child1'
-grand11 = child1.firstChild()
-assert grand11,'no grand11'
-grand12 = grand11.next()
-assert grand12,'no grand12'
-
-child2 = child1.next()
-assert child2,'no child2'
-grand21 = child2.firstChild()
-assert grand21,'no grand21'
-grand22 = grand21.next()
-assert grand22,'no grand22'
-
-def oops(found,p2,node,n,n2):
-    result = [' ']
-    result.append('goto-global-line test failed at line %s' % (n))
-    if not found:
-        result.append('line %s not found',n)
-    else:
-        result.append('got node "%s", expected "%s"' % (p2.h,node.h))
-        result.append('got offset %s, expected %s' % (n2,n))
-    return '\n'.join(result)
-
-table = (
-    # Use 1-based numbers externally.
-    # countLines converts to zero-based numbers.
-    (1, child1,  0),
-    (2, grand11, 0),
-    (3, grand11, 1),
-    (4, grand12, 0),
-    (5, grand12, 1),
-    (6, child1,  2),
-    (7, child2,  0),
-    (8, grand21, 0),
-    (9, grand21, 1),
-    (10,grand22, 0),
-    (11,grand22, 1),
-    (12,root,    3),
-)
-
-# Test against actual lines of the file.
-path = g.os_path_finalize_join(g.app.loadDir,'..','test',fn)
-f = open(path,'r') ; s = f.read() ; f.close()
-lines = g.splitLines(s) # The lines from the file.
-for n,node,index in table:
-    goto = c.goToLineNumber(c)
-    p2,n2,found = goto.countLines(root,n)
-        # n, the argument to countLines, is 1-based
-        # n2, the returned index into p2.b, is zero-based
-    n -= 1
-        # Convert n to zero-based for the comparisons below.
-    lines2 = g.splitLines(p2.b)
-    if 0:
-        print('%2d %s' % (n,repr(lines[n])))
-    else:
-        ok = lines2[n2].lstrip() == lines[n].lstrip() 
-        if not ok:
-            i = 0
-            for z in lines:
-                print('%2d %s' % (i,repr(z)))
-                i += 1
-        if not ok:
-            print('at line %s, index %s, node %s\ngot line %s\nexpected %s' % (
-                n,n2,p2.h,repr(lines2[n2].lstrip()),repr(lines[n].lstrip())))
-        assert ok
-</t>
-<t tx="ekr.20100216142240.5372">@language python
-@tabwidth -4
-@others
-# last line
-@ignore
-</t>
-<t tx="ekr.20100226073841.5348">class child1:
-    @others
-    # After @others in child1.
-</t>
-<t tx="ekr.20100226073841.5349">def child1_method1():
-    pass
-</t>
-<t tx="ekr.20100226073841.5350">def child1_method2():
-    pass
-</t>
-<t tx="ekr.20100226073841.5351">class child2:
-    @others
-</t>
-<t tx="ekr.20100226073841.5352">def child2_method1():
-    pass
-</t>
-<t tx="ekr.20100226073841.5353">def child2_method2():
-    pass
-</t>
 <t tx="ekr.20101220161557.6013"></t>
 <t tx="ekr.20101220161557.6016"></t>
-<t tx="ekr.20110606080926.4035">class child2:
-    @others
+<t tx="ekr.20110608135658.3377"></t>
+<t tx="ekr.20110608162543.3363">cc = c.chapterController
+chaptersNode = cc.findChaptersNode()
+assert chaptersNode
+
+if not cc.findChapterNode('aaa'):
+    cc.createChapterByName('aaa',p=None)
+
+cc.selectChapterByName('aaa',chaptersNode)
+cc.removeChapterByName('aaa')
+c.undoer.undo()
+assert cc.findChapterNode('aaa')
+cc.selectChapterByName('main',chaptersNode)
 </t>
-<t tx="ekr.20110606080926.4036">def child2_method1():
-    pass
+<t tx="ekr.20110608162543.3365">cc = c.chapterController
+chaptersNode = cc.findChaptersNode()
+assert chaptersNode
+
+if not cc.findChapterNode('aaa'):
+    cc.createChapterByName('aaa',p=None)
+    
+try:
+    cc.selectChapterByName('aaa',chaptersNode)
+    cc.renameChapterByName('bbb')
+    cc.selectChapterByName('bbb',chaptersNode)
+    cc.renameChapterByName('aaa')
+    assert cc.findChapterNode('aaa'),'after undo'
+finally:
+    cc.selectChapterByName('main',chaptersNode)
 </t>
-<t tx="ekr.20110606080926.4037">def child2_method2():
-    pass
-</t>
-<t tx="ekr.20110606081108.4060">class child1:
-    @others
-    # After @others in child1.
-</t>
-<t tx="ekr.20110606081108.4061">def child1_method1():
-    pass
-</t>
-<t tx="ekr.20110606081108.4062">def child1_method2():
-    pass
-</t>
-<t tx="ekr.20110606081108.4063">class child2:
-    @others
-</t>
-<t tx="ekr.20110606081108.4064">def child2_method1():
-    pass
-</t>
-<t tx="ekr.20110606081108.4065">def child2_method2():
-    pass
-</t>
-<t tx="ekr.20110606113721.3474"></t>
 </tnodes>
 </leo_file>

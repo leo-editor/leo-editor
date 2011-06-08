@@ -4195,6 +4195,36 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoColor tests')
+#@+node:ekr.20110608135658.3377: *3* leoChapters
+#@+node:ekr.20110608162543.3363: *4* @test chapter-create/remove & undo
+cc = c.chapterController
+chaptersNode = cc.findChaptersNode()
+assert chaptersNode
+
+if not cc.findChapterNode('aaa'):
+    cc.createChapterByName('aaa',p=None)
+
+cc.selectChapterByName('aaa',chaptersNode)
+cc.removeChapterByName('aaa')
+c.undoer.undo()
+assert cc.findChapterNode('aaa')
+cc.selectChapterByName('main',chaptersNode)
+#@+node:ekr.20110608162543.3365: *4* @test chapter-rename & undo
+cc = c.chapterController
+chaptersNode = cc.findChaptersNode()
+assert chaptersNode
+
+if not cc.findChapterNode('aaa'):
+    cc.createChapterByName('aaa',p=None)
+    
+try:
+    cc.selectChapterByName('aaa',chaptersNode)
+    cc.renameChapterByName('bbb')
+    cc.selectChapterByName('bbb',chaptersNode)
+    cc.renameChapterByName('aaa')
+    assert cc.findChapterNode('aaa'),'after undo'
+finally:
+    cc.selectChapterByName('main',chaptersNode)
 #@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5
 #@+node:ekr.20050512084850: *4*  Check outline

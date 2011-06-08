@@ -697,7 +697,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20110605121601.17906: *3* afterSelectHint (nativeTree)
     def afterSelectHint (self,p,old_p):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c
 
         self.selecting = False
@@ -708,10 +708,11 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if not p:
             return self.error('no p')
 
-        if p != c.currentPosition():
-            return self.error(
+        if p != c.p:
+            if trace: self.error(
                 '(afterSelectHint) p != c.p\np:   %s\nc.p: %s\n' % (
                 repr(p),repr(c.currentPosition())))
+            p = c.p
         
         # if trace: g.trace(c.p.h,g.callers())
 
