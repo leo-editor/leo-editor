@@ -1580,7 +1580,7 @@ def idle_focus_helper (self,tag,keys):
     
     '''An idle-tme handler that ensures that focus is *somewhere*.'''
     
-    trace = False and not g.unitTesting ; verbose = False
+    trace = True and not g.unitTesting ; verbose = False
     active = False
     
     c = self
@@ -1606,7 +1606,7 @@ def idle_focus_helper (self,tag,keys):
     if w:
         if trace and verbose:
             g.trace(self.idle_focus_count,w)
-    else:
+    elif g.app.gui.active: # Set by gui.onActivate/onDeactivate.
         if trace: g.trace('%s no focus -> body' % (self.idle_focus_count))
         if active: c.bodyWantsFocusNow()
 #@+node:ekr.20080514131122.20: *6* c.outerUpdate
@@ -2821,7 +2821,7 @@ def setCurrentPosition (self,p):
     Client code should use c.selectPosition instead."""
 
     trace = False and not g.unitTesting
-    c = self ; cc = c.chapterController ### Oops, not used.
+    c = self
 
     if trace:
         c._currentCount += 1
@@ -2831,10 +2831,12 @@ def setCurrentPosition (self,p):
     # c.setRootPosition()
 
     if p and not c.positionExists(p): # 2011/02/25:
-        g.warning('Invalid position',p)
-        if trace: g.trace(g.callers())
         c._currentPosition = c.rootPosition()
-        # g.trace('does not exists',p,'\n',g.callers())
+        g.warning('(c.setCurrentPosition) Invalid position: %s, root: %s' % (
+            repr(p and p.h),
+            repr(c._currentPosition and c._currentPosition.h)),
+            g.callers())
+        
         if g.unitTesting: assert False,p
         return
 

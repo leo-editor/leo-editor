@@ -7,6 +7,7 @@
 @language rest
 .. @+node:ekr.20110527182640.18358: *3* b3
 .. @+node:ekr.20110607140913.16575: *4* First
+.. @+node:ekr.20110607182447.16466: *5* escape got inserted into text
 .. @+node:ekr.20110607140913.16577: *5* Apropos macros
 .. @+node:ekr.20110606124445.16909: *5* Update key-handling theory of operation
 .. @+node:ekr.20110607140913.16578: *5* Make sure all keys contribute to lossage
@@ -22,7 +23,7 @@ def idle_focus_helper (self,tag,keys):
     
     '''An idle-tme handler that ensures that focus is *somewhere*.'''
     
-    trace = False and not g.unitTesting ; verbose = False
+    trace = True and not g.unitTesting ; verbose = False
     active = False
     
     c = self
@@ -48,7 +49,7 @@ def idle_focus_helper (self,tag,keys):
     if w:
         if trace and verbose:
             g.trace(self.idle_focus_count,w)
-    else:
+    elif g.app.gui.active: # Set by gui.onActivate/onDeactivate.
         if trace: g.trace('%s no focus -> body' % (self.idle_focus_count))
         if active: c.bodyWantsFocusNow()
 .. @+node:ekr.20110606001347.16927: *4* Important: 3

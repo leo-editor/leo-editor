@@ -205,7 +205,7 @@ class Commands (object):
         
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
         
-        trace = False and not g.unitTesting ; verbose = False
+        trace = True and not g.unitTesting ; verbose = False
         active = False
         
         c = self
@@ -231,7 +231,7 @@ class Commands (object):
         if w:
             if trace and verbose:
                 g.trace(self.idle_focus_count,w)
-        else:
+        elif g.app.gui.active: # Set by gui.onActivate/onDeactivate.
             if trace: g.trace('%s no focus -> body' % (self.idle_focus_count))
             if active: c.bodyWantsFocusNow()
     #@+node:ekr.20081005065934.1: *4* c.initAfterLoad
@@ -7026,8 +7026,17 @@ class Commands (object):
 
         """Return True if a position exists in c's tree"""
 
-        trace = True and not g.unitTesting
+        trace = True and not g.unitTesting ; verbose = False
         c = self ; p = p.copy()
+        
+        def report(i,children,v,tag=''):
+            if trace and verbose:
+                if i < 0 or i >= len(children):
+                    g.trace('bad i: %s, children: %s' % (
+                        i,len(children))) # ,g.callers(12))
+                elif children[i] != v:
+                    g.trace('v mismatch: children[i]: %s, v: %s' % (
+                        children[i] and children[i].h,v.h)) # ,g.callers(12))
 
         # This code must be fast.
         if not root:
@@ -7042,14 +7051,17 @@ class Commands (object):
                 p.moveToParent()
                 children = p.v.children
                 # Major bug fix: 2009/1/2 and 2009/1/5
+                report(i,children,old_v)
                 if i < 0 or i >= len(children) or children[i] != old_v:
                     return False
             else:
                 # A top-level position, check from hidden root vnode.
                 i = p._childIndex
                 children = c.hiddenRootNode.children
+                report(i,children,p.v)
                 return 0 <= i < len(children) and children[i] == p.v
 
+        if trace: g.trace('no v found')
         return False
     #@+node:ekr.20040803140033.2: *5* c.rootPosition
     _rootCount = 0
@@ -7252,7 +7264,7 @@ class Commands (object):
         Client code should use c.selectPosition instead."""
 
         trace = False and not g.unitTesting
-        c = self ; cc = c.chapterController ### Oops, not used.
+        c = self
 
         if trace:
             c._currentCount += 1
@@ -7262,10 +7274,12 @@ class Commands (object):
         # c.setRootPosition()
 
         if p and not c.positionExists(p): # 2011/02/25:
-            g.warning('Invalid position',p)
-            if trace: g.trace(g.callers())
             c._currentPosition = c.rootPosition()
-            # g.trace('does not exists',p,'\n',g.callers())
+            g.warning('(c.setCurrentPosition) Invalid position: %s, root: %s' % (
+                repr(p and p.h),
+                repr(c._currentPosition and c._currentPosition.h)),
+                g.callers())
+            
             if g.unitTesting: assert False,p
             return
 

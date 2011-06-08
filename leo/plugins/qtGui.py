@@ -4519,7 +4519,9 @@ class leoQtFrame (leoFrame.leoFrame):
             f = c.frame
 
             if f.use_chapters and f.use_chapter_tabs: # and cc and cc.findChaptersNode():
-                cc.tt = leoQtTreeTab(c,f.iconBar)
+                return leoQtTreeTab(c,f.iconBar)
+            else:
+                return None
         #@+node:ekr.20110605121601.18270: *5* deleteButton
         def deleteButton (self,w):
             """ w is button """
@@ -7078,13 +7080,11 @@ class leoQtTreeTab:
 
         tt = self
 
-        # g.trace(tabName)
-
         if tabName not in self.tabNames:
             tt.createTab(tabName)
 
         tt.cc.selectChapterByName(tabName)
-
+        
         self.c.redraw()
         self.c.outerUpdate()
     #@+node:ekr.20110605121601.18446: *5* tt.setTabLabel
@@ -7516,6 +7516,9 @@ class leoQtGui(leoGui.leoGui):
         self.iconimages = {} # Image cache set by getIconImage().
         self.mGuiName = 'qt'
         
+        # Communication between idle_focus_helper and activate/deactivate events.
+        self.active = True
+        
         # Put up the splash screen()
         if (g.app.use_splash_screen and
             not g.app.batchMode and
@@ -7555,39 +7558,6 @@ class leoQtGui(leoGui.leoGui):
                 splash = None
         
         return splash
-    #@+node:ekr.20110605121601.18480: *5* onActivateEvent (qtGui)
-    # Called from eventFilter
-
-    def onActivateEvent (self,event,c,obj,tag):
-
-        '''Put the focus in the body pane when the Leo window is
-        activated, say as the result of an Alt-tab or click.'''
-
-        # This is called several times for each window activation.
-        # We only need to set the focus once.
-
-        trace = False and not g.unitTesting
-        
-        if trace: g.trace(tag,c)
-
-        if c.exists and tag == 'body':
-            c.bodyWantsFocusNow()
-            g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
-    #@+node:ekr.20110605121601.18481: *5* onDeactiveEvent (qtGui)
-    def onDeactivateEvent (self,event,c,obj,tag):
-
-        '''Put the focus in the body pane when the Leo window is
-        activated, say as the result of an Alt-tab or click.'''
-
-        trace = False and not g.unitTesting
-
-        # This is called several times for each window activation.
-        # Save the headline only once.
-
-        if c.exists and tag.startswith('tree'):
-            if trace: g.trace(tag,c)
-            c.endEditing()
-            g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
     #@+node:ekr.20110605121601.18482: *5* IPython embedding & mainloop
     def embed_ipython(self):
         import IPython.ipapi
@@ -8039,6 +8009,41 @@ class leoQtGui(leoGui.leoGui):
         d.exec_()
         c.in_qt_dialog = False
         #@-<< emergency fallback >>
+    #@+node:ekr.20110607182447.16456: *4* Event handlers (qtGui)
+    #@+node:ekr.20110605121601.18480: *5* onActivateEvent (qtGui)
+    # Called from eventFilter
+
+    def onActivateEvent (self,event,c,obj,tag):
+
+        '''Put the focus in the body pane when the Leo window is
+        activated, say as the result of an Alt-tab or click.'''
+
+        # This is called several times for each window activation.
+        # We only need to set the focus once.
+
+        trace = True and not g.unitTesting
+
+        if c.exists and tag == 'body':
+            if trace: g.trace()
+            self.active = True
+            c.bodyWantsFocusNow()
+            g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
+    #@+node:ekr.20110605121601.18481: *5* onDeactiveEvent (qtGui)
+    def onDeactivateEvent (self,event,c,obj,tag):
+
+        '''Put the focus in the body pane when the Leo window is
+        activated, say as the result of an Alt-tab or click.'''
+
+        trace = True and not g.unitTesting
+
+        # This is called several times for each window activation.
+        # Save the headline only once.
+
+        if c.exists and tag.startswith('tree'):
+            self.active = False
+            if trace: g.trace()
+            c.endEditing()
+            g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
     #@+node:ekr.20110605121601.18508: *4* Focus (qtGui)
     def get_focus(self,c=None):
 

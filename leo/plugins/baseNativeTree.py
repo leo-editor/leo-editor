@@ -709,9 +709,11 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             return self.error('no p')
 
         if p != c.currentPosition():
-            return self.error('p is not c.currentPosition()')
+            return self.error(
+                '(afterSelectHint) p != c.p\np:   %s\nc.p: %s\n' % (
+                repr(p),repr(c.currentPosition())))
         
-        if trace: g.trace(c.p.h,g.callers())
+        # if trace: g.trace(c.p.h,g.callers())
 
         # We don't redraw during unit testing: an important speedup.
         if c.expandAllAncestors(p) and not g.unitTesting:
