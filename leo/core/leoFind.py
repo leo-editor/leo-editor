@@ -736,7 +736,13 @@ class leoFind:
                 flags = re.MULTILINE
                 if self.ignore_case: flags |= re.IGNORECASE
                 # New in Leo 4.5: escape the search text.
-                self.re_obj = re.compile(self.find_text,flags)
+                b,s = '\\b',self.find_text
+                if self.whole_word:
+                    if not s.startswith(b): s = b + s
+                    if not s.endswith(b): s = s + b
+                # g.trace(self.whole_word,repr(s))
+                    
+                self.re_obj = re.compile(s,flags)
                 # self.re_obj = re.compile(re.escape(self.find_text),flags)
             except Exception:
                 g.es('invalid regular expression:',self.find_text,color='blue')
