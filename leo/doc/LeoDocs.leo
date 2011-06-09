@@ -126,8 +126,7 @@
 <v t="ekr.20100805165051.7159"><vh>@file history.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.261"><vh>Theory of Operation</vh>
-<v t="ekr.20100805165051.7160"
-expanded="ekr.20050901101608.6,"><vh>@file theory.txt</vh></v>
+<v t="ekr.20100805165051.7160"><vh>@file theory.txt</vh></v>
 </v>
 <v t="ekr.20050901084134"><vh>White papers</vh>
 <v t="ekr.20100805165051.7161"><vh>@file whitepapers.txt</vh></v>
@@ -172,6 +171,7 @@ expanded="ekr.20050901101608.6,"><vh>@file theory.txt</vh></v>
 <v t="ekr.20110602091552.16917"><vh>Scripting improvements</vh></v>
 </v>
 </v>
+<v t="ekr.20110609120520.16494"><vh>New key-handling theory of operation</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -949,6 +949,102 @@ between the free_layout, NestedSplitter and viewrendered plugins.
 - Fixed MacOS Command-C bug.
 
 - Fixed major problem with multiple body editors
+</t>
+<t tx="ekr.20110609120520.16494">@language rest
+
+Key handling is already almost optimal, except for one or two global renaming issues.
+
+Instead of key-handling, Leo 4.9 cleaned up *event* handling.
+
+The following section discusses the big picture.
+
+Key handling domains
+====================
+
+Leo's key-handling code is very complex, but this complexity has almost nothing
+to do with supporting multiple guis. Rather, the key-handling code is complex
+because it must deal with the following four fundamentally different problem
+domains:
+
+Domain 1: Parsing user bindings in @keys, @mode and @shortcut nodes
+---------------------------------------------------------------------
+
+In this domain, complexity arises from allowing the user a variety of
+*equivalent* ways of specifying bindings. Furthermore, this domain allows the
+user to specify modes and per-pane bindings. Thus, all these complexities are
+unavoidable.
+
+Domain 2: Maintaining and using binding tables
+----------------------------------------------
+
+The result of parsing user bindings are a set of binding tables. These tables
+are complex, but we need not go into details here because only one method,
+k.masterKeyHandler (and its helper, getPaneBinding) uses the tables.
+
+The only thing we have to remember about the binding tables is that bindings are
+expressed in terms of so-called **strokes**.  Strokes are the "official" form of
+every user binding.  The essential property of a stroke is that it contains
+*all* the information required to handle the stroke: Leo can unambiguously
+determine exactly what a stroke means and what bindings are in effect for a
+stroke.  If necessary, Leo can correctly insert the proper character
+*corresponding* to the stroke into any text widget. 
+
+This correspondence (association) between the stroke and the actual
+character to be inserted into text widgets is crucial.  This
+correspondence is created in the next domain.
+
+Anticipating a bit, for any incoming key event, event.stroke is the
+stroke, and event.char is the character (if any) that *might*
+(depending on bindings) be inserted into text widgets.
+
+**New in Leo 4.9**: k.stroke2char calculates the to-be-inserted char from
+any stroke.
+
+Domain 3: Translating incoming key events into standard events
+--------------------------------------------------------------
+
+The eventFilter method in qtGui.py creates leoKeyEvent objects.  Turning "raw"
+Qt key events into leoKeyEvents is unavoidably complicated because eventFilter
+(and its allies) **must** carefully compute the stroke corresponding to the raw
+key event.  There is no way around this requirement if Leo's binding machinery
+in domain 2 is to work.  This code has been stable for a long time. 
+
+Domain 4: Printing key bindings in a human-readable format
+----------------------------------------------------------
+
+It's important not to forget this domain: there are some situations in which we
+want to represent '\b','\r','\n' and '\t' as 'BackSpace','Linefeed','Return' and
+'Tab'.
+
+The gang of four
+===============
+
+leoKeyEvents use the strings 'Backspace','Linefeed','Return' and 'Tab' (The
+Gang of Four) in event.char, when using '\b','\r','\n',and '\t' would be more
+intuitive.
+   
+All events are key events
+=========================
+
+All event objects passed around Leo are *key* event objects. Taking a look at
+the eventFilter method, we see clearly see that *only* key events ever get
+passed to Leo's core. All other events are handled by Qt-specific event
+handlers.
+
+As can be seen, these non-key events *can* be passed to Leo, but only as the
+event arg in g.doHook (!) At present, no plugin ever calls k.masterKeyHandler.
+The only call to k.masterKeyHandler in qtGui.py is the expected call in
+eventFilter.
+
+There are other calls to k.masterKeyHandler in Leo's core, but we can prove (by
+induction, if you will), that all events passed to k.masterKeyHandler are proper
+leoKeyEvent objects.
+
+The essential invariant is that the events passed to Leo's core methods really
+are be the leoKeyEvent objects created by qtGui.py.  Rather than asserting this
+invariant, the code will contains calls to c.check_event in essential places. 
+c.check_event is a "relaxed" place to do as much error checking is needed.  In
+particular, running the unit tests calls c.check_event many times. 
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os

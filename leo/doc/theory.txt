@@ -31,74 +31,21 @@ This chapter will be of use primarily to those wanting to change Leo's code.
 .. @+node:ekr.20050901102300: *3* @rst-no-head links
 .. _`History of Leo`:   history.html
 .. _`White Papers`:     whitepapers.html
-.. @+node:EKR.20040524104904.262: *3* Overview
-All versions of Leo are organized as a collection of classes. The general
-organization of Leo has remained remarkably stable throughout all versions of
-Leo, although the names of classes are different in different versions.
-Smalltalk's Model/View/Controller terminology is a good way think about Leo's
-classes. **Model classes** represent the fundamental data. The vnode
-class is Leo's primary model class.
+.. @+node:EKR.20040524104904.265: *3* Clones
+New in Leo 4.7. All clones of a node **are the same node**. This is the
+so-called **one-node** world. In this world, vnodes represent data, generators
+and positions represent the location of the data in an outline.  This is a much
+simpler world than all previous data representations.
 
-**View classes** draw the screen. The main view classes are leoFrame.py and
-leoTree.py. The colorizer class in leoColor.py handles syntax coloring in the
-body pane. Leo's view classes know about data stored in the vnode class. Most
-events (keystrokes and mouse actions) in the outline and body pane are handled
-in the leoTree class. The leoFrame class also creates the Leo window, including
-menus, and dispatches the appropriate members of the controller classes in
-response to menu commands.
+In Leo versions 4.2 to 4.6 clones were represented by sharing **tnodes**. Cloned
+vnodes shared the same tnode. This shared tnode represented the entire shared
+subtree of both clones. Thus, the _firstChild link had to reside in
+*tnodes*, not *vnodes*.
 
-**Controller classes** (aka commanders) control the application. In Leo,
-controllers mostly handle menu commands. Commanders create subcommanders to
-handle complex commands. The atFile class reads and writes files derived from
-\@file trees. The LeoFind class handles the Find and Change commands. The
-leoImportCommands class handles the Import and Export commands, and the undoer
-class handles the Undo command. Other classes could be considered controller
-classes.
-
-Each Leo window has its own commander and subcommanders. Subcommanders are not
-subclasses of their commander. Instead, subcommanders know the commander that
-created them, and call that commander as needed. Commanders and subcommanders
-call the model and view classes as needed. For example, the Commands class
-handles outline commands. To move a headline, the commander for the window calls
-a vnode move routine to alter the data, then calls the view class to redraw the
-screen based on the new data.
-
-A singleton instance of the **LeoApp** class represents the application itself.
-All code uses the app() global function to gain access to this singleton member.
-The ivars of the LeoApp object are the equivalent of Leo's global variables.
-leo.py uses no global Python variables, except the gApp variable returned by
-app(). leoGlobals.py defines all application constants. Naturally, most
-constants are local to the class that uses them.
-
-Several classes combine aspects of model, view and controller. For example, the
-**LeoPrefs** class represents user preferences (model), the Preference Panel
-(view) and the Preferences menu command (controller). Similarly, the **LeoFind**
-class represents find settings, the Find/Change dialog, and the Find/Change
-commands.
-
-We use the following convention throughout this documentation. Any variable
-named c is a commander, i.e., an instance of the Commands class in
-leoCommands.py. Variables named v are vnodes. These classes are defined in
-leoNodes.py.
-.. @+node:EKR.20040524104904.263: *3* Nodes
-The vnode class is Leo's fundamental model class. A **vnode** represents the
-data represented by headlines. As of Leo 4.7, all clones of a node are in fact
-**exactly the same node**.
-
-The vnode contains **all** data associated with a node. A vnode contains
-headline text, body text, and **user attributes**, uA's for short.
-
-Because Leo has unlimited Undo commands, Leo deletes vnodes only when a window
-closes. Leo deletes nodes indirectly using destroy methods. Several classes,
-including the vnode, leoFrame and leoTree classes, have destroy methods. destroy
-methods merely clear links so that Python's reference counting mechanisms will
-eventually delete vnodes and other data when a window closes.
-
-Leo's XML file format uses **tx** and **t** attributes to associate <v> elements
-with <t> elements. <v> elements represent nodes. <t> elements represent the body
-text of nodes. This is a (somewhat dubious) space optimization. The values of tx
-and t attributes are **gnx's** (global node indices). These indices do not
-change once a node has created.
+Prior to Leo version 4.2, Leo duplicated all the descendants of vnode v when
+cloning v. This created many complications that were removed in the shared tnode
+world. In particular, in the shared tnode scheme a vnode v is cloned if and only
+if len(v.vnodeList) > 1.
 .. @+node:EKR.20040524104904.264: *3* Drawing and events
 Leo must redraw the outline pane when commands are executed and as the result of mouse and keyboard events.
 The main challenges are eliminating flicker and handling events properly.
@@ -149,21 +96,6 @@ onHeadlineKey. Commanders and subcommanders call these event handlers to
 indicate that a command has changed, or will change, the headline or body text.
 Calling event handlers rather than c.beginUpdate and c.endUpdate ensures that
 the outline pane is redrawn only when needed.
-.. @+node:EKR.20040524104904.265: *3* Clones
-New in Leo 4.7. All clones of a node **are the same node**. This is the
-so-called **one-node** world. In this world, vnodes represent data, generators
-and positions represent the location of the data in an outline.  This is a much
-simpler world than all previous data representations.
-
-In Leo versions 4.2 to 4.6 clones were represented by sharing **tnodes**. Cloned
-vnodes shared the same tnode. This shared tnode represented the entire shared
-subtree of both clones. Thus, the _firstChild link had to reside in
-*tnodes*, not *vnodes*.
-
-Prior to Leo version 4.2, Leo duplicated all the descendants of vnode v when
-cloning v. This created many complications that were removed in the shared tnode
-world. In particular, in the shared tnode scheme a vnode v is cloned if and only
-if len(v.vnodeList) > 1.
 .. @+node:EKR.20040524104904.266: *3* Find and change commands
 The find and change commands are tricky; there are many details that must be
 handled properly. The following principles govern the LeoFind class:
@@ -206,51 +138,6 @@ of self.search_text indicate the range of text to be searched. Searching
 headline and body text simultaneously is complicated. The selectNextVnode()
 method handles the many details involved by setting self.s_text and its insert
 and sel attributes.
-.. @+node:EKR.20040524104904.268: *3* Unicode
-Leo uses unicode objects in vnodes to denote headline and body text.
-Note that unicode strings have no encoding; only plain strings have encodings.
-This means that once an (encoded) plain string has been converted to a unicode
-string it doesn't matter how the unicode string was created. This is the key
-that makes Leo's new code robust: internally Leo never has to worry about
-encodings. Encoding matter only when encoded strings are converted to and from
-Unicode. This happens when Leo reads or writes files.
-
-Python expressions that mix unicode strings u and plain strings s, like one of these::
-
-	u + s
-	u == s
-	u[5] == s[2:]
-
-are promoted to unicode objects using the "system encoding". This encoding
-should never be changed, but we can't assume that we know what it is, so for
-safety we should assume the most restrictive encoding, namely "ascii". With this
-assumption, Leo's code can't throw an exception during these promotions provided
-that: 
-
-- Leo converts all text to unicode when Leo reads files or gets text from
-  text widgets.
-
-- All string literals in Leo's code have only ascii characters.
-.. @+node:EKR.20040524104904.269: *3* Unlimited undo
-Unlimited undo is straightforward; it merely requires that all commands that
-affect the outline or body text must be undoable. In other words, everything
-that affects the outline or body text must be remembered. We may think of all
-the actions that may be Undone or Redone as a string of beads (undo nodes).
-
-Undoing an operation moves backwards to the next bead; redoing an operation moves
-forwards to the next bead. A bead pointer points to the present bead. The bead
-pointer points in front of the first bead when Undo is disabled. The bead
-pointer points at the last bead when Redo is disabled. An undo node is a Python
-dictionary containing all information needed to undo or redo the operation. The
-Undo command uses the present bead to undo the action, then moves the bead
-pointer backwards.
-
-The Redo command uses the bead after the present bead to redo the action, then
-moves the bead pointer forwards. All undoable operations call setUndoParams() to
-create a new bead. The list of beads does not branch; all undoable operations
-(except the Undo and Redo commands themselves) delete any beads following the
-newly created bead. I did not invent this model of unlimited undo.
-I first came across it in the documentation for Apple's Yellow Box classes.
 .. @+node:ekr.20060602142732: *3* Key bindings
 leoKeys.py handles key bindings.
 There are two kinds of bindings, gui bindings and pane bindings.
@@ -304,5 +191,118 @@ Here are the dictionaries that k.masterKeyHandler uses:
 - inverseBindingDict:
   This is *not* an ivar; it is computed by k.computeInverseBindingDict().
   Keys are emacs command names; values are *lists* of shortcuts.
+.. @+node:EKR.20040524104904.263: *3* Nodes
+The vnode class is Leo's fundamental model class. A **vnode** represents the
+data represented by headlines. As of Leo 4.7, all clones of a node are in fact
+**exactly the same node**.
+
+The vnode contains **all** data associated with a node. A vnode contains
+headline text, body text, and **user attributes**, uA's for short.
+
+Because Leo has unlimited Undo commands, Leo deletes vnodes only when a window
+closes. Leo deletes nodes indirectly using destroy methods. Several classes,
+including the vnode, leoFrame and leoTree classes, have destroy methods. destroy
+methods merely clear links so that Python's reference counting mechanisms will
+eventually delete vnodes and other data when a window closes.
+
+Leo's XML file format uses **tx** and **t** attributes to associate <v> elements
+with <t> elements. <v> elements represent nodes. <t> elements represent the body
+text of nodes. This is a (somewhat dubious) space optimization. The values of tx
+and t attributes are **gnx's** (global node indices). These indices do not
+change once a node has created.
+.. @+node:EKR.20040524104904.262: *3* Overview
+All versions of Leo are organized as a collection of classes. The general
+organization of Leo has remained remarkably stable throughout all versions of
+Leo, although the names of classes are different in different versions.
+Smalltalk's Model/View/Controller terminology is a good way think about Leo's
+classes. **Model classes** represent the fundamental data. The vnode
+class is Leo's primary model class.
+
+**View classes** draw the screen. The main view classes are leoFrame.py and
+leoTree.py. The colorizer class in leoColor.py handles syntax coloring in the
+body pane. Leo's view classes know about data stored in the vnode class. Most
+events (keystrokes and mouse actions) in the outline and body pane are handled
+in the leoTree class. The leoFrame class also creates the Leo window, including
+menus, and dispatches the appropriate members of the controller classes in
+response to menu commands.
+
+**Controller classes** (aka commanders) control the application. In Leo,
+controllers mostly handle menu commands. Commanders create subcommanders to
+handle complex commands. The atFile class reads and writes files derived from
+\@file trees. The LeoFind class handles the Find and Change commands. The
+leoImportCommands class handles the Import and Export commands, and the undoer
+class handles the Undo command. Other classes could be considered controller
+classes.
+
+Each Leo window has its own commander and subcommanders. Subcommanders are not
+subclasses of their commander. Instead, subcommanders know the commander that
+created them, and call that commander as needed. Commanders and subcommanders
+call the model and view classes as needed. For example, the Commands class
+handles outline commands. To move a headline, the commander for the window calls
+a vnode move routine to alter the data, then calls the view class to redraw the
+screen based on the new data.
+
+A singleton instance of the **LeoApp** class represents the application itself.
+All code uses the app() global function to gain access to this singleton member.
+The ivars of the LeoApp object are the equivalent of Leo's global variables.
+leo.py uses no global Python variables, except the gApp variable returned by
+app(). leoGlobals.py defines all application constants. Naturally, most
+constants are local to the class that uses them.
+
+Several classes combine aspects of model, view and controller. For example, the
+**LeoPrefs** class represents user preferences (model), the Preference Panel
+(view) and the Preferences menu command (controller). Similarly, the **LeoFind**
+class represents find settings, the Find/Change dialog, and the Find/Change
+commands.
+
+We use the following convention throughout this documentation. Any variable
+named c is a commander, i.e., an instance of the Commands class in
+leoCommands.py. Variables named v are vnodes. These classes are defined in
+leoNodes.py.
+.. @+node:EKR.20040524104904.268: *3* Unicode
+Leo uses unicode objects in vnodes to denote headline and body text.
+Note that unicode strings have no encoding; only plain strings have encodings.
+This means that once an (encoded) plain string has been converted to a unicode
+string it doesn't matter how the unicode string was created. This is the key
+that makes Leo's new code robust: internally Leo never has to worry about
+encodings. Encoding matter only when encoded strings are converted to and from
+Unicode. This happens when Leo reads or writes files.
+
+Python expressions that mix unicode strings u and plain strings s, like one of these::
+
+	u + s
+	u == s
+	u[5] == s[2:]
+
+are promoted to unicode objects using the "system encoding". This encoding
+should never be changed, but we can't assume that we know what it is, so for
+safety we should assume the most restrictive encoding, namely "ascii". With this
+assumption, Leo's code can't throw an exception during these promotions provided
+that: 
+
+- Leo converts all text to unicode when Leo reads files or gets text from
+  text widgets.
+
+- All string literals in Leo's code have only ascii characters.
+.. @+node:EKR.20040524104904.269: *3* Unlimited undo
+Unlimited undo is straightforward; it merely requires that all commands that
+affect the outline or body text must be undoable. In other words, everything
+that affects the outline or body text must be remembered. We may think of all
+the actions that may be Undone or Redone as a string of beads (undo nodes).
+
+Undoing an operation moves backwards to the next bead; redoing an operation moves
+forwards to the next bead. A bead pointer points to the present bead. The bead
+pointer points in front of the first bead when Undo is disabled. The bead
+pointer points at the last bead when Redo is disabled. An undo node is a Python
+dictionary containing all information needed to undo or redo the operation. The
+Undo command uses the present bead to undo the action, then moves the bead
+pointer backwards.
+
+The Redo command uses the bead after the present bead to redo the action, then
+moves the bead pointer forwards. All undoable operations call setUndoParams() to
+create a new bead. The list of beads does not branch; all undoable operations
+(except the Undo and Redo commands themselves) delete any beads following the
+newly created bead. I did not invent this model of unlimited undo.
+I first came across it in the documentation for Apple's Yellow Box classes.
 .. @-all
 .. @-leo
