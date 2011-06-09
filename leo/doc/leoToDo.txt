@@ -7,662 +7,6 @@
 @language rest
 .. @+node:ekr.20110527182640.18358: *3* b3
 .. @+node:ekr.20110607140913.16575: *4* First
-.. @+node:ekr.20110527084258.18378: *5* New file format
-@nocolor-node
-
-- <attr> solves pickle problem.
-
-* Treat gnx's as strings: don't parse them.
-  http://mail.google.com/mail/#inbox/12f3d4950fbabeea
-  
-* Don't save expansion bits in uA if not saving expansion bits. It's illogical
-  to save bits in uA's if they aren't save in in the <v> elements.
-  
-    @bool put_expansion_bits_in_leo_files = False
-
-- Use uuid's?
-
-- Remove spaces from user names.
-
-.. @+node:ekr.20110609042343.16546: *6* Notes
-.. @+node:ekr.20110609042343.16548: *7* File format, v3 draft 5
-@language rest
-@pagewidth 65
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/2ddb57c62e67825c
-
-Leo's file format: version 3, draft 5
-
-This draft is intended to reflect minimal changes from Leo's
-present file format, but with improvements mentioned at the
-Ashland sprint and developed afterward.
-
-This draft covers only Leo's xml format, but it may be adapted
-for use as a json file format.
-
-This draft contains significant invention by EKR. See the next
-section. Don't panic: it can be changed :-)
-
-Summary of changes from draft 4
-===============================
-
-- Elements will be renamed as follows::
-
-    old         new
-    ====        ====
-    <vnodes>    <directed-acyclic-graph>
-    <tnodes>    <data-list>
-    <v>         <node>
-    <t>         <data>
-
-- Nesting of <node> elements represents the structure of the DAG,
-  just as nesting of <v> elements does at present.
-  
-- Thus, there will be no <edge> elements.
-
-- Headlines will move from <v> elements to <data> elements.
-  This "normalizes" the data: headlines will appear only once.
-  
-- <attr> elements will represent uA's.  A full discussion below.
-
-  Ideally, I would like to support only string and json formats
-  for <attr> elements.  This is open to discussion. 
-
-- Only <node> elements will contain <attr> elements.
-
-- <node> elements for @file nodes will contain
-  <at-file-attributes> elements, representing Leo's "hidden
-  machinery" attributes.  <at-file-attributes> will contain
-  <attr> elements. 
-
-First lines
-===========
-
-Leo file will start with the following::
-
-    <?xml version="1.0" encoding="utf-8"?>
-    <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-    <leo_file file_format="3"
-        xmlns:leo="http://www.leo-editor.org/2011/leo"/>
-        
-
-No session data
-===============
-
-There will be no <globals>, <preferences> or
-<find_panel_settings> elements. All such "session data" will be
-restored from the cache, or from defaults if caching is disabled.
-
-**Important**: there is no representation of expansion state or
-the currently selected node anywhere in the .leo file.
-Eliminating these data is contingent on having Leo work well with
-caching disabled.
-
-Note: marks are more than session data. They must appear within
-<node> elements.
-
-
-Summary of format
-=================
-
-.leo files will have the following form, with similar indentation::
-
-    <?xml version="1.0" encoding="utf-8"?>
-    <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-    <leo_file file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
-    <directed-acyclic-graph>
-        <node id="gnx">
-            <!-- contained node elements, if any.
-        </node>
-        <node id="gnx">
-            <!-- contained v elements, if any.
-        </node>
-        ...
-    </directed-acyclic-graph>
-    <data-list>
-        <data id="gnx">
-            <!-- marked attribute appears only if the tnode/vnode is marked -->
-            <head>headline text</head>
-            <attr key="marked">1</attr>
-            <!-- uA's... -->
-            <!-- format="string" is the default -->
-            <attr key="a">a string</attr>
-            <attr key="b" format="json">a json string</attr>
-            <attr key="c" format="pickle">a pickled string</attr>
-            <attr key="d" format="binhex">a binhexed string</attr>
-            ...
-            <body>body text</body>
-        </data>
-        ...
-    </data-list>
-    </leo_file>
-
-<attr> elements
-===============
-
-<attr> elements will one of the following forms::
-
-    <attr key="a">a unicode string</attr>
-    <attr key="b" format="json">a json string</attr>
-    <attr key="c" format="pickle">a json string</attr>
-    <attr key="d" format="binhex">a binhexed string</attr>
-    
-The value will be a string by default.
-
-If possible, I would like to support only the string and json
-formats. This would make the data as transparent as possible.
-Please mentally amend the following discussion...
-
-uA's that start with "binhex_" will use the binhex format. This
-prefix must be retained in the type field, so the read code can
-restore them.
-
-If the value is not a string, and there is no "binhex_" prefix,
-the write code will use format="json" if json.dumps succeeds, and
-will use format="pickle" otherwise.
-
-No <attr> element will be written if both json.dumps and
-pickle.dumps fail. Attribute failures will create a warning for
-the plugin developer.
-    
-Descendant attributes in @file trees
-====================================
-
-Descendants of @file nodes do not appear in .leo files. Thus,
-important data must be stored in the so-called hidden machinery:
-attributes of the @file node.
-
-The <at-file-attributes> element may optionally be contained in
-the <node> element for @file nodes::
-
-    <at-file-attributes>
-        <attr>key="ua-name"
-            format="(empty)/json/pickle/binhex"
-            gnx="gnx">value
-        </attr>
-        ...
-    </at-file-attributes>
-.. @+node:ekr.20110421132230.6107: *7* File format, v3 draft 4
-@language rest
-@pagewidth 65
-
-Leo's file format: version 3, draft 4
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/a2b7e5321d62b64/a4cc51d404af94aa
-
-Here is the latest version, with the graphml stuff removed.
-
-This draft is intended to reflect our recent discussions, with no
-new invention from me. All comments and corrections welcome.
-
-This draft covers only Leo's xml format, but it may be adapted
-for use as a json file format.
-
-Recent changes
-==============
-
-- Removed graphml stuff, including leo: prefixes.
-
-- Used "key" in <attr> elements (and "type" in <edge> elements.)
-
-First lines
-===========
-
-Leo file will start with the following::
-
-    <?xml version="1.0" encoding="utf-8"?>
-    <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-    <leo_file file_format="3"
-        xmlns:leo="http://www.leo-editor.org/2011/leo"/>
-        
-
-No session data
-===============
-
-There will be no <globals>, <preferences> or
-<find_panel_settings> elements. All such "session data" will be
-restored from the cache, or from defaults if caching is disabled.
-
-**Important**: there is no representation of expansion state or
-the currently selected node anywhere in the .leo file.
-Eliminating these data is contingent on having Leo work well with
-caching disabled.
-
-Note: marks are more than session data. They must appear
-somewhere within <node> elements.
-
-
-Summary of format
-=================
-
-.leo files will have the following form, with similar indentation::
-
-    <?xml version="1.0" encoding="utf-8"?>
-    <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-    <leo_file file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
-    <graph>
-    <nodes>
-        <!-- marked attribute appears only if the vnode is marked -->
-        <node id="gnx"> 
-            <head>headline text</head>
-            <attr key="marked">1</attr>
-            <!-- uA's... -->
-            <!-- format="string" is the default -->
-            <attr key="a">a string</attr>
-            <attr key="b" format="json">a json string</attr>
-            <attr key="c" format="pickle">a pickled string</attr>
-            <attr key="d" format="binhex">a binhexed string</attr>
-            ...
-            <body>body text</body>
-        </node>
-        ...
-        <!-- @file nodes contain a <data> package -->
-        <node id="gnx">
-            <head>@file x.py</head>
-            ...
-            <at-file-attributes>
-                <attr>key="ua-name"
-                    format="(empty)/json/pickle/binhex"
-                    gnx="gnx">value
-                </attr>
-                ...
-            </at-file-attributes>
-        </node>
-        ...
-    </nodes>
-    <edges>
-        <edge type="child" from="gnx" to="gnx"</edge>
-        ...
-    </edges>
-    </graph>
-    </leo_file>
-
-<attr> elements
-===============
-
-<attr> elements will one of the following forms::
-
-    <attr key="a">a unicode string</attr>
-    <attr key="b" format="json">a json string</attr>
-    <attr key="c" format="pickle">a json string</attr>
-    <attr key="d" format="binhex">a binhexed string</attr>
-    
-That is, the value will be a string by default.
-
-uA's that start with "binhex_" will use the binhex format. This
-prefix must be retained in the type field, so the read code can
-restore them.
-
-If the value is not a string, and there is no "binhex_" prefix,
-the write code will use format="json" if json.dumps succeeds, and
-will use format="pickle" otherwise.
-
-No <attr> element will be written if both json.dumps and
-pickle.dumps fail. Attribute failures will create a warning for
-the plugin developer.
-
-<edge> elements
-===============
-
-<edge> elements will have the form::
-
-    <edge type="child" from="gnx" to="gnx"/>
-    
-Leo will use type="child" to represent Leo's official edges.
-Plugins are free to define any type except "child". Examples::
-
-    <edge type="undirected" from="gnx" to="gnx"/>
-    <edge type="bidirectional" from="gnx" to="gnx"/>
-    <edge type="backlink" from="gnx" to="gnx"/>
-    <edge type="myPlugin" from="gnx" to="gnx"/>
-    
-Descendant attributes in @file trees
-====================================
-
-Descendants of @file nodes do not appear in .leo files. Thus,
-important data must be stored in the so-called hidden machinery:
-attributes of the @file node.
-
-The <at-file-attributes> element may be contained in the
-<node> element for @file nodes::
-
-    <at-file-attributes>
-        <attr>key="ua-name"
-            format="(empty)/json/pickle/binhex"
-            gnx="gnx">value
-        </attr>
-        ...
-    </at-file-attributes>
-    
-In other words, we use the graphml <attr> element, extended with the
-gnx attribute, to represent all the uA's in the descendants of @file nodes.
-.. @+node:ekr.20110419083918.6104: *7* File format, v3 graphml
-@language rest
-@pagewidth 65
-
-This draft is intended to reflect our recent discussions, with no
-new invention from me. All comments and corrections welcome.
-
-The draft is also intended to be compatible with graphml.
-
-This draft covers only Leo's xml format, but it may be adapted
-for use as a json file format.
-
-I am willing to change "type" to "key" in <edge> elements if that
-would be preferable.
-
-Recent changes
-==============
-
-- Added <graphml> element defining the default namespace.
-
-- Defined the leo namespace for leo-only elements.
-    - Renamed <leo_file> to <leo:outline>
-    - Renamed <descendant-attributes> to <leo:at-file-attributes>
-
-- Used <leo:at-file-attributes> for marks, removing the special case.
-
-- Enclosed <leo:descendant-attributes> in a (graphml) <data> element.
-
-- Changed the format of the "marked" attribute to be a string-valued attribute.
-
-First lines
-===========
-
-Leo file will start with the following::
-
-    <?xml version="1.0" encoding="utf-8"?>
-    <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-    <leo:file file_format="3"
-        xmlns:leo="http://www.leo-editor.org/2011/leo"/>
-    <graphml xmlns="http://graphml.graphdrawing.org/xmlns"/>
-        
-
-No session data
-===============
-
-There will be no <globals>, <preferences> or
-<find_panel_settings> elements. All such "session data" will be
-restored from the cache, or from defaults if caching is disabled.
-
-**Important**: there is no representation of expansion state or
-the currently selected node anywhere in the .leo file.
-Eliminating these data is contingent on having Leo work well with
-caching disabled.
-
-Note: marks are more than session data. They must appear
-somewhere within <node> elements.
-
-
-Summary of format
-=================
-
-.leo files will have the following form, with similar indentation::
-
-    <?xml version="1.0" encoding="utf-8"?>
-    <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-    <leo:outline file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
-    <graphml xmlns="http://graphml.graphdrawing.org/xmlns"/>
-    <graph>
-    <nodes>
-        <!-- marked attribute appears only if the vnode is marked -->
-        <node id="gnx"> 
-            <head>headline text</head>
-            <attr key="marked">1</attr>
-            <!-- uA's... -->
-            <!-- format="string" is the default -->
-            <attr key="a">a string</attr>
-            <attr key="b" format="json">a json string</attr>
-            <attr key="c" format="pickle">a pickled string</attr>
-            <attr key="d" format="binhex">a binhexed string</attr>
-            ...
-            <body>body text</body>
-        </node>
-        ...
-        <!-- @file nodes contain a <data> package -->
-        <node id="gnx">
-            <head>@file x.py</head>
-            ...
-            <data>
-                <leo:at-file-attributes>
-                    <attr>key="ua-name"
-                        format="(empty)/json/pickle/binhex"
-                        gnx="gnx">value
-                    </attr>
-                    ...
-                </leo:at-file-attributes>
-            </data>
-        </node>
-        ...
-    </nodes>
-    <edges>
-        <edge type="child" from="gnx" to="gnx"</edge>
-        ...
-    </edges>
-    </graph>
-    </graphml>
-    </leo:outline>
-
-<attr> elements
-===============
-
-<attr> elements will one of the following forms::
-
-    <attr key="a">a unicode string</attr>
-    <attr key="b" format="json">a json string</attr>
-    <attr key="c" format="pickle">a json string</attr>
-    <attr key="d" format="binhex">a binhexed string</attr>
-    
-That is, the value will be a string by default.
-
-uA's that start with "binhex_" will use the binhex format. This
-prefix must be retained in the type field, so the read code can
-restore them.
-
-If the value is not a string, and there is no "binhex_" prefix,
-the write code will use format="json" if json.dumps succeeds, and
-will use format="pickle" otherwise.
-
-No <attr> element will be written if both json.dumps and
-pickle.dumps fail. Attribute failures will create a warning for
-the plugin developer.
-
-<edge> elements
-===============
-
-<edge> elements will have the form::
-
-    <edge type="child" from="gnx" to="gnx"/>
-    
-Leo will use type="child" to represent Leo's official edges.
-Plugins are free to define any type except "child". Examples::
-
-    <edge type="undirected" from="gnx" to="gnx"/>
-    <edge type="bidirectional" from="gnx" to="gnx"/>
-    <edge type="backlink" from="gnx" to="gnx"/>
-    <edge type="myPlugin" from="gnx" to="gnx"/>
-    
-Descendant attributes in @file trees
-====================================
-
-Descendants of @file nodes do not appear in .leo files. Thus,
-important data must be stored in the so-called hidden machinery:
-attributes of the @file node.
-
-The <leo:at-file-attributes> element may be contained in the
-<node> element for @file nodes. For compatibility with graphml,
-it will enclosed in a data element::
-    
-    <data>
-        <leo:at-file-attributes>
-            <attr>key="ua-name"
-                format="(empty)/json/pickle/binhex"
-                gnx="gnx">value
-            </attr>
-            ...
-        </leo:at-file-attributes>
-    </data>
-    
-In other words, we use the graphml <attr> element, extended with the
-gnx attribute, to represent all the uA's in the descendants of @file nodes.
-.. @+node:ekr.20090218115025.3: *7* Why are attributes pickled by default?
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/326a221f4c698f7a
-
-> On Wed, Feb 18, 2009 at 12:12 PM, Kent Tenney <ktenney@gmail.com> wrote:
->>
->> Currently, Leo pickles the value of unknown attributes unless
->> the name starts with 'str_'
->>
->> Running the following code in node 'UA'
->>
->> p = c.currentPosition()
->> p.v.u = {'hello':'world', 'str_hello':'world'}
->>
->> results in the following in the .leo file:
->>
->> <v t="ktenney.20090218114928.367" str_hello="world"
->> hello="5505776f726c6471002e"><vh>UA</vh></v>
->>
->> I think this is surprising, Python-centric and contrary to the
->> spirit of Leo as a flexible data management platform.
->
-> I suppose your point is that you can't create an arbitrarily named attribute
-> with a string value. Does that create a real problem?
-
-It requires a translation layer, either to (un)munge the name or
-(un)pickle. Real problem?
-
-Let's say each time I think 'I can use UAs to store that' I change
-my mind when I realize my values will be in a pickle. (I really don't
-want to name all my attributes str_xxx)
-
-> As far as being Python-centric, can you suggest any other way of converting
-> arbitrary data to a text string?
-
-How is it done in any other XML file?
-I've not used XML for arbitrary data, but it probably can be done.
-
-> Why would that way be better than pickle?
-
-My suspicion is that UAs would be used more for
-storing text and numbers (as seems common for XML files)
-than Python data objects.
-
-Does Leo use UAs to store pickles?
-
-I'm sure pickling capability is great, but I'm not convinced
-it should be the _default._
-
-No big deal.
-.. @+node:ekr.20110415173840.6098: *6* Code related to uA's
-.. @+node:ekr.20040701065235.2: *7* putDescendentAttributes
-def putDescendentAttributes (self,p):
-
-    nodeIndices = g.app.nodeIndices
-
-    # Create lists of all tnodes whose vnodes are marked or expanded.
-    marks = [] ; expanded = []
-    for p in p.subtree():
-        v = p.v
-        if p.isMarked() and p.v not in marks:
-            marks.append(v)
-        if p.hasChildren() and p.isExpanded() and v not in expanded:
-            expanded.append(v)
-
-    result = []
-    for theList,tag in ((marks,"marks"),(expanded,"expanded")):
-        if theList:
-            sList = []
-            for v in theList:
-                sList.append("%s," % nodeIndices.toString(v.fileIndex))
-            s = ''.join(sList)
-            # g.trace(tag,[str(p.h) for p in theList])
-            result.append('\n%s="%s"' % (tag,s))
-
-    return ''.join(result)
-.. @+node:ekr.20080805071954.2: *7* putDescendentVnodeUas
-def putDescendentVnodeUas (self,p):
-
-    '''Return the a uA field for descendent vnode attributes,
-    suitable for reconstituting uA's for anonymous vnodes.'''
-
-    trace = False
-    if trace: g.trace(p.h)
-
-    # Create aList of tuples (p,v) having a valid unknownAttributes dict.
-    # Create dictionary: keys are vnodes, values are corresonding archived positions.
-    pDict = {} ; aList = []
-    for p2 in p.self_and_subtree():
-        if hasattr(p2.v,"unknownAttributes"):
-            aList.append((p2.copy(),p2.v),)
-            pDict[p2.v] = p2.archivedPosition(root_p=p)
-
-    # Create aList of pairs (v,d) where d contains only pickleable entries.
-    if aList: aList = self.createUaList(aList)
-    if not aList: return ''
-
-    # Create d, an enclosing dict to hold all the inner dicts.
-    d = {}
-    for v,d2 in aList:
-        aList2 = [str(z) for z in pDict.get(v)]
-        # g.trace(aList2)
-        key = '.'.join(aList2)
-        d[key]=d2
-
-    if trace: g.trace(p.h,g.dictToString(d))
-
-    # Pickle and hexlify d
-    return d and self.pickle(
-        torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
-.. @+node:EKR.20040526202501: *7* putUnknownAttributes
-def putUnknownAttributes (self,torv):
-
-    """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
-
-    attrDict = torv.unknownAttributes
-    if type(attrDict) != type({}):
-        g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
-        return ''
-    else:
-        val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
-        # g.trace(torv,attrDict)
-        return val
-.. @+node:ekr.20090130114732.6: *7* v.u Property
-def __get_u(self):
-    v = self
-    if not hasattr(v,'unknownAttributes'):
-        v.unknownAttributes = {}
-    return v.unknownAttributes
-
-def __set_u(self,val):
-    v = self
-    if val is None:
-        if hasattr(v,'unknownAttributes'):
-            delattr(v,'unknownAttributes')
-    elif type(val) == type({}):
-        v.unknownAttributes = val
-    else:
-        raise ValueError
-
-u = property(
-    __get_u, __set_u,
-    doc = "vnode unknownAttribute property")
-.. @+node:ekr.20110606124445.16909: *5* * Update key-handling theory of operation
-.. @+node:ekr.20110607140913.16577: *5* * Apropos macros
-.. @+node:ekr.20110609042343.16545: *5* Easy: 4
-.. @+node:ekr.20110607182447.16466: *6* escape got inserted into text
-.. @+node:ekr.20110607140913.16578: *6* Make sure all keys contribute to lossage
-.. @+node:ekr.20110604182206.16757: *6* regex word-only does not work
-.. @+node:ekr.20110605121601.17012: *6* On Mac: change qttabs to qt
-.. @+node:ekr.20110606001347.16927: *4* Important: 2
 .. @+node:ekr.20090601083544.6051: *5* Add expand_noweb_references for rst3 plugin
 http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
@@ -688,8 +32,16 @@ Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
 get to this work, I should have <<code fragment>> under the @rst3 subtree as
 well, but this is then also treated as @rst3 input (which in this case, is not
 what I want).
-.. @+node:ekr.20040329094003: *5* Apply patch command
-.. @+node:ekr.20110604043410.17848: *6* Script
+.. @+node:ekr.20110609042343.16545: *5* Easy: 4
+.. @+node:ekr.20110607182447.16466: *6* escape got inserted into text
+.. @+node:ekr.20110607140913.16578: *6* Make sure all keys contribute to lossage
+.. @+node:ekr.20110604182206.16757: *6* regex word-only does not work
+.. @+node:ekr.20110605121601.17012: *6* On Mac: change qttabs to qt
+.. @+node:ekr.20110609042343.16551: *4* when b3 released: post to pyxides re "your mission"
+.. @+node:ekr.20101129095441.5963: *4* Improve screenshots page
+.. @+node:ekr.20110609102702.16472: *3* Wishlist
+.. @+node:ekr.20040329094003: *4* Apply patch command
+.. @+node:ekr.20110604043410.17848: *5* Script
 import leo.extensions.patch_11_01 as patch
 
 fn = 'xyzzy.patch'
@@ -698,7 +50,7 @@ if g.os_path_exists(fn):
     patch.fromfile(fn)
 else:
     g.es_print('not found:',fn)
-.. @+node:ekr.20110604043410.17824: *6* patch-11.01.py (study only)
+.. @+node:ekr.20110604043410.17824: *5* patch-11.01.py (study only)
 """ Patch utility to apply unified diffs
 
     Brute-force line-by-line non-recursive parsing 
@@ -725,7 +77,7 @@ __version__ = "11.01"
 
 if __name__ == "__main__":
   main()
-.. @+node:ekr.20110604043410.17843: *7* << imports >>
+.. @+node:ekr.20110604043410.17843: *6* << imports >>
 
 import copy
 import logging
@@ -736,7 +88,7 @@ import urllib2
 
 from os.path import exists, isfile, abspath
 from os import unlink
-.. @+node:ekr.20110604043410.17844: *7* << global data >>
+.. @+node:ekr.20110604043410.17844: *6* << global data >>
 # Logging is controlled by "python_patch" logger
 
 debugmode = False
@@ -755,8 +107,8 @@ logger.setLevel(logging.CRITICAL)
 DIFF = PLAIN = "plain"
 HG = MERCURIAL = "mercurial"
 SVN = SUBVERSION = "svn"
-.. @+node:ekr.20110604043410.17845: *7* top-level
-.. @+node:ekr.20110604043410.17826: *8* fromfile
+.. @+node:ekr.20110604043410.17845: *6* top-level
+.. @+node:ekr.20110604043410.17826: *7* fromfile
 def fromfile(filename):
   """ Parse patch file and return Patch() object
   """
@@ -765,23 +117,23 @@ def fromfile(filename):
   patch = Patch(fp)
   fp.close()
   return patch
-.. @+node:ekr.20110604043410.17827: *8* fromstring
+.. @+node:ekr.20110604043410.17827: *7* fromstring
 def fromstring(s):
   """ Parse text string and return Patch() object
   """
   return Patch( StringIO(s) )
-.. @+node:ekr.20110604043410.17828: *8* fromurl
+.. @+node:ekr.20110604043410.17828: *7* fromurl
 def fromurl(url):
   """ Read patch from URL
   """
   return Patch( urllib2.urlopen(url) )
-.. @+node:ekr.20110604043410.17829: *7* class Hunk
+.. @+node:ekr.20110604043410.17829: *6* class Hunk
 class Hunk(object):
 
   """ Parsed hunk data container (hunk starts with @@ -R +R @@) """
   
   @others
-.. @+node:ekr.20110604043410.17830: *8* __init__
+.. @+node:ekr.20110604043410.17830: *7* __init__
 def __init__(self):
 
   self.startsrc=None #: line count starts with 1
@@ -790,11 +142,11 @@ def __init__(self):
   self.linestgt=None
   self.invalid=False
   self.text=[]
-.. @+node:ekr.20110604043410.17831: *8* copy
+.. @+node:ekr.20110604043410.17831: *7* copy
 def copy(self):
   
   return copy.copy(self)
-.. @+node:ekr.20110604043410.17847: *8* apply
+.. @+node:ekr.20110604043410.17847: *7* apply
 #  def apply(self, estream):
 #    """ write hunk data into enumerable stream
 #        return strings one by one until hunk is
@@ -804,11 +156,11 @@ def copy(self):
 #        where lineno starts with 0
 #    """
 #    pass
-.. @+node:ekr.20110604043410.17832: *7* class Patch
+.. @+node:ekr.20110604043410.17832: *6* class Patch
 class Patch(object):
 
   @others
-.. @+node:ekr.20110604043410.17833: *8* __init__
+.. @+node:ekr.20110604043410.17833: *7* __init__
 def __init__(self, stream=None):
 
   # define Patch data members
@@ -829,11 +181,11 @@ def __init__(self, stream=None):
 
   if stream:
     self.parse(stream)
-.. @+node:ekr.20110604043410.17834: *8* copy
+.. @+node:ekr.20110604043410.17834: *7* copy
 def copy(self):
   
   return copy.copy(self)
-.. @+node:ekr.20110604043410.17835: *8* parse & helper class
+.. @+node:ekr.20110604043410.17835: *7* parse & helper class
 def parse(self, stream):
   """ parse unified diff """
   self.header = []
@@ -1077,7 +429,7 @@ def parse(self, stream):
       debug("- %2d hunks for %s" % (len(self.hunks[nextfileno-1]), self.source[nextfileno-1]))
 
   debug("total files: %d  total hunks: %d" % (len(self.source), sum(len(hset) for hset in self.hunks)))
-.. @+node:ekr.20110604043410.17846: *9* class wrapumerate
+.. @+node:ekr.20110604043410.17846: *8* class wrapumerate
 class wrapumerate(enumerate):
   """Enumerate wrapper that uses boolean end of stream status instead of
   StopIteration exception, and properties to access line information.
@@ -1115,7 +467,7 @@ class wrapumerate(enumerate):
   @property
   def lineno(self):
     return self._lineno
-.. @+node:ekr.20110604043410.17836: *8* apply
+.. @+node:ekr.20110604043410.17836: *7* apply
 def apply(self):
   """ apply parsed patch
       return True on success
@@ -1228,7 +580,7 @@ def apply(self):
 
   # todo: check for premature eof
   return (errors == 0)
-.. @+node:ekr.20110604043410.17837: *8* can_patch
+.. @+node:ekr.20110604043410.17837: *7* can_patch
 def can_patch(self, filename):
   """ Check if specified filename can be patched. Returns None if file can
   not be found among source filenames. False if patch can not be applied
@@ -1240,7 +592,7 @@ def can_patch(self, filename):
   if idx == None:
     return None
   return self._match_file_hunks(filename, self.hunks[idx])
-.. @+node:ekr.20110604043410.17838: *8* _match_file_hunks
+.. @+node:ekr.20110604043410.17838: *7* _match_file_hunks
 def _match_file_hunks(self, filepath, hunks):
   matched = True
   fp = open(abspath(filepath))
@@ -1279,7 +631,7 @@ def _match_file_hunks(self, filepath, hunks):
 
   fp.close()
   return matched
-.. @+node:ekr.20110604043410.17839: *8* patch_stream
+.. @+node:ekr.20110604043410.17839: *7* patch_stream
 def patch_stream(self, instream, hunks):
   """ Generator that yields stream patched with hunks iterable
   
@@ -1338,7 +690,7 @@ def patch_stream(self, instream, hunks):
    
   for line in instream:
     yield line
-.. @+node:ekr.20110604043410.17840: *8* write_hunks
+.. @+node:ekr.20110604043410.17840: *7* write_hunks
 def write_hunks(self, srcname, tgtname, hunks):
   src = open(srcname, "rb")
   tgt = open(tgtname, "wb")
@@ -1350,7 +702,7 @@ def write_hunks(self, srcname, tgtname, hunks):
   tgt.close()
   src.close()
   return True
-.. @+node:ekr.20110604043410.17841: *8* _get_file_idx
+.. @+node:ekr.20110604043410.17841: *7* _get_file_idx
 def _get_file_idx(self, filename, source=None):
 
   """ Detect index of given filename within patch.
@@ -1371,7 +723,7 @@ def _get_file_idx(self, filename, source=None):
         return i  
 
 
-.. @+node:ekr.20110604043410.17842: *7* main
+.. @+node:ekr.20110604043410.17842: *6* main
 def main():
   
   from optparse import OptionParser
@@ -1419,9 +771,668 @@ def main():
 
   # todo: document and test line ends handling logic - patch.py detects proper line-endings
   #       for inserted hunks and issues a warning if patched file has incosistent line ends
-.. @+node:ekr.20110609042343.16544: *3* rc1 or later
-.. @+node:ekr.20110527084258.18377: *4* Ashland sprint: 2
-.. @+node:ekr.20110527084258.18374: *5*  Summary of the Ashland sprint
+.. @+node:ekr.20110528034751.18273: *4* Global search in Nav plugin?
+.. @+node:ekr.20110528034751.18272: *4* Support for tabifying Leo's core panes
+Collaborate with Terry.
+
+A. Place separate body editors in free_layout areas. This should *easy* to
+   do! Almost nothing changes in the code, but the visual effect should be
+   much better.
+
+B. Allow any pane to be "tabified" (placed in a tab in the Log pane) and
+   "untabified." There are a few details to be handled, but nothing major.
+   
+C. Labels for panes.
+.. @+node:ekr.20110609102702.16471: ** To do: 4.10
+.. @+node:ekr.20110527084258.18378: *3* New file format
+@nocolor-node
+
+- <attr> solves pickle problem.
+
+* Treat gnx's as strings: don't parse them.
+  http://mail.google.com/mail/#inbox/12f3d4950fbabeea
+  
+* Don't save expansion bits in uA if not saving expansion bits. It's illogical
+  to save bits in uA's if they aren't save in in the <v> elements.
+  
+    @bool put_expansion_bits_in_leo_files = False
+
+- Use uuid's?
+
+- Remove spaces from user names.
+
+.. @+node:ekr.20110609042343.16546: *4* Notes
+.. @+node:ekr.20110609042343.16548: *5* File format, v3 draft 5
+@language rest
+@pagewidth 65
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/2ddb57c62e67825c
+
+Leo's file format: version 3, draft 5
+
+This draft is intended to reflect minimal changes from Leo's
+present file format, but with improvements mentioned at the
+Ashland sprint and developed afterward.
+
+This draft covers only Leo's xml format, but it may be adapted
+for use as a json file format.
+
+This draft contains significant invention by EKR. See the next
+section. Don't panic: it can be changed :-)
+
+Summary of changes from draft 4
+===============================
+
+- Elements will be renamed as follows::
+
+    old         new
+    ====        ====
+    <vnodes>    <directed-acyclic-graph>
+    <tnodes>    <data-list>
+    <v>         <node>
+    <t>         <data>
+
+- Nesting of <node> elements represents the structure of the DAG,
+  just as nesting of <v> elements does at present.
+  
+- Thus, there will be no <edge> elements.
+
+- Headlines will move from <v> elements to <data> elements.
+  This "normalizes" the data: headlines will appear only once.
+  
+- <attr> elements will represent uA's.  A full discussion below.
+
+  Ideally, I would like to support only string and json formats
+  for <attr> elements.  This is open to discussion. 
+
+- Only <node> elements will contain <attr> elements.
+
+- <node> elements for @file nodes will contain
+  <at-file-attributes> elements, representing Leo's "hidden
+  machinery" attributes.  <at-file-attributes> will contain
+  <attr> elements. 
+
+First lines
+===========
+
+Leo file will start with the following::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo_file file_format="3"
+        xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+        
+
+No session data
+===============
+
+There will be no <globals>, <preferences> or
+<find_panel_settings> elements. All such "session data" will be
+restored from the cache, or from defaults if caching is disabled.
+
+**Important**: there is no representation of expansion state or
+the currently selected node anywhere in the .leo file.
+Eliminating these data is contingent on having Leo work well with
+caching disabled.
+
+Note: marks are more than session data. They must appear within
+<node> elements.
+
+
+Summary of format
+=================
+
+.leo files will have the following form, with similar indentation::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo_file file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+    <directed-acyclic-graph>
+        <node id="gnx">
+            <!-- contained node elements, if any.
+        </node>
+        <node id="gnx">
+            <!-- contained v elements, if any.
+        </node>
+        ...
+    </directed-acyclic-graph>
+    <data-list>
+        <data id="gnx">
+            <!-- marked attribute appears only if the tnode/vnode is marked -->
+            <head>headline text</head>
+            <attr key="marked">1</attr>
+            <!-- uA's... -->
+            <!-- format="string" is the default -->
+            <attr key="a">a string</attr>
+            <attr key="b" format="json">a json string</attr>
+            <attr key="c" format="pickle">a pickled string</attr>
+            <attr key="d" format="binhex">a binhexed string</attr>
+            ...
+            <body>body text</body>
+        </data>
+        ...
+    </data-list>
+    </leo_file>
+
+<attr> elements
+===============
+
+<attr> elements will one of the following forms::
+
+    <attr key="a">a unicode string</attr>
+    <attr key="b" format="json">a json string</attr>
+    <attr key="c" format="pickle">a json string</attr>
+    <attr key="d" format="binhex">a binhexed string</attr>
+    
+The value will be a string by default.
+
+If possible, I would like to support only the string and json
+formats. This would make the data as transparent as possible.
+Please mentally amend the following discussion...
+
+uA's that start with "binhex_" will use the binhex format. This
+prefix must be retained in the type field, so the read code can
+restore them.
+
+If the value is not a string, and there is no "binhex_" prefix,
+the write code will use format="json" if json.dumps succeeds, and
+will use format="pickle" otherwise.
+
+No <attr> element will be written if both json.dumps and
+pickle.dumps fail. Attribute failures will create a warning for
+the plugin developer.
+    
+Descendant attributes in @file trees
+====================================
+
+Descendants of @file nodes do not appear in .leo files. Thus,
+important data must be stored in the so-called hidden machinery:
+attributes of the @file node.
+
+The <at-file-attributes> element may optionally be contained in
+the <node> element for @file nodes::
+
+    <at-file-attributes>
+        <attr>key="ua-name"
+            format="(empty)/json/pickle/binhex"
+            gnx="gnx">value
+        </attr>
+        ...
+    </at-file-attributes>
+.. @+node:ekr.20110421132230.6107: *5* File format, v3 draft 4
+@language rest
+@pagewidth 65
+
+Leo's file format: version 3, draft 4
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/a2b7e5321d62b64/a4cc51d404af94aa
+
+Here is the latest version, with the graphml stuff removed.
+
+This draft is intended to reflect our recent discussions, with no
+new invention from me. All comments and corrections welcome.
+
+This draft covers only Leo's xml format, but it may be adapted
+for use as a json file format.
+
+Recent changes
+==============
+
+- Removed graphml stuff, including leo: prefixes.
+
+- Used "key" in <attr> elements (and "type" in <edge> elements.)
+
+First lines
+===========
+
+Leo file will start with the following::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo_file file_format="3"
+        xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+        
+
+No session data
+===============
+
+There will be no <globals>, <preferences> or
+<find_panel_settings> elements. All such "session data" will be
+restored from the cache, or from defaults if caching is disabled.
+
+**Important**: there is no representation of expansion state or
+the currently selected node anywhere in the .leo file.
+Eliminating these data is contingent on having Leo work well with
+caching disabled.
+
+Note: marks are more than session data. They must appear
+somewhere within <node> elements.
+
+
+Summary of format
+=================
+
+.leo files will have the following form, with similar indentation::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo_file file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+    <graph>
+    <nodes>
+        <!-- marked attribute appears only if the vnode is marked -->
+        <node id="gnx"> 
+            <head>headline text</head>
+            <attr key="marked">1</attr>
+            <!-- uA's... -->
+            <!-- format="string" is the default -->
+            <attr key="a">a string</attr>
+            <attr key="b" format="json">a json string</attr>
+            <attr key="c" format="pickle">a pickled string</attr>
+            <attr key="d" format="binhex">a binhexed string</attr>
+            ...
+            <body>body text</body>
+        </node>
+        ...
+        <!-- @file nodes contain a <data> package -->
+        <node id="gnx">
+            <head>@file x.py</head>
+            ...
+            <at-file-attributes>
+                <attr>key="ua-name"
+                    format="(empty)/json/pickle/binhex"
+                    gnx="gnx">value
+                </attr>
+                ...
+            </at-file-attributes>
+        </node>
+        ...
+    </nodes>
+    <edges>
+        <edge type="child" from="gnx" to="gnx"</edge>
+        ...
+    </edges>
+    </graph>
+    </leo_file>
+
+<attr> elements
+===============
+
+<attr> elements will one of the following forms::
+
+    <attr key="a">a unicode string</attr>
+    <attr key="b" format="json">a json string</attr>
+    <attr key="c" format="pickle">a json string</attr>
+    <attr key="d" format="binhex">a binhexed string</attr>
+    
+That is, the value will be a string by default.
+
+uA's that start with "binhex_" will use the binhex format. This
+prefix must be retained in the type field, so the read code can
+restore them.
+
+If the value is not a string, and there is no "binhex_" prefix,
+the write code will use format="json" if json.dumps succeeds, and
+will use format="pickle" otherwise.
+
+No <attr> element will be written if both json.dumps and
+pickle.dumps fail. Attribute failures will create a warning for
+the plugin developer.
+
+<edge> elements
+===============
+
+<edge> elements will have the form::
+
+    <edge type="child" from="gnx" to="gnx"/>
+    
+Leo will use type="child" to represent Leo's official edges.
+Plugins are free to define any type except "child". Examples::
+
+    <edge type="undirected" from="gnx" to="gnx"/>
+    <edge type="bidirectional" from="gnx" to="gnx"/>
+    <edge type="backlink" from="gnx" to="gnx"/>
+    <edge type="myPlugin" from="gnx" to="gnx"/>
+    
+Descendant attributes in @file trees
+====================================
+
+Descendants of @file nodes do not appear in .leo files. Thus,
+important data must be stored in the so-called hidden machinery:
+attributes of the @file node.
+
+The <at-file-attributes> element may be contained in the
+<node> element for @file nodes::
+
+    <at-file-attributes>
+        <attr>key="ua-name"
+            format="(empty)/json/pickle/binhex"
+            gnx="gnx">value
+        </attr>
+        ...
+    </at-file-attributes>
+    
+In other words, we use the graphml <attr> element, extended with the
+gnx attribute, to represent all the uA's in the descendants of @file nodes.
+.. @+node:ekr.20110419083918.6104: *5* File format, v3 graphml
+@language rest
+@pagewidth 65
+
+This draft is intended to reflect our recent discussions, with no
+new invention from me. All comments and corrections welcome.
+
+The draft is also intended to be compatible with graphml.
+
+This draft covers only Leo's xml format, but it may be adapted
+for use as a json file format.
+
+I am willing to change "type" to "key" in <edge> elements if that
+would be preferable.
+
+Recent changes
+==============
+
+- Added <graphml> element defining the default namespace.
+
+- Defined the leo namespace for leo-only elements.
+    - Renamed <leo_file> to <leo:outline>
+    - Renamed <descendant-attributes> to <leo:at-file-attributes>
+
+- Used <leo:at-file-attributes> for marks, removing the special case.
+
+- Enclosed <leo:descendant-attributes> in a (graphml) <data> element.
+
+- Changed the format of the "marked" attribute to be a string-valued attribute.
+
+First lines
+===========
+
+Leo file will start with the following::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo:file file_format="3"
+        xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+    <graphml xmlns="http://graphml.graphdrawing.org/xmlns"/>
+        
+
+No session data
+===============
+
+There will be no <globals>, <preferences> or
+<find_panel_settings> elements. All such "session data" will be
+restored from the cache, or from defaults if caching is disabled.
+
+**Important**: there is no representation of expansion state or
+the currently selected node anywhere in the .leo file.
+Eliminating these data is contingent on having Leo work well with
+caching disabled.
+
+Note: marks are more than session data. They must appear
+somewhere within <node> elements.
+
+
+Summary of format
+=================
+
+.leo files will have the following form, with similar indentation::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo:outline file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+    <graphml xmlns="http://graphml.graphdrawing.org/xmlns"/>
+    <graph>
+    <nodes>
+        <!-- marked attribute appears only if the vnode is marked -->
+        <node id="gnx"> 
+            <head>headline text</head>
+            <attr key="marked">1</attr>
+            <!-- uA's... -->
+            <!-- format="string" is the default -->
+            <attr key="a">a string</attr>
+            <attr key="b" format="json">a json string</attr>
+            <attr key="c" format="pickle">a pickled string</attr>
+            <attr key="d" format="binhex">a binhexed string</attr>
+            ...
+            <body>body text</body>
+        </node>
+        ...
+        <!-- @file nodes contain a <data> package -->
+        <node id="gnx">
+            <head>@file x.py</head>
+            ...
+            <data>
+                <leo:at-file-attributes>
+                    <attr>key="ua-name"
+                        format="(empty)/json/pickle/binhex"
+                        gnx="gnx">value
+                    </attr>
+                    ...
+                </leo:at-file-attributes>
+            </data>
+        </node>
+        ...
+    </nodes>
+    <edges>
+        <edge type="child" from="gnx" to="gnx"</edge>
+        ...
+    </edges>
+    </graph>
+    </graphml>
+    </leo:outline>
+
+<attr> elements
+===============
+
+<attr> elements will one of the following forms::
+
+    <attr key="a">a unicode string</attr>
+    <attr key="b" format="json">a json string</attr>
+    <attr key="c" format="pickle">a json string</attr>
+    <attr key="d" format="binhex">a binhexed string</attr>
+    
+That is, the value will be a string by default.
+
+uA's that start with "binhex_" will use the binhex format. This
+prefix must be retained in the type field, so the read code can
+restore them.
+
+If the value is not a string, and there is no "binhex_" prefix,
+the write code will use format="json" if json.dumps succeeds, and
+will use format="pickle" otherwise.
+
+No <attr> element will be written if both json.dumps and
+pickle.dumps fail. Attribute failures will create a warning for
+the plugin developer.
+
+<edge> elements
+===============
+
+<edge> elements will have the form::
+
+    <edge type="child" from="gnx" to="gnx"/>
+    
+Leo will use type="child" to represent Leo's official edges.
+Plugins are free to define any type except "child". Examples::
+
+    <edge type="undirected" from="gnx" to="gnx"/>
+    <edge type="bidirectional" from="gnx" to="gnx"/>
+    <edge type="backlink" from="gnx" to="gnx"/>
+    <edge type="myPlugin" from="gnx" to="gnx"/>
+    
+Descendant attributes in @file trees
+====================================
+
+Descendants of @file nodes do not appear in .leo files. Thus,
+important data must be stored in the so-called hidden machinery:
+attributes of the @file node.
+
+The <leo:at-file-attributes> element may be contained in the
+<node> element for @file nodes. For compatibility with graphml,
+it will enclosed in a data element::
+    
+    <data>
+        <leo:at-file-attributes>
+            <attr>key="ua-name"
+                format="(empty)/json/pickle/binhex"
+                gnx="gnx">value
+            </attr>
+            ...
+        </leo:at-file-attributes>
+    </data>
+    
+In other words, we use the graphml <attr> element, extended with the
+gnx attribute, to represent all the uA's in the descendants of @file nodes.
+.. @+node:ekr.20090218115025.3: *5* Why are attributes pickled by default?
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/326a221f4c698f7a
+
+> On Wed, Feb 18, 2009 at 12:12 PM, Kent Tenney <ktenney@gmail.com> wrote:
+>>
+>> Currently, Leo pickles the value of unknown attributes unless
+>> the name starts with 'str_'
+>>
+>> Running the following code in node 'UA'
+>>
+>> p = c.currentPosition()
+>> p.v.u = {'hello':'world', 'str_hello':'world'}
+>>
+>> results in the following in the .leo file:
+>>
+>> <v t="ktenney.20090218114928.367" str_hello="world"
+>> hello="5505776f726c6471002e"><vh>UA</vh></v>
+>>
+>> I think this is surprising, Python-centric and contrary to the
+>> spirit of Leo as a flexible data management platform.
+>
+> I suppose your point is that you can't create an arbitrarily named attribute
+> with a string value. Does that create a real problem?
+
+It requires a translation layer, either to (un)munge the name or
+(un)pickle. Real problem?
+
+Let's say each time I think 'I can use UAs to store that' I change
+my mind when I realize my values will be in a pickle. (I really don't
+want to name all my attributes str_xxx)
+
+> As far as being Python-centric, can you suggest any other way of converting
+> arbitrary data to a text string?
+
+How is it done in any other XML file?
+I've not used XML for arbitrary data, but it probably can be done.
+
+> Why would that way be better than pickle?
+
+My suspicion is that UAs would be used more for
+storing text and numbers (as seems common for XML files)
+than Python data objects.
+
+Does Leo use UAs to store pickles?
+
+I'm sure pickling capability is great, but I'm not convinced
+it should be the _default._
+
+No big deal.
+.. @+node:ekr.20110415173840.6098: *4* Code related to uA's
+.. @+node:ekr.20040701065235.2: *5* putDescendentAttributes
+def putDescendentAttributes (self,p):
+
+    nodeIndices = g.app.nodeIndices
+
+    # Create lists of all tnodes whose vnodes are marked or expanded.
+    marks = [] ; expanded = []
+    for p in p.subtree():
+        v = p.v
+        if p.isMarked() and p.v not in marks:
+            marks.append(v)
+        if p.hasChildren() and p.isExpanded() and v not in expanded:
+            expanded.append(v)
+
+    result = []
+    for theList,tag in ((marks,"marks"),(expanded,"expanded")):
+        if theList:
+            sList = []
+            for v in theList:
+                sList.append("%s," % nodeIndices.toString(v.fileIndex))
+            s = ''.join(sList)
+            # g.trace(tag,[str(p.h) for p in theList])
+            result.append('\n%s="%s"' % (tag,s))
+
+    return ''.join(result)
+.. @+node:ekr.20080805071954.2: *5* putDescendentVnodeUas
+def putDescendentVnodeUas (self,p):
+
+    '''Return the a uA field for descendent vnode attributes,
+    suitable for reconstituting uA's for anonymous vnodes.'''
+
+    trace = False
+    if trace: g.trace(p.h)
+
+    # Create aList of tuples (p,v) having a valid unknownAttributes dict.
+    # Create dictionary: keys are vnodes, values are corresonding archived positions.
+    pDict = {} ; aList = []
+    for p2 in p.self_and_subtree():
+        if hasattr(p2.v,"unknownAttributes"):
+            aList.append((p2.copy(),p2.v),)
+            pDict[p2.v] = p2.archivedPosition(root_p=p)
+
+    # Create aList of pairs (v,d) where d contains only pickleable entries.
+    if aList: aList = self.createUaList(aList)
+    if not aList: return ''
+
+    # Create d, an enclosing dict to hold all the inner dicts.
+    d = {}
+    for v,d2 in aList:
+        aList2 = [str(z) for z in pDict.get(v)]
+        # g.trace(aList2)
+        key = '.'.join(aList2)
+        d[key]=d2
+
+    if trace: g.trace(p.h,g.dictToString(d))
+
+    # Pickle and hexlify d
+    return d and self.pickle(
+        torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
+.. @+node:EKR.20040526202501: *5* putUnknownAttributes
+def putUnknownAttributes (self,torv):
+
+    """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
+
+    attrDict = torv.unknownAttributes
+    if type(attrDict) != type({}):
+        g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
+        return ''
+    else:
+        val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
+        # g.trace(torv,attrDict)
+        return val
+.. @+node:ekr.20090130114732.6: *5* v.u Property
+def __get_u(self):
+    v = self
+    if not hasattr(v,'unknownAttributes'):
+        v.unknownAttributes = {}
+    return v.unknownAttributes
+
+def __set_u(self,val):
+    v = self
+    if val is None:
+        if hasattr(v,'unknownAttributes'):
+            delattr(v,'unknownAttributes')
+    elif type(val) == type({}):
+        v.unknownAttributes = val
+    else:
+        raise ValueError
+
+u = property(
+    __get_u, __set_u,
+    doc = "vnode unknownAttribute property")
+.. @+node:ekr.20110527084258.18374: *3* Summary of the Ashland sprint
 http://groups.google.com/group/leo-editor/browse_thread/thread/9b1dbebd56d50e14/d5a690127ddad38e
  
 "Sprint" isn't really the correct term.  We wrote no code.  Instead,
@@ -1498,440 +1509,10 @@ or a week or two at most.  The conclusion is that Leo has reached a
 mature state.
 
 Kent, Terry, did I omit anything?  Misstate anything? 
-.. @+node:ekr.20110528034751.18270: *6* Notes
+.. @+node:ekr.20110528034751.18270: *4* Notes
 - Viewrendered @html is a good way to learn/debug .css.
 
 - Study blender interface.
-.. @+node:ekr.20110528034751.18273: *5* Global search in Nav plugin?
-.. @+node:ekr.20110528034751.18272: *5* Support for tabifying Leo's core panes
-Collaborate with Terry.
-
-A. Place separate body editors in free_layout areas. This should *easy* to
-   do! Almost nothing changes in the code, but the visual effect should be
-   much better.
-
-B. Allow any pane to be "tabified" (placed in a tab in the Log pane) and
-   "untabified." There are a few details to be handled, but nothing major.
-   
-C. Labels for panes.
-.. @+node:ekr.20110531190516.19365: *4* Minor/Maybe: 4
-@language rest
-
-.. @+node:ekr.20100112051224.6226: *5* Vim-related: Range prefix to commands/objects (k.getArgs)
-The ability to specify a numeric range prefix is not supported. For example,
-entering "3dd" will not delete the next three lines and "20G" will not move the
-cursor to the 20th line in the file.
-
-The ability to specify a numeric range prefix to an object is not supported. For
-example, the "d2fx" command should Delete up to and including the 2nd Found "x"
-character.
-.. @+node:ekr.20110601105631.19373: *6* Simple vim bindings
-.. @+node:ekr.20110601105631.19374: *7* Cursors
-Vi normally uses two different "current character" designators depending on the
-current state.
-
-Insert state:
-
-In the Insert state, a vertical bar is placed between two characters to indicate
-where the next key will be inserted. Leo's cursor is of this type.
-
-Command state: 
-
-In the Command state, vi expects that the cursor is highlighting a current
-character and provides commands to enter the insert state or paste text either
-before or after that current character. Leo's vi emulation currently does not
-support a "current character" cursor. As a result, inserting and pasting before
-or after is replaced by inserting or pasting "at" the current cursor location.
-For example, the 'i' and 'a' command are both mapped to enter the insert state
-at the current cursor location.
-.. @+node:ekr.20110601105631.19375: *7* Enter insert mode after ctrl-h
-.. @+node:ekr.20110601105631.19376: *7* Colorize headline text depending on state
-.. @+node:ekr.20110601105631.19377: *7* colon destroys alt-x binding
-This project reorganizes makeBindingFromCommandsDict
-.. @+node:ekr.20110530063322.18333: *5* scala not colored properly
-.. @+node:ekr.20110518103946.18179: *5* Add external/leosax.py to leoPyRef.leo
-http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
-
-Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
-.. @+node:ekr.20090801103907.6018: *5* Add entries to global dicts for more languages (waiting for requests)
-http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
-
-Especially languages in leo/modes.
-
-** Only c.getOpenWithExt uses app.language_extension_dict.
-
-I'll wait until I get requests for particular language.
-.. @+node:ekr.20110528103005.18323: *6* Found: extension_dict
-.. @+node:ekr.20080819075811.13: *7* adjustTargetLanguage
-def adjustTargetLanguage (self,fn):
-
-    """Use the language implied by fn's extension if
-    there is a conflict between it and c.target_language."""
-
-    at = self ; c = at.c
-
-    if c.target_language:
-        junk,target_ext = g.os_path_splitext(fn)  
-    else:
-        target_ext = ''
-
-    junk,ext = g.os_path_splitext(fn)
-
-    if ext:
-        if ext.startswith('.'): ext = ext[1:]
-
-        language = g.app.extension_dict.get(ext)
-        if language:
-            c.target_language = language
-        else:
-            # An unknown language.
-            pass # Use the default language, **not** 'unknown_language'
-.. @+node:ekr.20090212054250.9: *7* c.createNodeFromExternalFile
-def createNodeFromExternalFile(self,fn):
-
-    '''Read the file into a node.
-    Return None, indicating that c.open should set focus.'''
-
-    c = self
-
-    s,e = g.readFileIntoString(fn)
-    if s is None: return
-    head,ext = g.os_path_splitext(fn)
-    if ext.startswith('.'): ext = ext[1:]
-    language = g.app.extension_dict.get(ext)
-    if language:
-        prefix = '@color\n@language %s\n\n' % language
-    else:
-        prefix = '@killcolor\n\n'
-    p2 = c.insertHeadline(op_name='Open File', as_child=False)
-    p2.h = '@edit %s' % fn # g.shortFileName(fn)
-    p2.b = prefix + s
-    w = c.frame.body.bodyCtrl
-    if w: w.setInsertPoint(0)
-    c.redraw()
-    c.recolor()
-.. @+node:ekr.20031218072017.2824: *7* c.getOpenWithExt
-def getOpenWithExt (self,p,ext):
-
-    trace = False and not g.app.unitTesting
-    c = self
-
-    if not ext:
-        # if node is part of @<file> tree, get ext from file name
-        for p2 in p.self_and_parents():
-            if p2.isAnyAtFileNode():
-                fn = p2.h.split(None,1)[1]
-                ext = g.os_path_splitext(fn)[1]
-                if trace: g.trace('found node:',ext,p2.h)
-                break
-
-    if not ext:
-        theDict = c.scanAllDirectives()
-        language = theDict.get('language')
-        ext = g.app.language_extension_dict.get(language)
-        if trace: g.trace('found directive',language,ext)
-
-    if not ext:
-        ext = '.txt'
-        if trace: g.trace('use default (.txt)')
-
-    if ext[0] != '.':
-        ext = '.'+ext
-
-    return ext
-.. @+node:EKR.20040504150046.4: *7* g.comment_delims_from_extension
-def comment_delims_from_extension(filename):
-
-    """
-    Return the comment delims corresponding to the filename's extension.
-
-    >>> import leo.core.leoGlobals as g
-    >>> g.comment_delims_from_extension(".py")
-    ('#', '', '')
-
-    >>> g.comment_delims_from_extension(".c")
-    ('//', '/*', '*/')
-
-    >>> g.comment_delims_from_extension(".html")
-    ('', '<!--', '-->')
-
-    """
-
-    if filename.startswith('.'):
-        # Python 2.6 changes how splitext works.
-        root,ext = None,filename
-    else:
-        root, ext = os.path.splitext(filename)
-    if ext == '.tmp':
-        root, ext = os.path.splitext(root)
-
-    language = g.app.extension_dict.get(ext[1:])
-    if ext:
-        return g.set_delims_from_language(language)
-    else:
-        g.trace("unknown extension: %s, filename: %s, root: %s" % (
-            repr(ext),repr(filename),repr(root)))
-        return '','',''
-.. @+node:ekr.20080811174246.1: *7* languageForExtension
-def languageForExtension (self,ext):
-
-    '''Return the language corresponding to the extension ext.'''
-
-    unknown = 'unknown_language'
-
-    if ext.startswith('.'): ext = ext[1:]
-
-    if ext:
-        z = g.app.extra_extension_dict.get(ext)
-        if z not in (None,'none','None'):
-            language = z
-        else:
-            language = g.app.extension_dict.get(ext)
-        if language in (None,'none','None'):
-            language = unknown
-    else:
-        language = unknown
-
-    # g.trace(ext,repr(language))
-
-    # Return the language even if there is no colorizer mode for it.
-    return language
-.. @+node:ekr.20031218072017.368: *6* << define global data structures >> (leoApp.py)
-# Internally, lower case is used for all language names.
-self.language_delims_dict = {
-    # Keys are languages, values are 1,2 or 3-tuples of delims.
-    "ada"           : "--",
-    "batch"         : "REM_", # Use the REM hack.
-    "actionscript"  : "// /* */", #jason 2003-07-03
-    "autohotkey"    : "; /* */", #TL - AutoHotkey language
-    "c"             : "// /* */", # C, C++ or objective C.
-    "config"        : "#", # Leo 4.5.1
-    "csharp"        : "// /* */", # C#
-    "cpp"           : "// /* */",# C++.
-    "css"           : "/* */", # 4/1/04
-    "cweb"          : "@q@ @>", # Use the "cweb hack"
-    "cython"        : "#",
-    "elisp"         : ";",
-    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
-    "fortran"       : "C",
-    "fortran90"     : "!",
-    "haskell"       : "--_ {-_ _-}",
-    "haxe"          : "//",
-    "html"          : "<!-- -->",
-    "ini"           : ";",
-    "java"          : "// /* */",
-    "kshell"        : "#", # Leo 4.5.1.
-    "latex"         : "%",
-    "lisp"          : ";", # EKR: 2010/09/29
-    "lua"           : "--",  # ddm 13/02/06
-    "nsi"           : ";", # EKR: 2010/10/27
-    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
-    "pascal"        : "// { }",
-    "perl"          : "#",
-    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-    "php"           : "// /* */", # 6/23/07: was "//",
-    "plain"         : "#", # We must pick something.
-    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
-    "python"        : "#",
-    "rapidq"        : "'", # fil 2004-march-11
-    "rebol"         : ";",  # jason 2003-07-03
-    "rest"          : ".._",
-    "rst"           : ".._",
-    "ruby"          : "#",  # thyrsus 2008-11-05
-    "scala"         : "// /* */",
-    "shell"         : "#",  # shell scripts
-    "tcltk"         : "#",
-    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
-    "unknown"       : "#", # Set when @comment is seen.
-    "unknown_language" : '#--unknown-language--',
-        # For unknown extensions in @shadow files.
-    "vim"           : "\"",
-    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "<!-- -->",
-    "xslt"          : "<!-- -->",
-}
-
-# Used only by c.getOpenWithExt.
-self.language_extension_dict = {
-    # Keys are languages, values are extensions.
-    "ada"           : "ada",
-    "actionscript"  : "as", #jason 2003-07-03
-    "autohotkey"    : "ahk", #TL - AutoHotkey language
-    "batch"         : "bat", # Leo 4.5.1.
-    "c"             : "c",
-    "config"        : "cfg",
-    "cpp"           : "cpp",
-    "css"           : "css", # 4/1/04
-    "cweb"          : "w",
-    #"cython"        : "pyd",
-    #"cython"        : "pyi",
-    "cython"        : "pyx", # Only one extension is valid at present.
-    "elisp"         : "el",
-    "forth"         : "forth",
-    "fortran"       : "f",
-    "fortran90"     : "f90",
-    "haskell"       : "hs",
-    "haxe"          : "hx",
-    "html"          : "html",
-    "ini"           : "ini",
-    "java"          : "java",
-    "kshell"        : "ksh", # Leo 4.5.1.
-    "latex"         : "tex", # 1/8/04
-    "lua"           : "lua",  # ddm 13/02/06
-    "nsi"           : "nsi", # EKR: 2010/10/27
-    "noweb"         : "nw",
-    "pascal"        : "p",
-    "perl"          : "pl",      # 11/7/05
-    "perlpod"       : "pod",  # 11/7/05
-    "php"           : "php",
-    "plain"         : "txt",
-    "python"        : "py",
-    "plsql"         : "sql", # qt02537 2005-05-27
-    "rapidq"        : "bas", # fil 2004-march-11
-    "rebol"         : "r",    # jason 2003-07-03
-    # "rst"           : "rst", # caught by pylint.
-    "rst"           : "rest",
-    "ruby"          : "rb",   # thyrsus 2008-11-05
-    "scala"         : "scala",
-    "shell"         : "sh",   # DS 4/1/04
-    "tex"           : "tex",
-    "tcltk"         : "tcl",
-    "unknown"       : "txt", # Set when @comment is seen.
-    "vim"           : "vim",
-    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "xml",
-    "xslt"          : "xsl",
-}
-
-self.extension_dict = {
-    # Keys are extensions, values are languages.
-    "ada"   : "ada",
-    "adb"   : "ada",
-    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
-    "as"    : "actionscript",
-    "bas"   : "rapidq",
-    "bat"   : "batch",
-    "c"     : "c",
-    "cfg"   : "config",
-    "cpp"   : "cpp",
-    "css"   : "css",
-    "el"    : "elisp",
-    "forth" : "forth",
-    "f"     : "fortran",
-    "f90"   : "fortran90",
-    "h"     : "c",
-    "html"  : "html",
-    "hs"    : "haskell",
-    "ini"   : "ini",
-    "java"  : "java",
-    "ksh"   : "kshell", # Leo 4.5.1.
-    "lua"   : "lua",  # ddm 13/02/06
-    "nsi"   : "nsi", # EKR: 2010/10/27
-    "nw"    : "noweb",
-    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
-    "p"     : "pascal",
-    "pl"    : "perl",   # 11/7/05
-    "pod"   : "perlpod", # 11/7/05
-    "php"   : "php",
-    "py"    : "python",
-    "pyd"   : "cython",
-    "pyi"   : "cython",
-    "pyx"   : "cython",
-    "sql"   : "plsql", # qt02537 2005-05-27
-    "r"     : "rebol",
-    "rb"    : "ruby", # thyrsus 2008-11-05
-    "rest"  : "rst",
-    "rst"   : "rst",
-    "scala" : "scala",
-    "sh"    : "shell",
-    "tex"   : "tex",
-    "txt"   : "plain",
-    "tcl"   : "tcltk",
-    "vim"   : "vim",
-    "w"     : "cweb",
-    "xml"   : "xml",
-    "xsl"   : "xslt",
-    "hx"    : "haxe",
-}
-
-# Extra language extensions, used to associate extensions with mode files.
-# Used by importCommands.languageForExtension.
-# Keys are extensions, values are corresponding mode file (without .py)
-# A value of 'none' is a signal to unit tests that no extension file exists.
-self.extra_extension_dict = {
-    'actionscript': 'actionscript',
-    'ada'   : 'ada95',
-    'adb'   : 'none', # ada??
-    'awk'   : 'awk',
-    'bas'   : 'none', # rapidq
-    'bat'   : 'none', # batch
-    'cfg'   : 'none', # Leo 4.5.1
-    'cpp'   : 'c',
-    'el'    : 'lisp',
-    'f'     : 'fortran90',
-    'hx'    : 'none',
-    'ksh'   : 'none', # Leo 4.5.1
-    'nsi'   : 'none', # Leo 4.8.
-    'nw'    : 'none', # noweb.
-    'otl'   : 'none', # vimoutline.
-    'pod'   : 'perl',
-    'tcl'   : 'tcl',
-    'unknown_language': 'none',
-    'w'     : 'none', # cweb
-}
-
-self.global_commands_dict = {}
-.. @+node:ekr.20110528103005.18319: *6* Script to global data structures from in modes/*.py files
-import glob
-import imp
-
-theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
-aList = glob.glob(theDir)
-theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes')
-
-print('-'*40,len(aList))
-known_keys = list(g.app.language_delims_dict.keys())
-known_keys.sort()
-known = []
-computed = {}
-for z in aList:
-    name = g.os_path_basename(z)
-    name2 = name[:-3]
-    if name2.startswith('__'): continue
-    # if name2 in known_keys:
-        # known.append(name)
-        # continue
-    try:
-        theFile, pathname, description = imp.find_module(name2,[theDir])
-        m = imp.load_module(name2, theFile, pathname, description)
-    except Exception:
-        g.es_exception()
-        m = None
-    if m:
-        aList2 = [m.properties.get(z)
-            for z in ('lineComment','commentStart','commentEnd')
-                if m.properties.get(z)]
-        print('%-20s : "%s",' % (
-            '"%s"' % (name2),
-            ' '.join(aList2)))
-        computed[name2] = ' '.join(aList2)
-mismatches = 0
-for z in known_keys:
-    val = g.app.language_delims_dict.get(z)
-    val2 = computed.get(z)
-    if not val:
-        print('oops: no val',z)
-    elif not val2:
-        print('oops: no val2',z)
-    elif val != val2:
-        mismatches += 1
-        print('mismatch for %s' % z)
-        print(repr(val))
-        print(repr(val2))
-print('%s total languages' % len(aList))
-print('%s new languages' % (len(list(computed.keys())) - len(known_keys)))
-print('%s mismatches' % mismatches)
-print('%s known language: %s' % (len(known_keys),known_keys))
 .. @+node:ekr.20110527225107.18351: *3* Vague
 @language rest
 
@@ -2220,6 +1801,423 @@ language before doing anything in this direction.
 As an intermediate step, maybe we could allow mixing RST processing with regular
 program text.  Leo would produce two documents out of a source file: a version
 for the compiler in plain ascii, and an HTML file for reading the source.
-.. @+node:ekr.20101129095441.5963: *3* Improve screenshots page
+.. @+node:ekr.20110531190516.19365: *3* Minor/Maybe: 4
+@language rest
+
+.. @+node:ekr.20100112051224.6226: *4* Vim-related: Range prefix to commands/objects (k.getArgs)
+The ability to specify a numeric range prefix is not supported. For example,
+entering "3dd" will not delete the next three lines and "20G" will not move the
+cursor to the 20th line in the file.
+
+The ability to specify a numeric range prefix to an object is not supported. For
+example, the "d2fx" command should Delete up to and including the 2nd Found "x"
+character.
+.. @+node:ekr.20110601105631.19373: *5* Simple vim bindings
+.. @+node:ekr.20110601105631.19374: *6* Cursors
+Vi normally uses two different "current character" designators depending on the
+current state.
+
+Insert state:
+
+In the Insert state, a vertical bar is placed between two characters to indicate
+where the next key will be inserted. Leo's cursor is of this type.
+
+Command state: 
+
+In the Command state, vi expects that the cursor is highlighting a current
+character and provides commands to enter the insert state or paste text either
+before or after that current character. Leo's vi emulation currently does not
+support a "current character" cursor. As a result, inserting and pasting before
+or after is replaced by inserting or pasting "at" the current cursor location.
+For example, the 'i' and 'a' command are both mapped to enter the insert state
+at the current cursor location.
+.. @+node:ekr.20110601105631.19375: *6* Enter insert mode after ctrl-h
+.. @+node:ekr.20110601105631.19376: *6* Colorize headline text depending on state
+.. @+node:ekr.20110601105631.19377: *6* colon destroys alt-x binding
+This project reorganizes makeBindingFromCommandsDict
+.. @+node:ekr.20110530063322.18333: *4* scala not colored properly
+.. @+node:ekr.20110518103946.18179: *4* Add external/leosax.py to leoPyRef.leo
+http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
+
+Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
+.. @+node:ekr.20090801103907.6018: *4* Add entries to global dicts for more languages (waiting for requests)
+http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+
+Especially languages in leo/modes.
+
+** Only c.getOpenWithExt uses app.language_extension_dict.
+
+I'll wait until I get requests for particular language.
+.. @+node:ekr.20110528103005.18323: *5* Found: extension_dict
+.. @+node:ekr.20080819075811.13: *6* adjustTargetLanguage
+def adjustTargetLanguage (self,fn):
+
+    """Use the language implied by fn's extension if
+    there is a conflict between it and c.target_language."""
+
+    at = self ; c = at.c
+
+    if c.target_language:
+        junk,target_ext = g.os_path_splitext(fn)  
+    else:
+        target_ext = ''
+
+    junk,ext = g.os_path_splitext(fn)
+
+    if ext:
+        if ext.startswith('.'): ext = ext[1:]
+
+        language = g.app.extension_dict.get(ext)
+        if language:
+            c.target_language = language
+        else:
+            # An unknown language.
+            pass # Use the default language, **not** 'unknown_language'
+.. @+node:ekr.20090212054250.9: *6* c.createNodeFromExternalFile
+def createNodeFromExternalFile(self,fn):
+
+    '''Read the file into a node.
+    Return None, indicating that c.open should set focus.'''
+
+    c = self
+
+    s,e = g.readFileIntoString(fn)
+    if s is None: return
+    head,ext = g.os_path_splitext(fn)
+    if ext.startswith('.'): ext = ext[1:]
+    language = g.app.extension_dict.get(ext)
+    if language:
+        prefix = '@color\n@language %s\n\n' % language
+    else:
+        prefix = '@killcolor\n\n'
+    p2 = c.insertHeadline(op_name='Open File', as_child=False)
+    p2.h = '@edit %s' % fn # g.shortFileName(fn)
+    p2.b = prefix + s
+    w = c.frame.body.bodyCtrl
+    if w: w.setInsertPoint(0)
+    c.redraw()
+    c.recolor()
+.. @+node:ekr.20031218072017.2824: *6* c.getOpenWithExt
+def getOpenWithExt (self,p,ext):
+
+    trace = False and not g.app.unitTesting
+    c = self
+
+    if not ext:
+        # if node is part of @<file> tree, get ext from file name
+        for p2 in p.self_and_parents():
+            if p2.isAnyAtFileNode():
+                fn = p2.h.split(None,1)[1]
+                ext = g.os_path_splitext(fn)[1]
+                if trace: g.trace('found node:',ext,p2.h)
+                break
+
+    if not ext:
+        theDict = c.scanAllDirectives()
+        language = theDict.get('language')
+        ext = g.app.language_extension_dict.get(language)
+        if trace: g.trace('found directive',language,ext)
+
+    if not ext:
+        ext = '.txt'
+        if trace: g.trace('use default (.txt)')
+
+    if ext[0] != '.':
+        ext = '.'+ext
+
+    return ext
+.. @+node:EKR.20040504150046.4: *6* g.comment_delims_from_extension
+def comment_delims_from_extension(filename):
+
+    """
+    Return the comment delims corresponding to the filename's extension.
+
+    >>> import leo.core.leoGlobals as g
+    >>> g.comment_delims_from_extension(".py")
+    ('#', '', '')
+
+    >>> g.comment_delims_from_extension(".c")
+    ('//', '/*', '*/')
+
+    >>> g.comment_delims_from_extension(".html")
+    ('', '<!--', '-->')
+
+    """
+
+    if filename.startswith('.'):
+        # Python 2.6 changes how splitext works.
+        root,ext = None,filename
+    else:
+        root, ext = os.path.splitext(filename)
+    if ext == '.tmp':
+        root, ext = os.path.splitext(root)
+
+    language = g.app.extension_dict.get(ext[1:])
+    if ext:
+        return g.set_delims_from_language(language)
+    else:
+        g.trace("unknown extension: %s, filename: %s, root: %s" % (
+            repr(ext),repr(filename),repr(root)))
+        return '','',''
+.. @+node:ekr.20080811174246.1: *6* languageForExtension
+def languageForExtension (self,ext):
+
+    '''Return the language corresponding to the extension ext.'''
+
+    unknown = 'unknown_language'
+
+    if ext.startswith('.'): ext = ext[1:]
+
+    if ext:
+        z = g.app.extra_extension_dict.get(ext)
+        if z not in (None,'none','None'):
+            language = z
+        else:
+            language = g.app.extension_dict.get(ext)
+        if language in (None,'none','None'):
+            language = unknown
+    else:
+        language = unknown
+
+    # g.trace(ext,repr(language))
+
+    # Return the language even if there is no colorizer mode for it.
+    return language
+.. @+node:ekr.20031218072017.368: *5* << define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM_", # Use the REM hack.
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "cython"        : "#",
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "haskell"       : "--_ {-_ _-}",
+    "haxe"          : "//",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lisp"          : ";", # EKR: 2010/09/29
+    "lua"           : "--",  # ddm 13/02/06
+    "nsi"           : ";", # EKR: 2010/10/27
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "rest"          : ".._",
+    "rst"           : ".._",
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "scala"         : "// /* */",
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--',
+        # For unknown extensions in @shadow files.
+    "vim"           : "\"",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
+}
+
+# Used only by c.getOpenWithExt.
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    #"cython"        : "pyd",
+    #"cython"        : "pyi",
+    "cython"        : "pyx", # Only one extension is valid at present.
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f90",
+    "haskell"       : "hs",
+    "haxe"          : "hx",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "nsi"           : "nsi", # EKR: 2010/10/27
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    # "rst"           : "rst", # caught by pylint.
+    "rst"           : "rest",
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "scala"         : "scala",
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vim"           : "vim",
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+    "xslt"          : "xsl",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "hs"    : "haskell",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nsi"   : "nsi", # EKR: 2010/10/27
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "pyd"   : "cython",
+    "pyi"   : "cython",
+    "pyx"   : "cython",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "scala" : "scala",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+    "w"     : "cweb",
+    "xml"   : "xml",
+    "xsl"   : "xslt",
+    "hx"    : "haxe",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran90',
+    'hx'    : 'none',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nsi'   : 'none', # Leo 4.8.
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+
+self.global_commands_dict = {}
+.. @+node:ekr.20110528103005.18319: *5* Script to global data structures from in modes/*.py files
+import glob
+import imp
+
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
+aList = glob.glob(theDir)
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes')
+
+print('-'*40,len(aList))
+known_keys = list(g.app.language_delims_dict.keys())
+known_keys.sort()
+known = []
+computed = {}
+for z in aList:
+    name = g.os_path_basename(z)
+    name2 = name[:-3]
+    if name2.startswith('__'): continue
+    # if name2 in known_keys:
+        # known.append(name)
+        # continue
+    try:
+        theFile, pathname, description = imp.find_module(name2,[theDir])
+        m = imp.load_module(name2, theFile, pathname, description)
+    except Exception:
+        g.es_exception()
+        m = None
+    if m:
+        aList2 = [m.properties.get(z)
+            for z in ('lineComment','commentStart','commentEnd')
+                if m.properties.get(z)]
+        print('%-20s : "%s",' % (
+            '"%s"' % (name2),
+            ' '.join(aList2)))
+        computed[name2] = ' '.join(aList2)
+mismatches = 0
+for z in known_keys:
+    val = g.app.language_delims_dict.get(z)
+    val2 = computed.get(z)
+    if not val:
+        print('oops: no val',z)
+    elif not val2:
+        print('oops: no val2',z)
+    elif val != val2:
+        mismatches += 1
+        print('mismatch for %s' % z)
+        print(repr(val))
+        print(repr(val2))
+print('%s total languages' % len(aList))
+print('%s new languages' % (len(list(computed.keys())) - len(known_keys)))
+print('%s mismatches' % mismatches)
+print('%s known language: %s' % (len(known_keys),known_keys))
 .. @-all
 .. @-leo
