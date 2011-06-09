@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="87" left="196" height="764" width="1220"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -96,20 +96,8 @@
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285508302e372e31362e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31342e3371057d71065808000000616e6e6f7461746571077d7108735507302e342e302e3571097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31302e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e372e31362e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e372e31342e3371057d71065808000000616e6e6f7461746571077d7108735807000000302e342e302e3571097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31302e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"
 expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20090529141856.4731,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4772,ekr.20090529141856.4774,ekr.20090529141856.4734,ekr.20100219080213.5365,ekr.20090529141856.4736,ekr.20090529141856.4780,ekr.20090529141856.4784,ekr.20071113194424.1,ekr.20040802071519,ekr.20080501121449.1,ekr.20081001094920.2,ekr.20100131171342.5610,ekr.20091219122958.5066,ekr.20090529115704.4396,ekr.20100131171342.5612,ekr.20040712101754.37,ekr.20040712101754.38,"><vh>@file activeUnitTests.txt</vh></v>
-</v>
-<v t="ekr.20110608135658.3377"><vh>leoChapters</vh>
-<v t="ekr.20110608162543.3363"><vh>@test chapter-create/remove &amp; undo</vh></v>
-<v t="ekr.20110608162543.3365"><vh>@test chapter-rename &amp; undo</vh></v>
-<v t="ekr.20110608181936.3368"><vh>@test chapter-move/clone/copy-node-to</vh>
-<v t="ekr.20110608181936.3369"><vh>node b</vh></v>
-<v t="ekr.20110608181936.3370"><vh>node c</vh></v>
-<v t="ekr.20110609110809.3391"><vh>node a</vh></v>
-</v>
-<v t="ekr.20080503132221.1"><vh>@test chapter-create-from-node</vh>
-<v t="ekr.20110609110809.3392"><vh>child</vh></v>
-</v>
 </v>
 </vnodes>
 <tnodes>
@@ -514,7 +502,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935"></t>
+<t tx="ekr.20070417092935" str_leo_pos="5,0"></t>
 <t tx="ekr.20071113140035">fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src','leoPy.leo'))
 flag,frame2 = g.openWithFileName(fileName,old_c=None,enableLog=False)
 c.frame.bringToFront()
@@ -543,44 +531,6 @@ for h in d2.keys():
     if not d1.get(h):
         g.pr(h)</t>
 <t tx="ekr.20071113203234"></t>
-<t tx="ekr.20080503132221.1">cc = c.chapterController
-root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-
-child = p.insertAsNthChild(0)
-# c.setHeadString(child,'child') # Force the headline to update.
-child.h = 'child'
-child.b = '# child'
-
-# Kill the chapter so the test will not fail if run twice.
-chapter = cc.chaptersDict.get('new-chapter')
-if chapter:
-    cc.removeChapterByName('new-chapter')
-
-try:
-    c.selectPosition(child)
-    c.chapterController.createChapterByName(
-        'new-chapter',child,'Create Chapter From Node')
-    if 0:
-        c.undoer.undo()
-        c.undoer.redo()
-        c.undoer.undo()
-        c.undoer.redo()
-        c.undoer.undo() # Don't pollute future unit tests.
-    else:
-        c.redraw_now() # Required.
-        chapterNode = cc.findChapterNode('new-chapter')
-        assert chapterNode,'fail 1: %s' % (undoType)
-        chapterNode.doDelete()
-        c.redraw_now()
-finally:
-    if 0:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    cc.selectChapterByName('main',collapse=True)
-    c.redraw_now()
-</t>
 <t tx="ekr.20090704085350.5007">@language python
 @others</t>
 <t tx="ekr.20090704085350.5028">@language python
@@ -657,79 +607,5 @@ s = "%d nodes" % count
 print s ; g.es(s)</t>
 <t tx="ekr.20101220161557.6013"></t>
 <t tx="ekr.20101220161557.6016"></t>
-<t tx="ekr.20110608135658.3377"></t>
-<t tx="ekr.20110608162543.3363">cc = c.chapterController
-chaptersNode = cc.findChaptersNode()
-assert chaptersNode
-
-chapterNode = (
-    cc.findChapterNode('aaa') or
-    cc.createChapterByName('aaa',p=None))
-
-cc.selectChapterByName('aaa',chaptersNode)
-cc.removeChapterByName('aaa')
-c.undoer.undo()
-assert cc.findChapterNode('aaa')
-cc.selectChapterByName('main',collapse=True)
-</t>
-<t tx="ekr.20110608162543.3365">cc = c.chapterController
-chaptersNode = cc.findChaptersNode()
-assert chaptersNode
-
-chapterNode = (
-    cc.findChapterNode('aaa') or
-    cc.createChapterByName('aaa',p=None))
-    
-try:
-    cc.selectChapterByName('aaa',chaptersNode)
-    cc.renameChapterByName('bbb')
-    cc.selectChapterByName('bbb',chaptersNode)
-    cc.renameChapterByName('aaa')
-    assert cc.findChapterNode('aaa'),'after undo'
-finally:
-    cc.selectChapterByName('main',collapse=True)
-</t>
-<t tx="ekr.20110608181936.3368">cc = c.chapterController
-chaptersNode = cc.findChaptersNode()
-assert chaptersNode,'fail 0'
-
-chapterNode = (
-    cc.findChapterNode('aaa') or
-    cc.createChapterByName('aaa',p=None))
-
-table = (
-    ('node a',cc.moveNodeToChapterHelper),
-    ('node b',cc.copyNodeToChapterHelper),
-    ('node c',cc.cloneNodeToChapterHelper),
-)
-
-try:
-    cc.selectChapterByName('aaa',chaptersNode)
-    for h,f in table:
-        p2 = g.findNodeInTree(c,p,h)
-        assert p2,'fail 1'
-        c.selectPosition(p2) # All helpers work on c.p.
-        f('aaa')
-        assert g.findNodeInTree(c,chapterNode,h),'fail 2'
-    assert not g.findNodeInTree(c,p,'node a')
-    assert g.findNodeInTree(c,p,'node b')
-    assert g.findNodeInTree(c,p,'node c')
-finally:
-    for h,f in table:
-        if not g.findNodeInTree(c,p,h):
-            p2 = p.insertAsLastChild()
-            p2.h = h
-            p2.b = '# %s' % h
-        p3 = g.findNodeInTree(c,chapterNode,h)
-        if p3: p3.doDelete()
-    cc.selectChapterByName('main',collapse=True)
-    c.redraw()
-</t>
-<t tx="ekr.20110608181936.3369"># node b
-</t>
-<t tx="ekr.20110608181936.3370"># node c
-</t>
-<t tx="ekr.20110609110809.3391"># node a</t>
-<t tx="ekr.20110609110809.3392"># child</t>
 </tnodes>
 </leo_file>

@@ -6794,6 +6794,79 @@ The already existing prefixes are::
 The macro-load and macro-save are as simple as possible.
 
 No further work will be done on macros unless somebody really wants these commands.
+#@+node:ekr.20110604182206.16757: *4* Added support for word-only option for regular expressions
+#@+node:ekr.20031218072017.3075: *5* findNextMatch
+# Resumes the search where it left off.
+# The caller must call set_first_incremental_search or set_first_batch_search.
+
+def findNextMatch(self):
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = self.p
+
+    if trace: g.trace('entry','p',p and p.h,
+        'search_headline',self.search_headline,
+        'search_body',self.search_body)
+
+    if not self.search_headline and not self.search_body:
+        if trace: g.trace('nothing to search')
+        return None, None
+
+    if len(self.find_text) == 0:
+        if trace: g.trace('no find text')
+        return None, None
+
+    self.errors = 0
+    attempts = 0
+    self.backwardAttempts = 0
+
+    # New in Leo 4.4.8: precompute the regexp for regexHelper.
+    if self.pattern_match:
+        try: # Precompile the regexp.
+            flags = re.MULTILINE
+            if self.ignore_case: flags |= re.IGNORECASE
+            # New in Leo 4.5: escape the search text.
+            b,s = '\\b',self.find_text
+            if self.whole_word:
+                if not s.startswith(b): s = b + s
+                if not s.endswith(b): s = s + b
+            # g.trace(self.whole_word,repr(s))
+                
+            self.re_obj = re.compile(s,flags)
+            # self.re_obj = re.compile(re.escape(self.find_text),flags)
+        except Exception:
+            g.es('invalid regular expression:',self.find_text,color='blue')
+            self.errors += 1 # Abort the search.
+            return None,None
+
+    while p:
+        pos, newpos = self.search()
+        if trace: g.trace('attempt','pos',pos,'p',p.h,'in_headline',self.in_headline)
+        if pos is not None:
+            if self.mark_finds:
+                p.setMarked()
+                c.frame.tree.drawIcon(p) # redraw only the icon.
+            if trace: g.trace('success',pos,newpos)
+            return pos, newpos
+        elif self.errors:
+            g.trace('find errors')
+            return None,None # Abort the search.
+        elif self.node_only:
+            # Bug fix: 2009-5-31.
+            # Attempt to switch from headline to body.
+            if self.in_headline:
+                self.in_headline = False
+                self.initNextText()
+            else: 
+                if trace: g.trace('fail: node only')
+                return None,None # We are only searching one node.
+        else:
+            if trace: g.trace('failed attempt',p)
+            attempts += 1
+            p = self.p = self.selectNextPosition()
+
+    if trace: g.trace('attempts',attempts,'backwardAttempts',self.backwardAttempts)
+    return None, None
 #@+node:ekr.20110607182447.16455: *3* Focus tracing
 #@+node:ekr.20080514131122.20: *4* c.outerUpdate
 def outerUpdate (self):

@@ -33,9 +33,9 @@ get to this work, I should have <<code fragment>> under the @rst3 subtree as
 well, but this is then also treated as @rst3 input (which in this case, is not
 what I want).
 .. @+node:ekr.20110609042343.16545: *5* Easy: 4
+.. @+node:ekr.20110609120520.16495: *6* k.strokeToChar may fail when caps lock key is on
 .. @+node:ekr.20110607182447.16466: *6* escape got inserted into text
 .. @+node:ekr.20110607140913.16578: *6* Make sure all keys contribute to lossage
-.. @+node:ekr.20110604182206.16757: *6* regex word-only does not work
 .. @+node:ekr.20110605121601.17012: *6* On Mac: change qttabs to qt
 .. @+node:ekr.20110609042343.16551: *4* when b3 released: post to pyxides re "your mission"
 .. @+node:ekr.20101129095441.5963: *4* Improve screenshots page
@@ -786,6 +786,9 @@ C. Labels for panes.
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10
 .. @+node:ekr.20110527084258.18378: *3* New file format
 @nocolor-node
+
+** remove window state, expansion status etc.
+   stuff from .leo file, and move that over to c.db
 
 - <attr> solves pickle problem.
 
