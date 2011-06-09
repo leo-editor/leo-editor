@@ -376,6 +376,12 @@ def scanOptions():
 
     if gui:
         gui = gui.lower()
+
+        if sys.platform == 'darwin' and qui == 'qttabs':
+            # 2011/06/9: Convert 'qttabs' to 'qt' on MacOS.
+            g.es('qttabs not supported on MacOS\nusing qt')
+            gui = 'qt'
+    
         if gui == 'qttabs':
             gui = g.app.guiArgName = 'qt'
             g.app.qt_use_tabs = True

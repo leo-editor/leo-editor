@@ -6,8 +6,8 @@
 .. @+node:ekr.20110520051220.18187: ** To do: 4.9
 @language rest
 .. @+node:ekr.20110527182640.18358: *3* b3
-.. @+node:ekr.20110607140913.16575: *4* First
-.. @+node:ekr.20090601083544.6051: *5* Add expand_noweb_references for rst3 plugin
+.. @+node:ekr.20110607140913.16578: *4* Make sure all keys contribute to lossage
+.. @+node:ekr.20090601083544.6051: *4* Add expand_noweb_references for rst3 plugin
 http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
 > What would work for me is if named sections in a @rst subtree
@@ -20,7 +20,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
 - When expand_noweb_references is True, definitions (typically clones)
   must be descendants of the referencing node (in the @rst tree)
-.. @+node:ekr.20090601083544.6052: *6* post
+.. @+node:ekr.20090601083544.6052: *5* post
 I want to write the documentation for the source program in a @rst3 subtree. In
 this @rst3 subtree I want to refer to fragments of the program, like:
 
@@ -32,10 +32,7 @@ Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
 get to this work, I should have <<code fragment>> under the @rst3 subtree as
 well, but this is then also treated as @rst3 input (which in this case, is not
 what I want).
-.. @+node:ekr.20110609042343.16545: *5* Easy/First: 3
-.. @+node:ekr.20110609120520.16495: *6* c.check__event may fail when caps lock key is on
-.. @+node:ekr.20110607140913.16578: *6* Make sure all keys contribute to lossage
-.. @+node:ekr.20110605121601.17012: *6* On Mac: change qttabs to qt
+.. @+node:ekr.20110609161752.16457: *4* Script to report commands that do not have docstring
 .. @+node:ekr.20110609042343.16551: *4* when b3 released: post to pyxides re "your mission"
 .. @+node:ekr.20101129095441.5963: *4* Improve screenshots page
 .. @+node:ekr.20110609102702.16472: *3* Wishlist

@@ -5225,6 +5225,10 @@ def funcToMethod(f,theClass,name=None):
 
     setattr(theClass,name or f.__name__,f)
     # g.trace(name)
+#@+node:ekr.20110609125359.16493: *3* g.isMacOS
+def isMacOS():
+    
+    return sys.platform == 'darwin'
 #@+node:ekr.20050920084036.4: *3* g.longestCommonPrefix & g.itemsMatchingPrefixInList
 def longestCommonPrefix (s1,s2):
 

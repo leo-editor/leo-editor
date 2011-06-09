@@ -6077,6 +6077,12 @@ def scanOptions():
 
     if gui:
         gui = gui.lower()
+
+        if sys.platform == 'darwin' and qui == 'qttabs':
+            # 2011/06/9: Convert 'qttabs' to 'qt' on MacOS.
+            g.es('qttabs not supported on MacOS\nusing qt')
+            gui = 'qt'
+    
         if gui == 'qttabs':
             gui = g.app.guiArgName = 'qt'
             g.app.qt_use_tabs = True
@@ -6899,6 +6905,10 @@ def findNextMatch(self):
 
     if trace: g.trace('attempts',attempts,'backwardAttempts',self.backwardAttempts)
     return None, None
+#@+node:ekr.20110605121601.17012: *4* On Mac: change qttabs to qt
+@nocolor-node
+
+The fix was a simple change to scanOptions.
 #@+node:ekr.20110607182447.16455: *3* Focus tracing
 #@+node:ekr.20080514131122.20: *4* c.outerUpdate
 def outerUpdate (self):
