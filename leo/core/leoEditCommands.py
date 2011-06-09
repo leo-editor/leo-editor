@@ -1966,7 +1966,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20050920084036.62: *3* esc methods for Python evaluation
-    #@+node:ekr.20050920084036.63: *4* watchEscape (Revise)
+    #@+node:ekr.20050920084036.63: *4* watchEscape
     def watchEscape (self,event):
 
         c,k = self.c,self.k
@@ -1980,8 +1980,8 @@ class editCommandsClass (baseEditCommandsClass):
             state = k.getState('escape')
             # hi1 = k.keysymHistory [0]
             # hi2 = k.keysymHistory [1]
-            data1 = leoKeys.keyHandlerClass.lossage[0]
-            data2 = leoKeys.keyHandlerClass.lossage[1]
+            data1 = g.app.lossage[0]
+            data2 = g.app.lossage[1]
             ch1, stroke1 = data1
             ch2, stroke2 = data2
 
@@ -3365,7 +3365,7 @@ class editCommandsClass (baseEditCommandsClass):
         k = self.k
 
         g.es('lossage...')
-        aList = leoKeys.keyHandlerClass.lossage
+        aList = g.app.lossage
         aList.reverse()
         for data in aList:
             ch,stroke = data

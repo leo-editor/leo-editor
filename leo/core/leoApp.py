@@ -75,6 +75,7 @@ class LeoApp:
         self.logInited = False # False: all log message go to logWaiting list.
         self.logIsLocked = False # True: no changes to log are allowed.
         self.logWaiting = [] # List of messages waiting to go to a log.
+        self.lossage = [] # List of last 100 keystrokes.
         self.menuWarningsGiven = False # True: supress warnings in menu code.
         self.nodeIndices = None # Singleton node indices instance.
         self.numberOfWindows = 0 # Number of opened windows.

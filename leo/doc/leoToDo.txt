@@ -6,7 +6,6 @@
 .. @+node:ekr.20110520051220.18187: ** To do: 4.9
 @language rest
 .. @+node:ekr.20110527182640.18358: *3* b3
-.. @+node:ekr.20110607140913.16578: *4* Make sure all keys contribute to lossage
 .. @+node:ekr.20090601083544.6051: *4* Add expand_noweb_references for rst3 plugin
 http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
@@ -32,9 +31,9 @@ Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
 get to this work, I should have <<code fragment>> under the @rst3 subtree as
 well, but this is then also treated as @rst3 input (which in this case, is not
 what I want).
-.. @+node:ekr.20110609161752.16457: *4* Script to report commands that do not have docstring
-.. @+node:ekr.20110609042343.16551: *4* when b3 released: post to pyxides re "your mission"
-.. @+node:ekr.20101129095441.5963: *4* Improve screenshots page
+.. @+node:ekr.20110609161752.16461: *4* Post production
+.. @+node:ekr.20110609042343.16551: *5* when b3 released: post to pyxides re "your mission"
+.. @+node:ekr.20101129095441.5963: *5* Improve screenshots page
 .. @+node:ekr.20110609102702.16472: *3* Wishlist
 .. @+node:ekr.20040329094003: *4* Apply patch command
 .. @+node:ekr.20110604043410.17848: *5* Script

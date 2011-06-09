@@ -1030,9 +1030,6 @@ class keyHandlerClass:
         # Used only if useGlobalRegisters arg to Emacs ctor is True.
         # Otherwise each Emacs instance has its own set of registers.
 
-    lossage = []
-        # A case could be made for per-instance lossage, but this is not supported.
-
     #@+others
     #@+node:ekr.20061031131434.75: *3*  k.Birth
     #@+node:ekr.20061031131434.76: *4*  ctor (keyHandler)
@@ -1961,11 +1958,15 @@ class keyHandlerClass:
         helpPrompt = 'Help for command: '
         c.check_event(event)
         ch = char = event and event.char or ''
+        stroke = event and event.stroke or ''
         if trace: g.trace('recording',recording,'state',state,char)
         
         # 2011/06/06: remember these events also.
         if recording:
             c.macroCommands.startrecordingMacro(event)
+            
+        if state > 0:
+            k.setLossage(char,stroke)
         
         if state == 0:
             k.mb_event = event # Save the full event for later.
@@ -2449,6 +2450,8 @@ class keyHandlerClass:
             c.macroCommands.startRecordingMacro(event)
 
         char = event and event.char or ''
+        if state > 0:
+            k.setLossage(char,stroke)
         
         if trace: g.trace(
             'state',state,'char',repr(char),'stroke',repr(stroke),
@@ -2725,15 +2728,7 @@ class keyHandlerClass:
                 'func:',func and func.__name__)
 
         if inserted:
-            #@+<< add character to history >>
-            #@+node:ekr.20061031131434.107: *5* << add character to history >>
-            if stroke or len(ch) > 0:
-                if len(keyHandlerClass.lossage) > 99:
-                    keyHandlerClass.lossage.pop()
-
-                # This looks like a memory leak, but isn't.
-                keyHandlerClass.lossage.insert(0,(ch,stroke),)
-            #@-<< add character to history >>
+            k.setLossage(ch,stroke)
 
         # We *must not* interfere with the global state in the macro class.
         if c.macroCommands.recordingMacro:
@@ -3658,7 +3653,7 @@ class keyHandlerClass:
                     for s1,s2,s3 in data])
             g.es('',aList,tabName=tabName)
         c.bodyWantsFocus()
-    #@+node:ekr.20061031131434.176: *4* computeInverseBindingDict
+    #@+node:ekr.20061031131434.176: *4* k.computeInverseBindingDict
     def computeInverseBindingDict (self):
 
         k = self ; d = {}
@@ -3679,7 +3674,62 @@ class keyHandlerClass:
                 d [b.commandName] = shortcutList
 
         return d
-    #@+node:ekr.20061031131434.168: *4* getFileName & helpers
+    #@+node:ekr.20061031131434.177: *4* k.doBackSpace
+    # Used by getArg and fullCommand.
+
+    def doBackSpace (self,defaultCompletionList,completion=True):
+
+        '''Cut back to previous prefix and update prefix.'''
+
+        trace = False and not g.unitTesting
+        k = self ; c = k.c ; w = self.w
+
+        # Step 1: actually delete the character.
+        ins = w.getInsertPoint()
+        s = w.getAllText()
+
+        if trace: g.trace('ins',ins,'k.mb_prefix',repr(k.mb_prefix),
+            'w',w)
+
+        if ins <= len(k.mb_prefix):
+            # g.trace('at start')
+            return
+        i,j = w.getSelectionRange()
+        if i == j:
+            ins -= 1
+            w.delete(ins)
+            w.setSelectionRange(ins,ins,insert=ins)
+        else:
+            ins = i
+            w.delete(i,j)
+            w.setSelectionRange(i,i,insert=ins)
+
+        # Step 2: compute completions.
+        if not completion: return
+        k.mb_tabListPrefix = w.getAllText()
+        k.computeCompletionList(defaultCompletionList,backspace=True)
+    #@+node:ekr.20061031131434.178: *4* k.doTabCompletion
+    # Used by getArg and fullCommand.
+
+    def doTabCompletion (self,defaultTabList,redraw=True):
+
+        '''Handle tab completion when the user hits a tab.'''
+
+        k = self ; c = k.c ; s = k.getLabel().strip()
+
+        if k.mb_tabList and s.startswith(k.mb_tabListPrefix):
+            # g.trace('cycle',repr(s))
+            # Set the label to the next item on the tab list.
+            k.mb_tabListIndex +=1
+            if k.mb_tabListIndex >= len(k.mb_tabList):
+                k.mb_tabListIndex = 0
+            k.setLabel(k.mb_prompt + k.mb_tabList [k.mb_tabListIndex])
+        else:
+            if redraw:
+                k.computeCompletionList(defaultTabList,backspace=False)
+
+        c.minibufferWantsFocus()
+    #@+node:ekr.20061031131434.168: *4* k.getFileName & helpers
     def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
 
         '''Similar to k.getArg, but uses completion to indicate files on the file system.'''
@@ -3798,7 +3848,7 @@ class keyHandlerClass:
             s = g.choose(path.endswith('\\'),theDir,fileName)
             s = fileName or g.os_path_basename(theDir) + '\\'
             g.es('',s,tabName=tabName)
-    #@+node:ekr.20061031131434.179: *4* getShortcutForCommand/Name (should return lists)
+    #@+node:ekr.20061031131434.179: *4* k.getShortcutForCommand/Name
     def getShortcutForCommandName (self,commandName):
 
         k = self ; c = k.c
@@ -3824,62 +3874,21 @@ class keyHandlerClass:
                     if b.commandName == command.__name__:
                          return k.tkbindingFromStroke(key)
         return ''
-    #@+node:ekr.20061031131434.177: *4* k.doBackSpace (minibuffer)
-    # Used by getArg and fullCommand.
-
-    def doBackSpace (self,defaultCompletionList,completion=True):
-
-        '''Cut back to previous prefix and update prefix.'''
-
+    #@+node:ekr.20110609161752.16459: *4* k.setLossage
+    def setLossage (self,ch,stroke):
+        
         trace = False and not g.unitTesting
-        k = self ; c = k.c ; w = self.w
+        k = self
+        
+        if trace: g.trace(repr(stroke),g.callers())
+        
+        if ch or stroke:
+            if len(g.app.lossage) > 99:
+                g.app.lossage.pop()
 
-        # Step 1: actually delete the character.
-        ins = w.getInsertPoint()
-        s = w.getAllText()
-
-        if trace: g.trace('ins',ins,'k.mb_prefix',repr(k.mb_prefix),
-            'w',w)
-
-        if ins <= len(k.mb_prefix):
-            # g.trace('at start')
-            return
-        i,j = w.getSelectionRange()
-        if i == j:
-            ins -= 1
-            w.delete(ins)
-            w.setSelectionRange(ins,ins,insert=ins)
-        else:
-            ins = i
-            w.delete(i,j)
-            w.setSelectionRange(i,i,insert=ins)
-
-        # Step 2: compute completions.
-        if not completion: return
-        k.mb_tabListPrefix = w.getAllText()
-        k.computeCompletionList(defaultCompletionList,backspace=True)
-    #@+node:ekr.20061031131434.178: *4* k.doTabCompletion
-    # Used by getArg and fullCommand.
-
-    def doTabCompletion (self,defaultTabList,redraw=True):
-
-        '''Handle tab completion when the user hits a tab.'''
-
-        k = self ; c = k.c ; s = k.getLabel().strip()
-
-        if k.mb_tabList and s.startswith(k.mb_tabListPrefix):
-            # g.trace('cycle',repr(s))
-            # Set the label to the next item on the tab list.
-            k.mb_tabListIndex +=1
-            if k.mb_tabListIndex >= len(k.mb_tabList):
-                k.mb_tabListIndex = 0
-            k.setLabel(k.mb_prompt + k.mb_tabList [k.mb_tabListIndex])
-        else:
-            if redraw:
-                k.computeCompletionList(defaultTabList,backspace=False)
-
-        c.minibufferWantsFocus()
-    #@+node:ekr.20061031131434.180: *4* traceBinding
+        # This looks like a memory leak, but isn't.
+        g.app.lossage.insert(0,(ch,stroke),)
+    #@+node:ekr.20061031131434.180: *4* k.traceBinding
     def traceBinding (self,bunch,shortcut,w):
 
         k = self ; c = k.c ; gui = g.app.gui
@@ -4085,7 +4094,7 @@ class keyHandlerClass:
         
         This method allows Leo to use strokes everywhere.'''
         
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         k = self ; s = stroke
         
         if not s:

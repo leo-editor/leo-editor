@@ -4895,6 +4895,11 @@ The fix was a last-minute adjustment in leoQtEventFilter.create_key_event.
 @nocolor-node
 
 The fix was yet another last-minute fix leoQtEventFiler.create_key_event.
+#@+node:ekr.20110607140913.16578: *4* Made sure all keys contribute to lossage
+@nocolor-node
+
+- Defined g.app.lossage instead of a class var of keyHandlerClass.
+- Created k.setLossage and called it in several places.
 #@+node:ekr.20110609042343.16542: *3* Features, including code improvements
 #@+node:ekr.20110526083709.18337: *4* Simplified Leo's key handling
 @nocolor-node
@@ -5739,7 +5744,7 @@ def stroke2char (self,stroke):
     
     This method allows Leo to use strokes everywhere.'''
     
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     k = self ; s = stroke
     
     if not s:
