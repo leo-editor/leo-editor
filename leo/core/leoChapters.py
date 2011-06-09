@@ -237,7 +237,7 @@ class chapterController:
     def createChapterByName (self,name,p,undoType='Create Chapter'):
 
         cc = self ; c = cc.c
-
+        
         if not name:
             return cc.note('no name')
 
@@ -245,7 +245,7 @@ class chapterController:
         theChapter = cc.chaptersDict.get(name)
 
         if theChapter:
-            return cc.note('duplicate chapter name: %s' % name)
+            return cc.note('duplicate chapter name: %s' % (name),killUnitTest=True)
 
         bunch = cc.beforeCreateChapter(c.p,oldChapter.name,name,undoType)
 
@@ -391,15 +391,15 @@ class chapterController:
         if not theChapter: return
         
         root = theChapter.root()
-        assert root
-
-        savedRoot = root
-        bunch = cc.beforeRemoveChapter(c.p,name,savedRoot)
-        cc.deleteChapterNode(name)
+        if root:
+            savedRoot = root
+            bunch = cc.beforeRemoveChapter(c.p,name,savedRoot)
+            cc.deleteChapterNode(name)
+            if tt:tt.destroyTab(name)
+            cc.selectChapterByName('main')
+            cc.afterRemoveChapter(bunch,c.p)
+        
         del cc.chaptersDict[name] # Do this after calling deleteChapterNode.
-        if tt:tt.destroyTab(name)
-        cc.selectChapterByName('main')
-        cc.afterRemoveChapter(bunch,c.p)
         cc.note('Removed chapter %s' % name)
         c.redraw()
     #@+node:ekr.20070317085437.41: *4* cc.renameChapter & helper
@@ -511,7 +511,8 @@ class chapterController:
             
         p = chapter.p
         if p and not c.positionExists(p):
-            g.trace('*** switching to root')
+            if not g.unitTesting:
+                g.trace('*** switching to root')
             p = c.rootPosition()
 
         chapter.select()
@@ -647,9 +648,12 @@ class chapterController:
 
         g.es_print('Error: ',s,color='red')
 
-    def note (self,s):
+    def note (self,s,killUnitTest=False):
         
-        if not g.unitTesting:
+        if g.unitTesting:
+            if killUnitTest:
+                assert False,s
+        else:
             g.es_print('Note: ',s,color='blue')
         
     def warning (self,s):

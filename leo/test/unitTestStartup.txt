@@ -193,9 +193,5 @@ False:
 #@+node:ekr.20050328101834.2: *4* @int  port = 8080
 #@+node:ekr.20050328101834.3: *4* @string rst_http_attributename = ''
 #@+node:ekr.20070515150433: ** @chapters
-#@+node:ekr.20070611081718: *3* @chapter unitTestChapter
-#@+node:ekr.20070611081718.1: *4* unitTestChapter node 1
-#@+node:ekr.20070611081718.2: *4* firstChild
-#@+node:ekr.20070611081718.4: *4* firstChild
 #@-all
 #@-leo

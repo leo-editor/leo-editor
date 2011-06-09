@@ -183,29 +183,6 @@ g.es(s)
 g.pr(s)
 s = '炰'
 g.pr(s)
-#@+node:ekr.20080503132221.1: *4* Startup
-root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-
-child = p.insertAsNthChild(0)
-c.setHeadString(child,'child') # Force the headline to update.
-c.selectPosition(child)
-
-try:
-    for undoType in ('Create Chapter From Node','Create Chapter'):
-        c.chapterController.createChapterByName('new-chapter',p,undoType)
-        c.undoer.undo()
-        c.undoer.redo()
-        c.undoer.undo()
-        c.undoer.redo()
-        c.undoer.undo() # Don't pollute future unit tests.
-
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now()
 #@+node:ekr.20100127162342.5123: *4* Import all plugins script
 import glob,os
 

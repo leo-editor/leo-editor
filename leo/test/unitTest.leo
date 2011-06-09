@@ -102,6 +102,14 @@ expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr
 <v t="ekr.20110608135658.3377"><vh>leoChapters</vh>
 <v t="ekr.20110608162543.3363"><vh>@test chapter-create/remove &amp; undo</vh></v>
 <v t="ekr.20110608162543.3365"><vh>@test chapter-rename &amp; undo</vh></v>
+<v t="ekr.20110608181936.3368"><vh>@test chapter-move/clone/copy-node-to</vh>
+<v t="ekr.20110608181936.3369"><vh>node b</vh></v>
+<v t="ekr.20110608181936.3370"><vh>node c</vh></v>
+<v t="ekr.20110608190306.3391"><vh>node a</vh></v>
+</v>
+<v t="ekr.20080503132221.1"><vh>@test chapter-create-from-node</vh>
+<v t="ekr.20110608190306.3392"><vh>child</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -535,6 +543,44 @@ for h in d2.keys():
     if not d1.get(h):
         g.pr(h)</t>
 <t tx="ekr.20071113203234"></t>
+<t tx="ekr.20080503132221.1">cc = c.chapterController
+root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+child = p.insertAsNthChild(0)
+# c.setHeadString(child,'child') # Force the headline to update.
+child.h = 'child'
+child.b = '# child'
+
+# Kill the chapter so the test will not fail if run twice.
+chapter = cc.chaptersDict.get('new-chapter')
+if chapter:
+    cc.removeChapterByName('new-chapter')
+
+try:
+    c.selectPosition(child)
+    c.chapterController.createChapterByName(
+        'new-chapter',child,'Create Chapter From Node')
+    if 0:
+        c.undoer.undo()
+        c.undoer.redo()
+        c.undoer.undo()
+        c.undoer.redo()
+        c.undoer.undo() # Don't pollute future unit tests.
+    else:
+        c.redraw_now() # Required.
+        chapterNode = cc.findChapterNode('new-chapter')
+        assert chapterNode,'fail 1: %s' % (undoType)
+        chapterNode.doDelete()
+        c.redraw_now()
+finally:
+    if 0:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    cc.selectChapterByName('main',collapse=True)
+    c.redraw_now()
+</t>
 <t tx="ekr.20090704085350.5007">@language python
 @others</t>
 <t tx="ekr.20090704085350.5028">@language python
@@ -616,21 +662,23 @@ print s ; g.es(s)</t>
 chaptersNode = cc.findChaptersNode()
 assert chaptersNode
 
-if not cc.findChapterNode('aaa'):
-    cc.createChapterByName('aaa',p=None)
+chapterNode = (
+    cc.findChapterNode('aaa') or
+    cc.createChapterByName('aaa',p=None))
 
 cc.selectChapterByName('aaa',chaptersNode)
 cc.removeChapterByName('aaa')
 c.undoer.undo()
 assert cc.findChapterNode('aaa')
-cc.selectChapterByName('main',chaptersNode)
+cc.selectChapterByName('main',collapse=True)
 </t>
 <t tx="ekr.20110608162543.3365">cc = c.chapterController
 chaptersNode = cc.findChaptersNode()
 assert chaptersNode
 
-if not cc.findChapterNode('aaa'):
-    cc.createChapterByName('aaa',p=None)
+chapterNode = (
+    cc.findChapterNode('aaa') or
+    cc.createChapterByName('aaa',p=None))
     
 try:
     cc.selectChapterByName('aaa',chaptersNode)
@@ -639,7 +687,49 @@ try:
     cc.renameChapterByName('aaa')
     assert cc.findChapterNode('aaa'),'after undo'
 finally:
-    cc.selectChapterByName('main',chaptersNode)
+    cc.selectChapterByName('main',collapse=True)
 </t>
+<t tx="ekr.20110608181936.3368">cc = c.chapterController
+chaptersNode = cc.findChaptersNode()
+assert chaptersNode,'fail 0'
+
+chapterNode = (
+    cc.findChapterNode('aaa') or
+    cc.createChapterByName('aaa',p=None))
+
+table = (
+    ('node a',cc.moveNodeToChapterHelper),
+    ('node b',cc.copyNodeToChapterHelper),
+    ('node c',cc.cloneNodeToChapterHelper),
+)
+
+try:
+    cc.selectChapterByName('aaa',chaptersNode)
+    for h,f in table:
+        p2 = g.findNodeInTree(c,p,h)
+        assert p2,'fail 1'
+        c.selectPosition(p2) # All helpers work on c.p.
+        f('aaa')
+        assert g.findNodeInTree(c,chapterNode,h),'fail 2'
+    assert not g.findNodeInTree(c,p,'node a')
+    assert g.findNodeInTree(c,p,'node b')
+    assert g.findNodeInTree(c,p,'node c')
+finally:
+    for h,f in table:
+        if not g.findNodeInTree(c,p,h):
+            p2 = p.insertAsLastChild()
+            p2.h = h
+            p2.b = '# %s' % h
+        p3 = g.findNodeInTree(c,chapterNode,h)
+        if p3: p3.doDelete()
+    cc.selectChapterByName('main',collapse=True)
+    c.redraw()
+</t>
+<t tx="ekr.20110608181936.3369"># node b
+</t>
+<t tx="ekr.20110608181936.3370"># node c
+</t>
+<t tx="ekr.20110608190306.3391"># node a</t>
+<t tx="ekr.20110608190306.3392"># child</t>
 </tnodes>
 </leo_file>
