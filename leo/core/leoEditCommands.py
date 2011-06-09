@@ -6831,7 +6831,7 @@ class macroCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20050920084036.194: *3* callNamedMacro
     def callNamedMacro (self,event):
 
-        '''Prompts for a macro name to save, then executes it.'''
+        '''Prompts for a macro name, then executes it.'''
 
         k = self.k ; tag = 'macro-name'
         state = k.getState(tag)
@@ -6881,7 +6881,7 @@ class macroCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20050920084036.206: *3* endMacro
     def endMacro (self,event=None):
 
-        '''Stop recording a keyboard macro.'''
+        '''Stops recording a macro.'''
 
         k = self.k
         self.recordingMacro = False
@@ -6909,7 +6909,7 @@ class macroCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20110606152005.16785: *3* getMacrosNode
     def getMacrosNode (self):
 
-        '''Return the position of the @chapters node.'''
+        '''Return the position of the @macros node.'''
 
         c = self.c
 
@@ -6946,6 +6946,8 @@ class macroCommandsClass (baseEditCommandsClass):
         return ''
     #@+node:ekr.20110606152005.16787: *3* loadMacros
     def loadMacros (self,event=None):
+        
+        '''Load macros from the @macros node.'''
         
         trace = False and not g.unitTesting
         c = self.c
@@ -6997,7 +6999,7 @@ class macroCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20050920084036.198: *3* nameLastMacro
     def nameLastMacro (self,event):
 
-        '''Prompt for the name to be given to the last recorded macro.'''
+        '''Prompts for the name to be given to the last recorded macro.'''
 
         k = self.k ; state = k.getState('name-macro')
 
@@ -7011,6 +7013,8 @@ class macroCommandsClass (baseEditCommandsClass):
             k.setLabelGrey('Macro defined: %s' % name)
     #@+node:ekr.20090201152408.1: *3* printMacros & printLastMacro
     def printMacros (self,event=None):
+        
+        '''Prints the name and definition of all named macros.'''
         
         names = list(self.namedMacros.keys())
 
@@ -7029,7 +7033,7 @@ class macroCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20050920084036.199: *3* saveMacros
     def saveMacros (self,event=None):
 
-        '''Store macros to the @macros node..'''
+        '''Store macros in the @macros node..'''
 
         p = self.getMacrosNode()
         
