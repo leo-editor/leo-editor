@@ -7248,7 +7248,9 @@ class Commands (object):
                 if v.isDirty():
                     v.clearDirty()
 
-        if g.app.gui.guiName().startswith('qt') and g.app.qt_use_tabs and hasattr(c.frame,'top'):
+        if (g.app.gui and g.app.gui.guiName().startswith('qt') and
+            g.app.qt_use_tabs and hasattr(c.frame,'top')
+        ):
             c.frame.top.leo_master.setChanged(c,changedFlag)
 
         s = c.frame.getTitle()
