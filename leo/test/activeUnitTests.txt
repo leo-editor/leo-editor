@@ -4267,7 +4267,7 @@ finally:
 # node b
 #@+node:ekr.20110608181936.3370: *5* node c
 # node c
-#@+node:ekr.20110609154215.3382: *5* node a
+#@+node:ekr.20110609155952.3382: *5* node a
 # node a
 #@+node:ekr.20080503132221.1: *4* @test chapter-create-from-node
 cc = c.chapterController
@@ -4307,7 +4307,7 @@ finally:
             root.firstChild().doDelete(newNode=None)
     cc.selectChapterByName('main',collapse=True)
     c.redraw_now()
-#@+node:ekr.20110609154215.3383: *5* child
+#@+node:ekr.20110609155952.3383: *5* child
 # child
 #@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5

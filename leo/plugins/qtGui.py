@@ -8560,7 +8560,7 @@ class leoQtEventFilter(QtCore.QObject):
             self.traceEvent(obj,event,tkKey,override)
 
         return override
-    #@+node:ekr.20110605195119.16937: *3* create_key_event (leoQtEventFilter) (new)
+    #@+node:ekr.20110605195119.16937: *3* create_key_event (leoQtEventFilter)
     def create_key_event (self,event,c,w,ch,tkKey,stroke):
 
         trace = False and not g.unitTesting ; verbose = True
@@ -8573,6 +8573,12 @@ class leoQtEventFilter(QtCore.QObject):
             ch = '\n' # Somehow Qt wants to return '\r'.
         elif stroke == 'Escape':
             ch = 'Escape'
+            
+        # Switch the Shift modifier to handle the cap-lock key.
+        if len(ch) == 1 and len(stroke) == 1 and ch.isalpha() and stroke.isalpha():
+            if ch != stroke:
+                if trace: g.trace('caps-lock')
+                stroke = ch
 
         # Patch provided by resi147.
         # See the thread: special characters in MacOSX, like '@'.

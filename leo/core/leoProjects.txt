@@ -4891,6 +4891,10 @@ def selectTab (self,tabName):
 @nocolor-node
 
 The fix was a last-minute adjustment in leoQtEventFilter.create_key_event.
+#@+node:ekr.20110609125359.16492: *4* Fixed caps-lock problem
+@nocolor-node
+
+The fix was yet another last-minute fix leoQtEventFiler.create_key_event.
 #@+node:ekr.20110609042343.16542: *3* Features, including code improvements
 #@+node:ekr.20110526083709.18337: *4* Simplified Leo's key handling
 @nocolor-node
@@ -5123,7 +5127,7 @@ def eventFilter(self, obj, event):
         self.traceEvent(obj,event,tkKey,override)
 
     return override
-#@+node:ekr.20110605195119.16937: *7* create_key_event (leoQtEventFilter) (new)
+#@+node:ekr.20110605195119.16937: *7* create_key_event (leoQtEventFilter)
 def create_key_event (self,event,c,w,ch,tkKey,stroke):
 
     trace = False and not g.unitTesting ; verbose = True
@@ -5136,6 +5140,12 @@ def create_key_event (self,event,c,w,ch,tkKey,stroke):
         ch = '\n' # Somehow Qt wants to return '\r'.
     elif stroke == 'Escape':
         ch = 'Escape'
+        
+    # Switch the Shift modifier to handle the cap-lock key.
+    if len(ch) == 1 and len(stroke) == 1 and ch.isalpha() and stroke.isalpha():
+        if ch != stroke:
+            if trace: g.trace('caps-lock')
+            stroke = ch
 
     # Patch provided by resi147.
     # See the thread: special characters in MacOSX, like '@'.
@@ -5516,7 +5526,7 @@ def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None
     stroke = c.k.shortcutFromSetting(stroke)
 
     return leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
-#@+node:ekr.20110605195119.16937: *6* create_key_event (leoQtEventFilter) (new)
+#@+node:ekr.20110605195119.16937: *6* create_key_event (leoQtEventFilter)
 def create_key_event (self,event,c,w,ch,tkKey,stroke):
 
     trace = False and not g.unitTesting ; verbose = True
@@ -5529,6 +5539,12 @@ def create_key_event (self,event,c,w,ch,tkKey,stroke):
         ch = '\n' # Somehow Qt wants to return '\r'.
     elif stroke == 'Escape':
         ch = 'Escape'
+        
+    # Switch the Shift modifier to handle the cap-lock key.
+    if len(ch) == 1 and len(stroke) == 1 and ch.isalpha() and stroke.isalpha():
+        if ch != stroke:
+            if trace: g.trace('caps-lock')
+            stroke = ch
 
     # Patch provided by resi147.
     # See the thread: special characters in MacOSX, like '@'.
