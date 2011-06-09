@@ -8568,9 +8568,11 @@ class leoQtEventFilter(QtCore.QObject):
         if trace and verbose: g.trace('ch: %s, tkKey: %s, stroke: %s' % (
             repr(ch),repr(tkKey),repr(stroke)))
             
-        # A strange patch.
+        # Last-minute adjustments...
         if stroke == 'Return':
             ch = '\n' # Somehow Qt wants to return '\r'.
+        elif stroke == 'Escape':
+            ch = 'Escape'
 
         # Patch provided by resi147.
         # See the thread: special characters in MacOSX, like '@'.

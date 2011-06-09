@@ -4078,16 +4078,14 @@ class keyHandlerClass:
             s = s[:-1]+'Space' # 2010/11/06
         # g.trace(stroke,s)
         return g.choose(brief,s,'<%s>' % s)
-    #@+node:ekr.20110606004638.16929: *4* k.stroke2char (new)
+    #@+node:ekr.20110606004638.16929: *4* k.stroke2char
     def stroke2char (self,stroke):
         
         '''Convert a stroke to an (insertable) char.
         
-        This method allows Leo to use strokes everywhere.
+        This method allows Leo to use strokes everywhere.'''
         
-        '''
-        
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         k = self ; s = stroke
         
         if not s:
@@ -4107,8 +4105,14 @@ class keyHandlerClass:
             if s.find(z) != -1:            
                 return ''
                 
-        # Special case the gang of four.
-        d = { 'BackSpace':'\b','Linefeed':'\r','Return':'\n','Tab':'\t' }
+        # Special case the gang of four, plus 'Escape',
+        d = {
+            'BackSpace':'\b',
+            'Escape':'Escape',
+            'Linefeed':'\r',
+            'Return':'\n',
+            'Tab':'\t',
+        }
         ch = d.get(s)
         if ch: return ch
                 

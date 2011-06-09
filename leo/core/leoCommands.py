@@ -450,7 +450,6 @@ class Commands (object):
         import leo.core.leoGui as leoGui
         
         def test(val,message):
-            # g.trace(g.unitTesting)
             if g.unitTesting and not trace:
                 assert val,message
             else:
@@ -462,12 +461,15 @@ class Commands (object):
         isLeoKeyEvent = isinstance(event,leoGui.leoKeyEvent)
         stroke = event.stroke
         got = event.char
+        
+        if trace: g.trace('plain: %s, stroke: %s, char: %s' % (
+            k.isPlainKey(stroke),repr(stroke),repr(event.char)))
 
         if g.unitTesting:
-            expected = k.stroke2char(event.stroke)
+            expected = k.stroke2char(stroke)
                 # Be strict for unit testing.
         elif trace or k.isPlainKey(stroke):
-            expected = k.stroke2char(event.stroke)
+            expected = k.stroke2char(stroke)
                 # Perform the full test.
         else:
             expected = event.char
@@ -477,8 +479,6 @@ class Commands (object):
                     
         test(isLeoKeyEvent,'not leo event: %s, callers: %s' % (
             repr(event),g.callers()))
-
-        # test(hasattr(event,'char'),'no char ivar: %s' % (event))
 
         test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
                 repr(stroke),repr(expected),repr(got)))

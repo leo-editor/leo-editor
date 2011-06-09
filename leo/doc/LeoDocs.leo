@@ -1017,7 +1017,7 @@ want to represent '\b','\r','\n' and '\t' as 'BackSpace','Linefeed','Return' and
 'Tab'.
 
 The gang of four
-===============
+================
 
 leoKeyEvents use the strings 'Backspace','Linefeed','Return' and 'Tab' (The
 Gang of Four) in event.char, when using '\b','\r','\n',and '\t' would be more
@@ -1040,11 +1040,18 @@ There are other calls to k.masterKeyHandler in Leo's core, but we can prove (by
 induction, if you will), that all events passed to k.masterKeyHandler are proper
 leoKeyEvent objects.
 
+c.check_event
+=============
+
 The essential invariant is that the events passed to Leo's core methods really
 are be the leoKeyEvent objects created by qtGui.py.  Rather than asserting this
 invariant, the code will contains calls to c.check_event in essential places. 
 c.check_event is a "relaxed" place to do as much error checking is needed.  In
-particular, running the unit tests calls c.check_event many times. 
+particular, running the unit tests calls c.check_event many times.
+
+c.check_event is a happy "accident".  It turns out to be the essential
+consistency check that continually verifies that the Qt event methods are
+delivering the expected keys to k.masterKeyHandler. 
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os

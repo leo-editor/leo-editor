@@ -4887,6 +4887,10 @@ def selectTab (self,tabName):
         tt.cc.selectChapterByName(tabName)
         c.redraw()
         c.outerUpdate()
+#@+node:ekr.20110607182447.16466: *4* Fixed recent bug: handle 'Escape' character properly
+@nocolor-node
+
+The fix was a last-minute adjustment in leoQtEventFilter.create_key_event.
 #@+node:ekr.20110609042343.16542: *3* Features, including code improvements
 #@+node:ekr.20110526083709.18337: *4* Simplified Leo's key handling
 @nocolor-node
@@ -4915,7 +4919,6 @@ def check_event (self,event):
     import leo.core.leoGui as leoGui
     
     def test(val,message):
-        # g.trace(g.unitTesting)
         if g.unitTesting and not trace:
             assert val,message
         else:
@@ -4927,12 +4930,15 @@ def check_event (self,event):
     isLeoKeyEvent = isinstance(event,leoGui.leoKeyEvent)
     stroke = event.stroke
     got = event.char
+    
+    if trace: g.trace('plain: %s, stroke: %s, char: %s' % (
+        k.isPlainKey(stroke),repr(stroke),repr(event.char)))
 
     if g.unitTesting:
-        expected = k.stroke2char(event.stroke)
+        expected = k.stroke2char(stroke)
             # Be strict for unit testing.
     elif trace or k.isPlainKey(stroke):
-        expected = k.stroke2char(event.stroke)
+        expected = k.stroke2char(stroke)
             # Perform the full test.
     else:
         expected = event.char
@@ -4943,11 +4949,9 @@ def check_event (self,event):
     test(isLeoKeyEvent,'not leo event: %s, callers: %s' % (
         repr(event),g.callers()))
 
-    # test(hasattr(event,'char'),'no char ivar: %s' % (event))
-
     test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
             repr(stroke),repr(expected),repr(got)))
-#@+node:ekr.20070228160107: *6* class leoKeyEvent (leoGui) (Changed)
+#@+node:ekr.20070228160107: *6* class leoKeyEvent (leoGui)
 class leoKeyEvent:
 
     '''A gui-independent wrapper for gui events.'''
@@ -5127,9 +5131,11 @@ def create_key_event (self,event,c,w,ch,tkKey,stroke):
     if trace and verbose: g.trace('ch: %s, tkKey: %s, stroke: %s' % (
         repr(ch),repr(tkKey),repr(stroke)))
         
-    # A strange patch.
+    # Last-minute adjustments...
     if stroke == 'Return':
         ch = '\n' # Somehow Qt wants to return '\r'.
+    elif stroke == 'Escape':
+        ch = 'Escape'
 
     # Patch provided by resi147.
     # See the thread: special characters in MacOSX, like '@'.
@@ -5518,9 +5524,11 @@ def create_key_event (self,event,c,w,ch,tkKey,stroke):
     if trace and verbose: g.trace('ch: %s, tkKey: %s, stroke: %s' % (
         repr(ch),repr(tkKey),repr(stroke)))
         
-    # A strange patch.
+    # Last-minute adjustments...
     if stroke == 'Return':
         ch = '\n' # Somehow Qt wants to return '\r'.
+    elif stroke == 'Escape':
+        ch = 'Escape'
 
     # Patch provided by resi147.
     # See the thread: special characters in MacOSX, like '@'.
@@ -5708,16 +5716,14 @@ def handleDefaultChar(self,event,stroke):
     else:
         # Let the widget handle the event.
         return # None
-#@+node:ekr.20110606004638.16929: *6* k.stroke2char (new)
+#@+node:ekr.20110606004638.16929: *6* k.stroke2char
 def stroke2char (self,stroke):
     
     '''Convert a stroke to an (insertable) char.
     
-    This method allows Leo to use strokes everywhere.
+    This method allows Leo to use strokes everywhere.'''
     
-    '''
-    
-    trace = False and not g.unitTesting
+    trace = True and not g.unitTesting
     k = self ; s = stroke
     
     if not s:
@@ -5737,8 +5743,14 @@ def stroke2char (self,stroke):
         if s.find(z) != -1:            
             return ''
             
-    # Special case the gang of four.
-    d = { 'BackSpace':'\b','Linefeed':'\r','Return':'\n','Tab':'\t' }
+    # Special case the gang of four, plus 'Escape',
+    d = {
+        'BackSpace':'\b',
+        'Escape':'Escape',
+        'Linefeed':'\r',
+        'Return':'\n',
+        'Tab':'\t',
+    }
     ch = d.get(s)
     if ch: return ch
             
@@ -6697,7 +6709,6 @@ def check_event (self,event):
     import leo.core.leoGui as leoGui
     
     def test(val,message):
-        # g.trace(g.unitTesting)
         if g.unitTesting and not trace:
             assert val,message
         else:
@@ -6709,12 +6720,15 @@ def check_event (self,event):
     isLeoKeyEvent = isinstance(event,leoGui.leoKeyEvent)
     stroke = event.stroke
     got = event.char
+    
+    if trace: g.trace('plain: %s, stroke: %s, char: %s' % (
+        k.isPlainKey(stroke),repr(stroke),repr(event.char)))
 
     if g.unitTesting:
-        expected = k.stroke2char(event.stroke)
+        expected = k.stroke2char(stroke)
             # Be strict for unit testing.
     elif trace or k.isPlainKey(stroke):
-        expected = k.stroke2char(event.stroke)
+        expected = k.stroke2char(stroke)
             # Perform the full test.
     else:
         expected = event.char
@@ -6724,8 +6738,6 @@ def check_event (self,event):
                 
     test(isLeoKeyEvent,'not leo event: %s, callers: %s' % (
         repr(event),g.callers()))
-
-    # test(hasattr(event,'char'),'no char ivar: %s' % (event))
 
     test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
             repr(stroke),repr(expected),repr(got)))
@@ -6795,6 +6807,10 @@ The macro-load and macro-save are as simple as possible.
 
 No further work will be done on macros unless somebody really wants these commands.
 #@+node:ekr.20110604182206.16757: *4* Added support for word-only option for regular expressions
+@nocolor-node
+
+When the word-only option is in effect, Leo ensures that the search pattern
+begins and ends with the '\b' anchor.
 #@+node:ekr.20031218072017.3075: *5* findNextMatch
 # Resumes the search where it left off.
 # The caller must call set_first_incremental_search or set_first_batch_search.

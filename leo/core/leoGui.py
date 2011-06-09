@@ -19,7 +19,7 @@ import leo.core.leoFind as leoFind # for nullFindTab.
 import leo.core.leoFrame as leoFrame # for nullGui.
 
 #@+others
-#@+node:ekr.20070228160107: ** class leoKeyEvent (leoGui) (Changed)
+#@+node:ekr.20070228160107: ** class leoKeyEvent (leoGui)
 class leoKeyEvent:
 
     '''A gui-independent wrapper for gui events.'''
