@@ -214,7 +214,7 @@ class chapterController:
         toChapter.p = p2.copy()
         toChapter.select()
         fromChapter.p = p.copy()
-    #@+node:ekr.20070317085437.31: *4* cc.createChapter & helper
+    #@+node:ekr.20070317085437.31: *4* cc.createChapter
     def createChapter (self,event=None):
 
         '''create-chapter command.
@@ -233,7 +233,7 @@ class chapterController:
             if k.arg:
                 cc.createChapterByName(k.arg,p=None,
                     undoType='Create Chapter')
-    #@+node:ekr.20070603190617: *5* cc.createChapterByName
+    #@+node:ekr.20070603190617: *4* cc.createChapterByName (common helper)
     def createChapterByName (self,name,p,undoType='Create Chapter'):
 
         cc = self ; c = cc.c
@@ -368,7 +368,7 @@ class chapterController:
             fromChapter.p = sel.copy()
         else:
             cc.note('can not move the last remaining node of a chapter.')
-    #@+node:ekr.20070317085437.40: *4* cc.removeChapter
+    #@+node:ekr.20070317085437.40: *4* cc.removeChapter & helper
     def removeChapter (self,event=None):
 
         cc = self ; c = cc.c
@@ -382,7 +382,7 @@ class chapterController:
             return cc.note('can not remove the main chapter')
         else:
             cc.removeChapterByName(name)
-    #@+node:ekr.20070606075434: *4* cc.removeChapterByName
+    #@+node:ekr.20070606075434: *5* cc.removeChapterByName
     def removeChapterByName (self,name):
 
         cc = self ; c = cc.c ; tt = cc.tt
@@ -452,7 +452,7 @@ class chapterController:
             # cc.note('renamed "%s" to "%s"' % (oldName,newName))
         else:
             cc.note('no @chapter %s' % (oldName))
-    #@+node:ekr.20070604165126: *4* cc.selectChapter
+    #@+node:ekr.20070604165126: *4* cc.selectChapter & helper
     def selectChapter (self,event=None):
 
         '''Use the minibuffer to get a chapter name,
@@ -472,7 +472,7 @@ class chapterController:
             k.resetLabel()
             if k.arg:
                 cc.selectChapterByName(k.arg)
-    #@+node:ekr.20070317130250: *4* cc.selectChapterByName & helper
+    #@+node:ekr.20070317130250: *5* cc.selectChapterByName & helper
     def selectChapterByName (self,name,collapse=True):
 
         '''Select a chapter.  Return True if a redraw is needed.'''
@@ -494,7 +494,7 @@ class chapterController:
             else: # Best for testing.
                 g.trace('*** creating',name)
                 cc.createChapterByName(name,p=c.p,undoType='Create Chapter')
-    #@+node:ekr.20090306060344.2: *5* selectChapterByNameHelper
+    #@+node:ekr.20090306060344.2: *6* selectChapterByNameHelper
     def selectChapterByNameHelper (self,chapter,collapse=True):
 
         trace = False and not g.unitTesting
@@ -930,7 +930,7 @@ class chapter:
                 self.cc.tt.setTabLabel(self.name)
         finally:
             self.selectLockout = False
-    #@+node:ekr.20070423102603.1: *4* chapterSelectHelper (big changes)
+    #@+node:ekr.20070423102603.1: *4* chapter.chapterSelectHelper
     def chapterSelectHelper (self,w=None,selectEditor=True):
 
         trace = False and not g.unitTesting

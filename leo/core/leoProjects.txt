@@ -4401,7 +4401,494 @@ class CommandChainDispatcher:
         """
         return iter(self.chain)
 #@+node:ekr.20110606124445.16908: ** 4.9 b3
-#@+node:ekr.20110526083709.18337: *3* Simplified Leo's key handling
+#@+node:ekr.20110609042343.16543: *3* Bugs
+#@+node:ekr.20110604182206.16760: *4* Fixed old bug: set-find-x commands no longer abort find commands
+@nocolor-node
+
+The commands that switch find scope, set-find-xxx, no longer terminate the find
+command, if one is active.  This is an old bug, and it's good to fix it.
+#@+node:ekr.20061031131434.152: *5* handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
+            return False
+        if k.isFKey(stroke):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName == 'replace-string' and state == 'getArg':
+                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
+                        return False # Let getArg handle it.
+                    elif b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit()
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocus() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@+node:ekr.20080509064108.6: *5* k.defineSingleLineCommands
+def defineSingleLineCommands (self):
+
+    k = self
+
+    # These commands can be executed in the minibuffer.
+    k.singleLineCommandList = [
+        # editCommandsClass
+        'back-to-indentation',
+        'back-to-home', # 2010/02/01
+        'back-char',
+        'back-char-extend-selection',
+        'back-word',
+        'back-word-extend-selection',
+        'backward-delete-char',
+        'backward-find-character',
+        'backward-find-character-extend-selection',
+        'beginning-of-line',
+        'beginning-of-line-extend-selection',
+        'capitalize-word',
+        'delete-char',
+        'delete-indentation',
+        'delete-spaces',
+        'downcase-word',
+        'end-of-line',
+        'end-of-line-extend-selection',
+        'escape',
+        'exchange-point-mark',
+        'extend-to-line',
+        'extend-to-word',
+        'find-character',
+        'find-character-extend-selection',
+        'find-word',
+        'find-word-in-line',
+        'forward-char',
+        'forward-char-extend-selection',
+        'forward-end-word',
+        'forward-end-word-extend-selection',
+        'forward-word',
+        'forward-word-extend-selection',
+        'insert-newline',
+        'insert-parentheses',
+        'move-past-close',
+        'move-past-close-extend-selection',
+        'newline-and-indent',
+        'select-all',
+        'transpose-chars',
+        'transpose-words',
+        'upcase-word',
+        # keyHandlerCommandsClass
+        # 'auto-complete',
+        'negative-argument',
+        'number-command',
+        'number-command-0',
+        'number-command-1',
+        'number-command-2',
+        'number-command-3',
+        'number-command-4',
+        'number-command-5',
+        'number-command-6',
+        'number-command-7',
+        'number-command-8',
+        'universal-argument',
+        # killBufferCommandsClass
+        'backward-kill-word',
+        'kill-line',
+        'kill-word',
+        'kill-ws',
+        'yank',
+        'yank-pop',
+        'zap-to-character',
+        # leoCommands
+        'cut-text',
+        'copy-text',
+        'paste-text',
+        # macroCommandsClass
+        'call-last-kbd-macro',
+        # search commands
+        # 'replace-string', # A special case so Shift-Ctrl-r will work after Ctrl-f.
+        'set-find-everywhere',              # 2011/06/07
+        'set-find-node-only',               # 2011/06/07
+        'set-find-suboutline-only',         # 2011/06/07
+        'toggle-find-collapses_nodes',
+        'toggle-find-ignore-case-option',
+        'toggle-find-in-body-option',
+        'toggle-find-in-headline-option',
+        'toggle-find-mark-changes-option',
+        'toggle-find-mark-finds-option',
+        'toggle-find-regex-option',
+        'toggle-find-reverse-option',
+        'toggle-find-word-option',
+        'toggle-find-wrap-around-option',
+        # registerCommandsClass
+        'append-to-register',
+        'copy-to-register',
+        'insert-register',
+        'prepend-to-register',
+    ]
+#@+node:ekr.20110607140913.16576: *4* Fixed recent bugs in the viewrendered and scrolledmessage plugins
+@nocolor-node
+
+An earlier rev fixed a bug that effectively destroyed the viewrendered plugin.
+It was caused by the new convention that alleviates the need for many @language
+directives. The fix was simply to enable the update_rst method if the massaged
+p.b is not empty.
+
+ScrolledMessageDialog.convertMessage now renders rst by default, unless *either*
+the html or text button is pressed.  There really should be three radio buttons:
+text, html or rST, but that's a tiny interface glitch.  The actual bug however,
+was much more serious: rst was never being rendered. 
+#@+node:ekr.20110605065044.17008: *4* Fixed chapters problems
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3f15a855ca38b26e
+
+Technical highlights:
+    
+- The check for c.positionExists(p) in c.setCurrentPosition continues to fail
+  when deleting @chapter nodes. However, the code now simply falls back to
+  c.rootPosition, without any apparant harm.
+  
+- The chapterController and chapter classes are now completely stateless, except
+  for chapter.p.
+  
+    A. chapter.findPositionInChapter has been simplified and generalized. It now
+       falls back to a reasonable value, based on p.v, if chapter.p does not
+       exist.
+       
+    B. All chapterController code now recomputes the location of @chapters and
+       @chapter nodes whenever those locations are needed.
+       
+    C. All chapter commands are unchanged in their actual workings, but all contain
+       a care "preamble" of checking code.
+       
+- Added unit test for all chapter commands.  All interactive commands now have
+  an xByName helper for use by unit tests.
+  
+- Added lockout to leoQtTreeTab.  This prevents flash during the rename chapter command.
+
+- Rewrote chapter.chapterSelectHelper.  This reduces, but does not eliminate, the
+  number of warnings given by c.setCurrentPosition.
+#@+node:ekr.20110608120120.16550: *5*  What I did
+@nocolor-node
+
+On Wed, Jun 8, 2011 at 12:07 PM, Edward K. Ream <edreamleo@gmail.com> wrote:
+
+> Rev 4300 fixes the [chapters-related bugs] by being much more careful about
+selection.
+
+The new code is also more relaxed about where @chapter nodes may reside.  They
+are always *created* as the last child of the first @chapters node in the
+outline (the @chapters, plural, node is created as needed).  However, you may
+move them while in the "main" chapter, with no ill effects.  In fact, you could
+swap @chapter nodes with the same name: when you select a chapter, Leo will use
+(show) the first node it finds. 
+
+The new code is now both more careful and more tolerant of @chapter nodes
+deleted by hand.  The chapter will still appear in the dropdown list: if you
+select it you will give a polite warning.  That's all.  In particular, the
+deleted chapter will *remain* in the dropdown list until you use the proper
+chapter-remove command.  That's about the only sane alternative: it allows you
+to resurrect the chapter, by hand or with an undo. 
+
+This is all made possible because the new code is almost completely stateless.
+The only exception is the saved position used to select a node when selecting a
+chapter. The old position-based findPositionInChapter method was not so
+ridiculous after all, but it has been simplified to make it work more reliably.
+It first looks for a "perfect" match using positions, and then degrades to
+looking for a vnode match. In practice, most matches are, in fact, perfect. The
+"imperfect" case typically happens when the user alters nodes in @chapter trees
+by hand in the "main" chapters.
+#@+node:ekr.20110607182447.16462: *5* Error messages
+@nocolor-node
+
+These are related to the errors given in c.setCurrentPosition.
+#@+node:ekr.20110605121601.17906: *6* afterSelectHint (nativeTree)
+def afterSelectHint (self,p,old_p):
+
+    trace = True and not g.unitTesting
+    c = self.c
+
+    self.selecting = False
+
+    if self.busy():
+        self.error('afterSelectHint busy!: %s' % self.busy())
+
+    if not p:
+        return self.error('no p')
+
+    if p != c.p:
+        if trace: self.error(
+            '(afterSelectHint) p != c.p\np:   %s\nc.p: %s\n' % (
+            repr(p),repr(c.currentPosition())))
+        p = c.p
+    
+    # if trace: g.trace(c.p.h,g.callers())
+
+    # We don't redraw during unit testing: an important speedup.
+    if c.expandAllAncestors(p) and not g.unitTesting:
+        self.full_redraw(p)
+    else:
+        c.outerUpdate() # Bring the tree up to date.
+        item = self.setItemForCurrentPosition(scroll=False)
+#@+node:ekr.20040803140033.1: *6* c.setCurrentPosition
+_currentCount = 0
+
+def setCurrentPosition (self,p):
+
+    """Set the presently selected position. For internal use only.
+
+    Client code should use c.selectPosition instead."""
+
+    trace = False and not g.unitTesting
+    c = self
+
+    if trace:
+        c._currentCount += 1
+        g.trace(c._currentCount,p)
+
+    if p and not c.positionExists(p): # 2011/02/25:
+        c._currentPosition = c.rootPosition()
+        if trace: trace('Invalid position: %s, root: %s' % (
+            repr(p and p.h),
+            repr(c._currentPosition and c._currentPosition.h)),
+            g.callers())
+        
+        # Don't kill unit tests for this kind of problem.
+        return
+
+    if p:
+        # Important: p.equal requires c._currentPosition to be non-None.
+        if c._currentPosition and p == c._currentPosition:
+            pass # We have already made a copy.
+        else: # Must make a copy _now_
+            c._currentPosition = p.copy()
+    else:
+        c._currentPosition = None
+
+# For compatibiility with old scripts.
+setCurrentVnode = setCurrentPosition
+#@+node:ekr.20070317131708: *6* chapter.findPositionInChapter
+def findPositionInChapter (self,p1,strict=False):
+
+    '''Return a valid position p such that p.v == v.'''
+
+    trace = True and not g.unitTesting ; verbose = False
+
+    c,cc = self.c,self.cc
+    
+    if not p1:
+        if trace and verbose: g.trace('*** no p')
+        return None
+
+    root = g.choose(self.name=='main',c.rootPosition(),self.root())
+
+    if c.positionExists(p1,root=root):
+        if trace and verbose: g.trace('found existing',p1.h)
+        return p1
+
+    if strict:
+        if trace: g.trace('strict test fails',p1.h)
+        return None
+    
+    theIter = g.choose(self.name=='main',
+        self.c.all_unique_positions,
+        root.self_and_subtree)
+
+    for p in theIter():
+        if p.v == p1.v:
+            if trace: g.trace('*** found vnode match',p1.h)
+            return p.copy()
+    
+    if trace: g.trace('*** not found',p1.h)
+    return None
+#@+node:ekr.20110607182447.16460: *5* Changed & new
+#@+node:ekr.20110605121601.18440: *6*  ctor (leoTreeTab)
+def __init__ (self,c,iconBar):
+
+    # g.trace('(leoTreeTab)',g.callers(4))
+
+    self.c = c
+    self.cc = c.chapterController
+    assert self.cc
+    self.iconBar = iconBar
+    self.lockout = False # True: do not redraw.
+    self.tabNames = []
+        # The list of tab names. Changes when tabs are renamed.
+    self.w = None # The QComboBox
+
+    self.createControl()
+#@+node:ekr.20070317085437.41: *6* cc.renameChapter & helper
+def renameChapter (self,event=None,newName=None): # newName is for unitTesting.
+
+    '''Use the minibuffer to get a new name for the present chapter.'''
+
+    cc = self ; c = cc.c ; k = cc.c.k
+    tag = 'rename-chapter'
+    state = k.getState(tag)
+
+    if state == 0 and not newName:
+        chapter = cc.selectedChapter
+        if not chapter: return
+        if chapter.name == 'main':
+            return cc.note('can not rename the main chapter')
+        else:
+            names = list(cc.chaptersDict.keys())
+            prefix = 'Rename this chapter: '
+            k.setLabelBlue(prefix,protect=True)
+            k.getArg(event,tag,1,self.renameChapter,prefix=prefix,tabList=names)
+    else:
+        k.clearState()
+        k.resetLabel()
+        chapter = cc.selectedChapter
+        if newName: k.arg = newName # A hack for unit testing.
+        if chapter and k.arg and k.arg != chapter.name:
+            cc.renameChapterByName(k.arg)
+#@+node:ekr.20110608135633.16553: *7* cc.renameChapterByName
+def renameChapterByName (self,newName):
+    
+    cc,c,d,tt = self,self.c,self.chaptersDict,self.tt
+    chapter = cc.selectedChapter
+    oldName = chapter.name
+    del d [oldName]
+    d [newName] = chapter
+    chapter.name = newName
+    root = cc.findChapterNode(oldName)
+    if root:
+        root.initHeadString('@chapter %s' % newName)
+        if tt:
+            try:
+                tt.lockout = True
+                tt.destroyTab(oldName)
+                tt.createTab(newName)
+                tt.setTabLabel(newName)
+            finally:
+                tt.lockout = False
+        cc.selectChapterByName(newName) # Necessary.
+        # cc.note('renamed "%s" to "%s"' % (oldName,newName))
+    else:
+        cc.note('no @chapter %s' % (oldName))
+#@+node:ekr.20070317131708: *6* chapter.findPositionInChapter
+def findPositionInChapter (self,p1,strict=False):
+
+    '''Return a valid position p such that p.v == v.'''
+
+    trace = True and not g.unitTesting ; verbose = False
+
+    c,cc = self.c,self.cc
+    
+    if not p1:
+        if trace and verbose: g.trace('*** no p')
+        return None
+
+    root = g.choose(self.name=='main',c.rootPosition(),self.root())
+
+    if c.positionExists(p1,root=root):
+        if trace and verbose: g.trace('found existing',p1.h)
+        return p1
+
+    if strict:
+        if trace: g.trace('strict test fails',p1.h)
+        return None
+    
+    theIter = g.choose(self.name=='main',
+        self.c.all_unique_positions,
+        root.self_and_subtree)
+
+    for p in theIter():
+        if p.v == p1.v:
+            if trace: g.trace('*** found vnode match',p1.h)
+            return p.copy()
+    
+    if trace: g.trace('*** not found',p1.h)
+    return None
+#@+node:ekr.20070423102603.1: *6* chapter.chapterSelectHelper
+def chapterSelectHelper (self,w=None,selectEditor=True):
+
+    trace = False and not g.unitTesting
+    c = self.c ; cc = self.cc ; name = self.name
+
+    if trace: g.trace('*** %s p: %s' % (
+        name,repr(self.p and self.p.h)))
+
+    cc.selectedChapter = self
+    
+    # 2011/06/08
+    if self.p and not c.positionExists(self.p):
+        self.p = self.root()
+        if trace: g.trace('*** switching to root',self.p)
+
+    p = self.p
+
+    # Next, recompute p and possibly select a new editor.
+    if w:
+        assert w == c.frame.body.bodyCtrl
+        assert w.leo_p
+        self.p = p = self.findPositionInChapter(w.leo_p) or self.root()
+    else:
+        # This must be done *after* switching roots.
+        self.p = p = self.findPositionInChapter(p) or self.root()
+
+        if selectEditor:
+            c.selectPosition(p) ##
+            w = self.findEditorInChapter(p)
+            c.frame.body.selectEditor(w) # Switches text.
+            
+    if name != 'main' and g.match_word(p.h,0,'@chapter'):
+        if p.hasChildren():
+            p = p.firstChild()
+        else:
+            if trace: g.trace('can not happen: no child of @chapter node')
+            
+    chaptersNode = cc.findChaptersNode()
+
+    if name == 'main' and chaptersNode:
+        chaptersNode.contract()
+
+    c.hoistStack = self.hoistStack[:]
+
+    ### c.selectPosition(p)
+    ### c.redraw_after_select(p)
+    c.selectPosition(p)
+    g.doHook('hoist-changed',c=c)
+    c.redraw_now(p)
+#@+node:ekr.20110605121601.18445: *6* tt.selectTab
+def selectTab (self,tabName):
+
+    tt,c = self,self.c
+
+    if tabName not in self.tabNames:
+        tt.createTab(tabName)
+        
+    # g.trace('lockout',tt.lockout,tabName,g.callers())
+        
+    if not tt.lockout:
+        tt.cc.selectChapterByName(tabName)
+        c.redraw()
+        c.outerUpdate()
+#@+node:ekr.20110609042343.16542: *3* Features, including code improvements
+#@+node:ekr.20110526083709.18337: *4* Simplified Leo's key handling
 @nocolor-node
 
 
@@ -4418,8 +4905,8 @@ Done:
 - Created leoGui.create_key_event and leoQtEventFilter.create_key_event.
 
 - Removed horrible last-minute hacks in leoQtEventFilter.create_key_event.
-#@+node:ekr.20110605195119.16939: *4* Changed & new...
-#@+node:ekr.20110605040658.17005: *5* c.check_event
+#@+node:ekr.20110605195119.16939: *5* Changed & new...
+#@+node:ekr.20110605040658.17005: *6* c.check_event
 def check_event (self,event):
     
     trace = False and not g.unitTesting
@@ -4460,7 +4947,7 @@ def check_event (self,event):
 
     test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
             repr(stroke),repr(expected),repr(got)))
-#@+node:ekr.20070228160107: *5* class leoKeyEvent (leoGui) (Changed)
+#@+node:ekr.20070228160107: *6* class leoKeyEvent (leoGui) (Changed)
 class leoKeyEvent:
 
     '''A gui-independent wrapper for gui events.'''
@@ -4471,7 +4958,7 @@ class leoKeyEvent:
 
         return 'leoKeyEvent: stroke: %s, char: %s, w: %s' % (
             repr(self.stroke),repr(self.char),repr(self.w))
-#@+node:ekr.20110605121601.18846: *6* ctor (leoKeyEvent)
+#@+node:ekr.20110605121601.18846: *7* ctor (leoKeyEvent)
 def __init__ (self,c,char,stroke,w,x,y,x_root,y_root):
     
     self.c = c
@@ -4486,13 +4973,13 @@ def __init__ (self,c,char,stroke,w,x,y,x_root,y_root):
     # Support for fastGotoNode plugin
     self.x_root = x_root
     self.y_root = y_root
-#@+node:ekr.20110605121601.18537: *5* class leoQtEventFilter
+#@+node:ekr.20110605121601.18537: *6* class leoQtEventFilter
 class leoQtEventFilter(QtCore.QObject):
 
     << about internal bindings >>
 
     @others
-#@+node:ekr.20110605121601.18538: *6* << about internal bindings >>
+#@+node:ekr.20110605121601.18538: *7* << about internal bindings >>
 @nocolor-node
 @
 
@@ -4523,7 +5010,7 @@ Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
 This table is consistent with how Leo already works (because it is consistent
 with Tk's key-event specifiers). It is also, I think, the least confusing set of
 rules.
-#@+node:ekr.20110605121601.18539: *6*  ctor
+#@+node:ekr.20110605121601.18539: *7*  ctor
 def __init__(self,c,w,tag=''):
 
     # g.trace('leoQtEventFilter',tag,w)
@@ -4547,7 +5034,7 @@ def __init__(self,c,w,tag=''):
     # Support for ctagscompleter.py plugin.
     self.ctagscompleter_active = False
     self.ctagscompleter_onKey = None
-#@+node:ekr.20110605121601.18540: *6* eventFilter
+#@+node:ekr.20110605121601.18540: *7* eventFilter
 def eventFilter(self, obj, event):
 
     trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
@@ -4632,7 +5119,7 @@ def eventFilter(self, obj, event):
         self.traceEvent(obj,event,tkKey,override)
 
     return override
-#@+node:ekr.20110605195119.16937: *6* create_key_event (leoQtEventFilter) (new)
+#@+node:ekr.20110605195119.16937: *7* create_key_event (leoQtEventFilter) (new)
 def create_key_event (self,event,c,w,ch,tkKey,stroke):
 
     trace = False and not g.unitTesting ; verbose = True
@@ -4672,14 +5159,14 @@ def create_key_event (self,event,c,w,ch,tkKey,stroke):
         repr(ch),repr(stroke)))
 
     return leoGui.leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
-#@+node:ekr.20110605121601.18541: *6* isSpecialOverride
+#@+node:ekr.20110605121601.18541: *7* isSpecialOverride
 def isSpecialOverride (self,tkKey,ch):
 
     '''Return True if tkKey is a special Tk key name.
     '''
 
     return tkKey or ch in self.flashers
-#@+node:ekr.20110605121601.18542: *6* toStroke
+#@+node:ekr.20110605121601.18542: *7* toStroke
 def toStroke (self,tkKey,ch):
     
     '''Convert the official tkKey name to a stroke.'''
@@ -4700,7 +5187,7 @@ def toStroke (self,tkKey,ch):
 
     if trace: g.trace('tkKey',tkKey,'-->',s)
     return s
-#@+node:ekr.20110605121601.18543: *6* toTkKey & helpers (must not change!)
+#@+node:ekr.20110605121601.18543: *7* toTkKey & helpers (must not change!)
 def toTkKey (self,event):
     
     '''Return tkKey,ch,ignore:
@@ -4723,7 +5210,7 @@ def toTkKey (self,event):
         event,mods,keynum,text,toString,ch)
 
     return tkKey,ch,ignore
-#@+node:ekr.20110605121601.18544: *7* qtKey
+#@+node:ekr.20110605121601.18544: *8* qtKey
 def qtKey (self,event):
 
     '''Return the components of a Qt key event.
@@ -4780,7 +5267,7 @@ def qtKey (self,event):
             keynum,repr(ch),mods,repr(toString)))
 
     return keynum,text,toString,ch
-#@+node:ekr.20110605121601.18545: *7* qtMods
+#@+node:ekr.20110605121601.18545: *8* qtMods
 def qtMods (self,event):
 
     '''Return the text version of the modifiers of the key event.'''
@@ -4815,7 +5302,7 @@ def qtMods (self,event):
     #g.trace(mods)
 
     return mods
-#@+node:ekr.20110605121601.18546: *7* tkKey & helper
+#@+node:ekr.20110605121601.18546: *8* tkKey & helper
 def tkKey (self,event,mods,keynum,text,toString,ch):
 
     '''Carefully convert the Qt key to a 
@@ -4868,7 +5355,7 @@ def tkKey (self,event,mods,keynum,text,toString,ch):
     ignore = not ch # Essential
     ch = text or toString
     return tkKey,ch,ignore
-#@+node:ekr.20110605121601.18547: *8* char2tkName
+#@+node:ekr.20110605121601.18547: *9* char2tkName
 char2tkNameDict = {
     # Part 1: same as k.guiBindNamesDict
     "&" : "ampersand",
@@ -4934,7 +5421,7 @@ def char2tkName (self,ch):
     val = self.char2tkNameDict.get(ch)
     # g.trace(repr(ch),repr(val))
     return val
-#@+node:ekr.20110605121601.18548: *6* traceEvent
+#@+node:ekr.20110605121601.18548: *7* traceEvent
 def traceEvent (self,obj,event,tkKey,override):
 
     if g.unitTesting: return
@@ -4993,7 +5480,7 @@ def traceEvent (self,obj,event,tkKey,override):
 
     if traceAll and eventType not in ignore:
         g.trace('%3s:%s obj:%s' % (eventType,'unknown',obj))
-#@+node:ekr.20110605121601.18549: *6* traceFocus
+#@+node:ekr.20110605121601.18549: *7* traceFocus
 def traceFocus (self,eventType,obj):
 
     ev = QtCore.QEvent
@@ -5014,7 +5501,7 @@ def traceFocus (self,eventType,obj):
                 # g.app.gui.widget_name(obj) or obj)))
 
     # else: g.trace('unknown kind: %s' % eventType)
-#@+node:ekr.20110605121601.18847: *5* create_key_event (leoGui) (new)
+#@+node:ekr.20110605121601.18847: *6* create_key_event (leoGui) (new)
 def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None):
     
     # if not char:
@@ -5023,7 +5510,7 @@ def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None
     stroke = c.k.shortcutFromSetting(stroke)
 
     return leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
-#@+node:ekr.20110605195119.16937: *5* create_key_event (leoQtEventFilter) (new)
+#@+node:ekr.20110605195119.16937: *6* create_key_event (leoQtEventFilter) (new)
 def create_key_event (self,event,c,w,ch,tkKey,stroke):
 
     trace = False and not g.unitTesting ; verbose = True
@@ -5063,7 +5550,7 @@ def create_key_event (self,event,c,w,ch,tkKey,stroke):
         repr(ch),repr(stroke)))
 
     return leoGui.leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
-#@+node:ekr.20061031131434.162: *5* generalModeHandler (changed)
+#@+node:ekr.20061031131434.162: *6* generalModeHandler (changed)
 def generalModeHandler (self,event,
     commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
 
@@ -5123,7 +5610,7 @@ def generalModeHandler (self,event,
                 if g.app.quitting or not c.exists: return # (for Tk) 'break'
 
     return # (for Tk) 'break'
-#@+node:ekr.20070123143428: *5* k.defineTkNames
+#@+node:ekr.20070123143428: *6* k.defineTkNames
 def defineTkNames (self):
 
     k = self
@@ -5177,7 +5664,7 @@ KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab,
 KP_F1,KP_F2,KP_F3,KP_F4,
 KP_0,KP_1,KP_2,KP_3,KP_4,KP_5,KP_6,KP_7,KP_8,KP_9,
 Insert
-#@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
+#@+node:ekr.20061031131434.110: *6* k.handleDefaultChar
 def handleDefaultChar(self,event,stroke):
     k = self ; c = k.c
     w = event and event.widget
@@ -5221,7 +5708,7 @@ def handleDefaultChar(self,event,stroke):
     else:
         # Let the widget handle the event.
         return # None
-#@+node:ekr.20110606004638.16929: *5* k.stroke2char (new)
+#@+node:ekr.20110606004638.16929: *6* k.stroke2char (new)
 def stroke2char (self,stroke):
     
     '''Convert a stroke to an (insertable) char.
@@ -5277,13 +5764,13 @@ def stroke2char (self,stroke):
 
     if trace: g.trace(repr(stroke),repr(val)) # 'shift',shift,
     return val
-#@+node:ekr.20110606135922.16755: *3* Experimented with getting Tk working again
+#@+node:ekr.20110606135922.16755: *5* Experimented with getting Tk working again
 @nocolor-node
 
 This project would not be pleasant.
 
 We would need a wrapper for key events.  See leoTkKeyEvent.
-#@+node:ekr.20031218072017.1934: *4* run & helpers
+#@+node:ekr.20031218072017.1934: *6* run & helpers
 def run(fileName=None,pymacs=None,*args,**keywords):
 
     """Initialize and run Leo"""
@@ -5307,7 +5794,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     if ok: g.app.gui.runMainLoop()
         # For scripts, the gui is a nullGui.
         # and the gui.setScript has already been called.
-#@+node:ekr.20090519143741.5915: *5* doPrePluginsInit & helpers
+#@+node:ekr.20090519143741.5915: *7* doPrePluginsInit & helpers
 def doPrePluginsInit(fileName,pymacs):
 
     ''' Scan options, set directories and read settings.'''
@@ -5362,7 +5849,7 @@ def doPrePluginsInit(fileName,pymacs):
         options['exit'] = True
 
     return files,options
-#@+node:ekr.20100914142850.5892: *6* createGui & helper
+#@+node:ekr.20100914142850.5892: *8* createGui & helper
 def createGui(pymacs,options):
 
     gui = options.get('gui')
@@ -5384,7 +5871,7 @@ def createGui(pymacs,options):
         createSpecialGui(gui,pymacs,script,windowFlag)
 
 
-#@+node:ekr.20080921060401.4: *6* createSpecialGui
+#@+node:ekr.20080921060401.4: *8* createSpecialGui
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
     if pymacs:
@@ -5399,7 +5886,7 @@ def createSpecialGui(gui,pymacs,script,windowFlag):
     else:
         assert g.app.guiArgName
         g.app.createDefaultGui() 
-#@+node:ekr.20070306085724: *6* adjustSysPath
+#@+node:ekr.20070306085724: *8* adjustSysPath
 def adjustSysPath ():
 
     '''Adjust sys.path to enable imports as usual with Leo.
@@ -5412,7 +5899,7 @@ def adjustSysPath ():
 
     2  Plugins now do fully qualified imports.
     '''
-#@+node:ekr.20041124083125: *6* completeFileName
+#@+node:ekr.20041124083125: *8* completeFileName
 def completeFileName (fileName):
 
     trace = False
@@ -5434,7 +5921,7 @@ def completeFileName (fileName):
     if trace: print('completeFileName',fileName)
 
     return fileName
-#@+node:ekr.20101021101942.6010: *6* getDefaultFile
+#@+node:ekr.20101021101942.6010: *8* getDefaultFile
 def getDefaultFile ():
 
     # Get the name of the workbook.
@@ -5453,7 +5940,7 @@ def getDefaultFile ():
     else:
         # It's too risky to open a default file if it is relative.
         return None
-#@+node:ekr.20101020125657.5976: *6* getFiles
+#@+node:ekr.20101020125657.5976: *8* getFiles
 def getFiles(fileName):
 
     files = []
@@ -5466,7 +5953,7 @@ def getFiles(fileName):
 
     files = [completeFileName(z) for z in files]
     return files
-#@+node:ekr.20080921091311.2: *6* initApp
+#@+node:ekr.20080921091311.2: *8* initApp
 def initApp (verbose):
 
     assert g.app.guiArgName
@@ -5476,7 +5963,7 @@ def initApp (verbose):
     g.app.config = leoConfig.configClass()
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.pluginsController.finishCreate() # 2010/09/09
-#@+node:ekr.20041130093254: *6* reportDirectories
+#@+node:ekr.20041130093254: *8* reportDirectories
 def reportDirectories(verbose):
 
     if verbose:
@@ -5486,7 +5973,7 @@ def reportDirectories(verbose):
             ("home",g.app.homeDir),
         ):
             g.es("%s dir:" % (kind),theDir,color="blue")
-#@+node:ekr.20091007103358.6061: *6* scanOptions
+#@+node:ekr.20091007103358.6061: *8* scanOptions
 def scanOptions():
 
     '''Handle all options and remove them from sys.argv.'''
@@ -5653,7 +6140,7 @@ def scanOptions():
         'windowFlag':windowFlag,
         'windowSize':windowSize,
     }
-#@+node:ekr.20090519143741.5917: *5* doPostPluginsInit & helpers (runLeo.py)
+#@+node:ekr.20090519143741.5917: *7* doPostPluginsInit & helpers (runLeo.py)
 def doPostPluginsInit(args,files,options):
 
     '''Return True if the frame was created properly.'''
@@ -5708,7 +6195,7 @@ def doPostPluginsInit(args,files,options):
         return False # Force an immediate exit.
 
     return True
-#@+node:ekr.20031218072017.1624: *6* createFrame & helpers (runLeo.py)
+#@+node:ekr.20031218072017.1624: *8* createFrame & helpers (runLeo.py)
 def createFrame (fileName,options):
 
     """Create a LeoFrame during Leo's startup process."""
@@ -5754,7 +6241,7 @@ def createFrame (fileName,options):
         g.es_print("file not found:",fileName,color='red')
 
     return c,frame
-#@+node:ekr.20100913171604.5888: *7* doSelect
+#@+node:ekr.20100913171604.5888: *9* doSelect
 def doSelect (c,s):
 
     '''Select the node with key s.'''
@@ -5765,7 +6252,7 @@ def doSelect (c,s):
         c.selectPosition(p)
     else:
         g.es_print('--select: not found:',s)
-#@+node:ekr.20100913171604.5885: *7* doWindowSize
+#@+node:ekr.20100913171604.5885: *9* doWindowSize
 def doWindowSize (c,windowSize):
 
     w = c.frame.top
@@ -5780,7 +6267,7 @@ def doWindowSize (c,windowSize):
     except Exception:
         print('doWindowSize:unexpected exception')
         g.es_exception()
-#@+node:ekr.20100913171604.5889: *7* findNode
+#@+node:ekr.20100913171604.5889: *9* findNode
 def findNode (c,s):
 
     s = s.strip()
@@ -5796,7 +6283,7 @@ def findNode (c,s):
             return p
 
     return None
-#@+node:ekr.20080921060401.5: *6* finishInitApp (runLeo.py)
+#@+node:ekr.20080921060401.5: *8* finishInitApp (runLeo.py)
 def finishInitApp(c):
 
     g.app.trace_gc          = c.config.getBool('trace_gc')
@@ -5805,7 +6292,7 @@ def finishInitApp(c):
 
     if g.app.disableSave:
         g.es("disabling save commands",color="red")
-#@+node:ekr.20080921060401.6: *6* initFocusAndDraw
+#@+node:ekr.20080921060401.6: *8* initFocusAndDraw
 def initFocusAndDraw(c,fileName):
 
     w = g.app.gui.get_focus(c)
@@ -5819,7 +6306,7 @@ def initFocusAndDraw(c,fileName):
         c.k.showStateAndMode(w)
 
     c.outerUpdate()
-#@+node:ekr.20100914142850.5894: *6* make_screen_shot
+#@+node:ekr.20100914142850.5894: *8* make_screen_shot
 def make_screen_shot(fn):
 
     '''Create a screenshot of the present Leo outline and save it to path.'''
@@ -5829,7 +6316,7 @@ def make_screen_shot(fn):
     if g.app.gui.guiName() == 'qt':
         m = g.loadOnePlugin('screenshots')
         m.make_screen_shot(fn)
-#@+node:ekr.20031218072017.1936: *5* isValidPython & emergency (Tk) dialog class
+#@+node:ekr.20031218072017.1936: *7* isValidPython & emergency (Tk) dialog class
 def isValidPython():
 
     if sys.platform == 'cli':
@@ -5863,13 +6350,13 @@ http://python.org/download/
         print("isValidPython: unexpected exception: g.CheckVersion")
         traceback.print_exc()
         return 0
-#@+node:ekr.20080822065427.8: *6* << define emergency dialog class >>
+#@+node:ekr.20080822065427.8: *8* << define emergency dialog class >>
 class emergencyDialog:
 
     """A class that creates an Tkinter dialog with a single OK button."""
 
     @others
-#@+node:ekr.20080822065427.9: *7* __init__ (emergencyDialog)
+#@+node:ekr.20080822065427.9: *9* __init__ (emergencyDialog)
 def __init__(self,title,message):
 
     """Constructor for the leoTkinterDialog class."""
@@ -5891,7 +6378,7 @@ def __init__(self,title,message):
         # Singleton tuple.
     self.createButtons(buttons)
     self.top.bind("<Key>", self.onKey)
-#@+node:ekr.20080822065427.12: *7* createButtons
+#@+node:ekr.20080822065427.12: *9* createButtons
 def createButtons (self,buttons):
 
     """Create a row of buttons.
@@ -5922,7 +6409,7 @@ def createButtons (self,buttons):
             self.defaultButtonCommand = command
 
     return buttonList
-#@+node:ekr.20080822065427.14: *7* createTopFrame
+#@+node:ekr.20080822065427.14: *9* createTopFrame
 def createTopFrame(self):
 
     """Create the Tk.Toplevel widget for a leoTkinterDialog."""
@@ -5937,7 +6424,7 @@ def createTopFrame(self):
 
     label = Tk.Label(self.frame,text=message,bg='white')
     label.pack(pady=10)
-#@+node:ekr.20080822065427.10: *7* okButton
+#@+node:ekr.20080822065427.10: *9* okButton
 def okButton(self):
 
     """Do default click action in ok button."""
@@ -5945,7 +6432,7 @@ def okButton(self):
     self.top.destroy()
     self.top = None
 
-#@+node:ekr.20080822065427.21: *7* onKey
+#@+node:ekr.20080822065427.21: *9* onKey
 def onKey(self,event):
 
     """Handle Key events in askOk dialogs."""
@@ -5953,7 +6440,7 @@ def onKey(self,event):
     self.okButton()
 
     return # (for Tk) "break"
-#@+node:ekr.20080822065427.16: *7* run
+#@+node:ekr.20080822065427.16: *9* run
 def run (self):
 
     """Run the modal emergency dialog."""
@@ -5963,7 +6450,7 @@ def run (self):
 
     self.top.grab_set() # Make the dialog a modal dialog.
     self.root.wait_window(self.top)
-#@+node:ekr.20100914142850.5892: *4* createGui & helper
+#@+node:ekr.20100914142850.5892: *6* createGui & helper
 def createGui(pymacs,options):
 
     gui = options.get('gui')
@@ -5985,7 +6472,7 @@ def createGui(pymacs,options):
         createSpecialGui(gui,pymacs,script,windowFlag)
 
 
-#@+node:ekr.20090520055433.5945: *4* g.openWithFileName & helpers
+#@+node:ekr.20090520055433.5945: *6* g.openWithFileName & helpers
 def openWithFileName(fileName,old_c,
     enableLog=True,gui=None,readAtFileNodesFlag=True):
 
@@ -6024,7 +6511,7 @@ def openWithFileName(fileName,old_c,
     g.createMenu(c,fn)
     g.finishOpen(c)
     return True,c.frame
-#@+node:ekr.20090520055433.5951: *5* g.createMenu
+#@+node:ekr.20090520055433.5951: *7* g.createMenu
 def createMenu(c,fileName=None):
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
@@ -6034,7 +6521,7 @@ def createMenu(c,fileName=None):
         c.updateRecentFiles(fileName)
         g.doHook("menu2",c=c,p=c.p,v=c.p)
         g.doHook("after-create-leo-frame",c=c)
-#@+node:ekr.20090520055433.5948: *5* g.findOpenFile
+#@+node:ekr.20090520055433.5948: *7* g.findOpenFile
 def findOpenFile(fileName):
 
     def munge(name):
@@ -6048,7 +6535,7 @@ def findOpenFile(fileName):
             c.outerUpdate()
             return c
     return None
-#@+node:ekr.20090520055433.5952: *5* g.finishOpen
+#@+node:ekr.20090520055433.5952: *7* g.finishOpen
 def finishOpen(c):
 
     k = c.k
@@ -6067,7 +6554,7 @@ def finishOpen(c):
         k.showStateAndMode()
     c.frame.initCompleteHint()
     return True
-#@+node:ekr.20090520055433.5950: *5* g.handleOpenHooks
+#@+node:ekr.20090520055433.5950: *7* g.handleOpenHooks
 def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
 
     if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
@@ -6087,7 +6574,7 @@ def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
         c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
     return True
-#@+node:ekr.20090520055433.5954: *5* g.mungeFileName
+#@+node:ekr.20090520055433.5954: *7* g.mungeFileName
 def mungeFileName(fileName):
 
     '''Create a full, normalized, Unicode path name, preserving case.'''
@@ -6099,7 +6586,7 @@ def mungeFileName(fileName):
     isLeo = isZipped or fn.endswith('.leo')
 
     return isLeo,fn,relFn
-#@+node:ekr.20090520055433.5946: *5* g.openWithFileNameHelper
+#@+node:ekr.20090520055433.5946: *7* g.openWithFileNameHelper
 def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
 
     if old_c: g.preRead(fileName)
@@ -6119,7 +6606,7 @@ def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
 
     c.isZipped = isZipped
     return c,theFile
-#@+node:ekr.20090520055433.5949: *6* preRead
+#@+node:ekr.20090520055433.5949: *8* preRead
 def preRead(fileName):
 
     '''Read the file for the first time,
@@ -6129,7 +6616,7 @@ def preRead(fileName):
     c = g.app.config.openSettingsFile(fileName)
     if c:
         g.app.config.updateSettings(c,localFlag=True)
-#@+node:ekr.20080921154026.1: *5* g.openWrapperLeoFile
+#@+node:ekr.20080921154026.1: *7* g.openWrapperLeoFile
 def openWrapperLeoFile (old_c,fileName,gui):
 
     '''Open a wrapper .leo file for the given file,
@@ -6182,7 +6669,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
 
     frame.c.setChanged(True) # Mark the outline dirty.
     return c
-#@+node:ekr.20031218072017.2297: *4* open (leoFileCommands)
+#@+node:ekr.20031218072017.2297: *6* open (leoFileCommands)
 def open(self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
 
     c = self.c ; frame = c.frame
@@ -6201,7 +6688,7 @@ def open(self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
         frame.resizePanesToRatio(ratio,frame.secondary_ratio)
 
     return ok
-#@+node:ekr.20110605040658.17005: *4* c.check_event
+#@+node:ekr.20110605040658.17005: *6* c.check_event
 def check_event (self,event):
     
     trace = False and not g.unitTesting
@@ -6242,7 +6729,7 @@ def check_event (self,event):
 
     test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
             repr(stroke),repr(expected),repr(got)))
-#@+node:ekr.20080610085158.3: *4* c.bind and c.bind2
+#@+node:ekr.20080610085158.3: *6* c.bind and c.bind2
 def bind (self,w,pattern,func,*args,**keys):
 
     c = self ; callers = g.callers()
@@ -6274,7 +6761,7 @@ def bind2 (self,w,pattern,func,*args,**keys):
         return val
 
     w.bind(pattern,bindCallback2,*args,**keys)
-#@+node:ekr.20110607114847.16562: *3* Changed names of commands so they have common prefixes
+#@+node:ekr.20110607114847.16562: *4* Changed names of commands so they have common prefixes
 @nocolor-node
 
 Any custom key bindings (none are bound by default) will have to change.
@@ -6301,170 +6788,148 @@ The already existing prefixes are::
     toggle-     toggle settings
     yank-       yank
     
-#@+node:ekr.20110607114847.16565: *3* Fixed crasher in k.masterCommand
-# The stroke arg is required.
-#@+node:ekr.20110604182206.16760: *3* Fixed old bug: set-find-x commands no longer abort find commands
-@nocolor-node
-
-The commands that switch find scope, set-find-xxx, no longer terminate the find
-command, if one is active.  This is an old bug, and it's good to fix it.
-#@+node:ekr.20061031131434.152: *4* handleMiniBindings
-def handleMiniBindings (self,event,state,stroke):
-
-    k = self ; c = k.c
-    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
-
-    # Special case for bindings handled in k.getArg:
-    if state in ('getArg','full-command'):
-        if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
-            return False
-        if k.isFKey(stroke):
-            return False
-
-    if not state.startswith('auto-'):
-        # New in Leo 4.5: ignore plain key binding in the minibuffer.
-        if not stroke or k.isPlainKey(stroke):
-            if trace: g.trace('plain key',stroke)
-            return False
-        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
-        # for all single-line editing commands.
-        for pane in ('mini','all','text'):
-            d = k.masterBindingsDict.get(pane)
-            if d:
-                b = d.get(stroke)
-                if b:
-                    if b.commandName == 'replace-string' and state == 'getArg':
-                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
-                        return False # Let getArg handle it.
-                    elif b.commandName not in k.singleLineCommandList:
-                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit()
-                    else:
-                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
-                        c.minibufferWantsFocus() # New in Leo 4.5.
-                    # Pass this on for macro recording.
-                    k.masterCommand(event,b.func,stroke,b.commandName)
-                    # Careful: the command could exit.
-                    if c.exists and not k.silentMode:
-                        c.minibufferWantsFocus()
-                    return True
-
-    return False
-#@+node:ekr.20080509064108.6: *4* k.defineSingleLineCommands
-def defineSingleLineCommands (self):
-
-    k = self
-
-    # These commands can be executed in the minibuffer.
-    k.singleLineCommandList = [
-        # editCommandsClass
-        'back-to-indentation',
-        'back-to-home', # 2010/02/01
-        'back-char',
-        'back-char-extend-selection',
-        'back-word',
-        'back-word-extend-selection',
-        'backward-delete-char',
-        'backward-find-character',
-        'backward-find-character-extend-selection',
-        'beginning-of-line',
-        'beginning-of-line-extend-selection',
-        'capitalize-word',
-        'delete-char',
-        'delete-indentation',
-        'delete-spaces',
-        'downcase-word',
-        'end-of-line',
-        'end-of-line-extend-selection',
-        'escape',
-        'exchange-point-mark',
-        'extend-to-line',
-        'extend-to-word',
-        'find-character',
-        'find-character-extend-selection',
-        'find-word',
-        'find-word-in-line',
-        'forward-char',
-        'forward-char-extend-selection',
-        'forward-end-word',
-        'forward-end-word-extend-selection',
-        'forward-word',
-        'forward-word-extend-selection',
-        'insert-newline',
-        'insert-parentheses',
-        'move-past-close',
-        'move-past-close-extend-selection',
-        'newline-and-indent',
-        'select-all',
-        'transpose-chars',
-        'transpose-words',
-        'upcase-word',
-        # keyHandlerCommandsClass
-        # 'auto-complete',
-        'negative-argument',
-        'number-command',
-        'number-command-0',
-        'number-command-1',
-        'number-command-2',
-        'number-command-3',
-        'number-command-4',
-        'number-command-5',
-        'number-command-6',
-        'number-command-7',
-        'number-command-8',
-        'universal-argument',
-        # killBufferCommandsClass
-        'backward-kill-word',
-        'kill-line',
-        'kill-word',
-        'kill-ws',
-        'yank',
-        'yank-pop',
-        'zap-to-character',
-        # leoCommands
-        'cut-text',
-        'copy-text',
-        'paste-text',
-        # macroCommandsClass
-        'call-last-kbd-macro',
-        # search commands
-        # 'replace-string', # A special case so Shift-Ctrl-r will work after Ctrl-f.
-        'set-find-everywhere',              # 2011/06/07
-        'set-find-node-only',               # 2011/06/07
-        'set-find-suboutline-only',         # 2011/06/07
-        'toggle-find-collapses_nodes',
-        'toggle-find-ignore-case-option',
-        'toggle-find-in-body-option',
-        'toggle-find-in-headline-option',
-        'toggle-find-mark-changes-option',
-        'toggle-find-mark-finds-option',
-        'toggle-find-regex-option',
-        'toggle-find-reverse-option',
-        'toggle-find-word-option',
-        'toggle-find-wrap-around-option',
-        # registerCommandsClass
-        'append-to-register',
-        'copy-to-register',
-        'insert-register',
-        'prepend-to-register',
-    ]
-#@+node:ekr.20110607140913.16576: *3* Fixed recent bugs in the viewrendered and scrolledmessage plugins
-@nocolor-node
-
-An earlier rev fixed a bug that effectively destroyed the viewrendered plugin.
-It was caused by the new convention that alleviates the need for many @language
-directives. The fix was simply to enable the update_rst method if the massaged
-p.b is not empty.
-
-ScrolledMessageDialog.convertMessage now renders rst by default, unless *either*
-the html or text button is pressed.  There really should be three radio buttons:
-text, html or rST, but that's a tiny interface glitch.  The actual bug however,
-was much more serious: rst was never being rendered. 
-#@+node:ekr.20110524141405.18370: *3* Finished macros
+#@+node:ekr.20110524141405.18370: *4* Finished macros
 @nocolor-node
 
 The macro-load and macro-save are as simple as possible.
 
 No further work will be done on macros unless somebody really wants these commands.
+#@+node:ekr.20110607182447.16455: *3* Focus tracing
+#@+node:ekr.20080514131122.20: *4* c.outerUpdate
+def outerUpdate (self):
+
+    trace = False and not g.unitTesting
+    verbose = False ; traceFocus = True
+    c = self ; aList = []
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    c.requestRedrawFlag = False
+    
+    if trace and (verbose or aList):
+        g.trace('**start',g.callers(5))
+    
+    if c.requestBringToFront:
+        if hasattr(c.frame,'bringToFront'):
+            c.frame.bringToFront()
+        c.requestBringToFront = False
+
+    # The iconify requests are made only by c.bringToFront.
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw')
+        c.frame.tree.redraw_now(forceDraw=True)
+
+    if c.requestRecolorFlag:
+        if verbose: aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        # This should be the only call to c.recolor_now.
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+    if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
+        if traceFocus: aList.append('focus: %s' % (
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
+    else:
+        # We must not set the focus to the body pane here!
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and (verbose or aList):
+        g.trace('** end',aList)
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+
+    # g.trace('after')
+#@+node:ekr.20110607182447.16456: *4* Event handlers (qtGui)
+#@+node:ekr.20110605121601.18480: *5* onActivateEvent (qtGui)
+# Called from eventFilter
+
+def onActivateEvent (self,event,c,obj,tag):
+
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
+
+    # This is called several times for each window activation.
+    # We only need to set the focus once.
+
+    trace = False and not g.unitTesting
+
+    if c.exists and tag == 'body':
+        if trace: g.trace()
+        self.active = True
+        c.bodyWantsFocusNow()
+        g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
+#@+node:ekr.20110605121601.18481: *5* onDeactiveEvent (qtGui)
+def onDeactivateEvent (self,event,c,obj,tag):
+
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
+
+    trace = False and not g.unitTesting
+
+    # This is called several times for each window activation.
+    # Save the headline only once.
+
+    if c.exists and tag.startswith('tree'):
+        self.active = False
+        if trace: g.trace()
+        c.endEditing()
+        g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
+#@+node:ekr.20110509064011.14563: *4* c.idle_focus_helper
+idle_focus_count = 0
+
+def idle_focus_helper (self,tag,keys):
+    
+    '''An idle-tme handler that ensures that focus is *somewhere*.'''
+    
+    trace = True and not g.unitTesting
+    verbose = False # False: only print surprises.
+    active = False # True: actually change the focus.
+    
+    c = self
+    assert tag == 'idle'
+
+    if g.app.unitTesting or keys.get('c') != c:
+        return
+        
+    self.idle_focus_count += 1
+        
+    if c.in_qt_dialog:
+        if trace and verbose: g.trace('in_qt_dialog')
+        return
+        
+    if c.idle_callback:
+        if trace: g.trace('calling c.idle_callback',c.idle_callback.__name__)
+        c.idle_callback()
+        c.idle_callback = None
+        return
+
+    w = g.app.gui.get_focus()
+
+    if w:
+        if trace and verbose:
+            g.trace(self.idle_focus_count,w)
+    elif g.app.gui.active: # Set by gui.onActivate/onDeactivate.
+        if trace:
+            g.trace('%s no focus -> body' % (self.idle_focus_count))
+        if active:
+            c.bodyWantsFocusNow()
 #@-all
 #@-leo

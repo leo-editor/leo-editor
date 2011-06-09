@@ -7,74 +7,184 @@
 @language rest
 .. @+node:ekr.20110527182640.18358: *3* b3
 .. @+node:ekr.20110607140913.16575: *4* First
-.. @+node:ekr.20110607182447.16466: *5* escape got inserted into text
-.. @+node:ekr.20110607140913.16577: *5* Apropos macros
-.. @+node:ekr.20110606124445.16909: *5* Update key-handling theory of operation
-.. @+node:ekr.20110607140913.16578: *5* Make sure all keys contribute to lossage
-.. @+node:ekr.20110607054506.16790: *5* (Done) Disabled idle-focus-helper
-@nocolor-node
-
-
-Done: It does not affect the alt-ctrl-s bug, but it will be useful to see the traces.
-.. @+node:ekr.20110509064011.14563: *6* c.idle_focus_helper
-idle_focus_count = 0
-
-def idle_focus_helper (self,tag,keys):
-    
-    '''An idle-tme handler that ensures that focus is *somewhere*.'''
-    
-    trace = True and not g.unitTesting
-    verbose = False # False: only print surprises.
-    active = False # True: actually change the focus.
-    
-    c = self
-    assert tag == 'idle'
-
-    if g.app.unitTesting or keys.get('c') != c:
-        return
-        
-    self.idle_focus_count += 1
-        
-    if c.in_qt_dialog:
-        if trace and verbose: g.trace('in_qt_dialog')
-        return
-        
-    if c.idle_callback:
-        if trace: g.trace('calling c.idle_callback',c.idle_callback.__name__)
-        c.idle_callback()
-        c.idle_callback = None
-        return
-
-    w = g.app.gui.get_focus()
-
-    if w:
-        if trace and verbose:
-            g.trace(self.idle_focus_count,w)
-    elif g.app.gui.active: # Set by gui.onActivate/onDeactivate.
-        if trace:
-            g.trace('%s no focus -> body' % (self.idle_focus_count))
-        if active:
-            c.bodyWantsFocusNow()
-.. @+node:ekr.20110606001347.16927: *4* Important: 3
 .. @+node:ekr.20110527084258.18378: *5* New file format
 @nocolor-node
 
-Stuff that got left out:
-    
+- <attr> solves pickle problem.
+
+* Treat gnx's as strings: don't parse them.
+  http://mail.google.com/mail/#inbox/12f3d4950fbabeea
+  
+* Don't save expansion bits in uA if not saving expansion bits. It's illogical
+  to save bits in uA's if they aren't save in in the <v> elements.
+  
+    @bool put_expansion_bits_in_leo_files = False
+
 - Use uuid's?
 
 - Remove spaces from user names.
-.. @+node:ekr.20110427135155.14306: *6* Add <attr> elements to .leo files
+
+.. @+node:ekr.20110609042343.16546: *6* Notes
+.. @+node:ekr.20110609042343.16548: *7* File format, v3 draft 5
 @language rest
+@pagewidth 65
 
-- <attr> solves pickle problem.
-.. @+node:ekr.20110414065052.6100: *6* * Treat gnx's as strings: don't parse them
-http://mail.google.com/mail/#inbox/12f3d4950fbabeea
-.. @+node:ekr.20101123131018.5842: *6* * Don't save expansion bits in uA if not saving expansion bits
-@bool put_expansion_bits_in_leo_files = False
+http://groups.google.com/group/leo-editor/browse_thread/thread/2ddb57c62e67825c
 
-It's illogical to save bits in uA's if they aren't save in in the <v> elements.
-.. @+node:ekr.20110421132230.6107: *6* File format, v3 draft 4
+Leo's file format: version 3, draft 5
+
+This draft is intended to reflect minimal changes from Leo's
+present file format, but with improvements mentioned at the
+Ashland sprint and developed afterward.
+
+This draft covers only Leo's xml format, but it may be adapted
+for use as a json file format.
+
+This draft contains significant invention by EKR. See the next
+section. Don't panic: it can be changed :-)
+
+Summary of changes from draft 4
+===============================
+
+- Elements will be renamed as follows::
+
+    old         new
+    ====        ====
+    <vnodes>    <directed-acyclic-graph>
+    <tnodes>    <data-list>
+    <v>         <node>
+    <t>         <data>
+
+- Nesting of <node> elements represents the structure of the DAG,
+  just as nesting of <v> elements does at present.
+  
+- Thus, there will be no <edge> elements.
+
+- Headlines will move from <v> elements to <data> elements.
+  This "normalizes" the data: headlines will appear only once.
+  
+- <attr> elements will represent uA's.  A full discussion below.
+
+  Ideally, I would like to support only string and json formats
+  for <attr> elements.  This is open to discussion. 
+
+- Only <node> elements will contain <attr> elements.
+
+- <node> elements for @file nodes will contain
+  <at-file-attributes> elements, representing Leo's "hidden
+  machinery" attributes.  <at-file-attributes> will contain
+  <attr> elements. 
+
+First lines
+===========
+
+Leo file will start with the following::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo_file file_format="3"
+        xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+        
+
+No session data
+===============
+
+There will be no <globals>, <preferences> or
+<find_panel_settings> elements. All such "session data" will be
+restored from the cache, or from defaults if caching is disabled.
+
+**Important**: there is no representation of expansion state or
+the currently selected node anywhere in the .leo file.
+Eliminating these data is contingent on having Leo work well with
+caching disabled.
+
+Note: marks are more than session data. They must appear within
+<node> elements.
+
+
+Summary of format
+=================
+
+.leo files will have the following form, with similar indentation::
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <?xml-stylesheet my_stylesheet?>
+    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <leo_file file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
+    <directed-acyclic-graph>
+        <node id="gnx">
+            <!-- contained node elements, if any.
+        </node>
+        <node id="gnx">
+            <!-- contained v elements, if any.
+        </node>
+        ...
+    </directed-acyclic-graph>
+    <data-list>
+        <data id="gnx">
+            <!-- marked attribute appears only if the tnode/vnode is marked -->
+            <head>headline text</head>
+            <attr key="marked">1</attr>
+            <!-- uA's... -->
+            <!-- format="string" is the default -->
+            <attr key="a">a string</attr>
+            <attr key="b" format="json">a json string</attr>
+            <attr key="c" format="pickle">a pickled string</attr>
+            <attr key="d" format="binhex">a binhexed string</attr>
+            ...
+            <body>body text</body>
+        </data>
+        ...
+    </data-list>
+    </leo_file>
+
+<attr> elements
+===============
+
+<attr> elements will one of the following forms::
+
+    <attr key="a">a unicode string</attr>
+    <attr key="b" format="json">a json string</attr>
+    <attr key="c" format="pickle">a json string</attr>
+    <attr key="d" format="binhex">a binhexed string</attr>
+    
+The value will be a string by default.
+
+If possible, I would like to support only the string and json
+formats. This would make the data as transparent as possible.
+Please mentally amend the following discussion...
+
+uA's that start with "binhex_" will use the binhex format. This
+prefix must be retained in the type field, so the read code can
+restore them.
+
+If the value is not a string, and there is no "binhex_" prefix,
+the write code will use format="json" if json.dumps succeeds, and
+will use format="pickle" otherwise.
+
+No <attr> element will be written if both json.dumps and
+pickle.dumps fail. Attribute failures will create a warning for
+the plugin developer.
+    
+Descendant attributes in @file trees
+====================================
+
+Descendants of @file nodes do not appear in .leo files. Thus,
+important data must be stored in the so-called hidden machinery:
+attributes of the @file node.
+
+The <at-file-attributes> element may optionally be contained in
+the <node> element for @file nodes::
+
+    <at-file-attributes>
+        <attr>key="ua-name"
+            format="(empty)/json/pickle/binhex"
+            gnx="gnx">value
+        </attr>
+        ...
+    </at-file-attributes>
+.. @+node:ekr.20110421132230.6107: *7* File format, v3 draft 4
 @language rest
 @pagewidth 65
 
@@ -230,7 +340,7 @@ The <at-file-attributes> element may be contained in the
     
 In other words, we use the graphml <attr> element, extended with the
 gnx attribute, to represent all the uA's in the descendants of @file nodes.
-.. @+node:ekr.20110419083918.6104: *6* File format, v3 graphml
+.. @+node:ekr.20110419083918.6104: *7* File format, v3 graphml
 @language rest
 @pagewidth 65
 
@@ -401,7 +511,58 @@ it will enclosed in a data element::
     
 In other words, we use the graphml <attr> element, extended with the
 gnx attribute, to represent all the uA's in the descendants of @file nodes.
-.. @+node:ekr.20110415173840.6098: *6* new uA's
+.. @+node:ekr.20090218115025.3: *7* Why are attributes pickled by default?
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/326a221f4c698f7a
+
+> On Wed, Feb 18, 2009 at 12:12 PM, Kent Tenney <ktenney@gmail.com> wrote:
+>>
+>> Currently, Leo pickles the value of unknown attributes unless
+>> the name starts with 'str_'
+>>
+>> Running the following code in node 'UA'
+>>
+>> p = c.currentPosition()
+>> p.v.u = {'hello':'world', 'str_hello':'world'}
+>>
+>> results in the following in the .leo file:
+>>
+>> <v t="ktenney.20090218114928.367" str_hello="world"
+>> hello="5505776f726c6471002e"><vh>UA</vh></v>
+>>
+>> I think this is surprising, Python-centric and contrary to the
+>> spirit of Leo as a flexible data management platform.
+>
+> I suppose your point is that you can't create an arbitrarily named attribute
+> with a string value. Does that create a real problem?
+
+It requires a translation layer, either to (un)munge the name or
+(un)pickle. Real problem?
+
+Let's say each time I think 'I can use UAs to store that' I change
+my mind when I realize my values will be in a pickle. (I really don't
+want to name all my attributes str_xxx)
+
+> As far as being Python-centric, can you suggest any other way of converting
+> arbitrary data to a text string?
+
+How is it done in any other XML file?
+I've not used XML for arbitrary data, but it probably can be done.
+
+> Why would that way be better than pickle?
+
+My suspicion is that UAs would be used more for
+storing text and numbers (as seems common for XML files)
+than Python data objects.
+
+Does Leo use UAs to store pickles?
+
+I'm sure pickling capability is great, but I'm not convinced
+it should be the _default._
+
+No big deal.
+.. @+node:ekr.20110415173840.6098: *6* Code related to uA's
 .. @+node:ekr.20040701065235.2: *7* putDescendentAttributes
 def putDescendentAttributes (self,p):
 
@@ -494,485 +655,14 @@ def __set_u(self,val):
 u = property(
     __get_u, __set_u,
     doc = "vnode unknownAttribute property")
-.. @+node:ekr.20110414164347.6082: *6* Reference for json stuff
-.. @+node:ekr.20031218072017.1997: *7* scanGnx
-def scanGnx (self,s,i):
-
-    """Create a gnx from its string representation"""
-
-    if not g.isString(s):
-        g.es("scanGnx: unexpected index type:",type(s),'',s,color="red")
-        return None,None,None
-
-    s = s.strip()
-
-    theId,t,n = None,None,None
-    i,theId = g.skip_to_char(s,i,'.')
-    if g.match(s,i,'.'):
-        i,t = g.skip_to_char(s,i+1,'.')
-        if g.match(s,i,'.'):
-            i,n = g.skip_to_char(s,i+1,'.')
-    # Use self.defaultId for missing id entries.
-    if theId == None or len(theId) == 0:
-        theId = self.defaultId
-    # Convert n to int.
-    if n:
-        try: n = int(n)
-        except Exception: pass
-
-    return theId,t,n
-.. @+node:ekr.20060919104530: *7* Sax (reading)
-.. @+node:ekr.20090525144314.6526: *8* cleanSaxInputString
-def cleanSaxInputString(self,s):
-
-    '''Clean control characters from s.
-    s may be a bytes or a (unicode) string.'''
-
-    # Note: form-feed ('\f') is 12 decimal.
-    badchars = [chr(ch) for ch in range(32)]
-    badchars.remove('\t')
-    badchars.remove('\r')
-    badchars.remove('\n')
-
-    flatten = ''.join(badchars)
-    pad = ' ' * len(flatten)
-
-    if g.isPython3:
-        flatten = bytes(flatten,'utf-8')
-        pad = bytes(pad,'utf-8')
-        transtable = bytes.maketrans(flatten,pad)
-    else:
-        transtable = string.maketrans(flatten,pad)
-
-    return s.translate(transtable)
-
-# for i in range(32): print i,repr(chr(i))
-.. @+node:ekr.20060919110638.5: *8* fc.createSaxChildren & helpers
-def createSaxChildren (self, sax_node, parent_v):
-
-    c = self.c
-    trace = False and not g.unitTesting # and c.shortFileName().find('small') > -1
-    children = []
-
-    for sax_child in sax_node.children:
-        tnx = sax_child.tnx
-        v = self.gnxDict.get(tnx)
-
-        if v: # A clone.
-            if trace: g.trace('**clone',v)
-            v = self.createSaxVnode(sax_child,parent_v,v=v)   
-        else:
-            v = self.createSaxVnode(sax_child,parent_v)
-            self.createSaxChildren(sax_child,v)
-
-        children.append(v)
-
-    parent_v.children = children
-    for child in children:
-        child.parents.append(parent_v)
-        if trace: g.trace(
-            '*** added parent',parent_v,'to',child,
-            'len(child.parents)',len(child.parents))
-
-    return children
-.. @+node:ekr.20060919110638.7: *9* fc.createSaxVnode & helpers
-def createSaxVnode (self,sax_node,parent_v,v=None):
-
-    c = self.c
-    trace = False and not g.unitTesting and c.shortFileName().find('test') > -1
-    verbose = False
-    h = sax_node.headString
-    b = sax_node.bodyString
-
-    if v:
-        # The body of the later node overrides the earlier.
-        # Don't set t.h: h is always empty.
-        # This may be an internal error.
-        if v.b == b:
-            if trace and verbose: g.trace(
-                '***no update\nold: %s\nnew: %s' % (v.b,b))
-        else:
-            if trace: g.trace(
-                '***update\nold: %s\nnew: %s' % (v.b,b))
-            v.b = b 
-    else:
-        v = leoNodes.vnode(context=c)
-        v.setBodyString(b)
-        v.setHeadString(h)
-
-        if sax_node.tnx:
-            v.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
-
-    index = self.canonicalTnodeIndex(sax_node.tnx)
-    self.gnxDict [index] = v
-
-    if trace and verbose: g.trace(
-        'tnx','%-22s' % (index),'v',id(v),
-        'len(body)','%-4d' % (len(b)),h)
-
-    self.handleVnodeSaxAttributes(sax_node,v)
-    self.handleTnodeSaxAttributes(sax_node,v)
-
-    return v
-.. @+node:ekr.20060919110638.8: *10* handleTnodeSaxAttributes
-def handleTnodeSaxAttributes (self,sax_node,v):
-
-    trace = False and not g.unitTesting
-    d = sax_node.tnodeAttributes
-    if trace and d: g.trace(sax_node,list(d.keys()))
-
-    aDict = {}
-    for key in d:
-        val = g.toUnicode(d.get(key)) # 2011/02/22
-        val2 = self.getSaxUa(key,val)
-        # g.trace(key,val,val2)
-        aDict[key] = val2
-
-    if aDict:
-        if trace: g.trace('uA',v,list(aDict.keys()))
-        v.unknownAttributes = aDict
-.. @+node:ekr.20061004053644: *10* handleVnodeSaxAttributes
-# The native attributes of <v> elements are a, t, vtag, tnodeList,
-# marks, expanded, and descendentTnodeUnknownAttributes.
-# New in Leo 4.5: added descendentVnodeUnknownAttributes to native attributes.
-
-def handleVnodeSaxAttributes (self,sax_node,v):
-
-    trace = False and not g.unitTesting
-    d = sax_node.attributes
-
-    s = d.get('a')
-    if s:
-        if trace and 'E' in s: g.trace('expand',v)
-        # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
-        # 'C' (clone) and 'D' bits are not used.
-        if 'M' in s: v.setMarked()
-        if 'E' in s: v.expand()
-        if 'O' in s: v.setOrphan()
-        # if 'T' in s: self.topVnode = v
-        if 'V' in s:
-            # g.trace('setting currentVnode',v,color='red')
-            self.currentVnode = v
-
-    s = d.get('tnodeList','')
-    tnodeList = s and s.split(',')
-    if tnodeList:
-        # This tnodeList will be resolved later.
-        if trace: g.trace('found tnodeList',v.headString(),tnodeList)
-        v.tempTnodeList = tnodeList
-
-    s = d.get('descendentTnodeUnknownAttributes')
-    if s: 
-        aDict = self.getDescendentUnknownAttributes(s,v=v)
-        if aDict:
-            # g.trace('descendentTnodeUaDictList',aDict)
-            self.descendentTnodeUaDictList.append(aDict)
-
-    s = d.get('descendentVnodeUnknownAttributes')
-    if s: 
-        aDict = self.getDescendentUnknownAttributes(s,v=v)
-        if aDict:
-            # g.trace('descendentVnodeUaDictList',aDict)
-            self.descendentVnodeUaDictList.append((v,aDict),)
-
-    s = d.get('expanded')
-    if s:
-        aList = self.getDescendentAttributes(s,tag="expanded")
-        # g.trace('expanded list',len(aList))
-        self.descendentExpandedList.extend(aList)
-
-    s = d.get('marks')
-    if s:
-        aList = self.getDescendentAttributes(s,tag="marks")
-        # g.trace('marks list',len(aList))
-        self.descendentMarksList.extend(aList)
-
-    aDict = {}
-    for key in d:
-        if key in self.nativeVnodeAttributes:
-            # This is not a bug.
-            if False and trace: g.trace(
-                '****ignoring***',key,d.get(key))
-        else:
-            val = d.get(key)
-            val2 = self.getSaxUa(key,val)
-            aDict[key] = val2
-            # g.trace(key,val,val2)
-    if aDict:
-        # if trace: g.trace('uA',v,aDict)
-        v.unknownAttributes = aDict
-.. @+node:ekr.20060919110638.2: *8* dumpSaxTree
-def dumpSaxTree (self,root,dummy):
-
-    if not root:
-        g.pr('dumpSaxTree: empty tree')
-        return
-    if not dummy:
-        root.dump()
-    for child in root.children:
-        self.dumpSaxTree(child,dummy=False)
-.. @+node:ekr.20061003093021: *8* getSaxUa
-def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
-
-    """Parse an unknown attribute in a <v> or <t> element.
-    The unknown tag has been pickled and hexlify'd.
-    """
-
-    try:
-        # val = str(val)
-        val = g.toEncodedString(val) # 2011/02/22.
-    except Exception:
-        g.es_print('unexpected exception converting hexlified string to string')
-        g.es_exception()
-        return None
-
-    # New in 4.3: leave string attributes starting with 'str_' alone.
-    if attr.startswith('str_'):
-        if type(val) == type(''):
-            return val
-        elif type(val) == type(b''):
-            # 2011/05/26.
-            return g.toUnicode(val)
-
-    # New in 4.3: convert attributes starting with 'b64_' using the base64 conversion.
-    if 0: # Not ready yet.
-        if attr.startswith('b64_'):
-            try: pass
-            except Exception: pass
-
-    try:
-        binString = binascii.unhexlify(val) # Throws a TypeError if val is not a hex string.
-    except Exception:
-        # Python 2.x throws TypeError
-        # Python 3.x throws binascii.Error
-        # Assume that Leo 4.1 wrote the attribute.
-        if g.unitTesting:
-            assert kind == 'raw','unit test failed: kind=' % repr(kind)
-        else:
-            g.trace('can not unhexlify %s=%s' % (attr,val))
-        return val
-    try:
-        # No change needed to support protocols.
-        val2 = pickle.loads(binString)
-        # g.trace('v.3 val:',val2)
-        return val2
-    except (pickle.UnpicklingError,ImportError,AttributeError,ValueError):
-        g.trace('can not unpickle %s=%s' % (attr,val))
-        return val
-.. @+node:ekr.20060919110638.14: *8* parse_leo_file
-def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
-
-    c = self.c
-    try:
-        if g.isPython3:
-            if theFile:
-                # Use the open binary file, opened by g.openLeoOrZipFile.
-                s = theFile.read() # type(s) is bytes.
-                s = self.cleanSaxInputString(s)
-                theFile = BytesIO(s)
-            else:
-                s = str(s,encoding='utf-8')
-                s = self.cleanSaxInputString(s)
-                theFile = StringIO(s)
-        else:
-            if theFile: s = theFile.read()
-            s = self.cleanSaxInputString(s)
-            theFile = cStringIO.StringIO(s)
-        parser = xml.sax.make_parser()
-        parser.setFeature(xml.sax.handler.feature_external_ges,1)
-            # Include external general entities, esp. xml-stylesheet lines.
-        if 0: # Expat does not read external features.
-            parser.setFeature(xml.sax.handler.feature_external_pes,1)
-                # Include all external parameter entities
-                # Hopefully the parser can figure out the encoding from the <?xml> element.
-        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
-        parser.setContentHandler(handler)
-        parser.parse(theFile) # expat does not support parseString
-        # g.trace('parsing done')
-        sax_node = handler.getRootNode()
-    except xml.sax.SAXParseException:
-        g.es_print('error parsing',inputFileName,color='red')
-        g.es_exception()
-        sax_node = None
-    except Exception:
-        g.es_print('unexpected exception parsing',inputFileName,color='red')
-        g.es_exception()
-        sax_node = None
-
-    return sax_node
-.. @+node:ekr.20060919110638.3: *8* readSaxFile
-def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
-
-    dump = False and not g.unitTesting
-    fc = self ; c = fc.c
-
-    # Pass one: create the intermediate nodes.
-    saxRoot = fc.parse_leo_file(theFile,fileName,
-        silent=silent,inClipboard=inClipboard,s=s)
-
-    if dump: fc.dumpSaxTree(saxRoot,dummy=True)
-
-    # Pass two: create the tree of vnodes and tnodes from the intermediate nodes.
-    if saxRoot:
-        parent_v = c.hiddenRootNode
-        children = fc.createSaxChildren(saxRoot,parent_v)
-        assert c.hiddenRootNode.children == children
-        v = children and children[0] or None
-        return v
-    else:
-        return None
-.. @+node:ekr.20060919110638.11: *8* resolveTnodeLists
-def resolveTnodeLists (self):
-
-    trace = False and not g.unitTesting
-    c = self.c
-
-    for p in c.all_unique_positions():
-        if hasattr(p.v,'tempTnodeList'):
-            # g.trace(p.v.headString())
-            result = []
-            for tnx in p.v.tempTnodeList:
-                index = self.canonicalTnodeIndex(tnx)
-                v = self.gnxDict.get(index)
-                if v:
-                    if trace: g.trace(tnx,v)
-                    result.append(v)
-                else:
-                    g.trace('*** No vnode for %s' % tnx)
-            if result:
-                p.v.tnodeList = result
-                # g.trace('*** tnodeList for',p.h,result)
-            delattr(p.v,'tempTnodeList')
-.. @+node:ekr.20080805132422.3: *8* resolveArchivedPosition  (New in Leo 4.5)
-def resolveArchivedPosition(self,archivedPosition,root_v):
-
-    '''Return a vnode corresponding to the archived position relative to root node root_v.'''
-
-    def oops (message):
-        if not g.app.unitTesting:
-            g.es_print('bad archived position: %s' % (message),color='red')
-
-    try:
-        aList = [int(z) for z in archivedPosition.split('.')]
-        aList.reverse()
-    except Exception:
-        return oops('"%s"' % archivedPosition)
-
-    if not aList:
-        return oops('empty')
-
-    last_v = root_v
-    n = aList.pop()
-    if n != 0:
-        return oops('root index="%s"' % n )
-
-    while aList:
-        n = aList.pop()
-        children = last_v.children
-        if n < len(children):
-            last_v = children[n]
-        else:
-            return oops('bad index="%s", len(children)="%s"' % (n,len(children)))
-
-    return last_v
-.. @+node:ekr.20060919110638.13: *8* setPositionsFromVnodes & helper (sax read)
-def setPositionsFromVnodes (self):
-
-    trace = False and not g.unitTesting
-    c = self.c ; p = c.rootPosition()
-    current,str_pos = None,None
-
-    use_db = g.enableDB and c.mFileName
-    if use_db:
-        str_pos = c.cacher.getCachedStringPosition()
-
-    if not str_pos:
-        d = hasattr(p.v,'unknownAttributes') and p.v.unknownAttributes
-        if d: str_pos = d.get('str_leo_pos')
-        if trace: g.trace('from p.v.u',str_pos)
-
-    if str_pos:
-        current = self.archivedPositionToPosition(str_pos)
-
-    c.setCurrentPosition(current or c.rootPosition())
-.. @+node:ekr.20061006104837.1: *9* archivedPositionToPosition
-def archivedPositionToPosition (self,s):
-
-    c = self.c
-    s = g.toUnicode(s) # 2011/02/25
-    aList = s.split(',')
-    try:
-        aList = [int(z) for z in aList]
-    except Exception:
-        # g.trace('oops: bad archived position. not an int:',aList,c)
-        aList = None
-    if not aList: return None
-    p = c.rootPosition() ; level = 0
-    while level < len(aList):
-        i = aList[level]
-        while i > 0:
-            if p.hasNext():
-                p.moveToNext()
-                i -= 1
-            else:
-                # g.trace('oops: bad archived position. no sibling:',aList,p.h,c)
-                return None
-        level += 1
-        if level < len(aList):
-            p.moveToFirstChild()
-            # g.trace('level',level,'index',aList[level],p.h)
-    return p
-.. @+node:ekr.20090218115025.3: *6* Why are attributes pickled by default?
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/326a221f4c698f7a
-
-> On Wed, Feb 18, 2009 at 12:12 PM, Kent Tenney <ktenney@gmail.com> wrote:
->>
->> Currently, Leo pickles the value of unknown attributes unless
->> the name starts with 'str_'
->>
->> Running the following code in node 'UA'
->>
->> p = c.currentPosition()
->> p.v.u = {'hello':'world', 'str_hello':'world'}
->>
->> results in the following in the .leo file:
->>
->> <v t="ktenney.20090218114928.367" str_hello="world"
->> hello="5505776f726c6471002e"><vh>UA</vh></v>
->>
->> I think this is surprising, Python-centric and contrary to the
->> spirit of Leo as a flexible data management platform.
->
-> I suppose your point is that you can't create an arbitrarily named attribute
-> with a string value. Does that create a real problem?
-
-It requires a translation layer, either to (un)munge the name or
-(un)pickle. Real problem?
-
-Let's say each time I think 'I can use UAs to store that' I change
-my mind when I realize my values will be in a pickle. (I really don't
-want to name all my attributes str_xxx)
-
-> As far as being Python-centric, can you suggest any other way of converting
-> arbitrary data to a text string?
-
-How is it done in any other XML file?
-I've not used XML for arbitrary data, but it probably can be done.
-
-> Why would that way be better than pickle?
-
-My suspicion is that UAs would be used more for
-storing text and numbers (as seems common for XML files)
-than Python data objects.
-
-Does Leo use UAs to store pickles?
-
-I'm sure pickling capability is great, but I'm not convinced
-it should be the _default._
-
-No big deal.
+.. @+node:ekr.20110606124445.16909: *5* * Update key-handling theory of operation
+.. @+node:ekr.20110607140913.16577: *5* * Apropos macros
+.. @+node:ekr.20110609042343.16545: *5* Easy: 4
+.. @+node:ekr.20110607182447.16466: *6* escape got inserted into text
+.. @+node:ekr.20110607140913.16578: *6* Make sure all keys contribute to lossage
+.. @+node:ekr.20110604182206.16757: *6* regex word-only does not work
+.. @+node:ekr.20110605121601.17012: *6* On Mac: change qttabs to qt
+.. @+node:ekr.20110606001347.16927: *4* Important: 2
 .. @+node:ekr.20090601083544.6051: *5* Add expand_noweb_references for rst3 plugin
 http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
@@ -1729,9 +1419,7 @@ def main():
 
   # todo: document and test line ends handling logic - patch.py detects proper line-endings
   #       for inserted hunks and issues a warning if patched file has incosistent line ends
-.. @+node:ekr.20110605212009.16932: *4* Minor bugs: 2
-.. @+node:ekr.20110604182206.16757: *5* regex word-only does not work
-.. @+node:ekr.20110605121601.17012: *5* On Mac: change qttabs to qt
+.. @+node:ekr.20110609042343.16544: *3* rc1 or later
 .. @+node:ekr.20110527084258.18377: *4* Ashland sprint: 2
 .. @+node:ekr.20110527084258.18374: *5*  Summary of the Ashland sprint
 http://groups.google.com/group/leo-editor/browse_thread/thread/9b1dbebd56d50e14/d5a690127ddad38e
