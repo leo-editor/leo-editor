@@ -3821,30 +3821,170 @@ finally:
 # child
 #@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5
-#@+node:ekr.20050512084850: *4*  Check outline
-#@+node:ekr.20040712101754.272: *5* Startup
+#@+node:ekr.20090104053806.1: *4* @@test c.checkFileTimeStamp & c.setFileTimeStamp
+# Disabled because modifying errorTest.py creates annoying bzr conflicts.
+
+import os
+
+path = g.os_path_finalize_join(g.app.testDir,'unittest','errorTest.py')
+assert g.os_path_exists(path),path
+timeStamp = c.timeStampDict.get(path)
+val = c.checkFileTimeStamp(path)
+assert val == True
+
+f = open(path)
+s = f.read()
+lines = g.splitLines(s)
+result = [] ; found = False
+tag = '# timestamp:'
+for line in lines:
+    if line.startswith(tag):
+        timeStamp = os.path.getmtime(path)
+        result.append('%s %s\n' % (tag,timeStamp))
+        found = True
+    else:
+        result.append(line)
+f.close()
+
+assert found,' no line starts with "%s"' % tag
+
+f = open(path,'w')
+f.write(''.join(result))
+f.close()
+
+timeStamp2 = os.path.getmtime(path)
+assert timeStamp != timeStamp2
+val = c.checkFileTimeStamp(path)
+assert not val,repr(val)
+c.setFileTimeStamp(path)
+val = c.checkFileTimeStamp(path)
+assert val,repr(val)
+#@+node:ekr.20110510054817.3475: *4* @test c.alert
+c.alert('test of c.alert')
+#@+node:ekr.20071113145804.10: *4* @test c.contractAllHeadlines
+c.contractAllHeadlines()
+p = c.rootPosition()
+while p.hasNext():
+    p.moveToNext()
+c.selectPosition(p)
+#@+node:ekr.20100209155559.5386: *4* @test c.createOpenWithTempFile
+c.createOpenWithTempFile(p,'.py')
+#@+node:ekr.20100203103015.5355: *4* @test c.getOpenWithExt
+@language python
+
+table = (
+    # (None,'.py'),
+    # ('','.py'),
+    ('txt','.txt'),
+    ('.txt','.txt'),
+)
+
+for ext,result in table:
+    result2 = c.getOpenWithExt(p,ext)
+    assert result==result2,'ext: %s, expected %s, got %s' % (
+        repr(ext),repr(result),repr(result2))
+#@+node:ekr.20100212072149.5341: *4* @test c.goToScriptLineNumber
+child = g.findNodeInChildren(c,p,'syntax-error')
+assert child,'no child'
+script = child.b
+try:
+    c.goToScriptLineNumber(child,script,1)
+finally:
+    p.contract()
+    c.selectPosition(p)
+    c.redraw()
+#@+node:ekr.20100212072149.5342: *5* syntax-error
+@language python
+def spam:
+    pass
+#@+node:ekr.20061106112522: *4* @test c.insertBodyTime
+w = c.frame.body.bodyCtrl
+s = w.getAllText()
+
+try:
+    w.setInsertPoint(len(s))
+    c.insertBodyTime()
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    # c.recolor()
+
+# end:
+#@+node:ekr.20050512083807.1: *4* @test c.markAllAtFileNodesDirty
+marks = [p.v for p in c.all_positions() if p.isMarked()]
+try:
+    ok = True
+    try:
+        c.markAllAtFileNodesDirty()
+    except Exception:
+        ok = False
+finally:
+    for p in c.all_positions():
+        if p.v in marks:
+            if not p.isMarked():
+                c.setMarked(p)
+        else:
+            if p.isMarked():
+                c.clearMarked(p)
+
+if not ok: raise
+#@+node:ekr.20100203103015.5356: *4* @test c.openTempFileInExternalEditor
+arg = ''
+arg0 = 'one'
+fn = '<fn>'
+filename = '' # g.os.path.basename(arg)
+vtuple = [arg0,fn]
+
+table = (
+    ('os.system',       'os.system(%s)' % (arg+fn)),
+    ('os.startfile',    'os.startfile(%s)' % (arg+fn)),
+    ('exec',            'exec(%s)' % (arg+fn)),
+    ('os.spawnl',       'os.spawnl(%s,%s,%s)' % (arg,filename,fn)),
+    ('os.spawnv',       'os.spawnv(%s,%s)' % (arg0,vtuple)),
+    ('subprocess.Popen','subprocess.Popen(%s)' % vtuple),
+    ('huh?',            'bad command:'+'huh?'),
+)
+
+for openType,result in table:
+    if openType in ('os.spawnv','subprocess.Popen'):
+        arg2 = ['one']
+    else:
+        arg2 = None
+    result2 = c.openTempFileInExternalEditor(
+        arg2,fn,openType,testing=True)
+    assert result==result2,'expected %s, got %s' % (
+        repr(result),repr(result2))
+#@+node:ekr.20100203103015.5354: *4* @test c.openWithTempFilePath
+s = c.openWithTempFilePath(p,'.py')
+assert s.find('LeoTemp') > -1
+assert s.endswith('.py')
+#@+node:ekr.20040802065214: *4* @test changing headline marks descendent @thin nodes dirty
+# Make sure that changing this headline marks descendant @thin nodes dirty.
+h = p.h
+
+try:
+    child = p.firstChild()
+    child.initHeadString("@thin bogus")
+    assert child.h == "@thin bogus", "setting headline failed"
+    child.clearDirty()
+    assert not child.isDirty(), "clearing dirty failed"
+    c.setHeadString(p,"changed")
+    assert child.isDirty(), "setting descendant @thin nodes dirty failed."
+finally:
+    try:
+        c.setHeadString(p,h)
+        c.setHeadString(child,"bogus")
+        p.clearDirty()
+        child.clearDirty()
+    finally: pass
+
+#### c.redraw()
+#@+node:ekr.20040802065214.1: *5* bogus
+test
+#@+node:ekr.20050512084850: *4* @test check outline
 errors = c.checkOutline(verbose=False,unittest=True,full=True) # Run full check.
 
 assert errors == 0, "Check Outline reported %d errors" % errors
-#@+node:ekr.20041019124050: *5* Docs
-test1 = p.firstChild()
-test2 = p.firstChild().next()
-
-c.prettyPrintPythonCode(p=test2,dump=False)
-
-assert(test2.b==test1.b)
-#@+node:ekr.20041019124050.1: *6* Original
-"""
-line 1
-line 2
-line 3
-"""
-#@+node:ekr.20041019124050.2: *6* Test
-"""
-line 1
-line 2
-line 3
-"""
 #@+node:ekr.20040713070526: *5* Scripts
 @language python 
 
@@ -3941,65 +4081,33 @@ class eggs:
     """ A typical doc string """
 
     @others
-#@+node:ekr.20100203103015.5352: *4*  For open-with
-#@+node:ekr.20100203103015.5353: *5* @test open-with conflict dialog
-# A copy of the code from c.createOrRecreateTempFileAsNeeded.
-# Not a perfect test, but stil significant.
+#@+node:ekr.20100131180007.5465: *4* @test class StubConfig
+class StubConfig(g.nullObject):
+    pass
 
-assert c.conflict_message,'fail 1'
+x = StubConfig()
+assert not x.getBool(c,'mySetting')
+assert not x.enabledPluginsFileName
+#@+node:ekr.20070611105423.1: *4* @test contract all
+c.contractAllHeadlines()
+#@+node:ville.20090602190735.4770: *4* @test g.command decorator
+_foo = 0
 
-result = g.app.gui.runAskYesNoCancelDialog(c,
-    "Conflict!", c.conflict_message,
-    yesMessage = "Outline",
-    noMessage = "File",
-    defaultButton = "Cancel")
+@g.command('my-test-command')
+def mytestcommand(event):
+    global _foo
 
-assert result in (None,'cancel'),'fail 2: %s' % result
-#@+node:ekr.20100203103015.5354: *5* @test c.openWithTempFilePath
-s = c.openWithTempFilePath(p,'.py')
-assert s.find('LeoTemp') > -1
-assert s.endswith('.py')
-#@+node:ekr.20100203103015.5355: *5* @test c.getOpenWithExt
-@language python
+    _foo = 1
 
-table = (
-    # (None,'.py'),
-    # ('','.py'),
-    ('txt','.txt'),
-    ('.txt','.txt'),
-)
+c.k.simulateCommand('my-test-command')
+assert _foo == 1
 
-for ext,result in table:
-    result2 = c.getOpenWithExt(p,ext)
-    assert result==result2,'ext: %s, expected %s, got %s' % (
-        repr(ext),repr(result),repr(result2))
-#@+node:ekr.20100203103015.5356: *5* @test c.openTempFileInExternalEditor
-arg = ''
-arg0 = 'one'
-fn = '<fn>'
-filename = '' # g.os.path.basename(arg)
-vtuple = [arg0,fn]
+# bonus test: c.app.commanders()
+assert c in g.app.commanders()
 
-table = (
-    ('os.system',       'os.system(%s)' % (arg+fn)),
-    ('os.startfile',    'os.startfile(%s)' % (arg+fn)),
-    ('exec',            'exec(%s)' % (arg+fn)),
-    ('os.spawnl',       'os.spawnl(%s,%s,%s)' % (arg,filename,fn)),
-    ('os.spawnv',       'os.spawnv(%s,%s)' % (arg0,vtuple)),
-    ('subprocess.Popen','subprocess.Popen(%s)' % vtuple),
-    ('huh?',            'bad command:'+'huh?'),
-)
 
-for openType,result in table:
-    if openType in ('os.spawnv','subprocess.Popen'):
-        arg2 = ['one']
-    else:
-        arg2 = None
-    result2 = c.openTempFileInExternalEditor(
-        arg2,fn,openType,testing=True)
-    assert result==result2,'expected %s, got %s' % (
-        repr(result),repr(result2))
-#@+node:ekr.20100203103015.5357: *5* @test g.isCallable
+
+#@+node:ekr.20100203103015.5357: *4* @test g.isCallable
 def spam(): pass
 lam = lambda a: None
 class aCallable:
@@ -4018,116 +4126,33 @@ for obj,val in table:
     val2 = g.isCallable(obj)
     assert val == val2,'%s, expected %s, got %s' % (
         repr(obj),val,val2)
-#@+node:ekr.20071113194033: *4*  Mark commands
-#@+node:ekr.20050512083807.1: *5* Startup
-marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.markAllAtFileNodesDirty()
-    except Exception:
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
+#@+node:ekr.20071113105654.1: *4* @test hoist with no children
+c.hoist()
+c.dehoist()
+#@+node:ekr.20070611105728: *4* @test illegal clone demote
+# Remove any previous children.
+while p.hasChildren():
+    p.firstChild().doDelete()
+# Create two cloned children.
+c.selectPosition(p)
+c.insertHeadline()
+p2 = c.p
+p2.moveToFirstChildOf(p)
+p2.setHeadString('aClone')
+c.selectPosition(p2)
+c.clone()
+assert 2 == p.numberOfChildren()
 
-if not ok: raise
-#@+node:ekr.20050512083807.2: *5* Docs
-marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.markAtFileNodesDirty()
-    except Exception:
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
-
-if not ok: raise
-#@+node:ekr.20050512083700.1: *5* Scripts
-marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.markChangedHeadlines()
-    except Exception:
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
-
-if not ok: raise
-#@+node:ekr.20050512083807: *5*  Test files
-marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.markChangedRoots()
-    except Exception:
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
-
-if not ok: raise
-#@+node:ekr.20050512083816: *5* Load tests for .leo files
-marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.markClones()
-    except Exception:
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
-
-if not ok: raise
-#@+node:ekr.20050512083822: *5* All unit tests
-marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.markHeadline()
-    except Exception:
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
-
-if not ok: raise
-#@+node:ekr.20050512083822.1: *5* @test markSubheads
+# Select the first clone and demote (it should be illegal)
+c.selectPosition(p2)
+c.demote() # This should do nothing.
+assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
+assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
+assert 2 == p.numberOfChildren(), 'fail 3'
+# Delete the children, but only if there are no errors.
+while p.hasChildren():
+    p.firstChild().doDelete()
+#@+node:ekr.20050512083822.1: *4* @test markSubheads
 marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
@@ -4145,11 +4170,43 @@ finally:
                 c.clearMarked(p)
 
 if not ok: raise
-#@+node:ekr.20050512084850.1: *6* child 1
+#@+node:ekr.20050512084850.1: *5* child 1
 pass
-#@+node:ekr.20050512084850.2: *6* child 2
+#@+node:ekr.20050512084850.2: *5* child 2
 pass
-#@+node:ekr.20050512083822.2: *5* @test unmarkAll
+#@+node:ekr.20100203103015.5353: *4* @test open-with conflict dialog
+# A copy of the code from c.createOrRecreateTempFileAsNeeded.
+# Not a perfect test, but stil significant.
+
+assert c.conflict_message,'fail 1'
+
+result = g.app.gui.runAskYesNoCancelDialog(c,
+    "Conflict!", c.conflict_message,
+    yesMessage = "Outline",
+    noMessage = "File",
+    defaultButton = "Cancel")
+
+assert result in (None,'cancel'),'fail 2: %s' % result
+#@+node:ekr.20041019124050: *4* @test prettyPrintPythonCode
+test1 = p.firstChild()
+test2 = p.firstChild().next()
+
+c.prettyPrintPythonCode(p=test2,dump=False)
+
+assert(test2.b==test1.b)
+#@+node:ekr.20041019124050.1: *5* Original
+"""
+line 1
+line 2
+line 3
+"""
+#@+node:ekr.20041019124050.2: *5* Test
+"""
+line 1
+line 2
+line 3
+"""
+#@+node:ekr.20050512083822.2: *4* @test unmarkAll
 marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
@@ -4167,81 +4224,14 @@ finally:
                 c.clearMarked(p)
 
 if not ok: raise
-#@+node:ekr.20110510054817.3475: *4* @test c.alert
-c.alert('test of c.alert')
-#@+node:ekr.20090104053806.1: *4* @@test c.checkFileTimeStamp & c.setFileTimeStamp
-# Disabled because modifying errorTest.py creates annoying bzr conflicts.
+#@+node:ekr.20071113201833: *4* @test zz restore the screen
+# This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
 
-import os
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
 
-path = g.os_path_finalize_join(g.app.testDir,'unittest','errorTest.py')
-assert g.os_path_exists(path),path
-timeStamp = c.timeStampDict.get(path)
-val = c.checkFileTimeStamp(path)
-assert val == True
-
-f = open(path)
-s = f.read()
-lines = g.splitLines(s)
-result = [] ; found = False
-tag = '# timestamp:'
-for line in lines:
-    if line.startswith(tag):
-        timeStamp = os.path.getmtime(path)
-        result.append('%s %s\n' % (tag,timeStamp))
-        found = True
-    else:
-        result.append(line)
-f.close()
-
-assert found,' no line starts with "%s"' % tag
-
-f = open(path,'w')
-f.write(''.join(result))
-f.close()
-
-timeStamp2 = os.path.getmtime(path)
-assert timeStamp != timeStamp2
-val = c.checkFileTimeStamp(path)
-assert not val,repr(val)
-c.setFileTimeStamp(path)
-val = c.checkFileTimeStamp(path)
-assert val,repr(val)
-#@+node:ekr.20071113145804.10: *4* @test c.contractAllHeadlines
-c.contractAllHeadlines()
-p = c.rootPosition()
-while p.hasNext():
-    p.moveToNext()
-c.selectPosition(p)
-#@+node:ekr.20100209155559.5386: *4* @test c.createOpenWithTempFile
-c.createOpenWithTempFile(p,'.py')
-#@+node:ekr.20100212072149.5341: *4* @test c.goToScriptLineNumber
-child = g.findNodeInChildren(c,p,'syntax-error')
-assert child,'no child'
-script = child.b
-try:
-    c.goToScriptLineNumber(child,script,1)
-finally:
-    p.contract()
-    c.selectPosition(p)
-    c.redraw()
-#@+node:ekr.20100212072149.5342: *5* syntax-error
-@language python
-def spam:
-    pass
-#@+node:ekr.20061106112522: *4* @test c.insertBodyTime
-w = c.frame.body.bodyCtrl
-s = w.getAllText()
-
-try:
-    w.setInsertPoint(len(s))
-    c.insertBodyTime()
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    # c.recolor()
-
-# end:
+print('\nEnd of leoCommands tests')
 #@+node:ekr.20101021205258.6009: *4* c.Directives & directories
 #@+node:ekr.20080917151620.9: *5* @test c.scanAllDirectives
 @language python
@@ -4292,89 +4282,6 @@ assert path and path.endswith(endpath),'expected ending %s got %s' % (
 #@+node:sps.20100531034136.20111: *6* @path again
 #@+node:sps.20100531034136.20112: *7* @path again
 #@+node:sps.20100531034136.20113: *8* xyz
-#@+node:ekr.20040802065214: *4* @test changing headline marks descendent @thin nodes dirty
-# Make sure that changing this headline marks descendant @thin nodes dirty.
-h = p.h
-
-try:
-    child = p.firstChild()
-    child.initHeadString("@thin bogus")
-    assert child.h == "@thin bogus", "setting headline failed"
-    child.clearDirty()
-    assert not child.isDirty(), "clearing dirty failed"
-    c.setHeadString(p,"changed")
-    assert child.isDirty(), "setting descendant @thin nodes dirty failed."
-finally:
-    try:
-        c.setHeadString(p,h)
-        c.setHeadString(child,"bogus")
-        p.clearDirty()
-        child.clearDirty()
-    finally: pass
-
-#### c.redraw()
-#@+node:ekr.20040802065214.1: *5* bogus
-test
-#@+node:ekr.20100131180007.5465: *4* @test class StubConfig
-class StubConfig(g.nullObject):
-    pass
-
-x = StubConfig()
-assert not x.getBool(c,'mySetting')
-assert not x.enabledPluginsFileName
-#@+node:ekr.20070611105423.1: *4* @test contract all
-c.contractAllHeadlines()
-#@+node:ville.20090602190735.4770: *4* @test g.command decorator
-_foo = 0
-
-@g.command('my-test-command')
-def mytestcommand(event):
-    global _foo
-
-    _foo = 1
-
-c.k.simulateCommand('my-test-command')
-assert _foo == 1
-
-# bonus test: c.app.commanders()
-assert c in g.app.commanders()
-
-
-
-#@+node:ekr.20071113105654.1: *4* @test hoist with no children
-c.hoist()
-c.dehoist()
-#@+node:ekr.20070611105728: *4* @test illegal clone demote
-# Remove any previous children.
-while p.hasChildren():
-    p.firstChild().doDelete()
-# Create two cloned children.
-c.selectPosition(p)
-c.insertHeadline()
-p2 = c.p
-p2.moveToFirstChildOf(p)
-p2.setHeadString('aClone')
-c.selectPosition(p2)
-c.clone()
-assert 2 == p.numberOfChildren()
-
-# Select the first clone and demote (it should be illegal)
-c.selectPosition(p2)
-c.demote() # This should do nothing.
-assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
-assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
-assert 2 == p.numberOfChildren(), 'fail 3'
-# Delete the children, but only if there are no errors.
-while p.hasChildren():
-    p.firstChild().doDelete()
-#@+node:ekr.20071113201833: *4* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-
-print('\nEnd of leoCommands tests')
 #@+node:ekr.20071113194216: *3* leoConfig
 # 3 failurs with Alt-5
 #@+node:ekr.20060325071703.2: *4* @@test ifgui
@@ -6145,366 +6052,6 @@ c.goNextVisitedNode()
 p3 = c.p
 # print(p3)
 # assert p == p3
-#@+node:ekr.20080904095020.1: *5* goto-line-number tests
-@nocolor-node
-
-c.gotoLineNumber is called in just two ways:
-
-- from goto-global-line with root=None,lines=None and scriptFile = False.
-- from c.goToScriptLineNumber with valid root and lines and scriptFile = True.
-#@+node:ekr.20080905112230.3: *6* goto-line-number tests: original files
-#@+node:ekr.20080904084223.1: *7* @auto unittest/at-auto-line-number-test.py
-@language python
-@tabwidth -4
-@others
-@ignore
-#@+node:ekr.20100226073841.5346: *8* at_auto_child
-# The name of this node comes from the name of this function!
-def at_auto_child():
-    pass
-#@+node:ekr.20110606080926.4030: *8* at_auto_child
-def at_auto_child():
-    pass
-#@+node:ekr.20110606081108.4057: *8* # The name of this node comes from the name of this function!
-# The name of this node comes from the name of this function!
-#@+node:ekr.20110606081108.4058: *8* at_auto_child
-def at_auto_child():
-    pass
-#@+node:ekr.20080904102243.2: *7* @file unittest/at-file-line-number-test.py
-@language python
-@tabwidth -4
-@others
-#@+node:ekr.20080904102243.3: *8* at-file-child
-def child():
-    pass
-#@+node:ekr.20080905130723.3: *7* @thin unittest/at-thin-line-number-test.py
-@language python
-@tabwidth -4
-@others
-#@+node:ekr.20080905130723.4: *8* at-thin-child
-def child():
-    pass
-#@+node:ekr.20080907122804.1: *7* @shadow unittest/at-shadow-line-number-test.py
-@language python
-@tabwidth -4
-@others
-#@+node:ekr.20110606093654.4060: *8* child
-def child():
-    pass
-#@+node:ekr.20080907123324.2: *7* @nosent unittest/at-nosent-line-number-test.py
-@language python
-@tabwidth -4
-@others
-#@+node:ekr.20080907123324.3: *8* at-nosent-child
-def child():
-    pass
-
-#
-#
-#
-#
-#
-#
-#@+node:ekr.20080905112230.4: *6* goto-line-number tests: clones
-# Can not clone @auto children!
-#@+node:ekr.20080904102243.3: *7* at-file-child
-def child():
-    pass
-#@+node:ekr.20080905130723.4: *7* at-thin-child
-def child():
-    pass
-#@+node:ekr.20080907123324.3: *7* at-nosent-child
-def child():
-    pass
-
-#
-#
-#
-#
-#
-#
-#@+node:ekr.20080905113550.2: *6* Tests with @auto as the root
-#@+node:ekr.20080904110148.1: *7* Startup
-root = p.parent().parent()
-h = '@auto unittest/at-auto-line-number-test.py'
-target = g.findNodeInTree(c,root,h)
-assert target
-
-p,n,found = c.goto_countLines (target,3)
-assert found,found
-assert n == 3,n
-assert p.h == 'at_auto_child',p.h
-#@+node:ekr.20080904110148.4: *7* Docs
-h = '@auto unittest/at-auto-line-number-test.py'
-root = g.findNodeAnywhere(c,h)
-assert root
-p,n,found = c.goto_countLines (root,20)
-assert not found
-assert p.h == 'at_auto_child'
-# print('p:%s, n:%s, found: %s' % (p,n,found))
-#@+node:ekr.20080904110148.5: *7* Scripts
-h = '@auto unittest/at-auto-line-number-test.py'
-root1 = g.findNodeAnywhere(c,h)
-assert root1
-assert root1.isAnyAtFileNode()
-
-fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n=3,p=root1)
-assert isRaw,isRaw
-assert fileName == h[6:],fileName
-assert root == root1
-
-if 0:
-    print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
-        root and root.h,isRaw,n,len(lines)))
-#@+node:ekr.20080904113003.2: *7*  Test files
-h = '@auto unittest/at-auto-line-number-test.py'
-root1 = g.findNodeAnywhere(c,h)
-assert root1
-assert root1.isAnyAtFileNode()
-
-scriptData = {'p':root1.copy(),'lines':['a','b','c']}
-fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n=2,scriptData=scriptData)
-
-assert isRaw,isRaw
-assert fileName == h[6:],fileName
-assert root == root1,root
-assert n == 2,n
-
-if 0:
-    print('root:%s, n:%s, len(lines): %s' % (
-        root and root.h,n,len(lines)))
-#@+node:ekr.20080905113550.3: *6* Tests with @file as the root
-#@+node:ekr.20080904120258.6: *7* Startup
-root = p.parent().parent()
-h = '@file unittest/at-file-line-number-test.py'
-target = g.findNodeInTree(c,root,h)
-assert target,'no target'
-
-gnx = g.app.nodeIndices.toString(target.v.fileIndex)
-assert gnx,'no gnx'
-
-p,found = c.goto_findGnx(root,gnx,h)
-assert found,found
-assert p == target,'\np:     %s\ntarget:%s' % (p,target)
-#@+node:ekr.20080905130723.1: *7* Docs
-root = p.parent().parent()
-h = '@file unittest/at-file-line-number-test.py'
-target = g.findNodeInTree(c,root,h)
-assert target,target
-
-n = 2
-fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p=target)
-assert fileName == h[6:]
-# print('lines\n%s' % g.listToString(lines))
-assert root == target
-
-vnodeName,gnx,offset,delim = c.goto_findVnode (root,lines,n,ignoreSentinels)
-
-assert lines,'no lines'
-assert not gnx,repr(gnx)
-assert offset is not None,repr(offset)
-assert vnodeName,repr(vnodeName)
-
-# print('vnodeName',vnodeName,'gnx',gnx,'offset',offset,'delim',delim)
-
-#@+node:ekr.20080907122804.2: *6* Tests with @shadow as the root
-#@+node:ekr.20080907122804.3: *7* Startup
-h = '@shadow unittest/at-shadow-line-number-test.py'
-root1 = g.findNodeAnywhere(c,h)
-assert root1
-assert root1.isAnyAtFileNode()
-
-fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n=6,p=root1)
-assert not isRaw,isRaw
-assert fileName == h[8:],fileName
-assert root == root1
-
-if 0:
-    print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
-        root and root.h,isRaw,n,len(lines)))
-#@+node:ekr.20080907123324.4: *6* Tests with @nosent as the root
-#@+node:ekr.20080907123324.5: *7* Startup
-h = '@nosent unittest/at-nosent-line-number-test.py'
-root1 = g.findNodeAnywhere(c,h)
-assert root1
-assert root1.isAnyAtFileNode()
-
-fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n=6,p=root1)
-assert isRaw,isRaw
-assert ignoreSentinels,ignoreSentinels
-assert fileName == h[8:],fileName
-assert root == root1
-
-if 0:
-    print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
-        root and root.h,isRaw,n,len(lines)))
-#@+node:ekr.20080905113550.4: *6* General tests
-#@+node:ekr.20080905165432.1: *7* Startup
-root = p.parent().parent()
-h = '@auto unittest/at-auto-line-number-test.py'
-target = g.findNodeInTree(c,root,h)
-assert target
-child = target.firstChild()
-assert child.h == 'at_auto_child'
-
-p,found = c.goto_findRoot(child)
-
-assert p == target,p and p.h
-assert found,found
-#@+node:ekr.20080905165432.3: *7* Docs
-root = p.parent().parent()
-
-# Find the cloned nodes that doesn't have an @file node for a parent.
-clones = g.findNodeInTree(c,root,'goto-line-number tests: clones')
-assert clones
-child = g.findNodeInTree(c,clones,'at-file-child')
-assert child and child.h == 'at-file-child',child
-
-h = '@file unittest/at-file-line-number-test.py'
-p,found = c.goto_findRoot(child)
-
-assert p and p.h==h,p and p.h
-assert found,found
-#@+node:ekr.20080904120258.2: *7* Scripts
-c.goto_showResults(found=True,p=p,n=3,n2=3,lines=3)
-#@+node:ekr.20080904120258.3: *7* @test goto_showResults not found
-c.goToLineNumber(c).showResults(
-    found=False,p=p,n=3,n2=3,lines=['a','b'])
-
-
-
-#@+node:ekr.20081111084046.6: *6* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-#@+node:ekr.20100216142240.5371: *6* @@test goto-global-line with @auto
-# The @auto node must be a child of this node
-# for findNodeAnywhere to succeed with Alt-6.
-fn = '../test/at-auto-unit-test.py'
-root = g.findNodeAnywhere(c,'@auto %s' % (fn))
-assert root,'no root'
-
-child1 = root.firstChild()
-assert child1,'no child1'
-grand11 = child1.firstChild()
-assert grand11,'no grand11'
-grand12 = grand11.next()
-assert grand12,'no grand12'
-
-child2 = child1.next()
-assert child2,'no child2'
-grand21 = child2.firstChild()
-assert grand21,'no grand21'
-grand22 = grand21.next()
-assert grand22,'no grand22'
-
-def oops(found,p2,node,n,n2):
-    result = [' ']
-    result.append('goto-global-line test failed at line %s' % (n))
-    if not found:
-        result.append('line %s not found',n)
-    else:
-        result.append('got node "%s", expected "%s"' % (p2.h,node.h))
-        result.append('got offset %s, expected %s' % (n2,n))
-    return '\n'.join(result)
-
-table = (
-    # Use 1-based numbers externally.
-    # countLines converts to zero-based numbers.
-    (1, child1,  0),
-    (2, grand11, 0),
-    (3, grand11, 1),
-    (4, grand12, 0),
-    (5, grand12, 1),
-    (6, child1,  2),
-    (7, child2,  0),
-    (8, grand21, 0),
-    (9, grand21, 1),
-    (10,grand22, 0),
-    (11,grand22, 1),
-    (12,root,    3),
-)
-
-# Test against actual lines of the file.
-path = g.os_path_finalize_join(g.app.loadDir,'..','test',fn)
-f = open(path,'r') ; s = f.read() ; f.close()
-lines = g.splitLines(s) # The lines from the file.
-for n,node,index in table:
-    goto = c.goToLineNumber(c)
-    p2,n2,found = goto.countLines(root,n)
-        # n, the argument to countLines, is 1-based
-        # n2, the returned index into p2.b, is zero-based
-    n -= 1
-        # Convert n to zero-based for the comparisons below.
-    lines2 = g.splitLines(p2.b)
-    if 0:
-        print('%2d %s' % (n,repr(lines[n])))
-    else:
-        ok = lines2[n2].lstrip() == lines[n].lstrip() 
-        if not ok:
-            i = 0
-            for z in lines:
-                print('%2d %s' % (i,repr(z)))
-                i += 1
-        if not ok:
-            print('at line %s, index %s, node %s\ngot line %s\nexpected %s' % (
-                n,n2,p2.h,repr(lines2[n2].lstrip()),repr(lines[n].lstrip())))
-        assert ok
-#@+node:ekr.20100216142240.5372: *7* @auto ../test/at-auto-unit-test.py
-@language python
-@tabwidth -4
-@others
-# last line
-@ignore
-#@+node:ekr.20100226073841.5348: *8* class child1
-class child1:
-    @others
-    # After @others in child1.
-#@+node:ekr.20100226073841.5349: *9* child1_method1
-def child1_method1():
-    pass
-#@+node:ekr.20100226073841.5350: *9* child1_method2
-def child1_method2():
-    pass
-#@+node:ekr.20100226073841.5351: *8* class child2
-class child2:
-    @others
-#@+node:ekr.20100226073841.5352: *9* child2_method1
-def child2_method1():
-    pass
-#@+node:ekr.20100226073841.5353: *9* child2_method2
-def child2_method2():
-    pass
-#@+node:ekr.20110606080926.4035: *8* class child2
-class child2:
-    @others
-#@+node:ekr.20110606080926.4036: *9* child2_method1
-def child2_method1():
-    pass
-#@+node:ekr.20110606080926.4037: *9* child2_method2
-def child2_method2():
-    pass
-#@+node:ekr.20110606081108.4060: *8* class child1
-class child1:
-    @others
-    # After @others in child1.
-#@+node:ekr.20110606081108.4061: *9* child1_method1
-def child1_method1():
-    pass
-#@+node:ekr.20110606081108.4062: *9* child1_method2
-def child1_method2():
-    pass
-#@+node:ekr.20110606081108.4063: *8* class child2
-class child2:
-    @others
-#@+node:ekr.20110606081108.4064: *9* child2_method1
-def child2_method1():
-    pass
-#@+node:ekr.20110606081108.4065: *9* child2_method2
-def child2_method2():
-    pass
 #@+node:ekr.20100212104817.5351: *5* @test help-for-command
 result = c.helpCommands.getBindingsForCommand('help-for-command')
 assert result.strip().lower()=='f1'
@@ -11692,7 +11239,7 @@ g.app.unitTestDict['restoreSelectedNode']=False
 #@+node:ekr.20040712101754.181: *4*  inner @test: Test consistency between parents iter and v.parents
 # The actual test is in a child node.
 #@+node:ekr.20040712101754.182: *5* parent
-#@+node:ekr.20040712101754.183: *6* Startup
+#@+node:ekr.20040712101754.183: *6* @test consistency between parents_iter and v.parents
 try:
     for p in c.all_positions():
         if 0: # Check all ancestors.  This is tricky and doesn't work yet.
@@ -12261,7 +11808,7 @@ try:
 finally:
     c.setBodyString(child,before)
     c.selectPosition(p)
-#@+node:ekr.20040802071519.1: *5* Startup
+#@+node:ekr.20040802071519.1: *5* Test
 after
 #@+node:ekr.20110502130500.3471: *4* @test p.unique_nodes
 aList = [z for z in p.unique_nodes()]

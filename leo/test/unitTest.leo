@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.68" body_secondary_ratio="0.50">
-	<global_window_position top="45" left="412" height="1026" width="1471"/>
+<globals body_outline_ratio="0.68" body_secondary_ratio="0.75">
+	<global_window_position top="45" left="412" height="1026" width="1041"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -94,10 +94,65 @@
 <v t="ekr.20100731163237.5782"><vh>@thin ../test/unittest/at-thin-html-test.html</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
+<v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
+<v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh></v>
+<v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
+<v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
+<v t="ekr.20080907123324.2"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
+<v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
+</v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31302e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"
-expanded="ekr.20071113194858,ekr.20071113193624,ekr.20071113194033,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31302e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+</v>
+<v t="ekr.20110610122533.3369"><vh>goto-global-line tests (Fail at present)</vh>
+<v t="ekr.20110610122533.3388"><vh>Tests with @auto as the root</vh>
+<v t="ekr.20110610122533.3389"><vh>@test goto-line-number @auto 1</vh></v>
+<v t="ekr.20110610122533.3390"><vh>@test @auto 2</vh></v>
+<v t="ekr.20110610122533.3391"><vh>@test @auto 3</vh></v>
+<v t="ekr.20110610122533.3392"><vh>@test @auto 4</vh></v>
+</v>
+<v t="ekr.20110610122533.3393"><vh>Tests with @file as the root</vh>
+<v t="ekr.20110610122533.3394"><vh>@test @file 1</vh></v>
+<v t="ekr.20110610122533.3395"><vh>@test @file 2</vh></v>
+</v>
+<v t="ekr.20110610122533.3396"><vh>Tests with @shadow as the root</vh>
+<v t="ekr.20110610122533.3397"><vh>@test @shadow</vh></v>
+</v>
+<v t="ekr.20110610122533.3398"><vh>Tests with @nosent as the root</vh>
+<v t="ekr.20110610122533.3399"><vh>Startup</vh></v>
+</v>
+<v t="ekr.20110610122533.3400"><vh>General tests</vh>
+<v t="ekr.20110610122533.3401"><vh>Startup</vh></v>
+<v t="ekr.20110610122533.3402"><vh>Docs</vh></v>
+<v t="ekr.20110610122533.3403"><vh>Scripts</vh></v>
+<v t="ekr.20110610122533.3404"><vh>@test goto_showResults not found</vh></v>
+</v>
+<v t="ekr.20110610122533.3405"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20110610122533.3406"><vh>@@test goto-global-line with @auto</vh>
+<v t="ekr.20110610122533.3407"><vh>@auto ../test/at-auto-unit-test.py</vh>
+<v t="ekr.20110610122533.3408"><vh>class child1</vh>
+<v t="ekr.20110610122533.3409"><vh>child1_method1</vh></v>
+<v t="ekr.20110610122533.3410"><vh>child1_method2</vh></v>
+</v>
+<v t="ekr.20110610122533.3411"><vh>class child2</vh>
+<v t="ekr.20110610122533.3412"><vh>child2_method1</vh></v>
+<v t="ekr.20110610122533.3413"><vh>child2_method2</vh></v>
+</v>
+<v t="ekr.20110610122533.3414"><vh>class child2</vh>
+<v t="ekr.20110610122533.3415"><vh>child2_method1</vh></v>
+<v t="ekr.20110610122533.3416"><vh>child2_method2</vh></v>
+</v>
+<v t="ekr.20110610122533.3417"><vh>class child1</vh>
+<v t="ekr.20110610122533.3418"><vh>child1_method1</vh></v>
+<v t="ekr.20110610122533.3419"><vh>child1_method2</vh></v>
+</v>
+<v t="ekr.20110610122533.3420"><vh>class child2</vh>
+<v t="ekr.20110610122533.3421"><vh>child2_method1</vh></v>
+<v t="ekr.20110610122533.3422"><vh>child2_method2</vh></v>
+</v>
+</v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -502,7 +557,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="5,0"></t>
+<t tx="ekr.20070417092935" str_leo_pos="6"></t>
 <t tx="ekr.20071113140035">fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src','leoPy.leo'))
 flag,frame2 = g.openWithFileName(fileName,old_c=None,enableLog=False)
 c.frame.bringToFront()
@@ -531,6 +586,20 @@ for h in d2.keys():
     if not d1.get(h):
         g.pr(h)</t>
 <t tx="ekr.20071113203234"></t>
+<t tx="ekr.20080907123324.2">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20080907123324.3">def child():
+    pass
+
+#
+#
+#
+#
+#
+#
+</t>
 <t tx="ekr.20090704085350.5007">@language python
 @others</t>
 <t tx="ekr.20090704085350.5028">@language python
@@ -607,5 +676,293 @@ s = "%d nodes" % count
 print s ; g.es(s)</t>
 <t tx="ekr.20101220161557.6013"></t>
 <t tx="ekr.20101220161557.6016"></t>
+<t tx="ekr.20110610122533.3369">@nocolor-node
+
+c.gotoLineNumber is called in just two ways:
+
+- from goto-global-line with root=None,lines=None and scriptFile = False.
+- from c.goToScriptLineNumber with valid root and lines and scriptFile = True.
+</t>
+<t tx="ekr.20110610122533.3388"></t>
+<t tx="ekr.20110610122533.3389">root = p.parent().parent()
+h = '@auto unittest/at-auto-line-number-test.py'
+target = g.findNodeAnywhere(c,h)
+assert target,'no @auto node'
+
+p,n,found = c.goToLineNumber(c).countLines(target,2)
+assert found,'not found'
+assert n == 1,'n: %s' % (n)
+assert p.h == 'at_auto_child',p.h
+</t>
+<t tx="ekr.20110610122533.3390">h = '@auto unittest/at-auto-line-number-test.py'
+root = g.findNodeAnywhere(c,h)
+assert root
+p,n,found = c.goto_countLines (root,20)
+assert not found
+assert p.h == 'at_auto_child'
+# print('p:%s, n:%s, found: %s' % (p,n,found))
+</t>
+<t tx="ekr.20110610122533.3391">h = '@auto unittest/at-auto-line-number-test.py'
+root1 = g.findNodeAnywhere(c,h)
+assert root1
+assert root1.isAnyAtFileNode()
+
+fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n=3,p=root1)
+assert isRaw,isRaw
+assert fileName == h[6:],fileName
+assert root == root1
+
+if 0:
+    print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
+        root and root.h,isRaw,n,len(lines)))
+</t>
+<t tx="ekr.20110610122533.3392">h = '@auto unittest/at-auto-line-number-test.py'
+root1 = g.findNodeAnywhere(c,h)
+assert root1
+assert root1.isAnyAtFileNode()
+
+scriptData = {'p':root1.copy(),'lines':['a','b','c']}
+fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n=2,scriptData=scriptData)
+
+assert isRaw,isRaw
+assert fileName == h[6:],fileName
+assert root == root1,root
+assert n == 2,n
+
+if 0:
+    print('root:%s, n:%s, len(lines): %s' % (
+        root and root.h,n,len(lines)))
+</t>
+<t tx="ekr.20110610122533.3393"></t>
+<t tx="ekr.20110610122533.3394">root = p.parent().parent()
+h = '@file unittest/at-file-line-number-test.py'
+target = g.findNodeInTree(c,root,h)
+assert target,'no target'
+
+gnx = g.app.nodeIndices.toString(target.v.fileIndex)
+assert gnx,'no gnx'
+
+p,found = c.goto_findGnx(root,gnx,h)
+assert found,found
+assert p == target,'\np:     %s\ntarget:%s' % (p,target)
+</t>
+<t tx="ekr.20110610122533.3395">root = p.parent().parent()
+h = '@file unittest/at-file-line-number-test.py'
+target = g.findNodeInTree(c,root,h)
+assert target,target
+
+n = 2
+fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p=target)
+assert fileName == h[6:]
+# print('lines\n%s' % g.listToString(lines))
+assert root == target
+
+vnodeName,gnx,offset,delim = c.goto_findVnode (root,lines,n,ignoreSentinels)
+
+assert lines,'no lines'
+assert not gnx,repr(gnx)
+assert offset is not None,repr(offset)
+assert vnodeName,repr(vnodeName)
+
+# print('vnodeName',vnodeName,'gnx',gnx,'offset',offset,'delim',delim)
+</t>
+<t tx="ekr.20110610122533.3396"></t>
+<t tx="ekr.20110610122533.3397">h = '@shadow unittest/at-shadow-line-number-test.py'
+root1 = g.findNodeAnywhere(c,h)
+assert root1
+assert root1.isAnyAtFileNode()
+
+fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n=6,p=root1)
+assert not isRaw,isRaw
+assert fileName == h[8:],fileName
+assert root == root1
+
+if 0:
+    print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
+        root and root.h,isRaw,n,len(lines)))
+</t>
+<t tx="ekr.20110610122533.3398"></t>
+<t tx="ekr.20110610122533.3399">h = '@nosent unittest/at-nosent-line-number-test.py'
+root1 = g.findNodeAnywhere(c,h)
+assert root1
+assert root1.isAnyAtFileNode()
+
+fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n=6,p=root1)
+assert isRaw,isRaw
+assert ignoreSentinels,ignoreSentinels
+assert fileName == h[8:],fileName
+assert root == root1
+
+if 0:
+    print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
+        root and root.h,isRaw,n,len(lines)))
+</t>
+<t tx="ekr.20110610122533.3400"></t>
+<t tx="ekr.20110610122533.3401">root = p.parent().parent()
+h = '@auto unittest/at-auto-line-number-test.py'
+target = g.findNodeInTree(c,root,h)
+assert target
+child = target.firstChild()
+assert child.h == 'at_auto_child'
+
+p,found = c.goto_findRoot(child)
+
+assert p == target,p and p.h
+assert found,found
+</t>
+<t tx="ekr.20110610122533.3402">root = p.parent().parent()
+
+# Find the cloned nodes that doesn't have an @file node for a parent.
+clones = g.findNodeInTree(c,root,'goto-line-number tests: clones')
+assert clones
+child = g.findNodeInTree(c,clones,'at-file-child')
+assert child and child.h == 'at-file-child',child
+
+h = '@file unittest/at-file-line-number-test.py'
+p,found = c.goto_findRoot(child)
+
+assert p and p.h==h,p and p.h
+assert found,found
+</t>
+<t tx="ekr.20110610122533.3403">c.goto_showResults(found=True,p=p,n=3,n2=3,lines=3)
+</t>
+<t tx="ekr.20110610122533.3404">c.goToLineNumber(c).showResults(
+    found=False,p=p,n=3,n2=3,lines=['a','b'])
+
+
+
+</t>
+<t tx="ekr.20110610122533.3405"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+</t>
+<t tx="ekr.20110610122533.3406"># The @auto node must be a child of this node
+# for findNodeAnywhere to succeed with Alt-6.
+fn = '../test/at-auto-unit-test.py'
+root = g.findNodeAnywhere(c,'@auto %s' % (fn))
+assert root,'no root'
+
+child1 = root.firstChild()
+assert child1,'no child1'
+grand11 = child1.firstChild()
+assert grand11,'no grand11'
+grand12 = grand11.next()
+assert grand12,'no grand12'
+
+child2 = child1.next()
+assert child2,'no child2'
+grand21 = child2.firstChild()
+assert grand21,'no grand21'
+grand22 = grand21.next()
+assert grand22,'no grand22'
+
+def oops(found,p2,node,n,n2):
+    result = [' ']
+    result.append('goto-global-line test failed at line %s' % (n))
+    if not found:
+        result.append('line %s not found',n)
+    else:
+        result.append('got node "%s", expected "%s"' % (p2.h,node.h))
+        result.append('got offset %s, expected %s' % (n2,n))
+    return '\n'.join(result)
+
+table = (
+    # Use 1-based numbers externally.
+    # countLines converts to zero-based numbers.
+    (1, child1,  0),
+    (2, grand11, 0),
+    (3, grand11, 1),
+    (4, grand12, 0),
+    (5, grand12, 1),
+    (6, child1,  2),
+    (7, child2,  0),
+    (8, grand21, 0),
+    (9, grand21, 1),
+    (10,grand22, 0),
+    (11,grand22, 1),
+    (12,root,    3),
+)
+
+# Test against actual lines of the file.
+path = g.os_path_finalize_join(g.app.loadDir,'..','test',fn)
+f = open(path,'r') ; s = f.read() ; f.close()
+lines = g.splitLines(s) # The lines from the file.
+for n,node,index in table:
+    goto = c.goToLineNumber(c)
+    p2,n2,found = goto.countLines(root,n)
+        # n, the argument to countLines, is 1-based
+        # n2, the returned index into p2.b, is zero-based
+    n -= 1
+        # Convert n to zero-based for the comparisons below.
+    lines2 = g.splitLines(p2.b)
+    if 0:
+        print('%2d %s' % (n,repr(lines[n])))
+    else:
+        ok = lines2[n2].lstrip() == lines[n].lstrip() 
+        if not ok:
+            i = 0
+            for z in lines:
+                print('%2d %s' % (i,repr(z)))
+                i += 1
+        if not ok:
+            print('at line %s, index %s, node %s\ngot line %s\nexpected %s' % (
+                n,n2,p2.h,repr(lines2[n2].lstrip()),repr(lines[n].lstrip())))
+        assert ok
+</t>
+<t tx="ekr.20110610122533.3407">@language python
+@tabwidth -4
+@others
+# last line
+@ignore
+</t>
+<t tx="ekr.20110610122533.3408">class child1:
+    @others
+    # After @others in child1.
+</t>
+<t tx="ekr.20110610122533.3409">def child1_method1():
+    pass
+</t>
+<t tx="ekr.20110610122533.3410">def child1_method2():
+    pass
+</t>
+<t tx="ekr.20110610122533.3411">class child2:
+    @others
+</t>
+<t tx="ekr.20110610122533.3412">def child2_method1():
+    pass
+</t>
+<t tx="ekr.20110610122533.3413">def child2_method2():
+    pass
+</t>
+<t tx="ekr.20110610122533.3414">class child2:
+    @others
+</t>
+<t tx="ekr.20110610122533.3415">def child2_method1():
+    pass
+</t>
+<t tx="ekr.20110610122533.3416">def child2_method2():
+    pass
+</t>
+<t tx="ekr.20110610122533.3417">class child1:
+    @others
+    # After @others in child1.
+</t>
+<t tx="ekr.20110610122533.3418">def child1_method1():
+    pass
+</t>
+<t tx="ekr.20110610122533.3419">def child1_method2():
+    pass
+</t>
+<t tx="ekr.20110610122533.3420">class child2:
+    @others
+</t>
+<t tx="ekr.20110610122533.3421">def child2_method1():
+    pass
+</t>
+<t tx="ekr.20110610122533.3422">def child2_method2():
+    pass
+</t>
 </tnodes>
 </leo_file>

@@ -5952,59 +5952,6 @@ pass
 pass
 #@+node:ekr.20080806084924.5: *9* greatGrandChild1
 pass
-#@+node:ekr.20101021210253.6017: *4* tnode stuff
-#@+node:ekr.20061001124008: *5* @@test fc.putTnodeList (minimal test)
-# New in Leo 4.7 b2: Leo never sets the tnodeList of any node.
-fc = c.fileCommands
-v = p.v
-child = p.firstChild()
-assert child,'no child'
-grandChild = child.firstChild()
-assert grandChild,'no grandChild'
-assert not v.tnodeList,repr(v.tnodeList)
-
-try:
-    v.tnodeList = [v,child.v,grandChild.v]
-    s = fc.putTnodeList(p.v)
-    expected = ' tnodeList="ekr.20061001124008,ekr.20061001124008.1,ekr.20061001124008.2"'
-    assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
-finally:
-    v.tnodeList = []
-#@+node:ekr.20061001124008.1: *6* child
-#@+node:ekr.20061001124008.2: *7* grandchild
-#@+node:ekr.20100131180007.5452: *5* @@test fc.tnodeAttributes
-@
-OMG: the hack in tnodeAttributes to support this unit test was the cause of the
-weird bug that had Leo work differently in scripts than it did in unit tests!!
-
-Let us hope that this is the worst blunder that I shall ever make.
-@c
-
-if 0: # Do **not** try to make this work: it isn't worth it.
-
-    import leo.core.leoFileCommands as leoFileCommands
-
-    class saxAttrsClass:
-        '''Simulating sax attributes'''
-        def __init__(self):
-            self.attrs = {
-                'tx':'ekr.123','testAttr':'abc',
-            }
-        def getNames(self):
-            return list(self.attrs.keys())
-        def getValue(self,key):
-            return self.attrs.get(key)
-
-    handler = leoFileCommands.saxContentHandler(
-        c,fileName='<test file>',
-        silent=True,inClipboard=False)
-    attributes = saxAttrsClass()
-    handler.tnodeAttributes(attributes)
-    aList = handler.nodeList
-    assert len(aList) == 1,len(aList)
-    b = aList[0]
-    d = b.tnodeAttributes
-    assert d.get('testAttr')=='abc',d.get('testAttr')
 #@+node:ekr.20100223094723.5375: *4* New import tests
 #@+node:ekr.20100223094723.5376: *5* @test skipToTheNextClassOrFunction (a class next)
 import leo.core.leoImport as leoImport
