@@ -16,7 +16,7 @@ Requires at least version 0.19 of mod_scripting.
 
 import leo.core.leoGlobals as g
 
-from mod_scripting import scriptingController
+from leo.plugins.mod_scripting import scriptingController
 
 __version__ = "0.5"
 
