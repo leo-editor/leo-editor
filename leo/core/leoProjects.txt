@@ -4902,6 +4902,466 @@ The fix was yet another last-minute fix leoQtEventFiler.create_key_event.
 
 - Defined g.app.lossage instead of a class var of keyHandlerClass.
 - Created k.setLossage and called it in several places.
+#@+node:ekr.20110610103805.16459: *4* Fixed bug: F3 now makes sure to save headline changes
+F3: findTabFindNext
+#@+node:ekr.20051022212004: *5* Find Tab commands
+# Just open the Find tab if it has never been opened.
+# For minibuffer commands, it would be good to force the Find tab to be visible.
+# However, this leads to unfortunate confusion when executed from a shortcut.
+
+def findTabChange(self,event=None):
+    '''Execute the 'Change' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.changeCommand()
+    else:
+        self.openFindTab()
+
+def findTabChangeThenFind(self,event=None):
+    '''Execute the 'Replace, Find' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.changeThenFindCommand()
+    else:
+        self.openFindTab()
+
+def findTabFindAll(self,event=None):
+    '''Execute the 'Find All' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.findAllCommand()
+    else:
+        self.openFindTab()
+
+def findTabFindNext (self,event=None):
+    '''Execute the 'Find Next' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.findNextCommand()
+    else:
+        self.openFindTab()
+
+def findTabFindPrev (self,event=None):
+    '''Execute the 'Find Previous' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.findPrevCommand()
+    else:
+        self.openFindTab()
+
+def hideFindTab (self,event=None):
+    '''Hide the Find tab.'''
+    if self.findTabHandler:
+        self.c.frame.log.selectTab('Log')
+#@+node:ekr.20031218072017.3074: *5* findNext
+def findNext(self,initFlag=True):
+
+    c = self.c
+    if not self.checkArgs():
+        return
+
+    if initFlag:
+        self.initInHeadline()
+        data = self.save()
+        self.initInteractiveCommands()
+    else:
+        data = self.save()
+
+    pos, newpos = self.findNextMatch()
+
+    if pos is None:
+        if self.wrapping:
+            g.es("end of wrapped search")
+        else:
+            g.es("not found","'%s'" % (self.find_text))
+        self.restore(data)
+    else:
+        self.showSuccess(pos,newpos)
+#@+node:ekr.20031218072017.3091: *5* showSuccess (leoFind) (changed)
+def showSuccess(self,pos,newpos,showState=True):
+
+    '''Display the result of a successful find operation.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = self.p
+    if not p:
+        return g.trace('can not happen: self.p is None')
+
+    current = c.p
+    c.frame.bringToFront() # Needed on the Mac
+
+    # Expand ancestors and set redraw if a redraw is needed.
+    redraw1 = not p.isVisible(c)
+    if c.sparse_find:
+        # Show only the 'sparse' tree when redrawing.
+        for p2 in c.p.self_and_parents():
+            if p2.isAncestorOf(p):
+                break
+            p2.contract()
+            redraw1 = True # Important bug fix. Was redraw = True.
+
+    redraw2 = c.expandAllAncestors(self.p)
+    redraw = redraw1 or redraw2
+
+    # Set state vars.
+    # Ensure progress in backwards searches.
+    insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
+    if self.wrap and not self.wrapPosition:
+        self.wrapPosition = self.p
+
+    if trace: g.trace('in_headline',self.in_headline)
+    if self.in_headline:
+        c.endEditing() ### 2011/06/10: A major bug fix.
+        selection = pos,newpos,insert
+        c.redrawAndEdit(p,
+            selection=selection,
+            keepMinibuffer=True)
+        w = c.edit_widget(p)
+    else:
+        w = c.frame.body.bodyCtrl
+        # This is like the logic in c.selectPosition.
+        if redraw:
+            c.redraw(p)
+        else:
+            c.selectPosition(p)
+            c.redraw_after_select(p)
+        c.bodyWantsFocus()
+        if showState:
+            c.k.showStateAndMode(w)
+        # g.trace(pos,newpos,insert)
+        w.setSelectionRange(pos,newpos,insert=insert)
+        w.seeInsertPoint()
+        c.outerUpdate()
+    return w # Support for isearch.
+#@+node:ekr.20031218072017.2991: *5* c.redrawAndEdit
+# Sets the focus to p and edits p.
+
+def redrawAndEdit(self,p,selectAll=False,selection=None,keepMinibuffer=False):
+
+    '''Redraw the screen and start editing the headline at position p.'''
+
+    c = self ; k = c.k
+
+    c.redraw(p)
+
+    if p:
+        # This should request focus.
+        c.frame.tree.editLabel(p,selectAll=selectAll,selection=selection)
+
+        if k and not keepMinibuffer:
+            # Setting the input state has no effect on focus.
+            if selectAll:
+                k.setInputState('insert')
+            else:
+                k.setDefaultInputState()
+
+            # This *does* affect focus.
+            k.showStateAndMode()
+
+    # Update the focus immediately.
+    if not keepMinibuffer:
+        c.outerUpdate()
+#@+node:ekr.20031218072017.3075: *5* findNextMatch
+# Resumes the search where it left off.
+# The caller must call set_first_incremental_search or set_first_batch_search.
+
+def findNextMatch(self):
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = self.p
+
+    if trace: g.trace('entry','p',p and p.h,
+        'search_headline',self.search_headline,
+        'search_body',self.search_body)
+
+    if not self.search_headline and not self.search_body:
+        if trace: g.trace('nothing to search')
+        return None, None
+
+    if len(self.find_text) == 0:
+        if trace: g.trace('no find text')
+        return None, None
+
+    self.errors = 0
+    attempts = 0
+    self.backwardAttempts = 0
+
+    # New in Leo 4.4.8: precompute the regexp for regexHelper.
+    if self.pattern_match:
+        try: # Precompile the regexp.
+            flags = re.MULTILINE
+            if self.ignore_case: flags |= re.IGNORECASE
+            # New in Leo 4.5: escape the search text.
+            b,s = '\\b',self.find_text
+            if self.whole_word:
+                if not s.startswith(b): s = b + s
+                if not s.endswith(b): s = s + b
+            # g.trace(self.whole_word,repr(s))
+                
+            self.re_obj = re.compile(s,flags)
+            # self.re_obj = re.compile(re.escape(self.find_text),flags)
+        except Exception:
+            g.es('invalid regular expression:',self.find_text,color='blue')
+            self.errors += 1 # Abort the search.
+            return None,None
+
+    while p:
+        pos, newpos = self.search()
+        if trace: g.trace('attempt','pos',pos,'p',p.h,'in_headline',self.in_headline)
+        if pos is not None:
+            if self.mark_finds:
+                p.setMarked()
+                c.frame.tree.drawIcon(p) # redraw only the icon.
+            if trace: g.trace('success',pos,newpos)
+            return pos, newpos
+        elif self.errors:
+            g.trace('find errors')
+            return None,None # Abort the search.
+        elif self.node_only:
+            # Bug fix: 2009-5-31.
+            # Attempt to switch from headline to body.
+            if self.in_headline:
+                self.in_headline = False
+                self.initNextText()
+            else: 
+                if trace: g.trace('fail: node only')
+                return None,None # We are only searching one node.
+        else:
+            if trace: g.trace('failed attempt',p)
+            attempts += 1
+            p = self.p = self.selectNextPosition()
+
+    if trace: g.trace('attempts',attempts,'backwardAttempts',self.backwardAttempts)
+    return None, None
+#@+node:ekr.20031218072017.3077: *5* search & helpers
+def search (self):
+
+    """Search s_ctrl for self.find_text under the control of the
+    whole_word, ignore_case, and pattern_match ivars.
+
+    Returns (pos, newpos) or (None,None)."""
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = self.p ; w = self.s_ctrl
+    index = w.getInsertPoint()
+    s = w.getAllText()
+
+    if trace: g.trace(index,repr(s[index:index+20]))
+    stopindex = g.choose(self.reverse,0,len(s)) # 'end' doesn't work here.
+    pos,newpos = self.searchHelper(s,index,stopindex,self.find_text,
+        backwards=self.reverse,nocase=self.ignore_case,
+        regexp=self.pattern_match,word=self.whole_word)
+
+    if trace: g.trace('pos,newpos',pos,newpos)
+    if pos == -1:
+        if trace: g.trace('** pos is -1',pos,newpos)
+        return None,None
+    << fail if we are passed the wrap point >>
+    insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
+    w.setSelectionRange(pos,newpos,insert=insert)
+
+    if trace: g.trace('** returns',pos,newpos)
+    return pos,newpos
+#@+node:ekr.20060526140328: *6* << fail if we are passed the wrap point >>
+if self.wrapping and self.wrapPos is not None and self.wrapPosition and p == self.wrapPosition:
+
+    if self.reverse and pos < self.wrapPos:
+        if trace: g.trace("** reverse wrap done",pos,newpos)
+        return None, None
+
+    if not self.reverse and newpos > self.wrapPos:
+        if trace: g.trace('** wrap done',pos,newpos)
+        return None, None
+#@+node:ekr.20060526081931: *6* searchHelper & allies
+def searchHelper (self,s,i,j,pattern,backwards,nocase,regexp,word,swapij=True):
+
+    trace = self.trace
+
+    if swapij and backwards: i,j = j,i
+
+    if trace: g.trace('back,nocase,regexp,word,',
+        backwards,nocase,regexp,word,i,j,repr(s[i:i+20]))
+
+    if not s[i:j] or not pattern:
+        if trace: g.trace('empty',i,j,'len(s)',len(s),'pattern',pattern)
+        return -1,-1
+
+    if regexp:
+        pos,newpos = self.regexHelper(s,i,j,pattern,backwards,nocase)
+    elif backwards:
+        pos,newpos = self.backwardsHelper(s,i,j,pattern,nocase,word)
+    else:
+        pos,newpos = self.plainHelper(s,i,j,pattern,nocase,word)
+
+    if trace: g.trace('returns',pos,newpos)
+    return pos,newpos
+#@+node:ekr.20060526092203: *7* regexHelper
+def regexHelper (self,s,i,j,pattern,backwards,nocase):
+
+    re_obj = self.re_obj # Use the pre-compiled object
+    if not re_obj:
+        g.trace('can not happen: no re_obj')
+        return -1,-1
+
+    if backwards: # Scan to the last match.  We must use search here.
+        last_mo = None ; i = 0
+        while i < len(s):
+            mo = re_obj.search(s,i,j)
+            if not mo: break
+            i += 1 ; last_mo = mo
+        mo = last_mo
+    else:
+        mo = re_obj.search(s,i,j)
+
+    if 0:
+        g.trace('i',i,'j',j,'s[i:j]',repr(s[i:j]),
+            'mo.start',mo and mo.start(),'mo.end',mo and mo.end())
+
+    while mo and 0 <= i < len(s):
+        if mo.start() == mo.end():
+            if backwards:
+                # Search backward using match instead of search.
+                i -= 1
+                while 0 <= i < len(s):
+                    mo = re_obj.match(s,i,j)
+                    if mo: break
+                    i -= 1
+            else:
+                i += 1 ; mo = re_obj.search(s,i,j)
+        else:
+            self.match_obj = mo
+            return mo.start(),mo.end()
+    self.match_obj = None
+    return -1,-1
+#@+node:ekr.20060526140744: *7* backwardsHelper
+debugIndices = []
+
+@
+rfind(sub [,start [,end]])
+
+Return the highest index in the string where substring sub is found, such that
+sub is contained within s[start,end]. Optional arguments start and end are
+interpreted as in slice notation. Return -1 on failure.
+@c
+
+def backwardsHelper (self,s,i,j,pattern,nocase,word):
+
+    debug = False
+    if nocase:
+        s = s.lower() ; pattern = pattern.lower() # Bug fix: 10/5/06: At last the bug is found!
+    pattern = self.replaceBackSlashes(pattern)
+    n = len(pattern)
+
+    if i < 0 or i > len(s) or j < 0 or j > len(s):
+        g.trace('bad index: i = %s, j = %s' % (i,j))
+        i = 0 ; j = len(s)
+
+    if debug and (s and i == 0 and j == 0):
+        g.trace('two zero indices')
+
+    self.backwardAttempts += 1
+
+    # short circuit the search: helps debugging.
+    if s.find(pattern) == -1:
+        if debug:
+            self.debugCount += 1
+            if self.debugCount < 50:
+                g.trace(i,j,'len(s)',len(s),self.p.h)
+        return -1,-1
+
+    if word:
+        while 1:
+            k = s.rfind(pattern,i,j)
+            if debug: g.trace('**word** %3s %3s %5s -> %s %s' % (i,j,g.choose(j==len(s),'(end)',''),k,self.p.h))
+            if k == -1: return -1, -1
+            if self.matchWord(s,k,pattern):
+                return k,k+n
+            else:
+                j = max(0,k-1)
+    else:
+        k = s.rfind(pattern,i,j)
+        if debug: g.trace('%3s %3s %5s -> %s %s' % (i,j,g.choose(j==len(s),'(end)',''),k,self.p.h))
+        if k == -1:
+            return -1, -1
+        else:
+            return k,k+n
+#@+node:ekr.20060526093531: *7* plainHelper
+def plainHelper (self,s,i,j,pattern,nocase,word):
+
+    trace = self.trace
+
+    # if trace: g.trace(i,j,repr(s[i:i+20]),'pattern',repr(pattern),'word',repr(word))
+    if trace: g.trace(i,j,repr(s[i:i+20]))
+
+    if nocase:
+        s = s.lower() ; pattern = pattern.lower()
+    pattern = self.replaceBackSlashes(pattern)
+    n = len(pattern)
+    if word:
+        while 1:
+            k = s.find(pattern,i,j)
+            # g.trace(k,n)
+            if k == -1:
+                if trace: g.trace('no match word',i)
+                return -1, -1
+            elif self.matchWord(s,k,pattern):
+                if trace: g.trace('match word',k)
+                return k, k + n
+            else: i = k + n
+    else:
+        k = s.find(pattern,i,j)
+        if k == -1:
+            if trace: g.trace('no match word',i)
+            return -1, -1
+        else:
+            if trace: g.trace('match', k)
+            return k, k + n
+#@+node:ekr.20060526140744.1: *7* matchWord
+def matchWord(self,s,i,pattern):
+
+    trace = self.trace
+
+    pattern = self.replaceBackSlashes(pattern)
+    if not s or not pattern or not g.match(s,i,pattern):
+        if trace: g.trace('empty')
+        return False
+
+    pat1,pat2 = pattern[0],pattern[-1]
+    # n = self.patternLen(pattern)
+    n = len(pattern)
+    ch1 = 0 <= i-1 < len(s) and s[i-1] or '.'
+    ch2 = 0 <= i+n < len(s) and s[i+n] or '.'
+
+    isWordPat1 = g.isWordChar(pat1)
+    isWordPat2 = g.isWordChar(pat2)
+    isWordCh1 = g.isWordChar(ch1)
+    isWordCh2 = g.isWordChar(ch2)
+
+    # g.trace('i',i,'ch1,ch2,pat',repr(ch1),repr(ch2),repr(pattern))
+
+    inWord = isWordPat1 and isWordCh1 or isWordPat2 and isWordCh2
+    if trace: g.trace('returns',not inWord)
+    return not inWord
+
+#@+node:ekr.20070105165924: *7* replaceBackSlashes
+def replaceBackSlashes (self,s):
+
+    '''Carefully replace backslashes in a search pattern.'''
+
+    # This is NOT the same as s.replace('\\n','\n').replace('\\t','\t').replace('\\\\','\\')
+    # because there is no rescanning.
+
+    i = 0
+    while i + 1 < len(s):
+        if s[i] == '\\':
+            ch = s[i+1]
+            if ch == '\\':
+                s = s[:i] + s[i+1:] # replace \\ by \
+            elif ch == 'n':
+                s = s[:i] + '\n' + s[i+2:] # replace the \n by a newline
+            elif ch == 't':
+                s = s[:i] + '\t' + s[i+2:] # replace \t by a tab
+            else:
+                i += 1 # Skip the escaped character.
+        i += 1
+
+    if self.trace: g.trace(repr(s))
+    return s
 #@+node:ekr.20110609042343.16542: *3* Features, including code improvements
 #@+node:ekr.20110526083709.18337: *4* Simplified Leo's key handling
 @nocolor-node

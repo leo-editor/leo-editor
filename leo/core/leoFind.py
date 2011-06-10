@@ -1295,7 +1295,7 @@ class leoFind:
             insert,start,end = None,None,None
 
         return (self.in_headline,p,w,insert,start,end)
-    #@+node:ekr.20031218072017.3091: *4* showSuccess (leoFind)
+    #@+node:ekr.20031218072017.3091: *4* showSuccess (leoFind) (changed)
     def showSuccess(self,pos,newpos,showState=True):
 
         '''Display the result of a successful find operation.'''
@@ -1329,6 +1329,7 @@ class leoFind:
 
         if trace: g.trace('in_headline',self.in_headline)
         if self.in_headline:
+            c.endEditing() ### 2011/06/10: A major bug fix.
             selection = pos,newpos,insert
             c.redrawAndEdit(p,
                 selection=selection,

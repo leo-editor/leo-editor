@@ -2945,7 +2945,7 @@ class keyHandlerClass:
         b = k.getPaneBinding(stroke,w)
         if b:
             if traceGC: g.printNewObjects('masterKey 3')
-            if trace: g.trace('   bound',stroke)
+            if trace: g.trace('   bound',stroke,b.func.__name__)
             return k.masterCommand(event,b.func,b.stroke,b.commandName)
         else:
             if traceGC: g.printNewObjects('masterKey 4')
