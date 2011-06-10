@@ -24,8 +24,8 @@ ok = None
 
 #@+<< imports >>
 #@+node:ekr.20101110095557.5884: ** << imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import os
 
