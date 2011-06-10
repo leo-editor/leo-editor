@@ -4742,6 +4742,58 @@ def loadMacros (self,f):
             macro.append(event)
         self.addToDoAltX(name,macro)
             # sets self.namedMacros[name]=macro
+#@+node:ekr.20110610051140.16459: *3* from leoGui.py
+#@+node:ekr.20040131103531: *4* << define leoGui file types >> (not used yet)
+allFullFiletypes = [
+    ("All files",   "*"),
+    ("C/C++ files", "*.c"),
+    ("C/C++ files", "*.cpp"),
+    ("C/C++ files", "*.h"),
+    ("C/C++ files", "*.hpp"),
+    ("Java files",  "*.java"),
+    ("Lua files",   "*.lua"),
+    ("Pascal files","*.pas"),
+    ("Python files","*.py")]
+    # To do: *.php, *.php3, *.php4")
+pythonFullFiletypes = [
+    ("Python files","*.py"),
+    ("All files","*"),
+    ("C/C++ files","*.c"),
+    ("C/C++ files","*.cpp"),
+    ("C/C++ files","*.h"),
+    ("C/C++ files","*.hpp"),
+    ("Java files","*.java"),
+    ("Lua files",   "*.lua"),
+    ("Pascal files","*.pas")]
+    # To do: *.php, *.php3, *.php4")
+textFullFiletypes = [
+    ("Text files","*.txt"),
+    ("C/C++ files","*.c"),
+    ("C/C++ files","*.cpp"),
+    ("C/C++ files","*.h"),
+    ("C/C++ files","*.hpp"),
+    ("Java files","*.java"),
+    ("Lua files",   "*.lua"),
+    ("Pascal files","*.pas"),
+    ("Python files","*.py"),
+    ("All files","*")]
+    # To do: *.php, *.php3, *.php4")
+CWEBTextAllFiletypes = [
+    ("CWEB files","*.w"),
+    ("Text files","*.txt"),
+    ("All files", "*")]
+leoAllFiletypes = [
+    ("Leo files","*.leo"),
+    ("All files","*")]
+leoFiletypes = [
+    ("Leo files","*.leo")]
+nowebTextAllFiletypes = [
+    ("Noweb files","*.nw"),
+    ("Text files", "*.txt"),
+    ("All files",  "*")]
+textAllFiletypes = [
+    ("Text files","*.txt"),
+    ("All files", "*")]
 #@+node:ekr.20101127152442.5878: ** Url's
 @color
 

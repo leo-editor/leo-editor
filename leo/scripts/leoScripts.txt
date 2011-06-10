@@ -11961,7 +11961,7 @@ def get_jsonfile(self, fname='codehash'):
 '''Find all commands that lack docstrings, and
 append the corresponding function name to the end of this node.'''
 
-d = c.commandsDict # Keys are command names; values are functions
+d = c.commandsDict # Keys are command names; values are functions,
 ignore = ['minibufferCallback','enterModeCallback',]
 aList = [ d.get(z).__name__ for z in d
     if not d.get(z).__doc__ and not d.get(z).__name__ in ignore]
@@ -16621,6 +16621,6 @@ a
 c  
 
 last
+@language python
 #@-all
-#@@language python
 #@-leo

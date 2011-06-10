@@ -51,61 +51,8 @@ class leoGui:
 
     """The base class of all gui classes.
 
-    Subclasses are expected to override all do-nothing methods of this class."""
-
-    #@+<< define leoGui file types >>
-    #@+node:ekr.20040131103531: *3* << define leoGui file types >> (not used yet)
-    allFullFiletypes = [
-        ("All files",   "*"),
-        ("C/C++ files", "*.c"),
-        ("C/C++ files", "*.cpp"),
-        ("C/C++ files", "*.h"),
-        ("C/C++ files", "*.hpp"),
-        ("Java files",  "*.java"),
-        ("Lua files",   "*.lua"),
-        ("Pascal files","*.pas"),
-        ("Python files","*.py")]
-        # To do: *.php, *.php3, *.php4")
-    pythonFullFiletypes = [
-        ("Python files","*.py"),
-        ("All files","*"),
-        ("C/C++ files","*.c"),
-        ("C/C++ files","*.cpp"),
-        ("C/C++ files","*.h"),
-        ("C/C++ files","*.hpp"),
-        ("Java files","*.java"),
-        ("Lua files",   "*.lua"),
-        ("Pascal files","*.pas")]
-        # To do: *.php, *.php3, *.php4")
-    textFullFiletypes = [
-        ("Text files","*.txt"),
-        ("C/C++ files","*.c"),
-        ("C/C++ files","*.cpp"),
-        ("C/C++ files","*.h"),
-        ("C/C++ files","*.hpp"),
-        ("Java files","*.java"),
-        ("Lua files",   "*.lua"),
-        ("Pascal files","*.pas"),
-        ("Python files","*.py"),
-        ("All files","*")]
-        # To do: *.php, *.php3, *.php4")
-    CWEBTextAllFiletypes = [
-        ("CWEB files","*.w"),
-        ("Text files","*.txt"),
-        ("All files", "*")]
-    leoAllFiletypes = [
-        ("Leo files","*.leo"),
-        ("All files","*")]
-    leoFiletypes = [
-        ("Leo files","*.leo")]
-    nowebTextAllFiletypes = [
-        ("Noweb files","*.nw"),
-        ("Text files", "*.txt"),
-        ("All files",  "*")]
-    textAllFiletypes = [
-        ("Text files","*.txt"),
-        ("All files", "*")]
-    #@-<< define leoGui file types >>
+    Subclasses are expected to override all do-nothing methods of this class.
+    """
 
     #@+others
     #@+node:ekr.20031218072017.3721: *3* app.gui Birth & death
@@ -179,7 +126,7 @@ class leoGui:
         #'setIdleTimeHookAfterDelay',   # optional
     )
     #@+node:ekr.20061109212618.1: *3* Must be defined only in base class
-    #@+node:ekr.20110605121601.18847: *4* create_key_event (leoGui) (new)
+    #@+node:ekr.20110605121601.18847: *4* create_key_event (leoGui)
     def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None):
         
         # if not char:

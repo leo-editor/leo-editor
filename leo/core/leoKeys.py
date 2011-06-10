@@ -1562,7 +1562,6 @@ class keyHandlerClass:
         k.guiBindNamesInverseDict = {}
         for key in k.guiBindNamesDict:
             k.guiBindNamesInverseDict [k.guiBindNamesDict.get(key)] = key
-
     #@+node:ekr.20061101071425: *4* oops
     def oops (self):
 
@@ -2459,6 +2458,7 @@ class keyHandlerClass:
         
         if trace: g.trace(
             'state',state,'char',repr(char),'stroke',repr(stroke),
+            'isPlain',k.isPlainKey(stroke),
             'escapes',k.getArgEscapes,
             'completion',state==0 and completion or state!=0 and k.arg_completion)
         if state == 0:
@@ -2728,7 +2728,7 @@ class keyHandlerClass:
 
         if trace: # Useful.
             g.trace('stroke: ',stroke,'ch:',repr(ch),
-                'w:',w and c.widget_name(w),
+                # 'w:',w and c.widget_name(w),
                 'func:',func and func.__name__)
 
         if inserted:
@@ -2817,7 +2817,7 @@ class keyHandlerClass:
         name = c.widget_name(w)
         trace = False and not g.unitTesting
 
-        if trace: g.trace('widget_name',name,'stroke',stroke)
+        if trace: g.trace('widget_name',name,'stroke',stroke,'enable alt-ctrl',self.enable_alt_ctrl_bindings)
 
         if (stroke and
             not stroke.startswith('Alt+Ctrl') and
@@ -3170,15 +3170,20 @@ class keyHandlerClass:
             (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
         ):
             # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
-            if trace: g.trace('ignoring unbound Alt/Ctrl key',stroke,char)
+            if trace: g.trace('ignoring unbound Alt/Ctrl key',
+                repr(char),repr(stroke))
             return # (for Tk) 'break'
 
-        elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
-            if trace: g.trace('ignoring unbound non-ascii key',repr(stroke))
+        elif k.ignore_unbound_non_ascii_keys and (
+            len(char) > 1 or
+            char not in string.printable # 2011/06/10: risky test?
+        ):
+            if trace: g.trace('ignoring unbound non-ascii key',
+                repr(char),repr(stroke))
             return # (for Tk) 'break'
 
         elif (
-            char and char.find('Escape') != -1 or
+            stroke and stroke.find('Escape') != -1 or
             stroke and stroke.find('Insert') != -1
         ):
             # Never insert escape or insert characters.
@@ -3186,7 +3191,7 @@ class keyHandlerClass:
             return # (for Tk) 'break'
 
         else:
-            if trace: g.trace('no func',stroke)
+            if trace: g.trace('no func',repr(char),repr(stroke))
             return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
     #@+node:ekr.20061031131434.155: *4* masterMenuHandler
     def masterMenuHandler (self,stroke,func,commandName):
@@ -4119,6 +4124,9 @@ class keyHandlerClass:
         for z in ('Alt','Ctrl','Command','Meta'):
             if s.find(z) != -1:            
                 return ''
+                # This is not accurate: leoQtEventFilter retains
+                # the spelling of Alt-Ctrl keys because of the
+                # @bool enable_alt_ctrl_bindings setting.
                 
         # Special case the gang of four, plus 'Escape',
         d = {

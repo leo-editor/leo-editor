@@ -445,15 +445,17 @@ class Commands (object):
     def check_event (self,event):
         
         trace = False and not g.unitTesting
+
         c,k = self,self.k
         
         import leo.core.leoGui as leoGui
         
         def test(val,message):
-            if g.unitTesting and not trace:
-                assert val,message
-            else:
-                if not val: print('check_event',message)
+            if trace:
+                if g.unitTesting:
+                    assert val,message
+                else:
+                    if not val: print('check_event',message)
         
         if not event:
             return
@@ -468,6 +470,10 @@ class Commands (object):
         if g.unitTesting:
             expected = k.stroke2char(stroke)
                 # Be strict for unit testing.
+        elif stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1:
+            expected = event.char
+                # Alas, Alt and Ctrl bindings must *retain* the char field,
+                # so there is no way to know what char field to expect.
         elif trace or k.isPlainKey(stroke):
             expected = k.stroke2char(stroke)
                 # Perform the full test.

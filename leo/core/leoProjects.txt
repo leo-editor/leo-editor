@@ -4925,15 +4925,17 @@ Done:
 def check_event (self,event):
     
     trace = False and not g.unitTesting
+
     c,k = self,self.k
     
     import leo.core.leoGui as leoGui
     
     def test(val,message):
-        if g.unitTesting and not trace:
-            assert val,message
-        else:
-            if not val: print('check_event',message)
+        if trace:
+            if g.unitTesting:
+                assert val,message
+            else:
+                if not val: print('check_event',message)
     
     if not event:
         return
@@ -4948,6 +4950,10 @@ def check_event (self,event):
     if g.unitTesting:
         expected = k.stroke2char(stroke)
             # Be strict for unit testing.
+    elif stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1:
+        expected = event.char
+            # Alas, Alt and Ctrl bindings must *retain* the char field,
+            # so there is no way to know what char field to expect.
     elif trace or k.isPlainKey(stroke):
         expected = k.stroke2char(stroke)
             # Perform the full test.
@@ -5137,7 +5143,7 @@ def eventFilter(self, obj, event):
 #@+node:ekr.20110605195119.16937: *7* create_key_event (leoQtEventFilter)
 def create_key_event (self,event,c,w,ch,tkKey,stroke):
 
-    trace = False and not g.unitTesting ; verbose = True
+    trace = False and not g.unitTesting ; verbose = False
     
     if trace and verbose: g.trace('ch: %s, tkKey: %s, stroke: %s' % (
         repr(ch),repr(tkKey),repr(stroke)))
@@ -5147,6 +5153,10 @@ def create_key_event (self,event,c,w,ch,tkKey,stroke):
         ch = '\n' # Somehow Qt wants to return '\r'.
     elif stroke == 'Escape':
         ch = 'Escape'
+        
+    # This looks reasonable, but see k.handleUnboundKeys.
+    # elif stroke.find('Ctrl+') > -1 or stroke.find('Alt+') > -1:
+    #    ch = ''
         
     # Switch the Shift modifier to handle the cap-lock key.
     if len(ch) == 1 and len(stroke) == 1 and ch.isalpha() and stroke.isalpha():
@@ -5178,8 +5188,8 @@ def create_key_event (self,event,c,w,ch,tkKey,stroke):
     x_root = hasattr(event,'x_root') and event.x_root or 0
     y_root = hasattr(event,'y_root') and event.y_root or 0
     
-    if trace: g.trace('ch: %s, stroke: %s' % (
-        repr(ch),repr(stroke)))
+    if trace: g.trace('ch: %s, stroke: %s printable: %s' % (
+        repr(ch),repr(stroke),ch in string.printable))
 
     return leoGui.leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
 #@+node:ekr.20110605121601.18541: *7* isSpecialOverride
@@ -5524,7 +5534,7 @@ def traceFocus (self,eventType,obj):
                 # g.app.gui.widget_name(obj) or obj)))
 
     # else: g.trace('unknown kind: %s' % eventType)
-#@+node:ekr.20110605121601.18847: *6* create_key_event (leoGui) (new)
+#@+node:ekr.20110605121601.18847: *6* create_key_event (leoGui)
 def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None):
     
     # if not char:
@@ -5536,7 +5546,7 @@ def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None
 #@+node:ekr.20110605195119.16937: *6* create_key_event (leoQtEventFilter)
 def create_key_event (self,event,c,w,ch,tkKey,stroke):
 
-    trace = False and not g.unitTesting ; verbose = True
+    trace = False and not g.unitTesting ; verbose = False
     
     if trace and verbose: g.trace('ch: %s, tkKey: %s, stroke: %s' % (
         repr(ch),repr(tkKey),repr(stroke)))
@@ -5546,6 +5556,10 @@ def create_key_event (self,event,c,w,ch,tkKey,stroke):
         ch = '\n' # Somehow Qt wants to return '\r'.
     elif stroke == 'Escape':
         ch = 'Escape'
+        
+    # This looks reasonable, but see k.handleUnboundKeys.
+    # elif stroke.find('Ctrl+') > -1 or stroke.find('Alt+') > -1:
+    #    ch = ''
         
     # Switch the Shift modifier to handle the cap-lock key.
     if len(ch) == 1 and len(stroke) == 1 and ch.isalpha() and stroke.isalpha():
@@ -5577,8 +5591,8 @@ def create_key_event (self,event,c,w,ch,tkKey,stroke):
     x_root = hasattr(event,'x_root') and event.x_root or 0
     y_root = hasattr(event,'y_root') and event.y_root or 0
     
-    if trace: g.trace('ch: %s, stroke: %s' % (
-        repr(ch),repr(stroke)))
+    if trace: g.trace('ch: %s, stroke: %s printable: %s' % (
+        repr(ch),repr(stroke),ch in string.printable))
 
     return leoGui.leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
 #@+node:ekr.20061031131434.162: *6* generalModeHandler (changed)
@@ -5702,7 +5716,7 @@ def handleDefaultChar(self,event,stroke):
     name = c.widget_name(w)
     trace = False and not g.unitTesting
 
-    if trace: g.trace('widget_name',name,'stroke',stroke)
+    if trace: g.trace('widget_name',name,'stroke',stroke,'enable alt-ctrl',self.enable_alt_ctrl_bindings)
 
     if (stroke and
         not stroke.startswith('Alt+Ctrl') and
@@ -5765,6 +5779,9 @@ def stroke2char (self,stroke):
     for z in ('Alt','Ctrl','Command','Meta'):
         if s.find(z) != -1:            
             return ''
+            # This is not accurate: leoQtEventFilter retains
+            # the spelling of Alt-Ctrl keys because of the
+            # @bool enable_alt_ctrl_bindings setting.
             
     # Special case the gang of four, plus 'Escape',
     d = {
@@ -6733,15 +6750,17 @@ def open(self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
 def check_event (self,event):
     
     trace = False and not g.unitTesting
+
     c,k = self,self.k
     
     import leo.core.leoGui as leoGui
     
     def test(val,message):
-        if g.unitTesting and not trace:
-            assert val,message
-        else:
-            if not val: print('check_event',message)
+        if trace:
+            if g.unitTesting:
+                assert val,message
+            else:
+                if not val: print('check_event',message)
     
     if not event:
         return
@@ -6756,6 +6775,10 @@ def check_event (self,event):
     if g.unitTesting:
         expected = k.stroke2char(stroke)
             # Be strict for unit testing.
+    elif stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1:
+        expected = event.char
+            # Alas, Alt and Ctrl bindings must *retain* the char field,
+            # so there is no way to know what char field to expect.
     elif trace or k.isPlainKey(stroke):
         expected = k.stroke2char(stroke)
             # Perform the full test.
