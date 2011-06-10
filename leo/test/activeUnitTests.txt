@@ -433,432 +433,6 @@ for ivar in (
     'root',
 ):
     assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar
-#@+node:ekr.20050120095423: ** Plugins
-#@+node:ekr.20110610082755.3362: *3*  qtGui.py
-#@+node:ekr.20100131171342.5503: *4* @test c.vnode2position
-trace = False
-
-if trace: print('=' * 20)
-
-for p in c.all_positions():
-
-    p2 = c.vnode2position(p.v)
-
-    if trace: print(p2.level(), p2.headString())
-
-    # We can *not* assert that p == p2, only that
-    # p2.v == p.v and c.positionExists(p2)
-    assert p2
-    assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
-    assert c.positionExists(p2),'does not exist: %s' % p2
-#@+node:ekr.20100131171342.5504: *4* @test position2Item
-tree = c.frame.tree
-
-
-c.redraw()
-
-p = c.rootPosition()
-while p:
-    item = tree.position2item(p)
-    v = tree.item2vnode(item)
-    assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
-    p.moveToVisNext(c)
-#@+node:ekr.20100131171342.5505: *4* @test item2position
-def test_sibs(parent_p,parent_item):
-
-    trace = False
-    tree = c.frame.tree
-    sib_items = tree.childItems(parent_item)
-    sibs = [z.copy() for z in parent_p.self_and_siblings_iter()]
-
-    assert len(sib_items) == len(sibs),(
-        'child_items: %s, children: %s' % (
-            g.listToString(sib_items),g.listToString(sibs)))
-
-    for item,p in zip(sib_items,sibs):
-        p2 = tree.item2position(item)
-        if trace: print (id(item),p2 and p2.headString() or not p2 and '**None**')
-        assert p == p2, 'item: %s, p: %s, p2: %s' % (id(item),p,p2)
-
-        # Recursively test.
-        child = p.firstChild()
-        if child.isVisible(c):
-            test_sibs(child,parent_item=item)
-
-if hasattr(c.frame.tree,'item2position'):
-    c.redraw()
-    test_sibs(c.rootPosition(),None)
-#@+node:ekr.20050120095423.11: *3* @suite import all plugins
-# Create unit tests in g.app.scriptDict["suite"]
-import leo.core.leoTest as leoTest
-import glob
-import sys
-import unittest
-
-@others
-
-suite = makePluginsTestSuite(c)
-
-g.app.scriptDict['suite'] = suite
-#@+node:ekr.20050120095423.12: *4* makePluginsTestSuite
-def makePluginsTestSuite(c):
-
-    '''Create a plugin test for .py file in the plugins directory'''
-
-    # Create the suite.
-    suite = unittest.makeSuite(unittest.TestCase)
-
-    # Add a test case for every plugin.
-    plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
-    plugins = g.os_path_abspath(plugins)
-    files = glob.glob(plugins)
-    files = [g.os_path_abspath(f) for f in files]
-    files.sort()
-    
-    for fn in files:
-        test = pluginTestCase(c,fn)
-        # g.trace(test.shortDescription())
-        suite.addTest(test)
-
-    if 0:
-        # Open a new window after all tests are completed.  Tests many plugins.
-        lastTest = lastTestCase(c,openFlag=True)
-        suite.addTest(lastTest)
-
-    return suite
-#@+node:ekr.20050120095423.13: *4* class pluginTestCase
-class pluginTestCase(unittest.TestCase):
-
-    '''A test case to test a single Leo plugin.'''
-
-    @others
-#@+node:ekr.20050120095423.14: *5* __init__
-def __init__ (self,c,path):
-
-    # Init the base class.
-    unittest.TestCase.__init__(self)
-
-    self.c = c
-    self.path = path
-#@+node:ekr.20050120095423.15: *5* fail
-def fail (self,msg=None):
-
-    """Mark a unit test as having failed."""
-
-    g.app.unitTestDict["fail"] = g.callerName(2)
-#@+node:ekr.20050120095423.16: *5* runTest
-def runTest(self):
-    
-    trace = True
-
-    c = self.c ; path = self.path
-    path,base = g.os_path_split(path)
-    fn = base[:-3]
-    
-    ignore = (
-        # Unfinished/obsolute gui's.
-        'gtkDialogs','gtkGui','ironPython','ironPythonGui',
-        'swing_gui','tkGui','wxGui','temacs',
-        # Tk-only.
-        'iPython',
-    )
-    
-    python2only = (
-        'dragdropgoodies',  # print statement
-        'geotag',           # print statement
-        'interact',         # import pexpect
-        'jinjarender',      # import jinga2
-        'leofeeds',         # import HTMLParser
-        'leomail',          # import HTMLParser
-        'read_only_nodes',  # import htmllib
-        'tomboy_import',    # import HTMLParser
-    )
-    
-    if fn in ignore or g.isPython3 and fn in python2only:
-        return
-    
-    exec('import leo.plugins.%s' % fn)
-    
-    # moduleName,ext  = g.os_path_splitext(base)
-    
-    # module = sys.modules.get(moduleName)
-
-    # if not module:
-        # moduleName = 'leo.plugins.%s' % (moduleName)
-        # module = g.app.pluginsController.loadOnePlugin(moduleName,verbose=True)
-        # # assert module, 'can not import %s' % moduleName
-        # if trace: g.trace('import failed: %s' % (moduleName))
-#@+node:ekr.20050120095423.17: *5* setUp
-def setUp(self):
-
-    g.app.unitTestDict = {}
-#@+node:ekr.20050120095423.18: *5* shortDescription
-def shortDescription (self):
-
-    return "pluginTestCase: %s" % g.shortFileName(self.path)
-#@+node:ekr.20050120095423.20: *4* class lastTestCase
-class lastTestCase(unittest.TestCase):
-
-    '''A test case to print a message at the end of plugin tests.'''
-
-    def __init__ (self,c,openFlag):
-        # Init the base class.
-        unittest.TestCase.__init__(self)
-        self.c = c
-        self.openFlag = openFlag
-
-    def runTest(self):
-        c = self.c
-        print('\n%s a new window to test more plugin logic\n' % g.choose(
-            self.openFlag,'opening','open'))
-        if self.openFlag:
-            self.new_c = new_c = c.new() # Create the new window.
-            new_c.frame.setTitle("unit test for 'new' hook")
-
-    if 0: # Doesn't work
-        def shutDown(self):
-            c = self.new_c
-            c.close()
-#@+node:ekr.20050218015346: *3* @@suite run all plugin test routines
-import glob
-import inspect
-import unittest
-
-changed = c.isChanged() ; p1 = c.p
-<< class testRoutineTestCase >>
-@others
-
-plugins = getAllPlugins()
-
-# g.printList(plugins)
-
-print('@suite run all plugin test routines')
-
-if 1:
-    g.app.unitTestDict["fail"] = False
-    suite = unittest.makeSuite(unittest.TestCase)
-    for plugin in plugins:
-        n = addTestRoutinesInPluginToSuite(c,g,plugin,suite)
-        if n:
-            plural = g.choose(n==1,'','s')
-            s = 'found %2d test routine%s for %s' % (n,plural,plugin)
-            g.es_print(s)
-    if 1: # For @suite nodes.  Better for unit testing.
-        g.app.scriptDict['suite'] = suite
-    else: # For script button nodes.  Good for testing.
-        # Verbosity: 1: print just dots.
-        unittest.TextTestRunner(verbosity=1).run(suite)
-        c.setChanged(changed) # Restore changed state.
-        c.selectVnode(p1) # N.B. Restore the selected node.
-#@+node:ekr.20050218015346.11: *4* << class testRoutineTestCase >>
-class testRoutineTestCase(unittest.TestCase):
-
-    """Create a unit test from a snippet of code."""
-
-    @others
-#@+node:ekr.20050218015346.12: *5* __init__
-def __init__ (self,c,g,moduleName,theClass,f,code,verbose=False):
-
-     # Init the base class.
-    unittest.TestCase.__init__(self)
-
-    self.c = c
-    self.moduleName = moduleName
-    self.theClass = theClass
-    self.f = f
-    self.g = g
-    self.code = code
-    self.p = c.p.copy()
-    self.verbose = verbose
-#@+node:ekr.20050218015346.13: *5*  fail
-def fail (self,msg=None):
-
-    """Mark a unit test as having failed."""
-
-    g.app.unitTestDict["fail"] = g.callerName(2)
-#@+node:ekr.20050218015346.16: *5* runTest
-def runTest (self):
-
-    f = self.f ; name = f.__name__ ; theClass = self.theClass
-
-    d = {'c':self.c,'g':self.g,'p':self.p}
-
-    if 1: # Use dead text to ensure a clean environment.
-        # The present code assumes all leading whitespace is consistent.
-        code = removeLeadingWs(self.code)
-        # The code is a def statement.  We concoct a call to the function or method.
-        if theClass:
-            s = '%s\n%s(self=None)\n' % (code,name)
-        else:
-            s = '%s\n%s()\n' % (code,name)
-
-        if self.verbose:
-            g.trace('executing...\n\n%s' % s)
-
-        exec(s,d) # Execute s in a environment containing c, g and p.
-
-    else: # Use live objects.
-        if theClass:
-            # Create a subclass of f's original class.
-            class __dummyClass(theClass):
-                # Create a ctor with a known signature.
-                def __init__(self): pass
-            # Make f a method of the dummyClass with name 'f'.
-            # N.B. f is still a method of theClass, and must be called as such!
-            if 0: # Override the method with f's actual name.
-                g.funcToMethod(f,__dummyClass,name)
-                obj = __dummyClass()
-                f = getattr(obj,name)
-                f(obj)
-            else:
-                # Use the name 'f' for f's name.
-                g.funcToMethod(f,__dummyClass,'f')
-                # Create an instance of __dummyClass and call it's f method.
-                obj = __dummyClass()
-                obj.f()
-        else: # Execute a plain function.
-            f(**keys)
-#@+node:ekr.20050218015346.17: *5* shortDescription
-def shortDescription (self):
-
-    return 'test function',repr(self.f)
-#@+node:ekr.20050218015346.18: *4* addTestRoutinesInPluginToSuite
-def addTestRoutinesInPluginToSuite (c,g,pluginName,suite):
-
-    path = g.os_path_abspath(g.os_path_join(g.app.loadDir,"..","plugins"))
-
-    plugin = g.importFromPath(pluginName,path,verbose=True)
-    if not plugin:
-        return len([])
-
-    tests = findTestsInModule(plugin,pluginName)
-
-    for test in tests:
-        theClass,f = test
-        code = inspect.getsource(f)
-        testCase = testRoutineTestCase(c,g,pluginName,theClass,f,code,verbose=False)
-        suite.addTest(testCase)
-
-    return len(tests)
-#@+node:ekr.20050218015346.19: *4* findTestsInModule
-def findTestsInModule (module,moduleName):
-
-    # g.trace(moduleName)
-
-    toString = g.listToString
-    try:
-        functions = inspect.getmembers(module,inspect.isfunction)
-    except Exception:
-        g.trace('Exception in inspect.getmembers(module,inspect.isfunction) for %s' % moduleName)
-        functions = []
-    try:
-        classes = inspect.getmembers(module,inspect.isclass)
-    except Exception:
-        g.trace('Exception in inspect.getmembers(module,inspect.isclass) for %s' % moduleName)
-        classes = []
-
-    # Ignore subclasses of TestCase.
-    classes = [theClass for className,theClass in classes
-        if not issubclass(theClass,unittest.TestCase)]
-
-    allMethods = []
-    for theClass in classes:
-        try:
-            methods = inspect.getmembers(theClass,inspect.ismethod)
-        except Exception:
-            # This looks like a bug in inspect: The zodb classes have no methods.
-            # g.trace('Exception in inspect.getmembers(theClass,inspect.ismethod) for %s' % moduleName)
-            methods = []
-        # print('\nmethods of class %s...\n\n%s' % (theClass,toString(methods)))
-        methods = [(theClass,f) for name,f in methods if name.startswith('test_')]
-        allMethods.extend(methods)
-
-    # Hack: remove duplicate tests from leoGlobals.py.
-    functions = [(None,f) for name,f in functions
-        if name.startswith('test_') and not name.startswith('test_g_')]
-
-    if 0:
-        << print classes, methods & functions >>
-
-    result = functions
-    result.extend(allMethods)
-    return result
-#@+node:ekr.20050218015346.20: *5* << print classes, methods & functions >>
-print('=' * 40)
-
-if classes:
-    print('classes in %s...\n%s' % (moduleName,toString(classes)))
-else:
-    print('no classes in %s' % (moduleName))
-if allMethods:
-    print('test methods in %s...\n%s'   % (moduleName,toString(allMethods)))
-else:
-    print('no test methods in %s' % (moduleName))
-if functions:
-    print('test functions in %s...\n%s' % (moduleName,toString(functions)))
-else:
-    print('no test functions in %s' % (moduleName))
-#@+node:ekr.20050218015346.22: *4* removeLeadingWs
-def removeLeadingWs (code):
-
-    if not code.strip():
-        return ''
-
-    lines = g.splitLines(code)
-    line = lines[0]
-    i = g.skip_ws(line,0)
-    ws = line[0:i]
-    if not ws:
-        return code
-    result = [] ; n = len(ws)
-    for line in lines:
-        if line.startswith(ws):
-            result.append(line[n:])
-        elif not line.strip() and line.endswith('\n'):
-            result.append('\n')
-        else:
-            print('unitTest.leo:underindented line:%s' % repr(line))
-            result.append(line)
-
-    # g.trace(g.listToString(result))
-
-    result = ''.join(result)
-    return result
-#@+node:ekr.20100131171342.5497: *3* @test dectect_urls.py
-import leo.plugins.detect_urls as detect_urls
-
-w = c.frame.body.bodyCtrl
-s = w.getAllText()
-if s.endswith('\n'): s = s[:-1]
-w.setInsertPoint(len(s))
-url = detect_urls.openURL(tag='test',keywords={'c':c})
-assert url == 'http://webpages.charter.net/edreamleo/front.html','Got:%s' % repr(url)
-
-@ The last line is the url
-http://webpages.charter.net/edreamleo/front.html
-#@+node:ekr.20100131171342.5500: *3* @test macros.parameterize
-import leo.plugins.macros as macros
-
-controller = macros.paramClass(c)
-controller.parameterize()
-    # Not much will happen because there are no children.
-    # However, this does test recent changes.
-#@+node:ekr.20100131171342.5501: *3* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c) # This *is* used
-
-c.contractAllHeadlines()
-h = 'All unit tests'
-p = u.findNodeAnywhere(h)
-if p:
-    p.expand()
-    g.app.unitTestDict['restoreSelectedNode']=False
-    c.selectPosition(p)
-    c.redraw()
-
-print('\nEnd of plugins unit tests')
 #@+node:ekr.20100205223124.5377: ** Syntax checking
 #@+node:ekr.20040712101813: *3* @@test c.checkAllPythonCode
 result = c.checkAllPythonCode(unittest=True,ignoreAtIgnore=True)
@@ -4203,7 +3777,7 @@ finally:
 # node b
 #@+node:ekr.20110608181936.3370: *5* node c
 # node c
-#@+node:ekr.20110610091621.3373: *5* node a
+#@+node:ekr.20110610103137.3373: *5* node a
 # node a
 #@+node:ekr.20080503132221.1: *4* @test chapter-create-from-node
 cc = c.chapterController
@@ -4243,7 +3817,7 @@ finally:
             root.firstChild().doDelete(newNode=None)
     cc.selectChapterByName('main',collapse=True)
     c.redraw_now()
-#@+node:ekr.20110610091621.3374: *5* child
+#@+node:ekr.20110610103137.3374: *5* child
 # child
 #@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5
@@ -17708,6 +17282,429 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoUndo tests.')
+#@+node:ekr.20050120095423: ** Plugins
+# Do this last.
+#@+node:ekr.20110610082755.3362: *3*  qtGui.py
+#@+node:ekr.20100131171342.5503: *4* @test c.vnode2position
+trace = False
+
+if trace: print('=' * 20)
+
+for p in c.all_positions():
+
+    p2 = c.vnode2position(p.v)
+
+    if trace: print(p2.level(), p2.headString())
+
+    # We can *not* assert that p == p2, only that
+    # p2.v == p.v and c.positionExists(p2)
+    assert p2
+    assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
+    assert c.positionExists(p2),'does not exist: %s' % p2
+#@+node:ekr.20100131171342.5504: *4* @test position2Item
+tree = c.frame.tree
+
+
+c.redraw()
+
+p = c.rootPosition()
+while p:
+    item = tree.position2item(p)
+    v = tree.item2vnode(item)
+    assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
+    p.moveToVisNext(c)
+#@+node:ekr.20100131171342.5505: *4* @test item2position
+def test_sibs(parent_p,parent_item):
+
+    trace = False
+    tree = c.frame.tree
+    sib_items = tree.childItems(parent_item)
+    sibs = [z.copy() for z in parent_p.self_and_siblings_iter()]
+
+    assert len(sib_items) == len(sibs),(
+        'child_items: %s, children: %s' % (
+            g.listToString(sib_items),g.listToString(sibs)))
+
+    for item,p in zip(sib_items,sibs):
+        p2 = tree.item2position(item)
+        if trace: print (id(item),p2 and p2.headString() or not p2 and '**None**')
+        assert p == p2, 'item: %s, p: %s, p2: %s' % (id(item),p,p2)
+
+        # Recursively test.
+        child = p.firstChild()
+        if child.isVisible(c):
+            test_sibs(child,parent_item=item)
+
+if hasattr(c.frame.tree,'item2position'):
+    c.redraw()
+    test_sibs(c.rootPosition(),None)
+#@+node:ekr.20050120095423.11: *3* @suite import all plugins
+# Create unit tests in g.app.scriptDict["suite"]
+import leo.core.leoTest as leoTest
+import glob
+import sys
+import unittest
+
+@others
+
+suite = makePluginsTestSuite(c)
+
+g.app.scriptDict['suite'] = suite
+#@+node:ekr.20050120095423.12: *4* makePluginsTestSuite
+def makePluginsTestSuite(c):
+
+    '''Create a plugin test for .py file in the plugins directory'''
+
+    # Create the suite.
+    suite = unittest.makeSuite(unittest.TestCase)
+
+    # Add a test case for every plugin.
+    plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
+    plugins = g.os_path_abspath(plugins)
+    files = glob.glob(plugins)
+    files = [g.os_path_abspath(f) for f in files]
+    files.sort()
+    
+    for fn in files:
+        test = pluginTestCase(c,fn)
+        # g.trace(test.shortDescription())
+        suite.addTest(test)
+
+    if 0:
+        # Open a new window after all tests are completed.  Tests many plugins.
+        lastTest = lastTestCase(c,openFlag=True)
+        suite.addTest(lastTest)
+
+    return suite
+#@+node:ekr.20050120095423.13: *4* class pluginTestCase
+class pluginTestCase(unittest.TestCase):
+
+    '''A test case to test a single Leo plugin.'''
+
+    @others
+#@+node:ekr.20050120095423.14: *5* __init__
+def __init__ (self,c,path):
+
+    # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.path = path
+#@+node:ekr.20050120095423.15: *5* fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    g.app.unitTestDict["fail"] = g.callerName(2)
+#@+node:ekr.20050120095423.16: *5* runTest
+def runTest(self):
+    
+    trace = False
+    c = self.c ; path = self.path
+    path,base = g.os_path_split(path)
+    fn = base[:-3]
+    
+    ignore = (
+        # Unfinished/obsolute gui's.
+        'gtkDialogs','gtkGui','ironPython','ironPythonGui',
+        'swing_gui','tkGui','wxGui','temacs',
+        # Tk-only.
+        'ipython',
+        # Imports path & win32clipboard.
+        'at_view',
+        # Experimental.
+        'stickynotes_plus',
+        # Generated by unit tests.
+        'pluginsTest',
+    )
+    
+    python2only = (
+        'dragdropgoodies',  # print statement
+        'geotag',           # print statement
+        'interact',         # import pexpect
+        'jinjarender',      # import jinga2
+        'leofeeds',         # import HTMLParser
+        'leomail',          # import HTMLParser
+        'read_only_nodes',  # import htmllib
+        'tomboy_import',    # import HTMLParser
+    )
+    
+    if fn in ignore or g.isPython3 and fn in python2only:
+        return
+    
+    if trace: g.trace(fn)
+    exec('import leo.plugins.%s' % fn)
+#@+node:ekr.20050120095423.17: *5* setUp
+def setUp(self):
+
+    g.app.unitTestDict = {}
+#@+node:ekr.20050120095423.18: *5* shortDescription
+def shortDescription (self):
+
+    return "pluginTestCase: %s" % g.shortFileName(self.path)
+#@+node:ekr.20050120095423.20: *4* class lastTestCase
+class lastTestCase(unittest.TestCase):
+
+    '''A test case to print a message at the end of plugin tests.'''
+
+    def __init__ (self,c,openFlag):
+        # Init the base class.
+        unittest.TestCase.__init__(self)
+        self.c = c
+        self.openFlag = openFlag
+
+    def runTest(self):
+        c = self.c
+        print('\n%s a new window to test more plugin logic\n' % g.choose(
+            self.openFlag,'opening','open'))
+        if self.openFlag:
+            self.new_c = new_c = c.new() # Create the new window.
+            new_c.frame.setTitle("unit test for 'new' hook")
+
+    if 0: # Doesn't work
+        def shutDown(self):
+            c = self.new_c
+            c.close()
+#@+node:ekr.20050218015346: *3* @@suite run all plugin test routines
+import glob
+import inspect
+import unittest
+
+changed = c.isChanged() ; p1 = c.p
+<< class testRoutineTestCase >>
+@others
+
+plugins = getAllPlugins()
+
+# g.printList(plugins)
+
+print('@suite run all plugin test routines')
+
+if 1:
+    g.app.unitTestDict["fail"] = False
+    suite = unittest.makeSuite(unittest.TestCase)
+    for plugin in plugins:
+        n = addTestRoutinesInPluginToSuite(c,g,plugin,suite)
+        if n:
+            plural = g.choose(n==1,'','s')
+            s = 'found %2d test routine%s for %s' % (n,plural,plugin)
+            g.es_print(s)
+    if 1: # For @suite nodes.  Better for unit testing.
+        g.app.scriptDict['suite'] = suite
+    else: # For script button nodes.  Good for testing.
+        # Verbosity: 1: print just dots.
+        unittest.TextTestRunner(verbosity=1).run(suite)
+        c.setChanged(changed) # Restore changed state.
+        c.selectVnode(p1) # N.B. Restore the selected node.
+#@+node:ekr.20050218015346.11: *4* << class testRoutineTestCase >>
+class testRoutineTestCase(unittest.TestCase):
+
+    """Create a unit test from a snippet of code."""
+
+    @others
+#@+node:ekr.20050218015346.12: *5* __init__
+def __init__ (self,c,g,moduleName,theClass,f,code,verbose=False):
+
+     # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.moduleName = moduleName
+    self.theClass = theClass
+    self.f = f
+    self.g = g
+    self.code = code
+    self.p = c.p.copy()
+    self.verbose = verbose
+#@+node:ekr.20050218015346.13: *5*  fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    g.app.unitTestDict["fail"] = g.callerName(2)
+#@+node:ekr.20050218015346.16: *5* runTest
+def runTest (self):
+
+    f = self.f ; name = f.__name__ ; theClass = self.theClass
+
+    d = {'c':self.c,'g':self.g,'p':self.p}
+
+    if 1: # Use dead text to ensure a clean environment.
+        # The present code assumes all leading whitespace is consistent.
+        code = removeLeadingWs(self.code)
+        # The code is a def statement.  We concoct a call to the function or method.
+        if theClass:
+            s = '%s\n%s(self=None)\n' % (code,name)
+        else:
+            s = '%s\n%s()\n' % (code,name)
+
+        if self.verbose:
+            g.trace('executing...\n\n%s' % s)
+
+        exec(s,d) # Execute s in a environment containing c, g and p.
+
+    else: # Use live objects.
+        if theClass:
+            # Create a subclass of f's original class.
+            class __dummyClass(theClass):
+                # Create a ctor with a known signature.
+                def __init__(self): pass
+            # Make f a method of the dummyClass with name 'f'.
+            # N.B. f is still a method of theClass, and must be called as such!
+            if 0: # Override the method with f's actual name.
+                g.funcToMethod(f,__dummyClass,name)
+                obj = __dummyClass()
+                f = getattr(obj,name)
+                f(obj)
+            else:
+                # Use the name 'f' for f's name.
+                g.funcToMethod(f,__dummyClass,'f')
+                # Create an instance of __dummyClass and call it's f method.
+                obj = __dummyClass()
+                obj.f()
+        else: # Execute a plain function.
+            f(**keys)
+#@+node:ekr.20050218015346.17: *5* shortDescription
+def shortDescription (self):
+
+    return 'test function',repr(self.f)
+#@+node:ekr.20050218015346.18: *4* addTestRoutinesInPluginToSuite
+def addTestRoutinesInPluginToSuite (c,g,pluginName,suite):
+
+    path = g.os_path_abspath(g.os_path_join(g.app.loadDir,"..","plugins"))
+
+    plugin = g.importFromPath(pluginName,path,verbose=True)
+    if not plugin:
+        return len([])
+
+    tests = findTestsInModule(plugin,pluginName)
+
+    for test in tests:
+        theClass,f = test
+        code = inspect.getsource(f)
+        testCase = testRoutineTestCase(c,g,pluginName,theClass,f,code,verbose=False)
+        suite.addTest(testCase)
+
+    return len(tests)
+#@+node:ekr.20050218015346.19: *4* findTestsInModule
+def findTestsInModule (module,moduleName):
+
+    # g.trace(moduleName)
+
+    toString = g.listToString
+    try:
+        functions = inspect.getmembers(module,inspect.isfunction)
+    except Exception:
+        g.trace('Exception in inspect.getmembers(module,inspect.isfunction) for %s' % moduleName)
+        functions = []
+    try:
+        classes = inspect.getmembers(module,inspect.isclass)
+    except Exception:
+        g.trace('Exception in inspect.getmembers(module,inspect.isclass) for %s' % moduleName)
+        classes = []
+
+    # Ignore subclasses of TestCase.
+    classes = [theClass for className,theClass in classes
+        if not issubclass(theClass,unittest.TestCase)]
+
+    allMethods = []
+    for theClass in classes:
+        try:
+            methods = inspect.getmembers(theClass,inspect.ismethod)
+        except Exception:
+            # This looks like a bug in inspect: The zodb classes have no methods.
+            # g.trace('Exception in inspect.getmembers(theClass,inspect.ismethod) for %s' % moduleName)
+            methods = []
+        # print('\nmethods of class %s...\n\n%s' % (theClass,toString(methods)))
+        methods = [(theClass,f) for name,f in methods if name.startswith('test_')]
+        allMethods.extend(methods)
+
+    # Hack: remove duplicate tests from leoGlobals.py.
+    functions = [(None,f) for name,f in functions
+        if name.startswith('test_') and not name.startswith('test_g_')]
+
+    if 0:
+        << print classes, methods & functions >>
+
+    result = functions
+    result.extend(allMethods)
+    return result
+#@+node:ekr.20050218015346.20: *5* << print classes, methods & functions >>
+print('=' * 40)
+
+if classes:
+    print('classes in %s...\n%s' % (moduleName,toString(classes)))
+else:
+    print('no classes in %s' % (moduleName))
+if allMethods:
+    print('test methods in %s...\n%s'   % (moduleName,toString(allMethods)))
+else:
+    print('no test methods in %s' % (moduleName))
+if functions:
+    print('test functions in %s...\n%s' % (moduleName,toString(functions)))
+else:
+    print('no test functions in %s' % (moduleName))
+#@+node:ekr.20050218015346.22: *4* removeLeadingWs
+def removeLeadingWs (code):
+
+    if not code.strip():
+        return ''
+
+    lines = g.splitLines(code)
+    line = lines[0]
+    i = g.skip_ws(line,0)
+    ws = line[0:i]
+    if not ws:
+        return code
+    result = [] ; n = len(ws)
+    for line in lines:
+        if line.startswith(ws):
+            result.append(line[n:])
+        elif not line.strip() and line.endswith('\n'):
+            result.append('\n')
+        else:
+            print('unitTest.leo:underindented line:%s' % repr(line))
+            result.append(line)
+
+    # g.trace(g.listToString(result))
+
+    result = ''.join(result)
+    return result
+#@+node:ekr.20100131171342.5497: *3* @test dectect_urls.py
+import leo.plugins.detect_urls as detect_urls
+
+w = c.frame.body.bodyCtrl
+s = w.getAllText()
+if s.endswith('\n'): s = s[:-1]
+w.setInsertPoint(len(s))
+url = detect_urls.openURL(tag='test',keywords={'c':c})
+assert url == 'http://webpages.charter.net/edreamleo/front.html','Got:%s' % repr(url)
+
+@ The last line is the url
+http://webpages.charter.net/edreamleo/front.html
+#@+node:ekr.20100131171342.5500: *3* @test macros.parameterize
+import leo.plugins.macros as macros
+
+controller = macros.paramClass(c)
+controller.parameterize()
+    # Not much will happen because there are no children.
+    # However, this does test recent changes.
+#@+node:ekr.20100131171342.5501: *3* @test zz restore the screen
+# This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+import leo.core.leoTest as leoTest
+u = leoTest.testUtils(c) # This *is* used
+
+c.contractAllHeadlines()
+h = 'All unit tests'
+p = u.findNodeAnywhere(h)
+if p:
+    p.expand()
+    g.app.unitTestDict['restoreSelectedNode']=False
+    c.selectPosition(p)
+    c.redraw()
+
+print('\nEnd of plugins unit tests')
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
