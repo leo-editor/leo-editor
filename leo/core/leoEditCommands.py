@@ -1055,14 +1055,26 @@ class controlCommandsClass (baseEditCommandsClass):
         k.setLabelGrey('finished shell-command: %s' % command)
     #@+node:ekr.20070429090859: *3* print plugins info...
     def printPluginHandlers (self,event=None):
+        
+        '''Print the handlers for each plugin.'''
 
         g.app.pluginsController.printHandlers(self.c)
 
     def printPlugins (self,event=None):
+        
+        '''Print the file name responsible for loading a plugin.
+
+        This is the first .leo file containing an @enabled-plugins node
+        that enables the plugin.'''
 
         g.app.pluginsController.printPlugins(self.c)
 
     def printPluginsInfo (self,event=None):
+        
+        '''Print the file name responsible for loading a plugin.
+
+        This is the first .leo file containing an @enabled-plugins node
+        that enables the plugin.'''
 
         g.app.pluginsController.printPluginsInfo(self.c)
     #@+node:ekr.20060603161041: *3* setSilentMode
@@ -1322,6 +1334,8 @@ class debugCommandsClass (baseEditCommandsClass):
         c.redraw()
     #@+node:ekr.20090226080753.8: *3* pdb
     def pdb (self,event=None):
+        
+        '''Fall into pdb.'''
 
         g.pdb()
     #@+node:ekr.20060210100432: *3* printFocus
@@ -1620,11 +1634,17 @@ class editCommandsClass (baseEditCommandsClass):
         pass
     #@+node:ekr.20100209160132.5763: *3* cache (leoEditCommands)
     def clearAllCaches (self,event=None):
+        
+        '''Clear all of Leo's file caches.'''
+
         c = self.c
         if c.cacher:
             c.cacher.clearAllCaches()
 
     def clearCache (self,event=None):
+        
+        '''Clear the outline's file cache.'''
+
         c = self.c
         if c.cacher:
             c.cacher.clearCache()
@@ -1968,6 +1988,8 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20050920084036.62: *3* esc methods for Python evaluation
     #@+node:ekr.20050920084036.63: *4* watchEscape
     def watchEscape (self,event):
+        
+        '''Enter watch escape mode.'''
 
         c,k = self.c,self.k
         
@@ -2169,15 +2191,19 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20060417194232: *3* find (quick)
     #@+node:ekr.20060925151926: *4* backward/findCharacter & helper
     def backwardFindCharacter (self,event):
+        '''Search backwards for a character.'''
         return self.findCharacterHelper(event,backward=True,extend=False)
 
     def backwardFindCharacterExtendSelection (self,event):
+        '''Search backward for a character, extending the selection.'''
         return self.findCharacterHelper(event,backward=True,extend=True)
 
     def findCharacter (self,event):
+        '''Search for a character.'''
         return self.findCharacterHelper(event,backward=False,extend=False)
 
     def findCharacterExtendSelection (self,event):
+        '''Search for a character, extending the selection.'''
         return self.findCharacterHelper(event,backward=False,extend=True)
     #@+node:ekr.20060417194232.1: *5* findCharacterHelper
     def findCharacterHelper (self,event,backward,extend):
@@ -2439,6 +2465,8 @@ class editCommandsClass (baseEditCommandsClass):
             if trace: g.trace('del uA[icons]',uaLoc)
     #@+node:ekr.20071114082418: *4* deleteFirstIcon
     def deleteFirstIcon (self,event=None):
+        
+        '''Delete the first icon in the selected node's icon list.'''
 
         c = self.c ; p = c.p
 
@@ -2477,6 +2505,8 @@ class editCommandsClass (baseEditCommandsClass):
             g.trace('not found',name)
     #@+node:ekr.20071114085054: *4* deleteLastIcon
     def deleteLastIcon (self,event=None):
+        
+        '''Delete the first icon in the selected node's icon list.'''
 
         c = self.c ; p = c.p
 
@@ -2488,6 +2518,8 @@ class editCommandsClass (baseEditCommandsClass):
             c.redraw_after_icons_changed()
     #@+node:ekr.20071114082418.1: *4* deleteNodeIcons
     def deleteNodeIcons (self,event=None):
+        
+        '''Delete all of the selected node's icons.'''
 
         c = self.c ; p = c.p
 
@@ -2501,6 +2533,8 @@ class editCommandsClass (baseEditCommandsClass):
             c.redraw_after_icons_changed()
     #@+node:ekr.20071114081313.1: *4* insertIcon
     def insertIcon (self,event=None):
+        
+        '''Prompt for an icon, and insert it into the node's icon list.'''
 
         trace = False and not g.unitTesting
         c = self.c ; p = c.p
@@ -2820,9 +2854,11 @@ class editCommandsClass (baseEditCommandsClass):
         self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20100817125519.5833: *4* delete-word & backward-delete-word
     def deleteWord(self,event=None):
+        '''Delete the word at the cursor.'''
         self.deleteWordHelper(event,forward=True)
 
     def backwardDeleteWord(self,event=None):
+        '''Delete the word in front of the cursor.'''
         self.deleteWordHelper(event,forward=False)
 
     def deleteWordHelper(self,event,forward):
@@ -3030,6 +3066,8 @@ class editCommandsClass (baseEditCommandsClass):
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
     #@+node:ekr.20110530082209.18248: *4* replaceCurrentCharacter
     def replaceCurrentCharacter (self,event):
+        
+        '''Replace the current character with the next character typed.'''
 
         c = self.c ; k = self.k ; tag = 'replace-current-character'
         state = k.getState(tag)
@@ -4044,6 +4082,8 @@ class editCommandsClass (baseEditCommandsClass):
         self.moveToHelper(event,i,extend)
     #@+node:ekr.20061111223516: *4* selectAllText (leoEditCommands)
     def selectAllText (self,event):
+        
+        '''Select all text.'''
 
         c = self.c 
 
@@ -4831,18 +4871,19 @@ class editCommandsClass (baseEditCommandsClass):
     # 
     #@+node:ekr.20050920084036.118: *4* sortLines commands
     def reverseSortLinesIgnoringCase(self,event):
+        '''Sort the selected lines in reverse order, ignoring case.'''
         return self.sortLines(event,ignoreCase=True,reverse=True)
 
     def reverseSortLines(self,event):
+        '''Sort the selected lines in reverse order.'''
         return self.sortLines(event,reverse=True)
 
     def sortLinesIgnoringCase(self,event):
+        '''Sort the selected lines, ignoring case.'''
         return self.sortLines(event,ignoreCase=True)
 
     def sortLines (self,event,ignoreCase=False,reverse=False):
-
-        '''Sort lines of the selected text by comparing the entire text of a line.'''
-
+        '''Sort the selected lines.'''
         c = self.c ; k = c.k ; w = self.editWidget(event)
         if not self._chckSel(event): return
 
@@ -5034,6 +5075,8 @@ class editCommandsClass (baseEditCommandsClass):
         self.endCommand(changed=changed,setLabel=True)
     #@+node:ekr.20050920084036.124: *4* swapCharacters & transeposeCharacters
     def swapCharacters (self,event):
+        
+        '''Swap the characters at the cursor.'''
 
         k = self.k
         w = self.editWidget(event)
@@ -5098,12 +5141,16 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20110527105255.18385: *4* printUas & printAllUas
     def printAllUas (self,event=None):
         
+        '''Print all uA's in the outline.'''
+        
         g.es_print('Dump of uAs...')
         for v in self.c.all_unique_nodes():
             if v.u:
                 self.printUas(v=v)
 
     def printUas (self,event=None,v=None):
+        
+        '''Print the uA's in the selected node.'''
         
         c = self.c
         if v: d,h = v.u,v.h
@@ -5119,6 +5166,8 @@ class editCommandsClass (baseEditCommandsClass):
             g.es_print('    %s%s: %s' % (pad,key,d.get(key)))
     #@+node:ekr.20110527105255.18386: *4* setUa
     def setUa (self,event):
+        
+        '''Prompt for the name and value of a uA, then set the uA in the present node.'''
         
         c,k = self.c,self.k
         tag = 'set-ua' ; state = k.getState(tag)
@@ -5167,6 +5216,8 @@ class editFileCommandsClass (baseEditCommandsClass):
         }
     #@+node:ekr.20070920104110: *3* compareLeoFiles
     def compareLeoFiles (self,event):
+        
+        '''Compare two .leo files.'''
 
         c = c1 = self.c ; w = c.frame.body.bodyCtrl
 
@@ -6167,6 +6218,16 @@ class helpCommandsClass (baseEditCommandsClass):
                 g.restoreStdout()
     #@+node:ekr.20070418074444: *3* printSettings
     def printSettings (self,event=None):
+        
+        '''Prints the value of every setting, except key bindings and commands and open-with tables.
+        The following shows where the active setting came from:
+
+        -     leoSettings.leo,
+        - [D] default settings.
+        - [F] indicates the file being loaded,
+        - [M] myLeoSettings.leo,
+
+        '''
 
         g.app.config.printSettings(self.c)
     #@-others
@@ -7026,6 +7087,8 @@ class macroCommandsClass (baseEditCommandsClass):
             g.es('no macros')
             
     def printLastMacro (self,event=None):
+        
+        '''Print the last (unnamed) macro.'''
         
         if self.lastMacro:
             for event in self.lastMacro:

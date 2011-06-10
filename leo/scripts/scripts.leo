@@ -191,7 +191,8 @@
 </v>
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
-<v t="ekr.20051110111150"><vh>@thin leoScripts.txt</vh></v>
+<v t="ekr.20051110111150"
+expanded="ekr.20051104082026,"><vh>@thin leoScripts.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>

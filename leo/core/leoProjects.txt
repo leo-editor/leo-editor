@@ -4246,6 +4246,8 @@ that this is a bad idea.
 The event args are unnecessary and confusing.
 #@+node:ekr.20061031131434.161: *5* exitNamedMode
 def exitNamedMode (self,event=None):
+    
+    '''Exit an input mode.'''
 
     k = self
 

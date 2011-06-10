@@ -414,6 +414,8 @@ class LeoPluginsController:
         return self.regularizeName(fn) in self.loadedModules
     #@+node:ekr.20100908125007.6025: *4* printHandlers
     def printHandlers (self,c,moduleName=None):
+        
+        '''Print the handlers for each plugin.'''
 
         tabName = 'Plugins'
         c.frame.log.selectTab(tabName)
@@ -446,6 +448,8 @@ class LeoPluginsController:
         g.es('',''.join(lines),tabName=tabName)
     #@+node:ekr.20100908125007.6026: *4* printPlugins
     def printPlugins (self,c):
+        
+        '''Print all enabled plugins.'''
 
         tabName = 'Plugins'
         c.frame.log.selectTab(tabName)

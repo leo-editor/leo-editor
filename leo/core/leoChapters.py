@@ -370,6 +370,8 @@ class chapterController:
             cc.note('can not move the last remaining node of a chapter.')
     #@+node:ekr.20070317085437.40: *4* cc.removeChapter & helper
     def removeChapter (self,event=None):
+        
+        '''Prompt for the name of a chapter, then remove it.'''
 
         cc = self ; c = cc.c
 

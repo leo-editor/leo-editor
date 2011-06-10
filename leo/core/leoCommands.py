@@ -1708,6 +1708,8 @@ class Commands (object):
                 frame.menu.createRecentFilesMenuItems()
     #@+node:tbrown.20080509212202.6: *6* cleanRecentFiles
     def cleanRecentFiles(self,event=None):
+        
+        '''Removed items from the recent files list that are no longer valid.'''
 
         c = self
 
@@ -1744,6 +1746,8 @@ class Commands (object):
         g.app.config.writeRecentFilesFile(c)
     #@+node:tbrown.20080509212202.8: *6* sortRecentFiles
     def sortRecentFiles(self,event=None):
+        
+        '''Sort the recent files list.'''
 
         c = self
 
@@ -1851,8 +1855,9 @@ class Commands (object):
     #@+node:ekr.20070915142635: *6* writeFileFromNode (changed)
     def writeFileFromNode (self,event=None):
 
-        # If node starts with @read-file-into-node, use the full path name in the headline.
-        # Otherwise, prompt for a file name.
+        '''If node starts with @read-file-into-node, use the full path name in the headline.
+        Otherwise, prompt for a file name.
+        '''
 
         c = self ; p = c.p
         c.endEditing()
@@ -2776,12 +2781,15 @@ class Commands (object):
         frame.colorPanel.bringToFront()
     #@+node:ekr.20031218072017.2883: *6* show/hide/toggleInvisibles
     def hideInvisibles (self,event=None):
+        '''Hide invisible (whitespace) characters.'''
         c = self ; c.showInvisiblesHelper(False)
 
     def showInvisibles (self,event=None):
+        '''Show invisible (whitespace) characters.'''
         c = self ; c.showInvisiblesHelper(True)
 
     def toggleShowInvisibles (self,event=None):
+        '''Toggle showing of invisible (whitespace) characters.'''
         c = self ; colorizer = c.frame.body.getColorizer()
         val = g.choose(colorizer.showInvisibles,0,1)
         c.showInvisiblesHelper(val)
@@ -4414,11 +4422,14 @@ class Commands (object):
 
     # For unit test of inverse commands dict.
     def beautifyAllPythonCode (self,event=None,dump=False):
+        
+        '''Reformat all Python code in the outline.'''
+
         return self.prettyPrintAllPythonCode (event,dump)
     #@+node:ekr.20040712053025.1: *7* prettyPrintPythonCode
     def prettyPrintPythonCode (self,event=None,p=None,dump=False):
 
-        '''Reformat all Python code in the selected tree to make it look more beautiful.'''
+        '''Reformat all Python code in the selected tree.'''
 
         c = self
 
@@ -4438,6 +4449,8 @@ class Commands (object):
 
     # For unit test of inverse commands dict.
     def beautifyPythonCode (self,event=None,dump=False):
+        
+        '''Beautify all Python code in the selected tree.'''
         return self.prettyPrintPythonCode (event,dump)
 
     #@+node:ekr.20050729211526: *7* prettyPrintPythonNode
@@ -4458,7 +4471,7 @@ class Commands (object):
     #@+node:ekr.20071001075704: *7* prettyPrintPythonTree
     def prettyPrintPythonTree (self,event=None,dump=False):
 
-        '''Reformat all Python code in the outline to make it look more beautiful.'''
+        '''Beautify all Python code in the selected outline.'''
 
         c = self ; p = c.p ; pp = c.prettyPrinter(c)
 
@@ -4473,6 +4486,9 @@ class Commands (object):
 
     # For unit test of inverse commands dict.
     def beautifyPythonTree (self,event=None,dump=False):
+        
+        '''Beautify all Python code in the selected outline.'''
+        
         return self.prettyPrintPythonTree (event,dump)
     #@+node:ekr.20040711135244.5: *7* class prettyPrinter
     class prettyPrinter:
@@ -5567,6 +5583,8 @@ class Commands (object):
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@+node:ekr.20071213185710: *6* c.toggleSparseMove
     def toggleSparseMove (self,event=None):
+        
+        '''Toggle whether moves collapse the outline.'''
 
         c = self
 
@@ -5980,6 +5998,8 @@ class Commands (object):
                 g.es('',name,"not found in",configDir,"\nor",homeLeoDir)
     #@+node:ekr.20061018094539: *5* openLeoScripts
     def openLeoScripts (self,event=None):
+        
+        '''Open scripts.leo.'''
 
         c = self
         fileName = g.os_path_join(g.app.loadDir,'..','scripts','scripts.leo')
@@ -6076,6 +6096,8 @@ class Commands (object):
     #@+node:ekr.20110402084740.14490: *4* Icon bar
     def goToNextHistory (self,event=None):
         
+        '''Go to the next node in the history list.'''
+        
         c = self
         p = c.nodeHistory.goNext()
             # Returns None if the position does not exist.
@@ -6087,6 +6109,8 @@ class Commands (object):
             c.nodeHistory.skipBeadUpdate = False
         
     def goToPrevHistory (self,event=None):
+        
+        '''Go to the previous node in the history list.'''
         
         c = self
         p = c.nodeHistory.goPrev()

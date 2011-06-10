@@ -2105,8 +2105,10 @@ class keyHandlerClass:
         pass 
     #@+node:ekr.20070613190936: *4* k.propagateKeyEvent
     def propagateKeyEvent (self,event):
+        
+        '''Open a menu.'''
 
-        self.oops() # Should be overridden.
+        # self.oops() # Should be overridden.
     #@+node:ekr.20061031131434.117: *4* negativeArgument (redo?)
     def negativeArgument (self,event):
 
@@ -2127,6 +2129,8 @@ class keyHandlerClass:
         return # (for Tk) 'break'
     #@+node:ekr.20061031131434.118: *4* numberCommand
     def numberCommand (self,event,stroke,number):
+        
+        '''Enter a number prefix for commands.'''
 
         k = self ; c = self.c
         k.stroke = stroke
@@ -3447,6 +3451,8 @@ class keyHandlerClass:
         k.generalModeHandler(event,modeName=modeName)
     #@+node:ekr.20061031131434.161: *4* exitNamedMode
     def exitNamedMode (self,event=None):
+        
+        '''Exit an input mode.'''
 
         k = self
 

@@ -405,6 +405,8 @@ class atFile:
     # should need to override only this method.
     #@+node:ekr.20070919133659: *4* at.checkDerivedFile
     def checkDerivedFile (self, event=None):
+        
+        '''Make sure an external file written by Leo may be read properly.'''
 
         at = self ; c = at.c ; p = c.p
 

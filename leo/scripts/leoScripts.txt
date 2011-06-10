@@ -11955,26 +11955,26 @@ def get_jsonfile(self, fname='codehash'):
 
 
 
-#@+node:ekr.20060530090451: *3* Print missing docstrings
-# Print all commands that do not have a docstring.
-d = c.commandsDict
-keys = d.keys() ; keys.sort
+#@+node:ekr.20110609184334.16461: *3* Print missing docstrings
+@color
 
-missing = []
+'''Find all commands that lack docstrings, and
+append the corresponding function name to the end of this node.'''
 
-for key in keys:
-    f = d.get(key)
-    if (not f.__doc__ and
-        not key.endswith('-mode') and
-        not key.startswith('open-with-')
-    ):
-        missing.append((key,f.__name__),)
+d = c.commandsDict # Keys are command names; values are functions
+ignore = ['minibufferCallback','enterModeCallback',]
+aList = [ d.get(z).__name__ for z in d
+    if not d.get(z).__doc__ and not d.get(z).__name__ in ignore]
+aList.sort()
+tag = '@nocolor\n@\n'
+i = p.b.find(tag)
+if i > -1:
+    p.b = p.b[:i+len(tag)]
+s = '\n'.join(aList)
+p.b = p.b + s
 
-missing.sort()
-print '-' * 20
-for data in missing:
-    a,b = data
-    print '%30s %s' % (a,b)
+@nocolor
+@
 #@+node:ekr.20051110105027.166: *3* Recursive import script
 # An example of running this script:
 
@@ -16622,4 +16622,5 @@ c
 
 last
 #@-all
+#@@language python
 #@-leo
