@@ -15979,19 +15979,6 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 - Fixed MacOS Command-C bug.
 
 - Fixed major problem with multiple body editors
-#@+node:ekr.20110604043410.17808: *4* Bugs and features new in b2
-- Double-clicking a headline now colorizers the headline exactly the same way as
-  when editing the headling with ctrl-H. This was a serious problem for those
-  with dark window-color schemes.
-  
-- The distribution script now ensures that leo\plugins\spellpyx.txt contains
-  Linux-style newlines. This prevents crashes in the PyEnchant spell checker.
-  
-- Leo imports .cfg files just like .ini files.
-
-- Fixed crasher in graphcanvas plugin caused by a bug in CommandChainDispatcher.add.
-
-
 #@+node:ekr.20110602091552.16903: *4* Major improvements
 - Leo highlights URL's everywhere. Ctrl-click URL's opens them in your web
   browser.
@@ -16372,5 +16359,172 @@ between the free_layout, NestedSplitter and viewrendered plugins.
   reports. This provides complete decoupling from Leo."
 
 - Call os.chdir when executing scripts.
+#@+node:ekr.20110604043410.17808: *4* New in 4.9 b2
+- Double-clicking a headline now colorizers the headline exactly the same way as
+  when editing the headling with ctrl-H. This was a serious problem for those
+  with dark window-color schemes.
+  
+- The distribution script now ensures that leo\plugins\spellpyx.txt contains
+  Linux-style newlines. This prevents crashes in the PyEnchant spell checker.
+  
+- Leo imports .cfg files just like .ini files.
+
+- Fixed crasher in graphcanvas plugin caused by a bug in CommandChainDispatcher.add.
+#@+node:ekr.20110611055444.16617: *4* New in 4.9 b3
+#@+node:ekr.20110611055444.16618: *5* Bugs fixed
+- Fixed ancient, major bug: F3 now makes sure to save headline changes
+
+- Fixed old bug: set-find-x commands no longer abort find commands
+
+  The commands that switch find scope, set-find-xxx, no longer terminate the
+  find command, if one is active.  This is an old bug, and it's good to fix it. 
+
+- Fixed recent bugs in the viewrendered and scrolledmessage plugins
+
+  An earlier rev fixed a bug that effectively destroyed the viewrendered plugin.
+  It was caused by the new convention that alleviates the need for many
+  \@language directives. The fix was simply to enable the update_rst method if
+  the massaged p.b is not empty.
+
+  ScrolledMessageDialog.convertMessage now renders rst by default, unless
+  *either* the html or text button is pressed.  There really should be three
+  radio buttons: text, html or rST, but that's a tiny interface glitch.  The
+  actual bug however, was much more serious: rst was never being rendered. 
+
+- Fixed chapters problems
+
+    http://groups.google.com/group/leo-editor/browse_thread/thread/3f15a855ca38b26e
+    
+    The new code is more relaxed about where @chapter nodes may reside.  They
+    are always *created* as the last child of the first @chapters node in the
+    outline (the @chapters, plural, node is created as needed).  However, you may
+    move them while in the "main" chapter, with no ill effects.  In fact, you could
+    swap @chapter nodes with the same name: when you select a chapter, Leo will use
+    (show) the first node it finds. 
+    
+    The new code is now both more careful and more tolerant of @chapter nodes
+    deleted by hand.  The chapter will still appear in the dropdown list: if you
+    select it you will give a polite warning.  That's all.  In particular, the
+    deleted chapter will *remain* in the dropdown list until you use the proper
+    chapter-remove command.  That's about the only sane alternative: it allows you
+    to resurrect the chapter, by hand or with an undo. 
+    
+    This is all made possible because the new code is almost completely stateless.
+    The only exception is the saved position used to select a node when selecting a
+    chapter. The old position-based findPositionInChapter method has been simplified
+    to make it work more reliably. It first looks for a "perfect" match using
+    positions, and then degrades to looking for a vnode match. In practice, most
+    matches are, in fact, perfect. The "imperfect" case typically happens when the
+    user alters nodes in @chapter trees by hand in the "main" chapters.
+    
+    Technical highlights:
+        
+    - The check for c.positionExists(p) in c.setCurrentPosition continues to fail
+      when deleting @chapter nodes. However, the code now simply falls back to
+      c.rootPosition, without any apparant harm.
+      
+    - The chapterController and chapter classes are now completely stateless, except
+      for chapter.p.
+      
+        A. chapter.findPositionInChapter has been simplified and generalized. It now
+           falls back to a reasonable value, based on p.v, if chapter.p does not
+           exist.
+           
+        B. All chapterController code now recomputes the location of @chapters and
+           @chapter nodes whenever those locations are needed.
+           
+        C. All chapter commands are unchanged in their actual workings, but all contain
+           a care "preamble" of checking code.
+           
+- Added unit test for all chapter commands.  All interactive commands now have
+  an xByName helper for use by unit tests.
+  
+- Added lockout to leoQtTreeTab.  This prevents flash during the rename chapter command.
+
+- Rewrote chapter.chapterSelectHelper.  This reduces, but does not eliminate, the
+  number of warnings given by c.setCurrentPosition.
+
+
+- Fixed recent bug: handle 'Escape' character properly
+
+  The fix was a last-minute adjustment in leoQtEventFilter.create_key_event.
+
+
+- Fixed caps-lock problem
+
+  The fix was yet another last-minute fix leoQtEventFiler.create_key_event.
+
+- Made sure all keys contribute to lossage
+#@+node:ekr.20110611055444.16654: *5* Simplified Leo's key handling
+This was a major simplification of Leo's core.
+
+- Eliminated event.keysym from Leo's core: test only ev.char and ev.stroke.
+
+- Replaced all dummy (g.bunch) events in Leo's core and in unitTest.leo.
+    
+- Replaced w.event_generate by g.app.gui.event_generate everywhere.
+    
+- Rewrote leoGui.leoKeyEvent.
+
+- Created leoGui.create_key_event and leoQtEventFilter.create_key_event.
+
+- Removed some ugly last-minute hacks in leoQtEventFilter.create_key_event.
+#@+node:ekr.20110611055444.16726: *5* Features
+- Changed names of commands so they have common prefixes
+
+    Any custom key bindings (none are bound by default) will have to change.
+    
+    The new prefixes are::
+    
+        abbrev-     abbreviation commands
+        buffer-     buffer command
+        directory-  director commands
+        file-       file commands
+        gc-         garbage collection
+        macro-      macro expansion
+        rectangle-  rectangle commands
+        register    register commands
+        
+    The already existing prefixes are::
+    
+        apropos-    help
+        ddabrev-    dynamic abbreviations
+        find-       find commands
+        isearch-    incremental search
+        print-      print information
+        run-        run unit tests
+        toggle-     toggle settings
+        yank-       yank
+        
+
+- Finished macros
+
+    The macro-load and macro-save are as simple as possible.
+
+    No further work will be done on macros unless somebody really wants these commands.
+
+
+- Added support for word-only option for regular expressions
+
+When the word-only option is in effect, Leo ensures that the search pattern
+begins and ends with the '\b' anchor.
+
+- Leo's startup code now forces the qt gui: it changes qttabs to qt.
+
+- Added support for expanded sections in plugin.  Added three new options:
+
+    expand_noweb_references
+    
+       True: Replace references by definitions.
+       Definitions must be descendants of the referencing node.
+    
+    ignore_noweb_definitions
+    
+        True: ignore section definition nodes.
+    
+    expand_noweb_recursively
+    
+        True: recursively expand definitions by expanding any
+        references found in definitions.
 #@-all
 #@-leo
