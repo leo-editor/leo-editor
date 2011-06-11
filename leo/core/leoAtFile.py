@@ -4480,7 +4480,7 @@ class atFile:
                 return at.miscDirective
 
         return at.noDirective
-    #@+node:ekr.20041005105605.199: *4* hasSectionName
+    #@+node:ekr.20041005105605.199: *4* at.findSectionName
     def findSectionName(self,s,i):
 
         end = s.find('\n',i)
@@ -4502,7 +4502,7 @@ class atFile:
                     break
 
         return ok, n1, n2
-    #@+node:ekr.20041005105605.200: *4* isSectionName
+    #@+node:ekr.20041005105605.200: *4* at.isSectionName
     # returns (flag, end). end is the index of the character after the section name.
 
     def isSectionName(self,s,i):
