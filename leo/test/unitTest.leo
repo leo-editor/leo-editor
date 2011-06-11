@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.68" body_secondary_ratio="0.75">
-	<global_window_position top="45" left="412" height="1026" width="1041"/>
+<globals body_outline_ratio="0.42" body_secondary_ratio="0.52">
+	<global_window_position top="45" left="412" height="1026" width="1182"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -103,7 +103,8 @@
 </v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31302e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31302e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"
+expanded="ekr.20050120095423,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20110610122533.3369"><vh>goto-global-line tests (Fail at present)</vh>
 <v t="ekr.20110610122533.3388"><vh>Tests with @auto as the root</vh>
@@ -557,7 +558,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935" str_leo_pos="5,0,7,1"></t>
 <t tx="ekr.20071113140035">fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src','leoPy.leo'))
 flag,frame2 = g.openWithFileName(fileName,old_c=None,enableLog=False)
 c.frame.bringToFront()

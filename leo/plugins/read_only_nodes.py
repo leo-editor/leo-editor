@@ -75,7 +75,11 @@ else:
     import urlparse 
 
 from formatter import AbstractFormatter, DumbWriter
-from htmllib   import HTMLParser
+
+if g.isPython3:
+    import html.parser as HTMLParser
+else:
+    from htmllib   import HTMLParser
 #@-<< imports >>
 __version__ = '2.0'
 #@+<< version history >>

@@ -30,6 +30,10 @@ __version__ = '0.1'
 
 #@+<< imports >>
 #@+node:ville.20090503124249.4: ** << imports >>
+import sys
+
+isPython3 = sys.version_info >= (3,0,0)
+
 import leo.core.leoGlobals as g
 
 import xml.etree.ElementTree as ET
@@ -37,7 +41,10 @@ import xml.etree.ElementTree as ET
 from leo.core import leoPlugins
     # Uses leoPlugins.TryNext
 
-import HTMLParser
+if isPython3:
+    import html.parser as HTMLParser
+else:
+    import HTMLParser
 #@-<< imports >>
 
 #@+others

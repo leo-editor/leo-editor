@@ -53,14 +53,14 @@ def init ():
     return ok
 #@+node:ville.20110115234843.8753: ** onDrop
 def onDrop(tag, keys):
-    print "ta",tag
+    print("ta",tag)
     ev = keys['dropevent']
     formats = keys['formats']
     md = ev.mimeData()
 
     mime_data_dump(md)
 
-    print "fo", formats
+    print("fo", formats)
 
     return False
 
@@ -69,9 +69,9 @@ def onDrop(tag, keys):
 def mime_data_dump(md):
     for fo in md.formats():
         da = str(md.data(fo))
-        print "FO", fo
-        print da
-        print "END"
+        print("FO", fo)
+        print(da)
+        print("END")
 #@+node:ville.20110115234843.8747: ** onCreate
 def onCreate (tag, keys):
 

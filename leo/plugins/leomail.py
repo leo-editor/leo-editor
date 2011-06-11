@@ -21,6 +21,15 @@ __version__ = '0.0'
 #@+node:ville.20110125222411.10539: ** << imports >>
 import leo.core.leoGlobals as g
 
+import sys
+
+isPython3 = sys.version_info >= (3,0,0)
+
+if isPython3:
+    from html.parser import HTMLParser
+else:
+    from HTMLParser import HTMLParser
+
 #@-<< imports >>
 
 #@+others
@@ -37,7 +46,6 @@ import mailbox
 
 #@+<< stripping >>
 #@+node:ville.20110125222411.10547: *3* << stripping >>
-from HTMLParser import HTMLParser
 
 class MLStripper(HTMLParser):
     def __init__(self):

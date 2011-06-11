@@ -1,14 +1,31 @@
 # coding=utf8
+
+import sys
+isPython3 = sys.version_info >= (3,0,0)
+
 import cgi
 import json
-import urlparse
-import BaseHTTPServer
+import os
 import threading
-import Queue
 import time
 import webbrowser
-import os
 
+if isPython3:
+    import http.server as BaseHTTPServer
+else:
+    import BaseHTTPServer
+    
+if isPython3:
+    import queue as Queue
+else:
+    import Queue
+
+if isPython3:
+    import urllib.request as urllib
+    import urllib.parse as urlparse
+else:
+    import urllib2 as urllib
+    import urlparse
 
 class QueueTimeout(Queue.Queue):
     """from http://stackoverflow.com/questions/1564501/add-timeout-argument-to-pythons-queue-join
@@ -95,19 +112,19 @@ class PyGeoTag(object):
         webbrowser.open_new("http://%s:%d/" %
             (self.address or "127.0.0.1", self.port))
     def callback(self, data):
-        print data
+        print(data)
     def _store(self, data):
         self.data = data
     def show_position(self, data={}):
 
-        print 'SHOWING',data
+        print('SHOWING',data)
 
         data["__msg_type"] = "show_position"
 
         self.request_queue.put(data)
     def request_position(self, data={}):
 
-        print 'REQUESTING',data
+        print('REQUESTING',data)
 
         data["__msg_type"] = "request_position"
 
@@ -187,7 +204,7 @@ class GeoTagRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
             #data = urlparse.parse_qs(urlparse.urlparse(self.path).query)['data'][0]
-            #print repr(json.loads(data))
+            #print(repr(json.loads(data)))
             try:
                 data = self.owner.request_queue.get_nowait()
             except Queue.Empty:
@@ -206,7 +223,7 @@ if __name__ == '__main__':
     f({"description": "Frogs", 'secret':7})
     f({"description": "Otters"})
 
-    print "DONE"
+    print("DONE")
     if pgt.synchronous:
         pgt.stop_server()
 

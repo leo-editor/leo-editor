@@ -32,8 +32,17 @@ import leo.core.leoGlobals as g
 
 from leo.core import leoPlugins
     # Uses leoPlugins.TryNext
+    
+import feedparser
+import sys
 
-import HTMLParser
+isPython3 = sys.version_info >= (3,0,0)
+
+if isPython3:
+    import html.parser as HTMLParser
+else:
+    import HTMLParser
+
 import pprint
 #@-<< imports >>
 
@@ -55,8 +64,6 @@ def onCreate (tag, keys):
 
     feeds_install()
 #@+node:ville.20110206142055.10648: ** fetch
-import feedparser
-
 
 class MLStripper(HTMLParser.HTMLParser):
     def __init__(self):
