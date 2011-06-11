@@ -1082,7 +1082,7 @@ class configClass:
         ("initial_horizontal_ratio","ratio",0.3),
         ("initial_horizontal_secondary_ratio","ratio",0.5),
         ("initial_vertical_secondary_ratio","ratio",0.7),
-        ("outline_pane_scrolls_horizontally","bool",False),
+        # ("outline_pane_scrolls_horizontally","bool",False),
         ("split_bar_color","color","LightSteelBlue2"),
         ("split_bar_relief","relief","groove"),
         ("split_bar_width","int",7),

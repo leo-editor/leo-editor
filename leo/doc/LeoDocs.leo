@@ -149,7 +149,8 @@
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"
+expanded="ekr.20110531155858.19246,ekr.20110611055444.16617,"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20110531155858.19246"><vh>4.9 rc1 Release notes</vh>
 <v t="ekr.20110601105631.19359"><vh>Deprecated/removed features</vh></v>
@@ -174,6 +175,7 @@
 <v t="ekr.20110611055444.16618"><vh>Bugs fixed</vh></v>
 <v t="ekr.20110611055444.16654"><vh>Simplified Leo's key handling</vh></v>
 <v t="ekr.20110611055444.16726"><vh>Features</vh></v>
+<v t="ekr.20110611092035.16493"><vh>Removed settings</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1107,6 +1109,21 @@ begins and ends with the '\b' anchor.
     
         True: recursively expand definitions by expanding any
         references found in definitions.
+</t>
+<t tx="ekr.20110611092035.16493">The following Tk settings have been removed from leoSettings.leo::
+
+    @bool center_selected_tree_node
+    @bool expanded_click_area
+    @bool idle_redraw
+    @bool initialClickExpandsOrContractsNode
+    @bool invisible_outline_navigation
+    @bool look_for_control_drag_on_mouse_down
+    @bool outline_pane_scrolls_horizontally
+    @bool use_minibuffer
+    
+The following setting was not active, and has also been removed::
+
+    @bool ignore_caps_lock
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os

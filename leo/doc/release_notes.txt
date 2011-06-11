@@ -16526,5 +16526,20 @@ begins and ends with the '\b' anchor.
     
         True: recursively expand definitions by expanding any
         references found in definitions.
+#@+node:ekr.20110611092035.16493: *5* Removed settings
+The following Tk settings have been removed from leoSettings.leo::
+
+    @bool center_selected_tree_node
+    @bool expanded_click_area
+    @bool idle_redraw
+    @bool initialClickExpandsOrContractsNode
+    @bool invisible_outline_navigation
+    @bool look_for_control_drag_on_mouse_down
+    @bool outline_pane_scrolls_horizontally
+    @bool use_minibuffer
+    
+The following setting was not active, and has also been removed::
+
+    @bool ignore_caps_lock
 #@-all
 #@-leo

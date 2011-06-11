@@ -57,30 +57,40 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>Candidates for settings in myLeoSettings.leo</vh>
-<v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
-<v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
-<v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
-<v t="ekr.20060212101234"><vh>@bool gc_before_redraw = True</vh></v>
-<v t="ekr.20060215102141"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
-<v t="ekr.20061012122620"><vh>@bool insert_new_nodes_at_end = False</vh></v>
-<v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = True</vh></v>
-<v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
-<v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
-<v t="ekr.20060215104345"><vh>@bool swap_mac_keys = False</vh></v>
+<v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20110611092035.16470"><vh>Appearance</vh>
+<v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+<v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
+<v t="ekr.20110611092035.16489"><vh>Chapters</vh>
 <v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070318065601"><vh>@bool use_chapters = True</vh></v>
-<v t="ekr.20061004150211"><vh>@bool use_sax_based_read = False</vh></v>
-<v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
+</v>
+<v t="ekr.20110611092035.16490"><vh>Windows</vh>
+<v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
+<v t="ekr.20100929121021.8511"><vh>@bool fixedwindow = False</vh></v>
+<v t="ekr.20080412115752.1"><vh>@data fixedWindowPosition</vh></v>
+<v t="edward.20081129091117.12"><vh>@string initial_split_orientation = vertical</vh></v>
+</v>
+</v>
+<v t="ekr.20110611092035.16464"><vh>Files</vh>
+<v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
 <v t="ekr.20061009190510"><vh>@bool write_recent_files_as_needed = True</vh></v>
-<v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20060127050605"><vh>@int max_undo_stack_size = 0</vh></v>
-<v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
+</v>
+<v t="ekr.20041119034357.20"><vh>Find/Change panel</vh>
+<v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
+<v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
+<v t="ekr.20060125104049"><vh>@bool show_only_find_tab_options = True</vh></v>
+<v t="ekr.20041119050105.1"><vh>@string change_text = None</vh></v>
+<v t="ekr.20041119050105.2"><vh>@string find_text = None</vh></v>
+<v t="ekr.20110611092035.16476"><vh>Radio buttons in the Find panel</vh>
+<v t="ekr.20041119050105.12"><vh>@bool node_only = False</vh></v>
+<v t="ekr.20041119050105.16"><vh>@bool suboutline_only = False</vh></v>
+</v>
 <v t="ekr.20041119050105.3"><vh>Checkboxes in the Find panel</vh>
 <v t="ekr.20041119050105.4"><vh>@bool batch = False</vh></v>
 <v t="ekr.20041119050105.5"><vh>@bool ignore_case = True</vh></v>
 <v t="ekr.20041119050105.6"><vh>@bool mark_changes = False</vh></v>
 <v t="ekr.20041119050105.7"><vh>@bool mark_finds = False</vh></v>
-<v t="ekr.20041119050105.12"><vh>@bool node_only = False</vh></v>
 <v t="ekr.20041119050105.9"><vh>@bool reverse = False</vh></v>
 <v t="ekr.20041119050105.8"><vh>@bool pattern_match = False</vh></v>
 <v t="ekr.20041120152657"><vh>@bool script_change = None</vh></v>
@@ -89,28 +99,68 @@
 <v t="ekr.20041119050105.10"><vh>@bool whole_word = False</vh></v>
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
-<v t="edward.20081129091117.12"><vh>@string initial_split_orientation = vertical</vh></v>
 </v>
-<v t="ekr.20080513060549.1"><vh>Settings for vim bindings</vh>
+<v t="ekr.20110611092035.16465"><vh>Key binding and operation</vh>
+<v t="ekr.20060215102141"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
+<v t="ekr.20060215104345"><vh>@bool swap_mac_keys = False</vh></v>
+<v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051101160257"><vh>About keyboard shortcuts</vh>
+<v t="ekr.20051007200824.1"><vh>About shortcut specifiers</vh></v>
+<v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
+</v>
+<v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
-<v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
+<v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
+<v t="ekr.20060104093101"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060122105527.4"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
+<v t="ekr.20060110141538"><vh>@keys Default Emacs shortcuts</vh>
+<v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
+<v t="ekr.20060112090844"><vh>@shortcuts Emacs: F-M</vh></v>
+<v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
+<v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
+<v t="ekr.20110517093705.14574"><vh>@shortcuts shift-f-keys</vh></v>
 </v>
-<v t="ekr.20100806211331.8331"><vh>Unused settings</vh>
-<v t="ekr.20070925144534.25"><vh>@menu Tan&amp;gle...</vh>
-<v t="ekr.20070925144534.26"><vh>@item *tangle-&amp;all</vh></v>
-<v t="ekr.20070925144534.27"><vh>@item *tangle-&amp;marked</vh></v>
-<v t="ekr.20070925144534.28"><vh>@item *&amp;tangle</vh></v>
+<v t="ekr.20060110141538.1"><vh>@keys No bindings</vh>
+<v t="ekr.20051218202206"><vh>@shortcuts No bindings: A-E</vh></v>
+<v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
+<v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
+<v t="ekr.20110517093705.14572"><vh>@shortcuts shift-f-keys</vh></v>
 </v>
-<v t="ekr.20070925144534.29"><vh>@menu &amp;Untangle...</vh>
-<v t="ekr.20070925144534.30"><vh>@item *untangle-&amp;all</vh></v>
-<v t="ekr.20070925144534.31"><vh>@item *untangle-&amp;marked</vh></v>
-<v t="ekr.20070925144534.32"><vh>@item *&amp;untangle</vh></v>
 </v>
-<v t="ekr.20100806210935.8331"><vh>Tangle/Untangle preferences</vh>
-<v t="ekr.20041119034357.33"><vh>@bool output_doc_chunks = True</vh></v>
-<v t="ekr.20041119034357.34"><vh>@bool tangle_outputs_header = True</vh></v>
-<v t="ekr.20041119034357.35"><vh>@bool run_tangle_done.py = False</vh></v>
-<v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
+<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
+<v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
+<v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
+<v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
+<v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
+<v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves</vh></v>
+<v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
+<v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
+<v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
+<v t="ekr.20080204124255"><vh>@shortcuts IPython commands</vh></v>
+<v t="ekr.20070613133747"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands</vh></v>
+<v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
+<v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
+<v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
+<v t="ekr.20090408091222.1"><vh>@shortcuts duplicate bindings for Qt</vh></v>
+<v t="ville.20090701225947.3902"><vh>@shortcuts Default plugins</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20110611092035.16463"><vh>Tree operation</vh>
+<v t="ekr.20041119050749.3"><vh>@bool allow_clone_drags = False</vh></v>
+<v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
+<v t="ekr.20080315083057.7"><vh>@bool collapse_nodes_while_spelling = True</vh></v>
+<v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
+<v t="ekr.20041119050749.4"><vh>@bool enable_drag_messages = False</vh></v>
+<v t="ekr.20061012122620"><vh>@bool insert_new_nodes_at_end = False</vh></v>
+<v t="tbrown.20110212091818.20118"><vh>@bool inter_outline_drag_moves = False</vh></v>
+<v t="ekr.20100107060708.6390"><vh>@bool qt-tree-multiple-selection = True</vh></v>
+<v t="ekr.20110601103939.19339"><vh>@bool single_click_auto_edits_headline = False</vh></v>
+<v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = True</vh></v>
+<v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
+<v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
+<v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
 </v>
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
@@ -119,20 +169,19 @@
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
 </v>
+<v t="ekr.20110611092035.16470"></v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
-<v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = True</vh></v>
-<v t="ekr.20110510071925.14590"><vh>@bool use_codewise = False</vh></v>
 <v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = False</vh></v>
+<v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
+<v t="ekr.20060216170801"><vh>@bool enable_calltips_initially = False</vh></v>
+<v t="ekr.20110510071925.14590"><vh>@bool use_codewise = False</vh></v>
+<v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = True</vh></v>
 </v>
-<v t="ekr.20041213105007.1"><vh>Colors</vh>
-<v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
-<v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
-<v t="ekr.20041119052015.2"><vh>@color log_text_foreground_color = None</vh></v>
-<v t="ekr.20041119053445"><vh>@color log_text_background_color = None</vh></v>
-<v t="ekr.20041217184352.2"><vh>@color log_pane_background_color = #f2fdff</vh></v>
-<v t="ekr.20051020125928"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
-<v t="ekr.20051025070845"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
-</v>
+<v t="ekr.20110611092035.16471"><vh>Colorizer &amp; colors</vh>
+<v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
+<v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
+<v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 200000</vh></v>
+<v t="ekr.20080326060254.3"><vh>@string target_language = python</vh></v>
 <v t="ekr.20041213105007.2"><vh>Body pane colors</vh>
 <v t="ekr.20041119034357.41"><vh>@color body_cursor_background_color = None</vh></v>
 <v t="ekr.20041119034357.40"><vh>@color body_cursor_foreground_color = None</vh></v>
@@ -150,16 +199,13 @@
 <v t="ekr.20080511041907.1"><vh>@color unselected_body_bg_color = #ffffef</vh></v>
 <v t="ekr.20080511041907.2"><vh>@color unselected_body_fg_color = black</vh></v>
 </v>
-<v t="ekr.20041119051246.1"><vh>Outline pane colors (Tk only)</vh>
-<v t="ekr.20041119051246.2"><vh>@@color headline_text_unselected_background_color = #ffffec</vh></v>
-<v t="ekr.20041119050749.6"><vh>@@color headline_text_unselected_foreground_color = None</vh></v>
-<v t="ekr.20041119051246.3"><vh>@@color headline_text_selected_background_color = #dbdbdb</vh></v>
-<v t="ekr.20041119050749.7"><vh>@@color headline_text_selected_foreground_color = None</vh></v>
-<v t="ekr.20041119051901"><vh>@@color headline_text_editing_background_color = None</vh></v>
-<v t="ekr.20041119050749.8"><vh>@@color headline_text_editing_foreground_color = None</vh></v>
-<v t="ekr.20041119050749.9"><vh>@@color headline_text_editing_selection_foreground_color = None</vh></v>
-<v t="ekr.20041119051901.1"><vh>@@color headline_text_editing_selection_background_color = None</vh></v>
-<v t="ekr.20041119050749.12"><vh>@@color outline_pane_background_color = #ffffec</vh></v>
+<v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
+<v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
+<v t="ekr.20041119052015.2"><vh>@color log_text_foreground_color = None</vh></v>
+<v t="ekr.20041119053445"><vh>@color log_text_background_color = None</vh></v>
+<v t="ekr.20041217184352.2"><vh>@color log_pane_background_color = #f2fdff</vh></v>
+<v t="ekr.20051020125928"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
+<v t="ekr.20051025070845"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
 </v>
 <v t="ekr.20100313080341.8368"><vh>Minibuffer background colors</vh>
 <v t="ekr.20100313080341.8369"><vh>@color minibuffer-background-color = lightblue</vh></v>
@@ -237,30 +283,37 @@
 </v>
 </v>
 </v>
-<v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
 </v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
+<v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
+<v t="ekr.20110611092035.16488"><vh>Bracket matching</vh>
+<v t="ekr.20060804095015.1"><vh>@string close_flash_brackets = )]}</vh></v>
+<v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
+</v>
+<v t="ekr.20110611092035.16479"><vh>Emacs-like commands</vh>
 <v t="ekr.20071006153053"><vh>@bool add_ws_to_kill_ring = False</vh></v>
-<v t="ekr.20080324105006.6"><vh>@bool allow_middle_button_paste = False</vh></v>
-<v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
-<v t="ekr.20041119034357.14"><vh>@bool at_root_bodies_start_in_doc_mode = True</vh></v>
-<v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
-<v t="ekr.20060930085532"></v>
-<v t="ekr.20080315083057.7"><vh>@bool collapse_nodes_while_spelling = True</vh></v>
-<v t="ekr.20070615094204"></v>
-<v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
 <v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
-<v t="ekr.20061012122620"></v>
-<v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
-<v t="ekr.20041119041019.2"><vh>@bool save_clears_undo_buffer = False</vh></v>
-<v t="ekr.20061029091403"><vh>@bool show_full_tracebacks_in_scripts = False</vh></v>
-<v t="ekr.20061007211759"></v>
-<v t="ekr.20080811105020.2"><vh>@bool suppress_import_parsing = False</vh></v>
-<v t="ekr.20060127050605"></v>
+</v>
+<v t="ekr.20110611092035.16482"><vh>Headline commands</vh>
 <v t="ekr.20041119050749.11"><vh>@string headline_gmt_time = None</vh></v>
 <v t="ekr.20041119050749.10"><vh>@string headline_time_format_string = %m/%d</vh></v>
-<v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
+</v>
+<v t="ekr.20071214132254"><vh>Import options</vh>
+<v t="ekr.20101104191857.8345"><vh>@bool at_auto_separate_non_def_nodes = False</vh></v>
+<v t="ekr.20071214132254.1"><vh>@data import_xml_tags</vh></v>
+</v>
+<v t="ekr.20110611092035.16481"><vh>Scripting</vh>
+<v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
+<v t="ekr.20061029091403"><vh>@bool show_full_tracebacks_in_scripts = False</vh></v>
+</v>
+<v t="ekr.20110611092035.16478"><vh>Tangle/Untange</vh>
+<v t="ekr.20041119034357.14"><vh>@bool at_root_bodies_start_in_doc_mode = True</vh></v>
+</v>
+<v t="ekr.20110611092035.16477"><vh>Undo</vh>
+<v t="ekr.20060127050605"><vh>@int max_undo_stack_size = 0</vh></v>
+<v t="ekr.20041119041019.2"><vh>@bool save_clears_undo_buffer = False</vh></v>
 <v t="ekr.20050126083026"><vh>@string undo_granularity = None</vh></v>
+</v>
 </v>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
@@ -306,7 +359,7 @@
 </v>
 <v t="ekr.20051126062243"><vh>Debugging</vh>
 <v t="ekr.20060408090018"><vh>@bool added_setting = True</vh></v>
-<v t="ekr.20060212101234"></v>
+<v t="ekr.20060212101234"><vh>@bool gc_before_redraw = True</vh></v>
 <v t="ekr.20060202113731"><vh>@bool show_tree_stats = False</vh></v>
 <v t="ekr.20060114073238"><vh>@bool trace_bindings = False</vh></v>
 <v t="ekr.20060616172614"><vh>@bool trace_bindings_verbose = False</vh></v>
@@ -351,119 +404,58 @@
 </v>
 </v>
 </v>
-<v t="ekr.20061003173413"><vh>File options</vh>
-<v t="ekr.20041119034357.7"><vh>.leo file options</vh>
-<v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
-<v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
-<v t="ekr.20061004150211"></v>
-<v t="ekr.20080921060401.3"><vh>@string default_leo_file = ~/.leo/workbook.leo</vh></v>
+<v t="ekr.20110611092035.16491"><vh>Directives</vh>
+<v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
+<v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
+<v t="ekr.20080326060254.3"></v>
 </v>
-<v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
-<v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
-<v t="ekr.20061009190510"></v>
-<v t="tbrown.20081003103821.1"><vh>@bool recent_files_group = False</vh></v>
-<v t="tbrown.20081003103821.2"><vh>@bool recent_files_group_always = False</vh></v>
-<v t="ekr.20100929121021.8511"><vh>@bool fixedwindow = False</vh></v>
-<v t="ekr.20101009103953.8642"><vh>@bool put_expansion_bits_in_leo_files = True</vh></v>
-<v t="ekr.20080412115752.1"><vh>@data fixedWindowPosition</vh></v>
-<v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
-<v t="ekr.20041119042929.9"><vh>@string default_derived_file_encoding = utf-8</vh></v>
-<v t="ekr.20041119042929.10"><vh>@string new_leo_file_encoding = utf-8</vh></v>
-<v t="ekr.20081216090156.5"><vh>@string underindent-escape-string = \\-</vh></v>
-<v t="ekr.20041119034357.12"><vh>derived files options</vh>
-<v t="ekr.20041119041747"><vh>@string output_newline = nl</vh></v>
-<v t="ekr.20041119041747.1"><vh>@string trailing_body_newlines = one</vh></v>
-<v t="ekr.20041119041747.4"><vh>@bool write_strips_blank_lines = True</vh></v>
-<v t="ekr.20070419103554"><vh>@bool force_newlines_in_at_nosent_bodies = True</vh></v>
-</v>
-<v t="ekr.20041119034357.11"><vh>directory options</vh>
+<v t="ekr.20041119034357.11"><vh>Directories</vh>
+<v t="ekr.20041119034357.29"><vh>@directory default_tangle_directory = None</vh></v>
 <v t="ekr.20041119041304"></v>
 <v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
 <v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
+</v>
+<v t="ekr.20061003173413"><vh>Files</vh>
+<v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
+<v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
+<v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
+<v t="ekr.20041119034357.12"><vh>External files</vh>
+<v t="ekr.20070419103554"><vh>@bool force_newlines_in_at_nosent_bodies = True</vh></v>
+<v t="ekr.20041119041747.4"><vh>@bool write_strips_blank_lines = True</vh></v>
+<v t="ekr.20041119041747"><vh>@string output_newline = nl</vh></v>
+<v t="ekr.20041119041747.1"><vh>@string trailing_body_newlines = one</vh></v>
+<v t="ekr.20081216090156.5"><vh>@string underindent-escape-string = \\-</vh></v>
+</v>
+<v t="ekr.20110611092035.16480"><vh>Import commands</vh>
+<v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
+<v t="ekr.20080811105020.2"><vh>@bool suppress_import_parsing = False</vh></v>
+</v>
+<v t="ekr.20041119034357.7"><vh>Leo files</vh>
+<v t="ekr.20101009103953.8642"><vh>@bool put_expansion_bits_in_leo_files = True</vh></v>
+<v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
+<v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
+<v t="ekr.20080921060401.3"><vh>@string default_leo_file = ~/.leo/workbook.leo</vh></v>
+</v>
+<v t="ekr.20110611092035.16474"><vh>Recent files</vh>
+<v t="tbrown.20081003103821.1"><vh>@bool recent_files_group = False</vh></v>
+<v t="tbrown.20081003103821.2"><vh>@bool recent_files_group_always = False</vh></v>
+<v t="ekr.20061009190510"></v>
 </v>
 <v t="ekr.20060730101451"><vh>Shadow files</vh>
 <v t="ekr.20060730101451.3"><vh>@string shadow_prefix = x</vh></v>
 <v t="ekr.20060730101451.5"><vh>@string shadow_subdir = .leo_shadow</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.20"><vh>Find/Change panel</vh>
-<v t="ekr.20060930085532"></v>
-<v t="ekr.20060125104049"><vh>@bool show_only_find_tab_options = True</vh></v>
-<v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
-<v t="ekr.20041119050105.1"><vh>@string change_text = None</vh></v>
-<v t="ekr.20041119050105.2"><vh>@string find_text = None</vh></v>
-<v t="ekr.20041119050105.3"></v>
-<v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
-<v t="ekr.20041119050105.16"><vh>@bool suboutline_only = False</vh></v>
-</v>
-<v t="ekr.20071214132254"><vh>Import options</vh>
-<v t="ekr.20101104191857.8345"><vh>@bool at_auto_separate_non_def_nodes = False</vh></v>
-<v t="ekr.20071214132254.1"><vh>@data import_xml_tags</vh></v>
-</v>
-<v t="ekr.20100907092300.6957"><vh>Inkscape options</vh>
-<v t="ekr.20100907092300.6958"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
-<v t="ekr.20100907092300.6959"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
-</v>
+<v t="ekr.20041119034357.20"></v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
-<v t="ekr.20060215094146"><vh>@@bool ignore_caps_lock = True</vh></v>
-<v t="ekr.20060216170801"><vh>@bool enable_calltips_initially = False</vh></v>
-<v t="ekr.20060215102141"></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
-<v t="ekr.20060926160657"></v>
-<v t="ekr.20060122105527.7"></v>
-<v t="ekr.20060215104345"></v>
 <v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
-<v t="ekr.20060122105527.5"><vh>@bool useCmdMenu = True</vh></v>
-<v t="ekr.20060122105527.6"><vh>@bool useMinibuffer = True</vh></v>
 <v t="ekr.20060926161207.1"><vh>@bool warn_about_redefined_shortcuts = True</vh></v>
-<v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
-<v t="ekr.20060804095015.1"><vh>@string close_flash_brackets = )]}</vh></v>
-<v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
-<v t="ekr.20051101160257"><vh>About keyboard shortcuts</vh>
-<v t="ekr.20051007200824.1"><vh>About shortcut specifiers</vh></v>
-<v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
-</v>
-<v t="ekr.20060117092249"><vh>About modes</vh></v>
-<v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101"><vh>@ignore Unused key bindings</vh>
-<v t="ekr.20060122105527.4"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
-<v t="ekr.20060110141538"><vh>@keys Default Emacs shortcuts</vh>
-<v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
-<v t="ekr.20060112090844"><vh>@shortcuts Emacs: F-M</vh></v>
-<v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
-<v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
-<v t="ekr.20110517093705.14574"><vh>@shortcuts shift-f-keys</vh></v>
-</v>
-<v t="ekr.20060110141538.1"><vh>@keys No bindings</vh>
-<v t="ekr.20051218202206"><vh>@shortcuts No bindings: A-E</vh></v>
-<v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
-<v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
-<v t="ekr.20110517093705.14572"><vh>@shortcuts shift-f-keys</vh></v>
-</v>
-</v>
-<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
-<v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
-<v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
-<v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
-<v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
-<v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves</vh></v>
-<v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
-<v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
-<v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
-<v t="ekr.20080204124255"><vh>@shortcuts IPython commands</vh></v>
-<v t="ekr.20070613133747"><vh>@shortcuts Menu commands</vh></v>
-<v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands</vh></v>
-<v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
-<v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
-<v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
-<v t="ekr.20090408091222.1"><vh>@shortcuts duplicate bindings for Qt</vh></v>
-<v t="ville.20090701225947.3902"><vh>@shortcuts Default plugins</vh></v>
-</v>
-</v>
+<v t="ekr.20051007200824"></v>
 <v t="ekr.20070925144552"><vh>Menus</vh>
+<v t="ekr.20060122105527.5"><vh>@bool useCmdMenu = True</vh></v>
 <v t="ekr.20071010123015"><vh>@@menu 文件</vh>
 <v t="ekr.20071010123015.1"><vh>@item new</vh></v>
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
@@ -1077,15 +1069,13 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536"><vh>Plugins</vh>
-<v t="vivainio.20080307190927"><vh>IPython</vh>
-<v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
+<v t="ekr.20110611092035.16492"><vh>Mouse</vh>
+<v t="ekr.20080324105006.6"><vh>@bool allow_middle_button_paste = False</vh></v>
 </v>
-<v t="ekr.20070417071249"></v>
+<v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"></v>
-<v t="tbrown.20100524101550.4704"><vh>@string mod_scripting_subtext =</vh></v>
 <v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
 <v t="tbrown.20091129085043.11790"><vh>@string active_path_attype = auto</vh></v>
 <v t="tbrown.20091129085043.11792"><vh>@string active_path_event = icondclick1</vh></v>
@@ -1115,6 +1105,16 @@
 <v t="ekr.20060807103220.10"><vh>@bool datenodes_year_node_omit_saturdays = True</vh></v>
 <v t="ekr.20060807103220.11"><vh>@bool datenodes_year_node_omit_sundays = True</vh></v>
 </v>
+<v t="ekr.20100907092300.6957"><vh>Inkscape options</vh>
+<v t="ekr.20100907092300.6958"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
+<v t="ekr.20100907092300.6959"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
+</v>
+<v t="vivainio.20080307190927"><vh>IPython</vh>
+<v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
+</v>
+<v t="ekr.20110611092035.16483"><vh>mod_scripting plugin</vh>
+<v t="tbrown.20100524101550.4704"><vh>@string mod_scripting_subtext =</vh></v>
+</v>
 <v t="TL.20090225102340.33"><vh>nodeActions plugin</vh>
 <v t="TL.20090225102340.34"><vh>@bool nodeActions_save_atFile_nodes = False</vh></v>
 <v t="TL.20090303191843.1"><vh>@int nodeActions_message_level = 1</vh></v>
@@ -1140,15 +1140,12 @@
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
 <v t="ekr.20081018053140.11"><vh>qtGui plugin</vh>
-<v t="ekr.20100107060708.6390"><vh>@bool qt-tree-multiple-selection = True</vh></v>
-<v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 200000</vh></v>
+<v t="ekr.20110611092035.16472"><vh>Don't change these unless you know what you are doing</vh>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
-<v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
-<v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
-<v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
 <v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
-<v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
+<v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
+<v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
+</v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
@@ -1230,27 +1227,22 @@
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.28"><vh>Preferences panel</vh>
-<v t="ekr.20041119034357.29"><vh>@directory default_tangle_directory = None</vh></v>
-<v t="ekr.20080326060254.3"><vh>@string target_language = python</vh></v>
-<v t="ekr.20041119034357.31"></v>
-<v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
-</v>
-<v t="ekr.20051025084017"><vh>Spell tab</vh>
+<v t="ekr.20051025084017"><vh>Spell checking</vh>
 <v t="ekr.20100904095239.8440"><vh>@string enchant_language = en_US</vh></v>
 <v t="ekr.20100904095239.8441"><vh>@string enchant_local_dictionary = None</vh></v>
 </v>
+<v t="ekr.20110611092035.16463"></v>
 <v t="ekr.20041119034357.15"><vh>Unicode options</vh>
-<v t="ekr.20080212084020"></v>
-<v t="ekr.20041119042929.9"></v>
-<v t="ekr.20041119042929.10"></v>
+<v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
+<v t="ekr.20041119042929.9"><vh>@string default_derived_file_encoding = utf-8</vh></v>
+<v t="ekr.20041119042929.10"><vh>@string new_leo_file_encoding = utf-8</vh></v>
+<v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
 <v t="ekr.20041119042929.11"><vh>@string tk_encoding = None</vh></v>
 </v>
 <v t="ekr.20050203090810"><vh>Unit test</vh>
 <v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
 </v>
 <v t="ekr.20041213105954"><vh>Window</vh>
-<v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="edward.20081129091117.12"></v>
 <v t="ekr.20041119034357.38"><vh>Body pane options</vh>
 <v t="ekr.20061010111324"><vh>@bool select_all_text_when_editing_headlines = False</vh></v>
@@ -1288,32 +1280,12 @@
 <v t="ekr.20041119034357.64"><vh>@int initial_window_top = 20</vh></v>
 <v t="ekr.20041119034357.65"><vh>@int initial_window_width = 800</vh></v>
 </v>
-<v t="ekr.20041119034357.54"><vh>Outline pane options</vh>
-<v t="ekr.20110601103939.19339"><vh>@bool single_click_auto_edits_headline = False</vh></v>
-<v t="ekr.20041119050749.3"><vh>@bool allow_clone_drags = False</vh></v>
-<v t="ekr.20061030092620"><vh>@bool center_selected_tree_node = True</vh></v>
-<v t="ekr.20041119050749.4"><vh>@bool enable_drag_messages = False</vh></v>
-<v t="ekr.20041119050749.5"><vh>@bool expanded_click_area = True</vh></v>
-<v t="ekr.20060528175513"><vh>@bool idle_redraw = False</vh></v>
-<v t="ekr.20060120123529"><vh>@bool initialClickExpandsOrContractsNode = True</vh></v>
-<v t="tbrown.20110212091818.20118"><vh>@bool inter_outline_drag_moves = False</vh></v>
-<v t="ekr.20061030104734"><vh>@bool invisible_outline_navigation = False</vh></v>
-<v t="ekr.20041119050749.17"><vh>@bool look_for_control_drag_on_mouse_down = True</vh></v>
-<v t="ekr.20041119050749.18"><vh>@bool outline_pane_scrolls_horizontally = True</vh></v>
-<v t="ekr.20070604075218"></v>
-<v t="ekr.20070318065601"></v>
-<v t="ekr.20061002115414.1"></v>
-</v>
 <v t="ekr.20041213105954.2"><vh>Splitter options</vh>
 <v t="ekr.20041119034357.68"><vh>@string split_bar_relief = groove</vh></v>
 <v t="ekr.20041119034357.69"><vh>@int split_bar_width = 6</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20081018053140.11"></v>
-<v t="ekr.20070224073109.1"></v>
-<v t="ekr.20081018053140.12"></v>
-<v t="ekr.20051007200824"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -1349,11 +1321,16 @@ The following integer values are supported:
 </t>
 <t tx="edward.20081129091117.12">horizontal: body pane to the right
 vertical: body pane on the botton</t>
-<t tx="ekr.20041119034357.1">@nocolor
+<t tx="ekr.20041119034357.1">@language rest
 
-The @settings tree contains all active settings.  Settings outside this tree have no effect.
+The @settings tree contains all active settings.
+
+Settings outside this tree have no effect.
+
+**Important**: changing *clones* of nodes that exist in the @settings
+tree will change all clones, so changing clones *will* have an effect.
 </t>
-<t tx="ekr.20041119034357.10"></t>
+<t tx="ekr.20041119034357.10">See the "Tree Operation" node for settings that affect how the tree pane works.</t>
 <t tx="ekr.20041119034357.11"></t>
 <t tx="ekr.20041119034357.12"></t>
 <t tx="ekr.20041119034357.13">True: Leo loads plugins on startup.
@@ -1384,7 +1361,6 @@ None  Compares all files when comparing directories.
 .py   Compares only .py files when comparing directories.</t>
 <t tx="ekr.20041119034357.19">These options have no effect when comparing directories.</t>
 <t tx="ekr.20041119034357.20"></t>
-<t tx="ekr.20041119034357.28">@nocolor</t>
 <t tx="ekr.20041119034357.29">DEPRECATED
 
 The default directory used if no directory specified in @path, @root or @file directives.
@@ -1398,10 +1374,6 @@ Negative tab widths (recommended) cause Leo to convert tabs to blanks when typin
 <t tx="ekr.20041119034357.32">The page width for wrapping doc parts in derived files.
 
 Valid values: any nonzero positive integer.</t>
-<t tx="ekr.20041119034357.33">True: Explicit Tangle commands output doc parts.</t>
-<t tx="ekr.20041119034357.34">True: Explicit Tangle commands output file header.</t>
-<t tx="ekr.20041119034357.35">True: Run tangle_done.py after explicit Tangle commands.</t>
-<t tx="ekr.20041119034357.36">True: Run tangle_done.py after explicit Untangle commands.</t>
 <t tx="ekr.20041119034357.38"></t>
 <t tx="ekr.20041119034357.39">True: Wrap body text.
 
@@ -1442,7 +1414,6 @@ Note: this setting can be overridden by the x_mode_bg_color settings.</t>
 
 </t>
 <t tx="ekr.20041119034357.53">Additional border in body text pane, in pixels.</t>
-<t tx="ekr.20041119034357.54"></t>
 <t tx="ekr.20041119034357.56">These options apply only to windows opened with the New command.</t>
 <t tx="ekr.20041119034357.57">The ratio of tree pane size to body pane size when splitting primary panes horizontally.
 
@@ -1631,8 +1602,7 @@ script that will be evaluated (in an empty context).
 <t tx="ekr.20041119041019">False: Print sends its output to stdout (console) when doing Execute Script command.
 True:  Print redirected to Leo's log pane when doing Execute Script command.
 </t>
-<t tx="ekr.20041119041019.1">
-The string to be appended to file names resulting from the Remove Sentinels command.
+<t tx="ekr.20041119041019.1">The string to be appended to file names resulting from the Remove Sentinels command.
 If the value starts with . the extension is appended to the original file name.
 Otherwise, the extension is appended before the file extension.
 Example 1:
@@ -1834,54 +1804,14 @@ Thu, 30 Jan 2003 16:57:12
 <t tx="ekr.20041119050749.11">True:  use gmt time when inserting time into headlines.
 
 False: use local time.</t>
-<t tx="ekr.20041119050749.12">Background color of outline pane itself.
-
-LavenderBlush1
-#ffffe1 # a little too yellow.
-#ffffec
-LightSteelBlue1 # Good for testing.</t>
-<t tx="ekr.20041119050749.17">This option controls the interpretation of the control key when dragging nodes in the outline pane.
-
-True: A drag is a control-drag if the control key is down at the start of the drag.
-
-False: A drag is a control-drag if the control key is down at the end of the drag.</t>
-<t tx="ekr.20041119050749.18">True: Use horizontal scrollbar in outline pane.</t>
 <t tx="ekr.20041119050749.3">True:  Allows control-dragging to create clones.
 False: All drags move nodes.
 
-See also: look_for_control_drag_on_mouse_down
 Setting this setting to False allows Leo to be used on Aqua.</t>
 <t tx="ekr.20041119050749.4">True:  Tell whether drags will move nodes or clone nodes.
 False: Don't issue such messages.
 
 </t>
-<t tx="ekr.20041119050749.5">1: Click near a node expands or contracts the node.
-0: Only clicks in a node's plus/minus box expands or contracts the node.
-
-Note:  @bool expanded_click_area = True conflicts with the UniversalScrolling plugin.</t>
-<t tx="ekr.20041119050749.6">Foreground color of unselected headline text.</t>
-<t tx="ekr.20041119050749.7">Foreground color of selected headline text that is not being edited.
-
-DodgerBlue4</t>
-<t tx="ekr.20041119050749.8">Foreground color of unselected headline text in a headline that is being edited.
-
-Background color must also be specified for either setting to take effect.</t>
-<t tx="ekr.20041119050749.9">Foreground color of selected text headline text in a headline that is being edited.
-
-Background must also be specified for either setting to take effect.</t>
-<t tx="ekr.20041119051246.1"></t>
-<t tx="ekr.20041119051246.2">Background color of unselected headline text.
-
-LavenderBlush1</t>
-<t tx="ekr.20041119051246.3">Background color of selected headline text that is not being edited.
-
-LavenderBlush2</t>
-<t tx="ekr.20041119051901">Background color of unselected headline text in a headline that is being edited.
-
-Foreground color must also be specified for either setting to take effect.</t>
-<t tx="ekr.20041119051901.1">Background color of selected text headline text in a headline that is being edited.
-
-Foreground must also be specified for either setting to take effect.</t>
 <t tx="ekr.20041119052015">Color for error messages written to the log window.</t>
 <t tx="ekr.20041119052015.1">True: Wrap body text.
 
@@ -1973,7 +1903,6 @@ Autments the settings parser and the dialog creator with scripts.</t>
 <t tx="ekr.20041120181045">A float value restricted to the range 0.0 to 1.0.</t>
 <t tx="ekr.20041122163623">When looking at @x, Leo converts to lower case and removes minus signs.
 Therefore, @if-platform and @ifPlatformare equivalent to @ifplatform.</t>
-<t tx="ekr.20041213105007.1"></t>
 <t tx="ekr.20041213105007.2"></t>
 <t tx="ekr.20041213105007.3"></t>
 <t tx="ekr.20041213105954">Options that require pixel values can be any Python expression that yields an int.
@@ -2121,16 +2050,15 @@ extract                             = Shift-Ctrl-D
 extract-names                       = Shift-Ctrl-N
 # extract-python-method               = None
 # extract-section                     = Shift-Ctrl-E</t>
-<t tx="ekr.20051007200824">@nocolor
+<t tx="ekr.20051007200824">This node contains sets of key bindings and settings.
 
-This node contains sets of key bindings and settings.
-These sets should have headlines starting with @keys so that the Check Bindings script can find them.
+These sets should have headlines starting with @keys so that the Check Bindings
+script can find them.
 
 - The *inactive* sets should be children of the node '@ignore Unused key bindings'
 
 - The *active* set should be *outside* of the @ignore and its descendants.
-
-@color</t>
+</t>
 <t tx="ekr.20051007200824.1">The following special single characters may be used in the tails of shortcuts.
 They are listed along with their associated Tk binding value. Leo contains
 special code to handle these characters. No other single characters may be
@@ -3359,8 +3287,6 @@ special case,
     command-name -&gt; same = binding
 
 will cause the command to be executed without changing mode.</t>
-<t tx="ekr.20060120123529">True:  Clicking anywhere in an unselected node selects the node and *also* expands or contracts it.
-False: Clicking an unselected node just selects the node, unless the click happens in the expand/contract box.</t>
 <t tx="ekr.20060121102627"></t>
 <t tx="ekr.20060122105527.3"></t>
 <t tx="ekr.20060122105527.4">@nocolor
@@ -3373,17 +3299,7 @@ The valid values are::
 ignore:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
-<t tx="ekr.20060122105527.5">The Cmds menu is not ready yet.  It will be similar to the Emacs Cmds menu.</t>
-<t tx="ekr.20060122105527.6">Important:
-
-1. The minibuffer will exist regardless of this setting, but will not be shown
-   initially if it is False.
-
-2. Hiding the minibuffer does not change any bindings or the operation of Leo in
-   any other way. Therefore, if you do hide the minibuffer initially, and never
-   want to use it, you should not bind shortcuts to any commands that use the
-   minibuffer.
-</t>
+<t tx="ekr.20060122105527.5"></t>
 <t tx="ekr.20060122105527.7">True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
 
 If this is False it will be harder to use the arrow keys in the headline.
@@ -3417,12 +3333,6 @@ Important: the Find Tab always exists regardless of this setting.</t>
 # There used to be a warning about this slowing Leo, but I seen now problem with it at present.</t>
 <t tx="ekr.20060212103826"># True (recommended): print a message when Leo calls gc.collect explicitly.</t>
 <t tx="ekr.20060215054710"></t>
-<t tx="ekr.20060215094146">No longer functional
-
-True (recommended): Leo completely ignores the caps-lock key.
-False: The caps-lock key reverses the case of alphabetic characters.
-
-Regardless of this setting, the caps-lock key has no effect on Control or Alt keys.</t>
 <t tx="ekr.20060215102141">True (Legacy):          ignore unbound non-ascii keys, like Ä.
 False: (Recommended):   allow unicode characters in Leo's text.</t>
 <t tx="ekr.20060215104345">True (legacy):      Translate control-only keys to command keys on the Mac.
@@ -3661,7 +3571,6 @@ http://www.digitalpeers.com/pythondebugger/
 
 There is no special support for Idle, so you may as well open Idle using Leo's
 open-python-window command.</t>
-<t tx="ekr.20060528175513"></t>
 <t tx="ekr.20060531094310">True:  auto-indent regardless of how text is colored.
 False: suppress auto-indenting if in range @nocolor or @kill.</t>
 <t tx="ekr.20060603070801">True:  enable calltip expansion initially.
@@ -3991,9 +3900,7 @@ Note: The plugin creates the press-run-script-button command regardless of this 
 
 Note: The plugin creates the press-script-button-button regardless of this setting.</t>
 <t tx="ekr.20061002115414"></t>
-<t tx="ekr.20061002115414.1">This setting appears in two places: 'Keyboard and minibuffer options' and 'Outline pane options'.
-
-A time (in seconds) that controls how handles keystrokes when the outline pane has focus.
+<t tx="ekr.20061002115414.1">The time (in seconds) that controls how handles keystrokes when the outline pane has focus.
 
 When two keystrokes are separated by less than this time, Leo will attempt to
 find the next headline that starts with the previous match, extended by the key
@@ -4005,50 +3912,29 @@ search fails, so in practice everything works well without thinking about what
 is happening.
 </t>
 <t tx="ekr.20061003173413"></t>
-<t tx="ekr.20061004150211">True:  Use a sax-based parser to read .leo files.
-       This is slower than using Leo's legacy xml parser, but may solve some unicode problems.
-False: Use Leo's legacy xml parser code.</t>
 <t tx="ekr.20061007211759">True: collapse the parent of the moved node when moving a node left.</t>
 <t tx="ekr.20061009190510">True: update .leoRecentFiles.txt, creating it if if does not exist.
 False: don't update .leoRecentFiles and don't create it.</t>
 <t tx="ekr.20061010111324">True: (legacy) Select all headline text when editing a headline.
 False: Put the cursor at the end of the headline text.</t>
-<t tx="ekr.20061011082224">@nocolor
+<t tx="ekr.20061011082224">@language rest
 
-myLeoSettings.leo is a major improvement in how Leo handles settings. You can
-'override' settings defined in any leoSettings.leo file by placing your own
-settings in myLeoSettings.leo, either in your HOME directory or in the
-leo/config directory (the directory containing this file.) Distributions of Leo
-leave myLeoSettings.leo alone, and myLeoSettings.leo is not part of Leo's cvs
-repository, so Leo never changes myLeoSettings.leo.
+myLeoSettings.leo allows you to override settings in leoSettings.leo file.
 
-This section lists settings that would be natural candidates for inclusion in
-myLeoSettings.leo. That is, you may have strong preferences for these settings
-that differ from mine.
+Put myLeoSettigns.leo in your HOME directory or in the leo/config directory.
 
-Notes:
+Distributions of Leo do not contain myLeoSettings.leo; Leo never changes
+your personal myLeoSettings.leo file.
 
-- The actual settings here have no effect because they are not in an @settings
-tree. However, their *clones* can have effect elsewhere in this file. You can use
-the Go To Next Clone (Alt-N) to find clones elsewhere in the file.
+This section lists settings that you would be most likely to want to change
+to suit your own preferences.  You may, however, change any setting in this file.
 
-- I have not included any keyboard shortcuts here because they are highly personal.
-  However, the ignore_unbound_non_ascii_keys option affects how Leo handles 'plain' keys.</t>
+**Important**: All parts of this section are clones of nodes in the @settings node,
+so changes you make to settings here *will* affect actual settings.
+</t>
 <t tx="ekr.20061012122620">True:  When a node is expanded, insert new nodes as the last child.
 False: (legacy &amp; recommended) When a node is expanded, insert new nodes as the first child.</t>
 <t tx="ekr.20061029091403"></t>
-<t tx="ekr.20061030092620">True (Recommended): Leo scrolls the outline to put the selected node near the center of the outline pane.
-False (Legacy): Leo scrolls the outline to put the selected node at the top or bottom of the outline pane.</t>
-<t tx="ekr.20061030104734">This option tells how to treat an uppercase letter typed when the outline pane
-is active but no headline is being edited. In such situations Leo searchs for an
-node whose headline starts with the present prefix, ignoring case The prefix
-starts with the first letter typed and other letters are added if they are typed
-within a 'short' period of time, as specified by the outline_nav_extend_delay
-
-True: Look in invisible nodes.
-False: Look only in visible nodes.
-
-I set this option to False because it is too easy form me to type Shift-whatever when I meant Ctrl-whatever.</t>
 <t tx="ekr.20061210091932">True: call os.chdir(base) when handling a relative path.
       as specified by the @string relative_path_base_directory setting.
       
@@ -4450,7 +4336,6 @@ propagate-key-event = Alt-W
 <t tx="ekr.20070925144534.247"></t>
 <t tx="ekr.20070925144534.248"></t>
 <t tx="ekr.20070925144534.249"></t>
-<t tx="ekr.20070925144534.25"></t>
 <t tx="ekr.20070925144534.250"></t>
 <t tx="ekr.20070925144534.251"></t>
 <t tx="ekr.20070925144534.252"></t>
@@ -4461,7 +4346,6 @@ propagate-key-event = Alt-W
 <t tx="ekr.20070925144534.257"></t>
 <t tx="ekr.20070925144534.258"></t>
 <t tx="ekr.20070925144534.259"></t>
-<t tx="ekr.20070925144534.26"></t>
 <t tx="ekr.20070925144534.260"></t>
 <t tx="ekr.20070925144534.261"></t>
 <t tx="ekr.20070925144534.262"></t>
@@ -4472,7 +4356,6 @@ propagate-key-event = Alt-W
 <t tx="ekr.20070925144534.267"></t>
 <t tx="ekr.20070925144534.268"></t>
 <t tx="ekr.20070925144534.269"></t>
-<t tx="ekr.20070925144534.27"></t>
 <t tx="ekr.20070925144534.270"></t>
 <t tx="ekr.20070925144534.271"></t>
 <t tx="ekr.20070925144534.272"></t>
@@ -4483,7 +4366,6 @@ propagate-key-event = Alt-W
 <t tx="ekr.20070925144534.277"></t>
 <t tx="ekr.20070925144534.278"></t>
 <t tx="ekr.20070925144534.279"></t>
-<t tx="ekr.20070925144534.28"></t>
 <t tx="ekr.20070925144534.280"></t>
 <t tx="ekr.20070925144534.281"></t>
 <t tx="ekr.20070925144534.282"></t>
@@ -4493,7 +4375,6 @@ propagate-key-event = Alt-W
 <t tx="ekr.20070925144534.287"></t>
 <t tx="ekr.20070925144534.288"></t>
 <t tx="ekr.20070925144534.289"></t>
-<t tx="ekr.20070925144534.29"></t>
 <t tx="ekr.20070925144534.290"></t>
 <t tx="ekr.20070925144534.294"></t>
 <t tx="ekr.20070925144534.295"></t>
@@ -4502,7 +4383,6 @@ propagate-key-event = Alt-W
 <t tx="ekr.20070925144534.298"></t>
 <t tx="ekr.20070925144534.299"></t>
 <t tx="ekr.20070925144534.3">&amp;Open...</t>
-<t tx="ekr.20070925144534.30"></t>
 <t tx="ekr.20070925144534.300"></t>
 <t tx="ekr.20070925144534.301"></t>
 <t tx="ekr.20070925144534.302"></t>
@@ -4513,7 +4393,6 @@ propagate-key-event = Alt-W
 <t tx="ekr.20070925144534.307"></t>
 <t tx="ekr.20070925144534.308"></t>
 <t tx="ekr.20070925144534.309"></t>
-<t tx="ekr.20070925144534.31"></t>
 <t tx="ekr.20070925144534.310"></t>
 <t tx="ekr.20070925144534.312"></t>
 <t tx="ekr.20070925144534.313"></t>
@@ -4523,7 +4402,6 @@ propagate-key-event = Alt-W
 <t tx="ekr.20070925144534.317"></t>
 <t tx="ekr.20070925144534.318"></t>
 <t tx="ekr.20070925144534.319"></t>
-<t tx="ekr.20070925144534.32"></t>
 <t tx="ekr.20070925144534.320"></t>
 <t tx="ekr.20070925144534.321"></t>
 <t tx="ekr.20070925144534.322"></t>
@@ -5061,17 +4939,6 @@ scroll-down-page        ! tree = PageDn
 scroll-up-half-page     ! tree = Shift-PageUp
 scroll-up-page          ! tree = PageUp         
 </t>
-<t tx="ekr.20080513060549.1"></t>
-<t tx="ekr.20080513060549.3">@nocolor
-
-This setting determines the initial binding for otherwise-unbound keystrokes
-when no mode is in effect.  Note: the keyboard-quit command exits all modes.
-
-The valid values are::
-
-command:  Leo ignores the key (like Vim).
-insert:  Leo inserts the key at the cursor (like Emacs)
-overwrite: Leo replaces the character at the cursor.</t>
 <t tx="ekr.20080513095644.1"># Allows temporary rebindings without interfering with typical bindings.
 
 --&gt; set-silent-mode
@@ -5104,11 +4971,8 @@ sort-siblings           = s
 # enter-move-outline-mode = Shift-o
 # enter-toggle-find-mode  = t
 # enter-extract-mode      = x</t>
-<t tx="ekr.20080514065934.1">@nocolor
-
-- By default, that is, with the settings in the new version of leoSettings.leo,
-Leo will work pretty much as it always has. To enable vim-like bindings, put the
-following in the @settings tree in myLeoSettings.leo:
+<t tx="ekr.20080514065934.1">- To enable vim-like bindings, put the following in the @settings tree in
+  myLeoSettings.leo:
 
     @strings [command,insert, overwrite] top_level_unbound_key_action = command
 
@@ -5646,8 +5510,6 @@ If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
 <t tx="ekr.20100313080341.8370"></t>
 <t tx="ekr.20100313080341.8371"></t>
 <t tx="ekr.20100507153425.8304">Valid values are top,bottom,left,right</t>
-<t tx="ekr.20100806210935.8331"># @root and the related Tangle/Untange commands are deprecated.</t>
-<t tx="ekr.20100806211331.8331"></t>
 <t tx="ekr.20100904095239.8440">The language code for Enchant.
 
 See http://www.rfk.id.au/software/pyenchant/tutorial.html#installation-dicts
@@ -5780,6 +5642,27 @@ do-nothing = Shift-F12
 <t tx="ekr.20110607054506.16837"></t>
 <t tx="ekr.20110607054506.16838"></t>
 <t tx="ekr.20110607080101.16563"></t>
+<t tx="ekr.20110611092035.16463"></t>
+<t tx="ekr.20110611092035.16464"></t>
+<t tx="ekr.20110611092035.16465"></t>
+<t tx="ekr.20110611092035.16470">**Important**: the @data qt-gui-plugin-style-sheet setting
+affects many aspects of Leo's appearance.  Look there first.</t>
+<t tx="ekr.20110611092035.16471"></t>
+<t tx="ekr.20110611092035.16472"></t>
+<t tx="ekr.20110611092035.16474"></t>
+<t tx="ekr.20110611092035.16476">If neither is checked, Leo searches the entire outline.</t>
+<t tx="ekr.20110611092035.16477"></t>
+<t tx="ekr.20110611092035.16478">These commands are deprecated</t>
+<t tx="ekr.20110611092035.16479"></t>
+<t tx="ekr.20110611092035.16480"></t>
+<t tx="ekr.20110611092035.16481"></t>
+<t tx="ekr.20110611092035.16482"></t>
+<t tx="ekr.20110611092035.16483"></t>
+<t tx="ekr.20110611092035.16488"></t>
+<t tx="ekr.20110611092035.16489"></t>
+<t tx="ekr.20110611092035.16490"></t>
+<t tx="ekr.20110611092035.16491"></t>
+<t tx="ekr.20110611092035.16492"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
@@ -5821,7 +5704,10 @@ loading files</t>
 <t tx="tbrown.20100304170159.5189">Should active_path load docstrings for python files?</t>
 <t tx="tbrown.20100401100336.16108">controls the maximum time active_path will spend on a recursive operation.</t>
 <t tx="tbrown.20100401100336.31583">controls the maximum size file active_path will open without query.</t>
-<t tx="tbrown.20100524101550.4704">text appended to @button headlines which have submenu items *in addition* to the standard Goto Script and Remove Button items.  Additional submenu items are added by @rclick nodes directly following the @button, and, if the @button has no '@others', as children of the @button.
+<t tx="tbrown.20100524101550.4704">text appended to @button headlines which have submenu items *in addition* to the
+standard Goto Script and Remove Button items.  Additional submenu items are
+added by @rclick nodes directly following the @button, and, if the @button has
+no '@others', as children of the @button. 
 
 Unicode chars like ▾ and … can be used here.
 </t>
