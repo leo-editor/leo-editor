@@ -2231,7 +2231,7 @@ class Commands (object):
             path = None
 
         return path
-    #@+node:ekr.20100216141722.5620: *6* class gotoLineNumber and helpers (commands)
+    #@+node:ekr.20100216141722.5620: *6* class goToLineNumber and helpers (commands)
     class goToLineNumber:
 
         '''A class implementing goto-global-line.'''
