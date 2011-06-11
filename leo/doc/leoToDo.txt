@@ -8,6 +8,8 @@
 - post to pyxides re "your mission"
 .. @+node:ekr.20110609042343.16551: *3* when b3 released: post to pyxides re "your mission"
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10
+.. @+node:ekr.20110611092035.16462: *3* Bug @language not recognized after @all
+It must come before @all.
 .. @+node:ekr.20040329094003: *3* Apply patch command
 .. @+node:ekr.20110604043410.17848: *4* Script
 import leo.extensions.patch_11_01 as patch

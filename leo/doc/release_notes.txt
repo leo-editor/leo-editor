@@ -15755,12 +15755,12 @@ The installer now makes proper entries in the Windows start menu.
 #@+node:ekr.20101124102457.5227: *5* New in 4.8 final
 - Fixed key redefinition message.
 #@+node:edream.110203163054.63: ** Latest version
-#@+node:ekr.20110531155858.19246: *3* 4.9 Release notes
+#@+node:ekr.20110531155858.19246: *3* 4.9 rc1 Release notes
 @language rest
 
-Leo 4.9 b2                              June 4, 2011
+Leo 4.9 release candidate 1                 June 12, 2011
 
-Leo 4.9 beta 2 is now available at:
+Leo 4.9 rc1 is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more. See:
@@ -15770,9 +15770,7 @@ The highlights of Leo 4.9:
 --------------------------
 
 - Leo no longer supports the Tk gui: the Qt gui now has
-  all essential features of Tk and Tk-only plugins.
-
-- A large number of "fit-and-finish" bugs fixed.
+  all essential features of Tk, including plugins.
 
 - Completed Leo's autocompleter.
 
@@ -15797,6 +15795,8 @@ The highlights of Leo 4.9:
 - New commands to insert, delete, change or print uA's.
 
 - Added namespace directive to .leo files.
+
+- Fixed many bugs, some important, some merely annoying :-)
 
 
 Links:
@@ -15946,7 +15946,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 - Disabled the rst button in the contextmenu.
 
 - Fixed horizontal scroll glitch in log pane (Python 2.x).
-  qtLog.put sets horizonal scrolling to zero.
+  qtLog.put sets horizontal scrolling to zero.
   This is a workaround to a glitch (Python 2.x only),
   but in fact it's generally useful.
 
@@ -15956,7 +15956,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 
 - Fixed goto-global-line problems.
 
-- Restore postions of non-tabbed windows.
+- Restore positions of non-tabbed windows.
 
 - Fixed Python 3.2 ua problems.
 
@@ -15972,7 +15972,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 
 - c.bringToFront now activates the window.
 
-- Fixed nav_qt plutin.
+- Fixed nav_qt plugin.
 
 - Fixed completer focus problems.
 
@@ -16108,7 +16108,7 @@ added. In short, the new caching scheme is much better than before, and it
 probably is close to optimal in most situations.
 
 #@+node:ekr.20110602091552.16905: *5* Greatly improved the viewrendered plugin
-The viewrendered plugin reates a window for *live* rendering of images, movies,
+The viewrendered plugin creates a window for *live* rendering of images, movies,
 sounds, rst, html, etc. 
 
 Commands
@@ -16361,7 +16361,7 @@ between the free_layout, NestedSplitter and viewrendered plugins.
 - Call os.chdir when executing scripts.
 #@+node:ekr.20110604043410.17808: *4* New in 4.9 b2
 - Double-clicking a headline now colorizers the headline exactly the same way as
-  when editing the headling with ctrl-H. This was a serious problem for those
+  when editing the headline with ctrl-H. This was a serious problem for those
   with dark window-color schemes.
   
 - The distribution script now ensures that leo\plugins\spellpyx.txt contains
@@ -16370,7 +16370,7 @@ between the free_layout, NestedSplitter and viewrendered plugins.
 - Leo imports .cfg files just like .ini files.
 
 - Fixed crasher in graphcanvas plugin caused by a bug in CommandChainDispatcher.add.
-#@+node:ekr.20110611055444.16617: *4* New in 4.9 b3
+#@+node:ekr.20110611055444.16617: *4* New in 4.9 rc1
 #@+node:ekr.20110611055444.16618: *5* Bugs fixed
 - Fixed ancient, major bug: F3 now makes sure to save headline changes
 
@@ -16421,7 +16421,7 @@ between the free_layout, NestedSplitter and viewrendered plugins.
         
     - The check for c.positionExists(p) in c.setCurrentPosition continues to fail
       when deleting @chapter nodes. However, the code now simply falls back to
-      c.rootPosition, without any apparant harm.
+      c.rootPosition, without any apparent harm.
       
     - The chapterController and chapter classes are now completely stateless, except
       for chapter.p.

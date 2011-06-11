@@ -289,7 +289,7 @@ g.pdb() is merely a convenience.  It is equivalent to::
 The debugger_pudb.py plugin causes g.pdb() to invoke the full-screen `pudb`_
 debugger instead of pdb. pudb works on Linux and similar systems; it does not
 work on Windows.
-.. @+node:ekr.20050903161843: *4* @button scripts
+.. @+node:ekr.20050903161843: *4* \@button scripts
 Creating an @button script should be your first thought whenever you want to
 automate any task. The scripting plugin, mod_scripting.py, must be enabled to
 use @button scripts.

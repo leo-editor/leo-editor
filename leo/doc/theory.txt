@@ -138,8 +138,52 @@ of self.search_text indicate the range of text to be searched. Searching
 headline and body text simultaneously is complicated. The selectNextVnode()
 method handles the many details involved by setting self.s_text and its insert
 and sel attributes.
-.. @+node:ekr.20060602142732: *3* Key bindings
-leoKeys.py handles key bindings.
+.. @+node:ekr.20110611085637.5019: *3* Key handling
+The following three sections deal with different aspects of how Leo handle's
+keystrokes that the user types. This is the most complex code in Leo.
+.. @+node:ekr.20110611085637.5014: *4* Key domains
+Leo's key-handling code has almost nothing to do with supporting multiple guis.
+Rather, the key-handling code is complex because it must deal with the following
+four fundamentally different problem domains.
+.. @+node:ekr.20110611085637.5015: *5* Domain 1: Parsing user bindings in @keys, @mode and @shortcut nodes
+In this domain, complexity arises from allowing the user a variety of
+*equivalent* ways of specifying bindings. Furthermore, this domain allows the
+user to specify modes and per-pane bindings. Thus, all these complexities are
+unavoidable.
+.. @+node:ekr.20110611085637.5016: *5* Domain 2: Maintaining and using binding tables
+The result of parsing user bindings are a set of binding tables. These tables
+are complex, but we need not go into details here because only one method,
+k.masterKeyHandler (and its helper, getPaneBinding) uses the tables.
+
+The only thing we have to remember about the binding tables is that bindings are
+expressed in terms of so-called **strokes**.  Strokes are the "official" form of
+every user binding.  The essential property of a stroke is that it contains
+*all* the information required to handle the stroke: Leo can unambiguously
+determine exactly what a stroke means and what bindings are in effect for a
+stroke.  If necessary, Leo can correctly insert the proper character
+*corresponding* to the stroke into any text widget. 
+
+This correspondence (association) between the stroke and the actual
+character to be inserted into text widgets is crucial.  This
+correspondence is created in the next domain.
+
+Anticipating a bit, for any incoming key event, event.stroke is the
+stroke, and event.char is the character (if any) that *might*
+(depending on bindings) be inserted into text widgets.
+
+**New in Leo 4.9**: k.stroke2char calculates the to-be-inserted char from
+any stroke.
+.. @+node:ekr.20110611085637.5017: *5* Domain 3: Translating incoming key events into standard events
+The eventFilter method in qtGui.py creates leoKeyEvent objects.  Turning "raw"
+Qt key events into leoKeyEvents is unavoidably complicated because eventFilter
+(and its allies) **must** carefully compute the stroke corresponding to the raw
+key event.  There is no way around this requirement if Leo's binding machinery
+in domain 2 is to work.  This code has been stable for a long time. 
+.. @+node:ekr.20110611085637.5018: *5* Domain 4: Printing key bindings in a human-readable format
+It's important not to forget this domain: there are some situations in which we
+want to represent '\b','\r','\n' and '\t' as 'BackSpace','Linefeed','Return' and
+'Tab'.
+.. @+node:ekr.20060602142732: *4* Key bindings
 There are two kinds of bindings, gui bindings and pane bindings.
 
 **Gui bindings** are the actual binding as seen by  whatever gui is in effect.
@@ -191,6 +235,36 @@ Here are the dictionaries that k.masterKeyHandler uses:
 - inverseBindingDict:
   This is *not* an ivar; it is computed by k.computeInverseBindingDict().
   Keys are emacs command names; values are *lists* of shortcuts.
+.. @+node:ekr.20110609120520.16494: *4* Handling key events
+All events are key events
+=========================
+
+All event objects passed around Leo are *key* event objects. Taking a look at
+the eventFilter method, we see clearly see that *only* key events ever get
+passed to Leo's core. All other events are handled by Qt-specific event
+handlers.
+
+As can be seen, these non-key events *can* be passed to Leo, but only as the
+event arg in g.doHook (!) At present, no plugin ever calls k.masterKeyHandler.
+The only call to k.masterKeyHandler in qtGui.py is the expected call in
+eventFilter.
+
+There are other calls to k.masterKeyHandler in Leo's core, but we can prove (by
+induction, if you will), that all events passed to k.masterKeyHandler are proper
+leoKeyEvent objects.
+
+c.check_event
+=============
+
+The essential invariant is that the events passed to Leo's core methods really
+are leoKeyEvent objects created by qtGui.py.  Rather than asserting this
+invariant, the code will contains calls to c.check_event in essential places. 
+c.check_event is a "relaxed" place to do as much error checking is needed.  In
+particular, running the unit tests calls c.check_event many times. 
+
+c.check_event is a happy "accident".  It turns out to be the essential
+consistency check that continually verifies that the Qt event methods are
+delivering the expected keys to k.masterKeyHandler. 
 .. @+node:EKR.20040524104904.263: *3* Nodes
 The vnode class is Leo's fundamental model class. A **vnode** represents the
 data represented by headlines. As of Leo 4.7, all clones of a node are in fact
