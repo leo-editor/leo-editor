@@ -5362,7 +5362,7 @@ def replaceBackSlashes (self,s):
 
     if self.trace: g.trace(repr(s))
     return s
-#@+node:ekr.20110609042343.16542: *3* Features, including code improvements
+#@+node:ekr.20110611035822.16584: *3* Code improvements
 #@+node:ekr.20110526083709.18337: *4* Simplified Leo's key handling
 @nocolor-node
 
@@ -7285,6 +7285,144 @@ def bind2 (self,w,pattern,func,*args,**keys):
         return val
 
     w.bind(pattern,bindCallback2,*args,**keys)
+#@+node:ekr.20110607182447.16455: *4* Focus tracing
+#@+node:ekr.20080514131122.20: *5* c.outerUpdate
+def outerUpdate (self):
+
+    trace = False and not g.unitTesting
+    verbose = False ; traceFocus = True
+    c = self ; aList = []
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    c.requestRedrawFlag = False
+    
+    if trace and (verbose or aList):
+        g.trace('**start',g.callers(5))
+    
+    if c.requestBringToFront:
+        if hasattr(c.frame,'bringToFront'):
+            c.frame.bringToFront()
+        c.requestBringToFront = False
+
+    # The iconify requests are made only by c.bringToFront.
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw')
+        c.frame.tree.redraw_now(forceDraw=True)
+
+    if c.requestRecolorFlag:
+        if verbose: aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        # This should be the only call to c.recolor_now.
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+    if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
+        if traceFocus: aList.append('focus: %s' % (
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
+    else:
+        # We must not set the focus to the body pane here!
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and (verbose or aList):
+        g.trace('** end',aList)
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+
+    # g.trace('after')
+#@+node:ekr.20110607182447.16456: *5* Event handlers (qtGui)
+#@+node:ekr.20110605121601.18480: *6* onActivateEvent (qtGui)
+# Called from eventFilter
+
+def onActivateEvent (self,event,c,obj,tag):
+
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
+
+    # This is called several times for each window activation.
+    # We only need to set the focus once.
+
+    trace = False and not g.unitTesting
+
+    if c.exists and tag == 'body':
+        if trace: g.trace()
+        self.active = True
+        c.bodyWantsFocusNow()
+        g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
+#@+node:ekr.20110605121601.18481: *6* onDeactiveEvent (qtGui)
+def onDeactivateEvent (self,event,c,obj,tag):
+
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
+
+    trace = False and not g.unitTesting
+
+    # This is called several times for each window activation.
+    # Save the headline only once.
+
+    if c.exists and tag.startswith('tree'):
+        self.active = False
+        if trace: g.trace()
+        c.endEditing()
+        g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
+#@+node:ekr.20110509064011.14563: *5* c.idle_focus_helper
+idle_focus_count = 0
+
+def idle_focus_helper (self,tag,keys):
+    
+    '''An idle-tme handler that ensures that focus is *somewhere*.'''
+    
+    trace = True and not g.unitTesting
+    verbose = False # False: only print surprises.
+    active = False # True: actually change the focus.
+    
+    c = self
+    assert tag == 'idle'
+
+    if g.app.unitTesting or keys.get('c') != c:
+        return
+        
+    self.idle_focus_count += 1
+        
+    if c.in_qt_dialog:
+        if trace and verbose: g.trace('in_qt_dialog')
+        return
+        
+    if c.idle_callback:
+        if trace: g.trace('calling c.idle_callback',c.idle_callback.__name__)
+        c.idle_callback()
+        c.idle_callback = None
+        return
+
+    w = g.app.gui.get_focus()
+
+    if w:
+        if trace and verbose:
+            g.trace(self.idle_focus_count,w)
+    elif g.app.gui.active: # Set by gui.onActivate/onDeactivate.
+        if trace:
+            g.trace('%s no focus -> body' % (self.idle_focus_count))
+        if active:
+            c.bodyWantsFocusNow()
+#@+node:ekr.20110609042343.16542: *3* Features
 #@+node:ekr.20110607114847.16562: *4* Changed names of commands so they have common prefixes
 @nocolor-node
 
@@ -7399,142 +7537,395 @@ def findNextMatch(self):
 @nocolor-node
 
 The fix was a simple change to scanOptions.
-#@+node:ekr.20110607182447.16455: *3* Focus tracing
-#@+node:ekr.20080514131122.20: *4* c.outerUpdate
-def outerUpdate (self):
+#@+node:ekr.20090601083544.6051: *4* Added support for expanded sections in plugin
+@nocolor-node
 
-    trace = False and not g.unitTesting
-    verbose = False ; traceFocus = True
-    c = self ; aList = []
-    if not c.exists or not c.k:
+
+expand_noweb_references
+
+   True: Replace references by definitions.
+   Definitions must be descendants of the referencing node.
+
+ignore_noweb_definitions
+
+    True: ignore section definition nodes.
+
+expand_noweb_recursively
+
+    True: recursively expand definitions by expanding any
+    references found in definitions.
+#@+node:ekr.20090601083544.6052: *5* post
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
+
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
+
+- Add support for the following options:
+    - expand_noweb_references: default False for compatibility.
+    - ignore_noweb_definitions: default False for compatibility.
+
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
+
+-----------------------------
+
+
+I want to write the documentation for the source program in a @rst3 subtree. In
+this @rst3 subtree I want to refer to fragments of the program, like:
+
+In the following code fragment::
+
+  <<code fragment>>
+
+Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
+get to this work, I should have <<code fragment>> under the @rst3 subtree as
+well, but this is then also treated as @rst3 input (which in this case, is not
+what I want).
+#@+node:ekr.20110610133739.16485: *5* Changed...
+#@+node:ekr.20090502071837.42: *6* createDefaultOptionsDict
+def createDefaultOptionsDict(self):
+
+    # Important: these must be munged names.
+    self.defaultOptionsDict = {
+        # Http options...
+        'clear_http_attributes':   False,
+        'http_server_support':     False,
+        'http_attributename':      'rst_http_attribute',
+        'node_begin_marker':       'http-node-marker-',
+        # Path options...
+        'default_path': None, # New in Leo 4.4a4 # Bug fix: must be None, not ''.
+        'stylesheet_name': 'default.css',
+        'stylesheet_path': None, # Bug fix: must be None, not ''.
+        'stylesheet_embed': True,
+        'publish_argv_for_missing_stylesheets': None,
+        # Global options...
+        'call_docutils': True, # 2010/08/05
+        'code_block_string': '',
+        'number_code_lines': True,
+        'underline_characters': '''#=+*^~"'`-:><_''',
+        'verbose':True,
+        'write_intermediate_file': False, # Used only if generate_rst is True.
+        'write_intermediate_extension': '.txt',
+        # Mode options...
+        'code_mode': False, # True: generate rst markup from @code and @doc parts.
+        'doc_only_mode': False, # True: generate only from @doc parts.
+        'generate_rst': True, # True: generate rst markup.  False: generate plain text.
+        'generate_rst_header_comment': True,
+            # True generate header comment (requires generate_rst option)
+        # Formatting options that apply to both code and rst modes....
+        'expand_noweb_references': False,
+        'ignore_noweb_definitions': False,
+        'expand_noweb_recursively': True,
+        'show_headlines': True,  # Can be set by @rst-no-head headlines.
+        'show_organizer_nodes': True,
+        'show_options_nodes': False,
+        'show_sections': True,
+        'strip_at_file_prefixes': True,
+        'show_doc_parts_in_rst_mode': True,
+        # Formatting options that apply only to code mode.
+        'show_doc_parts_as_paragraphs': False,
+        'show_leo_directives': True,
+        'show_markup_doc_parts': False,
+        'show_options_doc_parts': False,
+    }
+#@+node:ekr.20090502071837.83: *6* writeHeadline & helper
+def writeHeadline (self,p):
+
+    '''Generate an rST section if options permit it.
+    Remove headline commands from the headline first,
+    and never generate an rST section for @rst-option and @rst-options.'''
+
+    docOnly             = self.getOption('doc_only_mode')
+    ignore              = self.getOption('ignore_this_headline')
+    ignoreNowebDefs     = self.getOption('ignore_noweb_definitions')
+    showHeadlines       = self.getOption('show_headlines')
+    showOrganizers      = self.getOption('show_organizer_nodes')
+    showThisHeadline    = self.getOption('show_this_headline')
+
+    if (
+        p == self.topNode or
+        ignore or
+        docOnly or # handleDocOnlyMode handles this.
+        not showHeadlines and not showThisHeadline or
+        # docOnly and not showOrganizers and not thisHeadline or
+        not p.h.strip() and not showOrganizers or
+        not p.b.strip() and not showOrganizers or
+        ignoreNowebDefs and self.isSectionDef(p) # 2011/06/10.
+    ):
         return
 
-    # Suppress any requested redraw until we have iconified or diconified.
-    redrawFlag = c.requestRedrawFlag
-    c.requestRedrawFlag = False
-    
-    if trace and (verbose or aList):
-        g.trace('**start',g.callers(5))
-    
-    if c.requestBringToFront:
-        if hasattr(c.frame,'bringToFront'):
-            c.frame.bringToFront()
-        c.requestBringToFront = False
+    self.writeHeadlineHelper(p)
+#@+node:ekr.20090502071837.84: *7* writeHeadlineHelper
+def writeHeadlineHelper (self,p):
 
-    # The iconify requests are made only by c.bringToFront.
-    if c.requestedIconify == 'iconify':
-        if verbose: aList.append('iconify')
-        c.frame.iconify()
+    h = p.h
+    if not self.atAutoWrite:
+        h = h.strip()
 
-    if c.requestedIconify == 'deiconify':
-        if verbose: aList.append('deiconify')
-        c.frame.deiconify()
+    # Remove any headline command before writing the headline.
+    i = g.skip_ws(h,0)
+    i = g.skip_id(h,0,chars='@-')
+    word = h [:i].strip()
+    if word:
+        # Never generate a section for these...
+        if word in (
+            '@rst-option','@rst-options',
+            '@rst-no-head','@rst-no-headlines'
+        ):
+            return
 
-    if redrawFlag:
-        if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
-        # A hack: force the redraw, even if we are dragging.
-        aList.append('*** redraw')
-        c.frame.tree.redraw_now(forceDraw=True)
+        # Remove all other headline commands from the headline.
+        for command in self.headlineCommands:
+            if word == command:
+                h = h [len(word):].strip()
+                break
 
-    if c.requestRecolorFlag:
-        if verbose: aList.append('%srecolor' % (
-            g.choose(c.incrementalRecolorFlag,'','full ')))
-        # This should be the only call to c.recolor_now.
-        c.recolor_now(incremental=c.incrementalRecolorFlag)
+        # New in Leo 4.4.4.
+        if word.startswith('@'):
+            if self.getOption('strip_at_file_prefixes'):
+                for s in ('@auto','@file','@nosent','@thin',):
+                    if g.match_word(word,0,s):
+                        h = h [len(s):].strip()
 
-    if c.requestedFocusWidget:
-        w = c.requestedFocusWidget
-        if traceFocus: aList.append('focus: %s' % (
-            g.app.gui.widget_name(w)))
-        c.set_focus(w)
+    if not h.strip(): return
+
+    if self.getOption('show_sections'):
+        if self.getOption('generate_rst'):
+            self.write(self.underline(h,p)) # Used by @auto-rst.
+        else:
+            self.write('\n%s\n\n' % h)
     else:
-        # We must not set the focus to the body pane here!
-        # That would make nested calls to c.outerUpdate significant.
-        pass
+        self.write('\n**%s**\n\n' % h.replace('*',''))
+#@+node:ekr.20090502071837.71: *6* writeBody & helpers
+def writeBody (self,p):
 
-    if trace and (verbose or aList):
-        g.trace('** end',aList)
+    trace = True and not g.unitTesting
+   
+    if self.getOption('ignore_noweb_definitions'):
+        # 2011/06/10: Ignore section definition nodes.
+        name = self.isSectionDef(p)
+        if name:
+            if trace: g.trace('section def: %s' % (repr(name)))
+            return
 
-    c.incrementalRecolorFlag = False
-    c.requestRecolorFlag = None
-    c.requestRedrawFlag = False
-    c.requestedFocusWidget = None
-    c.requestedIconify = ''
+    # remove trailing cruft and split into lines.
+    lines = g.splitLines(p.b)
 
-    # g.trace('after')
-#@+node:ekr.20110607182447.16456: *4* Event handlers (qtGui)
-#@+node:ekr.20110605121601.18480: *5* onActivateEvent (qtGui)
-# Called from eventFilter
+    if self.getOption('code_mode'):
+        # Important: code mode is no longer documented!
+        if not self.getOption('show_options_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-options',
+                retainContents=False)
+        if not self.getOption('show_markup_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-markup',
+                retainContents=False)
+        if not self.getOption('show_leo_directives'):
+            lines = self.removeLeoDirectives(lines)
+        lines = self.handleCodeMode(lines)
+    elif self.getOption('doc_only_mode'):
+        # New in version 1.15
+        lines = self.handleDocOnlyMode(p,lines)
+    else:
+        lines = self.handleSpecialDocParts(lines,'@rst-options',
+            retainContents=False)
+        lines = self.handleSpecialDocParts(lines,'@rst-markup',
+            retainContents=self.getOption('generate_rst'))
+        if self.getOption('show_doc_parts_in_rst_mode') is True:
+            pass  # original behaviour, treat as plain text
+        elif self.getOption('show_doc_parts_in_rst_mode'):
+            # use value as class for content
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
+        else:  # option evaluates to false, cut them out
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=False)
+        lines = self.removeLeoDirectives(lines)
+        if self.getOption('expand_noweb_references'):
+            # 2011/06/10.
+            lines = self.expandSectionRefs(lines,p,seen=[])
+        if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
+            lines = self.replaceCodeBlockDirectives(lines)
 
-def onActivateEvent (self,event,c,obj,tag):
+    # Write the lines.
+    s = ''.join(lines)
 
-    '''Put the focus in the body pane when the Leo window is
-    activated, say as the result of an Alt-tab or click.'''
-
-    # This is called several times for each window activation.
-    # We only need to set the focus once.
-
-    trace = False and not g.unitTesting
-
-    if c.exists and tag == 'body':
-        if trace: g.trace()
-        self.active = True
-        c.bodyWantsFocusNow()
-        g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
-#@+node:ekr.20110605121601.18481: *5* onDeactiveEvent (qtGui)
-def onDeactivateEvent (self,event,c,obj,tag):
-
-    '''Put the focus in the body pane when the Leo window is
-    activated, say as the result of an Alt-tab or click.'''
-
-    trace = False and not g.unitTesting
-
-    # This is called several times for each window activation.
-    # Save the headline only once.
-
-    if c.exists and tag.startswith('tree'):
-        self.active = False
-        if trace: g.trace()
-        c.endEditing()
-        g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
-#@+node:ekr.20110509064011.14563: *4* c.idle_focus_helper
-idle_focus_count = 0
-
-def idle_focus_helper (self,tag,keys):
+    # We no longer add newlines to the start of nodes because
+    # we write a blank line after all sections.
+    # s = g.ensureLeadingNewlines(s,1)
+    s = g.ensureTrailingNewlines(s,2)
+    self.write(s)
+#@+node:ekr.20110610144305.6749: *7* isSectionDef/Ref
+def isSectionDef (self,p):
     
-    '''An idle-tme handler that ensures that focus is *somewhere*.'''
+    return self.isSectionRef(p.h)
+    
+def isSectionRef (self,s):
+
+    n1 = s.find("<<",0)
+    n2 = s.find(">>",0)
+    return -1 < n1 < n2 and s[n1+2:n2].strip()
+#@+node:ekr.20110610144305.6750: *7* expandSectionRefs
+def expandSectionRefs (self,lines,p,seen):
     
     trace = True and not g.unitTesting
-    verbose = False # False: only print surprises.
-    active = False # True: actually change the focus.
     
-    c = self
-    assert tag == 'idle'
+    if trace: g.trace(p.h,g.callers())
 
-    if g.app.unitTesting or keys.get('c') != c:
-        return
-        
-    self.idle_focus_count += 1
-        
-    if c.in_qt_dialog:
-        if trace and verbose: g.trace('in_qt_dialog')
-        return
-        
-    if c.idle_callback:
-        if trace: g.trace('calling c.idle_callback',c.idle_callback.__name__)
-        c.idle_callback()
-        c.idle_callback = None
-        return
+    result = []
+    for s in lines:
+        name = self.isSectionRef(s)
+        if name:
+            p2 = self.findSectionDef(name,p)
+            if p2:
+                g.trace('expanding: %s from %s' % (name,p2.h))
+                result.append(s) ### Maybe: append the section reference line.
+                lines2 = g.splitLines(p2.b)
+                if self.getOption('expand_noweb_recursively'):
+                    if name in seen:
+                        pass # Prevent unbounded recursion
+                    else:
+                        seen.append(name)
+                        result.extend(self.expandSectionRefs(lines2,p,seen))
+                else:
+                    result.extend(lines2)
+            else:
+                # Undefined reference.
+                result.append(s)
+        else:
+            result.append(s)
 
-    w = g.app.gui.get_focus()
+    return result
+#@+node:ekr.20110610144305.6751: *7* findSectionDef
+def findSectionDef (self,name,p):
+    
+    for p2 in p.subtree():
+        name2 = self.isSectionDef(p2)
+        if name2:
+            return p2
+    
+    return None
+#@+node:ekr.20090502071837.72: *7* handleCodeMode & helper
+def handleCodeMode (self,lines):
 
-    if w:
-        if trace and verbose:
-            g.trace(self.idle_focus_count,w)
-    elif g.app.gui.active: # Set by gui.onActivate/onDeactivate.
-        if trace:
-            g.trace('%s no focus -> body' % (self.idle_focus_count))
-        if active:
-            c.bodyWantsFocusNow()
+    '''Handle the preprocessed body text in code mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - Everything else gets put into a code-block directive.'''
+
+    trace = True and not g.unitTesting
+    result = [] ; n = 0 ; code = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if (
+            self.isSpecialDocPart(s,'@rst-markup') or (
+                self.getOption('show_doc_parts_as_paragraphs') and
+                self.isSpecialDocPart(s,None)
+            )
+        ):
+            if code:
+                self.finishCodePart(result,code)
+                code = []
+            result.append('')
+            n, lines2 = self.getDocPart(lines,n)
+            # A fix, perhaps dubious, to a bug discussed at
+            # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
+            # lines2 = [z.lstrip() for z in lines2]
+            # g.trace('lines2',lines2)
+            result.extend(lines2)
+        elif not s.strip() and not code:
+            pass # Ignore blank lines before the first code block.
+        else:
+            if not code: # Start the code block.
+                result.append('')
+                result.append(self.code_block_string)
+
+            if trace: g.trace('code line: %s' % repr(s))
+            code.append(s)
+       
+        # elif not code: # Start the code block.
+            # result.append('')
+            # result.append(self.code_block_string)
+            # if trace: g.trace('code line: %s' % repr(s))
+            # code.append(s)
+        # else: # Continue the code block.
+            # if trace: g.trace('code line: %s' % repr(s))
+            # code.append(s)
+
+    if code:
+        self.finishCodePart(result,code)
+        code = []
+
+    # Munge the result so as to keep docutils happy.
+    # Don't use self.rstripList: it's not the same.
+    # g.trace(result)
+    result2 = []
+    for z in result:
+        if z == '': result2.append('\n\n')
+        # 2010/08/27: Fix bug 618482.
+        # elif not z.rstrip(): pass
+        elif z.endswith('\n\n'): result2.append(z) # Leave alone.
+        else: result2.append('%s\n' % z.rstrip())
+
+    return result2
+#@+node:ekr.20090502071837.73: *8* formatCodeModeLine
+def formatCodeModeLine (self,s,n,numberOption):
+
+    if not s.strip(): s = ''
+
+    if numberOption:
+        return '\t%d: %s' % (n,s)
+    else:
+        return '\t%s' % s
+#@+node:ekr.20090502071837.74: *8* rstripList
+def rstripList (self,theList):
+
+    '''Removed trailing blank lines from theList.'''
+
+    # 2010/08/27: fix bug 618482.
+    s = ''.join(theList).rstrip()
+    return s.split('\n')
+#@+node:ekr.20090502071837.75: *8* finishCodePart
+def finishCodePart (self,result,code):
+
+    numberOption = self.getOption('number_code_lines')
+    code = self.rstripList(code)
+    i = 0
+    for line in code:
+        i += 1
+        result.append(self.formatCodeModeLine(line,i,numberOption))
+#@+node:ekr.20090502071837.76: *7* handleDocOnlyMode
+def handleDocOnlyMode (self,p,lines):
+
+    '''Handle the preprocessed body text in doc_only mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - All doc parts get copied.
+    - All code parts are ignored.'''
+
+    ignore              = self.getOption('ignore_this_headline')
+    showHeadlines       = self.getOption('show_headlines')
+    showThisHeadline    = self.getOption('show_this_headline')
+    showOrganizers      = self.getOption('show_organizer_nodes')
+
+    result = [] ; n = 0
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if self.isSpecialDocPart(s,'@rst-options'):
+            n, lines2 = self.getDocPart(lines,n) # ignore.
+        elif self.isAnyDocPart(s):
+            # Handle any other doc part, including @rst-markup.
+            n, lines2 = self.getDocPart(lines,n)
+            if lines2: result.extend(lines2)
+    if not result: result = []
+    if showHeadlines:
+        if result or showThisHeadline or showOrganizers or p == self.topNode:
+            # g.trace(len(result),p.h)
+            self.writeHeadlineHelper(p)
+    return result
 #@-all
 #@-leo
