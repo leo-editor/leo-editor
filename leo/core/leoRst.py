@@ -140,6 +140,7 @@ class rstCommands:
         self.silverCityWarningGiven = False
 
         # The options dictionary.
+        self.nodeOptionDict = {} # Keys are vnodes, values are optionsDict's.
         self.optionsDict = {}
         self.scriptSettingsDict = {} # 2010/08/12: for format-code command.
 
@@ -630,115 +631,6 @@ class rstCommands:
                 break
             result.append(s)
         return n, result
-    #@+node:ekr.20090502071837.72: *6* handleCodeMode & helper
-    def handleCodeMode (self,lines):
-
-        '''Handle the preprocessed body text in code mode as follows:
-
-        - Blank lines are copied after being cleaned.
-        - @ @rst-markup lines get copied as is.
-        - Everything else gets put into a code-block directive.'''
-
-        result = [] ; n = 0 ; code = []
-        while n < len(lines):
-            s = lines [n] ; n += 1
-            if (
-                self.isSpecialDocPart(s,'@rst-markup') or (
-                    self.getOption('show_doc_parts_as_paragraphs') and
-                    self.isSpecialDocPart(s,None)
-                )
-            ):
-                if code:
-                    self.finishCodePart(result,code)
-                    code = []
-                result.append('')
-                n, lines2 = self.getDocPart(lines,n)
-                # A fix, perhaps dubious, to a bug discussed at
-                # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
-                # lines2 = [z.lstrip() for z in lines2]
-                # g.trace('lines2',lines2)
-                result.extend(lines2)
-            elif not s.strip() and not code:
-                pass # Ignore blank lines before the first code block.
-            elif not code: # Start the code block.
-                result.append('')
-                result.append(self.code_block_string)
-                code.append(s)
-            else: # Continue the code block.
-                code.append(s)
-
-        if code:
-            self.finishCodePart(result,code)
-            code = []
-
-        # Munge the result so as to keep docutils happy.
-        # Don't use self.rstripList: it's not the same.
-        # g.trace(result)
-        result2 = []
-        for z in result:
-            if z == '': result2.append('\n\n')
-            # 2010/08/27: Fix bug 618482.
-            # elif not z.rstrip(): pass
-            elif z.endswith('\n\n'): result2.append(z) # Leave alone.
-            else: result2.append('%s\n' % z.rstrip())
-
-        return result2
-    #@+node:ekr.20090502071837.73: *7* formatCodeModeLine
-    def formatCodeModeLine (self,s,n,numberOption):
-
-        if not s.strip(): s = ''
-
-        if numberOption:
-            return '\t%d: %s' % (n,s)
-        else:
-            return '\t%s' % s
-    #@+node:ekr.20090502071837.74: *7* rstripList
-    def rstripList (self,theList):
-
-        '''Removed trailing blank lines from theList.'''
-
-        # 2010/08/27: fix bug 618482.
-        s = ''.join(theList).rstrip()
-        return s.split('\n')
-    #@+node:ekr.20090502071837.75: *7* finishCodePart
-    def finishCodePart (self,result,code):
-
-        numberOption = self.getOption('number_code_lines')
-        code = self.rstripList(code)
-        i = 0
-        for line in code:
-            i += 1
-            result.append(self.formatCodeModeLine(line,i,numberOption))
-    #@+node:ekr.20090502071837.76: *6* handleDocOnlyMode
-    def handleDocOnlyMode (self,p,lines):
-
-        '''Handle the preprocessed body text in doc_only mode as follows:
-
-        - Blank lines are copied after being cleaned.
-        - @ @rst-markup lines get copied as is.
-        - All doc parts get copied.
-        - All code parts are ignored.'''
-
-        ignore              = self.getOption('ignore_this_headline')
-        showHeadlines       = self.getOption('show_headlines')
-        showThisHeadline    = self.getOption('show_this_headline')
-        showOrganizers      = self.getOption('show_organizer_nodes')
-
-        result = [] ; n = 0
-        while n < len(lines):
-            s = lines [n] ; n += 1
-            if self.isSpecialDocPart(s,'@rst-options'):
-                n, lines2 = self.getDocPart(lines,n) # ignore.
-            elif self.isAnyDocPart(s):
-                # Handle any other doc part, including @rst-markup.
-                n, lines2 = self.getDocPart(lines,n)
-                if lines2: result.extend(lines2)
-        if not result: result = []
-        if showHeadlines:
-            if result or showThisHeadline or showOrganizers or p == self.topNode:
-                # g.trace(len(result),p.h)
-                self.writeHeadlineHelper(p)
-        return result
     #@+node:ekr.20090502071837.81: *6* handleSpecialDocParts
     def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
 
@@ -874,15 +766,23 @@ class rstCommands:
 
         # g.printList(result,tag='literal block')
         return n, result
-    #@+node:ekr.20090502071837.71: *6* writeBody
+    #@+node:ekr.20090502071837.71: *6* writeBody & helpers
     def writeBody (self,p):
 
-        # g.trace(p.h,p.b)
+        trace = True and not g.unitTesting
+       
+        if self.getOption('ignore_noweb_definitions'):
+            # 2011/06/10: Ignore section definition nodes.
+            name = self.isSectionDef(p)
+            if name:
+                if trace: g.trace('section def: %s' % (repr(name)))
+                return
 
         # remove trailing cruft and split into lines.
         lines = g.splitLines(p.b)
 
         if self.getOption('code_mode'):
+            # Important: code mode is no longer documented!
             if not self.getOption('show_options_doc_parts'):
                 lines = self.handleSpecialDocParts(lines,'@rst-options',
                     retainContents=False)
@@ -910,6 +810,9 @@ class rstCommands:
                 lines = self.handleSpecialDocParts(lines,None,
                     retainContents=False)
             lines = self.removeLeoDirectives(lines)
+            if self.getOption('expand_noweb_references'):
+                # 2011/06/10.
+                lines = self.expandSectionRefs(lines,p,seen=[])
             if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
                 lines = self.replaceCodeBlockDirectives(lines)
 
@@ -921,6 +824,176 @@ class rstCommands:
         # s = g.ensureLeadingNewlines(s,1)
         s = g.ensureTrailingNewlines(s,2)
         self.write(s)
+    #@+node:ekr.20110610144305.6749: *7* isSectionDef/Ref
+    def isSectionDef (self,p):
+        
+        return self.isSectionRef(p.h)
+        
+    def isSectionRef (self,s):
+
+        n1 = s.find("<<",0)
+        n2 = s.find(">>",0)
+        return -1 < n1 < n2 and s[n1+2:n2].strip()
+    #@+node:ekr.20110610144305.6750: *7* expandSectionRefs
+    def expandSectionRefs (self,lines,p,seen):
+        
+        trace = True and not g.unitTesting
+        
+        if trace: g.trace(p.h,g.callers())
+
+        result = []
+        for s in lines:
+            name = self.isSectionRef(s)
+            if name:
+                p2 = self.findSectionDef(name,p)
+                if p2:
+                    g.trace('expanding: %s from %s' % (name,p2.h))
+                    result.append(s) ### Maybe: append the section reference line.
+                    lines2 = g.splitLines(p2.b)
+                    if self.getOption('expand_noweb_recursively'):
+                        if name in seen:
+                            pass # Prevent unbounded recursion
+                        else:
+                            seen.append(name)
+                            result.extend(self.expandSectionRefs(lines2,p,seen))
+                    else:
+                        result.extend(lines2)
+                else:
+                    # Undefined reference.
+                    result.append(s)
+            else:
+                result.append(s)
+
+        return result
+    #@+node:ekr.20110610144305.6751: *7* findSectionDef
+    def findSectionDef (self,name,p):
+        
+        for p2 in p.subtree():
+            name2 = self.isSectionDef(p2)
+            if name2:
+                return p2
+        
+        return None
+    #@+node:ekr.20090502071837.72: *7* handleCodeMode & helper
+    def handleCodeMode (self,lines):
+
+        '''Handle the preprocessed body text in code mode as follows:
+
+        - Blank lines are copied after being cleaned.
+        - @ @rst-markup lines get copied as is.
+        - Everything else gets put into a code-block directive.'''
+
+        trace = True and not g.unitTesting
+        result = [] ; n = 0 ; code = []
+        while n < len(lines):
+            s = lines [n] ; n += 1
+            if (
+                self.isSpecialDocPart(s,'@rst-markup') or (
+                    self.getOption('show_doc_parts_as_paragraphs') and
+                    self.isSpecialDocPart(s,None)
+                )
+            ):
+                if code:
+                    self.finishCodePart(result,code)
+                    code = []
+                result.append('')
+                n, lines2 = self.getDocPart(lines,n)
+                # A fix, perhaps dubious, to a bug discussed at
+                # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
+                # lines2 = [z.lstrip() for z in lines2]
+                # g.trace('lines2',lines2)
+                result.extend(lines2)
+            elif not s.strip() and not code:
+                pass # Ignore blank lines before the first code block.
+            else:
+                if not code: # Start the code block.
+                    result.append('')
+                    result.append(self.code_block_string)
+
+                if trace: g.trace('code line: %s' % repr(s))
+                code.append(s)
+           
+            # elif not code: # Start the code block.
+                # result.append('')
+                # result.append(self.code_block_string)
+                # if trace: g.trace('code line: %s' % repr(s))
+                # code.append(s)
+            # else: # Continue the code block.
+                # if trace: g.trace('code line: %s' % repr(s))
+                # code.append(s)
+
+        if code:
+            self.finishCodePart(result,code)
+            code = []
+
+        # Munge the result so as to keep docutils happy.
+        # Don't use self.rstripList: it's not the same.
+        # g.trace(result)
+        result2 = []
+        for z in result:
+            if z == '': result2.append('\n\n')
+            # 2010/08/27: Fix bug 618482.
+            # elif not z.rstrip(): pass
+            elif z.endswith('\n\n'): result2.append(z) # Leave alone.
+            else: result2.append('%s\n' % z.rstrip())
+
+        return result2
+    #@+node:ekr.20090502071837.73: *8* formatCodeModeLine
+    def formatCodeModeLine (self,s,n,numberOption):
+
+        if not s.strip(): s = ''
+
+        if numberOption:
+            return '\t%d: %s' % (n,s)
+        else:
+            return '\t%s' % s
+    #@+node:ekr.20090502071837.74: *8* rstripList
+    def rstripList (self,theList):
+
+        '''Removed trailing blank lines from theList.'''
+
+        # 2010/08/27: fix bug 618482.
+        s = ''.join(theList).rstrip()
+        return s.split('\n')
+    #@+node:ekr.20090502071837.75: *8* finishCodePart
+    def finishCodePart (self,result,code):
+
+        numberOption = self.getOption('number_code_lines')
+        code = self.rstripList(code)
+        i = 0
+        for line in code:
+            i += 1
+            result.append(self.formatCodeModeLine(line,i,numberOption))
+    #@+node:ekr.20090502071837.76: *7* handleDocOnlyMode
+    def handleDocOnlyMode (self,p,lines):
+
+        '''Handle the preprocessed body text in doc_only mode as follows:
+
+        - Blank lines are copied after being cleaned.
+        - @ @rst-markup lines get copied as is.
+        - All doc parts get copied.
+        - All code parts are ignored.'''
+
+        ignore              = self.getOption('ignore_this_headline')
+        showHeadlines       = self.getOption('show_headlines')
+        showThisHeadline    = self.getOption('show_this_headline')
+        showOrganizers      = self.getOption('show_organizer_nodes')
+
+        result = [] ; n = 0
+        while n < len(lines):
+            s = lines [n] ; n += 1
+            if self.isSpecialDocPart(s,'@rst-options'):
+                n, lines2 = self.getDocPart(lines,n) # ignore.
+            elif self.isAnyDocPart(s):
+                # Handle any other doc part, including @rst-markup.
+                n, lines2 = self.getDocPart(lines,n)
+                if lines2: result.extend(lines2)
+        if not result: result = []
+        if showHeadlines:
+            if result or showThisHeadline or showOrganizers or p == self.topNode:
+                # g.trace(len(result),p.h)
+                self.writeHeadlineHelper(p)
+        return result
     #@+node:ekr.20090502071837.83: *6* writeHeadline & helper
     def writeHeadline (self,p):
 
@@ -928,11 +1001,12 @@ class rstCommands:
         Remove headline commands from the headline first,
         and never generate an rST section for @rst-option and @rst-options.'''
 
-        docOnly             =  self.getOption('doc_only_mode')
+        docOnly             = self.getOption('doc_only_mode')
         ignore              = self.getOption('ignore_this_headline')
+        ignoreNowebDefs     = self.getOption('ignore_noweb_definitions')
         showHeadlines       = self.getOption('show_headlines')
-        showThisHeadline    = self.getOption('show_this_headline')
         showOrganizers      = self.getOption('show_organizer_nodes')
+        showThisHeadline    = self.getOption('show_this_headline')
 
         if (
             p == self.topNode or
@@ -941,7 +1015,8 @@ class rstCommands:
             not showHeadlines and not showThisHeadline or
             # docOnly and not showOrganizers and not thisHeadline or
             not p.h.strip() and not showOrganizers or
-            not p.b.strip() and not showOrganizers
+            not p.b.strip() and not showOrganizers or
+            ignoreNowebDefs and self.isSectionDef(p) # 2011/06/10.
         ):
             return
 
@@ -1098,7 +1173,7 @@ class rstCommands:
 
         # Set up for a standard write.
         self.createDefaultOptionsDict()
-        self.tnodeOptionDict = {}
+        self.nodeOptionDict = {}
         self.scanAllOptions(p)
         self.init_write(p)
         self.preprocessTree(p) # Allow @ @rst-options, for example.
@@ -1176,6 +1251,9 @@ class rstCommands:
             'generate_rst_header_comment': True,
                 # True generate header comment (requires generate_rst option)
             # Formatting options that apply to both code and rst modes....
+            'expand_noweb_references': False,
+            'ignore_noweb_definitions': False,
+            'expand_noweb_recursively': True,
             'show_headlines': True,  # Can be set by @rst-no-head headlines.
             'show_organizer_nodes': True,
             'show_options_nodes': False,
@@ -1233,7 +1311,7 @@ class rstCommands:
     #@+node:ekr.20090502071837.46: *4* preprocessTree & helpers
     def preprocessTree (self,root):
 
-        self.tnodeOptionDict = {}
+        self.nodeOptionDict = {}
 
         # Bug fix 12/4/05: must preprocess parents too.
         for p in root.parents():
@@ -1244,16 +1322,16 @@ class rstCommands:
 
         if 0:
             g.trace(root.h)
-            for key in self.tnodeOptionDict.keys():
+            for key in self.nodeOptionDict.keys():
                 g.trace(key)
-                g.printDict(self.tnodeOptionDict.get(key))
+                g.printDict(self.nodeOptionDict.get(key))
     #@+node:ekr.20090502071837.47: *5* preprocessNode
     def preprocessNode (self,p):
 
-        d = self.tnodeOptionDict.get(p.v)
+        d = self.nodeOptionDict.get(p.v)
         if d is None:
             d = self.scanNodeForOptions(p)
-            self.tnodeOptionDict [p.v] = d
+            self.nodeOptionDict [p.v] = d
     #@+node:ekr.20090502071837.48: *5* parseOptionLine
     def parseOptionLine (self,s):
 
@@ -1360,6 +1438,8 @@ class rstCommands:
 
         Such entries may arise from @rst-option or @rst-options in the headline,
         or from @ @rst-options doc parts.'''
+        
+        trace = True and not g.unitTesting
 
         h = p.h
 
@@ -1369,6 +1449,11 @@ class rstCommands:
 
         # A fine point: body options over-ride headline options.
         d.update(d2)
+        
+        if trace and d:
+            g.trace(h)
+            for z in sorted(d):
+                print('    %s: %s' % (z,d.get(z)))
 
         return d
     #@+node:ekr.20090502071837.52: *5* scanOption
@@ -1423,7 +1508,7 @@ class rstCommands:
 
         # g.trace('-'*20)
         for p in p.self_and_parents():
-            d = self.tnodeOptionDict.get(p.v,{})
+            d = self.nodeOptionDict.get(p.v,{})
             # g.trace(p.h,d)
             for key in d.keys():
                 ivar = self.munge(key)
@@ -1474,7 +1559,7 @@ class rstCommands:
 
         All such options default to False.'''
 
-        d = self.tnodeOptionDict.get(p.v, {} )
+        d = self.nodeOptionDict.get(p.v, {} )
 
         for ivar in self.singleNodeOptions:
             val = d.get(ivar,False)
