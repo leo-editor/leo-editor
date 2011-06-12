@@ -601,7 +601,7 @@ class chapterController:
             # The chapter selection logic will select a new node.
             c.setChanged(True)
         else:
-            cc.note('no @chapter %s' % (chapter.name))
+            cc.note('no @chapter %s' % (chapterName))
     #@+node:ekr.20070325094401: *4* cc.findChaptersNode
     def findChaptersNode (self):
 
