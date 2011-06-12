@@ -544,6 +544,7 @@ LeoPlugins.leo:
     - Remove top-level clones.
 LeoPy.leo:
     - Update version numbers.
+    - Update the build number.
 LeoDist.leo:
     - Make sure copyright dates are correct.
         (trunk/license.txt **and** leo/doc/license.txt.)
