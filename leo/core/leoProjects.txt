@@ -1610,7 +1610,7 @@ These are related to the errors given in c.setCurrentPosition.
 #@+node:ekr.20110605121601.17906: *6* afterSelectHint (nativeTree)
 def afterSelectHint (self,p,old_p):
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     c = self.c
 
     self.selecting = False
@@ -4714,7 +4714,7 @@ def writeHeadlineHelper (self,p):
 #@+node:ekr.20090502071837.71: *6* writeBody & helpers
 def writeBody (self,p):
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
    
     if self.getOption('ignore_noweb_definitions'):
         # 2011/06/10: Ignore section definition nodes.
@@ -4782,7 +4782,7 @@ def isSectionRef (self,s):
 #@+node:ekr.20110610144305.6750: *7* expandSectionRefs
 def expandSectionRefs (self,lines,p,seen):
     
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     
     if trace: g.trace(p.h,g.callers())
 
@@ -4828,7 +4828,7 @@ def handleCodeMode (self,lines):
     - @ @rst-markup lines get copied as is.
     - Everything else gets put into a code-block directive.'''
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     result = [] ; n = 0 ; code = []
     while n < len(lines):
         s = lines [n] ; n += 1

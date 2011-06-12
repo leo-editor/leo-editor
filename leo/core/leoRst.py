@@ -769,7 +769,7 @@ class rstCommands:
     #@+node:ekr.20090502071837.71: *6* writeBody & helpers
     def writeBody (self,p):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
        
         if self.getOption('ignore_noweb_definitions'):
             # 2011/06/10: Ignore section definition nodes.
@@ -837,7 +837,7 @@ class rstCommands:
     #@+node:ekr.20110610144305.6750: *7* expandSectionRefs
     def expandSectionRefs (self,lines,p,seen):
         
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         
         if trace: g.trace(p.h,g.callers())
 
@@ -883,7 +883,7 @@ class rstCommands:
         - @ @rst-markup lines get copied as is.
         - Everything else gets put into a code-block directive.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         result = [] ; n = 0 ; code = []
         while n < len(lines):
             s = lines [n] ; n += 1
@@ -1439,7 +1439,7 @@ class rstCommands:
         Such entries may arise from @rst-option or @rst-options in the headline,
         or from @ @rst-options doc parts.'''
         
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         h = p.h
 
