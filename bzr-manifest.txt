@@ -1453,7 +1453,6 @@ leo/modes/zpt.xml
 leo/plugins/
 leo/plugins/.cvsignore
 leo/plugins/Backlink.ui
-leo/plugins/EditAttributes.py
 leo/plugins/FileActions.py
 leo/plugins/GraphCanvas/
 leo/plugins/GraphCanvas/GraphCanvas.svg
@@ -1506,7 +1505,6 @@ leo/plugins/dtest.py
 leo/plugins/dump_globals.py
 leo/plugins/empty_leo_file.py
 leo/plugins/enable_gc.py
-leo/plugins/exampleTemacsExtension.py
 leo/plugins/examples/
 leo/plugins/examples/__overrideClasses.py
 leo/plugins/examples/chinese_menu.py
@@ -1601,8 +1599,6 @@ leo/plugins/quicksearch.py
 leo/plugins/quit_leo.py
 leo/plugins/read_only_nodes.py
 leo/plugins/redirect_to_log.py
-leo/plugins/rst.py
-leo/plugins/rst2.py
 leo/plugins/rst3.py
 leo/plugins/runGtkDialogs.py.txt
 leo/plugins/run_nodes.py
@@ -1619,7 +1615,6 @@ leo/plugins/stickynotes.py
 leo/plugins/stickynotes_plus.py
 leo/plugins/swing_gui.py
 leo/plugins/systray.py
-leo/plugins/temacs.py
 leo/plugins/test/
 leo/plugins/test/ekr_test.py
 leo/plugins/test/failed_import.py
