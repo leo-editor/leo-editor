@@ -150,7 +150,7 @@
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"
-expanded="ekr.20110531155858.19246,ekr.20110611055444.16617,"><vh>@file release_notes.txt</vh></v>
+expanded="ekr.20110611055444.16617,"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20110531155858.19246"><vh>4.9 rc1 Release notes</vh>
 <v t="ekr.20110601105631.19359"><vh>Deprecated/removed features</vh></v>
@@ -178,6 +178,7 @@ expanded="ekr.20110531155858.19246,ekr.20110611055444.16617,"><vh>@file release_
 <v t="ekr.20110611092035.16493"><vh>Removed settings</vh></v>
 </v>
 </v>
+<v t="ekr.20110612074140.16401"><vh>Document new rst3 options</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -1125,6 +1126,104 @@ The following setting was not active, and has also been removed::
 
     @bool ignore_caps_lock
 </t>
+<t tx="ekr.20110612074140.16401">@nocolor-node
+
+In another thread I wrote:
+
+Rev 4327 added support for expanding section references in the the rst3 command.  There are three new options: expand_noweb_references, ignore_noweb_definitions, and expand_noweb_recursively. The new code both clean and safe: the code is self contained, and will have no effect on existing documents when the defaults for the three new options are in effect.
+
+A few more notes about this:
+
+1. This is an experimental feature, so far undocumented.  I'll add the docs today.  I expect that users may suggest changes to how these settings work; I certainly will not delay either rc1 or 4.9 final for this, but I'm willing to make changes as people suggest them.
+
+2. Here is an example of how these options work.  Top-level node::
+
+======================
+    @language rest
+    
+    @ @rst-options
+    expand_noweb_references = True
+    ignore_noweb_definitions = True
+    
+    call_docutils=True
+    code_mode=False
+    generate_rst=True
+    http_server_support = False
+    show_organizer_nodes=True
+    show_headlines=True
+    show_leo_directives=True
+    stylesheet_path=..\doc
+    write_intermediate_file = True
+    verbose=True
+    @c
+    
+    
+    ++++++++++++++
+    Chapter Title
+    ++++++++++++++
+    
+    This is a test chapter.
+    
+    &lt;&lt; section 2 &gt;&gt;
+    
+    After section 2.
+======================
+
+First child:  headline "Section 1".  Body text::
+
+    This is section 1.
+
+Second child: headline: &lt;&lt; section 2 &gt;&gt;  Body text::
+
+    This is section 2.
+
+Third child: headline "Section 3". Body text::
+
+    This is section 3.
+
+The output is as follows:
+
+======================
+    . rst3: filename: ../test/rst-test.html
+    
+    
+    
+    
+    ++++++++++++++
+    Chapter Title
+    ++++++++++++++
+    
+    This is a test chapter.
+    
+    &lt;&lt; section 2 &gt;&gt;
+    This is section 2.
+    
+    After section 2.
+    
+    Section 1
+    +++++++++
+    
+    This is section 1.
+    
+    Section 3
+    +++++++++
+    
+    This is section 3.
+======================
+
+Obviously, this a very minimal test.  
+
+3.  As you can see from the output, the rst3 command precedes the expansion of &lt;&lt; section 2 &gt;&gt;  by the section name.  Furthermore, perhaps the section name, if given, should be formatted in some way.  For that matter, perhaps the entire expansion should be formatted as a code block.
+
+In short, all aspects of the command might better be changed.
+
+4. This example does not show recursive expansion, but there is code in place to do that.  The code ensures that unbounded expansions can not happen.  While expanding any section, the rst3 will not expand again any sections that have already occurred in the expansion.
+
+5. All rst3 options apply to the entire node in which they appear (and all descendant nodes until over-ridden), but by splitting nodes one can change the settings on an expansion-by-expansion basis.  It is easy to split nodes without creating new sections using @rst-no-head in the headline.
+
+That's it for now.  I plan no further work on this until people actually start using this feature.
+
+Edward</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

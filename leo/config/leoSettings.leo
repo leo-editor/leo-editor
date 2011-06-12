@@ -23,6 +23,13 @@
 <v t="ekr.20060112104823"><vh>main</vh></v>
 </v>
 <v t="ekr.20090203131919.1"><vh>@button Check menu commands</vh></v>
+<v t="ekr.20110612074140.16414"><vh>@button check-core-settings @key=Alt-8</vh>
+<v t="ekr.20110612074140.16417"><vh>ctor</vh></v>
+<v t="ekr.20110612074140.16419"><vh>get_settings</vh></v>
+<v t="ekr.20110612074140.16478"><vh>get_settings_nodes</vh></v>
+<v t="ekr.20110612074140.16416"><vh>init</vh></v>
+<v t="ekr.20110612074140.16415"><vh>run</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20041119035137"><vh>About this file</vh>
@@ -5663,6 +5670,149 @@ affects many aspects of Leo's appearance.  Look there first.</t>
 <t tx="ekr.20110611092035.16490"></t>
 <t tx="ekr.20110611092035.16491"></t>
 <t tx="ekr.20110611092035.16492"></t>
+<t tx="ekr.20110612074140.16414">'''Check that all settings in leoPy.leo are defined here, and vice versa.'''
+
+import os
+
+class CheckSettings:
+    @others
+
+CheckSettings(c).run()
+</t>
+<t tx="ekr.20110612074140.16415">def run (self):
+    
+    verbose = False
+    settings_node = g.findNodeAnywhere(self.c,'@settings')
+
+    if not self.core_c:
+        return g.error('leoPy.leo must be open')
+
+    if not settings_node:
+        return g.error('no @settings node in leoPy.leo')
+    
+    # Step 1: compute aList1, the list of all settings in Leo's core.
+    aList1 = []
+    for p in self.core_c.all_positions():
+        self.get_settings(aList1,p)
+        aList1 = list(set(aList1))
+        aList1.sort()
+        
+    # Step 2: compute aList2, the list of all settings nodes in leoSettings.leo.
+    aList2 = []
+    for p in settings_node.subtree():
+        self.get_settings_nodes(aList2,p)
+        aList2 = list(set(aList2))
+        aList2.sort()
+        
+    if verbose:
+        os.system('cls')
+    else:
+        print('-'*10)
+    
+    for aList,tag in ((aList1,'leoPy.leo'),(aList2,'leoSettings.leo')):
+        nl = g.choose(verbose,'\n','')
+        end = g.choose(verbose,'...','')
+        print('%s%s unique settings in %s%s%s' % (
+            nl,len(aList),tag,end,nl))
+        if verbose:
+            for z in aList:
+                print(z.strip())
+        
+    if verbose: g.es_print('done')</t>
+<t tx="ekr.20110612074140.16416">def init (self):
+    
+    # leoPy.leo must be available.
+    for f in g.app.windowList:
+        c = f.c
+        fn = c.shortFileName()
+        if fn == 'leoPy.leo':
+            self.core_c = c
+            return
+    else:
+        self.core_c = None
+</t>
+<t tx="ekr.20110612074140.16417">def __init__ (self,c):
+
+    self.c = c
+    self.core_c = None
+    self.settingsNames =  (
+        # 'getAbbrevDict','getCommonCommands',
+        # 'getDirectory',
+        # 'getEnabledPlugins','getLanguage',
+        # 'getMenusList','getOpenWith',
+        # 'getRecentFiles','getShortcut',
+        'getBool','getColor','getData',
+        'getFloat','getFontFromParams',
+        'getInt','getRatio','getString',
+    )
+    self.settingsAtNames = (
+        '@bool','@color','@data','@float',
+        '@int','@ratio','@strings','@string',
+    )
+
+    self.init()
+</t>
+<t tx="ekr.20110612074140.16419">def get_settings (self,aList,p):
+    
+    '''Append all settings names in position p to aList'''
+        
+    names = self.settingsNames
+    for s in g.splitLines(p.b):
+        for s2 in names:
+            pat = 'config.%s' % (s2)
+            i = s.find(pat)
+            if i &gt; -1:
+                i = g.skip_ws(s,i+len(pat))
+                if g.match(s,i,'('):
+                    i += 1
+                    s3 = s[i:].strip()
+                    for delim in ('"',"'"):
+                        if s3.startswith(delim):
+                            j = s3.find(delim,1)
+                            if j &gt; -1:
+                                s4 = s3[1:j]
+                                if not s4.startswith('%'):
+                                    aList.append(s4)
+                                    break
+                break
+            i = s.find('config.get(')
+            if i &gt; -1:
+                break # Ignore this.
+            i = s.find('config.get(')
+            if i &gt; -1:
+                aList.append('*** %s' % (s))
+                break
+</t>
+<t tx="ekr.20110612074140.16478">def get_settings_nodes (self,aList,p):
+    
+    '''Append all settings names in position p to aList'''
+
+    s = p.h
+    for s2 in self.settingsAtNames:
+        if s.startswith(s2):
+            i = g.skip_ws(s,len(s2))
+            if s2 == '@strings':
+                j = s.find('=')
+                if j &gt; -1:
+                    aList.append(s[:j].strip().replace(' ',''))
+            else:
+                j = g.skip_id(s,i)
+                if j &gt; 0:
+                    word = s[i:j]
+                    # aList.append(word)
+                    # aList.append(s.strip())
+                    if word:
+                        aList.append(s[:j].strip())
+                    break
+            break
+        i = s.find('config.get(')
+        if i &gt; -1:
+            break # Ignore this.
+        i = s.find('config.get(')
+        if i &gt; -1:
+            aList.append('*** %s' % (s))
+            break
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
