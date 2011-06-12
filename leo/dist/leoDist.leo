@@ -86,7 +86,6 @@
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
 <v t="ekr.20101027115225.1494"><vh>@thin nsi-boilerplate.txt</vh></v>
 </v>
-<v t="ekr.20110603171959.1505"><vh>To do</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@nocolor
@@ -634,7 +633,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
 
 ### Important: The install/uninstall files must be copied to the trunk directory.
 
-version = '4.9-b2' ##version
+version = '4.9-rc1' ##version
 
 &lt;&lt; includes &gt;&gt;
 
@@ -1109,9 +1108,6 @@ Download: http://sourceforge.net/projects/leo/files/
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 </t>
-<t tx="ekr.20110603171959.1505">@nocolor-node
-
-- Make sure uninstall removes all files from unit test directories.</t>
 <t tx="ekr.20110603171959.1506">def clean_spellpyx (self):
     
     fn = g.os_path_finalize_join(pluginsDir,'spellpyx.txt')
