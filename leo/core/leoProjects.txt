@@ -2343,6 +2343,37 @@ def replaceBackSlashes (self,s):
 
     if self.trace: g.trace(repr(s))
     return s
+#@+node:ekr.20110612060246.16428: *4* Fixed crasher in g.guessExternalEditor
+@nocolor-node
+
+Added a guard for g.app.db.
+
+  File "c:\leo.repo\trunk\leo\core\leoGlobals.py", line 1968, in guessExternalEditor
+    g.app.db.get("LEO_EDITOR") or
+AttributeError: 'NoneType' object has no attribute 'get'
+#@+node:ville.20090701144325.14942: *5* g.guessExternalEditor
+def guessExternalEditor(c=None):
+    """ Return a 'sensible' external editor """
+
+    editor = (
+        os.environ.get("LEO_EDITOR") or
+        os.environ.get("EDITOR") or
+        g.app.db and g.app.db.get("LEO_EDITOR") or
+        g.app.config.getString(c,'external_editor'))
+
+    if editor: return editor
+
+    # fallbacks
+    platform = sys.platform.lower()
+    if platform.startswith('win'):
+        return "notepad"
+    elif platform.startswith('linux'):
+        return 'gedit'
+    else:
+        g.es('''No editor set.
+Please set LEO_EDITOR or EDITOR environment variable,
+or do g.app.db['LEO_EDITOR'] = "gvim"''')
+        return None
 #@+node:ekr.20110611035822.16584: *3* Code improvements
 #@+node:ekr.20110526083709.18337: *4* Simplified Leo's key handling
 @nocolor-node
