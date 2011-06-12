@@ -6,7 +6,8 @@
 .. @+node:ekr.20101129095441.5963: ** Improve screenshots page
 .. @+node:ekr.20110609161752.16461: ** After 4.9 is released
 - post to pyxides re "your mission"
-.. @+node:ekr.20110609042343.16551: *3* when b3 released: post to pyxides re "your mission"
+
+- Make some to-do items into wishlist bugs.
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10
 .. @+node:ekr.20110611113007.6600: *3* Bug: Wrap-around search should restart when find pattern changes
 @nocolor-node
