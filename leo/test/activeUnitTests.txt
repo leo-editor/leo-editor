@@ -3777,7 +3777,7 @@ finally:
 # node b
 #@+node:ekr.20110608181936.3370: *5* node c
 # node c
-#@+node:ekr.20110612064050.3330: *5* node a
+#@+node:ekr.20110612064437.3331: *5* node a
 # node a
 #@+node:ekr.20080503132221.1: *4* @test chapter-create-from-node
 cc = c.chapterController
@@ -3817,7 +3817,7 @@ finally:
             root.firstChild().doDelete(newNode=None)
     cc.selectChapterByName('main',collapse=True)
     c.redraw_now()
-#@+node:ekr.20110612064050.3331: *5* child
+#@+node:ekr.20110612064437.3332: *5* child
 # child
 #@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5
@@ -9401,6 +9401,9 @@ assert script.find('\r\n') == -1, repr(script)
 s = 'abc xy_z5 pdq'
 i,j = g.getWord(s,5)
 assert s[i:j] == 'xy_z5','got %s' % s[i:j]
+#@+node:ekr.20110612064437.3310: *4* @test g.guessExternalEditor
+val = g.guessExternalEditor(c)
+assert val == 'Leo',val
 #@+node:ekr.20100131180007.5417: *4* @test g.openLeoOrZipFile
 import zipfile
 
