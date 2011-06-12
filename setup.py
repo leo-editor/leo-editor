@@ -42,7 +42,7 @@ def fullsplit(path, result=None):
 # Tell distutils to put the data_files in platform-specific installation
 # locations. See here for an explanation:
 # http://groups.google.com/group/comp.lang.python/browse_thread/thread/35ec7b2fed36eaec/2105ee4d9e8042cb
-for scheme in INSTALL_SCHEMES.values():
+for scheme in list(INSTALL_SCHEMES.values()):
     scheme['data'] = scheme['purelib']
 #@+node:ville.20090213233714.2:@url http://groups.google.com/group/comp.lang.python/browse_thread/thread/35ec7b2fed36eaec/2105ee4d9e8042cb
 #@-node:ville.20090213233714.2:@url http://groups.google.com/group/comp.lang.python/browse_thread/thread/35ec7b2fed36eaec/2105ee4d9e8042cb
@@ -71,9 +71,9 @@ for dirpath, dirnames, filenames in os.walk(leo_dir):
             data_files.append([dirpath, [os.path.join(dirpath, f) for f in filenames]])
 
 import pprint
-print "data files"
+print("data files")
 pprint.pprint(data_files)
-print "packages (pre-cleanup)"
+print("packages (pre-cleanup)")
 pprint.pprint(packages)
 
 #cleanup unwanted packages
@@ -81,7 +81,7 @@ pprint.pprint(packages)
 # extensions should be provided through repos (packaging)
 packages = [pa for pa in packages if not pa.startswith('leo.extensions')]
 
-print "packages (post-cleanup)"
+print("packages (post-cleanup)")
 pprint.pprint(packages)
 
 #cleanup unwanted data files

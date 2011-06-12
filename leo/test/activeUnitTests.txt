@@ -650,6 +650,12 @@ for z in files:
         failed.append(fn)
 
 assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
+#@+node:ekr.20110612071416.3311: *3* @test syntax of setup.py
+import leo.core.leoTest as leoTest
+fn = g.os_path_finalize_join(g.app.loadDir,'..','..','setup.py')
+s,e = g.readFileIntoString(fn)
+assert g.os_path_exists(fn),'does not exist: %s' % (fn)
+leoTest.checkFileSyntax(fn,s,reraise=True,suppress=False)
 #@+node:ekr.20050208051418: ** Unicode tests
 #@+node:ekr.20050206201145: *3* @test % operator with unicode
 @first # -*- coding: utf-8 -*-
@@ -3777,7 +3783,7 @@ finally:
 # node b
 #@+node:ekr.20110608181936.3370: *5* node c
 # node c
-#@+node:ekr.20110612064437.3331: *5* node a
+#@+node:ekr.20110612071416.3332: *5* node a
 # node a
 #@+node:ekr.20080503132221.1: *4* @test chapter-create-from-node
 cc = c.chapterController
@@ -3817,7 +3823,7 @@ finally:
             root.firstChild().doDelete(newNode=None)
     cc.selectChapterByName('main',collapse=True)
     c.redraw_now()
-#@+node:ekr.20110612064437.3332: *5* child
+#@+node:ekr.20110612071416.3333: *5* child
 # child
 #@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5
