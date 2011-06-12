@@ -1,6 +1,8 @@
-Leo 4.9 b2                              June 4, 2011
+@language rest
 
-Leo 4.9 beta 2 is now available at:
+Leo 4.9 release candidate 1                 June 12, 2011
+
+Leo 4.9 rc1 is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more. See:
@@ -10,9 +12,7 @@ The highlights of Leo 4.9:
 --------------------------
 
 - Leo no longer supports the Tk gui: the Qt gui now has
-  all essential features of Tk and Tk-only plugins.
-
-- A large number of "fit-and-finish" bugs fixed.
+  all essential features of Tk, including plugins.
 
 - Completed Leo's autocompleter.
 
@@ -38,6 +38,8 @@ The highlights of Leo 4.9:
 
 - Added namespace directive to .leo files.
 
+- Fixed many bugs, some important, some merely annoying.
+
 
 Links:
 ------
@@ -46,4 +48,3 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/projects/leo/files/
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
-

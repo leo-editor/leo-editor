@@ -11,8 +11,8 @@
 #@@tabwidth -4
 
 build = 4265
-date = "June 4, 2011"
-version = "4.9 beta 2"
+date = "June 12, 2011"
+version = "4.9 release candidate 1"
 
 #@+at The following bzr command reports the buil automatically
 #@-leo

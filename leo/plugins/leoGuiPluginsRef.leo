@@ -31,30 +31,12 @@
 <v t="ekr.20081121105001.1090"><vh>@@button change leo imports</vh></v>
 <v t="ekr.20100102164747.3702"><vh>Count pages</vh></v>
 </v>
-<v t="ekr.20081121105001.1108"><vh>Notes</vh>
-<v t="ekr.20081121105001.147"><vh>@file qtNotes.txt</vh></v>
-</v>
 <v t="ekr.20081121105001.1110"><vh>Other guis</vh>
 <v t="ekr.20081121105001.12"><vh>@file cursesGui.py</vh></v>
 <v t="ekr.20081121105001.80"><vh>@file ironPythonGui.py</vh></v>
 <v t="ekr.20081121105001.595"><vh>@file swing_gui.py</vh></v>
-<v t="ekr.20081121110412.2"
-expanded="ekr.20081121110412.435,ekr.20081121110412.442,"><vh>@file tkGui.py</vh></v>
+<v t="ekr.20081121110412.2"><vh>@file tkGui.py</vh></v>
 <v t="ekr.20090126093408.1"><vh>@file wxGui.py</vh></v>
-</v>
-<v t="ekr.20081121105001.1092"><vh>Qt gui</vh>
-<v t="ekr.20090124174652.7"><vh>@file baseNativeTree.py</vh></v>
-<v t="ekr.20110316093303.14482"><vh>@file nested_splitter.py</vh></v>
-<v t="ekr.20100103094733.3709"><vh>@file qtframecommands.py</vh></v>
-<v t="ekr.20081121105001.188"><vh>@file qtGui.py</vh></v>
-<v t="leohag.20081204085551.1"><vh>@file scrolledmessage.py</vh></v>
-<v t="ekr.20081121105001.1093"><vh>QDesigner files</vh>
-<v t="ekr.20081121105001.1094"><vh>@auto ../test/qtui_generate.py</vh></v>
-<v t="ekr.20081121105001.1095"><vh>@auto qt_main.py</vh></v>
-<v t="ekr.20081121105001.1096"><vh>@auto qt_main.ui</vh></v>
-<v t="ekr.20081121105001.1097"><vh>@auto qt_quicksearch.py</vh></v>
-<v t="ekr.20081121105001.1098"><vh>@auto qt_quicksearch.ui</vh></v>
-</v>
 </v>
 </vnodes>
 <tnodes>
@@ -125,9 +107,6 @@ for p in p.self_and_subtree_iter():
         c.setBodyString(p,result)
 
 </t>
-<t tx="ekr.20081121105001.1092"></t>
-<t tx="ekr.20081121105001.1093"></t>
-<t tx="ekr.20081121105001.1108"></t>
 <t tx="ekr.20081121105001.1110"></t>
 <t tx="ekr.20090620053541.3858">u = c.undoer
 w = c.frame.body.bodyCtrl

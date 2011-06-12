@@ -17,7 +17,7 @@
 <v t="EKR.20040519091259"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="ekr.20101115090518.1494"><vh>Leo 4.8 final</vh></v>
-<v t="ekr.20110603112852.1505"><vh>Leo 4.9 b2</vh></v>
+<v t="ekr.20110603112852.1505"><vh>Leo 4.9 rc1</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -93,7 +93,7 @@
 
 1. Search for ##version
 
-2. Search for this suffix: -b2.
+2. Search for this suffix: -rc1.
 
 3. Search for copyright
 
@@ -144,9 +144,9 @@ Unzip the downloaded .zip file into the **unpacked folder** in your home directo
 The unpacked folder will be called something like leo-4-5.
 
 You can run Leo from your home directory.
-You can add  ~/leo-4-5 to your path, or you can create an alias that executes::
+You can add  ~/leo-4-9 to your path, or you can create an alias that executes::
 
-    python ~/leo-4-5/launchLeo.py
+    python ~/leo-4-9/launchLeo.py
 </t>
 <t tx="EKR.20040519090846.5">
 Installing Leo on Windows
@@ -155,7 +155,7 @@ Installing Leo on Windows
 There are now two ways to install Leo on Windows:
     
 1. Use the single-click executable installer, named something like
-   LeoSetup-4.9-b2.exe
+   LeoSetup-4.9-rc1.exe
 
 2. Leo is distributed as a .zip file.
    To install Leo from the .zip file:
@@ -176,7 +176,7 @@ There are now two ways to install Leo on Windows:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.9-b2
+Version: 4.9-rc1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -190,9 +190,11 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.9 b2                              June 4, 2011
+<t tx="EKR.20040519090846.9">@language rest
 
-Leo 4.9 beta 2 is now available at:
+Leo 4.9 release candidate 1                 June 12, 2011
+
+Leo 4.9 rc1 is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more. See:
@@ -202,9 +204,7 @@ The highlights of Leo 4.9:
 --------------------------
 
 - Leo no longer supports the Tk gui: the Qt gui now has
-  all essential features of Tk and Tk-only plugins.
-
-- A large number of "fit-and-finish" bugs fixed.
+  all essential features of Tk, including plugins.
 
 - Completed Leo's autocompleter.
 
@@ -230,6 +230,8 @@ The highlights of Leo 4.9:
 
 - Added namespace directive to .leo files.
 
+- Fixed many bugs, some important, some merely annoying.
+
 
 Links:
 ------
@@ -238,7 +240,6 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/projects/leo/files/
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
-
 </t>
 <t tx="EKR.20040519091259">@pagewidth 70
 @language rest
@@ -549,7 +550,6 @@ LeoDist.leo:
         (trunk/license.txt **and** leo/doc/license.txt.)
     - Update version numbers: search this file for ##version.
     - Update readme.txt
-    - Check 'INSTALL.TXT'
     - Check 'PKG-INFO.TXT'
 Create distribution files:
     - Run make-leo button in leoDist.leo.
@@ -1058,10 +1058,12 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 </t>
-<t tx="ekr.20110603112852.1505">Leo 4.9 b2                              June 4, 2011
+<t tx="ekr.20110603112852.1505">@language rest
 
-Leo 4.9 beta 2 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+Leo 4.9 release candidate 1                 June 12, 2011
+
+Leo 4.9 rc1 is now available at:
+http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
@@ -1070,9 +1072,7 @@ The highlights of Leo 4.9:
 --------------------------
 
 - Leo no longer supports the Tk gui: the Qt gui now has
-  all essential features of Tk and Tk-only plugins.
-
-- A large number of "fit-and-finish" bugs fixed.
+  all essential features of Tk, including plugins.
 
 - Completed Leo's autocompleter.
 
@@ -1098,6 +1098,8 @@ The highlights of Leo 4.9:
 
 - Added namespace directive to .leo files.
 
+- Fixed many bugs, some important, some merely annoying.
+
 
 Links:
 ------
@@ -1106,7 +1108,6 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/projects/leo/files/
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
-
 </t>
 <t tx="ekr.20110603171959.1505">@nocolor-node
 

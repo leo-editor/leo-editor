@@ -4438,3 +4438,7 @@ ddabrev
 expand_noweb_references
 ignore_noweb_definitions
 expand_noweb_recursively
+
+invisible_outline_navigation
+outline_pane_scrolls_horizontally
+use_minibuffer

@@ -9,6 +9,7 @@
 
 - Make some to-do items into wishlist bugs.
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10
+.. @+node:ekr.20110612102349.16415: *3* Complete check-core-settings script in leoSettigns.leo
 .. @+node:ekr.20110611113007.6600: *3* Bug: Wrap-around search should restart when find pattern changes
 @nocolor-node
 

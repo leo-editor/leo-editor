@@ -709,6 +709,34 @@ clear_http_attributes (default: False)
 node_begin_marker (default: 'http-node-marker-')
 
     The string used for node markers.
+.. @+node:ekr.20110612104631.16414: *4* Section expansion options
+@language rest
+
+**New in Leo 4.9**: The following three options allow you
+to expand noweb section references, much like Leo itself does.
+
+**expand_noweb_references**
+
+   True: Replace references by definitions.
+   Definitions must be descendants of the referencing node.
+
+**ignore_noweb_definitions**
+
+    True: ignore section definition nodes.
+
+**expand_noweb_recursively**
+
+    True: recursively expand definitions by expanding any
+    references found in definitions.
+        
+Notes:
+
+- This is an experimental feature: all aspects might changed. The defaults for
+  all these options ensure that the rst3 command works as it has always.
+
+- The rst3 command ensures that unbounded expansions can not happen. While
+  expanding any section, the rst3 will not expand again any sections that have
+  already occurred in the expansion.
 .. @+node:ekr.20100813075851.4297: *3* Other topics
 .. @+node:ekr.20100810091118.4298: *4* Markup doc parts
 **Markup doc parts** have the following form::

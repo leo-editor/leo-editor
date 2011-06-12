@@ -15763,14 +15763,14 @@ Leo 4.9 release candidate 1                 June 12, 2011
 Leo 4.9 rc1 is now available at:
 http://sourceforge.net/projects/leo/files/
 
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+Leo is a text editor, data organizer, project manager and much more.
+See: http://webpages.charter.net/edreamleo/intro.html
 
 The highlights of Leo 4.9:
 --------------------------
 
-- Leo no longer supports the Tk gui: the Qt gui now has
-  all essential features of Tk, including plugins.
+- The Qt gui completely replaces the Tk gui--Qt gui now has all essential
+  features of Tk, including plugins.
 
 - Completed Leo's autocompleter.
 
@@ -15796,8 +15796,7 @@ The highlights of Leo 4.9:
 
 - Added namespace directive to .leo files.
 
-- Fixed many bugs, some important, some merely annoying :-)
-
+- Fixed many bugs, some important, some merely annoying.
 
 Links:
 ------
@@ -16526,6 +16525,19 @@ begins and ends with the '\b' anchor.
     
         True: recursively expand definitions by expanding any
         references found in definitions.
+        
+Notes:
+
+- This is an experimental feature: all aspects might changed.
+
+- The code ensures that unbounded expansions can not happen. While expanding any
+  section, the rst3 will not expand again any sections that have already
+  occurred in the expansion.
+
+- All rst3 options apply to the entire node in which they appear (and all
+  descendant nodes until over-ridden), but by splitting nodes one can change the
+  settings on an expansion-by-expansion basis. It is easy to split nodes without
+  creating new sections using @rst-no-head in the headline.
 #@+node:ekr.20110611092035.16493: *5* Removed settings
 The following Tk settings have been removed from leoSettings.leo::
 

@@ -21,9 +21,9 @@ Unzip the downloaded .zip file into the **unpacked folder** in your home directo
 The unpacked folder will be called something like leo-4-5.
 
 You can run Leo from your home directory.
-You can add  ~/leo-4-5 to your path, or you can create an alias that executes::
+You can add  ~/leo-4-9 to your path, or you can create an alias that executes::
 
-    python ~/leo-4-5/launchLeo.py
+    python ~/leo-4-9/launchLeo.py
 
 Installing Leo on Windows
 --------------------------
@@ -31,7 +31,7 @@ Installing Leo on Windows
 There are now two ways to install Leo on Windows:
     
 1. Use the single-click executable installer, named something like
-   LeoSetup-4.9-b2.exe
+   LeoSetup-4.9-rc1.exe
 
 2. Leo is distributed as a .zip file.
    To install Leo from the .zip file:

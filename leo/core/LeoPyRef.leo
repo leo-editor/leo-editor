@@ -11,6 +11,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20051031040240"><vh>Startup</vh>
+<v t="ekr.20110607155823.16449"><vh>@chapters</vh></v>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20101218103123.12443"><vh>@button load-all</vh></v>
 <v t="ekr.20090620052003.8505"><vh>@@button add-test</vh></v>
@@ -109,11 +110,9 @@
 <v t="ekr.20041117062700"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@file leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31332e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
-<v t="ekr.20031218072017.3719"><vh>@file leoGui.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31332e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
-<v t="ekr.20061031131434"
-expanded="ekr.20061031131434.75,"><vh>@file leoKeys.py</vh></v>
+<v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@file leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@file leoPymacs.py</vh></v>
@@ -124,6 +123,11 @@ expanded="ekr.20061031131434.75,"><vh>@file leoKeys.py</vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
+<v t="ekr.20031218072017.3630"><vh>@file leoCompare.py</vh></v>
+<v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
+<v t="ekr.20031218072017.3655"><vh>@file leoFrame.py</vh></v>
+<v t="ekr.20031218072017.3719"><vh>@file leoGui.py</vh></v>
+<v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
 <v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
 <v t="ekr.20110605121601.17863"><vh>@file ../plugins/baseNativeTree.py</vh></v>
 <v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
@@ -137,16 +141,12 @@ expanded="ekr.20061031131434.75,"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20110605121601.18709"><vh>@auto ../plugins/qt_quicksearch.ui</vh></v>
 </v>
 </v>
-<v t="ekr.20031218072017.3630"><vh>@file leoCompare.py</vh></v>
-<v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
-<v t="ekr.20031218072017.3655"><vh>@file leoFrame.py</vh></v>
-<v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
 <v t="ekr.20100221142603.5638"><vh>@file ../../pylint-leo.py</vh></v>
 <v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
-<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@file leoTest.py</vh></v>
+<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@file leoTest.py</vh></v>
 </v>
 </v>
 </vnodes>
@@ -954,5 +954,6 @@ for z in table:
 </t>
 <t tx="ekr.20110605121601.17862"># These files are true plugins, but it is more convenient to put them here.</t>
 <t tx="ekr.20110605121601.18695"></t>
+<t tx="ekr.20110607155823.16449"></t>
 </tnodes>
 </leo_file>

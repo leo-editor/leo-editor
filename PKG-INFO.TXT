@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: leo
-Version: 4.9-b2
+Version: 4.9-rc1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
