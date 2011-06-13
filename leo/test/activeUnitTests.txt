@@ -3781,7 +3781,7 @@ finally:
 # node b
 #@+node:ekr.20110608181936.3370: *5* node c
 # node c
-#@+node:ekr.20110613110735.3338: *5* node a
+#@+node:ekr.20110613134508.3322: *5* node a
 # node a
 #@+node:ekr.20080503132221.1: *4* @test chapter-create-from-node
 cc = c.chapterController
@@ -3821,7 +3821,7 @@ finally:
             root.firstChild().doDelete(newNode=None)
     cc.selectChapterByName('main',collapse=True)
     c.redraw_now()
-#@+node:ekr.20110613110735.3339: *5* child
+#@+node:ekr.20110613134508.3323: *5* child
 # child
 #@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5
@@ -17513,5 +17513,18 @@ c.bodyWantsFocus()
 
 # Print does not work: it is redirected.
 g.es('all unit tests done',color='blue')
+#@+node:ekr.20110613134508.3325: ** @test zzz revert this file
+# Kludge: rename this frame so openWithFileName won't think it is open.
+fileName = c.mFileName
+c.mFileName = ""
+
+# Create a new frame before deleting this frame.
+ok, frame = g.openWithFileName(fileName,c)
+if ok:
+    frame.deiconify()
+    g.doHook("close-frame",c=c)
+    g.app.destroyWindow(c.frame)
+else:
+    c.mFileName = fileName
 #@-all
 #@-leo
