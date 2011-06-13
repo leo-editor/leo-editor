@@ -1215,7 +1215,7 @@ class leoMenu:
         '''Compute the old-style shortcut key for @shortcuts entries.'''
 
         return ''.join([ch for ch in s.strip().lower() if ch.isalnum()])
-    #@+node:ekr.20031218072017.1723: *4* createMenuEntries
+    #@+node:ekr.20031218072017.1723: *4* createMenuEntries (leoMenu)
     def createMenuEntries (self,menu,table,dynamicMenu=False):
 
         '''Create a menu entry from the table.
@@ -1324,9 +1324,22 @@ class leoMenu:
             stroke = k.shortcutFromSetting(accel,addKey=True) or ''
             if accelerator:
                 accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
+
             if trace: # and commandName == 'add-comments':
                 g.trace(bunch.val,repr(stroke),repr(accelerator),commandName)
-            def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName,event=None):
+                
+            # Add an entry for unit testing and masterMenuHandler.
+            
+            if stroke:
+                d = g.app.unitTestMenusDict
+                aSet = d.get(commandName,set())
+                aSet.add(stroke)
+                d[commandName] = aSet
+        
+            def masterMenuCallback (
+                c=c,k=k,stroke=stroke,
+                command=command,commandName=commandName,event=None
+            ):
                 # if trace: g.trace('stroke',stroke)
                 return k.masterMenuHandler(stroke,command,commandName)
 

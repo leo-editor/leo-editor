@@ -86,9 +86,7 @@ import types
 #     Keys are lowercase settings; values are 'real' Tk key specifiers.
 #     Important: this table has no inverse.
 # 
-# not an ivar (computed by k.computeInverseBindingDict):
-# 
-# inverseBindingDict
+# inverseBindingDict: not an ivar (computed by k.computeInverseBindingDict):
 #     Keys are emacs command names; values are *lists* of shortcuts.
 #@-<< about key dicts >>
 
@@ -3208,6 +3206,13 @@ class keyHandlerClass:
         c.check_event(event)
 
         if stroke:
+            # 2011/06/13: warn if the commandName does not match the stroke.
+            if commandName:
+                d = g.app.unitTestMenusDict
+                aSet = d.get(commandName,[])
+                if stroke not in aSet:
+                    g.trace('can not happen: unexpected command name: %s for stroke: %s' % (
+                        repr(commandName),repr(stroke)))
             return k.masterKeyHandler(event)
         else:
             return k.masterCommand(event,func,stroke,commandName)

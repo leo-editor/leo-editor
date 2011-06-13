@@ -6245,6 +6245,10 @@ class Commands (object):
         c = self ; command = keys.get('command')
 
         if command:
+            
+            # Command is always either:
+            # masterMenuCallback, defined in createMenuEntries or
+            # recentFilesCallback, defined in createRecentFilesMenuItems.
 
             def add_commandCallback(c=c,command=command):
                 # g.trace(command)

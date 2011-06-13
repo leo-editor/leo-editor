@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.47" body_secondary_ratio="0.69">
-	<global_window_position top="30" left="396" height="1026" width="898"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.69">
+	<global_window_position top="30" left="321" height="1026" width="1062"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -105,6 +105,7 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31302e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20110613143220.3314"><vh>@test All menus execute the proper command</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -627,5 +628,52 @@ s = "%d nodes" % count
 print s ; g.es(s)</t>
 <t tx="ekr.20101220161557.6013"></t>
 <t tx="ekr.20101220161557.6016"></t>
+<t tx="ekr.20110613143220.3314">@ We want to ensure that when masterMenuHandler does::
+    
+    event = g.app.gui.create_key_event(c,None,stroke,w)
+    return k.masterKeyHandler(event)
+    
+that the effect will be to call commandName, where commandName
+is the arg passed to masterMenuHandler.
+
+createMenuEntries creates the association of stroke to commandName.
+@c
+
+trace = False # False: the unit test can fail.
+k = c.k
+d = g.app.unitTestMenusDict
+d2 = k.bindingsDict ### c.k.masterGuiBindingsDict
+d2name = 'k.bindingsDict'
+commandNames = list(d.keys())
+commandNames.sort()
+exclude_strokes = ('Alt+F4','Ctrl+q','Ctrl+Shift+Tab',)
+
+for name in commandNames:
+    assert name in c.commandsDict,'unexpected command name: %s' % (
+        repr(name))
+    aSet = d.get(name)
+    aList = list(aSet)
+    aList.sort()
+    for z in exclude_strokes:
+        if z in aList:
+            aList.remove(z)
+    for stroke in aList:
+        aList2 = d2.get(stroke)
+        assert aList2,'stroke %s not in %s' % (
+            repr(stroke),d2name)
+        for b in aList2:
+            if b.commandName == name:
+                break
+        else:
+            if trace:
+                inverseBindingDict = k.computeInverseBindingDict()
+                print('%s: stroke %s not bound to %s in %s' % (
+                    p.h,repr(stroke),repr(name),d2name))
+                print('%s: inverseBindingDict.get(%s): %s' % (
+                    p.h,name,inverseBindingDict.get(name)))
+            else:
+                assert False,'stroke %s not bound to %s in %s' % (
+                    repr(stroke),repr(name),d2name)
+</t>
 </tnodes>
 </leo_file>

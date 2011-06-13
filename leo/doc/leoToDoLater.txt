@@ -145,35 +145,6 @@ if 0:
         # name is the minibuffer command name, f_name is the function name.
         i,p = find(c,command,f_name)
         adjust(c,f_name,i,p)
-.. @+node:ekr.20061031131434.3: *6* << about key dicts >>
-@nocolor
-@
-ivars:
-
-c.commandsDict:
-    Keys are emacs command names; values are functions f.
-
-k.inverseCommandsDict:
-    Keys are f.__name__; values are emacs command names.
-
-k.bindingsDict:
-    Keys are shortcuts; values are *lists* of g.bunch(func,name,warningGiven)
-
-k.masterBindingsDict:
-    Keys are scope names: 'all','text',etc. or mode names.
-    Values are dicts:  keys are strokes, values are g.Bunch(commandName,func,pane,stroke)
-
-k.masterGuiBindingsDict:
-    Keys are strokes; value is a list of widgets for which stroke is bound.
-
-k.settingsNameDict:
-    Keys are lowercase settings; values are 'real' Tk key specifiers.
-    Important: this table has no inverse.
-
-not an ivar (computed by k.computeInverseBindingDict):
-
-inverseBindingDict
-    Keys are emacs command names; values are *lists* of shortcuts.
 .. @+node:ekr.20101119030344.5841: *6* find_all_defs
 def find_all_defs (c):
 

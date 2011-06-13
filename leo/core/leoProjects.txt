@@ -5034,10 +5034,12 @@ def add_cascade (self,parent,label,menu,underline):
         self.menuBar.addMenu(menu)
 
     return menu
-#@+node:ekr.20110605121601.18345: *8* add_command (qt)
+#@+node:ekr.20110605121601.18345: *8* add_command (leoQtMenu)
 def add_command (self,**keys):
 
     """Wrapper for the Tkinter add_command menu method."""
+    
+    trace = False and not g.unitTesting # and label.startswith('Paste')
 
     c = self.c
     accel = keys.get('accelerator') or ''
@@ -5047,9 +5049,9 @@ def add_command (self,**keys):
     menu = keys.get('menu') or self
     if not label: return
     
-    trace = False and label.startswith('Paste') and not g.unitTesting
-    
-    if trace: g.trace(label,command,g.callers())
+    if trace: g.trace(label)
+        # command is always add_commandCallback,
+        # defined in c.add_command.
 
     if -1 < n < len(label):
         label = label[:n] + '&' + label[n:]
@@ -5319,6 +5321,10 @@ def add_command (self,menu,**keys):
     c = self ; command = keys.get('command')
 
     if command:
+        
+        # Command is always either:
+        # masterMenuCallback, defined in createMenuEntries or
+        # recentFilesCallback, defined in createRecentFilesMenuItems.
 
         def add_commandCallback(c=c,command=command):
             # g.trace(command)
@@ -5333,10 +5339,12 @@ def add_command (self,menu,**keys):
 
     else:
         g.trace('can not happen: no "command" arg')
-#@+node:ekr.20110605121601.18345: *5* add_command (qt)
+#@+node:ekr.20110605121601.18345: *5* add_command (leoQtMenu)
 def add_command (self,**keys):
 
     """Wrapper for the Tkinter add_command menu method."""
+    
+    trace = False and not g.unitTesting # and label.startswith('Paste')
 
     c = self.c
     accel = keys.get('accelerator') or ''
@@ -5346,9 +5354,9 @@ def add_command (self,**keys):
     menu = keys.get('menu') or self
     if not label: return
     
-    trace = False and label.startswith('Paste') and not g.unitTesting
-    
-    if trace: g.trace(label,command,g.callers())
+    if trace: g.trace(label)
+        # command is always add_commandCallback,
+        # defined in c.add_command.
 
     if -1 < n < len(label):
         label = label[:n] + '&' + label[n:]
@@ -5366,7 +5374,7 @@ def add_command (self,**keys):
 
         QtCore.QObject.connect(action,
             QtCore.SIGNAL("triggered()"),qt_add_command_callback)
-#@+node:ekr.20031218072017.1723: *5* createMenuEntries
+#@+node:ekr.20031218072017.1723: *5* createMenuEntries (leoMenu)
 def createMenuEntries (self,menu,table,dynamicMenu=False):
 
     '''Create a menu entry from the table.
@@ -5385,9 +5393,22 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
         stroke = k.shortcutFromSetting(accel,addKey=True) or ''
         if accelerator:
             accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
+
         if trace: # and commandName == 'add-comments':
             g.trace(bunch.val,repr(stroke),repr(accelerator),commandName)
-        def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName,event=None):
+            
+        # Add an entry for unit testing and masterMenuHandler.
+        
+        if stroke:
+            d = g.app.unitTestMenusDict
+            aSet = d.get(commandName,set())
+            aSet.add(stroke)
+            d[commandName] = aSet
+    
+        def masterMenuCallback (
+            c=c,k=k,stroke=stroke,
+            command=command,commandName=commandName,event=None
+        ):
             # if trace: g.trace('stroke',stroke)
             return k.masterMenuHandler(stroke,command,commandName)
 
@@ -5510,6 +5531,13 @@ def masterMenuHandler (self,stroke,func,commandName):
     c.check_event(event)
 
     if stroke:
+        # 2011/06/13: warn if the commandName does not match the stroke.
+        if commandName:
+            d = g.app.unitTestMenusDict
+            aSet = d.get(commandName,[])
+            if stroke not in aSet:
+                g.trace('can not happen: unexpected command name: %s for stroke: %s' % (
+                    repr(commandName),repr(stroke)))
         return k.masterKeyHandler(event)
     else:
         return k.masterCommand(event,func,stroke,commandName)
@@ -5680,6 +5708,13 @@ def masterMenuHandler (self,stroke,func,commandName):
     c.check_event(event)
 
     if stroke:
+        # 2011/06/13: warn if the commandName does not match the stroke.
+        if commandName:
+            d = g.app.unitTestMenusDict
+            aSet = d.get(commandName,[])
+            if stroke not in aSet:
+                g.trace('can not happen: unexpected command name: %s for stroke: %s' % (
+                    repr(commandName),repr(stroke)))
         return k.masterKeyHandler(event)
     else:
         return k.masterCommand(event,func,stroke,commandName)
@@ -7882,6 +7917,683 @@ def onDeactivateEvent (self,event,c,obj,tag):
         c.k.keyboardQuit() # 2011/06/13.
         # c.endEditing()
         g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
+#@+node:ekr.20110613090104.16403: *3* Running all unit tests leaves all files unchanged
+This was a major annoyance.
+#@+node:ekr.20110613133048.14783: *3* Added checks that all menus execute the proper command
+#@+node:ekr.20110613133048.14784: *4* Changed
+#@+node:ekr.20031218072017.1416: *5* app.__init__
+def __init__(self):
+
+    # These ivars are the global vars of this program.
+    self.afterHandler = None
+    self.atPathInBodyWarning = None # Set by get_directives_dict
+        # The headline of the @<file> node containing
+        # an @path directive in the body.
+    self.batchMode = False # True: run in batch mode.
+    self.commandName = None # The name of the command being executed.
+    self.commandInterruptFlag = False # True: command within a command.
+    self.config = None # The leoConfig instance.
+    self.count = 0 # General purpose debugging count.
+    self.db = None # Set to a leoCacher later.
+    self.debug = False
+        # True: enable extra debugging tests (not used at present).
+        # WARNING: this could greatly slow things down.
+    self.debugSwitch = 0
+        # 0: default behavior
+        # 1: full traces in g.es_exception.
+        # 2: call pdb.set_trace in g.es_exception, etc.
+    self.disableSave = False
+    self.dragging = False # Application-wide dragging flag.
+    self.enableUnitTest = True
+    self.extensionsDir = None
+    self.globalConfigDir = None
+        # The directory assumed to contain the global configuration files.
+    self.globalOpenDir = None # The directory last used to open a file.
+    self.gui = None # The gui class.
+    self.guiArgName = None # The gui name given in --gui option.
+    self.hasOpenWithMenu = False # True: open with plugin has been loaded.
+    self.hookError = False # True: suppress further calls to hooks.
+    self.hookFunction = None # Application wide hook function.
+    self.homeDir = None # The user's home directory.
+    self.homeLeoDir = None
+        # The '.leo' subdirectory of the user's home directory.
+    self.homeSettingsPrefix = '.'
+        # prepend to "myLeoSettings.leo" and <machineName>LeoSettings.leo
+    self.idle_imported = False # True: we have done an import idle
+    self.idleTimeDelay = 100
+        # Delay in msec between calls to "idle time" hook.
+    self.idleTimeHook = False
+        # True: the global idleTimeHookHandler will reshedule itself.
+    self.inBridge = False # True: running from leoBridge module.
+    self.initing = True # True: we are initiing the app.
+    self.killed = False # True: we are about to destroy the root window.
+    self.leoID = None # The id part of gnx's.
+    self.loadDir = None # The directory from which Leo was loaded.
+    self.log = None # The LeoFrame containing the present log.
+    self.logInited = False # False: all log message go to logWaiting list.
+    self.logIsLocked = False # True: no changes to log are allowed.
+    self.logWaiting = [] # List of messages waiting to go to a log.
+    self.lossage = [] # List of last 100 keystrokes.
+    self.menuWarningsGiven = False # True: supress warnings in menu code.
+    self.nodeIndices = None # Singleton node indices instance.
+    self.numberOfWindows = 0 # Number of opened windows.
+    self.oneConfigFilename = ''
+        # If non-empty, the name of a single configuration file.
+    self.openWithFiles = [] # List of data used by Open With command.
+    self.openWithFileNum = 0
+        # Used to generate temp file names for Open With command.
+    self.openWithTable = None
+        # The table passed to createOpenWithMenuFromTable.
+    self.pluginsController = None # Set early in the init process.
+    self.positions = 0 # Count of the number of positions generated.
+    self.printWaiting = [] # Queue of messages to be sent to the printer.
+    self.qt_use_tabs = False # True: allow tabbed main window.
+    self.quitting = False # True if quitting.  Locks out some events.
+    self.realMenuNameDict = {}
+        # Contains translations of menu names and menu item names.
+    self.root = None # The hidden main window. Set later.
+    self.searchDict = {} # For communication between find/change scripts.
+    self.scanErrors = 0 # The number of errors seen by g.scanError.
+    self.scriptDict = {}
+        # For communication between Execute Script command and scripts.
+    self.signon_printed = False
+    self.silentMode = False # True if signon is more silent.
+    self.start_fullscreen = False # For qtGui plugin.
+    self.start_maximized = False # For qtGui plugin.
+    self.start_minimized = False # For qtGui plugin.
+    self.statsDict = {}
+        # Statistics dict used by g.stat, g.clear_stats, g.print_stats.
+    self.trace = False # True: enable debugging traces.
+    self.trace_gc = False # defined in run()
+    self.trace_gc_calls = False # defined in run()
+    self.trace_gc_verbose = False # defined in run()
+    self.trace_gc_inited = False
+    self.tracePositions = False
+    self.trace_list = [] # "Sherlock" argument list for tracing().
+    self.translateToUpperCase = False
+    self.unicodeErrorGiven = True # True: suppres unicode tracebacks.
+    self.unitTestMenusDict = {}
+        # Created in leoMenu.createMenuEntries for a unit test.
+        # keys are command names. values are sets of strokes.
+    self.unitTestDict = {} # For communication between unit tests and code.
+    self.unitTestGui = None # A way to override the gui in external unit tests.
+    self.unitTesting = False # True if unit testing.
+    self.useIpython = False
+    self.use_psyco = False
+        # Can't be a config param because it is used
+        # before config module can be inited.
+    self.use_splash_screen = True
+    self.user_xresources_path = None # Resource file for Tk/tcl.
+    self.windowList = []
+        # Global list of all frames.  Does not include hidden root window.
+
+    # Global panels.  Destroyed when Leo ends.
+    self.pythonFrame = None
+
+    << Define global constants >>
+    << Define global data structures >>
+#@+node:ekr.20031218072017.1417: *6* << define global constants >>
+# self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+
+self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
+self.prolog_postfix_string = "?>"
+self.prolog_namespace_string = \
+    'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
+#@+node:ekr.20031218072017.368: *6* << define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM_", # Use the REM hack.
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "cython"        : "#",
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "haskell"       : "--_ {-_ _-}",
+    "haxe"          : "//",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lisp"          : ";", # EKR: 2010/09/29
+    "lua"           : "--",  # ddm 13/02/06
+    "nsi"           : ";", # EKR: 2010/10/27
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "rest"          : ".._",
+    "rst"           : ".._",
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "scala"         : "// /* */",
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--',
+        # For unknown extensions in @shadow files.
+    "vim"           : "\"",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
+}
+
+# Used only by c.getOpenWithExt.
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    #"cython"        : "pyd",
+    #"cython"        : "pyi",
+    "cython"        : "pyx", # Only one extension is valid at present.
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f90",
+    "haskell"       : "hs",
+    "haxe"          : "hx",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "nsi"           : "nsi", # EKR: 2010/10/27
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    # "rst"           : "rst", # caught by pylint.
+    "rst"           : "rest",
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "scala"         : "scala",
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vim"           : "vim",
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+    "xslt"          : "xsl",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "hs"    : "haskell",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nsi"   : "nsi", # EKR: 2010/10/27
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "pyd"   : "cython",
+    "pyi"   : "cython",
+    "pyx"   : "cython",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "scala" : "scala",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+    "w"     : "cweb",
+    "xml"   : "xml",
+    "xsl"   : "xslt",
+    "hx"    : "haxe",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran90',
+    'hx'    : 'none',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nsi'   : 'none', # Leo 4.8.
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+
+self.global_commands_dict = {}
+#@+node:ekr.20031218072017.1723: *5* createMenuEntries (leoMenu)
+def createMenuEntries (self,menu,table,dynamicMenu=False):
+
+    '''Create a menu entry from the table.
+    New in 4.4: this method shows the shortcut in the menu,
+    but this method **never** binds any shortcuts.'''
+
+    c = self.c ; f = c.frame ; k = c.k
+    if g.app.unitTesting: return
+
+    trace = False
+    for data in table:
+        << get label & command or continue >>
+        << compute commandName & accel from label & command >>
+        # Bug fix: 2009/09/30: use canonical stroke.
+        accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
+        stroke = k.shortcutFromSetting(accel,addKey=True) or ''
+        if accelerator:
+            accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
+
+        if trace: # and commandName == 'add-comments':
+            g.trace(bunch.val,repr(stroke),repr(accelerator),commandName)
+            
+        # Add an entry for unit testing and masterMenuHandler.
+        
+        if stroke:
+            d = g.app.unitTestMenusDict
+            aSet = d.get(commandName,set())
+            aSet.add(stroke)
+            d[commandName] = aSet
+    
+        def masterMenuCallback (
+            c=c,k=k,stroke=stroke,
+            command=command,commandName=commandName,event=None
+        ):
+            # if trace: g.trace('stroke',stroke)
+            return k.masterMenuHandler(stroke,command,commandName)
+
+        realLabel = self.getRealMenuName(label)
+        amp_index = realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        if sys.platform == 'darwin':
+            << clear accelerator if it is a plain key >>
+
+        # c.add_command ensures that c.outerUpdate is called.
+        if menu:
+            c.add_command(menu,label=realLabel,
+                accelerator=accelerator,
+                command=masterMenuCallback,
+                underline=amp_index)
+#@+node:ekr.20051021091958: *6* << get label & command or continue >>
+if g.isString(data):
+    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
+    ok = True
+    s = data
+    removeHyphens = s and s[0]=='*'
+    if removeHyphens: s = s[1:]
+    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+    command = s.replace('&','').lower()
+    if label == '-':
+        self.add_separator(menu)
+        continue # That's all.
+else:
+    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+    if ok:
+        if len(data) == 2:
+            # New in 4.4b2: command can be a minibuffer-command name (a string)
+            label,command = data
+        else:
+            # New in 4.4: we ignore shortcuts bound in menu tables.
+            label,junk,command = data
+
+        if label in (None,'-'):
+            self.add_separator(menu)
+            continue # That's all.
+    else:
+        g.trace('bad data in menu table: %s' % repr(data))
+        continue # Ignore bad data
+#@+node:ekr.20031218072017.1725: *6* << compute commandName & accel from label & command >>
+# New in 4.4b2: command can be a minibuffer-command name (a string)
+minibufferCommand = type(command) == type('')
+accel = None
+if minibufferCommand:
+    commandName = command 
+    command = c.commandsDict.get(commandName)
+    if command:
+        rawKey,bunchList = c.config.getShortcut(commandName)
+        # Pick the first entry that is not a mode.
+        for bunch in bunchList:
+            if not bunch.pane.endswith('-mode'):
+                accel = bunch and bunch.val
+                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+    else:
+        if not g.app.unitTesting and not dynamicMenu:
+            # Don't warn during unit testing.
+            # This may come from a plugin that normally isn't enabled.
+            if trace: g.trace('No inverse for %s' % commandName)
+        continue # There is no way to make this menu entry.
+else:
+    # First, get the old-style name.
+    commandName = self.computeOldStyleShortcutKey(label)
+    rawKey,bunchList = c.config.getShortcut(commandName)
+    for bunch in bunchList:
+        if not bunch.pane.endswith('-mode'):
+            if trace: g.trace('2','%20s' % (bunch.val),commandName)
+            accel = bunch and bunch.val ; break
+    # Second, get new-style name.
+    if not accel:
+        << compute emacs_name >>
+            # Contains the not-so-horrible kludge.
+        if emacs_name:
+            commandName = emacs_name
+            rawKey,bunchList = c.config.getShortcut(emacs_name)
+            # Pick the first entry that is not a mode.
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    accel = bunch.val
+                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    break
+        elif not dynamicMenu:
+            g.trace('No inverse for %s' % commandName)
+#@+node:ekr.20051021100806.1: *7* << compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+#@+node:ekr.20060216110502: *6* << clear accelerator if it is a plain key >>
+for z in ('Alt','Ctrl','Command'):
+    if accelerator.find(z) != -1:
+        break # Found.
+else:
+    accelerator = ''
+#@+node:ekr.20031218072017.1723: *5* createMenuEntries (leoMenu)
+def createMenuEntries (self,menu,table,dynamicMenu=False):
+
+    '''Create a menu entry from the table.
+    New in 4.4: this method shows the shortcut in the menu,
+    but this method **never** binds any shortcuts.'''
+
+    c = self.c ; f = c.frame ; k = c.k
+    if g.app.unitTesting: return
+
+    trace = False
+    for data in table:
+        << get label & command or continue >>
+        << compute commandName & accel from label & command >>
+        # Bug fix: 2009/09/30: use canonical stroke.
+        accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
+        stroke = k.shortcutFromSetting(accel,addKey=True) or ''
+        if accelerator:
+            accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
+
+        if trace: # and commandName == 'add-comments':
+            g.trace(bunch.val,repr(stroke),repr(accelerator),commandName)
+            
+        # Add an entry for unit testing and masterMenuHandler.
+        
+        if stroke:
+            d = g.app.unitTestMenusDict
+            aSet = d.get(commandName,set())
+            aSet.add(stroke)
+            d[commandName] = aSet
+    
+        def masterMenuCallback (
+            c=c,k=k,stroke=stroke,
+            command=command,commandName=commandName,event=None
+        ):
+            # if trace: g.trace('stroke',stroke)
+            return k.masterMenuHandler(stroke,command,commandName)
+
+        realLabel = self.getRealMenuName(label)
+        amp_index = realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        if sys.platform == 'darwin':
+            << clear accelerator if it is a plain key >>
+
+        # c.add_command ensures that c.outerUpdate is called.
+        if menu:
+            c.add_command(menu,label=realLabel,
+                accelerator=accelerator,
+                command=masterMenuCallback,
+                underline=amp_index)
+#@+node:ekr.20051021091958: *6* << get label & command or continue >>
+if g.isString(data):
+    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
+    ok = True
+    s = data
+    removeHyphens = s and s[0]=='*'
+    if removeHyphens: s = s[1:]
+    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+    command = s.replace('&','').lower()
+    if label == '-':
+        self.add_separator(menu)
+        continue # That's all.
+else:
+    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+    if ok:
+        if len(data) == 2:
+            # New in 4.4b2: command can be a minibuffer-command name (a string)
+            label,command = data
+        else:
+            # New in 4.4: we ignore shortcuts bound in menu tables.
+            label,junk,command = data
+
+        if label in (None,'-'):
+            self.add_separator(menu)
+            continue # That's all.
+    else:
+        g.trace('bad data in menu table: %s' % repr(data))
+        continue # Ignore bad data
+#@+node:ekr.20031218072017.1725: *6* << compute commandName & accel from label & command >>
+# New in 4.4b2: command can be a minibuffer-command name (a string)
+minibufferCommand = type(command) == type('')
+accel = None
+if minibufferCommand:
+    commandName = command 
+    command = c.commandsDict.get(commandName)
+    if command:
+        rawKey,bunchList = c.config.getShortcut(commandName)
+        # Pick the first entry that is not a mode.
+        for bunch in bunchList:
+            if not bunch.pane.endswith('-mode'):
+                accel = bunch and bunch.val
+                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+    else:
+        if not g.app.unitTesting and not dynamicMenu:
+            # Don't warn during unit testing.
+            # This may come from a plugin that normally isn't enabled.
+            if trace: g.trace('No inverse for %s' % commandName)
+        continue # There is no way to make this menu entry.
+else:
+    # First, get the old-style name.
+    commandName = self.computeOldStyleShortcutKey(label)
+    rawKey,bunchList = c.config.getShortcut(commandName)
+    for bunch in bunchList:
+        if not bunch.pane.endswith('-mode'):
+            if trace: g.trace('2','%20s' % (bunch.val),commandName)
+            accel = bunch and bunch.val ; break
+    # Second, get new-style name.
+    if not accel:
+        << compute emacs_name >>
+            # Contains the not-so-horrible kludge.
+        if emacs_name:
+            commandName = emacs_name
+            rawKey,bunchList = c.config.getShortcut(emacs_name)
+            # Pick the first entry that is not a mode.
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    accel = bunch.val
+                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    break
+        elif not dynamicMenu:
+            g.trace('No inverse for %s' % commandName)
+#@+node:ekr.20051021100806.1: *7* << compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+#@+node:ekr.20060216110502: *6* << clear accelerator if it is a plain key >>
+for z in ('Alt','Ctrl','Command'):
+    if accelerator.find(z) != -1:
+        break # Found.
+else:
+    accelerator = ''
+#@+node:ekr.20061031131434.155: *5* masterMenuHandler
+def masterMenuHandler (self,stroke,func,commandName):
+
+    k = self ; c = k.c
+    w = c.frame.getFocus()
+
+    # g.trace('stroke',stroke,'func',func and func.__name__,commandName)
+
+    # Create a minimal event for commands that require them.
+    event = g.app.gui.create_key_event(c,None,stroke,w)
+    
+    c.check_event(event)
+
+    if stroke:
+        # 2011/06/13: warn if the commandName does not match the stroke.
+        if commandName:
+            d = g.app.unitTestMenusDict
+            aSet = d.get(commandName,[])
+            if stroke not in aSet:
+                g.trace('can not happen: unexpected command name: %s for stroke: %s' % (
+                    repr(commandName),repr(stroke)))
+        return k.masterKeyHandler(event)
+    else:
+        return k.masterCommand(event,func,stroke,commandName)
+#@+node:ekr.20110613133048.14785: *4* Added new comments
+#@+node:ekr.20080610085158.2: *5* c.add_command
+def add_command (self,menu,**keys):
+
+    c = self ; command = keys.get('command')
+
+    if command:
+        
+        # Command is always either:
+        # masterMenuCallback, defined in createMenuEntries or
+        # recentFilesCallback, defined in createRecentFilesMenuItems.
+
+        def add_commandCallback(c=c,command=command):
+            # g.trace(command)
+            val = command()
+            # Careful: func may destroy c.
+            if c.exists: c.outerUpdate()
+            return val
+
+        keys ['command'] = add_commandCallback
+
+        menu.add_command(**keys)
+
+    else:
+        g.trace('can not happen: no "command" arg')
+#@+node:ekr.20110605121601.18345: *5* add_command (leoQtMenu)
+def add_command (self,**keys):
+
+    """Wrapper for the Tkinter add_command menu method."""
+    
+    trace = False and not g.unitTesting # and label.startswith('Paste')
+
+    c = self.c
+    accel = keys.get('accelerator') or ''
+    command = keys.get('command')
+    label = keys.get('label')
+    n = keys.get('underline')
+    menu = keys.get('menu') or self
+    if not label: return
+    
+    if trace: g.trace(label)
+        # command is always add_commandCallback,
+        # defined in c.add_command.
+
+    if -1 < n < len(label):
+        label = label[:n] + '&' + label[n:]
+    if accel:
+        label = '%s\t%s' % (label,accel)
+
+    if menu.leo_label == 'File': g.trace(label,g.callers(4))
+
+    action = menu.addAction(label)
+
+    if command:
+        def qt_add_command_callback(label=label,command=command):
+            # g.trace(command)
+            return command()
+
+        QtCore.QObject.connect(action,
+            QtCore.SIGNAL("triggered()"),qt_add_command_callback)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

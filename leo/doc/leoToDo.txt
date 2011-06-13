@@ -5,7 +5,6 @@
 .. @+all
 .. @+node:ekr.20101129095441.5963: ** Improve screenshots page
 .. @+node:ekr.20110613090104.16405: ** b4
-.. @+node:ekr.20110613090104.16403: *3* Make sure unit tests don't change files
 .. @+node:ekr.20110613132317.16392: *3* Test macros, executeNTimes
 .. @+node:ekr.20110613090104.16406: *3* Fix failing unit tests on Linux
 .. @+node:ekr.20110613133048.14782: ** rc1

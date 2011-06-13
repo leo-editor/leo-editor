@@ -5714,10 +5714,12 @@ class leoQtMenu (leoMenu.leoMenu):
             self.menuBar.addMenu(menu)
 
         return menu
-    #@+node:ekr.20110605121601.18345: *6* add_command (qt)
+    #@+node:ekr.20110605121601.18345: *6* add_command (leoQtMenu)
     def add_command (self,**keys):
 
         """Wrapper for the Tkinter add_command menu method."""
+        
+        trace = False and not g.unitTesting # and label.startswith('Paste')
 
         c = self.c
         accel = keys.get('accelerator') or ''
@@ -5727,9 +5729,9 @@ class leoQtMenu (leoMenu.leoMenu):
         menu = keys.get('menu') or self
         if not label: return
         
-        trace = False and label.startswith('Paste') and not g.unitTesting
-        
-        if trace: g.trace(label,command,g.callers())
+        if trace: g.trace(label)
+            # command is always add_commandCallback,
+            # defined in c.add_command.
 
         if -1 < n < len(label):
             label = label[:n] + '&' + label[n:]

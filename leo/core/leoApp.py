@@ -114,6 +114,9 @@ class LeoApp:
         self.trace_list = [] # "Sherlock" argument list for tracing().
         self.translateToUpperCase = False
         self.unicodeErrorGiven = True # True: suppres unicode tracebacks.
+        self.unitTestMenusDict = {}
+            # Created in leoMenu.createMenuEntries for a unit test.
+            # keys are command names. values are sets of strokes.
         self.unitTestDict = {} # For communication between unit tests and code.
         self.unitTestGui = None # A way to override the gui in external unit tests.
         self.unitTesting = False # True if unit testing.
