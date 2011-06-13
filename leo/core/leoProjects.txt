@@ -6914,6 +6914,54 @@ def readEndOthers (self,unused_s,unused_i):
         oldLevel = len(at.thinNodeStack)
         newLevel = at.endSentinelLevelStack.pop()
         at.changeLevel(oldLevel,newLevel)
+#@+node:ekr.20110611113007.6600: *3* Fixed bug: Wrap-around search now restart when find pattern changes
+@nocolor-node
+
+This was an ancient bug.
+#@+node:ekr.20031218072017.1460: *4* update_ivars (leoFind)
+# New in Leo 4.4.3: This is now gui-independent code.
+
+def update_ivars (self):
+
+    """Called just before doing a find to update ivars from the find panel."""
+
+    trace = False and not g.unitTesting
+
+    self.p = self.c.p
+    self.v = self.p.v
+
+    for key in self.intKeys:
+        val = self.svarDict[key].get()
+        # if trace: g.trace(self.svarDict.get(key),val)
+        setattr(self, key, val) # No more _flag hack.
+
+    # Set ivars from radio buttons. Convert these to 1 or 0.
+    search_scope = self.svarDict["radio-search-scope"].get()
+    # g.trace('radio-search-scope',search_scope)
+    self.suboutline_only = g.choose(search_scope == "suboutline-only",1,0)
+    self.node_only       = g.choose(search_scope == "node-only",1,0)
+    self.selection       = g.choose(search_scope == "selection-only",1,0)
+
+    # New in 4.3: The caller is responsible for removing most trailing cruft.
+    # Among other things, this allows Leo to search for a single trailing space.
+    s = self.find_ctrl.getAllText()
+    s = g.toUnicode(s)
+    if trace: g.trace('find',repr(s),self.find_ctrl)
+    if s and s[-1] in ('\r','\n'):
+        s = s[:-1]
+        
+    # 2011/06/13: clear wrap_pos if the find_text changes.
+    if s != self.find_text:
+        # g.trace('clearing self.wrap_pos')
+        self.wrapPosition = None
+    self.find_text = s
+
+    s = self.change_ctrl.getAllText()
+    if s and s[-1] in ('\r','\n'):
+        s = s[:-1]
+    s = g.toUnicode(s)
+    self.change_text = s
+    if trace: g.trace('change',repr(s))
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

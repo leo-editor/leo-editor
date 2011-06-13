@@ -225,6 +225,8 @@ class leoFind:
         # search. We set wrapPosition in selectNextPosition after the first
         # search fails. We also set wrapPosition on exit if the first search
         # suceeds.
+        # 
+        # 2011/06/13: wrapPosition must be reset when the find pattern changes.
         #@@c
 
         self.wrapPosition = None # The start of wrapped searches: persists between calls.
@@ -1382,6 +1384,11 @@ class leoFind:
         if trace: g.trace('find',repr(s),self.find_ctrl)
         if s and s[-1] in ('\r','\n'):
             s = s[:-1]
+            
+        # 2011/06/13: clear wrap_pos if the find_text changes.
+        if s != self.find_text:
+            # g.trace('clearing self.wrap_pos')
+            self.wrapPosition = None
         self.find_text = s
 
         s = self.change_ctrl.getAllText()
