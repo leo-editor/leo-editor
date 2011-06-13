@@ -4061,6 +4061,83 @@ paste-after-lws:    ^([ \t]+)           -->  \1x
     strings of some fixed length. Patterns which start with negative lookbehind
     assertions may match at the beginning of the string being searched.
 #@+node:ekr.20060217111834: *3* @url http://docs.python.org/lib/re-syntax.html
+#@+node:ekr.20110527084258.18374: ** Summary of the Ashland sprint
+http://groups.google.com/group/leo-editor/browse_thread/thread/9b1dbebd56d50e14/d5a690127ddad38e
+ 
+"Sprint" isn't really the correct term.  We wrote no code.  Instead,
+we discussed what seemed to each of us as the most important
+directions for Leo.
+
+After much pleasant discussion, we reached agreement, dreaded or not,
+on just about everything. I'll summarize the topics here, and
+elaborate about file format issues in a separate thread.
+
+1.  (Done) Make .leo files as standards-compliant as possible.
+
+This will demonstrate to newbies that we have some sophistication re
+web standards, and it will allow external tools to handle .leo files
+in the easiest possible way.
+
+I've delegated the design of this project to Kent.  I'll be in charge
+of implementation.
+
+2. Simplify and revise Leo's file format.
+
+Details in a separate thread: some items deserve just a bit more
+discussion.  In particular, we want the about-to-be-renamed <t>
+elements to contain headline text so that <t> elements represent key/
+value pairs directly.  The question is, should the about-to-be-renamed
+<v> elements contain headline text (readable, but "denormalized")?
+
+3. Support reading and writing Leo outlines in JSON format.
+
+This will allow closer cooperation with databases and other tools.
+I'll do this.
+
+4. Complete the transition to Terry's free_layout plugin.
+
+A. Place separate body editors in free_layout areas.  This should
+*easy* to do!  Almost nothing changes in the code, but the visual
+effect should be much better.
+
+B. Allow any pane to be "tabified" (placed in a tab in the Log pane)
+and "untabified."  There are a few details to be handled, but nothing
+major.
+
+Terry and I will collaborate on this.
+
+5. Add global search to the quicksearch plugin and to Leo's find
+command.
+
+6. (Abandoned) Add node-specific undo asap.
+
+The present undo is almost useless after a few levels.  Node-specific
+undo would be much more useful. This has been on the list forever.  It
+should be done yesterday.
+
+7.  Rejected direct support for .ini files instead of Leo's @settings
+nodes.
+
+After some discussion we decided that the present .ini importer should
+suffice.  In other words, it seems like a bad idea to support .ini
+settings *instead* of, or in *addition* to, .ini files.  However,
+scripts or commands to import/export Leo settings to one or more .ini
+files would be fine.
+
+8.  (done) Make uA's first class citizens.
+
+There should be commands to get and set uA's.  This is easy to do:
+it's just an oversight.
+
+Summary
+=======
+
+Looking back on the discussions, I am struck once again by how minor
+the suggestions are.  Most of these items can be done in a day or two,
+or a week or two at most.  The conclusion is that Leo has reached a
+mature state.
+
+Kent, Terry, did I omit anything?  Misstate anything? 
 #@+node:ekr.20031218072017.434: ** Unused code
 @ignore
 @language python
