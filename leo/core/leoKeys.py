@@ -3202,17 +3202,9 @@ class keyHandlerClass:
 
         # Create a minimal event for commands that require them.
         event = g.app.gui.create_key_event(c,None,stroke,w)
-        
         c.check_event(event)
 
         if stroke:
-            # 2011/06/13: warn if the commandName does not match the stroke.
-            if commandName:
-                d = g.app.unitTestMenusDict
-                aSet = d.get(commandName,[])
-                if stroke not in aSet:
-                    g.trace('can not happen: unexpected command name: %s for stroke: %s' % (
-                        repr(commandName),repr(stroke)))
             return k.masterKeyHandler(event)
         else:
             return k.masterCommand(event,func,stroke,commandName)

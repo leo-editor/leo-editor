@@ -5527,17 +5527,9 @@ def masterMenuHandler (self,stroke,func,commandName):
 
     # Create a minimal event for commands that require them.
     event = g.app.gui.create_key_event(c,None,stroke,w)
-    
     c.check_event(event)
 
     if stroke:
-        # 2011/06/13: warn if the commandName does not match the stroke.
-        if commandName:
-            d = g.app.unitTestMenusDict
-            aSet = d.get(commandName,[])
-            if stroke not in aSet:
-                g.trace('can not happen: unexpected command name: %s for stroke: %s' % (
-                    repr(commandName),repr(stroke)))
         return k.masterKeyHandler(event)
     else:
         return k.masterCommand(event,func,stroke,commandName)
@@ -5704,17 +5696,9 @@ def masterMenuHandler (self,stroke,func,commandName):
 
     # Create a minimal event for commands that require them.
     event = g.app.gui.create_key_event(c,None,stroke,w)
-    
     c.check_event(event)
 
     if stroke:
-        # 2011/06/13: warn if the commandName does not match the stroke.
-        if commandName:
-            d = g.app.unitTestMenusDict
-            aSet = d.get(commandName,[])
-            if stroke not in aSet:
-                g.trace('can not happen: unexpected command name: %s for stroke: %s' % (
-                    repr(commandName),repr(stroke)))
         return k.masterKeyHandler(event)
     else:
         return k.masterCommand(event,func,stroke,commandName)
@@ -8367,149 +8351,6 @@ for z in ('Alt','Ctrl','Command'):
         break # Found.
 else:
     accelerator = ''
-#@+node:ekr.20031218072017.1723: *5* createMenuEntries (leoMenu)
-def createMenuEntries (self,menu,table,dynamicMenu=False):
-
-    '''Create a menu entry from the table.
-    New in 4.4: this method shows the shortcut in the menu,
-    but this method **never** binds any shortcuts.'''
-
-    c = self.c ; f = c.frame ; k = c.k
-    if g.app.unitTesting: return
-
-    trace = False
-    for data in table:
-        << get label & command or continue >>
-        << compute commandName & accel from label & command >>
-        # Bug fix: 2009/09/30: use canonical stroke.
-        accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
-        stroke = k.shortcutFromSetting(accel,addKey=True) or ''
-        if accelerator:
-            accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
-
-        if trace: # and commandName == 'add-comments':
-            g.trace(bunch.val,repr(stroke),repr(accelerator),commandName)
-            
-        # Add an entry for unit testing and masterMenuHandler.
-        
-        if stroke:
-            d = g.app.unitTestMenusDict
-            aSet = d.get(commandName,set())
-            aSet.add(stroke)
-            d[commandName] = aSet
-    
-        def masterMenuCallback (
-            c=c,k=k,stroke=stroke,
-            command=command,commandName=commandName,event=None
-        ):
-            # if trace: g.trace('stroke',stroke)
-            return k.masterMenuHandler(stroke,command,commandName)
-
-        realLabel = self.getRealMenuName(label)
-        amp_index = realLabel.find("&")
-        realLabel = realLabel.replace("&","")
-        if sys.platform == 'darwin':
-            << clear accelerator if it is a plain key >>
-
-        # c.add_command ensures that c.outerUpdate is called.
-        if menu:
-            c.add_command(menu,label=realLabel,
-                accelerator=accelerator,
-                command=masterMenuCallback,
-                underline=amp_index)
-#@+node:ekr.20051021091958: *6* << get label & command or continue >>
-if g.isString(data):
-    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
-    ok = True
-    s = data
-    removeHyphens = s and s[0]=='*'
-    if removeHyphens: s = s[1:]
-    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
-    command = s.replace('&','').lower()
-    if label == '-':
-        self.add_separator(menu)
-        continue # That's all.
-else:
-    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
-    if ok:
-        if len(data) == 2:
-            # New in 4.4b2: command can be a minibuffer-command name (a string)
-            label,command = data
-        else:
-            # New in 4.4: we ignore shortcuts bound in menu tables.
-            label,junk,command = data
-
-        if label in (None,'-'):
-            self.add_separator(menu)
-            continue # That's all.
-    else:
-        g.trace('bad data in menu table: %s' % repr(data))
-        continue # Ignore bad data
-#@+node:ekr.20031218072017.1725: *6* << compute commandName & accel from label & command >>
-# New in 4.4b2: command can be a minibuffer-command name (a string)
-minibufferCommand = type(command) == type('')
-accel = None
-if minibufferCommand:
-    commandName = command 
-    command = c.commandsDict.get(commandName)
-    if command:
-        rawKey,bunchList = c.config.getShortcut(commandName)
-        # Pick the first entry that is not a mode.
-        for bunch in bunchList:
-            if not bunch.pane.endswith('-mode'):
-                accel = bunch and bunch.val
-                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
-    else:
-        if not g.app.unitTesting and not dynamicMenu:
-            # Don't warn during unit testing.
-            # This may come from a plugin that normally isn't enabled.
-            if trace: g.trace('No inverse for %s' % commandName)
-        continue # There is no way to make this menu entry.
-else:
-    # First, get the old-style name.
-    commandName = self.computeOldStyleShortcutKey(label)
-    rawKey,bunchList = c.config.getShortcut(commandName)
-    for bunch in bunchList:
-        if not bunch.pane.endswith('-mode'):
-            if trace: g.trace('2','%20s' % (bunch.val),commandName)
-            accel = bunch and bunch.val ; break
-    # Second, get new-style name.
-    if not accel:
-        << compute emacs_name >>
-            # Contains the not-so-horrible kludge.
-        if emacs_name:
-            commandName = emacs_name
-            rawKey,bunchList = c.config.getShortcut(emacs_name)
-            # Pick the first entry that is not a mode.
-            for bunch in bunchList:
-                if not bunch.pane.endswith('-mode'):
-                    accel = bunch.val
-                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
-                    break
-        elif not dynamicMenu:
-            g.trace('No inverse for %s' % commandName)
-#@+node:ekr.20051021100806.1: *7* << compute emacs_name >>
-@ One not-so-horrible kludge remains.
-
-The cut/copy/paste commands in the menu tables are not the same as the methods
-actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
-of extra translation to discover whether the user has overridden their
-bindings.
-@c
-
-if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
-    emacs_name = '%s-text' % commandName
-else:
-    try: # User errors in the table can cause this.
-        emacs_name = k.inverseCommandsDict.get(command.__name__)
-    except Exception:
-        emacs_name = None
-#@+node:ekr.20060216110502: *6* << clear accelerator if it is a plain key >>
-for z in ('Alt','Ctrl','Command'):
-    if accelerator.find(z) != -1:
-        break # Found.
-else:
-    accelerator = ''
 #@+node:ekr.20061031131434.155: *5* masterMenuHandler
 def masterMenuHandler (self,stroke,func,commandName):
 
@@ -8520,17 +8361,9 @@ def masterMenuHandler (self,stroke,func,commandName):
 
     # Create a minimal event for commands that require them.
     event = g.app.gui.create_key_event(c,None,stroke,w)
-    
     c.check_event(event)
 
     if stroke:
-        # 2011/06/13: warn if the commandName does not match the stroke.
-        if commandName:
-            d = g.app.unitTestMenusDict
-            aSet = d.get(commandName,[])
-            if stroke not in aSet:
-                g.trace('can not happen: unexpected command name: %s for stroke: %s' % (
-                    repr(commandName),repr(stroke)))
         return k.masterKeyHandler(event)
     else:
         return k.masterCommand(event,func,stroke,commandName)
