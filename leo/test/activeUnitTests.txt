@@ -3781,7 +3781,7 @@ finally:
 # node b
 #@+node:ekr.20110608181936.3370: *5* node c
 # node c
-#@+node:ekr.20110613134508.3322: *5* node a
+#@+node:ekr.20110613135059.3339: *5* node a
 # node a
 #@+node:ekr.20080503132221.1: *4* @test chapter-create-from-node
 cc = c.chapterController
@@ -3821,7 +3821,7 @@ finally:
             root.firstChild().doDelete(newNode=None)
     cc.selectChapterByName('main',collapse=True)
     c.redraw_now()
-#@+node:ekr.20110613134508.3323: *5* child
+#@+node:ekr.20110613135059.3340: *5* child
 # child
 #@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5
@@ -17518,6 +17518,8 @@ g.es('all unit tests done',color='blue')
 fileName = c.mFileName
 c.mFileName = ""
 
+assert fileName.endswith('unitTest.leo')
+
 # Create a new frame before deleting this frame.
 ok, frame = g.openWithFileName(fileName,c)
 if ok:
@@ -17526,5 +17528,8 @@ if ok:
     g.app.destroyWindow(c.frame)
 else:
     c.mFileName = fileName
+
+# Now save the file.  This should save activeUnitTests.txt.
+# c.fileCommands.save(c.mFileName)
 #@-all
 #@-leo
