@@ -8592,8 +8592,12 @@ class searchCommandsClass (baseEditCommandsClass):
         elif stroke in ('\b','BackSpace'):
             k.updateLabel(event)
             self.iSearchBackspace()
-        elif stroke.startswith('Ctrl+') or stroke.startswith('Alt+'):
-            # End the search and execute the command.
+        elif (
+            stroke.startswith('Ctrl+') or
+            stroke.startswith('Alt+') or
+            k.isFKey(stroke) # 2011/06/13.
+        ):
+            # End the search.
             self.endSearch()
             k.masterKeyHandler(event)
         else:

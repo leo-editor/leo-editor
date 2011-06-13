@@ -4,12 +4,6 @@
 
 .. @+all
 .. @+node:ekr.20101129095441.5963: ** Improve screenshots page
-.. @+node:ekr.20110613090104.16405: ** b4
-.. @+node:ekr.20110613132317.16392: *3* Test macros, executeNTimes
-.. @+node:ekr.20110613090104.16406: *3* Fix failing unit tests on Linux
-.. @+node:ekr.20110613133048.14782: ** rc1
-.. @+node:ekr.20110613132317.16393: *3* F-keys still being entered into search patterns.
-With Alt-s
 .. @+node:ekr.20110609161752.16461: ** After 4.9 b4 is released
 - post to pyxides re "your mission"
 

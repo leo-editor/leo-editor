@@ -8427,6 +8427,121 @@ def add_command (self,**keys):
 
         QtCore.QObject.connect(action,
             QtCore.SIGNAL("triggered()"),qt_add_command_callback)
+#@+node:ekr.20110613132317.16393: *3* F-keys end incremental searches
+With Alt-s
+#@+node:ekr.20061031131434.128: *4* getArg
+def getArg (self,event,
+    returnKind=None,returnState=None,handler=None,
+    prefix=None,tabList=[],completion=True,oneCharacter=False,
+    stroke=None, # New in 4.4.1.
+    useMinibuffer=True # New in 4.4.1
+):
+
+    '''Accumulate an argument until the user hits return (or control-g).
+    Enter the given return state when done.
+    The prefix does not form the arg.  The prefix defaults to the k.getLabel().
+    '''
+
+    k = self ; c = k.c ; gui  = g.app.gui
+    trace = (False or (c.config.getBool('trace_modes')) and not g.app.unitTesting)
+    state = k.getState('getArg')
+    
+    c.check_event(event)
+    
+    # 2011/06/06: remember these events also.
+    if c.macroCommands.recordingMacro and state > 0:
+        c.macroCommands.startRecordingMacro(event)
+
+    char = event and event.char or ''
+    if state > 0:
+        k.setLossage(char,stroke)
+    
+    if trace: g.trace(
+        'state',state,'char',repr(char),'stroke',repr(stroke),
+        'isPlain',k.isPlainKey(stroke),
+        'escapes',k.getArgEscapes,
+        'completion',state==0 and completion or state!=0 and k.arg_completion)
+    if state == 0:
+        k.arg = ''
+        << init altX vars >>
+        # Set the states.
+        bodyCtrl = c.frame.body.bodyCtrl
+        c.widgetWantsFocus(bodyCtrl)
+        k.afterGetArgState=returnKind,returnState,handler
+        k.setState('getArg',1,k.getArg)
+        k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
+        if useMinibuffer: c.minibufferWantsFocus()
+    elif char == 'Escape':
+        k.keyboardQuit()
+    elif char in ('\n','Return',) or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+        if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
+        if k.oneCharacterArg:
+            k.arg = char ##
+        else:
+            k.arg = k.getLabel(ignorePrompt=True)
+        kind,n,handler = k.afterGetArgState
+        if kind: k.setState(kind,n,handler)
+        c.frame.log.deleteTab('Completion')
+        trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
+        if handler: handler(event)
+    elif char in('\t','Tab'):
+        k.doTabCompletion(k.argTabList,k.arg_completion)
+    elif char in ('\b','BackSpace'):
+        k.doBackSpace(k.argTabList,k.arg_completion)
+        c.minibufferWantsFocus()
+    elif k.isFKey(stroke):
+        pass
+        # 2011/03/01: ignore F-keys. Ignoring all except plain keys would kill unicode searches.
+    else:
+        # Clear the list, any other character besides tab indicates that a new prefix is in effect.
+        k.mb_tabList = []
+        k.updateLabel(event)
+        k.mb_tabListPrefix = k.getLabel()
+    return # (for Tk) 'break'
+#@+node:ekr.20061031131434.129: *5* << init altX vars >>
+k.argSelectedText = c.frame.body.bodyCtrl.getSelectedText()
+    # 2010/09/01: remember the selected text for abbreviations.
+k.argTabList = tabList and tabList[:] or []
+k.arg_completion = completion
+# g.trace('completion',completion,'tabList',tabList)
+
+k.mb_prefix = prefix or k.getLabel()
+k.mb_prompt = prefix or ''
+k.mb_tabList = []
+
+# Clear the list: any non-tab indicates that a new prefix is in effect.
+k.mb_tabListPrefix = k.getLabel()
+k.oneCharacterArg = oneCharacter
+#@+node:ekr.20050920084036.264: *4* iSearchStateHandler
+# Called from the state manager when the state is 'isearch'
+
+def iSearchStateHandler (self,event):
+
+    trace = False and not g.unitTesting
+    c = self.c ; k = self.k
+    stroke = event and event.stroke or ''
+    if trace: g.trace('stroke',repr(stroke))
+
+    # No need to recognize ctrl-z.
+    if stroke in ('Escape','\n','Return'):
+        self.endSearch()
+    elif stroke in self.iSearchStrokes:
+        self.iSearch(again=True)
+    elif stroke in ('\b','BackSpace'):
+        k.updateLabel(event)
+        self.iSearchBackspace()
+    elif (
+        stroke.startswith('Ctrl+') or
+        stroke.startswith('Alt+') or
+        k.isFKey(stroke) # 2011/06/13.
+    ):
+        # End the search.
+        self.endSearch()
+        k.masterKeyHandler(event)
+    else:
+        if trace: g.trace('event',event)
+        k.updateLabel(event)
+        self.iSearch()
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
