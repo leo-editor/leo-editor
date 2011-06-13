@@ -4,14 +4,20 @@
 
 .. @+all
 .. @+node:ekr.20101129095441.5963: ** Improve screenshots page
+.. @+node:ekr.20110613090104.16405: ** b4
+.. @+node:ekr.20110613090104.16413: *3* * Deactivate window should do a ctrl-g
+.. @+node:ekr.20110613090104.16403: *3* * Make sure unit tests don't change files
+.. @+node:ekr.20110613090104.16409: *3* * Unit tests that all menu commands work
+.. @+node:ekr.20110613090104.16408: *3* Convert some to-do items to wishlist bugs
+.. @+node:ekr.20110612102349.16415: *3* Complete check-core-settings script in leoSettigns.leo
+# But don't change any settings :-)
+.. @+node:ekr.20110613090104.16406: *3* Fix failing unit tests on Linux
 .. @+node:ekr.20110609161752.16461: ** After 4.9 rc2 is released
 - post to pyxides re "your mission"
-
-- Make some to-do items into wishlist bugs.
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10
-.. @+node:ekr.20110612102349.16415: *3* Complete check-core-settings script in leoSettigns.leo
-.. @+node:ekr.20040329094003: *3* Apply patch command
-.. @+node:ekr.20110604043410.17848: *4* Script
+.. @+node:ekr.20110613090104.16407: *3* Maybe: 3
+.. @+node:ekr.20040329094003: *4* Apply patch command
+.. @+node:ekr.20110604043410.17848: *5* Script
 import leo.extensions.patch_11_01 as patch
 
 fn = 'xyzzy.patch'
@@ -20,7 +26,7 @@ if g.os_path_exists(fn):
     patch.fromfile(fn)
 else:
     g.es_print('not found:',fn)
-.. @+node:ekr.20110604043410.17824: *4* patch-11.01.py (study only)
+.. @+node:ekr.20110604043410.17824: *5* patch-11.01.py (study only)
 """ Patch utility to apply unified diffs
 
     Brute-force line-by-line non-recursive parsing 
@@ -47,7 +53,7 @@ __version__ = "11.01"
 
 if __name__ == "__main__":
   main()
-.. @+node:ekr.20110604043410.17843: *5* << imports >>
+.. @+node:ekr.20110604043410.17843: *6* << imports >>
 
 import copy
 import logging
@@ -58,7 +64,7 @@ import urllib2
 
 from os.path import exists, isfile, abspath
 from os import unlink
-.. @+node:ekr.20110604043410.17844: *5* << global data >>
+.. @+node:ekr.20110604043410.17844: *6* << global data >>
 # Logging is controlled by "python_patch" logger
 
 debugmode = False
@@ -77,8 +83,8 @@ logger.setLevel(logging.CRITICAL)
 DIFF = PLAIN = "plain"
 HG = MERCURIAL = "mercurial"
 SVN = SUBVERSION = "svn"
-.. @+node:ekr.20110604043410.17845: *5* top-level
-.. @+node:ekr.20110604043410.17826: *6* fromfile
+.. @+node:ekr.20110604043410.17845: *6* top-level
+.. @+node:ekr.20110604043410.17826: *7* fromfile
 def fromfile(filename):
   """ Parse patch file and return Patch() object
   """
@@ -87,23 +93,23 @@ def fromfile(filename):
   patch = Patch(fp)
   fp.close()
   return patch
-.. @+node:ekr.20110604043410.17827: *6* fromstring
+.. @+node:ekr.20110604043410.17827: *7* fromstring
 def fromstring(s):
   """ Parse text string and return Patch() object
   """
   return Patch( StringIO(s) )
-.. @+node:ekr.20110604043410.17828: *6* fromurl
+.. @+node:ekr.20110604043410.17828: *7* fromurl
 def fromurl(url):
   """ Read patch from URL
   """
   return Patch( urllib2.urlopen(url) )
-.. @+node:ekr.20110604043410.17829: *5* class Hunk
+.. @+node:ekr.20110604043410.17829: *6* class Hunk
 class Hunk(object):
 
   """ Parsed hunk data container (hunk starts with @@ -R +R @@) """
   
   @others
-.. @+node:ekr.20110604043410.17830: *6* __init__
+.. @+node:ekr.20110604043410.17830: *7* __init__
 def __init__(self):
 
   self.startsrc=None #: line count starts with 1
@@ -112,11 +118,11 @@ def __init__(self):
   self.linestgt=None
   self.invalid=False
   self.text=[]
-.. @+node:ekr.20110604043410.17831: *6* copy
+.. @+node:ekr.20110604043410.17831: *7* copy
 def copy(self):
   
   return copy.copy(self)
-.. @+node:ekr.20110604043410.17847: *6* apply
+.. @+node:ekr.20110604043410.17847: *7* apply
 #  def apply(self, estream):
 #    """ write hunk data into enumerable stream
 #        return strings one by one until hunk is
@@ -126,11 +132,11 @@ def copy(self):
 #        where lineno starts with 0
 #    """
 #    pass
-.. @+node:ekr.20110604043410.17832: *5* class Patch
+.. @+node:ekr.20110604043410.17832: *6* class Patch
 class Patch(object):
 
   @others
-.. @+node:ekr.20110604043410.17833: *6* __init__
+.. @+node:ekr.20110604043410.17833: *7* __init__
 def __init__(self, stream=None):
 
   # define Patch data members
@@ -151,11 +157,11 @@ def __init__(self, stream=None):
 
   if stream:
     self.parse(stream)
-.. @+node:ekr.20110604043410.17834: *6* copy
+.. @+node:ekr.20110604043410.17834: *7* copy
 def copy(self):
   
   return copy.copy(self)
-.. @+node:ekr.20110604043410.17835: *6* parse & helper class
+.. @+node:ekr.20110604043410.17835: *7* parse & helper class
 def parse(self, stream):
   """ parse unified diff """
   self.header = []
@@ -399,7 +405,7 @@ def parse(self, stream):
       debug("- %2d hunks for %s" % (len(self.hunks[nextfileno-1]), self.source[nextfileno-1]))
 
   debug("total files: %d  total hunks: %d" % (len(self.source), sum(len(hset) for hset in self.hunks)))
-.. @+node:ekr.20110604043410.17846: *7* class wrapumerate
+.. @+node:ekr.20110604043410.17846: *8* class wrapumerate
 class wrapumerate(enumerate):
   """Enumerate wrapper that uses boolean end of stream status instead of
   StopIteration exception, and properties to access line information.
@@ -437,7 +443,7 @@ class wrapumerate(enumerate):
   @property
   def lineno(self):
     return self._lineno
-.. @+node:ekr.20110604043410.17836: *6* apply
+.. @+node:ekr.20110604043410.17836: *7* apply
 def apply(self):
   """ apply parsed patch
       return True on success
@@ -550,7 +556,7 @@ def apply(self):
 
   # todo: check for premature eof
   return (errors == 0)
-.. @+node:ekr.20110604043410.17837: *6* can_patch
+.. @+node:ekr.20110604043410.17837: *7* can_patch
 def can_patch(self, filename):
   """ Check if specified filename can be patched. Returns None if file can
   not be found among source filenames. False if patch can not be applied
@@ -562,7 +568,7 @@ def can_patch(self, filename):
   if idx == None:
     return None
   return self._match_file_hunks(filename, self.hunks[idx])
-.. @+node:ekr.20110604043410.17838: *6* _match_file_hunks
+.. @+node:ekr.20110604043410.17838: *7* _match_file_hunks
 def _match_file_hunks(self, filepath, hunks):
   matched = True
   fp = open(abspath(filepath))
@@ -601,7 +607,7 @@ def _match_file_hunks(self, filepath, hunks):
 
   fp.close()
   return matched
-.. @+node:ekr.20110604043410.17839: *6* patch_stream
+.. @+node:ekr.20110604043410.17839: *7* patch_stream
 def patch_stream(self, instream, hunks):
   """ Generator that yields stream patched with hunks iterable
   
@@ -660,7 +666,7 @@ def patch_stream(self, instream, hunks):
    
   for line in instream:
     yield line
-.. @+node:ekr.20110604043410.17840: *6* write_hunks
+.. @+node:ekr.20110604043410.17840: *7* write_hunks
 def write_hunks(self, srcname, tgtname, hunks):
   src = open(srcname, "rb")
   tgt = open(tgtname, "wb")
@@ -672,7 +678,7 @@ def write_hunks(self, srcname, tgtname, hunks):
   tgt.close()
   src.close()
   return True
-.. @+node:ekr.20110604043410.17841: *6* _get_file_idx
+.. @+node:ekr.20110604043410.17841: *7* _get_file_idx
 def _get_file_idx(self, filename, source=None):
 
   """ Detect index of given filename within patch.
@@ -693,7 +699,7 @@ def _get_file_idx(self, filename, source=None):
         return i  
 
 
-.. @+node:ekr.20110604043410.17842: *5* main
+.. @+node:ekr.20110604043410.17842: *6* main
 def main():
   
   from optparse import OptionParser
@@ -741,9 +747,9 @@ def main():
 
   # todo: document and test line ends handling logic - patch.py detects proper line-endings
   #       for inserted hunks and issues a warning if patched file has incosistent line ends
-.. @+node:ekr.20110611043506.16494: *3* Ashland sprint items
-.. @+node:ekr.20110528034751.18273: *4* Global search in Nav plugin?
-.. @+node:ekr.20110528034751.18272: *4* Support for tabifying Leo's core panes
+.. @+node:ekr.20110611043506.16494: *4* Ashland sprint items
+.. @+node:ekr.20110528034751.18273: *5* Global search in Nav plugin?
+.. @+node:ekr.20110528034751.18272: *5* Support for tabifying Leo's core panes
 Collaborate with Terry.
 
 A. Place separate body editors in free_layout areas. This should *easy* to
@@ -754,11 +760,7 @@ B. Allow any pane to be "tabified" (placed in a tab in the Log pane) and
    "untabified." There are a few details to be handled, but nothing major.
    
 C. Labels for panes.
-.. @+node:ekr.20110610123547.6636: *3* Remove toggle-find-reverse-option, etc.
-@nocolor-node
-
-Remove the binding, and the checkbox.
-.. @+node:ekr.20110527084258.18378: *3* New file format
+.. @+node:ekr.20110527084258.18378: *4* New file format
 @nocolor-node
 
 ** remove window state, expansion status etc.
@@ -778,8 +780,8 @@ Remove the binding, and the checkbox.
 
 - Remove spaces from user names.
 
-.. @+node:ekr.20110609042343.16546: *4* Notes
-.. @+node:ekr.20110609042343.16548: *5* File format, v3 draft 5
+.. @+node:ekr.20110609042343.16546: *5* Notes
+.. @+node:ekr.20110609042343.16548: *6* File format, v3 draft 5
 @language rest
 @pagewidth 65
 
@@ -938,7 +940,7 @@ the <node> element for @file nodes::
         </attr>
         ...
     </at-file-attributes>
-.. @+node:ekr.20110421132230.6107: *5* File format, v3 draft 4
+.. @+node:ekr.20110421132230.6107: *6* File format, v3 draft 4
 @language rest
 @pagewidth 65
 
@@ -1094,7 +1096,7 @@ The <at-file-attributes> element may be contained in the
     
 In other words, we use the graphml <attr> element, extended with the
 gnx attribute, to represent all the uA's in the descendants of @file nodes.
-.. @+node:ekr.20110419083918.6104: *5* File format, v3 graphml
+.. @+node:ekr.20110419083918.6104: *6* File format, v3 graphml
 @language rest
 @pagewidth 65
 
@@ -1265,7 +1267,7 @@ it will enclosed in a data element::
     
 In other words, we use the graphml <attr> element, extended with the
 gnx attribute, to represent all the uA's in the descendants of @file nodes.
-.. @+node:ekr.20090218115025.3: *5* Why are attributes pickled by default?
+.. @+node:ekr.20090218115025.3: *6* Why are attributes pickled by default?
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/326a221f4c698f7a
@@ -1316,8 +1318,8 @@ I'm sure pickling capability is great, but I'm not convinced
 it should be the _default._
 
 No big deal.
-.. @+node:ekr.20110415173840.6098: *4* Code related to uA's
-.. @+node:ekr.20040701065235.2: *5* putDescendentAttributes
+.. @+node:ekr.20110415173840.6098: *5* Code related to uA's
+.. @+node:ekr.20040701065235.2: *6* putDescendentAttributes
 def putDescendentAttributes (self,p):
 
     nodeIndices = g.app.nodeIndices
@@ -1342,7 +1344,7 @@ def putDescendentAttributes (self,p):
             result.append('\n%s="%s"' % (tag,s))
 
     return ''.join(result)
-.. @+node:ekr.20080805071954.2: *5* putDescendentVnodeUas
+.. @+node:ekr.20080805071954.2: *6* putDescendentVnodeUas
 def putDescendentVnodeUas (self,p):
 
     '''Return the a uA field for descendent vnode attributes,
@@ -1376,7 +1378,7 @@ def putDescendentVnodeUas (self,p):
     # Pickle and hexlify d
     return d and self.pickle(
         torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
-.. @+node:EKR.20040526202501: *5* putUnknownAttributes
+.. @+node:EKR.20040526202501: *6* putUnknownAttributes
 def putUnknownAttributes (self,torv):
 
     """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
@@ -1389,7 +1391,7 @@ def putUnknownAttributes (self,torv):
         val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
         # g.trace(torv,attrDict)
         return val
-.. @+node:ekr.20090130114732.6: *5* v.u Property
+.. @+node:ekr.20090130114732.6: *6* v.u Property
 def __get_u(self):
     v = self
     if not hasattr(v,'unknownAttributes'):

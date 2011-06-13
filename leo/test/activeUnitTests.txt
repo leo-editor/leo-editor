@@ -3783,7 +3783,7 @@ finally:
 # node b
 #@+node:ekr.20110608181936.3370: *5* node c
 # node c
-#@+node:ekr.20110613081943.3338: *5* node a
+#@+node:ekr.20110613101740.3338: *5* node a
 # node a
 #@+node:ekr.20080503132221.1: *4* @test chapter-create-from-node
 cc = c.chapterController
@@ -3823,7 +3823,7 @@ finally:
             root.firstChild().doDelete(newNode=None)
     cc.selectChapterByName('main',collapse=True)
     c.redraw_now()
-#@+node:ekr.20110613081943.3339: *5* child
+#@+node:ekr.20110613101740.3339: *5* child
 # child
 #@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5
@@ -8706,7 +8706,7 @@ table = (
     ('mark_changes','toggle-find-mark-changes-option'),
     ('mark_finds','toggle-find-mark-finds-option'),
     ('pattern_match','toggle-find-regex-option'),
-    ('reverse','toggle-find-reverse-option'),
+    # ('reverse','toggle-find-reverse-option'),
     ('whole_word','toggle-find-word-option'),
     ('wrap','toggle-find-wrap-around-option'),
 )
@@ -9065,7 +9065,7 @@ for command in table:
     c.k.simulateCommand(command)
 #@+node:ekr.20060130151716.4: *4* @test show-find-options
 c.k.simulateCommand('show-find-options')
-#@+node:ekr.20060130151716.1: *4* @test togle find options commands
+#@+node:ekr.20060130151716.1: *4* @test toggle find options commands
 table = (
     # 'toggle-find-clone-find-all-option',
     'toggle-find-ignore-case-option',
@@ -9074,7 +9074,7 @@ table = (
     'toggle-find-mark-changes-option',
     'toggle-find-mark-finds-option',
     'toggle-find-regex-option',
-    'toggle-find-reverse-option',
+    # 'toggle-find-reverse-option',
     'toggle-find-word-option',
     'toggle-find-wrap-around-option',
 )

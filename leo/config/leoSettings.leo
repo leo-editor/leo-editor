@@ -932,7 +932,7 @@
 <v t="ekr.20070925144534.374"><vh>@item toggle-find-mark-&amp;changes-option</vh></v>
 <v t="ekr.20070925144534.375"><vh>@item toggle-find-mark-&amp;finds-option</vh></v>
 <v t="ekr.20070925144534.376"><vh>@item toggle-find-rege&amp;x-option</vh></v>
-<v t="ekr.20070925144534.377"><vh>@item toggle-find-&amp;reverse-option</vh></v>
+<v t="ekr.20070925144534.377"><vh>@@item toggle-find-&amp;reverse-option</vh></v>
 <v t="ekr.20070925144534.378"><vh>@item toggle-find-&amp;word-option</vh></v>
 <v t="ekr.20070925144534.379"><vh>@item toggle-find-wrap-&amp;around-option</vh></v>
 </v>
@@ -2660,7 +2660,7 @@ toggle-find-in-headline-option      = None
 toggle-find-mark-changes-option     = None
 toggle-find-mark-finds-option       = None
 toggle-find-regex-option            = None
-toggle-find-reverse-option          = None
+# toggle-find-reverse-option          = None
 toggle-find-word-option             = None
 toggle-find-wrap-around-option      = None
 toggle-split-direction          = None
@@ -2993,7 +2993,7 @@ toggle-find-in-headline-option      = None
 toggle-find-mark-changes-option     = None
 toggle-find-mark-finds-option       = None
 toggle-find-regex-option            = None
-toggle-find-reverse-option          = None
+# toggle-find-reverse-option          = None
 toggle-find-word-option             = None
 toggle-find-wrap-around-option      = None
 toggle-split-direction              = None
@@ -3532,7 +3532,7 @@ toggle-find-in-headline-option
 toggle-find-mark-changes-option
 toggle-find-mark-finds-option
 toggle-find-regex-option
-toggle-find-reverse-option
+# toggle-find-reverse-option
 toggle-find-word-option
 toggle-find-wrap-around-option
 word-search-backward
@@ -3633,7 +3633,7 @@ toggle-find-in-headline-option      = Alt-Ctrl-h
 toggle-find-mark-changes-option     = Alt-Ctrl-c
 toggle-find-mark-finds-option       = Alt-Ctrl-f
 toggle-find-regex-option            = Alt-Ctrl-x
-toggle-find-reverse-option          = Alt-Ctrl-r
+# toggle-find-reverse-option          = Alt-Ctrl-r
 toggle-find-word-option             = Alt-Ctrl-w
 toggle-find-wrap-around-option      = Alt-Ctrl-a</t>
 <t tx="ekr.20060603215208.20">full-command            = Alt-x

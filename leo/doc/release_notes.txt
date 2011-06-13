@@ -16369,7 +16369,7 @@ between the free_layout, NestedSplitter and viewrendered plugins.
 - Leo imports .cfg files just like .ini files.
 
 - Fixed crasher in graphcanvas plugin caused by a bug in CommandChainDispatcher.add.
-#@+node:ekr.20110611055444.16617: *4* New in 4.9 rc1
+#@+node:ekr.20110611055444.16617: *4* New in 4.9 b3
 #@+node:ekr.20110611055444.16618: *5* Bugs fixed
 - Fixed ancient, major bug: F3 now makes sure to save headline changes
 

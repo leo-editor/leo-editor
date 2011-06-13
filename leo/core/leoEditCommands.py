@@ -6069,7 +6069,6 @@ class helpCommandsClass (baseEditCommandsClass):
             toggle-find-mark-changes-option
             toggle-find-mark-finds-option
             toggle-find-regex-option
-            toggle-find-reverse-option
             toggle-find-word-option
             toggle-find-wrap-around-option
 
@@ -8269,7 +8268,7 @@ class searchCommandsClass (baseEditCommandsClass):
             'toggle-find-mark-changes-option':      self.toggleMarkChangesOption,
             'toggle-find-mark-finds-option':        self.toggleMarkFindsOption,
             'toggle-find-regex-option':             self.toggleRegexOption,
-            'toggle-find-reverse-option':           self.toggleReverseOption,
+            # 'toggle-find-reverse-option':           self.toggleReverseOption,
             'toggle-find-word-option':              self.toggleWholeWordOption,
             'toggle-find-wrap-around-option':       self.toggleWrapSearchOption,
 
@@ -8388,9 +8387,9 @@ class searchCommandsClass (baseEditCommandsClass):
     def toggleRegexOption (self, event):
         '''Toggle the 'Regexp' checkbox in the Find tab.'''
         return self.toggleOption('pattern_match')
-    def toggleReverseOption        (self, event):
-        '''Toggle the 'Reverse' checkbox in the Find tab.'''
-        return self.toggleOption('reverse')
+    # def toggleReverseOption        (self, event):
+        # '''Toggle the 'Reverse' checkbox in the Find tab.'''
+        # return self.toggleOption('reverse')
     def toggleSearchBodyOption (self, event):
         '''Set the 'Search Body' checkbox in the Find tab.'''
         return self.toggleOption('search_body')
@@ -8432,30 +8431,27 @@ class searchCommandsClass (baseEditCommandsClass):
         self.getHandler().replaceString(event)
 
     def reSearchBackward   (self,event):
-        '''Set the 'Regexp' checkbox to True and the 'Reverse' checkbox to True,
-        then do search-with-present-options.'''
+        '''Do a reverse regex search.'''
         self.getHandler().reSearchBackward(event)
 
     def reSearchForward    (self,event):
-        '''Set the 'Regexp' checkbox to True, then do search-with-present-options.'''
+        '''Do a forward regex search.'''
         self.getHandler().reSearchForward(event)
 
     def searchBackward     (self,event):
-        '''Set the 'Word Search' checkbox to False and the 'Reverse' checkbox to True,
-        then do search-with-present-options.'''
+        '''Do a backward plain search.'''
         self.getHandler().searchBackward(event)
 
     def searchForward      (self,event):
-        '''Set the 'Word Search' checkbox to False, then do search-with-present-options.'''
+        '''Do a forward plain search.'''
         self.getHandler().searchForward(event)
 
     def wordSearchBackward (self,event):
-        '''Set the 'Word Search' checkbox to True, then do search-with-present-options.'''
+        '''Do a backward word-only search.'''
         self.getHandler().wordSearchBackward(event)
 
     def wordSearchForward  (self,event):
-        '''Set the Word Search' checkbox to True and the 'Reverse' checkbox to True,
-        then do search-with-present-options.'''
+        '''Do a forward word-only search.'''
         self.getHandler().wordSearchForward(event)
 
     def searchWithPresentOptions (self,event):

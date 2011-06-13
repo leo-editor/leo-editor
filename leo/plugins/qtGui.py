@@ -2577,13 +2577,27 @@ class DynamicWindow(QtGui.QMainWindow):
             ('rb',  '&Suboutline Only', 3,1),
             ('box', 'Wrap &Around',     4,0),
             ('rb',  '&Node Only',       4,1),
-            ('box', '&Reverse',         5,0),
+            # ('box', '&Reverse',       5,0),
             ('box', 'Search &Headline', 5,1),
-            ('box', 'Rege&xp',          6,0),
+            ('box', 'Rege&xp',          5,0), # was 6,0
             ('box', 'Search &Body',     6,1),
-            ('box', 'Mark &Finds',      7,0),
-            ('box', 'Mark &Changes',    7,1))
+            ('box', 'Mark &Finds',      6,0), # was 7,0
+            ('box', 'Mark &Changes',    7,0)) # was 7,1
             # a,b,c,e,f,h,i,n,rs,w
+        # table = (
+            # ('box', 'Whole &Word',      2,0),
+            # ('rb',  '&Entire Outline',  2,1),
+            # ('box', '&Ignore Case',     3,0),
+            # ('rb',  '&Suboutline Only', 3,1),
+            # ('box', 'Wrap &Around',     4,0),
+            # ('rb',  '&Node Only',       4,1),
+            # ('box', '&Reverse',       5,0),
+            # ('box', 'Search &Headline', 5,1),
+            # ('box', 'Rege&xp',          6,0),
+            # ('box', 'Search &Body',     6,1),
+            # ('box', 'Mark &Finds',      7,0),
+            # ('box', 'Mark &Changes',    7,1))
+            # # a,b,c,e,f,h,i,n,rs,w
 
         for kind,label,row,col in table:
             name = mungeName(label)
@@ -3864,8 +3878,6 @@ class leoQtFindTab (leoFind.findTab):
 
         # Bind boxes to Window objects.
         self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
-        # findWrapper   = findTextWrapper(w.findPattern,'find-widget',c)
-        # changeWrapper = findTextWrapper(w.findChange,'change-widget',c)
         findWidget   = leoQLineEditWidget(w.findPattern,'find-widget',c)
         changeWidget = leoQLineEditWidget(w.findChange,'change-widget',c)
         data = (
@@ -3874,7 +3886,7 @@ class leoQtFindTab (leoFind.findTab):
             ('whole_word',      w.checkBoxWholeWord),
             ('ignore_case',     w.checkBoxIgnoreCase),
             ('wrap',            w.checkBoxWrapAround),
-            ('reverse',         w.checkBoxReverse),
+            ## ('reverse',         w.checkBoxReverse),
             ('pattern_match',   w.checkBoxRegexp),
             ('mark_finds',      w.checkBoxMarkFinds),
             ('entire_outline',  w.checkBoxEntireOutline),
@@ -3937,7 +3949,9 @@ class leoQtFindTab (leoFind.findTab):
 
         aList = (
             'ignore_case','mark_changes','mark_finds',
-            'pattern_match','reverse','search_body','search_headline',
+            'pattern_match',
+            # 'reverse',
+            'search_body','search_headline',
             'whole_word','wrap',
             'node_only','suboutline_only','entire_outline',
         )
@@ -4088,7 +4102,7 @@ class leoQtFindTab (leoFind.findTab):
         else:
             # g.trace('bad ivar name: %s' % ivar)
             return None
-    #@+node:ekr.20110605121601.18243: *5* setOption
+    #@+node:ekr.20110605121601.18243: *5* setOption (findTab)
     def setOption (self,ivar,val):
 
         trace = False and not g.unitTesting
