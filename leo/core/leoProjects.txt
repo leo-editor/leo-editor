@@ -1,7 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120072650.6089: * @file leoProjects.txt
-#@@language python # Override the default .txt coloring.
-
 #@+all
 #@+node:ekr.20101127152442.5916: ** Testing
 #@+node:ekr.20110601190157.19176: *3* Pylint
@@ -5844,4 +5842,5 @@ def numberCommand9 (self,event):
     '''Execute command number 9.'''
     return self.numberCommand (event,None,9)
 #@-all
+#@@language python # Override the default .txt coloring.
 #@-leo

@@ -1669,13 +1669,17 @@ class atFile:
         at = self
         at.popSentinelStack(at.endAll)
 
-        if at.readVersion5 and at.thinNodeStack:
+        if at.readVersion5:
 
             # Restore the node containing the @all directive.
             # *Never* terminate new-sentinel nodes until the post-pass.
+            at.raw = False # End raw mode: 2011/06/13.
             oldLevel = len(at.thinNodeStack)
             newLevel = at.endSentinelLevelStack.pop()
+            at.v = at.endSentinelNodeStack.pop() # Bug fix: 2011/06/13.
             at.changeLevel(oldLevel,newLevel)
+
+            # g.trace('oldLevel',oldLevel,'newLevel',newLevel,'at.v',at.v)
     #@+node:ekr.20041005105605.92: *6* at.readEndAt & readEndDoc
     def readEndAt (self,unused_s,unused_i):
 
