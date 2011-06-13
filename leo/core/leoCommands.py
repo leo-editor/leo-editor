@@ -6247,6 +6247,7 @@ class Commands (object):
         if command:
 
             def add_commandCallback(c=c,command=command):
+                # g.trace(command)
                 val = command()
                 # Careful: func may destroy c.
                 if c.exists: c.outerUpdate()
@@ -6851,19 +6852,23 @@ class Commands (object):
     #@+node:ekr.20031218072017.2974: *4* canPasteOutline
     def canPasteOutline (self,s=None):
 
+        trace = False and not g.unitTesting
         c = self
-        if s == None:
-            s = g.app.gui.getTextFromClipboard()
-        if not s:
-            return False
 
-        # g.trace(s)
-        if g.match(s,0,g.app.prolog_prefix_string):
-            return True
-        elif len(s) > 0:
-            return c.importCommands.stringIsValidMoreFile(s)
-        else:
-            return False
+        if not s:
+            s = g.app.gui.getTextFromClipboard()
+            
+        if s:
+            if g.match(s,0,g.app.prolog_prefix_string):
+                if trace: g.trace('matches xml prolog')
+                return True
+            else:
+                val = c.importCommands.stringIsValidMoreFile(s)
+                if trace: g.trace('More file?',val)
+                return val
+
+        if trace: g.trace('no clipboard text')
+        return False
     #@+node:ekr.20031218072017.2975: *4* canPromote
     def canPromote (self):
 

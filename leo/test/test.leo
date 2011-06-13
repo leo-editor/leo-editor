@@ -203,7 +203,6 @@
 </v>
 </v>
 <v t="ekr.20071025193940"></v>
-<v t="ekr.20110321213552.2500"></v>
 <v t="ekr.20090309064612.3"><vh>New features</vh>
 <v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
@@ -661,7 +660,6 @@
 </v>
 <v t="ekr.20110416065515.2437"><vh>jinja2</vh></v>
 <v t="ekr.20110511140347.2445"><vh>QTimer</vh></v>
-</v>
 <v t="ekr.20110320203616.2489"><vh>viewrendered examples</vh>
 <v t="ekr.20110526180653.2468"><vh>viewrendered buttons</vh>
 <v t="ekr.20110321012354.2495"><vh>@button pause-play</vh></v>
@@ -681,6 +679,7 @@
 <v t="ekr.20101014040509.2313"><vh>@url weather</vh></v>
 <v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
 <v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -1106,7 +1105,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="2,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui

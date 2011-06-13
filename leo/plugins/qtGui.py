@@ -5712,6 +5712,10 @@ class leoQtMenu (leoMenu.leoMenu):
         n = keys.get('underline')
         menu = keys.get('menu') or self
         if not label: return
+        
+        trace = False and label.startswith('Paste') and not g.unitTesting
+        
+        if trace: g.trace(label,command,g.callers())
 
         if -1 < n < len(label):
             label = label[:n] + '&' + label[n:]
@@ -5723,12 +5727,12 @@ class leoQtMenu (leoMenu.leoMenu):
         action = menu.addAction(label)
 
         if command:
-            def add_command_callback(label=label,command=command):
+            def qt_add_command_callback(label=label,command=command):
                 # g.trace(command)
                 return command()
 
             QtCore.QObject.connect(action,
-                QtCore.SIGNAL("triggered()"),add_command_callback)
+                QtCore.SIGNAL("triggered()"),qt_add_command_callback)
     #@+node:ekr.20110605121601.18346: *6* add_separator
     def add_separator(self,menu):
 
@@ -5858,6 +5862,10 @@ class leoQtMenu (leoMenu.leoMenu):
     def enableMenu (self,menu,name,val):
         
         '''Enable or disable the item in the menu with the given name.'''
+        
+        trace = False and name.startswith('Paste') and not g.unitTesting
+        
+        if trace: g.trace(val,name,menu)
 
         if menu and name:
             val = bool(val)
@@ -5868,7 +5876,7 @@ class leoQtMenu (leoMenu.leoMenu):
                     action.setEnabled(val)
                     break
             else:
-                if 0: g.trace('not found:',name)
+                if trace: g.trace('not found:',name)
     #@+node:ekr.20110605121601.18359: *6* getMenuLabel
     def getMenuLabel (self,menu,name):
 
@@ -5907,7 +5915,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         c = self.c
         menu = self.getMenu(menuName)
-        g.trace(menuName,menu)
+        # g.trace(menuName,menu)
         if menu:
             top = c.frame.top.leo_ui
             pos = menu.pos() # Doesn't do any good.

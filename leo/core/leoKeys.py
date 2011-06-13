@@ -2371,14 +2371,15 @@ class keyHandlerClass:
         k.setInputState(state)
         k.showStateAndMode()
     #@+node:ekr.20061031131434.125: *3* k.Externally visible helpers
-    #@+node:ekr.20061031131434.126: *4* manufactureKeyPressForCommandName (changed)
+    #@+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName (changed)
     def manufactureKeyPressForCommandName (self,w,commandName):
 
         '''Implement a command by passing a keypress to the gui.'''
 
         k = self ; c = k.c
 
-        stroke = k.getShortcutForCommandName(commandName)
+        setting = k.getShortcutForCommandName(commandName)
+        stroke = k.shortcutFromSetting(setting) # 2011/06/13
 
         # g.trace('stroke',repr(stroke),'commandName',commandName,'w',w,g.callers())
 
