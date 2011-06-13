@@ -17513,7 +17513,7 @@ if hasattr(tree,'redrawCount'):
 c.selectPosition(p)
 c.contractParent()
 c.selectPosition(p.parent())
-c.save() # Only good way to save the present expansion/selection state.
+### c.save() # Only good way to save the present expansion/selection state.
 g.app.unitTestDict['restoreSelectedNode']=False
 c.bodyWantsFocus()
 
