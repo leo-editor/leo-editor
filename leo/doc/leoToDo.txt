@@ -5,7 +5,6 @@
 .. @+all
 .. @+node:ekr.20101129095441.5963: ** Improve screenshots page
 .. @+node:ekr.20110613090104.16405: ** b4
-.. @+node:ekr.20110613090104.16413: *3* * Deactivate window should do a ctrl-g
 .. @+node:ekr.20110613090104.16403: *3* * Make sure unit tests don't change files
 .. @+node:ekr.20110613090104.16409: *3* * Unit tests that all menu commands work
 .. @+node:ekr.20110613090104.16408: *3* Convert some to-do items to wishlist bugs

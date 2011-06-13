@@ -4390,7 +4390,8 @@ def onDeactivateEvent (self,event,c,obj,tag):
     if c.exists and tag.startswith('tree'):
         self.active = False
         if trace: g.trace()
-        c.endEditing()
+        c.k.keyboardQuit() # 2011/06/13.
+        # c.endEditing()
         g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
 #@+node:ekr.20110509064011.14563: *5* c.idle_focus_helper
 idle_focus_count = 0
@@ -7689,6 +7690,198 @@ def createIvars (self):
         setattr(self,ivar,widget)
         self.widgetsDict[ivar] = widget
         # g.trace(ivar,widget)
+#@+node:ekr.20110613103140.16419: *3* Dismiss splash screen when asking for an ID
+#@+node:ekr.20110613103140.16424: *4* Splash Screen (qtGui)
+def dismiss_splash_screen (self):
+    
+    # g.trace(g.callers())
+    
+    gui = self
+    
+    if gui.splashScreen:
+        gui.splashScreen.hide()
+        gui.splashScreen.deleteLater()
+        gui.splashScreen = None
+#@+node:ekr.20110605121601.18483: *4* runMainLoop (qtGui)
+def runMainLoop(self):
+
+    '''Start the Qt main loop.'''
+    
+    g.app.gui.dismiss_splash_screen()
+    
+    if self.script:
+        log = g.app.log
+        if log:
+            g.pr('Start of batch script...\n')
+            log.c.executeScript(script=self.script)
+            g.pr('End of batch script')
+        else:
+            g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
+    else:
+        if g.app.useIpython:
+            self.embed_ipython()
+            sys.exit(0)
+
+        sys.exit(self.qtApp.exec_())
+#@+node:ekr.20031218072017.1978: *4* app.setLeoID
+def setLeoID (self,verbose=True):
+
+    tag = ".leoID.txt"
+    homeLeoDir = g.app.homeLeoDir # was homeDir.
+    globalConfigDir = g.app.globalConfigDir
+    loadDir = g.app.loadDir
+
+    verbose = not g.app.unitTesting
+    << return if we can set leoID from sys.leoID >>
+    << return if we can set leoID from "leoID.txt" >>
+    << return if we can set leoID from os.getenv('USER') >>
+    << put up a dialog requiring a valid id >>
+    << attempt to create leoID.txt >>
+#@+node:ekr.20031218072017.1979: *5* << return if we can set leoID from sys.leoID>>
+# This would be set by in Python's sitecustomize.py file.
+
+# Use hasattr & getattr to suppress pylint warning.
+# Use a "non-constant" attribute to suppress another warning!
+
+nonConstantAttr = "leoID"
+
+if hasattr(sys,nonConstantAttr):
+    g.app.leoID = getattr(sys,nonConstantAttr)
+    if verbose and not g.app.silentMode and not g.app.unitTesting:
+        g.es_print("leoID=",g.app.leoID,spaces=False,color='red')
+    # Careful: periods in the id field of a gnx will corrupt the .leo file!
+    g.app.leoID = g.app.leoID.replace('.','-')
+    return
+else:
+    g.app.leoID = None
+#@+node:ekr.20031218072017.1980: *5* << return if we can set leoID from "leoID.txt" >>
+for theDir in (homeLeoDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'r')
+            s = f.readline()
+            f.close()
+            if s and len(s) > 0:
+                g.app.leoID = s.strip()
+                # Careful: periods in the id field of a gnx
+                # will corrupt the .leo file!
+                g.app.leoID = g.app.leoID.replace('.','-')
+                if verbose and not g.app.silentMode and not g.app.unitTesting:
+                    g.es('leoID=',g.app.leoID,' (in ',theDir,')',
+                        spaces=False,color="red")
+                return
+            elif verbose and not g.app.unitTesting:
+                g.es('empty ',tag,' (in ',theDir,')',spaces=False,
+                    color = "red")
+        except IOError:
+            g.app.leoID = None
+        except Exception:
+            g.app.leoID = None
+            g.es_print('unexpected exception in app.setLeoID',color='red')
+            g.es_exception()
+#@+node:ekr.20060211140947.1: *5* << return if we can set leoID from os.getenv('USER') >>
+try:
+    theId = os.getenv('USER')
+    if theId:
+        if verbose and not g.app.unitTesting:
+            g.es("setting leoID from os.getenv('USER'):",
+                repr(theId),color='blue')
+        g.app.leoID = theId
+        # Careful: periods in the id field of a gnx
+        # will corrupt the .leo file!
+        g.app.leoID = g.app.leoID.replace('.','-')
+        return
+
+except Exception:
+    pass
+#@+node:ekr.20031218072017.1981: *5* << put up a dialog requiring a valid id >>
+# 2011/06/13: Don't put up a splash screen.
+# It would obscure the coming dialog.
+g.app.use_splash_screen = False
+
+# New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
+if g.app.gui is None:
+    # Create the Qt gui if it exists.
+    g.app.createDefaultGui(fileName='g.app.setLeoId',verbose=True)
+
+if g.app.gui is None: # Neither gui could be created: this should never happen.
+    print("Please enter LeoID (e.g. your username, 'johndoe'...)")
+    if g.isPython3: # 2010/02/04.
+        leoid = input('LeoID: ')
+    else:
+        leoid = raw_input('LeoID: ')
+else:
+    leoid = g.app.gui.runAskLeoIDDialog()
+
+# Bug fix: 2/6/05: put result in g.app.leoID.
+g.app.leoID = leoid
+
+# Careful: periods in the id field of a gnx will corrupt the .leo file!
+g.app.leoID = g.app.leoID.replace('.','-')
+
+# g.trace(g.app.leoID)
+g.es('leoID=',repr(g.app.leoID),spaces=False,color="blue")
+#@+node:ekr.20031218072017.1982: *5* << attempt to create leoID.txt >> (changed)
+for theDir in (homeLeoDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'w')
+            s = g.app.leoID
+            if not g.isPython3: # 2010/08/27
+                s = g.toEncodedString(s,encoding='utf-8',reportErrors=True)
+            f.write(s)
+            f.close()
+            if g.os_path_exists(fn):
+                g.es_print('',tag,'created in',theDir,color='red')
+                return
+        except IOError:
+            pass
+
+        g.es('can not create',tag,'in',theDir,color='red')
+#@+node:ekr.20110605121601.18479: *4* createSplashScreen (qtGui)
+def createSplashScreen (self):
+    
+    for name in (
+        'SplashScreen.jpg',
+        'SplashScreen.png',
+        'SplashScreen.ico',
+    ):
+        fn = g.os_path_finalize_join(g.app.loadDir,'..','Icons',name)
+            
+        if g.os_path_exists(fn):
+            qt = QtCore.Qt
+            pm = QtGui.QPixmap(fn)
+            splash = QtGui.QSplashScreen(pm,(qt.SplashScreen | qt.WindowStaysOnTopHint))
+            splash.show()
+            # g.trace('found',fn)
+            break
+        else:
+            # g.trace('not found',fn)
+            splash = None
+    
+    return splash
+#@+node:ekr.20110613090104.16413: *3* Leo now does a keyboard-quit when deativating a window
+#@+node:ekr.20110605121601.18481: *4* onDeactiveEvent (qtGui)
+def onDeactivateEvent (self,event,c,obj,tag):
+
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
+
+    trace = False and not g.unitTesting
+
+    # This is called several times for each window activation.
+    # Save the headline only once.
+
+    if c.exists and tag.startswith('tree'):
+        self.active = False
+        if trace: g.trace()
+        c.k.keyboardQuit() # 2011/06/13.
+        # c.endEditing()
+        g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
