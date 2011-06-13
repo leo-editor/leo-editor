@@ -67,6 +67,7 @@ class leoGui:
         self.mainLoop = None
         self.root = None
         self.script = None
+        self.splashScreen = None
         self.utils = None
         self.isNullGui = False
         self.bodyTextWidget = None
@@ -347,9 +348,21 @@ class leoGui:
 
         self.oops()
     #@+node:ekr.20070228154059: *3* May be defined in subclasses
+    #@+node:ekr.20110613103140.16423: *4* dismiss_spash_screen (leoGui)
+    def dismiss_splash_screen (self):
+        
+        pass # May be overridden in subclasses.
     #@+node:ekr.20070219084912: *4* finishCreate (may be overridden in subclasses)
     def finishCreate (self):
 
+        pass
+    #@+node:ekr.20101028131948.5861: *4* killPopupMenu & postPopupMenu
+    # These definitions keeps pylint happy.
+
+    def killPopupMenu(self):
+        pass
+
+    def postPopupMenu(self,*args,**keys):
         pass
     #@+node:ekr.20031218072017.3741: *4* oops
     def oops (self):
@@ -370,14 +383,6 @@ class leoGui:
             return w._name
         else:
             return repr(w)
-    #@+node:ekr.20101028131948.5861: *4* killPopupMenu & postPopupMenu
-    # These definitions keeps pylint happy.
-
-    def killPopupMenu(self):
-        pass
-
-    def postPopupMenu(self,*args,**keys):
-        pass
     #@-others
 #@+node:ekr.20031218072017.2223: ** class nullGui (leoGui)
 class nullGui(leoGui):

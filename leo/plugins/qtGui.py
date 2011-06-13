@@ -7534,6 +7534,8 @@ class leoQtGui(leoGui.leoGui):
 
         # Initialize the base class.
         leoGui.leoGui.__init__(self,'qt')
+        
+        # g.trace('(qtGui)',g.callers())
 
         self.qtApp = app = QtGui.QApplication(sys.argv)
         self.bodyTextWidget  = leoQtBaseTextWidget
@@ -7602,14 +7604,8 @@ class leoQtGui(leoGui.leoGui):
     def runMainLoop(self):
 
         '''Start the Qt main loop.'''
-
-        if g.app.use_splash_screen:
-            if hasattr(g.app.gui,'splashScreen'):
-                splash =  g.app.gui.splashScreen
-                if splash:
-                    splash.hide()
-                    splash.deleteLater()
-                    g.app.gui.splashScreen = None
+        
+        g.app.gui.dismiss_splash_screen()
         
         if self.script:
             log = g.app.log
@@ -8270,6 +8266,17 @@ class leoQtGui(leoGui.leoGui):
 
         return val
 
+    #@+node:ekr.20110613103140.16424: *4* Splash Screen (qtGui)
+    def dismiss_splash_screen (self):
+        
+        # g.trace(g.callers())
+        
+        gui = self
+        
+        if gui.splashScreen:
+            gui.splashScreen.hide()
+            gui.splashScreen.deleteLater()
+            gui.splashScreen = None
     #@+node:ekr.20110605121601.18523: *4* Style Sheets
     #@+node:ekr.20110605121601.18524: *5* setStyleSetting (qtGui)
     def setStyleSetting(self,w,widgetKind,selector,val):

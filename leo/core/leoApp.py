@@ -703,6 +703,10 @@ class LeoApp:
         #@-<< return if we can set leoID from os.getenv('USER') >>
         #@+<< put up a dialog requiring a valid id >>
         #@+node:ekr.20031218072017.1981: *3* << put up a dialog requiring a valid id >>
+        # 2011/06/13: Don't put up a splash screen.
+        # It would obscure the coming dialog.
+        g.app.use_splash_screen = False
+
         # New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
         if g.app.gui is None:
             # Create the Qt gui if it exists.
