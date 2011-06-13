@@ -4,18 +4,12 @@
 
 .. @+all
 .. @+node:ekr.20101129095441.5963: ** Improve screenshots page
-.. @+node:ekr.20110609161752.16461: ** After 4.9 is released
+.. @+node:ekr.20110609161752.16461: ** After 4.9 rc2 is released
 - post to pyxides re "your mission"
 
 - Make some to-do items into wishlist bugs.
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10
 .. @+node:ekr.20110612102349.16415: *3* Complete check-core-settings script in leoSettigns.leo
-.. @+node:ekr.20110611113007.6600: *3* Bug: Wrap-around search should restart when find pattern changes
-@nocolor-node
-
-It doesn't, but redoing the search (a second F3) does eventually find the pattern.
-.. @+node:ekr.20110611092035.16462: *3* Bug: @language not recognized after @all
-It must come before @all.
 .. @+node:ekr.20040329094003: *3* Apply patch command
 .. @+node:ekr.20110604043410.17848: *4* Script
 import leo.extensions.patch_11_01 as patch

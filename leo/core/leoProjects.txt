@@ -1383,7 +1383,7 @@ ic.run(
     svg_fn=svg_fn, # Optional: Name of working svg file.
     template_fn=template_fn, # Optional: Name of template svg file.
 )
-#@+node:ekr.20110606124445.16908: ** 4.9 b3
+#@+node:ekr.20110606124445.16908: ** 4.9 rc1
 #@+node:ekr.20110609042343.16543: *3* Bugs
 #@+node:ekr.20110604182206.16760: *4* Fixed old bug: set-find-x commands no longer abort find commands
 @nocolor-node
@@ -4938,5 +4938,910 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
+#@+node:ekr.20110613074837.16455: ** 4.9 rc2
+#@+node:ekr.20110613055012.16392: *3* Fixed major recent problem with commands dispatched from menus
+@nocolor-node
+
+A botch in leoGui.create_key_event caused the Shift modifier to be deleted from
+all commands executed by selecting an item in menus!
+#@+node:ekr.20110613055012.16401: *4* Changed
+#@+node:ekr.20110605121601.18847: *5* create_key_event (leoGui)
+def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None):
+    
+    # 2011/06/13: Do not call shortcutFromSetting here!
+    # For example, this would wrongly convert Ctrl-C to Ctrl-c,
+    # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
+
+    return leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
+#@+node:ekr.20061031131434.126: *5* k.manufactureKeyPressForCommandName (changed)
+def manufactureKeyPressForCommandName (self,w,commandName):
+
+    '''Implement a command by passing a keypress to the gui.'''
+
+    k = self ; c = k.c
+
+    setting = k.getShortcutForCommandName(commandName)
+    stroke = k.shortcutFromSetting(setting) # 2011/06/13
+
+    # g.trace('stroke',repr(stroke),'commandName',commandName,'w',w,g.callers())
+
+    if stroke and w:
+        # g.trace(stroke)
+        g.app.gui.set_focus(c,w)
+        g.app.gui.event_generate(c,None,stroke,w)
+    else:
+        message = 'no shortcut for %s' % (commandName)
+        if g.app.unitTesting:
+            raise AttributeError(message)
+        else:
+            g.trace(message,color='red')
+#@+node:ekr.20110613055012.16402: *4* Reference
+#@+node:ekr.20110605121601.18340: *5* class leoQtMenu (leoMenu)
+class leoQtMenu (leoMenu.leoMenu):
+
+    @others
+#@+node:ekr.20110605121601.18341: *6* leoQtMenu.__init__
+def __init__ (self,frame):
+
+    assert frame
+    assert frame.c
+
+    # Init the base class.
+    leoMenu.leoMenu.__init__(self,frame)
+
+    # called from createMenuFromConfigList,createNewMenu,new_menu,qtMenuWrapper.ctor.
+    # g.pr('leoQtMenu.__init__',g.callers(4))
+
+    self.frame = frame
+    self.c = c = frame.c
+    self.leo_label = '<no leo_label>'
+
+    self.menuBar = c.frame.top.menuBar()
+    assert self.menuBar is not None
+
+    # Inject this dict into the commander.
+    if not hasattr(c,'menuAccels'):
+        setattr(c,'menuAccels',{})
+
+    if 0:
+        self.font = c.config.getFontFromParams(
+            'menu_text_font_family', 'menu_text_font_size',
+            'menu_text_font_slant',  'menu_text_font_weight',
+            c.config.defaultMenuFontSize)
+#@+node:ekr.20110605121601.18342: *6* Tkinter menu bindings
+# See the Tk docs for what these routines are to do
+#@+node:ekr.20110605121601.18343: *7* Methods with Tk spellings
+#@+node:ekr.20110605121601.18344: *8* add_cascade
+def add_cascade (self,parent,label,menu,underline):
+
+    """Wrapper for the Tkinter add_cascade menu method.
+
+    Adds a submenu to the parent menu, or the menubar."""
+    
+    # menu and parent are a qtMenuWrappers.
+    # g.trace(label,parent)
+
+    c = self.c ; leoFrame = c.frame
+    n = underline
+    if -1 < n < len(label):
+        label = label[:n] + '&' + label[n:]
+
+    menu.setTitle(label)
+    menu.leo_label = label
+
+    if parent:
+        parent.addMenu(menu) # QMenu.addMenu.
+    else:
+        self.menuBar.addMenu(menu)
+
+    return menu
+#@+node:ekr.20110605121601.18345: *8* add_command (qt)
+def add_command (self,**keys):
+
+    """Wrapper for the Tkinter add_command menu method."""
+
+    c = self.c
+    accel = keys.get('accelerator') or ''
+    command = keys.get('command')
+    label = keys.get('label')
+    n = keys.get('underline')
+    menu = keys.get('menu') or self
+    if not label: return
+    
+    trace = False and label.startswith('Paste') and not g.unitTesting
+    
+    if trace: g.trace(label,command,g.callers())
+
+    if -1 < n < len(label):
+        label = label[:n] + '&' + label[n:]
+    if accel:
+        label = '%s\t%s' % (label,accel)
+
+    if menu.leo_label == 'File': g.trace(label,g.callers(4))
+
+    action = menu.addAction(label)
+
+    if command:
+        def qt_add_command_callback(label=label,command=command):
+            # g.trace(command)
+            return command()
+
+        QtCore.QObject.connect(action,
+            QtCore.SIGNAL("triggered()"),qt_add_command_callback)
+#@+node:ekr.20110605121601.18346: *8* add_separator
+def add_separator(self,menu):
+
+    """Wrapper for the Tkinter add_separator menu method."""
+
+    if menu:
+        menu.addSeparator()
+#@+node:ekr.20110605121601.18347: *8* delete
+def delete (self,menu,realItemName='<no name>'):
+
+    """Wrapper for the Tkinter delete menu method."""
+
+    # g.trace(menu)
+
+    # if menu:
+        # return menu.delete(realItemName)
+#@+node:ekr.20110605121601.18348: *8* delete_range (leoQtMenu)
+def delete_range (self,menu,n1,n2):
+
+    """Wrapper for the Tkinter delete menu method."""
+
+    # Menu is a subclass of QMenu and leoQtMenu.
+
+    # g.trace(menu,n1,n2,g.callers(4))
+
+    for z in menu.actions()[n1:n2]:
+        menu.removeAction(z)
+#@+node:ekr.20110605121601.18349: *8* destroy
+def destroy (self,menu):
+
+    """Wrapper for the Tkinter destroy menu method."""
+
+    # if menu:
+        # return menu.destroy()
+#@+node:ekr.20110605121601.18350: *8* index (leoQtMenu)
+def index (self,label):
+
+    '''Return the index of the menu with the given label.'''
+    # g.trace(label)
+
+    return 0
+#@+node:ekr.20110605121601.18351: *8* insert
+def insert (self,menuName,position,label,command,underline=None):
+
+    # g.trace(menuName,position,label,command,underline)
+
+    menu = self.getMenu(menuName)
+    if menu and label:
+        n = underline or 0
+        if -1 > n > len(label):
+            label = label[:n] + '&' + label[n:]
+        action = menu.addAction(label)
+        if command:
+            def insert_callback(label=label,command=command):
+                command()
+            QtCore.QObject.connect(
+                action,QtCore.SIGNAL("triggered()"),insert_callback)
+#@+node:ekr.20110605121601.18352: *8* insert_cascade
+def insert_cascade (self,parent,index,label,menu,underline):
+
+    """Wrapper for the Tkinter insert_cascade menu method."""
+
+    # g.trace(label,menu)
+
+    menu.setTitle(label)
+    menu.leo_label = label
+
+    if parent:
+        parent.addMenu(menu)
+    else:
+        self.menuBar.addMenu(menu)
+
+    return menu
+#@+node:ekr.20110605121601.18353: *8* new_menu (qt)
+def new_menu(self,parent,tearoff=False,label=''): # label is for debugging.
+
+    """Wrapper for the Tkinter new_menu menu method."""
+
+    c = self.c ; leoFrame = self.frame
+
+    # g.trace(parent,label)
+
+    # Parent can be None, in which case it will be added to the menuBar.
+    menu = qtMenuWrapper(c,leoFrame,parent)
+
+    return menu
+#@+node:ekr.20110605121601.18354: *7* Methods with other spellings (Qtmenu)
+#@+node:ekr.20110605121601.18355: *8* clearAccel
+def clearAccel(self,menu,name):
+
+    pass
+
+    # if not menu:
+        # return
+
+    # realName = self.getRealMenuName(name)
+    # realName = realName.replace("&","")
+
+    # menu.entryconfig(realName,accelerator='')
+#@+node:ekr.20110605121601.18356: *8* createMenuBar (Qtmenu)
+def createMenuBar(self,frame):
+
+    '''Create all top-level menus.
+    The menuBar itself has already been created.'''
+
+    self.createMenusFromTables()
+#@+node:ekr.20110605121601.18357: *8* createOpenWithMenu (QtMenu)
+def createOpenWithMenu(self,parent,label,index,amp_index):
+
+    '''Create the File:Open With submenu.
+
+    This is called from leoMenu.createOpenWithMenuFromTable.'''
+
+    # Use the existing Open With menu if possible.
+    menu = self.getMenu('openwith')
+
+    if not menu:
+        menu = self.new_menu(parent,tearoff=False,label=label)
+        menu.insert_cascade(parent,index,
+            label,menu,underline=amp_index)
+
+    return menu
+#@+node:ekr.20110605121601.18358: *8* disable/enableMenu (leoQtMenu)
+def disableMenu (self,menu,name):
+    self.enableMenu(menu,name,False)
+
+def enableMenu (self,menu,name,val):
+    
+    '''Enable or disable the item in the menu with the given name.'''
+    
+    trace = False and name.startswith('Paste') and not g.unitTesting
+    
+    if trace: g.trace(val,name,menu)
+
+    if menu and name:
+        val = bool(val)
+        # g.trace('%5s %s %s' % (val,name,menu))
+        for action in menu.actions():
+            s = g.toUnicode(action.text()).replace('&','')
+            if s.startswith(name):
+                action.setEnabled(val)
+                break
+        else:
+            if trace: g.trace('not found:',name)
+#@+node:ekr.20110605121601.18359: *8* getMenuLabel
+def getMenuLabel (self,menu,name):
+
+    '''Return the index of the menu item whose name (or offset) is given.
+    Return None if there is no such menu item.'''
+
+    # At present, it is valid to always return None.
+
+    # g.trace('menu',menu,'name',name)
+
+    # actions = menu.actions()
+    # for action in actions:
+        # g.trace(action)
+#@+node:ekr.20110605121601.18360: *8* setMenuLabel
+def setMenuLabel (self,menu,name,label,underline=-1):
+
+    def munge(s):
+        return g.u(s or '').replace('&','')
+
+    # menu is a qtMenuWrapper.
+    # g.trace('menu',menu,'name: %20s label: %s' % (name,label))
+    if not menu: return
+
+    realName  = munge(self.getRealMenuName(name))
+    realLabel = self.getRealMenuName(label)
+    for action in menu.actions():
+        s = munge(action.text())
+        s = s.split('\t')[0]
+        if s == realName:
+            action.setText(realLabel)
+            break
+#@+node:ekr.20110605121601.18361: *6* Activate menu commands
+def activateMenu (self,menuName):
+
+    '''Activate the menu with the given name'''
+
+    c = self.c
+    menu = self.getMenu(menuName)
+    # g.trace(menuName,menu)
+    if menu:
+        top = c.frame.top.leo_ui
+        pos = menu.pos() # Doesn't do any good.
+        r = top.geometry()
+        pt = QtCore.QPoint(r.x()+pos.x(),r.y())
+        menu.exec_(pt)
+#@+node:ekr.20110605121601.18362: *6* getMacHelpMenu
+def getMacHelpMenu (self,table):
+
+    return None
+#@+node:ekr.20040131171020: *5* << enable top level outline menu >>
+menu = frame.menu.getMenu("Outline")
+if menu:
+    enable(menu,"Cut Node",c.canCutOutline())
+    enable(menu,"Delete Node",c.canDeleteHeadline())
+    enable(menu,"Paste Node",c.canPasteOutline())
+    enable(menu,"Paste Node As Clone",c.canPasteOutline())
+    enable(menu,"Clone Node",c.canClone()) # 1/31/04
+    enable(menu,"Sort Siblings",c.canSortSiblings())
+    enable(menu,"Hoist",c.canHoist())
+    enable(menu,"De-Hoist",c.canDehoist())
+#@+node:ekr.20031218072017.2974: *5* canPasteOutline
+def canPasteOutline (self,s=None):
+
+    trace = False and not g.unitTesting
+    c = self
+
+    if not s:
+        s = g.app.gui.getTextFromClipboard()
+        
+    if s:
+        if g.match(s,0,g.app.prolog_prefix_string):
+            if trace: g.trace('matches xml prolog')
+            return True
+        else:
+            val = c.importCommands.stringIsValidMoreFile(s)
+            if trace: g.trace('More file?',val)
+            return val
+
+    if trace: g.trace('no clipboard text')
+    return False
+#@+node:ekr.20110605121601.18358: *5* disable/enableMenu (leoQtMenu)
+def disableMenu (self,menu,name):
+    self.enableMenu(menu,name,False)
+
+def enableMenu (self,menu,name,val):
+    
+    '''Enable or disable the item in the menu with the given name.'''
+    
+    trace = False and name.startswith('Paste') and not g.unitTesting
+    
+    if trace: g.trace(val,name,menu)
+
+    if menu and name:
+        val = bool(val)
+        # g.trace('%5s %s %s' % (val,name,menu))
+        for action in menu.actions():
+            s = g.toUnicode(action.text()).replace('&','')
+            if s.startswith(name):
+                action.setEnabled(val)
+                break
+        else:
+            if trace: g.trace('not found:',name)
+#@+node:ekr.20080610085158.2: *5* c.add_command
+def add_command (self,menu,**keys):
+
+    c = self ; command = keys.get('command')
+
+    if command:
+
+        def add_commandCallback(c=c,command=command):
+            # g.trace(command)
+            val = command()
+            # Careful: func may destroy c.
+            if c.exists: c.outerUpdate()
+            return val
+
+        keys ['command'] = add_commandCallback
+
+        menu.add_command(**keys)
+
+    else:
+        g.trace('can not happen: no "command" arg')
+#@+node:ekr.20110605121601.18345: *5* add_command (qt)
+def add_command (self,**keys):
+
+    """Wrapper for the Tkinter add_command menu method."""
+
+    c = self.c
+    accel = keys.get('accelerator') or ''
+    command = keys.get('command')
+    label = keys.get('label')
+    n = keys.get('underline')
+    menu = keys.get('menu') or self
+    if not label: return
+    
+    trace = False and label.startswith('Paste') and not g.unitTesting
+    
+    if trace: g.trace(label,command,g.callers())
+
+    if -1 < n < len(label):
+        label = label[:n] + '&' + label[n:]
+    if accel:
+        label = '%s\t%s' % (label,accel)
+
+    if menu.leo_label == 'File': g.trace(label,g.callers(4))
+
+    action = menu.addAction(label)
+
+    if command:
+        def qt_add_command_callback(label=label,command=command):
+            # g.trace(command)
+            return command()
+
+        QtCore.QObject.connect(action,
+            QtCore.SIGNAL("triggered()"),qt_add_command_callback)
+#@+node:ekr.20031218072017.1723: *5* createMenuEntries
+def createMenuEntries (self,menu,table,dynamicMenu=False):
+
+    '''Create a menu entry from the table.
+    New in 4.4: this method shows the shortcut in the menu,
+    but this method **never** binds any shortcuts.'''
+
+    c = self.c ; f = c.frame ; k = c.k
+    if g.app.unitTesting: return
+
+    trace = False
+    for data in table:
+        << get label & command or continue >>
+        << compute commandName & accel from label & command >>
+        # Bug fix: 2009/09/30: use canonical stroke.
+        accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
+        stroke = k.shortcutFromSetting(accel,addKey=True) or ''
+        if accelerator:
+            accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
+        if trace: # and commandName == 'add-comments':
+            g.trace(bunch.val,repr(stroke),repr(accelerator),commandName)
+        def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName,event=None):
+            # if trace: g.trace('stroke',stroke)
+            return k.masterMenuHandler(stroke,command,commandName)
+
+        realLabel = self.getRealMenuName(label)
+        amp_index = realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        if sys.platform == 'darwin':
+            << clear accelerator if it is a plain key >>
+
+        # c.add_command ensures that c.outerUpdate is called.
+        if menu:
+            c.add_command(menu,label=realLabel,
+                accelerator=accelerator,
+                command=masterMenuCallback,
+                underline=amp_index)
+#@+node:ekr.20051021091958: *6* << get label & command or continue >>
+if g.isString(data):
+    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
+    ok = True
+    s = data
+    removeHyphens = s and s[0]=='*'
+    if removeHyphens: s = s[1:]
+    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+    command = s.replace('&','').lower()
+    if label == '-':
+        self.add_separator(menu)
+        continue # That's all.
+else:
+    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+    if ok:
+        if len(data) == 2:
+            # New in 4.4b2: command can be a minibuffer-command name (a string)
+            label,command = data
+        else:
+            # New in 4.4: we ignore shortcuts bound in menu tables.
+            label,junk,command = data
+
+        if label in (None,'-'):
+            self.add_separator(menu)
+            continue # That's all.
+    else:
+        g.trace('bad data in menu table: %s' % repr(data))
+        continue # Ignore bad data
+#@+node:ekr.20031218072017.1725: *6* << compute commandName & accel from label & command >>
+# New in 4.4b2: command can be a minibuffer-command name (a string)
+minibufferCommand = type(command) == type('')
+accel = None
+if minibufferCommand:
+    commandName = command 
+    command = c.commandsDict.get(commandName)
+    if command:
+        rawKey,bunchList = c.config.getShortcut(commandName)
+        # Pick the first entry that is not a mode.
+        for bunch in bunchList:
+            if not bunch.pane.endswith('-mode'):
+                accel = bunch and bunch.val
+                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+    else:
+        if not g.app.unitTesting and not dynamicMenu:
+            # Don't warn during unit testing.
+            # This may come from a plugin that normally isn't enabled.
+            if trace: g.trace('No inverse for %s' % commandName)
+        continue # There is no way to make this menu entry.
+else:
+    # First, get the old-style name.
+    commandName = self.computeOldStyleShortcutKey(label)
+    rawKey,bunchList = c.config.getShortcut(commandName)
+    for bunch in bunchList:
+        if not bunch.pane.endswith('-mode'):
+            if trace: g.trace('2','%20s' % (bunch.val),commandName)
+            accel = bunch and bunch.val ; break
+    # Second, get new-style name.
+    if not accel:
+        << compute emacs_name >>
+            # Contains the not-so-horrible kludge.
+        if emacs_name:
+            commandName = emacs_name
+            rawKey,bunchList = c.config.getShortcut(emacs_name)
+            # Pick the first entry that is not a mode.
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    accel = bunch.val
+                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    break
+        elif not dynamicMenu:
+            g.trace('No inverse for %s' % commandName)
+#@+node:ekr.20051021100806.1: *7* << compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+#@+node:ekr.20060216110502: *6* << clear accelerator if it is a plain key >>
+for z in ('Alt','Ctrl','Command'):
+    if accelerator.find(z) != -1:
+        break # Found.
+else:
+    accelerator = ''
+#@+node:ekr.20061031131434.155: *5* masterMenuHandler
+def masterMenuHandler (self,stroke,func,commandName):
+
+    k = self ; c = k.c
+    w = c.frame.getFocus()
+
+    # g.trace('stroke',stroke,'func',func and func.__name__,commandName)
+
+    # Create a minimal event for commands that require them.
+    event = g.app.gui.create_key_event(c,None,stroke,w)
+    
+    c.check_event(event)
+
+    if stroke:
+        return k.masterKeyHandler(event)
+    else:
+        return k.masterCommand(event,func,stroke,commandName)
+#@+node:ekr.20110613055012.16394: *4* Found: create_key_event
+#@+node:ekr.20110613055012.16395: *5* Harmless: don't use stroke
+#@+node:ekr.20031218072017.4117: *6* defineMenuCallback
+def defineMenuCallback(self,command,name,minibufferCommand):
+    
+    c = self.c
+
+    if minibufferCommand:
+
+        # Create a dummy event as a signal to doCommand.
+        event = g.app.gui.create_key_event(c,None,None,None)
+
+        # The first parameter must be event, and it must default to None.
+        def minibufferMenuCallback(event=event,self=self,command=command,label=name):
+            c = self.c
+            return c.doCommand(command,label,event)
+
+        return minibufferMenuCallback
+
+    else:
+
+        # The first parameter must be event, and it must default to None.
+        def legacyMenuCallback(event=None,self=self,command=command,label=name):
+            c.check_event(event)
+            return c.doCommand(command,label)
+
+        return legacyMenuCallback
+#@+node:ekr.20051106040126: *6* c.executeMinibufferCommand
+def executeMinibufferCommand (self,commandName):
+
+    c = self ; k = c.k
+
+    func = c.commandsDict.get(commandName)
+
+    if func:
+        event = g.app.gui.create_key_event(c,None,None,None)
+        k.masterCommand(event,func,stroke=None,commandName=None)
+        return k.funcReturn
+    else:
+        g.error('no such command: %s %s' % (commandName,g.callers()))
+        return None
+#@+node:ekr.20061031131434.127: *6* simulateCommand
+def simulateCommand (self,commandName):
+
+    k = self ; c = k.c
+
+    commandName = commandName.strip()
+    if not commandName: return
+
+    aList = commandName.split(None)
+    if len(aList) == 1:
+        k.givenArgs = []
+    else:
+        commandName = aList[0]
+        k.givenArgs = aList[1:]
+
+    # g.trace(commandName,k.givenArgs)
+    func = c.commandsDict.get(commandName)
+
+    if func:
+        # g.trace(commandName,func.__name__)
+        stroke = None
+        if commandName.startswith('specialCallback'):
+            event = None # A legacy function.
+        else: # Create a dummy event as a signal.
+            event = g.app.gui.create_key_event(c,None,None,None)
+            
+        k.masterCommand(event,func,stroke,commandName=None)
+        if c.exists:
+            return k.funcReturn
+        else:
+            return None
+    else:
+        g.trace('no command for %s' % (commandName),color='red')
+        if g.app.unitTesting:
+            raise AttributeError
+        else:
+            return None
+#@+node:ekr.20110613055012.16397: *5* Harmless: uses specific stroke
+#@+node:ekr.20090204084607.2: *6* iSearch
+def iSearch (self,again=False):
+
+    '''Handle the actual incremental search.'''
+
+    c = self.c ; k = self.k ; p = c.p
+    ifinder = self.ifinder
+    reverse = not self.forward
+    pattern = k.getLabel(ignorePrompt=True)
+    if not pattern:
+        return self.abortSearch()
+    ifinder.c = c ; ifinder.p = p.copy()
+    # Get the base ivars from the find tab.
+    ifinder.update_ivars()
+    # Save
+    oldPattern = ifinder.find_text
+    oldRegexp  = ifinder.pattern_match
+    oldReverse = ifinder.reverse
+    oldWord =  ifinder.whole_word
+    # Override
+    ifinder.pattern_match = self.regexp
+    ifinder.reverse = reverse
+    ifinder.find_text = pattern
+    ifinder.whole_word = False # Word option can't be used!
+    # Prepare the search.
+    if len(self.stack) <= 1: ifinder.in_headline = False
+    w = self.setWidget()
+    s = w.getAllText()
+    i,j = w.getSelectionRange()
+    if again:   ins = g.choose(reverse,i,j+len(pattern))
+    else:       ins = g.choose(reverse,j+len(pattern),i)
+    ifinder.init_s_ctrl(s,ins)
+    # Do the search!
+    pos, newpos = ifinder.findNextMatch()
+    # Restore.
+    ifinder.find_text = oldPattern
+    ifinder.pattern_match = oldRegexp
+    ifinder.reverse = oldReverse
+    ifinder.whole_word = oldWord
+    # Handle the results of the search.
+    if pos is not None: # success.
+        w = ifinder.showSuccess(pos,newpos,showState=False)
+        if w: i,j = w.getSelectionRange(sort=False)
+        # else: g.trace('****')
+        if not again: self.push(c.p,i,j,ifinder.in_headline)
+    elif ifinder.wrapping:
+        g.es("end of wrapped search")
+    else:
+        g.es("not found","'%s'" % (pattern))
+        event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
+        k.updateLabel(event)
+#@+node:ekr.20110613055012.16396: *5* Real change: use stroke
+#@+node:ekr.20050920084036.197: *6* loadMacros
+def loadMacros (self,f):
+
+    '''Loads a macro file into the macros dictionary.'''
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+    try:
+        d = pickle.load(f)
+    except pickle.UnpicklingError:
+        g.es('error unpickling %s' % f.name)
+        return
+
+    # g.trace(f.name,d)
+
+    for name in d:
+        aList = d.get(name)
+        macro = []
+        for stroke in aList:
+            event = g.app.gui.create_key_event(c,None,stroke,w)
+            macro.append(event)
+        self.addToDoAltX(name,macro)
+            # sets self.namedMacros[name]=macro
+#@+node:ekr.20061031131434.155: *6* masterMenuHandler
+def masterMenuHandler (self,stroke,func,commandName):
+
+    k = self ; c = k.c
+    w = c.frame.getFocus()
+
+    # g.trace('stroke',stroke,'func',func and func.__name__,commandName)
+
+    # Create a minimal event for commands that require them.
+    event = g.app.gui.create_key_event(c,None,stroke,w)
+    
+    c.check_event(event)
+
+    if stroke:
+        return k.masterKeyHandler(event)
+    else:
+        return k.masterCommand(event,func,stroke,commandName)
+#@+node:ekr.20110605121601.18845: *6* event_generate (leoGui)
+def event_generate(self,c,char,stroke,w):
+
+    event = self.create_key_event(c,char,stroke,w)
+    c.k.masterKeyHandler(event)
+    c.outerUpdate()
+#@+node:ekr.20110606152005.16787: *6* loadMacros
+def loadMacros (self,event=None):
+    
+    '''Load macros from the @macros node.'''
+    
+    trace = False and not g.unitTesting
+    c = self.c
+    create_event = g.app.gui.create_key_event
+    p = self.getMacrosNode()
+    
+    def oops(message):
+        g.trace(message)
+    
+    lines = g.splitLines(p.b)
+    i = 0
+    macro = [] ; name = None
+    while i < len(lines):
+        progress = i
+        s = lines[i].strip()
+        i += 1
+        
+        if s.startswith('::') and s.endswith('::'):
+            name = s[2:-2]
+            if name:
+                macro = []
+                while i < len(lines):
+                    s = lines[i].strip()
+                    if trace: g.trace(repr(name),repr(s))
+                    if s:
+                        stroke=s
+                        char = c.k.stroke2char(stroke)
+                        w = c.frame.body.bodyCtrl
+                        macro.append(create_event(c,char,stroke,w))
+                        i += 1
+                    else: break
+                # Create the entries.
+                if macro:
+                    self.completeMacroDef(name,macro)
+                    macro = [] ; name = None
+                else:
+                    oops('empty expansion for %s' % (name))
+        elif s:
+            if s.startswith('#') or s.startswith('@'):
+                pass
+            else:
+                oops('ignoring line: %s' % (repr(s)))
+        else: pass
+        assert progress < i
+        
+    # finish of the last macro.
+    if macro:
+        self.completeMacroDef(name,macro)
+#@+node:ekr.20061031131434.202: *6* executeNTimes
+def executeNTimes (self,event,n):
+
+    trace = False and not g.unitTesting
+    c,k = self.c,self
+    
+    w = event and event.widget
+    stroke = event and event.stroke or ''
+
+    if stroke == k.fullCommandKey:
+        for z in range(n):
+            k.fullCommand()
+    else:
+        stroke = g.stripBrackets(stroke)
+        b = k.getPaneBinding(stroke,event and event.widget)
+        if b:
+            if trace: g.trace('repeat',n,'method',b.func.__name__,
+                'stroke',stroke,'widget',w)
+            for z in range(n):
+                event = g.app.gui.create_key_event(c,None,stroke,w)
+                k.masterCommand(event,func=b.func,stroke=stroke,commandName=None)
+        else:
+            for z in range(n):
+                k.masterKeyHandler(event)
+#@+node:ekr.20110613055012.16398: *4* Found: event_generate
+#@+node:ekr.20110613055012.16399: *5* Real change
+#@+node:ekr.20061031131434.126: *6* k.manufactureKeyPressForCommandName (changed)
+def manufactureKeyPressForCommandName (self,w,commandName):
+
+    '''Implement a command by passing a keypress to the gui.'''
+
+    k = self ; c = k.c
+
+    setting = k.getShortcutForCommandName(commandName)
+    stroke = k.shortcutFromSetting(setting) # 2011/06/13
+
+    # g.trace('stroke',repr(stroke),'commandName',commandName,'w',w,g.callers())
+
+    if stroke and w:
+        # g.trace(stroke)
+        g.app.gui.set_focus(c,w)
+        g.app.gui.event_generate(c,None,stroke,w)
+    else:
+        message = 'no shortcut for %s' % (commandName)
+        if g.app.unitTesting:
+            raise AttributeError(message)
+        else:
+            g.trace(message,color='red')
+#@+node:ekr.20110613055012.16400: *5* Harmless: use explicit keystrokes
+#@+node:ekr.20061031131434.118: *6* numberCommand
+def numberCommand (self,event,stroke,number):
+    
+    '''Enter a number prefix for commands.'''
+
+    k = self ; c = self.c
+    k.stroke = stroke
+    w = event and event.widget
+    
+    k.universalDispatcher(event)
+    g.app.gui.event_generate(c,chr(number),chr(number),w)
+    return # (for Tk) 'break'
+
+def numberCommand0 (self,event):
+    '''Execute command number 0.'''
+    return self.numberCommand (event,None,0)
+
+def numberCommand1 (self,event):
+    '''Execute command number 1.'''
+    return self.numberCommand (event,None,1)
+
+def numberCommand2 (self,event):
+    '''Execute command number 2.'''
+    return self.numberCommand (event,None,2)
+
+def numberCommand3 (self,event):
+    '''Execute command number 3.'''
+    return self.numberCommand (event,None,3)
+
+def numberCommand4 (self,event):
+    '''Execute command number 4.'''
+    return self.numberCommand (event,None,4)
+
+def numberCommand5 (self,event):
+    '''Execute command number 5.'''
+    return self.numberCommand (event,None,5)
+
+def numberCommand6 (self,event):
+    '''Execute command number 6.'''
+    return self.numberCommand (event,None,6)
+
+def numberCommand7 (self,event):
+    '''Execute command number 7.'''
+    return self.numberCommand (event,None,7)
+
+def numberCommand8 (self,event):
+    '''Execute command number 8.'''
+    return self.numberCommand (event,None,8)
+
+def numberCommand9 (self,event):
+    '''Execute command number 9.'''
+    return self.numberCommand (event,None,9)
 #@-all
 #@-leo
