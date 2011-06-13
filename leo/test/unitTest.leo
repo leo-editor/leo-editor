@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.47" body_secondary_ratio="0.52">
+<globals body_outline_ratio="0.47" body_secondary_ratio="0.69">
 	<global_window_position top="30" left="396" height="1026" width="898"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -508,7 +508,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="5,0"></t>
+<t tx="ekr.20070417092935" str_leo_pos="5"></t>
 <t tx="ekr.20071113140035">fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src','leoPy.leo'))
 flag,frame2 = g.openWithFileName(fileName,old_c=None,enableLog=False)
 c.frame.bringToFront()

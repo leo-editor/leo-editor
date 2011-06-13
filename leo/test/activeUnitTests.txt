@@ -3749,12 +3749,21 @@ assert chaptersNode,'fail 0'
 chapterNode = (
     cc.findChapterNode('aaa') or
     cc.createChapterByName('aaa',p=None))
-
+    
 table = (
     ('node a',cc.moveNodeToChapterHelper),
     ('node b',cc.copyNodeToChapterHelper),
     ('node c',cc.cloneNodeToChapterHelper),
 )
+    
+# Initialze 
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+for h,unused_f in table:
+    p2 = p.insertAsLastChild()
+    p2.h = h
+    p2.b = '# %s' % h
 
 try:
     cc.selectChapterByName('aaa',chaptersNode)
@@ -3768,24 +3777,23 @@ try:
     assert g.findNodeInTree(c,p,'node b')
     assert g.findNodeInTree(c,p,'node c')
 finally:
-    for h,f in table:
-        if not g.findNodeInTree(c,p,h):
-            p2 = p.insertAsLastChild()
-            p2.h = h
-            p2.b = '# %s' % h
-        p3 = g.findNodeInTree(c,chapterNode,h)
-        if p3: p3.doDelete()
+    if 1: # Restore the tree so activeUnitTests.txt does not change.
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+        for h,f in table:
+            # if not g.findNodeInTree(c,p,h):
+                # p2 = p.insertAsLastChild()
+                # p2.h = h
+                # p2.b = '# %s' % h
+            p3 = g.findNodeInTree(c,chapterNode,h)
+            if p3: p3.doDelete()
     cc.selectChapterByName('main',collapse=True)
     c.redraw()
-#@+node:ekr.20110608181936.3369: *5* node b
-# node b
-#@+node:ekr.20110608181936.3370: *5* node c
-# node c
-#@+node:ekr.20110613135059.3339: *5* node a
-# node a
 #@+node:ekr.20080503132221.1: *4* @test chapter-create-from-node
 cc = c.chapterController
 root = p.copy()
+
+# Init the children
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
 
@@ -3816,13 +3824,11 @@ try:
         chapterNode.doDelete()
         c.redraw_now()
 finally:
-    if 0:
+    cc.selectChapterByName('main',collapse=True)
+    if 1: # Do this so the activeUnitTests.txt does not change.
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
-    cc.selectChapterByName('main',collapse=True)
     c.redraw_now()
-#@+node:ekr.20110613135059.3340: *5* child
-# child
 #@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5
 #@+node:ekr.20090104053806.1: *4* @@test c.checkFileTimeStamp & c.setFileTimeStamp
@@ -17513,7 +17519,7 @@ c.bodyWantsFocus()
 
 # Print does not work: it is redirected.
 g.es('all unit tests done',color='blue')
-#@+node:ekr.20110613134508.3325: ** @test zzz revert this file
+#@+node:ekr.20110613134508.3325: ** @@test zzz revert this file
 # Kludge: rename this frame so openWithFileName won't think it is open.
 fileName = c.mFileName
 c.mFileName = ""
