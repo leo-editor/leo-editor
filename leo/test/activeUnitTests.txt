@@ -1,8 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20070114140212: * @file activeUnitTests.txt
-# Important: many unit tests are now in leoPy.leo.
 # All the following should pass when run locally (Alt-4).
-# All the following have errors when run externally (Alt-5).
 #@@language python
 #@+all
 #@+node:ekr.20090703080553.5000: ** @suite run all doctests
