@@ -17,7 +17,7 @@
 <v t="EKR.20040519091259"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="ekr.20101115090518.1494"><vh>Leo 4.8 final</vh></v>
-<v t="ekr.20110603112852.1505"><vh>Leo 4.9 rc1</vh></v>
+<v t="ekr.20110603112852.1505"><vh>Leo 4.9 b4</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -55,10 +55,12 @@
 </v>
 <v t="ekr.20101027070126.1639"><vh>@button make leo</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
+<v t="ekr.20110614062644.1379"><vh>&lt;&lt; define global paths and file names &gt;&gt;</vh></v>
 <v t="ekr.20101027070126.1643"><vh>class LeoMaker</vh>
 <v t="ekr.20101027070126.1662"><vh>run &amp; helpers</vh>
 <v t="ekr.20101105103524.1494"><vh>clean_manifest</vh></v>
 <v t="ekr.20110603171959.1506"><vh>clean_spellpyx</vh></v>
+<v t="ekr.20110614062644.1378"><vh>copy_ref_files</vh></v>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
 <v t="ekr.20101027070126.1663"><vh>directoryList</vh></v>
@@ -92,7 +94,7 @@
 
 1. Search for ##version
 
-2. Search for this suffix: -rc1.
+2. Search for this suffix: -b4.
 
 3. Search for copyright
 
@@ -154,7 +156,7 @@ Installing Leo on Windows
 There are now two ways to install Leo on Windows:
     
 1. Use the single-click executable installer, named something like
-   LeoSetup-4.9-rc1.exe
+   LeoSetup-4.9-b4.exe
 
 2. Leo is distributed as a .zip file.
    To install Leo from the .zip file:
@@ -175,7 +177,7 @@ There are now two ways to install Leo on Windows:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.9-rc1
+Version: 4.9-b4
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -189,21 +191,19 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">@language rest
+<t tx="EKR.20040519090846.9">Leo 4.9 beta 4                June 14, 2011
 
-Leo 4.9 release candidate 1                 June 12, 2011
-
-Leo 4.9 rc1 is now available at:
+Leo 4.9 b4 is now available at:
 http://sourceforge.net/projects/leo/files/
 
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+Leo is a text editor, data organizer, project manager and much more.
+See: http://webpages.charter.net/edreamleo/intro.html
 
 The highlights of Leo 4.9:
 --------------------------
 
-- Leo no longer supports the Tk gui: the Qt gui now has
-  all essential features of Tk, including plugins.
+- The Qt gui completely replaces the Tk gui--Qt gui now has all essential
+  features of Tk, including plugins.
 
 - Completed Leo's autocompleter.
 
@@ -229,8 +229,7 @@ The highlights of Leo 4.9:
 
 - Added namespace directive to .leo files.
 
-- Fixed many bugs, some important, some merely annoying.
-
+- Fixed many bugs, some important, others merely annoying.
 
 Links:
 ------
@@ -534,17 +533,30 @@ import time</t>
 </t>
 <t tx="ekr.20100202061222.1494">@nocolor-node
 
-Testing:
+Clean files and create a *trial* manifest.
+    (The make-leo button runs make-leo-manifest automatically.)
+    - Delete any unknow files reported by bzr status.
+    - Run make-leo-manifest (a .bat file).
+Pre-testing:
     - Run all unit tests.
     - Run pylint-leo.bat.
+Release notes and web documentation:
+    - Update the release notes.
+    - Copy release notes to leoDist.leo.
+    - Update version number and modification date on Leo's home page.
+    - (The sphinx date is updated automatically.)
+    - Regenerate all .html files.
+    - Copy files to web.  Include the home page, but *not* the toc.
+LeoPy.leo:
+    - Update version numbers.
+    - Update the build number.
 LeoDocs.leo:
     - Remove top-level clones.
     - Select the readme node.
 LeoPlugins.leo:
     - Remove top-level clones.
-LeoPy.leo:
-    - Update version numbers.
-    - Update the build number.
+Post-testing:
+    - Run all unit tests.
 LeoDist.leo:
     - Make sure copyright dates are correct.
         (trunk/license.txt **and** leo/doc/license.txt.)
@@ -552,8 +564,10 @@ LeoDist.leo:
     - Update readme.txt
     - Check 'PKG-INFO.TXT'
 Create distribution files:
-    - Run make-leo button in leoDist.leo.
-        - This creates bzr-manifest.txt and all other variable distribution files.
+    - Run make-leo button in leoDist.leo. This does the following:
+        1. Creates the xRef.leo files.
+        2. Creates bzr-manifest.txt using make-leo-manifest.bat
+        3. Creates all other variable distribution files.
     - Create the installer:
         - Choose leo.nsi in Windows Explorer and select "Compile NSI Script"
         - or just double-click leo.nsi.
@@ -564,6 +578,7 @@ Test files in installed folder.
         - leoPy.leo
         - LeoDocs.leo
 Create a bzr tag **last**.
+    - Update the build number.  Open any Leo file to test.
     - bzr tag leo-x-y
     - bzr commit --unchanged -m "added tag"
     - bzr push
@@ -626,41 +641,21 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
 </t>
 <t tx="ekr.20101027070126.1639">'''Make all variable Leo distribution files::
 
-        ### bzr-manifest.txt
+        bzr-manifest.txt
         leo\dist\nsi-install-files.txt
         leo\dist\nsi-uninstall-files.txt
         leo.zip.
 '''
 
-### Important: The install/uninstall files must be copied to the trunk directory.
-
-version = '4.9-rc1' ##version
+version = '4.9-b4' ##version
 
 &lt;&lt; includes &gt;&gt;
-
-# Globals...
-abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
-
-# First.
-bzrRoot     = join('Lib','site-packages','Leo-%s' % (version))
-    # Don't use abspath!
-distDir     = abspath(join(g.app.loadDir,'..','dist'))
-rootDir     = abspath(join(g.app.loadDir,'..','..')) # Same as top.
-pluginsDir  = abspath(join(g.app.loadDir,'..','plugins'))
-
-# Next.
-docDir =        abspath(join(g.app.loadDir,'..','doc'))
-manifest_fn =   abspath(join(rootDir,'bzr-manifest.txt'))
-install_fn =    abspath(join(distDir,'nsi-install-files.txt'))
-uninstall_fn =  abspath(join(distDir,'nsi-uninstall-files.txt'))
-zipFile =       abspath(join(rootDir,'Leo-%s.zip' % (version)))
-zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
-
-# assert g.os_path_exists(manifest)
+&lt;&lt; define global paths and file names &gt;&gt;
 
 @others
 
 LeoMaker().run()
+# LeoMaker().copy_ref_files()
 
 g.es_print('@button make-leo done')
 </t>
@@ -694,6 +689,7 @@ g.es_print('@button make-leo done')
     # This is a crucial check.
     errors = self.printMissing(files,dirDict,filesDict)
     if not errors:
+        self.copy_ref_files()
         self.create_install_files(dirs,dirDict,filesDict)
         self.create_uninstall_files(dirs,dirDict,filesDict)
         self.make_zip()
@@ -1060,19 +1056,19 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 </t>
 <t tx="ekr.20110603112852.1505">@language rest
 
-Leo 4.9 release candidate 1                 June 12, 2011
+Leo 4.9 beta 4                June 14, 2011
 
-Leo 4.9 rc1 is now available at:
+Leo 4.9 b4 is now available at:
 http://sourceforge.net/projects/leo/files/
 
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+Leo is a text editor, data organizer, project manager and much more.
+See: http://webpages.charter.net/edreamleo/intro.html
 
 The highlights of Leo 4.9:
 --------------------------
 
-- Leo no longer supports the Tk gui: the Qt gui now has
-  all essential features of Tk, including plugins.
+- The Qt gui completely replaces the Tk gui--Qt gui now has all essential
+  features of Tk, including plugins.
 
 - Completed Leo's autocompleter.
 
@@ -1098,8 +1094,7 @@ The highlights of Leo 4.9:
 
 - Added namespace directive to .leo files.
 
-- Fixed many bugs, some important, some merely annoying.
-
+- Fixed many bugs, some important, others merely annoying.
 
 Links:
 ------
@@ -1122,5 +1117,43 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
         f.write(s2)
         f.close()
 </t>
+<t tx="ekr.20110614062644.1378">def copy_ref_files (self):
+    
+    table = (
+        (pluginsDir,'leoGuiPlugins.leo','leoGuiPluginsRef.leo'),
+        (pluginsDir,'leoPlugins.leo','leoPluginsRef.leo'),
+        (coreDir,'leoPy.leo','leoPyRef.leo'),
+    )
+    
+    for d,src,dst in table:
+        src_path = join(d,src)
+        dst_path = join(d,dst)
+        if not exists(src_path):
+            g.error('does not exist',src_path)
+        if not exists(dst_path):
+            g.error('does not exist',dst_path)
+        if exists(src_path) and exists(dst_path):
+            shutil.copyfile(src_path,dst_path)
+</t>
+<t tx="ekr.20110614062644.1379"># Globals...
+abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
+
+# First.
+bzrRoot     = join('Lib','site-packages','Leo-%s' % (version))
+    # Don't use abspath!
+distDir     = abspath(join(g.app.loadDir,'..','dist'))
+rootDir     = abspath(join(g.app.loadDir,'..','..')) # Same as top.
+pluginsDir  = abspath(join(g.app.loadDir,'..','plugins'))
+
+# Next.
+coreDir =       abspath(join(g.app.loadDir,'..','core'))
+docDir =        abspath(join(g.app.loadDir,'..','doc'))
+manifest_fn =   abspath(join(rootDir,'bzr-manifest.txt'))
+install_fn =    abspath(join(distDir,'nsi-install-files.txt'))
+uninstall_fn =  abspath(join(distDir,'nsi-uninstall-files.txt'))
+zipFile =       abspath(join(rootDir,'Leo-%s.zip' % (version)))
+zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
+
+# assert g.os_path_exists(manifest)</t>
 </tnodes>
 </leo_file>

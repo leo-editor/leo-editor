@@ -10,9 +10,9 @@
 #@@language python
 #@@tabwidth -4
 
-build = 4345
-date = "June 12, 2011"
-version = "4.9 release candidate 1"
+build = 4366
+date = "June 14, 2011"
+version = "4.9 beta 4"
 
 #@+at The following bzr command reports the buil automatically
 #@-leo

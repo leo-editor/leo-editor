@@ -15755,12 +15755,12 @@ The installer now makes proper entries in the Windows start menu.
 #@+node:ekr.20101124102457.5227: *5* New in 4.8 final
 - Fixed key redefinition message.
 #@+node:edream.110203163054.63: ** Latest version
-#@+node:ekr.20110531155858.19246: *3* 4.9 rc1 Release notes
+#@+node:ekr.20110531155858.19246: *3* 4.9 b4 Release notes
 @language rest
 
-Leo 4.9 release candidate 1                 June 12, 2011
+Leo 4.9 beta 4                June 14, 2011
 
-Leo 4.9 rc1 is now available at:
+Leo 4.9 b4 is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
@@ -15796,7 +15796,7 @@ The highlights of Leo 4.9:
 
 - Added namespace directive to .leo files.
 
-- Fixed many bugs, some important, some merely annoying.
+- Fixed many bugs, some important, others merely annoying.
 
 Links:
 ------
@@ -16553,5 +16553,30 @@ The following Tk settings have been removed from leoSettings.leo::
 The following setting was not active, and has also been removed::
 
     @bool ignore_caps_lock
+#@+node:ekr.20110613172008.14775: *4* New in 4.9 b4
+Old bugs fixed
+--------------
+
+- Fixed an ancient bug: everything after @all was put in the wrong node!
+
+- Fixed an ancient bug: wrap-around search now restarts when find pattern changes
+
+- Fixed an ancient bug: F-keys end incremental searches.
+
+Recent bugs fixed
+-----------------
+
+- Fixed a recent problem with commands dispatched from menus The Shift modifier
+  was deleted from all commands executed by selecting an item in menus! A new
+  unit test checks that menus behave as expected.
+
+- Dismiss splash screen before putting up the dialog that asks for an ID.
+
+Other changes
+-------------
+
+- Running all unit tests leaves all files unchanged. This was a major annoyance.
+
+- Leo now does a keyboard-quit when deactivating a window.
 #@-all
 #@-leo

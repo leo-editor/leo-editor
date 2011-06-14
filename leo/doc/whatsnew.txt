@@ -612,6 +612,22 @@ begins and ends with the '\b' anchor.
     
         True: recursively expand definitions by expanding any
         references found in definitions.
+.. @+node:ekr.20110613172008.15106: *4* New in 4.9 b4
+- Running all unit tests leaves all files unchanged. This was a major annoyance.
+
+- Leo now does a keyboard-quit when deactivating a window.
+.. @+node:ekr.20110613172008.15107: *5* Ancient bugs fixed
+- Fixed an ancient bug: everything after @all was put in the wrong node!
+
+- Fixed an ancient bug: wrap-around search now restarts when find pattern changes.
+
+- Fixed an ancient bug: F-keys end incremental searches.
+.. @+node:ekr.20110613172008.15108: *5* Recent bugs fixed
+- Fixed a serious recent problem with commands dispatched from menus The Shift
+  modifier was deleted from all commands executed by selecting an item in menus!
+  A new unit test checks that menus behave as expected.
+
+- Dismiss splash screen before putting up the dialog that asks for an ID.
 .. @+node:ekr.20101025080245.5805: *3* Leo 4.8
 .. @+node:ekr.20101025080245.6077: *4* New sentinels
 .. _`simplest possible`: http://groups.google.com/group/leo-editor/browse_thread/thread/8b659c96720afd53/628a09779ca9e8c6
