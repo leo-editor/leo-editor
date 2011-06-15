@@ -563,14 +563,17 @@ LeoDist.leo:
     - Update version numbers: search this file for ##version.
     - Update readme.txt
     - Check 'PKG-INFO.TXT'
-Create distribution files:
-    - Run make-leo button in leoDist.leo. This does the following:
-        1. Creates the xRef.leo files.
-        2. Creates bzr-manifest.txt using make-leo-manifest.bat
-        3. Creates all other variable distribution files.
-    - Create the installer:
-        - Choose leo.nsi in Windows Explorer and select "Compile NSI Script"
-        - or just double-click leo.nsi.
+Run make-leo, making sure that the final revno matches the build number in version.py:
+    - Commit all files before running make-leo.  This provides a baseline.
+    - Run make-leo button in leoDist.leo.
+        - This creates bzr-manifest.txt and all other variable distribution files.
+        - This will change bzr-manifest by a little bit from the previously-computed manifest.
+    - Commit the slightly-changed bzr-manifest.txt.
+    - Change the build number in version.py to one more than the present revno.
+    - Commit the change to version.py, thereby making the build number match the final revno.
+Create the executable installer:
+    - Choose leo.nsi in Windows Explorer and select "Compile NSI Script"
+    - or just double-click leo.nsi.
 Test files in installed folder.
     - Run all unit tests in the installed folder, with the installed Leo.
     - Make sure the following open without errors:
@@ -582,6 +585,8 @@ Create a bzr tag **last**.
     - bzr tag leo-x-y
     - bzr commit --unchanged -m "added tag"
     - bzr push
+Optional: update leoDist.leo *after* doing the commit that adds the tag.
+    - This ensures that leoDist.leo in the distro matches the leoDist.leo in the tagged revno.
 @color
 # **** Scan all folders &amp; files before uploading.
 @nocolor
