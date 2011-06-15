@@ -8166,18 +8166,25 @@ class leoQtGui(leoGui.leoGui):
                 g.trace('cached',id(image),name)
             return image
         try:
-            fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
-
-            if 0: # Not needed: use QTreeWidget.setIconsize.
-                pixmap = QtGui.QPixmap()
-                pixmap.load(fullname)
-                image = QtGui.QIcon(pixmap)
+            iconsDir = g.os_path_join(g.app.loadDir,"..","Icons")
+            homeIconsDir = g.os_path_join(g.app.homeLeoDir,"Icons")
+            for theDir in (homeIconsDir,iconsDir):
+                fullname = g.os_path_finalize_join(theDir,name)
+                if g.os_path_exists(fullname):
+                    if 0: # Not needed: use QTreeWidget.setIconsize.
+                        pixmap = QtGui.QPixmap()
+                        pixmap.load(fullname)
+                        image = QtGui.QIcon(pixmap)
+                    else:
+                        image = QtGui.QIcon(fullname)
+            
+                    self.iconimages[name] = image
+                    if trace: g.trace('new',id(image),theDir,name)
+                    return image
+                elif trace: g.trace('Directory not found',theDir)
             else:
-                image = QtGui.QIcon(fullname)
-
-            self.iconimages[name] = image
-            if trace: g.trace('new',id(image),name)
-            return image
+                if trace: g.trace('Not found',name)
+                return None
 
         except Exception:
             g.es("exception loading:",fullname)

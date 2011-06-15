@@ -5,24 +5,7 @@
 .. @+all
 .. @+node:ekr.20101129095441.5963: ** Improve screenshots page
 .. @+node:ekr.20110615071510.14791: ** To do: 4.9
-.. @+node:ekr.20110614123640.6589: *3* * Custom location for icons
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/80163aec96b8ea45/4f58418924172252
-
-Feature request: leo should be able to load icons from a custom location 
-
-Problem: leo's "boxXX" icons are hardcoded. They don't look too well
-if leo runs with a dark theme. Please see http://i.imgur.com/dkVjp.png
-
-I think leo should be able to load icons from a non-default location.
-This way it would be possible to use another set of icons instead of
-default ones.
-
-Perhaps ~/.leo/ is a good candidate, leo could look there for an Icons
-subdirectory and load icons from there first, then fall back to
-default ones.
-.. @+node:ekr.20110615071510.14792: *3* ** Fix recent bugs
+.. @+node:ekr.20110615071510.14792: *3* ** Fix file-related bugs
 .. @+node:ekr.20110615071510.14794: *3* Later
 .. @+node:ekr.20110609161752.16461: *4* Post to pyxides re "your mission"
 .. @+node:ekr.20110614083842.6579: *4* Fix failing unit tests on Linux
