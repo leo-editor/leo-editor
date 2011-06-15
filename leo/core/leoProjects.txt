@@ -3588,8 +3588,8 @@ def scanOptions():
         gui = 'qt'
         g.app.qt_use_tabs = True
 
+    assert gui
     g.app.guiArgName = gui # 2011/06/15
-    g.trace(gui)
 
     # --minimized
     # --maximized
