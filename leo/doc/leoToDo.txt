@@ -4,11 +4,64 @@
 
 .. @+all
 .. @+node:ekr.20101129095441.5963: ** Improve screenshots page
-.. @+node:ekr.20110609161752.16461: ** After 4.9 b4 is released
-- post to pyxides re "your mission"
+.. @+node:ekr.20110615071510.14791: ** To do: 4.9
+.. @+node:ekr.20110614123640.6589: *3* * Custom location for icons
+@nocolor-node
 
-- Complete check-core-settings script in leoSettigns.leo,
-  but do *not* change any settings!
+http://groups.google.com/group/leo-editor/browse_thread/thread/80163aec96b8ea45/4f58418924172252
+
+Feature request: leo should be able to load icons from a custom location 
+
+Problem: leo's "boxXX" icons are hardcoded. They don't look too well
+if leo runs with a dark theme. Please see http://i.imgur.com/dkVjp.png
+
+I think leo should be able to load icons from a non-default location.
+This way it would be possible to use another set of icons instead of
+default ones.
+
+Perhaps ~/.leo/ is a good candidate, leo could look there for an Icons
+subdirectory and load icons from there first, then fall back to
+default ones.
+.. @+node:ekr.20110615071510.14793: *3* * Apply MacOS patch and test on Mac
+.. @+node:ekr.20110615071510.14792: *3* ** Fix recent bugs
+.. @+node:ekr.20110615071510.14794: *3* Later
+.. @+node:ekr.20110609161752.16461: *4* Post to pyxides re "your mission"
+.. @+node:ekr.20110614083842.6579: *4* Fix failing unit tests on Linux
+.. @+node:ekr.20110614123640.6586: *4* script to check myLeoSettings.leo
+@nocolor-node
+
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/764c9d2f260e2441/eb0564983b90feb5
+
+Perhaps leo could also have a command to validate myLeoSettings.leo
+and complain if it finds some obsolete settings that got removed from
+leo, but are still present in myLeoSettings. A special case would be
+to validate enabled-plugins node too, which can sometimes contain
+legacy lines, like it recently happened with UNL plugin that got moved
+to cotrib branch.
+.. @+node:ekr.20110614123640.6588: *4* About macros
+@nocolor-node
+
+Kent:
+    
+I don't understand macros. The following sounds like
+a description of a @command node, where calling the
+headline runs the body.
+
+"The first step will be to support @macros and @macro <name> nodes.
+The body text of @macro nodes will contain the text of the macro."
+
+Ah, the _text_ of the macro ... the macro is boilerplate, not code ... ?
+
+I like the _idea_ of collecting useful boilerplate and leveraging it to increase
+efficiency, but I've never done it, doubtful I will.
+
+Terry:
+    
+To me a higher priority would be documentation of, and if necessary
+improvement of, the commands for editing the body text, moving the
+position, selection, etc.
+
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10
 .. @+node:ekr.20110611043506.16494: *3* (Maybe) Ashland sprint items: 4
 .. @+node:ekr.20110527084258.18378: *4* New file format
@@ -963,9 +1016,42 @@ language before doing anything in this direction.
 As an intermediate step, maybe we could allow mixing RST processing with regular
 program text.  Leo would produce two documents out of a source file: a version
 for the compiler in plain ascii, and an HTML file for reading the source.
-.. @+node:ekr.20110531190516.19365: *3* Minor/Maybe: 4
+.. @+node:ekr.20110531190516.19365: *3* Minor/Maybe: 5
 @language rest
 
+.. @+node:ekr.20110614123640.6587: *4* Add headline/color functions to Leo's core
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/7e279fe3dedf42be/f00fde4df5b39ded
+
+What uA should be used to specify node colors?
+
+if the foreground / background color API uses uAs,
+would/should the uAs use the reserved "leo_&lt;something&gt;"
+namespace?
+
+-------------------
+
+Terry Brown
+
+Sounds like something I may have brought up, long ago.
+
+I was thinking that setting the fore/background color of nodes in the
+tree should be a "gui core" function, and that the info should be
+stored in uA, and so wanted to know what key should be used in uA for
+that.  I think the docs say top level keys starting with "leo_" are
+reserved, and probably wanted a ruling on
+
+v.u['leo_fg'] = 'red'
+
+vs
+
+v.u['leo_tree_style']['fg'] = 'red'
+
+etc.
+
+I think the question may be more complicated than just what to call the
+key, so you can probably retire the todo item.
 .. @+node:ekr.20100112051224.6226: *4* Vim-related: Range prefix to commands/objects (k.getArgs)
 The ability to specify a numeric range prefix is not supported. For example,
 entering "3dd" will not delete the next three lines and "20G" will not move the
