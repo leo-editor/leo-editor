@@ -8786,6 +8786,12 @@ def getIconImage (self,name):
         g.es("exception loading:",fullname)
         g.es_exception()
         return None
+#@+node:ekr.20110615091840.14796: *3* Investigated bug 797394: tangling logic gets confused about descendants that share names
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/797394
+
+It is invalid.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
