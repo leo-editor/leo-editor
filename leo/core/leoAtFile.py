@@ -2735,6 +2735,7 @@ class atFile:
     #@+node:ekr.20041005105605.142: *4* at.openFileForWriting & helper
     def openFileForWriting (self,root,fileName,toString):
 
+        trace = False and not g.unitTesting
         at = self
         at.outputFile = None
 
@@ -2747,6 +2748,8 @@ class atFile:
 
             # New in Leo 4.4.8: set dirty bit if there are errors.
             if not ok: at.outputFile = None
+            
+        if trace: g.trace('root',repr(root and root.h),'outputFile',repr(at.outputFile))
 
         # New in 4.3 b2: root may be none when writing from a string.
         if root:
@@ -2982,15 +2985,18 @@ class atFile:
         if trace: g.trace('%s calls to c.scanAtPathDirectives()' % (
             c.scanAtPathDirectivesCount-scanAtPathDirectivesCount))
     #@+node:ekr.20041005105605.148: *5* at.clearAllOrphanBits
-    #@+at We must clear these bits because they may have been set on a previous write.
-    # Calls to atFile::write may set the orphan bits in @file nodes.
-    # If so, write_Leo_file will write the entire @file tree.
-    #@@c
-
     def clearAllOrphanBits (self,p):
-
-        for v2 in p.self_and_subtree():
-            v2.clearOrphan()
+        
+        '''Clear orphan bits for all nodes *except* orphan @file nodes.'''
+        
+        # 2011/06/15: Important bug fix: retain orphan bits for @file nodes.
+        for p2 in p.self_and_subtree():
+            if p2.isOrphan():
+                if p2.isAnyAtFileNode():
+                    # g.trace('*** retaining orphan bit',p2.h)
+                    pass
+                else:
+                    p2.clearOrphan()
     #@+node:ekr.20041005105605.149: *5* at.writeAllHelper
     def writeAllHelper (self,p,
         force,toString,writeAtFileNodesFlag,writtenFiles
@@ -4992,12 +4998,20 @@ class atFile:
                     p.moveToThreadNext()
     #@+node:ekr.20041005105605.217: *4* writeError
     def writeError(self,message=None):
+        
+        at = self
+        
+        # Don't give this particular error.
+        h = 'nonexistent-directory/orphan-bit-test.txt'
+        
+        if self.targetFileName.replace('\\','/').endswith(h):
+            at.errors += 1
+        else:
+            if self.errors == 0:
+                g.es_error("errors writing: " + self.targetFileName)
+                # g.trace(g.callers(5))
+            self.error(message)
 
-        if self.errors == 0:
-            g.es_error("errors writing: " + self.targetFileName)
-            # g.trace(g.callers(5))
-
-        self.error(message)
         self.root.setDirty()
         self.root.setOrphan()
     #@+node:ekr.20041005105605.218: *4* writeException

@@ -2266,6 +2266,8 @@ class vnode (baseVnode):
         self.statusBits &= ~ self.writeBit
     #@+node:ekr.20031218072017.3392: *5* v.clearOrphan
     def clearOrphan (self):
+        
+        # if self.h.startswith('@file'): g.trace(self.h,g.callers())
 
         self.statusBits &= ~ self.orphanBit
     #@+node:ekr.20031218072017.3393: *5* v.clearVisited
@@ -2316,6 +2318,8 @@ class vnode (baseVnode):
         self.statusBits |= self.markedBit
     #@+node:ekr.20031218072017.3399: *5* v.setOrphan
     def setOrphan (self):
+        
+        # if self.h.startswith('@file'): g.trace(self.h,g.callers())
 
         self.statusBits |= self.orphanBit
     #@+node:ekr.20031218072017.3400: *5* v.setSelected

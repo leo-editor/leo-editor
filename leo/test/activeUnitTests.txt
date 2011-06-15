@@ -1649,6 +1649,17 @@ assert s == result
 # The length of this node should remain constant.
 
 assert len(p.b) == 175,len(p.b)
+#@+node:ekr.20110615130436.3319: *4* @test writing a .leo file retains orphan bits
+# Writing a .leo file must retain orphan bits of erroneous external files.
+
+h = '@file nonexistent-directory/orphan-bit-test.txt'
+p2 = g.findNodeAnywhere(c,h)
+assert p2,'not found: %s' % (h)
+assert p2.isOrphan(),'not an orphan originally'
+
+# It's dangerous to do the write, but this does test the bug fix.
+c.atFileCommands.clearAllOrphanBits(p2)
+assert p2.isOrphan(),'not an orphan after calling at.clearAllOrphanBits'
 #@+node:ekr.20071113201736: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

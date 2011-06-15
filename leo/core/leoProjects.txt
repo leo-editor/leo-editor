@@ -8792,6 +8792,281 @@ def getIconImage (self,name):
 https://bugs.launchpad.net/leo-editor/+bug/797394
 
 It is invalid.
+#@+node:ekr.20110615102017.14795: *3* Fixed bug 797470: File data sometimes silently erased when the tangler fails
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/797470
+
+It seems that Leo doesn't always store file data inside the outline when the
+tangler fails to write the file data --- e.g., when the file pathname does not
+exist, when undefined sections are present, etc. Instead, sometimes Leo ***marks
+the file nodes as no longer being saved but silently discards the data so that
+it won't appear the next time the outline is opened!***
+
+To experience this for yourself, try opening either of the attached files which
+contain examples of cases where the tangler can fail, and change file to @file.
+Save and quit Leo, and then open the file again. If you still see the children
+and content in bug.py, make a trivial change to it (to make bug.py dirty), save,
+quit, and open it again. Repeat this process a few times and you will eventually
+see that bug.py no longer has any content! The bug is nondeterministic, so
+sometimes its contents are lost on the first save (i.e., just after changing
+file to @file), sometimes it takes many iterations of this process for the
+contents to be lost.
+
+And this isn't just a strange corner case bug that is unlikely to trip up users
+in practice, but one that has actually caused me to lose data and have to
+recreate a file from scratch *twice* so far, which is what led me to investigate
+what was going on.
+#@+node:ekr.20110615102017.14798: *4* Added traces
+#@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper
+def openFileForWriting (self,root,fileName,toString):
+
+    trace = False and not g.unitTesting
+    at = self
+    at.outputFile = None
+
+    if toString:
+        at.shortFileName = g.shortFileName(fileName)
+        at.outputFileName = "<string: %s>" % at.shortFileName
+        at.outputFile = g.fileLikeObject()
+    else:
+        ok = at.openFileForWritingHelper(fileName)
+
+        # New in Leo 4.4.8: set dirty bit if there are errors.
+        if not ok: at.outputFile = None
+        
+    if trace: g.trace('root',repr(root and root.h),'outputFile',repr(at.outputFile))
+
+    # New in 4.3 b2: root may be none when writing from a string.
+    if root:
+        if at.outputFile:
+            root.clearOrphan()
+        else:
+            root.setOrphan()
+            root.setDirty()
+
+    return at.outputFile is not None
+#@+node:ekr.20041005105605.143: *6* at.openFileForWritingHelper & helper
+def openFileForWritingHelper (self,fileName):
+
+    '''Open the file and return True if all went well.'''
+
+    at = self ; c = at.c
+
+    try:
+        at.shortFileName = g.shortFileName(fileName)
+        at.targetFileName = c.os_path_finalize_join(at.default_directory,fileName)
+        path = g.os_path_dirname(at.targetFileName)
+        if not path or not g.os_path_exists(path):
+            if path:
+                path = g.makeAllNonExistentDirectories(path,c=c)
+            if not path or not g.os_path_exists(path):
+                path = g.os_path_dirname(at.targetFileName)
+                at.writeError("path does not exist: " + path)
+                return False
+    except Exception:
+        at.exception("exception creating path: %s" % repr(path))
+        g.es_exception()
+        return False
+
+    if g.os_path_exists(at.targetFileName):
+        try:
+            if not os.access(at.targetFileName,os.W_OK):
+                at.writeError("can not open: read only: " + at.targetFileName)
+                return False
+        except AttributeError:
+            pass # os.access() may not exist on all platforms.
+
+    try:
+        at.outputFileName = at.targetFileName + ".tmp"
+        kind,at.outputFile = self.openForWrite(at.outputFileName,'wb')
+        if not at.outputFile:
+            kind = g.choose(kind=='check',
+                'did not overwrite','can not create')
+            at.writeError("%s %s" % (kind,at.outputFileName))
+            return False
+    except Exception:
+        at.exception("exception creating:" + at.outputFileName)
+        return False
+
+    return True
+#@+node:bwmulder.20050101094804: *7* at.openForWrite
+def openForWrite (self, filename, wb='wb'):
+
+    '''Open a file for writes, handling shadow files.'''
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c ; x = c.shadowController
+
+    try:
+        shadow_filename = x.shadowPathName(filename)
+        self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+        open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
+        self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
+
+        if self.writing_to_shadow_directory:
+            if trace: g.trace(filename,shadow_filename)
+            x.message('writing %s' % shadow_filename)
+            return 'shadow',open(open_file_name,wb)
+        else:
+            ok = c.checkFileTimeStamp(at.targetFileName)
+            return 'check',ok and open(open_file_name,wb)
+
+    except IOError:
+        if not g.app.unitTesting:
+            g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
+            g.es_exception()
+        return 'error',None
+#@+node:ekr.20031218072017.1863: *5* putVnode
+def putVnode (self,p,isIgnore=False):
+
+    """Write a <v> element corresponding to a vnode."""
+
+    fc = self ; c = fc.c ; v = p.v
+    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+    isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
+        # 2010/09/02: @edit nodes must not have children.
+        # If they do, the entire tree is written to the outline.
+    isFile   = p.isAtFileNode()
+    isShadow = p.isAtShadowFileNode()
+    isThin   = p.isAtThinFileNode()
+    isOrphan = p.isOrphan()
+    if not isIgnore: isIgnore = p.isAtIgnoreNode()
+
+    # 2010/10/22: force writes of orphan @edit, @auto and @shadow trees.
+    if   isIgnore: forceWrite = True      # Always write full @ignore trees.
+    elif isAuto:   forceWrite = isOrphan  # Force write of orphan @auto trees.
+    elif isEdit:   forceWrite = isOrphan  # Force write of orphan @edit trees.
+    elif isFile:   forceWrite = isOrphan  # Force write of orphan @file trees.
+    elif isShadow: forceWrite = isOrphan  # Force write of @shadow trees.
+    elif isThin:   forceWrite = isOrphan  # Force write of  orphan @thin trees.
+    else:          forceWrite = True      # Write all other @<file> trees.
+    
+    # if p.h.startswith('@file'): g.trace('isOrphan',isOrphan,'forceWrite',forceWrite,p.h)
+
+    << Set gnx = vnode index >>
+    attrs = []
+    << Append attribute bits to attrs >>
+    << Append unKnownAttributes to attrs >>
+    attrs = ''.join(attrs)
+    v_head = '<v t="%s"%s>' % (gnx,attrs)
+    if gnx in fc.vnodesDict:
+        fc.put(v_head+'</v>\n')
+    else:
+        fc.vnodesDict[gnx]=True
+        v_head += '<vh>%s</vh>' % (xml.sax.saxutils.escape(p.v.headString()or''))
+        # The string catentation is faster than repeated calls to fc.put.
+        if not self.usingClipboard:
+            << issue informational messages >>
+        # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
+        if p.hasChildren() and (forceWrite or self.usingClipboard):
+            fc.put('%s\n' % v_head)
+            # This optimization eliminates all "recursive" copies.
+            p.moveToFirstChild()
+            while 1:
+                fc.putVnode(p,isIgnore)
+                if p.hasNext(): p.moveToNext()
+                else:           break
+            p.moveToParent() # Restore p in the caller.
+            fc.put('</v>\n')
+        else:
+            fc.put('%s</v>\n' % v_head) # Call put only once.
+#@+node:ekr.20031218072017.1864: *6* << Set gnx = vnode index >>
+gnx = g.app.nodeIndices.toString(v.fileIndex)
+
+if forceWrite or self.usingClipboard:
+    v.setWriteBit() # 4.2: Indicate we wrote the body text.
+#@+node:ekr.20031218072017.1865: *6* << Append attribute bits to attrs >>
+# These string catenations are benign because they rarely happen.
+attr = ""
+# New in Leo 4.5: support fixed .leo files.
+if not c.fixed:
+    if v.isExpanded() and v.hasChildren() and c.putBitsFlag:
+        attr += "E"
+    if v.isMarked():   attr += "M"
+    if v.isOrphan():   attr += "O"
+    if attr:
+        attrs.append(' a="%s"' % attr)
+
+# Put the archived *current* position in the *root* positions <v> element.
+if p == self.rootPosition:
+    aList = [str(z) for z in self.currentPosition.archivedPosition()]
+    d = v.u
+    str_pos = ','.join(aList)
+    if d.get('str_leo_pos'):
+        del d['str_leo_pos']
+    # Don't write the current position if we can cache it. 
+    if g.enableDB and c.mFileName:
+        c.cacher.setCachedStringPosition(str_pos)
+    elif c.fixed:
+        pass
+    else:
+        d['str_leo_pos'] = str_pos
+    v.u = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
+#@+node:ekr.20040324082713: *6* << Append unKnownAttributes to attrs>>
+# v.unknownAttributes are now put in <t> elements.
+
+if p.hasChildren() and not forceWrite and not self.usingClipboard:
+    # We put the entire tree when using the clipboard, so no need for this.
+    if not isAuto: # Bug fix: 2008/8/7.
+        attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
+        attrs.append(self.putDescendentAttributes(p))
+#@+node:ekr.20040702085529: *6* << issue informational messages >> (changed)
+if 0: # It's strange to clear the orphan bit.
+    if isOrphan and (isFile or isThin):
+        g.es("writing erroneous:",p.h,color="blue")
+        p.clearOrphan()
+#@+node:ekr.20031218072017.3392: *5* v.clearOrphan
+def clearOrphan (self):
+    
+    # if self.h.startswith('@file'): g.trace(self.h,g.callers())
+
+    self.statusBits &= ~ self.orphanBit
+#@+node:ekr.20031218072017.3399: *5* v.setOrphan
+def setOrphan (self):
+    
+    # if self.h.startswith('@file'): g.trace(self.h,g.callers())
+
+    self.statusBits |= self.orphanBit
+#@+node:ekr.20110615102017.14797: *4* Changed
+#@+node:ekr.20041005105605.148: *5* at.clearAllOrphanBits
+def clearAllOrphanBits (self,p):
+    
+    '''Clear orphan bits for all nodes *except* orphan @file nodes.'''
+    
+    # 2011/06/15: Important bug fix: retain orphan bits for @file nodes.
+    for p2 in p.self_and_subtree():
+        if p2.isOrphan():
+            if p2.isAnyAtFileNode():
+                # g.trace('*** retaining orphan bit',p2.h)
+                pass
+            else:
+                p2.clearOrphan()
+#@+node:ekr.20110615102017.14799: *4* Suppress error for particular unit test file
+#@+node:ekr.20041005105605.217: *5* writeError
+def writeError(self,message=None):
+    
+    at = self
+    
+    # Don't give this particular error.
+    h = 'nonexistent-directory/orphan-bit-test.txt'
+    
+    if self.targetFileName.replace('\\','/').endswith(h):
+        at.errors += 1
+    else:
+        if self.errors == 0:
+            g.es_error("errors writing: " + self.targetFileName)
+            # g.trace(g.callers(5))
+        self.error(message)
+
+    self.root.setDirty()
+    self.root.setOrphan()
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

@@ -1794,6 +1794,8 @@ class baseFileCommands:
         elif isShadow: forceWrite = isOrphan  # Force write of @shadow trees.
         elif isThin:   forceWrite = isOrphan  # Force write of  orphan @thin trees.
         else:          forceWrite = True      # Write all other @<file> trees.
+        
+        # if p.h.startswith('@file'): g.trace('isOrphan',isOrphan,'forceWrite',forceWrite,p.h)
 
         #@+<< Set gnx = vnode index >>
         #@+node:ekr.20031218072017.1864: *5* << Set gnx = vnode index >>

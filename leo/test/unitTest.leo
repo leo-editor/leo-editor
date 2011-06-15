@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.69">
-	<global_window_position top="30" left="321" height="1026" width="1062"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.52">
+	<global_window_position top="30" left="321" height="1026" width="1255"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -75,32 +75,35 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20071113203234"><vh>Test files</vh>
-<v t="ekr.20090704085350.5028"><vh>@asis ../test/unittest/at-asis-test.py</vh>
-<v t="ekr.20090704085350.5029"><vh>spam</vh></v>
-<v t="ekr.20090704085350.5030"><vh>eggs</vh></v>
-</v>
-<v t="ekr.20090704085350.5056"><vh>@auto ../test/unittest/at-auto-test.py</vh></v>
 <v t="ekr.20090704085350.5007"><vh>@@file ../test/unittest/at-file-test.py</vh></v>
 <v t="ekr.20090704085350.5040"><vh>@@noref ../test/unittest/at-noref-test.py</vh>
 <v t="ekr.20100123093044.5115"><vh>spam</vh></v>
 <v t="ekr.20100123093044.5117"><vh>eggs</vh></v>
 </v>
+<v t="ekr.20090704085350.5028"><vh>@asis ../test/unittest/at-asis-test.py</vh>
+<v t="ekr.20090704085350.5029"><vh>spam</vh></v>
+<v t="ekr.20090704085350.5030"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20090704085350.5056"><vh>@auto ../test/unittest/at-auto-test.py</vh></v>
+<v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
+<v t="ekr.20110615130436.3317" a="O"><vh>@file nonexistent-directory/orphan-bit-test.txt</vh>
+<v t="ekr.20110615130436.3318"><vh>Child goes here.</vh></v>
+</v>
+<v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh></v>
 <v t="ekr.20090704085350.5034"><vh>@nosent ../test/unittest/at-nosent-test.py</vh>
 <v t="ekr.20090704085350.5035"><vh>spam</vh></v>
 <v t="ekr.20090704085350.5036"><vh>eggs</vh></v>
 </v>
-<v t="ekr.20090704085350.5014"><vh>@shadow ../test/unittest/at-shadow-test.py</vh></v>
-<v t="ekr.20090704085350.5022"><vh>@thin ../test/unittest/at-thin-test.py</vh></v>
-<v t="ekr.20100731163237.5782"><vh>@thin ../test/unittest/at-thin-html-test.html</vh></v>
-<v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
-<v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
-<v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
-<v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh></v>
-<v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
-<v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
 <v t="ekr.20080907123324.2"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
 <v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
 </v>
+<v t="ekr.20090704085350.5014"><vh>@shadow ../test/unittest/at-shadow-test.py</vh></v>
+<v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
+<v t="ekr.20100731163237.5782"><vh>@thin ../test/unittest/at-thin-html-test.html</vh></v>
+<v t="ekr.20090704085350.5022"><vh>@thin ../test/unittest/at-thin-test.py</vh></v>
+<v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
+<v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
+<v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31302e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
@@ -627,5 +630,13 @@ s = "%d nodes" % count
 print s ; g.es(s)</t>
 <t tx="ekr.20101220161557.6013"></t>
 <t tx="ekr.20101220161557.6016"></t>
+<t tx="ekr.20110615130436.3317">@language rest
+
+This file is part of a unit test that ensures that orphan bits are retained when
+writing .leo files.
+
+The path is **supposed** not to exist.
+</t>
+<t tx="ekr.20110615130436.3318">Child content goes here.</t>
 </tnodes>
 </leo_file>
