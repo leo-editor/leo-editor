@@ -358,7 +358,6 @@ keywordsDictDict = {
 # Rules for scala_main ruleset.
 
 def scala_rule0(colorer, s, i):
-    g.trace(i)
     return colorer.match_mark_following(s, i, kind="label", pattern="@",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
 
