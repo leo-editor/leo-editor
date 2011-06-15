@@ -391,7 +391,7 @@ class LeoApp:
         # This method can be called twice if we had to get .leoID.txt.
         if app.gui: return
 
-        if argName == 'qt':
+        if argName in ('qt','qttabs'):
             app.createQtGui(fileName,verbose=verbose)
         elif argName == 'null':
             app.createNullGui()

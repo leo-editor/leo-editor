@@ -3405,7 +3405,7 @@ def createSpecialGui(gui,pymacs,script,windowFlag):
         else:
             g.app.createNullGuiWithScript(script=script)
     else:
-        assert g.app.guiArgName
+        # assert g.app.guiArgName
         g.app.createDefaultGui() 
 #@+node:ekr.20070306085724: *8* adjustSysPath
 def adjustSysPath ():
@@ -3477,7 +3477,7 @@ def getFiles(fileName):
 #@+node:ekr.20080921091311.2: *8* initApp
 def initApp (verbose):
 
-    assert g.app.guiArgName
+    # assert g.app.guiArgName
 
     # Force the user to set g.app.leoID.
     g.app.setLeoID(verbose=verbose)
@@ -3574,23 +3574,22 @@ def scanOptions():
         if sys.platform == 'darwin' and gui == 'qttabs': # 2011/06/05
             # 2011/06/9: Convert 'qttabs' to 'qt' on MacOS.
             g.es('qttabs not supported on MacOS\nusing qt')
-            gui = g.app.guiArgName = 'qt'
+            gui = 'qt'
             g.app.qt_use_tabs = False
         elif gui == 'qttabs':
-            g.app.guiArgName = 'qt'
             g.app.qt_use_tabs = True
         elif gui in ('curses','qt','null'):
-            g.app.guiArgName = gui
             g.app.qt_use_tabs = False
         else:
             print('scanOptions: unknown gui: %s' % gui)
-            g.app.guiArgName = gui = 'qt'
+            gui = 'qt'
             g.app.qt_use_tabs = True
     else:
-        gui = g.app.guiArgName = 'qt'
+        gui = 'qt'
         g.app.qt_use_tabs = True
 
-    assert gui == g.app.guiArgName
+    g.app.guiArgName = gui # 2011/06/15
+    g.trace(gui)
 
     # --minimized
     # --maximized

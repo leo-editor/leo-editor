@@ -22,7 +22,6 @@ default ones.
 Perhaps ~/.leo/ is a good candidate, leo could look there for an Icons
 subdirectory and load icons from there first, then fall back to
 default ones.
-.. @+node:ekr.20110615071510.14793: *3* * Apply MacOS patch and test on Mac
 .. @+node:ekr.20110615071510.14792: *3* ** Fix recent bugs
 .. @+node:ekr.20110615071510.14794: *3* Later
 .. @+node:ekr.20110609161752.16461: *4* Post to pyxides re "your mission"
