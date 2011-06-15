@@ -9067,6 +9067,64 @@ def writeError(self,message=None):
 
     self.root.setDirty()
     self.root.setOrphan()
+#@+node:ekr.20110615153319.6598: *3* The only "real" call to g.findReference
+#@+node:ekr.20041005105605.177: *4* putRefAt
+def putRefAt (self,s,i,n1,n2,p,delta):
+
+    """Put a reference at s[n1:n2+2] from p."""
+
+    at = self ; c = at.c ; name = s[n1:n2+2]
+
+    ref = g.findReference(c,name,p)
+    if not ref:
+        if not g.unitTesting:
+            at.writeError(
+                "undefined section: %s\n\treferenced from: %s" %
+                    ( name,p.h))
+        return None
+
+    # Expand the ref.
+    if not delta:
+        junk,delta = g.skip_leading_ws_with_indent(s,i,at.tab_width)
+
+    at.putLeadInSentinel(s,i,n1,delta)
+
+    inBetween = []
+    if at.thinFile: # @+-middle used only in thin files.
+        parent = ref.parent()
+        while parent != p:
+            inBetween.append(parent)
+            parent = parent.parent()
+
+    at.indent += delta
+
+    lws = at.leadingWs or ''
+    if at.writeVersion5:
+        at.putSentinel("@+" + name)
+    else:
+        at.putSentinel("@" + lws + name)
+
+    if inBetween:
+        # Bug fix: reverse the +middle sentinels, not the -middle sentinels.
+        inBetween.reverse()
+        for p2 in inBetween:
+            at.putOpenNodeSentinel(p2,middle=True)
+
+    at.putOpenNodeSentinel(ref)
+    at.putBody(ref)
+    at.putCloseNodeSentinel(ref)
+
+    if inBetween:
+        inBetween.reverse()
+        for p2 in inBetween:
+            at.putCloseNodeSentinel(p2,middle=True)
+
+    if at.writeVersion5:
+        at.putSentinel("@-" + name)
+
+    at.indent -= delta
+
+    return delta
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

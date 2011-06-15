@@ -3511,7 +3511,7 @@ class atFile:
             kind = at.directiveKind4(s,i)
             #@+<< handle line at s[i] >>
             #@+node:ekr.20041005105605.163: *5* << handle line at s[i] >> (putBody)
-            if trace: g.trace(kind,repr(s[i:next_i]))
+            if trace: g.trace(repr(s[i:next_i]))
 
             if kind == at.noDirective:
                 if not oneNodeOnly:
