@@ -681,6 +681,15 @@
 <v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
 </v>
 </v>
+<v t="ekr.20110615154959.2309"><vh>@@button redefine g.findReference(c,name,p)</vh>
+<v t="ekr.20110615154959.2310"><vh>myFindReference</vh></v>
+</v>
+<v t="ekr.20110615154959.2315" a="O"><vh>@@file test-find-reference.txt</vh>
+<v t="ekr.20110615154959.2316"><vh>&lt;&lt; a &gt;&gt;</vh>
+<v t="ekr.20110615154959.2317"><vh>&lt;&lt; b &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20110615154959.2318"><vh>&lt;&lt; b &gt;&gt;</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1105,7 +1114,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="7"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8777,5 +8786,41 @@ timer.start(0)
 <t tx="ekr.20110525093203.2470"></t>
 <t tx="ekr.20110526180653.2467"></t>
 <t tx="ekr.20110526180653.2468"></t>
+<t tx="ekr.20110615154959.2309">@others
+
+g.findReference = myFindReference
+</t>
+<t tx="ekr.20110615154959.2310">def myFindReference(c,name,root):
+
+    '''Find the section definition for name as Gregory wants ;-) '''
+    
+    trace = True and not g.unitTesting
+
+    if g.callers().find('recolor') &gt; -1: trace = False # Don't trace the colorizer.
+    
+    if trace: g.trace(name,root.h)
+    
+    for p in root.children():
+        if p.matchHeadline(name) and not p.isAtIgnoreNode():
+            if trace: g.trace(p.h,'1 parent',p.parent().h)
+            return p
+
+    for p in root.subtree():
+        assert(p!=root)
+        if p.matchHeadline(name) and not p.isAtIgnoreNode():
+            if trace: g.trace(p.h,'2 parent',p.parent().h)
+            return p
+
+    if trace: g.trace("not found:",name,root.h)
+    return c.nullPosition()
+</t>
+<t tx="ekr.20110615154959.2315">before
+&lt;&lt; a &gt;&gt;
+&lt;&lt; b &gt;&gt;
+after 2</t>
+<t tx="ekr.20110615154959.2316">This is a.
+&lt;&lt; b &gt;&gt;</t>
+<t tx="ekr.20110615154959.2317">This is b1.</t>
+<t tx="ekr.20110615154959.2318">This is b2.</t>
 </tnodes>
 </leo_file>
