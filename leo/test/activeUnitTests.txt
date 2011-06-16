@@ -11420,7 +11420,10 @@ g.app.unitTestDict ['expectedMismatchLine'] = 1
 
 runner.compareHelper(lines1,lines2,i,strict=False)
 #@+node:ekr.20100131171342.5604: *3* leoKeys
-#@+node:ekr.20100131171342.5606: *4* @test k.autoCompleterClass.calltip
+#@+node:ekr.20100131171342.5606: *4* @@test k.autoCompleterClass.calltip
+# This test is difficult to get right on all platforms.
+# It's not worth doing.
+
 try:
     k = c.k
     w = c.frame.body.bodyCtrl
