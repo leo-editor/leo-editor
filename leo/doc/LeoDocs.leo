@@ -151,7 +151,7 @@
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
-<v t="ekr.20110531155858.19246"><vh>4.9 Final Release notes</vh>
+<v t="ekr.20110531155858.19246"><vh>4.9 (Final) Release notes</vh>
 <v t="ekr.20110601105631.19359"><vh>Deprecated/removed features</vh></v>
 <v t="ekr.20110531155858.19830"><vh>Bugs fixed in b1</vh>
 <v t="ekr.20110604043410.17811"><vh>Numbered bugs</vh></v>
@@ -342,9 +342,9 @@ Important files:
 <t tx="ekr.20101112045055.5065">http://www.greygreen.org/tmp/plugins.html</t>
 <t tx="ekr.20110531155858.19246">@language rest
 
-Leo 4.9 Final               June 18, 2011
+Leo 4.9 final               June 18, 2011
 
-Leo 4.9 b4 is now available at:
+Leo 4.9 final is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.

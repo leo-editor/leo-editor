@@ -15755,12 +15755,12 @@ The installer now makes proper entries in the Windows start menu.
 #@+node:ekr.20101124102457.5227: *5* New in 4.8 final
 - Fixed key redefinition message.
 #@+node:edream.110203163054.63: ** Latest version
-#@+node:ekr.20110531155858.19246: *3* 4.9 Final Release notes
+#@+node:ekr.20110531155858.19246: *3* 4.9 (Final) Release notes
 @language rest
 
-Leo 4.9 Final               June 18, 2011
+Leo 4.9 final               June 18, 2011
 
-Leo 4.9 b4 is now available at:
+Leo 4.9 final is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.

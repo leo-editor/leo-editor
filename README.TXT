@@ -1,6 +1,8 @@
-Leo 4.9 beta 4                June 14, 2011
+@language rest
 
-Leo 4.9 b4 is now available at:
+Leo 4.9 final               June 18, 2011
+
+Leo 4.9 final is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
