@@ -205,7 +205,7 @@ class Commands (object):
         
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
         
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = False # False: only print surprises.
         active = False # True: actually change the focus.
         

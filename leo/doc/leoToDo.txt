@@ -4,7 +4,6 @@
 
 .. @+all
 .. @+node:ekr.20101129095441.5963: ** Improve screenshots page
-.. @+node:ekr.20110615071510.14791: ** To do: 4.9
 .. @+node:ekr.20110609161752.16461: ** Post to pyxides re "your mission"
 .. @+node:ekr.20110616084347.14800: *3* Post to pyxides, 2011/06/18
 http://groups.google.com/group/pyxides
