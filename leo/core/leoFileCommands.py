@@ -387,10 +387,16 @@ if sys.platform != 'cli':
             # g.trace(d,w,h,x,y)
 
             # Redraw the window before writing into it.
-            c.frame.setTopGeometry(w,h,x,y)
-            c.frame.deiconify()
-            c.frame.lift()
-            c.frame.update()
+            # 2011/06/16: Honor --minimized, --maximized or --fullscreen.
+            if (
+                not g.app.start_minimized and
+                not g.app.start_maximized and
+                not g.app.start_fullscreen
+            ):
+                c.frame.setTopGeometry(w,h,x,y)
+                c.frame.deiconify()
+                c.frame.lift()
+                c.frame.update()
 
             # Causes window to appear.
             # g.trace('ratio',c.frame.ratio,c)

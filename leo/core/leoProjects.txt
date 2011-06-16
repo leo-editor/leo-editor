@@ -9125,6 +9125,222 @@ def putRefAt (self,s,i,n1,n2,p,delta):
     at.indent -= delta
 
     return delta
+#@+node:ekr.20110616082502.14800: *3* Fixed bug 798194: --maximized has no effect
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/798194
+
+I execute leo by typing on the cmd command line: python launchleo.py
+quickstart.leo --maximized Other commands are accepted, tested with --minimized
+and with --no-splash
+
+Actually, the main Leo window is maximized for a very brief moment, before being
+reset by the call to setTopGeometry() in method startVnodes of class
+saxContentHandler in file leoFileCommands.py. If I comment out the call to
+setTopGeometry, then the window stays maximized.
+#@+node:ekr.20060919112118: *4* startVnodes
+def startVnodes (self,unused_attrs):
+
+    if self.inClipboard:
+        return # No need to do anything to the main window.
+
+    c = self.c ; d = self.global_window_position
+
+    w = d.get('width',700)
+    h = d.get('height',500)
+    x = d.get('left',50)
+    y = d.get('top',50)
+    # g.trace(d,w,h,x,y)
+
+    # Redraw the window before writing into it.
+    # 2011/06/16: Honor --minimized, --maximized or --fullscreen.
+    if (
+        not g.app.start_minimized and
+        not g.app.start_maximized and
+        not g.app.start_fullscreen
+    ):
+        c.frame.setTopGeometry(w,h,x,y)
+        c.frame.deiconify()
+        c.frame.lift()
+        c.frame.update()
+
+    # Causes window to appear.
+    # g.trace('ratio',c.frame.ratio,c)
+    c.frame.resizePanesToRatio(c.frame.ratio,c.frame.secondary_ratio)
+    if not self.silent and not g.unitTesting:
+        g.es("reading:",self.fileName)
+#@+node:ekr.20091007103358.6061: *4* scanOptions
+def scanOptions():
+
+    '''Handle all options and remove them from sys.argv.'''
+    trace = False
+
+    # Note: this automatically implements the --help option.
+    parser = optparse.OptionParser()
+    add = parser.add_option
+    add('-c', '--config', dest="one_config_path",
+        help = 'use a single configuration file')
+    add('--debug',        action="store_true",dest="debug",
+        help = 'enable debugging support')
+    add('-f', '--file',   dest="fileName",
+        help = 'load a file at startup')
+    add('--gui',
+        help = 'gui to use (qt/qttabs)')
+    add('--minimized',    action="store_true",
+        help = 'start minimized')
+    add('--maximized',    action="store_true",
+        help = 'start maximized (Qt only)')
+    add('--fullscreen',   action="store_true",
+        help = 'start fullscreen (Qt only)')
+    add('--ipython',      action="store_true",dest="use_ipython",
+        help = 'enable ipython support')
+    add('--no-cache',     action="store_true",dest='no_cache',
+        help = 'disable reading of cached files')
+    add('--no-splash',    action="store_true",dest='no_splash_screen',
+        help = 'disable the splash screen')
+    add('--silent',       action="store_true",dest="silent",
+        help = 'disable all log messages')
+    add('--screen-shot',  dest='screenshot_fn',
+        help = 'take a screen shot and then exit')
+    add('--script',       dest="script",
+        help = 'execute a script and then exit')
+    add('--script-window',dest="script_window",
+        help = 'open a window for scripts')
+    add('--select',       dest='select',
+        help='headline or gnx of node to select')
+    add('--version',      action="store_true",dest="version",
+        help='print version number and exit')
+    add('--window-size',  dest='window_size',
+        help='initial window size in height x width format')
+
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+    if trace: print('scanOptions:',sys.argv)
+
+    # Handle the args...
+
+    # -c or --config
+    path = options.one_config_path
+    if path:
+        path = g.os_path_finalize_join(os.getcwd(),path)
+        if g.os_path_exists(path):
+            g.app.oneConfigFilename = path
+        else:
+            g.es_print('Invalid -c option: file not found:',path,color='red')
+
+    # --debug
+    if options.debug:
+        g.debug = True
+        print('scanOptions: *** debug mode on')
+
+    # -f or --file
+    fileName = options.fileName
+    if fileName:
+        fileName = fileName.strip('"')
+        if trace: print('scanOptions:',fileName)
+
+    # --gui
+    gui = options.gui
+
+    if gui:
+        gui = gui.lower()
+
+        if sys.platform == 'darwin' and gui == 'qttabs': # 2011/06/05
+            # 2011/06/9: Convert 'qttabs' to 'qt' on MacOS.
+            g.es('qttabs not supported on MacOS\nusing qt')
+            gui = 'qt'
+            g.app.qt_use_tabs = False
+        elif gui == 'qttabs':
+            g.app.qt_use_tabs = True
+        elif gui in ('curses','qt','null'):
+            g.app.qt_use_tabs = False
+        else:
+            print('scanOptions: unknown gui: %s' % gui)
+            gui = 'qt'
+            g.app.qt_use_tabs = True
+    else:
+        gui = 'qt'
+        g.app.qt_use_tabs = True
+
+    assert gui
+    g.app.guiArgName = gui # 2011/06/15
+
+    # --minimized
+    # --maximized
+    # --fullscreen
+    g.app.start_minimized = options.minimized
+    g.app.start_maximized = options.maximized
+    g.app.start_fullscreen = options.fullscreen
+
+    # --ipython
+    g.app.useIpython = options.use_ipython
+
+    # --no-cache
+    if options.no_cache:
+        print('scanOptions: disabling caching')
+        g.enableDB = False
+        
+    # --no-splash
+    # g.trace('--no-splash',options.no_splash_screen)
+    g.app.use_splash_screen = not options.no_splash_screen
+
+    # --screen-shot=fn
+    screenshot_fn = options.screenshot_fn
+    if screenshot_fn:
+        screenshot_fn = screenshot_fn.strip('"')
+        if trace: print('scanOptions: screenshot_fn',screenshot_fn)
+
+    # --script
+    script_path = options.script
+    script_path_w = options.script_window
+    if script_path and script_path_w:
+        parser.error("--script and script-window are mutually exclusive")
+
+    script_name = script_path or script_path_w
+    if script_name:
+        script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
+        script,e = g.readFileIntoString(script_name,kind='script:')
+        # print('script_name',repr(script_name))
+    else:
+        script = None
+        # if trace: print('scanOptions: no script')
+
+    # --select
+    select = options.select
+    if select:
+        select = select.strip('"')
+        if trace: print('scanOptions: select',repr(select))
+
+    # --silent
+    g.app.silentMode = options.silent
+    # print('scanOptions: silentMode',g.app.silentMode)
+
+    # --version: print the version and exit.
+    versionFlag = options.version
+
+    # --window-size
+    windowSize = options.window_size
+    if windowSize:
+        if trace: print('windowSize',repr(windowSize))
+        try:
+            h,w = windowSize.split('x')
+        except ValueError:
+            windowSize = None
+            g.trace('bad --window-size:',size)
+
+    # Compute the return values.
+    windowFlag = script and script_path_w
+    return {
+        'fileName':fileName,
+        'gui':gui,
+        'screenshot_fn':screenshot_fn,
+        'script':script,
+        'select':select,
+        'version':versionFlag,
+        'windowFlag':windowFlag,
+        'windowSize':windowSize,
+    }
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

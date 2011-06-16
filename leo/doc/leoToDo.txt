@@ -5,11 +5,8 @@
 .. @+all
 .. @+node:ekr.20101129095441.5963: ** Improve screenshots page
 .. @+node:ekr.20110615071510.14791: ** To do: 4.9
-.. @+node:ekr.20110615071510.14792: *3* ** Fix file-related bugs
-.. @+node:ekr.20110615071510.14794: *3* Later
-.. @+node:ekr.20110609161752.16461: *4* Post to pyxides re "your mission"
-.. @+node:ekr.20110614083842.6579: *4* Fix failing unit tests on Linux
-.. @+node:ekr.20110614123640.6586: *4* script to check myLeoSettings.leo
+.. @+node:ekr.20110609102702.16471: ** To do: 4.10
+.. @+node:ekr.20110614123640.6586: *3* script to check myLeoSettings.leo
 @nocolor-node
 
 
@@ -21,31 +18,7 @@ leo, but are still present in myLeoSettings. A special case would be
 to validate enabled-plugins node too, which can sometimes contain
 legacy lines, like it recently happened with UNL plugin that got moved
 to cotrib branch.
-.. @+node:ekr.20110614123640.6588: *4* About macros
-@nocolor-node
-
-Kent:
-    
-I don't understand macros. The following sounds like
-a description of a @command node, where calling the
-headline runs the body.
-
-"The first step will be to support @macros and @macro <name> nodes.
-The body text of @macro nodes will contain the text of the macro."
-
-Ah, the _text_ of the macro ... the macro is boilerplate, not code ... ?
-
-I like the _idea_ of collecting useful boilerplate and leveraging it to increase
-efficiency, but I've never done it, doubtful I will.
-
-Terry:
-    
-To me a higher priority would be documentation of, and if necessary
-improvement of, the commands for editing the body text, moving the
-position, selection, etc.
-
-.. @+node:ekr.20110609102702.16471: ** To do: 4.10
-.. @+node:ekr.20110611043506.16494: *3* (Maybe) Ashland sprint items: 4
+.. @+node:ekr.20110611043506.16494: *3* Ashland sprint items: 4
 .. @+node:ekr.20110527084258.18378: *4* New file format
 @nocolor-node
 
