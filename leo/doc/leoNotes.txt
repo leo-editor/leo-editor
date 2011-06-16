@@ -4,6 +4,8 @@
 
 #@+all
 #@+node:ekr.20090202064534.4: **  Your mission, should you choose to accept it
+@language rest
+
 #@+node:ekr.20100223100750.5843: *3* Original post by Robin Dunn
 @nocolor-node
 
@@ -197,6 +199,40 @@ would be important to you.
 
 P.S. Leo does have auto-completion.  It will be improved in Leo 4.9.
 
+#@+node:ekr.20110616084347.14800: *3* Post to pyxides, 2011/06/18
+http://groups.google.com/group/pyxides
+
+On 2010/02/23 I commented about Leo 4.7 as it relates to Robin Dunn's post,
+http://groups.google.com/group/leo-editor/browse_thread/thread/4f76a0f57759aba
+
+Imo, Leo has accomplished the mission. Leo has all the important features that
+Leo's users have requested. Yes, wishlist items remain. See:
+https://bugs.launchpad.net/leo-editor/+bugs 
+
+None of these wish-list items interferes in any way with Leo's day-to-day
+operation. Furthermore, many of Leo's essential features moot the need for more
+traditional features.
+
+For example, Leo 4.9 adds full support for macros. Recording, saving, editing
+and retrieving macros is easier in Leo than in other editors because Leo stores
+macros in @macro nodes, not external files. But few, if any, of Leo's users are
+likely to use macros because Leo's @button nodes make all of Python's scripting
+abilities easily available on a node-by-node or outline-wide basis.
+
+It may be that Leo could benefit from some Emacs-like or vim-like features, but
+that doesn't seem so likely.  Leo has many users who also use Emacs and vim, and
+they seem happy enough :-)
+
+Finally, Leo offers features that have no counterpart at all in editors like
+Emacs and vim. For example, the rst3 command converts an outline to restructured
+text. See: http://webpages.charter.net/edreamleo/rstplugin3.html Yes, one could
+imagine an org-mode command that does this, but the fact is that Leo's outline
+orientation has given it abilities possessed by no other editor or IDE.
+
+Naturally, you may disagree. I invite you to try Leo. If, after using Leo for
+real work, you find you would like some new feature, then by all means ask.
+
+Edward
 #@+node:ekr.20061116060847: ** @url http://www.jhorman.org/wikidPad/
 #@+node:ekr.20091218120633.6299: ** Bzr
 #@+node:ekr.20080917153158.10: *3* Bzr notes

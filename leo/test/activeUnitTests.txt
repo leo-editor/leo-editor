@@ -9473,7 +9473,7 @@ i,j = g.getWord(s,5)
 assert s[i:j] == 'xy_z5','got %s' % s[i:j]
 #@+node:ekr.20110612064437.3310: *4* @test g.guessExternalEditor
 val = g.guessExternalEditor(c)
-assert val == 'Leo',val
+assert val,'no val' # This can be different on different platforms.
 #@+node:ekr.20100131180007.5417: *4* @test g.openLeoOrZipFile
 import zipfile
 
