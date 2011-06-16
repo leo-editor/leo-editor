@@ -15755,10 +15755,10 @@ The installer now makes proper entries in the Windows start menu.
 #@+node:ekr.20101124102457.5227: *5* New in 4.8 final
 - Fixed key redefinition message.
 #@+node:edream.110203163054.63: ** Latest version
-#@+node:ekr.20110531155858.19246: *3* 4.9 b4 Release notes
+#@+node:ekr.20110531155858.19246: *3* 4.9 Final Release notes
 @language rest
 
-Leo 4.9 beta 4                June 14, 2011
+Leo 4.9 Final               June 18, 2011
 
 Leo 4.9 b4 is now available at:
 http://sourceforge.net/projects/leo/files/
@@ -16578,5 +16578,18 @@ Other changes
 - Running all unit tests leaves all files unchanged. This was a major annoyance.
 
 - Leo now does a keyboard-quit when deactivating a window.
+#@+node:ekr.20110616100929.14794: *4* New in 4.9 final
+- When running on MacOS, Leo uses the qt gui when the qttabs gui is requested.
+
+- Leo now looks in home/.leo/Icons directory for icons before looking in the
+  leo/Icons directory.
+  http://groups.google.com/group/leo-editor/browse_thread/thread/80163aec96b8ea45/4f58418924172252
+
+- Fixed bug 797470: File data sometimes silently erased when the tangler fails.
+  https://bugs.launchpad.net/leo-editor/+bug/797470 This was a serious bug, but
+  it could happen only when saving an errorneous file twice.
+
+- Fixed bug 798194: --maximized has no effect
+  https://bugs.launchpad.net/leo-editor/+bug/798194
 #@-all
 #@-leo
