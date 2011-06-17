@@ -124,7 +124,7 @@ class AutoCompleterClass:
         
         # Options...
         self.auto_tab       = c.config.getBool('auto_tab_complete',False)
-        # self.use_codewise   = c.config.getBool('use_codewise',False) and not self.is_leo_source_file()
+        self.forbid_invalid = c.config.getBool('forbid_invalid_completions',False)
         self.use_qcompleter = c.config.getBool('use_qcompleter',False)
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
@@ -405,9 +405,10 @@ class AutoCompleterClass:
                 else:
                     g.es('No completions',color='blue')
                     self.exit()
-                return
+                return None
             else:
-                if trace: g.trace('ignore non plain key',repr(stroke))
+                if trace: g.trace('ignore non plain key',repr(stroke),g.callers())
+                self.abort() # 2011/06/17.
                 return 'do-standard-keys'
     #@+node:ekr.20061031131434.20: *4* calltip & helpers
     def calltip (self):
@@ -872,7 +873,7 @@ class AutoCompleterClass:
             common_prefix,prefix,aList = self.compute_completion_list()
             if trace: g.trace('ch',repr(ch),'prefix',repr(prefix),'len(aList)',len(aList))
             if not aList:
-                if 0: # Annoying. Let the user type "by hand".
+                if self.forbid_invalid: # 2011/06/17.
                     # Delete the character we just inserted.
                     self.do_backspace()
             elif self.auto_tab and len(common_prefix) > len(prefix):
@@ -2953,13 +2954,21 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.108: *5* callStateFunction
     def callStateFunction (self,event):
 
+        trace = False and not g.unitTesting
         k = self ; val = None 
-        
         ch = event and event.char or ''
+        stroke = event and event.stroke or ''
 
-        # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
-
-        if k.state.kind:
+        if trace: g.trace(k.state.kind,'ch',ch,'stroke',stroke,
+            'ignore_unbound_non_ascii_keys',k.ignore_unbound_non_ascii_keys)
+            
+        if k.state.kind == 'auto-complete':
+            # 2011/06/17.
+            # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
+            val = k.state.handler(event)
+            if trace: g.trace('auto-complete returns',repr(val))
+            return val
+        elif k.state.kind:
             if (
                 k.ignore_unbound_non_ascii_keys and
                 len(ch) == 1 and # 2011/04/01
@@ -2996,7 +3005,10 @@ class keyHandlerClass:
             # Do the default state action.
             if trace: g.trace('calling state function',k.state.kind)
             val = k.callStateFunction(event) # Calls end-command.
-            if val != 'do-standard-keys':
+            if trace: g.trace('state function returns',repr(val))
+            if val == 'do-standard-keys':
+                return False,None # 2011/06/17.
+            else:
                 return True,'break'
 
         # Third, pass keys to user modes.
