@@ -17,7 +17,7 @@
 <v t="EKR.20040519091259"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="ekr.20101115090518.1494"><vh>Leo 4.8 final</vh></v>
-<v t="ekr.20110603112852.1505"><vh>Leo 4.9 final</vh></v>
+<v t="ekr.20110603112852.1505"><vh>Leo 4.9 rc1</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -94,7 +94,7 @@
 
 1. Search for ##version
 
-2. Search for this suffix: -final.
+2. Search for this suffix: -rc1.
 
 3. Search for copyright
 
@@ -156,7 +156,7 @@ Installing Leo on Windows
 There are now two ways to install Leo on Windows:
     
 1. Use the single-click executable installer, named something like
-   LeoSetup-4.9-final.exe
+   LeoSetup-4.9-rc1.exe
 
 2. Leo is distributed as a .zip file.
    To install Leo from the .zip file:
@@ -177,7 +177,7 @@ There are now two ways to install Leo on Windows:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.9-final
+Version: 4.9-rc1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -191,11 +191,9 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">@language rest
+<t tx="EKR.20040519090846.9">Leo 4.9 rc1               June 17, 2011
 
-Leo 4.9 final               June 18, 2011
-
-Leo 4.9 final is now available at:
+Leo 4.9 rc1 is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
@@ -231,7 +229,7 @@ The highlights of Leo 4.9:
 
 - Added namespace directive to .leo files.
 
-- Fixed many bugs, some important, others merely annoying.
+- Fixed many bugs, some important, most quite minor.
 
 Links:
 ------
@@ -242,6 +240,7 @@ Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 </t>
 <t tx="EKR.20040519091259">@pagewidth 70
+
 @language rest
 </t>
 <t tx="EKR.20040519091259.1">4.4.5       setup: 547  zip: 379  2007-12-11
@@ -654,7 +653,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
         leo.zip.
 '''
 
-version = '4.9-final' ##version
+version = '4.9-rc1' ##version
 
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
@@ -1061,11 +1060,9 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 </t>
-<t tx="ekr.20110603112852.1505">@language rest
+<t tx="ekr.20110603112852.1505">Leo 4.9 rc1               June 17, 2011
 
-Leo 4.9 final               June 18, 2011
-
-Leo 4.9 final is now available at:
+Leo 4.9 rc1 is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
@@ -1101,7 +1098,7 @@ The highlights of Leo 4.9:
 
 - Added namespace directive to .leo files.
 
-- Fixed many bugs, some important, others merely annoying.
+- Fixed many bugs, some important, most quite minor.
 
 Links:
 ------

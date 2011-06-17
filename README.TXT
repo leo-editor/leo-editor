@@ -1,8 +1,6 @@
-@language rest
+Leo 4.9 rc1               June 17, 2011
 
-Leo 4.9 final               June 18, 2011
-
-Leo 4.9 final is now available at:
+Leo 4.9 rc1 is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
@@ -38,7 +36,7 @@ The highlights of Leo 4.9:
 
 - Added namespace directive to .leo files.
 
-- Fixed many bugs, some important, others merely annoying.
+- Fixed many bugs, some important, most quite minor.
 
 Links:
 ------

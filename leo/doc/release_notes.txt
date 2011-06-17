@@ -15755,12 +15755,12 @@ The installer now makes proper entries in the Windows start menu.
 #@+node:ekr.20101124102457.5227: *5* New in 4.8 final
 - Fixed key redefinition message.
 #@+node:edream.110203163054.63: ** Latest version
-#@+node:ekr.20110531155858.19246: *3* 4.9 (Final) Release notes
+#@+node:ekr.20110531155858.19246: *3* 4.9 rc1 Release notes
 @language rest
 
-Leo 4.9 final               June 18, 2011
+Leo 4.9 rc1               June 17, 2011
 
-Leo 4.9 final is now available at:
+Leo 4.9 rc1 is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
@@ -15796,7 +15796,7 @@ The highlights of Leo 4.9:
 
 - Added namespace directive to .leo files.
 
-- Fixed many bugs, some important, others merely annoying.
+- Fixed many bugs, some important, most quite minor.
 
 Links:
 ------
@@ -16578,7 +16578,7 @@ Other changes
 - Running all unit tests leaves all files unchanged. This was a major annoyance.
 
 - Leo now does a keyboard-quit when deactivating a window.
-#@+node:ekr.20110616100929.14794: *4* New in 4.9 final
+#@+node:ekr.20110616100929.14794: *4* New in 4.9 rc1
 - When running on MacOS, Leo uses the qt gui when the qttabs gui is requested.
 
 - Leo now looks in home/.leo/Icons directory for icons before looking in the
@@ -16591,5 +16591,18 @@ Other changes
 
 - Fixed bug 798194: --maximized has no effect
   https://bugs.launchpad.net/leo-editor/+bug/798194
+  
+- Added the @bool forbid_invalid_completions setting.
+
+- Non-plain keys, such as Ctrl-s, abort auto-completion and are interpreted as
+  usual.
+
+- Don't mark the .leo file as changed when setting orphan bit. There is no need:
+  the orphan bits will ensure errors get reported if the file is saved.
+
+- Disabled the open-compare-window command. It is/was a Tk only command.
+
+- The open-python-window command fails more gracefully It issues a message
+  instead of crashing if idlelib does not exist.
 #@-all
 #@-leo
