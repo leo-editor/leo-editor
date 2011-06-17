@@ -616,13 +616,13 @@ begins and ends with the '\b' anchor.
 - Running all unit tests leaves all files unchanged. This was a major annoyance.
 
 - Leo now does a keyboard-quit when deactivating a window.
-.. @+node:ekr.20110613172008.15107: *5* 4.9 b4: Ancient bugs fixed
+
 - Fixed an ancient bug: everything after @all was put in the wrong node!
 
 - Fixed an ancient bug: wrap-around search now restarts when find pattern changes.
 
 - Fixed an ancient bug: F-keys end incremental searches.
-.. @+node:ekr.20110613172008.15108: *5* 4.9 b4: Recent bugs fixed
+
 - Fixed a serious recent problem with commands dispatched from menus The Shift
   modifier was deleted from all commands executed by selecting an item in menus!
   A new unit test checks that menus behave as expected.
