@@ -181,6 +181,7 @@
 <v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = False</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
 <v t="ekr.20060216170801"><vh>@bool enable_calltips_initially = False</vh></v>
+<v t="ekr.20110617081407.14760"><vh>@bool forbid_invalid_completions = False</vh></v>
 <v t="ekr.20110510071925.14590"><vh>@bool use_codewise = False</vh></v>
 <v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = True</vh></v>
 </v>
@@ -5813,6 +5814,7 @@ CheckSettings(c).run()
             aList.append('*** %s' % (s))
             break
 </t>
+<t tx="ekr.20110617081407.14760">True: Don't add characters during autocompletion that are not part of any computed completion.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
