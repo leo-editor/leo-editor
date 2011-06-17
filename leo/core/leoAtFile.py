@@ -575,9 +575,9 @@ class atFile:
         elif at.errors > 0:
             # 2010/10/22: Dirty bits are *always* cleared.
             # Only the orphan bit is preserved.
-            root.setDirty()
+            ### root.setDirty() # 2011/06/17: Won't be preserved anyway
             root.setOrphan()
-            c.setChanged(True)
+            ### c.setChanged(True) # 2011/06/17.
         else:
             root.clearOrphan()
         if at.errors == 0 and not isFileLike and not fromString:
@@ -767,9 +767,10 @@ class atFile:
                 if wasOrphan and not partialFlag and not ok:
                     # Remind the user to fix the problem.
                     # However, the dirty bit gets cleared.
-                    p.setDirty() # Expensive, but it can't be helped.
+                    ### p.setDirty() # 2011/06/17: won't be preserved anyway.
+                        # Expensive, but it can't be helped.
                     p.setOrphan() # 2010/10/22: the dirty bit gets cleared.
-                    c.setChanged(True)
+                    ### c.setChanged(True) # 2011/06/17
                 p.moveToNodeAfterTree()
             else:
                 # 2010/7/28: set v.at_read bit if the @asis or @nosent
@@ -2842,7 +2843,7 @@ class atFile:
         """Write a 4.x derived file.
         root is the position of an @<file> node"""
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
 

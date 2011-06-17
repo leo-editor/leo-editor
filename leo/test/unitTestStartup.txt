@@ -118,6 +118,8 @@ leoTest.runTimerOnNode(c,p,count=100)
 #@+node:ekr.20080529115911.1: *3* @button profile
 import leo.core.leoTest as leoTest
 leoTest.runProfileOnNode(p,outputPath=None) # Defaults to leo\test\profileStats.txt
+#@+node:ekr.20110617104931.3322: *3* @button print isOrphan
+print(p.v.isOrphan(),p.h)
 #@+node:ekr.20080312090030.1: ** Commands
 #@+node:ekr.20051104081502.552: *3* @@command my-command @key = alt-shift-ctrl-z
 g.es('my-command',color='red')
