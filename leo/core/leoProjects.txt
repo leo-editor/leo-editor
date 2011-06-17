@@ -1511,7 +1511,9 @@ def read(self,root,importFileName=None,
     # Bug fix 2011/05/23: Restore orphan trees from the outline.
     if root.isOrphan():
         g.es("reading:",root.h)
-        g.warning('The outline contains an orphan node!\nRetaining the outline')
+        # g.warning('The outline contains an orphan node!\nRetaining the outline')
+        g.es_print('orphan node in',root.h,color='red')
+        g.es_print('retaining the data from the .leo file',color='blue')
         return False
     at.initReadIvars(root,fileName,
         importFileName=importFileName,atShadow=atShadow)
@@ -1718,6 +1720,12 @@ def isFileLike (self,s):
         if trace: g.trace('found: True isThin:',
             isThin,repr(line))
         return not isThin
+#@+node:ekr.20110617130730.14780: *3* Disabled the open-compare-window command
+It is/was a Tk only command.
+#@+node:ekr.20110617130730.14781: *3* open-python-window command fails more gracefully
+@nocolor-node
+
+It issues a message instead of crashing if idlelib does not exist.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

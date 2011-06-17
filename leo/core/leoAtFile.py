@@ -503,7 +503,9 @@ class atFile:
         # Bug fix 2011/05/23: Restore orphan trees from the outline.
         if root.isOrphan():
             g.es("reading:",root.h)
-            g.warning('The outline contains an orphan node!\nRetaining the outline')
+            # g.warning('The outline contains an orphan node!\nRetaining the outline')
+            g.es_print('orphan node in',root.h,color='red')
+            g.es_print('retaining the data from the .leo file',color='blue')
             return False
         at.initReadIvars(root,fileName,
             importFileName=importFileName,atShadow=atShadow)
@@ -3021,7 +3023,7 @@ class atFile:
                     p.h,repr(oldPath),repr(newPath)))
 
         if (p.v.isDirty() or
-            p.v.isOrphan() or # 2011/06/17.
+            # p.v.isOrphan() or # 2011/06/17.
             pathChanged or
             writeAtFileNodesFlag or
             p.v in writtenFiles

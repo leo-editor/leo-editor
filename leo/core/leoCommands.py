@@ -5943,7 +5943,12 @@ class Commands (object):
 
         '''Open Python's Idle debugger in a separate process.'''
 
-        idlelib_path = imp.find_module('idlelib')[1]
+        try:
+            idlelib_path = imp.find_module('idlelib')[1]
+        except ImportError:
+            g.es_print('idlelib not found: can not open a Python window.')
+            return
+
         idle = g.os_path_join(idlelib_path,'idle.py')
         args = [sys.executable, idle ]
 
