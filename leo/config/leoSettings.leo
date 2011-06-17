@@ -977,7 +977,7 @@
 <v t="ekr.20070925144534.401"><vh>@item *&amp;cascade-windows</vh></v>
 <v t="ekr.20070925144534.402"><vh>@item *&amp;minimize-all</vh></v>
 <v t="ekr.20070925144534.403"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.404"><vh>@item *open-compare-window</vh></v>
+<v t="ekr.20070925144534.404"><vh>@@item *open-compare-window</vh></v>
 <v t="ekr.20070925144534.405"><vh>@item *open-python-&amp;window</vh></v>
 </v>
 <v t="ekr.20070925144534.406"><vh>@menu &amp;Help</vh>
@@ -2546,7 +2546,7 @@ number-command-6                = Alt-6
 number-command-7                = Alt-7
 number-command-8                = Alt-8
 number-command-9                = Alt-9 
-open-compare-window             = None
+# open-compare-window             = None
 open-leoDocs-leo                = None
 open-leoPlugins-leo             = None
 open-leoSettings-leo            = None
@@ -2852,7 +2852,7 @@ number-command-7                    = None
 number-command-8                    = None
 number-command-9                    = None
 # number-to-register                = None
-open-compare-window                 = None
+# open-compare-window                 = None
 open-find-dialog                    = None # Deprecated: all find commands use the Find *tab*
 open-leoDocs-leo                    = None
 open-leoPlugins-leo                 = None

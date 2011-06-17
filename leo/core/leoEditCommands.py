@@ -6762,7 +6762,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'move-outline-right':           c.moveOutlineRight,
             'move-outline-up':              c.moveOutlineUp,
             'new':                          c.new,
-            'open-compare-window':          c.openCompareWindow,
+            # 'open-compare-window':          c.openCompareWindow,
             'open-find-dialog':             c.showFindPanel, # Deprecated.
             'open-leoDocs-leo':             c.leoDocumentation,
             'open-leoPlugins-leo':          c.openLeoPlugins,
