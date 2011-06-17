@@ -40,6 +40,14 @@ real work, you find you would like some new feature, then by all means ask.
 
 Edward
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10
+.. @+node:ekr.20110617144701.14907: *3* Code cleaning
+@nocolor-node
+
+- Remove multiple continguous comment lines.
+
+- Eliminate k.callStateFunction if possible.
+  The code should just call the "func":
+  it should be up to each mode handler to handle special cases!
 .. @+node:ekr.20110614123640.6588: *3* Documentation re emacs-like commands for editing body text
 @nocolor-node
 
