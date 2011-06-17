@@ -1381,6 +1381,14 @@ ic.run(
     svg_fn=svg_fn, # Optional: Name of working svg file.
     template_fn=template_fn, # Optional: Name of template svg file.
 )
+#@+node:ekr.20110617102247.14765: ** * Last-minute changes
+#@+node:ekr.20110617102247.14766: *3* Two changes to autocompleter
+@nocolor-node
+
+- Added @bool forbid_invalid_completions option.
+
+- Non-plain keys, such as Ctrl-s, abort auto-completion
+  and are interpreted as usual.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
