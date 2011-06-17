@@ -2842,7 +2842,7 @@ class atFile:
         """Write a 4.x derived file.
         root is the position of an @<file> node"""
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
 
@@ -2901,6 +2901,7 @@ class atFile:
 
         if not at.openFileForWriting(root,at.targetFileName,toString):
             # openFileForWriting calls root.setDirty() if there are errors.
+            if trace: g.trace('open failed',eventualFileName)
             return
 
         try:
@@ -3018,7 +3019,12 @@ class atFile:
                 if trace: g.trace('p %s\noldPath %s\nnewPath %s' % (
                     p.h,repr(oldPath),repr(newPath)))
 
-        if p.v.isDirty() or pathChanged or writeAtFileNodesFlag or p.v in writtenFiles:
+        if (p.v.isDirty() or
+            p.v.isOrphan() or # 2011/06/17.
+            pathChanged or
+            writeAtFileNodesFlag or
+            p.v in writtenFiles
+        ):
 
             # Tricky: @ignore not recognised in @asis nodes.
             if p.isAtAsisFileNode():
@@ -5001,10 +5007,10 @@ class atFile:
         
         at = self
         
-        # Don't give this particular error.
+        # Don't give errors for this particular file during unit testing.
         h = 'nonexistent-directory/orphan-bit-test.txt'
         
-        if self.targetFileName.replace('\\','/').endswith(h):
+        if g.unitTesting and self.targetFileName.replace('\\','/').endswith(h):
             at.errors += 1
         else:
             if self.errors == 0:

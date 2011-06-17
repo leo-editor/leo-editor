@@ -1389,6 +1389,25 @@ ic.run(
 
 - Non-plain keys, such as Ctrl-s, abort auto-completion
   and are interpreted as usual.
+#@+node:ekr.20110617102445.14767: *3* Give errors for orphan-bit-test.txt when not unit testing
+#@+node:ekr.20041005105605.217: *4* writeError
+def writeError(self,message=None):
+    
+    at = self
+    
+    # Don't give errors for this particular file during unit testing.
+    h = 'nonexistent-directory/orphan-bit-test.txt'
+    
+    if g.unitTesting and self.targetFileName.replace('\\','/').endswith(h):
+        at.errors += 1
+    else:
+        if self.errors == 0:
+            g.es_error("errors writing: " + self.targetFileName)
+            # g.trace(g.callers(5))
+        self.error(message)
+
+    self.root.setDirty()
+    self.root.setOrphan()
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
