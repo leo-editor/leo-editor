@@ -1726,6 +1726,169 @@ It is/was a Tk only command.
 @nocolor-node
 
 It issues a message instead of crashing if idlelib does not exist.
+#@+node:ekr.20110619173515.14894: ** 4.9 final
+#@+node:ekr.20110618125607.6528: *3* Fixed crash on mouse clicks in minibuffer
+@nocolor-node
+
+# Happens when clicking in minibuffer.
+
+scanOptions: disabling caching
+Leo 4.9 rc1, build 4399, June 17, 2011
+Python 2.6.4, qt version 4.5.3
+Windows 6, 1, 7601, 2, Service Pack 1
+reading settings in C:\leo.repo\trunk\leo\config\leoSettings.leo
+reading settings in c:\Users\edreamleo\.leo\myLeoSettings.leo
+reading settings in c:\prog\Speed\web_edward.leo
+wrote recent file: c:\Users\edreamleo\.leo\.leoRecentFiles.txt
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2009, in mouseReleaseEvent
+    c=c,w=c.frame.body.bodyCtrl,ch='',tkKey='',stroke='')
+TypeError: __init__() got an unexpected keyword argument 'ch'
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2009, in mouseReleaseEvent
+    c=c,w=c.frame.body.bodyCtrl,ch='',tkKey='',stroke='')
+TypeError: __init__() got an unexpected keyword argument 'ch'
+#@+node:ekr.20110605195119.16937: *4* create_key_event (leoQtEventFilter)
+def create_key_event (self,event,c,w,ch,tkKey,stroke):
+
+    trace = False and not g.unitTesting ; verbose = False
+    
+    if trace and verbose: g.trace('ch: %s, tkKey: %s, stroke: %s' % (
+        repr(ch),repr(tkKey),repr(stroke)))
+        
+    # Last-minute adjustments...
+    if stroke == 'Return':
+        ch = '\n' # Somehow Qt wants to return '\r'.
+    elif stroke == 'Escape':
+        ch = 'Escape'
+        
+    # This looks reasonable, but see k.handleUnboundKeys.
+    # elif stroke.find('Ctrl+') > -1 or stroke.find('Alt+') > -1:
+    #    ch = ''
+        
+    # Switch the Shift modifier to handle the cap-lock key.
+    if len(ch) == 1 and len(stroke) == 1 and ch.isalpha() and stroke.isalpha():
+        if ch != stroke:
+            if trace: g.trace('caps-lock')
+            stroke = ch
+
+    # Patch provided by resi147.
+    # See the thread: special characters in MacOSX, like '@'.
+    if sys.platform.startswith('darwin'):
+        darwinmap = {
+            'Alt-Key-5': '[',
+            'Alt-Key-6': ']',
+            'Alt-Key-7': '|',
+            'Alt-slash': '\\',
+            'Alt-Key-8': '{',
+            'Alt-Key-9': '}',
+            'Alt-e': '€',
+            'Alt-l': '@',
+        }
+        if tkKey in darwinmap:
+            stroke = darwinmap[tkKey]
+            
+    char = ch
+    # Auxiliary info.
+    x      = hasattr(event,'x') and event.x or 0
+    y      = hasattr(event,'y') and event.y or 0
+    # Support for fastGotoNode plugin
+    x_root = hasattr(event,'x_root') and event.x_root or 0
+    y_root = hasattr(event,'y_root') and event.y_root or 0
+    
+    if trace: g.trace('ch: %s, stroke: %s printable: %s' % (
+        repr(ch),repr(stroke),ch in string.printable))
+
+    return leoGui.leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
+#@+node:ekr.20110605121601.18847: *4* create_key_event (leoGui)
+def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None):
+    
+    # 2011/06/13: Do not call shortcutFromSetting here!
+    # For example, this would wrongly convert Ctrl-C to Ctrl-c,
+    # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
+
+    return leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
+#@+node:ekr.20070228160107: *4* class leoKeyEvent (leoGui)
+class leoKeyEvent:
+
+    '''A gui-independent wrapper for gui events.'''
+    
+    @others
+
+    def __repr__ (self):
+
+        return 'leoKeyEvent: stroke: %s, char: %s, w: %s' % (
+            repr(self.stroke),repr(self.char),repr(self.w))
+#@+node:ekr.20110605121601.18846: *5* ctor (leoKeyEvent)
+def __init__ (self,c,char,stroke,w,x,y,x_root,y_root):
+    
+    self.c = c
+    self.char = char or ''
+    self.stroke = stroke or ''
+    self.w = self.widget = w
+    
+    # Optional ivars
+    self.x = x
+    self.y = y
+
+    # Support for fastGotoNode plugin
+    self.x_root = x_root
+    self.y_root = y_root
+#@+node:ekr.20110605121601.18131: *4* class leoQtMinibuffer (leoQLineEditWidget)
+class leoQtMinibuffer (leoQLineEditWidget):
+
+    def __init__ (self,c):
+        self.c = c
+        w = c.frame.top.leo_ui.lineEdit # QLineEdit
+        # g.trace('(leoQtMinibuffer)',w)
+        
+        # Init the base class.
+        leoQLineEditWidget.__init__(self,widget=w,name='minibuffer',c=c)
+
+        self.ev_filter = leoQtEventFilter(c,w=self,tag='minibuffer')
+        w.installEventFilter(self.ev_filter)
+    
+        # Monkey-patch the event handlers
+        << define mouseReleaseEvent >>
+        w.mouseReleaseEvent = mouseReleaseEvent
+
+    def setBackgroundColor(self,color):
+        # Called from k.setLabelGrey & k.setLabelBlue.
+        # g.trace(color,g.callers())
+        self.widget.setStyleSheet('background-color:%s' % color)
+
+    def setForegroundColor(self,color):
+        pass
+#@+node:ekr.20110605121601.18132: *5* << define mouseReleaseEvent >> (leoQtMinibuffer)
+def mouseReleaseEvent (*args,**keys):
+    
+    '''Override QLineEdit.mouseReleaseEvent.
+    
+    Simulate alt-x if we are not in an input state.'''
+    
+    # Important: c and w must be unbound here.
+    k = c.k
+    
+    # g.trace(args,keys)
+    
+    # Call the base class method.
+    if len(args) == 1:
+        event = args[0]
+        QtGui.QLineEdit.mouseReleaseEvent(w,event)
+        
+    elif len(args) == 2:
+        event = args[1]
+        #QtGui.QTextBrowser.mouseReleaseEvent(*args)
+        QtGui.QLineEdit.mouseReleaseEvent(*args)
+    else:
+        g.trace('can not happen')
+        return
+
+    # g.trace('state',k.state.kind,k.state.n)
+    if not k.state.kind:
+        event2 = g.app.gui.create_key_event(c,
+            char='',stroke='',w=c.frame.body.bodyCtrl)
+        k.fullCommand(event2)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

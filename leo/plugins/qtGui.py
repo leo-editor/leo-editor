@@ -2005,8 +2005,8 @@ class leoQtMinibuffer (leoQLineEditWidget):
 
             # g.trace('state',k.state.kind,k.state.n)
             if not k.state.kind:
-                event2 = leoGui.leoKeyEvent(event=None,
-                    c=c,w=c.frame.body.bodyCtrl,ch='',tkKey='',stroke='')
+                event2 = g.app.gui.create_key_event(c,
+                    char='',stroke='',w=c.frame.body.bodyCtrl)
                 k.fullCommand(event2)
         #@-<< define mouseReleaseEvent >>
         w.mouseReleaseEvent = mouseReleaseEvent
