@@ -40,6 +40,140 @@ real work, you find you would like some new feature, then by all means ask.
 
 Edward
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10
+.. @+node:ekr.20110620065017.14900: *3* Bugs
+.. @+node:ekr.20110619173515.14895: *4* Fix bug: realpath in g.openWithFileName
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/cd5e2125c9e13d8f
+
+g.openWithFileName needs
+
+   fileName = g.os_path_realpath(fileName)
+
+at the start of it, otherwise
+
+g.openWithFileName("/home/tbrown/.leo/.todo.leo", c) will open another
+instance of an already open "/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo"
+because it doesn't recognize them as being the same.
+
+It would be nice if the original attempt to open
+"/home/tbrown/.leo/.todo.leo" was not converted to
+"/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo", but I think the POSIX
+spec. insists on giving CPython the real path form, so this is hard to
+avoid.  You see this when selecting a file using a file dialog, in the
+dialog you choose /home/me/myfile.txt, but the return
+is /mnt/usr1/usr1/home/me/myfile.txt.
+
+Anyway, let me know if and when I can push that to trunk, impacts seem
+to be limited to (a) not failing to detect an already opened file in
+g.openWithFileName, which is a bug, and (b) sometimes less attractive
+apparent paths, which is annoying, but I think better than the bug.
+
+(this of course trips up UNLs
+if /mnt/usr1/usr1/home/tbrown/.leo/.todo.leo is already loaded and the
+UNL is /home/tbrown/.leo/.todo.leo#Home-->Paint roof)
+.. @+node:ekr.20110619173515.14896: *4* Fix bug: wrong modality level on autocompleter
+Just noticed the autocompleter pop-up is modal globally, not just for
+the Leo windows.  Probably should only block the Leo windows.
+.. @+node:ekr.20110620065017.14898: *4* Fix Coloring problem with move-lines-up
+.. @+node:ekr.20051214133130.1: *5* endCommand
+# New in Leo 4.4b4: calling endCommand is valid for all widgets,
+# but handles undo only if we are in body pane.
+
+def endCommand(self,label=None,changed=True,setLabel=True):
+
+    '''Do the common processing at the end of each command.'''
+
+    trace =  False and not g.unitTesting
+    c = self.c ; b = self.undoData ; k = self.k
+
+    if trace: g.trace('changed',changed)
+
+    if b and b.name.startswith('body') and changed:
+        c.frame.body.onBodyChanged(undoType=b.undoType,
+            oldSel=b.oldSel,oldText=b.oldText,oldYview=None)
+
+    self.undoData = None # Bug fix: 1/6/06 (after a5 released).
+
+    k.clearState()
+
+    # Warning: basic editing commands **must not** set the label.
+    if setLabel:
+        if label:
+            k.setLabelGrey(label)
+        else:
+            k.resetLabel()
+.. @+node:ekr.20031218072017.1329: *5* onBodyChanged (leoBody)
+# This is the only key handler for the body pane.
+def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
+
+    '''Update Leo after the body has been changed.'''
+
+    trace = False and not g.unitTesting
+    body = self ; c = self.c
+    bodyCtrl = w = body.bodyCtrl
+    p = c.p
+    insert = w.getInsertPoint()
+    ch = g.choose(insert==0,'',w.get(insert-1))
+    ch = g.toUnicode(ch)
+    newText = w.getAllText() # Note: getAllText converts to unicode.
+    newSel = w.getSelectionRange()
+    if not oldText:
+        oldText = p.b ; changed = True
+    else:
+        changed = oldText != newText
+    if not changed: return
+    if trace:
+        # g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
+        g.trace('oldSel',oldSel,'newSel',newSel)
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+    p.v.setBodyString(newText)
+    p.v.insertSpot = body.getInsertPoint()
+    << recolor the body >>
+    if not c.changed: c.setChanged(True)
+    self.updateEditors()
+    << update icons if necessary >>
+.. @+node:ekr.20051026083733.6: *6* << recolor the body >>
+body.colorizer.interrupt()
+c.frame.scanForTabWidth(p)
+body.recolor(p,incremental=not self.forceFullRecolorFlag)
+self.forceFullRecolorFlag = False
+
+if g.app.unitTesting:
+    g.app.unitTestDict['colorized'] = True
+.. @+node:ekr.20051026083733.7: *6* << update icons if necessary >>
+
+redraw_flag = False
+# Update dirty bits.
+# p.setDirty() sets all cloned and @file dirty bits.
+if not p.isDirty() and p.setDirty():
+    redraw_flag = True
+
+# Update icons. p.v.iconVal may not exist during unit tests.
+val = p.computeIcon()
+# g.trace('new val:',val,'old val:',hasattr(p.v,'iconVal') and p.v.iconVal or '<None>')
+if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
+    p.v.iconVal = val
+    redraw_flag = True
+
+if redraw_flag:
+    c.redraw_after_icons_changed()
+.. @+node:ekr.20110620065017.14899: *5* move-lines-up bug
+@language python
+
+        @language python
+
+
+        def test():
+
+            """ a
+            b
+            c
+            print 1
+            """
+
+            print 2
 .. @+node:ekr.20110617144701.14907: *3* Code cleaning
 @nocolor-node
 

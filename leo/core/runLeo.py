@@ -390,8 +390,11 @@ def scanOptions():
             print('scanOptions: unknown gui: %s' % gui)
             gui = 'qt'
             g.app.qt_use_tabs = True
-    else:
+    elif sys.platform == 'darwin':
         gui = 'qt'
+        g.app.qt_use_tabs = False
+    else:
+        gui = 'qttabs'
         g.app.qt_use_tabs = True
 
     assert gui
