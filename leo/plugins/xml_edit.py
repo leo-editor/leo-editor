@@ -403,13 +403,28 @@ def xml_validate(event):
         
     # set cwd so local .dtd files can be found
     cd_here(c,p)
+    
+    # make xml indented because for some unknown reason pretty_print=True
+    # in xml_for_subtree doesn't work
+    # etree.fromstring only returns the root node, 
+    # losing the DTD, so etree.parse instead
+    import StringIO
+    xml_ = StringIO.StringIO(xml_)
+    xml_ = etree.tostring(etree.parse(xml_), pretty_print=True)
 
     parser = etree.XMLParser(dtd_validation=True)
     try:
         dom = etree.fromstring(xml_, parser=parser)
         g.es('No errors found')
-    except etree.XMLSyntaxError:
+    except etree.XMLSyntaxError as xse:
         g.es('ERROR validating XML')
-        g.es(traceback.format_exc())
+        g.es(str(xse))
+        
+        # seems XMLSyntaxError doesn't set lineno?  Get from message
+        lineno = int(str(xse).split()[-3].strip(','))-1
+        xml_text = xml_.split('\n')     
+        for i in range(max(0, lineno-6), min(len(xml_text), lineno+3)):
+            g.es("%d%s %s"%(i, ':' if i != lineno else '*', xml_text[i]))
+        
 #@-others
 #@-leo
