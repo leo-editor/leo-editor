@@ -308,7 +308,9 @@ trace_tags.py
    Traces most common hooks, but not key, drag or idle hooks.
 
 viewrendered.py
-   Creates a window for *live* rendering of rst, html, etc. (Qt only).
+   Creates a window for *live* rendering of rst, html, etc.
+   This plugin uses docutils, http://docutils.sourceforge.net/,
+   to do the rendering, so installing docutils is recommended.
 
 vim.py
    Enables two-way communication with VIM.
