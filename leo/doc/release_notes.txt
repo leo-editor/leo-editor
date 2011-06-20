@@ -15755,12 +15755,12 @@ The installer now makes proper entries in the Windows start menu.
 #@+node:ekr.20101124102457.5227: *5* New in 4.8 final
 - Fixed key redefinition message.
 #@+node:edream.110203163054.63: ** Latest version
-#@+node:ekr.20110531155858.19246: *3* 4.9 rc1 Release notes
+#@+node:ekr.20110531155858.19246: *3* Leo 4.9 Release notes
 @language rest
 
-Leo 4.9 rc1               June 17, 2011
+Leo 4.9 final              June 21, 2011
 
-Leo 4.9 rc1 is now available at:
+Leo 4.9 final is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
@@ -16604,5 +16604,7 @@ Other changes
 
 - The open-python-window command fails more gracefully It issues a message
   instead of crashing if idlelib does not exist.
+#@+node:ekr.20110620083705.14902: *4* New in 4.9 final
+Fixed crash on mouse clicks in minibuffer.
 #@-all
 #@-leo

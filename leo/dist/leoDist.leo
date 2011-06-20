@@ -17,7 +17,7 @@
 <v t="EKR.20040519091259"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="ekr.20101115090518.1494"><vh>Leo 4.8 final</vh></v>
-<v t="ekr.20110603112852.1505"><vh>Leo 4.9 rc1</vh></v>
+<v t="ekr.20110603112852.1505"><vh>Leo 4.9 final</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -191,9 +191,9 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.9 rc1               June 17, 2011
+<t tx="EKR.20040519090846.9">Leo 4.9 final              June 21, 2011
 
-Leo 4.9 rc1 is now available at:
+Leo 4.9 final is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
@@ -1060,9 +1060,9 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 </t>
-<t tx="ekr.20110603112852.1505">Leo 4.9 rc1               June 17, 2011
+<t tx="ekr.20110603112852.1505">Leo 4.9 final              June 21, 2011
 
-Leo 4.9 rc1 is now available at:
+Leo 4.9 final is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
