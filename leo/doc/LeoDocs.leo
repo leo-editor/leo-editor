@@ -149,9 +149,10 @@
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"
+expanded="edream.110203163054.117,"><vh>@file release_notes.txt</vh></v>
 </v>
-<v t="ekr.20110531155858.19246"><vh>4.9 rc1 Release notes</vh>
+<v t="ekr.20110531155858.19246"><vh>Leo 4.9 Release notes</vh>
 <v t="ekr.20110601105631.19359"><vh>Deprecated/removed features</vh></v>
 <v t="ekr.20110531155858.19830"><vh>Bugs fixed in b1</vh>
 <v t="ekr.20110604043410.17811"><vh>Numbered bugs</vh></v>
@@ -178,6 +179,7 @@
 </v>
 <v t="ekr.20110613172008.14775"><vh>New in 4.9 b4</vh></v>
 <v t="ekr.20110616100929.14794"><vh>New in 4.9 rc1</vh></v>
+<v t="ekr.20110620083705.14902"><vh>New in 4.9 final</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -342,9 +344,9 @@ Important files:
 <t tx="ekr.20101112045055.5065">http://www.greygreen.org/tmp/plugins.html</t>
 <t tx="ekr.20110531155858.19246">@language rest
 
-Leo 4.9 rc1               June 17, 2011
+Leo 4.9 final              June 21, 2011
 
-Leo 4.9 rc1 is now available at:
+Leo 4.9 final is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
@@ -1189,6 +1191,7 @@ Other changes
 - The open-python-window command fails more gracefully It issues a message
   instead of crashing if idlelib does not exist.
 </t>
+<t tx="ekr.20110620083705.14902">Fixed crash on mouse clicks in minibuffer.</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
