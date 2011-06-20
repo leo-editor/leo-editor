@@ -4,7 +4,13 @@
 #@+node:tbrown.20100318101414.5991: ** << docstring >>
 '''
 
-Creates a window for *live* rendering of images, movies, sounds, rst, html, etc.  (Qt only).
+Creates a window for *live* rendering of images, movies, sounds, rst, html, etc.
+
+Dependencies
+============
+
+This plugin uses docutils,http://docutils.sourceforge.net/, to render reStructuredText,
+so installing docutils is highly recommended when using this plugin.
 
 Commands
 ========
