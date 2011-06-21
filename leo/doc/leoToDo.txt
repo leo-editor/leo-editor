@@ -41,6 +41,7 @@ real work, you find you would like some new feature, then by all means ask.
 Edward
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10
 .. @+node:ekr.20110620065017.14900: *3* Bugs
+.. @+node:ekr.20110620122650.14904: *4* Make it clearer in the Edit:Find menu how to do search/replace
 .. @+node:ekr.20110620083705.14901: *4* Fix or disable curses and none gui's
 See scanOptions.
 .. @+node:ekr.20110619173515.14895: *4* Fix bug: realpath in g.openWithFileName

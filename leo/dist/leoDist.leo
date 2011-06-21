@@ -94,7 +94,7 @@
 
 1. Search for ##version
 
-2. Search for this suffix: -rc1.
+2. Search for this suffix: -final.
 
 3. Search for copyright
 
@@ -156,7 +156,7 @@ Installing Leo on Windows
 There are now two ways to install Leo on Windows:
     
 1. Use the single-click executable installer, named something like
-   LeoSetup-4.9-rc1.exe
+   LeoSetup-4.9-final.exe
 
 2. Leo is distributed as a .zip file.
    To install Leo from the .zip file:
@@ -177,7 +177,7 @@ There are now two ways to install Leo on Windows:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.9-rc1
+Version: 4.9-final
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -653,7 +653,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
         leo.zip.
 '''
 
-version = '4.9-rc1' ##version
+version = '4.9-final' ##version
 
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
