@@ -263,7 +263,6 @@ class NestedSplitter(QtGui.QSplitter):
         orientation = self.other_orientation[self.orientation()]
         
         layout = self.parent().layout()
-        g.trace(layout)
 
         if isinstance(self.parent(),NestedSplitter):
             # don't add new splitter if not needed, i.e. we're the
@@ -275,13 +274,17 @@ class NestedSplitter(QtGui.QSplitter):
         elif layout:
             new = NestedSplitter(None,orientation=orientation,
                 root=self.root)
-            # parent set by insertWidget() below
+            # parent set by layout.insertWidget() below
             old = self
             pos = layout.indexOf(old)
+            
             new.addWidget(old)
             if not w:
                 w = NestedSplitterChoice(new)
             new.insertWidget(side,w)
+
+            layout.insertWidget(pos, new)
+            
         else:
             # fail - parent is not NestedSplitter and has no layout
             g.trace('fail',self)
