@@ -72,7 +72,8 @@ class NestedSplitterChoice(QtGui.QWidget):
         
         button.connect(button,
             Qt.SIGNAL('customContextMenuRequested(QPoint)'),
-            lambda pnt: self.parent().choice_menu(self, pnt))
+            lambda pnt: self.parent().choice_menu(self,
+                button.mapToParent(pnt)))
 
         button.connect(button,
             Qt.SIGNAL('clicked()'),
@@ -343,9 +344,10 @@ class NestedSplitter(QtGui.QSplitter):
         else:  # put it in a new splitter
         
             if side in ('right-of', 'left-of'):
-                ns = NestedSplitter()
+                ns = NestedSplitter(root=self.root)
             else:
-                ns = NestedSplitter(orientation=QtConst.Vertical)
+                ns = NestedSplitter(orientation=QtConst.Vertical,
+                    root=self.root)
                 
             old = layout['content'][pos]
             if not isinstance(old, QtGui.QWidget):  # see get_layout()

@@ -89,7 +89,7 @@
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@file ../doc/leoToDoLater.txt</vh></v>
 </v>
-<v t="ekr.20031218072017.2406"><vh>Code</vh>
+<v t="ekr.20031218072017.2406" a="E"><vh>Code</vh>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
 </v>
@@ -121,16 +121,17 @@
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
 </v>
-<v t="ekr.20031218072017.3625"><vh>Gui classes</vh>
+<v t="ekr.20031218072017.3625" a="E"><vh>Gui classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
 <v t="ekr.20031218072017.3630"><vh>@file leoCompare.py</vh></v>
 <v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
 <v t="ekr.20031218072017.3655"><vh>@file leoFrame.py</vh></v>
 <v t="ekr.20031218072017.3719"><vh>@file leoGui.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
-<v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
+<v t="ekr.20110605121601.17862" a="E"><vh>Qt gui</vh>
 <v t="ekr.20110605121601.17863"><vh>@file ../plugins/baseNativeTree.py</vh></v>
-<v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
+<v t="ekr.20110605121601.17954" a="E"
+expanded="ekr.20110605121601.17957,ekr.20110605121601.17959,ekr.20110605121601.17961,ekr.20110605121601.17966,ekr.20110605121601.17969,ekr.20110605121601.17980,ekr.20110605121601.17991,"><vh>@file ../plugins/nested_splitter.py</vh></v>
 <v t="ekr.20110605121601.17996"><vh>@file ../plugins/qtframecommands.py</vh></v>
 <v t="ekr.20110605121601.18002"><vh>@file ../plugins/qtGui.py</vh></v>
 <v t="ekr.20110605121601.18695"><vh>QDesigner files</vh>
