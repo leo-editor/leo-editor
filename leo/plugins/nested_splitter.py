@@ -298,6 +298,65 @@ class NestedSplitter(QtGui.QSplitter):
             # fail - parent is not NestedSplitter and has no layout
             g.trace('fail',self)
             pass
+    #@+node:tbrown.20110621120042.22675: *3* add_adjacent
+    def add_adjacent(self, what, widget_id, side='right-of'):
+        
+        layout = self.top().get_layout()
+        
+        def hunter(layout, id_):
+            """Recursively look for this widget"""
+            for n,i in enumerate(layout['content']):
+                if (i == id_ or
+                    (isinstance(i, QtGui.QWidget) and
+                     (i.objectName() == id_ or i.__class__.__name__ == id_)
+                    )
+                   ):
+                    return layout, n
+                    
+                if not isinstance(i, QtGui.QWidget):
+                    # then it must be a layout dict
+                    x = hunter(i, id_)
+                    if x:
+                        return x
+            return None
+        
+        # find the layout containing widget_id
+        l = hunter(layout, widget_id)
+        
+        if not l:
+            return False
+        
+        layout, pos = l
+        
+        if (layout['orientation'] == QtConst.Horizontal and
+            side in ('right-of', 'left-of')
+            or
+            layout['orientation'] == QtConst.Vertical and
+            side in ('above', 'below')):
+            # put it in existing splitter
+                
+            if side in ('right-of', 'below'):
+                pos += 1
+            
+            layout['splitter'].insert(pos, what)
+            
+        else:  # put it in a new splitter
+        
+            if side in ('right-of', 'left-of'):
+                ns = NestedSplitter()
+            else:
+                ns = NestedSplitter(orientation=QtConst.Vertical)
+                
+            old = layout['content'][pos]
+            if not isinstance(old, QtGui.QWidget):  # see get_layout()
+                old = layout['splitter']
+                
+            ns.insert(0, old)
+            ns.insert(1 if side in ('right-of', 'below') else 0, what)
+            
+            layout['splitter'].insert(pos, ns)
+            
+        return True
     #@+node:ekr.20110605121601.17972: *3* choice_menu
     def choice_menu(self, button, pos):
 
@@ -532,7 +591,7 @@ class NestedSplitter(QtGui.QSplitter):
         return top
     #@+node:ekr.20110605121601.17989: *3* get_layout
     def get_layout(self):
-        """return {'orientation':str, 'content':[], 'splitter':ns}
+        """return {'orientation':QOrientation, 'content':[], 'splitter':ns}
         
         Where content is a list of widgets, or if a widget is a NestedSplitter, the
         result of that splitters call to get_layout().  splitter is the splitter
