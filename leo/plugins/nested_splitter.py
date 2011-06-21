@@ -206,6 +206,15 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
         for cb in splitter.root.callbacks:
             cb(menu, splitter, index, button_mode=False)
 
+        if True:
+            submenu = menu.addMenu('Debug')
+            act = QtGui.QAction("Print splitter layout", self)
+            def cb(splitter=splitter):
+                print("\n%s\n" % 
+                    splitter.layout_to_text(splitter.top().get_layout()))
+            act.connect(act, Qt.SIGNAL('triggered()'), cb)
+            submenu.addAction(act)  
+
         menu.exec_(self.mapToGlobal(pos))
 
         for i in 0,1:
@@ -295,7 +304,6 @@ class NestedSplitter(QtGui.QSplitter):
         menu = QtGui.QMenu()
 
         if self.root.marked and not self.invalid_swap(button, self.root.marked[3]):
-            an_item = True
             act = QtGui.QAction("Move marked here", self)
             act.connect(act, Qt.SIGNAL('triggered()'), 
                 lambda: self.replace_widget(button, self.root.marked[3]))
@@ -550,6 +558,9 @@ class NestedSplitter(QtGui.QSplitter):
     def layout_to_text(self, layout, _depth=0, _ans=[]):
         """convert the output from get_layout to indented human readable text
         for development/debugging"""
+        
+        if _depth == 0:
+            _ans = []
         
         orientation = 'vertical'
         if layout['orientation'] == QtConst.Horizontal:
