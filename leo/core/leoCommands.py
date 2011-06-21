@@ -3800,6 +3800,7 @@ class Commands (object):
                         v=v,head=v.headString(),body=v.b)
             #@-<< remember all data for undo/redo Paste As Clone >>
         # create a *position* to be pasted.
+
         if isLeo:
             pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
         else:
@@ -3835,7 +3836,8 @@ class Commands (object):
         c.setChanged(True)
         # paste as first child if back is expanded.
         back = pasted.back()
-        if back and back.isExpanded():
+        if back and back.hasChildren() and back.isExpanded():
+            # 2011/06/21: fixed hanger: test back.hasChildren().
             pasted.moveToNthChildOf(back,0)
         # c.setRootPosition()
 

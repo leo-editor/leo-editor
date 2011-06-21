@@ -1381,514 +1381,123 @@ ic.run(
     svg_fn=svg_fn, # Optional: Name of working svg file.
     template_fn=template_fn, # Optional: Name of template svg file.
 )
-#@+node:ekr.20110617102247.14765: ** 4.9 rc1
-#@+node:ekr.20110617102247.14766: *3* Two changes to autocompleter
+#@+node:ekr.20110621074459.14908: ** 4.9.1
+#@+node:ekr.20110621074459.14904: *3* Fixed ancient hanger in paste-retaining-clones
 @nocolor-node
 
-- Added @bool forbid_invalid_completions option.
+https://bugs.launchpad.net/leo-editor/+bug/800157
 
-- Non-plain keys, such as Ctrl-s, abort auto-completion
-  and are interpreted as usual.
-#@+node:ekr.20110617102445.14767: *3* Give errors for orphan-bit-test.txt when not unit testing
-#@+node:ekr.20041005105605.217: *4* writeError
-def writeError(self,message=None):
-    
-    at = self
-    
-    # Don't give errors for this particular file during unit testing.
-    h = 'nonexistent-directory/orphan-bit-test.txt'
-    
-    if g.unitTesting and self.targetFileName.replace('\\','/').endswith(h):
-        at.errors += 1
+In a new file containing only a "NewHeadline" and that being selected, execute:
+
+copy-node
+insert-child
+<<enter>>
+undo
+paste-retaining-clones
+
+Leo's UI freezes and loops forever with 100% CPU.
+
+Note: If one does not undo, Leo prints "Invalid paste: nodes may not descend
+from themselves". I guess the undo circumvents such a check. However, that
+should not be the case, as paste-retaining-clones inserts the clones _after_ and
+not as children of the selected node "NewHeadline".
+
+I guess that the undo forgets to set the selection back to "NewHeadline", so
+that Leo tries to insert the clones after the undone child node - therefore as
+child of "NewHeadline".
+
+====================
+
+EKR: only getLeoOutlineFromClipboar calls checkPaste.
+#@+node:ekr.20031218072017.1551: *4* pasteOutline
+# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
+
+def pasteOutline(self,event=None,reassignIndices=True):
+
+    '''Paste an outline into the present outline from the clipboard.
+    Nodes do *not* retain their original identify.'''
+
+    c = self ; u = c.undoer ; current = c.p
+    s = g.app.gui.getTextFromClipboard()
+    pasteAsClone = not reassignIndices
+    undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
+
+    c.endEditing()
+
+    if not s or not c.canPasteOutline(s):
+        return # This should never happen.
+
+    isLeo = g.match(s,0,g.app.prolog_prefix_string)
+    vnodeInfoDict = {}
+    if pasteAsClone:
+        << remember all data for undo/redo Paste As Clone >>
+    # create a *position* to be pasted.
+
+    if isLeo:
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
     else:
-        if self.errors == 0:
-            g.es_error("errors writing: " + self.targetFileName)
-            # g.trace(g.callers(5))
-        self.error(message)
+        pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
 
-    self.root.setDirty()
-    self.root.setOrphan()
-#@+node:ekr.20110617130730.14779: *3* Always warn about orphan nodes when saving .leo files
-#@+node:ekr.20110617100740.14775: *3* Don't set file changed when setting orphan nodes
-@nocolor-node
+    if not pasted: return
 
-There is no need: the orphan bits will ensure errors get reported if the file is saved.
-#@+node:ekr.20110617102445.14768: *4* Changed
-#@+node:ekr.20041005105605.26: *5* at.readAll
-def readAll(self,root,partialFlag=False):
+    copiedBunchList = []
+    if pasteAsClone:
+        << put only needed info in copiedBunchList >>
+    undoData = u.beforeInsertNode(current,
+        pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
 
-    """Scan vnodes, looking for @<file> nodes to read."""
+    c.validateOutline()
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    c.setChanged(True)
+    # paste as first child if back is expanded.
+    back = pasted.back()
+    if back and back.hasChildren() and back.isExpanded():
+        # 2011/06/21: fixed hanger: test back.hasChildren().
+        pasted.moveToNthChildOf(back,0)
+    # c.setRootPosition()
 
-    use_tracer = False
-    if use_tracer: tt = g.startTracer()
+    if pasteAsClone:
+        # Set dirty bits for ancestors of *all* pasted nodes.
+        # Note: the setDescendentsDirty flag does not do what we want.
+        for p in pasted.self_and_subtree():
+            p.setAllAncestorAtFileNodesDirty(
+                setDescendentsDirty=False)
 
-    at = self ; c = at.c
-    force = partialFlag
-    if partialFlag:
-        # Capture the current headline only if
-        # we aren't doing the initial read.
-        c.endEditing() 
-    anyRead = False
-    p = root.copy()
+    u.afterInsertNode(pasted,undoType,undoData)
+    c.redraw(pasted)
+    c.recolor()
+#@+node:ekr.20050418084539: *5* << remember all data for undo/redo Paste As Clone >>
+@
 
-    scanned_tnodes = set()
+We don't know yet which nodes will be affected by the paste, so we remember
+everything. This is expensive, but foolproof.
 
-    if partialFlag: after = p.nodeAfterTree()    
-    else: after = c.nullPosition()
+The alternative is to try to remember the 'before' values of tnodes in the
+fileCommands read logic. Several experiments failed, and the code is very ugly.
+In short, it seems wise to do things the foolproof way.
 
-    while p and p != after:
-        gnx = p.gnx
-        #skip clones
-        if gnx in scanned_tnodes:
-            p.moveToNodeAfterTree()
-            continue
-        scanned_tnodes.add(gnx)
+@c
 
-        if not p.h.startswith('@'):
-            p.moveToThreadNext()
-        elif p.isAtIgnoreNode():
-            p.moveToNodeAfterTree()
-        elif p.isAtThinFileNode():
-            anyRead = True
-            at.read(p,force=force)
-            p.moveToNodeAfterTree()
-        elif p.isAtAutoNode():
-            fileName = p.atAutoNodeName()
-            at.readOneAtAutoNode (fileName,p)
-            p.moveToNodeAfterTree()
-        elif p.isAtEditNode():
-            fileName = p.atEditNodeName()
-            at.readOneAtEditNode (fileName,p)
-            p.moveToNodeAfterTree()
-        elif p.isAtShadowFileNode():
-            fileName = p.atShadowFileNodeName()
-            at.readOneAtShadowNode (fileName,p)
-            p.moveToNodeAfterTree()
-        elif p.isAtFileNode():
-            anyRead = True
-            wasOrphan = p.isOrphan()
-            ok = at.read(p,force=force)
-            if wasOrphan and not partialFlag and not ok:
-                # Remind the user to fix the problem.
-                # However, the dirty bit gets cleared.
-                ### p.setDirty() # 2011/06/17: won't be preserved anyway.
-                    # Expensive, but it can't be helped.
-                p.setOrphan() # 2010/10/22: the dirty bit gets cleared.
-                ### c.setChanged(True) # 2011/06/17
-            p.moveToNodeAfterTree()
-        else:
-            # 2010/7/28: set v.at_read bit if the @asis or @nosent
-            # **node** exists.  We'll prompt for dangerous writes
-            # if a) this bit is clear and b) the file exists.
-            if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-                p.v.at_read = True # Remember that we have seen this node.
-            p.moveToThreadNext()
+for v in c.all_unique_nodes():
+    if v not in vnodeInfoDict:
+        vnodeInfoDict[v] = g.Bunch(
+            v=v,head=v.headString(),body=v.b)
+#@+node:ekr.20050418084539.2: *5* << put only needed info in copiedBunchList >>
+# Create a dict containing only copied tnodes.
+copiedVnodeDict = {}
+for p in pasted.self_and_subtree():
+    if p.v not in copiedVnodeDict:
+        copiedVnodeDict[p.v] = p.v
 
-    # 2010/10/22: Preserve the orphan bits: the dirty bits will be cleared!
-    #for v in c.all_unique_nodes():
-    #    v.clearOrphan()
+# g.trace(list(copiedVnodeDict.keys()))
 
-    if partialFlag and not anyRead:
-        g.es("no @<file> nodes in the selected tree")
+for v in vnodeInfoDict:
+    bunch = vnodeInfoDict.get(v)
+    if copiedVnodeDict.get(v):
+        copiedBunchList.append(bunch)
 
-    if use_tracer: tt.stop()
-#@+node:ekr.20041005105605.21: *5* at.read & helpers
-def read(self,root,importFileName=None,
-    fromString=None,atShadow=False,force=False
-):
-
-    """Read an @thin or @file tree."""
-
-    trace = False and not g.unitTesting
-    if trace: g.trace(root.h)
-    at = self ; c = at.c
-    fileName = at.initFileName(fromString,importFileName,root)
-    if not fileName:
-        at.error("Missing file name.  Restoring @file tree from .leo file.")
-        return False
-    # Fix bug 760531: always mark the root as read, even if there was an error.
-    root.v.at_read = True
-    # Bug fix 2011/05/23: Restore orphan trees from the outline.
-    if root.isOrphan():
-        g.es("reading:",root.h)
-        # g.warning('The outline contains an orphan node!\nRetaining the outline')
-        g.es_print('orphan node in',root.h,color='red')
-        g.es_print('retaining the data from the .leo file',color='blue')
-        return False
-    at.initReadIvars(root,fileName,
-        importFileName=importFileName,atShadow=atShadow)
-    at.fromString = fromString
-    if at.errors:
-        if trace: g.trace('Init error')
-        return False
-    fileName = at.openFileForReading(fromString=fromString)
-    if fileName and at.inputFile:
-        c.setFileTimeStamp(fileName)
-    elif fromString: # 2010/09/02.
-        pass
-    else:
-        if trace: g.trace('No inputFile')
-        return False
-
-    # Get the file from the cache if possible.
-    if fromString:
-        s,loaded,fileKey = fromString,False,None
-    else:
-        s,loaded,fileKey = c.cacher.readFile(fileName,root)
-    # Never read an external file with file-like sentinels from the cache.
-    isFileLike = loaded and at.isFileLike(s)
-    if not loaded or isFileLike:
-        # if trace: g.trace('file-like file',fileName)
-        force = True # Disable caching.
-    if loaded and not force:
-        if trace: g.trace('in cache',fileName)
-        at.inputFile.close()
-        root.clearDirty()
-        return True
-    if not g.unitTesting:
-        g.es("reading:",root.h)
-    if isFileLike:
-        if g.unitTesting:
-            if 0: print("converting @file format in",root.h)
-            g.app.unitTestDict['read-convert']=True
-        else:
-            g.es("converting @file format in",root.h,color='red')
-    root.clearVisitedInTree()
-    at.scanAllDirectives(root,importing=at.importing,reading=True)
-        # Sets the following ivars:
-            # at.default_directory
-            # at.encoding
-            # at.explicitLineEnding
-            # at.language
-            # at.output_newline
-            # at.page_width
-            # at.tab_width
-
-    if trace: g.trace(fileName)
-    thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
-    at.inputFile.close()
-    root.clearDirty() # May be set dirty below.
-    if at.errors == 0:
-        at.deleteUnvisitedNodes(root)
-        at.deleteTnodeList(root)
-    if at.errors == 0 and not at.importing:
-        # Used by mod_labels plugin.
-        at.copyAllTempBodyStringsToVnodes(root,thinFile)
-    at.deleteAllTempBodyStrings()
-    if isFileLike and at.errors == 0: # Old-style sentinels.
-        # 2010/02/24: Make the root @file node dirty so it will
-        # be written automatically when saving the file.
-        # Do *not* set the orphan bit here!
-        root.clearOrphan()
-        root.setDirty()
-        c.setChanged(True) # Essential, to keep dirty bit set.
-    elif at.errors > 0:
-        # 2010/10/22: Dirty bits are *always* cleared.
-        # Only the orphan bit is preserved.
-        ### root.setDirty() # 2011/06/17: Won't be preserved anyway
-        root.setOrphan()
-        ### c.setChanged(True) # 2011/06/17.
-    else:
-        root.clearOrphan()
-    if at.errors == 0 and not isFileLike and not fromString:
-        c.cacher.writeFile(root,fileKey)
-
-    if trace: g.trace('at.errors',at.errors)
-    return at.errors == 0
-#@+node:ekr.20041005105605.25: *6* at.deleteAllTempBodyStrings
-def deleteAllTempBodyStrings(self):
-
-    for v in self.c.all_unique_nodes():
-        if hasattr(v,"tempBodyString"):
-            delattr(v,"tempBodyString")
-        if hasattr(v,"tempBodyList"):
-            delattr(v,"tempBodyList")
-#@+node:ekr.20100122130101.6174: *6* at.deleteTnodeList
-def deleteTnodeList (self,p): # atFile method.
-
-    '''Remove p's tnodeList.'''
-
-    v = p.v
-
-    if hasattr(v,"tnodeList"):
-
-        if False: # Not an error, but a useful trace.
-            s = "deleting tnodeList for " + repr(v)
-            g.es_print(s,color="blue")
-
-        delattr(v,"tnodeList")
-        v._p_changed = True
-#@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes & helpers
-def deleteUnvisitedNodes (self,root):
-
-    '''Delete unvisited nodes in root's subtree, not including root.
-
-    Actually, instead of deleting the nodes, we move them to be children of the
-    'Resurrected Nodes' r.
-    '''
-
-    at = self
-
-    if not root.hasChildren():
-        return
-
-    # Carefully set up the arguments.
-    aList = [z.copy() for z in root.subtree() if not z.isVisited()]
-    if not aList: return
-
-    r = at.createResurrectedNodesNode()
-    assert r not in aList
-    callback=at.defineResurrectedNodeCallback(r,root)
-
-    # Now move the nodes.
-    root.firstChild().deletePositionsInList(aList,callback)
-#@+node:ekr.20100803073751.5817: *7* createResurrectedNodesNode
-def createResurrectedNodesNode(self):
-
-    '''Create a 'Resurrected Nodes' node as the last top-level node.'''
-
-    at = self ; c = at.c ; tag = 'Resurrected Nodes'
-
-    # Find the last top-level node.
-    last = c.rootPosition()
-    while last.hasNext():
-        last.moveToNext()
-
-    if last.h == tag:
-        # The 'Resurrected Nodes' node already exists.
-        p = last
-    else:
-        # Create the 'Resurrected Nodes' node after 'last'.
-        p = last.insertAfter()
-        p.setHeadString(tag)
-
-    p.expand()
-    return p
-#@+node:ekr.20100803073751.5818: *7* defineResurrectedNodeCallback
-def defineResurrectedNodeCallback (self,r,root):
-
-    '''Define a callback that moves node p as r's last child.'''
-
-    def callback(p,r=r.copy(),root=root):
-
-        '''The resurrected nodes callback.'''
-
-        child = r.insertAsLastChild()
-        child.h = 'From %s' % root.h
-        p.moveToLastChildOf(child)
-
-        if g.unitTesting:
-            # g.trace(p.h,r.h)
-            pass 
-        else:
-            g.es('resurrected node:',p.h,color='red')
-            g.es('in file:',root.h,color='blue')
-
-    return callback
-
-
-#@+node:ekr.20041005105605.22: *6* at.initFileName
-def initFileName (self,fromString,importFileName,root):
-
-    if fromString:
-        fileName = "<string-file>"
-    elif importFileName:
-        fileName = importFileName
-    elif root.isAnyAtFileNode():
-        fileName = root.anyAtFileNodeName()
-    else:
-        fileName = None
-
-    return fileName
-#@+node:ekr.20100224050618.11547: *6* at.isFileLike
-def isFileLike (self,s):
-
-    '''Return True if s has file-like sentinels.'''
-
-    trace = False and not g.unitTesting
-    at = self ; tag = "@+leo"
-    s = g.toUnicode(s)
-    i = s.find(tag)
-    if i == -1:
-        if trace: g.trace('found: False',repr(s))
-        return True # Don't use the cashe.
-    else:
-        j,k = g.getLine(s,i)
-        line = s[j:k]
-        valid,new_df,start,end,isThin = \
-            at.parseLeoSentinel(line)
-        if trace: g.trace('found: True isThin:',
-            isThin,repr(line))
-        return not isThin
-#@+node:ekr.20110617130730.14780: *3* Disabled the open-compare-window command
-It is/was a Tk only command.
-#@+node:ekr.20110617130730.14781: *3* open-python-window command fails more gracefully
-@nocolor-node
-
-It issues a message instead of crashing if idlelib does not exist.
-#@+node:ekr.20110619173515.14894: ** 4.9 final
-#@+node:ekr.20110618125607.6528: *3* Fixed crash on mouse clicks in minibuffer
-@nocolor-node
-
-# Happens when clicking in minibuffer.
-
-scanOptions: disabling caching
-Leo 4.9 rc1, build 4399, June 17, 2011
-Python 2.6.4, qt version 4.5.3
-Windows 6, 1, 7601, 2, Service Pack 1
-reading settings in C:\leo.repo\trunk\leo\config\leoSettings.leo
-reading settings in c:\Users\edreamleo\.leo\myLeoSettings.leo
-reading settings in c:\prog\Speed\web_edward.leo
-wrote recent file: c:\Users\edreamleo\.leo\.leoRecentFiles.txt
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2009, in mouseReleaseEvent
-    c=c,w=c.frame.body.bodyCtrl,ch='',tkKey='',stroke='')
-TypeError: __init__() got an unexpected keyword argument 'ch'
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2009, in mouseReleaseEvent
-    c=c,w=c.frame.body.bodyCtrl,ch='',tkKey='',stroke='')
-TypeError: __init__() got an unexpected keyword argument 'ch'
-#@+node:ekr.20110605195119.16937: *4* create_key_event (leoQtEventFilter)
-def create_key_event (self,event,c,w,ch,tkKey,stroke):
-
-    trace = False and not g.unitTesting ; verbose = False
-    
-    if trace and verbose: g.trace('ch: %s, tkKey: %s, stroke: %s' % (
-        repr(ch),repr(tkKey),repr(stroke)))
-        
-    # Last-minute adjustments...
-    if stroke == 'Return':
-        ch = '\n' # Somehow Qt wants to return '\r'.
-    elif stroke == 'Escape':
-        ch = 'Escape'
-        
-    # This looks reasonable, but see k.handleUnboundKeys.
-    # elif stroke.find('Ctrl+') > -1 or stroke.find('Alt+') > -1:
-    #    ch = ''
-        
-    # Switch the Shift modifier to handle the cap-lock key.
-    if len(ch) == 1 and len(stroke) == 1 and ch.isalpha() and stroke.isalpha():
-        if ch != stroke:
-            if trace: g.trace('caps-lock')
-            stroke = ch
-
-    # Patch provided by resi147.
-    # See the thread: special characters in MacOSX, like '@'.
-    if sys.platform.startswith('darwin'):
-        darwinmap = {
-            'Alt-Key-5': '[',
-            'Alt-Key-6': ']',
-            'Alt-Key-7': '|',
-            'Alt-slash': '\\',
-            'Alt-Key-8': '{',
-            'Alt-Key-9': '}',
-            'Alt-e': '€',
-            'Alt-l': '@',
-        }
-        if tkKey in darwinmap:
-            stroke = darwinmap[tkKey]
-            
-    char = ch
-    # Auxiliary info.
-    x      = hasattr(event,'x') and event.x or 0
-    y      = hasattr(event,'y') and event.y or 0
-    # Support for fastGotoNode plugin
-    x_root = hasattr(event,'x_root') and event.x_root or 0
-    y_root = hasattr(event,'y_root') and event.y_root or 0
-    
-    if trace: g.trace('ch: %s, stroke: %s printable: %s' % (
-        repr(ch),repr(stroke),ch in string.printable))
-
-    return leoGui.leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
-#@+node:ekr.20110605121601.18847: *4* create_key_event (leoGui)
-def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None):
-    
-    # 2011/06/13: Do not call shortcutFromSetting here!
-    # For example, this would wrongly convert Ctrl-C to Ctrl-c,
-    # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
-
-    return leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
-#@+node:ekr.20070228160107: *4* class leoKeyEvent (leoGui)
-class leoKeyEvent:
-
-    '''A gui-independent wrapper for gui events.'''
-    
-    @others
-
-    def __repr__ (self):
-
-        return 'leoKeyEvent: stroke: %s, char: %s, w: %s' % (
-            repr(self.stroke),repr(self.char),repr(self.w))
-#@+node:ekr.20110605121601.18846: *5* ctor (leoKeyEvent)
-def __init__ (self,c,char,stroke,w,x,y,x_root,y_root):
-    
-    self.c = c
-    self.char = char or ''
-    self.stroke = stroke or ''
-    self.w = self.widget = w
-    
-    # Optional ivars
-    self.x = x
-    self.y = y
-
-    # Support for fastGotoNode plugin
-    self.x_root = x_root
-    self.y_root = y_root
-#@+node:ekr.20110605121601.18131: *4* class leoQtMinibuffer (leoQLineEditWidget)
-class leoQtMinibuffer (leoQLineEditWidget):
-
-    def __init__ (self,c):
-        self.c = c
-        w = c.frame.top.leo_ui.lineEdit # QLineEdit
-        # g.trace('(leoQtMinibuffer)',w)
-        
-        # Init the base class.
-        leoQLineEditWidget.__init__(self,widget=w,name='minibuffer',c=c)
-
-        self.ev_filter = leoQtEventFilter(c,w=self,tag='minibuffer')
-        w.installEventFilter(self.ev_filter)
-    
-        # Monkey-patch the event handlers
-        << define mouseReleaseEvent >>
-        w.mouseReleaseEvent = mouseReleaseEvent
-
-    def setBackgroundColor(self,color):
-        # Called from k.setLabelGrey & k.setLabelBlue.
-        # g.trace(color,g.callers())
-        self.widget.setStyleSheet('background-color:%s' % color)
-
-    def setForegroundColor(self,color):
-        pass
-#@+node:ekr.20110605121601.18132: *5* << define mouseReleaseEvent >> (leoQtMinibuffer)
-def mouseReleaseEvent (*args,**keys):
-    
-    '''Override QLineEdit.mouseReleaseEvent.
-    
-    Simulate alt-x if we are not in an input state.'''
-    
-    # Important: c and w must be unbound here.
-    k = c.k
-    
-    # g.trace(args,keys)
-    
-    # Call the base class method.
-    if len(args) == 1:
-        event = args[0]
-        QtGui.QLineEdit.mouseReleaseEvent(w,event)
-        
-    elif len(args) == 2:
-        event = args[1]
-        #QtGui.QTextBrowser.mouseReleaseEvent(*args)
-        QtGui.QLineEdit.mouseReleaseEvent(*args)
-    else:
-        g.trace('can not happen')
-        return
-
-    # g.trace('state',k.state.kind,k.state.n)
-    if not k.state.kind:
-        event2 = g.app.gui.create_key_event(c,
-            char='',stroke='',w=c.frame.body.bodyCtrl)
-        k.fullCommand(event2)
+# g.trace('copiedBunchList',copiedBunchList)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
