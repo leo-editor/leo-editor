@@ -41,6 +41,20 @@ real work, you find you would like some new feature, then by all means ask.
 Edward
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10
 .. @+node:ekr.20110620065017.14900: *3* Bugs
+.. @+node:ekr.20110621085435.6531: *4* Improve the find panel and find menu
+@nocolor-node
+
+Recently, perhaps it was today, there was a remark made about Leo's
+Find panel being confusing for newbies.  I have some sympathy for the
+remarks.
+
+1.  Looking at Leo's Edit:Find menu, there is no obvious way of doing
+a search/replace operation.  I'll fix this soon after 4.9 final.
+
+2.  The Find tab should make it clearer that it is a summary/status
+tab only--not a way of actually initiating or continuing searches.
+Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
+for the find/change patterns would help a bit.
 .. @+node:ekr.20110620122650.14904: *4* Make it clearer in the Edit:Find menu how to do search/replace
 .. @+node:ekr.20110620083705.14901: *4* Fix or disable curses and none gui's
 See scanOptions.
@@ -177,6 +191,23 @@ if redraw_flag:
             """
 
             print 2
+.. @+node:ekr.20110621085435.6532: *4* Request: have equal-sized-panes resize vr pane
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/583bc0a31a6c7979
+
+I noticed that when the renderpane is active it is not affected by the
+Window>Equal Sized Panes command. Only the Outline and Body Panes are affected -
+just as described in
+http://webpages.charter.net/edreamleo/outlines.html#resizing-panes. However from
+the user perspective the current behaviour appears as though the command is only
+partially successful. Since there are specific commands to contract/expand the
+log pane, shouldn't the log and render panes also be affected by the
+Window>Equal Sized Panes command?
+
+
+I suppose so.  I would prefer to wait for Terry to finish his
+pane-generalization code before dealing with this.
 .. @+node:ekr.20110617144701.14907: *3* Code cleaning
 @nocolor-node
 
