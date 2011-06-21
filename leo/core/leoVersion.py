@@ -6,13 +6,14 @@
 # Leo 4.6.1 final: July 30, 2009.
 # Leo 4.7.1 final: February 26, 2010.
 # Leo 4.8   final: November 26, 2010.
+# Leo 4.9   final: June 21, 2011
 
 #@@language python
 #@@tabwidth -4
 
-build = 4399
-date = "June 17, 2011"
-version = "4.9 rc1"
+build = 4411
+date = "June 21, 2011"
+version = "4.9 final"
 
 #@+at The following bzr command reports the buil automatically
 #@-leo
