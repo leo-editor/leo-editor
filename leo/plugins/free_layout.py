@@ -35,20 +35,26 @@ def init():
     g.registerHandler('after-create-leo-frame',onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
+    
+    if not hasattr(g, 'free_layout_callbacks'):
+        g.free_layout_callbacks = []
 
     return True
 #@+node:ekr.20110318080425.14391: ** onCreate
 def onCreate (tag, keys):
     
-    global controllers
+    #X global controllers
+    #X 
+    #X c = keys.get('c')
+    #X if c:
+    #X     h = c.hash()
+    #X     if not controllers.get(h):
+    #X         controllers[h] = FreeLayoutController(c)
     
     c = keys.get('c')
     if c:
-        h = c.hash()
-        if not controllers.get(h):
-            controllers[h] = FreeLayoutController(c)
-        
         NestedSplitter.enabled = True
+        FreeLayoutController(c) 
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
     
@@ -57,15 +63,15 @@ class FreeLayoutController:
     def __init__ (self,c):
         
         self.c = c
-        self.renderer = None # The renderer widget
-        self.top_splitter = None # The top-level splitter.
-        
-        c.free_layout = self # For viewrendered plugin.
+        #X self.renderer = None # The renderer widget
+        #X self.top_splitter = None # The top-level splitter.
+        c.free_layout = self
+        #X  # For viewrendered plugin.
         
         self.init()
         
     #@+node:ekr.20110318080425.14393: *3* create_renderer
-    def create_renderer (self,w):
+    def Xcreate_renderer (self,w):
         
         pc = self ; c = pc.c
         
@@ -92,7 +98,7 @@ class FreeLayoutController:
 
         # Register menu callbacks with the NestedSplitter.
         splitter.register(pc.offer_tabs)
-        splitter.register(pc.offer_viewrendered)
+        splitter.register(self.from_g)
 
         # when NestedSplitter disposes of children, it will either close
         # them, or move them to another designated widget.  Here we set
@@ -114,6 +120,15 @@ class FreeLayoutController:
         # if the log tab panel is removed, move it back to the top splitter
         logWidget = splitter.findChild(QtGui.QFrame, "logFrame")
         logWidget._is_permanent = True
+    #@+node:tbrown.20110621120042.22918: *3* from_g
+    def from_g(self, menu, splitter, index, button_mode):
+        
+        for i in g.free_layout_callbacks:
+            i(menu, splitter, index, button_mode, self.c)
+    #@+node:tbrown.20110621120042.22914: *3* get_top_splitter
+    def get_top_splitter(self):
+
+        return self.c.frame.top.findChild(NestedSplitter)
     #@+node:ekr.20110318080425.14392: *3* menu callbacks
     # These are called when the user right-clicks the NestedSplitter.
     #@+node:ekr.20110317024548.14380: *4* add_item
@@ -124,14 +139,14 @@ class FreeLayoutController:
         act.connect(act, Qt.SIGNAL('triggered()'), func)
         menu.addAction(act)
     #@+node:ekr.20110316100442.14371: *4* offer_tabs
-    def offer_tabs(self,menu,splitter,index,button_mode):
+    def offer_tabs(self, menu, splitter, index, button_mode):
         
         pc = self
         
         if not button_mode:
             return
 
-        top_splitter = pc.top_splitter # c.frame.top.splitter_2.top()
+        top_splitter = self.get_top_splitter()
         logTabWidget = top_splitter.findChild(QtGui.QWidget, "logTabWidget")
 
         for n in range(logTabWidget.count()):
@@ -146,7 +161,7 @@ class FreeLayoutController:
 
             self.add_item(wrapper,menu,"Add "+logTabWidget.tabText(n),splitter)
     #@+node:ekr.20110316100442.14372: *4* offer_viewrendered
-    def offer_viewrendered(self,menu,splitter, index, button_mode):
+    def offer_viewrendered(self, menu, splitter, index, button_mode):
         
         pc = self ; c = pc.c
         

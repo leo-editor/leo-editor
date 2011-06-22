@@ -5,8 +5,6 @@
 
 #@+<< imports >>
 #@+node:ekr.20110605121601.17955: ** << imports >>
-import leo.core.leoGlobals as g
-
 import sys
 
 from inspect import isclass
@@ -86,8 +84,6 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
     #@+node:ekr.20110605121601.17962: *3* __init__
     def __init__(self, owner):
         
-        # g.trace(self,'owner',owner)
-
         QtGui.QSplitterHandle.__init__(self, owner.orientation(), owner)
 
         self.setStyleSheet("background-color: green;")
@@ -178,7 +174,6 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
         for i in 0,1:
             if not neighbour[i] or neighbour[i].count() == 1:
                 def split_callback(i=i,index=index,splitter=splitter):
-                    g.trace(splitter,index,i)
                     splitter.split(index,i)
                 self.add_item(split_callback,menu,'Split %s %s' % (lr[i], split_dir))
 
@@ -264,8 +259,6 @@ class NestedSplitter(QtGui.QSplitter):
     #@+node:ekr.20110605121601.17970: *4* createHandle
     def createHandle(self, *args, **kargs):
         
-        # g.trace(self,g.callers())
-
         return NestedSplitterHandle(self)
     #@+node:ekr.20110605121601.17971: *3* add
     def add(self,side,w=None):
@@ -297,7 +290,6 @@ class NestedSplitter(QtGui.QSplitter):
             
         else:
             # fail - parent is not NestedSplitter and has no layout
-            g.trace('fail',self)
             pass
     #@+node:tbrown.20110621120042.22675: *3* add_adjacent
     def add_adjacent(self, what, widget_id, side='right-of'):
@@ -412,6 +404,10 @@ class NestedSplitter(QtGui.QSplitter):
                 count.append(1)
 
         return widget, neighbour, count
+    #@+node:tbrown.20110621120042.22920: *3* equalize_sizes
+    def equalize_sizes(self):
+        size = sum(self.sizes()) / self.count()
+        self.setSizes([size]*self.count())
     #@+node:ekr.20110605121601.17975: *3* insert
     def insert(self,index,w=None):
         
@@ -421,6 +417,8 @@ class NestedSplitter(QtGui.QSplitter):
             # This creates the menu.
 
         self.insertWidget(index,w)
+        
+        self.equalize_sizes()
         
         return w
     #@+node:ekr.20110605121601.17976: *3* invalid_swap
@@ -445,8 +443,6 @@ class NestedSplitter(QtGui.QSplitter):
     #@+node:ekr.20110605121601.17979: *3* register
     def register(self, cb):
         
-        # g.trace(cb)
-
         self.root.callbacks.append(cb)
     #@+node:ekr.20110605121601.17980: *3* remove & helper
     def remove(self, index, side):
@@ -463,12 +459,13 @@ class NestedSplitter(QtGui.QSplitter):
         if isinstance(widget, NestedSplitter):
 
             count = widget.count()
+            all_ok = True
 
             for splitter in widget.self_and_descendants():
                 for i in range(splitter.count()):
-                    self.close_or_keep(splitter.widget(i))
+                    all_ok &= self.close_or_keep(splitter.widget(i))
 
-            if count <= 0:
+            if all_ok and count <= 0:
                 widget.deleteLater()
 
         else:
@@ -486,29 +483,32 @@ class NestedSplitter(QtGui.QSplitter):
                     holder.addTab(widget, getattr(widget,k))
                 else:
                     holder.addWidget(widget)
-                break
+                return True
         else:
-            widget.close()
-            widget.deleteLater()
+            if widget.close():
+                widget.deleteLater()
+                return True
+        
+        return False
+                
     #@+node:ekr.20110605121601.17982: *3* replace_widget & replace_widget_at_index
     def replace_widget(self, old, new):
 
         self.insertWidget(self.indexOf(old), new)
         old.deleteLater()
-        
-    # Called only from viewrendered plugin.
-        
+
+        self.equalize_sizes()
+           
     def replace_widget_at_index(self,index,new):
         
         '''Replace the widget at index with w.'''
         
         old = self.widget(index)
-        if not old:
-            g.trace('Can not happen: no old widget')
-        elif old != new:
-            # g.trace(index,old,new)
+        if old != new:
             self.insertWidget(index,new)
             old.deleteLater()
+
+        self.equalize_sizes()
     #@+node:ekr.20110605121601.17983: *3* rotate
     def rotate(self, descending=False):
 
@@ -536,29 +536,30 @@ class NestedSplitter(QtGui.QSplitter):
     #@+node:ekr.20110605121601.17985: *3* split (NestedSplitter)
     def split(self,index,side,w=None,name=None):
 
+        sizes = self.sizes()
+
         old = self.widget(index+side-1)
-        old_name = old and old.objectName() or '<no name>'
-        splitter_name = self.objectName() or '<no name>'
+        #X old_name = old and old.objectName() or '<no name>'
+        #X splitter_name = self.objectName() or '<no name>'
         
         if not w:
             w = NestedSplitterChoice(self)
-        
-        # g.trace(splitter_name,old_name,old,w)
 
         if isinstance(old, NestedSplitter):
             old.addWidget(w)
-            index = old.indexOf(w)
-            return old,index # For viewrendered plugin.
+            #X index = old.indexOf(w)
+            #X return old,index # For viewrendered plugin.
         else:
             orientation = self.other_orientation[self.orientation()]
             new = NestedSplitter(self, orientation=orientation, root=self.root)
-            if name: new.setObjectName(name)
+            #X if name: new.setObjectName(name)
             self.insertWidget(index+side-1, new)
             new.addWidget(old)
             new.addWidget(w)
-            index = new.indexOf(w)
-            # g.trace(index,new)
-            return new,index # For viewrendered plugin.
+            #X index = new.indexOf(w)
+            #X return new,index # For viewrendered plugin.
+            
+        self.setSizes(sizes)
     #@+node:ekr.20110605121601.17986: *3* swap
     def swap(self, index):
 

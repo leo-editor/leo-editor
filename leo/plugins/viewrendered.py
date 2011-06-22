@@ -228,16 +228,22 @@ def decorate_window(w):
     w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
     w.resize(600, 300)
 #@+node:tbrown.20100318101414.5995: *3* init
-def init ():
+def init():
     
     # g.trace('viewrendered.py')
     
     g.plugin_signon(__name__)
-    g.registerHandler('after-create-leo-frame',onCreate)
+    # g.registerHandler('after-create-leo-frame', onCreate)
+
+    if not hasattr(g, 'free_layout_callbacks'):
+        g.free_layout_callbacks = []
+    g.free_layout_callbacks.append(free_layout_menu)
 
     return True
 #@+node:ekr.20110317024548.14376: *3* onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
+    
+    return
     
     global controllers
     
@@ -246,6 +252,17 @@ def onCreate (tag, keys):
         h = c.hash()
         if not controllers.get(h):
             controllers[h] = ViewRenderedController(c)
+#@+node:tbrown.20110621120042.22917: *3* free_layout_menu
+def free_layout_menu(menu, splitter, index, button_mode, c):
+    """callback from nested splitter"""
+    
+    if button_mode:
+
+        def wrapper(c=c, splitter=splitter, index=index):
+            splitter.replace_widget(splitter.widget(index), 
+                ViewRenderedController(c, place=False))
+
+        c.free_layout.add_item(wrapper, menu, 'Add ViewRendered', splitter)
 #@+node:ekr.20110320120020.14490: ** Commands
 #@+node:ekr.20110321072702.14507: *3* g.command('lock-unlock-rendering-pane')
 @g.command('lock-unlock-rendering-pane')
@@ -339,8 +356,9 @@ def viewrendered(event):
 
     c = event.get('c')
     if c:
-        pc = controllers.get(c.hash())
-        if pc: pc.view('rst')
+        ViewRenderedController(c)
+        #X pc = controllers.get(c.hash())
+        #X if pc: pc.view('rst')
 #@+node:ekr.20110320120020.14475: *3* g.command('vr')
 @g.command('vr')
 def viewrendered(event):
@@ -351,21 +369,35 @@ def viewrendered(event):
         pc = controllers.get(c.hash())
         if pc: pc.view('rst')
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController
-class ViewRenderedController:
+class ViewRenderedController(QtGui.QWidget):
     
     '''A class to control rendering in a rendering pane.'''
     
     #@+others
     #@+node:ekr.20110317080650.14380: *3* ctor & helpers
-    def __init__ (self,c):
-            
+    def __init__ (self, c, place=True):
+        
+        QtGui.QWidget.__init__(self)
+        self.setLayout(QtGui.QVBoxLayout())
+        self.layout().setContentsMargins(0,0,0,0)
+        
+        if place:
+            if hasattr(c, 'free_layout'):
+                splitter = c.free_layout.get_top_splitter()
+                if not splitter.add_adjacent(self, 'bodyFrame', 'below'):
+                    splitter.insert(0, self)
+            else:
+                self.setWindowTitle("Viewrendered")
+                self.resize(600, 600)
+                self.show()
+
         self.active = False
         self.c = c
         self.badColors = []
         self.delete_callback = None
         self.gnx = None
         self.inited = False
-        self.free_layout_pc = None # Set later by embed.
+        #X self.free_layout_pc = None # Set later by embed.
         self.gs = None # For @graphics-script: a QGraphicsScene 
         self.gv = None # For @graphics-script: a QGraphicsView
         self.kind = 'rst' # in self.dispatch_dict.keys()
@@ -374,14 +406,14 @@ class ViewRenderedController:
         self.s = '' # The plugin's docstring to be rendered temporarily.
         self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
         self.sizes = [] # Saved splitter sizes.
-        self.splitter = None # The free_layout splitter containing the rendering pane.
+        #X self.splitter = None # The free_layout splitter containing the rendering pane.
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.svg_class = QtSvg.QSvgWidget
         self.text_class = QtGui.QTextEdit
         self.graphics_class = QtGui.QGraphicsWidget
         self.vp = None # The present video player.
         self.w = None # The present widget in the rendering pane.
-        
+        self.title = None
         # User-options:
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
         self.auto_create  = c.config.getBool('view-rendered-auto-create',False)
@@ -390,13 +422,17 @@ class ViewRenderedController:
         self.scrolled_message_use_viewrendered = c.config.getBool('scrolledmessage_use_viewrendered',True)
         
         # Init.
-        c.viewrendered = self # For free_layout
+        #X c.viewrendered = self # For free_layout
         # w.setReadOnly(True)
         self.create_dispatch_dict()
-        self.load_free_layout()
+        #X self.load_free_layout()
+        
+        # self.frame = None
 
-        if self.auto_create:
-            self.view(self.default_kind)
+        self.activate()
+
+        #X if self.auto_create:
+        #X     self.view(self.default_kind)
     #@+node:ekr.20110320120020.14478: *4* create_dispatch_dict
     def create_dispatch_dict (self):
         
@@ -414,7 +450,7 @@ class ViewRenderedController:
             'url':          pc.update_url,
         }
     #@+node:ekr.20110319013946.14467: *4* load_free_layout
-    def load_free_layout (self):
+    def Xload_free_layout (self):
         
         c = self.c
         
@@ -424,6 +460,11 @@ class ViewRenderedController:
             # g.trace('auto-loading free_layout.py')
             m = g.loadOnePlugin('free_layout.py',verbose=False)
             m.onCreate(tag='viewrendered',keys={'c':c})
+    #@+node:tbrown.20110621120042.22676: *3* closeEvent
+    def closeEvent(self, event):
+        
+        self.deactivate()
+
     #@+node:ekr.20110317080650.14381: *3* activate
     def activate (self):
         
@@ -471,7 +512,7 @@ class ViewRenderedController:
         g.note('rendering pane unlocked')
         self.locked = False
     #@+node:ekr.20110317080650.14384: *3* show & hide & helper
-    def hide (self):
+    def Xhide (self):
         
         trace = False and not g.unitTesting
         pc = self
@@ -486,34 +527,34 @@ class ViewRenderedController:
         else:
             g.trace('** no pc.w')
         
-    def show (self):
+    def Xshow (self):
         
         trace = False and not g.unitTesting
         pc = self
 
         # First, show the pane so sizes will be valid.
-        pc.w.show()
+        #X pc.w.show()
             
-        if pc.auto_hide:
-            new_sizes = self.validSizes(pc.sizes,'show-saved')
-            if new_sizes:
-                pc.splitter.setSizes(new_sizes)
-                return
+        #X if pc.auto_hide:
+        #X     new_sizes = self.validSizes(pc.sizes,'show-saved')
+        #X     if new_sizes:
+        #X         pc.splitter.setSizes(new_sizes)
+        #X         return
                 
-        sizes = pc.splitter.sizes()
-        new_sizes = self.validSizes(sizes,'show')
-        if new_sizes:
-            pc.splitter.setSizes(new_sizes)
-            return
-            
-        total = sum(sizes)
-        if total:
-            if trace: g.trace('Setting sizes',total/2)
-            pc.splitter.setSizes([total/2,total/2])
-        else:
-            if trace: g.trace('** empty sizes!')
+        #X sizes = pc.splitter.sizes()
+        #X new_sizes = self.validSizes(sizes,'show')
+        #X if new_sizes:
+        #X     pc.splitter.setSizes(new_sizes)
+        #X     return
+        #X     
+        #X total = sum(sizes)
+        #X if total:
+        #X     if trace: g.trace('Setting sizes',total/2)
+        #X     pc.splitter.setSizes([total/2,total/2])
+        #X else:
+        #X     if trace: g.trace('** empty sizes!')
     #@+node:ekr.20110526131737.18370: *4* validSizes
-    def validSizes (self,sizes,tag):
+    def XvalidSizes (self,sizes,tag):
         
         trace = False and not g.unitTesting
 
@@ -590,24 +631,19 @@ class ViewRenderedController:
                 f = pc.update_rst
             f(s,keywords)
     #@+node:ekr.20110320120020.14486: *4* embed_widget & helper
-    def embed_widget (self,w,delete_callback=None,opaque_resize=True):
+    def embed_widget (self,w,delete_callback=None):
         
         '''Embed widget w in the free_layout splitter.'''
         
-        pc = self ; c = pc.c ; splitter = pc.splitter
+        pc = self ; c = pc.c #X ; splitter = pc.splitter
         
-        assert splitter,'no splitter'
-        assert pc.must_change_widget(w)
-        
-        # Call the previous delete callback if it exists.
-        if pc.delete_callback:
-            pc.delete_callback()
-        elif pc.w:
-            pc.w.deleteLater()
+        pc.w = w
+        layout = self.layout()
+        for i in range(layout.count()):
+            layout.removeItem(layout.itemAt(0))
+        self.layout().addWidget(w)
+        w.show()
 
-        # Remember the new delete callback.
-        pc.delete_callback = delete_callback
-        
         # Special inits for text widgets...
         if w.__class__ == pc.text_class:
             text_name = 'body-text-renderer'
@@ -621,12 +657,27 @@ class ViewRenderedController:
             wrapper = qtGui.leoQTextEditWidget(w,wrapper_name,c)
             c.k.completeAllBindingsForWidget(wrapper)
             w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
-           
+              
+        return
+        
+        #X assert splitter,'no splitter'
+        assert pc.must_change_widget(w)
+        
+        # Call the previous delete callback if it exists.
+        if pc.delete_callback:
+            pc.delete_callback()
+        elif pc.w:
+            pc.w.deleteLater()
+
+        # Remember the new delete callback.
+        pc.delete_callback = delete_callback
+        
+     
         # Insert w into the splitter, retaining the splitter ratio.
-        sizes = splitter.sizes()
-        splitter.replace_widget_at_index(pc.splitter_index,w)
-        splitter.setOpaqueResize(opaque_resize)
-        splitter.setSizes(sizes)
+        #X sizes = splitter.sizes()
+        #X splitter.replace_widget_at_index(pc.splitter_index,w)
+        #X splitter.setOpaqueResize(opaque_resize)
+        #X splitter.setSizes(sizes)
         
         # Set pc.w
         pc.w = w
@@ -969,8 +1020,8 @@ class ViewRenderedController:
         
         return ''.join(result)
     #@+node:ekr.20110317024548.14379: *3* view & helper
-    def view(self,kind,s=None,title=None):
-        
+    def Xview(self,kind,s=None,title=None):
+
         pc = self
         pc.kind = kind
         
@@ -988,7 +1039,9 @@ class ViewRenderedController:
         # if big:
             # pc.w.zoomIn(4)
     #@+node:ekr.20110318080425.14394: *4* embed_renderer
-    def embed_renderer (self):
+    def Xembed_renderer (self):
+        
+        return
         
         '''Use the free_layout plugin to embed self.w in a splitter.'''
         
