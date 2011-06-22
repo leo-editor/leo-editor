@@ -230,10 +230,7 @@ def decorate_window(w):
 #@+node:tbrown.20100318101414.5995: *3* init
 def init():
     
-    # g.trace('viewrendered.py')
-    
     g.plugin_signon(__name__)
-    # g.registerHandler('after-create-leo-frame', onCreate)
 
     if not hasattr(g, 'free_layout_callbacks'):
         g.free_layout_callbacks = []

@@ -463,9 +463,9 @@ class NestedSplitter(QtGui.QSplitter):
 
             for splitter in widget.self_and_descendants():
                 for i in range(splitter.count()):
-                    all_ok &= self.close_or_keep(splitter.widget(i))
+                    all_ok &= (self.close_or_keep(splitter.widget(i)) is not False)
 
-            if all_ok and count <= 0:
+            if all_ok or count <= 0:
                 widget.deleteLater()
 
         else:
@@ -474,7 +474,7 @@ class NestedSplitter(QtGui.QSplitter):
     def close_or_keep(self, widget):
 
         if widget is None:
-            return
+            True
 
         for k in self.root.holders:
             if hasattr(widget, k):
@@ -547,6 +547,7 @@ class NestedSplitter(QtGui.QSplitter):
 
         if isinstance(old, NestedSplitter):
             old.addWidget(w)
+            old.equalize_sizes()
             #X index = old.indexOf(w)
             #X return old,index # For viewrendered plugin.
         else:
@@ -556,6 +557,7 @@ class NestedSplitter(QtGui.QSplitter):
             self.insertWidget(index+side-1, new)
             new.addWidget(old)
             new.addWidget(w)
+            new.equalize_sizes()
             #X index = new.indexOf(w)
             #X return new,index # For viewrendered plugin.
             
