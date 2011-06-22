@@ -251,13 +251,13 @@ def onCreate(tag, keys):
             controllers[h] = ViewRenderedController(c)
 #@+node:tbrown.20110621120042.22917: *3* free_layout_menu
 def free_layout_menu(menu, splitter, index, button_mode, c):
-    """callback from nested splitter"""
+    """callback for free_layout"""
     
     if button_mode:
 
         def wrapper(c=c, splitter=splitter, index=index):
             splitter.replace_widget(splitter.widget(index), 
-                ViewRenderedController(c, place=False))
+                ViewRenderedController(c))
 
         c.free_layout.add_item(wrapper, menu, 'Add ViewRendered', splitter)
 #@+node:ekr.20110320120020.14490: ** Commands
@@ -353,9 +353,17 @@ def viewrendered(event):
 
     c = event.get('c')
     if c:
-        ViewRenderedController(c)
-        #X pc = controllers.get(c.hash())
-        #X if pc: pc.view('rst')
+        
+        vr = ViewRenderedController(c)
+        
+        if hasattr(c, 'free_layout'):
+            splitter = c.free_layout.get_top_splitter()
+            if not splitter.add_adjacent(vr, 'bodyFrame', 'below'):
+                splitter.insert(0, vr)
+        else:
+            vr.setWindowTitle("Rendered View")
+            vr.resize(600, 600)
+            vr.show()
 #@+node:ekr.20110320120020.14475: *3* g.command('vr')
 @g.command('vr')
 def viewrendered(event):
@@ -372,22 +380,12 @@ class ViewRenderedController(QtGui.QWidget):
     
     #@+others
     #@+node:ekr.20110317080650.14380: *3* ctor & helpers
-    def __init__ (self, c, place=True):
+    def __init__ (self, c):
         
         QtGui.QWidget.__init__(self)
         self.setLayout(QtGui.QVBoxLayout())
         self.layout().setContentsMargins(0,0,0,0)
         
-        if place:
-            if hasattr(c, 'free_layout'):
-                splitter = c.free_layout.get_top_splitter()
-                if not splitter.add_adjacent(self, 'bodyFrame', 'below'):
-                    splitter.insert(0, self)
-            else:
-                self.setWindowTitle("Viewrendered")
-                self.resize(600, 600)
-                self.show()
-
         self.active = False
         self.c = c
         self.badColors = []
