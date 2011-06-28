@@ -106,7 +106,7 @@ class FreeLayoutController:
 
         logTabWidget = splitter.findChild(QtGui.QWidget, "logTabWidget")
         splitter.root.holders['_is_from_tab'] = logTabWidget
-        splitter.root.holders['_is_permanent'] = splitter
+        splitter.root.holders['_is_permanent'] = 'TOP'
 
         # allow body and tree widgets to be "removed" to tabs on the log tab panel    
         bodyWidget = splitter.findChild(QtGui.QFrame, "bodyFrame")
@@ -243,18 +243,25 @@ class FreeLayoutController:
         
             id_ = id_.split(':', 1)[1]
             w = self.get_top_splitter().findChild(QtGui.QWidget, id_)
-            w.setHidden(False)  # may be from Tab holder
-            return w        
+            if w:
+                w.setHidden(False)  # may be from Tab holder
+            return w      
              
         return None
     #@+node:tbrown.20110628083641.11730: *3* ns_context
     def ns_context(self):
         
-        return [
+        
+        ans = [
             ('Save layout', '_fl_save_layout'),
-            ('Load layout', '_fl_load_layout'),
-            ('Delete layout', '_fl_delete_layout'),
         ]
+        
+        d = g.app.db.get('ns_layouts', {})
+        if d:
+            ans.append({'Load layout': [(k, '_fl_load_layout:'+k) for k in d]})
+            ans.append({'Delete layout': [(k, '_fl_delete_layout:'+k) for k in d]})
+            
+        return ans
     #@+node:tbrown.20110628083641.11732: *3* ns_do_context
     def ns_do_context(self, id_, splitter, index):
         
@@ -263,23 +270,28 @@ class FreeLayoutController:
             name = g.app.gui.runAskOkCancelStringDialog(self.c, "Save layout",
                 "Name for layout?")
             if name:
-                # make sure g.app.db's __set_item__ is hit so it knows to save
                 if 'ns_layouts' in g.app.db:
-                    d = g.app.db['ns_layouts']
-                else:
-                    d = {}
+                    d = g.app.db.get('ns_layouts', {})
                 d[name] = layout
+                # make sure g.app.db's __set_item__ is hit so it knows to save
                 g.app.db['ns_layouts'] = d
                 
             return True
         
-        if id_ == '_fl_load_layout':
-            name = g.app.gui.runAskOkCancelStringDialog(self.c, "Save layout",
-                "Name for layout?")
-            if name:
-                layout = g.app.db['ns_layouts'][name]
-                self.get_top_splitter().load_layout(layout)
-                return True
+        if id_.startswith('_fl_load_layout:'):
+            name = id_.split(':', 1)[1]
+            layout = g.app.db['ns_layouts'][name]
+            self.get_top_splitter().load_layout(layout)
+            return True
+            
+        if id_.startswith('_fl_delete_layout:'):
+            name = id_.split(':', 1)[1]
+            if g.app.gui.runAskYesNoCancelDialog(self.c, "Really delete Layout?",
+                "Really permanently delete the layout '%s'?"%name) == 'yes':
+                d = g.app.db.get('ns_layouts', {})
+                del d[name]
+                # make sure g.app.db's __set_item__ is hit so it knows to save
+                g.app.db['ns_layouts'] = d
     #@-others
 #@-others
 #@-leo

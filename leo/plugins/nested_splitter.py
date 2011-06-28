@@ -216,15 +216,22 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
             act.connect(act, Qt.SIGNAL('triggered()'), cb)
             submenu.addAction(act)  
 
-        for provider in splitter.root.providers:
-            if hasattr(provider, 'ns_context'):
-                for title, id_ in provider.ns_context():
+        def load_items(menu, items):
+            for i in items:
+                if isinstance(i, dict):
+                    for k in i:
+                        load_items(menu.addMenu(k), i[k])
+                else:
+                    title, id_ = i
                     def cb(id_=id_):
                         splitter.context_cb(id_, index)
                     act = QtGui.QAction(title, self)
                     act.connect(act, Qt.SIGNAL('triggered()'), cb)
-                    menu.addAction(act)        
+                    menu.addAction(act)              
 
+        for provider in splitter.root.providers:
+            if hasattr(provider, 'ns_context'):
+                load_items(menu, provider.ns_context())
 
         menu.exec_(self.mapToGlobal(pos))
 
@@ -288,7 +295,7 @@ class NestedSplitter(QtGui.QSplitter):
             # only child of a previosly more populated splitter
             self.parent().insertWidget(
                 self.parent().indexOf(self) + side,
-                NestedSplitterChoice(self))
+                NestedSplitterChoice(self.parent()))
 
         elif layout:
             new = NestedSplitter(None,orientation=orientation,
@@ -406,6 +413,13 @@ class NestedSplitter(QtGui.QSplitter):
             return
         
         self.replace_widget_at_index(index, provided)
+        self.top().prune_empty()
+        
+        # user can set up one widget pane plus one Action pane, then move the
+        # widget into the action pane, level 1 pane and no handles
+        if self.top().max_count() < 2:
+            print('Adding Action widget to maintain at least one handle')
+            self.top().insert(0, NestedSplitterChoice(self.top()))
     #@+node:tbrown.20110628083641.11729: *3* context_cb
     def context_cb(self, id_, index):
 
@@ -486,7 +500,16 @@ class NestedSplitter(QtGui.QSplitter):
 
         """find max widgets in this and child splitters"""
 
-        return max([i.count() for i in self.self_and_descendants()])
+        counts = []
+        count = 0
+        for i in range(self.count()):
+            if isinstance(self.widget(i), NestedSplitter):
+                counts.append(self.widget(i).max_count())
+            else:
+                count += 1
+        counts.append(count)
+
+        return max(counts)
 
     #@+node:ekr.20110605121601.17979: *3* register
     def register(self, cb):
@@ -509,12 +532,15 @@ class NestedSplitter(QtGui.QSplitter):
 
         # send close signal to all children
         if isinstance(widget, NestedSplitter):
+            
+            print 'remove splitter'
 
             count = widget.count()
             all_ok = True
 
             for splitter in widget.self_and_descendants():
-                for i in range(splitter.count()):
+                for i in range(splitter.count()-1, -1, -1):
+                    print i, all_ok
                     all_ok &= (self.close_or_keep(splitter.widget(i)) is not False)
 
             if all_ok or count <= 0:
@@ -526,11 +552,16 @@ class NestedSplitter(QtGui.QSplitter):
     def close_or_keep(self, widget):
 
         if widget is None:
-            True
+            return True
 
         for k in self.root.holders:
+            print 'check', k, widget
             if hasattr(widget, k):
                 holder = self.root.holders[k]
+                print 'use',k,holder
+                if holder == 'TOP':
+                    holder = self.top()
+                    print 'moving to top'
                 if hasattr(holder, "addTab"):
                     holder.addTab(widget, getattr(widget,k))
                 else:
@@ -689,7 +720,7 @@ class NestedSplitter(QtGui.QSplitter):
         return self.get_layout(_saveable=True)
     #@+node:tbrown.20110628083641.21154: *3* load_layout
     def load_layout(self, layout, level=0):
-          
+        
         self.setOrientation(layout['orientation'])
         found = 0
         for i in layout['content']:
@@ -704,12 +735,14 @@ class NestedSplitter(QtGui.QSplitter):
                     self.insert(found, provided)
                     found += 1
                 else:
-                    print 'NO', i
+                    print('NO %s'%i)
                  
         self.prune_empty()
         if self.count() == len(layout['sizes']):
             self.setSizes(layout['sizes'])
         else:
+            print('Wrong pane count at level %d, count:%d, sizes:%d'%(
+                level, self.count(), len(layout['sizes'])))
             self.equalize_sizes()
     #@+node:tbrown.20110628083641.21156: *3* prune_empty
     def prune_empty(self):
@@ -737,10 +770,12 @@ class NestedSplitter(QtGui.QSplitter):
                         # we already have it, i.e. it's a singleton
                         w = self.top().find_by_id(id_)
                         if w:
-                            w._ns_id = id_
+                            if not hasattr(w, '_ns_id'):
+                                w._ns_id = id_
                             return w
                     else:
-                        provided._ns_id = id_
+                        if not hasattr(provided, '_ns_id'):
+                            provided._ns_id = id_
                         return provided
         return None
     #@+node:ekr.20110605121601.17990: *3* layout_to_text
