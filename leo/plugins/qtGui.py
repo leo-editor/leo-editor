@@ -7712,7 +7712,7 @@ class leoQtGui(leoGui.leoGui):
         if not ok:
             return None
 
-        return txt
+        return str(txt)  # 2011-06-28 TNB return string not QString
     #@+node:ekr.20110605121601.18491: *5* runAskOkCancelNumberDialog
     def runAskOkCancelNumberDialog(self,c,title,message):
 

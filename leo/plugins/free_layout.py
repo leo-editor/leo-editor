@@ -94,7 +94,7 @@ class FreeLayoutController:
 
         pc = self ; c = self.c
 
-        splitter = c.frame.top.splitter_2.top() # A NestedSplitter.
+        splitter = self.get_top_splitter() # A NestedSplitter.
 
         # Register menu callbacks with the NestedSplitter.
         splitter.register(pc.offer_tabs)
@@ -120,6 +120,12 @@ class FreeLayoutController:
         # if the log tab panel is removed, move it back to the top splitter
         logWidget = splitter.findChild(QtGui.QFrame, "logFrame")
         logWidget._is_permanent = True
+        
+        
+        # tag core Leo components (see ns_provides)
+        splitter.findChild(QtGui.QWidget, "outlineFrame")._ns_id = '_leo_pane:outlineFrame'
+        splitter.findChild(QtGui.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
+        splitter.findChild(QtGui.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
 
         splitter.register_provider(self)
     #@+node:tbrown.20110621120042.22918: *3* from_g
@@ -193,12 +199,18 @@ class FreeLayoutController:
             QtGui.QWidget, "logTabWidget")
         for n in range(logTabWidget.count()):
             text = str(logTabWidget.tabText(n))  # not QString
+            if text in ('Body', 'Tree'):
+                continue  # handled below
             if text == 'Log':
                 # if Leo can't find Log in tab pane, it creates another
                 continue
             ans.append(('+'+text, 
                         '_leo_tab:'+text))
-                        
+
+        ans.append(('Tree', '_leo_pane:outlineFrame'))
+        ans.append(('Body', '_leo_pane:bodyFrame'))
+        ans.append(('Tab pane', '_leo_pane:logFrame'))
+
         if 'leo.plugins.viewrendered' in g.getLoadedPlugins():
             ans.append(('+Viewrendered', '_leo_viewrendered'))
         
@@ -219,12 +231,55 @@ class FreeLayoutController:
                     w.setHidden(False)
                     w._is_from_tab = logTabWidget.tabText(n)
                     return w
+                    
+            # didn't find it, maybe it's already in a splitter
+            return 'USE_EXISTING'
         
         if id_ == '_leo_viewrendered':
             from leo.plugins.viewrendered import ViewRenderedController
             return ViewRenderedController(self.c)
+
+        if id_.startswith('_leo_pane:'):
         
+            id_ = id_.split(':', 1)[1]
+            w = self.get_top_splitter().findChild(QtGui.QWidget, id_)
+            w.setHidden(False)  # may be from Tab holder
+            return w        
+             
         return None
+    #@+node:tbrown.20110628083641.11730: *3* ns_context
+    def ns_context(self):
+        
+        return [
+            ('Save layout', '_fl_save_layout'),
+            ('Load layout', '_fl_load_layout'),
+            ('Delete layout', '_fl_delete_layout'),
+        ]
+    #@+node:tbrown.20110628083641.11732: *3* ns_do_context
+    def ns_do_context(self, id_, splitter, index):
+        
+        if id_ == '_fl_save_layout':
+            layout = self.get_top_splitter().get_saveable_layout()
+            name = g.app.gui.runAskOkCancelStringDialog(self.c, "Save layout",
+                "Name for layout?")
+            if name:
+                # make sure g.app.db's __set_item__ is hit so it knows to save
+                if 'ns_layouts' in g.app.db:
+                    d = g.app.db['ns_layouts']
+                else:
+                    d = {}
+                d[name] = layout
+                g.app.db['ns_layouts'] = d
+                
+            return True
+        
+        if id_ == '_fl_load_layout':
+            name = g.app.gui.runAskOkCancelStringDialog(self.c, "Save layout",
+                "Name for layout?")
+            if name:
+                layout = g.app.db['ns_layouts'][name]
+                self.get_top_splitter().load_layout(layout)
+                return True
     #@-others
 #@-others
 #@-leo

@@ -199,6 +199,11 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
                     splitter.add(i)
                 self.add_item(add_callback,menu,'Add %s' % (ab[i]))
 
+        # equalize panes
+        def eq(splitter=splitter.top()):
+            splitter.equalize_sizes(recurse=True)
+        self.add_item(eq, menu, 'Equalize all')
+
         for cb in splitter.root.callbacks:
             cb(menu, splitter, index, button_mode=False)   
 
@@ -395,35 +400,19 @@ class NestedSplitter(QtGui.QSplitter):
     #@+node:tbrown.20110628083641.11723: *3* place_provided
     def place_provided(self, id_, index):
         
-        provided = None
+        provided = self.get_provided(id_)
         
-        for provider in self.root.providers:
-            if hasattr(provider, 'ns_provide'):
-                provided = provider.ns_provide(id_)
-                if provided:
-                    break
-        else:
+        if not provided:
             return
-        
-        provided._ns_id = id_
         
         self.replace_widget_at_index(index, provided)
     #@+node:tbrown.20110628083641.11729: *3* context_cb
     def context_cb(self, id_, index):
-        
-        provided = None
-        
+
         for provider in self.root.providers:
-            if hasattr(provider, 'ns_provide'):
-                provided = provider.ns_provide(id_)
-                if provided:
-                    break
-        else:
-            return
-        
-        provided._ns_id = id_
-        
-        self.replace_widget_at_index(index, provided)
+            if hasattr(provider, 'ns_do_context'):
+                provided = provider.ns_do_context(id_, self, index)
+                break
     #@+node:ekr.20110605121601.17973: *3* contains
     def contains(self, widget):
 
@@ -459,9 +448,14 @@ class NestedSplitter(QtGui.QSplitter):
 
         return widget, neighbour, count
     #@+node:tbrown.20110621120042.22920: *3* equalize_sizes
-    def equalize_sizes(self):
+    def equalize_sizes(self, recurse=False):
         size = sum(self.sizes()) / self.count()
         self.setSizes([size]*self.count())
+        
+        if recurse:
+            for i in range(self.count()):
+                if isinstance(self.widget(i), NestedSplitter):
+                    self.widget(i).equalize_sizes(recurse=True)
     #@+node:ekr.20110605121601.17975: *3* insert
     def insert(self,index,w=None):
         
@@ -635,7 +629,6 @@ class NestedSplitter(QtGui.QSplitter):
         w = self.widget(idx)
 
         if self.invalid_swap(w, ow):
-            # print 'Invalid swap'
             return
 
         self.insertWidget(idx, ow)
@@ -655,7 +648,7 @@ class NestedSplitter(QtGui.QSplitter):
 
         return top
     #@+node:ekr.20110605121601.17989: *3* get_layout
-    def get_layout(self):
+    def get_layout(self, _saveable=False):
         """return {'orientation':QOrientation, 'content':[], 'splitter':ns}
         
         Where content is a list of widgets, or if a widget is a NestedSplitter, the
@@ -663,21 +656,93 @@ class NestedSplitter(QtGui.QSplitter):
         which generated the dict.
         
         Usually you would call ns.top().get_layout()
+        
+        With _saveable==True (via get_saveable_layour()) content entry for
+        non-NestedSplitter items is the provider ID string for the item, or
+        'UNKNOWN', and the splitter entry is omitted.
         """
         
         ans = {
             'orientation': self.orientation(),
-            'splitter': self,
             'content': []
         }
+        
+        if not _saveable:
+            ans['splitter'] = self
+            
+        ans['sizes'] = self.sizes()
+        
         for i in range(self.count()):
             w = self.widget(i)
             if isinstance(w, NestedSplitter):
-                ans['content'].append(w.get_layout())
+                ans['content'].append(w.get_layout(_saveable=_saveable))
             else:
-                ans['content'].append(w)
+                if _saveable:
+                    ans['content'].append(getattr(w, '_ns_id', 'UNKNOWN'))
+                else:
+                    ans['content'].append(w)
                 
         return ans
+    #@+node:tbrown.20110628083641.11733: *3* get_saveable_layout
+    def get_saveable_layout(self):
+        
+        return self.get_layout(_saveable=True)
+    #@+node:tbrown.20110628083641.21154: *3* load_layout
+    def load_layout(self, layout, level=0):
+          
+        self.setOrientation(layout['orientation'])
+        found = 0
+        for i in layout['content']:
+            if isinstance(i, dict):
+                new = NestedSplitter(root=self.root)
+                self.insert(found, new)
+                found += 1
+                new.load_layout(i, level+1)
+            else:
+                provided = self.get_provided(i)
+                if provided:
+                    self.insert(found, provided)
+                    found += 1
+                else:
+                    print 'NO', i
+                 
+        self.prune_empty()
+        if self.count() == len(layout['sizes']):
+            self.setSizes(layout['sizes'])
+        else:
+            self.equalize_sizes()
+    #@+node:tbrown.20110628083641.21156: *3* prune_empty
+    def prune_empty(self):
+        
+        for i in range(self.count()-1, -1, -1):
+            w = self.widget(i)
+            if isinstance(w, NestedSplitter):
+                if w.max_count() == 0:
+                    w.deleteLater()
+    #@+node:tbrown.20110628083641.21155: *3* get_provided
+    def find_by_id(self, id_):
+        for s in self.self_and_descendants():                  
+            for i in range(s.count()):
+                if getattr(s.widget(i), '_ns_id', None) == id_:
+                    return s.widget(i)
+        return None
+
+    def get_provided(self, id_):
+        for provider in self.root.providers:
+            if hasattr(provider, 'ns_provide'):
+                provided = provider.ns_provide(id_)
+                if provided:
+                    if provided == 'USE_EXISTING':
+                        # provider claiming responsibility, and saying
+                        # we already have it, i.e. it's a singleton
+                        w = self.top().find_by_id(id_)
+                        if w:
+                            w._ns_id = id_
+                            return w
+                    else:
+                        provided._ns_id = id_
+                        return provided
+        return None
     #@+node:ekr.20110605121601.17990: *3* layout_to_text
     def layout_to_text(self, layout, _depth=0, _ans=[]):
         """convert the output from get_layout to indented human readable text
