@@ -94,7 +94,7 @@ class FreeLayoutController:
 
         pc = self ; c = self.c
 
-        self.top_splitter = splitter = c.frame.top.splitter_2.top() # A NestedSplitter.
+        splitter = c.frame.top.splitter_2.top() # A NestedSplitter.
 
         # Register menu callbacks with the NestedSplitter.
         splitter.register(pc.offer_tabs)
@@ -120,6 +120,8 @@ class FreeLayoutController:
         # if the log tab panel is removed, move it back to the top splitter
         logWidget = splitter.findChild(QtGui.QFrame, "logFrame")
         logWidget._is_permanent = True
+
+        splitter.register_provider(self)
     #@+node:tbrown.20110621120042.22918: *3* from_g
     def from_g(self, menu, splitter, index, button_mode):
         
@@ -140,6 +142,8 @@ class FreeLayoutController:
         menu.addAction(act)
     #@+node:ekr.20110316100442.14371: *4* offer_tabs
     def offer_tabs(self, menu, splitter, index, button_mode):
+        
+        return
         
         pc = self
         
@@ -163,6 +167,8 @@ class FreeLayoutController:
     #@+node:ekr.20110316100442.14372: *4* offer_viewrendered
     def offer_viewrendered(self, menu, splitter, index, button_mode):
         
+        return
+        
         pc = self ; c = pc.c
         
         vr_pc = hasattr(c,"viewrendered") and c.viewrendered
@@ -177,6 +183,48 @@ class FreeLayoutController:
                 # g.trace(index)
             
             self.add_item(wrapper,menu,"Add Viewrendered",splitter)
+    #@+node:tbrown.20110627201141.11745: *3* ns_provides
+    def ns_provides(self):
+
+        ans = []
+        
+        # list of things in tab widget
+        logTabWidget = self.get_top_splitter().findChild(
+            QtGui.QWidget, "logTabWidget")
+        for n in range(logTabWidget.count()):
+            text = str(logTabWidget.tabText(n))  # not QString
+            if text == 'Log':
+                # if Leo can't find Log in tab pane, it creates another
+                continue
+            ans.append(('+'+text, 
+                        '_leo_tab:'+text))
+                        
+        if 'leo.plugins.viewrendered' in g.getLoadedPlugins():
+            ans.append(('+Viewrendered', '_leo_viewrendered'))
+        
+        return ans
+    #@+node:tbrown.20110628083641.11724: *3* ns_provide
+    def ns_provide(self, id_):
+        
+        if id_.startswith('_leo_tab:'):
+        
+            id_ = id_.split(':', 1)[1]
+        
+            logTabWidget = self.get_top_splitter().findChild(
+                QtGui.QWidget, "logTabWidget")
+                
+            for n in range(logTabWidget.count()):
+                if logTabWidget.tabText(n) == id_:
+                    w = logTabWidget.widget(n)
+                    w.setHidden(False)
+                    w._is_from_tab = logTabWidget.tabText(n)
+                    return w
+        
+        if id_ == '_leo_viewrendered':
+            from leo.plugins.viewrendered import ViewRenderedController
+            return ViewRenderedController(self.c)
+        
+        return None
     #@-others
 #@-others
 #@-leo

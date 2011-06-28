@@ -200,7 +200,7 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
                 self.add_item(add_callback,menu,'Add %s' % (ab[i]))
 
         for cb in splitter.root.callbacks:
-            cb(menu, splitter, index, button_mode=False)
+            cb(menu, splitter, index, button_mode=False)   
 
         if True:
             submenu = menu.addMenu('Debug')
@@ -210,6 +210,16 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
                     splitter.layout_to_text(splitter.top().get_layout()))
             act.connect(act, Qt.SIGNAL('triggered()'), cb)
             submenu.addAction(act)  
+
+        for provider in splitter.root.providers:
+            if hasattr(provider, 'ns_context'):
+                for title, id_ in provider.ns_context():
+                    def cb(id_=id_):
+                        splitter.context_cb(id_, index)
+                    act = QtGui.QAction(title, self)
+                    act.connect(act, Qt.SIGNAL('triggered()'), cb)
+                    menu.addAction(act)        
+
 
         menu.exec_(self.mapToGlobal(pos))
 
@@ -241,6 +251,7 @@ class NestedSplitter(QtGui.QSplitter):
             if root == self:
                 root.marked = None # Tuple: self,index,side-1,widget
                 root.callbacks = []
+                root.providers = []
                 root.holders = {}
 
         self.root = root
@@ -355,6 +366,8 @@ class NestedSplitter(QtGui.QSplitter):
     def choice_menu(self, button, pos):
 
         menu = QtGui.QMenu()
+        
+        index=self.indexOf(button)
 
         if self.root.marked and not self.invalid_swap(button, self.root.marked[3]):
             act = QtGui.QAction("Move marked here", self)
@@ -363,13 +376,54 @@ class NestedSplitter(QtGui.QSplitter):
             menu.addAction(act)        
 
         for cb in self.root.callbacks:
-            cb(menu, self, self.indexOf(button), button_mode=True)
+            cb(menu, self, index, button_mode=True)
+
+        for provider in self.root.providers:
+            if hasattr(provider, 'ns_provides'):
+                for title, id_ in provider.ns_provides():
+                    def cb(id_=id_):
+                        self.place_provided(id_, index)
+                    act = QtGui.QAction(title, self)
+                    act.connect(act, Qt.SIGNAL('triggered()'), cb)
+                    menu.addAction(act)        
 
         if menu.isEmpty():
             act = QtGui.QAction("Nothing marked, and no options", self)
             menu.addAction(act)
 
         menu.exec_(button.mapToGlobal(pos))
+    #@+node:tbrown.20110628083641.11723: *3* place_provided
+    def place_provided(self, id_, index):
+        
+        provided = None
+        
+        for provider in self.root.providers:
+            if hasattr(provider, 'ns_provide'):
+                provided = provider.ns_provide(id_)
+                if provided:
+                    break
+        else:
+            return
+        
+        provided._ns_id = id_
+        
+        self.replace_widget_at_index(index, provided)
+    #@+node:tbrown.20110628083641.11729: *3* context_cb
+    def context_cb(self, id_, index):
+        
+        provided = None
+        
+        for provider in self.root.providers:
+            if hasattr(provider, 'ns_provide'):
+                provided = provider.ns_provide(id_)
+                if provided:
+                    break
+        else:
+            return
+        
+        provided._ns_id = id_
+        
+        self.replace_widget_at_index(index, provided)
     #@+node:ekr.20110605121601.17973: *3* contains
     def contains(self, widget):
 
@@ -444,6 +498,10 @@ class NestedSplitter(QtGui.QSplitter):
     def register(self, cb):
         
         self.root.callbacks.append(cb)
+    #@+node:tbrown.20110627201141.11744: *3* register_provider
+    def register_provider(self, provider):
+        
+        self.root.providers.append(provider)
     #@+node:ekr.20110605121601.17980: *3* remove & helper
     def remove(self, index, side):
 
@@ -584,6 +642,8 @@ class NestedSplitter(QtGui.QSplitter):
         osplitter.insertWidget(oidx, w)
 
         self.root.marked = self, self.indexOf(ow), 0, ow
+        self.equalize_sizes()
+        osplitter.equalize_sizes()
     #@+node:ekr.20110605121601.17988: *3* top
     def top(self):
 
@@ -634,7 +694,7 @@ class NestedSplitter(QtGui.QSplitter):
             '   '*_depth,
             layout['splitter'].__class__.__name__,
             layout['splitter'].objectName(),
-            orientation
+            orientation,
         ))
         
         _depth += 1
@@ -642,10 +702,11 @@ class NestedSplitter(QtGui.QSplitter):
             if isinstance(i, dict):
                 self.layout_to_text(i, _depth, _ans)
             else:
-                _ans.append("%s%s (%s)" % (
+                _ans.append("%s%s (%s) from %s" % (
                    '   '*_depth,
                    i.__class__.__name__,
-                   str(i.objectName())  # not QString
+                   str(i.objectName()),  # not QString
+                   getattr(i, '_ns_id', 'UNKNOWN')
                 ))
                 
         if _depth == 1:
