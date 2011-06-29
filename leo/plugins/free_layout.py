@@ -136,7 +136,7 @@ class FreeLayoutController:
     #@+node:tbrown.20110621120042.22914: *3* get_top_splitter
     def get_top_splitter(self):
 
-        return self.c.frame.top.findChild(NestedSplitter)
+        return self.c.frame.top.findChild(NestedSplitter).top()
     #@+node:ekr.20110318080425.14392: *3* menu callbacks
     # These are called when the user right-clicks the NestedSplitter.
     #@+node:ekr.20110317024548.14380: *4* add_item
@@ -270,8 +270,7 @@ class FreeLayoutController:
             name = g.app.gui.runAskOkCancelStringDialog(self.c, "Save layout",
                 "Name for layout?")
             if name:
-                if 'ns_layouts' in g.app.db:
-                    d = g.app.db.get('ns_layouts', {})
+                d = g.app.db.get('ns_layouts', {})
                 d[name] = layout
                 # make sure g.app.db's __set_item__ is hit so it knows to save
                 g.app.db['ns_layouts'] = d

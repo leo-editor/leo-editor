@@ -15,10 +15,6 @@ from PyQt4.QtCore import Qt as QtConst
 #@-<< imports >>
 
 #@+others
-#@+node:tbrown.20110628211133.6522: ** dispose
-def dispose(x):
-    return
-    x.setParent(None)
 #@+node:ekr.20110605121601.17956: ** init
 def init():
     
@@ -262,7 +258,7 @@ class NestedSplitter(QtGui.QSplitter):
         QtGui.QSplitter.__init__(self,orientation,parent)
             # This creates a NestedSplitterHandle.
 
-        if not root:
+        if root is None:
             root = self.top()
             if root == self:
                 root.marked = None # Tuple: self,index,side-1,widget
@@ -309,7 +305,7 @@ class NestedSplitter(QtGui.QSplitter):
             pos = layout.indexOf(old)
             
             new.addWidget(old)
-            if not w:
+            if w is None:
                 w = NestedSplitterChoice(new)
             new.insertWidget(side,w)
 
@@ -343,7 +339,7 @@ class NestedSplitter(QtGui.QSplitter):
         # find the layout containing widget_id
         l = hunter(layout, widget_id)
         
-        if not l:
+        if l is None:
             return False
         
         layout, pos = l
@@ -413,7 +409,7 @@ class NestedSplitter(QtGui.QSplitter):
         
         provided = self.get_provided(id_)
         
-        if not provided:
+        if provided is None:
             return
         
         self.replace_widget_at_index(index, provided)
@@ -477,7 +473,7 @@ class NestedSplitter(QtGui.QSplitter):
     #@+node:ekr.20110605121601.17975: *3* insert
     def insert(self,index,w=None):
         
-        if not w:
+        if w is None:  # do NOT use 'not w', fails in PyQt 4.8
             w = NestedSplitterChoice(self)
             # A QWidget, with self as parent.
             # This creates the menu.
@@ -548,7 +544,7 @@ class NestedSplitter(QtGui.QSplitter):
                     all_ok &= (self.close_or_keep(splitter.widget(i)) is not False)
 
             if all_ok or count <= 0:
-                dispose(widget)
+                widget.deleteLater()
 
         else:
             self.close_or_keep(widget)
@@ -573,7 +569,7 @@ class NestedSplitter(QtGui.QSplitter):
                 return True
         else:
             if widget.close():
-                dispose(widget)
+                widget.deleteLater()
                 return True
         
         return False
@@ -582,7 +578,7 @@ class NestedSplitter(QtGui.QSplitter):
     def replace_widget(self, old, new):
 
         self.insertWidget(self.indexOf(old), new)
-        dispose(old)
+        old.deleteLater()
 
         self.equalize_sizes()
            
@@ -593,7 +589,7 @@ class NestedSplitter(QtGui.QSplitter):
         old = self.widget(index)
         if old != new:
             self.insertWidget(index,new)
-            dispose(old)
+            old.deleteLater()
 
         self.equalize_sizes()
     #@+node:ekr.20110605121601.17983: *3* rotate
@@ -629,7 +625,7 @@ class NestedSplitter(QtGui.QSplitter):
         #X old_name = old and old.objectName() or '<no name>'
         #X splitter_name = self.objectName() or '<no name>'
         
-        if not w:
+        if w is None:
             w = NestedSplitterChoice(self)
 
         if isinstance(old, NestedSplitter):
@@ -725,16 +721,20 @@ class NestedSplitter(QtGui.QSplitter):
     #@+node:tbrown.20110628083641.21154: *3* load_layout
     def load_layout(self, layout, level=0):
         
+        print 'enter',level,self
+         
         self.setOrientation(layout['orientation'])
         found = 0
         for i in layout['content']:
             if isinstance(i, dict):
-                new = NestedSplitter(root=self.root)
+                new = NestedSplitter(root=self.root, parent=self)
+                print 'new',new,bool(new)
                 self.insert(found, new)
                 found += 1
                 new.load_layout(i, level+1)
             else:
                 provided = self.get_provided(i)
+                print 'get',level,found,provided
                 if provided:
                     self.insert(found, provided)
                     found += 1
@@ -748,6 +748,8 @@ class NestedSplitter(QtGui.QSplitter):
             print('Wrong pane count at level %d, count:%d, sizes:%d'%(
                 level, self.count(), len(layout['sizes'])))
             self.equalize_sizes()
+            
+        print 'exit',level   
     #@+node:tbrown.20110628083641.21156: *3* prune_empty
     def prune_empty(self):
         
@@ -755,7 +757,8 @@ class NestedSplitter(QtGui.QSplitter):
             w = self.widget(i)
             if isinstance(w, NestedSplitter):
                 if w.max_count() == 0:
-                    dispose(w)
+                    w.setParent(None)
+                    # w.deleteLater()
     #@+node:tbrown.20110628083641.21155: *3* get_provided
     def find_by_id(self, id_):
         for s in self.self_and_descendants():                  

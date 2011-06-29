@@ -232,6 +232,10 @@ def init():
     
     g.plugin_signon(__name__)
 
+    g.registerHandler('after-create-leo-frame', onCreate)
+
+    return True
+
     if not hasattr(g, 'free_layout_callbacks'):
         g.free_layout_callbacks = []
     g.free_layout_callbacks.append(free_layout_menu)
@@ -239,6 +243,10 @@ def init():
     return True
 #@+node:ekr.20110317024548.14376: *3* onCreate
 def onCreate(tag, keys):
+    
+    c = keys.get('c')
+    if c:
+        ViewRenderedProvider(c)
     
     return
     
@@ -373,6 +381,22 @@ def viewrendered(event):
     if c:
         pc = controllers.get(c.hash())
         if pc: pc.view('rst')
+#@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider
+class ViewRenderedProvider:
+    #@+others
+    #@+node:tbrown.20110629084915.35154: *3* __init__
+    def __init__(self, c):
+        self.c = c
+        if hasattr(c, 'free_layout'):
+            c.free_layout.get_top_splitter().register_provider(self)
+    #@+node:tbrown.20110629084915.35150: *3* ns_provides
+    def ns_provides(self):
+        return[('_Viewrendered', '_leo_viewrendered')]
+    #@+node:tbrown.20110629084915.35151: *3* ns_provide
+    def ns_provide(self, id_):
+        if id_ == '_leo_viewrendered':
+            return ViewRenderedController(self.c)
+    #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController
 class ViewRenderedController(QtGui.QWidget):
     
@@ -380,9 +404,9 @@ class ViewRenderedController(QtGui.QWidget):
     
     #@+others
     #@+node:ekr.20110317080650.14380: *3* ctor & helpers
-    def __init__ (self, c):
+    def __init__ (self, c, parent=None):
         
-        QtGui.QWidget.__init__(self)
+        QtGui.QWidget.__init__(self, parent)
         self.setLayout(QtGui.QVBoxLayout())
         self.layout().setContentsMargins(0,0,0,0)
         
