@@ -15,6 +15,10 @@ from PyQt4.QtCore import Qt as QtConst
 #@-<< imports >>
 
 #@+others
+#@+node:tbrown.20110628211133.6522: ** dispose
+def dispose(x):
+    return
+    x.setParent(None)
 #@+node:ekr.20110605121601.17956: ** init
 def init():
     
@@ -544,7 +548,7 @@ class NestedSplitter(QtGui.QSplitter):
                     all_ok &= (self.close_or_keep(splitter.widget(i)) is not False)
 
             if all_ok or count <= 0:
-                widget.deleteLater()
+                dispose(widget)
 
         else:
             self.close_or_keep(widget)
@@ -569,7 +573,7 @@ class NestedSplitter(QtGui.QSplitter):
                 return True
         else:
             if widget.close():
-                widget.deleteLater()
+                dispose(widget)
                 return True
         
         return False
@@ -578,7 +582,7 @@ class NestedSplitter(QtGui.QSplitter):
     def replace_widget(self, old, new):
 
         self.insertWidget(self.indexOf(old), new)
-        old.deleteLater()
+        dispose(old)
 
         self.equalize_sizes()
            
@@ -589,7 +593,7 @@ class NestedSplitter(QtGui.QSplitter):
         old = self.widget(index)
         if old != new:
             self.insertWidget(index,new)
-            old.deleteLater()
+            dispose(old)
 
         self.equalize_sizes()
     #@+node:ekr.20110605121601.17983: *3* rotate
@@ -751,7 +755,7 @@ class NestedSplitter(QtGui.QSplitter):
             w = self.widget(i)
             if isinstance(w, NestedSplitter):
                 if w.max_count() == 0:
-                    w.deleteLater()
+                    dispose(w)
     #@+node:tbrown.20110628083641.21155: *3* get_provided
     def find_by_id(self, id_):
         for s in self.self_and_descendants():                  

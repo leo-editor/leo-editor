@@ -321,15 +321,19 @@ def show(self):
         # if pc: pc.hide()
 #@+node:ekr.20110526083709.18343: ** Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110317080650.14380: *3* ctor & helpers
-def __init__ (self,c):
-        
+def __init__ (self, c):
+    
+    QtGui.QWidget.__init__(self)
+    self.setLayout(QtGui.QVBoxLayout())
+    self.layout().setContentsMargins(0,0,0,0)
+    
     self.active = False
     self.c = c
     self.badColors = []
     self.delete_callback = None
     self.gnx = None
     self.inited = False
-    self.free_layout_pc = None # Set later by embed.
+    #X self.free_layout_pc = None # Set later by embed.
     self.gs = None # For @graphics-script: a QGraphicsScene 
     self.gv = None # For @graphics-script: a QGraphicsView
     self.kind = 'rst' # in self.dispatch_dict.keys()
@@ -338,14 +342,14 @@ def __init__ (self,c):
     self.s = '' # The plugin's docstring to be rendered temporarily.
     self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
     self.sizes = [] # Saved splitter sizes.
-    self.splitter = None # The free_layout splitter containing the rendering pane.
+    #X self.splitter = None # The free_layout splitter containing the rendering pane.
     self.splitter_index = None # The index of the rendering pane in the splitter.
     self.svg_class = QtSvg.QSvgWidget
     self.text_class = QtGui.QTextEdit
     self.graphics_class = QtGui.QGraphicsWidget
     self.vp = None # The present video player.
     self.w = None # The present widget in the rendering pane.
-    
+    self.title = None
     # User-options:
     self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
     self.auto_create  = c.config.getBool('view-rendered-auto-create',False)
@@ -354,13 +358,17 @@ def __init__ (self,c):
     self.scrolled_message_use_viewrendered = c.config.getBool('scrolledmessage_use_viewrendered',True)
     
     # Init.
-    c.viewrendered = self # For free_layout
+    #X c.viewrendered = self # For free_layout
     # w.setReadOnly(True)
     self.create_dispatch_dict()
-    self.load_free_layout()
+    #X self.load_free_layout()
+    
+    # self.frame = None
 
-    if self.auto_create:
-        self.view(self.default_kind)
+    self.activate()
+
+    #X if self.auto_create:
+    #X     self.view(self.default_kind)
 #@+node:ekr.20110320120020.14478: *4* create_dispatch_dict
 def create_dispatch_dict (self):
     
@@ -495,7 +503,7 @@ def must_update (self,keywords):
             # pc.splitter = None
             # return
 #@+node:ekr.20110317080650.14384: *3* show & hide & helper
-def hide (self):
+def Xhide (self):
     
     trace = False and not g.unitTesting
     pc = self
@@ -510,32 +518,32 @@ def hide (self):
     else:
         g.trace('** no pc.w')
     
-def show (self):
+def Xshow (self):
     
     trace = False and not g.unitTesting
     pc = self
 
     # First, show the pane so sizes will be valid.
-    pc.w.show()
+    #X pc.w.show()
         
-    if pc.auto_hide:
-        new_sizes = self.validSizes(pc.sizes,'show-saved')
-        if new_sizes:
-            pc.splitter.setSizes(new_sizes)
-            return
+    #X if pc.auto_hide:
+    #X     new_sizes = self.validSizes(pc.sizes,'show-saved')
+    #X     if new_sizes:
+    #X         pc.splitter.setSizes(new_sizes)
+    #X         return
             
-    sizes = pc.splitter.sizes()
-    new_sizes = self.validSizes(sizes,'show')
-    if new_sizes:
-        pc.splitter.setSizes(new_sizes)
-        return
-        
-    total = sum(sizes)
-    if total:
-        if trace: g.trace('Setting sizes',total/2)
-        pc.splitter.setSizes([total/2,total/2])
-    else:
-        if trace: g.trace('** empty sizes!')
+    #X sizes = pc.splitter.sizes()
+    #X new_sizes = self.validSizes(sizes,'show')
+    #X if new_sizes:
+    #X     pc.splitter.setSizes(new_sizes)
+    #X     return
+    #X     
+    #X total = sum(sizes)
+    #X if total:
+    #X     if trace: g.trace('Setting sizes',total/2)
+    #X     pc.splitter.setSizes([total/2,total/2])
+    #X else:
+    #X     if trace: g.trace('** empty sizes!')
 #@+node:ekr.20110526131737.18370: *4* validSizes
 def validSizes (self,sizes,tag):
     
@@ -986,8 +994,8 @@ def remove_directives (self,s):
     
     return ''.join(result)
 #@+node:ekr.20110317024548.14379: *3* view & helper
-def view(self,kind,s=None,title=None):
-    
+def Xview(self,kind,s=None,title=None):
+
     pc = self
     pc.kind = kind
     
