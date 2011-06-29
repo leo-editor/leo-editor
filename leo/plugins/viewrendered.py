@@ -410,6 +410,8 @@ class ViewRenderedController(QtGui.QWidget):
         self.setLayout(QtGui.QVBoxLayout())
         self.layout().setContentsMargins(0,0,0,0)
         
+        self._ns_id = '_leo_viewrendered'  # for free_layout load/save
+        
         self.active = False
         self.c = c
         self.badColors = []

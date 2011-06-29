@@ -29,8 +29,9 @@
 <v t="ekr.20100102164842.5328"><vh>Script: count pages</vh></v>
 <v t="ekr.20101110084839.5680"><vh>Script: plugins not in this file</vh></v>
 </v>
-<v t="ekr.20090430075506.4"><vh>Notes &amp; to-do</vh>
-<v t="ekr.20090430075506.3"><vh>@file leoPluginNotes.txt</vh></v>
+<v t="ekr.20090430075506.4" a="E"><vh>Notes &amp; to-do</vh>
+<v t="ekr.20090430075506.3" a="E"
+expanded="ekr.20090430075506.6,"><vh>@file leoPluginNotes.txt</vh></v>
 </v>
 <v t="ekr.20100909111553.5583"><vh>Unit tests</vh>
 <v t="ekr.20100909121239.5797"><vh>@ignore</vh>
@@ -75,9 +76,9 @@
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
 <v t="tbrown.20100318101414.5990" a="E"
-expanded="ekr.20110317024548.14375,"><vh>@file viewrendered.py</vh></v>
+expanded="tbrown.20110629084915.35149,ekr.20110317024548.14375,ekr.20110317080650.14380,"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
-<v t="tbrown.20110203111907.5519" a="E"
+<v t="tbrown.20110203111907.5519"
 expanded="ekr.20110318080425.14389,ekr.20110318080425.14392,"><vh>@file free_layout.py</vh></v>
 <v t="ville.20110403115003.10348" a="E"><vh>@file valuespace.py</vh></v>
 <v t="ville.20110409151021.5691"><vh>newHeadline</vh></v>

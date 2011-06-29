@@ -381,7 +381,9 @@ class NestedSplitter(QtGui.QSplitter):
         
         index=self.indexOf(button)
 
-        if self.root.marked and not self.invalid_swap(button, self.root.marked[3]):
+        if (self.root.marked and 
+            not self.invalid_swap(button, self.root.marked[3]) and
+            self.top.max_count() > 2):
             act = QtGui.QAction("Move marked here", self)
             act.connect(act, Qt.SIGNAL('triggered()'), 
                 lambda: self.replace_widget(button, self.root.marked[3]))
@@ -533,18 +535,15 @@ class NestedSplitter(QtGui.QSplitter):
         # send close signal to all children
         if isinstance(widget, NestedSplitter):
             
-            print 'remove splitter'
-
             count = widget.count()
             all_ok = True
 
             for splitter in widget.self_and_descendants():
                 for i in range(splitter.count()-1, -1, -1):
-                    print i, all_ok
                     all_ok &= (self.close_or_keep(splitter.widget(i)) is not False)
 
             if all_ok or count <= 0:
-                widget.deleteLater()
+                widget.setParent(None)
 
         else:
             self.close_or_keep(widget)
@@ -555,13 +554,10 @@ class NestedSplitter(QtGui.QSplitter):
             return True
 
         for k in self.root.holders:
-            print 'check', k, widget
             if hasattr(widget, k):
                 holder = self.root.holders[k]
-                print 'use',k,holder
                 if holder == 'TOP':
                     holder = self.top()
-                    print 'moving to top'
                 if hasattr(holder, "addTab"):
                     holder.addTab(widget, getattr(widget,k))
                 else:
@@ -569,7 +565,7 @@ class NestedSplitter(QtGui.QSplitter):
                 return True
         else:
             if widget.close():
-                widget.deleteLater()
+                widget.setParent(None)
                 return True
         
         return False
@@ -578,7 +574,7 @@ class NestedSplitter(QtGui.QSplitter):
     def replace_widget(self, old, new):
 
         self.insertWidget(self.indexOf(old), new)
-        old.deleteLater()
+        old.setParent(None)
 
         self.equalize_sizes()
            
@@ -589,7 +585,7 @@ class NestedSplitter(QtGui.QSplitter):
         old = self.widget(index)
         if old != new:
             self.insertWidget(index,new)
-            old.deleteLater()
+            old.setParent(None)
 
         self.equalize_sizes()
     #@+node:ekr.20110605121601.17983: *3* rotate
@@ -720,21 +716,17 @@ class NestedSplitter(QtGui.QSplitter):
         return self.get_layout(_saveable=True)
     #@+node:tbrown.20110628083641.21154: *3* load_layout
     def load_layout(self, layout, level=0):
-        
-        print 'enter',level,self
          
         self.setOrientation(layout['orientation'])
         found = 0
         for i in layout['content']:
             if isinstance(i, dict):
                 new = NestedSplitter(root=self.root, parent=self)
-                print 'new',new,bool(new)
                 self.insert(found, new)
                 found += 1
                 new.load_layout(i, level+1)
             else:
                 provided = self.get_provided(i)
-                print 'get',level,found,provided
                 if provided:
                     self.insert(found, provided)
                     found += 1
@@ -748,8 +740,6 @@ class NestedSplitter(QtGui.QSplitter):
             print('Wrong pane count at level %d, count:%d, sizes:%d'%(
                 level, self.count(), len(layout['sizes'])))
             self.equalize_sizes()
-            
-        print 'exit',level   
     #@+node:tbrown.20110628083641.21156: *3* prune_empty
     def prune_empty(self):
         
