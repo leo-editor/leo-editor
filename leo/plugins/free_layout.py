@@ -204,15 +204,12 @@ class FreeLayoutController:
             if text == 'Log':
                 # if Leo can't find Log in tab pane, it creates another
                 continue
-            ans.append(('+'+text, 
+            ans.append((text, 
                         '_leo_tab:'+text))
 
         ans.append(('Tree', '_leo_pane:outlineFrame'))
         ans.append(('Body', '_leo_pane:bodyFrame'))
         ans.append(('Tab pane', '_leo_pane:logFrame'))
-
-        if 'leo.plugins.viewrendered' in g.getLoadedPlugins():
-            ans.append(('+Viewrendered', '_leo_viewrendered'))
         
         return ans
     #@+node:tbrown.20110628083641.11724: *3* ns_provide
@@ -234,10 +231,6 @@ class FreeLayoutController:
                     
             # didn't find it, maybe it's already in a splitter
             return 'USE_EXISTING'
-        
-        if id_ == '_leo_viewrendered':
-            from leo.plugins.viewrendered import ViewRenderedController
-            return ViewRenderedController(self.c)
 
         if id_.startswith('_leo_pane:'):
         

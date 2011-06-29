@@ -361,15 +361,23 @@ class PlugIn:
         else:
             msg = ''
 
-        g.app.gui.runScrolledMessageDialog(
+        if not g.doHook('scrolledMessage',
             short_title = self.name,
             title="About Plugin ( " + self.name + " )",
             label="Version: " + self.version,
             msg=msg,
             c=self.c,
             flags='rst',
-            name='leo_system'
-        )
+            name='leo_system'):
+                g.app.gui.runScrolledMessageDialog(
+                    short_title = self.name,
+                    title="About Plugin ( " + self.name + " )",
+                    label="Version: " + self.version,
+                    msg=msg,
+                    c=self.c,
+                    flags='rst',
+                    name='leo_system'
+                )
     #@+node:pap.20050317183526: *3* getNiceName
     def getNiceName(self, name):
         """Return a nice version of the plugin name
