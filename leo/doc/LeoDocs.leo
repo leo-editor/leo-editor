@@ -69,7 +69,8 @@
 <v t="ekr.20100805165051.7155"><vh>@file commands.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.211"><vh>Customizing Leo</vh>
-<v t="ekr.20100805165051.7158"><vh>@file customizing.txt</vh></v>
+<v t="ekr.20100805165051.7158"
+expanded="ekr.20050901101608.4,EKR.20040524104904.140,ekr.20070317043727.3,"><vh>@file customizing.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20101025080245.5799"><vh>Intermediate Topics</vh>
