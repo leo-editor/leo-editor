@@ -1498,6 +1498,45 @@ for v in vnodeInfoDict:
         copiedBunchList.append(bunch)
 
 # g.trace('copiedBunchList',copiedBunchList)
+#@+node:ekr.20110705101348.14898: *3* Fixed bug in p.setAllAncestorAtFileNodesDirty
+@language rest
+
+The code that marks descendant @<file> nodes dirty now tests
+p2.isAnyAtFileNode().  The old code tested p2.isAtThinFileNode().
+#@+node:ekr.20040303214038: *4* p.setAllAncestorAtFileNodesDirty
+def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    p = self
+    dirtyVnodeList = []
+
+    # Calculate all nodes that are joined to p or parents of such nodes.
+    nodes = p.findAllPotentiallyDirtyNodes()
+
+    if setDescendentsDirty:
+        # N.B. Only mark _direct_ descendents of nodes.
+        # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
+        for p2 in p.subtree():
+            # Only @thin nodes need to be marked.
+            if p2.v not in nodes and p2.isAnyAtFileNode():
+                    # Bug fix: 2011/07/05: was p2.isAtThinFileNode():
+                nodes.append(p2.v)
+
+    if trace and verbose:
+        for v in nodes:
+            print (v.isDirty(),v.isAnyAtFileNode(),v)
+
+    dirtyVnodeList = [v for v in nodes
+        if not v.isDirty() and v.isAnyAtFileNode()]
+    changed = len(dirtyVnodeList) > 0
+
+    for v in dirtyVnodeList:
+        v.setDirty()
+
+    if trace: g.trace("position",dirtyVnodeList,g.callers(5))
+
+    return dirtyVnodeList
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
