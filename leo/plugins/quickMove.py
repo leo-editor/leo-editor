@@ -487,7 +487,10 @@ class quickMoveButton:
                 nd = p2.insertAsNthChild(0)
             else:
                 nd = p2.insertAsLastChild()
-            nd.h = p.h
+            h = p.anyAtFileNodeName() or p.h
+            while h and h[0] == '@':
+                h = h[1:]
+            nd.h = h
             nd.b = unl
 
         elif self.type_ == 'copy':
