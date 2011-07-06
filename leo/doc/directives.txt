@@ -161,9 +161,7 @@ that cause the HTML and XML importers to create outline nodes. By default, the
 **organizer tags** are html, body, head, and div.
 
 When writing \@auto nodes, Leo writes the external file without sentinels. This
-allows you to use Leo in collaborative environments without disturbing
-colleagues. Leo does not expand section references when writing \@auto nodes:
-Leo generates \@verbatim sentinels for lines that look like section references.
+allows you to use Leo in collaborative environments without disturbing colleagues.
 
 When importing files into \@auto trees, Leo performs several checks to ensure
 that writing the imported file will produce exactly the same file. These checks
