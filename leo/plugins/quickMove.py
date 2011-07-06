@@ -24,6 +24,12 @@ as the first child of the target node.
 
 `Clone` and `Copy` variants are like `Move`, but clone or copy instead of moving.
 
+`Bookmark` buttons create a node under the target node with the headstring
+of the selected node and a body whose first line is an UNL pointing to the
+selected node.  If the selected node is a descendent of a node containing
+`@bookmarks`, *and* you have the bookmarks plugin enabled, clicking on the
+created node will take you to the selected node.
+
 `Link` works in conjunction with the `backlink` plugin (and also the
 `graphcanvas` plugin) creating a link to/from the target and current nodes.
 
@@ -49,7 +55,10 @@ Set Parent Notes
   do with a long strip of separate buttons, but it collects quickMove buttons
   as sub-menu items of one quickMove button, saving a lot of toolbar space.
 
-Bookmarks 
+Bookmarks
+  Note: this describes the use of Jump To buttons for bookmarks, Bookmark nodes
+  (see above) are better.
+
   Create somewhere out of the way in your outline a node called
   `Bookmarks`. Use the quickMove menu to make it a `Jump To` button, and use its
   context menu to make it permanent. There is no particular reason to jump to
@@ -535,7 +544,7 @@ class quickMoveButton:
         while p:
             heads.insert(0, p.h)
             p = p.parent()
-        return "@url "+"-->".join(heads)
+        return "-->".join(heads)
     #@-others
 #@-others
 #@-leo

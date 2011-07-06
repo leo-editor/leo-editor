@@ -801,7 +801,8 @@ class position (object):
             # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
             for p2 in p.subtree():
                 # Only @thin nodes need to be marked.
-                if p2.v not in nodes and p2.isAtThinFileNode():
+                if p2.v not in nodes and p2.isAnyAtFileNode():
+                        # Bug fix: 2011/07/05: was p2.isAtThinFileNode():
                     nodes.append(p2.v)
 
         if trace and verbose:
@@ -825,7 +826,8 @@ class position (object):
 
         p = self ; dirtyVnodeList = []
 
-        # g.trace(p.h,g.callers(4))
+        # g.trace('dirty: %s, setDescendentsDirty: %s' % (
+            # p.v.isDirty(),setDescendentsDirty),p.h)
 
         if not p.v.isDirty():
             p.v.setDirty()
@@ -2243,7 +2245,7 @@ class vnode (baseVnode):
         changed = len(dirtyVnodeList) > 0
 
         for v in dirtyVnodeList:
-            v.setDirty() # Do not call v.setDirty here!
+            v.setDirty() # Do not call p.setDirty here!
 
         if trace: g.trace("vnode",dirtyVnodeList)
 
