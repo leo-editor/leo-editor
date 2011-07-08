@@ -724,7 +724,7 @@ The body has focus--it is colored a pale pink, and
 contains a blinking cursor.
 
 **Note**: on some monitors the colors will be almost
-invisible.  You can choose such colors to suit your
+invisible.  You can choose pane colors to suit your
 taste.
 
 .. image:: slide-002.png
