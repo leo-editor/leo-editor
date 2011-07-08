@@ -2,12 +2,12 @@
 #@+node:tbrown.20070322113635: * @file bookmarks.py
 #@+<< docstring >>
 #@+node:tbrown.20070322113635.1: ** << docstring >>
-''' Supports @bookmark nodes with url's in body text.
+''' Supports @bookmarks nodes with url's in body text.
 
-Below a node with @bookmarks in the title, double-clicking any node will attempt
-to open the url in the first line of the body-text. For lists of bookmarks
-(including UNLs) this gives a clean presentation with no '@url' markup repeated
-on every line etc.
+Below a node with @bookmarks in the title, double-clicking the headline of any
+node will attempt to open the url in the first line of the body-text. For lists
+of bookmarks (including UNLs) this gives a clean presentation with no '@url'
+markup repeated on every line etc.
 
 '''
 #@-<< docstring >>
