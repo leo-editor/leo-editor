@@ -336,12 +336,6 @@ class tkinterGui(leoGui.leoGui):
         """Create a Tkinter color picker panel."""
         return leoTkinterComparePanel(c)
 
-    # def createFindPanel(self,c):
-        # """Create a hidden Tkinter find panel."""
-        # panel = leoTkinterFind(c)
-        # panel.top.withdraw()
-        # return panel
-
     def createFindTab (self,c,parentFrame):
         """Create a Tkinter find tab in the indicated frame."""
         return tkFindTab(c,parentFrame)
@@ -2721,13 +2715,6 @@ class tkFindTab (leoFind.findTab):
             ("<Escape>",    self.hideTab),
         ]
 
-        # table2 = (
-            # ('<Button-2>',  self.frame.OnPaste,  k.masterClickHandler),
-        # )
-
-        # if c.config.getBool('allow_middle_button_paste'):
-            # table.extend(table2)
-
         for w in (self.find_ctrl,self.change_ctrl):
             for event, callback in table:
                 c.bind(w,event,callback)
@@ -3122,11 +3109,6 @@ class tkSpellTab:
 
         self.changeButton.configure(state=state)
         self.changeFindButton.configure(state=state)
-
-        # state = g.choose(self.c.undoer.canRedo(),"normal","disabled")
-        # self.redoButton.configure(state=state)
-        # state = g.choose(self.c.undoer.canUndo(),"normal","disabled")
-        # self.undoButton.configure(state=state)
 
         self.addButton.configure(state='normal')
         self.ignoreButton.configure(state='normal')
