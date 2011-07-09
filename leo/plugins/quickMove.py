@@ -222,7 +222,7 @@ class quickMove(object):
         for i in reversed([b for b in buttons_todo if 'parent' in b]):
             self.addButton(i['first'], i['type'], v=i['v'], parent=i['parent'])
 
-        c.frame.menu.createNewMenu('Move', 'Outline')
+        # c.frame.menu.createNewMenu('Move', 'Outline')
 
         self.local_imps = []  # make table for createMenuItemsFromTable()
         for func, name, text in self.imps:
