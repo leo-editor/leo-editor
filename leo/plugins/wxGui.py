@@ -283,23 +283,6 @@ class wxFindFrame (wx.Frame,leoFind.leoFind):
         else:
             t.SetInsertionPoint(0)
         return t
-    #@+node:ekr.20090126093408.24: *5* gui_search
-    # def gui_search (self,t,find_text,index,
-        # stopindex,backwards,regexp,nocase):
-
-        # g.trace(index,stopindex,backwards,regexp,nocase)
-
-        # s = t.text # t is the dummy text widget
-
-        # if index is None:
-            # index = 0
-
-        # pos = s.find(find_text,index)
-
-        # if pos == -1:
-            # pos = None
-
-        # return pos
     #@+node:ekr.20090126093408.25: *5* init
     def init (self,c):
 

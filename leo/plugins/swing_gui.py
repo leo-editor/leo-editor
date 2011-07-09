@@ -3548,11 +3548,6 @@ class leoSwingLog (leoFrame.leoLog):
     #@+node:ekr.20081121105001.833: *5* renameTab
     def renameTab (self,oldName,newName):
 
-        # g.trace('newName',newName)
-
-        # label = self.nb.tab(oldName)
-        # label.configure(text=newName)
-
         pass
     #@+node:ekr.20081121105001.834: *5* selectTab
     def selectTab (self,tabName,createText=True,wrap='none'):
@@ -4202,9 +4197,6 @@ class leoSwingTextWidget: ### (leoFrame.baseTextWidget):
 
         w = self
         i,j = w.toGuiIndex(i),w.toGuiIndex(j)
-
-        ### Tk.Text.delete(w,i,j)
-        ### Tk.Text.insert(w,i,s)
     #@+node:ekr.20081121105001.894: *5* see
     def see (self,i): # swingTextWidget.
 
@@ -4227,15 +4219,7 @@ class leoSwingTextWidget: ### (leoFrame.baseTextWidget):
     #@+node:ekr.20081121105001.897: *5* setAllText
     def setAllText (self,s): # swingTextWidget
 
-        w = self
-
-        # state = Tk.Text.cget(w,"state")
-        # Tk.Text.configure(w,state="normal")
-
-        # Tk.Text.delete(w,'1.0','end')
-        # Tk.Text.insert(w,'1.0',s)
-
-        # Tk.Text.configure(w,state=state)
+        pass
     #@+node:ekr.20081121105001.898: *5* setBackgroundColor
     def setBackgroundColor (self,color):
 
@@ -4246,8 +4230,6 @@ class leoSwingTextWidget: ### (leoFrame.baseTextWidget):
 
         w = self
         i = w.toGuiIndex(i)
-        # g.trace(i,g.callers())
-        ### Tk.Text.mark_set(w,'insert',i)
     #@+node:ekr.20081121105001.900: *5* setSelectionRange
     def setSelectionRange (self,i,j,insert=None): # swingTextWidget
 
@@ -6172,17 +6154,8 @@ class leoSwingTree (leoFrame.leoTree):
 
         """Show a popup menu."""
 
-        c = self.c ; menu = self.popupMenu
+        # c = self.c ; menu = self.popupMenu
 
-        ###
-
-        # if sys.platform == "linux2": # 20-SEP-2002 DTHEIN: not needed for Windows
-            # menu.bind("<FocusOut>",self.OnPopupFocusLost)
-
-        # menu.post(event.x_root, event.y_root)
-
-        # # Set the focus immediately so we know when we lose it.
-        # c.widgetWantsFocus(menu)
     #@+node:ekr.20081121105001.1011: *5* onTreeClick
     def onTreeClick (self,event=None):
 
@@ -6945,9 +6918,6 @@ class swingGui(leoGui.leoGui):
     #@+node:ekr.20081121105001.1064: *4* Idle Time
     #@+node:ekr.20081121105001.1065: *5* swingGui.setIdleTimeHook
     def setIdleTimeHook (self,idleTimeHookHandler):
-
-        # if self.root:
-            # self.root.after_idle(idleTimeHookHandler)
 
         pass
     #@+node:ekr.20081121105001.1066: *5* setIdleTimeHookAfterDelay
