@@ -612,9 +612,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             p = self.item2position(item)
             if p:
                 event = None
-                g.doHook("icondclick1",c=c,p=p,v=p,event=event)
-                c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
-                g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+                if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
+                    c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+                    g.doHook("icondclick2",c=c,p=p,v=p,event=event)
             else:
                 g.trace('*** no p')
 
