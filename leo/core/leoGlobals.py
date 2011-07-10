@@ -2061,6 +2061,9 @@ def handleUrlInUrlNode(url, c=None, p=None):
                     # Disable later call to c.onClick so
                     # the focus stays in frame.c (DOESN'T WORK?)
                     c.doubleClickFlag = True
+                    
+                    g.app.gui.ensure_commander_visible(frame.c)
+
                     return
                     
         if parsed.scheme in ('', 'file'):
