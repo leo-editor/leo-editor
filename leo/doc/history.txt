@@ -248,7 +248,7 @@ This version of Leo featured more significant improvements:
 - Added support for @edit nodes.
 .. @+node:ekr.20101025080245.6087: *3* Leo 4.7 The one node world and Python 3k
 Leo 4.7 accomplishes something I long thought to be impossible: the unification
-of vnodes and tnodes. tnodes now longer exist: vnodes contain all data. The Aha
+of vnodes and tnodes. tnodes no longer exist: vnodes contain all data. The Aha
 that made this possible is that iterators and positions allow a single node to
 appear in more than one place in a tree traversal.
 

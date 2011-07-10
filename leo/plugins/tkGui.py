@@ -336,12 +336,6 @@ class tkinterGui(leoGui.leoGui):
         """Create a Tkinter color picker panel."""
         return leoTkinterComparePanel(c)
 
-    # def createFindPanel(self,c):
-        # """Create a hidden Tkinter find panel."""
-        # panel = leoTkinterFind(c)
-        # panel.top.withdraw()
-        # return panel
-
     def createFindTab (self,c,parentFrame):
         """Create a Tkinter find tab in the indicated frame."""
         return tkFindTab(c,parentFrame)
@@ -2721,13 +2715,6 @@ class tkFindTab (leoFind.findTab):
             ("<Escape>",    self.hideTab),
         ]
 
-        # table2 = (
-            # ('<Button-2>',  self.frame.OnPaste,  k.masterClickHandler),
-        # )
-
-        # if c.config.getBool('allow_middle_button_paste'):
-            # table.extend(table2)
-
         for w in (self.find_ctrl,self.change_ctrl):
             for event, callback in table:
                 c.bind(w,event,callback)
@@ -3122,11 +3109,6 @@ class tkSpellTab:
 
         self.changeButton.configure(state=state)
         self.changeFindButton.configure(state=state)
-
-        # state = g.choose(self.c.undoer.canRedo(),"normal","disabled")
-        # self.redoButton.configure(state=state)
-        # state = g.choose(self.c.undoer.canUndo(),"normal","disabled")
-        # self.undoButton.configure(state=state)
 
         self.addButton.configure(state='normal')
         self.ignoreButton.configure(state='normal')
@@ -3580,9 +3562,6 @@ class leoTkinterFrame (leoFrame.leoFrame):
             f.tree   = leoTkinterTree(c,f,f.canvas)
             f.log    = leoTkinterLog(f,f.split2Pane2)
             f.body   = leoTkinterBody(f,f.split1Pane2)
-
-        # Yes, this an "official" ivar: this is a kludge.
-        # f.bodyCtrl = f.body.bodyCtrl
 
         # Configure.
         f.setTabWidth(c.tab_width)
@@ -6649,22 +6628,16 @@ class leoTkinterTree (leoFrame.leoTree):
         self.visibleBoxes = []
 
         for theId in self.visibleClickBoxes:
-            # if theId not in self.freeClickBoxes:
-                # self.freeClickBoxes.append(theId)
             self.freeClickBoxes[theId] = theId
             canvas.coords(theId,-100,-100,-100,-100)
         self.visibleClickBoxes = []
 
         for theId in self.visibleIcons:
-            # if theId not in self.freeIcons:
-                # self.freeIcons.append(theId)
             self.freeIcons[theId] = theId
             canvas.coords(theId,-100,-100)
         self.visibleIcons = []
 
         for theId in self.visibleLines:
-            # if theId not in self.freeLines:
-                # self.freeLines.append(theId)
             self.freeLines[theId] = theId
             canvas.coords(theId,-100,-100,-100,-100)
         self.visibleLines = []
@@ -6675,8 +6648,6 @@ class leoTkinterTree (leoFrame.leoTree):
             # assert theId == w.leo_window_id
             canvas.coords(theId,-100,-100)
             w.leo_position = None # Allow the position to be freed.
-            # if data not in self.freeText:
-                # self.freeText.append(data)
             self.freeText[data] = data
         self.visibleText = {}
 
@@ -8611,15 +8582,6 @@ class leoTkinterTreeTab (leoFrame.leoTreeTab):
         if 'main' in names: names.remove('main')
         names.sort()
         names.insert(0,'main')
-
-        # This crashes on recent Ubuntu versions.
-        # It may be a Tk bug.
-
-        # since this was crashing on Windows as well,
-        # we'll disable it completely for time being
-
-        # if not sys.platform.startswith('linux'):
-            # tt.chapterMenu.setitems(names)
     #@-others
 #@+node:ekr.20081121110412.317: *3* class leoTkTextWidget (Tk.Text)
 class leoTkTextWidget (Tk.Text):
@@ -8912,12 +8874,6 @@ class leoTkTextWidget (Tk.Text):
         i = w.toGuiIndex(i)
         Tk.Text.insert(w,i,s)
 
-    #@+node:ekr.20081121110412.337: *5* mark_set NO LONGER USED
-    # def mark_set(self,markName,i):
-
-        # w = self
-        # i = w.toGuiIndex(i)
-        # Tk.Text.mark_set(w,markName,i)
     #@+node:ekr.20081121110412.338: *5* replace
     def replace (self,i,j,s): # tkTextWidget
 

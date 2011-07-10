@@ -64,19 +64,6 @@ class ironPythonGui(leoGui.leoGui):
 
         # Initialize the base class.
         leoGui.leoGui.__init__(self,"IronPython")
-
-        # self.bitmap_name = None
-        # self.bitmap = None
-        # self.focus_widget = None
-
-        # self.plainTextWidget = plainTextWidget
-
-        # self.use_stc = True # Unit tests fail regardless of this setting.
-        # self.bodyTextWidget = g.choose(self.use_stc,stcWidget,richTextWidget)
-        # self.plainTextWidget = plainTextWidget
-
-        # self.findTabHandler = None
-        # self.spellTabHandler = None
     #@+node:ekr.20081121105001.88: *4* ip.Gui.createKeyHandlerClass
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
 

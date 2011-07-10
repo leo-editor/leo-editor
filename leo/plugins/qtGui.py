@@ -728,11 +728,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def indexWarning (self,s):
 
         return
-
-        # if s not in self.warningsDict:
-            # g.es_print('warning: using dubious indices in %s' % (s),color='red')
-            # g.es_print('callers',g.callers(5))
-            # self.warningsDict[s] = True
     #@+node:ekr.20110605121601.18050: *4*  May be overridden in subclasses
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
         pass
@@ -1192,12 +1187,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         tc = w.textCursor()
         i,j = tc.selectionStart(),tc.selectionEnd()
 
-        # s = tc.selectedText()
-        # if s: n = len(s)
-        # else: n = 0
-        
-        # g.trace(i,j,w)
-        
         return i,j
     #@+node:ekr.20110605121601.18084: *5* getYScrollPosition
     def getYScrollPosition(self):
@@ -1446,12 +1435,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             if g.os_path_exists(s2):
                 # g.es(s2.replace('\\','/'))
                 s = 'file:///' + s2
-                # if s2.endswith('.html') or s2.endswith('.htm'):
-                    # s = open(s2).read()
-                    # return s
             else:
                 g.es('not found',s2)
-                #return s # Don't render the image.
                 return None
         elif s.endswith('.html') or s.endswith('.htm'):
             s = open(s).read()
@@ -1596,7 +1581,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     toGuiIndex = toPythonIndex
     #@+node:ekr.20110605121601.18101: *6* toPythonIndexToRowCol (leoQTextEditWidget)
     def toPythonIndexRowCol(self,index):
-        #print "use idx",index
 
         w = self 
 
@@ -1606,17 +1590,12 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             index = w.getLastPosition()
 
         te = self.widget
-        #print te
         doc = te.document()
         i = w.toPythonIndex(index)
         bl = doc.findBlock(i)
         row = bl.blockNumber()
         col = i - bl.position()
 
-        #s = w.getAllText()
-        #i = w.toPythonIndex(index)
-        #row,col = g.convertPythonIndexToRowCol(s,i)
-        #print "idx",i,row,col
         return i,row,col
     #@+node:ekr.20110605121601.18102: *5* get
     def get(self,i,j=None):
@@ -2243,10 +2222,6 @@ class DynamicWindow(QtGui.QMainWindow):
         self.richTextEdit = body
         self.leo_body_frame = bodyFrame
         self.leo_body_inner_frame = innerFrame
-        # self.leo_body_grid = grid
-        # self.grid = innerGrid
-        # self.page_2 = page2
-        # self.verticalBodyLayout= vLayout
     #@+node:ekr.20110605121601.18144: *6* createCentralWidget
     def createCentralWidget (self):
 
@@ -2290,12 +2265,6 @@ class DynamicWindow(QtGui.QMainWindow):
 
         # Official ivars
         self.tabWidget = tabWidget # Used by leoQtLog.
-        # self.leo_log_frame = logFrame
-        # self.leo_log_grid = outerGrid
-        # self.findTab = findTab
-        # self.spellTab = spellTab
-        # self.leo_log_inner_frame = innerFrame
-        # self.leo_log_inner_grid = innerGrid
     #@+node:ekr.20110605121601.18146: *6* createMainLayout (DynamicWindow)
     def createMainLayout (self,parent):
 
@@ -2384,9 +2353,6 @@ class DynamicWindow(QtGui.QMainWindow):
 
         # Official ivars...
         self.treeWidget = treeWidget
-        # self.leo_outline_frame = treeFrame
-        # self.leo_outline_grid = grid
-        # self.leo_outline_inner_frame = innerFrame
 
         return treeFrame
     #@+node:ekr.20110605121601.18150: *6* createStatusBar
@@ -2584,20 +2550,6 @@ class DynamicWindow(QtGui.QMainWindow):
             ('box', 'Mark &Finds',      6,0), # was 7,0
             ('box', 'Mark &Changes',    7,0)) # was 7,1
             # a,b,c,e,f,h,i,n,rs,w
-        # table = (
-            # ('box', 'Whole &Word',      2,0),
-            # ('rb',  '&Entire Outline',  2,1),
-            # ('box', '&Ignore Case',     3,0),
-            # ('rb',  '&Suboutline Only', 3,1),
-            # ('box', 'Wrap &Around',     4,0),
-            # ('rb',  '&Node Only',       4,1),
-            # ('box', '&Reverse',       5,0),
-            # ('box', 'Search &Headline', 5,1),
-            # ('box', 'Rege&xp',          6,0),
-            # ('box', 'Search &Body',     6,1),
-            # ('box', 'Mark &Finds',      7,0),
-            # ('box', 'Mark &Changes',    7,1))
-            # # a,b,c,e,f,h,i,n,rs,w
 
         for kind,label,row,col in table:
             name = mungeName(label)
@@ -3706,26 +3658,6 @@ class leoQtBody (leoFrame.leoBody):
         if not self.canvasRendererVisible:
             self.canvasRendererLabel = self.packRenderer(f,name,w)
             self.canvasRendererVisible = True
-        
-        # self.editorWidgets[name] = wrapper
-
-        # if self.numberOfEditors == 2:
-            # # Inject the ivars into the first editor.
-            # # The name of the last editor need not be '1'
-            # d = self.editorWidgets ; keys = list(d.keys())
-            # old_name = keys[0]
-            # old_wrapper = d.get(old_name)
-            # old_w = old_wrapper.widget
-            # self.injectIvars(f,old_name,p,old_wrapper)
-            # self.updateInjectedIvars (old_w,p)
-            # self.selectLabel(old_wrapper) # Immediately create the label in the old editor.
-
-        # # Switch editors.
-        # c.frame.body.bodyCtrl = wrapper
-        # self.selectLabel(wrapper)
-        # self.selectEditor(wrapper)
-        # self.updateEditors()
-        # c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18222: *5* showTextRenderer
     # An override of leoFrame.addEditor.
 
@@ -3747,27 +3679,6 @@ class leoQtBody (leoFrame.leoBody):
         if not self.textRendererVisible:
             self.textRendererLabel = self.packRenderer(f,name,w)
             self.textRendererVisible = True
-            
-        # bodyCtrl = self.c.frame.body.bodyCtrl # A leoQTextEditWidget
-        # p = c.p
-
-        # if self.numberOfEditors == 2:
-            # # Inject the ivars into the first editor.
-            # # The name of the last editor need not be '1'
-            # d = self.editorWidgets ; keys = list(d.keys())
-            # old_name = keys[0]
-            # old_wrapper = d.get(old_name)
-            # old_w = old_wrapper.widget
-            # self.injectIvars(f,old_name,p,old_wrapper)
-            # self.updateInjectedIvars (old_w,p)
-            # self.selectLabel(old_wrapper) # Immediately create the label in the old editor.
-
-        # # Switch editors.
-        # c.frame.body.bodyCtrl = wrapper
-        # self.selectLabel(wrapper)
-        # self.selectEditor(wrapper)
-        # self.updateEditors()
-        # c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18223: *4* Event handlers (qtBody)
     def onFocusIn (self,obj):
 
@@ -4595,10 +4506,6 @@ class leoQtFrame (leoFrame.leoFrame):
                     rc = QtGui.QAction(rclick.h[8:], b)
                     rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
                     b.insertAction(b.actions()[-2], rc)  # insert rc before Remove Button
-
-                    # k.registerCommand(buttonText.lower(),
-                    #   shortcut=shortcut,func=atButtonCallback,
-                    #   pane='button',verbose=verbose)
         #@-others
     #@+node:ekr.20110605121601.18272: *4* Minibuffer methods (Qt)
     #@+node:ekr.20110605121601.18273: *5* f.setMinibufferBindings
@@ -5044,12 +4951,6 @@ class leoQtFrame (leoFrame.leoFrame):
             c.bodyWantsFocus()
         else:
             c.treeWantsFocus()
-
-        # if w == frame.body.bodyCtrl.widget:
-            # c.treeWantsFocus()
-        # else:
-            # c.endEditing()
-            # c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18303: *6* cascade
     def cascade (self,event=None):
 
@@ -5626,28 +5527,6 @@ class leoQtLog (leoFrame.leoLog):
     def setFont(self,familyBox,sizeEntry,slantBox,weightBox,label):
 
         pass
-
-        # d = {}
-        # for box,key in (
-            # (familyBox, 'family'),
-            # (None,      'size'),
-            # (slantBox,  'slant'),
-            # (weightBox, 'weight'),
-        # ):
-            # if box: val = box.get()
-            # else:
-                # val = sizeEntry.get().strip() or ''
-                # try: int(val)
-                # except ValueError: val = None
-            # if val and val.lower() not in ('none','<none>',):
-                # d[key] = val
-
-        # family=d.get('family',None)
-        # size=d.get('size',12)
-        # weight=d.get('weight','normal')
-        # slant=d.get('slant','roman')
-        # font = self.getFont(family,size,slant,weight)
-        # label.configure(font=font)
     #@+node:ekr.20110605121601.18339: *5* hideFontTab
     def hideFontTab (self,event=None):
 
@@ -5900,12 +5779,6 @@ class leoQtMenu (leoMenu.leoMenu):
         Return None if there is no such menu item.'''
 
         # At present, it is valid to always return None.
-
-        # g.trace('menu',menu,'name',name)
-
-        # actions = menu.actions()
-        # for action in actions:
-            # g.trace(action)
     #@+node:ekr.20110605121601.18360: *6* setMenuLabel
     def setMenuLabel (self,menu,name,label,underline=-1):
 
@@ -7963,10 +7836,6 @@ class leoQtGui(leoGui.leoGui):
         g.es_print('Properties menu not supported for Qt gui',color='blue')
         result = 'Cancel'
         return result,data
-
-        # d = propertiesDialog(title,data)
-        # result = d.run()
-        # return result
     #@+node:ekr.20110605121601.18502: *5* runSaveFileDialog
     def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultextension=''):
 
@@ -8612,11 +8481,7 @@ class leoQtEventFilter(QtCore.QObject):
             ch = '\n' # Somehow Qt wants to return '\r'.
         elif stroke == 'Escape':
             ch = 'Escape'
-            
-        # This looks reasonable, but see k.handleUnboundKeys.
-        # elif stroke.find('Ctrl+') > -1 or stroke.find('Alt+') > -1:
-        #    ch = ''
-            
+
         # Switch the Shift modifier to handle the cap-lock key.
         if len(ch) == 1 and len(stroke) == 1 and ch.isalpha() and stroke.isalpha():
             if ch != stroke:
@@ -10018,19 +9883,6 @@ class jEditColorizer:
         self.rulesDict      = bunch.rulesDict
         self.rulesetName    = bunch.rulesetName
         self.word_chars     = bunch.word_chars # 2011/05/21
-
-        # State stuff.
-        # h = self.highlighter
-        # h.setCurrentBlockState(bunch.currentState)
-        # self.nextState      = bunch.nextState
-        # self.restartDict    = bunch.restartDict
-        # self.stateDict      = bunch.stateDict
-        # self.stateNameDict  = bunch.stateNameDict
-
-        # self.clearState()
-
-        # g.trace(self.rulesetName)
-
     #@+node:ekr.20110605121601.18586: *6* updateDelimsTables
     def updateDelimsTables (self):
 

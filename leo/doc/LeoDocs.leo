@@ -69,8 +69,7 @@
 <v t="ekr.20100805165051.7155"><vh>@file commands.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.211"><vh>Customizing Leo</vh>
-<v t="ekr.20100805165051.7158"
-expanded="ekr.20050901101608.4,EKR.20040524104904.140,ekr.20070317043727.3,"><vh>@file customizing.txt</vh></v>
+<v t="ekr.20100805165051.7158"><vh>@file customizing.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20101025080245.5799"><vh>Intermediate Topics</vh>
@@ -150,8 +149,7 @@ expanded="ekr.20050901101608.4,EKR.20040524104904.140,ekr.20070317043727.3,"><vh
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"
-expanded="edream.110203163054.63,ekr.20110531155858.19246,ekr.20110531155858.19830,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20110531155858.19246"><vh>Leo 4.9 Release notes</vh>
 <v t="ekr.20110601105631.19359"><vh>Deprecated/removed features</vh></v>
@@ -181,9 +179,6 @@ expanded="edream.110203163054.63,ekr.20110531155858.19246,ekr.20110531155858.198
 <v t="ekr.20110613172008.14775"><vh>New in 4.9 b4</vh></v>
 <v t="ekr.20110616100929.14794"><vh>New in 4.9 rc1</vh></v>
 <v t="ekr.20110620083705.14902"><vh>New in 4.9 final</vh></v>
-</v>
-<v t="ekr.20110705112819.14903"><vh>Changed</vh>
-<v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt;</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -248,80 +243,6 @@ http://groups.google.com/group/leo-editor</t>
 <t tx="ekr.20091130111843.6787"></t>
 <t tx="ekr.20100731112744.7267"></t>
 <t tx="ekr.20100805171546.4412"># This section contains important files used to generate Leo's web site.</t>
-<t tx="ekr.20100806170836.4396">.. index::
-    pair: @auto; Reference
-
-The \@auto directive imports an external file into a tree of nodes. Using \@auto
-is *highly recommended* when using external files that must not contain Leo
-sentinels.
-
-\@auto trees allow people to use Leo in collaborative environments without using
-sentinels in external files. Even without sentinels, \@auto trees can change
-when the corresponding external file changes outside of Leo.
-
-.. index::
-    pair: Importer; Reference
-
-When reading \@auto nodes, Leo creates the \@auto tree using **importers**,
-parsers that create an outline with nodes for each class, method and function in
-the external file. Some importers create other kinds of nodes as well.
-
-Importers presently exist for C, elisp, HTML, .ini files, Java, Javascript, Pascal, PHP,
-Python and xml. Leo determines the language using the file's extension. If no
-parser exists for a language, Leo copies the entire body of the external file
-into the \@auto node.
-
-.. index::
-    pair: Organizer tag; Reference
-
-**Note**: the \@data import_xml_tags setting specifies the **organizer tags**
-that cause the HTML and XML importers to create outline nodes. By default, the
-**organizer tags** are html, body, head, and div.
-
-When writing \@auto nodes, Leo writes the external file without sentinels. This
-allows you to use Leo in collaborative environments without disturbing colleagues.
-
-When importing files into \@auto trees, Leo performs several checks to ensure
-that writing the imported file will produce exactly the same file. These checks
-can produces **errors** or **warnings**. Errors indicate a potentially serious
-problem. Leo inserts an \@ignore directive in the \@auto tree if any error is
-found. This prevents the \@auto tree from modifying the external file.
-
-.. index::
-    pair: Strict language; Reference
-
-Before importing a file, Leo **regularizes** the leading whitespace of all
-lines of the original source file. That is, Leo converts blanks to tabs or
-tabs to blanks depending on the value of the \@tabwidth directive in effect
-for the \@auto node. Leo also checks that the indentation of any non-blank
-line is a multiple of the indentation specified by the \@tabwidth directive.
-**Strict languages** are languages such as Python for which leading
-whitespace must be preserved exactly as it appears in the original source
-file. Problems during regularizing whitespace generate errors for strict
-languages and warnings for non-strict languages.
-
-After importing a file, Leo verifies that writing the \@auto node would create
-the same file as the original file. Such file comparison mismatches
-generate errors unless the problem involves only leading whitespace for
-non-strict languages. Whenever a mismatch occurs the first non-matching line is
-printed.
-
-File comparison mismatches can arise for several reasons:
-
-1. Bugs in the import parsers. Please report any such bugs immediately.
-
-2. Underindented lines in classes, methods or function.
-
-.. index::
-    pair: Underindented line; Reference
-
-An **underindented line** is a line of body text that is indented less then the
-starting line of the class, method or function in which it appears. Leo outlines
-can not represent such lines exactly: every line in an external file will have
-at least the indentation of any unindented line of the corresponding node in the
-outline. Leo will issue a warning (not an error) for underindented Python
-comment lines. Such lines can not change the meaning of Python programs.
-</t>
 <t tx="ekr.20100821182153.4341"></t>
 <t tx="ekr.20101007100904.4372"></t>
 <t tx="ekr.20101025080245.5794"></t>
@@ -1270,7 +1191,6 @@ Other changes
   instead of crashing if idlelib does not exist.
 </t>
 <t tx="ekr.20110620083705.14902">Fixed crash on mouse clicks in minibuffer.</t>
-<t tx="ekr.20110705112819.14903"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
