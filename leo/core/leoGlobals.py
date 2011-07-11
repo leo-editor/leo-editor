@@ -2335,7 +2335,7 @@ def findOpenFile(fileName):
 
     for frame in g.app.windowList:
         c = frame.c
-        if munge(fileName) == munge(c.mFileName):
+        if g.os_path_realpath(munge(fileName)) == g.os_path_realpath(munge(c.mFileName)):
             frame.bringToFront()
             c.setLog()
             c.outerUpdate()
