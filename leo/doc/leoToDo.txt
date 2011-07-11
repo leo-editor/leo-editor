@@ -3,44 +3,8 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20110621074459.14907: ** Investigate YouTube videos
-.. @+node:ekr.20101129095441.5963: ** Improve screenshots page
-.. @+node:ekr.20110609161752.16461: ** Post to pyxides re "your mission"
-.. @+node:ekr.20110616084347.14800: *3* Post to pyxides, 2011/06/18
-http://groups.google.com/group/pyxides
-
-On 2010/02/23 I commented about Leo 4.7 as it relates to Robin Dunn's post,
-http://groups.google.com/group/leo-editor/browse_thread/thread/4f76a0f57759aba
-
-Imo, Leo has accomplished the mission. Leo has all the important features that
-Leo's users have requested. Yes, wishlist items remain. See:
-https://bugs.launchpad.net/leo-editor/+bugs 
-
-None of these wish-list items interferes in any way with Leo's day-to-day
-operation. Furthermore, many of Leo's essential features moot the need for more
-traditional features.
-
-For example, Leo 4.9 adds full support for macros. Recording, saving, editing
-and retrieving macros is easier in Leo than in other editors because Leo stores
-macros in @macro nodes, not external files. But few, if any, of Leo's users are
-likely to use macros because Leo's @button nodes make all of Python's scripting
-abilities easily available on a node-by-node or outline-wide basis.
-
-It may be that Leo could benefit from some Emacs-like or vim-like features, but
-that doesn't seem so likely.  Leo has many users who also use Emacs and vim, and
-they seem happy enough :-)
-
-Finally, Leo offers features that have no counterpart at all in editors like
-Emacs and vim. For example, the rst3 command converts an outline to restructured
-text. See: http://webpages.charter.net/edreamleo/rstplugin3.html Yes, one could
-imagine an org-mode command that does this, but the fact is that Leo's outline
-orientation has given it abilities possessed by no other editor or IDE.
-
-Naturally, you may disagree. I invite you to try Leo. If, after using Leo for
-real work, you find you would like some new feature, then by all means ask.
-
-Edward
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10
+I am willing to fix bugs, but I would like to declare a moratorium on feature additions until 2012.
 .. @+node:ekr.20110620065017.14900: *3* Bugs
 .. @+node:ekr.20110621085435.6531: *4* Improve the find panel and find menu
 @nocolor-node
@@ -56,7 +20,6 @@ a search/replace operation.  I'll fix this soon after 4.9 final.
 tab only--not a way of actually initiating or continuing searches.
 Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
 for the find/change patterns would help a bit.
-.. @+node:ekr.20110620122650.14904: *4* Make it clearer in the Edit:Find menu how to do search/replace
 .. @+node:ekr.20110620083705.14901: *4* Fix or disable curses and none gui's
 See scanOptions.
 .. @+node:ekr.20110619173515.14895: *4* Fix bug: realpath in g.openWithFileName
@@ -93,105 +56,6 @@ UNL is /home/tbrown/.leo/.todo.leo#Home-->Paint roof)
 .. @+node:ekr.20110619173515.14896: *4* Fix bug: wrong modality level on autocompleter
 Just noticed the autocompleter pop-up is modal globally, not just for
 the Leo windows.  Probably should only block the Leo windows.
-.. @+node:ekr.20110620065017.14898: *4* Fix Coloring problem with move-lines-up
-.. @+node:ekr.20051214133130.1: *5* endCommand
-# New in Leo 4.4b4: calling endCommand is valid for all widgets,
-# but handles undo only if we are in body pane.
-
-def endCommand(self,label=None,changed=True,setLabel=True):
-
-    '''Do the common processing at the end of each command.'''
-
-    trace =  False and not g.unitTesting
-    c = self.c ; b = self.undoData ; k = self.k
-
-    if trace: g.trace('changed',changed)
-
-    if b and b.name.startswith('body') and changed:
-        c.frame.body.onBodyChanged(undoType=b.undoType,
-            oldSel=b.oldSel,oldText=b.oldText,oldYview=None)
-
-    self.undoData = None # Bug fix: 1/6/06 (after a5 released).
-
-    k.clearState()
-
-    # Warning: basic editing commands **must not** set the label.
-    if setLabel:
-        if label:
-            k.setLabelGrey(label)
-        else:
-            k.resetLabel()
-.. @+node:ekr.20031218072017.1329: *5* onBodyChanged (leoBody)
-# This is the only key handler for the body pane.
-def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
-
-    '''Update Leo after the body has been changed.'''
-
-    trace = False and not g.unitTesting
-    body = self ; c = self.c
-    bodyCtrl = w = body.bodyCtrl
-    p = c.p
-    insert = w.getInsertPoint()
-    ch = g.choose(insert==0,'',w.get(insert-1))
-    ch = g.toUnicode(ch)
-    newText = w.getAllText() # Note: getAllText converts to unicode.
-    newSel = w.getSelectionRange()
-    if not oldText:
-        oldText = p.b ; changed = True
-    else:
-        changed = oldText != newText
-    if not changed: return
-    if trace:
-        # g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
-        g.trace('oldSel',oldSel,'newSel',newSel)
-    c.undoer.setUndoTypingParams(p,undoType,
-        oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
-    p.v.setBodyString(newText)
-    p.v.insertSpot = body.getInsertPoint()
-    << recolor the body >>
-    if not c.changed: c.setChanged(True)
-    self.updateEditors()
-    << update icons if necessary >>
-.. @+node:ekr.20051026083733.6: *6* << recolor the body >>
-body.colorizer.interrupt()
-c.frame.scanForTabWidth(p)
-body.recolor(p,incremental=not self.forceFullRecolorFlag)
-self.forceFullRecolorFlag = False
-
-if g.app.unitTesting:
-    g.app.unitTestDict['colorized'] = True
-.. @+node:ekr.20051026083733.7: *6* << update icons if necessary >>
-
-redraw_flag = False
-# Update dirty bits.
-# p.setDirty() sets all cloned and @file dirty bits.
-if not p.isDirty() and p.setDirty():
-    redraw_flag = True
-
-# Update icons. p.v.iconVal may not exist during unit tests.
-val = p.computeIcon()
-# g.trace('new val:',val,'old val:',hasattr(p.v,'iconVal') and p.v.iconVal or '<None>')
-if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
-    p.v.iconVal = val
-    redraw_flag = True
-
-if redraw_flag:
-    c.redraw_after_icons_changed()
-.. @+node:ekr.20110620065017.14899: *5* move-lines-up bug
-@language python
-
-        @language python
-
-
-        def test():
-
-            """ a
-            b
-            c
-            print 1
-            """
-
-            print 2
 .. @+node:ekr.20110621085435.6532: *4* Request: have equal-sized-panes resize vr pane
 @nocolor-node
 
@@ -209,33 +73,6 @@ Window>Equal Sized Panes command?
 
 I suppose so.  I would prefer to wait for Terry to finish his
 pane-generalization code before dealing with this.
-.. @+node:ekr.20110617144701.14907: *3* Code cleaning
-@nocolor-node
-
-- Remove multiple continguous comment lines.
-
-- Eliminate k.callStateFunction if possible.
-  The code should just call the "func":
-  it should be up to each mode handler to handle special cases!
-.. @+node:ekr.20110614123640.6588: *3* Documentation re emacs-like commands for editing body text
-@nocolor-node
-
-To me a higher priority would be documentation of, and if necessary
-improvement of, the commands for editing the body text, moving the
-position, selection, etc.
-
-.. @+node:ekr.20110614123640.6586: *3* script to check myLeoSettings.leo
-@nocolor-node
-
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/764c9d2f260e2441/eb0564983b90feb5
-
-Perhaps leo could also have a command to validate myLeoSettings.leo
-and complain if it finds some obsolete settings that got removed from
-leo, but are still present in myLeoSettings. A special case would be
-to validate enabled-plugins node too, which can sometimes contain
-legacy lines, like it recently happened with UNL plugin that got moved
-to contrib branch.
 .. @+node:ekr.20110611043506.16494: *3* Ashland sprint items: 4
 .. @+node:ekr.20110527084258.18378: *4* New file format
 @nocolor-node
