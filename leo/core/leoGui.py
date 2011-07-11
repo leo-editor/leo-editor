@@ -383,6 +383,10 @@ class leoGui:
             return w._name
         else:
             return repr(w)
+    #@+node:tbrown.20110618095626.22068: *4* ensure_commander_visible
+    def ensure_commander_visible(self, c):
+        """E.g. if commanders are in tabs, make sure c's tab is visible"""
+        pass
     #@-others
 #@+node:ekr.20031218072017.2223: ** class nullGui (leoGui)
 class nullGui(leoGui):

@@ -1963,7 +1963,7 @@ class leoQtMinibuffer (leoQLineEditWidget):
             '''Override QLineEdit.mouseReleaseEvent.
             
             Simulate alt-x if we are not in an input state.'''
-            
+
             # Important: c and w must be unbound here.
             k = c.k
             
@@ -7968,6 +7968,25 @@ class leoQtGui(leoGui.leoGui):
         if w:
             if trace: print('qtGui.set_focus',gui.widget_name(w),w,g.callers(2))
             w.setFocus()
+
+    def ensure_commander_visible(self, c1):
+        """Check to see if c.frame is in a tabbed ui, and if so, make sure
+        the tab is visible"""
+
+        # START: copy from Code-->Startup & external files-->@file runLeo.py -->run & helpers-->doPostPluginsInit & helpers (runLeo.py)
+        # For qttabs gui, select the first-loaded tab.
+        if hasattr(g.app.gui,'frameFactory'):
+            factory = g.app.gui.frameFactory
+            if factory and hasattr(factory,'setTabForCommander'):
+                c = c1
+                factory.setTabForCommander(c)
+                c.bodyWantsFocusNow()
+        # END: copy
+        
+        # ugly hack to get focus from the commander which called this
+        def focus(c=c):
+            c.bodyWantsFocusNow()
+        QtCore.QTimer.singleShot(500, focus)
     #@+node:ekr.20110605121601.18509: *4* Font
     #@+node:ekr.20110605121601.18510: *5* qtGui.getFontFromParams
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):

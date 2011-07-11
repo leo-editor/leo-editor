@@ -2058,9 +2058,7 @@ def handleUrlInUrlNode(url, c=None, p=None):
                     g.recursiveUNLSearch(parsed.fragment.split("-->"), frame.c)
                     
                 if ok:
-                    # Disable later call to c.onClick so
-                    # the focus stays in frame.c (DOESN'T WORK?)
-                    c.doubleClickFlag = True
+                    frame.c.bringToFront()
                     return
                     
         if parsed.scheme in ('', 'file'):
