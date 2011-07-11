@@ -6343,6 +6343,7 @@ class Commands (object):
         c.requestBringToFront = True
         c.requestedIconify = 'deiconify'
         c.requestedFocusWidget = c.frame.body.bodyCtrl
+        g.app.gui.ensure_commander_visible(c)
 
     BringToFront = bringToFront # Compatibility with old scripts
     #@+node:ekr.20040803072955.143: *4* c.expandAllAncestors

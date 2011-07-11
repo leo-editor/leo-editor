@@ -565,10 +565,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 if trace: g.trace('auto_edit',auto_edit,p.h)
                 self.prev_v = p.v
                 event = None
-                g.doHook("iconclick1",c=c,p=p,v=p,event=event)
-                # if c.positionExists(p): c.selectPosition(p) # 2011/03/07
-    #@verbatim
-                #@ c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+                if g.doHook("iconclick1",c=c,p=p,v=p,event=event) is None:
+                    pass
+                    # if c.positionExists(p): c.selectPosition(p) # 2011/03/07
+                    # c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
                 g.doHook("iconclick2",c=c,p=p,v=p,event=event)
             else:
                 auto_edit = None
@@ -612,8 +612,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             p = self.item2position(item)
             if p:
                 event = None
-                g.doHook("icondclick1",c=c,p=p,v=p,event=event)
-                c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+                if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
+                    c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
                 g.doHook("icondclick2",c=c,p=p,v=p,event=event)
             else:
                 g.trace('*** no p')
