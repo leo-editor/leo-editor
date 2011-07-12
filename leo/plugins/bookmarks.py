@@ -2,13 +2,18 @@
 #@+node:tbrown.20070322113635: * @file bookmarks.py
 #@+<< docstring >>
 #@+node:tbrown.20070322113635.1: ** << docstring >>
-''' Supports @bookmarks nodes with url's in body text.
+''' Supports @bookmarks nodes with url's in body text, adds pane to display them.
 
 Below a node with @bookmarks in the title, double-clicking the headline of any
 node will attempt to open the url in the first line of the body-text. For lists
 of bookmarks (including UNLs) this gives a clean presentation with no '@url'
 markup repeated on every line etc.
 
+The bookmarks_show command will add a tab or pane (if free_layout is enabled)
+showing the bookmarks with unique colors.  You can very quickly jump around between
+nodes in a file using this.  The free_layout Action button context menu will also
+allow you to add one of these bookmark panes, and the should be saved and loaded
+again if the layout is saved and loaded.
 '''
 #@-<< docstring >>
 
