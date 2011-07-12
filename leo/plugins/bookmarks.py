@@ -192,6 +192,7 @@ class BookMarkDisplayProvider:
         if id_.startswith('_leo_bookmarks_show'):
             
             c = self.c
+            v = None
             
             if ':' in id_:
                 gnx = id_.split(':')[1]
@@ -199,9 +200,7 @@ class BookMarkDisplayProvider:
                     if i.gnx == gnx:
                         v = i
                         break
-                else:
-                    v = None
-            
+
             bmd = BookMarkDisplay(self.c, v=v)
             return bmd.w
     #@-others
