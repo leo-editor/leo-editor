@@ -42,10 +42,21 @@ if g.app.gui.guiName() == 'qt':
 def init():
 
     g.registerHandler("icondclick1", onDClick1)
+    
+    if use_qt:
+        g.registerHandler('after-create-leo-frame', onCreate)
 
     g.plugin_signon(__name__)
 
     return True
+#@+node:tbrown.20110712121053.19751: ** onCreate
+def onCreate(tag, keys):
+    
+    c = keys.get('c')
+    if c:
+        BookMarkDisplayProvider(c)
+    
+    return
 #@+node:tbrown.20070322113635.4: ** onDClick1
 def onDClick1 (tag,keywords):
 
@@ -78,15 +89,19 @@ class BookMarkDisplay:
     
     #@+others
     #@+node:tbrown.20110712100955.18926: *3* __init__
-    def __init__(self, c):
+    def __init__(self, c, v=None):
         
         self.c = c
-        self.v = c.p.v
+        self.v = v or c.p.v
         
         if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
             # FIXME, second hasattr temporary until free_layout merges with trunk
             self.w = QtGui.QWidget()
-            c.free_layout.get_top_splitter().add_adjacent(self.w, 'bodyFrame', 'left-of')
+            c.free_layout.get_top_splitter().add_adjacent(self.w, 'bodyFrame', 'above')
+            
+            # stuff for pane persistence
+            self.w._ns_id = '_leo_bookmarks_show:'+self.v.gnx
+            
         else:
             c.frame.log.createTab(c.p.h[:10])
             tabWidget = c.frame.log.tabWidget
@@ -159,6 +174,36 @@ class BookMarkDisplay:
             self.show_list(self.current_list)
         
         return None  # do not stop processing the select1 hook
+    #@-others
+#@+node:tbrown.20110712121053.19746: ** class BookMarkDisplayProvider
+class BookMarkDisplayProvider:
+    #@+others
+    #@+node:tbrown.20110712121053.19747: *3* __init__
+    def __init__(self, c):
+        self.c = c
+        if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
+            # FIXME, second hasattr temporary until free_layout merges with trunk
+            c.free_layout.get_top_splitter().register_provider(self)
+    #@+node:tbrown.20110712121053.19748: *3* ns_provides
+    def ns_provides(self):
+        return[('Bookmarks', '_leo_bookmarks_show')]
+    #@+node:tbrown.20110712121053.19749: *3* ns_provide
+    def ns_provide(self, id_):
+        if id_.startswith('_leo_bookmarks_show'):
+            
+            c = self.c
+            
+            if ':' in id_:
+                gnx = id_.split(':')[1]
+                for i in c.all_nodes():
+                    if i.gnx == gnx:
+                        v = i
+                        break
+                else:
+                    v = None
+            
+            bmd = BookMarkDisplay(self.c, v=v)
+            return bmd.w
     #@-others
 #@-others
 #@-leo
