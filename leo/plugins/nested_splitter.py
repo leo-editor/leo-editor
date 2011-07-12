@@ -383,7 +383,7 @@ class NestedSplitter(QtGui.QSplitter):
 
         if (self.root.marked and 
             not self.invalid_swap(button, self.root.marked[3]) and
-            self.top.max_count() > 2):
+            self.top().max_count() > 2):
             act = QtGui.QAction("Move marked here", self)
             act.connect(act, Qt.SIGNAL('triggered()'), 
                 lambda: self.replace_widget(button, self.root.marked[3]))
@@ -758,6 +758,15 @@ class NestedSplitter(QtGui.QSplitter):
         return None
 
     def get_provided(self, id_):
+        """IMPORTANT: nested_splitter should set the _ns_id attribute *only*
+        if the provider doesn't do it itself.  That allows the provider to
+        encode state information in the id.
+        
+        Also IMPORTANT: nested_splitter should call all providers for each id_, not
+        just providers which previously advertised the id_.  E.g. a provider which
+        advertises leo_bookmarks_show may also be the correct provider for
+        leo_bookmarks_show:4532.234 - let the providers decide in ns_provide().
+        """
         for provider in self.root.providers:
             if hasattr(provider, 'ns_provide'):
                 provided = provider.ns_provide(id_)
@@ -768,10 +777,12 @@ class NestedSplitter(QtGui.QSplitter):
                         w = self.top().find_by_id(id_)
                         if w:
                             if not hasattr(w, '_ns_id'):
+                                # IMPORTANT: see docstring
                                 w._ns_id = id_
                             return w
                     else:
                         if not hasattr(provided, '_ns_id'):
+                            # IMPORTANT: see docstring
                             provided._ns_id = id_
                         return provided
         return None
