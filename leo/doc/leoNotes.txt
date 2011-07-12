@@ -199,15 +199,18 @@ would be important to you.
 
 P.S. Leo does have auto-completion.  It will be improved in Leo 4.9.
 
-#@+node:ekr.20110616084347.14800: *3* Post to pyxides, 2011/06/18
+#@+node:ekr.20110616084347.14800: *3* Post to pyxides, 2011/07/10
 http://groups.google.com/group/pyxides
+
+@nocolor-node
 
 On 2010/02/23 I commented about Leo 4.7 as it relates to Robin Dunn's post,
 http://groups.google.com/group/leo-editor/browse_thread/thread/4f76a0f57759aba
 
-Imo, Leo has accomplished the mission. Leo has all the important features that
-Leo's users have requested. Yes, wishlist items remain. See:
-https://bugs.launchpad.net/leo-editor/+bugs 
+A few weeks ago Leo 4.9 went out the door. Imo, this version of Leo has
+accomplished the mission. Leo has all the important features that Leo's users
+have requested. Yes, wishlist items remain. See:
+https://bugs.launchpad.net/leo-editor/+bugs
 
 None of these wish-list items interferes in any way with Leo's day-to-day
 operation. Furthermore, many of Leo's essential features moot the need for more
@@ -229,7 +232,7 @@ text. See: http://webpages.charter.net/edreamleo/rstplugin3.html Yes, one could
 imagine an org-mode command that does this, but the fact is that Leo's outline
 orientation has given it abilities possessed by no other editor or IDE.
 
-Naturally, you may disagree. I invite you to try Leo. If, after using Leo for
+I invite you to try Leo. If, after using Leo for
 real work, you find you would like some new feature, then by all means ask.
 
 Edward
