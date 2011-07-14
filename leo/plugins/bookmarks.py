@@ -201,12 +201,19 @@ class BookMarkDisplayProvider:
             
             if ':' in id_:
                 gnx = id_.split(':')[1]
+                if not gnx and '_leo_bookmarks_show' in c.db:
+                    gnx = c.db['_leo_bookmarks_show']
                 for i in c.all_nodes():
                     if i.gnx == gnx:
                         v = i
-                        break
+                        break         
+
+            if not v:
+                v = c.p.v
+            c.db['_leo_bookmarks_show'] = v.gnx
 
             bmd = BookMarkDisplay(self.c, v=v)
+            bmd._ns_id = '_leo_bookmarks_show:'  # colon indicates not fresh
             return bmd.w
     #@-others
 #@-others
