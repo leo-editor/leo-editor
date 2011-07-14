@@ -32,8 +32,8 @@ def init():
     if g.app.gui.guiName() != "qt":
         return False
 
-    g.registerHandler('after-create-leo-frame',onCreate)
-    # can't use before-create-leo-frame because Qt dock's not ready
+    g.registerHandler('after-create-leo-frame',bindControllers)
+    g.registerHandler('after-create-leo-frame2',loadLayouts)
     g.plugin_signon(__name__)
     
     # DEPRECATED
@@ -41,21 +41,23 @@ def init():
         g.free_layout_callbacks = []
 
     return True
-#@+node:ekr.20110318080425.14391: ** onCreate
-def onCreate (tag, keys):
-    
-    #X global controllers
-    #X 
-    #X c = keys.get('c')
-    #X if c:
-    #X     h = c.hash()
-    #X     if not controllers.get(h):
-    #X         controllers[h] = FreeLayoutController(c)
+#@+node:ekr.20110318080425.14391: ** bindControllers
+def bindControllers(tag, keys):
     
     c = keys.get('c')
     if c:
         NestedSplitter.enabled = True
         FreeLayoutController(c) 
+#@+node:tbrown.20110714155709.22852: ** loadLayouts
+def loadLayouts(tag, keys):
+    
+    c = keys.get('c')
+    if c:
+
+        if '_ns_layout' in c.db:
+            name = c.db['_ns_layout']
+            c.free_layout.get_top_splitter().load_layout(
+                g.app.db['ns_layouts'][name])
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
     

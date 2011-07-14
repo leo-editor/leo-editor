@@ -2327,6 +2327,7 @@ def createMenu(c,fileName=None):
         c.updateRecentFiles(fileName)
         g.doHook("menu2",c=c,p=c.p,v=c.p)
         g.doHook("after-create-leo-frame",c=c)
+        g.doHook("after-create-leo-frame2",c=c)
 #@+node:ekr.20090520055433.5948: *4* g.findOpenFile
 def findOpenFile(fileName):
 

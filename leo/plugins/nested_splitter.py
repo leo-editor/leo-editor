@@ -467,6 +467,10 @@ class NestedSplitter(QtGui.QSplitter):
     def equalize_sizes(self, recurse=False):
         if not self.count():
             return
+            
+        for i in range(self.count()):
+            self.widget(i).setHidden(False)
+            
         size = sum(self.sizes()) / self.count()
         self.setSizes([size]*self.count())
         
