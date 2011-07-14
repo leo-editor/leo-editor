@@ -36,6 +36,7 @@ def init():
     # can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
     
+    # DEPRECATED
     if not hasattr(g, 'free_layout_callbacks'):
         g.free_layout_callbacks = []
 
@@ -92,12 +93,12 @@ class FreeLayoutController:
     #@+node:tbrown.20110203111907.5522: *3* init
     def init(self):
 
-        pc = self ; c = self.c
+        c = self.c
 
         splitter = self.get_top_splitter() # A NestedSplitter.
 
         # Register menu callbacks with the NestedSplitter.
-        splitter.register(pc.offer_tabs)
+        splitter.register(self.offer_tabs)
         splitter.register(self.from_g)
 
         # when NestedSplitter disposes of children, it will either close
@@ -253,6 +254,7 @@ class FreeLayoutController:
         if d:
             ans.append({'Load layout': [(k, '_fl_load_layout:'+k) for k in d]})
             ans.append({'Delete layout': [(k, '_fl_delete_layout:'+k) for k in d]})
+            ans.append(('Forget layout', '_fl_forget_layout:'))
             
         return ans
     #@+node:tbrown.20110628083641.11732: *3* ns_do_context
@@ -263,6 +265,7 @@ class FreeLayoutController:
             name = g.app.gui.runAskOkCancelStringDialog(self.c, "Save layout",
                 "Name for layout?")
             if name:
+                self.c.db['_ns_layout'] = name
                 d = g.app.db.get('ns_layouts', {})
                 d[name] = layout
                 # make sure g.app.db's __set_item__ is hit so it knows to save
@@ -272,6 +275,7 @@ class FreeLayoutController:
         
         if id_.startswith('_fl_load_layout:'):
             name = id_.split(':', 1)[1]
+            self.c.db['_ns_layout'] = name
             layout = g.app.db['ns_layouts'][name]
             self.get_top_splitter().load_layout(layout)
             return True
@@ -284,6 +288,10 @@ class FreeLayoutController:
                 del d[name]
                 # make sure g.app.db's __set_item__ is hit so it knows to save
                 g.app.db['ns_layouts'] = d
+        
+        if id_.startswith('_fl_forget_layout:') or id_.startswith('_fl_delete_layout:'):
+            if '_ns_layout' in self.c.db:
+                del self.c.db['_ns_layout']
     #@-others
 #@-others
 #@-leo
