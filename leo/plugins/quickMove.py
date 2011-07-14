@@ -547,7 +547,7 @@ class quickMoveButton:
         while p:
             heads.insert(0, p.h)
             p = p.parent()
-        return "-->".join(heads)
+        return "#"+"-->".join(heads)
     #@-others
 #@-others
 #@-leo
