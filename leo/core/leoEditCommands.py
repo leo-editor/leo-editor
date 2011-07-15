@@ -1865,22 +1865,25 @@ class editCommandsClass (baseEditCommandsClass):
     def focusToTree (self,event):
         '''Put the keyboard focus in Leo's outline pane.'''
         self.c.treeWantsFocus()
-    #@+node:ekr.20060211063744.1: *4* clicks in the headline
-    # These call the actual event handlers so as to trigger hooks.
+    #@+node:ekr.20060211063744.1: *4* clicks in the headline (leoEditCommands)
+    # These call wrappers that trigger hooks.
 
     def clickHeadline (self,event=None):
         '''Simulate a click in the headline of the presently selected node.'''
-        c = self.c ; p = c.p
-        c.frame.tree.onHeadlineClick(event,p=p)
+        c = self.c
+        c.frame.tree.onHeadlineClick(event,c.p)
 
     def doubleClickHeadline (self,event=None):
         '''Simulate a double click in headline of the presently selected node.'''
-        return self.clickHeadline(event)
+        c = self.c
+        return c.frame.tree.onDoubleClickHeadline(event,c.p)
+        
+    # This is not used in Leo at present.
 
     def rightClickHeadline (self,event=None):
         '''Simulate a right click in the headline of the presently selected node.'''
-        c = self.c ; p = c.p
-        c.frame.tree.onHeadlineRightClick(event,p=p)
+        c = self.c
+        c.frame.tree.onHeadlineRightClick(event,c.p)
     #@+node:ekr.20060211055455: *4* clicks in the icon box
     # These call the actual event handlers so as to trigger hooks.
 
