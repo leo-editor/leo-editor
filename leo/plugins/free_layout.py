@@ -230,6 +230,7 @@ class FreeLayoutController:
                     w = logTabWidget.widget(n)
                     w.setHidden(False)
                     w._is_from_tab = logTabWidget.tabText(n)
+                    w.setMinimumSize(20,20)
                     return w
                     
             # didn't find it, maybe it's already in a splitter
@@ -241,6 +242,7 @@ class FreeLayoutController:
             w = self.get_top_splitter().findChild(QtGui.QWidget, id_)
             if w:
                 w.setHidden(False)  # may be from Tab holder
+                w.setMinimumSize(20,20)
             return w      
              
         return None

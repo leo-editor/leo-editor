@@ -113,6 +113,8 @@ class BookMarkDisplay:
             tabWidget = c.frame.log.tabWidget
             self.w = tabWidget.widget(tabWidget.count()-1)
         
+        self.w.setObjectName('show_bookmarks')
+        self.w.setMinimumSize(10, 10)
         self.w.setLayout(QtGui.QVBoxLayout())
         self.w.layout().setContentsMargins(0,0,0,0)
 
