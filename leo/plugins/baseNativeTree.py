@@ -728,6 +728,39 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def showPopupMenu (self,event):
 
         """Show a popup menu."""
+    #@+node:ekr.20110715053352.16519: ** Event wrappers ... (nativeTree)
+    # These are used by leoEditCommands.
+    #@+node:ekr.20110715053352.16518: *3* onDoubleClickHeadline (nativeTree)
+    def onDoubleClickHeadline (self,event,p):
+
+        c = self.c
+
+        try:
+            if not g.doHook("headdclick1",c=c,p=p,v=p,event=event):
+                self.editLabel(p,selectAll=True,selection=None)
+            g.doHook("headdclick2",c=c,p=p,v=p,event=event)
+        except:
+            g.es_event_exception("headdclick")
+    #@+node:ekr.20110715053352.16520: *3* onHeadlineClick (nativeTree)
+    def onHeadlineClick (self,event,p):
+
+        c = self.c
+
+        try:
+            g.doHook("headclick1",c=c,p=p,v=p,event=event)
+            g.doHook("headclick2",c=c,p=p,v=p,event=event)
+        except:
+            g.es_event_exception("headclick")
+    #@+node:ekr.20110715053352.16521: *3* onHeadlineRightClick (nativeTree)
+    def onHeadlineRightClick (self,event,p):
+
+        c = self.c
+
+        try:
+            g.doHook("headrclick1",c=c,p=p,v=p,event=event)
+            g.doHook("headrclick2",c=c,p=p,v=p,event=event)
+        except:
+            g.es_event_exception("headrclick")
     #@+node:ekr.20110605121601.17905: ** Selecting & editing... (nativeTree)
     #@+node:ekr.20110605121601.17906: *3* afterSelectHint (nativeTree)
     def afterSelectHint (self,p,old_p):
