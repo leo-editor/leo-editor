@@ -86,7 +86,9 @@ def onDClick1 (tag,keywords):
 @g.command('bookmarks_show')
 def bookmarks_show(event):
     if use_qt:
-        BookMarkDisplay(event['c'])
+        bmd = BookMarkDisplay(event['c'])
+        bmd.c.free_layout.get_top_splitter().add_adjacent(bmd.w, 'bodyFrame', 'above')
+
     else:
         g.es("Requires Qt GUI")
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
@@ -102,7 +104,6 @@ class BookMarkDisplay:
         if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
             # FIXME, second hasattr temporary until free_layout merges with trunk
             self.w = QtGui.QWidget()
-            c.free_layout.get_top_splitter().add_adjacent(self.w, 'bodyFrame', 'above')
             
             # stuff for pane persistence
             self.w._ns_id = '_leo_bookmarks_show:'
