@@ -47,6 +47,8 @@ try:
     import pygraphviz
 except ImportError:
     pygraphviz = None
+    
+c_db_key = '_graph_canvas_gnx'
 #@+node:bob.20110119123023.7393: ** init
 def init ():
 
@@ -86,6 +88,32 @@ def onCreate (tag, keys):
     if not c: return
 
     graphcanvasController(c)
+    
+    if c_db_key in c.db:
+        gnx = c.db[c_db_key]
+        v = None
+        for i in c.all_unique_nodes():
+            if i.gnx == gnx:
+                break
+        else:
+            return
+        
+        c.graphcanvasController.loadGraph(
+            c.vnode2position(i).self_and_subtree())
+#@+node:tbrown.20110716130512.21969: ** command graph-toggle-autoload
+@g.command('graph-toggle-autoload')
+def toggle_autoload(event):
+    
+    c = event.get('c')
+    if not c:
+        return
+    
+    if c_db_key in c.db:
+        del c.db[c_db_key]
+        g.es('Cleared - no graph will be autoloaded')
+    else:
+        c.db[c_db_key] = str(c.p.v.gnx)
+        g.es('Graph for current node will be autoloaded')
 #@+node:bob.20110119123023.7395: ** class graphcanvasUI
 class graphcanvasUI(QtGui.QWidget):
     #@+others
