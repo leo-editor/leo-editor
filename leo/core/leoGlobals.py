@@ -3729,7 +3729,7 @@ def os_startfile(fname):
         except ImportError:
             os.system("open '%s'" % (fname,))
     else:
-        os.system('xdg-open ' + fname)
+        os.system('xdg-open "%s"'%fname)
 #@+node:ekr.20031218072017.2160: *3* toUnicodeFileEncoding
 def toUnicodeFileEncoding(path):
 
