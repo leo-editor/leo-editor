@@ -100,6 +100,7 @@ def onCreate (tag, keys):
         
         c.graphcanvasController.loadGraph(
             c.vnode2position(i).self_and_subtree())
+        c.graphcanvasController.loadLinked('all')
 #@+node:tbrown.20110716130512.21969: ** command graph-toggle-autoload
 @g.command('graph-toggle-autoload')
 def toggle_autoload(event):
