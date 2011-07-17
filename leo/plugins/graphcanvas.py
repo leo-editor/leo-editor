@@ -89,6 +89,9 @@ def onCreate (tag, keys):
 
     graphcanvasController(c)
     
+    if not hasattr(c, 'db'):
+        return  # no c.db before file is saved to particular name
+    
     if c_db_key in c.db:
         gnx = c.db[c_db_key]
         v = None
