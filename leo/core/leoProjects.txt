@@ -1537,6 +1537,451 @@ def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
     if trace: g.trace("position",dirtyVnodeList,g.callers(5))
 
     return dirtyVnodeList
+#@+node:ekr.20110717110529.14970: *3* Removed timer hack from double-click code
+#@+node:tbrown.20090219095555.61: *4* g.handleUrlInUrlNode
+def handleUrlInUrlNode(url, c=None, p=None):
+    
+    # Note 1: the UNL plugin has its own notion of what a good url is.
+
+    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
+    #         node if it exists.
+
+    if g.unitTesting: return
+    << check the url; return if bad >>
+    << pass the url to the web browser >>
+#@+node:tbrown.20090219095555.62: *5* << check the url; return if bad >>
+@ A valid url is (according to D.T.Hein):
+
+3 or more lowercase alphas, followed by,
+one ':', followed by,
+one or more of: (excludes !"#;<>[\]^`|)
+  $%&'()*+,-./0-9:=?@A-Z_a-z{}~
+followed by one of: (same as above, except no minus sign or comma).
+  $%&'()*+/0-9:=?@A-Z_a-z}~
+@c
+
+# urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+
+if not url or len(url) == 0:
+    g.es("no url following @url")
+    return
+
+# Add http:// if required.
+# if not re.match('^([a-z]{3,}:)',url):
+#     url = 'http://' + url
+# if not re.match(urlPattern,url):
+#     g.es("invalid url:",url)
+#     return
+#@+node:tbrown.20090219095555.63: *5* << pass the url to the web browser >>
+@ Most browsers should handle the following urls:
+  ftp://ftp.uu.net/public/whatever.
+  http://localhost/MySiteUnderDevelopment/index.html
+  file://home/me/todolist.html
+@c
+
+try:
+    
+    parsed = urlparse(url)
+    
+    leo_path = parsed.path
+    if parsed.netloc:
+        leo_path = os.path.join(parsed.netloc, parsed.path)
+        # "readme.txt" gets parsed into .netloc...
+    
+    if c and parsed.scheme in ('', 'file'):
+        
+        # local UNLs like "node-->subnode", "-->node", and "#node"
+        if '-->' in parsed.path:
+            g.recursiveUNLSearch(parsed.path.split("-->"), c)
+            return
+        if not parsed.path and parsed.fragment:
+            g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+            return
+
+        # leo aware path
+        leo_path = os.path.expanduser(leo_path)
+        leo_path = g.os_path_expandExpression(leo_path, c=c)
+        if p and not os.path.isabs(leo_path):
+            leo_path = os.path.normpath(
+                os.path.join(c.getNodePath(p), leo_path))
+
+        # .leo file
+        if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+            ok,frame = g.openWithFileName(leo_path, c)
+            
+            # with UNL after path
+            if ok and parsed.fragment:
+                g.recursiveUNLSearch(parsed.fragment.split("-->"), frame.c)
+                
+            if ok:
+                frame.c.bringToFront()
+                return
+                
+    if parsed.scheme in ('', 'file'):
+        if os.path.exists(leo_path):
+            g.os_startfile(leo_path)
+            return
+        if parsed.scheme == 'file':
+            g.es("File '%s' does not exist"%leo_path)
+            return
+        
+    import webbrowser
+    # Mozilla throws a weird exception, then opens the file!
+    try: webbrowser.open(url)
+    except: pass
+    
+except:
+    g.es("exception opening",url)
+    g.es_exception()
+#@+node:tbrown.20110219154422.37469: *4* recursiveUNLSearch
+def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
+    """try and move to unl in the commander c
+    
+    NOTE: maxdepth is max depth seen in recursion so far, not a limit on
+          how fast we will recurse.  So it should default to 0 (zero).
+    """
+
+    def moveToP(c, p):
+        c.expandAllAncestors(p) # 2009/11/07
+        c.selectPosition(p)
+        c.redraw()
+        c.frame.bringToFront()  # doesn't seem to work
+
+    if depth == 0:
+        nds = c.rootPosition().self_and_siblings()
+        unlList = [i for i in unlList if i.strip()]
+        # drop empty parts so "-->node name" works
+    else:
+        nds = p.children()
+
+    for i in nds:
+
+        if unlList[depth] == i.h:
+
+            if depth+1 == len(unlList):  # found it
+                moveToP(c, i)
+                return True, maxdepth, maxp
+            else:
+                if maxdepth < depth+1:
+                    maxdepth = depth+1
+                    maxp = i.copy()
+                found, maxdepth, maxp = g.recursiveUNLSearch(unlList, c, depth+1, i, maxdepth, maxp)
+                if found:
+                    return found, maxdepth, maxp
+                # else keep looking through nds
+
+    if depth == 0 and maxp:  # inexact match
+        moveToP(c, maxp)
+        g.es('Partial UNL match')
+
+    return False, maxdepth, maxp
+#@+node:ekr.20031218072017.2312: *4* tree.OnIconDoubleClick (@url) & helper
+# Several plugins handle url's, especially UNL.py.
+
+def OnIconDoubleClick (self,p):
+
+    # Note: "icondclick" hooks handled by vnode callback routine.
+
+    c = self.c
+    s = p.h.strip()
+    if g.match_word(s,0,"@url"): 
+        if p.b.strip():
+            lines = p.b.split('\n',1)
+            url = lines and lines[0].strip() or ''
+        else:
+            url = s[4:].strip()
+        # g.trace(url,g.callers())
+
+        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+            g.handleUrlInUrlNode(url, c=c, p=p)
+        g.doHook("@url2",c=c,p=p,v=p)
+
+    return # (for Tk) 'break' # 11/19/06
+#@+node:ekr.20110605121601.18406: *4* qtTree.initAfterLoad
+def initAfterLoad (self):
+
+    '''Do late-state inits.'''
+
+    # Called by Leo's core.
+
+    c = self.c ; frame = c.frame
+    w = c.frame.top ; tw = self.treeWidget
+
+    if not leoQtTree.callbacksInjected:
+        leoQtTree.callbacksInjected = True
+        self.injectCallbacks() # A base class method.
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemDoubleClicked(QTreeWidgetItem*, int)"),
+        self.onItemDoubleClicked)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemClicked(QTreeWidgetItem*, int)"),
+        self.onItemClicked)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemSelectionChanged()"),
+        self.onTreeSelect)
+
+    # We don't need this.  Hooray!
+    # w.connect(self.treeWidget,QtCore.SIGNAL(
+            # "itemChanged(QTreeWidgetItem*, int)"),
+        # self.onItemChanged)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemCollapsed(QTreeWidgetItem*)"),
+        self.onItemCollapsed)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemExpanded(QTreeWidgetItem*)"),
+        self.onItemExpanded)
+
+    w.connect(self.treeWidget, QtCore.SIGNAL(
+            "customContextMenuRequested(QPoint)"),
+        self.onContextMenu)
+
+    self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+    tw.installEventFilter(self.ev_filter)
+
+    # 2010/01/24: Do not set this here.
+    # The read logic sets c.changed to indicate nodes have changed.
+    # c.setChanged(False)
+#@+node:ekr.20110605121601.17896: *4* onItemClicked (nativeTree)
+def onItemClicked (self,item,col):
+    
+    """wrapper around the real _onItemClicked which uses a QTimer to avoid
+    running itemClicked stuff if itemDoubleClicked occurs"""
+    
+    if TIME_HACK and self.dblclicktimer is not None:
+        self.dblclicktimer.stop()
+        self.dblclicktimer = None
+        auto_edit = False
+        # this click was preceeded by one less than dbl click interval ago,
+        # so no single click auto_edit (double click editing may still occur)
+    else:
+        p = self.item2position(item)
+        auto_edit = self.prev_v == p.v
+        
+    if TIME_HACK:  
+        self.dblclicktimer = QtCore.QTimer()
+        self.dblclicktimer.setSingleShot(True)
+    
+        def do_it(self=self,item=item,col=col,auto_edit=auto_edit):
+            self.dblclicktimer = None
+            self._onItemClicked(item,col,auto_edit)
+             
+        self.dblclicktimer.connect(self.dblclicktimer, 
+            QtCore.SIGNAL('timeout()'), do_it)
+    
+        self.dblclicktimer.start(g.app.gui.qtApp.doubleClickInterval())
+  
+def _onItemClicked (self,item,col,auto_edit=False):
+
+    # This is called after an item is selected.
+    trace = False and not g.unitTesting ; verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+    # if trace: g.trace(self.traceItem(item),g.callers(4))
+    try:
+        self.selecting = True
+        p = self.item2position(item)
+        if p:
+            # auto_edit = self.prev_v == p.v
+            if trace: g.trace('auto_edit',auto_edit,p.h)
+            self.prev_v = p.v
+            event = None
+            if g.doHook("iconclick1",c=c,p=p,v=p,event=event) is None:
+                pass
+                # if c.positionExists(p): c.selectPosition(p) # 2011/03/07
+                # c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("iconclick2",c=c,p=p,v=p,event=event)
+        else:
+            auto_edit = None
+            g.trace('*** no p')
+
+        # 2011/05/27: click here is like ctrl-g.
+        c.k.keyboardQuit(setFocus=False)
+        c.treeWantsFocus() # 2011/05/08: Focus must stay in the tree!
+        c.outerUpdate()
+        # 2011/06/01: A second *single* click on a selected node
+        # enters editing state.
+        if auto_edit and self.auto_edit:
+            e,wrapper = self.createTreeEditorForItem(item)
+    finally:
+        self.selecting = False
+#@+node:ekr.20110605121601.17897: *4* onItemDoubleClicked (nativeTree)
+def onItemDoubleClicked (self,item,col):
+
+    if  TIME_HACK and self.dblclicktimer is not None:
+        self.dblclicktimer.stop()
+        self.dblclicktimer = None
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item))
+
+    try:
+        self.selecting = True
+
+        e,wrapper = self.createTreeEditorForItem(item)
+        if e:
+            wrapper.setEditorColors(c.k.insert_mode_bg_color,'(not used)')
+        else:
+            g.trace('*** no e')
+
+        p = self.item2position(item)
+        if p:
+            event = None
+            # 2011/07/26: end editing here for @url nodes.
+            if p.h.startswith('@url'):
+                c.endEditing()
+            if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
+                c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+        else:
+            g.trace('*** no p')
+
+        c.outerUpdate()
+    finally:
+        self.selecting = False
+#@+node:ekr.20110726130504.15081: *3* Fixed double-click problem
+@nocolor-node
+
+CAUTION: new double click handling code
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dbd63b9b38911906
+
+The problem isn't single/double, but double click not stopping the
+event processing.  It has the correct form:
+
+if g.doHook('doubleClick1') is None:
+   do-normal-double-click-stuff
+g.doHook('doubleClick2')
+
+but I think some other route through the code, or additional processing
+of the event means that even thought the handler registered on
+doubleClick1 returns non-None, the node goes into headline edit mode,
+with focus.
+
+This is bad, because the doubleClick1 on an @url node attempts to
+select and raise a different commander (tab), so now you're looking at
+one commander but focus is in another, so what you type trashes the
+headline in the original commander.
+
+The timer shouldn't be needed - a 'doubleClick1' hook which returns
+non-None should stop the headline going into edit mode.  If you can
+make that be the case, all is well.
+#@+node:ekr.20110605121601.17894: *4* onIconBoxDoubleClick
+def onIconBoxDoubleClick (self,event,p=None):
+
+    if self.busy(): return
+
+    c = self.c
+    if not p: p = c.p
+
+    if not g.doHook("icondclick1",c=c,p=p,v=p,event=event):
+        self.endEditLabel()
+        self.OnIconDoubleClick(p) # Call the method in the base class.
+
+    g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+
+    c.outerUpdate()
+#@+node:ekr.20031218072017.2312: *4* tree.OnIconDoubleClick (@url) & helper
+# Several plugins handle url's, especially UNL.py.
+
+def OnIconDoubleClick (self,p):
+
+    # Note: "icondclick" hooks handled by vnode callback routine.
+
+    c = self.c
+    s = p.h.strip()
+    if g.match_word(s,0,"@url"): 
+        if p.b.strip():
+            lines = p.b.split('\n',1)
+            url = lines and lines[0].strip() or ''
+        else:
+            url = s[4:].strip()
+        # g.trace(url,g.callers())
+
+        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+            g.handleUrlInUrlNode(url, c=c, p=p)
+        g.doHook("@url2",c=c,p=p,v=p)
+
+    return # (for Tk) 'break' # 11/19/06
+#@+node:ekr.20100908125007.6018: *4* doPlugins
+# This is the default g.app.hookFunction.
+
+def doPlugins(self,tag,keywords):
+
+    if g.app.killed:
+        return
+
+    if tag in ('start1','open0'):
+        self.loadHandlers(tag,keywords)
+
+    return self.doHandlersForTag(tag,keywords)
+#@+node:ekr.20110605121601.17897: *4* onItemDoubleClicked (nativeTree)
+def onItemDoubleClicked (self,item,col):
+
+    if  TIME_HACK and self.dblclicktimer is not None:
+        self.dblclicktimer.stop()
+        self.dblclicktimer = None
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item))
+
+    try:
+        self.selecting = True
+
+        e,wrapper = self.createTreeEditorForItem(item)
+        if e:
+            wrapper.setEditorColors(c.k.insert_mode_bg_color,'(not used)')
+        else:
+            g.trace('*** no e')
+
+        p = self.item2position(item)
+        if p:
+            event = None
+            # 2011/07/26: end editing here for @url nodes.
+            if p.h.startswith('@url'):
+                c.endEditing()
+            if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
+                c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+        else:
+            g.trace('*** no p')
+
+        c.outerUpdate()
+    finally:
+        self.selecting = False
+#@+node:ekr.20110605121601.18420: *4* createTreeEditorForItem (leoQtTree)
+def createTreeEditorForItem(self,item):
+
+    trace = False and not g.unitTesting
+
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+    e = w.itemWidget(item,0)
+    e.setObjectName('headline')
+    wrapper = self.connectEditorWidget(e,item)
+    
+    if trace: g.trace(e,wrapper)
+
+    return e,wrapper
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

@@ -602,7 +602,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         c = self.c
 
-        if trace: g.trace(col,self.traceItem(item),g.callers(4))
+        if trace: g.trace(col,self.traceItem(item))
 
         try:
             self.selecting = True
@@ -616,6 +616,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             p = self.item2position(item)
             if p:
                 event = None
+                # 2011/07/26: end editing here for @url nodes.
+                if p.h.startswith('@url'):
+                    c.endEditing()
                 if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
                     c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
                 g.doHook("icondclick2",c=c,p=p,v=p,event=event)
