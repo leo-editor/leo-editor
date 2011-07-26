@@ -2917,8 +2917,8 @@ class leoQtBody (leoFrame.leoBody):
             g.es_print('invalid body background color: %s' % (colorName),color='blue')
     #@+node:ekr.20110605121601.18189: *5* setForegroundColorHelper (qtBody)
     def setForegroundColorHelper (self,colorName,obj):
-        
         # obj is a QTextEdit or QTextBrowser.
+
         trace = False and not g.unitTesting
         if not colorName: return
 
@@ -9444,6 +9444,9 @@ class jEditColorizer:
 
             # Tags used by forth.
             'bracketRange'   :'bracketRange_font',
+            
+            ## Default font.
+            #'default'       :'default_font',
 
              # jEdit tags.
             'comment1'      :'comment1_font',
@@ -10999,6 +11002,8 @@ class jEditColorizer:
             i = self.restart(n,s,trace and traceMatch)
         if i == 0:
             self.setState(self.prevState())
+            
+        ### last_i = i
 
         while i < len(s):
             progress = i
@@ -11012,7 +11017,11 @@ class jEditColorizer:
                     if trace and traceMatch and f.__name__!='match_blanks':
                         g.trace('match: %20s %s' % (
                             f.__name__,s[i:i+n]))
+                    # The match has already been colored.
+                    ### if last_i < i:
+                        ### self.colorRangeWithTag(s,last_i,i,'default')
                     i += n
+                    ### last_i = i
                     break # Stop searching the functions.
                 elif n < 0: # Fail and skip n chars.
                     if trace and traceMatch and verbose:
