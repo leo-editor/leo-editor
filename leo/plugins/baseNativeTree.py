@@ -16,6 +16,8 @@ import leo.core.leoNodes as leoNodes
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 
+TIME_HACK = False
+
 class baseNativeTreeWidget (leoFrame.leoTree):
 
     """The base class for native tree widgets.
@@ -73,7 +75,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
         
         # to distinguish between single and double clicks
-        self.dblclicktimer = None
+        if TIME_HACK:
+            self.dblclicktimer = None
     #@+node:ekr.20110605121601.17866: *3* get_name (nativeTree)
     def getName (self):
 
@@ -526,7 +529,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         """wrapper around the real _onItemClicked which uses a QTimer to avoid
         running itemClicked stuff if itemDoubleClicked occurs"""
         
-        if self.dblclicktimer is not None:
+        if TIME_HACK and self.dblclicktimer is not None:
             self.dblclicktimer.stop()
             self.dblclicktimer = None
             auto_edit = False
@@ -534,19 +537,20 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             # so no single click auto_edit (double click editing may still occur)
         else:
             p = self.item2position(item)
-            auto_edit = self.prev_v == p.v    
+            auto_edit = self.prev_v == p.v
             
-        self.dblclicktimer = QtCore.QTimer()
-        self.dblclicktimer.setSingleShot(True)
+        if TIME_HACK:  
+            self.dblclicktimer = QtCore.QTimer()
+            self.dblclicktimer.setSingleShot(True)
         
-        def do_it(self=self,item=item,col=col,auto_edit=auto_edit):
-            self.dblclicktimer = None
-            self._onItemClicked(item,col,auto_edit)
-             
-        self.dblclicktimer.connect(self.dblclicktimer, 
-            QtCore.SIGNAL('timeout()'), do_it)
-
-        self.dblclicktimer.start(g.app.gui.qtApp.doubleClickInterval())
+            def do_it(self=self,item=item,col=col,auto_edit=auto_edit):
+                self.dblclicktimer = None
+                self._onItemClicked(item,col,auto_edit)
+                 
+            self.dblclicktimer.connect(self.dblclicktimer, 
+                QtCore.SIGNAL('timeout()'), do_it)
+        
+            self.dblclicktimer.start(g.app.gui.qtApp.doubleClickInterval())
       
     def _onItemClicked (self,item,col,auto_edit=False):
 
@@ -587,7 +591,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20110605121601.17897: *3* onItemDoubleClicked (nativeTree)
     def onItemDoubleClicked (self,item,col):
 
-        if  self.dblclicktimer is not None:
+        if  TIME_HACK and self.dblclicktimer is not None:
             self.dblclicktimer.stop()
             self.dblclicktimer = None
 
