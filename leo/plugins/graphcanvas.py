@@ -89,7 +89,7 @@ def onCreate (tag, keys):
 
     graphcanvasController(c)
     
-    if c_db_key in c.db:
+    if hasattr(c,'db') and c_db_key in c.db:
         gnx = c.db[c_db_key]
         v = None
         for i in c.all_unique_nodes():
