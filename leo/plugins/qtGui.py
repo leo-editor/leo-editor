@@ -7982,11 +7982,6 @@ class leoQtGui(leoGui.leoGui):
                 factory.setTabForCommander(c)
                 c.bodyWantsFocusNow()
         # END: copy
-        
-        # ugly hack to get focus from the commander which called this
-        # def focus(c=c):
-            # c.bodyWantsFocusNow()
-        # QtCore.QTimer.singleShot(500, focus)
     #@+node:ekr.20110605121601.18509: *4* Font
     #@+node:ekr.20110605121601.18510: *5* qtGui.getFontFromParams
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
