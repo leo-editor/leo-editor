@@ -1956,6 +1956,10 @@ def handleUrlInUrlNode(url, c=None, p=None):
 
             # .leo file
             if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+                # 2011/07/28: Immediately end editing, so that
+                # typing in the new window works properly.
+                c.endEditing()
+                c.redraw_now()
                 ok,frame = g.openWithFileName(leo_path, c)
                 
                 # with UNL after path

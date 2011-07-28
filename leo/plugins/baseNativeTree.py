@@ -614,20 +614,21 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 g.trace('*** no e')
 
             p = self.item2position(item)
-            if p:
-                event = None
-                # 2011/07/26: end editing here for @url nodes.
-                if p.h.startswith('@url'):
-                    c.endEditing()
-                if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
-                    c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
-                g.doHook("icondclick2",c=c,p=p,v=p,event=event)
-            else:
-                g.trace('*** no p')
-
-            c.outerUpdate()
+            
+        # 2011/07/28: End the lockout here, not at the end.
+        # This allows g.handleUrlInUrlNode to end editing properly.
         finally:
             self.selecting = False
+            
+        if p:
+            event = None
+            if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
+                c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+        else:
+            g.trace('*** no p')
+
+        c.outerUpdate()
     #@+node:ekr.20110605121601.17898: *3* onItemExpanded (nativeTree)
     def onItemExpanded (self,item):
 
