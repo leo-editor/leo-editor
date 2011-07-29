@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.50">
-	<global_window_position top="131" left="476" height="837" width="1350"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1114,7 +1114,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="7"></t>
+<t tx="ekr.20070416075121"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -1694,14 +1694,15 @@ row,col = g.convertPythonIndexToRowCol(s,ins)
 g.pr('row',row,'col',col)</t>
 <t tx="ekr.20071025192258">import leoTest
 leoTest.doTests (c,all=False)</t>
-<t tx="ekr.20071025193940"># Standard plugins
+<t tx="ekr.20071025193940">free_layout.py
+
+# Standard plugins
 mod_scripting.py
 nav_qt.py
 plugins_menu.py
 quicksearch.py
-scrolledmessage.py
+# scrolledmessage.py
 # UNL.py # moved to core.
-# free_layout.py
 viewrendered.py
 
 # Other useful plugins

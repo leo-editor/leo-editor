@@ -286,12 +286,15 @@ def lock_unlock_rendering_pane(event):
 
     c = event.get('c')
     if c:
-        pc = controllers.get(c.hash())
-        if pc:
-            if pc.locked:
-                pc.unlock()
+        
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if not vr:
+            g.es('Open a viewrendered pane first')
+        else:
+            if vr.locked:
+                vr.unlock()
             else:
-                pc.lock()
+                vr.lock()
 #@+node:ekr.20110320233639.5777: *3* g.command('pause-play-movie')
 @g.command('pause-play-movie')
 def pause_play_movie(event):
@@ -300,58 +303,41 @@ def pause_play_movie(event):
 
     c = event.get('c')
     if c:
-        pc = controllers.get(c.hash())
-        if pc and pc.vp:
-            vp = pc.vp
-            if vp.isPlaying():
-                vp.pause()
-            else:
-                vp.play()
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if not vr:
+            g.es('Open a viewrendered pane first')
+        else:
+            if vr and vr.vp:
+                vp = vr.vp
+                if vp.isPlaying():
+                    vp.pause()
+                else:
+                    vp.play()
 #@+node:ekr.20110317080650.14386: *3* g.command('toggle-rendering-pane')
 @g.command('toggle-rendering-pane')
 def toggle_rendering_pane(event):
     
-    '''Show or hide the rendering pane, but do not delete it.'''
+    '''Show or hide the rendering pane.'''
 
     c = event.get('c')
     if c:
-        pc = controllers.get(c.hash())
-        if pc:
-            if pc.active:
-                pc.hide()
-            else:
-                # show
-                pc.length = -1
-                pc.s = None
-                pc.gnx = 0
-                pc.view('rst')
-                assert pc.active,'not active after toggle'
-#@+node:ekr.20110321085459.14462: *3* g.command('hide-rendering-pane')
-@g.command('hide-rendering-pane')
-def hide_rendering_pane(event):
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if vr:
+            close_rendering_pane(event)
+        else:
+            viewrendered(event)
+#@+node:ekr.20110321085459.14462: *3* g.command('close-rendering-pane')
+@g.command('close-rendering-pane')
+def close_rendering_pane(event):
     
-    '''Hide the rendering pane, but do not delete it.'''
+    '''Close the rendering pane.'''
 
     c = event.get('c')
     if c:
-        pc = controllers.get(c.hash())
-        if pc:
-            pc.hide()
-#@+node:ekr.20110321085459.14464: *3* g.command('show-rendering-pane')
-@g.command('show-rendering-pane')
-def show_rendering_pane(event):
-    
-    '''Hide the rendering pane, but do not delete it.'''
-
-    c = event.get('c')
-    if c:
-        pc = controllers.get(c.hash())
-        if pc:
-            # show
-            pc.length = -1
-            pc.s = None
-            pc.gnx = 0
-            pc.view('rst')
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if vr:
+            vr.deactivate()
+            vr.deleteLater()
 #@+node:ekr.20110321151523.14464: *3* g.command('update-rendering-pane')
 @g.command('update-rendering-pane')
 def update_rendering_pane (event):
@@ -360,9 +346,11 @@ def update_rendering_pane (event):
 
     c = event.get('c')
     if c:
-        pc = controllers.get(c.hash())
-        if pc:
-            pc.update(tag='view',keywords={'c':pc.c,'force':True})
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if not vr:
+            g.es('Open a viewrendered pane first')
+        else:
+            vr.update(tag='view',keywords={'c':c,'force':True})
 #@+node:tbrown.20100318101414.5998: *3* g.command('viewrendered')
 @g.command('viewrendered')
 def viewrendered(event):
@@ -378,7 +366,7 @@ def viewrendered(event):
             vr._ns_id = '_leo_viewrendered'  # for free_layout load/save
             
             splitter = c.free_layout.get_top_splitter()
-            if not splitter.add_adjacent(vr, 'bodyFrame', 'below'):
+            if not splitter.add_adjacent(vr, 'bodyFrame', 'right-of'):
                 splitter.insert(0, vr)
         else:
             vr.setWindowTitle("Rendered View")
@@ -386,13 +374,10 @@ def viewrendered(event):
             vr.show()
 #@+node:ekr.20110320120020.14475: *3* g.command('vr')
 @g.command('vr')
-def viewrendered(event):
+def viewrendered_alias(event):
     """A synonynm for the viewrendered command"""
 
-    c = event.get('c')
-    if c:
-        pc = controllers.get(c.hash())
-        if pc: pc.view('rst')
+    viewrendered(event)
 #@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider
 class ViewRenderedProvider:
     #@+others
@@ -419,6 +404,7 @@ class ViewRenderedController(QtGui.QWidget):
     def __init__ (self, c, parent=None):
         
         QtGui.QWidget.__init__(self, parent)
+        self.setObjectName('viewrendered_pane')
         self.setLayout(QtGui.QVBoxLayout())
         self.layout().setContentsMargins(0,0,0,0)
         
@@ -523,6 +509,7 @@ class ViewRenderedController(QtGui.QWidget):
         pc = self ; c = pc.c ; p = c.p ; w = pc.w
         force = keywords.get('force')
         s, val = pc.must_update(keywords)
+        
         if not force and not val:
             # Save the scroll position.
             if w.__class__ == pc.text_class:
@@ -611,7 +598,10 @@ class ViewRenderedController(QtGui.QWidget):
         verbose = False
         pc = self ; c = pc.c ; p = c.p
         
-        if c != keywords.get('c') or not pc.active or pc.locked or g.unitTesting:
+        if (c != keywords.get('c') or 
+            not pc.active or
+            (pc.locked and not keywords.get('force')) or
+            g.unitTesting):
             if trace: g.trace('not active')
             return None,False
         
@@ -759,7 +749,8 @@ class ViewRenderedController(QtGui.QWidget):
             pc.show()
         else:
             if pc.auto_hide:
-                pc.hide()
+                pass  # needs review
+                # pc.hide()
             return
         
         if got_docutils and not isHtml:

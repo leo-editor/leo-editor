@@ -283,6 +283,18 @@ class NestedSplitter(QtGui.QSplitter):
     def createHandle(self, *args, **kargs):
         
         return NestedSplitterHandle(self)
+    #@+node:tbrown.20110729101912.30820: *4* childEvent
+    def childEvent(self, c):
+        """If a panel client is closed not by us, there may be zero
+        splitter handles left, so add an Action button"""
+            
+        QtGui.QSplitter.childEvent(self, c)
+        
+        if not c.removed():
+            return
+        
+        if self.top().max_count() < 2:
+            self.top().insert(0)  # create an action button
     #@+node:ekr.20110605121601.17971: *3* add
     def add(self,side,w=None):
 
@@ -511,10 +523,10 @@ class NestedSplitter(QtGui.QSplitter):
         counts = []
         count = 0
         for i in range(self.count()):
+            count += 1
             if isinstance(self.widget(i), NestedSplitter):
                 counts.append(self.widget(i).max_count())
-            else:
-                count += 1
+                
         counts.append(count)
 
         return max(counts)
