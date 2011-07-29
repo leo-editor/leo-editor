@@ -246,8 +246,10 @@ class position (object):
         elif n1 < n2:
             x1 = self._childIndex; v2,x2 = other.stack[n]
             return x1 > x2
-        else:
-            return True
+        else: # n1 > n2
+            # 2011/07/28: Bug fix suggested by SegundoBob.
+            x1 = other._childIndex; v2,x2 = self.stack[n]
+            return x2 >= x1
     #@+node:ekr.20040117170612: *4* p.__getattr__ (no longer used)
     # No longer used.  All code must now be aware of the one-node world.
 

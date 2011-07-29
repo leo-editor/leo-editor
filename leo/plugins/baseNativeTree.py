@@ -71,9 +71,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         self.setConfigIvars()
         self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
-        
-        # to distinguish between single and double clicks
-        self.dblclicktimer = None
     #@+node:ekr.20110605121601.17866: *3* get_name (nativeTree)
     def getName (self):
 
@@ -521,34 +518,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         c.outerUpdate()
     #@+node:ekr.20110605121601.17896: *3* onItemClicked (nativeTree)
-    def onItemClicked (self,item,col):
-        
-        """wrapper around the real _onItemClicked which uses a QTimer to avoid
-        running itemClicked stuff if itemDoubleClicked occurs"""
-        
-        if self.dblclicktimer is not None:
-            self.dblclicktimer.stop()
-            self.dblclicktimer = None
-            auto_edit = False
-            # this click was preceeded by one less than dbl click interval ago,
-            # so no single click auto_edit (double click editing may still occur)
-        else:
-            p = self.item2position(item)
-            auto_edit = self.prev_v == p.v    
-            
-        self.dblclicktimer = QtCore.QTimer()
-        self.dblclicktimer.setSingleShot(True)
-        
-        def do_it(self=self,item=item,col=col,auto_edit=auto_edit):
-            self.dblclicktimer = None
-            self._onItemClicked(item,col,auto_edit)
-             
-        self.dblclicktimer.connect(self.dblclicktimer, 
-            QtCore.SIGNAL('timeout()'), do_it)
-
-        self.dblclicktimer.start(g.app.gui.qtApp.doubleClickInterval())
-      
-    def _onItemClicked (self,item,col,auto_edit=False):
+    def onItemClicked (self,item,col,auto_edit=False):
 
         # This is called after an item is selected.
         trace = False and not g.unitTesting ; verbose = False
@@ -560,6 +530,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         try:
             self.selecting = True
             p = self.item2position(item)
+            auto_edit = self.prev_v == p.v
             if p:
                 # auto_edit = self.prev_v == p.v
                 if trace: g.trace('auto_edit',auto_edit,p.h)
@@ -587,10 +558,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20110605121601.17897: *3* onItemDoubleClicked (nativeTree)
     def onItemDoubleClicked (self,item,col):
 
-        if  self.dblclicktimer is not None:
-            self.dblclicktimer.stop()
-            self.dblclicktimer = None
-
         trace = False and not g.unitTesting
         verbose = False
 
@@ -598,7 +565,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         c = self.c
 
-        if trace: g.trace(col,self.traceItem(item),g.callers(4))
+        if trace: g.trace(col,self.traceItem(item))
 
         try:
             self.selecting = True
@@ -610,17 +577,21 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 g.trace('*** no e')
 
             p = self.item2position(item)
-            if p:
-                event = None
-                if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
-                    c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
-                g.doHook("icondclick2",c=c,p=p,v=p,event=event)
-            else:
-                g.trace('*** no p')
-
-            c.outerUpdate()
+            
+        # 2011/07/28: End the lockout here, not at the end.
+        # This allows g.handleUrlInUrlNode to end editing properly.
         finally:
             self.selecting = False
+            
+        if p:
+            event = None
+            if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
+                c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+        else:
+            g.trace('*** no p')
+
+        c.outerUpdate()
     #@+node:ekr.20110605121601.17898: *3* onItemExpanded (nativeTree)
     def onItemExpanded (self,item):
 

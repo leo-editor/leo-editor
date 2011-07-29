@@ -943,101 +943,6 @@ def stripPathCruft (path):
 
     # We want a *relative* path, not an absolute path.
     return path
-#@+node:ekr.20110520051220.18181: *3* g.wrap_lines (new)
-#@+at
-# Important note: this routine need not deal with leading whitespace.
-# Instead, the caller should simply reduce pageWidth by the width of
-# leading whitespace wanted, then add that whitespace to the lines
-# returned here.
-# 
-# The key to this code is the invarient that line never ends in whitespace.
-#@@c
-
-def wrap_lines (lines,pageWidth,firstLineWidth=None):
-
-    """Returns a list of lines, consisting of the input lines wrapped to the given pageWidth."""
-
-    if pageWidth < 10:
-        pageWidth = 10
-
-    # First line is special
-    if not firstLineWidth:
-        firstLineWidth = pageWidth
-    if firstLineWidth < 10:
-        firstLineWidth = 10
-    outputLineWidth = firstLineWidth
-
-    # Sentence spacing
-    #@+<< determine sentence spacing >>
-    #@+node:ekr.20110520051220.18182: *4* << determine sentence spacing >>
-    oneSpace = 0
-    twoSpaces = 0
-
-    for l in lines:
-        two = l.count('.  ')
-        oneAndTwo = l.count('. ')
-        twoSpaces += two
-        oneSpace += oneAndTwo - two
-
-    if oneSpace >= twoSpaces:
-        sentenceSpace = ' '
-    else:
-        sentenceSpace = '  '
-    #@-<< determine sentence spacing >>
-    
-    # g.trace(lines)
-    result = [] # The lines of the result.
-    line = "" # The line being formed.  It never ends in whitespace.
-    for s in lines:
-        i = 0
-        while i < len(s):
-            assert(len(line) <= outputLineWidth) # DTHEIN 18-JAN-2004
-            j = g.skip_ws(s,i)   # ;   ws = s[i:j]
-            k = g.skip_non_ws(s,j) ; word = s[j:k]
-            assert(k>i)
-            i = k
-            # DTHEIN 18-JAN-2004: wrap at exactly the text width, 
-            # not one character less
-            # 
-            wordLen = len(word)
-            if word.endswith('.') or word.endswith('?') or word.endswith('!'):
-                space = sentenceSpace
-            else:
-                space = ' '
-            if len(line) > 0 and wordLen > 0: wordLen += len(space)
-            if wordLen + len(line) <= outputLineWidth:
-                if wordLen > 0:
-                    #@+<< place blank and word on the present line >>
-                    #@+node:ekr.20110520051220.18183: *4* << place blank and word on the present line >>
-                    if len(line) == 0:
-                        # Just add the word to the start of the line.
-                        line = word
-                    else:
-                        # Add the word, preceeded by a blank.
-                        line = space[:1].join([line,word+space[1:]]) # DTHEIN 18-JAN-2004: better syntax
-                    #@-<< place blank and word on the present line >>
-                else: pass # discard the trailing whitespace.
-            else:
-                #@+<< place word on a new line >>
-                #@+node:ekr.20110520051220.18184: *4* << place word on a new line >>
-                # End the previous line.
-                if len(line) > 0:
-                    result.append(line)
-                    outputLineWidth = pageWidth # DTHEIN 3-NOV-2002: width for remaining lines
-
-                # Discard the whitespace and put the word on a new line.
-                line = word + space[1:]
-
-                # Careful: the word may be longer than pageWidth.
-                if len(line) > pageWidth: # DTHEIN 18-JAN-2004: line can equal pagewidth
-                    result.append(line)
-                    outputLineWidth = pageWidth # DTHEIN 3-NOV-2002: width for remaining lines
-                    line = ""
-                #@-<< place word on a new line >>
-    if len(line) > 0:
-        result.append(line)
-    # g.trace(result)
-    return result
 #@+node:ekr.20031218072017.3104: ** Debugging, Dumping, Timing, Tracing & Sherlock
 #@+node:ekr.20031218072017.3105: *3* g.alert
 def alert(message,c=None):
@@ -2051,6 +1956,10 @@ def handleUrlInUrlNode(url, c=None, p=None):
 
             # .leo file
             if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+                # 2011/07/28: Immediately end editing, so that
+                # typing in the new window works properly.
+                c.endEditing()
+                c.redraw_now()
                 ok,frame = g.openWithFileName(leo_path, c)
                 
                 # with UNL after path
@@ -5620,6 +5529,88 @@ def removeExtraLws (s,tab_width):
         for line in g.splitLines(result):
             g.pr(repr(line))
 
+    return result
+#@+node:ekr.20110727091744.15083: *3* g.wrap_lines (newer)
+#@+at
+# Important note: this routine need not deal with leading whitespace.
+# Instead, the caller should simply reduce pageWidth by the width of
+# leading whitespace wanted, then add that whitespace to the lines
+# returned here.
+# 
+# The key to this code is the invarient that line never ends in whitespace.
+#@@c
+
+def wrap_lines (lines,pageWidth,firstLineWidth=None):
+
+    """Returns a list of lines, consisting of the input lines wrapped to the given pageWidth."""
+
+    if pageWidth < 10:
+        pageWidth = 10
+
+    # First line is special
+    if not firstLineWidth:
+        firstLineWidth = pageWidth
+    if firstLineWidth < 10:
+        firstLineWidth = 10
+    outputLineWidth = firstLineWidth
+
+    # Sentence spacing
+    # This should be determined by some setting, and can only be either 1 or 2
+    sentenceSpacingWidth = 1
+    assert(0 < sentenceSpacingWidth < 3)
+    
+    # g.trace(lines)
+    result = [] # The lines of the result.
+    line = "" # The line being formed.  It never ends in whitespace.
+    for s in lines:
+        i = 0
+        while i < len(s):
+            assert(len(line) <= outputLineWidth) # DTHEIN 18-JAN-2004
+            j = g.skip_ws(s,i)   # ;   ws = s[i:j]
+            k = g.skip_non_ws(s,j) ; word = s[j:k]
+            assert(k>i)
+            i = k
+            # DTHEIN 18-JAN-2004: wrap at exactly the text width, 
+            # not one character less
+            # 
+            wordLen = len(word)
+            if line.endswith('.') or line.endswith('?') or line.endswith('!'):
+                space = ' ' * sentenceSpacingWidth
+            else:
+                space = ' '
+            if len(line) > 0 and wordLen > 0: wordLen += len(space)
+            if wordLen + len(line) <= outputLineWidth:
+                if wordLen > 0:
+                    #@+<< place blank and word on the present line >>
+                    #@+node:ekr.20110727091744.15084: *4* << place blank and word on the present line >>
+                    if len(line) == 0:
+                        # Just add the word to the start of the line.
+                        line = word
+                    else:
+                        # Add the word, preceeded by a blank.
+                        line = space.join((line,word)) # DTHEIN 18-JAN-2004: better syntax
+                    #@-<< place blank and word on the present line >>
+                else: pass # discard the trailing whitespace.
+            else:
+                #@+<< place word on a new line >>
+                #@+node:ekr.20110727091744.15085: *4* << place word on a new line >>
+                # End the previous line.
+                if len(line) > 0:
+                    result.append(line)
+                    outputLineWidth = pageWidth # DTHEIN 3-NOV-2002: width for remaining lines
+
+                # Discard the whitespace and put the word on a new line.
+                line = word
+
+                # Careful: the word may be longer than pageWidth.
+                if len(line) > pageWidth: # DTHEIN 18-JAN-2004: line can equal pagewidth
+                    result.append(line)
+                    outputLineWidth = pageWidth # DTHEIN 3-NOV-2002: width for remaining lines
+                    line = ""
+                #@-<< place word on a new line >>
+    if len(line) > 0:
+        result.append(line)
+    # g.trace(result)
     return result
 #@+node:ekr.20031218072017.3200: *3* get_leading_ws
 def get_leading_ws(s):

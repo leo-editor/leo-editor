@@ -1537,6 +1537,1184 @@ def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
     if trace: g.trace("position",dirtyVnodeList,g.callers(5))
 
     return dirtyVnodeList
+#@+node:ekr.20110717110529.14970: *3* Removed timer hack from double-click code
+#@+node:tbrown.20090219095555.61: *4* g.handleUrlInUrlNode
+def handleUrlInUrlNode(url, c=None, p=None):
+    
+    # Note 1: the UNL plugin has its own notion of what a good url is.
+
+    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
+    #         node if it exists.
+
+    if g.unitTesting: return
+    << check the url; return if bad >>
+    << pass the url to the web browser >>
+#@+node:tbrown.20090219095555.62: *5* << check the url; return if bad >>
+@ A valid url is (according to D.T.Hein):
+
+3 or more lowercase alphas, followed by,
+one ':', followed by,
+one or more of: (excludes !"#;<>[\]^`|)
+  $%&'()*+,-./0-9:=?@A-Z_a-z{}~
+followed by one of: (same as above, except no minus sign or comma).
+  $%&'()*+/0-9:=?@A-Z_a-z}~
+@c
+
+# urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+
+if not url or len(url) == 0:
+    g.es("no url following @url")
+    return
+
+# Add http:// if required.
+# if not re.match('^([a-z]{3,}:)',url):
+#     url = 'http://' + url
+# if not re.match(urlPattern,url):
+#     g.es("invalid url:",url)
+#     return
+#@+node:tbrown.20090219095555.63: *5* << pass the url to the web browser >>
+@ Most browsers should handle the following urls:
+  ftp://ftp.uu.net/public/whatever.
+  http://localhost/MySiteUnderDevelopment/index.html
+  file://home/me/todolist.html
+@c
+
+try:
+    
+    parsed = urlparse(url)
+    
+    leo_path = parsed.path
+    if parsed.netloc:
+        leo_path = os.path.join(parsed.netloc, parsed.path)
+        # "readme.txt" gets parsed into .netloc...
+    
+    if c and parsed.scheme in ('', 'file'):
+        
+        # local UNLs like "node-->subnode", "-->node", and "#node"
+        if '-->' in parsed.path:
+            g.recursiveUNLSearch(parsed.path.split("-->"), c)
+            return
+        if not parsed.path and parsed.fragment:
+            g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+            return
+
+        # leo aware path
+        leo_path = os.path.expanduser(leo_path)
+        leo_path = g.os_path_expandExpression(leo_path, c=c)
+        if p and not os.path.isabs(leo_path):
+            leo_path = os.path.normpath(
+                os.path.join(c.getNodePath(p), leo_path))
+
+        # .leo file
+        if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+            # 2011/07/28: Immediately end editing, so that
+            # typing in the new window works properly.
+            c.endEditing()
+            c.redraw_now()
+            ok,frame = g.openWithFileName(leo_path, c)
+            
+            # with UNL after path
+            if ok and parsed.fragment:
+                g.recursiveUNLSearch(parsed.fragment.split("-->"), frame.c)
+                
+            if ok:
+                frame.c.bringToFront()
+                return
+                
+    if parsed.scheme in ('', 'file'):
+        if os.path.exists(leo_path):
+            g.os_startfile(leo_path)
+            return
+        if parsed.scheme == 'file':
+            g.es("File '%s' does not exist"%leo_path)
+            return
+        
+    import webbrowser
+    # Mozilla throws a weird exception, then opens the file!
+    try: webbrowser.open(url)
+    except: pass
+    
+except:
+    g.es("exception opening",url)
+    g.es_exception()
+#@+node:tbrown.20110219154422.37469: *4* recursiveUNLSearch
+def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
+    """try and move to unl in the commander c
+    
+    NOTE: maxdepth is max depth seen in recursion so far, not a limit on
+          how fast we will recurse.  So it should default to 0 (zero).
+    """
+
+    def moveToP(c, p):
+        c.expandAllAncestors(p) # 2009/11/07
+        c.selectPosition(p)
+        c.redraw()
+        c.frame.bringToFront()  # doesn't seem to work
+
+    if depth == 0:
+        nds = c.rootPosition().self_and_siblings()
+        unlList = [i for i in unlList if i.strip()]
+        # drop empty parts so "-->node name" works
+    else:
+        nds = p.children()
+
+    for i in nds:
+
+        if unlList[depth] == i.h:
+
+            if depth+1 == len(unlList):  # found it
+                moveToP(c, i)
+                return True, maxdepth, maxp
+            else:
+                if maxdepth < depth+1:
+                    maxdepth = depth+1
+                    maxp = i.copy()
+                found, maxdepth, maxp = g.recursiveUNLSearch(unlList, c, depth+1, i, maxdepth, maxp)
+                if found:
+                    return found, maxdepth, maxp
+                # else keep looking through nds
+
+    if depth == 0 and maxp:  # inexact match
+        moveToP(c, maxp)
+        g.es('Partial UNL match')
+
+    return False, maxdepth, maxp
+#@+node:ekr.20031218072017.2312: *4* tree.OnIconDoubleClick (@url) & helper
+# Several plugins handle url's, especially UNL.py.
+
+def OnIconDoubleClick (self,p):
+
+    # Note: "icondclick" hooks handled by vnode callback routine.
+
+    c = self.c
+    s = p.h.strip()
+    if g.match_word(s,0,"@url"): 
+        if p.b.strip():
+            lines = p.b.split('\n',1)
+            url = lines and lines[0].strip() or ''
+        else:
+            url = s[4:].strip()
+        # g.trace(url,g.callers())
+
+        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+            g.handleUrlInUrlNode(url, c=c, p=p)
+        g.doHook("@url2",c=c,p=p,v=p)
+
+    return # (for Tk) 'break' # 11/19/06
+#@+node:ekr.20110605121601.18406: *4* qtTree.initAfterLoad
+def initAfterLoad (self):
+
+    '''Do late-state inits.'''
+
+    # Called by Leo's core.
+
+    c = self.c ; frame = c.frame
+    w = c.frame.top ; tw = self.treeWidget
+
+    if not leoQtTree.callbacksInjected:
+        leoQtTree.callbacksInjected = True
+        self.injectCallbacks() # A base class method.
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemDoubleClicked(QTreeWidgetItem*, int)"),
+        self.onItemDoubleClicked)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemClicked(QTreeWidgetItem*, int)"),
+        self.onItemClicked)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemSelectionChanged()"),
+        self.onTreeSelect)
+
+    # We don't need this.  Hooray!
+    # w.connect(self.treeWidget,QtCore.SIGNAL(
+            # "itemChanged(QTreeWidgetItem*, int)"),
+        # self.onItemChanged)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemCollapsed(QTreeWidgetItem*)"),
+        self.onItemCollapsed)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemExpanded(QTreeWidgetItem*)"),
+        self.onItemExpanded)
+
+    w.connect(self.treeWidget, QtCore.SIGNAL(
+            "customContextMenuRequested(QPoint)"),
+        self.onContextMenu)
+
+    self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+    tw.installEventFilter(self.ev_filter)
+
+    # 2010/01/24: Do not set this here.
+    # The read logic sets c.changed to indicate nodes have changed.
+    # c.setChanged(False)
+#@+node:ekr.20110605121601.17896: *4* onItemClicked (nativeTree)
+def onItemClicked (self,item,col,auto_edit=False):
+
+    # This is called after an item is selected.
+    trace = False and not g.unitTesting ; verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+    # if trace: g.trace(self.traceItem(item),g.callers(4))
+    try:
+        self.selecting = True
+        p = self.item2position(item)
+        auto_edit = self.prev_v == p.v
+        if p:
+            # auto_edit = self.prev_v == p.v
+            if trace: g.trace('auto_edit',auto_edit,p.h)
+            self.prev_v = p.v
+            event = None
+            if g.doHook("iconclick1",c=c,p=p,v=p,event=event) is None:
+                pass
+                # if c.positionExists(p): c.selectPosition(p) # 2011/03/07
+                # c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("iconclick2",c=c,p=p,v=p,event=event)
+        else:
+            auto_edit = None
+            g.trace('*** no p')
+
+        # 2011/05/27: click here is like ctrl-g.
+        c.k.keyboardQuit(setFocus=False)
+        c.treeWantsFocus() # 2011/05/08: Focus must stay in the tree!
+        c.outerUpdate()
+        # 2011/06/01: A second *single* click on a selected node
+        # enters editing state.
+        if auto_edit and self.auto_edit:
+            e,wrapper = self.createTreeEditorForItem(item)
+    finally:
+        self.selecting = False
+#@+node:ekr.20110605121601.17897: *4* onItemDoubleClicked (nativeTree)
+def onItemDoubleClicked (self,item,col):
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item))
+
+    try:
+        self.selecting = True
+
+        e,wrapper = self.createTreeEditorForItem(item)
+        if e:
+            wrapper.setEditorColors(c.k.insert_mode_bg_color,'(not used)')
+        else:
+            g.trace('*** no e')
+
+        p = self.item2position(item)
+        
+    # 2011/07/28: End the lockout here, not at the end.
+    # This allows g.handleUrlInUrlNode to end editing properly.
+    finally:
+        self.selecting = False
+        
+    if p:
+        event = None
+        if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
+            c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+        g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+    else:
+        g.trace('*** no p')
+
+    c.outerUpdate()
+#@+node:ekr.20110726130504.15081: *3* Fixed double-click problem
+@nocolor-node
+
+CAUTION: new double click handling code
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dbd63b9b38911906
+
+The problem isn't single/double, but double click not stopping the
+event processing.  It has the correct form:
+
+if g.doHook('doubleClick1') is None:
+   do-normal-double-click-stuff
+g.doHook('doubleClick2')
+
+but I think some other route through the code, or additional processing
+of the event means that even thought the handler registered on
+doubleClick1 returns non-None, the node goes into headline edit mode,
+with focus.
+
+This is bad, because the doubleClick1 on an @url node attempts to
+select and raise a different commander (tab), so now you're looking at
+one commander but focus is in another, so what you type trashes the
+headline in the original commander.
+
+The timer shouldn't be needed - a 'doubleClick1' hook which returns
+non-None should stop the headline going into edit mode.  If you can
+make that be the case, all is well.
+#@+node:ekr.20110605121601.17894: *4* onIconBoxDoubleClick
+def onIconBoxDoubleClick (self,event,p=None):
+
+    if self.busy(): return
+
+    c = self.c
+    if not p: p = c.p
+
+    if not g.doHook("icondclick1",c=c,p=p,v=p,event=event):
+        self.endEditLabel()
+        self.OnIconDoubleClick(p) # Call the method in the base class.
+
+    g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+
+    c.outerUpdate()
+#@+node:ekr.20031218072017.2312: *4* tree.OnIconDoubleClick (@url) & helper
+# Several plugins handle url's, especially UNL.py.
+
+def OnIconDoubleClick (self,p):
+
+    # Note: "icondclick" hooks handled by vnode callback routine.
+
+    c = self.c
+    s = p.h.strip()
+    if g.match_word(s,0,"@url"): 
+        if p.b.strip():
+            lines = p.b.split('\n',1)
+            url = lines and lines[0].strip() or ''
+        else:
+            url = s[4:].strip()
+        # g.trace(url,g.callers())
+
+        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+            g.handleUrlInUrlNode(url, c=c, p=p)
+        g.doHook("@url2",c=c,p=p,v=p)
+
+    return # (for Tk) 'break' # 11/19/06
+#@+node:ekr.20100908125007.6018: *4* doPlugins
+# This is the default g.app.hookFunction.
+
+def doPlugins(self,tag,keywords):
+
+    if g.app.killed:
+        return
+
+    if tag in ('start1','open0'):
+        self.loadHandlers(tag,keywords)
+
+    return self.doHandlersForTag(tag,keywords)
+#@+node:ekr.20110605121601.17897: *4* onItemDoubleClicked (nativeTree)
+def onItemDoubleClicked (self,item,col):
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item))
+
+    try:
+        self.selecting = True
+
+        e,wrapper = self.createTreeEditorForItem(item)
+        if e:
+            wrapper.setEditorColors(c.k.insert_mode_bg_color,'(not used)')
+        else:
+            g.trace('*** no e')
+
+        p = self.item2position(item)
+        
+    # 2011/07/28: End the lockout here, not at the end.
+    # This allows g.handleUrlInUrlNode to end editing properly.
+    finally:
+        self.selecting = False
+        
+    if p:
+        event = None
+        if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
+            c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+        g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+    else:
+        g.trace('*** no p')
+
+    c.outerUpdate()
+#@+node:ekr.20110605121601.18420: *4* createTreeEditorForItem (leoQtTree)
+def createTreeEditorForItem(self,item):
+
+    trace = False and not g.unitTesting
+
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+    e = w.itemWidget(item,0)
+    e.setObjectName('headline')
+    wrapper = self.connectEditorWidget(e,item)
+    
+    if trace: g.trace(e,wrapper)
+
+    return e,wrapper
+#@+node:ekr.20110728093358.6703: *3* Over-riding bindings
+#@+node:ekr.20061031131434.3: *4* << about key dicts >>
+@nocolor
+@
+ivars:
+
+c.commandsDict:
+    Keys are emacs command names; values are functions f.
+
+k.inverseCommandsDict:
+    Keys are f.__name__; values are emacs command names.
+
+k.bindingsDict:
+    Keys are shortcuts; values are *lists* of g.bunch(func,name,warningGiven)
+
+k.masterBindingsDict:
+    Keys are scope names: 'all','text',etc. or mode names.
+    Values are dicts:  keys are strokes, values are g.Bunch(commandName,func,pane,stroke)
+
+k.masterGuiBindingsDict:
+    Keys are strokes; value is a list of widgets for which stroke is bound.
+
+k.settingsNameDict:
+    Keys are lowercase settings; values are 'real' Tk key specifiers.
+    Important: this table has no inverse.
+
+inverseBindingDict: not an ivar (computed by k.computeInverseBindingDict):
+    Keys are emacs command names; values are *lists* of shortcuts.
+#@+node:ekr.20061031131434.146: *4* masterKeyHandler & helpers
+master_key_count = 0
+
+def masterKeyHandler (self,event):
+
+    '''This is the handler for almost all key bindings.'''
+    
+    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+    verbose = True
+    
+    k,c = self,self.c ; gui = g.app.gui
+    c.check_event(event)
+    << define vars >>
+
+    if char in special_keys:
+        if trace and verbose: g.trace('char',char)
+        return None
+    
+    if traceGC: g.printNewObjects('masterKey 1')
+    if trace and verbose: g.trace('stroke:',repr(stroke),'char:',
+        repr(event and event.char),
+        'ch:',repr(event and event.char),
+        'state',state,'state2',k.unboundKeyAction)
+
+    # Handle keyboard-quit first.
+    if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.endMacro()
+            return # (for Tk) 'break'
+        else:
+            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+
+    if k.inState():
+        if trace: g.trace('   state %-10s %s' % (stroke,state))
+        done,val = k.doMode(event,state,stroke)
+        if done: return val
+
+    if traceGC: g.printNewObjects('masterKey 2')
+            
+    # 2011/02/08: An important simplification.
+    if isPlain and k.unboundKeyAction != 'command':
+        if self.isAutoCompleteChar(stroke):
+            if trace: g.trace('autocomplete key',stroke)
+        else:
+            if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
+            return k.handleUnboundKeys(event,char,stroke)
+
+    # 2011/02/08: Use getPandBindings for *all* keys.
+    b = k.getPaneBinding(stroke,w)
+    if b:
+        if traceGC: g.printNewObjects('masterKey 3')
+        if trace: g.trace('   bound',stroke,b.func.__name__)
+        return k.masterCommand(event,b.func,b.stroke,b.commandName)
+    else:
+        if traceGC: g.printNewObjects('masterKey 4')
+        if trace: g.trace(' unbound',stroke)
+        return k.handleUnboundKeys(event,char,stroke)
+#@+node:ekr.20061031131434.147: *5* << define vars >>
+w = event and event.widget
+char = event and event.char or ''
+stroke = event and event.stroke or ''
+w_name = c.widget_name(w)
+state = k.state.kind
+
+special_keys = (
+    'Alt_L','Alt_R',
+    'Caps_Lock','Control_L','Control_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Num_Lock',
+    'Shift_L','Shift_R',
+    'Win_L','Win_R',
+)
+
+self.master_key_count += 1
+
+isPlain =  k.isPlainKey(stroke)
+#@+node:ekr.20061031131434.108: *5* callStateFunction
+def callStateFunction (self,event):
+
+    trace = False and not g.unitTesting
+    k = self ; val = None 
+    ch = event and event.char or ''
+    stroke = event and event.stroke or ''
+
+    if trace: g.trace(k.state.kind,'ch',ch,'stroke',stroke,
+        'ignore_unbound_non_ascii_keys',k.ignore_unbound_non_ascii_keys)
+        
+    if k.state.kind == 'auto-complete':
+        # 2011/06/17.
+        # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
+        val = k.state.handler(event)
+        if trace: g.trace('auto-complete returns',repr(val))
+        return val
+    elif k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            len(ch) == 1 and # 2011/04/01
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@+node:ekr.20091230094319.6244: *5* doMode
+def doMode (self,event,state,stroke):
+
+    trace = False and not g.unitTesting
+    k = self
+
+    # First, honor minibuffer bindings for all except user modes.
+    if state in ('getArg','getFileName','full-command','auto-complete'):
+        if k.handleMiniBindings(event,state,stroke):
+            return True,'break'
+
+    # Second, honor general modes.
+    if state == 'getArg':
+        return True,k.getArg(event,stroke=stroke)
+    elif state == 'getFileName':
+        return True,k.getFileName(event)
+    elif state in ('full-command','auto-complete'):
+        # Do the default state action.
+        if trace: g.trace('calling state function',k.state.kind)
+        val = k.callStateFunction(event) # Calls end-command.
+        if trace: g.trace('state function returns',repr(val))
+        if val == 'do-standard-keys':
+            return False,None # 2011/06/17.
+        else:
+            return True,'break'
+
+    # Third, pass keys to user modes.
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        b = d.get(stroke)
+        if b:
+            if trace: g.trace('calling generalModeHandler',stroke)
+            k.generalModeHandler (event,
+                commandName=b.commandName,func=b.func,
+                modeName=state,nextMode=b.nextMode)
+            return True,'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            # if trace: g.trace('unbound key ends mode',stroke,state)
+            g.warning('unbound key ends mode',stroke) # 2011/02/02
+            k.endMode()
+            return False,None
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            if trace: g.trace('handler',handler)
+            handler(event)
+        else:
+            if trace: g.trace('No state handler for %s' % state)
+        return True,'break'
+#@+node:ekr.20091230094319.6240: *5* getPaneBinding
+def getPaneBinding (self,stroke,w):
+
+    trace = False and not g.unitTesting
+    verbose = True
+    k = self ; w_name = k.c.widget_name(w)
+    # keyStatesTuple = ('command','insert','overwrite')
+    state = k.unboundKeyAction
+
+    if trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
+        'isTextWidget(w)',g.app.gui.isTextWidget(w))
+
+    for key,name in (
+        # Order here is similar to bindtags order.
+        ('command',None),
+        ('insert',None),
+        ('overwrite',None),
+        ('button',None),
+        ('body','body'),
+        ('text','head'), # Important: text bindings in head before tree bindings.
+        ('tree','head'),
+        ('tree','canvas'),
+        ('log', 'log'),
+        ('text','log'),
+        ('text',None),
+        ('all',None),
+    ):
+        if (
+            # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+            name and w_name.startswith(name) or
+            key in ('command','insert','overwrite') and state == key or # 2010/02/09
+            key in ('text','all') and g.app.gui.isTextWidget(w) or
+            key in ('button','all')
+        ):
+            d = k.masterBindingsDict.get(key,{})
+            if trace and verbose:
+                # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+                g.trace('key: %7s name: %6s stroke: %10s in keys: %s' %
+                    (key,name,stroke,stroke in d))
+                # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
+            if d:
+                b = d.get(stroke)
+                if b:
+                    table = ('previous-line','next-line',)
+                    if key == 'text' and name == 'head' and b.commandName in table:
+                        if trace: g.trace('***** special case',b.commandName)
+                        pass
+                    else:
+                        if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
+                            key,name,repr(b.stroke),b.commandName))
+                        return b
+#@+node:ekr.20061031131434.152: *5* handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
+            return False
+        if k.isFKey(stroke):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName == 'replace-string' and state == 'getArg':
+                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
+                        return False # Let getArg handle it.
+                    elif b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit()
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocus() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@+node:ekr.20110209083917.16004: *5* isAutoCompleteChar
+def isAutoCompleteChar (self,stroke):
+    
+    '''Return True if stroke is bound to the auto-complete in
+    the insert or overwrite state.'''
+
+    k = self ; state = k.unboundKeyAction
+    
+    if stroke and state in ('insert','overwrite'):
+        for key in (state,'body','log','text','all'):
+            d = k.masterBindingsDict.get(key,{})
+            if d:
+                b = d.get(stroke)
+                if b and b.commandName == 'auto-complete':
+                    return True
+    return False
+#@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
+def handleUnboundKeys (self,event,char,stroke):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    k = self ; c = k.c
+    modesTuple = ('insert','overwrite')
+    
+    # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
+
+    if trace and verbose: g.trace('ch: %s, stroke %s' % (
+        repr(event and event.char),repr(stroke)))
+
+    # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        if trace: g.trace('ignoring unbound character in command mode',stroke)
+        return # (for Tk) 'break'
+
+    elif k.isFKey(stroke):
+        if trace: g.trace('ignoring F-key',stroke)
+        return # (for Tk) 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif (not self.enable_alt_ctrl_bindings and
+        (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
+    ):
+        # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
+        if trace: g.trace('ignoring unbound Alt/Ctrl key',
+            repr(char),repr(stroke))
+        return # (for Tk) 'break'
+
+    elif k.ignore_unbound_non_ascii_keys and (
+        len(char) > 1 or
+        char not in string.printable # 2011/06/10: risky test?
+    ):
+        if trace: g.trace('ignoring unbound non-ascii key',
+            repr(char),repr(stroke))
+        return # (for Tk) 'break'
+
+    elif (
+        stroke and stroke.find('Escape') != -1 or
+        stroke and stroke.find('Insert') != -1
+    ):
+        # Never insert escape or insert characters.
+        if trace: g.trace('ignore Escape/Ignore',stroke)
+        return # (for Tk) 'break'
+
+    else:
+        if trace: g.trace('no func',repr(char),repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+#@+node:ekr.20061031131434.119: *4* k.printBindings & helper
+def printBindings (self,event=None):
+
+    '''Print all the bindings presently in effect.'''
+
+    k = self ; c = k.c
+    d = k.bindingsDict ; tabName = 'Bindings'
+    c.frame.log.clearTab(tabName)
+    legend = '''\
+legend:
+[S] leoSettings.leo
+[ ] default binding
+[F] loaded .leo File
+[M] myLeoSettings.leo
+[@] mode
+'''
+    legend = g.adjustTripleString(legend,c.tab_width)
+
+    data = [] ; n1 = 4 ; n2 = 20
+    if not d: return g.es('no bindings')
+    for key in sorted(d):
+        bunchList = d.get(key,[])
+        for b in bunchList:
+            pane = g.choose(b.pane=='all','',' %s:' % (b.pane))
+            s1 = pane
+            s2 = k.prettyPrintKey(key,brief=True)
+            s3 = b.commandName
+            s4 = b.get('_hash','<no hash>')
+            n1 = max(n1,len(s1))
+            n2 = max(n2,len(s2))
+            data.append((s1,s2,s3,s4),)
+
+    # Print keys by type:
+    result = []
+    result.append('\n'+legend)
+    sep = '-' * n1
+    for prefix in (
+        'Alt+Ctrl+Shift', 'Alt+Shift', 'Alt+Ctrl', 'Alt+Key','Alt',
+        'Ctrl+Shift', 'Ctrl', 'Shift',
+        'Meta+Ctrl+Shift', 'Meta+Shift', 'Meta+Ctrl', 'Meta+Key','Meta',
+        # Meta support
+    ):
+        data2 = []
+        for item in data:
+            s1,s2,s3,s4 = item
+            if s2.startswith(prefix):
+                data2.append(item)
+        # g.es('','%s %s' % (sep, prefix),tabName=tabName)
+        result.append('%s %s\n' % (sep, prefix))
+        self.printBindingsHelper(result,data2,n1,n2,prefix=prefix)
+        # Remove all the items in data2 from data.
+        # This must be done outside the iterator on data.
+        for item in data2:
+            data.remove(item)
+    # Print all plain bindings.
+    result.append('%s %s\n' % (sep, 'Plain Keys'))
+    self.printBindingsHelper(result,data,n1,n2,prefix=None)
+    if not g.unitTesting:
+        g.es('',''.join(result),tabName=tabName)
+    state = k.unboundKeyAction 
+    k.showStateAndMode()
+    return result # for unit test.
+#@+node:ekr.20061031131434.120: *5* printBindingsHelper
+def printBindingsHelper (self,result,data,n1,n2,prefix):
+
+    n = prefix and len(prefix)+1 or 0 # Add 1 for the '+' after the prefix.
+
+    data1 = [z for z in data if z and z[1] and len(z[1][n:]) == 1]
+        # The list of all items with only one character following the prefix.
+
+    data2 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
+        # The list of all other items.
+
+    # This isn't perfect in variable-width fonts.
+    for data in (data1,data2):
+        data.sort(key=lambda x: x[1])
+            # key is a function that extracts args.
+        for s1,s2,s3,s4 in data:
+            
+            # 2011/02/10: Print the source of the binding: s4 is the _hash.
+            s4 = s4.lower()
+            if s4.endswith('myleosettings.leo'):
+                letter = 'M'
+            elif s4.endswith('leosettings.leo'):
+                letter = 'S'
+            elif s4.endswith('.leo'):
+                letter = 'F'
+            elif s4.find('mode') != -1:
+                letter = '@' # the full mode.
+            else:
+                letter = ' '
+            
+            # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
+            result.append('%s %*s %*s %s\n' % (letter,-n1,s1,-(min(12,n2)),s2,s3))
+#@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config)
+def getShortcut (self,c,shortcutName):
+
+    '''Return rawKey,accel for shortcutName'''
+
+    key = c.frame.menu.canonicalizeMenuName(shortcutName)
+    key = key.replace('&','') # Allow '&' in names.
+    
+    if c.k.new_bindings:
+        bunchList = self.getShortcutHelper(c,key) # 2011/02/11
+    else:
+        bunchList = self.get(c,key,'shortcut')
+    # g.trace(c.k.new_bindings) # 'bunchList',bunchList)
+    if bunchList:
+        bunchList = [bunch for bunch in bunchList
+            if bunch.val and bunch.val.lower() != 'none']
+        return key,bunchList
+    else:
+        return key,[]
+#@+node:ekr.20110211041914.15415: *5* getShortcutHelper(g.app.config)
+def getShortcutHelper (self,c,key):
+    
+    '''Like get, but return *all* the found bunchLists's.
+    
+    'key' is actually a commandname.'''
+
+    trace = False and not g.unitTesting
+    kind = 'shortcut'
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+    result = []
+
+    if c and not isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            bunchList,junk = self.getValFromDict(d,key,kind)
+            if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    for d in self.localOptionsList:
+        bunchList,junk = self.getValFromDict(d,key,kind)
+        if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    for d in self.dictList:
+        bunchList,junk = self.getValFromDict(d,key,kind)
+        if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    # Use settings in leoSettings.leo *last*.
+    if c and isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            bunchList,junk = self.getValFromDict(d,key,kind)
+            if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    return result
+#@+node:ekr.20110211041914.15418: *5* mergeShortcuts
+def mergeShortcuts (self,result,aList,key):
+        # key is for debugging.
+        # key is a conical command name, *not* a keystroke.
+    
+    '''Append all non-conflicting entries of aList to result.'''
+    
+    trace = False and not g.unitTesting
+    # If there is a real override, **earlier** entries take precedence.
+    # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
+    
+    vals = [z.val for z in result]
+    aList = [z for z in aList if z.val not in vals]
+    result.extend(aList)
+
+    if trace and len(result) > 1:
+        g.trace(key,['%s %s' % (z.val,z.pane) for z in result])
+#@+node:ekr.20041117083141: *4* get & allies (g.app.config)
+def get (self,c,setting,kind):
+
+    """Get the setting and make sure its type matches the expected type."""
+
+    trace = False and not g.unitTesting
+
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+
+    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+    if c and not isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                # if setting == 'targetlanguage':
+                    # g.trace(c.shortFileName(),setting,val,g.callers())
+                return val
+
+    for d in self.localOptionsList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            # kind2 = d.get('_hash','<no hash>')
+            # if setting == 'targetlanguage':
+                # g.trace(kind2,setting,val,g.callers())
+            return val
+
+    for d in self.dictList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            kind = d.get('_hash','<no hash>')
+            # if setting == 'targetlanguage':
+                # g.trace(kind,setting,val,g.callers())
+            return val
+
+    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+    if c and isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                # if setting == 'targetlanguage':
+                    # g.trace(c.shortFileName(),setting,val,g.callers())
+                return val
+
+    return None
+#@+node:ekr.20041121143823: *5* getValFromDict
+def getValFromDict (self,d,setting,requestedType,warn=True):
+
+    '''Look up the setting in d. If warn is True, warn if the requested type
+    does not (loosely) match the actual type.
+    returns (val,exists)'''
+
+    bunch = d.get(self.munge(setting))
+    if not bunch: return None,False
+
+    # g.trace(setting,requestedType,bunch.toString())
+    val = bunch.val
+
+    if g.isPython3:
+        isNone = val in ('None','none','',None)
+    else:
+        isNone = val in (
+            unicode('None'),unicode('none'),unicode(''),
+            'None','none','',None)
+
+    if not self.typesMatch(bunch.kind,requestedType):
+        # New in 4.4: make sure the types match.
+        # A serious warning: one setting may have destroyed another!
+        # Important: this is not a complete test of conflicting settings:
+        # The warning is given only if the code tries to access the setting.
+        if warn:
+            g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
+            g.es_print('there may be conflicting settings!',color='red')
+        return None, False
+    # elif val in (u'None',u'none','None','none','',None):
+    elif isNone:
+        return None, True # Exists, but is None
+    else:
+        # g.trace(setting,val)
+        return val, True
+#@+node:ekr.20051015093141: *5* typesMatch
+def typesMatch (self,type1,type2):
+
+    '''
+    Return True if type1, the actual type, matches type2, the requeseted type.
+
+    The following equivalences are allowed:
+
+    - None matches anything.
+    - An actual type of string or strings matches anything *except* shortcuts.
+    - Shortcut matches shortcuts.
+    '''
+
+    shortcuts = ('shortcut','shortcuts',)
+
+    return (
+        type1 == None or type2 == None or
+        type1.startswith('string') and type2 not in shortcuts or
+        type1 == 'int' and type2 == 'size' or
+        (type1 in shortcuts and type2 in shortcuts) or
+        type1 == type2
+    )
+#@+node:ekr.20110728112148.6735: *3* Fixed url focus issues
+#@+node:ekr.20110605121601.17897: *4* onItemDoubleClicked (nativeTree)
+def onItemDoubleClicked (self,item,col):
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item))
+
+    try:
+        self.selecting = True
+
+        e,wrapper = self.createTreeEditorForItem(item)
+        if e:
+            wrapper.setEditorColors(c.k.insert_mode_bg_color,'(not used)')
+        else:
+            g.trace('*** no e')
+
+        p = self.item2position(item)
+        
+    # 2011/07/28: End the lockout here, not at the end.
+    # This allows g.handleUrlInUrlNode to end editing properly.
+    finally:
+        self.selecting = False
+        
+    if p:
+        event = None
+        if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
+            c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+        g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+    else:
+        g.trace('*** no p')
+
+    c.outerUpdate()
+#@+node:tbrown.20090219095555.61: *4* g.handleUrlInUrlNode
+def handleUrlInUrlNode(url, c=None, p=None):
+    
+    # Note 1: the UNL plugin has its own notion of what a good url is.
+
+    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
+    #         node if it exists.
+
+    if g.unitTesting: return
+    << check the url; return if bad >>
+    << pass the url to the web browser >>
+#@+node:tbrown.20090219095555.62: *5* << check the url; return if bad >>
+@ A valid url is (according to D.T.Hein):
+
+3 or more lowercase alphas, followed by,
+one ':', followed by,
+one or more of: (excludes !"#;<>[\]^`|)
+  $%&'()*+,-./0-9:=?@A-Z_a-z{}~
+followed by one of: (same as above, except no minus sign or comma).
+  $%&'()*+/0-9:=?@A-Z_a-z}~
+@c
+
+# urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+
+if not url or len(url) == 0:
+    g.es("no url following @url")
+    return
+
+# Add http:// if required.
+# if not re.match('^([a-z]{3,}:)',url):
+#     url = 'http://' + url
+# if not re.match(urlPattern,url):
+#     g.es("invalid url:",url)
+#     return
+#@+node:tbrown.20090219095555.63: *5* << pass the url to the web browser >>
+@ Most browsers should handle the following urls:
+  ftp://ftp.uu.net/public/whatever.
+  http://localhost/MySiteUnderDevelopment/index.html
+  file://home/me/todolist.html
+@c
+
+try:
+    
+    parsed = urlparse(url)
+    
+    leo_path = parsed.path
+    if parsed.netloc:
+        leo_path = os.path.join(parsed.netloc, parsed.path)
+        # "readme.txt" gets parsed into .netloc...
+    
+    if c and parsed.scheme in ('', 'file'):
+        
+        # local UNLs like "node-->subnode", "-->node", and "#node"
+        if '-->' in parsed.path:
+            g.recursiveUNLSearch(parsed.path.split("-->"), c)
+            return
+        if not parsed.path and parsed.fragment:
+            g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+            return
+
+        # leo aware path
+        leo_path = os.path.expanduser(leo_path)
+        leo_path = g.os_path_expandExpression(leo_path, c=c)
+        if p and not os.path.isabs(leo_path):
+            leo_path = os.path.normpath(
+                os.path.join(c.getNodePath(p), leo_path))
+
+        # .leo file
+        if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+            # 2011/07/28: Immediately end editing, so that
+            # typing in the new window works properly.
+            c.endEditing()
+            c.redraw_now()
+            ok,frame = g.openWithFileName(leo_path, c)
+            
+            # with UNL after path
+            if ok and parsed.fragment:
+                g.recursiveUNLSearch(parsed.fragment.split("-->"), frame.c)
+                
+            if ok:
+                frame.c.bringToFront()
+                return
+                
+    if parsed.scheme in ('', 'file'):
+        if os.path.exists(leo_path):
+            g.os_startfile(leo_path)
+            return
+        if parsed.scheme == 'file':
+            g.es("File '%s' does not exist"%leo_path)
+            return
+        
+    import webbrowser
+    # Mozilla throws a weird exception, then opens the file!
+    try: webbrowser.open(url)
+    except: pass
+    
+except:
+    g.es("exception opening",url)
+    g.es_exception()
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
