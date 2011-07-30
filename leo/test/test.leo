@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.52" body_secondary_ratio="0.50">
-	<global_window_position top="131" left="476" height="837" width="1350"/>
+	<global_window_position top="137" left="495" height="837" width="1079"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -660,6 +660,7 @@
 </v>
 <v t="ekr.20110416065515.2437"><vh>jinja2</vh></v>
 <v t="ekr.20110511140347.2445"><vh>QTimer</vh></v>
+</v>
 <v t="ekr.20110320203616.2489"><vh>viewrendered examples</vh>
 <v t="ekr.20110526180653.2468"><vh>viewrendered buttons</vh>
 <v t="ekr.20110321012354.2495"><vh>@button pause-play</vh></v>
@@ -679,16 +680,6 @@
 <v t="ekr.20101014040509.2313"><vh>@url weather</vh></v>
 <v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
 <v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
-</v>
-</v>
-<v t="ekr.20110615154959.2309"><vh>@@button redefine g.findReference(c,name,p)</vh>
-<v t="ekr.20110615154959.2310"><vh>myFindReference</vh></v>
-</v>
-<v t="ekr.20110615154959.2315" a="O"><vh>@@file test-find-reference.txt</vh>
-<v t="ekr.20110615154959.2316"><vh>&lt;&lt; a &gt;&gt;</vh>
-<v t="ekr.20110615154959.2317"><vh>&lt;&lt; b &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20110615154959.2318"><vh>&lt;&lt; b &gt;&gt;</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1114,7 +1105,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="7"></t>
+<t tx="ekr.20070416075121" str_leo_pos="1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -1695,53 +1686,42 @@ g.pr('row',row,'col',col)</t>
 <t tx="ekr.20071025192258">import leoTest
 leoTest.doTests (c,all=False)</t>
 <t tx="ekr.20071025193940"># Standard plugins
+free_layout.py
 mod_scripting.py
 nav_qt.py
 plugins_menu.py
 quicksearch.py
-scrolledmessage.py
-# UNL.py # moved to core.
-# free_layout.py
+
 viewrendered.py
 
-# Other useful plugins
-# codewisecompleter.py
-leoremote.py
-screenshots.py
+### UNL.py # moved to core.
+### scrolledmessage.py is broken at present.
+
+# Other useful plugins...
 
 # attrib_edit.py
-# ctagscompleter.py
-# rst3.py
+# codewisecompleter.py
 # contextmenu.py
-# open_with.py
+# ctagscompleter.py
+# graphed.py
 # ipython.py
+# leoOPML.py
+# leo_to_html.py
+# leoremote.py
 # mod_autosave.py
-# templates.py
-
+# nodenavigator.py
+# open_with.py
+# pydeeshell.py
+# rst3.py
+# screenshots.py
 # stickynotes.py # requires Python 3.0
 # stickynotes_plus.py
-# pydeeshell.py
-# nodenavigator.py
+# templates.py
 # vim.py
 # xemacs.py
 
 # test of @bool warn_when_plugins_fail_to_load
 # xyzzy.py 
-
-# Other interesting plugins
-# leo_to_html.py
-# leoOPML.py
-
-# graphed.py
-
-# Tk plugins...
-# cleo.py
-# color_markup.py # Does not work with threading colorizer.
-# image.py
-# nav_buttons.py
-# rClick.py
-# threading_colorizer.py
-# toolbar.py
 </t>
 <t tx="ekr.20071026102420.2"></t>
 <t tx="ekr.20071026102420.3"></t>
@@ -8786,41 +8766,5 @@ timer.start(0)
 <t tx="ekr.20110525093203.2470"></t>
 <t tx="ekr.20110526180653.2467"></t>
 <t tx="ekr.20110526180653.2468"></t>
-<t tx="ekr.20110615154959.2309">@others
-
-g.findReference = myFindReference
-</t>
-<t tx="ekr.20110615154959.2310">def myFindReference(c,name,root):
-
-    '''Find the section definition for name as Gregory wants ;-) '''
-    
-    trace = True and not g.unitTesting
-
-    if g.callers().find('recolor') &gt; -1: trace = False # Don't trace the colorizer.
-    
-    if trace: g.trace(name,root.h)
-    
-    for p in root.children():
-        if p.matchHeadline(name) and not p.isAtIgnoreNode():
-            if trace: g.trace(p.h,'1 parent',p.parent().h)
-            return p
-
-    for p in root.subtree():
-        assert(p!=root)
-        if p.matchHeadline(name) and not p.isAtIgnoreNode():
-            if trace: g.trace(p.h,'2 parent',p.parent().h)
-            return p
-
-    if trace: g.trace("not found:",name,root.h)
-    return c.nullPosition()
-</t>
-<t tx="ekr.20110615154959.2315">before
-&lt;&lt; a &gt;&gt;
-&lt;&lt; b &gt;&gt;
-after 2</t>
-<t tx="ekr.20110615154959.2316">This is a.
-&lt;&lt; b &gt;&gt;</t>
-<t tx="ekr.20110615154959.2317">This is b1.</t>
-<t tx="ekr.20110615154959.2318">This is b2.</t>
 </tnodes>
 </leo_file>

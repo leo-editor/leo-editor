@@ -52,10 +52,13 @@ class cacher:
 
         trace = False and not g.unitTesting
         if trace: g.trace('cacher','c',c)
+        
         self.c = c
 
         # set by initFileDB and initGlobalDB...
-        self.db = None # will be a PickleShareDB instance.
+        self.db = {}
+            # 2011/07/30
+            # When caching is enabled will be a PickleShareDB instance.
         self.dbdirname = None # A string.
         self.inited = False
 
@@ -84,6 +87,8 @@ class cacher:
             # Fixes bug 670108.
             self.c.db = self.db
             self.inited = True
+            
+            if trace: g.trace('self.c.db',self.db)
     #@+node:ekr.20100208082353.5920: *4* initGlobalDb
     def initGlobalDB (self):
 
@@ -96,7 +101,7 @@ class cacher:
             self.inited = True
             return db
         else:
-            return None
+            return {} # 2011/07/30: Use a plain dict as a dummy.
     #@+node:ekr.20100210163813.5747: *4* save (cacher)
     def save (self,fn,changeName):
 
@@ -105,7 +110,15 @@ class cacher:
     #@+node:ekr.20100209160132.5759: *3* clear/AllCache(s) (cacher)
     def clearCache (self):
         if self.db:
-            self.db.clear(verbose=True)
+            # 2011/07/30: Be careful about calling db.clear.
+            try:
+                self.db.clear(verbose=True)
+            except TypeError:
+                self.db.clear() # self.db is a Python dict.
+            except Exception:
+                g.trace('unexpected exception')
+                g.es_exception()
+                self.db = {}
 
     def clearAllCaches (self):
 

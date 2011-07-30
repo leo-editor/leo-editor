@@ -32,23 +32,32 @@ def init():
     if g.app.gui.guiName() != "qt":
         return False
 
-    g.registerHandler('after-create-leo-frame',onCreate)
-    # can't use before-create-leo-frame because Qt dock's not ready
+    g.registerHandler('after-create-leo-frame',bindControllers)
+    g.registerHandler('after-create-leo-frame2',loadLayouts)
     g.plugin_signon(__name__)
+    
+    # DEPRECATED
+    if not hasattr(g, 'free_layout_callbacks'):
+        g.free_layout_callbacks = []
 
     return True
-#@+node:ekr.20110318080425.14391: ** onCreate
-def onCreate (tag, keys):
-    
-    global controllers
+#@+node:ekr.20110318080425.14391: ** bindControllers
+def bindControllers(tag, keys):
     
     c = keys.get('c')
     if c:
-        h = c.hash()
-        if not controllers.get(h):
-            controllers[h] = FreeLayoutController(c)
-        
         NestedSplitter.enabled = True
+        FreeLayoutController(c) 
+#@+node:tbrown.20110714155709.22852: ** loadLayouts
+def loadLayouts(tag, keys):
+    
+    c = keys.get('c')
+    if c:
+
+        if '_ns_layout' in c.db:
+            name = c.db['_ns_layout']
+            c.free_layout.get_top_splitter().load_layout(
+                g.app.db['ns_layouts'][name])
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
     
@@ -57,15 +66,15 @@ class FreeLayoutController:
     def __init__ (self,c):
         
         self.c = c
-        self.renderer = None # The renderer widget
-        self.top_splitter = None # The top-level splitter.
-        
-        c.free_layout = self # For viewrendered plugin.
+        #X self.renderer = None # The renderer widget
+        #X self.top_splitter = None # The top-level splitter.
+        c.free_layout = self
+        #X  # For viewrendered plugin.
         
         self.init()
         
     #@+node:ekr.20110318080425.14393: *3* create_renderer
-    def create_renderer (self,w):
+    def Xcreate_renderer (self,w):
         
         pc = self ; c = pc.c
         
@@ -86,13 +95,13 @@ class FreeLayoutController:
     #@+node:tbrown.20110203111907.5522: *3* init
     def init(self):
 
-        pc = self ; c = self.c
+        c = self.c
 
-        self.top_splitter = splitter = c.frame.top.splitter_2.top() # A NestedSplitter.
+        splitter = self.get_top_splitter() # A NestedSplitter.
 
         # Register menu callbacks with the NestedSplitter.
-        splitter.register(pc.offer_tabs)
-        splitter.register(pc.offer_viewrendered)
+        splitter.register(self.offer_tabs)
+        splitter.register(self.from_g)
 
         # when NestedSplitter disposes of children, it will either close
         # them, or move them to another designated widget.  Here we set
@@ -100,7 +109,7 @@ class FreeLayoutController:
 
         logTabWidget = splitter.findChild(QtGui.QWidget, "logTabWidget")
         splitter.root.holders['_is_from_tab'] = logTabWidget
-        splitter.root.holders['_is_permanent'] = splitter
+        splitter.root.holders['_is_permanent'] = 'TOP'
 
         # allow body and tree widgets to be "removed" to tabs on the log tab panel    
         bodyWidget = splitter.findChild(QtGui.QFrame, "bodyFrame")
@@ -114,6 +123,23 @@ class FreeLayoutController:
         # if the log tab panel is removed, move it back to the top splitter
         logWidget = splitter.findChild(QtGui.QFrame, "logFrame")
         logWidget._is_permanent = True
+        
+        
+        # tag core Leo components (see ns_provides)
+        splitter.findChild(QtGui.QWidget, "outlineFrame")._ns_id = '_leo_pane:outlineFrame'
+        splitter.findChild(QtGui.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
+        splitter.findChild(QtGui.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
+
+        splitter.register_provider(self)
+    #@+node:tbrown.20110621120042.22918: *3* from_g
+    def from_g(self, menu, splitter, index, button_mode):
+        
+        for i in g.free_layout_callbacks:
+            i(menu, splitter, index, button_mode, self.c)
+    #@+node:tbrown.20110621120042.22914: *3* get_top_splitter
+    def get_top_splitter(self):
+
+        return self.c.frame.top.findChild(NestedSplitter).top()
     #@+node:ekr.20110318080425.14392: *3* menu callbacks
     # These are called when the user right-clicks the NestedSplitter.
     #@+node:ekr.20110317024548.14380: *4* add_item
@@ -124,14 +150,16 @@ class FreeLayoutController:
         act.connect(act, Qt.SIGNAL('triggered()'), func)
         menu.addAction(act)
     #@+node:ekr.20110316100442.14371: *4* offer_tabs
-    def offer_tabs(self,menu,splitter,index,button_mode):
+    def offer_tabs(self, menu, splitter, index, button_mode):
+        
+        return
         
         pc = self
         
         if not button_mode:
             return
 
-        top_splitter = pc.top_splitter # c.frame.top.splitter_2.top()
+        top_splitter = self.get_top_splitter()
         logTabWidget = top_splitter.findChild(QtGui.QWidget, "logTabWidget")
 
         for n in range(logTabWidget.count()):
@@ -146,7 +174,9 @@ class FreeLayoutController:
 
             self.add_item(wrapper,menu,"Add "+logTabWidget.tabText(n),splitter)
     #@+node:ekr.20110316100442.14372: *4* offer_viewrendered
-    def offer_viewrendered(self,menu,splitter, index, button_mode):
+    def offer_viewrendered(self, menu, splitter, index, button_mode):
+        
+        return
         
         pc = self ; c = pc.c
         
@@ -162,6 +192,110 @@ class FreeLayoutController:
                 # g.trace(index)
             
             self.add_item(wrapper,menu,"Add Viewrendered",splitter)
+    #@+node:tbrown.20110627201141.11745: *3* ns_provides
+    def ns_provides(self):
+
+        ans = []
+        
+        # list of things in tab widget
+        logTabWidget = self.get_top_splitter().findChild(
+            QtGui.QWidget, "logTabWidget")
+        for n in range(logTabWidget.count()):
+            text = str(logTabWidget.tabText(n))  # not QString
+            if text in ('Body', 'Tree'):
+                continue  # handled below
+            if text == 'Log':
+                # if Leo can't find Log in tab pane, it creates another
+                continue
+            ans.append((text, 
+                        '_leo_tab:'+text))
+
+        ans.append(('Tree', '_leo_pane:outlineFrame'))
+        ans.append(('Body', '_leo_pane:bodyFrame'))
+        ans.append(('Tab pane', '_leo_pane:logFrame'))
+        
+        return ans
+    #@+node:tbrown.20110628083641.11724: *3* ns_provide
+    def ns_provide(self, id_):
+        
+        if id_.startswith('_leo_tab:'):
+        
+            id_ = id_.split(':', 1)[1]
+        
+            logTabWidget = self.get_top_splitter().findChild(
+                QtGui.QWidget, "logTabWidget")
+                
+            for n in range(logTabWidget.count()):
+                if logTabWidget.tabText(n) == id_:
+                    w = logTabWidget.widget(n)
+                    w.setHidden(False)
+                    w._is_from_tab = logTabWidget.tabText(n)
+                    w.setMinimumSize(20,20)
+                    return w
+                    
+            # didn't find it, maybe it's already in a splitter
+            return 'USE_EXISTING'
+
+        if id_.startswith('_leo_pane:'):
+        
+            id_ = id_.split(':', 1)[1]
+            w = self.get_top_splitter().findChild(QtGui.QWidget, id_)
+            if w:
+                w.setHidden(False)  # may be from Tab holder
+                w.setMinimumSize(20,20)
+            return w      
+             
+        return None
+    #@+node:tbrown.20110628083641.11730: *3* ns_context
+    def ns_context(self):
+        
+        
+        ans = [
+            ('Save layout', '_fl_save_layout'),
+        ]
+        
+        d = g.app.db.get('ns_layouts', {})
+        if d:
+            ans.append({'Load layout': [(k, '_fl_load_layout:'+k) for k in d]})
+            ans.append({'Delete layout': [(k, '_fl_delete_layout:'+k) for k in d]})
+            ans.append(('Forget layout', '_fl_forget_layout:'))
+            
+        return ans
+    #@+node:tbrown.20110628083641.11732: *3* ns_do_context
+    def ns_do_context(self, id_, splitter, index):
+        
+        if id_ == '_fl_save_layout':
+            layout = self.get_top_splitter().get_saveable_layout()
+            name = g.app.gui.runAskOkCancelStringDialog(self.c, "Save layout",
+                "Name for layout?")
+            if name:
+                self.c.db['_ns_layout'] = name
+                d = g.app.db.get('ns_layouts', {})
+                d[name] = layout
+                # make sure g.app.db's __set_item__ is hit so it knows to save
+                g.app.db['ns_layouts'] = d
+                
+            return True
+        
+        if id_.startswith('_fl_load_layout:'):
+            name = id_.split(':', 1)[1]
+            self.c.db['_ns_layout'] = name
+            layout = g.app.db['ns_layouts'][name]
+            self.get_top_splitter().load_layout(layout)
+            return True
+            
+        if id_.startswith('_fl_delete_layout:'):
+            name = id_.split(':', 1)[1]
+            if g.app.gui.runAskYesNoCancelDialog(self.c, "Really delete Layout?",
+                "Really permanently delete the layout '%s'?"%name) == 'yes':
+                d = g.app.db.get('ns_layouts', {})
+                del d[name]
+                # make sure g.app.db's __set_item__ is hit so it knows to save
+                g.app.db['ns_layouts'] = d
+        
+        if id_.startswith('_fl_forget_layout:') or id_.startswith('_fl_delete_layout:'):
+            if '_ns_layout' in self.c.db:
+                del self.c.db['_ns_layout']
     #@-others
 #@-others
 #@-leo

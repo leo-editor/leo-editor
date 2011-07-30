@@ -86,7 +86,9 @@ def onDClick1 (tag,keywords):
 @g.command('bookmarks_show')
 def bookmarks_show(event):
     if use_qt:
-        BookMarkDisplay(event['c'])
+        bmd = BookMarkDisplay(event['c'])
+        bmd.c.free_layout.get_top_splitter().add_adjacent(bmd.w, 'bodyFrame', 'above')
+
     else:
         g.es("Requires Qt GUI")
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
@@ -97,21 +99,23 @@ class BookMarkDisplay:
     def __init__(self, c, v=None):
         
         self.c = c
-        self.v = v or c.p.v
+        self.v = v if v is not None else c.p.v
         
         if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
             # FIXME, second hasattr temporary until free_layout merges with trunk
             self.w = QtGui.QWidget()
-            c.free_layout.get_top_splitter().add_adjacent(self.w, 'bodyFrame', 'above')
             
             # stuff for pane persistence
-            self.w._ns_id = '_leo_bookmarks_show:'+self.v.gnx
+            self.w._ns_id = '_leo_bookmarks_show:'
+            c.db['_leo_bookmarks_show'] = str(v.gnx)
             
         else:
             c.frame.log.createTab(c.p.h[:10])
             tabWidget = c.frame.log.tabWidget
             self.w = tabWidget.widget(tabWidget.count()-1)
         
+        self.w.setObjectName('show_bookmarks')
+        self.w.setMinimumSize(10, 10)
         self.w.setLayout(QtGui.QVBoxLayout())
         self.w.layout().setContentsMargins(0,0,0,0)
 
@@ -201,10 +205,15 @@ class BookMarkDisplayProvider:
             
             if ':' in id_:
                 gnx = id_.split(':')[1]
+                if not gnx and '_leo_bookmarks_show' in c.db:
+                    gnx = c.db['_leo_bookmarks_show']
                 for i in c.all_nodes():
-                    if i.gnx == gnx:
+                    if str(i.gnx) == gnx:
                         v = i
                         break
+                    
+            if v is None:
+                v = c.p.v
 
             bmd = BookMarkDisplay(self.c, v=v)
             return bmd.w

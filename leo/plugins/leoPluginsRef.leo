@@ -29,8 +29,9 @@
 <v t="ekr.20100102164842.5328"><vh>Script: count pages</vh></v>
 <v t="ekr.20101110084839.5680"><vh>Script: plugins not in this file</vh></v>
 </v>
-<v t="ekr.20090430075506.4"><vh>Notes &amp; to-do</vh>
-<v t="ekr.20090430075506.3"><vh>@file leoPluginNotes.txt</vh></v>
+<v t="ekr.20090430075506.4" a="E"><vh>Notes &amp; to-do</vh>
+<v t="ekr.20090430075506.3" a="E"
+expanded="ekr.20090430075506.6,"><vh>@file leoPluginNotes.txt</vh></v>
 </v>
 <v t="ekr.20100909111553.5583"><vh>Unit tests</vh>
 <v t="ekr.20100909121239.5797"><vh>@ignore</vh>
@@ -41,7 +42,7 @@
 <v t="ekr.20100909111553.5588"><vh>@mark-for-unit-tests</vh></v>
 </v>
 <v t="ekr.20080707101341.1"><vh>@file ../modes/forth.py</vh></v>
-<v t="edream.110203113231.618"><vh>Plugins</vh>
+<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>  Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
@@ -63,20 +64,23 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
+<v t="ekr.20101110150056.9453" a="E"><vh> Qt only plugins</vh>
 <v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
 <v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
 <v t="ville.20090314215508.4"><vh>@file quicksearch.py</vh></v>
-<v t="ekr.20101104190737.5629"><vh>@file scrolledmessage.py</vh></v>
+<v t="ekr.20101104190737.5629" a="E"
+expanded="leohag.20081203143921.19,leohag.20081203143921.9,ekr.20110319081254.14462,"><vh>@file scrolledmessage.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
-<v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
+<v t="tbrown.20100318101414.5990" a="E"
+expanded="ekr.20110320120020.14491,ekr.20110320120020.14490,tbrown.20110629084915.35149,ekr.20110317024548.14375,ekr.20110317080650.14380,ekr.20101112195628.5426,ekr.20110320120020.14486,ekr.20110322031455.5765,"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
-<v t="tbrown.20110203111907.5519"><vh>@file free_layout.py</vh></v>
+<v t="tbrown.20110203111907.5519"
+expanded="ekr.20110318080425.14389,ekr.20110318080425.14392,"><vh>@file free_layout.py</vh></v>
 <v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
 <v t="ville.20110409151021.5691"><vh>newHeadline</vh></v>
 </v>
@@ -146,7 +150,7 @@
 <v t="EKR.20040517075715.20"><vh>@file-nosent word_export.ini</vh></v>
 </v>
 </v>
-<v t="edream.110203113231.872"><vh>Files and nodes</vh>
+<v t="edream.110203113231.872" a="E"><vh>Files and nodes</vh>
 <v t="tbrown.20080613095157.2"><vh>@file active_path.py</vh></v>
 <v t="edream.110203113231.873"><vh>@file at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@file at_produce.py</vh></v>
@@ -166,7 +170,8 @@
 <v t="ekr.20040910070811.1"><vh>@file run_nodes.py</vh></v>
 <v t="ekr.20040828103325"><vh>@file startfile.py</vh></v>
 <v t="tbrown.20110428144124.29061"><vh>@file xml_edit.py</vh></v>
-<v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
+<v t="mork.20041010095009" a="E"
+expanded="mork.20041025100716,"><vh>@file xsltWithNodes.py</vh></v>
 </v>
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh></v>
 <v t="ekr.20041001210557"><vh>Scripting</vh>
@@ -200,7 +205,7 @@
 <v t="ekr.20050805162550"><vh>@file rst3.py</vh></v>
 </v>
 </v>
-<v t="ekr.20040915073259"><vh>User interface</vh>
+<v t="ekr.20040915073259" a="E"><vh>User interface</vh>
 <v t="ekr.20061023142737"><vh> UNL plugin</vh>
 <v t="ekr.20061023142737.1"><vh>Tests</vh>
 <v t="rogererens.20041130095659"><vh>@url 'file: ./../../plugins/leoPlugins.leo#Plugins--&gt;UNL plugin--&gt;To do'</vh></v>
@@ -213,10 +218,11 @@
 <v t="tbrown.20090513125417.5244"><vh>@file interact.py</vh></v>
 <v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
 <v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
-<v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
+<v t="EKR.20040517080555.2" a="E"
+expanded="ekr.20060107091318,EKR.20040517080555.24,EKR.20040517080555.23,EKR.20040517080555.3,EKR.20040517080555.4,EKR.20040517080555.19,EKR.20040517080555.20,"><vh>@file plugins_menu.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
-<v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
-<v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
+<v t="EKR.20040517080555.36" a="E"><vh>@file scripts_menu.py</vh></v>
+<v t="ekr.20101110095202.5882" a="E"><vh>@file zenity_file_dialogs.py</vh></v>
 </v>
 </v>
 </vnodes>

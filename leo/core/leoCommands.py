@@ -84,6 +84,7 @@ class Commands (object):
 
         # Data.
         self.chapterController = None
+        self.db = {} # 2011/07/30: May be changed to a PickleShare instance later.
         self.frame = frame
         self.hiddenRootNode = leoNodes.vnode(context=c)
         self.hiddenRootNode.setHeadString('<hidden root vnode>')

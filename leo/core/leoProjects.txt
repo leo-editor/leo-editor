@@ -1382,7 +1382,8 @@ ic.run(
     template_fn=template_fn, # Optional: Name of template svg file.
 )
 #@+node:ekr.20110621074459.14908: ** 4.9.1
-#@+node:ekr.20110621074459.14904: *3* Fixed ancient hanger in paste-retaining-clones
+#@+node:ekr.20110730093802.15134: *3* Bugs
+#@+node:ekr.20110621074459.14904: *4* Fixed ancient hanger in paste-retaining-clones
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/800157
@@ -1409,7 +1410,7 @@ child of "NewHeadline".
 ====================
 
 EKR: only getLeoOutlineFromClipboar calls checkPaste.
-#@+node:ekr.20031218072017.1551: *4* pasteOutline
+#@+node:ekr.20031218072017.1551: *5* pasteOutline
 # To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
 
 def pasteOutline(self,event=None,reassignIndices=True):
@@ -1467,7 +1468,7 @@ def pasteOutline(self,event=None,reassignIndices=True):
     u.afterInsertNode(pasted,undoType,undoData)
     c.redraw(pasted)
     c.recolor()
-#@+node:ekr.20050418084539: *5* << remember all data for undo/redo Paste As Clone >>
+#@+node:ekr.20050418084539: *6* << remember all data for undo/redo Paste As Clone >>
 @
 
 We don't know yet which nodes will be affected by the paste, so we remember
@@ -1483,7 +1484,7 @@ for v in c.all_unique_nodes():
     if v not in vnodeInfoDict:
         vnodeInfoDict[v] = g.Bunch(
             v=v,head=v.headString(),body=v.b)
-#@+node:ekr.20050418084539.2: *5* << put only needed info in copiedBunchList >>
+#@+node:ekr.20050418084539.2: *6* << put only needed info in copiedBunchList >>
 # Create a dict containing only copied tnodes.
 copiedVnodeDict = {}
 for p in pasted.self_and_subtree():
@@ -1498,12 +1499,12 @@ for v in vnodeInfoDict:
         copiedBunchList.append(bunch)
 
 # g.trace('copiedBunchList',copiedBunchList)
-#@+node:ekr.20110705101348.14898: *3* Fixed bug in p.setAllAncestorAtFileNodesDirty
+#@+node:ekr.20110705101348.14898: *4* Fixed bug in p.setAllAncestorAtFileNodesDirty
 @language rest
 
 The code that marks descendant @<file> nodes dirty now tests
 p2.isAnyAtFileNode().  The old code tested p2.isAtThinFileNode().
-#@+node:ekr.20040303214038: *4* p.setAllAncestorAtFileNodesDirty
+#@+node:ekr.20040303214038: *5* p.setAllAncestorAtFileNodesDirty
 def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
 
     trace = False and not g.unitTesting
@@ -1537,8 +1538,8 @@ def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
     if trace: g.trace("position",dirtyVnodeList,g.callers(5))
 
     return dirtyVnodeList
-#@+node:ekr.20110717110529.14970: *3* Removed timer hack from double-click code
-#@+node:tbrown.20090219095555.61: *4* g.handleUrlInUrlNode
+#@+node:ekr.20110717110529.14970: *4* Removed timer hack from double-click code
+#@+node:tbrown.20090219095555.61: *5* g.handleUrlInUrlNode
 def handleUrlInUrlNode(url, c=None, p=None):
     
     # Note 1: the UNL plugin has its own notion of what a good url is.
@@ -1549,7 +1550,7 @@ def handleUrlInUrlNode(url, c=None, p=None):
     if g.unitTesting: return
     << check the url; return if bad >>
     << pass the url to the web browser >>
-#@+node:tbrown.20090219095555.62: *5* << check the url; return if bad >>
+#@+node:tbrown.20090219095555.62: *6* << check the url; return if bad >>
 @ A valid url is (according to D.T.Hein):
 
 3 or more lowercase alphas, followed by,
@@ -1572,7 +1573,7 @@ if not url or len(url) == 0:
 # if not re.match(urlPattern,url):
 #     g.es("invalid url:",url)
 #     return
-#@+node:tbrown.20090219095555.63: *5* << pass the url to the web browser >>
+#@+node:tbrown.20090219095555.63: *6* << pass the url to the web browser >>
 @ Most browsers should handle the following urls:
   ftp://ftp.uu.net/public/whatever.
   http://localhost/MySiteUnderDevelopment/index.html
@@ -1637,7 +1638,7 @@ try:
 except:
     g.es("exception opening",url)
     g.es_exception()
-#@+node:tbrown.20110219154422.37469: *4* recursiveUNLSearch
+#@+node:tbrown.20110219154422.37469: *5* recursiveUNLSearch
 def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
     """try and move to unl in the commander c
     
@@ -1679,7 +1680,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
         g.es('Partial UNL match')
 
     return False, maxdepth, maxp
-#@+node:ekr.20031218072017.2312: *4* tree.OnIconDoubleClick (@url) & helper
+#@+node:ekr.20031218072017.2312: *5* tree.OnIconDoubleClick (@url) & helper
 # Several plugins handle url's, especially UNL.py.
 
 def OnIconDoubleClick (self,p):
@@ -1701,7 +1702,7 @@ def OnIconDoubleClick (self,p):
         g.doHook("@url2",c=c,p=p,v=p)
 
     return # (for Tk) 'break' # 11/19/06
-#@+node:ekr.20110605121601.18406: *4* qtTree.initAfterLoad
+#@+node:ekr.20110605121601.18406: *5* qtTree.initAfterLoad
 def initAfterLoad (self):
 
     '''Do late-state inits.'''
@@ -1750,7 +1751,7 @@ def initAfterLoad (self):
     # 2010/01/24: Do not set this here.
     # The read logic sets c.changed to indicate nodes have changed.
     # c.setChanged(False)
-#@+node:ekr.20110605121601.17896: *4* onItemClicked (nativeTree)
+#@+node:ekr.20110605121601.17896: *5* onItemClicked (nativeTree)
 def onItemClicked (self,item,col,auto_edit=False):
 
     # This is called after an item is selected.
@@ -1788,7 +1789,7 @@ def onItemClicked (self,item,col,auto_edit=False):
             e,wrapper = self.createTreeEditorForItem(item)
     finally:
         self.selecting = False
-#@+node:ekr.20110605121601.17897: *4* onItemDoubleClicked (nativeTree)
+#@+node:ekr.20110605121601.17897: *5* onItemDoubleClicked (nativeTree)
 def onItemDoubleClicked (self,item,col):
 
     trace = False and not g.unitTesting
@@ -1825,7 +1826,7 @@ def onItemDoubleClicked (self,item,col):
         g.trace('*** no p')
 
     c.outerUpdate()
-#@+node:ekr.20110726130504.15081: *3* Fixed double-click problem
+#@+node:ekr.20110726130504.15081: *4* Fixed double-click problem
 @nocolor-node
 
 CAUTION: new double click handling code
@@ -1852,7 +1853,7 @@ headline in the original commander.
 The timer shouldn't be needed - a 'doubleClick1' hook which returns
 non-None should stop the headline going into edit mode.  If you can
 make that be the case, all is well.
-#@+node:ekr.20110605121601.17894: *4* onIconBoxDoubleClick
+#@+node:ekr.20110605121601.17894: *5* onIconBoxDoubleClick
 def onIconBoxDoubleClick (self,event,p=None):
 
     if self.busy(): return
@@ -1867,7 +1868,7 @@ def onIconBoxDoubleClick (self,event,p=None):
     g.doHook("icondclick2",c=c,p=p,v=p,event=event)
 
     c.outerUpdate()
-#@+node:ekr.20031218072017.2312: *4* tree.OnIconDoubleClick (@url) & helper
+#@+node:ekr.20031218072017.2312: *5* tree.OnIconDoubleClick (@url) & helper
 # Several plugins handle url's, especially UNL.py.
 
 def OnIconDoubleClick (self,p):
@@ -1889,7 +1890,7 @@ def OnIconDoubleClick (self,p):
         g.doHook("@url2",c=c,p=p,v=p)
 
     return # (for Tk) 'break' # 11/19/06
-#@+node:ekr.20100908125007.6018: *4* doPlugins
+#@+node:ekr.20100908125007.6018: *5* doPlugins
 # This is the default g.app.hookFunction.
 
 def doPlugins(self,tag,keywords):
@@ -1901,7 +1902,7 @@ def doPlugins(self,tag,keywords):
         self.loadHandlers(tag,keywords)
 
     return self.doHandlersForTag(tag,keywords)
-#@+node:ekr.20110605121601.17897: *4* onItemDoubleClicked (nativeTree)
+#@+node:ekr.20110605121601.17897: *5* onItemDoubleClicked (nativeTree)
 def onItemDoubleClicked (self,item,col):
 
     trace = False and not g.unitTesting
@@ -1938,7 +1939,7 @@ def onItemDoubleClicked (self,item,col):
         g.trace('*** no p')
 
     c.outerUpdate()
-#@+node:ekr.20110605121601.18420: *4* createTreeEditorForItem (leoQtTree)
+#@+node:ekr.20110605121601.18420: *5* createTreeEditorForItem (leoQtTree)
 def createTreeEditorForItem(self,item):
 
     trace = False and not g.unitTesting
@@ -1953,8 +1954,384 @@ def createTreeEditorForItem(self,item):
     if trace: g.trace(e,wrapper)
 
     return e,wrapper
-#@+node:ekr.20110728093358.6703: *3* Over-riding bindings
-#@+node:ekr.20061031131434.3: *4* << about key dicts >>
+#@+node:ekr.20110728112148.6735: *4* Fixed url focus issues
+#@+node:ekr.20110605121601.17897: *5* onItemDoubleClicked (nativeTree)
+def onItemDoubleClicked (self,item,col):
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item))
+
+    try:
+        self.selecting = True
+
+        e,wrapper = self.createTreeEditorForItem(item)
+        if e:
+            wrapper.setEditorColors(c.k.insert_mode_bg_color,'(not used)')
+        else:
+            g.trace('*** no e')
+
+        p = self.item2position(item)
+        
+    # 2011/07/28: End the lockout here, not at the end.
+    # This allows g.handleUrlInUrlNode to end editing properly.
+    finally:
+        self.selecting = False
+        
+    if p:
+        event = None
+        if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
+            c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+        g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+    else:
+        g.trace('*** no p')
+
+    c.outerUpdate()
+#@+node:tbrown.20090219095555.61: *5* g.handleUrlInUrlNode
+def handleUrlInUrlNode(url, c=None, p=None):
+    
+    # Note 1: the UNL plugin has its own notion of what a good url is.
+
+    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
+    #         node if it exists.
+
+    if g.unitTesting: return
+    << check the url; return if bad >>
+    << pass the url to the web browser >>
+#@+node:tbrown.20090219095555.62: *6* << check the url; return if bad >>
+@ A valid url is (according to D.T.Hein):
+
+3 or more lowercase alphas, followed by,
+one ':', followed by,
+one or more of: (excludes !"#;<>[\]^`|)
+  $%&'()*+,-./0-9:=?@A-Z_a-z{}~
+followed by one of: (same as above, except no minus sign or comma).
+  $%&'()*+/0-9:=?@A-Z_a-z}~
+@c
+
+# urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+
+if not url or len(url) == 0:
+    g.es("no url following @url")
+    return
+
+# Add http:// if required.
+# if not re.match('^([a-z]{3,}:)',url):
+#     url = 'http://' + url
+# if not re.match(urlPattern,url):
+#     g.es("invalid url:",url)
+#     return
+#@+node:tbrown.20090219095555.63: *6* << pass the url to the web browser >>
+@ Most browsers should handle the following urls:
+  ftp://ftp.uu.net/public/whatever.
+  http://localhost/MySiteUnderDevelopment/index.html
+  file://home/me/todolist.html
+@c
+
+try:
+    
+    parsed = urlparse(url)
+    
+    leo_path = parsed.path
+    if parsed.netloc:
+        leo_path = os.path.join(parsed.netloc, parsed.path)
+        # "readme.txt" gets parsed into .netloc...
+    
+    if c and parsed.scheme in ('', 'file'):
+        
+        # local UNLs like "node-->subnode", "-->node", and "#node"
+        if '-->' in parsed.path:
+            g.recursiveUNLSearch(parsed.path.split("-->"), c)
+            return
+        if not parsed.path and parsed.fragment:
+            g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+            return
+
+        # leo aware path
+        leo_path = os.path.expanduser(leo_path)
+        leo_path = g.os_path_expandExpression(leo_path, c=c)
+        if p and not os.path.isabs(leo_path):
+            leo_path = os.path.normpath(
+                os.path.join(c.getNodePath(p), leo_path))
+
+        # .leo file
+        if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+            # 2011/07/28: Immediately end editing, so that
+            # typing in the new window works properly.
+            c.endEditing()
+            c.redraw_now()
+            ok,frame = g.openWithFileName(leo_path, c)
+            
+            # with UNL after path
+            if ok and parsed.fragment:
+                g.recursiveUNLSearch(parsed.fragment.split("-->"), frame.c)
+                
+            if ok:
+                frame.c.bringToFront()
+                return
+                
+    if parsed.scheme in ('', 'file'):
+        if os.path.exists(leo_path):
+            g.os_startfile(leo_path)
+            return
+        if parsed.scheme == 'file':
+            g.es("File '%s' does not exist"%leo_path)
+            return
+        
+    import webbrowser
+    # Mozilla throws a weird exception, then opens the file!
+    try: webbrowser.open(url)
+    except: pass
+    
+except:
+    g.es("exception opening",url)
+    g.es_exception()
+#@+node:ekr.20110728093358.6702: *4* Fixed p1 > p2
+#@+node:ekr.20040228094013: *5*  p.ctor & other special methods...
+#@+node:ekr.20080416161551.190: *6*  p.__init__
+def __init__ (self,v,childIndex=0,stack=None,trace=False):
+
+    '''Create a new position with the given childIndex and parent stack.'''
+
+    # To support ZODB the code must set v._p_changed = 1
+    # whenever any mutable vnode object changes.
+
+    self._childIndex = childIndex
+    self.v = v
+
+    # New in Leo 4.5: stack entries are tuples (v,childIndex).
+    if stack:
+        self.stack = stack[:] # Creating a copy here is safest and best.
+    else:
+        self.stack = []
+
+    g.app.positions += 1
+
+    # if g.app.tracePositions and trace: g.trace(g.callers())
+
+    self.txtOffset = None # see self.textOffset()
+#@+node:ekr.20080920052058.3: *6* p.__eq__ & __ne__
+def __eq__(self,p2):
+
+    """Return True if two postions are equivalent."""
+
+    p1 = self
+
+    # Don't use g.trace: it might call p.__eq__ or p.__ne__.
+    # print ('p.__eq__: %s %s' % (
+        # p1 and p1.v and p1.h,p2 and p2.v and p2.h))
+
+    if p2 is None or p2.v is None:
+        return p1.v is None
+    else:
+        return ( p1.v == p2.v and
+            p1._childIndex == p2._childIndex and
+            p1.stack == p2.stack )
+
+def __ne__(self,p2):
+
+    """Return True if two postions are not equivalent."""
+
+    return not self.__eq__(p2) # For possible use in Python 2.x.
+#@+node:ekr.20091210082012.6230: *6* p.__ge__ & __le__& __lt__
+def __ge__ (self,other):
+
+    return self.__eq__(other) or self.__gt__(other)
+
+def __le__ (self,other):
+
+    return self.__eq__(other) or self.__lt__(other)
+
+def __lt__ (self,other):
+
+    return not self.__eq__(other) and not self.__gt__(other)
+#@+node:ekr.20091210082012.6233: *6* p.__gt__
+def __gt__ (self,other):
+
+    '''Return True if self appears after other in outline order.'''
+
+    stack1,stack2 = self.stack,other.stack
+    n1,n2 = len(stack1),len(stack2) ; n = min(n1,n2)
+    # Compare the common part of the stacks.
+    for item1,item2 in zip(stack1,stack2):
+        v1,x1 = item1 ; v2,x2 = item2
+        if x1 > x2: return True
+        elif x1 < x2: return False
+    # Finish the comparison.
+    if n1 == n2:
+        x1,x2 = self._childIndex,other._childIndex
+        return x1 > x2
+    elif n1 < n2:
+        x1 = self._childIndex; v2,x2 = other.stack[n]
+        return x1 > x2
+    else: # n1 > n2
+        # 2011/07/28: Bug fix suggested by SegundoBob.
+        x1 = other._childIndex; v2,x2 = self.stack[n]
+        return x2 >= x1
+#@+node:ekr.20040117170612: *6* p.__getattr__ (no longer used)
+# No longer used.  All code must now be aware of the one-node world.
+
+# def __getattr__ (self,attr):
+
+    # """Convert references to p.t into references to p.v."""
+
+    # if attr=="t":
+        # return self.v
+    # else:
+        # # New in 4.3: _silently_ raise the attribute error.
+        # # This allows plugin code to use hasattr(p,attr) !
+        # if 0:
+            # print("unknown position attribute: %s" % attr)
+            # import traceback ; traceback.print_stack()
+        # raise AttributeError(attr)
+#@+node:ekr.20040117173448: *6* p.__nonzero__ & __bool__
+@
+Tests such as 'if p' or 'if not p' are the _only_ correct ways to test
+whether a position p is valid. In particular, tests like 'if p is
+None' or 'if p is not None' will not work properly.
+@c
+
+if g.isPython3:
+
+    def __bool__ ( self):
+
+        """Return True if a position is valid."""
+
+        # Tracing this appears to cause unbounded prints.
+        # print("__bool__",self.v and self.v.cleanHeadString())
+
+        return self.v is not None
+
+else:
+
+    def __nonzero__ ( self):
+
+        """Return True if a position is valid."""
+
+        # if g.app.trace: "__nonzero__",self.v
+
+        # g.trace(repr(self))
+
+        return self.v is not None
+#@+node:ekr.20040301205720: *6* p.__str__ and p.__repr__
+def __str__ (self):
+
+    p = self
+
+    if p.v:
+        # return "<pos %d childIndex: %d lvl: %d [%d] %s>" % (
+            # id(p),p._childIndex,p.level(),len(p.stack),p.cleanHeadString())
+        return "<pos %d childIndex: %d lvl: %d key: %s %s>" % (
+            id(p),p._childIndex,p.level(),p.key(),p.cleanHeadString())
+    else:
+        return "<pos %d [%d] None>" % (id(p),len(p.stack))
+
+__repr__ = __str__
+#@+node:ekr.20061006092649: *6* p.archivedPosition
+def archivedPosition (self,root_p=None):
+
+    '''Return a representation of a position suitable for use in .leo files.'''
+
+    p = self
+
+    if root_p is None:
+        aList = [z._childIndex for z in p.self_and_parents()]
+    else:
+        aList = []
+        for z in p.self_and_parents():
+            if z == root_p:
+                aList.append(0)
+                break
+            else:
+                aList.append(z._childIndex)
+        # g.trace(aList)
+
+    aList.reverse()
+    return aList
+#@+node:ekr.20040117171654: *6* p.copy
+# Using this routine can generate huge numbers of temporary positions during a tree traversal.
+
+def copy (self):
+
+    """"Return an independent copy of a position."""
+
+    # if g.app.tracePositions: g.trace(g.callers())
+
+    return position(self.v,self._childIndex,self.stack,trace=False)
+#@+node:ekr.20040310153624: *6* p.dump
+def dumpLink (self,link):
+
+    return g.choose(link,link,"<none>")
+
+def dump (self,label=""):
+
+    p = self
+    if p.v:
+        p.v.dump() # Don't print a label
+#@+node:ekr.20080416161551.191: *6* p.key
+def key (self):
+
+    p = self
+
+    # For unified nodes we must include a complete key,
+    # so we can distinguish between clones.
+    result = []
+    for z in p.stack:
+        v,childIndex = z
+        result.append('%s:%s' % (id(v),childIndex))
+
+    result.append('%s:%s' % (id(p.v),p._childIndex))
+
+    return '.'.join(result)
+#@+node:ekr.20110730091449.15132: *4* Fixed cacher problem
+@nocolor-node
+
+- leoCommands.__init__ now sets self.db = {}
+- initGlobalDB now returns {} instead of None if there is no cacher.
+#@+node:ekr.20100208062523.5886: *5*  ctor (cacher)
+def __init__ (self,c=None):
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('cacher','c',c)
+    
+    self.c = c
+
+    # set by initFileDB and initGlobalDB...
+    self.db = {}
+        # 2011/07/30
+        # When caching is enabled will be a PickleShareDB instance.
+    self.dbdirname = None # A string.
+    self.inited = False
+
+#@+node:ekr.20100209160132.5759: *5* clear/AllCache(s) (cacher)
+def clearCache (self):
+    if self.db:
+        # 2011/07/30: Be careful about calling db.clear.
+        try:
+            self.db.clear(verbose=True)
+        except TypeError:
+            self.db.clear() # self.db is a Python dict.
+        except Exception:
+            g.trace('unexpected exception')
+            g.es_exception()
+            self.db = {}
+
+def clearAllCaches (self):
+
+    # Clear the cachers *only* for all open windows.
+    # This is much safer than tryting to Kill all db's.
+    for frame in g.windows():
+        c = frame.c
+        if c.cacher:
+            c.cacher.clearCache()
+#@+node:ekr.20110730093802.15135: *3* Investigations/features
+#@+node:ekr.20110728093358.6703: *4* Over-riding bindings
+#@+node:ekr.20061031131434.3: *5* << about key dicts >>
 @nocolor
 @
 ivars:
@@ -1981,7 +2358,7 @@ k.settingsNameDict:
 
 inverseBindingDict: not an ivar (computed by k.computeInverseBindingDict):
     Keys are emacs command names; values are *lists* of shortcuts.
-#@+node:ekr.20061031131434.146: *4* masterKeyHandler & helpers
+#@+node:ekr.20061031131434.146: *5* masterKeyHandler & helpers
 master_key_count = 0
 
 def masterKeyHandler (self,event):
@@ -2039,7 +2416,7 @@ def masterKeyHandler (self,event):
         if traceGC: g.printNewObjects('masterKey 4')
         if trace: g.trace(' unbound',stroke)
         return k.handleUnboundKeys(event,char,stroke)
-#@+node:ekr.20061031131434.147: *5* << define vars >>
+#@+node:ekr.20061031131434.147: *6* << define vars >>
 w = event and event.widget
 char = event and event.char or ''
 stroke = event and event.stroke or ''
@@ -2058,7 +2435,7 @@ special_keys = (
 self.master_key_count += 1
 
 isPlain =  k.isPlainKey(stroke)
-#@+node:ekr.20061031131434.108: *5* callStateFunction
+#@+node:ekr.20061031131434.108: *6* callStateFunction
 def callStateFunction (self,event):
 
     trace = False and not g.unitTesting
@@ -2092,7 +2469,7 @@ def callStateFunction (self,event):
             g.es_print('no state function for',k.state.kind,color='red')
 
     return val
-#@+node:ekr.20091230094319.6244: *5* doMode
+#@+node:ekr.20091230094319.6244: *6* doMode
 def doMode (self,event,state,stroke):
 
     trace = False and not g.unitTesting
@@ -2143,7 +2520,7 @@ def doMode (self,event,state,stroke):
         else:
             if trace: g.trace('No state handler for %s' % state)
         return True,'break'
-#@+node:ekr.20091230094319.6240: *5* getPaneBinding
+#@+node:ekr.20091230094319.6240: *6* getPaneBinding
 def getPaneBinding (self,stroke,w):
 
     trace = False and not g.unitTesting
@@ -2194,7 +2571,7 @@ def getPaneBinding (self,stroke,w):
                         if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
                             key,name,repr(b.stroke),b.commandName))
                         return b
-#@+node:ekr.20061031131434.152: *5* handleMiniBindings
+#@+node:ekr.20061031131434.152: *6* handleMiniBindings
 def handleMiniBindings (self,event,state,stroke):
 
     k = self ; c = k.c
@@ -2236,7 +2613,7 @@ def handleMiniBindings (self,event,state,stroke):
                     return True
 
     return False
-#@+node:ekr.20110209083917.16004: *5* isAutoCompleteChar
+#@+node:ekr.20110209083917.16004: *6* isAutoCompleteChar
 def isAutoCompleteChar (self,stroke):
     
     '''Return True if stroke is bound to the auto-complete in
@@ -2252,7 +2629,7 @@ def isAutoCompleteChar (self,stroke):
                 if b and b.commandName == 'auto-complete':
                     return True
     return False
-#@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
+#@+node:ekr.20080510095819.1: *6* k.handleUnboundKeys
 def handleUnboundKeys (self,event,char,stroke):
 
     trace = False and not g.unitTesting
@@ -2311,7 +2688,7 @@ def handleUnboundKeys (self,event,char,stroke):
     else:
         if trace: g.trace('no func',repr(char),repr(stroke))
         return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-#@+node:ekr.20061031131434.119: *4* k.printBindings & helper
+#@+node:ekr.20061031131434.119: *5* k.printBindings & helper
 def printBindings (self,event=None):
 
     '''Print all the bindings presently in effect.'''
@@ -2373,7 +2750,7 @@ legend:
     state = k.unboundKeyAction 
     k.showStateAndMode()
     return result # for unit test.
-#@+node:ekr.20061031131434.120: *5* printBindingsHelper
+#@+node:ekr.20061031131434.120: *6* printBindingsHelper
 def printBindingsHelper (self,result,data,n1,n2,prefix):
 
     n = prefix and len(prefix)+1 or 0 # Add 1 for the '+' after the prefix.
@@ -2405,7 +2782,7 @@ def printBindingsHelper (self,result,data,n1,n2,prefix):
             
             # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
             result.append('%s %*s %*s %s\n' % (letter,-n1,s1,-(min(12,n2)),s2,s3))
-#@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config)
+#@+node:ekr.20041117062717.14: *5* getShortcut (g.app.config)
 def getShortcut (self,c,shortcutName):
 
     '''Return rawKey,accel for shortcutName'''
@@ -2424,7 +2801,7 @@ def getShortcut (self,c,shortcutName):
         return key,bunchList
     else:
         return key,[]
-#@+node:ekr.20110211041914.15415: *5* getShortcutHelper(g.app.config)
+#@+node:ekr.20110211041914.15415: *6* getShortcutHelper(g.app.config)
 def getShortcutHelper (self,c,key):
     
     '''Like get, but return *all* the found bunchLists's.
@@ -2458,7 +2835,7 @@ def getShortcutHelper (self,c,key):
             if bunchList: self.mergeShortcuts(result,bunchList,key)
 
     return result
-#@+node:ekr.20110211041914.15418: *5* mergeShortcuts
+#@+node:ekr.20110211041914.15418: *6* mergeShortcuts
 def mergeShortcuts (self,result,aList,key):
         # key is for debugging.
         # key is a conical command name, *not* a keystroke.
@@ -2475,7 +2852,7 @@ def mergeShortcuts (self,result,aList,key):
 
     if trace and len(result) > 1:
         g.trace(key,['%s %s' % (z.val,z.pane) for z in result])
-#@+node:ekr.20041117083141: *4* get & allies (g.app.config)
+#@+node:ekr.20041117083141: *5* get & allies (g.app.config)
 def get (self,c,setting,kind):
 
     """Get the setting and make sure its type matches the expected type."""
@@ -2521,7 +2898,7 @@ def get (self,c,setting,kind):
                 return val
 
     return None
-#@+node:ekr.20041121143823: *5* getValFromDict
+#@+node:ekr.20041121143823: *6* getValFromDict
 def getValFromDict (self,d,setting,requestedType,warn=True):
 
     '''Look up the setting in d. If warn is True, warn if the requested type
@@ -2556,7 +2933,7 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
     else:
         # g.trace(setting,val)
         return val, True
-#@+node:ekr.20051015093141: *5* typesMatch
+#@+node:ekr.20051015093141: *6* typesMatch
 def typesMatch (self,type1,type2):
 
     '''
@@ -2578,340 +2955,6 @@ def typesMatch (self,type1,type2):
         (type1 in shortcuts and type2 in shortcuts) or
         type1 == type2
     )
-#@+node:ekr.20110728112148.6735: *3* Fixed url focus issues
-#@+node:ekr.20110605121601.17897: *4* onItemDoubleClicked (nativeTree)
-def onItemDoubleClicked (self,item,col):
-
-    trace = False and not g.unitTesting
-    verbose = False
-
-    if self.busy(): return
-
-    c = self.c
-
-    if trace: g.trace(col,self.traceItem(item))
-
-    try:
-        self.selecting = True
-
-        e,wrapper = self.createTreeEditorForItem(item)
-        if e:
-            wrapper.setEditorColors(c.k.insert_mode_bg_color,'(not used)')
-        else:
-            g.trace('*** no e')
-
-        p = self.item2position(item)
-        
-    # 2011/07/28: End the lockout here, not at the end.
-    # This allows g.handleUrlInUrlNode to end editing properly.
-    finally:
-        self.selecting = False
-        
-    if p:
-        event = None
-        if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
-            c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
-        g.doHook("icondclick2",c=c,p=p,v=p,event=event)
-    else:
-        g.trace('*** no p')
-
-    c.outerUpdate()
-#@+node:tbrown.20090219095555.61: *4* g.handleUrlInUrlNode
-def handleUrlInUrlNode(url, c=None, p=None):
-    
-    # Note 1: the UNL plugin has its own notion of what a good url is.
-
-    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
-    #         node if it exists.
-
-    if g.unitTesting: return
-    << check the url; return if bad >>
-    << pass the url to the web browser >>
-#@+node:tbrown.20090219095555.62: *5* << check the url; return if bad >>
-@ A valid url is (according to D.T.Hein):
-
-3 or more lowercase alphas, followed by,
-one ':', followed by,
-one or more of: (excludes !"#;<>[\]^`|)
-  $%&'()*+,-./0-9:=?@A-Z_a-z{}~
-followed by one of: (same as above, except no minus sign or comma).
-  $%&'()*+/0-9:=?@A-Z_a-z}~
-@c
-
-# urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
-
-if not url or len(url) == 0:
-    g.es("no url following @url")
-    return
-
-# Add http:// if required.
-# if not re.match('^([a-z]{3,}:)',url):
-#     url = 'http://' + url
-# if not re.match(urlPattern,url):
-#     g.es("invalid url:",url)
-#     return
-#@+node:tbrown.20090219095555.63: *5* << pass the url to the web browser >>
-@ Most browsers should handle the following urls:
-  ftp://ftp.uu.net/public/whatever.
-  http://localhost/MySiteUnderDevelopment/index.html
-  file://home/me/todolist.html
-@c
-
-try:
-    
-    parsed = urlparse(url)
-    
-    leo_path = parsed.path
-    if parsed.netloc:
-        leo_path = os.path.join(parsed.netloc, parsed.path)
-        # "readme.txt" gets parsed into .netloc...
-    
-    if c and parsed.scheme in ('', 'file'):
-        
-        # local UNLs like "node-->subnode", "-->node", and "#node"
-        if '-->' in parsed.path:
-            g.recursiveUNLSearch(parsed.path.split("-->"), c)
-            return
-        if not parsed.path and parsed.fragment:
-            g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
-            return
-
-        # leo aware path
-        leo_path = os.path.expanduser(leo_path)
-        leo_path = g.os_path_expandExpression(leo_path, c=c)
-        if p and not os.path.isabs(leo_path):
-            leo_path = os.path.normpath(
-                os.path.join(c.getNodePath(p), leo_path))
-
-        # .leo file
-        if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
-            # 2011/07/28: Immediately end editing, so that
-            # typing in the new window works properly.
-            c.endEditing()
-            c.redraw_now()
-            ok,frame = g.openWithFileName(leo_path, c)
-            
-            # with UNL after path
-            if ok and parsed.fragment:
-                g.recursiveUNLSearch(parsed.fragment.split("-->"), frame.c)
-                
-            if ok:
-                frame.c.bringToFront()
-                return
-                
-    if parsed.scheme in ('', 'file'):
-        if os.path.exists(leo_path):
-            g.os_startfile(leo_path)
-            return
-        if parsed.scheme == 'file':
-            g.es("File '%s' does not exist"%leo_path)
-            return
-        
-    import webbrowser
-    # Mozilla throws a weird exception, then opens the file!
-    try: webbrowser.open(url)
-    except: pass
-    
-except:
-    g.es("exception opening",url)
-    g.es_exception()
-#@+node:ekr.20110728093358.6702: *3* Fixed p1 > p2
-#@+node:ekr.20040228094013: *4*  p.ctor & other special methods...
-#@+node:ekr.20080416161551.190: *5*  p.__init__
-def __init__ (self,v,childIndex=0,stack=None,trace=False):
-
-    '''Create a new position with the given childIndex and parent stack.'''
-
-    # To support ZODB the code must set v._p_changed = 1
-    # whenever any mutable vnode object changes.
-
-    self._childIndex = childIndex
-    self.v = v
-
-    # New in Leo 4.5: stack entries are tuples (v,childIndex).
-    if stack:
-        self.stack = stack[:] # Creating a copy here is safest and best.
-    else:
-        self.stack = []
-
-    g.app.positions += 1
-
-    # if g.app.tracePositions and trace: g.trace(g.callers())
-
-    self.txtOffset = None # see self.textOffset()
-#@+node:ekr.20080920052058.3: *5* p.__eq__ & __ne__
-def __eq__(self,p2):
-
-    """Return True if two postions are equivalent."""
-
-    p1 = self
-
-    # Don't use g.trace: it might call p.__eq__ or p.__ne__.
-    # print ('p.__eq__: %s %s' % (
-        # p1 and p1.v and p1.h,p2 and p2.v and p2.h))
-
-    if p2 is None or p2.v is None:
-        return p1.v is None
-    else:
-        return ( p1.v == p2.v and
-            p1._childIndex == p2._childIndex and
-            p1.stack == p2.stack )
-
-def __ne__(self,p2):
-
-    """Return True if two postions are not equivalent."""
-
-    return not self.__eq__(p2) # For possible use in Python 2.x.
-#@+node:ekr.20091210082012.6230: *5* p.__ge__ & __le__& __lt__
-def __ge__ (self,other):
-
-    return self.__eq__(other) or self.__gt__(other)
-
-def __le__ (self,other):
-
-    return self.__eq__(other) or self.__lt__(other)
-
-def __lt__ (self,other):
-
-    return not self.__eq__(other) and not self.__gt__(other)
-#@+node:ekr.20091210082012.6233: *5* p.__gt__
-def __gt__ (self,other):
-
-    '''Return True if self appears after other in outline order.'''
-
-    stack1,stack2 = self.stack,other.stack
-    n1,n2 = len(stack1),len(stack2) ; n = min(n1,n2)
-    # Compare the common part of the stacks.
-    for item1,item2 in zip(stack1,stack2):
-        v1,x1 = item1 ; v2,x2 = item2
-        if x1 > x2: return True
-        elif x1 < x2: return False
-    # Finish the comparison.
-    if n1 == n2:
-        x1,x2 = self._childIndex,other._childIndex
-        return x1 > x2
-    elif n1 < n2:
-        x1 = self._childIndex; v2,x2 = other.stack[n]
-        return x1 > x2
-    else: # n1 > n2
-        # 2011/07/28: Bug fix suggested by SegundoBob.
-        x1 = other._childIndex; v2,x2 = self.stack[n]
-        return x2 >= x1
-#@+node:ekr.20040117170612: *5* p.__getattr__ (no longer used)
-# No longer used.  All code must now be aware of the one-node world.
-
-# def __getattr__ (self,attr):
-
-    # """Convert references to p.t into references to p.v."""
-
-    # if attr=="t":
-        # return self.v
-    # else:
-        # # New in 4.3: _silently_ raise the attribute error.
-        # # This allows plugin code to use hasattr(p,attr) !
-        # if 0:
-            # print("unknown position attribute: %s" % attr)
-            # import traceback ; traceback.print_stack()
-        # raise AttributeError(attr)
-#@+node:ekr.20040117173448: *5* p.__nonzero__ & __bool__
-@
-Tests such as 'if p' or 'if not p' are the _only_ correct ways to test
-whether a position p is valid. In particular, tests like 'if p is
-None' or 'if p is not None' will not work properly.
-@c
-
-if g.isPython3:
-
-    def __bool__ ( self):
-
-        """Return True if a position is valid."""
-
-        # Tracing this appears to cause unbounded prints.
-        # print("__bool__",self.v and self.v.cleanHeadString())
-
-        return self.v is not None
-
-else:
-
-    def __nonzero__ ( self):
-
-        """Return True if a position is valid."""
-
-        # if g.app.trace: "__nonzero__",self.v
-
-        # g.trace(repr(self))
-
-        return self.v is not None
-#@+node:ekr.20040301205720: *5* p.__str__ and p.__repr__
-def __str__ (self):
-
-    p = self
-
-    if p.v:
-        # return "<pos %d childIndex: %d lvl: %d [%d] %s>" % (
-            # id(p),p._childIndex,p.level(),len(p.stack),p.cleanHeadString())
-        return "<pos %d childIndex: %d lvl: %d key: %s %s>" % (
-            id(p),p._childIndex,p.level(),p.key(),p.cleanHeadString())
-    else:
-        return "<pos %d [%d] None>" % (id(p),len(p.stack))
-
-__repr__ = __str__
-#@+node:ekr.20061006092649: *5* p.archivedPosition
-def archivedPosition (self,root_p=None):
-
-    '''Return a representation of a position suitable for use in .leo files.'''
-
-    p = self
-
-    if root_p is None:
-        aList = [z._childIndex for z in p.self_and_parents()]
-    else:
-        aList = []
-        for z in p.self_and_parents():
-            if z == root_p:
-                aList.append(0)
-                break
-            else:
-                aList.append(z._childIndex)
-        # g.trace(aList)
-
-    aList.reverse()
-    return aList
-#@+node:ekr.20040117171654: *5* p.copy
-# Using this routine can generate huge numbers of temporary positions during a tree traversal.
-
-def copy (self):
-
-    """"Return an independent copy of a position."""
-
-    # if g.app.tracePositions: g.trace(g.callers())
-
-    return position(self.v,self._childIndex,self.stack,trace=False)
-#@+node:ekr.20040310153624: *5* p.dump
-def dumpLink (self,link):
-
-    return g.choose(link,link,"<none>")
-
-def dump (self,label=""):
-
-    p = self
-    if p.v:
-        p.v.dump() # Don't print a label
-#@+node:ekr.20080416161551.191: *5* p.key
-def key (self):
-
-    p = self
-
-    # For unified nodes we must include a complete key,
-    # so we can distinguish between clones.
-    result = []
-    for z in p.stack:
-        v,childIndex = z
-        result.append('%s:%s' % (id(v),childIndex))
-
-    result.append('%s:%s' % (id(p.v),p._childIndex))
-
-    return '.'.join(result)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

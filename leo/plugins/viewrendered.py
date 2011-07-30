@@ -228,24 +228,55 @@ def decorate_window(w):
     w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
     w.resize(600, 300)
 #@+node:tbrown.20100318101414.5995: *3* init
-def init ():
-    
-    # g.trace('viewrendered.py')
+def init():
     
     g.plugin_signon(__name__)
-    g.registerHandler('after-create-leo-frame',onCreate)
+
+    g.registerHandler('after-create-leo-frame', onCreate)
+    
+    g.registerHandler('scrolledMessage', show_scrolled_message)
 
     return True
 #@+node:ekr.20110317024548.14376: *3* onCreate
-def onCreate (tag, keys):
-    
-    global controllers
+def onCreate(tag, keys):
     
     c = keys.get('c')
     if c:
-        h = c.hash()
-        if not controllers.get(h):
-            controllers[h] = ViewRenderedController(c)
+        ViewRenderedProvider(c)
+    
+    return
+#@+node:tbrown.20110629132207.8984: *3* show_scrolled_message
+def show_scrolled_message(tag, kw):
+
+    c = kw.get('c')
+    
+    vr = c.frame.top.findChild(QtGui.QWidget, 'vr_scrolled_message')
+    if vr is None:
+        vr = ViewRenderedController(c)
+        vr.setObjectName('vr_scrolled_message')
+        if hasattr(c, 'free_layout'):
+            splitter = c.free_layout.get_top_splitter()
+            if not splitter.add_adjacent(vr, 'bodyFrame', 'right-of'):
+                splitter.insert(0, vr)
+        else:
+            vr.resize(600, 600)
+            vr.show()
+    
+    title = kw.get('short_title','').strip()
+    vr.setWindowTitle(title)
+    s = [
+        title,
+        '=' * len(title),
+        '',
+        kw.get('msg')
+    ]
+    s = '\n'.join(s)
+
+    vr.update_rst(s, kw)
+    vr.locked = True
+    vr.active = False
+    
+    return True
 #@+node:ekr.20110320120020.14490: ** Commands
 #@+node:ekr.20110321072702.14507: *3* g.command('lock-unlock-rendering-pane')
 @g.command('lock-unlock-rendering-pane')
@@ -255,12 +286,15 @@ def lock_unlock_rendering_pane(event):
 
     c = event.get('c')
     if c:
-        pc = controllers.get(c.hash())
-        if pc:
-            if pc.locked:
-                pc.unlock()
+        
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if not vr:
+            g.es('Open a viewrendered pane first')
+        else:
+            if vr.locked:
+                vr.unlock()
             else:
-                pc.lock()
+                vr.lock()
 #@+node:ekr.20110320233639.5777: *3* g.command('pause-play-movie')
 @g.command('pause-play-movie')
 def pause_play_movie(event):
@@ -269,58 +303,41 @@ def pause_play_movie(event):
 
     c = event.get('c')
     if c:
-        pc = controllers.get(c.hash())
-        if pc and pc.vp:
-            vp = pc.vp
-            if vp.isPlaying():
-                vp.pause()
-            else:
-                vp.play()
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if not vr:
+            g.es('Open a viewrendered pane first')
+        else:
+            if vr and vr.vp:
+                vp = vr.vp
+                if vp.isPlaying():
+                    vp.pause()
+                else:
+                    vp.play()
 #@+node:ekr.20110317080650.14386: *3* g.command('toggle-rendering-pane')
 @g.command('toggle-rendering-pane')
 def toggle_rendering_pane(event):
     
-    '''Show or hide the rendering pane, but do not delete it.'''
+    '''Show or hide the rendering pane.'''
 
     c = event.get('c')
     if c:
-        pc = controllers.get(c.hash())
-        if pc:
-            if pc.active:
-                pc.hide()
-            else:
-                # show
-                pc.length = -1
-                pc.s = None
-                pc.gnx = 0
-                pc.view('rst')
-                assert pc.active,'not active after toggle'
-#@+node:ekr.20110321085459.14462: *3* g.command('hide-rendering-pane')
-@g.command('hide-rendering-pane')
-def hide_rendering_pane(event):
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if vr:
+            close_rendering_pane(event)
+        else:
+            viewrendered(event)
+#@+node:ekr.20110321085459.14462: *3* g.command('close-rendering-pane')
+@g.command('close-rendering-pane')
+def close_rendering_pane(event):
     
-    '''Hide the rendering pane, but do not delete it.'''
+    '''Close the rendering pane.'''
 
     c = event.get('c')
     if c:
-        pc = controllers.get(c.hash())
-        if pc:
-            pc.hide()
-#@+node:ekr.20110321085459.14464: *3* g.command('show-rendering-pane')
-@g.command('show-rendering-pane')
-def show_rendering_pane(event):
-    
-    '''Hide the rendering pane, but do not delete it.'''
-
-    c = event.get('c')
-    if c:
-        pc = controllers.get(c.hash())
-        if pc:
-            # show
-            pc.length = -1
-            pc.s = None
-            pc.gnx = 0
-            pc.view('rst')
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if vr:
+            vr.deactivate()
+            vr.deleteLater()
 #@+node:ekr.20110321151523.14464: *3* g.command('update-rendering-pane')
 @g.command('update-rendering-pane')
 def update_rendering_pane (event):
@@ -329,9 +346,11 @@ def update_rendering_pane (event):
 
     c = event.get('c')
     if c:
-        pc = controllers.get(c.hash())
-        if pc:
-            pc.update(tag='view',keywords={'c':pc.c,'force':True})
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if not vr:
+            g.es('Open a viewrendered pane first')
+        else:
+            vr.update(tag='view',keywords={'c':c,'force':True})
 #@+node:tbrown.20100318101414.5998: *3* g.command('viewrendered')
 @g.command('viewrendered')
 def viewrendered(event):
@@ -339,33 +358,62 @@ def viewrendered(event):
 
     c = event.get('c')
     if c:
-        pc = controllers.get(c.hash())
-        if pc: pc.view('rst')
+        
+        vr = ViewRenderedController(c)
+        
+        if hasattr(c, 'free_layout'):
+            
+            vr._ns_id = '_leo_viewrendered'  # for free_layout load/save
+            
+            splitter = c.free_layout.get_top_splitter()
+            if not splitter.add_adjacent(vr, 'bodyFrame', 'right-of'):
+                splitter.insert(0, vr)
+        else:
+            vr.setWindowTitle("Rendered View")
+            vr.resize(600, 600)
+            vr.show()
 #@+node:ekr.20110320120020.14475: *3* g.command('vr')
 @g.command('vr')
-def viewrendered(event):
+def viewrendered_alias(event):
     """A synonynm for the viewrendered command"""
 
-    c = event.get('c')
-    if c:
-        pc = controllers.get(c.hash())
-        if pc: pc.view('rst')
+    viewrendered(event)
+#@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider
+class ViewRenderedProvider:
+    #@+others
+    #@+node:tbrown.20110629084915.35154: *3* __init__
+    def __init__(self, c):
+        self.c = c
+        if hasattr(c, 'free_layout'):
+            c.free_layout.get_top_splitter().register_provider(self)
+    #@+node:tbrown.20110629084915.35150: *3* ns_provides
+    def ns_provides(self):
+        return[('Viewrendered', '_leo_viewrendered')]
+    #@+node:tbrown.20110629084915.35151: *3* ns_provide
+    def ns_provide(self, id_):
+        if id_ == '_leo_viewrendered':
+            return ViewRenderedController(self.c)
+    #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController
-class ViewRenderedController:
+class ViewRenderedController(QtGui.QWidget):
     
     '''A class to control rendering in a rendering pane.'''
     
     #@+others
     #@+node:ekr.20110317080650.14380: *3* ctor & helpers
-    def __init__ (self,c):
-            
+    def __init__ (self, c, parent=None):
+        
+        QtGui.QWidget.__init__(self, parent)
+        self.setObjectName('viewrendered_pane')
+        self.setLayout(QtGui.QVBoxLayout())
+        self.layout().setContentsMargins(0,0,0,0)
+        
         self.active = False
         self.c = c
         self.badColors = []
         self.delete_callback = None
         self.gnx = None
         self.inited = False
-        self.free_layout_pc = None # Set later by embed.
         self.gs = None # For @graphics-script: a QGraphicsScene 
         self.gv = None # For @graphics-script: a QGraphicsView
         self.kind = 'rst' # in self.dispatch_dict.keys()
@@ -374,29 +422,24 @@ class ViewRenderedController:
         self.s = '' # The plugin's docstring to be rendered temporarily.
         self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
         self.sizes = [] # Saved splitter sizes.
-        self.splitter = None # The free_layout splitter containing the rendering pane.
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.svg_class = QtSvg.QSvgWidget
         self.text_class = QtGui.QTextEdit
         self.graphics_class = QtGui.QGraphicsWidget
         self.vp = None # The present video player.
         self.w = None # The present widget in the rendering pane.
-        
+        self.title = None
         # User-options:
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
         self.auto_create  = c.config.getBool('view-rendered-auto-create',False)
         self.auto_hide    = c.config.getBool('view-rendered-auto-hide',False)
         self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
         self.scrolled_message_use_viewrendered = c.config.getBool('scrolledmessage_use_viewrendered',True)
+        self.node_changed = True
         
         # Init.
-        c.viewrendered = self # For free_layout
-        # w.setReadOnly(True)
         self.create_dispatch_dict()
-        self.load_free_layout()
-
-        if self.auto_create:
-            self.view(self.default_kind)
+        self.activate()
     #@+node:ekr.20110320120020.14478: *4* create_dispatch_dict
     def create_dispatch_dict (self):
         
@@ -413,17 +456,11 @@ class ViewRenderedController:
             'svg':          pc.update_svg,
             'url':          pc.update_url,
         }
-    #@+node:ekr.20110319013946.14467: *4* load_free_layout
-    def load_free_layout (self):
+    #@+node:tbrown.20110621120042.22676: *3* closeEvent
+    def closeEvent(self, event):
         
-        c = self.c
-        
-        fl = hasattr(c,'free_layout') and c.free_layout
+        self.deactivate()
 
-        if not fl:
-            # g.trace('auto-loading free_layout.py')
-            m = g.loadOnePlugin('free_layout.py',verbose=False)
-            m.onCreate(tag='viewrendered',keys={'c':c})
     #@+node:ekr.20110317080650.14381: *3* activate
     def activate (self):
         
@@ -450,18 +487,6 @@ class ViewRenderedController:
         g.unregisterHandler('idle',pc.update)
         
         pc.active = False
-    #@+node:ekr.20110318080425.14388: *3* has/set_renderer
-    def has_renderer (self):
-        
-        '''Return True if the renderer pane is visible.'''
-        
-        return self.splitter
-
-    def set_renderer (self,splitter,index):
-        
-        self.splitter = splitter
-        self.splitter_index = index
-        # g.trace(index,splitter)
     #@+node:ekr.20110321072702.14508: *3* lock/unlock
     def lock (self):
         g.note('rendering pane locked')
@@ -470,78 +495,6 @@ class ViewRenderedController:
     def unlock (self):
         g.note('rendering pane unlocked')
         self.locked = False
-    #@+node:ekr.20110317080650.14384: *3* show & hide & helper
-    def hide (self):
-        
-        trace = False and not g.unitTesting
-        pc = self
-        if pc.auto_hide:
-            sizes = pc.splitter.sizes()
-            new_sizes = self.validSizes(sizes,'hide')
-            if new_sizes: pc.sizes = new_sizes
-        else:
-            pc.deactivate()
-        if pc.w:
-            pc.w.hide()
-        else:
-            g.trace('** no pc.w')
-        
-    def show (self):
-        
-        trace = False and not g.unitTesting
-        pc = self
-
-        # First, show the pane so sizes will be valid.
-        pc.w.show()
-            
-        if pc.auto_hide:
-            new_sizes = self.validSizes(pc.sizes,'show-saved')
-            if new_sizes:
-                pc.splitter.setSizes(new_sizes)
-                return
-                
-        sizes = pc.splitter.sizes()
-        new_sizes = self.validSizes(sizes,'show')
-        if new_sizes:
-            pc.splitter.setSizes(new_sizes)
-            return
-            
-        total = sum(sizes)
-        if total:
-            if trace: g.trace('Setting sizes',total/2)
-            pc.splitter.setSizes([total/2,total/2])
-        else:
-            if trace: g.trace('** empty sizes!')
-    #@+node:ekr.20110526131737.18370: *4* validSizes
-    def validSizes (self,sizes,tag):
-        
-        trace = False and not g.unitTesting
-
-        if len(sizes) == 2:
-            if sizes[0] and sizes[1]:
-                result = sizes
-                kind = 'valid'
-            elif sizes[0] or sizes[1]:
-                total = sizes[0] + sizes[1]
-                if tag == 'hide':
-                    # Important: don't change the saved size here!
-                    result = []
-                    kind = 'invalid'
-                else:
-                    kind = '** average'
-                    result = [total/2,total/2]
-            else:
-                result = []
-                kind = 'empty'
-        elif len(sizes) == 3 and sizes[0] and sizes[1] and not sizes[2]:
-            result = [sizes[0],sizes[1]]
-            kind = 'truncated'
-        else:
-            result = []
-            kind = 'invalid'
-            
-        if trace: g.trace(repr(tag),repr(kind),sizes)
-        return result
     #@+node:ekr.20110319143920.14466: *3* underline
     def underline (self,s):
         
@@ -556,10 +509,16 @@ class ViewRenderedController:
         pc = self ; c = pc.c ; p = c.p ; w = pc.w
         force = keywords.get('force')
         s, val = pc.must_update(keywords)
+        
         if not force and not val:
             # Save the scroll position.
             if w.__class__ == pc.text_class:
-                sb = w.verticalScrollBar()
+                # 2011/07/30: The widge may no longer exist.
+                try:
+                    sb = w.verticalScrollBar()
+                except Exception:
+                    g.es_exception()
+                    self.deactivate()
                 if sb:
                     pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
             # g.trace('no update')
@@ -590,24 +549,19 @@ class ViewRenderedController:
                 f = pc.update_rst
             f(s,keywords)
     #@+node:ekr.20110320120020.14486: *4* embed_widget & helper
-    def embed_widget (self,w,delete_callback=None,opaque_resize=True):
+    def embed_widget (self,w,delete_callback=None):
         
         '''Embed widget w in the free_layout splitter.'''
         
-        pc = self ; c = pc.c ; splitter = pc.splitter
+        pc = self ; c = pc.c #X ; splitter = pc.splitter
         
-        assert splitter,'no splitter'
-        assert pc.must_change_widget(w)
-        
-        # Call the previous delete callback if it exists.
-        if pc.delete_callback:
-            pc.delete_callback()
-        elif pc.w:
-            pc.w.deleteLater()
+        pc.w = w
+        layout = self.layout()
+        for i in range(layout.count()):
+            layout.removeItem(layout.itemAt(0))
+        self.layout().addWidget(w)
+        w.show()
 
-        # Remember the new delete callback.
-        pc.delete_callback = delete_callback
-        
         # Special inits for text widgets...
         if w.__class__ == pc.text_class:
             text_name = 'body-text-renderer'
@@ -621,15 +575,8 @@ class ViewRenderedController:
             wrapper = qtGui.leoQTextEditWidget(w,wrapper_name,c)
             c.k.completeAllBindingsForWidget(wrapper)
             w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
-           
-        # Insert w into the splitter, retaining the splitter ratio.
-        sizes = splitter.sizes()
-        splitter.replace_widget_at_index(pc.splitter_index,w)
-        splitter.setOpaqueResize(opaque_resize)
-        splitter.setSizes(sizes)
-        
-        # Set pc.w
-        pc.w = w
+              
+        return
     #@+node:ekr.20110321072702.14510: *5* setBackgroundColor
     def setBackgroundColor (self,colorName,name,w):
         
@@ -656,7 +603,10 @@ class ViewRenderedController:
         verbose = False
         pc = self ; c = pc.c ; p = c.p
         
-        if c != keywords.get('c') or not pc.active or pc.locked or g.unitTesting:
+        if (c != keywords.get('c') or 
+            not pc.active or
+            (pc.locked and not keywords.get('force')) or
+            g.unitTesting):
             if trace: g.trace('not active')
             return None,False
         
@@ -804,7 +754,8 @@ class ViewRenderedController:
             pc.show()
         else:
             if pc.auto_hide:
-                pc.hide()
+                pass  # needs review
+                # pc.hide()
             return
         
         if got_docutils and not isHtml:
@@ -968,42 +919,6 @@ class ViewRenderedController:
             result.append(s)
         
         return ''.join(result)
-    #@+node:ekr.20110317024548.14379: *3* view & helper
-    def view(self,kind,s=None,title=None):
-        
-        pc = self
-        pc.kind = kind
-        
-        # g.trace(kind,s and len(s))
-        
-        pc.embed_renderer()
-        pc.s = s
-        pc.title = title
-        
-        pc.activate()
-        pc.update(tag='view',keywords={'c':pc.c})
-            # May set pc.w.
-        pc.show()
-
-        # if big:
-            # pc.w.zoomIn(4)
-    #@+node:ekr.20110318080425.14394: *4* embed_renderer
-    def embed_renderer (self):
-        
-        '''Use the free_layout plugin to embed self.w in a splitter.'''
-        
-        pc = self ; c = pc.c
-        
-        # g.trace(pc.splitter,pc.w)
-        
-        if pc.splitter:
-            return
-
-        fl_pc = hasattr(c,'free_layout') and c.free_layout
-        if fl_pc:
-            pc.free_layout_pc = fl_pc
-            fl_pc.create_renderer(pc.w)
-                # Calls set_renderer, which sets pc.splitter.
     #@-others
 #@-others
 #@-leo
