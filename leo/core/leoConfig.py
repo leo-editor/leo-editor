@@ -1615,7 +1615,7 @@ class configClass:
                     return bunch.path,bunch.val
         else:
             return 'unknown setting',None
-    #@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config) (changed)
+    #@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config)
     def getShortcut (self,c,shortcutName):
 
         '''Return rawKey,accel for shortcutName'''
@@ -1634,10 +1634,12 @@ class configClass:
             return key,bunchList
         else:
             return key,[]
-    #@+node:ekr.20110211041914.15415: *5* getShortcutHelper(g.app.config) (NEW)
+    #@+node:ekr.20110211041914.15415: *5* getShortcutHelper(g.app.config)
     def getShortcutHelper (self,c,key):
         
-        '''Like get, but return *all* the found bunchLists's.'''
+        '''Like get, but return *all* the found bunchLists's.
+        
+        'key' is actually a commandname.'''
 
         trace = False and not g.unitTesting
         kind = 'shortcut'
@@ -1666,7 +1668,7 @@ class configClass:
                 if bunchList: self.mergeShortcuts(result,bunchList,key)
 
         return result
-    #@+node:ekr.20110211041914.15418: *5* mergeShortcuts (NEW)
+    #@+node:ekr.20110211041914.15418: *5* mergeShortcuts
     def mergeShortcuts (self,result,aList,key):
             # key is for debugging.
             # key is a conical command name, *not* a keystroke.
