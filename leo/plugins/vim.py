@@ -6,8 +6,6 @@
 
 It's recommended that you have gvim installed--the basic console vim is not recommended.
 
-**On Tk ui, the open_with plugin must be enabled for this plugin to work properly!**
-
 When properly installed, this plugin does the following:
 
 - By default, the plugin opens nodes on icondclick2 events.
@@ -24,11 +22,15 @@ When properly installed, this plugin does the following:
       @string vim_trigger_event = iconclick2
 
   to open nodes on single clicks in the icon box.
-  You could also set:
+  You could also set::
 
       @string vim_trigger_event = select2
 
   to open a node in vim whenever the selected node changes for any reason.
+  
+  To disable this setting, set::
+      
+      @string vim_trigger_event = disable   
 
 - Leo will put Vim cursor at same location as Leo cursor in file if 'vim_plugin_positions_cursor' set to True.
 
@@ -228,10 +230,13 @@ def on_open_window (tag,keywords):
     c = keywords.get('c')
 
     event = c.config.getString('vim_trigger_event') or 'icondclick1'
+    
+    g.trace('trigger event:',event)
 
-    g.registerHandler(event,open_in_vim)
+    if event.lower() != 'disable':
+        g.registerHandler(event,open_in_vim)
 
-    # g.trace('trigger event:',event,repr(c))
+    
 #@+node:EKR.20040517075715.11: ** open_in_vim
 def open_in_vim (tag,keywords):
 
@@ -241,7 +246,8 @@ def open_in_vim (tag,keywords):
     p2 = keywords.get('old_p')
     if not c: return
     p = c.p
-    # g.trace(tag,p and p.key(),p2 and p2.key())
+
+    # g.trace(tag,p and p.h)
 
     if tag.startswith('select') and p == p2:
         return
