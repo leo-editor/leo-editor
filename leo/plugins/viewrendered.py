@@ -867,16 +867,6 @@ class ViewRenderedController(QtGui.QWidget):
             return pc.w
         else:
             return pc.w
-    #@+node:ekr.20110320233639.5776: *5* get_fn
-    def get_fn (self,s,tag):
-        
-        pc = self
-        p = pc.c.p
-        fn = s or p.h[len(tag):]
-        fn = fn.strip()
-        path = g.os_path_finalize_join(g.app.loadDir,fn)
-        ok = g.os_path_exists(path)
-        return ok,path
     #@+node:ekr.20110320120020.14483: *5* get_kind
     def get_kind(self,p):
         
@@ -893,6 +883,20 @@ class ViewRenderedController(QtGui.QWidget):
         # To do: look at ancestors, or uA's.
 
         return pc.kind # The default.
+    #@+node:ekr.20110320233639.5776: *5* get_fn
+    def get_fn (self,s,tag):
+        
+        pc = self ; c = pc.c
+        fn = s or c.p.h[len(tag):]
+        fn = fn.strip()
+        # path = g.os_path_finalize_join(g.app.loadDir,fn)
+        fn = fn.replace('\\','/')
+        parts = fn.split('/')
+        args = [g.app.loadDir]
+        args.extend(parts)
+        path = g.os_path_finalize_join(*args,c=c)
+        ok = g.os_path_exists(path)
+        return ok,path
     #@+node:ekr.20110321005148.14536: *5* get_url
     def get_url (self,s,tag):
         

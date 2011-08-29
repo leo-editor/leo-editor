@@ -3435,13 +3435,16 @@ def os_path_expandExpression (s,**keys):
     '''Expand {{anExpression}} in c's context.'''
 
     trace = False
+    
     s1 = s
     c = keys.get('c')
     if not c:
         g.trace('can not happen: no c',g.callers())
         return s
 
-    if not s: return ''
+    if not s:
+        if trace: g.trace('no s')
+        return ''
 
     i = s.find('{{')
     j = s.find('}}')
@@ -3455,11 +3458,11 @@ def os_path_expandExpression (s,**keys):
                 d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
                 val = eval(exp,d)
                 s = s[:i] + str(val) + s[j+2:]
+                if trace: g.trace(s1,s)
             except Exception:
                 g.trace(g.callers())
                 g.es_exception(full=True, c=c, color='red')
 
-        if trace: g.trace(s1,s)
     return s
 #@+node:ekr.20080921060401.13: *3* os_path_expanduser
 def os_path_expanduser(path):
@@ -3494,8 +3497,8 @@ def os_path_finalize_join (*args,**keys):
     c = keys.get('c')
 
     if c:
-        args = [g.os_path_expandExpression(path,**keys)
-            for path in args if path]
+        args = [g.os_path_expandExpression(z,**keys)
+            for z in args if z]
 
     return os.path.normpath(os.path.abspath(
         g.os_path_join(*args,**keys))) # Handles expanduser
