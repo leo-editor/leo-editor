@@ -226,8 +226,16 @@ class parserBaseClass:
 
         # This setting is handled differently from all other settings,
         # because the last setting must be retrieved before any commander exists.
-
-        # g.trace('len(s)',len(s))
+        
+        # 2011/09/04: Remove comments, comment lines and blank lines.
+        aList = []
+        for s in g.splitLines(s):
+            i = s.find('#')
+            if i > -1: s = s[:i]
+            if s.strip(): aList.append(s.lstrip())
+        s = ''.join(aList)
+        # g.trace('\n%s' % s)
+                
 
         # Set the global config ivars.
         g.app.config.enabledPluginsString = s

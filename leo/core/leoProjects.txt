@@ -2955,6 +2955,142 @@ def typesMatch (self,type1,type2):
         (type1 in shortcuts and type2 in shortcuts) or
         type1 == type2
     )
+#@+node:ekr.20110904102049.15417: *4* Relative path problems
+#@+node:ekr.20101022172109.6108: *5* g.scanAtPathDirectives scanAllAtPathDirectives
+def scanAtPathDirectives(c,aList):
+
+    path = c.scanAtPathDirectives(aList)
+    return path
+
+def scanAllAtPathDirectives(c,p):
+
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    return path
+#@+node:ekr.20080828103146.15: *5* c.scanAtPathDirectives
+def scanAtPathDirectives(self,aList):
+
+    '''Scan aList for @path directives.
+    Return a reasonable default if no @path directive is found.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+
+    c = self
+    c.scanAtPathDirectivesCount += 1 # An important statistic.
+    if trace and verbose: g.trace('**entry',g.callers(4))
+
+    # Step 1: Compute the starting path.
+    # The correct fallback directory is the absolute path to the base.
+    if c.openDirectory:  # Bug fix: 2008/9/18
+        base = c.openDirectory
+    else:
+        base = g.app.config.relative_path_base_directory
+        if base and base == "!":    base = g.app.loadDir
+        elif base and base == ".":  base = c.openDirectory
+
+    if trace and verbose:
+        g.trace('base   ',base)
+        g.trace('loadDir',g.app.loadDir)
+
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+    if trace and verbose: g.trace('absbase',absbase)
+
+    # Step 2: look for @path directives.
+    paths = [] ; fileName = None
+    for d in aList:
+        # Look for @path directives.
+        path = d.get('path')
+        warning = d.get('@path_in_body')
+        if trace and path:
+            g.trace('**** d',d)
+            g.trace('**** @path path',path)
+        if path is not None: # retain empty paths for warnings.
+            # Convert "path" or <path> to path.
+            path = g.stripPathCruft(path)
+            if path and not warning:
+                paths.append(path)
+            # We will silently ignore empty @path directives.
+
+    # Add absbase and reverse the list.
+    paths.append(absbase)
+    paths.reverse()
+
+    # Step 3: Compute the full, effective, absolute path.
+    if trace and verbose:
+        g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+
+    path = c.os_path_finalize_join(*paths)
+
+    if trace and verbose: g.trace('joined path:',path)
+    if trace: g.trace('returns',path)
+
+    return path or g.getBaseDirectory(c)
+        # 2010/10/22: A useful default.
+#@+node:ekr.20080922124033.6: *5* os_path_expandExpression
+def os_path_expandExpression (s,**keys):
+
+    '''Expand {{anExpression}} in c's context.'''
+
+    trace = False
+    
+    s1 = s
+    c = keys.get('c')
+    if not c:
+        g.trace('can not happen: no c',g.callers())
+        return s
+
+    if not s:
+        if trace: g.trace('no s')
+        return ''
+
+    i = s.find('{{')
+    j = s.find('}}')
+    if -1 < i < j:
+        exp = s[i+2:j].strip()
+        if exp:
+            try:
+                import os
+                import sys
+                p = c.p
+                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
+                val = eval(exp,d)
+                s = s[:i] + str(val) + s[j+2:]
+                if trace: g.trace(s1,s)
+            except Exception:
+                g.trace(g.callers())
+                g.es_exception(full=True, c=c, color='red')
+
+    return s
+#@+node:ekr.20080921060401.14: *5* g.os_path_finalize & os_path_finalize_join
+def os_path_finalize (path,**keys):
+
+    '''
+    Expand '~', then return os.path.normpath, os.path.abspath of the path.
+
+    There is no corresponding os.path method'''
+
+    c = keys.get('c')
+
+    if c: path = g.os_path_expandExpression(path,**keys)
+
+    path = g.os_path_expanduser(path)
+
+    return os.path.normpath(os.path.abspath(path))
+
+def os_path_finalize_join (*args,**keys):
+
+    '''Do os.path.join(*args), then finalize the result.'''
+
+    c = keys.get('c')
+
+    if c:
+        args = [g.os_path_expandExpression(z,**keys)
+            for z in args if z]
+
+    return os.path.normpath(os.path.abspath(
+        g.os_path_join(*args,**keys))) # Handles expanduser
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
