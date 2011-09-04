@@ -4199,7 +4199,8 @@ If you do put @enabled-plugins nodes in x.leo, be prepared for confusion from ti
 
 plugins_menu.py
 
-free_layout.py  # needs to be early
+free_layout.py
+    # needs to be early
 viewrendered.py
 
 leo_to_html.py
