@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.50">
-	<global_window_position top="137" left="495" height="837" width="1079"/>
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.41">
+	<global_window_position top="137" left="495" height="837" width="1352"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -660,7 +660,6 @@
 </v>
 <v t="ekr.20110416065515.2437"><vh>jinja2</vh></v>
 <v t="ekr.20110511140347.2445"><vh>QTimer</vh></v>
-</v>
 <v t="ekr.20110320203616.2489"><vh>viewrendered examples</vh>
 <v t="ekr.20110526180653.2468"><vh>viewrendered buttons</vh>
 <v t="ekr.20110321012354.2495"><vh>@button pause-play</vh></v>
@@ -681,6 +680,9 @@
 <v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
 <v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
 </v>
+</v>
+<v t="ekr.20110905100704.2466"><vh>@file c:/prog/blender_script.py</vh></v>
+<v t="ekr.20110905100550.2463"><vh>@button blender-script @key=Alt-7</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1105,7 +1107,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8766,5 +8768,18 @@ timer.start(0)
 <t tx="ekr.20110525093203.2470"></t>
 <t tx="ekr.20110526180653.2467"></t>
 <t tx="ekr.20110526180653.2468"></t>
+<t tx="ekr.20110905100550.2463">'''Run the selected node as a blender script.'''
+
+import subprocess
+
+args = [
+    r"C:\Program Files (x86)\Blender Foundation\Blender\blender.exe",
+    "-P",
+    r"C:/prog/blender_script.py",
+    # r"-V"
+]
+
+data = subprocess.Popen(args, None)
+</t>
 </tnodes>
 </leo_file>
