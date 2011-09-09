@@ -681,7 +681,7 @@
 <v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
 </v>
 </v>
-<v t="ekr.20110905100704.2466"><vh>@@file c:/prog/blender_script.py</vh></v>
+<v t="ekr.20110905100704.2466"><vh>@file c:/prog/blender_script.py</vh></v>
 <v t="ekr.20110905100550.2463"><vh>@button blender-script @key=Alt-7</vh></v>
 </vnodes>
 <tnodes>
@@ -8780,37 +8780,6 @@ args = [
 ]
 
 data = subprocess.Popen(args, None)
-</t>
-<t tx="ekr.20110905100704.2466">print("Hello from c:/prog/blender_script.py")
-
-print('Builtin Modules:     bpy, bpy.data, bpy.ops, bpy.props, bpy.types, bpy.context, bpy.utils, bgl, blf, mathutils')
-print('Convenience Imports: from mathutils import *; from math import *')
-
-# from mathutils import *
-# from math import *
-
-if 1:
-    print('\nsys.path...')
-    import sys
-    for z in sys.path:
-        print(z)
-    
-# The important includes...
-import bpy
-C = bpy.context
-
-if 1: # Dumps of available symbols...
-    print('\ndir()...')
-    for z in dir():
-        print(z)
-        
-    print('\ndir(bpy)...')
-    for z in dir(bpy):
-        print(z)
-        
-    print('\ndir(C)...')
-    for z in dir(C):
-        print(z)
 </t>
 </tnodes>
 </leo_file>

@@ -56,6 +56,10 @@ class shadowController:
     def __init__ (self,c,trace=False,trace_writers=False):
 
         self.c = c
+        
+        # File encoding.
+        self.encoding = c.config.default_derived_file_encoding
+            # 2011/09/08
 
         # Configuration...
         self.shadow_subdir = c.config.getString('shadow_subdir') or '.leo_shadow'
@@ -130,7 +134,7 @@ class shadowController:
         Return True if theFile was changed.
         '''
 
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting ; verbose = False
         x = self
         exists = g.os_path_exists(fn)
 
@@ -153,10 +157,13 @@ class shadowController:
         # Replace the file.
         try:
             f = open(fn,'wb')
-            f.write(g.toEncodedString(s))
-            if trace: g.trace('fn',fn,
-                '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
-                '\ncallers',g.callers(4))
+            # 2011/09/09: Use self.encoding.
+            f.write(g.toEncodedString(s,encoding=self.encoding))
+            if trace:
+                g.trace('encoding',self.encoding)
+                if verbose: g.trace('fn',fn,
+                    '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
+                    '\ncallers',g.callers(4))
             f.close()
             if not g.unitTesting:
                 # g.trace('created:',fn,g.callers())
@@ -516,15 +523,42 @@ class shadowController:
         '''Propagate the changes from the public file (without_sentinels)
         to the private file (with_sentinels)'''
 
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting ; verbose = False
         x = self ; at = self.c.atFileCommands
         at.errors = 0
+        
+        # A massive klude: read the file private file just to read the encoding.
+        f = open(old_private_file)
+        at.scanHeader(f,old_private_file)
+        f.close()
+        self.encoding = at.encoding
+        if trace: g.trace(self.encoding)
+        
+        if g.isPython3:
+            old_public_lines  = open(old_public_file,encoding=self.encoding).readlines()
+            old_private_lines = open(old_private_file,encoding=self.encoding).readlines()
+        else:
+            old_public_lines  = open(old_public_file).readlines()
+            old_private_lines = open(old_private_file).readlines()
+        
+            # 2011/09/09: convert each line to unicode.
+            def cvt(s):
+                return g.choose(g.isUnicode(s),s,g.toUnicode(s,self.encoding))
 
-        old_public_lines  = open(old_public_file).readlines()
-        old_private_lines = open(old_private_file).readlines()
+            old_public_lines  = [cvt(s) for s in old_public_lines]
+            old_private_lines = [cvt(s) for s in old_private_lines]
+        
+        if 0:
+            g.trace('\nprivate lines...%s' % old_private_file)
+            for s in old_private_lines:
+                g.trace(type(s),g.isUnicode(s),repr(s))
+            g.trace('\npublic lines...%s' % old_public_file)
+            for s in old_public_lines:
+                g.trace(type(s),g.isUnicode(s),repr(s))
+
         marker = x.markerFromFileLines(old_private_lines,old_private_file)
 
-        if trace:
+        if trace and verbose:
             g.trace(
                 'marker',marker,
                 '\npublic_file',old_public_file,
@@ -583,7 +617,7 @@ class shadowController:
         mapping.append(len(lines)) # To terminate loops.
         return results, mapping 
     #@+node:bwmulder.20041231170726: *4* x.updatePublicAndPrivateFiles
-    def updatePublicAndPrivateFiles (self,fn,shadow_fn):
+    def updatePublicAndPrivateFiles (self,root,fn,shadow_fn):
 
         '''handle crucial @shadow read logic.
 

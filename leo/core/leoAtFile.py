@@ -471,7 +471,7 @@ class atFile:
                 if trace:
                     g.trace('         fn:       ',fn)
                     g.trace('reading: shadow_fn:',shadow_fn)
-                x.updatePublicAndPrivateFiles(fn,shadow_fn)
+                x.updatePublicAndPrivateFiles(self.root,fn,shadow_fn)
                 fn = shadow_fn
 
             try:
@@ -513,6 +513,7 @@ class atFile:
         if at.errors:
             if trace: g.trace('Init error')
             return False
+
         fileName = at.openFileForReading(fromString=fromString)
         if fileName and at.inputFile:
             c.setFileTimeStamp(fileName)
@@ -546,18 +547,21 @@ class atFile:
             else:
                 g.es("converting @file format in",root.h,color='red')
         root.clearVisitedInTree()
+
         at.scanAllDirectives(root,importing=at.importing,reading=True)
             # Sets the following ivars:
                 # at.default_directory
-                # at.encoding
+                # at.encoding: **Important**: changed later
+                #     by readOpenFile/at.scanHeader.
                 # at.explicitLineEnding
                 # at.language
                 # at.output_newline
                 # at.page_width
                 # at.tab_width
 
-        if trace: g.trace(fileName)
+        if trace: g.trace(repr(at.encoding),fileName)
         thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
+            # Calls at.scanHeader, which sets at.encoding.
         at.inputFile.close()
         root.clearDirty() # May be set dirty below.
         if at.errors == 0:
@@ -936,9 +940,11 @@ class atFile:
 
         Leo 4.5 and later can only read 4.x derived files.'''
 
+        trace = False and not g.unitTesting
         at = self
 
         firstLines,read_new,thinFile = at.scanHeader(theFile,fileName)
+            # Important: this sets at.encoding, used by at.readLine.
         at.thinFile = thinFile
             # 2010/01/22: use *only* the header to set self.thinFile.
 
@@ -994,6 +1000,8 @@ class atFile:
         # *Always* put the temp body text into at.v.tempBodyString.
         v.tempBodyString = s
         #@-<< handle first and last lines >>
+        
+        if trace: g.trace(at.encoding,fileName) # root.v.tempBodyString)
 
         return thinFile
     #@+node:ekr.20100122130101.6175: *5* at.shouldDeleteChildren
@@ -2812,7 +2820,7 @@ class atFile:
 
         '''Open a file for writes, handling shadow files.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         at = self ; c = at.c ; x = c.shadowController
 
         try:
@@ -3245,6 +3253,8 @@ class atFile:
             toString=False, # True: create a fileLikeObject.  This is done below.
             forcePythonSentinels=True) # A hack to suppress an error message.
                 # The actual sentinels will be set below.
+                
+        # g.trace('encoding',repr(at.encoding))
 
         # Bug fix: Leo 4.5.1: use x.markerFromFileName to force the delim to match
         #                     what is used in x.propegate changes.
@@ -3256,7 +3266,8 @@ class atFile:
         # Write the public and private files to public_s and private_s strings.
         data = []
         for sentinels in (False,True):
-            theFile = at.openStringFile(fn)
+            # 2011/09/09: specify encoding explicitly.
+            theFile = at.openStringFile(fn,encoding=at.encoding)
             at.sentinels = sentinels
             at.writeOpenFile(root,
                 nosentinels=not sentinels,toString=False)
@@ -3449,6 +3460,8 @@ class atFile:
         nosentinels=False,toString=False,fromString=''):
 
         """Do all writes except asis writes."""
+        
+        # g.trace(self.encoding,'nosentinels',nosentinels,root.h,self.outputFile,g.callers())
 
         at = self
         s = g.choose(fromString,fromString,root.v.b)
@@ -4558,14 +4571,14 @@ class atFile:
         val = p.hasChildren() or len(s2.strip()) >= 10
         if trace: g.trace(val,p.h)
         return val
-    #@+node:ekr.20080712150045.2: *4* openStringFile
-    def openStringFile (self,fn):
+    #@+node:ekr.20080712150045.2: *4* at.openStringFile
+    def openStringFile (self,fn,encoding='utf-8'):
 
         at = self
 
         at.shortFileName = g.shortFileName(fn)
         at.outputFileName = "<string: %s>" % at.shortFileName
-        at.outputFile = g.fileLikeObject()
+        at.outputFile = g.fileLikeObject(encoding=encoding)
         at.targetFileName = "<string-file>"
 
         return at.outputFile
@@ -4611,7 +4624,7 @@ class atFile:
                 # at.outputFile is a fileLikeObject.
                 # Bug fix: this must be done last.
                 s = g.toEncodedString(s,at.encoding,reportErrors=True)
-                if trace: g.trace(repr(s),g.callers(5))
+                if trace: g.trace(at.encoding,f,repr(s)) # ,g.callers(5))
                 f.write(s)
             except Exception:
                 at.exception("exception writing:" + s)
