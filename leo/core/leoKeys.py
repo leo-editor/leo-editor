@@ -822,7 +822,7 @@ class AutoCompleterClass:
             c.frame.log.clearTab('Info',wrap='word')
             self.put('',doc,tabName='Info')
         else:
-            g.es('no docstring for',word,color='blue')
+            g.es('no docstring for',repr(prefix),color='blue')
     #@+node:ekr.20110510071925.14586: *4* init_qcompleter
     def init_qcompleter (self,event=None):
         

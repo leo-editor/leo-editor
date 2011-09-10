@@ -16040,7 +16040,7 @@ instead of the highlighted text.
 One minor change: the legacy completer now *does* insert characters that do
 not match the start of any possible completion. This is an experimental feature,
 but it might play well with using codewise completions as a fallback to
-leo-related completions.
+Leo-related completions.
 
 Function and design
 ===================
@@ -16070,17 +16070,17 @@ really good hack, and it eliminates the need for the ContextSniffer class.
 Performance
 ===========
 
-Performance of leo-related completions is *much* better than before. The old
+Performance of Leo-related completions is *much* better than before. The old
 code used Python's inspect module and was horribly complex. The new code uses
 eval and is perfectly straightforward.
 
 The present codewise-related code caches completions for all previously-seen
 prefixes. This dramatically speeds up backspacing. Global caching is possible
-because completions depend *only* one the present prefix, *not* on the presently
+because completions depend *only* on the present prefix, *not* on the presently
 selected node. If ContextSniffer were used, completions would depend on the
 selected node and caching would likely be impractical. Despite these
 improvements, the performance of codewise-oriented completions is noticeably
-slower than leo-related completions.
+slower than Leo-related completions.
 
 Performance notes
 =================

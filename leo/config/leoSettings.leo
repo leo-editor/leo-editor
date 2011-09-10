@@ -13,6 +13,7 @@
 <v t="ekr.20070622214401"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
+<v t="ekr.20110910072247.15420"><vh>@@button promote-bodies</vh></v>
 <v t="ekr.20051010093913"><vh>@@button Save</vh></v>
 <v t="ekr.20051011123608"><vh>@@button align to col</vh></v>
 <v t="ekr.20060112103537.17"><vh>@button Check bindings</vh>
@@ -8075,6 +8076,19 @@ cycle-editor-focus   = j   #Vim goes to window below current window
 
 delete-editor        = c   #Close current window (if more than one)
 delete-editor        = q   #Close current window (if more than one)
+</t>
+<t tx="ekr.20110910072247.15420">'''Copy the body text of all descendants to the parent's body text.'''
+
+# Great for creating what's new nodes.
+result = [p.b]
+b = c.undoer.beforeChangeNodeContents(p)
+for child in p.subtree():
+    if child.b:
+        result.append('\n- %s\n\n%s\n' % (child.h,child.b))
+    else:
+        result.append('\n- %s\n\n' % (child.h))
+p.b = ''.join(result)
+c.undoer.afterChangeNodeContents(p,'promote-child-bodies',b)
 </t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
