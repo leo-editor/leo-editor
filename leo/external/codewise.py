@@ -10,37 +10,63 @@
 #@+node:ekr.20110310091639.14291: ** << docstring >>
 """ CodeWise - global code intelligence database
 
-Why codewise:
+Why this module
+===============
 
 - Exuberant ctags is an excellent code scanner
 - Unfortunately, TAGS file lookup sucks for "find methods of this class"
 - TAGS files can be all around the hard drive. CodeWise database is
   just one file (by default ~/.codewise.db)
 - I wanted to implement modern code completion for Leo editor
+- codewise.py is usable as a python module, or a command line tool.
 
-- This is usable as a python module, or a command line tool.
+Creating ctags data
+===================
+    
+1. Make sure you have exuberant ctags (not just regular ctags)
+   installed. It's an Ubuntu package, so its easy to install if
+   you're using Ubuntu.
 
-To use, do the following:
+ 
+2. [Optional] Create a custom ~/.ctags file containing default
+    configuration settings for ctags. See:
+    http://ctags.sourceforge.net/ctags.html#FILES for more
+    details.
+    
+    The ``codewise setup`` command (see below), will leave this
+    file alone if it exists; otherwise, ``codewise setup`` will
+    create a ~/.ctags file containing::
+    
+        --exclude=*.html
+        --exclude=*.css
 
-1. Make sure you have exuberant ctags (not just regular ctags) installed. It's
-an Ubuntu package, so easy if you're using Ubuntu.
+3. Create the ctags data using Ville's codewise module.  It's in leo/external/codewise.py.
+   Execute the following from a console window::
+    
+        codewise setup
+            # Creates ~/.ctags if it does not exist.
+        codewise init
+            # Deletes ~/.codewise.db if it exists.
+        codewise parse <path to directory>
+            # Adds ctags data to ~/.codewise.db for <directory>
+      
+**Note**: I use a batch file called codewise.bat to execute the
+above code. codewise.bat contains::
 
-2. Enable the plugin by putting "codewisecompleter.py" on an
-uncommented line in your @enabled-plugins @settings node.
+    python <path to leo>\leo\external\codewise.py %*
+    
+Using the autocompleter
+=======================
 
-3. Run leo\external\codewise from the command line::
+After restarting Leo, type, for example, in the body pane::
 
-  codewise setup (optional: create template ~/.ctags)
-  codewise init
-  codewise parse .../path/to/leo/  # For completion on leo code
-  codewise parse .../some/other/project/
+    c.op<ctrl-space>
+    
+that is, use use the autocomplete-force command,
+to find all the c. methods starting with 'op' etc. 
 
-Then, after restarting leo if necessary, type
-
-c.op<Alt-0> in the body editor to find all the c. methods starting
-with 'op' etc. 
-
-Theory of operation:
+Theory of operation
+===================
     
 - ~/.codewise.db is an sqlite database with following tables:
 
@@ -50,17 +76,19 @@ FILE maps file id's to file names
 
 DATASOURCE contains places where data has been parsed from, to enable reparse
 
-FUNCTION, the most important one, contains functions/methods, along 
- with CLASS and FILE it was found in. Additionally, it has SEARCHPATTERN
- field that can be used to give calltips, or used as a regexp to find the 
- method from file quickly.
+FUNCTION, the most important one, contains functions/methods, along with CLASS
+ and FILE it was found in. Additionally, it has SEARCHPATTERN field that can be
+ used to give calltips, or used as a regexp to find the method from file
+ quickly.
 
-You can browse the data by installing sqlitebrovser and doing 
-'sqlitebrowser ~/codewise.db'
+You can browse the data by installing sqlitebrovser and doing 'sqlitebrowser
+~/codewise.db'
 
-If you know the class name you want to find the methods for, CodeWise.get_members with a list of classes to match. 
+If you know the class name you want to find the methods for,
+CodeWise.get_members with a list of classes to match.
 
-If you want to match a function without a class, call CodeWise.get_functions. This can be much slower if you have a huge database.
+If you want to match a function without a class, call CodeWise.get_functions.
+This can be much slower if you have a huge database.
     
 """
 #@-<< docstring >>
