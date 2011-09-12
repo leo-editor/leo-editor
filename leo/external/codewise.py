@@ -40,17 +40,18 @@ Creating ctags data
         --exclude=*.html
         --exclude=*.css
 
-3. Create the ctags data using Ville's codewise module.  It's in leo/external/codewise.py.
-   Execute the following from a console window::
+3. Create the ctags data in ~/.codewise.db using this module. Execute the
+   following from a console window::
     
         codewise setup
-            # Creates ~/.ctags if it does not exist.
+            # Optional: creates ~/.ctags if it does not exist.
+            # See http://ctags.sourceforge.net/ctags.html#FILES
         codewise init
-            # Deletes ~/.codewise.db if it exists.
+            # Optional: deletes ~/.codewise.db if it exists.
         codewise parse <path to directory>
             # Adds ctags data to ~/.codewise.db for <directory>
       
-**Note**: I use a batch file called codewise.bat to execute the
+**Note**: On Windows, use a batch file, say codewise.bat, to execute the
 above code. codewise.bat contains::
 
     python <path to leo>\leo\external\codewise.py %*
