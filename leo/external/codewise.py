@@ -30,7 +30,7 @@ uncommented line in your @enabled-plugins @settings node.
 
 3. Run leo\external\codewise from the command line::
 
-  codewise setup
+  codewise setup (optional: create template ~/.ctags)
   codewise init
   codewise parse .../path/to/leo/  # For completion on leo code
   codewise parse .../some/other/project/
@@ -134,7 +134,9 @@ COMMIT;
 """
 #@-<< define DB_SCHEMA >>
 
-DEFAULT_DB = os.path.expanduser("~/.codewise.db")
+DEFAULT_DB = os.path.normpath(os.path.expanduser("~/.codewise.db"))
+
+# print('default db: %s' % DEFAULT_DB)
 
 #@+others
 #@+node:ekr.20110310091639.14295: ** top level...
@@ -155,7 +157,7 @@ def cmd_functions(args):
 #@+node:ekr.20110310091639.14285: *4* cmd_init
 def cmd_init(args):
     
-    print("Initializing CodeWise db at", DEFAULT_DB)
+    print("Initializing CodeWise db at: %s" % DEFAULT_DB)
 
     if os.path.isfile(DEFAULT_DB):
         os.remove(DEFAULT_DB)
@@ -203,11 +205,17 @@ def cmd_scintilla(args):
 #@+node:ekr.20110310091639.14286: *4* cmd_setup
 def cmd_setup(args):
     
-    ctagsfile = os.path.expanduser("~/.ctags")
-    print("Creating template",ctagsfile)
-    assert not os.path.isfile(ctagsfile)
-    open(ctagsfile, "w").write("--exclude=*.html\n--exclude=*.css\n")
-    cmd_init(args)
+    ctagsfile = os.path.normpath(os.path.expanduser("~/.ctags"))
+    
+    # assert not os.path.isfile(ctagsfile)
+    if os.path.isfile(ctagsfile):
+        print("Using template file: %s" % ctagsfile)
+    else:
+        print("Creating template: %s" % ctagsfile)
+        open(ctagsfile, "w").write("--exclude=*.html\n--exclude=*.css\n")
+
+    # No need for this: the docs say to run "init" after "setup"
+    # cmd_init(args)
 
 #@+node:ekr.20110310091639.14284: *4* cmd_tags
 def cmd_tags(args):
