@@ -115,6 +115,7 @@ class AutoCompleterClass:
         self.tabName = None # The name of the main completion tab.
         self.verbose = False # True: print all members, regardless of how many there are.
         self.w = None # The widget that gets focus after autocomplete is done.
+        self.warnings = {} # Keys are language names.
         
         # Codewise pre-computes...
         self.codewiseSelfList = []
@@ -157,12 +158,14 @@ class AutoCompleterClass:
             return # (for Tk) 'break'
 
         self.language = g.scanForAtLanguage(c,c.p)
-        if w and self.language == 'python' and (k.enable_autocompleter or force):
+        # g.trace(self.language)
+
+        if w and (k.enable_autocompleter or force): # self.language == 'python':
             if trace: g.trace('starting')
             self.w = w
             self.start(event)
         else:
-            if trace: g.trace('not enabled')
+            if trace: g.trace('autocompletion not enabled')
 
         return # (for Tk) 'break'
     #@+node:ekr.20061031131434.10: *4* autoCompleteForce
@@ -946,6 +949,8 @@ class AutoCompleterClass:
         
         aList = common_prefix.split('.')
         header = '.'.join(aList[:-1])
+        
+        g.trace(self.use_qcompleter,len(tabList))
         
         if self.verbose or self.use_qcompleter or len(tabList) < 20:
             tabList = self.clean_completion_list(header,tabList,)

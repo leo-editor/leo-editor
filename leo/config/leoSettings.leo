@@ -365,7 +365,7 @@
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
 <v t="ekr.20060216170801"><vh>@bool enable_calltips_initially = False</vh></v>
 <v t="ekr.20110617081407.14760"><vh>@bool forbid_invalid_completions = False</vh></v>
-<v t="ekr.20110510071925.14590"><vh>@bool use_codewise = False</vh></v>
+<v t="ekr.20110510071925.14590"><vh>@@@bool use_codewise = False</vh></v>
 <v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = True</vh></v>
 </v>
 <v t="ekr.20110611092035.16471"><vh>Colorizer &amp; colors</vh>
@@ -5762,7 +5762,9 @@ False: show completions in Leo's Completions tab.
 **Note**: this option has effect only when using the qt or qttabs gui's.
 </t>
 <t tx="ekr.20110510071925.14590">True: use codewise completions.
-False: use leo-specific completions.</t>
+False: use leo-specific completions.
+
+This setting is no longer used!</t>
 <t tx="ekr.20110512085854.14461">True: Automatically extend the completed text to the longest common prefix of all completions.</t>
 <t tx="ekr.20110517093705.14572">do-nothing = Shift-F1
 do-nothing = Shift-F2

@@ -3285,9 +3285,9 @@ def trace (*args,**keys):
     # Compute the effective args.
     d = {'align':0,'newline':True}
     d = g.doKeywordArgs(keys,d)
-    newline = d.get('newline')
-    align = d.get('align')
-    if align is None: align = 0
+    newline = d.get('newline',None)
+    align = d.get('align',0)
+    # if not align: align = 0
 
     # Compute the caller name.
     try: # get the function name from the call stack.
@@ -3295,7 +3295,7 @@ def trace (*args,**keys):
         code1 = f1.f_code # The code object
         name = code1.co_name # The code name
     except Exception:
-        name = ''
+        name = '?'
     if name == "?":
         name = "<unknown>"
 
