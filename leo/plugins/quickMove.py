@@ -14,6 +14,9 @@ Adds `Move/Clone/Copy To Last Child Button` and `Move/Clone/Copy To First Child
 Button`, `Link To/From` and `Jump To` commands to the Move sub-menu on the
 Outline menu, and each node's context menu, if the `contextmenu` plugin is enabled.
 
+Also adds a `Copy/Move to` menu item to copy/move nodes to other currently
+open outlines, currently to the top of the other outline only.
+
 Select a node ``Foo`` and then use the `Move To Last Child Button` command.
 This adds a 'to Foo' button to the button bar. Now select another node and click
 the 'to Foo' button. The selected node will be moved to the last child
@@ -151,6 +154,21 @@ class quickMove(object):
     ]
 
     #@+others
+    #@+node:tbrown.20110914094319.18256: *3* copy_recursively
+    @staticmethod
+    def copy_recursively(nd0, nd1):
+        """Recursively copy subtree, between outlines
+        
+        Might not work within the same outline, but intended for use between
+        outlines.
+        """
+        
+        nd1.h = nd0.h
+        nd1.b = nd0.b
+        nd1.v.u = nd0.v.u
+        
+        for child in nd0.children():
+            quickMove.copy_recursively(child, nd1.insertAsLastChild())
     #@+node:ekr.20070117113133: *3* ctor
     def __init__(self, c):
 
@@ -366,6 +384,16 @@ class quickMove(object):
             return  # wrong commander
 
         pathmenu = menu.addMenu("Move")
+        
+        for txt, cut in ("Copy to...", False), ("Move to...", True):
+        
+            sub = pathmenu.addMenu(txt)
+        
+            for c2 in g.app.commanders():
+                a = sub.addAction("Top of " +
+                    g.os_path_basename(c2.fileName()))
+                a.connect(a, QtCore.SIGNAL("triggered()"), 
+                    lambda c2=c2, p=p, cut=cut: self.to_other(c2, p, cut=cut))
 
         for name,dummy,command in self.local_imps:
             a = pathmenu.addAction(name)
@@ -426,6 +454,24 @@ class quickMove(object):
         b.button.parent().layout().removeWidget(b.button)
 
         g.es('Moved to parent')
+    #@+node:tbrown.20110914094319.18255: *3* to_other
+    def to_other(self, c2, p, op=None, cut=False):
+        """Copy/Move(cut == True) p from self.c to c2 at quickmove node op,
+        or top of outline if op == None.  c2 may be self.c.
+        """
+        
+        nd = c2.rootPosition().insertAfter()
+        nd.copy().back().moveAfter(nd)
+        
+        self.copy_recursively(p, nd)
+
+        if cut:
+            nxt = p.copy().visNext(self.c).v
+            self.c.deleteOutline(p)
+            self.c.selectPosition(self.c.vnode2position(nxt))
+        
+        c2.redraw()
+        self.c.redraw()  # must come second to keep focus
     #@-others
 
 #@+node:tbrown.20070117104409.5: ** class quickMoveButton

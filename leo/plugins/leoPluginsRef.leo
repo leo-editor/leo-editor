@@ -88,7 +88,7 @@ expanded="ekr.20110318080425.14389,ekr.20110318080425.14392,"><vh>@file free_lay
 <v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
 <v t="ville.20091204224145.5355"><vh>@file codewisecompleter.py</vh></v>
 </v>
-<v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
+<v t="edream.110203113231.667" a="E"><vh>Commands &amp; directives</vh>
 <v t="edream.110203113231.741"><vh>@file add_directives.py</vh></v>
 <v t="ekr.20101110084839.5682"><vh>@file bzr_qcommands.py</vh></v>
 <v t="EKR.20040517080049.1"><vh>@file empty_leo_file.py</vh></v>
@@ -104,7 +104,8 @@ expanded="ekr.20110318080425.14389,ekr.20110318080425.14392,"><vh>@file free_lay
 <v t="edream.110203113231.720"><vh>@file outline_export.py</vh></v>
 <v t="danr7.20060912105041.1"><vh>@file paste_as_headlines.py</vh></v>
 <v t="ekr.20041021120118"><vh>@file pretty_print.py</vh></v>
-<v t="tbrown.20070117104409"><vh>@file quickMove.py</vh></v>
+<v t="tbrown.20070117104409" a="E"
+expanded="tbrown.20070117104409.4,"><vh>@file quickMove.py</vh></v>
 <v t="ekr.20081214160729.1"><vh>@file setHomeDirectory.py</vh></v>
 <v t="danr7.20061010105952.1"><vh>@file word_count.py</vh></v>
 </v>
@@ -151,7 +152,7 @@ expanded="ekr.20110318080425.14389,ekr.20110318080425.14392,"><vh>@file free_lay
 </v>
 </v>
 <v t="edream.110203113231.872" a="E"><vh>Files and nodes</vh>
-<v t="tbrown.20080613095157.2"><vh>@file active_path.py</vh></v>
+<v t="tbrown.20080613095157.2" a="E"><vh>@file active_path.py</vh></v>
 <v t="edream.110203113231.873"><vh>@file at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@file at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@file at_view.py</vh></v>

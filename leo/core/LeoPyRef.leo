@@ -108,7 +108,7 @@ expanded="ekr.20031218072017.1934,ekr.20090519143741.5917,"><vh>@file runLeo.py 
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
 <v t="ekr.20031218072017.2810" a="E"
-expanded="ekr.20041118104831,"><vh>@file leoCommands.py</vh></v>
+expanded="ekr.20041118104831,ekr.20031218072017.2818,ekr.20031218072017.2894,ekr.20031218072017.2895,ekr.20031218072017.1759,ekr.20031218072017.2913,"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20041117062700"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@file leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
@@ -116,7 +116,8 @@ expanded="ekr.20041118104831,"><vh>@file leoCommands.py</vh></v>
 expanded="ekr.20031218072017.3139,"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
-<v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
+<v t="ekr.20031218072017.3320" a="E"
+expanded="ekr.20031218072017.889,ekr.20080416161551.199,"><vh>@file leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@file leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@file leoPymacs.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
@@ -138,7 +139,7 @@ expanded="ekr.20110605121601.17864,ekr.20110605121601.17885,ekr.20110605121601.1
 <v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
 <v t="ekr.20110605121601.17996"><vh>@file ../plugins/qtframecommands.py</vh></v>
 <v t="ekr.20110605121601.18002" a="E"
-expanded="ekr.20110605121601.18004,ekr.20110605121601.18005,ekr.20110605121601.18020,ekr.20110605121601.18023,ekr.20110605121601.18024,ekr.20110605121601.18025,ekr.20110605121601.18131,"><vh>@file ../plugins/qtGui.py</vh></v>
+expanded="ekr.20110605121601.18004,ekr.20110605121601.18005,ekr.20110605121601.18020,ekr.20110605121601.18023,ekr.20110605121601.18024,ekr.20110605121601.18025,ekr.20110605121601.18131,ekr.20110605121601.18474,ekr.20110605121601.18475,"><vh>@file ../plugins/qtGui.py</vh></v>
 <v t="ekr.20110605121601.18695"><vh>QDesigner files</vh>
 <v t="ekr.20110605121601.18696"><vh>@auto ../test/qtui_generate.py</vh></v>
 <v t="ekr.20110605121601.18698"><vh>@auto ../plugins/qt_main.py</vh></v>

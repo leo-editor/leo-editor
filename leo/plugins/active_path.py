@@ -504,7 +504,7 @@ def run_recursive(c):
 
     c.__active_path['start_time'] = time.time()
 
-    for s in p.self_and_subtree():
+    for s in reversed(list(p.self_and_subtree())):
 
         if time.time() - c.__active_path['start_time'] >= c.__active_path['timeout']:
             g.es('Recursive processing aborts after %f seconds' %
