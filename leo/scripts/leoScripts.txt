@@ -2,6 +2,9 @@
 #@+node:ekr.20051110111150: * @thin leoScripts.txt
 # We use this file to make it easier to use cvs.
 
+#@@language python
+#@@tabwidth -4
+
 #@+all
 #@+node:ekr.20051110110853: ** Clear all uA's, tnodeLists, etc.
 # Use these with caution.
@@ -12046,27 +12049,22 @@ def createLastChildOf (v,headline):
     child = v.insertAsLastChild()
     child.initHeadString(headline)
     return child
-#@+node:ekr.20110508132538.3431: *3* Recursive create @auto nodes
+#@+node:ekr.20110916103731.2459: *3* Recursive create @auto nodes
 import os
 
 @others
 
-types = ('.py',)
+types = ('.py','.c',)
 
-theDir = r'C:\prog\lib2to3-copy'
-importFiles(theDir,types,kind=None,recursive=True)
+theDir = r'C:\apps\swigwin-2.0.4\Source'
+importFiles(theDir,types,recursive=True)
 c.redraw()
 
 g.es("done",color="blue")
-#@+node:ekr.20110508132538.3432: *4* importFiles
-def importFiles (theDir,type=None,kind="@file",recursive=False):
+#@+node:ekr.20110916103731.2460: *4* importFiles (top-level)
+def importFiles (theDir,type=None,recursive=False):
 
     v = c.currentVnode()
-
-    # Check the params.
-    if kind not in ('@file',None):
-        g.es("kind must be @file or None: " + repr(kind))
-        return
 
     if not g.os_path_exists(theDir):
         g.es("directory does not exist: " + theDir)
@@ -12074,13 +12072,13 @@ def importFiles (theDir,type=None,kind="@file",recursive=False):
 
     root = createLastChildOf(v,"imported files")
     try:
-        importDir (theDir,type,kind,recursive,root)
+        importDir (theDir,type,recursive,root)
         root.contract()
     except:
         g.es_exception()
     c.redraw()
-#@+node:ekr.20110508132538.3433: *4* importDir
-def importDir (theDir,types,kind,recursive,root):
+#@+node:ekr.20110916103731.2461: *4* importDir
+def importDir (theDir,types,recursive,root,level=0):
 
     g.es("theDir: " + theDir,color="blue")
 
@@ -12096,26 +12094,26 @@ def importDir (theDir,types,kind,recursive,root):
             elif recursive:
                 dirs.append(path)
         if len(files2) > 0 or len(dirs) > 0:
-            import_root = createLastChildOf(root,theDir)
+            path_part = g.choose(level==0,theDir,g.os_path_basename(theDir))
+            import_root = createLastChildOf(root,'@path %s' % (path_part))
         else:
             import_root = root
         
         c.selectVnode(import_root)
         
-        ### if len(files2) > 0:
-            ### c.importCommands.importFilesCommand(files2,kind)
         if len(files2) > 0:
             for fn in files2:
-                p2 = createLastChildOf(import_root,'@auto %s' % (fn))
+                p2 = createLastChildOf(import_root,'@auto %s' % (
+                    g.shortFileName(fn)))
                 
         if len(dirs) > 0:
             dirs.sort()
             for theDir in dirs:
-                importDir(theDir,types,kind,recursive,import_root)
+                importDir(theDir,types,recursive,import_root,level+1)
     except:
         g.es("exception in importFiles script")
         g.es_exception()
-#@+node:ekr.20110508132538.3434: *4* createLastChildOf
+#@+node:ekr.20110916103731.2462: *4* createLastChildOf
 def createLastChildOf (v,headline):
 
     child = v.insertAsLastChild()

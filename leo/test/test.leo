@@ -115,6 +115,11 @@
 <v t="ekr.20080105130903"><vh>warnings</vh></v>
 <v t="ekr.20080105120559"><vh>&lt;&lt; define data &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20110916103511.2472"><vh>@@button Recursive create @auto nodes</vh>
+<v t="ekr.20110916103511.2473"><vh>importFiles</vh></v>
+<v t="ekr.20110916103511.2474"><vh>importDir</vh></v>
+<v t="ekr.20110916103511.2475"><vh>createLastChildOf</vh></v>
+</v>
 <v t="ekr.20090715064044.1782"><vh>@@button render-as-sphinx</vh></v>
 <v t="ekr.20080915095329.1"><vh>@@button rst3</vh></v>
 <v t="ekr.20070515073111"><vh>@@button sep</vh></v>
@@ -681,8 +686,6 @@
 <v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
 </v>
 </v>
-<v t="ekr.20110905100704.2466"><vh>@file c:/prog/blender_script.py</vh></v>
-<v t="ekr.20110905100550.2463"><vh>@button blender-script @key=Alt-7</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1107,7 +1110,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="6"></t>
+<t tx="ekr.20070416075121" str_leo_pos="0,1,0,15"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -8768,18 +8771,80 @@ timer.start(0)
 <t tx="ekr.20110525093203.2470"></t>
 <t tx="ekr.20110526180653.2467"></t>
 <t tx="ekr.20110526180653.2468"></t>
-<t tx="ekr.20110905100550.2463">'''Run the selected node as a blender script.'''
+<t tx="ekr.20110916103511.2472">import os
 
-import subprocess
+@others
 
-args = [
-    r"C:\Program Files (x86)\Blender Foundation\Blender\blender.exe",
-    "-P",
-    r"C:/prog/blender_script.py",
-    # r"-V"
-]
+types = ('.py',)
 
-data = subprocess.Popen(args, None)
+theDir = r'C:\prog\lib2to3-copy'
+importFiles(theDir,types,kind=None,recursive=True)
+c.redraw()
+
+g.es("done",color="blue")
+</t>
+<t tx="ekr.20110916103511.2473">def importFiles (theDir,type=None,kind="@file",recursive=False):
+
+    v = c.currentVnode()
+
+    # Check the params.
+    if kind not in ('@file',None):
+        g.es("kind must be @file or None: " + repr(kind))
+        return
+
+    if not g.os_path_exists(theDir):
+        g.es("directory does not exist: " + theDir)
+        return
+
+    root = createLastChildOf(v,"imported files")
+    try:
+        importDir (theDir,type,kind,recursive,root)
+        root.contract()
+    except:
+        g.es_exception()
+    c.redraw()
+</t>
+<t tx="ekr.20110916103511.2474">def importDir (theDir,types,kind,recursive,root):
+
+    g.es("theDir: " + theDir,color="blue")
+
+    try:
+        files = os.listdir(theDir)
+        files2 = [] ; dirs =[]
+        for f in files:
+            path = g.os_path_join(theDir,f)
+            if g.os_path_isfile(path):
+                name, ext = g.os_path_splitext(f)
+                if not types or ext in types:
+                    files2.append(path)
+            elif recursive:
+                dirs.append(path)
+        if len(files2) &gt; 0 or len(dirs) &gt; 0:
+            import_root = createLastChildOf(root,theDir)
+        else:
+            import_root = root
+        
+        c.selectVnode(import_root)
+        
+        ### if len(files2) &gt; 0:
+            ### c.importCommands.importFilesCommand(files2,kind)
+        if len(files2) &gt; 0:
+            for fn in files2:
+                p2 = createLastChildOf(import_root,'@auto %s' % (fn))
+                
+        if len(dirs) &gt; 0:
+            dirs.sort()
+            for theDir in dirs:
+                importDir(theDir,types,kind,recursive,import_root)
+    except:
+        g.es("exception in importFiles script")
+        g.es_exception()
+</t>
+<t tx="ekr.20110916103511.2475">def createLastChildOf (v,headline):
+
+    child = v.insertAsLastChild()
+    child.initHeadString(headline.replace('\\','/'))
+    return child
 </t>
 </tnodes>
 </leo_file>
