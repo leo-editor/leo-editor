@@ -950,7 +950,7 @@ class AutoCompleterClass:
         aList = common_prefix.split('.')
         header = '.'.join(aList[:-1])
         
-        g.trace(self.use_qcompleter,len(tabList))
+        # g.trace(self.use_qcompleter,len(tabList))
         
         if self.verbose or self.use_qcompleter or len(tabList) < 20:
             tabList = self.clean_completion_list(header,tabList,)
