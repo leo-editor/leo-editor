@@ -278,6 +278,25 @@ def show_scrolled_message(tag, kw):
     
     return True
 #@+node:ekr.20110320120020.14490: ** Commands
+#@+node:ekr.20110917103917.3639: *3* g.command('close-rendering-pane')
+@g.command('close-rendering-pane')
+def close_rendering_pane(event):
+    
+    '''Close the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if vr:
+            vr.deactivate()
+            vr.deleteLater()
+#@+node:ekr.20110321085459.14462: *3* g.command('hide-rendering-pane')
+@g.command('hide-rendering-pane')
+def hide_rendering_pane(event):
+    
+    '''A synonym for 'close-rendering-pane.'''
+    
+    close_rendering_pane(event)
 #@+node:ekr.20110321072702.14507: *3* g.command('lock-unlock-rendering-pane')
 @g.command('lock-unlock-rendering-pane')
 def lock_unlock_rendering_pane(event):
@@ -313,6 +332,13 @@ def pause_play_movie(event):
                     vp.pause()
                 else:
                     vp.play()
+#@+node:ekr.20110917103917.3637: *3* g.command('show-rendering-pane')
+@g.command('show-rendering-pane')
+def show_rendering_pane (event):
+    
+    '''A synonym for viewrendered.'''
+    
+    viewrendered(event)
 #@+node:ekr.20110317080650.14386: *3* g.command('toggle-rendering-pane')
 @g.command('toggle-rendering-pane')
 def toggle_rendering_pane(event):
@@ -323,21 +349,9 @@ def toggle_rendering_pane(event):
     if c:
         vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
         if vr:
-            close_rendering_pane(event)
+            hide_rendering_pane(event)
         else:
             viewrendered(event)
-#@+node:ekr.20110321085459.14462: *3* g.command('close-rendering-pane')
-@g.command('close-rendering-pane')
-def close_rendering_pane(event):
-    
-    '''Close the rendering pane.'''
-
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
-        if vr:
-            vr.deactivate()
-            vr.deleteLater()
 #@+node:ekr.20110321151523.14464: *3* g.command('update-rendering-pane')
 @g.command('update-rendering-pane')
 def update_rendering_pane (event):
