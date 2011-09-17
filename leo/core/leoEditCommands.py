@@ -1685,39 +1685,49 @@ class editCommandsClass (baseEditCommandsClass):
         
         #@+<< docstring >>
         #@+node:ekr.20110916215321.7982: *5* << docstring >>
-        '''
-        c2py converts C or C++ text into python text. The conversion is not complete.
-        Nevertheless, c2py eliminates much of the tedious text manipulation that would
-        otherwise be required.
+        ''' The c-to-python command converts C or C++ text to python text. The
+        conversion is not complete. Nevertheless, c2py eliminates much of the tedious
+        text manipulation that would otherwise be required.
 
         The following is a list of the translations performed by convertCodeList:
 
-        I.  Prepass
+        Prepass
+        =======
 
         These translations happen before removing all curly braces.
 
-        Suppose we are translating:
+        Suppose we are translating::
 
             aTypeSpec aClass::aMethod(t1 v1,...,tn vn)
             {
                 body
             }
 
-        1. Translates the function prototype, i.e., translates:
+        Prepass part 1
+        --------------
+
+        Translates the function prototype, i.e., translates::
 
             aTypeSpec aClass::aMethod(t1 v1,...,tn vn)
-        to:
+            
+        to::
+            
             def aMethod(v1,...vn):
 
-        As a special case, c2py translates:
+        As a special case, c2py translates::
 
             aTypeSpec aClass::aClass(t1 v1,...,tn vn)
-        to:
+            
+        to::
+            
             aClass.__init__(t1 v1,...,tn vn)
 
-        Yes, I know, aClass.__init__ isn't proper Python, but retaining the class name is useful.
+        True, aClass.__init__ isn't proper Python, but retaining the class name is useful.
 
-        2. Let t denote any member of typeList or classList.
+        Prepass part 2
+        --------------
+
+        Let t denote any member of typeList or classList.  The code::
 
             a) Removes all casts of the form (t) or (t*) or (t**), etc.
             b) Converts t x, t *x, t **x, etc. to x.
@@ -1725,47 +1735,54 @@ class editCommandsClass (baseEditCommandsClass):
             d) For all i in ivarsDict[aClass] converts this -> i to self.i
             e) For all i in ivarsDict[aClass] converts i to self.i
 
-        3. Converts < < x > > = to @c.  This Leo-specific translation is not done when translating files.
+        Prepass part 3
+        --------------
 
-        II.  Main Pass
+        [No longer used.] Converts < < x > > = to @c. A Leo-specific translation.
 
-        This pass does the following simple translations everywhere except in comments and strings.
+        Main Pass
+        =========
 
-        Changes all -> to .
-        Changes all this.self to self (This corrects problems during the prepass.)
-        Removes all curly braces
-        Changes all #if to if
-        Changes all else if to elif
-        Changes all #else to else:
-        Changes all else to else:
-        Removes all #endif
-        Changes all && to and
-        Changes all || to or
-        Changes all TRUE to True
-        Changes all FALSE to False
-        Changes all NULL to None
-        Changes all this to self
-        Changes all @code to @c.  This Leo-specific translation is not done when translating files.
+        This pass does the following simple translations everywhere except in comments
+        and strings::
 
-        III.  Complex Pass
+            Changes all -> to .
+            Changes all this.self to self (This corrects problems during the prepass.)
+            Removes all curly braces
+            Changes all #if to if
+            Changes all else if to elif
+            Changes all #else to else:
+            Changes all else to else:
+            Removes all #endif
+            Changes all && to and
+            Changes all || to or
+            Changes all TRUE to True
+            Changes all FALSE to False
+            Changes all NULL to None
+            Changes all this to self
+            Changes all @code to @c.  [No longer used: aLeo-specific translation.]
 
-        This pass attempts more complex translations.
+        Complex Pass
+        ============
 
-        Converts if ( x ) to if x:
-        Converts elif ( x ) to elif x:
-        Converts while ( x ) to while x:
-        Converts for ( x ; y ; z ) to for x SEMI y SEMI z:
+        This pass attempts more complex translations::
 
-        IV.  Final Pass
+            Converts if ( x ) to if x:
+            Converts elif ( x ) to elif x:
+            Converts while ( x ) to while x:
+            Converts for ( x ; y ; z ) to for x SEMI y SEMI z:
 
-        This pass completes the translation.
+        Final Pass
+        ==========
 
-        Removes all semicolons.
-        Removes @c if it starts the text.  This Leo-specific translation is not done when translating files.
-        Removes all blank lines.
-        Removes excess whitespace from all lines, leaving leading whitespace unchanged.
-        Replaces C/C++ comments by Python comments.
-        Removes trailing whitespace from all lines.
+        This pass completes the translation::
+
+            Removes all semicolons.
+            Removes @c if it starts the text.  [No longer used: a Leo-specific translation.]
+            Removes all blank lines.
+            Removes excess whitespace from all lines, leaving leading whitespace unchanged.
+            Replaces C/C++ comments by Python comments.
+            Removes trailing whitespace from all lines.
 
         '''
         #@-<< docstring >>
@@ -1774,28 +1791,25 @@ class editCommandsClass (baseEditCommandsClass):
         #@+node:ekr.20110916215321.7983: *5* << theory of operation >>
         #@+at Strategy and Performance
         # 
-        # c2py is straightforward. The speed of c2py is unimportant. We don't care about
-        # the memory used because we translate only small pieces of text at a time.
+        # We use a single list for all changes to the text. This eliminates stress on the
+        # gc. Using multiple passes greatly simplifies the code and does not it down
+        # significantly. Anyway, speed is both good and unimportant.
         # 
-        # We can do body[i:j] = x, regardless of len(x). We can also do del body[i:j] to
-        # delete characters.
+        # A convention: within this code only, s denotes any *sequence*, not just a
+        # string. We use this convention only within methods that do not, in fact, change s.
         # 
-        # We scan repeatedly through the text. Using many passes greatly simplifies the
-        # code and does not slow down c2py significantly.
+        # No replacements are done within strings or comments. The idiom is::
         # 
-        # No scans are done within strings or comments. The idiom to handle such scans is
-        # the following:
+        #     def someScan(self,aList):
+        #         i = 0
+        #         while i < len(aList):
+        #             if self.is_string_or_comment(aList,i):
+        #                 i = skip_string_or_comment(aList,i)
+        #             elif << found what we are looking for ? >> :
+        #                 << convert what we are looking for, setting i >>
+        #             else: i += 1
         # 
-        # def someScan(body):
-        #     i = 0
-        #     while i < body(len):
-        #         if isStringOrComment(body,i):
-        #             i = skipStringOrComment(body,i)
-        #         elif << found what we are looking for ? >> :
-        #             << convert what we are looking for, setting i >>
-        #         else: i += 1
-        # 
-        # That's about all there is to it.  The code was remarkably easy to write and seems clear to me.
+        # That's all.
         #@-<< theory of operation >>
         
         #@+others
