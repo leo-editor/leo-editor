@@ -1787,152 +1787,442 @@ class editCommandsClass (baseEditCommandsClass):
         '''
         #@-<< docstring >>
         
-        #@+<< theory of operation >>
-        #@+node:ekr.20110916215321.7983: *5* << theory of operation >>
-        #@+at Strategy and Performance
-        # 
-        # We use a single list for all changes to the text. This eliminates stress on the
-        # gc. Using multiple passes greatly simplifies the code and does not it down
-        # significantly. Anyway, speed is both good and unimportant.
-        # 
-        # A convention: within this code only, s denotes any *sequence*, not just a
-        # string. We use this convention only within methods that do not, in fact, change s.
-        # 
-        # No replacements are done within strings or comments. The idiom is::
-        # 
-        #     def someScan(self,aList):
-        #         i = 0
-        #         while i < len(aList):
-        #             if self.is_string_or_comment(aList,i):
-        #                 i = skip_string_or_comment(aList,i)
-        #             elif << found what we are looking for ? >> :
-        #                 << convert what we are looking for, setting i >>
-        #             else: i += 1
-        # 
-        # That's all.
-        #@-<< theory of operation >>
-        
         #@+others
         #@+node:ekr.20110916215321.8055: *5* class C_to_python
         class C_to_python:
             
+            #@+<< docstring: theory of operation >>
+            #@+node:ekr.20110916215321.7983: *6* << docstring: theory of operation >>
+            #@@nocolor-node
+
+            '''
+            We use a single list for all changes to the text. This eliminates stress on the
+            gc. Using multiple passes greatly simplifies the code and does not it down
+            significantly. Anyway, speed is both good and unimportant.
+
+            A convention: within this class only, s denotes a *sequence*, not just a string.
+            We use this convention in methods that do not, in fact, change the sequence.
+
+            No replacements are done within strings or comments. The idiom is::
+
+                def someScan(self,aList):
+                    i = 0
+                    while i < len(aList):
+                        if self.is_string_or_comment(aList,i):
+                            i = skip_string_or_comment(aList,i)
+                        elif < found what we are looking for ?>:
+                            <convert what we are looking for, setting i>
+                        else: i += 1
+
+            That's all.
+            '''
+            #@-<< docstring: theory of operation >>
+            
             #@+others
-            #@+node:ekr.20110916215321.8057: *6* ctor
+            #@+node:ekr.20110916215321.8056: *6* Unused
+            if 0:
+                #@+others
+                #@+node:ekr.20110917104720.6871: *7* Drivers & helpers
+                #@+node:ekr.20110916215321.7989: *8* convertLeo1to2 & helper
+                def convertLeo1to2 (self):
+
+                    for p in self.p.self_and_subtree():
+                        g.es("converting:",p.h)
+                        s=convertStringLeo1to2(p.b)
+                        p.b = s
+
+                    g.es("done")
+                #@+node:ekr.20110916215321.7990: *9* convertStringLeo1to2
+                def convertStringLeo1to2 (self,s):
+                    
+                    aList = [z for z in s]
+                    outputList = []
+                    i = 0
+                    while i < len(aList):
+                        j = skipCodePart(aList,i)
+                        if j > i:
+                            code = aList[i:j]
+                            convertCodeList1to2(code)
+                            i = j
+                            #print "-----code:", listToString(code)
+                            for item in code:
+                                outputList.append(item)
+                        j = skipDocPart(aList,i)
+                        if j > i:
+                            doc = aList[i:j]
+                            convertDocList(doc) # same as in c2py
+                            #print "-----doc:", listToString(doc)
+                            i = j
+                            for item in doc:
+                                outputList.append(item)
+
+                    result = listToString(outputList)
+                    global printFlag
+                    if printFlag: print("-----:\n", result)
+                    return result
+                #@+node:ekr.20110916215321.7994: *8* convertLeoTree
+                def convertLeoTree (self):
+
+                    for p2 in self.p.self_and_subtree():
+                        print("converting:",v.h)
+                        s = convertCStringToPython(p2.b,leoFlag=True)
+                        p2.b = s
+
+                    g.es('done')
+                #@+node:ekr.20110916215321.7995: *8* convertCFileToPython
+                def convertCFileToPython(fn):
+
+                    f=open(fn, 'r')
+                    if not f: return
+                    s = f.read()
+                    f.close()
+
+                    f=open(fn + ".py", 'w')
+                    if not f: return
+                    s = convertCStringToPython(s,leoFlag=False)
+                    f.write(s)
+                    f.close()
+                #@+node:ekr.20110916215321.7991: *8* convertCodeList1to2
+                #@+at We do _not_ replace @root by @file or insert @others as needed.
+                # Inserting @others can be done easily enough by hand,
+                # and may take more global knowledge than we can reasonably expect to have.
+                #@@c
+
+                def convertCodeList1to2 (self,aList):
+
+                    if 0: # There isn't much reason to do this.
+                        removeAtRoot(aList)
+
+                    self.safeReplace(aList,"@code","@c")
+                    self.replaceSectionDefs(aList)
+                    self.removeLeadingAtCode(aList)
+                #@+node:ekr.20110916215321.7996: *8* convertCStringToPython
+                def convertCStringToPython (self,s,leoFlag):
+
+                    # print "convertCStringToPython:start\n", s
+                    firstPart = True
+                    aList = [z for z in s]
+
+                    if not leoFlag:
+                        self.convertCodeList(aList,firstPart,dontDoLeoTranslations)
+                        return ''.join(aList)
+
+                    outputList = []
+                    i = 0
+                    while i < len(aList):
+                        j = skipCodePart(aList,i)
+                        if j > i:
+                            code = aList [i: j]
+                            convertCodeList(code,firstPart,doLeoTranslations)
+                            i = j
+                            #print "-----code:", ''.join(code)
+                            for item in code:
+                                outputList.append(item)
+                        firstPart = False # don't remove @c from here on.
+                        j = skipDocPart(aList,i)
+                        if j > i:
+                            doc = aList [i: j]
+                            convertDocList(doc)
+                            #print "-----doc:", ''.join(doc)
+                            i = j
+                            for item in doc:
+                                outputList.append(item)
+
+                    result = ''.join(outputList)
+                    global printFlag
+                    if printFlag: print("-----:\n",result)
+                    return result
+                #@+node:ekr.20110917104720.6876: *8* get_default_user_types
+                def get_default_user_types (self):
+                    
+                    '''Return default user types.'''
+                    
+                    self.class_list = [
+                        # "vnode", "tnode", "Commands",
+                        # "wxString", "wxTreeCtrl", "wxTextCtrl", "wxSplitterWindow",
+                    ]
+
+                    self.ivars_dict = {
+                        # "atFile": [
+                            # "mCommands", "mErrors", "mStructureErrors",
+                            # "mTargetFileName", "mOutputFileName", "mOutputStream",
+                            # "mStartSentinelComment", "mEndSentinelComment", "mRoot",
+                        # ],
+                        # "vnode": [
+                            # "mCommands", "mJoinList", "mIconVal", "mTreeID", "mT", "mStatusBits",
+                        # ],
+                        # "tnode": [
+                            # "mBodyString", "mBodyRTF", "mJoinHead", "mStatusBits", "mFileIndex",
+                            # "mSelectionStart", "mSelectionLength", "mCloneIndex",
+                        # ],
+                        # "LeoFrame": [
+                            # "mNextFrame", "mPrevFrame", "mCommands",
+                        # ],
+                        # "Commands": [
+                            # # public
+                            # "mCurrentVnode", "mLeoFrame", "mInhibitOnTreeChanged", "mMaxTnodeIndex",
+                            # "mTreeCtrl", "mBodyCtrl", "mFirstWindowAndNeverSaved",
+                            # #private
+                            # "mTabWidth", "mChanged", "mOutlineExpansionLevel", "mUsingClipboard",
+                            # "mFileName", "mMemoryInputStream", "mMemoryOutputStream", "mFileInputStream",
+                            # "mInputFile", "mFileOutputStream", "mFileSize", "mTopVnode", "mTagList",
+                            # "mMaxVnodeTag",
+                            # "mUndoType", "mUndoVnode", "mUndoParent", "mUndoBack", "mUndoN",
+                            # "mUndoDVnodes", "mUndoLastChild", "mUndoablyDeletedVnode",
+                        # ],
+                    }
+                #@+node:ekr.20110917104720.6873: *7* Scanning
+                #@+node:ekr.20110916215321.7998: *8* convertDocList
+                def convertDocList (self,docList):
+
+                    # print "convertDocList:", docList
+                    if self.match_word(docList,0,"@doc"):
+                        i = self.skip_ws(docList,4)
+                        if self.match(docList,i,"\n"):
+                            i += 1
+                        docList [0: i] = [z for z in ("@ ")]
+                #@+node:ekr.20110916215321.8000: *8* skipCodePart
+                def skipCodePart (self,aList,i):
+
+                    # print "skipCodePart", i
+                    if self.match_word(aList,i,"@doc") or self.match_word(aList,i,"@"):
+                        return i
+                    while i < len(aList):
+                        if self.match(aList,i,"//"):
+                            i = skipPastLine(aList,i)
+                        elif self.match(aList,i,"/*"):
+                            i = skipCBlockComment(aList,i)
+                        elif self.match(aList,i,'"') or self.match(aList,i,"'"):
+                            i = skipString(aList,i)
+                        elif self.match(aList,i,"\n"):
+                            i += 1
+                            if self.match_word(aList,i,"@doc") or self.match_word(aList,i,"@"):
+                                break
+                        else: i += 1
+                    return i
+                #@+node:ekr.20110916215321.7999: *8* skipDocPart
+                def skipDocPart (self,aList,i):
+
+                    # print "skipDocPart", i
+                    while i < len(aList):
+                        if self.match_word(aList,i,"@code") or self.match_word(aList,i,"@c"):
+                            break
+                        elif isSectionDef(aList,i):
+                            break
+                        else: i = skipPastLine(aList,i)
+                    return i
+                #@+node:ekr.20110917104720.6872: *7* Utils
+                #@+node:ekr.20110916215321.8018: *8* findInCode
+                def findInCode (self,aList,i,findString):
+
+                    while i < len(aList):
+                        if self.is_string_or_comment(aList,i):
+                            i = self.skip_string_or_comment(aList,i)
+                        elif self.match(aList,i,findString):
+                            return i
+                        else:
+                            i += 1
+
+                    return -1
+                #@+node:ekr.20110916215321.8019: *8* findInList
+                def findInList (self,aList,i,findString):
+
+                    while i < len(aList):
+                        if self.match(aList,i,findString):
+                            return i
+                        else:
+                            i += 1
+
+                    return-1
+                #@+node:ekr.20110916215321.7986: *7* speedTest
+                def speedTest (self,passes):
+
+                    import time
+                    fn = r"c:\prog\LeoPy\LeoPy.leo"
+                    f=open(fn)
+                    if not f:
+                        print("not found: ",fn)
+                        return
+                    s=f.read()
+                    f.close()
+                    print("file:", fn, " size:", len(s), " passes:", passes)
+                    print("speedTest start")
+                    time1 = time.clock()
+                    p = passes
+                    while p > 0:
+                        n = len(s) ; i = 0 ; lines = 0
+                        while -1 < i < n:
+                            if s[i] == '\n':
+                                lines += 1 ; i += 1
+                            else:
+                                i = s.find('\n',i) # _much_ faster than list-based-find.
+                            continue
+                            # match is about 9 times slower than simple test.
+                            if s[i]=='\n': # match(s,i,'\n'): # 
+                                i += 1
+                            else:
+                                i += 1
+                        p -= 1
+                    time2 = time.clock()
+                    print("lines:", lines)
+                    print("speedTest done:")
+                    print("elapsed time:", time2-time1)
+                    print("time/pass:", (time2-time1)/passes)
+                #@+node:ekr.20110916215321.7981: *7* test
+                def test(self):
+                    
+                    #@+<< define test data >>
+                    #@+node:ekr.20110917104720.6875: *8* << define test data >>
+                    testData = [
+                    "\n@doc\n\
+                    This is a doc part: format, whilest, {};->.\n\
+                    <<\
+                    section def>>=\n\
+                    LeoFrame::LeoFrame(vnode *v, char *s, int i)\n\
+                    {\n\
+                        // test ; {} /* */.\n\
+                        #if 0 //comment\n\
+                            if(gLeoFrameList)gLeoFrameList -> mPrevFrame = this ;\n\
+                            else\n\
+                                this -> mNextFrame = gLeoFrameList ;\n\
+                        #else\n\
+                            \n\
+                            vnode *v = new vnode(a,b);\n\
+                            Commands *commander = (Commands) NULL ; // after cast\n\
+                            this -> mPrevFrame = NULL ;\n\
+                        #endif\n\
+                        if (a==b)\n\
+                            a = 2;\n\
+                        else if (a ==c)\n\
+                            a = 3;\n\
+                        else return; \n\
+                        /* Block comment test:\n\
+                            if(2):while(1): end.*/\n\
+                        for(int i = 1; i < limit; ++i){\n\
+                            mVisible = FALSE ;\n\
+                            mOnTop = TRUE ;\n\
+                        }\n\
+                        // trailing ws.	 \n\
+                        mCommands = new Commands(this, mTreeCtrl, mTextCtrl) ;\n\
+                        gActiveFrame = this ;\n\
+                    }\n\
+                        ", "<<" +
+                    "vnode methods >>=\n\
+                    \n\
+                    void vnode::OnCopyNode(wxCommandEvent& WXUNUSED(event))\n\
+                    {\n\
+                        mCommands -> copyOutline();\n\
+                    }\n\
+                    \n@doc\n\
+                    another doc part if, then, else, -> \n<<" +
+                    "vnode methods >>=\n\
+                    void vnode::OnPasteNode(wxCommandEvent& WXUNUSED(event))\n\
+                    {\n\
+                        mCommands -> pasteOutline();\n\
+                    }\n" ]
+                    #@-<< define test data >>
+                    
+                    self.print_flag = True
+                    for s in testData:
+                        self.convertCStringToPython(s,leoFlag=True)
+                #@-others
+            #@+node:ekr.20110916215321.8057: *6* ctor & helpers
             def __init__ (self,c):
                 
                 self.c = c
                 self.p = c.p.copy()
-                self.tab_width = 4
-                self.print_flag = False
                 
+                aList = g.get_directives_dict_list(self.p)
+                self.tab_width = g.scanAtTabwidthDirectives(aList) or 4
+                # g.trace('tab_width',self.tab_width)
+                
+                # Internal state...
                 self.class_name = ''
                     # gClassName = "" # The class name for the present function.  Used to modify ivars.
                 self.ivars = []
                     # gIvars = [] # List of ivars to be converted to self.ivar
+                self.print_flag = False
                     
-                #@+<< specify user types >>
-                #@+node:ekr.20110916215321.7984: *7* << specify user types >>
-                #@+at Please change the following lists so they contain the types and classes used by your program.
-                # 
-                # c2py removes all type definitions correctly; it converts
-                #     new aType(...)
-                # to
-                #     aType(...)
-                #@@c
+                # Get user types.
+                self.get_user_types()
+            #@+node:ekr.20110916215321.7984: *7* get_user_types
+            #@@nocolor
+            #@+at
+            # 
+            # Change the following lists so they contain the types and classes used by your
+            # program. c-to-python converts::
+            #     
+            #     new aType(...)
+            # 
+            # to::
+            #     
+            #     aType(...)
+            #     
+            # Change ivarsDict so it represents the instance variables (ivars) used by your
+            # program's classes. ivarsDict is a dictionary used to translate ivar i of class c
+            # to self.i. It also translates this->i to self.i.
+            # 
+            #@@c
+            #@@color
+                    
+            def get_user_types (self):
+                
+                c = self.c
 
-                self.class_list = [
-                    "vnode", "tnode", "Commands",
-                    "wxString", "wxTreeCtrl", "wxTextCtrl", "wxSplitterWindow" ]
+                self.class_list = c.config.getData('c-to-python-class-list') or []
+                
+                self.type_list  = (
+                    c.config.getData('c-to-python-type-list') or
+                    ["char", "void", "short", "long", "int", "double", "float"]
+                )
+                aList = c.config.getData('c-to-python-ivars-dict')
+                if aList:
+                    self.ivars_dict = self.parse_ivars_data(aList)
+                else:
+                    self.ivars_dict = {}
+                
+                if 0:
+                    #g.trace('class_list',self.class_list)
+                    #g.trace('type_list',self.type_list)
+                    g.trace('ivars_dict...')
+                    d = self.ivars_dict
+                    keys = list(d.keys())
+                    for key in sorted(keys):
+                        print('%s:' % (key))
+                        for val in d.get(key):
+                            print('  %s' % (val))
+                
+            #@+node:ekr.20110917104720.6877: *7* parse_ivars_data
+            def parse_ivars_data (self,aList):
+                
+                d,key = {},None
+                aList = [z.strip() for z in aList if z.strip()]
+                for s in aList:
+                    if s.endswith(':'):
+                        key = s[:-1].strip()
+                    elif key:
+                        ivars = [z.strip() for z in s.split(',') if z.strip()]
+                        aList = d.get(key,[])
+                        aList.extend(ivars)
+                        d [key] = aList
+                    else:
+                        g.es('invalid @data c-to-python-ivars-dict',repr(s),color='red')
+                        return {}
 
-                self.type_list = ["char", "void", "short", "long", "int", "double", "float"]
-
-                #@+at Please change ivarsDict so it represents the instance variables (ivars) used by your program's classes.
-                # 
-                # ivarsDict is a dictionary used to translate ivar i of class c to self.i.  It also translates this->i to self.i.
-                #@@c
-
-                self.ivars_dict = {
-                    "atFile": [ "mCommands", "mErrors", "mStructureErrors",
-                        "mTargetFileName", "mOutputFileName", "mOutputStream",
-                        "mStartSentinelComment", "mEndSentinelComment", "mRoot"],
-
-                    "vnode": ["mCommands", "mJoinList", "mIconVal", "mTreeID", "mT", "mStatusBits"],
-
-                    "tnode": ["mBodyString", "mBodyRTF", "mJoinHead", "mStatusBits", "mFileIndex",
-                        "mSelectionStart", "mSelectionLength", "mCloneIndex"],
-
-                    "LeoFrame": ["mNextFrame", "mPrevFrame", "mCommands"],
-
-                    "Commands": [
-                        # public
-                        "mCurrentVnode", "mLeoFrame", "mInhibitOnTreeChanged", "mMaxTnodeIndex",
-                        "mTreeCtrl", "mBodyCtrl", "mFirstWindowAndNeverSaved",
-                        #private
-                        "mTabWidth", "mChanged", "mOutlineExpansionLevel", "mUsingClipboard",
-                        "mFileName", "mMemoryInputStream", "mMemoryOutputStream", "mFileInputStream",
-                        "mInputFile", "mFileOutputStream", "mFileSize", "mTopVnode", "mTagList",
-                        "mMaxVnodeTag",
-                        "mUndoType", "mUndoVnode", "mUndoParent", "mUndoBack", "mUndoN",
-                        "mUndoDVnodes", "mUndoLastChild", "mUndoablyDeletedVnode" ]}
-                #@-<< specify user types >>
-                #@+<< define testData >>
-                #@+node:ekr.20110916215321.7985: *7* << define testData >>
-                testData = [ "\n@doc\n\
-                This is a doc part: format, whilest, {};->.\n\
-                <<\
-                section def>>=\n\
-                LeoFrame::LeoFrame(vnode *v, char *s, int i)\n\
-                {\n\
-                    // test ; {} /* */.\n\
-                    #if 0 //comment\n\
-                        if(gLeoFrameList)gLeoFrameList -> mPrevFrame = this ;\n\
-                        else\n\
-                            this -> mNextFrame = gLeoFrameList ;\n\
-                    #else\n\
-                        \n\
-                        vnode *v = new vnode(a,b);\n\
-                        Commands *commander = (Commands) NULL ; // after cast\n\
-                        this -> mPrevFrame = NULL ;\n\
-                    #endif\n\
-                    if (a==b)\n\
-                        a = 2;\n\
-                    else if (a ==c)\n\
-                        a = 3;\n\
-                    else return; \n\
-                    /* Block comment test:\n\
-                        if(2):while(1): end.*/\n\
-                    for(int i = 1; i < limit; ++i){\n\
-                        mVisible = FALSE ;\n\
-                        mOnTop = TRUE ;\n\
-                    }\n\
-                    // trailing ws.	 \n\
-                    mCommands = new Commands(this, mTreeCtrl, mTextCtrl) ;\n\
-                    gActiveFrame = this ;\n\
-                }\n\
-                    ", "<<" +
-                "vnode methods >>=\n\
-                \n\
-                void vnode::OnCopyNode(wxCommandEvent& WXUNUSED(event))\n\
-                {\n\
-                    mCommands -> copyOutline();\n\
-                }\n\
-                \n@doc\n\
-                another doc part if, then, else, -> \n<<" +
-                "vnode methods >>=\n\
-                void vnode::OnPasteNode(wxCommandEvent& WXUNUSED(event))\n\
-                {\n\
-                    mCommands -> pasteOutline();\n\
-                }\n" ]
-                #@-<< define testData >>
+                return d
             #@+node:ekr.20110916215321.8058: *6* go
             def go (self):
                 
                 for p in self.p.self_and_subtree():
-                    print("converting:",p.h)
+                    print("\nconverting:",p.h)
                     aList = [z for z in p.b]
-                    self.convertCodeList(aList)
-                    print(''.join(aList))
-                    ### p.b = ''.join(aList)
+                    try:
+                        self.convertCodeList(aList)
+                        print(''.join(aList))
+                        p.b = ''.join(aList)
+                    except Exception:
+                        g.es_print('\nc-to-py error: %s' % (p.h),color='red')
+                        g.es_exception()
 
                 g.es("done")
             #@+node:ekr.20110916215321.7997: *6* convertCodeList (main pattern function)
@@ -1969,7 +2259,7 @@ class editCommandsClass (baseEditCommandsClass):
                 ### if leoFlag: self.safe_replace(aList, "@code", "@c")
                 
                 # Next...
-                self.handleAllKeywords(aList)
+                self.handle_all_keywords(aList)
                 self.removeSemicolonsAtEndOfLines(aList)
                     # after processing for keywords
 
@@ -2005,7 +2295,7 @@ class editCommandsClass (baseEditCommandsClass):
                             n = 0
                     i = self.skip_past_line(aList, i)
             #@+node:ekr.20110916215321.8003: *7* mungeAllFunctions
-            def mungeAllFunctions(self,codeList):
+            def mungeAllFunctions(self,aList):
                 
                 '''
                 Scan for a '{' at the top level that is preceeded by ')'
@@ -2015,27 +2305,27 @@ class editCommandsClass (baseEditCommandsClass):
                 prevSemi = 0 # Previous semicolon: header contains all previous text
                 i = 0
                 firstOpen = None
-                while i < len(codeList):
-                    if self.is_string_or_comment(codeList,i):
-                        i = self.skip_string_or_comment(codeList,i)
+                while i < len(aList):
+                    if self.is_string_or_comment(aList,i):
+                        i = self.skip_string_or_comment(aList,i)
                         prevSemi = i
-                    elif self.match(codeList, i, '('):
+                    elif self.match(aList, i, '('):
                         if not firstOpen:
                             firstOpen = i
                         i += 1
-                    elif self.match(codeList, i, '#'):
-                        i = self.skip_past_line(codeList, i)
+                    elif self.match(aList, i, '#'):
+                        i = self.skip_past_line(aList, i)
                         prevSemi = i
-                    elif self.match(codeList, i, ';'):
+                    elif self.match(aList, i, ';'):
                         i += 1
                         prevSemi = i
-                    elif self.match_word(codeList, i, "@code"):
+                    elif self.match_word(aList, i, "@code"):
                         i += 5
                         prevSemi = i # restart the scan
-                    elif self.match_word(codeList, i, "@c"):
+                    elif self.match_word(aList, i, "@c"):
                         i += 2 ; prevSemi = i # restart the scan
-                    elif self.match(codeList, i, "{"):
-                        i = self.handlePossibleFunctionHeader(codeList,i,prevSemi,firstOpen)
+                    elif self.match(aList, i, "{"):
+                        i = self.handlePossibleFunctionHeader(aList,i,prevSemi,firstOpen)
                         prevSemi = i ; firstOpen = None # restart the scan
                     else: i += 1
             #@+node:ekr.20110916215321.8004: *8* handlePossibleFunctionHeader
@@ -2045,46 +2335,46 @@ class editCommandsClass (baseEditCommandsClass):
             # to
             # def y (z1,..zn): {
 
-            def handlePossibleFunctionHeader (self,codeList, i, prevSemi, firstOpen):
+            def handlePossibleFunctionHeader (self,aList, i, prevSemi, firstOpen):
 
-                assert(self.match(codeList,i,"{"))
-                prevSemi = self.skip_ws_and_nl(codeList, prevSemi)
-                close = self.prevNonWsOrNlChar(codeList, i)
-                if close < 0 or codeList[close] != ')':
-                    return 1 + self.skip_to_matching_bracket(codeList, i)
+                assert(self.match(aList,i,"{"))
+                prevSemi = self.skip_ws_and_nl(aList, prevSemi)
+                close = self.prevNonWsOrNlChar(aList, i)
+                if close < 0 or aList[close] != ')':
+                    return 1 + self.skip_to_matching_bracket(aList, i)
                 if not firstOpen:
-                    return 1 + self.skip_to_matching_bracket(codeList, i)
-                close2 = self.skip_to_matching_bracket(codeList, firstOpen)
+                    return 1 + self.skip_to_matching_bracket(aList, i)
+                close2 = self.skip_to_matching_bracket(aList, firstOpen)
                 if close2 != close:
-                    return 1 + self.skip_to_matching_bracket(codeList, i)
+                    return 1 + self.skip_to_matching_bracket(aList, i)
                 open = firstOpen
-                assert(codeList[open]=='(')
-                head = codeList[prevSemi:open]
+                assert(aList[open]=='(')
+                head = aList[prevSemi:open]
                 # do nothing if the head starts with "if", "for" or "while"
                 k = self.skip_ws(head,0)
                 if k >= len(head) or not head[k].isalpha():
-                    return 1 + self.skip_to_matching_bracket(codeList, i)
+                    return 1 + self.skip_to_matching_bracket(aList, i)
                 kk = self.skip_past_word(head,k)
                 if kk > k:
                     headString = ''.join(head[k:kk])
                     # C keywords that might be followed by '{'
                     # print "headString:", headString
                     if headString in [ "class", "do", "for", "if", "struct", "switch", "while"]:
-                        return 1 + self.skip_to_matching_bracket(codeList, i)
-                args = codeList[open:close+1]
-                k = 1 + self.skip_to_matching_bracket(codeList,i)
-                body = codeList[i:k]
+                        return 1 + self.skip_to_matching_bracket(aList, i)
+                args = aList[open:close+1]
+                k = 1 + self.skip_to_matching_bracket(aList,i)
+                body = aList[i:k]
                 #print "head:", ''.join(head)
                 #print "args:", ''.join(args)
                 #print "body:", ''.join(body)
-                #print "tot: ", ''.join(codeList[prevSemi:k])
+                #print "tot: ", ''.join(aList[prevSemi:k])
                 head = self.massageFunctionHead(head)
                 args = self.massageFunctionArgs(args)
                 body = self.massageFunctionBody(body)
                 #print "head2:", ''.join(head)
                 #print "args2:", ''.join(args)
                 #print "body2:", ''.join(body)
-                #print "tot2: ", ''.join(codeList[prevSemi:k])
+                #print "tot2: ", ''.join(aList[prevSemi:k])
                 result = []
                 for item in head:
                     result.append(item)
@@ -2093,7 +2383,7 @@ class editCommandsClass (baseEditCommandsClass):
                 for item in body:
                     result.append(item)
 
-                codeList[prevSemi:k] = result
+                aList[prevSemi:k] = result
                 return k
             #@+node:ekr.20110916215321.8005: *8* massageFunctionArgs
             def massageFunctionArgs (self,args):
@@ -2257,8 +2547,8 @@ class editCommandsClass (baseEditCommandsClass):
                             i = j
                     else: i += 1
                 return body
-            #@+node:ekr.20110916215321.8011: *7* handleAllKeywords
-            def handleAllKeywords(self,codeList):
+            #@+node:ekr.20110916215321.8011: *7* handle_all_keywords
+            def handle_all_keywords (self,aList):
                 
                 '''
                 converts if ( x ) to if x:
@@ -2266,48 +2556,48 @@ class editCommandsClass (baseEditCommandsClass):
                 '''
 
                 i = 0
-                while i < len(codeList):
-                    if self.is_string_or_comment(codeList,i):
-                        i = self.skip_string_or_comment(codeList,i)
+                while i < len(aList):
+                    if self.is_string_or_comment(aList,i):
+                        i = self.skip_string_or_comment(aList,i)
                     elif (
-                        self.match_word(codeList,i,"if") or
-                        self.match_word(codeList,i,"while") or
-                        self.match_word(codeList,i,"for") or
-                        self.match_word(codeList,i,"elif")
+                        self.match_word(aList,i,"if") or
+                        self.match_word(aList,i,"while") or
+                        self.match_word(aList,i,"for") or
+                        self.match_word(aList,i,"elif")
                     ):
-                        i = handleKeyword(codeList,i)
+                        i = self.handle_keyword(aList,i)
                     else:
                         i += 1
-                # print "handAllKeywords2:", ''.join(codeList)
-            #@+node:ekr.20110916215321.8012: *8* handleKeyword
-            def handleKeyword(self,codeList,i):
+                # print "handAllKeywords2:", ''.join(aList)
+            #@+node:ekr.20110916215321.8012: *8* handle_keyword
+            def handle_keyword (self,aList,i):
 
                 isFor = False
-                if self.match_word(codeList,i,"if"):
+                if self.match_word(aList,i,"if"):
                     i += 2
-                elif self.match_word(codeList,i,"elif"):
+                elif self.match_word(aList,i,"elif"):
                     i += 4
-                elif self.match_word(codeList,i,"while"):
+                elif self.match_word(aList,i,"while"):
                     i += 5
-                elif self.match_word(codeList,i,"for"):
+                elif self.match_word(aList,i,"for"):
                     i += 3
                     isFor = True
                 else: assert(0)
 
                 # Make sure one space follows the keyword.
                 k = i
-                i = self.skip_ws(codeList,i)
+                i = self.skip_ws(aList,i)
                 if k == i:
-                    c = codeList[i]
-                    codeList[i:i+1] = [ ' ', c ]
+                    c = aList[i]
+                    aList[i:i+1] = [ ' ', c ]
                     i += 1
 
                 # Remove '(' and matching ')' and add a ':'
-                if codeList[i] == "(":
-                    j = self.removeMatchingBrackets(codeList,i)
-                    if j > i and j < len(codeList):
-                        c = codeList[j]
-                        codeList[j:j+1] = [":", " ", c]
+                if aList[i] == "(":
+                    j = self.removeMatchingBrackets(aList,i)
+                    if j > i and j < len(aList):
+                        c = aList[j]
+                        aList[j:j+1] = [":", " ", c]
                         j = j + 2
                     return j
                 return i
@@ -2379,84 +2669,84 @@ class editCommandsClass (baseEditCommandsClass):
                     else:
                         i = self.skip_past_line(aList,i)
             #@+node:ekr.20110916215321.8027: *8* removeAtRoot
-            def removeAtRoot (self,codeList):
+            def removeAtRoot (self,aList):
 
-                i = self.skip_ws(codeList, 0)
-                if self.match_word(codeList,i,"@root"):
-                    j = self.skip_past_line(codeList,i)
-                    del codeList[i:j]
+                i = self.skip_ws(aList, 0)
+                if self.match_word(aList,i,"@root"):
+                    j = self.skip_past_line(aList,i)
+                    del aList[i:j]
 
-                while i < len(codeList):
-                    if self.is_string_or_comment(codeList,i):
-                        i = self.skip_string_or_comment(codeList,i)
-                    elif self.match(codeList,i,"\n"):
-                        i = self.skip_ws(codeList, i+1)
-                        if self.match_word (codeList,i,"@root"):
-                            j = self.skip_past_line(codeList,i)
-                            del codeList[i:j]
+                while i < len(aList):
+                    if self.is_string_or_comment(aList,i):
+                        i = self.skip_string_or_comment(aList,i)
+                    elif self.match(aList,i,"\n"):
+                        i = self.skip_ws(aList, i+1)
+                        if self.match_word (aList,i,"@root"):
+                            j = self.skip_past_line(aList,i)
+                            del aList[i:j]
                     else: i += 1
             #@+node:ekr.20110916215321.8028: *8* removeBlankLines
-            def removeBlankLines (self,codeList):
+            def removeBlankLines (self,aList):
 
                 i = 0
-                while i < len(codeList):
+                while i < len(aList):
                     j = i
-                    while j < len(codeList) and codeList[j] in " \t":
+                    while j < len(aList) and aList[j] in " \t":
                         j += 1
-                    if j == len(codeList) or codeList[j] == '\n':
-                        del codeList[i:j+1]
+                    if j == len(aList) or aList[j] == '\n':
+                        del aList[i:j+1]
                     else:
                         oldi = i
-                        i = self.skip_past_line(codeList,i)
+                        i = self.skip_past_line(aList,i)
             #@+node:ekr.20110916215321.8029: *8* removeExcessWs
-            def removeExcessWs (self,codeList):
+            def removeExcessWs (self,aList):
 
                 i = 0
-                i = self.removeExcessWsFromLine(codeList,i)
-                while i < len(codeList):
-                    if self.is_string_or_comment(codeList,i):
-                        i = self.skip_string_or_comment(codeList,i)
-                    elif self.match(codeList,i,'\n'):
+                i = self.removeExcessWsFromLine(aList,i)
+                while i < len(aList):
+                    if self.is_string_or_comment(aList,i):
+                        i = self.skip_string_or_comment(aList,i)
+                    elif self.match(aList,i,'\n'):
                         i += 1
-                        i = self.removeExcessWsFromLine(codeList,i)
+                        i = self.removeExcessWsFromLine(aList,i)
                     else: i += 1
             #@+node:ekr.20110916215321.8030: *8* removeExessWsFromLine
-            def removeExcessWsFromLine (self,codeList,i):
+            def removeExcessWsFromLine (self,aList,i):
 
-                assert(i==0 or codeList[i-1] == '\n')
-                i = self.skip_ws(codeList,i)
-                while i < len(codeList):
-                    if self.is_string_or_comment(codeList,i): break # safe
-                    elif self.match(codeList, i, '\n'): break
-                    elif self.match(codeList, i, ' ') or self.match(codeList, i, '\t'):
+                assert(i==0 or aList[i-1] == '\n')
+                i = self.skip_ws(aList,i)
+                while i < len(aList):
+                    if self.is_string_or_comment(aList,i): break # safe
+                    elif self.match(aList, i, '\n'): break
+                    elif self.match(aList, i, ' ') or self.match(aList, i, '\t'):
                         # Replace all whitespace by one blank.
                         k = i
-                        i = self.skip_ws(codeList,i)
-                        codeList[k:i] = [' ']
+                        i = self.skip_ws(aList,i)
+                        aList[k:i] = [' ']
                         i = k + 1 # make sure we don't go past a newline!
                     else: i += 1
                 return i
             #@+node:ekr.20110916215321.8031: *8* removeLeadingAtCode
-            def removeLeadingAtCode (self,codeList):
+            def removeLeadingAtCode (self,aList):
 
-                i = self.skip_ws_and_nl(codeList,0)
-                if self.match_word(codeList,i,"@code"):
-                    i = self.skip_ws_and_nl(codeList,5)
-                    del codeList[0:i]
-                elif self.match_word(codeList,i,"@c"):
-                    i = self.skip_ws_and_nl(codeList,2)
-                    del codeList[0:i]
+                i = self.skip_ws_and_nl(aList,0)
+                if self.match_word(aList,i,"@code"):
+                    i = self.skip_ws_and_nl(aList,5)
+                    del aList[0:i]
+                elif self.match_word(aList,i,"@c"):
+                    i = self.skip_ws_and_nl(aList,2)
+                    del aList[0:i]
             #@+node:ekr.20110916215321.8032: *8* removeMatchingBrackets
-            def removeMatchingBrackets (self,codeList, i):
+            def removeMatchingBrackets (self,aList, i):
 
-                j = self.skip_to_matching_bracket(codeList, i)
-                if j > i and j < len(codeList):
-                    # print "del brackets:", ''.join(codeList[i:j+1])
-                    c = codeList[j]
+                j = self.skip_to_matching_bracket(aList, i)
+                if j > i and j < len(aList):
+                    # print "del brackets:", ''.join(aList[i:j+1])
+                    c = aList[j]
                     if c == ')' or c == ']' or c == '}':
-                        del codeList[j:j+1]
-                        del codeList[i:i+1]
-                        # print "returning:", ''.join(codeList[i:j])
+                        del aList[j:j+1]
+                        del aList[i:i+1]
+                        # print "returning:", ''.join(aList[i:j])
                         return j - 1
                     else: return j + 1
                 else: return j

@@ -481,6 +481,11 @@
 <v t="ekr.20060804095015.1"><vh>@string close_flash_brackets = )]}</vh></v>
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 </v>
+<v t="ekr.20110917104720.9414"><vh>c-to-python settings</vh>
+<v t="ekr.20110917104720.9415"><vh>@data c-to-python-class-list</vh></v>
+<v t="ekr.20110917104720.9416"><vh>@data c-to-python-type-list</vh></v>
+<v t="ekr.20110917104720.9417"><vh>@data c-to-python-ivars-dict</vh></v>
+</v>
 <v t="ekr.20110611092035.16479"><vh>Emacs-like commands</vh>
 <v t="ekr.20071006153053"><vh>@bool add_ws_to_kill_ring = False</vh></v>
 <v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
@@ -8091,6 +8096,65 @@ for child in p.subtree():
         result.append('\n- %s\n\n' % (child.h))
 p.b = ''.join(result)
 c.undoer.afterChangeNodeContents(p,'promote-child-bodies',b)
+</t>
+<t tx="ekr.20110917104720.9414"></t>
+<t tx="ekr.20110917104720.9415"># The names of your classes, one per line.
+
+Commands
+vnode
+position
+</t>
+<t tx="ekr.20110917104720.9416"># The names of your typedef types and standard types, one per line.
+#
+# c-to-python converts::
+#
+#   new aType(...)
+#
+# to::
+#
+#   aType(...)
+
+char
+void
+short
+long
+int
+double
+float
+unsigned</t>
+<t tx="ekr.20110917104720.9417"># The instance variables (ivars) used by your programs classes.
+# This creates a dictionary.  Keys are class names, values are lists of ivars.
+
+# Lines ending with a colon specify keys.
+# All other lines are comma-delimited lists of ivars for the last-seen key.
+# Trailing commas are ignored.
+
+atFile:
+    mCommands, mErrors, mStructureErrors,
+    mTargetFileName, mOutputFileName, mOutputStream,
+    mStartSentinelComment, mEndSentinelComment, mRoot
+
+vnode:
+    mCommands, mJoinList, mIconVal, mTreeID, mT, mStatusBits
+
+tnode:
+    mBodyString, mBodyRTF, mJoinHead, mStatusBits, mFileIndex,
+    mSelectionStart, mSelectionLength, mCloneIndex,
+
+LeoFrame:
+    mNextFrame, mPrevFrame, mCommands,
+
+Commands:
+# public
+    mCurrentVnode, mLeoFrame, mInhibitOnTreeChanged, mMaxTnodeIndex,
+    mTreeCtrl, mBodyCtrl, mFirstWindowAndNeverSaved,
+#private
+    mTabWidth, mChanged, mOutlineExpansionLevel, mUsingClipboard,
+    mFileName, mMemoryInputStream, mMemoryOutputStream, mFileInputStream,
+    mInputFile, mFileOutputStream, mFileSize, mTopVnode, mTagList,
+    mMaxVnodeTag,
+    mUndoType, mUndoVnode, mUndoParent, mUndoBack, mUndoN,
+    mUndoDVnodes, mUndoLastChild, mUndoablyDeletedVnode,
 </t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
