@@ -1596,6 +1596,7 @@ class editCommandsClass (baseEditCommandsClass):
             'scroll-up-line':                       self.scrollUpLine,
             'scroll-up-page':                       self.scrollUpPage,
             'select-all':                           self.selectAllText,
+            'select-to-matching-bracket':           self.selectToMatchingBracket,
             # Exists, but can not be executed via the minibuffer.
             # 'self-insert-command':                self.selfInsertCommand,
             'set-comment-column':                   self.setCommentColumn,
@@ -1632,6 +1633,51 @@ class editCommandsClass (baseEditCommandsClass):
 
         # g.trace()
         pass
+    #@+node:ekr.20110916215321.6709: *3* brackets (leoEditCommands)
+    #@+node:ekr.20110916215321.6708: *4* selectToMatchingBracket
+    def selectToMatchingBracket (self,event):
+        
+        c = self.c ; k = c.k ; w = self.editWidget(event)
+        if not w: return
+        
+        i = w.getInsertPoint()
+        s = w.getAllText()
+        
+        allBrackets = self.openBracketsList + self.closeBracketsList
+        
+        if i < len(s) and s[i] in allBrackets:
+            ch = s[i]
+        elif i > 0 and s[i-1] in allBrackets:
+            i -= 1
+            ch = s[i]
+        else:
+            g.es('no bracket selected')
+            return
+
+        d = {}
+        if ch in self.openBracketsList:
+            for z in range(len(self.openBracketsList)):
+                d [self.openBracketsList[z]] = self.closeBracketsList[z]
+            reverse = False # Search forward
+        else:
+            for z in range(len(self.openBracketsList)):
+                d [self.closeBracketsList[z]] = self.openBracketsList[z]
+            reverse = True # Search backward
+
+        delim2 = d.get(ch)
+        
+        # This should be generalized...
+        language = g.findLanguageDirectives(c,c.p)
+        if language in ('c','cpp','csharp'):
+            j = g.skip_matching_c_delims(s,i,ch,delim2,reverse=reverse)
+        else:
+            j = g.skip_matching_python_delims(s,i,ch,delim2,reverse=reverse)
+        # g.trace(i,j,ch,delim2,reverse,language)
+        if j not in (-1,i):
+            if reverse:
+                i += 1; j += 1
+            w.setSelectionRange(i,j,ins=j)
+            w.see(j)
     #@+node:ekr.20100209160132.5763: *3* cache (leoEditCommands)
     def clearAllCaches (self,event=None):
         

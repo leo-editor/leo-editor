@@ -4209,6 +4209,79 @@ def skip_matching_python_delims(s,i,delim1,delim2,reverse=False):
             else: i += 1
             if i == progress: return -1
     return -1
+#@+node:ekr.20110916215321.6712: *4* g.skip_matching_c_delims
+def skip_matching_c_delims(s,i,delim1,delim2,reverse=False):
+
+    '''Skip from the opening delim to the matching delim2.
+
+    Return the index of the matching ')', or -1'''
+
+    level = 0
+    assert(g.match(s,i,delim1))
+    if reverse:
+        # Reverse scanning is tricky.
+        # This doesn't handle single-line comments properly.
+        while i >= 0:
+            progress = i
+            ch = s[i]
+            if ch == delim1:
+                level += 1 ; i -= 1
+            elif ch == delim2:
+                level -= 1
+                if level <= 0:  return i-1
+                i -= 1
+            elif ch in ('\'','"'):
+                i -= 1
+                while i >= 0:
+                    if s[i] == ch and not s[i-1] == '\\':
+                        i -= 1 ; break
+                    else:
+                        i -= 1
+            elif g.match(s,i,'*/'):
+                i += 2
+                while i >= 0:
+                    if g.match(s,i,'/*'):
+                        i -= 2
+                        break
+                    else:
+                        i -= 1
+            else: i -= 1
+            if i == progress:
+                g.trace('oops: reverse')
+                return -1
+    else:
+        while i < len(s):
+            progress = i
+            ch = s[i]
+            # g.trace(i,repr(ch))
+            if ch == delim1:
+                level += 1 ; i += 1
+            elif ch == delim2:
+                level -= 1 ; i += 1
+                if level <= 0:  return i
+            elif ch in ('\'','"'):
+                i += 1
+                while i < len(s):
+                    if s[i] == ch and not s[i-1] == '\\':
+                        i += 1 ; break
+                    else:
+                        i += 1
+            elif g.match(s,i,'//'):
+                i = g.skip_to_end_of_line(s,i+2)
+            elif g.match(s,i,'/*'):
+                i += 2
+                while i < len(s):
+                    if g.match(s,i,'*/'):
+                        i += 2
+                        break
+                    else:
+                        i += 1
+            else: i += 1
+            if i == progress:
+                g.trace('oops')
+                return -1
+    g.trace('not found')
+    return -1
 #@+node:ekr.20060627080947: *4* skip_matching_python_parens
 def skip_matching_python_parens(s,i):
 
