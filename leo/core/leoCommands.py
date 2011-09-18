@@ -4420,343 +4420,109 @@ class Commands (object):
         #@+others
         #@+node:ekr.20110917174948.6904: *8* __init__
         def __init__ (self,c):
-
-            self.array = []
-                # List of strings comprising the line being accumulated.
-                # Important: this list never crosses a line.
-            self.bracketLevel = 0
+            
             self.c = c
-            self.changed = False
-            self.dumping = False
-            self.erow = self.ecol = 0 # The ending row/col of the token.
-            self.lastName = None # The name of the previous token type.
-            self.line = 0 # Same as self.srow
-            self.lineParenLevel = 0
-            self.lines = [] # List of lines.
-            self.name = None
-            self.p = c.p
-            self.parenLevel = 0
-            self.prevName = None
-            self.s = None # The string containing the line.
-            self.squareBracketLevel = 0
-            self.srow = self.scol = 0 # The starting row/col of the token.
-            self.startline = True # True: the token starts a line.
-            self.tracing = False
-            #@+<< define dispatch dict >>
-            #@+node:ekr.20110917174948.6905: *9* << define dispatch dict >>
-            self.dispatchDict = {
-
-                "comment":    self.doMultiLine,
-                "dedent":     self.doDedent,
-                "endmarker":  self.doEndMarker,
-                "errortoken": self.doErrorToken,
-                "indent":     self.doIndent,
-                "name":       self.doName,
-                "newline":    self.doNewline,
-                "nl" :        self.doNewline,
-                "number":     self.doNumber,
-                "op":         self.doOp,
-                "string":     self.doMultiLine,
-            }
-            #@-<< define dispatch dict >>
-        #@+node:ekr.20110917174948.6928: *8* Others
-        #@+node:ekr.20110917174948.6906: *9* clear
-        def clear (self):
-            self.lines = []
-        #@+node:ekr.20110917174948.6907: *9* dumpLines
-        def dumpLines (self,p,lines):
-
-            g.pr('\n','-'*10,p.cleanHeadString())
-
-            if 0:
-                for line in lines:
-                    line2 = g.toEncodedString(line,reportErrors=True)
-                    g.pr(line2,newline=False) # Don't add a trailing newline!)
-            else:
-                for i in range(len(lines)):
-                    line = lines[i]
-                    line = g.toEncodedString(line,reportErrors=True)
-                    g.pr("%3d" % i, repr(lines[i]))
-        #@+node:ekr.20110917174948.6908: *9* dumpToken
-        def dumpToken (self,token5tuple):
-
-            t1,t2,t3,t4,t5 = token5tuple
-            srow,scol = t3 ; erow,ecol = t4
-            line = str(t5) # can fail
-            name = token.tok_name[t1].lower()
-            val = str(t2) # can fail
-
-            startLine = self.line != srow
-            if startLine:
-                g.pr("----- line",srow,repr(line))
-            self.line = srow
-
-            g.pr("%10s (%2d,%2d) %-8s" % (name,scol,ecol,repr(val)))
-        #@+node:ekr.20110917174948.6909: *9* endUndo
-        def endUndo (self):
-
-            c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
-            current = c.p
-
-            if self.changed:
-                # Tag the end of the command.
-                u.afterChangeGroup(current,undoType,dirtyVnodeList=self.dirtyVnodeList)
-        #@+node:ekr.20110917174948.6910: *9* get
-        def get (self):
-
-            if self.lastName != 'newline' and self.lines:
-                # Strip the trailing whitespace from the last line.
-                self.lines[-1] = self.lines[-1].rstrip()
-
-            return self.lines
-        #@+node:ekr.20110917174948.6912: *9* put
-        def put (self,s,strip=True):
-
-            """Put s to self.array, and strip trailing whitespace if strip is True."""
-
-            if self.array and strip:
-                prev = self.array[-1]
-                if len(self.array) == 1:
-                    if prev.rstrip():
-                        # Stripping trailing whitespace doesn't strip leading whitespace.
-                        self.array[-1] = prev.rstrip()
-                else:
-                    # The previous entry isn't leading whitespace, so we can strip whitespace.
-                    self.array[-1] = prev.rstrip()
-
-            self.array.append(s)
-        #@+node:ekr.20110917174948.6913: *9* putArray
-        def putArray (self):
-
-            """Add the next text by joining all the strings is self.array"""
-
-            self.lines.append(''.join(self.array))
-            self.array = []
-            self.lineParenLevel = 0
-        #@+node:ekr.20110917174948.6914: *9* putNormalToken & allies
-        def putNormalToken (self,token5tuple):
-
-            t1,t2,t3,t4,t5 = token5tuple
-            self.name = token.tok_name[t1].lower() # The token type
-            self.val = t2  # the token string
-            self.srow,self.scol = t3 # row & col where the token begins in the source.
-            self.erow,self.ecol = t4 # row & col where the token ends in the source.
-            self.s = t5 # The line containing the token.
-            self.startLine = self.line != self.srow
-            self.line = self.srow
-
-            if self.startLine:
-                self.doStartLine()
-
-            f = self.dispatchDict.get(self.name,self.oops)
-            self.trace()
-            f()
-            self.lastName = self.name
-        #@+node:ekr.20110917174948.6915: *10* doEndMarker
-        def doEndMarker (self):
-
-            self.putArray()
-        #@+node:ekr.20110917174948.6916: *10* doErrorToken
-        def doErrorToken (self):
-
-            self.array.append(self.val)
-
-            # This code is executed for versions of Python earlier than 2.4
-            if self.val == '@':
-                # Preserve whitespace after @.
-                i = g.skip_ws(self.s,self.scol+1)
-                ws = self.s[self.scol+1:i]
-                if ws:
-                    self.array.append(ws)
-        #@+node:ekr.20110917174948.6917: *10* doIndent & doDedent
-        def doDedent (self):
-
-            pass
-
-        def doIndent (self):
-
-            self.array.append(self.val)
-        #@+node:ekr.20110917174948.6918: *10* doMultiLine (strings, etc).
-        def doMultiLine (self):
-
-            # Ensure a blank before comments not preceded entirely by whitespace.
-
-            if self.val.startswith('#') and self.array:
-                prev = self.array[-1]
-                if prev and prev[-1] != ' ':
-                    self.put(' ') 
-
-            # These may span lines, so duplicate the end-of-line logic.
-            lines = g.splitLines(self.val)
-            for line in lines:
-                self.array.append(line)
-                if line and line[-1] == '\n':
-                    self.putArray()
-
-            # Add a blank after the string if there is something in the last line.
-            if self.array:
-                line = self.array[-1]
-                if line.strip():
-                    self.put(' ')
-
-            # Suppress start-of-line logic.
-            self.line = self.erow
-        #@+node:ekr.20110917174948.6919: *10* doName
-        def doName(self):
-
-            # Ensure whitespace or start-of-line precedes the name.
-            if self.array:
-                last = self.array[-1]
-                ch = last[-1]
-                outer = self.parenLevel == 0 and self.squareBracketLevel == 0
-                chars = '@ \t{([.'
-                if not outer: chars += ',=<>*-+&|/'
-                if ch not in chars:
-                    self.array.append(' ')
-
-            self.array.append("%s " % self.val)
-
-            if self.prevName == "def": # A personal idiosyncracy.
-                self.array.append(' ') # Retain the blank before '('.
-
-            self.prevName = self.val
-        #@+node:ekr.20110917174948.6920: *10* doNewline
-        def doNewline (self):
-
-            # Remove trailing whitespace.
-            # This never removes trailing whitespace from multi-line tokens.
-            if self.array:
-                self.array[-1] = self.array[-1].rstrip()
-
-            self.array.append('\n')
-            self.putArray()
-        #@+node:ekr.20110917174948.6921: *10* doNumber
-        def doNumber (self):
-
-            self.array.append(self.val)
-        #@+node:ekr.20110917174948.6922: *10* doOp
-        def doOp (self):
-
-            val = self.val
-            outer = self.lineParenLevel <= 0 or (self.parenLevel == 0 and self.squareBracketLevel == 0)
-            # New in Python 2.4: '@' is an operator, not an error token.
-            if self.val == '@':
-                self.array.append(self.val)
-                # Preserve whitespace after @.
-                i = g.skip_ws(self.s,self.scol+1)
-                ws = self.s[self.scol+1:i]
-                if ws: self.array.append(ws)
-            elif val == '(':
-                # Nothing added; strip leading blank before function calls but not before Python keywords.
-                strip = self.lastName=='name' and not keyword.iskeyword(self.prevName)
-                self.put('(',strip=strip)
-                self.parenLevel += 1 ; self.lineParenLevel += 1
-            elif val in ('=','==','+=','-=','!=','<=','>=','<','>','<>','*','**','+','&','|','/','//'):
-                # Add leading and trailing blank in outer mode.
-                s = g.choose(outer,' %s ','%s')
-                self.put(s % val)
-            elif val in ('^','~','{','['):
-                # Add leading blank in outer mode.
-                s = g.choose(outer,' %s','%s')
-                self.put(s % val)
-                if val == '[': self.squareBracketLevel += 1
-            elif val in (',',':','}',']',')'):
-                # Add trailing blank in outer mode.
-                s = g.choose(outer,'%s ','%s')
-                self.put(s % val)
-                if val == ']': self.squareBracketLevel -= 1
-                if val == ')':
-                    self.parenLevel -= 1 ; self.lineParenLevel -= 1
-            # ----- no difference between outer and inner modes ---
-            elif val in (';','%'):
-                # Add leading and trailing blank.
-                self.put(' %s ' % val)
-            elif val == '>>':
-                # Add leading blank.
-                self.put(' %s' % val)
-            elif val == '<<':
-                # Add trailing blank.
-                self.put('%s ' % val)
-            elif val in ('-'):
-                # Could be binary or unary.  Or could be a hyphen in a section name.
-                # Add preceding blank only for non-id's.
-                if outer:
-                    if self.array:
-                        prev = self.array[-1].rstrip()
-                        if prev and not g.isWordChar(prev[-1]):
-                            self.put(' %s' % val)
-                        else: self.put(val)
-                    else: self.put(val) # Try to leave whitespace unchanged.
-                else:
-                    self.put(val)
-            else:
-                self.put(val)
-        #@+node:ekr.20110917174948.6923: *10* doStartLine
-        def doStartLine (self):
-
-            before = self.s[0:self.scol]
-            i = g.skip_ws(before,0)
-            self.ws = self.s[0:i]
-
-            if self.ws:
-                self.array.append(self.ws)
-        #@+node:ekr.20110917174948.6924: *10* oops
-        def oops(self):
-
-            g.pr("unknown PrettyPrinting code: %s" % (self.name))
-        #@+node:ekr.20110917174948.6925: *10* trace
-        def trace(self):
-
-            if self.tracing:
-
-                g.trace("%10s: %s" % (
-                    self.name,
-                    repr(g.toEncodedString(self.val))
-                ))
-        #@+node:ekr.20110917174948.6926: *9* putToken
-        def putToken (self,token5tuple):
-
-            if self.dumping:
-                self.dumpToken(token5tuple)
-            else:
-                self.putNormalToken(token5tuple)
-        #@+node:ekr.20110917174948.6927: *9* replaceBody
-        def replaceBody (self,p,lines):
-
-            c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
-            sel = c.frame.body.getInsertPoint()
-            oldBody = p.b
-            body = ''.join(lines)
-
-            if oldBody != body:
-                if not self.changed:
-                    # Start the group.
-                    u.beforeChangeGroup(p,undoType)
-                    self.changed = True
-                    self.dirtyVnodeList = []
-                undoData = u.beforeChangeNodeContents(p)
-                c.setBodyString(p,body)
-                dirtyVnodeList2 = p.setDirty()
-                self.dirtyVnodeList.extend(dirtyVnodeList2)
-                u.afterChangeNodeContents(p,undoType,undoData,dirtyVnodeList=self.dirtyVnodeList)
-        #@+node:ekr.20110917174948.6911: *8* prettyPrintNode
-        def prettyPrintNode(self,p,dump):
+            
+            self.brackets = 0
+                # The number of brackets seen that increase indentation level.
+            self.ignored_brackets = 0
+                # The number of '}' to ignore before reducing self.brackets.
+            self.ignore_ws = False
+                # True: ignore the next whitespace token if any.
+            self.result = []
+                # The list of tokens that form the final result.
+            self.tab_width = 4
+                # The number of spaces in each unit of leading indentation.
+        #@+node:ekr.20110917174948.6911: *8* indent & helpers
+        def indent (self,p):
 
             c = self.c
             if not p.b: return
             
             aList = self.tokenize(p.b)
-            return
-            
-            for s in aList:
-                self.putToken()
-                
-            s = ''.join(self.result)
+            assert ''.join(aList) == p.b
 
-            if dump:
-                self.dumpLines(p,s)
-            else:
+            self.bracketLevel = 0
+            self.result = []
+            for s in aList:
+                self.put_token(s)
+
+            s = ''.join(self.result)
+            g.trace(s)
+
+            if 0:
                 p.b = s
+        #@+node:ekr.20110917204542.6967: *9* put_token
+        def put_token (self,s):
+            
+            '''Append token s to self.result as is,
+            *except* for adjusting leading whitespace and comments.
+            
+            '{' tokens bump self.brackets or self.ignored_brackets.
+            self.brackets determines leading whitespace.
+            '''
+            
+            # The ignore_ws flag applies only to the next whitespace token.
+            if not s.isspace():
+                self.ignore_ws = False
+            
+            if s == '{':
+                # Increase brackets unless '=' precedes it.
+                if self.prev_token('='):
+                    self.ignored_brackets += 1
+                else:
+                    self.brackets += 1
+            elif s == '}':
+                if self.ignored_brackets:
+                    self.ignored_brackets -= 1
+                else:
+                    self.brackets -= 1
+                    self.remove_indent()
+            elif s == '\n':
+                # Add the proper whitespace to the token.
+                s = '\n%s' % (' ' * self.brackets * self.tab_width)
+                self.ignore_ws = True
+            elif s.isspace() and self.ignore_ws:
+                # Kill the whitespace.
+                s = ''
+            elif s.startswith('/*'):
+                pass ### To do: reformat block comments.
+            else:
+                pass # put s as it is.
+            
+            if s:
+                self.result.append(s)
+            
+        #@+node:ekr.20110917204542.6968: *9* prev_token
+        def prev_token (self,s):
+            
+            '''Return the previous token, ignoring whitespace and comments.'''
+            
+            return False ###
+            
+            i = len(self.result)-1
+            while i >= 0:
+                s2 = self.result[i]
+                if s == s2:
+                    return True
+                elif s.isspace() or s.startswith('//') or s.startswith ('/*'):
+                    i -= 1
+                else:
+                    return False
+        #@+node:ekr.20110917204542.6969: *9* remove_indent
+        def remove_indent (self):
+            
+            '''Remove one tab-width of blanks from the previous token.'''
+            
+            n = len(self.result)
+            w = self.tab_width
+            
+            if n > 0:
+                s = self.result[-1]
+                if s.isspace():
+                    self.result.pop()
+                    self.result.append(s[:-w])
+                    
         #@+node:ekr.20110917174948.6930: *8* tokenize & helper
         def tokenize (self,s):
             
@@ -4786,11 +4552,13 @@ class Commands (object):
                     # Accumulate everything else.
                     while (
                         j < n and
-                        s[j] not in '@"\' \t\n_' and
+                        not s[j].isspace() and
+                        not s[j].isalpha() and
+                        not s[j] in '"\'_@' and
+                            # start of strings, identifiers, and single-character tokens.
                         not g.match(s,j,'//') and
                         not g.match(s,j,'/*') and
-                        not g.match(s,j,'-->') and
-                        not s[j].isalpha()
+                        not g.match(s,j,'-->')
                     ):
                         j += 1
                     
@@ -4815,16 +4583,22 @@ class Commands (object):
         
         cpp = CPrettyPrinter(c)
         p2 = g.findNodeAnywhere(c,'c tokenize test')
-        aList = cpp.tokenize(p2.b)
-        assert(p2.b == ''.join(aList))
-        if 0:
+        
+        if 1: # test of indent.
             import os ; os.system('cls')
-            print('*' * 40)
-            # print(''.join(aList))
-            for z in aList:
-                print(repr(z))
-        else:
-            print('pass')
+            cpp.indent(p2)
+        
+        if 0: # test of tokenize.
+            aList = cpp.tokenize(p2.b)
+            assert(p2.b == ''.join(aList))
+            if 0:
+                import os ; os.system('cls')
+                print('*' * 40)
+                # print(''.join(aList))
+                for z in aList:
+                    print(repr(z))
+            else:
+                print('pass')
     #@+node:ekr.20040711135244.5: *7* class PythonPrettyPrinter
     class PythonPrettyPrinter:
 
@@ -5210,7 +4984,7 @@ class Commands (object):
 
         for p in root.self_and_subtree():
             if g.scanForAtLanguage(c,p) == "c":
-                pp.prettyPrintNode(p,dump=dump)
+                pp.indent(p)
 
         pp.endUndo()
 
