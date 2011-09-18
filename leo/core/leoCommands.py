@@ -4424,11 +4424,13 @@ class Commands (object):
             self.c = c
             
             self.brackets = 0
-                # The number of brackets seen that increase indentation level.
+                # The brackets indentation level.
             self.ignored_brackets = 0
                 # The number of '}' to ignore before reducing self.brackets.
             self.ignore_ws = False
                 # True: ignore the next whitespace token if any.
+            self.parens = 0
+                # The parenthesis nesting level.
             self.result = []
                 # The list of tokens that form the final result.
             self.tab_width = 4
@@ -4478,15 +4480,22 @@ class Commands (object):
                 else:
                     self.brackets -= 1
                     self.remove_indent()
+            elif s == ')':
+                self.parens += 1
+            elif s == '(':
+                self.parens = max(0,self.parens-1)
             elif s == '\n':
-                # Add the proper whitespace to the token.
-                s = '\n%s' % (' ' * self.brackets * self.tab_width)
-                self.ignore_ws = True
+                if self.parens == 0:
+                    # Add the proper whitespace to the token.
+                    s = '\n%s' % (' ' * self.brackets * self.tab_width)
+                    self.ignore_ws = True
+                else:
+                    pass # Use the existing indentation.
             elif s.isspace() and self.ignore_ws:
                 # Kill the whitespace.
                 s = ''
             elif s.startswith('/*'):
-                pass ### To do: reformat block comments.
+                pass # Possible: reformat block comments.
             else:
                 pass # put s as it is.
             
