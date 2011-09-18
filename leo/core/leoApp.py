@@ -67,6 +67,7 @@ class LeoApp:
         self.idleTimeHook = False
             # True: the global idleTimeHookHandler will reshedule itself.
         self.inBridge = False # True: running from leoBridge module.
+        self.inScript = False # True: executing a script.
         self.initing = True # True: we are initiing the app.
         self.killed = False # True: we are about to destroy the root window.
         self.leoID = None # The id part of gnx's.

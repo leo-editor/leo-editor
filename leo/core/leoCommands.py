@@ -2127,12 +2127,21 @@ class Commands (object):
                     c.inCommand = False
                     if writeScriptFile:
                         scriptFile = self.writeScriptFile(script)
-                        if g.isPython3:
-                            exec(compile(script,scriptFile,'exec'),d)
-                        else:
-                            execfile(scriptFile,d)
+                        
+                        g.app.inScript = True
+                        try:
+                            if g.isPython3:
+                                exec(compile(script,scriptFile,'exec'),d)
+                            else:
+                                execfile(scriptFile,d)
+                        finally:
+                            g.app.inScript = False
                     else:
-                        exec(script,d)
+                        g.app.inScript = True
+                        try:
+                            exec(script,d)
+                        finally:
+                            g.app.inScript = False
                     if 0: # This message switches panes, and can be disruptive.
                         if not script1 and not silent:
                             # Careful: the script may have changed the log tab.
@@ -4587,8 +4596,10 @@ class Commands (object):
             else:
                 return j + 2
         #@-others
-
-    if 0: # test
+        
+    # print('inScript',g.app.inScript)
+        
+    if g.app.inScript:
         
         cpp = CPrettyPrinter(c)
         p2 = g.findNodeAnywhere(c,'c tokenize test')

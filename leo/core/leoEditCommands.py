@@ -2813,7 +2813,7 @@ class editCommandsClass (baseEditCommandsClass):
                 if self.match(s,i,pat):
                     j = i + len(pat)
                     if j >= len(s):
-                        g.trace(i,pat)
+                        # g.trace(i,pat)
                         return True
                     else:
                         ch = s[j]
