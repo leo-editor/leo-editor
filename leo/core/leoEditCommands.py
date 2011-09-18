@@ -2418,7 +2418,7 @@ class editCommandsClass (baseEditCommandsClass):
                 result.append(':')
                 # print "new args:", ''.join(result)
                 return result
-            #@+node:ekr.20110916215321.8006: *8* massageFunctionHead (sets gClassName)
+            #@+node:ekr.20110916215321.8006: *8* massageFunctionHead (sets .class_name)
             def massageFunctionHead (self,head):
 
                 # print "head:", ''.join(head)
