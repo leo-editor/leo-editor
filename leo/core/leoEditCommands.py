@@ -1683,8 +1683,8 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20110916215321.8054: *4* cToPy (leoEditCommands)
     def cToPy (self,event):
         
-        #@+<< docstring >>
-        #@+node:ekr.20110916215321.7982: *5* << docstring >>
+        #@+<< docstring: c-to-python >>
+        #@+node:ekr.20110916215321.7982: *5* << docstring: c-to-python >>
         ''' The c-to-python command converts C or C++ text to python text. The
         conversion is not complete. Nevertheless, c2py eliminates much of the tedious
         text manipulation that would otherwise be required.
@@ -1785,13 +1785,11 @@ class editCommandsClass (baseEditCommandsClass):
             Removes trailing whitespace from all lines.
 
         '''
-        #@-<< docstring >>
+        #@-<< docstring: c-to-python >>
         
-        #@+others
-        #@+node:ekr.20110916215321.8055: *5* class C_to_python
         class C_to_python:
-            
             #@+<< docstring: theory of operation >>
+            #@+middle:ekr.20110918184425.6914: *5* class C_to_python
             #@+node:ekr.20110916215321.7983: *6* << docstring: theory of operation >>
             #@@nocolor-node
 
@@ -1817,8 +1815,8 @@ class editCommandsClass (baseEditCommandsClass):
             That's all.
             '''
             #@-<< docstring: theory of operation >>
-            
             #@+others
+            #@+node:ekr.20110918184425.6914: *5* class C_to_python
             #@+node:ekr.20110916215321.8056: *6* Unused
             if 0:
                 #@+others
@@ -2129,8 +2127,9 @@ class editCommandsClass (baseEditCommandsClass):
             #@+node:ekr.20110916215321.8057: *6* ctor & helpers
             def __init__ (self,c):
                 
+                # g.trace('(cToPy)',c)
                 self.c = c
-                self.p = c.p.copy()
+                self.p = self.c.p.copy()
                 
                 aList = g.get_directives_dict_list(self.p)
                 self.tab_width = g.scanAtTabwidthDirectives(aList) or 4
@@ -2213,17 +2212,32 @@ class editCommandsClass (baseEditCommandsClass):
             #@+node:ekr.20110916215321.8058: *6* go
             def go (self):
                 
+                c = self.c
+                u = c.undoer ; undoType = 'c-to-python'
+                pp = c.CPrettyPrinter(c)
+                
+                u.beforeChangeGroup(c.p,undoType)
+                dirtyVnodeList = []
+                changed = False
+                
                 for p in self.p.self_and_subtree():
-                    print("\nconverting:",p.h)
-                    aList = [z for z in p.b]
-                    try:
-                        self.convertCodeList(aList)
-                        print(''.join(aList))
-                        p.b = ''.join(aList)
-                    except Exception:
-                        g.es_print('\nc-to-py error: %s' % (p.h),color='red')
-                        g.es_exception()
-
+                    g.es("converting:",p.h)
+                    bunch = u.beforeChangeNodeContents(p,oldBody=p.b)
+                    s = pp.indent(p)
+                    # s = p.b # Indent is not ready yet.
+                    aList = [z for z in s]
+                    self.convertCodeList(aList)
+                    s = ''.join(aList)
+                    if s != p.b:
+                        p.b = s
+                        p.v.setDirty()
+                        dirtyVnodeList.append(p.v)
+                        c.undoer.afterChangeNodeContents(p,undoType,bunch)
+                        changed = True
+                            
+                if changed:
+                    u.afterChangeGroup(c.p,undoType,
+                        reportFlag=False,dirtyVnodeList=dirtyVnodeList)
                 g.es("done")
             #@+node:ekr.20110916215321.7997: *6* convertCodeList (main pattern function)
             def convertCodeList(self,aList): ### firstPart,leoFlag):
@@ -3063,9 +3077,10 @@ class editCommandsClass (baseEditCommandsClass):
                     else: break
                 return i
             #@-others
-        #@-others
 
         C_to_python(self.c).go()
+        
+        self.c.bodyWantsFocus()
     #@+node:ekr.20100209160132.5763: *3* cache (leoEditCommands)
     def clearAllCaches (self,event=None):
         
@@ -8093,6 +8108,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'about-leo':                    c.about,
             'add-comments':                 c.addComments,     
             'beautify':                     c.beautifyPythonCode,
+            'beautify-c':                   c.beautifyCCode,
             'beautify-all':                 c.beautifyAllPythonCode,
             'beautify-tree':                c.beautifyPythonTree,
             'cascade-windows':              f.cascade,

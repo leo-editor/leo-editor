@@ -4425,7 +4425,7 @@ class Commands (object):
     #@+node:ekr.20040711135959.1: *6* Pretty Print commands
     #@+node:ekr.20110917174948.6903: *7* class CPrettyPrinter
     class CPrettyPrinter:
-
+        
         #@+others
         #@+node:ekr.20110917174948.6904: *8* __init__
         def __init__ (self,c):
@@ -4452,18 +4452,20 @@ class Commands (object):
             
             aList = self.tokenize(p.b)
             assert ''.join(aList) == p.b
+            
+            if 0:
+                for z in aList:
+                    print(repr(z))
 
             self.bracketLevel = 0
+            self.parens = 0
             self.result = []
             for s in aList:
                 self.put_token(s)
 
             s = ''.join(self.result)
-            g.trace(s)
-
-            if 0:
-                p.b = s
-        #@+node:ekr.20110917204542.6967: *9* put_token
+            return s
+        #@+node:ekr.20110917204542.6967: *9* put_token & helpers
         def put_token (self,s):
             
             '''Append token s to self.result as is,
@@ -4477,26 +4479,35 @@ class Commands (object):
             if not s.isspace():
                 self.ignore_ws = False
             
+            # if s == '{':
+                # # Increase brackets unless '=' precedes it.
+                # if self.prev_token('='):
+                    # self.ignored_brackets += 1
+                # else:
+                    # self.brackets += 1
+            # elif s == '}':
+                # if self.ignored_brackets:
+                    # self.ignored_brackets -= 1
+                # else:
+                    # self.brackets -= 1
+                    # self.remove_indent()
+                    
+            # It doesn't hurt to increase indentation after *all* '{'.
             if s == '{':
-                # Increase brackets unless '=' precedes it.
-                if self.prev_token('='):
-                    self.ignored_brackets += 1
-                else:
-                    self.brackets += 1
+                self.brackets += 1
             elif s == '}':
-                if self.ignored_brackets:
-                    self.ignored_brackets -= 1
-                else:
-                    self.brackets -= 1
-                    self.remove_indent()
-            elif s == ')':
-                self.parens += 1
+                self.brackets -= 1
+                self.remove_indent()
             elif s == '(':
-                self.parens = max(0,self.parens-1)
+                self.parens += 1
+            elif s == ')':
+                self.parens -= 1
             elif s == '\n':
-                if self.parens == 0:
+                # g.trace('newline',self.parens)
+                if self.parens <= 0:
                     # Add the proper whitespace to the token.
-                    s = '\n%s' % (' ' * self.brackets * self.tab_width)
+                    self.result.append('\n')
+                    s = ' ' * self.brackets * self.tab_width
                     self.ignore_ws = True
                 else:
                     pass # Use the existing indentation.
@@ -4504,19 +4515,17 @@ class Commands (object):
                 # Kill the whitespace.
                 s = ''
             elif s.startswith('/*'):
-                pass # Possible: reformat block comments.
+                s = self.reformat_block_comment(s)
             else:
                 pass # put s as it is.
             
             if s:
                 self.result.append(s)
             
-        #@+node:ekr.20110917204542.6968: *9* prev_token
+        #@+node:ekr.20110917204542.6968: *10* prev_token
         def prev_token (self,s):
             
             '''Return the previous token, ignoring whitespace and comments.'''
-            
-            return False ###
             
             i = len(self.result)-1
             while i >= 0:
@@ -4527,20 +4536,23 @@ class Commands (object):
                     i -= 1
                 else:
                     return False
-        #@+node:ekr.20110917204542.6969: *9* remove_indent
+        #@+node:ekr.20110918184425.6916: *10* reformat_block_comment
+        def reformat_block_comment (self,s):
+            
+            return s
+        #@+node:ekr.20110917204542.6969: *10* remove_indent
         def remove_indent (self):
             
             '''Remove one tab-width of blanks from the previous token.'''
             
-            n = len(self.result)
-            w = self.tab_width
+            w = abs(self.tab_width)
             
-            if n > 0:
+            if self.result:
                 s = self.result[-1]
-                if s.isspace():
+                if s.isspace() and s.find('\n') == -1:
                     self.result.pop()
+                    s = s.replace('\t',' ' * w)
                     self.result.append(s[:-w])
-                    
         #@+node:ekr.20110917174948.6930: *8* tokenize & helper
         def tokenize (self,s):
             
@@ -4555,8 +4567,8 @@ class Commands (object):
                     j = g.skip_line(s,i)
                 elif g.match(s,i,'/*'):
                     j = self.skip_block_comment(s,i)
-                elif g.match(s,i,'-->'):
-                    j = i + 3
+                # elif g.match(s,i,'-->'):
+                    # j = i + 3
                 elif ch in "'\"":
                     j = g.skip_string(s,i)
                 elif ch.isalpha() or ch == '_':
@@ -4568,17 +4580,17 @@ class Commands (object):
                 else:
                     j += 1
                     # Accumulate everything else.
-                    while (
-                        j < n and
-                        not s[j].isspace() and
-                        not s[j].isalpha() and
-                        not s[j] in '"\'_@' and
-                            # start of strings, identifiers, and single-character tokens.
-                        not g.match(s,j,'//') and
-                        not g.match(s,j,'/*') and
-                        not g.match(s,j,'-->')
-                    ):
-                        j += 1
+                    # while (
+                        # j < n and
+                        # not s[j].isspace() and
+                        # not s[j].isalpha() and
+                        # not s[j] in '"\'_@' and
+                            # # start of strings, identifiers, and single-character tokens.
+                        # not g.match(s,j,'//') and
+                        # not g.match(s,j,'/*') and
+                        # not g.match(s,j,'-->')
+                    # ):
+                        # j += 1
                     
                 assert j > i
                 result.append(''.join(s[i:j]))
@@ -4596,8 +4608,6 @@ class Commands (object):
             else:
                 return j + 2
         #@-others
-        
-    # print('inScript',g.app.inScript)
         
     if g.app.inScript:
         
@@ -4989,30 +4999,35 @@ class Commands (object):
         '''Reformat all Python code in the outline.'''
 
         return self.prettyPrintAllPythonCode (event,dump)
-    #@+node:ekr.20110917174948.6877: *7* prettyPrintCCode
-    def prettyPrintCCode (self,event=None,p=None,dump=False):
+    #@+node:ekr.20110917174948.6877: *7* beautifyCCode
+    def beautifyCCode (self,event=None):
 
         '''Reformat all C code in the selected tree.'''
 
         c = self
-        root = p and p.copy() or c.p
+        pp = c.CPrettyPrinter(c)
+        u = c.undoer ; undoType = 'beautify-c'
         
-        #@+others
-        #@-others
+        u.beforeChangeGroup(c.p,undoType)
+        dirtyVnodeList = []
+        changed = False
 
-        pp = CPrettyPrinter(c)
-
-        for p in root.self_and_subtree():
+        for p in c.p.self_and_subtree():
             if g.scanForAtLanguage(c,p) == "c":
-                pp.indent(p)
+                bunch = u.beforeChangeNodeContents(p,oldBody=p.b)
+                s = pp.indent(p)
+                if p.b != s:
+                    p.b = s
+                    p.v.setDirty()
+                    dirtyVnodeList.append(p.v)
+                    u.afterChangeNodeContents(p,undoType,bunch)
+                    changed = True
 
-        pp.endUndo()
-
-    # For unit test of inverse commands dict.
-    def beautifyCCode (self,event=None,dump=False):
-        
-        '''Beautify all Python code in the selected tree.'''
-        return self.prettyPrintCCode (event,dump)
+        if changed:
+            u.afterChangeGroup(c.p,undoType,
+                reportFlag=False,dirtyVnodeList=dirtyVnodeList)
+                
+        c.bodyWantsFocus()
     #@+node:ekr.20040712053025.1: *7* prettyPrintPythonCode
     def prettyPrintPythonCode (self,event=None,p=None,dump=False):
 
