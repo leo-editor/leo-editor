@@ -790,17 +790,7 @@ If you actually want the text of the abbrev in the buffer, rather than its
 expansion, you can accomplish this by inserting the following punctuation with
 C-q. Thus, foo C-q , leaves `foo,' in the buffer.
 .. @+node:ekr.20060628103226.3: *5* Make sure repeat counts work on basic editing commands
-.. @+node:ekr.20110527225107.18352: *4* Maybe: 5
-.. @+node:ekr.20090724081340.5987: *5* Improve recursive import script and @auto
-Instead of adding an @ignore directive, it might be better
-to change @auto to @@auto.
-
-Should @auto be more lenient with C files?
-
-Improve the recursive import script.
-    - Minimize the path names
-    - Option to include/exclude the @auto itself
-
+.. @+node:ekr.20110527225107.18352: *4* Maybe: 4
 .. @+node:ekr.20051110155735.1: *5* Improve Spell tab & spell checker
 @nocolor
 

@@ -4453,6 +4453,8 @@ class Commands (object):
             aList = self.tokenize(p.b)
             assert ''.join(aList) == p.b
             
+            aList = self.add_statement_braces(aList)
+            
             if 0:
                 for z in aList:
                     print(repr(z))
@@ -4465,6 +4467,100 @@ class Commands (object):
 
             s = ''.join(self.result)
             return s
+        #@+node:ekr.20110918225821.6815: *9* add_statement_braces
+        def add_statement_braces (self,s):
+            
+            trace = True ; verbose = False
+            i,n,result = 0,len(s),[]
+            while i < n:
+                token = s[i]
+                progress = i
+                if token in ('if','for','while',):
+                    j = self.skip_ws_and_comments(s,i+1)
+                    if self.match(s,j,'('):
+                        j = self.skip_parens(s,j)
+                        if self.match(s,j,')'):
+                            j = self.skip_ws_and_comments(s,j+1)
+                            if self.match(s,j,'{'):
+                                result.extend(s[i:j])
+                            else:
+                                if trace:
+                                    # g.trace(i,j,s[i:j])
+                                    g.trace('inserting "{" after: %s' % (
+                                        repr(''.join(s[i:j]))))
+                                result.extend(s[i:j])
+                                result.append(' ')
+                                result.append('{')
+                                result.append('\n')
+                                i = j
+                                j = self.skip_statement(s,i)
+                                result.extend(s[i:j])
+                                result.append('\n')
+                                result.append('}')
+                                if trace:
+                                    # g.trace(i,j,s[i:j])
+                                    g.trace('inserting "}" after: %s' % (
+                                        repr(''.join(s[i:j]))))
+                        else:
+                            g.trace('missing ")" after: "%s"' % (token))
+                            result.extend(s[i:j])
+                    else:
+                        g.trace('missing "(" after: "%s"' % (token))
+                        result.extend(s[i:j])
+                    i = j
+                else:
+                    result.append(token)
+                    i += 1
+                assert progress < i
+                    
+            if trace and verbose: g.trace(''.join(result))
+            return result
+                    
+        #@+node:ekr.20110918225821.6820: *10* skip_ws_and_nl
+        def skip_ws_and_comments (self,s,i):
+            
+            while i < len(s):
+                token = s[i]
+                if token.isspace():
+                    i += 1
+                elif token.startswith('//') or token.startswith('/*'):
+                    i += 1
+                else:
+                    break
+                
+            return i
+        #@+node:ekr.20110918225821.6817: *10* skip_parens
+        def skip_parens(self,s,i):
+
+            '''Skips from the opening ( to the matching ).
+
+            If no matching is found i is set to len(s)'''
+
+            assert(self.match(s,i,'('))
+            
+            level = 0
+            while i < len(s):
+                ch = s[i]
+                if ch == '(':
+                    level += 1 ; i += 1
+                elif ch == ')':
+                    level -= 1
+                    if level <= 0:  return i
+                    i += 1
+                else: i += 1
+            return i
+        #@+node:ekr.20110918225821.6818: *10* skip_statement
+        def skip_statement (self,s,i):
+            
+            '''Skip to the next ';' or '}' token.'''
+            
+            while i < len(s):
+                if s[i] in ';}':
+                    i += 1
+                    break
+                else:
+                    i += 1
+            return i
         #@+node:ekr.20110917204542.6967: *9* put_token & helpers
         def put_token (self,s):
             
@@ -4553,6 +4649,10 @@ class Commands (object):
                     self.result.pop()
                     s = s.replace('\t',' ' * w)
                     self.result.append(s[:-w])
+        #@+node:ekr.20110918225821.6819: *8* match
+        def match(self,s,i,pat):
+            
+            return i < len(s) and s[i] == pat
         #@+node:ekr.20110917174948.6930: *8* tokenize & helper
         def tokenize (self,s):
             
