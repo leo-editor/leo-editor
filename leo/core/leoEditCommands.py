@@ -1970,6 +1970,22 @@ class editCommandsClass (baseEditCommandsClass):
                         # ],
                     }
                 #@+node:ekr.20110917104720.6873: *7* Scanning
+                #@+node:ekr.20110916215321.8002: *8* convertLeadingBlanks
+                def convertLeadingBlanks(self,aList):
+
+                    w = self.tab_width
+                    if w < 2: return
+
+                    i = 0
+                    while i < len(aList):
+                        n = 0
+                        while i < len(aList) and aList[i] == ' ':
+                            n += 1 ; i += 1
+                            if n == w:
+                                aList[i-w:i] = ['\t']
+                                i = i - w + 1
+                                n = 0
+                        i = self.skip_past_line(aList, i)
                 #@+node:ekr.20110916215321.7998: *8* convertDocList
                 def convertDocList (self,docList):
 
@@ -2240,74 +2256,61 @@ class editCommandsClass (baseEditCommandsClass):
                         reportFlag=False,dirtyVnodeList=dirtyVnodeList)
                 g.es("done")
             #@+node:ekr.20110916215321.7997: *6* convertCodeList (main pattern function)
-            def convertCodeList(self,aList): ### firstPart,leoFlag):
+            def convertCodeList(self,aList):
                 
-                # g.pdb()
+                r = self.safe_replace
 
                 # First...
                 self.replace(aList, "\r", '')
-                self.convertLeadingBlanks(aList)
-                ### if leoFlag: replaceSectionDefs(aList)
+                # self.convertLeadingBlanks(aList) # Now done by indent.
+                # if leoFlag: replaceSectionDefs(aList)
                 self.mungeAllFunctions(aList)
-
-                # Next...
-                self.safe_replace(aList, " -> ", '.')
-                self.safe_replace(aList, "->", '.')
-                self.safe_replace(aList, " . ", '.')
-                self.safe_replace(aList, "this.self", "self")
-                self.safe_replace(aList, "{", '')
-                self.safe_replace(aList, "}", '')
-                self.safe_replace(aList, "#if", "if")
-                self.safe_replace(aList, "#else", "else")
-                self.safe_replace(aList, "#endif", '')
-                self.safe_replace(aList, "else if", "elif")
-                self.safe_replace(aList, "else", "else:")
-                self.safe_replace(aList, "&&", "and")
-                self.safe_replace(aList, "||", "or")
-                self.safe_replace(aList, "TRUE", "True")
-                self.safe_replace(aList, "FALSE", "False")
-                self.safe_replace(aList, "NULL", "None")
-                self.safe_replace(aList, "this", "self")
-                self.safe_replace(aList, "try", "try:")
-                self.safe_replace(aList, "catch", "except:")
-                ### if leoFlag: self.safe_replace(aList, "@code", "@c")
                 
                 # Next...
-                self.handle_all_keywords(aList)
-                self.removeSemicolonsAtEndOfLines(aList)
+                r(aList, " -> ", '.')
+                r(aList, "->", '.')
+                r(aList, " . ", '.')
+                r(aList, "this.self", "self")
+                r(aList, "{", '')
+                r(aList, "}", '')
+                r(aList, "#if", "if")
+                r(aList, "#else", "else")
+                r(aList, "#endif", '')
+                r(aList, "else if", "elif")
+                r(aList, "else", "else:")
+                r(aList, "&&", "and")
+                r(aList, "||", "or")
+                r(aList, "TRUE", "True")
+                r(aList, "FALSE", "False")
+                r(aList, "NULL", "None")
+                r(aList, "this", "self")
+                r(aList, "try", "try:")
+                r(aList, "catch", "except:")
+                # if leoFlag: r(aList, "@code", "@c")
+
+                # Next...
+                if 1:
+                    self.handle_all_keywords(aList)
+                    self.removeSemicolonsAtEndOfLines(aList)
                     # after processing for keywords
 
                 # Last...
-                ### if firstPart and leoFlag: removeLeadingAtCode(aList)
+                # if firstPart and leoFlag: removeLeadingAtCode(aList)
                 self.removeBlankLines(aList)
                 self.removeExcessWs(aList)
                 # your taste may vary: in Python I don't like extra whitespace
-                self.safe_replace(aList, " :", ":") 
-                self.safe_replace(aList, ", ", ",")
-                self.safe_replace(aList, " ,", ",")
-                self.safe_replace(aList, " (", "(")
-                self.safe_replace(aList, "( ", "(")
-                self.safe_replace(aList, " )", ")")
-                self.safe_replace(aList, ") ", ")")
+                r(aList, " :", ":") 
+                r(aList, ", ", ",")
+                r(aList, " ,", ",")
+                r(aList, " (", "(")
+                r(aList, "( ", "(")
+                r(aList, " )", ")")
+                r(aList, ") ", ")")
+                r(aList, "@language c","@language python")
                 self.replaceComments(aList) # should follow all calls to safe_replace
                 self.removeTrailingWs(aList)
-                self.safe_replace(aList, "\t ", "\t") # happens when deleting declarations.
-            #@+node:ekr.20110916215321.8001: *6* Scanning & Replacing...
-            #@+node:ekr.20110916215321.8002: *7* convertLeadingBlanks
-            def convertLeadingBlanks(self,aList):
-
-                w = self.tab_width
-                if w < 2: return
-                i = 0
-                while i < len(aList):
-                    n = 0
-                    while i < len(aList) and aList[i] == ' ':
-                        n += 1 ; i += 1
-                        if n == w:
-                            aList[i-w:i] = ['\t']
-                            i = i - w + 1
-                            n = 0
-                    i = self.skip_past_line(aList, i)
+                self.replace(aList, "\t ", "\t") # happens when deleting declarations.
+            #@+node:ekr.20110916215321.8001: *6* Scanning
             #@+node:ekr.20110916215321.8003: *7* mungeAllFunctions
             def mungeAllFunctions(self,aList):
                 
@@ -2320,28 +2323,36 @@ class editCommandsClass (baseEditCommandsClass):
                 i = 0
                 firstOpen = None
                 while i < len(aList):
+                    progress = i
                     if self.is_string_or_comment(aList,i):
-                        i = self.skip_string_or_comment(aList,i)
-                        prevSemi = i
+                        j = self.skip_string_or_comment(aList,i)
+                        prevSemi = j
                     elif self.match(aList, i, '('):
                         if not firstOpen:
                             firstOpen = i
-                        i += 1
+                        j = i + 1
                     elif self.match(aList, i, '#'):
-                        i = self.skip_past_line(aList, i)
-                        prevSemi = i
-                    elif self.match(aList, i, ';'):
-                        i += 1
-                        prevSemi = i
-                    elif self.match_word(aList, i, "@code"):
-                        i += 5
-                        prevSemi = i # restart the scan
-                    elif self.match_word(aList, i, "@c"):
-                        i += 2 ; prevSemi = i # restart the scan
+                        # At this point, it is a preprocessor directive.
+                        j = self.skip_past_line(aList, i)
+                        prevSemi = j
+                    elif self.match(aList,i,';'):
+                        j = i + 1
+                        prevSemi = j
+                    # elif self.match_word(aList, i, "@code"):
+                        # j = i + 5
+                        # prevSemi = j # restart the scan
+                    # elif self.match_word(aList, i, "@c"):
+                        # j = i + 2 ; prevSemi = j # restart the scan
                     elif self.match(aList, i, "{"):
-                        i = self.handlePossibleFunctionHeader(aList,i,prevSemi,firstOpen)
-                        prevSemi = i ; firstOpen = None # restart the scan
-                    else: i += 1
+                        # g.trace('*before*',repr(''.join(aList[prevSemi:i])))
+                        j = self.handlePossibleFunctionHeader(aList,i,prevSemi,firstOpen)
+                        prevSemi = j ; firstOpen = None # restart the scan
+                        # g.trace('*after*',repr(''.join(aList[prevSemi:prevSemi+20])))
+                    else:
+                        j = i + 1
+                    
+                    assert j > progress
+                    i = j
             #@+node:ekr.20110916215321.8004: *8* handlePossibleFunctionHeader
             # converts function header lines from c++ format to python format.
             # That is, converts
@@ -2349,25 +2360,33 @@ class editCommandsClass (baseEditCommandsClass):
             # to
             # def y (z1,..zn): {
 
-            def handlePossibleFunctionHeader (self,aList, i, prevSemi, firstOpen):
-
+            def handlePossibleFunctionHeader (self,aList,i,prevSemi,firstOpen):
+                
+                trace = False
                 assert(self.match(aList,i,"{"))
+
                 prevSemi = self.skip_ws_and_nl(aList, prevSemi)
-                close = self.prevNonWsOrNlChar(aList, i)
+                close = self.prevNonWsOrNlChar(aList,i)
+
                 if close < 0 or aList[close] != ')':
-                    return 1 + self.skip_to_matching_bracket(aList, i)
+                    return 1 + self.skip_to_matching_bracket(aList,i)
+                    
                 if not firstOpen:
-                    return 1 + self.skip_to_matching_bracket(aList, i)
+                    return 1 + self.skip_to_matching_bracket(aList,i)
+
                 close2 = self.skip_to_matching_bracket(aList, firstOpen)
                 if close2 != close:
-                    return 1 + self.skip_to_matching_bracket(aList, i)
-                open = firstOpen
-                assert(aList[open]=='(')
-                head = aList[prevSemi:open]
+                    return 1 + self.skip_to_matching_bracket(aList,i)
+
+                open_paren = firstOpen
+                assert(aList[open_paren]=='(')
+                head = aList[prevSemi:open_paren]
+
                 # do nothing if the head starts with "if", "for" or "while"
                 k = self.skip_ws(head,0)
                 if k >= len(head) or not head[k].isalpha():
-                    return 1 + self.skip_to_matching_bracket(aList, i)
+                    return 1 + self.skip_to_matching_bracket(aList,i)
+
                 kk = self.skip_past_word(head,k)
                 if kk > k:
                     headString = ''.join(head[k:kk])
@@ -2375,34 +2394,32 @@ class editCommandsClass (baseEditCommandsClass):
                     # print "headString:", headString
                     if headString in [ "class", "do", "for", "if", "struct", "switch", "while"]:
                         return 1 + self.skip_to_matching_bracket(aList, i)
-                args = aList[open:close+1]
+
+                args = aList[open_paren:close+1]
                 k = 1 + self.skip_to_matching_bracket(aList,i)
                 body = aList[i:k]
-                #print "head:", ''.join(head)
-                #print "args:", ''.join(args)
-                #print "body:", ''.join(body)
-                #print "tot: ", ''.join(aList[prevSemi:k])
+                
+                if False and trace:
+                    g.trace('\nhead: %s\nargs: %s\nbody: %s' % (
+                        ''.join(head),''.join(args),''.join(body)))
+                
                 head = self.massageFunctionHead(head)
                 args = self.massageFunctionArgs(args)
                 body = self.massageFunctionBody(body)
-                #print "head2:", ''.join(head)
-                #print "args2:", ''.join(args)
-                #print "body2:", ''.join(body)
-                #print "tot2: ", ''.join(aList[prevSemi:k])
+                if trace:
+                    g.trace('\nhead2: %s\nargs2: %s\nbody2: %s' % (
+                        ''.join(head),''.join(args),''.join(body)))
+
                 result = []
-                for item in head:
-                    result.append(item)
-                for item in args:
-                    result.append(item)
-                for item in body:
-                    result.append(item)
+                if head: result.extend(head)
+                if args: result.extend(args)
+                if body: result.extend(body)
 
                 aList[prevSemi:k] = result
-                return k
+                return prevSemi + len(result)
             #@+node:ekr.20110916215321.8005: *8* massageFunctionArgs
             def massageFunctionArgs (self,args):
-                
-                ### global gClassName
+
                 assert(args[0]=='(')
                 assert(args[-1]==')')
 
@@ -2434,15 +2451,13 @@ class editCommandsClass (baseEditCommandsClass):
                 return result
             #@+node:ekr.20110916215321.8006: *8* massageFunctionHead (sets .class_name)
             def massageFunctionHead (self,head):
-
-                # print "head:", ''.join(head)
+                
                 result = []
                 prevWord = []
-                # global gClassName ; gClassName = []
                 self.class_name = ''
                 i = 0
                 while i < len(head):
-                    i = self.skip_ws_and_nl(head, i)
+                    i = self.skip_ws_and_nl(head,i)
                     if i < len(head) and head[i].isalpha():
                         result = []
                         j = self.skip_past_word(head,i)
@@ -2458,20 +2473,19 @@ class editCommandsClass (baseEditCommandsClass):
                             if i < len(head) and (head[i]=='~' or head[i].isalpha()):
                                 j = self.skip_past_word(head,i)
                                 if head[i:j] == prevWord:
-                                    for item in list("__init__"): result.append(item)
+                                    result.extend(list("__init__"))
                                 elif head[i]=='~' and head[i+1:j] == prevWord:
-                                    for item in list("__del__"): result.append(item)
+                                    result.extend(list('__del__'))
                                 else:
                                     # for item in "::": result.append(item)
-                                    for item in head[i:j]: result.append(item)
+                                    result.extend(head[i:j])
                                 i = j
                         else:
-                            for item in prevWord:result.append(item)
+                            result.extend(prevWord)
                     else: i += 1
 
                 finalResult = list("def ")
-                for item in result: finalResult.append(item)
-                # print "new head:", ''.join(finalResult)
+                finalResult.extend(result)
                 return finalResult
             #@+node:ekr.20110916215321.8007: *8* massageFunctionBody
             def massageFunctionBody (self,body):
@@ -2615,90 +2629,181 @@ class editCommandsClass (baseEditCommandsClass):
                         j = j + 2
                     return j
                 return i
+            #@+node:ekr.20110916215321.8063: *6* Utils
+            #@+node:ekr.20110916215321.8017: *7* find... & match...
+            #@+node:ekr.20110916215321.8020: *8* match
+            def match (self,s,i,pat):
+                
+                '''Return True if s[i:] matches the pat string.
+                
+                We can't use g.match because s is usually a list.
+                '''
+                
+                assert pat
+
+                j = 0
+                while i+j < len(s) and j < len(pat):
+                    if s[i+j] == pat[j]:
+                        j += 1
+                        if j == len(pat):
+                            return True
+                    else:
+                        return False
+
+                return False
+            #@+node:ekr.20110916215321.8021: *8* match_word
+            def match_word (self,s,i,pat):
+                
+                '''Return True if s[i:] word matches the pat string.'''
+                
+                if self.match(s,i,pat):
+                    j = i + len(pat)
+                    if j >= len(s):
+                        # g.trace(i,pat)
+                        return True
+                    else:
+                        ch = s[j]
+                        return not ch.isalnum() and ch != '_'
+                else:
+                    return False
+            #@+node:ekr.20110916215321.8066: *7* is...
+            #@+node:ekr.20110916215321.8015: *8* isSectionDef
+            # returns the ending index if i points to < < x > > =
+            def isSectionDef (self,aList,i):
+
+                i = self.skip_ws(aList,i)
+                if not self.match(aList,i,"<<"):
+                    return False
+                while i < len(aList) and aList[i] != '\n':
+                    if self.match(aList,i,">>="):
+                        return i+3
+                    else:
+                        i += 1
+                return False
+            #@+node:ekr.20110916215321.8016: *8* is_string_or_comment
+            def is_string_or_comment (self,s,i):
+
+                # Does range checking.
+                m = self.match
+                return m(s,i,"'") or m(s,i,'"') or m(s,i,"//") or m(s,i,"/*")
+            #@+node:ekr.20110916215321.8014: *8* is_ws and is_ws_or_nl
+            def is_ws (self,ch):
+                return ch in ' \t'
+
+            def is_ws_or_nl (self,ch):
+                return ch in ' \t\n'
+            #@+node:ekr.20110916215321.8041: *7* prevNonWsChar and prevNonWsOrNlChar
+            def prevNonWsChar (self,s,i):
+
+                i -= 1
+                while i >= 0 and self.is_ws(s[i]):
+                    i -= 1
+                return i
+
+            def prevNonWsOrNlChar (self,s,i):
+
+                i -= 1
+                while i >= 0 and self.is_ws_or_nl(s[i]):
+                    i -= 1
+                return i
             #@+node:ekr.20110916215321.8022: *7* remove...
-            #@+node:ekr.20110916215321.8023: *8* removeAllCComments
-            def removeAllCComments (self,aList,delim):
+            #@+node:ekr.20110919113533.6821: *8* Not used
+            if 0:
+                #@+others
+                #@+node:ekr.20110916215321.8023: *9* removeAllCComments (Not used)
+                def removeAllCComments (self,aList,delim):
 
-                i = 0
-                while i < len(aList):
-                    progress = i
-                    if self.match(aList,i,"'") or self.match(aList,i,'"'):
-                        i = self.skip_string(aList,i)
-                    elif self.match(aList,i,"//"):
-                        j = self.skip_past_line(aList,i)
-                        print("deleting single line comment:", ''.join(aList[i:j]))
-                        del aList[i:j]
-                    elif self.match(aList,i,"/*"):
-                        j = self.skip_c_block_comment(aList,i)
-                        print("deleting block comment:", ''.join(aList[i:j]))
-                        del aList[i:j]
-                    else:
-                        i += 1
-                    assert i > progress
-            #@+node:ekr.20110916215321.8024: *8* removeAllCSentinels
-            def removeAllCSentinels (self,aList,delim):
-
-                i = 0
-                while i < len(aList):
-                    if self.match(aList,i,"'") or self.match(aList,i,'"'):
-                        # string starts a line.
-                        i = self.skip_string(aList,i)
-                        i = self.skip_past_line(aList,i)
-                    elif self.match(aList,i,"/*"):
-                        # block comment starts a line
-                        i = self.skip_c_block_comment(aList,i)
-                        i = self.skip_past_line(line,i)
-                    elif self.match(aList,i,"//@"):
-                        j = self.skip_past_line(aList,i)
-                        print("deleting sentinel:", ''.join(aList[i:j]))
-                        del aList[i:j]
-                    else:
-                        i = self.skip_past_line(aList,i)
-            #@+node:ekr.20110916215321.8025: *8* removeAllPythonComments
-            def removeAllPythonComments (self,aList,delim):
-
-                i = 0
-                while i < len(aList):
-                    if self.match(aList,i,"'") or self.match(aList,i,'"'):
-                        i = self.skip_string(aList,i)
-                    elif self.match(aList,i,"#"):
-                        j = self.skip_past_line(aList,i)
-                        print("deleting comment:", ''.join(aList[i:j]))
-                        del aList[i:j]
-                    else:
-                        i += 1
-            #@+node:ekr.20110916215321.8026: *8* removeAllPythonSentinels
-            def removeAllPythonSentinels (self,aList,delim):
-
-                i = 0
-                while i < len(aList):
-                    if self.match(aList,i,"'") or self.match(aList,i,'"'):
-                        # string starts a line.
-                        i = self.skip_string(aList,i)
-                        i = self.skip_past_line(aList,i)
-                    elif self.match(aList,i,"#@"):
-                        j = self.skip_past_line(aList,i)
-                        print("deleting sentinel:", ''.join(aList[i:j]))
-                        del aList[i:j]
-                    else:
-                        i = self.skip_past_line(aList,i)
-            #@+node:ekr.20110916215321.8027: *8* removeAtRoot
-            def removeAtRoot (self,aList):
-
-                i = self.skip_ws(aList, 0)
-                if self.match_word(aList,i,"@root"):
-                    j = self.skip_past_line(aList,i)
-                    del aList[i:j]
-
-                while i < len(aList):
-                    if self.is_string_or_comment(aList,i):
-                        i = self.skip_string_or_comment(aList,i)
-                    elif self.match(aList,i,"\n"):
-                        i = self.skip_ws(aList, i+1)
-                        if self.match_word (aList,i,"@root"):
-                            j = self.skip_past_line(aList,i)
+                    i = 0
+                    while i < len(aList):
+                        progress = i
+                        if self.match(aList,i,"'") or self.match(aList,i,'"'):
+                            i = self.skip_string(aList,i)
+                        elif self.match(aList,i,"//"):
+                            j = self.skip_to_end_of_line(aList,i)
+                            print("deleting single line comment:", ''.join(aList[i:j]))
                             del aList[i:j]
-                    else: i += 1
+                        elif self.match(aList,i,"/*"):
+                            j = self.skip_c_block_comment(aList,i)
+                            print("deleting block comment:", ''.join(aList[i:j]))
+                            del aList[i:j]
+                        else:
+                            i += 1
+                        assert i > progress
+                #@+node:ekr.20110916215321.8024: *9* removeAllCSentinels
+                def removeAllCSentinels (self,aList,delim):
+
+                    i = 0
+                    while i < len(aList):
+                        if self.match(aList,i,"'") or self.match(aList,i,'"'):
+                            # string starts a line.
+                            i = self.skip_string(aList,i)
+                            i = self.skip_past_line(aList,i)
+                        elif self.match(aList,i,"/*"):
+                            # block comment starts a line
+                            i = self.skip_c_block_comment(aList,i)
+                            i = self.skip_past_line(line,i)
+                        elif self.match(aList,i,"//@"):
+                            j = self.skip_past_line(aList,i)
+                            print("deleting sentinel:", ''.join(aList[i:j]))
+                            del aList[i:j]
+                        else:
+                            i = self.skip_past_line(aList,i)
+                #@+node:ekr.20110916215321.8025: *9* removeAllPythonComments
+                def removeAllPythonComments (self,aList,delim):
+
+                    i = 0
+                    while i < len(aList):
+                        if self.match(aList,i,"'") or self.match(aList,i,'"'):
+                            i = self.skip_string(aList,i)
+                        elif self.match(aList,i,"#"):
+                            j = self.skip_past_line(aList,i)
+                            print("deleting comment:", ''.join(aList[i:j]))
+                            del aList[i:j]
+                        else:
+                            i += 1
+                #@+node:ekr.20110916215321.8026: *9* removeAllPythonSentinels
+                def removeAllPythonSentinels (self,aList,delim):
+
+                    i = 0
+                    while i < len(aList):
+                        if self.match(aList,i,"'") or self.match(aList,i,'"'):
+                            # string starts a line.
+                            i = self.skip_string(aList,i)
+                            i = self.skip_past_line(aList,i)
+                        elif self.match(aList,i,"#@"):
+                            j = self.skip_past_line(aList,i)
+                            print("deleting sentinel:", ''.join(aList[i:j]))
+                            del aList[i:j]
+                        else:
+                            i = self.skip_past_line(aList,i)
+                #@+node:ekr.20110916215321.8027: *9* removeAtRoot
+                def removeAtRoot (self,aList):
+
+                    i = self.skip_ws(aList, 0)
+                    if self.match_word(aList,i,"@root"):
+                        j = self.skip_past_line(aList,i)
+                        del aList[i:j]
+
+                    while i < len(aList):
+                        if self.is_string_or_comment(aList,i):
+                            i = self.skip_string_or_comment(aList,i)
+                        elif self.match(aList,i,"\n"):
+                            i = self.skip_ws(aList, i+1)
+                            if self.match_word (aList,i,"@root"):
+                                j = self.skip_past_line(aList,i)
+                                del aList[i:j]
+                        else: i += 1
+                #@+node:ekr.20110916215321.8031: *9* removeLeadingAtCode
+                def removeLeadingAtCode (self,aList):
+
+                    i = self.skip_ws_and_nl(aList,0)
+                    if self.match_word(aList,i,"@code"):
+                        i = self.skip_ws_and_nl(aList,5)
+                        del aList[0:i]
+                    elif self.match_word(aList,i,"@c"):
+                        i = self.skip_ws_and_nl(aList,2)
+                        del aList[0:i]
+                #@-others
             #@+node:ekr.20110916215321.8028: *8* removeBlankLines
             def removeBlankLines (self,aList):
 
@@ -2740,16 +2845,6 @@ class editCommandsClass (baseEditCommandsClass):
                         i = k + 1 # make sure we don't go past a newline!
                     else: i += 1
                 return i
-            #@+node:ekr.20110916215321.8031: *8* removeLeadingAtCode
-            def removeLeadingAtCode (self,aList):
-
-                i = self.skip_ws_and_nl(aList,0)
-                if self.match_word(aList,i,"@code"):
-                    i = self.skip_ws_and_nl(aList,5)
-                    del aList[0:i]
-                elif self.match_word(aList,i,"@c"):
-                    i = self.skip_ws_and_nl(aList,2)
-                    del aList[0:i]
             #@+node:ekr.20110916215321.8032: *8* removeMatchingBrackets
             def removeMatchingBrackets (self,aList, i):
 
@@ -2796,93 +2891,6 @@ class editCommandsClass (baseEditCommandsClass):
                             del aList[j:i]
                             i = j
                     else: i += 1
-            #@+node:ekr.20110916215321.8063: *6* Utils
-            #@+node:ekr.20110916215321.8017: *7* find... & match...
-            #@+node:ekr.20110916215321.8020: *8* match
-            def match (self,s,i,pat): ### findStringOrList):
-                
-                '''Return True if s[i:] matches the pat string.
-                
-                We can't use g.match because s is usually a list.
-                '''
-
-                # Works, but stresses the gc.
-                # return pat and ''.join(s[i:i+len(pat)]) == pat
-               
-                ### findList = list(findStringOrList)
-                j = 0
-                while i+j < len(s) and j < len(pat):
-                    if s[i+j] != pat[j]:
-                        return False
-                    else:
-                        j += 1
-                        if j == len(pat):
-                            return True
-                return False
-            #@+node:ekr.20110916215321.8021: *8* match_word
-            def match_word (self,s,i,pat): ### findStringOrList):
-                
-                '''Return True if s[i:] word matches the pat string.'''
-                
-                if self.match(s,i,pat):
-                    j = i + len(pat)
-                    if j >= len(s):
-                        # g.trace(i,pat)
-                        return True
-                    else:
-                        ch = s[j]
-                        return not ch.isalnum() and ch != '_'
-                else:
-                    return False
-
-                # j = match(s,i,findString)
-                # if not j:
-                    # return False
-                # elif j >= len(s):
-                    # return True
-                # else:
-                    # c = s[j]
-                    # return not (c in string.letters or c in string.digits or c == '_')
-            #@+node:ekr.20110916215321.8066: *7* is...
-            #@+node:ekr.20110916215321.8015: *8* isSectionDef
-            # returns the ending index if i points to < < x > > =
-            def isSectionDef (self,aList,i):
-
-                i = self.skip_ws(aList,i)
-                if not self.match(aList,i,"<<"):
-                    return False
-                while i < len(aList) and aList[i] != '\n':
-                    if self.match(aList,i,">>="):
-                        return i+3
-                    else:
-                        i += 1
-                return False
-            #@+node:ekr.20110916215321.8016: *8* is_string_or_comment
-            def is_string_or_comment (self,s,i):
-
-                # Does range checking.
-                m = self.match
-                return m(s,i,"'") or m(s,i,'"') or m(s,i,"//") or m(s,i,"/*")
-            #@+node:ekr.20110916215321.8014: *8* is_ws and is_ws_or_nl
-            def is_ws (self,ch):
-                return ch in ' \t'
-
-            def is_ws_or_nl (self,ch):
-                return ch in ' \t\n'
-            #@+node:ekr.20110916215321.8041: *7* prevNonWsChar and prevNonWsOrNlChar
-            def prevNonWsChar (self,aList,i):
-
-                i -= 1
-                while i >= 0 and self.is_ws(aList[i]):
-                    i -= 1
-                return i
-
-            def prevNonWsOrNlChar (self,aList,i):
-
-                i -= 1
-                while i >= 0 and self.is_ws_or_nl(aList[i]):
-                    i -= 1
-                return i
             #@+node:ekr.20110916215321.8035: *7* replace... & safe_replace
             #@+node:ekr.20110916215321.8036: *8* replace
             def replace (self,aList,findString,changeString):
@@ -2893,12 +2901,10 @@ class editCommandsClass (baseEditCommandsClass):
 
                 if not findString: return
                 
-                ### findList = list(findString)
                 changeList = list(changeString)
-
                 i = 0
                 while i < len(aList):
-                    if self.match(aList,i,findString): ### findList):
+                    if self.match(aList,i,findString):
                         aList[i:i+len(findList)] = changeList
                         i += len(changeList)
                     else:
@@ -2907,28 +2913,38 @@ class editCommandsClass (baseEditCommandsClass):
             # For Leo we expect few block comments; doc parts are much more common.
 
             def replaceComments (self,aList):
+                
+                # g.trace('\n',''.join(aList))
 
                 i = 0
-                if self.match(aList,i,"//"):
-                    aList[0:2] = ['#']
                 while i < len(aList):
+                    # Loop invariant: j > progress at end.
+                    progress = i
                     if self.match(aList,i,"//"):
                         aList[i:i+2] = ['#']
-                        i = self.skip_past_line(aList,i)
+                        j = self.skip_past_line(aList,i)
                     elif self.match(aList,i,"/*"):
                         j = self.skip_c_block_comment(aList,i)
+                        assert j > i + 3
                         del aList[j-2:j]
                         aList[i:i+2] = ['#']
-                        j -= 2 ; k = i ; delta = -1
-                        while k < j + delta :
-                            if aList[k]=='\n':
-                                aList[k:k+1] = ['\n','#',' ']
-                                delta += 2 ; k += 3 # progress!
-                            else: k += 1
-                        i = j + delta
+                        j -= 3
+                        # g.trace(i,j,repr(''.join(aList[i:j])))
+                        while i < j:
+                            if aList[i]=='\n':
+                                aList[i:i+1] = ['\n','#',' ']
+                                j += 2
+                                i += 3 # progress: delta(i) > delta(j)
+                            else:
+                                i += 1
                     elif self.match(aList,i,'"') or self.match(aList,i,"'"):
-                        i = self.skip_string(aList,i)
-                    else: i += 1
+                        j = self.skip_string(aList,i)
+                    else:
+                        j = i+1
+                    
+                    # g.trace(repr(aList[progress:j]))
+                    assert j > progress
+                    i = j
             #@+node:ekr.20110916215321.8038: *8* replaceSectionDefs
             def replaceSectionDefs (self,aList):
                 
@@ -2955,21 +2971,21 @@ class editCommandsClass (baseEditCommandsClass):
                 '''
 
                 if not findString: return
-                ### findList = list(findString)
+
                 changeList = list(changeString)
                 i = 0
-                if findString[0].isalpha(): #use self.match_word
+                if findString[0].isalpha(): # use self.match_word
                     while i < len(aList):
                         if self.is_string_or_comment(aList,i):
                             i = self.skip_string_or_comment(aList,i)
-                        elif self.match_word(aList,i,findString): ### findList):
+                        elif self.match_word(aList,i,findString):
                             aList[i:i+len(findString)] = changeList
                             i += len(changeList)
                         else:
                             i += 1
                 else: #use self.match
                     while i < len(aList):
-                        if self.match(aList,i,findString): ### findList):
+                        if self.match(aList,i,findString):
                             aList[i:i+len(findString)] = changeList
                             i += len(changeList)
                         else:
@@ -2977,6 +2993,9 @@ class editCommandsClass (baseEditCommandsClass):
             #@+node:ekr.20110916215321.8040: *7* skip
             #@+node:ekr.20110916215321.8042: *8* skip_c_block_comment
             def skip_c_block_comment (self,s,i):
+                
+                # if 'replaceComments' in g.callers():
+                    # g.trace(repr(''.join(s[i:i+20])))
 
                 assert(self.match(s,i,"/*"))
                 i += 2
@@ -3031,12 +3050,15 @@ class editCommandsClass (baseEditCommandsClass):
             def skip_string_or_comment (self,s,i):
 
                 if self.match(s,i,"'") or self.match(s,i,'"'):
-                    return self.skip_string(s,i)
+                    j = self.skip_string(s,i)
                 elif self.match(s,i,"//"):
-                    return self.skip_past_line(s,i)
+                    j = self.skip_past_line(s,i)
                 elif self.match(s,i,"/*"):
-                    return self.skip_c_block_comment(s,i)
+                    j = self.skip_c_block_comment(s,i)
                 else: assert(0)
+                
+                # g.trace(repr(''.join(s[i:j])))
+                return j
             #@+node:ekr.20110916215321.8047: *8* skip_to_matching_bracket
             def skip_to_matching_bracket (self,s,i):
 
