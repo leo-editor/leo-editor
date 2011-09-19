@@ -4581,593 +4581,6 @@ def skip_matching_c_delims(s,i,delim1,delim2,reverse=False):
                 return -1
     g.trace('not found')
     return -1
-#@+node:ekr.20110917174948.6875: *4* Added beautify-c command
-#@+node:ekr.20110917174948.6903: *5* class CPrettyPrinter
-class CPrettyPrinter:
-    
-    @others
-    
-if g.app.inScript:
-    
-    cpp = CPrettyPrinter(c)
-    p2 = g.findNodeAnywhere(c,'c tokenize test')
-    
-    if 1: # test of indent.
-        import os ; os.system('cls')
-        cpp.indent(p2)
-    
-    if 0: # test of tokenize.
-        aList = cpp.tokenize(p2.b)
-        assert(p2.b == ''.join(aList))
-        if 0:
-            import os ; os.system('cls')
-            print('*' * 40)
-            # print(''.join(aList))
-            for z in aList:
-                print(repr(z))
-        else:
-            print('pass')
-#@+node:ekr.20110917174948.6904: *6* __init__
-def __init__ (self,c):
-    
-    self.c = c
-    
-    self.brackets = 0
-        # The brackets indentation level.
-    self.ignored_brackets = 0
-        # The number of '}' to ignore before reducing self.brackets.
-    self.ignore_ws = False
-        # True: ignore the next whitespace token if any.
-    self.parens = 0
-        # The parenthesis nesting level.
-    self.result = []
-        # The list of tokens that form the final result.
-    self.tab_width = 4
-        # The number of spaces in each unit of leading indentation.
-#@+node:ekr.20110917174948.6911: *6* indent & helpers
-def indent (self,p):
-
-    c = self.c
-    if not p.b: return
-    
-    aList = self.tokenize(p.b)
-    assert ''.join(aList) == p.b
-    
-    aList = self.add_statement_braces(aList)
-    
-    if 0:
-        for z in aList:
-            print(repr(z))
-
-    self.bracketLevel = 0
-    self.parens = 0
-    self.result = []
-    for s in aList:
-        self.put_token(s)
-
-    s = ''.join(self.result)
-    return s
-#@+node:ekr.20110918225821.6815: *7* add_statement_braces
-def add_statement_braces (self,s):
-    
-    trace = True ; verbose = False
-    i,n,result = 0,len(s),[]
-    while i < n:
-        token = s[i]
-        progress = i
-        if token in ('if','for','while',):
-            j = self.skip_ws_and_comments(s,i+1)
-            if self.match(s,j,'('):
-                j = self.skip_parens(s,j)
-                if self.match(s,j,')'):
-                    j = self.skip_ws_and_comments(s,j+1)
-                    if self.match(s,j,'{'):
-                        result.extend(s[i:j])
-                    else:
-                        if trace:
-                            # g.trace(i,j,s[i:j])
-                            g.trace('inserting "{" after: %s' % (
-                                repr(''.join(s[i:j]))))
-                        result.extend(s[i:j])
-                        result.append(' ')
-                        result.append('{')
-                        result.append('\n')
-                        i = j
-                        j = self.skip_statement(s,i)
-                        result.extend(s[i:j])
-                        result.append('\n')
-                        result.append('}')
-                        if trace:
-                            # g.trace(i,j,s[i:j])
-                            g.trace('inserting "}" after: %s' % (
-                                repr(''.join(s[i:j]))))
-                else:
-                    g.trace('missing ")" after: "%s"' % (token))
-                    result.extend(s[i:j])
-            else:
-                g.trace('missing "(" after: "%s"' % (token))
-                result.extend(s[i:j])
-            i = j
-        else:
-            result.append(token)
-            i += 1
-        assert progress < i
-            
-    if trace and verbose: g.trace(''.join(result))
-    return result
-            
-#@+node:ekr.20110918225821.6820: *8* skip_ws_and_nl
-def skip_ws_and_comments (self,s,i):
-    
-    while i < len(s):
-        token = s[i]
-        if token.isspace():
-            i += 1
-        elif token.startswith('//') or token.startswith('/*'):
-            i += 1
-        else:
-            break
-        
-    return i
-#@+node:ekr.20110918225821.6817: *8* skip_parens
-def skip_parens(self,s,i):
-
-    '''Skips from the opening ( to the matching ).
-
-    If no matching is found i is set to len(s)'''
-
-    assert(self.match(s,i,'('))
-    
-    level = 0
-    while i < len(s):
-        ch = s[i]
-        if ch == '(':
-            level += 1 ; i += 1
-        elif ch == ')':
-            level -= 1
-            if level <= 0:  return i
-            i += 1
-        else: i += 1
-    return i
-#@+node:ekr.20110918225821.6818: *8* skip_statement
-def skip_statement (self,s,i):
-    
-    '''Skip to the next ';' or '}' token.'''
-    
-    while i < len(s):
-        if s[i] in ';}':
-            i += 1
-            break
-        else:
-            i += 1
-    return i
-#@+node:ekr.20110917204542.6967: *7* put_token & helpers
-def put_token (self,s):
-    
-    '''Append token s to self.result as is,
-    *except* for adjusting leading whitespace and comments.
-    
-    '{' tokens bump self.brackets or self.ignored_brackets.
-    self.brackets determines leading whitespace.
-    '''
-    
-    # The ignore_ws flag applies only to the next whitespace token.
-    if not s.isspace():
-        self.ignore_ws = False
-    
-    # if s == '{':
-        # # Increase brackets unless '=' precedes it.
-        # if self.prev_token('='):
-            # self.ignored_brackets += 1
-        # else:
-            # self.brackets += 1
-    # elif s == '}':
-        # if self.ignored_brackets:
-            # self.ignored_brackets -= 1
-        # else:
-            # self.brackets -= 1
-            # self.remove_indent()
-            
-    # It doesn't hurt to increase indentation after *all* '{'.
-    if s == '{':
-        self.brackets += 1
-    elif s == '}':
-        self.brackets -= 1
-        self.remove_indent()
-    elif s == '(':
-        self.parens += 1
-    elif s == ')':
-        self.parens -= 1
-    elif s == '\n':
-        # g.trace('newline',self.parens)
-        if self.parens <= 0:
-            # Add the proper whitespace to the token.
-            self.result.append('\n')
-            s = ' ' * self.brackets * self.tab_width
-            self.ignore_ws = True
-        else:
-            pass # Use the existing indentation.
-    elif s.isspace() and self.ignore_ws:
-        # Kill the whitespace.
-        s = ''
-    elif s.startswith('/*'):
-        s = self.reformat_block_comment(s)
-    else:
-        pass # put s as it is.
-    
-    if s:
-        self.result.append(s)
-    
-#@+node:ekr.20110917204542.6968: *8* prev_token
-def prev_token (self,s):
-    
-    '''Return the previous token, ignoring whitespace and comments.'''
-    
-    i = len(self.result)-1
-    while i >= 0:
-        s2 = self.result[i]
-        if s == s2:
-            return True
-        elif s.isspace() or s.startswith('//') or s.startswith ('/*'):
-            i -= 1
-        else:
-            return False
-#@+node:ekr.20110918184425.6916: *8* reformat_block_comment
-def reformat_block_comment (self,s):
-    
-    return s
-#@+node:ekr.20110917204542.6969: *8* remove_indent
-def remove_indent (self):
-    
-    '''Remove one tab-width of blanks from the previous token.'''
-    
-    w = abs(self.tab_width)
-    
-    if self.result:
-        s = self.result[-1]
-        if s.isspace() and s.find('\n') == -1:
-            self.result.pop()
-            s = s.replace('\t',' ' * w)
-            self.result.append(s[:-w])
-#@+node:ekr.20110918225821.6819: *6* match
-def match(self,s,i,pat):
-    
-    return i < len(s) and s[i] == pat
-#@+node:ekr.20110917174948.6930: *6* tokenize & helper
-def tokenize (self,s):
-    
-    '''Tokenize comments, strings, identifiers, whitespace and operators.'''
-
-    i,n,result = 0,len(s),[]
-    while i < n:
-        # Loop invariant: j > i at end and s[i:j] is the new token.
-        j = i
-        ch = s[i]
-        if g.match(s,i,'//'):
-            j = g.skip_line(s,i)
-        elif g.match(s,i,'/*'):
-            j = self.skip_block_comment(s,i)
-        # elif g.match(s,i,'-->'):
-            # j = i + 3
-        elif ch in "'\"":
-            j = g.skip_string(s,i)
-        elif ch.isalpha() or ch == '_':
-            j = g.skip_c_id(s,i)
-        elif ch in ' \t':
-            j = g.skip_ws(s,i)
-        elif ch in '@\n': # Always separate tokens.
-            j += 1
-        else:
-            j += 1
-            # Accumulate everything else.
-            # while (
-                # j < n and
-                # not s[j].isspace() and
-                # not s[j].isalpha() and
-                # not s[j] in '"\'_@' and
-                    # # start of strings, identifiers, and single-character tokens.
-                # not g.match(s,j,'//') and
-                # not g.match(s,j,'/*') and
-                # not g.match(s,j,'-->')
-            # ):
-                # j += 1
-            
-        assert j > i
-        result.append(''.join(s[i:j]))
-        i = j # Advance.
-        
-    return result
-#@+node:ekr.20110917193725.6974: *7* skip_block_comment
-def skip_block_comment (self,s,i):
-
-    assert(g.match(s,i,"/*"))
-
-    j = s.find("*/",i)
-    if j == -1:
-        return n
-    else:
-        return j + 2
-#@+node:ekr.20110917174948.6877: *5* beautifyCCode
-def beautifyCCode (self,event=None):
-
-    '''Reformat all C code in the selected tree.'''
-
-    c = self
-    pp = c.CPrettyPrinter(c)
-    u = c.undoer ; undoType = 'beautify-c'
-    
-    u.beforeChangeGroup(c.p,undoType)
-    dirtyVnodeList = []
-    changed = False
-
-    for p in c.p.self_and_subtree():
-        if g.scanForAtLanguage(c,p) == "c":
-            bunch = u.beforeChangeNodeContents(p,oldBody=p.b)
-            s = pp.indent(p)
-            if p.b != s:
-                p.b = s
-                p.v.setDirty()
-                dirtyVnodeList.append(p.v)
-                u.afterChangeNodeContents(p,undoType,bunch)
-                changed = True
-
-    if changed:
-        u.afterChangeGroup(c.p,undoType,
-            reportFlag=False,dirtyVnodeList=dirtyVnodeList)
-            
-    c.bodyWantsFocus()
-#@+node:ekr.20110917193725.6973: *5* c tokenize test
-@language c
-
-static exit_values_ty indent_main_loop(void)
-{
-    codes_ty         hd_type         = code_eof;
-    char           * t_ptr           = NULL;
-    codes_ty         type_code       = start_token;
-    exit_values_ty   file_exit_value = total_success;
-    int              dec_ind         = 0; /* current indentation for declarations */
-
-    BOOLEAN          scase           = false; /* true when we've just see a "case";
-                                               * determines what to do with the
-                                               * following colon */
-    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
-                                               * a newline was passed over */
-    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
-                                               * while(...), etc. */
-    BOOLEAN          force_nl        = false;
-
-    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
-     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
-     * set to 2 in the middle of the main token reading loop and is decremented
-     * at the beginning of the loop, so it will reach zero when the second token
-     * after the ')' is read.
-     */
-
-    BOOLEAN          last_token_ends_sp = false;
-
-    BOOLEAN          last_else = false; /* true if last keyword was an else */
-
-    for (;;)
-    {
-        /* this is the main loop.  it will go until
-         * we reach eof */
-
-        BOOLEAN is_procname_definition;
-        bb_code_ty can_break;
-
-        if (type_code != newline)
-        {
-            can_break = parser_state_tos->can_break;
-        }
-
-        parser_state_tos->last_saw_nl = false;
-        parser_state_tos->can_break = bb_none;
-
-        type_code = lexi ();    /* lexi reads one token.  "token" points to
-                                 * the actual characters. lexi returns a code
-                                 * indicating the type of token */
-
-        /* If the last time around we output an identifier or
-         * a paren, then consider breaking the line here if it's
-         * too long.
-         *
-         * A similar check is performed at the end of the loop, after
-         * we've put the token on the line. */
-
-        if ((settings.max_col > 0) &&
-            (buf_break != NULL) &&
-            ( ( (parser_state_tos->last_token == ident) &&
-                (type_code != comma) &&
-                (type_code != semicolon) &&
-                (type_code != newline) &&
-                (type_code != form_feed) &&
-                (type_code != rparen) &&
-                (type_code != struct_delim)) ||
-              ( (parser_state_tos->last_token == rparen) &&
-                (type_code != comma) &&
-                (type_code != rparen) ) ) &&
-            (output_line_length () > settings.max_col))
-        {
-            break_line = 1;
-        }
-
-        if (last_token_ends_sp > 0)
-        {
-            last_token_ends_sp--;
-        }
-
-        is_procname_definition =
-                (((parser_state_tos->procname[0] != '\0') &&
-                  parser_state_tos->in_parameter_declaration) ||
-                 (parser_state_tos->classname[0] != '\0'));
-
-        /* The following code moves everything following an if (), while (),
-         * else, etc. up to the start of the following stmt to a buffer. This
-         * allows proper handling of both kinds of brace placement.
-         */
-
-        flushed_nl = false;
-
-        if (!search_brace(&type_code, &force_nl, &flushed_nl, &last_else, &is_procname_definition))
-        {
-            /* Hit EOF unexpectedly in comment. */
-            return indent_punt;
-        }
-        
-        if (type_code == code_eof)
-        {
-            /* we got eof */
-            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
-            {
-                dump_line(true, &paren_target);
-            }
-
-            if (parser_state_tos->tos > 1)      /* check for balanced braces */
-            {
-                ERROR (_("Unexpected end of file"), 0, 0);
-                file_exit_value = indent_error;
-            }
-
-            if (settings.verbose)
-            {
-                printf (_("There were %d non-blank output lines and %d comments\n"),
-                        (int) out_lines, (int) com_lines);
-                if (com_lines > 0 && code_lines > 0)
-                {
-                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
-                            (1.0 * com_lines) / code_lines);
-                }
-            }
-            flush_output ();
-
-            return file_exit_value;                                              /* RETURN */
-        }
-
-        if ((type_code != comment) &&
-            (type_code != cplus_comment) &&
-            (type_code != newline) &&
-            (type_code != preesc) &&
-            (type_code != form_feed))
-        {
-            if (force_nl &&
-                (type_code != semicolon) &&
-                ( (type_code != lbrace) ||
-                  (!parser_state_tos->in_decl && !settings.btype_2) ||
-                  (parser_state_tos->in_decl && !settings.braces_on_struct_decl_line) ||
-                  (parser_state_tos->last_token == rbrace)))
-            {
-                if (settings.verbose && !flushed_nl)
-                {
-                    WARNING (_("Line broken 2"), 0, 0);
-                }
-
-                flushed_nl = false;
-                dump_line(true, &paren_target);
-                parser_state_tos->want_blank = false;
-                force_nl = false;
-            }
-
-            parser_state_tos->in_stmt = true;   /* turn on flag which causes
-                                                 * an extra level of
-                                                 * indentation. this is
-                                                 * turned off by a ; or } */
-            if (s_com != e_com)
-            {
-                /* the code has an embedded comment in the
-                 * line. Move it from the com buffer to the
-                 * code buffer.
-                 *
-                 * Do not add a space before the comment if it is the first
-                 * thing on the line.
-                 */
-
-                if (e_code != s_code)
-                {
-                    set_buf_break (bb_embedded_comment_start, paren_target);
-                    *e_code++ = ' ';
-                    embedded_comment_on_line = 2;
-                }
-                else
-                {
-                    embedded_comment_on_line = 1;
-                }
-
-                for (t_ptr = s_com; *t_ptr; ++t_ptr)
-                {
-                    check_code_size();
-                    *e_code++ = *t_ptr;
-                }
-
-                set_buf_break (bb_embedded_comment_end, paren_target);
-                *e_code++ = ' ';
-                *e_code = '\0'; /* null terminate code sect */
-                parser_state_tos->want_blank = false;
-                e_com = s_com;
-            }
-        }
-        else if ((type_code != comment) &&
-                 (type_code != cplus_comment) &&
-                 !(settings.break_function_decl_args &&
-                   (parser_state_tos->last_token == comma)) &&
-                 !( (parser_state_tos->last_token == comma) &&
-                    !settings.leave_comma))
-        {
-            /* preserve force_nl thru a comment but
-             * cancel forced newline after newline, form feed, etc.
-             * however, don't cancel if last thing seen was comma-newline
-             * and -bc flag is on. */
-
-            force_nl = false;
-        }
-
-        /* Main switch on type of token scanned */
-
-        check_code_size();
-        
-        /* now, decide what to do with the token */
-
-        handle_the_token(type_code, &scase, &force_nl, &sp_sw, &flushed_nl,
-                         &hd_type, &dec_ind, &last_token_ends_sp, &file_exit_value,
-                         can_break, &last_else, is_procname_definition);
-        
-        *e_code = '\0';         /* make sure code section is null terminated */
-
-        if ((type_code != comment) &&
-            (type_code != cplus_comment) &&
-            (type_code != newline) &&
-            (type_code != preesc) &&
-            (type_code != form_feed))
-        {
-            parser_state_tos->last_token = type_code;
-        }
-
-        /* Now that we've put the token on the line (in most cases),
-         * consider breaking the line because it's too long.
-         *
-         * Don't consider the cases of `unary_op', newlines,
-         * declaration types (int, etc.), if, while, for,
-         * identifiers (handled at the beginning of the loop),
-         * periods, or preprocessor commands. */
-
-        if ((settings.max_col > 0) && (buf_break != NULL))
-        {
-            if ( ( (type_code == binary_op) ||
-                   (type_code == postop) ||
-                   (type_code == question) ||
-                   ((type_code == colon) && (scase || (squest <= 0))) ||
-                   (type_code == semicolon) ||
-                   (type_code == sp_nparen) ||
-                   (type_code == sp_else) ||
-                   ((type_code == ident) && (*token == '\"')) ||
-                   (type_code == struct_delim) ||
-                   (type_code == comma)) &&
-                 (output_line_length () > settings.max_col))
-            {
-                break_line = 1;
-            }
-        }
-    }                           /* end of main infinite loop */
-}
 #@+node:ekr.20110916215321.7767: *4* Added c-to-python command
 @nocolor-node
 
@@ -6596,6 +6009,603 @@ def skip_ws_and_nl (self,aList,i):
 
 - Generates only @auto, does not do an actual import.
 - Creates @path nodes so actual @auto nodes are short.
+#@+node:ekr.20110917174948.6875: *4* Added beautify-c command
+#@+node:ekr.20110917174948.6903: *5* class CPrettyPrinter
+class CPrettyPrinter:
+    
+    @others
+    
+if g.app.inScript:
+    
+    cpp = CPrettyPrinter(c)
+    p2 = g.findNodeAnywhere(c,'c tokenize test')
+    
+    if 1: # test of indent.
+        import os ; os.system('cls')
+        cpp.indent(p2)
+    
+    if 0: # test of tokenize.
+        aList = cpp.tokenize(p2.b)
+        assert(p2.b == ''.join(aList))
+        if 0:
+            import os ; os.system('cls')
+            print('*' * 40)
+            # print(''.join(aList))
+            for z in aList:
+                print(repr(z))
+        else:
+            print('pass')
+#@+node:ekr.20110917174948.6904: *6* __init__
+def __init__ (self,c):
+    
+    self.c = c
+    self.p = None # Set in indent.
+    
+    self.brackets = 0
+        # The brackets indentation level.
+    self.ignored_brackets = 0
+        # The number of '}' to ignore before reducing self.brackets.
+    self.ignore_ws = False
+        # True: ignore the next whitespace token if any.
+    self.parens = 0
+        # The parenthesis nesting level.
+    self.result = []
+        # The list of tokens that form the final result.
+    self.tab_width = 4
+        # The number of spaces in each unit of leading indentation.
+#@+node:ekr.20110917174948.6911: *6* indent & helpers
+def indent (self,p):
+
+    c = self.c
+    if not p.b: return
+    self.p = p.copy()
+    
+    aList = self.tokenize(p.b)
+    assert ''.join(aList) == p.b
+    
+    aList = self.add_statement_braces(aList)
+    
+    if 0:
+        for z in aList:
+            print(repr(z))
+
+    self.bracketLevel = 0
+    self.parens = 0
+    self.result = []
+    for s in aList:
+        self.put_token(s)
+
+    s = ''.join(self.result)
+    return s
+#@+node:ekr.20110918225821.6815: *7* add_statement_braces
+def add_statement_braces (self,s):
+    
+    p = self.p
+    trace = False
+    
+    def oops(message,i,j):
+        g.es_print('** changed ',p.h,color='red')
+        g.es_print('%s after\n%s' % (
+            message,repr(''.join(s[i:j]))))
+    
+    i,n,result = 0,len(s),[]
+    while i < n:
+        token = s[i]
+        progress = i
+        if token in ('if','for','while',):
+            j = self.skip_ws_and_comments(s,i+1)
+            if self.match(s,j,'('):
+                j = self.skip_parens(s,j)
+                if self.match(s,j,')'):
+                    j = self.skip_ws_and_comments(s,j+1)
+                    if self.match(s,j,';'):
+                        # Example: while (*++prefix);
+                        result.extend(s[i:j])
+                    elif self.match(s,j,'{'):
+                        result.extend(s[i:j])
+                    else:
+                        oops("insert '{'",i,j)
+                        result.extend(s[i:j])
+                        result.append(' ')
+                        result.append('{')
+                        result.append('\n')
+                        i = j
+                        j = self.skip_statement(s,i)
+                        result.extend(s[i:j])
+                        result.append('\n')
+                        result.append('}')
+                        oops("insert '}'",i,j)
+                else:
+                    oops("missing ')'",i,j)
+                    result.extend(s[i:j])
+            else:
+                oops("missing '('",i,j)
+                result.extend(s[i:j])
+            i = j
+        else:
+            result.append(token)
+            i += 1
+        assert progress < i
+            
+    if trace: g.trace(''.join(result))
+    return result
+            
+#@+node:ekr.20110918225821.6820: *8* skip_ws_and_nl
+def skip_ws_and_comments (self,s,i):
+    
+    while i < len(s):
+        token = s[i]
+        if token.isspace():
+            i += 1
+        elif token.startswith('//') or token.startswith('/*'):
+            i += 1
+        else:
+            break
+        
+    return i
+#@+node:ekr.20110918225821.6817: *8* skip_parens
+def skip_parens(self,s,i):
+
+    '''Skips from the opening ( to the matching ).
+
+    If no matching is found i is set to len(s)'''
+
+    assert(self.match(s,i,'('))
+    
+    level = 0
+    while i < len(s):
+        ch = s[i]
+        if ch == '(':
+            level += 1 ; i += 1
+        elif ch == ')':
+            level -= 1
+            if level <= 0:  return i
+            i += 1
+        else: i += 1
+    return i
+#@+node:ekr.20110918225821.6818: *8* skip_statement
+def skip_statement (self,s,i):
+    
+    '''Skip to the next ';' or '}' token.'''
+    
+    while i < len(s):
+        if s[i] in ';}':
+            i += 1
+            break
+        else:
+            i += 1
+    return i
+#@+node:ekr.20110917204542.6967: *7* put_token & helpers
+def put_token (self,s):
+    
+    '''Append token s to self.result as is,
+    *except* for adjusting leading whitespace and comments.
+    
+    '{' tokens bump self.brackets or self.ignored_brackets.
+    self.brackets determines leading whitespace.
+    '''
+    
+    # The ignore_ws flag applies only to the next whitespace token.
+    if not s.isspace():
+        self.ignore_ws = False
+    
+    # if s == '{':
+        # # Increase brackets unless '=' precedes it.
+        # if self.prev_token('='):
+            # self.ignored_brackets += 1
+        # else:
+            # self.brackets += 1
+    # elif s == '}':
+        # if self.ignored_brackets:
+            # self.ignored_brackets -= 1
+        # else:
+            # self.brackets -= 1
+            # self.remove_indent()
+            
+    # It doesn't hurt to increase indentation after *all* '{'.
+    if s == '{':
+        self.brackets += 1
+    elif s == '}':
+        self.brackets -= 1
+        self.remove_indent()
+    elif s == '(':
+        self.parens += 1
+    elif s == ')':
+        self.parens -= 1
+    elif s == '\n':
+        # g.trace('newline',self.parens)
+        if self.parens <= 0:
+            # Add the proper whitespace to the token.
+            self.result.append('\n')
+            s = ' ' * self.brackets * self.tab_width
+            self.ignore_ws = True
+        else:
+            pass # Use the existing indentation.
+    elif s.isspace() and self.ignore_ws:
+        # Kill the whitespace.
+        s = ''
+    elif s.startswith('/*'):
+        s = self.reformat_block_comment(s)
+    else:
+        pass # put s as it is.
+    
+    if s:
+        self.result.append(s)
+    
+#@+node:ekr.20110917204542.6968: *8* prev_token
+def prev_token (self,s):
+    
+    '''Return the previous token, ignoring whitespace and comments.'''
+    
+    i = len(self.result)-1
+    while i >= 0:
+        s2 = self.result[i]
+        if s == s2:
+            return True
+        elif s.isspace() or s.startswith('//') or s.startswith ('/*'):
+            i -= 1
+        else:
+            return False
+#@+node:ekr.20110918184425.6916: *8* reformat_block_comment
+def reformat_block_comment (self,s):
+    
+    return s
+#@+node:ekr.20110917204542.6969: *8* remove_indent
+def remove_indent (self):
+    
+    '''Remove one tab-width of blanks from the previous token.'''
+    
+    w = abs(self.tab_width)
+    
+    if self.result:
+        s = self.result[-1]
+        if s.isspace() and s.find('\n') == -1:
+            self.result.pop()
+            s = s.replace('\t',' ' * w)
+            self.result.append(s[:-w])
+#@+node:ekr.20110918225821.6819: *6* match
+def match(self,s,i,pat):
+    
+    return i < len(s) and s[i] == pat
+#@+node:ekr.20110917174948.6930: *6* tokenize & helper
+def tokenize (self,s):
+    
+    '''Tokenize comments, strings, identifiers, whitespace and operators.'''
+
+    i,n,result = 0,len(s),[]
+    while i < n:
+        # Loop invariant: j > i at end and s[i:j] is the new token.
+        j = i
+        ch = s[i]
+        if ch == '#':
+            # Preprocessor directive.
+            j = g.skip_to_end_of_line(s,i)
+        if g.match(s,i,'//'):
+            j = g.skip_line(s,i)
+        elif g.match(s,i,'/*'):
+            j = self.skip_block_comment(s,i)
+        # elif g.match(s,i,'-->'):
+            # j = i + 3
+        elif ch in "'\"":
+            j = g.skip_string(s,i)
+        elif ch.isalpha() or ch == '_':
+            j = g.skip_c_id(s,i)
+        elif ch in ' \t':
+            j = g.skip_ws(s,i)
+        # elif ch in '@\n': # Always separate tokens.
+            # j += 1
+        else:
+            j += 1
+            # Accumulate everything else.
+            # while (
+                # j < n and
+                # not s[j].isspace() and
+                # not s[j].isalpha() and
+                # not s[j] in '"\'_@' and
+                    # # start of strings, identifiers, and single-character tokens.
+                # not g.match(s,j,'//') and
+                # not g.match(s,j,'/*') and
+                # not g.match(s,j,'-->')
+            # ):
+                # j += 1
+            
+        assert j > i
+        result.append(''.join(s[i:j]))
+        i = j # Advance.
+        
+    return result
+#@+node:ekr.20110917193725.6974: *7* skip_block_comment
+def skip_block_comment (self,s,i):
+
+    assert(g.match(s,i,"/*"))
+
+    j = s.find("*/",i)
+    if j == -1:
+        return n
+    else:
+        return j + 2
+#@+node:ekr.20110917174948.6877: *5* beautifyCCode
+def beautifyCCode (self,event=None):
+
+    '''Reformat all C code in the selected tree.'''
+
+    c = self
+    pp = c.CPrettyPrinter(c)
+    u = c.undoer ; undoType = 'beautify-c'
+    
+    u.beforeChangeGroup(c.p,undoType)
+    dirtyVnodeList = []
+    changed = False
+
+    for p in c.p.self_and_subtree():
+        if g.scanForAtLanguage(c,p) == "c":
+            bunch = u.beforeChangeNodeContents(p,oldBody=p.b)
+            s = pp.indent(p)
+            if p.b != s:
+                # g.es('changed: %s' % (p.h))
+                p.b = s
+                p.v.setDirty()
+                dirtyVnodeList.append(p.v)
+                u.afterChangeNodeContents(p,undoType,bunch)
+                changed = True
+
+    if changed:
+        u.afterChangeGroup(c.p,undoType,
+            reportFlag=False,dirtyVnodeList=dirtyVnodeList)
+            
+    c.bodyWantsFocus()
+#@+node:ekr.20110917193725.6973: *5* c tokenize test
+@language c
+
+static exit_values_ty indent_main_loop(void)
+{
+    codes_ty         hd_type         = code_eof;
+    char           * t_ptr           = NULL;
+    codes_ty         type_code       = start_token;
+    exit_values_ty   file_exit_value = total_success;
+    int              dec_ind         = 0; /* current indentation for declarations */
+
+    BOOLEAN          scase           = false; /* true when we've just see a "case";
+                                               * determines what to do with the
+                                               * following colon */
+    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
+                                               * a newline was passed over */
+    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
+                                               * while(...), etc. */
+    BOOLEAN          force_nl        = false;
+
+    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
+     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
+     * set to 2 in the middle of the main token reading loop and is decremented
+     * at the beginning of the loop, so it will reach zero when the second token
+     * after the ')' is read.
+     */
+
+    BOOLEAN          last_token_ends_sp = false;
+
+    BOOLEAN          last_else = false; /* true if last keyword was an else */
+
+    for (;;)
+    {
+        /* this is the main loop.  it will go until
+         * we reach eof */
+
+        BOOLEAN is_procname_definition;
+        bb_code_ty can_break;
+
+        if (type_code != newline)
+        {
+            can_break = parser_state_tos->can_break;
+        }
+
+        parser_state_tos->last_saw_nl = false;
+        parser_state_tos->can_break = bb_none;
+
+        type_code = lexi ();    /* lexi reads one token.  "token" points to
+                                 * the actual characters. lexi returns a code
+                                 * indicating the type of token */
+
+        /* If the last time around we output an identifier or
+         * a paren, then consider breaking the line here if it's
+         * too long.
+         *
+         * A similar check is performed at the end of the loop, after
+         * we've put the token on the line. */
+
+        if ((settings.max_col > 0) &&
+            (buf_break != NULL) &&
+            ( ( (parser_state_tos->last_token == ident) &&
+                (type_code != comma) &&
+                (type_code != semicolon) &&
+                (type_code != newline) &&
+                (type_code != form_feed) &&
+                (type_code != rparen) &&
+                (type_code != struct_delim)) ||
+              ( (parser_state_tos->last_token == rparen) &&
+                (type_code != comma) &&
+                (type_code != rparen) ) ) &&
+            (output_line_length () > settings.max_col))
+        {
+            break_line = 1;
+        }
+
+        if (last_token_ends_sp > 0)
+        {
+            last_token_ends_sp--;
+        }
+
+        is_procname_definition =
+                (((parser_state_tos->procname[0] != '\0') &&
+                  parser_state_tos->in_parameter_declaration) ||
+                 (parser_state_tos->classname[0] != '\0'));
+
+        /* The following code moves everything following an if (), while (),
+         * else, etc. up to the start of the following stmt to a buffer. This
+         * allows proper handling of both kinds of brace placement.
+         */
+
+        flushed_nl = false;
+
+        if (!search_brace(&type_code, &force_nl, &flushed_nl, &last_else, &is_procname_definition))
+        {
+            /* Hit EOF unexpectedly in comment. */
+            return indent_punt;
+        }
+        
+        if (type_code == code_eof)
+        {
+            /* we got eof */
+            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
+            {
+                dump_line(true, &paren_target);
+            }
+
+            if (parser_state_tos->tos > 1)      /* check for balanced braces */
+            {
+                ERROR (_("Unexpected end of file"), 0, 0);
+                file_exit_value = indent_error;
+            }
+
+            if (settings.verbose)
+            {
+                printf (_("There were %d non-blank output lines and %d comments\n"),
+                        (int) out_lines, (int) com_lines);
+                if (com_lines > 0 && code_lines > 0)
+                {
+                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
+                            (1.0 * com_lines) / code_lines);
+                }
+            }
+            flush_output ();
+
+            return file_exit_value;                                              /* RETURN */
+        }
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            if (force_nl &&
+                (type_code != semicolon) &&
+                ( (type_code != lbrace) ||
+                  (!parser_state_tos->in_decl && !settings.btype_2) ||
+                  (parser_state_tos->in_decl && !settings.braces_on_struct_decl_line) ||
+                  (parser_state_tos->last_token == rbrace)))
+            {
+                if (settings.verbose && !flushed_nl)
+                {
+                    WARNING (_("Line broken 2"), 0, 0);
+                }
+
+                flushed_nl = false;
+                dump_line(true, &paren_target);
+                parser_state_tos->want_blank = false;
+                force_nl = false;
+            }
+
+            parser_state_tos->in_stmt = true;   /* turn on flag which causes
+                                                 * an extra level of
+                                                 * indentation. this is
+                                                 * turned off by a ; or } */
+            if (s_com != e_com)
+            {
+                /* the code has an embedded comment in the
+                 * line. Move it from the com buffer to the
+                 * code buffer.
+                 *
+                 * Do not add a space before the comment if it is the first
+                 * thing on the line.
+                 */
+
+                if (e_code != s_code)
+                {
+                    set_buf_break (bb_embedded_comment_start, paren_target);
+                    *e_code++ = ' ';
+                    embedded_comment_on_line = 2;
+                }
+                else
+                {
+                    embedded_comment_on_line = 1;
+                }
+
+                for (t_ptr = s_com; *t_ptr; ++t_ptr)
+                {
+                    check_code_size();
+                    *e_code++ = *t_ptr;
+                }
+
+                set_buf_break (bb_embedded_comment_end, paren_target);
+                *e_code++ = ' ';
+                *e_code = '\0'; /* null terminate code sect */
+                parser_state_tos->want_blank = false;
+                e_com = s_com;
+            }
+        }
+        else if ((type_code != comment) &&
+                 (type_code != cplus_comment) &&
+                 !(settings.break_function_decl_args &&
+                   (parser_state_tos->last_token == comma)) &&
+                 !( (parser_state_tos->last_token == comma) &&
+                    !settings.leave_comma))
+        {
+            /* preserve force_nl thru a comment but
+             * cancel forced newline after newline, form feed, etc.
+             * however, don't cancel if last thing seen was comma-newline
+             * and -bc flag is on. */
+
+            force_nl = false;
+        }
+
+        /* Main switch on type of token scanned */
+
+        check_code_size();
+        
+        /* now, decide what to do with the token */
+
+        handle_the_token(type_code, &scase, &force_nl, &sp_sw, &flushed_nl,
+                         &hd_type, &dec_ind, &last_token_ends_sp, &file_exit_value,
+                         can_break, &last_else, is_procname_definition);
+        
+        *e_code = '\0';         /* make sure code section is null terminated */
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            parser_state_tos->last_token = type_code;
+        }
+
+        /* Now that we've put the token on the line (in most cases),
+         * consider breaking the line because it's too long.
+         *
+         * Don't consider the cases of `unary_op', newlines,
+         * declaration types (int, etc.), if, while, for,
+         * identifiers (handled at the beginning of the loop),
+         * periods, or preprocessor commands. */
+
+        if ((settings.max_col > 0) && (buf_break != NULL))
+        {
+            if ( ( (type_code == binary_op) ||
+                   (type_code == postop) ||
+                   (type_code == question) ||
+                   ((type_code == colon) && (scase || (squest <= 0))) ||
+                   (type_code == semicolon) ||
+                   (type_code == sp_nparen) ||
+                   (type_code == sp_else) ||
+                   ((type_code == ident) && (*token == '\"')) ||
+                   (type_code == struct_delim) ||
+                   (type_code == comma)) &&
+                 (output_line_length () > settings.max_col))
+            {
+                break_line = 1;
+            }
+        }
+    }                           /* end of main infinite loop */
+}
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>

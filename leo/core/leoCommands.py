@@ -4431,6 +4431,7 @@ class Commands (object):
         def __init__ (self,c):
             
             self.c = c
+            self.p = None # Set in indent.
             
             self.brackets = 0
                 # The brackets indentation level.
@@ -4449,6 +4450,7 @@ class Commands (object):
 
             c = self.c
             if not p.b: return
+            self.p = p.copy()
             
             aList = self.tokenize(p.b)
             assert ''.join(aList) == p.b
@@ -4470,7 +4472,14 @@ class Commands (object):
         #@+node:ekr.20110918225821.6815: *9* add_statement_braces
         def add_statement_braces (self,s):
             
-            trace = True ; verbose = False
+            p = self.p
+            trace = False
+            
+            def oops(message,i,j):
+                g.es_print('** changed ',p.h,color='red')
+                g.es_print('%s after\n%s' % (
+                    message,repr(''.join(s[i:j]))))
+            
             i,n,result = 0,len(s),[]
             while i < n:
                 token = s[i]
@@ -4481,13 +4490,13 @@ class Commands (object):
                         j = self.skip_parens(s,j)
                         if self.match(s,j,')'):
                             j = self.skip_ws_and_comments(s,j+1)
-                            if self.match(s,j,'{'):
+                            if self.match(s,j,';'):
+                                # Example: while (*++prefix);
+                                result.extend(s[i:j])
+                            elif self.match(s,j,'{'):
                                 result.extend(s[i:j])
                             else:
-                                if trace:
-                                    # g.trace(i,j,s[i:j])
-                                    g.trace('inserting "{" after: %s' % (
-                                        repr(''.join(s[i:j]))))
+                                oops("insert '{'",i,j)
                                 result.extend(s[i:j])
                                 result.append(' ')
                                 result.append('{')
@@ -4497,15 +4506,12 @@ class Commands (object):
                                 result.extend(s[i:j])
                                 result.append('\n')
                                 result.append('}')
-                                if trace:
-                                    # g.trace(i,j,s[i:j])
-                                    g.trace('inserting "}" after: %s' % (
-                                        repr(''.join(s[i:j]))))
+                                oops("insert '}'",i,j)
                         else:
-                            g.trace('missing ")" after: "%s"' % (token))
+                            oops("missing ')'",i,j)
                             result.extend(s[i:j])
                     else:
-                        g.trace('missing "(" after: "%s"' % (token))
+                        oops("missing '('",i,j)
                         result.extend(s[i:j])
                     i = j
                 else:
@@ -4513,7 +4519,7 @@ class Commands (object):
                     i += 1
                 assert progress < i
                     
-            if trace and verbose: g.trace(''.join(result))
+            if trace: g.trace(''.join(result))
             return result
                     
         #@+node:ekr.20110918225821.6820: *10* skip_ws_and_nl
@@ -4663,6 +4669,9 @@ class Commands (object):
                 # Loop invariant: j > i at end and s[i:j] is the new token.
                 j = i
                 ch = s[i]
+                if ch == '#':
+                    # Preprocessor directive.
+                    j = g.skip_to_end_of_line(s,i)
                 if g.match(s,i,'//'):
                     j = g.skip_line(s,i)
                 elif g.match(s,i,'/*'):
@@ -4675,8 +4684,8 @@ class Commands (object):
                     j = g.skip_c_id(s,i)
                 elif ch in ' \t':
                     j = g.skip_ws(s,i)
-                elif ch in '@\n': # Always separate tokens.
-                    j += 1
+                # elif ch in '@\n': # Always separate tokens.
+                    # j += 1
                 else:
                     j += 1
                     # Accumulate everything else.
@@ -5117,6 +5126,7 @@ class Commands (object):
                 bunch = u.beforeChangeNodeContents(p,oldBody=p.b)
                 s = pp.indent(p)
                 if p.b != s:
+                    # g.es('changed: %s' % (p.h))
                     p.b = s
                     p.v.setDirty()
                     dirtyVnodeList.append(p.v)
