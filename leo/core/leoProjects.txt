@@ -4441,6 +4441,12 @@ def replaceFileWithString (self,fn,s):
         x.error('unexpected exception writing file: %s' % (fn))
         g.es_exception()
         return False
+#@+node:ekr.20110917130105.6873: *4* Fix a w.see botch.
+@nocolor-node
+
+The call to w.see(ins+5) in rp_reformat created a big problem.
+
+Replacing this with w.see(ins) is much better.
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
 @nocolor-node

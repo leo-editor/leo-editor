@@ -4728,6 +4728,8 @@ class leoQtFrame (leoFrame.leoFrame):
     # but they could be called by LeoQTextBrowser.
 
     def OnBodyClick (self,event=None):
+        
+        g.trace()
 
         try:
             c = self.c ; p = c.currentPosition()
@@ -4757,6 +4759,8 @@ class leoQtFrame (leoFrame.leoFrame):
     # Not called
 
     def OnBodyDoubleClick (self,event=None):
+        
+        g.trace()
 
         try:
             c = self.c ; p = c.currentPosition()
