@@ -4598,8 +4598,9 @@ if g.app.inScript:
     p2 = g.findNodeAnywhere(c,'c tokenize test')
     
     if 1: # test of indent.
-        import os ; os.system('cls')
+        # import os ; os.system('cls')
         cpp.indent(p2)
+        print('done')
     
     if 0: # test of tokenize.
         aList = cpp.tokenize(p2.b)
@@ -4610,8 +4611,7 @@ if g.app.inScript:
             # print(''.join(aList))
             for z in aList:
                 print(repr(z))
-        else:
-            print('pass')
+        print('done')
 #@+node:ekr.20110917174948.6904: *6* __init__
 def __init__ (self,c):
     
@@ -4620,18 +4620,21 @@ def __init__ (self,c):
     
     self.brackets = 0
         # The brackets indentation level.
-    self.ignored_brackets = 0
-        # The number of '}' to ignore before reducing self.brackets.
-    self.ignore_ws = False
-        # True: ignore the next whitespace token if any.
     self.parens = 0
         # The parenthesis nesting level.
     self.result = []
         # The list of tokens that form the final result.
     self.tab_width = 4
         # The number of spaces in each unit of leading indentation.
+        
+    # No longer used.
+    
+    # self.ignored_brackets = 0
+        # # The number of '}' to ignore before reducing self.brackets.
+    # self.ignore_ws = False
+        # # True: ignore the next whitespace token if any.
 #@+node:ekr.20110917174948.6911: *6* indent & helpers
-def indent (self,p):
+def indent (self,p,toList=False):
 
     c = self.c
     if not p.b: return
@@ -4641,19 +4644,22 @@ def indent (self,p):
     assert ''.join(aList) == p.b
     
     aList = self.add_statement_braces(aList)
-    
-    if 0:
-        for z in aList:
-            print(repr(z))
 
     self.bracketLevel = 0
     self.parens = 0
     self.result = []
     for s in aList:
+        # g.trace(repr(s))
         self.put_token(s)
+        
+    if 0:
+        for z in self.result:
+            print(repr(z))
 
-    s = ''.join(self.result)
-    return s
+    if toList:
+        return self.result
+    else:
+        return ''.join(self.result)
 #@+node:ekr.20110918225821.6815: *7* add_statement_braces
 def add_statement_braces (self,s):
     
@@ -4661,8 +4667,8 @@ def add_statement_braces (self,s):
     trace = False
     
     def oops(message,i,j):
-        g.es_print('** changed ',p.h,color='red')
-        g.es_print('%s after\n%s' % (
+        g.es('** changed ',p.h,color='red')
+        g.es('%s after\n%s' % (
             message,repr(''.join(s[i:j]))))
     
     i,n,result = 0,len(s),[]
@@ -4674,6 +4680,7 @@ def add_statement_braces (self,s):
             if self.match(s,j,'('):
                 j = self.skip_parens(s,j)
                 if self.match(s,j,')'):
+                    old_j = j+1
                     j = self.skip_ws_and_comments(s,j+1)
                     if self.match(s,j,';'):
                         # Example: while (*++prefix);
@@ -4682,6 +4689,8 @@ def add_statement_braces (self,s):
                         result.extend(s[i:j])
                     else:
                         oops("insert '{'",i,j)
+                        # Back up, and don't go past a newline or comment.
+                        j = self.skip_ws(s,old_j)
                         result.extend(s[i:j])
                         result.append(' ')
                         result.append('{')
@@ -4707,7 +4716,18 @@ def add_statement_braces (self,s):
     if trace: g.trace(''.join(result))
     return result
             
-#@+node:ekr.20110918225821.6820: *8* skip_ws_and_nl
+#@+node:ekr.20110919184022.6903: *8* skip_ws
+def skip_ws (self,s,i):
+    
+    while i < len(s):
+        token = s[i]
+        if token.startswith(' ') or token.startswith('\t'):
+            i += 1
+        else:
+            break
+        
+    return i
+#@+node:ekr.20110918225821.6820: *8* skip_ws_and_comments
 def skip_ws_and_comments (self,s,i):
     
     while i < len(s):
@@ -4761,25 +4781,7 @@ def put_token (self,s):
     '{' tokens bump self.brackets or self.ignored_brackets.
     self.brackets determines leading whitespace.
     '''
-    
-    # The ignore_ws flag applies only to the next whitespace token.
-    if not s.isspace():
-        self.ignore_ws = False
-    
-    # if s == '{':
-        # # Increase brackets unless '=' precedes it.
-        # if self.prev_token('='):
-            # self.ignored_brackets += 1
-        # else:
-            # self.brackets += 1
-    # elif s == '}':
-        # if self.ignored_brackets:
-            # self.ignored_brackets -= 1
-        # else:
-            # self.brackets -= 1
-            # self.remove_indent()
-            
-    # It doesn't hurt to increase indentation after *all* '{'.
+
     if s == '{':
         self.brackets += 1
     elif s == '}':
@@ -4789,18 +4791,15 @@ def put_token (self,s):
         self.parens += 1
     elif s == ')':
         self.parens -= 1
-    elif s == '\n':
-        # g.trace('newline',self.parens)
+    elif s.startswith('\n'):
         if self.parens <= 0:
-            # Add the proper whitespace to the token.
-            self.result.append('\n')
-            s = ' ' * self.brackets * self.tab_width
-            self.ignore_ws = True
-        else:
-            pass # Use the existing indentation.
-    elif s.isspace() and self.ignore_ws:
-        # Kill the whitespace.
-        s = ''
+            s = '\n%s' % (' ' * self.brackets * self.tab_width)
+        else: pass # Use the existing indentation.
+    elif s.isspace():
+        if self.parens <= 0 and self.result and self.result[-1].startswith('\n'):
+            # Kill the whitespace.
+            s = ''
+        else: pass # Keep the whitespace.
     elif s.startswith('/*'):
         s = self.reformat_block_comment(s)
     else:
@@ -4808,7 +4807,21 @@ def put_token (self,s):
     
     if s:
         self.result.append(s)
-    
+        
+@
+    # It doesn't hurt to increase indentation after *all* '{'.
+    if s == '{':
+        # Increase brackets unless '=' precedes it.
+        if self.prev_token('='):
+            self.ignored_brackets += 1
+        else:
+            self.brackets += 1
+    elif s == '}':
+        if self.ignored_brackets:
+            self.ignored_brackets -= 1
+        else:
+            self.brackets -= 1
+            self.remove_indent()
 #@+node:ekr.20110917204542.6968: *8* prev_token
 def prev_token (self,s):
     
@@ -4836,10 +4849,14 @@ def remove_indent (self):
     
     if self.result:
         s = self.result[-1]
-        if s.isspace() and s.find('\n') == -1:
+        if s.isspace():
             self.result.pop()
             s = s.replace('\t',' ' * w)
-            self.result.append(s[:-w])
+            if s.startswith('\n'):
+                s2 = s[1:]
+                self.result.append('\n'+s2[:-w])
+            else:
+                self.result.append(s[:-w])
 #@+node:ekr.20110918225821.6819: *6* match
 def match(self,s,i,pat):
     
@@ -4851,46 +4868,45 @@ def tokenize (self,s):
 
     i,n,result = 0,len(s),[]
     while i < n:
-        # Loop invariant: j > i at end and s[i:j] is the new token.
+        # Loop invariant: at end: j > i and s[i:j] is the new token.
         j = i
         ch = s[i]
-        if ch == '#':
-            # Preprocessor directive.
+        if ch in '@\n': # Make *sure* these are separate tokens.
+            j += 1
+        elif ch == '#': # Preprocessor directive.
             j = g.skip_to_end_of_line(s,i)
-        if g.match(s,i,'//'):
+        elif ch in ' \t':
+            j = g.skip_ws(s,i)
+        elif ch.isalpha() or ch == '_':
+            j = g.skip_c_id(s,i)
+        elif g.match(s,i,'//'):
             j = g.skip_line(s,i)
         elif g.match(s,i,'/*'):
             j = self.skip_block_comment(s,i)
-        # elif g.match(s,i,'-->'):
-            # j = i + 3
         elif ch in "'\"":
             j = g.skip_string(s,i)
-        elif ch.isalpha() or ch == '_':
-            j = g.skip_c_id(s,i)
-        elif ch in ' \t':
-            j = g.skip_ws(s,i)
-        # elif ch in '@\n': # Always separate tokens.
-            # j += 1
         else:
             j += 1
-            # Accumulate everything else.
-            # while (
-                # j < n and
-                # not s[j].isspace() and
-                # not s[j].isalpha() and
-                # not s[j] in '"\'_@' and
-                    # # start of strings, identifiers, and single-character tokens.
-                # not g.match(s,j,'//') and
-                # not g.match(s,j,'/*') and
-                # not g.match(s,j,'-->')
-            # ):
-                # j += 1
             
         assert j > i
         result.append(''.join(s[i:j]))
         i = j # Advance.
         
     return result
+    
+@ The following could be added to the 'else' clause::
+    # Accumulate everything else.
+    while (
+        j < n and
+        not s[j].isspace() and
+        not s[j].isalpha() and
+        not s[j] in '"\'_@' and
+            # start of strings, identifiers, and single-character tokens.
+        not g.match(s,j,'//') and
+        not g.match(s,j,'/*') and
+        not g.match(s,j,'-->')
+    ):
+        j += 1
 #@+node:ekr.20110917193725.6974: *7* skip_block_comment
 def skip_block_comment (self,s,i):
 
