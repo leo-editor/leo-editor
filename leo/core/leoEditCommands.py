@@ -2353,10 +2353,10 @@ class editCommandsClass (baseEditCommandsClass):
                 g.trace('\nhead: %s\nargs: %s\nbody: %s' % (
                     ''.join(head),''.join(args),''.join(body)))
             
-            if True:
-                head = self.massageFunctionHead(head)
-                args = self.massageFunctionArgs(args)
-                body = self.massageFunctionBody(body)
+            head = self.massageFunctionHead(head)
+            args = self.massageFunctionArgs(args)
+            body = self.massageFunctionBody(body)
+
             if False and trace:
                 g.trace('\nhead2: %s\nargs2: %s\nbody2: %s' % (
                     ''.join(head),''.join(args),''.join(body)))
@@ -2473,6 +2473,9 @@ class editCommandsClass (baseEditCommandsClass):
                         k = j
                         j = self.skip_to_matching_bracket(body,j)
                         g.trace('found block\n',''.join(body[k:j+1]))
+                        m = '# <Start dedented block>...'
+                        body[k:k+1] = list(m)
+                        j += len(m)
                         while k < j:
                             progress = k
                             if body[k] == '\n':
@@ -2491,6 +2494,9 @@ class editCommandsClass (baseEditCommandsClass):
                             else:
                                 k += 1
                             assert progress < k
+                        m = '    # <End dedented block>'
+                        body[j:j+1] = list(m)
+                        j += len(m)
                 else:
                     j = i + 1
                 assert i < j
