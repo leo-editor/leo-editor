@@ -2037,19 +2037,21 @@ class editCommandsClass (baseEditCommandsClass):
         #@+node:ekr.20110916215321.8057: *6* ctor & helpers
         def __init__ (self,c):
             
-            # g.trace('(cToPy)',c)
             self.c = c
             self.p = self.c.p.copy()
             
             aList = g.get_directives_dict_list(self.p)
             self.tab_width = g.scanAtTabwidthDirectives(aList) or 4
-            # g.trace('tab_width',self.tab_width)
             
+            # code switch
+            self.use_tokens = False
+                # True: use larger tokens; False: use 1-character tokens.
+
             # Internal state...
             self.class_name = ''
-                # gClassName = "" # The class name for the present function.  Used to modify ivars.
+                # The class name for the present function.  Used to modify ivars.
             self.ivars = []
-                # gIvars = [] # List of ivars to be converted to self.ivar
+                # List of ivars to be converted to self.ivar
             self.print_flag = False
                 
             # Get user types.
@@ -2133,16 +2135,14 @@ class editCommandsClass (baseEditCommandsClass):
             for p in self.p.self_and_subtree():
                 g.es("converting:",p.h)
                 bunch = u.beforeChangeNodeContents(p,oldBody=p.b)
-                if 1:
-                    # Traditionally, every character of the source
-                    # is a separate list item.
+                if self.use_tokens:
+                    # Multi-characer tokens.
+                    aList = pp.indent(p,toList=True)
+                else:
+                    # Traditionally operation: 1-character tokens.
                     s = pp.indent(p,toList = False)
                     aList = [z for z in s]
-                else:
-                    # Important: using pretty-printer's token list would
-                    # imply significant changes to the C_to_Python class.
-                    aList = pp.indent(p,toList=True)
-                
+
                 self.convertCodeList(aList)
             
                 s = ''.join(aList)
@@ -2183,8 +2183,8 @@ class editCommandsClass (baseEditCommandsClass):
             sr(aList, "#endif", '')
             sr(aList, "else if", "elif")
             sr(aList, "else", "else:")
-            sr(aList, "&&", "and")
-            sr(aList, "||", "or")
+            sr(aList, "&&", " and")
+            sr(aList, "||", " or")
             sr(aList, "TRUE", "True")
             sr(aList, "FALSE", "False")
             sr(aList, "NULL", "None")
@@ -2195,6 +2195,7 @@ class editCommandsClass (baseEditCommandsClass):
 
             # Next...
             self.handle_all_keywords(aList)
+            self.insert_not(aList)
             self.removeSemicolonsAtEndOfLines(aList)
                 # after processing for keywords
 
@@ -2215,6 +2216,20 @@ class editCommandsClass (baseEditCommandsClass):
             self.removeTrailingWs(aList)
             r(aList, "\t ", "\t") # happens when deleting declarations.
         #@+node:ekr.20110916215321.8001: *6* Scanning
+        #@+node:ekr.20110919211949.6920: *7* insert_not
+        def insert_not (self,aList):
+            
+            '''Change "!" to "not" except before "="'''
+            
+            i = 0
+            while i < len(aList):
+                if self.is_string_or_comment(aList,i):
+                    i = self.skip_string_or_comment(aList,i)
+                elif aList[i] == '!' and not self.match(aList,i+1,'='):
+                    aList[i:i+1] = list('not ')
+                    i += 4
+                else:
+                    i += 1
         #@+node:ekr.20110916215321.8003: *7* mungeAllFunctions
         def mungeAllFunctions(self,aList):
             
@@ -2232,7 +2247,7 @@ class editCommandsClass (baseEditCommandsClass):
                     if not firstOpen:
                         firstOpen = i
                     j = i + 1
-                elif self.match(aList, i, '#'):
+                elif self.match(aList,i,'#'):
                     # At this point, it is a preprocessor directive.
                     j = self.skip_past_line(aList, i)
                     prevSemi = j
@@ -2549,32 +2564,61 @@ class editCommandsClass (baseEditCommandsClass):
             '''
             
             assert pat
-
-            j = 0
-            while i+j < len(s) and j < len(pat):
-                if s[i+j] == pat[j]:
-                    j += 1
-                    if j == len(pat):
-                        return True
-                else:
-                    return False
-
-            return False
+            
+            if self.use_tokens:
+                aList,i,n = [],0,0
+                while n < len(pat) and i < len(s):
+                    token = s[i]
+                    n += len(token)
+                    aList.append(token)
+                
+                return pat.startswith(''.join(aList))
+            else:
+                j = 0
+                while i+j < len(s) and j < len(pat):
+                    if s[i+j] == pat[j]:
+                        j += 1
+                        if j == len(pat):
+                            return True
+                    else:
+                        return False
+            
+                return False
         #@+node:ekr.20110916215321.8021: *8* match_word
         def match_word (self,s,i,pat):
             
             '''Return True if s[i:] word matches the pat string.'''
             
-            if self.match(s,i,pat):
-                j = i + len(pat)
-                if j >= len(s):
-                    # g.trace(i,pat)
-                    return True
-                else:
-                    ch = s[j]
-                    return not ch.isalnum() and ch != '_'
+            if self.use_tokens:
+                aList,i,n = [],0,0
+                while i < len(s) and n < len(pat):
+                    token = s[i]
+                    i += 1
+                    n += len(token)
+                    aList.append(token)
+                if n == len(pat):
+                    return pat == ''.join(aList)
+                elif n > len(pat):
+                    s2 = ''.join(aList)
+                    if pat.startswith(s2):
+                        ch = s2[len(pat)]
+                        return not ch.isalnum() and not ch == '_'
+                    else:
+                        return False
+                else: # n < len(pat)
+                    assert i == len(s)
+                    return False
             else:
-                return False
+                if self.match(s,i,pat):
+                    j = i + len(pat)
+                    if j >= len(s):
+                        # g.trace(i,pat)
+                        return True
+                    else:
+                        ch = s[j]
+                        return not ch.isalnum() and ch != '_'
+                else:
+                    return False
         #@+node:ekr.20110916215321.8066: *7* is...
         #@+node:ekr.20110916215321.8015: *8* isSectionDef
         # returns the ending index if i points to < < x > > =
@@ -2593,14 +2637,31 @@ class editCommandsClass (baseEditCommandsClass):
         def is_string_or_comment (self,s,i):
 
             # Does range checking.
-            m = self.match
-            return m(s,i,"'") or m(s,i,'"') or m(s,i,"//") or m(s,i,"/*")
+            if self.use_tokens:
+                if i >= len(s):
+                    return False
+                ch = s[i]
+                # return (
+                    # ch.startswith("'") or ch.startswith('"') or
+                    # ch.startswith("//") or ch.startswith("/*")
+                m = ch.startswith
+                return m("'") or m('"') or m("//") or m("/*")
+                
+            else:
+                m = self.match
+                return m(s,i,"'") or m(s,i,'"') or m(s,i,"//") or m(s,i,"/*")
         #@+node:ekr.20110916215321.8014: *8* is_ws and is_ws_or_nl
         def is_ws (self,ch):
-            return ch in ' \t'
+            if self.use_tokens:
+                return ch.startswith(' ') or ch.startswith('\t')
+            else:
+                return ch in ' \t'
 
         def is_ws_or_nl (self,ch):
-            return ch in ' \t\n'
+            if self.use_tokens:
+                return ch.startswith(' ') or ch.startswith('\t') or ch.startswith('\n')
+            else:
+                return ch in ' \t\n'
         #@+node:ekr.20110916215321.8041: *7* prevNonWsChar and prevNonWsOrNlChar
         def prevNonWsChar (self,s,i):
 
@@ -2742,15 +2803,19 @@ class editCommandsClass (baseEditCommandsClass):
 
             assert(i==0 or aList[i-1] == '\n')
             i = self.skip_ws(aList,i)
+                # Retain the leading whitespace.
+
             while i < len(aList):
-                if self.is_string_or_comment(aList,i): break # safe
-                elif self.match(aList, i, '\n'): break
-                elif self.match(aList, i, ' ') or self.match(aList, i, '\t'):
+                if self.is_string_or_comment(aList,i):
+                    break # safe
+                elif self.match(aList,i,'\n'):
+                    break
+                elif self.match(aList,i,' ') or self.match(aList,i,'\t'):
                     # Replace all whitespace by one blank.
-                    k = i
-                    i = self.skip_ws(aList,i)
-                    aList[k:i] = [' ']
-                    i = k + 1 # make sure we don't go past a newline!
+                    j = self.skip_ws(aList,i)
+                    assert(j > i)
+                    aList[i:j] = [' ']
+                    i += 1 # make sure we don't go past a newline!
                 else: i += 1
             return i
         #@+node:ekr.20110916215321.8032: *8* removeMatchingBrackets
