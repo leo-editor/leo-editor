@@ -2201,10 +2201,7 @@ class editCommandsClass (baseEditCommandsClass):
             r(aList, "\r", '')
             # self.convertLeadingBlanks(aList) # Now done by indent.
             # if leoFlag: replaceSectionDefs(aList)
-
             self.mungeAllFunctions(aList)
-            
-            # g.trace('\n',''.join(aList))
             
             # Next...
             sr(aList, " -> ", '.')
@@ -2218,8 +2215,8 @@ class editCommandsClass (baseEditCommandsClass):
             sr(aList, "#endif", '')
             sr(aList, "else if", "elif")
             sr(aList, "else", "else:")
-            sr(aList, "&&", " and")
-            sr(aList, "||", " or")
+            sr(aList, "&&", " and ")
+            sr(aList, "||", " or ")
             sr(aList, "TRUE", "True")
             sr(aList, "FALSE", "False")
             sr(aList, "NULL", "None")
@@ -2314,13 +2311,14 @@ class editCommandsClass (baseEditCommandsClass):
 
         def handlePossibleFunctionHeader (self,aList,i,prevSemi,firstOpen):
 
-            trace = True
+            trace = False
             assert(self.match(aList,i,"{"))
 
             prevSemi = self.skip_ws_and_nl(aList, prevSemi)
             close = self.prevNonWsOrNlChar(aList,i)
 
             if close < 0 or aList[close] != ')':
+                # Should not increase *Python* indent.
                 return 1 + self.skip_to_matching_bracket(aList,i)
                 
             if not firstOpen:
@@ -2349,10 +2347,9 @@ class editCommandsClass (baseEditCommandsClass):
 
             args = aList[open_paren:close+1]
             k = 1 + self.skip_to_matching_bracket(aList,i)
-            ### body = aList[i:k]
             body = aList[close+1:k]
             
-            if False and trace:
+            if True and trace:
                 g.trace('\nhead: %s\nargs: %s\nbody: %s' % (
                     ''.join(head),''.join(args),''.join(body)))
             
@@ -2368,10 +2365,6 @@ class editCommandsClass (baseEditCommandsClass):
             if head: result.extend(head)
             if args: result.extend(args)
             if body: result.extend(body)
-            
-            # print('replacing\n',''.join(aList[prevSemi:k]))
-            
-            # print('result\n',''.join(result))
 
             aList[prevSemi:k] = result
             return prevSemi + len(result)
@@ -2445,12 +2438,64 @@ class editCommandsClass (baseEditCommandsClass):
             finalResult = list("def ")
             finalResult.extend(result)
             return finalResult
-        #@+node:ekr.20110916215321.8007: *8* massageFunctionBody
+        #@+node:ekr.20110916215321.8007: *8* massageFunctionBody & helpers
         def massageFunctionBody (self,body):
 
             body = self.massageIvars(body)
             body = self.removeCasts(body)
             body = self.removeTypeNames(body)
+            body = self.dedentBlocks(body)
+            return body
+        #@+node:ekr.20110919224143.6928: *9* dedentBlocks
+        def dedentBlocks (self,body):
+            
+            '''Look for '{' preceded by '{' or '}' or ';'
+            (with intervening whitespace and comments).
+            '''
+            
+            i = 0
+            while i < len(body):
+                j = i
+                ch = body[i]
+                if self.is_string_or_comment(body,i):
+                    j = self.skip_string_or_comment(body,i)
+                elif ch in '{};':
+                    # Look ahead ofr '{'
+                    j += 1
+                    while True:
+                        k = j
+                        j = self.skip_ws_and_nl(body,j)
+                        if self.is_string_or_comment(body,j):
+                            j = self.skip_string_or_comment(body,j)
+                        if k == j: break
+                        assert k < j
+                    if self.match(body,j,'{'):
+                        k = j
+                        j = self.skip_to_matching_bracket(body,j)
+                        g.trace('found block\n',''.join(body[k:j+1]))
+                        while k < j:
+                            progress = k
+                            if body[k] == '\n':
+                                k += 1
+                                spaces = 0
+                                while spaces < 4 and k < j:
+                                    if body[k] == ' ':
+                                        spaces += 1
+                                        k += 1
+                                    else:
+                                        break
+                                if spaces > 0:
+                                    del body[k-spaces:k]
+                                    k -= spaces
+                                    j -= spaces
+                            else:
+                                k += 1
+                            assert progress < k
+                else:
+                    j = i + 1
+                assert i < j
+                i = j
+                        
             return body
         #@+node:ekr.20110916215321.8008: *9* massageIvars
         def massageIvars (self,body):
@@ -2581,15 +2626,23 @@ class editCommandsClass (baseEditCommandsClass):
 
             # Remove '(' and matching ')' and add a ':'
             if aList[i] == "(":
-                j = self.removeMatchingBrackets(aList,i)
+                # Look ahead.  Don't remove if we span a line.
+                j = self.skip_to_matching_bracket(aList, i)
+                k = i
+                found = False
+                while k < j and not found:
+                    found = aList[k] == '\n'
+                    k += 1
+                if not found:
+                    j = self.removeMatchingBrackets(aList,i)
                 if j > i and j < len(aList):
-                    c = aList[j]
-                    aList[j:j+1] = [":", " ", c]
+                    ch = aList[j]
+                    aList[j:j+1] = [ch,":", " "]
                     j = j + 2
                 return j
             return i
         #@+node:ekr.20110916215321.8063: *6* Utils
-        #@+node:ekr.20110916215321.8017: *7* find... & match...
+        #@+node:ekr.20110916215321.8017: *7* match...
         #@+node:ekr.20110916215321.8020: *8* match
         def match (self,s,i,pat):
             
