@@ -2204,6 +2204,18 @@ class editCommandsClass (baseEditCommandsClass):
             self.mungeAllFunctions(aList)
             
             # Next...
+            if 1:
+                # CC2 stuff:
+                sr(aList, "TRACEPB",   "if trace: g.trace")
+                sr(aList, "TRACEPN",   "if trace: g.trace")
+                sr(aList, "TRACEPX",   "if trace: g.trace")
+                sr(aList, "TICKB",     "if trace: g.trace")
+                sr(aList, "TICKN",     "if trace: g.trace")
+                sr(aList, "TICKX",     "if trace: g.trace")
+                sr(aList, "g.trace(ftag,", "g.trace(")
+                sr(aList, "ASSERT_TRACE", "assert")
+
+            sr(aList, "ASSERT","assert")
             sr(aList, " -> ", '.')
             sr(aList, "->", '.')
             sr(aList, " . ", '.')
@@ -2407,6 +2419,7 @@ class editCommandsClass (baseEditCommandsClass):
             prevWord = []
             self.class_name = ''
             i = 0
+            # g.trace(repr(''.join(head)))
             while i < len(head):
                 i = self.skip_ws_and_nl(head,i)
                 if i < len(head) and head[i].isalpha():
@@ -2419,8 +2432,8 @@ class editCommandsClass (baseEditCommandsClass):
                     if self.match(head,i,"::"):
                         # Set the global to the class name.
                         self.class_name = ''.join(prevWord)
-                        # print "class name:", gClassName
-                        i = self.skip_ws(head, i+2)
+                        # print(class name:", self.class_name)
+                        i = self.skip_ws(head,i+2)
                         if i < len(head) and (head[i]=='~' or head[i].isalpha()):
                             j = self.skip_past_word(head,i)
                             if head[i:j] == prevWord:
@@ -2428,7 +2441,7 @@ class editCommandsClass (baseEditCommandsClass):
                             elif head[i]=='~' and head[i+1:j] == prevWord:
                                 result.extend('__del__')
                             else:
-                                # for item in "::": result.append(item)
+                                # result.extend(list('::'))
                                 result.extend(head[i:j])
                             i = j
                     else:
@@ -2968,10 +2981,13 @@ class editCommandsClass (baseEditCommandsClass):
             trace = False
             n = len(comment_lines)
             assert n > 0
-            if n == 1:
-                return comment_lines
             
             s = comment_lines[0]
+            junk,w = g.skip_leading_ws_with_indent(s,0,tab_width=4)
+
+            if n == 1:
+                return ['%s# %s' % ((' ' * (w-1)),s.strip())]
+            
             junk,w = g.skip_leading_ws_with_indent(s,0,tab_width=4)
             i,result = 0,[]
             for i in range(len(comment_lines)):
@@ -2988,9 +3004,6 @@ class editCommandsClass (baseEditCommandsClass):
                 for z in result: print(repr(z))
 
             return result
-
-            
-            
         #@+node:ekr.20110916215321.8038: *8* replaceSectionDefs
         def replaceSectionDefs (self,aList):
             
