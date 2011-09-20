@@ -1863,6 +1863,50 @@ class editCommandsClass (baseEditCommandsClass):
                         # "mUndoDVnodes", "mUndoLastChild", "mUndoablyDeletedVnode",
                     # ],
                 }
+            #@+node:ekr.20110919211949.6921: *7* Multi-character code
+            # This is all fairly horrible code...
+
+            # None of it has been tested...
+            #@+node:ekr.20110919211949.6922: *8* match
+            def match (self,s,i,pat):
+                
+                '''Return True if s[i:] matches the pat string.
+                
+                We can't use g.match because s is usually a list.
+                '''
+                
+                assert pat
+                
+                aList,i,n = [],0,0
+                while n < len(pat) and i < len(s):
+                    token = s[i]
+                    n += len(token)
+                    aList.append(token)
+                
+                return pat.startswith(''.join(aList))
+            #@+node:ekr.20110919211949.6923: *8* match_word
+            def match_word (self,s,i,pat):
+                
+                '''Return True if s[i:] word matches the pat string.'''
+                
+                aList,i,n = [],0,0
+                while i < len(s) and n < len(pat):
+                    token = s[i]
+                    i += 1
+                    n += len(token)
+                    aList.append(token)
+                if n == len(pat):
+                    return pat == ''.join(aList)
+                elif n > len(pat):
+                    s2 = ''.join(aList)
+                    if pat.startswith(s2):
+                        ch = s2[len(pat)]
+                        return not ch.isalnum() and not ch == '_'
+                    else:
+                        return False
+                else: # n < len(pat)
+                    assert i == len(s)
+                    return False
             #@+node:ekr.20110917104720.6873: *7* Scanning
             #@+node:ekr.20110916215321.8002: *8* convertLeadingBlanks
             def convertLeadingBlanks(self,aList):
@@ -2042,10 +2086,6 @@ class editCommandsClass (baseEditCommandsClass):
             
             aList = g.get_directives_dict_list(self.p)
             self.tab_width = g.scanAtTabwidthDirectives(aList) or 4
-            
-            # code switch
-            self.use_tokens = False
-                # True: use larger tokens; False: use 1-character tokens.
 
             # Internal state...
             self.class_name = ''
@@ -2135,14 +2175,9 @@ class editCommandsClass (baseEditCommandsClass):
             for p in self.p.self_and_subtree():
                 g.es("converting:",p.h)
                 bunch = u.beforeChangeNodeContents(p,oldBody=p.b)
-                if self.use_tokens:
-                    # Multi-characer tokens.
-                    aList = pp.indent(p,toList=True)
-                else:
-                    # Traditionally operation: 1-character tokens.
-                    s = pp.indent(p,toList = False)
-                    aList = [z for z in s]
-
+                
+                s = pp.indent(p,toList = False)
+                aList = [z for z in s]
                 self.convertCodeList(aList)
             
                 s = ''.join(aList)
@@ -2564,61 +2599,32 @@ class editCommandsClass (baseEditCommandsClass):
             '''
             
             assert pat
-            
-            if self.use_tokens:
-                aList,i,n = [],0,0
-                while n < len(pat) and i < len(s):
-                    token = s[i]
-                    n += len(token)
-                    aList.append(token)
-                
-                return pat.startswith(''.join(aList))
-            else:
-                j = 0
-                while i+j < len(s) and j < len(pat):
-                    if s[i+j] == pat[j]:
-                        j += 1
-                        if j == len(pat):
-                            return True
-                    else:
-                        return False
-            
-                return False
+
+            j = 0
+            while i+j < len(s) and j < len(pat):
+                if s[i+j] == pat[j]:
+                    j += 1
+                    if j == len(pat):
+                        return True
+                else:
+                    return False
+
+            return False
         #@+node:ekr.20110916215321.8021: *8* match_word
         def match_word (self,s,i,pat):
             
             '''Return True if s[i:] word matches the pat string.'''
-            
-            if self.use_tokens:
-                aList,i,n = [],0,0
-                while i < len(s) and n < len(pat):
-                    token = s[i]
-                    i += 1
-                    n += len(token)
-                    aList.append(token)
-                if n == len(pat):
-                    return pat == ''.join(aList)
-                elif n > len(pat):
-                    s2 = ''.join(aList)
-                    if pat.startswith(s2):
-                        ch = s2[len(pat)]
-                        return not ch.isalnum() and not ch == '_'
-                    else:
-                        return False
-                else: # n < len(pat)
-                    assert i == len(s)
-                    return False
-            else:
-                if self.match(s,i,pat):
-                    j = i + len(pat)
-                    if j >= len(s):
-                        # g.trace(i,pat)
-                        return True
-                    else:
-                        ch = s[j]
-                        return not ch.isalnum() and ch != '_'
+
+            if self.match(s,i,pat):
+                j = i + len(pat)
+                if j >= len(s):
+                    # g.trace(i,pat)
+                    return True
                 else:
-                    return False
+                    ch = s[j]
+                    return not ch.isalnum() and ch != '_'
+            else:
+                return False
         #@+node:ekr.20110916215321.8066: *7* is...
         #@+node:ekr.20110916215321.8015: *8* isSectionDef
         # returns the ending index if i points to < < x > > =
@@ -2637,31 +2643,14 @@ class editCommandsClass (baseEditCommandsClass):
         def is_string_or_comment (self,s,i):
 
             # Does range checking.
-            if self.use_tokens:
-                if i >= len(s):
-                    return False
-                ch = s[i]
-                # return (
-                    # ch.startswith("'") or ch.startswith('"') or
-                    # ch.startswith("//") or ch.startswith("/*")
-                m = ch.startswith
-                return m("'") or m('"') or m("//") or m("/*")
-                
-            else:
-                m = self.match
-                return m(s,i,"'") or m(s,i,'"') or m(s,i,"//") or m(s,i,"/*")
+            m = self.match
+            return m(s,i,"'") or m(s,i,'"') or m(s,i,"//") or m(s,i,"/*")
         #@+node:ekr.20110916215321.8014: *8* is_ws and is_ws_or_nl
         def is_ws (self,ch):
-            if self.use_tokens:
-                return ch.startswith(' ') or ch.startswith('\t')
-            else:
-                return ch in ' \t'
+            return ch in ' \t'
 
         def is_ws_or_nl (self,ch):
-            if self.use_tokens:
-                return ch.startswith(' ') or ch.startswith('\t') or ch.startswith('\n')
-            else:
-                return ch in ' \t\n'
+            return ch in ' \t\n'
         #@+node:ekr.20110916215321.8041: *7* prevNonWsChar and prevNonWsOrNlChar
         def prevNonWsChar (self,s,i):
 
