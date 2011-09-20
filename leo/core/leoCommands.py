@@ -4681,8 +4681,8 @@ class Commands (object):
             
             '''Tokenize comments, strings, identifiers, whitespace and operators.'''
 
-            i,n,result = 0,len(s),[]
-            while i < n:
+            i,result = 0,[]
+            while i < len(s):
                 # Loop invariant: at end: j > i and s[i:j] is the new token.
                 j = i
                 ch = s[i]

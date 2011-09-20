@@ -2472,7 +2472,7 @@ class editCommandsClass (baseEditCommandsClass):
                     if self.match(body,j,'{'):
                         k = j
                         j = self.skip_to_matching_bracket(body,j)
-                        g.trace('found block\n',''.join(body[k:j+1]))
+                        # g.trace('found block\n',''.join(body[k:j+1]))
                         m = '# <Start dedented block>...'
                         body[k:k+1] = list(m)
                         j += len(m)
@@ -2926,16 +2926,12 @@ class editCommandsClass (baseEditCommandsClass):
             i = 0
             while i < len(aList):
                 if self.match(aList,i,findString):
-                    aList[i:i+len(findList)] = changeList
+                    aList[i:i+len(findString)] = changeList
                     i += len(changeList)
                 else:
                     i += 1
         #@+node:ekr.20110916215321.8037: *8* replaceComments
-        # For Leo we expect few block comments; doc parts are much more common.
-
         def replaceComments (self,aList):
-            
-            # g.trace('\n',''.join(aList))
 
             i = 0
             while i < len(aList):
@@ -2946,26 +2942,55 @@ class editCommandsClass (baseEditCommandsClass):
                     j = self.skip_past_line(aList,i)
                 elif self.match(aList,i,"/*"):
                     j = self.skip_c_block_comment(aList,i)
-                    assert j > i + 3
-                    del aList[j-2:j]
-                    aList[i:i+2] = ['#']
-                    j -= 3
-                    # g.trace(i,j,repr(''.join(aList[i:j])))
-                    while i < j:
-                        if aList[i]=='\n':
-                            aList[i:i+1] = ['\n','#',' ']
-                            j += 2
-                            i += 3 # progress: delta(i) > delta(j)
-                        else:
-                            i += 1
+                    k = i
+                    while k-1 >= 0 and aList[k-1] in ' \t':
+                        k -= 1
+                    assert k == 0 or aList[k-1] not in ' \t'
+                    lws = ''.join(aList[k:i])
+                    comment_body = ''.join(aList[i+2:j-2])
+                    comment_lines = g.splitLines(lws + comment_body)
+                    comment_lines = self.munge_block_comment(comment_lines)
+                    comment = '\n'.join(comment_lines) # A list of lines.
+                    comment_list = list(comment) # A list of characters.
+                    aList[k:j] = comment_list
+                    j = k + len(comment_list)
+                    progress = j - 1 # Disable the check below.
                 elif self.match(aList,i,'"') or self.match(aList,i,"'"):
                     j = self.skip_string(aList,i)
                 else:
                     j = i+1
-                
-                # g.trace(repr(aList[progress:j]))
+
                 assert j > progress
                 i = j
+        #@+node:ekr.20110920063732.6935: *9* munge_block_comment
+        def munge_block_comment (self,comment_lines):
+            
+            trace = False
+            n = len(comment_lines)
+            assert n > 0
+            if n == 1:
+                return comment_lines
+            
+            s = comment_lines[0]
+            junk,w = g.skip_leading_ws_with_indent(s,0,tab_width=4)
+            i,result = 0,[]
+            for i in range(len(comment_lines)):
+                s = comment_lines[i]
+                if s.strip():
+                    result.append('%s# %s' % ((' ' * w),s.strip()))
+                elif i == n-1:
+                    pass # Omit the line entirely.
+                else:
+                    result.append('') # Add a blank line
+            
+            if trace:
+                g.trace()
+                for z in result: print(repr(z))
+
+            return result
+
+            
+            
         #@+node:ekr.20110916215321.8038: *8* replaceSectionDefs
         def replaceSectionDefs (self,aList):
             
