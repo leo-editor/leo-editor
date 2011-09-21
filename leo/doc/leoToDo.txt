@@ -3,7 +3,7 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20110609102702.16471: ** To do: 4.10
+.. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 I am willing to fix bugs, but I would like to declare a moratorium on feature additions until 2012.
 .. @+node:ekr.20110620065017.14900: *3* Bugs
 .. @+node:ekr.20110621085435.6531: *4* Improve the find panel and find menu
@@ -73,8 +73,108 @@ Window>Equal Sized Panes command?
 
 I suppose so.  I would prefer to wait for Terry to finish his
 pane-generalization code before dealing with this.
-.. @+node:ekr.20110611043506.16494: *3* Ashland sprint items: 4
-.. @+node:ekr.20110527084258.18378: *4* New file format
+.. @+node:ekr.20110921094450.6956: ** To do: 4.10
+3. Bridges
+
+
+.. @+node:ekr.20110921094450.6954: *3* Important
+.. @+node:ekr.20110921094450.6955: *4* Windows
+Leo should support more new windows.
+
+
+Terry's plugins have also created nifty new windows.
+
+Here are some other ideas:
+
+A.  Hosting the PyQt demo inside Leo.
+
+B. Making an OpenGl window an official Leo window. This might be the start of a
+   prototype for "Blender in a Leo Window".
+.. @+node:ekr.20110528034751.18272: *5* Support for tabifying Leo's core panes
+Collaborate with Terry.
+
+A. Place separate body editors in free_layout areas. This should *easy* to
+   do! Almost nothing changes in the code, but the visual effect should be
+   much better.
+
+B. Allow any pane to be "tabified" (placed in a tab in the Log pane) and
+   "untabified." There are a few details to be handled, but nothing major.
+   
+C. Labels for panes.
+.. @+node:ekr.20110525112110.18402: *5* Ideas: 
+.. @+node:ekr.20101104191857.5820: *6* QWebView makes Leo a presentation tool
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
+
+Ville:
+
+Create one QWebView window, zoom it in to have large fonts.
+
+Create @button that converts current node containing restructuredtext to html,
+and pushes that html to QWebView.
+
+Voila', instant presentation tool. The webview window would be on projector, and
+leo would be in your private computer. You can easily edit the text, or find new
+interesting slides to present in privacy of your own screen.
+
+.. @+node:ekr.20060227123536: *6* Tiddlywiki and related comments about rendering body text (Mulder)
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3578252
+By: bwmulder
+
+I have been thinking for a while that it ought to be possible to somehow  to
+unite Leo with wiki features (my thinking is still vague at this point).
+
+If you look at systems like Tiddlywiki (http://www.tiddlywiki.com/) you will
+find that they already pretty much provide all the formatting features mentioned
+in the article.
+
+MoinMoin, another wiki (http://moinmoin.wikiwikiweb.de), has started to use
+a graphical interface for editing in the latest version.
+
+Maybe Leo can be split up into three components:
+
+1. A storage component is responsible for storing nodes. Currently, this is
+just memory, but databases like shelve, Zope or sqllite should also be possible.
+
+2. The control component is responsible for converting from the internal format
+to external files which can be processed by existing compilers, searching within
+a document, and the like.
+
+3. A display component is responsible for interfacing with the user. If can
+be TK, but it can also be something like the Tiddlywiki interface, which immediately
+shows the formatting applied to text.
+
+I don't know much about javascript, so I would have to learn more about this
+language before doing anything in this direction.
+
+As an intermediate step, maybe we could allow mixing RST processing with regular
+program text.  Leo would produce two documents out of a source file: a version
+for the compiler in plain ascii, and an HTML file for reading the source.
+.. @+node:ekr.20110921094450.6957: *4* Keys: restart vim project
+This requires commands that can be composed.
+.. @+node:ekr.20110921094450.6958: *4* Bridges
+There are already bridges for vim, emacs, ipython and docutils, but I think more
+can be done.
+
+The first thought is to improve Leo's inter-process communication capabilities.
+I'm not sure what that entails...
+
+As a blue-sky project, could Leo interact with the window manager in order to
+resize vim, say, to it automatically tracks Leo's body pane (or any other pane).
+.. @+node:ekr.20110921094450.6959: *4* Code tools
+Analysis, checking, refactoring and other code-level tools are a natural for
+Leo. When the new-lint project is mature, it could be folded into Leo.
+
+* Rewrite the beautify-python command using a much simpler tokenizer.
+
+.. @+node:ekr.20110921094450.6960: *4* Documentation tools
+Perhaps Leo's documentation could be built primarily from docstrings. In any
+event, documentation tools are always needed.
+.. @+node:ekr.20110531190516.19365: *3* Maybe
+@language rest
+
+.. @+node:ekr.20110611043506.16494: *4*  Ashland sprint items: 3
+.. @+node:ekr.20110527084258.18378: *5* New file format
 @nocolor-node
 
 ** remove window state, expansion status etc.
@@ -94,8 +194,8 @@ pane-generalization code before dealing with this.
 
 - Remove spaces from user names.
 
-.. @+node:ekr.20110609042343.16546: *5* Notes
-.. @+node:ekr.20110609042343.16548: *6* File format, v3 draft 5
+.. @+node:ekr.20110609042343.16546: *6* Notes
+.. @+node:ekr.20110609042343.16548: *7* File format, v3 draft 5
 @language rest
 @pagewidth 65
 
@@ -254,7 +354,7 @@ the <node> element for @file nodes::
         </attr>
         ...
     </at-file-attributes>
-.. @+node:ekr.20110421132230.6107: *6* File format, v3 draft 4
+.. @+node:ekr.20110421132230.6107: *7* File format, v3 draft 4
 @language rest
 @pagewidth 65
 
@@ -410,7 +510,7 @@ The <at-file-attributes> element may be contained in the
     
 In other words, we use the graphml <attr> element, extended with the
 gnx attribute, to represent all the uA's in the descendants of @file nodes.
-.. @+node:ekr.20110419083918.6104: *6* File format, v3 graphml
+.. @+node:ekr.20110419083918.6104: *7* File format, v3 graphml
 @language rest
 @pagewidth 65
 
@@ -581,7 +681,7 @@ it will enclosed in a data element::
     
 In other words, we use the graphml <attr> element, extended with the
 gnx attribute, to represent all the uA's in the descendants of @file nodes.
-.. @+node:ekr.20090218115025.3: *6* Why are attributes pickled by default?
+.. @+node:ekr.20090218115025.3: *7* Why are attributes pickled by default?
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/326a221f4c698f7a
@@ -632,8 +732,8 @@ I'm sure pickling capability is great, but I'm not convinced
 it should be the _default._
 
 No big deal.
-.. @+node:ekr.20110415173840.6098: *5* Code related to uA's
-.. @+node:ekr.20040701065235.2: *6* putDescendentAttributes
+.. @+node:ekr.20110415173840.6098: *6* Code related to uA's
+.. @+node:ekr.20040701065235.2: *7* putDescendentAttributes
 def putDescendentAttributes (self,p):
 
     nodeIndices = g.app.nodeIndices
@@ -658,7 +758,7 @@ def putDescendentAttributes (self,p):
             result.append('\n%s="%s"' % (tag,s))
 
     return ''.join(result)
-.. @+node:ekr.20080805071954.2: *6* putDescendentVnodeUas
+.. @+node:ekr.20080805071954.2: *7* putDescendentVnodeUas
 def putDescendentVnodeUas (self,p):
 
     '''Return the a uA field for descendent vnode attributes,
@@ -692,7 +792,7 @@ def putDescendentVnodeUas (self,p):
     # Pickle and hexlify d
     return d and self.pickle(
         torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
-.. @+node:EKR.20040526202501: *6* putUnknownAttributes
+.. @+node:EKR.20040526202501: *7* putUnknownAttributes
 def putUnknownAttributes (self,torv):
 
     """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
@@ -705,7 +805,7 @@ def putUnknownAttributes (self,torv):
         val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
         # g.trace(torv,attrDict)
         return val
-.. @+node:ekr.20090130114732.6: *6* v.u Property
+.. @+node:ekr.20090130114732.6: *7* v.u Property
 def __get_u(self):
     v = self
     if not hasattr(v,'unknownAttributes'):
@@ -725,73 +825,9 @@ def __set_u(self,val):
 u = property(
     __get_u, __set_u,
     doc = "vnode unknownAttribute property")
-.. @+node:ekr.20110528034751.18273: *4* Global search in Nav plugin?
-.. @+node:ekr.20110528034751.18272: *4* Support for tabifying Leo's core panes
-Collaborate with Terry.
-
-A. Place separate body editors in free_layout areas. This should *easy* to
-   do! Almost nothing changes in the code, but the visual effect should be
-   much better.
-
-B. Allow any pane to be "tabified" (placed in a tab in the Log pane) and
-   "untabified." There are a few details to be handled, but nothing major.
-   
-C. Labels for panes.
-.. @+node:ekr.20110613110911.16421: *4* Read/write files in json format
-.. @+node:ekr.20110527225107.18351: *3* Vague
-@language rest
-
-**Important**: These items are not scheduled for any release. They will be done
-only if there are specific requests for them.
-
-Eventually, all these items will move to the dreaded to-do-later list.
-.. @+node:ekr.20110529115328.18238: *4* Emacs related: 5
-I'll do these if and and only if somebody asks for them.
-.. @+node:ekr.20110529104352.18248: *5* Complete k.universalDispatche
-.. @+node:ekr.20110529104352.18249: *5* Complete number-to-register command
-.. @+node:ekr.20031218072017.753: *5* Emacs comint-mode
-@nocolor
-
-The improved Execute Script command does most of this
-
-Michael Manti
-mmanti@mac.com
-
-P.S. I think a feature that could make Leo *the* IDE for developing in 
-interpreted languages is something like the (X)Emacs comint-mode.el for 
-interacting with the shell and interpreters.
-
-comint-mode.el serves as the basis for interactive modes for a number of
-languages--OCaml, Haskell, SML, among them. It allows for editing expressions in
-one buffer and triggering their evaluation in another buffer that has an
-interpreter running in it, along with entering commands in the interpreter
-buffer and moving back and forth through the history of their evaluation.
-
-Imagine being able to highlight a node in Leo, and have all the code in it and
-its children evaluated in an interpreter running in a separate window or pane,
-much as Leo can open a Python shell now. Users of those languages could build
-plug-ins specific to their language atop that layer, and the @language directive
-could activate that. I think that would be very cool.
-.. @+node:ekr.20071004120359.2: *5* expand-region-abbrev
-See: regionalExpandAbbrev.
-
-You may wish to expand an abbrev with a prefix attached; for example, if `cnst'
-expands into `construction', you might want to use it to enter `reconstruction'.
-It does not work to type recnst, because that is not necessarily a defined
-abbrev. What you can do is use the command M-' (abbrev-prefix-mark) in between
-the prefix `re' and the abbrev `cnst'. First, insert `re'. Then type M-'; this
-inserts a hyphen in the buffer to indicate that it has done its work. Then
-insert the abbrev `cnst'; the buffer now contains `re-cnst'. Now insert a
-non-word character to expand the abbrev `cnst' into `construction'. This
-expansion step also deletes the hyphen that indicated M-' had been used. The
-result is the desired `reconstruction'.
-
-If you actually want the text of the abbrev in the buffer, rather than its
-expansion, you can accomplish this by inserting the following punctuation with
-C-q. Thus, foo C-q , leaves `foo,' in the buffer.
-.. @+node:ekr.20060628103226.3: *5* Make sure repeat counts work on basic editing commands
-.. @+node:ekr.20110527225107.18352: *4* Maybe: 4
-.. @+node:ekr.20051110155735.1: *5* Improve Spell tab & spell checker
+.. @+node:ekr.20110528034751.18273: *5* Global search in Nav plugin?
+.. @+node:ekr.20110613110911.16421: *5* Read/write files in json format
+.. @+node:ekr.20051110155735.1: *4* Improve Spell tab & spell checker
 @nocolor
 
 - Per-pane key bindings. (arrows, etc.)
@@ -799,10 +835,10 @@ C-q. Thus, foo C-q , leaves `foo,' in the buffer.
 - Select the first entry.
 
 @color
-.. @+node:ekr.20090907080624.6081: *6* Spell checker should check headlines
-.. @+node:ekr.20101004092958.5914: *5* Write treepad scanner
+.. @+node:ekr.20090907080624.6081: *5* Spell checker should check headlines
+.. @+node:ekr.20101004092958.5914: *4* Write treepad scanner
 @ treepad.py is from the treepad website
-.. @+node:ekr.20101004092958.5939: *6* treepad.py
+.. @+node:ekr.20101004092958.5939: *5* treepad.py
 @first #! /usr/local/bin/python
 
 # treepad.py
@@ -813,7 +849,7 @@ C-q. Thus, foo C-q , leaves `foo,' in the buffer.
 if __name__ == '__main__':
     Main().Run()
 
-.. @+node:ekr.20101004092958.5940: *7* treepad declarations
+.. @+node:ekr.20101004092958.5940: *6* treepad declarations
 import sys, os, re, string
 
 # constants
@@ -821,10 +857,10 @@ VERSION = "<Treepad version 2.7>"
 
 # regexes
 END_RE = re.compile(r'^<end node> ([^ ]+)$')
-.. @+node:ekr.20101004092958.5941: *7* class Node
+.. @+node:ekr.20101004092958.5941: *6* class Node
 class Node:
     @others
-.. @+node:ekr.20101004092958.5942: *8* __init__
+.. @+node:ekr.20101004092958.5942: *7* __init__
 def __init__(self):
     self.title    = ""
     self.level    = 0
@@ -832,19 +868,19 @@ def __init__(self):
     self.children = []
     self.parent   = None
     self.end      = ""
-.. @+node:ekr.20101004092958.5943: *8* __str__
+.. @+node:ekr.20101004092958.5943: *7* __str__
 def __str__(self):
     return "%s/%d" % (self.title, self.level)
-.. @+node:ekr.20101004092958.5944: *8* addchild
+.. @+node:ekr.20101004092958.5944: *7* addchild
 def addchild(self, node):
     assert self.level == node.level-1 and node.parent is None
     node.parent = self
     self.children.append( node )
-.. @+node:ekr.20101004092958.5945: *8* findparent
+.. @+node:ekr.20101004092958.5945: *7* findparent
 def findparent(self, node):
     if self.level == (node.level-1): return self
     return self.parent.findparent(node)
-.. @+node:ekr.20101004092958.5946: *8* writenode
+.. @+node:ekr.20101004092958.5946: *7* writenode
 def writenode(self, fp):
     fp.write("dt=Text\n")
     fp.write("<node>\n")
@@ -853,28 +889,28 @@ def writenode(self, fp):
     for line in self.article:
         fp.write("%s\n" % line)
     fp.write("<end node> %s\n" % self.end)
-.. @+node:ekr.20101004092958.5947: *8* writetree
+.. @+node:ekr.20101004092958.5947: *7* writetree
 def writetree(self, fp):
     self.writenode(fp)
     for node in self.children:
         node.writetree(fp)
 
-.. @+node:ekr.20101004092958.5948: *7* class NodeReader
+.. @+node:ekr.20101004092958.5948: *6* class NodeReader
 class NodeReader:
     @others
-.. @+node:ekr.20101004092958.5949: *8* __init__
+.. @+node:ekr.20101004092958.5949: *7* __init__
 def __init__(self, fname, fp):
     self.fname    = fname
     self.fp       = fp
-.. @+node:ekr.20101004092958.5950: *8* expect
+.. @+node:ekr.20101004092958.5950: *7* expect
 def expect(self, text, line=None):
     if line is None:
         line = self.fp.readline().strip()
     assert line == text, "expected " + line + " == " + text
-.. @+node:ekr.20101004092958.5951: *8* readstart
+.. @+node:ekr.20101004092958.5951: *7* readstart
 def readstart(self):
     self.expect(VERSION)
-.. @+node:ekr.20101004092958.5952: *8* readnode
+.. @+node:ekr.20101004092958.5952: *7* readnode
 def readnode(self):
     line = self.fp.readline()
     if line is None:
@@ -896,16 +932,16 @@ def readnode(self):
         node.article.append( line.strip() )
     return node
 
-.. @+node:ekr.20101004092958.5953: *7* class TreeReader
+.. @+node:ekr.20101004092958.5953: *6* class TreeReader
 class TreeReader:
     @others
-.. @+node:ekr.20101004092958.5954: *8* __init__
+.. @+node:ekr.20101004092958.5954: *7* __init__
 def __init__(self, fname, fp=None):
     if fp is None: fp = open(fname, 'r')
     self.nodereader = NodeReader(fname, fp)
     self.root = None
     self.prev = None
-.. @+node:ekr.20101004092958.5955: *8* add
+.. @+node:ekr.20101004092958.5955: *7* add
 def add(self, node):
     if self.prev is None:
         assert node.level == 0
@@ -915,7 +951,7 @@ def add(self, node):
         parent = self.prev.findparent(node)
         parent.addchild( node )
     self.prev = node
-.. @+node:ekr.20101004092958.5956: *8* read
+.. @+node:ekr.20101004092958.5956: *7* read
 def read(self):
     self.nodereader.readstart()
     prev = None
@@ -924,40 +960,39 @@ def read(self):
         if node is None: break
         self.add(node)
 
-.. @+node:ekr.20101004092958.5957: *7* class TreeWriter
+.. @+node:ekr.20101004092958.5957: *6* class TreeWriter
 class TreeWriter:
     @others
-.. @+node:ekr.20101004092958.5958: *8* __init__
+.. @+node:ekr.20101004092958.5958: *7* __init__
 def __init__(self, fname, fp=None):
     if fp is None: fp = open(fname, 'w')
     self.fname = fname
     self.fp    = fp
-.. @+node:ekr.20101004092958.5959: *8* write
+.. @+node:ekr.20101004092958.5959: *7* write
 def write(self, root):
     self.fp.write("%s\n" % VERSION)
     root.writetree(self.fp)
 
-.. @+node:ekr.20101004092958.5960: *7* class Main
+.. @+node:ekr.20101004092958.5960: *6* class Main
 class Main:
     @others
-.. @+node:ekr.20101004092958.5961: *8* __init__
+.. @+node:ekr.20101004092958.5961: *7* __init__
 def __init__(self):
     self.infile  = sys.argv[1]
     self.outfile = sys.argv[2]
     self.reader  = TreeReader(self.infile)
     self.writer  = TreeWriter(self.outfile)
-.. @+node:ekr.20101004092958.5962: *8* Run
+.. @+node:ekr.20101004092958.5962: *7* Run
 
 def Run(self):
     self.reader.read()
     self.writer.write(self.reader.root)
 
-.. @+node:ekr.20110520051220.18203: *5* Cross-tab search
+.. @+node:ekr.20110520051220.18203: *4* Cross-tab search
 @language rest
 
 This would be a substitute for cross-file clones.
-.. @+node:ekr.20110525112110.18402: *4* Ideas: 4
-.. @+node:ekr.20071001052501: *5* Versioning for nodes
+.. @+node:ekr.20071001052501: *4* Versioning for nodes
 @nocolor
 
 One feature I have not seen in SCS system is something which might be called
@@ -967,58 +1002,7 @@ in the 2000 steps which transformed 5 into 6 (just suggested this feature to
 the bazaar people). This happens actually quite often to me, since I use the
 SCS as a back-up system, saving many (uninteresting) intermediate steps while
 implementing a new feature.
-.. @+node:ekr.20101104191857.5820: *5* QWebView makes Leo a presentation tool
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
-
-Ville:
-
-Create one QWebView window, zoom it in to have large fonts.
-
-Create @button that converts current node containing restructuredtext to html,
-and pushes that html to QWebView.
-
-Voila', instant presentation tool. The webview window would be on projector, and
-leo would be in your private computer. You can easily edit the text, or find new
-interesting slides to present in privacy of your own screen.
-
-.. @+node:ekr.20080802070659.11: *5* Make node attributes visible, and supported by Leo's core
-.. @+node:ekr.20060227123536: *5* Tiddlywiki and related comments about rendering body text (Mulder)
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3578252
-By: bwmulder
-
-I have been thinking for a while that it ought to be possible to somehow  to
-unite Leo with wiki features (my thinking is still vague at this point).
-
-If you look at systems like Tiddlywiki (http://www.tiddlywiki.com/) you will
-find that they already pretty much provide all the formatting features mentioned
-in the article.
-
-MoinMoin, another wiki (http://moinmoin.wikiwikiweb.de), has started to use
-a graphical interface for editing in the latest version.
-
-Maybe Leo can be split up into three components:
-
-1. A storage component is responsible for storing nodes. Currently, this is
-just memory, but databases like shelve, Zope or sqllite should also be possible.
-
-2. The control component is responsible for converting from the internal format
-to external files which can be processed by existing compilers, searching within
-a document, and the like.
-
-3. A display component is responsible for interfacing with the user. If can
-be TK, but it can also be something like the Tiddlywiki interface, which immediately
-shows the formatting applied to text.
-
-I don't know much about javascript, so I would have to learn more about this
-language before doing anything in this direction.
-
-As an intermediate step, maybe we could allow mixing RST processing with regular
-program text.  Leo would produce two documents out of a source file: a version
-for the compiler in plain ascii, and an HTML file for reading the source.
-.. @+node:ekr.20110531190516.19365: *3* Minor/Maybe: 5
-@language rest
-
+.. @+node:ekr.20080802070659.11: *4* Make node attributes visible, and supported by Leo's core
 .. @+node:ekr.20110614123640.6587: *4* Add headline/color functions to Leo's core
 @nocolor-node
 
@@ -1467,5 +1451,57 @@ print('%s total languages' % len(aList))
 print('%s new languages' % (len(list(computed.keys())) - len(known_keys)))
 print('%s mismatches' % mismatches)
 print('%s known language: %s' % (len(known_keys),known_keys))
+.. @+node:ekr.20110527225107.18351: *4* Vague
+@language rest
+
+**Important**: These items are not scheduled for any release. They will be done
+only if there are specific requests for them.
+
+Eventually, all these items will move to the dreaded to-do-later list.
+.. @+node:ekr.20110529115328.18238: *5* Emacs related: 5
+I'll do these if and and only if somebody asks for them.
+.. @+node:ekr.20110529104352.18248: *6* Complete k.universalDispatcher
+.. @+node:ekr.20110529104352.18249: *6* Complete number-to-register command
+.. @+node:ekr.20031218072017.753: *6* Emacs comint-mode
+@nocolor
+
+The improved Execute Script command does most of this
+
+Michael Manti
+mmanti@mac.com
+
+P.S. I think a feature that could make Leo *the* IDE for developing in 
+interpreted languages is something like the (X)Emacs comint-mode.el for 
+interacting with the shell and interpreters.
+
+comint-mode.el serves as the basis for interactive modes for a number of
+languages--OCaml, Haskell, SML, among them. It allows for editing expressions in
+one buffer and triggering their evaluation in another buffer that has an
+interpreter running in it, along with entering commands in the interpreter
+buffer and moving back and forth through the history of their evaluation.
+
+Imagine being able to highlight a node in Leo, and have all the code in it and
+its children evaluated in an interpreter running in a separate window or pane,
+much as Leo can open a Python shell now. Users of those languages could build
+plug-ins specific to their language atop that layer, and the @language directive
+could activate that. I think that would be very cool.
+.. @+node:ekr.20071004120359.2: *6* expand-region-abbrev
+See: regionalExpandAbbrev.
+
+You may wish to expand an abbrev with a prefix attached; for example, if `cnst'
+expands into `construction', you might want to use it to enter `reconstruction'.
+It does not work to type recnst, because that is not necessarily a defined
+abbrev. What you can do is use the command M-' (abbrev-prefix-mark) in between
+the prefix `re' and the abbrev `cnst'. First, insert `re'. Then type M-'; this
+inserts a hyphen in the buffer to indicate that it has done its work. Then
+insert the abbrev `cnst'; the buffer now contains `re-cnst'. Now insert a
+non-word character to expand the abbrev `cnst' into `construction'. This
+expansion step also deletes the hyphen that indicated M-' had been used. The
+result is the desired `reconstruction'.
+
+If you actually want the text of the abbrev in the buffer, rather than its
+expansion, you can accomplish this by inserting the following punctuation with
+C-q. Thus, foo C-q , leaves `foo,' in the buffer.
+.. @+node:ekr.20060628103226.3: *6* Make sure repeat counts work on basic editing commands
 .. @-all
 .. @-leo

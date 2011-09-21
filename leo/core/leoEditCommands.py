@@ -2173,24 +2173,25 @@ class editCommandsClass (baseEditCommandsClass):
             changed = False
             
             for p in self.p.self_and_subtree():
-                g.es("converting:",p.h)
-                bunch = u.beforeChangeNodeContents(p,oldBody=p.b)
+                if p.b:
+                    # g.es("converting:",p.h)
+                    bunch = u.beforeChangeNodeContents(p,oldBody=p.b)
+                    
+                    s = pp.indent(p)
+                    aList = list(s)
+                    self.convertCodeList(aList)
                 
-                s = pp.indent(p,toList = False)
-                aList = [z for z in s]
-                self.convertCodeList(aList)
-            
-                s = ''.join(aList)
-                if s != p.b:
-                    p.b = s
-                    p.v.setDirty()
-                    dirtyVnodeList.append(p.v)
-                    c.undoer.afterChangeNodeContents(p,undoType,bunch)
-                    changed = True
-                        
-            if changed:
-                u.afterChangeGroup(c.p,undoType,
-                    reportFlag=False,dirtyVnodeList=dirtyVnodeList)
+                    s = ''.join(aList)
+                    if s != p.b:
+                        p.b = s
+                        p.v.setDirty()
+                        dirtyVnodeList.append(p.v)
+                        c.undoer.afterChangeNodeContents(p,undoType,bunch)
+                        changed = True
+                            
+                if changed:
+                    u.afterChangeGroup(c.p,undoType,
+                        reportFlag=False,dirtyVnodeList=dirtyVnodeList)
             g.es("done")
         #@+node:ekr.20110916215321.7997: *6* convertCodeList (main pattern function)
         def convertCodeList(self,aList):
