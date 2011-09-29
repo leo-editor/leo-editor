@@ -228,10 +228,10 @@ class parserBaseClass:
         # because the last setting must be retrieved before any commander exists.
         
         # 2011/09/04: Remove comments, comment lines and blank lines.
-        aList = []
-        for s in g.splitLines(s):
+        aList,lines = [],g.splitLines(s)
+        for s in lines:
             i = s.find('#')
-            if i > -1: s = s[:i]
+            if i > -1: s = s[:i]+'\n' # 2011/09/29: must add newline back in.
             if s.strip(): aList.append(s.lstrip())
         s = ''.join(aList)
         # g.trace('\n%s' % s)
