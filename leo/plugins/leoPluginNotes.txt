@@ -1,281 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20090430075506.3: * @file leoPluginNotes.txt
 #@+all
-#@+node:ekr.20090430075506.6: ** To do
-#@+node:ekr.20090430102730.3: *3* Add expand_noweb_references for rst3 plugin
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
-
-> What would work for me is if named sections in a @rst subtree
-> would work exactly as they work for other derived files: they
-> get inserted at the place where they are referenced.
-
-- Add support for the following options:
-    - expand_noweb_references: default False for compatibility.
-    - ignore_noweb definitions: default False for compatibility.
-
-- When expand_noweb_references is True, definitions (typically clones)
-  must be descendants of the referencing node (in the @rst tree)
-#@+node:ekr.20090430120622.2: *4* post
-@nocolor-node
-
-I want to write the documentation for the source program in a @rst3 subtree. In
-this @rst3 subtree I want to refer to fragments of the program, like:
-
-In the following code fragment::
-
-  <<code fragment>>
-
-Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
-get to this work, I should have <<code fragment>> under the @rst3 subtree as
-well, but this is then also treated as @rst3 input (which in this case, is not
-what I want).
-#@+node:ekr.20050811101550.1: *4* writeBody & helpers
-def writeBody (self,p):
-
-    # remove trailing cruft and split into lines.
-    lines = p.b.rstrip().split('\n') 
-
-    if self.getOption('code_mode'):
-        if not self.getOption('show_options_doc_parts'):
-            lines = self.handleSpecialDocParts(lines,'@rst-options',
-                retainContents=False)
-        if not self.getOption('show_markup_doc_parts'):
-            lines = self.handleSpecialDocParts(lines,'@rst-markup',
-                retainContents=False)
-        if not self.getOption('show_leo_directives'):
-            lines = self.removeLeoDirectives(lines)
-        lines = self.handleCodeMode(lines)
-    elif self.getOption('doc_only_mode'):
-        # New in version 1.15
-        lines = self.handleDocOnlyMode(p,lines)
-    else:
-        lines = self.handleSpecialDocParts(lines,'@rst-options',
-            retainContents=False)
-        lines = self.handleSpecialDocParts(lines,'@rst-markup',
-            retainContents=self.getOption('generate_rst'))
-        if self.getOption('show_doc_parts_in_rst_mode') is True:
-            pass  # original behaviour, treat as plain text
-        elif self.getOption('show_doc_parts_in_rst_mode'):
-            # use value as class for content
-            lines = self.handleSpecialDocParts(lines,None,
-                retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
-        else:  # option evaluates to false, cut them out
-            lines = self.handleSpecialDocParts(lines,None,
-                retainContents=False)
-        lines = self.removeLeoDirectives(lines)
-        if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
-            lines = self.replaceCodeBlockDirectives(lines)
-
-    s = '\n'.join(lines).strip()
-    if s:
-        self.write('%s\n\n' % s)
-#@+node:ekr.20050811150541: *5* handleCodeMode & helper
-def handleCodeMode (self,lines):
-
-    '''Handle the preprocessed body text in code mode as follows:
-
-    - Blank lines are copied after being cleaned.
-    - @ @rst-markup lines get copied as is.
-    - Everything else gets put into a code-block directive.'''
-
-    result = [] ; n = 0 ; code = []
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if (
-            self.isSpecialDocPart(s,'@rst-markup') or
-            (self.getOption('show_doc_parts_as_paragraphs') and self.isSpecialDocPart(s,None))
-        ):
-            if code:
-                self.finishCodePart(result,code)
-                code = []
-            result.append('')
-            n, lines2 = self.getDocPart(lines,n)
-            result.extend(lines2)
-        elif not s.strip() and not code:
-            pass # Ignore blank lines before the first code block.
-        elif not code: # Start the code block.
-            result.append('')
-            result.append(self.code_block_string)
-            code.append(s)
-        else: # Continue the code block.
-            code.append(s)
-
-    if code:
-        self.finishCodePart(result,code)
-        code = []
-    return self.rstripList(result)
-#@+node:ekr.20050811152104: *6* formatCodeModeLine
-def formatCodeModeLine (self,s,n,numberOption):
-
-    if not s.strip(): s = ''
-
-    if numberOption:
-        return '\t%d: %s' % (n,s)
-    else:
-        return '\t%s' % s
-#@+node:ekr.20050813155021: *6* rstripList
-def rstripList (self,theList):
-
-    '''Removed trailing blank lines from theList.'''
-
-    s = '\n'.join(theList).rstrip()
-    return s.split('\n')
-#@+node:ekr.20050813160208: *6* finishCodePart
-def finishCodePart (self,result,code):
-
-    numberOption = self.getOption('number_code_lines')
-    code = self.rstripList(code)
-    i = 0
-    for line in code:
-        i += 1
-        result.append(self.formatCodeModeLine(line,i,numberOption))
-#@+node:ekr.20060608094815: *5* handleDocOnlyMode
-def handleDocOnlyMode (self,p,lines):
-
-    '''Handle the preprocessed body text in doc_only mode as follows:
-
-    - Blank lines are copied after being cleaned.
-    - @ @rst-markup lines get copied as is.
-    - All doc parts get copied.
-    - All code parts are ignored.'''
-
-    ignore              = self.getOption('ignore_this_headline')
-    showHeadlines       = self.getOption('show_headlines')
-    showThisHeadline    = self.getOption('show_this_headline')
-    showOrganizers      = self.getOption('show_organizer_nodes')
-
-    result = [] ; n = 0
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if self.isSpecialDocPart(s,'@rst-options'):
-            n, lines2 = self.getDocPart(lines,n) # ignore.
-        elif self.isAnyDocPart(s):
-            # Handle any other doc part, including @rst-markup.
-            n, lines2 = self.getDocPart(lines,n)
-            if lines2: result.extend(lines2)
-    if not result: result = []
-    if showHeadlines:
-        if result or showThisHeadline or showOrganizers or p == self.topNode:
-            # g.trace(len(result),p.h)
-            self.writeHeadlineHelper(p)
-    return result
-#@+node:ekr.20060608094815.1: *5* isAnyDocPart
-def isAnyDocPart (self,s):
-
-    if s.startswith('@doc'):
-        return True
-    elif not s.startswith('@'):
-        return False
-    else:
-        return len(s) == 1 or s[1].isspace()
-#@+node:ekr.20050811153208: *5* isSpecialDocPart
-def isSpecialDocPart (self,s,kind):
-
-    '''Return True if s is a special doc part of the indicated kind.
-
-    If kind is None, return True if s is any doc part.'''
-
-    if s.startswith('@') and len(s) > 1 and s[1].isspace():
-        if kind:
-            i = g.skip_ws(s,1)
-            result = g.match_word(s,i,kind)
-        else:
-            result = True
-    elif not kind:
-        result = g.match_word(s,0,'@doc') or g.match_word(s,0,'@')
-    else:
-        result = False
-
-    return result
-#@+node:ekr.20050811163802: *5* isAnySpecialDocPart
-def isAnySpecialDocPart (self,s):
-
-    for kind in (
-        '@rst-markup',
-        '@rst-option',
-        '@rst-options',
-    ):
-        if self.isSpecialDocPart(s,kind):
-            return True
-
-    return False
-#@+node:ekr.20050811105438: *5* removeLeoDirectives
-def removeLeoDirectives (self,lines):
-
-    '''Remove all Leo directives, except within literal blocks.'''
-
-    n = 0 ; result = []
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if s.strip().endswith('::'):
-            n, lit = self.skip_literal_block(lines,n-1)
-            result.extend(lit)
-        elif s.startswith('@') and not self.isAnySpecialDocPart(s):
-            for key in self.leoDirectivesList:
-                if g.match_word(s,0,key):
-                    # g.trace('removing %s' % s)
-                    break
-            else:
-                result.append(s)
-        else:
-            result.append(s)
-
-    return result
-#@+node:ekr.20050811105438.1: *5* handleSpecialDocParts
-def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
-
-    # g.trace(kind,g.listToString(lines))
-
-    result = [] ; n = 0
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if s.strip().endswith('::'):
-            n, lit = self.skip_literal_block(lines,n-1)
-            result.extend(lit)
-        elif self.isSpecialDocPart(s,kind):
-            n, lines2 = self.getDocPart(lines,n)
-            if retainContents:
-                result.extend([''])
-                if asClass:
-                    result.extend(['.. container:: '+asClass, ''])
-                    if 'literal' in asClass.split():
-                        result.extend(['  ::', ''])
-                    for l2 in lines2: result.append('    '+l2)
-                else:
-                    result.extend(lines2)
-                result.extend([''])
-        else:
-            result.append(s)
-
-    return result
-#@+node:ekr.20050805162550.30: *5* replaceCodeBlockDirectives
-def replaceCodeBlockDirectives (self,lines):
-
-    '''Replace code-block directive, but not in literal blocks.'''
-
-    n = 0 ; result = []
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if s.strip().endswith('::'):
-            n, lit = self.skip_literal_block(lines,n-1)
-            result.extend(lit)
-        else:
-            i = g.skip_ws(s,0)
-            if g.match(s,i,'..'):
-                i = g.skip_ws(s,i+2)
-                if g.match_word(s,i,'code-block'):
-                    if 1: # Create a literal block to hold the code.
-                        result.append('::\n')
-                    else: # This 'annotated' literal block is confusing.
-                        result.append('%s code::\n' % s[i+len('code-block'):])
-                else:
-                    result.append(s)
-            else:
-                result.append(s)
-
-    return result
 #@+node:ekr.20110317080650.14388: ** Unused code
 #@+node:leohag.20081203143921.18: *3* show (not used from scrolledmessage)
 def show(self):
@@ -319,6 +44,89 @@ def show(self):
     # if c:
         # pc = controllers.get(c.hash())
         # if pc: pc.hide()
-#@+node:ekr.20110526083709.18343: ** Supported auto-hide in viewrendered plugin
+#@+node:ekr.20110929165422.15433: *3* Deleted docs for todo.py
+@nocolor-node
+
+The Times Menu
+=================
+
+**Show Times** Adds entries of the form::
+    
+     '<2 days, 45%>'
+     
+to nodes with associated due dates or completion times.
+
+'days' can be changed to 'hours' or 'weeks' or whatever using the setting::
+    
+     @string todo_time_name = hours
+
+*Note*: Removing / updating these strings in the node headlines relies on the
+'< ... >' being the last thing on the line, if you add anything after it it will
+no longer be touched by these functions.
+
+The times shown are not updated automatically unless you use @project nodes.
+
+**Re-calc. derived times** recalculates the time required for the selected node
+using the the data in all descendant nodes. This function may appear to fail if
+@project nodes are present.
+
+Basically the time required and progress from pseudo-leaf nodes (nodes with no
+children that have time-required settings) is always preserved, but all non-leaf
+nodes are considered to be groups of tasks with no inherent time-required and
+progress-level of their own.
+
+Consider this tree::
+
+    + To do
+        + Complete day
+            + Dress
+                - Find shoes
+                - Tie shoes
+            + Commute
+                - Start car
+                - Drive to work
+            + Work
+                - Read email
+                - Write code
+
+The leaf nodes are the ones on the right starting with '-'. Using 'Re-calc. time
+required' on ' Complete day' would add or replace the progress and time-required
+attributes of the non-leaf nodes to make them reflect the time-required /
+progress of their descendants. Note however that if say 'Commute' had a
+time-required value set and neither 'Start car' nor 'Drive to work' had any
+time-required setting, 'Commute''s setting would be left alone, it would be
+treated as a sort of effective leaf node in this context.
+
+If you set up a tree like this::
+
+    + Big project (100 days, 0%)
+        - Set up SVN (1 day, 0%)
+
+and then run the "Re-calc. derived times" command on 'Big project', its
+time-required will be reduced to 1 day. To avoid this you should add another
+leaf node, 'Rest of project', with a time-required of 99 days, after 'Set up
+SVN'. Or just pay no attention to the time-required on 'Big project' until
+you've made a more complete list of its sub-components.
+
+The progress and times shown are not updated automatically unless you use @project nodes.
+
+**Clear derived times** behaves like Re-calc. time required except instead of
+adding time and progress information it clears it.
+
+\@Project Nodes
+===============
+
+\@project nodes can be used to make updates of progress bars and displayed times
+automatic.
+
+Whenever you change the progress-level or time-required on a node, cleo will
+search back up through the tree to find the highest level parent node with
+'\@project' in the headline. cleo will then execute Re-calc. time required on
+that node. If the node contains '\@project time' (one space) the Show times
+command will also be executed on that node.
+
+Remember that when a \@project node is present, attempts to remove progress and
+time required values may appear to fail as Re-calc. time required replaces them
+as you remove them.
 #@-all
 #@-leo
