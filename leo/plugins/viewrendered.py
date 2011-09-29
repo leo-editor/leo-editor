@@ -291,7 +291,6 @@ def close_rendering_pane(event):
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
-        g.trace(vr)
         if vr:
             vr.deactivate()
             vr.deleteLater()
