@@ -7938,7 +7938,9 @@ class leoQtGui(leoGui.leoGui):
         if c.exists and tag.startswith('tree'):
             self.active = False
             if trace: g.trace()
-            c.k.keyboardQuit() # 2011/06/13.
+            c.k.keyboardQuit(setFocus=False)
+                # 2011/06/13.
+                # 2011/09/29. Don't change the tab in the log pane.
             # c.endEditing()
             g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
     #@+node:ekr.20110605121601.18508: *4* Focus (qtGui)
