@@ -1,16 +1,117 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20090119215428.2: * @file todo.py
 #@+<< docstring >>
-#@+node:tbrown.20090119215428.3: ** << docstring >>
-''' Provides to-do list and simple task management for leo (Qt only).
-
-``todo`` is a Qt plugin, the Tk version is called ``cleo``.
+#@+node:tbrown.20090119215428.3: ** << docstring >> (todo.py)
+''' Provides to-do list and simple task management.
 
 This plugin adds time required, progress and priority settings for nodes. With
 the @project tag a branch can display progress and time required with dynamic
-hierarchical updates. For full documentation see::
+hierarchical updates.
 
-  http://leo.zwiki.org/tododoc.html
+
+Icons
+=====
+
+The plugin uses icons in the leo/Icons/cleo folder. These icons are generated
+from the file cleo_icons.svg in the same directory. You may replace the PNG
+images with any others you wish.
+
+
+The Task Tab
+============
+
+The plugin "Task" Tab of the log pane.  It looks like this:
+    
+    .. image:: ../Icons/cleo/LeoTaskTab.png
+    
+Along the top are icons that you can associate with nodes.
+Just click on the icon: it will appear on the presently selected node.
+
+Next are a set of fields that allow you to associate **due dates** and **completion times** with nodes.
+
+Clicking on the Button named "Menu" reveals submenus.
+
+The Times Menu
+=================
+
+**Show Times** Adds entries of the form::
+    
+     '<2 days, 45%>'
+     
+to nodes with associated due dates or completion times.
+
+'days' can be changed to 'hours' or 'weeks' or whatever using the setting::
+    
+     @string todo_time_name = hours
+
+*Note*: Removing / updating these strings in the node headlines relies on the
+'< ... >' being the last thing on the line, if you add anything after it it will
+no longer be touched by these functions.
+
+The times shown are not updated automatically unless you use @project nodes.
+
+**Re-calc. derived times** recalculates the time required for the selected node
+using the the data in all descendant nodes. This function may appear to fail if
+@project nodes are present.
+
+Basically the time required and progress from pseudo-leaf nodes (nodes with no
+children that have time-required settings) is always preserved, but all non-leaf
+nodes are considered to be groups of tasks with no inherent time-required and
+progress-level of their own.
+
+Consider this tree::
+
+    + To do
+        + Complete day
+            + Dress
+                - Find shoes
+                - Tie shoes
+            + Commute
+                - Start car
+                - Drive to work
+            + Work
+                - Read email
+                - Write code
+
+The leaf nodes are the ones on the right starting with '-'. Using 'Re-calc. time
+required' on ' Complete day' would add or replace the progress and time-required
+attributes of the non-leaf nodes to make them reflect the time-required /
+progress of their descendants. Note however that if say 'Commute' had a
+time-required value set and neither 'Start car' nor 'Drive to work' had any
+time-required setting, 'Commute''s setting would be left alone, it would be
+treated as a sort of effective leaf node in this context.
+
+If you set up a tree like this::
+
+    + Big project (100 days, 0%)
+        - Set up SVN (1 day, 0%)
+
+and then run the "Re-calc. derived times" command on 'Big project', its
+time-required will be reduced to 1 day. To avoid this you should add another
+leaf node, 'Rest of project', with a time-required of 99 days, after 'Set up
+SVN'. Or just pay no attention to the time-required on 'Big project' until
+you've made a more complete list of its sub-components.
+
+The progress and times shown are not updated automatically unless you use @project nodes.
+
+**Clear derived times** behaves like Re-calc. time required except instead of
+adding time and progress information it clears it.
+
+\@Project Nodes
+===============
+
+\@project nodes can be used to make updates of progress bars and displayed times
+automatic.
+
+Whenever you change the progress-level or time-required on a node, cleo will
+search back up through the tree to find the highest level parent node with
+'\@project' in the headline. cleo will then execute Re-calc. time required on
+that node. If the node contains '\@project time' (one space) the Show times
+command will also be executed on that node.
+
+Remember that when a \@project node is present, attempts to remove progress and
+time required values may appear to fail as Re-calc. time required replaces them
+as you remove them.
 
 '''
 #@-<< docstring >>
