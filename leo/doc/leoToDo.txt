@@ -6,10 +6,8 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 I am willing to fix bugs, but I would like to declare a moratorium on feature additions until 2012.
 .. @+node:ekr.20110921132705.6960: *3* To do first
-.. @+node:ekr.20110929074744.15449: *4* Allow mouseless leo (really)
-Alt-x show (tab name).  For example: show-tab<tab> (typing completion)
-.. @+node:ekr.20110929074744.15450: *4* close/hide-rendering-pane doesn't work if pane created from plugins menu
-.. @+node:ekr.20110918204916.6811: *4* ** revise autocompletion docs based on recent posts
+.. @+node:ekr.20110929074744.15498: *4* *Fix documentation for todo plugin
+.. @+node:ekr.20110918204916.6811: *4* * revise autocompletion docs based on recent posts
 .. @+node:ekr.20110929074744.15474: *5* Autocompleter post
 @language rest
 @pagewidth 65
@@ -847,6 +845,9 @@ For example, to print a list of all commands type Alt-X print-commands <Return>.
 
 The following sections list the various commands that you can invoke from the minibuffer. Important: you may bind keystrokes to any of these commands. See Customizing Leo for full details.
 .. @+node:ekr.20110929074744.15447: *4* remove scrolledmessage plugin?
+.. @+node:ekr.20110929074744.15499: *4* Allow more panes to be part of the free_layout "action" buttons
+.. @+node:ekr.20110929074744.15449: *4* Allow mouseless leo (really)
+Alt-x show (tab name).  For example: show-tab<tab> (typing completion)
 .. @+node:ekr.20110919113533.6818: *4* split-defs-into-node
 .. @+node:ekr.20110919113533.6820: *5* methods
 # Normalize a type. Replaces type with fully qualified version
