@@ -4203,27 +4203,23 @@ If you do put @enabled-plugins nodes in x.leo, be prepared for confusion from ti
 
 # Standard plugins enabled in official distributions....
 
+# First...
 plugins_menu.py
+free_layout.py # needs to be early
 
-free_layout.py
-    # needs to be early
-viewrendered.py
-
+# Next...
+contextmenu.py
 leo_to_html.py
 mod_scripting.py
-quicksearch.py
-
-contextmenu.py
 nav_qt.py
+quicksearch.py
 stickynotes.py
-# UNL.py # moved to core, 20110220 TNB
+todo.py
+viewrendered.py
 
 # The plugins manager plugin does not
 # understand @enabled-plugins nodes.
 # plugin_manager.py
-
-# The rst3 plugin has been moved to Leo's core.
-# rst3.py
 
 # All other plugins.
 # Order is important for enabled plugins that
@@ -4233,11 +4229,10 @@ stickynotes.py
 # EditAttributes.py
 # FileActions.py
 # Library.py
-# nodeActions.py
 # UASearch.py
+# UNL.py # moved to core, 20110220 TNB
 # URLloader.py
 # UniversalScrolling.py
-
 # add_directives.py
 # arrows.py
 # at_folder.py
@@ -4248,6 +4243,8 @@ stickynotes.py
 # chapter_hoist.py
 # cleo.py
 # color_markup.py
+# colorize_headlines.py
+# ctagscompleter.py
 # datenodes.py
 # detect_urls.py
 # dyna_menu.py
@@ -4273,6 +4270,7 @@ stickynotes.py
 # nav_buttons.py
 # newButtons.py
 # niceNosent.py
+# nodeActions.py
 # nodebar.py
 # nodenavigator.py
 # open_shell.py
@@ -4282,17 +4280,21 @@ stickynotes.py
 # pretty_print.py
 # print_cp.py
 # quickMove.py
+# quicksearch.py
 # rClick.py
 # read_only_nodes.py
 # rowcol.py
+# rst3.py # The rst3 plugin has been moved to Leo's core.
 # run_nodes.py
 # s_menu.py
 # scheduler.py
+# scrolledmessage.py # interferes with viewrendered.py.
 # searchbox.py
 # shortcut_button.py
 # slideshow.py
 # table.py
 # templates.py
+# tomboy_import.py
 # trace_tags.py
 # vim.py
 # word_count.py
@@ -4301,10 +4303,7 @@ stickynotes.py
 # xemacs.py
 # xsltWithNodes.py
 # zodb.py
-# quicksearch.py
-# tomboy_import.py
-# ctagscompleter.py
-# colorize_headlines.py</t>
+</t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
 False: Chapter commands do not exists.</t>
 <t tx="ekr.20070326094544"></t>
