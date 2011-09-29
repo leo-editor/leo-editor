@@ -65,13 +65,6 @@ import leo.core.leoGlobals as g
 
 # **Important**: this plugin is gui-independent.
 
-###
-# if g.app.gui.guiName() == 'tkinter':
-    # if g.isPython3:
-        # Tk = None
-    # else:
-        # Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=False)
-
 if g.isPython3:
     import configparser as ConfigParser
 else:
@@ -187,14 +180,11 @@ def createPluginsMenu (tag,keywords):
         plgObList = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
         c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu("&Plugins")
         PluginDatabase.setMenu("Default", pluginMenu)
-        #@+<< Add group menus >>
-        #@+node:pap.20050305152223: *4* << Add group menus >>
+        # Add group menus
         for group_name in PluginDatabase.getGroups():
-
-            PluginDatabase.setMenu(
-                group_name,
+            PluginDatabase.setMenu(group_name,
                 c.frame.menu.createNewMenu(group_name, "&Plugins"))
-        #@-<< Add group menus >>
+
         for plgObj in plgObList:
             addPluginMenuItem(plgObj, c)
 #@+node:ekr.20070302175530: *3* init
@@ -209,11 +199,6 @@ def init ():
 
     g.registerHandler("create-optional-menus",createPluginsMenu)
     g.plugin_signon(__name__)
-
-    ###
-    # if g.app.gui.guiName() == 'tkinter':
-        # g.app.gui.runPropertiesDialog = runPropertiesDialog
-        # g.app.gui.runScrolledMessageDialog = runScrolledMessageDialog
 
     return True
 #@+node:pap.20050305152751: ** class PluginDatabase
@@ -360,6 +345,9 @@ class PlugIn:
             # msg = msg.replace('\\n','\\\\n')
         else:
             msg = ''
+            
+        # EKR: At present, the viewrendered plugin supports a scrolledMessage hook.
+        # However, it does not create an "official" viewrendered pane.
 
         if not g.doHook('scrolledMessage',
             short_title = self.name,
@@ -482,352 +470,5 @@ class PlugIn:
         return text
     #@-others
 
-#@+node:EKR.20040517080555.10: ** class TkPropertiesDialog
-class TkPropertiesDialog:
-
-    """A class to create and run a Properties dialog"""
-
-    #@+others
-    #@+node:bob.20071208030419: *3* __init__
-    def __init__(self, title, data, callback=None, buttons=[]):
-        #@+<< docstring >>
-        #@+node:bob.20071208211442: *4* << docstring >>
-        """ Initializes and shows a Properties dialog.
-
-            'buttons' should be a list of names for buttons.
-
-            'callback' should be None or a function of the form:
-
-                def cb(name, data)
-                    ...
-                    return 'close' # or anything other than 'close'
-
-            where name is the name of the button clicked and data is
-            a data structure representing the current state of the dialog.
-
-            If a callback is provided then when a button (other than
-            'OK' or 'Cancel') is clicked then the callback will be called
-            with name and data as parameters.
-
-                If the literal string 'close' is returned from the callback
-                the dialog will be closed and self.result will be set to a
-                tuple (button, data).
-
-                If anything other than the literal string 'close' is returned
-                from the callback, the dialog will continue to be displayed.
-
-            If no callback is provided then when a button is clicked the
-            dialog will be closed and self.result set to  (button, data).
-
-            The 'ok' and 'cancel' buttons (which are always provided) behave as
-            if no callback was supplied.
-
-        """
-        #@-<< docstring >>
-
-        if buttons is None:
-            buttons = []
-
-        self.entries = []
-        self.title = title
-        self.callback = callback
-        self.buttons = buttons
-        self.data = data
-
-        #@+<< create the frame from the configuration data >>
-        #@+node:bob.20071208030419.2: *4* << Create the frame from the configuration data >>
-        root = g.app.root
-
-        #@+<< Create the top level and the main frame >>
-        #@+node:bob.20071208030419.3: *5* << Create the top level and the main frame >>
-        self.top = top = Tk.Toplevel(root)
-        g.app.gui.attachLeoIcon(self.top)
-        #top.title("Properties of "+ plugin.name)
-        top.title(title)
-
-        top.resizable(0,0) # neither height or width is resizable.
-
-        self.frame = frame = Tk.Frame(top)
-        frame.pack(side="top")
-        #@-<< Create the top level and the main frame >>
-        #@+<< Create widgets for each section and option >>
-        #@+node:bob.20071208030419.4: *5* << Create widgets for each section and option >>
-        # Create all the entry boxes on the screen to allow the user to edit the properties
-
-        sections = data.keys()
-        sections.sort()
-
-        for section in sections:
-
-            # Create a frame for the section.
-            f = Tk.Frame(top, relief="groove",bd=2)
-            f.pack(side="top",padx=5,pady=5)
-            Tk.Label(f, text=section.capitalize()).pack(side="top")
-
-            # Create an inner frame for the options.
-            b = Tk.Frame(f)
-            b.pack(side="top",padx=2,pady=2)
-
-            options = data[section].keys()
-            options.sort()
-
-            row = 0
-            # Create a Tk.Label and Tk.Entry for each option.
-            for option in options:
-                e = Tk.Entry(b)
-                e.insert(0, data[section][option])
-                Tk.Label(b, text=option).grid(row=row, column=0, sticky="e", pady=4)
-                e.grid(row=row, column=1, sticky="ew", pady = 4)
-                row += 1
-                self.entries.append((section, option, e))
-        #@-<< Create widgets for each section and option >>
-        #@+<< Create the buttons >>
-        #@+node:bob.20071208030419.5: *5* << Create the buttons >>
-        box = Tk.Frame(top, borderwidth=5)
-        box.pack(side="bottom")
-
-        buttons.extend(("OK", "Cancel"))
-
-        for name in buttons:
-            Tk.Button(box,
-                text=name,
-                width=6,
-                command=lambda self=self, name=name: self.onButton(name)
-            ).pack(side="left",padx=5)
-
-        #@-<< Create the buttons >>
-
-        g.app.gui.center_dialog(top) # Do this after packing.
-        top.grab_set() # Make the dialog a modal dialog.
-        top.focus_force() # Get all keystrokes.
-
-        self.result = ('Cancel', '')
-
-        root.wait_window(top)
-        #@-<< create the frame from the configuration data >>
-    #@+node:EKR.20040517080555.17: *3* Event Handlers
-
-    def onButton(self, name):
-        """Event handler for all button clicks."""
-
-        data = self.getData()
-        self.result = (name, data)
-
-        if name in ('OK', 'Cancel'):
-            self.top.destroy()
-            return
-
-        if self.callback:
-            retval = self.callback(name, data)
-            if retval == 'close':
-                self.top.destroy()
-            else:
-                self.result = ('Cancel', None)
-
-
-    #@+node:EKR.20040517080555.18: *3* getData
-    def getData(self):
-        """Return the modified configuration."""
-
-        data = {}
-        for section, option, entry in self.entries:
-            if section not in data:
-                data[section] = {}
-            s = entry.get()
-            s = g.toEncodedString(s,"ascii",reportErrors=True) # Config params had better be ascii.
-            data[section][option] = s
-
-        return data
-
-
-    #@-others
-#@+node:EKR.20040517080555.19: ** class TkScrolledMessageDialog
-class TkScrolledMessageDialog:
-
-    """A class to create and run a Scrolled Message dialog for Tk"""
-
-    default_buttons = ["Text to HTML", "RST to HTML", "Close"]
-
-    #@+others
-    #@+node:EKR.20040517080555.20: *3* __init__
-    def __init__(self, title='Message', label= '', msg='', callback=None, buttons=None):
-
-        """Create and run a modal dialog showing 'msg' in a scrollable window."""
-
-        if buttons is None:
-            buttons = []
-
-        self.callback = callback
-        self.title = title
-        self.label = label
-        self.msg = msg
-
-        self.buttons = buttons or []
-
-        self.buttons.extend(self.default_buttons)
-
-        self.result = ('Cancel', None)
-
-        root = g.app.root
-        self.top = top = Tk.Toplevel(root)
-        g.app.gui.attachLeoIcon(self.top)
-
-        top.title(title)
-        top.resizable(1,1) # height and width is resizable.
-
-        frame = Tk.Frame(top)
-        frame.pack(side="top", expand=True, fill='both')
-
-        #@+<< Create the contents of the about box >>
-        #@+node:EKR.20040517080555.21: *4* << Create the contents of the about box >>
-        #Tk.Label(frame,text="Version " + version).pack()
-
-        if label:
-            Tk.Label(frame, text=label).pack()
-
-        body = w = g.app.gui.plainTextWidget(
-            frame,name='body-pane',
-            bd=2,bg="white",relief="flat",setgrid=0,wrap='word')
-        w.insert(0,msg)
-        if 0: # prevents arrow keys from being visible.
-            w.configure(state='disabled')
-        w.setInsertPoint(0)
-        w.see(0)
-
-        bodyBar = Tk.Scrollbar(frame,name='bodyBar')
-        body['yscrollcommand'] = bodyBar.set
-        bodyBar['command'] = body.yview
-
-        bodyBar.pack(side="right", fill="y")
-        body.pack(expand=1,fill="both")
-
-        def destroyCallback(event=None,top=top):
-            self.result = ('Cancel', None)
-            top.destroy()
-
-        body.bind('<Return>',destroyCallback)
-
-        g.app.gui.set_focus(None,body)
-        #@-<< Create the contents of the about box >>
-
-        self.create_the_buttons(top, self.buttons)
-
-        g.app.gui.center_dialog(top) # Do this after packing.
-        top.grab_set() # Make the dialog a modal dialog.
-        top.focus_force() # Get all keystrokes.
-
-        root.wait_window(top)
-    #@+node:bobjack.20080320174907.4: *3* create_the_buttons
-    def create_the_buttons(self, parent, buttons):
-
-        """
-        Create the TK buttons and pack them in a button box.
-        """
-
-        box = Tk.Frame(parent, borderwidth=5)
-        box.pack(side="bottom")
-
-        for name in buttons:
-            Tk.Button(box,
-                text=name,
-                command=lambda self=self, name=name: self.onButton(name)
-            ).pack(side="left",padx=5)
-    #@+node:bobjack.20080320193548.2: *3* get_default_buttons
-    #@+node:bob.20071209110304.1: *3* Event Handlers
-
-    def onButton(self, name):
-        """Event handler for all button clicks."""
-
-        retval = ''
-
-        if name in self.default_buttons:
-
-            if name in ('Close'):
-                self.top.destroy()
-                return
-
-            retval = self.show_message_as_html(name)
-
-        elif self.callback:
-
-            retval = self.callback(name) or ''
-
-        if retval.lower() == 'close':
-            self.top.destroy()
-        else:
-            self.result = ('Cancel', None)
-
-
-    #@+node:bobjack.20080317174956.3: *3* show_message_as_html
-    def show_message_as_html(self, name):
-
-        try:
-            import leo.plugins.leo_to_html as leo_to_html
-        except ImportError:
-            g.es('Can not import leo.plugins.leo_to_html as leo_to_html', color='red')
-            return
-
-        oHTML = leo_to_html.Leo_to_HTML(c=None) # no need for a commander
-
-        oHTML.loadConfig()
-        oHTML.silent = True 
-        oHTML.myFileName = oHTML.title = self.title + ' ' + self.label
-
-        if name.lower().startswith('text'):
-            retval = self.show_text_message(oHTML)
-        elif name.lower().startswith('rst'):
-            retval = self.show_rst_message(oHTML)
-        else:
-            return
-
-        return retval
-    #@+node:bobjack.20080320174907.2: *3* show_rst_message
-    def show_rst_message(self, oHTML):
-
-        try:
-            from docutils import core
-        except ImportError:
-            g.es('Can not import docutils', color='red')
-            return
-
-        overrides = {
-            'doctitle_xform': False,
-            'initial_header_level': 1
-        }
-
-        parts = core.publish_parts(
-            source=self.msg,
-            writer_name='html',
-            settings_overrides=overrides
-        )
-
-        oHTML.xhtml = parts['whole']
-        oHTML.show()
-
-        return 'close'
-    #@+node:bobjack.20080320174907.3: *3* show_text_message
-    def show_text_message(self, oHTML):
-
-        oHTML.xhtml = '<pre>' + self.msg + '</pre>'
-        oHTML.applyTemplate()
-        oHTML.show()
-
-        return 'close'
-    #@-others
-#@+node:bob.20071208211442.1: ** runPropertiesDialog
-def runPropertiesDialog(title='Properties', data={}, callback=None, buttons=None):
-    """Dispay a modal TkPropertiesDialog"""
-
-
-    dialog = TkPropertiesDialog(title, data, callback, buttons)
-
-    return dialog.result 
-#@+node:bob.20071209110304: ** runScrolledMessageDialog
-def runScrolledMessageDialog(title='Message', label= '', msg='', callback=None, buttons=None, **kw):
-    """Display a modal TkScrolledMessageDialog."""
-
-    dialog = TkScrolledMessageDialog(title, label, msg, callback, buttons)
-
-    return dialog.result
 #@-others
 #@-leo
