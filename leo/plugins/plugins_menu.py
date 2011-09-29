@@ -345,9 +345,6 @@ class PlugIn:
             # msg = msg.replace('\\n','\\\\n')
         else:
             msg = ''
-            
-        # EKR: At present, the viewrendered plugin supports a scrolledMessage hook.
-        # However, it does not create an "official" viewrendered pane.
 
         if not g.doHook('scrolledMessage',
             short_title = self.name,
