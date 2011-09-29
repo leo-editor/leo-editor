@@ -250,17 +250,21 @@ def show_scrolled_message(tag, kw):
 
     c = kw.get('c')
     
-    vr = c.frame.top.findChild(QtGui.QWidget, 'vr_scrolled_message')
-    if vr is None:
-        vr = ViewRenderedController(c)
-        vr.setObjectName('vr_scrolled_message')
-        if hasattr(c, 'free_layout'):
-            splitter = c.free_layout.get_top_splitter()
-            if not splitter.add_adjacent(vr, 'bodyFrame', 'right-of'):
-                splitter.insert(0, vr)
-        else:
-            vr.resize(600, 600)
-            vr.show()
+    if 1:
+        vr = viewrendered(event=kw)
+    else:
+        # Old code.
+        vr = c.frame.top.findChild(QtGui.QWidget,'vr_scrolled_message')
+        if vr is None:
+            vr = ViewRenderedController(c)
+            vr.setObjectName('vr_scrolled_message')
+            if hasattr(c, 'free_layout'):
+                splitter = c.free_layout.get_top_splitter()
+                if not splitter.add_adjacent(vr, 'bodyFrame', 'right-of'):
+                    splitter.insert(0, vr)
+            else:
+                vr.resize(600, 600)
+                vr.show()
     
     title = kw.get('short_title','').strip()
     vr.setWindowTitle(title)
@@ -287,6 +291,7 @@ def close_rendering_pane(event):
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        g.trace(vr)
         if vr:
             vr.deactivate()
             vr.deleteLater()
@@ -386,6 +391,10 @@ def viewrendered(event):
             vr.setWindowTitle("Rendered View")
             vr.resize(600, 600)
             vr.show()
+            
+        return vr
+    else:
+        return None
 #@+node:ekr.20110320120020.14475: *3* g.command('vr')
 @g.command('vr')
 def viewrendered_alias(event):
