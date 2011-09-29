@@ -6,7 +6,847 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 I am willing to fix bugs, but I would like to declare a moratorium on feature additions until 2012.
 .. @+node:ekr.20110921132705.6960: *3* To do first
+.. @+node:ekr.20110929074744.15449: *4* Allow mouseless leo (really)
+Alt-x show (tab name).  For example: show-tab<tab> (typing completion)
+.. @+node:ekr.20110929074744.15450: *4* close/hide-rendering-pane doesn't work if pane created from plugins menu
 .. @+node:ekr.20110918204916.6811: *4* ** revise autocompletion docs based on recent posts
+.. @+node:ekr.20110929074744.15474: *5* Autocompleter post
+@language rest
+@pagewidth 65
+
+Overview of the code
+====================
+
+All notes refer to methods in class AutoCompleterClass unless otherwise noted.
+
+- The autoComplete method is the entry point. It will be called
+  when autocompletion is enabled and the user types either a period
+  or ctrl-space (
+
+
+The legacy autocompleter is eval based.
+
+ uses Leo-specific code to when editing specific .leo files: leoDocs.leo, leoPlugins.leo, etc.
+       
+.. @+node:ekr.20110929074744.15475: *6* Creating ctags data
+On Sep 10, 8:36 am, "Edward K. Ream" <edream...@gmail.com> wrote:
+
+> Later posts will discuss the following:
+> 
+> - Setting up to use ctags/codewise completion.
+
+This section describes how to use Ville's codewise.py
+module in leo\external folder.
+
+**Note**: I've recently made a few changes to codewise.py. The
+following discussion reflects the following changes:
+
+- Changed docstring.
+
+- The setup command does not crash if the ~/.ctags file already
+  exist.
+  
+- The setup command does not call the init command, and thus does
+  not delete ~/.codewise.db.
+  
+- Revised various print statements so they look better with Python 3.x.
+
+**Important**: Leo's core contains all necessary autocompletion
+code. In particular, enable *neither* the ctagscompleter.py
+plugin *nor* the codewisecompleter.py plugin. I plan to remove
+these plugins immediately, unless someone gives a good reason not
+to do so.
+
+**Important**: I've taken care to with the following
+instructions, but there could be oversights or misunderstandings.
+I would appreciate any corrections or additions.
+
+Creating codewise/ctags data
+============================
+
+1. Make sure you have exuberant ctags (not just regular ctags)
+   installed. It's an Ubuntu package, so its easy to install if
+   you're using Ubuntu.
+   
+2. Execute the following commands from Leo's external/codewise.py
+   module. **Note**: On Windows, you can use codewise.bat to
+   execute these commands. For example::
+
+        python <path to leo>\external\codewise.py %*
+    
+A. [Optional] Create a custom ~/.ctags file containing default
+   configuration settings for ctags::
+    
+        codewise setup
+        
+    This command will leave the ~/.ctags file unchanged if it
+    exists.  Othewise, the ``codewise setup`` command will
+    create a ~/.ctags file containing the following defaults::
+    
+        --exclude=*.html
+        --exclude=*.css
+    
+    See: http://ctags.sourceforge.net/ctags.html#FILES for more
+    details about the .ctags file.
+    
+B. [Optional] Delete the existing ctags database in ~/.codewise.db::
+   
+        codewise init
+        
+C. Add ctags data to the existing ctags database::
+
+        codewise parse <path to directory>
+        
+   You can add data from multiple sources by running
+   the ``codewise parse`` command on multiple directories.
+   
+.. @+node:ekr.20110929074744.15476: *6* Using Leo's autocompleter (outline form)
+@language rest
+
+Leo's autocompletion suggests **completions**, text may be valid in a given
+point, or **context** in source code. For example, suppose the context is::
+
+    os.path.s
+    
+That is, suppose the cursor follows ``os.path.s`` in the body pane. The valid
+completions are all the members of Python's os.path module whose names start with 's',
+namely::
+
+    samefile
+    sameopenfile
+    sep
+    split
+    splitdrive
+    splitext
+    splitunc
+    stat
+    supports_unicode_filenames
+    sys
+    
+.. @+node:ekr.20110929074744.15477: *7* Starting autocompletions
+There are two ways to have Leo show autocompletions, manually and automatically.
+You can use both at the same time.
+
+**Manual autocompletion**: Leo will show autocompletions whenever you execute
+the auto-complete-force (ctrl-space) command.
+
+**Automatic autocompletion**: If (automatic) autocompletion is enabled, Leo will show completions
+whenever you type a period in the body pane.
+
+You can enable autocompletion in several ways:
+
+1. By setting @bool enable_autocompleter_initially = True.
+
+2. By using the toggle-autocompleter (Alt-1) command.
+.. @+node:ekr.20110929074744.15478: *7* Displaying autocompletions
+How Leo displays these completions depends on the setting::
+
+    @bool use_qcompleter
+    
+True: Leo shows completions in the QCompleter popup window.
+False: Leo shows completions in the log pane.
+    
+
+
+.. @+node:ekr.20110929074744.15479: *7* Using the QCompleter
+When the ``@bool use_qcompleter`` setting is False, Leo shows all completions in a
+popup window, regardless of how many completions there are. To **accept** a
+completion, use the up and down arrows to select a completion, then type the
+return key. To **cancel** completion, type the escape key. As an important
+shortcut, if the popup window contains only one entry, you may accept a
+completion by simply typing the return key.
+.. @+node:ekr.20110929074744.15480: *7* Using the Log pane completer
+When the ``@bool use_qcompleter`` setting is True, Leo shows completions in in
+Leo's log pane. When there are more than 20 completions, Leo shows only the
+characters that start a completions. For example, when completing ``os.path.``
+the log pane will show::
+
+    _ 17
+    a 2
+    b 1
+    c 2
+    d 3
+    e 4
+    g 5
+    i 5
+    j 1
+    l 1
+    n 2
+    o 1
+    p 2
+    r 2
+    s 10
+    
+To see the complete list, type the '!' character.  You will see::
+
+    __all__
+    __builtins__
+    __cached__
+    __doc__
+    __file__
+    __name__
+    __package__
+    _get_altsep
+    _get_bothseps
+    _get_colon
+    _get_dot
+    _get_empty
+    _get_sep
+    _get_special
+    _getfileinformation
+    _getfinalpathname
+    _getfullpathname
+    abspath
+    altsep
+    basename
+    commonprefix
+    curdir
+    defpath
+    devnull
+    dirname
+    exists
+    ...
+
+Typically, however, you would simply type one of the valid prefix characters.
+For example, typing the letter 'a' would create the context ``os.path.a`` and
+the log pane would show::
+
+    abspath
+    altsep
+    
+As you type, Leo enters the longest common prefix of all completions into the
+body pane. Typing return, escape or ctrl-g (or any other alt or ctrl key) ends
+completion.
+.. @+node:ekr.20110929074744.15481: *7* Showing docstrings
+Regardless of the setting of ``@bool use_qcompleter``,
+typing '?' while autocompleting will show the docstring of
+the present context.  For example, if the context is
+``os.path.join``, typing '?' will show::
+
+    Join two or more pathname components, inserting "\" as needed.
+    If any component is an absolute path, all previous path components
+    will be discarded.
+    
+It is not possible to copy the docstring from the log pane
+when using the QCompleter because the QCompleter popup window is a modal dialog.
+.. @+node:ekr.20110929074744.15482: *6* Using Leo's autocompleter (COPY)
+@language rest
+
+Leo's autocompletion suggests **completions**, text may be valid in a given
+point, or **context** in source code. For example, suppose the context is::
+
+    os.path.s
+    
+That is, suppose the cursor follows ``os.path.s`` in the body pane. The valid
+completions are all the members of Python's os.path module whose names start with 's',
+namely::
+
+    samefile
+    sameopenfile
+    sep
+    split
+    splitdrive
+    splitext
+    splitunc
+    stat
+    supports_unicode_filenames
+    sys
+    
+Starting autocompletions
+========================
+
+There are two ways to have Leo show autocompletions, manually and automatically.
+You can use both at the same time.
+
+**Manual autocompletion**: Leo will show autocompletions whenever you execute
+the auto-complete-force (ctrl-space) command.
+
+**Automatic autcompletion**: If (automatic) autocompletion is enabled, Leo will show completions
+whenever you type a period in the body pane.
+
+You can enable autocompletion in several ways:
+
+1. By setting @bool enable_autocompleter_initially = True.
+
+2. By using the toggle-autocompleter (Alt-1) command.
+
+Displaying autocompletions
+==========================
+
+How Leo displays these completions depends on the setting::
+
+    @bool use_qcompleter
+    
+True: Leo shows completions in the QCompleter popup window.
+False: Leo shows completions in the log pane.
+
+Using the QCompleter
+====================
+
+When the ``@bool use_qcompleter`` setting is False, Leo shows all completions in a
+popup window, regardless of how many completions there are. To **accept** a
+completion, use the up and down arrows to select a completion, then type the
+return key. To **cancel** completion, type the escape key. As an important
+shortcut, if the popup window contains only one entry, you may accept a
+completion by simply typing the return key.
+
+Using the Log pane completer
+============================
+
+When the ``@bool use_qcompleter`` setting is True, Leo shows completions in in
+Leo's log pane. When there are more than 20 completions, Leo shows only the
+characters that start a completions. For example, when completing ``os.path.``
+the log pane will show::
+
+    _ 17
+    a 2
+    b 1
+    c 2
+    d 3
+    e 4
+    g 5
+    i 5
+    j 1
+    l 1
+    n 2
+    o 1
+    p 2
+    r 2
+    s 10
+    
+To see the complete list, type the '!' character.  You will see::
+
+    __all__
+    __builtins__
+    __cached__
+    __doc__
+    __file__
+    __name__
+    __package__
+    _get_altsep
+    _get_bothseps
+    _get_colon
+    _get_dot
+    _get_empty
+    _get_sep
+    _get_special
+    _getfileinformation
+    _getfinalpathname
+    _getfullpathname
+    abspath
+    altsep
+    basename
+    commonprefix
+    curdir
+    defpath
+    devnull
+    dirname
+    exists
+    ...
+
+Typically, however, you would simply type one of the valid prefix characters.
+For example, typing the letter 'a' would create the context ``os.path.a`` and
+the log pane would show::
+
+    abspath
+    altsep
+    
+As you type, Leo enters the longest common prefix of all completions into the
+body pane. Typing return, escape or ctrl-g (or any other alt or ctrl key) ends
+completion.
+
+Showing docstrings
+==================
+
+Regardless of the setting of ``@bool use_qcompleter``,
+typing '?' while autocompleting will show the docstring of
+the present context.  For example, if the context is
+``os.path.join``, typing '?' will show::
+
+    Join two or more pathname components, inserting "\" as needed.
+    If any component is an absolute path, all previous path components
+    will be discarded.
+    
+It is not possible to copy the docstring from the log pane
+when using the QCompleter because the QCompleter popup window is a modal dialog.
+.. @+node:ekr.20110929074744.15483: *7* Starting autocompletions
+There are two ways to have Leo show autocompletions, manually and automatically.
+You can use both at the same time.
+
+**Manual autocompletion**: Leo will show autocompletions whenever you execute
+the auto-complete-force (ctrl-space) command.
+
+**Automatic autocompletion**: If (automatic) autocompletion is enabled, Leo will show completions
+whenever you type a period in the body pane.
+
+You can enable autocompletion in several ways:
+
+1. By setting @bool enable_autocompleter_initially = True.
+
+2. By using the toggle-autocompleter (Alt-1) command.
+.. @+node:ekr.20110929074744.15484: *7* Displaying autocompletions
+How Leo displays these completions depends on the setting::
+
+    @bool use_qcompleter
+    
+True: Leo shows completions in the QCompleter popup window.
+False: Leo shows completions in the log pane.
+    
+
+
+.. @+node:ekr.20110929074744.15485: *7* Using the QCompleter
+When the ``@bool use_qcompleter`` setting is False, Leo shows all completions in a
+popup window, regardless of how many completions there are. To **accept** a
+completion, use the up and down arrows to select a completion, then type the
+return key. To **cancel** completion, type the escape key. As an important
+shortcut, if the popup window contains only one entry, you may accept a
+completion by simply typing the return key.
+.. @+node:ekr.20110929074744.15486: *7* Using the Log pane completer
+When the ``@bool use_qcompleter`` setting is True, Leo shows completions in in
+Leo's log pane. When there are more than 20 completions, Leo shows only the
+characters that start a completions. For example, when completing ``os.path.``
+the log pane will show::
+
+    _ 17
+    a 2
+    b 1
+    c 2
+    d 3
+    e 4
+    g 5
+    i 5
+    j 1
+    l 1
+    n 2
+    o 1
+    p 2
+    r 2
+    s 10
+    
+To see the complete list, type the '!' character.  You will see::
+
+    __all__
+    __builtins__
+    __cached__
+    __doc__
+    __file__
+    __name__
+    __package__
+    _get_altsep
+    _get_bothseps
+    _get_colon
+    _get_dot
+    _get_empty
+    _get_sep
+    _get_special
+    _getfileinformation
+    _getfinalpathname
+    _getfullpathname
+    abspath
+    altsep
+    basename
+    commonprefix
+    curdir
+    defpath
+    devnull
+    dirname
+    exists
+    ...
+
+Typically, however, you would simply type one of the valid prefix characters.
+For example, typing the letter 'a' would create the context ``os.path.a`` and
+the log pane would show::
+
+    abspath
+    altsep
+    
+As you type, Leo enters the longest common prefix of all completions into the
+body pane. Typing return, escape or ctrl-g (or any other alt or ctrl key) ends
+completion.
+.. @+node:ekr.20110929074744.15487: *7* Showing docstrings
+Regardless of the setting of ``@bool use_qcompleter``,
+typing '?' while autocompleting will show the docstring of
+the present context.  For example, if the context is
+``os.path.join``, typing '?' will show::
+
+    Join two or more pathname components, inserting "\" as needed.
+    If any component is an absolute path, all previous path components
+    will be discarded.
+    
+It is not possible to copy the docstring from the log pane
+when using the QCompleter because the QCompleter popup window is a modal dialog.
+.. @+node:ekr.20110929074744.15488: *6* Code notes
+Function and design
+===================
+
+Both the legacy and new completer now work *exactly* the
+same way, because they both use the AutoCompleterClass to
+compute the list of completions.
+
+The strict "stateless" requirement means that the
+"intermediate" completions must be entered into the body
+pane while completion is active. It works well as a visual
+cue when using the tabbed completer: indeed, the tabbed
+completer would be difficult to use without this cue.
+
+The situation is slightly different with the qcompleter.
+Adding code before the user accepts the completion might be
+considered an "advanced" feature. However, it does have two
+important advantages, especially when "chaining" across
+periods: it indicates the status of the chaining and it
+limits what must appear in the qcompleter window.
+
+
+
+.. @+node:ekr.20110929074744.15489: *6* Minor settings
+Minor Autocompletion settings
+=============================
+
+These are found in leoSettings.leo: @settings-->Autocompleter
+
+- @bool use_codewise = False
+
+True: use codewise completions.
+False: use Leo-specific completions.
+
+- @bool use_qcompleter = True
+
+True:  show completions in a QCompleter popup.
+False: show completions in Leo's Completions tab.
+This option has effect only when using the qt or qttabs gui's.
+
+The following options specify minor user preferences: they have little or no effect on the design or code of the autocompleter:
+
+- @bool auto_tab_complete = False
+
+True: Automatically extend the completed text to the longest common prefix of all completions.
+
+- @bool autocomplete-brackets = False
+
+True: When typing an opening bracket '(','[' or '{', immediately type the corresponding closing bracket.  To move past the closing bracket, just type it.
+
+- @bool enable_calltips_initially = False
+
+- @bool forbid_invalid_completions = False
+
+True: Don't add characters during autocompletion that are not part of any computed completion.
+.. @+node:ekr.20110929074744.15490: *6* Appearance
+Appearance
+==========
+
+There is little change to the legacy completer, except that
+no text is highlighted in the body pane during completion.
+This is calmer than before. Furthermore, there is no longer
+any need for highlighting, because when the user types a
+backspace the legacy completer now simply deletes a single
+character instead of the highlighted text.
+
+One minor change: the legacy completer now *does* insert
+characters that do not match the start of any possible
+completion. This is an experimental feature, but it might
+play well with using codewise completions as a fallback to
+Leo-related completions.
+
+.. @+node:ekr.20110929074744.15491: *6* Codewise notes
+Why the codewise module
+=======================
+
+- This module supports modern code completion for the Leo editor.
+
+- Exuberant ctags is an excellent code scanner, but TAGS file
+  lookup sucks for "find methods of this class".
+  
+- This module puts all data in a single file, ~/.codewise.db by
+  default. In contrast, TAGS files can exist all over the file
+  system.
+
+- The code in codewise.py is usable as a python module, or a
+  command line tool.
+
+
+Codewise completions
+====================
+
+The codewise-oriented completions appear to work well. In
+large part, this is due to adding the global "self."
+completions to all class-related completions (kind ==
+'class' in ac.get_codewise_completions). This looks like a
+really good hack, and it eliminates the need for the
+ContextSniffer class.
+.. @+node:ekr.20110929074744.15492: *6* Performance
+Performance
+===========
+
+Performance of Leo-related completions is *much* better than
+before. The old code used Python's inspect module and was
+horribly complex. The new code uses eval and is perfectly
+straightforward.
+
+The present codewise-related code caches completions for all
+previously-seen prefixes. This dramatically speeds up
+backspacing. Global caching is possible because completions
+depend *only* on the present prefix, *not* on the presently
+selected node. If ContextSniffer were used, completions
+would depend on the selected node and caching would likely
+be impractical. Despite these improvements, the performance
+of codewise-oriented completions is noticeably slower than
+Leo-related completions.
+
+Performance notes
+=================
+
+The ac.get_cached_options cuts back the prefix until it
+finds a cached prefix. ac.compute_completion_list then uses
+this (perhaps-way-too-long-list) as a starting point, and
+computes the final completion list by calling
+g.itemsMatchingPrefixInList.
+
+This may not be absolutely the fastest way, but it is much
+simpler and more robust than attempting to do "prefix AI"
+based on comparing old and new prefixes. Furthermore, this
+scheme is completely independent of the how completions are
+actually computed. The autocompleter now caches options
+lists, regardless of whether using eval or codewise.
+
+In most cases the scheme is extremely fast: calls to
+get_completions replace calls to
+g.itemsMatchingPrefixInList. However, for short prefixes,
+the list that g.g.itemsMatchingPrefixInList scans can have
+thousands of items. Scanning large lists can't be helped in
+any case for short prefixes.
+
+Happily, the new scheme is still *completely* stateless: the
+completionDict does *not* define state (it is valid
+everywhere) and no state variables had to be added. In
+short, the new caching scheme is much better than before,
+and it probably is close to optimal in most situations.
+
+.. @+node:ekr.20110929074744.15493: *6* Completions
+os.path.splitdrive.d_rule
+os.path.join
+.. @+node:ekr.20110929074744.15494: *7* Docs
+@language rest
+
+
+Creating codewise/ctags data
+============================
+
+This is adapted from the thread:
+http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e/ca01e7a803d2b546
+"HOWTO: make Ville's autocompleter work.
+
+1. Make sure you have exuberant ctags (not just regular ctags) installed.  It's an Ubuntu package, so it's easy to install if you're using Ubuntu.
+
+2. All recent versions of Leo contain Ville's codewise module: leo/external/codewise.py
+
+@pagewidth 60
+
+Overview of the code
+====================
+
+All notes refer to methods in class AutoCompleterClass
+unless otherwise noted.
+
+- The autoComplete method is the entry point.  It will be called when autocompletion is enabled and the user types either a period or ctrl-space (
+
+
+The legacy autocompleter is eval based.
+
+ uses Leo-specific code to when editing specific .leo files: leoDocs.leo, leoPlugins.leo, etc.
+       
+
+
+Here are the contents of the discussion of autocompletion from the 4.9 release notes in LeoDocs.leo.  These should be folded into Leo's Users Guide: I'll do that today.
+
+QQQQQ
+ 
+Appearance
+==========
+
+There is little change to the legacy completer, except that
+no text is highlighted in the body pane during completion.
+This is calmer than before. Furthermore, there is no longer
+any need for highlighting, because when the user types a
+backspace the legacy completer now simply deletes a single
+character instead of the highlighted text.
+
+One minor change: the legacy completer now *does* insert
+characters that do not match the start of any possible
+completion. This is an experimental feature, but it might
+play well with using codewise completions as a fallback to
+Leo-related completions.
+
+Function and design
+===================
+
+Both the legacy and new completer now work *exactly* the
+same way, because they both use the AutoCompleterClass to
+compute the list of completions.
+
+The strict "stateless" requirement means that the
+"intermediate" completions must be entered into the body
+pane while completion is active. It works well as a visual
+cue when using the tabbed completer: indeed, the tabbed
+completer would be difficult to use without this cue.
+
+The situation is slightly different with the qcompleter.
+Adding code before the user accepts the completion might be
+considered an "advanced" feature. However, it does have two
+important advantages, especially when "chaining" across
+periods: it indicates the status of the chaining and it
+limits what must appear in the qcompleter window.
+
+Codewise completions
+====================
+
+The codewise-oriented completions appear to work well. In
+large part, this is due to adding the global "self."
+completions to all class-related completions (kind ==
+'class' in ac.get_codewise_completions). This looks like a
+really good hack, and it eliminates the need for the
+ContextSniffer class.
+
+Performance
+===========
+
+Performance of Leo-related completions is *much* better than
+before. The old code used Python's inspect module and was
+horribly complex. The new code uses eval and is perfectly
+straightforward.
+
+The present codewise-related code caches completions for all
+previously-seen prefixes. This dramatically speeds up
+backspacing. Global caching is possible because completions
+depend *only* on the present prefix, *not* on the presently
+selected node. If ContextSniffer were used, completions
+would depend on the selected node and caching would likely
+be impractical. Despite these improvements, the performance
+of codewise-oriented completions is noticeably slower than
+Leo-related completions.
+
+Performance notes
+=================
+
+The ac.get_cached_options cuts back the prefix until it
+finds a cached prefix. ac.compute_completion_list then uses
+this (perhaps-way-too-long-list) as a starting point, and
+computes the final completion list by calling
+g.itemsMatchingPrefixInList.
+
+This may not be absolutely the fastest way, but it is much
+simpler and more robust than attempting to do "prefix AI"
+based on comparing old and new prefixes. Furthermore, this
+scheme is completely independent of the how completions are
+actually computed. The autocompleter now caches options
+lists, regardless of whether using eval or codewise.
+
+In most cases the scheme is extremely fast: calls to
+get_completions replace calls to
+g.itemsMatchingPrefixInList. However, for short prefixes,
+the list that g.g.itemsMatchingPrefixInList scans can have
+thousands of items. Scanning large lists can't be helped in
+any case for short prefixes.
+
+Happily, the new scheme is still *completely* stateless: the
+completionDict does *not* define state (it is valid
+everywhere) and no state variables had to be added. In
+short, the new caching scheme is much better than before,
+and it probably is close to optimal in most situations.
+
+QQQQQ
+
+Part 2: New documentation
+
+As I reread the release notes, I see that they are too code-oriented for the general reader.  What is needed are the following:
+
+1. A discussion of Autocompletion settings in 
+.. @+node:ekr.20110929074744.15495: *8* Additional options
+The following options specify minor user preferences: they have little or no
+effect on the design or code of the autocompleter:
+
+- @bool auto_tab_complete = False
+
+True: Automatically extend the completed text to the longest common prefix of all completions.
+
+- @bool autocomplete-brackets = False
+
+True: When typing an opening bracket '(','[' or '{', immediately type the corresponding closing bracket.  To move past the closing bracket, just type it.
+
+- @bool enable_calltips_initially = False
+
+- @bool forbid_invalid_completions = False
+
+True: Don't add characters during autocompletion that are not part of any computed completion.
+.. @+node:ekr.20110929074744.15496: *7* Existing docs
+@language rest
+@pagewidth 65
+
+Typing a period when @language python is in effect starts
+autocompletion. Typing Return or Control-g (keyboard-quit) exits
+autocompletion.
+
+Autocompletion shows what may follow a period in code. (Actually
+you can specify any character using the auto-complete shortcut
+setting.) For example, after typing g. Leo will show a list of
+all the global functions in leoGlobals.py. Autocompletion works
+much like tab completion in the minibuffer. Unlike the
+minibuffer, the presently selected completion appears directly in
+the body pane.
+
+A leading period brings up ‘Autocomplete Modules’. (The period
+goes away.) You can also get any module by typing its name. If
+more than 25 items would appear in the Autocompleter tab, Leo
+shows only the valid starting characters. At this point, typing
+an exclamation mark shows the complete list. Thereafter, typing
+further exclamation marks toggles between full and abbreviated
+modes.
+
+If x is a list ‘x.!’ shows all its elements, and if x is a Python
+dictionary, ‘x.!’ shows x.keys(). For example, ‘sys.modules.!’
+Again, further exclamation marks toggles between full and
+abbreviated modes.
+
+During autocompletion, typing a question mark shows the docstring
+for the object. For example: ‘g.app?’ shows the docstring for
+g.app. This doesn’t work (yet) directly for Python globals, but
+‘__builtin__.f?’ does. Example: ‘__builtin__.pow?’ shows the
+docstring for pow.
+
+Autocompletion works in the Find tab; you can use <Tab> to cycle
+through the choices. The ‘Completion’ tab appears while you are
+doing this; the Find tab reappears once the completion is
+finished. Calltips
+
+Calltips appear after you type an open parenthesis in code.
+Calltips shows the expected arguments to a function or method.
+Calltips work for any Python function or method, including
+Python’s global functions. Typing Return or Control-g
+(keyboard-quit) exits calltips.
+
+Examples:
+
+    ‘g.toUnicode(‘ gives ‘g.toUnicode(s, encoding, reportErrors=False’
+    ‘c.widgetWantsFocusNow’ gives ‘c.widgetWantsFocusNow(w’
+    ‘reduce(‘ gives ‘reduce(function, sequence[, initial]) -> value’
+
+The calltips appear directly in the text and the argument list is highlighted so you can just type to replace it. The calltips appear also in the status line for reference after you have started to replace the args.
+
+Options
+
+Both autocompletion and calltips are initially enabled or disabled by the enable_autocompleter and enable_calltips settings in leoSettings.leo. You may enable or disable these features at any time with these commands: enable-auto-completer-command, enable-calltips-command, disable-auto-completer-command and disable-calltips-command.
+The minibuffer
+
+The mini-buffer is a text area at the bottom of the body pane. You use it like the Emacs mini-buffer to invoke commands by their so-called long name. The following commands affect the minibuffer:
+
+    full-command: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a full command name, then hit <Return> to execute the command. Tab completion works, but not yet for file names.
+
+    universal-argument: (default shortcut: Alt-u) Like Emacs Ctrl-u. Adds a repeat count for later command. Ctrl-u 999 a adds 999 a’s.
+    keyboard-quit: (default shortcut: Ctrl-g) Exits any minibuffer mode and puts the focus in the body pane.
+
+For example, to print a list of all commands type Alt-X print-commands <Return>.
+
+The following sections list the various commands that you can invoke from the minibuffer. Important: you may bind keystrokes to any of these commands. See Customizing Leo for full details.
+.. @+node:ekr.20110929074744.15447: *4* remove scrolledmessage plugin?
 .. @+node:ekr.20110919113533.6818: *4* split-defs-into-node
 .. @+node:ekr.20110919113533.6820: *5* methods
 # Normalize a type. Replaces type with fully qualified version
