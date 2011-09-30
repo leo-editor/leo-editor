@@ -823,7 +823,11 @@ class atFile:
         p.v.at_read = True # Create the attribute
 
         s,ok,fileKey = c.cacher.readFile(fileName,p)
-        if ok: return
+        if ok:
+            g.doHook('after-auto',c=c,p=p)
+                # call after-auto callbacks
+                # 2011/09/30: added call to g.doHook here.
+            return
 
         if not g.unitTesting:
             g.es("reading:",p.h)
@@ -840,7 +844,9 @@ class atFile:
             c.setChanged(oldChanged)
         else:
             c.cacher.writeFile(p,fileKey)
-            g.doHook('after-auto', p = p)  # call after-auto callbacks
+            g.doHook('after-auto',c=c,p=p)
+                # call after-auto callbacks
+                # 2011/09/30: add 'c' keyword arg.
     #@+node:ekr.20090225080846.3: *4* at.readOneAtEditNode
     def readOneAtEditNode (self,fn,p):
 

@@ -7829,6 +7829,170 @@ def removeTypeNames (self,body):
     return body
 #@+node:ekr.20110929074744.15447: *4* removed scrolledmessage plugin
 The viewrendered plugin does more.
+#@+node:ekr.20110930075237.15469: *4* Added import-org-mode script
+#@+node:ekr.20110929165422.15432: *5* import-org-mode (command, not used)
+class ImportOrgMode:
+    @others
+
+def importOrgMode (self,event):
+    c = self.c
+    self.ImportOrgMode(c).go(c.p)
+    c.bodyWantsFocus()
+
+if g.app.inScript:
+    print('='*40)
+    ImportOrgMode(c).test()
+    print('done')
+#@+node:ekr.20110929185034.15461: *6* ctor
+def __init__ (self,c):
+    
+    self.c = c
+#@+node:ekr.20110929185034.15457: *6* go
+def go (self,p):
+    
+    '''Prompt for a file and pass the contents to scan().'''
+#@+node:ekr.20110929185034.15460: *6* scan
+def scan (self,fn,p,s):
+
+    self.c = c
+    root = p.insertAsLastChild()
+    root.h = fn
+    level,stack = 0,[root]
+    body = ['@others\n']
+    
+    for s in g.splitLines(s):
+        g.trace(repr(s))
+        if s.startswith('*'):
+            i,level = 0,0
+            while s[i] == '*':
+                i += 1
+                level += 1
+            if level > len(stack):
+                g.trace('bad level',repr(s))
+                last = None
+            elif level == len(stack):
+                last = stack[-1]
+                last.b = ''.join(body)
+            else:
+                last = stack[-1]
+                last.b = ''.join(body)
+                stack = stack[:level]
+            parent = stack[-1]
+            p = parent.insertAsLastChild()
+            p.h = s.strip()
+            stack.append(p)
+            body = []
+        else:
+            body.append(s)
+            
+    # Finish any trailing lines.
+    if body:
+        parent = stack[-1]
+        parent.b = ''.join(body)
+        
+    root.contract()
+    c.redraw(root)
+#@+node:ekr.20110929185034.15459: *6* test
+def test (self):
+    
+    s = '''
+* A1
+    a1.1
+    a1.2
+** B11
+** B12
+b12.1
+*** C121
+c121.1
+    c121.2
+c121.3
+* A2
+a2.1
+** B21
+*** C211
+c211.1
+*** C212
+** B22
+    b22.1
+b22.1
+* A3
+* A4
+a4.1
+* A5
+** B51
+*** C511
+**** D5111
+***** E51111
+** B52
+*** C521
+c521.1
+'''
+
+    tag = 'test-import-org-mode'
+    p = g.findNodeAnywhere(c,tag)
+    s = g.adjustTripleString(s,-4)
+    if p:
+        try:
+            self.scan('test-file',p,s)
+        except Exception:
+            c.redraw(p)
+    else:
+        print('not found: %s' % tag)
+#@+node:ekr.20110929185034.15578: *5* @@button import-org-mode
+'''Import each file in the files list after the presently selected node.'''
+
+
+files = (
+    r'c:\Users\edreamleo\test\import-org-mode.txt',
+    r'c:\Users\edreamleo\test\import-org-mode.txt',
+)
+
+@others
+
+for fn in files:
+    try:
+        root = c.p.copy()
+        f = open(fn)
+        s = f.read()
+        scan(c,fn,s)
+        c.selectPosition(root)
+    except IOError:
+        print('can not open %s' % fn)
+#@+node:ekr.20110929185034.15580: *6* scan
+def scan (c,fn,s):
+
+    last = root = c.p.insertAsLastChild()
+    last.h = g.shortFileName(fn)
+    level,stack = 0,[root]
+    body = ['@others\n']
+    
+    for s in g.splitLines(s):
+        if s.startswith('*'):
+            i,level = 0,0
+            while s[i] == '*':
+                i += 1 ; level += 1
+            if level > len(stack):
+                g.trace('bad level',repr(s))
+            elif level == len(stack):
+                last.b = ''.join(body)
+            else:
+                last.b = ''.join(body)
+                stack = stack[:level]
+            parent = stack[-1]
+            last = parent.insertAsLastChild()
+            last.h = s.strip()
+            stack.append(last)
+            body = []
+        else:
+            body.append(s)
+            
+    # Finish any trailing lines.
+    if body:
+        last.b = ''.join(body)
+        
+    root.contract()
+    c.redraw(root)
+#@+node:ekr.20110929185034.15463: *5* test-import-org-mode
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
