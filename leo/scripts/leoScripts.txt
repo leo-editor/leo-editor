@@ -2860,30 +2860,93 @@ while i < 1000:
     i += 1
 print 'tested all numbers <',i
 #@+node:ekr.20051104082026: ** Important
-#@+node:ekr.20080401065127.4: *3* create-at-auto-nodes
-# A script to create @auto nodes from all .py files in a directory.
+#@+node:ekr.20080519162425.1: *3* @@button change leo imports
+change = False # True: actually make the changes.
+trace = True
 
-import glob,os
-
-reallyCreate = False
-
-baseDir = r'c:\Python25\Lib\distutils'
-
-dirs = ('','command',) # '' represents the base dir.
 print '-' * 40
 
-for theDir in dirs:
-    pattern = g.os_path_join(baseDir,theDir,'*.py')
-    files = glob.glob(pattern)
-    print ; print 'pattern:', pattern ; print
-    # print g.listToString(files)
-    for name in files:
-        h = '@auto %s' % (name[len(baseDir) + 1:].strip())
-        print 'creating',h
-        if reallyCreate:
-            child = p.insertAsLastChild()
-            child.initHeadString(h)
-c.redraw()
+tag = 'import leo' ; n = len('import ')
+
+for p in p.self_and_subtree():
+    result = []
+    for s in g.splitlines(p.b):
+        i = s.find(tag,0)
+        if i > -1:
+            # Do nothing if we have already done the translation.
+            i2 = s.find('<<') ; i3 = s.find('import leo.core')
+            if i2 == -1 and i3 == -1:
+                i += n
+                j = g.skip_c_id(s,i)
+                word = s[i:j]
+                rest = s[j:]
+                if rest.strip().startswith('as'):
+                    s = s[:i] + 'leo.core.' + word + rest
+                else:
+                    s = s[:i] + 'leo.core.' + word + ' as ' + word + rest
+                if trace:
+                    print p.h
+                    j,k=g.getLine(s,i) ; print s[j:k]
+        result.append(s)
+    result = ''.join(result)
+
+    if change and result != p.b:
+        c.setBodyString(p,result)
+
+#@+node:ekr.20110929185034.15716: *3* @@button import-org-mode
+'''Import each file in the files list after the presently selected node.'''
+
+
+files = (
+    r'c:\Users\edreamleo\test\import-org-mode.txt',
+    r'c:\Users\edreamleo\test\import-org-mode.txt',
+)
+
+@others
+
+for fn in files:
+    try:
+        root = c.p.copy()
+        f = open(fn)
+        s = f.read()
+        scan(c,fn,s)
+        c.selectPosition(root)
+    except IOError:
+        print('can not open %s' % fn)
+#@+node:ekr.20110929185034.15717: *4* scan
+def scan (c,fn,s):
+
+    last = root = c.p.insertAsLastChild()
+    last.h = g.shortFileName(fn)
+    level,stack = 0,[root]
+    body = ['@others\n']
+    
+    for s in g.splitLines(s):
+        if s.startswith('*'):
+            i,level = 0,0
+            while s[i] == '*':
+                i += 1 ; level += 1
+            if level > len(stack):
+                g.trace('bad level',repr(s))
+            elif level == len(stack):
+                last.b = ''.join(body)
+            else:
+                last.b = ''.join(body)
+                stack = stack[:level]
+            parent = stack[-1]
+            last = parent.insertAsLastChild()
+            last.h = s.strip()
+            stack.append(last)
+            body = []
+        else:
+            body.append(s)
+            
+    # Finish any trailing lines.
+    if body:
+        last.b = ''.join(body)
+        
+    root.contract()
+    c.redraw(root)
 #@+node:ekr.20080221113205: *3* @@button print g.es stats
 @first # -*- coding: utf-8 -*-
 
@@ -3212,39 +3275,6 @@ def setToBeTranslated (self,s,n):
 
     if (n % 2) == 1 and s not in self.toBeTranslated:
         self.toBeTranslated.append(s)
-#@+node:ekr.20080519162425.1: *3* @@button change leo imports
-change = False # True: actually make the changes.
-trace = True
-
-print '-' * 40
-
-tag = 'import leo' ; n = len('import ')
-
-for p in p.self_and_subtree():
-    result = []
-    for s in g.splitlines(p.b):
-        i = s.find(tag,0)
-        if i > -1:
-            # Do nothing if we have already done the translation.
-            i2 = s.find('<<') ; i3 = s.find('import leo.core')
-            if i2 == -1 and i3 == -1:
-                i += n
-                j = g.skip_c_id(s,i)
-                word = s[i:j]
-                rest = s[j:]
-                if rest.strip().startswith('as'):
-                    s = s[:i] + 'leo.core.' + word + rest
-                else:
-                    s = s[:i] + 'leo.core.' + word + ' as ' + word + rest
-                if trace:
-                    print p.h
-                    j,k=g.getLine(s,i) ; print s[j:k]
-        result.append(s)
-    result = ''.join(result)
-
-    if change and result != p.b:
-        c.setBodyString(p,result)
-
 #@+node:ekr.20051110105027.34: *3* c2py  Convert C code to Python syntax
 @first
 @language python
@@ -4802,6 +4832,30 @@ def setNode (p,data):
         p.initHeadString('@item ' + head.strip())
     if body and body.strip():
         p.setTnodeText(body.strip())
+#@+node:ekr.20080401065127.4: *3* create-at-auto-nodes
+# A script to create @auto nodes from all .py files in a directory.
+
+import glob,os
+
+reallyCreate = False
+
+baseDir = r'c:\Python25\Lib\distutils'
+
+dirs = ('','command',) # '' represents the base dir.
+print '-' * 40
+
+for theDir in dirs:
+    pattern = g.os_path_join(baseDir,theDir,'*.py')
+    files = glob.glob(pattern)
+    print ; print 'pattern:', pattern ; print
+    # print g.listToString(files)
+    for name in files:
+        h = '@auto %s' % (name[len(baseDir) + 1:].strip())
+        print 'creating',h
+        if reallyCreate:
+            child = p.insertAsLastChild()
+            child.initHeadString(h)
+c.redraw()
 #@+node:ekr.20051103072643: *3* Export to treepad
 # simple script to export current node and children as a treepad document
 # the file format for treepad 2.x is simple.
@@ -11978,6 +12032,76 @@ p.b = p.b + s
 
 @nocolor
 @
+#@+node:ekr.20110916103731.2459: *3* Recursive create @auto nodes
+import os
+
+@others
+
+types = ('.py','.c',)
+
+theDir = r'C:\apps\swigwin-2.0.4\Source'
+importFiles(theDir,types,recursive=True)
+c.redraw()
+
+g.es("done",color="blue")
+#@+node:ekr.20110916103731.2460: *4* importFiles (top-level)
+def importFiles (theDir,type=None,recursive=False):
+
+    v = c.currentVnode()
+
+    if not g.os_path_exists(theDir):
+        g.es("directory does not exist: " + theDir)
+        return
+
+    root = createLastChildOf(v,"imported files")
+    try:
+        importDir (theDir,type,recursive,root)
+        root.contract()
+    except:
+        g.es_exception()
+    c.redraw()
+#@+node:ekr.20110916103731.2461: *4* importDir
+def importDir (theDir,types,recursive,root,level=0):
+
+    g.es("theDir: " + theDir,color="blue")
+
+    try:
+        files = os.listdir(theDir)
+        files2 = [] ; dirs =[]
+        for f in files:
+            path = g.os_path_join(theDir,f)
+            if g.os_path_isfile(path):
+                name, ext = g.os_path_splitext(f)
+                if not types or ext in types:
+                    files2.append(path)
+            elif recursive:
+                dirs.append(path)
+        if len(files2) > 0 or len(dirs) > 0:
+            path_part = g.choose(level==0,theDir,g.os_path_basename(theDir))
+            import_root = createLastChildOf(root,'@path %s' % (path_part))
+        else:
+            import_root = root
+        
+        c.selectVnode(import_root)
+        
+        if len(files2) > 0:
+            for fn in files2:
+                p2 = createLastChildOf(import_root,'@auto %s' % (
+                    g.shortFileName(fn)))
+                
+        if len(dirs) > 0:
+            dirs.sort()
+            for theDir in dirs:
+                importDir(theDir,types,recursive,import_root,level+1)
+    except:
+        g.es("exception in importFiles script")
+        g.es_exception()
+#@+node:ekr.20110916103731.2462: *4* createLastChildOf
+def createLastChildOf (v,headline):
+
+    child = v.insertAsLastChild()
+    child.initHeadString(headline.replace('\\','/'))
+    return child
 #@+node:ekr.20051110105027.166: *3* Recursive import script
 # An example of running this script:
 
@@ -12048,76 +12172,6 @@ def createLastChildOf (v,headline):
 
     child = v.insertAsLastChild()
     child.initHeadString(headline)
-    return child
-#@+node:ekr.20110916103731.2459: *3* Recursive create @auto nodes
-import os
-
-@others
-
-types = ('.py','.c',)
-
-theDir = r'C:\apps\swigwin-2.0.4\Source'
-importFiles(theDir,types,recursive=True)
-c.redraw()
-
-g.es("done",color="blue")
-#@+node:ekr.20110916103731.2460: *4* importFiles (top-level)
-def importFiles (theDir,type=None,recursive=False):
-
-    v = c.currentVnode()
-
-    if not g.os_path_exists(theDir):
-        g.es("directory does not exist: " + theDir)
-        return
-
-    root = createLastChildOf(v,"imported files")
-    try:
-        importDir (theDir,type,recursive,root)
-        root.contract()
-    except:
-        g.es_exception()
-    c.redraw()
-#@+node:ekr.20110916103731.2461: *4* importDir
-def importDir (theDir,types,recursive,root,level=0):
-
-    g.es("theDir: " + theDir,color="blue")
-
-    try:
-        files = os.listdir(theDir)
-        files2 = [] ; dirs =[]
-        for f in files:
-            path = g.os_path_join(theDir,f)
-            if g.os_path_isfile(path):
-                name, ext = g.os_path_splitext(f)
-                if not types or ext in types:
-                    files2.append(path)
-            elif recursive:
-                dirs.append(path)
-        if len(files2) > 0 or len(dirs) > 0:
-            path_part = g.choose(level==0,theDir,g.os_path_basename(theDir))
-            import_root = createLastChildOf(root,'@path %s' % (path_part))
-        else:
-            import_root = root
-        
-        c.selectVnode(import_root)
-        
-        if len(files2) > 0:
-            for fn in files2:
-                p2 = createLastChildOf(import_root,'@auto %s' % (
-                    g.shortFileName(fn)))
-                
-        if len(dirs) > 0:
-            dirs.sort()
-            for theDir in dirs:
-                importDir(theDir,types,recursive,import_root,level+1)
-    except:
-        g.es("exception in importFiles script")
-        g.es_exception()
-#@+node:ekr.20110916103731.2462: *4* createLastChildOf
-def createLastChildOf (v,headline):
-
-    child = v.insertAsLastChild()
-    child.initHeadString(headline.replace('\\','/'))
     return child
 #@+node:ekr.20060209173725: *3* rst-to-leo
 '''A script to import rst files into Leo.
