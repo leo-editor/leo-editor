@@ -360,8 +360,8 @@ docstrings and imports at the start of files. So the body text of
 \@file nodes typically look something like this::
 
     << docstring >>
-    \@language python
-    \@tabwidth -4
+    @language python
+    @tabwidth -4
     << imports >>
     @others
 
@@ -550,7 +550,7 @@ directive is in effect throughout a tree, unless overridden in some subtree.
 \@first
 
     This directive forces a lines to appear before the first sentinel of a
-    external file. Here is a common way to start a Python file:
+    external file. Here is a common way to start a Python file::
 
         @first #! /usr/bin/env python
         @first # -*- coding: utf-8 -*-
@@ -638,7 +638,7 @@ easily access any part of any Leo outline, and Leo's own source code. For
 example, the following script will print all the headlines in an outline::
 
     for p in c.all_positions():
-        print ' '*p.level(),p.h
+        print(' '*p.level(),p.h)
 
 The example above is only the beginning of what scripts can do.
 See `Scripting Leo with Python`_ for a complete discussion of scripting Leo.
