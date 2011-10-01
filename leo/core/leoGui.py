@@ -46,6 +46,9 @@ class leoKeyEvent:
 
         return 'leoKeyEvent: stroke: %s, char: %s, w: %s' % (
             repr(self.stroke),repr(self.char),repr(self.w))
+            
+    def type(self):
+        return 'leoKeyEvent'
 #@+node:ekr.20031218072017.3720: ** class leoGui
 class leoGui:
 
