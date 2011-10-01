@@ -453,8 +453,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20110605121601.17892: *4* onIconBoxClick
     def onIconBoxClick (self,event,p=None):
 
-        g.trace(self.c.p)
-
         if self.busy(): return
 
         c = self.c
@@ -628,7 +626,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         '''Select the proper position when a tree node is selected.'''
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
 
         if self.busy(): return
 
