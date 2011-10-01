@@ -357,7 +357,7 @@ class baseTextWidget:
         return w2
 
     findFocus = getFocus
-    #@+node:ekr.20070228074312.20: *5* getInsertPoint
+    #@+node:ekr.20070228074312.20: *5* getInsertPoint (baseTextWidget)
     def getInsertPoint(self):
 
         w = self
@@ -479,7 +479,7 @@ class baseTextWidget:
         w.virtualInsertPoint = i = w.toPythonIndex(pos)
         # g.trace(self,i)
         w._setInsertPoint(i)
-    #@+node:ekr.20070228074312.36: *5* setSelectionRange
+    #@+node:ekr.20070228074312.36: *5* setSelectionRange (baseTextWidget)
     def setSelectionRange (self,i,j,insert=None):
 
         w = self
@@ -497,7 +497,7 @@ class baseTextWidget:
             ins = w.toPythonIndex(insert)
             if ins in (i,j):
                 self.virtualInsertPoint = ins
-    #@+node:ekr.20070228074312.38: *5* setYScrollPosition
+    #@+node:ekr.20070228074312.38: *5* setYScrollPosition (baseTextWidget)
     def setYScrollPosition (self,i):
 
         w = self
@@ -1296,15 +1296,18 @@ class leoBody:
         # g.trace(i,j,repr(sel))
         w.setSelectionRange(i,j,insert=j)
         return i,j
-    #@+node:ekr.20031218072017.4038: *5* get/setYScrollPosition
+    #@+node:ekr.20031218072017.4038: *5* get/setYScrollPosition (leoBody)
     def getYScrollPosition (self):
+
         return self.bodyCtrl.getYScrollPosition()
 
     def setYScrollPosition (self,scrollPosition):
+        
         if len(scrollPosition) == 2:
             first,last = scrollPosition
         else:
             first = scrollPosition
+            
         self.bodyCtrl.setYScrollPosition(first)
     #@+node:ekr.20070228080627: *4* Text Wrappers (leoBody)
     def getAllText (self):                  return self.bodyCtrl.getAllText()
@@ -2463,6 +2466,7 @@ class leoTree:
                 if body:
                     yview = body.getYScrollPosition()
                     insertSpot = c.frame.body.getInsertPoint()
+                    # g.trace('set insert spot',insertSpot)
                 else:
                     g.trace('no body!','c.frame',c.frame,'old_p',old_p)
                     yview,insertSpot = None,0
