@@ -2642,7 +2642,7 @@ class keyHandlerClass:
                     b.func=func
                     d2[key2] = b
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
-    #@+node:ekr.20061031131434.153: *4* masterClickHandler
+    #@+node:ekr.20061031131434.153: *4* masterClickHandler (NO LONGER USED)
     def masterClickHandler (self,event,func=None):
 
         g.app.gui.killPopupMenu()
