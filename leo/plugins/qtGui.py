@@ -109,7 +109,8 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             QtGui.QListWidget.__init__(self)
             self.setWindowFlags(QtCore.Qt.Popup | self.windowFlags())
             # Make this window a modal window.
-            # self.setWindowModality(QtCore.Qt.WindowModal)
+            # Calling this does not fix the Ubuntu-specific modal behavior.
+            ### self.setWindowModality(QtCore.Qt.NonModal) ### WindowModal)
 
             if 0:
                 # embed the window in a splitter.
