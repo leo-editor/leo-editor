@@ -23,7 +23,7 @@ To enable this plugin put this into your file::
 
     @settings
         @bool http_active = True
-        @int  port = 8080
+        @int  http_port = 8080
         @string rst_http_attributename = 'rst_http_attribute'
 
 **Note**: the browser_encoding constant (defined in the top node of this file)
@@ -89,6 +89,7 @@ import socket
 import sys
 import time
 import urllib
+from xml.sax.saxutils import quoteattr
 #@-<< imports >>
 #@+<< version history >>
 #@+node:ekr.20050328104558: ** << version history >>
@@ -524,7 +525,10 @@ class leo_interface(object):
          """
         try:
             path = self.split_leo_path(self.path)
-            if path == '/':
+            
+            if path[0] == '_':
+                f = self.leo_actions.get_response()
+            elif path == '/':
                  f = self.get_leo_windowlist()
             else:
                 try:
@@ -595,6 +599,8 @@ class RequestHandler(
     #@+others
     #@+node:EKR.20040517080250.14: *3* __init__
     def __init__(self,conn,addr,server):
+        
+        self.leo_actions = LeoActions(self)
         
         asynchat.async_chat.__init__(self,conn)
 
@@ -786,7 +792,7 @@ class Server(asyncore.dispatcher):
     """Copied from http_server in medusa"""
     #@+others
     #@+node:EKR.20040517080250.38: *3* __init__
-    def __init__ (self, ip, port,handler):
+    def __init__ (self, ip, port, handler):
 
         self.ip = ip
         self.port = port
@@ -816,6 +822,97 @@ class Server(asyncore.dispatcher):
         # on the incoming connexion
         self.handler(conn,addr,self)
     #@-others
+#@+node:tbrown.20110930093028.34530: ** class LeoActions
+class LeoActions:
+    """A place to collect other URL based actions like saving
+    bookmarks from the browser.  Conceptually this stuff could
+    go in class leo_interface but putting it here for separation
+    for now."""
+    
+    #@+others
+    #@+node:tbrown.20110930220448.18077: *3* __init__
+    def __init__(self, request_handler):
+        
+        self.request_handler = request_handler
+    #@+node:tbrown.20110930220448.18075: *3* add_bookmark
+    def add_bookmark(self):
+        """Return the file like 'f' that leo_interface.send_head makes
+        
+        
+        javascript:w=window;if(w.content){w=w.content}; d=w.document; w.open('http://localhost:8130/_/add/bkmk/?&name=' + escape(d.title) + '&selection=' + escape(window.getSelection()) + '&url=' + escape(w.location.href),%22_blank%22,%22toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, copyhistory=no, width=800, height=450, status=no%22);void(0)
+        
+        """
+        
+        parsed_url = urlparse.urlparse(self.request_handler.path)
+        query = urlparse.parse_qs(parsed_url.query)
+        
+        print parsed_url.query
+        print query
+        
+        name = query['name'][0]
+        url = query['url'][0]
+        
+        f = StringIO()
+        
+        if '_form' in query:
+            
+            f.write("""
+    <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
+    <p>Bookmark saved</p></body>""")
+            
+            c = g.app.commanders()[0]
+            nd = c.rootPosition().insertAfter()
+            nd.moveToRoot(c.rootPosition())
+            nd.h = name
+            
+            selection = query.get('selection', [''])[0]
+            if selection:
+                selection = '\n\n"""\n'+selection+'\n"""'
+            
+            nd.b = "%s\n\nTags: %s\n\n%s\n\nCollected: %s%s\n\n%s" % (
+                url, 
+                query.get('tags', [''])[0],
+                query.get('_name', [''])[0],
+                time.strftime("%c"),
+                selection,
+                query.get('description', [''])[0],
+            )
+            c.setChanged(True)
+            c.selectPosition(nd)  # required for body text redraw
+            c.redraw()
+
+            return f
+        
+        f.write("""
+    <body style='font-family:mono'>
+    <form method='GET' action='/_/add/bkmk/'>
+    <input type='hidden' name='_form' value='1'/>
+    <input type='hidden' name='_name' value=%s/>
+    <input type='hidden' name='selection' value=%s/>
+    Tags (comma sep.):<input name='tags' size='80'/><br/>
+    Title:<input name='name' value=%s size='80'/><br/>
+    URL:<input name='url' value=%s size='80'/><br/>
+    Notes:<textarea name='description' cols='80' rows='6'></textarea><br/>
+    <input type='submit' value='Save'/><br/>
+    </form>
+    </body>""" % (quoteattr(name), 
+                  quoteattr(query.get('selection', [''])[0]), 
+                  quoteattr(name), 
+                  quoteattr(url)))
+
+        return f
+    #@+node:tbrown.20110930220448.18076: *3* get_response
+    def get_response(self):
+        """Return the file like 'f' that leo_interface.send_head makes"""
+
+        if self.request_handler.path.startswith('/_/add/bkmk/'):
+            return self.add_bookmark()
+            
+        f = StringIO()
+        f.write("Unknown URL in LeoActions.get_response()")
+        return f
+    #@-others
+    
 #@+node:EKR.20040517080250.40: ** poll
 def poll(timeout=0.0):
     global sockets_to_close
@@ -902,7 +999,7 @@ def getConfiguration(c):
     # port.
     newport = c.config.getInt("http_port") 
     if newport:
-        config.port = newport
+        config.http_port = newport
 
     # active.
     newactive = c.config.getBool("http_active")

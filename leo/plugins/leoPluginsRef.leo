@@ -30,8 +30,7 @@
 <v t="ekr.20101110084839.5680"><vh>Script: plugins not in this file</vh></v>
 </v>
 <v t="ekr.20090430075506.4" a="E"><vh>Notes &amp; to-do</vh>
-<v t="ekr.20090430075506.3" a="E"
-expanded="ekr.20090430075506.6,"><vh>@file leoPluginNotes.txt</vh></v>
+<v t="ekr.20090430075506.3" a="E"><vh>@file leoPluginNotes.txt</vh></v>
 </v>
 <v t="ekr.20100909111553.5583"><vh>Unit tests</vh>
 <v t="ekr.20100909121239.5797"><vh>@ignore</vh>
@@ -71,8 +70,7 @@ expanded="ekr.20090430075506.6,"><vh>@file leoPluginNotes.txt</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
 <v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
 <v t="ville.20090314215508.4"><vh>@file quicksearch.py</vh></v>
-<v t="ekr.20101104190737.5629" a="E"
-expanded="leohag.20081203143921.19,leohag.20081203143921.9,ekr.20110319081254.14462,"><vh>@file scrolledmessage.py</vh></v>
+<v t="ekr.20101104190737.5629"><vh>@file scrolledmessage.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
@@ -180,11 +178,12 @@ expanded="mork.20041025100716,"><vh>@file xsltWithNodes.py</vh></v>
 <v t="ekr.20060328125248"><vh>@file mod_scripting.py</vh></v>
 <v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
 </v>
-<v t="ekr.20050111122605"><vh>Servers</vh>
+<v t="ekr.20050111122605" a="E"><vh>Servers</vh>
 <v t="ville.20091009202416.10040"><vh>@file leoremote.py</vh></v>
-<v t="EKR.20040517080250.1"><vh>@file mod_http.py</vh></v>
+<v t="EKR.20040517080250.1" a="E"
+expanded="ekr.20110522152535.18250,bwmulder.20050322132919,EKR.20040517080250.20,EKR.20040517080250.13,EKR.20040517080250.37,tbrown.20110930093028.34530,EKR.20040517080250.40,EKR.20040517080250.46,"><vh>@file mod_http.py</vh></v>
 </v>
-<v t="ekr.20101004082701.5674"><vh>Slideshows and screenshots</vh>
+<v t="ekr.20101004082701.5674" a="E"><vh>Slideshows and screenshots</vh>
 <v t="ekr.20060831165821"><vh>@file slideshow.py</vh></v>
 <v t="ekr.20101121031443.5330"><vh>@file screenshots.py</vh></v>
 </v>
@@ -220,7 +219,7 @@ expanded="mork.20041025100716,"><vh>@file xsltWithNodes.py</vh></v>
 <v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
 <v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
 <v t="EKR.20040517080555.2" a="E"
-expanded="ekr.20060107091318,EKR.20040517080555.24,EKR.20040517080555.23,EKR.20040517080555.3,EKR.20040517080555.4,EKR.20040517080555.19,EKR.20040517080555.20,"><vh>@file plugins_menu.py</vh></v>
+expanded="ekr.20060107091318,EKR.20040517080555.24,EKR.20040517080555.3,EKR.20040517080555.4,"><vh>@file plugins_menu.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
 <v t="EKR.20040517080555.36" a="E"><vh>@file scripts_menu.py</vh></v>
 <v t="ekr.20101110095202.5882" a="E"><vh>@file zenity_file_dialogs.py</vh></v>
