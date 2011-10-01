@@ -6,94 +6,14 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 I am willing to fix bugs, but I would like to declare a moratorium on feature additions until 2012.
 .. @+node:ekr.20110921132705.6960: *3* To do first
-.. @+node:ekr.20110930075237.15472: *4* Improving Leo: think inside the box
-@nocolor-node
-
-There is plenty of room for improving Leo, and my recent energy spike
-promises to carry over to Leo itself.  Here are the major areas that I
-see that can be improved:
-
-1. Windows.
-
-Terry's work is an enabler.  Just as Blender supports many kinds of
-windows, so too should Leo.  Up until now, the outline, body and log
-panes have been the only "official" panes.  The rendering pane soon
-will be fully official.
-
-Terry's plugins have also created nifty new windows.
-
-Here are some other ideas:
-
-A.  Hosting the PyQt demo inside Leo.
-
-B.  Making an OpenGL window an official Leo window.  This might be the
-start of a prototype for "Blender in a Leo Window"
-
-2. Keystrokes
-
-Restarting the vim-keys project is conceivable.  I stopped work on the
-project when I realized that vim bindings only make sense when
-*commands* can be composed as in vim.
-
-3. Bridges
-
-This could be an important "new" direction.  True, there are already
-bridges for vim, emacs, ipython and docutils, but I think more can be
-done.
-
-The first thought is to improve Leo's inter-process communication
-capabilities.  I'm not sure what that entails...
-
-As a blue-sky project, could Leo interact with the window manager in
-order to resize vim, say, to it automatically tracks Leo's body pane
-(or any other pane).
-
-4. Code tools
-
-Analysis, checking, refactoring and other code-level tools are a
-natural for Leo.  When the new-lint project is mature, it could be
-folded into Leo.
-
-5. Documentation
-
-Perhaps Leo's documentation could be built primarily from docstrings.
-In any event, documentation tools are always needed.
-.. @+node:ekr.20110930075237.15473: *4* Kent's suggestions
-@nocolor-node
-
-Buttons:
-Enhance the button machinery to allow mixed case, spaces, colors.
-Provide cascading rclick capability: rclick on an rclick list ...
-
-Templating:
-Solid, simple implementation of one of the standard template engines
-providing intuitive template nodes, variable definitions, and rendering options.
-
-Wizards:
-Leverage the template capability to offer form-based content creation:
-- create a plugin
-- generate a test node
-- generate a wizard :-]
-
-LeoFS:
-- create a Leo implementation of pyfilesystem
-http://packages.python.org/fs/implementersguide.html
-
-Enhanced node attributes:
-ctime, atime, mtime
-
-remove expansion data from .leo file
-
-- provide persistence of tab status
- (resume editing with same tabs open when using tabbed gui)
-.. @+node:ekr.20110930075237.15474: *4* Matt Wilkie
-@nocolor-node
-
-As for user interface, I'd love to see myLeoSettings with a checkbox
-interface and filter bar at the top, and a feature to "merge or reset
-from LeoSettings".
-... or maybe something like Firefox's "about:config" would be better
-suited (and probably faster to build).
+.. @+node:ekr.20110930174206.15470: *4* * Bring screen shots up to date
+> While doing so I noted that on the sourceforge project
+> page some screenshots are bit old, such as touting Tk.
+>
+> shows tk - http://webpages.charter.net/edreamleo/screen-shots.html
+> uses @thin - http://webpages.charter.net/edreamleo/PCWindow.gif
+> screenshots shows deprecated plugin manager -
+> http://sourceforge.net/projects/leo/
 .. @+node:ekr.20110918204916.6811: *4* * revise autocompletion docs based on recent posts
 .. @+node:ekr.20110929074744.15474: *5* Autocompleter post
 @language rest
@@ -931,6 +851,94 @@ The mini-buffer is a text area at the bottom of the body pane. You use it like t
 For example, to print a list of all commands type Alt-X print-commands <Return>.
 
 The following sections list the various commands that you can invoke from the minibuffer. Important: you may bind keystrokes to any of these commands. See Customizing Leo for full details.
+.. @+node:ekr.20110930075237.15472: *4* Improving Leo: think inside the box
+@nocolor-node
+
+There is plenty of room for improving Leo, and my recent energy spike
+promises to carry over to Leo itself.  Here are the major areas that I
+see that can be improved:
+
+1. Windows.
+
+Terry's work is an enabler.  Just as Blender supports many kinds of
+windows, so too should Leo.  Up until now, the outline, body and log
+panes have been the only "official" panes.  The rendering pane soon
+will be fully official.
+
+Terry's plugins have also created nifty new windows.
+
+Here are some other ideas:
+
+A.  Hosting the PyQt demo inside Leo.
+
+B.  Making an OpenGL window an official Leo window.  This might be the
+start of a prototype for "Blender in a Leo Window"
+
+2. Keystrokes
+
+Restarting the vim-keys project is conceivable.  I stopped work on the
+project when I realized that vim bindings only make sense when
+*commands* can be composed as in vim.
+
+3. Bridges
+
+This could be an important "new" direction.  True, there are already
+bridges for vim, emacs, ipython and docutils, but I think more can be
+done.
+
+The first thought is to improve Leo's inter-process communication
+capabilities.  I'm not sure what that entails...
+
+As a blue-sky project, could Leo interact with the window manager in
+order to resize vim, say, to it automatically tracks Leo's body pane
+(or any other pane).
+
+4. Code tools
+
+Analysis, checking, refactoring and other code-level tools are a
+natural for Leo.  When the new-lint project is mature, it could be
+folded into Leo.
+
+5. Documentation
+
+Perhaps Leo's documentation could be built primarily from docstrings.
+In any event, documentation tools are always needed.
+.. @+node:ekr.20110930075237.15473: *5* Kent's suggestions
+@nocolor-node
+
+Buttons:
+Enhance the button machinery to allow mixed case, spaces, colors.
+Provide cascading rclick capability: rclick on an rclick list ...
+
+Templating:
+Solid, simple implementation of one of the standard template engines
+providing intuitive template nodes, variable definitions, and rendering options.
+
+Wizards:
+Leverage the template capability to offer form-based content creation:
+- create a plugin
+- generate a test node
+- generate a wizard :-]
+
+LeoFS:
+- create a Leo implementation of pyfilesystem
+http://packages.python.org/fs/implementersguide.html
+
+Enhanced node attributes:
+ctime, atime, mtime
+
+remove expansion data from .leo file
+
+- provide persistence of tab status
+ (resume editing with same tabs open when using tabbed gui)
+.. @+node:ekr.20110930075237.15474: *5* Matt Wilkie
+@nocolor-node
+
+As for user interface, I'd love to see myLeoSettings with a checkbox
+interface and filter bar at the top, and a feature to "merge or reset
+from LeoSettings".
+... or maybe something like Firefox's "about:config" would be better
+suited (and probably faster to build).
 .. @+node:ekr.20110929074744.15499: *4* Allow more panes to be part of the free_layout "action" buttons
 .. @+node:ekr.20110929074744.15449: *4* Allow mouseless leo (really)
 @nocolor-node
