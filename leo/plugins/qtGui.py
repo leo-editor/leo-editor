@@ -332,15 +332,15 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         else: kind = 'unknown: %s' % repr(button)
         if trace: g.trace(tag,kind)
         return kind
-    #@+node:ekr.20110605121601.18020: *4* url support
-    #@+node:ekr.20110605121601.18021: *5* mousePress/ReleaseEvent
+    #@+node:ekr.20110605121601.18020: *4* url support (LeoQTextBrowser)
+    #@+node:ekr.20110605121601.18021: *5* mousePress/ReleaseEvent (LeoQTextBrowser)
     # def mousePressEvent (self,event):
         # QtGui.QTextBrowser.mousePressEvent(self,event)
         
     def mouseReleaseEvent(self,event):
         self.onMouseUp(event)
         QtGui.QTextBrowser.mouseReleaseEvent(self,event)
-    #@+node:ekr.20110605121601.18022: *5* onMouseUp
+    #@+node:ekr.20110605121601.18022: *5* onMouseUp (LeoQTextBrowser)
     def onMouseUp(self,event=None):
 
         # Open the url on a control-click.
@@ -403,8 +403,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 
                 Simulate alt-x if we are not in an input state.'''
                 
-                # g.trace(args,keys)
-                
                 # Call the base class method.
                 if len(args) == 1:
                     event = args[0]
@@ -415,6 +413,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 else:
                     g.trace('can not happen')
                     return
+                    
 
                 # Open the url on a control-click.
                 if QtCore.Qt.ControlModifier & event.modifiers():
@@ -423,7 +422,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
                 # 2011/05/28: Do *not* change the focus!
                 # This would rip focus away from tab panes.
-                c.k.keyboardQuit(setFocus=False)
+                ##### c.k.keyboardQuit(setFocus=False)
             #@-<< define mouseReleaseEvent >>
             self.widget.mouseReleaseEvent = mouseReleaseEvent
 
@@ -460,12 +459,12 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20110605121601.18030: *5* onCursorPositionChanged (leoQtBaseTextWidget)
     def onCursorPositionChanged(self,event=None):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
 
         c = self.c
         name = c.widget_name(self)
-
-        if trace: g.trace('(leoQtBaseTextWidget)',name,g.callers())
+            
+        return ###
 
         if name.startswith('body'):
             if hasattr(c.frame,'statusLine'):
@@ -613,7 +612,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             self.setInsertPoint(insert)
         # g.trace('insert',insert)
 
-    #@+node:ekr.20110605121601.18045: *6* setSelectionRange & dummy helper
+    #@+node:ekr.20110605121601.18045: *6* setSelectionRange & dummy helper (leoQtBaseTextWidget)
     def setSelectionRange(self,*args,**keys):
 
         # A kludge to allow a single arg containing i,j
@@ -780,8 +779,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20110605121601.18054: *6* colorSelection
     def colorSelection (self,i,j,colorName):
 
-        g.trace()
-
         w = self.widget
         if not colorName: return
         if g.unitTesting: return
@@ -806,18 +803,18 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         w.setTextColor(color)
         self.setSelectionRange(old_i,old_j,insert=old_ins)
         sb.setSliderPosition(pos)
-    #@+node:ekr.20110605121601.18055: *6* tag_add
-    # This appears never to be called.
+    #@+node:ekr.20110605121601.18055: *6* tag_add (not used)
+    if 0: # This appears never to be called.
 
-    def tag_add(self,tagName,i,j=None,*args):
-
-        if j is None: j = i+1
-
-        g.trace(tagName,i,j)
-
-        val = self.configDict.get(tagName)
-        if val:
-            self.colorSelection(i,j,val)
+        def tag_add(self,tagName,i,j=None,*args):
+        
+            if j is None: j = i+1
+        
+            # g.trace(tagName,i,j)
+        
+            val = self.configDict.get(tagName)
+            if val:
+                self.colorSelection(i,j,val)
     #@+node:ekr.20110605121601.18056: *6* tag_config & tag_configure (baseTextWidget)
     def tag_config (self,*args,**keys):
 
@@ -928,7 +925,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
             
         if disabled:
             w.setEnabled(False)
-    #@+node:ekr.20110605121601.18069: *5* setInsertPoint
+    #@+node:ekr.20110605121601.18069: *5* setInsertPoint (QLineEdit)
     def setInsertPoint(self,i):
 
         w = self.widget
@@ -1190,7 +1187,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         i,j = tc.selectionStart(),tc.selectionEnd()
 
         return i,j
-    #@+node:ekr.20110605121601.18084: *5* getYScrollPosition
+    #@+node:ekr.20110605121601.18084: *5* getYScrollPosition (leoQTextEditWidget)
     def getYScrollPosition(self):
 
         w = self.widget
@@ -1205,7 +1202,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         # g.trace('self widget',self.widget)
         
         return self.widget.textCursor().hasSelection()
-    #@+node:ekr.20110605121601.18086: *5* scrolling (QTextEdit)
+    #@+node:ekr.20110605121601.18086: *5* scrolling (QTextEditWidget)
     #@+node:ekr.20110605121601.18087: *6* indexIsVisible and linesPerPage
     # This is not used if linesPerPage exists.
     def indexIsVisible (self,i):
@@ -1273,11 +1270,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         if trace:
             g.trace('%s calls to recolor' % (
                 colorer.recolorCount-n))
-    #@+node:ekr.20110605121601.18090: *5* see
+    #@+node:ekr.20110605121601.18090: *5* see (leoQTextEditWidget)
     def see(self,i):
 
         self.widget.ensureCursorVisible()
-    #@+node:ekr.20110605121601.18091: *5* seeInsertPoint
+    #@+node:ekr.20110605121601.18091: *5* seeInsertPoint (leoQTextEditWidget)
     def seeInsertPoint (self):
 
         self.widget.ensureCursorVisible()
@@ -1473,18 +1470,17 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     ''' % (s, descr)
 
         return html
-    #@+node:ekr.20110605121601.18095: *5* setInsertPoint
+    #@+node:ekr.20110605121601.18095: *5* setInsertPoint (leoQTextEditWidget)
     def setInsertPoint(self,i):
-
+        
         w = self.widget
-
         s = w.toPlainText()
         i = self.toPythonIndex(i)
         i = max(0,min(i,len(s)))
         cursor = w.textCursor()
         cursor.setPosition(i)
         w.setTextCursor(cursor)
-    #@+node:ekr.20110605121601.18096: *5* setSelectionRangeHelper & helper
+    #@+node:ekr.20110605121601.18096: *5* setSelectionRangeHelper & helper (leoQTextEditWidget)
     def setSelectionRangeHelper(self,i,j,insert):
 
         trace = False and not g.unitTesting
@@ -1529,10 +1525,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         n = tc.position()
         return n
 
-    #@+node:ekr.20110605121601.18098: *5* setYScrollPosition
+    #@+node:ekr.20110605121601.18098: *5* setYScrollPosition (leoQTextEditWidget)
     def setYScrollPosition(self,pos):
-
-        # g.trace(pos,g.callers(3))
 
         w = self.widget
         sb = w.verticalScrollBar()
@@ -1544,6 +1538,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 pos = n1
             except TypeError:
                 pass
+
         sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18099: *5*  PythonIndex
     #@+node:ekr.20110605121601.18100: *6* toPythonIndex
@@ -1561,8 +1556,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         elif index == 'end':
             return w.getLastPosition()
         else:
-            # g.trace(repr(index))
-            #s = w.getAllText()
             doc = te.document()
             data = index.split('.')
             if len(data) == 2:
@@ -1570,12 +1563,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 row,col = int(row),int(col)
                 bl = doc.findBlockByNumber(row-1)
                 return bl.position() + col
-
-
-                #i = g.convertRowColToPythonIndex(s,row-1,col)
-
-                # g.trace(index,row,col,i,g.callers(6))
-                #return i
             else:
                 g.trace('bad string index: %s' % index)
                 return 0
@@ -1742,7 +1729,7 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
     def hasSelection(self):
 
         return self.widget.hasSelectedText()
-    #@+node:ekr.20110605121601.18112: *5* see
+    #@+node:ekr.20110605121601.18112: *5* see (QScintilla)
     def see(self,i):
 
         # Ok for now.  Using SCI_SETYCARETPOLICY might be better.
@@ -1769,7 +1756,7 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
         w = self.widget
         w.SendScintilla(w.SCI_SETCURRENTPOS,i)
         w.SendScintilla(w.SCI_SETANCHOR,i)
-    #@+node:ekr.20110605121601.18115: *5* setSelectionRangeHelper
+    #@+node:ekr.20110605121601.18115: *5* setSelectionRangeHelper (QScintilla)
     def setSelectionRangeHelper(self,i,j,insert):
 
         w = self.widget
@@ -1906,7 +1893,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
 
         if self.check():
             g.app.gui.set_focus(self.c,self.widget)
-    #@+node:ekr.20110605121601.18129: *5* setInsertPoint
+    #@+node:ekr.20110605121601.18129: *5* setInsertPoint (leoQtHeadlineWidget)
     def setInsertPoint(self,i):
 
         if not self.check(): return
@@ -1968,9 +1955,7 @@ class leoQtMinibuffer (leoQLineEditWidget):
 
             # Important: c and w must be unbound here.
             k = c.k
-            
-            # g.trace(args,keys)
-            
+
             # Call the base class method.
             if len(args) == 1:
                 event = args[0]
@@ -2034,6 +2019,7 @@ def init():
 #@+node:ekr.20110605121601.18135: *3* openURL()
 @g.command('open-url')
 def openURL(event):
+
     c = event.get('c')
     w = c.frame.body.bodyCtrl
     s = w.getAllText()
@@ -2963,8 +2949,7 @@ class leoQtBody (leoFrame.leoBody):
     set_focus = setFocus
     def setForegroundColor (self,color):return self.widget.setForegroundColor(color)
     def setInsertPoint (self,pos):      return self.widget.setInsertPoint(pos)
-    def setSelectionRange(self,*args,**keys):
-        self.widget.setSelectionRange(*args,**keys)
+    def setSelectionRange(self,*args,**keys):   self.widget.setSelectionRange(*args,**keys)
     def setYScrollPosition (self,i):    return self.widget.setYScrollPosition(i)
 
     # Part 2: corresponding to mustBeDefinedInBaseClass.
@@ -3695,7 +3680,10 @@ class leoQtBody (leoFrame.leoBody):
         trace = False and not g.unitTesting
 
         c = self.c
-        if trace: g.trace(c.p.h) # obj,obj.objectName())
+        if trace:
+            g.trace(c.p.h,str(obj.objectName()))
+            
+        return ###
 
         # 2010/08/01: Update the history only on focus in events.
         # 2011/04/02: Update history only in leoframe.tree.select.
@@ -8416,9 +8404,9 @@ class leoQtEventFilter(QtCore.QObject):
 
         trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
         verbose = True
-        traceEvent = False
-        traceKey = (False or self.trace_masterKeyHandler)
-        traceFocus = False
+        traceEvent = True
+        traceKey = (True or self.trace_masterKeyHandler)
+        traceFocus = True
         c = self.c ; k = c.k
         eventType = event.type()
         ev = QtCore.QEvent
@@ -8816,11 +8804,19 @@ class leoQtEventFilter(QtCore.QObject):
         eventType = event.type()
 
         show = [
-            # (e.Enter,'enter'),(e.Leave,'leave'),
-            # (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
+            # (e.DynamicPropertyChange,'dynamic-property-change'), # 170
+            (e.Enter,'enter'),
+            (e.Leave,'leave'),
+            (e.FocusIn,'focus-in'),
+            (e.FocusOut,'focus-out'),
+            (e.LayoutRequest,'layout-request'),
             # (e.MouseMove,'mouse-move'),
             (e.MouseButtonPress,'mouse-dn'),
             (e.MouseButtonRelease,'mouse-up'),
+            # (e.Paint,'paint'), # 12
+            (e.Wheel,'wheel'), # 31
+            (e.WindowActivate,'window-activate'), # 24
+            (e.WindowDeactivate,'window-deactivate'), # 25
         ]
 
         if keys:
@@ -8831,36 +8827,48 @@ class leoQtEventFilter(QtCore.QObject):
             ]
             show.extend(show2)
 
+        # ignore = (
+            # 1,16,67,70,
+            # e.ChildPolished,
+            # e.DeferredDelete,
+            # e.Enter,e.Leave,
+            # e.FocusIn,e.FocusOut,
+            # e.Hide,e.HideToParent,
+            # e.Move,
+            # e.Resize,
+            # e.MouseMove,
+            # e.MouseButtonPress,
+            # e.MouseButtonRelease,
+            # e.ParentChange,
+            # e.Polish,e.PolishRequest,
+            # e.Show,e.ShowToParent,
+            # e.WindowBlocked,e.WindowUnblocked,
+            # e.ZOrderChange,
+        # )
+        
         ignore = (
-            1,16,67,70,
-            e.ChildPolished,
-            e.DeferredDelete,
-            e.DynamicPropertyChange,
-            e.Enter,e.Leave,
-            e.FocusIn,e.FocusOut,
-            e.FontChange,
-            e.Hide,e.HideToParent,
-            e.HoverEnter,e.HoverLeave,e.HoverMove,
-            e.LayoutRequest,
-            e.MetaCall,e.Move,e.Paint,e.Resize,
-            e.MouseMove,
-            #e.MouseButtonPress,e.MouseButtonRelease,
-            e.PaletteChange,
-            e.ParentChange,
-            e.Polish,e.PolishRequest,
-            e.Show,e.ShowToParent,
-            e.StyleChange,
-            e.ToolTip,
-            e.WindowActivate,e.WindowDeactivate,
-            e.WindowBlocked,e.WindowUnblocked,
-            e.ZOrderChange,
+            e.DynamicPropertyChange, # 170
+            e.FontChange, # 97
+            e.HoverEnter, # 127
+            e.HoverLeave, # 128
+            e.HoverMove, # 129
+            # e.LayoutRequest, # 76
+            e.MetaCall, # 43
+            e.MouseMove, # 155
+            e.Paint, # 12
+            e.PaletteChange, # 39
+            e.Resize, # 14
+            e.StyleChange, # 100
+            e.Timer, # 1
+            e.ToolTip, # 110
+            # e.Wheel, # 31
         )
 
         for val,kind in show:
             if eventType == val:
                 g.trace(
                     '%5s %18s in-state: %5s key: %s override: %s: obj: %s' % (
-                    self.tag,kind,repr(c.k.inState()),tkKey,override,obj))
+                    self.tag,kind,repr(c.k and c.k.inState()),tkKey,override,obj))
                 return
 
         if traceAll and eventType not in ignore:
