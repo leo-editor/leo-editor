@@ -971,17 +971,21 @@ class leoBody:
             w.setInsertPoint(w.leo_insertSpot)
         else:
             w.setInsertPoint(0)
+            
+        w.seeInsertPoint() ### 2011/09/30
 
-        if w.leo_scrollBarSpot is not None:
-            first,last = w.leo_scrollBarSpot
-            w.yview('moveto',first)
-        else:
-            w.seeInsertPoint()
+        ### 2011/09/30
+        # if w.leo_scrollBarSpot is not None:
+            # first,last = w.leo_scrollBarSpot
+            # w.yview('moveto',first)
+        # else:
+            # w.seeInsertPoint()
 
         if w.leo_selection:
             try:
                 start,end = w.leo_selection
                 w.setSelectionRange(start,end)
+                w.see(start) ### 2011/09/30
             except Exception:
                 pass
         #@-<< restore the selection, insertion point and the scrollbar >>
@@ -1057,7 +1061,8 @@ class leoBody:
             if w2 != w and w2.leo_active:
                 w2.leo_active = False
                 self.unselectLabel(w2)
-                w2.leo_scrollBarSpot = w2.yview()
+                ### 2011/09/30
+                ### w2.leo_scrollBarSpot = w2.yview()
                 w2.leo_insertSpot = w2.getInsertPoint()
                 w2.leo_selection = w2.getSelectionRange()
                 # g.trace('inactive:',id(w2),'scroll',w2.leo_scrollBarSpot,'ins',w2.leo_insertSpot)
@@ -2421,7 +2426,7 @@ class leoTree:
             c.frame.tree.afterSelectHint(p,old_p)
 
         return val  # Don't put a return in a finally clause.
-    #@+node:ekr.20070423101911: *4* selectHelper
+    #@+node:ekr.20070423101911: *4* selectHelper (leoTree)
     #  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
 
     def selectHelper (self,p,scroll):
@@ -2467,7 +2472,7 @@ class leoTree:
                     self.setUnselectedLabelState(old_p)
 
                 if old_p and old_p != p: # 2010/02/11: Don't change the *new* node's insert point!
-                    old_p.v.scrollBarSpot = yview
+                    ### old_p.v.scrollBarSpot = yview
                     old_p.v.insertSpot = insertSpot
                 #@-<< unselect the old node >>
 

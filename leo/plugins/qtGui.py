@@ -427,7 +427,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             self.widget.mouseReleaseEvent = mouseReleaseEvent
 
         self.injectIvars(c)
-    #@+node:ekr.20110605121601.18027: *5* injectIvars
+    #@+node:ekr.20110605121601.18027: *5* injectIvars (leoQtBaseTextWidget)
     def injectIvars (self,name='1',parentFrame=None):
 
         w = self ; p = self.c.currentPosition()
@@ -446,7 +446,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         w.leo_frame = None
         w.leo_name = name
         w.leo_label = None
-        w.leo_scrollBarSpot = None
+        ### 2011/09/30
+        ### w.leo_scrollBarSpot = None
         w.leo_insertSpot = None
         w.leo_selection = None
 
@@ -3246,7 +3247,7 @@ class leoQtBody (leoFrame.leoBody):
             self.selectEditorLockout = False
 
         return val # Don't put a return in a finally clause.
-    #@+node:ekr.20110605121601.18203: *7* selectEditorHelper
+    #@+node:ekr.20110605121601.18203: *7* selectEditorHelper (leoBody)
     def selectEditorHelper (self,wrapper):
 
         trace = False and not g.unitTesting
@@ -3299,12 +3300,15 @@ class leoQtBody (leoFrame.leoBody):
             wrapper.setInsertPoint(w.leo_insertSpot)
         else:
             wrapper.setInsertPoint(0)
+            
+        wrapper.seeInsertPoint() ###
 
-        if hasattr(w,'leo_scrollBarSpot') and w.leo_scrollBarSpot is not None:
-            first,last = w.leo_scrollBarSpot
-            wrapper.see(first)
-        else:
-            wrapper.seeInsertPoint()
+        ###
+        # if hasattr(w,'leo_scrollBarSpot') and w.leo_scrollBarSpot is not None:
+            # first,last = w.leo_scrollBarSpot
+            # wrapper.see(first)
+        # else:
+            # wrapper.seeInsertPoint()
 
         if hasattr(w,'leo_selection') and w.leo_selection:
             try:
@@ -3366,7 +3370,7 @@ class leoQtBody (leoFrame.leoBody):
             w.leo_chapter = cc.getSelectedChapter()
         else:
             w.leo_chapter = None
-    #@+node:ekr.20110605121601.18209: *6* deactivateEditors
+    #@+node:ekr.20110605121601.18209: *6* deactivateEditors (qtBody)
     def deactivateEditors(self,wrapper):
 
         '''Deactivate all editors except wrapper's editor.'''
@@ -3385,7 +3389,8 @@ class leoQtBody (leoFrame.leoBody):
             if wrapper2 != wrapper and active:
                 w2.leo_active = False
                 self.unselectLabel(wrapper2)
-                w2.leo_scrollBarSpot = wrapper2.getYScrollPosition()
+                ### 2011/09/30
+                ### w2.leo_scrollBarSpot = wrapper2.getYScrollPosition()
                 w2.leo_insertSpot = wrapper2.getInsertPoint()
                 w2.leo_selection = wrapper2.getSelectionRange()
                 if trace: g.trace('**deactivate wrapper %s w %s' % (
@@ -3412,7 +3417,7 @@ class leoQtBody (leoFrame.leoBody):
                 # This *can* happen when selecting a deleted node.
                 w.leo_p = c.p.copy()
                 return False
-    #@+node:ekr.20110605121601.18211: *6* injectIvars
+    #@+node:ekr.20110605121601.18211: *6* injectIvars (qtBody)
     def injectIvars (self,parentFrame,name,p,wrapper):
 
         trace = False and not g.unitTesting
@@ -3439,7 +3444,8 @@ class leoQtBody (leoFrame.leoBody):
         # w.leo_label = None # Injected by packLabel.
         w.leo_name = name
         # w.leo_on_focus_in = onFocusInCallback
-        w.leo_scrollBarSpot = None
+        ### 2011/09/30
+        ### w.leo_scrollBarSpot = None
         w.leo_selection = None
         w.leo_wrapper = wrapper
     #@+node:ekr.20110605121601.18212: *6* packLabel
@@ -3491,7 +3497,7 @@ class leoQtBody (leoFrame.leoBody):
         finally:
             # Restore.
             c.frame.body.bodyCtrl = old_wrapper
-    #@+node:ekr.20110605121601.18214: *6* switchToChapter (leoBody)
+    #@+node:ekr.20110605121601.18214: *6* switchToChapter (qtBody)
     def switchToChapter (self,w):
 
         '''select w.leo_chapter.'''
@@ -3680,6 +3686,7 @@ class leoQtBody (leoFrame.leoBody):
             self.textRendererLabel = self.packRenderer(f,name,w)
             self.textRendererVisible = True
     #@+node:ekr.20110605121601.18223: *4* Event handlers (qtBody)
+    #@+node:ekr.20110930174206.15472: *5* onFocusIn
     def onFocusIn (self,obj):
 
         '''Handle a focus-in event in the body pane.'''
@@ -3700,7 +3707,7 @@ class leoQtBody (leoFrame.leoBody):
             self.onFocusColorHelper('focus-in',obj)
             obj.setReadOnly(False)
             obj.setFocus() # Weird, but apparently necessary.
-
+    #@+node:ekr.20110930174206.15473: *5* onFocusOut
     def onFocusOut (self,obj):
 
         '''Handle a focus-out event in the body pane.'''
@@ -6822,7 +6829,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
             item = None
 
         return item
-    #@+node:ekr.20110605121601.18430: *6* scrollToItem
+    #@+node:ekr.20110605121601.18430: *6* scrollToItem (leoQtTree)
     def scrollToItem (self,item):
 
         w = self.treeWidget
