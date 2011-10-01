@@ -413,16 +413,20 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 else:
                     g.trace('can not happen')
                     return
-                    
 
                 # Open the url on a control-click.
                 if QtCore.Qt.ControlModifier & event.modifiers():
                     event = {'c':c}
                     openURL(event) # A module-level function.
 
-                # 2011/05/28: Do *not* change the focus!
-                # This would rip focus away from tab panes.
-                ##### c.k.keyboardQuit(setFocus=False)
+                # 2011/10/01: Run the code at idle time:  running the code
+                # immediately interferes with scrolling in the body pane.
+                def mouseReleaseCallback(c=c):
+                    # 2011/05/28: Do *not* change the focus!
+                    # This would rip focus away from tab panes.
+                    c.k.keyboardQuit(setFocus=False)
+                
+                g.app.gui.runAtIdle(mouseReleaseCallback)
             #@-<< define mouseReleaseEvent >>
             self.widget.mouseReleaseEvent = mouseReleaseEvent
 
@@ -464,8 +468,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         c = self.c
         name = c.widget_name(self)
             
-        return ###
-
+        # Apparently, this does not cause problems
+        # because it generates no events in the body pane.
         if name.startswith('body'):
             if hasattr(c.frame,'statusLine'):
                 c.frame.statusLine.update()
@@ -3672,7 +3676,7 @@ class leoQtBody (leoFrame.leoBody):
             self.textRendererLabel = self.packRenderer(f,name,w)
             self.textRendererVisible = True
     #@+node:ekr.20110605121601.18223: *4* Event handlers (qtBody)
-    #@+node:ekr.20110930174206.15472: *5* onFocusIn
+    #@+node:ekr.20110930174206.15472: *5* onFocusIn (qtBody)
     def onFocusIn (self,obj):
 
         '''Handle a focus-in event in the body pane.'''
@@ -3682,13 +3686,13 @@ class leoQtBody (leoFrame.leoBody):
         c = self.c
         if trace:
             g.trace(c.p.h,str(obj.objectName()))
-            
-        return ###
 
         # 2010/08/01: Update the history only on focus in events.
         # 2011/04/02: Update history only in leoframe.tree.select.
         # c.nodeHistory.update(c.p)
-
+        
+        # Apparently, this does not cause problems
+        # because it generates no events in the body pane.
         if obj.objectName() == 'richTextEdit':
             wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
             if wrapper and wrapper != self.bodyCtrl:
@@ -4263,7 +4267,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         def put_helper(self,s,w):
             w.setText(s)
-        #@+node:ekr.20110605121601.18261: *5* update
+        #@+node:ekr.20110605121601.18261: *5* update (qtStatusLineClass)
         def update (self):
             if g.app.killed: return
 
@@ -4288,6 +4292,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
             # g.trace('fcol',fcol,'te',id(te),g.callers(2))
             # g.trace('c.frame.body.bodyCtrl',body.bodyCtrl)
+            # g.trace(row,col,fcol)
 
             self.put1(
                 "line: %d, col: %d, fcol: %d" % (row,col,fcol))
@@ -8101,7 +8106,7 @@ class leoQtGui(leoGui.leoGui):
             return image,image.height()
         else:
             return None,None
-    #@+node:ekr.20110605121601.18519: *4* Idle Time
+    #@+node:ekr.20110605121601.18519: *4* Idle Time (qtGui)
     #@+node:ekr.20110605121601.18520: *5* qtGui.setIdleTimeHook & setIdleTimeHookAfterDelay
     timer = None
 

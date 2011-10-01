@@ -11,9 +11,15 @@ I am willing to fix bugs, but I would like to declare a moratorium on feature ad
 > page some screenshots are bit old, such as touting Tk.
 >
 > shows tk - http://webpages.charter.net/edreamleo/screen-shots.html
+    Fixed
+    
 > uses @thin - http://webpages.charter.net/edreamleo/PCWindow.gif
+
 > screenshots shows deprecated plugin manager -
 > http://sourceforge.net/projects/leo/
+    All souce-forge screenshots need to be replaced.
+
+
 .. @+node:ekr.20110918204916.6811: *4* * revise autocompletion docs based on recent posts
 .. @+node:ekr.20110929074744.15474: *5* Autocompleter post
 @language rest
@@ -851,122 +857,7 @@ The mini-buffer is a text area at the bottom of the body pane. You use it like t
 For example, to print a list of all commands type Alt-X print-commands <Return>.
 
 The following sections list the various commands that you can invoke from the minibuffer. Important: you may bind keystrokes to any of these commands. See Customizing Leo for full details.
-.. @+node:ekr.20110930075237.15472: *4* Improving Leo: think inside the box
-@nocolor-node
-
-There is plenty of room for improving Leo, and my recent energy spike
-promises to carry over to Leo itself.  Here are the major areas that I
-see that can be improved:
-
-1. Windows.
-
-Terry's work is an enabler.  Just as Blender supports many kinds of
-windows, so too should Leo.  Up until now, the outline, body and log
-panes have been the only "official" panes.  The rendering pane soon
-will be fully official.
-
-Terry's plugins have also created nifty new windows.
-
-Here are some other ideas:
-
-A.  Hosting the PyQt demo inside Leo.
-
-B.  Making an OpenGL window an official Leo window.  This might be the
-start of a prototype for "Blender in a Leo Window"
-
-2. Keystrokes
-
-Restarting the vim-keys project is conceivable.  I stopped work on the
-project when I realized that vim bindings only make sense when
-*commands* can be composed as in vim.
-
-3. Bridges
-
-This could be an important "new" direction.  True, there are already
-bridges for vim, emacs, ipython and docutils, but I think more can be
-done.
-
-The first thought is to improve Leo's inter-process communication
-capabilities.  I'm not sure what that entails...
-
-As a blue-sky project, could Leo interact with the window manager in
-order to resize vim, say, to it automatically tracks Leo's body pane
-(or any other pane).
-
-4. Code tools
-
-Analysis, checking, refactoring and other code-level tools are a
-natural for Leo.  When the new-lint project is mature, it could be
-folded into Leo.
-
-5. Documentation
-
-Perhaps Leo's documentation could be built primarily from docstrings.
-In any event, documentation tools are always needed.
-.. @+node:ekr.20110930075237.15473: *5* Kent's suggestions
-@nocolor-node
-
-Buttons:
-Enhance the button machinery to allow mixed case, spaces, colors.
-Provide cascading rclick capability: rclick on an rclick list ...
-
-Templating:
-Solid, simple implementation of one of the standard template engines
-providing intuitive template nodes, variable definitions, and rendering options.
-
-Wizards:
-Leverage the template capability to offer form-based content creation:
-- create a plugin
-- generate a test node
-- generate a wizard :-]
-
-LeoFS:
-- create a Leo implementation of pyfilesystem
-http://packages.python.org/fs/implementersguide.html
-
-Enhanced node attributes:
-ctime, atime, mtime
-
-remove expansion data from .leo file
-
-- provide persistence of tab status
- (resume editing with same tabs open when using tabbed gui)
-.. @+node:ekr.20110930075237.15474: *5* Matt Wilkie
-@nocolor-node
-
-As for user interface, I'd love to see myLeoSettings with a checkbox
-interface and filter bar at the top, and a feature to "merge or reset
-from LeoSettings".
-... or maybe something like Firefox's "about:config" would be better
-suited (and probably faster to build).
-.. @+node:ekr.20110929074744.15499: *4* Allow more panes to be part of the free_layout "action" buttons
-.. @+node:ekr.20110929074744.15449: *4* Allow mouseless leo (really)
-@nocolor-node
-
-Alt-x show (tab name).  For example: show-tab<tab> (typing completion)
-
-There is a relationship here with mouseless
-programming.  It would seem that all visual elements, especially those
-that may exist in multiple versions, must have a name or other
-description suitable for generalized commands.
-
-At present, the most serious hole in Leo's commands is that there is
-no way to close or select a tab in the qttabs gui that represents an
-entire file: afaik, you have to use the mouse to change files.  By
-extension, the user might want multiple rendering panes, especially if
-one or more are locked.  Without a description, there is no way to
-specify exactly what show/hide-rendering pane does.
-
-I haven't forgotten the autocompleter docs.  I'll get to them next.
-It looks like autocompletion would be the way to generalize the not-
-very-effect commands that switch focus from one ui element to
-another.  A related benefit is one generalized command might be more
-convenient to use than the present flavors of (buggy) cycle-focus
-commands.
-
-In short, contemplating generalized windows leads us to generalized
-select/delete/show/hide commands, based on autocompletion, that work
-on various ui elements.  This looks like the next project. 
+.. @+node:ekr.20110930213637.15474: *4* Fix Find tab: it should scroll, not contract
 .. @+node:ekr.20110929165422.15431: *4* Fun scripts
 .. @+node:ekr.20110919113533.6818: *5* split-defs-into-node
 .. @+node:ekr.20110919113533.6820: *6* methods
@@ -1857,7 +1748,124 @@ statdef pass(n):
     t.top(n)
 .. @+node:ekr.20110917104720.9418: *5* convert-names-to-pep8
 .. @+node:ekr.20110918204546.6809: *5* convert-to-class
-.. @+node:ekr.20110929165422.15449: *4* Add expand_noweb_references for rst3 plugin
+.. @+node:ekr.20110930213637.15473: *4* Next
+.. @+node:ekr.20110930075237.15472: *5* Improving Leo: think inside the box
+@nocolor-node
+
+There is plenty of room for improving Leo, and my recent energy spike
+promises to carry over to Leo itself.  Here are the major areas that I
+see that can be improved:
+
+1. Windows.
+
+Terry's work is an enabler.  Just as Blender supports many kinds of
+windows, so too should Leo.  Up until now, the outline, body and log
+panes have been the only "official" panes.  The rendering pane soon
+will be fully official.
+
+Terry's plugins have also created nifty new windows.
+
+Here are some other ideas:
+
+A.  Hosting the PyQt demo inside Leo.
+
+B.  Making an OpenGL window an official Leo window.  This might be the
+start of a prototype for "Blender in a Leo Window"
+
+2. Keystrokes
+
+Restarting the vim-keys project is conceivable.  I stopped work on the
+project when I realized that vim bindings only make sense when
+*commands* can be composed as in vim.
+
+3. Bridges
+
+This could be an important "new" direction.  True, there are already
+bridges for vim, emacs, ipython and docutils, but I think more can be
+done.
+
+The first thought is to improve Leo's inter-process communication
+capabilities.  I'm not sure what that entails...
+
+As a blue-sky project, could Leo interact with the window manager in
+order to resize vim, say, to it automatically tracks Leo's body pane
+(or any other pane).
+
+4. Code tools
+
+Analysis, checking, refactoring and other code-level tools are a
+natural for Leo.  When the new-lint project is mature, it could be
+folded into Leo.
+
+5. Documentation
+
+Perhaps Leo's documentation could be built primarily from docstrings.
+In any event, documentation tools are always needed.
+.. @+node:ekr.20110930075237.15473: *6* Kent's suggestions
+@nocolor-node
+
+Buttons:
+Enhance the button machinery to allow mixed case, spaces, colors.
+Provide cascading rclick capability: rclick on an rclick list ...
+
+Templating:
+Solid, simple implementation of one of the standard template engines
+providing intuitive template nodes, variable definitions, and rendering options.
+
+Wizards:
+Leverage the template capability to offer form-based content creation:
+- create a plugin
+- generate a test node
+- generate a wizard :-]
+
+LeoFS:
+- create a Leo implementation of pyfilesystem
+http://packages.python.org/fs/implementersguide.html
+
+Enhanced node attributes:
+ctime, atime, mtime
+
+remove expansion data from .leo file
+
+- provide persistence of tab status
+ (resume editing with same tabs open when using tabbed gui)
+.. @+node:ekr.20110930075237.15474: *6* Matt Wilkie
+@nocolor-node
+
+As for user interface, I'd love to see myLeoSettings with a checkbox
+interface and filter bar at the top, and a feature to "merge or reset
+from LeoSettings".
+... or maybe something like Firefox's "about:config" would be better
+suited (and probably faster to build).
+.. @+node:ekr.20110929074744.15499: *5* Allow more panes to be part of the free_layout "action" buttons
+.. @+node:ekr.20110929074744.15449: *5* Allow mouseless leo (really)
+@nocolor-node
+
+Alt-x show (tab name).  For example: show-tab<tab> (typing completion)
+
+There is a relationship here with mouseless
+programming.  It would seem that all visual elements, especially those
+that may exist in multiple versions, must have a name or other
+description suitable for generalized commands.
+
+At present, the most serious hole in Leo's commands is that there is
+no way to close or select a tab in the qttabs gui that represents an
+entire file: afaik, you have to use the mouse to change files.  By
+extension, the user might want multiple rendering panes, especially if
+one or more are locked.  Without a description, there is no way to
+specify exactly what show/hide-rendering pane does.
+
+I haven't forgotten the autocompleter docs.  I'll get to them next.
+It looks like autocompletion would be the way to generalize the not-
+very-effect commands that switch focus from one ui element to
+another.  A related benefit is one generalized command might be more
+convenient to use than the present flavors of (buggy) cycle-focus
+commands.
+
+In short, contemplating generalized windows leads us to generalized
+select/delete/show/hide commands, based on autocompletion, that work
+on various ui elements.  This looks like the next project. 
+.. @+node:ekr.20110929165422.15449: *5* Add expand_noweb_references for rst3 plugin
 @nocolor
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
@@ -1872,7 +1880,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
 - When expand_noweb_references is True, definitions (typically clones)
   must be descendants of the referencing node (in the @rst tree)
-.. @+node:ekr.20110929165422.15450: *5* post
+.. @+node:ekr.20110929165422.15450: *6* post
 @nocolor-node
 
 I want to write the documentation for the source program in a @rst3 subtree. In
@@ -1886,7 +1894,7 @@ Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
 get to this work, I should have <<code fragment>> under the @rst3 subtree as
 well, but this is then also treated as @rst3 input (which in this case, is not
 what I want).
-.. @+node:ekr.20110929165422.15451: *5* writeBody & helpers
+.. @+node:ekr.20110929165422.15451: *6* writeBody & helpers
 def writeBody (self,p):
 
     # remove trailing cruft and split into lines.
@@ -1926,7 +1934,7 @@ def writeBody (self,p):
     s = '\n'.join(lines).strip()
     if s:
         self.write('%s\n\n' % s)
-.. @+node:ekr.20110929165422.15452: *6* handleCodeMode & helper
+.. @+node:ekr.20110929165422.15452: *7* handleCodeMode & helper
 def handleCodeMode (self,lines):
 
     '''Handle the preprocessed body text in code mode as follows:
@@ -1961,7 +1969,7 @@ def handleCodeMode (self,lines):
         self.finishCodePart(result,code)
         code = []
     return self.rstripList(result)
-.. @+node:ekr.20110929165422.15453: *7* formatCodeModeLine
+.. @+node:ekr.20110929165422.15453: *8* formatCodeModeLine
 def formatCodeModeLine (self,s,n,numberOption):
 
     if not s.strip(): s = ''
@@ -1970,14 +1978,14 @@ def formatCodeModeLine (self,s,n,numberOption):
         return '\t%d: %s' % (n,s)
     else:
         return '\t%s' % s
-.. @+node:ekr.20110929165422.15454: *7* rstripList
+.. @+node:ekr.20110929165422.15454: *8* rstripList
 def rstripList (self,theList):
 
     '''Removed trailing blank lines from theList.'''
 
     s = '\n'.join(theList).rstrip()
     return s.split('\n')
-.. @+node:ekr.20110929165422.15455: *7* finishCodePart
+.. @+node:ekr.20110929165422.15455: *8* finishCodePart
 def finishCodePart (self,result,code):
 
     numberOption = self.getOption('number_code_lines')
@@ -1986,7 +1994,7 @@ def finishCodePart (self,result,code):
     for line in code:
         i += 1
         result.append(self.formatCodeModeLine(line,i,numberOption))
-.. @+node:ekr.20110929165422.15456: *6* handleDocOnlyMode
+.. @+node:ekr.20110929165422.15456: *7* handleDocOnlyMode
 def handleDocOnlyMode (self,p,lines):
 
     '''Handle the preprocessed body text in doc_only mode as follows:
@@ -2016,7 +2024,7 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
-.. @+node:ekr.20110929165422.15457: *6* isAnyDocPart
+.. @+node:ekr.20110929165422.15457: *7* isAnyDocPart
 def isAnyDocPart (self,s):
 
     if s.startswith('@doc'):
@@ -2025,7 +2033,7 @@ def isAnyDocPart (self,s):
         return False
     else:
         return len(s) == 1 or s[1].isspace()
-.. @+node:ekr.20110929165422.15458: *6* isSpecialDocPart
+.. @+node:ekr.20110929165422.15458: *7* isSpecialDocPart
 def isSpecialDocPart (self,s,kind):
 
     '''Return True if s is a special doc part of the indicated kind.
@@ -2044,7 +2052,7 @@ def isSpecialDocPart (self,s,kind):
         result = False
 
     return result
-.. @+node:ekr.20110929165422.15459: *6* isAnySpecialDocPart
+.. @+node:ekr.20110929165422.15459: *7* isAnySpecialDocPart
 def isAnySpecialDocPart (self,s):
 
     for kind in (
@@ -2056,7 +2064,7 @@ def isAnySpecialDocPart (self,s):
             return True
 
     return False
-.. @+node:ekr.20110929165422.15460: *6* removeLeoDirectives
+.. @+node:ekr.20110929165422.15460: *7* removeLeoDirectives
 def removeLeoDirectives (self,lines):
 
     '''Remove all Leo directives, except within literal blocks.'''
@@ -2078,7 +2086,7 @@ def removeLeoDirectives (self,lines):
             result.append(s)
 
     return result
-.. @+node:ekr.20110929165422.15461: *6* handleSpecialDocParts
+.. @+node:ekr.20110929165422.15461: *7* handleSpecialDocParts
 def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
 
     # g.trace(kind,g.listToString(lines))
@@ -2105,7 +2113,7 @@ def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
             result.append(s)
 
     return result
-.. @+node:ekr.20110929165422.15462: *6* replaceCodeBlockDirectives
+.. @+node:ekr.20110929165422.15462: *7* replaceCodeBlockDirectives
 def replaceCodeBlockDirectives (self,lines):
 
     '''Replace code-block directive, but not in literal blocks.'''

@@ -4752,6 +4752,7 @@ def selectHelper (self,p,scroll):
 if body:
     yview = body.getYScrollPosition()
     insertSpot = c.frame.body.getInsertPoint()
+    # g.trace('set insert spot',insertSpot)
 else:
     g.trace('no body!','c.frame',c.frame,'old_p',old_p)
     yview,insertSpot = None,0
@@ -4880,6 +4881,91 @@ furthermore, the default is supposed to be NonModal.
 Anyway, calling setWindowModality(QtCore.Qt.NonModal) does not seem to
 have much effect on Ubuntu, so I think I can safely say there is
 nothing more I can do. 
+#@+node:ekr.20111001070827.15477: *4* Fixed scrolling bug
+@nocolor-node
+
+Notes:
+    
+1. k.masterKeyHandler is no longer used(!)
+
+2. The bug was the call to k.keyboardQuit in leoQtBaseTextWidget.mouseReleaseEvent.
+
+   The fix was to call k.keyboardQuit at idle time using g.app.gui.runAtIdle.
+
+3. qtBody.onFocusIn and leoQtBaseTextWidget.onCursorPositionChanged also call
+   non-trivial code. Apparently these calls are benign because they do not
+   generate any events in the body pane.
+   
+#@+node:ekr.20111001070827.15486: *5* The bug
+#@+node:ekr.20110605121601.18026: *6* << define mouseReleaseEvent >> (leoQtBaseTextWidget)
+def mouseReleaseEvent (*args,**keys):
+    
+    '''Override QLineEdit.mouseReleaseEvent.
+    
+    Simulate alt-x if we are not in an input state.'''
+    
+    # Call the base class method.
+    if len(args) == 1:
+        event = args[0]
+        QtGui.QTextBrowser.mouseReleaseEvent(widget,event) # widget is unbound.
+    elif len(args) == 2:
+        event = args[1]
+        QtGui.QTextBrowser.mouseReleaseEvent(*args)
+    else:
+        g.trace('can not happen')
+        return
+
+    # Open the url on a control-click.
+    if QtCore.Qt.ControlModifier & event.modifiers():
+        event = {'c':c}
+        openURL(event) # A module-level function.
+
+    # 2011/10/01: Run the code at idle time:  running the code
+    # immediately interferes with scrolling in the body pane.
+    def mouseReleaseCallback(c=c):
+        # 2011/05/28: Do *not* change the focus!
+        # This would rip focus away from tab panes.
+        c.k.keyboardQuit(setFocus=False)
+    
+    g.app.gui.runAtIdle(mouseReleaseCallback)
+#@+node:ekr.20111001070827.15485: *5* Calls to significant code from event handlers...
+#@+node:ekr.20110605121601.18030: *6* onCursorPositionChanged (leoQtBaseTextWidget)
+def onCursorPositionChanged(self,event=None):
+
+    trace = True and not g.unitTesting
+
+    c = self.c
+    name = c.widget_name(self)
+        
+    # Apparently, this does not cause problems
+    # because it generates no events in the body pane.
+    if name.startswith('body'):
+        if hasattr(c.frame,'statusLine'):
+            c.frame.statusLine.update()
+#@+node:ekr.20110930174206.15472: *6* onFocusIn (qtBody)
+def onFocusIn (self,obj):
+
+    '''Handle a focus-in event in the body pane.'''
+
+    trace = False and not g.unitTesting
+
+    c = self.c
+    if trace:
+        g.trace(c.p.h,str(obj.objectName()))
+
+    # 2010/08/01: Update the history only on focus in events.
+    # 2011/04/02: Update history only in leoframe.tree.select.
+    # c.nodeHistory.update(c.p)
+    
+    # Apparently, this does not cause problems
+    # because it generates no events in the body pane.
+    if obj.objectName() == 'richTextEdit':
+        wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
+        if wrapper and wrapper != self.bodyCtrl:
+            self.selectEditor(wrapper)
+        self.onFocusColorHelper('focus-in',obj)
+        obj.setReadOnly(False)
+        obj.setFocus() # Weird, but apparently necessary.
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
