@@ -39,6 +39,13 @@ and edit the port (8130 in the example above) to match the port you're using
 for mod_http.
 
 Bookmarks are created as the first node in the outline which has been opened longest.
+You can set the ``@string`` ``http_bookmark_unl`` to specify an alternative location,
+e.g.::
+    
+    @string http_bookmark_unl = /home/tbrown/.bookmarks.leo#@bookmarks-->Incoming
+
+to place them in the `Incoming` node in the `@bookmarks` node in the `.bookmarks.leo` outline.
+    
 The headline is preceeded with '@url ' *unless* the ``bookmarks`` plugin is loaded.
 If the ``bookmarks`` plugin is loaded the bookmark will have to be moved to a ``@bookmarks`` tree to be useful.
 
@@ -849,6 +856,7 @@ class LeoActions:
     def __init__(self, request_handler):
         
         self.request_handler = request_handler
+        self.bookmark_unl = g.app.commanders()[0].config.getString('http_bookmark_unl')
     #@+node:tbrown.20110930220448.18075: *3* add_bookmark
     def add_bookmark(self):
         """Return the file like 'f' that leo_interface.send_head makes
@@ -866,15 +874,44 @@ class LeoActions:
         name = query['name'][0]
         url = query['url'][0]
         
-        c = g.app.commanders()[0]
+        c = None  # outline for bookmarks
+        previous = None  # previous bookmark for adding selections
+        parent = None  # parent node for new bookmarks
+        using_root = False
+        if self.bookmark_unl:
+            parsed = urlparse.urlparse(self.bookmark_unl)
+            leo_path = os.path.expanduser(parsed.path)
+            
+            ok,frame = g.openWithFileName(leo_path, None)
+
+            if ok:
+                g.es("Opened '%s' for bookmarks"%self.bookmark_unl)
+                c = frame.c            
+
+                if parsed.fragment:
+                    g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+                parent = c.currentPosition()
+                if parent.hasChildren():
+                    previous = parent.getFirstChild()
+            else:
+                g.es("Failed to open '%s' for bookmarks"%self.bookmark_unl)
+
+        if c is None:
+            using_root = True
+            c = g.app.commanders()[0]
+            parent = c.rootPosition()
+            previous = c.rootPosition()
         
         f = StringIO()
         
-        if url == c.rootPosition().b.split('\n',1)[0]:
+        if previous and url == previous.b.split('\n',1)[0]:
             # another marking of the same page, just add selection
             self.add_bookmark_selection(
-                c.rootPosition(), query.get('selection', [''])[0])
-                
+                previous, query.get('selection', [''])[0])
+
+            c.selectPosition(previous)  # required for body text redraw
+            c.redraw()
+
             f.write("""
     <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
     <p>Selection added</p></body>""")
@@ -888,9 +925,12 @@ class LeoActions:
     <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
     <p>Bookmark saved</p></body>""")
             
-            nd = c.rootPosition().insertAfter()
-            nd.moveToRoot(c.rootPosition())
-            if g.pluginIsLoaded('leo.plugins.bookarks'):
+            if using_root:
+                nd = parent.insertAfter()
+                nd.moveToRoot(c.rootPosition())
+            else:
+                nd = parent.insertAsNthChild(0)
+            if g.pluginIsLoaded('leo.plugins.bookmarks'):
                 nd.h = name
             else:
                 nd.h = '@url '+name
@@ -993,6 +1033,7 @@ class LeoActions:
             b[collected+1:collected+1] = insert
 
         node.b = '\n'.join(b)
+        node.setDirty()
          
     #@+node:tbrown.20110930220448.18076: *3* get_response
     def get_response(self):
