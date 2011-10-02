@@ -418,15 +418,20 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 if QtCore.Qt.ControlModifier & event.modifiers():
                     event = {'c':c}
                     openURL(event) # A module-level function.
-
-                # 2011/10/01: Run the code at idle time:  running the code
-                # immediately interferes with scrolling in the body pane.
-                def mouseReleaseCallback(c=c):
+                    
+                if 1: ##### Safe to do, because of changes to keyboardQuit.
                     # 2011/05/28: Do *not* change the focus!
                     # This would rip focus away from tab panes.
                     c.k.keyboardQuit(setFocus=False)
-                
-                g.app.gui.runAtIdle(mouseReleaseCallback)
+                else:
+                    def mouseReleaseCallback(c=c):
+                        # 2011/05/28: Do *not* change the focus!
+                        # This would rip focus away from tab panes.
+                        c.k.keyboardQuit(setFocus=False)
+
+                    # 2011/10/01: Run the code at idle time:  running the code
+                    # immediately interferes with scrolling in the body pane.
+                    g.app.gui.runAtIdle(mouseReleaseCallback)
             #@-<< define mouseReleaseEvent >>
             self.widget.mouseReleaseEvent = mouseReleaseEvent
 
@@ -3691,23 +3696,35 @@ class leoQtBody (leoFrame.leoBody):
         # 2011/04/02: Update history only in leoframe.tree.select.
         # c.nodeHistory.update(c.p)
         
-        # Apparently, this does not cause problems
-        # because it generates no events in the body pane.
-        if obj.objectName() == 'richTextEdit':
-            wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
-            if wrapper and wrapper != self.bodyCtrl:
-                self.selectEditor(wrapper)
-            self.onFocusColorHelper('focus-in',obj)
-            obj.setReadOnly(False)
-            obj.setFocus() # Weird, but apparently necessary.
-    #@+node:ekr.20110930174206.15473: *5* onFocusOut
+        def onFocusInCallback(obj=obj,self=self):
+            if obj.objectName() == 'richTextEdit':
+                wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
+                if wrapper and wrapper != self.bodyCtrl:
+                    self.selectEditor(wrapper)
+                self.onFocusColorHelper('focus-in',obj)
+                obj.setReadOnly(False)
+                obj.setFocus() # Weird, but apparently necessary.
+
+        if 1:
+            g.app.gui.runAtIdle(onFocusInCallback)
+        else:
+            onFocusInCallBack(obj,self)
+    #@+node:ekr.20110930174206.15473: *5* onFocusOut (qtBody)
     def onFocusOut (self,obj):
 
         '''Handle a focus-out event in the body pane.'''
-
-        if obj.objectName() == 'richTextEdit':
-            self.onFocusColorHelper('focus-out',obj)
-            obj.setReadOnly(True)
+        
+        # g.trace(obj)
+        
+        def onFocusOutCallback(obj=obj,self=self):
+            if obj.objectName() == 'richTextEdit':
+                self.onFocusColorHelper('focus-out',obj)
+                obj.setReadOnly(True)
+        
+        if 1:
+            g.app.gui.runAtIdle(onFocusOutCallback)
+        else:
+            onFocusOutCallback(obj,self)
     #@+node:ekr.20110605121601.18224: *5* onFocusColorHelper (qtBody)
     badFocusColors = []
 

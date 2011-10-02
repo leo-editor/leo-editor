@@ -3284,7 +3284,7 @@ class keyHandlerClass:
         k = self ; c = k.c ; w = self.w
         if not w: return
 
-        if trace: g.trace(repr(s),g.callers(4))
+        if trace: g.trace(repr(s),w)
 
         w.setAllText(s)
         n = len(s)
@@ -3297,12 +3297,13 @@ class keyHandlerClass:
 
         k = self ; c = k.c ; w = self.w
         if not w: return
-        trace = self.trace_minibuffer and not g.app.unitTesting
+        trace = (False or self.trace_minibuffer) and not g.app.unitTesting
 
         trace and g.trace('len(s)',len(s))
         if not s: return
 
         c.widgetWantsFocusNow(w)
+
         w.insert('end',s)
 
         if select:
@@ -4274,7 +4275,7 @@ class keyHandlerClass:
                 w = c.frame.tree.getWrapper(w2,item=None)
                 isText = bool(w) # A benign hack.
 
-        if trace: g.trace('state: %s text?: %s w: %s' % (
+        if trace: g.trace('state: %s, text?: %s, w: %s' % (
             state,isText,w))
 
         if mode:
@@ -4291,14 +4292,19 @@ class keyHandlerClass:
             s = '%s State' % state.capitalize()
             if c.editCommands.extendMode:
                 s = s + ' (Extend Mode)'
-
-        if s:
-            # g.trace(s,w,g.callers(4))
-            k.setLabelBlue(label=s,protect=True)
-
-        if w and isText:
-            k.showStateColors(inOutline,w)
-            k.showStateCursor(state,w)
+                
+        def showStateAndModeCallback(inOutline=inOutline,k=k,w=w):
+            if s:
+                k.setLabelBlue(label=s,protect=True)
+            if w and isText:
+                k.showStateColors(inOutline,w)
+                k.showStateCursor(state,w)
+                
+        if 1:
+            g.app.gui.runAtIdle(showStateAndModeCallback)
+        else:
+            showStateAndModeCallback(inOutline,k,w)
+            
     #@+node:ekr.20080512115455.1: *4* showStateColors
     def showStateColors (self,inOutline,w):
 
