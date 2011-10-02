@@ -30,6 +30,21 @@ To enable this plugin put this into your file::
 must match the character encoding used in the browser. If it does not, non-ascii
 characters will look strange.
 
+Can also be used for bookmarking directly from the browser to Leo.  To
+do this, add a bookmark to the browser with the following URL / Location:
+    
+    javascript:w=window;if(w.content){w=w.content}; d=w.document; w.open('http://localhost:8130/_/add/bkmk/?&name=' + escape(d.title) + '&selection=' + escape(window.getSelection()) + '&url=' + escape(w.location.href),%22_blank%22,%22toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, copyhistory=no, width=800, height=300, status=no%22);void(0)
+    
+and edit the port (8130 in the example above) to match the port you're using
+for mod_http.
+
+Bookmarks are created as the first node in the outline which has been opened longest.
+The headline is preceeded with '@url ' *unless* the ``bookmarks`` plugin is loaded.
+If the ``bookmarks`` plugin is loaded the bookmark will have to be moved to a ``@bookmarks`` tree to be useful.
+
+The browser may or may not be able to close the bookmark form window for you, depending on settings - set ``dom.allow_scripts_to_close_windows`` to true
+in ``about:config`` in Firefox.
+
 '''
 #@-<< docstring >>
 
@@ -839,7 +854,6 @@ class LeoActions:
         """Return the file like 'f' that leo_interface.send_head makes
         
         
-        javascript:w=window;if(w.content){w=w.content}; d=w.document; w.open('http://localhost:8130/_/add/bkmk/?&name=' + escape(d.title) + '&selection=' + escape(window.getSelection()) + '&url=' + escape(w.location.href),%22_blank%22,%22toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, copyhistory=no, width=800, height=450, status=no%22);void(0)
         
         """
         
@@ -852,18 +866,34 @@ class LeoActions:
         name = query['name'][0]
         url = query['url'][0]
         
+        c = g.app.commanders()[0]
+        
         f = StringIO()
         
+        if url == c.rootPosition().b.split('\n',1)[0]:
+            # another marking of the same page, just add selection
+            self.add_bookmark_selection(
+                c.rootPosition(), query.get('selection', [''])[0])
+                
+            f.write("""
+    <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
+    <p>Selection added</p></body>""")
+
+            return f
+        
         if '_form' in query:
+            # got extra details, save to new node
             
             f.write("""
     <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
     <p>Bookmark saved</p></body>""")
             
-            c = g.app.commanders()[0]
             nd = c.rootPosition().insertAfter()
             nd.moveToRoot(c.rootPosition())
-            nd.h = name
+            if g.pluginIsLoaded('leo.plugins.bookarks'):
+                nd.h = name
+            else:
+                nd.h = '@url '+name
             
             selection = query.get('selection', [''])[0]
             if selection:
@@ -882,25 +912,88 @@ class LeoActions:
             c.redraw()
 
             return f
+            
+        # send form to collect extra details
         
         f.write("""
-    <body style='font-family:mono'>
+    <html><head><style>
+    body {font-family:mono; font-size: 80%%;}
+    th {text-align:right}
+    </style>
+    </head><body onload='document.getElementById("tags").focus();'>
     <form method='GET' action='/_/add/bkmk/'>
     <input type='hidden' name='_form' value='1'/>
     <input type='hidden' name='_name' value=%s/>
     <input type='hidden' name='selection' value=%s/>
-    Tags (comma sep.):<input name='tags' size='80'/><br/>
-    Title:<input name='name' value=%s size='80'/><br/>
-    URL:<input name='url' value=%s size='80'/><br/>
-    Notes:<textarea name='description' cols='80' rows='6'></textarea><br/>
+    <table>
+    <tr><th>Tags:</th><td><input id='tags' name='tags' size='60'/>(comma sep.)</td></tr>
+    <tr><th>Title:</th><td><input name='name' value=%s size='60'/></td></tr>
+    <tr><th>URL:</th><td><input name='url' value=%s size='60'/></td></tr>
+    <tr><th>Notes:</th><td><textarea name='description' cols='60' rows='6'></textarea></td></tr>
+    </table>
     <input type='submit' value='Save'/><br/>
     </form>
-    </body>""" % (quoteattr(name), 
+    </body></html>""" % (quoteattr(name), 
                   quoteattr(query.get('selection', [''])[0]), 
                   quoteattr(name), 
                   quoteattr(url)))
 
         return f
+    #@+node:tbrown.20111002082827.18325: *3* add_bookmark_selection
+    def add_bookmark_selection(self, node, text):
+        '''Insert the selected text into the bookmark node,
+        after any earlier selections but before the users comments.
+        
+            http://example.com/
+            
+            Tags: tags, are here
+            
+            Full title of the page
+            
+            Collected: timestamp
+            
+            """
+            The first saved selection
+            """
+            
+            """
+            The second saved selection
+            """
+            
+            Users comments
+
+        i.e. just above the "Users comments" line.
+        '''
+        
+        b = node.b.split('\n')
+        insert = ['', '"""', text, '"""']
+        
+        collected = None
+        tri_quotes = []
+        
+        for n, i in enumerate(b):
+            
+            if collected is None and i.startswith('Collected: '):
+                collected = n
+            
+            if i == '"""':
+                tri_quotes.append(n)
+        
+        if collected is None:
+            # not a regularly formatted text, just append
+            b.extend(insert)
+        
+        elif len(tri_quotes) >= 2:
+            # insert after the last balanced pair of tri quotes
+            x = tri_quotes[len(tri_quotes)-len(tri_quotes)%2-1]+1
+            b[x:x] = insert
+
+        else:
+            # found Collected but no tri quotes
+            b[collected+1:collected+1] = insert
+
+        node.b = '\n'.join(b)
+         
     #@+node:tbrown.20110930220448.18076: *3* get_response
     def get_response(self):
         """Return the file like 'f' that leo_interface.send_head makes"""
