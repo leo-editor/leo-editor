@@ -23,12 +23,34 @@ To enable this plugin put this into your file::
 
     @settings
         @bool http_active = True
-        @int  port = 8080
+        @int  http_port = 8080
         @string rst_http_attributename = 'rst_http_attribute'
 
 **Note**: the browser_encoding constant (defined in the top node of this file)
 must match the character encoding used in the browser. If it does not, non-ascii
 characters will look strange.
+
+Can also be used for bookmarking directly from the browser to Leo.  To
+do this, add a bookmark to the browser with the following URL / Location:
+    
+    javascript:w=window;if(w.content){w=w.content}; d=w.document; w.open('http://localhost:8130/_/add/bkmk/?&name=' + escape(d.title) + '&selection=' + escape(window.getSelection()) + '&url=' + escape(w.location.href),%22_blank%22,%22toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, copyhistory=no, width=800, height=300, status=no%22);void(0)
+    
+and edit the port (8130 in the example above) to match the port you're using
+for mod_http.
+
+Bookmarks are created as the first node in the outline which has been opened longest.
+You can set the ``@string`` ``http_bookmark_unl`` to specify an alternative location,
+e.g.::
+    
+    @string http_bookmark_unl = /home/tbrown/.bookmarks.leo#@bookmarks-->Incoming
+
+to place them in the `Incoming` node in the `@bookmarks` node in the `.bookmarks.leo` outline.
+    
+The headline is preceeded with '@url ' *unless* the ``bookmarks`` plugin is loaded.
+If the ``bookmarks`` plugin is loaded the bookmark will have to be moved to a ``@bookmarks`` tree to be useful.
+
+The browser may or may not be able to close the bookmark form window for you, depending on settings - set ``dom.allow_scripts_to_close_windows`` to true
+in ``about:config`` in Firefox.
 
 '''
 #@-<< docstring >>
@@ -89,6 +111,7 @@ import socket
 import sys
 import time
 import urllib
+from xml.sax.saxutils import quoteattr
 #@-<< imports >>
 #@+<< version history >>
 #@+node:ekr.20050328104558: ** << version history >>
@@ -524,7 +547,10 @@ class leo_interface(object):
          """
         try:
             path = self.split_leo_path(self.path)
-            if path == '/':
+            
+            if path[0] == '_':
+                f = self.leo_actions.get_response()
+            elif path == '/':
                  f = self.get_leo_windowlist()
             else:
                 try:
@@ -595,6 +621,8 @@ class RequestHandler(
     #@+others
     #@+node:EKR.20040517080250.14: *3* __init__
     def __init__(self,conn,addr,server):
+        
+        self.leo_actions = LeoActions(self)
         
         asynchat.async_chat.__init__(self,conn)
 
@@ -786,7 +814,7 @@ class Server(asyncore.dispatcher):
     """Copied from http_server in medusa"""
     #@+others
     #@+node:EKR.20040517080250.38: *3* __init__
-    def __init__ (self, ip, port,handler):
+    def __init__ (self, ip, port, handler):
 
         self.ip = ip
         self.port = port
@@ -816,6 +844,209 @@ class Server(asyncore.dispatcher):
         # on the incoming connexion
         self.handler(conn,addr,self)
     #@-others
+#@+node:tbrown.20110930093028.34530: ** class LeoActions
+class LeoActions:
+    """A place to collect other URL based actions like saving
+    bookmarks from the browser.  Conceptually this stuff could
+    go in class leo_interface but putting it here for separation
+    for now."""
+    
+    #@+others
+    #@+node:tbrown.20110930220448.18077: *3* __init__
+    def __init__(self, request_handler):
+        
+        self.request_handler = request_handler
+        self.bookmark_unl = g.app.commanders()[0].config.getString('http_bookmark_unl')
+    #@+node:tbrown.20110930220448.18075: *3* add_bookmark
+    def add_bookmark(self):
+        """Return the file like 'f' that leo_interface.send_head makes
+        
+        
+        
+        """
+        
+        parsed_url = urlparse.urlparse(self.request_handler.path)
+        query = urlparse.parse_qs(parsed_url.query)
+        
+        print parsed_url.query
+        print query
+        
+        name = query['name'][0]
+        url = query['url'][0]
+        
+        c = None  # outline for bookmarks
+        previous = None  # previous bookmark for adding selections
+        parent = None  # parent node for new bookmarks
+        using_root = False
+        if self.bookmark_unl:
+            parsed = urlparse.urlparse(self.bookmark_unl)
+            leo_path = os.path.expanduser(parsed.path)
+            
+            ok,frame = g.openWithFileName(leo_path, None)
+
+            if ok:
+                g.es("Opened '%s' for bookmarks"%self.bookmark_unl)
+                c = frame.c            
+
+                if parsed.fragment:
+                    g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+                parent = c.currentPosition()
+                if parent.hasChildren():
+                    previous = parent.getFirstChild()
+            else:
+                g.es("Failed to open '%s' for bookmarks"%self.bookmark_unl)
+
+        if c is None:
+            using_root = True
+            c = g.app.commanders()[0]
+            parent = c.rootPosition()
+            previous = c.rootPosition()
+        
+        f = StringIO()
+        
+        if previous and url == previous.b.split('\n',1)[0]:
+            # another marking of the same page, just add selection
+            self.add_bookmark_selection(
+                previous, query.get('selection', [''])[0])
+
+            c.selectPosition(previous)  # required for body text redraw
+            c.redraw()
+
+            f.write("""
+    <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
+    <p>Selection added</p></body>""")
+
+            return f
+        
+        if '_form' in query:
+            # got extra details, save to new node
+            
+            f.write("""
+    <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
+    <p>Bookmark saved</p></body>""")
+            
+            if using_root:
+                nd = parent.insertAfter()
+                nd.moveToRoot(c.rootPosition())
+            else:
+                nd = parent.insertAsNthChild(0)
+            if g.pluginIsLoaded('leo.plugins.bookmarks'):
+                nd.h = name
+            else:
+                nd.h = '@url '+name
+            
+            selection = query.get('selection', [''])[0]
+            if selection:
+                selection = '\n\n"""\n'+selection+'\n"""'
+            
+            nd.b = "%s\n\nTags: %s\n\n%s\n\nCollected: %s%s\n\n%s" % (
+                url, 
+                query.get('tags', [''])[0],
+                query.get('_name', [''])[0],
+                time.strftime("%c"),
+                selection,
+                query.get('description', [''])[0],
+            )
+            c.setChanged(True)
+            c.selectPosition(nd)  # required for body text redraw
+            c.redraw()
+
+            return f
+            
+        # send form to collect extra details
+        
+        f.write("""
+    <html><head><style>
+    body {font-family:mono; font-size: 80%%;}
+    th {text-align:right}
+    </style>
+    </head><body onload='document.getElementById("tags").focus();'>
+    <form method='GET' action='/_/add/bkmk/'>
+    <input type='hidden' name='_form' value='1'/>
+    <input type='hidden' name='_name' value=%s/>
+    <input type='hidden' name='selection' value=%s/>
+    <table>
+    <tr><th>Tags:</th><td><input id='tags' name='tags' size='60'/>(comma sep.)</td></tr>
+    <tr><th>Title:</th><td><input name='name' value=%s size='60'/></td></tr>
+    <tr><th>URL:</th><td><input name='url' value=%s size='60'/></td></tr>
+    <tr><th>Notes:</th><td><textarea name='description' cols='60' rows='6'></textarea></td></tr>
+    </table>
+    <input type='submit' value='Save'/><br/>
+    </form>
+    </body></html>""" % (quoteattr(name), 
+                  quoteattr(query.get('selection', [''])[0]), 
+                  quoteattr(name), 
+                  quoteattr(url)))
+
+        return f
+    #@+node:tbrown.20111002082827.18325: *3* add_bookmark_selection
+    def add_bookmark_selection(self, node, text):
+        '''Insert the selected text into the bookmark node,
+        after any earlier selections but before the users comments.
+        
+            http://example.com/
+            
+            Tags: tags, are here
+            
+            Full title of the page
+            
+            Collected: timestamp
+            
+            """
+            The first saved selection
+            """
+            
+            """
+            The second saved selection
+            """
+            
+            Users comments
+
+        i.e. just above the "Users comments" line.
+        '''
+        
+        b = node.b.split('\n')
+        insert = ['', '"""', text, '"""']
+        
+        collected = None
+        tri_quotes = []
+        
+        for n, i in enumerate(b):
+            
+            if collected is None and i.startswith('Collected: '):
+                collected = n
+            
+            if i == '"""':
+                tri_quotes.append(n)
+        
+        if collected is None:
+            # not a regularly formatted text, just append
+            b.extend(insert)
+        
+        elif len(tri_quotes) >= 2:
+            # insert after the last balanced pair of tri quotes
+            x = tri_quotes[len(tri_quotes)-len(tri_quotes)%2-1]+1
+            b[x:x] = insert
+
+        else:
+            # found Collected but no tri quotes
+            b[collected+1:collected+1] = insert
+
+        node.b = '\n'.join(b)
+        node.setDirty()
+         
+    #@+node:tbrown.20110930220448.18076: *3* get_response
+    def get_response(self):
+        """Return the file like 'f' that leo_interface.send_head makes"""
+
+        if self.request_handler.path.startswith('/_/add/bkmk/'):
+            return self.add_bookmark()
+            
+        f = StringIO()
+        f.write("Unknown URL in LeoActions.get_response()")
+        return f
+    #@-others
+    
 #@+node:EKR.20040517080250.40: ** poll
 def poll(timeout=0.0):
     global sockets_to_close
@@ -902,7 +1133,7 @@ def getConfiguration(c):
     # port.
     newport = c.config.getInt("http_port") 
     if newport:
-        config.port = newport
+        config.http_port = newport
 
     # active.
     newactive = c.config.getBool("http_active")
