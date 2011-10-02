@@ -5440,6 +5440,14 @@ If there are more than this number, a new row is created.</t>
 
 /* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
 
+QScrollArea {
+    background-color: white;
+}
+
+QWidget#findTab {
+    background-color: white;
+}
+
 /* A QWidget: supports only background attributes.*/
 
 QSplitter::handle {

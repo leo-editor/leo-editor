@@ -2247,11 +2247,14 @@ class DynamicWindow(QtGui.QMainWindow):
         innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
         outerGrid = self.createGrid(logFrame,'logGrid')
         outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
-
+        
+        findScrollArea = QtGui.QScrollArea()
+        findScrollArea.setObjectName('findScrollArea')
         findTab = QtGui.QWidget()
         findTab.setObjectName('findTab')
-        tabWidget.addTab(findTab,'Find')
+        tabWidget.addTab(findScrollArea,'Find')
         self.createFindTab(findTab)
+        findScrollArea.setWidget(findTab)
 
         spellTab = QtGui.QWidget()
         spellTab.setObjectName('spellTab')
@@ -2403,7 +2406,7 @@ class DynamicWindow(QtGui.QMainWindow):
         w.setLineWidth(lineWidth)
         self.setName(w,name)
         return w
-    #@+node:ekr.20110605121601.18156: *6* createGrid
+    #@+node:ekr.20110605121601.18156: *6* createGrid (DynamicWindow)
     def createGrid (self,parent,name,margin=0,spacing=0):
 
         w = QtGui.QGridLayout(parent)
@@ -2510,7 +2513,7 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ekr.20110605121601.18166: *6* createFindTab (DynamicWindow)
     def createFindTab (self,parent):
 
-        grid = self.createGrid(parent,'findGrid',margin=10,spacing=20)
+        grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
         
         # Row 0: heading.
         lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
