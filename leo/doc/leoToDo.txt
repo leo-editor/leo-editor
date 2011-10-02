@@ -6,20 +6,6 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 I am willing to fix bugs, but I would like to declare a moratorium on feature additions until 2012.
 .. @+node:ekr.20110921132705.6960: *3* To do first
-.. @+node:ekr.20110930174206.15470: *4* * Bring screen shots up to date
-> While doing so I noted that on the sourceforge project
-> page some screenshots are bit old, such as touting Tk.
->
-> shows tk - http://webpages.charter.net/edreamleo/screen-shots.html
-    Fixed
-    
-> uses @thin - http://webpages.charter.net/edreamleo/PCWindow.gif
-
-> screenshots shows deprecated plugin manager -
-> http://sourceforge.net/projects/leo/
-    All souce-forge screenshots need to be replaced.
-
-
 .. @+node:ekr.20110918204916.6811: *4* * revise autocompletion docs based on recent posts
 .. @+node:ekr.20110929074744.15474: *5* Autocompleter post
 @language rest
@@ -857,6 +843,20 @@ The mini-buffer is a text area at the bottom of the body pane. You use it like t
 For example, to print a list of all commands type Alt-X print-commands <Return>.
 
 The following sections list the various commands that you can invoke from the minibuffer. Important: you may bind keystrokes to any of these commands. See Customizing Leo for full details.
+.. @+node:ekr.20110930174206.15470: *4* * Bring screen shots up to date
+> While doing so I noted that on the sourceforge project
+> page some screenshots are bit old, such as touting Tk.
+>
+> shows tk - http://webpages.charter.net/edreamleo/screen-shots.html
+    Fixed
+    
+> uses @thin - http://webpages.charter.net/edreamleo/PCWindow.gif
+
+> screenshots shows deprecated plugin manager -
+> http://sourceforge.net/projects/leo/
+    All souce-forge screenshots need to be replaced.
+
+
 .. @+node:ekr.20110930213637.15474: *4* Fix Find tab: it should scroll, not contract
 .. @+node:ekr.20110929165422.15431: *4* Fun scripts
 .. @+node:ekr.20110919113533.6818: *5* split-defs-into-node
