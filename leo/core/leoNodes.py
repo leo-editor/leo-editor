@@ -1882,7 +1882,7 @@ class vnode (baseVnode):
             # Required so we can compute top-level siblings.
             # It is named .context rather than .c to emphasize its limited usage.
         self.insertSpot = None # Location of previous insert point.
-        self.scrollBarSpot = None # Previous value of scrollbar position.
+        ### self.scrollBarSpot = None # Previous value of scrollbar position.
         self.selectionLength = 0 # The length of the selected body text.
         self.selectionStart = 0 # The start of the selected body text.
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
@@ -2365,11 +2365,14 @@ class vnode (baseVnode):
             w.see(spot)
         else:
             w.setInsertPoint(0)
+            
+        w.seeInsertPoint() ### 2011/09/30
 
-        # Restore the scroll spot after the call to w.see.
-        if v and v.scrollBarSpot != None:
-            first,last = v.scrollBarSpot
-            w.setYScrollPosition(first)
+        ### 2011/09/30 
+        # # Restore the scroll spot after the call to w.see.
+        # if v and v.scrollBarSpot != None:
+            # first,last = v.scrollBarSpot
+            # w.setYScrollPosition(first)
     #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll(w)
     def saveCursorAndScroll(self,w):
 
@@ -2377,7 +2380,8 @@ class vnode (baseVnode):
         if not w: return
         
         try:
-            v.scrollBarSpot = w.getYScrollPosition()
+            ### 2011/09/30
+            ### v.scrollBarSpot = w.getYScrollPosition()
             v.insertSpot = w.getInsertPoint()
         except AttributeError:
             # 2011/03/21: w may not support the high-level interface.

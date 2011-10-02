@@ -49,8 +49,7 @@
 </v>
 <v t="ekr.20101025080245.5795"><vh>Basics</vh>
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
-<v t="ekr.20100805165051.7151"
-expanded="ekr.20050830115714,"><vh>@file FAQ.txt</vh></v>
+<v t="ekr.20100805165051.7151"><vh>@file FAQ.txt</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows page</vh>
 <v t="ekr.20100821182153.4344"><vh>@file screen-shots.txt</vh></v>

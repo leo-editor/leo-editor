@@ -46,6 +46,9 @@ class leoKeyEvent:
 
         return 'leoKeyEvent: stroke: %s, char: %s, w: %s' % (
             repr(self.stroke),repr(self.char),repr(self.w))
+            
+    def type(self):
+        return 'leoKeyEvent'
 #@+node:ekr.20031218072017.3720: ** class leoGui
 class leoGui:
 
@@ -598,6 +601,9 @@ class unitTestGui(nullGui):
     def createSpellTab(self,c,spellHandler,tabName):
 
         pass # This method keeps pylint happy.
+    #@+node:ekr.20111001155050.15484: *3* runAtIdle
+    def runAtIdle (self,aFunc):
+        pass
     #@+node:ekr.20081119083601.1: *3* toUnicode
     def toUnicode (self,s):
 
