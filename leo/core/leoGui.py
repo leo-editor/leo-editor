@@ -601,6 +601,9 @@ class unitTestGui(nullGui):
     def createSpellTab(self,c,spellHandler,tabName):
 
         pass # This method keeps pylint happy.
+    #@+node:ekr.20111001155050.15484: *3* runAtIdle
+    def runAtIdle (self,aFunc):
+        pass
     #@+node:ekr.20081119083601.1: *3* toUnicode
     def toUnicode (self,s):
 
