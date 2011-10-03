@@ -5736,7 +5736,8 @@ def intraFileDrop (self,cloneDrag,fn,p1,p2):
         u.afterMoveNode(p1,'Drag',undoData,dirtyVnodeList)
         c.redraw_now(p1)
     else:
-        g.trace('** move failed')
+        if not g.unitTesting:
+            g.trace('** move failed')
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution

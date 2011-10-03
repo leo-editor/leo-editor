@@ -6073,7 +6073,8 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             u.afterMoveNode(p1,'Drag',undoData,dirtyVnodeList)
             c.redraw_now(p1)
         else:
-            g.trace('** move failed')
+            if not g.unitTesting:
+                g.trace('** move failed')
     #@+node:ekr.20110605121601.18369: *5* urlDrop & helpers
     def urlDrop (self,ev,p):
 

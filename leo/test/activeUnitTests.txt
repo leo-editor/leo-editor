@@ -9869,36 +9869,15 @@ g.app.unitTestDict['restoreSelectedNode']=False
 
 # print('\nEnd of leoGlobals tests.')
 #@+node:ekr.20100131171342.5599: *3* leoGui
-#@+node:ekr.20100131171342.5600: *4* @test w.toGui/PythonIndex
-w = c.frame.body.bodyCtrl
-s = w.getAllText()
+#@+node:ekr.20111003145300.3466: *4* @test illegal drag gives warning
+'''Test that dragging this node onto the child node generates a warning.'''
 
-for i in range(len(s)):
-    i2 = w.toGuiIndex(i)
-    i3 = w.toPythonIndex(i2)
-    assert(i3==i)
-#@+node:ekr.20100131171342.5601: *4* @test w.toGuiIndex (test2)
-#ab
-#
-
-w = c.frame.body.bodyCtrl
-
-# This test applies only to tkinter indices.
-if g.app.gui.guiName() == 'tkinter':
-
-    table = (
-        (-1,'1.0'), # One too small.
-        (0,'1.0'),
-        (1,'1.1'),
-        (2,'1.2'),
-        (3,'1.3'), # The newline ends a row.
-        (4,'2.0'),
-        (5,'2.1'),
-    )
-
-    for i,expected in table:
-        result = w.toGuiIndex(i)
-        assert result == expected,'toGuiIndex(i): %s, expected: %s, got: %s' % (i,expected,result)
+fn = '<file name>'
+p2 = p.firstChild()
+for cloneDrag in (True,False):
+    c.frame.tree.treeWidget.intraFileDrop(cloneDrag,fn,p,p2)
+    assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
+#@+node:ekr.20111003145300.3467: *5* a
 #@+node:ekr.20100131171342.5602: *4* @test leoTextWidget
 if g.app.gui.guiName() == 'tkinter':
 
@@ -9946,6 +9925,36 @@ if g.app.gui.guiName() == 'tkinter':
     w.tag_add('test',4,6)
     aTuple = w.tag_ranges('test')
     assert aTuple == (4,6),'tag_add failed: %s' % aTuple
+#@+node:ekr.20100131171342.5600: *4* @test w.toGui/PythonIndex
+w = c.frame.body.bodyCtrl
+s = w.getAllText()
+
+for i in range(len(s)):
+    i2 = w.toGuiIndex(i)
+    i3 = w.toPythonIndex(i2)
+    assert(i3==i)
+#@+node:ekr.20100131171342.5601: *4* @test w.toGuiIndex (test2)
+#ab
+#
+
+w = c.frame.body.bodyCtrl
+
+# This test applies only to tkinter indices.
+if g.app.gui.guiName() == 'tkinter':
+
+    table = (
+        (-1,'1.0'), # One too small.
+        (0,'1.0'),
+        (1,'1.1'),
+        (2,'1.2'),
+        (3,'1.3'), # The newline ends a row.
+        (4,'2.0'),
+        (5,'2.1'),
+    )
+
+    for i,expected in table:
+        result = w.toGuiIndex(i)
+        assert result == expected,'toGuiIndex(i): %s, expected: %s, got: %s' % (i,expected,result)
 #@+node:ekr.20100131171342.5603: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
