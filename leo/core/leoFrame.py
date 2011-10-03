@@ -2610,7 +2610,7 @@ class nullBody (leoBody):
         w = stringTextWidget(c=self.c,name='body')
         self.bodyCtrl = self.widget = w
         self.editorWidgets['1'] = w
-        self.colorizer = leoColor.nullColorizer(self.c)
+        self.colorizer = None # leoColor.nullColorizer(self.c)
     #@+node:ekr.20031218072017.2193: *3* Utils (internal use)
     #@+node:ekr.20031218072017.2194: *4* findStartOfLine
     def findStartOfLine (self,lineNumber):

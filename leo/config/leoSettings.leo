@@ -42,7 +42,7 @@
 <v t="ekr.20041119042929.3"><vh>@encoding</vh></v>
 <v t="ekr.20041119042929.4"><vh>@int</vh></v>
 <v t="ekr.20061002115414"><vh>@float</vh></v>
-<v t="ekr.20041119042929.5"><vh>@font</vh></v>
+<v t="ekr.20111003130143.15561"><vh>@font</vh></v>
 <v t="ekr.20041120181045"><vh>@ratio</vh></v>
 <v t="ekr.20041119042929.2"><vh>@path</vh></v>
 <v t="ekr.20041119042929.7"><vh>@string</vh></v>
@@ -371,7 +371,7 @@
 <v t="ekr.20110611092035.16471"><vh>Colorizer &amp; colors</vh>
 <v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
 <v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
-<v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 200000</vh></v>
+<v t="ekr.20081018053140.12"></v>
 <v t="ekr.20080326060254.3"><vh>@string target_language = python</vh></v>
 <v t="ekr.20041213105007.2"><vh>Body pane colors</vh>
 <v t="ekr.20041119034357.41"><vh>@color body_cursor_background_color = None</vh></v>
@@ -392,7 +392,7 @@
 </v>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
 <v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
-<v t="ekr.20041119052015.2"><vh>@color log_text_foreground_color = None</vh></v>
+<v t="ekr.20041119052015.2"><vh>@@color log_text_foreground_color = None</vh></v>
 <v t="ekr.20041119053445"><vh>@color log_text_background_color = None</vh></v>
 <v t="ekr.20041217184352.2"><vh>@color log_pane_background_color = #f2fdff</vh></v>
 <v t="ekr.20051020125928"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
@@ -404,33 +404,9 @@
 <v t="ekr.20100313080341.8371"><vh>@color minibuffer-warning-color = lightgrey</vh></v>
 </v>
 <v t="ekr.20041119034357.70"><vh>Syntax colors &amp; options</vh>
-<v t="ekr.20060201111002"></v>
-<v t="ekr.20060828145228"><vh>Options for old colorizer</vh>
-<v t="ekr.20041119034357.73"><vh>@bool color_cweb_comments_with_latex = True</vh></v>
-<v t="ekr.20041119034357.72"><vh>@bool color_cweb_doc_parts_with_latex = True</vh></v>
-<v t="ekr.20041119034357.74"><vh>@bool color_directives_in_plain_text = True</vh></v>
-<v t="ekr.20041119034357.75"><vh>@bool underline_undefined_section_names = True</vh></v>
-<v t="ekr.20041119034357.76"><vh>@bool use_hyperlinks = False</vh></v>
-<v t="ekr.20041119034357.78"><vh>@color comment_color = firebrick3</vh></v>
-<v t="ekr.20041119034357.79"><vh>@color cweb_section_name_color = red</vh></v>
-<v t="ekr.20041119034357.80"><vh>@color directive_color = blue</vh></v>
-<v t="ekr.20041119034357.81"><vh>@color doc_part_color = firebrick3</vh></v>
-<v t="ekr.20080703071815.3"><vh>@color forth_bracket_range_color = orange</vh></v>
-<v t="ekr.20041119034357.82"><vh>@color keyword_color = blue</vh></v>
-<v t="ekr.20041120152508"><vh>@color latex_background_color = None</vh></v>
-<v t="ekr.20041119034357.83"><vh>@color leo_keyword_color = #00aa00</vh></v>
-<v t="ekr.20041119034357.85"><vh>@color section_name_brackets_color = blue</vh></v>
-<v t="ekr.20041119034357.84"><vh>@color section_name_color = red</vh></v>
-<v t="ekr.20041119034357.86"><vh>@color show_invisibles_space_background_color = Gray90</vh></v>
-<v t="ekr.20041119034357.87"><vh>@color show_invisibles_tab_foreground_color = Gray80</vh></v>
-<v t="ekr.20041119034357.88"><vh>@color string_color = #00aa00</vh></v>
-<v t="ekr.20041119034357.89"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="ekr.20060829085840"><vh>@font php keyword fonts (old colorizer)</vh></v>
-</v>
-<v t="ekr.20060504131831"><vh>Options for jEdit colorer</vh>
 <v t="ekr.20100102121150.6344"><vh>@bool show-invisibles-by-default = False</vh></v>
-<v t="ekr.20060513100933"><vh>@int colorizer_interrupt_count1 = 10</vh></v>
-<v t="ekr.20060513100933.1"><vh>@int colorizer_interrupt_count2 = 5000</vh></v>
+<v t="ekr.20060201111002"></v>
+<v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 200000</vh></v>
 <v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
 <v t="ekr.20100102100353.8705"><vh>@color blank_color = grey</vh></v>
 <v t="ekr.20100102100353.8706"><vh>@color tab_color = black</vh></v>
@@ -470,7 +446,6 @@
 <v t="ekr.20080703111151.12"><vh>@font forth keyword3_font</vh></v>
 <v t="ekr.20080703111151.14"><vh>@font forth keyword4_font</vh></v>
 <v t="ekr.20080703111151.15"><vh>@font forth keyword5_font</vh></v>
-</v>
 </v>
 </v>
 </v>
@@ -570,7 +545,6 @@
 <v t="ekr.20060126083715"><vh>@bool trace_gc_verbose = False</vh></v>
 <v t="ekr.20070729101310"><vh>@bool trace_import = False</vh></v>
 <v t="ekr.20060215054710"><vh>@bool trace_key_event= False</vh></v>
-<v t="ekr.20060131071947"><vh>@bool trace_masterClickHandler = False</vh></v>
 <v t="ekr.20051126062525"><vh>@bool trace_masterCommand = False</vh></v>
 <v t="ekr.20060209045356"><vh>@bool trace_masterFocusHandler = False</vh></v>
 <v t="ekr.20060131071612"><vh>@bool trace_masterKeyHandler = False</vh></v>
@@ -1696,31 +1670,16 @@ always uses this ratio when opening a file that is being split vertically.</t>
 <t tx="ekr.20041119034357.68">The Tk -relief option for the split bar.</t>
 <t tx="ekr.20041119034357.69">The width of the split bar, in pixels (must be an integer).</t>
 <t tx="ekr.20041119034357.7"></t>
-<t tx="ekr.20041119034357.70">Syntax colors may be any valid Tk color name or color value.
+<t tx="ekr.20041119034357.70">@nocolor-node
+
+These are the settings used by Leo's Qt syntax colorer.
+
+Syntax colors may be any valid Tk color name or color value.
 
 For example, "00aa00" is the dark green used by IDLE.
 
 See http://www.tcl.tk/man/tcl8.3/TkCmd/colors.htm for a list of valid color
 names. These names are case sensitive, for example: BlanchedAlmond.</t>
-<t tx="ekr.20041119034357.72">True:  Leo colors @space, @* and @** sections in cweb mode as black with LaTeX keywords highlighted.
-False: Leo colors @space, @* and @** sections in cweb mode as comments (default is red).
-
-Note: this setting does not affect how Leo colors noweb section references and defintions.</t>
-<t tx="ekr.20041119034357.73">True:  Leo colors C language comments in cweb mode as black with LaTeX keywords highlighted.
-Flase: Leo colors C language comments in cweb mode as comments (default red).
-
-Note: this setting does not affect how Leo colors noweb section references and defintions.</t>
-<t tx="ekr.20041119034357.74">True:  Leo colors @directives when @language plain is in effect.
-False: Leo colors everything black when @language plain is in effect.</t>
-<t tx="ekr.20041119034357.75">True: Underline undefined section names
-
-Only functional if use_hyperlinks = 0
-
-</t>
-<t tx="ekr.20041119034357.76">True:  underline "live" links.
-False: (recommended): Underline undefined section names.</t>
-<t tx="ekr.20041119034357.78">The color of comments in code parts.</t>
-<t tx="ekr.20041119034357.79">The color of name in @&lt;name@&gt;</t>
 <t tx="ekr.20041119034357.8">Example:
 
 "Created by Leo at @date"
@@ -1732,22 +1691,6 @@ Notes:
 2. Use \n to separate lines.
 3. This must be empty for compatibility with older versions of Leo.
 4. Please use an empty comment when updating to CVS!</t>
-<t tx="ekr.20041119034357.80">The color of C/C++ preprocessor directive lines.</t>
-<t tx="ekr.20041119034357.81">The color of text in doc parts.</t>
-<t tx="ekr.20041119034357.82">The color of keywords of the present language.
-
-For example, the color of "if", "try" and "except" in Python.</t>
-<t tx="ekr.20041119034357.83">The color of Leo keywords such as @ignore, @color, etc.</t>
-<t tx="ekr.20041119034357.84">The color of name in &lt; &lt; name &gt; &gt; when name is defined.</t>
-<t tx="ekr.20041119034357.85">The color of the double angle brackets in &lt;&lt; name &gt;&gt;
-
-</t>
-<t tx="ekr.20041119034357.86">The background color that represents spaces and tabs when Show Invisibles mode is in effect.</t>
-<t tx="ekr.20041119034357.87">The foreground color that represents spaces and tabs when Show Invisibles mode is in effect.</t>
-<t tx="ekr.20041119034357.88">The color of strings and their delimiters.
-
-</t>
-<t tx="ekr.20041119034357.89">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.</t>
 <t tx="ekr.20041119034357.9">A string, s.  If present, .leo files will contain an xml-stylesheet line following
 the opening xml line. 
 For example:
@@ -1881,12 +1824,6 @@ Leo assumes that Tk text widgets return:
 <t tx="ekr.20041119042929.2">Same as @directory.</t>
 <t tx="ekr.20041119042929.3"></t>
 <t tx="ekr.20041119042929.4"></t>
-<t tx="ekr.20041119042929.5">Valid values:
-    
-weight: bold, normal, None
-slant: roman, italic, None
-
-Use the show-fonts command to pick fonts, then copy the values shown by the show-fonts command to the values here.</t>
 <t tx="ekr.20041119042929.7"></t>
 <t tx="ekr.20041119042929.9">The encoding used for derived files if no @encoding directive is in effect.
 This setting is also used to encode files created by the Tangle commands.
@@ -2032,7 +1969,6 @@ the environment in which @if code is executed.</t>
 except that it isn't necessary to import sys.
 
 This would be the natural way to implement platform-dependent settings.</t>
-<t tx="ekr.20041120152508"></t>
 <t tx="ekr.20041120152657"></t>
 <t tx="ekr.20041120152900.2">When the Script Search radio button is selected Leo treats the contents of the
 Search Text as a script to execute whenever any kind of Find command is
@@ -3515,7 +3451,6 @@ False: (legacy)     The Find tab shows text, options and buttons.</t>
 Non-zero: limit the maximum stack size to the given number.</t>
 <t tx="ekr.20060131071612">
 </t>
-<t tx="ekr.20060131071947"></t>
 <t tx="ekr.20060201111002"></t>
 <t tx="ekr.20060202092911"></t>
 <t tx="ekr.20060202113731"></t>
@@ -3742,7 +3677,6 @@ word-search-forward</t>
 <t tx="ekr.20060408090018"></t>
 <t tx="ekr.20060425124142"></t>
 <t tx="ekr.20060425125015"></t>
-<t tx="ekr.20060504131831"></t>
 <t tx="ekr.20060504131831.1"></t>
 <t tx="ekr.20060504131831.2"></t>
 <t tx="ekr.20060504134056"></t>
@@ -3752,10 +3686,6 @@ word-search-forward</t>
 <t tx="ekr.20060504140408"></t>
 <t tx="ekr.20060504140408.1"></t>
 <t tx="ekr.20060504140408.2"></t>
-<t tx="ekr.20060513100933">The number of times the colorizer's main loop in colorOneChunk executes before pausing to check for events.
-A reasonable value is 10.</t>
-<t tx="ekr.20060513100933.1">The number of times the colorizer's main loop in colorOneChunk executes before actually colorizing text.
-A reasonable value is 5000.</t>
 <t tx="ekr.20060521132401">c:\Python24\Scripts\_winpdb.py</t>
 <t tx="ekr.20060521134125">The debug target to use if no target is specified otherwise.
 
@@ -3893,7 +3823,6 @@ horizontal: pack body-pane editors horizontally.</t>
 <t tx="ekr.20060828110551.1">Valid settings for _style strings are None, normal, bold, italic, bold-italic.</t>
 <t tx="ekr.20060828110551.2"></t>
 <t tx="ekr.20060828110551.3"></t>
-<t tx="ekr.20060828145228"></t>
 <t tx="ekr.20060828145228.1"># For new colorizer
 
 # php_keyword1_font_family = None
@@ -3901,12 +3830,6 @@ php_keyword1_font_size = None
 php_keyword1_font_slant = roman
     # roman, italic
 php_keyword1_font_weight = normal
-    # normal, bold</t>
-<t tx="ekr.20060829085840"># php_keyword_font_family = None
-php_keyword_font_size = None
-php_keyword_font_slant = roman
-    # roman, italic
-php_keyword_font_weight = none
     # normal, bold</t>
 <t tx="ekr.20060904211808"></t>
 <t tx="ekr.20060904211808.1">The path to the zodb storage.</t>
@@ -5301,7 +5224,6 @@ right clicks in the body pane.
 <t tx="ekr.20080515053412.7"></t>
 <t tx="ekr.20080515053412.8"></t>
 <t tx="ekr.20080515053412.9">Indent</t>
-<t tx="ekr.20080703071815.3"></t>
 <t tx="ekr.20080703111151.12"># bold words in forth
 
 forth_keyword3_family = None
@@ -5444,6 +5366,11 @@ If there are more than this number, a new row is created.</t>
 <t tx="ekr.20081018053140.12">/* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
 
 /* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
+
+/*
+    Important: this stylesheets is responsible for most, but *not* all, of Leo's appearance.
+    See also settings in "Colorizer and colors" 
+*/
 
 QScrollArea {
     background-color: white;
@@ -8172,6 +8099,20 @@ Commands:
 <t tx="ekr.20111003085631.15489"></t>
 <t tx="ekr.20111003085631.15490"></t>
 <t tx="ekr.20111003104518.15499"></t>
+<t tx="ekr.20111003130143.15561">**Important**: these nodes **only** specify fonts used by Leo's syntax colorizer.
+
+To set fonts in Leo's widgets, change Leo's master sytle sheet::
+    
+    @data qt-gui-plugin-style-sheet 
+
+Valid values for the body of @font nodes::
+    
+    weight: bold, normal, None
+    slant: roman, italic, None
+
+Use the show-fonts command to pick fonts, then copy the values shown by the
+show-fonts command to the values here.
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

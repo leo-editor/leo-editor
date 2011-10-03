@@ -1069,7 +1069,6 @@ class keyHandlerClass:
         self.minibuffer_error_color         = getColor('minibuffer_error_color') or 'red'
         self.swap_mac_keys                  = getBool('swap_mac_keys')
         self.trace_bind_key_exceptions      = getBool('trace_bind_key_exceptions')
-        self.trace_masterClickHandler       = getBool('trace_masterClickHandler')
         self.traceMasterCommand             = getBool('trace_masterCommand')
         self.trace_masterKeyHandler         = getBool('trace_masterKeyHandler')
         self.trace_masterKeyHandlerGC       = getBool('trace_masterKeyHandlerGC')
@@ -1096,7 +1095,6 @@ class keyHandlerClass:
         self.newMinibufferWidget = None # Usually the minibuffer restores focus.  This overrides this default.
         self.regx = g.bunch(iter=None,key=None)
         self.repeatCount = None
-        self.previousSelection = None # A hack for middle-button paste: set by masterClickHandler, used by pasteText.
         self.state = g.bunch(kind=None,n=None,handler=None)
         #@-<< define externally visible ivars >>
         #@+<< define internal ivars >>
@@ -2642,57 +2640,6 @@ class keyHandlerClass:
                     b.func=func
                     d2[key2] = b
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
-    #@+node:ekr.20061031131434.153: *4* masterClickHandler (NO LONGER USED)
-    def masterClickHandler (self,event,func=None):
-
-        g.app.gui.killPopupMenu()
-
-        k = self ; c = k.c ; gui = g.app.gui
-        if not event: return
-        w = event and event.widget ; wname = c.widget_name(w)
-        trace = not g.app.unitTesting and (False or k.trace_masterClickHandler)
-
-        if trace: g.trace(wname,func and func.__name__)
-        # c.frame.body.colorizer.interrupt() # New in 4.4.1
-
-        # A click outside the minibuffer terminates any state.
-        if k.inState() and w != c.frame.miniBufferWidget:
-            if not c.widget_name(w).startswith('log'):
-                k.keyboardQuit()
-                # k.endMode() # Less drastic than keyboard-quit.
-                w and c.widgetWantsFocusNow(w)
-                if trace: g.trace('inState: break')
-                return # (for Tk) 'break'
-
-        # Update the selection point immediately for updateStatusLine.
-        k.previousSelection = None
-        if wname.startswith('body'):
-            c.frame.body.onClick(event) # New in Leo 4.4.2.
-        elif wname.startswith('mini'):
-            # x,y = gui.eventXY(event)
-            x,y = event and event.x,event and event.y
-            x = w.xyToPythonIndex(x,y)
-            i,j = k.getEditableTextRange()
-            if i <= x <= j:
-                w.setSelectionRange(x,x,insert=x)
-            else:
-                if trace: g.trace('2: break')
-                return # (for Tk) 'break'
-        if event and func:
-            if trace: g.trace(func.__name__)
-            val = func(event) # Don't even *think* of overriding this.
-            if trace: g.trace('val:',val,g.callers())
-            return val
-        else:
-            # All tree callbacks have a func, so we can't be in the tree.
-            # g.trace('*'*20,'auto-deactivate tree: %s' % wname)
-            c.frame.tree.OnDeactivate()
-            c.widgetWantsFocusNow(w)
-            if trace: g.trace('end: None')
-            return # None
-
-    masterClick3Handler = masterClickHandler
-    masterDoubleClick3Handler = masterClickHandler
     #@+node:ekr.20061031131434.105: *4* masterCommand & helpers
     def masterCommand (self,event,func,stroke,commandName=None):
 
@@ -2859,25 +2806,6 @@ class keyHandlerClass:
         else:
             # Let the widget handle the event.
             return # None
-    #@+node:ekr.20061031131434.154: *4* masterDoubleClickHandler
-    def masterDoubleClickHandler (self,event,func=None):
-
-        k = self ; c = k.c ; w = event and event.widget
-
-        if c.config.getBool('trace_masterClickHandler'):
-            g.trace(c.widget_name(w),func and func.__name__)
-
-        if event and func:
-            # Don't event *think* of overriding this.
-            return func(event)
-        else:
-            gui = g.app.gui
-            x.y = event and event.x,event and event.y
-            i = w.xyToPythonIndex(x,y)
-            s = w.getAllText()
-            start,end = g.getWord(s,i)
-            w.setSelectionRange(start,end)
-            return # (for Tk) 'break'
     #@+node:ekr.20061031131434.146: *4* masterKeyHandler & helpers
     master_key_count = 0
 

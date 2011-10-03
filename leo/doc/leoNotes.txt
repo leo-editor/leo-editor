@@ -4089,498 +4089,6 @@ or a week or two at most.  The conclusion is that Leo has reached a
 mature state.
 
 Kent, Terry, did I omit anything?  Misstate anything? 
-#@+node:ekr.20031218072017.434: ** Unused code
-@ignore
-@language python
-@color
-#@+node:ekr.20050920084036.207: *3* queryReplaceCommandsClass (limited to single node)
-class queryReplaceCommandsClass (baseEditCommandsClass):
-
-    '''A class to handle query replace commands.'''
-
-    @others
-#@+node:ekr.20050920084036.208: *4*  ctor & init
-def __init__ (self,c):
-
-    baseEditCommandsClass.__init__(self,c) # init the base class.
-    self.regexp = False # True: do query-replace-regexp.  Set in stateHandler.
-
-def init (self):
-
-    self.qQ = None
-    self.qR = None
-    self.replaced = 0 # The number of replacements.
-#@+node:ekr.20050920084036.209: *4*  getPublicCommands
-def getPublicCommands (self):
-
-    return {
-        'query-replace':        self.queryReplace,
-        'query-replace-regex':  self.queryReplaceRegex,
-    }
-#@+node:ekr.20050920084036.210: *4* Entry points
-def queryReplace (self,event):
-
-    '''Interactively find and replace text.
-    This is not recommended: Leo's other find and change commands are more capable.'''
-    self.regexp = False
-    self.stateHandler(event)
-
-def queryReplaceRegex (self,event):
-    '''Interactively find and replace text using regular expressions.
-    This is not recommended: Leo's other find and change commands are more capable.'''
-    self.regexp = True
-    self.stateHandler(event)
-#@+node:ekr.20051005151838: *4* Helpers
-#@+node:ekr.20050920084036.212: *5* doOneReplace
-def doOneReplace (self,event):
-
-    w = self.editWidget(event)
-    if not w: return
-
-    i = w.tag_ranges('qR')
-    w.delete(i[0],i[1])
-    ins = w.getInsertPoint()
-    w.insert(ins,self.qR)
-    self.replaced += 1
-#@+node:ekr.20050920084036.219: *5* findNextMatch (query-replace)
-def findNextMatch (self,event):
-
-    '''Find the next match and select it.
-    Return True if a match was found.
-    Otherwise, call quitSearch and return False.'''
-
-    k = self.k
-    w = self.editWidget(event)
-    if not w: return
-
-    if g.app.gui.guiName() != 'tkinter':
-        return g.es('command not ready yet',color='blue')
-
-    w.tag_delete('qR')
-    if self.regexp:
-        << handle regexp >>
-    else:
-        << handle plain search >>
-#@+node:ekr.20051005155611: *6* << handle regexp >>
-try:
-    regex = re.compile(self.qQ)
-except Exception:
-    self.quitSearch(event,'Illegal regular expression')
-    return False
-
-i = w.getInsertPoint()
-txt = w.get(i,'end')
-match = regex.search(txt)
-
-if match:
-    start = match.start()
-    end = match.end()
-    length = end - start
-    i = w.getInsertPoint()
-    w.setInsertPoint(i+start)
-    w.tag_add('qR','insert','insert +%sc' % length)
-    w.tag_config('qR',background='lightblue')
-    i = w.getInsertPoint()
-    txt = w.get(i,i+length)
-    return True
-else:
-    self.quitSearch(event)
-    return False
-#@+node:ekr.20051005160923: *6* << handle plain search >> (tag_add & tag_config) LATER
-i = w.search(self.qQ,'insert',stopindex='end')
-
-if i:
-    w.setInsertPoint(i)
-    w.tag_add('qR','insert','insert +%sc' % len(self.qQ))
-    w.tag_config('qR',background='lightblue')
-    return True
-else:
-    self.quitSearch(event)
-    return False
-#@+node:ekr.20050920084036.211: *5* getUserResponse
-def getUserResponse (self,event):
-
-    w = self.editWidget(event)
-    char = event and event.char or ''
-    
-    if not w or not char return
-
-    if char in ('Y','y'):
-        self.doOneReplace(event)
-        if not self.findNextMatch(event):
-            self.quitSearch(event)
-    elif char in ('Q','q','\n','Return'):
-        self.quitSearch(event)
-    elif char == '!':
-        while self.findNextMatch(event):
-            self.doOneReplace(event)
-    elif char in ('N','n','Delete'):
-        # Skip over the present match.
-        i = w.getInsertPoint()
-        w.setInsertPoint(i + len(self.qQ))
-        if not self.findNextMatch(event):
-            self.quitSearch(event)
-
-    w.seeInsertPoint()
-#@+node:ekr.20050920084036.220: *5* quitSearch
-def quitSearch (self,event,message=None):
-
-    k = self.k
-    w = self.editWidget(event)
-    if not w: return
-
-    w.tag_delete('qR')
-    k.clearState()
-    if message is None:
-        message = 'Replaced %d occurences' % self.replaced
-    k.setLabelGrey(message)
-#@+node:ekr.20050920084036.215: *5* stateHandler
-def stateHandler (self,event):
-
-    k = self.k ; state = k.getState('query-replace')
-
-    prompt = g.choose(self.regexp,'Query replace regexp','Query replace')
-
-    if state == 0: # Get the first arg.
-        self.init()
-        k.setLabelBlue(prompt + ': ',protect=True)
-        k.getArg(event,'query-replace',1,self.stateHandler)
-    elif state == 1: # Get the second arg.
-        self.qQ = k.arg
-        if len(k.arg) > 0:
-            prompt = '%s %s with: ' % (prompt,k.arg)
-            k.setLabelBlue(prompt)
-            k.getArg(event,'query-replace',2,self.stateHandler)
-        else:
-            k.resetLabel()
-            k.clearState()
-    elif state == 2: # Set the prompt and find the first match.
-        self.qR = k.arg # Null replacement arg is ok.
-        k.setLabelBlue('Query replacing %s with %s\n' % (self.qQ,self.qR) +
-            'y: replace, (n or Delete): skip, !: replace all, (q or Return): quit',
-            protect=True)
-        k.setState('query-replace',3,self.stateHandler)
-        self.findNextMatch(event)
-    elif state == 3:
-        self.getUserResponse(event)
-#@+node:ekr.20101031172539.5880: *3* Existing autocompleter: do not delete
-#@+node:ekr.20061031131434.43: *4* completeSelf (not used yet)
-def completeSelf (self):
-
-    g.trace(g.callers(4))
-
-    # This scan will be fast if an instant object already exists.
-    className,obj,p,s = self.classScanner.scan()
-    # g.trace(className,obj,p,s and len(s))
-
-    # First, look up the className.
-    if not obj and className:
-        obj = self.allClassesDict.get(className)
-        # if obj: g.trace('found in allClassesDict: %s = %s' % (className,obj))
-
-    # Second, create the object from class definition.
-    if not obj and s:
-        theClass = self.computeClassObjectFromString(className,s)
-        if theClass:
-            obj = self.createProxyObjectFromClass(className,theClass)
-            if obj:
-                self.selfObjectsDict [className] = obj
-                # This prevents future rescanning, even if the node moves.
-                self.selfVnodesDict [p.v] = obj
-    if obj:
-        self.selfClassName = className
-        self.push(self.theObject)
-        self.theObject = obj
-        self.membersList = self.getMembersList(obj=obj)
-    else:
-        # No further action possible or desirable.
-        self.selfClassName = None
-        self.theObject = None
-        self.clear()
-        self.membersList = []
-#@+node:ekr.20061031131434.60: *4* class forgivingParserClass (not used)
-class forgivingParserClass:
-
-    '''A class to create a valid class instances from
-    a class definition that may contain syntax errors.'''
-
-    @others
-#@+node:ekr.20061031131434.61: *5* ctor (forgivingParserClass)
-def __init__ (self,c):
-
-    self.c = c
-    self.excludedTnodesList = []
-    self.old_putBody = None # Set in parse for communication with newPutBody.
-#@+node:ekr.20061031131434.62: *5* parse
-def parse (self,p):
-
-    '''The top-level parser method.
-
-    It patches c.atFileCommands.putBody, calls the forgiving parser and finally
-    restores c.atFileCommands.putBody.'''
-
-    c = self.c
-
-    # Create an ivar for communication with newPutBody.
-    self.old_putBody = c.atFileCommands.putBody
-
-    # Override atFile.putBody.
-    c.atFileCommands.putBody = self.newPutBody
-
-    try:
-        s = None
-        s = self.forgivingParser(p)
-    finally:
-        c.atFileCommands.putBody = self.old_putBody
-
-    return s # Don't put a return in a finally clause.
-
-
-#@+node:ekr.20061031131434.63: *5* forgivingParser (leoKeys)
-def forgivingParser (self,p,suppress=False):
-
-    c = self.c ; root = p.copy()
-    self.excludedTnodesList = []
-    s = g.getScript(c,root,useSelectedText=False)
-    while s:
-        try:
-            if not g.isPython3:
-                s = g.toEncodedString(s)
-            compile(s+'\n','<string>','exec')
-            break
-        except SyntaxError:
-            fileName, n = g.getLastTracebackFileAndLineNumber()
-            p = self.computeErrorNode(c,root,n,lines=g.splitLines(s))
-            if not p or p == root:
-                if not suppress:
-                    g.es_print('syntax error in class node: can not continue')
-                s = None ; break
-            else:
-                # g.es_print('syntax error: deleting',p.h)
-                self.excludedTnodesList.append(p.v)
-                s = g.getScript(c,root,useSelectedText=False)
-        except Exception:
-            g.trace('unexpected exception')
-            g.es_exception()
-            break
-    return s or ''
-#@+node:ekr.20061031131434.64: *5* computeErrorNode (leoKeys)
-def computeErrorNode (self,c,root,n,lines):
-
-    '''The from c.goToLineNumber that applies to scripts.
-    Unlike c.gotoLineNumberOpen, this function returns a position.'''
-
-    if n == 1 or n >= len(lines):
-        return root
-
-    # vnodeName, junk, junk, junk, junk = c.convertLineToVnodeNameIndexLine(
-        # lines, n, root, scriptFind = True)
-
-    goto = goToLineNumber(c)
-    vnodeName,junk,junk,junk = goto.findVnode(
-        root,lines,n,ignoreSentinels)
-
-    if vnodeName:
-        for p in root.self_and_subtree():
-            if p.matchHeadline(vnodeName):
-                return p
-
-    return None
-#@+node:ekr.20061031131434.65: *5* newPutBody
-def newPutBody (self,p,oneNodeOnly=False,fromString=''):
-
-    if p.v in self.excludedTnodesList:
-        pass
-        # g.trace('ignoring',p.h)
-    else:
-        self.old_putBody(p,oneNodeOnly,fromString)
-#@+node:ekr.20061031131434.66: *4* class classScannerClass (not used)
-# Called by completeSelf, which is not used.
-
-class classScannerClass:
-
-    '''A class to find class definitions in a node or its parents.'''
-
-    @others
-#@+node:ekr.20061031131434.67: *5* ctor
-def __init__ (self,c):
-
-    self.c = c
-
-    # Ignore @root for now:
-    # self.start_in_doc = c.config.getBool('at_root_bodies_start_in_doc_mode')
-
-    self.start_in_doc = False
-#@+node:ekr.20061031131434.68: *5* scan
-def scan (self):
-
-    c = self.c
-
-    className,obj,p = self.findParentClass(c.p)
-    # g.trace(className,obj,p)
-
-    if p and not obj:
-        parser = c.k.autoCompleter.forgivingParser
-        s = parser.parse(p)
-    else:
-        s = None
-
-    return className,obj,p,s
-#@+node:ekr.20061031131434.69: *5* findParentClass
-def findParentClass (self,root):
-
-    autoCompleter = self.c.k.autoCompleter
-
-    # First, see if any parent has already been scanned.
-    for p in root.self_and_parents():
-        obj = autoCompleter.selfVnodesDict.get(p.v)
-        if obj:
-            # g.trace('found',obj,'in',p.h)
-            return None,obj,p
-
-    # Next, do a much slower scan.
-    # g.trace('slow scanning...')
-    for p in root.self_and_parents():
-        className = self.findClass(p)
-        if className:
-            # g.trace('found',className,'in',p.h)
-            return className,None,p
-
-    return None,None,None
-#@+node:ekr.20061031131434.70: *5* findClass & helpers
-def findClass (self,p):
-
-    lines = g.splitLines(p.b)
-    inDoc = self.start_in_doc
-    # g.trace(p.h)
-    for s in lines:
-        if inDoc:
-            if self.endsDoc(s):
-                inDoc = False
-        else:
-            if self.startsDoc(s):
-                inDoc = True
-            else:
-                # Not a perfect scan: a triple-string could start with 'class',
-                # but perfection is not important.
-                className = self.startsClass(s)
-                if className: return className
-    else:
-        return None
-#@+node:ekr.20061031131434.71: *6* endsDoc
-def endsDoc (self,s):
-
-    return s.startswith('@c')
-#@+node:ekr.20061031131434.72: *6* startsClass
-def startsClass (self,s):
-
-    if s.startswith('class'):
-        i = 5
-        i = g.skip_ws(s,i)
-        j = g.skip_id(s,i)
-        word = s[i:j]
-        # g.trace(word)
-        return word
-    else:
-        return None
-#@+node:ekr.20061031131434.73: *6* startsDoc
-def startsDoc (self,s):
-
-    for s2 in ('@doc','@ ','@\n', '@r', '@\t'):
-        if s.startswith(s2):
-            return True
-    else:
-        return False
-#@+node:ekr.20061031131434.57: *4* Proxy classes and objects
-#@+node:ekr.20061031131434.58: *5* createProxyObjectFromClass
-def createProxyObjectFromClass (self,className,theClass):
-
-    '''Create a dummy instance object by instantiating theClass with a dummy ctor.'''
-
-    if 0: # Calling the real ctor is way too dangerous.
-        # Set args to the list of required arguments.
-        args = inspect.getargs(theClass.__init__.im_func.func_code)
-        args = args[0] ; n = len(args)-1
-        args = [None for z in range(n)]
-
-    def dummyCtor (self):
-        pass
-
-    try:
-        obj = None
-        old_init = hasattr(theClass,'__init__') and theClass.__init__
-        theClass.__init__ = dummyCtor
-        obj = theClass()
-    finally:
-        if old_init:
-            theClass.__init__ = old_init
-        else:
-            delattr(theClass,'__init__')
-
-    g.trace(type(theClass),obj)
-
-    # Verify that it has all the proper attributes.
-    # g.trace(g.listToString(dir(obj)))
-    return obj
-#@+node:ekr.20061031131434.59: *5* createClassObjectFromString
-def computeClassObjectFromString (self,className,s):
-
-    try:
-        # Add the the class definition to the present environment.
-        exec(s) # Security violation!
-
-        # Get the newly created object from the locals dict.
-        theClass = locals().get(className)
-        return theClass
-
-    except Exception:
-        if 1: # Could be a weird kind of user error.
-            g.es_print('unexpected exception in',computeProxyObject)
-            g.es_exception()
-        return None
-#@+node:ekr.20080924032842.3: *4* getExternalCompletions
-def getExternalCompletions (self,s,p=None,language='python'):
-
-    '''Return the completions possible at the end of string 's'.
-       Return (theObject,completions):
-    - theObject is None unless the last character is 's' is a period.
-    - completions is the list of valid completions.'''
-
-    c = self.c ; k = c.k
-    if not p: p = c.p
-
-    # Use a separate widget containing just s.
-    self.widget = w = leoFrame.stringTextWidget(c,'compute-completions-widget')
-    w.setAllText(s)
-
-    # Scan back for the first period.
-    i = len(s)-1
-    # while i > 0 and s[i] != '.':
-    while i > 0 and g.isWordChar(s[i]):
-        i -= 1
-    if s[i] == '.': i += 1
-    prefix = s[i:].strip()
-
-    # Remember the prefix, but put the insert before the period.
-    w.setSelectionRange(i, len(s)-1, insert=i)
-
-    # Init the ivars...
-    self.language = p and g.scanForAtLanguage(c,p) or language
-    self.tabName = ''
-    old_enable = c.k.enable_autocompleter
-
-    # Get the completions.
-    try:
-        c.k.enable_autocompleter = True
-        self.useTabs = False
-        self.start(prefix=prefix)
-    finally:
-        c.k.enable_autocompleter = old_enable
-        self.useTabs = True
-
-    theObject,tabList = self.theObject,self.tabList
-    self.exit() # Not called from the autocompleter itself.
-    return theObject,tabList
 #@+node:ekr.20101127152442.5878: ** Url's
 @color
 
@@ -5734,5 +5242,2943 @@ http://technet.microsoft.com/en-us/sysinternals/bb896645.aspx?PHPSESSID=d926
 http://www.codeproject.com/Articles/36538/Windows-7-Tricks-and-Keyboard-Shortcuts.aspx
 
 @language rest
+#@+node:ekr.20111003130143.15533: ** Unused settings (from leoSettings.leo)
+@ignore
+#@+node:ekr.20111003130143.15534: *3* @bool trace_masterClickHandler = False
+#@+node:ekr.20111003130143.15535: *3* Unused Options for jEdit colorizer
+#@+node:ekr.20111003130143.15536: *4* @int colorizer_interrupt_count2 = 5000
+The number of times the colorizer's main loop in colorOneChunk executes before actually colorizing text.
+A reasonable value is 5000.
+#@+node:ekr.20111003130143.15537: *4* @int colorizer_interrupt_count1 = 10
+The number of times the colorizer's main loop in colorOneChunk executes before pausing to check for events.
+A reasonable value is 10.
+#@+node:ekr.20111003130143.15538: *3* Options for old colorizer
+#@+node:ekr.20111003130143.15539: *4* @bool color_cweb_comments_with_latex = True
+True:  Leo colors C language comments in cweb mode as black with LaTeX keywords highlighted.
+Flase: Leo colors C language comments in cweb mode as comments (default red).
+
+Note: this setting does not affect how Leo colors noweb section references and defintions.
+#@+node:ekr.20111003130143.15540: *4* @bool color_cweb_doc_parts_with_latex = True
+True:  Leo colors @space, @* and @** sections in cweb mode as black with LaTeX keywords highlighted.
+False: Leo colors @space, @* and @** sections in cweb mode as comments (default is red).
+
+Note: this setting does not affect how Leo colors noweb section references and defintions.
+#@+node:ekr.20111003130143.15541: *4* @bool color_directives_in_plain_text = True
+True:  Leo colors @directives when @language plain is in effect.
+False: Leo colors everything black when @language plain is in effect.
+#@+node:ekr.20111003130143.15542: *4* @bool underline_undefined_section_names = True
+True: Underline undefined section names
+
+Only functional if use_hyperlinks = 0
+
+#@+node:ekr.20111003130143.15543: *4* @bool use_hyperlinks = False
+True:  underline "live" links.
+False: (recommended): Underline undefined section names.
+#@+node:ekr.20111003130143.15544: *4* @color comment_color = firebrick3
+The color of comments in code parts.
+#@+node:ekr.20111003130143.15545: *4* @color cweb_section_name_color = red
+The color of name in @<name@>
+#@+node:ekr.20111003130143.15546: *4* @color directive_color = blue
+The color of C/C++ preprocessor directive lines.
+#@+node:ekr.20111003130143.15547: *4* @color doc_part_color = firebrick3
+The color of text in doc parts.
+#@+node:ekr.20111003130143.15548: *4* @color forth_bracket_range_color = orange
+#@+node:ekr.20111003130143.15549: *4* @color keyword_color = blue
+The color of keywords of the present language.
+
+For example, the color of "if", "try" and "except" in Python.
+#@+node:ekr.20111003130143.15550: *4* @color latex_background_color = None
+#@+node:ekr.20111003130143.15551: *4* @color leo_keyword_color = #00aa00
+The color of Leo keywords such as @ignore, @color, etc.
+#@+node:ekr.20111003130143.15552: *4* @color section_name_brackets_color = blue
+The color of the double angle brackets in << name >>
+
+#@+node:ekr.20111003130143.15553: *4* @color section_name_color = red
+The color of name in < < name > > when name is defined.
+#@+node:ekr.20111003130143.15554: *4* @color show_invisibles_space_background_color = Gray90
+The background color that represents spaces and tabs when Show Invisibles mode is in effect.
+#@+node:ekr.20111003130143.15555: *4* @color show_invisibles_tab_foreground_color = Gray80
+The foreground color that represents spaces and tabs when Show Invisibles mode is in effect.
+#@+node:ekr.20111003130143.15556: *4* @color string_color = #00aa00
+The color of strings and their delimiters.
+
+#@+node:ekr.20111003130143.15557: *4* @color undefined_section_name_color = red
+The color of name in << name >> when name is undefined.
+#@+node:ekr.20111003130143.15558: *4* @font php keyword fonts (old colorizer)
+# php_keyword_font_family = None
+php_keyword_font_size = None
+php_keyword_font_slant = roman
+    # roman, italic
+php_keyword_font_weight = none
+    # normal, bold
+#@+node:ekr.20031218072017.434: ** Unused code
+@ignore
+@language python
+@color
+#@+node:ekr.20050920084036.207: *3* queryReplaceCommandsClass (limited to single node)
+class queryReplaceCommandsClass (baseEditCommandsClass):
+
+    '''A class to handle query replace commands.'''
+
+    @others
+#@+node:ekr.20050920084036.208: *4*  ctor & init
+def __init__ (self,c):
+
+    baseEditCommandsClass.__init__(self,c) # init the base class.
+    self.regexp = False # True: do query-replace-regexp.  Set in stateHandler.
+
+def init (self):
+
+    self.qQ = None
+    self.qR = None
+    self.replaced = 0 # The number of replacements.
+#@+node:ekr.20050920084036.209: *4*  getPublicCommands
+def getPublicCommands (self):
+
+    return {
+        'query-replace':        self.queryReplace,
+        'query-replace-regex':  self.queryReplaceRegex,
+    }
+#@+node:ekr.20050920084036.210: *4* Entry points
+def queryReplace (self,event):
+
+    '''Interactively find and replace text.
+    This is not recommended: Leo's other find and change commands are more capable.'''
+    self.regexp = False
+    self.stateHandler(event)
+
+def queryReplaceRegex (self,event):
+    '''Interactively find and replace text using regular expressions.
+    This is not recommended: Leo's other find and change commands are more capable.'''
+    self.regexp = True
+    self.stateHandler(event)
+#@+node:ekr.20051005151838: *4* Helpers
+#@+node:ekr.20050920084036.212: *5* doOneReplace
+def doOneReplace (self,event):
+
+    w = self.editWidget(event)
+    if not w: return
+
+    i = w.tag_ranges('qR')
+    w.delete(i[0],i[1])
+    ins = w.getInsertPoint()
+    w.insert(ins,self.qR)
+    self.replaced += 1
+#@+node:ekr.20050920084036.219: *5* findNextMatch (query-replace)
+def findNextMatch (self,event):
+
+    '''Find the next match and select it.
+    Return True if a match was found.
+    Otherwise, call quitSearch and return False.'''
+
+    k = self.k
+    w = self.editWidget(event)
+    if not w: return
+
+    if g.app.gui.guiName() != 'tkinter':
+        return g.es('command not ready yet',color='blue')
+
+    w.tag_delete('qR')
+    if self.regexp:
+        << handle regexp >>
+    else:
+        << handle plain search >>
+#@+node:ekr.20051005155611: *6* << handle regexp >>
+try:
+    regex = re.compile(self.qQ)
+except Exception:
+    self.quitSearch(event,'Illegal regular expression')
+    return False
+
+i = w.getInsertPoint()
+txt = w.get(i,'end')
+match = regex.search(txt)
+
+if match:
+    start = match.start()
+    end = match.end()
+    length = end - start
+    i = w.getInsertPoint()
+    w.setInsertPoint(i+start)
+    w.tag_add('qR','insert','insert +%sc' % length)
+    w.tag_config('qR',background='lightblue')
+    i = w.getInsertPoint()
+    txt = w.get(i,i+length)
+    return True
+else:
+    self.quitSearch(event)
+    return False
+#@+node:ekr.20051005160923: *6* << handle plain search >> (tag_add & tag_config) LATER
+i = w.search(self.qQ,'insert',stopindex='end')
+
+if i:
+    w.setInsertPoint(i)
+    w.tag_add('qR','insert','insert +%sc' % len(self.qQ))
+    w.tag_config('qR',background='lightblue')
+    return True
+else:
+    self.quitSearch(event)
+    return False
+#@+node:ekr.20050920084036.211: *5* getUserResponse
+def getUserResponse (self,event):
+
+    w = self.editWidget(event)
+    char = event and event.char or ''
+    
+    if not w or not char return
+
+    if char in ('Y','y'):
+        self.doOneReplace(event)
+        if not self.findNextMatch(event):
+            self.quitSearch(event)
+    elif char in ('Q','q','\n','Return'):
+        self.quitSearch(event)
+    elif char == '!':
+        while self.findNextMatch(event):
+            self.doOneReplace(event)
+    elif char in ('N','n','Delete'):
+        # Skip over the present match.
+        i = w.getInsertPoint()
+        w.setInsertPoint(i + len(self.qQ))
+        if not self.findNextMatch(event):
+            self.quitSearch(event)
+
+    w.seeInsertPoint()
+#@+node:ekr.20050920084036.220: *5* quitSearch
+def quitSearch (self,event,message=None):
+
+    k = self.k
+    w = self.editWidget(event)
+    if not w: return
+
+    w.tag_delete('qR')
+    k.clearState()
+    if message is None:
+        message = 'Replaced %d occurences' % self.replaced
+    k.setLabelGrey(message)
+#@+node:ekr.20050920084036.215: *5* stateHandler
+def stateHandler (self,event):
+
+    k = self.k ; state = k.getState('query-replace')
+
+    prompt = g.choose(self.regexp,'Query replace regexp','Query replace')
+
+    if state == 0: # Get the first arg.
+        self.init()
+        k.setLabelBlue(prompt + ': ',protect=True)
+        k.getArg(event,'query-replace',1,self.stateHandler)
+    elif state == 1: # Get the second arg.
+        self.qQ = k.arg
+        if len(k.arg) > 0:
+            prompt = '%s %s with: ' % (prompt,k.arg)
+            k.setLabelBlue(prompt)
+            k.getArg(event,'query-replace',2,self.stateHandler)
+        else:
+            k.resetLabel()
+            k.clearState()
+    elif state == 2: # Set the prompt and find the first match.
+        self.qR = k.arg # Null replacement arg is ok.
+        k.setLabelBlue('Query replacing %s with %s\n' % (self.qQ,self.qR) +
+            'y: replace, (n or Delete): skip, !: replace all, (q or Return): quit',
+            protect=True)
+        k.setState('query-replace',3,self.stateHandler)
+        self.findNextMatch(event)
+    elif state == 3:
+        self.getUserResponse(event)
+#@+node:ekr.20101031172539.5880: *3* Existing autocompleter: do not delete
+#@+node:ekr.20061031131434.43: *4* completeSelf (not used yet)
+def completeSelf (self):
+
+    g.trace(g.callers(4))
+
+    # This scan will be fast if an instant object already exists.
+    className,obj,p,s = self.classScanner.scan()
+    # g.trace(className,obj,p,s and len(s))
+
+    # First, look up the className.
+    if not obj and className:
+        obj = self.allClassesDict.get(className)
+        # if obj: g.trace('found in allClassesDict: %s = %s' % (className,obj))
+
+    # Second, create the object from class definition.
+    if not obj and s:
+        theClass = self.computeClassObjectFromString(className,s)
+        if theClass:
+            obj = self.createProxyObjectFromClass(className,theClass)
+            if obj:
+                self.selfObjectsDict [className] = obj
+                # This prevents future rescanning, even if the node moves.
+                self.selfVnodesDict [p.v] = obj
+    if obj:
+        self.selfClassName = className
+        self.push(self.theObject)
+        self.theObject = obj
+        self.membersList = self.getMembersList(obj=obj)
+    else:
+        # No further action possible or desirable.
+        self.selfClassName = None
+        self.theObject = None
+        self.clear()
+        self.membersList = []
+#@+node:ekr.20061031131434.60: *4* class forgivingParserClass (not used)
+class forgivingParserClass:
+
+    '''A class to create a valid class instances from
+    a class definition that may contain syntax errors.'''
+
+    @others
+#@+node:ekr.20061031131434.61: *5* ctor (forgivingParserClass)
+def __init__ (self,c):
+
+    self.c = c
+    self.excludedTnodesList = []
+    self.old_putBody = None # Set in parse for communication with newPutBody.
+#@+node:ekr.20061031131434.62: *5* parse
+def parse (self,p):
+
+    '''The top-level parser method.
+
+    It patches c.atFileCommands.putBody, calls the forgiving parser and finally
+    restores c.atFileCommands.putBody.'''
+
+    c = self.c
+
+    # Create an ivar for communication with newPutBody.
+    self.old_putBody = c.atFileCommands.putBody
+
+    # Override atFile.putBody.
+    c.atFileCommands.putBody = self.newPutBody
+
+    try:
+        s = None
+        s = self.forgivingParser(p)
+    finally:
+        c.atFileCommands.putBody = self.old_putBody
+
+    return s # Don't put a return in a finally clause.
+
+
+#@+node:ekr.20061031131434.63: *5* forgivingParser (leoKeys)
+def forgivingParser (self,p,suppress=False):
+
+    c = self.c ; root = p.copy()
+    self.excludedTnodesList = []
+    s = g.getScript(c,root,useSelectedText=False)
+    while s:
+        try:
+            if not g.isPython3:
+                s = g.toEncodedString(s)
+            compile(s+'\n','<string>','exec')
+            break
+        except SyntaxError:
+            fileName, n = g.getLastTracebackFileAndLineNumber()
+            p = self.computeErrorNode(c,root,n,lines=g.splitLines(s))
+            if not p or p == root:
+                if not suppress:
+                    g.es_print('syntax error in class node: can not continue')
+                s = None ; break
+            else:
+                # g.es_print('syntax error: deleting',p.h)
+                self.excludedTnodesList.append(p.v)
+                s = g.getScript(c,root,useSelectedText=False)
+        except Exception:
+            g.trace('unexpected exception')
+            g.es_exception()
+            break
+    return s or ''
+#@+node:ekr.20061031131434.64: *5* computeErrorNode (leoKeys)
+def computeErrorNode (self,c,root,n,lines):
+
+    '''The from c.goToLineNumber that applies to scripts.
+    Unlike c.gotoLineNumberOpen, this function returns a position.'''
+
+    if n == 1 or n >= len(lines):
+        return root
+
+    # vnodeName, junk, junk, junk, junk = c.convertLineToVnodeNameIndexLine(
+        # lines, n, root, scriptFind = True)
+
+    goto = goToLineNumber(c)
+    vnodeName,junk,junk,junk = goto.findVnode(
+        root,lines,n,ignoreSentinels)
+
+    if vnodeName:
+        for p in root.self_and_subtree():
+            if p.matchHeadline(vnodeName):
+                return p
+
+    return None
+#@+node:ekr.20061031131434.65: *5* newPutBody
+def newPutBody (self,p,oneNodeOnly=False,fromString=''):
+
+    if p.v in self.excludedTnodesList:
+        pass
+        # g.trace('ignoring',p.h)
+    else:
+        self.old_putBody(p,oneNodeOnly,fromString)
+#@+node:ekr.20061031131434.66: *4* class classScannerClass (not used)
+# Called by completeSelf, which is not used.
+
+class classScannerClass:
+
+    '''A class to find class definitions in a node or its parents.'''
+
+    @others
+#@+node:ekr.20061031131434.67: *5* ctor
+def __init__ (self,c):
+
+    self.c = c
+
+    # Ignore @root for now:
+    # self.start_in_doc = c.config.getBool('at_root_bodies_start_in_doc_mode')
+
+    self.start_in_doc = False
+#@+node:ekr.20061031131434.68: *5* scan
+def scan (self):
+
+    c = self.c
+
+    className,obj,p = self.findParentClass(c.p)
+    # g.trace(className,obj,p)
+
+    if p and not obj:
+        parser = c.k.autoCompleter.forgivingParser
+        s = parser.parse(p)
+    else:
+        s = None
+
+    return className,obj,p,s
+#@+node:ekr.20061031131434.69: *5* findParentClass
+def findParentClass (self,root):
+
+    autoCompleter = self.c.k.autoCompleter
+
+    # First, see if any parent has already been scanned.
+    for p in root.self_and_parents():
+        obj = autoCompleter.selfVnodesDict.get(p.v)
+        if obj:
+            # g.trace('found',obj,'in',p.h)
+            return None,obj,p
+
+    # Next, do a much slower scan.
+    # g.trace('slow scanning...')
+    for p in root.self_and_parents():
+        className = self.findClass(p)
+        if className:
+            # g.trace('found',className,'in',p.h)
+            return className,None,p
+
+    return None,None,None
+#@+node:ekr.20061031131434.70: *5* findClass & helpers
+def findClass (self,p):
+
+    lines = g.splitLines(p.b)
+    inDoc = self.start_in_doc
+    # g.trace(p.h)
+    for s in lines:
+        if inDoc:
+            if self.endsDoc(s):
+                inDoc = False
+        else:
+            if self.startsDoc(s):
+                inDoc = True
+            else:
+                # Not a perfect scan: a triple-string could start with 'class',
+                # but perfection is not important.
+                className = self.startsClass(s)
+                if className: return className
+    else:
+        return None
+#@+node:ekr.20061031131434.71: *6* endsDoc
+def endsDoc (self,s):
+
+    return s.startswith('@c')
+#@+node:ekr.20061031131434.72: *6* startsClass
+def startsClass (self,s):
+
+    if s.startswith('class'):
+        i = 5
+        i = g.skip_ws(s,i)
+        j = g.skip_id(s,i)
+        word = s[i:j]
+        # g.trace(word)
+        return word
+    else:
+        return None
+#@+node:ekr.20061031131434.73: *6* startsDoc
+def startsDoc (self,s):
+
+    for s2 in ('@doc','@ ','@\n', '@r', '@\t'):
+        if s.startswith(s2):
+            return True
+    else:
+        return False
+#@+node:ekr.20061031131434.57: *4* Proxy classes and objects
+#@+node:ekr.20061031131434.58: *5* createProxyObjectFromClass
+def createProxyObjectFromClass (self,className,theClass):
+
+    '''Create a dummy instance object by instantiating theClass with a dummy ctor.'''
+
+    if 0: # Calling the real ctor is way too dangerous.
+        # Set args to the list of required arguments.
+        args = inspect.getargs(theClass.__init__.im_func.func_code)
+        args = args[0] ; n = len(args)-1
+        args = [None for z in range(n)]
+
+    def dummyCtor (self):
+        pass
+
+    try:
+        obj = None
+        old_init = hasattr(theClass,'__init__') and theClass.__init__
+        theClass.__init__ = dummyCtor
+        obj = theClass()
+    finally:
+        if old_init:
+            theClass.__init__ = old_init
+        else:
+            delattr(theClass,'__init__')
+
+    g.trace(type(theClass),obj)
+
+    # Verify that it has all the proper attributes.
+    # g.trace(g.listToString(dir(obj)))
+    return obj
+#@+node:ekr.20061031131434.59: *5* createClassObjectFromString
+def computeClassObjectFromString (self,className,s):
+
+    try:
+        # Add the the class definition to the present environment.
+        exec(s) # Security violation!
+
+        # Get the newly created object from the locals dict.
+        theClass = locals().get(className)
+        return theClass
+
+    except Exception:
+        if 1: # Could be a weird kind of user error.
+            g.es_print('unexpected exception in',computeProxyObject)
+            g.es_exception()
+        return None
+#@+node:ekr.20080924032842.3: *4* getExternalCompletions
+def getExternalCompletions (self,s,p=None,language='python'):
+
+    '''Return the completions possible at the end of string 's'.
+       Return (theObject,completions):
+    - theObject is None unless the last character is 's' is a period.
+    - completions is the list of valid completions.'''
+
+    c = self.c ; k = c.k
+    if not p: p = c.p
+
+    # Use a separate widget containing just s.
+    self.widget = w = leoFrame.stringTextWidget(c,'compute-completions-widget')
+    w.setAllText(s)
+
+    # Scan back for the first period.
+    i = len(s)-1
+    # while i > 0 and s[i] != '.':
+    while i > 0 and g.isWordChar(s[i]):
+        i -= 1
+    if s[i] == '.': i += 1
+    prefix = s[i:].strip()
+
+    # Remember the prefix, but put the insert before the period.
+    w.setSelectionRange(i, len(s)-1, insert=i)
+
+    # Init the ivars...
+    self.language = p and g.scanForAtLanguage(c,p) or language
+    self.tabName = ''
+    old_enable = c.k.enable_autocompleter
+
+    # Get the completions.
+    try:
+        c.k.enable_autocompleter = True
+        self.useTabs = False
+        self.start(prefix=prefix)
+    finally:
+        c.k.enable_autocompleter = old_enable
+        self.useTabs = True
+
+    theObject,tabList = self.theObject,self.tabList
+    self.exit() # Not called from the autocompleter itself.
+    return theObject,tabList
+#@+node:ekr.20111003130143.15504: *3* Old colorizer, from leoColor.py
+#@+node:ekr.20031218072017.2796: *4* class colorizer
+class colorizer:
+    """Leo's syntax colorer class"""
+    def interrupt(self): pass
+    @others
+#@+node:ekr.20031218072017.1605: *5* color.__init__ & helper
+def __init__(self,c):
+
+    self.c = c
+    self.frame = c.frame
+    self.trace = c.config.getBool('trace_colorizer')
+    self.count = 0 # how many times this has been called.
+    self.use_hyperlinks = False # True: use hyperlinks and underline "live" links.
+    self.enabled = True # True: syntax coloring enabled
+    self.fonts = {}
+    self.showInvisibles = False # True: show "invisible" characters.
+    self.comment_string = None # Set by scanColorDirectives on @comment
+    # For incremental coloring.
+    self.tags = (
+        "blank","comment","cwebName","docPart","keyword","leoKeyword",
+        "latexModeBackground","latexModeKeyword",
+        "latexBackground","latexKeyword",
+        "link","name","nameBrackets","pp","string","tab",
+        "elide","bold","bolditalic","italic") # new for wiki styling.
+    self.incremental = False
+    self.sel = None
+    self.lines = []
+    self.states = []
+    self.last_flag = "unknown"
+    self.last_language = "unknown"
+    << define colorizer keywords >>
+    << ivars for communication between colorizeAnyLanguage and its allies >>
+    << define dispatch dicts >>
+    self.setFontFromConfig()
+#@+node:ekr.20031218072017.371: *6* << define colorizer keywords >>
+@others
+#@+node:ekr.20031218072017.372: *7* actionscript keywords
+self.actionscript_keywords = [
+#Jason 2003-07-03 
+#Actionscript keywords for Leo adapted from UltraEdit syntax highlighting
+"break", "call", "continue", "delete", "do", "else", "false", "for", "function", "goto", "if", "in", "new", "null", "return", "true", "typeof", "undefined", "var", "void", "while", "with", "#include", "catch", "constructor", "prototype", "this", "try", "_parent", "_root", "__proto__", "ASnative", "abs", "acos", "appendChild", "asfunction", "asin", "atan", "atan2", "attachMovie", "attachSound", "attributes", "BACKSPACE", "CAPSLOCK", "CONTROL", "ceil", "charAt", "charCodeAt", "childNodes", "chr", "cloneNode", "close", "concat", "connect", "cos", "createElement", "createTextNode", "DELETEKEY", "DOWN", "docTypeDecl", "duplicateMovieClip", "END", "ENTER", "ESCAPE", "enterFrame", "entry", "equal", "eval", "evaluate", "exp", "firstChild", "floor", "fromCharCode", "fscommand", "getAscii", "getBeginIndex", "getBounds", "getBytesLoaded", "getBytesTotal", "getCaretIndex", "getCode", "getDate", "getDay", "getEndIndex", "getFocus", "getFullYear", "getHours", "getMilliseconds", "getMinutes", "getMonth", "getPan", "getProperty", "getRGB", "getSeconds", "getTime", "getTimer", "getTimezoneOffset", "getTransform", "getURL", "getUTCDate", "getUTCDay", "getUTCFullYear", "getUTCHours", "getUTCMilliseconds", "getUTCMinutes", "getUTCMonth", "getUTCSeconds", "getVersion", "getVolume", "getYear", "globalToLocal", "gotoAndPlay", "gotoAndStop", "HOME", "haschildNodes", "hide", "hitTest", "INSERT", "Infinity", "ifFrameLoaded", "ignoreWhite", "indexOf", "insertBefore", "int", "isDown", "isFinite", "isNaN", "isToggled", "join", "keycode", "keyDown", "keyUp", "LEFT", "LN10", "LN2", "LOG10E", "LOG2E", "lastChild", "lastIndexOf", "length", "load", "loaded", "loadMovie", "loadMovieNum", "loadVariables", "loadVariablesNum", "localToGlobal", "log", "MAX_VALUE", "MIN_VALUE", "max", "maxscroll", "mbchr", "mblength", "mbord", "mbsubstring", "min", "NEGATIVE_INFINITY", "NaN", "newline", "nextFrame", "nextScene", "nextSibling", "nodeName", "nodeType", "nodeValue", "on", "onClipEvent", "onClose", "onConnect", "onData", "onLoad", "onXML", "ord", "PGDN", "PGUP", "PI", "POSITIVE_INFINITY", "parentNode", "parseFloat", "parseInt", "parseXML", "play", "pop", "pow", "press", "prevFrame", "previousSibling", "prevScene", "print", "printAsBitmap", "printAsBitmapNum", "printNum", "push", "RIGHT", "random", "release", "removeMovieClip", "removeNode", "reverse", "round", "SPACE", "SQRT1_2", "SQRT2", "scroll", "send", "sendAndLoad", "set", "setDate", "setFocus", "setFullYear", "setHours", "setMilliseconds", "setMinutes", "setMonth", "setPan", "setProperty", "setRGB", "setSeconds", "setSelection", "setTime", "setTransform", "setUTCDate", "setUTCFullYear", "setUTCHours", "setUTCMilliseconds", "setUTCMinutes", "setUTCMonth", "setUTCSeconds", "setVolume", "setYear", "shift", "show", "sin", "slice", "sort", "start", "startDrag", "status", "stop", "stopAllSounds", "stopDrag", "substr", "substring", "swapDepths", "splice", "split", "sqrt", "TAB", "tan", "targetPath", "tellTarget", "toggleHighQuality", "toLowerCase", "toString", "toUpperCase", "trace", "UP", "UTC", "unescape", "unloadMovie", "unLoadMovieNum", "unshift", "updateAfterEvent", "valueOf", "xmlDecl", "_alpha", "_currentframe", "_droptarget", "_focusrect", "_framesloaded", "_height", "_highquality", "_name", "_quality", "_rotation", "_soundbuftime", "_target", "_totalframes", "_url", "_visible", "_width", "_x", "_xmouse", "_xscale", "_y", "_ymouse", "_yscale", "and", "add", "eq", "ge", "gt", "le", "lt", "ne", "not", "or", "Array", "Boolean", "Color", "Date", "Key", "Math", "MovieClip", "Mouse", "Number", "Object", "Selection", "Sound", "String", "XML", "XMLSocket"
+]
+#@+node:bwmulder.20041023131509: *7* ada keywords
+self.ada_keywords = [
+    "abort",       "else",       "new",        "return",
+    "abs",         "elsif",      "not",        "reverse",
+    "abstract",    "end",        "null",
+    "accept",      "entry",      "select",
+    "access",      "exception",  "separate",
+    "aliased",     "exit",       "of",         "subtype",
+    "all",                       "or",
+    "and",         "for",        "others",     "tagged",
+    "array",       "function",   "out",        "task",
+    "at",                                      "terminate",
+                   "generic",    "package",    "then",
+    "begin",       "goto",       "pragma",     "type",
+    "body",                      "private",
+                   "if",         "procedure",
+    "case",        "in",         "protected",  "until",
+    "constant",    "is",                       "use",
+                                 "raise",
+    "declare",                   "range",      "when",
+    "delay",       "limited",    "record",     "while",
+    "delta",       "loop",       "rem",        "with",
+    "digits",                    "renames",
+    "do",          "mod",        "requeue",    "xor"
+   ]
+#@+node:ekr.20040206072057: *7* c# keywords
+self.csharp_keywords = [
+    "abstract","as",
+    "base","bool","break","byte",
+    "case","catch","char","checked","class","const","continue",
+    "decimal","default","delegate","do","double",
+    "else","enum","event","explicit","extern",
+    "false","finally","fixed","float","for","foreach",
+    "get","goto",
+    "if","implicit","in","int","interface","internal","is",
+    "lock","long",
+    "namespace","new","null",
+    "object","operator","out","override",
+    "params","partial","private","protected","public",
+    "readonly","ref","return",
+    "sbyte","sealed","set","short","sizeof","stackalloc",
+    "static","string","struct","switch",
+    "this","throw","true","try","typeof",
+    "uint","ulong","unchecked","unsafe","ushort","using",
+    "value","virtual","void","volatile",
+    "where","while",
+    "yield"]
+#@+node:ekr.20031218072017.373: *7* c/c++/cweb keywords
+self.c_keywords = [
+    # C keywords
+    "auto","break","case","char","continue",
+    "default","do","double","else","enum","extern",
+    "float","for","goto","if","int","long","register","return",
+    "short","signed","sizeof","static","struct","switch",
+    "typedef","union","unsigned","void","volatile","while",
+    # C++ keywords
+    "asm","bool","catch","class","const","const_cast",
+    "delete","dynamic_cast","explicit","false","friend",
+    "inline","mutable","namespace","new","operator",
+    "private","protected","public","reinterpret_cast","static_cast",
+    "template","this","throw","true","try",
+    "typeid","typename","using","virtual","wchar_t",
+]
+
+self.cweb_keywords = self.c_keywords
+#@+node:ekr.20040401103539: *7* css keywords
+self.css_keywords = [
+#html tags
+"address", "applet", "area", "a", "base", "basefont",
+"big", "blockquote", "body", "br", "b", "caption", "center",
+"cite", "code", "dd", "dfn", "dir", "div", "dl", "dt", "em", "font",
+"form", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "html", "img",
+"input", "isindex", "i", "kbd", "link", "li", "link", "map", "menu",
+"meta", "ol", "option", "param", "pre", "p", "samp",
+"select", "small", "span", "strike", "strong", "style", "sub", "sup",
+"table", "td", "textarea", "th", "title", "tr", "tt", "ul", "u", "var",
+#units
+"mm", "cm", "in", "pt", "pc", "em", "ex", "px",
+#colors
+"aqua", "black", "blue", "fuchsia", "gray", "green", "lime", "maroon", "navy", "olive", "purple", "red", "silver", "teal", "yellow", "white",
+#important directive
+"!important",
+#font rules
+"font", "font-family", "font-style", "font-variant", "font-weight", "font-size",
+#font values
+"cursive", "fantasy", "monospace", "normal", "italic", "oblique", "small-caps",
+"bold", "bolder", "lighter", "medium", "larger", "smaller",
+"serif", "sans-serif",
+#background rules
+"background", "background-color", "background-image", "background-repeat", "background-attachment", "background-position",
+#background values
+"contained", "none", "top", "center", "bottom", "left", "right", "scroll", "fixed",
+"repeat", "repeat-x", "repeat-y", "no-repeat",
+#text rules
+"word-spacing", "letter-spacing", "text-decoration", "vertical-align", "text-transform", "text-align", "text-indent", "text-transform", "text-shadow", "unicode-bidi", "line-height",
+#text values
+"normal", "none", "underline", "overline", "blink", "sub", "super", "middle", "top", "text-top", "text-bottom",
+"capitalize", "uppercase", "lowercase", "none", "left", "right", "center", "justify",
+"line-through",
+#box rules
+"margin", "margin-top", "margin-bottom", "margin-left", "margin-right",
+"margin", "padding-top", "padding-bottom", "padding-left", "padding-right",
+"border", "border-width", "border-style", "border-top", "border-top-width", "border-top-style", "border-bottom", "border-bottom-width", "border-bottom-style", "border-left", "border-left-width", "border-left-style", "border-right", "border-right-width", "border-right-style", "border-color",
+#box values
+"width", "height", "float", "clear",
+"auto", "thin", "medium", "thick", "left", "right", "none", "both",
+"none", "dotted", "dashed", "solid", "double", "groove", "ridge", "inset", "outset",
+#display rules
+"display", "white-space", 
+"min-width", "max-width", "min-height", "max-height",
+"outline-color", "outline-style", "outline-width",
+#display values
+"run-in", "inline-block", "list-item", "block", "inline", "none", "normal", "pre", "nowrap", "table-cell", "table-row", "table-row-group", "table-header-group", "inline-table", "table-column", "table-column-group", "table-cell", "table-caption"
+#list rules
+"list-style", "list-style-type", "list-style-image", "list-style-position",
+#list values
+"disc", "circle", "square", "decimal", "decimal-leading-zero", "none",
+"lower-roman", "upper-roman", "lower-alpha", "upper-alpha", "lower-latin", "upper-latin",
+#table rules
+"border-collapse", "caption-side",
+#table-values
+"empty-cells", "table-layout",
+#misc values/rules
+"counter-increment", "counter-reset",
+"marker-offset", "z-index",
+"cursor", "direction", "marks", "quotes",
+"clip", "content", "orphans", "overflow", "visibility",
+#aural rules
+"pitch", "range", "pitch-during", "cue-after", "pause-after", "cue-before", "pause-before", "speak-header", "speak-numeral", "speak-punctuation", "speed-rate", "play-during", "voice-family",
+#aural values
+"stress", "azimuth", "elevation", "pitch", "richness", "volume",
+"page-break", "page-after", "page-inside"]
+#@+node:ekr.20031218072017.374: *7* elisp keywords
+# EKR: needs more work.
+self.elisp_keywords = [
+    # Maybe...
+    "error","princ",
+    # More typical of other lisps...
+    "apply","eval",
+    "t","nil",
+    "and","or","not",
+    "cons","car","cdr",
+    "cond",
+    "defconst","defun","defvar",
+    "eq","ne","equal","gt","ge","lt","le",
+    "if",
+    "let",
+    "mapcar",
+    "prog","progn",
+    "set","setq",
+    "type-of",
+    "unless",
+    "when","while"]
+#@+node:ekr.20031218072017.375: *7* html keywords
+# No longer used by syntax colorer.
+self.html_keywords = []
+
+if 0: # Not used at present.
+    self.unused_keywords = [
+        # html constructs.
+        "a","body","cf",
+        "h1","h2","h3","h4","h5","h6",
+        "head","html","hr",
+        "i","img","li","lu","meta",
+        "p","title","ul",
+        # Common tags
+        "caption","col","colgroup",
+        "table","tbody","td","tfoot","th","thead","tr",
+        "script","style"]
+
+    self.html_specials = [ "<%","%>" ]
+#@+node:ekr.20031218072017.376: *7* java keywords
+self.java_keywords = [
+    "abstract","boolean","break","byte","byvalue",
+    "case","cast","catch","char","class","const","continue",
+    "default","do","double","else","extends",
+    "false","final","finally","float","for","future",
+    "generic","goto","if","implements","import","inner",
+    "instanceof","int","interface","long","native",
+    "new","null","operator","outer",
+    "package","private","protected","public","rest","return",
+    "short","static","super","switch","synchronized",
+    "this","throw","transient","true","try",
+    "var","void","volatile","while"]
+#@+node:ekr.20031218072017.377: *7* latex keywords
+#If you see two idenitical words, with minor capitalization differences
+#DO NOT ASSUME that they are the same word. For example \vert produces
+#a single vertical line and \Vert produces a double vertical line
+#Marcus A. Martin.
+
+self.latex_special_keyword_characters = "@(){}%"
+
+self.latex_keywords = [
+    #special keyworlds
+    "\\%", # 11/9/03
+    "\\@", "\\(", "\\)", "\\{", "\\}",
+    #A
+    "\\acute", "\\addcontentsline", "\\addtocontents", "\\addtocounter", "\\address",
+    "\\addtolength", "\\addvspace", "\\AE", "\\ae", "\\aleph", "\\alph", "\\angle",
+    "\\appendix", 
+    "\\approx", "\\arabic", "\\arccos", "\\arcsin", "\\arctan", "\\ast", "\\author",
+    #B
+    "\\b", "\\backmatter", "\\backslash", "\\bar", "\\baselineskip", "\\baselinestretch",
+    "\\begin", "\\beta", "\\bezier", "\\bf", "\\bfseries", "\\bibitem", "\\bigcap",
+    "\\bigcup", "\\bigodot", "\\bigoplus", "\\bigotimes", "\\bigskip", "\\biguplus",
+    "\\bigvee", "\\bigwedge", "\\bmod", "\\boldmath", "\\Box", "\\breve", "\\bullet",
+    #C
+    "\\c", "\\cal", "\\caption", "\\cdot", "\\cdots", "\\centering", "\\chapter",
+    "\\check", "\\chi", "\\circ", "\\circle", "\\cite", "\\cleardoublepage", "\\clearpage",
+    "\\cline", "\\closing", "\\clubsuit", "\\coprod", "\\copywright", "\\cos", "\\cosh",
+    "\\cot", "\\coth", "csc",
+    #D
+    "\\d", "\\dag", "\\dashbox", "\\date", "\\ddag", "\\ddot", "\\ddots", "\\decl",
+    "\\deg", "\\Delta", 
+    "\\delta", "\\depthits", "\\det", 
+    "\\DH", "\\dh", "\\Diamond", "\\diamondsuit", "\\dim", "\\div", "\\DJ", "\\dj",
+    "\\documentclass", "\\documentstyle", 
+    "\\dot", "\\dotfil", "\\downarrow",
+    #E
+    "\\ell", "\\em", "\\emph", "\\end", "\\enlargethispage", "\\ensuremath",
+    "\\enumi", "\\enuii", "\\enumiii", "\\enuiv", "\\epsilon", "\\equation", "\\equiv",
+    "\\eta", "\\example", "\\exists", "\\exp",
+    #F
+    "\\fbox", "\\figure", "\\flat", "\\flushbottom", "\\fnsymbol", "\\footnote",
+    "\\footnotemark", "\\fotenotesize", 
+    "\\footnotetext", "\\forall", "\\frac", "\\frame", "\\framebox", "\\frenchspacing",
+    "\\frontmatter",
+    #G
+    "\\Gamma", "\\gamma", "\\gcd", "\\geq", "\\gg", "\\grave", "\\guillemotleft", 
+    "\\guillemotright", "\\guilsinglleft", "\\guilsinglright",
+    #H
+    "\\H", "\\hat", "\\hbar", "\\heartsuit", "\\heightits", "\\hfill", "\\hline", "\\hom",
+    "\\hrulefill", "\\hspace", "\\huge", "\\Huge", "\\hyphenation"
+    #I
+    "\\Im", "\\imath", "\\include", "includeonly", "indent", "\\index", "\\inf", "\\infty", 
+    "\\input", "\\int", "\\iota", "\\it", "\\item", "\\itshape",
+    #J
+    "\\jmath", "\\Join",
+    #K
+    "\\k", "\\kappa", "\\ker", "\\kill",
+    #L
+    "\\label", "\\Lambda", "\\lambda", "\\langle", "\\large", "\\Large", "\\LARGE", 
+    "\\LaTeX", "\\LaTeXe", 
+    "\\ldots", "\\leadsto", "\\left", "\\Leftarrow", "\\leftarrow", "\\lefteqn", "\\leq",
+    "\\lg", "\\lhd", "\\lim", "\\liminf", "\\limsup", "\\line", "\\linebreak", 
+    "\\linethickness", "\\linewidth", "\\listfiles",
+    "\\ll", "\\ln", "\\location", "\\log", "\\Longleftarrow", "\\longleftarrow", 
+    "\\Longrightarrow", "longrightarrow",
+    #M
+    "\\mainmatter", "\\makebox", "\\makeglossary", "\\makeindex","\\maketitle", "\\markboth", "\\markright",
+    "\\mathbf", "\\mathcal", "\\mathit", "\\mathnormal", "\\mathop",
+    "\\mathrm", "\\mathsf", "\\mathtt", "\\max", "\\mbox", "\\mdseries", "\\medskip",
+    "\\mho", "\\min", "\\mp", "\\mpfootnote", "\\mu", "\\multicolumn", "\\multiput",
+    #N
+    "\\nabla", "\\natural", "\\nearrow", "\\neq", "\\newcommand", "\\newcounter", 
+    "\\newenvironment", "\\newfont",
+    "\\newlength", "\\newline", "\\newpage", "\\newsavebox", "\\newtheorem", "\\NG", "\\ng",
+    "\\nocite", "\\noindent", "\\nolinbreak", "\\nopagebreak", "\\normalsize",
+    "\\not", "\\nu", "nwarrow",
+    #O
+    "\\Omega", "\\omega", "\\onecolumn", "\\oint", "\\opening", "\\oval", 
+    "\\overbrace", "\\overline",
+    #P
+    "\\P", "\\page", "\\pagebreak", "\\pagenumbering", "\\pageref", "\\pagestyle", 
+    "\\par", "\\parbox", "\\paragraph", "\\parindent", "\\parskip", "\\part", 
+    "\\partial", "\\per", "\\Phi", "\\phi", "\\Pi", "\\pi", "\\pm", 
+    "\\pmod", "\\pounds", "\\prime", "\\printindex", "\\prod", "\\propto", "\\protext", 
+    "\\providecomamnd", "\\Psi", "\\psi", "\\put",
+    #Q
+    "\\qbezier", "\\quoteblbase", "\\quotesinglbase",
+    #R
+    "\\r", "\\raggedbottom", "\\raggedleft", "\\raggedright", "\\raisebox", "\\rangle", 
+    "\\Re", "\\ref", "\\renewcommand", "\\renewenvironment", "\\rhd", "\\rho", "\\right", 
+    "\\Rightarrow", "\\rightarrow", "\\rm", "\\rmfamily",
+    "\\Roman", "\\roman", "\\rule", 
+    #S
+    "\\s", "\\samepage", "\\savebox", "\\sbox", "\\sc", "\\scriptsize", "\\scshape", 
+    "\\searrow", "\\sec", "\\section",
+    "\\setcounter", "\\setlength", "\\settowidth", "\\settodepth", "\\settoheight", 
+    "\\settowidth", "\\sf", "\\sffamily", "\\sharp", "\\shortstack", "\\Sigma", "\\sigma", 
+    "\\signature", "\\sim", "\\simeq", "\\sin", "\\sinh", "\\sl", "\\SLiTeX",
+    "\\slshape", "\\small", "\\smallskip", "\\spadesuit", "\\sqrt", "\\sqsubset",
+    "\\sqsupset", "\\SS",
+    "\\stackrel", "\\star", "\\subsection", "\\subset", 
+    "\\subsubsection", "\\sum", "\\sup", "\\supressfloats", "\\surd", "\\swarrow",
+    #T
+    "\\t", "\\table", "\\tableofcontents", "\\tabularnewline", "\\tan", "\\tanh", 
+    "\\tau", "\\telephone", "\\TeX", "\\textbf",
+    "\\textbullet", "\\textcircled", "\\textcompworkmark", "\\textemdash", 
+    "\\textendash", "\\textexclamdown", "\\textheight", "\\textquestiondown", 
+    "\\textquoteblleft", "\\textquoteblright", "\\textquoteleft",
+    "\\textperiod", "\\textquotebl", "\\textquoteright", "\\textmd", "\\textit", "\\textrm", 
+    "\\textsc", "\\textsl", "\\textsf", "\\textsuperscript", "\\texttt", "\\textup",
+    "\\textvisiblespace", "\\textwidth", "\\TH", "\\th", "\\thanks", "\\thebibligraphy",
+    "\\Theta", "theta", 
+    "\\tilde", "\\thinlines", 
+    "\\thispagestyle", "\\times", "\\tiny", "\\title", "\\today", "\\totalheightits", 
+    "\\triangle", "\\tt", 
+    "\\ttfamily", "\\twocoloumn", "\\typeout", "\\typein",
+    #U
+    "\\u", "\\underbrace", "\\underline", "\\unitlength", "\\unlhd", "\\unrhd", "\\Uparrow",
+    "\\uparrow", "\\updownarrow", "\\upshape", "\\Upsilon", "\\upsilon", "\\usebox",
+    "\\usecounter", "\\usepackage", 
+    #V
+    "\\v", "\\value", "\\varepsilon", "\\varphi", "\\varpi", "\\varrho", "\\varsigma", 
+    "\\vartheta", "\\vdots", "\\vec", "\\vector", "\\verb", "\\Vert", "\\vert", "\\vfill",
+    "\\vline", "\\vphantom", "\\vspace",
+    #W
+    "\\widehat", "\\widetilde", "\\widthits", "\\wp",
+    #X
+    "\\Xi", "\\xi",
+    #Z
+    "\\zeta" ]
+#@+node:ekr.20060328110802: *7* lua keywords
+# ddm 13/02/06
+self.lua_keywords = [
+    "and", "break", "do", "else", "elseif", "end",
+    "false", "for", "function", "if", "in", "local",
+    "nil", "not", "or", "repeat", "return", "then",
+    "true", "until", "while",
+]
+#@+node:ekr.20031218072017.378: *7* pascal keywords
+self.pascal_keywords = [
+    "and","array","as","begin",
+    "case","const","class","constructor","cdecl"
+    "div","do","downto","destructor","dispid","dynamic",
+    "else","end","except","external",
+    "false","file","for","forward","function","finally",
+    "goto","if","in","is","label","library",
+    "mod","message","nil","not","nodefault""of","or","on",
+    "procedure","program","packed","pascal",
+    "private","protected","public","published",
+    "record","repeat","raise","read","register",
+    "set","string","shl","shr","stdcall",
+    "then","to","true","type","try","until","unit","uses",
+    "var","virtual","while","with","xor"
+    # object pascal
+    "asm","absolute","abstract","assembler","at","automated",
+    "finalization",
+    "implementation","inherited","initialization","inline","interface",
+    "object","override","resident","resourcestring",
+    "threadvar",
+    # limited contexts
+    "exports","property","default","write","stored","index","name" ]
+#@+node:ekr.20031218072017.379: *7* perl/perlpod keywords
+self.perl_keywords = [
+    "continue","do","else","elsif","format","for","format","for","foreach",
+    "if","local","package","sub","tr","unless","until","while","y",
+    # Comparison operators
+    "cmp","eq","ge","gt","le","lt","ne",
+    # Matching ooperators
+    "m","s",
+    # Unary functions
+    "alarm","caller","chdir","cos","chroot","exit","eval","exp",
+    "getpgrp","getprotobyname","gethostbyname","getnetbyname","gmtime",
+    "hex","int","length","localtime","log","ord","oct",
+    "require","reset","rand","rmdir","readlink",
+    "scalar","sin","sleep","sqrt","srand","umask",
+    # Transfer ops
+    "next","last","redo","go","dump",
+    # File operations...
+    "select","open",
+    # FL ops
+    "binmode","close","closedir","eof",
+    "fileno","getc","getpeername","getsockname","lstat",
+    "readdir","rewinddir","stat","tell","telldir","write",
+    # FL2 ops
+    "bind","connect","flock","listen","opendir",
+    "seekdir","shutdown","truncate",
+    # FL32 ops
+    "accept","pipe",
+    # FL3 ops
+    "fcntl","getsockopt","ioctl","read",
+    "seek","send","sysread","syswrite",
+    # FL4 & FL5 ops
+    "recv","setsocket","socket","socketpair",
+    # Array operations
+    "pop","shift","split","delete",
+    # FLIST ops
+    "sprintf","grep","join","pack",
+    # LVAL ops
+    "chop","defined","study","undef",
+    # f0 ops
+    "endhostent","endnetent","endservent","endprotoent",
+    "endpwent","endgrent","fork",
+    "getgrent","gethostent","getlogin","getnetent","getppid",
+    "getprotoent","getpwent","getservent",
+    "setgrent","setpwent","time","times","wait","wantarray",
+    # f1 ops
+    "getgrgid","getgrnam","getprotobynumber","getpwnam","getpwuid",
+    "sethostent","setnetent","setprotoent","setservent",
+    # f2 ops
+    "atan2","crypt",
+    "gethostbyaddr","getnetbyaddr","getpriority","getservbyname","getservbyport",
+    "index","link","mkdir","msgget","rename",
+    "semop","setpgrp","symlink","unpack","waitpid",
+    # f2 or 3 ops
+    "index","rindex","substr",
+    # f3 ops
+    "msgctl","msgsnd","semget","setpriority","shmctl","shmget","vec",
+    # f4 & f5 ops
+    "semctl","shmread","shmwrite","msgrcv",
+    # Assoc ops
+    "dbmclose","each","keys","values",
+    # List ops
+    "chmod","chown","die","exec","kill",
+    "print","printf","return","reverse",
+    "sort","system","syscall","unlink","utime","warn",
+]
+
+self.perlpod_keywords = self.perl_keywords
+#@+node:ekr.20031218072017.380: *7* php keywords
+self.php_keywords = [ # 08-SEP-2002 DTHEIN
+    "__CLASS__", "__FILE__", "__FUNCTION__", "__LINE__",
+    "and", "as", "break",
+    "case", "cfunction", "class", "const", "continue",
+    "declare", "default", "do",
+    "else", "elseif", "enddeclare", "endfor", "endforeach",
+    "endif", "endswitch",  "endwhile", "eval", "extends",
+    "for", "foreach", "function", "global", "if",
+    "new", "old_function", "or", "static", "switch",
+    "use", "var", "while", "xor" ]
+
+# The following are supposed to be followed by ()
+self.php_paren_keywords = [
+    "array", "die", "echo", "empty", "exit",
+    "include", "include_once", "isset", "list",
+    "print", "require", "require_once", "return",
+    "unset" ]
+
+# The following are handled by special case code:
+# "<?php", "?>"
+#@+node:ekr.20050618052653: *7* plsql keywords
+self.plsql_keywords = [
+# reserved keywords
+"abort",
+"accept",
+"access",
+"add",
+"admin",
+"after",
+"all",
+"allocate",
+"alter",
+"analyze",
+"and",
+"any",
+"archive",
+"archivelog",
+"array",
+"arraylen",
+"as",
+"asc",
+"assert",
+"assign",
+"at",
+"audit",
+"authorization",
+"avg",
+"backup",
+"base_table",
+"become",
+"before",
+"begin",
+"between",
+"binary_integer",
+"block",
+"body",
+"boolean",
+"by",
+"cache",
+"cancel",
+"cascade",
+"case",
+"change",
+"char",
+"char_base",
+"character",
+"check",
+"checkpoint",
+"close",
+"cluster",
+"clusters",
+"cobol",
+"colauth",
+"column",
+"columns",
+"comment",
+"commit",
+"compile",
+"compress",
+"connect",
+"constant",
+"constraint",
+"constraints",
+"contents",
+"continue",
+"controlfile",
+"count",
+"crash",
+"create",
+"current",
+"currval",
+"cursor",
+"cycle",
+"data_base",
+"database",
+"datafile",
+"date",
+"dba",
+"debugoff",
+"debugon",
+"dec",
+"decimal",
+"declare",
+"default",
+"definition",
+"delay",
+"delete",
+"delta",
+"desc",
+"digits",
+"disable",
+"dismount",
+"dispose",
+"distinct",
+"distinct",
+"do",
+"double",
+"drop",
+"drop",
+"dump",
+"each",
+"else",
+"else",
+"elsif",
+"enable",
+"end",
+"end",
+"entry",
+"escape",
+"events",
+"except",
+"exception",
+"exception_init",
+"exceptions",
+"exclusive",
+"exec",
+"execute",
+"exists",
+"exists",
+"exit",
+"explain",
+"extent",
+"externally",
+"false",
+"fetch",
+"fetch",
+"file",
+"float",
+"float",
+"flush",
+"for",
+"for",
+"force",
+"foreign",
+"form",
+"fortran",
+"found",
+"freelist",
+"freelists",
+"from",
+"from",
+"function",
+"generic",
+"go",
+"goto",
+"grant",
+"group",
+"groups",
+"having",
+"identified",
+"if",
+"immediate",
+"in",
+"including",
+"increment",
+"index",
+"indexes",
+"indicator",
+"initial",
+"initrans",
+"insert",
+"instance",
+"int",
+"integer",
+"intersect",
+"into",
+"is",
+"key",
+"language",
+"layer",
+"level",
+"like",
+"limited",
+"link",
+"lists",
+"lock",
+"logfile",
+"long",
+"loop",
+"manage",
+"manual",
+"max",
+"maxdatafiles",
+"maxextents",
+"maxinstances",
+"maxlogfiles",
+"maxloghistory",
+"maxlogmembers",
+"maxtrans",
+"maxvalue",
+"min",
+"minextents",
+"minus",
+"minvalue",
+"mlslabel",
+"mod",
+"mode",
+"modify",
+"module",
+"mount",
+"natural",
+"new",
+"new",
+"next",
+"nextval",
+"noarchivelog",
+"noaudit",
+"nocache",
+"nocompress",
+"nocycle",
+"nomaxvalue",
+"nominvalue",
+"none",
+"noorder",
+"noresetlogs",
+"normal",
+"nosort",
+"not",
+"notfound",
+"nowait",
+"null",
+"number",
+"number_base",
+"numeric",
+"of",
+"off",
+"offline",
+"old",
+"on",
+"online",
+"only",
+"open",
+"open",
+"optimal",
+"option",
+"or",
+"order",
+"others",
+"out",
+"own",
+"package",
+"package",
+"parallel",
+"partition",
+"pctfree",
+"pctincrease",
+"pctused",
+"plan",
+"pli",
+"positive",
+"pragma",
+"precision",
+"primary",
+"prior",
+"private",
+"private",
+"privileges",
+"procedure",
+"procedure",
+"profile",
+"public",
+"quota",
+"raise",
+"range",
+"raw",
+"read",
+"real",
+"record",
+"recover",
+"references",
+"referencing",
+"release",
+"remr",
+"rename",
+"resetlogs",
+"resource",
+"restricted",
+"return",
+"reuse",
+"reverse",
+"revoke",
+"role",
+"roles",
+"rollback",
+"row",
+"rowid",
+"rowlabel",
+"rownum",
+"rows",
+"rowtype",
+"run",
+"savepoint",
+"schema",
+"scn",
+"section",
+"segment",
+"select",
+"select",
+"separate",
+"sequence",
+"session",
+"set",
+"set",
+"share",
+"shared",
+"size",
+"size",
+"smallint",
+"smallint",
+"snapshot",
+"some",
+"sort",
+"space",
+"sql",
+"sqlbuf",
+"sqlcode",
+"sqlerrm",
+"sqlerror",
+"sqlstate",
+"start",
+"start",
+"statement",
+"statement_id",
+"statistics",
+"stddev",
+"stop",
+"storage",
+"subtype",
+"successful",
+"sum",
+"sum",
+"switch",
+"synonym",
+"sysdate",
+"system",
+"tabauth",
+"table",
+"tables",
+"tables",
+"tablespace",
+"task",
+"temporary",
+"terminate",
+"then",
+"thread",
+"time",
+"to",
+"tracing",
+"transaction",
+"trigger",
+"triggers",
+"true",
+"truncate",
+"type",
+"uid",
+"under",
+"union",
+"unique",
+"unlimited",
+"until",
+"update",
+"use",
+"user",
+"using",
+"validate",
+"values",
+"varchar",
+"varchar2",
+"variance",
+"view",
+"views",
+"when",
+"whenever",
+"where",
+"while",
+"with",
+"work",
+"write",
+"xor" ]
+#@+node:ekr.20031218072017.381: *7* python keywords
+self.python_keywords = [
+    "and",       "del",       "for",       "is",        "raise",    
+    "assert",    "elif",      "from",      "lambda",    "return",   
+    "break",     "else",      "global",    "not",       "try",      
+    "class",     "except",    "if",        "or",        "yield",   
+    "continue",  "exec",      "import",    "pass",      "while",
+    "def",       "finally",   "in",        "print"]
+#@+node:ekr.20040331145826: *7* rapidq keywords
+self.rapidq_keywords = [
+# Syntax file for RapidQ
+"$APPTYPE","$DEFINE","$ELSE","$ENDIF","$ESCAPECHARS","$IFDEF","$IFNDEF",
+"$INCLUDE","$MACRO","$OPTIMIZE","$OPTION","$RESOURCE","$TYPECHECK","$UNDEF",
+"ABS","ACOS","ALIAS","AND","AS","ASC","ASIN","ATAN","ATN","BIN$","BIND","BYTE",
+"CALL","CALLBACK","CALLFUNC","CASE","CEIL","CHDIR","CHDRIVE","CHR$","CINT",
+"CLNG","CLS","CODEPTR","COMMAND$","COMMANDCOUNT","CONSOLE","CONST","CONSTRUCTOR",
+"CONVBASE$","COS","CREATE","CSRLIN","CURDIR$","DATA","DATE$","DEC","DECLARE",
+"DEFBYTE","DEFDBL","DEFDWORD","DEFINT","DEFLNG","DEFSHORT","DEFSNG","DEFSTR",
+"DEFWORD","DELETE$","DIM","DIR$","DIREXISTS","DO","DOEVENTS","DOUBLE","DWORD",
+"ELSE","ELSEIF","END","ENVIRON","ENVIRON$","EVENT","EXIT","EXP","EXTENDS",
+"EXTRACTRESOURCE","FIELD$","FILEEXISTS","FIX","FLOOR","FOR","FORMAT$","FRAC",
+"FUNCTION","FUNCTIONI","GET$","GOSUB","GOTO","HEX$","IF","INC","INITARRAY",
+"INKEY$","INP","INPUT","INPUT$","INPUTHANDLE","INSERT$","INSTR","INT","INTEGER",
+"INV","IS","ISCONSOLE","KILL","KILLMESSAGE","LBOUND","LCASE$","LEFT$","LEN",
+"LFLUSH","LIB","LIBRARYINST","LOCATE","LOG","LONG","LOOP","LPRINT","LTRIM$",
+"MEMCMP","MESSAGEBOX","MESSAGEDLG","MID$","MKDIR","MOD","MOUSEX","MOUSEY",
+"NEXT","NOT","OFF","ON","OR","OUT","OUTPUTHANDLE","PARAMSTR$","PARAMSTRCOUNT",
+"PARAMVAL","PARAMVALCOUNT","PCOPY","PEEK","PLAYWAV","POKE","POS","POSTMESSAGE",
+"PRINT","PROPERTY","QUICKSORT","RANDOMIZE","REDIM","RENAME","REPLACE$",
+"REPLACESUBSTR$","RESOURCE","RESOURCECOUNT","RESTORE","RESULT","RETURN",
+"REVERSE$","RGB","RIGHT$","RINSTR","RMDIR","RND","ROUND","RTRIM$","RUN",
+"SCREEN","SELECT","SENDER","SENDMESSAGE","SETCONSOLETITLE","SGN","SHELL",
+"SHL","SHORT","SHOWMESSAGE","SHR","SIN","SINGLE","SIZEOF","SLEEP","SOUND",
+"SPACE$","SQR","STACK","STATIC","STEP","STR$","STRF$","STRING","STRING$",
+"SUB","SUBI","SWAP","TALLY","TAN","THEN","TIME$","TIMER","TO","TYPE","UBOUND",
+"UCASE$","UNLOADLIBRARY","UNTIL","VAL","VARIANT","VARPTR","VARPTR$","VARTYPE",
+"WEND","WHILE","WITH","WORD","XOR"]
+#@+node:sps.20081213155951.1: *7* ruby keywords
+self.ruby_keywords = [
+# ruby keywords
+# based on "Ruby in a Nutshell"
+"BEGIN",    "do",     "next",   "then",
+"END",      "else",   "nil",    "true",
+"alias",    "elsif",  "not",    "undef",
+"and",      "end",    "or",     "unless",
+"begin",    "ensure", "redo",   "until",
+"break",    "false",  "rescue", "when",
+"case",     "for",    "retry",  "while",
+"class",    "if",     "return", "yield",
+"def",      "in",     "self",   "__FILE__",
+"defined?", "module", "super",  "__LINE__",
+]
+#@+node:ekr.20031218072017.382: *7* rebol keywords
+self.rebol_keywords = [
+#Jason 2003-07-03 
+#based on UltraEdit syntax highlighting
+"about", "abs", "absolute", "add", "alert", "alias", "all", "alter", "and", "and~", "any", "append", "arccosine", "arcsine", "arctangent", "array", "ask", "at",  
+"back", "bind", "boot-prefs", "break", "browse", "build-port", "build-tag",  
+"call", "caret-to-offset", "catch", "center-face", "change", "change-dir", "charset", "checksum", "choose", "clean-path", "clear", "clear-fields", "close", "comment", "complement", "compose", "compress", "confirm", "continue-post", "context", "copy", "cosine", "create-request", "crypt", "cvs-date", "cvs-version",  
+"debase", "decode-cgi", "decode-url", "decompress", "deflag-face", "dehex", "delete", "demo", "desktop", "detab", "dh-compute-key", "dh-generate-key", "dh-make-key", "difference", "dirize", "disarm", "dispatch", "divide", "do", "do-boot", "do-events", "do-face", "do-face-alt", "does", "dsa-generate-key", "dsa-make-key", "dsa-make-signature", "dsa-verify-signature",  
+"echo", "editor", "either", "else", "emailer", "enbase", "entab", "exclude", "exit", "exp", "extract", 
+"fifth", "find", "find-key-face", "find-window", "flag-face", "first", "flash", "focus", "for", "forall", "foreach", "forever", "form", "forskip", "fourth", "free", "func", "function",  
+"get", "get-modes", "get-net-info", "get-style",  
+"halt", "has", "head", "help", "hide", "hide-popup",  
+"if", "import-email", "in", "inform", "input", "insert", "insert-event-func", "intersect", 
+"join", 
+"last", "launch", "launch-thru", "layout", "license", "list-dir", "load", "load-image", "load-prefs", "load-thru", "log-10", "log-2", "log-e", "loop", "lowercase",  
+"make", "make-dir", "make-face", "max", "maximum", "maximum-of", "min", "minimum", "minimum-of", "mold", "multiply",  
+"negate", "net-error", "next", "not", "now",  
+"offset-to-caret", "open", "open-events", "or", "or~", 
+"parse", "parse-email-addrs", "parse-header", "parse-header-date", "parse-xml", "path-thru", "pick", "poke", "power", "prin", "print", "probe", "protect", "protect-system",  
+"q", "query", "quit",  
+"random", "read", "read-io", "read-net", "read-thru", "reboot", "recycle", "reduce", "reform", "rejoin", "remainder", "remold", "remove", "remove-event-func", "rename", "repeat", "repend", "replace", "request", "request-color", "request-date", "request-download", "request-file", "request-list", "request-pass", "request-text", "resend", "return", "reverse", "rsa-encrypt", "rsa-generate-key", "rsa-make-key", 
+"save", "save-prefs", "save-user", "scroll-para", "second", "secure", "select", "send", "send-and-check", "set", "set-modes", "set-font", "set-net", "set-para", "set-style", "set-user", "set-user-name", "show", "show-popup", "sine", "size-text", "skip", "sort", "source", "split-path", "square-root", "stylize", "subtract", "switch",  
+"tail", "tangent", "textinfo", "third", "throw", "throw-on-error", "to", "to-binary", "to-bitset", "to-block", "to-char", "to-date", "to-decimal", "to-email", "to-event", "to-file", "to-get-word", "to-hash", "to-hex", "to-idate", "to-image", "to-integer", "to-issue", "to-list", "to-lit-path", "to-lit-word", "to-local-file", "to-logic", "to-money", "to-none", "to-pair", "to-paren", "to-path", "to-rebol-file", "to-refinement", "to-set-path", "to-set-word", "to-string", "to-tag", "to-time", "to-tuple", "to-url", "to-word", "trace", "trim", "try",  
+"unfocus", "union", "unique", "uninstall", "unprotect", "unset", "until", "unview", "update", "upgrade", "uppercase", "usage", "use",  
+"vbug", "view", "view-install", "view-prefs",  
+"wait", "what", "what-dir", "while", "write", "write-io",  
+"xor", "xor~",  
+"action!", "any-block!", "any-function!", "any-string!", "any-type!", "any-word!",  
+"binary!", "bitset!", "block!",  
+"char!",  
+"datatype!", "date!", "decimal!", 
+"email!", "error!", "event!",  
+"file!", "function!",  
+"get-word!",  
+"hash!",  
+"image!", "integer!", "issue!",  
+"library!", "list!", "lit-path!", "lit-word!", "logic!",  
+"money!",  
+"native!", "none!", "number!",  
+"object!", "op!",  
+"pair!", "paren!", "path!", "port!",  
+"refinement!", "routine!",  
+"series!", "set-path!", "set-word!", "string!", "struct!", "symbol!",  
+"tag!", "time!", "tuple!",  
+"unset!", "url!",  
+"word!",  
+"any-block?", "any-function?", "any-string?", "any-type?", "any-word?",  
+"binary?", "bitset?", "block?",  
+"char?", "connected?", "crypt-strength?", 
+"datatype?", "date?", "decimal?", "dir?",  
+"email?", "empty?", "equal?", "error?", "even?", "event?", "exists?", "exists-key?",
+"file?", "flag-face?", "found?", "function?",  
+"get-word?", "greater-or-equal?", "greater?",  
+"hash?", "head?",  
+"image?", "in-window?", "index?", "info?", "input?", "inside?", "integer?", "issue?",  
+"length?", "lesser-or-equal?", "lesser?", "library?", "link-app?", "link?", "list?", "lit-path?", "lit-word?", "logic?",  
+"modified?", "money?",  
+"native?", "negative?", "none?", "not-equal?", "number?",  
+"object?", "odd?", "offset?", "op?", "outside?",  
+"pair?", "paren?", "path?", "port?", "positive?",  
+"refinement?", "routine?",  
+"same?", "screen-offset?", "script?", "series?", "set-path?", "set-word?", "size?", "span?", "strict-equal?", "strict-not-equal?", "string?", "struct?",  
+"tag?", "tail?", "time?", "tuple?", "type?",  
+"unset?", "url?",  
+"value?", "view?", 
+"within?", "word?",  
+"zero?"
+]
+#@+node:ekr.20040401111125: *7* shell keywords
+self.shell_keywords = [
+    # reserved keywords
+    "case","do","done","elif","else","esac","fi",
+    "for","if","in","then",
+    "until","while",
+    "break","cd","chdir","continue","eval","exec",
+    "exit","kill","newgrp","pwd","read","readonly",
+    "return","shift","test","trap","ulimit",
+    "umask","wait" ]
+#@+node:ekr.20031218072017.383: *7* tcl/tk keywords
+self.tcltk_keywords = [ # Only the tcl keywords are here.
+    "after",     "append",    "array",
+    "bgerror",   "binary",    "break",
+    "catch",     "cd",        "clock",
+    "close",     "concat",    "continue",
+    "dde",
+    "encoding",  "eof",       "eval",
+    "exec",      "exit",      "expr",
+    "fblocked",  "fconfigure","fcopy",     "file",      "fileevent",
+    "filename",  "flush",     "for",       "foreach",   "format",
+    "gets",      "glob",      "global",
+    "history",
+    "if",        "incr",      "info",      "interp",
+    "join",
+    "lappend",   "lindex",    "linsert",   "list",      "llength",
+    "load",      "lrange",    "lreplace",  "lsearch",   "lsort",
+    "memory",    "msgcat",
+    "namespace",
+    "open",
+    "package",   "parray",    "pid",
+    "proc",      "puts",      "pwd",
+    "read",      "regexp",    "registry",   "regsub",
+    "rename",    "resource",  "return",
+    "scan",      "seek",      "set",        "socket",   "source",
+    "split",     "string",    "subst",      "switch",
+    "tell",      "time",      "trace",
+    "unknown",   "unset",     "update",     "uplevel",   "upvar",
+    "variable",  "vwait",
+    "while" ]
+#@+node:ekr.20031218072017.1606: *6* << ivars for communication between colorizeAnyLanguage and its allies >>
+# Copies of arguments.
+self.p = None
+self.language = None
+self.flag = None
+self.killFlag = False
+self.line_index = 0
+
+# Others.
+self.single_comment_start = None
+self.block_comment_start = None
+self.block_comment_end = None
+self.case_sensitiveLanguage = True
+self.has_string = None
+self.string_delims = ("'",'"')
+self.has_pp_directives = None
+self.keywords = None
+self.lb = None
+self.rb = None
+self.rootMode = None # None, "code" or "doc"
+
+self.latex_cweb_docs     = c.config.getBool("color_cweb_doc_parts_with_latex")
+self.latex_cweb_comments = c.config.getBool("color_cweb_comments_with_latex")
+# g.pr("docs,comments",self.latex_cweb_docs,self.latex_cweb_comments)
+#@+node:ekr.20031218072017.1607: *6* << define dispatch dicts >>
+self.state_dict = {
+    "blockComment" : self.continueBlockComment,
+    "doubleString" : self.continueDoubleString, # 1/25/03
+    "nocolor"      : self.continueNocolor,
+    "normal"       : self.doNormalState,
+    "singleString" : self.continueSingleString,  # 1/25/03
+    "string3s"     : self.continueSinglePythonString,
+    "string3d"     : self.continueDoublePythonString,
+    "doc"          : self.continueDocPart,
+    "unknown"      : self.doNormalState, # 8/25/05
+}
+#@+node:ekr.20080704085627.3: *6* splitList
+def splitList (self,ivar,fileName):
+
+    '''Process lines containing pairs of entries 
+    in a list whose *name* is ivar.
+    Put the results in ivars whose names are ivar1 and ivar2.'''
+
+    result1 = [] ; result2 = []
+    aList = getattr(self,ivar)
+
+    # Look for pairs.  Comments have already been removed.
+    for s in aList:
+        pair = s.split(' ')
+        if len(pair) == 2 and pair[0].strip() and pair[1].strip():
+            result1.append(pair[0].strip())
+            result2.append(pair[1].strip())
+        else:
+            g.es_print('%s: ignoring line: %s' % (fileName,s))
+
+    # Set the ivars.
+    name1 = '%s1' % ivar
+    name2 = '%s1' % ivar
+    setattr(self,name1, result1)
+    setattr(self,name2, result2)
+
+    # g.trace(name1,getattr(self,name1))
+    # g.trace(name2,getattr(self,name2))
+#@+node:ekr.20031218072017.2801: *5* colorize & recolor_range
+# The main colorizer entry point.
+
+def colorize(self,p,incremental=False,interruptable=True):
+    # interruptable used only in new colorizer.
+
+    # g.trace(g.callers())
+
+    if self.enabled:
+        # if self.trace: g.trace("incremental",incremental)
+        self.incremental=incremental
+        self.updateSyntaxColorer(p)
+        return self.colorizeAnyLanguage(p)
+    else:
+        return "ok" # For unit testing.
+
+#@+node:ekr.20031218072017.1880: *5* colorizeAnyLanguage & allies
+def colorizeAnyLanguage (self,p,leading=None,trailing=None):
+
+    """Color the body pane either incrementally or non-incrementally"""
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+
+    if not c.config.getBool('use_syntax_coloring'):
+        # There have been reports of this trace causing crashes.
+        # Certainly it is not necessary.
+        # g.trace('no coloring')
+        return
+
+    if self.killFlag:
+        self.removeAllTags()
+        return
+    try:
+        # g.trace('incremental',self.incremental)
+        << initialize ivars & tags >>
+        g.doHook("init-color-markup",colorer=self,p=self.p,v=self.p)
+        if self.incremental and (
+            << all state ivars match >> ):
+            << incrementally color the text >>
+        else:
+            << non-incrementally color the text >>
+        << update state ivars >>
+        return "ok" # for testing.
+    except:
+        << set state ivars to "unknown" >>
+        if self.c:
+            g.es_exception()
+        else:
+            import traceback ; traceback.print_exc()
+        return "error" # for unit testing.
+#@+node:ekr.20031218072017.1602: *6* << initialize ivars & tags >> colorizeAnyLanguage
+# Copy the arguments.
+self.p = p
+
+# Get the body text, converted to unicode.
+self.allBodyText = w.getAllText()
+sel = w.getInsertPoint()
+start,end = g.convertPythonIndexToRowCol(self.allBodyText,sel)
+start += 1 # Simulate the old 1-based Tk scheme.  self.index undoes this hack.
+# g.trace('new',start,end)
+
+if self.language: self.language = self.language.lower()
+# g.trace(self.count,self.p)
+# g.trace(body.tag_names())
+
+if not self.incremental:
+    self.removeAllTags()
+    # self.removeAllImages()
+
+<< configure fonts >>
+<< configure tags >>
+<< configure language-specific settings >>
+
+self.hyperCount = 0 # Number of hypertext tags
+self.count += 1
+lines = self.allBodyText.split('\n')
+#@+node:ekr.20060829084924: *7* << configure fonts >> (revise,maybe)
+# Get the default body font.
+defaultBodyfont = self.fonts.get('default_body_font')
+if not defaultBodyfont:
+    defaultBodyfont = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant",  "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.fonts['default_body_font'] = defaultBodyfont
+
+# Configure fonts.
+w = c.frame.body.bodyCtrl
+keys = sorted(default_font_dict)
+for key in keys:
+    option_name = default_font_dict[key]
+    # First, look for the language-specific setting, then the general setting.
+    for name in ('%s_%s' % (self.language,option_name),(option_name)):
+        font = self.fonts.get(name)
+        if font:
+            # g.trace('found',name,id(font))
+            w.tag_config(key,font=font)
+            break
+        else:
+            family = c.config.get(name + '_family','family')
+            size   = c.config.get(name + '_size',  'size')   
+            slant  = c.config.get(name + '_slant', 'slant')
+            weight = c.config.get(name + '_weight','weight')
+            if family or slant or weight or size:
+                family = family or g.app.config.defaultFontFamily
+                size   = size or str(c.config.defaultBodyFontSize)
+                slant  = slant or 'roman'
+                weight = weight or 'normal'
+                font = c.config.getFontFromParams(family,size,slant,weight)
+                # Save a reference to the font so it 'sticks'.
+                self.fonts[name] = font 
+                # g.trace(key,name,family,size,slant,weight,id(font))
+                w.tag_config(key,font=font)
+                break
+    else: # Neither the general setting nor the language-specific setting exists.
+        if len(list(self.fonts.keys())) > 1: # Restore the default font.
+            # g.trace('default',key)
+            w.tag_config(key,font=defaultBodyfont)
+#@+node:ekr.20031218072017.1603: *7* << configure tags >>
+# g.trace('configure tags',self.c.frame.body.bodyCtrl)
+
+for name in default_colors_dict:
+    option_name,default_color = default_colors_dict[name]
+    option_color = c.config.getColor(option_name)
+    color = g.choose(option_color,option_color,default_color)
+    # g.trace(name,color)
+    # Must use foreground, not fg.
+    try:
+        c.frame.body.tag_configure(name, foreground=color)
+    except: # Recover after a user error.
+        c.frame.body.tag_configure(name, foreground=default_color)
+
+underline_undefined = c.config.getBool("underline_undefined_section_names")
+use_hyperlinks      = c.config.getBool("use_hyperlinks")
+self.use_hyperlinks = use_hyperlinks
+
+# underline=var doesn't seem to work.
+if 0: # use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
+    c.frame.body.tag_configure("link",underline=1) # defined
+    c.frame.body.tag_configure("name",underline=0) # undefined
+else:
+    c.frame.body.tag_configure("link",underline=0)
+    if underline_undefined:
+        c.frame.body.tag_configure("name",underline=1)
+    else:
+        c.frame.body.tag_configure("name",underline=0)
+
+# 8/4/02: we only create tags for whitespace when showing invisibles.
+if self.showInvisibles:
+    for name,option_name,default_color in (
+        ("blank","show_invisibles_space_background_color","Gray90"),
+        ("tab",  "show_invisibles_tab_background_color",  "Gray80")):
+        option_color = c.config.getColor(option_name)
+        color = g.choose(option_color,option_color,default_color)
+        try:
+            c.frame.body.tag_configure(name,background=color)
+        except: # Recover after a user error.
+            c.frame.body.tag_configure(name,background=default_color)
+
+# 11/15/02: Colors for latex characters.  Should be user options...
+
+if 1: # Alas, the selection doesn't show if a background color is specified.
+    c.frame.body.tag_configure("latexModeBackground",foreground="black")
+    c.frame.body.tag_configure("latexModeKeyword",foreground="blue")
+    c.frame.body.tag_configure("latexBackground",foreground="black")
+    c.frame.body.tag_configure("latexKeyword",foreground="blue")
+else: # Looks cool, and good for debugging.
+    c.frame.body.tag_configure("latexModeBackground",foreground="black",background="seashell1")
+    c.frame.body.tag_configure("latexModeKeyword",foreground="blue",background="seashell1")
+    c.frame.body.tag_configure("latexBackground",foreground="black",background="white")
+    c.frame.body.tag_configure("latexKeyword",foreground="blue",background="white")
+
+# Tags for wiki coloring.
+if self.showInvisibles:
+    c.frame.body.tag_configure("elide",background="yellow")
+else:
+    c.frame.body.tag_configure("elide",elide="1")
+c.frame.body.tag_configure("bold",font=self.bold_font)
+c.frame.body.tag_configure("italic",font=self.italic_font)
+c.frame.body.tag_configure("bolditalic",font=self.bolditalic_font)
+for name in self.color_tags_list:
+    c.frame.body.tag_configure(name,foreground=name)
+#@+node:ekr.20031218072017.370: *7* << configure language-specific settings >> colorizer
+# Define has_string, keywords, single_comment_start, block_comment_start, block_comment_end.
+
+if self.language == "cweb": # Use C comments, not cweb sentinel comments.
+    delim1,delim2,delim3 = g.set_delims_from_language("c")
+elif self.comment_string:
+    delim1,delim2,delim3 = g.set_delims_from_string(self.comment_string)
+elif self.language == "plain": # 1/30/03
+    delim1,delim2,delim3 = None,None,None
+else:
+    delim1,delim2,delim3 = g.set_delims_from_language(self.language)
+
+self.single_comment_start = delim1
+self.block_comment_start = delim2
+self.block_comment_end = delim3
+
+# A strong case can be made for making this code as fast as possible.
+# Whether this is compatible with general language descriptions remains to be seen.
+self.case_sensitiveLanguage = self.language not in case_insensitiveLanguages
+self.has_string = self.language != "plain"
+if self.language == "plain":
+    self.string_delims = ()
+elif self.language in ("elisp","html"):
+    self.string_delims = ('"')
+else:
+    self.string_delims = ("'",'"')
+self.has_pp_directives = self.language in ("c","csharp","cweb","latex")
+
+# The list of languages for which keywords exist.
+# Eventually we might just use language_delims_dict.keys()
+languages = [
+    "actionscript","ada","c","csharp","css","cweb","elisp","html","java","latex","lua",
+    "pascal","perl","perlpod","php","plsql","python","rapidq","rebol","ruby","shell","tcltk"]
+
+self.keywords = []
+if self.language == "cweb":
+    for i in self.c_keywords:
+        self.keywords.append(i)
+    for i in self.cweb_keywords:
+        self.keywords.append(i)
+else:
+    for name in languages:
+        if self.language==name: 
+            # g.trace("setting keywords for",name)
+            self.keywords = getattr(self, name + "_keywords")
+
+# Color plain text unless we are under the control of @nocolor.
+# state = g.choose(self.flag,"normal","nocolor")
+state = self.setFirstLineState()
+
+if 1: # 10/25/02: we color both kinds of references in cweb mode.
+    self.lb = "<<"
+    self.rb = ">>"
+else:
+    self.lb = g.choose(self.language == "cweb","@<","<<")
+    self.rb = g.choose(self.language == "cweb","@>",">>")
+#@+node:ekr.20031218072017.1881: *6* << all state ivars match >>
+self.flag == self.last_flag and
+self.last_language == self.language
+#@+node:ekr.20031218072017.1882: *6* << incrementally color the text >>
+@ Each line has a starting state. The starting state for the first line
+is always "normal".
+
+We need remember only self.lines and self.states between colorizing.
+It is not necessary to know where the text comes from, only what the
+previous text was! We must always colorize everything when changing
+nodes, even if all lines match, because the context may be different.
+
+We compute the range of lines to be recolored by comparing leading
+lines and trailing lines of old and new text. All other lines (the
+middle lines) must be colorized, as well as any trailing lines whose
+states may have changed as the result of changes to the middle lines.
+@c
+
+if self.trace: g.trace("incremental",self.language)
+
+# 6/30/03: make a copies of everything
+old_lines = self.lines[:]
+old_states = self.states[:]
+new_lines = lines[:]
+new_states = []
+
+new_len = len(new_lines)
+old_len = len(old_lines)
+
+if new_len == 0:
+    self.states = []
+    self.lines = []
+    return
+
+# Bug fix: 11/21/02: must test against None.
+if leading != None and trailing != None:
+    # g.pr("leading,trailing:",leading,trailing)
+    leading_lines = leading
+    trailing_lines = trailing
+else:
+    << compute leading, middle & trailing lines >>
+
+middle_lines = new_len - leading_lines - trailing_lines
+# g.pr("middle lines", middle_lines)
+
+<< clear leading_lines if middle lines involve @color or @recolor  >>
+<< initialize new states >>
+<< colorize until the states match >>
+#@+node:ekr.20031218072017.1883: *7* << compute leading, middle & trailing  lines >>
+@ The leading lines are the leading matching lines. The trailing lines
+are the trailing matching lines. The middle lines are all other new
+lines. We will color at least all the middle lines. There may be no
+middle lines if we delete lines.
+@c
+
+min_len = min(old_len,new_len)
+
+i = 0
+while i < min_len:
+    if old_lines[i] != new_lines[i]:
+        break
+    i += 1
+leading_lines = i
+
+if leading_lines == new_len:
+    # All lines match, and we must color _everything_.
+    # (several routine delete, then insert the text again,
+    # deleting all tags in the process).
+    # g.pr("recolor all")
+    leading_lines = trailing_lines = 0
+else:
+    i = 0
+    while i < min_len - leading_lines:
+        if old_lines[old_len-i-1] != new_lines[new_len-i-1]:
+            break
+        i += 1
+    trailing_lines = i
+#@+node:ekr.20031218072017.1884: *7* << clear leading_lines if middle lines involve @color or @recolor  >>
+@ 11/19/02: Changing @color or @nocolor directives requires we recolor
+all leading states as well.
+@c
+
+if trailing_lines == 0:
+    m1 = new_lines[leading_lines:]
+    m2 = old_lines[leading_lines:]
+else:
+    m1 = new_lines[leading_lines:-trailing_lines]
+    m2 = old_lines[leading_lines:-trailing_lines]
+m1.extend(m2) # m1 now contains all old and new middle lines.
+if m1:
+    for s in m1:
+        i = g.skip_ws(s,0)
+        if g.match_word(s,i,"@color") or g.match_word(s,i,"@nocolor"):
+            leading_lines = 0
+            break
+#@+node:ekr.20031218072017.1885: *7* << initialize new states >>
+# Copy the leading states from the old to the new lines.
+i = 0
+while i < leading_lines and i < old_len: # 12/8/02
+    new_states.append(old_states[i])
+    i += 1
+
+# We know the starting state of the first middle line!
+if middle_lines > 0 and i < old_len:
+    new_states.append(old_states[i])
+    i += 1
+
+# Set the state of all other middle lines to "unknown".
+first_trailing_line = max(0,new_len - trailing_lines)
+while i < first_trailing_line:
+    new_states.append("unknown")
+    i += 1
+
+# Copy the trailing states from the old to the new lines.
+i = max(0,old_len - trailing_lines)
+while i < old_len and i < len(old_states):
+    new_states.append(old_states[i])
+    i += 1
+
+# 1/8/03: complete new_states by brute force.
+while len(new_states) < new_len:
+    new_states.append("unknown")
+#@+node:ekr.20031218072017.1886: *7* << colorize until the states match >>
+# Colorize until the states match.
+# All middle lines have "unknown" state, so they will all be colored.
+
+# Start in the state _after_ the last leading line, which may be unknown.
+i = leading_lines
+while i > 0:
+    if i < old_len and i < new_len:
+        state = new_states[i]
+        # assert(state!="unknown") # This can fail.
+        break
+    else:
+        i -= 1
+
+if i == 0:
+    # Color plain text unless we are under the control of @nocolor.
+    # state = g.choose(self.flag,"normal","nocolor")
+    state = self.setFirstLineState()
+    new_states[0] = state
+
+# The new_states[] will be "unknown" unless the lines match,
+# so we do not need to compare lines here.
+while i < new_len:
+    self.line_index = i + 1
+    state = self.colorizeLine(new_lines[i],state)
+    i += 1
+    # Set the state of the _next_ line.
+    if i < new_len and state != new_states[i]:
+        new_states[i] = state
+    else: break
+
+# Update the ivars
+self.states = new_states
+self.lines = new_lines
+#@+node:ekr.20031218072017.1887: *6* << non-incrementally color the text >>
+if self.trace: g.trace("non-incremental",self.language)
+
+self.line_index = 1 # The Tk line number for indices, as in n.i
+for s in lines:
+    state = self.colorizeLine(s,state)
+    self.line_index += 1
+#@+node:ekr.20031218072017.1888: *6* << update state ivars >>
+self.last_flag = self.flag
+self.last_language = self.language
+#@+node:ekr.20031218072017.1889: *6* << set state ivars to "unknown" >>
+self.last_flag = "unknown"
+self.last_language = "unknown"
+#@+node:ekr.20031218072017.1892: *5* colorizeLine & allies
+def colorizeLine (self,s,state):
+
+    # g.pr("line,inc,state,s:",self.line_index,self.incremental,state,s)
+
+    if self.incremental:
+        self.removeTagsFromLine()
+
+    i = 0
+    while i < len(s):
+        self.progress = i
+        func = self.state_dict[state]
+        i,state = func(s,i)
+
+    return state
+#@+node:ekr.20031218072017.1618: *6* continueBlockComment
+def continueBlockComment (self,s,i):
+
+    j = s.find(self.block_comment_end,i)
+
+    if j == -1:
+        j = len(s) # The entire line is part of the block comment.
+        if self.language=="cweb":
+            self.doLatexLine(s,i,j)
+        else:
+            if not g.doHook("color-optional-markup",
+                colorer=self,p=self.p,v=self.p,s=s,i=i,j=j,colortag="comment"):
+                self.tag("comment",i,j)
+        return j,"blockComment" # skip the rest of the line.
+
+    else:
+        # End the block comment.
+        k = len(self.block_comment_end)
+        if self.language=="cweb" and self.latex_cweb_comments:
+            self.doLatexLine(s,i,j)
+            self.tag("comment",j,j+k)
+        else:
+            if not g.doHook("color-optional-markup",
+                colorer=self,p=self.p,v=self.p,s=s,i=i,j=j+k,colortag="comment"):
+                self.tag("comment",i,j+k)
+        i = j + k
+        return i,"normal"
+#@+node:ekr.20031218072017.1893: *6* continueSingle/DoubleString
+def continueDoubleString (self,s,i):
+    return self.continueString(s,i,'"',"doubleString")
+
+def continueSingleString (self,s,i):
+    return self.continueString(s,i,"'","singleString")
+
+# Similar to skip_string.
+def continueString (self,s,i,delim,continueState):
+    # g.trace(delim + s[i:])
+    continueFlag = g.choose(self.language in ("elisp","html"),True,False)
+    j = i
+    while i < len(s) and s[i] != delim:
+        if s[i:] == "\\":
+            i = len(s) ; continueFlag = True ; break
+        elif s[i] == "\\":
+            i += 2
+        else:
+            i += 1
+    if i >= len(s):
+        i = len(s)
+    elif s[i] == delim:
+        i += 1 ; continueFlag = False
+    self.tag("string",j,i)
+    state = g.choose(continueFlag,continueState,"normal")
+    return i,state
+#@+node:ekr.20031218072017.1614: *6* continueDocPart
+def continueDocPart (self,s,i):
+
+    c = self.c ; state = "doc"
+    if self.language == "cweb":
+        << handle cweb doc part >>
+    else:
+        << handle noweb doc part >>
+    return i,state
+#@+node:ekr.20031218072017.1615: *7* << handle cweb doc part >>
+word = self.getCwebWord(s,i)
+if word and len(word) > 0:
+    j = i + len(word)
+    if word in ("@<","@(","@c","@d","@f","@p"):
+        state = "normal" # end the doc part and rescan
+    else:
+        # The control code does not end the doc part.
+        self.tag("keyword",i,j)
+        i = j
+        if word in ("@^","@.","@:","@="): # Ended by "@>"
+            j = s.find("@>",i)
+            if j > -1:
+                self.tag("cwebName",i,j)
+                self.tag("nameBrackets",j,j+2)
+                i = j + 2
+elif g.match(s,i,self.lb):
+    j = self.doNowebSecRef(s,i)
+    if j == i + 2: # not a section ref.
+        self.tag("docPart",i,j)
+    i = j
+elif self.latex_cweb_docs:
+    # Everything up to the next "@" is latex colored.
+    j = s.find("@",i+1)
+    if j == -1: j = len(s)
+    self.doLatexLine(s,i,j)
+    i = j
+else:
+    # Everthing up to the next "@" is in the doc part.
+    j = s.find("@",i+1)
+    if j == -1: j = len(s)
+    self.tag("docPart",i,j)
+    i = j
+#@+node:ekr.20031218072017.1616: *7* << handle noweb doc part >>
+if i == 0 and g.match(s,i,"<<"):
+    # Possible section definition line.
+    return i,"normal" # rescan the line.
+
+if i == 0 and s[i] == '@':
+    j = self.skip_id(s,i+1,chars='-')
+    word = s[i:j]
+    word = word.lower()
+else:
+    word = ""
+
+if word in ["@c","@code","@unit","@root","@root-code","@root-doc","@color","@nocolor"]:
+    # End of the doc part.
+    c.frame.body.tag_remove("docPart",self.index(i),self.index(j)) # 10/27/03
+    self.tag("leoKeyword",i,j)
+    state = "normal"
+    if word != '@nocolor': i = j # 3/8/05: Rescan @nocolor.
+else:
+    # The entire line is in the doc part.
+    j = len(s)
+    if not g.doHook("color-optional-markup",
+        colorer=self,p=self.p,v=self.p,s=s,i=i,j=j,colortag="docPart"):
+        self.tag("docPart",i,j)
+    i = j # skip the rest of the line.
+#@+node:ekr.20031218072017.1894: *6* continueNocolor
+def continueNocolor (self,s,i):
+
+    if i == 0 and s[i] == '@':
+        j = self.skip_id(s,i+1)
+        word = s[i:j]
+        word = word.lower()
+    else:
+        word = ""
+
+    if word == "@color" and self.language != "plain":
+        # End of the nocolor part.
+        self.tag("leoKeyword",0,j)
+        return i,"normal"
+    else:
+        # The entire line is in the nocolor part.
+        # Add tags for blanks and tabs to make "Show Invisibles" work.
+        for ch in s[i:]:
+            if ch == ' ':
+                self.tag("blank",i,i+1)
+            elif ch == '\t':
+                self.tag("tab",i,i+1)
+            i += 1
+        return i,"nocolor"
+#@+node:ekr.20031218072017.1613: *6* continueSingle/DoublePythonString
+def continueDoublePythonString (self,s,i):
+    j = s.find('"""',i)
+    return self.continuePythonString(s,i,j,"string3d")
+
+def continueSinglePythonString (self,s,i):
+    j = s.find("'''",i)
+    return self.continuePythonString(s,i,j,"string3s")
+
+def continuePythonString (self,s,i,j,continueState):
+
+    if j == -1: # The entire line is part of the triple-quoted string.
+        j = len(s)
+        if continueState == "string3d":
+            if not g.doHook("color-optional-markup",
+                colorer=self,p=self.p,v=self.p,s=s,i=i,j=j,colortag="string"):
+                self.tag("string",i,j)
+        else:
+            self.tag("string",i,j)
+        return j,continueState # skip the rest of the line.
+
+    else: # End the string
+        if continueState == "string3d":
+            if not g.doHook("color-optional-markup",
+                colorer=self,p=self.p,v=self.p,s=s,i=i,j=j,colortag="string"):
+                self.tag("string",i,j+3)
+            else:
+                self.tag("string",i,j+3)
+        else:
+            self.tag("string",i,j+3)
+        return j+3,"normal"
+#@+node:ekr.20031218072017.1620: *6* doAtKeyword: NOT for cweb keywords
+# Handles non-cweb keyword.
+
+def doAtKeyword (self,s,i):
+
+    j = self.skip_id(s,i+1,chars="-") # to handle @root-code, @root-doc
+    word = s[i:j]
+    word = word.lower()
+    # g.trace(word,word[1:] in g.globalDirectiveList)
+    if i != 0 and word not in ("@others","@all"):
+        word = "" # can't be a Leo keyword, even if it looks like it.
+
+    # 7/8/02: don't color doc parts in plain text.
+    if self.language != "plain" and (word == "@" or word == "@doc"):
+        # at-space is a Leo keyword.
+        self.tag("leoKeyword",i,j)
+        k = len(s) # Everything on the line is in the doc part.
+        if not g.doHook("color-optional-markup",
+            colorer=self,p=self.p,v=self.p,s=s,i=j,j=k,colortag="docPart"):
+            self.tag("docPart",j,k)
+        return k,"doc"
+    elif word == "@nocolor":
+        # Nothing on the line is colored.
+        self.tag("leoKeyword",i,j)
+        return j,"nocolor"
+    elif word[1:] in g.globalDirectiveList:
+        self.tag("leoKeyword",i,j)
+        return j,"normal"
+    else:
+        return j,"normal"
+#@+node:ekr.20031218072017.1895: *6* doLatexLine
+# Colorize the line from i to j.
+
+def doLatexLine (self,s,i,j):
+
+    while i < j:
+        if g.match(s,i,"\\"):
+            k = self.skip_id(s,i+1)
+            word = s[i:k]
+            if word in self.latex_keywords:
+                self.tag("latexModeKeyword",i,k)
+            i = k
+        else:
+            self.tag("latexModeBackground",i,i+1)
+            i += 1
+#@+node:ekr.20031218072017.1896: *6* doNormalState
+def doNormalState (self,s,i):
+
+    ch = s[i] ; state = "normal"
+
+    if ch in string.ascii_letters or ch == '_' or (
+        (ch == '\\' and self.language=="latex") or
+        (ch in '/&<>' and self.language=="html") or
+        (ch == '$' and self.language=="rapidq")
+    ):
+        << handle possible keyword >>
+    elif g.match(s,i,self.lb):
+        i = self.doNowebSecRef(s,i)
+    elif ch == '@':
+        << handle at keyword >>
+    elif g.match(s,i,self.single_comment_start):
+        << handle single-line comment >>
+    elif g.match(s,i,self.block_comment_start):
+        << start block comment >>
+    elif ch == '%' and self.language=="cweb":
+        << handle latex line >>
+    elif self.language=="latex":
+        << handle latex normal character >>
+    # ---- From here on self.language != "latex" -----
+    elif ch in self.string_delims:
+        << handle string >>
+    elif ch == '#' and self.has_pp_directives:
+        << handle C preprocessor line >>
+    elif self.language == "php" and (g.match(s,i,"<") or g.match(s,i,"?")):
+        # g.trace("%3d" % i,php_re.match(s,i),s)
+        << handle special php keywords >>
+    elif ch == ' ':
+        << handle blank >>
+    elif ch == '\t':
+        << handle tab >>
+    else:
+        << handle normal character >>
+
+    if 0: # This can fail harmlessly when using wxPython plugin.  Don't know exactly why.
+        g.trace(self.progress,i,state)
+        assert(self.progress < i)
+    return i,state
+#@+node:ekr.20031218072017.1897: *7* Valid regardless of latex mode
+#@+node:ekr.20031218072017.1898: *8* << handle possible  keyword >>
+if self.language == "latex":
+    << handle possible latex keyword >>
+elif self.language == "html":
+    << handle possible html keyword >>
+else:
+    << handle general keyword >>
+i = j
+#@+node:ekr.20031218072017.1899: *9* << handle possible latex keyword >>
+if g.match(s,i,"\\"):
+    if i + 1 < len(s) and s[i+1] in self.latex_special_keyword_characters:
+        j = i + 2 # A special 2-character LaTex keyword.
+    else:
+        j = self.skip_id(s,i+1)
+    word = s[i:j]
+    if word in self.latex_keywords:
+        self.tag("latexKeyword",i,j)
+    else:
+        self.tag("latexBackground",i,j)
+else:
+    self.tag("latexBackground",i,i+1)
+    j = i + 1 # skip the character.
+#@+node:ekr.20031218072017.1900: *9* << handle possible html keyword >>
+if g.match(s,i,"<!---") or g.match(s,i,"<!--"):
+    if g.match(s,i,"<!---"): k = 5
+    else: k = 4
+    self.tag("comment",i,i+k)
+    j = i + k ; state = "blockComment"
+elif g.match(s,i,"<"):
+    if g.match(s,i,"</"): k = 2
+    else: k = 1
+    j = self.skip_id(s,i+k)
+    self.tag("keyword",i,j)
+elif g.match(s,i,"&"):
+    j = self.skip_id(s,i+1,';')
+    self.tag("keyword",i,j)
+elif g.match(s,i,"/>"):
+    j = i + 2
+    self.tag("keyword",i,j)
+elif g.match(s,i,">"):
+    j = i + 1
+    self.tag("keyword",i,j)
+else:
+    j = i + 1
+#@+node:ekr.20031218072017.1901: *9* << handle general keyword >>
+if self.language == "rapidq":
+    j = self.skip_id(s,i+1,chars="$")
+elif self.language == "rebol":
+    j = self.skip_id(s,i+1,chars="-~!?")
+elif self.language in ("elisp","css"):
+    j = self.skip_id(s,i+1,chars="-")
+else:
+    j = self.skip_id(s,i)
+
+word = s[i:j]
+if not self.case_sensitiveLanguage:
+    word = word.lower()
+
+if word in self.keywords:
+    self.tag("keyword",i,j)
+elif self.language == "php":
+    if word in self.php_paren_keywords and g.match(s,j,"()"):
+        self.tag("keyword",i,j+2)
+        j += 2
+#@+node:ekr.20031218072017.1902: *8* << handle at keyword >>
+if self.language == "cweb":
+    if g.match(s,i,"@(") or g.match(s,i,"@<"):
+        << handle cweb ref or def >>
+    else:
+        word = self.getCwebWord(s,i)
+        if word:
+            << Handle cweb control word >>
+        else:
+            i,state = self.doAtKeyword(s,i)
+else:
+    i,state = self.doAtKeyword(s,i)
+#@+node:ekr.20031218072017.1904: *9* << handle cweb ref or def >>
+self.tag("nameBrackets",i,i+2)
+
+# See if the line contains the right name bracket.
+j = s.find("@>=",i+2)
+k = g.choose(j==-1,2,3)
+if j == -1:
+    j = s.find("@>",i+2)
+
+if j == -1:
+    i += 2
+else:
+    self.tag("cwebName",i+2,j)
+    self.tag("nameBrackets",j,j+k)
+    i = j + k
+#@+node:ekr.20031218072017.1903: *9* << Handle cweb control word >>
+# Color and skip the word.
+assert(self.language=="cweb")
+
+j = i + len(word)
+self.tag("keyword",i,j)
+i = j
+
+if word in ("@ ","@\t","@\n","@*","@**"):
+    state = "doc"
+elif word in ("@<","@(","@c","@d","@f","@p"):
+    state = "normal"
+elif word in ("@^","@.","@:","@="): # Ended by "@>"
+    j = s.find("@>",i)
+    if j > -1:
+        self.tag("cwebName",i,j)
+        self.tag("nameBrackets",j,j+2)
+        i = j + 2
+#@+node:ekr.20031218072017.1617: *8* << handle single-line comment >>
+# g.pr("single-line comment i,s:",i,s)
+
+if self.language == "cweb" and self.latex_cweb_comments:
+    j = i + len(self.single_comment_start)
+    self.tag("comment",i,j)
+    self.doLatexLine(s,j,len(s))
+    i = len(s)
+elif self.language == "shell" and (i>0 and s[i-1]=='$'):
+    i += 1 # '$#' in shell should not start a comment (DS 040113)
+else:
+    j = len(s)
+    if not g.doHook("color-optional-markup",
+        colorer=self,p=self.p,v=self.p,s=s,i=i,j=j,colortag="comment"):
+        self.tag("comment",i,j)
+    i = j
+#@+node:ekr.20031218072017.1619: *8* << start block comment >>
+k = len(self.block_comment_start)
+
+if not g.doHook("color-optional-markup",
+    colorer=self,p=self.p,v=self.p,s=s,i=i,j=i+k,colortag="comment"):
+    self.tag("comment",i,i+k)
+
+i += k ; state = "blockComment"
+#@+node:ekr.20031218072017.1905: *8* << handle latex line >>
+self.tag("keyword",i,i+1)
+i += 1 # Skip the %
+self.doLatexLine(s,i,len(s))
+i = len(s)
+#@+node:ekr.20031218072017.1906: *7* Vaid only in latex mode
+#@+node:ekr.20031218072017.1907: *8* << handle latex normal character >>
+if self.language=="cweb":
+    self.tag("latexModeBackground",i,i+1)
+else:
+    self.tag("latexBackground",i,i+1)
+i += 1
+#@+node:ekr.20031218072017.1908: *7* Valid when not in latex_mode
+#@+node:ekr.20031218072017.1612: *8* << handle string >>
+# g.trace(self.language)
+
+if self.language == "python":
+
+    delim = s[i:i+3]
+    j, state = self.skip_python_string(s,i)
+    if delim == '"""':
+        # Only handle wiki items in """ strings.
+        if not g.doHook("color-optional-markup",
+            colorer=self,p=self.p,v=self.p,s=s,i=i,j=j,colortag="string"):
+            self.tag("string",i,j)
+    else:
+        self.tag("string",i,j)
+    i = j
+
+else:
+    j, state = self.skip_string(s,i)
+    self.tag("string",i,j)
+    i = j
+#@+node:ekr.20031218072017.1909: *8* << handle C preprocessor line >>
+# 10/17/02: recognize comments in preprocessor lines.
+j = i
+while i < len(s):
+    if g.match(s,i,self.single_comment_start) or g.match(s,i,self.block_comment_start):
+        break
+    else: i += 1
+
+self.tag("pp",j,i)
+#@+node:ekr.20031218072017.1910: *8* << handle special php keywords >>
+if g.match(s.lower(),i,"<?php"):
+    self.tag("keyword",i,i+5)
+    i += 5
+elif g.match(s,i,"?>"):
+    self.tag("keyword",i,i+2)
+    i += 2
+else:
+    i += 1
+#@+node:ekr.20031218072017.1911: *8* << handle blank >>
+if self.showInvisibles:
+    self.tag("blank",i,i+1)
+i += 1
+#@+node:ekr.20031218072017.1912: *8* << handle tab >>
+if self.showInvisibles:
+    self.tag("tab",i,i+1)
+i += 1
+#@+node:ekr.20031218072017.1913: *8* << handle normal character >>
+# self.tag("normal",i,i+1)
+i += 1
+#@+node:ekr.20031218072017.1914: *6* doNowebSecRef (colorizer)
+def doNowebSecRef (self,s,i):
+
+    c = self.c
+    self.tag("nameBrackets",i,i+2)
+
+    # See if the line contains the right name bracket.
+    j = s.find(self.rb+"=",i+2)
+    k = g.choose(j==-1,2,3)
+    if j == -1:
+        j = s.find(self.rb,i+2)
+    if j == -1:
+        return i + 2
+    else:
+        # includes brackets
+        searchName = s[i:j]
+        ref = g.findReference(c,searchName,self.p)
+        if ref:
+            self.tag("link",i+2,j)
+            if self.use_hyperlinks:
+                << set the hyperlink >>
+        elif k == 3: # a section definition
+            self.tag("link",i+2,j)
+        else:
+            self.tag("name",i+2,j)
+        self.tag("nameBrackets",j,j+k)
+        return j + k
+#@+node:ekr.20031218072017.1915: *7* << set the hyperlink >>
+# Set the bindings to vnode callbacks.
+# Create the tag.
+# Create the tag name.
+tagName = "hyper" + str(self.hyperCount)
+self.hyperCount += 1
+c.frame.body.tag_delete(tagName)
+self.tag(tagName,i+2,j)
+
+ref.tagName = tagName
+w = c.frame.body
+c.tag_bind(w,tagName,"<Control-1>",ref.OnHyperLinkControlClick)
+c.tag_bind(w,tagName,"<Any-Enter>",ref.OnHyperLinkEnter)
+c.tag_bind(w,tagName,"<Any-Leave>",ref.OnHyperLinkLeave)
+#@+node:ekr.20031218072017.1604: *6* removeAllTags & removeTagsFromLines
+def removeAllTags (self):
+
+    # Warning: the following DOES NOT WORK: w.tag_delete(self.tags)
+    w = self.c.frame.body
+    for tag in self.tags:
+        w.tag_delete(tag)
+
+    for tag in self.color_tags_list:
+        w.tag_delete(tag)
+
+def removeTagsFromLine (self):
+
+    # g.pr("removeTagsFromLine",self.line_index)
+    w = self.c.frame.body
+    for tag in self.tags:
+        w.tag_remove(tag,self.index(0),self.index("end")) # 10/27/03
+
+    for tag in self.color_tags_list:
+        w.tag_remove(tag,self.index(0),self.index("end")) # 10/27/03
+#@+node:ekr.20050420083821: *5* disable & enable
+def disable (self):
+
+    # g.pr("disabling all syntax coloring")
+    self.enabled=False
+
+def enable (self):
+
+    self.enabled=True
+#@+node:ekr.20031218072017.2803: *5* getCwebWord
+def getCwebWord (self,s,i):
+
+    # g.trace(g.get_line(s,i))
+    if not g.match(s,i,"@"):
+        return None
+
+    ch1 = ch2 = word = None
+    if i + 1 < len(s): ch1 = s[i+1]
+    if i + 2 < len(s): ch2 = s[i+2]
+
+    if g.match(s,i,"@**"):
+        word = "@**"
+    elif not ch1:
+        word = "@"
+    elif not ch2:
+        word = s[i:i+2]
+    elif (
+        (ch1 in string.ascii_letters and not ch2 in string.ascii_letters) or # single-letter control code
+        ch1 not in string.ascii_letters # non-letter control code
+    ):
+        word = s[i:i+2]
+
+    # if word: g.trace(word)
+
+    return word
+#@+node:ekr.20071009094150: *5* isSameColorState
+def isSameColorState (self):
+
+    return False
+#@+node:ekr.20031218072017.1944: *5* removeAllImages (leoColor)
+def removeAllImages (self):
+
+    '''Remove all references to previous images.
+    In Tk, this will cause all images to disappear.'''
+
+    self.image_references = []
+#@+node:ekr.20080828103146.8: *5* scanColorDirectives (leoColor)
+def scanColorDirectives(self,p):
+
+    '''Scan position p and p's ancestors looking for @comment, @language and @root directives,
+    setting corresponding colorizer ivars.'''
+
+    c = self.c
+    if not c: return # May be None for testing.
+
+    table = (
+        ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
+        ('root',        c.scanAtRootDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,func in table:
+        val = func(aList)
+        if val: d[key]=val
+
+    # Post process.
+    lang_dict       = d.get('lang-dict')
+    self.rootMode   = d.get('root') or None
+
+    if lang_dict:
+        self.language       = lang_dict.get('language')
+        self.comment_string = lang_dict.get('comment')
+    else:
+        self.language       = c.target_language and c.target_language.lower()
+        self.comment_string = None
+
+    # g.trace('self.language',self.language)
+    return self.language # For use by external routines.
+#@+node:ekr.20041217041016: *5* setFontFromConfig (colorizer)
+def setFontFromConfig (self):
+
+    c = self.c
+
+    self.bold_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant",  "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+
+    if self.bold_font:
+        self.bold_font.configure(weight="bold")
+
+    self.italic_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant",  "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+
+    if self.italic_font:
+        self.italic_font.configure(slant="italic",weight="normal")
+
+    self.bolditalic_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant",  "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+
+    if self.bolditalic_font:
+        self.bolditalic_font.configure(weight="bold",slant="italic")
+
+    self.color_tags_list = []
+    self.image_references = []
+#@+node:ekr.20031218072017.2804: *5* updateSyntaxColorer
+# self.flag is True unless an unambiguous @nocolor is seen.
+
+def updateSyntaxColorer (self,p):
+
+    p = p.copy()
+    self.flag = self.useSyntaxColoring(p)
+    self.scanColorDirectives(p)
+#@+node:ekr.20031218072017.2805: *5* useSyntaxColoring
+def useSyntaxColoring (self,p):
+
+    """Return True unless p is unambiguously under the control of @nocolor."""
+
+    p = p.copy() ; first = p.copy()
+    self.killFlag = False
+
+    # New in Leo 4.6: @nocolor-node disables one node only.
+    theDict = g.get_directives_dict(p)
+    if 'nocolor-node' in theDict:
+        return False
+
+    for p in p.self_and_parents():
+        theDict = g.get_directives_dict(p)
+        no_color = 'nocolor' in theDict
+        color = 'color' in theDict
+        kill_color = 'killcolor' in theDict
+        # A killcolor anywhere disables coloring.
+        if kill_color:
+            self.killFlag = True
+            return False
+        # A color anywhere in the target enables coloring.
+        elif color and p == first:
+            return True
+        # Otherwise, the @nocolor specification must be unambiguous.
+        elif no_color and not color:
+            return False
+        elif color and not no_color:
+            return True
+
+    return True
+#@+node:ekr.20031218072017.2806: *5* Utils
+@
+These methods are like the corresponding functions in leoGlobals.py
+except they issue no error messages.
+#@+node:ekr.20031218072017.1609: *6* index & tag (leoColor)
+def index (self,i):
+
+    # Short-circuit the redundant computations.
+    w = self.c.frame.body.bodyCtrl ; s = self.allBodyText
+    return w.rowColToGuiIndex(s,self.line_index-1,i)
+
+def tag (self,name,i,j):
+
+    self.c.frame.body.tag_add(name,self.index(i),self.index(j))
+#@+node:ekr.20031218072017.2807: *6* setFirstLineState
+def setFirstLineState (self):
+
+    if self.flag:
+        if self.rootMode:
+            state = g.choose(self.rootMode=="code","normal","doc")
+        else:
+            state = "normal"
+    else:
+        state = "nocolor"
+
+    return state
+#@+node:ekr.20031218072017.2808: *6* skip_id
+def skip_id(self,s,i,chars=None):
+
+    n = len(s)
+
+    # if not g.isPython3:
+        # chars = chars and g.toUnicode(chars,encoding='ascii') or unicode('')
+
+    chars = chars or g.u('')
+
+    while i < n and (g.isWordChar(s[i]) or s[i] in chars):
+            i += 1
+    return i
+#@+node:ekr.20031218072017.1610: *6* skip_python_string
+def skip_python_string(self,s,i):
+
+    delim = s[i:i+3]
+    if delim == "'''" or delim == '"""':
+        k = s.find(delim,i+3)
+        if k == -1:
+            return len(s),g.choose(delim=="'''","string3s","string3d")
+        else:
+            return k+3, "normal"
+    else:
+        return self.skip_string(s,i)
+#@+node:ekr.20031218072017.2809: *6* skip_string
+def skip_string(self,s,i):
+
+    """Skip a string literal."""
+
+    allow_newlines = self.language == "elisp"
+    delim = s[i] ; i += 1
+    continue_state = g.choose(delim=="'","singleString","doubleString")
+    assert(delim == '"' or delim == "'")
+    n = len(s)
+    while i < n and s[i] != delim and (allow_newlines or not s[i] == '\n'): # 6/3/04: newline ends most strings.
+        if s[i:] == "\\": # virtual trailing newline.
+            return n,continue_state
+        elif s[i] == '\\': i += 2
+        else: i += 1
+
+    if i >= n:
+        return n, g.choose(allow_newlines,continue_state,"normal")
+    if s[i] == delim:
+        i += 1
+    return i,"normal"
+#@+node:ekr.20031218072017.2218: *4* class nullColorizer
+class nullColorizer (colorizer):
+
+    """A do-nothing colorer class"""
+
+    @others
+#@+node:ekr.20031218072017.2219: *5* __init__
+def __init__ (self,c):
+
+    colorizer.__init__(self,c) # init the base class.
+
+    self.c = c
+    self.enabled = False
+#@+node:ekr.20031218072017.2220: *5* entry points
+def colorize(self,p,incremental=False,interruptable=True):
+    return 'ok' # Used by unit tests.
+
+def disable(self):                          pass
+def enable(self):                           pass
+def scanColorDirectives(self,p):            pass
+
+def setFontFromConfig (self):
+    self.bold_font = None
+    self.italic_font = None
+    self.bolditalic_font = None
+    self.color_tags_list = []
+    self.image_references = []
+
+def updateSyntaxColorer (self,p):           pass
+
+#@+node:ekr.20031218072017.2795: *4* << define colorizer constants >>
+# php_re = re.compile("<?(\s|=|[pP][hH][pP])")
+php_re = re.compile("<?(\s[pP][hH][pP])")
+
+# These defaults are sure to exist.
+default_colors_dict = {
+    # tag name       :(     option name,           default color),
+    "comment"        :("comment_color",               "red"),
+    "cwebName"       :("cweb_section_name_color",     "red"),
+    "pp"             :("directive_color",             "blue"),
+    "docPart"        :("doc_part_color",              "red"),
+    "keyword"        :("keyword_color",               "blue"),
+    "leoKeyword"     :("leo_keyword_color",           "blue"),
+    "link"           :("section_name_color",          "red"),
+    "nameBrackets"   :("section_name_brackets_color", "blue"),
+    "string"         :("string_color",                "#00aa00"), # Used by IDLE.
+    "name"           :("undefined_section_name_color","red"),
+    "latexBackground":("latex_background_color","white"),
+}
+
+default_font_dict = {
+    # tag name       : option name
+    'comment'        :'comment_font',
+    'cwebName'       :'cweb_section_name_font',
+    'pp'             :'directive_font',
+    'docPart'        :'doc_part_font',
+    'keyword'        :'keyword_font',
+    'leoKeyword'     :'leo_keyword_font',
+    'link'           :'section_name_font',
+    'nameBrackets'   :'section_name_brackets_font',
+    'string'         :'string_font',
+    'name'           :'undefined_section_name_font',
+    'latexBackground':'latex_background_font',
+}
+#@+node:EKR.20040623090054: *4* << define global colorizer data >>
+case_insensitiveLanguages = ['plsql',]
+#@+node:ekr.20061031131434.153: *3* masterClickHandler
+def masterClickHandler (self,event,func=None):
+
+    g.app.gui.killPopupMenu()
+
+    k = self ; c = k.c ; gui = g.app.gui
+    if not event: return
+    w = event and event.widget ; wname = c.widget_name(w)
+    trace = not g.app.unitTesting and (False or k.trace_masterClickHandler)
+
+    if trace: g.trace(wname,func and func.__name__)
+    # c.frame.body.colorizer.interrupt() # New in 4.4.1
+
+    # A click outside the minibuffer terminates any state.
+    if k.inState() and w != c.frame.miniBufferWidget:
+        if not c.widget_name(w).startswith('log'):
+            k.keyboardQuit()
+            # k.endMode() # Less drastic than keyboard-quit.
+            w and c.widgetWantsFocusNow(w)
+            if trace: g.trace('inState: break')
+            return # (for Tk) 'break'
+
+    # Update the selection point immediately for updateStatusLine.
+    k.previousSelection = None
+    if wname.startswith('body'):
+        c.frame.body.onClick(event) # New in Leo 4.4.2.
+    elif wname.startswith('mini'):
+        # x,y = gui.eventXY(event)
+        x,y = event and event.x,event and event.y
+        x = w.xyToPythonIndex(x,y)
+        i,j = k.getEditableTextRange()
+        if i <= x <= j:
+            w.setSelectionRange(x,x,insert=x)
+        else:
+            if trace: g.trace('2: break')
+            return # (for Tk) 'break'
+    if event and func:
+        if trace: g.trace(func.__name__)
+        val = func(event) # Don't even *think* of overriding this.
+        if trace: g.trace('val:',val,g.callers())
+        return val
+    else:
+        # All tree callbacks have a func, so we can't be in the tree.
+        # g.trace('*'*20,'auto-deactivate tree: %s' % wname)
+        c.frame.tree.OnDeactivate()
+        c.widgetWantsFocusNow(w)
+        if trace: g.trace('end: None')
+        return # None
+
+masterClick3Handler = masterClickHandler
+masterDoubleClick3Handler = masterClickHandler
+#@+node:ekr.20061031131434.154: *3* masterDoubleClickHandler
+def masterDoubleClickHandler (self,event,func=None):
+
+    k = self ; c = k.c ; w = event and event.widget
+
+    if c.config.getBool('trace_masterClickHandler'):
+        g.trace(c.widget_name(w),func and func.__name__)
+
+    if event and func:
+        # Don't event *think* of overriding this.
+        return func(event)
+    else:
+        gui = g.app.gui
+        x.y = event and event.x,event and event.y
+        i = w.xyToPythonIndex(x,y)
+        s = w.getAllText()
+        start,end = g.getWord(s,i)
+        w.setSelectionRange(start,end)
+        return # (for Tk) 'break'
 #@-all
 #@-leo
