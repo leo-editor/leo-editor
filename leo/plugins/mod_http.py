@@ -871,7 +871,7 @@ class LeoActions:
         print(parsed_url.query)
         print(query)
         
-        name = query['name'][0]
+        name = query.get('name', ['NO TITLE'])[0]
         url = query['url'][0]
         
         c = None  # outline for bookmarks
