@@ -5690,6 +5690,51 @@ def updateAutoIndent (self,p,w):
         w.seeInsertPoint()
             # 2011/10/02: Fix cursor-movement bug.
 #@+node:ekr.20111003135314.15480: *4* Fixed a major DnD bug
+#@+node:ekr.20031218072017.1760: *5* c.checkMoveWithParentWithWarning & c.checkDrag
+#@+node:ekr.20070910105044: *6* c.checkMoveWithParentWithWarning
+def checkMoveWithParentWithWarning (self,root,parent,warningFlag):
+
+    """Return False if root or any of root's descedents is a clone of
+    parent or any of parents ancestors."""
+    
+    c = self
+
+    message = "Illegal move or drag: no clone may contain a clone of itself"
+
+    # g.trace("root",root,"parent",parent)
+    clonedVnodes = {}
+    for ancestor in parent.self_and_parents():
+        if ancestor.isCloned():
+            v = ancestor.v
+            clonedVnodes[v] = v
+
+    if not clonedVnodes:
+        return True
+
+    for p in root.self_and_subtree():
+        if p.isCloned() and clonedVnodes.get(p.v):
+            if g.app.unitTesting:
+                g.app.unitTestDict['checkMoveWithParentWithWarning']=True
+            elif warningFlag:
+                c.alert(message)
+            return False
+    return True
+#@+node:ekr.20070910105044.1: *6* c.checkDrag
+def checkDrag (self,root,target):
+
+    """Return False if target is any descendant of root."""
+
+    c = self
+    message = "Can not drag a node into its descendant tree."
+
+    for z in root.subtree():
+        if z == target:
+            if g.app.unitTesting:
+                g.app.unitTestDict['checkMoveWithParentWithWarning']=True
+            else:
+                c.alert(message)
+            return False
+    return True
 #@+node:ekr.20110605121601.18368: *5* intraFileDrop
 def intraFileDrop (self,cloneDrag,fn,p1,p2):
 
