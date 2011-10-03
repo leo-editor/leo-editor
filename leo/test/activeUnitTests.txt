@@ -656,7 +656,9 @@ passList = (
     'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
     'qtGui','qt_main','qt_quicksearch','qtframecommands',
     'quickMove','quicksearch','redirect_to_log','rst3','run_nodes',
-    'screenshots','scrolledmessage','setHomeDirectory','slideshow','spydershell','startfile',
+    'screenshots',
+    # 'scrolledmessage',
+    'setHomeDirectory','slideshow','spydershell','startfile',
     'testRegisterCommand','todo','trace_gc_plugin','trace_keys','trace_tags',
     'vim','xemacs',
 )
@@ -685,7 +687,7 @@ for theDir,aList in table:
         if not z.endswith('.py'): z = z + '.py'
         fn = os.path.abspath(os.path.join('leo',theDir,z))
         if os.path.exists(fn): files.append(fn)
-        else: print('*** file not found:',fn)
+        else: print('*** file not found: %s' % (fn))
 
 failed = []
 for z in files:
@@ -12785,8 +12787,9 @@ def run(self):
     assert rst,'rst'
     assert html,'html'
     # Kludge: disregard version of docutils.
-    html = html.replace('Docutils 0.6','Docutils 0.8')
-    html = html.replace('Docutils 0.7','Docutils 0.8')
+    html = html.replace('Docutils 0.8.1:','Docutils 0.8:')
+    html = html.replace('Docutils 0.6:','Docutils 0.8:')
+    html = html.replace('Docutils 0.7:','Docutils 0.8:')
     if expected.hasChildren():
         child1 = expected.firstChild()
         child2 = expected.firstChild().next()
