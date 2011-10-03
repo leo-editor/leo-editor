@@ -4997,91 +4997,6 @@ def setForegroundColorHelper (self,colorName,obj):
     elif colorName not in self.badFocusColors:
         self.badFocusColors.append(colorName)
         g.es_print('invalid body foreground color: %s' % (colorName),color='blue')
-#@+node:ekr.20110605121601.18540: *6* eventFilter
-def eventFilter(self, obj, event):
-
-    trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
-    verbose = True
-    traceEvent = True
-    traceKey = (True or self.trace_masterKeyHandler)
-    traceFocus = True
-    c = self.c ; k = c.k
-    eventType = event.type()
-    ev = QtCore.QEvent
-    gui = g.app.gui
-    aList = []
-
-    # if trace and verbose: g.trace('*****',eventType)
-
-    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
-
-    if trace and traceFocus: self.traceFocus(eventType,obj)
-    
-    # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
-    lineEditKeyKinds = [ev.KeyPress,ev.KeyRelease]
-        
-    if eventType in lineEditKeyKinds:
-        p = c.currentPosition()
-        isEditWidget = obj == c.frame.tree.edit_widget(p)
-        self.keyIsActive = g.choose(
-            isEditWidget,
-            eventType == ev.KeyRelease,
-            eventType == ev.KeyPress)
-        # g.trace(isEditWidget,eventType,obj)
-    else:
-        self.keyIsActive = False
-
-    if eventType == ev.WindowActivate:
-        gui.onActivateEvent(event,c,obj,self.tag)
-        override = False ; tkKey = None
-    elif eventType == ev.WindowDeactivate:
-        gui.onDeactivateEvent(event,c,obj,self.tag)
-        override = False ; tkKey = None
-    elif eventType in kinds:
-        tkKey,ch,ignore = self.toTkKey(event)
-        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-        if ignore:
-            override = False
-        # This is extremely bad.  At present, it is needed to handle tab properly.
-        elif self.isSpecialOverride(tkKey,ch):
-            override = True
-        elif k.inState():
-            override = not ignore # allow all keystrokes.
-        else:
-            override = len(aList) > 0
-        # if trace and verbose: g.trace(
-            # tkKey,len(aList),'ignore',ignore,'override',override)
-    else:
-        override = False ; tkKey = '<no key>'
-        if self.tag == 'body':
-            if eventType == ev.FocusIn:
-                c.frame.body.onFocusIn(obj)
-            elif eventType == ev.FocusOut:
-                c.frame.body.onFocusOut(obj)
-
-    if self.keyIsActive:
-        stroke = self.toStroke(tkKey,ch)
-
-        if override:
-            if trace and traceKey and not ignore:
-                g.trace('bound',repr(stroke)) # repr(aList))
-            w = self.w # Pass the wrapper class, not the wrapped widget.
-            event = self.create_key_event(event,c,w,ch,tkKey,stroke)
-            ret = k.masterKeyHandler(event)
-            c.outerUpdate()
-        else:
-            if trace and traceKey and verbose:
-                g.trace(self.tag,'unbound',tkKey,stroke)
-        
-        if trace and traceKey:
-            # Trace key events.
-            self.traceEvent(obj,event,tkKey,override)
-
-    elif trace and traceEvent:
-        # Trace non-key events.
-        self.traceEvent(obj,event,tkKey,override)
-
-    return override
 #@+node:ekr.20061031170011.9: *6* extendLabel
 def extendLabel(self,s,select=False,protect=False):
     
@@ -5319,6 +5234,30 @@ def update (self):
     self.lastCol = col
     self.lastFcol = fcol
 #@+node:ekr.20111002125540.7024: *5* Changed
+#@+node:ekr.20110605121601.18539: *6*  ctor (leoQtEventFilter)
+def __init__(self,c,w,tag=''):
+
+    # g.trace('leoQtEventFilter',tag,w)
+
+    # Init the base class.
+    QtCore.QObject.__init__(self)
+
+    self.c = c
+    self.w = w      # A leoQtX object, *not* a Qt object.
+    self.tag = tag
+
+    # Debugging.
+    self.keyIsActive = False
+    self.trace_masterKeyHandler = c.config.getBool('trace_masterKeyHandler')
+
+    # Pretend there is a binding for these characters.
+    close_flashers = c.config.getString('close_flash_brackets') or ''
+    open_flashers  = c.config.getString('open_flash_brackets') or ''
+    self.flashers = open_flashers + close_flashers
+    
+    # Support for ctagscompleter.py plugin.
+    self.ctagscompleter_active = False
+    self.ctagscompleter_onKey = None
 #@+node:ekr.20110605121601.18026: *6* << define mouseReleaseEvent >> (leoQtBaseTextWidget)
 def mouseReleaseEvent (*args,**keys):
     
@@ -5352,7 +5291,19 @@ def mouseReleaseEvent (*args,**keys):
     # 2011/10/02: Calling k.keyboardQuit here causes some
     # unwanted scrolling in rare cases, but seemingly that
     # can't be helped: removing this call would be confusing.
+    
     c.k.keyboardQuit(setFocus=False)
+    
+    # Does not work: the layout-request event happens later.
+    # w = self.widget
+    # g.trace('blocking',w)
+    # w.blockSignals(True)
+    # try:
+        # c.k.keyboardQuit(setFocus=False)
+        # c.frame.top.update()
+    # finally:
+        # w.blockSignals(False)
+        # g.trace('unblocking',w)
 #@+node:ekr.20111002071727.15509: *6* Event handlers...
 #@+node:ekr.20110930174206.15473: *7* onFocusOut (qtBody)
 def onFocusOut (self,obj):
@@ -5416,6 +5367,96 @@ def onFocusColorHelper(self,kind,obj):
 
     w.widget.ensureCursorVisible()
         # 2011/10/02: Fix cursor-movement bug.
+#@+node:ekr.20110605121601.18540: *6* eventFilter
+def eventFilter(self, obj, event):
+
+    trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
+    verbose = True
+    traceEvent = True
+    traceKey = (True or self.trace_masterKeyHandler)
+    traceFocus = True
+    c = self.c ; k = c.k
+    eventType = event.type()
+    ev = QtCore.QEvent
+    gui = g.app.gui
+    aList = []
+
+    # if trace and verbose: g.trace('*****',eventType)
+
+    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
+
+    if trace and traceFocus: self.traceFocus(eventType,obj)
+    
+    # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
+    lineEditKeyKinds = [ev.KeyPress,ev.KeyRelease]
+        
+    if eventType in lineEditKeyKinds:
+        p = c.currentPosition()
+        isEditWidget = obj == c.frame.tree.edit_widget(p)
+        self.keyIsActive = g.choose(
+            isEditWidget,
+            eventType == ev.KeyRelease,
+            eventType == ev.KeyPress)
+        # g.trace(isEditWidget,eventType,obj)
+    else:
+        self.keyIsActive = False
+
+    if eventType == ev.WindowActivate:
+        gui.onActivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    elif eventType == ev.WindowDeactivate:
+        gui.onDeactivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    # elif eventType == ev.LayoutRequest:
+        # g.trace(event,event.spontaneous())
+        # event.accept()
+        # override = True
+        # tkKey = None
+    elif eventType in kinds:
+        tkKey,ch,ignore = self.toTkKey(event)
+        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+        if ignore:
+            override = False
+        # This is extremely bad.  At present, it is needed to handle tab properly.
+        elif self.isSpecialOverride(tkKey,ch):
+            override = True
+        elif k.inState():
+            override = not ignore # allow all keystrokes.
+        else:
+            override = len(aList) > 0
+        # if trace and verbose: g.trace(
+            # tkKey,len(aList),'ignore',ignore,'override',override)
+    else:
+        override = False ; tkKey = '<no key>'
+        if self.tag == 'body':
+            if eventType == ev.FocusIn:
+                c.frame.body.onFocusIn(obj)
+            elif eventType == ev.FocusOut:
+                c.frame.body.onFocusOut(obj)
+
+    if self.keyIsActive:
+        stroke = self.toStroke(tkKey,ch)
+
+        if override:
+            if trace and traceKey and not ignore:
+                g.trace('bound',repr(stroke)) # repr(aList))
+            w = self.w # Pass the wrapper class, not the wrapped widget.
+            event = self.create_key_event(event,c,w,ch,tkKey,stroke)
+            ret = k.masterKeyHandler(event)
+            c.outerUpdate()
+        else:
+            if trace and traceKey and verbose:
+                g.trace(self.tag,'unbound',tkKey,stroke)
+        
+        if trace and traceKey:
+            # Trace key events.
+            self.traceEvent(obj,event,tkKey,override)
+
+    elif trace and traceEvent:
+        # Trace non-key events.
+        self.traceEvent(obj,event,tkKey,override)
+
+    return override
 #@+node:ekr.20111002125540.7021: *6* get/setYScrollPosition (LeoQTextBrowser) (New)
 def getYScrollPosition(self):
 
@@ -5523,32 +5564,6 @@ def onFocusColorHelper(self,kind,obj):
 
     w.widget.ensureCursorVisible()
         # 2011/10/02: Fix cursor-movement bug.
-#@+node:ekr.20110605121601.18224: *6* onFocusColorHelper (qtBody)
-badFocusColors = []
-
-def onFocusColorHelper(self,kind,obj):
-
-    trace = False and not g.unitTesting
-    
-    c = self.c ; w = c.frame.body.bodyCtrl
-    
-    if trace: g.trace(kind)
-    
-    if kind == 'focus-in':
-        # if trace: g.trace('%9s' % (kind),'calling c.k.showStateColors()')
-        c.k.showStateColors(inOutline=False,w=self.widget)
-    else:
-        # 2011/03/14: Also set the foreground color.
-        colorName = self.unselectedForegroundColor
-        # if trace: g.trace('%9s' % (kind),colorName)
-        self.setForegroundColorHelper(colorName,obj)
-        
-        colorName = self.unselectedBackgroundColor
-        # if trace: g.trace('%9s' % (kind),colorName)
-        self.setBackgroundColorHelper(colorName,obj)
-
-    w.widget.ensureCursorVisible()
-        # 2011/10/02: Fix cursor-movement bug.
 #@+node:ekr.20061031170011.8: *6* setLabel
 def setLabel (self,s,protect=False):
 
@@ -5614,14 +5629,27 @@ def showStateAndMode(self,w=None,prompt=None,setFocus=True):
         s = '%s State' % state.capitalize()
         if c.editCommands.extendMode:
             s = s + ' (Extend Mode)'
-
+            
     if s:
         k.setLabelBlue(label=s,protect=True)
     if w and isText:
         k.showStateColors(inOutline,w)
         k.showStateCursor(state,w)
         w.seeInsertPoint()
-            # 2011/10/02: Fix cursor-movement bug.
+        # 2011/10/02: Fix cursor-movement bug.
+
+    # Doesn't work.
+    # self.w.widget.blockSignals(True)
+    # try:
+        # if s:
+            # k.setLabelBlue(label=s,protect=True)
+        # if w and isText:
+            # k.showStateColors(inOutline,w)
+            # k.showStateCursor(state,w)
+            # w.seeInsertPoint()
+            # # 2011/10/02: Fix cursor-movement bug.
+    # finally:
+        # self.w.widget.blockSignals(False)
 #@+node:ekr.20051026171121.1: *6* updateAutoIndent (leoEditCommands)
 def updateAutoIndent (self,p,w):
 

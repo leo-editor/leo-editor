@@ -857,7 +857,6 @@ The following sections list the various commands that you can invoke from the mi
     All souce-forge screenshots need to be replaced.
 
 
-.. @+node:ekr.20110930213637.15474: *4* Fix Find tab: it should scroll, not contract
 .. @+node:ekr.20110929165422.15431: *4* Fun scripts
 .. @+node:ekr.20110919113533.6818: *5* split-defs-into-node
 .. @+node:ekr.20110919113533.6820: *6* methods
