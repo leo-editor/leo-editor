@@ -30,27 +30,30 @@ To enable this plugin put this into your file::
 must match the character encoding used in the browser. If it does not, non-ascii
 characters will look strange.
 
-Can also be used for bookmarking directly from the browser to Leo.  To
-do this, add a bookmark to the browser with the following URL / Location:
+Can also be used for bookmarking directly from the browser to Leo. To do this,
+add a bookmark to the browser with the following URL / Location::
     
     javascript:w=window;if(w.content){w=w.content}; d=w.document; w.open('http://localhost:8130/_/add/bkmk/?&name=' + escape(d.title) + '&selection=' + escape(window.getSelection()) + '&url=' + escape(w.location.href),%22_blank%22,%22toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, copyhistory=no, width=800, height=300, status=no%22);void(0)
     
-and edit the port (8130 in the example above) to match the port you're using
-for mod_http.
+and edit the port (8130 in the example above) to match the port you're using for
+mod_http.
 
-Bookmarks are created as the first node in the outline which has been opened longest.
-You can set the ``@string`` ``http_bookmark_unl`` to specify an alternative location,
-e.g.::
+Bookmarks are created as the first node in the outline which has been opened
+longest. You can set the ``@string`` ``http_bookmark_unl`` to specify an
+alternative location, e.g.::
     
     @string http_bookmark_unl = /home/tbrown/.bookmarks.leo#@bookmarks-->Incoming
 
-to place them in the `Incoming` node in the `@bookmarks` node in the `.bookmarks.leo` outline.
+to place them in the `Incoming` node in the `@bookmarks` node in the
+`.bookmarks.leo` outline.
     
-The headline is preceeded with '@url ' *unless* the ``bookmarks`` plugin is loaded.
-If the ``bookmarks`` plugin is loaded the bookmark will have to be moved to a ``@bookmarks`` tree to be useful.
+The headline is preceeded with '@url ' *unless* the ``bookmarks`` plugin is
+loaded. If the ``bookmarks`` plugin is loaded the bookmark will have to be moved
+to a ``@bookmarks`` tree to be useful.
 
-The browser may or may not be able to close the bookmark form window for you, depending on settings - set ``dom.allow_scripts_to_close_windows`` to true
-in ``about:config`` in Firefox.
+The browser may or may not be able to close the bookmark form window for you,
+depending on settings - set ``dom.allow_scripts_to_close_windows`` to true in
+``about:config`` in Firefox.
 
 '''
 #@-<< docstring >>
@@ -879,7 +882,7 @@ class LeoActions:
         
         path = self.bookmark_unl
         
-        g.trace(path)
+        # g.trace(path)
 
         if path:
             # EKR
