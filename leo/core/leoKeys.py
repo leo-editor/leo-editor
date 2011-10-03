@@ -2519,7 +2519,7 @@ class keyHandlerClass:
             k.mb_tabListPrefix = k.getLabel()
         return # (for Tk) 'break'
     #@+node:ekr.20061031131434.130: *4* keyboardQuit
-    def keyboardQuit (self,event=None,setFocus=True):
+    def keyboardQuit (self,event=None,setFocus=True,mouseClick=False):
 
         '''This method clears the state and the minibuffer label.
 
@@ -2557,7 +2557,7 @@ class keyHandlerClass:
 
         # At present, only the auto-completer suppresses this.
         k.setDefaultInputState()
-        k.showStateAndMode()
+        k.showStateAndMode(setFocus=setFocus)
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
     def registerCommand (self,commandName,shortcut,func,
         pane='all',verbose=False, wrap=True):
@@ -3289,18 +3289,22 @@ class keyHandlerClass:
         w.setAllText(s)
         n = len(s)
         w.setSelectionRange(n,n,insert=n)
+        
+        w2 = c.frame.body.bodyCtrl.widget
+        if w2: w2.ensureCursorVisible()
+            # 2011/10/02: Fix cursor-movement bug.
 
         if protect:
             k.mb_prefix = s
     #@+node:ekr.20061031170011.9: *4* extendLabel
     def extendLabel(self,s,select=False,protect=False):
+        
+        trace = False and not g.unitTesting
 
         k = self ; c = k.c ; w = self.w
-        if not w: return
-        trace = (False or self.trace_minibuffer) and not g.app.unitTesting
-
-        trace and g.trace('len(s)',len(s))
-        if not s: return
+        if not (w and s): return
+        
+        if trace: g.trace(s)
 
         c.widgetWantsFocusNow(w)
 
@@ -4247,7 +4251,7 @@ class keyHandlerClass:
 
         # k.showStateAndMode()
     #@+node:ekr.20061031131434.192: *4* showStateAndMode
-    def showStateAndMode(self,w=None,prompt=None):
+    def showStateAndMode(self,w=None,prompt=None,setFocus=True):
 
         trace = False and not g.unitTesting
         k = self ; c = k.c
@@ -4292,23 +4296,18 @@ class keyHandlerClass:
             s = '%s State' % state.capitalize()
             if c.editCommands.extendMode:
                 s = s + ' (Extend Mode)'
-                
-        def showStateAndModeCallback(inOutline=inOutline,k=k,w=w):
-            if s:
-                k.setLabelBlue(label=s,protect=True)
-            if w and isText:
-                k.showStateColors(inOutline,w)
-                k.showStateCursor(state,w)
-                
-        if 1:
-            g.app.gui.runAtIdle(showStateAndModeCallback)
-        else:
-            showStateAndModeCallback(inOutline,k,w)
-            
+
+        if s:
+            k.setLabelBlue(label=s,protect=True)
+        if w and isText:
+            k.showStateColors(inOutline,w)
+            k.showStateCursor(state,w)
+            w.seeInsertPoint()
+                # 2011/10/02: Fix cursor-movement bug.
     #@+node:ekr.20080512115455.1: *4* showStateColors
     def showStateColors (self,inOutline,w):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         k = self ; c = k.c ; state = k.unboundKeyAction
 
         # body = c.frame.body ; bodyCtrl = body.bodyCtrl
@@ -4317,7 +4316,7 @@ class keyHandlerClass:
         if state not in ('insert','command','overwrite'):
             g.trace('bad input state',state)
 
-        if trace: g.trace('%9s' % (state),w_name)
+        # if trace: g.trace('%9s' % (state),w_name)
         
         if w_name.startswith('body'):
             w = c.frame.body

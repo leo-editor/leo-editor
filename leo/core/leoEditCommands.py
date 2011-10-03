@@ -4941,6 +4941,8 @@ class editCommandsClass (baseEditCommandsClass):
             i = w.getInsertPoint()
             w.insert(i,ws)
             w.setInsertPoint(i+len(ws))
+            w.seeInsertPoint()
+                # 2011/10/02: Fix cursor-movement bug.
     #@+node:ekr.20051027172949: *5* updateAutomatchBracket
     def updateAutomatchBracket (self,p,w,ch,oldSel):
 

@@ -87,6 +87,8 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
         QtGui.QTextBrowser.__init__(self,parent)
         
+        # g.trace('(LeoQTextBrowser)',repr(self.leo_wrapper))
+        
         # For QCompleter
         self.leo_q_completer = None
         self.leo_options = None
@@ -347,6 +349,22 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         if QtCore.Qt.ControlModifier & event.modifiers():
             event = {'c':self.leo_c}
             openURL(event)
+    #@+node:ekr.20111002125540.7021: *4* get/setYScrollPosition (LeoQTextBrowser) (New)
+    def getYScrollPosition(self):
+
+        w = self
+        sb = w.verticalScrollBar()
+        i = sb.sliderPosition()
+        # g.trace('(LeoQTextBrowser)',i)
+        return i
+
+    def setYScrollPosition(self,pos):
+
+        w = self
+        sb = w.verticalScrollBar()
+        i = pos or 0 # pos may be None.
+        # g.trace('(LeoQTextBrowser)',i)
+        sb.setSliderPosition(i)
     #@-others
 #@-<< define LeoQTextBrowser >>
 #@+<< define leoQtBaseTextWidget class >>
@@ -403,6 +421,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 
                 Simulate alt-x if we are not in an input state.'''
                 
+                trace = False and not g.unitTesting
+                
                 # Call the base class method.
                 if len(args) == 1:
                     event = args[0]
@@ -419,19 +439,15 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                     event = {'c':c}
                     openURL(event) # A module-level function.
                     
-                if 1: ##### Safe to do, because of changes to keyboardQuit.
-                    # 2011/05/28: Do *not* change the focus!
-                    # This would rip focus away from tab panes.
-                    c.k.keyboardQuit(setFocus=False)
-                else:
-                    def mouseReleaseCallback(c=c):
-                        # 2011/05/28: Do *not* change the focus!
-                        # This would rip focus away from tab panes.
-                        c.k.keyboardQuit(setFocus=False)
-
-                    # 2011/10/01: Run the code at idle time:  running the code
-                    # immediately interferes with scrolling in the body pane.
-                    g.app.gui.runAtIdle(mouseReleaseCallback)
+                if trace: g.trace()
+                    
+                # 2011/05/28: Do *not* change the focus!
+                # This would rip focus away from tab panes.
+                
+                # 2011/10/02: Calling k.keyboardQuit here causes some
+                # unwanted scrolling in rare cases, but seemingly that
+                # can't be helped: removing this call would be confusing.
+                c.k.keyboardQuit(setFocus=False)
             #@-<< define mouseReleaseEvent >>
             self.widget.mouseReleaseEvent = mouseReleaseEvent
 
@@ -1251,10 +1267,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         # g.trace(kind,n,h,lineSpacing,delta,val)
         vScroll.setValue(val+(delta*lineSpacing))
         c.bodyWantsFocus()
-    #@+node:ekr.20110605121601.18089: *5* insert (avoid call to setAllText)
+    #@+node:ekr.20110605121601.18089: *5* insert (avoid call to setAllText) (leoQTextWidget)
     def insert(self,i,s):
 
-        trace = False and not g.unitTesting
         c,w = self.c,self.widget
         colorer = c.frame.body.colorizer.highlighter.colorer
         n = colorer.recolorCount
@@ -1263,8 +1278,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         colorer.initFlag = True
 
         i = self.toGuiIndex(i)
-        sb = w.verticalScrollBar()
-        pos = sb.sliderPosition()
+        ##### It's not a good idea to force the scrollbar like this.
+        ##### sb = w.verticalScrollBar()
+        ##### pos = sb.sliderPosition()
         cursor = w.textCursor()
         try:
             self.changingText = True # Disable onTextChanged.
@@ -1274,11 +1290,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         finally:
             self.changingText = False
 
-        sb.setSliderPosition(pos)
-
-        if trace:
-            g.trace('%s calls to recolor' % (
-                colorer.recolorCount-n))
+        ##### sb.setSliderPosition(pos)
+        ##### w.ensureCursorVisible() # This has no effect.
     #@+node:ekr.20110605121601.18090: *5* see (leoQTextEditWidget)
     def see(self,i):
 
@@ -2248,6 +2261,7 @@ class DynamicWindow(QtGui.QMainWindow):
         outerGrid = self.createGrid(logFrame,'logGrid')
         outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
         
+        # 2011/10/01: Embed the Find tab in a QScrollArea.
         findScrollArea = QtGui.QScrollArea()
         findScrollArea.setObjectName('findScrollArea')
         findTab = QtGui.QWidget()
@@ -2472,7 +2486,7 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         self.setName(w,name)
         return w
-    #@+node:ekr.20110605121601.18163: *6* createText
+    #@+node:ekr.20110605121601.18163: *6* createText (DynamicWindow)
     def createText (self,parent,name,
         # hPolicy=None,vPolicy=None,
         lineWidth = 0,
@@ -2835,8 +2849,6 @@ class leoQtBody (leoFrame.leoBody):
             # Hook up the QSyntaxHighlighter
             self.colorizer = leoQtColorizer(c,w.widget)
             qtWidget.setAcceptRichText(False)
-            
-        # g.trace('(leoQtBody)',self,'self.widget',self.widget)
 
         # Config stuff.
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
@@ -2857,7 +2869,7 @@ class leoQtBody (leoFrame.leoBody):
         self.textRendererVisible = False
         self.textRendererWrapper = None
 
-        if trace: print('qtBody.__init__ %s' % self.widget)
+        if trace: g.trace('(qtBody)',self.widget)
     #@+node:ekr.20110605121601.18183: *6* setWrap (qtBody)
     def setWrap (self,p):
 
@@ -2908,8 +2920,8 @@ class leoQtBody (leoFrame.leoBody):
         styleSheet = 'QTextEdit#richTextEdit { background-color: %s; }' % (
             colorName)
             
-        if trace: g.trace(colorName,g.callers()) # id(obj),obj,str(obj.objectName()))
-
+        if trace: g.trace(colorName,str(obj.objectName()),obj.__class__)
+        
         if QtGui.QColor(colorName).isValid():
             obj.setStyleSheet(styleSheet)
         elif colorName not in self.badFocusColors:
@@ -2925,8 +2937,8 @@ class leoQtBody (leoFrame.leoBody):
         styleSheet = 'QTextEdit#richTextEdit { color: %s; }' % (
             colorName)
             
-        if trace: g.trace(colorName,g.callers()) # id(obj),obj,str(obj.objectName()))
-
+        if trace: g.trace(colorName,str(obj.objectName()),obj.__class__)
+        
         if QtGui.QColor(colorName).isValid():
             obj.setStyleSheet(styleSheet)
         elif colorName not in self.badFocusColors:
@@ -3692,42 +3704,34 @@ class leoQtBody (leoFrame.leoBody):
         trace = False and not g.unitTesting
 
         c = self.c
-        if trace:
-            g.trace(c.p.h,str(obj.objectName()))
+        
+        if trace: g.trace(str(obj.objectName()))
 
         # 2010/08/01: Update the history only on focus in events.
         # 2011/04/02: Update history only in leoframe.tree.select.
         # c.nodeHistory.update(c.p)
         
-        def onFocusInCallback(obj=obj,self=self):
-            if obj.objectName() == 'richTextEdit':
-                wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
-                if wrapper and wrapper != self.bodyCtrl:
-                    self.selectEditor(wrapper)
-                self.onFocusColorHelper('focus-in',obj)
-                obj.setReadOnly(False)
-                obj.setFocus() # Weird, but apparently necessary.
-
-        if 1:
-            g.app.gui.runAtIdle(onFocusInCallback)
-        else:
-            onFocusInCallBack(obj,self)
+        if obj.objectName() == 'richTextEdit':
+            wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
+            if wrapper and wrapper != self.bodyCtrl:
+                self.selectEditor(wrapper)
+            self.onFocusColorHelper('focus-in',obj)
+            obj.setReadOnly(False)
+            obj.setFocus() # Weird, but apparently necessary.
     #@+node:ekr.20110930174206.15473: *5* onFocusOut (qtBody)
     def onFocusOut (self,obj):
 
         '''Handle a focus-out event in the body pane.'''
         
-        # g.trace(obj)
+        trace = False and not g.unitTesting
+
+        if trace: g.trace(str(obj.objectName()))
         
-        def onFocusOutCallback(obj=obj,self=self):
-            if obj.objectName() == 'richTextEdit':
-                self.onFocusColorHelper('focus-out',obj)
-                obj.setReadOnly(True)
+        # Apparently benign.
+        if obj.objectName() == 'richTextEdit':
+            self.onFocusColorHelper('focus-out',obj)
+            obj.setReadOnly(True)
         
-        if 1:
-            g.app.gui.runAtIdle(onFocusOutCallback)
-        else:
-            onFocusOutCallback(obj,self)
     #@+node:ekr.20110605121601.18224: *5* onFocusColorHelper (qtBody)
     badFocusColors = []
 
@@ -3735,7 +3739,9 @@ class leoQtBody (leoFrame.leoBody):
 
         trace = False and not g.unitTesting
         
-        c = self.c
+        c = self.c ; w = c.frame.body.bodyCtrl
+        
+        if trace: g.trace(kind)
         
         if kind == 'focus-in':
             # if trace: g.trace('%9s' % (kind),'calling c.k.showStateColors()')
@@ -3743,12 +3749,15 @@ class leoQtBody (leoFrame.leoBody):
         else:
             # 2011/03/14: Also set the foreground color.
             colorName = self.unselectedForegroundColor
-            if trace: g.trace('%9s' % (kind),colorName)
+            # if trace: g.trace('%9s' % (kind),colorName)
             self.setForegroundColorHelper(colorName,obj)
             
             colorName = self.unselectedBackgroundColor
-            if trace: g.trace('%9s' % (kind),colorName)
+            # if trace: g.trace('%9s' % (kind),colorName)
             self.setBackgroundColorHelper(colorName,obj)
+
+        w.widget.ensureCursorVisible()
+            # 2011/10/02: Fix cursor-movement bug.
     #@-others
 #@+node:ekr.20110605121601.18225: *3* class leoQtFindTab (findTab)
 class leoQtFindTab (leoFind.findTab):
@@ -4289,6 +4298,7 @@ class leoQtFrame (leoFrame.leoFrame):
             w.setText(s)
         #@+node:ekr.20110605121601.18261: *5* update (qtStatusLineClass)
         def update (self):
+
             if g.app.killed: return
 
             c = self.c ; body = c.frame.body
@@ -4727,19 +4737,19 @@ class leoQtFrame (leoFrame.leoFrame):
 
         self.controlKeyIsDown = False
     #@+node:ekr.20110605121601.18288: *5* OnActivateBody (qtFrame)
-    def OnActivateBody (self,event=None):
+    # def OnActivateBody (self,event=None):
 
-        pass
-    #@+node:ekr.20110605121601.18289: *5* OnActivateLeoEvent, OnDeactivateLeoEvent
-    def OnActivateLeoEvent(self,event=None):
+        # pass
+    #@+node:ekr.20110605121601.18289: *5* OnActivateLeoEvent, OnDeactivateLeoEvent (not used)
+    # def OnActivateLeoEvent(self,event=None):
 
-        '''Handle a click anywhere in the Leo window.'''
+        # '''Handle a click anywhere in the Leo window.'''
 
-        self.c.setLog()
+        # self.c.setLog()
 
-    def OnDeactivateLeoEvent(self,event=None):
+    # def OnDeactivateLeoEvent(self,event=None):
 
-        pass # This causes problems on the Mac.
+        # pass # This causes problems on the Mac.
     #@+node:ekr.20110605121601.18290: *5* OnActivateTree
     def OnActivateTree (self,event=None):
 
@@ -4758,7 +4768,7 @@ class leoQtFrame (leoFrame.leoFrame):
                 g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
                 return 'break'
             else:
-                self.OnActivateBody(event=event)
+                ##### self.OnActivateBody(event=event)
                 c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
                 g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
         except:
@@ -8152,7 +8162,6 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20110605121601.18521: *5* qtGui.runAtIdle
     def runAtIdle (self,aFunc):
         
-        
         '''This can not be called in some contexts.'''
         
         timer = QtCore.QTimer()
@@ -8160,11 +8169,11 @@ class leoQtGui(leoGui.leoGui):
         
         # print('runAtIdle',aFunc)
 
-        def atIdleCallBack(aFunc=aFunc):
-            # print('atIdleCallBack')
+        def atIdleCallback(aFunc=aFunc):
+            print('atIdleCallBack',aFunc)
             aFunc()
 
-        timer.connect(timer,QtCore.SIGNAL("timeout()"),atIdleCallBack)
+        timer.connect(timer,QtCore.SIGNAL("timeout()"),atIdleCallback)
 
         # To make your application perform idle processing, use a QTimer with 0 timeout.
         timer.start(0)
