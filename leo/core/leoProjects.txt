@@ -5689,6 +5689,54 @@ def updateAutoIndent (self,p,w):
         w.setInsertPoint(i+len(ws))
         w.seeInsertPoint()
             # 2011/10/02: Fix cursor-movement bug.
+#@+node:ekr.20111003135314.15480: *4* Fixed a major DnD bug
+#@+node:ekr.20110605121601.18368: *5* intraFileDrop
+def intraFileDrop (self,cloneDrag,fn,p1,p2):
+
+    '''Move p1 after (or as the first child of) p2.'''
+
+    c = self.c ; u = c.undoer
+    c.selectPosition(p1)
+
+    if p2.hasChildren() and p2.isExpanded():
+        # Attempt to move p1 to the first child of p2.
+        parent = p2
+        def move(p1,p2):
+            if cloneDrag: p1 = p1.clone()
+            p1.moveToNthChildOf(p2,0)
+            p1.setDirty()
+            p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
+            return p1
+    else:
+        # Attempt to move p1 after p2.
+        parent = p2.parent()
+        def move(p1,p2):
+            if cloneDrag: p1 = p1.clone()
+            p1.moveAfter(p2)
+            p1.setDirty()
+            p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
+            return p1
+
+    ok = (
+        # 2011/10/03: Major bug fix.
+        c.checkDrag(p1,p2) and
+        c.checkMoveWithParentWithWarning(p1,p2,True))
+    # g.trace(ok,cloneDrag)
+    if ok:
+        undoData = u.beforeMoveNode(p1)
+        dirtyVnodeList = p1.setAllAncestorAtFileNodesDirty()
+        p1 = move(p1,p2)
+        if cloneDrag:
+            # Set dirty bits for ancestors of *all* cloned nodes.
+            # Note: the setDescendentsDirty flag does not do what we want.
+            for z in p1.self_and_subtree():
+                z.setAllAncestorAtFileNodesDirty(
+                    setDescendentsDirty=False)
+        c.setChanged(True)
+        u.afterMoveNode(p1,'Drag',undoData,dirtyVnodeList)
+        c.redraw_now(p1)
+    else:
+        g.trace('** move failed')
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution

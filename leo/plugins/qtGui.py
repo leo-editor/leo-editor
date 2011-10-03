@@ -5932,7 +5932,6 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             if trace or self.trace: g.trace('no p!')
             return
 
-
         md = ev.mimeData()
         #print "drop md",mdl
         if not md:
@@ -6055,7 +6054,11 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
                 p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
                 return p1
 
-        ok = c.checkMoveWithParentWithWarning(p1,parent,True)
+        ok = (
+            # 2011/10/03: Major bug fix.
+            c.checkDrag(p1,p2) and
+            c.checkMoveWithParentWithWarning(p1,p2,True))
+        # g.trace(ok,cloneDrag)
         if ok:
             undoData = u.beforeMoveNode(p1)
             dirtyVnodeList = p1.setAllAncestorAtFileNodesDirty()
