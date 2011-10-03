@@ -447,7 +447,19 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 # 2011/10/02: Calling k.keyboardQuit here causes some
                 # unwanted scrolling in rare cases, but seemingly that
                 # can't be helped: removing this call would be confusing.
+                
                 c.k.keyboardQuit(setFocus=False)
+                
+                # Does not work: the layout-request event happens later.
+                # w = self.widget
+                # g.trace('blocking',w)
+                # w.blockSignals(True)
+                # try:
+                    # c.k.keyboardQuit(setFocus=False)
+                    # c.frame.top.update()
+                # finally:
+                    # w.blockSignals(False)
+                    # g.trace('unblocking',w)
             #@-<< define mouseReleaseEvent >>
             self.widget.mouseReleaseEvent = mouseReleaseEvent
 
@@ -8409,7 +8421,7 @@ class leoQtEventFilter(QtCore.QObject):
     #@-<< about internal bindings >>
 
     #@+others
-    #@+node:ekr.20110605121601.18539: *3*  ctor
+    #@+node:ekr.20110605121601.18539: *3*  ctor (leoQtEventFilter)
     def __init__(self,c,w,tag=''):
 
         # g.trace('leoQtEventFilter',tag,w)
@@ -8473,6 +8485,11 @@ class leoQtEventFilter(QtCore.QObject):
         elif eventType == ev.WindowDeactivate:
             gui.onDeactivateEvent(event,c,obj,self.tag)
             override = False ; tkKey = None
+        # elif eventType == ev.LayoutRequest:
+            # g.trace(event,event.spontaneous())
+            # event.accept()
+            # override = True
+            # tkKey = None
         elif eventType in kinds:
             tkKey,ch,ignore = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])

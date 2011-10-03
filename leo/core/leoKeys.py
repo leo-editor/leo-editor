@@ -4296,14 +4296,27 @@ class keyHandlerClass:
             s = '%s State' % state.capitalize()
             if c.editCommands.extendMode:
                 s = s + ' (Extend Mode)'
-
+                
         if s:
             k.setLabelBlue(label=s,protect=True)
         if w and isText:
             k.showStateColors(inOutline,w)
             k.showStateCursor(state,w)
             w.seeInsertPoint()
-                # 2011/10/02: Fix cursor-movement bug.
+            # 2011/10/02: Fix cursor-movement bug.
+
+        # Doesn't work.
+        # self.w.widget.blockSignals(True)
+        # try:
+            # if s:
+                # k.setLabelBlue(label=s,protect=True)
+            # if w and isText:
+                # k.showStateColors(inOutline,w)
+                # k.showStateCursor(state,w)
+                # w.seeInsertPoint()
+                # # 2011/10/02: Fix cursor-movement bug.
+        # finally:
+            # self.w.widget.blockSignals(False)
     #@+node:ekr.20080512115455.1: *4* showStateColors
     def showStateColors (self,inOutline,w):
 
