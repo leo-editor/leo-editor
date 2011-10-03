@@ -868,8 +868,8 @@ class LeoActions:
         parsed_url = urlparse.urlparse(self.request_handler.path)
         query = urlparse.parse_qs(parsed_url.query)
         
-        print parsed_url.query
-        print query
+        print(parsed_url.query)
+        print(query)
         
         name = query['name'][0]
         url = query['url'][0]
