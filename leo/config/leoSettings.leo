@@ -1311,6 +1311,7 @@
 <v t="ekr.20111003085631.15488"><vh>mod_http plugin</vh>
 <v t="ekr.20111003085631.15489"><vh>@bool http_active = True</vh></v>
 <v t="ekr.20111003085631.15490"><vh>@int http_port = 8130</vh></v>
+<v t="ekr.20111003104518.15499"><vh>@@string http_bookmark_unl = Bookmarks</vh></v>
 </v>
 <v t="ekr.20110611092035.16483"><vh>mod_scripting plugin</vh>
 <v t="tbrown.20100524101550.4704"><vh>@string mod_scripting_subtext =</vh></v>
@@ -8170,6 +8171,7 @@ Commands:
 <t tx="ekr.20111003085631.15488"></t>
 <t tx="ekr.20111003085631.15489"></t>
 <t tx="ekr.20111003085631.15490"></t>
+<t tx="ekr.20111003104518.15499"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

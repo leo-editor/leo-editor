@@ -860,16 +860,14 @@ class LeoActions:
     #@+node:tbrown.20110930220448.18075: *3* add_bookmark
     def add_bookmark(self):
         """Return the file like 'f' that leo_interface.send_head makes
-        
-        
-        
+
         """
         
         parsed_url = urlparse.urlparse(self.request_handler.path)
         query = urlparse.parse_qs(parsed_url.query)
         
-        print(parsed_url.query)
-        print(query)
+        # print(parsed_url.query)
+        # print(query)
         
         name = query.get('name', ['NO TITLE'])[0]
         url = query['url'][0]
@@ -878,23 +876,38 @@ class LeoActions:
         previous = None  # previous bookmark for adding selections
         parent = None  # parent node for new bookmarks
         using_root = False
-        if self.bookmark_unl:
-            parsed = urlparse.urlparse(self.bookmark_unl)
+        
+        path = self.bookmark_unl
+        
+        g.trace(path)
+
+        if path:
+            # EKR
+            i = path.find('#')
+            if i > -1:
+                path = path[:i].strip()
+                unl = path[i+1:].strip()
+            else:
+                path = path
+                unl = ''
+            
+            parsed = urlparse.urlparse(path) # self.bookmark_unl) # EKR
             leo_path = os.path.expanduser(parsed.path)
             
             ok,frame = g.openWithFileName(leo_path, None)
 
             if ok:
-                g.es("Opened '%s' for bookmarks"%self.bookmark_unl)
+                g.es_print("Opened '%s' for bookmarks"% path) # self.bookmark_unl)
                 c = frame.c            
 
+                parsed = urlparse.urlparse(unl) # self.bookmark_unl) # EKR
                 if parsed.fragment:
                     g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
                 parent = c.currentPosition()
                 if parent.hasChildren():
                     previous = parent.getFirstChild()
             else:
-                g.es("Failed to open '%s' for bookmarks"%self.bookmark_unl)
+                g.es_print("Failed to open '%s' for bookmarks"%self.bookmark_unl)
 
         if c is None:
             using_root = True
@@ -1005,6 +1018,8 @@ class LeoActions:
         i.e. just above the "Users comments" line.
         '''
         
+        # g.trace(node.h)
+        
         b = node.b.split('\n')
         insert = ['', '"""', text, '"""']
         
@@ -1034,7 +1049,6 @@ class LeoActions:
 
         node.b = '\n'.join(b)
         node.setDirty()
-         
     #@+node:tbrown.20110930220448.18076: *3* get_response
     def get_response(self):
         """Return the file like 'f' that leo_interface.send_head makes"""
