@@ -2,34 +2,39 @@
 #@+node:ekr.20101110092851.5742: * @file leoOPML.py
 #@+<< docstring >>
 #@+node:ekr.20060904103412.1: ** << docstring >>
-r'''A plugin to read and write Leo outlines in .opml (http://en.wikipedia.org/wiki/OPML) format.
+r'''A plugin to read and write Leo outlines in .opml
+(http://en.wikipedia.org/wiki/OPML) format.
 
-Warning: the OPML plugin is not fully functional at present. Use with caution.
+**Warning**: the OPML plugin is not fully functional at present. Use with
+caution.
 
-The OPML plugin creates two new commands that read and write Leo outlines in OPML format.
-The read-opml-file command creates a Leo outline from an .opml file.
-The write-opml-file command writes the present Leo outline to an .opml file.
+The OPML plugin creates two new commands that read and write Leo outlines in
+OPML format. The read-opml-file command creates a Leo outline from an .opml
+file. The write-opml-file command writes the present Leo outline to an .opml
+file.
 
 Various settings control what gets written to .opml files, and in what format.
-As usual, you specify settings for the OPML plugin using leoSettings.leo.
-The settings for the OPML are found in the node: @settings-->Plugins-->opml plugin
+As usual, you specify settings for the OPML plugin using leoSettings.leo. The
+settings for the OPML are found in the node: @settings-->Plugins-->opml plugin.
 
-Here are the settings that control the format of .opml files. The default values are shown.
+Here are the settings that control the format of .opml files. The default values
+are shown.
 
 - @string opml_namespace = leo:com:leo-opml-version-1
 
-The namespace urn for the xmlns attribute of <opml> elements.
-This value typically is not used, but it should refer to Leo in some way.
+The namespace urn for the xmlns attribute of <opml> elements. This value
+typically is not used, but it should refer to Leo in some way.
 
 - @bool opml_use_outline_elements = True
 
-- If True, Leo writes body text to <leo:body> elements nested in <outline> elements.
-Otherwise, Leo writes body text to leo:body attributes of <outline> elements.
+- If True, Leo writes body text to <leo:body> elements nested in <outline>
+  elements. Otherwise, Leo writes body text to leo:body attributes of <outline>
+  elements.
 
 - @string opml_version = 2.0
 
-The opml version string written to the <OPML> element.
-Use 2.0 unless there is a specific reason to use 1.0.
+The opml version string written to the <OPML> element. Use 2.0 unless there is a
+specific reason to use 1.0.
 
 - @bool opml_write_body_text = True
 
@@ -38,8 +43,10 @@ Leo writes body text to the OPML file only if this is True.
 - @bool opml_write_leo_details = True
 
 If True, Leo writes the native attributes of Leo's <v> elements as attributes of
-the opml <outline> elements. The native attributes of <v> elements are a,
-descendentTnodeUnknownAttributes, expanded, marks, t, and tnodeList.
+the opml <outline> elements.
+
+The native attributes of <v> elements are a, t, vtag (new), tnodeList,
+marks, expanded and descendentTnodeUnknownAttributes.
 
 - @bool opml_write_leo_globals_attributes = True
 
@@ -48,13 +55,14 @@ the <head> element of the .opml file.
 
 - @bool opml_write_ua_attributes
 
-If True, write unknownAttributes  **NOTE** ua_attributes are not currently read from opml
+If True, write unknownAttributes **NOTE**: ua_attributes are not currently read
+from opml.
 
 - @bool opml_expand_ua_dictionary
 
-If True, expand an unknownAttriubte 'x' of type dict to 'ua_x_key0', 'ua_x_key1' etc.
-**WARNING** using this feature may prevent reading these ua_attributes from opml,
-if that feature is implemented in the future.
+If True, expand an unknownAttriubte 'x' of type dict to 'ua_x_key0', 'ua_x_key1'
+etc. **WARNING**: using this feature may prevent reading these ua_attributes from
+opml, if that feature is implemented in the future.
 
 - @bool opml_skip_ua_dictionary_blanks
 
@@ -244,9 +252,9 @@ class opmlFileCommandsClass (leoFileCommands.fileCommands):
 
         if self.opml_write_leo_details: # Put leo-specific attributes.
             for name,val in (
-                ('leo:t', g.app.nodeIndices.toString(p.v.t.fileIndex)),
+                ('leo:v', g.app.nodeIndices.toString(p.v.fileIndex)),
                 ('leo:a', self.aAttributes(p)),
-                ('leo:tnodeList',self.tnodeListAttributes(p)),
+                # ('leo:tnodeList',self.tnodeListAttributes(p)),
             ):
                 if val: self.put(attrFormat % (name,val))
 
@@ -304,30 +312,30 @@ class opmlFileCommandsClass (leoFileCommands.fileCommands):
         #if p.equal(self.topPosition):   attr.append('T')
 
         return ''.join(attr)
-    #@+node:ekr.20060919172012.9: *5* tnodeListAttributes
+    #@+node:ekr.20060919172012.9: *5* tnodeListAttributes (Not used)
     # Based on fileCommands.putTnodeList.
 
     def tnodeListAttributes (self,p):
 
-        '''Put the tnodeList attribute of p.v.t'''
+        '''Put the tnodeList attribute of p.v'''
 
         # Remember: entries in the tnodeList correspond to @+node sentinels, _not_ to tnodes!
 
-        if not hasattr(p.v.t,'tnodeList') or not p.v.t.tnodeList:
+        if not hasattr(p.v,'tnodeList') or not p.v.tnodeList:
             return None
 
-        # g.trace('tnodeList',p.v.t.tnodeList)
+        # g.trace('tnodeList',p.v.tnodeList)
 
         # Assign fileIndices.
-        for t in p.v.t.tnodeList:
+        for v in p.v.tnodeList:
             try: # Will fail for None or any pre 4.1 file index.
-                theId,time,n = p.v.t.fileIndex
+                theId,time,n = p.v.fileIndex
             except:
-                g.trace("assigning gnx for ",p.v.t)
+                g.trace("assigning gnx for ",p.v)
                 gnx = g.app.nodeIndices.getNewIndex()
-                p.v.t.setFileIndex(gnx) # Don't convert to string until the actual write.
+                p.v.setFileIndex(gnx) # Don't convert to string until the actual write.
 
-        s = ','.join([g.app.nodeIndices.toString(t.fileIndex) for t in p.v.t.tnodeList])
+        s = ','.join([g.app.nodeIndices.toString(v.fileIndex) for v in p.v.tnodeList])
         return s
     #@+node:tbrown.20061004094757: *5* uAAttributes
     def uAAttributes(self, p):
@@ -371,75 +379,106 @@ class opmlController:
         self.currentVnode = None
         self.topVnode = None
 
-        self.generatedTnxs = {}  # Keys are tnx's (strings).  Values are vnodes.
-    #@+node:ekr.20060904103412.8: *3* createCommands (not used)
-    def createCommands (self):
+        self.generated_gnxs = {}  # Keys are gnx's (strings).  Values are vnodes.
+    #@+node:ekr.20111003161039.17380: *3* Not used
+    if 0:
+        #@+others
+        #@+node:ekr.20060904103412.8: *4* createCommands (not used)
+        def createCommands (self):
 
-        c = self.c
-        c.opmlCommands = self
+            c = self.c
+            c.opmlCommands = self
 
-        if 0:
-            for name,func in (
-                ('read-opml-file',  self.readFile),
-                ('write-opml-file', self.writeFile),
-            ):
-                c.k.registerCommand (name,shortcut=None,func=func,pane='all',verbose=False)
+            if 0:
+                for name,func in (
+                    ('read-opml-file',  self.readFile),
+                    ('write-opml-file', self.writeFile),
+                ):
+                    c.k.registerCommand (name,shortcut=None,func=func,pane='all',verbose=False)
+        #@+node:ekr.20060914171659: *4* createVnodeTree
+        def createVnodeTree (self,node,parent_v):
+
+            v = self.createVnode(node,parent_v)
+
+            # To do: create the children only if v is not a clone.
+            self.createChildren(node,v)
+
+            return v
+        #@+node:ekr.20060914174806: *4* linkParentAndChildren
+        def linkParentAndChildren (self, parent_v, children):
+
+            # if children: g.trace(parent_v,len(children))
+
+            firstChild_v = children and children[0] or None
+
+            parent_v._firstChild = firstChild_v
+
+            for child in children:
+                child._parent = parent_v
+
+            # v = parent_v
+            # if v not in v.vnodeList:
+                # v.vnodeList.append(v)
+        #@+node:ekr.20060914165257: *4* linkSiblings
+        def linkSiblings (self, sibs):
+
+            '''Set the v._back and v._next links for all vnodes v in sibs.'''
+
+            n = len(sibs)
+
+            for i in xrange(n):
+                v = sibs[i]
+                v._back = (i-1 >= 0 and sibs[i-1]) or None
+                v._next = (i+1 <  n and sibs[i+1]) or None
+        #@-others
+        
     #@+node:ekr.20060914163456: *3* createVnodes & helpers
-    def createVnodes (self, dummyRoot):
+    def createVnodes (self,dummyRoot):
 
         '''**Important**: this method and its helpers are low-level code
         corresponding to link/unlink methods in leoNodes.py.
         Modify this with extreme care.'''
 
-        self.generatedTnxs = {}
+        self.generated_gnxs = {}
 
-        children = self.createChildren(dummyRoot,parent_v = None)
-        firstChild = children and children[0]
-
-        return firstChild
+        children = self.createChildren(dummyRoot,parent_v=None)
+        return children
+        
+        # firstChild = children and children[0]
+        # return firstChild
     #@+node:ekr.20060914171659.2: *4* createChildren
     # node is a nodeClass object, parent_v is a vnode.
 
     def createChildren (self, node, parent_v):
 
-        result = []
+        children = []
 
         for child in node.children:
-            tnx = child.tnx
-            v = tnx and self.generatedTnxs.get(tnx)
-            if v:
-                # A clone.  Create a new clone node, but share the subtree, i.e., the tnode.
-                # g.trace('clone',child.headString)
-                v = self.createVnode(child,parent_v,t=v.t)
-            else:
-                v = self.createVnodeTree(child,parent_v)
-                if tnx: self.generatedTnxs [tnx] = v
-            result.append(v)
+            gnx = child.gnx
+            v = gnx and self.generated_gnxs.get(gnx)
+            if not v:
+                v = self.createVnode(child,v)
+                self.createChildren(child,v)
+                
+            children.append(v)
 
-        self.linkSiblings(result)
-        if parent_v: self.linkParentAndChildren(parent_v,result)
-        return result
-    #@+node:ekr.20060914171659: *4* createVnodeTree
-    def createVnodeTree (self,node,parent_v):
+        if parent_v:
+            parent_v.children = children
+            for child in children:
+                child.parents.append(parent_v)
+           
 
-        v = self.createVnode(node,parent_v)
-
-        # To do: create the children only if v is not a clone.
-        self.createChildren(node,v)
-
-        return v
+        return children
     #@+node:ekr.20060914171659.1: *4* createVnode & helpers
-    def createVnode (self,node,parent_v,t=None):
-
-        h = node.headString
-        b = node.bodyString
-        if not node.tnx or not t:
-            t = leoNodes.tnode(bodyString=b,headString=h)
-            if node.tnx:
-                t.fileIndex = g.app.nodeIndices.scanGnx(node.tnx,0)
-        v = leoNodes.vnode(t)
-        v.t.vnodeList.append(v)
-        v._parent = parent_v
+    def createVnode (self,node,v=None):
+        
+        if not v:
+            v = leoNodes.vnode(context=self.c)
+            v.b,v.h = node.bodyString,node.headString
+            
+        if node.gnx:
+            v.fileIndex = g.app.nodeIndices.scanGnx(node.gnx)
+            self.generated_gnxs [node.gnx] = v
 
         self.handleVnodeAttributes(node,v)
 
@@ -455,44 +494,20 @@ class opmlController:
             if 'O' in a: v.setOrphan()
             if 'T' in a: self.topVnode = v
             if 'V' in a: self.currentVnode = v
-
-        s = node.attributes.get('leo:tnodeList')
-        tnodeList = s and s.split(',')
-        if tnodeList:
-            # This tnode list will be resolved later.
-            # g.trace('found tnodeList',v.headString(),len(tnodeList))
-            v.tempTnodeList = tnodeList
-    #@+node:ekr.20060914174806: *4* linkParentAndChildren
-    def linkParentAndChildren (self, parent_v, children):
-
-        # if children: g.trace(parent_v,len(children))
-
-        firstChild_v = children and children[0] or None
-
-        parent_v.t._firstChild = firstChild_v
-
-        for child in children:
-            child._parent = parent_v
-
-        v = parent_v
-        if v not in v.t.vnodeList:
-            v.t.vnodeList.append(v)
-    #@+node:ekr.20060914165257: *4* linkSiblings
-    def linkSiblings (self, sibs):
-
-        '''Set the v._back and v._next links for all vnodes v in sibs.'''
-
-        n = len(sibs)
-
-        for i in xrange(n):
-            v = sibs[i]
-            v._back = (i-1 >= 0 and sibs[i-1]) or None
-            v._next = (i+1 <  n and sibs[i+1]) or None
+            
+        if 0: # Leo no longer uses the tnodeList.
+            s = node.attributes.get('leo:tnodeList')
+            tnodeList = s and s.split(',')
+            if tnodeList:
+                # This tnode list will be resolved later.
+                # g.trace('found tnodeList',v.headString(),len(tnodeList))
+                v.tempTnodeList = tnodeList
     #@+node:ekr.20060913220707: *3* dumpTree
-    def dumpTree (self,root,dummy):
+    def dumpTree (self,root,dummy=True):
 
         if not dummy:
             root.dump()
+
         for child in root.children:
             self.dumpTree(child,dummy=False)
     #@+node:ekr.20060904134958.116: *3* parse_opml_file
@@ -506,7 +521,7 @@ class opmlController:
 
         try: f = open(path)
         except IOError:
-            g.trace('can not open %s'%path)
+            g.trace('can not open %s' % path)
             return None
         try:
             try:
@@ -538,38 +553,44 @@ class opmlController:
         c = self.c
 
         # Pass one: create the intermediate nodes.
-        self.dummyRoot = dummyRoot = self.parse_opml_file(fileName)
+        dummyRoot = self.parse_opml_file(fileName)
 
-        # self.dumpTree(dummyRoot,dummy=True)
+        self.dumpTree(dummyRoot)
 
-        # Pass two: create the tree of vnodes and tnodes from the intermediate nodes.
-        v = self.createVnodes(dummyRoot)
-        if v:
+        # Pass two: create the tree of vnodes from the sax nodes.
+        children = self.createVnodes(dummyRoot)
+        if children:
             c2 = c.new()
-            c2.setRootVnode(v)
-            if self.opml_read_derived_files:
-                at = c2.atFileCommands
-                c2.fileCommands.tnodesDict = self.createTnodesDict()
-                # g.trace('c2',id(c2),'tnodesDict',id(c2.fileCommands.tnodesDict))
-                self.resolveTnodeLists(c2)
-                if self.opml_read_derived_files:
-                    c2.atFileCommands.readAll(c2.rootPosition())
-            c2.checkOutline()
-            self.setCurrentPosition(c2)
-            c2.redraw()
-            return c2 # for testing.
+            c2.hiddenRootNode.children = children
+            # c2.setRootVnode(v)
+            # if self.opml_read_derived_files:
+                # at = c2.atFileCommands
+                # c2.fileCommands.tnodesDict = self.createTnodesDict()
+                # # g.trace('c2',id(c2),'tnodesDict',id(c2.fileCommands.tnodesDict))
+                # self.resolveTnodeLists(c2)
+                # if self.opml_read_derived_files:
+                    # c2.atFileCommands.readAll(c2.rootPosition())
+            errors = c2.checkOutline()
+            if errors:
+                g.trace('%s errors!' % errors)
+                return None
+            else:
+                p = position(v=children[0],childIndex=0,stack=None)
+                c2.selectPosition(p)
+                c2.redraw()
+                return c2 # for testing.
     #@+node:ekr.20060921153603: *4* createTnodesDict
     def createTnodesDict (self):
 
-        ''' c.tnodesDict by from self.generatedTnxs
-        by onverting vnode entries to tnodes.'''
+        ''' c.tnodesDict by from self.generated_gnxs
+        by converting vnode entries to tnodes.'''
 
         d = {}
 
-        for key in self.generatedTnxs.keys():
-            v = self.generatedTnxs.get(key)
-            # g.trace('v.t',id(v.t),'fileIndex',v.t.fileIndex,v.headString()[:20])
-            d[key] = v.t
+        for key in list(self.generated_gnxs.keys()):
+            v = self.generated_gnxs.get(key)
+            # g.trace('v',id(v),'fileIndex',v.fileIndex,v.headString()[:20])
+            d[key] = v
 
         return d
     #@+node:ekr.20060917214140: *4* setCurrentPosition
@@ -588,14 +609,14 @@ class opmlController:
         for p in c.allNodes_iter():
             if hasattr(p.v,'tempTnodeList'):
                 result = []
-                for tnx in p.v.tempTnodeList:
-                    v = self.generatedTnxs.get(tnx)
+                for gnx in p.v.tempTnodeList:
+                    v = self.generated_gnxs.get(gnx)
                     if v:
-                        # g.trace('found',v,tnx,v.t)
-                        result.append(v.t)
+                        # g.trace('found',v,gnx,v)
+                        result.append(v)
                     else:
-                        g.trace('No tnode for %s' % tnx)
-                p.v.t.tnodeList = result
+                        g.trace('No tnode for %s' % gnx)
+                p.v.tnodeList = result
                 delattr(p.v,'tempTnodeList')
     #@+node:ekr.20060919201810: *3* readOpmlCommand
     def readOpmlCommand (self,event=None):
@@ -619,12 +640,15 @@ class opmlController:
 
         if not fileName: return
 
-        self.c.fileCommands.write_Leo_file(
+        ok = self.c.fileCommands.write_Leo_file(
             fileName,
             outlineOnlyFlag=not self.opml_write_derived_files,
             toString=False,toOPML=True)
-
-        g.es_print('wrote %s' % fileName)
+            
+        if ok:
+            g.es_print('wrote %s' % fileName)
+        else:
+            g.es_print('did not write %s' % fileName)
     #@+node:ekr.20060919201330: *3* writeOpmlCommand
     def writeOpmlCommand (self,event=None):
 
@@ -669,7 +693,7 @@ class nodeClass:
         self.bodyString = ''
         self.headString = ''
         self.children = []
-        self.tnx = None
+        self.gnx = None
     #@+node:ekr.20060904141220.2: *3*  node.__str__ & __repr__
     def __str__ (self):
 
@@ -679,10 +703,17 @@ class nodeClass:
     #@+node:ekr.20060913220507: *3* dump
     def dump (self):
 
-        print()
-        print('node: tnx: %s %s' % (self.tnx,self.headString))
-        print('children:',[child for child in self.children])
-        print('attrs:',self.attributes.values())
+        print('\nnode: %s: %s' % (self.gnx,self.headString))
+
+        if self.children:
+            print('children:[')
+            for child in self.children:
+                print('  node: %s: %s' % (child.gnx,child.headString))
+            print(']')
+        else:
+            print('children:[]')
+
+        print('attrs: %s' % self.attributes.values())
     #@-others
 #@+node:ekr.20060904134958.164: ** class contentHandler (XMLGenerator)
 class contentHandler (xml.sax.saxutils.XMLGenerator):
@@ -730,14 +761,12 @@ class contentHandler (xml.sax.saxutils.XMLGenerator):
 
         attrs: an Attributes item passed to startElement.'''
 
-        return [g.Bunch(name=name,val=attrs.getValue(name)) for name in attrs.getNames()]
+        return [g.Bunch(name=name,val=attrs.getValue(name))
+            for name in attrs.getNames()]
     #@+node:ekr.20060904134958.170: *4* error
     def error (self, message):
 
-        print()
-        print()
-        print('XML error: %s' % (message))
-        print()
+        print('\n\nXML error: %s\n' % (message))
 
         self.errors += 1
     #@+node:ekr.20060917185525.1: *4* inElement
@@ -931,8 +960,8 @@ class contentHandler (xml.sax.saxutils.XMLGenerator):
                 #g.trace(repr(val))
                 #g.es_dump (val[:30])
                 node.bodyString = val
-            elif name == 'leo:t':
-                node.tnx = val
+            elif name == 'leo:v':
+                node.gnx = val
             else:
                 node.attributes[name] = val
     #@+node:ekr.20060922071010: *4* startWinPos
