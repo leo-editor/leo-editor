@@ -252,7 +252,9 @@ class opmlFileCommandsClass (leoFileCommands.fileCommands):
 
             data = self.uAAttributes(p)
             if data:
-                for name,val in data.iteritems():
+                # for name,val in data.iteritems():
+                for name in list(data.keys()):
+                    val = data.get(name)
                     self.put(attrFormat % (name,val))
 
         self.put(attrFormat % ('text',self.attributeEscape(head)))    
@@ -332,9 +334,14 @@ class opmlFileCommandsClass (leoFileCommands.fileCommands):
         """write unknownAttributes with various levels of expansion"""
         data = {}
         if self.opml_write_ua_attributes and hasattr(p.v, 'unknownAttributes'):
-            for uak, uav in p.v.unknownAttributes.iteritems():
+            # for uak, uav in p.v.unknownAttributes.iteritems():
+            d = p.u
+            for uak in list(d.keys()):
+                uav = d.get(uak)
                 if self.opml_expand_ua_dictionary and type(uav) == type({}):
-                    for uakc, uavc in uav.iteritems():
+                    # for uakc, uavc in uav.iteritems():
+                    for uakc in list(uav.keys()):
+                        uavc = uav.get(uakc)
                         if str(uavc)!='' or not self.opml_skip_ua_dictionary_blanks:
                             data['leo:ua_'+uak+'_'+uakc] = self.attributeEscape(str(uavc))
                 else:

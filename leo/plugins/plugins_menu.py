@@ -153,7 +153,9 @@ def addPluginMenuItem (p,c):
         if p.othercmds:
             table.append(("-",None,None))
             items = []
-            for cmd, fn in p.othercmds.iteritems():
+            d = p.othercmds
+            for cmd in list(d.keys()):
+                fn = d.get(cmd)
                 # New in 4.4: this callback gets called with an event arg.
                 def cmd_callback (event,c=c,fn=fn):
                     fn(c)
