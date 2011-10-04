@@ -3188,41 +3188,47 @@ class Commands (object):
         c = self ; u = c.undoer ; undoType = 'Extract Section Names'
         body = c.frame.body ; current = c.p
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
-        if not lines: return
+        if not lines:
+            g.es('No lines selected',color='blue')
+            return
 
         u.beforeChangeGroup(current,undoType)
-        if 1: # In group...
-            found = False
-            for s in lines:
-                #@+<< Find the next section name >>
-                #@+node:ekr.20031218072017.1711: *8* << Find the next section name >>
-                head1 = s.find("<<")
-                if head1 > -1:
-                    head2 = s.find(">>",head1)
-                else:
-                    head1 = s.find("@<")
-                    if head1 > -1:
-                        head2 = s.find("@>",head1)
+        found = False
+        for s in lines:
+            name = c.findSectionName(s)
+            if name:
+                undoData = u.beforeInsertNode(current)
+                p = self.createLastChildNode(current,name,None)
+                u.afterInsertNode(p,undoType,undoData)
+                found = True
+        c.validateOutline()
 
-                if head1 == -1 or head2 == -1 or head1 > head2:
-                    name = None
-                else:
-                    name = s[head1:head2+2]
-                #@-<< Find the next section name >>
-                if name:
-                    undoData = u.beforeInsertNode(current)
-                    p = self.createLastChildNode(current,name,None)
-                    u.afterInsertNode(p,undoType,undoData)
-                    found = True
-            c.validateOutline()
-            if not found:
-                g.es("selected text should contain one or more section names",color="blue")
-        u.afterChangeGroup(current,undoType)
-        c.redraw(p)
+        if found:
+            u.afterChangeGroup(current,undoType)
+            c.redraw(p)
+        else:
+            g.es("selected text should contain section names",color="blue")
 
         # Restore the selection.
         body.setSelectionRange(oldSel)
         body.setFocus()
+    #@+node:ekr.20031218072017.1711: *8* findSectionName
+    def findSectionName(self,s):
+
+        head1 = s.find("<<")
+        if head1 > -1:
+            head2 = s.find(">>",head1)
+        else:
+            head1 = s.find("@<")
+            if head1 > -1:
+                head2 = s.find("@>",head1)
+        
+        if head1 == -1 or head2 == -1 or head1 > head2:
+            name = None
+        else:
+            name = s[head1:head2+2]
+
+        return name
     #@+node:ekr.20031218072017.1829: *6* getBodyLines
     def getBodyLines (self,expandSelection=False):
 

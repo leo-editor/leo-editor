@@ -858,6 +858,10 @@ The following sections list the various commands that you can invoke from the mi
 
 
 .. @+node:ekr.20110929165422.15431: *4* Fun scripts
+.. @+node:ekr.20111003161039.17378: *5* verify setting
+@nocolor-node
+
+Ensure that all settings in leoSettings.leo appear in the core, and vice versa.
 .. @+node:ekr.20110919113533.6818: *5* split-defs-into-node
 .. @+node:ekr.20110919113533.6820: *6* methods
 # Normalize a type. Replaces type with fully qualified version
@@ -1748,6 +1752,8 @@ statdef pass(n):
 .. @+node:ekr.20110917104720.9418: *5* convert-names-to-pep8
 .. @+node:ekr.20110918204546.6809: *5* convert-to-class
 .. @+node:ekr.20110930213637.15473: *4* Next
+.. @+node:ekr.20111003161039.15481: *5* Support solarized colors
+http://ethanschoonover.com/solarized
 .. @+node:ekr.20110930075237.15472: *5* Improving Leo: think inside the box
 @nocolor-node
 
@@ -1824,7 +1830,14 @@ http://packages.python.org/fs/implementersguide.html
 Enhanced node attributes:
 ctime, atime, mtime
 
-remove expansion data from .leo file
+
+Remove expansion data from .leo file:
+    
+    @bool put_expansion_bits_in_leo_files = False
+    
+    It would be possible to put expansion bits in c.db. The key would be the
+    gnx, so it would be straightforward. We could even eliminate the option
+    entirely...
 
 - provide persistence of tab status
  (resume editing with same tabs open when using tabbed gui)
@@ -2138,6 +2151,9 @@ def replaceCodeBlockDirectives (self,lines):
                 result.append(s)
 
     return result
+.. @+node:ekr.20111003161039.17379: *5* A modern undo
+A Modern Undo - Making undo usable beyond the last few changes
+> http://e-texteditor.com/blog/2006/making-undo-usable
 .. @+node:ekr.20110620065017.14900: *3* Bugs
 .. @+node:ekr.20110621085435.6531: *4* Improve the find panel and find menu
 @nocolor-node
