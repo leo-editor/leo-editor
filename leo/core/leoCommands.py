@@ -4163,6 +4163,7 @@ class Commands (object):
 
         Remove any tnodeLists."""
 
+        trace = False and not g.unitTesting
         c = self ; count = 1 ; errors = 0
 
         if full and not unittest:
@@ -4172,6 +4173,7 @@ class Commands (object):
         else:    iter = c.all_positions
 
         for p in iter():
+            if trace: g.trace(p.h)
             try:
                 count += 1
                 #@+<< remove tnodeList >>
@@ -4201,34 +4203,34 @@ class Commands (object):
                     threadNext = p.threadNext()
 
                     if threadBack:
-                        assert p == threadBack.threadNext(), "p==threadBack.threadNext"
+                        assert p == threadBack.threadNext(), "p!=p.threadBack().threadNext()"
 
                     if threadNext:
-                        assert p == threadNext.threadBack(), "p==threadNext.threadBack"
+                        assert p == threadNext.threadBack(), "p!=p.threadNext().threadBack()"
                     #@+node:ekr.20040314035615.1: *8* assert consistency of next and back links
                     back = p.back()
                     next = p.next()
 
                     if back:
-                        assert p == back.next(), 'p!=back.next(),  back: %s back.next: %s' % (
+                        assert p == back.next(), 'p!=p.back().next(),  back: %s\nback.next: %s' % (
                             back,back.next())
 
                     if next:
-                        assert p == next.back(), 'p!=next.back, next: %s next.back: %s' % (
+                        assert p == next.back(), 'p!=p.next().back, next: %s\nnext.back: %s' % (
                             next,next.back())
                     #@+node:ekr.20040314035615.2: *8* assert consistency of parent and child links
                     if p.hasParent():
                         n = p.childIndex()
-                        assert p == p.parent().moveToNthChild(n), "p==parent.moveToNthChild"
+                        assert p == p.parent().moveToNthChild(n), "p!=parent.moveToNthChild"
 
                     for child in p.children():
-                        assert p == child.parent(), "p==child.parent"
+                        assert p == child.parent(), "p!=child.parent"
 
                     if p.hasNext():
-                        assert p.next().parent() == p.parent(), "next.parent==parent"
+                        assert p.next().parent() == p.parent(), "next.parent!=parent"
 
                     if p.hasBack():
-                        assert p.back().parent() == p.parent(), "back.parent==parent"
+                        assert p.back().parent() == p.parent(), "back.parent!=parent"
                     #@+node:ekr.20080426051658.1: *8* assert consistency of parent and children arrays
                     #@+at
                     # Every nodes gets visited, so we only check consistency
@@ -4253,6 +4255,7 @@ class Commands (object):
 
                 g.es_print(s,color="red")
                 #@-<< give test failed message >>
+                if trace: return errors 
         if verbose or not unittest:
             #@+<< print summary message >>
             #@+node:ekr.20040314043900: *7* <<print summary message >>
