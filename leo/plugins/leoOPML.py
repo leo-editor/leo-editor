@@ -143,6 +143,16 @@ import leo.core.leoFileCommands as leoFileCommands
 
 import xml.sax
 import xml.sax.saxutils
+
+import string
+
+if g.isPython3:
+    import io # Python 3.x
+    StringIO = io.StringIO
+    BytesIO = io.BytesIO
+else:
+    import cStringIO # Python 2.x
+    StringIO = cStringIO.StringIO
 #@-<< imports >>
 
 #@+others
@@ -430,26 +440,60 @@ class opmlController:
                 v = sibs[i]
                 v._back = (i-1 >= 0 and sibs[i-1]) or None
                 v._next = (i+1 <  n and sibs[i+1]) or None
+        #@+node:ekr.20060904134958.116: *4* OLD_parse_opml_file
+        def OLD_parse_opml_file (self,inputFileName):
+
+            if not inputFileName or not inputFileName.endswith('.opml'):
+                return None
+
+            c = self.c
+            path = g.os_path_normpath(g.os_path_join(g.app.loadDir,inputFileName))
+
+            try: f = open(path)
+            except IOError:
+                g.trace('can not open %s' % path)
+                return None
+            try:
+                try:
+                    node = None
+                    parser = xml.sax.make_parser()
+                    # Do not include external general entities.
+                    # The actual feature name is "http://xml.org/sax/features/external-general-entities"
+                    parser.setFeature(xml.sax.handler.feature_external_ges,0)
+                    handler = SaxContentHandler(c,inputFileName)
+                    parser.setContentHandler(handler)
+                    parser.parse(f)
+                    node = handler.getNode()
+                except xml.sax.SAXParseException:
+                    g.es_print('Error parsing %s' % (inputFileName),color='red')
+                    g.es_exception()
+                    return None
+                except Exception:
+                    g.es_print('Unexpected exception parsing %s' % (inputFileName),color='red')
+                    g.es_exception()
+                    return None
+            finally:
+                f.close()
+                return node
         #@-others
         
     #@+node:ekr.20060914163456: *3* createVnodes & helpers
-    def createVnodes (self,dummyRoot):
+    def createVnodes (self,c,dummyRoot):
 
         '''**Important**: this method and its helpers are low-level code
         corresponding to link/unlink methods in leoNodes.py.
         Modify this with extreme care.'''
 
         self.generated_gnxs = {}
-
-        children = self.createChildren(dummyRoot,parent_v=None)
+        parent_v = c.hiddenRootNode
+        parent_v.children = []
+        children = self.createChildren(c,dummyRoot,parent_v)
+        assert c.hiddenRootNode.children == children
         return children
-        
-        # firstChild = children and children[0]
-        # return firstChild
     #@+node:ekr.20060914171659.2: *4* createChildren
     # node is a nodeClass object, parent_v is a vnode.
 
-    def createChildren (self, node, parent_v):
+    def createChildren (self,c,node,parent_v):
 
         children = []
 
@@ -457,27 +501,25 @@ class opmlController:
             gnx = child.gnx
             v = gnx and self.generated_gnxs.get(gnx)
             if not v:
-                v = self.createVnode(child,v)
-                self.createChildren(child,v)
+                v = self.createVnode(c,child,v)
+                self.createChildren(c,child,v)
                 
             children.append(v)
 
-        if parent_v:
-            parent_v.children = children
-            for child in children:
-                child.parents.append(parent_v)
+        parent_v.children = children
+        for child in children:
+            child.parents.append(parent_v)
            
-
         return children
     #@+node:ekr.20060914171659.1: *4* createVnode & helpers
-    def createVnode (self,node,v=None):
+    def createVnode (self,c,node,v=None):
         
         if not v:
-            v = leoNodes.vnode(context=self.c)
+            v = leoNodes.vnode(context=c)
             v.b,v.h = node.bodyString,node.headString
             
         if node.gnx:
-            v.fileIndex = g.app.nodeIndices.scanGnx(node.gnx)
+            v.fileIndex = g.app.nodeIndices.scanGnx(node.gnx,0)
             self.generated_gnxs [node.gnx] = v
 
         self.handleVnodeAttributes(node,v)
@@ -510,75 +552,108 @@ class opmlController:
 
         for child in root.children:
             self.dumpTree(child,dummy=False)
-    #@+node:ekr.20060904134958.116: *3* parse_opml_file
-    def parse_opml_file (self,inputFileName):
-
-        if not inputFileName or not inputFileName.endswith('.opml'):
-            return None
+    #@+node:ekr.20111003220434.15488: *3* parse_opml_file & helper
+    def parse_opml_file(self,fn):
 
         c = self.c
-        path = g.os_path_normpath(g.os_path_join(g.app.loadDir,inputFileName))
+        
+        if not fn or not fn.endswith('.opml'):
+            return g.trace('bad file name: %s' % repr(fn))
 
-        try: f = open(path)
-        except IOError:
-            g.trace('can not open %s' % path)
-            return None
+        c = self.c
+        path = g.os_path_normpath(g.os_path_join(g.app.loadDir,fn))
+
         try:
-            try:
-                node = None
-                parser = xml.sax.make_parser()
-                # Do not include external general entities.
-                # The actual feature name is "http://xml.org/sax/features/external-general-entities"
-                parser.setFeature(xml.sax.handler.feature_external_ges,0)
-                handler = contentHandler(c,inputFileName)
-                parser.setContentHandler(handler)
-                parser.parse(f)
-                node = handler.getNode()
-            except xml.sax.SAXParseException:
-                g.es_print('Error parsing %s' % (inputFileName),color='red')
-                g.es_exception()
-                return None
-            except Exception:
-                g.es_print('Unexpected exception parsing %s' % (inputFileName),color='red')
-                g.es_exception()
-                return None
-        finally:
-            f.close()
-            return node
+            f = open(path,'rb')
+            s = f.read() # type(s) is bytes for Python 3.x.
+            s = self.cleanSaxInputString(s)
+        except IOError:
+            return g.trace('can not open %s' % path)
+
+        try:
+            if g.isPython3:
+                theFile = BytesIO(s)
+            else:
+                theFile = cStringIO.StringIO(s)
+
+            parser = xml.sax.make_parser()
+            parser.setFeature(xml.sax.handler.feature_external_ges,1)
+            # Do not include external general entities.
+            # The actual feature name is "http://xml.org/sax/features/external-general-entities"
+            parser.setFeature(xml.sax.handler.feature_external_pes,0)
+            handler = SaxContentHandler(c,fn)
+            parser.setContentHandler(handler)
+            parser.parse(theFile) # expat does not support parseString
+            sax_node = handler.getNode()
+        except xml.sax.SAXParseException:
+            g.es_print('error parsing',fn,color='red')
+            g.es_exception()
+            sax_node = None
+        except Exception:
+            g.es_print('unexpected exception parsing',fn,color='red')
+            g.es_exception()
+            sax_node = None
+
+        return sax_node
+    #@+node:ekr.20111003220434.15490: *4* cleanSaxInputString
+    def cleanSaxInputString(self,s):
+
+        '''Clean control characters from s.
+        s may be a bytes or a (unicode) string.'''
+
+        # Note: form-feed ('\f') is 12 decimal.
+        badchars = [chr(ch) for ch in range(32)]
+        badchars.remove('\t')
+        badchars.remove('\r')
+        badchars.remove('\n')
+
+        flatten = ''.join(badchars)
+        pad = ' ' * len(flatten)
+
+        if g.isPython3:
+            flatten = bytes(flatten,'utf-8')
+            pad = bytes(pad,'utf-8')
+            transtable = bytes.maketrans(flatten,pad)
+        else:
+            transtable = string.maketrans(flatten,pad)
+
+        return s.translate(transtable)
+
+    # for i in range(32): print i,repr(chr(i))
     #@+node:ekr.20060904103721: *3* readFile
     def readFile (self,fileName):
 
-        if not fileName: return
-
-        c = self.c
+        if not fileName:
+            return g.trace('no fileName')
+        
+        c = self.c.new()
+            # Create the new commander *now*
+            # so that created vnodes will have the proper context.
 
         # Pass one: create the intermediate nodes.
         dummyRoot = self.parse_opml_file(fileName)
-
         self.dumpTree(dummyRoot)
 
-        # Pass two: create the tree of vnodes from the sax nodes.
-        children = self.createVnodes(dummyRoot)
-        if children:
-            c2 = c.new()
-            c2.hiddenRootNode.children = children
-            # c2.setRootVnode(v)
+        # Pass two: create the outline from the sax nodes.
+        children = self.createVnodes(c,dummyRoot)
+        p = leoNodes.position(v=children[0],childIndex=0,stack=None)
+
+        # Check the outline.
+        c.dumpOutline()
+        errors = c.checkOutline()
+        if errors:
+            return g.trace('%s errors!' % errors)
+            
+        # if self.opml_read_derived_files:
+            # at = c.atFileCommands
+            # c.fileCommands.tnodesDict = self.createTnodesDict()
+            # self.resolveTnodeLists(c)
             # if self.opml_read_derived_files:
-                # at = c2.atFileCommands
-                # c2.fileCommands.tnodesDict = self.createTnodesDict()
-                # # g.trace('c2',id(c2),'tnodesDict',id(c2.fileCommands.tnodesDict))
-                # self.resolveTnodeLists(c2)
-                # if self.opml_read_derived_files:
-                    # c2.atFileCommands.readAll(c2.rootPosition())
-            errors = c2.checkOutline()
-            if errors:
-                g.trace('%s errors!' % errors)
-                return None
-            else:
-                p = position(v=children[0],childIndex=0,stack=None)
-                c2.selectPosition(p)
-                c2.redraw()
-                return c2 # for testing.
+                # c.atFileCommands.readAll(c.rootPosition())
+
+        c.selectPosition(p)
+        c.redraw()
+        return c # for testing.
     #@+node:ekr.20060921153603: *4* createTnodesDict
     def createTnodesDict (self):
 
@@ -715,8 +790,8 @@ class nodeClass:
 
         print('attrs: %s' % self.attributes.values())
     #@-others
-#@+node:ekr.20060904134958.164: ** class contentHandler (XMLGenerator)
-class contentHandler (xml.sax.saxutils.XMLGenerator):
+#@+node:ekr.20060904134958.164: ** class SaxContentHandler (XMLGenerator)
+class SaxContentHandler (xml.sax.saxutils.XMLGenerator):
 
     '''A sax content handler class that reads OPML files.'''
 
