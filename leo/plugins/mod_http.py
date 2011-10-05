@@ -553,6 +553,8 @@ class leo_interface(object):
             
             if path[0] == '_':
                 f = self.leo_actions.get_response()
+            elif len(path) == 1 and path[0] == 'favicon.ico':
+                 f = self.leo_actions.get_favicon()
             elif path == '/':
                  f = self.get_leo_windowlist()
             else:
@@ -1052,6 +1054,15 @@ class LeoActions:
 
         node.b = '\n'.join(b)
         node.setDirty()
+    #@+node:tbrown.20111005093154.17683: *3* get_favicon
+    def get_favicon(self):
+        
+        path = g.os_path_join(
+            g.computeLeoDir(), 'Icons', 'LeoApp16.ico')
+
+        f = StringIO()
+        f.write(open(path).read())
+        return f
     #@+node:tbrown.20110930220448.18076: *3* get_response
     def get_response(self):
         """Return the file like 'f' that leo_interface.send_head makes"""
