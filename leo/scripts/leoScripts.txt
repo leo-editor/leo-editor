@@ -12033,7 +12033,7 @@ d = get_options(exe)
 makePDF(d,open_out=True,trace=True)
 #@+node:ekr.20111004185540.15535: *4* << docstring >>
 @nocolor-node
-@
+'''
 
 A script for creating a pdf from a latex file.
 
@@ -12109,6 +12109,7 @@ Acknowledgements
 ================
 
 The original script by M.D.Boldin.  Rewritten by EKR.
+'''
 
 #@+node:ekr.20111004185540.15537: *4* get_options
 def get_options(exe):

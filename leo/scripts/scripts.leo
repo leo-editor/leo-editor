@@ -197,7 +197,7 @@
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
 <v t="ekr.20051110111150"
-expanded="ekr.20111004182631.15511,"><vh>@thin leoScripts.txt</vh></v>
+expanded="ekr.20111004090723.15496,ekr.20111004182631.15511,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"
 expanded="ekr.20110914030403.2417,ekr.20110914030403.2446,ekr.20110914030403.2421,"><vh>@file gen_blender_docs.py</vh></v>
 </v>
@@ -2688,7 +2688,7 @@ makePDF(d,open_out=True,trace=True)
         return None,None
 </t>
 <t tx="ekr.20111004185540.15535">@nocolor-node
-@
+'''
 
 A script for creating a pdf from a latex file.
 
@@ -2764,6 +2764,7 @@ Acknowledgements
 ================
 
 The original script by M.D.Boldin.  Rewritten by EKR.
+'''
 
 </t>
 <t tx="ekr.20111004185540.15537">def get_options(exe):
