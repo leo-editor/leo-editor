@@ -404,9 +404,33 @@
 <v t="ekr.20100313080341.8371"><vh>@color minibuffer-warning-color = lightgrey</vh></v>
 </v>
 <v t="ekr.20041119034357.70"><vh>Syntax colors &amp; options</vh>
+<v t="ekr.20111004182631.15533"><vh>Options</vh>
+<v t="ekr.20111004182631.15534"><vh>@bool color_cweb_comments_with_latex = True</vh></v>
+<v t="ekr.20111004182631.15535"><vh>@bool color_cweb_doc_parts_with_latex = True</vh></v>
+<v t="ekr.20111004182631.15536"><vh>@bool color_directives_in_plain_text = True</vh></v>
 <v t="ekr.20100102121150.6344"><vh>@bool show-invisibles-by-default = False</vh></v>
+<v t="ekr.20111004182631.15537"><vh>@bool underline_undefined_section_names = True</vh></v>
+<v t="ekr.20111004182631.15538"><vh>@bool use_hyperlinks = False</vh></v>
 <v t="ekr.20060201111002"></v>
-<v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 200000</vh></v>
+<v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 0</vh></v>
+</v>
+<v t="ekr.20111004182631.15554"><vh>Common colors (At least some *are* used by new colorizer)</vh>
+<v t="ekr.20111004182631.15539"><vh>@color comment_color = firebrick3</vh></v>
+<v t="ekr.20111004182631.15540"><vh>@color cweb_section_name_color = red</vh></v>
+<v t="ekr.20111004182631.15541"><vh>@color directive_color = blue</vh></v>
+<v t="ekr.20111004182631.15542"><vh>@color doc_part_color = firebrick3</vh></v>
+<v t="ekr.20111004182631.15543"><vh>@color forth_bracket_range_color = orange</vh></v>
+<v t="ekr.20111004182631.15544"><vh>@color keyword_color = blue</vh></v>
+<v t="ekr.20111004182631.15545"><vh>@color latex_background_color = None</vh></v>
+<v t="ekr.20111004182631.15546"><vh>@color leo_keyword_color = #00aa00</vh></v>
+<v t="ekr.20111004182631.15547"><vh>@color section_name_brackets_color = blue</vh></v>
+<v t="ekr.20111004182631.15548"><vh>@color section_name_color = red</vh></v>
+<v t="ekr.20111004182631.15549"><vh>@color show_invisibles_space_background_color = Gray90</vh></v>
+<v t="ekr.20111004182631.15550"><vh>@color show_invisibles_tab_foreground_color = Gray80</vh></v>
+<v t="ekr.20111004182631.15551"><vh>@color string_color = #00aa00</vh></v>
+<v t="ekr.20111004182631.15552"><vh>@color undefined_section_name_color = red</vh></v>
+<v t="ekr.20111004182631.15553"><vh>@font php keyword fonts (old colorizer)</vh></v>
+</v>
 <v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
 <v t="ekr.20100102100353.8705"><vh>@color blank_color = grey</vh></v>
 <v t="ekr.20100102100353.8706"><vh>@color tab_color = black</vh></v>
@@ -429,7 +453,7 @@
 <v t="ekr.20060828110551.1"><vh>Language-specific colors</vh>
 <v t="ekr.20060828110551.2"><vh>php</vh>
 <v t="ekr.20060828110551.3"><vh>@color php_operator_color = DodgerBlue1</vh></v>
-<v t="ekr.20060828145228.1"><vh>@font php keyword fonts (new colorizer)</vh></v>
+<v t="ekr.20060828145228.1"><vh>@font php keyword fonts</vh></v>
 </v>
 <v t="ekr.20080703111151.18"><vh>Forth fonts, colors &amp; settings</vh>
 <v t="ekr.20080703111151.21"><vh>@color forth_keyword3_color = black</vh></v>
@@ -3823,9 +3847,7 @@ horizontal: pack body-pane editors horizontally.</t>
 <t tx="ekr.20060828110551.1">Valid settings for _style strings are None, normal, bold, italic, bold-italic.</t>
 <t tx="ekr.20060828110551.2"></t>
 <t tx="ekr.20060828110551.3"></t>
-<t tx="ekr.20060828145228.1"># For new colorizer
-
-# php_keyword1_font_family = None
+<t tx="ekr.20060828145228.1"># php_keyword1_font_family = None
 php_keyword1_font_size = None
 php_keyword1_font_slant = roman
     # roman, italic
@@ -5638,7 +5660,9 @@ Change to your Python's default encoding if you have unicode problems.</t>
 <t tx="ekr.20090630073313.8522"></t>
 <t tx="ekr.20090703122042.7463">print 'hi'</t>
 <t tx="ekr.20090724102842.2492">If zero, all nodes are colorized, regardless of length of body text.
-If &gt; 0, only nodes whose body text are smaller than this limit are colorized.</t>
+If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
+
+200000</t>
 <t tx="ekr.20090905151712.8546"></t>
 <t tx="ekr.20100102100353.8705"></t>
 <t tx="ekr.20100102100353.8706"></t>
@@ -8113,6 +8137,66 @@ Valid values for the body of @font nodes::
 Use the show-fonts command to pick fonts, then copy the values shown by the
 show-fonts command to the values here.
 </t>
+<t tx="ekr.20111004182631.15533"></t>
+<t tx="ekr.20111004182631.15534">True:  Leo colors C language comments in cweb mode as black with LaTeX keywords highlighted.
+Flase: Leo colors C language comments in cweb mode as comments (default red).
+
+Note: this setting does not affect how Leo colors noweb section references and defintions.
+</t>
+<t tx="ekr.20111004182631.15535">True:  Leo colors @space, @* and @** sections in cweb mode as black with LaTeX keywords highlighted.
+False: Leo colors @space, @* and @** sections in cweb mode as comments (default is red).
+
+Note: this setting does not affect how Leo colors noweb section references and defintions.
+</t>
+<t tx="ekr.20111004182631.15536">True:  Leo colors @directives when @language plain is in effect.
+False: Leo colors everything black when @language plain is in effect.
+</t>
+<t tx="ekr.20111004182631.15537">True: Underline undefined section names
+
+Only functional if use_hyperlinks = 0
+
+</t>
+<t tx="ekr.20111004182631.15538">True:  underline "live" links.
+False: (recommended): Underline undefined section names.
+</t>
+<t tx="ekr.20111004182631.15539">The color of comments in code parts.
+</t>
+<t tx="ekr.20111004182631.15540">The color of name in @&lt;name@&gt;
+</t>
+<t tx="ekr.20111004182631.15541">The color of C/C++ preprocessor directive lines.
+</t>
+<t tx="ekr.20111004182631.15542">The color of text in doc parts.
+</t>
+<t tx="ekr.20111004182631.15543"></t>
+<t tx="ekr.20111004182631.15544">The color of keywords of the present language.
+
+For example, the color of "if", "try" and "except" in Python.
+</t>
+<t tx="ekr.20111004182631.15545"></t>
+<t tx="ekr.20111004182631.15546">The color of Leo keywords such as @ignore, @color, etc.
+</t>
+<t tx="ekr.20111004182631.15547">The color of the double angle brackets in &lt;&lt; name &gt;&gt;
+
+</t>
+<t tx="ekr.20111004182631.15548">The color of name in &lt; &lt; name &gt; &gt; when name is defined.
+</t>
+<t tx="ekr.20111004182631.15549">The background color that represents spaces and tabs when Show Invisibles mode is in effect.
+</t>
+<t tx="ekr.20111004182631.15550">The foreground color that represents spaces and tabs when Show Invisibles mode is in effect.
+</t>
+<t tx="ekr.20111004182631.15551">The color of strings and their delimiters.
+
+</t>
+<t tx="ekr.20111004182631.15552">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
+</t>
+<t tx="ekr.20111004182631.15553"># php_keyword_font_family = None
+php_keyword_font_size = None
+php_keyword_font_slant = roman
+    # roman, italic
+php_keyword_font_weight = none
+    # normal, bold
+</t>
+<t tx="ekr.20111004182631.15554"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
