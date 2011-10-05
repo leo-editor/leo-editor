@@ -12037,6 +12037,11 @@ makePDF(d,open_out=True,trace=True)
 
 A script for creating a pdf from a latex file.
 
+*Important: you must run Leo from a console when using this script, at least
+until the script can drive pdflatex in some kind of unattended mode. As it is
+now, pdflatex is likely to hang, waiting for console input. The typical (only?)
+response is to hit carriage returns until pdflatex finishes.
+
 There are two modes of operation, static and dynamic, determined by the contents
 of **d**, the **option dictionary**, returned by get_options.
 

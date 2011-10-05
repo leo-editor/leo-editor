@@ -197,7 +197,7 @@
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
 <v t="ekr.20051110111150"
-expanded="ekr.20111004182631.15511,"><vh>@thin leoScripts.txt</vh></v>
+expanded="ekr.20111004090723.15496,ekr.20111004182631.15511,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"
 expanded="ekr.20110914030403.2417,ekr.20110914030403.2446,ekr.20110914030403.2421,"><vh>@file gen_blender_docs.py</vh></v>
 </v>
@@ -2691,6 +2691,11 @@ makePDF(d,open_out=True,trace=True)
 '''
 
 A script for creating a pdf from a latex file.
+
+*Important: you must run Leo from a console when using this script, at least
+until the script can drive pdflatex in some kind of unattended mode. As it is
+now, pdflatex is likely to hang, waiting for console input. The typical (only?)
+response is to hit carriage returns until pdflatex finishes.
 
 There are two modes of operation, static and dynamic, determined by the contents
 of **d**, the **option dictionary**, returned by get_options.
