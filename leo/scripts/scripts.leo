@@ -197,7 +197,7 @@
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
 <v t="ekr.20051110111150"
-expanded="ekr.20111004090723.15496,ekr.20111004182631.15511,"><vh>@thin leoScripts.txt</vh></v>
+expanded="ekr.20111004182631.15511,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"
 expanded="ekr.20110914030403.2417,ekr.20110914030403.2446,ekr.20110914030403.2421,"><vh>@file gen_blender_docs.py</vh></v>
 </v>

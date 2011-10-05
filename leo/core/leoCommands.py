@@ -5501,7 +5501,7 @@ class Commands (object):
         """Clone all marked nodes as children of parent position."""
 
         c = self ; u = c.undoer
-        current = c.currentPosition()
+        current = c.p
 
         # Create a new node to hold clones.
         parent = current.insertAfter()
@@ -5520,6 +5520,80 @@ class Commands (object):
         parent.expand()
         c.selectPosition(parent)
         c.redraw()    
+    #@+node:ekr.20111005081134.15540: *6* c.deleteMarked
+    def deleteMarked (self,event=None):
+        
+        """Delete all marked nodes."""
+        
+        c = self ; u = c.undoer
+        
+        ## undoData = u.beforeDeleteMarked(c.p)
+        
+        # Delete one node for each pass. This works because, in effect,
+        # p.doDelete and its helpers update the root position.
+        while True:
+            for p in c.all_positions():
+                if p.isMarked():
+                    p.doDelete()
+                    break
+            else:
+                break
+        
+        ## u.afterDeleteMarked(undoData)
+        
+        # Don't even *think* about restoring the old position.
+        c.contractAllHeadlines()
+        c.selectPosition(c.rootPosition())
+        c.redraw()    
+    #@+node:ekr.20111005081134.15539: *6* c.moveMarked & helper
+    def moveMarked (self,event=None):
+
+        '''Move all marked nodes as children of parent position.'''
+        
+        c = self
+        
+        # *Important*: v.setMarked and v.clearMarked are cheap:
+        # they just set or clear a status bit in the vnode.
+        
+        # Remember all marked nodes.
+        marked = [v for v in c.all_unique_nodes() if v.isMarked()]
+        if not marked:
+            return g.es('no marked nodes',color='blue')
+
+        # Create a new root node to hold the moved nodes.
+        parent = c.createMoveMarkedNode()
+
+        # Move marked nodes one node at a time.
+        while True:
+            assert parent == c.rootPosition()
+            assert not parent.isMarked()
+            for p in c.all_positions():
+                if p.isMarked():
+                    # Move the node and unmark it temporarily.
+                    p.moveToLastChildOf(parent)
+                    p.v.clearMarked()
+                    break
+            else:
+                break
+                
+        # Remark all nodes.
+        for v in marked:
+            v.setMarked()
+            
+        # Don't even *think* about restoring the old position.
+        assert parent == c.rootPosition()
+        c.contractAllHeadlines()
+        c.selectPosition(parent)
+        c.redraw()    
+    #@+node:ekr.20111005081134.15543: *7* createMoveMarkedNode
+    def createMoveMarkedNode(self):
+        
+        c = self
+        oldRoot = c.rootPosition()
+        p = oldRoot.insertAfter()
+        p.moveToRoot(oldRoot)
+        c.setHeadString(p,'Moved marked nodes')
+        return p
     #@+node:ekr.20031218072017.2923: *6* markChangedHeadlines
     def markChangedHeadlines (self,event=None):
 
