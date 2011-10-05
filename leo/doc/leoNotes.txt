@@ -5252,65 +5252,6 @@ A reasonable value is 5000.
 #@+node:ekr.20111003130143.15537: *4* @int colorizer_interrupt_count1 = 10
 The number of times the colorizer's main loop in colorOneChunk executes before pausing to check for events.
 A reasonable value is 10.
-#@+node:ekr.20111003130143.15538: *3* Options for old colorizer
-#@+node:ekr.20111003130143.15539: *4* @bool color_cweb_comments_with_latex = True
-True:  Leo colors C language comments in cweb mode as black with LaTeX keywords highlighted.
-Flase: Leo colors C language comments in cweb mode as comments (default red).
-
-Note: this setting does not affect how Leo colors noweb section references and defintions.
-#@+node:ekr.20111003130143.15540: *4* @bool color_cweb_doc_parts_with_latex = True
-True:  Leo colors @space, @* and @** sections in cweb mode as black with LaTeX keywords highlighted.
-False: Leo colors @space, @* and @** sections in cweb mode as comments (default is red).
-
-Note: this setting does not affect how Leo colors noweb section references and defintions.
-#@+node:ekr.20111003130143.15541: *4* @bool color_directives_in_plain_text = True
-True:  Leo colors @directives when @language plain is in effect.
-False: Leo colors everything black when @language plain is in effect.
-#@+node:ekr.20111003130143.15542: *4* @bool underline_undefined_section_names = True
-True: Underline undefined section names
-
-Only functional if use_hyperlinks = 0
-
-#@+node:ekr.20111003130143.15543: *4* @bool use_hyperlinks = False
-True:  underline "live" links.
-False: (recommended): Underline undefined section names.
-#@+node:ekr.20111003130143.15544: *4* @color comment_color = firebrick3
-The color of comments in code parts.
-#@+node:ekr.20111003130143.15545: *4* @color cweb_section_name_color = red
-The color of name in @<name@>
-#@+node:ekr.20111003130143.15546: *4* @color directive_color = blue
-The color of C/C++ preprocessor directive lines.
-#@+node:ekr.20111003130143.15547: *4* @color doc_part_color = firebrick3
-The color of text in doc parts.
-#@+node:ekr.20111003130143.15548: *4* @color forth_bracket_range_color = orange
-#@+node:ekr.20111003130143.15549: *4* @color keyword_color = blue
-The color of keywords of the present language.
-
-For example, the color of "if", "try" and "except" in Python.
-#@+node:ekr.20111003130143.15550: *4* @color latex_background_color = None
-#@+node:ekr.20111003130143.15551: *4* @color leo_keyword_color = #00aa00
-The color of Leo keywords such as @ignore, @color, etc.
-#@+node:ekr.20111003130143.15552: *4* @color section_name_brackets_color = blue
-The color of the double angle brackets in << name >>
-
-#@+node:ekr.20111003130143.15553: *4* @color section_name_color = red
-The color of name in < < name > > when name is defined.
-#@+node:ekr.20111003130143.15554: *4* @color show_invisibles_space_background_color = Gray90
-The background color that represents spaces and tabs when Show Invisibles mode is in effect.
-#@+node:ekr.20111003130143.15555: *4* @color show_invisibles_tab_foreground_color = Gray80
-The foreground color that represents spaces and tabs when Show Invisibles mode is in effect.
-#@+node:ekr.20111003130143.15556: *4* @color string_color = #00aa00
-The color of strings and their delimiters.
-
-#@+node:ekr.20111003130143.15557: *4* @color undefined_section_name_color = red
-The color of name in << name >> when name is undefined.
-#@+node:ekr.20111003130143.15558: *4* @font php keyword fonts (old colorizer)
-# php_keyword_font_family = None
-php_keyword_font_size = None
-php_keyword_font_slant = roman
-    # roman, italic
-php_keyword_font_weight = none
-    # normal, bold
 #@+node:ekr.20031218072017.434: ** Unused code
 @ignore
 @language python

@@ -6,6 +6,8 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 I am willing to fix bugs, but I would like to declare a moratorium on feature additions until 2012.
 .. @+node:ekr.20110921132705.6960: *3* To do first
+.. @+node:ekr.20111004182631.15510: *4* Finish LaTeX script
+.. @+node:ekr.20111004090723.15494: *4* * Test Leo bookmark script on Linux
 .. @+node:ekr.20110918204916.6811: *4* * revise autocompletion docs based on recent posts
 .. @+node:ekr.20110929074744.15474: *5* Autocompleter post
 @language rest
@@ -1849,7 +1851,6 @@ interface and filter bar at the top, and a feature to "merge or reset
 from LeoSettings".
 ... or maybe something like Firefox's "about:config" would be better
 suited (and probably faster to build).
-.. @+node:ekr.20110929074744.15499: *5* Allow more panes to be part of the free_layout "action" buttons
 .. @+node:ekr.20110929074744.15449: *5* Allow mouseless leo (really)
 @nocolor-node
 
@@ -2151,9 +2152,19 @@ def replaceCodeBlockDirectives (self,lines):
                 result.append(s)
 
     return result
-.. @+node:ekr.20111003161039.17379: *5* A modern undo
-A Modern Undo - Making undo usable beyond the last few changes
-> http://e-texteditor.com/blog/2006/making-undo-usable
+.. @+node:ekr.20111003232155.6988: *5* Use g.app.db for marks & expansion bits
+This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
+.. @+node:ekr.20111004090723.15491: *5* Fix broken link in docs
+> In this node of LeoDocs.leo:
+> Users Guide-->Basics-->FAQ-->@file FAQ.txt-->@rst html\FAQ.html-->Tips and
+> techniques-->How can I display graphics in Leo?
+>
+> It introduce a link of sourceforge forum, but the page seems not exist or
+> disabled.
+> http://sourceforge.net/forum/forum.php?thread_id=1201579&forum_id=10226
+.. @+node:ekr.20111004182631.15509: *4* Later
+.. @+node:ekr.20111004090723.15495: *5* Finish leoOPML plugin
+.. @+node:ekr.20110929074744.15499: *5* Allow more panes to be part of the free_layout "action" buttons
 .. @+node:ekr.20110620065017.14900: *3* Bugs
 .. @+node:ekr.20110621085435.6531: *4* Improve the find panel and find menu
 @nocolor-node
