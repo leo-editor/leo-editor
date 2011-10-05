@@ -5552,36 +5552,30 @@ class Commands (object):
         
         c = self
         
-        # *Important*: v.setMarked and v.clearMarked are cheap:
-        # they just set or clear a status bit in the vnode.
-        
-        # Remember all marked nodes.
-        marked = [v for v in c.all_unique_nodes() if v.isMarked()]
-        if not marked:
+        # Check for marks.
+        for v in c.all_unique_nodes():
+            if v.isMarked():
+                break
+        else:
             return g.es('no marked nodes',color='blue')
 
         # Create a new root node to hold the moved nodes.
         parent = c.createMoveMarkedNode()
+        assert not parent.isMarked()
 
         # Move marked nodes one node at a time.
         while True:
             assert parent == c.rootPosition()
-            assert not parent.isMarked()
             for p in c.all_positions():
-                if p.isMarked():
-                    # Move the node and unmark it temporarily.
+                # Careful: don't move already-moved nodes.
+                if p.isMarked() and not parent.isAncestorOf(p):
                     p.moveToLastChildOf(parent)
-                    p.v.clearMarked()
                     break
             else:
                 break
-                
-        # Remark all nodes.
-        for v in marked:
-            v.setMarked()
-            
+
         # Don't even *think* about restoring the old position.
-        assert parent == c.rootPosition()
+        c.setChanged(True)
         c.contractAllHeadlines()
         c.selectPosition(parent)
         c.redraw()    
