@@ -283,7 +283,7 @@ def show_scrolled_message(tag, kw):
     return True
 #@+node:ekr.20110320120020.14490: ** Commands
 #@+node:ekr.20110917103917.3639: *3* g.command('close-rendering-pane')
-@g.command('close-rendering-pane')
+@g.command('viewrendered-close')
 def close_rendering_pane(event):
     
     '''Close the rendering pane.'''
@@ -295,14 +295,14 @@ def close_rendering_pane(event):
             vr.deactivate()
             vr.deleteLater()
 #@+node:ekr.20110321085459.14462: *3* g.command('hide-rendering-pane')
-@g.command('hide-rendering-pane')
+@g.command('viewrendered-hide')
 def hide_rendering_pane(event):
     
     '''A synonym for 'close-rendering-pane.'''
     
     close_rendering_pane(event)
 #@+node:ekr.20110321072702.14507: *3* g.command('lock-unlock-rendering-pane')
-@g.command('lock-unlock-rendering-pane')
+@g.command('viewrendered-lock-toggle')
 def lock_unlock_rendering_pane(event):
     
     '''Pause or play a movie in the rendering pane.'''
@@ -319,7 +319,7 @@ def lock_unlock_rendering_pane(event):
             else:
                 vr.lock()
 #@+node:ekr.20110320233639.5777: *3* g.command('pause-play-movie')
-@g.command('pause-play-movie')
+@g.command('viewrendered-pause-play')
 def pause_play_movie(event):
     
     '''Pause or play a movie in the rendering pane.'''
@@ -337,14 +337,14 @@ def pause_play_movie(event):
                 else:
                     vp.play()
 #@+node:ekr.20110917103917.3637: *3* g.command('show-rendering-pane')
-@g.command('show-rendering-pane')
+@g.command('viewrendered-show')
 def show_rendering_pane (event):
     
     '''A synonym for viewrendered.'''
     
     viewrendered(event)
 #@+node:ekr.20110317080650.14386: *3* g.command('toggle-rendering-pane')
-@g.command('toggle-rendering-pane')
+@g.command('viewrendered-show-toggle')
 def toggle_rendering_pane(event):
     
     '''Show or hide the rendering pane.'''
@@ -357,7 +357,7 @@ def toggle_rendering_pane(event):
         else:
             viewrendered(event)
 #@+node:ekr.20110321151523.14464: *3* g.command('update-rendering-pane')
-@g.command('update-rendering-pane')
+@g.command('viewrendered-update')
 def update_rendering_pane (event):
     
     '''Hide the rendering pane, but do not delete it.'''
