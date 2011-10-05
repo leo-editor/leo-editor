@@ -153,7 +153,19 @@ class config:
 #@+node:ekr.20060830091349: *3* init
 def init ():
 
-    g.registerHandler("open2", onFileOpen)
+    if 0:
+        g.registerHandler("open2", onFileOpen)
+    else:
+        getGlobalConfiguration()
+        if config.http_active:
+            
+            s=Server('',config.http_port,RequestHandler)
+            asyncore.read = a_read
+            g.registerHandler("idle", plugin_wrapper)
+    
+            g.es("http serving enabled on port %s, version %s" % (
+                config.http_port, __version__), color="purple")
+        
     g.plugin_signon(__name__)
 
     return True
@@ -1170,6 +1182,31 @@ def getConfiguration(c):
 
     # attribute name.
     new_rst2_http_attributename = c.config.getString("rst2_http_attributename")
+    if new_rst2_http_attributename:
+        config.rst2_http_attributename = new_rst2_http_attributename
+#@+node:tbrown.20111005140148.18223: ** getGlobalConfiguration
+def getGlobalConfiguration():
+
+    """read config."""
+
+    # timeout.
+    newtimeout = g.app.config.getInt(None, "http_timeout")
+    if newtimeout is not None:
+        config.http_timeout = newtimeout  / 1000.0
+    
+    # port.
+    newport = g.app.config.getInt(None, "http_port") 
+    if newport:
+        config.http_port = newport
+
+    # active.
+    newactive = g.app.config.getBool(None, "http_active")
+    if newactive is not None:
+        config.http_active = newactive
+
+    # attribute name.
+    new_rst2_http_attributename = g.app.config.getString(
+        None, "rst2_http_attributename")
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
 #@-others
