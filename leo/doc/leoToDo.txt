@@ -6,7 +6,6 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 I am willing to fix bugs, but I would like to declare a moratorium on feature additions until 2012.
 .. @+node:ekr.20110921132705.6960: *3* To do first
-.. @+node:ekr.20111005105340.15553: *4* ** Make sure reformat-paragraph doesn't scroll
 .. @+node:ekr.20111004090723.15494: *4* * Test Leo bookmark script on Linux
 .. @+node:ekr.20110918204916.6811: *4* * revise autocompletion docs based on recent posts
 .. @+node:ekr.20110929074744.15474: *5* Autocompleter post

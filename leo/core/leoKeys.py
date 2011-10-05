@@ -4230,8 +4230,9 @@ class keyHandlerClass:
         if w and isText:
             k.showStateColors(inOutline,w)
             k.showStateCursor(state,w)
-            w.seeInsertPoint()
-            # 2011/10/02: Fix cursor-movement bug.
+            # w.seeInsertPoint()
+                # 2011/10/02: Fix cursor-movement bug.
+                # 2011/10/05: Rats: this messes up the reformat-paragraph command.
 
         # Doesn't work.
         # self.w.widget.blockSignals(True)
