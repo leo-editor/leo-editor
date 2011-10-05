@@ -74,41 +74,7 @@ import glob
 import os
 import sys
 #@-<< imports >>
-__version__ = "2.2"
-#@+<< version history >>
-#@+node:ekr.20050101100033: ** << version history >>
-#@@nocolor
-#@+at
-# 
-# 1.4 EKR: Check at runtime to make sure that the plugin has been loaded before calling topLevelMenu function.
-# 1.5 EKR:
-# - Check for ImportError directly in Plugin.__init__.
-#   Alas, this can not report import problems without more work.
-#   This _really_ should be done, but it will have to wait.
-#   As a workaround, plugins_manager.py now has an init method and reports its own import problems.
-# 1.6 Paul Paterson:
-# - Add support for plugin groups. Each group gets its own sub menu now
-# - Set __plugin_group__ to "Core"
-# 1.7 EKR: Set default version in Plugin.__init__ so plugins without version still appear in plugin menu.
-# 1.8 Paul Paterson: Changed the names in the plugin menu to remove at_, mod_ and capitalized.
-# 1.9 Paul Paterson:
-# - Refactored to allow dynamically adding plugins to the menu after initial load
-# - Reformatted menu items for cmd_ThisIsIt to be "This Is It"
-# 1.10 EKR: Removed the g.app.dialog hack.
-# 1.11 EKR: Added event arg to cmd_callback.  This was causing crashes in several plugins.
-# 1.12 EKR: Fixed bug per http://sourceforge.net/forum/message.php?msg_id=3810157
-# 1.13 EKR:
-# - Always Plugin.name and Plugin.realname for use by createPluginsMenu.
-# - Add plugins to Plugins menu *only* if they have been explicitly enabled.
-#   This solves the HTTP mystery: HTTP was being imported by mod_scripting plugin.
-# 1.14 EKR: Added init function.
-# 1.15 plumloco: Separated out the gui elements of the 'properties' and 'about' dialogs to make the plugin gui independant.
-# 1.16 bobjack:
-# - Added 'Text to HTML' and 'RST to HTML' buttons to TkScrolledMessageDialog.
-# - Converted docstring to RST.
-# 2.0 EKR: Now works with Python 3.x.
-# 2.2 SegundoBob:  Allow plugins not in leo/plugins.
-#@-<< version history >>
+__version__ = "2.3"
 
 __plugin_name__ = "Plugins Menu"
 __plugin_priority__ = -100

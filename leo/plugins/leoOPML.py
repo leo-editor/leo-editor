@@ -80,6 +80,8 @@ If True, when expanding as above, skip blank dict entries.
 #@@nocolor
 #@+at
 # 
+# * Support reading external files.
+# 
 # - Enhance open/save commands when this plugin is active.
 # 
 # - read/write uA's.
@@ -90,49 +92,6 @@ __version__ = '0.93'
 # For traces.
 printElements = [] # ['all','outline','head','body',]
 
-#@+<< version history >>
-#@+node:ekr.20060904103412.2: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 0.01 EKR: Initial version.
-# 0.02 EKR: This plugin overrides leoFileCommands.fileCommands.putToOPML.
-# - Changes to Leo's core:
-#     - Added toOPML=False keyword argument to write_Leo_file.
-#     - Added dummy putToOPML method.
-# 0.03 EKR: Use SAX to read .opml files.  Parsing works.  More semantics are needed.
-# 0.04 EKR: Simplified the code.
-# 0.05 EKR: Outline created with proper headlines: (wrote & debugged createVnodes & helpers)
-# 0.06 EKR: Rewrote createChildren.  It's simpler and appears to handle clones properly.
-# 0.07 EKR: Revised code using saxRead plugin as a model.
-# All strings are now assumed to be unicode.
-# 0.08 EKR: Leo can now read and write body and headline text properly.
-# - Use xml.sax.saxutils to quote attributes properly.
-# - Improved error handling in parse_opml_file.
-# 0.1 EKR: Write and read a attributes (marks, expanded, etc.)
-# 0.1.1 EKR: Added resolveTnodeLists and related logic.
-# 0.1.2 EKR: Moved parse_opml_file into opmlController class, as is done in the saxRead plugin.
-# 0.2 EKR: Moved putToOPML and its helpers to Leo's core, so there is no need to subclass any fileCommands class.
-# Future plugins could customize these methods, but configuration settings would be better.
-# 0.3 EKR: Do not call toUnicode: sax should already have done that.
-# 0.4 EKR: No change to opml plugin, but defined fc.attributeEscape to convert newlines to '&#10;\n'
-# This overcomes the sax parser's tendency to strip newlines from attributes.  Sheesh.
-# 0.5 EKR: Added support for namespaces.  The beginnings of opml settings.
-# 0.6 EKR: Moved write code back into plugin.  It is more convenient and flexible.
-# - Added support for opml_use_outline_elements, opml_write_leo_details and opml_write_body_text
-#   settings in leoSettings.leo.
-# - The read code no longer requires tnx fields.
-# 0.7 EKR: Support for opml_version.  Reading and writing works (except for tnodeLists) regardless of settings.
-# 0.8 EKR: This plugin now creates the read/write-opml-file commands.
-# 0.9 EKR: Improved docstring.
-# 0.91 EKR: reading derived files appears to work:
-# - create c.fileCommands.tnodeDict before calling c.atFileCommands.readAll.
-# - Properly init t.fileIndex to an actual gnx using scanGnx.
-# 0.92 EKR: Support for opml_write_leo_globals_attributes setting:
-# - Read and write leo:body_outline_ratio attribute and <leo:global_window_position> element.
-# 0.93 EKR: Support opml_read_derived_files & opml_write_derived_files
-# 0.94 TNB: write unknownAttributes, use leo: rather than just : for namespace, tweaked SAX content reading
-#@-<< version history >>
 #@+<< imports >>
 #@+node:ekr.20060904103412.3: ** << imports >>
 import leo.core.leoGlobals as g
