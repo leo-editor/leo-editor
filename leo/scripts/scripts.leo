@@ -197,9 +197,21 @@
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
 <v t="ekr.20051110111150"
-expanded="ekr.20051104082026,"><vh>@thin leoScripts.txt</vh></v>
+expanded="ekr.20111004182631.15511,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"
 expanded="ekr.20110914030403.2417,ekr.20110914030403.2446,ekr.20110914030403.2421,"><vh>@file gen_blender_docs.py</vh></v>
+</v>
+<v t="ekr.20111004090723.15496"><vh>@button MakePDF</vh>
+<v t="ekr.20111004185540.15535"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20111004185540.15537"><vh>get_options</vh></v>
+<v t="ekr.20111004185540.15540"><vh>log</vh></v>
+<v t="ekr.20111004090723.15502"><vh>makePDF</vh></v>
+<v t="ekr.20111004182631.15511"><vh>setup &amp; helpers</vh>
+<v t="ekr.20111004185540.15538"><vh>compute_file_names</vh></v>
+</v>
+</v>
+<v t="ekr.20111004214045.2482"><vh>@path C:\Users\edreamleo\Latex</vh>
+<v t="ekr.20111004185540.15541"><vh>@@auto sample.tex</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2614,6 +2626,565 @@ g.es("done",color="blue")
     child.initHeadString(headline.replace('\\','/'))
     return child
 </t>
+<t tx="ekr.20111004090723.15496">&lt;&lt; docstring &gt;&gt;
+
+@language python
+@tabwidth -4
+
+import os
+import subprocess
+
+@others
+
+log = g.es_print
+
+exe = r'C:\apps\MiKTeX 2.9\miktex\bin\pdflatex.exe'
+    # The full path to the executable.
+
+d = get_options(exe)
+
+makePDF(d,open_out=True,trace=True)
+</t>
+<t tx="ekr.20111004090723.15502">def makePDF (d,open_out,trace):
+    
+    command,out_fn = setup(d)
+    if not command: return
+    
+    # Save the outline to save the file.
+    c.save()
+
+    if trace:
+        log('\nMakePDF: command...')
+        for arg in command:
+            log('  %s' % arg)
+        log('')
+
+    # Execute the command and wait for it to finish.
+    subprocess.Popen(command).wait()
+
+    if open_out:
+        if trace: log('Opening: %s' % out_fn)
+        os.startfile(out_fn)
+    
+    if trace: log('Done')
+</t>
+<t tx="ekr.20111004182631.15511">def setup (d):
+    
+    '''Return the command to execute and the name of the output file.'''
+
+    exe = d.get('exe')
+    in_fn,out_dir = compute_file_names(d)
+
+    if in_fn and out_dir:
+        command = [
+            exe,
+            '-output-directory=%s' % (out_dir),
+            in_fn
+        ]
+        out_fn = g.os_path_join(
+            out_dir,g.shortFileName(in_fn[:-4]))+'.pdf'
+        return command,out_fn
+    else:
+        return None,None
+</t>
+<t tx="ekr.20111004185540.15535">@nocolor-node
+@
+
+A script for creating a pdf from a latex file.
+
+There are two modes of operation, static and dynamic, determined by the contents
+of **d**, the **option dictionary**, returned by get_options.
+
+**Important**: change get_options as described below to meet your needs.
+
+If d.get('in_fn') exists, the script operates in static mode. Otherwise, the
+script operates in dynamic mode.
+
+Static mode
+===========
+
+d.get('in_fn') must be the full path to the input file.
+
+If d.get('out_dir') exists, it must be the full path to the output directory.
+The out_dir setting is optional. If omitted, output goes to the directory
+containing the input file.
+
+Dynamic mode
+============
+
+Rather than use d.get('in_fn'), the script finds the nearest @&lt;file&gt; node in
+c.p.self_and_parents(). This node, *whatever it is*, is assumed to contain LaTeX
+text.
+
+**Important**: if in_fn is a relative path, it is converted to an absolute path
+by taking account of any ancestor @path directive. If the resulting path is
+still relative, it is taken to be a path relative to the directory containing
+the .leo file. Here is the actual code::
+    
+    c_dir = g.os_path_dirname(c.fileName())
+    fn = g.os_path_join(c_dir,c.getNodePath(p),fn)
+    
+If d.get('out_dir') exists, it may be either an absolute or relative path. If it
+is a relative path, it is taken to be a path relative to the path given by the
+@&lt;file&gt; node. That is::
+    
+    out_dir = g.os_path_join(g.os_path_dirname(fn),out_dir)
+
+Other settings
+==============
+
+- exe:  The full path to the pdf creation program.
+        'pdflatex' is part of MikTex.
+
+- open_out: True: open the output file automatically after it is created.
+
+- trace: True: output log messages using g.es_print.
+
+The exe setting is a global variable.  The open_out and trace settings
+are arguments to the makePDF function.
+
+To do
+=====
+
+- Add an argument to the command that would have pdflatex run without user input.
+
+- determine if the node held a rst file and first turn this into Latex.
+
+- open the log file or read it into a node if there is a compiling error.
+
+- It might be useful to have some settings in the file node that let the script
+  automatically basic latex packages, items and definitions for a particular
+  type of document (Title page, TOC, set date, use the beamer package to create
+  slides, etc.)
+
+- It would be really cool to be able to render TEX to PDF in real time like
+  viewrendered handles HTML and ReST.
+  
+Acknowledgements
+================
+
+The original script by M.D.Boldin.  Rewritten by EKR.
+
+</t>
+<t tx="ekr.20111004185540.15537">def get_options(exe):
+    
+    '''Return the user options in a dict.'''
+    
+    if 0: # Static options...
+        return {
+            'exe': exe,
+            'in_fn':    r'C:\Users\edreamleo\Latex\sample.tex',
+                # The full path to the input file.
+            'out_dir':  r'C:\Users\edreamleo\Latex\out',
+                # The full path to the output directory.
+        }
+    else : # Dynamic options...
+        '''The nearest @&lt;file&gt; gives the input file.
+        
+        If all paths are relative, the result is relative
+        to the directory containing this .leo file.
+        '''
+    
+        return {
+            'exe': exe,
+            'out_dir': 'out',
+                # The output directory,
+                # relative to the directory of the input file.
+                # None is valid.
+        }
+</t>
+<t tx="ekr.20111004185540.15538">def compute_file_names (d):
+    
+    '''Return the absolute paths to the input file and the output directory.'''
+    
+    fn = d.get('in_fn')
+    if fn:
+        # Static, absolute paths.
+        out_dir = d.get('out_dir') or g.os_path_dirname(fn)
+        if g.os_path_exists(fn) and g.os_path_exists(out_dir):
+            return fn,out_dir
+        elif not g.os_path_exists(fn):
+            log('File not found: %s' % fn)
+            return None,None
+        else:
+            log('Directory not found: %s' % out_dir)
+            return None,None
+    else:
+        # Dynamic file name from the nearest @&lt;file&gt; node.
+        for p in c.p.self_and_parents():
+            if p.isAnyAtFileNode():
+                fn = p.anyAtFileNodeName()
+                break
+        else:
+            log('no &lt;@file&gt; node found at: "%s"' % c.p.h)
+            return None,None
+        
+        # Compute the absolute path to the filename,
+        # taking into account any relevant @path directives.
+        c_dir = g.os_path_dirname(c.fileName())
+        fn = g.os_path_join(c_dir,c.getNodePath(p),fn)
+        out_dir = d.get('out_dir') or ''
+        out_dir = g.os_path_join(g.os_path_dirname(fn),out_dir)
+        
+        if g.os_path_exists(fn) and g.os_path_exists(out_dir):
+            return fn,out_dir
+        else:
+            log('not found: %s' % fn)
+            return None,None
+</t>
+<t tx="ekr.20111004185540.15540">def log (s):
+    
+    '''Write a message to the log.'''
+    
+    g.es_print(s,color='red')
+</t>
+<t tx="ekr.20111004185540.15541">@language tex
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}    % need for subequations
+\usepackage{graphicx}   % need for figures
+\usepackage{verbatim}   % useful for program listings
+\usepackage{color}      % use if color is used in text
+\usepackage{subfigure}  % use for side-by-side figures
+\usepackage{hyperref}   % use for hypertext links, including those to external documents and URLs
+
+% don't need the following. simply use defaults
+\setlength{\baselineskip}{16.0pt}    % 16 pt usual spacing between lines
+
+\setlength{\parskip}{3pt plus 2pt}
+\setlength{\parindent}{20pt}
+\setlength{\oddsidemargin}{0.5cm}
+\setlength{\evensidemargin}{0.5cm}
+\setlength{\marginparsep}{0.75cm}
+\setlength{\marginparwidth}{2.5cm}
+\setlength{\marginparpush}{1.0cm}
+\setlength{\textwidth}{150mm}
+
+\begin{comment}
+\pagestyle{empty} % use if page numbers not wanted
+\end{comment}
+
+% above is the preamble
+
+\begin{document}
+
+\begin{center}
+{\large Introduction to \LaTeX} \\ % \\ = new line
+\copyright 2006 by Harvey Gould \\
+December 5, 2006
+\end{center}
+
+\section{Introduction}
+\TeX\ looks more difficult than it is. It is
+almost as easy as $\pi$. See how easy it is to make special
+symbols such as $\alpha$,
+$\beta$, $\gamma$,
+$\delta$, $\sin x$, $\hbar$, $\lambda$, $\ldots$ We also can make
+subscripts
+$A_{x}$, $A_{xy}$ and superscripts, $e^x$, $e^{x^2}$, and
+$e^{a^b}$. We will use \LaTeX, which is based on \TeX\ and has
+many higher-level commands (macros) for formatting, making
+tables, etc. More information can be found in Ref.~\cite{latex}.
+
+We just made a new paragraph. Extra lines and spaces make no
+difference. Note that all formulas are enclosed by
+\$ and occur in \textit{math mode}.
+
+The default font is Computer Modern. It includes \textit{italics},
+\textbf{boldface},
+\textsl{slanted}, and \texttt{monospaced} fonts.
+
+\section{Equations}
+Let us see how easy it is to write equations.
+\begin{equation}
+\Delta =\sum_{i=1}^N w_i (x_i - \bar{x})^2 .
+\end{equation}
+It is a good idea to number equations, but we can have a
+equation without a number by writing
+\begin{equation}
+P(x) = \frac{x - a}{b - a} , \nonumber
+\end{equation}
+and
+\begin{equation}
+g = \frac{1}{2} \sqrt{2\pi} . \nonumber
+\end{equation}
+
+We can give an equation a label so that we can refer to it later.
+\begin{equation}
+\label{eq:ising}
+E = -J \sum_{i=1}^N s_i s_{i+1} ,
+\end{equation}
+Equation~\eqref{eq:ising} expresses the energy of a configuration
+of spins in the Ising model.\footnote{It is necessary to process (typeset) a
+file twice to get the counters correct.}
+
+We can define our own macros to save typing. For example, suppose
+that we introduce the macros:
+\begin{verbatim}
+ \newcommand{\lb}{{\langle}}
+ \newcommand{\rb}{{\rangle}}
+\end{verbatim}
+\newcommand{\lb}{{\langle}}
+\newcommand{\rb}{{\rangle}}
+Then we can write the average value of $x$ as
+\begin{verbatim}
+\begin{equation}
+\lb x \rb = 3
+\end{equation}
+\end{verbatim}
+The result is
+\begin{equation}
+\lb x \rb = 3 .
+\end{equation}
+
+Examples of more complicated equations:
+\begin{equation}
+I = \! \int_{-\infty}^\infty f(x)\,dx \label{eq:fine}.
+\end{equation}
+We can do some fine tuning by adding small amounts of horizontal
+spacing:
+\begin{verbatim}
+ \, small space       \! negative space
+\end{verbatim}
+as is done in Eq.~\eqref{eq:fine}.
+
+We also can align several equations:
+\begin{align}
+a &amp; = b \\
+c &amp;= d ,
+\end{align}
+or number them as subequations:
+\begin{subequations}
+\begin{align}
+a &amp; = b \\
+c &amp;= d .
+\end{align}
+\end{subequations}
+
+We can also have different cases:
+\begin{equation}
+\label{eq:mdiv}
+m(T) =
+\begin{cases}
+0 &amp; \text{$T &gt; T_c$} \\
+\bigl(1 - [\sinh 2 \beta J]^{-4} \bigr)^{\! 1/8} &amp; \text{$T &lt; T_c$}
+\end{cases}
+\end{equation}
+write matrices
+\begin{align}
+\textbf{T} &amp;=
+\begin{pmatrix}
+T_{++} \hfill &amp; T_{+-} \\
+T_{-+} &amp; T_{--} \hfill 
+\end{pmatrix} , \nonumber \\
+&amp; =
+\begin{pmatrix}
+e^{\beta (J + B)} \hfill &amp; e^{-\beta J} \hfill \\
+e^{-\beta J} \hfill &amp; e^{\beta (J - B)} \hfill
+\end{pmatrix}.
+\end{align}
+and 
+\newcommand{\rv}{\textbf{r}}
+\begin{equation}
+\sum_i \vec A \cdot \vec B = -P\!\int\! \rv \cdot
+\hat{\mathbf{n}}\, dA = P\!\int \! {\vec \nabla} \cdot \rv\, dV.
+\end{equation}
+
+\section{Tables}
+Tables are a little more difficult. TeX
+automatically calculates the width of the columns.
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|l|l|r|l|}
+\hline
+lattice &amp; $d$ &amp; $q$ &amp; $T_{\rm mf}/T_c$ \\
+\hline
+square &amp; 2 &amp; 4 &amp; 1.763 \\
+\hline
+triangular &amp; 2 &amp; 6 &amp; 1.648 \\
+\hline
+diamond &amp; 3 &amp; 4 &amp; 1.479 \\
+\hline
+simple cubic &amp; 3 &amp; 6 &amp; 1.330 \\
+\hline
+bcc &amp; 3 &amp; 8 &amp; 1.260 \\
+\hline
+fcc &amp; 3 &amp; 12 &amp; 1.225 \\
+\hline
+\end{tabular}
+\caption{\label{tab:5/tc}Comparison of the mean-field predictions
+for the critical temperature of the Ising model with exact results
+and the best known estimates for different spatial dimensions $d$
+and lattice symmetries.}
+\end{center}
+\end{table}
+
+\section{Lists}
+
+Some example of formatted lists include the
+following:
+
+\begin{enumerate}
+
+\item bread
+
+\item cheese
+
+\end{enumerate}
+
+\begin{itemize}
+
+\item Tom
+
+\item Dick
+
+\end{itemize}
+
+\section{Figures}
+
+We can make figures bigger or smaller by scaling them. Figure~\ref{fig:lj}
+has been scaled by 60\%.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics{figures/sine}
+\caption{\label{fig:typical}Show me a sine.}
+\end{center}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+\scalebox{0.6}{\includegraphics{figures/lj}}
+\caption{\label{fig:lj}Plot of the
+Lennard-Jones potential
+$u(r)$. The potential is characterized by a length
+$\sigma$ and an energy
+$\epsilon$.}
+\end{center}
+\end{figure}
+
+\section{Literal text}
+It is desirable to print program code exactly as it is typed in a
+monospaced font. Use \verb \begin{verbatim} and
+\verb \end{verbatim} as in the following example:
+\begin{verbatim}
+double y0 = 10; // example of declaration and assignment statement
+double v0 = 0;  // initial velocity
+double t = 0;   // time
+double dt = 0.01; // time step
+double y = y0;
+\end{verbatim}
+The command \verb \verbatiminput{programs/Square.java}\ allows
+you to list the file \texttt{Square.java} in the directory
+programs.
+
+\section{Special Symbols}
+
+\subsection{Common Greek letters}
+
+These commands may be used only in math mode. Only the most common
+letters are included here.
+
+$\alpha, 
+\beta, \gamma, \Gamma,
+\delta,\Delta,
+\epsilon, \zeta, \eta, \theta, \Theta, \kappa,
+\lambda, \Lambda, \mu, \nu,
+\xi, \Xi,
+\pi, \Pi,
+\rho,
+\sigma, 
+\tau,
+\phi, \Phi,
+\chi,
+\psi, \Psi,
+\omega, \Omega$
+
+\subsection{Special symbols}
+
+The derivative is defined as
+\begin{equation}
+\frac{dy}{dx} = \lim_{\Delta x \to 0} \frac{\Delta y}
+{\Delta x}
+\end{equation}
+\begin{equation}
+f(x) \to y \quad \mbox{as} \quad x \to
+x_{0}
+\end{equation}
+\begin{equation}
+f(x) \mathop {\longrightarrow}
+\limits_{x \to x_0} y
+\end{equation}
+
+\noindent Order of magnitude:
+\begin{equation}
+\log_{10}f \simeq n
+\end{equation}
+\begin{equation}
+f(x)\sim 10^{n}
+\end{equation}
+Approximate equality:
+\begin{equation}
+f(x)\simeq g(x)
+\end{equation}
+\LaTeX\ is simple if we keep everything in proportion:
+\begin{equation}
+f(x) \propto x^3 .
+\end{equation}
+
+Finally we can skip some space by using commands such as
+\begin{verbatim}
+\bigskip    \medskip    \smallskip    \vspace{1pc}
+\end{verbatim}
+The space can be negative.
+
+\section{\color{red}Use of Color}
+
+{\color{blue}{We can change colors for emphasis}},
+{\color{green}{but}} {\color{cyan}{who is going pay for the ink?}}
+
+\section{\label{morefig}Subfigures}
+
+As soon as many students start becoming comfortable using \LaTeX, they want
+to use some of its advanced features. So we now show how to place two
+figures side by side.
+
+\begin{figure}[h!]
+\begin{center}
+\subfigure[Real and imaginary.]{
+\includegraphics[scale=0.5]{figures/reim}}
+\subfigure[Amplitude and phase.]{
+\includegraphics[scale=0.5]{figures/phase}}
+\caption{\label{fig:qm/complexfunctions} Two representations of complex
+wave functions.}
+\end{center}
+\end{figure}
+
+We first have to include the necessary package,
+\verb+\usepackage{subfigure}+, which has to go in the preamble (before
+\verb+\begin{document}+). It sometimes can be difficult to place a figure in
+the desired place.
+
+Your LaTeX document can be easily modified to make a poster or a screen
+presentation similar to (and better than) PowerPoint. Conversion to HTML is
+straightforward. Comments on this tutorial are appreciated.
+
+\begin{thebibliography}{5}
+
+\bibitem{latex}Helmut Kopka and Patrick W. Daly, \textsl{A Guide to
+\LaTeX: Document Preparation for Beginners and Advanced Users},
+fourth edition, Addison-Wesley (2004).
+
+\bibitem{website}Some useful links are
+given at \url{}.
+
+\end{thebibliography}
+
+{\small \noindent Updated 5 December 2006.}
+\end{document}
+</t>
+<t tx="ekr.20111004214045.2482"></t>
 <t tx="ville.20090508224531.9799">""" Dump nodes to ~/.leo/dump git repository.
 
 Before using this, you need to:

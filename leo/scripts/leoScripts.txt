@@ -12012,6 +12012,218 @@ def get_jsonfile(self, fname='codehash'):
 
 
 
+#@+node:ekr.20111004090723.15496: *3* @button MakePDF
+<< docstring >>
+
+@language python
+@tabwidth -4
+
+import os
+import subprocess
+
+@others
+
+log = g.es_print
+
+exe = r'C:\apps\MiKTeX 2.9\miktex\bin\pdflatex.exe'
+    # The full path to the executable.
+
+d = get_options(exe)
+
+makePDF(d,open_out=True,trace=True)
+#@+node:ekr.20111004185540.15535: *4* << docstring >>
+@nocolor-node
+@
+
+A script for creating a pdf from a latex file.
+
+There are two modes of operation, static and dynamic, determined by the contents
+of **d**, the **option dictionary**, returned by get_options.
+
+**Important**: change get_options as described below to meet your needs.
+
+If d.get('in_fn') exists, the script operates in static mode. Otherwise, the
+script operates in dynamic mode.
+
+Static mode
+===========
+
+d.get('in_fn') must be the full path to the input file.
+
+If d.get('out_dir') exists, it must be the full path to the output directory.
+The out_dir setting is optional. If omitted, output goes to the directory
+containing the input file.
+
+Dynamic mode
+============
+
+Rather than use d.get('in_fn'), the script finds the nearest @<file> node in
+c.p.self_and_parents(). This node, *whatever it is*, is assumed to contain LaTeX
+text.
+
+**Important**: if in_fn is a relative path, it is converted to an absolute path
+by taking account of any ancestor @path directive. If the resulting path is
+still relative, it is taken to be a path relative to the directory containing
+the .leo file. Here is the actual code::
+    
+    c_dir = g.os_path_dirname(c.fileName())
+    fn = g.os_path_join(c_dir,c.getNodePath(p),fn)
+    
+If d.get('out_dir') exists, it may be either an absolute or relative path. If it
+is a relative path, it is taken to be a path relative to the path given by the
+@<file> node. That is::
+    
+    out_dir = g.os_path_join(g.os_path_dirname(fn),out_dir)
+
+Other settings
+==============
+
+- exe:  The full path to the pdf creation program.
+        'pdflatex' is part of MikTex.
+
+- open_out: True: open the output file automatically after it is created.
+
+- trace: True: output log messages using g.es_print.
+
+The exe setting is a global variable.  The open_out and trace settings
+are arguments to the makePDF function.
+
+To do
+=====
+
+- Add an argument to the command that would have pdflatex run without user input.
+
+- determine if the node held a rst file and first turn this into Latex.
+
+- open the log file or read it into a node if there is a compiling error.
+
+- It might be useful to have some settings in the file node that let the script
+  automatically basic latex packages, items and definitions for a particular
+  type of document (Title page, TOC, set date, use the beamer package to create
+  slides, etc.)
+
+- It would be really cool to be able to render TEX to PDF in real time like
+  viewrendered handles HTML and ReST.
+  
+Acknowledgements
+================
+
+The original script by M.D.Boldin.  Rewritten by EKR.
+
+#@+node:ekr.20111004185540.15537: *4* get_options
+def get_options(exe):
+    
+    '''Return the user options in a dict.'''
+    
+    if 0: # Static options...
+        return {
+            'exe': exe,
+            'in_fn':    r'C:\Users\edreamleo\Latex\sample.tex',
+                # The full path to the input file.
+            'out_dir':  r'C:\Users\edreamleo\Latex\out',
+                # The full path to the output directory.
+        }
+    else : # Dynamic options...
+        '''The nearest @<file> gives the input file.
+        
+        If all paths are relative, the result is relative
+        to the directory containing this .leo file.
+        '''
+    
+        return {
+            'exe': exe,
+            'out_dir': 'out',
+                # The output directory,
+                # relative to the directory of the input file.
+                # None is valid.
+        }
+#@+node:ekr.20111004185540.15540: *4* log
+def log (s):
+    
+    '''Write a message to the log.'''
+    
+    g.es_print(s,color='red')
+#@+node:ekr.20111004090723.15502: *4* makePDF
+def makePDF (d,open_out,trace):
+    
+    command,out_fn = setup(d)
+    if not command: return
+    
+    # Save the outline to save the file.
+    c.save()
+
+    if trace:
+        log('\nMakePDF: command...')
+        for arg in command:
+            log('  %s' % arg)
+        log('')
+
+    # Execute the command and wait for it to finish.
+    subprocess.Popen(command).wait()
+
+    if open_out:
+        if trace: log('Opening: %s' % out_fn)
+        os.startfile(out_fn)
+    
+    if trace: log('Done')
+#@+node:ekr.20111004182631.15511: *4* setup & helpers
+def setup (d):
+    
+    '''Return the command to execute and the name of the output file.'''
+
+    exe = d.get('exe')
+    in_fn,out_dir = compute_file_names(d)
+
+    if in_fn and out_dir:
+        command = [
+            exe,
+            '-output-directory=%s' % (out_dir),
+            in_fn
+        ]
+        out_fn = g.os_path_join(
+            out_dir,g.shortFileName(in_fn[:-4]))+'.pdf'
+        return command,out_fn
+    else:
+        return None,None
+#@+node:ekr.20111004185540.15538: *5* compute_file_names
+def compute_file_names (d):
+    
+    '''Return the absolute paths to the input file and the output directory.'''
+    
+    fn = d.get('in_fn')
+    if fn:
+        # Static, absolute paths.
+        out_dir = d.get('out_dir') or g.os_path_dirname(fn)
+        if g.os_path_exists(fn) and g.os_path_exists(out_dir):
+            return fn,out_dir
+        elif not g.os_path_exists(fn):
+            log('File not found: %s' % fn)
+            return None,None
+        else:
+            log('Directory not found: %s' % out_dir)
+            return None,None
+    else:
+        # Dynamic file name from the nearest @<file> node.
+        for p in c.p.self_and_parents():
+            if p.isAnyAtFileNode():
+                fn = p.anyAtFileNodeName()
+                break
+        else:
+            log('no <@file> node found at: "%s"' % c.p.h)
+            return None,None
+        
+        # Compute the absolute path to the filename,
+        # taking into account any relevant @path directives.
+        c_dir = g.os_path_dirname(c.fileName())
+        fn = g.os_path_join(c_dir,c.getNodePath(p),fn)
+        out_dir = d.get('out_dir') or ''
+        out_dir = g.os_path_join(g.os_path_dirname(fn),out_dir)
+        
+        if g.os_path_exists(fn) and g.os_path_exists(out_dir):
+            return fn,out_dir
+        else:
+            log('not found: %s' % fn)
+            return None,None
 #@+node:ekr.20110609184334.16461: *3* Print missing docstrings
 @color
 
