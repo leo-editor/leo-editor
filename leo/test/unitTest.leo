@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.58">
-	<global_window_position top="51" left="522" height="977" width="964"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.42">
+	<global_window_position top="51" left="522" height="977" width="1240"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -107,6 +107,39 @@
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+</v>
+<v t="ekr.20111006064419.3492"><vh>New</vh>
+<v t="ekr.20111006105711.3539"><vh>@@test clone-marked-nodes</vh></v>
+<v t="ekr.20111006072734.3640"><vh>@common x-marked-nodes test code</vh>
+<v t="ekr.20111006072734.3641"><vh>setup_test</vh></v>
+<v t="ekr.20111006115024.3613"><vh>tear_down</vh></v>
+<v t="ekr.20111006105711.3734"><vh>delete_children</vh></v>
+<v t="ekr.20111006072734.3642"><vh>test_children</vh></v>
+<v t="ekr.20111006072734.3643"><vh>undo_test</vh></v>
+<v t="ekr.20111006072734.3592"><vh>data</vh>
+<v t="ekr.20111006072734.3600"><vh>a</vh>
+<v t="ekr.20111006072734.3601"><vh>b</vh></v>
+</v>
+<v t="ekr.20111006072734.3597"><vh>c</vh></v>
+<v t="ekr.20111006072734.3598"><vh>d</vh></v>
+<v t="ekr.20111006072734.3599"><vh>e</vh>
+<v t="ekr.20111006072734.3600"></v>
+</v>
+</v>
+</v>
+<v t="ekr.20111006105711.3544"><vh>@test clone-marked-nodes</vh></v>
+<v t="ekr.20111006064419.3491"><vh>@test delete-marked-nodes</vh></v>
+<v t="ekr.20111006064419.3493"><vh>@test move-marked-nodes</vh>
+<v t="ekr.20111006064419.3537"><vh>First</vh></v>
+<v t="ekr.20111006064419.3543"><vh>a</vh>
+<v t="ekr.20111006064419.3544"><vh>b</vh></v>
+</v>
+<v t="ekr.20111006064419.3540"><vh>c</vh></v>
+<v t="ekr.20111006064419.3541"><vh>d</vh></v>
+<v t="ekr.20111006064419.3542"><vh>e</vh>
+<v t="ekr.20111006064419.3543"></v>
+</v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -511,7 +544,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="5"></t>
+<t tx="ekr.20070417092935" str_leo_pos="6,1,1"></t>
 <t tx="ekr.20071113140035">fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src','leoPy.leo'))
 flag,frame2 = g.openWithFileName(fileName,old_c=None,enableLog=False)
 c.frame.bringToFront()
@@ -638,5 +671,122 @@ writing .leo files.
 The path is **supposed** not to exist.
 </t>
 <t tx="ekr.20110615130436.3318">Child content goes here.</t>
+<t tx="ekr.20111006064419.3491">c.unmarkAll() # Make sure we protect the rest of the unit tests!
+
+</t>
+<t tx="ekr.20111006064419.3492"></t>
+<t tx="ekr.20111006064419.3493">c.unmarkAll() # Make sure we protect the rest of the unit tests!
+</t>
+<t tx="ekr.20111006064419.3537"></t>
+<t tx="ekr.20111006064419.3540"></t>
+<t tx="ekr.20111006064419.3541"></t>
+<t tx="ekr.20111006064419.3542"></t>
+<t tx="ekr.20111006064419.3543"></t>
+<t tx="ekr.20111006064419.3544"></t>
+<t tx="ekr.20111006072734.3592">for p in p.subtree():
+    print(p.v)</t>
+<t tx="ekr.20111006072734.3597"></t>
+<t tx="ekr.20111006072734.3598"></t>
+<t tx="ekr.20111006072734.3599"></t>
+<t tx="ekr.20111006072734.3600"></t>
+<t tx="ekr.20111006072734.3601"></t>
+<t tx="ekr.20111006072734.3640">@others
+</t>
+<t tx="ekr.20111006072734.3641">def setup_test(target):
+    
+    c.unmarkAll() # Make sure we move only the test nodes!
+    
+    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
+    assert common,'no common'
+    data = g.findNodeInTree(c,common,'data')
+    assert data,'no data'
+    
+    delete_children(target)
+
+    # Copy the nodes.
+    c.selectPosition(data)
+    c.copyOutline()
+    c.selectPosition(target)
+    c.pasteOutline()
+    c.moveOutlineRight()
+    c.promote()
+    c.deleteOutline()
+    c.redraw()
+        
+    for h in ('a','b','c'):
+        p2 = g.findNodeInTree(c,target,h)
+        assert p2,'not found: %s' % (h)
+        p2.setMarked()
+        
+    for child in target.children():
+        if child.h == 'a':
+            assert child.isCloned(),'not cloned!: %s' % (child)
+        else:
+            assert not child.isCloned(),'cloned!: %s' % (child)
+        
+    # g.trace('setup complete')
+    </t>
+<t tx="ekr.20111006072734.3642">def test_children(p):
+    
+    n = p.numberOfChildren()
+    assert n == 3 ,'children: %s' % (n)
+    
+    child = p.firstChild()
+    assert child.h == 'a','child1: %s' % (child)
+    
+    child = child.next()
+    assert child.h == 'c','child2: %s' % (child)
+    
+    child = child.next()
+    assert child.h == 'a','child3: %s' % (child)
+</t>
+<t tx="ekr.20111006072734.3643">def undo_test(p):
+    
+    n = p.numberOfChildren()
+    assert n == 5 ,'undo children: %s' % (n)
+</t>
+<t tx="ekr.20111006105711.3539">exec(g.findTestScript(c,'@common x-marked-nodes test code'))
+
+def test(p):
+    setup_test(p)
+    c.cloneMarked()
+    assert c.p.h == 'Clones of marked nodes',c.p.h
+    # test_undo()
+
+try:
+    test(p)
+finally:
+    tear_down(p)
+</t>
+<t tx="ekr.20111006105711.3544">exec(g.findTestScript(c,'@common x-marked-nodes test code'))
+
+def test(p):
+    setup_test(p)
+    c.cloneMarked()
+    assert c.p.h == 'Clones of marked nodes',c.p.h
+    # test_undo()
+
+try:
+    test(p)
+finally:
+    tear_down(p)
+</t>
+<t tx="ekr.20111006105711.3734">def delete_children(p):
+
+    while p.hasChildren():
+        p.firstChild().doDelete()
+</t>
+<t tx="ekr.20111006115024.3613">def tear_down(p):
+    
+    delete_children(p)
+
+    if p.next().h == 'Clones of marked nodes':
+        p.next().doDelete()
+        
+    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
+    common.contract()
+
+    c.redraw()
+</t>
 </tnodes>
 </leo_file>

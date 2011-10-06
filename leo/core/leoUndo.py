@@ -603,6 +603,35 @@ class undoer:
         u.pushBead(bunch)
 
         return bunch
+    #@+node:ekr.20111006060936.15639: *5* afterCloneMarkedNodes
+    def afterCloneMarkedNodes (self,p):
+
+        u = self ; c = u.c
+        if u.redoing or u.undoing: return
+        
+        bunch = u.createCommonBunch(p)
+        
+            # Sets
+            # oldChanged = c.isChanged(),
+            # oldDirty = p.isDirty(),
+            # oldMarked = p.isMarked(),
+            # oldSel = w and w.getSelectionRange() or None,
+            # p = p.copy(),
+
+        # Set types & helpers
+        bunch.kind = 'clone-marked-nodes'
+        bunch.undoType = 'clone-marked-nodes'
+
+        # Set helpers
+        bunch.undoHelper = u.undoCloneMarkedNodes
+        bunch.redoHelper = u.redoCloneMarkedNodes
+
+        bunch.newP = p.next()
+        bunch.newChanged = c.isChanged()
+        bunch.newDirty = p.isDirty()
+        bunch.newMarked = p.isMarked()
+
+        u.pushBead(bunch)
     #@+node:ekr.20050411193627.5: *5* afterCloneNode
     def afterCloneNode (self,p,command,bunch,dirtyVnodeList=[]):
 
@@ -1442,6 +1471,14 @@ class undoer:
 
         c.frame.menu.createRecentFilesMenuItems()
     #@+node:ekr.20111005152227.15558: *4* redoCloneMarkedNodes
+    def redoCloneMarkedNodes (self):
+
+        u = self ; c = u.c
+
+        c.selectPosition(u.p)
+        c.cloneMarked()
+        u.newP = c.p
+        u.newChanged = c.isChanged()
     #@+node:ekr.20050412083057: *4* redoCloneNode
     def redoCloneNode (self):
 
@@ -1793,6 +1830,16 @@ class undoer:
 
         c.frame.menu.createRecentFilesMenuItems()
     #@+node:ekr.20111005152227.15560: *4* undoCloneMarkedNodes
+    def undoCloneMarkedNodes (self):
+
+        u = self
+        
+        next = u.p.next()
+        assert next.h == 'Clones of marked nodes',repr(u.p,h)
+        next.doDelete()
+
+        u.p.setAllAncestorAtFileNodesDirty()
+        u.c.selectPosition(u.p)
     #@+node:ekr.20050412083057.1: *4* undoCloneNode
     def undoCloneNode (self):
 

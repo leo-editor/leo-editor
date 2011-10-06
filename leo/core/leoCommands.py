@@ -5500,25 +5500,36 @@ class Commands (object):
 
         """Clone all marked nodes as children of parent position."""
 
-        c = self ; u = c.undoer
-        current = c.p
+        c = self ; u = c.undoer ; p1 = c.p.copy()
 
         # Create a new node to hold clones.
-        parent = current.insertAfter()
+        parent = p1.insertAfter()
         parent.h = 'Clones of marked nodes'
-        marked = []
-        for p in c.all_positions():
-            if p.isMarked() and not p.v in marked:
-                marked.append(p.v)
-        marked.reverse()
 
-        undoData = u.beforeChangeTree(parent)
-        for v in marked:
-            # This only works for one-node world.
-            v._linkAsNthChild(parent.v,0)
-        u.afterChangeTree(parent,'Clone marked',undoData)
-        parent.expand()
-        c.selectPosition(parent)
+        moved,n,p = [],0,c.rootPosition()
+        while p:
+            # Careful: don't clone already-cloned nodes.
+            if p == parent:
+                p.moveToNodeAfterTree()
+            elif p.isMarked() and not p.v in moved:
+                moved.append(p.v)
+                # Moving the clone leaves position p unchanged.
+                p.clone().moveToLastChildOf(parent)
+                p.moveToNodeAfterTree()
+                n += 1
+            else:
+                p.moveToThreadNext()
+
+        if n:
+            c.setChanged(True)
+            parent.expand()
+            c.selectPosition(parent)
+            u.afterCloneMarkedNodes(p1)
+        else:
+            parent.doDelete()
+            c.selectPosition(p1)
+
+        g.es('cloned %s nodes' % (n),color='blue')
         c.redraw()    
     #@+node:ekr.20111005081134.15540: *6* c.deleteMarked
     def deleteMarked (self,event=None):
