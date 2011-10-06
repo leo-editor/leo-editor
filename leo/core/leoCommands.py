@@ -5498,7 +5498,7 @@ class Commands (object):
     #@+node:ekr.20090905110447.6098: *6* c.cloneMarked
     def cloneMarked(self,event=None):
 
-        """Clone all marked nodes as children of parent position."""
+        """Clone all marked nodes as children of a new node."""
 
         c = self ; u = c.undoer ; p1 = c.p.copy()
 

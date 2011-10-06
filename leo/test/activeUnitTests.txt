@@ -5172,7 +5172,7 @@ def test(p):
 try:
     test(p)
 finally:
-    tear_down(p)
+    tear_down(p,'Clones of marked nodes')
 #@+node:ekr.20061101121602.162: *5* @test count-region
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
@@ -5237,8 +5237,17 @@ first line
 line 1
 last line
 #@+node:ekr.20111006064419.3491: *5* @test delete-marked-nodes
-c.unmarkAll() # Make sure we protect the rest of the unit tests!
+exec(g.findTestScript(c,'@common x-marked-nodes test code'))
 
+def test(p):
+    setup_test(p)
+    c.deleteMarked()
+    # test_undo()
+
+try:
+    test(p)
+finally:
+    tear_down(p)
 #@+node:ekr.20070131162935: *5* @test delete-spaces
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
@@ -6688,15 +6697,19 @@ first line
 line c
 last line
 #@+node:ekr.20111006064419.3493: *5* @test move-marked-nodes
-c.unmarkAll() # Make sure we protect the rest of the unit tests!
-#@+node:ekr.20111006064419.3537: *6* First
-#@+node:ekr.20111006064419.3543: *6* a
-#@+node:ekr.20111006064419.3544: *7* b
-#@+node:ekr.20111006064419.3540: *6* c
-#@+node:ekr.20111006064419.3541: *6* d
-#@+node:ekr.20111006064419.3542: *6* e
-#@+node:ekr.20111006064419.3543: *7* a
-#@+node:ekr.20111006064419.3544: *8* b
+exec(g.findTestScript(c,'@common x-marked-nodes test code'))
+
+def test(p):
+    setup_test(p)
+    c.moveMarked()
+    root = c.rootPosition()
+    assert root.h == 'Moved marked nodes',root.h
+    # test_undo()
+
+try:
+    test(p)
+finally:
+    tear_down(p,'Moved marked nodes')
 #@+node:ekr.20061101121602.294: *5* @test move-past-close
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)

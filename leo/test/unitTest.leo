@@ -129,17 +129,7 @@
 </v>
 <v t="ekr.20111006105711.3544"><vh>@test clone-marked-nodes</vh></v>
 <v t="ekr.20111006064419.3491"><vh>@test delete-marked-nodes</vh></v>
-<v t="ekr.20111006064419.3493"><vh>@test move-marked-nodes</vh>
-<v t="ekr.20111006064419.3537"><vh>First</vh></v>
-<v t="ekr.20111006064419.3543"><vh>a</vh>
-<v t="ekr.20111006064419.3544"><vh>b</vh></v>
-</v>
-<v t="ekr.20111006064419.3540"><vh>c</vh></v>
-<v t="ekr.20111006064419.3541"><vh>d</vh></v>
-<v t="ekr.20111006064419.3542"><vh>e</vh>
-<v t="ekr.20111006064419.3543"></v>
-</v>
-</v>
+<v t="ekr.20111006064419.3493"><vh>@test move-marked-nodes</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -544,7 +534,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6,1,1"></t>
+<t tx="ekr.20070417092935" str_leo_pos="6,1"></t>
 <t tx="ekr.20071113140035">fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src','leoPy.leo'))
 flag,frame2 = g.openWithFileName(fileName,old_c=None,enableLog=False)
 c.frame.bringToFront()
@@ -671,18 +661,33 @@ writing .leo files.
 The path is **supposed** not to exist.
 </t>
 <t tx="ekr.20110615130436.3318">Child content goes here.</t>
-<t tx="ekr.20111006064419.3491">c.unmarkAll() # Make sure we protect the rest of the unit tests!
+<t tx="ekr.20111006064419.3491">exec(g.findTestScript(c,'@common x-marked-nodes test code'))
 
+def test(p):
+    setup_test(p)
+    c.deleteMarked()
+    # test_undo()
+
+try:
+    test(p)
+finally:
+    tear_down(p)
 </t>
 <t tx="ekr.20111006064419.3492"></t>
-<t tx="ekr.20111006064419.3493">c.unmarkAll() # Make sure we protect the rest of the unit tests!
+<t tx="ekr.20111006064419.3493">exec(g.findTestScript(c,'@common x-marked-nodes test code'))
+
+def test(p):
+    setup_test(p)
+    c.moveMarked()
+    root = c.rootPosition()
+    assert root.h == 'Moved marked nodes',root.h
+    # test_undo()
+
+try:
+    test(p)
+finally:
+    tear_down(p,'Moved marked nodes')
 </t>
-<t tx="ekr.20111006064419.3537"></t>
-<t tx="ekr.20111006064419.3540"></t>
-<t tx="ekr.20111006064419.3541"></t>
-<t tx="ekr.20111006064419.3542"></t>
-<t tx="ekr.20111006064419.3543"></t>
-<t tx="ekr.20111006064419.3544"></t>
 <t tx="ekr.20111006072734.3592">for p in p.subtree():
     print(p.v)</t>
 <t tx="ekr.20111006072734.3597"></t>
@@ -769,20 +774,23 @@ def test(p):
 try:
     test(p)
 finally:
-    tear_down(p)
+    tear_down(p,'Clones of marked nodes')
 </t>
 <t tx="ekr.20111006105711.3734">def delete_children(p):
 
     while p.hasChildren():
         p.firstChild().doDelete()
 </t>
-<t tx="ekr.20111006115024.3613">def tear_down(p):
+<t tx="ekr.20111006115024.3613">def tear_down(p,h=None):
     
     delete_children(p)
+    
+    if h:
+        node = g.findNodeAnywhere(c,h)
+        if node:
+            node.doDelete()
+            # g.trace('deleted',node.h)
 
-    if p.next().h == 'Clones of marked nodes':
-        p.next().doDelete()
-        
     common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
     common.contract()
 
