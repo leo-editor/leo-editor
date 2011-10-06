@@ -5525,22 +5525,23 @@ class Commands (object):
         
         """Delete all marked nodes."""
         
-        c = self ; u = c.undoer
+        c = self ; u = c.undoer ; p1 = c.p.copy()
         
-        ## undoData = u.beforeDeleteMarked(c.p)
-        
-        # Delete one node for each pass. This works because, in effect,
-        # p.doDelete and its helpers update the root position.
-        while True:
-            for p in c.all_positions():
-                if p.isMarked():
-                    p.doDelete()
-                    break
+        undo_data,p = [],c.rootPosition()
+        while p:
+            if p.isMarked():
+                undo_data.append(p.copy())
+                next = p.positionAfterDeletedTree()
+                p.doDelete()
+                p = next
             else:
-                break
-        
-        ## u.afterDeleteMarked(undoData)
-        
+                p.moveToThreadNext()
+
+        if undo_data:
+            u.afterDeleteMarkedNodes(undo_data,p1)
+            g.es('deleted %s nodes' % (len(undo_data)),color='blue')
+            c.setChanged(True)
+
         # Don't even *think* about restoring the old position.
         c.contractAllHeadlines()
         c.selectPosition(c.rootPosition())
@@ -5550,7 +5551,7 @@ class Commands (object):
 
         '''Move all marked nodes as children of parent position.'''
         
-        c = self
+        c = self ; u = c.undoer ; p1 = c.p.copy()
         
         # Check for marks.
         for v in c.all_unique_nodes():
@@ -5563,19 +5564,24 @@ class Commands (object):
         parent = c.createMoveMarkedNode()
         assert not parent.isMarked()
 
-        # Move marked nodes one node at a time.
-        while True:
+        undo_data,p = [],c.rootPosition()
+        while p:
             assert parent == c.rootPosition()
-            for p in c.all_positions():
-                # Careful: don't move already-moved nodes.
-                if p.isMarked() and not parent.isAncestorOf(p):
-                    p.moveToLastChildOf(parent)
-                    break
+            # Careful: don't move already-moved nodes.
+            if p.isMarked() and not parent.isAncestorOf(p):
+                undo_data.append(p.copy())
+                next = p.positionAfterDeletedTree()
+                p.moveToLastChildOf(parent)
+                p = next
             else:
-                break
+                p.moveToThreadNext()
 
+        if undo_data:
+            u.afterMoveMarkedNodes(undo_data,p1)
+            g.es('moved %s nodes' % (len(undo_data)),color='blue')
+            c.setChanged(True)
+            
         # Don't even *think* about restoring the old position.
-        c.setChanged(True)
         c.contractAllHeadlines()
         c.selectPosition(parent)
         c.redraw()    

@@ -97,6 +97,7 @@ class undoer:
         self.afterTree = None
         self.beforeTree = None
         self.children = None
+        self.deleteMarkedNodesData = None
         self.dirtyVnodeList = None
         self.followingSibs = None
         self.kind = None
@@ -666,6 +667,31 @@ class undoer:
         bunch.newMarked = p.isMarked()
 
         u.pushBead(bunch)
+    #@+node:ekr.20111005152227.15555: *5* afterDeleteMarkedNodes
+    def afterDeleteMarkedNodes (self,data,p):
+
+        u = self ; c = u.c
+        if u.redoing or u.undoing: return
+        
+        bunch = u.createCommonBunch(p)
+
+        # Set types & helpers
+        bunch.kind = 'delete-marked-nodes'
+        bunch.undoType = 'delete-marked-nodes'
+
+        # Set helpers
+        bunch.undoHelper = u.undoDeleteMarkedNodes
+        bunch.redoHelper = u.redoDeleteMarkedNodes
+
+        bunch.newP = p.copy()
+        bunch.deleteMarkedNodesData = data
+        # bunch.dirtyVnodeList = dirtyVnodeList
+
+        bunch.newChanged = c.isChanged()
+        bunch.newDirty = p.isDirty()
+        bunch.newMarked = p.isMarked()
+
+        u.pushBead(bunch)
     #@+node:ekr.20080425060424.8: *5* afterDemote
     def afterDemote (self,p,followingSibs,dirtyVnodeList):
 
@@ -758,6 +784,31 @@ class undoer:
 
         bunch.dirtyVnodeList = dirtyVnodeList
         bunch.newChanged = u.c.isChanged()
+        bunch.newDirty = p.isDirty()
+        bunch.newMarked = p.isMarked()
+
+        u.pushBead(bunch)
+    #@+node:ekr.20111005152227.15562: *5* afterMoveMarkedNodes
+    def afterMoveMarkedNodes (self,data,p):
+
+        u = self ; c = u.c
+        if u.redoing or u.undoing: return
+        
+        bunch = u.createCommonBunch(p)
+
+        # Set types & helpers
+        bunch.kind = 'move-marked-nodes'
+        bunch.undoType = 'move-marked-nodes'
+
+        # Set helpers
+        bunch.undoHelper = u.undoMoveMarkedNodes
+        bunch.redoHelper = u.redoMoveMarkedNodes
+
+        bunch.newP = p.copy()
+        bunch.deleteMarkedNodesData = data
+        # bunch.dirtyVnodeList = dirtyVnodeList
+
+        bunch.newChanged = c.isChanged()
         bunch.newDirty = p.isDirty()
         bunch.newMarked = p.isMarked()
 
@@ -1390,6 +1441,7 @@ class undoer:
         c.recentFiles = u.newRecentFiles[:]
 
         c.frame.menu.createRecentFilesMenuItems()
+    #@+node:ekr.20111005152227.15558: *4* redoCloneMarkedNodes
     #@+node:ekr.20050412083057: *4* redoCloneNode
     def redoCloneNode (self):
 
@@ -1409,6 +1461,15 @@ class undoer:
             v.setDirty()
 
         c.selectPosition(u.newP)
+    #@+node:ekr.20111005152227.15559: *4* redoDeleteMarkedNodes
+    def redoDeleteMarkedNodes (self):
+
+        u = self ; c = u.c
+
+        c.selectPosition(u.p)
+        c.deleteMarked()
+        c.selectPosition(u.newP)
+        u.newChanged = c.isChanged()
     #@+node:EKR.20040526072519.2: *4* redoDeleteNode
     def redoDeleteNode (self):
 
@@ -1581,6 +1642,15 @@ class undoer:
 
         for v in u.dirtyVnodeList:
             v.setDirty()
+    #@+node:ekr.20111005152227.15564: *4* redoMoveMarkedNodes
+    def redoMoveMarkedNodes (self):
+        
+        u = self ; c = u.c
+
+        c.selectPosition(u.p)
+        c.moveMarked()
+        c.selectPosition(u.newP)
+        u.newChanged = c.isChanged()
     #@+node:ekr.20080425060424.13: *4* redoPromote
     def redoPromote (self):
 
@@ -1722,6 +1792,7 @@ class undoer:
         c.recentFiles = u.oldRecentFiles[:]
 
         c.frame.menu.createRecentFilesMenuItems()
+    #@+node:ekr.20111005152227.15560: *4* undoCloneMarkedNodes
     #@+node:ekr.20050412083057.1: *4* undoCloneNode
     def undoCloneNode (self):
 
@@ -1735,6 +1806,25 @@ class undoer:
         for v in u.dirtyVnodeList:
             v.setDirty() # Bug fix: Leo 4.4.6
 
+        c.selectPosition(u.p)
+    #@+node:ekr.20111005152227.15557: *4* undoDeleteMarkedNodes
+    def undoDeleteMarkedNodes (self):
+
+        u = self ; c = u.c
+        
+        # Undo the deletes in reverse order
+        aList = u.deleteMarkedNodesData[:]
+        aList.reverse()
+
+        for p in aList:
+            if p.stack:
+                parent_v,junk = p.stack[-1]
+            else:
+                parent_v = c.hiddenRootNode
+                
+            p.v._addLink(p._childIndex,parent_v)
+
+        u.p.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.p)
     #@+node:ekr.20050412084055: *4* undoDeleteNode
     def undoDeleteNode (self):
@@ -1915,6 +2005,29 @@ class undoer:
 
         for v in u.dirtyVnodeList:
             v.setDirty() # Bug fix: Leo 4.4.6.
+    #@+node:ekr.20111005152227.15563: *4* undoMoveMarkedNodes
+    def undoMoveMarkedNodes (self):
+
+        u = self ; c = u.c
+        
+        # Undo the moves in reverse order
+        aList = u.deleteMarkedNodesData[:]
+        aList.reverse()
+        root = c.rootPosition()
+
+        for p in aList:
+            if p.stack:
+                parent_v,junk = p.stack[-1]
+            else:
+                parent_v = c.hiddenRootNode
+                
+            p.v._addLink(p._childIndex,parent_v)
+            
+        # A shortcut. This deletes all the "extra copies of the nodes".
+        root.doDelete()
+        
+        u.p.setAllAncestorAtFileNodesDirty()
+        c.selectPosition(u.p)
     #@+node:ekr.20080425060424.14: *4* undoPromote
     def undoPromote (self):
 

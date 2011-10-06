@@ -642,6 +642,25 @@ class position (object):
         return p.v and len(p.stack) or 0
 
     simpleLevel = level
+    #@+node:ekr.20111005152227.15566: *4* p.positionAfterDeletedTree
+    def positionAfterDeletedTree (self):
+        
+        '''Return the position corresponding to p.nodeAfterTree()
+        after this node is deleted.
+        
+        This will be p.nodeAfterTree() unless p.next() exists.
+        '''
+        
+        p = self
+        next = p.next()
+        if next:
+            # An excellent hack:
+            # The position will be the same as p, except for the vnode.
+            p = p.copy()
+            p.v = next.v
+            return p
+        else:
+            return p.nodeAfterTree()
     #@+node:shadow.20080825171547.2: *4* p.textOffset
     def textOffset(self):
         '''
