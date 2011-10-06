@@ -645,17 +645,36 @@ class position (object):
     #@+node:ekr.20111005152227.15566: *4* p.positionAfterDeletedTree
     def positionAfterDeletedTree (self):
         
-        '''Return the position corresponding to p.nodeAfterTree()
-        after this node is deleted.
+        '''Return the position corresponding to p.nodeAfterTree() after this node is
+        deleted. This will be p.nodeAfterTree() unless p.next() exists.
         
-        This will be p.nodeAfterTree() unless p.next() exists.
+        This method allows scripts to traverse an outline, deleting nodes during the
+        traversal. The pattern is::
+            
+            p = c.rootPosition()
+            while p:
+            if <delete p?>:
+                next = p.positionAfterDeletedTree()
+                p.doDelete()
+                p = next
+            else:
+                p.moveToThreadNext()
+                
+        This method also allows scripts to *move* nodes during a traversal, **provided**
+        that nodes are moved to a "safe" spot so that moving a node does not change the
+        position of any other nodes.
+        
+        For example, the move-marked-nodes command first creates a **move node**, called
+        'Clones of marked nodes'. All moved nodes become children of this move node.
+        **Inserting** these nodes as children of the "move node" does not change the
+        positions of other nodes. **Deleting** these nodes *may* change the position of
+        nodes, but the pattern above handles this complication cleanly.
         '''
         
         p = self
         next = p.next()
         if next:
-            # An excellent hack:
-            # The position will be the same as p, except for the vnode.
+            # The new position will be the same as p, except for p.v.
             p = p.copy()
             p.v = next.v
             return p
