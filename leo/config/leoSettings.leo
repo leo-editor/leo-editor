@@ -1487,7 +1487,9 @@
 </v>
 <v t="ekr.20111006212449.11850"><vh>@button check-settings</vh>
 <v t="ekr.20111006212449.11851"><vh>ctor</vh></v>
-<v t="ekr.20111006212449.11852"><vh>def check</vh></v>
+<v t="ekr.20111006212449.11852"><vh>check &amp; helper</vh>
+<v t="ekr.20111007043902.15697"><vh>print_missing</vh></v>
+</v>
 <v t="ekr.20111006212449.11853"><vh>error</vh></v>
 <v t="ekr.20111006212449.11854"><vh>get_commanders</vh></v>
 <v t="ekr.20111006212449.11855"><vh>get_configs</vh></v>
@@ -1501,6 +1503,7 @@
 <v t="ekr.20111006212449.11861"><vh>munge</vh></v>
 <v t="ekr.20111006212449.11862"><vh>run</vh></v>
 </v>
+<v t="ekr.20111007043902.15698"><vh>test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -8236,27 +8239,61 @@ Controller(c).run()</t>
     table = ('Bool','Color','Int','Float',# 'Font',
         'Ratio','Path','String',
     )
+    format = '%40s %s'
     
-    for kind in table:
-        config_key = 'get%s' % kind
-        settings_key = '@%s' % kind.lower()
-        
-        config_list = configs_d.get(config_key,[])
-        settings_list = settings_d.get(settings_key,[])
-        
-        config_list =   [self.munge(s) for s in config_list]
-        settings_list = [self.munge(s) for s in settings_list]
-        
-        print('\nmissing %s settings...' % settings_key)
-        for s in config_list:
-            if s not in settings_list:
-                print(s)
-                
-        print('\nmissing config.%s calls...' % config_key)
-        for s in settings_list:
-            if s not in config_list:
-                print(s)
-    </t>
+    if 1: # Less important: print missing settings.
+        for kind in table:
+            config_key = 'get%s' % kind
+            settings_key = '@%s' % kind.lower()
+            
+            config_list = configs_d.get(config_key,[])
+            settings_list = settings_d.get(settings_key,[])
+            
+            munged_config_list =   [self.munge(s) for s in config_list]
+            munged_settings_list = [self.munge(s) for s in settings_list]
+            
+            print('\nmissing %s settings...' % settings_key)
+            missing = set()
+            for s in munged_config_list:
+                if s not in munged_settings_list:
+                    missing.add(s)
+            missing = list(missing)
+            missing.sort()
+            if missing:
+                print(format % ('Canonical','Actual'))
+                print(format % ('=' * len('Canonical'),'=' * len('Actual')))
+                for s in missing:
+                    self.print_missing(format,s,
+                        config_list,settings_list,
+                        munged_config_list,munged_settings_list)
+                    
+                        
+    # More important: print missing calls to c.config.getX
+    if 1:
+        for kind in table:
+            config_key = 'get%s' % kind
+            settings_key = '@%s' % kind.lower()
+            
+            config_list = configs_d.get(config_key,[])
+            settings_list = settings_d.get(settings_key,[])
+            
+            munged_config_list =   [self.munge(s) for s in config_list]
+            munged_settings_list = [self.munge(s) for s in settings_list]
+
+            print('\nmissing config.%s calls...' % config_key)
+            missing = set()
+            for s in munged_settings_list:
+                if s not in munged_config_list:
+                    missing.add(s)
+            missing = list(missing)
+            missing.sort()
+            if missing:
+                print(format % ('Canonical','Actual'))
+                print(format % ('=' * len('Canonical'),'=' * len('Actual')))
+                for s in missing:
+                    self.print_missing(format,s,
+                        settings_list,config_list,
+                        munged_settings_list,munged_config_list)</t>
 <t tx="ekr.20111006212449.11853">def error (self,s):
     
     print(s)
@@ -8328,7 +8365,7 @@ Controller(c).run()</t>
     while i &lt; len(s):
         progress = i
         ch = s[i]
-        if False and (
+        if (
             ch == '@' and
             (g.match(s,i,'@ ') or g.match(s,i,'@\n')) and 
             (i == 0 or s[i-1] == '\n')
@@ -8338,7 +8375,7 @@ Controller(c).run()</t>
         elif ch == '#':
             i = g.skip_to_end_of_line(s,i)
         elif ch in ('"',"'"):
-            i = g.skip_python_string(s,i)
+            i = g.skip_string(s,i,verbose=False)
         elif ch == '_' or ch.isalpha():
             j = g.skip_id(s,i)
             kind = s[i:j]
@@ -8405,13 +8442,6 @@ Controller(c).run()</t>
                 aList = d.get(kind,[])
                 if name not in aList:
                     aList.append(name)
-                # Don't bother checking for duplicates.
-                # for name2,v in aList:
-                    # if name == name2 and v != p.v:
-                        # self.error('duplicate setting: %s' % (p.h))
-                        # break
-                # else:
-                    # aList.append((name,p.v),)
                 d [kind] = aList
             else:
                 self.error('no name for %s' % (kind))
@@ -8463,7 +8493,18 @@ Controller(c).run()</t>
     if self.errors == 0:
         self.check(configs,settings)
         
-    g.trace('done')</t>
+    # g.trace('done')</t>
+<t tx="ekr.20111007043902.15697">def print_missing(self,format,munged_s,in_list,out_list,munged_in_list,munged_out_list):
+    
+    assert munged_s in munged_in_list,munged_s
+    assert munged_s not in munged_out_list,munged_s
+    
+    match_list = [s for s in in_list if self.munge(s) == munged_s]
+    
+    print('%40s %s' % (munged_s,match_list))</t>
+<t tx="ekr.20111007043902.15698">a = set()
+a.add('a')
+print(a)</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
