@@ -1492,9 +1492,10 @@
 </v>
 <v t="ekr.20111006212449.11853"><vh>error</vh></v>
 <v t="ekr.20111006212449.11854"><vh>get_commanders</vh></v>
-<v t="ekr.20111006212449.11855"><vh>get_configs</vh></v>
+<v t="ekr.20111006212449.11855"><vh>get_configs &amp; helpers</vh>
 <v t="ekr.20111006212449.11856"><vh>get_configs_from_outline &amp; helper</vh>
 <v t="ekr.20111006212449.11857"><vh>scan_for_configs</vh></v>
+</v>
 </v>
 <v t="ekr.20111006212449.11858"><vh>get_settings &amp; helper</vh>
 <v t="ekr.20111006212449.11859"><vh>is_setting</vh></v>
@@ -1503,7 +1504,6 @@
 <v t="ekr.20111006212449.11861"><vh>munge</vh></v>
 <v t="ekr.20111006212449.11862"><vh>run</vh></v>
 </v>
-<v t="ekr.20111007043902.15698"><vh>test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -8216,11 +8216,7 @@ php_keyword_font_weight = none
     # normal, bold
 </t>
 <t tx="ekr.20111004182631.15554"></t>
-<t tx="ekr.20111006212449.11850">import os
-
-# To do: remove run-on-string message.
-
-class Controller:
+<t tx="ekr.20111006212449.11850">class Controller:
     @others
     
 Controller(c).run()</t>
@@ -8356,6 +8352,8 @@ Controller(c).run()</t>
     
     return d</t>
 <t tx="ekr.20111006212449.11857">def scan_for_configs (self,p,d):
+    
+    '''Scan the body text of p, finding all calls to getX.'''
 
     kinds = ('getBool','getColor','getInt','getFloat',
         # '@font', # special case.
@@ -8379,41 +8377,18 @@ Controller(c).run()</t>
         elif ch == '_' or ch.isalpha():
             j = g.skip_id(s,i)
             kind = s[i:j]
-            n1,n2 = g.getLine(s,i)
             if kind in kinds:
-                # print(repr(s[n1:n2]))
                 i = g.skip_ws(s,j)
                 if g.match(s,i,'('):
                     i = g.skip_ws(s,i+1)
                     if g.match(s,i,'"') or g.match(s,i,"'"):
                         j = g.skip_string(s,i)
                         name = s[i+1:j-1]
-                        # name = self.munge(name)
                         aList = d.get(kind,[])
                         if name not in aList:
                             aList.append(name)
                         d [kind] = aList
-                        # print(name)
             i = j
-                
-            # j = g.skip_id(s,i,'.')
-            # kind = s[i:j]
-            # g.trace(kind)
-            # if kind.startswith('config.get'):
-                # g.trace(kind,p.h)
-                # i = g.skip_ws(s,j)
-                # if g.match(s,i,'('):
-                    # i += 1
-                    # i = g.skip_ws(s,i)
-                    # j = g.skip_id(s,i,'-')
-                    # name = s[i:j]
-                    # aList = d.get(kind,[])
-                    # if name not in aList:
-                        # aList.append(name)
-                    # d [kind] = aList
-                # i = j
-            # else:
-                # i = g.skip_id(s,i)
         else:
             i += 1
         assert progress &lt; i
@@ -8481,10 +8456,12 @@ Controller(c).run()</t>
     return kind,name</t>
 <t tx="ekr.20111006212449.11861">def munge (self,s):
     
+    '''Return the canonicalized name for settings and arguments to c.config.getX.'''
+    
     return s.replace('-','').replace('_','').lower()</t>
 <t tx="ekr.20111006212449.11862">def run(self):
     
-    os.system('cls')
+    # import os ; os.system('cls')
     
     self.get_commanders()
     configs = self.get_configs()
@@ -8496,15 +8473,14 @@ Controller(c).run()</t>
     # g.trace('done')</t>
 <t tx="ekr.20111007043902.15697">def print_missing(self,format,munged_s,in_list,out_list,munged_in_list,munged_out_list):
     
+    '''Print the canonical name, followed by the list of names that match.'''
+    
     assert munged_s in munged_in_list,munged_s
     assert munged_s not in munged_out_list,munged_s
     
     match_list = [s for s in in_list if self.munge(s) == munged_s]
     
-    print('%40s %s' % (munged_s,match_list))</t>
-<t tx="ekr.20111007043902.15698">a = set()
-a.add('a')
-print(a)</t>
+    print(format % (munged_s,match_list))</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
