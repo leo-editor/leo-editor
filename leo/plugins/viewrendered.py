@@ -175,6 +175,9 @@ try:
     got_docutils = True
 except ImportError:
     got_docutils = False
+except SyntaxError:
+    got_docutils = False
+        # Docutils is not compatible with Python 2.7.
     
 try:
     import PyQt4.phonon as phonon

@@ -7514,7 +7514,18 @@ class leoQtGui(leoGui.leoGui):
         return splash
     #@+node:ekr.20110605121601.18482: *5* IPython embedding & mainloop
     def embed_ipython(self):
-        import IPython.ipapi
+        
+        try:
+            import IPython.ipapi
+        except ImportError:
+            g.trace('can not import IPython.ipapi')
+            # Just run the Qt main loop.
+            sys.exit(self.qtApp.exec_())
+        except Exception:
+            g.trace('unexpected error importing IPython.ipapi')
+            g.es_exception()
+            # Just run the Qt main loop.
+            sys.exit(self.qtApp.exec_())
 
         oargv = sys.argv
         # no c
@@ -7526,7 +7537,7 @@ class leoQtGui(leoGui.leoGui):
         ses = IPython.ipapi.make_session()
         sys.argv = oargv
         # Does not return until IPython closes! IPython runs the leo mainloop
-        ses.mainloop()    
+        ses.mainloop()
     #@+node:ekr.20110605121601.18483: *5* runMainLoop (qtGui)
     def runMainLoop(self):
 

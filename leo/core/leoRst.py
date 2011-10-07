@@ -34,6 +34,8 @@ try:
     if verbose: print('docutils.io imported')
 except ImportError:
     docutils = None
+except Exception:
+    docutils = None
 
 import os
 
