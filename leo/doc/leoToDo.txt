@@ -6,8 +6,23 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 I am willing to fix bugs, but I would like to declare a moratorium on feature additions until 2012.
 .. @+node:ekr.20110921132705.6960: *3* To do first
+.. @+node:ekr.20111006060936.15638: *4* Finish unit tests for x-marked-nodes commands
 .. @+node:ekr.20111004090723.15494: *4* * Test Leo bookmark script on Linux
-.. @+node:ekr.20110918204916.6811: *4* * revise autocompletion docs based on recent posts
+.. @+node:ekr.20110930174206.15470: *4* * Bring screen shots up to date
+> While doing so I noted that on the sourceforge project
+> page some screenshots are bit old, such as touting Tk.
+>
+> shows tk - http://webpages.charter.net/edreamleo/screen-shots.html
+    Fixed
+    
+> uses @thin - http://webpages.charter.net/edreamleo/PCWindow.gif
+
+> screenshots shows deprecated plugin manager -
+> http://sourceforge.net/projects/leo/
+    All souce-forge screenshots need to be replaced.
+
+
+.. @+node:ekr.20110918204916.6811: *4* revise autocompletion docs based on recent posts
 .. @+node:ekr.20110929074744.15474: *5* Autocompleter post
 @language rest
 @pagewidth 65
@@ -844,20 +859,98 @@ The mini-buffer is a text area at the bottom of the body pane. You use it like t
 For example, to print a list of all commands type Alt-X print-commands <Return>.
 
 The following sections list the various commands that you can invoke from the minibuffer. Important: you may bind keystrokes to any of these commands. See Customizing Leo for full details.
-.. @+node:ekr.20110930174206.15470: *4* * Bring screen shots up to date
-> While doing so I noted that on the sourceforge project
-> page some screenshots are bit old, such as touting Tk.
->
-> shows tk - http://webpages.charter.net/edreamleo/screen-shots.html
-    Fixed
+.. @+node:ekr.20111006183053.7091: *4* Why doesn't embedded Leo draw icons?
+.. @+node:ekr.20110605121601.18412: *5* getCompositeIconImage
+def getCompositeIconImage(self,p,val):
+
+    trace = False and not g.unitTesting
+    userIcons = self.c.editCommands.getIconList(p)
+    if not userIcons:
+        # if trace: g.trace('no userIcons')
+        return self.getStatusIconImage(p)
+
+    hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
+    hash.append(str(val))
+    hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
+    hash = ':'.join(hash)
+
+    if hash in g.app.gui.iconimages:
+        icon = g.app.gui.iconimages[hash]
+        if trace: g.trace('cached %s' % (icon))
+        return icon
+
+    images = [g.app.gui.getImageImage(i['file']) for i in userIcons
+             if i['where'] == 'beforeIcon']
+    images.append(g.app.gui.getImageImage("box%02d.GIF" % val))
+    images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
+                  if i['where'] == 'beforeHeadline'])
+    width = sum([i.width() for i in images])
+    height = max([i.height() for i in images])
+
+    pix = QtGui.QPixmap(width,height)
+    pix.fill()
+    pix.setAlphaChannel(pix)
+    painter = QtGui.QPainter(pix)
+    x = 0
+    for i in images:
+        painter.drawPixmap(x,(height-i.height())//2,i)
+        x += i.width()
+    painter.end()
+
+    icon = QtGui.QIcon(pix)
+    g.app.gui.iconimages[hash] = icon
+    if trace: g.trace('new %s' % (icon))
+    return icon
+.. @+node:ekr.20110605121601.18516: *5* getIconImage (qtGui)
+def getIconImage (self,name):
+
+    '''Load the icon and return it.'''
+
+    trace = False and not g.unitTesting
+
+    # Return the image from the cache if possible.
+    if name in self.iconimages:
+        image = self.iconimages.get(name)
+        if trace: ### and not name.startswith('box'):
+            g.trace('cached',id(image),name,image)
+        return image
+    try:
+        iconsDir = g.os_path_join(g.app.loadDir,"..","Icons")
+        homeIconsDir = g.os_path_join(g.app.homeLeoDir,"Icons")
+        for theDir in (homeIconsDir,iconsDir):
+            fullname = g.os_path_finalize_join(theDir,name)
+            if g.os_path_exists(fullname):
+                if 0: # Not needed: use QTreeWidget.setIconsize.
+                    pixmap = QtGui.QPixmap()
+                    pixmap.load(fullname)
+                    image = QtGui.QIcon(pixmap)
+                else:
+                    image = QtGui.QIcon(fullname)
+                    if trace: g.trace('name',fullname,'image',image)
+        
+                self.iconimages[name] = image
+                if trace: g.trace('new',id(image),theDir,name)
+                return image
+            elif trace: g.trace('Directory not found',theDir)
+        else:
+            if trace: g.trace('Not found',name)
+            return None
+
+    except Exception:
+        g.es_print("exception loading:",fullname)
+        g.es_exception()
+        return None
+.. @+node:ekr.20110605121601.17948: *5* getStatusIconImage
+def getStatusIconImage (self,p):
+
+    val = p.v.computeIcon()
+
+    r = g.app.gui.getIconImage(
+        "box%02d.GIF" % val)
+        
+    # g.trace(r)
     
-> uses @thin - http://webpages.charter.net/edreamleo/PCWindow.gif
-
-> screenshots shows deprecated plugin manager -
-> http://sourceforge.net/projects/leo/
-    All souce-forge screenshots need to be replaced.
-
-
+    return r
 .. @+node:ekr.20110929165422.15431: *4* Fun scripts
 .. @+node:ekr.20111003161039.17378: *5* verify setting
 @nocolor-node
