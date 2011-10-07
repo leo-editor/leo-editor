@@ -1485,6 +1485,22 @@
 </v>
 </v>
 </v>
+<v t="ekr.20111006212449.11850"><vh>@button check-settings</vh>
+<v t="ekr.20111006212449.11851"><vh>ctor</vh></v>
+<v t="ekr.20111006212449.11852"><vh>def check</vh></v>
+<v t="ekr.20111006212449.11853"><vh>error</vh></v>
+<v t="ekr.20111006212449.11854"><vh>get_commanders</vh></v>
+<v t="ekr.20111006212449.11855"><vh>get_configs</vh></v>
+<v t="ekr.20111006212449.11856"><vh>get_configs_from_outline &amp; helper</vh>
+<v t="ekr.20111006212449.11857"><vh>scan_for_configs</vh></v>
+</v>
+<v t="ekr.20111006212449.11858"><vh>get_settings &amp; helper</vh>
+<v t="ekr.20111006212449.11859"><vh>is_setting</vh></v>
+<v t="ekr.20111006212449.11860"><vh>parse_setting</vh></v>
+</v>
+<v t="ekr.20111006212449.11861"><vh>munge</vh></v>
+<v t="ekr.20111006212449.11862"><vh>run</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -8197,6 +8213,257 @@ php_keyword_font_weight = none
     # normal, bold
 </t>
 <t tx="ekr.20111004182631.15554"></t>
+<t tx="ekr.20111006212449.11850">import os
+
+# To do: remove run-on-string message.
+
+class Controller:
+    @others
+    
+Controller(c).run()</t>
+<t tx="ekr.20111006212449.11851">def __init__ (self,c):
+    self.c = c
+    
+    self.errors = 0
+    
+    # Commanders.
+    self.core = None # Commander for leoPy.leo.
+    self.plugins = None # Commander for leoPlugins.leo.
+    self.settings = None # Commander for leoSettings.leo.
+</t>
+<t tx="ekr.20111006212449.11852">def check (self,configs_d,settings_d):
+    
+    table = ('Bool','Color','Int','Float',# 'Font',
+        'Ratio','Path','String',
+    )
+    
+    for kind in table:
+        config_key = 'get%s' % kind
+        settings_key = '@%s' % kind.lower()
+        
+        config_list = configs_d.get(config_key,[])
+        settings_list = settings_d.get(settings_key,[])
+        
+        config_list =   [self.munge(s) for s in config_list]
+        settings_list = [self.munge(s) for s in settings_list]
+        
+        print('\nmissing %s settings...' % settings_key)
+        for s in config_list:
+            if s not in settings_list:
+                print(s)
+                
+        print('\nmissing config.%s calls...' % config_key)
+        for s in settings_list:
+            if s not in config_list:
+                print(s)
+    </t>
+<t tx="ekr.20111006212449.11853">def error (self,s):
+    
+    print(s)
+    self.errors += 1
+</t>
+<t tx="ekr.20111006212449.11854">def get_commanders (self):
+    
+    '''Open files as needed and set the commander ivars.'''
+    
+    def open_commander(fn):
+        ok,frame = g.openWithFileName(fn,old_c=self.c,
+            enableLog=True,gui=None,readAtFileNodesFlag=True)
+        if ok:
+            return frame.c
+        else:
+            self.error('not found: %s' % fn)
+            
+    self.core = open_commander(
+        g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
+            
+    self.plugins = open_commander(
+        g.os_path_join(g.app.loadDir,'..','plugins','leoPlugins.leo'))
+        
+    self.settings = open_commander(
+        g.os_path_join(g.app.loadDir,'..','config','leoSettings.leo'))
+        
+    # g.trace('\n%s\n%s\n%s' % (self.core,self.plugins,self.settings))
+</t>
+<t tx="ekr.20111006212449.11855">def get_configs(self):
+    
+    '''Return a dict containing a representation
+    of all calls to x.config.getX.
+    '''
+    
+    d = {}
+    
+    for c in (self.core,self.plugins):
+        print('scanning: %s' % c.shortFileName())
+        self.get_configs_from_outline(c,d)
+    
+    return d</t>
+<t tx="ekr.20111006212449.11856">def get_configs_from_outline (self,c,d):
+    
+    '''Scan the outline for all calls to x.config.getX
+    and add items to d.
+    '''
+    
+    trace = False
+    
+    for p in c.all_positions():
+        self.scan_for_configs(p,d)
+        
+    if trace:
+        keys = list(d.keys())
+        for key in sorted(keys):
+            print(key)
+            aList = d.get(key)
+            for name in sorted(aList):
+                print('  ' + name)
+    
+    return d</t>
+<t tx="ekr.20111006212449.11857">def scan_for_configs (self,p,d):
+
+    kinds = ('getBool','getColor','getInt','getFloat',
+        # '@font', # special case.
+        'getRatio','getPath','getString',
+    )
+    i,s = 0,p.b
+    while i &lt; len(s):
+        progress = i
+        ch = s[i]
+        if False and (
+            ch == '@' and
+            (g.match(s,i,'@ ') or g.match(s,i,'@\n')) and 
+            (i == 0 or s[i-1] == '\n')
+        ):
+            i = s.find('\n@c',i)
+            if i == -1: break
+        elif ch == '#':
+            i = g.skip_to_end_of_line(s,i)
+        elif ch in ('"',"'"):
+            i = g.skip_python_string(s,i)
+        elif ch == '_' or ch.isalpha():
+            j = g.skip_id(s,i)
+            kind = s[i:j]
+            n1,n2 = g.getLine(s,i)
+            if kind in kinds:
+                # print(repr(s[n1:n2]))
+                i = g.skip_ws(s,j)
+                if g.match(s,i,'('):
+                    i = g.skip_ws(s,i+1)
+                    if g.match(s,i,'"') or g.match(s,i,"'"):
+                        j = g.skip_string(s,i)
+                        name = s[i+1:j-1]
+                        # name = self.munge(name)
+                        aList = d.get(kind,[])
+                        if name not in aList:
+                            aList.append(name)
+                        d [kind] = aList
+                        # print(name)
+            i = j
+                
+            # j = g.skip_id(s,i,'.')
+            # kind = s[i:j]
+            # g.trace(kind)
+            # if kind.startswith('config.get'):
+                # g.trace(kind,p.h)
+                # i = g.skip_ws(s,j)
+                # if g.match(s,i,'('):
+                    # i += 1
+                    # i = g.skip_ws(s,i)
+                    # j = g.skip_id(s,i,'-')
+                    # name = s[i:j]
+                    # aList = d.get(kind,[])
+                    # if name not in aList:
+                        # aList.append(name)
+                    # d [kind] = aList
+                # i = j
+            # else:
+                # i = g.skip_id(s,i)
+        else:
+            i += 1
+        assert progress &lt; i
+    
+    return d</t>
+<t tx="ekr.20111006212449.11858">def get_settings (self):
+    
+    '''Return a dict containing a representation
+    of all settings in leoSettings.leo.
+    '''
+    
+    trace = False
+    c,d = self.settings,{}
+    
+    print('scanning: %s' % c.shortFileName())
+
+    settings_node = g.findNodeAnywhere(c,'@settings')
+    if not settings_node:
+        return self.error('no @settings node')
+        
+    for p in settings_node.subtree():
+        if self.is_setting(p):
+            kind,name = self.parse_setting(p)
+            if name:
+                # name = self.munge(name)
+                aList = d.get(kind,[])
+                if name not in aList:
+                    aList.append(name)
+                # Don't bother checking for duplicates.
+                # for name2,v in aList:
+                    # if name == name2 and v != p.v:
+                        # self.error('duplicate setting: %s' % (p.h))
+                        # break
+                # else:
+                    # aList.append((name,p.v),)
+                d [kind] = aList
+            else:
+                self.error('no name for %s' % (kind))
+                
+    if trace:
+        keys = list(d.keys())
+        for key in sorted(keys):
+            print(key)
+            aList = d.get(key)
+            for name in sorted(aList):
+                print('  ' + name)
+
+    return d</t>
+<t tx="ekr.20111006212449.11859">def is_setting (self,p):
+    
+    # For now, these are enough
+    table = (
+        '@bool','@color','@int','@float',
+        # '@font', # special case.
+        '@ratio','@path','@string',
+    )
+    
+    for s in table:
+        if g.match_word(p.h,0,s):
+            return True
+    return False</t>
+<t tx="ekr.20111006212449.11860">def parse_setting (self,p):
+    
+    s = p.h
+    assert s[0] == '@'
+    i = g.skip_id(s,1)
+    kind = s[:i]
+    assert kind
+    i = g.skip_ws(s,i)
+    j = g.skip_id(s,i,chars='-')
+    name = s[i:j]
+    return kind,name</t>
+<t tx="ekr.20111006212449.11861">def munge (self,s):
+    
+    return s.replace('-','').replace('_','').lower()</t>
+<t tx="ekr.20111006212449.11862">def run(self):
+    
+    os.system('cls')
+    
+    self.get_commanders()
+    configs = self.get_configs()
+    settings = self.get_settings()
+    
+    if self.errors == 0:
+        self.check(configs,settings)
+        
+    g.trace('done')</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
