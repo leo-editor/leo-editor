@@ -83,6 +83,10 @@ try:
 except ImportError:
     g.es_print('ipython plugin: can not import IPython.ipapi',color='red')
     import_ok = False
+except SyntaxError:
+    g.es_print('ipython plugin: syntax error importing IPython.ipapi',color='red')
+    import_ok = False
+    
 #@-<< imports >>
 
 # Globals
@@ -95,7 +99,7 @@ gIP = None
 #@+node:ekr.20080201143145.4: *3* init
 def init ():
 
-    if not import_ok: return
+    if not import_ok: return False
 
     # This plugin depends on the properties of the gui's event loop.
     # It may work for other gui's, but this is not guaranteed.

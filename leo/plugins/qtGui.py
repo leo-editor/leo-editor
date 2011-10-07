@@ -6625,6 +6625,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         trace = False and not g.unitTesting
         userIcons = self.c.editCommands.getIconList(p)
         if not userIcons:
+            # if trace: g.trace('no userIcons')
             return self.getStatusIconImage(p)
 
         hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
@@ -8098,8 +8099,8 @@ class leoQtGui(leoGui.leoGui):
         # Return the image from the cache if possible.
         if name in self.iconimages:
             image = self.iconimages.get(name)
-            if trace and not name.startswith('box'):
-                g.trace('cached',id(image),name)
+            if trace: ### and not name.startswith('box'):
+                g.trace('cached',id(image),name,image)
             return image
         try:
             iconsDir = g.os_path_join(g.app.loadDir,"..","Icons")
@@ -8113,6 +8114,7 @@ class leoQtGui(leoGui.leoGui):
                         image = QtGui.QIcon(pixmap)
                     else:
                         image = QtGui.QIcon(fullname)
+                        if trace: g.trace('name',fullname,'image',image)
             
                     self.iconimages[name] = image
                     if trace: g.trace('new',id(image),theDir,name)
@@ -8123,7 +8125,7 @@ class leoQtGui(leoGui.leoGui):
                 return None
 
         except Exception:
-            g.es("exception loading:",fullname)
+            g.es_print("exception loading:",fullname)
             g.es_exception()
             return None
     #@+node:ekr.20110605121601.18517: *5* getImageImage

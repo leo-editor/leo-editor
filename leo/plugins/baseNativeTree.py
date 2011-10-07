@@ -1198,8 +1198,12 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         val = p.v.computeIcon()
 
-        return g.app.gui.getIconImage(
+        r = g.app.gui.getIconImage(
             "box%02d.GIF" % val)
+            
+        # g.trace(r)
+        
+        return r
     #@+node:ekr.20110605121601.17949: *4* getVnodeIcon
     def getVnodeIcon(self,p):
 
