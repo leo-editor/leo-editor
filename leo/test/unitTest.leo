@@ -534,7 +534,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6,1"></t>
+<t tx="ekr.20070417092935" str_leo_pos="5"></t>
 <t tx="ekr.20071113140035">fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src','leoPy.leo'))
 flag,frame2 = g.openWithFileName(fileName,old_c=None,enableLog=False)
 c.frame.bringToFront()

@@ -5529,7 +5529,8 @@ class Commands (object):
             parent.doDelete()
             c.selectPosition(p1)
 
-        g.es('cloned %s nodes' % (n),color='blue')
+        if not g.unitTesting:
+            g.es('cloned %s nodes' % (n),color='blue')
         c.redraw()    
     #@+node:ekr.20111005081134.15540: *6* c.deleteMarked
     def deleteMarked (self,event=None):
@@ -5550,7 +5551,8 @@ class Commands (object):
 
         if undo_data:
             u.afterDeleteMarkedNodes(undo_data,p1)
-            g.es('deleted %s nodes' % (len(undo_data)),color='blue')
+            if not g.unitTesting:
+                g.es('deleted %s nodes' % (len(undo_data)),color='blue')
             c.setChanged(True)
 
         # Don't even *think* about restoring the old position.
@@ -5589,7 +5591,8 @@ class Commands (object):
 
         if undo_data:
             u.afterMoveMarkedNodes(undo_data,p1)
-            g.es('moved %s nodes' % (len(undo_data)),color='blue')
+            if not g.unitTesting:
+                g.es('moved %s nodes' % (len(undo_data)),color='blue')
             c.setChanged(True)
             
         # Don't even *think* about restoring the old position.
