@@ -24,12 +24,31 @@
 <v t="ekr.20060112104823"><vh>main</vh></v>
 </v>
 <v t="ekr.20090203131919.1"><vh>@button Check menu commands</vh></v>
-<v t="ekr.20110612074140.16414"><vh>@button check-core-settings @key=Alt-8</vh>
+<v t="ekr.20110612074140.16414"><vh>@button check-core-settings (OlD)</vh>
 <v t="ekr.20110612074140.16417"><vh>ctor</vh></v>
 <v t="ekr.20110612074140.16419"><vh>get_settings</vh></v>
 <v t="ekr.20110612074140.16478"><vh>get_settings_nodes</vh></v>
 <v t="ekr.20110612074140.16416"><vh>init</vh></v>
 <v t="ekr.20110612074140.16415"><vh>run</vh></v>
+</v>
+<v t="ekr.20111006212449.11850"><vh>@button check-settings</vh>
+<v t="ekr.20111006212449.11851"><vh>ctor</vh></v>
+<v t="ekr.20111006212449.11852"><vh>check &amp; helper</vh>
+<v t="ekr.20111007043902.15697"><vh>print_missing</vh></v>
+</v>
+<v t="ekr.20111006212449.11853"><vh>error</vh></v>
+<v t="ekr.20111006212449.11854"><vh>get_commanders</vh></v>
+<v t="ekr.20111006212449.11855"><vh>get_configs &amp; helpers</vh>
+<v t="ekr.20111006212449.11856"><vh>get_configs_from_outline &amp; helper</vh>
+<v t="ekr.20111006212449.11857"><vh>scan_for_configs</vh></v>
+</v>
+</v>
+<v t="ekr.20111006212449.11858"><vh>get_settings &amp; helper</vh>
+<v t="ekr.20111006212449.11859"><vh>is_setting</vh></v>
+<v t="ekr.20111006212449.11860"><vh>parse_setting</vh></v>
+</v>
+<v t="ekr.20111006212449.11861"><vh>munge</vh></v>
+<v t="ekr.20111006212449.11862"><vh>run</vh></v>
 </v>
 </v>
 </v>
@@ -1484,25 +1503,6 @@
 <v t="ekr.20041119034357.69"><vh>@int split_bar_width = 6</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20111006212449.11850"><vh>@button check-settings</vh>
-<v t="ekr.20111006212449.11851"><vh>ctor</vh></v>
-<v t="ekr.20111006212449.11852"><vh>check &amp; helper</vh>
-<v t="ekr.20111007043902.15697"><vh>print_missing</vh></v>
-</v>
-<v t="ekr.20111006212449.11853"><vh>error</vh></v>
-<v t="ekr.20111006212449.11854"><vh>get_commanders</vh></v>
-<v t="ekr.20111006212449.11855"><vh>get_configs &amp; helpers</vh>
-<v t="ekr.20111006212449.11856"><vh>get_configs_from_outline &amp; helper</vh>
-<v t="ekr.20111006212449.11857"><vh>scan_for_configs</vh></v>
-</v>
-</v>
-<v t="ekr.20111006212449.11858"><vh>get_settings &amp; helper</vh>
-<v t="ekr.20111006212449.11859"><vh>is_setting</vh></v>
-<v t="ekr.20111006212449.11860"><vh>parse_setting</vh></v>
-</v>
-<v t="ekr.20111006212449.11861"><vh>munge</vh></v>
-<v t="ekr.20111006212449.11862"><vh>run</vh></v>
 </v>
 </vnodes>
 <tnodes>
