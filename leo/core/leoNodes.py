@@ -2071,10 +2071,18 @@ class vnode (baseVnode):
     #@+node:ekr.20031218072017.3351: *4* isAtIgnoreNode
     def isAtIgnoreNode (self):
 
-        """Returns True if the receiver contains @ignore in its body at the start of a line."""
-
-        flag, i = g.is_special(self._bodyString, 0, "@ignore")
-        return flag
+        """Returns True if the receiver contains @ignore in its body at the start of a line.
+        
+        or if the headline starts with @ignore."""
+        
+        v = self
+        
+        # 2011/10/08: honor @ignore in headlines.  Sheesh.
+        if g.match_word(self._headString,0,'@ignore'):
+            return True
+        else:
+            flag, i = g.is_special(self._bodyString, 0,"@ignore")
+            return flag
     #@+node:ekr.20031218072017.3352: *4* isAtOthersNode
     def isAtOthersNode (self):
 
