@@ -2984,7 +2984,10 @@ class atFile:
 
         at.clearAllOrphanBits(p)
         while p and p != after:
-            if p.isAnyAtFileNode() or p.isAtIgnoreNode():
+            if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
+                # Note: @ignore not honored in @asis nodes.
+                p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
+            elif p.isAnyAtFileNode():
                 self.writeAllHelper(p,force,toString,writeAtFileNodesFlag,writtenFiles)
                 p.moveToNodeAfterTree()
             else:
