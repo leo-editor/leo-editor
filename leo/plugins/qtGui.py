@@ -7872,7 +7872,7 @@ class leoQtGui(leoGui.leoGui):
         parent = None
         s = QtGui.QFileDialog.getExistingDirectory (parent,title,startdir)
         return g.u(s)
-    #@+node:ekr.20110605121601.18500: *5* runOpenFileDialog
+    #@+node:ekr.20110605121601.18500: *5* runOpenFileDialog (qtGui)
     def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False, startpath = None):
 
         """Create and run an Qt open file dialog ."""

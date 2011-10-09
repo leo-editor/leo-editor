@@ -1068,7 +1068,10 @@ class Commands (object):
             not c.changed and not c.frame.saved and # The window has never been changed
             g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
         #@-<< Set closeFlag if the only open window is empty >>
-        table = [("Leo files","*.leo"), ("All files","*"),
+        table = [
+            # 2010/10/09: Fix an interface blunder. Show all files by default.
+            ("All files","*"),
+            ("Leo files","*.leo"),
             ("Python files","*.py"),]
 
         fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
