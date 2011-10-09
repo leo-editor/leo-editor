@@ -5784,6 +5784,28 @@ def intraFileDrop (self,cloneDrag,fn,p1,p2):
     else:
         if not g.unitTesting:
             g.trace('** move failed')
+#@+node:ekr.20111008073427.15594: *4* Fixed macro crash
+# A misspelling:
+    
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 409, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 1967, in fullCommand
+    c.macroCommands.startrecordingMacro(event)
+AttributeError: macroCommandsClass instance has no attribute 'startrecordingMacro'
+#@+node:ekr.20111009162434.7206: *4* Regularized slashes in @edit/@file
+@nocolor-node
+
+Examples:
+    
+    @edit C:/leo.repo/ipython-0.12/IPython/frontend/qt/console/pygments_highlighter.py
+        # The filename comes from g.app.gui.runOpenFileDialog
+    
+    @file C:\leo.repo\ipython-0.12\IPython\frontend\qt\console\pygments_highlighter.py
+        # Created by import.
+        
+The problem was the call to g.os_path_normpath in importDerived files:
+    it converts slashes to backslashes on windows (!!)
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
@@ -11025,6 +11047,12 @@ def createMoveMarkedNode(self):
     p.moveToRoot(oldRoot)
     c.setHeadString(p,'Moved marked nodes')
     return p
+#@+node:ekr.20111009101205.7134: *4* Open now shows all files
+@nocolor-node
+
+Surprisingly important: it is a not-so-subtle clue that *any* file may be
+opened: non-Leo files are opened in @edit nodes. Soon: external files containing
+Leo sentinels will be opened as @file nodes.
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>

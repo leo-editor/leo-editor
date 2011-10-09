@@ -859,6 +859,7 @@ The mini-buffer is a text area at the bottom of the body pane. You use it like t
 For example, to print a list of all commands type Alt-X print-commands <Return>.
 
 The following sections list the various commands that you can invoke from the minibuffer. Important: you may bind keystrokes to any of these commands. See Customizing Leo for full details.
+.. @+node:ekr.20111008073427.15595: *4* Macro bug: really must have a shortcut for call-last-macro
 .. @+node:ekr.20111006183053.7091: *4* Why doesn't embedded Leo draw icons?
 .. @+node:ekr.20110605121601.18412: *5* getCompositeIconImage
 def getCompositeIconImage(self,p,val):
@@ -1846,6 +1847,7 @@ statdef pass(n):
 .. @+node:ekr.20110917104720.9418: *5* convert-names-to-pep8
 .. @+node:ekr.20110918204546.6809: *5* convert-to-class
 .. @+node:ekr.20110930213637.15473: *4* Next
+.. @+node:ekr.20111009162434.7204: *5* Port ipy_leo.py to latest version of IPython
 .. @+node:ekr.20111003161039.15481: *5* Support solarized colors
 http://ethanschoonover.com/solarized
 .. @+node:ekr.20110930075237.15472: *5* Improving Leo: think inside the box

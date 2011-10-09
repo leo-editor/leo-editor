@@ -959,10 +959,13 @@ class leoImportCommands (scanUtility):
         if not paths: return
         u.beforeChangeGroup(current,command)
         for fileName in paths:
+            fileName = fileName.replace('\\','/') # 2011/10/09.
             g.setGlobalOpenDir(fileName)
             #@+<< set isThin if fileName is a thin derived file >>
             #@+node:ekr.20040930135204: *5* << set isThin if fileName is a thin derived file >>
-            fileName = g.os_path_normpath(fileName)
+            # 2011/10/09: g.os.path.normpath converts to *back* slashes!
+
+            # fileName = g.os_path_normpath(fileName)
 
             try:
                 theFile = open(fileName,'rb')
