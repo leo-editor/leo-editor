@@ -1964,7 +1964,7 @@ class keyHandlerClass:
         
         # 2011/06/06: remember these events also.
         if recording:
-            c.macroCommands.startrecordingMacro(event)
+            c.macroCommands.startRecordingMacro(event)
             
         if state > 0:
             k.setLossage(char,stroke)
