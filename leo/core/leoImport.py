@@ -974,7 +974,8 @@ class leoImportCommands (scanUtility):
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAfter()
             if isThin:
-                p.initHeadString("@thin " + fileName)
+                # 2010/10/09: create @file node, not a deprecated @thin node.
+                p.initHeadString("@file " + fileName)
                 at.read(p)
             else:
                 p.initHeadString("Imported @file " + fileName)
