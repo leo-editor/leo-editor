@@ -950,13 +950,14 @@ class leoImportCommands (scanUtility):
         self.setBodyString(p,p.b)
         c.frame.body.onBodyChanged(undoType=None)
     #@+node:ekr.20031218072017.1810: *4* importDerivedFiles
-    def importDerivedFiles (self,parent=None,paths=None):
+    def importDerivedFiles (self,parent=None,paths=None,command='Import'):
         # Not a command.  It must *not* have an event arg.
 
-        c = self.c ; u = c.undoer ; command = 'Import'
+        c = self.c ; u = c.undoer
         at = c.atFileCommands ; current = c.p
         self.tab_width = self.getTabWidth()
-        if not paths: return
+        if not paths:
+            return False
         u.beforeChangeGroup(current,command)
         for fileName in paths:
             fileName = fileName.replace('\\','/') # 2011/10/09.
@@ -984,11 +985,13 @@ class leoImportCommands (scanUtility):
                 p.initHeadString("Imported @file " + fileName)
                 at.read(p,importFileName=fileName)
             p.contract()
+            p.setDirty() # 2011/10/09: tell why the file is dirty!
             u.afterInsertNode(p,command,undoData)
         current.expand()
         c.setChanged(True)
         u.afterChangeGroup(p,command)
         c.redraw(current)
+        return True
     #@+node:ekr.20031218072017.3212: *4* importFilesCommand
     def importFilesCommand (self,files=None,treeType=None):
         # Not a command.  It must *not* have an event arg.

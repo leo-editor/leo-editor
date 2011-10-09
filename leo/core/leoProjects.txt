@@ -11053,6 +11053,128 @@ def createMoveMarkedNode(self):
 Surprisingly important: it is a not-so-subtle clue that *any* file may be
 opened: non-Leo files are opened in @edit nodes. Soon: external files containing
 Leo sentinels will be opened as @file nodes.
+#@+node:ekr.20111009104133.7160: *4* Made open smarter
+@nocolor-node
+
+Create @file nodes (not @thin nodes) when opening an external file.
+
+Changed c.open; minor change to importDerivedFiles.
+#@+node:ekr.20031218072017.1810: *5* importDerivedFiles
+def importDerivedFiles (self,parent=None,paths=None,command='Import'):
+    # Not a command.  It must *not* have an event arg.
+
+    c = self.c ; u = c.undoer
+    at = c.atFileCommands ; current = c.p
+    self.tab_width = self.getTabWidth()
+    if not paths:
+        return False
+    u.beforeChangeGroup(current,command)
+    for fileName in paths:
+        fileName = fileName.replace('\\','/') # 2011/10/09.
+        g.setGlobalOpenDir(fileName)
+        << set isThin if fileName is a thin derived file >>
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAfter()
+        if isThin:
+            # 2010/10/09: create @file node, not a deprecated @thin node.
+            p.initHeadString("@file " + fileName)
+            at.read(p)
+        else:
+            p.initHeadString("Imported @file " + fileName)
+            at.read(p,importFileName=fileName)
+        p.contract()
+        p.setDirty() # 2011/10/09: tell why the file is dirty!
+        u.afterInsertNode(p,command,undoData)
+    current.expand()
+    c.setChanged(True)
+    u.afterChangeGroup(p,command)
+    c.redraw(current)
+    return True
+#@+node:ekr.20040930135204: *6* << set isThin if fileName is a thin derived file >>
+# 2011/10/09: g.os.path.normpath converts to *back* slashes!
+
+# fileName = g.os_path_normpath(fileName)
+
+try:
+    theFile = open(fileName,'rb')
+    isThin = at.scanHeaderForThin(theFile,fileName)
+    theFile.close()
+except IOError:
+    isThin = False
+#@+node:ekr.20031218072017.2821: *5* c.open & helper
+def open (self,event=None):
+
+    '''Open a Leo window containing the contents of a .leo file.'''
+
+    c = self
+    << Set closeFlag if the only open window is empty >>
+    table = [
+        # 2010/10/09: Fix an interface blunder. Show all files by default.
+        ("All files","*"),
+        ("Leo files","*.leo"),
+        ("Python files","*.py"),]
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+        title = "Open",filetypes = table,defaultextension = ".leo")
+    c.bringToFront()
+
+    ok = False
+    if fileName:
+        if fileName.endswith('.leo'):
+            ok, frame = g.openWithFileName(fileName,c)
+            if ok:
+                g.chdir(fileName)
+                g.setGlobalOpenDir(fileName)
+            if ok and closeFlag:
+                g.app.destroyWindow(c.frame)
+        elif c.looksLikeDerivedFile(fileName):
+            # 2011/10/09: A smart open makes Leo lighter:
+            # Create an @file node for files containing Leo sentinels.
+            ok = c.importCommands.importDerivedFiles(parent=c.p,
+                paths=[fileName],command='Open')
+        else:
+            # otherwise, create an @edit node.
+            ok = c.createNodeFromExternalFile(fileName)
+
+    # openWithFileName sets focus if ok.
+    if not ok:
+        c.initialFocusHelper()
+#@+node:ekr.20031218072017.2822: *6* << Set closeFlag if the only open window is empty >>
+@
+If this is the only open window was opened when the app started, and
+the window has never been written to or saved, then we will
+automatically close that window if this open command completes
+successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@+node:ekr.20090212054250.9: *6* c.createNodeFromExternalFile
+def createNodeFromExternalFile(self,fn):
+
+    '''Read the file into a node.
+    Return None, indicating that c.open should set focus.'''
+
+    c = self
+
+    s,e = g.readFileIntoString(fn)
+    if s is None: return
+    head,ext = g.os_path_splitext(fn)
+    if ext.startswith('.'): ext = ext[1:]
+    language = g.app.extension_dict.get(ext)
+    if language:
+        prefix = '@color\n@language %s\n\n' % language
+    else:
+        prefix = '@killcolor\n\n'
+    p2 = c.insertHeadline(op_name='Open File', as_child=False)
+    p2.h = '@edit %s' % fn # g.shortFileName(fn)
+    p2.b = prefix + s
+    w = c.frame.body.bodyCtrl
+    if w: w.setInsertPoint(0)
+    c.redraw()
+    c.recolor()
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>

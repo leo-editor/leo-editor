@@ -1087,7 +1087,13 @@ class Commands (object):
                     g.setGlobalOpenDir(fileName)
                 if ok and closeFlag:
                     g.app.destroyWindow(c.frame)
+            elif c.looksLikeDerivedFile(fileName):
+                # 2011/10/09: A smart open makes Leo lighter:
+                # Create an @file node for files containing Leo sentinels.
+                ok = c.importCommands.importDerivedFiles(parent=c.p,
+                    paths=[fileName],command='Open')
             else:
+                # otherwise, create an @edit node.
                 ok = c.createNodeFromExternalFile(fileName)
 
         # openWithFileName sets focus if ok.
