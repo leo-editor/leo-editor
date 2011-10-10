@@ -182,7 +182,6 @@ def cmd_functions(args):
     lines = list(set(el[0] + "\t" + el[1] for el in funcs))
     lines.sort()
     return lines # EKR
-
 #@+node:ekr.20110310091639.14285: *4* cmd_init
 def cmd_init(args):
     
@@ -206,9 +205,6 @@ def cmd_members(args):
         
     lines.sort()
     return lines # EKR
-    
-   
-
 #@+node:ekr.20110310091639.14283: *4* cmd_parse
 def cmd_parse(args):
 
@@ -619,14 +615,14 @@ def main():
         return
     
     cmd = sys.argv[1]
-    #print "cmd",cmd
+    # print "cmd",cmd
     args = sys.argv[2:]
     if cmd == 'tags':
         cmd_tags(args)
     elif cmd == 'm':
-        cmd_members(args)
+        printlines(cmd_members(args))
     elif cmd == 'f':
-        cmd_functions(args)        
+        printlines(cmd_functions(args))
         
     elif cmd =='parse':
         cmd_parse(args)
