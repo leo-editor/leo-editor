@@ -14,10 +14,12 @@
 <v t="ekr.20070427110751"><vh>@chapters</vh></v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
-<v t="ekr.20110916103731.2451"><vh>@button create @auto nodes</vh>
-<v t="ekr.20110916103731.2452"><vh>importFiles (top-level)</vh></v>
-<v t="ekr.20110916103731.2453"><vh>importDir</vh></v>
-<v t="ekr.20110916103731.2454"><vh>createLastChildOf</vh></v>
+<v t="ekr.20111010154337.15593"><vh>@button create @auto nodes</vh>
+<v t="ekr.20111010154337.15594"><vh> importFiles (top-level)</vh></v>
+<v t="ekr.20111010154337.15595"><vh>createLastChildOf</vh></v>
+<v t="ekr.20111010154337.15596"><vh>disableAllNodes</vh></v>
+<v t="ekr.20111010154337.15597"><vh>importDir</vh></v>
+<v t="ekr.20111010154337.15598"><vh>loadAtAutoFiles</vh></v>
 </v>
 <v t="ekr.20111008064811.15674"><vh>@button join-below</vh></v>
 <v t="ekr.20111008064811.15676"><vh>@button join-above</vh></v>
@@ -110,10 +112,8 @@
 </v>
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
-<v t="ekr.20051110111150"
-expanded="ekr.20051104082026,ekr.20111004182631.15511,"><vh>@thin leoScripts.txt</vh></v>
-<v t="ekr.20110914030246.2405"
-expanded="ekr.20110914030403.2417,ekr.20110914030403.2446,ekr.20110914030403.2421,"><vh>@file gen_blender_docs.py</vh></v>
+<v t="ekr.20051110111150"><vh>@thin leoScripts.txt</vh></v>
+<v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 </v>
 <v t="ekr.20111004214045.2482"><vh>@path C:\Users\edreamleo\Latex</vh>
 <v t="ekr.20111004185540.15541"><vh>@@auto sample.tex</vh></v>
@@ -1216,76 +1216,6 @@ self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))
     if (n % 2) == 1 and s not in self.toBeTranslated:
         self.toBeTranslated.append(s)
 </t>
-<t tx="ekr.20110916103731.2451">import os
-
-@others
-
-types = ('.py','.c',)
-
-theDir = r'C:\apps\swigwin-2.0.4\Source'
-importFiles(theDir,types,recursive=True)
-c.redraw()
-
-g.es("done",color="blue")
-</t>
-<t tx="ekr.20110916103731.2452">def importFiles (theDir,type=None,recursive=False):
-
-    v = c.currentVnode()
-
-    if not g.os_path_exists(theDir):
-        g.es("directory does not exist: " + theDir)
-        return
-
-    root = createLastChildOf(v,"imported files")
-    try:
-        importDir (theDir,type,recursive,root)
-        root.contract()
-    except:
-        g.es_exception()
-    c.redraw()
-</t>
-<t tx="ekr.20110916103731.2453">def importDir (theDir,types,recursive,root,level=0):
-
-    g.es("theDir: " + theDir,color="blue")
-
-    try:
-        files = os.listdir(theDir)
-        files2 = [] ; dirs =[]
-        for f in files:
-            path = g.os_path_join(theDir,f)
-            if g.os_path_isfile(path):
-                name, ext = g.os_path_splitext(f)
-                if not types or ext in types:
-                    files2.append(path)
-            elif recursive:
-                dirs.append(path)
-        if len(files2) &gt; 0 or len(dirs) &gt; 0:
-            path_part = g.choose(level==0,theDir,g.os_path_basename(theDir))
-            import_root = createLastChildOf(root,'@path %s' % (path_part))
-        else:
-            import_root = root
-        
-        c.selectVnode(import_root)
-        
-        if len(files2) &gt; 0:
-            for fn in files2:
-                p2 = createLastChildOf(import_root,'@auto %s' % (
-                    g.shortFileName(fn)))
-                
-        if len(dirs) &gt; 0:
-            dirs.sort()
-            for theDir in dirs:
-                importDir(theDir,types,recursive,import_root,level+1)
-    except:
-        g.es("exception in importFiles script")
-        g.es_exception()
-</t>
-<t tx="ekr.20110916103731.2454">def createLastChildOf (v,headline):
-
-    child = v.insertAsLastChild()
-    child.initHeadString(headline.replace('\\','/'))
-    return child
-</t>
 <t tx="ekr.20111004185540.15541">@language tex
 \documentclass[12pt]{article}
 
@@ -1660,6 +1590,99 @@ if p2:
     p.doDelete(p2)
     # u.afterChangeGroup(p,'join-below',undoData)
     c.redraw(p2)
+</t>
+<t tx="ekr.20111010154337.15593">import os
+
+@others
+
+types = ('.py',)
+theDir = r'C:\apps\pygments\pygments'
+    
+importFiles(theDir,types,recursive=True)
+c.redraw()
+
+g.es("done",color="blue")
+</t>
+<t tx="ekr.20111010154337.15594">def importFiles (theDir,type=None,recursive=False):
+    
+    root = c.p.copy()
+    v = c.currentVnode()
+
+    if not g.os_path_exists(theDir):
+        g.es("directory does not exist: " + theDir)
+        return
+
+    root = createLastChildOf(v,"imported files")
+    try:
+        importDir (theDir,type,recursive,root)
+        root.contract()
+    except:
+        g.es_exception()
+        
+    # Do this last, as a double check on paths, etc.
+    loadAtAutoFiles(root)
+    disableAtAutoFiles(root)
+    c.redraw()
+</t>
+<t tx="ekr.20111010154337.15595">def createLastChildOf (v,headline):
+
+    child = v.insertAsLastChild()
+    child.initHeadString(headline.replace('\\','/'))
+    return child
+</t>
+<t tx="ekr.20111010154337.15596">def disableAtAutoFiles(root):
+
+    for p in root.subtree():
+        if p.isAtAutoNode():
+            assert p.h.startswith('@auto ')
+            p.h = '@' + p.h</t>
+<t tx="ekr.20111010154337.15597">def importDir (theDir,types,recursive,root,level=0):
+
+    g.es("theDir: " + theDir,color="blue")
+
+    try:
+        files = os.listdir(theDir)
+        files2 = [] ; dirs =[]
+        for f in files:
+            path = g.os_path_join(theDir,f)
+            if g.os_path_isfile(path):
+                name, ext = g.os_path_splitext(f)
+                if not types or ext in types:
+                    files2.append(path)
+            elif recursive:
+                dirs.append(path)
+        if len(files2) &gt; 0 or len(dirs) &gt; 0:
+            path_part = g.choose(level==0,theDir,g.os_path_basename(theDir))
+            import_root = createLastChildOf(root,'@path %s' % (path_part))
+        else:
+            import_root = root
+        
+        c.selectVnode(import_root)
+        
+        if len(files2) &gt; 0:
+            files2.sort()
+            for fn in files2:
+                p2 = createLastChildOf(import_root,'@auto %s' % (
+                    g.shortFileName(fn)))
+                
+        if len(dirs) &gt; 0:
+            dirs.sort()
+            for theDir in dirs:
+                importDir(theDir,types,recursive,import_root,level+1)
+    except:
+        g.es("exception in importFiles script")
+        g.es_exception()
+</t>
+<t tx="ekr.20111010154337.15598">def loadAtAutoFiles(root):
+    at = c.atFileCommands
+    p = root.copy()
+    while p:
+        if p.isAtAutoNode():
+            fn = p.atAutoNodeName()
+            at.readOneAtAutoNode(fn,p)
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
 </t>
 </tnodes>
 </leo_file>
