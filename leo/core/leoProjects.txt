@@ -1650,11 +1650,11 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
         c.expandAllAncestors(p) # 2009/11/07
         c.selectPosition(p)
         c.redraw()
-        c.frame.bringToFront()  # doesn't seem to work
+        c.frame.bringToFront()
 
     if depth == 0:
         nds = c.rootPosition().self_and_siblings()
-        unlList = [i for i in unlList if i.strip()]
+        unlList = [i.replace('--%3E', '-->') for i in unlList if i.strip()]
         # drop empty parts so "-->node name" works
     else:
         nds = p.children()
@@ -4740,8 +4740,7 @@ def selectHelper (self,p,scroll):
 
     # what UNL.py used to do
     c.frame.clearStatusLine()
-    c.frame.putStatusLine("-->".join(reversed(
-        [i.h for i in p.self_and_parents()])))
+    c.frame.putStatusLine(p.get_UNL())
 
     g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
     g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
@@ -6377,9 +6376,9 @@ matchers. In effect, these restarters are lambda bindings for the generic
 restarter methods.
 
 In actuality, very few restarters are needed. For example, for Python, we need
-restarters for that look for continued strings, and both flavors of continued
-triple-quoted strings. For python, these turn out to be three separate lambda
-bindings for restart_match_span.
+restarters for continued strings, and both flavors of continued triple-quoted
+strings. For python, these turn out to be three separate lambda bindings for
+restart_match_span.
 
 When a jEdit pattern matcher partially succeeds, it creates the lambda binding
 for its restarter and calls setRestart to set the ending state of the present
@@ -13932,6 +13931,7 @@ def createNodeFromExternalFile(self,fn):
     if w: w.setInsertPoint(0)
     c.redraw()
     c.recolor()
+#@+node:ekr.20111010154337.15586: *4* Improved create @auto nodes script
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
