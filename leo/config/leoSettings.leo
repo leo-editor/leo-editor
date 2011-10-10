@@ -7036,9 +7036,9 @@ change-then-find                    ! body = Alt-p    #Replace then search (use 
 
 #Mark and go to mark commands
 #----------------------------
-point-to-register    ! body = m
-jump-to-register     ! body = quoteright  # '
-jump-to-register     ! body = quoteleft   # `
+# point-to-register    ! body = m
+# jump-to-register     ! body = quoteright  # '
+# jump-to-register     ! body = quoteleft   # `
 
 #Window commands
 #--------------------------------

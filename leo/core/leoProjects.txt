@@ -9425,6 +9425,7 @@ def positionAfterDeletedTree (self):
     else:
         return p.nodeAfterTree()
 #@+node:ekr.20111005081134.15541: *4* Added delete-marked-nodes and move-marked-nodes commands
+# And rewrote clone-marked-nodes.
 #@+node:ekr.20111005152227.15556: *5* Undo stuff
 #@+node:ekr.20111005152227.15561: *6*  Reference
 #@+node:ekr.20050318085432.4: *7* afterX...
