@@ -2516,8 +2516,7 @@ class leoTree:
 
         # what UNL.py used to do
         c.frame.clearStatusLine()
-        c.frame.putStatusLine("-->".join(reversed(
-            [i.h for i in p.self_and_parents()])))
+        c.frame.putStatusLine(p.get_UNL())
 
         g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
