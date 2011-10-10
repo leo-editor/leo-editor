@@ -11059,9 +11059,9 @@ Leo sentinels will be opened as @file nodes.
 
 Create @file nodes (not @thin nodes) when opening an external file.
 
-Changed c.open; minor change to importDerivedFiles.
-
 Changed g.openWrapperLeoFile to create @file instead of @edit when possible.
+
+Changed c.open; minor changes to importDerivedFiles.
 #@+node:ekr.20031218072017.1810: *5* importDerivedFiles
 def importDerivedFiles (self,parent=None,paths=None,command='Import'):
     # Not a command.  It must *not* have an event arg.

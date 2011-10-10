@@ -1516,6 +1516,7 @@ u = property(
     __get_u, __set_u,
     doc = "vnode unknownAttribute property")
 .. @+node:ekr.20111010062725.15541: *4* Bugs
+.. @+node:ekr.20111010062725.15543: *5* ctrl-k twice (second time on blank line) doesn't work
 .. @+node:ekr.20111010062725.15537: *5* Finish cleaning @color settings
 .. @+node:ekr.20111008073427.15595: *5* Macro bug: really must have a shortcut for call-last-macro
 .. @+node:ekr.20110930213637.15473: *4* Next
