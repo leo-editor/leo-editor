@@ -1504,6 +1504,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20051007200824"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4926,7 +4927,7 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 800
 50
 50</t>
-<t tx="ekr.20080510072134.2">cycle-focus                         = Ctrl-tab
+<t tx="ekr.20080510072134.2">cycle-focus                         = None # Ctrl-tab: now tab-cycle-next
 cycle-all-focus                     = Ctrl-Shift-tab
 
 back-word                           = Ctrl-LtArrow
