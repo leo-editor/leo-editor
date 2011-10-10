@@ -2021,11 +2021,11 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
         c.expandAllAncestors(p) # 2009/11/07
         c.selectPosition(p)
         c.redraw()
-        c.frame.bringToFront()  # doesn't seem to work
+        c.frame.bringToFront()
 
     if depth == 0:
         nds = c.rootPosition().self_and_siblings()
-        unlList = [i for i in unlList if i.strip()]
+        unlList = [i.replace('--%3E', '-->') for i in unlList if i.strip()]
         # drop empty parts so "-->node name" works
     else:
         nds = p.children()
