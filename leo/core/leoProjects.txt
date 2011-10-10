@@ -6121,14 +6121,7 @@ def scanColorDirectives(self,p):
         return self.language
         
     #  Attempt to get the language from the nearest enclosing @<file> node.
-    for p in root.self_and_parents():
-        if p.isAnyAtFileNode():
-            name = p.anyAtFileNodeName()
-            junk,ext = g.os_path_splitext(name)
-            ext = ext[1:] # strip the leading .
-            self.language = g.app.extension_dict.get(ext)
-            if trace: g.trace('found extension',p.h,ext,self.language)
-            break
+    self.language = g.getLanguageFromAncestorAtFileNode(root)
 
     if not self.language:
         if trace: g.trace('using default',c.target_language)
@@ -8281,14 +8274,7 @@ def scanColorDirectives(self,p):
         return self.language
         
     #  Attempt to get the language from the nearest enclosing @<file> node.
-    for p in root.self_and_parents():
-        if p.isAnyAtFileNode():
-            name = p.anyAtFileNodeName()
-            junk,ext = g.os_path_splitext(name)
-            ext = ext[1:] # strip the leading .
-            self.language = g.app.extension_dict.get(ext)
-            if trace: g.trace('found extension',p.h,ext,self.language)
-            break
+    self.language = g.getLanguageFromAncestorAtFileNode(root)
 
     if not self.language:
         if trace: g.trace('using default',c.target_language)
@@ -8349,6 +8335,230 @@ def isValidLanguage (self,language):
     
     fn = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
     return g.os_path_exists(fn)
+#@+node:ekr.20111010082822.15544: *4* Made sure Leo's write code auto-detects file extension
+@nocolor-node
+
+- Added getLanguageFromAncestorAtFileNode.
+
+- Revised code in at.scanAllDirectives & leoQtColorizer.scanColorDirectives.
+#@+node:ekr.20110605121601.18556: *5* scanColorDirectives (leoQtColorizer) & helper
+def scanColorDirectives(self,p):
+    
+    '''Set self.language based on the directives in p's tree.'''
+
+    trace = False and not g.unitTesting
+    c = self.c
+    if c == None: return None # self.c may be None for testing.
+    
+    root = p.copy()
+    self.language = None
+    self.rootMode = None # None, "code" or "doc"
+
+    for p in root.self_and_parents():
+        theDict = g.get_directives_dict(p)
+        # if trace: g.trace(p.h,theDict)
+        << Test for @language >>
+        << Test for @root, @root-doc or @root-code >>
+        
+    # 2011/05/28: If no language, get the language from any @<file> node.
+    if self.language:
+        if trace: g.trace('found @language %s' % (self.language))
+        return self.language
+        
+    #  Attempt to get the language from the nearest enclosing @<file> node.
+    self.language = g.getLanguageFromAncestorAtFileNode(root)
+
+    if not self.language:
+        if trace: g.trace('using default',c.target_language)
+        self.language = c.target_language
+
+    return self.language # For use by external routines.
+#@+node:ekr.20110605121601.18557: *6* << Test for @language >>
+if 'language' in theDict:
+    s = theDict["language"]
+    i = g.skip_ws(s,0)
+    j = g.skip_c_id(s,i)
+    aList = self.findLanguageDirectives(p)
+    # In the root node, we use the first (valid) @language directive,
+    # no matter how many @language directives the root node contains.
+    # In ancestor nodes, only unambiguous @language directives
+    # set self.language.
+    if p == root or len(aList) == 1:
+        self.languageList = aList
+        self.language = aList and aList[0] or []
+        break
+#@+node:ekr.20110605121601.18558: *6* << Test for @root, @root-doc or @root-code >>
+if 'root' in theDict and not self.rootMode:
+
+    s = theDict["root"]
+    if g.match_word(s,0,"@root-code"):
+        self.rootMode = "code"
+    elif g.match_word(s,0,"@root-doc"):
+        self.rootMode = "doc"
+    else:
+        doc = c.config.at_root_bodies_start_in_doc_mode
+        self.rootMode = g.choose(doc,"doc","code")
+#@+node:ekr.20110605121601.18559: *6* findLanguageDirectives
+def findLanguageDirectives (self,p):
+
+    '''Scan p's body text for *valid* @language directives.
+
+    Return a list of languages.'''
+    
+    # Speed not very important: called only for nodes containing @language directives.
+    trace = False and not g.unitTesting
+    aList = []
+    for s in g.splitLines(p.b):
+        if g.match_word(s,0,'@language'):
+            i = len('@language')
+            i = g.skip_ws(s,i)
+            j = g.skip_id(s,i)
+            if j > i:
+                word = s[i:j]
+                if self.isValidLanguage(word):
+                    aList.append(word)
+                else:
+                    if trace:g.trace('invalid',word)
+
+    if trace: g.trace(aList)
+    return aList
+#@+node:ekr.20110605121601.18560: *6* isValidLanguage
+def isValidLanguage (self,language):
+    
+    fn = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
+    return g.os_path_exists(fn)
+#@+node:ekr.20080923070954.4: *5* at.scanAllDirectives
+def scanAllDirectives(self,p,
+    scripting=False,importing=False,
+    reading=False,forcePythonSentinels=False,
+    createPath=True,
+    issuePathWarning=False,
+):
+
+    '''Scan p and p's ancestors looking for directives,
+    setting corresponding atFile ivars.'''
+
+    trace = False and not g.unitTesting
+    at = self ; c = self.c ; p1 = p.copy()
+    g.app.atPathInBodyWarning = None
+    << set ivars >>
+    lang_dict = {'language':at.language,'delims':delims,}
+    table = (
+        ('encoding',    at.encoding,    g.scanAtEncodingDirectives),
+        # ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lang-dict',   None,           g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    if issuePathWarning and g.app.atPathInBodyWarning:
+        g.es('warning: ignoring @path directive in',
+            g.app.atPathInBodyWarning,color='red')
+
+    # Post process.
+    lineending  = d.get('lineending')
+    lang_dict = d.get('lang-dict')
+    if lang_dict:
+        delims      = lang_dict.get('delims')
+        at.language = lang_dict.get('language')
+    else:
+        # 2011/10/10:
+        # No language directive.  Look for @<file> nodes.
+        language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
+        delims   = g.set_delims_from_language(language)
+
+    at.encoding             = d.get('encoding')
+    at.explicitLineEnding   = bool(lineending)
+    at.output_newline       = lineending or g.getOutputNewline(c=c)
+    at.page_width           = d.get('pagewidth')
+    at.default_directory    = d.get('path')
+    at.tab_width            = d.get('tabwidth')
+
+    if not importing and not reading:
+        # Don't override comment delims when reading!
+        << set comment strings from delims >>
+
+    # For unit testing.
+    d = {
+        "all"       : all,
+        "encoding"  : at.encoding,
+        "language"  : at.language,
+        "lineending": at.output_newline,
+        "pagewidth" : at.page_width,
+        "path"      : at.default_directory,
+        "tabwidth"  : at.tab_width,
+    }
+    if trace: g.trace(d)
+    return d
+#@+node:ekr.20080923070954.14: *6* << Set ivars >>
+self.page_width = self.c.page_width
+self.tab_width  = self.c.tab_width
+
+self.default_directory = None # 8/2: will be set later.
+
+# g.trace(c.target_language)
+
+if c.target_language:
+    c.target_language = c.target_language.lower()
+
+delims = g.set_delims_from_language(c.target_language)
+at.language = c.target_language
+
+at.encoding = c.config.default_derived_file_encoding
+at.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
+#@+node:ekr.20080923070954.13: *6* << Set comment strings from delims >>
+if forcePythonSentinels:
+    # Force Python language.
+    delim1,delim2,delim3 = g.set_delims_from_language("python")
+    self.language = "python"
+else:
+    delim1,delim2,delim3 = delims
+
+# Use single-line comments if we have a choice.
+# delim1,delim2,delim3 now correspond to line,start,end
+if delim1:
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
+else: # Emergency!
+    # assert(0)
+    if not g.app.unitTesting:
+        g.es_print("unknown language: using Python comment delimiters")
+        g.es_print("c.target_language:",c.target_language)
+        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+    at.startSentinelComment = "#" # This should never happen!
+    at.endSentinelComment = ""
+
+# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
+#@+node:ekr.20111010082822.15545: *5* g.getLanguageFromAncestorAtFileNode (New)
+def getLanguageFromAncestorAtFileNode(p):
+    
+    '''Return the language in effect as determined
+    by the file extension of the nearest enclosing @<file> node.
+    '''
+    
+    for p in p.self_and_parents():
+        if p.isAnyAtFileNode():
+            name = p.anyAtFileNodeName()
+            junk,ext = g.os_path_splitext(name)
+            ext = ext[1:] # strip the leading .
+            language = g.app.extension_dict.get(ext)
+            
+            # g.trace('found extension',p.h,ext,language)
+            return language
+    
+    return None
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution

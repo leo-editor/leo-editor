@@ -5091,7 +5091,7 @@ class atFile:
         setting corresponding atFile ivars.'''
 
         trace = False and not g.unitTesting
-        at = self ; c = self.c
+        at = self ; c = self.c ; p1 = p.copy()
         g.app.atPathInBodyWarning = None
         #@+<< set ivars >>
         #@+node:ekr.20080923070954.14: *4* << Set ivars >>
@@ -5114,7 +5114,8 @@ class atFile:
         lang_dict = {'language':at.language,'delims':delims,}
         table = (
             ('encoding',    at.encoding,    g.scanAtEncodingDirectives),
-            ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+            # ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+            ('lang-dict',   None,           g.scanAtCommentAndAtLanguageDirectives),
             ('lineending',  None,           g.scanAtLineendingDirectives),
             ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
             ('path',        None,           c.scanAtPathDirectives),
@@ -5133,13 +5134,19 @@ class atFile:
                 g.app.atPathInBodyWarning,color='red')
 
         # Post process.
-        lang_dict   = d.get('lang-dict')
-        delims      = lang_dict.get('delims')
         lineending  = d.get('lineending')
+        lang_dict = d.get('lang-dict')
+        if lang_dict:
+            delims      = lang_dict.get('delims')
+            at.language = lang_dict.get('language')
+        else:
+            # 2011/10/10:
+            # No language directive.  Look for @<file> nodes.
+            language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
+            delims   = g.set_delims_from_language(language)
 
         at.encoding             = d.get('encoding')
         at.explicitLineEnding   = bool(lineending)
-        at.language             = lang_dict.get('language')
         at.output_newline       = lineending or g.getOutputNewline(c=c)
         at.page_width           = d.get('pagewidth')
         at.default_directory    = d.get('path')

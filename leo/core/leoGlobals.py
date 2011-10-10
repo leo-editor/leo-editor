@@ -520,6 +520,24 @@ def get_directives_dict_list(p):
         # g.trace('%4d %s' % (n,g.timeSince(time1)))
 
     return result
+#@+node:ekr.20111010082822.15545: *4* g.getLanguageFromAncestorAtFileNode (New)
+def getLanguageFromAncestorAtFileNode(p):
+    
+    '''Return the language in effect as determined
+    by the file extension of the nearest enclosing @<file> node.
+    '''
+    
+    for p in p.self_and_parents():
+        if p.isAnyAtFileNode():
+            name = p.anyAtFileNodeName()
+            junk,ext = g.os_path_splitext(name)
+            ext = ext[1:] # strip the leading .
+            language = g.app.extension_dict.get(ext)
+            
+            # g.trace('found extension',p.h,ext,language)
+            return language
+    
+    return None
 #@+node:ekr.20031218072017.1386: *4* g.getOutputNewline
 def getOutputNewline (c=None,name=None):
 
@@ -553,6 +571,7 @@ def scanAtCommentAndAtLanguageDirectives(aList):
 
     @comment should follow @language if both appear in the same node.'''
 
+    trace = False and not g.unitTesting
     lang = None
 
     for d in aList:
@@ -571,8 +590,11 @@ def scanAtCommentAndAtLanguageDirectives(aList):
 
         if comment or language:
             delims = delim1,delim2,delim3
-            return {'language':lang,'comment':comment,'delims':delims}
+            d = {'language':lang,'comment':comment,'delims':delims}
+            if trace: g.trace(d)
+            return d
 
+    if trace: g.trace(repr(None))
     return None
 #@+node:ekr.20080827175609.32: *4* g.scanAtEncodingDirectives
 def scanAtEncodingDirectives(aList):
