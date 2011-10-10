@@ -9114,15 +9114,18 @@ class leoQtColorizer:
         # 2011/05/28: If no language, get the language from any @<file> node.
         if self.language:
             if trace: g.trace('found @language %s' % (self.language))
-        else:
-            for p in root.self_and_parents():
-                if p.isAnyAtFileNode():
-                    name = p.anyAtFileNodeName()
-                    junk,ext = g.os_path_splitext(name)
-                    ext = ext[1:] # strip the leading .
-                    self.language = g.app.extension_dict.get(ext)
-                    if trace: g.trace('found extension',p.h,ext,self.language)
-                    break
+            return self.language
+            
+        #  Attempt to get the language from the nearest enclosing @<file> node.
+        for p in root.self_and_parents():
+            if p.isAnyAtFileNode():
+                name = p.anyAtFileNodeName()
+                junk,ext = g.os_path_splitext(name)
+                ext = ext[1:] # strip the leading .
+                self.language = g.app.extension_dict.get(ext)
+                if trace: g.trace('found extension',p.h,ext,self.language)
+                break
+
         if not self.language:
             if trace: g.trace('using default',c.target_language)
             self.language = c.target_language
