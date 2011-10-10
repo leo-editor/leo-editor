@@ -6,6 +6,65 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 I am willing to fix bugs, but I would like to declare a moratorium on feature additions until 2012.
 .. @+node:ekr.20110921132705.6960: *3* To do first
+.. @+node:ekr.20111010122531.15570: *4* Lighter Leo
+.. @+node:ekr.20111010122531.15568: *5* Lighter rendering
+@language rest
+
+The free_layout and viewrendered plugins are a huge step forward.  But
+the lighter/heavier distinction suggests a new way to use them.
+
+Suppose Leo supports @render-rest or @render-html.
+
+This means that all nodes in the tree will have the body pane become a
+rendering pane for rST or html.
+
+Imagine LeoDocs completely rendered at all times.
+
+Of course, for specific purposes, say in Leo's scripting chapter, we
+might want to override these rendering directives (which should be
+allowed in headlines too) with @no-render.
+
+The point is that having *both* the original text *and* the rendered
+text be visible is often too heavy: the user usually does not want to
+know about the sources: the rendering is good enough.
+
+I suppose for sophisticated users, something like show/hide-body pane
+would be good commands to have, but that doesn't matter: those
+commands to not increase the burden on the user while she is reading
+the (rendered) docs.
+.. @+node:ekr.20111010122531.15569: *5* Lighter commands
+@language rest
+
+A reminder, the opposite of "light" is "heavy", not "dark" :-)
+
+Leo's print-settings, print-commands and print-bindings commands
+create too much text.
+
+Suppose they created outline nodes instead, replacing existing nodes
+if they exist.  Something like this:
+
+- Reference (Anywhere you like)
+ - @print-settings
+    etc.
+ - @print-bindings
+   etc
+ - @print commands
+   etc
+
+Doh!  This uses Leo's power.  The subnodes can be as voluminous as
+desired, and there can be organizer nodes in each case.  The actual
+tree could be specified as in @menus.
+
+Etc., etc.  This could moot the need for separate apropos commands.
+Conversely, apropos commands could create their own trees, or
+subtrees.
+
+This could be the tip of an iceberg.
+
+The more I think about the light/heavy distinction, the more I think
+it is getting close to what makes Leo special.  For example, clones
+(and nodes, for that matter) drastically lighten the apparent
+complexity of programs or data.
 .. @+node:ekr.20111009230326.7036: *4* Important
 .. @+node:ekr.20110930174206.15470: *5* * Bring screen shots up to date
 > While doing so I noted that on the sourceforge project
@@ -1515,6 +1574,20 @@ def __set_u(self,val):
 u = property(
     __get_u, __set_u,
     doc = "vnode unknownAttribute property")
+.. @+node:ekr.20111010093113.15548: *5* Lighten Leo's code base
+@nocolor-node
+
+
+Almost from day one, Leo has defined gui base classes in the core, and
+subclasses in gui plugins.
+
+I plan to continue that organization, but I would like to remove some of the
+wrapping layers if possible. The present scheme has one or two too many
+redirection layers, and they are more of a nuisance than a help.
+
+One idea would be to define **interface classes** that define the desired api's.
+Unit tests could test that subclass implements the interface class, without
+having to resort to quite as much error-prone machinery as at present.
 .. @+node:ekr.20111010062725.15541: *4* Bugs
 .. @+node:ekr.20111010062725.15543: *5* ctrl-k twice (second time on blank line) doesn't work
 .. @+node:ekr.20111010062725.15537: *5* Finish cleaning @color settings
