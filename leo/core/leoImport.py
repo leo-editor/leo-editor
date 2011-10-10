@@ -952,13 +952,14 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20031218072017.1810: *4* importDerivedFiles
     def importDerivedFiles (self,parent=None,paths=None,command='Import'):
         # Not a command.  It must *not* have an event arg.
-
-        c = self.c ; u = c.undoer
-        at = c.atFileCommands ; current = c.p
+        # command is None when this is called to import a file from the command lline.
+        c = self.c ; u = c.undoer ; at = c.atFileCommands
+        current = c.p or c.rootPosition()
         self.tab_width = self.getTabWidth()
         if not paths:
-            return False
-        u.beforeChangeGroup(current,command)
+            return None
+        # Initial open from command line is not undoable.
+        if command: u.beforeChangeGroup(current,command)
         for fileName in paths:
             fileName = fileName.replace('\\','/') # 2011/10/09.
             g.setGlobalOpenDir(fileName)
@@ -975,7 +976,7 @@ class leoImportCommands (scanUtility):
             except IOError:
                 isThin = False
             #@-<< set isThin if fileName is a thin derived file >>
-            undoData = u.beforeInsertNode(parent)
+            if command: undoData = u.beforeInsertNode(parent)
             p = parent.insertAfter()
             if isThin:
                 # 2010/10/09: create @file node, not a deprecated @thin node.
@@ -986,12 +987,12 @@ class leoImportCommands (scanUtility):
                 at.read(p,importFileName=fileName)
             p.contract()
             p.setDirty() # 2011/10/09: tell why the file is dirty!
-            u.afterInsertNode(p,command,undoData)
+            if command: u.afterInsertNode(p,command,undoData)
         current.expand()
         c.setChanged(True)
-        u.afterChangeGroup(p,command)
+        if command: u.afterChangeGroup(p,command)
         c.redraw(current)
-        return True
+        return p
     #@+node:ekr.20031218072017.3212: *4* importFilesCommand
     def importFilesCommand (self,files=None,treeType=None):
         # Not a command.  It must *not* have an event arg.

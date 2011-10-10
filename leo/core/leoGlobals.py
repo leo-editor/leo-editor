@@ -2346,6 +2346,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
 
     c,frame = g.app.newLeoCommanderAndFrame(
         fileName=None,relativeFileName=None,gui=gui)
+    assert c.rootPosition()
 
     # Needed for plugins.
     if 0: # This causes duplicate common buttons.
@@ -2357,8 +2358,14 @@ def openWrapperLeoFile (old_c,fileName,gui):
     frame.lift()
     frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
 
-    if True: # Just read the file into the node.
-        fileName = g.os_path_finalize(fileName)
+    fileName = g.os_path_finalize(fileName)
+    if c.looksLikeDerivedFile(fileName):
+        # 2011/10/10: Create an @file node.
+        p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
+            paths=[fileName],command=None) # Not undoable.
+        if not p: return None
+    else:
+        # Create an @edit node.
         s,e = g.readFileIntoString(fileName)
         if s is None: return None
         p = c.rootPosition()
@@ -2366,24 +2373,15 @@ def openWrapperLeoFile (old_c,fileName,gui):
             p.setHeadString('@edit %s' % fileName)
             p.setBodyString(s)
             c.selectPosition(p)
-    else:  # Import the file into the new outline.
-        junk,ext = g.os_path_splitext(fileName)
-        p = c.p
-        p = c.importCommands.createOutline(fileName,parent=p,atAuto=False,ext=ext)
-        c.setCurrentPosition(p)
-        c.moveOutlineLeft()
-        p = c.p
-        c.setCurrentPosition(p.back())
-        c.deleteOutline(op_name=None)
-        p = c.p
-        p.expand()
 
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
     if c.config.getBool('use_chapters') and c.chapterController:
         c.chapterController.finishCreate()
 
-    frame.c.setChanged(True) # Mark the outline dirty.
+    frame.c.setChanged(False)
+        # Mark the outline clean.
+        # This makes it easy to open non-Leo files for quick study.
     return c
 #@+node:ekr.20100125073206.8710: *3* g.readFileIntoString (Leo 4.7)
 def readFileIntoString (fn,

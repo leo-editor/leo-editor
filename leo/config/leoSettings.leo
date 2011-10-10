@@ -1504,7 +1504,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051007200824"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.

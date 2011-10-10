@@ -121,7 +121,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     if ok: g.app.gui.runMainLoop()
         # For scripts, the gui is a nullGui.
         # and the gui.setScript has already been called.
-#@+node:ekr.20090519143741.5915: *3* doPrePluginsInit & helpers
+#@+node:ekr.20090519143741.5915: *3* doPrePluginsInit & helpers (runLeo.py)
 def doPrePluginsInit(fileName,pymacs):
 
     ''' Scan options, set directories and read settings.'''
