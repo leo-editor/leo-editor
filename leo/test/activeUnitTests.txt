@@ -5166,9 +5166,12 @@ exec(g.findTestScript(c,'@common x-marked-nodes test code'))
 def test(p):
     setup_test(p)
     c.cloneMarked()
-    assert c.p.h == 'Clones of marked nodes',c.p.h
-    # test_undo()
-
+    h = 'Clones of marked nodes'
+    assert c.p.h == h,c.p.h
+    c.undoer.undo()
+    assert not g.findNodeAnywhere(c,h)
+    c.undoer.redo()
+    assert c.p.h == h,c.p.h
 try:
     test(p)
 finally:
@@ -5242,8 +5245,14 @@ exec(g.findTestScript(c,'@common x-marked-nodes test code'))
 def test(p):
     setup_test(p)
     c.deleteMarked()
-    # test_undo()
-
+    n = p.numberOfChildren()
+    assert n == 2 ,'delete: children: %s' % (n)
+    c.undoer.undo()
+    n = p.numberOfChildren()
+    assert n == 4,'undo: children: %s' % (n)
+    c.undoer.redo()
+    n = p.numberOfChildren()
+    assert n == 2 ,'delete: children: %s' % (n)
 try:
     test(p)
 finally:
@@ -6704,7 +6713,14 @@ def test(p):
     c.moveMarked()
     root = c.rootPosition()
     assert root.h == 'Moved marked nodes',root.h
-    # test_undo()
+    n = p.numberOfChildren()
+    assert n == 2 ,'delete: children: %s' % (n)
+    c.undoer.undo()
+    n = p.numberOfChildren()
+    assert n == 4,'undo: children: %s' % (n)
+    c.undoer.redo()
+    n = p.numberOfChildren()
+    assert n == 2 ,'delete: children: %s' % (n)
 
 try:
     test(p)
@@ -8703,6 +8719,90 @@ def runEditCommandTest (c,p,inHeadline=False):
         # Make sure to restore the headline so it can be used for future tests
         if inHeadline:
             c.setHeadString(work,'work')
+#@+node:ekr.20111006072734.3640: *4* @common x-marked-nodes test code
+@others
+#@+node:ekr.20111006072734.3641: *5* setup_test
+def setup_test(target):
+    
+    c.unmarkAll() # Make sure we move only the test nodes!
+    
+    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
+    assert common,'no common'
+    data = g.findNodeInTree(c,common,'data')
+    assert data,'no data'
+    
+    delete_children(target)
+
+    # Copy the nodes.
+    c.selectPosition(data)
+    c.copyOutline()
+    c.selectPosition(target)
+    c.pasteOutline()
+    c.moveOutlineRight()
+    c.promote()
+    c.deleteOutline()
+    c.redraw()
+        
+    for h in ('a','b','c'):
+        p2 = g.findNodeInTree(c,target,h)
+        assert p2,'not found: %s' % (h)
+        p2.setMarked()
+        
+    for child in target.children():
+        if child.h == 'a':
+            assert child.isCloned(),'not cloned!: %s' % (child)
+        else:
+            assert not child.isCloned(),'cloned!: %s' % (child)
+        
+    # g.trace('setup complete')
+    
+#@+node:ekr.20111006115024.3613: *5* tear_down
+def tear_down(p,h=None):
+    
+    delete_children(p)
+    
+    if h:
+        node = g.findNodeAnywhere(c,h)
+        if node:
+            node.doDelete()
+            # g.trace('deleted',node.h)
+
+    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
+    common.contract()
+
+    c.redraw()
+#@+node:ekr.20111006105711.3734: *5* delete_children
+def delete_children(p):
+
+    while p.hasChildren():
+        p.firstChild().doDelete()
+#@+node:ekr.20111006072734.3642: *5* test_children
+def test_children(p):
+    
+    n = p.numberOfChildren()
+    assert n == 3 ,'children: %s' % (n)
+    
+    child = p.firstChild()
+    assert child.h == 'a','child1: %s' % (child)
+    
+    child = child.next()
+    assert child.h == 'c','child2: %s' % (child)
+    
+    child = child.next()
+    assert child.h == 'a','child3: %s' % (child)
+#@+node:ekr.20111006072734.3643: *5* test_undo (not used)
+# def test_undo(p):
+    
+    # n = p.numberOfChildren()
+    # assert n == 4 ,'undo children: %s' % (n)
+#@+node:ekr.20111006072734.3592: *5* data
+#@+node:ekr.20111006072734.3600: *6* a
+#@+node:ekr.20111006072734.3601: *7* b
+#@+node:ekr.20111006072734.3597: *6* c
+#@+node:ekr.20111006072734.3598: *6* d
+#@+node:ekr.20111006072734.3599: *6* e
+#@+node:ekr.20111006072734.3600: *7* a
+#@+node:ekr.20111006072734.3601: *8* b
 #@+node:ekr.20100131180007.5453: *4* @test dynamicExpandHelper
 # A totally wimpy test.
 c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',rlist=None,w=None)

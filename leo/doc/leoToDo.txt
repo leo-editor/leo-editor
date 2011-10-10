@@ -6,7 +6,6 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 I am willing to fix bugs, but I would like to declare a moratorium on feature additions until 2012.
 .. @+node:ekr.20110921132705.6960: *3* To do first
-.. @+node:ekr.20111006060936.15638: *4* Finish unit tests for x-marked-nodes commands
 .. @+node:ekr.20111004090723.15494: *4* * Test Leo bookmark script on Linux
 .. @+node:ekr.20110930174206.15470: *4* * Bring screen shots up to date
 > While doing so I noted that on the sourceforge project
@@ -860,103 +859,240 @@ For example, to print a list of all commands type Alt-X print-commands <Return>.
 
 The following sections list the various commands that you can invoke from the minibuffer. Important: you may bind keystrokes to any of these commands. See Customizing Leo for full details.
 .. @+node:ekr.20111008073427.15595: *4* Macro bug: really must have a shortcut for call-last-macro
-.. @+node:ekr.20111006183053.7091: *4* Why doesn't embedded Leo draw icons?
-.. @+node:ekr.20110605121601.18412: *5* getCompositeIconImage
-def getCompositeIconImage(self,p,val):
+.. @+node:ekr.20111009162434.7203: *4* Investigate pygments
+.. @+node:ekr.20111009080647.15614: *5* pygments test
+from pygments import highlight
+from pygments.lexers import PythonLexer
+from pygments.formatters import HtmlFormatter
+import time
 
-    trace = False and not g.unitTesting
-    userIcons = self.c.editCommands.getIconList(p)
-    if not userIcons:
-        # if trace: g.trace('no userIcons')
-        return self.getStatusIconImage(p)
+fn = g.os_path_finalize_join(g.app.loadDir,'leoCommands.py')
+s = open(fn).read()
 
-    hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
-    hash.append(str(val))
-    hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
-    hash = ':'.join(hash)
+# s = 'print "Hello World"'
 
-    if hash in g.app.gui.iconimages:
-        icon = g.app.gui.iconimages[hash]
-        if trace: g.trace('cached %s' % (icon))
-        return icon
+t1 = time.time()
 
-    images = [g.app.gui.getImageImage(i['file']) for i in userIcons
-             if i['where'] == 'beforeIcon']
-    images.append(g.app.gui.getImageImage("box%02d.GIF" % val))
-    images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
-                  if i['where'] == 'beforeHeadline'])
-    width = sum([i.width() for i in images])
-    height = max([i.height() for i in images])
+s2 = highlight(s,PythonLexer(),HtmlFormatter())
 
-    pix = QtGui.QPixmap(width,height)
-    pix.fill()
-    pix.setAlphaChannel(pix)
-    painter = QtGui.QPainter(pix)
-    x = 0
-    for i in images:
-        painter.drawPixmap(x,(height-i.height())//2,i)
-        x += i.width()
-    painter.end()
+t2 = time.time()
 
-    icon = QtGui.QIcon(pix)
-    g.app.gui.iconimages[hash] = icon
-    if trace: g.trace('new %s' % (icon))
-    return icon
-.. @+node:ekr.20110605121601.18516: *5* getIconImage (qtGui)
-def getIconImage (self,name):
-
-    '''Load the icon and return it.'''
-
-    trace = False and not g.unitTesting
-
-    # Return the image from the cache if possible.
-    if name in self.iconimages:
-        image = self.iconimages.get(name)
-        if trace: ### and not name.startswith('box'):
-            g.trace('cached',id(image),name,image)
-        return image
-    try:
-        iconsDir = g.os_path_join(g.app.loadDir,"..","Icons")
-        homeIconsDir = g.os_path_join(g.app.homeLeoDir,"Icons")
-        for theDir in (homeIconsDir,iconsDir):
-            fullname = g.os_path_finalize_join(theDir,name)
-            if g.os_path_exists(fullname):
-                if 0: # Not needed: use QTreeWidget.setIconsize.
-                    pixmap = QtGui.QPixmap()
-                    pixmap.load(fullname)
-                    image = QtGui.QIcon(pixmap)
-                else:
-                    image = QtGui.QIcon(fullname)
-                    if trace: g.trace('name',fullname,'image',image)
-        
-                self.iconimages[name] = image
-                if trace: g.trace('new',id(image),theDir,name)
-                return image
-            elif trace: g.trace('Directory not found',theDir)
-        else:
-            if trace: g.trace('Not found',name)
-            return None
-
-    except Exception:
-        g.es_print("exception loading:",fullname)
-        g.es_exception()
-        return None
-.. @+node:ekr.20110605121601.17948: *5* getStatusIconImage
-def getStatusIconImage (self,p):
-
-    val = p.v.computeIcon()
-
-    r = g.app.gui.getIconImage(
-        "box%02d.GIF" % val)
-        
-    # g.trace(r)
-    
-    return r
-.. @+node:ekr.20110929165422.15431: *4* Fun scripts
-.. @+node:ekr.20111003161039.17378: *5* verify setting
+print(len(s),len(s2),'%2.2f sec' % (t2-t1))
+.. @+node:ekr.20111009080647.15615: *5* pygments install error on pthon26 (python3.2 no problem)
 @nocolor-node
 
-Ensure that all settings in leoSettings.leo appear in the core, and vice versa.
+c:\apps\pygments>python26 setup.py install
+
+c:\apps\pygments>c:\python26\python.exe setup.py install
+running install
+running bdist_egg
+running egg_info
+creating Pygments.egg-info
+writing Pygments.egg-info\PKG-INFO
+writing top-level names to Pygments.egg-info\top_level.txt
+writing dependency_links to Pygments.egg-info\dependency_links.txt
+writing entry points to Pygments.egg-info\entry_points.txt
+writing manifest file 'Pygments.egg-info\SOURCES.txt'
+reading manifest file 'Pygments.egg-info\SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+writing manifest file 'Pygments.egg-info\SOURCES.txt'
+installing library code to build\bdist.win32\egg
+running install_lib
+running build_py
+creating build\bdist.win32
+creating build\bdist.win32\egg
+creating build\bdist.win32\egg\pygments
+copying build\lib\pygments\cmdline.py -> build\bdist.win32\egg\pygments
+copying build\lib\pygments\console.py -> build\bdist.win32\egg\pygments
+copying build\lib\pygments\filter.py -> build\bdist.win32\egg\pygments
+creating build\bdist.win32\egg\pygments\filters
+copying build\lib\pygments\filters\__init__.py -> build\bdist.win32\egg\pygments\filters
+copying build\lib\pygments\formatter.py -> build\bdist.win32\egg\pygments
+creating build\bdist.win32\egg\pygments\formatters
+copying build\lib\pygments\formatters\bbcode.py -> build\bdist.win32\egg\pygments\formatters
+copying build\lib\pygments\formatters\html.py -> build\bdist.win32\egg\pygments\formatters
+copying build\lib\pygments\formatters\img.py -> build\bdist.win32\egg\pygments\formatters
+copying build\lib\pygments\formatters\latex.py -> build\bdist.win32\egg\pygments\formatters
+copying build\lib\pygments\formatters\other.py -> build\bdist.win32\egg\pygments\formatters
+copying build\lib\pygments\formatters\rtf.py -> build\bdist.win32\egg\pygments\formatters
+copying build\lib\pygments\formatters\svg.py -> build\bdist.win32\egg\pygments\formatters
+copying build\lib\pygments\formatters\terminal.py -> build\bdist.win32\egg\pygments\formatters
+copying build\lib\pygments\formatters\terminal256.py -> build\bdist.win32\egg\pygments\formatters
+copying build\lib\pygments\formatters\_mapping.py -> build\bdist.win32\egg\pygments\formatters
+copying build\lib\pygments\formatters\__init__.py -> build\bdist.win32\egg\pygments\formatters
+copying build\lib\pygments\lexer.py -> build\bdist.win32\egg\pygments
+creating build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\agile.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\asm.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\compiled.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\dotnet.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\functional.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\hdl.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\math.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\other.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\parsers.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\postgres.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\pypylog.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\special.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\templates.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\text.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\web.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\_asybuiltins.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\_clbuiltins.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\_luabuiltins.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\_mapping.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\_phpbuiltins.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\_postgres_builtins.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\_vimbuiltins.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\lexers\__init__.py -> build\bdist.win32\egg\pygments\lexers
+copying build\lib\pygments\plugin.py -> build\bdist.win32\egg\pygments
+copying build\lib\pygments\scanner.py -> build\bdist.win32\egg\pygments
+copying build\lib\pygments\style.py -> build\bdist.win32\egg\pygments
+creating build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\autumn.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\borland.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\bw.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\colorful.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\default.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\emacs.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\friendly.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\fruity.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\manni.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\monokai.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\murphy.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\native.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\pastie.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\perldoc.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\tango.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\trac.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\vim.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\vs.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\styles\__init__.py -> build\bdist.win32\egg\pygments\styles
+copying build\lib\pygments\token.py -> build\bdist.win32\egg\pygments
+copying build\lib\pygments\unistring.py -> build\bdist.win32\egg\pygments
+copying build\lib\pygments\util.py -> build\bdist.win32\egg\pygments
+copying build\lib\pygments\__init__.py -> build\bdist.win32\egg\pygments
+byte-compiling build\bdist.win32\egg\pygments\cmdline.py to cmdline.pyc
+
+SyntaxError: ('invalid syntax', ('build\\bdist.win32\\egg\\pygments\\cmdline.py', 133, 43,
+'print("%s not found!" % what, file=sys.stderr)\n'))
+
+byte-compiling build\bdist.win32\egg\pygments\console.py to console.pyc
+byte-compiling build\bdist.win32\egg\pygments\filter.py to filter.pyc
+byte-compiling build\bdist.win32\egg\pygments\filters\__init__.py to __init__.pyc
+byte-compiling build\bdist.win32\egg\pygments\formatter.py to formatter.pyc
+byte-compiling build\bdist.win32\egg\pygments\formatters\bbcode.py to bbcode.pyc
+byte-compiling build\bdist.win32\egg\pygments\formatters\html.py to html.pyc
+
+SyntaxError: ('invalid syntax', ('build\\bdist.win32\\egg\\pygments\\formatters\\html.py', 472, 88, "
+       'using current directory as base for the CSS file name', file=sys.stderr)\n"))
+
+byte-compiling build\bdist.win32\egg\pygments\formatters\img.py to img.pyc
+byte-compiling build\bdist.win32\egg\pygments\formatters\latex.py to latex.pyc
+byte-compiling build\bdist.win32\egg\pygments\formatters\other.py to other.pyc
+byte-compiling build\bdist.win32\egg\pygments\formatters\rtf.py to rtf.pyc
+byte-compiling build\bdist.win32\egg\pygments\formatters\svg.py to svg.pyc
+byte-compiling build\bdist.win32\egg\pygments\formatters\terminal.py to terminal.pyc
+byte-compiling build\bdist.win32\egg\pygments\formatters\terminal256.py to terminal256.pyc
+byte-compiling build\bdist.win32\egg\pygments\formatters\_mapping.py to _mapping.pyc
+byte-compiling build\bdist.win32\egg\pygments\formatters\__init__.py to __init__.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexer.py to lexer.pyc
+SyntaxError: ('invalid syntax', ('build\\bdist.win32\\egg\\pygments\\lexer.py', 40, 30, 'class Lexer(object, metaclass=L
+exerMeta):\n'))
+
+byte-compiling build\bdist.win32\egg\pygments\lexers\agile.py to agile.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\asm.py to asm.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\compiled.py to compiled.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\dotnet.py to dotnet.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\functional.py to functional.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\hdl.py to hdl.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\math.py to math.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\other.py to other.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\parsers.py to parsers.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\postgres.py to postgres.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\pypylog.py to pypylog.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\special.py to special.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\templates.py to templates.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\text.py to text.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\web.py to web.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\_asybuiltins.py to _asybuiltins.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\_clbuiltins.py to _clbuiltins.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\_luabuiltins.py to _luabuiltins.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\_mapping.py to _mapping.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\_phpbuiltins.py to _phpbuiltins.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\_postgres_builtins.py to _postgres_builtins.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\_vimbuiltins.py to _vimbuiltins.pyc
+byte-compiling build\bdist.win32\egg\pygments\lexers\__init__.py to __init__.pyc
+byte-compiling build\bdist.win32\egg\pygments\plugin.py to plugin.pyc
+byte-compiling build\bdist.win32\egg\pygments\scanner.py to scanner.pyc
+byte-compiling build\bdist.win32\egg\pygments\style.py to style.pyc
+
+SyntaxError: ('invalid syntax', ('build\\bdist.win32\\egg\\pygments\\style.py', 107, 30,
+
+'class Style(object, metaclass=StyleMeta):\n'))
+
+byte-compiling build\bdist.win32\egg\pygments\styles\autumn.py to autumn.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\borland.py to borland.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\bw.py to bw.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\colorful.py to colorful.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\default.py to default.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\emacs.py to emacs.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\friendly.py to friendly.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\fruity.py to fruity.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\manni.py to manni.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\monokai.py to monokai.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\murphy.py to murphy.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\native.py to native.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\pastie.py to pastie.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\perldoc.py to perldoc.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\tango.py to tango.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\trac.py to trac.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\vim.py to vim.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\vs.py to vs.pyc
+byte-compiling build\bdist.win32\egg\pygments\styles\__init__.py to __init__.pyc
+byte-compiling build\bdist.win32\egg\pygments\token.py to token.pyc
+byte-compiling build\bdist.win32\egg\pygments\unistring.py to unistring.pyc
+byte-compiling build\bdist.win32\egg\pygments\util.py to util.pyc
+byte-compiling build\bdist.win32\egg\pygments\__init__.py to __init__.pyc
+creating build\bdist.win32\egg\EGG-INFO
+copying Pygments.egg-info\PKG-INFO -> build\bdist.win32\egg\EGG-INFO
+copying Pygments.egg-info\SOURCES.txt -> build\bdist.win32\egg\EGG-INFO
+copying Pygments.egg-info\dependency_links.txt -> build\bdist.win32\egg\EGG-INFO
+copying Pygments.egg-info\entry_points.txt -> build\bdist.win32\egg\EGG-INFO
+copying Pygments.egg-info\not-zip-safe -> build\bdist.win32\egg\EGG-INFO
+copying Pygments.egg-info\top_level.txt -> build\bdist.win32\egg\EGG-INFO
+creating dist
+creating 'dist\Pygments-1.4dev_20111009-py2.6.egg' and adding 'build\bdist.win32\egg' to it
+removing 'build\bdist.win32\egg' (and everything under it)
+Processing Pygments-1.4dev_20111009-py2.6.egg
+creating c:\python26\lib\site-packages\Pygments-1.4dev_20111009-py2.6.egg
+Extracting Pygments-1.4dev_20111009-py2.6.egg to c:\python26\lib\site-packages
+
+SyntaxError: ('invalid syntax', ('c:\\python26\\lib\\site-packages\\Pygments-1.4dev_20111009-py2.6.egg\\pygments\\cmdlin
+e.py', 133, 43, '        print("%s not found!" % what, file=sys.stderr)\n'))
+
+SyntaxError: ('invalid syntax', ('c:\\python26\\lib\\site-packages\\Pygments-1.4dev_20111009-py2.6.egg\\pygments\\lexer.
+py', 40, 30, 'class Lexer(object, metaclass=LexerMeta):\n'))
+
+SyntaxError: ('invalid syntax', ('c:\\python26\\lib\\site-packages\\Pygments-1.4dev_20111009-py2.6.egg\\pygments\\style.
+py', 107, 30, 'class Style(object, metaclass=StyleMeta):\n'))
+
+SyntaxError: ('invalid syntax', ('c:\\python26\\lib\\site-packages\\Pygments-1.4dev_20111009-py2.6.egg\\pygments\\format
+ters\\html.py', 472, 88, "                          'using current directory as base for the CSS file name', file=sys.st
+derr)\n"))
+
+Removing pygments 1.1.1 from easy-install.pth file
+Adding Pygments 1.4dev-20111009 to easy-install.pth file
+Installing pygmentize-script.py script to c:\python26\Scripts
+Installing pygmentize.exe script to c:\python26\Scripts
+Installing pygmentize.exe.manifest script to c:\python26\Scripts
+
+Installed c:\python26\lib\site-packages\pygments-1.4dev_20111009-py2.6.egg
+Processing dependencies for Pygments==1.4dev-20111009
+Finished processing dependencies for Pygments==1.4dev-20111009
+
+c:\apps\pygments>
+.. @+node:ekr.20110929165422.15431: *4* Fun scripts
 .. @+node:ekr.20110919113533.6818: *5* split-defs-into-node
 .. @+node:ekr.20110919113533.6820: *6* methods
 # Normalize a type. Replaces type with fully qualified version
@@ -2256,6 +2392,98 @@ This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
 > It introduce a link of sourceforge forum, but the page seems not exist or
 > disabled.
 > http://sourceforge.net/forum/forum.php?thread_id=1201579&forum_id=10226
+.. @+node:ekr.20111006183053.7091: *5* Why doesn't embedded Leo draw icons?
+.. @+node:ekr.20110605121601.18412: *6* getCompositeIconImage
+def getCompositeIconImage(self,p,val):
+
+    trace = False and not g.unitTesting
+    userIcons = self.c.editCommands.getIconList(p)
+    if not userIcons:
+        # if trace: g.trace('no userIcons')
+        return self.getStatusIconImage(p)
+
+    hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
+    hash.append(str(val))
+    hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
+    hash = ':'.join(hash)
+
+    if hash in g.app.gui.iconimages:
+        icon = g.app.gui.iconimages[hash]
+        if trace: g.trace('cached %s' % (icon))
+        return icon
+
+    images = [g.app.gui.getImageImage(i['file']) for i in userIcons
+             if i['where'] == 'beforeIcon']
+    images.append(g.app.gui.getImageImage("box%02d.GIF" % val))
+    images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
+                  if i['where'] == 'beforeHeadline'])
+    width = sum([i.width() for i in images])
+    height = max([i.height() for i in images])
+
+    pix = QtGui.QPixmap(width,height)
+    pix.fill()
+    pix.setAlphaChannel(pix)
+    painter = QtGui.QPainter(pix)
+    x = 0
+    for i in images:
+        painter.drawPixmap(x,(height-i.height())//2,i)
+        x += i.width()
+    painter.end()
+
+    icon = QtGui.QIcon(pix)
+    g.app.gui.iconimages[hash] = icon
+    if trace: g.trace('new %s' % (icon))
+    return icon
+.. @+node:ekr.20110605121601.18516: *6* getIconImage (qtGui)
+def getIconImage (self,name):
+
+    '''Load the icon and return it.'''
+
+    trace = False and not g.unitTesting
+
+    # Return the image from the cache if possible.
+    if name in self.iconimages:
+        image = self.iconimages.get(name)
+        if trace: ### and not name.startswith('box'):
+            g.trace('cached',id(image),name,image)
+        return image
+    try:
+        iconsDir = g.os_path_join(g.app.loadDir,"..","Icons")
+        homeIconsDir = g.os_path_join(g.app.homeLeoDir,"Icons")
+        for theDir in (homeIconsDir,iconsDir):
+            fullname = g.os_path_finalize_join(theDir,name)
+            if g.os_path_exists(fullname):
+                if 0: # Not needed: use QTreeWidget.setIconsize.
+                    pixmap = QtGui.QPixmap()
+                    pixmap.load(fullname)
+                    image = QtGui.QIcon(pixmap)
+                else:
+                    image = QtGui.QIcon(fullname)
+                    if trace: g.trace('name',fullname,'image',image)
+        
+                self.iconimages[name] = image
+                if trace: g.trace('new',id(image),theDir,name)
+                return image
+            elif trace: g.trace('Directory not found',theDir)
+        else:
+            if trace: g.trace('Not found',name)
+            return None
+
+    except Exception:
+        g.es_print("exception loading:",fullname)
+        g.es_exception()
+        return None
+.. @+node:ekr.20110605121601.17948: *6* getStatusIconImage
+def getStatusIconImage (self,p):
+
+    val = p.v.computeIcon()
+
+    r = g.app.gui.getIconImage(
+        "box%02d.GIF" % val)
+        
+    # g.trace(r)
+    
+    return r
 .. @+node:ekr.20111004182631.15509: *4* Later
 .. @+node:ekr.20111004090723.15495: *5* Finish leoOPML plugin
 .. @+node:ekr.20110929074744.15499: *5* Allow more panes to be part of the free_layout "action" buttons
