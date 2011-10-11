@@ -22,6 +22,7 @@ except ImportError:
 import difflib
 import os
 import re
+import shlex
 import string
 import subprocess # Always exists in Python 2.6 and above.
 import sys
@@ -1020,39 +1021,19 @@ class controlCommandsClass (baseEditCommandsClass):
 
         self.c.undoer.undo()
     #@+node:ekr.20050920084036.160: *3* executeSubprocess
-    def executeSubprocess (self,event,command,theInput=None):
+    def executeSubprocess (self,event,command):
 
         '''Execute a command in a separate process.'''
 
         k = self.k
-        w = self.editWidget(event)
-        if not w: return
 
-        k.setLabelBlue('started  shell-command: %s' % command)
         try:
-            ofile = os.tmpfile()
-            efile = os.tmpfile()
-            process = subprocess.Popen(command,bufsize=-1,
-                stdout = ofile.fileno(), stderr = ofile.fileno(),
-                stdin = subprocess.PIPE, shell = True)
-            if theInput: process.communicate(theInput)
-            process.wait()
-            efile.seek(0)
-            errinfo = efile.read()
-            if errinfo:
-                i = w.getInsertPoint()
-                w.insert(i,errinfo)
-            ofile.seek(0)
-            okout = ofile.read()
-            if okout:
-                i = w.getInsertPoint()
-                w.insert(i,okout)
+            args = shlex.split(command)
+            subprocess.Popen(args).wait()
+            k.setLabelGrey('Done: %s' % command)
         except Exception:
             junk, x, junk = sys.exc_info()
-            i = w.getInsertPoint()
-            w.insert(i,x)
-
-        k.setLabelGrey('finished shell-command: %s' % command)
+            k.setLabelRed('Exception: %s' % repr(x))
     #@+node:ekr.20070429090859: *3* print plugins info...
     def printPluginHandlers (self,event=None):
         
@@ -1091,19 +1072,17 @@ class controlCommandsClass (baseEditCommandsClass):
 
         '''Execute a shell command.'''
 
-        if subprocess:
-            k = self.k ; state = k.getState('shell-command')
+        k = self.k ; state = k.getState('shell-command')
 
-            if state == 0:
-                k.setLabelBlue('shell-command: ',protect=True)
-                k.getArg(event,'shell-command',1,self.shellCommand)
-            else:
-                command = k.arg
-                k.commandName = 'shell-command: %s' % command
-                k.clearState()
-                self.executeSubprocess(event,command)
+        if state == 0:
+            k.setLabelBlue('shell-command: ',protect=True)
+            k.getArg(event,'shell-command',1,self.shellCommand)
         else:
-            k.setLabelGrey('can not execute shell-command: can not import subprocess')
+            command = k.arg
+            k.commandName = 'shell-command: %s' % command
+            k.clearState()
+            self.executeSubprocess(event,command)
+        
     #@+node:ekr.20050930112126: *3* shellCommandOnRegion
     def shellCommandOnRegion (self,event):
 
@@ -1113,16 +1092,13 @@ class controlCommandsClass (baseEditCommandsClass):
         w = self.editWidget(event)
         if not w: return
 
-        if subprocess:
-            if w.hasSelection():
-                command = w.getSelectedText()
-                k.commandName = 'shell-command: %s' % command
-                self.executeSubprocess(event,command)
-            else:
-                k.clearState()
-                k.resetLabel()
+        if w.hasSelection():
+            command = w.getSelectedText()
+            k.commandName = 'shell-command: %s' % command
+            self.executeSubprocess(event,command)
         else:
-            k.setLabelGrey('can not execute shell-command: can not import subprocess')
+            k.clearState()
+            k.setLabelRed('No text selected')
     #@+node:ville.20090222184600.2: *3* actOnNode
     def actOnNode(self, event):
         """ Execute node-specific action (typically defined by plugins)

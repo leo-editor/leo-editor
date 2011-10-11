@@ -3281,9 +3281,11 @@ class keyHandlerClass:
 
         k = self ; w = self.w
         if not w: return
-
-        w.setForegroundColor(self.minibuffer_error_color) # 'red')
-
+        
+        w.setBothColors(
+            self.minibuffer_warning_color,
+            self.minibuffer_error_color)
+        
         if label is not None:
             k.setLabel(label,protect)
     #@+node:ekr.20061031170011.12: *4* updateLabel

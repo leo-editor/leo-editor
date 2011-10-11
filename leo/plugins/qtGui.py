@@ -2011,13 +2011,16 @@ class leoQtMinibuffer (leoQLineEditWidget):
         #@-<< define mouseReleaseEvent >>
         w.mouseReleaseEvent = mouseReleaseEvent
 
+    # Note: can only set one stylesheet at a time.
     def setBackgroundColor(self,color):
-        # Called from k.setLabelGrey & k.setLabelBlue.
-        # g.trace(color,g.callers())
         self.widget.setStyleSheet('background-color:%s' % color)
 
     def setForegroundColor(self,color):
-        pass
+        self.widget.setStyleSheet('color:%s' % color)
+        
+    def setBothColors(self,background_color,foreground_color):
+        self.widget.setStyleSheet('background-color:%s; color: %s' % (
+            background_color,foreground_color))
 #@-others
 #@-<< define text widget classes >>
 
@@ -9349,9 +9352,9 @@ class jEditColorizer:
     # restarter methods.
     # 
     # In actuality, very few restarters are needed. For example, for Python, we need
-    # restarters for that look for continued strings, and both flavors of continued
-    # triple-quoted strings. For python, these turn out to be three separate lambda
-    # bindings for restart_match_span.
+    # restarters for continued strings, and both flavors of continued triple-quoted
+    # strings. For python, these turn out to be three separate lambda bindings for
+    # restart_match_span.
     # 
     # When a jEdit pattern matcher partially succeeds, it creates the lambda binding
     # for its restarter and calls setRestart to set the ending state of the present
