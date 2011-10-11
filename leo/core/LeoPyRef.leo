@@ -83,7 +83,8 @@
 <v t="ekr.20031218072017.329"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
-<v t="ekr.20100120072650.6089"><vh>@file leoProjects.txt</vh></v>
+<v t="ekr.20100120072650.6089"
+expanded="ekr.20110605121601.18131,"><vh>@file leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
@@ -94,7 +95,8 @@
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
 </v>
 <v t="ekr.20090802181029.5989" a="E"><vh>Startup &amp; external files</vh>
-<v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
+<v t="ekr.20110310091639.14254" a="E"
+expanded="ekr.20110310091639.14295,ekr.20110310091639.14294,ekr.20110310091639.14256,"><vh>@file ../external/codewise.py</vh></v>
 <v t="ekr.20100120092047.6087"><vh>@file ../external/ipy_leo.py</vh></v>
 <v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
 <v t="ekr.20031218072017.2605" a="E"
@@ -115,9 +117,10 @@ expanded="ekr.20041118104831,ekr.20031218072017.2818,ekr.20031218072017.2894,ekr
 <v t="ekr.20031218072017.3093" a="E" descendentVnodeUnknownAttributes="7d71005506302e31332e3071017d71025808000000616e6e6f7461746571037d710473732e"
 expanded="ekr.20031218072017.3139,"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
-<v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
+<v t="ekr.20061031131434" a="E"
+expanded="ekr.20061031131434.4,ekr.20061031131434.8,ekr.20061031131434.16,ekr.20061031131434.20,ekr.20061031131434.28,ekr.20110512212836.14471,ekr.20110510120621.14539,ekr.20110511133940.14561,"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3320" a="E"
-expanded="ekr.20031218072017.889,ekr.20080416161551.199,"><vh>@file leoNodes.py</vh></v>
+expanded="ekr.20031218072017.889,ekr.20040306212636,ekr.20080416161551.199,"><vh>@file leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@file leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@file leoPymacs.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
@@ -139,7 +142,7 @@ expanded="ekr.20110605121601.17864,ekr.20110605121601.17885,ekr.20110605121601.1
 <v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
 <v t="ekr.20110605121601.17996"><vh>@file ../plugins/qtframecommands.py</vh></v>
 <v t="ekr.20110605121601.18002" a="E"
-expanded="ekr.20110605121601.18004,ekr.20110605121601.18005,ekr.20110605121601.18020,ekr.20110605121601.18023,ekr.20110605121601.18024,ekr.20110605121601.18025,ekr.20110605121601.18131,ekr.20110605121601.18474,ekr.20110605121601.18475,"><vh>@file ../plugins/qtGui.py</vh></v>
+expanded="ekr.20110605121601.18004,ekr.20110605121601.18005,ekr.20110605121601.18008,ekr.20110605121601.18009,ekr.20110605121601.18020,ekr.20110605121601.18023,ekr.20110605121601.18024,ekr.20110605121601.18025,ekr.20110605121601.18131,ekr.20110605121601.18474,ekr.20110605121601.18475,"><vh>@file ../plugins/qtGui.py</vh></v>
 <v t="ekr.20110605121601.18695"><vh>QDesigner files</vh>
 <v t="ekr.20110605121601.18696"><vh>@auto ../test/qtui_generate.py</vh></v>
 <v t="ekr.20110605121601.18698"><vh>@auto ../plugins/qt_main.py</vh></v>
