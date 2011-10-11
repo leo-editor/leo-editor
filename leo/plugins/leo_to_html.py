@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:bob.20111008072526.9537: * @file /home/bob/svnMyWork/LeoToHtml/trunk/leo_to_html.py
+#@+node:danr7.20060902215215.1: * @file leo_to_html.py
 #@@language python
 #@@tabwidth -4
 
@@ -7,7 +7,7 @@
 #@+node:danr7.20060902215215.2: ** << docstring >>
 ''' Converts a leo outline to an html web page.
 
-This plugin takes an outline stored in LEO and converts it to html which is then
+This plugin takes an outline stored in Leo and converts it to html which is then
 either saved in a file or shown in a browser. It is based on the original
 leoToHTML 1.0 plugin by Dan Rahmel which had bullet list code by Mike Crowe.
 
@@ -506,29 +506,18 @@ class Leo_to_HTML(object):
         """
 
         self.silent = show
-
         self.announce_start()
-
         self.loadConfig()
-
         if bullet in ('bullet', 'number', 'head'):
             self.bullet_type = bullet
-
         self.setup()
-
-
         self.do_xhtml(node)
         self.applyTemplate()
-
         if show:
             self.show()
-
         else:
             self.writeall()
-
         self.announce_end()
-
-
     #@+node:bob.20080109063110.7: *3* announce
     def announce(self, msg, prefix=None, color=None, silent=None):
 
@@ -586,11 +575,6 @@ class Leo_to_HTML(object):
         if self.bullet_type not in ('bullet', 'number', 'head'):
             self.bulletType = 'number'
 
-
-
-
-
-
     #@+node:bob.20080109063110.8: *3* setup
     def setup(self):
 
@@ -638,7 +622,7 @@ class Leo_to_HTML(object):
         self.title = myFileName
 
         if myFileName[-4:].lower() == '.leo':
-            myFileName = myFileName[:-4]            # Remove .leo suffix
+            myFileName = myFileName[:-4]    # Remove .leo suffix
 
         self.myFileName = myFileName + '.html'
     #@+node:bob.20080107154746.10: *3* applyTemplate
@@ -664,7 +648,6 @@ class Leo_to_HTML(object):
             xhtml
         )
     #@+node:bob.20080109063110.9: *3* show
-
     def show(self):
 
         """
@@ -740,25 +723,25 @@ class Leo_to_HTML(object):
 
         try:
             f = open(filepath, 'wb')
-            ok = True
-        except IOError:
-            ok = False
+        except Exception:
+            g.es('can not open: %s' % (filepath),color='red')
+            g.es_exception(full=False,c=self.c)
+            return False
 
-        if ok:
+        try:
             try:
-                try:
-                    f.write(data.encode('utf-8'))
-                finally:
-                    f.close()
-            except IOError:
+                f.write(data.encode('utf-8'))
+                self.announce('output file: %s' % (filepath),
+                    color=self.fileColor)
+                ok = True
+            except Exception:
+                g.es('write failed: %s' % (filepath),color='red')
+                g.es_exception(full=False,c=self.c)
                 ok = False
-
-        if ok:
-            self.announce('output file: %s' % filepath, color=self.fileColor)
-            return True
-
-        self.announce_fail('failed writing to %s' % filepath)
-        return False
+        finally:
+            f.close()
+            
+        return ok
     #@+node:bob.20080107175154: *3* getXHTMLTemplate
     def getXHTMLTemplate(self):
         """Returns a string containing a template for the outline page.
