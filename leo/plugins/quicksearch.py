@@ -43,9 +43,11 @@ from PyQt4.QtGui import QListWidget, QListWidgetItem
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-import fnmatch,re
+import fnmatch, re
 
-# Whatever other imports your plugins uses.
+from leo.plugins import qt_quicksearch
+
+global qsWidget
 #@-<< imports >>
 
 #@+others
@@ -67,11 +69,7 @@ def onCreate (tag, keys):
 
     install_qt_quicksearch_tab(c)
 
-#@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget
-from leo.plugins import qt_quicksearch
-
-global qsWidget
-
+#@+node:tbrown.20111011152601.48461: ** show_unittest_failures
 def show_unittest_failures(event):
     c = event.get('c')
     fails = c.db['unittest/cur/fail']
@@ -96,8 +94,8 @@ def show_unittest_failures(event):
 
         it = nav.scon.addGeneric(pos.h, mkcb(pos,stack))
         it.setToolTip(stack)
-    c.k.simulateCommand('focus-to-nav')    
-
+    c.k.simulateCommand('focus-to-nav')
+#@+node:tbrown.20111011152601.48462: ** install_qt_quicksearch_tab
 def install_qt_quicksearch_tab(c):
     #tabw = c.frame.top.tabWidget
 
@@ -114,13 +112,24 @@ def install_qt_quicksearch_tab(c):
     def focus_to_nav(event):
         c.frame.log.selectTab('Nav')
         wdg.ui.listWidget.setFocus()
-
+        
+    def find_selected(event):
+        text = c.frame.body.getSelectedText()
+        if text.strip():
+            wdg.ui.lineEdit.setText(text)
+            wdg.returnPressed()
+            focus_to_nav(event)
+        else:
+            focus_quicksearch_entry(event)
+            
     def nodehistory(event):
         c.frame.log.selectTab('Nav')
         wdg.scon.doNodeHistory()
 
     c.k.registerCommand(
-            'find-quick','Ctrl-Shift-f',focus_quicksearch_entry)
+            'find-quick',None,focus_quicksearch_entry)
+    c.k.registerCommand(
+            'find-quick-selected','Ctrl-Shift-f',find_selected)
     c.k.registerCommand(
             'focus-to-nav', None,focus_to_nav)
     c.k.registerCommand(
@@ -147,7 +156,7 @@ def install_qt_quicksearch_tab(c):
     tab_widget = wdg.parent().parent()
     tab_widget.connect(tab_widget,
         QtCore.SIGNAL("currentChanged(int)"), activate_input)
-
+#@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget
 class LeoQuickSearchWidget(QtGui.QWidget):
     """ 'Find in files'/grep style search widget """
     #@+others
@@ -264,7 +273,6 @@ class QuickSearchController:
 
     def doSearch(self, pat):
         self.clear()
-
 
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*'+ pat + '*').replace(r"\Z(?ms)","")
