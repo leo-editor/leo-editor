@@ -1093,6 +1093,10 @@
 <v t="ekr.20090531084727.10896"><vh>@item scroll-up-line</vh></v>
 <v t="ekr.20070925144534.330"><vh>@item scroll-&amp;up-page</vh></v>
 </v>
+<v t="ekr.20111010200020.15684"><vh>@menu Shell...</vh>
+<v t="ekr.20111010200020.15685"><vh>@item shell-command</vh></v>
+<v t="ekr.20111010200020.15686"><vh>@item shell-command-on-region</vh></v>
+</v>
 <v t="ekr.20070925144534.334"><vh>@menu Spell C&amp;heck...</vh>
 <v t="ekr.20070925144534.335"><vh>@item &amp;open-spell-tab</vh></v>
 <v t="ekr.20070925144534.336"><vh>@item spell-&amp;change</vh></v>
@@ -8481,6 +8485,9 @@ Controller(c).run()</t>
     match_list = [s for s in in_list if self.munge(s) == munged_s]
     
     print(format % (munged_s,match_list))</t>
+<t tx="ekr.20111010200020.15684"></t>
+<t tx="ekr.20111010200020.15685"></t>
+<t tx="ekr.20111010200020.15686"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
