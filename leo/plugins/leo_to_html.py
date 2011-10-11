@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:danr7.20060902215215.1: * @file leo_to_html.py
+#@+node:bob.20111008072526.9537: * @file /home/bob/svnMyWork/LeoToHtml/trunk/leo_to_html.py
 #@@language python
 #@@tabwidth -4
 
@@ -400,14 +400,12 @@ class Leo_to_HTML(object):
         if self.bullet_type != 'head':
             xhtml.append(self.openLevelString)
 
-        if node:
-
-            if self.bullet_type == 'head':
-                self.doItemHeadlineTags(root)
-            else:
-                self.doItemBulletList(root)
-
+        if self.bullet_type == 'head':
+            self.doItemHeadlineTags(root)
         else:
+            self.doItemBulletList(root)
+
+        if not node:
 
             for pp in root.following_siblings():
 
