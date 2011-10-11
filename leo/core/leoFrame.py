@@ -1517,8 +1517,17 @@ class leoFrame:
         Return True if the user vetos the quit or save operation."""
 
         c = self.c
-        name = g.choose(c.mFileName,c.mFileName,self.title)
+
         theType = g.choose(g.app.quitting, "quitting?", "closing?")
+        
+        # See if we are in quick edit/save mode.
+        root = c.rootPosition()
+        quick_save = not c.mFileName and not root.next() and root.isAtEditNode()
+        
+        if quick_save:
+            name = g.shortFileName(root.atEditNodeName())
+        else:
+            name = g.choose(c.mFileName,c.mFileName,self.title)
 
         answer = g.app.gui.runAskYesNoCancelDialog(c,
             "Confirm",
@@ -1531,19 +1540,26 @@ class leoFrame:
             return False # Don't save and don't veto.
         else:
             if not c.mFileName:
-                #@+<< Put up a file save dialog to set mFileName >>
-                #@+node:ekr.20031218072017.3693: *5* << Put up a file save dialog to set mFileName >>
-                # Make sure we never pass None to the ctor.
-                if not c.mFileName:
-                    c.mFileName = ""
+                root = c.rootPosition()
+                if not root.next() and root.isAtEditNode():
+                    # There is only a single @edit node in the outline.
+                    # A hack to allow "quick edit" of non-Leo files.
+                    # See https://bugs.launchpad.net/leo-editor/+bug/381527
+                    fileName = None
+                    # Write the @edit node if needed.
+                    if root.isDirty():
+                        c.atFileCommands.writeOneAtEditNode(root,
+                            toString=False,force=True)
+                    return False # Don't save and don't veto.
+                else:
+                    c.mFileName = g.app.gui.runSaveFileDialog(
+                        initialfile = '',
+                        title="Save",
+                        filetypes=[("Leo files", "*.leo")],
+                        defaultextension=".leo")
+                    
+                    c.bringToFront()
 
-                c.mFileName = g.app.gui.runSaveFileDialog(
-                    initialfile = c.mFileName,
-                    title="Save",
-                    filetypes=[("Leo files", "*.leo")],
-                    defaultextension=".leo")
-                c.bringToFront()
-                #@-<< Put up a file save dialog to set mFileName >>
             if c.mFileName:
                 ok = c.fileCommands.save(c.mFileName)
                 return not ok # New in 4.2: Veto if the save did not succeed.

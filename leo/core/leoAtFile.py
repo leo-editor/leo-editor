@@ -2830,10 +2830,15 @@ class atFile:
         at = self ; c = at.c ; x = c.shadowController
 
         try:
-            shadow_filename = x.shadowPathName(filename)
-            self.writing_to_shadow_directory = os.path.exists(shadow_filename)
-            open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
-            self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
+            # 2011/10/11: in "quick edit/save" mode the .leo file may not have a name.
+            if c.fileName():
+                shadow_filename = x.shadowPathName(filename)
+                self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+                open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
+                self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
+            else:
+                self.writing_to_shadow_directory = False
+                open_file_name = filename
 
             if self.writing_to_shadow_directory:
                 if trace: g.trace(filename,shadow_filename)
@@ -3425,7 +3430,7 @@ class atFile:
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
         fn = c.os_path_finalize_join(at.default_directory,fn)
         exists = g.os_path_exists(fn)
-        if not hasattr(root.v,'at_read') and exists:
+        if not force and not hasattr(root.v,'at_read') and exists:
             # Prompt if writing a new @edit node would overwrite the existing file.
             ok = self.promptForDangerousWrite(fn,kind='@edit')
             if ok:

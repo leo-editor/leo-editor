@@ -1450,11 +1450,24 @@ class Commands (object):
             # Calls c.setChanged(False) if no error.
             c.fileCommands.save(c.mFileName)
         else:
-            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-                initialfile = c.mFileName,
-                title="Save",
-                filetypes=[("Leo files", "*.leo")],
-                defaultextension=".leo")
+            root = c.rootPosition()
+            if not root.next() and root.isAtEditNode():
+                # There is only a single @edit node in the outline.
+                # A hack to allow "quick edit" of non-Leo files.
+                # See https://bugs.launchpad.net/leo-editor/+bug/381527
+                fileName = None
+                # Write the @edit node if needed.
+                if root.isDirty():
+                    c.atFileCommands.writeOneAtEditNode(root,
+                        toString=False,force=True)
+                c.setChanged(False)
+            else:
+                fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+                    initialfile = c.mFileName,
+                    title="Save",
+                    filetypes=[("Leo files", "*.leo")],
+                    defaultextension=".leo")
+        
             c.bringToFront()
 
             if fileName:
