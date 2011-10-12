@@ -6,7 +6,310 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 I am willing to fix bugs, but I would like to declare a moratorium on feature additions until 2012.
 .. @+node:ekr.20110921132705.6960: *3* To do first
+.. @+node:ekr.20110929165422.15449: *4* Add expand_noweb_references for rst3 plugin
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
+
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
+
+- Add support for the following options:
+    - expand_noweb_references: default False for compatibility.
+    - ignore_noweb definitions: default False for compatibility.
+
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
+.. @+node:ekr.20110929165422.15450: *5* post
+@nocolor-node
+
+I want to write the documentation for the source program in a @rst3 subtree. In
+this @rst3 subtree I want to refer to fragments of the program, like:
+
+In the following code fragment::
+
+  <<code fragment>>
+
+Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
+get to this work, I should have <<code fragment>> under the @rst3 subtree as
+well, but this is then also treated as @rst3 input (which in this case, is not
+what I want).
+.. @+node:ekr.20111012093116.9385: *5* post 2
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/15239f5f504cee6f
+
+I think I am using @rst in an awkward way, and would appreciate a few
+pointers.
+
+To document live code with rst2, I used subheading in the code like
+<<subroutine>> and then cloned that node and put it into the rst doc
+tree.
+
+That doesn't work anymore: <<nodes>> are not recognized by rst3, so
+I'm converting those clones to "@rst-no-head label". In the the live
+code I have to replace <<subroutine>> with @others. That's awkward at
+times.
+
+All this requires a bit of fiddling. Am I missing the point of rst3?
+There must be a better way... 
+.. @+node:ekr.20110929165422.15451: *5* writeBody & helpers
+def writeBody (self,p):
+
+    # remove trailing cruft and split into lines.
+    lines = p.b.rstrip().split('\n') 
+
+    if self.getOption('code_mode'):
+        if not self.getOption('show_options_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-options',
+                retainContents=False)
+        if not self.getOption('show_markup_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-markup',
+                retainContents=False)
+        if not self.getOption('show_leo_directives'):
+            lines = self.removeLeoDirectives(lines)
+        lines = self.handleCodeMode(lines)
+    elif self.getOption('doc_only_mode'):
+        # New in version 1.15
+        lines = self.handleDocOnlyMode(p,lines)
+    else:
+        lines = self.handleSpecialDocParts(lines,'@rst-options',
+            retainContents=False)
+        lines = self.handleSpecialDocParts(lines,'@rst-markup',
+            retainContents=self.getOption('generate_rst'))
+        if self.getOption('show_doc_parts_in_rst_mode') is True:
+            pass  # original behaviour, treat as plain text
+        elif self.getOption('show_doc_parts_in_rst_mode'):
+            # use value as class for content
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
+        else:  # option evaluates to false, cut them out
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=False)
+        lines = self.removeLeoDirectives(lines)
+        if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
+            lines = self.replaceCodeBlockDirectives(lines)
+
+    s = '\n'.join(lines).strip()
+    if s:
+        self.write('%s\n\n' % s)
+.. @+node:ekr.20110929165422.15452: *6* handleCodeMode & helper
+def handleCodeMode (self,lines):
+
+    '''Handle the preprocessed body text in code mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - Everything else gets put into a code-block directive.'''
+
+    result = [] ; n = 0 ; code = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if (
+            self.isSpecialDocPart(s,'@rst-markup') or
+            (self.getOption('show_doc_parts_as_paragraphs') and self.isSpecialDocPart(s,None))
+        ):
+            if code:
+                self.finishCodePart(result,code)
+                code = []
+            result.append('')
+            n, lines2 = self.getDocPart(lines,n)
+            result.extend(lines2)
+        elif not s.strip() and not code:
+            pass # Ignore blank lines before the first code block.
+        elif not code: # Start the code block.
+            result.append('')
+            result.append(self.code_block_string)
+            code.append(s)
+        else: # Continue the code block.
+            code.append(s)
+
+    if code:
+        self.finishCodePart(result,code)
+        code = []
+    return self.rstripList(result)
+.. @+node:ekr.20110929165422.15453: *7* formatCodeModeLine
+def formatCodeModeLine (self,s,n,numberOption):
+
+    if not s.strip(): s = ''
+
+    if numberOption:
+        return '\t%d: %s' % (n,s)
+    else:
+        return '\t%s' % s
+.. @+node:ekr.20110929165422.15454: *7* rstripList
+def rstripList (self,theList):
+
+    '''Removed trailing blank lines from theList.'''
+
+    s = '\n'.join(theList).rstrip()
+    return s.split('\n')
+.. @+node:ekr.20110929165422.15455: *7* finishCodePart
+def finishCodePart (self,result,code):
+
+    numberOption = self.getOption('number_code_lines')
+    code = self.rstripList(code)
+    i = 0
+    for line in code:
+        i += 1
+        result.append(self.formatCodeModeLine(line,i,numberOption))
+.. @+node:ekr.20110929165422.15456: *6* handleDocOnlyMode
+def handleDocOnlyMode (self,p,lines):
+
+    '''Handle the preprocessed body text in doc_only mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - All doc parts get copied.
+    - All code parts are ignored.'''
+
+    ignore              = self.getOption('ignore_this_headline')
+    showHeadlines       = self.getOption('show_headlines')
+    showThisHeadline    = self.getOption('show_this_headline')
+    showOrganizers      = self.getOption('show_organizer_nodes')
+
+    result = [] ; n = 0
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if self.isSpecialDocPart(s,'@rst-options'):
+            n, lines2 = self.getDocPart(lines,n) # ignore.
+        elif self.isAnyDocPart(s):
+            # Handle any other doc part, including @rst-markup.
+            n, lines2 = self.getDocPart(lines,n)
+            if lines2: result.extend(lines2)
+    if not result: result = []
+    if showHeadlines:
+        if result or showThisHeadline or showOrganizers or p == self.topNode:
+            # g.trace(len(result),p.h)
+            self.writeHeadlineHelper(p)
+    return result
+.. @+node:ekr.20110929165422.15457: *6* isAnyDocPart
+def isAnyDocPart (self,s):
+
+    if s.startswith('@doc'):
+        return True
+    elif not s.startswith('@'):
+        return False
+    else:
+        return len(s) == 1 or s[1].isspace()
+.. @+node:ekr.20110929165422.15458: *6* isSpecialDocPart
+def isSpecialDocPart (self,s,kind):
+
+    '''Return True if s is a special doc part of the indicated kind.
+
+    If kind is None, return True if s is any doc part.'''
+
+    if s.startswith('@') and len(s) > 1 and s[1].isspace():
+        if kind:
+            i = g.skip_ws(s,1)
+            result = g.match_word(s,i,kind)
+        else:
+            result = True
+    elif not kind:
+        result = g.match_word(s,0,'@doc') or g.match_word(s,0,'@')
+    else:
+        result = False
+
+    return result
+.. @+node:ekr.20110929165422.15459: *6* isAnySpecialDocPart
+def isAnySpecialDocPart (self,s):
+
+    for kind in (
+        '@rst-markup',
+        '@rst-option',
+        '@rst-options',
+    ):
+        if self.isSpecialDocPart(s,kind):
+            return True
+
+    return False
+.. @+node:ekr.20110929165422.15460: *6* removeLeoDirectives
+def removeLeoDirectives (self,lines):
+
+    '''Remove all Leo directives, except within literal blocks.'''
+
+    n = 0 ; result = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if s.strip().endswith('::'):
+            n, lit = self.skip_literal_block(lines,n-1)
+            result.extend(lit)
+        elif s.startswith('@') and not self.isAnySpecialDocPart(s):
+            for key in self.leoDirectivesList:
+                if g.match_word(s,0,key):
+                    # g.trace('removing %s' % s)
+                    break
+            else:
+                result.append(s)
+        else:
+            result.append(s)
+
+    return result
+.. @+node:ekr.20110929165422.15461: *6* handleSpecialDocParts
+def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
+
+    # g.trace(kind,g.listToString(lines))
+
+    result = [] ; n = 0
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if s.strip().endswith('::'):
+            n, lit = self.skip_literal_block(lines,n-1)
+            result.extend(lit)
+        elif self.isSpecialDocPart(s,kind):
+            n, lines2 = self.getDocPart(lines,n)
+            if retainContents:
+                result.extend([''])
+                if asClass:
+                    result.extend(['.. container:: '+asClass, ''])
+                    if 'literal' in asClass.split():
+                        result.extend(['  ::', ''])
+                    for l2 in lines2: result.append('    '+l2)
+                else:
+                    result.extend(lines2)
+                result.extend([''])
+        else:
+            result.append(s)
+
+    return result
+.. @+node:ekr.20110929165422.15462: *6* replaceCodeBlockDirectives
+def replaceCodeBlockDirectives (self,lines):
+
+    '''Replace code-block directive, but not in literal blocks.'''
+
+    n = 0 ; result = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if s.strip().endswith('::'):
+            n, lit = self.skip_literal_block(lines,n-1)
+            result.extend(lit)
+        else:
+            i = g.skip_ws(s,0)
+            if g.match(s,i,'..'):
+                i = g.skip_ws(s,i+2)
+                if g.match_word(s,i,'code-block'):
+                    if 1: # Create a literal block to hold the code.
+                        result.append('::\n')
+                    else: # This 'annotated' literal block is confusing.
+                        result.append('%s code::\n' % s[i+len('code-block'):])
+                else:
+                    result.append(s)
+            else:
+                result.append(s)
+
+    return result
 .. @+node:ekr.20111010122531.15570: *4* Lighter Leo
+.. @+node:ekr.20111012091630.9384: *5* * Handle ed non-existing-non-leo-file correctly
+.. @+node:ekr.20111012061216.15698: *5* * Complete expand/contract commands
+.. @+node:ekr.20111010162047.15678: *5* The @auto script *must* put @first nodes in root node
+@nocolor-node
+
+Also the import commands.
+
+Especially:
+    - Shebang line.
+    - Python encoding line.
 .. @+node:ekr.20111010122531.15568: *5* Lighter rendering
 @language rest
 
@@ -65,8 +368,524 @@ The more I think about the light/heavy distinction, the more I think
 it is getting close to what makes Leo special.  For example, clones
 (and nodes, for that matter) drastically lighten the apparent
 complexity of programs or data.
-.. @+node:ekr.20111009230326.7036: *4* Important
-.. @+node:ekr.20110930174206.15470: *5* * Bring screen shots up to date
+.. @+node:ekr.20111012061216.15699: *6* use @g.command for all Leo commands
+.. @+node:ekr.20111010093113.15547: *5* Add support for ! in minibuffer
+.. @+node:ekr.20061031131434.145: *6* k.Master event handlers
+.. @+node:ekr.20061031131434.105: *7* masterCommand & helpers
+def masterCommand (self,event,func,stroke,commandName=None):
+
+    '''This is the central dispatching method.
+    All commands and keystrokes pass through here.'''
+
+    k = self ; c = k.c ; gui = g.app.gui
+    trace = (False or k.traceMasterCommand) and not g.unitTesting
+    verbose = False
+    traceGC = False
+    if traceGC: g.printNewObjects('masterCom 1')
+    
+    c.check_event(event)
+
+    c.setLog()
+    c.startRedrawCount = c.frame.tree.redrawCount
+    k.stroke = stroke # Set this global for general use.
+
+    char = ch = event and event.char or ''
+    w = event and event.w
+
+    k.func = func
+    k.funcReturn = None # For unit testing.
+    commandName = commandName or func and func.__name__ or '<no function>'
+    << define specialKeysyms >>
+    special = char in specialKeysyms
+    interesting = func is not None
+    inserted = not special
+
+    if trace: # Useful.
+        g.trace('stroke: ',stroke,'ch:',repr(ch),
+            # 'w:',w and c.widget_name(w),
+            'func:',func and func.__name__)
+
+    if inserted:
+        k.setLossage(ch,stroke)
+
+    # We *must not* interfere with the global state in the macro class.
+    if c.macroCommands.recordingMacro:
+        c.macroCommands.startRecordingMacro(event)
+        # 2011/06/06: Show the key, if possible.
+        ### return # (for Tk) 'break'
+
+    # g.trace(stroke,k.abortAllModesKey)
+
+    if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
+        k.keyboardQuit()
+        k.endCommand(commandName)
+        return # (for Tk) 'break'
+
+    if special: # Don't pass these on.
+        return # (for Tk) 'break' 
+
+    if k.regx.iter:
+        try:
+            k.regXKey = char
+            k.regx.iter.next() # EKR: next() may throw StopIteration.
+        except StopIteration:
+            pass
+        return # (for Tk) 'break'
+
+    if k.abbrevOn:
+        expanded = c.abbrevCommands.expandAbbrev(event,stroke)
+        if expanded: return # (for Tk) 'break'
+
+    if func: # Func is an argument.
+        if commandName == 'propagate-key-event':
+            # Do *nothing* with the event.
+            return k.propagateKeyEvent(event)
+        elif commandName.startswith('specialCallback'):
+            # The callback function will call c.doCommand
+            if trace: g.trace('calling specialCallback for',commandName)
+            # if commandName != 'repeat-complex-command': # 2010/01/11
+                # k.mb_history.insert(0,commandName)
+            val = func(event)
+            # k.simulateCommand uses k.funcReturn.
+            k.funcReturn = k.funcReturn or val # For unit tests.
+        else:
+            # Call c.doCommand directly
+            if trace: g.trace('calling command directly',commandName)
+            # if commandName != 'repeat-complex-command': # 2010/01/11
+                # k.mb_history.insert(0,commandName)
+            # if commandName == 'select-all': g.pdb()
+            c.doCommand(func,commandName,event=event)
+        if c.exists:
+            k.endCommand(commandName)
+            c.frame.updateStatusLine()
+        if traceGC: g.printNewObjects('masterCom 2')
+        return # (for Tk) 'break'
+    elif k.inState():
+        return # (for Tk) 'break' #Ignore unbound keys in a state.
+    else:
+        if traceGC: g.printNewObjects('masterCom 3')
+        val = k.handleDefaultChar(event,stroke)
+        if c.exists:
+            c.frame.updateStatusLine()
+        if traceGC: g.printNewObjects('masterCom 4')
+        return val
+.. @+node:ekr.20061031131434.106: *8* << define specialKeysyms >>
+specialKeysyms = (
+    'Alt_L','Alt_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Caps_Lock','Control_L','Control_R',
+    'Num_Lock',
+    'Shift_L','Shift_R',
+)
+.. @+node:ekr.20061031131434.109: *8* callKeystrokeFunction (not used)
+def callKeystrokeFunction (self,event):
+
+    '''Handle a quick keystroke function.
+    Return the function or None.'''
+
+    k = self
+    numberOfArgs, func = k.keystrokeFunctionDict [k.stroke]
+
+    if func:
+        func(event)
+        commandName = k.inverseCommandsDict.get(func) # Get the emacs command name.
+        k.endCommand(commandName)
+
+    return func
+.. @+node:ekr.20061031131434.110: *8* k.handleDefaultChar
+def handleDefaultChar(self,event,stroke):
+    k = self ; c = k.c
+    w = event and event.widget
+    name = c.widget_name(w)
+    trace = False and not g.unitTesting
+
+    if trace: g.trace('widget_name',name,'stroke',stroke,'enable alt-ctrl',self.enable_alt_ctrl_bindings)
+
+    if (stroke and
+        not stroke.startswith('Alt+Ctrl') and
+        not self.enable_alt_ctrl_bindings and
+        (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
+    ):
+        if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+        return # (for Tk) 'break'
+
+    if name.startswith('body'):
+        action = k.unboundKeyAction
+        if action in ('insert','overwrite'):
+            c.editCommands.selfInsertCommand(event,action=action)
+        else: # Ignore the key
+            if trace: g.trace('ignoring',stroke)
+        return # (for Tk) 'break'
+    elif name.startswith('head'):
+        c.frame.tree.onHeadlineKey(event)
+        return # (for Tk) 'break'
+    elif name.startswith('canvas'):
+        if not stroke: # Not exactly right, but it seems to be good enough.
+            c.onCanvasKey(event) # New in Leo 4.4.2
+        return # (for Tk) 'break'
+    elif name.startswith('log'):
+        i = w.logCtrl.getInsertPoint()
+        if not stroke:
+            stroke = event and event.stroke
+        if stroke in ('\n','Return'): stroke = '\n'
+        elif stroke in ('\t','Tab'): stroke = '\t'
+        elif stroke in ('\b','Backspace'): stroke = '\b'
+        elif stroke in ('.','Period','period'): stroke = '.'
+        w.logCtrl.insert(i,stroke)
+        return # None
+    else:
+        # Let the widget handle the event.
+        return # None
+.. @+node:ekr.20061031131434.146: *7* masterKeyHandler & helpers
+master_key_count = 0
+
+def masterKeyHandler (self,event):
+
+    '''This is the handler for almost all key bindings.'''
+    
+    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+    verbose = True
+    
+    k,c = self,self.c ; gui = g.app.gui
+    c.check_event(event)
+    << define vars >>
+
+    if char in special_keys:
+        if trace and verbose: g.trace('char',char)
+        return None
+    
+    if traceGC: g.printNewObjects('masterKey 1')
+    if trace and verbose: g.trace('stroke:',repr(stroke),'char:',
+        repr(event and event.char),
+        'ch:',repr(event and event.char),
+        'state',state,'state2',k.unboundKeyAction)
+
+    # Handle keyboard-quit first.
+    if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.endMacro()
+            return # (for Tk) 'break'
+        else:
+            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+
+    if k.inState():
+        if trace: g.trace('   state %-10s %s' % (stroke,state))
+        done,val = k.doMode(event,state,stroke)
+        if done: return val
+
+    if traceGC: g.printNewObjects('masterKey 2')
+            
+    # 2011/02/08: An important simplification.
+    if isPlain and k.unboundKeyAction != 'command':
+        if self.isAutoCompleteChar(stroke):
+            if trace: g.trace('autocomplete key',stroke)
+        else:
+            if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
+            return k.handleUnboundKeys(event,char,stroke)
+
+    # 2011/02/08: Use getPandBindings for *all* keys.
+    b = k.getPaneBinding(stroke,w)
+    if b:
+        if traceGC: g.printNewObjects('masterKey 3')
+        if trace: g.trace('   bound',stroke,b.func.__name__)
+        return k.masterCommand(event,b.func,b.stroke,b.commandName)
+    else:
+        if traceGC: g.printNewObjects('masterKey 4')
+        if trace: g.trace(' unbound',stroke)
+        return k.handleUnboundKeys(event,char,stroke)
+.. @+node:ekr.20061031131434.147: *8* << define vars >>
+w = event and event.widget
+char = event and event.char or ''
+stroke = event and event.stroke or ''
+w_name = c.widget_name(w)
+state = k.state.kind
+
+special_keys = (
+    'Alt_L','Alt_R',
+    'Caps_Lock','Control_L','Control_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Num_Lock',
+    'Shift_L','Shift_R',
+    'Win_L','Win_R',
+)
+
+self.master_key_count += 1
+
+isPlain =  k.isPlainKey(stroke)
+.. @+node:ekr.20061031131434.108: *8* callStateFunction
+def callStateFunction (self,event):
+
+    trace = False and not g.unitTesting
+    k = self ; val = None 
+    ch = event and event.char or ''
+    stroke = event and event.stroke or ''
+
+    if trace: g.trace(k.state.kind,'ch',ch,'stroke',stroke,
+        'ignore_unbound_non_ascii_keys',k.ignore_unbound_non_ascii_keys)
+        
+    if k.state.kind == 'auto-complete':
+        # 2011/06/17.
+        # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
+        val = k.state.handler(event)
+        if trace: g.trace('auto-complete returns',repr(val))
+        return val
+    elif k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            len(ch) == 1 and # 2011/04/01
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+.. @+node:ekr.20091230094319.6244: *8* doMode
+def doMode (self,event,state,stroke):
+
+    trace = False and not g.unitTesting
+    k = self
+
+    # First, honor minibuffer bindings for all except user modes.
+    if state in ('getArg','getFileName','full-command','auto-complete'):
+        if k.handleMiniBindings(event,state,stroke):
+            return True,'break'
+
+    # Second, honor general modes.
+    if state == 'getArg':
+        return True,k.getArg(event,stroke=stroke)
+    elif state == 'getFileName':
+        return True,k.getFileName(event)
+    elif state in ('full-command','auto-complete'):
+        # Do the default state action.
+        if trace: g.trace('calling state function',k.state.kind)
+        val = k.callStateFunction(event) # Calls end-command.
+        if trace: g.trace('state function returns',repr(val))
+        if val == 'do-standard-keys':
+            return False,None # 2011/06/17.
+        else:
+            return True,'break'
+
+    # Third, pass keys to user modes.
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        b = d.get(stroke)
+        if b:
+            if trace: g.trace('calling generalModeHandler',stroke)
+            k.generalModeHandler (event,
+                commandName=b.commandName,func=b.func,
+                modeName=state,nextMode=b.nextMode)
+            return True,'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            # if trace: g.trace('unbound key ends mode',stroke,state)
+            g.warning('unbound key ends mode',stroke) # 2011/02/02
+            k.endMode()
+            return False,None
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            if trace: g.trace('handler',handler)
+            handler(event)
+        else:
+            if trace: g.trace('No state handler for %s' % state)
+        return True,'break'
+.. @+node:ekr.20091230094319.6240: *8* getPaneBinding
+def getPaneBinding (self,stroke,w):
+
+    trace = False and not g.unitTesting
+    verbose = True
+    k = self ; w_name = k.c.widget_name(w)
+    # keyStatesTuple = ('command','insert','overwrite')
+    state = k.unboundKeyAction
+
+    if trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
+        'isTextWidget(w)',g.app.gui.isTextWidget(w))
+
+    for key,name in (
+        # Order here is similar to bindtags order.
+        ('command',None),
+        ('insert',None),
+        ('overwrite',None),
+        ('button',None),
+        ('body','body'),
+        ('text','head'), # Important: text bindings in head before tree bindings.
+        ('tree','head'),
+        ('tree','canvas'),
+        ('log', 'log'),
+        ('text','log'),
+        ('text',None),
+        ('all',None),
+    ):
+        if (
+            # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+            name and w_name.startswith(name) or
+            key in ('command','insert','overwrite') and state == key or # 2010/02/09
+            key in ('text','all') and g.app.gui.isTextWidget(w) or
+            key in ('button','all')
+        ):
+            d = k.masterBindingsDict.get(key,{})
+            if trace and verbose:
+                # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+                g.trace('key: %7s name: %6s stroke: %10s in keys: %s' %
+                    (key,name,stroke,stroke in d))
+                # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
+            if d:
+                b = d.get(stroke)
+                if b:
+                    table = ('previous-line','next-line',)
+                    if key == 'text' and name == 'head' and b.commandName in table:
+                        if trace: g.trace('***** special case',b.commandName)
+                        pass
+                    else:
+                        if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
+                            key,name,repr(b.stroke),b.commandName))
+                        return b
+.. @+node:ekr.20061031131434.152: *8* handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
+            return False
+        if k.isFKey(stroke):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName == 'replace-string' and state == 'getArg':
+                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
+                        return False # Let getArg handle it.
+                    elif b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit()
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocus() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+.. @+node:ekr.20110209083917.16004: *8* isAutoCompleteChar
+def isAutoCompleteChar (self,stroke):
+    
+    '''Return True if stroke is bound to the auto-complete in
+    the insert or overwrite state.'''
+
+    k = self ; state = k.unboundKeyAction
+    
+    if stroke and state in ('insert','overwrite'):
+        for key in (state,'body','log','text','all'):
+            d = k.masterBindingsDict.get(key,{})
+            if d:
+                b = d.get(stroke)
+                if b and b.commandName == 'auto-complete':
+                    return True
+    return False
+.. @+node:ekr.20080510095819.1: *8* k.handleUnboundKeys
+def handleUnboundKeys (self,event,char,stroke):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    k = self ; c = k.c
+    modesTuple = ('insert','overwrite')
+    
+    # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
+
+    if trace and verbose: g.trace('ch: %s, stroke %s' % (
+        repr(event and event.char),repr(stroke)))
+
+    # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        if trace: g.trace('ignoring unbound character in command mode',stroke)
+        return # (for Tk) 'break'
+
+    elif k.isFKey(stroke):
+        if trace: g.trace('ignoring F-key',stroke)
+        return # (for Tk) 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif (not self.enable_alt_ctrl_bindings and
+        (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
+    ):
+        # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
+        if trace: g.trace('ignoring unbound Alt/Ctrl key',
+            repr(char),repr(stroke))
+        return # (for Tk) 'break'
+
+    elif k.ignore_unbound_non_ascii_keys and (
+        len(char) > 1 or
+        char not in string.printable # 2011/06/10: risky test?
+    ):
+        if trace: g.trace('ignoring unbound non-ascii key',
+            repr(char),repr(stroke))
+        return # (for Tk) 'break'
+
+    elif (
+        stroke and stroke.find('Escape') != -1 or
+        stroke and stroke.find('Insert') != -1
+    ):
+        # Never insert escape or insert characters.
+        if trace: g.trace('ignore Escape/Ignore',stroke)
+        return # (for Tk) 'break'
+
+    else:
+        if trace: g.trace('no func',repr(char),repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+.. @+node:ekr.20061031131434.155: *7* masterMenuHandler
+def masterMenuHandler (self,stroke,func,commandName):
+
+    k = self ; c = k.c
+    w = c.frame.getFocus()
+
+    # g.trace('stroke',stroke,'func',func and func.__name__,commandName)
+
+    # Create a minimal event for commands that require them.
+    event = g.app.gui.create_key_event(c,None,stroke,w)
+    c.check_event(event)
+
+    if stroke:
+        return k.masterKeyHandler(event)
+    else:
+        return k.masterCommand(event,func,stroke,commandName)
+.. @+node:ekr.20111011062533.15686: *4* Thicker Leo
+.. @+node:ekr.20111011175652.15696: *5* Register a domain name like leo-editor.org
+.. @+node:ekr.20111011175652.15697: *5* Transclude leo-editor conversations to Leo's home page
+.. @+node:ekr.20110930174206.15470: *5* Bring screen shots up to date
 > While doing so I noted that on the sourceforge project
 > page some screenshots are bit old, such as touting Tk.
 >
@@ -80,6 +899,7 @@ complexity of programs or data.
     All souce-forge screenshots need to be replaced.
 
 
+.. @+node:ekr.20111009230326.7036: *4* Important
 .. @+node:ekr.20110918204916.6811: *5* revise autocompletion docs based on recent posts
 .. @+node:ekr.20110929074744.15474: *6* Autocompleter post
 @language rest
@@ -1592,6 +2412,38 @@ having to resort to quite as much error-prone machinery as at present.
 .. @+node:ekr.20111010062725.15543: *5* ctrl-k twice (second time on blank line) doesn't work
 .. @+node:ekr.20111010062725.15537: *5* Finish cleaning @color settings
 .. @+node:ekr.20111008073427.15595: *5* Macro bug: really must have a shortcut for call-last-macro
+.. @+node:ekr.20111011062533.15693: *5* Make headline widgets scrollable, if possible
+# It doesn't seem easy.
+.. @+node:ekr.20110605121601.18422: *6* editLabelHelper (leoQtTree)
+def editLabelHelper (self,item,selectAll=False,selection=None):
+
+    '''Called by nativeTree.editLabel to do
+    gui-specific stuff.'''
+
+    trace = False and not g.unitTesting
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+        # Generates focus-in event that tree doesn't report.
+    e = w.itemWidget(item,0) # A QLineEdit.
+
+    if e:
+        s = e.text() ; len_s = len(s)
+        if s == 'newHeadline': selectAll=True
+        if selection:
+            i,j,ins = selection
+            start,n = i,abs(i-j)
+                # Not right for backward searches.
+        elif selectAll: start,n,ins = 0,len_s,len_s
+        else:           start,n,ins = len_s,0,len_s
+        e.setObjectName('headline')
+        e.setSelection(start,n)
+        # e.setCursorPosition(ins) # Does not work.
+        e.setFocus()
+        wrapper = self.connectEditorWidget(e,item) # Hook up the widget.
+
+    if trace: g.trace(e,wrapper)
+    return e,wrapper # 2011/02/11
 .. @+node:ekr.20110930213637.15473: *4* Next
 .. @+node:ekr.20111009162434.7203: *5* Investigate pygments
 .. @+node:ekr.20111009080647.15614: *6* pygments test
@@ -4201,280 +5053,6 @@ commands.
 In short, contemplating generalized windows leads us to generalized
 select/delete/show/hide commands, based on autocompletion, that work
 on various ui elements.  This looks like the next project. 
-.. @+node:ekr.20110929165422.15449: *5* Add expand_noweb_references for rst3 plugin
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
-
-> What would work for me is if named sections in a @rst subtree
-> would work exactly as they work for other derived files: they
-> get inserted at the place where they are referenced.
-
-- Add support for the following options:
-    - expand_noweb_references: default False for compatibility.
-    - ignore_noweb definitions: default False for compatibility.
-
-- When expand_noweb_references is True, definitions (typically clones)
-  must be descendants of the referencing node (in the @rst tree)
-.. @+node:ekr.20110929165422.15450: *6* post
-@nocolor-node
-
-I want to write the documentation for the source program in a @rst3 subtree. In
-this @rst3 subtree I want to refer to fragments of the program, like:
-
-In the following code fragment::
-
-  <<code fragment>>
-
-Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
-get to this work, I should have <<code fragment>> under the @rst3 subtree as
-well, but this is then also treated as @rst3 input (which in this case, is not
-what I want).
-.. @+node:ekr.20110929165422.15451: *6* writeBody & helpers
-def writeBody (self,p):
-
-    # remove trailing cruft and split into lines.
-    lines = p.b.rstrip().split('\n') 
-
-    if self.getOption('code_mode'):
-        if not self.getOption('show_options_doc_parts'):
-            lines = self.handleSpecialDocParts(lines,'@rst-options',
-                retainContents=False)
-        if not self.getOption('show_markup_doc_parts'):
-            lines = self.handleSpecialDocParts(lines,'@rst-markup',
-                retainContents=False)
-        if not self.getOption('show_leo_directives'):
-            lines = self.removeLeoDirectives(lines)
-        lines = self.handleCodeMode(lines)
-    elif self.getOption('doc_only_mode'):
-        # New in version 1.15
-        lines = self.handleDocOnlyMode(p,lines)
-    else:
-        lines = self.handleSpecialDocParts(lines,'@rst-options',
-            retainContents=False)
-        lines = self.handleSpecialDocParts(lines,'@rst-markup',
-            retainContents=self.getOption('generate_rst'))
-        if self.getOption('show_doc_parts_in_rst_mode') is True:
-            pass  # original behaviour, treat as plain text
-        elif self.getOption('show_doc_parts_in_rst_mode'):
-            # use value as class for content
-            lines = self.handleSpecialDocParts(lines,None,
-                retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
-        else:  # option evaluates to false, cut them out
-            lines = self.handleSpecialDocParts(lines,None,
-                retainContents=False)
-        lines = self.removeLeoDirectives(lines)
-        if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
-            lines = self.replaceCodeBlockDirectives(lines)
-
-    s = '\n'.join(lines).strip()
-    if s:
-        self.write('%s\n\n' % s)
-.. @+node:ekr.20110929165422.15452: *7* handleCodeMode & helper
-def handleCodeMode (self,lines):
-
-    '''Handle the preprocessed body text in code mode as follows:
-
-    - Blank lines are copied after being cleaned.
-    - @ @rst-markup lines get copied as is.
-    - Everything else gets put into a code-block directive.'''
-
-    result = [] ; n = 0 ; code = []
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if (
-            self.isSpecialDocPart(s,'@rst-markup') or
-            (self.getOption('show_doc_parts_as_paragraphs') and self.isSpecialDocPart(s,None))
-        ):
-            if code:
-                self.finishCodePart(result,code)
-                code = []
-            result.append('')
-            n, lines2 = self.getDocPart(lines,n)
-            result.extend(lines2)
-        elif not s.strip() and not code:
-            pass # Ignore blank lines before the first code block.
-        elif not code: # Start the code block.
-            result.append('')
-            result.append(self.code_block_string)
-            code.append(s)
-        else: # Continue the code block.
-            code.append(s)
-
-    if code:
-        self.finishCodePart(result,code)
-        code = []
-    return self.rstripList(result)
-.. @+node:ekr.20110929165422.15453: *8* formatCodeModeLine
-def formatCodeModeLine (self,s,n,numberOption):
-
-    if not s.strip(): s = ''
-
-    if numberOption:
-        return '\t%d: %s' % (n,s)
-    else:
-        return '\t%s' % s
-.. @+node:ekr.20110929165422.15454: *8* rstripList
-def rstripList (self,theList):
-
-    '''Removed trailing blank lines from theList.'''
-
-    s = '\n'.join(theList).rstrip()
-    return s.split('\n')
-.. @+node:ekr.20110929165422.15455: *8* finishCodePart
-def finishCodePart (self,result,code):
-
-    numberOption = self.getOption('number_code_lines')
-    code = self.rstripList(code)
-    i = 0
-    for line in code:
-        i += 1
-        result.append(self.formatCodeModeLine(line,i,numberOption))
-.. @+node:ekr.20110929165422.15456: *7* handleDocOnlyMode
-def handleDocOnlyMode (self,p,lines):
-
-    '''Handle the preprocessed body text in doc_only mode as follows:
-
-    - Blank lines are copied after being cleaned.
-    - @ @rst-markup lines get copied as is.
-    - All doc parts get copied.
-    - All code parts are ignored.'''
-
-    ignore              = self.getOption('ignore_this_headline')
-    showHeadlines       = self.getOption('show_headlines')
-    showThisHeadline    = self.getOption('show_this_headline')
-    showOrganizers      = self.getOption('show_organizer_nodes')
-
-    result = [] ; n = 0
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if self.isSpecialDocPart(s,'@rst-options'):
-            n, lines2 = self.getDocPart(lines,n) # ignore.
-        elif self.isAnyDocPart(s):
-            # Handle any other doc part, including @rst-markup.
-            n, lines2 = self.getDocPart(lines,n)
-            if lines2: result.extend(lines2)
-    if not result: result = []
-    if showHeadlines:
-        if result or showThisHeadline or showOrganizers or p == self.topNode:
-            # g.trace(len(result),p.h)
-            self.writeHeadlineHelper(p)
-    return result
-.. @+node:ekr.20110929165422.15457: *7* isAnyDocPart
-def isAnyDocPart (self,s):
-
-    if s.startswith('@doc'):
-        return True
-    elif not s.startswith('@'):
-        return False
-    else:
-        return len(s) == 1 or s[1].isspace()
-.. @+node:ekr.20110929165422.15458: *7* isSpecialDocPart
-def isSpecialDocPart (self,s,kind):
-
-    '''Return True if s is a special doc part of the indicated kind.
-
-    If kind is None, return True if s is any doc part.'''
-
-    if s.startswith('@') and len(s) > 1 and s[1].isspace():
-        if kind:
-            i = g.skip_ws(s,1)
-            result = g.match_word(s,i,kind)
-        else:
-            result = True
-    elif not kind:
-        result = g.match_word(s,0,'@doc') or g.match_word(s,0,'@')
-    else:
-        result = False
-
-    return result
-.. @+node:ekr.20110929165422.15459: *7* isAnySpecialDocPart
-def isAnySpecialDocPart (self,s):
-
-    for kind in (
-        '@rst-markup',
-        '@rst-option',
-        '@rst-options',
-    ):
-        if self.isSpecialDocPart(s,kind):
-            return True
-
-    return False
-.. @+node:ekr.20110929165422.15460: *7* removeLeoDirectives
-def removeLeoDirectives (self,lines):
-
-    '''Remove all Leo directives, except within literal blocks.'''
-
-    n = 0 ; result = []
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if s.strip().endswith('::'):
-            n, lit = self.skip_literal_block(lines,n-1)
-            result.extend(lit)
-        elif s.startswith('@') and not self.isAnySpecialDocPart(s):
-            for key in self.leoDirectivesList:
-                if g.match_word(s,0,key):
-                    # g.trace('removing %s' % s)
-                    break
-            else:
-                result.append(s)
-        else:
-            result.append(s)
-
-    return result
-.. @+node:ekr.20110929165422.15461: *7* handleSpecialDocParts
-def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
-
-    # g.trace(kind,g.listToString(lines))
-
-    result = [] ; n = 0
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if s.strip().endswith('::'):
-            n, lit = self.skip_literal_block(lines,n-1)
-            result.extend(lit)
-        elif self.isSpecialDocPart(s,kind):
-            n, lines2 = self.getDocPart(lines,n)
-            if retainContents:
-                result.extend([''])
-                if asClass:
-                    result.extend(['.. container:: '+asClass, ''])
-                    if 'literal' in asClass.split():
-                        result.extend(['  ::', ''])
-                    for l2 in lines2: result.append('    '+l2)
-                else:
-                    result.extend(lines2)
-                result.extend([''])
-        else:
-            result.append(s)
-
-    return result
-.. @+node:ekr.20110929165422.15462: *7* replaceCodeBlockDirectives
-def replaceCodeBlockDirectives (self,lines):
-
-    '''Replace code-block directive, but not in literal blocks.'''
-
-    n = 0 ; result = []
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if s.strip().endswith('::'):
-            n, lit = self.skip_literal_block(lines,n-1)
-            result.extend(lit)
-        else:
-            i = g.skip_ws(s,0)
-            if g.match(s,i,'..'):
-                i = g.skip_ws(s,i+2)
-                if g.match_word(s,i,'code-block'):
-                    if 1: # Create a literal block to hold the code.
-                        result.append('::\n')
-                    else: # This 'annotated' literal block is confusing.
-                        result.append('%s code::\n' % s[i+len('code-block'):])
-                else:
-                    result.append(s)
-            else:
-                result.append(s)
-
-    return result
 .. @+node:ekr.20111004090723.15491: *5* Fix broken link in docs
 > In this node of LeoDocs.leo:
 > Users Guide-->Basics-->FAQ-->@file FAQ.txt-->@rst html\FAQ.html-->Tips and
@@ -4576,893 +5154,6 @@ def getStatusIconImage (self,p):
     
     return r
 .. @+node:ekr.20110929165422.15431: *4* Fun scripts
-.. @+node:ekr.20110919113533.6818: *5* split-defs-into-node
-.. @+node:ekr.20110919113533.6820: *6* methods
-# Normalize a type. Replaces type with fully qualified version
-def normalize_type(ty):
-    SwigType *qty
-    if CPlusPlus:
-        Replaceall(ty,"struct ","")
-        Replaceall(ty,"union ","")
-        Replaceall(ty,"class ","")
-    qty = SwigType_typedef_qualified(ty)
-    #    Printf(stdout,"%s -. %s\n",ty,qty);
-    Clear(ty)
-    Append(ty,qty)
-    Delete(qty)
-# Normaldef normalize_parms(p):
-#     while(p)
-#         SwigType *ty = Getattr(p,"type");
-#         normalize_type(ty);
-#         /* This is a check for a function type
-            SwigType *qty = SwigType_typedef_resolve_all(ty)
-            if SwigType_isfunction(qty):
-                SwigType_add_pointer(ty)
-            Delete(qty)
-        String *value = Getattr(p,"value")
-        if value:
-            Node *n = Swig_symbol_clookup(value,0)
-            if n:
-                String *q = Swig_symbol_qualified(n)
-                if q and Len(q):
-                    String *vb = Swig_scopename_last(value)
-                    Clear(value)
-                    Printf(value,"%s::%s",SwigType_namestr(q),vb)
-                    Delete(q)
-        if value and SwigType_istemplate(value):
-            String *nv = SwigType_namestr(value)
-            Setattr(p,"value",nv)
-        p = nextSibling(p)
-void normalize_later(ParmList *p)
-    while p:
-        SwigType *ty = Getattr(p,"type")
-        Append(normalize,ty)
-        p = nextSibling(p)
-# Walk through entries in normalize list and patch them up
-def normalize_list():
-    Hash *currentsym = Swig_symbol_current()
-    normal_node *nn = patch_list
-    normal_node *np
-    while nn:
-        Swig_symbol_setscope(nn.symtab)
-        SwigType_set_scope(nn.typescope)
-        Iterator t
-        for t = First(nn.normallist); t.item; t = Next(t):
-            normalize_type(t.item)
-        Delete(nn.normallist)
-        np = nn.next
-        delete(nn)
-        nn = np
-    Swig_symbol_setscope(currentsym)
-# generate C++ inheritance type-relationships
-def cplus_inherit_types_impl(first,cls,clsname,bases,baselist,ispublic,cast):
-    if first == cls:
-        return
-    			# The Marcelo check
-    if !cls:
-        cls = first
-    List *alist = 0
-    List *ilist = Getattr(cls,bases)
-    if !ilist:
-        List *nlist = Getattr(cls,baselist)
-        if nlist:
-             len = Len(nlist)
-             i
-            for i = 0; i < len; i++:
-                Node *bcls = 0
-                 clsforward = 0
-                String *bname = Getitem(nlist,i)
-                String *sname = bname
-                String *tname = 0
-                # Try to locate the base class.   We look in the symbol table and we chase
-#      typedef declarations to get to the base class if necessary
-                Symtab *st = Getattr(cls,"sym:symtab")
-                if SwigType_istemplate(bname):
-                    tname = SwigType_typedef_resolve_all(bname)
-                    sname = tname
-                while 1:
-                    String *qsname = SwigType_typedef_qualified(sname)
-                    bcls = Swig_symbol_clookup(qsname,st)
-                    Delete(qsname)
-                    if bcls:
-                        if Strcmp(nodeType(bcls),"class")!= 0:
-                            # Not a class.   The symbol could be a typedef.
-                            if checkAttribute(bcls,"storage","typedef"):
-                                SwigType *decl = Getattr(bcls,"decl")
-                                if !decl or !(Len(decl)):
-                                    sname = Getattr(bcls,"type")
-                                    st = Getattr(bcls,"sym:symtab")
-                                    if SwigType_istemplate(sname):
-                                        if tname:
-                                            Delete(tname)
-                                        tname = SwigType_typedef_resolve_all(sname)
-                                        sname = tname
-                                    continue
-                            if Strcmp(nodeType(bcls),"classforward")!= 0:
-                                Swig_error(Getfile(bname),Getline(bname),"'%s' is not a valid base class.\n",SwigType_namestr(bname))
-                                Swig_error(Getfile(bcls),Getline(bcls),"See definition of '%s'.\n",SwigType_namestr(bname))
-                             else:
-                                Swig_warning(WARN_TYPE_INCOMPLETE,Getfile(bname),Getline(bname),"Base class '%s' is incomplete.\n",SwigType_namestr(bname))
-                                Swig_warning(WARN_TYPE_INCOMPLETE,Getfile(bcls),Getline(bcls),"Only forward declaration '%s' was found.\n",SwigType_namestr(bname))
-                                clsforward = 1
-                            bcls = 0
-                         else:
-                            if Getattr(bcls,"typepass:visit"):
-                                if !ilist:
-                                    ilist = alist = NewList()
-                                Append(ilist,bcls)
-                             else:
-                                Swig_warning(WARN_TYPE_UNDEFINED_CLASS,Getfile(bname),Getline(bname),"Base class '%s' undefined.\n",SwigType_namestr(bname))
-                                Swig_warning(WARN_TYPE_UNDEFINED_CLASS,Getfile(bcls),Getline(bcls),"'%s' must be defined before it is used as a base class.\n",SwigType_namestr(bname))
-                    break
-                if tname:
-                    Delete(tname)
-                if !bcls:
-                    if !clsforward:
-                        if ispublic and !Getmeta(bname,"already_warned"):
-                            Swig_warning(WARN_TYPE_UNDEFINED_CLASS,Getfile(bname),Getline(bname),"Nothing known about base class '%s'. Ignored.\n",SwigType_namestr(bname))
-                            if Strchr(bname,'<'):
-                                Swig_warning(WARN_TYPE_UNDEFINED_CLASS,Getfile(bname),Getline(bname),"Maybe you forgot to instantiate '%s' using %%template.\n",SwigType_namestr(bname))
-                            Setmeta(bname,"already_warned","1")
-                    SwigType_inherit(clsname,bname,cast,0)
-        if ilist:
-            Setattr(cls,bases,ilist)
-    if alist:
-        Delete(alist)
-    if !ilist:
-        return
-     len = Len(ilist)
-     i
-    for i = 0; i < len; i++:
-        Node *n = Getitem(ilist,i)
-        String *bname = Getattr(n,"name")
-        Node *bclass = n; # Getattr(n,"class");
-        Hash *scopes = Getattr(bclass,"typescope")
-        SwigType_inherit(clsname,bname,cast,0)
-        String *smartptr = Getattr(first,"feature:smartptr")
-        if smartptr:
-            SwigType *smart = 0
-            SwigType *spt = Swig_cparse_type(smartptr)
-            if spt:
-                smart = SwigType_typedef_resolve_all(spt)
-                Delete(spt)
-                # Record a(fake)inheritance relationship between smart pointer
-#      and smart pointer to base class,so that smart pointer upcasts
-#      are automatically generated.
-                SwigType *bsmart = Copy(smart)
-                SwigType *rclsname = SwigType_typedef_resolve_all(clsname)
-                SwigType *rbname = SwigType_typedef_resolve_all(bname)
-                Replaceall(bsmart,rclsname,rbname)
-                Delete(rclsname)
-                Delete(rbname)
-                String *smartnamestr = SwigType_namestr(smart)
-                String *bsmartnamestr = SwigType_namestr(bsmart)
-                # construct casting code
-                String *convcode = NewStringf("\n    *newmemory = SWIG_CAST_NEW_MEMORY;\n    return(void *)new %s(*(%s *)$from);\n",bsmartnamestr,smartnamestr)
-                Delete(bsmartnamestr)
-                Delete(smartnamestr)
-                # setup inheritance relationship between smart pointer templates
-                SwigType_inherit(smart,bsmart,0,convcode)
-                if !GetFlag(bclass,"feature:smartptr"):
-                    Swig_warning(WARN_LANG_SMARTPTR_MISSING,Getfile(first),Getline(first),"Base class '%s' of '%s' is not similarly marked as a smart pointer.\n",SwigType_namestr(Getattr(bclass,"name")),SwigType_namestr(Getattr(first,"name")))
-                Delete(convcode)
-                Delete(bsmart)
-                Delete(smart)
-             else:
-                Swig_error(Getfile(first),Getline(first),"Invalid type(%s)in 'smartptr' feature for class %s.\n",SwigType_namestr(smartptr),SwigType_namestr(clsname))
-         else:
-            if GetFlag(bclass,"feature:smartptr"):
-                Swig_warning(WARN_LANG_SMARTPTR_MISSING,Getfile(first),Getline(first),"Derived class '%s' of '%s' is not similarly marked as a smart pointer.\n",SwigType_namestr(Getattr(first,"name")),SwigType_namestr(Getattr(bclass,"name")))
-        if !importmode:
-            String *btype = Copy(bname)
-            SwigType_add_pointer(btype)
-            SwigType_remember(btype)
-            Delete(btype)
-        if scopes:
-            SwigType_inherit_scope(scopes)
-        # Set up inheritance in the symbol table
-        Symtab *st = Getattr(cls,"symtab")
-        Symtab *bst = Getattr(bclass,"symtab")
-        if st == bst:
-            Swig_warning(WARN_PARSE_REC_INHERITANCE,Getfile(cls),Getline(cls),"Recursive scope inheritance of '%s'.\n",SwigType_namestr(Getattr(cls,"name")))
-            continue
-        Symtab *s = Swig_symbol_current()
-        Swig_symbol_setscope(st)
-        Swig_symbol_inherit(bst)
-        Swig_symbol_setscope(s)
-        # Recursively hit base classes
-        String *namestr = SwigType_namestr(Getattr(bclass,"name"))
-        String *newcast = NewStringf("(%s *)%s",namestr,cast)
-        Delete(namestr)
-        cplus_inherit_types_impl(first,bclass,clsname,bases,baselist,ispublic,newcast)
-        Delete(newcast)
-void append_list(List *lb,List *la)
-    if la and lb:
-        for Iterator bi = First(la); bi.item; bi = Next(bi):
-            Append(lb,bi.item)
-void cplus_inherit_types(Node *first,Node *cls,String *clsname,String *cast = 0)
-    cplus_inherit_types_impl(first,cls,clsname,"bases","baselist",1,cast)
-    cplus_inherit_types_impl(first,cls,clsname,"protectedbases","protectedbaselist",0,cast)
-    cplus_inherit_types_impl(first,cls,clsname,"privatebases","privatebaselist",0,cast)
-    if !cls:
-        cls = first
-    List *allbases = NewList()
-    append_list(allbases,Getattr(cls,"bases"))
-    append_list(allbases,Getattr(cls,"protectedbases"))
-    append_list(allbases,Getattr(cls,"privatebases"))
-    if Len(allbases):
-        Setattr(cls,"allbases",allbases)
-    Delete(allbases)
-# ------------------------------------------------------------
-# * top()
-# * ------------------------------------------------------------
-def top(n):
-    importmode = 0
-    module = Getattr(n,"module")
-    inclass = 0
-    normalize = 0
-    nsname = 0
-    nssymname = 0
-    classhash = Getattr(n,"classes")
-    emit_children(n)
-    normalize_list()
-    SwigType_set_scope(0)
-    return SWIG_OK
-# ------------------------------------------------------------
-# * moduleDirective()
-# * ------------------------------------------------------------
-virtual int moduleDirective(Node *n)
-    if !module:
-        module = n
-    return SWIG_OK
-# ------------------------------------------------------------
-# * importDirective()
-# * ------------------------------------------------------------
-def importDirective(n):
-    String *oldmodule = module
-     oldimport = importmode
-    importmode = 1
-    module = 0
-    emit_children(n)
-    importmode = oldimport
-    module = oldmodule
-    return SWIG_OK
-# ------------------------------------------------------------
-# * includeDirective()
-# * externDirective()
-# * extendDirective()
-# * ------------------------------------------------------------
-virtual int includeDirective(Node *n)
-    return emit_children(n)
-def externDeclaration(n):
-    return emit_children(n)
-virtual int edef xtendDirective(n):
-    return emit_children(n)
-# ------------------------------------------------------------
-# * classDeclaration()
-# * ------------------------------------------------------------
-def classDeclaration(n):
-    String *name = Getattr(n,"name")
-    String *tdname = Getattr(n,"tdname")
-    String *unnamed = Getattr(n,"unnamed")
-    String *storage = Getattr(n,"storage")
-    String *kind = Getattr(n,"kind")
-    Node *oldinclass = inclass
-    List *olist = normalize
-    Symtab *symtab
-    String *nname = 0
-    String *fname = 0
-    String *scopename = 0
-    normalize = NewList()
-    if name:
-        if SwigType_istemplate(name):
-            # We need to fully resolve the name to make templates work correctly */
-Node *cn
-            fname = SwigType_typedef_resolve_all(name)
-            if Strcmp(fname,name)!= 0 and(cn = Swig_symbol_clookup_local(fname,0)):
-                if(n == cn)
-      or(Strcmp(nodeType(cn),"template")== 0)
-      or(Getattr(cn,"feature:onlychildren")!= 0)
-      or(Getattr(n,"feature:onlychildren")!= 0):
-                    Swig_symbol_cadd(fname,n)
-                    SwigType_typedef_class(fname)
-                    scopename = Copy(fname)
-                 else:
-                    Swig_warning(WARN_TYPE_REDEFINED,Getfile(n),Getline(n),"Template '%s' was already wrapped,\n",SwigType_namestr(name))
-                    Swig_warning(WARN_TYPE_REDEFINED,Getfile(cn),Getline(cn),"previous wrap of '%s'.\n",SwigType_namestr(Getattr(cn,"name")))
-                    scopename = 0
-             else:
-                Swig_symbol_cadd(fname,n)
-                SwigType_typedef_class(fname)
-                scopename = Copy(fname)
-         else:
-            if(CPlusPlus)or(unnamed):
-                SwigType_typedef_class(name)
-             else:
-                SwigType_typedef_class(NewStringf("%s %s",kind,name))
-            scopename = Copy(name)
-     else:
-        scopename = 0
-    Setattr(n,"typepass:visit","1")
-    # Need to set up a typedef if unnamed
-    if unnamed and tdname and(Cmp(storage,"typedef")== 0):
-        SwigType_typedef(unnamed,tdname)
-    if nsname:
-        nname = NewStringf("%s::%s",nsname,name)
-        String *tdname = Getattr(n,"tdname")
-        if tdname:
-            tdname = NewStringf("%s::%s",nsname,tdname)
-            Setattr(n,"tdname",tdname)
-    if nssymname:
-        if GetFlag(n,"feature:nspace"):
-            Setattr(n,"sym:nspace",nssymname)
-    SwigType_new_scope(scopename)
-    SwigType_attach_symtab(Getattr(n,"symtab"))
-    # Inherit type definitions into the class
-    if name:
-        cplus_inherit_types(n,0,nname ? nname:(fname ? fname: name))
-    inclass = n
-    symtab = Swig_symbol_setscope(Getattr(n,"symtab"))
-    emit_children(n)
-    Swig_symbol_setscope(symtab)
-    Hash *ts = SwigType_pop_scope()
-    Setattr(n,"typescope",ts)
-    Delete(ts)
-    Setattr(n,"module",module)
-    # Normalize deferred types
-        normal_node *nn = new normal_node()
-        nn.normallist = normalize
-        nn.symtab = Getattr(n,"symtab")
-        nn.next = patch_list
-        nn.typescope = Getattr(n,"typescope")
-        patch_list = nn
-    normalize = olist
-    inclass = oldinclass
-    # If in a namespace,patch the class name
-    if nname:
-        Setattr(n,"name",nname)
-        Delete(nname)
-    return SWIG_OK
-# ------------------------------------------------------------
-# * namespaceDeclaration()
-# * ------------------------------------------------------------
-virtual int templateDeclaration(Node *n)
-    String *name = Getattr(n,"name")
-    String *ttype = Getattr(n,"templatetype")
-    if Strcmp(ttype,"class")== 0:
-        String *rname = SwigType_typedef_resolve_all(name)
-        SwigType_typedef_class(rname)
-        Delete(rname)
-     elif Strcmp(ttype,"classforward")== 0:
-        String *rname = SwigType_typedef_resolve_all(name)
-        SwigType_typedef_class(rname)
-        Delete(rname)
-        #      SwigType_typedef_class(name);
-    return SWIG_OK
-# ------------------------------------------------------------
-# * classforwardDeclaration()
-# * ------------------------------------------------------------
-def classforwardDeclaration(n):
-    # Temporary hack. Can't do inside a class because it breaks
-#    C nested structure wrapping
-    if(!inclass)or(CPlusPlus):
-        String *name = Getattr(n,"name")
-        String *nname
-        SwigType_typedef_class(name)
-        if nsname:
-            nname = NewStringf("%s::%s",nsname,name)
-            Setattr(n,"name",nname)
-    return SWIG_OK
-# ------------------------------------------------------------
-# * namespaceDeclaration()
-# * ------------------------------------------------------------
-virtual int namespaceDeclaration(Node *n)
-    Symtab *symtab
-    String *name = Getattr(n,"name")
-    String *alias = Getattr(n,"alias")
-    List *olist = normalize
-    normalize = NewList()
-    if alias:
-        Typetab *ts = Getattr(n,"typescope")
-        if !ts:
-            Node *ns
-            # Create a empty scope for the alias
-            ns = Getattr(n,"namespace")
-            if ns:
-                SwigType_scope_alias(name,Getattr(ns,"typescope"))
-            ts = Getattr(ns,"typescope")
-            Setattr(n,"typescope",ts)
-        # Namespace alias
-        return SWIG_OK
-     else:
-        if name:
-            Node *nn = Swig_symbol_clookup(name,n)
-            Hash *ts = 0
-            if nn:
-                ts = Getattr(nn,"typescope")
-            if !ts:
-                SwigType_new_scope(name)
-                SwigType_attach_symtab(Getattr(n,"symtab"))
-             else:
-                SwigType_set_scope(ts)
-        String *oldnsname = nsname
-        String *oldnssymname = nssymname
-        nsname = Swig_symbol_qualified(Getattr(n,"symtab"))
-        nssymname = Swig_symbol_qualified_language_scopename(Getattr(n,"symtab"))
-        symtab = Swig_symbol_setscope(Getattr(n,"symtab"))
-        emit_children(n)
-        Swig_symbol_setscope(symtab)
-        if name:
-            Hash *ts = SwigType_pop_scope()
-            Setattr(n,"typescope",ts)
-            Delete(ts)
-        # Normalize deferred types
-            normal_node *nn = new normal_node()
-            nn.normallist = normalize
-            nn.symtab = Getattr(n,"symtab")
-            nn.next = patch_list
-            nn.typescope = Getattr(n,"typescope")
-            patch_list = nn
-        normalize = olist
-        Delete(nssymname)
-        nssymname = oldnssymname
-        Delete(nsname)
-        nsname = oldnsname
-        return SWIG_OK
-# ------------------------------------------------------------
-# * cDeclaration()
-# * ------------------------------------------------------------
-def cDeclaration(n):
-    if NoExcept:
-        Delattr(n,"throws")
-    # Normalize types.
-    SwigType *ty = Getattr(n,"type")
-    normalize_type(ty)
-    SwigType *decl = Getattr(n,"decl")
-    if decl:
-        normalize_type(decl)
-    normalize_parms(Getattr(n,"parms"))
-    normalize_parms(Getattr(n,"throws"))
-    if GetFlag(n,"conversion_operator"):
-        # The call to the operator in the generated wrapper must be fully qualified in order to compile
-        SwigType *name = Getattr(n,"name")
-        SwigType *qualifiedname = Swig_symbol_string_qualify(name,0)
-        Clear(name)
-        Append(name,qualifiedname)
-        Delete(qualifiedname)
-    if checkAttribute(n,"storage","typedef"):
-        String *name = Getattr(n,"name")
-        ty = Getattr(n,"type")
-        decl = Getattr(n,"decl")
-        SwigType *t = Copy(ty)
-            # If the typename is qualified,make sure the scopename is fully qualified when making a typedef
-            if Swig_scopename_check(t)and strncmp(Char(t),"::",2):
-                String *base,*prefix,*qprefix
-                base = Swig_scopename_last(t)
-                prefix = Swig_scopename_prefix(t)
-                qprefix = SwigType_typedef_qualified(prefix)
-                Delete(t)
-                t = NewStringf("%s::%s",qprefix,base)
-                Delete(base)
-                Delete(prefix)
-                Delete(qprefix)
-        SwigType_push(t,decl)
-        if CPlusPlus:
-            Replaceall(t,"struct ","")
-            Replaceall(t,"union ","")
-            Replaceall(t,"class ","")
-        SwigType_typedef(t,name)
-    # If namespaces are active.  We need to patch the name with a namespace prefix
-    if nsname and !inclass:
-        String *name = Getattr(n,"name")
-        if name:
-            String *nname = NewStringf("%s::%s",nsname,name)
-            Setattr(n,"name",nname)
-            Delete(nname)
-    clean_overloaded(n)
-    return SWIG_OK
-# ------------------------------------------------------------
-# * constructorDeclaration()
-# * ------------------------------------------------------------
-virtual int constructorDeclaration(Node *n)
-    if NoExcept:
-        Delattr(n,"throws")
-    normalize_parms(Getattr(n,"parms"))
-    normalize_parms(Getattr(n,"throws"))
-    # If in a namespace,patch the class name
-    if nsname:
-        String *nname = NewStringf("%s::%s",nsname,Getattr(n,"name"))
-        Setattr(n,"name",nname)
-    clean_overloaded(n)
-    return SWIG_OK
-# ------------------------------------------------------------
-# * destructorDeclaration()
-# * ------------------------------------------------------------
-def destructorDeclaration(n):
-    # If in a namespace,patch the class name
-    if nsname:
-        String *nname = NewStringf("%s::%s",nsname,Getattr(n,"name"))
-        Setattr(n,"name",nname)
-    return SWIG_OK
-# ------------------------------------------------------------
-# * constantDirective()
-# * ------------------------------------------------------------
-virtual int constantDirective(Node *n)
-    SwigType *ty = Getattr(n,"type")
-    if ty:
-        Setattr(n,"type",SwigType_typedef_qualified(ty))
-    return SWIG_OK
-# ------------------------------------------------------------
-# * enumDeclaration()
-# * ------------------------------------------------------------
-def enumDeclaration(n):
-    String *name = Getattr(n,"name")
-    if name:
-        String *scope = 0
-        # Add a typedef to the type table so that we can use 'enum Name' as well as just 'Name'
-  if nsname or inclass:
-            # But first correct the name and tdname to contain the fully qualified scopename
-if nsname and inclass:
-                scope = NewStringf("%s::%s",nsname,Getattr(inclass,"name"))
-             elif nsname:
-                scope = NewStringf("%s",nsname)
-             elif inclass:
-                scope = NewStringf("%s",Getattr(inclass,"name"))
-            String *nname = NewStringf("%s::%s",scope,name)
-            Setattr(n,"name",nname)
-            String *tdname = Getattr(n,"tdname")
-            if tdname:
-                tdname = NewStringf("%s::%s",scope,tdname)
-                Setattr(n,"tdname",tdname)
-            SwigType *t = NewStringf("enum %s",nname)
-            SwigType_typedef(t,name)
-         else:
-            SwigType *t = NewStringf("enum %s",name)
-            SwigType_typedef(t,name)
-        Delete(scope)
-    String *tdname = Getattr(n,"tdname")
-    String *unnamed = Getattr(n,"unnamed")
-    String *storage = Getattr(n,"storage")
-    # Construct enumtype - for declaring an enum of this type with SwigType_ltype()etc
-String *enumtype = 0
-    if unnamed and tdname and(Cmp(storage,"typedef")== 0):
-        enumtype = Copy(Getattr(n,"tdname"))
-     elif name:
-        enumtype = NewStringf("%s%s",CPlusPlus ? "": "enum ",Getattr(n,"name"))
-     else:
-        # anonymous enums
-  enumtype = Copy(Getattr(n,"type"))
-    Setattr(n,"enumtype",enumtype)
-    if nssymname:
-        if GetFlag(n,"feature:nspace"):
-            Setattr(n,"sym:nspace",nssymname)
-    # This block of code is for dealing with %ignore on an enum item where the target language
-# attempts to use the C enum value in the target language itself and expects the previous enum value
-# to be one more than the previous value... the previous enum item might not exist if it is ignored!
-# - It sets the first non-ignored enum item with the "firstenumitem" attribute.
-# - It adds an enumvalue attribute if the previous enum item is ignored
-        Node *c
-         count = 0
-        String *previous = 0
-        bool previous_ignored = false
-        bool firstenumitem = false
-        for c = firstChild(n); c; c = nextSibling(c):
-            assert(strcmp(Char(nodeType(c)),"enumitem")== 0)
-            bool reset
-            String *enumvalue = Getattr(c,"enumvalue")
-            if GetFlag(c,"feature:ignore")or !Getattr(c,"sym:name"):
-                reset = enumvalue ? true: false
-                previous_ignored = true
-             else:
-                if !enumvalue and previous_ignored:
-                    if previous:
-                        Setattr(c,"enumvalue",NewStringf("(%s)+ %d",previous,count+1))
-                    else:
-                    Setattr(c,"enumvalue",NewStringf("%d",count))
-                    SetFlag(c,"virtenumvalue")# identify enumvalue as virtual,ie not from the parsed source
-                if !firstenumitem:
-                    SetFlag(c,"firstenumitem")
-                    firstenumitem = true
-                reset = true
-                previous_ignored = false
-            if reset:
-                previous = enumvalue ? enumvalue: Getattr(c,"name")
-                count = 0
-             else:
-                count++
-    emit_children(n)
-    return SWIG_OK
-# ------------------------------------------------------------
-# * enumvalueDeclaration()
-# * ------------------------------------------------------------
-virtual int enumvalueDeclaration(Node *n)
-    String *name = Getattr(n,"name")
-    String *value = Getattr(n,"value")
-    if !value:
-        value = name
-    if Strcmp(value,name)== 0:
-        String *new_value
-        if(nsname or inclass)and cparse_cplusplus:
-            new_value = NewStringf("%s::%s",SwigType_namestr(Swig_symbol_qualified(n)),value)
-         else:
-            new_value = NewString(value)
-        if(nsname or inclass)and !cparse_cplusplus:
-            String *cppvalue = NewStringf("%s::%s",SwigType_namestr(Swig_symbol_qualified(n)),value)
-            Setattr(n,"cppvalue",cppvalue); # for target languages that always generate C++ code even when wrapping C code
-        Setattr(n,"value",new_value)
-        Delete(new_value)
-    Node *next = nextSibling(n)
-    # Make up an enumvalue if one was not specified in the parsed code(not designed to be used on enum items and %ignore - enumvalue will be set instead)
-if !GetFlag(n,"feature:ignore"):
-        if Getattr(n,"_last")and !Getattr(n,"enumvalue"):  	# Only the first enum item has _last set(Note: first non-ignored enum item has firstenumitem set)
-Setattr(n,"enumvalueex","0")
-        if next and !Getattr(next,"enumvalue"):
-            Setattr(next,"enumvalueex",NewStringf("%s + 1",Getattr(n,"sym:name")))
-    return SWIG_OK
-# ------------------------------------------------------------
-# * enumforwardDeclaration()
-# * ------------------------------------------------------------
-def enumforwardDeclaration(n):
-    # Use enumDeclaration()to do all the hard work.
-# Note that no children can be emitted in a forward declaration as there aren't any.
-return enumDeclaration(n)
-ifdef DEBUG_OVERLOADED
-static void show_overloaded(Node *n)
-    Node *c = Getattr(n,"sym:overloaded")
-    Node *checkoverloaded = c
-    Printf(stdout,"-------------------- overloaded start %s sym:overloaded():%p -------------------------------\n",Getattr(n,"name"),c)
-    while c:
-        if Getattr(c,"error"):
-            c = Getattr(c,"sym:nextSibling")
-            continue
-        if Getattr(c,"sym:overloaded")!= checkoverloaded:
-            Printf(stdout,"sym:overloaded error c:%p checkoverloaded:%p\n",c,checkoverloaded)
-            Swig_print_node(c)
-            exit(1)
-        String *decl = Strcmp(nodeType(c),"using")== 0 ? NewString("------"): Getattr(c,"decl")
-        Printf(stdout,"  show_overloaded %s::%s(%s)         [%s] nodeType:%s\n",parentNode(c)? Getattr(parentNode(c),"name"): "NOPARENT",Getattr(c,"name"),decl,Getattr(c,"sym:overname"),nodeType(c))
-        if !Getattr(c,"sym:overloaded"):
-            Printf(stdout,"sym:overloaded error.....%p\n",c)
-            Swig_print_node(c)
-            exit(1)
-        c = Getattr(c,"sym:nextSibling")
-    Printf(stdout,"-------------------- overloaded end   %s -------------------------------\n",Getattr(n,"name"))
-# ------------------------------------------------------------
-# * usingDeclaration()
-# * ------------------------------------------------------------
-def usingDeclaration(n):
-    if Getattr(n,"namespace"):
-        # using namespace id
-        # For a namespace import.   We set up inheritance in the type system
-        Node *ns = Getattr(n,"node")
-        if ns:
-            Typetab *ts = Getattr(ns,"typescope")
-            if ts:
-                SwigType_using_scope(ts)
-        return SWIG_OK
-     else:
-        Node *ns
-        # using id
-        Symtab *stab = Getattr(n,"sym:symtab")
-        if stab:
-            String *uname = Getattr(n,"uname")
-            ns = Swig_symbol_clookup(uname,stab)
-            if !ns and SwigType_istemplate(uname):
-                String *tmp = Swig_symbol_template_deftype(uname,0)
-                if !Equal(tmp,uname):
-                    ns = Swig_symbol_clookup(tmp,stab)
-                Delete(tmp)
-         else:
-            ns = 0
-        if !ns:
-            if is_public(n):
-                Swig_warning(WARN_PARSE_USING_UNDEF,Getfile(n),Getline(n),"Nothing known about '%s'.\n",SwigType_namestr(Getattr(n,"uname")))
-         else:
-            # Only a single symbol is being used.  There are only a few symbols that
-#    we actually care about.  These are typedef,class declarations,and enum
-            String *ntype = nodeType(ns)
-            if Strcmp(ntype,"cdecl")== 0:
-                if checkAttribute(ns,"storage","typedef"):
-                    # A typedef declaration
-                    String *uname = Getattr(n,"uname")
-                    SwigType_typedef_using(uname)
-                 else:
-                    # A normal C declaration.
-                    if(inclass)and(!GetFlag(n,"feature:ignore"))and(Getattr(n,"sym:name")):
-                        Node *c = ns
-                        Node *unodes = 0,*last_unodes = 0
-                         ccount = 0
-                        String *symname = Getattr(n,"sym:name")
-                        while c:
-                            if Strcmp(nodeType(c),"cdecl")== 0:
-                                if !(checkAttribute(c,"storage","static")
-        or checkAttribute(c,"storage","typedef")
-        or checkAttribute(c,"storage","friend")
-        or(Getattr(c,"feature:extend")and !Getattr(c,"code"))
-        or GetFlag(c,"feature:ignore")):
-                                    # Don't generate a method if the method is overridden in this class,
-#          * for example don't generate another m(bool)should there be a Base::m(bool):
-#          * struct Derived: Base
-#          *   void m(bool);
-#          *   using Base::m;
-#          * ;
-#
-                                    String *csymname = Getattr(c,"sym:name")
-                                    if !csymname or(Strcmp(csymname,symname)== 0):
-                                            String *decl = Getattr(c,"decl")
-                                            Node *over = Getattr(n,"sym:overloaded")
-                                             match = 0
-                                            while over:
-                                                String *odecl = Getattr(over,"decl")
-                                                if Cmp(decl,odecl)== 0:
-                                                    match = 1
-                                                    break
-                                                over = Getattr(over,"sym:nextSibling")
-                                            if match:
-                                                c = Getattr(c,"csym:nextSibling")
-                                                continue
-                                        Node *nn = copyNode(c)
-                                        Delattr(nn,"access")	# access might be different from the method in the base class
-          Setattr(nn,"access",Getattr(n,"access"))
-                                        if !Getattr(nn,"sym:name"):
-                                            Setattr(nn,"sym:name",symname)
-                                        if !GetFlag(nn,"feature:ignore"):
-                                            ParmList *parms = CopyParmList(Getattr(c,"parms"))
-                                             is_pointer = SwigType_ispointer_return(Getattr(nn,"decl"))
-                                             is_void = checkAttribute(nn,"type","void")and !is_pointer
-                                            Setattr(nn,"parms",parms)
-                                            Delete(parms)
-                                            if Getattr(n,"feature:extend"):
-                                                String *ucode = is_void ? NewStringf(" self.%s(",Getattr(n,"uname")): NewStringf(" return self.%s(",Getattr(n,"uname"))
-                                                for ParmList *p = parms; p;:
-                                                    Append(ucode,Getattr(p,"name"))
-                                                    p = nextSibling(p)
-                                                    if p:
-                                                        Append(ucode,",")
-                                                Append(ucode,"); ")
-                                                Setattr(nn,"code",ucode)
-                                                Delete(ucode)
-                                            ParmList *throw_parm_list = Getattr(c,"throws")
-                                            if throw_parm_list:
-                                                Setattr(nn,"throws",CopyParmList(throw_parm_list))
-                                            ccount++
-                                            if !last_unodes:
-                                                last_unodes = nn
-                                                unodes = nn
-                                             else:
-                                                Setattr(nn,"previousSibling",last_unodes)
-                                                Setattr(last_unodes,"nextSibling",nn)
-                                                Setattr(nn,"sym:previousSibling",last_unodes)
-                                                Setattr(last_unodes,"sym:nextSibling",nn)
-                                                Setattr(nn,"sym:overloaded",unodes)
-                                                Setattr(unodes,"sym:overloaded",unodes)
-                                                last_unodes = nn
-                                         else:
-                                            Delete(nn)
-                            c = Getattr(c,"csym:nextSibling")
-                        if unodes:
-                            set_firstChild(n,unodes)
-                            if ccount > 1:
-                                if !Getattr(n,"sym:overloaded"):
-                                    Setattr(n,"sym:overloaded",n)
-                                    Setattr(n,"sym:overname","_SWIG_0")
-                        # Hack the parse tree symbol table for overloaded methods. Replace the "using" node with the
-#        * list of overloaded methods we have just added in as child nodes to the "using" node.
-#        * The node will still exist,it is just the symbol table linked list of overloaded methods
-#        * which is hacked.
-                        if Getattr(n,"sym:overloaded"):
-                             cnt = 0
-                            ifdef DEBUG_OVERLOADED
-    Node *debugnode = n
-                            show_overloaded(n)
-    if !firstChild(n):
-                                # Remove from overloaded list('using' node does not actually end up adding in any methods)
-      Node *ps = Getattr(n,"sym:previousSibling")
-                                Node *ns = Getattr(n,"sym:nextSibling")
-                                if ps:
-                                    Setattr(ps,"sym:nextSibling",ns)
-                                if ns:
-                                    Setattr(ns,"sym:previousSibling",ps)
-                             else:
-                                # The 'using' node results in methods being added in - slot in the these methods here
-      Node *ps = Getattr(n,"sym:previousSibling")
-                                Node *ns = Getattr(n,"sym:nextSibling")
-                                Node *fc = firstChild(n)
-                                Node *pp = fc
-                                Node *firstoverloaded = Getattr(n,"sym:overloaded")
-                                if firstoverloaded == n:
-                                    # This 'using' node we are cutting out was the first node in the overloaded list.
-        # Change the first node in the list to its first sibling
-        Delattr(firstoverloaded,"sym:overloaded")
-                                    Node *nnn = Getattr(firstoverloaded,"sym:nextSibling")
-                                    firstoverloaded = fc
-                                    while nnn:
-                                        Setattr(nnn,"sym:overloaded",firstoverloaded)
-                                        nnn = Getattr(nnn,"sym:nextSibling")
-                                while pp:
-                                    Node *ppn = Getattr(pp,"sym:nextSibling")
-                                    Setattr(pp,"sym:overloaded",firstoverloaded)
-                                    Setattr(pp,"sym:overname",NewStringf("%s_%d",Getattr(n,"sym:overname"),cnt++))
-                                    if ppn:
-                                        pp = ppn
-                                    else:
-                                    break
-                                if ps:
-                                    Setattr(ps,"sym:nextSibling",fc)
-                                    Setattr(fc,"sym:previousSibling",ps)
-                                if ns:
-                                    Setattr(ns,"sym:previousSibling",pp)
-                                    Setattr(pp,"sym:nextSibling",ns)
-                                ifdef DEBUG_OVERLOADED
-      debugnode = firstoverloaded
-                            Delattr(n,"sym:previousSibling")
-                            Delattr(n,"sym:nextSibling")
-                            Delattr(n,"sym:overloaded")
-                            Delattr(n,"sym:overname")
-                            ifdef DEBUG_OVERLOADED
-    show_overloaded(debugnode)
-    clean_overloaded(n)# Needed?
-             elif(Strcmp(ntype,"class")== 0)or((Strcmp(ntype,"classforward")== 0)):
-                # We install the using class name as kind of a typedef back to the original class
-                String *uname = Getattr(n,"uname")
-                # Import into current type scope
-                SwigType_typedef_using(uname)
-             elif Strcmp(ntype,"enum")== 0:
-                SwigType_typedef_using(Getattr(n,"uname"))
-    return SWIG_OK
-# ------------------------------------------------------------
-# * typemapDirective()
-# * ------------------------------------------------------------
-virtual int typemapDirective(Node *n)
-    if inclass or nsname:
-        Node *items = firstChild(n)
-        while items:
-            Parm *pattern = Getattr(items,"pattern")
-            Parm *parms = Getattr(items,"parms")
-            normalize_later(pattern)
-            normalize_later(parms)
-            items = nextSibling(items)
-    return SWIG_OK
-# ------------------------------------------------------------
-# * typemapcopyDirective()
-# * ------------------------------------------------------------
-def typemapcopyDirective(n):
-    if inclass or nsname:
-        Node *items = firstChild(n)
-        ParmList *pattern = Getattr(n,"pattern")
-        normalize_later(pattern)
-        while items:
-            ParmList *npattern = Getattr(items,"pattern")
-            normalize_later(npattern)
-            items = nextSibling(items)
-    return SWIG_OK
-# ------------------------------------------------------------
-# * applyDirective()
-# * ------------------------------------------------------------
-virtual int applyDirective(Node *n)
-    if inclass or nsname:
-        ParmList *pattern = Getattr(n,"pattern")
-        normalize_later(pattern)
-        Node *items = firstChild(n)
-        while items:
-            Parm *apattern = Getattr(items,"pattern")
-            normalize_later(apattern)
-            items = nextSibling(items)
-    return SWIG_OK
-# ------------------------------------------------------------
-# * clearDirective()
-# * ------------------------------------------------------------
-def clearDirective(n):
-    if inclass or nsname:
-        Node *p
-        for p = firstChild(n); p; p = nextSibling(p):
-            ParmList *pattern = Getattr(p,"pattern")
-            normalize_later(pattern)
-    return SWIG_OK
-public:
-statdef pass(n):
-    TypePass t
-    t.top(n)
 .. @+node:ekr.20110917104720.9418: *5* convert-names-to-pep8
 .. @+node:ekr.20110918204546.6809: *5* convert-to-class
 .. @+node:ekr.20111004182631.15509: *4* Later
