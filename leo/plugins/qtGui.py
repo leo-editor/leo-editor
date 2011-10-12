@@ -112,7 +112,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             self.setWindowFlags(QtCore.Qt.Popup | self.windowFlags())
             # Make this window a modal window.
             # Calling this does not fix the Ubuntu-specific modal behavior.
-            ### self.setWindowModality(QtCore.Qt.NonModal) ### WindowModal)
+            # self.setWindowModality(QtCore.Qt.NonModal) # WindowModal)
 
             if 0:
                 # embed the window in a splitter.
@@ -1289,9 +1289,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         colorer.initFlag = True
 
         i = self.toGuiIndex(i)
-        ##### It's not a good idea to force the scrollbar like this.
-        ##### sb = w.verticalScrollBar()
-        ##### pos = sb.sliderPosition()
+        ### 2011/10/12: Valid?
+        # sb = w.verticalScrollBar()
+        # pos = sb.sliderPosition()
         cursor = w.textCursor()
         try:
             self.changingText = True # Disable onTextChanged.
@@ -1301,8 +1301,10 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         finally:
             self.changingText = False
 
-        ##### sb.setSliderPosition(pos)
-        ##### w.ensureCursorVisible() # This has no effect.
+        ### 2011/10/12: Valid?
+        # sb.setSliderPosition(pos)
+
+        ### w.ensureCursorVisible() # This has no effect.
     #@+node:ekr.20110605121601.18090: *5* see (leoQTextEditWidget)
     def see(self,i):
 
@@ -3128,22 +3130,24 @@ class leoQtBody (leoFrame.leoBody):
         self.selectLabel(wrapper)
 
         # g.trace('===',id(w),w.leo_chapter,w.leo_p.h)
-    #@+node:ekr.20110605121601.18198: *6* cycleEditorFocus
-    def cycleEditorFocus (self,event=None):
+    #@+node:ekr.20110605121601.18198: *6* cycleEditorFocus (qtBody)
+    # Use the base class method.
 
-        '''Cycle keyboard focus between the body text editors.'''
+    # def cycleEditorFocus (self,event=None):
 
-        c = self.c ; d = self.editorWidgets
-        w = c.frame.body.bodyCtrl
-        values = list(d.values())
-        if len(values) > 1:
-            i = values.index(w) + 1
-            if i == len(values): i = 0
-            w2 = d.values()[i]
-            assert(w!=w2)
-            self.selectEditor(w2)
-            c.frame.body.bodyCtrl = w2
-            # g.trace('***',g.app.gui.widget_name(w2),id(w2))
+        # '''Cycle keyboard focus between the body text editors.'''
+
+        # c = self.c ; d = self.editorWidgets
+        # w = c.frame.body.bodyCtrl
+        # values = list(d.values())
+        # if len(values) > 1:
+            # i = values.index(w) + 1
+            # if i == len(values): i = 0
+            # w2 = list(d.values())[i]
+            # assert(w!=w2)
+            # self.selectEditor(w2)
+            # c.frame.body.bodyCtrl = w2
+            
     #@+node:ekr.20110605121601.18199: *6* deleteEditor
     def deleteEditor (self,event=None):
 

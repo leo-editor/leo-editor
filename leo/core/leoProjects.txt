@@ -4759,7 +4759,7 @@ if old_p != p:
 
 if old_p and old_p != p:
     # 2010/02/11: Don't change the *new* node's insert point!
-    ### old_p.v.scrollBarSpot = yview
+    old_p.v.scrollBarSpot = yview
     old_p.v.insertSpot = insertSpot
 #@+node:ekr.20040803072955.130: *7* << select the new node >>
 # Bug fix: we must always set this, even if we never edit the node.
@@ -5480,9 +5480,9 @@ def insert(self,i,s):
     colorer.initFlag = True
 
     i = self.toGuiIndex(i)
-    ##### It's not a good idea to force the scrollbar like this.
-    ##### sb = w.verticalScrollBar()
-    ##### pos = sb.sliderPosition()
+    ### 2011/10/12: Valid?
+    # sb = w.verticalScrollBar()
+    # pos = sb.sliderPosition()
     cursor = w.textCursor()
     try:
         self.changingText = True # Disable onTextChanged.
@@ -5492,8 +5492,10 @@ def insert(self,i,s):
     finally:
         self.changingText = False
 
-    ##### sb.setSliderPosition(pos)
-    ##### w.ensureCursorVisible() # This has no effect.
+    ### 2011/10/12: Valid?
+    # sb.setSliderPosition(pos)
+
+    ### w.ensureCursorVisible() # This has no effect.
 #@+node:ekr.20061031131434.130: *6* keyboardQuit
 def keyboardQuit (self,event=None,setFocus=True,mouseClick=False):
 

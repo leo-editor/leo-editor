@@ -810,12 +810,13 @@ class leoBody:
         self.selectLabel(w)
 
         # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.h)
-    #@+node:ekr.20060528170438: *6* cycleEditorFocus
+    #@+node:ekr.20060528170438: *6* cycleEditorFocus (leoBody)
     def cycleEditorFocus (self,event=None):
 
         '''Cycle keyboard focus between the body text editors.'''
 
-        c = self.c ; d = self.editorWidgets ; w = c.frame.body.bodyCtrl
+        c = self.c ; d = self.editorWidgets
+        w = c.frame.body.bodyCtrl
         values = list(d.values())
         if len(values) > 1:
             i = values.index(w) + 1
@@ -824,9 +825,6 @@ class leoBody:
             assert(w!=w2)
             self.selectEditor(w2)
             c.frame.body.bodyCtrl = w2
-            # g.pr('***',g.app.gui.widget_name(w2),id(w2))
-
-        return # (for Tk) 'break'
     #@+node:ekr.20060528113806: *6* deleteEditor
     def deleteEditor (self,event=None):
 
@@ -2493,7 +2491,7 @@ class leoTree:
 
                 if old_p and old_p != p:
                     # 2010/02/11: Don't change the *new* node's insert point!
-                    ### old_p.v.scrollBarSpot = yview
+                    old_p.v.scrollBarSpot = yview
                     old_p.v.insertSpot = insertSpot
                 #@-<< unselect the old node >>
 
