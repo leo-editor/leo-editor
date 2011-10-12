@@ -166,6 +166,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
                 QtGui.QListWidget.keyPressEvent(self,event)
             elif key == qt.Key_Tab:
                 if trace: g.trace('<tab>')
+                self.tab_callback()
             elif key in (qt.Key_Enter,qt.Key_Return):
                 if trace: g.trace('<return>')
                 self.select_callback()
@@ -203,6 +204,46 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
                 c.frame.body.onBodyChanged('Typing')
 
             self.end_completer()
+        #@+node:tbrown.20111011094944.27031: *6* tab_callback
+        def tab_callback(self):  
+
+            '''Called when user hits tab on an item in the QListWidget.'''
+
+            trace = False and not g.unitTesting
+            c = self.leo_c ; w = c.frame.body
+
+            # Replace the tail of the prefix with the completion.
+            completion = self.currentItem().text()
+            prefix = c.k.autoCompleter.get_autocompleter_prefix()
+            
+            parts = prefix.split('.')
+            
+            if len(parts) < 2:
+                return
+
+            var = parts[-2]
+
+            if len(parts) > 1:
+                tail = parts[-1]
+            else:
+                tail = prefix
+                
+            if trace: g.trace('prefix',repr(prefix),'tail',repr(tail),'completion',repr(completion))
+
+            w = c.k.autoCompleter.w
+            i = j = w.getInsertPoint()
+            text = w.getAllText()
+            while (i and text[i] != '.'):
+                    i -= 1
+            i += 1
+
+            if j > i:
+                w.delete(i,j)
+
+            w.setInsertPoint(i)
+            
+            c.k.autoCompleter.klass = completion
+            c.k.autoCompleter.compute_completion_list()
         #@+node:ekr.20110605121601.18015: *6* set_position (LeoQListWidget)
         def set_position (self,c):
             

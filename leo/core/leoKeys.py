@@ -116,6 +116,7 @@ class AutoCompleterClass:
         self.verbose = False # True: print all members, regardless of how many there are.
         self.w = None # The widget that gets focus after autocomplete is done.
         self.warnings = {} # Keys are language names.
+        self.klass = None
         
         # Codewise pre-computes...
         self.codewiseSelfList = []
@@ -141,6 +142,7 @@ class AutoCompleterClass:
         w = event and event.w or c.get_focus()
 
         self.force = force
+        self.klass = None
         
         if not state in ('insert','overwrite'):
             if trace: g.trace('not in insert/overwrite mode')
@@ -475,15 +477,21 @@ class AutoCompleterClass:
             # True: report hits and misses.
             # False: report misses.
         
-        prefix = self.get_autocompleter_prefix()
-        
-        key,options = self.get_cached_options(prefix)
-        if options:
-            if trace and verbose: g.trace('**prefix hit: %s, %s' % (prefix,key))
+        if self.klass:
+            prefix = ''
+            # something later on eats the first char, not sure what
+            options = ['^'+i for i in self.lookup_methods([str(self.klass)],None)]
+            g.es("%s: %d options" % (self.klass, len(options)))
+            self.klass = None
         else:
-            if trace: g.trace('**prefix miss: %s, %s' % (prefix,key))
-            options = self.get_completions(prefix)
-        
+            prefix = self.get_autocompleter_prefix()
+            key,options = self.get_cached_options(prefix)
+            if options:
+                if trace and verbose: g.trace('**prefix hit: %s, %s' % (prefix,key))
+            else:
+                if trace: g.trace('**prefix miss: %s, %s' % (prefix,key))
+                options = self.get_completions(prefix)
+            
         tabList,common_prefix = g.itemsMatchingPrefixInList(
             prefix,options,matchEmptyPrefix=False)
 
