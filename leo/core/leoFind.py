@@ -1331,7 +1331,7 @@ class leoFind:
 
         if trace: g.trace('in_headline',self.in_headline)
         if self.in_headline:
-            c.endEditing() ### 2011/06/10: A major bug fix.
+            c.endEditing() # 2011/06/10: A major bug fix.
             selection = pos,newpos,insert
             c.redrawAndEdit(p,
                 selection=selection,

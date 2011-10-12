@@ -2690,7 +2690,7 @@ class keyHandlerClass:
         if c.macroCommands.recordingMacro:
             c.macroCommands.startRecordingMacro(event)
             # 2011/06/06: Show the key, if possible.
-            ### return # (for Tk) 'break'
+            # return # (for Tk) 'break'
 
         # g.trace(stroke,k.abortAllModesKey)
 

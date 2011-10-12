@@ -483,8 +483,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         w.leo_frame = None
         w.leo_name = name
         w.leo_label = None
-        ### 2011/09/30
-        ### w.leo_scrollBarSpot = None
+        w.leo_scrollBarSpot = None
         w.leo_insertSpot = None
         w.leo_selection = None
 
@@ -3326,14 +3325,14 @@ class leoQtBody (leoFrame.leoBody):
         else:
             wrapper.setInsertPoint(0)
             
-        wrapper.seeInsertPoint() ###
+        ### A bad fix.
+        ### wrapper.seeInsertPoint()
 
-        ###
-        # if hasattr(w,'leo_scrollBarSpot') and w.leo_scrollBarSpot is not None:
-            # first,last = w.leo_scrollBarSpot
-            # wrapper.see(first)
-        # else:
-            # wrapper.seeInsertPoint()
+        if hasattr(w,'leo_scrollBarSpot') and w.leo_scrollBarSpot is not None:
+            first,last = w.leo_scrollBarSpot
+            wrapper.see(first)
+        else:
+            wrapper.seeInsertPoint()
 
         if hasattr(w,'leo_selection') and w.leo_selection:
             try:
@@ -3414,8 +3413,7 @@ class leoQtBody (leoFrame.leoBody):
             if wrapper2 != wrapper and active:
                 w2.leo_active = False
                 self.unselectLabel(wrapper2)
-                ### 2011/09/30
-                ### w2.leo_scrollBarSpot = wrapper2.getYScrollPosition()
+                w2.leo_scrollBarSpot = wrapper2.getYScrollPosition()
                 w2.leo_insertSpot = wrapper2.getInsertPoint()
                 w2.leo_selection = wrapper2.getSelectionRange()
                 if trace: g.trace('**deactivate wrapper %s w %s' % (
@@ -3469,8 +3467,7 @@ class leoQtBody (leoFrame.leoBody):
         # w.leo_label = None # Injected by packLabel.
         w.leo_name = name
         # w.leo_on_focus_in = onFocusInCallback
-        ### 2011/09/30
-        ### w.leo_scrollBarSpot = None
+        w.leo_scrollBarSpot = None
         w.leo_selection = None
         w.leo_wrapper = wrapper
     #@+node:ekr.20110605121601.18212: *6* packLabel
@@ -4783,7 +4780,7 @@ class leoQtFrame (leoFrame.leoFrame):
                 g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
                 return 'break'
             else:
-                ##### self.OnActivateBody(event=event)
+                ### self.OnActivateBody(event=event)
                 c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
                 g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
         except:
@@ -8113,7 +8110,7 @@ class leoQtGui(leoGui.leoGui):
         # Return the image from the cache if possible.
         if name in self.iconimages:
             image = self.iconimages.get(name)
-            if trace: ### and not name.startswith('box'):
+            if trace: # and not name.startswith('box'):
                 g.trace('cached',id(image),name,image)
             return image
         try:
@@ -8855,7 +8852,7 @@ class leoQtEventFilter(QtCore.QObject):
         # 'Insert':'Insert',
         'Return':'Return',
         'Tab':'Tab',
-        ### 'Tab':'\t', # A hack for QLineEdit.
+        # 'Tab':'\t', # A hack for QLineEdit.
         # Unused: Break, Caps_Lock,Linefeed,Num_lock
     }
 
@@ -11087,8 +11084,6 @@ class jEditColorizer:
         if i == 0:
             self.setState(self.prevState())
             
-        ### last_i = i
-
         while i < len(s):
             progress = i
             functions = self.rulesDict.get(s[i],[])
@@ -11102,10 +11097,7 @@ class jEditColorizer:
                         g.trace('match: %20s %s' % (
                             f.__name__,s[i:i+n]))
                     # The match has already been colored.
-                    ### if last_i < i:
-                        ### self.colorRangeWithTag(s,last_i,i,'default')
                     i += n
-                    ### last_i = i
                     break # Stop searching the functions.
                 elif n < 0: # Fail and skip n chars.
                     if trace and traceMatch and verbose:

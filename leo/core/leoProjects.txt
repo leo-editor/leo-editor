@@ -2789,9 +2789,9 @@ def read(self,root,importFileName=None,
     elif at.errors > 0:
         # 2010/10/22: Dirty bits are *always* cleared.
         # Only the orphan bit is preserved.
-        ### root.setDirty() # 2011/06/17: Won't be preserved anyway
+        # root.setDirty() # 2011/06/17: Won't be preserved anyway
         root.setOrphan()
-        ### c.setChanged(True) # 2011/06/17.
+        # c.setChanged(True) # 2011/06/17.
     else:
         root.clearOrphan()
     if at.errors == 0 and not isFileLike and not fromString:
@@ -4475,8 +4475,7 @@ def deactivateEditors(self,wrapper):
         if wrapper2 != wrapper and active:
             w2.leo_active = False
             self.unselectLabel(wrapper2)
-            ### 2011/09/30
-            ### w2.leo_scrollBarSpot = wrapper2.getYScrollPosition()
+            w2.leo_scrollBarSpot = wrapper2.getYScrollPosition()
             w2.leo_insertSpot = wrapper2.getInsertPoint()
             w2.leo_selection = wrapper2.getSelectionRange()
             if trace: g.trace('**deactivate wrapper %s w %s' % (
@@ -4495,8 +4494,7 @@ def inactivateActiveEditor(self,w):
         if w2 != w and w2.leo_active:
             w2.leo_active = False
             self.unselectLabel(w2)
-            ### 2011/09/30
-            ### w2.leo_scrollBarSpot = w2.yview()
+            w2.leo_scrollBarSpot = w2.yview()
             w2.leo_insertSpot = w2.getInsertPoint()
             w2.leo_selection = w2.getSelectionRange()
             # g.trace('inactive:',id(w2),'scroll',w2.leo_scrollBarSpot,'ins',w2.leo_insertSpot)
@@ -4521,8 +4519,7 @@ def injectIvars (self,name='1',parentFrame=None):
     w.leo_frame = None
     w.leo_name = name
     w.leo_label = None
-    ### 2011/09/30
-    ### w.leo_scrollBarSpot = None
+    w.leo_scrollBarSpot = None
     w.leo_insertSpot = None
     w.leo_selection = None
 
@@ -4554,8 +4551,7 @@ def injectIvars (self,parentFrame,name,p,wrapper):
     # w.leo_label = None # Injected by packLabel.
     w.leo_name = name
     # w.leo_on_focus_in = onFocusInCallback
-    ### 2011/09/30
-    ### w.leo_scrollBarSpot = None
+    w.leo_scrollBarSpot = None
     w.leo_selection = None
     w.leo_wrapper = wrapper
 #@+node:ekr.20070423102603: *6* selectEditorHelper
@@ -4606,20 +4602,21 @@ if w.leo_insertSpot:
 else:
     w.setInsertPoint(0)
     
-w.seeInsertPoint() ### 2011/09/30
+### A bad change.
+### w.seeInsertPoint() ### 2011/09/30
 
-### 2011/09/30
-# if w.leo_scrollBarSpot is not None:
-    # first,last = w.leo_scrollBarSpot
-    # w.yview('moveto',first)
-# else:
-    # w.seeInsertPoint()
+if w.leo_scrollBarSpot is not None:
+    first,last = w.leo_scrollBarSpot
+    w.yview('moveto',first)
+else:
+    w.seeInsertPoint()
 
 if w.leo_selection:
     try:
         start,end = w.leo_selection
         w.setSelectionRange(start,end)
-        w.see(start) ### 2011/09/30
+        ### Don't alter the scroll position.
+        ### w.see(start) ### 2011/09/30
     except Exception:
         pass
 #@+node:ekr.20110605121601.18203: *6* selectEditorHelper (leoBody)
@@ -4677,14 +4674,14 @@ if hasattr(w,'leo_insertSpot') and w.leo_insertSpot:
 else:
     wrapper.setInsertPoint(0)
     
-wrapper.seeInsertPoint() ###
+### A bad fix.
+### wrapper.seeInsertPoint()
 
-###
-# if hasattr(w,'leo_scrollBarSpot') and w.leo_scrollBarSpot is not None:
-    # first,last = w.leo_scrollBarSpot
-    # wrapper.see(first)
-# else:
-    # wrapper.seeInsertPoint()
+if hasattr(w,'leo_scrollBarSpot') and w.leo_scrollBarSpot is not None:
+    first,last = w.leo_scrollBarSpot
+    wrapper.see(first)
+else:
+    wrapper.seeInsertPoint()
 
 if hasattr(w,'leo_selection') and w.leo_selection:
     try:
@@ -4760,7 +4757,8 @@ if old_p != p:
     self.endEditLabel() # sets editPosition = None
     self.setUnselectedLabelState(old_p)
 
-if old_p and old_p != p: # 2010/02/11: Don't change the *new* node's insert point!
+if old_p and old_p != p:
+    # 2010/02/11: Don't change the *new* node's insert point!
     ### old_p.v.scrollBarSpot = yview
     old_p.v.insertSpot = insertSpot
 #@+node:ekr.20040803072955.130: *7* << select the new node >>
@@ -4811,7 +4809,7 @@ def __init__ (self,context):
         # Required so we can compute top-level siblings.
         # It is named .context rather than .c to emphasize its limited usage.
     self.insertSpot = None # Location of previous insert point.
-    ### self.scrollBarSpot = None # Previous value of scrollbar position.
+    self.scrollBarSpot = None # Previous value of scrollbar position.
     self.selectionLength = 0 # The length of the selected body text.
     self.selectionStart = 0 # The start of the selected body text.
 #@+node:ekr.20100303074003.5636: *6* v.restoreCursorAndScroll
@@ -4826,13 +4824,13 @@ def restoreCursorAndScroll (self,w):
     else:
         w.setInsertPoint(0)
         
-    w.seeInsertPoint() ### 2011/09/30
+    ### A bad change.  We must save the scroll bar position.
+    ### w.seeInsertPoint() ### 2011/09/30
 
-    ### 2011/09/30 
-    # # Restore the scroll spot after the call to w.see.
-    # if v and v.scrollBarSpot != None:
-        # first,last = v.scrollBarSpot
-        # w.setYScrollPosition(first)
+    # Restore the scroll spot after the call to w.see.
+    if v and v.scrollBarSpot != None:
+        first,last = v.scrollBarSpot
+        w.setYScrollPosition(first)
 #@+node:ekr.20100303074003.5638: *6* v.saveCursorAndScroll(w)
 def saveCursorAndScroll(self,w):
 
@@ -4840,8 +4838,7 @@ def saveCursorAndScroll(self,w):
     if not w: return
     
     try:
-        ### 2011/09/30
-        ### v.scrollBarSpot = w.getYScrollPosition()
+        v.scrollBarSpot = w.getYScrollPosition()
         v.insertSpot = w.getInsertPoint()
     except AttributeError:
         # 2011/03/21: w may not support the high-level interface.
@@ -8107,8 +8104,6 @@ def mainLoop(self,n,s):
     if i == 0:
         self.setState(self.prevState())
         
-    ### last_i = i
-
     while i < len(s):
         progress = i
         functions = self.rulesDict.get(s[i],[])
@@ -8122,10 +8117,7 @@ def mainLoop(self,n,s):
                     g.trace('match: %20s %s' % (
                         f.__name__,s[i:i+n]))
                 # The match has already been colored.
-                ### if last_i < i:
-                    ### self.colorRangeWithTag(s,last_i,i,'default')
                 i += n
-                ### last_i = i
                 break # Stop searching the functions.
             elif n < 0: # Fail and skip n chars.
                 if trace and traceMatch and verbose:

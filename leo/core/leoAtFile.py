@@ -581,9 +581,9 @@ class atFile:
         elif at.errors > 0:
             # 2010/10/22: Dirty bits are *always* cleared.
             # Only the orphan bit is preserved.
-            ### root.setDirty() # 2011/06/17: Won't be preserved anyway
+            # root.setDirty() # 2011/06/17: Won't be preserved anyway
             root.setOrphan()
-            ### c.setChanged(True) # 2011/06/17.
+            # c.setChanged(True) # 2011/06/17.
         else:
             root.clearOrphan()
         if at.errors == 0 and not isFileLike and not fromString:
@@ -773,10 +773,10 @@ class atFile:
                 if wasOrphan and not partialFlag and not ok:
                     # Remind the user to fix the problem.
                     # However, the dirty bit gets cleared.
-                    ### p.setDirty() # 2011/06/17: won't be preserved anyway.
+                    # p.setDirty() # 2011/06/17: won't be preserved anyway.
                         # Expensive, but it can't be helped.
                     p.setOrphan() # 2010/10/22: the dirty bit gets cleared.
-                    ### c.setChanged(True) # 2011/06/17
+                    # c.setChanged(True) # 2011/06/17
                 p.moveToNodeAfterTree()
             else:
                 # 2010/7/28: set v.at_read bit if the @asis or @nosent

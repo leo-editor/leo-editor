@@ -3598,7 +3598,7 @@ class Commands (object):
         w.setSelectionRange(ins,ins,insert=ins)
         
         # Make the next line visible: this is a big improvement.
-        w.see(ins) ### ins+5 creates all kinds of problems.
+        w.see(ins)
     #@+node:ekr.20101118113953.5843: *7* rp_wrap_all_lines
     def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
 
