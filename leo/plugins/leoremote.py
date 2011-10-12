@@ -4,11 +4,13 @@
 #@+node:ville.20091009202416.10041: ** << docstring >>
 ''' Remote control for Leo.
 
+    Executing the leoserve-start command will cause Leo to to listen on a local
+    socket for commands from other processes.
+
 Example client::
 
     from leo.external import lproto
     import os
-
 
     addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
     print("will connect to",addr)
@@ -25,20 +27,17 @@ Example client::
 #@-<< docstring >>
 
 __version__ = '0.0'
-#@+<< version history >>
-#@+node:ville.20091009202416.10042: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# Put notes about each version here.
-#@-<< version history >>
 
 #@+<< imports >>
 #@+node:ville.20091009202416.10043: ** << imports >>
 import leo.core.leoGlobals as g
 
 from leo.external import lproto
-import os, sys, tempfile
+
+import os
+import socket # For a test of its capabilities.
+import sys
+import tempfile
 #@-<< imports >>
 
 #@+others
@@ -47,14 +46,12 @@ def init ():
 
     ok = True
 
-
     if ok:
         #g.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
 
     #serve_thread()
     #g.app.remoteserver = ss = LeoSocketServer()
-
 
     return ok
 #@+node:ville.20091010231411.5262: ** g.command('leoserv-start')
@@ -64,7 +61,7 @@ def leoserv_start(event):
     g.app.leoserv = lps = lproto.LProtoServer()
 
     def dispatch_script(msg, ses):
-        print("dispatch script", msg)
+        print("leoremote.py: dispatch script", msg)
         fd, pth = tempfile.mkstemp(suffix='.py')
         f = os.fdopen(fd,"w")
         f.write(msg)
@@ -77,28 +74,28 @@ def leoserv_start(event):
         execfile(pth, ses['pydict'])
         print("run done")
 
-
     lps.set_receiver(dispatch_script)
-    uniqid = 'leoserv-%d' % os.getpid()
+    
+    # EKR: 2011/10/12
+    if hasattr(socket,'AF_UNIX'):
+        uniqid = 'leoserv-%d' % os.getpid()
+    else:
+        uniqid = '172.16.0.0',1
+
     lps.listen(uniqid)
+    
     fullpath = lps.srv.fullServerName()
-    open(os.path.expanduser('~/.leo/leoserv_sockname'),'w').write(fullpath)
-
-
-
-
-
-
-
-
-
-
+    socket_file = os.path.expanduser('~/.leo/leoserv_sockname')
+    open(socket_file,'w').write(fullpath)
+    print('leoremote.py: file:   %s' % socket_file)
+    print('leoremote.py: server: %s' % fullpath)
 #@+node:ville.20091009211846.10039: ** script execution
 def run_remote_script(fname):
+
     # c and p are ambiguous for remote script
     print("rrs")
-    d = {'g' : g }
-
-    execfile(fname, d )
+    
+    d = {'g': g }
+    execfile(fname, d)
 #@-others
 #@-leo

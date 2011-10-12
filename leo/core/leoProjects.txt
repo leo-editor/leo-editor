@@ -14049,6 +14049,361 @@ def executeSubprocess (self,event,command):
         junk, x, junk = sys.exc_info()
         k.setLabelRed('Exception: %s' % repr(x))
 #@+node:ekr.20111010122531.15572: *4* Added shell commands to Cmds menu
+#@+node:ekr.20111011052729.15681: *4* Added quick edit/save mode
+#@+node:ekr.20111011062533.15685: *5* Request
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/381527
+
+Opens a new nameless leo file and adds somefile.foo as an @edit node.
+
+This is good but...
+
+Saving is a pain, because you have to give a name / location for the .leo file,
+and in the quick edit use case you want to be able to just hit ctrl-S to save
+somefile.foo.
+
+=====
+
+Ah, at last I see the problem. Saving the **.leo** file is too "heavy". This is
+an interesting design problem. You could say that Leo could "throw away" the
+temporary .leo file, provided it contains only the @edit node.
+
+True, "quick" editing of a non-Leo file could be done in the workbook, but such
+an approach would litter the workbook, and would make opening the workbook
+slower and slower. That is, the workbook would get heavier and heavier.
+#@+node:ekr.20111011062533.15684: *5* Checkin log
+@nocolor-node
+
+Rev 4577 adds an important new feature: "quick edit/save mode"
+
+This fixes bug 381527 quick edit and save use of leo, and makes Leo considerably lighter.
+
+**Important**: As you will see below, quite a few hacks were needed to make this work.  That doesn't bother me at all, because they are all hidden.  The *effect* of those hacks is easily understandable.
+
+**However**, I may have missed something: I almost missed that I had to change the code that prompts for a save when closing an unsaved headline.  So please be on the lookout for any use cases that I missed.
+
+From the checkin log:
+
+QQQQQ
+
+"leo somefile.foo" opens a nameless .leo file containing a single @edit node.
+
+In quick edit/save mode, the user can change somefile.foo without saving the .leo file at all.
+
+Leo *does* properly prompt for saves so that changes to somefile.foo will not be lost.
+
+Quick edit/save mode changes Leo as follows:
+
+1. The save command, and *only* the save command (not save-as or save-to), looks for an unsaved .leo file containing a single @edit node. This is the "quick save" case.
+
+In this case, Leo does *not* prompt for a filename and does *not*, therefore, save the .leo file. However, Leo does save the @edit node if it is dirty.
+
+2. In the quick edit/save case, atFile.writeOneAtEdit node does *not* prompt for so-called dangerous writes, because, in fact, the write is not dangerous :-)
+
+3. In the quick edit/save case, leoFrame.promptForSave prompts for saving the @edit file, *not* the .leo file.
+
+QQQQQ
+
+I forgot to mention one detail.  There is no way to save the .leo file itself in quick edit/save mode.  If you want to do that, simply add any other node at the top level of the outline.  This ends quick edit/save mode.  When you save or close the outline, Leo will prompt you for the name of the .leo file as usual.
+
+Edward
+#@+node:ekr.20111011062533.15683: *5* Crash
+@nocolor-node
+
+Can not compute shadow path: .leo file has not been saved
+exception creating:c:\leo.repo\trunk\launchLeo.py.tmp
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 2813, in openFileForWritingHelper
+    kind,at.outputFile = self.openForWrite(at.outputFileName,'wb')
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 2834, in openForWrite
+    self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+  File "c:\python32\lib\genericpath.py", line 18, in exists
+    os.stat(path)
+#@+node:ekr.20031218072017.2834: *5* c.save
+def save (self,event=None):
+
+    '''Save a Leo outline to a file.'''
+
+    c = self ; p = c.p
+    # Do this now: w may go away.
+    w = g.app.gui.get_focus(c)
+    inBody = g.app.gui.widget_name(w).startswith('body')
+    if inBody: p.saveCursorAndScroll(w)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+        c.mFileName = ""
+
+    if c.mFileName:
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.save(c.mFileName)
+    else:
+        root = c.rootPosition()
+        if not root.next() and root.isAtEditNode():
+            # There is only a single @edit node in the outline.
+            # A hack to allow "quick edit" of non-Leo files.
+            # See https://bugs.launchpad.net/leo-editor/+bug/381527
+            fileName = None
+            # Write the @edit node if needed.
+            if root.isDirty():
+                c.atFileCommands.writeOneAtEditNode(root,
+                    toString=False,force=True)
+            c.setChanged(False)
+        else:
+            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+                initialfile = c.mFileName,
+                title="Save",
+                filetypes=[("Leo files", "*.leo")],
+                defaultextension=".leo")
+    
+        c.bringToFront()
+
+        if fileName:
+            # Don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
+                # Bug fix in 4.4b2.
+            if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+                c.frame.top.leo_master.setTabName(c,c.mFileName)
+            c.fileCommands.save(c.mFileName)
+            c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
+
+    # Done in fileCommands.save.
+    # c.redraw_after_icons_changed()
+
+    # *Safely* restore focus, without using the old w directly.
+    if inBody:
+        c.bodyWantsFocus()
+        p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
+    else:
+        c.treeWantsFocus()
+#@+node:ekr.20090225080846.5: *5* at.writeOneAtEditNode
+def writeOneAtEditNode(self,p,toString,force=False):
+
+    '''Write one @edit node.'''
+
+    at = self ; c = at.c ; root = p.copy()
+    c.endEditing()
+
+    fn = p.atEditNodeName()
+    if not fn and not toString: return False
+
+    if p.hasChildren():
+        g.es('@edit nodes must not have children',color='red')
+        g.es('To save your work, convert @edit to @auto or @thin')
+        return False
+
+    at.default_directory = g.setDefaultDirectory(c,p,importing=True)
+    fn = c.os_path_finalize_join(at.default_directory,fn)
+    exists = g.os_path_exists(fn)
+    if not force and not hasattr(root.v,'at_read') and exists:
+        # Prompt if writing a new @edit node would overwrite the existing file.
+        ok = self.promptForDangerousWrite(fn,kind='@edit')
+        if ok:
+            root.v.at_read = True # Create the attribute for all clones.
+        else:
+            g.es("not written:",fn)
+            return False
+
+    at.targetFileName = fn
+    at.initWriteIvars(root,at.targetFileName,
+        atAuto=True, atEdit=True,
+        nosentinels=True,thinFile=False,
+        scriptWrite=False,toString=toString)
+
+    # Compute the file's contents.
+    # Unlike the @nosent file logic it does not add a final newline.
+    contents = ''.join([s for s in g.splitLines(p.b)
+        if at.directiveKind4(s,0) == at.noDirective])
+
+    if toString:
+        at.stringOutput = contents
+        return True
+
+    ok = at.openFileForWriting(root,fileName=fn,toString=False)
+    if ok:
+        self.os(contents)
+        at.closeWriteFile()
+    if ok and at.errors == 0:
+        at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+    else:
+        g.es("not written:",at.targetFileName) # 2010/10/22
+        root.setDirty()
+        root.setOrphan() # 2010/10/22
+
+    return ok
+#@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper
+def openFileForWriting (self,root,fileName,toString):
+
+    trace = False and not g.unitTesting
+    at = self
+    at.outputFile = None
+
+    if toString:
+        at.shortFileName = g.shortFileName(fileName)
+        at.outputFileName = "<string: %s>" % at.shortFileName
+        at.outputFile = g.fileLikeObject()
+    else:
+        ok = at.openFileForWritingHelper(fileName)
+
+        # New in Leo 4.4.8: set dirty bit if there are errors.
+        if not ok: at.outputFile = None
+        
+    if trace: g.trace('root',repr(root and root.h),'outputFile',repr(at.outputFile))
+
+    # New in 4.3 b2: root may be none when writing from a string.
+    if root:
+        if at.outputFile:
+            root.clearOrphan()
+        else:
+            root.setOrphan()
+            root.setDirty()
+
+    return at.outputFile is not None
+#@+node:ekr.20041005105605.143: *6* at.openFileForWritingHelper & helper
+def openFileForWritingHelper (self,fileName):
+
+    '''Open the file and return True if all went well.'''
+
+    at = self ; c = at.c
+
+    try:
+        at.shortFileName = g.shortFileName(fileName)
+        at.targetFileName = c.os_path_finalize_join(at.default_directory,fileName)
+        path = g.os_path_dirname(at.targetFileName)
+        if not path or not g.os_path_exists(path):
+            if path:
+                path = g.makeAllNonExistentDirectories(path,c=c)
+            if not path or not g.os_path_exists(path):
+                path = g.os_path_dirname(at.targetFileName)
+                at.writeError("path does not exist: " + path)
+                return False
+    except Exception:
+        at.exception("exception creating path: %s" % repr(path))
+        g.es_exception()
+        return False
+
+    if g.os_path_exists(at.targetFileName):
+        try:
+            if not os.access(at.targetFileName,os.W_OK):
+                at.writeError("can not open: read only: " + at.targetFileName)
+                return False
+        except AttributeError:
+            pass # os.access() may not exist on all platforms.
+
+    try:
+        at.outputFileName = at.targetFileName + ".tmp"
+        kind,at.outputFile = self.openForWrite(at.outputFileName,'wb')
+        if not at.outputFile:
+            kind = g.choose(kind=='check',
+                'did not overwrite','can not create')
+            at.writeError("%s %s" % (kind,at.outputFileName))
+            return False
+    except Exception:
+        at.exception("exception creating:" + at.outputFileName)
+        return False
+
+    return True
+#@+node:bwmulder.20050101094804: *7* at.openForWrite
+def openForWrite (self, filename, wb='wb'):
+
+    '''Open a file for writes, handling shadow files.'''
+
+    trace = True and not g.unitTesting
+    at = self ; c = at.c ; x = c.shadowController
+
+    try:
+        # 2011/10/11: in "quick edit/save" mode the .leo file may not have a name.
+        if c.fileName():
+            shadow_filename = x.shadowPathName(filename)
+            self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+            open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
+            self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
+        else:
+            self.writing_to_shadow_directory = False
+            open_file_name = filename
+
+        if self.writing_to_shadow_directory:
+            if trace: g.trace(filename,shadow_filename)
+            x.message('writing %s' % shadow_filename)
+            return 'shadow',open(open_file_name,wb)
+        else:
+            ok = c.checkFileTimeStamp(at.targetFileName)
+            return 'check',ok and open(open_file_name,wb)
+
+    except IOError:
+        if not g.app.unitTesting:
+            g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
+            g.es_exception()
+        return 'error',None
+#@+node:ekr.20031218072017.3692: *5* promptForSave (leoFrame)
+def promptForSave (self):
+
+    """Prompt the user to save changes.
+
+    Return True if the user vetos the quit or save operation."""
+
+    c = self.c
+
+    theType = g.choose(g.app.quitting, "quitting?", "closing?")
+    
+    # See if we are in quick edit/save mode.
+    root = c.rootPosition()
+    quick_save = not c.mFileName and not root.next() and root.isAtEditNode()
+    
+    if quick_save:
+        name = g.shortFileName(root.atEditNodeName())
+    else:
+        name = g.choose(c.mFileName,c.mFileName,self.title)
+
+    answer = g.app.gui.runAskYesNoCancelDialog(c,
+        "Confirm",
+        'Save changes to %s before %s' % (name,theType))
+
+    # g.pr(answer)
+    if answer == "cancel":
+        return True # Veto.
+    elif answer == "no":
+        return False # Don't save and don't veto.
+    else:
+        if not c.mFileName:
+            root = c.rootPosition()
+            if not root.next() and root.isAtEditNode():
+                # There is only a single @edit node in the outline.
+                # A hack to allow "quick edit" of non-Leo files.
+                # See https://bugs.launchpad.net/leo-editor/+bug/381527
+                fileName = None
+                # Write the @edit node if needed.
+                if root.isDirty():
+                    c.atFileCommands.writeOneAtEditNode(root,
+                        toString=False,force=True)
+                return False # Don't save and don't veto.
+            else:
+                c.mFileName = g.app.gui.runSaveFileDialog(
+                    initialfile = '',
+                    title="Save",
+                    filetypes=[("Leo files", "*.leo")],
+                    defaultextension=".leo")
+                
+                c.bringToFront()
+
+        if c.mFileName:
+            ok = c.fileCommands.save(c.mFileName)
+            return not ok # New in 4.2: Veto if the save did not succeed.
+        else:
+            return True # Veto.
+#@+node:ekr.20111011165246.15707: *4* Searches from Leo's web pages now work
+Updating Sphinx and using new .js files did the trick.
+#@+node:ekr.20110919113533.6818: *4* Added @button split-defs
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>

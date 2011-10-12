@@ -10,18 +10,29 @@ Author: Ville M. Vainio <vivainio@gmail.com>
 
 """
 #@-<< docstring >>
-
 #@+<< imports >>
 #@+node:ville.20091009234538.1373: ** << imports >>
 # todo move out qt dep
 from PyQt4 import QtCore, QtNetwork
 import socket
 import struct
+
+import os
+
+import leo.core.leoGlobals as g
 #@-<< imports >>
+
+# EKR: use this by default.
+
+if hasattr(socket,'AF_UNIX'):
+    standard_leo_socket_name = os.path.expanduser('~/.leo/leoserv_sockname')
+else:
+    standard_leo_socket_name = '(172.16.0.0:1)' # A hack.
 
 #@+others
 #@+node:ville.20091010205847.1363: ** sending
 def mk_send_bytes(msg):
+
     lendesc = struct.pack('I', len(msg))
     return lendesc + msg
 
@@ -68,40 +79,54 @@ class LProtoBuf:
         print("in buf",self.buf)
 #@+node:ville.20091009234538.1374: ** class LProtoServer
 class LProtoServer:
+    
     #@+others
-    #@+node:ville.20091009234538.1380: *3* methods
+    #@+node:ekr.20111012070545.7254: *3* __init__
     def __init__(self):
+
         self.srv = QtNetwork.QLocalServer()
-        self.srv.connect(self.srv, QtCore.SIGNAL("newConnection()"),
-            self.connected)
         self.receiver = None
-
-        self.ses = {}  
-
-    def listen(self, name):
+        self.ses = {}
+        
+        self.is_connected = self.srv.connect(
+            self.srv,
+            QtCore.SIGNAL("newConnection()"),
+            self.connected)
+    #@+node:ekr.20111012070545.7255: *3* listen
+    def listen(self,name):
+        
+        g.trace(name,g.callers())
+        
         self.srv.listen(name)
-        print("listen on",self.srv.fullServerName())
+        
+        print("lproto.py: listen on",self.srv.fullServerName())
 
-    def msg_received(self, msg, ses):
+    #@+node:ekr.20111012070545.7256: *3* msg_received
+    def msg_received(self,msg,ses):
+
         if self.receiver:
-            self.receiver(msg, ses)
-
+            self.receiver(msg,ses)
+    #@+node:ekr.20111012070545.7257: *3* set_receiver
     def set_receiver(self, receiver):
+        
         self.receiver = receiver
-
+    #@+node:ekr.20111012070545.7258: *3* connected
     def connected(self):
+        
+        '''Event handler for newConnection.'''
+
         print("hnd con")
         lsock = self.srv.nextPendingConnection()
         print("conn", lsock)
+
         buf =  LProtoBuf()
 
-        self.ses[lsock] = ses_ent = {'_sock' : lsock, '_buf' : buf }
+        self.ses[lsock] = ses_ent = {'_sock': lsock, '_buf': buf}
 
         def msg_recv_cb(msg):
             self.msg_received(msg, ses_ent)
 
         buf.set_recv_cb( msg_recv_cb )
-
 
         def readyread_cb():
             print("read ready")
@@ -109,44 +134,79 @@ class LProtoServer:
             buf = ses_ent['_buf']
             buf.push_bytes(allbytes)
 
-        lsock.connect(lsock, QtCore.SIGNAL('readyRead()'), readyread_cb)
+        lsock.connect(lsock,
+            QtCore.SIGNAL('readyRead()'),
+            readyread_cb)
         #self.connect(self.qsock, SIGNAL('connectionClosed()'), self.handleClosed)
-
-
+    #@+node:ekr.20111012091630.9385: *3* readyread
     def readyread(self):
         pass
-
     #@-others
 #@+node:ville.20091010205847.1360: ** (ignore) class LProtoObsoleteClient
-class LProtoObsoleteClient:
-    #@+others
-    #@+node:ville.20091010205847.1361: *3* initialization
-    def __init__(self):
-        self.cl = QtNetwork.QLocalSocket()
+if 0:
+    class LProtoObsoleteClient:
+        #@+others
+        #@+node:ville.20091010205847.1361: *3* initialization
+        def __init__(self):
+            self.cl = QtNetwork.QLocalSocket()
 
-    def connect(self, name):
-        self.cl.connectToServer(name)
-        print("client connected")
-    #@-others
+        def connect(self,name):
+            self.cl.connectToServer(name)
+            print("client connected")
+        #@-others
 #@+node:ville.20091010233144.10051: ** class LProtoClient
 class LProtoClient:
+    
+    #@+others
+    #@+node:ekr.20111012070545.7210: *3* ctor
+    def __init__(self,fname=standard_leo_socket_name):
 
-    def __init__(self,fname):
-
-        if hasattr(socket,'AF_UNIX'):
-            self.socket = socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
-            self.socket.connect(fname)
+        self.socket_name = fname
+        
+        self.is_connected = self.connect(fname)
+        
+        if self.is_connected:
+            self.recvbuf = LProtoBuf()
         else:
-            host = '172.16.0.0' # host is a local address.
-            port = 1
-            self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-            self.socket.connect((host,port),)
-
-        self.recvbuf = LProtoBuf()
-
-    def send(self, msg):
+            self.recvbuf = None
+    #@+node:ekr.20111012070545.7212: *3* connect
+    def connect (self,fname):
+        
+        '''Connect to the server.  Return True if the connection was established.'''
+        
+        trace = True and not g.unitTesting
+        
+        if trace: g.trace(fname,socket)
+       
+        if hasattr(socket,'AF_UNIX'):
+            try:
+                self.socket = socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
+                self.socket.connect(fname)
+                return True
+            except Exception:
+                g.es_print('lproto.py: failed to connect!',fname)
+                g.es_exception(full=False,c=None,color='red')
+                return False
+        else:
+            try:
+                host = '172.16.0.0' # host is a local address.
+                port = 1
+                self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+                self.socket.connect((host,port),)
+                self.socket.connect(fname)
+                return True
+            except Exception:
+                g.es_print('lproto.py: failed to connect! host: %s, port: %s' % (
+                    host,port))
+                g.es_exception(full=False,c=None,color='red')
+                return False
+    #@+node:ekr.20111012070545.7211: *3* send
+    def send(self,msg):
+        
         byts = mk_send_bytes(msg)
         self.socket.sendall(byts)
+    #@-others
 
+    
 #@-others
 #@-leo
