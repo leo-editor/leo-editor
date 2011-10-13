@@ -15334,22 +15334,10 @@ def openWrapperLeoFile (old_c,fileName,gui):
 #@+node:ekr.20041124083125: *7* completeFileName
 def completeFileName (fileName):
 
-    trace = True
-
     fileName = g.toUnicode(fileName)
     fileName = g.os_path_finalize(fileName)
 
     # 2011/10/12: don't add .leo to *any* file.
-    if 0:
-        # Bug fix: don't add .leo to existing files.
-        junk,ext = g.os_path_splitext(fileName)
-        if g.os_path_exists(fileName):
-            pass # use the fileName as is.
-        elif ext != '.leo':
-            fileName = fileName + ".leo"
-
-    if trace: print('completeFileName: %s' % fileName)
-
     return fileName
 #@+node:ekr.20111012172344.9386: *6* Reference
 #@+node:ekr.20031218072017.1624: *7* createFrame & helpers (runLeo.py)
@@ -15646,6 +15634,11 @@ def openWrapperLeoFile (old_c,fileName,gui):
 #@+node:ekr.20111011165246.15707: *4* Searches from Leo's web pages now work
 Updating Sphinx and using new .js files did the trick.
 #@+node:ekr.20110919113533.6818: *4* Added @button split-defs
+#@+node:ekr.20111013104917.15659: *4* MacOS is no longer fully supported
+@nocolor-node
+
+Leo's home page no longer mentions MacOS and LeoDocs.leo and install.txt now
+warn people that MacOS is difficult to install.
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>

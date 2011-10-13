@@ -229,22 +229,10 @@ def adjustSysPath ():
 #@+node:ekr.20041124083125: *4* completeFileName
 def completeFileName (fileName):
 
-    trace = True
-
     fileName = g.toUnicode(fileName)
     fileName = g.os_path_finalize(fileName)
 
     # 2011/10/12: don't add .leo to *any* file.
-    if 0:
-        # Bug fix: don't add .leo to existing files.
-        junk,ext = g.os_path_splitext(fileName)
-        if g.os_path_exists(fileName):
-            pass # use the fileName as is.
-        elif ext != '.leo':
-            fileName = fileName + ".leo"
-
-    if trace: print('completeFileName: %s' % fileName)
-
     return fileName
 #@+node:ekr.20101021101942.6010: *4* getDefaultFile
 def getDefaultFile ():
