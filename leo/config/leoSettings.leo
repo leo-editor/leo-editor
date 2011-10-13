@@ -1508,6 +1508,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20070224073109.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4176,19 +4177,24 @@ If you do put @enabled-plugins nodes in x.leo, be prepared for confusion from ti
 
 # Standard plugins enabled in official distributions....
 
-# First...
+# Essential plugins...
 plugins_menu.py
 free_layout.py # needs to be early
 
-# Next...
-contextmenu.py
-leo_to_html.py
-mod_scripting.py
-nav_qt.py
-quicksearch.py
-stickynotes.py
-todo.py
-viewrendered.py
+# Recommended plugins.
+# Enable them in myLeoSettings.leo as desired.
+
+# **Imortant** Enabling plugins here makes it
+# impossible to disable them in any .leo file.
+
+# contextmenu.py
+# leo_to_html.py
+# mod_scripting.py
+# nav_qt.py
+# quicksearch.py
+# stickynotes.py
+# todo.py
+# viewrendered.py
 
 # The plugins manager plugin does not
 # understand @enabled-plugins nodes.
