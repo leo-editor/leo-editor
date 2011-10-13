@@ -300,7 +300,6 @@ def replaceCodeBlockDirectives (self,lines):
 
     return result
 .. @+node:ekr.20111010122531.15570: *4* Lighter Leo
-.. @+node:ekr.20111012091630.9384: *5* * Handle ed non-existing-non-leo-file correctly
 .. @+node:ekr.20111012061216.15698: *5* * Complete expand/contract commands
 .. @+node:ekr.20111010162047.15678: *5* The @auto script *must* put @first nodes in root node
 @nocolor-node

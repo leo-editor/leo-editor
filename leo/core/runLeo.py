@@ -229,23 +229,21 @@ def adjustSysPath ():
 #@+node:ekr.20041124083125: *4* completeFileName
 def completeFileName (fileName):
 
-    trace = False
-    if trace: print('completeFileName',fileName)
-
-    if not (fileName and fileName.strip()):
-        return None,None
+    trace = True
 
     fileName = g.toUnicode(fileName)
     fileName = g.os_path_finalize(fileName)
-    junk,ext = g.os_path_splitext(fileName)
 
-    # Bug fix: don't add .leo to existing files.
-    if g.os_path_exists(fileName):
-        pass # use the fileName as is.
-    elif ext != '.leo':
-        fileName = fileName + ".leo"
+    # 2011/10/12: don't add .leo to *any* file.
+    if 0:
+        # Bug fix: don't add .leo to existing files.
+        junk,ext = g.os_path_splitext(fileName)
+        if g.os_path_exists(fileName):
+            pass # use the fileName as is.
+        elif ext != '.leo':
+            fileName = fileName + ".leo"
 
-    if trace: print('completeFileName',fileName)
+    if trace: print('completeFileName: %s' % fileName)
 
     return fileName
 #@+node:ekr.20101021101942.6010: *4* getDefaultFile
@@ -534,7 +532,7 @@ def createFrame (fileName,options):
     script = options.get('script')
 
     # Try to create a frame for the file.
-    if fileName and g.os_path_exists(fileName):
+    if fileName: ### and g.os_path_exists(fileName):
         ok, frame = g.openWithFileName(fileName,None)
         c2 = frame.c
         select = options.get('select')

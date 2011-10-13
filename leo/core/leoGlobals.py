@@ -2219,10 +2219,10 @@ def openWithFileName(fileName,old_c,
 
     where frame.c is the commander of the newly-opened outline.
     """
-
+    
     if not fileName: return False, None
     isLeo,fn,relFn = g.mungeFileName(fileName)
-
+    
     # Return if the file is already open.
     c = g.findOpenFile(fn)
     if c: return True,c.frame
@@ -2234,6 +2234,7 @@ def openWithFileName(fileName,old_c,
         c,f = g.openWithFileNameHelper(old_c,gui,fn,relFn)
     else:
         c,f = g.openWrapperLeoFile(old_c,fn,gui),None
+
     app.unlockLog()# 2010/10/20
     if not c: return False,None
 
@@ -2359,13 +2360,13 @@ def openWrapperLeoFile (old_c,fileName,gui):
 
     '''Open a wrapper .leo file for the given file,
     and import the file into .leo file.'''
-
-    # This code is similar to c.new, but different enough to be separate.
-    if not g.os_path_exists(fileName):
-        if not g.unitTesting:
-            g.es_print("can not open:",fileName,color="blue")
+    
+    # Never open a non-existent file during unit testing.
+    if g.unitTesting and not g.os_path_exists(fileName):
         return None
-
+    
+    # 2011/10/12: support quick edit-save mode.
+    # We will create an @edit node below for non-existent files.
     c,frame = g.app.newLeoCommanderAndFrame(
         fileName=None,relativeFileName=None,gui=gui)
     assert c.rootPosition()
@@ -2381,7 +2382,13 @@ def openWrapperLeoFile (old_c,fileName,gui):
     frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
 
     fileName = g.os_path_finalize(fileName)
-    if c.looksLikeDerivedFile(fileName):
+
+    if not g.os_path_exists(fileName):
+        # 2011/10/12: Create an empty @edit node.
+        p = c.rootPosition()
+        p.setHeadString('@edit %s' % fileName)
+        c.selectPosition(p)
+    elif c.looksLikeDerivedFile(fileName):
         # 2011/10/10: Create an @file node.
         p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
             paths=[fileName],command=None) # Not undoable.
