@@ -26,7 +26,8 @@ Installing Leo
 
 .. index:: Installing Leo
 
-This chapter tells how to install and run Leo.
+This chapter tells how to install and run Leo on Windows or Linux.
+Leo can be installed on MacOS, but the process is difficult and not recommended.
 
 **Important**: If you have *any* problems installing Leo,
 please ask for help on `Leo's help forum`_.
@@ -64,9 +65,6 @@ http://www.riverbankcomputing.co.uk/software/pyqt/download
 The version of PyQt that you download must match your installed Python version.
 Remember that Leo requires Python 2.6 or later, or Python 3.0 or later. Now run
 the binary PyQt installer.
-
-Special care may be needed to install PyQt on MacOS. You must use the qt gui,
-not the qttabs gui.
 .. @+node:ekr.20100731112744.7281: *4* Installing PyEnchant
 You must install the PyEnchant package if you want to use Leo's Spell tab.
 Download and install the PyEnchant package from
@@ -154,6 +152,9 @@ You can, instead, add the following link::
 
 Now you are ready to `run Leo`_.
 .. @+node:ekr.20100731112744.7275: *4* Installing Leo on MacOS X
+**Important**: Installing Leo on MacOS is difficult and not recommended.
+Furthermore, Leo does not work as well on MacOS as on other platforms.
+
 Here is how to install Leo on MacOS 10.5 (Leopard):
 
 1. MacOS 10.5 comes with Python pre-installed.
