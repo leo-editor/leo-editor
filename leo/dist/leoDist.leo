@@ -189,7 +189,7 @@ Description:
 	powerful outline commands and many other things, including 
 	unlimited Undo/Redo and an integrated Python shell(IDLE) window.
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
-Platform: Windows, Linux, Macintosh
+Platform: Windows, Linux
 </t>
 <t tx="EKR.20040519090846.9">Leo 4.9 final              June 21, 2011
 
