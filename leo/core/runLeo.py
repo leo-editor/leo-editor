@@ -520,14 +520,15 @@ def createFrame (fileName,options):
     script = options.get('script')
 
     # Try to create a frame for the file.
-    if fileName: ### and g.os_path_exists(fileName):
+    if fileName:
         ok, frame = g.openWithFileName(fileName,None)
-        c2 = frame.c
-        select = options.get('select')
-        windowSize = options.get('windowSize')
-        if select: doSelect(c2,select)
-        if windowSize: doWindowSize(c2,windowSize)
-        if ok: return c2,frame
+        if ok and frame:
+            c2 = frame.c
+            select = options.get('select')
+            windowSize = options.get('windowSize')
+            if select: doSelect(c2,select)
+            if windowSize: doWindowSize(c2,windowSize)
+            return c2,frame
 
     # Create a _new_ frame & indicate it is the startup window.
     c,frame = g.app.newLeoCommanderAndFrame(
