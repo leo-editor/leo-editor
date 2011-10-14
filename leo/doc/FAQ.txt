@@ -33,7 +33,6 @@ This is Leo's Frequently Asked Questions document.
 
 .. ----- External links.
 
-.. _`cvs repository`:   http://sourceforge.net/cvs/?group_id=3458
 .. _decorator:          http://www.python.org/peps/pep-0318.html
 .. _docutils:           http://docutils.sourceforge.net/
 .. _unicode:            http://www.unicode.org/
@@ -811,12 +810,9 @@ you like. The second editor's pane will change focus to the node_ you're moving,
 but the first editor will stay focused on the main node_. It's a lot easier to
 do than to describe!
 .. @+node:ekr.20050830115714.120: *4* How can I display graphics in Leo?
-One way is to link directly to the media file from a Leo node_ (with @url)
-and write a script button to wrap all URL-nodes under the current node_ in a
-single HTML page (using the HTML browser trick at
-http://sourceforge.net/forum/forum.php?thread_id=1201579&forum_id=10226).
-
-Then, you can view your media in two ways:
+One way is to link directly to the media file from a Leo node_ (with @url) and
+write a script button to wrap all URL-nodes under the current node_ in a single
+HTML page. Then, you can view your media in two ways:
 
 -   Individually. You can directly click on the @url link to display the media
     in the browser (assuming you have your MIME/filetype associations set up
@@ -971,10 +967,6 @@ Remove these invalid characters as follows:
    Remove the invalid character, save the .leo file.
 
 Repeat steps 1 and 2 until all invalid characters are gone.
-.. @+node:ekr.20060210070421: *4* @rst-ignore I can't run Leo from a cvs sandbox.  What's going on?
-Leo's extensions folder contains Pmw in official distributions, but not in the
-Cvs repository, so you won't be able to use a Leo in a sandbox unless you copy
-Pmw to the extensions folder or have Pmw otherwise available on Python's path.
 .. @+node:ekr.20050830115714.115: *4* Error messages from the rst3 plugin aren't helpful. What can I do?
 For the most part, docutils_ does a good job of reporting errors. docutils_ prints
 a message to the console and inserts an unmistakable error message in the
@@ -1056,9 +1048,6 @@ Leo does this so that you won't accidentally overwrite your files after importin
 Change the filename following @file (or @file) as desired,
 then remove the @ignore directive_.
 Saving the outline will then create the external file.
-.. @+node:ekr.20060323105214: *4* Leo's Recent Files menu doesn't work from a cvs shandbox.  What's going on?
-You must create .leoRecentFiles.txt in the config directory.
-.leoRecentFiles.txt is part of the standard releases but is not part of the cvs repository.
 .. @+node:ekr.20060329101442: *4* Nothing (or almost nothing) happens when I start Leo.  What should I do?
 Missing modules can cause installation problems.
 If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file

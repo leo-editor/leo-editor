@@ -67,7 +67,7 @@ painless and powerful.
 
 .. @+node:ekr.20080203101507.2: *3* @rst-no-head links
 .. Links
-.. _discussions:            http://sourceforge.net/forum/forum.php?thread_id=1911662&forum_id=10226
+
 .. _ipython:                http://ipython.scipy.org/
 .. _IPython:                http://ipython.scipy.org/
 .. _`IPython Notebook`:     http://projects.scipy.org/ipython/ipython/wiki/NoteBook
@@ -574,9 +574,8 @@ wheels started rolling, I got obsessed with the power of this concept
 Everything was mind-bogglingly easy/trivial, something that is typical of all
 promising technologies.
 
-Discussions_ on SourceForge show how the goal of close cooperation between Leo and IPython went from
+The goal of close cooperation between Leo and IPython went from
 vague dream to completed reality over the span of about 10 days.
-
 .. @+node:vivainio.20080302174957: *3* @rst-ignore Old documentation - not completely valid anymore
 .. @+node:ekr.20080204100523.1: *4* Commands
 This plugin creates the following Leo commands commands:

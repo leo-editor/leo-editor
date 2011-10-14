@@ -2648,8 +2648,6 @@ And also constructs like \documentclass{report}.
 #@+node:ekr.20050513141913.22: *6* Error messages in scripts are now redirected properly.
 http://sourceforge.net/forum/message.php?msg_id=3051870
 #@+node:ekr.20050513141913.30: *6* Fixed 2 crashers in nav_buttons plugin
-http://sourceforge.net/forum/message.php?msg_id=3138608
-
 The nav_buttons plugin was using self.c rather than keywords.get('c') in a hook
 handler. The general rule is that hook handlers should do nothing if self.c !-
 keywords.get('c').  This was an old bug, arising from the rewrite of the plugin.
@@ -2660,8 +2658,6 @@ It would perhaps be better to specify an optional commander in registerHandler
 and only call the handler if the commander matches. However, this isn't so easy
 or clean to do.I
 
-http://sourceforge.net/forum/forum.php?thread_id=1282631&forum_id=10226
-
 The plugin was failing to set the positionList ivar (in the base
 tkinterListBoxDialog class). This was a fairly recent blunder: I saw that
 positionList wasn't used in the plugin directly, so I 'improved' the code by
@@ -2670,8 +2666,6 @@ using subclassing.
 #@+node:ekr.20050513141913.57: *6* Fixed crasher in yoffsetTree
 This happened when creating a new chapter with chapters.py enabled.
 #@+node:ekr.20050513141913.60: *6* Fixed crasher in undo
-http://sourceforge.net/forum/forum.php?thread_id=1281868&forum_id=10226
-
 The fix was to recompute newSel in << handle backspace with negative tab_width >> in idle_body_key.
 #@+node:ekr.20050513141913.82: *6* Fixed  several problems with Extract and Extract Section
 - The section name lost its indentation.
@@ -2684,8 +2678,6 @@ http://sourceforge.net/forum/message.php?msg_id=3143895
 
 The Edit->Delete command did nothing when the selected text was in a headline.
 #@+node:ekr.20050513141913.127: *6* Fixed bugs re initial_splitter_orientation & @strings & @ints generally
-http://sourceforge.net/forum/forum.php?thread_id=1281868&forum_id=10226
-
 doStrings now accepts either:
 
 @strings[values]name=value
@@ -2700,8 +2692,6 @@ http://sourceforge.net/forum/message.php?msg_id=3149604
 
 Changed c.hoistStack[-1].current to c.hoistStack[-1].p in c.insertHeadline.
 #@+node:ekr.20050513141913.145: *6* Fixed problem with settings dialog position when panes split horizontally
-http://sourceforge.net/forum/forum.php?thread_id=1281868&forum_id=10226
-
 The code now calls frame.resizePanesToRatio in createFrame in Leo.
 
 Not only does this fix this bug, it honors the following settings:
@@ -7428,9 +7418,15 @@ As a result:
   simple and confined to one place in the Commands class.
 #@+node:ekr.20060928195040: *6* New features
 #@+node:ekr.20060928194633.1: *7* myLeoSettings.leo
-The myLeoSettings.leo file is a way of ensuring that your customized settings are not altered when updating Leo from cvs or while installing a new version of Leo.  The myLeoSettings.leo acts much like Python's site-customize.py file.  The myLeoSettings.leo file will never be part of any Leo distribution, and it will never exist in Leo's cvs repository.  This solution is *much* better than trying to update leoSettings.leo with scripts.
+The myLeoSettings.leo file is a way of ensuring that your customized settings
+are not altered when updating Leo from cvs or while installing a new version of
+Leo. The myLeoSettings.leo acts much like Python's site-customize.py file. The
+myLeoSettings.leo file will never be part of any Leo distribution. This solution
+is *much* better than trying to update leoSettings.leo with scripts.
 
-Leo loads settings from myLeoSettings.leo *after* loading settings from leoSettings.leo files but *before* loading settings from the .leo file being opened.
+Leo loads settings from myLeoSettings.leo *after* loading settings from
+leoSettings.leo files but *before* loading settings from the .leo file being
+opened.
 #@+node:ekr.20060928172525.195: *7* Created simple support for ZODB databases
 @nocolor
 
@@ -7732,8 +7728,6 @@ well without me thinking at all about what is happening.
 #@+node:ekr.20061008190633.353: *7* added p.archivedPosition
 #@+node:ekr.20061008190633.382: *7* (Integrated sax with read logic)
 #@+node:ekr.20061009074305: *6* Leap 204. "New" positions allow Leo outlines to represent arbitrary directed graphs
-See: http://sourceforge.net/forum/forum.php?thread_id=1587064&forum_id=10226
-
 Leo's theory of relativity
 
 1. We can archive any position p by saving the list [p.childIndex() for p in
@@ -9754,13 +9748,7 @@ imported C:/test/aa.cc
 
 @color
 #@+node:ekr.20071115102156.79: *7* Fixed various @auto comparison problems
-@nocolor
-
-http://sourceforge.net/forum/forum.php?thread_id=1865290&forum_id=10226
-
 @bool at_auto_warns_about_leading_whitespace
-
-@color
 #@+node:ekr.20071115102156.81: *7* Retain relative paths in recent files menu
 http://sourceforge.net/forum/message.php?msg_id=4464649
 By: terry_n_brown
