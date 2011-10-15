@@ -859,12 +859,13 @@ class Commands (object):
         
         c = self
         
-        if g.unitTesting:
-            return
+        # if g.unitTesting:
+            # return
             
         s = g.adjustTripleString(s.rstrip(),c.tab_width)
         pc = g.app.pluginsController
         vr = pc.loadOnePlugin('viewrendered.py')
+        assert vr # For unit testing.
         if vr:
             kw = {
                 'c':c,
@@ -876,6 +877,8 @@ class Commands (object):
                 'title':''}
             vr.show_scrolled_message(tag='Apropos',kw=kw)
             c.bodyWantsFocus()
+            if g.unitTesting:
+                vr.close_rendering_pane(event={'c':c})
         else:
             g.es(s)
     #@+node:bobjack.20080509080123.2: *3* c.universalCallback
