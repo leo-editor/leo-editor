@@ -912,33 +912,37 @@ assert g.os_path_exists(name)
 #@+node:ekr.20071113194858: ** Organized by file
 # All the following files have problems when run with Alt-5.
 #@+node:ekr.20100223123103.5382: *3* @test expand/contract-pane
-# These commands are implemented by qtGui.py
+import leo.core.leoFrame as leoFrame
 
-def closeEnough(f1,f2):
-    return abs(f1-f2) < 0.0001
-
-f = c.frame
-ratio,ratio2 = f.ratio,f.secondary_ratio
-
-table = (
-    c.bodyWantsFocusNow,
-    c.logWantsFocusNow,
-    c.treeWantsFocusNow,
-)
-
-for func in table:
-    func()
-    f.contractPane()
-    if func == c.logWantsFocusNow:
-        assert ratio2 != f.secondary_ratio,'fail 1'
-    else:
-        assert ratio != f.ratio,'fail 2: %s, %s' % (ratio,f.ratio)
-    func()
-    f.expandPane()
-    assert closeEnough(ratio,f.ratio),'fail 3 %s != %s' % (
-        ratio,f.ratio)
-    assert closeEnough(ratio2,f.secondary_ratio),'fail 4 %s != %s' % (
-        ratio2,f.secondary_ratio)
+# The test is not valid when run externally.
+if not isinstance(c.frame,leoFrame.nullFrame):
+    
+    # These commands are implemented by qtGui.py
+    def closeEnough(f1,f2):
+        return abs(f1-f2) < 0.0001
+    
+    f = c.frame
+    ratio,ratio2 = f.ratio,f.secondary_ratio
+    
+    table = (
+        c.bodyWantsFocusNow,
+        c.logWantsFocusNow,
+        c.treeWantsFocusNow,
+    )
+    
+    for func in table:
+        func()
+        f.contractPane()
+        if func == c.logWantsFocusNow:
+            assert ratio2 != f.secondary_ratio,'fail 1'
+        else:
+            assert ratio != f.ratio,'fail 2: %s, %s' % (ratio,f.ratio)
+        func()
+        f.expandPane()
+        assert closeEnough(ratio,f.ratio),'fail 3 %s != %s' % (
+            ratio,f.ratio)
+        assert closeEnough(ratio2,f.secondary_ratio),'fail 4 %s != %s' % (
+            ratio2,f.secondary_ratio)
 #@+node:ekr.20100131171342.5506: *3* leoApp
 #@+node:ekr.20100131171342.5507: *4* @test consistency of leoApp tables
 @
@@ -961,7 +965,7 @@ for lang in lang_d:
 for ext in ext_d:
     lang = ext_d.get(ext)
     assert lang in lang_d,'fail 3: %s' % lang
-#@+node:ekr.20050112095306.1: *3* leoAtFile
+#@+node:ekr.20050112095306.1: *3* leoAtFile (not valid when run externally)
 #@+node:ekr.20041021065844: *4* @test @asis
 import leo.core.leoTest as leoTest
 
@@ -3773,124 +3777,132 @@ g.app.unitTestDict['restoreSelectedNode']=False
 print('\nEnd of leoColor tests')
 #@+node:ekr.20110608135658.3377: *3* leoChapters
 #@+node:ekr.20110608162543.3363: *4* @test chapter-create/remove & undo
+# cc will be None when unit tests run dynamically.
 cc = c.chapterController
-chaptersNode = cc.findChaptersNode()
-assert chaptersNode
-
-chapterNode = (
-    cc.findChapterNode('aaa') or
-    cc.createChapterByName('aaa',p=None))
-
-cc.selectChapterByName('aaa',chaptersNode)
-cc.removeChapterByName('aaa')
-c.undoer.undo()
-assert cc.findChapterNode('aaa')
-cc.selectChapterByName('main',collapse=True)
+if cc:
+    chaptersNode = cc.findChaptersNode()
+    assert chaptersNode
+    
+    chapterNode = (
+        cc.findChapterNode('aaa') or
+        cc.createChapterByName('aaa',p=None))
+    
+    cc.selectChapterByName('aaa',chaptersNode)
+    cc.removeChapterByName('aaa')
+    c.undoer.undo()
+    assert cc.findChapterNode('aaa')
+    cc.selectChapterByName('main',collapse=True)
 #@+node:ekr.20110608162543.3365: *4* @test chapter-rename & undo
+# cc will be None when unit tests run dynamically.
 cc = c.chapterController
-chaptersNode = cc.findChaptersNode()
-assert chaptersNode
-
-chapterNode = (
-    cc.findChapterNode('aaa') or
-    cc.createChapterByName('aaa',p=None))
+if cc:
+    chaptersNode = cc.findChaptersNode()
+    assert chaptersNode
     
-try:
-    cc.selectChapterByName('aaa',chaptersNode)
-    cc.renameChapterByName('bbb')
-    cc.selectChapterByName('bbb',chaptersNode)
-    cc.renameChapterByName('aaa')
-    assert cc.findChapterNode('aaa'),'after undo'
-finally:
-    cc.selectChapterByName('main',collapse=True)
+    chapterNode = (
+        cc.findChapterNode('aaa') or
+        cc.createChapterByName('aaa',p=None))
+        
+    try:
+        cc.selectChapterByName('aaa',chaptersNode)
+        cc.renameChapterByName('bbb')
+        cc.selectChapterByName('bbb',chaptersNode)
+        cc.renameChapterByName('aaa')
+        assert cc.findChapterNode('aaa'),'after undo'
+    finally:
+        cc.selectChapterByName('main',collapse=True)
 #@+node:ekr.20110608181936.3368: *4* @test chapter-move/clone/copy-node-to
+# cc will be None when unit tests run dynamically.
 cc = c.chapterController
-chaptersNode = cc.findChaptersNode()
-assert chaptersNode,'fail 0'
-
-chapterNode = (
-    cc.findChapterNode('aaa') or
-    cc.createChapterByName('aaa',p=None))
+if cc:
+    chaptersNode = cc.findChaptersNode()
+    assert chaptersNode,'fail 0'
     
-table = (
-    ('node a',cc.moveNodeToChapterHelper),
-    ('node b',cc.copyNodeToChapterHelper),
-    ('node c',cc.cloneNodeToChapterHelper),
-)
+    chapterNode = (
+        cc.findChapterNode('aaa') or
+        cc.createChapterByName('aaa',p=None))
+        
+    table = (
+        ('node a',cc.moveNodeToChapterHelper),
+        ('node b',cc.copyNodeToChapterHelper),
+        ('node c',cc.cloneNodeToChapterHelper),
+    )
+        
+    # Initialze 
+    while p.hasChildren():
+        p.firstChild().doDelete(newNode=None)
     
-# Initialze 
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-
-for h,unused_f in table:
-    p2 = p.insertAsLastChild()
-    p2.h = h
-    p2.b = '# %s' % h
-
-try:
-    cc.selectChapterByName('aaa',chaptersNode)
-    for h,f in table:
-        p2 = g.findNodeInTree(c,p,h)
-        assert p2,'fail 1'
-        c.selectPosition(p2) # All helpers work on c.p.
-        f('aaa')
-        assert g.findNodeInTree(c,chapterNode,h),'fail 2'
-    assert not g.findNodeInTree(c,p,'node a')
-    assert g.findNodeInTree(c,p,'node b')
-    assert g.findNodeInTree(c,p,'node c')
-finally:
-    if 1: # Restore the tree so activeUnitTests.txt does not change.
-        while p.hasChildren():
-            p.firstChild().doDelete(newNode=None)
+    for h,unused_f in table:
+        p2 = p.insertAsLastChild()
+        p2.h = h
+        p2.b = '# %s' % h
+    
+    try:
+        cc.selectChapterByName('aaa',chaptersNode)
         for h,f in table:
-            # if not g.findNodeInTree(c,p,h):
-                # p2 = p.insertAsLastChild()
-                # p2.h = h
-                # p2.b = '# %s' % h
-            p3 = g.findNodeInTree(c,chapterNode,h)
-            if p3: p3.doDelete()
-    cc.selectChapterByName('main',collapse=True)
-    c.redraw()
+            p2 = g.findNodeInTree(c,p,h)
+            assert p2,'fail 1'
+            c.selectPosition(p2) # All helpers work on c.p.
+            f('aaa')
+            assert g.findNodeInTree(c,chapterNode,h),'fail 2'
+        assert not g.findNodeInTree(c,p,'node a')
+        assert g.findNodeInTree(c,p,'node b')
+        assert g.findNodeInTree(c,p,'node c')
+    finally:
+        if 1: # Restore the tree so activeUnitTests.txt does not change.
+            while p.hasChildren():
+                p.firstChild().doDelete(newNode=None)
+            for h,f in table:
+                # if not g.findNodeInTree(c,p,h):
+                    # p2 = p.insertAsLastChild()
+                    # p2.h = h
+                    # p2.b = '# %s' % h
+                p3 = g.findNodeInTree(c,chapterNode,h)
+                if p3: p3.doDelete()
+        cc.selectChapterByName('main',collapse=True)
+        c.redraw()
 #@+node:ekr.20080503132221.1: *4* @test chapter-create-from-node
+# cc will be None when unit tests run dynamically.
 cc = c.chapterController
-root = p.copy()
-
-# Init the children
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-
-child = p.insertAsNthChild(0)
-# c.setHeadString(child,'child') # Force the headline to update.
-child.h = 'child'
-child.b = '# child'
-
-# Kill the chapter so the test will not fail if run twice.
-chapter = cc.chaptersDict.get('new-chapter')
-if chapter:
-    cc.removeChapterByName('new-chapter')
-
-try:
-    c.selectPosition(child)
-    c.chapterController.createChapterByName(
-        'new-chapter',child,'Create Chapter From Node')
-    if 0:
-        c.undoer.undo()
-        c.undoer.redo()
-        c.undoer.undo()
-        c.undoer.redo()
-        c.undoer.undo() # Don't pollute future unit tests.
-    else:
-        c.redraw_now() # Required.
-        chapterNode = cc.findChapterNode('new-chapter')
-        assert chapterNode,'fail 1: %s' % (undoType)
-        chapterNode.doDelete()
+if cc:
+    root = p.copy()
+    
+    # Init the children
+    while p.hasChildren():
+        p.firstChild().doDelete(newNode=None)
+    
+    child = p.insertAsNthChild(0)
+    # c.setHeadString(child,'child') # Force the headline to update.
+    child.h = 'child'
+    child.b = '# child'
+    
+    # Kill the chapter so the test will not fail if run twice.
+    chapter = cc.chaptersDict.get('new-chapter')
+    if chapter:
+        cc.removeChapterByName('new-chapter')
+    
+    try:
+        c.selectPosition(child)
+        c.chapterController.createChapterByName(
+            'new-chapter',child,'Create Chapter From Node')
+        if 0:
+            c.undoer.undo()
+            c.undoer.redo()
+            c.undoer.undo()
+            c.undoer.redo()
+            c.undoer.undo() # Don't pollute future unit tests.
+        else:
+            c.redraw_now() # Required.
+            chapterNode = cc.findChapterNode('new-chapter')
+            assert chapterNode,'fail 1: %s' % (undoType)
+            chapterNode.doDelete()
+            c.redraw_now()
+    finally:
+        cc.selectChapterByName('main',collapse=True)
+        if 1: # Do this so the activeUnitTests.txt does not change.
+            while root.hasChildren():
+                root.firstChild().doDelete(newNode=None)
         c.redraw_now()
-finally:
-    cc.selectChapterByName('main',collapse=True)
-    if 1: # Do this so the activeUnitTests.txt does not change.
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now()
 #@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5
 #@+node:ekr.20090104053806.1: *4* @@test c.checkFileTimeStamp & c.setFileTimeStamp
@@ -4168,17 +4180,18 @@ _foo = 0
 @g.command('my-test-command')
 def mytestcommand(event):
     global _foo
-
     _foo = 1
 
-c.k.simulateCommand('my-test-command')
-assert _foo == 1
+try:
+    c.k.simulateCommand('my-test-command')
+    assert _foo == 1
+    
+    # bonus test: c.app.commanders()
+    assert c in g.app.commanders()
 
-# bonus test: c.app.commanders()
-assert c in g.app.commanders()
-
-
-
+except AttributeError:
+    # Raised only for unit testing.
+    pass
 #@+node:ekr.20100203103015.5357: *4* @test g.isCallable
 def spam(): pass
 lam = lambda a: None
@@ -4391,7 +4404,7 @@ assert not g.os_path_exists(fn),'fail 1'
 #@+node:ekr.20050203084930.1: *4* @test global settings
 w = g.app.config.get(None,'global_setting_for_unit_tests','int')
 
-assert w == 132
+assert w in (None,132) # Will be None when tests run dynamically.
 #@+node:ekr.20060325071703.1: *4* @test ifplatform
 import sys
 
@@ -4407,9 +4420,9 @@ elif sys.platform== 'darwin':
     assert(darwin)
 
 #@+node:ekr.20050203001146: *4* @test local settings (c.page_width)
-# g.es(c.page_width)
+# print(c.page_width)
 
-assert c.page_width == 80
+assert c.page_width in (80,132) # 132 when test run dynamically.
 #@+node:ekr.20071113201854: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
@@ -4440,7 +4453,7 @@ for gui in guis:
     # gui.runCompareDialog(c) # Removed.
 
 g.app.gui = oldGui
-#@+node:ekr.20071113192611: *3* leoEditCommands
+#@+node:ekr.20071113192611: *3* leoEditCommands (not valid when run externally)
 # 24 failures, 2 errors with Alt-5
 #@+node:ekr.20070131175538: *4*  Commands A-B
 #@+node:ekr.20061101121602.78: *5* @test add-space-to-lines
@@ -9213,7 +9226,9 @@ try:
 finally:
     c2.setChanged(False)
     c2.close()
-#@+node:ekr.20090507084947.5152: *4* @test t.fileIndex remains the same
+#@+node:ekr.20090507084947.5152: *4* @test t.fileIndex remains the same (not valid when run externally)
+# print(p.v.fileIndex) 
+
 assert p.v.fileIndex == ('ekr', '20090507084947', 5152)
 #@+node:ekr.20071113202045: *4* @test zz restore the screen
 # This is **not** a real unit test.
@@ -9223,7 +9238,7 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoFileCommands tests.')
-#@+node:ekr.20071113193527: *3* leoFind
+#@+node:ekr.20071113193527: *3* leoFind (not valid when run externally)
 # 4 failures with Alt-5
 #@+node:ekr.20051107115231.29: *4* @@test Find keeps focus in body & shows selected text
 import leo.core.leoEditCommands as leoEditCommands
@@ -9296,7 +9311,7 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 # print('\nEnd of leoFind tests.')
-#@+node:ekr.20071113194424: *3* leoFrame
+#@+node:ekr.20071113194424: *3* leoFrame (not valid when run externally)
 # 3 failures with Alt-5
 #@+node:ekr.20060912091510.1: *4* @@test add-editor & delete-editor
 import time
@@ -10013,9 +10028,13 @@ g.app.unitTestDict['restoreSelectedNode']=False
 
 fn = '<file name>'
 p2 = p.firstChild()
-for cloneDrag in (True,False):
-    c.frame.tree.treeWidget.intraFileDrop(cloneDrag,fn,p,p2)
-    assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
+
+# Not valid for nullTree (dynamic unit tests).
+tree = c.frame.tree
+if hasattr(tree,'treeWidget'):
+    for cloneDrag in (True,False):
+        tree.treeWidget.intraFileDrop(cloneDrag,fn,p,p2)
+        assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
 #@+node:ekr.20111003145300.3467: *5* a
 #@+node:ekr.20100131171342.5602: *4* @test leoTextWidget
 if g.app.gui.guiName() == 'tkinter':
@@ -10102,7 +10121,7 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 # print('\nEnd of leoGui tests.')
-#@+node:ekr.20090529141856.4682: *3* leoImport
+#@+node:ekr.20090529141856.4682: *3* leoImport (not valid when run externally)
 # These test are inconvenient to include in leoPy.leo
 # because they would need a @mark-for-unit-tests node,
 # and Alt-5 would execute all the tests.
@@ -11688,7 +11707,7 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 # print('\nEnd of leoKeys tests.')
-#@+node:ekr.20071113194424.1: *3* leoNodes
+#@+node:ekr.20071113194424.1: *3* leoNodes (not valid when run externally)
 # 4 failures with Alt-5
 #@+node:ekr.20040712101754.181: *4*  inner @test: Test consistency between parents iter and v.parents
 # The actual test is in a child node.
@@ -13012,8 +13031,10 @@ for s in (
     result = x.handleMissingStyleSheetArgs(s=s)
     assert result == expected,'expected %s\ngot %s' % (expected,result)
 #@+node:ekr.20100812172232.5801: *4* @test rst3 defaults
-exec(g.findTestScript(c,'@common leoRst test code'))
-rst3Test(c,p)
+s = g.findTestScript(c,'@common leoRst test code',warn=False)
+if s:
+    exec(s)
+    rst3Test(c,p)
 #@+node:ekr.20100812182942.5805: *5* source
 @language rest
 #@+node:ekr.20100812182942.5807: *6* @rst test.html
@@ -13597,8 +13618,10 @@ This is the body of the section.</p>
 </body>
 </html>
 #@+node:ekr.20100813100841.5850: *4* @test rst3 @no-head
-exec(g.findTestScript(c,'@common leoRst test code'))
-rst3Test(c,p)
+s = g.findTestScript(c,'@common leoRst test code',warn=False)
+if s:
+    exec(s)
+    rst3Test(c,p)
 #@+node:ekr.20100813100841.5854: *5* source
 @language rest
 #@+node:ekr.20100813100841.5855: *6* @rst test.html
@@ -14158,8 +14181,11 @@ hr { /* EKR */
 </body>
 </html>
 #@+node:ekr.20100813100841.5824: *4* @test doc_only_mode (set in headline)
-exec(g.findTestScript(c,'@common leoRst test code'))
-rst3Test(c,p)
+# Skip test when running test dynamically.
+s = g.findTestScript(c,'@common leoRst test code',warn=False)
+if s:
+    exec(s)
+    rst3Test(c,p)
 #@+node:ekr.20100813100841.5839: *5* source
 @language rest
 #@+node:ekr.20100813100841.5840: *6* @rst test.html
@@ -14739,8 +14765,11 @@ it has two lines.</p>
 </body>
 </html>
 #@+node:ekr.20100813124317.5879: *4* @test doc_only_mode (set in options doc part)
-exec(g.findTestScript(c,'@common leoRst test code'))
-rst3Test(c,p)
+# Skip test when running test dynamically.
+s = g.findTestScript(c,'@common leoRst test code',warn=False)
+if s:
+    exec(s)
+    rst3Test(c,p)
 #@+node:ekr.20100813124317.5880: *5* source
 @language rest
 #@+node:ekr.20100813124317.5881: *6* @rst test.html
@@ -15320,8 +15349,11 @@ it has two lines.</p>
 #@+node:ekr.20100813100841.5825: *4* @test show_doc_parts_in_rst_mode
 # Applies to options doc parts as well.
 #@+node:ekr.20100827140832.5913: *4* @test show_leo_directives=False
-exec(g.findTestScript(c,'@common leoRst test code'))
-rst3Test(c,p)
+# Skip test when running test dynamically.
+s = g.findTestScript(c,'@common leoRst test code',warn=False)
+if s:
+    exec(s)
+    rst3Test(c,p)
 #@+node:ekr.20100827140832.5917: *5* source
 @language rest
 #@+node:ekr.20100827140832.5918: *6* @rst test.html
@@ -17028,7 +17060,7 @@ class test:
 
 X = test()
 sendEmail(X)
-#@+node:ekr.20071113193729: *3* leoUndo
+#@+node:ekr.20071113193729: *3* leoUndo (not valid when run externally)
 @
 
 9 failures with Alt-5.
@@ -17306,15 +17338,16 @@ for p in c.all_positions():
 #@+node:ekr.20100131171342.5504: *4* @test position2Item
 tree = c.frame.tree
 
-
-c.redraw()
-
-p = c.rootPosition()
-while p:
-    item = tree.position2item(p)
-    v = tree.item2vnode(item)
-    assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
-    p.moveToVisNext(c)
+# position2item does not exist when running unit tests dynamically.
+if hasattr(tree,'position2item'):
+    
+    c.redraw()
+    p = c.rootPosition()
+    while p:
+        item = tree.position2item(p)
+        v = tree.item2vnode(item)
+        assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
+        p.moveToVisNext(c)
 #@+node:ekr.20100131171342.5505: *4* @test item2position
 def test_sibs(parent_p,parent_item):
 
@@ -17681,16 +17714,20 @@ def removeLeadingWs (code):
 
     result = ''.join(result)
     return result
-#@+node:ekr.20100131171342.5497: *3* @test dectect_urls.py
+#@+node:ekr.20100131171342.5497: *3* @test detect_urls.py
 import leo.plugins.detect_urls as detect_urls
 
+print(c.frame.body.bodyCtrl)
 w = c.frame.body.bodyCtrl
 s = w.getAllText()
-if s.endswith('\n'): s = s[:-1]
-w.setInsertPoint(len(s))
-url = detect_urls.openURL(tag='test',keywords={'c':c})
-assert url == 'http://webpages.charter.net/edreamleo/front.html','Got:%s' % repr(url)
 
+# s will be empty when running unit tests dynamically.
+if s:
+    if s.endswith('\n'): s = s[:-1]
+    w.setInsertPoint(len(s))
+    url = detect_urls.openURL(tag='test',keywords={'c':c})
+    assert url == 'http://webpages.charter.net/edreamleo/front.html','Got:%s' % repr(url)
+    
 @ The last line is the url
 http://webpages.charter.net/edreamleo/front.html
 #@+node:ekr.20100131171342.5500: *3* @test macros.parameterize

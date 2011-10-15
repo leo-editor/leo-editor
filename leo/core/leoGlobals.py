@@ -1917,6 +1917,7 @@ def handleUrlInUrlNode(url, c=None, p=None):
     #         node if it exists.
 
     if g.unitTesting: return
+    
     #@+<< check the url; return if bad >>
     #@+node:tbrown.20090219095555.62: *4* << check the url; return if bad >>
     #@+at A valid url is (according to D.T.Hein):
@@ -1931,7 +1932,7 @@ def handleUrlInUrlNode(url, c=None, p=None):
 
     # urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
 
-    if not url or len(url) == 0:
+    if not url:
         g.es("no url following @url")
         return
 
@@ -4805,7 +4806,7 @@ def getTestVars ():
     d['getTestVars'] = True
     return c,p and p.copy()
 #@+node:ekr.20100812172650.5909: *3* g.findTestScript
-def findTestScript(c,h,where=None):
+def findTestScript(c,h,where=None,warn=True):
 
     if where:
         p = g.findNodeAnywhere(c,where)
@@ -4817,7 +4818,7 @@ def findTestScript(c,h,where=None):
     if p:
         return g.getScript(c,p)
     else:
-        g.trace('Not found',h)
+        if warn: g.trace('Not found',h)
         return None
 #@+node:EKR.20040612114220: ** Utility classes, functions & objects...
 #@+node:ekr.20050315073003: *3*  Index utilities... (leoGlobals)

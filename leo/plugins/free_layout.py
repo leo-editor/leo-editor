@@ -56,8 +56,11 @@ def loadLayouts(tag, keys):
 
         if '_ns_layout' in c.db:
             name = c.db['_ns_layout']
-            c.free_layout.get_top_splitter().load_layout(
-                g.app.db['ns_layouts'][name])
+            # Careful: we could be unit testing.
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.load_layout(
+                    g.app.db['ns_layouts'][name])
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
     
@@ -97,7 +100,10 @@ class FreeLayoutController:
 
         c = self.c
 
+        # Careful: we could be unit testing.
         splitter = self.get_top_splitter() # A NestedSplitter.
+        if not splitter:
+            return
 
         # Register menu callbacks with the NestedSplitter.
         splitter.register(self.offer_tabs)
@@ -138,8 +144,13 @@ class FreeLayoutController:
             i(menu, splitter, index, button_mode, self.c)
     #@+node:tbrown.20110621120042.22914: *3* get_top_splitter
     def get_top_splitter(self):
-
-        return self.c.frame.top.findChild(NestedSplitter).top()
+        
+        # Careful: we could be unit testing.
+        f = self.c.frame
+        if hasattr(f,'top'):
+            return f.top.findChild(NestedSplitter).top()
+        else:
+            return None
     #@+node:ekr.20110318080425.14392: *3* menu callbacks
     # These are called when the user right-clicks the NestedSplitter.
     #@+node:ekr.20110317024548.14380: *4* add_item
@@ -159,7 +170,10 @@ class FreeLayoutController:
         if not button_mode:
             return
 
+        # Careful: we could be unit testing.
         top_splitter = self.get_top_splitter()
+        if not top_splitter: return
+
         logTabWidget = top_splitter.findChild(QtGui.QWidget, "logTabWidget")
 
         for n in range(logTabWidget.count()):

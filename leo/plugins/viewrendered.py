@@ -253,21 +253,7 @@ def show_scrolled_message(tag, kw):
 
     c = kw.get('c')
     
-    if 1:
-        vr = viewrendered(event=kw)
-    else:
-        # Old code.
-        vr = c.frame.top.findChild(QtGui.QWidget,'vr_scrolled_message')
-        if vr is None:
-            vr = ViewRenderedController(c)
-            vr.setObjectName('vr_scrolled_message')
-            if hasattr(c, 'free_layout'):
-                splitter = c.free_layout.get_top_splitter()
-                if not splitter.add_adjacent(vr, 'bodyFrame', 'right-of'):
-                    splitter.insert(0, vr)
-            else:
-                vr.resize(600, 600)
-                vr.show()
+    vr = viewrendered(event=kw)
     
     title = kw.get('short_title','').strip()
     vr.setWindowTitle(title)
@@ -387,8 +373,10 @@ def viewrendered(event):
             vr._ns_id = '_leo_viewrendered'  # for free_layout load/save
             
             splitter = c.free_layout.get_top_splitter()
-            if not splitter.add_adjacent(vr, 'bodyFrame', 'right-of'):
-                splitter.insert(0, vr)
+            # Careful: we may be unit testing.
+            if splitter:
+                if not splitter.add_adjacent(vr, 'bodyFrame', 'right-of'):
+                    splitter.insert(0, vr)
         else:
             vr.setWindowTitle("Rendered View")
             vr.resize(600, 600)
@@ -409,8 +397,11 @@ class ViewRenderedProvider:
     #@+node:tbrown.20110629084915.35154: *3* __init__
     def __init__(self, c):
         self.c = c
+        # Careful: we may be unit testing.
         if hasattr(c, 'free_layout'):
-            c.free_layout.get_top_splitter().register_provider(self)
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.register_provider(self)
     #@+node:tbrown.20110629084915.35150: *3* ns_provides
     def ns_provides(self):
         return[('Viewrendered', '_leo_viewrendered')]

@@ -97,6 +97,7 @@ def show_unittest_failures(event):
     c.k.simulateCommand('focus-to-nav')
 #@+node:tbrown.20111011152601.48462: ** install_qt_quicksearch_tab
 def install_qt_quicksearch_tab(c):
+    
     #tabw = c.frame.top.tabWidget
 
     wdg = LeoQuickSearchWidget(c)
@@ -153,9 +154,11 @@ def install_qt_quicksearch_tab(c):
             wdg.ui.lineEdit.selectAll()
             wdg.ui.lineEdit.setFocus()
 
-    tab_widget = wdg.parent().parent()
-    tab_widget.connect(tab_widget,
-        QtCore.SIGNAL("currentChanged(int)"), activate_input)
+    # Careful: we may be unit testing.
+    if wdg and wdg.parent():
+        tab_widget = wdg.parent().parent()
+        tab_widget.connect(tab_widget,
+            QtCore.SIGNAL("currentChanged(int)"), activate_input)
 #@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget
 class LeoQuickSearchWidget(QtGui.QWidget):
     """ 'Find in files'/grep style search widget """
@@ -189,8 +192,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         if self.scon.its:
             self.ui.listWidget.setFocus()
     #@-others
-#@+node:ville.20090314215508.12: ** QuickSearchController
-
+#@+node:ekr.20111014074810.15659: ** matchLines
 def matchlines(b, miter):
     res = []
     for m in miter:
@@ -198,6 +200,8 @@ def matchlines(b, miter):
         li = b[st:en].strip()
         res.append((li, (m.start(), m.end() )))
     return res
+
+#@+node:ville.20090314215508.12: ** QuickSearchController
 
 class QuickSearchController:
     def __init__(self, c, listWidget):
@@ -240,16 +244,15 @@ class QuickSearchController:
 
     def addHeadlineMatches(self, poslist):
         for p in poslist:
-            it =  QListWidgetItem(p.h, self.lw);    
+            it = QListWidgetItem(p.h, self.lw)   
             f = it.font()
             f.setBold(True)
             it.setFont(f)
-
             self.its[it] = (p,None)
 
     def addBodyMatches(self, poslist):               
         for p in poslist:
-            it =  QListWidgetItem(p.h, self.lw)
+            it = QListWidgetItem(p.h, self.lw)
             f = it.font()
             f.setBold(True)
             it.setFont(f)
@@ -258,12 +261,12 @@ class QuickSearchController:
             ms = matchlines(p.b, p.matchiter)
             for ml, pos in ms:
                 #print "ml",ml,"pos",pos
-                it =  QListWidgetItem(ml, self.lw);    
+                it = id(QListWidgetItem(ml, self.lw))   
                 self.its[it] = (p, pos)
 
     def addGeneric(self, text, f):
         """ Add generic callback """
-        it =  QListWidgetItem(text, self.lw)
+        it = id(QListWidgetItem(text, self.lw))
         self.its[it] = f
         return it
 

@@ -2435,10 +2435,10 @@ class keyHandlerClass:
             else:
                 return None
         else:
-            g.trace('no command for %s' % (commandName),color='red')
             if g.app.unitTesting:
                 raise AttributeError
             else:
+                g.trace('no command for %s' % (commandName),color='red')
                 return None
     #@+node:ekr.20061031131434.128: *4* getArg
     def getArg (self,event,

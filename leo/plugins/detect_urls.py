@@ -55,7 +55,6 @@ def init():
 #@+node:vpe.20060305064323.5: ** openURL()
 def openURL(tag,keywords):
     c = keywords.get("c")
-
     w = c.frame.body.bodyCtrl
     s = w.getAllText()
     ins = w.getInsertPoint()

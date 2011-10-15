@@ -1204,7 +1204,8 @@ Other changes
 - The open-python-window command fails more gracefully It issues a message
   instead of crashing if idlelib does not exist.
 </t>
-<t tx="ekr.20110620083705.14902">Fixed crash on mouse clicks in minibuffer.</t>
+<t tx="ekr.20110620083705.14902">Fixed crash on mouse clicks in minibuffer.
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

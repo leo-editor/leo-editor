@@ -2891,7 +2891,7 @@ class leoQtBody (leoFrame.leoBody):
                 c.frame.top.textEdit,
                 name='body',c=c)
             self.bodyCtrl = w # The widget as seen from Leo's core.
-            self.colorizer = None # leoColor.nullColorizer(c)
+            self.colorizer = nullColorizer(c)
         else:
             top = c.frame.top
             sw = top.leo_ui.stackedWidget

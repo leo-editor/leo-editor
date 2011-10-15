@@ -87,7 +87,11 @@ def onDClick1 (tag,keywords):
 def bookmarks_show(event):
     if use_qt:
         bmd = BookMarkDisplay(event['c'])
-        bmd.c.free_layout.get_top_splitter().add_adjacent(bmd.w, 'bodyFrame', 'above')
+        
+        # Careful: we could be unit testing.
+        splitter = bmd.c.free_layout.get_top_splitter()
+        if splitter:
+            splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
 
     else:
         g.es("Requires Qt GUI")
@@ -190,9 +194,13 @@ class BookMarkDisplayProvider:
     #@+node:tbrown.20110712121053.19747: *3* __init__
     def __init__(self, c):
         self.c = c
+        
         if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
             # FIXME, second hasattr temporary until free_layout merges with trunk
-            c.free_layout.get_top_splitter().register_provider(self)
+            splitter = c.free_layout.get_top_splitter()
+            # Careful: we could be unit testing.
+            if splitter:
+                splitter.register_provider(self)
     #@+node:tbrown.20110712121053.19748: *3* ns_provides
     def ns_provides(self):
         return[('Bookmarks', '_leo_bookmarks_show')]

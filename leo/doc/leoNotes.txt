@@ -7985,36 +7985,6 @@ def skip_string(self,s,i):
     if s[i] == delim:
         i += 1
     return i,"normal"
-#@+node:ekr.20031218072017.2218: *4* class nullColorizer
-class nullColorizer (colorizer):
-
-    """A do-nothing colorer class"""
-
-    @others
-#@+node:ekr.20031218072017.2219: *5* __init__
-def __init__ (self,c):
-
-    colorizer.__init__(self,c) # init the base class.
-
-    self.c = c
-    self.enabled = False
-#@+node:ekr.20031218072017.2220: *5* entry points
-def colorize(self,p,incremental=False,interruptable=True):
-    return 'ok' # Used by unit tests.
-
-def disable(self):                          pass
-def enable(self):                           pass
-def scanColorDirectives(self,p):            pass
-
-def setFontFromConfig (self):
-    self.bold_font = None
-    self.italic_font = None
-    self.bolditalic_font = None
-    self.color_tags_list = []
-    self.image_references = []
-
-def updateSyntaxColorer (self,p):           pass
-
 #@+node:ekr.20031218072017.2795: *4* << define colorizer constants >>
 # php_re = re.compile("<?(\s|=|[pP][hH][pP])")
 php_re = re.compile("<?(\s[pP][hH][pP])")

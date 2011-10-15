@@ -6,7 +6,93 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 I am willing to fix bugs, but I would like to declare a moratorium on feature additions until 2012.
 .. @+node:ekr.20111013065147.9418: *3* Urgent/First
-.. @+node:ekr.20111012061216.15698: *4* * Complete expand/contract commands
+.. @+node:ekr.20111014074810.15654: *4* Play with the bookmarks and quicksearch plugins
+.. @+node:ekr.20111014134653.15672: *4* Search across multiple Leo files
+http://groups.google.com/group/leo-editor/browse_thread/thread/cf5ab54f29a6c128
+.. @+node:ekr.20111014074810.15653: *4* Rewrite MacOs instructions using Ludvig's homebrew instructions
+@language rest
+
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
+
+I bear good tidings of great joy!
+
+I recently received a new MacBook Pro and did a fresh upgrade to Mac
+OS 10.7 (Lion). I then used the opportunity to test out installation
+procedures of various software on a clean system. My main finding is
+that the excellent Homebrew (mxcl.github.com/homebrew/) makes things
+much easier these days.
+
+Why Homebrew? It does not try to replace every single bit of
+functionality on your Mac with their own version, like Macports or
+fink. It reuses the existing libraries as far as possible. No need to
+reinstall Python, for example (one of my pet gripes when people try to
+install new software on their Macs, and the source of much confusion
+and pain). It installs to /usr/local, the standard place to find
+third-party libraries and headers, instead of the obscure /opt or /sw.
+It's simple to use and to extend.
+
+I last installed Leo on Mac OS 10.4 (Tiger) back in the Tk days, and
+wondered what it looked like in Qt. All the horror stories of PyQT on
+Mac discouraged me from trying this before, so I was keen to see if
+Homebrew helps. Here is my installation write-up:
+
+- Make sure you have Xcode installed
+  (test it by confirming that "gcc" runs in the Terminal)
+
+- In preparation for homebrew, the best option in my opinion is
+  to delete /usr/local via::
+
+  sudo rm -rf /usr/local
+
+  and install any software in it via homebrew instead. If this step
+  fills you with dread and you do not want to lose your beloved
+  third-party software, the second-best option is to make sure you
+  have write permission for the directory via::
+
+  sudo chown -R <your user name>:admin /usr/local
+
+  If you don't know your username, run "whoami". :-) This is
+  useful because homebrew actually discourages you from
+  installing third-party software as the superuser (the usual Mac
+  apps in /Applications are also installed as the normal user,
+  for that matter).
+
+- Install Homebrew (http://mxcl.github.com/homebrew/) by running
+  the following command in the Terminal::
+
+  /usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
+
+- Run "brew update" to get the latest formulas
+
+- Now install PyQT (yes, that's it!)::
+
+  brew install pyqt
+
+- Run "brew doctor" and check any further suggestions to improve
+  your system.
+
+- Add the following lines to your ~/.bash_profile
+  (or ~/.profile on Leopard)::
+
+  export PATH=/usr/local/bin:$PATH
+  # This is for SIP (and PyQT) as suggested by Homebrew
+  export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
+
+- Open a new Terminal tab / window so that the above settings
+  take effect, and install Leo. I downloaded the Leo-4.9-final-a.zip,
+  unzipped it, and ran "python launchLeo.py" inside the Leo
+  directory.
+
+We should consider adding a Homebrew formula for Leo. This will
+simplify the process even further, to simply "brew install leo". I
+started on this, but wasn't sure where to put the various Leo files in
+the system hierarchy. The Debian package can give some clues here, but
+I haven't looked at it yet.
+
+Ludwig
+.. @+node:ekr.20111014074810.15652: *4* viewrendered should work better when docutils does not exist
+.. @+node:ekr.20111014074810.15651: *4* Write (or find) script to update plugins page from docstrings
 .. @+node:ekr.20110621085435.6531: *4* Improve the find panel and find menu
 @nocolor-node
 
@@ -67,6 +153,8 @@ UNL is /home/tbrown/.leo/.todo.leo#Home-->Paint roof)
     All souce-forge screenshots need to be replaced.
 
 
+.. @+node:ekr.20111014074810.15655: *4* What about LeoDocs(hard-crash).leo is causing the crash?
+.. @+node:ekr.20111012061216.15698: *4* * Complete expand/contract commands
 .. @+node:ekr.20111013065147.9427: *3* Urgent/Bugs
 .. @+node:ekr.20111010162047.15678: *4* The @auto script *must* put @first nodes in root node
 @nocolor-node

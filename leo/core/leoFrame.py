@@ -2624,7 +2624,7 @@ class nullBody (leoBody):
         w = stringTextWidget(c=self.c,name='body')
         self.bodyCtrl = self.widget = w
         self.editorWidgets['1'] = w
-        self.colorizer = None # leoColor.nullColorizer(self.c)
+        self.colorizer = nullColorizer(self.c)
     #@+node:ekr.20031218072017.2193: *3* Utils (internal use)
     #@+node:ekr.20031218072017.2194: *4* findStartOfLine
     def findStartOfLine (self,lineNumber):
@@ -2686,6 +2686,40 @@ class nullBody (leoBody):
     # Low-level gui...
     def hasFocus (self):                        pass
     def setFocus (self):                        pass
+    #@-others
+#@+node:ekr.20031218072017.2218: ** class nullColorizer
+class nullColorizer: ### (colorizer):
+
+    """A do-nothing colorer class"""
+
+    #@+others
+    #@+node:ekr.20031218072017.2219: *3* __init__
+    def __init__ (self,c):
+
+        ### colorizer.__init__(self,c) # init the base class.
+
+        self.c = c
+        self.enabled = False
+    #@+node:ekr.20031218072017.2220: *3* entry points
+    def colorize(self,p,incremental=False,interruptable=True):
+        return 'ok' # Used by unit tests.
+
+    def disable(self): pass
+
+    def enable(self): pass
+
+    def interrupt(self): pass
+
+    def scanColorDirectives(self,p): pass
+
+    def setFontFromConfig (self):
+        self.bold_font = None
+        self.italic_font = None
+        self.bolditalic_font = None
+        self.color_tags_list = []
+        self.image_references = []
+
+    def updateSyntaxColorer (self,p): pass
     #@-others
 #@+node:ekr.20031218072017.2222: ** class nullFrame
 class nullFrame (leoFrame):
