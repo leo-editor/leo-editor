@@ -13803,7 +13803,6 @@ This was a serious error.  It could cause clone clashes on later reloads.
 #@+node:ekr.20100201192329.7106: *6* Fixed crasher in sort-siblings
 This only happened if two nodes had the same headline.
 #@+node:ekr.20100201192329.7108: *6* Fixed bug 515164: a crasher in p.positionExists
-#@+node:ekr.20100201192329.7112: *6* Fix crasher in scrolledMessage.py
 #@+node:ekr.20100201192329.7113: *6* Fixed problem with colon following @path
 @nocolor-node
 
@@ -15764,8 +15763,6 @@ The highlights of Leo 4.9:
 
 - The rendering pane can now display movies, html, svg images, etc.
 
-- The scrolledmessage plugin can now use the rendering pane.
-
 - Nodes may contain multiple @language directives.
 
 - Leo highlights URL's everywhere. Ctrl-click URL's opens them in your web
@@ -16095,143 +16092,6 @@ added. In short, the new caching scheme is much better than before, and it
 probably is close to optimal in most situations.
 
 #@+node:ekr.20110602091552.16905: *5* Greatly improved the viewrendered plugin
-The viewrendered plugin creates a window for *live* rendering of images, movies,
-sounds, rst, html, etc. 
-
-Commands
-========
-
-viewrendered.py creates the following (``Alt-X``) commands:
-
-``viewrendered (abbreviated vr)``
-    Opens a new rendering window.
-    
-    By default, the rendering pane renders body text as reStructuredText, with
-    all Leo directives removed. However, if the body text starts with ``<``
-    (after removing directives), the body text is rendered as html.
-    
-    **Important**: The default rendering just described does not apply to nodes
-    whose headlines begin with @image, @html, @movie, @networkx, @svg and @url.
-    See the section called **Special Renderings** below.
-
-    Rendering sets the process current directory (os.chdir()) to the path
-    to the node being rendered, to allow relative paths to work in ``.. image::`` directives.
-
-``hide-rendering-pane``
-    Makes the rendering pane invisible, but does not destroy it.
-
-``lock-unlock-rendering-pane``
-    Toggles the locked state of the rendering pane. When unlocked (the initial
-    state), the rendering pane renders the contents of the presently selected
-    node. When locked, the rendering pane does not change when other nodes are
-    selected. This is useful for playing movies in the rendering pane.
-    
-``pause-play-movie``
-    This command has effect only if the rendering pane is presently showing a movie.
-    It pauses the movie if playing, or resumes the movie if paused.
-
-``show-rendering-pane``
-    Makes the rendering pane visible.
-
-``toggle-rendering-pane``
-    Shows the rendering pane if invisible, otherwise hides it.
-    
-``update-rendering-pane``
-    Forces an update of the rendering pane. This is especially useful for
-    @graphics-script nodes: such nodes are update automatically only when
-    selected, not when the body text changes.
-    
-Rendering reStructuredText
-==========================
-
-For example, both::
-
-    Heading
-    -------
-
-    `This` is **really** a line of text.
-
-and::
-
-    <h1>Heading<h1>
-
-    <tt>This</tt> is <b>really</b> a line of text.
-
-will look something like:
-
-    **Heading**
-
-    `This` is **really** a line of text.
-    
-**Important**: reStructuredText errors and warnings will appear in red in the rendering pane.
-
-Special renderings
-===================
-
-This plugin renders @image, @html, @movie, @networkx, @svg and @url nodes in
-special ways.
-
-For @image, @movie and @svg nodes, either the headline or the first line of body
-text may contain a filename.  If relative, the filename is resolved relative to
-Leo's load directory. 
-
-- ``@graphics-script`` executes the script in the body text in a context containing
-  two predefined variables:
-      
-    - gs is the QGraphicsScene for the rendering pane.
-    - gv is the QGraphicsView for the rendering pane.
-    
-  Using these variables, the script in the body text may create graphics to the
-  rendering pane.
-
-- ``@image`` renders the file as an image.
-
-
-- ``@html`` renders the body text as html.
-
-
-- ``@movie`` plays the file as a movie.  @movie also works for music files.
-
-- ``@networkx`` is non-functional at present.  It is intended to
-  render the body text as a networkx graph.
-  See http://networkx.lanl.gov/
-
-
-- ``@svg`` renders the file as a (possibly animated!) svg (Scalable Vector Image).
-  See http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
-  **Note**: if the first character of the body text is ``<`` after removing Leo directives,
-  the contents of body pane is taken to be an svg image.
-
-- ``@url`` is non-functional at present.
-
-Settings
-========
-
-- ``@color rendering-pane-background-color = white``
-  The background color the rendering pane when rendering text.
-
-- ``@bool view-rendered-auto-create = False``
-  When True, show the rendering pane when Leo opens an outline.
-  
-- ``@bool view-rendered-auto-hide = False``
-  When True, hide the rendering pane for text-only renderings.
-
-- ``@string view-rendered-default-kind = rst``
-  The default kind of rendering.  One of (big,rst,html)
-
-- ``@bool scrolledmessage_use_viewrendered = True``
-  When True the scrolledmessage dialog will use the rendering pane,
-  creating it as needed.  In particular, the plugins_menu plugin
-  will show plugin docstrings in the rendering pane.
-  
-Acknowledgments
-================
-
-Terry Brown created this initial version of this plugin,
-and the free_layout and NestedSplitter plugins used by viewrendered.
-
-Edward K. Ream generalized this plugin and added communication and coordination
-between the free_layout, NestedSplitter and viewrendered plugins.
 #@+node:ekr.20110531155858.20246: *4* New and improved features
 #@+node:ekr.20110602091552.16907: *5* Colorizing improvements
 - Support multiple @language directives in a single node
@@ -16278,9 +16138,9 @@ between the free_layout, NestedSplitter and viewrendered plugins.
   options are given. To change the splash screen, replace
   leo\Icons\SplashScreen.jpg with another image.
 
-- The apropos commands now print in a separate area if possible. The commands use
-  the scrolledmessage plugin if possible, which in turn uses the viewrendered
-  plugin by default. This makes the apropos messages much more visible.
+- The apropos commands now print in a separate area if possible. The commands
+  use the viewrendered plugin by default. This makes the apropos messages much
+  more visible.
 
 - Handle click events like alt-x or ctrl-g Clicking in the minibuffer now is
   equivalent to alt-x, provided that the minibuffer is not in use. Clicking most
@@ -16366,17 +16226,12 @@ between the free_layout, NestedSplitter and viewrendered plugins.
   The commands that switch find scope, set-find-xxx, no longer terminate the
   find command, if one is active.  This is an old bug, and it's good to fix it. 
 
-- Fixed recent bugs in the viewrendered and scrolledmessage plugins
+- Fixed recent bugs in the viewrendered plugin.
 
   An earlier rev fixed a bug that effectively destroyed the viewrendered plugin.
   It was caused by the new convention that alleviates the need for many
   \@language directives. The fix was simply to enable the update_rst method if
   the massaged p.b is not empty.
-
-  ScrolledMessageDialog.convertMessage now renders rst by default, unless
-  *either* the html or text button is pressed.  There really should be three
-  radio buttons: text, html or rST, but that's a tiny interface glitch.  The
-  actual bug however, was much more serious: rst was never being rendered. 
 
 - Fixed chapters problems
 

@@ -6,10 +6,147 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 I am willing to fix bugs, but I would like to declare a moratorium on feature additions until 2012.
 .. @+node:ekr.20111013065147.9418: *3* Urgent/First
-.. @+node:ekr.20111014074810.15654: *4* Play with the bookmarks and quicksearch plugins
-.. @+node:ekr.20111014134653.15672: *4* Search across multiple Leo files
+.. @+node:ekr.20111015150822.9347: *4* Features
+.. @+node:ekr.20111012061216.15698: *5* * Complete expand/contract commands
+.. @+node:ekr.20111015150822.9353: *5* Improve mod_scriping:  Allow @button[tag]
+.. @+node:ekr.20111015150822.9354: *5* Improve quicksearch plugin
+@nocolor-node
+
+- Allow global searches.
+- Add bindings.
+- Integrate with Leo's Find Tab?
+.. @+node:ekr.20111014134653.15672: *5* Search across multiple Leo files
 http://groups.google.com/group/leo-editor/browse_thread/thread/cf5ab54f29a6c128
-.. @+node:ekr.20111014074810.15653: *4* Rewrite MacOs instructions using Ludvig's homebrew instructions
+.. @+node:ekr.20111015150822.9351: *5* Improve bookmarks
+@nocolor-node
+
+- Allow {{exp}}
+- Convert back slashes to forward slashes.
+.. @+node:ekr.20031218072017.2312: *6* tree.OnIconDoubleClick (@url) & helper
+# Several plugins handle url's, especially UNL.py.
+
+def OnIconDoubleClick (self,p):
+
+    # Note: "icondclick" hooks handled by vnode callback routine.
+
+    c = self.c
+    s = p.h.strip()
+    if g.match_word(s,0,"@url"): 
+        if p.b.strip():
+            lines = p.b.split('\n',1)
+            url = lines and lines[0].strip() or ''
+        else:
+            url = s[4:].strip()
+        # g.trace(url,g.callers())
+
+        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+            g.handleUrlInUrlNode(url, c=c, p=p)
+        g.doHook("@url2",c=c,p=p,v=p)
+
+    return # (for Tk) 'break' # 11/19/06
+.. @+node:tbrown.20090219095555.61: *6* g.handleUrlInUrlNode
+def handleUrlInUrlNode(url, c=None, p=None):
+    
+    # Note 1: the UNL plugin has its own notion of what a good url is.
+
+    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
+    #         node if it exists.
+
+    if g.unitTesting: return
+    
+    << check the url; return if bad >>
+    << pass the url to the web browser >>
+.. @+node:tbrown.20090219095555.62: *7* << check the url; return if bad >>
+@ A valid url is (according to D.T.Hein):
+
+3 or more lowercase alphas, followed by,
+one ':', followed by,
+one or more of: (excludes !"#;<>[\]^`|)
+  $%&'()*+,-./0-9:=?@A-Z_a-z{}~
+followed by one of: (same as above, except no minus sign or comma).
+  $%&'()*+/0-9:=?@A-Z_a-z}~
+@c
+
+# urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+
+if not url:
+    g.es("no url following @url")
+    return
+
+# Add http:// if required.
+# if not re.match('^([a-z]{3,}:)',url):
+#     url = 'http://' + url
+# if not re.match(urlPattern,url):
+#     g.es("invalid url:",url)
+#     return
+.. @+node:tbrown.20090219095555.63: *7* << pass the url to the web browser >>
+@ Most browsers should handle the following urls:
+  ftp://ftp.uu.net/public/whatever.
+  http://localhost/MySiteUnderDevelopment/index.html
+  file://home/me/todolist.html
+@c
+
+try:
+    
+    parsed = urlparse(url)
+    
+    leo_path = parsed.path
+    if parsed.netloc:
+        leo_path = os.path.join(parsed.netloc, parsed.path)
+        # "readme.txt" gets parsed into .netloc...
+    
+    if c and parsed.scheme in ('', 'file'):
+        
+        # local UNLs like "node-->subnode", "-->node", and "#node"
+        if '-->' in parsed.path:
+            g.recursiveUNLSearch(parsed.path.split("-->"), c)
+            return
+        if not parsed.path and parsed.fragment:
+            g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+            return
+
+        # leo aware path
+        leo_path = os.path.expanduser(leo_path)
+        leo_path = g.os_path_expandExpression(leo_path, c=c)
+        if p and not os.path.isabs(leo_path):
+            leo_path = os.path.normpath(
+                os.path.join(c.getNodePath(p), leo_path))
+
+        # .leo file
+        if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+            # 2011/07/28: Immediately end editing, so that
+            # typing in the new window works properly.
+            c.endEditing()
+            c.redraw_now()
+            ok,frame = g.openWithFileName(leo_path, c)
+            
+            # with UNL after path
+            if ok and parsed.fragment:
+                g.recursiveUNLSearch(parsed.fragment.split("-->"), frame.c)
+                
+            if ok:
+                frame.c.bringToFront()
+                return
+                
+    if parsed.scheme in ('', 'file'):
+        if os.path.exists(leo_path):
+            g.os_startfile(leo_path)
+            return
+        if parsed.scheme == 'file':
+            g.es("File '%s' does not exist"%leo_path)
+            return
+        
+    import webbrowser
+    # Mozilla throws a weird exception, then opens the file!
+    try: webbrowser.open(url)
+    except: pass
+    
+except:
+    g.es("exception opening",url)
+    g.es_exception()
+.. @+node:ekr.20111015150822.9349: *4* Bugs
+.. @+node:ekr.20111015150822.9352: *5* Bind Ctrl-A to select All
+.. @+node:ekr.20111014074810.15653: *5* Rewrite MacOs instructions using Ludvig's homebrew instructions
 @language rest
 
 
@@ -91,9 +228,8 @@ the system hierarchy. The Debian package can give some clues here, but
 I haven't looked at it yet.
 
 Ludwig
-.. @+node:ekr.20111014074810.15652: *4* viewrendered should work better when docutils does not exist
-.. @+node:ekr.20111014074810.15651: *4* Write (or find) script to update plugins page from docstrings
-.. @+node:ekr.20110621085435.6531: *4* Improve the find panel and find menu
+.. @+node:ekr.20111014074810.15652: *5* viewrendered should work better when docutils does not exist
+.. @+node:ekr.20110621085435.6531: *5* Improve the find panel and find menu
 @nocolor-node
 
 Recently, perhaps it was today, there was a remark made about Leo's
@@ -107,6 +243,24 @@ a search/replace operation.  I'll fix this soon after 4.9 final.
 tab only--not a way of actually initiating or continuing searches.
 Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
 for the find/change patterns would help a bit.
+.. @+node:ekr.20111010062725.15537: *5* Finish cleaning @color settings
+.. @+node:ekr.20110930174206.15470: *5* Bring screen shots up to date
+> While doing so I noted that on the sourceforge project
+> page some screenshots are bit old, such as touting Tk.
+>
+> shows tk - http://webpages.charter.net/edreamleo/screen-shots.html
+    Fixed
+    
+> uses @thin - http://webpages.charter.net/edreamleo/PCWindow.gif
+
+> screenshots shows deprecated plugin manager -
+> http://sourceforge.net/projects/leo/
+    All souce-forge screenshots need to be replaced.
+
+
+.. @+node:ekr.20111014074810.15655: *5* What about LeoDocs(hard-crash).leo is causing the crash?
+.. @+node:ekr.20111015150822.9350: *4* Scripts
+.. @+node:ekr.20111014074810.15651: *5* Write (or find) script to update plugins page from docstrings
 .. @+node:ekr.20110619173515.14895: *4* Fix bug: realpath in g.openWithFileName
 @nocolor-node
 
@@ -138,23 +292,6 @@ apparent paths, which is annoying, but I think better than the bug.
 (this of course trips up UNLs
 if /mnt/usr1/usr1/home/tbrown/.leo/.todo.leo is already loaded and the
 UNL is /home/tbrown/.leo/.todo.leo#Home-->Paint roof)
-.. @+node:ekr.20111010062725.15537: *4* Finish cleaning @color settings
-.. @+node:ekr.20110930174206.15470: *4* Bring screen shots up to date
-> While doing so I noted that on the sourceforge project
-> page some screenshots are bit old, such as touting Tk.
->
-> shows tk - http://webpages.charter.net/edreamleo/screen-shots.html
-    Fixed
-    
-> uses @thin - http://webpages.charter.net/edreamleo/PCWindow.gif
-
-> screenshots shows deprecated plugin manager -
-> http://sourceforge.net/projects/leo/
-    All souce-forge screenshots need to be replaced.
-
-
-.. @+node:ekr.20111014074810.15655: *4* What about LeoDocs(hard-crash).leo is causing the crash?
-.. @+node:ekr.20111012061216.15698: *4* * Complete expand/contract commands
 .. @+node:ekr.20111013065147.9427: *3* Urgent/Bugs
 .. @+node:ekr.20111010162047.15678: *4* The @auto script *must* put @first nodes in root node
 @nocolor-node

@@ -4267,7 +4267,6 @@ free_layout.py # needs to be early
 # run_nodes.py
 # s_menu.py
 # scheduler.py
-# scrolledmessage.py # interferes with viewrendered.py.
 # searchbox.py
 # shortcut_button.py
 # slideshow.py

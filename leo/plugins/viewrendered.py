@@ -138,11 +138,6 @@ Settings
 
 - ``@string view-rendered-default-kind = rst``
   The default kind of rendering.  One of (big,rst,html)
-
-- ``@bool scrolledmessage_use_viewrendered = True``
-  When True the scrolledmessage dialog will use the rendering pane,
-  creating it as needed.  In particular, the plugins_menu plugin
-  will show plugin docstrings in the rendering pane.
   
 Acknowledgments
 ================
@@ -219,7 +214,7 @@ QPlainTextEdit {
 # - (Failed) Make viewrendered-big work.
 #@@c
 
-controllers = {}
+# controllers = {}
     # Keys are c.hash(): values are PluginControllers
 
 #@+others
@@ -450,7 +445,6 @@ class ViewRenderedController(QtGui.QWidget):
         self.auto_create  = c.config.getBool('view-rendered-auto-create',False)
         self.auto_hide    = c.config.getBool('view-rendered-auto-hide',False)
         self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
-        self.scrolled_message_use_viewrendered = c.config.getBool('scrolledmessage_use_viewrendered',True)
         self.node_changed = True
         
         # Init.

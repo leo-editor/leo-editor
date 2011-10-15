@@ -9783,6 +9783,97 @@ def openWrapperLeoFile (old_c,fileName,gui):
         # Mark the outline clean.
         # This makes it easy to open non-Leo files for quick study.
     return c
+#@+node:ekr.20111015150822.9346: *4* Fixed Py3k crash in quicksearch.py
+@nocolor-node
+ 
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\plugins\quicksearch.py", line 187, in returnPressed
+    self.scon.doSearch(t)
+  File "c:\leo.repo\trunk\leo\plugins\quicksearch.py", line 289, in doSearch
+    self.addBodyMatches(bm)
+  File "c:\leo.repo\trunk\leo\plugins\quicksearch.py", line 257, in addBodyMatches
+    self.its[it] = (p, None)
+TypeError: unhashable type: 'QListWidgetItem'
+#@+node:ekr.20111015150822.13125: *4* Removed all references to scrolledmessage plugin
+#@+node:ekr.20110530082209.18250: *5* c.putApropos
+def putApropos (self,s):
+    
+    c = self
+    
+    if g.unitTesting:
+        return
+        
+    s = g.adjustTripleString(s.rstrip(),c.tab_width)
+    pc = g.app.pluginsController
+    vr = pc.loadOnePlugin('viewrendered.py')
+    if vr:
+        kw = {
+            'c':c,
+            'flags':'rst',
+            'label':'',
+            'msg':s,
+            'name':'Apropos',
+            'short_title':'',
+            'title':''}
+        vr.show_scrolled_message(tag='Apropos',kw=kw)
+        c.bodyWantsFocus()
+    else:
+        g.es(s)
+#@+node:ekr.20110605121601.18503: *5* runScrolledMessageDialog
+def runScrolledMessageDialog (self,
+    short_title= '',
+    title='Message',
+    label= '',
+    msg='',
+    c=None,**kw
+):
+
+    if g.unitTesting: return None
+
+    def send(title=title, label=label, msg=msg, c=c, kw=kw):
+        return g.doHook('scrolledMessage',
+            short_title=short_title,title=title,
+            label=label, msg=msg,c=c, **kw)
+
+    if not c or not c.exists:
+        << no c error>>
+    else:        
+        retval = send()
+        if retval: return retval
+        << load viewrendered plugin >>
+        retval = send()
+        if retval: return retval
+        << no dialog error >>
+
+    << emergency fallback >>
+#@+node:ekr.20110605121601.18504: *6* << no c error>>
+g.es_print_error('%s\n%s\n\t%s' % (
+    "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
+    "as a keyword argument",
+    g.callers()
+))
+#@+node:ekr.20110605121601.18505: *6* << load viewrendered plugin >>
+pc = g.app.pluginsController
+vr = pc.loadOnePlugin('viewrendered.py')
+if vr:
+    # g.es('viewrendered plugin loaded.', color='blue')
+    sm.onCreate('tag',{'c':c})
+#@+node:ekr.20110605121601.18506: *6* << no dialog error >>
+g.es_print_error(
+    'No handler for the "scrolledMessage" hook.\n\t%s' % (
+        g.callers()))
+#@+node:ekr.20110605121601.18507: *6* << emergency fallback >>
+b = QtGui.QMessageBox
+d = b(None) # c.frame.top)
+d.setWindowFlags(QtCore.Qt.Dialog) # That is, not a fixed size dialog.
+
+d.setWindowTitle(title)
+if msg: d.setText(msg)
+d.setIcon(b.Information)
+yes = d.addButton('Ok',b.YesRole)
+c.in_qt_dialog = True
+d.exec_()
+c.in_qt_dialog = False
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution

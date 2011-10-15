@@ -7954,7 +7954,13 @@ class leoQtGui(leoGui.leoGui):
         s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter_)
         return g.u(s)
     #@+node:ekr.20110605121601.18503: *5* runScrolledMessageDialog
-    def runScrolledMessageDialog (self,short_title= '',title='Message', label= '',msg='',c=None, **kw):
+    def runScrolledMessageDialog (self,
+        short_title= '',
+        title='Message',
+        label= '',
+        msg='',
+        c=None,**kw
+    ):
 
         if g.unitTesting: return None
 
@@ -7975,17 +7981,14 @@ class leoQtGui(leoGui.leoGui):
         else:        
             retval = send()
             if retval: return retval
-            #@+<< load scrolledmessage plugin >>
-            #@+node:ekr.20110605121601.18505: *6* << load scrolledmessage plugin >>
+            #@+<< load viewrendered plugin >>
+            #@+node:ekr.20110605121601.18505: *6* << load viewrendered plugin >>
             pc = g.app.pluginsController
-            sm = pc.getPluginModule('scrolledmessage')
-
-            if not sm:
-                sm = pc.loadOnePlugin('leo.plugins.scrolledmessage',verbose=True)
-                if sm:
-                    g.es('scrolledmessage plugin loaded.', color='blue')
-                    sm.onCreate('tag',{'c':c})
-            #@-<< load scrolledmessage plugin >>
+            vr = pc.loadOnePlugin('viewrendered.py')
+            if vr:
+                # g.es('viewrendered plugin loaded.', color='blue')
+                sm.onCreate('tag',{'c':c})
+            #@-<< load viewrendered plugin >>
             retval = send()
             if retval: return retval
             #@+<< no dialog error >>

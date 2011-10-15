@@ -864,21 +864,17 @@ class Commands (object):
             
         s = g.adjustTripleString(s.rstrip(),c.tab_width)
         pc = g.app.pluginsController
-        sm = pc.loadOnePlugin('scrolledmessage.py')
-
-        if sm:
-            smc = sm.controllers.get(c)
-            if not smc:
-                sm.controllers[c] = smc = sm.ScrolledMessageController(c) 
-            # For the proper keywords, see the docstring for scrolledmessage.py.
+        vr = pc.loadOnePlugin('viewrendered.py')
+        if vr:
             kw = {
+                'c':c,
                 'flags':'rst',
                 'label':'',
                 'msg':s,
                 'name':'Apropos',
                 'short_title':'',
                 'title':''}
-            smc.createDialog(kw=kw)
+            vr.show_scrolled_message(tag='Apropos',kw=kw)
             c.bodyWantsFocus()
         else:
             g.es(s)

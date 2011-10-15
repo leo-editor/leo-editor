@@ -60,7 +60,8 @@ def getPassList():
         'quickMove','quicksearch','redirect_to_log','rClickBasePluginClasses',
         'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
         'rst3',
-        'scrolledmessage','setHomeDirectory','slideshow','spydershell','startfile',
+        # 'scrolledmessage', # No longer exists.
+        'setHomeDirectory','slideshow','spydershell','startfile',
         'testRegisterCommand','todo',
         # 'toolbar', # in plugins table.
         'trace_gc_plugin','trace_keys','trace_tags',
