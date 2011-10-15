@@ -202,12 +202,12 @@ def matchlines(b, miter):
     return res
 
 #@+node:ville.20090314215508.12: ** QuickSearchController
-
 class QuickSearchController:
     def __init__(self, c, listWidget):
         self.lw = listWidget
         self.c = c
-        self.its = {}
+        self.its = {} # Keys are id(w),values are tuples (p,pos)
+        
         # we want both single-clicks and activations (press enter)
         self.lw.connect(self.lw,
                 QtCore.SIGNAL("itemActivated(QListWidgetItem*)"),
@@ -217,7 +217,7 @@ class QuickSearchController:
                 self.selectItem)        
 
     def selectItem(self, it):
-        tgt = self.its[it]
+        tgt = self.its[it and id(it)]
         # generic callable
         if callable(tgt):
             tgt()
@@ -248,7 +248,7 @@ class QuickSearchController:
             f = it.font()
             f.setBold(True)
             it.setFont(f)
-            self.its[it] = (p,None)
+            self.its[id(it)] = (p,None)
 
     def addBodyMatches(self, poslist):               
         for p in poslist:
@@ -257,17 +257,17 @@ class QuickSearchController:
             f.setBold(True)
             it.setFont(f)
 
-            self.its[it] = (p, None)
+            self.its[id(it)] = (p, None)
             ms = matchlines(p.b, p.matchiter)
             for ml, pos in ms:
                 #print "ml",ml,"pos",pos
                 it = id(QListWidgetItem(ml, self.lw))   
-                self.its[it] = (p, pos)
+                self.its[id(it)] = (p,pos)
 
     def addGeneric(self, text, f):
         """ Add generic callback """
         it = id(QListWidgetItem(text, self.lw))
-        self.its[it] = f
+        self.its[id(it)] = f
         return it
 
     def clear(self):
