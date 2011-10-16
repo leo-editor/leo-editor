@@ -2132,16 +2132,14 @@ class Commands (object):
             if script.strip():
                 sys.path.insert(0,c.frame.openDirectory)
                 script += '\n' # Make sure we end the script properly.
-                # g.pr('*** script',script)
                 try:
                     p = c.p
                     if p: c.setCurrentDirectoryFromContext(p)
                     d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
                     if define_name: d['__name__'] = define_name
+                    d['script_args'] = args or []
                     if namespace: d.update(namespace)
-                    if args:
-                        # g.trace('setting sys.argv',args)
-                        sys.argv = args
+                    # if args: sys.argv = args
                     # A kludge: reset c.inCommand here to handle the case where we *never* return.
                     # (This can happen when there are multiple event loops.)
                     # This does not prevent zombie windows if the script puts up a dialog...

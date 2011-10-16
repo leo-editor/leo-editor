@@ -187,6 +187,7 @@ class parserBaseClass:
                 # We can not assume that p will be valid when it is used.
                 script = g.getScript(c,p,useSelectedText=False,forcePythonSentinels=True,useSentinels=True)
                 aList.append((p.h,script),)
+                # g.trace(h)
 
         # g.trace(g.listToString(aList))
 

@@ -2577,6 +2577,8 @@ class keyHandlerClass:
         If wrap is True then func will be wrapped with c.universalCallback.
 
         '''
+        
+        # g.trace(commandName,g.callers())
 
         trace = False and not g.unitTesting
         k = self ; c = k.c

@@ -258,7 +258,6 @@ for the find/change patterns would help a bit.
     All souce-forge screenshots need to be replaced.
 
 
-.. @+node:ekr.20111014074810.15655: *5* What about LeoDocs(hard-crash).leo is causing the crash?
 .. @+node:ekr.20111015150822.9350: *4* Scripts
 .. @+node:ekr.20111014074810.15651: *5* Write (or find) script to update plugins page from docstrings
 .. @+node:ekr.20110619173515.14895: *4* Fix bug: realpath in g.openWithFileName

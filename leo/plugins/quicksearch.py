@@ -6,6 +6,9 @@
 
 Just load the plugin, activate "Nav" tab, enter search text and press enter.
 
+Usage
+=====
+
 The pattern to search for is, by default, a case *insensitive* fnmatch pattern
 (e.g. foo*bar), because they are typically easier to type than regexps. If you
 want to search for a regexp, use 'r:' prefix, e.g. r:foo.*bar.
@@ -16,6 +19,29 @@ by searching for "r:(?i)Foo". (?i) is a standard feature of Python regular expre
 syntax, as documented in 
 
 http://docs.python.org/library/re.html#regular-expression-syntax
+
+Commands
+========
+
+This plugin defines the following commands that can be bound to keys:
+    
+- find-quick:
+  Opens the Nav tab.
+
+- find-quick-selected:
+  Opens the Nav tab with the selected text as the search string.
+
+- focus-to-nav:
+  Puts focus in Nav tab.
+
+- find-quick-test-failures:
+  Lists nodes in c.db.get('unittest/cur/fail')
+
+- history:
+  Lists nodes from c.nodeHistory.
+    
+- marked-list:
+  List all marked nodes.
 
 '''
 #@-<< docstring >>
@@ -72,30 +98,32 @@ def onCreate (tag, keys):
 #@+node:tbrown.20111011152601.48461: ** show_unittest_failures
 def show_unittest_failures(event):
     c = event.get('c')
-    fails = c.db['unittest/cur/fail']
-    print(fails)
+    fails = c.db.get('unittest/cur/fail')
+    # print(fails)
     nav = c.frame.nav
     #print nav
 
     nav.scon.clear()
-    for gnx, stack in fails:
-        pos = None
-        # sucks
-        for p in c.all_positions():
-            if p.gnx == gnx:
-                pos = p.copy()
-                break
+    if fails:
+        for gnx, stack in fails:
+            pos = None
+            # sucks
+            for p in c.all_positions():
+                if p.gnx == gnx:
+                    pos = p.copy()
+                    break
+    
+            def mkcb(pos, stack):
+                def focus():            
+                    g.es(stack)
+                    c.selectPosition(pos)        
+                return focus
+    
+            it = nav.scon.addGeneric(pos.h, mkcb(pos,stack))
+            it.setToolTip(stack)
 
-        def mkcb(pos, stack):
-            def focus():            
-                g.es(stack)
-                c.selectPosition(pos)        
-            return focus
-
-        it = nav.scon.addGeneric(pos.h, mkcb(pos,stack))
-        it.setToolTip(stack)
     c.k.simulateCommand('focus-to-nav')
-#@+node:tbrown.20111011152601.48462: ** install_qt_quicksearch_tab
+#@+node:tbrown.20111011152601.48462: ** install_qt_quicksearch_tab (Creates commands)
 def install_qt_quicksearch_tab(c):
     
     #tabw = c.frame.top.tabWidget
@@ -128,15 +156,15 @@ def install_qt_quicksearch_tab(c):
         wdg.scon.doNodeHistory()
 
     c.k.registerCommand(
-            'find-quick',None,focus_quicksearch_entry)
+        'find-quick',None,focus_quicksearch_entry)
     c.k.registerCommand(
-            'find-quick-selected','Ctrl-Shift-f',find_selected)
+        'find-quick-selected','Ctrl-Shift-f',find_selected)
     c.k.registerCommand(
-            'focus-to-nav', None,focus_to_nav)
+        'focus-to-nav', None,focus_to_nav)
     c.k.registerCommand(
-            'find-quick-test-failures', None,show_unittest_failures)
+        'find-quick-test-failures', None,show_unittest_failures)
     c.k.registerCommand(
-            'history', None, nodehistory)
+        'history', None, nodehistory)
 
     @g.command('marked-list')
     def showmarks(event):
@@ -159,27 +187,62 @@ def install_qt_quicksearch_tab(c):
         tab_widget = wdg.parent().parent()
         tab_widget.connect(tab_widget,
             QtCore.SIGNAL("currentChanged(int)"), activate_input)
-#@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget
-class LeoQuickSearchWidget(QtGui.QWidget):
-    """ 'Find in files'/grep style search widget """
+#@+node:ekr.20111015194452.15716: ** class QuickSearchEventFilter
+class QuickSearchEventFilter(QtCore.QObject):
+
     #@+others
-    #@+node:ville.20090314215508.3: *3* methods
-    def __init__(self, c, parent = None):
+    #@+node:ekr.20111015194452.15718: *3*  ctor (leoQtEventFilter)
+    def __init__(self,c,w):
+
+        # Init the base class.
+        QtCore.QObject.__init__(self)
+        
+        self.c = c
+        self.w = w
+    #@+node:ekr.20111015194452.15719: *3* eventFilter
+    def eventFilter(self,obj,event):
+
+        eventType = event.type()
+        ev = QtCore.QEvent
+        
+        # QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
+        kinds = [ev.KeyPress,ev.KeyRelease]
+        
+        g.trace(eventType,eventType in kinds)
+        
+        if eventType in kinds:
+            self.w.onKeyPress(event)
+            
+        return False
+    #@-others
+#@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget (QWidget)
+class LeoQuickSearchWidget(QtGui.QWidget):
+    
+    """ 'Find in files'/grep style search widget """
+
+    #@+others
+    #@+node:ekr.20111015194452.15695: *3*  ctor
+    def __init__(self,c,parent=None):
+        
         QtGui.QWidget.__init__(self, parent)
+
         self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
         self.ui.setupUi(self)
 
         w = self.ui.listWidget
+        
         cc = QuickSearchController(c,w)
         self.scon = cc
 
         self.connect(self.ui.lineEdit,
-                    QtCore.SIGNAL("returnPressed()"),
-                      self.returnPressed)
+            QtCore.SIGNAL("returnPressed()"),
+            self.returnPressed)
 
-        self.c = c                  
+        self.c = c
 
+    #@+node:ekr.20111015194452.15696: *3* returnPressed
     def returnPressed(self):
+
         t = g.u(self.ui.lineEdit.text())
         if not t.strip():
             return
@@ -194,6 +257,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
     #@-others
 #@+node:ekr.20111014074810.15659: ** matchLines
 def matchlines(b, miter):
+
     res = []
     for m in miter:
         st, en = g.getLine(b, m.start())
@@ -206,20 +270,28 @@ class QuickSearchController:
     
     #@+others
     #@+node:ekr.20111015194452.15685: *3* __init__
-    def __init__(self, c, listWidget):
+    def __init__(self,c,listWidget):
 
-        self.lw = listWidget
         self.c = c
+        self.lw = w = listWidget # A QListWidget.
         self.its = {} # Keys are id(w),values are tuples (p,pos)
         
         # we want both single-clicks and activations (press enter)
-        self.lw.connect(self.lw,
-                QtCore.SIGNAL("itemActivated(QListWidgetItem*)"),
-                  self.selectItem)        
-        self.lw.connect(self.lw,                                    
-                QtCore.SIGNAL("itemPressed(QListWidgetItem*)"),
-                self.selectItem)        
-
+        w.connect(w,
+            QtCore.SIGNAL("itemActivated(QListWidgetItem*)"),
+            self.onSelectItem)
+          
+        w.connect(w,                                  
+            QtCore.SIGNAL("itemPressed(QListWidgetItem*)"),
+            self.onSelectItem)
+            
+        w.connect(w,
+            QtCore.SIGNAL("currentItemChanged(QListWidgetItem*,QListWidgetItem *)"),
+            self.onItemChanged)
+            
+        # Doesn't work.
+        # ev_filter = QuickSearchEventFilter(c,w)
+        # w.installEventFilter(ev_filter)
     #@+node:ekr.20111015194452.15689: *3* addBodyMatches
     def addBodyMatches(self, poslist):
                 
@@ -235,7 +307,6 @@ class QuickSearchController:
                 #print "ml",ml,"pos",pos
                 it = id(QListWidgetItem(ml, self.lw))   
                 self.its[id(it)] = (p,pos)
-
     #@+node:ekr.20111015194452.15690: *3* addGeneric
     def addGeneric(self, text, f):
         
@@ -244,7 +315,6 @@ class QuickSearchController:
         it = id(QListWidgetItem(text, self.lw))
         self.its[id(it)] = f
         return it
-
     #@+node:ekr.20111015194452.15688: *3* addHeadlineMatches
     def addHeadlineMatches(self, poslist):
 
@@ -254,7 +324,6 @@ class QuickSearchController:
             f.setBold(True)
             it.setFont(f)
             self.its[id(it)] = (p,None)
-
     #@+node:ekr.20111015194452.15691: *3* clear
     def clear(self):
 
@@ -297,26 +366,51 @@ class QuickSearchController:
             if p.isMarked():
                 pl.append(p.copy())
         self.addHeadlineMatches(pl)
+    #@+node:ekr.20111015194452.15700: *3* Event handlers
+    #@+node:ekr.20111015194452.15699: *4* onItemChanged
+    def onItemChanged(self, it,it_prev):
+        
+        c = self.c
+        tgt = self.its.get(it and id(it))    
+        if not tgt: return
 
-
-    #@+node:ekr.20111015194452.15686: *3* selectItem
-    def selectItem(self, it):
-
-        tgt = self.its[it and id(it)]
         # generic callable
         if callable(tgt):
             tgt()
         elif len(tgt) == 2:            
-            #print "selected",it
             p, pos = tgt
-            self.c.selectPosition(p)
+            c.selectPosition(p)
             if pos is not None:
                 st, en = pos
-                w = self.c.frame.body.bodyCtrl
+                w = c.frame.body.bodyCtrl
                 w.setSelectionRange(st,en)
                 w.seeInsertPoint()
             self.lw.setFocus()
 
+    #@+node:ekr.20111015194452.15686: *4* onSelectItem
+    def onSelectItem(self, it):
+
+        c = self.c
+        tgt = self.its.get(it and id(it))
+        if not tgt: return
+
+        # generic callable
+        if callable(tgt):
+            tgt()
+        elif len(tgt) == 2:            
+            p, pos = tgt
+            c.selectPosition(p)
+            if pos is not None:
+                st, en = pos
+                w = c.frame.body.bodyCtrl
+                w.setSelectionRange(st,en)
+                w.seeInsertPoint()
+            c.k.keyboardQuit()
+                # Put the focus in the body pane.
+    #@+node:ekr.20111015194452.15730: *4* onKeyPress
+    def onKeyPress (self,event):
+        
+        g.trace(event)
     #@-others
 #@-others
 #@-leo

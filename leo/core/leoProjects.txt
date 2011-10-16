@@ -16029,6 +16029,26 @@ Updating Sphinx and using new .js files did the trick.
 
 Leo's home page no longer mentions MacOS and LeoDocs.leo and install.txt now
 warn people that MacOS is difficult to install.
+#@+node:ekr.20111015194452.15694: *4* Added support for tags in @button nodes
+@nocolor-node
+
+The mod_scripting plugin so that the name of the command created by an @button
+nodes does not include any [<tag>] that immediately follows @button. Examples::
+
+    @button [ekr] x
+    @button [edit] y
+    @button [important] z
+
+These buttons create commands named x, y and z, and the name of the buttons are
+x, y and z.
+
+Note that the '[' must be the first non-blank after @button to be recognized and
+removed.
+
+The code is a straightforward addition to cleanButtonText in mod_scripting.py:
+it is unlikely to have any impact whatsoever to existing @button nodes.
+
+The intended use is for searches of the form @button [some tag].
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
