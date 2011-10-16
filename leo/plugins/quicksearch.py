@@ -203,7 +203,11 @@ def matchlines(b, miter):
 
 #@+node:ville.20090314215508.12: ** QuickSearchController
 class QuickSearchController:
+    
+    #@+others
+    #@+node:ekr.20111015194452.15685: *3* __init__
     def __init__(self, c, listWidget):
+
         self.lw = listWidget
         self.c = c
         self.its = {} # Keys are id(w),values are tuples (p,pos)
@@ -216,41 +220,9 @@ class QuickSearchController:
                 QtCore.SIGNAL("itemPressed(QListWidgetItem*)"),
                 self.selectItem)        
 
-    def selectItem(self, it):
-        tgt = self.its[it and id(it)]
-        # generic callable
-        if callable(tgt):
-            tgt()
-        elif len(tgt) == 2:            
-            #print "selected",it
-            p, pos = tgt
-            self.c.selectPosition(p)
-            if pos is not None:
-                st, en = pos
-                w = self.c.frame.body.bodyCtrl
-                w.setSelectionRange(st,en)
-                w.seeInsertPoint()
-            self.lw.setFocus()
-
-    def doShowMarked(self):
-        self.clear()
-        c = self.c
-        pl = leoNodes.poslist()
-        for p in c.all_positions():
-            if p.isMarked():
-                pl.append(p.copy())
-        self.addHeadlineMatches(pl)
-
-
-    def addHeadlineMatches(self, poslist):
-        for p in poslist:
-            it = QListWidgetItem(p.h, self.lw)   
-            f = it.font()
-            f.setBold(True)
-            it.setFont(f)
-            self.its[id(it)] = (p,None)
-
-    def addBodyMatches(self, poslist):               
+    #@+node:ekr.20111015194452.15689: *3* addBodyMatches
+    def addBodyMatches(self, poslist):
+                
         for p in poslist:
             it = QListWidgetItem(p.h, self.lw)
             f = it.font()
@@ -264,17 +236,41 @@ class QuickSearchController:
                 it = id(QListWidgetItem(ml, self.lw))   
                 self.its[id(it)] = (p,pos)
 
+    #@+node:ekr.20111015194452.15690: *3* addGeneric
     def addGeneric(self, text, f):
+        
         """ Add generic callback """
+
         it = id(QListWidgetItem(text, self.lw))
         self.its[id(it)] = f
         return it
 
+    #@+node:ekr.20111015194452.15688: *3* addHeadlineMatches
+    def addHeadlineMatches(self, poslist):
+
+        for p in poslist:
+            it = QListWidgetItem(p.h, self.lw)   
+            f = it.font()
+            f.setBold(True)
+            it.setFont(f)
+            self.its[id(it)] = (p,None)
+
+    #@+node:ekr.20111015194452.15691: *3* clear
     def clear(self):
+
         self.its = {}
         self.lw.clear()
 
+    #@+node:ekr.20111015194452.15693: *3* doNodeHistory
+    def doNodeHistory(self):
+
+        nh = leoNodes.poslist(po[0] for po in self.c.nodeHistory.beadList)
+        nh.reverse()
+        self.clear()
+        self.addHeadlineMatches(nh)
+    #@+node:ekr.20111015194452.15692: *3* doSearch
     def doSearch(self, pat):
+
         self.clear()
 
         if not pat.startswith('r:'):
@@ -291,10 +287,36 @@ class QuickSearchController:
         bm = self.c.find_b(bpat, flags)
         self.addBodyMatches(bm)
 
-    def doNodeHistory(self):
-        nh = leoNodes.poslist(po[0] for po in self.c.nodeHistory.beadList)
-        nh.reverse()
+    #@+node:ekr.20111015194452.15687: *3* doShowMarked
+    def doShowMarked(self):
+
         self.clear()
-        self.addHeadlineMatches(nh)
+        c = self.c
+        pl = leoNodes.poslist()
+        for p in c.all_positions():
+            if p.isMarked():
+                pl.append(p.copy())
+        self.addHeadlineMatches(pl)
+
+
+    #@+node:ekr.20111015194452.15686: *3* selectItem
+    def selectItem(self, it):
+
+        tgt = self.its[it and id(it)]
+        # generic callable
+        if callable(tgt):
+            tgt()
+        elif len(tgt) == 2:            
+            #print "selected",it
+            p, pos = tgt
+            self.c.selectPosition(p)
+            if pos is not None:
+                st, en = pos
+                w = self.c.frame.body.bodyCtrl
+                w.setSelectionRange(st,en)
+                w.seeInsertPoint()
+            self.lw.setFocus()
+
+    #@-others
 #@-others
 #@-leo
