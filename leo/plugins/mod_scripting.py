@@ -595,6 +595,11 @@ class scriptingController:
             s = s[1:]
         if g.match_word(s,0,'button'):
             s = s[6:]
+        # 2011/10/16: Delete [tag]
+        s = s.strip()
+        i,j = s.find('['),s.find(']')
+        if i == 0 and i < j:
+            s = s[j+1:].strip()
         for tag in ('@key','@args'):
             i = s.find(tag)
             if i != -1:
