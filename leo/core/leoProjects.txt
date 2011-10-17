@@ -9877,6 +9877,12 @@ yes = d.addButton('Ok',b.YesRole)
 c.in_qt_dialog = True
 d.exec_()
 c.in_qt_dialog = False
+#@+node:ekr.20111016210000.15951: *4* Support @ignore when installing @command/@button nodes
+@nocolor-node
+
+Changed doButtons and doCommands kind handlers.
+
+This allows us to put example nodes in leoSettings.leo.
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution

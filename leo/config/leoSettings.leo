@@ -538,7 +538,49 @@
 </v>
 </v>
 <v t="ekr.20080312075451.1"><vh>Common @command nodes</vh>
-<v t="ekr.20080312075451.2"><vh>@commands</vh></v>
+<v t="ekr.20080312075451.2"><vh>@commands</vh>
+<v t="ekr.20111016210000.15952"><vh>@ignore</vh>
+<v t="ekr.20111016210000.16011"><vh>@command redefine g.findReference</vh>
+<v t="ekr.20111016210000.16012"><vh>myFindReference</vh></v>
+</v>
+<v t="ekr.20111016210000.15976"><vh>Checking</vh>
+<v t="ekr.20111016210000.15977"><vh>@command check-bindings</vh>
+<v t="ekr.20111016210000.15978"><vh>defineSetNames</vh></v>
+<v t="ekr.20111016210000.15979"><vh>doSet</vh></v>
+<v t="ekr.20111016210000.15980"><vh>doShortcuts</vh></v>
+<v t="ekr.20111016210000.15981"><vh>checkSets</vh></v>
+<v t="ekr.20111016210000.15982"><vh>main</vh></v>
+</v>
+</v>
+<v t="ekr.20111016210000.16001"><vh>Editing body text</vh>
+<v t="ekr.20111016210000.16002"><vh>@command align-to-col (modify as needed)</vh></v>
+<v t="ekr.20111016210000.16003"><vh>@command c-to-python-clean-docs</vh>
+<v t="ekr.20111016210000.16004"><vh>clean_doc</vh></v>
+</v>
+<v t="ekr.20111016210000.16005"><vh>@command clean-body</vh>
+<v t="ekr.20111016210000.16006"><vh>clean_head</vh></v>
+<v t="ekr.20111016210000.16007"><vh>clean_tail</vh></v>
+</v>
+<v t="ekr.20111016210000.16008"><vh>@command remove-newlines</vh></v>
+</v>
+<v t="ekr.20111016210000.15961"><vh>Importing files</vh>
+<v t="ekr.20111016210000.15962"><vh>@command create @auto nodes {path,types} @args C:\apps\pygments\pygments,.py,.c</vh>
+<v t="ekr.20111016210000.15963"><vh> importFiles (top-level)</vh></v>
+<v t="ekr.20111016210000.15964"><vh>createLastChildOf</vh></v>
+<v t="ekr.20111016210000.15965"><vh>disableAllNodes</vh></v>
+<v t="ekr.20111016210000.15966"><vh>importDir</vh></v>
+<v t="ekr.20111016210000.15967"><vh>loadAtAutoFiles</vh></v>
+<v t="ekr.20111016210000.15968"><vh>run</vh></v>
+</v>
+</v>
+<v t="ekr.20111016210000.15988"><vh>Node merging &amp; splitting</vh>
+<v t="ekr.20111016210000.15989"><vh>@command flatten script</vh></v>
+<v t="ekr.20111016210000.15990"><vh>@command join-node-above</vh></v>
+<v t="ekr.20111016210000.15991"><vh>@command join-node-below</vh></v>
+<v t="ekr.20111016210000.15992"><vh>@command promote-bodies</vh></v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20041119034357.16"><vh>Compare panel</vh>
 <v t="ekr.20041119034357.17"><vh>files &amp; directories</vh>
@@ -4771,9 +4813,9 @@ the following character is underlined in the name.
 - If the command name in an @item node is just a hyphen (-), the item represents
 a menu separator.</t>
 <t tx="ekr.20070926082256.1">c.prettyPrintPythonNode()</t>
-<t tx="ekr.20070926082407">@color
+<t tx="ekr.20070926082407">@language python
 
-# @button nodes outside this tree are ignored.</t>
+# @button nodes outside this tree are ignored, as are @command nodes inside @ignore trees.</t>
 <t tx="ekr.20070926132045">All @button nodes in this tree define **global buttons** that appear in all Leo outlines.
 
 At present, all @button nodes in this tree are disabled because they start with
@@ -4913,9 +4955,9 @@ The body text contains the script associated with the command.</t>
 <t tx="ekr.20080312071248.26">Denotes the tree containing active @command nodes.
 @command nodes outside this tree are ignored.</t>
 <t tx="ekr.20080312075451.1"></t>
-<t tx="ekr.20080312075451.2">@color
+<t tx="ekr.20080312075451.2">@language python
 
-# @command nodes outside this tree are ignored.</t>
+# @command nodes outside this tree are ignored, as are @command nodes inside @ignore trees.</t>
 <t tx="ekr.20080315083057.7">True: (Recommended) The spell commands collapse all nodes that are not ancestors of the node containing the match.
 False: The spell commands do not collapse any nodes.</t>
 <t tx="ekr.20080324105006.6">True: allow linux-like pastes using a mouse's middle button.
@@ -8493,6 +8535,498 @@ Controller(c).run()</t>
 <t tx="ekr.20111010200020.15684"></t>
 <t tx="ekr.20111010200020.15685"></t>
 <t tx="ekr.20111010200020.15686"></t>
+<t tx="ekr.20111016210000.15952">@nocolor-node
+
+The scripts here may be of general interest.  To enable them,
+copy them to myLeoSettings.leo.</t>
+<t tx="ekr.20111016210000.15961"></t>
+<t tx="ekr.20111016210000.15962">'''Recursively create @auto nodes for all files and directories of the given path.
+Create @auto nodes only for files with the given extensions.
+'''
+
+import os
+import sys
+@others
+
+
+    
+run(script_args)</t>
+<t tx="ekr.20111016210000.15963">def importFiles (theDir,type=None,recursive=False):
+    
+    root = c.p.copy()
+    v = c.currentVnode()
+
+    if not g.os_path_exists(theDir):
+        g.es("directory does not exist: " + theDir)
+        return
+
+    root = createLastChildOf(v,"imported files")
+    try:
+        importDir (theDir,type,recursive,root)
+        root.contract()
+    except:
+        g.es_exception()
+        
+    # Do this last, as a double check on paths, etc.
+    loadAtAutoFiles(root)
+    disableAtAutoFiles(root)
+    c.redraw()
+</t>
+<t tx="ekr.20111016210000.15964">def createLastChildOf (v,headline):
+
+    child = v.insertAsLastChild()
+    child.initHeadString(headline.replace('\\','/'))
+    return child
+</t>
+<t tx="ekr.20111016210000.15965">def disableAtAutoFiles(root):
+
+    for p in root.subtree():
+        if p.isAtAutoNode():
+            assert p.h.startswith('@auto ')
+            p.h = '@' + p.h</t>
+<t tx="ekr.20111016210000.15966">def importDir (theDir,types,recursive,root,level=0):
+
+    g.es("theDir: " + theDir,color="blue")
+
+    try:
+        files = os.listdir(theDir)
+        files2 = [] ; dirs =[]
+        for f in files:
+            path = g.os_path_join(theDir,f)
+            if g.os_path_isfile(path):
+                name, ext = g.os_path_splitext(f)
+                if not types or ext in types:
+                    files2.append(path)
+            elif recursive:
+                dirs.append(path)
+        if len(files2) &gt; 0 or len(dirs) &gt; 0:
+            path_part = g.choose(level==0,theDir,g.os_path_basename(theDir))
+            import_root = createLastChildOf(root,'@path %s' % (path_part))
+        else:
+            import_root = root
+        
+        c.selectVnode(import_root)
+        
+        if len(files2) &gt; 0:
+            files2.sort()
+            for fn in files2:
+                p2 = createLastChildOf(import_root,'@auto %s' % (
+                    g.shortFileName(fn)))
+                
+        if len(dirs) &gt; 0:
+            dirs.sort()
+            for theDir in dirs:
+                importDir(theDir,types,recursive,import_root,level+1)
+    except:
+        g.es("exception in importFiles script")
+        g.es_exception()
+</t>
+<t tx="ekr.20111016210000.15967">def loadAtAutoFiles(root):
+    at = c.atFileCommands
+    p = root.copy()
+    while p:
+        if p.isAtAutoNode():
+            fn = p.atAutoNodeName()
+            at.readOneAtAutoNode(fn,p)
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+</t>
+<t tx="ekr.20111016210000.15968">def run(args):
+    
+    theDir = args[0]
+    types = args[1:] or ('.py')
+
+    importFiles(theDir,types,recursive=True)
+
+    c.redraw()
+    g.es_print("done",color="blue")
+</t>
+<t tx="ekr.20111016210000.15976"></t>
+<t tx="ekr.20111016210000.15977">'''This script reports commands that exist in some but not all key- binding
+sets. setNames is a list of the roots of all such sets.'''
+
+import leoConfig
+import leoTest
+
+u = leoTest.testUtils(c)
+parser = leoConfig.settingsTreeParser(c)
+
+# Add these as required to handle commands defined by plugins.
+optionalCommandPrefixes = ['group-operations']
+optionalCommandNames = [
+    # These are the command names as defined by plugins.
+    # LeoSlideShows.leo defines buttons whose commands do not end in '-command'.
+    'next-slide-command','next-slide-show-command',
+    'prev-slide-command','prev-slide-show-command',
+    # The ipython plugin.
+    'start-ipython','get-ipython-results','push-to-ipython',
+]
+
+setNames = []
+setsDict = {} # keys are set names, values are dicts of command names.
+shortcutsDict = {}
+
+@others
+
+main()
+</t>
+<t tx="ekr.20111016210000.15978">def defineSetNames():
+
+    global setNames
+
+    if 1:
+        setNames = []
+        for p in c.allNodes_iter():
+            h = p.headString()
+            if h.startswith('@keys'):
+                h = h[5:].strip()
+                if h not in setNames:
+                    setNames.append(h)
+        g.es('Found these sets...')
+        for setName in setNames:
+            g.es_print('  %s' % str(setName))
+    else:
+        setNames = [
+            'Default Emacs shortcuts',
+            'Legacy Leo bindings',
+            'Legacy Leo shortcuts with important Emacs bindings',
+            'No bindings',
+            'EKR bindings: a mix',
+            'EKR bindings: Mode-oriented',
+        ]
+
+    setNames.sort()
+</t>
+<t tx="ekr.20111016210000.15979">def doSet(p,name):
+
+    global shortcutsDict
+
+    shortcutsDict = {}
+
+    for p in p.subtree_iter():
+        if p.headString().startswith('@shortcuts'):
+            doShortcuts(p,name)
+</t>
+<t tx="ekr.20111016210000.15980">def doShortcuts(p,setName):
+
+    global parser,setsDict,shortcutsDict
+
+    d = setsDict.get(setName,{})
+    s = p.bodyString()
+    lines = g.splitLines(s)
+    for line in lines:
+        line = line.strip()
+        if line and not line.startswith('#'):
+            commandName,bunch = parser.parseShortcutLine(line)
+            if not bunch:
+                g.es_print('In %s:\nmissing "=" in shortcut line:%s' % (
+                    p.headString(),repr(line)),color='red')
+            else:
+                # Having multiple shortcuts for a command if fine,
+                # But having multiple commands for a shortcut is not.
+                shortcut = bunch and bunch.val
+                pane = bunch and bunch.pane
+                if shortcut not in (None,'None','none'):
+                    aList = shortcutsDict.get(shortcut,[])
+                    if aList:
+                        for commandName2,pane2 in aList:
+                            if pane == pane2:
+                                g.es_print('duplicate shortcut %s in set %s: previous command: %s' % (
+                                    shortcut,setName,commandName2),color='red')
+                        else:
+                            aList.append((commandName,pane),)
+                    else:
+                        shortcutsDict [shortcut] = [(commandName,pane),]
+
+                data = d.get(commandName)
+                if data:
+                    shortcut2,pane2 = data
+                    if shortcut == shortcut2 and pane == pane2:
+                        g.es_print('duplicate %s in set %s' % (
+                            commandName,setName),color='red')
+                else:
+                    data = shortcut,pane
+                    d[commandName] = data
+
+    setsDict[setName] = d
+</t>
+<t tx="ekr.20111016210000.15981">def checkSets():
+
+    global setNames, optionalCommandPrefixes, optionalCommandNames
+
+    # Compute the union of all the command names.
+    allNames = {}
+    for setName in setNames:
+        d = setsDict.get(setName)
+        if d:
+            for key in d.keys():
+                allNames[key] = key
+        else:
+            g.es_print('No setsDict for %s' % (repr(setName)),color='red')
+
+    k = c.keyHandler
+    keys = allNames.keys()
+    keys.sort()
+
+    # Warn about missing names.
+    for setName in ('No bindings',): # setNames:
+        d = setsDict.get(setName)
+        if not d:
+            g.es_print("'@keys No bindings' not found",color='red')
+        for key in keys:
+            if key not in ('none','None',None) and key not in d.keys():
+                # Don't warn about missing 'enter-xxx-mode' commands.
+                if (
+                    not (key.startswith('enter-') and key.endswith('-mode')) and
+                    not (key.startswith('press-') and key.endswith('-button'))
+                ):
+                    g.es_print('%s is missing %-35s = None' % (setName,repr(key)))
+
+    # Warn about undefined commands.
+    for key in keys:
+        if not c.commandsDict.get(key):
+            ok = False
+            # full-command and quick command are weird special cases.
+            if key not in ('None',None,'full-command','quick-command'):
+                # Don't warn about missing 'enter-xxx-mode' commands.
+                if key.startswith('enter-') and key.endswith('-mode'):
+                    ok = True
+                elif key.startswith('press-') and key.endswith('-button'):
+                    ok = True
+                for prefix in optionalCommandPrefixes:
+                    if key.startswith(prefix):
+                        ok = True
+                for optionalCommand in optionalCommandNames:
+                    if key == optionalCommand:
+                        ok = True
+                if not ok:
+                    g.es_print('Undefined command name: %s' % (key))
+</t>
+<t tx="ekr.20111016210000.15982">def main ():
+
+    global setNames
+    defineSetNames()
+
+    # root = u.findNodeAnywhere('Keyboard shortcuts')
+    # for p in root.self_and_subtree_iter():
+
+    g.es_print('-' * 40)
+    seen = {}
+    for p in c.allNodes_iter():
+        h = p.headString()
+        if h.startswith('@keys'):
+            h = h[5:].strip()
+            if not seen.get(h):
+                seen[h] = True
+                doSet(p,h)
+    checkSets()
+    g.es('Check Bindings done')
+</t>
+<t tx="ekr.20111016210000.15988"></t>
+<t tx="ekr.20111016210000.15989">'''Convert a script to a string as if written with @nosent.
+
+Writes the script to a node called "flattened p.h".'''
+
+at = c.atFileCommands
+
+at.write (p,kind = '@unknown',
+    nosentinels = True, thinFile = False,
+    scriptWrite = False, toString = True)
+
+output = p.insertAfter()
+output.h = 'flattened %s' % p.h
+output.b = at.stringOutput
+c.redraw()
+</t>
+<t tx="ekr.20111016210000.15990">'''Append p.b to p.back().b. and delete node p.'''
+
+u = c.undoer
+p2 = p.back()
+if p2:
+    b = p.b.lstrip()
+    if not b.startswith('\n'):
+        b = '\n' + b
+    # undoData = u.beforeChangeGroup(p)
+    p2.b = p2.b + b
+    p.doDelete(p2)
+    # u.afterChangeGroup(p,'join-below',undoData)
+    c.redraw(p2)
+</t>
+<t tx="ekr.20111016210000.15991">'''Prepend p.b to p.next().b. and delete node p.'''
+
+u = c.undoer
+p2 = p.next()
+if p2:
+    b = p.b.lstrip()
+    if not b.endswith('\n'):
+        b = b + '\n'
+    # undoData = u.beforeChangeGroup(p)
+    p2.b = b + p2.b
+    p.doDelete(p2)
+    # u.afterChangeGroup(p,'join-below',undoData)
+    c.redraw(p2)
+</t>
+<t tx="ekr.20111016210000.15992">'''Copy the body text of all descendants to the parent's body text.'''
+
+# Great for creating what's new nodes.
+result = [p.b]
+b = c.undoer.beforeChangeNodeContents(p)
+for child in p.subtree():
+    if child.b:
+        result.append('\n- %s\n\n%s\n' % (child.h,child.b))
+    else:
+        result.append('\n- %s\n\n' % (child.h))
+p.b = ''.join(result)
+c.undoer.afterChangeNodeContents(p,'promote-child-bodies',b)
+</t>
+<t tx="ekr.20111016210000.16001"></t>
+<t tx="ekr.20111016210000.16002">n = len('insert-newline              ')
+
+result = []
+for line in g.splitLines(p.b):
+    i = line.find('=')
+    if i == -1 or i &lt;= n:
+        result.append(line)
+    else:
+        result.append(line[:n] + line[i:])
+
+p.b = ''.join(result)
+</t>
+<t tx="ekr.20111016210000.16003">@others
+
+import os ; os.system('cls')
+
+for p in p.self_and_subtree():
+    if p.b:
+        i,aList,result = 0,g.splitLines(p.b),[]
+        while i &lt; len(aList):
+            j,s = i,aList[i]
+            if s.lstrip().startswith('#'):
+                j,comments = clean_doc(aList,i)
+                result.extend(comments)
+            else:
+                result.append(s)
+                j = i + 1
+            assert j &gt; i
+            i = j
+
+        result = ''.join(result)
+        if result != p.b:
+            g.es('changed',p.h)
+            p.b = result
+</t>
+<t tx="ekr.20111016210000.16004">def clean_doc (aList,i):
+    
+    j = i
+    while j &lt; len(aList) and aList[j].lstrip().startswith('#'):
+        j += 1
+
+    n = j - i
+    assert n &gt; 0 # aList[i] should be a comment line.
+    
+    if n &gt; 1:
+        comments = aList[i:j]
+        s = comments[0]
+        junk,w = g.skip_leading_ws_with_indent(s,0,tab_width=4)
+        result = []
+        for i in range(n):
+            s = comments[i].lstrip()
+            assert s.find('#') == 0
+            body = s[1:].lstrip()
+            if body:
+                result.append('%s# %s' % ((' ' * w),body))
+            elif i in (0,n-1):
+                pass # Omit the line entirely.
+            else:
+                result.append('\n') # Add a blank line
+    else:
+        result = aList[i:j]
+    
+    if 1:
+        g.trace()
+        for z in result: print(repr(z))
+    return j,result
+</t>
+<t tx="ekr.20111016210000.16005">@others
+
+for p in p.self_and_subtree():
+    clean_head(p)
+    clean_tail(p)
+</t>
+<t tx="ekr.20111016210000.16006">def clean_head(p):
+
+    lines = g.splitLines(p.b)
+
+    for i in range(len(lines)):
+        s = lines[i]
+        if s.strip():
+            break
+    else:
+        i = len(s)
+
+    s = ''.join(lines[i:])
+    if s != p.b:
+        p.b = s
+</t>
+<t tx="ekr.20111016210000.16007">def clean_tail(p):
+
+    lines = g.splitLines(p.b)
+    i = len(lines) - 1
+    while i &gt;= 0:
+        s = lines[i]
+        if s.strip():
+            break
+        else:
+            i -= 1
+
+    s = ''.join(lines[:i+1])
+    if s != p.b:
+        p.b = s
+</t>
+<t tx="ekr.20111016210000.16008">s = p.bodyString()
+
+s = s.replace('\n\n','***2***')
+s = s.replace('\n',' ')
+s = s.replace('***2***','\n\n')
+s = s.replace('\n  ','\n')
+s = s.replace('\n ','\n')
+s = s.replace('     ',' ')
+s = s.replace('    ',' ')
+s = s.replace('   ',' ')
+s = s.replace('  ',' ')
+
+p.setBodyString(s)</t>
+<t tx="ekr.20111016210000.16011">'''Find the section definition for name as Gregory wants ;-) '''
+
+@others
+
+g.findReference = myFindReference
+</t>
+<t tx="ekr.20111016210000.16012">def myFindReference(c,name,root):
+
+    '''Find the section definition for name as Gregory wants ;-) '''
+    
+    trace = True and not g.unitTesting
+
+    if g.callers().find('recolor') &gt; -1: trace = False # Don't trace the colorizer.
+    
+    if trace: g.trace(name,root.h)
+    
+    for p in root.children():
+        if p.matchHeadline(name) and not p.isAtIgnoreNode():
+            if trace: g.trace(p.h,'1 parent',p.parent().h)
+            return p
+
+    for p in root.subtree():
+        assert(p!=root)
+        if p.matchHeadline(name) and not p.isAtIgnoreNode():
+            if trace: g.trace(p.h,'2 parent',p.parent().h)
+            return p
+
+    if trace: g.trace("not found:",name,root.h)
+    return c.nullPosition()
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
