@@ -161,14 +161,20 @@ class parserBaseClass:
         '''Handle an @buttons tree.'''
 
         aList = [] ; c = self.c ; tag = '@button'
-        for p in p.unique_subtree():
-            h = p.h
-            if g.match_word(h,0,tag):
-                # We can not assume that p will be valid when it is used.
-                script = g.getScript(c,p,useSelectedText=False,forcePythonSentinels=True,useSentinels=True)
-                aList.append((p.h,script),)
 
-        # g.trace(g.listToString([h for h,script in aList]))
+        after = p.nodeAfterTree()
+        while p and p != after:
+            if p.isAtIgnoreNode():
+                p.moveToNodeAfterTree()
+            else:
+                if g.match_word(p.h,0,tag):
+                    # We can not assume that p will be valid when it is used.
+                    script = g.getScript(c,p,
+                        useSelectedText=False,
+                        forcePythonSentinels=True,
+                        useSentinels=True)
+                    aList.append((p.h,script),)
+                p.moveToThreadNext()
 
         # This setting is handled differently from most other settings,
         # because the last setting must be retrieved before any commander exists.
@@ -181,15 +187,20 @@ class parserBaseClass:
         '''Handle an @commands tree.'''
 
         aList = [] ; c = self.c ; tag = '@command'
-        for p in p.subtree():
-            h = p.h
-            if g.match_word(h,0,tag):
-                # We can not assume that p will be valid when it is used.
-                script = g.getScript(c,p,useSelectedText=False,forcePythonSentinels=True,useSentinels=True)
-                aList.append((p.h,script),)
-                # g.trace(h)
-
-        # g.trace(g.listToString(aList))
+        
+        after = p.nodeAfterTree()
+        while p and p != after:
+            if p.isAtIgnoreNode():
+                p.moveToNodeAfterTree()
+            else:
+                if g.match_word(p.h,0,tag):
+                    # We can not assume that p will be valid when it is used.
+                    script = g.getScript(c,p,
+                        useSelectedText=False,
+                        forcePythonSentinels=True,
+                        useSentinels=True)
+                    aList.append((p.h,script),)
+                p.moveToThreadNext()
 
         # This setting is handled differently from most other settings,
         # because the last setting must be retrieved before any commander exists.
@@ -1004,9 +1015,6 @@ class parserBaseClass:
         after = p.nodeAfterTree()
         while p and p != after:
             result = self.visitNode(p)
-            # if g.isPython3:
-                # g.trace(result,p.h)
-                # if p.h == 'Menus': g.pdb()
             if result == "skip":
                 # g.es_print('skipping settings in',p.h,color='blue')
                 p.moveToNodeAfterTree()
