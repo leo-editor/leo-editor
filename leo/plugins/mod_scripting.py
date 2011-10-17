@@ -269,7 +269,7 @@ class scriptingController:
             for z in buttons:
                 h,script = z
                 shortcut = self.getShortcut(h)
-                if trace: g.trace('global @button',h,'',shortcut or '',color='purple')
+                if trace: g.trace('global @button',h,'',shortcut or '')
                 self.handleAtButtonSetting(h,script)
     #@+node:ekr.20070926084600: *5* handleAtButtonSetting & helper
     def handleAtButtonSetting (self,h,script):
@@ -354,9 +354,7 @@ class scriptingController:
                 def commonCommandCallback (event=None,script=script):
                     c.executeScript(args=args,script=script,silent=True)
         
-                if trace: g.es('global @command',h,'',shortcut or '',color='purple')
-                        
-                # g.trace(repr(h),repr(args))
+                if trace: g.es('global @command',h,'',shortcut or '')
                 k.registerCommand(h,shortcut,commonCommandCallback,verbose=False)
     #@+node:ekr.20060328125248.20: *4* createRunScriptIconButton 'run-script' & callback
     def createRunScriptIconButton (self):
@@ -496,8 +494,7 @@ class scriptingController:
             statusLine = '%s = %s' % (statusLine,shortcut)
 
         # This helper is also called by the script-button callback.
-        if trace: g.trace('local @command',h,'',shortcut or '', color='purple')
-
+        if trace: g.trace('local @command',h,'',shortcut or '')
         b = self.createAtButtonHelper(p,h,statusLine,shortcut,verbose=False)
 
         # g.trace('p',p,'b',b)
@@ -506,6 +503,7 @@ class scriptingController:
 
         '''Handle @command name [@key[=]shortcut].'''
 
+        trace = False and not g.app.unitTesting and not g.app.batchMode
         c = self.c ; k = c.keyHandler ; h = p.h
         if not h.strip(): return
 
@@ -523,17 +521,13 @@ class scriptingController:
         else:
             commandName = h[len(tag):].strip()
         #@-<< get the commandName and optional shortcut >>
-        g.trace(p.h,commandName)
         args = self.getArgs(h)
 
         def atCommandCallback (event=None,args=args,c=c,p=p.copy()):
             # The 'end-of-script command messes up tabs.
             c.executeScript(args=args,p=p,silent=True)
 
-        if not g.app.unitTesting and not g.app.batchMode:
-            g.es('local @command',self.cleanButtonText(commandName),
-                '',shortcut or '', color='purple')
-
+        if trace: g.es('local @command',commandName,'',shortcut or '')
         k.registerCommand(commandName,shortcut,atCommandCallback,verbose=False)
     #@+node:ekr.20060328125248.13: *4* handleAtPluginNode @plugin
     def handleAtPluginNode (self,p):
