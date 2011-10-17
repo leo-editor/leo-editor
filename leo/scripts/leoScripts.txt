@@ -12012,7 +12012,7 @@ def get_jsonfile(self, fname='codehash'):
 
 
 
-#@+node:ekr.20111004090723.15496: *3* @button MakePDF
+#@+node:ekr.20111004090723.15496: *3* @@button MakePDF
 << docstring >>
 
 @language python
@@ -12230,6 +12230,334 @@ def compute_file_names (d):
         else:
             log('not found: %s' % fn)
             return None,None
+#@+node:ekr.20110328173745.3249: *3* @@button Print g.es
+@first # -*- coding: utf-8 -*-
+
+# To do: put list of to-be-translated strings in a doc part.
+
+<< docstring >>
+<< version history >>
+
+class controllerClass:
+    @others
+
+x = controllerClass(c,p)
+x.main()
+#@+node:ekr.20110328173745.3250: *4* << docstring >>
+'''Here is a cute Leo script. It discovers all g.es statements and the unbound
+variables in those statements in a single pass over the selected outline. It
+then puts the decls followed by the statements in the body text of the
+@scan_g.es_results node.
+
+Thus, after this script, you can **execute** the body text of the
+@scan_g.es_results node. In particular, assuming that g.translateString converts
+all translated text to upper case, it is easy to tell which strings have been
+translated. '''
+#@+node:ekr.20110328173745.3251: *4* << version history >>
+@nocolor
+@
+
+2008/2/19 EKR: Initial 2-pass version.
+2008/2/20 EKR:
+- Convert to single-pass using decls and statements arrays.
+- Add 'tabName' to list of keyword arguments.
+- Fixed various bugs.
+2008/2/20 EKR 2:
+- Generate g.es statements to inicate beginnings of files.
+  This allows us to execute all generated statements at once.
+- Convert between '.' and '__' as needed to avoid using real ivars.
+2008/2/21 EKR:
+- Added mungeString.
+- Rewrote mungeStatements, scanParens and scanIdChain.
+These changes now properly handle all arguments.
+2008/2/21 EKR 2:
+- Added stringize and related logic.
+- Added setToBeTranslated to put list of to-be-translated strings into leading docstring.
+#@+node:ekr.20110328173745.3252: *4*  ctor
+def __init__ (self,c,p):
+
+    self.c = c
+    self.p = p
+
+    self.decls = {}
+    self.keywordArgs = ('color','newline','tabName',)
+    self.rootName = '@scan_results'
+    self.statements = []
+    self.printStatements = ('g.es','g.es_print',)
+    self.suppressTranslation = False # True: keyword arg to g.es seen.
+    self.toBeTranslated = []
+    self.traceFlag = False
+
+    self.root = g.findNodeAnywhere(c,self.rootName)
+#@+node:ekr.20110328173745.3253: *4* error & trace
+def error (self,s):
+
+    self.statements.append('***error: %s' % s)
+
+def trace(self,s):
+
+    if self.traceFlag:
+        self.statements.append(s)
+#@+node:ekr.20110328173745.3254: *4* main
+def main (self):
+
+    '''The main line.'''
+
+    c = self.c
+    self.scan()
+    self.mungeStatements()
+    keys = list(self.decls.keys())
+    keys.sort()
+    # This is such a great hack :-)
+    decls = ["%s = '%s'" % (self.mungeString(z),self.stringize(z,delim="'")) for z in keys]
+
+    # Put to-be-translated.
+    results = ['@ To be translated...',]
+    self.toBeTranslated.sort()
+    results.extend(self.toBeTranslated)
+    results.extend(['@c',])
+    # Put decls.
+    results.extend(['# Decls...',])
+    results.extend(["color='red'","newline=True","tabName='Log'"])
+    results.extend(decls)
+    # Put statements
+    results.extend(["g.app.translateToUpperCase=True",])
+    results.extend(self.statements)
+    results.extend(["g.app.translateToUpperCase=False",])
+
+    results = '\n'.join(results)
+
+    # Put the results in the root node, or print them.
+    if self.root:
+        c.setBodyString(self.root,results)
+        c.selectPosition(self.root)
+        c.redraw()
+    else:
+        g.error('node not found',self.rootName)
+        g.print(results)
+
+    g.es('done',color='blue')
+#@+node:ekr.20110328173745.3255: *4* munging...
+#@+node:ekr.20110328173745.3256: *5* mungeString
+def mungeString (self,s):
+
+    '''Convert string s so that it is a valid Python name.'''
+
+    s = s.strip()
+    # s = s.replace('@','_AT_')
+    # s = s.replace('<','_LT_')
+    # s = s.replace('>','_GT_')
+    s = s.replace(',','_COMMA_')
+    s = s.replace('.','_DOT_')
+    s = s.replace('()','_PARENS_')
+    s = s.replace('(','_LP_')
+    s = s.replace(')','_RP_')
+    s = s.replace('"','_DQ_')
+    s = s.replace("'",'_SQ_')
+    s = ''.join([g.choose(z == '_' or z.isalnum(),z,'_') for z in s])
+    return s
+#@+node:ekr.20110328173745.3257: *5* mungeHeadline
+def mungeHeadline (self,s):
+
+    s = s.strip()
+    s = s.replace('<<','< <')
+    s = s.replace('>>','> >')
+    return s
+#@+node:ekr.20110328173745.3258: *5* mungeStatements
+def mungeStatements (self):
+
+    '''Convert a references to an known id chain by the corresponding decl.'''
+
+    keys = self.decls.keys()
+    for tag in self.printStatements:
+        if tag in keys: keys.remove(tag)
+
+    results = []
+    for s in self.statements:
+        i = 0 ; inner_result = []
+        while i < len(s):
+            progress = i
+            for key in keys:
+                if g.match_word(s,i,key):
+                    inner_result.append(self.mungeString(key))
+                    i += len(key)
+                    break
+            else:
+                inner_result.append(s[i])
+            i = max(i,progress+1)
+        new_statement = ''.join(inner_result)
+        if new_statement != s:
+            # Add the original lines as comments.
+            for z in g.splitLines(s):
+                results.append ('# %s' % (z.rstrip()))
+        results.append(new_statement) # Add the munged line.
+
+    self.statements = results
+
+#@+node:ekr.20110328173745.3259: *5* stringize
+def stringize (self,s,delim):
+
+    s = s.strip()
+    s = s.replace(delim,'\\%s' % (delim))
+    return s
+#@+node:ekr.20110328173745.3260: *4* scan & helpers
+def scan(self):
+
+    for p in self.p.self_and_subtree():
+
+        self.scanNode(p)
+#@+node:ekr.20110328173745.3261: *5* scanIdChain
+def scanIdChain (self,s,i,outer):
+
+    assert g.is_c_id(s[i])
+    start = i 
+
+    while i < len(s):
+        progress = i
+        # Skip a.b.c...
+        if not g.is_c_id(s[i]): break
+        i = g.skip_id(s,i,chars='.')
+        i = g.skip_ws(s,i)
+        word = s[start:i].strip()
+        if outer and g.match(s,i,'=') and word in (self.keywordArgs):
+            # g.trace('***','=',word)
+            self.suppressTranslation = True
+        # Only a paren is valid now.
+        if not g.match(s,i,'('): break
+        # We shall munge the entire paren expression.
+        i = g.skip_matching_python_parens(s,i)
+        if g.match(s,i,')'): i += 1
+        # Only a dot is valid now.
+        if not g.match(s,i,'.'): break
+        i += 1
+        assert i > progress
+
+    self.setDecl(s[start:i])
+    return i
+#@+node:ekr.20110328173745.3262: *5* scanNode
+def scanNode(self,p):
+
+    tags = ('g.es','g.es_print',)
+    s,h = p.b, p.h
+    print_h = True
+
+    if h.startswith('@thin'):
+        << insert statements highlighting the @thin node >>
+
+    i = 0
+    while i < len(s):
+        progress = i
+        for tag in tags:
+            if g.match_word(s,i,tag):
+                start = i ; i += len(tag)
+                self.suppressTranslation = False
+                i = g.skip_ws(s,i)
+                if g.match(s,i,'('):
+                    << Insert a comment containing the headline >>
+                    i = self.scanParens(s,i,outer=True)
+                    statement = s[start:i]
+                    self.statements.append(statement)
+                break
+        i = max(i,progress+1)
+#@+node:ekr.20110328173745.3263: *6* << insert statements highlighting the @thin node >>
+self.statements.append('# ---- %s' % (h))
+self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))
+#@+node:ekr.20110328173745.3264: *6* << Insert a comment containing the headline >>
+if print_h:
+    print_h = False
+    if not h.startswith('@thin'):
+        self.statements.append('# -- node %s' % (self.mungeHeadline(h)))
+#@+node:ekr.20110328173745.3265: *5* scanParens
+def scanParens(self,s,i,outer):
+
+    '''Scan a parenthesized list of args.'''
+
+    assert g.match(s,i,'(')
+    j = g.skip_matching_python_parens(s,i)
+    if j == -1:
+        self.error('**incomplete paren at: %s' % s[i:])
+        return i+1 # Just skip the paren
+
+    assert g.match(s,j,')')
+    n = 1
+    while i < j:
+        progress = i ; ch = s[i]
+
+        if ch in ("'",'"',):
+            i = self.scanStringArg(s,i,n,outer)
+            n += 1
+
+        elif g.is_c_id(ch):
+            i = self.scanIdChain(s,i,outer)
+            n += 1
+
+        i = max(i,progress+1)
+
+    return j + 1 # return the character after the paren.
+#@+node:ekr.20110328173745.3266: *5* scanStringArg
+def scanStringArg(self,s,i,n,outer):
+
+    '''Skip a string, and possible %'''
+
+    j = g.skip_python_string(s,i)
+    if j <= i: return i
+
+    # g.trace(n,s[i:j])
+
+    if outer:
+        self.setToBeTranslated(s[i:j],n)
+
+    i = g.skip_ws(s,j)
+    if not g.match(s,i,'%'):
+        return i
+
+    # Handle what follows the '%'
+    i = g.skip_ws(s,i+1)
+
+    if g.match(s,i,'('):
+        i = self.scanParens(s,i,outer=False)
+    elif i < len(s) and g.is_c_id(s[i]):
+        i = self.scanIdChain(s,i,outer)
+
+    return i
+#@+node:ekr.20110328173745.3267: *4* setDecl
+def setDecl (self,s):
+
+    s = s.strip()
+
+    if s in ('c','g','p','len','str','repr','and','or','not','is',):
+        return # Don't need a binding for these.
+
+    if s in ('color','newline','tabName',):
+        return # Special binding will be used for these.
+
+    if s.isdigit():
+        return # Don't bind integers.
+
+    self.decls[s] = True
+#@+node:ekr.20110328173745.3268: *4* setToBeTranslated
+def setToBeTranslated (self,s,n):
+
+
+    s = s.strip()
+
+    if s.startswith('"') or s.startswith("'"):
+        s = s[1:]
+    if s.endswith('"') or s.endswith("'"):
+        s = s[:-1]
+
+    s = s.strip()
+
+    # Suppress translation when a keyword is seen, regardless of position.
+    if s in self.keywordArgs:
+        self.suppressTranslation = True
+
+    if self.suppressTranslation:
+        # g.trace('not added',s)
+        return
+
+    if (n % 2) == 1 and s not in self.toBeTranslated:
+        self.toBeTranslated.append(s)
 #@+node:ekr.20110609184334.16461: *3* Print missing docstrings
 @color
 
@@ -13367,6 +13695,40 @@ Sleep(2700)
 
 ;careful you don't close the leo you are working from
 Send("!Fx")
+#@+node:ville.20090522185354.16487: *3* Call hierarchy tracing (using python 'trace' module)
+"""
+Analyzing program flow.
+
+Run (ctrl+b) this script after 
+
+cd ~/leo-editor
+python -m trace --trackcalls launchLeo.py --gui=qt >trace.txt
+
+"""
+
+tracefile = '~/leo-editor/trace.txt'
+
+import os
+
+
+tr = open(os.path.expanduser(tracefile))
+print tr
+top = p.insertAsLastChild().copy()
+top.h = 'trace session'
+cur = None
+no = None
+for l in tr:
+    if l.startswith('***'):
+        cur = top.insertAsLastChild().copy()
+        cur.h = os.path.basename(l.split()[1])
+    elif l.startswith('  -->'):
+        no = cur.insertAsLastChild().copy()
+        no.h = os.path.basename(l.split()[1].strip())
+    else:
+        if no:
+            no.b += l.strip() + '\n'
+
+    print ".",
 #@+node:ekr.20040330095252: *3* Clear log frame
 t = c.frame.log.logCtrl
 t.delete("1.0","end")
@@ -13403,6 +13765,30 @@ f1.close() ; f2.close()
 f1 = open(p1) ; f2 = open(p2)
 g.es("equal (text mode)",f1.read()==f2.read())
 f1.close() ; f2.close()
+#@+node:ekr.20111017085134.16202: *3* Compate old and new nodes
+old,new = None,None
+for child in p.children():
+    if child.h.startswith('old'):
+        old = child.copy()
+    if child.h.startswith('new'):
+        new = child.copy()
+if old and new:
+    print(old.b == new.b)
+    if old.b != new.b:
+        print('*' * 20)
+        print(len(old.b),len(new.b))
+        old_lines = g.splitLines(old.b)
+        new_lines = g.splitLines(new.b)
+        for i in range(max(len(old_lines),len(new_lines))):
+            if (i < len(old_lines) and i < len(new_lines) and
+                old_lines[i] == new_lines[i]
+            ):
+                pass
+            else:
+                if i < len(old_lines):
+                    print('old %2d %s' % (i,repr(old_lines[i])))
+                if i < len(new_lines):
+                    print('new %2d %s' % (i,repr(new_lines[i])))
 #@+node:ekr.20050219054039: *3* Convert ChoiceMail .ini file to .csv file
 @ These scripts work on the child nodes as shown.
 
@@ -13503,169 +13889,6 @@ c.setBodyString(result_p,result)
 print 'done!'
 #@+node:ekr.20050219054039.1: *5* address
 #@+node:ekr.20050218184044.11: *5* result
-#@+node:ekr.20080105135417: *3* Delete All Icons
-# Same as delete-all-icons command (now removed)
-# A script seems safer because it can not be executed by mistake.
-
-for p in c.all_positions():
-    if hasattr(p.v,"unknownAttributes"):
-        a = p.v.unknownAttributes
-        iconsList = a.get("icons")
-        if iconsList:
-            a["icons"] = []
-            a["lineYOffset"] = 0
-            p.setDirty()
-            c.setChanged(True)
-c.redraw()
-#@+node:ekr.20061220094557: *3* Script to backup Outlook Express files
-# http://support.microsoft.com/default.aspx/kb/270670
-# See Notes child for the manual instructions taken from the URL above.
-
-import glob
-import os
-
-theDir = (r'C:\Documents and Settings\Ed\Local Settings\Application Data\Identities' +
-    r'\{B14A7A05-7759-4249-A9C2-FDC8B4FDC50C}\Microsoft\Outlook Express')
-
-files = glob.glob(theDir + r'\*.*')
-files.sort()
-
-#theFiles = [g.os_path_basename(z) for z in files]
-#theFiles.sort()
-#print g.listToString(theFiles)
-
-dest = r'c:\OutlookBackup'
-if not g.os_path_exists(dest):
-    g.es_print('***** Creating %s' % dest)
-    os.mkdir(dest)
-
-for inputName in files:
-    base = g.os_path_basename(inputName)
-    outputName = g.os_path_join(dest,base)
-    inputFile = file(inputName)
-    s = inputFile.read()
-    inputFile.close()
-    outputFile = file(outputName,'w')
-    outputFile.write(s)
-    outputFile.close()
-    g.es_print('***** Wrote %s' % outputName)
-#@+node:ekr.20061220094557.1: *4* Notes
-@killcolor
-@
-
-To backup Outlook Express data:
-• Copy mail files to a backup folder 
-• Export the Address Book to a file 
-• Export the mail account to a file 
-• Export the news account to a file
-
-To restore or import Outlook Express data:
-• Import messages from the backup folder 
-• Import the Address Book file 
-• Import the mail account file 
-• Import the news account file 
-
-Step 1: Copy Mail Files to a Backup Folder (Make a backup copy of your Outlook Express e-mail message files):
-
-(EKR: get the file name)
-
-1. On the Tools menu, click Options. 
-2. On the Maintenance tab, click Store Folder. 
-3. Select the folder location, and then press CTRL+C to copy the location.
-4. Click Cancel, and then click Cancel again to close the dialog box. 
-
-r'C:\Documents and Settings\Ed\Local Settings\Application Data\Identities\{B14A7A05-7759-4249-A9C2-FDC8B4FDC50C}\Microsoft\Outlook Express'
-
-(EKR: open the directory)
-
-5. Click Start, and then click Run. 
-6. In the Open box, press CTRL+V, and then click OK.
-
-(EKR: Copy all files to a folder)
-
-7. On the Edit menu, click Select All. 
-8. On the Edit menu, click Copy, and then close the window.
-9. Right-click any empty space on your desktop, click New, and then click Folder. 
-10. Type mail backup for the folder name, and then press ENTER. 
-11. Double-click the Mail Backup folder to open it. 
-12. On the Edit menu, click Paste. 
-13. Close the Mail Backup window. 
-
-Step 2: Export the Address Book to a File
-
-A .WAB (Windows Address Book) file is used by Outlook Express 5.x and 6.0 versions, even if multiple Identities are used. The individual data for each Identity is stored in a folder, by user name, within the .WAB file in use.
-
-Exporting this data, while logged in to a specific Identity, is the only means of segregating the Address Book data. If the .WAB file becomes dissociated from the user Identities, the data can only be exported in total - not folder by folder.
-
-Another reason to export the .WAB file to a .csv file is that if the .WAB file is shared with Microsoft Outlook, the addresses are stored in the *.pst file in Outlook. When you export the file from the Outlook Express File menu to a *.csv file it exports the correct contacts. If the Address Book is shared with Microsoft Outlook, you are not able to export from within the Address Book on the File menu. This option is dimmed or not available.
-
-To export your Outlook Express address book: 1. On the File menu, click Export, and then click Address Book. 
-2. Click Text File (Comma Separated Values), and then click Export. 
-3. Click Browse. 
-4. Locate the Mail Backup folder that you created. 
-5. In the File Name box, type address book backup, and then click Save. 
-6. Click Next. 
-7. Click to select the check boxes for the fields that you want to export, and then click Finish. 
-8. Click OK and then click Close. 
-
-Step 3: Make a backup copy of your Outlook Express mail account:
-
-1. On the Tools menu, click Accounts. 
-2. On the Mail tab, click the mail account that you want to export, and then click Export. 
-3. In the Save In box, locate the Mail Backup folder on your desktop, and then click Save. 
-4. Repeat these steps for each mail account that you want to export. 
-5. Click Close. 
-
-Step 4: Make a backup copy of your Outlook Express news accounts:
-
-1. On the Tools menu, click Accounts. 
-2. On the News tab, click the news account that you want to export, and then click Export. 
-3. In the Save In box, use locate the Mail Backup folder on your desktop, and then click Save. 
-4. Repeat these steps for each news account that you want to export. 
-5. Click Close. 
-
-Importing Outlook Express data
-
-To restore data, you may need to re-create the Identities for each user, prior to using the following steps.
-***Repeat each step, as needed, for each Identity.
-
-Step 1: Import Messages from the Backup Folder (Import your Outlook Express e-mail messages from the Backup folder)
-
-1. On the File menu, point to Import, and then click Messages. 
-2. In the Select an e-mail program to import from box, click Microsoft Outlook Express 5 or Microsoft Outlook Express 6, and then click Next. 
-3. Click Import mail from an OE5 store directory or Import mail from an OE6 store directory, and then click OK. 
-4. Click Browse, and then click on the Mail Backup folder on your desktop. 
-5. Click OK, and then click Next. 
-6. Click All folders, click Next, and then click Finish. 
-
-Step 2: Import the Address Book File
-
-1. On the File menu, click Import, and then click Other Address Book. 
-2. Click Text File (Comma Separated Values), and then click Import. 
-3. Click Browse. 
-4. Locate the Mail Backup folder on your desktop, click the address book Backup.csv file, and then click Open. 
-5. Click Next, and then click Finish. 
-6. Click OK, and then click Close. 
-
-Step 3: Import the Mail Account File
-
-1. On the Tools menu, click Accounts. 
-2. On the Mail tab, click Import. 
-3. In the Look In box, locate the Mail Backup folder on your desktop. 
-4. Click the mail account that you want to import, and then click Open. 
-5. Repeat these steps for each mail account that you want to import. 
-6. Click Close. 
-
-Step 4: Import the Newsgroup Account File
-
-1. On the Tools menu, click Accounts. 
-2. On the News tab, click Import. 
-3. In the Look In box, locate the Mail Backup folder on your desktop. 
-4. Click the news account that you want to import, and then click Open. 
-5. Repeat these steps for each news account that you want to import. 
-6. Click Close.
-
-@color
 #@+node:ekr.20051110105027.106: *3* Create diagrams using Graphviz and pydot
 #@+node:ekr.20051110105027.107: *4* pydot notes by EKR
 @nocolor
@@ -14155,6 +14378,20 @@ def vnodeRepr(v):
 #@+node:ekr.20051110105027.145: *7* Child1
 #@+node:ekr.20051110105027.146: *8* GrandChild
 #@+node:ekr.20051110105027.147: *7* Child2
+#@+node:ekr.20080105135417: *3* Delete All Icons
+# Same as delete-all-icons command (now removed)
+# A script seems safer because it can not be executed by mistake.
+
+for p in c.all_positions():
+    if hasattr(p.v,"unknownAttributes"):
+        a = p.v.unknownAttributes
+        iconsList = a.get("icons")
+        if iconsList:
+            a["icons"] = []
+            a["lineYOffset"] = 0
+            p.setDirty()
+            c.setChanged(True)
+c.redraw()
 #@+node:ekr.20050225161940: *3* Execute @test, @suite or file
 @
 
@@ -14446,6 +14683,33 @@ def addMenu(tag,keywords):
     table = ("FilterHoist",None,callback),
 
     c.frame.menu.createMenuItemsFromTable("Outline",table)
+#@+node:ekr.20111017085134.16022: *3* Find long lines
+# This works, but splitting long lines by hand
+# is the very essence of stupidity.
+
+# Don't use this script!
+# Use a *reliable* pep8 tool instead.
+
+g.es('finding long lines in',p.h)
+found = False
+while p and not found:
+    for line in g.splitLines(p.b):
+        if len(line) > 80:
+            found = True
+            g.es('long line in',p.h)
+            c.selectPosition(p)
+            break
+    else:
+        p.moveToThreadNext()
+g.es('done')
+#@+node:ekr.20060801093639: *3* Finding @file nodes
+current = c.currentPosition()
+for p in current.self_and_parents():
+    if p.isAnyAtFileNode():
+        d = c.scanAllDirectives(p)
+        path = d.get('path')
+        print g.os_path_join(path,p.atFileNodeName())
+        break
 #@+node:ekr.20051110105027.151: *3* Get statistics using dis module
 # routines to gather static statistics about opcodes based on dis module.
 import compiler
@@ -14570,6 +14834,33 @@ def print_stats (stats):
     for stat,i in stats2:
         print string.rjust(repr(stat),6), dis.opname[i]
     print "total", total
+#@+node:ekr.20111017085134.16018: *3* Inspect modules
+import inspect
+
+fn = g.os_path_finalize_join(g.app.loadDir,'leoNodes.py')
+
+m = __import__ ('leoNodes')
+# print(m)
+
+classes = inspect.getmembers(m,inspect.isclass)
+# print(classes)
+print('='*20)
+for z in classes:
+    name,value = z
+    print(name)
+    members = inspect.getmembers(value)
+    print('members of',name)
+    for name2,value2 in members:
+        if False: # not name2.startswith('__'):
+            print('  ',name2)
+        if name2 == '__init__':
+            print('__init__',value2)
+            if inspect.isfunction(value2):
+                init_members = inspect.getmembers(value2)
+                print('init members')
+                for name3,value3 in init_members:
+                    if not name3.startswith('__'):
+                        print('    ',name3)
 #@+node:ekr.20051110105027.158: *3* Linux install script
 @first
 
@@ -14602,6 +14893,65 @@ print commands.getoutput("python /usr/lib/leo/leo.py %s" % files)
 fd.close()
 commands.getoutput("chmod 755 /usr/bin/leo")
 print "***** Leo installed successfully - type 'leo filename.leo' to use it."
+#@+node:ekr.20111017085134.16020: *3* max N
+n = 0
+
+for p in c.all_positions():
+    n = max(n,p.level())
+
+g.es('n',n)
+
+last = 0
+delta = 0
+d = {}
+
+for p in c.all_positions():
+    n = p.level()
+    if n < last:
+        delta = max(delta,last-n)
+        d [last-n] = d.get(last-n,0) + 1
+    last = n
+
+g.es('delta',delta)
+g.es('d',d)
+#@+node:ekr.20061018084920: *3* munge-db
+'''A script to munge database records so they conform to an existing db's format.'''
+# Almost infinitely easier to do this in Python rather than FileMaker Pro's laughable scripting language.
+path = r'c:\rebecca\REBECCA9_97.txt'
+path2 = r'c:\rebecca\REBECCA9_97-converted.txt'
+f = file(path)
+s = f.read() ; f.close()
+f = file(path2,'w')
+print '-' * 40, len(s)
+lines = s.split('\n')
+n = 0
+for line in lines:
+    n += 1
+    if not line.strip(): continue
+    # bug: fails for fields containing commas.  Should use a regex instead.
+    fields = line.split(',')
+    result = []
+    info1,last,full,addr1,addr2,zip,info2,info3 = fields
+    assert full.startswith('"')
+    data = full[1:-1].strip().split(' ')
+    first = '"%s"' % data[0].strip()
+    data = addr2[1:-1].strip().split(' ')
+    city = '"%s"' % ''.join(data[:-2])
+    state = '"%s"' % data[-2].upper()
+    for field in (first,last,addr1,city,state,zip,info1,info2,info3):
+        if field.startswith('"'):
+            # Capitalize each word.
+            s = field[1:-1].strip()
+            aList = s.split(' ')
+            s = ' '.join([z.capitalize() for z in aList])
+            result.append('"%s"' % s)
+        else:
+            result.append(field)
+    s = ','.join(result)
+    print s
+    f.write(s+'\n')
+f.close()
+print '%d records' % n
 #@+node:ekr.20060509121738: *3* Scipts related to the new colorizer
 #@+node:ekr.20060509121738.1: *4* Find longest
 # Find longest body text
@@ -14641,86 +14991,155 @@ for p in p.self_and_subtree():
 
 c.selectPosition(pmax)
 c.redraw()
-#@+node:ekr.20060801093639: *3* Finding @file nodes
-current = c.currentPosition()
-for p in current.self_and_parents():
-    if p.isAnyAtFileNode():
-        d = c.scanAllDirectives(p)
-        path = d.get('path')
-        print g.os_path_join(path,p.atFileNodeName())
-        break
-#@+node:ekr.20061018084920: *3* munge-db
-'''A script to munge database records so they conform to an existing db's format.'''
-# Almost infinitely easier to do this in Python rather than FileMaker Pro's laughable scripting language.
-path = r'c:\rebecca\REBECCA9_97.txt'
-path2 = r'c:\rebecca\REBECCA9_97-converted.txt'
-f = file(path)
-s = f.read() ; f.close()
-f = file(path2,'w')
-print '-' * 40, len(s)
-lines = s.split('\n')
-n = 0
-for line in lines:
-    n += 1
-    if not line.strip(): continue
-    # bug: fails for fields containing commas.  Should use a regex instead.
-    fields = line.split(',')
-    result = []
-    info1,last,full,addr1,addr2,zip,info2,info3 = fields
-    assert full.startswith('"')
-    data = full[1:-1].strip().split(' ')
-    first = '"%s"' % data[0].strip()
-    data = addr2[1:-1].strip().split(' ')
-    city = '"%s"' % ''.join(data[:-2])
-    state = '"%s"' % data[-2].upper()
-    for field in (first,last,addr1,city,state,zip,info1,info2,info3):
-        if field.startswith('"'):
-            # Capitalize each word.
-            s = field[1:-1].strip()
-            aList = s.split(' ')
-            s = ' '.join([z.capitalize() for z in aList])
-            result.append('"%s"' % s)
-        else:
-            result.append(field)
-    s = ','.join(result)
-    print s
-    f.write(s+'\n')
-f.close()
-print '%d records' % n
-#@+node:ville.20090522185354.16487: *3* Call hierarchy tracing (using python 'trace' module)
-"""
-Analyzing program flow.
+#@+node:ekr.20061220094557: *3* Script to backup Outlook Express files
+# http://support.microsoft.com/default.aspx/kb/270670
+# See Notes child for the manual instructions taken from the URL above.
 
-Run (ctrl+b) this script after 
-
-cd ~/leo-editor
-python -m trace --trackcalls launchLeo.py --gui=qt >trace.txt
-
-"""
-
-tracefile = '~/leo-editor/trace.txt'
-
+import glob
 import os
 
+theDir = (r'C:\Documents and Settings\Ed\Local Settings\Application Data\Identities' +
+    r'\{B14A7A05-7759-4249-A9C2-FDC8B4FDC50C}\Microsoft\Outlook Express')
 
-tr = open(os.path.expanduser(tracefile))
-print tr
-top = p.insertAsLastChild().copy()
-top.h = 'trace session'
-cur = None
-no = None
-for l in tr:
-    if l.startswith('***'):
-        cur = top.insertAsLastChild().copy()
-        cur.h = os.path.basename(l.split()[1])
-    elif l.startswith('  -->'):
-        no = cur.insertAsLastChild().copy()
-        no.h = os.path.basename(l.split()[1].strip())
-    else:
-        if no:
-            no.b += l.strip() + '\n'
+files = glob.glob(theDir + r'\*.*')
+files.sort()
 
-    print ".",
+#theFiles = [g.os_path_basename(z) for z in files]
+#theFiles.sort()
+#print g.listToString(theFiles)
+
+dest = r'c:\OutlookBackup'
+if not g.os_path_exists(dest):
+    g.es_print('***** Creating %s' % dest)
+    os.mkdir(dest)
+
+for inputName in files:
+    base = g.os_path_basename(inputName)
+    outputName = g.os_path_join(dest,base)
+    inputFile = file(inputName)
+    s = inputFile.read()
+    inputFile.close()
+    outputFile = file(outputName,'w')
+    outputFile.write(s)
+    outputFile.close()
+    g.es_print('***** Wrote %s' % outputName)
+#@+node:ekr.20061220094557.1: *4* Notes
+@killcolor
+@
+
+To backup Outlook Express data:
+• Copy mail files to a backup folder 
+• Export the Address Book to a file 
+• Export the mail account to a file 
+• Export the news account to a file
+
+To restore or import Outlook Express data:
+• Import messages from the backup folder 
+• Import the Address Book file 
+• Import the mail account file 
+• Import the news account file 
+
+Step 1: Copy Mail Files to a Backup Folder (Make a backup copy of your Outlook Express e-mail message files):
+
+(EKR: get the file name)
+
+1. On the Tools menu, click Options. 
+2. On the Maintenance tab, click Store Folder. 
+3. Select the folder location, and then press CTRL+C to copy the location.
+4. Click Cancel, and then click Cancel again to close the dialog box. 
+
+r'C:\Documents and Settings\Ed\Local Settings\Application Data\Identities\{B14A7A05-7759-4249-A9C2-FDC8B4FDC50C}\Microsoft\Outlook Express'
+
+(EKR: open the directory)
+
+5. Click Start, and then click Run. 
+6. In the Open box, press CTRL+V, and then click OK.
+
+(EKR: Copy all files to a folder)
+
+7. On the Edit menu, click Select All. 
+8. On the Edit menu, click Copy, and then close the window.
+9. Right-click any empty space on your desktop, click New, and then click Folder. 
+10. Type mail backup for the folder name, and then press ENTER. 
+11. Double-click the Mail Backup folder to open it. 
+12. On the Edit menu, click Paste. 
+13. Close the Mail Backup window. 
+
+Step 2: Export the Address Book to a File
+
+A .WAB (Windows Address Book) file is used by Outlook Express 5.x and 6.0 versions, even if multiple Identities are used. The individual data for each Identity is stored in a folder, by user name, within the .WAB file in use.
+
+Exporting this data, while logged in to a specific Identity, is the only means of segregating the Address Book data. If the .WAB file becomes dissociated from the user Identities, the data can only be exported in total - not folder by folder.
+
+Another reason to export the .WAB file to a .csv file is that if the .WAB file is shared with Microsoft Outlook, the addresses are stored in the *.pst file in Outlook. When you export the file from the Outlook Express File menu to a *.csv file it exports the correct contacts. If the Address Book is shared with Microsoft Outlook, you are not able to export from within the Address Book on the File menu. This option is dimmed or not available.
+
+To export your Outlook Express address book: 1. On the File menu, click Export, and then click Address Book. 
+2. Click Text File (Comma Separated Values), and then click Export. 
+3. Click Browse. 
+4. Locate the Mail Backup folder that you created. 
+5. In the File Name box, type address book backup, and then click Save. 
+6. Click Next. 
+7. Click to select the check boxes for the fields that you want to export, and then click Finish. 
+8. Click OK and then click Close. 
+
+Step 3: Make a backup copy of your Outlook Express mail account:
+
+1. On the Tools menu, click Accounts. 
+2. On the Mail tab, click the mail account that you want to export, and then click Export. 
+3. In the Save In box, locate the Mail Backup folder on your desktop, and then click Save. 
+4. Repeat these steps for each mail account that you want to export. 
+5. Click Close. 
+
+Step 4: Make a backup copy of your Outlook Express news accounts:
+
+1. On the Tools menu, click Accounts. 
+2. On the News tab, click the news account that you want to export, and then click Export. 
+3. In the Save In box, use locate the Mail Backup folder on your desktop, and then click Save. 
+4. Repeat these steps for each news account that you want to export. 
+5. Click Close. 
+
+Importing Outlook Express data
+
+To restore data, you may need to re-create the Identities for each user, prior to using the following steps.
+***Repeat each step, as needed, for each Identity.
+
+Step 1: Import Messages from the Backup Folder (Import your Outlook Express e-mail messages from the Backup folder)
+
+1. On the File menu, point to Import, and then click Messages. 
+2. In the Select an e-mail program to import from box, click Microsoft Outlook Express 5 or Microsoft Outlook Express 6, and then click Next. 
+3. Click Import mail from an OE5 store directory or Import mail from an OE6 store directory, and then click OK. 
+4. Click Browse, and then click on the Mail Backup folder on your desktop. 
+5. Click OK, and then click Next. 
+6. Click All folders, click Next, and then click Finish. 
+
+Step 2: Import the Address Book File
+
+1. On the File menu, click Import, and then click Other Address Book. 
+2. Click Text File (Comma Separated Values), and then click Import. 
+3. Click Browse. 
+4. Locate the Mail Backup folder on your desktop, click the address book Backup.csv file, and then click Open. 
+5. Click Next, and then click Finish. 
+6. Click OK, and then click Close. 
+
+Step 3: Import the Mail Account File
+
+1. On the Tools menu, click Accounts. 
+2. On the Mail tab, click Import. 
+3. In the Look In box, locate the Mail Backup folder on your desktop. 
+4. Click the mail account that you want to import, and then click Open. 
+5. Repeat these steps for each mail account that you want to import. 
+6. Click Close. 
+
+Step 4: Import the Newsgroup Account File
+
+1. On the Tools menu, click Accounts. 
+2. On the News tab, click Import. 
+3. In the Look In box, locate the Mail Backup folder on your desktop. 
+4. Click the news account that you want to import, and then click Open. 
+5. Repeat these steps for each news account that you want to import. 
+6. Click Close.
+
+@color
 #@+node:ekr.20041126132604: ** Prototypes
 #@+node:ekr.20051011211253: *3* Debugger canvas
 import Tkinter as Tk

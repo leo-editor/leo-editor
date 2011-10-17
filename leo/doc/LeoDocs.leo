@@ -11,8 +11,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070610174018"><vh>Startup</vh>
-<v t="ekr.20101028112631.4959"
-expanded="ekr.20050404094627,ekr.20050407144417,"><vh>@file doc-startup.txt</vh></v>
+<v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100580b000000302e312e302e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"><vh>@file doc-startup.txt</vh></v>
 </v>
 <v t="ekr.20100908122026.4443"><vh>@@enabled_plugins</vh></v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>

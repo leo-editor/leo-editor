@@ -12,25 +12,8 @@
 <vnodes>
 <v t="ekr.20070622214401"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
-<v t="ekr.20060112110750"><vh>Buttons</vh>
-<v t="ekr.20110910072247.15420"><vh>@@button promote-bodies</vh></v>
-<v t="ekr.20051010093913"><vh>@@button Save</vh></v>
-<v t="ekr.20051011123608"><vh>@@button align to col</vh></v>
-<v t="ekr.20060112103537.17"><vh>@button Check bindings</vh>
-<v t="ekr.20060112104119"><vh>defineSetNames</vh></v>
-<v t="ekr.20060112104333"><vh>doSet</vh></v>
-<v t="ekr.20060112105523"><vh>doShortcuts</vh></v>
-<v t="ekr.20060112104333.1"><vh>checkSets</vh></v>
-<v t="ekr.20060112104823"><vh>main</vh></v>
-</v>
-<v t="ekr.20090203131919.1"><vh>@button Check menu commands</vh></v>
-<v t="ekr.20110612074140.16414"><vh>@button check-core-settings (OlD)</vh>
-<v t="ekr.20110612074140.16417"><vh>ctor</vh></v>
-<v t="ekr.20110612074140.16419"><vh>get_settings</vh></v>
-<v t="ekr.20110612074140.16478"><vh>get_settings_nodes</vh></v>
-<v t="ekr.20110612074140.16416"><vh>init</vh></v>
-<v t="ekr.20110612074140.16415"><vh>run</vh></v>
-</v>
+<v t="ekr.20060112110750"><vh>Local buttons</vh>
+<v t="ekr.20090203131919.1"><vh>@button check-menus-cmds</vh></v>
 <v t="ekr.20111006212449.11850"><vh>@button check-settings</vh>
 <v t="ekr.20111006212449.11851"><vh>ctor</vh></v>
 <v t="ekr.20111006212449.11852"><vh>check &amp; helper</vh>
@@ -49,6 +32,29 @@
 </v>
 <v t="ekr.20111006212449.11861"><vh>munge</vh></v>
 <v t="ekr.20111006212449.11862"><vh>run</vh></v>
+</v>
+<v t="ekr.20060112103537.17"><vh>@button check-bindings</vh>
+<v t="ekr.20060112104119"><vh>defineSetNames</vh></v>
+<v t="ekr.20060112104333"><vh>doSet</vh></v>
+<v t="ekr.20060112105523"><vh>doShortcuts</vh></v>
+<v t="ekr.20060112104333.1"><vh>checkSets</vh></v>
+<v t="ekr.20060112104823"><vh>main</vh></v>
+</v>
+<v t="ekr.20111017082630.16086"><vh>Disabled/old</vh>
+<v t="ekr.20111017082630.16080"><vh>@@button check-bindings</vh>
+<v t="ekr.20111017082630.16081"><vh>defineSetNames</vh></v>
+<v t="ekr.20111017082630.16082"><vh>doSet</vh></v>
+<v t="ekr.20111017082630.16083"><vh>doShortcuts</vh></v>
+<v t="ekr.20111017082630.16084"><vh>checkSets</vh></v>
+<v t="ekr.20111017082630.16085"><vh>main</vh></v>
+</v>
+<v t="ekr.20110612074140.16414"><vh>@@button check-core-settings (OlD)</vh>
+<v t="ekr.20110612074140.16417"><vh>ctor</vh></v>
+<v t="ekr.20110612074140.16419"><vh>get_settings</vh></v>
+<v t="ekr.20110612074140.16478"><vh>get_settings_nodes</vh></v>
+<v t="ekr.20110612074140.16416"><vh>init</vh></v>
+<v t="ekr.20110612074140.16415"><vh>run</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -530,27 +536,23 @@
 </v>
 </v>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
-<v t="ekr.20070926082407"><vh>@buttons</vh>
-<v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
-<v t="ekr.20090610164636.8489"><vh>@@button add-test @key=alt-9</vh></v>
-<v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
-<v t="ekr.20071009135515"><vh>@@button rst3</vh></v>
-</v>
+<v t="ekr.20070926082407"><vh>@buttons</vh></v>
 </v>
 <v t="ekr.20080312075451.1"><vh>Common @command nodes</vh>
 <v t="ekr.20080312075451.2"><vh>@commands</vh>
 <v t="ekr.20111016210000.15952"><vh>@ignore</vh>
+<v t="ekr.20111017085134.16213"><vh>@command clones-tab</vh>
+<v t="ekr.20111017085134.16214"><vh>class cloneNavigator</vh>
+<v t="ekr.20111017085134.16215"><vh>init</vh></v>
+<v t="ekr.20111017085134.16216"><vh>getAllClones</vh></v>
+<v t="ekr.20111017085134.16217"><vh>displayClones</vh>
+<v t="ekr.20111017085134.16218"><vh>&lt;&lt;Fill listbox with clone parent headlines&gt;&gt;</vh></v>
+<v t="ekr.20111017085134.16219"><vh>&lt;&lt;Goto selected position when listbox selection changes&gt;&gt;</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20111016210000.16011"><vh>@command redefine g.findReference</vh>
 <v t="ekr.20111016210000.16012"><vh>myFindReference</vh></v>
-</v>
-<v t="ekr.20111016210000.15976"><vh>Checking</vh>
-<v t="ekr.20111016210000.15977"><vh>@command check-bindings</vh>
-<v t="ekr.20111016210000.15978"><vh>defineSetNames</vh></v>
-<v t="ekr.20111016210000.15979"><vh>doSet</vh></v>
-<v t="ekr.20111016210000.15980"><vh>doShortcuts</vh></v>
-<v t="ekr.20111016210000.15981"><vh>checkSets</vh></v>
-<v t="ekr.20111016210000.15982"><vh>main</vh></v>
-</v>
 </v>
 <v t="ekr.20111016210000.16001"><vh>Editing body text</vh>
 <v t="ekr.20111016210000.16002"><vh>@command align-to-col (modify as needed)</vh></v>
@@ -578,6 +580,10 @@
 <v t="ekr.20111016210000.15990"><vh>@command join-node-above</vh></v>
 <v t="ekr.20111016210000.15991"><vh>@command join-node-below</vh></v>
 <v t="ekr.20111016210000.15992"><vh>@command promote-bodies</vh></v>
+<v t="ekr.20111017083715.16023"><vh>@command split-defs</vh></v>
+</v>
+<v t="ekr.20111017080453.16077"><vh>Testing</vh>
+<v t="ekr.20111017080453.16079"><vh>@command add-test</vh></v>
 </v>
 </v>
 </v>
@@ -1550,7 +1556,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070224073109.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2362,21 +2367,6 @@ KP_Add, KP_Decimal, KP_Divide, KP_Enter, KP_Equal,
 KP_Multiply, KP_Separator, KP_Space, KP_Subtract, KP_Tab,
 KP_F1, KP_F2, KP_F3, KP_F4,
 KP_0, KP_1, KP_2, KP_3, KP_4, KP_5, KP_6, KP_7, KP_8, KP_9</t>
-<t tx="ekr.20051010093913">c.save()</t>
-<t tx="ekr.20051011123608">n = len('insert-newline              ')
-
-s = p.bodyString()
-result = []
-for line in g.splitLines(s):
-    i = line.find('=')
-    if i == -1 or i &lt;= n:
-        result.append(line)
-    else:
-        result.append(line[:n] + line[i:])
-
-result = ''.join(result)
-# print result
-p.setBodyString(result)</t>
 <t tx="ekr.20051020125928">#d6c7d3
 #d2cad0
 #c6d3d7</t>
@@ -4812,14 +4802,17 @@ the following character is underlined in the name.
 
 - If the command name in an @item node is just a hyphen (-), the item represents
 a menu separator.</t>
-<t tx="ekr.20070926082256.1">c.prettyPrintPythonNode()</t>
 <t tx="ekr.20070926082407">@language python
+@nocolor-node
 
-# @button nodes outside this tree are ignored, as are @command nodes inside @ignore trees.</t>
-<t tx="ekr.20070926132045">All @button nodes in this tree define **global buttons** that appear in all Leo outlines.
+All @button nodes in the @buttons tree define **global buttons** that appear in all Leo outlines.
 
-At present, all @button nodes in this tree are disabled because they start with
-@@ instead of just @. A better place for global buttons is in myLeoSettings.leo.</t>
+All other @button nodes define **local buttons** that appear only in this outline.
+</t>
+<t tx="ekr.20070926132045">All @button nodes in the @buttons tree define **global buttons** that appear in all Leo outlines.
+
+All other @button nodes define **local buttons** that appear only in this outline.
+</t>
 <t tx="ekr.20070927051742"></t>
 <t tx="ekr.20070927051856"></t>
 <t tx="ekr.20070927173324">A placeholder for the actual menu.
@@ -4846,8 +4839,6 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20071005173455"></t>
 <t tx="ekr.20071006153053">True: add stuff consisting only of whitespace to the kill ring.</t>
 <t tx="ekr.20071006153725"></t>
-<t tx="ekr.20071009135515">c.rstCommands.rst3()
-</t>
 <t tx="ekr.20071010123015">文件</t>
 <t tx="ekr.20071010123015.1">新建</t>
 <t tx="ekr.20071010123223.1">打开</t>
@@ -4954,10 +4945,17 @@ The body text contains the script associated with the command.</t>
 @button nodes outside this tree are ignored.</t>
 <t tx="ekr.20080312071248.26">Denotes the tree containing active @command nodes.
 @command nodes outside this tree are ignored.</t>
-<t tx="ekr.20080312075451.1"></t>
-<t tx="ekr.20080312075451.2">@language python
+<t tx="ekr.20080312075451.1">All @command nodes in the @commands tree define **global commands** that appear in all Leo outlines.
 
-# @command nodes outside this tree are ignored, as are @command nodes inside @ignore trees.</t>
+All other @command nodes define **local commands** that are defined only in this outline.
+</t>
+<t tx="ekr.20080312075451.2">@language python
+@nocolor-node
+
+All @command nodes in the @commands tree define **global commands** that appear in all Leo outlines.
+
+All other @command nodes define **local commands** that are defined only in this outline.
+</t>
 <t tx="ekr.20080315083057.7">True: (Recommended) The spell commands collapse all nodes that are not ancestors of the node containing the match.
 False: The spell commands do not collapse any nodes.</t>
 <t tx="ekr.20080324105006.6">True: allow linux-like pastes using a mouse's middle button.
@@ -5704,22 +5702,6 @@ A reasonable alternative would be:
 <t tx="ekr.20090531084727.10894"></t>
 <t tx="ekr.20090531084727.10895"></t>
 <t tx="ekr.20090531084727.10896"></t>
-<t tx="ekr.20090610164636.8489">u = c.undoer
-w = c.frame.body.bodyCtrl
-p2 = p.insertAsNthChild(0)
-c.setHeadString(p2,'@test xxx')
-s = '''\
-if g.unitTesting:
-    c,p = g.getTestVars()
-
-    '''
-c.setBodyString(p2,s)
-c.selectPosition(p2)
-c.redraw()
-w.setInsertPoint(len(s))
-c.bodyWantsFocus()
-c.outerUpdate()
-</t>
 <t tx="ekr.20090620112052.9070">@nocolor
 
 The encoding assumed for strings used by the Qt plugin.
@@ -5728,7 +5710,6 @@ Change to your Python's default encoding if you have unicode problems.</t>
 <t tx="ekr.20090628075121.8432">Open &amp;quickstart.leo</t>
 <t tx="ekr.20090630073313.8521"></t>
 <t tx="ekr.20090630073313.8522"></t>
-<t tx="ekr.20090703122042.7463">print 'hi'</t>
 <t tx="ekr.20090724102842.2492">If zero, all nodes are colorized, regardless of length of body text.
 If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
 
@@ -8117,19 +8098,6 @@ cycle-editor-focus   = j   #Vim goes to window below current window
 delete-editor        = c   #Close current window (if more than one)
 delete-editor        = q   #Close current window (if more than one)
 </t>
-<t tx="ekr.20110910072247.15420">'''Copy the body text of all descendants to the parent's body text.'''
-
-# Great for creating what's new nodes.
-result = [p.b]
-b = c.undoer.beforeChangeNodeContents(p)
-for child in p.subtree():
-    if child.b:
-        result.append('\n- %s\n\n%s\n' % (child.h,child.b))
-    else:
-        result.append('\n- %s\n\n' % (child.h))
-p.b = ''.join(result)
-c.undoer.afterChangeNodeContents(p,'promote-child-bodies',b)
-</t>
 <t tx="ekr.20110917104720.9414"></t>
 <t tx="ekr.20110917104720.9415"># The names of your classes, one per line.
 
@@ -8642,187 +8610,6 @@ run(script_args)</t>
     c.redraw()
     g.es_print("done",color="blue")
 </t>
-<t tx="ekr.20111016210000.15976"></t>
-<t tx="ekr.20111016210000.15977">'''This script reports commands that exist in some but not all key- binding
-sets. setNames is a list of the roots of all such sets.'''
-
-import leoConfig
-import leoTest
-
-u = leoTest.testUtils(c)
-parser = leoConfig.settingsTreeParser(c)
-
-# Add these as required to handle commands defined by plugins.
-optionalCommandPrefixes = ['group-operations']
-optionalCommandNames = [
-    # These are the command names as defined by plugins.
-    # LeoSlideShows.leo defines buttons whose commands do not end in '-command'.
-    'next-slide-command','next-slide-show-command',
-    'prev-slide-command','prev-slide-show-command',
-    # The ipython plugin.
-    'start-ipython','get-ipython-results','push-to-ipython',
-]
-
-setNames = []
-setsDict = {} # keys are set names, values are dicts of command names.
-shortcutsDict = {}
-
-@others
-
-main()
-</t>
-<t tx="ekr.20111016210000.15978">def defineSetNames():
-
-    global setNames
-
-    if 1:
-        setNames = []
-        for p in c.allNodes_iter():
-            h = p.headString()
-            if h.startswith('@keys'):
-                h = h[5:].strip()
-                if h not in setNames:
-                    setNames.append(h)
-        g.es('Found these sets...')
-        for setName in setNames:
-            g.es_print('  %s' % str(setName))
-    else:
-        setNames = [
-            'Default Emacs shortcuts',
-            'Legacy Leo bindings',
-            'Legacy Leo shortcuts with important Emacs bindings',
-            'No bindings',
-            'EKR bindings: a mix',
-            'EKR bindings: Mode-oriented',
-        ]
-
-    setNames.sort()
-</t>
-<t tx="ekr.20111016210000.15979">def doSet(p,name):
-
-    global shortcutsDict
-
-    shortcutsDict = {}
-
-    for p in p.subtree_iter():
-        if p.headString().startswith('@shortcuts'):
-            doShortcuts(p,name)
-</t>
-<t tx="ekr.20111016210000.15980">def doShortcuts(p,setName):
-
-    global parser,setsDict,shortcutsDict
-
-    d = setsDict.get(setName,{})
-    s = p.bodyString()
-    lines = g.splitLines(s)
-    for line in lines:
-        line = line.strip()
-        if line and not line.startswith('#'):
-            commandName,bunch = parser.parseShortcutLine(line)
-            if not bunch:
-                g.es_print('In %s:\nmissing "=" in shortcut line:%s' % (
-                    p.headString(),repr(line)),color='red')
-            else:
-                # Having multiple shortcuts for a command if fine,
-                # But having multiple commands for a shortcut is not.
-                shortcut = bunch and bunch.val
-                pane = bunch and bunch.pane
-                if shortcut not in (None,'None','none'):
-                    aList = shortcutsDict.get(shortcut,[])
-                    if aList:
-                        for commandName2,pane2 in aList:
-                            if pane == pane2:
-                                g.es_print('duplicate shortcut %s in set %s: previous command: %s' % (
-                                    shortcut,setName,commandName2),color='red')
-                        else:
-                            aList.append((commandName,pane),)
-                    else:
-                        shortcutsDict [shortcut] = [(commandName,pane),]
-
-                data = d.get(commandName)
-                if data:
-                    shortcut2,pane2 = data
-                    if shortcut == shortcut2 and pane == pane2:
-                        g.es_print('duplicate %s in set %s' % (
-                            commandName,setName),color='red')
-                else:
-                    data = shortcut,pane
-                    d[commandName] = data
-
-    setsDict[setName] = d
-</t>
-<t tx="ekr.20111016210000.15981">def checkSets():
-
-    global setNames, optionalCommandPrefixes, optionalCommandNames
-
-    # Compute the union of all the command names.
-    allNames = {}
-    for setName in setNames:
-        d = setsDict.get(setName)
-        if d:
-            for key in d.keys():
-                allNames[key] = key
-        else:
-            g.es_print('No setsDict for %s' % (repr(setName)),color='red')
-
-    k = c.keyHandler
-    keys = allNames.keys()
-    keys.sort()
-
-    # Warn about missing names.
-    for setName in ('No bindings',): # setNames:
-        d = setsDict.get(setName)
-        if not d:
-            g.es_print("'@keys No bindings' not found",color='red')
-        for key in keys:
-            if key not in ('none','None',None) and key not in d.keys():
-                # Don't warn about missing 'enter-xxx-mode' commands.
-                if (
-                    not (key.startswith('enter-') and key.endswith('-mode')) and
-                    not (key.startswith('press-') and key.endswith('-button'))
-                ):
-                    g.es_print('%s is missing %-35s = None' % (setName,repr(key)))
-
-    # Warn about undefined commands.
-    for key in keys:
-        if not c.commandsDict.get(key):
-            ok = False
-            # full-command and quick command are weird special cases.
-            if key not in ('None',None,'full-command','quick-command'):
-                # Don't warn about missing 'enter-xxx-mode' commands.
-                if key.startswith('enter-') and key.endswith('-mode'):
-                    ok = True
-                elif key.startswith('press-') and key.endswith('-button'):
-                    ok = True
-                for prefix in optionalCommandPrefixes:
-                    if key.startswith(prefix):
-                        ok = True
-                for optionalCommand in optionalCommandNames:
-                    if key == optionalCommand:
-                        ok = True
-                if not ok:
-                    g.es_print('Undefined command name: %s' % (key))
-</t>
-<t tx="ekr.20111016210000.15982">def main ():
-
-    global setNames
-    defineSetNames()
-
-    # root = u.findNodeAnywhere('Keyboard shortcuts')
-    # for p in root.self_and_subtree_iter():
-
-    g.es_print('-' * 40)
-    seen = {}
-    for p in c.allNodes_iter():
-        h = p.headString()
-        if h.startswith('@keys'):
-            h = h[5:].strip()
-            if not seen.get(h):
-                seen[h] = True
-                doSet(p,h)
-    checkSets()
-    g.es('Check Bindings done')
-</t>
 <t tx="ekr.20111016210000.15988"></t>
 <t tx="ekr.20111016210000.15989">'''Convert a script to a string as if written with @nosent.
 
@@ -9027,6 +8814,316 @@ g.findReference = myFindReference
     if trace: g.trace("not found:",name,root.h)
     return c.nullPosition()
 </t>
+<t tx="ekr.20111017080453.16077"></t>
+<t tx="ekr.20111017080453.16079">u = c.undoer
+w = c.frame.body.bodyCtrl
+p2 = p.insertAsNthChild(0)
+c.setHeadString(p2,'@test xxx')
+s = '''\
+if g.unitTesting:
+    c,p = g.getTestVars()
+
+    '''
+c.setBodyString(p2,s)
+c.selectPosition(p2)
+c.redraw()
+w.setInsertPoint(len(s))
+c.bodyWantsFocus()
+c.outerUpdate()
+</t>
+<t tx="ekr.20111017082630.16080">'''This script reports commands that exist in some but not all key- binding
+sets. setNames is a list of the roots of all such sets.'''
+
+import leoConfig
+import leoTest
+
+u = leoTest.testUtils(c)
+parser = leoConfig.settingsTreeParser(c)
+
+# Add these as required to handle commands defined by plugins.
+optionalCommandPrefixes = ['group-operations']
+optionalCommandNames = [
+    # These are the command names as defined by plugins.
+    # LeoSlideShows.leo defines buttons whose commands do not end in '-command'.
+    'next-slide-command','next-slide-show-command',
+    'prev-slide-command','prev-slide-show-command',
+    # The ipython plugin.
+    'start-ipython','get-ipython-results','push-to-ipython',
+]
+
+setNames = []
+setsDict = {} # keys are set names, values are dicts of command names.
+shortcutsDict = {}
+
+@others
+
+main()
+</t>
+<t tx="ekr.20111017082630.16081">def defineSetNames():
+
+    global setNames
+
+    if 1:
+        setNames = []
+        for p in c.allNodes_iter():
+            h = p.headString()
+            if h.startswith('@keys'):
+                h = h[5:].strip()
+                if h not in setNames:
+                    setNames.append(h)
+        g.es('Found these sets...')
+        for setName in setNames:
+            g.es_print('  %s' % str(setName))
+    else:
+        setNames = [
+            'Default Emacs shortcuts',
+            'Legacy Leo bindings',
+            'Legacy Leo shortcuts with important Emacs bindings',
+            'No bindings',
+            'EKR bindings: a mix',
+            'EKR bindings: Mode-oriented',
+        ]
+
+    setNames.sort()
+</t>
+<t tx="ekr.20111017082630.16082">def doSet(p,name):
+
+    global shortcutsDict
+
+    shortcutsDict = {}
+
+    for p in p.subtree_iter():
+        if p.headString().startswith('@shortcuts'):
+            doShortcuts(p,name)
+</t>
+<t tx="ekr.20111017082630.16083">def doShortcuts(p,setName):
+
+    global parser,setsDict,shortcutsDict
+
+    d = setsDict.get(setName,{})
+    s = p.bodyString()
+    lines = g.splitLines(s)
+    for line in lines:
+        line = line.strip()
+        if line and not line.startswith('#'):
+            commandName,bunch = parser.parseShortcutLine(line)
+            if not bunch:
+                g.es_print('In %s:\nmissing "=" in shortcut line:%s' % (
+                    p.headString(),repr(line)),color='red')
+            else:
+                # Having multiple shortcuts for a command if fine,
+                # But having multiple commands for a shortcut is not.
+                shortcut = bunch and bunch.val
+                pane = bunch and bunch.pane
+                if shortcut not in (None,'None','none'):
+                    aList = shortcutsDict.get(shortcut,[])
+                    if aList:
+                        for commandName2,pane2 in aList:
+                            if pane == pane2:
+                                g.es_print('duplicate shortcut %s in set %s: previous command: %s' % (
+                                    shortcut,setName,commandName2),color='red')
+                        else:
+                            aList.append((commandName,pane),)
+                    else:
+                        shortcutsDict [shortcut] = [(commandName,pane),]
+
+                data = d.get(commandName)
+                if data:
+                    shortcut2,pane2 = data
+                    if shortcut == shortcut2 and pane == pane2:
+                        g.es_print('duplicate %s in set %s' % (
+                            commandName,setName),color='red')
+                else:
+                    data = shortcut,pane
+                    d[commandName] = data
+
+    setsDict[setName] = d
+</t>
+<t tx="ekr.20111017082630.16084">def checkSets():
+
+    global setNames, optionalCommandPrefixes, optionalCommandNames
+
+    # Compute the union of all the command names.
+    allNames = {}
+    for setName in setNames:
+        d = setsDict.get(setName)
+        if d:
+            for key in d.keys():
+                allNames[key] = key
+        else:
+            g.es_print('No setsDict for %s' % (repr(setName)),color='red')
+
+    k = c.keyHandler
+    keys = allNames.keys()
+    keys.sort()
+
+    # Warn about missing names.
+    for setName in ('No bindings',): # setNames:
+        d = setsDict.get(setName)
+        if not d:
+            g.es_print("'@keys No bindings' not found",color='red')
+        for key in keys:
+            if key not in ('none','None',None) and key not in d.keys():
+                # Don't warn about missing 'enter-xxx-mode' commands.
+                if (
+                    not (key.startswith('enter-') and key.endswith('-mode')) and
+                    not (key.startswith('press-') and key.endswith('-button'))
+                ):
+                    g.es_print('%s is missing %-35s = None' % (setName,repr(key)))
+
+    # Warn about undefined commands.
+    for key in keys:
+        if not c.commandsDict.get(key):
+            ok = False
+            # full-command and quick command are weird special cases.
+            if key not in ('None',None,'full-command','quick-command'):
+                # Don't warn about missing 'enter-xxx-mode' commands.
+                if key.startswith('enter-') and key.endswith('-mode'):
+                    ok = True
+                elif key.startswith('press-') and key.endswith('-button'):
+                    ok = True
+                for prefix in optionalCommandPrefixes:
+                    if key.startswith(prefix):
+                        ok = True
+                for optionalCommand in optionalCommandNames:
+                    if key == optionalCommand:
+                        ok = True
+                if not ok:
+                    g.es_print('Undefined command name: %s' % (key))
+</t>
+<t tx="ekr.20111017082630.16085">def main ():
+
+    global setNames
+    defineSetNames()
+
+    # root = u.findNodeAnywhere('Keyboard shortcuts')
+    # for p in root.self_and_subtree_iter():
+
+    g.es_print('-' * 40)
+    seen = {}
+    for p in c.allNodes_iter():
+        h = p.headString()
+        if h.startswith('@keys'):
+            h = h[5:].strip()
+            if not seen.get(h):
+                seen[h] = True
+                doSet(p,h)
+    checkSets()
+    g.es('Check Bindings done')
+</t>
+<t tx="ekr.20111017082630.16086"></t>
+<t tx="ekr.20111017083715.16023">def run(p):
+    
+    '''Split p.b into nodes for each *top-level* def.'''
+    
+    lines,name = [],None
+    for s in g.splitlines(p.b):
+        if g.match_word(s,0,'def'):
+            if name:
+                child = p.insertAsLastChild()
+                child.h = name
+                child.b = ''.join(lines)
+            lines = [s]
+            i = g.skip_ws(s,3)
+            j = g.skip_id(s,i,'_')
+            name = s[i:j]
+        else:
+            lines.append(s)
+            
+    if lines and name:
+        child = p.insertAsLastChild()
+        child.h = name
+        child.b = ''.join(lines)
+        
+    c.redraw()
+
+run(p)</t>
+<t tx="ekr.20111017085134.16213">@
+Ever have a clone that is difficult to understand outside the context of its
+original parent? Here's some code to help. It displays the headline of the
+current node plus the headlines of all the parents of all the clones of the
+current node. Selecting a displayed parent headline moves the current node to
+the corresponding clone in the outline.
+
+The idea is to be able to quickly see the context of all the clones of the
+current node and to be able to easily navigate from one clone instance to the
+next.
+@c
+
+@others
+c.cn = cloneNavigator(c)
+c.cn.displayClones(c)
+</t>
+<t tx="ekr.20111017085134.16214">class cloneNavigator:
+    '''
+       Displays the headline of the current node plus the headlines of
+       all the parents of all the clones of the current node.  Selecting
+       a displayed parent headline moves the current node to the
+       corresponding clone in the outline.
+
+       The idea is to be able to quickly see the context of all the clones
+       of the current node and to be able to easily navigate from one clone
+       instance to the next.
+    '''
+    @others
+</t>
+<t tx="ekr.20111017085134.16215">def __init__ (self,c):
+    self.c = c
+    import Tkinter as Tk
+    if 0:
+        f = Tk.Toplevel()
+    else:
+        log = c.frame.log
+        log.selectTab('Clones')
+        f = log.tabFrame
+        for w in f.winfo_children():
+            w.destroy()
+
+    # Create and pack empty label and listbox
+    self.title = Tk.Label(f)
+    self.title.pack(anchor="nw")
+    self.lb = Tk.Listbox(f)
+    self.lb.pack(expand=1,fill="both")
+</t>
+<t tx="ekr.20111017085134.16216">def getAllClones(self,p):
+    c = self.c
+    def clonesOf(p,p1=p):
+        return p.v.t == p1.v.t
+    return filter(clonesOf, c.allNodes_iter(copy=True))</t>
+<t tx="ekr.20111017085134.16217">def displayClones(self,c):
+    '''Displays the parent headline for all the clones of the current position'''
+    cp = c.p
+
+    # "Title" is the headline of the current node
+    self.title.configure(text=cp.h)
+
+    # Initialize listbox and clone list
+    clones = self.getAllClones(cp)
+    self.lb.delete(0,self.lb.size()-1)
+
+    &lt;&lt;Fill listbox with clone parent headlines&gt;&gt;    
+    &lt;&lt;Goto selected position when listbox selection changes&gt;&gt;
+</t>
+<t tx="ekr.20111017085134.16218"># Add the headlines of all the clone parents to the listbox
+for p in clones:
+    if p.parent():
+        text = p.parent().h
+    else:
+        text = "&lt;root&gt;"
+    self.lb.insert(self.lb.size(),text)
+
+    # Initial listbox selection corresponds to current position
+    if p.v == cp.v:
+        self.lb.selection_set(self.lb.size()-1)
+</t>
+<t tx="ekr.20111017085134.16219"># Callback for when a listbox entry is selected            
+def gotoSelectedPosition(event,lb=self.lb,c=c,positions=clones):
+    idx = int(lb.curselection()[0])
+    p = positions[idx]
+    c.frame.tree.expandAllAncestors(p)
+    c.selectPosition(p)
+    return
+self.lb.bind(g.angleBrackets("ListboxSelect"), gotoSelectedPosition)</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

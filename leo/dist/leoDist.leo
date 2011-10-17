@@ -12,7 +12,6 @@
 <vnodes>
 <v t="ekr.20050315084904"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
-<v t="ekr.20050315084922"><vh>@@button Spell</vh></v>
 </v>
 <v t="EKR.20040519091259"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
@@ -320,7 +319,6 @@ now for about 2 -- 3 months. It has totally changed not only the way that I
 program, but also the way that I store and organise all of the information that
 I need for the job that I do. -- Ian Mulvany</t>
 <t tx="ekr.20050315084904"></t>
-<t tx="ekr.20050315084922">c.spellCommands.openSpellTab()</t>
 <t tx="ekr.20060213160806">"Thanks for a wonderful program – everybody should be using it! It blows the
 socks off that Java Mind mapping software that won project of the month a while
 back on sourceforge!" -- Derick van Niekerk.
