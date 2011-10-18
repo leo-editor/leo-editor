@@ -236,6 +236,7 @@ class PluginCatalog(object):
         return big_doc
         
     #@+node:ekr.20111018061632.15905: *3* make_parser
+    @staticmethod
     def make_parser():
         """Return an optparse.OptionParser"""
 
@@ -262,6 +263,7 @@ class PluginCatalog(object):
         return parser
     #@+node:ekr.20111018061632.15909: *3* run
     def run(self):
+
         """run with the supplied options, see make_parser()"""
 
         opt = self.opt  
@@ -289,7 +291,9 @@ class PluginCatalog(object):
     #@-others
 #@+node:ekr.20111018061632.15912: ** main
 def main():
+    
     """create and run a PluginCatalog"""
+    
     opts, args = PluginCatalog.make_parser().parse_args()
 
     if args and not opts.output:
