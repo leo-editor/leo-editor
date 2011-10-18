@@ -555,7 +555,7 @@
 <v t="ekr.20111016210000.16012"><vh>myFindReference</vh></v>
 </v>
 <v t="ekr.20111016210000.16001"><vh>Editing body text</vh>
-<v t="ekr.20111016210000.16002"><vh>@command align-to-col (modify as needed)</vh></v>
+<v t="ekr.20111016210000.16002"><vh>@command align-to-col {modify as needed}</vh></v>
 <v t="ekr.20111016210000.16003"><vh>@command c-to-python-clean-docs</vh>
 <v t="ekr.20111016210000.16004"><vh>clean_doc</vh></v>
 </v>

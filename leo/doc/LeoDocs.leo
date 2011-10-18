@@ -20,7 +20,8 @@
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
-<v t="ekr.20101112045055.5064"><vh>@edit plugin_catalog.py</vh></v>
+<v t="ekr.20101112045055.5064"
+expanded="ekr.20111018061632.15913,"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20100808060203.4273"><vh>@file html/front.html</vh></v>
 <v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
 <v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
@@ -181,6 +182,8 @@
 <v t="ekr.20110616100929.14794"><vh>New in 4.9 rc1</vh></v>
 <v t="ekr.20110620083705.14902"><vh>New in 4.9 final</vh></v>
 </v>
+<v t="ekr.20101112045055.5064"
+expanded="ekr.20111018061632.15913,"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>

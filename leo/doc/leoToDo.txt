@@ -5,18 +5,479 @@
 .. @+all
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 I am willing to fix bugs, but I would like to declare a moratorium on feature additions until 2012.
+.. @+node:ekr.20111017132257.15881: *3* Action items
+# To do: Present until Oct 10.
+# Did Oct 11 and later.
+.. @+node:ekr.20111017102409.15875: *4* Create print-buttons command
+@nocolor-node
+
+- Create print-buttons command, showing source of all @command and @button nodes.
+.. @+node:ekr.20111017102409.15876: *4* Document new organization for @command and @button nodes
+@language rest
+
+Recent revs to to the trunk complete, with perhaps one or two small
+additions to come, a grand redesign of all of Leo's @command/@button
+nodes:
+
+- Significant @command nodes now appear in:
+
+   leoSettings.leo#@settings-->Common @command nodes
+   -->@commands-->@ignore
+
+That is, they are define in as common global @command nodes, but they
+are ignored.  Move them to myLeoSettings.leo as needed.
+
+- @buttons appear only local to specific files.  See leoSettings.leo
+for check buttons and LeoDocs.leo for various preview buttons.
+
+In other words, the new org uses @command for global scripts and
+@button for local scripts.  This makes sense for two reasons.  First,
+we can't use @button for global scripts because that would overwhelm
+the icon area.  Second, using @button for local scripts draws
+attention to scripts that only make sense in a local context.  It's
+very effect.
+
+Edward
+
+P.S. Except for the relatively minor tweaks, Leo already had
+everything needed to support this scheme.  In particular, Leo already
+supported the distinction between local and global @command and
+@button nodes.
+
+P.P.S. Earlier today I correct an oversight:  Leo now properly
+supports @ignore nodes in @commands and @buttons nodes.  This is very
+useful: no need for @@button or @@command.
+.. @+node:ekr.20111017132257.15892: *4* Add short intro to scripting
+@language rest
+
+http://mail.google.com/mail/#inbox/1330f306b947656c
+
+> Maybe I'm missing something here, probably because I've always
+> dismissed scripting because I don't have the foggiest notion of how to
+> write one.
+
+As you have just discovered, Leo does have scripting docs.
+
+However, let me say a few words about scripting in *this* context.
+
+What makes Leo scripting so important is that the predefined c, g and
+p variables give *full* and *easy* access to all the data in your
+outlines, as well as hundreds, if not thousands, of useful Python
+functions in Leo's core.
+
+You could say that these variables, especially c, define a *very*
+easy-to-use DOM (Document Object Model) through which you can get o
+set any data in *your** outlines.
+
+The hello world example is::
+
+   for p in c.all_positions():
+       indent = '.' * p.level()
+       print('%s%s' % (indent,p.h))
+
+Here, c.all_positions() delivers a list of positions, and p.level()
+and p.h deliver the indentation level and head string of position p.
+
+Another crucial part of Leo scripting is that you can put Leo script
+*anywhere* in a Leo outline.  You can do this in three ways:
+
+1. You can just put the script above in the body of any node and run
+it with Ctrl-B (execute-script).
+
+2. You can make a script button by putting the script in an @button node.
+
+3. You can make a new Leo command by putting the script in an @command node.
+
+.. @+node:ekr.20111017132257.15891: *4* Get IPython working again!
+.. @+node:ekr.20111017124557.15879: *4* Easier scripting
+# aList = [z for z in dir(c) if 'hild' in z]
+# aList.sort()
+# for z in aList:
+    # print(z)
+
+c.insertHeadline(event=None, op_name='Insert Node', as_child=False)
+
+x = g.BasicLeoScript()
+
+x.insert()
+x.delete()
+x.node()
+n.h, n.d
+
+.. @+node:ekr.20111017132257.15885: *4* Add refresh colorizing automatically when @language edited
+.. @+node:ekr.20111017132257.15882: *4* 30 Sep: play with import_xml plugin
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b5c2982778a2df53
+
+Provides commands (Alt-x) for importing and exporting XML from a Leo
+outline. These commands are to XML what ``@auto-rst`` is to
+reStructuredText.
+
+``xml2leo`` imports an .xml file into the node following the currently
+selected node.  ``leo2xml`` exports the current subtree to an .xml file
+the user selects.
+
+``xml_validate``, if executed on the top node in the
+Leo xml tree, reports any errors in XML generation or DTD validation,
+based on the DTD referenced from the XML itself.  If there's no DTD
+it reports that as an error.
+
+``leo2xml2leo`` takes the selected Leo subtree representing an XML file,
+converts it to XML internally, and then creates a new Leo subtree from
+that XML after the original, with 'NEW ' at the start of the top node's
+name.  This updates all the headlines, so that the convenience only
+previews (see below) are updated.  The original can be deleted if the
+new subtree seems correct.
+
+Conventions
+===========
+
+This is a valid XML file::
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE dml SYSTEM "dml.dtd">
+    <?xml-stylesheet href="common.css"?>
+    <dml xmlns='http://example.com/' xmlns:other='http://other.com/'/>
+      <block type='example'>Here's <other:b>some</other:b> text</block>
+    </dml>
+    <!-- This is the last line -->
+
+Note the processing instruction (xml-stylesheet), the DTD (DOCTYPE),
+the trailing comment (after the closing tag), and the pernicious
+mixed content (three separate pieces of text in the ``<block/>`` element).
+These commands attempt to deal with all of this.
+
+ - A top level Leo node is created to hold these top level parts.  Its
+   headline is the basename of the file.
+ - The xml declaration is placed in the body of
+   this top level Leo node
+ - Below that, in the same body text, appears a simple namespace map::
+
+     http://example.com/
+     other: http://other.com/
+     ...
+
+   i.e. the default namespace first, and then any prefixed name spaces.
+ - Below that, in the same body text, appears the ``DOCTYPE`` declaration
+ - Children are added to this top level Leo node to represent the
+   top level elements in the xml file.  Headlines have the following
+   meanings:
+
+       - ``? pi-target some="other" __CHK`` - i.e. questionmark,
+         space, name of processing instruction target, start of processing
+         instruction content.  Only the questionmark, which indicates
+         the processing instruction, and the first word, which indicates
+         the processing instruction target, matter.  The remainder is just
+         a convenience preview of the processing instruction content, which
+         is the Leo node's body text.
+
+       - ``# This is *really* imp`` - i.e. hash,
+         space, start of comment content.  Only the hash, which indicates
+         the comment, matters.  The remainder is just
+         a convenience preview of the comment content, which
+         is the Leo node's body text.
+
+       - ``tagname name_attribute start of element text`` - i.e. the name
+         of an element followed by a convenience preview of the element's
+         text content.  If the element has a ``name`` attribute that's
+         included at the start of the text preview.  Only the first word
+         matters, it's the name of the element.
+
+ - Element's text is placed in the Leo node's body.  If the element has
+   tailing text (the ``" text"`` tailing the ``<other:b/>`` element
+   in the above example), that occurs in the Leo node's body separated
+   by the `tailing text sentinel`::
+
+       @________________________________TAIL_TEXT_______________________________
+
+ - Element's attributes are stored in a dict ``p.v.u['_XML']['_edit']``
+   on the Leo node. ``'_XML'`` is the uA prefix for these commands, and
+   ``'_edit'`` is used by the ``attrib_edit`` plugin to identify
+   attributes it should present to the user for editing. The
+   ``attrib_edit`` plugin **should be enabled** and its ``v.u mode``
+   activated (through its submenu on the Plugins menu). The attribute
+   edit panel initially appears as a tab in the log pane, although it
+   can be moved around by right clicking on the pane dividers if the
+   ``viewrendered`` and ``free_layout`` plugins are enabled. 
+.. @+node:ekr.20111017132257.15883: *4* 30 Sep: Possible to use IPython completion?
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/014fe61ff9480b2b
+
+I don't know if this is relevant or not, but the IPython autocompletion
+capability is awesome.
+
+If I'm investigating code I tend to do the following.
+
+list the modules in a package:
+In [1]: from fs import <tab>
+
+this lists the modules, in a package so I pick one
+In [1]: from fs import osfs
+<the osfs entry is tab-completable>
+
+now I can check the usage of fs.osfs
+In [2]: osfs? <enter>
+
+or the source:
+In [2]: osfs?? <enter>
+
+or the contents of the module
+In [2]: osfs. <tab>
+
+I can instantiate a class:
+In [3]: myfs = osfs.OSFS('/')
+
+and examine the ivars and methods:
+In [4]: myfs. <tab>
+
+It is such an efficient way to learn and remember the details of code.
+
+I know a bunch of work was done on Leo/IPython integration, don't
+know the current status, my wish of synchronized IPython and Leo
+may well be one of the many granted wishes I have forgotten about.
+
+I certainly think IPython autocompletion is the gold standard. 
+.. @+node:ekr.20111017132257.15884: *4* 2 Oct: Terry added bookmark scripts
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b17d140b7ceb8fc9
+
+I've added web page bookmarking from your browser to Leo.
+
+Docs., appended to the mod_http plugin, where this functionality lives,
+are pasted below.
+
+Screen shot of the form which pops up when you click the Bookmark
+button in your browser attached.  The body text of the corresponding
+bookmark node created in Leo is:
+
+    Leo's Home Page
+        http://webpages.charter.net/edreamleo/front.html
+
+        Tags: leo, python
+
+        Leo's Home Page
+
+        Collected: Sun 02 Oct 2011 02:52:51 PM CDT
+
+        Keep this under your pillow.
+
+If you had some text selected on the page in your browser that would
+also appear in the above, and repeatedly bookmarking the same page with
+different selections incrementally adds such quotes to the bookmark
+node.
+
+Here are the docs.:
+
+Can also be used for bookmarking directly from the browser to Leo.  To
+do this, add a bookmark to the browser with the following URL / Location:
+
+    javascript:w=window;if(w.content){w=w.content}; d=w.document; w.open('http://localhost:8130/_/add/bkmk/?&name=' + escape(d.title) + '&selection=' + escape(window.getSelection()) + '&url=' + escape(w.location.href),%22_blank%22,%22toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, copyhistory=no, width=800, height=300, status=no%22);void(0)
+
+and edit the port (8130 in the example above) to match the port you're using
+for mod_http.
+
+Bookmarks are created as the first node in the outline which has been opened longest.
+You can set the ``@string`` ``http_bookmark_unl`` to specify an alternative location,
+e.g.::
+
+    @string http_bookmark_unl = /home/tbrown/.bookmarks.leo#@bookmarks-->Incoming
+
+to place them in the `Incoming` node in the `@bookmarks` node in the `.bookmarks.leo` outline.
+
+The headline is preceeded with '@url ' *unless* the ``bookmarks`` plugin is loaded.
+If the ``bookmarks`` plugin is loaded the bookmark will have to be moved to a ``@bookmarks`` tree to be useful.
+
+The browser may or may not be able to close the bookmark form window for you, depending on settings - set ``dom.allow_scripts_to_close_windows`` to true
+in ``about:config`` in Firefox. 
+.. @+node:ekr.20111017132257.15886: *4* 2 Oct: Tip: How to restore focus without the mouse
+@language rest
+
+It sometimes happens that the focus gets left in a Leo in a widget
+that doesn't support Leo's key bindings.  You would think that you
+would have to use the mouse to click in, say, the body pane so that
+you can use Leo's key bindings again.
+
+But you don't have to do that.  Instead, use Alt-tab once to change
+away from Leo, and then use Alt-tab again to change back to Leo.  When
+you do this, Leo puts focus in the body pane and you are all set. This
+will work either on Windows or Ubuntu.  A similar trick works on
+MacOS.
+
+Edward
+
+P.S. One of the requirements of the recent bug fix was that doing Alt-
+tab twice would put the focus in the body pane.  If you think that was
+easy, you are sadly mistaken :-) 
+.. @+node:ekr.20111017132257.15888: *4* 3 Oct: Is there a script to diff 2 Leo files & create a tree?
+.. @+node:ekr.20111017132257.15889: *4* 4 Oct: Document clone/move/delete-marked commands
+http://groups.google.com/group/leo-editor/browse_thread/thread/4686ebad81bb1ea1
+.. @+node:ekr.20111017132257.15890: *4* 7 Oct: Investigate how IPython hijacks event loops
+http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
 .. @+node:ekr.20111013065147.9418: *3* Urgent/First
 .. @+node:ekr.20111016204209.9432: *4* Posts: immediately
 @language rest
 
-- Distinction: Links: identity/content based.
-    - Content can include headline, body text, uA's, docstrings, etc.
-    
-- Distinction: Kaizen & ratchets.
-    - Just prevent back sliding.
-    
+
 - Context switching is hard:
     - Fix editor/chapters bugs.
+.. @+node:ekr.20111015194452.15682: *5* Improved quicksearch plugin
+@nocolor-node
+
+- Selecting any node using arrow keys shows the node in the outline immediately.
+
+- Clicking a node or hitting <return> puts focus in body pane.
+
+- Still to do: support Ctrl-G in Nav Tab.
+.. @+node:ekr.20111015173019.15681: *5* Document @mark-for-unit-test trees!
+@language rest
+
+
+I would prefer if it would be possible to launch tests externally without loading plug-ins.
+
+As I see in Code-->Testing-->@file leoTest.py-->runUnitTestLeoFile
+and in Code-->Testing-->@file leoTest.py-->class runTestExternallyHelperClass-->runTests
+
+there is an option to set gui for testing (g.app.unitTestGui) and default is 'nullGui'.
+
+Maybe there could be an option to disable loading of plug-ins also ?
+
+For the tests that I mostly write and run, loading plug-ins is just wasting time.
+Vitalije.
+
+===========================
+
+> I am not sure what happens at present, and I'm not sure whether any settings apply to these commands.
+
+Good news (mostly): you can set up dynamic unit tests exactly the way you want.
+
+I was going to point you at the documentation but (how can this
+possibly be?) the documentation doesn't exist!  I really could have
+sworn that everyone knew about what I am about to tell you ;-)  To
+quote Alan Greenspan, "I'm shocked.  Shocked."
+
+So here goes...
+
+Let p be the presently selected node when you hit Alt-5
+(run-unit-tests).  Leo, that is, the code in
+runTestExternallyHelperClass, creates dynamicUnitTest.leo by
+assembling all of the following nodes from p's descendants.
+
+- All @test nodes,
+- All @suite nodes, and, **most importantly**,
+- All children of all @mark-for-unit-tests nodes.
+
+You can use @mark-for-unit-test nodes to include any "supporting data"
+you want, including, say, "@common test code" to be imported as
+follows::
+
+    exec(g.findTestScript(c,'@common test code'))
+
+Hmm.  I doubt this is really written up properly, although I know for
+sure at the time I did write it up on leo-editor.  It's a very cool
+pattern.
+
+Now here is the new trick.  It *should* work, but actually does *not*
+work yet.  Boo hoo. Are you ready?
+
+- @mark-for-unit-tests
+  - @settings
+    - @enabled-plugins
+
+Alas, this doesn't work because the test code runs dynamicUnitTest.py,
+which runs dynamicUnitTest.leo **using the leoBridge module**.  And,
+as I have just verified, the leoBridge module doesn't load *any*
+plugins.  Nor does it init any other settings.
+
+So, no matter *what* @enabled-plugins contains, your code will start
+off with no plugins at all.  Thus, the following unit test will always
+pass when run with Alt-5::
+
+    @test loaded-plugins
+
+    pc = g.app.pluginsController
+    aList = pc.getLoadedPlugins()
+    assert not aList,aList
+
+However, your tests *can* load plugins if they like, provided they
+don't through an exception when loaded with nullGui.  For example, the
+following test passes::
+
+    @test load backlink plugin
+
+    pc = g.app.pluginsController
+    pc.loadOnePlugin('backlink.py')
+    aList = pc.getLoadedPlugins()
+    assert 'leo.plugins.backlink' in aList
+
+A similar trick could probably be used to set c.config settings from
+the @settings tree, but at present your code would have to do all the
+work itself: the leoBridge module does **not** initialize settings.
+That is, c.config.getBool(x) returns None for all (strings) x.
+
+I hope this gives you a sense of what is going on.  For full details,
+consult leoTest.py.
+
+It has been fun tracking this down.  I'll fix the documentation immediately. 
+.. @+node:ekr.20111016072542.15702: *5* FAQ entry: @commands Aha
+@language rest
+
+The prefix "DingDing" signifies that this post is an answer to the
+lament:
+
+    "Wouldn't it be great if we all could remember what we,
+    and others, have already done :-)"
+
+Last night I had a forehead-slapping moment: the place to put @button
+nodes is in myLeoSettings.leo.
+
+This morning, I realized that using @command rather than @button
+completes the Aha.
+
+This organization has all benefits, and no drawbacks:
+
+- I always know here scripts are.
+
+- No need for duplicates.
+
+- I can organize the scripts within myLeoSettings.leo as usual using
+organizer nodes.  This organization can change as needed.
+
+- Using @command rather than @button means that I never have to
+disable scripts.  No more @@button.
+
+- Using @command saves screen real estate.  In my experience, having
+buttons be visible doesn't prevent them from being hidden in full
+view.
+
+- If I use common prefixes, like c_ (for command) or edit_ (for edit-
+related scripts) or ekr_ (for personal scripts), the *typing
+completion* will let me zero in on the script I want to use:
+
+    <alt-x> c_<tab>
+    <alt-x> c_import<tab>
+
+etc.  Furthermore, Ctrl-P (repeat-complex-command) will allow me to
+rerun the last script run.  This is a quite common case.
+
+Summary
+=======
+
+This Aha substitutes an *already-existing* usage (typing completion)
+for a whole set of memory-intensive retrieval problems.  I'm not
+likely ever to forget typing completion, although I might forget the
+specif prefixes used in @command nodes.  If that happens, I'll know
+where to look.
+
+This Aha takes full advantage of Leo's organization strengths and
+*concentrates* those strengths by putting all the to-be-organized
+material in one place.  This allows for easy reorganization:  changing
+command-name prefixes, for instance, would be straightforward.
+
+This is another example of the assertion that Leo already has most of
+what is required to handle any task. 
 .. @+node:ekr.20110929165422.15449: *4* Test noweb expansions in rst3 command
 @nocolor-node
 
@@ -1633,133 +2094,8 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
-.. @+node:ekr.20111016204209.9430: *4* Docs & posts
-.. @+node:ekr.20111015194452.15682: *5* Improved quicksearch plugin
-@nocolor-node
-
-- Selecting any node using arrow keys shows the node in the outline immediately.
-
-- Clicking a node or hitting <return> puts focus in body pane.
-
-- Still to do: support Ctrl-G in Nav Tab.
-.. @+node:ekr.20111015173019.15681: *5* Document @mark-for-unit-test trees!
-@language rest
-
-
-I would prefer if it would be possible to launch tests externally without loading plug-ins.
-
-As I see in Code-->Testing-->@file leoTest.py-->runUnitTestLeoFile
-and in Code-->Testing-->@file leoTest.py-->class runTestExternallyHelperClass-->runTests
-
-there is an option to set gui for testing (g.app.unitTestGui) and default is 'nullGui'.
-
-Maybe there could be an option to disable loading of plug-ins also ?
-
-For the tests that I mostly write and run, loading plug-ins is just wasting time.
-Vitalije.
-
-===========================
-
-> I am not sure what happens at present, and I'm not sure whether any settings apply to these commands.
-
-Good news (mostly): you can set up dynamic unit tests exactly the way you want.
-
-I was going to point you at the documentation but (how can this
-possibly be?) the documentation doesn't exist!  I really could have
-sworn that everyone knew about what I am about to tell you ;-)  To
-quote Alan Greenspan, "I'm shocked.  Shocked."
-
-So here goes...
-
-Let p be the presently selected node when you hit Alt-5
-(run-unit-tests).  Leo, that is, the code in
-runTestExternallyHelperClass, creates dynamicUnitTest.leo by
-assembling all of the following nodes from p's descendants.
-
-- All @test nodes,
-- All @suite nodes, and, **most importantly**,
-- All children of all @mark-for-unit-tests nodes.
-
-You can use @mark-for-unit-test nodes to include any "supporting data"
-you want, including, say, "@common test code" to be imported as
-follows::
-
-    exec(g.findTestScript(c,'@common test code'))
-
-Hmm.  I doubt this is really written up properly, although I know for
-sure at the time I did write it up on leo-editor.  It's a very cool
-pattern.
-
-Now here is the new trick.  It *should* work, but actually does *not*
-work yet.  Boo hoo. Are you ready?
-
-- @mark-for-unit-tests
-  - @settings
-    - @enabled-plugins
-
-Alas, this doesn't work because the test code runs dynamicUnitTest.py,
-which runs dynamicUnitTest.leo **using the leoBridge module**.  And,
-as I have just verified, the leoBridge module doesn't load *any*
-plugins.  Nor does it init any other settings.
-
-So, no matter *what* @enabled-plugins contains, your code will start
-off with no plugins at all.  Thus, the following unit test will always
-pass when run with Alt-5::
-
-    @test loaded-plugins
-
-    pc = g.app.pluginsController
-    aList = pc.getLoadedPlugins()
-    assert not aList,aList
-
-However, your tests *can* load plugins if they like, provided they
-don't through an exception when loaded with nullGui.  For example, the
-following test passes::
-
-    @test load backlink plugin
-
-    pc = g.app.pluginsController
-    pc.loadOnePlugin('backlink.py')
-    aList = pc.getLoadedPlugins()
-    assert 'leo.plugins.backlink' in aList
-
-A similar trick could probably be used to set c.config settings from
-the @settings tree, but at present your code would have to do all the
-work itself: the leoBridge module does **not** initialize settings.
-That is, c.config.getBool(x) returns None for all (strings) x.
-
-I hope this gives you a sense of what is going on.  For full details,
-consult leoTest.py.
-
-It has been fun tracking this down.  I'll fix the documentation immediately. 
-.. @+node:ekr.20111016072542.15775: *5* ** Data mining
-@nocolor-node
-
-- The proper place for data is in docstrings.
-
-- Connect docs with docstrings.
-
-** Use link nodes to link docstrings with documentation.
-    
-    - create-link-node
-    - copy-link-node
-    - perhaps various kinds of link nodes:
-        A: .leo file + gnx.
-        B: url
-.. @+node:ekr.20111016072542.15703: *6* New work flow: put posts into docs
-@language rest
-
-- Grab commit logs.
-- Link to docs.
 .. @+node:ekr.20111015150822.9347: *4* Features
 .. @+node:ekr.20111012061216.15698: *5* * Complete expand/contract commands
-.. @+node:ekr.20111015150822.9353: *5* Improve mod_scriping:  Allow @button[tag]
-.. @+node:ekr.20111015150822.9354: *5* Improve quicksearch plugin
-@nocolor-node
-
-- Allow global searches.
-- Add bindings.
-- Integrate with Leo's Find Tab?
 .. @+node:ekr.20111014134653.15672: *5* Search across multiple Leo files
 http://groups.google.com/group/leo-editor/browse_thread/thread/cf5ab54f29a6c128
 .. @+node:ekr.20111015150822.9351: *5* Improve bookmarks
@@ -1889,6 +2225,12 @@ try:
 except:
     g.es("exception opening",url)
     g.es_exception()
+.. @+node:ekr.20111015150822.9354: *5* Improve quicksearch plugin
+@nocolor-node
+
+- Allow global searches.
+- Add bindings.
+- Integrate with Leo's Find Tab?
 .. @+node:ekr.20111015150822.9349: *4* Bugs
 .. @+node:ekr.20111014074810.15655: *5* **What about LeoDocs(hard-crash).leo is causing the crash?
 .. @+node:ekr.20111015150822.9352: *5* Bind Ctrl-A to select All
@@ -3519,6 +3861,8 @@ suited (and probably faster to build).
 .. @+node:ekr.20111013065147.9426: *3* Important/Next
 .. @+node:ekr.20111010122531.15569: *4* print-bindings/commands/settings create nodes
 @language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/d302b2715b3ace96
 
 A reminder, the opposite of "light" is "heavy", not "dark" :-)
 
