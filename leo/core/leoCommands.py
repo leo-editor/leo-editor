@@ -7375,10 +7375,13 @@ class Commands (object):
         return v and v.hasChildren()
     #@+node:ekr.20031218072017.2976: *4* canRevert
     def canRevert (self):
+        
+        # 2011/10/18: Allow revert, regardless of change status.
+        return True
 
         # c.mFileName will be "untitled" for unsaved files.
-        c = self
-        return (c.frame and c.mFileName and c.isChanged())
+        # c = self
+        # return (c.frame and c.mFileName and c.isChanged())
     #@+node:ekr.20031218072017.2977: *4* canSelect....
     def canSelectThreadBack (self):
         c = self ; p = c.p
