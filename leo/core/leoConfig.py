@@ -163,7 +163,10 @@ class parserBaseClass:
         aList = [] ; c = self.c ; tag = '@button'
 
         after = p.nodeAfterTree()
-        while p and p != after:
+        # while p and p != after:
+        for p in p.unique_subtree():
+            if p == after:
+                break
             if p.isAtIgnoreNode():
                 p.moveToNodeAfterTree()
             else:
