@@ -9571,8 +9571,27 @@ for i in range(3):
 
 if 0: # Not usually enabled.
     g.es_trace('\ntest of es_trace: Ă',color='red')
-#@+node:ekr.20101021210253.6019: *4* g.Directives & directories
-#@+node:ekr.20071113090055.5: *5* @test g.get_directives_dict
+#@+node:ekr.20111018163546.3690: *4* @test g.getDocString
+s1 = 'no docstring'
+s2 = '''
+# comment
+"""docstring2."""
+'''
+s3 = '''
+"""docstring3."""
+\'\'\'docstring2.\'\'\'
+'''
+
+table = (
+    (s1,''),
+    (s2,'docstring2.'),
+    (s3,'docstring3.'),
+)
+
+for s,result in table:
+    s2 = g.getDocString(s)
+    assert s2 == result,'Expected %s, got %s' % (repr(result),repr(s2))
+#@+node:ekr.20071113090055.5: *4* @test g.get_directives_dict
 # This will work regardless of where this method is.
 @language python
 @tabwidth -4
@@ -9585,7 +9604,7 @@ assert d.get('language') == 'python'
 assert d.get('tabwidth') == -4
 # assert d.get('path').endswith('xyzzy')
 assert d.get('pagewidth') == 120
-#@+node:ekr.20100131180007.5434: *5* @test g.get_directives_dict 2
+#@+node:ekr.20100131180007.5434: *4* @test g.get_directives_dict 2
 @language python
 @comment a b c
     # @comment must follow @language.
@@ -9606,7 +9625,6 @@ assert d.get('encoding') == 'utf-8'
 assert d.get('comment') == 'a b c'
 assert not d.get('path'),d.get('path')
 # assert d.get('path').endswith('xyzzy')
-#@+node:ekr.20101021205258.6010: *5* @test g.makeAllNonExistentDirectories
 #@+node:ekr.20061104172236.18: *4* @test g.getLine
 s = 'a\ncd\n\ne'
 
@@ -9630,6 +9648,7 @@ assert s[i:j] == 'xy_z5','got %s' % s[i:j]
 #@+node:ekr.20110612064437.3310: *4* @test g.guessExternalEditor
 val = g.guessExternalEditor(c)
 assert val,'no val' # This can be different on different platforms.
+#@+node:ekr.20101021205258.6010: *4* @test g.makeAllNonExistentDirectories
 #@+node:ekr.20100131180007.5417: *4* @test g.openLeoOrZipFile
 import zipfile
 
