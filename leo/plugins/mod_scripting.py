@@ -632,7 +632,7 @@ class scriptingController:
         class atButtonCallback(object):
             def __init__(self,controller,p,b,c,buttonText):
                 self.controller = controller
-                self.p = p
+                self.p = p.copy()
                 self.b = b
                 self.c = c
                 self.buttonText = buttonText
@@ -640,6 +640,10 @@ class scriptingController:
             def __call__(self, event=None):
                 self.controller.executeScriptFromButton(self.p,self.b,self.buttonText)
                 if self.c.exists: self.c.outerUpdate()
+                
+            # 2011/10/17: Add support for docstrings.
+            def docstring(self):
+                return g.getDocString(self.p.b)
 
         cb = atButtonCallback(controller=self,p=p.copy(),b=b,c=c,buttonText=buttonText)
         self.iconBar.setCommandForButton(b,cb)
