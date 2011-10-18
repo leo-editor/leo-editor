@@ -5119,6 +5119,30 @@ def computeWindowTitle (fileName):
         else:
             title = fn
         return title
+#@+node:ekr.20111017204736.15898: *3* g.getDocString
+def getDocString(s):
+    
+    '''Return the text of the first docstring found in s.'''
+
+    tags = ('"""',"'''")
+    tag1,tag2 = tags
+    i1,i2 = s.find(tag1),s.find(tag2)
+
+    if i1 == -1 and i2 == -1:
+        return ''
+    if i1 > -1 and i2 > -1:
+        i = min(i1,i2)
+    else:
+        i = max(i1,i2)
+    tag = s[i:i+3]
+    assert tag in tags
+
+    j = s.find(tag,i+3)
+    if j > -1:
+        return s[i+3:j]
+    else:
+        return ''
+
 #@+node:ekr.20090516135452.5777: *3* g.ensureLeading/TrailingNewlines
 def ensureLeadingNewlines (s,n):
 

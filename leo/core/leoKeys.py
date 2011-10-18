@@ -2381,66 +2381,7 @@ class keyHandlerClass:
         k.setInputState(state)
         k.showStateAndMode()
     #@+node:ekr.20061031131434.125: *3* k.Externally visible helpers
-    #@+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName (changed)
-    def manufactureKeyPressForCommandName (self,w,commandName):
-
-        '''Implement a command by passing a keypress to the gui.'''
-
-        k = self ; c = k.c
-
-        setting = k.getShortcutForCommandName(commandName)
-        stroke = k.shortcutFromSetting(setting) # 2011/06/13
-
-        # g.trace('stroke',repr(stroke),'commandName',commandName,'w',w,g.callers())
-
-        if stroke and w:
-            # g.trace(stroke)
-            g.app.gui.set_focus(c,w)
-            g.app.gui.event_generate(c,None,stroke,w)
-        else:
-            message = 'no shortcut for %s' % (commandName)
-            if g.app.unitTesting:
-                raise AttributeError(message)
-            else:
-                g.trace(message,color='red')
-    #@+node:ekr.20061031131434.127: *4* simulateCommand
-    def simulateCommand (self,commandName):
-
-        k = self ; c = k.c
-
-        commandName = commandName.strip()
-        if not commandName: return
-
-        aList = commandName.split(None)
-        if len(aList) == 1:
-            k.givenArgs = []
-        else:
-            commandName = aList[0]
-            k.givenArgs = aList[1:]
-
-        # g.trace(commandName,k.givenArgs)
-        func = c.commandsDict.get(commandName)
-
-        if func:
-            # g.trace(commandName,func.__name__)
-            stroke = None
-            if commandName.startswith('specialCallback'):
-                event = None # A legacy function.
-            else: # Create a dummy event as a signal.
-                event = g.app.gui.create_key_event(c,None,None,None)
-                
-            k.masterCommand(event,func,stroke,commandName=None)
-            if c.exists:
-                return k.funcReturn
-            else:
-                return None
-        else:
-            if g.app.unitTesting:
-                raise AttributeError
-            else:
-                g.trace('no command for %s' % (commandName),color='red')
-                return None
-    #@+node:ekr.20061031131434.128: *4* getArg
+    #@+node:ekr.20061031131434.128: *4* k.getArg
     def getArg (self,event,
         returnKind=None,returnState=None,handler=None,
         prefix=None,tabList=[],completion=True,oneCharacter=False,
@@ -2524,7 +2465,7 @@ class keyHandlerClass:
             k.updateLabel(event)
             k.mb_tabListPrefix = k.getLabel()
         return # (for Tk) 'break'
-    #@+node:ekr.20061031131434.130: *4* keyboardQuit
+    #@+node:ekr.20061031131434.130: *4* k.keyboardQuit
     def keyboardQuit (self,event=None,setFocus=True,mouseClick=False):
 
         '''This method clears the state and the minibuffer label.
@@ -2564,6 +2505,41 @@ class keyHandlerClass:
         # At present, only the auto-completer suppresses this.
         k.setDefaultInputState()
         k.showStateAndMode(setFocus=setFocus)
+    #@+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName (changed)
+    def manufactureKeyPressForCommandName (self,w,commandName):
+
+        '''Implement a command by passing a keypress to the gui.'''
+
+        k = self ; c = k.c
+
+        setting = k.getShortcutForCommandName(commandName)
+        stroke = k.shortcutFromSetting(setting) # 2011/06/13
+
+        # g.trace('stroke',repr(stroke),'commandName',commandName,'w',w,g.callers())
+
+        if stroke and w:
+            # g.trace(stroke)
+            g.app.gui.set_focus(c,w)
+            g.app.gui.event_generate(c,None,stroke,w)
+        else:
+            message = 'no shortcut for %s' % (commandName)
+            if g.app.unitTesting:
+                raise AttributeError(message)
+            else:
+                g.trace(message,color='red')
+    #@+node:ekr.20071212104050: *4* k.overrideCommand
+    def overrideCommand (self,commandName,func):
+
+        # Override entries in c.k.masterBindingsDict
+        k = self
+        d = k.masterBindingsDict
+        for key in d:
+            d2 = d.get(key)
+            for key2 in d2:
+                b = d2.get(key2)
+                if b.commandName == commandName:
+                    b.func=func
+                    d2[key2] = b
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
     def registerCommand (self,commandName,shortcut,func,
         pane='all',verbose=False, wrap=True):
@@ -2636,19 +2612,43 @@ class keyHandlerClass:
                     if d.get(key) == commandName:
                         c.commandsDict [key] = c.commandsDict.get(commandName)
                         break
-    #@+node:ekr.20071212104050: *4* k.overrideCommand
-    def overrideCommand (self,commandName,func):
+    #@+node:ekr.20061031131434.127: *4* k.simulateCommand
+    def simulateCommand (self,commandName):
 
-        # Override entries in c.k.masterBindingsDict
-        k = self
-        d = k.masterBindingsDict
-        for key in d:
-            d2 = d.get(key)
-            for key2 in d2:
-                b = d2.get(key2)
-                if b.commandName == commandName:
-                    b.func=func
-                    d2[key2] = b
+        k = self ; c = k.c
+
+        commandName = commandName.strip()
+        if not commandName: return
+
+        aList = commandName.split(None)
+        if len(aList) == 1:
+            k.givenArgs = []
+        else:
+            commandName = aList[0]
+            k.givenArgs = aList[1:]
+
+        # g.trace(commandName,k.givenArgs)
+        func = c.commandsDict.get(commandName)
+
+        if func:
+            # g.trace(commandName,func.__name__)
+            stroke = None
+            if commandName.startswith('specialCallback'):
+                event = None # A legacy function.
+            else: # Create a dummy event as a signal.
+                event = g.app.gui.create_key_event(c,None,None,None)
+                
+            k.masterCommand(event,func,stroke,commandName=None)
+            if c.exists:
+                return k.funcReturn
+            else:
+                return None
+        else:
+            if g.app.unitTesting:
+                raise AttributeError
+            else:
+                g.trace('no command for %s' % (commandName),color='red')
+                return None
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
     #@+node:ekr.20061031131434.105: *4* masterCommand & helpers
     def masterCommand (self,event,func,stroke,commandName=None):

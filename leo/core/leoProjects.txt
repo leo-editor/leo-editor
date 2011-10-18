@@ -5498,7 +5498,7 @@ def insert(self,i,s):
     # sb.setSliderPosition(pos)
 
     ### w.ensureCursorVisible() # This has no effect.
-#@+node:ekr.20061031131434.130: *6* keyboardQuit
+#@+node:ekr.20061031131434.130: *6* k.keyboardQuit
 def keyboardQuit (self,event=None,setFocus=True,mouseClick=False):
 
     '''This method clears the state and the minibuffer label.
