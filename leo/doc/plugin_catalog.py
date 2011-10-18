@@ -63,11 +63,15 @@ try:
     from docutils.transforms.parts import Contents
     from docutils.utils import SystemMessage
 except Exception:
-    print('plugin_catelog.py: can not import docutils')
+    sys.stderr.write('plugin_catelog.py: can not import docutils\n')
     ok = False
 #@-<< imports >>
 
 #@+others
+#@+node:tbrown.20111018094615.23242: ** err
+def err(s):
+    sys.stderr.write(s)
+    sys.stderr.flush()
 #@+node:ekr.20111018061632.15913: ** class PluginCatalog
 class PluginCatalog(object):
     
@@ -123,7 +127,8 @@ class PluginCatalog(object):
 
         for loc in opt.location:
 
-            path, dummy, files = os.walk(loc).next()
+            for path, dummy, files in os.walk(loc):
+                break  # only want the first answer
 
             for file_name in sorted(files, key=lambda x:x.lower()):
                 if not file_name.lower().endswith('.py'):
@@ -148,7 +153,7 @@ class PluginCatalog(object):
                     continue  # don't whine about __init__.py
 
                 if opt.show_paths:
-                    sys.stderr.write("Processing: '%s'\n" % file_path)
+                    err("Processing: '%s'\n" % file_path)
                 try:
                     doc_tree = publish_doctree(doc_string)
                 except SystemMessage:
@@ -190,6 +195,7 @@ class PluginCatalog(object):
         last_alpha = ''
 
         for doc in doc_strings:
+            
             section = nodes.section()
             big_doc += section
             section += nodes.title(text=doc[0])
@@ -224,7 +230,12 @@ class PluginCatalog(object):
                     break
 
             for element in doc[2]:
-                section += element.deepcopy()
+                try:
+                    section += element.deepcopy()
+                except TypeError:
+                    err(
+                        'Element.deepcopy() failed, dropped element for %s\n' %
+                        doc[0])
 
         if opt.include_contents:
             contents.details = {'text': 'Contents here'}
@@ -276,18 +287,18 @@ class PluginCatalog(object):
         if opt.css_file:
             settings_overrides['stylesheet_path'] = opt.css_file
 
-        open(opt.output, 'w').write(
+        open(opt.output, 'wb').write(
             publish_from_doctree(big_doc, writer_name='html',
                 settings_overrides = settings_overrides)
         )
-        sys.stderr.write("Wrote '%s'\n" % opt.output)
+        err("Wrote '%s'\n" % opt.output)
 
         if opt.xml_output:
-            open(opt.xml_output, 'w').write(
+            open(opt.xml_output, 'wb').write(
                 publish_from_doctree(big_doc, writer_name='xml',
                     settings_overrides = {'indents': True})
             )
-            sys.stderr.write("Wrote '%s'\n" % opt.xml_output)
+            err("Wrote '%s'\n" % opt.xml_output)
     #@-others
 #@+node:ekr.20111018061632.15912: ** main
 def main():
