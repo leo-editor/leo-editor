@@ -50,6 +50,7 @@ else:
     StringIO = cStringIO.StringIO
     from urlparse import urlparse
 
+import inspect
 import operator
 import re
 import shutil
@@ -5107,6 +5108,13 @@ bunch = Bunch
 # From the Python cookbook, recipe 5.23
 
 # This is now defined at the start of this file.
+#@+node:ville.20090827174345.9963: *3* g.assertui
+class UiTypeException(Exception):
+    pass
+
+def assertUi(uitype):
+    if not g.app.gui.guiName() == uitype:
+        raise UiTypeException
 #@+node:ekr.20031218072017.3103: *3* g.computeWindowTitle
 def computeWindowTitle (fileName):
 
@@ -5119,30 +5127,6 @@ def computeWindowTitle (fileName):
         else:
             title = fn
         return title
-#@+node:ekr.20111017204736.15898: *3* g.getDocString
-def getDocString(s):
-    
-    '''Return the text of the first docstring found in s.'''
-
-    tags = ('"""',"'''")
-    tag1,tag2 = tags
-    i1,i2 = s.find(tag1),s.find(tag2)
-
-    if i1 == -1 and i2 == -1:
-        return ''
-    if i1 > -1 and i2 > -1:
-        i = min(i1,i2)
-    else:
-        i = max(i1,i2)
-    tag = s[i:i+3]
-    assert tag in tags
-
-    j = s.find(tag,i+3)
-    if j > -1:
-        return s[i+3:j]
-    else:
-        return ''
-
 #@+node:ekr.20090516135452.5777: *3* g.ensureLeading/TrailingNewlines
 def ensureLeadingNewlines (s,n):
 
@@ -5261,6 +5245,92 @@ def funcToMethod(f,theClass,name=None):
 
     setattr(theClass,name or f.__name__,f)
     # g.trace(name)
+#@+node:ekr.20111017204736.15898: *3* g.getDocString
+def getDocString(s):
+    
+    '''Return the text of the first docstring found in s.'''
+
+    tags = ('"""',"'''")
+    tag1,tag2 = tags
+    i1,i2 = s.find(tag1),s.find(tag2)
+
+    if i1 == -1 and i2 == -1:
+        return ''
+    if i1 > -1 and i2 > -1:
+        i = min(i1,i2)
+    else:
+        i = max(i1,i2)
+    tag = s[i:i+3]
+    assert tag in tags
+
+    j = s.find(tag,i+3)
+    if j > -1:
+        return s[i+3:j]
+    else:
+        return ''
+
+#@+node:ekr.20111017211256.15905: *3* g.getDocStringForFunction
+def getDocStringForFunction (func):
+    
+    '''Return the docstring for a function that creates a Leo command.'''
+    
+    def name(func):
+        return hasattr(func,'__name__') and func.__name__ or ''
+        
+    def get_defaults(func,i):
+        args, varargs, keywords, defaults = inspect.getargspec(func)
+        return defaults[i]
+    
+    if name(func) == 'minibufferCallback':
+        func = get_defaults(func,0)
+        if name(func) == 'commonCommandCallback':
+            script = get_defaults(func,1)
+            s = g.getDocString(script)
+        elif hasattr(func,'docstring'): # atButtonCallback object.
+            s = func.docstring()
+        elif hasattr(func,'__doc__'):
+            s = func.__doc__ or ''
+        else:
+            print('**oops',func)
+            s = ''
+    else:
+        s = func.__doc__ or ''
+        
+    return s
+#@+node:ekr.20061031102333.2: *3* g.getWord & getLine
+def getWord (s,i):
+
+    '''Return i,j such that s[i:j] is the word surrounding s[i].'''
+
+    if i >= len(s): i = len(s) - 1
+    if i < 0: i = 0
+    # Scan backwards.
+    while 0 <= i < len(s) and g.isWordChar(s[i]):
+        i-= 1
+    i += 1
+    # Scan forwards.
+    j = i
+    while 0 <= j < len(s) and g.isWordChar(s[j]):
+        j += 1
+    return i,j
+
+def getLine (s,i):
+
+    '''Return i,j such that s[i:j] is the line surrounding s[i].
+    s[i] is a newline only if the line is empty.
+    s[j] is a newline unless there is no trailing newline.
+    '''
+
+    if i > len(s): i = len(s) -1 # Bug fix: 10/6/07 (was if i >= len(s))
+    if i < 0: i = 0
+    j = s.rfind('\n',0,i) # A newline *ends* the line, so look to the left of a newline.
+    if j == -1: j = 0
+    else:       j += 1
+    k = s.find('\n',i)
+    if k == -1: k = len(s)
+    else:       k = k + 1
+    # g.trace('i,j,k',i,j,k,repr(s[j:k]))
+    return j,k
 #@+node:ekr.20110609125359.16493: *3* g.isMacOS
 def isMacOS():
     
@@ -5372,40 +5442,6 @@ def stripBrackets (s):
     if s.endswith('>'):
         s = s[:-1]
     return s
-#@+node:ekr.20061031102333.2: *3* g.getWord & getLine
-def getWord (s,i):
-
-    '''Return i,j such that s[i:j] is the word surrounding s[i].'''
-
-    if i >= len(s): i = len(s) - 1
-    if i < 0: i = 0
-    # Scan backwards.
-    while 0 <= i < len(s) and g.isWordChar(s[i]):
-        i-= 1
-    i += 1
-    # Scan forwards.
-    j = i
-    while 0 <= j < len(s) and g.isWordChar(s[j]):
-        j += 1
-    return i,j
-
-def getLine (s,i):
-
-    '''Return i,j such that s[i:j] is the line surrounding s[i].
-    s[i] is a newline only if the line is empty.
-    s[j] is a newline unless there is no trailing newline.
-    '''
-
-    if i > len(s): i = len(s) -1 # Bug fix: 10/6/07 (was if i >= len(s))
-    if i < 0: i = 0
-    j = s.rfind('\n',0,i) # A newline *ends* the line, so look to the left of a newline.
-    if j == -1: j = 0
-    else:       j += 1
-    k = s.find('\n',i)
-    if k == -1: k = len(s)
-    else:       k = k + 1
-    # g.trace('i,j,k',i,j,k,repr(s[j:k]))
-    return j,k
 #@+node:ekr.20041219095213: *3* import wrappers
 #@+node:ekr.20040917061619: *4* g.cantImport
 def cantImport (moduleName,pluginName=None,verbose=True):
@@ -5573,13 +5609,6 @@ class readLinesClass:
         return line
 
     __next__ = next
-#@+node:ville.20090827174345.9963: *3* g.assertui
-class UiTypeException(Exception):
-    pass
-
-def assertUi(uitype):
-    if not g.app.gui.guiName() == uitype:
-        raise UiTypeException
 #@+node:ekr.20031218072017.3197: ** Whitespace...
 #@+node:ekr.20031218072017.3198: *3* computeLeadingWhitespace
 # Returns optimized whitespace corresponding to width with the indicated tab_width.

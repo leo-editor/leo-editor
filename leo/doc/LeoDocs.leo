@@ -182,8 +182,6 @@ expanded="ekr.20111018061632.15913,"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20110616100929.14794"><vh>New in 4.9 rc1</vh></v>
 <v t="ekr.20110620083705.14902"><vh>New in 4.9 final</vh></v>
 </v>
-<v t="ekr.20101112045055.5064"
-expanded="ekr.20111018061632.15913,"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>

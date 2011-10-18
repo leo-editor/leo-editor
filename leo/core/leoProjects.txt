@@ -1301,24 +1301,6 @@ E1120:263:runUnitTests: No value passed for parameter 'headline' in function cal
 E1120:1017:rstClass.initOptionsFromSettings: No value passed for parameter 'tag' in function call
 
 
-************* Module leo.plugins.scrolledmessage
-W0311:407: Bad indentation. Found 12 spaces, expected 8
-W0311:408: Bad indentation. Found 12 spaces, expected 8
-W0311:410: Bad indentation. Found 12 spaces, expected 8
-W0311:411: Bad indentation. Found 12 spaces, expected 8
-E1101:289:ScrolledMessageDialog.doActionOutlineShow: Instance of 'ScrolledMessageDialog' has no 'name' member
-W0107:314:ScrolledMessageDialog.doActionAbout: Unnecessary pass statement
-E1101:318:ScrolledMessageDialog.doActionRST3: Instance of 'LeoApp' has no 'pluginsController' member
-E1101:532:ScrolledMessageDialog.updateDialog: Instance of 'ScrolledMessageDialog' has no 'label' member
-E1101:533:ScrolledMessageDialog.updateDialog: Instance of 'ScrolledMessageDialog' has no 'label' member
-E1101:539:ScrolledMessageDialog.updateDialog: Instance of 'ScrolledMessageDialog' has no 'title' member
-E0211:543:ScrolledMessageDialog.afterDrawHandler: Method has no argument
-E0602:613:ScrolledMessageController.afterRedrawHandler: Undefined variable 'dialogs'
-E1120:614:ScrolledMessageController.afterRedrawHandler: No value passed for parameter 'tag' in function call
-E1120:614:ScrolledMessageController.afterRedrawHandler: No value passed for parameter 'keywords' in function call
-W0611: 91: Unused import inspect
-
-
 ************* Module leo.plugins.todo
 E1101: 58:init: Module 'leo.core.leoGlobals' has no 'tree_popup_handlers' member
 E0102:260:todoController.addPopupMenu.func: function already defined line 251
@@ -9795,6 +9777,12 @@ Traceback (most recent call last):
     self.its[it] = (p, None)
 TypeError: unhashable type: 'QListWidgetItem'
 #@+node:ekr.20111015150822.13125: *4* Removed all references to scrolledmessage plugin
+@nocolor-node
+
+The scrolledmessage plugin no longer exists.
+
+The runScrolledMessageDialog *does* still exist, but it now uses the
+viewrendered plugin.
 #@+node:ekr.20110530082209.18250: *5* c.putApropos
 def putApropos (self,s):
     
@@ -15326,6 +15314,13 @@ where y is not "leo".
   
 2. If x.y does *not* exist, leo should do exactly the same
    thing, except that @edit x.y will be empty.
+   
+However, there are two problems with using Leo as a replacement for SciTe:
+
+1. Load time.  SciTe loads instantly, Leo does not.
+
+2. Screen real estate: Leo is not at its best when presenting only a single
+   @edit node: everything but the body pane is wasted space.
 #@+node:ekr.20111011062533.15685: *5* Request
 @language rest
 
@@ -16055,6 +16050,142 @@ The code is a straightforward addition to cleanButtonText in mod_scripting.py:
 it is unlikely to have any impact whatsoever to existing @button nodes.
 
 The intended use is for searches of the form @button [some tag].
+#@+node:ekr.20111018104244.15929: *4* **Important**: reorganized @button & @command nodes.
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bd6ed96c88fabb4e
+
+The prefix "DingDing" signifies that this post is an answer to the
+lament:
+
+    "Wouldn't it be great if we all could remember what we,
+    and others, have already done :-)"
+
+Last night I had a forehead-slapping moment: the place to put @button
+nodes is in myLeoSettings.leo.
+
+This morning, I realized that using @command rather than @button
+completes the Aha.
+
+This organization has all benefits, and no drawbacks:
+
+- I always know here scripts are.
+
+- No need for duplicates.
+
+- I can organize the scripts within myLeoSettings.leo as usual using
+organizer nodes.  This organization can change as needed.
+
+- Using @command rather than @button means that I never have to
+disable scripts.  No more @@button.
+
+- Using @command saves screen real estate.  In my experience, having
+buttons be visible doesn't prevent them from being hidden in full
+view.
+
+- If I use common prefixes, like c_ (for command) or edit_ (for edit-
+related scripts) or ekr_ (for personal scripts), the *typing
+completion* will let me zero in on the script I want to use:
+
+    <alt-x> c_<tab>
+    <alt-x> c_import<tab>
+
+etc.  Furthermore, Ctrl-P (repeat-complex-command) will allow me to
+rerun the last script run.  This is a quite common case.
+
+Summary
+=======
+
+This Aha substitutes an *already-existing* usage (typing completion)
+for a whole set of memory-intensive retrieval problems.  I'm not
+likely ever to forget typing completion, although I might forget the
+specif prefixes used in @command nodes.  If that happens, I'll know
+where to look.
+
+This Aha takes full advantage of Leo's organization strengths and
+*concentrates* those strengths by putting all the to-be-organized
+material in one place.  This allows for easy reorganization:  changing
+command-name prefixes, for instance, would be straightforward. 
+#@+node:ekr.20111018104244.15930: *4* **Important**:
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/9ebd0dd748f3011f
+
+1. Today's work promises to *end* my confusion about scripts:
+
+Scripts will typically be found in myLeoSettings.leo, or, for
+"official" scripts, in other places, particularly leoSettings.leo.
+
+The print-buttons command (maybe better called print-scripts) will
+show the location of @button or @command nodes.
+
+2. This is a huge breakthrough, because it makes hundreds of scripts
+easily available.  This in turn makes *all* scripts more valuable.
+
+3. As I was thinking about these happy developments, I realized that a
+big new horizon is about to open up.
+
+I shall not describe here my thought processes, but they were related
+to what I have been thinking of as @link nodes. The idea behind @link
+nodes was that they would be a link to a given node, specified by a
+commander and a gnx.
+
+However, scripts moot the need for @link nodes!  The phrase that
+popped into my head was::
+
+    Don't *link* to nodes, *search* for nodes!
+
+That is, links, no matter how "good" they are, are breakable and
+fragile; searches are more robust and more dynamic.  Bye bye link
+nodes!
+
+4.  Do you see what has just happened?  A search, in other words **a
+script**, has eliminated the need for a major new core feature, that
+is, link nodes.
+
+This is a *huge* change in point of view!
+
+5.  Here are some implications:
+
+A.  Leo must have a check-doc-strings script that will verify that all
+commands have non-trivial doc strings.
+
+B. Leo must have a create-command-docs script that will create large
+parts of Leo's documentation for individual commands by searching for
+commands in all the proper places, including functions specified by
+@g.command(name) and Leo's various commands dictionaries.
+
+C. Leo must have a create-plugins-doc script that does the same for
+plugins.  A prototype of this script exists somewhere.  Making it an
+@command node will make it much more visible.
+
+Conclusions
+==========
+
+1. "Smallish" changes (making scripts more visible via typing
+completion) has greatly increased the convenience, and thus
+application, of scripts.
+
+Part of the Leo Aha is that Leo outlines are *much* easier to script
+than flat files.  We are about to see an explosion in applicability of
+scripts in Leo.
+
+2. Searches, that is, scripts, are a *much* more powerful mechanism
+than breakable links.  My throwaway response to many feature requests
+has always been, "well, you can always write a script to do what you
+want."
+
+Now we can see the sense in which this is a proper, universal,
+response.  In Leo's case, it has recently become clear that docstrings
+are the natural *primary* location for data.  This makes the data
+available for online help, such as the help-for-command command.
+
+Now we can see that the *proper* way of creating large parts of Leo's
+documentation tree (nodes for the rst3 command) will be via one or
+more scripts that dynamically search Leo's source files looking for
+data!
+
+A great day for Leo.
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
