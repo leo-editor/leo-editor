@@ -1,3 +1,9 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20101112045055.5064: * @file plugin_catalog.py
+#@@language python
+
+#@+<< docstring >>
+#@+node:ekr.20111018061632.15902: ** << docstring >>
 """
 Extract plugin status and docs. from docstrings
 
@@ -40,7 +46,9 @@ TODO
  - List of semantic tags provided by plugin (@bookmark...)
 
 """
-
+#@-<< docstring >>
+#@+<< imports >>
+#@+node:ekr.20111018061632.15903: ** << imports >>
 import os
 import sys
 import ast
@@ -48,47 +56,65 @@ import time
 from copy import deepcopy
 import optparse
 
-from docutils.core import publish_doctree, publish_from_doctree
-from docutils import nodes
-from docutils.transforms.parts import Contents
-from docutils.utils import SystemMessage
+try:
+    ok = True
+    from docutils.core import publish_doctree, publish_from_doctree
+    from docutils import nodes
+    from docutils.transforms.parts import Contents
+    from docutils.utils import SystemMessage
+except Exception:
+    print('plugin_catelog.py: can not import docutils')
+    ok = False
+#@-<< imports >>
+
+#@+others
+#@+node:ekr.20111018061632.15913: ** class PluginCatalog
 class PluginCatalog(object):
+    
     """see module docs. and make_parser()"""
-
-    @staticmethod
-    def make_parser():
-        """Return an optparse.OptionParser"""
-
-        parser = optparse.OptionParser("Usage: plug_catalog.py [options] dir1 [dir2 ...] output.html")
-
-        parser.add_option("--location", action="append", type="string",
-            help="Add a location to the list to search", default=[])
-        parser.add_option("--css-file", type="string",
-            help="Use this CSS file in the HTML output")
-        parser.add_option("--max-files", type="int",
-            help="Stope after this many files, mainly for testing")
-        parser.add_option("--include-contents", action="store_true", 
-            default=False,
-            help="Include table of contents (the summary is more useful)")
-        parser.add_option("--no-summary", action="store_true", default=False,
-            help="Don't generate the summary")
-        parser.add_option("--show-paths", action="store_true", default=False,
-            help="Show paths to .py files, useful for resolving RST errors")
-        parser.add_option("--output", type="string", default=None,
-            help="Filename for the html output")
-        parser.add_option("--xml-output", type="string", default=None,
-            help="Filename for optional xml output, mainly for testing")
-
-        return parser
-
+    
+    #@+others
+    #@+node:ekr.20111018061632.15906: *3* __init__
     def __init__(self, opt):
+
         """opt - see make_parser() or --help"""
 
         self.opt = opt
         self.id_num = 0  # for generating ids for the doctree
         self.document = None
+    #@+node:ekr.20111018061632.15910: *3* add_ids
+    def add_ids(self, node, depth=0):
 
+        """Recursively add ids starting with 'lid' to doctree node.
+
+        Always id the top level node, and also document, section, and topic
+        nodes below it."""
+
+        if hasattr(node, 'tagname'):
+            if depth == 0 or node.tagname in ('document', 'section', 'topic'):
+                if True or not node['ids']:
+                    self.id_num += 1
+                    node['ids'].append('lid'+str(self.id_num))
+            for child in node:
+                self.add_ids(child, depth+1)
+    #@+node:ekr.20111018061632.15911: *3* first_text
+    def first_text(self, node):
+
+        """find first paragraph to use as a summary"""
+
+        if node.tagname == 'paragraph':
+            return deepcopy(node)
+        else:
+            for child in node:
+                if hasattr(child, 'tagname'):
+                    ans = self.first_text(child)
+                    if ans:
+                        return ans
+
+        return None
+    #@+node:ekr.20111018061632.15907: *3* get_doc_strings
     def get_doc_strings(self):
+
         """collect docstrings in .py files in specified locations"""
 
         doc_strings = []
@@ -139,8 +165,10 @@ class PluginCatalog(object):
                     break
 
         return doc_strings
+    #@+node:ekr.20111018061632.15908: *3* make_document
     def make_document(self, doc_strings):
-        """make doctree represeneation of collected fragments"""
+        
+        """make doctree representation of collected fragments"""
 
         opt = self.opt  
 
@@ -206,6 +234,33 @@ class PluginCatalog(object):
             transform.apply()
 
         return big_doc
+        
+    #@+node:ekr.20111018061632.15905: *3* make_parser
+    def make_parser():
+        """Return an optparse.OptionParser"""
+
+        parser = optparse.OptionParser("Usage: plug_catalog.py [options] dir1 [dir2 ...] output.html")
+
+        parser.add_option("--location", action="append", type="string",
+            help="Add a location to the list to search", default=[])
+        parser.add_option("--css-file", type="string",
+            help="Use this CSS file in the HTML output")
+        parser.add_option("--max-files", type="int",
+            help="Stope after this many files, mainly for testing")
+        parser.add_option("--include-contents", action="store_true", 
+            default=False,
+            help="Include table of contents (the summary is more useful)")
+        parser.add_option("--no-summary", action="store_true", default=False,
+            help="Don't generate the summary")
+        parser.add_option("--show-paths", action="store_true", default=False,
+            help="Show paths to .py files, useful for resolving RST errors")
+        parser.add_option("--output", type="string", default=None,
+            help="Filename for the html output")
+        parser.add_option("--xml-output", type="string", default=None,
+            help="Filename for optional xml output, mainly for testing")
+
+        return parser
+    #@+node:ekr.20111018061632.15909: *3* run
     def run(self):
         """run with the supplied options, see make_parser()"""
 
@@ -220,47 +275,19 @@ class PluginCatalog(object):
             settings_overrides['stylesheet_path'] = opt.css_file
 
         open(opt.output, 'w').write(
-          publish_from_doctree(big_doc, writer_name='html',
-              settings_overrides = settings_overrides)
+            publish_from_doctree(big_doc, writer_name='html',
+                settings_overrides = settings_overrides)
         )
         sys.stderr.write("Wrote '%s'\n" % opt.output)
 
         if opt.xml_output:
             open(opt.xml_output, 'w').write(
-              publish_from_doctree(big_doc, writer_name='xml',
-                  settings_overrides = {'indents': True})
+                publish_from_doctree(big_doc, writer_name='xml',
+                    settings_overrides = {'indents': True})
             )
             sys.stderr.write("Wrote '%s'\n" % opt.xml_output)
-
-    def add_ids(self, node, depth=0):
-        """recursively add ids starting with 'lid' to doctree node
-
-        Always id the top level node, and also document, section, and topic
-        nodes below it."""
-        if hasattr(node, 'tagname'):
-            if depth == 0 or node.tagname in ('document', 'section', 'topic'):
-                if True or not node['ids']:
-                    self.id_num += 1
-                    node['ids'].append('lid'+str(self.id_num))
-            for child in node:
-                self.add_ids(child, depth+1)
-
-    def first_text(self, node):
-        """find first paragraph to use as a summary"""
-
-        if node.tagname == 'paragraph':
-            return deepcopy(node)
-        else:
-            for child in node:
-                if hasattr(child, 'tagname'):
-                    ans = self.first_text(child)
-                    if ans:
-                        return ans
-
-        return None
-
-
-
+    #@-others
+#@+node:ekr.20111018061632.15912: ** main
 def main():
     """create and run a PluginCatalog"""
     opts, args = PluginCatalog.make_parser().parse_args()
@@ -273,6 +300,9 @@ def main():
 
     plugin_catalog = PluginCatalog(opts)
     plugin_catalog.run()
-if __name__ == "__main__":
-    main()
+#@-others
 
+if __name__ == "__main__":
+    if ok:
+        main()
+#@-leo
