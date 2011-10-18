@@ -7198,13 +7198,23 @@ class helpCommandsClass (baseEditCommandsClass):
         c = self.c
         bindings = self.getBindingsForCommand(commandName)
         func = c.commandsDict.get(commandName)
-        if func and func.__doc__:
+        s = g.getDocStringForFunction(func)
+        if s:
             s = ''.join([
                 g.choose(line.strip(),line.lstrip(),'\n')
-                    for line in g.splitLines(func.__doc__)])
+                    for line in g.splitLines(s)])
+        # if func and func.__doc__:
+            # s = ''.join([
+                # g.choose(line.strip(),line.lstrip(),'\n')
+                    # for line in g.splitLines(func.__doc__)])
         else:
-            s = 'no docstring'
-        g.es('','%s:%s\n%s\n' % (commandName,bindings,s),color='blue')
+            s = '(no docstring)'
+        if bindings:
+            g.es('','%s:%s\n' % (commandName,bindings),color='blue')
+        else:
+            g.es('','%s\n' % (commandName),color='blue')
+        g.es('','%s\n' % (s))
+       
 
     def getBindingsForCommand(self,commandName):
 
