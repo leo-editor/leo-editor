@@ -253,7 +253,9 @@ class LeoQuickSearchWidget(QtGui.QWidget):
             self.scon.doSearch(t)
 
         if self.scon.its:
+            self.ui.listWidget.blockSignals(True) # don't jump to first hit
             self.ui.listWidget.setFocus()
+            self.ui.listWidget.blockSignals(False) # ok, respond if user moves
     #@-others
 #@+node:ekr.20111014074810.15659: ** matchLines
 def matchlines(b, miter):
@@ -275,11 +277,11 @@ class QuickSearchController:
         self.c = c
         self.lw = w = listWidget # A QListWidget.
         self.its = {} # Keys are id(w),values are tuples (p,pos)
-        
+
         # we want both single-clicks and activations (press enter)
         w.connect(w,
             QtCore.SIGNAL("itemActivated(QListWidgetItem*)"),
-            self.onSelectItem)
+            self.onActivated)
           
         w.connect(w,                                  
             QtCore.SIGNAL("itemPressed(QListWidgetItem*)"),
@@ -287,7 +289,7 @@ class QuickSearchController:
             
         w.connect(w,
             QtCore.SIGNAL("currentItemChanged(QListWidgetItem*,QListWidgetItem *)"),
-            self.onItemChanged)
+            self.onSelectItem)
             
         # Doesn't work.
         # ev_filter = QuickSearchEventFilter(c,w)
@@ -305,7 +307,7 @@ class QuickSearchController:
             ms = matchlines(p.b, p.matchiter)
             for ml, pos in ms:
                 #print "ml",ml,"pos",pos
-                it = id(QListWidgetItem(ml, self.lw))   
+                it = QListWidgetItem(ml, self.lw)   
                 self.its[id(it)] = (p,pos)
     #@+node:ekr.20111015194452.15690: *3* addGeneric
     def addGeneric(self, text, f):
@@ -356,6 +358,7 @@ class QuickSearchController:
         bm = self.c.find_b(bpat, flags)
         self.addBodyMatches(bm)
 
+        self.lw.insertItem(0, "%d hits"%self.lw.count())
     #@+node:ekr.20111015194452.15687: *3* doShowMarked
     def doShowMarked(self):
 
@@ -367,31 +370,13 @@ class QuickSearchController:
                 pl.append(p.copy())
         self.addHeadlineMatches(pl)
     #@+node:ekr.20111015194452.15700: *3* Event handlers
-    #@+node:ekr.20111015194452.15699: *4* onItemChanged
-    def onItemChanged(self, it,it_prev):
-        
-        c = self.c
-        tgt = self.its.get(it and id(it))    
-        if not tgt: return
-
-        # generic callable
-        if callable(tgt):
-            tgt()
-        elif len(tgt) == 2:            
-            p, pos = tgt
-            c.selectPosition(p)
-            if pos is not None:
-                st, en = pos
-                w = c.frame.body.bodyCtrl
-                w.setSelectionRange(st,en)
-                w.seeInsertPoint()
-            self.lw.setFocus()
-
     #@+node:ekr.20111015194452.15686: *4* onSelectItem
-    def onSelectItem(self, it):
-
+    def onSelectItem(self, it, it_prev=None):
+        
         c = self.c
+            
         tgt = self.its.get(it and id(it))
+
         if not tgt: return
 
         # generic callable
@@ -405,12 +390,14 @@ class QuickSearchController:
                 w = c.frame.body.bodyCtrl
                 w.setSelectionRange(st,en)
                 w.seeInsertPoint()
-            c.k.keyboardQuit()
-                # Put the focus in the body pane.
-    #@+node:ekr.20111015194452.15730: *4* onKeyPress
-    def onKeyPress (self,event):
+                
+            self.lw.setFocus()
+    #@+node:tbrown.20111018130925.3642: *4* onActivated
+    def onActivated (self,event):
         
-        g.trace(event)
+        c = self.c
+
+        c.bodyWantsFocusNow()
     #@-others
 #@-others
 #@-leo
