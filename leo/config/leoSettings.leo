@@ -554,6 +554,9 @@
 <v t="ekr.20111016210000.16011"><vh>@command redefine g.findReference</vh>
 <v t="ekr.20111016210000.16012"><vh>myFindReference</vh></v>
 </v>
+<v t="ekr.20111018162222.15853"><vh>Docstrings</vh>
+<v t="ekr.20111018162222.15855"><vh>@command print-cmd-docstrings</vh></v>
+</v>
 <v t="ekr.20111016210000.16001"><vh>Editing body text</vh>
 <v t="ekr.20111016210000.16002"><vh>@command align-to-col {modify as needed}</vh></v>
 <v t="ekr.20111016210000.16003"><vh>@command c-to-python-clean-docs</vh>
@@ -1556,6 +1559,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20080312075451.2"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -9124,6 +9128,27 @@ def gotoSelectedPosition(event,lb=self.lb,c=c,positions=clones):
     c.selectPosition(p)
     return
 self.lb.bind(g.angleBrackets("ListboxSelect"), gotoSelectedPosition)</t>
+<t tx="ekr.20111018162222.15853"></t>
+<t tx="ekr.20111018162222.15855">'''Print all commands that lack a docstring.'''
+
+import os ; os.system('cls')
+
+@others
+
+d = c.commandsDict # Keys are command names, values are functions.
+aList = list(d.keys())
+aList.sort()
+empty = []
+for key in aList:
+    func = d.get(key)
+    s = g.getDocStringForFunction(func)
+    if not s: empty.append(key)
+
+print('%s commands' % (len(aList)))
+print('%s commands without docstrings...' % len(empty))
+for key in empty:
+    print(key)
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
