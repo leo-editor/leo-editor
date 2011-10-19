@@ -583,7 +583,11 @@
 <v t="ekr.20111016210000.15990"><vh>@command join-node-above</vh></v>
 <v t="ekr.20111016210000.15991"><vh>@command join-node-below</vh></v>
 <v t="ekr.20111016210000.15992"><vh>@command promote-bodies</vh></v>
-<v t="ekr.20111017083715.16023"><vh>@command split-defs</vh></v>
+<v t="ekr.20111018170513.15882"><vh>@command split-defs</vh>
+<v t="ekr.20111018170513.15883"><vh>make_node</vh></v>
+<v t="ekr.20111018170513.15884"><vh>remove_trailing_decorators</vh></v>
+<v t="ekr.20111018170513.15885"><vh>run</vh></v>
+</v>
 </v>
 <v t="ekr.20111017080453.16077"><vh>Testing</vh>
 <v t="ekr.20111017080453.16079"><vh>@command add-test</vh></v>
@@ -9016,32 +9020,6 @@ main()
     g.es('Check Bindings done')
 </t>
 <t tx="ekr.20111017082630.16086"></t>
-<t tx="ekr.20111017083715.16023">def run(p):
-    
-    '''Split p.b into nodes for each *top-level* def.'''
-    
-    lines,name = [],None
-    for s in g.splitlines(p.b):
-        if g.match_word(s,0,'def'):
-            if name:
-                child = p.insertAsLastChild()
-                child.h = name
-                child.b = ''.join(lines)
-            lines = [s]
-            i = g.skip_ws(s,3)
-            j = g.skip_id(s,i,'_')
-            name = s[i:j]
-        else:
-            lines.append(s)
-            
-    if lines and name:
-        child = p.insertAsLastChild()
-        child.h = name
-        child.b = ''.join(lines)
-        
-    c.redraw()
-
-run(p)</t>
 <t tx="ekr.20111017085134.16213">@
 Ever have a clone that is difficult to understand outside the context of its
 original parent? Here's some code to help. It displays the headline of the
@@ -9148,6 +9126,61 @@ print('%s commands' % (len(aList)))
 print('%s commands without docstrings...' % len(empty))
 for key in empty:
     print(key)
+</t>
+<t tx="ekr.20111018170513.15882">@others
+
+run(p)</t>
+<t tx="ekr.20111018170513.15883">def make_node(p,lines,name):
+    child = p.insertAsLastChild()
+    child.h = name
+    child.b = ''.join(lines)</t>
+<t tx="ekr.20111018170513.15884">def remove_trailing_decorators(lines):
+    
+    decorators = []
+    while lines:
+        s = lines.pop()
+        if s.startswith('@'):
+            j = g.skip_id(s,1,chars='-')
+            name = s[1:j]
+            if name not in g.globalDirectiveList:
+                decorators.append(s)
+            else:
+                lines.append(s)
+                break
+        else:
+            lines.append(s)
+            break
+        
+    if decorators:
+        decorators.reverse()
+        
+    return decorators
+</t>
+<t tx="ekr.20111018170513.15885">def run(p):
+    
+    '''Split p.b into nodes for each *top-level* def.'''
+    
+    b = c.undoer.beforeChangeTree(p)
+
+    lines,name = [],None
+    for s in g.splitlines(p.b):
+        if g.match_word(s,0,'def'):
+            if lines and name:
+                decorators = remove_trailing_decorators(lines)
+                make_node(p,lines,name)
+                lines = decorators
+            lines.append(s)
+            i = g.skip_ws(s,3)
+            j = g.skip_id(s,i,'_')
+            name = s[i:j]
+        else:
+            lines.append(s)
+            
+    if lines and name:
+        make_node(p,lines,name)
+        
+    c.undoer.afterChangeTree(p,'split-defs',b)
+    c.redraw()
 </t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files

@@ -16186,6 +16186,7 @@ more scripts that dynamically search Leo's source files looking for
 data!
 
 A great day for Leo.
+#@+node:ekr.20111018163319.9412: *4* help-for-command now uses g.getDocStringFromFunction
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
