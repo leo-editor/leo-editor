@@ -1421,6 +1421,56 @@ consult leoTest.py.
 
 It has been fun tracking this down.  I'll fix the documentation immediately. 
 .. @+node:ekr.20111018104244.15924: *4* Revise Leo's wiki
+.. @+node:ekr.20111019080436.15850: *3* Bugs: 5
+.. @+node:ekr.20110619173515.14895: *4* Fix bug: realpath in g.openWithFileName
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/cd5e2125c9e13d8f
+
+g.openWithFileName needs
+
+   fileName = g.os_path_realpath(fileName)
+
+at the start of it, otherwise
+
+g.openWithFileName("/home/tbrown/.leo/.todo.leo", c) will open another
+instance of an already open "/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo"
+because it doesn't recognize them as being the same.
+
+It would be nice if the original attempt to open
+"/home/tbrown/.leo/.todo.leo" was not converted to
+"/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo", but I think the POSIX
+spec. insists on giving CPython the real path form, so this is hard to
+avoid.  You see this when selecting a file using a file dialog, in the
+dialog you choose /home/me/myfile.txt, but the return
+is /mnt/usr1/usr1/home/me/myfile.txt.
+
+Anyway, let me know if and when I can push that to trunk, impacts seem
+to be limited to (a) not failing to detect an already opened file in
+g.openWithFileName, which is a bug, and (b) sometimes less attractive
+apparent paths, which is annoying, but I think better than the bug.
+
+(this of course trips up UNLs
+if /mnt/usr1/usr1/home/tbrown/.leo/.todo.leo is already loaded and the
+UNL is /home/tbrown/.leo/.todo.leo#Home-->Paint roof)
+.. @+node:ekr.20110621085435.6531: *4* Fix bug: Improve the find panel and find menu
+@nocolor-node
+
+Recently, perhaps it was today, there was a remark made about Leo's
+Find panel being confusing for newbies.  I have some sympathy for the
+remarks.
+
+1.  Looking at Leo's Edit:Find menu, there is no obvious way of doing
+a search/replace operation.  I'll fix this soon after 4.9 final.
+
+2.  The Find tab should make it clearer that it is a summary/status
+tab only--not a way of actually initiating or continuing searches.
+Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
+for the find/change patterns would help a bit.
+.. @+node:ekr.20111018104244.15920: *4* Fix bug: Use QLocalSocket in LProtoClient.connect
+http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
+.. @+node:ekr.20111010062725.15537: *4* Fix bug: Finish cleaning @color settings
+.. @+node:ekr.20111014074810.15655: *4* * What about LeoDocs(hard-crash).leo is causing the crash?
 .. @+node:ekr.20111018220642.15859: *3* First: easy: 15
 .. @+node:ekr.20110929165422.15449: *4* Test noweb expansions in rst3 command
 @nocolor-node
@@ -3081,45 +3131,50 @@ def handleDocOnlyMode (self,p,lines):
             self.writeHeadlineHelper(p)
     return result
 .. @+node:ekr.20111018104244.15925: *4* Is leo.leo really useful?
-.. @+node:ekr.20111012061216.15698: *4* Complete expand/contract commands
-.. @+node:ekr.20111017102409.15875: *4* Create print-buttons command
+.. @+node:ekr.20111019080436.15848: *4* Features
+.. @+node:ekr.20111012061216.15698: *5* Complete expand/contract commands
+.. @+node:ekr.20111017102409.15875: *5* Create print-buttons command
 @nocolor-node
 
 - Create print-buttons command, showing source of all @command and @button nodes.
-.. @+node:ekr.20110619173515.14895: *4* Fix bug: realpath in g.openWithFileName
-@nocolor-node
+.. @+node:ekr.20111010122531.15569: *5* print-bindings/commands/settings create nodes
+@language rest
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/cd5e2125c9e13d8f
+http://groups.google.com/group/leo-editor/browse_thread/thread/d302b2715b3ace96
 
-g.openWithFileName needs
+A reminder, the opposite of "light" is "heavy", not "dark" :-)
 
-   fileName = g.os_path_realpath(fileName)
+Leo's print-settings, print-commands and print-bindings commands
+create too much text.
 
-at the start of it, otherwise
+Suppose they created outline nodes instead, replacing existing nodes
+if they exist.  Something like this:
 
-g.openWithFileName("/home/tbrown/.leo/.todo.leo", c) will open another
-instance of an already open "/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo"
-because it doesn't recognize them as being the same.
+- Reference (Anywhere you like)
+ - @print-settings
+    etc.
+ - @print-bindings
+   etc
+ - @print commands
+   etc
 
-It would be nice if the original attempt to open
-"/home/tbrown/.leo/.todo.leo" was not converted to
-"/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo", but I think the POSIX
-spec. insists on giving CPython the real path form, so this is hard to
-avoid.  You see this when selecting a file using a file dialog, in the
-dialog you choose /home/me/myfile.txt, but the return
-is /mnt/usr1/usr1/home/me/myfile.txt.
+Doh!  This uses Leo's power.  The subnodes can be as voluminous as
+desired, and there can be organizer nodes in each case.  The actual
+tree could be specified as in @menus.
 
-Anyway, let me know if and when I can push that to trunk, impacts seem
-to be limited to (a) not failing to detect an already opened file in
-g.openWithFileName, which is a bug, and (b) sometimes less attractive
-apparent paths, which is annoying, but I think better than the bug.
+Etc., etc.  This could moot the need for separate apropos commands.
+Conversely, apropos commands could create their own trees, or
+subtrees.
 
-(this of course trips up UNLs
-if /mnt/usr1/usr1/home/tbrown/.leo/.todo.leo is already loaded and the
-UNL is /home/tbrown/.leo/.todo.leo#Home-->Paint roof)
-.. @+node:ekr.20111010093113.15547: *4* Add support for ! in minibuffer
-.. @+node:ekr.20061031131434.145: *5* k.Master event handlers
-.. @+node:ekr.20061031131434.105: *6* masterCommand & helpers
+This could be the tip of an iceberg.
+
+The more I think about the light/heavy distinction, the more I think
+it is getting close to what makes Leo special.  For example, clones
+(and nodes, for that matter) drastically lighten the apparent
+complexity of programs or data.
+.. @+node:ekr.20111010093113.15547: *5* Add support for ! in minibuffer
+.. @+node:ekr.20061031131434.145: *6* k.Master event handlers
+.. @+node:ekr.20061031131434.105: *7* masterCommand & helpers
 def masterCommand (self,event,func,stroke,commandName=None):
 
     '''This is the central dispatching method.
@@ -3217,7 +3272,7 @@ def masterCommand (self,event,func,stroke,commandName=None):
             c.frame.updateStatusLine()
         if traceGC: g.printNewObjects('masterCom 4')
         return val
-.. @+node:ekr.20061031131434.106: *7* << define specialKeysyms >>
+.. @+node:ekr.20061031131434.106: *8* << define specialKeysyms >>
 specialKeysyms = (
     'Alt_L','Alt_R',
     'Meta_L','Meta_R', # Meta support.
@@ -3225,7 +3280,7 @@ specialKeysyms = (
     'Num_Lock',
     'Shift_L','Shift_R',
 )
-.. @+node:ekr.20061031131434.109: *7* callKeystrokeFunction (not used)
+.. @+node:ekr.20061031131434.109: *8* callKeystrokeFunction (not used)
 def callKeystrokeFunction (self,event):
 
     '''Handle a quick keystroke function.
@@ -3240,7 +3295,7 @@ def callKeystrokeFunction (self,event):
         k.endCommand(commandName)
 
     return func
-.. @+node:ekr.20061031131434.110: *7* k.handleDefaultChar
+.. @+node:ekr.20061031131434.110: *8* k.handleDefaultChar
 def handleDefaultChar(self,event,stroke):
     k = self ; c = k.c
     w = event and event.widget
@@ -3284,7 +3339,7 @@ def handleDefaultChar(self,event,stroke):
     else:
         # Let the widget handle the event.
         return # None
-.. @+node:ekr.20061031131434.146: *6* masterKeyHandler & helpers
+.. @+node:ekr.20061031131434.146: *7* masterKeyHandler & helpers
 master_key_count = 0
 
 def masterKeyHandler (self,event):
@@ -3342,7 +3397,7 @@ def masterKeyHandler (self,event):
         if traceGC: g.printNewObjects('masterKey 4')
         if trace: g.trace(' unbound',stroke)
         return k.handleUnboundKeys(event,char,stroke)
-.. @+node:ekr.20061031131434.147: *7* << define vars >>
+.. @+node:ekr.20061031131434.147: *8* << define vars >>
 w = event and event.widget
 char = event and event.char or ''
 stroke = event and event.stroke or ''
@@ -3361,7 +3416,7 @@ special_keys = (
 self.master_key_count += 1
 
 isPlain =  k.isPlainKey(stroke)
-.. @+node:ekr.20061031131434.108: *7* callStateFunction
+.. @+node:ekr.20061031131434.108: *8* callStateFunction
 def callStateFunction (self,event):
 
     trace = False and not g.unitTesting
@@ -3395,7 +3450,7 @@ def callStateFunction (self,event):
             g.es_print('no state function for',k.state.kind,color='red')
 
     return val
-.. @+node:ekr.20091230094319.6244: *7* doMode
+.. @+node:ekr.20091230094319.6244: *8* doMode
 def doMode (self,event,state,stroke):
 
     trace = False and not g.unitTesting
@@ -3446,7 +3501,7 @@ def doMode (self,event,state,stroke):
         else:
             if trace: g.trace('No state handler for %s' % state)
         return True,'break'
-.. @+node:ekr.20091230094319.6240: *7* getPaneBinding
+.. @+node:ekr.20091230094319.6240: *8* getPaneBinding
 def getPaneBinding (self,stroke,w):
 
     trace = False and not g.unitTesting
@@ -3497,7 +3552,7 @@ def getPaneBinding (self,stroke,w):
                         if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
                             key,name,repr(b.stroke),b.commandName))
                         return b
-.. @+node:ekr.20061031131434.152: *7* handleMiniBindings
+.. @+node:ekr.20061031131434.152: *8* handleMiniBindings
 def handleMiniBindings (self,event,state,stroke):
 
     k = self ; c = k.c
@@ -3539,7 +3594,7 @@ def handleMiniBindings (self,event,state,stroke):
                     return True
 
     return False
-.. @+node:ekr.20110209083917.16004: *7* isAutoCompleteChar
+.. @+node:ekr.20110209083917.16004: *8* isAutoCompleteChar
 def isAutoCompleteChar (self,stroke):
     
     '''Return True if stroke is bound to the auto-complete in
@@ -3555,7 +3610,7 @@ def isAutoCompleteChar (self,stroke):
                 if b and b.commandName == 'auto-complete':
                     return True
     return False
-.. @+node:ekr.20080510095819.1: *7* k.handleUnboundKeys
+.. @+node:ekr.20080510095819.1: *8* k.handleUnboundKeys
 def handleUnboundKeys (self,event,char,stroke):
 
     trace = False and not g.unitTesting
@@ -3614,7 +3669,7 @@ def handleUnboundKeys (self,event,char,stroke):
     else:
         if trace: g.trace('no func',repr(char),repr(stroke))
         return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-.. @+node:ekr.20061031131434.155: *6* masterMenuHandler
+.. @+node:ekr.20061031131434.155: *7* masterMenuHandler
 def masterMenuHandler (self,stroke,func,commandName):
 
     k = self ; c = k.c
@@ -3630,18 +3685,17 @@ def masterMenuHandler (self,stroke,func,commandName):
         return k.masterKeyHandler(event)
     else:
         return k.masterCommand(event,func,stroke,commandName)
-.. @+node:ekr.20111017132257.15888: *4* Is there a script to diff 2 Leo files & create a tree?
-.. @+node:ekr.20111018104244.15927: *4* Allow {{expr}} in URL's (and UNL's?)
-.. @+node:ekr.20111018104244.15920: *4* Use QLocalSocket in LProtoClient.connect
-http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
-.. @+node:ekr.20111018104244.15932: *4* Write create-command-docs script
+.. @+node:ekr.20111017132257.15888: *5* Is there a script to diff 2 Leo files & create a tree?
+.. @+node:ekr.20111018104244.15927: *5* Allow {{expr}} in URL's (and UNL's?)
+.. @+node:ekr.20111019080436.15849: *4* Doc scripts
+.. @+node:ekr.20111018104244.15932: *5* Write create-command-docs script
 @language rest
 
 Leo must have a create-command-docs script that will create large
 parts of Leo's documentation for individual commands.
 
 Base this on print-cmd-docstrings.
-.. @+node:ekr.20111018104244.15933: *4* Write create-plugins-doc script (Use/adapt plugin_catalog.py)
+.. @+node:ekr.20111018104244.15933: *5* Write create-plugins-doc script (Use/adapt plugin_catalog.py)
 @language rest
 
 Leo must have a create-plugins-doc script that does the same for
@@ -3649,57 +3703,6 @@ plugins.  A prototype of this script exists somewhere.  Making it an
 @command node will make it much more visible. 
 
 Terry wrote plugin_catalog.py.  It is in LeoDocs.leo)
-.. @+node:ekr.20110621085435.6531: *4* Improve the find panel and find menu
-@nocolor-node
-
-Recently, perhaps it was today, there was a remark made about Leo's
-Find panel being confusing for newbies.  I have some sympathy for the
-remarks.
-
-1.  Looking at Leo's Edit:Find menu, there is no obvious way of doing
-a search/replace operation.  I'll fix this soon after 4.9 final.
-
-2.  The Find tab should make it clearer that it is a summary/status
-tab only--not a way of actually initiating or continuing searches.
-Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
-for the find/change patterns would help a bit.
-.. @+node:ekr.20111014074810.15655: *4* * What about LeoDocs(hard-crash).leo is causing the crash?
-.. @+node:ekr.20111010122531.15569: *4* print-bindings/commands/settings create nodes
-@language rest
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/d302b2715b3ace96
-
-A reminder, the opposite of "light" is "heavy", not "dark" :-)
-
-Leo's print-settings, print-commands and print-bindings commands
-create too much text.
-
-Suppose they created outline nodes instead, replacing existing nodes
-if they exist.  Something like this:
-
-- Reference (Anywhere you like)
- - @print-settings
-    etc.
- - @print-bindings
-   etc
- - @print commands
-   etc
-
-Doh!  This uses Leo's power.  The subnodes can be as voluminous as
-desired, and there can be organizer nodes in each case.  The actual
-tree could be specified as in @menus.
-
-Etc., etc.  This could moot the need for separate apropos commands.
-Conversely, apropos commands could create their own trees, or
-subtrees.
-
-This could be the tip of an iceberg.
-
-The more I think about the light/heavy distinction, the more I think
-it is getting close to what makes Leo special.  For example, clones
-(and nodes, for that matter) drastically lighten the apparent
-complexity of programs or data.
-.. @+node:ekr.20111010062725.15537: *4* Finish cleaning @color settings
 .. @+node:ekr.20111018220642.15861: *3* Study
 .. @+node:ekr.20111018104244.15921: *4* * Leo google group feed summary for website
 http://groups.google.com/group/leo-editor/browse_thread/thread/060677c927c898d2
@@ -4041,7 +4044,9 @@ Processing dependencies for Pygments==1.4dev-20111009
 Finished processing dependencies for Pygments==1.4dev-20111009
 
 c:\apps\pygments>
-.. @+node:ekr.20111013065147.9422: *3* Important/First: 5
+.. @+node:ekr.20111013065147.9422: *3* Important/First: 6
+.. @+node:ekr.20111017132257.15891: *4* * Get IPython working again
+.. @+node:ekr.20111009162434.7204: *5* Port ipy_leo.py to latest version of IPython
 .. @+node:ekr.20111010122531.15568: *4* * @render-rest, @render-html trees
 @language rest
 
@@ -4919,8 +4924,6 @@ u = property(
     doc = "vnode unknownAttribute property")
 .. @+node:ekr.20111004090723.15495: *4* Finish leoOPML plugin
 .. @+node:ekr.20111018220642.15862: *3* Plugins
-.. @+node:ekr.20111017132257.15891: *4* * Get IPython working again
-.. @+node:ekr.20111009162434.7204: *5* Port ipy_leo.py to latest version of IPython
 .. @+node:ekr.20111015150822.9354: *4* Improve quicksearch plugin
 @nocolor-node
 
