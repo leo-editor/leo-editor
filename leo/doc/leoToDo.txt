@@ -4,8 +4,10 @@
 
 .. @+all
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
-.. @+node:ekr.20111018220642.15858: *3* First: Docs: 15
-.. @+node:ekr.20111017132257.15892: *4* Add short intro to scripting
+.. @+node:ekr.20111019104425.15857: *3* Projects: 5
+.. @+node:ekr.20111018220642.15858: *4* Bring docs up to date: 16
+.. @+node:ekr.20111019104425.15865: *5* Make sure docstrings include present documentation
+.. @+node:ekr.20111017132257.15892: *5* Add short intro to scripting
 @language rest
 
 http://mail.google.com/mail/#inbox/1330f306b947656c
@@ -46,7 +48,7 @@ it with Ctrl-B (execute-script).
 
 3. You can make a new Leo command by putting the script in an @command node.
 
-.. @+node:ekr.20111017124557.15879: *5* Easier scripting
+.. @+node:ekr.20111017124557.15879: *6* Easier scripting
 # aList = [z for z in dir(c) if 'hild' in z]
 # aList.sort()
 # for z in aList:
@@ -61,7 +63,7 @@ x.delete()
 x.node()
 n.h, n.d
 
-.. @+node:ekr.20111017102409.15876: *4* Document new organization for @command and @button nodes
+.. @+node:ekr.20111017102409.15876: *5* Document new organization for @command and @button nodes
 @language rest
 
 Recent revs to to the trunk complete, with perhaps one or two small
@@ -96,7 +98,7 @@ supported the distinction between local and global @command and
 P.P.S. Earlier today I correct an oversight:  Leo now properly
 supports @ignore nodes in @commands and @buttons nodes.  This is very
 useful: no need for @@button or @@command.
-.. @+node:ekr.20111015173019.15681: *4* Document @mark-for-unit-test trees!
+.. @+node:ekr.20111015173019.15681: *5* Document @mark-for-unit-test trees!
 @language rest
 
 
@@ -186,7 +188,7 @@ I hope this gives you a sense of what is going on.  For full details,
 consult leoTest.py.
 
 It has been fun tracking this down.  I'll fix the documentation immediately. 
-.. @+node:ekr.20110930174206.15470: *4* Urgent: Bring screen shots up to date
+.. @+node:ekr.20110930174206.15470: *5* Urgent: Bring screen shots up to date
 > While doing so I noted that on the sourceforge project
 > page some screenshots are bit old, such as touting Tk.
 >
@@ -200,7 +202,7 @@ It has been fun tracking this down.  I'll fix the documentation immediately.
     All souce-forge screenshots need to be replaced.
 
 
-.. @+node:ekr.20111015194452.15682: *4* Improved quicksearch plugin
+.. @+node:ekr.20111015194452.15682: *5* Improved quicksearch plugin
 @nocolor-node
 
 - Selecting any node using arrow keys shows the node in the outline immediately.
@@ -208,7 +210,7 @@ It has been fun tracking this down.  I'll fix the documentation immediately.
 - Clicking a node or hitting <return> puts focus in body pane.
 
 - Still to do: support Ctrl-G in Nav Tab.
-.. @+node:ekr.20111016072542.15702: *4* FAQ entry: @commands Aha
+.. @+node:ekr.20111016072542.15702: *5* FAQ entry: @commands Aha
 @language rest
 
 The prefix "DingDing" signifies that this post is an answer to the
@@ -265,7 +267,7 @@ command-name prefixes, for instance, would be straightforward.
 
 This is another example of the assertion that Leo already has most of
 what is required to handle any task. 
-.. @+node:ekr.20111014074810.15653: *4* Rewrite MacOs instructions using Ludvig's homebrew instructions
+.. @+node:ekr.20111014074810.15653: *5* Rewrite MacOs instructions using Ludvig's homebrew instructions
 @language rest
 
 
@@ -347,8 +349,8 @@ the system hierarchy. The Debian package can give some clues here, but
 I haven't looked at it yet.
 
 Ludwig
-.. @+node:ekr.20110918204916.6811: *4* revise autocompletion docs based on recent posts
-.. @+node:ekr.20110929074744.15474: *5* Autocompleter post
+.. @+node:ekr.20110918204916.6811: *5* revise autocompletion docs based on recent posts
+.. @+node:ekr.20110929074744.15474: *6* Autocompleter post
 @language rest
 @pagewidth 65
 
@@ -366,7 +368,7 @@ The legacy autocompleter is eval based.
 
  uses Leo-specific code to when editing specific .leo files: leoDocs.leo, leoPlugins.leo, etc.
        
-.. @+node:ekr.20110929074744.15475: *6* Creating ctags data
+.. @+node:ekr.20110929074744.15475: *7* Creating ctags data
 On Sep 10, 8:36 am, "Edward K. Ream" <edream...@gmail.com> wrote:
 
 > Later posts will discuss the following:
@@ -438,7 +440,7 @@ C. Add ctags data to the existing ctags database::
    You can add data from multiple sources by running
    the ``codewise parse`` command on multiple directories.
    
-.. @+node:ekr.20110929074744.15476: *6* Using Leo's autocompleter (outline form)
+.. @+node:ekr.20110929074744.15476: *7* Using Leo's autocompleter (outline form)
 @language rest
 
 Leo's autocompletion suggests **completions**, text may be valid in a given
@@ -461,7 +463,7 @@ namely::
     supports_unicode_filenames
     sys
     
-.. @+node:ekr.20110929074744.15477: *7* Starting autocompletions
+.. @+node:ekr.20110929074744.15477: *8* Starting autocompletions
 There are two ways to have Leo show autocompletions, manually and automatically.
 You can use both at the same time.
 
@@ -476,7 +478,7 @@ You can enable autocompletion in several ways:
 1. By setting @bool enable_autocompleter_initially = True.
 
 2. By using the toggle-autocompleter (Alt-1) command.
-.. @+node:ekr.20110929074744.15478: *7* Displaying autocompletions
+.. @+node:ekr.20110929074744.15478: *8* Displaying autocompletions
 How Leo displays these completions depends on the setting::
 
     @bool use_qcompleter
@@ -486,14 +488,14 @@ False: Leo shows completions in the log pane.
     
 
 
-.. @+node:ekr.20110929074744.15479: *7* Using the QCompleter
+.. @+node:ekr.20110929074744.15479: *8* Using the QCompleter
 When the ``@bool use_qcompleter`` setting is False, Leo shows all completions in a
 popup window, regardless of how many completions there are. To **accept** a
 completion, use the up and down arrows to select a completion, then type the
 return key. To **cancel** completion, type the escape key. As an important
 shortcut, if the popup window contains only one entry, you may accept a
 completion by simply typing the return key.
-.. @+node:ekr.20110929074744.15480: *7* Using the Log pane completer
+.. @+node:ekr.20110929074744.15480: *8* Using the Log pane completer
 When the ``@bool use_qcompleter`` setting is True, Leo shows completions in in
 Leo's log pane. When there are more than 20 completions, Leo shows only the
 characters that start a completions. For example, when completing ``os.path.``
@@ -555,7 +557,7 @@ the log pane would show::
 As you type, Leo enters the longest common prefix of all completions into the
 body pane. Typing return, escape or ctrl-g (or any other alt or ctrl key) ends
 completion.
-.. @+node:ekr.20110929074744.15481: *7* Showing docstrings
+.. @+node:ekr.20110929074744.15481: *8* Showing docstrings
 Regardless of the setting of ``@bool use_qcompleter``,
 typing '?' while autocompleting will show the docstring of
 the present context.  For example, if the context is
@@ -567,7 +569,7 @@ the present context.  For example, if the context is
     
 It is not possible to copy the docstring from the log pane
 when using the QCompleter because the QCompleter popup window is a modal dialog.
-.. @+node:ekr.20110929074744.15482: *6* Using Leo's autocompleter (COPY)
+.. @+node:ekr.20110929074744.15482: *7* Using Leo's autocompleter (COPY)
 @language rest
 
 Leo's autocompletion suggests **completions**, text may be valid in a given
@@ -707,7 +709,7 @@ the present context.  For example, if the context is
     
 It is not possible to copy the docstring from the log pane
 when using the QCompleter because the QCompleter popup window is a modal dialog.
-.. @+node:ekr.20110929074744.15483: *7* Starting autocompletions
+.. @+node:ekr.20110929074744.15483: *8* Starting autocompletions
 There are two ways to have Leo show autocompletions, manually and automatically.
 You can use both at the same time.
 
@@ -722,7 +724,7 @@ You can enable autocompletion in several ways:
 1. By setting @bool enable_autocompleter_initially = True.
 
 2. By using the toggle-autocompleter (Alt-1) command.
-.. @+node:ekr.20110929074744.15484: *7* Displaying autocompletions
+.. @+node:ekr.20110929074744.15484: *8* Displaying autocompletions
 How Leo displays these completions depends on the setting::
 
     @bool use_qcompleter
@@ -732,14 +734,14 @@ False: Leo shows completions in the log pane.
     
 
 
-.. @+node:ekr.20110929074744.15485: *7* Using the QCompleter
+.. @+node:ekr.20110929074744.15485: *8* Using the QCompleter
 When the ``@bool use_qcompleter`` setting is False, Leo shows all completions in a
 popup window, regardless of how many completions there are. To **accept** a
 completion, use the up and down arrows to select a completion, then type the
 return key. To **cancel** completion, type the escape key. As an important
 shortcut, if the popup window contains only one entry, you may accept a
 completion by simply typing the return key.
-.. @+node:ekr.20110929074744.15486: *7* Using the Log pane completer
+.. @+node:ekr.20110929074744.15486: *8* Using the Log pane completer
 When the ``@bool use_qcompleter`` setting is True, Leo shows completions in in
 Leo's log pane. When there are more than 20 completions, Leo shows only the
 characters that start a completions. For example, when completing ``os.path.``
@@ -801,7 +803,7 @@ the log pane would show::
 As you type, Leo enters the longest common prefix of all completions into the
 body pane. Typing return, escape or ctrl-g (or any other alt or ctrl key) ends
 completion.
-.. @+node:ekr.20110929074744.15487: *7* Showing docstrings
+.. @+node:ekr.20110929074744.15487: *8* Showing docstrings
 Regardless of the setting of ``@bool use_qcompleter``,
 typing '?' while autocompleting will show the docstring of
 the present context.  For example, if the context is
@@ -813,7 +815,7 @@ the present context.  For example, if the context is
     
 It is not possible to copy the docstring from the log pane
 when using the QCompleter because the QCompleter popup window is a modal dialog.
-.. @+node:ekr.20110929074744.15488: *6* Code notes
+.. @+node:ekr.20110929074744.15488: *7* Code notes
 Function and design
 ===================
 
@@ -836,7 +838,7 @@ limits what must appear in the qcompleter window.
 
 
 
-.. @+node:ekr.20110929074744.15489: *6* Minor settings
+.. @+node:ekr.20110929074744.15489: *7* Minor settings
 Minor Autocompletion settings
 =============================
 
@@ -868,7 +870,7 @@ True: When typing an opening bracket '(','[' or '{', immediately type the corres
 - @bool forbid_invalid_completions = False
 
 True: Don't add characters during autocompletion that are not part of any computed completion.
-.. @+node:ekr.20110929074744.15490: *6* Appearance
+.. @+node:ekr.20110929074744.15490: *7* Appearance
 Appearance
 ==========
 
@@ -885,7 +887,7 @@ completion. This is an experimental feature, but it might
 play well with using codewise completions as a fallback to
 Leo-related completions.
 
-.. @+node:ekr.20110929074744.15491: *6* Codewise notes
+.. @+node:ekr.20110929074744.15491: *7* Codewise notes
 Why the codewise module
 =======================
 
@@ -911,7 +913,7 @@ completions to all class-related completions (kind ==
 'class' in ac.get_codewise_completions). This looks like a
 really good hack, and it eliminates the need for the
 ContextSniffer class.
-.. @+node:ekr.20110929074744.15492: *6* Performance
+.. @+node:ekr.20110929074744.15492: *7* Performance
 Performance
 ===========
 
@@ -959,10 +961,10 @@ everywhere) and no state variables had to be added. In
 short, the new caching scheme is much better than before,
 and it probably is close to optimal in most situations.
 
-.. @+node:ekr.20110929074744.15493: *6* Completions
+.. @+node:ekr.20110929074744.15493: *7* Completions
 os.path.splitdrive.d_rule
 os.path.join
-.. @+node:ekr.20110929074744.15494: *7* Docs
+.. @+node:ekr.20110929074744.15494: *8* Docs
 @language rest
 
 
@@ -1098,7 +1100,7 @@ Part 2: New documentation
 As I reread the release notes, I see that they are too code-oriented for the general reader.  What is needed are the following:
 
 1. A discussion of Autocompletion settings in 
-.. @+node:ekr.20110929074744.15495: *8* Additional options
+.. @+node:ekr.20110929074744.15495: *9* Additional options
 The following options specify minor user preferences: they have little or no
 effect on the design or code of the autocompleter:
 
@@ -1115,7 +1117,7 @@ True: When typing an opening bracket '(','[' or '{', immediately type the corres
 - @bool forbid_invalid_completions = False
 
 True: Don't add characters during autocompletion that are not part of any computed completion.
-.. @+node:ekr.20110929074744.15496: *7* Existing docs
+.. @+node:ekr.20110929074744.15496: *8* Existing docs
 @language rest
 @pagewidth 65
 
@@ -1184,7 +1186,7 @@ The mini-buffer is a text area at the bottom of the body pane. You use it like t
 For example, to print a list of all commands type Alt-X print-commands <Return>.
 
 The following sections list the various commands that you can invoke from the minibuffer. Important: you may bind keystrokes to any of these commands. See Customizing Leo for full details.
-.. @+node:ekr.20111017132257.15884: *4* Terry added bookmark scripts
+.. @+node:ekr.20111017132257.15884: *5* Terry added bookmark scripts
 @language rest
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/b17d140b7ceb8fc9
@@ -1237,11 +1239,11 @@ If the ``bookmarks`` plugin is loaded the bookmark will have to be moved to a ``
 
 The browser may or may not be able to close the bookmark form window for you, depending on settings - set ``dom.allow_scripts_to_close_windows`` to true
 in ``about:config`` in Firefox. 
-.. @+node:ekr.20111018104244.15931: *4* Added @command print-cmd-docstrings
+.. @+node:ekr.20111018104244.15931: *5* Added @command print-cmd-docstrings
 Leo must have a check-doc-strings script that will verify that all
 commands have non-trivial doc strings.
 
-.. @+node:ekr.20111017132257.15886: *4* Add tip: How to restore focus without the mouse
+.. @+node:ekr.20111017132257.15886: *5* Add tip: How to restore focus without the mouse
 @language rest
 
 It sometimes happens that the focus gets left in a Leo in a widget
@@ -1260,9 +1262,9 @@ Edward
 P.S. One of the requirements of the recent bug fix was that doing Alt-
 tab twice would put the focus in the body pane.  If you think that was
 easy, you are sadly mistaken :-) 
-.. @+node:ekr.20111017132257.15889: *4* Document clone/move/delete-marked commands
+.. @+node:ekr.20111017132257.15889: *5* Document clone/move/delete-marked commands
 http://groups.google.com/group/leo-editor/browse_thread/thread/4686ebad81bb1ea1
-.. @+node:ekr.20111018104244.15922: *4* Leo on Mac OSX: new installation instructions
+.. @+node:ekr.20111018104244.15922: *5* Leo on Mac OSX: new installation instructions
 @language rest
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
@@ -1345,7 +1347,7 @@ I haven't looked at it yet.
 Now I just have to start using Leo after all these years of checking
 it out... :-)
 
-.. @+node:ekr.20111018104244.15926: *4* Document loading plugins when running unit tests externally
+.. @+node:ekr.20111018104244.15926: *5* Document loading plugins when running unit tests externally
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/b560a3b84e7ec7a8
@@ -1420,59 +1422,28 @@ I hope this gives you a sense of what is going on.  For full details,
 consult leoTest.py.
 
 It has been fun tracking this down.  I'll fix the documentation immediately. 
-.. @+node:ekr.20111018104244.15924: *4* Revise Leo's wiki
-.. @+node:ekr.20111019080436.15850: *3* Bugs: 5
-.. @+node:ekr.20110619173515.14895: *4* Fix bug: realpath in g.openWithFileName
+.. @+node:ekr.20111018104244.15924: *5* Revise Leo's wiki
+.. @+node:ekr.20111019080436.15849: *5* Doc scripts: 2
+.. @+node:ekr.20111018104244.15932: *6* Write create-command-docs script
+@language rest
+
+This will create large docs for individual commands from docstrings.
+
+Base this on print-cmd-docstrings.
+.. @+node:ekr.20111018104244.15933: *6* Write create-plugins-doc script (Use/adapt plugin_catalog.py)
+@language rest
+
+Leo must have a create-plugins-doc script that does the same for
+plugins.  A prototype of this script exists somewhere.  Making it an
+@command node will make it much more visible. 
+
+Terry wrote plugin_catalog.py.  It is in LeoDocs.leo)
+.. @+node:ekr.20111019080436.15850: *4* Fix all significant bugs: 8
+.. @+node:ekr.20111017132257.15885: *5* * Add refresh colorizing automatically when @language edited
 @nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/cd5e2125c9e13d8f
-
-g.openWithFileName needs
-
-   fileName = g.os_path_realpath(fileName)
-
-at the start of it, otherwise
-
-g.openWithFileName("/home/tbrown/.leo/.todo.leo", c) will open another
-instance of an already open "/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo"
-because it doesn't recognize them as being the same.
-
-It would be nice if the original attempt to open
-"/home/tbrown/.leo/.todo.leo" was not converted to
-"/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo", but I think the POSIX
-spec. insists on giving CPython the real path form, so this is hard to
-avoid.  You see this when selecting a file using a file dialog, in the
-dialog you choose /home/me/myfile.txt, but the return
-is /mnt/usr1/usr1/home/me/myfile.txt.
-
-Anyway, let me know if and when I can push that to trunk, impacts seem
-to be limited to (a) not failing to detect an already opened file in
-g.openWithFileName, which is a bug, and (b) sometimes less attractive
-apparent paths, which is annoying, but I think better than the bug.
-
-(this of course trips up UNLs
-if /mnt/usr1/usr1/home/tbrown/.leo/.todo.leo is already loaded and the
-UNL is /home/tbrown/.leo/.todo.leo#Home-->Paint roof)
-.. @+node:ekr.20110621085435.6531: *4* Fix bug: Improve the find panel and find menu
-@nocolor-node
-
-Recently, perhaps it was today, there was a remark made about Leo's
-Find panel being confusing for newbies.  I have some sympathy for the
-remarks.
-
-1.  Looking at Leo's Edit:Find menu, there is no obvious way of doing
-a search/replace operation.  I'll fix this soon after 4.9 final.
-
-2.  The Find tab should make it clearer that it is a summary/status
-tab only--not a way of actually initiating or continuing searches.
-Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
-for the find/change patterns would help a bit.
-.. @+node:ekr.20111018104244.15920: *4* Fix bug: Use QLocalSocket in LProtoClient.connect
-http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
-.. @+node:ekr.20111010062725.15537: *4* Fix bug: Finish cleaning @color settings
-.. @+node:ekr.20111014074810.15655: *4* * What about LeoDocs(hard-crash).leo is causing the crash?
-.. @+node:ekr.20111018220642.15859: *3* First: easy: 15
-.. @+node:ekr.20110929165422.15449: *4* Test noweb expansions in rst3 command
+Could this be done as part of macro expansion?
+.. @+node:ekr.20110929165422.15449: *5* Test noweb expansions in rst3 command
 @nocolor-node
 
 *** Important *** This was all done in Leo 4.9
@@ -1489,7 +1460,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
 - When expand_noweb_references is True, definitions (typically clones)
   must be descendants of the referencing node (in the @rst tree)
-.. @+node:ekr.20111018104244.15918: *5* Report
+.. @+node:ekr.20111018104244.15918: *6* Report
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/15239f5f504cee6f
@@ -1531,8 +1502,8 @@ But now I can go see what happens in the code for debugging, since the
 option gives a pointer into the code.
 
 Thanks!
-.. @+node:ekr.20100813041139.5920: *5* Entry points
-.. @+node:ekr.20100812082517.5945: *6* code_to_rst_command & helpers
+.. @+node:ekr.20100813041139.5920: *6* Entry points
+.. @+node:ekr.20100812082517.5945: *7* code_to_rst_command & helpers
 def code_to_rst_command (self,event=None,p=None,scriptSettingsDict=None,toString=False):
 
     '''Format the presently selected node as computer code.
@@ -1579,7 +1550,7 @@ def code_to_rst_command (self,event=None,p=None,scriptSettingsDict=None,toString
 
     if callDocutils or writeIntermediateFile:
         self.write_files(ext,fn,callDocutils,toString,writeIntermediateFile)
-.. @+node:ekr.20100812082517.5963: *7* write_code_body & helpers
+.. @+node:ekr.20100812082517.5963: *8* write_code_body & helpers
 def write_code_body (self,p):
 
     trace = False
@@ -1612,7 +1583,7 @@ def write_code_body (self,p):
     # Write the lines with exactly two trailing newlines.
     s = ''.join(result).rstrip() + '\n\n'
     self.write(s)
-.. @+node:ekr.20100812082517.5964: *8* split_parts
+.. @+node:ekr.20100812082517.5964: *9* split_parts
 def split_parts (self,lines,showDocsAsParagraphs):
 
     '''Split a list of body lines into a list of tuples (kind,lines).'''
@@ -1650,7 +1621,7 @@ def split_parts (self,lines,showDocsAsParagraphs):
         parts.append((kind,part_lines[:]),)
 
     return parts
-.. @+node:ekr.20100812082517.5965: *8* write_code_block
+.. @+node:ekr.20100812082517.5965: *9* write_code_block
 def write_code_block (self,lines):
 
     result = ['::\n\n'] # ['[**code block**]\n\n']
@@ -1665,7 +1636,7 @@ def write_code_block (self,lines):
 
     s = ''.join(result).rstrip()+'\n\n'
     return g.splitLines(s)
-.. @+node:ekr.20100812082517.5966: *7* write_code_headline & helper
+.. @+node:ekr.20100812082517.5966: *8* write_code_headline & helper
 def write_code_headline (self,p):
 
     '''Generate an rST section if options permit it.
@@ -1691,7 +1662,7 @@ def write_code_headline (self,p):
         return
 
     self.write_code_headline_helper(p)
-.. @+node:ekr.20100812082517.5967: *8* write_code_headline_helper
+.. @+node:ekr.20100812082517.5967: *9* write_code_headline_helper
 def write_code_headline_helper (self,p):
 
     h = p.h.strip()
@@ -1716,7 +1687,7 @@ def write_code_headline_helper (self,p):
         self.write(self.underline(h,p))
     else:
         self.write('\n**%s**\n\n' % h.replace('*',''))
-.. @+node:ekr.20100812082517.5968: *7* write_code_node
+.. @+node:ekr.20100812082517.5968: *8* write_code_node
 def write_code_node (self,p):
 
     '''Format a node according to the options presently in effect.
@@ -1737,7 +1708,7 @@ def write_code_node (self,p):
         self.write_code_headline(p)
         self.write_code_body(p)
         p.moveToThreadNext()
-.. @+node:ekr.20100812082517.5939: *7* write_code_tree
+.. @+node:ekr.20100812082517.5939: *8* write_code_tree
 def write_code_tree (self,p,fn):
 
     '''Write p's tree as code to self.outputFile.'''
@@ -1753,13 +1724,13 @@ def write_code_tree (self,p,fn):
     after = p.nodeAfterTree()
     while p and p != after:
         self.write_code_node(p) # Side effect: advances p.
-.. @+node:ekr.20090511055302.5793: *6* rst3 command & helpers
+.. @+node:ekr.20090511055302.5793: *7* rst3 command & helpers
 def rst3 (self,event=None):
 
     '''Write all @rst nodes.'''
 
     self.processTopTree(self.c.p)
-.. @+node:ekr.20090502071837.62: *7* processTopTree
+.. @+node:ekr.20090502071837.62: *8* processTopTree
 def processTopTree (self,p,justOneFile=False):
 
     c = self.c ; current = p.copy()
@@ -1777,7 +1748,7 @@ def processTopTree (self,p,justOneFile=False):
         self.processTree(current,ext=None,toString=False,justOneFile=justOneFile)
 
     g.es_print('done',color='blue')
-.. @+node:ekr.20090502071837.63: *7* processTree
+.. @+node:ekr.20090502071837.63: *8* processTree
 def processTree(self,p,ext=None,toString=False,justOneFile=False):
 
     '''Process all @rst nodes in a tree.
@@ -1811,7 +1782,7 @@ def processTree(self,p,ext=None,toString=False,justOneFile=False):
     if not found:
         g.es('No @rst or @slides nodes in selected tree',color='blue')
     return None,None
-.. @+node:ekr.20090502071837.64: *7* write_rst_tree
+.. @+node:ekr.20090502071837.64: *8* write_rst_tree
 def write_rst_tree (self,p,ext,fn,toString=False,justOneFile=False):
 
     '''Convert p's tree to rst sources.
@@ -1847,7 +1818,7 @@ def write_rst_tree (self,p,ext,fn,toString=False,justOneFile=False):
 
     if callDocutils or writeIntermediateFile:
         self.write_files(ext,fn,callDocutils,toString,writeIntermediateFile)
-.. @+node:ekr.20100822092546.5835: *7* write_slides & helper
+.. @+node:ekr.20100822092546.5835: *8* write_slides & helper
 def write_slides (self,p,toString=False):
 
     '''Convert p's children to slides.'''
@@ -1878,7 +1849,7 @@ def write_slides (self,p,toString=False):
             callDocutils=self.getOption('call_docutils'),
             toString=toString,
             writeIntermediateFile=self.getOption('write_intermediate_file'))
-.. @+node:ekr.20100822174725.5836: *8* writeSlideTitle
+.. @+node:ekr.20100822174725.5836: *9* writeSlideTitle
 def writeSlideTitle (self,title,n,n_tot):
 
     '''Write the title, underlined with the '#' character.'''
@@ -1890,8 +1861,8 @@ def writeSlideTitle (self,title,n,n_tot):
         encoding=self.encoding,reportErrors=False)))
 
     self.write('%s\n%s \n\n' % (title,('#'*width)))
-.. @+node:ekr.20090502071837.58: *7* write methods (rst3 command)
-.. @+node:ekr.20090502071837.68: *8* getDocPart
+.. @+node:ekr.20090502071837.58: *8* write methods (rst3 command)
+.. @+node:ekr.20090502071837.68: *9* getDocPart
 def getDocPart (self,lines,n):
 
     # g.trace('n',n,repr(''.join(lines)))
@@ -1904,7 +1875,7 @@ def getDocPart (self,lines,n):
             break
         result.append(s)
     return n, result
-.. @+node:ekr.20090502071837.69: *9* << Append whatever follows @doc or @space to result >>
+.. @+node:ekr.20090502071837.69: *10* << Append whatever follows @doc or @space to result >>
 if n > 0:
     line = lines[n-1]
     if line.startswith('@doc'):
@@ -1921,7 +1892,7 @@ if n > 0:
 
     if s.strip():
         result.append(s)
-.. @+node:ekr.20090502071837.81: *8* handleSpecialDocParts
+.. @+node:ekr.20090502071837.81: *9* handleSpecialDocParts
 def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
 
     # g.trace(kind,g.listToString(lines))
@@ -1948,7 +1919,7 @@ def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
             result.append(s)
 
     return result
-.. @+node:ekr.20090502071837.77: *8* isAnyDocPart
+.. @+node:ekr.20090502071837.77: *9* isAnyDocPart
 def isAnyDocPart (self,s):
 
     if s.startswith('@doc'):
@@ -1957,7 +1928,7 @@ def isAnyDocPart (self,s):
         return False
     else:
         return len(s) == 1 or s[1].isspace()
-.. @+node:ekr.20090502071837.79: *8* isAnySpecialDocPart
+.. @+node:ekr.20090502071837.79: *9* isAnySpecialDocPart
 def isAnySpecialDocPart (self,s):
 
     for kind in (
@@ -1969,7 +1940,7 @@ def isAnySpecialDocPart (self,s):
             return True
 
     return False
-.. @+node:ekr.20090502071837.78: *8* isSpecialDocPart
+.. @+node:ekr.20090502071837.78: *9* isSpecialDocPart
 def isSpecialDocPart (self,s,kind):
 
     '''Return True if s is a special doc part of the indicated kind.
@@ -1991,7 +1962,7 @@ def isSpecialDocPart (self,s,kind):
         # repr(kind),result,repr(s)))
 
     return result
-.. @+node:ekr.20090502071837.80: *8* removeLeoDirectives
+.. @+node:ekr.20090502071837.80: *9* removeLeoDirectives
 def removeLeoDirectives (self,lines):
 
     '''Remove all Leo directives, except within literal blocks.'''
@@ -2013,7 +1984,7 @@ def removeLeoDirectives (self,lines):
             result.append(s)
 
     return result
-.. @+node:ekr.20090502071837.82: *8* replaceCodeBlockDirectives
+.. @+node:ekr.20090502071837.82: *9* replaceCodeBlockDirectives
 def replaceCodeBlockDirectives (self,lines):
 
     '''Replace code-block directive, but not in literal blocks.'''
@@ -2039,7 +2010,7 @@ def replaceCodeBlockDirectives (self,lines):
                 result.append(s)
 
     return result
-.. @+node:ekr.20090502071837.70: *8* skip_literal_block
+.. @+node:ekr.20090502071837.70: *9* skip_literal_block
 def skip_literal_block (self,lines,n):
 
     s = lines[n] ; result = [s] ; n += 1
@@ -2056,7 +2027,7 @@ def skip_literal_block (self,lines,n):
 
     # g.printList(result,tag='literal block')
     return n, result
-.. @+node:ekr.20090502071837.71: *8* writeBody & helpers
+.. @+node:ekr.20090502071837.71: *9* writeBody & helpers
 def writeBody (self,p):
 
     trace = False and not g.unitTesting
@@ -2114,7 +2085,7 @@ def writeBody (self,p):
     # s = g.ensureLeadingNewlines(s,1)
     s = g.ensureTrailingNewlines(s,2)
     self.write(s)
-.. @+node:ekr.20110610144305.6749: *9* isSectionDef/Ref
+.. @+node:ekr.20110610144305.6749: *10* isSectionDef/Ref
 def isSectionDef (self,p):
     
     return self.isSectionRef(p.h)
@@ -2124,7 +2095,7 @@ def isSectionRef (self,s):
     n1 = s.find("<<",0)
     n2 = s.find(">>",0)
     return -1 < n1 < n2 and s[n1+2:n2].strip()
-.. @+node:ekr.20110610144305.6750: *9* expandSectionRefs
+.. @+node:ekr.20110610144305.6750: *10* expandSectionRefs
 def expandSectionRefs (self,lines,p,seen):
     
     trace = False and not g.unitTesting
@@ -2155,7 +2126,7 @@ def expandSectionRefs (self,lines,p,seen):
             result.append(s)
 
     return result
-.. @+node:ekr.20110610144305.6751: *9* findSectionDef
+.. @+node:ekr.20110610144305.6751: *10* findSectionDef
 def findSectionDef (self,name,p):
     
     for p2 in p.subtree():
@@ -2164,7 +2135,7 @@ def findSectionDef (self,name,p):
             return p2
     
     return None
-.. @+node:ekr.20090502071837.72: *9* handleCodeMode & helper
+.. @+node:ekr.20090502071837.72: *10* handleCodeMode & helper
 def handleCodeMode (self,lines):
 
     '''Handle the preprocessed body text in code mode as follows:
@@ -2228,7 +2199,7 @@ def handleCodeMode (self,lines):
         else: result2.append('%s\n' % z.rstrip())
 
     return result2
-.. @+node:ekr.20090502071837.73: *10* formatCodeModeLine
+.. @+node:ekr.20090502071837.73: *11* formatCodeModeLine
 def formatCodeModeLine (self,s,n,numberOption):
 
     if not s.strip(): s = ''
@@ -2237,7 +2208,7 @@ def formatCodeModeLine (self,s,n,numberOption):
         return '\t%d: %s' % (n,s)
     else:
         return '\t%s' % s
-.. @+node:ekr.20090502071837.74: *10* rstripList
+.. @+node:ekr.20090502071837.74: *11* rstripList
 def rstripList (self,theList):
 
     '''Removed trailing blank lines from theList.'''
@@ -2245,7 +2216,7 @@ def rstripList (self,theList):
     # 2010/08/27: fix bug 618482.
     s = ''.join(theList).rstrip()
     return s.split('\n')
-.. @+node:ekr.20090502071837.75: *10* finishCodePart
+.. @+node:ekr.20090502071837.75: *11* finishCodePart
 def finishCodePart (self,result,code):
 
     numberOption = self.getOption('number_code_lines')
@@ -2254,7 +2225,7 @@ def finishCodePart (self,result,code):
     for line in code:
         i += 1
         result.append(self.formatCodeModeLine(line,i,numberOption))
-.. @+node:ekr.20090502071837.76: *9* handleDocOnlyMode
+.. @+node:ekr.20090502071837.76: *10* handleDocOnlyMode
 def handleDocOnlyMode (self,p,lines):
 
     '''Handle the preprocessed body text in doc_only mode as follows:
@@ -2284,7 +2255,7 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
-.. @+node:ekr.20090502071837.83: *8* writeHeadline & helper
+.. @+node:ekr.20090502071837.83: *9* writeHeadline & helper
 def writeHeadline (self,p):
 
     '''Generate an rST section if options permit it.
@@ -2311,7 +2282,7 @@ def writeHeadline (self,p):
         return
 
     self.writeHeadlineHelper(p)
-.. @+node:ekr.20090502071837.84: *9* writeHeadlineHelper
+.. @+node:ekr.20090502071837.84: *10* writeHeadlineHelper
 def writeHeadlineHelper (self,p):
 
     h = p.h
@@ -2352,7 +2323,7 @@ def writeHeadlineHelper (self,p):
             self.write('\n%s\n\n' % h)
     else:
         self.write('\n**%s**\n\n' % h.replace('*',''))
-.. @+node:ekr.20090502071837.85: *8* writeNode (leoRst)
+.. @+node:ekr.20090502071837.85: *9* writeNode (leoRst)
 def writeNode (self,p):
 
     '''Format a node according to the options presently in effect.'''
@@ -2380,7 +2351,7 @@ def writeNode (self,p):
         self.writeHeadline(p)
         self.writeBody(p)
         p.moveToThreadNext()
-.. @+node:ekr.20090502071837.86: *8* writePreformat
+.. @+node:ekr.20090502071837.86: *9* writePreformat
 def writePreformat (self,p):
 
     '''Write p's body text lines as if preformatted.
@@ -2400,7 +2371,7 @@ def writePreformat (self,p):
     s = '\n'.join(lines)
     if s.strip():
         self.write('%s\n\n' % s)
-.. @+node:ekr.20090502071837.87: *8* writeTree
+.. @+node:ekr.20090502071837.87: *9* writeTree
 def writeTree(self,p,fn):
 
     '''Write p's tree to self.outputFile.'''
@@ -2417,7 +2388,7 @@ def writeTree(self,p,fn):
     after = p.nodeAfterTree()
     while p and p != after:
         self.writeNode(p) # Side effect: advances p.
-.. @+node:ekr.20090502071837.67: *6* writeNodeToString
+.. @+node:ekr.20090502071837.67: *7* writeNodeToString
 def writeNodeToString (self,p=None,ext=None):
 
     '''Scan p's tree (defaults to presently selected tree) looking for @rst nodes.
@@ -2437,7 +2408,7 @@ def writeNodeToString (self,p=None,ext=None):
             return self.processTree(p,ext=ext,toString=True,justOneFile=True)
     else:
         return self.processTree(current,ext=ext,toString=True,justOneFile=True)
-.. @+node:ekr.20090512153903.5803: *6* writeAtAutoFile
+.. @+node:ekr.20090512153903.5803: *7* writeAtAutoFile
 def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
 
     '''Write an @auto tree containing imported rST code.
@@ -2458,7 +2429,7 @@ def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
     finally:
         self.atAutoWrite = False
     return ok
-.. @+node:ekr.20090513073632.5733: *7* initAtAutoWrite (rstCommands)
+.. @+node:ekr.20090513073632.5733: *8* initAtAutoWrite (rstCommands)
 def initAtAutoWrite(self,p,fileName,outputFile):
 
     # Set up for a standard write.
@@ -2491,7 +2462,7 @@ def initAtAutoWrite(self,p,fileName,outputFile):
     self.atAutoWriteUnderlines   = underlines2 + underlines1
     self.underlines1 = underlines1
     self.underlines2 = underlines2
-.. @+node:ekr.20091228080620.6499: *7* isSafeWrite
+.. @+node:ekr.20091228080620.6499: *8* isSafeWrite
 def isSafeWrite (self,p):
 
     '''Return True if node p contributes nothing but
@@ -2509,8 +2480,8 @@ def isSafeWrite (self,p):
             return False
     else:
         return True
-.. @+node:ekr.20090502071837.41: *5* Options
-.. @+node:ekr.20090502071837.42: *6* createDefaultOptionsDict
+.. @+node:ekr.20090502071837.41: *6* Options
+.. @+node:ekr.20090502071837.42: *7* createDefaultOptionsDict
 def createDefaultOptionsDict(self):
 
     # Important: these must be munged names.
@@ -2556,7 +2527,7 @@ def createDefaultOptionsDict(self):
         'show_markup_doc_parts': False,
         'show_options_doc_parts': False,
     }
-.. @+node:ekr.20090502071837.43: *6* dumpSettings (debugging)
+.. @+node:ekr.20090502071837.43: *7* dumpSettings (debugging)
 def dumpSettings (self):
 
     d = self.optionsDict
@@ -2565,7 +2536,7 @@ def dumpSettings (self):
     g.pr('present settings...')
     for key in keys:
         g.pr('%20s %s' % (key,d.get(key)))
-.. @+node:ekr.20090502071837.44: *6* getOption & setOption
+.. @+node:ekr.20090502071837.44: *7* getOption & setOption
 def getOption (self,name):
 
     # 2010/08/12: munging names here is safe because setOption munges.
@@ -2575,7 +2546,7 @@ def getOption (self,name):
 def setOption (self,name,val,tag):
 
     self.optionsDict [self.munge(name)] = val
-.. @+node:ekr.20090502071837.45: *6* initCodeBlockString
+.. @+node:ekr.20090502071837.45: *7* initCodeBlockString
 def initCodeBlockString(self,p):
 
     trace = False and not g.unitTesting
@@ -2598,7 +2569,7 @@ def initCodeBlockString(self,p):
             language.title())
     else:
         self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n\n'
-.. @+node:ekr.20090502071837.46: *6* preprocessTree & helpers
+.. @+node:ekr.20090502071837.46: *7* preprocessTree & helpers
 def preprocessTree (self,root):
 
     self.nodeOptionDict = {}
@@ -2615,14 +2586,14 @@ def preprocessTree (self,root):
         for key in self.nodeOptionDict.keys():
             g.trace(key)
             g.printDict(self.nodeOptionDict.get(key))
-.. @+node:ekr.20090502071837.47: *7* preprocessNode
+.. @+node:ekr.20090502071837.47: *8* preprocessNode
 def preprocessNode (self,p):
 
     d = self.nodeOptionDict.get(p.v)
     if d is None:
         d = self.scanNodeForOptions(p)
         self.nodeOptionDict [p.v] = d
-.. @+node:ekr.20090502071837.48: *7* parseOptionLine
+.. @+node:ekr.20090502071837.48: *8* parseOptionLine
 def parseOptionLine (self,s):
 
     '''Parse a line containing name=val and return (name,value) or None.
@@ -2643,7 +2614,7 @@ def parseOptionLine (self,s):
     else:
         # g.trace('*True')
         return name,'True'
-.. @+node:ekr.20090502071837.49: *7* scanForOptionDocParts
+.. @+node:ekr.20090502071837.49: *8* scanForOptionDocParts
 def scanForOptionDocParts (self,p,s):
 
     '''Return a dictionary containing all options from @rst-options doc parts in p.
@@ -2672,7 +2643,7 @@ def scanForOptionDocParts (self,p,s):
                             d.update(self.scanOption(p,line))
                     break
     return d
-.. @+node:ekr.20090502071837.50: *7* scanHeadlineForOptions
+.. @+node:ekr.20090502071837.50: *8* scanHeadlineForOptions
 def scanHeadlineForOptions (self,p):
 
     '''Return a dictionary containing the options implied by p's headline.'''
@@ -2721,7 +2692,7 @@ def scanHeadlineForOptions (self,p):
             g.trace('unknown kind of @rst headline',p.h,g.callers(4))
 
         return {}
-.. @+node:ekr.20090502071837.51: *7* scanNodeForOptions
+.. @+node:ekr.20090502071837.51: *8* scanNodeForOptions
 def scanNodeForOptions (self,p):
 
     '''Return a dictionary containing all the option-name:value entries in p.
@@ -2746,7 +2717,7 @@ def scanNodeForOptions (self,p):
             print('    %s: %s' % (z,d.get(z)))
 
     return d
-.. @+node:ekr.20090502071837.52: *7* scanOption
+.. @+node:ekr.20090502071837.52: *8* scanOption
 def scanOption (self,p,s):
 
     '''Return { name:val } if s is a line of the form name=val.
@@ -2771,7 +2742,7 @@ def scanOption (self,p,s):
         s2 = 'bad rst3 option in %s: %s' % (p.h,s)
         g.es_print(s2,color='red')
         return {}
-.. @+node:ekr.20090502071837.53: *7* scanOptions
+.. @+node:ekr.20090502071837.53: *8* scanOptions
 def scanOptions (self,p,s):
 
     '''Return a dictionary containing all the options in s.'''
@@ -2783,7 +2754,7 @@ def scanOptions (self,p,s):
         if d2: d.update(d2)
 
     return d
-.. @+node:ekr.20090502071837.54: *6* scanAllOptions & helpers
+.. @+node:ekr.20090502071837.54: *7* scanAllOptions & helpers
 # Once an option is seen, no other related options in ancestor nodes have any effect.
 
 def scanAllOptions(self,p):
@@ -2812,7 +2783,7 @@ def scanAllOptions(self,p):
         self.setOption("generate_rst_header_comment",True, "rst3_all")
         self.setOption("http_server_support", True, "rst3_all")
         self.setOption("write_intermediate_file", True, "rst3_all")
-.. @+node:ekr.20090502071837.55: *7* initOptionsFromSettings
+.. @+node:ekr.20090502071837.55: *8* initOptionsFromSettings
 def initOptionsFromSettings (self):
 
     c = self.c
@@ -2842,7 +2813,7 @@ def initOptionsFromSettings (self):
     if self.getOption('http_server_support') and not mod_http:
         g.es('No http_server_support: can not import mod_http plugin',color='red')
         self.setOption('http_server_support',False)
-.. @+node:ekr.20090502071837.56: *7* handleSingleNodeOptions
+.. @+node:ekr.20090502071837.56: *8* handleSingleNodeOptions
 def handleSingleNodeOptions (self,p):
 
     '''Init the settings of single-node options from the tnodeOptionsDict.
@@ -2856,7 +2827,7 @@ def handleSingleNodeOptions (self,p):
         #g.trace('%24s %8s %s' % (ivar,val,p.h))
         self.setOption(ivar,val,p.h)
 
-.. @+node:ekr.20090502071837.42: *5* createDefaultOptionsDict
+.. @+node:ekr.20090502071837.42: *6* createDefaultOptionsDict
 def createDefaultOptionsDict(self):
 
     # Important: these must be munged names.
@@ -2902,7 +2873,7 @@ def createDefaultOptionsDict(self):
         'show_markup_doc_parts': False,
         'show_options_doc_parts': False,
     }
-.. @+node:ekr.20090502071837.71: *5* writeBody & helpers
+.. @+node:ekr.20090502071837.71: *6* writeBody & helpers
 def writeBody (self,p):
 
     trace = False and not g.unitTesting
@@ -2960,7 +2931,7 @@ def writeBody (self,p):
     # s = g.ensureLeadingNewlines(s,1)
     s = g.ensureTrailingNewlines(s,2)
     self.write(s)
-.. @+node:ekr.20110610144305.6749: *6* isSectionDef/Ref
+.. @+node:ekr.20110610144305.6749: *7* isSectionDef/Ref
 def isSectionDef (self,p):
     
     return self.isSectionRef(p.h)
@@ -2970,7 +2941,7 @@ def isSectionRef (self,s):
     n1 = s.find("<<",0)
     n2 = s.find(">>",0)
     return -1 < n1 < n2 and s[n1+2:n2].strip()
-.. @+node:ekr.20110610144305.6750: *6* expandSectionRefs
+.. @+node:ekr.20110610144305.6750: *7* expandSectionRefs
 def expandSectionRefs (self,lines,p,seen):
     
     trace = False and not g.unitTesting
@@ -3001,7 +2972,7 @@ def expandSectionRefs (self,lines,p,seen):
             result.append(s)
 
     return result
-.. @+node:ekr.20110610144305.6751: *6* findSectionDef
+.. @+node:ekr.20110610144305.6751: *7* findSectionDef
 def findSectionDef (self,name,p):
     
     for p2 in p.subtree():
@@ -3010,7 +2981,7 @@ def findSectionDef (self,name,p):
             return p2
     
     return None
-.. @+node:ekr.20090502071837.72: *6* handleCodeMode & helper
+.. @+node:ekr.20090502071837.72: *7* handleCodeMode & helper
 def handleCodeMode (self,lines):
 
     '''Handle the preprocessed body text in code mode as follows:
@@ -3074,7 +3045,7 @@ def handleCodeMode (self,lines):
         else: result2.append('%s\n' % z.rstrip())
 
     return result2
-.. @+node:ekr.20090502071837.73: *7* formatCodeModeLine
+.. @+node:ekr.20090502071837.73: *8* formatCodeModeLine
 def formatCodeModeLine (self,s,n,numberOption):
 
     if not s.strip(): s = ''
@@ -3083,7 +3054,7 @@ def formatCodeModeLine (self,s,n,numberOption):
         return '\t%d: %s' % (n,s)
     else:
         return '\t%s' % s
-.. @+node:ekr.20090502071837.74: *7* rstripList
+.. @+node:ekr.20090502071837.74: *8* rstripList
 def rstripList (self,theList):
 
     '''Removed trailing blank lines from theList.'''
@@ -3091,7 +3062,7 @@ def rstripList (self,theList):
     # 2010/08/27: fix bug 618482.
     s = ''.join(theList).rstrip()
     return s.split('\n')
-.. @+node:ekr.20090502071837.75: *7* finishCodePart
+.. @+node:ekr.20090502071837.75: *8* finishCodePart
 def finishCodePart (self,result,code):
 
     numberOption = self.getOption('number_code_lines')
@@ -3100,7 +3071,7 @@ def finishCodePart (self,result,code):
     for line in code:
         i += 1
         result.append(self.formatCodeModeLine(line,i,numberOption))
-.. @+node:ekr.20090502071837.76: *6* handleDocOnlyMode
+.. @+node:ekr.20090502071837.76: *7* handleDocOnlyMode
 def handleDocOnlyMode (self,p,lines):
 
     '''Handle the preprocessed body text in doc_only mode as follows:
@@ -3130,14 +3101,122 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
-.. @+node:ekr.20111018104244.15925: *4* Is leo.leo really useful?
-.. @+node:ekr.20111019080436.15848: *4* Features
-.. @+node:ekr.20111012061216.15698: *5* Complete expand/contract commands
-.. @+node:ekr.20111017102409.15875: *5* Create print-buttons command
+.. @+node:ekr.20110619173515.14895: *5* Fix bug: realpath in g.openWithFileName
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/cd5e2125c9e13d8f
+
+g.openWithFileName needs
+
+   fileName = g.os_path_realpath(fileName)
+
+at the start of it, otherwise
+
+g.openWithFileName("/home/tbrown/.leo/.todo.leo", c) will open another
+instance of an already open "/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo"
+because it doesn't recognize them as being the same.
+
+It would be nice if the original attempt to open
+"/home/tbrown/.leo/.todo.leo" was not converted to
+"/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo", but I think the POSIX
+spec. insists on giving CPython the real path form, so this is hard to
+avoid.  You see this when selecting a file using a file dialog, in the
+dialog you choose /home/me/myfile.txt, but the return
+is /mnt/usr1/usr1/home/me/myfile.txt.
+
+Anyway, let me know if and when I can push that to trunk, impacts seem
+to be limited to (a) not failing to detect an already opened file in
+g.openWithFileName, which is a bug, and (b) sometimes less attractive
+apparent paths, which is annoying, but I think better than the bug.
+
+(this of course trips up UNLs
+if /mnt/usr1/usr1/home/tbrown/.leo/.todo.leo is already loaded and the
+UNL is /home/tbrown/.leo/.todo.leo#Home-->Paint roof)
+.. @+node:ekr.20110621085435.6531: *5* Fix bug: Improve the find panel and find menu
+@nocolor-node
+
+Recently, perhaps it was today, there was a remark made about Leo's
+Find panel being confusing for newbies.  I have some sympathy for the
+remarks.
+
+1.  Looking at Leo's Edit:Find menu, there is no obvious way of doing
+a search/replace operation.  I'll fix this soon after 4.9 final.
+
+2.  The Find tab should make it clearer that it is a summary/status
+tab only--not a way of actually initiating or continuing searches.
+Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
+for the find/change patterns would help a bit.
+.. @+node:ekr.20111018104244.15920: *5* Fix bug: Use QLocalSocket in LProtoClient.connect
+http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
+.. @+node:ekr.20111010062725.15537: *5* Fix bug: Finish cleaning @color settings
+.. @+node:ekr.20111014074810.15655: *5* * What about LeoDocs(hard-crash).leo is causing the crash?
+.. @+node:ekr.20111010162047.15678: *5* * The @auto script *must* put @first nodes in root node
+@nocolor-node
+
+Also the import commands.
+
+Especially:
+    - Shebang line.
+    - Python encoding line.
+.. @+node:ekr.20111019104425.15866: *4* Fix all bug-tracker items
+.. @+node:ekr.20111019104425.15862: *4* Dynamic home page
+.. @+node:ekr.20111011175652.15696: *5* Register a domain name like leo-editor.org
+.. @+node:ekr.20111018104244.15921: *5* * Leo google group feed summary for website
+http://groups.google.com/group/leo-editor/browse_thread/thread/060677c927c898d2
+.. @+node:ekr.20111018104244.15919: *5* Follow up on "Leo as a static site generator
+@nocolor-node
+
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/840b0998de6c83e8
+
+A long thread, full on interesting things.
+.. @+node:ekr.20111011175652.15697: *5* Transclude leo-editor conversations to Leo's home page
+.. @+node:ekr.20111017132257.15891: *4* Get IPython working again
+.. @+node:ekr.20111017132257.15890: *5* Investigate how IPython hijacks event loops
+http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
+.. @+node:ekr.20111009162434.7204: *5* Port ipy_leo.py to latest version of IPython
+.. @+node:ekr.20111019080436.15848: *3* Easy new features: 10
+.. @+node:ekr.20111010122531.15568: *4* * @render-rest, @render-html trees
+@language rest
+
+The free_layout and viewrendered plugins are a huge step forward.  But
+the lighter/heavier distinction suggests a new way to use them.
+
+Suppose Leo supports @render-rest or @render-html.
+
+This means that all nodes in the tree will have the body pane become a
+rendering pane for rST or html.
+
+Imagine LeoDocs completely rendered at all times.
+
+Of course, for specific purposes, say in Leo's scripting chapter, we
+might want to override these rendering directives (which should be
+allowed in headlines too) with @no-render.
+
+The point is that having *both* the original text *and* the rendered
+text be visible is often too heavy: the user usually does not want to
+know about the sources: the rendering is good enough.
+
+I suppose for sophisticated users, something like show/hide-body pane
+would be good commands to have, but that doesn't matter: those
+commands to not increase the burden on the user while she is reading
+the (rendered) docs.
+.. @+node:ekr.20111019104425.15869: *4* * Convert @command nodes to official commands
+@nocolor-node
+
+May require command-related settings.
+
+Example:
+    @path create-at-auto-nodes-path=C:\apps\pygments\pygments
+    @string create-at-auto-nodes-types=.py,
+    @bool create-at-auto-nodes-is-recursive=True
+.. @+node:ekr.20111019104425.15868: *4* * Render to tex, pdf, rst, etc.
+.. @+node:ekr.20111012061216.15698: *4* Complete expand/contract commands
+.. @+node:ekr.20111017102409.15875: *4* Create print-buttons command
 @nocolor-node
 
 - Create print-buttons command, showing source of all @command and @button nodes.
-.. @+node:ekr.20111010122531.15569: *5* print-bindings/commands/settings create nodes
+.. @+node:ekr.20111010122531.15569: *4* print-bindings/commands/settings create nodes
 @language rest
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/d302b2715b3ace96
@@ -3172,9 +3251,9 @@ The more I think about the light/heavy distinction, the more I think
 it is getting close to what makes Leo special.  For example, clones
 (and nodes, for that matter) drastically lighten the apparent
 complexity of programs or data.
-.. @+node:ekr.20111010093113.15547: *5* Add support for ! in minibuffer
-.. @+node:ekr.20061031131434.145: *6* k.Master event handlers
-.. @+node:ekr.20061031131434.105: *7* masterCommand & helpers
+.. @+node:ekr.20111010093113.15547: *4* Add support for ! in minibuffer
+.. @+node:ekr.20061031131434.145: *5* k.Master event handlers
+.. @+node:ekr.20061031131434.105: *6* masterCommand & helpers
 def masterCommand (self,event,func,stroke,commandName=None):
 
     '''This is the central dispatching method.
@@ -3272,7 +3351,7 @@ def masterCommand (self,event,func,stroke,commandName=None):
             c.frame.updateStatusLine()
         if traceGC: g.printNewObjects('masterCom 4')
         return val
-.. @+node:ekr.20061031131434.106: *8* << define specialKeysyms >>
+.. @+node:ekr.20061031131434.106: *7* << define specialKeysyms >>
 specialKeysyms = (
     'Alt_L','Alt_R',
     'Meta_L','Meta_R', # Meta support.
@@ -3280,7 +3359,7 @@ specialKeysyms = (
     'Num_Lock',
     'Shift_L','Shift_R',
 )
-.. @+node:ekr.20061031131434.109: *8* callKeystrokeFunction (not used)
+.. @+node:ekr.20061031131434.109: *7* callKeystrokeFunction (not used)
 def callKeystrokeFunction (self,event):
 
     '''Handle a quick keystroke function.
@@ -3295,7 +3374,7 @@ def callKeystrokeFunction (self,event):
         k.endCommand(commandName)
 
     return func
-.. @+node:ekr.20061031131434.110: *8* k.handleDefaultChar
+.. @+node:ekr.20061031131434.110: *7* k.handleDefaultChar
 def handleDefaultChar(self,event,stroke):
     k = self ; c = k.c
     w = event and event.widget
@@ -3339,7 +3418,7 @@ def handleDefaultChar(self,event,stroke):
     else:
         # Let the widget handle the event.
         return # None
-.. @+node:ekr.20061031131434.146: *7* masterKeyHandler & helpers
+.. @+node:ekr.20061031131434.146: *6* masterKeyHandler & helpers
 master_key_count = 0
 
 def masterKeyHandler (self,event):
@@ -3397,7 +3476,7 @@ def masterKeyHandler (self,event):
         if traceGC: g.printNewObjects('masterKey 4')
         if trace: g.trace(' unbound',stroke)
         return k.handleUnboundKeys(event,char,stroke)
-.. @+node:ekr.20061031131434.147: *8* << define vars >>
+.. @+node:ekr.20061031131434.147: *7* << define vars >>
 w = event and event.widget
 char = event and event.char or ''
 stroke = event and event.stroke or ''
@@ -3416,7 +3495,7 @@ special_keys = (
 self.master_key_count += 1
 
 isPlain =  k.isPlainKey(stroke)
-.. @+node:ekr.20061031131434.108: *8* callStateFunction
+.. @+node:ekr.20061031131434.108: *7* callStateFunction
 def callStateFunction (self,event):
 
     trace = False and not g.unitTesting
@@ -3450,7 +3529,7 @@ def callStateFunction (self,event):
             g.es_print('no state function for',k.state.kind,color='red')
 
     return val
-.. @+node:ekr.20091230094319.6244: *8* doMode
+.. @+node:ekr.20091230094319.6244: *7* doMode
 def doMode (self,event,state,stroke):
 
     trace = False and not g.unitTesting
@@ -3501,7 +3580,7 @@ def doMode (self,event,state,stroke):
         else:
             if trace: g.trace('No state handler for %s' % state)
         return True,'break'
-.. @+node:ekr.20091230094319.6240: *8* getPaneBinding
+.. @+node:ekr.20091230094319.6240: *7* getPaneBinding
 def getPaneBinding (self,stroke,w):
 
     trace = False and not g.unitTesting
@@ -3552,7 +3631,7 @@ def getPaneBinding (self,stroke,w):
                         if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
                             key,name,repr(b.stroke),b.commandName))
                         return b
-.. @+node:ekr.20061031131434.152: *8* handleMiniBindings
+.. @+node:ekr.20061031131434.152: *7* handleMiniBindings
 def handleMiniBindings (self,event,state,stroke):
 
     k = self ; c = k.c
@@ -3594,7 +3673,7 @@ def handleMiniBindings (self,event,state,stroke):
                     return True
 
     return False
-.. @+node:ekr.20110209083917.16004: *8* isAutoCompleteChar
+.. @+node:ekr.20110209083917.16004: *7* isAutoCompleteChar
 def isAutoCompleteChar (self,stroke):
     
     '''Return True if stroke is bound to the auto-complete in
@@ -3610,7 +3689,7 @@ def isAutoCompleteChar (self,stroke):
                 if b and b.commandName == 'auto-complete':
                     return True
     return False
-.. @+node:ekr.20080510095819.1: *8* k.handleUnboundKeys
+.. @+node:ekr.20080510095819.1: *7* k.handleUnboundKeys
 def handleUnboundKeys (self,event,char,stroke):
 
     trace = False and not g.unitTesting
@@ -3669,7 +3748,7 @@ def handleUnboundKeys (self,event,char,stroke):
     else:
         if trace: g.trace('no func',repr(char),repr(stroke))
         return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-.. @+node:ekr.20061031131434.155: *7* masterMenuHandler
+.. @+node:ekr.20061031131434.155: *6* masterMenuHandler
 def masterMenuHandler (self,stroke,func,commandName):
 
     k = self ; c = k.c
@@ -3685,133 +3764,142 @@ def masterMenuHandler (self,stroke,func,commandName):
         return k.masterKeyHandler(event)
     else:
         return k.masterCommand(event,func,stroke,commandName)
-.. @+node:ekr.20111017132257.15888: *5* Is there a script to diff 2 Leo files & create a tree?
-.. @+node:ekr.20111018104244.15927: *5* Allow {{expr}} in URL's (and UNL's?)
-.. @+node:ekr.20111019080436.15849: *4* Doc scripts
-.. @+node:ekr.20111018104244.15932: *5* Write create-command-docs script
-@language rest
-
-Leo must have a create-command-docs script that will create large
-parts of Leo's documentation for individual commands.
-
-Base this on print-cmd-docstrings.
-.. @+node:ekr.20111018104244.15933: *5* Write create-plugins-doc script (Use/adapt plugin_catalog.py)
-@language rest
-
-Leo must have a create-plugins-doc script that does the same for
-plugins.  A prototype of this script exists somewhere.  Making it an
-@command node will make it much more visible. 
-
-Terry wrote plugin_catalog.py.  It is in LeoDocs.leo)
-.. @+node:ekr.20111018220642.15861: *3* Study
-.. @+node:ekr.20111018104244.15921: *4* * Leo google group feed summary for website
-http://groups.google.com/group/leo-editor/browse_thread/thread/060677c927c898d2
-.. @+node:ekr.20111017132257.15882: *4* Study import_xml plugin
-@language rest
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/b5c2982778a2df53
-
-Provides commands (Alt-x) for importing and exporting XML from a Leo
-outline. These commands are to XML what ``@auto-rst`` is to
-reStructuredText.
-
-``xml2leo`` imports an .xml file into the node following the currently
-selected node.  ``leo2xml`` exports the current subtree to an .xml file
-the user selects.
-
-``xml_validate``, if executed on the top node in the
-Leo xml tree, reports any errors in XML generation or DTD validation,
-based on the DTD referenced from the XML itself.  If there's no DTD
-it reports that as an error.
-
-``leo2xml2leo`` takes the selected Leo subtree representing an XML file,
-converts it to XML internally, and then creates a new Leo subtree from
-that XML after the original, with 'NEW ' at the start of the top node's
-name.  This updates all the headlines, so that the convenience only
-previews (see below) are updated.  The original can be deleted if the
-new subtree seems correct.
-
-Conventions
-===========
-
-This is a valid XML file::
-
-    <?xml version="1.0" encoding="UTF-8"?>
-    <!DOCTYPE dml SYSTEM "dml.dtd">
-    <?xml-stylesheet href="common.css"?>
-    <dml xmlns='http://example.com/' xmlns:other='http://other.com/'/>
-      <block type='example'>Here's <other:b>some</other:b> text</block>
-    </dml>
-    <!-- This is the last line -->
-
-Note the processing instruction (xml-stylesheet), the DTD (DOCTYPE),
-the trailing comment (after the closing tag), and the pernicious
-mixed content (three separate pieces of text in the ``<block/>`` element).
-These commands attempt to deal with all of this.
-
- - A top level Leo node is created to hold these top level parts.  Its
-   headline is the basename of the file.
- - The xml declaration is placed in the body of
-   this top level Leo node
- - Below that, in the same body text, appears a simple namespace map::
-
-     http://example.com/
-     other: http://other.com/
-     ...
-
-   i.e. the default namespace first, and then any prefixed name spaces.
- - Below that, in the same body text, appears the ``DOCTYPE`` declaration
- - Children are added to this top level Leo node to represent the
-   top level elements in the xml file.  Headlines have the following
-   meanings:
-
-       - ``? pi-target some="other" __CHK`` - i.e. questionmark,
-         space, name of processing instruction target, start of processing
-         instruction content.  Only the questionmark, which indicates
-         the processing instruction, and the first word, which indicates
-         the processing instruction target, matter.  The remainder is just
-         a convenience preview of the processing instruction content, which
-         is the Leo node's body text.
-
-       - ``# This is *really* imp`` - i.e. hash,
-         space, start of comment content.  Only the hash, which indicates
-         the comment, matters.  The remainder is just
-         a convenience preview of the comment content, which
-         is the Leo node's body text.
-
-       - ``tagname name_attribute start of element text`` - i.e. the name
-         of an element followed by a convenience preview of the element's
-         text content.  If the element has a ``name`` attribute that's
-         included at the start of the text preview.  Only the first word
-         matters, it's the name of the element.
-
- - Element's text is placed in the Leo node's body.  If the element has
-   tailing text (the ``" text"`` tailing the ``<other:b/>`` element
-   in the above example), that occurs in the Leo node's body separated
-   by the `tailing text sentinel`::
-
-       @________________________________TAIL_TEXT_______________________________
-
- - Element's attributes are stored in a dict ``p.v.u['_XML']['_edit']``
-   on the Leo node. ``'_XML'`` is the uA prefix for these commands, and
-   ``'_edit'`` is used by the ``attrib_edit`` plugin to identify
-   attributes it should present to the user for editing. The
-   ``attrib_edit`` plugin **should be enabled** and its ``v.u mode``
-   activated (through its submenu on the Plugins menu). The attribute
-   edit panel initially appears as a tab in the log pane, although it
-   can be moved around by right clicking on the pane dividers if the
-   ``viewrendered`` and ``free_layout`` plugins are enabled. 
-.. @+node:ekr.20111018104244.15919: *4* Follow up on "Leo as a static site generator
+.. @+node:ekr.20111017132257.15888: *4* Is there a script to diff 2 Leo files & create a tree?
+.. @+node:ekr.20111018104244.15927: *4* Allow {{expr}} in URL's (and UNL's?)
+.. @+node:ekr.20111018104244.15925: *4* Improve leo.leo by making bookmarks more useful
 @nocolor-node
 
+- Some kinds of relative bookmarks don't work.
+- Allow {{exp}}
+- Convert back slashes to forward slashes.
+.. @+node:ekr.20031218072017.2312: *5* tree.OnIconDoubleClick (@url) & helper
+# Several plugins handle url's, especially UNL.py.
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/840b0998de6c83e8
+def OnIconDoubleClick (self,p):
 
-A long thread, full on interesting things.
-.. @+node:ekr.20111017132257.15890: *4* Investigate how IPython hijacks event loops
-http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
-.. @+node:ekr.20111011175652.15697: *4* Transclude leo-editor conversations to Leo's home page
-.. @+node:ekr.20111009162434.7203: *4* Investigate pygments
+    # Note: "icondclick" hooks handled by vnode callback routine.
+
+    c = self.c
+    s = p.h.strip()
+    if g.match_word(s,0,"@url"): 
+        if p.b.strip():
+            lines = p.b.split('\n',1)
+            url = lines and lines[0].strip() or ''
+        else:
+            url = s[4:].strip()
+        # g.trace(url,g.callers())
+
+        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+            g.handleUrlInUrlNode(url, c=c, p=p)
+        g.doHook("@url2",c=c,p=p,v=p)
+
+    return # (for Tk) 'break' # 11/19/06
+.. @+node:tbrown.20090219095555.61: *5* g.handleUrlInUrlNode
+def handleUrlInUrlNode(url, c=None, p=None):
+    
+    # Note 1: the UNL plugin has its own notion of what a good url is.
+
+    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
+    #         node if it exists.
+
+    if g.unitTesting: return
+    
+    << check the url; return if bad >>
+    << pass the url to the web browser >>
+.. @+node:tbrown.20090219095555.62: *6* << check the url; return if bad >>
+@ A valid url is (according to D.T.Hein):
+
+3 or more lowercase alphas, followed by,
+one ':', followed by,
+one or more of: (excludes !"#;<>[\]^`|)
+  $%&'()*+,-./0-9:=?@A-Z_a-z{}~
+followed by one of: (same as above, except no minus sign or comma).
+  $%&'()*+/0-9:=?@A-Z_a-z}~
+@c
+
+# urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+
+if not url:
+    g.es("no url following @url")
+    return
+
+# Add http:// if required.
+# if not re.match('^([a-z]{3,}:)',url):
+#     url = 'http://' + url
+# if not re.match(urlPattern,url):
+#     g.es("invalid url:",url)
+#     return
+.. @+node:tbrown.20090219095555.63: *6* << pass the url to the web browser >>
+@ Most browsers should handle the following urls:
+  ftp://ftp.uu.net/public/whatever.
+  http://localhost/MySiteUnderDevelopment/index.html
+  file://home/me/todolist.html
+@c
+
+try:
+    
+    parsed = urlparse(url)
+    
+    leo_path = parsed.path
+    if parsed.netloc:
+        leo_path = os.path.join(parsed.netloc, parsed.path)
+        # "readme.txt" gets parsed into .netloc...
+    
+    if c and parsed.scheme in ('', 'file'):
+        
+        # local UNLs like "node-->subnode", "-->node", and "#node"
+        if '-->' in parsed.path:
+            g.recursiveUNLSearch(parsed.path.split("-->"), c)
+            return
+        if not parsed.path and parsed.fragment:
+            g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+            return
+
+        # leo aware path
+        leo_path = os.path.expanduser(leo_path)
+        leo_path = g.os_path_expandExpression(leo_path, c=c)
+        if p and not os.path.isabs(leo_path):
+            leo_path = os.path.normpath(
+                os.path.join(c.getNodePath(p), leo_path))
+
+        # .leo file
+        if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+            # 2011/07/28: Immediately end editing, so that
+            # typing in the new window works properly.
+            c.endEditing()
+            c.redraw_now()
+            ok,frame = g.openWithFileName(leo_path, c)
+            
+            # with UNL after path
+            if ok and parsed.fragment:
+                g.recursiveUNLSearch(parsed.fragment.split("-->"), frame.c)
+                
+            if ok:
+                frame.c.bringToFront()
+                return
+                
+    if parsed.scheme in ('', 'file'):
+        if os.path.exists(leo_path):
+            g.os_startfile(leo_path)
+            return
+        if parsed.scheme == 'file':
+            g.es("File '%s' does not exist"%leo_path)
+            return
+        
+    import webbrowser
+    # Mozilla throws a weird exception, then opens the file!
+    try: webbrowser.open(url)
+    except: pass
+    
+except:
+    g.es("exception opening",url)
+    g.es_exception()
+.. @+node:ekr.20111013065147.9422: *3* Important new features: 3
+.. @+node:ekr.20111003161039.15481: *4* * Support solarized colors
+http://ethanschoonover.com/solarized
+.. @+node:ekr.20111003232155.6988: *4* * Use c.db for marks & expansion bits
+This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
+.. @+node:ekr.20111019104425.15863: *4* * Use pygments for syntax coloring
 .. @+node:ekr.20111009080647.15614: *5* pygments test
 from pygments import highlight
 from pygments.lexers import PythonLexer
@@ -4044,51 +4132,27 @@ Processing dependencies for Pygments==1.4dev-20111009
 Finished processing dependencies for Pygments==1.4dev-20111009
 
 c:\apps\pygments>
-.. @+node:ekr.20111013065147.9422: *3* Important/First: 6
-.. @+node:ekr.20111017132257.15891: *4* * Get IPython working again
-.. @+node:ekr.20111009162434.7204: *5* Port ipy_leo.py to latest version of IPython
-.. @+node:ekr.20111010122531.15568: *4* * @render-rest, @render-html trees
+.. @+node:ekr.20111019104425.15861: *3* Fun Scripts: 4
+.. @+node:ekr.20111019080436.15849: *4* Doc scripts: 2
+.. @+node:ekr.20111018104244.15932: *5* Write create-command-docs script
 @language rest
 
-The free_layout and viewrendered plugins are a huge step forward.  But
-the lighter/heavier distinction suggests a new way to use them.
+This will create large docs for individual commands from docstrings.
 
-Suppose Leo supports @render-rest or @render-html.
+Base this on print-cmd-docstrings.
+.. @+node:ekr.20111018104244.15933: *5* Write create-plugins-doc script (Use/adapt plugin_catalog.py)
+@language rest
 
-This means that all nodes in the tree will have the body pane become a
-rendering pane for rST or html.
+Leo must have a create-plugins-doc script that does the same for
+plugins.  A prototype of this script exists somewhere.  Making it an
+@command node will make it much more visible. 
 
-Imagine LeoDocs completely rendered at all times.
-
-Of course, for specific purposes, say in Leo's scripting chapter, we
-might want to override these rendering directives (which should be
-allowed in headlines too) with @no-render.
-
-The point is that having *both* the original text *and* the rendered
-text be visible is often too heavy: the user usually does not want to
-know about the sources: the rendering is good enough.
-
-I suppose for sophisticated users, something like show/hide-body pane
-would be good commands to have, but that doesn't matter: those
-commands to not increase the burden on the user while she is reading
-the (rendered) docs.
-.. @+node:ekr.20111017132257.15885: *4* * Add refresh colorizing automatically when @language edited
-.. @+node:ekr.20111003161039.15481: *4* * Support solarized colors
-http://ethanschoonover.com/solarized
-.. @+node:ekr.20111010162047.15678: *4* * The @auto script *must* put @first nodes in root node
-@nocolor-node
-
-Also the import commands.
-
-Especially:
-    - Shebang line.
-    - Python encoding line.
-.. @+node:ekr.20111003232155.6988: *4* * Use c.db for marks & expansion bits
-This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
-.. @+node:ekr.20111009230326.7036: *3* Important/Later: 10
+Terry wrote plugin_catalog.py.  It is in LeoDocs.leo)
+.. @+node:ekr.20110917104720.9418: *4* convert-names-to-pep8
+.. @+node:ekr.20110918204546.6809: *4* convert-to-class
+.. @+node:ekr.20111009230326.7036: *3* Important/Later: 8
 .. @+node:ekr.20111014134653.15672: *4* Search across multiple Leo files
 http://groups.google.com/group/leo-editor/browse_thread/thread/cf5ab54f29a6c128
-.. @+node:ekr.20111011175652.15696: *4* Register a domain name like leo-editor.org
 .. @+node:ekr.20110929074744.15449: *4* generalize show/hide/select gui elements commands
 @nocolor-node
 
@@ -4922,149 +4986,109 @@ def __set_u(self,val):
 u = property(
     __get_u, __set_u,
     doc = "vnode unknownAttribute property")
-.. @+node:ekr.20111004090723.15495: *4* Finish leoOPML plugin
 .. @+node:ekr.20111018220642.15862: *3* Plugins
-.. @+node:ekr.20111015150822.9354: *4* Improve quicksearch plugin
-@nocolor-node
+.. @+node:ekr.20111017132257.15882: *4* Study import_xml plugin
+@language rest
 
-- Allow global searches.
-- Add bindings.
-- Integrate with Leo's Find Tab?
-.. @+node:ekr.20111015150822.9351: *4* Improve bookmarks
-@nocolor-node
+http://groups.google.com/group/leo-editor/browse_thread/thread/b5c2982778a2df53
 
-- Allow {{exp}}
-- Convert back slashes to forward slashes.
-.. @+node:ekr.20031218072017.2312: *5* tree.OnIconDoubleClick (@url) & helper
-# Several plugins handle url's, especially UNL.py.
+Provides commands (Alt-x) for importing and exporting XML from a Leo
+outline. These commands are to XML what ``@auto-rst`` is to
+reStructuredText.
 
-def OnIconDoubleClick (self,p):
+``xml2leo`` imports an .xml file into the node following the currently
+selected node.  ``leo2xml`` exports the current subtree to an .xml file
+the user selects.
 
-    # Note: "icondclick" hooks handled by vnode callback routine.
+``xml_validate``, if executed on the top node in the
+Leo xml tree, reports any errors in XML generation or DTD validation,
+based on the DTD referenced from the XML itself.  If there's no DTD
+it reports that as an error.
 
-    c = self.c
-    s = p.h.strip()
-    if g.match_word(s,0,"@url"): 
-        if p.b.strip():
-            lines = p.b.split('\n',1)
-            url = lines and lines[0].strip() or ''
-        else:
-            url = s[4:].strip()
-        # g.trace(url,g.callers())
+``leo2xml2leo`` takes the selected Leo subtree representing an XML file,
+converts it to XML internally, and then creates a new Leo subtree from
+that XML after the original, with 'NEW ' at the start of the top node's
+name.  This updates all the headlines, so that the convenience only
+previews (see below) are updated.  The original can be deleted if the
+new subtree seems correct.
 
-        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-            g.handleUrlInUrlNode(url, c=c, p=p)
-        g.doHook("@url2",c=c,p=p,v=p)
+Conventions
+===========
 
-    return # (for Tk) 'break' # 11/19/06
-.. @+node:tbrown.20090219095555.61: *5* g.handleUrlInUrlNode
-def handleUrlInUrlNode(url, c=None, p=None):
-    
-    # Note 1: the UNL plugin has its own notion of what a good url is.
+This is a valid XML file::
 
-    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
-    #         node if it exists.
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE dml SYSTEM "dml.dtd">
+    <?xml-stylesheet href="common.css"?>
+    <dml xmlns='http://example.com/' xmlns:other='http://other.com/'/>
+      <block type='example'>Here's <other:b>some</other:b> text</block>
+    </dml>
+    <!-- This is the last line -->
 
-    if g.unitTesting: return
-    
-    << check the url; return if bad >>
-    << pass the url to the web browser >>
-.. @+node:tbrown.20090219095555.62: *6* << check the url; return if bad >>
-@ A valid url is (according to D.T.Hein):
+Note the processing instruction (xml-stylesheet), the DTD (DOCTYPE),
+the trailing comment (after the closing tag), and the pernicious
+mixed content (three separate pieces of text in the ``<block/>`` element).
+These commands attempt to deal with all of this.
 
-3 or more lowercase alphas, followed by,
-one ':', followed by,
-one or more of: (excludes !"#;<>[\]^`|)
-  $%&'()*+,-./0-9:=?@A-Z_a-z{}~
-followed by one of: (same as above, except no minus sign or comma).
-  $%&'()*+/0-9:=?@A-Z_a-z}~
-@c
+ - A top level Leo node is created to hold these top level parts.  Its
+   headline is the basename of the file.
+ - The xml declaration is placed in the body of
+   this top level Leo node
+ - Below that, in the same body text, appears a simple namespace map::
 
-# urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+     http://example.com/
+     other: http://other.com/
+     ...
 
-if not url:
-    g.es("no url following @url")
-    return
+   i.e. the default namespace first, and then any prefixed name spaces.
+ - Below that, in the same body text, appears the ``DOCTYPE`` declaration
+ - Children are added to this top level Leo node to represent the
+   top level elements in the xml file.  Headlines have the following
+   meanings:
 
-# Add http:// if required.
-# if not re.match('^([a-z]{3,}:)',url):
-#     url = 'http://' + url
-# if not re.match(urlPattern,url):
-#     g.es("invalid url:",url)
-#     return
-.. @+node:tbrown.20090219095555.63: *6* << pass the url to the web browser >>
-@ Most browsers should handle the following urls:
-  ftp://ftp.uu.net/public/whatever.
-  http://localhost/MySiteUnderDevelopment/index.html
-  file://home/me/todolist.html
-@c
+       - ``? pi-target some="other" __CHK`` - i.e. questionmark,
+         space, name of processing instruction target, start of processing
+         instruction content.  Only the questionmark, which indicates
+         the processing instruction, and the first word, which indicates
+         the processing instruction target, matter.  The remainder is just
+         a convenience preview of the processing instruction content, which
+         is the Leo node's body text.
 
-try:
-    
-    parsed = urlparse(url)
-    
-    leo_path = parsed.path
-    if parsed.netloc:
-        leo_path = os.path.join(parsed.netloc, parsed.path)
-        # "readme.txt" gets parsed into .netloc...
-    
-    if c and parsed.scheme in ('', 'file'):
-        
-        # local UNLs like "node-->subnode", "-->node", and "#node"
-        if '-->' in parsed.path:
-            g.recursiveUNLSearch(parsed.path.split("-->"), c)
-            return
-        if not parsed.path and parsed.fragment:
-            g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
-            return
+       - ``# This is *really* imp`` - i.e. hash,
+         space, start of comment content.  Only the hash, which indicates
+         the comment, matters.  The remainder is just
+         a convenience preview of the comment content, which
+         is the Leo node's body text.
 
-        # leo aware path
-        leo_path = os.path.expanduser(leo_path)
-        leo_path = g.os_path_expandExpression(leo_path, c=c)
-        if p and not os.path.isabs(leo_path):
-            leo_path = os.path.normpath(
-                os.path.join(c.getNodePath(p), leo_path))
+       - ``tagname name_attribute start of element text`` - i.e. the name
+         of an element followed by a convenience preview of the element's
+         text content.  If the element has a ``name`` attribute that's
+         included at the start of the text preview.  Only the first word
+         matters, it's the name of the element.
 
-        # .leo file
-        if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
-            # 2011/07/28: Immediately end editing, so that
-            # typing in the new window works properly.
-            c.endEditing()
-            c.redraw_now()
-            ok,frame = g.openWithFileName(leo_path, c)
-            
-            # with UNL after path
-            if ok and parsed.fragment:
-                g.recursiveUNLSearch(parsed.fragment.split("-->"), frame.c)
-                
-            if ok:
-                frame.c.bringToFront()
-                return
-                
-    if parsed.scheme in ('', 'file'):
-        if os.path.exists(leo_path):
-            g.os_startfile(leo_path)
-            return
-        if parsed.scheme == 'file':
-            g.es("File '%s' does not exist"%leo_path)
-            return
-        
-    import webbrowser
-    # Mozilla throws a weird exception, then opens the file!
-    try: webbrowser.open(url)
-    except: pass
-    
-except:
-    g.es("exception opening",url)
-    g.es_exception()
+ - Element's text is placed in the Leo node's body.  If the element has
+   tailing text (the ``" text"`` tailing the ``<other:b/>`` element
+   in the above example), that occurs in the Leo node's body separated
+   by the `tailing text sentinel`::
+
+       @________________________________TAIL_TEXT_______________________________
+
+ - Element's attributes are stored in a dict ``p.v.u['_XML']['_edit']``
+   on the Leo node. ``'_XML'`` is the uA prefix for these commands, and
+   ``'_edit'`` is used by the ``attrib_edit`` plugin to identify
+   attributes it should present to the user for editing. The
+   ``attrib_edit`` plugin **should be enabled** and its ``v.u mode``
+   activated (through its submenu on the Plugins menu). The attribute
+   edit panel initially appears as a tab in the log pane, although it
+   can be moved around by right clicking on the pane dividers if the
+   ``viewrendered`` and ``free_layout`` plugins are enabled. 
+.. @+node:ekr.20111004090723.15495: *4* Finish leoOPML plugin
 .. @+node:ekr.20111018220642.15860: *3* Bugs/Minor
 .. @+node:ekr.20111014074810.15652: *4* viewrendered should work better when docutils does not exist
 .. @+node:ekr.20111008073427.15595: *4* Macro bug: really must have a shortcut for call-last-macro
 .. @+node:ekr.20111010062725.15543: *4* ctrl-k twice (second time on blank line) doesn't work
 .. @+node:ekr.20111013065147.9424: *3* Code cleanup
-.. @+node:ekr.20110620083705.14901: *4* Fix or disable curses gui
-leoBridge.py requires the nullGui.
-.. @+node:ekr.20111012061216.15699: *4* use @g.command for all Leo commands
+.. @+node:ekr.20111012061216.15699: *4* ?use @g.command for all Leo commands?
 .. @+node:ekr.20111010093113.15548: *4* Lighten Leo's code base; remove wrapper layers
 @nocolor-node
 
@@ -5078,10 +5102,7 @@ redirection layers, and they are more of a nuisance than a help.
 One idea would be to define **interface classes** that define the desired api's.
 Unit tests could test that subclass implements the interface class, without
 having to resort to quite as much error-prone machinery as at present.
-.. @+node:ekr.20110929165422.15431: *3* Fun scripts
-.. @+node:ekr.20110917104720.9418: *4* convert-names-to-pep8
-.. @+node:ekr.20110918204546.6809: *4* convert-to-class
-.. @+node:ekr.20110620065017.14900: *3* Bugs/Cant Fix?
+.. @+node:ekr.20110620065017.14900: *3* Bugs/Can't/Won't fix
 .. @+node:ekr.20111011062533.15693: *4* Make headline widgets scrollable, if possible
 # It doesn't seem easy.
 .. @+node:ekr.20110605121601.18422: *5* editLabelHelper (leoQtTree)
@@ -5117,6 +5138,8 @@ def editLabelHelper (self,item,selectAll=False,selection=None):
 .. @+node:ekr.20110619173515.14896: *4* Fix bug: wrong modality level on autocompleter
 Just noticed the autocompleter pop-up is modal globally, not just for
 the Leo windows.  Probably should only block the Leo windows.
+.. @+node:ekr.20110620083705.14901: *4* Fix or disable curses gui
+leoBridge.py requires the nullGui.
 .. @+node:ekr.20110921094450.6956: ** To do: 4.10
 3. Bridges
 
