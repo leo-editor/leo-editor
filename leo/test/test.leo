@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.41">
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.52">
 	<global_window_position top="137" left="495" height="837" width="1352"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -85,68 +85,168 @@
 </v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
-<v t="ekr.20070531102813"><vh>Disabled buttons</vh>
-<v t="ekr.20060814111542"><vh>@@button add-e</vh></v>
-<v t="ekr.20080813100905.1"><vh>@@button args-test @args = a,b,c</vh></v>
-<v t="ekr.20060918083159"><vh>@@button Clear uAs</vh></v>
-<v t="ekr.20071002150320"><vh>@@button create-canvas</vh></v>
-<v t="ekr.20060809084033"><vh>@@button cvt to g.et</vh>
-<v t="ekr.20060809104405"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
-<v t="ekr.20060809092023"><vh>test</vh>
-<v t="ekr.20060809103738"><vh>test1</vh></v>
-<v t="ekr.20060809103738.1"><vh>test2</vh></v>
+<v t="ekr.20070531102813"><vh>@ignore Disabled buttons</vh>
+<v t="ekr.20071002150320"><vh>@button create-canvas</vh></v>
+<v t="ekr.20100812102648.2193"><vh>@button format-code</vh>
+<v t="ekr.20100812102648.2195"><vh>&lt;&lt; options &gt;&gt;</vh></v>
+<v t="ekr.20100812114823.2176"><vh>The code-to-rst command</vh>
+<v t="ekr.20100812114823.2177"><vh>code_to_rst_command &amp; helpers</vh>
+<v t="ekr.20100812114823.2178"><vh>write_code_body &amp; helpers</vh>
+<v t="ekr.20100812114823.2179"><vh>split_parts</vh></v>
+<v t="ekr.20100812114823.2180"><vh>write_code_block</vh></v>
 </v>
-<v t="ekr.20060809090508"><vh>replace</vh>
-<v t="ekr.20060809091749.72"><vh>&lt;&lt; handle string &gt;&gt;</vh></v>
-<v t="ekr.20060809091749.73"><vh>&lt;&lt; handle g.es &gt;&gt;</vh></v>
+<v t="ekr.20100812114823.2181"><vh>write_code_headline &amp; helper</vh>
+<v t="ekr.20100812114823.2182"><vh>write_code_headline_helper</vh></v>
+</v>
+<v t="ekr.20100812114823.2183"><vh>write_code_node</vh></v>
+<v t="ekr.20100812114823.2184"><vh>write_code_tree</vh></v>
+</v>
+<v t="ekr.20100812114823.2185"><vh>Changed methods</vh>
+<v t="ekr.20100812114823.2186"><vh>getOption &amp; setOption</vh></v>
+<v t="ekr.20100812114823.2187"><vh>initOptionsFromSettings</vh></v>
+<v t="ekr.20100812114823.2188"><vh>writeSpecialTree</vh></v>
 </v>
 </v>
-<v t="ekr.20070531104646"><vh>@@button da-comp</vh></v>
-<v t="ekr.20070531103315"><vh>@@button da-expand</vh></v>
-<v t="ekr.20090819085532.4265"><vh>@@button detach-body</vh></v>
-<v t="ekr.20081025105942.1"><vh>@@button dir</vh></v>
-<v t="ekr.20070530072113"><vh>@@button hide-ch</vh></v>
-<v t="ekr.20061030041200"><vh>@@button iron-py @key=Alt-5</vh></v>
-<v t="ekr.20071025192258"><vh>@@button local-tests @key=Alt+4</vh></v>
-<v t="ekr.20090718072135.1786"><vh>@@button print sep</vh></v>
-<v t="ekr.20071006084354"><vh>@@button print tk line number</vh></v>
-<v t="ekr.20080105115712"><vh>@@button pylint</vh>
+</v>
+<v t="ekr.20090701125834.1765"><vh>@button insert-inst-icon</vh></v>
+<v t="ekr.20061030041200"><vh>@button iron-py</vh></v>
+<v t="ekr.20110414063538.2372"><vh>@button json r/w</vh>
+<v t="ekr.20110414063538.2385"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20110414063538.2383"><vh>TestClass</vh>
+<v t="ekr.20110414073628.2389"><vh> utils</vh></v>
+<v t="ekr.20110414063538.2384"><vh>main</vh></v>
+<v t="ekr.20110414094917.2406"><vh>Reading...</vh>
+<v t="ekr.20110414094917.2420"><vh>Not used</vh>
+<v t="ekr.20110414094917.2415"><vh>readSaxFile</vh></v>
+<v t="ekr.20110414094917.2418"><vh>setPositionsFromVnodes &amp; helper</vh>
+<v t="ekr.20110414094917.2419"><vh>archivedPositionToPosition</vh></v>
+</v>
+<v t="ekr.20110414094917.2416"><vh>resolve_tnode_lists</vh></v>
+<v t="ekr.20110414094917.2417"><vh>resolve_archived_position</vh></v>
+</v>
+<v t="ekr.20110414185051.2435"><vh>create_v_dict</vh></v>
+<v t="ekr.20110414094917.2422"><vh>read_json_data &amp; helper</vh>
+<v t="ekr.20110414094917.2432"><vh>create_t_dict</vh></v>
+</v>
+<v t="ekr.20110414094917.2408"><vh>create_json_children</vh></v>
+<v t="ekr.20110414094917.2409"><vh>create_json_vnode &amp; helpers</vh>
+<v t="ekr.20110414094917.2410"><vh>handle_json_tnode_attributes</vh></v>
+<v t="ekr.20110414094917.2411"><vh>handle_json_vnode_attributes</vh></v>
+</v>
+<v t="ekr.20110414094917.2413"><vh>get_json_ua</vh></v>
+</v>
+<v t="ekr.20110414094917.2391"><vh>Writing...</vh>
+<v t="ekr.20110414063538.2373"><vh>putFile</vh></v>
+<v t="ekr.20110414063538.2374"><vh>putTnode</vh></v>
+<v t="ekr.20110414063538.2375"><vh>putTnodes</vh>
+<v t="ekr.20110414063538.2376"><vh>&lt;&lt; write only those tnodes that were referenced &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20110414063538.2377"><vh>putVnode</vh>
+<v t="ekr.20110414063538.2378"><vh>&lt;&lt; Set gnx = vnode index &gt;&gt;</vh></v>
+<v t="ekr.20110414063538.2379"><vh>&lt;&lt; Append attribute bits to attrs &gt;&gt;</vh></v>
+<v t="ekr.20110414063538.2380"><vh>&lt;&lt; Append unKnownAttributes to attrs&gt;&gt; fc.put</vh></v>
+<v t="ekr.20110414063538.2381"><vh>&lt;&lt; issue informational messages &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20110414063538.2382"><vh>putVnodes</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080806145258.14"><vh>@button Leo2DHTML</vh>
+<v t="ekr.20080806145258.15"><vh>&lt;&lt; about LeoToHTML &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.16"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.17"><vh>escape</vh></v>
+<v t="ekr.20080806145258.18"><vh>writeAll</vh></v>
+<v t="ekr.20080806145258.19"><vh>writeBody</vh></v>
+<v t="ekr.20080806145258.20"><vh>writeHead</vh></v>
+<v t="ekr.20080806145258.21"><vh>writeContents</vh></v>
+<v t="ekr.20080806145258.22"><vh>writePreamble</vh></v>
+<v t="ekr.20080806145258.23"><vh>writePostamble</vh></v>
+</v>
+<v t="ekr.20101103135707.2439"><vh>@button move head to prev</vh></v>
+<v t="ekr.20101103170034.2445"><vh>@button move tail to next</vh></v>
+<v t="ekr.20080105115712"><vh>@button pylint</vh>
 <v t="ekr.20080115085447"><vh>harmless warnings, errors</vh></v>
 <v t="ekr.20080105130903"><vh>warnings</vh></v>
 <v t="ekr.20080105120559"><vh>&lt;&lt; define data &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20110916103511.2472"><vh>@@button Recursive create @auto nodes</vh>
-<v t="ekr.20110916103511.2473"><vh>importFiles</vh></v>
-<v t="ekr.20110916103511.2474"><vh>importDir</vh></v>
-<v t="ekr.20110916103511.2475"><vh>createLastChildOf</vh></v>
+<v t="ekr.20090715064044.1782"><vh>@button render-as-sphinx</vh></v>
+<v t="ekr.20080807114145.2"><vh>@button run-windows-script</vh>
+<v t="ekr.20080807115344.5"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080807115344.2"><vh>class MySite</vh></v>
+<v t="ekr.20080807115344.3"><vh>class Application</vh></v>
+<v t="ekr.20080807115344.4"><vh>RunCode</vh></v>
 </v>
-<v t="ekr.20090715064044.1782"><vh>@@button render-as-sphinx</vh></v>
-<v t="ekr.20080915095329.1"><vh>@@button rst3</vh></v>
-<v t="ekr.20070515073111"><vh>@@button sep</vh></v>
-<v t="ekr.20060427103457"><vh>@@button settings.leo</vh></v>
-<v t="ekr.20090521070342.1907"><vh>@@button show-rst</vh></v>
-<v t="ekr.20080310111916.1"><vh>@@button Translate "can not" to "can't"</vh></v>
-<v t="ekr.20070115092430"><vh>@@button winpdb</vh></v>
-<v t="ekr.20080815073750.1"><vh>@@button write-nosent-files</vh></v>
-<v t="ekr.20071128122043"><vh>@@command create-shell-tab @key = Alt+5</vh></v>
-<v t="ekr.20070604095313"><vh>Chapter buttons</vh>
-<v t="ekr.20070530072113.1"><vh>@@button show-ch</vh></v>
-<v t="ekr.20070603175054.1"><vh>@@button ch-main</vh></v>
-<v t="ekr.20070603175054"><vh>@@button ch-abc</vh></v>
-<v t="ekr.20070603190713.1"><vh>@@button ch-xyz</vh></v>
-<v t="ekr.20070603190713"><vh>@@button ch-add-xyz</vh></v>
+<v t="ekr.20070115092430"><vh>@button winpdb</vh></v>
+<v t="ekr.20080815073750.1"><vh>@button write-nosent-files</vh></v>
+<v t="ekr.20070929122956.1"><vh>buttons for networkx</vh>
+<v t="ekr.20070929070426"><vh>@button print link</vh></v>
+<v t="ekr.20070927175908"><vh>@button leo2graph</vh></v>
+<v t="ekr.20070929062147.1"><vh>@button at-graph2graph</vh></v>
+<v t="ekr.20070929062147.2"><vh>@button at-networkx2graph</vh>
+<v t="ekr.20070929081505"><vh>error</vh></v>
+<v t="ekr.20070929074830"><vh>parse</vh></v>
+<v t="ekr.20070929072506.2"><vh>parseNodes</vh></v>
+<v t="ekr.20070929074830.1"><vh>parseEdges</vh></v>
+</v>
+<v t="ekr.20070929082546"><vh>@button at-networkx2at-graph</vh>
+<v t="ekr.20070929120541"><vh>createEdges</vh></v>
+<v t="ekr.20070929120541.1"><vh>createNodes</vh></v>
+<v t="ekr.20070929115302"><vh>createTree</vh></v>
+<v t="ekr.20070929114410.2"><vh>error</vh></v>
+<v t="ekr.20070929114410.3"><vh>parse</vh></v>
+<v t="ekr.20070929114410.5"><vh>parseEdges</vh></v>
+<v t="ekr.20070929114410.4"><vh>parseNodes</vh></v>
+</v>
+</v>
+<v t="ekr.20110320205650.2495"><vh>Movie buttons</vh>
+<v t="ekr.20101014040509.2318"><vh>@@button play/pause (OLD)</vh></v>
+<v t="ekr.20101014040509.2321"><vh>@button crash test</vh></v>
+<v t="ekr.20101014040509.2316"><vh>@button load video</vh>
+<v t="ekr.20101014040509.2317"><vh>run</vh></v>
+</v>
+<v t="ekr.20110321012354.2495"><vh>@button pause-play</vh></v>
+<v t="ekr.20101014040509.2320"><vh>@button show-stack</vh></v>
+<v t="ekr.20101014040509.2319"><vh>@button vid-stop</vh></v>
 </v>
 <v t="ekr.20060904110922"><vh>OPML buttons</vh>
-<v t="ekr.20060904111037.1"><vh>@@button opml-write</vh></v>
-<v t="ekr.20060904111037"><vh>@@button opml-read</vh></v>
+<v t="ekr.20060904111037.1"><vh>@button opml-write</vh></v>
+<v t="ekr.20060904111037"><vh>@button opml-read</vh></v>
+</v>
+<v t="ekr.20090620063706.1826"><vh>Prototype of rendering commands</vh>
+<v t="ekr.20090619103402.1818"><vh>@button render-as-html</vh></v>
+<v t="ekr.20090619103402.1821"><vh>@button render-as-text</vh></v>
+</v>
+<v t="ekr.20091013153026.2721"><vh>Prototype of using patternmatch library</vh>
+<v t="ekr.20091011110344.1853"><vh>@button find script a</vh></v>
+<v t="ekr.20091010091628.1836"><vh>@button create find button</vh>
+<v t="ekr.20091010104145.1840"><vh>class patController</vh>
+<v t="ekr.20091010104145.1842"><vh>ctor</vh></v>
+<v t="ekr.20091010104145.1843"><vh>setup</vh></v>
+<v t="ekr.20091010104145.1844"><vh>driver</vh></v>
+<v t="ekr.20091010104145.1845"><vh>find</vh></v>
+<v t="ekr.20091010104145.1846"><vh>findr</vh></v>
 </v>
 </v>
-<v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
-<v t="ekr.20061030041356"><vh>@url c:\prog\IronPython-1.0.1\Doc\IronPythonApiReference.chm</vh></v>
+<v t="ekr.20091010091628.1837"><vh>find pat a</vh></v>
+</v>
+<v t="ekr.20100109084336.1996"><vh>Prototypes of gui-dependent cursor move helpers</vh>
+<v t="ekr.20100109081612.1984"><vh>@button up</vh></v>
+<v t="ekr.20100109081746.1990"><vh>@button up-extend</vh></v>
+<v t="ekr.20100109081746.1993"><vh>@button up-page-extend</vh></v>
+<v t="ekr.20100109081746.1988"><vh>@button down</vh></v>
+<v t="ekr.20100109081746.1992"><vh>@button down-extend</vh></v>
+</v>
+<v t="ekr.20110526180653.2468"><vh>viewrendered buttons</vh>
+<v t="ekr.20110321012354.2496"><vh>@button toggle-renderer</vh></v>
+<v t="ekr.20110321073942.2490"><vh>@button lock-unlock-renderer</vh></v>
+<v t="ekr.20110321213439.2495"><vh>@button update-renderer</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20070410063214"><vh>Commands</vh>
-<v t="ekr.20060924180049"><vh>@@command clones-tab</vh>
+<v t="ekr.20111020134534.2594"><vh>@ignore disabled commands</vh>
+<v t="ekr.20071128122043"><vh>@command create-shell-tab</vh></v>
+<v t="ekr.20060924180049"><vh>@command clones-tab</vh>
 <v t="ekr.20060924180049.1"><vh>class cloneNavigator</vh>
 <v t="ekr.20060924180049.2"><vh>init</vh></v>
 <v t="ekr.20060924180049.3"><vh>getAllClones</vh></v>
@@ -156,9 +256,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080214091706.2"><vh>@@command ekr-command</vh></v>
-<v t="ekr.20080823154546.1"><vh>@@command parse-python @key = Alt-5</vh></v>
-<v t="edward.20081127113749.2"><vh>@@command complete-previous</vh>
+<v t="ekr.20080823154546.1"><vh>@command parse-python</vh></v>
+<v t="edward.20081127113749.2"><vh>@command complete-previous</vh>
 <v t="edward.20081127113749.3"><vh>WordCompleter</vh>
 <v t="edward.20081127113749.4"><vh>complete_word</vh>
 <v t="edward.20081127113749.5"><vh>&lt;&lt;backward search&gt;&gt;</vh>
@@ -178,9 +277,10 @@
 </v>
 <v t="edward.20081127113749.15"><vh>getCurrentWord</vh></v>
 </v>
-<v t="edward.20081127113749.16"><vh>@@command complete-next</vh>
+<v t="edward.20081127113749.16"><vh>@command complete-next</vh>
 <v t="edward.20081127113749.3"></v>
 <v t="edward.20081127113749.15"></v>
+</v>
 </v>
 </v>
 <v t="ekr.20071026102420.3"><vh>Scripts</vh>
@@ -253,17 +353,6 @@
 </v>
 <v t="ekr.20080806145258.12"><vh>Prototype of Leo in Ajax</vh>
 <v t="ekr.20080806145258.13"><vh>To do</vh></v>
-<v t="ekr.20080806145258.14"><vh>@@button Leo2DHTML</vh>
-<v t="ekr.20080806145258.15"><vh>&lt;&lt; about LeoToHTML &gt;&gt;</vh></v>
-<v t="ekr.20080806145258.16"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
-<v t="ekr.20080806145258.17"><vh>escape</vh></v>
-<v t="ekr.20080806145258.18"><vh>writeAll</vh></v>
-<v t="ekr.20080806145258.19"><vh>writeBody</vh></v>
-<v t="ekr.20080806145258.20"><vh>writeHead</vh></v>
-<v t="ekr.20080806145258.21"><vh>writeContents</vh></v>
-<v t="ekr.20080806145258.22"><vh>writePreamble</vh></v>
-<v t="ekr.20080806145258.23"><vh>writePostamble</vh></v>
-</v>
 <v t="ekr.20080806145258.24"><vh>@@file server.py</vh></v>
 <v t="ekr.20080806145258.25"><vh>@@file hello.html</vh></v>
 <v t="ekr.20080806145258.26"><vh>@@file cgi-bin/edward.py</vh>
@@ -299,56 +388,12 @@
 <v t="ekr.20070928095102.2"><vh>child2</vh></v>
 </v>
 </v>
-<v t="ekr.20070929122956.1"><vh>buttons</vh>
-<v t="ekr.20070929070426"><vh>@@button print link</vh></v>
-<v t="ekr.20070927175908"><vh>@@button leo2graph</vh></v>
-<v t="ekr.20070929062147.1"><vh>@@button at-graph2graph</vh></v>
-<v t="ekr.20070929062147.2"><vh>@@button at-networkx2graph</vh>
-<v t="ekr.20070929081505"><vh>error</vh></v>
-<v t="ekr.20070929074830"><vh>parse</vh></v>
-<v t="ekr.20070929072506.2"><vh>parseNodes</vh></v>
-<v t="ekr.20070929074830.1"><vh>parseEdges</vh></v>
-</v>
-<v t="ekr.20070929082546"><vh>@@button at-networkx2at-graph</vh>
-<v t="ekr.20070929120541"><vh>createEdges</vh></v>
-<v t="ekr.20070929120541.1"><vh>createNodes</vh></v>
-<v t="ekr.20070929115302"><vh>createTree</vh></v>
-<v t="ekr.20070929114410.2"><vh>error</vh></v>
-<v t="ekr.20070929114410.3"><vh>parse</vh></v>
-<v t="ekr.20070929114410.5"><vh>parseEdges</vh></v>
-<v t="ekr.20070929114410.4"><vh>parseNodes</vh></v>
-</v>
-</v>
 </v>
 <v t="ekr.20070630142904"><vh>Prototype of pyrex</vh>
 <v t="ekr.20070630142904.2"><vh>gcc build docs</vh></v>
 <v t="ekr.20070630142904.3"><vh>pyrexc command-line options</vh></v>
 <v t="ekr.20070630142904.4"><vh>@@file myModule.pyx</vh></v>
 <v t="ekr.20070630142904.5"><vh>Make myModule.c</vh></v>
-</v>
-<v t="ekr.20090620063706.1826"><vh>Prototype of rendering commands</vh>
-<v t="ekr.20090619103402.1818"><vh>@@button render-as-html</vh></v>
-<v t="ekr.20090619103402.1821"><vh>@@button render-as-text</vh></v>
-</v>
-<v t="ekr.20091013153026.2721"><vh>prototype of using patternmatch library</vh>
-<v t="ekr.20091011110344.1853"><vh>@@button find script a</vh></v>
-<v t="ekr.20091010091628.1836"><vh>@@button create find button</vh>
-<v t="ekr.20091010104145.1840"><vh>class patController</vh>
-<v t="ekr.20091010104145.1842"><vh>ctor</vh></v>
-<v t="ekr.20091010104145.1843"><vh>setup</vh></v>
-<v t="ekr.20091010104145.1844"><vh>driver</vh></v>
-<v t="ekr.20091010104145.1845"><vh>find</vh></v>
-<v t="ekr.20091010104145.1846"><vh>findr</vh></v>
-</v>
-</v>
-<v t="ekr.20091010091628.1837"><vh>find pat a</vh></v>
-</v>
-<v t="ekr.20100109084336.1996"><vh>Prototypes of gui-dependent cursor move helpers</vh>
-<v t="ekr.20100109081612.1984"><vh>@@button up</vh></v>
-<v t="ekr.20100109081746.1990"><vh>@@button up-extend</vh></v>
-<v t="ekr.20100109081746.1993"><vh>@@button up-page-extend</vh></v>
-<v t="ekr.20100109081746.1988"><vh>@@button down</vh></v>
-<v t="ekr.20100109081746.1992"><vh>@@button down-extend</vh></v>
 </v>
 <v t="ekr.20090728090618.2837"><vh>pydiction-1.0</vh>
 <v t="ekr.20090728090618.2846"><vh>pydiction.vim</vh></v>
@@ -369,12 +414,6 @@
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 <v t="ekr.20080811113441.2"><vh>Running body text as a windows script</vh>
 <v t="ekr.20080807115344.1"><vh>Windows script</vh></v>
-<v t="ekr.20080807114145.2"><vh>@@button run-windows-script</vh>
-<v t="ekr.20080807115344.5"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20080807115344.2"><vh>class MySite</vh></v>
-<v t="ekr.20080807115344.3"><vh>class Application</vh></v>
-<v t="ekr.20080807115344.4"><vh>RunCode</vh></v>
-</v>
 </v>
 <v t="ekr.20071026102420.2"><vh>Screen capture with Wink</vh>
 <v t="ekr.20070528111805"><vh>FrontWindowCapture.pyw</vh></v>
@@ -383,15 +422,6 @@
 <v t="ekr.20100516140428.2135"><vh>sha1 hashes</vh></v>
 <v t="ekr.20091230081322.1919"><vh>unicode categories</vh></v>
 <v t="ekr.20100521101729.2148"><vh>proto of template</vh></v>
-<v t="ekr.20110320205650.2495"><vh>Movie buttons</vh>
-<v t="ekr.20101014040509.2316"><vh>@@button load video</vh>
-<v t="ekr.20101014040509.2317"><vh>run</vh></v>
-</v>
-<v t="ekr.20101014040509.2318"><vh>@@button play/pause</vh></v>
-<v t="ekr.20101014040509.2319"><vh>@@button vid-stop</vh></v>
-<v t="ekr.20101014040509.2320"><vh>@@button show-stack</vh></v>
-<v t="ekr.20101014040509.2321"><vh>@@button crash test</vh></v>
-</v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20100203174233.2032"><vh>@@test paste-script</vh></v>
@@ -507,7 +537,6 @@
 </v>
 <v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
 <v t="ekr.20100824124015.2195"><vh>print icons</vh></v>
-<v t="ekr.20090701125834.1765"><vh>@@button insert-inst-icon</vh></v>
 <v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
 <v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
 <v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
@@ -529,7 +558,6 @@
 <v t="ekr.20100202115249.2023"><vh>@@thin qttexttest.py</vh></v>
 </v>
 <v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
-<v t="ekr.20090514073218.1923"><vh>@@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
@@ -567,36 +595,8 @@
 </v>
 <v t="ekr.20101004104134.2347"><vh>Recent</vh>
 <v t="ekr.20100729114420.2152"><vh>plain fonts</vh></v>
-<v t="ekr.20101004104134.2346"><vh>Autocomplter tests</vh>
-<v t="ekr.20101002141822.2349"><vh>@@button auto-scan @key=Alt-8</vh></v>
-</v>
-<v t="ekr.20101004104134.2348"><vh>Formatting code</vh>
-<v t="ekr.20100812102648.2193"><vh>@@button format-code</vh>
-<v t="ekr.20100812102648.2195"><vh>&lt;&lt; options &gt;&gt;</vh></v>
-<v t="ekr.20100812114823.2176"><vh>The code-to-rst command</vh>
-<v t="ekr.20100812114823.2177"><vh>code_to_rst_command &amp; helpers</vh>
-<v t="ekr.20100812114823.2178"><vh>write_code_body &amp; helpers</vh>
-<v t="ekr.20100812114823.2179"><vh>split_parts</vh></v>
-<v t="ekr.20100812114823.2180"><vh>write_code_block</vh></v>
-</v>
-<v t="ekr.20100812114823.2181"><vh>write_code_headline &amp; helper</vh>
-<v t="ekr.20100812114823.2182"><vh>write_code_headline_helper</vh></v>
-</v>
-<v t="ekr.20100812114823.2183"><vh>write_code_node</vh></v>
-<v t="ekr.20100812114823.2184"><vh>write_code_tree</vh></v>
-</v>
-<v t="ekr.20100812114823.2185"><vh>Changed methods</vh>
-<v t="ekr.20100812114823.2186"><vh>getOption &amp; setOption</vh></v>
-<v t="ekr.20100812114823.2187"><vh>initOptionsFromSettings</vh></v>
-<v t="ekr.20100812114823.2188"><vh>writeSpecialTree</vh></v>
-</v>
-</v>
-</v>
-</v>
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
 <v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
-<v t="ekr.20101103135707.2439"><vh>@@button move head to prev</vh></v>
-<v t="ekr.20101103170034.2445"><vh>@@button move tail to next</vh></v>
 <v t="ekr.20110127090822.2451"><vh>dump k.bindingsDict</vh></v>
 <v t="ekr.20110325142419.2337"><vh>QCompleter example</vh>
 <v t="ekr.20110325142419.2338"><vh>class DictionaryCompleter(QCompleter)</vh></v>
@@ -621,57 +621,10 @@
 <v t="ekr.20110414094917.2429"><vh>grandchild21</vh></v>
 </v>
 </v>
-<v t="ekr.20110414063538.2372"><vh>@button json r/w @key=Alt-8</vh>
-<v t="ekr.20110414063538.2385"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20110414063538.2383"><vh>TestClass</vh>
-<v t="ekr.20110414073628.2389"><vh> utils</vh></v>
-<v t="ekr.20110414063538.2384"><vh>main</vh></v>
-<v t="ekr.20110414094917.2406"><vh>Reading...</vh>
-<v t="ekr.20110414094917.2420"><vh>Not used</vh>
-<v t="ekr.20110414094917.2415"><vh>readSaxFile</vh></v>
-<v t="ekr.20110414094917.2418"><vh>setPositionsFromVnodes &amp; helper</vh>
-<v t="ekr.20110414094917.2419"><vh>archivedPositionToPosition</vh></v>
-</v>
-<v t="ekr.20110414094917.2416"><vh>resolve_tnode_lists</vh></v>
-<v t="ekr.20110414094917.2417"><vh>resolve_archived_position</vh></v>
-</v>
-<v t="ekr.20110414185051.2435"><vh>create_v_dict</vh></v>
-<v t="ekr.20110414094917.2422"><vh>read_json_data &amp; helper</vh>
-<v t="ekr.20110414094917.2432"><vh>create_t_dict</vh></v>
-</v>
-<v t="ekr.20110414094917.2408"><vh>create_json_children</vh></v>
-<v t="ekr.20110414094917.2409"><vh>create_json_vnode &amp; helpers</vh>
-<v t="ekr.20110414094917.2410"><vh>handle_json_tnode_attributes</vh></v>
-<v t="ekr.20110414094917.2411"><vh>handle_json_vnode_attributes</vh></v>
-</v>
-<v t="ekr.20110414094917.2413"><vh>get_json_ua</vh></v>
-</v>
-<v t="ekr.20110414094917.2391"><vh>Writing...</vh>
-<v t="ekr.20110414063538.2373"><vh>putFile</vh></v>
-<v t="ekr.20110414063538.2374"><vh>putTnode</vh></v>
-<v t="ekr.20110414063538.2375"><vh>putTnodes</vh>
-<v t="ekr.20110414063538.2376"><vh>&lt;&lt; write only those tnodes that were referenced &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20110414063538.2377"><vh>putVnode</vh>
-<v t="ekr.20110414063538.2378"><vh>&lt;&lt; Set gnx = vnode index &gt;&gt;</vh></v>
-<v t="ekr.20110414063538.2379"><vh>&lt;&lt; Append attribute bits to attrs &gt;&gt;</vh></v>
-<v t="ekr.20110414063538.2380"><vh>&lt;&lt; Append unKnownAttributes to attrs&gt;&gt; fc.put</vh></v>
-<v t="ekr.20110414063538.2381"><vh>&lt;&lt; issue informational messages &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20110414063538.2382"><vh>putVnodes</vh></v>
-</v>
-</v>
-</v>
 </v>
 <v t="ekr.20110416065515.2437"><vh>jinja2</vh></v>
 <v t="ekr.20110511140347.2445"><vh>QTimer</vh></v>
 <v t="ekr.20110320203616.2489"><vh>viewrendered examples</vh>
-<v t="ekr.20110526180653.2468"><vh>viewrendered buttons</vh>
-<v t="ekr.20110321012354.2495"><vh>@button pause-play</vh></v>
-<v t="ekr.20110321012354.2496"><vh>@button toggle-renderer</vh></v>
-<v t="ekr.20110321073942.2490"><vh>@button lock-unlock-renderer</vh></v>
-<v t="ekr.20110321213439.2495"><vh>@button update-renderer</vh></v>
-</v>
 <v t="ekr.20110320203616.2491"><vh>rst test</vh></v>
 <v t="ekr.20110320203616.2492"><vh>docstring test</vh></v>
 <v t="ekr.20101014040509.2311"><vh>@movie Horse movie</vh></v>
@@ -863,106 +816,6 @@ spam(a=4)
 <t tx="ekr.20041001211817">import os
 
 g.pr(os.path.exists(os.path.normpath("C:\\Progra~1\\Eclipse")))</t>
-<t tx="ekr.20060427103457"># Open leoSettings.leo
-c.openLeoSettings()</t>
-<t tx="ekr.20060809084033">'''A script to convert calls to g.es to g.et, and raw strings s to g._(s)'''
-
-__version__ = 0.2
-&lt;&lt; version history &gt;&gt;
-
-@others
-
-trace = False # For debugging.
-doReplace = True # True: actually replace the body text.
-
-if not doReplace: g.es_print('-' * 40)
-c.beginUpdate()
-try:
-    u = c.undoer
-    undoType = 'Convert g.es'
-    u.beforeChangeGroup (p,undoType)
-    for p in c.currentPosition().self_and_subtree_iter():
-        replace(p)
-    u.afterChangeGroup(p,undoType,reportFlag=True)
-finally:
-    c.endUpdate()</t>
-<t tx="ekr.20060809090508"># Based on leoImport.scanPythonText.
-def replace(p):
-    '''Replace g.es by g.et and strings s by g._(s)'''
-    s = p.bodyString()
-    if not s.strip(): return
-    result = [] ;  i = 0 ; count = 0
-    while i &lt; len(s):
-        progress = j = i
-        ch = s[i]
-        if ch == '\n' or ch == '\r':
-            i = g.skip_nl(s,i)
-            result.append(s[j:i])
-        elif ch == '#':
-            i = g.skip_to_end_of_line(s,i)
-            result.append(s[j:i])
-        elif ch == '"' or ch == "'":
-            &lt;&lt; handle string &gt;&gt;
-        elif g.is_c_id(ch):
-            if g.match_word(s,i,'g.es'):
-                &lt;&lt; handle g.es &gt;&gt;
-            else:
-                i = g.skip_c_id(s,i)
-                result.append(s[j:i])
-        else:
-            i += 1
-            result.append(s[j:i])
-        assert(progress &lt; i)
-    if count:
-        result = ''.join(result)
-        if doReplace:
-            undoData = u.beforeChangeNodeContents(p)
-            p.setBodyStringOrPane(result)
-            p.v.t.setDirty()
-            u.afterChangeNodeContents(p,'Change Body',undoData)
-        else:
-            g.trace('result...\n',result)</t>
-<t tx="ekr.20060809091749.72">i = g.skip_python_string(s,i)
-s2 = s[j:i].strip()
-result.append('g._(%s)' % s2)
-if trace: g.trace('string:',s2)
-count += 1</t>
-<t tx="ekr.20060809091749.73">i += 4 ; k1 = i
-i = g.skip_ws(s,i)
-found = False
-if g.match(s,i,'('):
-    k2 = i
-    k3 = g.skip_parens(s,i)
-    if g.match(s,k3,')'):
-        # Only translate if there are exactly one string in the parens.
-        s2 = s[k2+1:k3]
-        if (
-            s2 and s2.count(',') == 0 and
-            (s2.count('"') == 2 or s2.count("'") == 2)
-        ):
-            i = k3
-            if trace: g.trace('call g.es:',g.get_line(s,i))
-            result.append('g.et')
-            result.append(s[k1:i])
-            count += 1 ; found = True
-if not found:
-    result.append(s[j:i])</t>
-<t tx="ekr.20060809092023"></t>
-<t tx="ekr.20060809103738">def test1():
-    
-    g.es('abc')
-    g.es('abc',xyz)
-    g.es(xyz)</t>
-<t tx="ekr.20060809103738.1">def test2():
-
-    x = 'abc' + 'xyz'
-    y = abc</t>
-<t tx="ekr.20060809104405">@nocolor
-@
-0.1 EKR: Initial version.
-0.2 EKR: Support doReplace and made script fully undoable.</t>
-<t tx="ekr.20060814111542"># Add an editor to the body pane.
-c.frame.body.addEditor()</t>
 <t tx="ekr.20060904110922"></t>
 <t tx="ekr.20060904111037">if hasattr(c,'opmlCommands'):
     c.opmlCommands.readOpmlCommand()
@@ -972,28 +825,6 @@ else:
     c.opmlCommands.writeOpmlCommand()
 else:
     g.es_print('opml plugin not loaded')</t>
-<t tx="ekr.20060918083159">put = print
-
-doit = True
-
-for p in c.allNodes_iter():
-
-    if hasattr(p.v,"unknownAttributes"):
-        put("v.uA:",
-            p.headString(),
-            g.listToString(p.v.unknownAttributes.keys()))
-        if doit:
-            delattr(p.v,"unknownAttributes")
-
-    # if hasattr(p.v.t,"unknownAttributes"):
-        # put("t.ua:",
-            # p.headString(),
-            # g.listToString(p.v.t.unknownAttributes.keys()))
-        # if doit:
-            # delattr(p.v.t,"unknownAttributes")
-           
-put('done') 
-c.redraw()</t>
 <t tx="ekr.20060924180049">@
 Ever have a clone that is difficult to understand outside the context of its
 original parent? Here's some code to help. It displays the headline of the
@@ -1087,8 +918,6 @@ if 1: # Executes Iron Python in the console. (But not from the tutorials directo
         os.spawnv(os.P_NOWAIT, path, args)
     else: # Use a pristine environment.
         os.spawnve(os.P_NOWAIT, path, args, os.environ)</t>
-<t tx="ekr.20061030041356"></t>
-<t tx="ekr.20061030041450"></t>
 <t tx="ekr.20070115092430"># Invoke winpdb for general scripts **not** containing the predefined g, p or d constants.
 
 # This is essentially the same as using the debug command.
@@ -1110,9 +939,8 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="0,1,0,15"></t>
+<t tx="ekr.20070416075121" str_leo_pos="0"></t>
 <t tx="ekr.20070503085527"></t>
-<t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
 g.app.gui = leoGui.nullGui(guiName='testGui')
@@ -1305,20 +1133,7 @@ if __name__ == '__main__':
     gvim,
     and Python itself.
 """</t>
-<t tx="ekr.20070530072113">c.chapterController.hideChapters()</t>
-<t tx="ekr.20070530072113.1">c.chapterController.showChapters()</t>
 <t tx="ekr.20070531102813"></t>
-<t tx="ekr.20070531103315">c.abbrevCommands.dynamicExpansion(event=None)</t>
-<t tx="ekr.20070531104646">c.abbrevCommands.dynamicCompletion()</t>
-<t tx="ekr.20070603175054">cc = c.chapterController
-cc.selectChapterByName('abc')</t>
-<t tx="ekr.20070603175054.1">cc = c.chapterController
-cc.selectChapterByName('main')</t>
-<t tx="ekr.20070603190713">cc = c.chapterController
-cc.createChapterByName('xyz')</t>
-<t tx="ekr.20070603190713.1">cc = c.chapterController
-cc.selectChapterByName('xyz')</t>
-<t tx="ekr.20070604095313"></t>
 <t tx="ekr.20070604100125"></t>
 <t tx="ekr.20070609085533"></t>
 <t tx="ekr.20070630142904"></t>
@@ -1683,13 +1498,6 @@ if not w:
 
 log.selectTab(tag)
 </t>
-<t tx="ekr.20071006084354">w = c.frame.body.bodyCtrl
-s = w.getAllText()
-ins = w.getInsertPoint()
-row,col = g.convertPythonIndexToRowCol(s,ins)
-g.pr('row',row,'col',col)</t>
-<t tx="ekr.20071025192258">import leoTest
-leoTest.doTests (c,all=False)</t>
 <t tx="ekr.20071025193940"># Standard plugins
 free_layout.py
 mod_scripting.py
@@ -1880,18 +1688,6 @@ for z in ('body','button','headline','log','menu','outline'):
     arg0,arg1,arg2,arg3 = args = ['%s_text_font_%s' % (z,z2) for z2 in kind]
     setting = '%s_text_font' % (z)
     g.pr('%20s' % (setting),c.config.getFontFromParams(arg0,arg1,arg2,arg3,defaultSize=12))
-</t>
-<t tx="ekr.20080214091706.2">g.pr('hello from ekr')</t>
-<t tx="ekr.20080310111916.1">def myTranslateString (s):
-
-    i = s.lower().find('can not')
-    if i == -1:
-        return s
-    else:
-        return s[:i+1] + "an't" + s[i+7:]
-
-g.translateString = myTranslateString
-
 </t>
 <t tx="ekr.20080412082246.1"></t>
 <t tx="ekr.20080503202744.3">import rope.base.project
@@ -2546,8 +2342,6 @@ from win32com.axscript.server import axsite
 import pythoncom
 import win32com.server.util</t>
 <t tx="ekr.20080811113441.2"></t>
-<t tx="ekr.20080813100905.1">import sys
-print sys.argv</t>
 <t tx="ekr.20080815073750.1">n = 0
 for p in c.allNodes_iter():
     if p.isAtNoSentFileNode():
@@ -2601,25 +2395,6 @@ if not s.endswith('\n'): s = s + '\n'
 c.importCommands.scanPythonText(s,p2.copy(),atAuto=True)
 c.redraw_now()
 g.pr('done')</t>
-<t tx="ekr.20080915095329.1">import leo.core.leoPlugins as leoPlugins
-
-rst3 = leoPlugins.getPluginModule('rst3')
-
-if rst3:
-    controller = rst3.controllers.get(c)
-    if controller:
-        controller.processTopTree(p)
-else:
-    rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
-    if rst3:
-        g.es('rst3 loaded')
-        rst3.onCreate('tag',{'c':c})
-    else:
-        # Ask to be removed.
-        g.app.scriptDict['removeMe'] = True
-
-# print 'done'
-</t>
 <t tx="ekr.20080917063615.1">aList = (
 'aspellbindir',
 'wholeword',
@@ -2684,8 +2459,6 @@ c.frame.addIconButton(text="New")</t>
 <t tx="ekr.20080930085514.1">c.frame.clearIconBar()</t>
 <t tx="ekr.20080930114036.1"></t>
 <t tx="ekr.20081003094737.1"></t>
-<t tx="ekr.20081025105942.1">import os
-os.system("dir")</t>
 <t tx="ekr.20081205104320.1"># import os
 tag = '#!/bin/bash\n'
 s = g.getScript(c,p,
@@ -2811,20 +2584,9 @@ print 'done'
 M.close()
 M.logout()
 c.redraw()</t>
-<t tx="ekr.20090514073218.1923">import leo.core.leoTest as leoTest
-
-if False:
-    # Run tests locally.
-    leoTest.doTests(c,all=True)
-else:
-    # Run tests externally.
-    path = 'test.leo' # path is relative to leo\test directory
-    leoTest.runUnitTestLeoFile(gui='nullGui',path=path,silent=False)
-</t>
 <t tx="ekr.20090514101216.1927"># 'self' is now defined in @test and @suite nodes.
 self.assertNotEqual(1,2)</t>
 <t tx="ekr.20090514103332.1929">@language python</t>
-<t tx="ekr.20090521070342.1907">g.app.gui.runScrolledMessageDialog(c=c,msg=u'rst:'+p.b)</t>
 <t tx="ekr.20090525090210.1940">La Peña</t>
 <t tx="ekr.20090601093755.1802">bookmarks = []
 
@@ -2979,7 +2741,6 @@ else:
 w = c.frame.body.bodyCtrl.widget
 w.setHtml(b)
 </t>
-<t tx="ekr.20090718072135.1786">print '=' * 40</t>
 <t tx="ekr.20090728090618.2832"># An example of running this script:
 
 import os
@@ -3610,10 +3371,6 @@ License: BSD.
 
 When using select2, you may want to use the detach-editor-toggle command.
 </t>
-<t tx="ekr.20090819085532.4265">w = c.frame.body.bodyCtrl.widget
-w.setParent(None)
-w.show()
-</t>
 <t tx="ekr.20091010091628.1836">@language python
 
 '''Create a script button that will search for the icon-like
@@ -3757,10 +3514,10 @@ There are several problems with this approach:
    
 State of the prototype code:
     
-- @@button find script a kinda works, but it only finds patterns at
+- \@button find script a kinda works, but it only finds patterns at
   the start of body text.  It does shows that generators are useful.
   
-- @@button create find button doesn't do anything, and it's not clear
+- \@button create find button doesn't do anything, and it's not clear
   that is can ever be extended to be useful.
   
   The idea of this button was that clicking on a node, say "pat a",
@@ -7214,14 +6971,8 @@ table = (
 )
 for start,path in table:
     print(start,path,'--&gt;',os.path.relpath(path,start).replace('\\','/'))</t>
-<t tx="ekr.20101002141822.2349">import leo.core.leoKeys as leoKeys
-
-leoKeys.AutoCompleterScanner(c).scan()
-</t>
-<t tx="ekr.20101004104134.2346"></t>
 <t tx="ekr.20101004104134.2347">
 </t>
-<t tx="ekr.20101004104134.2348"></t>
 <t tx="ekr.20101009105505.2295">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
@@ -8771,80 +8522,6 @@ timer.start(0)
 <t tx="ekr.20110525093203.2470"></t>
 <t tx="ekr.20110526180653.2467"></t>
 <t tx="ekr.20110526180653.2468"></t>
-<t tx="ekr.20110916103511.2472">import os
-
-@others
-
-types = ('.py',)
-
-theDir = r'C:\prog\lib2to3-copy'
-importFiles(theDir,types,kind=None,recursive=True)
-c.redraw()
-
-g.es("done",color="blue")
-</t>
-<t tx="ekr.20110916103511.2473">def importFiles (theDir,type=None,kind="@file",recursive=False):
-
-    v = c.currentVnode()
-
-    # Check the params.
-    if kind not in ('@file',None):
-        g.es("kind must be @file or None: " + repr(kind))
-        return
-
-    if not g.os_path_exists(theDir):
-        g.es("directory does not exist: " + theDir)
-        return
-
-    root = createLastChildOf(v,"imported files")
-    try:
-        importDir (theDir,type,kind,recursive,root)
-        root.contract()
-    except:
-        g.es_exception()
-    c.redraw()
-</t>
-<t tx="ekr.20110916103511.2474">def importDir (theDir,types,kind,recursive,root):
-
-    g.es("theDir: " + theDir,color="blue")
-
-    try:
-        files = os.listdir(theDir)
-        files2 = [] ; dirs =[]
-        for f in files:
-            path = g.os_path_join(theDir,f)
-            if g.os_path_isfile(path):
-                name, ext = g.os_path_splitext(f)
-                if not types or ext in types:
-                    files2.append(path)
-            elif recursive:
-                dirs.append(path)
-        if len(files2) &gt; 0 or len(dirs) &gt; 0:
-            import_root = createLastChildOf(root,theDir)
-        else:
-            import_root = root
-        
-        c.selectVnode(import_root)
-        
-        ### if len(files2) &gt; 0:
-            ### c.importCommands.importFilesCommand(files2,kind)
-        if len(files2) &gt; 0:
-            for fn in files2:
-                p2 = createLastChildOf(import_root,'@auto %s' % (fn))
-                
-        if len(dirs) &gt; 0:
-            dirs.sort()
-            for theDir in dirs:
-                importDir(theDir,types,kind,recursive,import_root)
-    except:
-        g.es("exception in importFiles script")
-        g.es_exception()
-</t>
-<t tx="ekr.20110916103511.2475">def createLastChildOf (v,headline):
-
-    child = v.insertAsLastChild()
-    child.initHeadString(headline.replace('\\','/'))
-    return child
-</t>
+<t tx="ekr.20111020134534.2594"></t>
 </tnodes>
 </leo_file>

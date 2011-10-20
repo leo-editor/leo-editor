@@ -232,6 +232,9 @@ class scriptingController:
     def createAllButtons (self):
 
         '''Scans the outline looking for @button, @command, @plugin and @script nodes.'''
+        
+        def match(p,s):
+            return g.match_word(p.h,0,s)
 
         c = self.c
         if self.scanned: return # Not really needed, but can't hurt.
@@ -246,18 +249,27 @@ class scriptingController:
         # Next, create common buttons and commands.
         self.createCommonButtons()
         self.createCommonCommands()
+        
         # Last, scan for user-defined nodes.
-        def startswith(p,s):
-            return g.match_word(p.h,0,s)
-        for p in c.all_positions():
-            if self.atButtonNodes and startswith(p,'@button'): 
-                self.handleAtButtonNode(p)
-            if self.atCommandsNodes and startswith(p,'@command'):
-                self.handleAtCommandNode(p)
-            if self.atPluginNodes and startswith(p,'@plugin'):
-                self.handleAtPluginNode(p)
-            if self.atScriptNodes and startswith(p,'@script'):
-                self.handleAtScriptNode(p)
+        
+            
+        # 2011/10/20: honor @ignore here.
+        # for p in c.all_positions():
+        p = c.rootPosition()
+        while p:
+            if p.isAtIgnoreNode():
+                p.moveToNodeAfterTree()
+            else:
+                if self.atButtonNodes and match(p,'@button'): 
+                    self.handleAtButtonNode(p)
+                elif self.atCommandsNodes and match(p,'@command'):
+                    self.handleAtCommandNode(p)
+                elif self.atPluginNodes and match(p,'@plugin'):
+                    self.handleAtPluginNode(p)
+                elif self.atScriptNodes and match(p,'@script'):
+                    self.handleAtScriptNode(p)
+                p.moveToThreadNext()
+
     #@+node:ekr.20080312071248.1: *4* createCommonButtons & helper
     def createCommonButtons (self):
 
