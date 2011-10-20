@@ -262,7 +262,8 @@ class AutoCompleterClass:
         c.k.keyboardQuit()
         
         if self.use_qcompleter:
-            self.qw.end_completer()
+            if self.qw:
+                self.qw.end_completer()
         else:
             for name in (self.tabName,'Modules','Info'):
                 c.frame.log.deleteTab(name)
@@ -918,7 +919,8 @@ class AutoCompleterClass:
         
         if self.use_qcompleter:
             # g.trace(self.qw.leo_qc)
-            c.widgetWantsFocusNow(self.qw.leo_qc)
+            if self.qw:
+                c.widgetWantsFocusNow(self.qw.leo_qc)
     #@+node:ekr.20110314115639.14269: *4* is_leo_source_file
     def is_leo_source_file (self):
         
@@ -967,7 +969,8 @@ class AutoCompleterClass:
             
         if self.use_qcompleter:
             # Put the completions in the QListView.
-            self.qw.show_completions(tabList)
+            if self.qw:
+                self.qw.show_completions(tabList)
         else:
             # Update the tab name, creating the tab if necessary.
             c.widgetWantsFocus(self.w)
