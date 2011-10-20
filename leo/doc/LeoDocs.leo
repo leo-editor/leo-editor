@@ -20,10 +20,8 @@
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
-<v t="ekr.20101112045055.5064"
-expanded="ekr.20111018061632.15913,"><vh>@file plugin_catalog.py</vh></v>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4286,"><vh>@file html/front.html</vh></v>
+<v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/front.html</vh></v>
 <v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
 <v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
@@ -182,12 +180,6 @@ expanded="ekr.20100808060203.4286,"><vh>@file html/front.html</vh></v>
 <v t="ekr.20110613172008.14775"><vh>New in 4.9 b4</vh></v>
 <v t="ekr.20110616100929.14794"><vh>New in 4.9 rc1</vh></v>
 <v t="ekr.20110620083705.14902"><vh>New in 4.9 final</vh></v>
-</v>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4286,"></v>
-<v t="ekr.20111019104425.15900"><vh>Add new words to Leo's home page</vh>
-<v t="ekr.20111019104425.15902"><vh>&lt;&lt; what is Leo list &gt;&gt; (Old)</vh></v>
-<v t="ekr.20111019104425.15904"><vh>&lt;&lt; what is Leo list &gt;&gt;</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1069,78 +1061,6 @@ Other changes
   instead of crashing if idlelib does not exist.
 </t>
 <t tx="ekr.20110620083705.14902">Fixed crash on mouse clicks in minibuffer.
-</t>
-<t tx="ekr.20111019104425.15900">@language html
-
-Leo is:
-
-- A premier platform for scripting, programming and searching.
-
-- A completely flexible and arbitrarily expandable filing cabinet for
-   all kinds of (text) data, and by reference, any kind of data.
-
-- A generator/creator of (text) data and documents of all kinds:
-  including programs, web sites, and .pdf, .html and .tex files.
-
-- A rendering engine for rST, html, svg, graphics, music and movies.
-
-- A platform for studying, manipulating, testing and verifying
-  computer programs and any other data.
-
-Recently, there has been progress in all these areas. I expect
-continued progress in all areas for the foreseeable future. </t>
-<t tx="ekr.20111019104425.15902">&lt;li&gt;
-    An outline-oriented &lt;i&gt;browser&lt;/i&gt; and &lt;i&gt;project manager&lt;/i&gt; that organizes&lt;br&gt;
-    programs, web sites, URL's, pictures, movies or any other kind of data.&lt;br&gt;
-    You can organize your data in as many ways as you like within a &lt;i&gt;single&lt;/i&gt; outline.&lt;/li&gt;
-&lt;li&gt;
-    A &lt;i&gt;programmer's editor&lt;/i&gt; that fully integrates outline structure with programming.
-    &lt;!--
-    &lt;a HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;noweb&lt;/a&gt; and
-    &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;CWEB&lt;/a&gt; markup.&lt;/li&gt;
-    --&gt;
-&lt;li&gt;
-    &lt;i&gt;Fully scriptable&lt;/i&gt; using &lt;a HREF="http://www.python.org/"&gt;Python&lt;/a&gt;.
-    Leo's core is 100% pure Python.&lt;/li&gt;
-&lt;li&gt;
-    &lt;i&gt;Portable&lt;/i&gt;. Leo runs on Windows and Linux.&lt;br&gt;
-    Leo requires the
-    &lt;a HREF="http://www.riverbankcomputing.co.uk/software/pyqt/intro"&gt;PyQt&lt;/a&gt; widget set.&lt;br&gt;
-    Leo's outline files are &lt;a HREF="http://www.w3.org/XML/"&gt;XML&lt;/a&gt; format.&lt;/li&gt;
-&lt;li&gt;
-    &lt;a href="http://www.opensource.org/"&gt;&lt;i&gt;Open Software&lt;/i&gt;&lt;/a&gt;,
-    distributed under the
-    &lt;a href="http://www.opensource.org/licenses/mit-license.php/"&gt;MIT License&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;
-    Leo stands for Leonine Editor with Outlines.&lt;/li&gt;
-
-</t>
-<t tx="ekr.20111019104425.15904">&lt;li&gt;
-    A premier Integrated Development Environment, fully scriptable using
-    &lt;a HREF="http://www.python.org/"&gt;Python&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;
-    An outline-oriented, flexible filing cabinet holding any kind of data: including&lt;br&gt;
-    programs, web sites, text documents of all kinds, music, graphics and movies.&lt;/li&gt;
-&lt;li&gt;
-    &lt;i&gt;The&lt;/i&gt; premier platform for creating, generating, studying, scripting, testing,&lt;br&gt;
-    and validating computer programs, web sites and any other complex data.&lt;/li&gt;
-&lt;li&gt;
-    A rendering engine for
-    &lt;a HREF="http://docutils.sourceforge.net/rst.html"&gt;reStructuredText&lt;/a&gt;, web pages and
-    &lt;a HREF="http://www.w3.org/Graphics/SVG/"&gt;svg graphics&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;
-    A music and movie player.&lt;/li&gt;
-&lt;li&gt;
-    A sophisticated
-    &lt;a HREF="http://www.riverbankcomputing.co.uk/software/pyqt/intro"&gt;PyQt&lt;/a&gt;
-    app running on Windows and Linux.&lt;/li&gt;
-&lt;li&gt;
-    100% pure &lt;a HREF="http://www.python.org/"&gt;Python&lt;/a&gt;,
-    running on Python 2.6 and above, including Python 3.x.&lt;/li&gt;
-&lt;li&gt;
-    &lt;a href="http://www.opensource.org/"&gt;&lt;i&gt;Open Software&lt;/i&gt;&lt;/a&gt;,
-    distributed under the
-    &lt;a href="http://www.opensource.org/licenses/mit-license.php/"&gt;MIT License&lt;/a&gt;.&lt;/li&gt;
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os
