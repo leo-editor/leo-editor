@@ -308,29 +308,23 @@ class PlugIn:
 
         """Put information about this plugin in a scrolledMessage dialog."""
 
+        c = self.c
         if self.doc:
             msg = self.doc.strip()+'\n'
-            # msg = msg.replace('\\n','\\\\n')
         else:
             msg = ''
 
-        if not g.doHook('scrolledMessage',
-            short_title = self.name,
-            title="About Plugin ( " + self.name + " )",
+        # 2011/10/20: runScrolledMessageDialog looks for a scrolledmessage hook.
+        # Don't do it here.
+        g.app.gui.runScrolledMessageDialog(
+            c=c,
+            flags='rst',
             label="Version: " + self.version,
             msg=msg,
-            c=self.c,
-            flags='rst',
-            name='leo_system'):
-                g.app.gui.runScrolledMessageDialog(
-                    c=c,
-                    flags='rst',
-                    label="Version: " + self.version,
-                    msg=msg,
-                    name='leo_system',
-                    short_title = self.name,
-                    title="About Plugin ( " + self.name + " )",
-                )
+            name='leo_system',
+            short_title = self.name,
+            title="About Plugin ( " + self.name + " )",
+        )
     #@+node:pap.20050317183526: *3* getNiceName
     def getNiceName(self, name):
         """Return a nice version of the plugin name

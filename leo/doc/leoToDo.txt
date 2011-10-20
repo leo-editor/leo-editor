@@ -4132,7 +4132,7 @@ Processing dependencies for Pygments==1.4dev-20111009
 Finished processing dependencies for Pygments==1.4dev-20111009
 
 c:\apps\pygments>
-.. @+node:ekr.20111019104425.15861: *3* Fun Scripts: 4
+.. @+node:ekr.20111019104425.15861: *3* Scripts: 4
 .. @+node:ekr.20111019080436.15849: *4* Doc scripts: 2
 .. @+node:ekr.20111018104244.15932: *5* Write create-command-docs script
 @language rest
@@ -4150,7 +4150,104 @@ plugins.  A prototype of this script exists somewhere.  Making it an
 Terry wrote plugin_catalog.py.  It is in LeoDocs.leo)
 .. @+node:ekr.20110917104720.9418: *4* convert-names-to-pep8
 .. @+node:ekr.20110918204546.6809: *4* convert-to-class
-.. @+node:ekr.20111009230326.7036: *3* Important/Later: 8
+.. @+node:ekr.20111019104425.15885: *3* Most fun
+.. @+node:ekr.20111014074810.15655: *4* * What about LeoDocs(hard-crash).leo is causing the crash?
+.. @+node:ekr.20111017132257.15885: *4* * Add refresh colorizing automatically when @language edited
+@nocolor-node
+
+Could this be done as part of macro expansion?
+.. @+node:ekr.20111010122531.15568: *4* * @render-rest, @render-html trees
+@language rest
+
+The free_layout and viewrendered plugins are a huge step forward.  But
+the lighter/heavier distinction suggests a new way to use them.
+
+Suppose Leo supports @render-rest or @render-html.
+
+This means that all nodes in the tree will have the body pane become a
+rendering pane for rST or html.
+
+Imagine LeoDocs completely rendered at all times.
+
+Of course, for specific purposes, say in Leo's scripting chapter, we
+might want to override these rendering directives (which should be
+allowed in headlines too) with @no-render.
+
+The point is that having *both* the original text *and* the rendered
+text be visible is often too heavy: the user usually does not want to
+know about the sources: the rendering is good enough.
+
+I suppose for sophisticated users, something like show/hide-body pane
+would be good commands to have, but that doesn't matter: those
+commands to not increase the burden on the user while she is reading
+the (rendered) docs.
+.. @+node:ekr.20111003161039.15481: *4* * Support solarized colors
+http://ethanschoonover.com/solarized
+.. @+node:ekr.20110917104720.9418: *4* convert-names-to-pep8
+.. @+node:ekr.20111009230326.7036: *3* Important/Later:
+.. @+node:ekr.20110930075237.15472: *4* * Improving Leo: think inside the box
+@language rest,
+.. @+node:ekr.20111019104425.15889: *5* Vim keys
+Restarting the vim-keys project is conceivable.  I stopped work on the
+project when I realized that vim bindings only make sense when
+*commands* can be composed as in vim.
+.. @+node:ekr.20111019104425.15886: *5* Windows
+Terry's work is an enabler.  Just as Blender supports many kinds of
+windows, so too should Leo.  Up until now, the outline, body and log
+panes have been the only "official" panes.  The rendering pane soon
+will be fully official.
+.. @+node:ekr.20111019104425.15890: *5* Bridges
+This could be an important "new" direction.  True, there are already
+bridges for vim, emacs, ipython and docutils, but I think more can be
+done.
+
+The first thought is to improve Leo's inter-process communication
+capabilities.  I'm not sure what that entails...
+
+As a blue-sky project, could Leo interact with the window manager in
+order to resize vim, say, to it automatically tracks Leo's body pane
+(or any other pane).
+.. @+node:ekr.20111019104425.15887: *5* Host the PyQt demo inside Leo
+.. @+node:ekr.20111019104425.15888: *5* Support an openGL window in Leo
+.. @+node:ekr.20111019104425.15891: *5* Code tools
+Analysis, checking, refactoring and other code-level tools are a
+natural for Leo.  When the new-lint project is mature, it could be
+folded into Leo.
+
+.. @+node:ekr.20110930075237.15473: *5* Kent's suggestions
+@nocolor-node
+
+
+- 
+.. @+node:ekr.20111019104425.15892: *6* Buttons
+Enhance the button machinery to allow mixed case, spaces, colors.
+Provide cascading rclick capability: rclick on an rclick list ...
+.. @+node:ekr.20111019104425.15893: *6* Templating
+Solid, simple implementation of one of the standard template engines
+providing intuitive template nodes, variable definitions, and rendering options.
+
+.. @+node:ekr.20111019104425.15894: *6* Wizards
+Leverage the template capability to offer form-based content creation:
+- create a plugin
+- generate a test node
+- generate a wizard :-]
+.. @+node:ekr.20111019104425.15895: *6* LeoFS
+- create a Leo implementation of pyfilesystem
+http://packages.python.org/fs/implementersguide.html
+
+.. @+node:ekr.20111019104425.15896: *6* Enhansed node attributes: ctime, atime, mtime
+.. @+node:ekr.20111019104425.15897: *6* Persistent tab status
+Resume editing with same tabs open when using tabbed gui.
+
+.. @+node:ekr.20111019104425.15898: *6* Persistent pane layout
+.. @+node:ekr.20110930075237.15474: *5* Matt Wilkie
+@nocolor-node
+
+As for user interface, I'd love to see myLeoSettings with a checkbox
+interface and filter bar at the top, and a feature to "merge or reset
+from LeoSettings".
+... or maybe something like Firefox's "about:config" would be better
+suited (and probably faster to build).
 .. @+node:ekr.20111014134653.15672: *4* Search across multiple Leo files
 http://groups.google.com/group/leo-editor/browse_thread/thread/cf5ab54f29a6c128
 .. @+node:ekr.20110929074744.15449: *4* generalize show/hide/select gui elements commands
@@ -4194,101 +4291,6 @@ Window>Equal Sized Panes command?
 
 I suppose so.  I would prefer to wait for Terry to finish his
 pane-generalization code before dealing with this.
-.. @+node:ekr.20110930075237.15472: *4* Improving Leo: think inside the box
-@nocolor-node
-
-There is plenty of room for improving Leo, and my recent energy spike
-promises to carry over to Leo itself.  Here are the major areas that I
-see that can be improved:
-
-1. Windows.
-
-Terry's work is an enabler.  Just as Blender supports many kinds of
-windows, so too should Leo.  Up until now, the outline, body and log
-panes have been the only "official" panes.  The rendering pane soon
-will be fully official.
-
-Terry's plugins have also created nifty new windows.
-
-Here are some other ideas:
-
-A.  Hosting the PyQt demo inside Leo.
-
-B.  Making an OpenGL window an official Leo window.  This might be the
-start of a prototype for "Blender in a Leo Window"
-
-2. Keystrokes
-
-Restarting the vim-keys project is conceivable.  I stopped work on the
-project when I realized that vim bindings only make sense when
-*commands* can be composed as in vim.
-
-3. Bridges
-
-This could be an important "new" direction.  True, there are already
-bridges for vim, emacs, ipython and docutils, but I think more can be
-done.
-
-The first thought is to improve Leo's inter-process communication
-capabilities.  I'm not sure what that entails...
-
-As a blue-sky project, could Leo interact with the window manager in
-order to resize vim, say, to it automatically tracks Leo's body pane
-(or any other pane).
-
-4. Code tools
-
-Analysis, checking, refactoring and other code-level tools are a
-natural for Leo.  When the new-lint project is mature, it could be
-folded into Leo.
-
-5. Documentation
-
-Perhaps Leo's documentation could be built primarily from docstrings.
-In any event, documentation tools are always needed.
-.. @+node:ekr.20110930075237.15473: *5* Kent's suggestions
-@nocolor-node
-
-Buttons:
-Enhance the button machinery to allow mixed case, spaces, colors.
-Provide cascading rclick capability: rclick on an rclick list ...
-
-Templating:
-Solid, simple implementation of one of the standard template engines
-providing intuitive template nodes, variable definitions, and rendering options.
-
-Wizards:
-Leverage the template capability to offer form-based content creation:
-- create a plugin
-- generate a test node
-- generate a wizard :-]
-
-LeoFS:
-- create a Leo implementation of pyfilesystem
-http://packages.python.org/fs/implementersguide.html
-
-Enhanced node attributes:
-ctime, atime, mtime
-
-
-Remove expansion data from .leo file:
-    
-    @bool put_expansion_bits_in_leo_files = False
-    
-    It would be possible to put expansion bits in c.db. The key would be the
-    gnx, so it would be straightforward. We could even eliminate the option
-    entirely...
-
-- provide persistence of tab status
- (resume editing with same tabs open when using tabbed gui)
-.. @+node:ekr.20110930075237.15474: *5* Matt Wilkie
-@nocolor-node
-
-As for user interface, I'd love to see myLeoSettings with a checkbox
-interface and filter bar at the top, and a feature to "merge or reset
-from LeoSettings".
-... or maybe something like Firefox's "about:config" would be better
-suited (and probably faster to build).
 .. @+node:ekr.20111018104244.15928: *4* Improve Find panel
 @nocolor-node
 
