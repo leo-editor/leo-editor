@@ -9845,10 +9845,13 @@ g.es_print_error('%s\n%s\n\t%s' % (
 ))
 #@+node:ekr.20110605121601.18505: *6* << load viewrendered plugin >>
 pc = g.app.pluginsController
-vr = pc.loadOnePlugin('viewrendered.py')
-if vr:
-    # g.es('viewrendered plugin loaded.', color='blue')
-    sm.onCreate('tag',{'c':c})
+# 2011/10/20: load viewrendered (and call vr.onCreate)
+# *only* if not already loaded.
+if not pc.isLoaded('viewrendered.py'):
+    vr = pc.loadOnePlugin('viewrendered.py')
+    if vr:
+        g.es('viewrendered plugin loaded.', color='blue')
+        vr.onCreate('tag',{'c':c})
 #@+node:ekr.20110605121601.18506: *6* << no dialog error >>
 g.es_print_error(
     'No handler for the "scrolledMessage" hook.\n\t%s' % (
@@ -9871,6 +9874,65 @@ c.in_qt_dialog = False
 Changed doButtons and doCommands kind handlers.
 
 This allows us to put example nodes in leoSettings.leo.
+#@+node:ekr.20111020113237.15895: *4* Fixed crasher in runScrolledMessageDialog
+#@+node:ekr.20110605121601.18503: *5* runScrolledMessageDialog
+def runScrolledMessageDialog (self,
+    short_title= '',
+    title='Message',
+    label= '',
+    msg='',
+    c=None,**kw
+):
+
+    if g.unitTesting: return None
+
+    def send(title=title, label=label, msg=msg, c=c, kw=kw):
+        return g.doHook('scrolledMessage',
+            short_title=short_title,title=title,
+            label=label, msg=msg,c=c, **kw)
+
+    if not c or not c.exists:
+        << no c error>>
+    else:        
+        retval = send()
+        if retval: return retval
+        << load viewrendered plugin >>
+        retval = send()
+        if retval: return retval
+        << no dialog error >>
+
+    << emergency fallback >>
+#@+node:ekr.20110605121601.18504: *6* << no c error>>
+g.es_print_error('%s\n%s\n\t%s' % (
+    "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
+    "as a keyword argument",
+    g.callers()
+))
+#@+node:ekr.20110605121601.18505: *6* << load viewrendered plugin >>
+pc = g.app.pluginsController
+# 2011/10/20: load viewrendered (and call vr.onCreate)
+# *only* if not already loaded.
+if not pc.isLoaded('viewrendered.py'):
+    vr = pc.loadOnePlugin('viewrendered.py')
+    if vr:
+        g.es('viewrendered plugin loaded.', color='blue')
+        vr.onCreate('tag',{'c':c})
+#@+node:ekr.20110605121601.18506: *6* << no dialog error >>
+g.es_print_error(
+    'No handler for the "scrolledMessage" hook.\n\t%s' % (
+        g.callers()))
+#@+node:ekr.20110605121601.18507: *6* << emergency fallback >>
+b = QtGui.QMessageBox
+d = b(None) # c.frame.top)
+d.setWindowFlags(QtCore.Qt.Dialog) # That is, not a fixed size dialog.
+
+d.setWindowTitle(title)
+if msg: d.setText(msg)
+d.setIcon(b.Information)
+yes = d.addButton('Ok',b.YesRole)
+c.in_qt_dialog = True
+d.exec_()
+c.in_qt_dialog = False
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
@@ -16949,6 +17011,48 @@ def os_path_finalize_join (*args,**keys):
 
     return os.path.normpath(os.path.abspath(
         g.os_path_join(*args,**keys))) # Handles expanduser
+#@+node:ekr.20111020092529.15886: *4* Investigate bug: 877332: @file TEX files not reading correctly
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/877332
+
+Not valid: this is a 4.9-final bug that was fixed long ago.
+
+reading: @thin C:\Documents and Settings\Rob\Desktop\Dropbox\Templates\LaTex Templates\Exam2.tex
+exception executing command
+Traceback (most recent call last):
+ File "C:\Program Files\Leo-4.9-final\leo\core\leoCommands.py", line 408, in doCommand
+   val = command(event)
+ File "C:\Program Files\Leo-4.9-final\leo\core\leoCommands.py", line 981, in importAnyFile
+   ic.importDerivedFiles(parent=c.p,paths=derived)
+ File "C:\Program Files\Leo-4.9-final\leo\core\leoImport.py", line 978, in importDerivedFiles
+   at.read(p)
+ File "C:\Program Files\Leo-4.9-final\leo\core\leoAtFile.py", line 586, in read
+   c.cacher.writeFile(root,fileKey)
+ File "C:\Program Files\Leo-4.9-final\leo\core\leoCache.py", line 412, in writeFile
+   elif fileKey in self.db:
+TypeError: argument of type 'NoneType' is not iterable
+#@+node:ekr.20100208071151.5903: *5* writeFile (cacher)
+# Was atFile.writeCachedTree
+
+def writeFile(self,p,fileKey):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    # Bug fix: 2010/05/26: check g.enableDB before giving internal error.
+    if not g.enableDB:
+        if trace: g.trace('cache disabled')
+    elif not fileKey:
+        g.trace(g.callers(5))
+        g.internalError('empty fileKey')
+    elif self.db.get(fileKey):
+        if trace: g.trace('already cached',fileKey)
+    else:
+        if trace: g.trace('caching ',p.h,fileKey)
+        self.db[fileKey] = self.makeCacheList(p)
+        
+    # if trace: g.trace('* callers',g.callers(4))
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

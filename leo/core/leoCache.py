@@ -348,7 +348,7 @@ class cacher:
             while root.hasChildren():
                 root.firstChild().doDelete()
             # Recreate the file from the cache.
-            aList = self.db[key]
+            aList = self.db.get(key)
             self.createOutlineFromCacheList(root.v,aList,fileName=fileName)
 
         return s,ok,key
@@ -413,21 +413,21 @@ class cacher:
     def writeFile(self,p,fileKey):
 
         trace = False and not g.unitTesting
-        verbose = False
         c = self.c
 
         # Bug fix: 2010/05/26: check g.enableDB before giving internal error.
         if not g.enableDB:
-            if trace and verbose: g.trace('cache disabled')
+            if trace: g.trace('cache disabled')
         elif not fileKey:
             g.trace(g.callers(5))
             g.internalError('empty fileKey')
-        elif fileKey in self.db:
+        elif self.db.get(fileKey):
             if trace: g.trace('already cached',fileKey)
         else:
             if trace: g.trace('caching ',p.h,fileKey)
             self.db[fileKey] = self.makeCacheList(p)
-        if trace:g.trace('* callers',g.callers(4))
+            
+        # if trace: g.trace('* callers',g.callers(4))
     #@+node:ekr.20100208065621.5890: *3* test (cacher)
     def test(self):
 

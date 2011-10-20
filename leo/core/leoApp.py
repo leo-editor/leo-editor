@@ -14,7 +14,6 @@ import leo.core.leoVersion as leoVersion
 
 import os
 import sys
-# import leo.external.pickleshare as pickleshare
 
 class LeoApp:
 

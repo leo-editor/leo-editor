@@ -7984,10 +7984,13 @@ class leoQtGui(leoGui.leoGui):
             #@+<< load viewrendered plugin >>
             #@+node:ekr.20110605121601.18505: *6* << load viewrendered plugin >>
             pc = g.app.pluginsController
-            vr = pc.loadOnePlugin('viewrendered.py')
-            if vr:
-                # g.es('viewrendered plugin loaded.', color='blue')
-                sm.onCreate('tag',{'c':c})
+            # 2011/10/20: load viewrendered (and call vr.onCreate)
+            # *only* if not already loaded.
+            if not pc.isLoaded('viewrendered.py'):
+                vr = pc.loadOnePlugin('viewrendered.py')
+                if vr:
+                    g.es('viewrendered plugin loaded.', color='blue')
+                    vr.onCreate('tag',{'c':c})
             #@-<< load viewrendered plugin >>
             retval = send()
             if retval: return retval
