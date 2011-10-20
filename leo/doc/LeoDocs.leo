@@ -181,6 +181,7 @@
 <v t="ekr.20110616100929.14794"><vh>New in 4.9 rc1</vh></v>
 <v t="ekr.20110620083705.14902"><vh>New in 4.9 final</vh></v>
 </v>
+<v t="ekr.20100817101952.4306"><vh>Installing Leo with bzr</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -244,6 +245,50 @@ http://groups.google.com/group/leo-editor</t>
 <t tx="ekr.20091130111843.6787"></t>
 <t tx="ekr.20100731112744.7267"></t>
 <t tx="ekr.20100805171546.4412"># This section contains important files used to generate Leo's web site.</t>
+<t tx="ekr.20100817101952.4306">Many users will want to track the development version of Leo, in order to stay
+on top of the latest features and bug fixes. Running the development version is
+quite safe and easy, and it's also a requirement if you want to contribute to
+Leo.
+
+1. First, you need to get Bazaar (bzr) from http://bazaar-vcs.org. For windows
+   users we recommend the standalone installer - the python installer may have
+   problems pushing to Launchpad. Plain bzr installer only contains the command
+   line version, so you might want to augment that with a friendly GUI - qbzr is
+   recommended as it's the easiest one to install. It provides command like
+   bzr qlog, bzr qannotate etc.
+
+2. Get Leo from launchpad by doing::
+
+     bzr branch lp:leo-editor
+
+And that's it! You can run leo/core/leo.py directly. When you want to refresh the
+code with latest modifications from Launchpad, run bzr pull.
+
+If you make modifications to Leo (with the interest in sharing them with the Leo
+community), you can check them in to your local branch by doing bzr checkin.
+Now, to actually request your changes to be merged to Leo trunk, you need a
+Launchpad account with RSA keys in place. There is showmedo video about how to
+accomplish this in Windows using puttygen and pageant at
+http://showmedo.com/videos/video?name=1510070&amp;fromSeriesID=151.
+
+After your Launchpad account is set up, go to
+https://launchpad.net/leo-editor, choose "Code" tab -&gt; Register Branch,
+select Branch type "Hosted" and fill in descriptive details about the branch.
+After that, go to the branch home page from Code tab again, and copy-paste the
+push command line to terminal. For example, for branch::
+
+    https://code.launchpad.net/~leo-editor-team/leo-editor/mod_rclick
+
+The push command is::
+
+    bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/mod_rclick    
+
+You may wish to add --remember command line option to bzr push, to direct all
+future pushes to that location. Then, you only need to execute bzr push.
+
+After your branch is pushed, you can email the Leo mailing list and request it
+to be reviewed and merged to trunk.
+</t>
 <t tx="ekr.20100821182153.4341"></t>
 <t tx="ekr.20100908122026.4443"># Standard plugins
 mod_scripting.py

@@ -16112,7 +16112,7 @@ The code is a straightforward addition to cleanButtonText in mod_scripting.py:
 it is unlikely to have any impact whatsoever to existing @button nodes.
 
 The intended use is for searches of the form @button [some tag].
-#@+node:ekr.20111018104244.15929: *4* **Important**: reorganized @button & @command nodes.
+#@+node:ekr.20111018104244.15929: *4* Reorganized @button & @command nodes.
 @language rest
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/bd6ed96c88fabb4e
@@ -16168,7 +16168,7 @@ This Aha takes full advantage of Leo's organization strengths and
 *concentrates* those strengths by putting all the to-be-organized
 material in one place.  This allows for easy reorganization:  changing
 command-name prefixes, for instance, would be straightforward. 
-#@+node:ekr.20111018104244.15930: *4* **Important**:
+#@+node:ekr.20111018104244.15930: *4* DingDing: big Aha's
 @language rest
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/9ebd0dd748f3011f
@@ -16249,6 +16249,12 @@ data!
 
 A great day for Leo.
 #@+node:ekr.20111018163319.9412: *4* help-for-command now uses g.getDocStringFromFunction
+#@+node:ekr.20111020120612.15897: *4* @ignore now prevents local @button/@command node definitions
+@nocolor-node
+
+A big improvement.  There is no longer any need for @@buton, etc.: just put under an @ignore node.
+
+test.leo illustrates the new organization.
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
