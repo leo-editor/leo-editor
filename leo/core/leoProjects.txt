@@ -2470,6 +2470,7 @@ def scanHeader(self,theFile,fileName):
     isThinDerivedFile is True if the file is an @thin file."""
 
     trace = False and not g.unitTesting
+    # if trace: g.trace('=====',fileName)
     at = self
     firstLines = [] # The lines before @+leo.
     tag = "@+leo"
@@ -2500,7 +2501,7 @@ at-first lines are written "verbatim", so nothing more needs to be done!
 @c
 
 s = at.readLine(theFile,fileName)
-if trace: g.trace('first line',repr(s))
+if trace: g.trace(fileName,'first line',repr(s))
 while len(s) > 0:
     j = s.find(tag)
     if j != -1: break
@@ -2637,6 +2638,7 @@ def scanHeader(self,theFile,fileName):
     isThinDerivedFile is True if the file is an @thin file."""
 
     trace = False and not g.unitTesting
+    # if trace: g.trace('=====',fileName)
     at = self
     firstLines = [] # The lines before @+leo.
     tag = "@+leo"
@@ -2667,7 +2669,7 @@ at-first lines are written "verbatim", so nothing more needs to be done!
 @c
 
 s = at.readLine(theFile,fileName)
-if trace: g.trace('first line',repr(s))
+if trace: g.trace(fileName,'first line',repr(s))
 while len(s) > 0:
     j = s.find(tag)
     if j != -1: break
@@ -4330,9 +4332,12 @@ def propagate_changes(self, old_public_file, old_private_file):
     at.errors = 0
     
     # A massive klude: read the file private file just to read the encoding.
-    f = open(old_private_file)
-    at.scanHeader(f,old_private_file)
+    f = open(old_private_file,'rb')
+        # 2011/10/21: read in 'rb' mode.
+    at.scanHeader(f,old_private_file) # sets at.encoding
+    if trace: g.trace('*** header scanned: encoding:',at.encoding)
     f.close()
+
     self.encoding = at.encoding
     if trace: g.trace(self.encoding)
     
@@ -10041,6 +10046,256 @@ def expandAbbrev (self,event,stroke):
 
 Changed at.readEndOthers and at.readEndRef so that they
 always set at.inCode = True
+#@+node:ekr.20111021105253.9480: *4* Fixed unicode bugs with @shadow
+@nocolor-node
+
+Fixed several encoding problems related to this thread: @shadow - @encoding windows-1250 - problem
+http://groups.google.com/group/leo-editor/browse_thread/thread/a4ba80559447218a/9a37a4ed6c44d452
+
+There were several real problems fixed.  The summary: @encoding directives were always required.
+
+In detail:
+
+1. at.initWriteIvars now checks for a Python # -*- coding: line.
+   If present, it must be the very first line.
+   If present, it will override any @encoding directives.
+
+2. g.getPythonEncodingFromString now can deal with either of the following lines:
+
+    @first # -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
+
+That is, g.getPythonEncodingFromString can strip the leading @first.
+
+3. g.readlineForceUnixNewline and x.propagate_changes now catch UnicodeDecodeError.
+   This is very important: previously decoding errors crashed Leo!.
+
+All unit tests pass with both Python 2.x and 3.x.
+
+#@+node:ekr.20111021143217.9478: *5* Changed...
+#@+node:ekr.20031218072017.3120: *6* g.readlineForceUnixNewline
+@ Stephen P. Schaefer 9/7/2002
+
+The Unix readline() routine delivers "\r\n" line end strings verbatim,
+while the windows versions force the string to use the Unix convention
+of using only "\n". This routine causes the Unix readline to do the
+same.
+@c
+
+def readlineForceUnixNewline(f,fileName=None):
+
+    try:
+        s = f.readline()
+        # g.trace(repr(s))
+    except UnicodeDecodeError:
+        g.trace('UnicodeDecodeError: %s' % (fileName),f,g.callers())
+        s = g.u('')
+
+    if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
+        s = s[0:-2] + "\n"
+    return s
+#@+node:ekr.20080708094444.36: *6* x.propagate_changes
+def propagate_changes(self, old_public_file, old_private_file):
+
+    '''Propagate the changes from the public file (without_sentinels)
+    to the private file (with_sentinels)'''
+
+    trace = False and not g.unitTesting ; verbose = False
+    x = self ; at = self.c.atFileCommands
+    at.errors = 0
+    
+    # A massive klude: read the file private file just to read the encoding.
+    f = open(old_private_file,'rb')
+        # 2011/10/21: read in 'rb' mode.
+    at.scanHeader(f,old_private_file) # sets at.encoding
+    if trace: g.trace('*** header scanned: encoding:',at.encoding)
+    f.close()
+
+    self.encoding = at.encoding
+    if trace: g.trace(self.encoding)
+    
+    if g.isPython3:
+        try:
+            old_public_lines  = open(old_public_file,encoding=self.encoding).readlines()
+        except UnicodeDecodeError:
+            at.error('UnicodeDecodeError reading %s', old_public_file)
+            return None
+        try:
+            old_private_lines = open(old_private_file,encoding=self.encoding).readlines()
+        except UnicodeDecodeError:
+            at.error('UnicodeDecodeError reading %s', new_public_file)
+            return None
+    else:
+        try:
+            old_public_lines  = open(old_public_file).readlines()
+        except UnicodeDecodeError:
+            at.error('UnicodeDecodeError reading %s', old_public_file)
+            return None
+        try:
+            old_private_lines = open(old_private_file).readlines()
+        except UnicodeDecodeError:
+            at.error('UnicodeDecodeError reading %s', new_public_file)
+            return None
+    
+        # 2011/09/09: convert each line to unicode.
+        def cvt(s):
+            return g.choose(g.isUnicode(s),s,g.toUnicode(s,self.encoding))
+
+        old_public_lines  = [cvt(s) for s in old_public_lines]
+        old_private_lines = [cvt(s) for s in old_private_lines]
+    
+    if 0:
+        g.trace('\nprivate lines...%s' % old_private_file)
+        for s in old_private_lines:
+            g.trace(type(s),g.isUnicode(s),repr(s))
+        g.trace('\npublic lines...%s' % old_public_file)
+        for s in old_public_lines:
+            g.trace(type(s),g.isUnicode(s),repr(s))
+
+    marker = x.markerFromFileLines(old_private_lines,old_private_file)
+
+    if trace and verbose:
+        g.trace(
+            'marker',marker,
+            '\npublic_file',old_public_file,
+            '\npublic lines...\n%s' %(
+                g.listToString(old_public_lines,toRepr=True)),
+            '\nprivate_file',old_private_file,
+            '\nprivate lines...\n%s\n' %(
+                g.listToString(old_private_lines,toRepr=True)))
+
+    new_private_lines = x.propagate_changed_lines(
+        old_public_lines,old_private_lines,marker)
+
+    # Important bug fix: Never create the private file here!
+    fn = old_private_file
+    copy = os.path.exists(fn) and new_private_lines != old_private_lines
+
+    # 2010/01/07: check at.errors also.
+    if copy and x.errors == 0 and at.errors == 0:
+        s = ''.join(new_private_lines)
+        ok = x.replaceFileWithString(fn,s)
+        # g.trace('ok',ok,'writing private file',fn)
+
+    return copy
+#@+node:ekr.20041005105605.15: *6* at.initWriteIvars
+def initWriteIvars(self,root,targetFileName,
+    atAuto=False,atEdit=False,atShadow=False,
+    nosentinels=False,thinFile=False,
+    scriptWrite=False,toString=False,
+    forcePythonSentinels=None,
+):
+    at = self ; c = at.c
+
+    assert root
+    self.initCommonIvars()
+
+    at.atAuto = atAuto
+    at.atEdit = atEdit
+    at.atShadow = atShadow
+    # at.default_directory: set by scanAllDirectives()
+    at.docKind = None
+    if forcePythonSentinels:
+        at.endSentinelComment = None
+    # else: at.endSentinelComment set by initCommonIvars.
+    # at.encoding: set by scanAllDirectives() below.
+    # at.explicitLineEnding # True: an @lineending directive specifies the ending.
+        # Set by scanAllDirectives() below.
+    at.fileChangedFlag = False # True: the file has actually been updated.
+    at.force_newlines_in_at_nosent_bodies = c.config.getBool(
+        'force_newlines_in_at_nosent_bodies')
+    if forcePythonSentinels is None:
+        forcePythonSentinels = scriptWrite
+    # at.language:      set by scanAllDirectives() below.
+    # at.outputFile:    set below.
+    # at.outputNewline: set below.
+    if forcePythonSentinels:
+        # Force Python comment delims for g.getScript.
+        at.startSentinelComment = "#"
+    # else:                 set by initCommonIvars.
+    # at.stringOutput:      set below.
+    # at.outputFileName:    set below.
+    # at.output_newline:    set by scanAllDirectives() below.
+    # at.page_width:        set by scanAllDirectives() below.
+    at.sentinels = not nosentinels
+    at.shortFileName = ""   # For messages.
+    at.root = root
+    # at.tab_width:         set by scanAllDirectives() below.
+    at.targetFileName = targetFileName
+        # Must be None for @shadow.
+    at.thinFile = thinFile
+    at.toString = toString
+    at.writeVersion5 = at.new_write and not atShadow
+
+    at.scanAllDirectives(root,
+        scripting=scriptWrite,
+        forcePythonSentinels=forcePythonSentinels,
+        issuePathWarning=True)
+    # Sets the following ivars:
+        # at.default_directory
+        # at.encoding
+        # at.explicitLineEnding
+        # at.language
+        # at.output_newline
+        # at.page_width
+        # at.tab_width
+
+    # 2011/10/21: Encoding directive overrides everything else.
+    if at.language == 'python':
+        encoding = g.getPythonEncodingFromString(root.b)
+        if encoding:
+            at.encoding = encoding
+            # g.trace('scanned encoding',encoding)
+
+    if toString:
+        at.outputFile = g.fileLikeObject()
+        if g.app.unitTesting:
+            at.output_newline = '\n'
+        # else: at.output_newline set in initCommonIvars.
+        at.stringOutput = ""
+        at.outputFileName = "<string-file>"
+    else:
+        at.outputFile = None # The temporary output file.
+        # at.outputNewline set in initCommonIvars.
+        at.stringOutput = None
+        at.outputFileName = g.u('')
+
+    # Init all other ivars even if there is an error.
+    if not at.errors and at.root:
+        if hasattr(at.root.v,'tnodeList'):
+            delattr(at.root.v,'tnodeList')
+        at.root.v._p_changed = True
+#@+node:ekr.20100125073206.8709: *6* g.getPythonEncodingFromString
+def getPythonEncodingFromString(s):
+
+    '''Return the encoding given by Python's encoding line.
+    s is the entire file.
+    '''
+
+    encoding = None
+    tag,tag2 = '# -*- coding:','-*-'
+    n1,n2 = len(tag),len(tag2)
+
+    if s:
+        # For Python 3.x we must convert to unicode before calling startswith.
+        # The encoding doesn't matter: we only look at the first line, and if
+        # the first line is an encoding line, it will contain only ascii characters.
+        s = g.toUnicode(s,encoding='ascii',reportErrors=False)
+        lines = g.splitLines(s)
+        line1 = lines[0].strip()
+        if line1.startswith(tag) and line1.endswith(tag2):
+            e = line1[n1:-n2].strip()
+            if e and g.isValidEncoding(e):
+                encoding = e
+        elif g.match_word(line1,0,'@first'): # 2011/10/21.
+            line1 = line1[len('@first'):].strip()
+            if line1.startswith(tag) and line1.endswith(tag2):
+                e = line1[n1:-n2].strip()
+                # g.trace(e,g.isValidEncoding(e),g.callers())
+                if e and g.isValidEncoding(e):
+                    encoding = e
+
+    return encoding
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution

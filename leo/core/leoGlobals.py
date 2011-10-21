@@ -2473,8 +2473,9 @@ def readlineForceUnixNewline(f,fileName=None):
 
     try:
         s = f.readline()
+        # g.trace(repr(s))
     except UnicodeDecodeError:
-        g.es_print('UnicodeDecodeError: %s' % fileName)
+        g.trace('UnicodeDecodeError: %s' % (fileName),f,g.callers())
         s = g.u('')
 
     if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
@@ -4603,6 +4604,13 @@ def getPythonEncodingFromString(s):
             e = line1[n1:-n2].strip()
             if e and g.isValidEncoding(e):
                 encoding = e
+        elif g.match_word(line1,0,'@first'): # 2011/10/21.
+            line1 = line1[len('@first'):].strip()
+            if line1.startswith(tag) and line1.endswith(tag2):
+                e = line1[n1:-n2].strip()
+                # g.trace(e,g.isValidEncoding(e),g.callers())
+                if e and g.isValidEncoding(e):
+                    encoding = e
 
     return encoding
 #@+node:ekr.20080816125725.2: *3* g.isBytes, isCallable, isChar, isString & isUnicode

@@ -528,9 +528,12 @@ class shadowController:
         at.errors = 0
         
         # A massive klude: read the file private file just to read the encoding.
-        f = open(old_private_file)
-        at.scanHeader(f,old_private_file)
+        f = open(old_private_file,'rb')
+            # 2011/10/21: read in 'rb' mode.
+        at.scanHeader(f,old_private_file) # sets at.encoding
+        if trace: g.trace('*** header scanned: encoding:',at.encoding)
         f.close()
+
         self.encoding = at.encoding
         if trace: g.trace(self.encoding)
         

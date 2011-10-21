@@ -337,6 +337,13 @@ class atFile:
             # at.page_width
             # at.tab_width
 
+        # 2011/10/21: Encoding directive overrides everything else.
+        if at.language == 'python':
+            encoding = g.getPythonEncodingFromString(root.b)
+            if encoding:
+                at.encoding = encoding
+                # g.trace('scanned encoding',encoding)
+
         if toString:
             at.outputFile = g.fileLikeObject()
             if g.app.unitTesting:
@@ -2485,6 +2492,7 @@ class atFile:
         isThinDerivedFile is True if the file is an @thin file."""
 
         trace = False and not g.unitTesting
+        # if trace: g.trace('=====',fileName)
         at = self
         firstLines = [] # The lines before @+leo.
         tag = "@+leo"
@@ -2504,7 +2512,7 @@ class atFile:
         #@@c
 
         s = at.readLine(theFile,fileName)
-        if trace: g.trace('first line',repr(s))
+        if trace: g.trace(fileName,'first line',repr(s))
         while len(s) > 0:
             j = s.find(tag)
             if j != -1: break

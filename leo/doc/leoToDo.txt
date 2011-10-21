@@ -5,7 +5,7 @@
 .. @+all
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 .. @+node:ekr.20111021105253.9477: *3* First
-.. @+node:ekr.20111020092529.15885: *4* Urgent bug: Fix serious menu-binding problem
+.. @+node:ekr.20111020092529.15885: *4* Fix bug: menu-binding problem
 @nocolor-node
 
 http://mail.google.com/mail/#inbox/1331909dd653f3c9
@@ -484,7 +484,7 @@ def killOneShortcut (self,bunch,name,p):
     
     if 0:
         g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20110929165422.15449: *4* Current bug: Test noweb expansions in rst3 command
+.. @+node:ekr.20110929165422.15449: *4* Test bug fix: noweb expansions in rst3 command
 @nocolor-node
 
 *** Important *** This was all done in Leo 4.9
@@ -3653,7 +3653,7 @@ consult leoTest.py.
 It has been fun tracking this down.  I'll fix the documentation immediately. 
 .. @+node:ekr.20111018104244.15924: *5* Revise Leo's wiki
 .. @+node:ekr.20111019080436.15850: *4* Fix all significant bugs
-.. @+node:ekr.20111020092529.15885: *5* Urgent bug: Fix serious menu-binding problem
+.. @+node:ekr.20111020092529.15885: *5* Fix bug: menu-binding problem
 @nocolor-node
 
 http://mail.google.com/mail/#inbox/1331909dd653f3c9
@@ -4132,7 +4132,7 @@ def killOneShortcut (self,bunch,name,p):
     
     if 0:
         g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20110929165422.15449: *5* Current bug: Test noweb expansions in rst3 command
+.. @+node:ekr.20110929165422.15449: *5* Test bug fix: noweb expansions in rst3 command
 @nocolor-node
 
 *** Important *** This was all done in Leo 4.9
