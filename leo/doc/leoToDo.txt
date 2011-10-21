@@ -4,8 +4,57 @@
 
 .. @+all
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
-.. @+node:ekr.20111019104425.15857: *3* Projects: 5
-.. @+node:ekr.20111018220642.15858: *4* Bring docs up to date: 16
+.. @+node:ekr.20111019104425.15857: *3* Projects: 7
+.. @+node:ekr.20111018220642.15858: *4* Bring docs up to date
+.. @+node:ekr.20111020120612.15894: *5* Review bzr instructions
+.. @+node:ekr.20111020120612.15896: *5* Add link to glossary from Leo's home page
+@nocolor-node
+
+> Looks good, how about a link "Search", leading to
+> http://webpages.charter.net/edreamleo/genindex.html or some other page
+> where there's a search box.
+
+Good idea.  I'll do it today.
+.. @+node:ekr.20111021105253.9476: *5* Make sure all colorizer languages have entries in leoApp.py
+.. @+node:ekr.20111021035504.9469: *6* Script: get all comments from modes
+import glob
+import imp
+@others
+
+keys = ("lineComment","commentStart","commentEnd",)
+d = {}
+    # Keys are language names.
+    # Values are a list of comment delims, in keys order.
+paths,modes_path = get_paths()
+for path in paths:
+    module_name = g.shortFileName(path)[:-3]
+    module = import_module(module_name,modes_path)
+    aList = []
+    for key in keys:
+        val = module.properties.get(key)
+        if val: aList.append(val)
+    d[module_name] = aList
+
+print('-'* 20)
+print('language_delims_dict')
+for key in sorted(d):
+    print('%16s: "%s"' % ('"%s"' % (key),' '.join(d.get(key))))
+.. @+node:ekr.20111021035504.9470: *7* get_paths
+def get_paths():
+    
+    modes_path = g.os_path_finalize_join(g.app.loadDir,'..','modes')
+    pattern = g.os_path_finalize_join(modes_path,'*.py')
+    paths = glob.glob(pattern)
+    paths = [z for z in paths if not z.endswith('__init__.py')]
+    return paths,modes_path
+.. @+node:ekr.20111021035504.9471: *7* import_module
+def import_module(module_name,modes_path):
+    
+    data = imp.find_module(module_name,[modes_path])
+        # This can open the file.
+    theFile,pathname,description = data
+    module = imp.load_module(module_name,theFile,pathname,description)
+    return module
 .. @+node:ekr.20111019104425.15865: *5* Make sure docstrings include present documentation
 .. @+node:ekr.20111017132257.15892: *5* Add short intro to scripting
 @language rest
@@ -1438,7 +1487,486 @@ plugins.  A prototype of this script exists somewhere.  Making it an
 @command node will make it much more visible. 
 
 Terry wrote plugin_catalog.py.  It is in LeoDocs.leo)
-.. @+node:ekr.20111019080436.15850: *4* Fix all significant bugs: 8
+.. @+node:ekr.20111019080436.15850: *4* Fix all significant bugs
+.. @+node:ekr.20111020092529.15885: *5* ** Fix serious menu-binding problem
+@nocolor-node
+
+http://mail.google.com/mail/#inbox/1331909dd653f3c9
+
+> Now I understand.  If I override the shortcut associated with the menu
+> item, in this case Alt-A, the menu breaks.
+
+This is a serious bug!  The menu item now executes the command bound
+to Alt-A!  Very bad.
+.. @+node:ekr.20031218072017.2609: *6* app.closeLeoWindow
+def closeLeoWindow (self,frame):
+
+    """Attempt to close a Leo window.
+
+    Return False if the user veto's the close."""
+
+    c = frame.c
+
+    # g.trace('frame',frame,g.callers(4))
+
+    c.endEditing() # Commit any open edits.
+
+    if c.promptingForClose:
+        # There is already a dialog open asking what to do.
+        return False
+
+    g.app.config.writeRecentFilesFile(c)
+        # Make sure .leoRecentFiles.txt is written.
+
+    if c.changed:
+        c.promptingForClose = True
+        veto = frame.promptForSave()
+        c.promptingForClose = False
+        if veto: return False
+
+    g.app.setLog(None) # no log until we reactive a window.
+
+    g.doHook("close-frame",c=c)
+        # This may remove frame from the window list.
+
+    if frame in g.app.windowList:
+        g.app.destroyWindow(frame)
+
+    if g.app.windowList:
+        # Pick a window to activate so we can set the log.
+        frame = g.app.windowList[0]
+        frame.deiconify()
+        frame.lift()
+        frame.c.setLog()
+        frame.c.bodyWantsFocus()
+        frame.c.outerUpdate()
+    elif not g.app.unitTesting:
+        g.app.finishQuit()
+
+    return True # The window has been closed.
+.. @+node:ekr.20031218072017.1723: *6* createMenuEntries (leoMenu)
+def createMenuEntries (self,menu,table,dynamicMenu=False):
+
+    '''Create a menu entry from the table.
+    New in 4.4: this method shows the shortcut in the menu,
+    but this method **never** binds any shortcuts.'''
+
+    c = self.c ; f = c.frame ; k = c.k
+    if g.app.unitTesting: return
+
+    trace = False and not g.unitTesting
+    for data in table:
+        << get label & command or continue >>
+        << compute commandName & accel from label & command >>
+        # Bug fix: 2009/09/30: use canonical stroke.
+        accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
+        stroke = k.shortcutFromSetting(accel,addKey=True) or ''
+        if accelerator:
+            accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
+
+        if trace and commandName == 'sort-siblings':
+            g.trace(repr(stroke),repr(accelerator),commandName)
+            
+        # Add an entry for unit testing and masterMenuHandler.
+        
+        if stroke:
+            d = g.app.unitTestMenusDict
+            aSet = d.get(commandName,set())
+            aSet.add(stroke)
+            d[commandName] = aSet
+    
+        def masterMenuCallback (
+            c=c,k=k,stroke=stroke,
+            command=command,commandName=commandName,event=None
+        ):
+            if trace: g.trace('stroke',stroke)
+            return k.masterMenuHandler(stroke,command,commandName)
+
+        realLabel = self.getRealMenuName(label)
+        amp_index = realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        if sys.platform == 'darwin':
+            << clear accelerator if it is a plain key >>
+
+        # c.add_command ensures that c.outerUpdate is called.
+        if menu:
+            c.add_command(menu,label=realLabel,
+                accelerator=accelerator,
+                command=masterMenuCallback,
+                underline=amp_index)
+.. @+node:ekr.20051021091958: *7* << get label & command or continue >>
+if g.isString(data):
+    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
+    ok = True
+    s = data
+    removeHyphens = s and s[0]=='*'
+    if removeHyphens: s = s[1:]
+    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+    command = s.replace('&','').lower()
+    # if command == 'sort-siblings': g.trace('**1')
+    if label == '-':
+        self.add_separator(menu)
+        continue # That's all.
+else:
+    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+    if ok:
+        if len(data) == 2:
+            # New in 4.4b2: command can be a minibuffer-command name (a string)
+            label,command = data
+            # if command == 'sort-siblings': g.trace('**2')
+        else:
+            # New in 4.4: we ignore shortcuts bound in menu tables.
+            label,junk,command = data
+            # if command == 'sort-siblings': g.trace('**3')
+
+        if label in (None,'-'):
+            self.add_separator(menu)
+            continue # That's all.
+    else:
+        g.trace('bad data in menu table: %s' % repr(data))
+        continue # Ignore bad data
+.. @+node:ekr.20031218072017.1725: *7* << compute commandName & accel from label & command >>
+# New in 4.4b2: command can be a minibuffer-command name (a string)
+minibufferCommand = type(command) == type('')
+accel = None
+if minibufferCommand:
+    commandName = command 
+    command = c.commandsDict.get(commandName)
+    if command:
+        rawKey,bunchList = c.config.getShortcut(commandName)
+        # Pick the first entry that is not a mode.
+        for bunch in bunchList:
+            if not bunch.pane.endswith('-mode'):
+                accel = bunch and bunch.val
+                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+    else:
+        if not g.app.unitTesting and not dynamicMenu:
+            # Don't warn during unit testing.
+            # This may come from a plugin that normally isn't enabled.
+            if trace: g.trace('No inverse for %s' % commandName)
+        continue # There is no way to make this menu entry.
+else:
+    # First, get the old-style name.
+    commandName = self.computeOldStyleShortcutKey(label)
+    rawKey,bunchList = c.config.getShortcut(commandName)
+    for bunch in bunchList:
+        if not bunch.pane.endswith('-mode'):
+            if trace: g.trace('2','%20s' % (bunch.val),commandName)
+            accel = bunch and bunch.val ; break
+    # Second, get new-style name.
+    if not accel:
+        << compute emacs_name >>
+            # Contains the not-so-horrible kludge.
+        if emacs_name:
+            commandName = emacs_name
+            rawKey,bunchList = c.config.getShortcut(emacs_name)
+            # Pick the first entry that is not a mode.
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    accel = bunch.val
+                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    break
+        elif not dynamicMenu:
+            g.trace('No inverse for %s' % commandName)
+.. @+node:ekr.20051021100806.1: *8* << compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+.. @+node:ekr.20060216110502: *7* << clear accelerator if it is a plain key >>
+for z in ('Alt','Ctrl','Command'):
+    if accelerator.find(z) != -1:
+        break # Found.
+else:
+    accelerator = ''
+.. @+node:ekr.20041117083141: *6* get & allies (g.app.config)
+def get (self,c,setting,kind):
+
+    """Get the setting and make sure its type matches the expected type."""
+
+    trace = False and not g.unitTesting
+
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+
+    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+    if c and not isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                # if setting == 'targetlanguage':
+                    # g.trace(c.shortFileName(),setting,val,g.callers())
+                return val
+
+    for d in self.localOptionsList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            # kind2 = d.get('_hash','<no hash>')
+            # if setting == 'targetlanguage':
+                # g.trace(kind2,setting,val,g.callers())
+            return val
+
+    for d in self.dictList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            kind = d.get('_hash','<no hash>')
+            # if setting == 'targetlanguage':
+                # g.trace(kind,setting,val,g.callers())
+            return val
+
+    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+    if c and isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                # if setting == 'targetlanguage':
+                    # g.trace(c.shortFileName(),setting,val,g.callers())
+                return val
+
+    return None
+.. @+node:ekr.20041121143823: *7* getValFromDict
+def getValFromDict (self,d,setting,requestedType,warn=True):
+
+    '''Look up the setting in d. If warn is True, warn if the requested type
+    does not (loosely) match the actual type.
+    returns (val,exists)'''
+
+    bunch = d.get(self.munge(setting))
+    if not bunch: return None,False
+
+    # g.trace(setting,requestedType,bunch.toString())
+    val = bunch.val
+
+    if g.isPython3:
+        isNone = val in ('None','none','',None)
+    else:
+        isNone = val in (
+            unicode('None'),unicode('none'),unicode(''),
+            'None','none','',None)
+
+    if not self.typesMatch(bunch.kind,requestedType):
+        # New in 4.4: make sure the types match.
+        # A serious warning: one setting may have destroyed another!
+        # Important: this is not a complete test of conflicting settings:
+        # The warning is given only if the code tries to access the setting.
+        if warn:
+            g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
+            g.es_print('there may be conflicting settings!',color='red')
+        return None, False
+    # elif val in (u'None',u'none','None','none','',None):
+    elif isNone:
+        return None, True # Exists, but is None
+    else:
+        # g.trace(setting,val)
+        return val, True
+.. @+node:ekr.20051015093141: *7* typesMatch
+def typesMatch (self,type1,type2):
+
+    '''
+    Return True if type1, the actual type, matches type2, the requeseted type.
+
+    The following equivalences are allowed:
+
+    - None matches anything.
+    - An actual type of string or strings matches anything *except* shortcuts.
+    - Shortcut matches shortcuts.
+    '''
+
+    shortcuts = ('shortcut','shortcuts',)
+
+    return (
+        type1 == None or type2 == None or
+        type1.startswith('string') and type2 not in shortcuts or
+        type1 == 'int' and type2 == 'size' or
+        (type1 in shortcuts and type2 in shortcuts) or
+        type1 == type2
+    )
+.. @+node:ekr.20041117062717.14: *6* getShortcut (g.app.config)
+def getShortcut (self,c,commandName):
+
+    '''Return rawKey,accel for shortcutName'''
+    
+    trace = False and commandName == 'sort-siblings' and not g.unitTesting
+
+    key = c.frame.menu.canonicalizeMenuName(commandName)
+    key = key.replace('&','') # Allow '&' in names.
+    
+    if c.k.new_bindings:
+        bunchList = self.getShortcutHelper(c,key) # 2011/02/11
+    else:
+        bunchList = self.get(c,key,'shortcut')
+
+    if bunchList:
+        bunchList = [bunch for bunch in bunchList
+            if bunch.val and bunch.val.lower() != 'none']
+        if trace: g.trace(key,bunchList)
+        return key,bunchList
+    else:
+        return key,[]
+.. @+node:ekr.20110211041914.15415: *7* getShortcutHelper(g.app.config)
+def getShortcutHelper (self,c,key):
+    
+    '''Like get, but return *all* the found bunchLists's.
+    
+    'key' is actually a commandname.'''
+
+    trace = False and not g.unitTesting
+    kind = 'shortcut'
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+    result = []
+
+    if c and not isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            bunchList,junk = self.getValFromDict(d,key,kind)
+            if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    for d in self.localOptionsList:
+        bunchList,junk = self.getValFromDict(d,key,kind)
+        if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    for d in self.dictList:
+        bunchList,junk = self.getValFromDict(d,key,kind)
+        if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    # Use settings in leoSettings.leo *last*.
+    if c and isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            bunchList,junk = self.getValFromDict(d,key,kind)
+            if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    return result
+.. @+node:ekr.20110211041914.15418: *7* mergeShortcuts
+def mergeShortcuts (self,result,aList,key):
+        # key is for debugging.
+        # key is a conical command name, *not* a keystroke.
+    
+    '''Append all non-conflicting entries of aList to result.'''
+    
+    trace = False and not g.unitTesting
+
+    # If there is a real override, **earlier** entries take precedence.
+    # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
+    
+    vals = [z.val for z in result]
+    aList = [z for z in aList if z.val not in vals]
+    result.extend(aList)
+
+    if trace and len(result) > 1:
+        g.trace(key,['%s %s' % (z.val,z.pane) for z in result])
+.. @+node:ekr.20111020144401.9584: *6* Changed
+.. @+node:ekr.20041117062717.2: *7* ctor (configClass)
+def __init__ (self):
+
+    # g.trace('g.app.config')
+    self.atCommonButtonsList = [] # List of info for common @buttons nodes.
+    self.atCommonCommandsList = [] # List of info for common @commands nodes.
+    self.buttonsFileName = ''
+    self.configsExist = False # True when we successfully open a setting file.
+    self.defaultFont = None # Set in gui.getDefaultConfigFont.
+    self.defaultFontFamily = None # Set in gui.getDefaultConfigFont.
+    self.enabledPluginsFileName = None
+    self.enabledPluginsString = '' 
+    self.globalConfigFile = None # Set in initSettingsFiles
+    self.homeFile = None # Set in initSettingsFiles
+    self.inited = False
+    self.menusList = []
+    self.menusFileName = ''
+    self.modeCommandsDict = {}
+        # For use by @mode logic. Keys are command names, values are g.Bunches.
+        # A special key: *mode-prompt* it the prompt to be given.
+    self.myGlobalConfigFile = None
+    self.myHomeConfigFile = None
+    self.machineConfigFile = None
+    self.presentBindingsDict = {}
+        # 2011/10/20
+        # The bindings in effect **for this commander only**.
+        # Keys are command-names, values are lists of bindings.
+    self.presentInverseBindingsDict = {}
+        # 2011/10/20
+        # A helper dict, used to create presentBindingsDict.
+        # Keys are keystrokes, values are lists of command names.
+    self.recentFilesFiles = [] # List of g.Bunches describing .leoRecentFiles.txt files.
+    self.write_recent_files_as_needed = False # Will be set later.
+    self.silent = g.app.silentMode
+    # g.trace('c.config.silent',self.silent)
+
+    # Inited later...
+    self.panes = None
+    self.sc = None
+    self.tree = None
+
+    self.initDicts()
+    self.initIvarsFromSettings()
+    self.initSettingsFiles()
+    self.initRecentFiles()
+.. @+node:ekr.20041120105609: *7* doShortcuts (ParserBaseClass)
+def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
+
+    trace = False and not g.unitTesting
+    c = self.c ; k = c.k
+    d = self.shortcutsDict
+    if s is None: s = p.b
+
+    theHash = d.get('_hash')
+    theHash = g.choose(theHash,g.shortFileName(theHash),'<no hash>')
+
+    if trace: g.trace('localFlag: %s d._hash: %s node: %s' % (
+        self.localFlag,theHash,junk_name))
+
+    for line in g.splitLines(s):
+        line = line.strip()
+        if line and not g.match(line,0,'#'):
+            name,bunch = self.parseShortcutLine(line)
+            if bunch:
+                bunch._hash = theHash
+                if bunch.val in (None,'none','None'):
+                    self.killOneShortcut(bunch,name,p)
+                else:
+                    self.doOneShortcut(bunch,name,p)
+.. @+node:ekr.20111020144401.9585: *8* doOneShortcut (ParserBaseClass)
+def doOneShortcut(self,bunch,name,p):
+    
+    '''Handle a regular shortcut.'''
+    
+    trace = False and name == 'sort-siblings' and not g.unitTesting
+    
+    if trace: g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
+        
+    d = self.shortcutsDict
+    bunchList = d.get(name,[])
+    bunchList.append(bunch)
+    d [name] = bunchList
+
+    self.set(p,"shortcut",name,bunchList)
+        ### Huh?????
+    self.setShortcut(name,bunchList)
+    
+    # if bunch.pane in ('kill','Kill'):
+        # munge = k.shortcutFromSetting
+        # if trace: g.trace('****** killing binding:',
+            # bunch.val,'to',name)
+        # bunchList = [z for z in bunchList
+            # if munge(z.val) != munge(bunch.val)]
+        # # g.trace(bunchList)
+.. @+node:ekr.20111020144401.9586: *8* killOneShortcut (ParserBaseClass)
+def killOneShortcut (self,bunch,name,p):
+    
+    if 0:
+        g.trace(bunch,name,p and p.h)
 .. @+node:ekr.20111017132257.15885: *5* * Add refresh colorizing automatically when @language edited
 @nocolor-node
 
@@ -3175,6 +3703,12 @@ A long thread, full on interesting things.
 .. @+node:ekr.20111017132257.15890: *5* Investigate how IPython hijacks event loops
 http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
 .. @+node:ekr.20111009162434.7204: *5* Port ipy_leo.py to latest version of IPython
+.. @+node:ekr.20111021035504.9467: *4* Play with PyQt Qtest framework
+http://groups.google.com/group/leo-editor/browse_thread/thread/b851e7d9855a57c2
+
+http://www.voom.net/pyqt-qtest-example
+.. @+node:ekr.20110921094450.6957: *4* Restart vim project
+This requires commands that can be composed.
 .. @+node:ekr.20111019080436.15848: *3* Easy new features: 10
 .. @+node:ekr.20111010122531.15568: *4* * @render-rest, @render-html trees
 @language rest
@@ -4151,11 +4685,6 @@ Terry wrote plugin_catalog.py.  It is in LeoDocs.leo)
 .. @+node:ekr.20110917104720.9418: *4* convert-names-to-pep8
 .. @+node:ekr.20110918204546.6809: *4* convert-to-class
 .. @+node:ekr.20111019104425.15885: *3* Most fun
-.. @+node:ekr.20111014074810.15655: *4* * What about LeoDocs(hard-crash).leo is causing the crash?
-.. @+node:ekr.20111017132257.15885: *4* * Add refresh colorizing automatically when @language edited
-@nocolor-node
-
-Could this be done as part of macro expansion?
 .. @+node:ekr.20111010122531.15568: *4* * @render-rest, @render-html trees
 @language rest
 
@@ -5219,7 +5748,7 @@ language before doing anything in this direction.
 As an intermediate step, maybe we could allow mixing RST processing with regular
 program text.  Leo would produce two documents out of a source file: a version
 for the compiler in plain ascii, and an HTML file for reading the source.
-.. @+node:ekr.20110921094450.6957: *4* Keys: restart vim project
+.. @+node:ekr.20110921094450.6957: *4* Restart vim project
 This requires commands that can be composed.
 .. @+node:ekr.20110921094450.6958: *4* Bridges
 There are already bridges for vim, emacs, ipython and docutils, but I think more
