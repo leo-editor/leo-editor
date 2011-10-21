@@ -1783,7 +1783,9 @@ class atFile:
                 s = at.massageAtDocPart(s) # 2011/05/24
                 at.appendToOut(s)
                 at.docOut = []
-                at.inCode = True
+
+            # 2010/10/21: Important bug fix: always enter code mode.
+            at.inCode = True
 
             # Restore the node continain the @others directive.
             # *Never* terminate new-sentinel nodes until the post-pass.
@@ -1807,6 +1809,7 @@ class atFile:
             if at.docOut:
                 at.appendToOut(''.join(at.docOut))
                 at.docOut = []
+
             # 2010/10/21: Important bug fix: always enter code mode.
             at.inCode = True
         
