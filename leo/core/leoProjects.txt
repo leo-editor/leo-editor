@@ -5818,6 +5818,7 @@ self.language_delims_dict = {
     "latex"         : "%",
     "lisp"          : ";", # EKR: 2010/09/29
     "lua"           : "--",  # ddm 13/02/06
+    "matlab"        : "%", # EKR: 2011/10/21
     "nsi"           : ";", # EKR: 2010/10/27
     "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
     "pascal"        : "// { }",
@@ -5872,6 +5873,7 @@ self.language_extension_dict = {
     "kshell"        : "ksh", # Leo 4.5.1.
     "latex"         : "tex", # 1/8/04
     "lua"           : "lua",  # ddm 13/02/06
+    "matlab"        : "m", # EKR: 2011/10/21
     "nsi"           : "nsi", # EKR: 2010/10/27
     "noweb"         : "nw",
     "pascal"        : "p",
@@ -5920,6 +5922,7 @@ self.extension_dict = {
     "java"  : "java",
     "ksh"   : "kshell", # Leo 4.5.1.
     "lua"   : "lua",  # ddm 13/02/06
+    "m"     : "matlab", # EKR 2011/10/21
     "nsi"   : "nsi", # EKR: 2010/10/27
     "nw"    : "noweb",
     "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
@@ -16709,21 +16712,24 @@ def printBindingsHelper (self,result,data,n1,n2,prefix):
             # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
             result.append('%s %*s %*s %s\n' % (letter,-n1,s1,-(min(12,n2)),s2,s3))
 #@+node:ekr.20041117062717.14: *5* getShortcut (g.app.config)
-def getShortcut (self,c,shortcutName):
+def getShortcut (self,c,commandName):
 
     '''Return rawKey,accel for shortcutName'''
+    
+    trace = False and commandName == 'sort-siblings' and not g.unitTesting
 
-    key = c.frame.menu.canonicalizeMenuName(shortcutName)
+    key = c.frame.menu.canonicalizeMenuName(commandName)
     key = key.replace('&','') # Allow '&' in names.
     
     if c.k.new_bindings:
         bunchList = self.getShortcutHelper(c,key) # 2011/02/11
     else:
         bunchList = self.get(c,key,'shortcut')
-    # g.trace(c.k.new_bindings) # 'bunchList',bunchList)
+
     if bunchList:
         bunchList = [bunch for bunch in bunchList
             if bunch.val and bunch.val.lower() != 'none']
+        if trace: g.trace(key,bunchList)
         return key,bunchList
     else:
         return key,[]
@@ -16769,6 +16775,7 @@ def mergeShortcuts (self,result,aList,key):
     '''Append all non-conflicting entries of aList to result.'''
     
     trace = False and not g.unitTesting
+
     # If there is a real override, **earlier** entries take precedence.
     # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
     

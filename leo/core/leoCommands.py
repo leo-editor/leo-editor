@@ -8295,9 +8295,9 @@ class configSettings:
         '''Return the list of recently opened files.'''
         return g.app.config.getRecentFiles()
 
-    def getShortcut (self,shortcutName):
+    def getShortcut (self,commandName):
         '''Return the tuple (rawKey,accel) for shortcutName in @shortcuts tree.'''
-        return g.app.config.getShortcut(self.c,shortcutName)
+        return g.app.config.getShortcut(self.c,commandName)
 
     def getSettingSource(self,setting):
         '''return the name of the file responsible for setting.'''

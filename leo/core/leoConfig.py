@@ -542,42 +542,59 @@ class parserBaseClass:
         except ValueError:
             self.valueError(p,kind,name,val)
     #@+node:ekr.20041120105609: *4* doShortcuts (ParserBaseClass)
-    def doShortcuts(self,p,kind,name,val,s=None):
+    def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
 
-        c = self.c ; d = self.shortcutsDict ; k = c.k
-        trace = False or c.config.getBool('trace_bindings_verbose')
-        verbose = False
+        trace = False and not g.unitTesting
+        c = self.c ; k = c.k
+        d = self.shortcutsDict
+        if s is None: s = p.b
+
         theHash = d.get('_hash')
         theHash = g.choose(theHash,g.shortFileName(theHash),'<no hash>')
-        if trace: g.trace('localFlag: %s d._hash: %s %s' % (
-            self.localFlag,theHash,c.shortFileName()))
-        munge = k.shortcutFromSetting
-        if s is None: s = p.b
-        lines = g.splitLines(s)
-        for line in lines:
+
+        if trace: g.trace('localFlag: %s d._hash: %s node: %s' % (
+            self.localFlag,theHash,junk_name))
+
+        for line in g.splitLines(s):
             line = line.strip()
             if line and not g.match(line,0,'#'):
                 name,bunch = self.parseShortcutLine(line)
-                if bunch is not None:
-                    bunch._hash = theHash # 2011/02/10
-                    if bunch.val not in (None,'none','None'):
-                        # A regular shortcut.
-                        bunchList = d.get(name,[])
-                        if bunch.pane in ('kill','Kill'):
-                            if trace and verbose: g.trace('****** killing binding:',
-                                bunch.val,'to',name)
-                            bunchList = [z for z in bunchList
-                                if munge(z.val) != munge(bunch.val)]
-                            # g.trace(bunchList)
-                        else:
-                            if trace and verbose: g.trace('%6s %20s %s' % (
-                                bunch.pane,bunch.val,name))
-                            bunchList.append(bunch)
-                        d [name] = bunchList
-                        # if name in ('full-command'):
-                            # g.trace('id(self.shortcutsDict)',id(d),bunchList)
-                        self.set(p,"shortcut",name,bunchList)
-                        self.setShortcut(name,bunchList)
+                if bunch:
+                    bunch._hash = theHash
+                    if bunch.val in (None,'none','None'):
+                        self.killOneShortcut(bunch,name,p)
+                    else:
+                        self.doOneShortcut(bunch,name,p)
+    #@+node:ekr.20111020144401.9585: *5* doOneShortcut (ParserBaseClass)
+    def doOneShortcut(self,bunch,name,p):
+        
+        '''Handle a regular shortcut.'''
+        
+        trace = False and name == 'sort-siblings' and not g.unitTesting
+        
+        if trace: g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
+            
+        d = self.shortcutsDict
+        bunchList = d.get(name,[])
+        bunchList.append(bunch)
+        d [name] = bunchList
+
+        self.set(p,"shortcut",name,bunchList)
+            ### Huh?????
+        self.setShortcut(name,bunchList)
+        
+        # if bunch.pane in ('kill','Kill'):
+            # munge = k.shortcutFromSetting
+            # if trace: g.trace('****** killing binding:',
+                # bunch.val,'to',name)
+            # bunchList = [z for z in bunchList
+                # if munge(z.val) != munge(bunch.val)]
+            # # g.trace(bunchList)
+    #@+node:ekr.20111020144401.9586: *5* killOneShortcut (ParserBaseClass)
+    def killOneShortcut (self,bunch,name,p):
+        
+        if 0:
+            g.trace(bunch,name,p and p.h)
     #@+node:ekr.20041217132028: *4* doString
     def doString (self,p,kind,name,val):
 
@@ -1187,6 +1204,14 @@ class configClass:
         self.myGlobalConfigFile = None
         self.myHomeConfigFile = None
         self.machineConfigFile = None
+        self.presentBindingsDict = {}
+            # 2011/10/20
+            # The bindings in effect **for this commander only**.
+            # Keys are command-names, values are lists of bindings.
+        self.presentInverseBindingsDict = {}
+            # 2011/10/20
+            # A helper dict, used to create presentBindingsDict.
+            # Keys are keystrokes, values are lists of command names.
         self.recentFilesFiles = [] # List of g.Bunches describing .leoRecentFiles.txt files.
         self.write_recent_files_as_needed = False # Will be set later.
         self.silent = g.app.silentMode
@@ -1636,21 +1661,24 @@ class configClass:
         else:
             return 'unknown setting',None
     #@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config)
-    def getShortcut (self,c,shortcutName):
+    def getShortcut (self,c,commandName):
 
         '''Return rawKey,accel for shortcutName'''
+        
+        trace = False and commandName == 'sort-siblings' and not g.unitTesting
 
-        key = c.frame.menu.canonicalizeMenuName(shortcutName)
+        key = c.frame.menu.canonicalizeMenuName(commandName)
         key = key.replace('&','') # Allow '&' in names.
         
         if c.k.new_bindings:
             bunchList = self.getShortcutHelper(c,key) # 2011/02/11
         else:
             bunchList = self.get(c,key,'shortcut')
-        # g.trace(c.k.new_bindings) # 'bunchList',bunchList)
+
         if bunchList:
             bunchList = [bunch for bunch in bunchList
                 if bunch.val and bunch.val.lower() != 'none']
+            if trace: g.trace(key,bunchList)
             return key,bunchList
         else:
             return key,[]
@@ -1696,6 +1724,7 @@ class configClass:
         '''Append all non-conflicting entries of aList to result.'''
         
         trace = False and not g.unitTesting
+
         # If there is a real override, **earlier** entries take precedence.
         # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
         

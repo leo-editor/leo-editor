@@ -170,6 +170,7 @@ class LeoApp:
             "latex"         : "%",
             "lisp"          : ";", # EKR: 2010/09/29
             "lua"           : "--",  # ddm 13/02/06
+            "matlab"        : "%", # EKR: 2011/10/21
             "nsi"           : ";", # EKR: 2010/10/27
             "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
             "pascal"        : "// { }",
@@ -224,6 +225,7 @@ class LeoApp:
             "kshell"        : "ksh", # Leo 4.5.1.
             "latex"         : "tex", # 1/8/04
             "lua"           : "lua",  # ddm 13/02/06
+            "matlab"        : "m", # EKR: 2011/10/21
             "nsi"           : "nsi", # EKR: 2010/10/27
             "noweb"         : "nw",
             "pascal"        : "p",
@@ -272,6 +274,7 @@ class LeoApp:
             "java"  : "java",
             "ksh"   : "kshell", # Leo 4.5.1.
             "lua"   : "lua",  # ddm 13/02/06
+            "m"     : "matlab", # EKR 2011/10/21
             "nsi"   : "nsi", # EKR: 2010/10/27
             "nw"    : "noweb",
             "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin

@@ -255,6 +255,8 @@ class leoMenu:
     def createMenusFromTables (self):
 
         c = self.c
+        
+        # g.trace(g.callers())
 
         aList = c.config.getMenusList()
         if aList:
@@ -1225,7 +1227,7 @@ class leoMenu:
         c = self.c ; f = c.frame ; k = c.k
         if g.app.unitTesting: return
 
-        trace = False
+        trace = False and not g.unitTesting
         for data in table:
             #@+<< get label & command or continue >>
             #@+node:ekr.20051021091958: *5* << get label & command or continue >>
@@ -1237,6 +1239,7 @@ class leoMenu:
                 if removeHyphens: s = s[1:]
                 label = self.capitalizeMinibufferMenuName(s,removeHyphens)
                 command = s.replace('&','').lower()
+                # if command == 'sort-siblings': g.trace('**1')
                 if label == '-':
                     self.add_separator(menu)
                     continue # That's all.
@@ -1246,9 +1249,11 @@ class leoMenu:
                     if len(data) == 2:
                         # New in 4.4b2: command can be a minibuffer-command name (a string)
                         label,command = data
+                        # if command == 'sort-siblings': g.trace('**2')
                     else:
                         # New in 4.4: we ignore shortcuts bound in menu tables.
                         label,junk,command = data
+                        # if command == 'sort-siblings': g.trace('**3')
 
                     if label in (None,'-'):
                         self.add_separator(menu)
@@ -1325,8 +1330,8 @@ class leoMenu:
             if accelerator:
                 accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
 
-            if trace: # and commandName == 'add-comments':
-                g.trace(bunch.val,repr(stroke),repr(accelerator),commandName)
+            if trace and commandName == 'sort-siblings':
+                g.trace(repr(stroke),repr(accelerator),commandName)
                 
             # Add an entry for unit testing and masterMenuHandler.
             
@@ -1340,7 +1345,7 @@ class leoMenu:
                 c=c,k=k,stroke=stroke,
                 command=command,commandName=commandName,event=None
             ):
-                # if trace: g.trace('stroke',stroke)
+                if trace: g.trace('stroke',stroke)
                 return k.masterMenuHandler(stroke,command,commandName)
 
             realLabel = self.getRealMenuName(label)
