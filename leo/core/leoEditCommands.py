@@ -401,6 +401,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
             c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
             if i != j: w.delete(i,j)
             w.insert(i,val)
+            c.frame.body.forceFullRecolor() # 2011/10/21
             c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
 
         return val is not None
