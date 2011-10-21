@@ -4172,7 +4172,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         # Used by event handlers...
         self.controlKeyIsDown = False # For control-drags
-        self.draggedItem = None
+        # self.draggedItem = None
         self.isActive = True
         self.redrawCount = 0
         self.wantedWidget = None
