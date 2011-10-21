@@ -2463,11 +2463,12 @@ class atFile:
         self.root.setOrphan()
 
     #@+node:ekr.20041005105605.128: *4* at.readLine
-    def readLine (self,theFile):
+    def readLine (self,theFile,fileName=None):
 
         """Reads one line from file using the present encoding"""
 
-        s = g.readlineForceUnixNewline(theFile) # calls theFile.readline
+        at = self
+        s = g.readlineForceUnixNewline(theFile,fileName=fileName) # calls theFile.readline
         # g.trace(repr(s),g.callers(4))
         u = g.toUnicode(s,self.encoding)
         return u
@@ -2502,13 +2503,13 @@ class atFile:
         # at-first lines are written "verbatim", so nothing more needs to be done!
         #@@c
 
-        s = at.readLine(theFile)
+        s = at.readLine(theFile,fileName)
         if trace: g.trace('first line',repr(s))
         while len(s) > 0:
             j = s.find(tag)
             if j != -1: break
             firstLines.append(s) # Queue the line
-            s = at.readLine(theFile)
+            s = at.readLine(theFile,fileName)
 
         n = len(s)
         valid = n > 0

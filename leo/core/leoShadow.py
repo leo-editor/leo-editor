@@ -535,11 +535,27 @@ class shadowController:
         if trace: g.trace(self.encoding)
         
         if g.isPython3:
-            old_public_lines  = open(old_public_file,encoding=self.encoding).readlines()
-            old_private_lines = open(old_private_file,encoding=self.encoding).readlines()
+            try:
+                old_public_lines  = open(old_public_file,encoding=self.encoding).readlines()
+            except UnicodeDecodeError:
+                at.error('UnicodeDecodeError reading %s', old_public_file)
+                return None
+            try:
+                old_private_lines = open(old_private_file,encoding=self.encoding).readlines()
+            except UnicodeDecodeError:
+                at.error('UnicodeDecodeError reading %s', new_public_file)
+                return None
         else:
-            old_public_lines  = open(old_public_file).readlines()
-            old_private_lines = open(old_private_file).readlines()
+            try:
+                old_public_lines  = open(old_public_file).readlines()
+            except UnicodeDecodeError:
+                at.error('UnicodeDecodeError reading %s', old_public_file)
+                return None
+            try:
+                old_private_lines = open(old_private_file).readlines()
+            except UnicodeDecodeError:
+                at.error('UnicodeDecodeError reading %s', new_public_file)
+                return None
         
             # 2011/09/09: convert each line to unicode.
             def cvt(s):

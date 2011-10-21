@@ -2469,9 +2469,14 @@ def readFileIntoString (fn,
 # same.
 #@@c
 
-def readlineForceUnixNewline(f):
+def readlineForceUnixNewline(f,fileName=None):
 
-    s = f.readline()
+    try:
+        s = f.readline()
+    except UnicodeDecodeError:
+        g.es_print('UnicodeDecodeError: %s' % fileName)
+        s = g.u('')
+
     if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
         s = s[0:-2] + "\n"
     return s

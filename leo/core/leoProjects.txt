@@ -2499,13 +2499,13 @@ the comment delimiters we set here.
 at-first lines are written "verbatim", so nothing more needs to be done!
 @c
 
-s = at.readLine(theFile)
+s = at.readLine(theFile,fileName)
 if trace: g.trace('first line',repr(s))
 while len(s) > 0:
     j = s.find(tag)
     if j != -1: break
     firstLines.append(s) # Queue the line
-    s = at.readLine(theFile)
+    s = at.readLine(theFile,fileName)
 
 n = len(s)
 valid = n > 0
@@ -2666,13 +2666,13 @@ the comment delimiters we set here.
 at-first lines are written "verbatim", so nothing more needs to be done!
 @c
 
-s = at.readLine(theFile)
+s = at.readLine(theFile,fileName)
 if trace: g.trace('first line',repr(s))
 while len(s) > 0:
     j = s.find(tag)
     if j != -1: break
     firstLines.append(s) # Queue the line
-    s = at.readLine(theFile)
+    s = at.readLine(theFile,fileName)
 
 n = len(s)
 valid = n > 0
@@ -4068,11 +4068,12 @@ def massageAtDocPart (self,s):
     # g.trace(repr(s))
     return s
 #@+node:ekr.20041005105605.128: *6* at.readLine
-def readLine (self,theFile):
+def readLine (self,theFile,fileName=None):
 
     """Reads one line from file using the present encoding"""
 
-    s = g.readlineForceUnixNewline(theFile) # calls theFile.readline
+    at = self
+    s = g.readlineForceUnixNewline(theFile,fileName=fileName) # calls theFile.readline
     # g.trace(repr(s),g.callers(4))
     u = g.toUnicode(s,self.encoding)
     return u
@@ -4336,11 +4337,27 @@ def propagate_changes(self, old_public_file, old_private_file):
     if trace: g.trace(self.encoding)
     
     if g.isPython3:
-        old_public_lines  = open(old_public_file,encoding=self.encoding).readlines()
-        old_private_lines = open(old_private_file,encoding=self.encoding).readlines()
+        try:
+            old_public_lines  = open(old_public_file,encoding=self.encoding).readlines()
+        except UnicodeDecodeError:
+            at.error('UnicodeDecodeError reading %s', old_public_file)
+            return None
+        try:
+            old_private_lines = open(old_private_file,encoding=self.encoding).readlines()
+        except UnicodeDecodeError:
+            at.error('UnicodeDecodeError reading %s', new_public_file)
+            return None
     else:
-        old_public_lines  = open(old_public_file).readlines()
-        old_private_lines = open(old_private_file).readlines()
+        try:
+            old_public_lines  = open(old_public_file).readlines()
+        except UnicodeDecodeError:
+            at.error('UnicodeDecodeError reading %s', old_public_file)
+            return None
+        try:
+            old_private_lines = open(old_private_file).readlines()
+        except UnicodeDecodeError:
+            at.error('UnicodeDecodeError reading %s', new_public_file)
+            return None
     
         # 2011/09/09: convert each line to unicode.
         def cvt(s):
