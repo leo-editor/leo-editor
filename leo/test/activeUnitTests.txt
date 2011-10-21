@@ -1186,6 +1186,23 @@ assert not p.isDirty(),p.h # Do not ignore this failure!
 for p2,h2 in table:
     assert p2.h == h2
     assert len(p2.b) > 10
+#@+node:ekr.20111021115306.3696: *4* @test @file: tex bug
+p = g.findNodeAnywhere(c,"@file ../test/unittest/tex-error.tex")
+assert(p)
+
+s1 = r"""\begin{document}
+<< Document """
+
+s2 = r""">>
+% hidden comment
+\end{document}
+"""
+
+s = s1 + s2
+
+# print(repr(s))
+# print(repr(p.b))
+assert p.b == s
 #@+node:ekr.20100802220019.5795: *4* @test at.deleteUnvistedNodes
 def clone (p,parent,n):
     p2 = p.clone()

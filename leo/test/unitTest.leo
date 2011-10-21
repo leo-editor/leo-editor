@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.46" body_secondary_ratio="0.56">
+<globals body_outline_ratio="0.46" body_secondary_ratio="0.49">
 	<global_window_position top="51" left="522" height="977" width="1240"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -104,9 +104,11 @@
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
+<v t="ekr.20111021115306.3697"><vh>@file ../test/unittest/tex-error.tex</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"
+expanded="ekr.20050112095306.1,ekr.20101021205258.6011,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
