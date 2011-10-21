@@ -1255,6 +1255,8 @@ class atFile:
     def readNormalLine (self,s,i=0): # i not used.
 
         at = self
+        
+        # g.trace('inCode',at.inCode,repr(s))
 
         if at.inCode:
             if not at.raw:
@@ -1805,8 +1807,9 @@ class atFile:
             if at.docOut:
                 at.appendToOut(''.join(at.docOut))
                 at.docOut = []
-                at.inCode = True
-
+            # 2010/10/21: Important bug fix: always enter code mode.
+            at.inCode = True
+        
             # Restore the node containing the section reference.
             # *Never* terminate new-sentinel nodes until the post-pass.
             at.raw = False # End raw mode.
