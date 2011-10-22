@@ -896,7 +896,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def tag_config (self,*args,**keys):
 
         trace = False and not g.unitTesting
-        if trace: g.trace(self,args,keys)
+        if trace: g.trace(args,keys)
 
         if len(args) == 1:
             key = args[0]
@@ -1939,7 +1939,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         w.setText(s)
         if insert is not None:
             self.setSelectionRange(i,i,insert=i)
-    #@+node:ekr.20110605121601.18126: *5* setEditorColors (leoQtHeadlineWidget)
+    #@+node:ekr.20110605121601.18126: *5* setEditorColors (leoQtHeadlineWidget) (REWRITE)
     def setEditorColors(self,bg,fg):
         
         # g.trace('(leoQtHeadlineWidget)',bg,g.callers())
@@ -2960,47 +2960,24 @@ class leoQtBody (leoFrame.leoBody):
     def setEditorColors (self,bg,fg):
         
         obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
-        
-        # g.trace('(leoQtBody)',bg,fg,g.callers())
-        
-        self.setForegroundColorHelper(fg,obj)
-        self.setBackgroundColorHelper(bg,obj)
-    #@+node:ekr.20110605121601.18188: *5* setBackgroundColorHelper (qtBody)
-    def setBackgroundColorHelper (self,colorName,obj):
-        
-        # obj is a QTextEdit or QTextBrowser.
-        
-        trace = False and not g.unitTesting
-        
-        if not colorName: return
 
-        styleSheet = 'QTextEdit#richTextEdit { background-color: %s; }' % (
-            colorName)
-            
-        if trace: g.trace(colorName,str(obj.objectName()),obj.__class__)
-        
-        if QtGui.QColor(colorName).isValid():
-            obj.setStyleSheet(styleSheet)
-        elif colorName not in self.badFocusColors:
-            self.badFocusColors.append(colorName)
-            g.es_print('invalid body background color: %s' % (colorName),color='blue')
-    #@+node:ekr.20110605121601.18189: *5* setForegroundColorHelper (qtBody)
-    def setForegroundColorHelper (self,colorName,obj):
-        # obj is a QTextEdit or QTextBrowser.
+        # g.trace('(leoQtBody)',bg,fg)
 
-        trace = False and not g.unitTesting
-        if not colorName: return
+        def check(color,kind,default):
+            if not QtGui.QColor(color).isValid():
+                if color not in self.badFocusColors:
+                    self.badFocusColors.append(color)
+                    g.es_print('invalid body %s color: %s' % (
+                        kind,color),color='blue')
+                color = default
+            return color
 
-        styleSheet = 'QTextEdit#richTextEdit { color: %s; }' % (
-            colorName)
-            
-        if trace: g.trace(colorName,str(obj.objectName()),obj.__class__)
+        bg = check(bg,'background','white')
+        fg = check(fg,'foreground','black')
         
-        if QtGui.QColor(colorName).isValid():
-            obj.setStyleSheet(styleSheet)
-        elif colorName not in self.badFocusColors:
-            self.badFocusColors.append(colorName)
-            g.es_print('invalid body foreground color: %s' % (colorName),color='blue')
+        obj.setStyleSheet('background-color:%s; color: %s' % (bg,fg))
+        
+        # g.trace(obj.styleSheet())
     #@+node:ekr.20110605121601.18190: *4* Do-nothings (qtBody)
     def oops (self):
         g.trace('qtBody',g.callers(3))
@@ -3804,14 +3781,9 @@ class leoQtBody (leoFrame.leoBody):
             # if trace: g.trace('%9s' % (kind),'calling c.k.showStateColors()')
             c.k.showStateColors(inOutline=False,w=self.widget)
         else:
-            # 2011/03/14: Also set the foreground color.
-            colorName = self.unselectedForegroundColor
-            # if trace: g.trace('%9s' % (kind),colorName)
-            self.setForegroundColorHelper(colorName,obj)
-            
-            colorName = self.unselectedBackgroundColor
-            # if trace: g.trace('%9s' % (kind),colorName)
-            self.setBackgroundColorHelper(colorName,obj)
+            bg = self.unselectedBackgroundColor
+            fg = self.unselectedForegroundColor
+            c.frame.body.setEditorColors(bg,fg)
 
         w.widget.ensureCursorVisible()
             # 2011/10/02: Fix cursor-movement bug.
@@ -9519,15 +9491,15 @@ class jEditColorizer:
             # tag name       :(     option name,           default color),
             'blank'          :('blank_color',                 'black'), # 2010/1/2
             'tab'            :('tab_color',                   'black'), # 2010/1/2
-            'comment'        :('comment_color',               'red'),
+            ###'comment'        :('comment_color',               'red'),
             'cwebName'       :('cweb_section_name_color',     'red'),
             'pp'             :('directive_color',             'blue'),
             'docPart'        :('doc_part_color',              'red'),
-            'keyword'        :('keyword_color',               'blue'),
+            ### 'keyword'        :('keyword_color',               'blue'),
             'leoKeyword'     :('leo_keyword_color',           'blue'),
             'link'           :('section_name_color',          'red'),
             'nameBrackets'   :('section_name_brackets_color', 'blue'),
-            'string'         :('string_color',                '#00aa00'), # Used by IDLE.
+            ### 'string'         :('string_color',                '#00aa00'), # Used by IDLE.
             'name'           :('undefined_section_name_color','red'),
             'latexBackground':('latex_background_color',      'white'),
             'url'            :('url_color',                   'purple'),
@@ -9552,8 +9524,8 @@ class jEditColorizer:
             'literal3'       :('literal3_color', '#00aa00'),
             'literal4'       :('literal4_color', '#00aa00'),
             'markup'         :('markup_color',   'red'),
-            'null'           :('null_color',     'black'),
-            'operator'       :('operator_color', 'black'),
+            'null'           :('null_color',     None), ###'black'),
+            'operator'       :('operator_color', None), ###'black'),
         }
     #@+node:ekr.20110605121601.18575: *6* defineDefaultFontDict
     def defineDefaultFontDict (self):
@@ -9676,7 +9648,7 @@ class jEditColorizer:
     def configure_tags (self):
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         traceColor = False
         traceFonts = True
         c = self.c ; w = self.w
@@ -9701,6 +9673,7 @@ class jEditColorizer:
             self.fonts['default_body_font'] = defaultBodyfont
 
         # Configure fonts.
+        if trace: g.trace('*'*10,'configuring fonts')
         keys = list(self.default_font_dict.keys()) ; keys.sort()
         for key in keys:
             option_name = self.default_font_dict[key]
@@ -9744,8 +9717,10 @@ class jEditColorizer:
             if isQt and key == 'url' and font:
                 font.setUnderline(True) # 2011/03/04
 
+        if trace: g.trace('*'*10,'configuring colors')
         keys = list(self.default_colors_dict.keys()) ; keys.sort()
         for name in keys:
+            # if name == 'operator': g.pdb()
             option_name,default_color = self.default_colors_dict[name]
             color = (
                 c.config.getColor('%s_%s' % (self.colorizer.language,option_name)) or
@@ -11224,7 +11199,7 @@ class jEditColorizer:
             if trace: g.trace('empty range')
             return
 
-        w = self.w
+        w = self.w # A leoQTextEditWidget
         colorName = w.configDict.get(tag)
 
         # Munge the color name.

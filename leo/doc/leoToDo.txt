@@ -2167,8 +2167,6 @@ I suppose for sophisticated users, something like show/hide-body pane
 would be good commands to have, but that doesn't matter: those
 commands to not increase the burden on the user while she is reading
 the (rendered) docs.
-.. @+node:ekr.20111003161039.15481: *4* * Support solarized colors
-http://ethanschoonover.com/solarized
 .. @+node:ekr.20111019104425.15857: *3* Projects: 7
 .. @+node:ekr.20111018220642.15858: *4* Bring docs up to date
 .. @+node:ekr.20111019080436.15849: *5*  Doc scripts: 2

@@ -5792,5 +5792,57 @@ def find_all_docstrings(commanders):
     result = []
 
     return result
+#@+node:ekr.20111021211000.13207: *3* From qtBody.onFocusColorHelper
+        if 0: # Wrong.
+            # 2011/03/14: Also set the foreground color.
+            colorName = self.unselectedForegroundColor
+            # if trace: g.trace('%9s' % (kind),colorName)
+            self.setForegroundColorHelper(colorName,obj)
+            
+            colorName = self.unselectedBackgroundColor
+            # if trace: g.trace('%9s' % (kind),colorName)
+            self.setBackgroundColorHelper(colorName,obj)
+#@+node:ekr.20111021211000.13208: *3* From qtBody.setEditorColors
+    # Wrong: only one stylesheet can be in effect at once.
+    self.setForegroundColorHelper(fg,obj)
+    self.setBackgroundColorHelper(bg,obj)
+#@+node:ekr.20110605121601.18188: *4* setBackgroundColorHelper (qtBody)
+def setBackgroundColorHelper (self,colorName,obj):
+    
+    # obj is a QTextEdit or QTextBrowser.
+    
+    trace = True and not g.unitTesting
+    
+    if not colorName: return
+
+    styleSheet = 'QTextEdit#richTextEdit { background-color: %s; }' % (
+        colorName)
+        
+    if trace:
+        g.trace(colorName,g.callers())
+        # g.trace(colorName,str(obj.objectName()),obj.__class__)
+    
+    if QtGui.QColor(colorName).isValid():
+        obj.setStyleSheet(styleSheet)
+    elif colorName not in self.badFocusColors:
+        self.badFocusColors.append(colorName)
+        g.es_print('invalid body background color: %s' % (colorName),color='blue')
+#@+node:ekr.20110605121601.18189: *4* setForegroundColorHelper (qtBody)
+def setForegroundColorHelper (self,colorName,obj):
+    # obj is a QTextEdit or QTextBrowser.
+
+    trace = True and not g.unitTesting
+    if not colorName: return
+
+    styleSheet = 'QTextEdit#richTextEdit { color: %s; }' % (
+        colorName)
+        
+    if trace: g.trace(colorName,str(obj.objectName()),obj.__class__)
+    
+    if QtGui.QColor(colorName).isValid():
+        obj.setStyleSheet(styleSheet)
+    elif colorName not in self.badFocusColors:
+        self.badFocusColors.append(colorName)
+        g.es_print('invalid body foreground color: %s' % (colorName),color='blue')
 #@-all
 #@-leo
