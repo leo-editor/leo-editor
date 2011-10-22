@@ -5844,5 +5844,24 @@ def setForegroundColorHelper (self,colorName,obj):
     elif colorName not in self.badFocusColors:
         self.badFocusColors.append(colorName)
         g.es_print('invalid body foreground color: %s' % (colorName),color='blue')
+#@+node:ekr.20110605121601.18127: *3* setBackgroundColorHelper (leoQtHeadlineWidget)
+def setBackgroundColorHelper (self,colorName):
+    
+    trace = False and not g.unitTesting
+    
+    if not colorName: return
+    
+    w = self.widget # A QLineEdit
+
+    styleSheet = 'QTreeWidget QLineEdit { background-color: %s; }' % (
+        colorName)
+        
+    if trace: g.trace(colorName,w)
+
+    if QtGui.QColor(colorName).isValid():
+        w.setStyleSheet(styleSheet)
+    elif colorName not in self.badFocusColors:
+        self.badFocusColors.append(colorName)
+        g.warning('invalid headline background color: %s' % (colorName))
 #@-all
 #@-leo

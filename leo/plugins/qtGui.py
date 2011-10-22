@@ -390,7 +390,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         if QtCore.Qt.ControlModifier & event.modifiers():
             event = {'c':self.leo_c}
             openURL(event)
-    #@+node:ekr.20111002125540.7021: *4* get/setYScrollPosition (LeoQTextBrowser) (New)
+    #@+node:ekr.20111002125540.7021: *4* get/setYScrollPosition (LeoQTextBrowser)
     def getYScrollPosition(self):
 
         w = self
@@ -1939,31 +1939,26 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         w.setText(s)
         if insert is not None:
             self.setSelectionRange(i,i,insert=i)
-    #@+node:ekr.20110605121601.18126: *5* setEditorColors (leoQtHeadlineWidget) (REWRITE)
+    #@+node:ekr.20110605121601.18126: *5* setEditorColors (leoQtHeadlineWidget) (rewritten)
     def setEditorColors(self,bg,fg):
         
-        # g.trace('(leoQtHeadlineWidget)',bg,g.callers())
-     
-        self.setBackgroundColorHelper(bg)
-    #@+node:ekr.20110605121601.18127: *6* setBackgroundColorHelper (leoQtHeadlineWidget)
-    def setBackgroundColorHelper (self,colorName):
+        obj = self.widget # A QLineEdit
         
-        trace = False and not g.unitTesting
-        
-        if not colorName: return
-        
-        w = self.widget # A QLineEdit
+        # g.trace('(leoQtHeadlineWidget)',bg,fg)
 
-        styleSheet = 'QTreeWidget QLineEdit { background-color: %s; }' % (
-            colorName)
-            
-        if trace: g.trace(colorName,w)
+        def check(color,kind,default):
+            if not QtGui.QColor(color).isValid():
+                if color not in self.badFocusColors:
+                    self.badFocusColors.append(color)
+                    g.es_print('invalid body %s color: %s' % (
+                        kind,color),color='blue')
+                color = default
+            return color
 
-        if QtGui.QColor(colorName).isValid():
-            w.setStyleSheet(styleSheet)
-        elif colorName not in self.badFocusColors:
-            self.badFocusColors.append(colorName)
-            g.warning('invalid headline background color: %s' % (colorName))
+        bg = check(bg,'background','white')
+        fg = check(fg,'foreground','black')
+        
+        obj.setStyleSheet('background-color:%s; color: %s' % (bg,fg))
     #@+node:ekr.20110605121601.18128: *5* setFocus
     def setFocus (self):
 
@@ -2906,6 +2901,19 @@ class leoQtBody (leoFrame.leoBody):
             # Hook up the QSyntaxHighlighter
             self.colorizer = leoQtColorizer(c,w.widget)
             qtWidget.setAcceptRichText(False)
+            
+            if 0: # xxx test: disable foreground color change for selected text.
+                palette = qtWidget.palette()
+                highlight_foreground_brush = palette.brush(palette.Active,palette.HighlightedText) # white.
+                highlight_background_brush = palette.brush(palette.Active,palette.Highlight) # dark blue
+                normal_brush = palette.brush(palette.Active,palette.Text)
+                
+                g.trace('foreground',highlight_foreground_brush.color().name())
+                g.trace('background',highlight_background_brush.color().name())
+                highlight_foreground_brush.setColor(QtGui.QColor('red'))
+                g.trace('foreground',highlight_foreground_brush.color().name())
+                palette.setBrush(palette.HighlightedText,highlight_foreground_brush)
+                
 
         # Config stuff.
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
@@ -2955,8 +2963,7 @@ class leoQtBody (leoFrame.leoBody):
     def getName (self):
 
         return 'body-widget'
-    #@+node:ekr.20110605121601.18186: *4* Colors (qtBody)
-    #@+node:ekr.20110605121601.18187: *5* setEditorColors (qtBody)
+    #@+node:ekr.20110605121601.18187: *4* setEditorColors (qtBody)
     def setEditorColors (self,bg,fg):
         
         obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
