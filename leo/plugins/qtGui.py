@@ -7575,46 +7575,49 @@ class leoQtGui(leoGui.leoGui):
         QtCore.pyqtRemoveInputHook()
         self.qtApp.exit()
     #@+node:ekr.20111022215436.16685: *4* Borders (qtGui)
-    red_border = "border: 1px solid red;"
-    white_border  = "border: 1px solid white;"
-
     def add_border(self,w):
+        
+        if not g.app.focus_border_active:
+            return
 
         if hasattr(w,'viewport'):
             w = w.viewport()
         
-        s = w.styleSheet().strip() or ''
-        if s and s.find(self.white_border) > -1:
-            s = s.replace(self.white_border,self.red_border)
+        s = str(w.styleSheet()).strip() or ''
+        if s and s.find(g.app.focus_border_unfocused) > -1:
+            s = s.replace(g.app.focus_border_unfocused,g.app.focus_border_focused)
             w.setStyleSheet(s)
-        elif s and s.find(self.red_border) > -1:
+        elif s and s.find(g.app.focus_border_focused) > -1:
             pass
         elif s:
             if s and not s.endswith(';'): s = s + ';'
-            s = s + self.red_border
+            s = s + g.app.focus_border_focused
             w.setStyleSheet(s)
         elif not s:
-            s = self.red_border
+            s = g.app.focus_border_focused
             w.setStyleSheet(s)
         
     def remove_border(self,w):
         
+        if not g.app.focus_border_active:
+            return
+
         if hasattr(w,'viewport'):
             w = w.viewport()
         
-        s = w.styleSheet().strip() or ''
+        s = str(w.styleSheet()).strip() or ''
         
-        if s and s.find(self.red_border) > -1:
-            s = s.replace(self.red_border,self.white_border)
+        if s and s.find(g.app.focus_border_focused) > -1:
+            s = s.replace(g.app.focus_border_focused,g.app.focus_border_unfocused)
             w.setStyleSheet(s)
-        elif s and s.find(self.white_border) > -1:
+        elif s and s.find(g.app.focus_border_unfocused) > -1:
             pass
         elif s:
             if s and not s.endswith(';'): s = s + ';'
-            s = s + self.white_border
+            s = s + g.app.focus_border_unfocused
             w.setStyleSheet(s)
         elif not s:
-            s = self.white_border
+            s = g.app.focus_border_unfocused
             w.setStyleSheet(s)
     #@+node:ekr.20110605121601.18485: *4* Clipboard (qtGui)
     def replaceClipboardWith (self,s):
@@ -8521,6 +8524,15 @@ class leoQtEventFilter(QtCore.QObject):
         # Support for ctagscompleter.py plugin.
         self.ctagscompleter_active = False
         self.ctagscompleter_onKey = None
+
+        # focused pane border highlighting
+        # would make more sense to do this in qtGui.__init__ but
+        # c.config is not available there
+        g.app.focus_border_active = c.config.getBool('focus_border_active') or False
+        g.app.focus_border_focused = (c.config.getString('focus_border_focused') or 
+            "border: 1px solid red;")
+        g.app.focus_border_unfocused = (c.config.getString('focus_border_unfocused') or
+            "border: 1px solid white;")
     #@+node:ekr.20110605121601.18540: *3* eventFilter
     def eventFilter(self, obj, event):
 

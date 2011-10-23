@@ -91,18 +91,21 @@
 </v>
 <v t="ekr.20061011082224"><vh>Candidates for settings in myLeoSettings.leo</vh>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20110611092035.16470"><vh>Appearance</vh>
+<v t="ekr.20110611092035.16470" a="E"><vh>Appearance</vh>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
 <v t="ekr.20110611092035.16489"><vh>Chapters</vh>
 <v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070318065601"><vh>@bool use_chapters = True</vh></v>
 </v>
-<v t="ekr.20110611092035.16490"><vh>Windows</vh>
+<v t="ekr.20110611092035.16490" a="E"><vh>Windows</vh>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="ekr.20100929121021.8511"><vh>@bool fixedwindow = False</vh></v>
 <v t="ekr.20080412115752.1"><vh>@data fixedWindowPosition</vh></v>
 <v t="edward.20081129091117.12"><vh>@string initial_split_orientation = vertical</vh></v>
+<v t="tbrown.20111023102130.24532"><vh>@bool focus_border_active = False</vh></v>
+<v t="tbrown.20111023102130.24534"><vh>@string focus_border_focused = border: 1px solid red;</vh></v>
+<v t="tbrown.20111023102130.24536"><vh>@string focus_border_unfocused = border: 1px solid white;</vh></v>
 </v>
 </v>
 <v t="ekr.20110611092035.16464"><vh>Files</vh>
@@ -586,13 +589,13 @@
 </v>
 </v>
 </v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
 </v>
-<v t="ekr.20110611092035.16470"></v>
+<v t="ekr.20110611092035.16470" a="E"></v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
 <v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = False</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
@@ -12232,6 +12235,15 @@ which is not helpful.  By setting this value to 1, you would see
 
 where the extra information is the name of the linked node's parent.
 </t>
+<t tx="tbrown.20111023102130.24532">draw the border defined by @string focus_border_focused and
+@string focus_border_unfocused around the focused pane (body
+or tree).</t>
+<t tx="tbrown.20111023102130.24534">draw the border defined by @string focus_border_focused and
+@string focus_border_unfocused around the focused pane (body
+or tree).</t>
+<t tx="tbrown.20111023102130.24536">draw the border defined by @string focus_border_focused and
+@string focus_border_unfocused around the focused pane (body
+or tree).</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
