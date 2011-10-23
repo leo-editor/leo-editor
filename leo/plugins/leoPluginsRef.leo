@@ -21,16 +21,11 @@
 <v t="ekr.20100910115903.5599"><vh>@string screenshot-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
 </v>
-<v t="ekr.20060924180348"><vh>buttons</vh>
-<v t="ekr.20080519084304.2"><vh>@@button change leo imports</vh></v>
-<v t="ekr.20101112124740.5432"><vh>@button preview</vh></v>
-</v>
 <v t="ekr.20080515173014.1"><vh>regex: replace w.bind by c.bind(w...)</vh></v>
-<v t="ekr.20100102164842.5328"><vh>Script: count pages</vh></v>
 <v t="ekr.20101110084839.5680"><vh>Script: plugins not in this file</vh></v>
 </v>
-<v t="ekr.20090430075506.4" a="E"><vh>Notes &amp; to-do</vh>
-<v t="ekr.20090430075506.3" a="E"><vh>@file leoPluginNotes.txt</vh></v>
+<v t="ekr.20090430075506.4"><vh>Notes &amp; to-do</vh>
+<v t="ekr.20090430075506.3"><vh>@file leoPluginNotes.txt</vh></v>
 </v>
 <v t="ekr.20100909111553.5583"><vh>Unit tests</vh>
 <v t="ekr.20100909121239.5797"><vh>@ignore</vh>
@@ -41,7 +36,7 @@
 <v t="ekr.20100909111553.5588"><vh>@mark-for-unit-tests</vh></v>
 </v>
 <v t="ekr.20080707101341.1"><vh>@file ../modes/forth.py</vh></v>
-<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>  Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
@@ -63,30 +58,26 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101110150056.9453" a="E"><vh> Qt only plugins</vh>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
+<v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
+<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
 <v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
 <v t="ville.20090314215508.4"><vh>@file quicksearch.py</vh></v>
-<v t="ekr.20101104190737.5629"><vh>@file scrolledmessage.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
-<v t="tbrown.20100318101414.5990" a="E"
-expanded="ekr.20110320120020.14491,ekr.20110320120020.14490,tbrown.20110629084915.35149,ekr.20110317024548.14375,ekr.20110317080650.14380,ekr.20101112195628.5426,ekr.20110320120020.14486,ekr.20110322031455.5765,"><vh>@file viewrendered.py</vh></v>
+<v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
-<v t="tbrown.20110203111907.5519"
-expanded="ekr.20110318080425.14389,ekr.20110318080425.14392,"><vh>@file free_layout.py</vh></v>
+<v t="tbrown.20110203111907.5519"><vh>@file free_layout.py</vh></v>
 <v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
-<v t="ville.20110409151021.5691"><vh>newHeadline</vh></v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
 <v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
 <v t="ville.20091204224145.5355"><vh>@file codewisecompleter.py</vh></v>
 </v>
-<v t="edream.110203113231.667" a="E"><vh>Commands &amp; directives</vh>
+<v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
 <v t="edream.110203113231.741"><vh>@file add_directives.py</vh></v>
 <v t="ekr.20101110084839.5682"><vh>@file bzr_qcommands.py</vh></v>
 <v t="EKR.20040517080049.1"><vh>@file empty_leo_file.py</vh></v>
@@ -102,8 +93,7 @@ expanded="ekr.20110318080425.14389,ekr.20110318080425.14392,"><vh>@file free_lay
 <v t="edream.110203113231.720"><vh>@file outline_export.py</vh></v>
 <v t="danr7.20060912105041.1"><vh>@file paste_as_headlines.py</vh></v>
 <v t="ekr.20041021120118"><vh>@file pretty_print.py</vh></v>
-<v t="tbrown.20070117104409" a="E"
-expanded="tbrown.20070117104409.4,"><vh>@file quickMove.py</vh></v>
+<v t="tbrown.20070117104409"><vh>@file quickMove.py</vh></v>
 <v t="ekr.20081214160729.1"><vh>@file setHomeDirectory.py</vh></v>
 <v t="danr7.20061010105952.1"><vh>@file word_count.py</vh></v>
 </v>
@@ -149,8 +139,8 @@ expanded="tbrown.20070117104409.4,"><vh>@file quickMove.py</vh></v>
 <v t="EKR.20040517075715.20"><vh>@file-nosent word_export.ini</vh></v>
 </v>
 </v>
-<v t="edream.110203113231.872" a="E"><vh>Files and nodes</vh>
-<v t="tbrown.20080613095157.2" a="E"><vh>@file active_path.py</vh></v>
+<v t="edream.110203113231.872"><vh>Files and nodes</vh>
+<v t="tbrown.20080613095157.2"><vh>@file active_path.py</vh></v>
 <v t="edream.110203113231.873"><vh>@file at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@file at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@file at_view.py</vh></v>
@@ -169,21 +159,20 @@ expanded="tbrown.20070117104409.4,"><vh>@file quickMove.py</vh></v>
 <v t="ekr.20040910070811.1"><vh>@file run_nodes.py</vh></v>
 <v t="ekr.20040828103325"><vh>@file startfile.py</vh></v>
 <v t="tbrown.20110428144124.29061"><vh>@file xml_edit.py</vh></v>
-<v t="mork.20041010095009" a="E"
-expanded="mork.20041025100716,"><vh>@file xsltWithNodes.py</vh></v>
+<v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
 </v>
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh></v>
 <v t="ekr.20041001210557"><vh>Scripting</vh>
 <v t="tbrown.20100226095909.12777"><vh>@file leoscreen.py</vh></v>
-<v t="ekr.20060328125248"><vh>@file mod_scripting.py</vh></v>
+<v t="ekr.20060328125248"
+expanded="ekr.20060328125248.6,ekr.20061014075212,"><vh>@file mod_scripting.py</vh></v>
 <v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
 </v>
-<v t="ekr.20050111122605" a="E"><vh>Servers</vh>
+<v t="ekr.20050111122605"><vh>Servers</vh>
 <v t="ville.20091009202416.10040"><vh>@file leoremote.py</vh></v>
-<v t="EKR.20040517080250.1" a="E"
-expanded="ekr.20110522152535.18250,bwmulder.20050322132919,EKR.20040517080250.20,EKR.20040517080250.13,EKR.20040517080250.37,tbrown.20110930093028.34530,EKR.20040517080250.40,EKR.20040517080250.46,"><vh>@file mod_http.py</vh></v>
+<v t="EKR.20040517080250.1"><vh>@file mod_http.py</vh></v>
 </v>
-<v t="ekr.20101004082701.5674" a="E"><vh>Slideshows and screenshots</vh>
+<v t="ekr.20101004082701.5674"><vh>Slideshows and screenshots</vh>
 <v t="ekr.20060831165821"><vh>@file slideshow.py</vh></v>
 <v t="ekr.20101121031443.5330"><vh>@file screenshots.py</vh></v>
 </v>
@@ -205,7 +194,7 @@ expanded="ekr.20110522152535.18250,bwmulder.20050322132919,EKR.20040517080250.20
 <v t="ekr.20050805162550"><vh>@file rst3.py</vh></v>
 </v>
 </v>
-<v t="ekr.20040915073259" a="E"><vh>User interface</vh>
+<v t="ekr.20040915073259"><vh>User interface</vh>
 <v t="ekr.20061023142737"><vh> UNL plugin</vh>
 <v t="ekr.20061023142737.1"><vh>Tests</vh>
 <v t="rogererens.20041130095659"><vh>@url 'file: ./../../plugins/leoPlugins.leo#Plugins--&gt;UNL plugin--&gt;To do'</vh></v>
@@ -218,11 +207,12 @@ expanded="ekr.20110522152535.18250,bwmulder.20050322132919,EKR.20040517080250.20
 <v t="tbrown.20090513125417.5244"><vh>@file interact.py</vh></v>
 <v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
 <v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
-<v t="EKR.20040517080555.2" a="E"
-expanded="ekr.20060107091318,EKR.20040517080555.24,EKR.20040517080555.3,EKR.20040517080555.4,"><vh>@file plugins_menu.py</vh></v>
+<v t="EKR.20040517080555.2"
+expanded="EKR.20040517080555.3,"><vh>@file plugins_menu.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
-<v t="EKR.20040517080555.36" a="E"><vh>@file scripts_menu.py</vh></v>
-<v t="ekr.20101110095202.5882" a="E"><vh>@file zenity_file_dialogs.py</vh></v>
+<v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
+<v t="tbrown.20090119215428.2"></v>
+<v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
 </v>
 </v>
 </vnodes>
@@ -455,7 +445,6 @@ To activate the rst3 plugin, do the following:
 - Check in the menu 'Edit' for item 'Write-Restructured-Text'.
 
 @color</t>
-<t tx="ekr.20060924180348"></t>
 <t tx="ekr.20061023141459"></t>
 <t tx="ekr.20061023141638"></t>
 <t tx="ekr.20061023142737"></t>
@@ -476,49 +465,8 @@ abc.xyz.pdq
 w.bind\(.*,.*,.*$
 
 [-w]\.bind\(</t>
-<t tx="ekr.20080519084304.2">change = True # True: actually make the changes.
-trace = True
-
-print '-' * 40
-
-tag = 'import leo' ; n = len('import ')
-
-for p in p.self_and_subtree_iter():
-    result = []
-    for s in g.splitlines(p.bodyString()):
-        i = s.find(tag,0)
-        if i &gt; -1:
-            # Do nothing if we have already done the translation.
-            i2 = s.find('&lt;&lt;') ; i3 = s.find('import leo.core')
-            if i2 == -1 and i3 == -1:
-                i += n
-                j = g.skip_c_id(s,i)
-                word = s[i:j]
-                rest = s[j:]
-                if rest.strip().startswith('as'):
-                    s = s[:i] + 'leo.core.' + word + rest
-                else:
-                    s = s[:i] + 'leo.core.' + word + ' as ' + word + rest
-                if trace:
-                    print p.headString()
-                    j,k=g.getLine(s,i) ; print s[j:k]
-        result.append(s)
-    result = ''.join(result)
-
-    if change and result != p.bodyString():
-        c.setBodyString(p,result)
-
-</t>
 <t tx="ekr.20081121105001.2080"># All gui plugins are now in leoGuiPluginsRef.leo</t>
 <t tx="ekr.20090430075506.4"></t>
-<t tx="ekr.20100102164842.5328">nodes = 0 ; lines = 0
-for p in c.all_unique_positions():
-    nodes += 1
-    lines += len(g.splitLines(p.b))
-
-pages = ((nodes * 10) + lines) / 50
-s = "%d nodes,  %d lines, %d pages" % (nodes,lines,pages)
-print(s); g.es(s)</t>
 <t tx="ekr.20100103093121.5365"># These are experimental plugins.</t>
 <t tx="ekr.20100909111553.5583"></t>
 <t tx="ekr.20100909111553.5588"># Add the tree to the external unit test</t>
@@ -584,10 +532,7 @@ else:
 </t>
 <t tx="ekr.20101110150056.9453"># Some of the most important recent plugins work only with the Qt gui.</t>
 <t tx="ekr.20101110150056.9457"></t>
-<t tx="ekr.20101112124740.5432">g.app.gui.runScrolledMessageDialog(c=c, msg = g.u('rst:') + p.b + '\n\n')
-</t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
-<t tx="ville.20110409151021.5691"></t>
 </tnodes>
 </leo_file>
