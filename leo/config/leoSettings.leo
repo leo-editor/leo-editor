@@ -586,6 +586,61 @@
 </v>
 </v>
 </v>
+<v t="ekr.20080312075451.2"><vh>@commands</vh>
+<v t="ekr.20111016210000.15952"><vh>@ignore</vh>
+<v t="ekr.20111017085134.16213"><vh>@command clones-tab</vh>
+<v t="ekr.20111017085134.16214"><vh>class cloneNavigator</vh>
+<v t="ekr.20111017085134.16215"><vh>init</vh></v>
+<v t="ekr.20111017085134.16216"><vh>getAllClones</vh></v>
+<v t="ekr.20111017085134.16217"><vh>displayClones</vh>
+<v t="ekr.20111017085134.16218"><vh>&lt;&lt;Fill listbox with clone parent headlines&gt;&gt;</vh></v>
+<v t="ekr.20111017085134.16219"><vh>&lt;&lt;Goto selected position when listbox selection changes&gt;&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20111016210000.16011"><vh>@command redefine g.findReference</vh>
+<v t="ekr.20111016210000.16012"><vh>myFindReference</vh></v>
+</v>
+<v t="ekr.20111018162222.15853"><vh>Docstrings</vh>
+<v t="ekr.20111018162222.15855"><vh>@command print-cmd-docstrings</vh></v>
+</v>
+<v t="ekr.20111016210000.16001"><vh>Editing body text</vh>
+<v t="ekr.20111016210000.16002"><vh>@command align-to-col {modify as needed}</vh></v>
+<v t="ekr.20111016210000.16003"><vh>@command c-to-python-clean-docs</vh>
+<v t="ekr.20111016210000.16004"><vh>clean_doc</vh></v>
+</v>
+<v t="ekr.20111016210000.16005"><vh>@command clean-body</vh>
+<v t="ekr.20111016210000.16006"><vh>clean_head</vh></v>
+<v t="ekr.20111016210000.16007"><vh>clean_tail</vh></v>
+</v>
+<v t="ekr.20111016210000.16008"><vh>@command remove-newlines</vh></v>
+</v>
+<v t="ekr.20111016210000.15961"><vh>Importing files</vh>
+<v t="ekr.20111016210000.15962"><vh>@command create @auto nodes {path,types} @args C:\apps\pygments\pygments,.py,.c</vh>
+<v t="ekr.20111016210000.15963"><vh> importFiles (top-level)</vh></v>
+<v t="ekr.20111016210000.15964"><vh>createLastChildOf</vh></v>
+<v t="ekr.20111016210000.15965"><vh>disableAllNodes</vh></v>
+<v t="ekr.20111016210000.15966"><vh>importDir</vh></v>
+<v t="ekr.20111016210000.15967"><vh>loadAtAutoFiles</vh></v>
+<v t="ekr.20111016210000.15968"><vh>run</vh></v>
+</v>
+</v>
+<v t="ekr.20111016210000.15988"><vh>Node merging &amp; splitting</vh>
+<v t="ekr.20111016210000.15989"><vh>@command flatten script</vh></v>
+<v t="ekr.20111016210000.15990"><vh>@command join-node-above</vh></v>
+<v t="ekr.20111016210000.15991"><vh>@command join-node-below</vh></v>
+<v t="ekr.20111016210000.15992"><vh>@command promote-bodies</vh></v>
+<v t="ekr.20111018170513.15882"><vh>@command split-defs</vh>
+<v t="ekr.20111018170513.15883"><vh>make_node</vh></v>
+<v t="ekr.20111018170513.15884"><vh>remove_trailing_decorators</vh></v>
+<v t="ekr.20111018170513.15885"><vh>run</vh></v>
+</v>
+</v>
+<v t="ekr.20111017080453.16077"><vh>Testing</vh>
+<v t="ekr.20111017080453.16079"><vh>@command add-test</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
@@ -747,61 +802,7 @@
 <v t="ekr.20070926082407"><vh>@buttons</vh></v>
 </v>
 <v t="ekr.20080312075451.1"><vh>Common @command nodes</vh>
-<v t="ekr.20080312075451.2"><vh>@commands</vh>
-<v t="ekr.20111016210000.15952"><vh>@ignore</vh>
-<v t="ekr.20111017085134.16213"><vh>@command clones-tab</vh>
-<v t="ekr.20111017085134.16214"><vh>class cloneNavigator</vh>
-<v t="ekr.20111017085134.16215"><vh>init</vh></v>
-<v t="ekr.20111017085134.16216"><vh>getAllClones</vh></v>
-<v t="ekr.20111017085134.16217"><vh>displayClones</vh>
-<v t="ekr.20111017085134.16218"><vh>&lt;&lt;Fill listbox with clone parent headlines&gt;&gt;</vh></v>
-<v t="ekr.20111017085134.16219"><vh>&lt;&lt;Goto selected position when listbox selection changes&gt;&gt;</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20111016210000.16011"><vh>@command redefine g.findReference</vh>
-<v t="ekr.20111016210000.16012"><vh>myFindReference</vh></v>
-</v>
-<v t="ekr.20111018162222.15853"><vh>Docstrings</vh>
-<v t="ekr.20111018162222.15855"><vh>@command print-cmd-docstrings</vh></v>
-</v>
-<v t="ekr.20111016210000.16001"><vh>Editing body text</vh>
-<v t="ekr.20111016210000.16002"><vh>@command align-to-col {modify as needed}</vh></v>
-<v t="ekr.20111016210000.16003"><vh>@command c-to-python-clean-docs</vh>
-<v t="ekr.20111016210000.16004"><vh>clean_doc</vh></v>
-</v>
-<v t="ekr.20111016210000.16005"><vh>@command clean-body</vh>
-<v t="ekr.20111016210000.16006"><vh>clean_head</vh></v>
-<v t="ekr.20111016210000.16007"><vh>clean_tail</vh></v>
-</v>
-<v t="ekr.20111016210000.16008"><vh>@command remove-newlines</vh></v>
-</v>
-<v t="ekr.20111016210000.15961"><vh>Importing files</vh>
-<v t="ekr.20111016210000.15962"><vh>@command create @auto nodes {path,types} @args C:\apps\pygments\pygments,.py,.c</vh>
-<v t="ekr.20111016210000.15963"><vh> importFiles (top-level)</vh></v>
-<v t="ekr.20111016210000.15964"><vh>createLastChildOf</vh></v>
-<v t="ekr.20111016210000.15965"><vh>disableAllNodes</vh></v>
-<v t="ekr.20111016210000.15966"><vh>importDir</vh></v>
-<v t="ekr.20111016210000.15967"><vh>loadAtAutoFiles</vh></v>
-<v t="ekr.20111016210000.15968"><vh>run</vh></v>
-</v>
-</v>
-<v t="ekr.20111016210000.15988"><vh>Node merging &amp; splitting</vh>
-<v t="ekr.20111016210000.15989"><vh>@command flatten script</vh></v>
-<v t="ekr.20111016210000.15990"><vh>@command join-node-above</vh></v>
-<v t="ekr.20111016210000.15991"><vh>@command join-node-below</vh></v>
-<v t="ekr.20111016210000.15992"><vh>@command promote-bodies</vh></v>
-<v t="ekr.20111018170513.15882"><vh>@command split-defs</vh>
-<v t="ekr.20111018170513.15883"><vh>make_node</vh></v>
-<v t="ekr.20111018170513.15884"><vh>remove_trailing_decorators</vh></v>
-<v t="ekr.20111018170513.15885"><vh>run</vh></v>
-</v>
-</v>
-<v t="ekr.20111017080453.16077"><vh>Testing</vh>
-<v t="ekr.20111017080453.16079"><vh>@command add-test</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20080312075451.2"></v>
 </v>
 <v t="ekr.20041119034357.16"><vh>Compare panel</vh>
 <v t="ekr.20041119034357.17"><vh>files &amp; directories</vh>
@@ -1747,6 +1748,11 @@
 <v t="ekr.20041119034357.42"><vh>@string body_time_format_string = %m/%d/%Y %H:%M:%S</vh></v>
 <v t="ekr.20060620085654"><vh>@string editor_orientation = horizontal</vh></v>
 </v>
+<v t="ekr.20111023095357.16693"><vh>Focus border settings</vh>
+<v t="ekr.20111023095357.16694"><vh>@bool use_focus_border = True</vh></v>
+<v t="ekr.20111023095357.16695"><vh>@int focus_border_width = 1</vh></v>
+<v t="ekr.20111023095357.16696"><vh>@color focus_border_color = red</vh></v>
+</v>
 <v t="ekr.20080930072519.3"><vh>Icon bar options</vh></v>
 <v t="ekr.20080930072519.4"><vh>@int icon_bar_widgets_per_row = 20</vh></v>
 <v t="ekr.20041213105954.1"><vh>Log pane options</vh>
@@ -1771,7 +1777,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080312075451.2"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -12161,6 +12166,10 @@ forth_keyword5_size = None
 forth_keyword5_slant = slant
 forth_keyword5_weight = normal
 </t>
+<t tx="ekr.20111023095357.16693"></t>
+<t tx="ekr.20111023095357.16694"></t>
+<t tx="ekr.20111023095357.16695"></t>
+<t tx="ekr.20111023095357.16696"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
