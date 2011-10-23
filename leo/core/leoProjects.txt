@@ -5393,10 +5393,10 @@ def eventFilter(self, obj, event):
         override = False ; tkKey = '<no key>'
         if self.tag == 'body':
             if eventType == ev.FocusIn:
-                g.app.gui.add_border(obj.parent())
+                g.app.gui.add_border(obj)
                 c.frame.body.onFocusIn(obj)
             elif eventType == ev.FocusOut:
-                g.app.gui.remove_border(obj.parent())
+                g.app.gui.remove_border(obj)
                 c.frame.body.onFocusOut(obj)
         if self.tag in ('tree','log'):
             if eventType == ev.FocusIn:

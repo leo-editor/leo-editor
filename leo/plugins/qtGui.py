@@ -7575,30 +7575,47 @@ class leoQtGui(leoGui.leoGui):
         QtCore.pyqtRemoveInputHook()
         self.qtApp.exit()
     #@+node:ekr.20111022215436.16685: *4* Borders (qtGui)
-    border = "border: 1px solid red;"
+    red_border = "border: 1px solid red;"
+    white_border  = "border: 1px solid white;"
 
     def add_border(self,w):
+
+        if hasattr(w,'viewport'):
+            w = w.viewport()
         
-        border = self.border
         s = w.styleSheet().strip() or ''
-        if s and s.find(border) == -1:
+        if s and s.find(self.white_border) > -1:
+            s = s.replace(self.white_border,self.red_border)
+            w.setStyleSheet(s)
+        elif s and s.find(self.red_border) > -1:
+            pass
+        elif s:
             if s and not s.endswith(';'): s = s + ';'
-            s = s + border
+            s = s + self.red_border
             w.setStyleSheet(s)
         elif not s:
-            s = border
+            s = self.red_border
             w.setStyleSheet(s)
-        # g.trace(w,s)
         
     def remove_border(self,w):
         
-        border = self.border
+        if hasattr(w,'viewport'):
+            w = w.viewport()
+        
         s = w.styleSheet().strip() or ''
-        i = s.find(border)
-        if i > -1:
-            s = s[:i] + s[i+len(border):]
+        
+        if s and s.find(self.red_border) > -1:
+            s = s.replace(self.red_border,self.white_border)
             w.setStyleSheet(s)
-        # g.trace(w,i,s)
+        elif s and s.find(self.white_border) > -1:
+            pass
+        elif s:
+            if s and not s.endswith(';'): s = s + ';'
+            s = s + self.white_border
+            w.setStyleSheet(s)
+        elif not s:
+            s = self.white_border
+            w.setStyleSheet(s)
     #@+node:ekr.20110605121601.18485: *4* Clipboard (qtGui)
     def replaceClipboardWith (self,s):
 
@@ -8567,10 +8584,10 @@ class leoQtEventFilter(QtCore.QObject):
             override = False ; tkKey = '<no key>'
             if self.tag == 'body':
                 if eventType == ev.FocusIn:
-                    g.app.gui.add_border(obj.parent())
+                    g.app.gui.add_border(obj)
                     c.frame.body.onFocusIn(obj)
                 elif eventType == ev.FocusOut:
-                    g.app.gui.remove_border(obj.parent())
+                    g.app.gui.remove_border(obj)
                     c.frame.body.onFocusOut(obj)
             if self.tag in ('tree','log'):
                 if eventType == ev.FocusIn:
