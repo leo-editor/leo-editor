@@ -570,7 +570,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
             e,wrapper = self.createTreeEditorForItem(item)
             if e:
-                wrapper.setEditorColors(c.k.insert_mode_bg_color,'(not used)')
+                wrapper.setEditorColors(
+                    c.k.insert_mode_bg_color,
+                    c.k.insert_mode_fg_color)
             else:
                 g.trace('*** no e')
 

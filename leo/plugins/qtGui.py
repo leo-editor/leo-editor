@@ -1944,13 +1944,13 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         
         obj = self.widget # A QLineEdit
         
-        # g.trace('(leoQtHeadlineWidget)',bg,fg)
+        # g.trace('(leoQtHeadlineWidget)',bg,fg,g.callers())
 
         def check(color,kind,default):
             if not QtGui.QColor(color).isValid():
                 if color not in self.badFocusColors:
                     self.badFocusColors.append(color)
-                    g.es_print('invalid body %s color: %s' % (
+                    g.es_print('invalid head %s color: %s' % (
                         kind,color),color='blue')
                 color = default
             return color
@@ -4772,20 +4772,6 @@ class leoQtFrame (leoFrame.leoFrame):
     def OnControlKeyUp (self,event=None):
 
         self.controlKeyIsDown = False
-    #@+node:ekr.20110605121601.18288: *5* OnActivateBody (qtFrame)
-    # def OnActivateBody (self,event=None):
-
-        # pass
-    #@+node:ekr.20110605121601.18289: *5* OnActivateLeoEvent, OnDeactivateLeoEvent (not used)
-    # def OnActivateLeoEvent(self,event=None):
-
-        # '''Handle a click anywhere in the Leo window.'''
-
-        # self.c.setLog()
-
-    # def OnDeactivateLeoEvent(self,event=None):
-
-        # pass # This causes problems on the Mac.
     #@+node:ekr.20110605121601.18290: *5* OnActivateTree
     def OnActivateTree (self,event=None):
 
@@ -5909,7 +5895,8 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         pass
 
     #@+others
-    #@+node:ekr.20110605121601.18364: *4* dragEnter
+    #@+node:ekr.20111022222228.16980: *4* Event handlers (LeoQTreeWidget)
+    #@+node:ekr.20110605121601.18364: *5* dragEnter
     def dragEnterEvent(self,ev):
 
         '''Export c.p's tree as a Leo mime-data.'''
@@ -5936,7 +5923,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         # Always accept the drag, even if we are already dragging.
         ev.accept()
-    #@+node:ekr.20110605121601.18365: *4* dropEvent & helpers
+    #@+node:ekr.20110605121601.18365: *5* dropEvent & helpers
     def dropEvent(self,ev):
 
         trace = False and not g.unitTesting
@@ -5981,7 +5968,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             self.urlDrop(ev,p)
         else:
             self.outlineDrop(ev,p)
-    #@+node:ekr.20110605121601.18366: *5* outlineDrop & helpers
+    #@+node:ekr.20110605121601.18366: *6* outlineDrop & helpers
     def outlineDrop (self,ev,p):
 
         trace = False and not g.unitTesting
@@ -6003,7 +5990,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         else:
             # Clone dragging between files is not allowed.
             self.interFileDrop(fn,p,s)
-    #@+node:ekr.20110605121601.18367: *6* interFileDrop
+    #@+node:ekr.20110605121601.18367: *7* interFileDrop
     def interFileDrop (self,fn,p,s):
 
         '''Paste the mime data after (or as the first child of) p.'''
@@ -6051,7 +6038,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         u.afterInsertNode(pasted,undoType,undoData)
         c.redraw_now(pasted)
         c.recolor()
-    #@+node:ekr.20110605121601.18368: *6* intraFileDrop
+    #@+node:ekr.20110605121601.18368: *7* intraFileDrop
     def intraFileDrop (self,cloneDrag,fn,p1,p2):
 
         '''Move p1 after (or as the first child of) p2.'''
@@ -6099,7 +6086,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         else:
             if not g.unitTesting:
                 g.trace('** move failed')
-    #@+node:ekr.20110605121601.18369: *5* urlDrop & helpers
+    #@+node:ekr.20110605121601.18369: *6* urlDrop & helpers
     def urlDrop (self,ev,p):
 
         c = self.c ; u = c.undoer ; undoType = 'Drag Urls'
@@ -6123,7 +6110,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             c.setChanged(True)
             u.afterChangeGroup(c.p,undoType,reportFlag=False,dirtyVnodeList=[])
             c.redraw_now()
-    #@+node:ekr.20110605121601.18370: *6* doFileUrl & helper
+    #@+node:ekr.20110605121601.18370: *7* doFileUrl & helper
     def doFileUrl (self,p,url):
 
         fn = str(url.path())
@@ -6149,7 +6136,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         g.es_print('not found: %s' % (fn))
         return False
-    #@+node:ekr.20110605121601.18371: *7* doFileUrlHelper & helper
+    #@+node:ekr.20110605121601.18371: *8* doFileUrlHelper & helper
     def doFileUrlHelper (self,fn,p,s):
 
         '''Insert s in an @file, @auto or @edit node after p.'''
@@ -6168,7 +6155,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         u.afterInsertNode(p2,undoType,undoData)
 
         c.selectPosition(p2)
-    #@+node:ekr.20110605121601.18372: *8* createAtFileNode & helpers
+    #@+node:ekr.20110605121601.18372: *9* createAtFileNode & helpers
     def createAtFileNode (self,fn,p,s):
 
         '''Set p's headline, body text and possibly descendants
@@ -6189,7 +6176,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         else:
             self.createAtEditNode(fn,p,s)
         self.warnIfNodeExists(p)
-    #@+node:ekr.20110605121601.18373: *9* createAtAutoTree
+    #@+node:ekr.20110605121601.18373: *10* createAtAutoTree
     def createAtAutoTree (self,fn,p,s):
 
         '''Make p an @auto node and create the tree using
@@ -6205,7 +6192,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         # No error recovery should be needed here.
 
         p.clearDirty() # Don't automatically rewrite this node.
-    #@+node:ekr.20110605121601.18374: *9* createAtEditNode
+    #@+node:ekr.20110605121601.18374: *10* createAtEditNode
     def createAtEditNode(self,fn,p,s):
 
         c = self.c ; at = c.atFileCommands
@@ -6215,7 +6202,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         at.readOneAtEditNode(fn,p)
         p.h = '@edit %s' % (fn)
         p.clearDirty() # Don't automatically rewrite this node.
-    #@+node:ekr.20110605121601.18375: *9* createAtFileTree
+    #@+node:ekr.20110605121601.18375: *10* createAtFileTree
     def createAtFileTree (self,fn,p,s):
 
         '''Make p an @file node and create the tree using
@@ -6237,7 +6224,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             g.es_print('Error reading',fn,color='red')
             p.b = '' # Safe: will not cause a write later.
             p.clearDirty() # Don't automatically rewrite this node.
-    #@+node:ekr.20110605121601.18376: *9* isThinFile
+    #@+node:ekr.20110605121601.18376: *10* isThinFile
     def isThinFile (self,fn,s):
 
         '''Return true if the file whose contents is s
@@ -6256,7 +6243,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             valid,new_df,start,end,isThin = at.parseLeoSentinel(line)
             # g.trace('valid',valid,'new_df',new_df,'isThin',isThin)
             return valid and new_df and isThin
-    #@+node:ekr.20110605121601.18377: *9* isAutoFile
+    #@+node:ekr.20110605121601.18377: *10* isAutoFile
     def isAutoFile (self,fn,unused_s):
 
         '''Return true if the file whose name is fn
@@ -6267,7 +6254,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         d = c.importCommands.importDispatchDict
         junk,ext = g.os_path_splitext(fn)
         return d.get(ext)
-    #@+node:ekr.20110605121601.18378: *9* warnIfNodeExists
+    #@+node:ekr.20110605121601.18378: *10* warnIfNodeExists
     def warnIfNodeExists (self,p):
 
         c = self.c ; h = p.h
@@ -6275,7 +6262,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             if p2.h == h and p2 != p:
                 g.es('Warning: duplicate node:',h,color='blue')
                 break
-    #@+node:ekr.20110605121601.18379: *7* doPathUrlHelper
+    #@+node:ekr.20110605121601.18379: *8* doPathUrlHelper
     def doPathUrlHelper (self,fn,p):
 
         '''Insert s in an @file, @auto or @edit node after p.'''
@@ -6294,7 +6281,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         u.afterInsertNode(p2,undoType,undoData)
 
         c.selectPosition(p2)
-    #@+node:ekr.20110605121601.18380: *6* doHttpUrl
+    #@+node:ekr.20110605121601.18380: *7* doHttpUrl
     def doHttpUrl (self,p,url):
 
         '''Insert the url in an @url node after p.'''
@@ -7587,6 +7574,31 @@ class leoQtGui(leoGui.leoGui):
     def destroySelf (self):
         QtCore.pyqtRemoveInputHook()
         self.qtApp.exit()
+    #@+node:ekr.20111022215436.16685: *4* Borders (qtGui)
+    border = "border: 1px solid red;"
+
+    def add_border(self,w):
+        
+        border = self.border
+        s = w.styleSheet().strip() or ''
+        if s and s.find(border) == -1:
+            if s and not s.endswith(';'): s = s + ';'
+            s = s + border
+            w.setStyleSheet(s)
+        elif not s:
+            s = border
+            w.setStyleSheet(s)
+        # g.trace(w,s)
+        
+    def remove_border(self,w):
+        
+        border = self.border
+        s = w.styleSheet().strip() or ''
+        i = s.find(border)
+        if i > -1:
+            s = s[:i] + s[i+len(border):]
+            w.setStyleSheet(s)
+        # g.trace(w,i,s)
     #@+node:ekr.20110605121601.18485: *4* Clipboard (qtGui)
     def replaceClipboardWith (self,s):
 
@@ -7620,24 +7632,6 @@ class leoQtGui(leoGui.leoGui):
         else:
             g.trace('no clipboard!')
             return ''
-    #@+node:ekr.20110605121601.18486: *4* Do nothings
-    def color (self,color):
-        return None
-
-    def createRootWindow(self):
-        pass
-
-    def killGui(self,exitFlag=True):
-        """Destroy a gui and terminate Leo if exitFlag is True."""
-
-    def killPopupMenu(self):
-        pass
-
-    def recreateRootWindow(self):
-        """Create the hidden root window of a gui
-        after a previous gui has terminated with killGui(False)."""
-
-
     #@+node:ekr.20110605121601.18487: *4* Dialogs & panels (qtGui)
     #@+node:ekr.20110605121601.18488: *5* alert (qtGui)
     def alert (self,c,message):
@@ -7994,6 +7988,24 @@ class leoQtGui(leoGui.leoGui):
         d.exec_()
         c.in_qt_dialog = False
         #@-<< emergency fallback >>
+    #@+node:ekr.20110605121601.18486: *4* Do nothings
+    def color (self,color):
+        return None
+
+    def createRootWindow(self):
+        pass
+
+    def killGui(self,exitFlag=True):
+        """Destroy a gui and terminate Leo if exitFlag is True."""
+
+    def killPopupMenu(self):
+        pass
+
+    def recreateRootWindow(self):
+        """Create the hidden root window of a gui
+        after a previous gui has terminated with killGui(False)."""
+
+
     #@+node:ekr.20110607182447.16456: *4* Event handlers (qtGui)
     #@+node:ekr.20110605121601.18480: *5* onActivateEvent (qtGui)
     # Called from eventFilter
@@ -8254,6 +8266,71 @@ class leoQtGui(leoGui.leoGui):
 
         return val
 
+    #@+node:ekr.20110605121601.18528: *4* makeScriptButton (to do)
+    def makeScriptButton (self,c,
+        args=None,
+        p=None, # A node containing the script.
+        script=None, # The script itself.
+        buttonText=None,
+        balloonText='Script Button',
+        shortcut=None,bg='LightSteelBlue1',
+        define_g=True,define_name='__main__',silent=False, # Passed on to c.executeScript.
+    ):
+
+        '''Create a script button for the script in node p.
+        The button's text defaults to p.headString'''
+
+        k = c.k
+        if p and not buttonText: buttonText = p.h.strip()
+        if not buttonText: buttonText = 'Unnamed Script Button'
+        #@+<< create the button b >>
+        #@+node:ekr.20110605121601.18529: *5* << create the button b >>
+        iconBar = c.frame.getIconBarObject()
+        b = iconBar.add(text=buttonText)
+        #@-<< create the button b >>
+        #@+<< define the callbacks for b >>
+        #@+node:ekr.20110605121601.18530: *5* << define the callbacks for b >>
+        def deleteButtonCallback(event=None,b=b,c=c):
+            if b: b.pack_forget()
+            c.bodyWantsFocus()
+
+        def executeScriptCallback (event=None,
+            b=b,c=c,buttonText=buttonText,p=p and p.copy(),script=script):
+
+            if c.disableCommandsMessage:
+                g.es('',c.disableCommandsMessage,color='blue')
+            else:
+                g.app.scriptDict = {}
+                c.executeScript(args=args,p=p,script=script,
+                define_g= define_g,define_name=define_name,silent=silent)
+                # Remove the button if the script asks to be removed.
+                if g.app.scriptDict.get('removeMe'):
+                    g.es("removing","'%s'" % (buttonText),"button at its request")
+                    b.pack_forget()
+            # Do not assume the script will want to remain in this commander.
+        #@-<< define the callbacks for b >>
+        b.configure(command=executeScriptCallback)
+        c.bind(b,'<3>',deleteButtonCallback)
+        if shortcut:
+            #@+<< bind the shortcut to executeScriptCallback >>
+            #@+node:ekr.20110605121601.18531: *5* << bind the shortcut to executeScriptCallback >>
+            func = executeScriptCallback
+            shortcut = k.canonicalizeShortcut(shortcut)
+            ok = k.bindKey ('button', shortcut,func,buttonText)
+            if ok:
+                g.es_print('bound @button',buttonText,'to',shortcut,color='blue')
+            #@-<< bind the shortcut to executeScriptCallback >>
+        #@+<< create press-buttonText-button command >>
+        #@+node:ekr.20110605121601.18532: *5* << create press-buttonText-button command >>
+        aList = [g.choose(ch.isalnum(),ch,'-') for ch in buttonText]
+
+        buttonCommandName = ''.join(aList)
+        buttonCommandName = buttonCommandName.replace('--','-')
+        buttonCommandName = 'press-%s-button' % buttonCommandName.lower()
+
+        # This will use any shortcut defined in an @shortcuts node.
+        k.registerCommand(buttonCommandName,None,executeScriptCallback,pane='button',verbose=False)
+        #@-<< create press-buttonText-button command >>
     #@+node:ekr.20110613103140.16424: *4* Splash Screen (qtGui)
     def dismiss_splash_screen (self):
         
@@ -8329,71 +8406,6 @@ class leoQtGui(leoGui.leoGui):
 
         # g.trace(id(w),name)
         return name
-    #@+node:ekr.20110605121601.18528: *4* makeScriptButton (to do)
-    def makeScriptButton (self,c,
-        args=None,
-        p=None, # A node containing the script.
-        script=None, # The script itself.
-        buttonText=None,
-        balloonText='Script Button',
-        shortcut=None,bg='LightSteelBlue1',
-        define_g=True,define_name='__main__',silent=False, # Passed on to c.executeScript.
-    ):
-
-        '''Create a script button for the script in node p.
-        The button's text defaults to p.headString'''
-
-        k = c.k
-        if p and not buttonText: buttonText = p.h.strip()
-        if not buttonText: buttonText = 'Unnamed Script Button'
-        #@+<< create the button b >>
-        #@+node:ekr.20110605121601.18529: *5* << create the button b >>
-        iconBar = c.frame.getIconBarObject()
-        b = iconBar.add(text=buttonText)
-        #@-<< create the button b >>
-        #@+<< define the callbacks for b >>
-        #@+node:ekr.20110605121601.18530: *5* << define the callbacks for b >>
-        def deleteButtonCallback(event=None,b=b,c=c):
-            if b: b.pack_forget()
-            c.bodyWantsFocus()
-
-        def executeScriptCallback (event=None,
-            b=b,c=c,buttonText=buttonText,p=p and p.copy(),script=script):
-
-            if c.disableCommandsMessage:
-                g.es('',c.disableCommandsMessage,color='blue')
-            else:
-                g.app.scriptDict = {}
-                c.executeScript(args=args,p=p,script=script,
-                define_g= define_g,define_name=define_name,silent=silent)
-                # Remove the button if the script asks to be removed.
-                if g.app.scriptDict.get('removeMe'):
-                    g.es("removing","'%s'" % (buttonText),"button at its request")
-                    b.pack_forget()
-            # Do not assume the script will want to remain in this commander.
-        #@-<< define the callbacks for b >>
-        b.configure(command=executeScriptCallback)
-        c.bind(b,'<3>',deleteButtonCallback)
-        if shortcut:
-            #@+<< bind the shortcut to executeScriptCallback >>
-            #@+node:ekr.20110605121601.18531: *5* << bind the shortcut to executeScriptCallback >>
-            func = executeScriptCallback
-            shortcut = k.canonicalizeShortcut(shortcut)
-            ok = k.bindKey ('button', shortcut,func,buttonText)
-            if ok:
-                g.es_print('bound @button',buttonText,'to',shortcut,color='blue')
-            #@-<< bind the shortcut to executeScriptCallback >>
-        #@+<< create press-buttonText-button command >>
-        #@+node:ekr.20110605121601.18532: *5* << create press-buttonText-button command >>
-        aList = [g.choose(ch.isalnum(),ch,'-') for ch in buttonText]
-
-        buttonCommandName = ''.join(aList)
-        buttonCommandName = buttonCommandName.replace('--','-')
-        buttonCommandName = 'press-%s-button' % buttonCommandName.lower()
-
-        # This will use any shortcut defined in an @shortcuts node.
-        k.registerCommand(buttonCommandName,None,executeScriptCallback,pane='button',verbose=False)
-        #@-<< create press-buttonText-button command >>
     #@-others
 #@+node:ekr.20110605121601.18533: ** Non-essential
 #@+node:ekr.20110605121601.18534: *3* quickheadlines
@@ -8555,9 +8567,16 @@ class leoQtEventFilter(QtCore.QObject):
             override = False ; tkKey = '<no key>'
             if self.tag == 'body':
                 if eventType == ev.FocusIn:
+                    g.app.gui.add_border(obj.parent())
                     c.frame.body.onFocusIn(obj)
                 elif eventType == ev.FocusOut:
+                    g.app.gui.remove_border(obj.parent())
                     c.frame.body.onFocusOut(obj)
+            if self.tag in ('tree','log'):
+                if eventType == ev.FocusIn:
+                    g.app.gui.add_border(obj)
+                elif eventType == ev.FocusOut:
+                    g.app.gui.remove_border(obj)
 
         if self.keyIsActive:
             stroke = self.toStroke(tkKey,ch)

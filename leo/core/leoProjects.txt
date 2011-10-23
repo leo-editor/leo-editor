@@ -1789,7 +1789,9 @@ def onItemDoubleClicked (self,item,col):
 
         e,wrapper = self.createTreeEditorForItem(item)
         if e:
-            wrapper.setEditorColors(c.k.insert_mode_bg_color,'(not used)')
+            wrapper.setEditorColors(
+                c.k.insert_mode_bg_color,
+                c.k.insert_mode_fg_color)
         else:
             g.trace('*** no e')
 
@@ -1902,7 +1904,9 @@ def onItemDoubleClicked (self,item,col):
 
         e,wrapper = self.createTreeEditorForItem(item)
         if e:
-            wrapper.setEditorColors(c.k.insert_mode_bg_color,'(not used)')
+            wrapper.setEditorColors(
+                c.k.insert_mode_bg_color,
+                c.k.insert_mode_fg_color)
         else:
             g.trace('*** no e')
 
@@ -1955,7 +1959,9 @@ def onItemDoubleClicked (self,item,col):
 
         e,wrapper = self.createTreeEditorForItem(item)
         if e:
-            wrapper.setEditorColors(c.k.insert_mode_bg_color,'(not used)')
+            wrapper.setEditorColors(
+                c.k.insert_mode_bg_color,
+                c.k.insert_mode_fg_color)
         else:
             g.trace('*** no e')
 
@@ -5387,9 +5393,16 @@ def eventFilter(self, obj, event):
         override = False ; tkKey = '<no key>'
         if self.tag == 'body':
             if eventType == ev.FocusIn:
+                g.app.gui.add_border(obj.parent())
                 c.frame.body.onFocusIn(obj)
             elif eventType == ev.FocusOut:
+                g.app.gui.remove_border(obj.parent())
                 c.frame.body.onFocusOut(obj)
+        if self.tag in ('tree','log'):
+            if eventType == ev.FocusIn:
+                g.app.gui.add_border(obj)
+            elif eventType == ev.FocusOut:
+                g.app.gui.remove_border(obj)
 
     if self.keyIsActive:
         stroke = self.toStroke(tkKey,ch)
@@ -19439,13 +19452,13 @@ def setEditorColors(self,bg,fg):
     
     obj = self.widget # A QLineEdit
     
-    # g.trace('(leoQtHeadlineWidget)',bg,fg)
+    # g.trace('(leoQtHeadlineWidget)',bg,fg,g.callers())
 
     def check(color,kind,default):
         if not QtGui.QColor(color).isValid():
             if color not in self.badFocusColors:
                 self.badFocusColors.append(color)
-                g.es_print('invalid body %s color: %s' % (
+                g.es_print('invalid head %s color: %s' % (
                     kind,color),color='blue')
             color = default
         return color
