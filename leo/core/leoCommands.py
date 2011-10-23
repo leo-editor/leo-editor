@@ -254,6 +254,8 @@ class Commands (object):
         c.contractVisitedNodes  = c.config.getBool('contractVisitedNodes')
         c.fixed                 = c.config.getBool('fixedWindow',default=False)
         c.fixedWindowPosition   = c.config.getData('fixedWindowPosition')
+        c.focus_border_color    = c.config.getColor('focus_border_color') or 'red'
+        c.focus_border_width    = c.config.getInt('focus_border_width') or 1 # pixels
         c.outlineHasInitialFocus= c.config.getBool('outline_pane_has_initial_focus')
         c.showMinibuffer        = c.config.getBool('useMinibuffer')
             # This option is a bad idea.
@@ -267,6 +269,8 @@ class Commands (object):
         c.smart_tab             = c.config.getBool('smart_tab')
             # Note: there is also a smart_auto_indent setting.
         c.tab_width             = c.config.getInt('tab_width') or -4
+        c.use_focus_border      = c.config.getBool('use_focus_border',default=True)
+
 
         # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
         # g.trace(c.sparse_move)
@@ -329,6 +333,9 @@ class Commands (object):
         self.tab_width = -4
         self.tangle_batch_flag = False
         self.untangle_batch_flag = False
+        self.use_focus_border = False
+        self.focus_border_color = 'white'
+        self.focus_border_width = 1 # pixels
 
         # Default Tangle options
         self.use_header_flag = False

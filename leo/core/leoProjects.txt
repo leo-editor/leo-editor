@@ -5393,16 +5393,16 @@ def eventFilter(self, obj, event):
         override = False ; tkKey = '<no key>'
         if self.tag == 'body':
             if eventType == ev.FocusIn:
-                g.app.gui.add_border(obj)
+                g.app.gui.add_border(c,obj)
                 c.frame.body.onFocusIn(obj)
             elif eventType == ev.FocusOut:
-                g.app.gui.remove_border(obj)
+                g.app.gui.remove_border(c,obj)
                 c.frame.body.onFocusOut(obj)
         if self.tag in ('tree','log'):
             if eventType == ev.FocusIn:
-                g.app.gui.add_border(obj)
+                g.app.gui.add_border(c,obj)
             elif eventType == ev.FocusOut:
-                g.app.gui.remove_border(obj)
+                g.app.gui.remove_border(c,obj)
 
     if self.keyIsActive:
         stroke = self.toStroke(tkKey,ch)
@@ -19489,6 +19489,482 @@ def setEditorColors (self,bg,fg):
     obj.setStyleSheet('background-color:%s; color: %s' % (bg,fg))
     
     # g.trace(obj.styleSheet())
+#@+node:ekr.20111022215436.16684: *4* Added border around selected pane
+@nocolor-node
+
+Done: Made this optional, and configurable.
+
+#@+node:ekr.20031218072017.2811: *5*  c.Birth & death
+#@+node:ekr.20031218072017.2812: *6* c.__init__
+def __init__(self,frame,fileName,relativeFileName=None):
+
+    trace = False
+    c = self ; tag = 'Commands.__init__'
+
+    self.requestBringToFront = False
+    self.requestedFocusWidget = None
+    self.requestRedrawFlag = False
+    self.requestedIconify = '' # 'iconify','deiconify'
+    self.requestRecolorFlag = False
+
+    if trace:
+        print(tag)
+        import time ; t1 = time.clock()
+    self.exists = True # Indicate that this class exists and has not been destroyed.
+        # Do this early in the startup process so we can call hooks.
+
+    # Init ivars with self.x instead of c.x to keep pylint happy
+
+    # Debugging.
+    self.command_count = 0
+    self.scanAtPathDirectivesCount = 0
+    self.trace_focus_count = 0
+
+    # Data.
+    self.chapterController = None
+    self.db = {} # 2011/07/30: May be changed to a PickleShare instance later.
+    self.frame = frame
+    self.hiddenRootNode = leoNodes.vnode(context=c)
+    self.hiddenRootNode.setHeadString('<hidden root vnode>')
+    self.idle_callback = None # For c.idle_focus_helper.
+    self.in_qt_dialog = False # True when in a qt dialog.
+    self.isZipped = False # May be set to True by g.openWithFileName.
+    self.mFileName = fileName
+        # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
+    self.mRelativeFileName = relativeFileName
+
+    self.initIvars()
+    self.nodeHistory = nodeHistory(c)
+    self.initConfigSettings()
+    c.setWindowPosition() # Do this after initing settings.
+
+    # initialize the sub-commanders.
+    # c.finishCreate creates the sub-commanders for edit commands.
+
+    # Break circular import dependencies by importing here.
+    # These imports take almost 3/4 sec in the leoBridge.
+    import leo.core.leoAtFile as leoAtFile
+    import leo.core.leoCache as leoCache
+    import leo.core.leoEditCommands as leoEditCommands
+    import leo.core.leoFileCommands as leoFileCommands
+    import leo.core.leoImport as leoImport
+    import leo.core.leoRst as leoRst
+    import leo.core.leoShadow as leoShadow
+    import leo.core.leoTangle as leoTangle
+    import leo.core.leoUndo as leoUndo
+
+    if trace: t2 = g.printDiffTime('%s: after imports' % (tag),t1)
+
+    self.shadowController = leoShadow.shadowController(c)
+    self.fileCommands   = leoFileCommands.fileCommands(c)
+    self.atFileCommands = leoAtFile.atFile(c)
+    self.importCommands = leoImport.leoImportCommands(c)
+    self.rstCommands    = leoRst.rstCommands(c)
+    self.tangleCommands = leoTangle.tangleCommands(c)
+    leoEditCommands.createEditCommanders(c)
+    self.rstCommands = leoRst.rstCommands(c)
+
+    c.cacher = leoCache.cacher(c)
+    c.cacher.initFileDB(self.mFileName)
+
+    if trace: t3 = g.printDiffTime('%s: after controllers created' % (tag),t2)
+
+    if 0:
+        g.pr("\n*** using Null undoer ***\n")
+        self.undoer = leoUndo.nullUndoer(self)
+    else:
+        self.undoer = leoUndo.undoer(self)
+        
+#@+node:ekr.20031218072017.2814: *6* c.__repr__ & __str__
+def __repr__ (self):
+
+    return "Commander %d: %s" % (id(self),repr(self.mFileName))
+
+__str__ = __repr__
+#@+node:ekr.20050920093543: *6* c.finishCreate & helper
+def finishCreate (self,initEditCommanders=True):  # New in 4.4.
+
+    '''Finish creating the commander after frame.finishCreate.
+
+    Important: this is the last step in the startup process.'''
+
+    c = self ; p = c.p
+    c.miniBufferWidget = c.frame.miniBufferWidget
+    # print('Commands.finishCreate',c.fileName())
+
+    # Create a keyHandler even if there is no miniBuffer.
+    c.keyHandler = c.k = k = g.app.gui.createKeyHandlerClass(c,
+        useGlobalKillbuffer=True,
+        useGlobalRegisters=True)
+
+    if initEditCommanders:
+        # A 'real' .leo file.
+        import leo.core.leoEditCommands as leoEditCommands
+        c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
+        self.rstCommands.finishCreate()
+
+        # copy global commands to this controller    
+
+        for name,f in g.app.global_commands_dict.items():
+            k.registerCommand(name,shortcut = None, func = f, pane='all',verbose=False)        
+
+        k.finishCreate()
+    else:
+        # A leoSettings.leo file.
+        c.commandsDict = {}
+        
+    if g.app.gui.guiName().lower().startswith('qt'):
+        g.registerHandler('idle',c.idle_focus_helper)
+
+    c.frame.log.finishCreate()
+    c.bodyWantsFocus()
+#@+node:ekr.20051007143620: *7* printCommandsDict
+def printCommandsDict (self):
+
+    c = self
+
+    print('Commands...')
+    for key in sorted(c.commandsDict):
+        command = c.commandsDict.get(key)
+        print('%30s = %s' % (
+            key,g.choose(command,command.__name__,'<None>')))
+    print('')
+#@+node:ekr.20041130173135: *6* c.hash
+def hash (self):
+
+    c = self
+    if c.mFileName:
+        return c.os_path_finalize(c.mFileName).lower()
+    else:
+        return 0
+#@+node:ekr.20110509064011.14563: *6* c.idle_focus_helper
+idle_focus_count = 0
+
+def idle_focus_helper (self,tag,keys):
+    
+    '''An idle-tme handler that ensures that focus is *somewhere*.'''
+    
+    trace = False and not g.unitTesting
+    verbose = False # False: only print surprises.
+    active = False # True: actually change the focus.
+    
+    c = self
+    assert tag == 'idle'
+
+    if g.app.unitTesting or keys.get('c') != c:
+        return
+        
+    self.idle_focus_count += 1
+        
+    if c.in_qt_dialog:
+        if trace and verbose: g.trace('in_qt_dialog')
+        return
+        
+    if c.idle_callback:
+        if trace: g.trace('calling c.idle_callback',c.idle_callback.__name__)
+        c.idle_callback()
+        c.idle_callback = None
+        return
+
+    w = g.app.gui.get_focus()
+
+    if w:
+        if trace and verbose:
+            g.trace(self.idle_focus_count,w)
+    elif g.app.gui.active: # Set by gui.onActivate/onDeactivate.
+        if trace:
+            g.trace('%s no focus -> body' % (self.idle_focus_count))
+        if active:
+            c.bodyWantsFocusNow()
+#@+node:ekr.20081005065934.1: *6* c.initAfterLoad
+def initAfterLoad (self):
+
+    '''Provide an offical hook for late inits of the commander.'''
+
+    pass
+#@+node:ekr.20090213065933.6: *6* c.initConfigSettings
+def initConfigSettings (self):
+
+    '''Init all cached commander config settings.'''
+
+    c = self
+    c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
+    c.contractVisitedNodes  = c.config.getBool('contractVisitedNodes')
+    c.fixed                 = c.config.getBool('fixedWindow',default=False)
+    c.fixedWindowPosition   = c.config.getData('fixedWindowPosition')
+    c.focus_border_color    = c.config.getColor('focus_border_color') or 'red'
+    c.focus_border_width    = c.config.getInt('focus_border_width') or 1 # pixels
+    c.outlineHasInitialFocus= c.config.getBool('outline_pane_has_initial_focus')
+    c.showMinibuffer        = c.config.getBool('useMinibuffer')
+        # This option is a bad idea.
+    c.putBitsFlag           = c.config.getBool('put_expansion_bits_in_leo_files',default=True)
+    # g.trace('putBitsFlag',c.putBitsFlag,c.fileName())
+    c.sparse_move           = c.config.getBool('sparse_move_outline_left')
+    c.sparse_find           = c.config.getBool('collapse_nodes_during_finds')
+    c.sparce_spell          = c.config.getBool('collapse_nodes_while_spelling')
+    c.stayInTreeAfterSelect = c.config.getBool('stayInTreeAfterSelect')
+    c.stayInTreeAfterEdit   = c.config.getBool('stayInTreeAfterEditHeadline')
+    c.smart_tab             = c.config.getBool('smart_tab')
+        # Note: there is also a smart_auto_indent setting.
+    c.tab_width             = c.config.getInt('tab_width') or -4
+    c.use_focus_border      = c.config.getBool('use_focus_border',default=True)
+
+
+    # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
+    # g.trace(c.sparse_move)
+#@+node:ekr.20040731071037: *6* c.initIvars
+def initIvars(self):
+
+    c = self
+    << initialize ivars >>
+
+    self.config = configSettings(c)
+    g.app.config.setIvarsFromSettings(c)
+#@+node:ekr.20031218072017.2813: *7* << initialize ivars >> (commands)
+self._currentPosition = self.nullPosition()
+# self._rootPosition    = self.nullPosition()
+self._topPosition     = self.nullPosition()
+
+# Delayed focus.
+self.doubleClickFlag = False
+self.hasFocusWidget = None
+self.requestedFocusWidget = None
+
+# Official ivars.
+self.gui = g.app.gui
+self.ipythonController = None # Set only by the ipython plugin.
+
+# Interlock to prevent setting c.changed when switching chapters.
+c.suppressHeadChanged = False
+
+# Interlocks to prevent premature closing of a window.
+self.inCommand = False
+self.requestCloseWindow = False
+
+# For emacs/vim key handling.
+self.commandsDict = None
+self.keyHandler = self.k = None
+self.miniBufferWidget = None
+
+# per-document info...
+self.changed = False # True if any data has been changed since the last save.
+self.disableCommandsMessage = ''
+    # The presence of this message disables all commands.
+self.expansionLevel = 0  # The expansion level of this outline.
+self.expansionNode = None # The last node we expanded or contracted.
+self.hookFunction = None
+self.ignoreChangedPaths = False # True: disable path changed message in at.WriteAllHelper.
+self.loading = False # True if we are loading a file: disables c.setChanged()
+self.nodeConflictList = [] # List of nodes with conflicting read-time data.
+self.nodeConflictFileName = None # The fileName for c.nodeConflictList.
+self.openDirectory = None
+self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
+self.promptingForClose = False # To lock out additional closing dialogs.
+self.timeStampDict = {} # New in Leo 4.6.
+
+# For tangle/untangle
+self.tangle_errors = 0
+
+# Global options: set later in initConfigSettings
+self.fixed = False
+self.page_width = 132
+self.sparse_find = True # 2010/02/02: created ivar.
+self.sparse_move = True # 2010/02/02: created ivar.
+self.sparse_spell = True # 2010/02/02: created ivar.
+self.tab_width = -4
+self.tangle_batch_flag = False
+self.untangle_batch_flag = False
+self.use_focus_border = False
+self.focus_border_color = 'white'
+self.focus_border_width = 1 # pixels
+
+# Default Tangle options
+self.use_header_flag = False
+self.output_doc_flag = False
+
+# Default Target Language
+self.target_language = "python" # Required if leoConfig.txt does not exist.
+
+# For hoist/dehoist commands.
+self.hoistStack = []
+    # Stack of nodes to be root of drawn tree.
+    # Affects drawing routines and find commands.
+self.recentFiles = [] # List of recent files
+
+# For outline navigation.
+self.navPrefix = g.u('') # Must always be a string.
+self.navTime = None
+#@+node:ekr.20090213065933.7: *6* c.setWindowPosition
+def setWindowPosition (self):
+
+    c = self
+
+    # g.trace(c.fixed,c.fixedWindowPosition)
+
+    if c.fixedWindowPosition:
+        try:
+            w,h,l,t = self.fixedWindowPosition
+            c.fixedWindowPosition = int(w),int(h),int(l),int(t)
+        except Exception:
+            g.es_print('bad @data fixedWindowPosition',
+                repr(self.fixedWindowPosition),color='red')
+    else:
+        c.windowPosition = 500,700,50,50 # width,height,left,top.
+#@+node:ekr.20111022215436.16685: *5* Borders (qtGui)
+red_border = "border: %spx solid %s;"
+white_border  = "border: 1px solid white;"
+
+def add_border(self,c,w):
+    
+    if not c.use_focus_border:
+        return
+        
+    # g.trace(c.focus_border_width,c.focus_border_color)
+    
+    white_border = self.white_border
+    red_border = self.red_border % (
+        c.focus_border_width,c.focus_border_color)
+
+    if hasattr(w,'viewport'):
+        w = w.viewport()
+    
+    s = str(w.styleSheet()).strip() or ''
+    if s and s.find(white_border) > -1:
+        s = s.replace(white_border,red_border)
+        w.setStyleSheet(s)
+    elif s and s.find(red_border) > -1:
+        pass
+    elif s:
+        if s and not s.endswith(';'): s = s + ';'
+        s = s + red_border
+        w.setStyleSheet(s)
+    elif not s:
+        s = red_border
+        w.setStyleSheet(s)
+    
+def remove_border(self,c,w):
+    
+    if not c.use_focus_border:
+        return
+        
+    white_border = self.white_border
+    red_border = self.red_border % (
+        c.focus_border_width,c.focus_border_color)
+    
+    if hasattr(w,'viewport'):
+        w = w.viewport()
+    
+    s = str(w.styleSheet()).strip() or ''
+    
+    if s and s.find(red_border) > -1:
+        s = s.replace(red_border,white_border)
+        w.setStyleSheet(s)
+    elif s and s.find(white_border) > -1:
+        pass
+    elif s:
+        if s and not s.endswith(';'): s = s + ';'
+        s = s + white_border
+        w.setStyleSheet(s)
+    elif not s:
+        s = white_border
+        w.setStyleSheet(s)
+#@+node:ekr.20110605121601.18540: *5* eventFilter
+def eventFilter(self, obj, event):
+
+    trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
+    verbose = True
+    traceEvent = True
+    traceKey = (True or self.trace_masterKeyHandler)
+    traceFocus = True
+    c = self.c ; k = c.k
+    eventType = event.type()
+    ev = QtCore.QEvent
+    gui = g.app.gui
+    aList = []
+
+    # if trace and verbose: g.trace('*****',eventType)
+
+    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
+
+    if trace and traceFocus: self.traceFocus(eventType,obj)
+    
+    # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
+    lineEditKeyKinds = [ev.KeyPress,ev.KeyRelease]
+        
+    if eventType in lineEditKeyKinds:
+        p = c.currentPosition()
+        isEditWidget = obj == c.frame.tree.edit_widget(p)
+        self.keyIsActive = g.choose(
+            isEditWidget,
+            eventType == ev.KeyRelease,
+            eventType == ev.KeyPress)
+        # g.trace(isEditWidget,eventType,obj)
+    else:
+        self.keyIsActive = False
+
+    if eventType == ev.WindowActivate:
+        gui.onActivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    elif eventType == ev.WindowDeactivate:
+        gui.onDeactivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    # elif eventType == ev.LayoutRequest:
+        # g.trace(event,event.spontaneous())
+        # event.accept()
+        # override = True
+        # tkKey = None
+    elif eventType in kinds:
+        tkKey,ch,ignore = self.toTkKey(event)
+        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+        if ignore:
+            override = False
+        # This is extremely bad.  At present, it is needed to handle tab properly.
+        elif self.isSpecialOverride(tkKey,ch):
+            override = True
+        elif k.inState():
+            override = not ignore # allow all keystrokes.
+        else:
+            override = len(aList) > 0
+        # if trace and verbose: g.trace(
+            # tkKey,len(aList),'ignore',ignore,'override',override)
+    else:
+        override = False ; tkKey = '<no key>'
+        if self.tag == 'body':
+            if eventType == ev.FocusIn:
+                g.app.gui.add_border(c,obj)
+                c.frame.body.onFocusIn(obj)
+            elif eventType == ev.FocusOut:
+                g.app.gui.remove_border(c,obj)
+                c.frame.body.onFocusOut(obj)
+        if self.tag in ('tree','log'):
+            if eventType == ev.FocusIn:
+                g.app.gui.add_border(c,obj)
+            elif eventType == ev.FocusOut:
+                g.app.gui.remove_border(c,obj)
+
+    if self.keyIsActive:
+        stroke = self.toStroke(tkKey,ch)
+
+        if override:
+            if trace and traceKey and not ignore:
+                g.trace('bound',repr(stroke)) # repr(aList))
+            w = self.w # Pass the wrapper class, not the wrapped widget.
+            event = self.create_key_event(event,c,w,ch,tkKey,stroke)
+            ret = k.masterKeyHandler(event)
+            c.outerUpdate()
+        else:
+            if trace and traceKey and verbose:
+                g.trace(self.tag,'unbound',tkKey,stroke)
+        
+        if trace and traceKey:
+            # Trace key events.
+            self.traceEvent(obj,event,tkKey,override)
+
+    elif trace and traceEvent:
+        # Trace non-key events.
+        self.traceEvent(obj,event,tkKey,override)
+
+    return override
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>

@@ -449,7 +449,7 @@ class nullGui(leoGui):
         if 1:
             g.trace("nullGui",g.callers(4))
     #@+node:ekr.20070301171901: *3* do nothings (leoGui)
-    def add_border(self,w):
+    def add_border(self,c,w):
         pass
 
     def alert (self,message):
@@ -486,7 +486,7 @@ class nullGui(leoGui):
     def get_window_info (self,window):
         return 0,0,0,0
         
-    def remove_border (self,w):
+    def remove_border (self,c,w):
         pass
 
     def replaceClipboardWith (self,s):

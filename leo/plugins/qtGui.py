@@ -7575,49 +7575,62 @@ class leoQtGui(leoGui.leoGui):
         QtCore.pyqtRemoveInputHook()
         self.qtApp.exit()
     #@+node:ekr.20111022215436.16685: *4* Borders (qtGui)
-    def add_border(self,w):
+    red_border = "border: %spx solid %s;"
+    white_border  = "border: 1px solid white;"
+
+    def add_border(self,c,w):
         
-        if not g.app.focus_border_active:
+        if not c.use_focus_border:
             return
+            
+        # g.trace(c.focus_border_width,c.focus_border_color)
+        
+        white_border = self.white_border
+        red_border = self.red_border % (
+            c.focus_border_width,c.focus_border_color)
 
         if hasattr(w,'viewport'):
             w = w.viewport()
         
         s = str(w.styleSheet()).strip() or ''
-        if s and s.find(g.app.focus_border_unfocused) > -1:
-            s = s.replace(g.app.focus_border_unfocused,g.app.focus_border_focused)
+        if s and s.find(white_border) > -1:
+            s = s.replace(white_border,red_border)
             w.setStyleSheet(s)
-        elif s and s.find(g.app.focus_border_focused) > -1:
+        elif s and s.find(red_border) > -1:
             pass
         elif s:
             if s and not s.endswith(';'): s = s + ';'
-            s = s + g.app.focus_border_focused
+            s = s + red_border
             w.setStyleSheet(s)
         elif not s:
-            s = g.app.focus_border_focused
+            s = red_border
             w.setStyleSheet(s)
         
-    def remove_border(self,w):
+    def remove_border(self,c,w):
         
-        if not g.app.focus_border_active:
+        if not c.use_focus_border:
             return
-
+            
+        white_border = self.white_border
+        red_border = self.red_border % (
+            c.focus_border_width,c.focus_border_color)
+        
         if hasattr(w,'viewport'):
             w = w.viewport()
         
         s = str(w.styleSheet()).strip() or ''
         
-        if s and s.find(g.app.focus_border_focused) > -1:
-            s = s.replace(g.app.focus_border_focused,g.app.focus_border_unfocused)
+        if s and s.find(red_border) > -1:
+            s = s.replace(red_border,white_border)
             w.setStyleSheet(s)
-        elif s and s.find(g.app.focus_border_unfocused) > -1:
+        elif s and s.find(white_border) > -1:
             pass
         elif s:
             if s and not s.endswith(';'): s = s + ';'
-            s = s + g.app.focus_border_unfocused
+            s = s + white_border
             w.setStyleSheet(s)
         elif not s:
-            s = g.app.focus_border_unfocused
+            s = white_border
             w.setStyleSheet(s)
     #@+node:ekr.20110605121601.18485: *4* Clipboard (qtGui)
     def replaceClipboardWith (self,s):
@@ -8524,15 +8537,6 @@ class leoQtEventFilter(QtCore.QObject):
         # Support for ctagscompleter.py plugin.
         self.ctagscompleter_active = False
         self.ctagscompleter_onKey = None
-
-        # focused pane border highlighting
-        # would make more sense to do this in qtGui.__init__ but
-        # c.config is not available there
-        g.app.focus_border_active = c.config.getBool('focus_border_active') or False
-        g.app.focus_border_focused = (c.config.getString('focus_border_focused') or 
-            "border: 1px solid red;")
-        g.app.focus_border_unfocused = (c.config.getString('focus_border_unfocused') or
-            "border: 1px solid white;")
     #@+node:ekr.20110605121601.18540: *3* eventFilter
     def eventFilter(self, obj, event):
 
@@ -8596,16 +8600,16 @@ class leoQtEventFilter(QtCore.QObject):
             override = False ; tkKey = '<no key>'
             if self.tag == 'body':
                 if eventType == ev.FocusIn:
-                    g.app.gui.add_border(obj)
+                    g.app.gui.add_border(c,obj)
                     c.frame.body.onFocusIn(obj)
                 elif eventType == ev.FocusOut:
-                    g.app.gui.remove_border(obj)
+                    g.app.gui.remove_border(c,obj)
                     c.frame.body.onFocusOut(obj)
             if self.tag in ('tree','log'):
                 if eventType == ev.FocusIn:
-                    g.app.gui.add_border(obj)
+                    g.app.gui.add_border(c,obj)
                 elif eventType == ev.FocusOut:
-                    g.app.gui.remove_border(obj)
+                    g.app.gui.remove_border(c,obj)
 
         if self.keyIsActive:
             stroke = self.toStroke(tkKey,ch)
