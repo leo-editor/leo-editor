@@ -12455,7 +12455,7 @@ def scanForTabWidth (self,p):
     c.frame.setTabWidth(w)
     c.tab_width = w # 2011/10/24
     # g.trace(w)
-#@+node:ekr.20111024170505.16464: *4* Applied patch for Bug 800311: Undo: Word granularity should recognize cursor movements 
+#@+node:ekr.20111024170505.16464: *4* Applied patch for Bug 800311: Undo: Word granularity should recognize cursor movements
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/800311
@@ -21967,6 +21967,8 @@ def initConfigSettings (self):
 
     c = self
     c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
+    c.collapse_nodes_after_move = c.config.getBool('collapse_nodes_after_move')
+        # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
     c.contractVisitedNodes  = c.config.getBool('contractVisitedNodes')
     c.fixed                 = c.config.getBool('fixedWindow',default=False)
     c.fixedWindowPosition   = c.config.getData('fixedWindowPosition')
@@ -21986,7 +21988,6 @@ def initConfigSettings (self):
         # Note: there is also a smart_auto_indent setting.
     c.tab_width             = c.config.getInt('tab_width') or -4
     c.use_focus_border      = c.config.getBool('use_focus_border',default=True)
-
 
     # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
     # g.trace(c.sparse_move)

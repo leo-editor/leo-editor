@@ -251,6 +251,8 @@ class Commands (object):
 
         c = self
         c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
+        c.collapse_nodes_after_move = c.config.getBool('collapse_nodes_after_move')
+            # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
         c.contractVisitedNodes  = c.config.getBool('contractVisitedNodes')
         c.fixed                 = c.config.getBool('fixedWindow',default=False)
         c.fixedWindowPosition   = c.config.getData('fixedWindowPosition')
@@ -270,7 +272,6 @@ class Commands (object):
             # Note: there is also a smart_auto_indent setting.
         c.tab_width             = c.config.getInt('tab_width') or -4
         c.use_focus_border      = c.config.getBool('use_focus_border',default=True)
-
 
         # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
         # g.trace(c.sparse_move)
@@ -5888,7 +5889,8 @@ class Commands (object):
                 dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
                 p.moveAfter(next)
 
-        if moved and c.sparse_move and parent and not parent.isAncestorOf(p):
+        # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
+        if c.collapse_nodes_after_move and moved and c.sparse_move and parent and not parent.isAncestorOf(p):
             # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
             parent.contract()
         #@-<< Move p down & set moved if successful >>
@@ -5932,7 +5934,9 @@ class Commands (object):
             dirtyVnodeList.extend(dirtyVnodeList2)
         c.setChanged(True)
         u.afterMoveNode(p,'Move Left',undoData,dirtyVnodeList)
-        if c.sparse_move: # New in Leo 4.4.2
+
+        # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
+        if c.collapse_nodes_after_move and c.sparse_move: # New in Leo 4.4.2
             parent.contract()
         c.redraw_now(p,setFocus=True)
         c.recolor_now() # Moving can change syntax coloring.
@@ -6030,7 +6034,8 @@ class Commands (object):
                 moved = True
                 p.moveAfter(back2)
 
-        if moved and c.sparse_move and parent and not parent.isAncestorOf(p):
+        # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
+        if c.collapse_nodes_after_move and moved and c.sparse_move and parent and not parent.isAncestorOf(p):
             # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
             parent.contract()
         #@-<< Move p up >>
