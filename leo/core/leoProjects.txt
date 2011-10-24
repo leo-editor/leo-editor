@@ -22756,12 +22756,14 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
     # g.trace(setting,requestedType,bunch.toString())
     val = bunch.val
 
+    # 2011/10/24: test for an explicit None.  
     if g.isPython3:
-        isNone = val in ('None','none','',None)
+        isNone = val in ('None','none','') #,None)
+            
     else:
         isNone = val in (
             unicode('None'),unicode('none'),unicode(''),
-            'None','none','',None)
+            'None','none','') #,None)
 
     if not self.typesMatch(bunch.kind,requestedType):
         # New in 4.4: make sure the types match.
@@ -22774,7 +22776,8 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
         return None, False
     # elif val in (u'None',u'none','None','none','',None):
     elif isNone:
-        return None, True # Exists, but is None
+        return '', True
+            # 2011/10/24: Exists, a *user-defined* empty value.
     else:
         # g.trace(setting,val)
         return val, True

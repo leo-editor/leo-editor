@@ -1932,12 +1932,14 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
     # g.trace(setting,requestedType,bunch.toString())
     val = bunch.val
 
+    # 2011/10/24: test for an explicit None.  
     if g.isPython3:
-        isNone = val in ('None','none','',None)
+        isNone = val in ('None','none','') #,None)
+            
     else:
         isNone = val in (
             unicode('None'),unicode('none'),unicode(''),
-            'None','none','',None)
+            'None','none','') #,None)
 
     if not self.typesMatch(bunch.kind,requestedType):
         # New in 4.4: make sure the types match.
@@ -1950,7 +1952,8 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
         return None, False
     # elif val in (u'None',u'none','None','none','',None):
     elif isNone:
-        return None, True # Exists, but is None
+        return '', True
+            # 2011/10/24: Exists, a *user-defined* empty value.
     else:
         # g.trace(setting,val)
         return val, True
@@ -2202,10 +2205,6 @@ Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
 for the find/change patterns would help a bit.
 .. @+node:ekr.20111018104244.15920: *4* Fix bug: Use QLocalSocket in LProtoClient.connect
 http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
-.. @+node:ekr.20111023164430.16770: *4* Fix @color bug
-@nocolor-node
-
-There is a bug in getColor:  an explicit None should override previous entries.
 .. @+node:ekr.20111018220642.15858: *3* Docs
 .. @+node:ekr.20111019104425.15862: *4* ** Dynamic home page
 .. @+node:ekr.20111011175652.15696: *5* Register a domain name like leo-editor.org
