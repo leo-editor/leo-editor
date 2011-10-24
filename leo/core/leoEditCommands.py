@@ -4803,8 +4803,6 @@ class editCommandsClass (baseEditCommandsClass):
     def doPlainTab(self,s,i,tab_width,w):
 
         '''Insert spaces equivalent to one tab.'''
-        
-        g.trace(tab_width)
 
         start,end = g.getLine(s,i)
         s2 = s[start:i]
