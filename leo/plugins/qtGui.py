@@ -7575,63 +7575,20 @@ class leoQtGui(leoGui.leoGui):
         QtCore.pyqtRemoveInputHook()
         self.qtApp.exit()
     #@+node:ekr.20111022215436.16685: *4* Borders (qtGui)
-    red_border = "border: %spx solid %s;"
-    white_border  = "border: 1px solid white;"
-
     def add_border(self,c,w):
         
-        if not c.use_focus_border:
-            return
-            
-        # g.trace(c.focus_border_width,c.focus_border_color)
-        
-        white_border = self.white_border
-        red_border = self.red_border % (
-            c.focus_border_width,c.focus_border_color)
-
-        if hasattr(w,'viewport'):
-            w = w.viewport()
-        
-        s = str(w.styleSheet()).strip() or ''
-        if s and s.find(white_border) > -1:
-            s = s.replace(white_border,red_border)
-            w.setStyleSheet(s)
-        elif s and s.find(red_border) > -1:
-            pass
-        elif s:
-            if s and not s.endswith(';'): s = s + ';'
-            s = s + red_border
-            w.setStyleSheet(s)
-        elif not s:
-            s = red_border
-            w.setStyleSheet(s)
-        
+        if c.use_focus_border:
+            if hasattr(w,'viewport'):
+                w = w.viewport()
+            w.setStyleSheet("border: %spx solid %s;" % (
+                c.focus_border_width,c.focus_border_color))
+       
     def remove_border(self,c,w):
         
-        if not c.use_focus_border:
-            return
-            
-        white_border = self.white_border
-        red_border = self.red_border % (
-            c.focus_border_width,c.focus_border_color)
-        
-        if hasattr(w,'viewport'):
-            w = w.viewport()
-        
-        s = str(w.styleSheet()).strip() or ''
-        
-        if s and s.find(red_border) > -1:
-            s = s.replace(red_border,white_border)
-            w.setStyleSheet(s)
-        elif s and s.find(white_border) > -1:
-            pass
-        elif s:
-            if s and not s.endswith(';'): s = s + ';'
-            s = s + white_border
-            w.setStyleSheet(s)
-        elif not s:
-            s = white_border
-            w.setStyleSheet(s)
+        if c.use_focus_border:
+            if hasattr(w,'viewport'):
+                w = w.viewport()
+            w.setStyleSheet("border: 1px solid white;")
     #@+node:ekr.20110605121601.18485: *4* Clipboard (qtGui)
     def replaceClipboardWith (self,s):
 

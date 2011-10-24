@@ -5863,5 +5863,70 @@ def setBackgroundColorHelper (self,colorName):
     elif colorName not in self.badFocusColors:
         self.badFocusColors.append(colorName)
         g.warning('invalid headline background color: %s' % (colorName))
+#@+node:ekr.20111023165432.16575: *3* Borders (qtGui) (Complext)
+# red_border = "border: %spx solid %s;"
+# white_border  = "border: 1px solid white;"
+
+def add_border(self,c,w):
+    
+    if not c.use_focus_border:
+        return
+        
+    # g.trace(c.focus_border_width,c.focus_border_color)
+    
+   
+    if hasattr(w,'viewport'):
+        w = w.viewport()
+        
+    if 1: # Don't worry about restoring previous stylesheets.
+        w.setStyleSheet("border: %spx solid %s;" % (
+            c.focus_border_width,c.focus_border_color))
+    else:
+        white_border = self.white_border
+        red_border = self.red_border % (
+            c.focus_border_width,c.focus_border_color)
+
+        s = str(w.styleSheet()).strip() or ''
+        if s and s.find(white_border) > -1:
+            s = s.replace(white_border,red_border)
+            w.setStyleSheet(s)
+        elif s and s.find(red_border) > -1:
+            pass
+        elif s:
+            if s and not s.endswith(';'): s = s + ';'
+            s = s + red_border
+            w.setStyleSheet(s)
+        elif not s:
+            s = red_border
+            w.setStyleSheet(s)
+    
+def remove_border(self,c,w):
+    
+    if not c.use_focus_border:
+        return
+    
+    if hasattr(w,'viewport'):
+        w = w.viewport()
+        
+    if 1: # Don't worry about restoring previous stylesheets.
+        w.setStyleSheet("border: 1px solid white;")
+    else:
+        white_border = self.white_border
+        red_border = self.red_border % (
+        c.focus_border_width,c.focus_border_color)
+        s = str(w.styleSheet()).strip() or ''
+        
+        if s and s.find(red_border) > -1:
+            s = s.replace(red_border,white_border)
+            w.setStyleSheet(s)
+        elif s and s.find(white_border) > -1:
+            pass
+        elif s:
+            if s and not s.endswith(';'): s = s + ';'
+            s = s + white_border
+            w.setStyleSheet(s)
+        elif not s:
+            s = white_border
+            w.setStyleSheet(s)
 #@-all
 #@-leo
