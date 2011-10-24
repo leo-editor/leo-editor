@@ -2207,10 +2207,6 @@ Leo 4.9 final, build 4411, June 21, 2011
 Python 2.7.1, qt version 4.7.2
 linux2
 .. @+node:ekr.20111024170505.16461: *5* Medium priority
-.. @+node:ekr.20111024170505.16460: *6* Bug 800312: Collapsing node moves should be optional
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/800312
 .. @+node:ekr.20111017132257.15891: *4* Get IPython working again
 .. @+node:ekr.20111017132257.15890: *5* Investigate how IPython hijacks event loops
 http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9

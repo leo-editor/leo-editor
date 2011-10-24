@@ -12485,6 +12485,10 @@ Something else about the undo code:
 
 - The "We have just inserted a line." section is not only entered on a new line
   (see other attached patch)
+#@+node:ekr.20111024170505.16460: *4* Applied patch for Bug 800312: Collapsing node moves should be optional
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/800312
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
