@@ -1322,6 +1322,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18089: *5* insert (avoid call to setAllText) (leoQTextWidget)
     def insert(self,i,s):
 
+        
         c,w = self.c,self.widget
         colorer = c.frame.body.colorizer.highlighter.colorer
         n = colorer.recolorCount
@@ -1939,7 +1940,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         w.setText(s)
         if insert is not None:
             self.setSelectionRange(i,i,insert=i)
-    #@+node:ekr.20110605121601.18126: *5* setEditorColors (leoQtHeadlineWidget) (rewritten)
+    #@+node:ekr.20110605121601.18126: *5* setEditorColors (leoQtHeadlineWidget) (no longer called)
     def setEditorColors(self,bg,fg):
         
         obj = self.widget # A QLineEdit
@@ -9472,17 +9473,37 @@ class jEditColorizer:
         self.word_chars = {} # Inited by init_keywords().
         self.setFontFromConfig()
         self.tags = [
-            "blank","comment","cwebName","docPart","keyword","leoKeyword",
-            "latexModeBackground","latexModeKeyword",
-            "latexBackground","latexKeyword",
-            "link","name","nameBrackets","pp","string",
-            "elide","bold","bolditalic","italic", # new for wiki styling.
-            "tab",
-            # Leo jEdit tags...
-            '@color', '@nocolor', 'doc_part', 'section_ref',
+        
+            # To be removed...
+        
+                # Used only by the old colorizer.
+                # 'bracketRange',
+                # "comment",
+                # "cwebName"
+                # "keyword",
+                # "latexBackground","latexKeyword","latexModeKeyword",
+                # "pp",
+                # "string",
+                
+                # Wiki styling.  These were never user options.
+                # "bold","bolditalic","elide","italic",
+                
+                # Marked as Leo jEdit tags, but not used.
+                # '@color', '@nocolor','doc_part', 'section_ref',
+            
+            # 8 Leo-specific tags.
+            "blank",  # show_invisibles_space_color
+            "docPart",
+            "leoKeyword",
+            "link",
+            "name",
+            "nameBrackets",
+            "tab", # show_invisibles_space_color
+            "url",
+            
             # jEdit tags.
-            'bracketRange',
             'comment1','comment2','comment3','comment4',
+            # default, # exists, but never generated.
             'function',
             'keyword1','keyword2','keyword3','keyword4',
             'label','literal1','literal2','literal3','literal4',
@@ -9504,90 +9525,100 @@ class jEditColorizer:
 
         # These defaults are sure to exist.
         self.default_colors_dict = {
-            # tag name       :(     option name,           default color),
-            'blank'          :('blank_color',                 'black'), # 2010/1/2
-            'tab'            :('tab_color',                   'black'), # 2010/1/2
-            ###'comment'        :('comment_color',               'red'),
-            'cwebName'       :('cweb_section_name_color',     'red'),
-            'pp'             :('directive_color',             'blue'),
-            'docPart'        :('doc_part_color',              'red'),
-            ### 'keyword'        :('keyword_color',               'blue'),
-            'leoKeyword'     :('leo_keyword_color',           'blue'),
-            'link'           :('section_name_color',          'red'),
-            'nameBrackets'   :('section_name_brackets_color', 'blue'),
-            ### 'string'         :('string_color',                '#00aa00'), # Used by IDLE.
-            'name'           :('undefined_section_name_color','red'),
-            'latexBackground':('latex_background_color',      'white'),
-            'url'            :('url_color',                   'purple'),
-
-            # Tags used by forth.
-            'bracketRange'   :('bracket_range_color','orange'),
+        
+            # Used in Leo rules...
+        
+            # tag name      :( option name,                  default color),
+            'blank'         :('show_invisibles_space_color', '#E5E5E5'), # gray90
+            'docPart'       :('doc_part_color',              'red'),
+            'leoKeyword'    :('leo_keyword_color',           'blue'),
+            'link'          :('section_name_color',          'red'),
+            'name'          :('undefined_section_name_color','red'),
+            'nameBrackets'  :('section_name_brackets_color', 'blue'),
+            'tab'           :('show_invisibles_tab_color',   '#CCCCCC'), # gray80
+            'url'           :('url_color',                   'purple'),
+            
+            # Used by the old colorizer: to be removed.
+            
+            # 'bracketRange'   :('bracket_range_color',     'orange'), # Forth.
+            # 'comment'        :('comment_color',           'red'),
+            # 'cwebName'       :('cweb_section_name_color', 'red'),
+            # 'keyword'        :('keyword_color',           'blue'),
+            # 'latexBackground':('latex_background_color',  'white'),
+            # 'pp'             :('directive_color',         'blue'),
+            # 'string'         :('string_color',            '#00aa00'), # Used by IDLE.
 
             # jEdit tags.
-            'comment1'       :('comment1_color', 'red'),
-            'comment2'       :('comment2_color', 'red'),
-            'comment3'       :('comment3_color', 'red'),
-            'comment4'       :('comment4_color', 'red'),
-            'function'       :('function_color', 'black'),
-            'keyword1'       :('keyword1_color', 'blue'),
-            'keyword2'       :('keyword2_color', 'blue'),
-            'keyword3'       :('keyword3_color', 'blue'),
-            'keyword4'       :('keyword4_color', 'blue'),
-            'keyword5'       :('keyword5_color', 'blue'),
-            'label'          :('label_color',    'black'),
-            'literal1'       :('literal1_color', '#00aa00'),
-            'literal2'       :('literal2_color', '#00aa00'),
-            'literal3'       :('literal3_color', '#00aa00'),
-            'literal4'       :('literal4_color', '#00aa00'),
-            'markup'         :('markup_color',   'red'),
-            'null'           :('null_color',     None), ###'black'),
-            'operator'       :('operator_color', None), ###'black'),
+            # tag name  :( option name,     default color),
+            'comment1'  :('comment1_color', 'red'),
+            'comment2'  :('comment2_color', 'red'),
+            'comment3'  :('comment3_color', 'red'),
+            'comment4'  :('comment4_color', 'red'),
+            'function'  :('function_color', 'black'),
+            'keyword1'  :('keyword1_color', 'blue'),
+            'keyword2'  :('keyword2_color', 'blue'),
+            'keyword3'  :('keyword3_color', 'blue'),
+            'keyword4'  :('keyword4_color', 'blue'),
+            'keyword5'  :('keyword5_color', 'blue'),
+            'label'     :('label_color',    'black'),
+            'literal1'  :('literal1_color', '#00aa00'),
+            'literal2'  :('literal2_color', '#00aa00'),
+            'literal3'  :('literal3_color', '#00aa00'),
+            'literal4'  :('literal4_color', '#00aa00'),
+            'markup'    :('markup_color',   'red'),
+            'null'      :('null_color',     None), ###'black'),
+            'operator'  :('operator_color', None), ###'black'),
         }
     #@+node:ekr.20110605121601.18575: *6* defineDefaultFontDict
     def defineDefaultFontDict (self):
 
         self.default_font_dict = {
-            # tag name      : option name
-            'comment'       :'comment_font',
-            'cwebName'      :'cweb_section_name_font',
-            'pp'            :'directive_font',
-            'docPart'       :'doc_part_font',
-            'keyword'       :'keyword_font',
-            'leoKeyword'    :'leo_keyword_font',
-            'link'          :'section_name_font',
-            'nameBrackets'  :'section_name_brackets_font',
-            'string'        :'string_font',
-            'name'          :'undefined_section_name_font',
-            'latexBackground':'latex_background_font',
-            'tab'           : 'tab_font',
-            'url'           : 'url_font',
-
-            # Tags used by forth.
-            'bracketRange'   :'bracketRange_font',
+        
+            # Used in Leo rules...
             
-            ## Default font.
-            #'default'       :'default_font',
-
+                # tag name      : option name
+                'blank'         :'show_invisibles_space_font', # 2011/10/24.
+                'docPart'       :'doc_part_font',
+                'leoKeyword'    :'leo_keyword_font',
+                'link'          :'section_name_font',
+                'name'          :'undefined_section_name_font',
+                'nameBrackets'  :'section_name_brackets_font',
+                'tab'           : 'show_invisibles_tab_font', # 2011/10/24.
+                'url'           : 'url_font',
+            
+            # Used by old colorizer.
+            
+                # 'bracketRange'   :'bracketRange_font', # Forth.
+                # 'comment'       :'comment_font',
+                # 'cwebName'      :'cweb_section_name_font',
+                # 'keyword'       :'keyword_font',
+                # 'latexBackground':'latex_background_font',
+                # 'pp'            :'directive_font',
+                # 'string'        :'string_font',
+        
              # jEdit tags.
-            'comment1'      :'comment1_font',
-            'comment2'      :'comment2_font',
-            'comment3'      :'comment3_font',
-            'comment4'      :'comment4_font',
-            'function'      :'function_font',
-            'keyword1'      :'keyword1_font',
-            'keyword2'      :'keyword2_font',
-            'keyword3'      :'keyword3_font',
-            'keyword4'      :'keyword4_font',
-            'keyword5'      :'keyword5_font',
-            'label'         :'label_font',
-            'literal1'      :'literal1_font',
-            'literal2'      :'literal2_font',
-            'literal3'      :'literal3_font',
-            'literal4'      :'literal4_font',
-            'markup'        :'markup_font',
-            # 'nocolor' This tag is used, but never generates code.
-            'null'          :'null_font',
-            'operator'      :'operator_font',
+             
+                 # tag name     : option name
+                'comment1'      :'comment1_font',
+                'comment2'      :'comment2_font',
+                'comment3'      :'comment3_font',
+                'comment4'      :'comment4_font',
+                #'default'       :'default_font',
+                'function'      :'function_font',
+                'keyword1'      :'keyword1_font',
+                'keyword2'      :'keyword2_font',
+                'keyword3'      :'keyword3_font',
+                'keyword4'      :'keyword4_font',
+                'keyword5'      :'keyword5_font',
+                'label'         :'label_font',
+                'literal1'      :'literal1_font',
+                'literal2'      :'literal2_font',
+                'literal3'      :'literal3_font',
+                'literal4'      :'literal4_font',
+                'markup'        :'markup_font',
+                # 'nocolor' This tag is used, but never generates code.
+                'null'          :'null_font',
+                'operator'      :'operator_font',
         }
     #@+node:ekr.20110605121601.18576: *5* addImportedRules
     def addImportedRules (self,mode,rulesDict,rulesetName):
@@ -9660,6 +9691,32 @@ class jEditColorizer:
                 theDict [ch] = theList
 
         # g.trace(g.listToString(theDict.get('@')))
+    #@+node:ekr.20111024091133.16702: *5* configure_hard_tab_width
+    def configure_hard_tab_width (self):
+        
+        # The stated default is 40, but apparently it must be set explicitly.
+        
+        trace = False and not g.unitTesting
+        c,w = self.c,self.w
+     
+        if 0:
+            # No longer used: c.config.getInt('qt-tab-width')
+            hard_tab_width = abs(10*c.tab_width)
+            if trace: g.trace('hard_tab_width',hard_tab_width,self.w)
+        else:
+            # For some reason, the size is not accurate.
+            font = w.widget.currentFont()
+            info = QtGui.QFontInfo(font)
+            size = info.pointSizeF()
+            pixels_per_point = 1.0 # 0.9
+            hard_tab_width = abs(int(pixels_per_point*size*c.tab_width))
+            
+            if trace: g.trace(
+                'family',font.family(),'point size',size,
+                'tab_width',c.tab_width,
+                'hard_tab_width',hard_tab_width) # ,self.w)
+        
+        w.widget.setTabStopWidth(hard_tab_width)
     #@+node:ekr.20110605121601.18578: *5* configure_tags
     def configure_tags (self):
 
@@ -9671,10 +9728,6 @@ class jEditColorizer:
         isQt = g.app.gui.guiName().startswith('qt')
 
         if trace: g.trace(self.colorizer.language) # ,g.callers(5))
-
-        # The stated default is 40, but apparently it must be set explicitly.
-        tabWidth = c.config.getInt('qt-tab-width') or 40
-        w.widget.setTabStopWidth(tabWidth)
 
         if w and hasattr(w,'start_tag_configure'):
             w.start_tag_configure()
@@ -9765,25 +9818,25 @@ class jEditColorizer:
 
         self.configure_variable_tags()
 
-        # Colors for latex characters.  Should be user options...
+        # 2011/10/24: These were used only by the old colorizer.
+            # Colors for latex characters.
+            # if 1: # Alas, the selection doesn't show if a background color is specified.
+                # w.tag_configure("latexModeBackground",foreground="black")
+                # w.tag_configure("latexModeKeyword",foreground="blue")
+                # w.tag_configure("latexBackground",foreground="black")
+                # w.tag_configure("latexKeyword",foreground="blue")
+            # else: # Looks cool, and good for debugging.
+                # w.tag_configure("latexModeBackground",foreground="black",background="seashell1")
+                # w.tag_configure("latexModeKeyword",foreground="blue",background="seashell1")
+                # w.tag_configure("latexBackground",foreground="black",background="white")
+                # w.tag_configure("latexKeyword",foreground="blue",background="white")
 
-        if 1: # Alas, the selection doesn't show if a background color is specified.
-            w.tag_configure("latexModeBackground",foreground="black")
-            w.tag_configure("latexModeKeyword",foreground="blue")
-            w.tag_configure("latexBackground",foreground="black")
-            w.tag_configure("latexKeyword",foreground="blue")
-        else: # Looks cool, and good for debugging.
-            w.tag_configure("latexModeBackground",foreground="black",background="seashell1")
-            w.tag_configure("latexModeKeyword",foreground="blue",background="seashell1")
-            w.tag_configure("latexBackground",foreground="black",background="white")
-            w.tag_configure("latexKeyword",foreground="blue",background="white")
-
-        # Tags for wiki coloring.
-        w.tag_configure("bold",font=self.bold_font)
-        w.tag_configure("italic",font=self.italic_font)
-        w.tag_configure("bolditalic",font=self.bolditalic_font)
-        for name in self.color_tags_list:
-            w.tag_configure(name,foreground=name)
+            # Tags for wiki coloring.
+            # w.tag_configure("bold",font=self.bold_font)
+            # w.tag_configure("italic",font=self.italic_font)
+            # w.tag_configure("bolditalic",font=self.bolditalic_font)
+            # for name in self.color_tags_list:
+                # w.tag_configure(name,foreground=name)
 
         try:
             w.end_tag_configure()
@@ -9822,7 +9875,9 @@ class jEditColorizer:
         if p: self.p = p.copy()
         self.all_s = s or ''
 
-        if trace: g.trace('='*20,self.colorizer.language) #,g.callers(4))
+        if trace: g.trace('='*20,
+            'tabwidth',self.c.tab_width,
+            self.colorizer.language) #,g.callers(4))
 
         # State info.
         self.all_s = s
@@ -9845,6 +9900,8 @@ class jEditColorizer:
             # Must be done to support per-language @font/@color settings.
             self.configure_tags()
             self.last_language = self.colorizer.language
+            
+        self.configure_hard_tab_width() # 2011/10/04
     #@+node:ekr.20110605121601.18581: *5* init_mode & helpers
     def init_mode (self,name):
 
@@ -11117,7 +11174,7 @@ class jEditColorizer:
             if traceState:
                 g.trace('** start',self.showState(n),repr(s))
             else:
-                g.trace(self.language_name,repr(s)) # ,g.callers(6))
+                g.trace(self.language_name,repr(s),g.callers())
                     # Called from recolor.
 
         i = 0
@@ -11233,7 +11290,7 @@ class jEditColorizer:
             if color.isValid():
                 self.actualColorDict[colorName] = color
             else:
-                return g.trace('unknown color name',colorName)
+                return g.trace('unknown color name',colorName,g.callers())
 
         underline = w.configUnderlineDict.get(tag)
 
