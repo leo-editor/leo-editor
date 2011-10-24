@@ -92,11 +92,120 @@
 <v t="ekr.20061011082224"><vh>Candidates for settings in myLeoSettings.leo</vh>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20110611092035.16470"><vh>Appearance</vh>
+<v t="ekr.20111024091133.16701"><vh>@@@int qt-tab-width = 40</vh></v>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
 <v t="ekr.20110611092035.16489"><vh>Chapters</vh>
 <v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070318065601"><vh>@bool use_chapters = True</vh></v>
+</v>
+<v t="ekr.20110611092035.16471"><vh>Colorizer &amp; colors</vh>
+<v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
+<v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
+<v t="ekr.20081018053140.12"></v>
+<v t="ekr.20080326060254.3"><vh>@string target_language = python</vh></v>
+<v t="ekr.20041213105007.2"><vh>Body pane colors</vh>
+<v t="ekr.20041119034357.41"><vh>@color body_cursor_background_color = None</vh></v>
+<v t="ekr.20041119034357.40"><vh>@color body_cursor_foreground_color = None</vh></v>
+<v t="ekr.20041119034357.50"><vh>@color body_insertion_cursor_color = None</vh></v>
+<v t="ekr.20041119034357.49"><vh>@color body_text_background_color = None</vh></v>
+<v t="ekr.20041119034357.48"><vh>@color body_text_foreground_color = None</vh></v>
+<v t="ekr.20051006200015"><vh>@color body_text_selection_background_color = Gray80</vh></v>
+<v t="ekr.20051006200015.1"><vh>@color body_text_selection_foreground_color = white</vh></v>
+<v t="ekr.20060605081712"><vh>@color command_mode_bg_color = #f2fdff</vh></v>
+<v t="ekr.20060822101942.1"><vh>@color command_mode_fg_color = None</vh></v>
+<v t="ekr.20080514082950.2"><vh>@color insert_mode_bg_color = #fdf5f5</vh></v>
+<v t="ekr.20060605081712.3"><vh>@color insert_mode_fg_color = black</vh></v>
+<v t="ekr.20060606085536"><vh>@color overwrite_mode_bg_color = azure2</vh></v>
+<v t="ekr.20060606085536.1"><vh>@color overwrite_mode_fg_color = black</vh></v>
+<v t="ekr.20080511041907.1"><vh>@color unselected_body_bg_color = #ffffef</vh></v>
+<v t="ekr.20080511041907.2"><vh>@color unselected_body_fg_color = black</vh></v>
+</v>
+<v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
+<v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
+<v t="ekr.20041119052015.2"><vh>@@color log_text_foreground_color = None</vh></v>
+<v t="ekr.20041119053445"><vh>@color log_text_background_color = None</vh></v>
+<v t="ekr.20041217184352.2"><vh>@color log_pane_background_color = #f2fdff</vh></v>
+<v t="ekr.20051020125928"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
+<v t="ekr.20051025070845"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
+</v>
+<v t="ekr.20100313080341.8368"><vh>Minibuffer background colors</vh>
+<v t="ekr.20100313080341.8369"><vh>@color minibuffer-background-color = lightblue</vh></v>
+<v t="ekr.20100313080341.8370"><vh>@color minibuffer-error-color = red</vh></v>
+<v t="ekr.20100313080341.8371"><vh>@color minibuffer-warning-color = lightgrey</vh></v>
+</v>
+<v t="ekr.20041119034357.70"><vh>Syntax colors &amp; options</vh>
+<v t="ekr.20111004182631.15533"><vh>Options</vh>
+<v t="ekr.20111004182631.15534"><vh>@bool color_cweb_comments_with_latex = True</vh></v>
+<v t="ekr.20111004182631.15535"><vh>@bool color_cweb_doc_parts_with_latex = True</vh></v>
+<v t="ekr.20111004182631.15536"><vh>@bool color_directives_in_plain_text = True</vh></v>
+<v t="ekr.20100102121150.6344"><vh>@bool show-invisibles-by-default = False</vh></v>
+<v t="ekr.20111004182631.15537"><vh>@bool underline_undefined_section_names = True</vh></v>
+<v t="ekr.20111004182631.15538"><vh>@bool use_hyperlinks = False</vh></v>
+<v t="ekr.20060201111002"></v>
+<v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 0</vh></v>
+</v>
+<v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
+<v t="ekr.20111024091133.16650"><vh>Colors for Leo constructs</vh>
+<v t="ekr.20111004182631.15542"><vh>@color doc_part_color = firebrick3</vh></v>
+<v t="ekr.20111004182631.15546"><vh>@color leo_keyword_color = #00aa00</vh></v>
+<v t="ekr.20111004182631.15548"><vh>@color section_name_color = red</vh></v>
+<v t="ekr.20111004182631.15549"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
+<v t="ekr.20111004182631.15550"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
+<v t="ekr.20111004182631.15552"><vh>@color undefined_section_name_color = red</vh></v>
+<v t="ekr.20111024091133.16671"><vh>@color url_color = purple</vh></v>
+</v>
+<v t="ekr.20111024091133.16651"><vh>Colors for standard jEdit tags</vh>
+<v t="ekr.20100102100353.8705"><vh>@@@color blank_color = grey</vh></v>
+<v t="ekr.20060504140351"><vh>@color comment1_color = firebrick3</vh></v>
+<v t="ekr.20060504140408"><vh>@color comment2_color = firebrick3</vh></v>
+<v t="ekr.20060504140408.1"><vh>@color comment3_color = plum3</vh></v>
+<v t="ekr.20060504140408.2"><vh>@color comment4_color = orchid1</vh></v>
+<v t="ekr.20060504131831.1"><vh>@color keyword1_color = blue</vh></v>
+<v t="ekr.20060827102902"><vh>@color keyword2_color = blue</vh></v>
+<v t="ekr.20060827102902.1"><vh>@color keyword3_color = blue</vh></v>
+<v t="ekr.20060827102902.2"><vh>@color keyword4_color = blue</vh></v>
+<v t="ekr.20060704090341"><vh>@color label_color = red</vh></v>
+<v t="ekr.20060504131831.2"><vh>@color literal1_color = #00aa00</vh></v>
+<v t="ekr.20060504134056"><vh>@color literal2_color = #00aa00</vh></v>
+<v t="ekr.20060504134056.1"><vh>@color literal3_color = #00aa00</vh></v>
+<v t="ekr.20060504134056.2"><vh>@color literal4_color = #00aa00</vh></v>
+<v t="ekr.20060826152759"><vh>@color markup_color = blue</vh></v>
+<v t="ekr.20060713101831"><vh>@color operator_color = None</vh></v>
+<v t="ekr.20100102100353.8706"><vh>@@@color tab_color = black</vh></v>
+</v>
+</v>
+<v t="ekr.20060828110551.1"><vh>Language-specific colors</vh>
+<v t="ekr.20060828110551.2"><vh>php</vh>
+<v t="ekr.20060828110551.3"><vh>@color php_operator_color = DodgerBlue1</vh></v>
+<v t="ekr.20060828145228.1"><vh>@font php keyword fonts</vh></v>
+</v>
+<v t="ekr.20080703111151.18"><vh>Forth fonts, colors &amp; settings</vh>
+<v t="ekr.20080703111151.21"><vh>@color forth_keyword3_color = black</vh></v>
+<v t="ekr.20080703111151.22"><vh>@color forth_keyword4_color = black</vh></v>
+<v t="ekr.20080703111151.23"><vh>@color forth_keyword5_color = black</vh></v>
+<v t="ekr.20080705064822.2"><vh>@data forth-bold-italic-words</vh></v>
+<v t="ekr.20080705064822.3"><vh>@data forth-bold-words</vh></v>
+<v t="ekr.20080705064822.1"><vh>@data forth-defwords</vh></v>
+<v t="ekr.20080705064822.4"><vh>@data forth-delimiter-pairs</vh></v>
+<v t="ekr.20080705064822.6"><vh>@data forth-italic-words</vh></v>
+<v t="ekr.20080705064822.7"><vh>@data forth-string-word-pairs</vh></v>
+<v t="ekr.20080705064822.5"><vh>@data forth-words</vh></v>
+<v t="ekr.20080703111151.17"><vh>@font forth keyword2_font</vh></v>
+<v t="ekr.20080703111151.12"><vh>@font forth keyword3_font</vh></v>
+<v t="ekr.20080703111151.14"><vh>@font forth keyword4_font</vh></v>
+<v t="ekr.20080703111151.15"><vh>@font forth keyword5_font</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20111024091133.16686"><vh>Fonts</vh>
+<v t="ekr.20111024091133.16692"><vh>@font body text font</vh></v>
+<v t="ekr.20111024091133.16693"><vh>@font button font</vh></v>
+<v t="ekr.20111024091133.16694"><vh>@font log font</vh></v>
+<v t="ekr.20111024091133.16695"><vh>@font menu text font</vh></v>
+<v t="ekr.20111024091133.16696"><vh>@font outline font</vh></v>
+<v t="ekr.20111024091133.16698"><vh>@font url font</vh></v>
 </v>
 <v t="ekr.20110611092035.16490"><vh>Windows</vh>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
@@ -656,112 +765,7 @@
 <v t="ekr.20110510071925.14590"><vh>@@@bool use_codewise = False</vh></v>
 <v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = True</vh></v>
 </v>
-<v t="ekr.20110611092035.16471"><vh>Colorizer &amp; colors</vh>
-<v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
-<v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
-<v t="ekr.20081018053140.12"></v>
-<v t="ekr.20080326060254.3"><vh>@string target_language = python</vh></v>
-<v t="ekr.20041213105007.2"><vh>Body pane colors</vh>
-<v t="ekr.20041119034357.41"><vh>@color body_cursor_background_color = None</vh></v>
-<v t="ekr.20041119034357.40"><vh>@color body_cursor_foreground_color = None</vh></v>
-<v t="ekr.20041119034357.50"><vh>@color body_insertion_cursor_color = None</vh></v>
-<v t="ekr.20041119034357.49"><vh>@color body_text_background_color = None</vh></v>
-<v t="ekr.20041119034357.48"><vh>@color body_text_foreground_color = None</vh></v>
-<v t="ekr.20051006200015"><vh>@color body_text_selection_background_color = Gray80</vh></v>
-<v t="ekr.20051006200015.1"><vh>@color body_text_selection_foreground_color = white</vh></v>
-<v t="ekr.20060605081712"><vh>@color command_mode_bg_color = #f2fdff</vh></v>
-<v t="ekr.20060822101942.1"><vh>@color command_mode_fg_color = None</vh></v>
-<v t="ekr.20080514082950.2"><vh>@color insert_mode_bg_color = #fdf5f5</vh></v>
-<v t="ekr.20060605081712.3"><vh>@color insert_mode_fg_color = black</vh></v>
-<v t="ekr.20060606085536"><vh>@color overwrite_mode_bg_color = azure2</vh></v>
-<v t="ekr.20060606085536.1"><vh>@color overwrite_mode_fg_color = black</vh></v>
-<v t="ekr.20080511041907.1"><vh>@color unselected_body_bg_color = #ffffef</vh></v>
-<v t="ekr.20080511041907.2"><vh>@color unselected_body_fg_color = black</vh></v>
-</v>
-<v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
-<v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
-<v t="ekr.20041119052015.2"><vh>@@color log_text_foreground_color = None</vh></v>
-<v t="ekr.20041119053445"><vh>@color log_text_background_color = None</vh></v>
-<v t="ekr.20041217184352.2"><vh>@color log_pane_background_color = #f2fdff</vh></v>
-<v t="ekr.20051020125928"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
-<v t="ekr.20051025070845"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
-</v>
-<v t="ekr.20100313080341.8368"><vh>Minibuffer background colors</vh>
-<v t="ekr.20100313080341.8369"><vh>@color minibuffer-background-color = lightblue</vh></v>
-<v t="ekr.20100313080341.8370"><vh>@color minibuffer-error-color = red</vh></v>
-<v t="ekr.20100313080341.8371"><vh>@color minibuffer-warning-color = lightgrey</vh></v>
-</v>
-<v t="ekr.20041119034357.70"><vh>Syntax colors &amp; options</vh>
-<v t="ekr.20111004182631.15533"><vh>Options</vh>
-<v t="ekr.20111004182631.15534"><vh>@bool color_cweb_comments_with_latex = True</vh></v>
-<v t="ekr.20111004182631.15535"><vh>@bool color_cweb_doc_parts_with_latex = True</vh></v>
-<v t="ekr.20111004182631.15536"><vh>@bool color_directives_in_plain_text = True</vh></v>
-<v t="ekr.20100102121150.6344"><vh>@bool show-invisibles-by-default = False</vh></v>
-<v t="ekr.20111004182631.15537"><vh>@bool underline_undefined_section_names = True</vh></v>
-<v t="ekr.20111004182631.15538"><vh>@bool use_hyperlinks = False</vh></v>
-<v t="ekr.20060201111002"></v>
-<v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 0</vh></v>
-</v>
-<v t="ekr.20111004182631.15554"><vh>Common colors (At least some *are* used by new colorizer)</vh>
-<v t="ekr.20111004182631.15539"><vh>@color comment_color = firebrick3</vh></v>
-<v t="ekr.20111004182631.15540"><vh>@color cweb_section_name_color = red</vh></v>
-<v t="ekr.20111004182631.15541"><vh>@color directive_color = blue</vh></v>
-<v t="ekr.20111004182631.15542"><vh>@color doc_part_color = firebrick3</vh></v>
-<v t="ekr.20111004182631.15543"><vh>@color forth_bracket_range_color = orange</vh></v>
-<v t="ekr.20111004182631.15544"><vh>@color keyword_color = blue</vh></v>
-<v t="ekr.20111004182631.15545"><vh>@color latex_background_color = None</vh></v>
-<v t="ekr.20111004182631.15546"><vh>@color leo_keyword_color = #00aa00</vh></v>
-<v t="ekr.20111004182631.15547"><vh>@color section_name_brackets_color = blue</vh></v>
-<v t="ekr.20111004182631.15548"><vh>@color section_name_color = red</vh></v>
-<v t="ekr.20111004182631.15549"><vh>@color show_invisibles_space_background_color = Gray90</vh></v>
-<v t="ekr.20111004182631.15550"><vh>@color show_invisibles_tab_foreground_color = Gray80</vh></v>
-<v t="ekr.20111004182631.15551"><vh>@color string_color = #00aa00</vh></v>
-<v t="ekr.20111004182631.15552"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="ekr.20111004182631.15553"><vh>@font php keyword fonts (old colorizer)</vh></v>
-</v>
-<v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
-<v t="ekr.20100102100353.8705"><vh>@color blank_color = grey</vh></v>
-<v t="ekr.20100102100353.8706"><vh>@color tab_color = black</vh></v>
-<v t="ekr.20060704090341"><vh>@color label_color = red</vh></v>
-<v t="ekr.20060504131831.1"><vh>@color keyword1_color = blue</vh></v>
-<v t="ekr.20060827102902"><vh>@color keyword2_color = blue</vh></v>
-<v t="ekr.20060827102902.1"><vh>@color keyword3_color = blue</vh></v>
-<v t="ekr.20060827102902.2"><vh>@color keyword4_color = blue</vh></v>
-<v t="ekr.20060504131831.2"><vh>@color literal1_color = #00aa00</vh></v>
-<v t="ekr.20060504134056"><vh>@color literal2_color = #00aa00</vh></v>
-<v t="ekr.20060504134056.1"><vh>@color literal3_color = #00aa00</vh></v>
-<v t="ekr.20060504134056.2"><vh>@color literal4_color = #00aa00</vh></v>
-<v t="ekr.20060826152759"><vh>@color markup_color = blue</vh></v>
-<v t="ekr.20060504140351"><vh>@color comment1_color = firebrick3</vh></v>
-<v t="ekr.20060504140408"><vh>@color comment2_color = firebrick3</vh></v>
-<v t="ekr.20060504140408.1"><vh>@color comment3_color = plum3</vh></v>
-<v t="ekr.20060504140408.2"><vh>@color comment4_color = orchid1</vh></v>
-<v t="ekr.20060713101831"><vh>@color operator_color = None</vh></v>
-</v>
-<v t="ekr.20060828110551.1"><vh>Language-specific colors</vh>
-<v t="ekr.20060828110551.2"><vh>php</vh>
-<v t="ekr.20060828110551.3"><vh>@color php_operator_color = DodgerBlue1</vh></v>
-<v t="ekr.20060828145228.1"><vh>@font php keyword fonts</vh></v>
-</v>
-<v t="ekr.20080703111151.18"><vh>Forth fonts, colors &amp; settings</vh>
-<v t="ekr.20080703111151.21"><vh>@color forth_keyword3_color = black</vh></v>
-<v t="ekr.20080703111151.22"><vh>@color forth_keyword4_color = black</vh></v>
-<v t="ekr.20080703111151.23"><vh>@color forth_keyword5_color = black</vh></v>
-<v t="ekr.20080705064822.2"><vh>@data forth-bold-italic-words</vh></v>
-<v t="ekr.20080705064822.3"><vh>@data forth-bold-words</vh></v>
-<v t="ekr.20080705064822.1"><vh>@data forth-defwords</vh></v>
-<v t="ekr.20080705064822.4"><vh>@data forth-delimiter-pairs</vh></v>
-<v t="ekr.20080705064822.6"><vh>@data forth-italic-words</vh></v>
-<v t="ekr.20080705064822.7"><vh>@data forth-string-word-pairs</vh></v>
-<v t="ekr.20080705064822.5"><vh>@data forth-words</vh></v>
-<v t="ekr.20080703111151.17"><vh>@font forth keyword2_font</vh></v>
-<v t="ekr.20080703111151.12"><vh>@font forth keyword3_font</vh></v>
-<v t="ekr.20080703111151.14"><vh>@font forth keyword4_font</vh></v>
-<v t="ekr.20080703111151.15"><vh>@font forth keyword5_font</vh></v>
-</v>
-</v>
-</v>
-</v>
+<v t="ekr.20110611092035.16471"></v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
 <v t="ekr.20110611092035.16488"><vh>Bracket matching</vh>
@@ -924,6 +928,7 @@
 </v>
 </v>
 <v t="ekr.20041119034357.20"></v>
+<v t="ekr.20111024091133.16686"></v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
 <v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
@@ -8417,44 +8422,24 @@ Only functional if use_hyperlinks = 0
 <t tx="ekr.20111004182631.15538">True:  underline "live" links.
 False: (recommended): Underline undefined section names.
 </t>
-<t tx="ekr.20111004182631.15539">The color of comments in code parts.
-</t>
-<t tx="ekr.20111004182631.15540">The color of name in @&lt;name@&gt;
-</t>
-<t tx="ekr.20111004182631.15541">The color of C/C++ preprocessor directive lines.
-</t>
 <t tx="ekr.20111004182631.15542">The color of text in doc parts.
 </t>
-<t tx="ekr.20111004182631.15543"></t>
-<t tx="ekr.20111004182631.15544">The color of keywords of the present language.
-
-For example, the color of "if", "try" and "except" in Python.
-</t>
-<t tx="ekr.20111004182631.15545"></t>
 <t tx="ekr.20111004182631.15546">The color of Leo keywords such as @ignore, @color, etc.
-</t>
-<t tx="ekr.20111004182631.15547">The color of the double angle brackets in &lt;&lt; name &gt;&gt;
-
 </t>
 <t tx="ekr.20111004182631.15548">The color of name in &lt; &lt; name &gt; &gt; when name is defined.
 </t>
-<t tx="ekr.20111004182631.15549">The background color that represents spaces and tabs when Show Invisibles mode is in effect.
-</t>
-<t tx="ekr.20111004182631.15550">The foreground color that represents spaces and tabs when Show Invisibles mode is in effect.
-</t>
-<t tx="ekr.20111004182631.15551">The color of strings and their delimiters.
+<t tx="ekr.20111004182631.15549">The background color that represents spaces when Show Invisibles mode is in effect.
 
+gray80: #CCCCCC
+gray90: #E5E5E5
+</t>
+<t tx="ekr.20111004182631.15550">The foreground color that represents tabs when Show Invisibles mode is in effect.
+
+gray80: #CCCCCC
+gray90: #E5E5E5
 </t>
 <t tx="ekr.20111004182631.15552">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
 </t>
-<t tx="ekr.20111004182631.15553"># php_keyword_font_family = None
-php_keyword_font_size = None
-php_keyword_font_slant = roman
-    # roman, italic
-php_keyword_font_weight = none
-    # normal, bold
-</t>
-<t tx="ekr.20111004182631.15554"></t>
 <t tx="ekr.20111006212449.11850">class Controller:
     @others
     
@@ -12170,6 +12155,81 @@ forth_keyword5_weight = normal
 <t tx="ekr.20111023095357.16694"></t>
 <t tx="ekr.20111023095357.16695"></t>
 <t tx="ekr.20111023095357.16696"></t>
+<t tx="ekr.20111024091133.16650"></t>
+<t tx="ekr.20111024091133.16651"></t>
+<t tx="ekr.20111024091133.16671"></t>
+<t tx="ekr.20111024091133.16686">@nocolor
+@
+
+Valid values:
+
+weight: bold, normal, None
+slant: roman, italic, None
+
+Use the show-fonts command to pick fonts, then copy the values shown by the show-fonts command to the values here.
+
+@c
+
+import sys ; print sys.platform
+</t>
+<t tx="ekr.20111024091133.16692">body_text_font_family = DejaVu Sans Mono
+body_text_font_size = 12
+    # 14 &amp; 16 look great
+body_text_font_slant = None
+body_text_font_weight = None
+</t>
+<t tx="ekr.20111024091133.16693">button_text_font_family = verdana
+button_text_font_size = 9
+    # was 7
+button_text_font_slant = roman
+button_text_font_weight = bold
+</t>
+<t tx="ekr.20111024091133.16694"># The font for the log pane. Default is default font for Tk.Text widgets.
+# Tk translates invalid font names to another font in a system-dependent way.
+# 
+# Default size is 12 for Linux, 9 otherwise.
+
+log_text_font_family = Courier
+    # Courier looks ok, but DejaVu Sans Mono is more consistent.
+    
+log_text_font_size = 10
+    # Use Courier 10 to make it obvious that we are using tk.
+    # For DejaVu Sans Mono: use 12 for consistency with body pane.
+    # For Courier: 16 is a bit big
+
+log_text_font_slant = roman
+log_text_font_weight = normal
+</t>
+<t tx="ekr.20111024091133.16695">menu_text_font_family = None
+menu_text_font_size = 10
+menu_text_font_slant = None
+menu_text_font_weight = None</t>
+<t tx="ekr.20111024091133.16696">headline_text_font_family = DejaVu Sans Mono
+    # DejaVu Sans Mono looks ok, better maybe than Verdana.
+    # None looks bad
+    # Verdana looks ok, not great
+headline_text_font_size = 12
+    # Courier 12 looks bad.
+    # For Verdana
+        # 12 looks good.
+        # 14 looks too big
+    # For DejaVu Sans Mono...
+        # 10 is too small, and looks bad.
+        # 12 looks good, but the inter-line spacing is too big.
+        # 14 and 16 look a bit too big
+headline_text_font_slant = roman
+headline_text_font_weight = normal
+</t>
+<t tx="ekr.20111024091133.16698">url_font_family = DejaVu Sans Mono
+url_font_size = 12
+    # 14 &amp; 16 look great
+url_font_slant = None
+url_font_weight = bold
+</t>
+<t tx="ekr.20111024091133.16701">No longer used.
+
+configure_hard_tab_width now does a good, but not great,
+job of computing what the width of a hard tab should be.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
