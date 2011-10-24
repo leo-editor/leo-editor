@@ -127,6 +127,10 @@ class undoer:
         self.pasteAsClone = None
         self.sortChildren = None
 
+        self.oldSel = None
+        self.newSel = None
+        self.prevSel = None
+
     def redoHelper(self):
         pass
 
@@ -231,7 +235,8 @@ class undoer:
     #@+node:ekr.20050126081529: *4* recognizeStartOfTypingWord
     def recognizeStartOfTypingWord (self,
         old_lines,old_row,old_col,old_ch, 
-        new_lines,new_row,new_col,new_ch):
+        new_lines,new_row,new_col,new_ch,
+        prev_row,prev_col):
 
         ''' A potentially user-modifiable method that should return True if the
         typing indicated by the params starts a new 'word' for the purposes of
@@ -248,7 +253,12 @@ class undoer:
         for use by more sophisticated algorithms.'''
 
         # Start a word if new_ch begins whitespace + word
-        return not old_ch.isspace() and new_ch.isspace()
+        new_word_started = not old_ch.isspace() and new_ch.isspace()
+
+        # Start a word if the cursor has been moved since the last change
+        moved_cursor = new_row != prev_row or new_col != prev_col + 1
+
+        return new_word_started or moved_cursor
     #@+node:ekr.20031218072017.3613: *4* redoMenuName, undoMenuName
     def redoMenuName (self,name):
 
@@ -1330,6 +1340,7 @@ class undoer:
                     #@+node:ekr.20050125203937: *7* << set newBead if the change does not continue a word >>
                     old_start,old_end = oldSel
                     new_start,new_end = newSel
+                    prev_start,prev_end = u.prevSel
                     # g.trace('new_start',new_start,'old_start',old_start)
                     if old_start != old_end or new_start != new_end:
                         # The new and old characters are not contiguous.
@@ -1338,6 +1349,7 @@ class undoer:
                         # 2011/04/01: Patch by Sam Hartsfield
                         old_row,old_col = g.convertPythonIndexToRowCol(oldText,old_start)
                         new_row,new_col = g.convertPythonIndexToRowCol(newText,new_start)
+                        prev_row,prev_col = g.convertPythonIndexToRowCol(oldText,prev_start)
                         old_lines = g.splitLines(oldText)
                         new_lines = g.splitLines(newText)
                         # g.trace('old',old_row,old_col,len(old_lines))
@@ -1347,6 +1359,7 @@ class undoer:
                             # The new and old characters are not contiguous.
                             newBead = True
                         elif old_col == 0 or new_col == 0:
+                            # TODO this is not true, we might as well just have entered a char at the beginning of an existing line
                             pass # We have just inserted a line.
                         else:
                             # 2011/04/01: Patch by Sam Hartsfield
@@ -1363,7 +1376,8 @@ class undoer:
                                 # g.trace(repr(old_ch),repr(new_ch))
                                 newBead = self.recognizeStartOfTypingWord(
                                     old_lines,old_row,old_col,old_ch,
-                                    new_lines,new_row,new_col,new_ch)
+                                    new_lines,new_row,new_col,new_ch,
+                                    prev_row,prev_col)
                     #@-<< set newBead if the change does not continue a word >>
                 except Exception:
                     if 0:
@@ -1373,6 +1387,9 @@ class undoer:
                     g.es_exception()
                     newBead = True
         #@-<< set newBead if we can't share the previous bead >>
+
+        # Save end selection as new "previous" selection
+        u.prevSel = u.newSel
 
         if newBead:
             # Push params on undo stack, clearing all forward entries.
