@@ -2154,6 +2154,63 @@ def killOneShortcut (self,bunch,name,p):
     if 0:
         g.trace(bunch,name,p and p.h)
 .. @+node:ekr.20111019104425.15866: *4* ** Fix all bug-tracker items
+.. @+node:ekr.20111024170505.16457: *5* High priority
+.. @+node:ekr.20111024170505.16458: *6* Bug 804960: Refreshing unlinks clones, just reopening connects them agai
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/804960
+
+When we clone a node inside an @shadow (containing @others) node and then
+refresh the @shadow node from file, the clone is unlinked and marked as changed.
+If we now save, close the .leo file and open it again, the nodes are linked
+again! (showing "cloned" symbol) User's thought: "How the heck can the file
+change _between save and re-open_ when I changed nothing?"
+
+I think what should be done about this is the check that Leo does when it opens
+the file again, and that check should be done immediately after the "refresh
+node from file" operation. Also, at this point, the "Recovered nodes" node
+should appear (if file and node have both changed), not only after the next .leo
+file close/reopen (as that happens quite infrequently, I guess, e.g. once a day
+for me). Otherwise, the user can easily lose data.
+.. @+node:ekr.20111024170505.16459: *6* Bug 879331: Redefining a key binding breaks menu items with same binding
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/879331
+
+Redefining a binding, say for Alt-a, in x.leo will cause the sort-siblings menu
+(bound to alt-a) to execute the command specified by the command bound to Alt-a!
+
+https://bugs.launchpad.net/leo-editor/+bug/815564
+
+This anomaly only occurs when all of the following conditions are true:
+
+1) There is a global command name X that is the "same" as the root name of the
+file containing a plugin Y. Here, "same" means equal after the command name is
+converted to lower case and all underlines in the root name are replaced by
+dashes.
+
+2) A shortcut (a.k.a. keystroke) is bound to command name X.
+
+When these conditions are true, then the Plugins dropdown menu shows the key
+binding next to the plugin name and left-clicking the plugin name executes the
+global command--and, there is no way to display the plugin's help.
+
+Plugin Help Rendering: Plugin help is rendered by the viewrendered plugin, not
+by the old scrolledmessage.py plugin.
+
+Leo-editor revision: 4433
+OS: Ubuntu 11.04 (natty)
+
+Startup log pane:
+Leo Log Window
+Leo 4.9 final, build 4411, June 21, 2011
+Python 2.7.1, qt version 4.7.2
+linux2
+.. @+node:ekr.20111024170505.16461: *5* Medium priority
+.. @+node:ekr.20111024170505.16460: *6* Bug 800312: Collapsing node moves should be optional
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/800312
 .. @+node:ekr.20111017132257.15891: *4* Get IPython working again
 .. @+node:ekr.20111017132257.15890: *5* Investigate how IPython hijacks event loops
 http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
