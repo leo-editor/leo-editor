@@ -5,490 +5,7 @@
 .. @+all
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 .. @+node:ekr.20111019080436.15850: *3* First: Fix all significant bugs
-.. @+node:ekr.20111017132257.15891: *4* **Get IPython working again
-.. @+node:ekr.20111017132257.15890: *5* Investigate how IPython hijacks event loops
-http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
-.. @+node:ekr.20111009162434.7204: *5* Port ipy_leo.py to latest version of IPython
-.. @+node:ekr.20111020092529.15885: *4* Fix bug: menu-binding problem
-@nocolor-node
-
-http://mail.google.com/mail/#inbox/1331909dd653f3c9
-
-> Now I understand.  If I override the shortcut associated with the menu
-> item, in this case Alt-A, the menu breaks.
-
-This is a serious bug!  The menu item now executes the command bound
-to Alt-A!  Very bad.
-.. @+node:ekr.20031218072017.2609: *5* app.closeLeoWindow
-def closeLeoWindow (self,frame):
-
-    """Attempt to close a Leo window.
-
-    Return False if the user veto's the close."""
-
-    c = frame.c
-
-    # g.trace('frame',frame,g.callers(4))
-
-    c.endEditing() # Commit any open edits.
-
-    if c.promptingForClose:
-        # There is already a dialog open asking what to do.
-        return False
-
-    g.app.config.writeRecentFilesFile(c)
-        # Make sure .leoRecentFiles.txt is written.
-
-    if c.changed:
-        c.promptingForClose = True
-        veto = frame.promptForSave()
-        c.promptingForClose = False
-        if veto: return False
-
-    g.app.setLog(None) # no log until we reactive a window.
-
-    g.doHook("close-frame",c=c)
-        # This may remove frame from the window list.
-
-    if frame in g.app.windowList:
-        g.app.destroyWindow(frame)
-
-    if g.app.windowList:
-        # Pick a window to activate so we can set the log.
-        frame = g.app.windowList[0]
-        frame.deiconify()
-        frame.lift()
-        frame.c.setLog()
-        frame.c.bodyWantsFocus()
-        frame.c.outerUpdate()
-    elif not g.app.unitTesting:
-        g.app.finishQuit()
-
-    return True # The window has been closed.
-.. @+node:ekr.20031218072017.1723: *5* createMenuEntries (leoMenu)
-def createMenuEntries (self,menu,table,dynamicMenu=False):
-
-    '''Create a menu entry from the table.
-    New in 4.4: this method shows the shortcut in the menu,
-    but this method **never** binds any shortcuts.'''
-
-    c = self.c ; f = c.frame ; k = c.k
-    if g.app.unitTesting: return
-
-    trace = False and not g.unitTesting
-    for data in table:
-        << get label & command or continue >>
-        << compute commandName & accel from label & command >>
-        # Bug fix: 2009/09/30: use canonical stroke.
-        accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
-        stroke = k.shortcutFromSetting(accel,addKey=True) or ''
-        if accelerator:
-            accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
-
-        if trace and commandName == 'sort-siblings':
-            g.trace(repr(stroke),repr(accelerator),commandName)
-            
-        # Add an entry for unit testing and masterMenuHandler.
-        
-        if stroke:
-            d = g.app.unitTestMenusDict
-            aSet = d.get(commandName,set())
-            aSet.add(stroke)
-            d[commandName] = aSet
-    
-        def masterMenuCallback (
-            c=c,k=k,stroke=stroke,
-            command=command,commandName=commandName,event=None
-        ):
-            if trace: g.trace('stroke',stroke)
-            return k.masterMenuHandler(stroke,command,commandName)
-
-        realLabel = self.getRealMenuName(label)
-        amp_index = realLabel.find("&")
-        realLabel = realLabel.replace("&","")
-        if sys.platform == 'darwin':
-            << clear accelerator if it is a plain key >>
-
-        # c.add_command ensures that c.outerUpdate is called.
-        if menu:
-            c.add_command(menu,label=realLabel,
-                accelerator=accelerator,
-                command=masterMenuCallback,
-                underline=amp_index)
-.. @+node:ekr.20051021091958: *6* << get label & command or continue >>
-if g.isString(data):
-    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
-    ok = True
-    s = data
-    removeHyphens = s and s[0]=='*'
-    if removeHyphens: s = s[1:]
-    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
-    command = s.replace('&','').lower()
-    # if command == 'sort-siblings': g.trace('**1')
-    if label == '-':
-        self.add_separator(menu)
-        continue # That's all.
-else:
-    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
-    if ok:
-        if len(data) == 2:
-            # New in 4.4b2: command can be a minibuffer-command name (a string)
-            label,command = data
-            # if command == 'sort-siblings': g.trace('**2')
-        else:
-            # New in 4.4: we ignore shortcuts bound in menu tables.
-            label,junk,command = data
-            # if command == 'sort-siblings': g.trace('**3')
-
-        if label in (None,'-'):
-            self.add_separator(menu)
-            continue # That's all.
-    else:
-        g.trace('bad data in menu table: %s' % repr(data))
-        continue # Ignore bad data
-.. @+node:ekr.20031218072017.1725: *6* << compute commandName & accel from label & command >>
-# New in 4.4b2: command can be a minibuffer-command name (a string)
-minibufferCommand = type(command) == type('')
-accel = None
-if minibufferCommand:
-    commandName = command 
-    command = c.commandsDict.get(commandName)
-    if command:
-        rawKey,bunchList = c.config.getShortcut(commandName)
-        # Pick the first entry that is not a mode.
-        for bunch in bunchList:
-            if not bunch.pane.endswith('-mode'):
-                accel = bunch and bunch.val
-                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
-    else:
-        if not g.app.unitTesting and not dynamicMenu:
-            # Don't warn during unit testing.
-            # This may come from a plugin that normally isn't enabled.
-            if trace: g.trace('No inverse for %s' % commandName)
-        continue # There is no way to make this menu entry.
-else:
-    # First, get the old-style name.
-    commandName = self.computeOldStyleShortcutKey(label)
-    rawKey,bunchList = c.config.getShortcut(commandName)
-    for bunch in bunchList:
-        if not bunch.pane.endswith('-mode'):
-            if trace: g.trace('2','%20s' % (bunch.val),commandName)
-            accel = bunch and bunch.val ; break
-    # Second, get new-style name.
-    if not accel:
-        << compute emacs_name >>
-            # Contains the not-so-horrible kludge.
-        if emacs_name:
-            commandName = emacs_name
-            rawKey,bunchList = c.config.getShortcut(emacs_name)
-            # Pick the first entry that is not a mode.
-            for bunch in bunchList:
-                if not bunch.pane.endswith('-mode'):
-                    accel = bunch.val
-                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
-                    break
-        elif not dynamicMenu:
-            g.trace('No inverse for %s' % commandName)
-.. @+node:ekr.20051021100806.1: *7* << compute emacs_name >>
-@ One not-so-horrible kludge remains.
-
-The cut/copy/paste commands in the menu tables are not the same as the methods
-actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
-of extra translation to discover whether the user has overridden their
-bindings.
-@c
-
-if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
-    emacs_name = '%s-text' % commandName
-else:
-    try: # User errors in the table can cause this.
-        emacs_name = k.inverseCommandsDict.get(command.__name__)
-    except Exception:
-        emacs_name = None
-.. @+node:ekr.20060216110502: *6* << clear accelerator if it is a plain key >>
-for z in ('Alt','Ctrl','Command'):
-    if accelerator.find(z) != -1:
-        break # Found.
-else:
-    accelerator = ''
-.. @+node:ekr.20041117083141: *5* get & allies (g.app.config)
-def get (self,c,setting,kind):
-
-    """Get the setting and make sure its type matches the expected type."""
-
-    trace = False and not g.unitTesting
-
-    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
-
-    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-    if c and not isLeoSettings:
-        d = self.localOptionsDict.get(c.hash())
-        if d:
-            val,junk = self.getValFromDict(d,setting,kind)
-            if val is not None:
-                # if setting == 'targetlanguage':
-                    # g.trace(c.shortFileName(),setting,val,g.callers())
-                return val
-
-    for d in self.localOptionsList:
-        val,junk = self.getValFromDict(d,setting,kind)
-        if val is not None:
-            # kind2 = d.get('_hash','<no hash>')
-            # if setting == 'targetlanguage':
-                # g.trace(kind2,setting,val,g.callers())
-            return val
-
-    for d in self.dictList:
-        val,junk = self.getValFromDict(d,setting,kind)
-        if val is not None:
-            kind = d.get('_hash','<no hash>')
-            # if setting == 'targetlanguage':
-                # g.trace(kind,setting,val,g.callers())
-            return val
-
-    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-    if c and isLeoSettings:
-        d = self.localOptionsDict.get(c.hash())
-        if d:
-            val,junk = self.getValFromDict(d,setting,kind)
-            if val is not None:
-                # if setting == 'targetlanguage':
-                    # g.trace(c.shortFileName(),setting,val,g.callers())
-                return val
-
-    return None
-.. @+node:ekr.20041121143823: *6* getValFromDict
-def getValFromDict (self,d,setting,requestedType,warn=True):
-
-    '''Look up the setting in d. If warn is True, warn if the requested type
-    does not (loosely) match the actual type.
-    returns (val,exists)'''
-
-    bunch = d.get(self.munge(setting))
-    if not bunch: return None,False
-
-    # g.trace(setting,requestedType,bunch.toString())
-    val = bunch.val
-
-    if g.isPython3:
-        isNone = val in ('None','none','',None)
-    else:
-        isNone = val in (
-            unicode('None'),unicode('none'),unicode(''),
-            'None','none','',None)
-
-    if not self.typesMatch(bunch.kind,requestedType):
-        # New in 4.4: make sure the types match.
-        # A serious warning: one setting may have destroyed another!
-        # Important: this is not a complete test of conflicting settings:
-        # The warning is given only if the code tries to access the setting.
-        if warn:
-            g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
-            g.es_print('there may be conflicting settings!',color='red')
-        return None, False
-    # elif val in (u'None',u'none','None','none','',None):
-    elif isNone:
-        return None, True # Exists, but is None
-    else:
-        # g.trace(setting,val)
-        return val, True
-.. @+node:ekr.20051015093141: *6* typesMatch
-def typesMatch (self,type1,type2):
-
-    '''
-    Return True if type1, the actual type, matches type2, the requeseted type.
-
-    The following equivalences are allowed:
-
-    - None matches anything.
-    - An actual type of string or strings matches anything *except* shortcuts.
-    - Shortcut matches shortcuts.
-    '''
-
-    shortcuts = ('shortcut','shortcuts',)
-
-    return (
-        type1 == None or type2 == None or
-        type1.startswith('string') and type2 not in shortcuts or
-        type1 == 'int' and type2 == 'size' or
-        (type1 in shortcuts and type2 in shortcuts) or
-        type1 == type2
-    )
-.. @+node:ekr.20041117062717.14: *5* getShortcut (g.app.config)
-def getShortcut (self,c,commandName):
-
-    '''Return rawKey,accel for shortcutName'''
-    
-    trace = False and commandName == 'sort-siblings' and not g.unitTesting
-
-    key = c.frame.menu.canonicalizeMenuName(commandName)
-    key = key.replace('&','') # Allow '&' in names.
-    
-    if c.k.new_bindings:
-        bunchList = self.getShortcutHelper(c,key) # 2011/02/11
-    else:
-        bunchList = self.get(c,key,'shortcut')
-
-    if bunchList:
-        bunchList = [bunch for bunch in bunchList
-            if bunch.val and bunch.val.lower() != 'none']
-        if trace: g.trace(key,bunchList)
-        return key,bunchList
-    else:
-        return key,[]
-.. @+node:ekr.20110211041914.15415: *6* getShortcutHelper(g.app.config)
-def getShortcutHelper (self,c,key):
-    
-    '''Like get, but return *all* the found bunchLists's.
-    
-    'key' is actually a commandname.'''
-
-    trace = False and not g.unitTesting
-    kind = 'shortcut'
-    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
-    result = []
-
-    if c and not isLeoSettings:
-        d = self.localOptionsDict.get(c.hash())
-        if d:
-            bunchList,junk = self.getValFromDict(d,key,kind)
-            if bunchList: self.mergeShortcuts(result,bunchList,key)
-
-    for d in self.localOptionsList:
-        bunchList,junk = self.getValFromDict(d,key,kind)
-        if bunchList: self.mergeShortcuts(result,bunchList,key)
-
-    for d in self.dictList:
-        bunchList,junk = self.getValFromDict(d,key,kind)
-        if bunchList: self.mergeShortcuts(result,bunchList,key)
-
-    # Use settings in leoSettings.leo *last*.
-    if c and isLeoSettings:
-        d = self.localOptionsDict.get(c.hash())
-        if d:
-            bunchList,junk = self.getValFromDict(d,key,kind)
-            if bunchList: self.mergeShortcuts(result,bunchList,key)
-
-    return result
-.. @+node:ekr.20110211041914.15418: *6* mergeShortcuts
-def mergeShortcuts (self,result,aList,key):
-        # key is for debugging.
-        # key is a conical command name, *not* a keystroke.
-    
-    '''Append all non-conflicting entries of aList to result.'''
-    
-    trace = False and not g.unitTesting
-
-    # If there is a real override, **earlier** entries take precedence.
-    # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
-    
-    vals = [z.val for z in result]
-    aList = [z for z in aList if z.val not in vals]
-    result.extend(aList)
-
-    if trace and len(result) > 1:
-        g.trace(key,['%s %s' % (z.val,z.pane) for z in result])
-.. @+node:ekr.20111020144401.9584: *5* Changed
-.. @+node:ekr.20041117062717.2: *6* ctor (configClass)
-def __init__ (self):
-
-    # g.trace('g.app.config')
-    self.atCommonButtonsList = [] # List of info for common @buttons nodes.
-    self.atCommonCommandsList = [] # List of info for common @commands nodes.
-    self.buttonsFileName = ''
-    self.configsExist = False # True when we successfully open a setting file.
-    self.defaultFont = None # Set in gui.getDefaultConfigFont.
-    self.defaultFontFamily = None # Set in gui.getDefaultConfigFont.
-    self.enabledPluginsFileName = None
-    self.enabledPluginsString = '' 
-    self.globalConfigFile = None # Set in initSettingsFiles
-    self.homeFile = None # Set in initSettingsFiles
-    self.inited = False
-    self.menusList = []
-    self.menusFileName = ''
-    self.modeCommandsDict = {}
-        # For use by @mode logic. Keys are command names, values are g.Bunches.
-        # A special key: *mode-prompt* it the prompt to be given.
-    self.myGlobalConfigFile = None
-    self.myHomeConfigFile = None
-    self.machineConfigFile = None
-    self.presentBindingsDict = {}
-        # 2011/10/20
-        # The bindings in effect **for this commander only**.
-        # Keys are command-names, values are lists of bindings.
-    self.presentInverseBindingsDict = {}
-        # 2011/10/20
-        # A helper dict, used to create presentBindingsDict.
-        # Keys are keystrokes, values are lists of command names.
-    self.recentFilesFiles = [] # List of g.Bunches describing .leoRecentFiles.txt files.
-    self.write_recent_files_as_needed = False # Will be set later.
-    self.silent = g.app.silentMode
-    # g.trace('c.config.silent',self.silent)
-
-    # Inited later...
-    self.panes = None
-    self.sc = None
-    self.tree = None
-
-    self.initDicts()
-    self.initIvarsFromSettings()
-    self.initSettingsFiles()
-    self.initRecentFiles()
-.. @+node:ekr.20041120105609: *6* doShortcuts (ParserBaseClass)
-def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
-
-    trace = False and not g.unitTesting
-    c = self.c ; k = c.k
-    d = self.shortcutsDict
-    if s is None: s = p.b
-
-    theHash = d.get('_hash')
-    theHash = g.choose(theHash,g.shortFileName(theHash),'<no hash>')
-
-    if trace: g.trace('localFlag: %s d._hash: %s node: %s' % (
-        self.localFlag,theHash,junk_name))
-
-    for line in g.splitLines(s):
-        line = line.strip()
-        if line and not g.match(line,0,'#'):
-            name,bunch = self.parseShortcutLine(line)
-            if bunch:
-                bunch._hash = theHash
-                if bunch.val in (None,'none','None'):
-                    self.killOneShortcut(bunch,name,p)
-                else:
-                    self.doOneShortcut(bunch,name,p)
-.. @+node:ekr.20111020144401.9585: *7* doOneShortcut (ParserBaseClass)
-def doOneShortcut(self,bunch,name,p):
-    
-    '''Handle a regular shortcut.'''
-    
-    trace = False and name == 'sort-siblings' and not g.unitTesting
-    
-    if trace: g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
-        
-    d = self.shortcutsDict
-    bunchList = d.get(name,[])
-    bunchList.append(bunch)
-    d [name] = bunchList
-
-    self.set(p,"shortcut",name,bunchList)
-        ### Huh?????
-    self.setShortcut(name,bunchList)
-    
-    # if bunch.pane in ('kill','Kill'):
-        # munge = k.shortcutFromSetting
-        # if trace: g.trace('****** killing binding:',
-            # bunch.val,'to',name)
-        # bunchList = [z for z in bunchList
-            # if munge(z.val) != munge(bunch.val)]
-        # # g.trace(bunchList)
-.. @+node:ekr.20111020144401.9586: *7* killOneShortcut (ParserBaseClass)
-def killOneShortcut (self,bunch,name,p):
-    
-    if 0:
-        g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20110929165422.15449: *4* Test bug fix: noweb expansions in rst3 command
+.. @+node:ekr.20110929165422.15449: *4* ** Test bug fix: noweb expansions in rst3 command
 @nocolor-node
 
 *** Important *** This was all done in Leo 4.9
@@ -2146,6 +1663,498 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
+.. @+node:ekr.20111010162047.15678: *4* ** The @auto script *must* put @first nodes in root node
+@nocolor-node
+
+Also the import commands.
+
+Especially:
+    - Shebang line.
+    - Python encoding line.
+.. @+node:ekr.20111020092529.15885: *4* ** Fix bug: menu-binding problem
+@nocolor-node
+
+http://mail.google.com/mail/#inbox/1331909dd653f3c9
+
+> Now I understand.  If I override the shortcut associated with the menu
+> item, in this case Alt-A, the menu breaks.
+
+This is a serious bug!  The menu item now executes the command bound
+to Alt-A!  Very bad.
+.. @+node:ekr.20031218072017.2609: *5* app.closeLeoWindow
+def closeLeoWindow (self,frame):
+
+    """Attempt to close a Leo window.
+
+    Return False if the user veto's the close."""
+
+    c = frame.c
+
+    # g.trace('frame',frame,g.callers(4))
+
+    c.endEditing() # Commit any open edits.
+
+    if c.promptingForClose:
+        # There is already a dialog open asking what to do.
+        return False
+
+    g.app.config.writeRecentFilesFile(c)
+        # Make sure .leoRecentFiles.txt is written.
+
+    if c.changed:
+        c.promptingForClose = True
+        veto = frame.promptForSave()
+        c.promptingForClose = False
+        if veto: return False
+
+    g.app.setLog(None) # no log until we reactive a window.
+
+    g.doHook("close-frame",c=c)
+        # This may remove frame from the window list.
+
+    if frame in g.app.windowList:
+        g.app.destroyWindow(frame)
+
+    if g.app.windowList:
+        # Pick a window to activate so we can set the log.
+        frame = g.app.windowList[0]
+        frame.deiconify()
+        frame.lift()
+        frame.c.setLog()
+        frame.c.bodyWantsFocus()
+        frame.c.outerUpdate()
+    elif not g.app.unitTesting:
+        g.app.finishQuit()
+
+    return True # The window has been closed.
+.. @+node:ekr.20031218072017.1723: *5* createMenuEntries (leoMenu)
+def createMenuEntries (self,menu,table,dynamicMenu=False):
+
+    '''Create a menu entry from the table.
+    New in 4.4: this method shows the shortcut in the menu,
+    but this method **never** binds any shortcuts.'''
+
+    c = self.c ; f = c.frame ; k = c.k
+    if g.app.unitTesting: return
+
+    trace = False and not g.unitTesting
+    for data in table:
+        << get label & command or continue >>
+        << compute commandName & accel from label & command >>
+        # Bug fix: 2009/09/30: use canonical stroke.
+        accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
+        stroke = k.shortcutFromSetting(accel,addKey=True) or ''
+        if accelerator:
+            accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
+
+        if trace and commandName == 'sort-siblings':
+            g.trace(repr(stroke),repr(accelerator),commandName)
+            
+        # Add an entry for unit testing and masterMenuHandler.
+        
+        if stroke:
+            d = g.app.unitTestMenusDict
+            aSet = d.get(commandName,set())
+            aSet.add(stroke)
+            d[commandName] = aSet
+    
+        def masterMenuCallback (
+            c=c,k=k,stroke=stroke,
+            command=command,commandName=commandName,event=None
+        ):
+            if trace: g.trace('stroke',stroke)
+            return k.masterMenuHandler(stroke,command,commandName)
+
+        realLabel = self.getRealMenuName(label)
+        amp_index = realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        if sys.platform == 'darwin':
+            << clear accelerator if it is a plain key >>
+
+        # c.add_command ensures that c.outerUpdate is called.
+        if menu:
+            c.add_command(menu,label=realLabel,
+                accelerator=accelerator,
+                command=masterMenuCallback,
+                underline=amp_index)
+.. @+node:ekr.20051021091958: *6* << get label & command or continue >>
+if g.isString(data):
+    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
+    ok = True
+    s = data
+    removeHyphens = s and s[0]=='*'
+    if removeHyphens: s = s[1:]
+    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+    command = s.replace('&','').lower()
+    # if command == 'sort-siblings': g.trace('**1')
+    if label == '-':
+        self.add_separator(menu)
+        continue # That's all.
+else:
+    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+    if ok:
+        if len(data) == 2:
+            # New in 4.4b2: command can be a minibuffer-command name (a string)
+            label,command = data
+            # if command == 'sort-siblings': g.trace('**2')
+        else:
+            # New in 4.4: we ignore shortcuts bound in menu tables.
+            label,junk,command = data
+            # if command == 'sort-siblings': g.trace('**3')
+
+        if label in (None,'-'):
+            self.add_separator(menu)
+            continue # That's all.
+    else:
+        g.trace('bad data in menu table: %s' % repr(data))
+        continue # Ignore bad data
+.. @+node:ekr.20031218072017.1725: *6* << compute commandName & accel from label & command >>
+# New in 4.4b2: command can be a minibuffer-command name (a string)
+minibufferCommand = type(command) == type('')
+accel = None
+if minibufferCommand:
+    commandName = command 
+    command = c.commandsDict.get(commandName)
+    if command:
+        rawKey,bunchList = c.config.getShortcut(commandName)
+        # Pick the first entry that is not a mode.
+        for bunch in bunchList:
+            if not bunch.pane.endswith('-mode'):
+                accel = bunch and bunch.val
+                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+    else:
+        if not g.app.unitTesting and not dynamicMenu:
+            # Don't warn during unit testing.
+            # This may come from a plugin that normally isn't enabled.
+            if trace: g.trace('No inverse for %s' % commandName)
+        continue # There is no way to make this menu entry.
+else:
+    # First, get the old-style name.
+    commandName = self.computeOldStyleShortcutKey(label)
+    rawKey,bunchList = c.config.getShortcut(commandName)
+    for bunch in bunchList:
+        if not bunch.pane.endswith('-mode'):
+            if trace: g.trace('2','%20s' % (bunch.val),commandName)
+            accel = bunch and bunch.val ; break
+    # Second, get new-style name.
+    if not accel:
+        << compute emacs_name >>
+            # Contains the not-so-horrible kludge.
+        if emacs_name:
+            commandName = emacs_name
+            rawKey,bunchList = c.config.getShortcut(emacs_name)
+            # Pick the first entry that is not a mode.
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    accel = bunch.val
+                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    break
+        elif not dynamicMenu:
+            g.trace('No inverse for %s' % commandName)
+.. @+node:ekr.20051021100806.1: *7* << compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+.. @+node:ekr.20060216110502: *6* << clear accelerator if it is a plain key >>
+for z in ('Alt','Ctrl','Command'):
+    if accelerator.find(z) != -1:
+        break # Found.
+else:
+    accelerator = ''
+.. @+node:ekr.20041117083141: *5* get & allies (g.app.config)
+def get (self,c,setting,kind):
+
+    """Get the setting and make sure its type matches the expected type."""
+
+    trace = False and not g.unitTesting
+
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+
+    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+    if c and not isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                # if setting == 'targetlanguage':
+                    # g.trace(c.shortFileName(),setting,val,g.callers())
+                return val
+
+    for d in self.localOptionsList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            # kind2 = d.get('_hash','<no hash>')
+            # if setting == 'targetlanguage':
+                # g.trace(kind2,setting,val,g.callers())
+            return val
+
+    for d in self.dictList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            kind = d.get('_hash','<no hash>')
+            # if setting == 'targetlanguage':
+                # g.trace(kind,setting,val,g.callers())
+            return val
+
+    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+    if c and isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                # if setting == 'targetlanguage':
+                    # g.trace(c.shortFileName(),setting,val,g.callers())
+                return val
+
+    return None
+.. @+node:ekr.20041121143823: *6* getValFromDict
+def getValFromDict (self,d,setting,requestedType,warn=True):
+
+    '''Look up the setting in d. If warn is True, warn if the requested type
+    does not (loosely) match the actual type.
+    returns (val,exists)'''
+
+    bunch = d.get(self.munge(setting))
+    if not bunch: return None,False
+
+    # g.trace(setting,requestedType,bunch.toString())
+    val = bunch.val
+
+    if g.isPython3:
+        isNone = val in ('None','none','',None)
+    else:
+        isNone = val in (
+            unicode('None'),unicode('none'),unicode(''),
+            'None','none','',None)
+
+    if not self.typesMatch(bunch.kind,requestedType):
+        # New in 4.4: make sure the types match.
+        # A serious warning: one setting may have destroyed another!
+        # Important: this is not a complete test of conflicting settings:
+        # The warning is given only if the code tries to access the setting.
+        if warn:
+            g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
+            g.es_print('there may be conflicting settings!',color='red')
+        return None, False
+    # elif val in (u'None',u'none','None','none','',None):
+    elif isNone:
+        return None, True # Exists, but is None
+    else:
+        # g.trace(setting,val)
+        return val, True
+.. @+node:ekr.20051015093141: *6* typesMatch
+def typesMatch (self,type1,type2):
+
+    '''
+    Return True if type1, the actual type, matches type2, the requeseted type.
+
+    The following equivalences are allowed:
+
+    - None matches anything.
+    - An actual type of string or strings matches anything *except* shortcuts.
+    - Shortcut matches shortcuts.
+    '''
+
+    shortcuts = ('shortcut','shortcuts',)
+
+    return (
+        type1 == None or type2 == None or
+        type1.startswith('string') and type2 not in shortcuts or
+        type1 == 'int' and type2 == 'size' or
+        (type1 in shortcuts and type2 in shortcuts) or
+        type1 == type2
+    )
+.. @+node:ekr.20041117062717.14: *5* getShortcut (g.app.config)
+def getShortcut (self,c,commandName):
+
+    '''Return rawKey,accel for shortcutName'''
+    
+    trace = False and commandName == 'sort-siblings' and not g.unitTesting
+
+    key = c.frame.menu.canonicalizeMenuName(commandName)
+    key = key.replace('&','') # Allow '&' in names.
+    
+    if c.k.new_bindings:
+        bunchList = self.getShortcutHelper(c,key) # 2011/02/11
+    else:
+        bunchList = self.get(c,key,'shortcut')
+
+    if bunchList:
+        bunchList = [bunch for bunch in bunchList
+            if bunch.val and bunch.val.lower() != 'none']
+        if trace: g.trace(key,bunchList)
+        return key,bunchList
+    else:
+        return key,[]
+.. @+node:ekr.20110211041914.15415: *6* getShortcutHelper(g.app.config)
+def getShortcutHelper (self,c,key):
+    
+    '''Like get, but return *all* the found bunchLists's.
+    
+    'key' is actually a commandname.'''
+
+    trace = False and not g.unitTesting
+    kind = 'shortcut'
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+    result = []
+
+    if c and not isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            bunchList,junk = self.getValFromDict(d,key,kind)
+            if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    for d in self.localOptionsList:
+        bunchList,junk = self.getValFromDict(d,key,kind)
+        if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    for d in self.dictList:
+        bunchList,junk = self.getValFromDict(d,key,kind)
+        if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    # Use settings in leoSettings.leo *last*.
+    if c and isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            bunchList,junk = self.getValFromDict(d,key,kind)
+            if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    return result
+.. @+node:ekr.20110211041914.15418: *6* mergeShortcuts
+def mergeShortcuts (self,result,aList,key):
+        # key is for debugging.
+        # key is a conical command name, *not* a keystroke.
+    
+    '''Append all non-conflicting entries of aList to result.'''
+    
+    trace = False and not g.unitTesting
+
+    # If there is a real override, **earlier** entries take precedence.
+    # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
+    
+    vals = [z.val for z in result]
+    aList = [z for z in aList if z.val not in vals]
+    result.extend(aList)
+
+    if trace and len(result) > 1:
+        g.trace(key,['%s %s' % (z.val,z.pane) for z in result])
+.. @+node:ekr.20111020144401.9584: *5* Changed
+.. @+node:ekr.20041117062717.2: *6* ctor (configClass)
+def __init__ (self):
+
+    # g.trace('g.app.config')
+    self.atCommonButtonsList = [] # List of info for common @buttons nodes.
+    self.atCommonCommandsList = [] # List of info for common @commands nodes.
+    self.buttonsFileName = ''
+    self.configsExist = False # True when we successfully open a setting file.
+    self.defaultFont = None # Set in gui.getDefaultConfigFont.
+    self.defaultFontFamily = None # Set in gui.getDefaultConfigFont.
+    self.enabledPluginsFileName = None
+    self.enabledPluginsString = '' 
+    self.globalConfigFile = None # Set in initSettingsFiles
+    self.homeFile = None # Set in initSettingsFiles
+    self.inited = False
+    self.menusList = []
+    self.menusFileName = ''
+    self.modeCommandsDict = {}
+        # For use by @mode logic. Keys are command names, values are g.Bunches.
+        # A special key: *mode-prompt* it the prompt to be given.
+    self.myGlobalConfigFile = None
+    self.myHomeConfigFile = None
+    self.machineConfigFile = None
+    self.presentBindingsDict = {}
+        # 2011/10/20
+        # The bindings in effect **for this commander only**.
+        # Keys are command-names, values are lists of bindings.
+    self.presentInverseBindingsDict = {}
+        # 2011/10/20
+        # A helper dict, used to create presentBindingsDict.
+        # Keys are keystrokes, values are lists of command names.
+    self.recentFilesFiles = [] # List of g.Bunches describing .leoRecentFiles.txt files.
+    self.write_recent_files_as_needed = False # Will be set later.
+    self.silent = g.app.silentMode
+    # g.trace('c.config.silent',self.silent)
+
+    # Inited later...
+    self.panes = None
+    self.sc = None
+    self.tree = None
+
+    self.initDicts()
+    self.initIvarsFromSettings()
+    self.initSettingsFiles()
+    self.initRecentFiles()
+.. @+node:ekr.20041120105609: *6* doShortcuts (ParserBaseClass)
+def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
+
+    trace = False and not g.unitTesting
+    c = self.c ; k = c.k
+    d = self.shortcutsDict
+    if s is None: s = p.b
+
+    theHash = d.get('_hash')
+    theHash = g.choose(theHash,g.shortFileName(theHash),'<no hash>')
+
+    if trace: g.trace('localFlag: %s d._hash: %s node: %s' % (
+        self.localFlag,theHash,junk_name))
+
+    for line in g.splitLines(s):
+        line = line.strip()
+        if line and not g.match(line,0,'#'):
+            name,bunch = self.parseShortcutLine(line)
+            if bunch:
+                bunch._hash = theHash
+                if bunch.val in (None,'none','None'):
+                    self.killOneShortcut(bunch,name,p)
+                else:
+                    self.doOneShortcut(bunch,name,p)
+.. @+node:ekr.20111020144401.9585: *7* doOneShortcut (ParserBaseClass)
+def doOneShortcut(self,bunch,name,p):
+    
+    '''Handle a regular shortcut.'''
+    
+    trace = False and name == 'sort-siblings' and not g.unitTesting
+    
+    if trace: g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
+        
+    d = self.shortcutsDict
+    bunchList = d.get(name,[])
+    bunchList.append(bunch)
+    d [name] = bunchList
+
+    self.set(p,"shortcut",name,bunchList)
+        ### Huh?????
+    self.setShortcut(name,bunchList)
+    
+    # if bunch.pane in ('kill','Kill'):
+        # munge = k.shortcutFromSetting
+        # if trace: g.trace('****** killing binding:',
+            # bunch.val,'to',name)
+        # bunchList = [z for z in bunchList
+            # if munge(z.val) != munge(bunch.val)]
+        # # g.trace(bunchList)
+.. @+node:ekr.20111020144401.9586: *7* killOneShortcut (ParserBaseClass)
+def killOneShortcut (self,bunch,name,p):
+    
+    if 0:
+        g.trace(bunch,name,p and p.h)
+.. @+node:ekr.20111019104425.15866: *4* ** Fix all bug-tracker items
+.. @+node:ekr.20111017132257.15891: *4* Get IPython working again
+.. @+node:ekr.20111017132257.15890: *5* Investigate how IPython hijacks event loops
+http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
+.. @+node:ekr.20111009162434.7204: *5* Port ipy_leo.py to latest version of IPython
 .. @+node:ekr.20110619173515.14895: *4* Fix bug: realpath in g.openWithFileName
 @nocolor-node
 
@@ -2193,16 +2202,6 @@ Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
 for the find/change patterns would help a bit.
 .. @+node:ekr.20111018104244.15920: *4* Fix bug: Use QLocalSocket in LProtoClient.connect
 http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
-.. @+node:ekr.20111010062725.15537: *4* Fix bug: Finish cleaning @color settings
-.. @+node:ekr.20111010162047.15678: *4* * The @auto script *must* put @first nodes in root node
-@nocolor-node
-
-Also the import commands.
-
-Especially:
-    - Shebang line.
-    - Python encoding line.
-.. @+node:ekr.20111019104425.15866: *4* Fix all bug-tracker items
 .. @+node:ekr.20111023164430.16770: *4* Fix @color bug
 @nocolor-node
 
@@ -3701,2144 +3700,7 @@ consult leoTest.py.
 
 It has been fun tracking this down.  I'll fix the documentation immediately. 
 .. @+node:ekr.20111018104244.15924: *4* Revise Leo's wiki
-.. @+node:ekr.20111021105253.9477: *3* Next
-.. @+node:ekr.20111020092529.15885: *4* Fix bug: menu-binding problem
-@nocolor-node
-
-http://mail.google.com/mail/#inbox/1331909dd653f3c9
-
-> Now I understand.  If I override the shortcut associated with the menu
-> item, in this case Alt-A, the menu breaks.
-
-This is a serious bug!  The menu item now executes the command bound
-to Alt-A!  Very bad.
-.. @+node:ekr.20031218072017.2609: *5* app.closeLeoWindow
-def closeLeoWindow (self,frame):
-
-    """Attempt to close a Leo window.
-
-    Return False if the user veto's the close."""
-
-    c = frame.c
-
-    # g.trace('frame',frame,g.callers(4))
-
-    c.endEditing() # Commit any open edits.
-
-    if c.promptingForClose:
-        # There is already a dialog open asking what to do.
-        return False
-
-    g.app.config.writeRecentFilesFile(c)
-        # Make sure .leoRecentFiles.txt is written.
-
-    if c.changed:
-        c.promptingForClose = True
-        veto = frame.promptForSave()
-        c.promptingForClose = False
-        if veto: return False
-
-    g.app.setLog(None) # no log until we reactive a window.
-
-    g.doHook("close-frame",c=c)
-        # This may remove frame from the window list.
-
-    if frame in g.app.windowList:
-        g.app.destroyWindow(frame)
-
-    if g.app.windowList:
-        # Pick a window to activate so we can set the log.
-        frame = g.app.windowList[0]
-        frame.deiconify()
-        frame.lift()
-        frame.c.setLog()
-        frame.c.bodyWantsFocus()
-        frame.c.outerUpdate()
-    elif not g.app.unitTesting:
-        g.app.finishQuit()
-
-    return True # The window has been closed.
-.. @+node:ekr.20031218072017.1723: *5* createMenuEntries (leoMenu)
-def createMenuEntries (self,menu,table,dynamicMenu=False):
-
-    '''Create a menu entry from the table.
-    New in 4.4: this method shows the shortcut in the menu,
-    but this method **never** binds any shortcuts.'''
-
-    c = self.c ; f = c.frame ; k = c.k
-    if g.app.unitTesting: return
-
-    trace = False and not g.unitTesting
-    for data in table:
-        << get label & command or continue >>
-        << compute commandName & accel from label & command >>
-        # Bug fix: 2009/09/30: use canonical stroke.
-        accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
-        stroke = k.shortcutFromSetting(accel,addKey=True) or ''
-        if accelerator:
-            accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
-
-        if trace and commandName == 'sort-siblings':
-            g.trace(repr(stroke),repr(accelerator),commandName)
-            
-        # Add an entry for unit testing and masterMenuHandler.
-        
-        if stroke:
-            d = g.app.unitTestMenusDict
-            aSet = d.get(commandName,set())
-            aSet.add(stroke)
-            d[commandName] = aSet
-    
-        def masterMenuCallback (
-            c=c,k=k,stroke=stroke,
-            command=command,commandName=commandName,event=None
-        ):
-            if trace: g.trace('stroke',stroke)
-            return k.masterMenuHandler(stroke,command,commandName)
-
-        realLabel = self.getRealMenuName(label)
-        amp_index = realLabel.find("&")
-        realLabel = realLabel.replace("&","")
-        if sys.platform == 'darwin':
-            << clear accelerator if it is a plain key >>
-
-        # c.add_command ensures that c.outerUpdate is called.
-        if menu:
-            c.add_command(menu,label=realLabel,
-                accelerator=accelerator,
-                command=masterMenuCallback,
-                underline=amp_index)
-.. @+node:ekr.20051021091958: *6* << get label & command or continue >>
-if g.isString(data):
-    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
-    ok = True
-    s = data
-    removeHyphens = s and s[0]=='*'
-    if removeHyphens: s = s[1:]
-    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
-    command = s.replace('&','').lower()
-    # if command == 'sort-siblings': g.trace('**1')
-    if label == '-':
-        self.add_separator(menu)
-        continue # That's all.
-else:
-    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
-    if ok:
-        if len(data) == 2:
-            # New in 4.4b2: command can be a minibuffer-command name (a string)
-            label,command = data
-            # if command == 'sort-siblings': g.trace('**2')
-        else:
-            # New in 4.4: we ignore shortcuts bound in menu tables.
-            label,junk,command = data
-            # if command == 'sort-siblings': g.trace('**3')
-
-        if label in (None,'-'):
-            self.add_separator(menu)
-            continue # That's all.
-    else:
-        g.trace('bad data in menu table: %s' % repr(data))
-        continue # Ignore bad data
-.. @+node:ekr.20031218072017.1725: *6* << compute commandName & accel from label & command >>
-# New in 4.4b2: command can be a minibuffer-command name (a string)
-minibufferCommand = type(command) == type('')
-accel = None
-if minibufferCommand:
-    commandName = command 
-    command = c.commandsDict.get(commandName)
-    if command:
-        rawKey,bunchList = c.config.getShortcut(commandName)
-        # Pick the first entry that is not a mode.
-        for bunch in bunchList:
-            if not bunch.pane.endswith('-mode'):
-                accel = bunch and bunch.val
-                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
-    else:
-        if not g.app.unitTesting and not dynamicMenu:
-            # Don't warn during unit testing.
-            # This may come from a plugin that normally isn't enabled.
-            if trace: g.trace('No inverse for %s' % commandName)
-        continue # There is no way to make this menu entry.
-else:
-    # First, get the old-style name.
-    commandName = self.computeOldStyleShortcutKey(label)
-    rawKey,bunchList = c.config.getShortcut(commandName)
-    for bunch in bunchList:
-        if not bunch.pane.endswith('-mode'):
-            if trace: g.trace('2','%20s' % (bunch.val),commandName)
-            accel = bunch and bunch.val ; break
-    # Second, get new-style name.
-    if not accel:
-        << compute emacs_name >>
-            # Contains the not-so-horrible kludge.
-        if emacs_name:
-            commandName = emacs_name
-            rawKey,bunchList = c.config.getShortcut(emacs_name)
-            # Pick the first entry that is not a mode.
-            for bunch in bunchList:
-                if not bunch.pane.endswith('-mode'):
-                    accel = bunch.val
-                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
-                    break
-        elif not dynamicMenu:
-            g.trace('No inverse for %s' % commandName)
-.. @+node:ekr.20051021100806.1: *7* << compute emacs_name >>
-@ One not-so-horrible kludge remains.
-
-The cut/copy/paste commands in the menu tables are not the same as the methods
-actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
-of extra translation to discover whether the user has overridden their
-bindings.
-@c
-
-if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
-    emacs_name = '%s-text' % commandName
-else:
-    try: # User errors in the table can cause this.
-        emacs_name = k.inverseCommandsDict.get(command.__name__)
-    except Exception:
-        emacs_name = None
-.. @+node:ekr.20060216110502: *6* << clear accelerator if it is a plain key >>
-for z in ('Alt','Ctrl','Command'):
-    if accelerator.find(z) != -1:
-        break # Found.
-else:
-    accelerator = ''
-.. @+node:ekr.20041117083141: *5* get & allies (g.app.config)
-def get (self,c,setting,kind):
-
-    """Get the setting and make sure its type matches the expected type."""
-
-    trace = False and not g.unitTesting
-
-    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
-
-    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-    if c and not isLeoSettings:
-        d = self.localOptionsDict.get(c.hash())
-        if d:
-            val,junk = self.getValFromDict(d,setting,kind)
-            if val is not None:
-                # if setting == 'targetlanguage':
-                    # g.trace(c.shortFileName(),setting,val,g.callers())
-                return val
-
-    for d in self.localOptionsList:
-        val,junk = self.getValFromDict(d,setting,kind)
-        if val is not None:
-            # kind2 = d.get('_hash','<no hash>')
-            # if setting == 'targetlanguage':
-                # g.trace(kind2,setting,val,g.callers())
-            return val
-
-    for d in self.dictList:
-        val,junk = self.getValFromDict(d,setting,kind)
-        if val is not None:
-            kind = d.get('_hash','<no hash>')
-            # if setting == 'targetlanguage':
-                # g.trace(kind,setting,val,g.callers())
-            return val
-
-    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-    if c and isLeoSettings:
-        d = self.localOptionsDict.get(c.hash())
-        if d:
-            val,junk = self.getValFromDict(d,setting,kind)
-            if val is not None:
-                # if setting == 'targetlanguage':
-                    # g.trace(c.shortFileName(),setting,val,g.callers())
-                return val
-
-    return None
-.. @+node:ekr.20041121143823: *6* getValFromDict
-def getValFromDict (self,d,setting,requestedType,warn=True):
-
-    '''Look up the setting in d. If warn is True, warn if the requested type
-    does not (loosely) match the actual type.
-    returns (val,exists)'''
-
-    bunch = d.get(self.munge(setting))
-    if not bunch: return None,False
-
-    # g.trace(setting,requestedType,bunch.toString())
-    val = bunch.val
-
-    if g.isPython3:
-        isNone = val in ('None','none','',None)
-    else:
-        isNone = val in (
-            unicode('None'),unicode('none'),unicode(''),
-            'None','none','',None)
-
-    if not self.typesMatch(bunch.kind,requestedType):
-        # New in 4.4: make sure the types match.
-        # A serious warning: one setting may have destroyed another!
-        # Important: this is not a complete test of conflicting settings:
-        # The warning is given only if the code tries to access the setting.
-        if warn:
-            g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
-            g.es_print('there may be conflicting settings!',color='red')
-        return None, False
-    # elif val in (u'None',u'none','None','none','',None):
-    elif isNone:
-        return None, True # Exists, but is None
-    else:
-        # g.trace(setting,val)
-        return val, True
-.. @+node:ekr.20051015093141: *6* typesMatch
-def typesMatch (self,type1,type2):
-
-    '''
-    Return True if type1, the actual type, matches type2, the requeseted type.
-
-    The following equivalences are allowed:
-
-    - None matches anything.
-    - An actual type of string or strings matches anything *except* shortcuts.
-    - Shortcut matches shortcuts.
-    '''
-
-    shortcuts = ('shortcut','shortcuts',)
-
-    return (
-        type1 == None or type2 == None or
-        type1.startswith('string') and type2 not in shortcuts or
-        type1 == 'int' and type2 == 'size' or
-        (type1 in shortcuts and type2 in shortcuts) or
-        type1 == type2
-    )
-.. @+node:ekr.20041117062717.14: *5* getShortcut (g.app.config)
-def getShortcut (self,c,commandName):
-
-    '''Return rawKey,accel for shortcutName'''
-    
-    trace = False and commandName == 'sort-siblings' and not g.unitTesting
-
-    key = c.frame.menu.canonicalizeMenuName(commandName)
-    key = key.replace('&','') # Allow '&' in names.
-    
-    if c.k.new_bindings:
-        bunchList = self.getShortcutHelper(c,key) # 2011/02/11
-    else:
-        bunchList = self.get(c,key,'shortcut')
-
-    if bunchList:
-        bunchList = [bunch for bunch in bunchList
-            if bunch.val and bunch.val.lower() != 'none']
-        if trace: g.trace(key,bunchList)
-        return key,bunchList
-    else:
-        return key,[]
-.. @+node:ekr.20110211041914.15415: *6* getShortcutHelper(g.app.config)
-def getShortcutHelper (self,c,key):
-    
-    '''Like get, but return *all* the found bunchLists's.
-    
-    'key' is actually a commandname.'''
-
-    trace = False and not g.unitTesting
-    kind = 'shortcut'
-    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
-    result = []
-
-    if c and not isLeoSettings:
-        d = self.localOptionsDict.get(c.hash())
-        if d:
-            bunchList,junk = self.getValFromDict(d,key,kind)
-            if bunchList: self.mergeShortcuts(result,bunchList,key)
-
-    for d in self.localOptionsList:
-        bunchList,junk = self.getValFromDict(d,key,kind)
-        if bunchList: self.mergeShortcuts(result,bunchList,key)
-
-    for d in self.dictList:
-        bunchList,junk = self.getValFromDict(d,key,kind)
-        if bunchList: self.mergeShortcuts(result,bunchList,key)
-
-    # Use settings in leoSettings.leo *last*.
-    if c and isLeoSettings:
-        d = self.localOptionsDict.get(c.hash())
-        if d:
-            bunchList,junk = self.getValFromDict(d,key,kind)
-            if bunchList: self.mergeShortcuts(result,bunchList,key)
-
-    return result
-.. @+node:ekr.20110211041914.15418: *6* mergeShortcuts
-def mergeShortcuts (self,result,aList,key):
-        # key is for debugging.
-        # key is a conical command name, *not* a keystroke.
-    
-    '''Append all non-conflicting entries of aList to result.'''
-    
-    trace = False and not g.unitTesting
-
-    # If there is a real override, **earlier** entries take precedence.
-    # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
-    
-    vals = [z.val for z in result]
-    aList = [z for z in aList if z.val not in vals]
-    result.extend(aList)
-
-    if trace and len(result) > 1:
-        g.trace(key,['%s %s' % (z.val,z.pane) for z in result])
-.. @+node:ekr.20111020144401.9584: *5* Changed
-.. @+node:ekr.20041117062717.2: *6* ctor (configClass)
-def __init__ (self):
-
-    # g.trace('g.app.config')
-    self.atCommonButtonsList = [] # List of info for common @buttons nodes.
-    self.atCommonCommandsList = [] # List of info for common @commands nodes.
-    self.buttonsFileName = ''
-    self.configsExist = False # True when we successfully open a setting file.
-    self.defaultFont = None # Set in gui.getDefaultConfigFont.
-    self.defaultFontFamily = None # Set in gui.getDefaultConfigFont.
-    self.enabledPluginsFileName = None
-    self.enabledPluginsString = '' 
-    self.globalConfigFile = None # Set in initSettingsFiles
-    self.homeFile = None # Set in initSettingsFiles
-    self.inited = False
-    self.menusList = []
-    self.menusFileName = ''
-    self.modeCommandsDict = {}
-        # For use by @mode logic. Keys are command names, values are g.Bunches.
-        # A special key: *mode-prompt* it the prompt to be given.
-    self.myGlobalConfigFile = None
-    self.myHomeConfigFile = None
-    self.machineConfigFile = None
-    self.presentBindingsDict = {}
-        # 2011/10/20
-        # The bindings in effect **for this commander only**.
-        # Keys are command-names, values are lists of bindings.
-    self.presentInverseBindingsDict = {}
-        # 2011/10/20
-        # A helper dict, used to create presentBindingsDict.
-        # Keys are keystrokes, values are lists of command names.
-    self.recentFilesFiles = [] # List of g.Bunches describing .leoRecentFiles.txt files.
-    self.write_recent_files_as_needed = False # Will be set later.
-    self.silent = g.app.silentMode
-    # g.trace('c.config.silent',self.silent)
-
-    # Inited later...
-    self.panes = None
-    self.sc = None
-    self.tree = None
-
-    self.initDicts()
-    self.initIvarsFromSettings()
-    self.initSettingsFiles()
-    self.initRecentFiles()
-.. @+node:ekr.20041120105609: *6* doShortcuts (ParserBaseClass)
-def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
-
-    trace = False and not g.unitTesting
-    c = self.c ; k = c.k
-    d = self.shortcutsDict
-    if s is None: s = p.b
-
-    theHash = d.get('_hash')
-    theHash = g.choose(theHash,g.shortFileName(theHash),'<no hash>')
-
-    if trace: g.trace('localFlag: %s d._hash: %s node: %s' % (
-        self.localFlag,theHash,junk_name))
-
-    for line in g.splitLines(s):
-        line = line.strip()
-        if line and not g.match(line,0,'#'):
-            name,bunch = self.parseShortcutLine(line)
-            if bunch:
-                bunch._hash = theHash
-                if bunch.val in (None,'none','None'):
-                    self.killOneShortcut(bunch,name,p)
-                else:
-                    self.doOneShortcut(bunch,name,p)
-.. @+node:ekr.20111020144401.9585: *7* doOneShortcut (ParserBaseClass)
-def doOneShortcut(self,bunch,name,p):
-    
-    '''Handle a regular shortcut.'''
-    
-    trace = False and name == 'sort-siblings' and not g.unitTesting
-    
-    if trace: g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
-        
-    d = self.shortcutsDict
-    bunchList = d.get(name,[])
-    bunchList.append(bunch)
-    d [name] = bunchList
-
-    self.set(p,"shortcut",name,bunchList)
-        ### Huh?????
-    self.setShortcut(name,bunchList)
-    
-    # if bunch.pane in ('kill','Kill'):
-        # munge = k.shortcutFromSetting
-        # if trace: g.trace('****** killing binding:',
-            # bunch.val,'to',name)
-        # bunchList = [z for z in bunchList
-            # if munge(z.val) != munge(bunch.val)]
-        # # g.trace(bunchList)
-.. @+node:ekr.20111020144401.9586: *7* killOneShortcut (ParserBaseClass)
-def killOneShortcut (self,bunch,name,p):
-    
-    if 0:
-        g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20110929165422.15449: *4* Test bug fix: noweb expansions in rst3 command
-@nocolor-node
-
-*** Important *** This was all done in Leo 4.9
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
-
-> What would work for me is if named sections in a @rst subtree
-> would work exactly as they work for other derived files: they
-> get inserted at the place where they are referenced.
-
-- Add support for the following options:
-    - expand_noweb_references:  default False for compatibility.
-    - ignore_noweb definitions: default False for compatibility.
-
-- When expand_noweb_references is True, definitions (typically clones)
-  must be descendants of the referencing node (in the @rst tree)
-.. @+node:ekr.20111018104244.15918: *5* Report
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/15239f5f504cee6f
-
-I tried it out with:
-
-Test
-.....@rst test.html
-      which contains:
-      This is a test (underlined)
-      then the reference:
-      <<test>>
-...............<<test>>
-                which contains: Here is some text.
-
-In the top node Test I have:
-@ @rst-options
-expand_noweb_references=True
-expand_noweb_recursively=True
-show_headlines=False  (without this, the <<test>> headline becomes a section
-heading)
-@c
-
-It sort of works:
---------------------------------------------
-This is a test
-
-<<test>>Here is some text.
-
-Here is some text.
---------------------------------------------
-
-The reference <<test>> does not get erased, even if the definition actually
-gets inserted beside it. On the other hand, though I can suppress the
-headline of the definition with the rst option, the body of the definition
-gets inserted as a section anyway; definitions are not ignored by rst.
-
-But now I can go see what happens in the code for debugging, since the
-option gives a pointer into the code.
-
-Thanks!
-.. @+node:ekr.20100813041139.5920: *5* Entry points
-.. @+node:ekr.20100812082517.5945: *6* code_to_rst_command & helpers
-def code_to_rst_command (self,event=None,p=None,scriptSettingsDict=None,toString=False):
-
-    '''Format the presently selected node as computer code.
-
-    Settings from scriptSettingsDict override normal settings.
-
-    On exit:
-        self.source contains rst sources
-        self.stringOutput contains docutils output if docutils called.
-    '''
-
-    trace = False and not g.unitTesting
-    c = self.c
-    if p: p = p.copy()
-    else: p = c.p
-    self.topNode = p.copy()
-    self.topLevel = p.level()
-
-    # **Important**: This command works as much like the rst3 command as possible.
-    # Difference arise because there is no @rst node to specify a filename.
-    # Instead we get the filename from scriptSettingsDict, or use 'code_to_rst.html'
-
-    # Capture the settings, munging all settings.
-    self.scriptSettingsDict = {}
-    d = scriptSettingsDict
-    if d:
-        for key in d.keys():
-            self.scriptSettingsDict[self.munge(key)] = d.get(key)
-
-    # Init options...
-    self.preprocessTree(p)
-    self.init_write(p) # scanAllDirectives sets self.path and self.encoding.
-    self.scanAllOptions(p) # Settings for p are valid after this call.
-    callDocutils = self.getOption('call_docutils')
-    writeIntermediateFile = self.getOption('write_intermediate_file')
-    fn = self.getOption('output-file-name') or 'code_to_rst.html'
-    junk,ext = g.os_path_splitext(fn)
-
-    # Write the rst sources to self.sources...
-    self.outputFile = StringIO()
-    self.write_code_tree(p,fn)
-    self.source = self.outputFile.getvalue()
-    self.outputFile = None
-
-    if callDocutils or writeIntermediateFile:
-        self.write_files(ext,fn,callDocutils,toString,writeIntermediateFile)
-.. @+node:ekr.20100812082517.5963: *7* write_code_body & helpers
-def write_code_body (self,p):
-
-    trace = False
-    self.p = p.copy() # for traces.
-    if not p.b.strip():
-        return # No need to write any more newlines.
-
-    showDocsAsParagraphs = self.getOption('show_doc_parts_as_paragraphs')
-    lines = g.splitLines(p.b)
-    parts = self.split_parts(lines,showDocsAsParagraphs)
-    result = []
-    for kind,lines in parts:
-        if trace: g.trace(kind,len(lines),p.h)
-        if kind == '@rst-option': # Also handles '@rst-options'
-            pass # The prepass has already handled the options.
-        elif kind == '@rst-markup':
-            lines.extend('\n')
-            result.extend(lines)
-        elif kind == '@doc':
-            if showDocsAsParagraphs:
-                result.extend(lines)
-                result.append('\n')
-            else:
-                result.extend(self.write_code_block(lines))
-        elif kind == 'code':
-            result.extend(self.write_code_block(lines))
-        else:
-            g.trace('Can not happen',kind)
-
-    # Write the lines with exactly two trailing newlines.
-    s = ''.join(result).rstrip() + '\n\n'
-    self.write(s)
-.. @+node:ekr.20100812082517.5964: *8* split_parts
-def split_parts (self,lines,showDocsAsParagraphs):
-
-    '''Split a list of body lines into a list of tuples (kind,lines).'''
-
-    kind,parts,part_lines = 'code',[],[]
-    for s in lines:
-        if g.match_word(s,0,'@ @rst-markup'):
-            if part_lines: parts.append((kind,part_lines[:]),)
-            kind = '@rst-markup'
-            n = len('@ @rst-markup')
-            after = s[n:].strip()
-            part_lines = g.choose(after,[after],[])
-        elif s.startswith('@ @rst-option'):
-            if part_lines: parts.append((kind,part_lines[:]),)
-            kind,part_lines = '@rst-option',[s] # part_lines will be ignored.
-        elif s.startswith('@ ') or s.startswith('@\n') or s.startswith('@doc'):
-            if showDocsAsParagraphs:
-                if part_lines: parts.append((kind,part_lines[:]),)
-                kind = '@doc'
-                # Put only what follows @ or @doc
-                n = g.choose(s.startswith('@doc'),4,1)
-                after = s[n:].lstrip()
-                part_lines = g.choose(after,[after],[])
-            else:
-                part_lines.append(s) # still in code mode.
-        elif g.match_word(s,0,'@c') and kind != 'code':
-            if kind == '@doc' and not showDocsAsParagraphs:
-                    part_lines.append(s) # Show the @c as code.
-            parts.append((kind,part_lines[:]),)
-            kind,part_lines = 'code',[]
-        else:
-            part_lines.append(s)
-
-    if part_lines:
-        parts.append((kind,part_lines[:]),)
-
-    return parts
-.. @+node:ekr.20100812082517.5965: *8* write_code_block
-def write_code_block (self,lines):
-
-    result = ['::\n\n'] # ['[**code block**]\n\n']
-
-    if self.getOption('number-code-lines'):
-        i = 1
-        for s in lines:
-            result.append('    %d: %s' % (i,s))
-            i += 1
-    else:
-        result.extend(['    %s' % (z) for z in lines])
-
-    s = ''.join(result).rstrip()+'\n\n'
-    return g.splitLines(s)
-.. @+node:ekr.20100812082517.5966: *7* write_code_headline & helper
-def write_code_headline (self,p):
-
-    '''Generate an rST section if options permit it.
-    Remove headline commands from the headline first,
-    and never generate an rST section for @rst-option and @rst-options.'''
-
-
-    docOnly             = self.getOption('doc_only_mode')
-    ignore              = self.getOption('ignore_this_headline')
-    showHeadlines       = self.getOption('show_headlines')
-    showThisHeadline    = self.getOption('show_this_headline')
-    showOrganizers      = self.getOption('show_organizer_nodes')
-
-    if (
-        p == self.topNode or
-        ignore or
-        docOnly or # handleDocOnlyMode handles this.
-        not showHeadlines and not showThisHeadline or
-        # docOnly and not showOrganizers and not thisHeadline or
-        not p.h.strip() and not showOrganizers or
-        not p.b.strip() and not showOrganizers
-    ):
-        return
-
-    self.write_code_headline_helper(p)
-.. @+node:ekr.20100812082517.5967: *8* write_code_headline_helper
-def write_code_headline_helper (self,p):
-
-    h = p.h.strip()
-
-    # Remove any headline command before writing the headline.
-    i = g.skip_ws(h,0)
-    i = g.skip_id(h,0,chars='@-')
-    word = h [:i].strip()
-    if word:
-        # Never generate a section for @rst-option or @rst-options or @rst-no-head.
-        if word in ('@rst-option','@rst-options','@rst-no-head','@rst-no-headlines'):
-            return
-
-        for prefix in ('@rst-ignore-node','@rst-ignore-tree','@rst-ignore'):
-            if word == prefix:
-                h = h [len(word):].strip()
-                break
-
-    if not h.strip(): return
-
-    if self.getOption('show_sections'):
-        self.write(self.underline(h,p))
-    else:
-        self.write('\n**%s**\n\n' % h.replace('*',''))
-.. @+node:ekr.20100812082517.5968: *7* write_code_node
-def write_code_node (self,p):
-
-    '''Format a node according to the options presently in effect.
-
-    Side effect: advance p'''
-
-    h = p.h.strip()
-    self.scanAllOptions(p)
-
-    if self.getOption('ignore_this_tree'):
-        p.moveToNodeAfterTree()
-    elif self.getOption('ignore_this_node'):
-        p.moveToThreadNext()
-    elif g.match_word(h,0,'@rst-options') and not self.getOption('show_options_nodes'):
-        p.moveToThreadNext()
-    else:
-        self.http_addNodeMarker(p)
-        self.write_code_headline(p)
-        self.write_code_body(p)
-        p.moveToThreadNext()
-.. @+node:ekr.20100812082517.5939: *7* write_code_tree
-def write_code_tree (self,p,fn):
-
-    '''Write p's tree as code to self.outputFile.'''
-
-    self.scanAllOptions(p) # So we can get the next option.
-
-    if self.getOption('generate_rst_header_comment'):
-        self.write('.. rst3: filename: %s\n\n' % fn)
-
-    # We can't use an iterator because we may skip parts of the tree.
-    p = p.copy() # Only one copy is needed for traversal.
-    self.topNode = p.copy() # Indicate the top of this tree.
-    after = p.nodeAfterTree()
-    while p and p != after:
-        self.write_code_node(p) # Side effect: advances p.
-.. @+node:ekr.20090511055302.5793: *6* rst3 command & helpers
-def rst3 (self,event=None):
-
-    '''Write all @rst nodes.'''
-
-    self.processTopTree(self.c.p)
-.. @+node:ekr.20090502071837.62: *7* processTopTree
-def processTopTree (self,p,justOneFile=False):
-
-    c = self.c ; current = p.copy()
-
-    # This strange looking code looks up and down the tree for @rst nodes.
-    for p in current.self_and_parents():
-        h = p.h
-        if h.startswith('@rst') and not h.startswith('@rst-'):
-            self.processTree(p,ext=None,toString=False,justOneFile=justOneFile)
-            break
-        elif h.startswith('@slides'):
-            self.processTree(p,ext=None,toString=False,justOneFile=False)
-            break
-    else:
-        self.processTree(current,ext=None,toString=False,justOneFile=justOneFile)
-
-    g.es_print('done',color='blue')
-.. @+node:ekr.20090502071837.63: *7* processTree
-def processTree(self,p,ext=None,toString=False,justOneFile=False):
-
-    '''Process all @rst nodes in a tree.
-    ext is the docutils extention: it's useful for scripts and unit tests.
-    '''
-
-    trace = False and not g.unitTesting
-    if trace: g.trace(p.h)
-    self.preprocessTree(p)
-    found = False ; self.stringOutput = ''
-    p = p.copy() ; after= p.nodeAfterTree()
-    while p and p != after:
-        h = p.h.strip()
-        if g.match_word(h,0,"@rst"):
-            fn = h[4:].strip()
-            if ((fn and fn[0] != '-') or (toString and not fn)):
-                if trace: g.trace('found: %s',p.h)
-                found = True
-                self.write_rst_tree(p,ext,fn,toString=toString,justOneFile=justOneFile)
-                self.scanAllOptions(p) # Restore the top-level verbose setting.
-                if toString:
-                    return p.copy(),self.stringOutput
-                p.moveToNodeAfterTree()
-            else:
-                p.moveToThreadNext()
-        elif g.match(h,0,"@slides"):
-            self.write_slides(p)
-            found = True
-            p.moveToNodeAfterTree()
-        else: p.moveToThreadNext()
-    if not found:
-        g.es('No @rst or @slides nodes in selected tree',color='blue')
-    return None,None
-.. @+node:ekr.20090502071837.64: *7* write_rst_tree
-def write_rst_tree (self,p,ext,fn,toString=False,justOneFile=False):
-
-    '''Convert p's tree to rst sources.
-    Optionally call docutils to convert rst to output.
-
-    On exit:
-        self.source contains rst sources
-        self.stringOutput contains docutils output if docutils called.
-    '''
-
-    c = self.c
-    self.topNode = p.copy()
-    self.topLevel = p.level()
-    if toString:
-        ext = ext or '.html' # 2010/08/12: Unit test found this.
-    else:
-        junk,ext = g.os_path_splitext(fn)
-    ext = ext.lower()
-    if not ext.startswith('.'): ext = '.' + ext
-
-    # Init options...
-    self.init_write(p) # ScanAllDirectives sets self.path and self.encoding.
-    self.scanAllOptions(p) # Settings for p are valid after this call.
-    callDocutils = self.getOption('call_docutils')
-    writeIntermediateFile = self.getOption('write_intermediate_file')
-
-    # Write the rst sources to self.source.
-    self.outputFile = StringIO()
-    self.writeTree(p,fn)
-    self.source = self.outputFile.getvalue() # the rST sources.
-    self.outputFile = None
-    self.stringOutput = None
-
-    if callDocutils or writeIntermediateFile:
-        self.write_files(ext,fn,callDocutils,toString,writeIntermediateFile)
-.. @+node:ekr.20100822092546.5835: *7* write_slides & helper
-def write_slides (self,p,toString=False):
-
-    '''Convert p's children to slides.'''
-
-    c = self.c ; p = p.copy() ; h = p.h
-    i = g.skip_id(h,1) # Skip the '@'
-    kind,fn = h[:i].strip(),h[i:].strip()
-    if not fn: return g.es('%s requires file name' % (kind),color='red')
-    title = p and p.firstChild().h or '<no slide>'
-    title = title.strip().capitalize()
-    n_tot = p.numberOfChildren()
-
-    n = 1
-    for child in p.children():
-        self.init_write(p) # ScanAllDirectives sets self.path and self.encoding.
-        self.scanAllOptions(child) # Settings for child are valid after this call.
-        # Compute the slide's file name.
-        fn2,ext = g.os_path_splitext(fn)
-        fn2 = '%s-%03d%s' % (fn2,n,ext) # Use leading zeros for :glob:.
-        n += 1
-        # Write the rst sources to self.source.
-        self.outputFile = StringIO()
-        self.writeSlideTitle(title,n-1,n_tot)
-        self.writeBody(child)
-        self.source = self.outputFile.getvalue() # the rST sources.
-        self.outputFile,self.stringOutput = None,None
-        self.write_files(ext,fn2,
-            callDocutils=self.getOption('call_docutils'),
-            toString=toString,
-            writeIntermediateFile=self.getOption('write_intermediate_file'))
-.. @+node:ekr.20100822174725.5836: *8* writeSlideTitle
-def writeSlideTitle (self,title,n,n_tot):
-
-    '''Write the title, underlined with the '#' character.'''
-
-    if n != 1:
-        title = '%s (%s of %s)' % (title,n,n_tot)
-
-    width = max(4,len(g.toEncodedString(title,
-        encoding=self.encoding,reportErrors=False)))
-
-    self.write('%s\n%s \n\n' % (title,('#'*width)))
-.. @+node:ekr.20090502071837.58: *7* write methods (rst3 command)
-.. @+node:ekr.20090502071837.68: *8* getDocPart
-def getDocPart (self,lines,n):
-
-    # g.trace('n',n,repr(''.join(lines)))
-
-    result = []
-    << Append whatever follows @doc or @space to result >>
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if g.match_word(s,0,'@code') or g.match_word(s,0,'@c'):
-            break
-        result.append(s)
-    return n, result
-.. @+node:ekr.20090502071837.69: *9* << Append whatever follows @doc or @space to result >>
-if n > 0:
-    line = lines[n-1]
-    if line.startswith('@doc'):
-        s = line[4:].lstrip()
-    elif line.startswith('@'):
-        s = line[1:].lstrip()
-    else:
-        s = ''
-
-    # New in Leo 4.4.4: remove these special tags.
-    for tag in ('@rst-options','@rst-option','@rst-markup'):
-        if g.match_word(s,0,tag):
-            s = s[len(tag):].strip()
-
-    if s.strip():
-        result.append(s)
-.. @+node:ekr.20090502071837.81: *8* handleSpecialDocParts
-def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
-
-    # g.trace(kind,g.listToString(lines))
-
-    result = [] ; n = 0
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if s.strip().endswith('::'):
-            n, lit = self.skip_literal_block(lines,n-1)
-            result.extend(lit)
-        elif self.isSpecialDocPart(s,kind):
-            n, lines2 = self.getDocPart(lines,n)
-            if retainContents:
-                result.extend([''])
-                if asClass:
-                    result.extend(['.. container:: '+asClass, ''])
-                    if 'literal' in asClass.split():
-                        result.extend(['  ::', ''])
-                    for l2 in lines2: result.append('    '+l2)
-                else:
-                    result.extend(lines2)
-                result.extend([''])
-        else:
-            result.append(s)
-
-    return result
-.. @+node:ekr.20090502071837.77: *8* isAnyDocPart
-def isAnyDocPart (self,s):
-
-    if s.startswith('@doc'):
-        return True
-    elif not s.startswith('@'):
-        return False
-    else:
-        return len(s) == 1 or s[1].isspace()
-.. @+node:ekr.20090502071837.79: *8* isAnySpecialDocPart
-def isAnySpecialDocPart (self,s):
-
-    for kind in (
-        '@rst-markup',
-        '@rst-option',
-        '@rst-options',
-    ):
-        if self.isSpecialDocPart(s,kind):
-            return True
-
-    return False
-.. @+node:ekr.20090502071837.78: *8* isSpecialDocPart
-def isSpecialDocPart (self,s,kind):
-
-    '''Return True if s is a special doc part of the indicated kind.
-
-    If kind is None, return True if s is any doc part.'''
-
-    if s.startswith('@') and len(s) > 1 and s[1].isspace():
-        if kind:
-            i = g.skip_ws(s,1)
-            result = g.match_word(s,i,kind)
-        else:
-            result = True
-    elif not kind:
-        result = g.match_word(s,0,'@doc') or g.match_word(s,0,'@')
-    else:
-        result = False
-
-    # g.trace('kind %s, result %s, s %s' % (
-        # repr(kind),result,repr(s)))
-
-    return result
-.. @+node:ekr.20090502071837.80: *8* removeLeoDirectives
-def removeLeoDirectives (self,lines):
-
-    '''Remove all Leo directives, except within literal blocks.'''
-
-    n = 0 ; result = []
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if s.strip().endswith('::'):
-            n, lit = self.skip_literal_block(lines,n-1)
-            result.extend(lit)
-        elif s.startswith('@') and not self.isAnySpecialDocPart(s):
-            for key in self.leoDirectivesList:
-                if g.match_word(s,1,key):
-                    # g.trace('removing %s' % s)
-                    break
-            else:
-                result.append(s)
-        else:
-            result.append(s)
-
-    return result
-.. @+node:ekr.20090502071837.82: *8* replaceCodeBlockDirectives
-def replaceCodeBlockDirectives (self,lines):
-
-    '''Replace code-block directive, but not in literal blocks.'''
-
-    n = 0 ; result = []
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if s.strip().endswith('::'):
-            n, lit = self.skip_literal_block(lines,n-1)
-            result.extend(lit)
-        else:
-            i = g.skip_ws(s,0)
-            if g.match(s,i,'..'):
-                i = g.skip_ws(s,i+2)
-                if g.match_word(s,i,'code-block'):
-                    if 1: # Create a literal block to hold the code.
-                        result.append('::\n')
-                    else: # This 'annotated' literal block is confusing.
-                        result.append('%s code::\n' % s[i+len('code-block'):])
-                else:
-                    result.append(s)
-            else:
-                result.append(s)
-
-    return result
-.. @+node:ekr.20090502071837.70: *8* skip_literal_block
-def skip_literal_block (self,lines,n):
-
-    s = lines[n] ; result = [s] ; n += 1
-    indent = g.skip_ws(s,0)
-
-    # Skip lines until a non-blank line is found with same or less indent.
-    while n < len(lines):
-        s = lines[n]
-        indent2 = g.skip_ws(s,0)
-        if s and not s.isspace() and indent2 <= indent:
-            break # We will rescan lines [n]
-        n += 1
-        result.append(s)
-
-    # g.printList(result,tag='literal block')
-    return n, result
-.. @+node:ekr.20090502071837.71: *8* writeBody & helpers
-def writeBody (self,p):
-
-    trace = False and not g.unitTesting
-   
-    if self.getOption('ignore_noweb_definitions'):
-        # 2011/06/10: Ignore section definition nodes.
-        name = self.isSectionDef(p)
-        if name:
-            if trace: g.trace('section def: %s' % (repr(name)))
-            return
-
-    # remove trailing cruft and split into lines.
-    lines = g.splitLines(p.b)
-
-    if self.getOption('code_mode'):
-        # Important: code mode is no longer documented!
-        if not self.getOption('show_options_doc_parts'):
-            lines = self.handleSpecialDocParts(lines,'@rst-options',
-                retainContents=False)
-        if not self.getOption('show_markup_doc_parts'):
-            lines = self.handleSpecialDocParts(lines,'@rst-markup',
-                retainContents=False)
-        if not self.getOption('show_leo_directives'):
-            lines = self.removeLeoDirectives(lines)
-        lines = self.handleCodeMode(lines)
-    elif self.getOption('doc_only_mode'):
-        # New in version 1.15
-        lines = self.handleDocOnlyMode(p,lines)
-    else:
-        lines = self.handleSpecialDocParts(lines,'@rst-options',
-            retainContents=False)
-        lines = self.handleSpecialDocParts(lines,'@rst-markup',
-            retainContents=self.getOption('generate_rst'))
-        if self.getOption('show_doc_parts_in_rst_mode') is True:
-            pass  # original behaviour, treat as plain text
-        elif self.getOption('show_doc_parts_in_rst_mode'):
-            # use value as class for content
-            lines = self.handleSpecialDocParts(lines,None,
-                retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
-        else:  # option evaluates to false, cut them out
-            lines = self.handleSpecialDocParts(lines,None,
-                retainContents=False)
-        lines = self.removeLeoDirectives(lines)
-        if self.getOption('expand_noweb_references'):
-            # 2011/06/10.
-            lines = self.expandSectionRefs(lines,p,seen=[])
-        if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
-            lines = self.replaceCodeBlockDirectives(lines)
-
-    # Write the lines.
-    s = ''.join(lines)
-
-    # We no longer add newlines to the start of nodes because
-    # we write a blank line after all sections.
-    # s = g.ensureLeadingNewlines(s,1)
-    s = g.ensureTrailingNewlines(s,2)
-    self.write(s)
-.. @+node:ekr.20110610144305.6749: *9* isSectionDef/Ref
-def isSectionDef (self,p):
-    
-    return self.isSectionRef(p.h)
-    
-def isSectionRef (self,s):
-
-    n1 = s.find("<<",0)
-    n2 = s.find(">>",0)
-    return -1 < n1 < n2 and s[n1+2:n2].strip()
-.. @+node:ekr.20110610144305.6750: *9* expandSectionRefs
-def expandSectionRefs (self,lines,p,seen):
-    
-    trace = False and not g.unitTesting
-    
-    if trace: g.trace(p.h,g.callers())
-
-    result = []
-    for s in lines:
-        name = self.isSectionRef(s)
-        if name:
-            p2 = self.findSectionDef(name,p)
-            if p2:
-                g.trace('expanding: %s from %s' % (name,p2.h))
-                result.append(s) ### Maybe: append the section reference line.
-                lines2 = g.splitLines(p2.b)
-                if self.getOption('expand_noweb_recursively'):
-                    if name in seen:
-                        pass # Prevent unbounded recursion
-                    else:
-                        seen.append(name)
-                        result.extend(self.expandSectionRefs(lines2,p,seen))
-                else:
-                    result.extend(lines2)
-            else:
-                # Undefined reference.
-                result.append(s)
-        else:
-            result.append(s)
-
-    return result
-.. @+node:ekr.20110610144305.6751: *9* findSectionDef
-def findSectionDef (self,name,p):
-    
-    for p2 in p.subtree():
-        name2 = self.isSectionDef(p2)
-        if name2:
-            return p2
-    
-    return None
-.. @+node:ekr.20090502071837.72: *9* handleCodeMode & helper
-def handleCodeMode (self,lines):
-
-    '''Handle the preprocessed body text in code mode as follows:
-
-    - Blank lines are copied after being cleaned.
-    - @ @rst-markup lines get copied as is.
-    - Everything else gets put into a code-block directive.'''
-
-    trace = False and not g.unitTesting
-    result = [] ; n = 0 ; code = []
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if (
-            self.isSpecialDocPart(s,'@rst-markup') or (
-                self.getOption('show_doc_parts_as_paragraphs') and
-                self.isSpecialDocPart(s,None)
-            )
-        ):
-            if code:
-                self.finishCodePart(result,code)
-                code = []
-            result.append('')
-            n, lines2 = self.getDocPart(lines,n)
-            # A fix, perhaps dubious, to a bug discussed at
-            # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
-            # lines2 = [z.lstrip() for z in lines2]
-            # g.trace('lines2',lines2)
-            result.extend(lines2)
-        elif not s.strip() and not code:
-            pass # Ignore blank lines before the first code block.
-        else:
-            if not code: # Start the code block.
-                result.append('')
-                result.append(self.code_block_string)
-
-            if trace: g.trace('code line: %s' % repr(s))
-            code.append(s)
-       
-        # elif not code: # Start the code block.
-            # result.append('')
-            # result.append(self.code_block_string)
-            # if trace: g.trace('code line: %s' % repr(s))
-            # code.append(s)
-        # else: # Continue the code block.
-            # if trace: g.trace('code line: %s' % repr(s))
-            # code.append(s)
-
-    if code:
-        self.finishCodePart(result,code)
-        code = []
-
-    # Munge the result so as to keep docutils happy.
-    # Don't use self.rstripList: it's not the same.
-    # g.trace(result)
-    result2 = []
-    for z in result:
-        if z == '': result2.append('\n\n')
-        # 2010/08/27: Fix bug 618482.
-        # elif not z.rstrip(): pass
-        elif z.endswith('\n\n'): result2.append(z) # Leave alone.
-        else: result2.append('%s\n' % z.rstrip())
-
-    return result2
-.. @+node:ekr.20090502071837.73: *10* formatCodeModeLine
-def formatCodeModeLine (self,s,n,numberOption):
-
-    if not s.strip(): s = ''
-
-    if numberOption:
-        return '\t%d: %s' % (n,s)
-    else:
-        return '\t%s' % s
-.. @+node:ekr.20090502071837.74: *10* rstripList
-def rstripList (self,theList):
-
-    '''Removed trailing blank lines from theList.'''
-
-    # 2010/08/27: fix bug 618482.
-    s = ''.join(theList).rstrip()
-    return s.split('\n')
-.. @+node:ekr.20090502071837.75: *10* finishCodePart
-def finishCodePart (self,result,code):
-
-    numberOption = self.getOption('number_code_lines')
-    code = self.rstripList(code)
-    i = 0
-    for line in code:
-        i += 1
-        result.append(self.formatCodeModeLine(line,i,numberOption))
-.. @+node:ekr.20090502071837.76: *9* handleDocOnlyMode
-def handleDocOnlyMode (self,p,lines):
-
-    '''Handle the preprocessed body text in doc_only mode as follows:
-
-    - Blank lines are copied after being cleaned.
-    - @ @rst-markup lines get copied as is.
-    - All doc parts get copied.
-    - All code parts are ignored.'''
-
-    ignore              = self.getOption('ignore_this_headline')
-    showHeadlines       = self.getOption('show_headlines')
-    showThisHeadline    = self.getOption('show_this_headline')
-    showOrganizers      = self.getOption('show_organizer_nodes')
-
-    result = [] ; n = 0
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if self.isSpecialDocPart(s,'@rst-options'):
-            n, lines2 = self.getDocPart(lines,n) # ignore.
-        elif self.isAnyDocPart(s):
-            # Handle any other doc part, including @rst-markup.
-            n, lines2 = self.getDocPart(lines,n)
-            if lines2: result.extend(lines2)
-    if not result: result = []
-    if showHeadlines:
-        if result or showThisHeadline or showOrganizers or p == self.topNode:
-            # g.trace(len(result),p.h)
-            self.writeHeadlineHelper(p)
-    return result
-.. @+node:ekr.20090502071837.83: *8* writeHeadline & helper
-def writeHeadline (self,p):
-
-    '''Generate an rST section if options permit it.
-    Remove headline commands from the headline first,
-    and never generate an rST section for @rst-option and @rst-options.'''
-
-    docOnly             = self.getOption('doc_only_mode')
-    ignore              = self.getOption('ignore_this_headline')
-    ignoreNowebDefs     = self.getOption('ignore_noweb_definitions')
-    showHeadlines       = self.getOption('show_headlines')
-    showOrganizers      = self.getOption('show_organizer_nodes')
-    showThisHeadline    = self.getOption('show_this_headline')
-
-    if (
-        p == self.topNode or
-        ignore or
-        docOnly or # handleDocOnlyMode handles this.
-        not showHeadlines and not showThisHeadline or
-        # docOnly and not showOrganizers and not thisHeadline or
-        not p.h.strip() and not showOrganizers or
-        not p.b.strip() and not showOrganizers or
-        ignoreNowebDefs and self.isSectionDef(p) # 2011/06/10.
-    ):
-        return
-
-    self.writeHeadlineHelper(p)
-.. @+node:ekr.20090502071837.84: *9* writeHeadlineHelper
-def writeHeadlineHelper (self,p):
-
-    h = p.h
-    if not self.atAutoWrite:
-        h = h.strip()
-
-    # Remove any headline command before writing the headline.
-    i = g.skip_ws(h,0)
-    i = g.skip_id(h,0,chars='@-')
-    word = h [:i].strip()
-    if word:
-        # Never generate a section for these...
-        if word in (
-            '@rst-option','@rst-options',
-            '@rst-no-head','@rst-no-headlines'
-        ):
-            return
-
-        # Remove all other headline commands from the headline.
-        for command in self.headlineCommands:
-            if word == command:
-                h = h [len(word):].strip()
-                break
-
-        # New in Leo 4.4.4.
-        if word.startswith('@'):
-            if self.getOption('strip_at_file_prefixes'):
-                for s in ('@auto','@file','@nosent','@thin',):
-                    if g.match_word(word,0,s):
-                        h = h [len(s):].strip()
-
-    if not h.strip(): return
-
-    if self.getOption('show_sections'):
-        if self.getOption('generate_rst'):
-            self.write(self.underline(h,p)) # Used by @auto-rst.
-        else:
-            self.write('\n%s\n\n' % h)
-    else:
-        self.write('\n**%s**\n\n' % h.replace('*',''))
-.. @+node:ekr.20090502071837.85: *8* writeNode (leoRst)
-def writeNode (self,p):
-
-    '''Format a node according to the options presently in effect.'''
-
-    self.initCodeBlockString(p)
-    self.scanAllOptions(p)
-
-    if 0:
-        g.trace('%24s code_mode %s' % (p.h,self.getOption('code_mode')))
-
-    h = p.h.strip()
-
-    if self.getOption('preformat_this_node'):
-        self.http_addNodeMarker(p)
-        self.writePreformat(p)
-        p.moveToThreadNext()
-    elif self.getOption('ignore_this_tree'):
-        p.moveToNodeAfterTree()
-    elif self.getOption('ignore_this_node'):
-        p.moveToThreadNext()
-    elif g.match_word(h,0,'@rst-options') and not self.getOption('show_options_nodes'):
-        p.moveToThreadNext()
-    else:
-        self.http_addNodeMarker(p)
-        self.writeHeadline(p)
-        self.writeBody(p)
-        p.moveToThreadNext()
-.. @+node:ekr.20090502071837.86: *8* writePreformat
-def writePreformat (self,p):
-
-    '''Write p's body text lines as if preformatted.
-
-     ::
-
-        line 1
-        line 2 etc.
-    '''
-
-    # g.trace(p.h,g.callers())
-
-    lines = p.b.split('\n')
-    lines = [' '*4 + z for z in lines]
-    lines.insert(0,'::\n')
-
-    s = '\n'.join(lines)
-    if s.strip():
-        self.write('%s\n\n' % s)
-.. @+node:ekr.20090502071837.87: *8* writeTree
-def writeTree(self,p,fn):
-
-    '''Write p's tree to self.outputFile.'''
-
-    self.scanAllOptions(p)
-
-    if self.getOption('generate_rst'):
-        if self.getOption('generate_rst_header_comment'):
-            self.write(self.rstComment(
-                'rst3: filename: %s\n\n' % fn))
-
-    # We can't use an iterator because we may skip parts of the tree.
-    p = p.copy() # Only one copy is needed for traversal.
-    after = p.nodeAfterTree()
-    while p and p != after:
-        self.writeNode(p) # Side effect: advances p.
-.. @+node:ekr.20090502071837.67: *6* writeNodeToString
-def writeNodeToString (self,p=None,ext=None):
-
-    '''Scan p's tree (defaults to presently selected tree) looking for @rst nodes.
-    Convert the first node found to an ouput of the type specified by ext.
-
-    The @rst may or may not be followed by a filename; the filename is *ignored*,
-    and its type does not affect ext or the output generated in any way.
-
-    ext should start with a period: .html, .tex or None (specifies rst output).
-
-    Returns (p, s), where p is the position of the @rst node and s is the converted text.'''
-
-    c = self.c ; current = p or c.p
-
-    for p in current.self_and_parents():
-        if p.h.startswith('@rst'):
-            return self.processTree(p,ext=ext,toString=True,justOneFile=True)
-    else:
-        return self.processTree(current,ext=ext,toString=True,justOneFile=True)
-.. @+node:ekr.20090512153903.5803: *6* writeAtAutoFile
-def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
-
-    '''Write an @auto tree containing imported rST code.
-    The caller will close the output file.'''
-
-    try:
-        self.trialWrite = trialWrite
-        self.atAutoWrite = True
-        self.initAtAutoWrite(p,fileName,outputFile)
-        self.topNode = p.copy() # Indicate the top of this tree.
-        self.topLevel = p.level()
-        after = p.nodeAfterTree()
-        ok = self.isSafeWrite(p)
-        if ok:
-            p = p.firstChild() # A hack: ignore the root node.
-            while p and p != after:
-                self.writeNode(p) # side effect: advances p
-    finally:
-        self.atAutoWrite = False
-    return ok
-.. @+node:ekr.20090513073632.5733: *7* initAtAutoWrite (rstCommands)
-def initAtAutoWrite(self,p,fileName,outputFile):
-
-    # Set up for a standard write.
-    self.createDefaultOptionsDict()
-    self.nodeOptionDict = {}
-    self.scanAllOptions(p)
-    self.init_write(p)
-    self.preprocessTree(p) # Allow @ @rst-options, for example.
-    # Do the overrides.
-    self.outputFile = outputFile
-    # Set underlining characters.
-    # It makes no sense to use user-defined
-    # underlining characters in @auto-rst.
-    d = p.v.u.get('rst-import',{})
-    underlines2 = d.get('underlines2','')
-        # Do *not* set a default for overlining characters.
-    if len(underlines2) > 1:
-        underlines2 = underlines2[0]
-        g.trace('too many top-level underlines, using %s' % (
-            underlines2),color='blue')
-    underlines1 = d.get('underlines1','')
-    # Bug fix:  2010/05/26: pad underlines with default characters.
-    default_underlines = '=+*^~"\'`-:><_'
-    if underlines1:
-        for ch in default_underlines[1:]:
-            if ch not in underlines1:
-                underlines1 = underlines1 + ch
-    else:
-        underlines1 = default_underlines
-    self.atAutoWriteUnderlines   = underlines2 + underlines1
-    self.underlines1 = underlines1
-    self.underlines2 = underlines2
-.. @+node:ekr.20091228080620.6499: *7* isSafeWrite
-def isSafeWrite (self,p):
-
-    '''Return True if node p contributes nothing but
-    rst-options to the write.'''
-
-    if self.trialWrite or not p.isAtAutoRstNode():
-        return True # Trial writes are always safe.
-
-    lines = g.splitLines(p.b)
-    for z in lines:
-        if z.strip() and not z.startswith('@') and not z.startswith('.. '):
-            # A real line that will not be written.
-            g.es('unsafe @auto-rst',color='red')
-            g.es('body text will be ignored in\n',p.h)
-            return False
-    else:
-        return True
-.. @+node:ekr.20090502071837.41: *5* Options
-.. @+node:ekr.20090502071837.42: *6* createDefaultOptionsDict
-def createDefaultOptionsDict(self):
-
-    # Important: these must be munged names.
-    self.defaultOptionsDict = {
-        # Http options...
-        'clear_http_attributes':   False,
-        'http_server_support':     False,
-        'http_attributename':      'rst_http_attribute',
-        'node_begin_marker':       'http-node-marker-',
-        # Path options...
-        'default_path': None, # New in Leo 4.4a4 # Bug fix: must be None, not ''.
-        'stylesheet_name': 'default.css',
-        'stylesheet_path': None, # Bug fix: must be None, not ''.
-        'stylesheet_embed': True,
-        'publish_argv_for_missing_stylesheets': None,
-        # Global options...
-        'call_docutils': True, # 2010/08/05
-        'code_block_string': '',
-        'number_code_lines': True,
-        'underline_characters': '''#=+*^~"'`-:><_''',
-        'verbose':True,
-        'write_intermediate_file': False, # Used only if generate_rst is True.
-        'write_intermediate_extension': '.txt',
-        # Mode options...
-        'code_mode': False, # True: generate rst markup from @code and @doc parts.
-        'doc_only_mode': False, # True: generate only from @doc parts.
-        'generate_rst': True, # True: generate rst markup.  False: generate plain text.
-        'generate_rst_header_comment': True,
-            # True generate header comment (requires generate_rst option)
-        # Formatting options that apply to both code and rst modes....
-        'expand_noweb_references': False,
-        'ignore_noweb_definitions': False,
-        'expand_noweb_recursively': True,
-        'show_headlines': True,  # Can be set by @rst-no-head headlines.
-        'show_organizer_nodes': True,
-        'show_options_nodes': False,
-        'show_sections': True,
-        'strip_at_file_prefixes': True,
-        'show_doc_parts_in_rst_mode': True,
-        # Formatting options that apply only to code mode.
-        'show_doc_parts_as_paragraphs': False,
-        'show_leo_directives': True,
-        'show_markup_doc_parts': False,
-        'show_options_doc_parts': False,
-    }
-.. @+node:ekr.20090502071837.43: *6* dumpSettings (debugging)
-def dumpSettings (self):
-
-    d = self.optionsDict
-    keys = sorted(d)
-
-    g.pr('present settings...')
-    for key in keys:
-        g.pr('%20s %s' % (key,d.get(key)))
-.. @+node:ekr.20090502071837.44: *6* getOption & setOption
-def getOption (self,name):
-
-    # 2010/08/12: munging names here is safe because setOption munges.
-    # g.trace(name,self.optionsDict.get(self.munge(name)))
-    return self.optionsDict.get(self.munge(name))
-
-def setOption (self,name,val,tag):
-
-    self.optionsDict [self.munge(name)] = val
-.. @+node:ekr.20090502071837.45: *6* initCodeBlockString
-def initCodeBlockString(self,p):
-
-    trace = False and not g.unitTesting
-    c = self.c
-    # if trace: os.system('cls')
-    d = c.scanAllDirectives(p)
-    language = d.get('language')
-    if language is None: language = 'python'
-    else: language = language.lower()
-    syntax = SilverCity is not None
-
-    if trace: g.trace('language',language,'language.title()',language.title(),p.h)
-
-    # Note: lines that end with '\n\n' are a signal to handleCodeMode.
-    s = self.getOption('code_block_string')
-    if s:
-        self.code_block_string = s.replace('\\n','\n')
-    elif syntax and language in ('python','ruby','perl','c'):
-        self.code_block_string = '**code**:\n\n.. code-block:: %s\n\n' % (
-            language.title())
-    else:
-        self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n\n'
-.. @+node:ekr.20090502071837.46: *6* preprocessTree & helpers
-def preprocessTree (self,root):
-
-    self.nodeOptionDict = {}
-
-    # Bug fix 12/4/05: must preprocess parents too.
-    for p in root.parents():
-        self.preprocessNode(p)
-
-    for p in root.self_and_subtree():
-        self.preprocessNode(p)
-
-    if 0:
-        g.trace(root.h)
-        for key in self.nodeOptionDict.keys():
-            g.trace(key)
-            g.printDict(self.nodeOptionDict.get(key))
-.. @+node:ekr.20090502071837.47: *7* preprocessNode
-def preprocessNode (self,p):
-
-    d = self.nodeOptionDict.get(p.v)
-    if d is None:
-        d = self.scanNodeForOptions(p)
-        self.nodeOptionDict [p.v] = d
-.. @+node:ekr.20090502071837.48: *7* parseOptionLine
-def parseOptionLine (self,s):
-
-    '''Parse a line containing name=val and return (name,value) or None.
-
-    If no value is found, default to True.'''
-
-    s = s.strip()
-    if s.endswith(','): s = s[:-1]
-    # Get name.  Names may contain '-' and '_'.
-    i = g.skip_id(s,0,chars='-_')
-    name = s [:i]
-    if not name: return None
-    j = g.skip_ws(s,i)
-    if g.match(s,j,'='):
-        val = s [j+1:].strip()
-        # g.trace(val)
-        return name,val
-    else:
-        # g.trace('*True')
-        return name,'True'
-.. @+node:ekr.20090502071837.49: *7* scanForOptionDocParts
-def scanForOptionDocParts (self,p,s):
-
-    '''Return a dictionary containing all options from @rst-options doc parts in p.
-    Multiple @rst-options doc parts are allowed: this code aggregates all options.
-    '''
-
-    d = {} ; n = 0 ; lines = g.splitLines(s)
-    while n < len(lines):
-        line = lines[n] ; n += 1
-        if line.startswith('@'):
-            i = g.skip_ws(line,1)
-            for kind in ('@rst-options','@rst-option'):
-                if g.match_word(line,i,kind):
-                    # Allow options on the same line.
-                    line = line[i+len(kind):]
-                    d.update(self.scanOption(p,line))
-                    # Add options until the end of the doc part.
-                    while n < len(lines):
-                        line = lines[n] ; n += 1 ; found = False
-                        for stop in ('@c','@code', '@'):
-                            if g.match_word(line,0,stop):
-                                found = True ; break
-                        if found:
-                            break
-                        else:
-                            d.update(self.scanOption(p,line))
-                    break
-    return d
-.. @+node:ekr.20090502071837.50: *7* scanHeadlineForOptions
-def scanHeadlineForOptions (self,p):
-
-    '''Return a dictionary containing the options implied by p's headline.'''
-
-    h = p.h.strip()
-
-    if p == self.topNode:
-        return {} # Don't mess with the root node.
-    elif g.match_word(h,0,'@rst-option'):
-        s = h [len('@rst-option'):]
-        return self.scanOption(p,s)
-    elif g.match_word(h,0,'@rst-options'):
-        return self.scanOptions(p,p.b)
-    else:
-        # Careful: can't use g.match_word because options may have '-' chars.
-        i = g.skip_id(h,0,chars='@-')
-        word = h[0:i]
-
-        for option,ivar,val in (
-            ('@rst',                'code_mode',False),
-            ('@rst-code',           'code_mode',True),
-            ('@rst-default-path',   'default_prefix',''),
-            ('@rst-doc-only',       'doc_only_mode',True),
-            ('@rst-head',           'show_this_headline',True),
-            # ('@rst-head' ,        'show_headlines',False),
-            ('@rst-ignore',         'ignore_this_tree',True),
-            ('@rst-ignore-node',    'ignore_this_node',True),
-            ('@rst-ignore-tree',    'ignore_this_tree',True),
-            ('@rst-no-head',        'ignore_this_headline',True),
-            ('@rst-preformat',      'preformat_this_node',True),
-        ):
-            if word == option:
-                d = { ivar: val }
-                # Special case: code mode and doc-only modes are linked.
-                if ivar == 'code_mode':
-                    d ['doc_only_mode'] = False
-                elif ivar == 'doc_only_mode':
-                    d ['code_mode'] = False
-                # Special case: Treat a bare @rst like @rst-no-head
-                if h == '@rst':
-                    d ['ignore_this_headline'] = True
-                # g.trace(repr(h),d)
-                return d
-
-        if h.startswith('@rst'):
-            g.trace('unknown kind of @rst headline',p.h,g.callers(4))
-
-        return {}
-.. @+node:ekr.20090502071837.51: *7* scanNodeForOptions
-def scanNodeForOptions (self,p):
-
-    '''Return a dictionary containing all the option-name:value entries in p.
-
-    Such entries may arise from @rst-option or @rst-options in the headline,
-    or from @ @rst-options doc parts.'''
-    
-    trace = False and not g.unitTesting
-
-    h = p.h
-
-    d = self.scanHeadlineForOptions(p)
-
-    d2 = self.scanForOptionDocParts(p,p.b)
-
-    # A fine point: body options over-ride headline options.
-    d.update(d2)
-    
-    if trace and d:
-        g.trace(h)
-        for z in sorted(d):
-            print('    %s: %s' % (z,d.get(z)))
-
-    return d
-.. @+node:ekr.20090502071837.52: *7* scanOption
-def scanOption (self,p,s):
-
-    '''Return { name:val } if s is a line of the form name=val.
-    Otherwise return {}'''
-
-    if not s.strip() or s.strip().startswith('..'): return {}
-
-    data = self.parseOptionLine(s)
-
-    if data:
-        name,val = data
-        if self.munge(name) in list(self.defaultOptionsDict.keys()):
-            if   val.lower() == 'true': val = True
-            elif val.lower() == 'false': val = False
-            # g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
-            return { self.munge(name): val }
-        else:
-            g.es_print('ignoring unknown option: %s' % (name),color='red')
-            return {}
-    else:
-        g.trace(repr(s))
-        s2 = 'bad rst3 option in %s: %s' % (p.h,s)
-        g.es_print(s2,color='red')
-        return {}
-.. @+node:ekr.20090502071837.53: *7* scanOptions
-def scanOptions (self,p,s):
-
-    '''Return a dictionary containing all the options in s.'''
-
-    d = {}
-
-    for line in g.splitLines(s):
-        d2 = self.scanOption(p,line)
-        if d2: d.update(d2)
-
-    return d
-.. @+node:ekr.20090502071837.54: *6* scanAllOptions & helpers
-# Once an option is seen, no other related options in ancestor nodes have any effect.
-
-def scanAllOptions(self,p):
-
-    '''Scan position p and p's ancestors looking for options,
-    setting corresponding ivars.
-    '''
-
-    self.initOptionsFromSettings() # Must be done on every node.
-    self.handleSingleNodeOptions(p)
-    seen = self.singleNodeOptions[:] # Suppress inheritance of single-node options.
-
-    # g.trace('-'*20)
-    for p in p.self_and_parents():
-        d = self.nodeOptionDict.get(p.v,{})
-        # g.trace(p.h,d)
-        for key in d.keys():
-            ivar = self.munge(key)
-            if not ivar in seen:
-                seen.append(ivar)
-                val = d.get(key)
-                self.setOption(key,val,p.h)
-
-    if self.rst3_all:
-        self.setOption("generate_rst", True, "rst3_all")
-        self.setOption("generate_rst_header_comment",True, "rst3_all")
-        self.setOption("http_server_support", True, "rst3_all")
-        self.setOption("write_intermediate_file", True, "rst3_all")
-.. @+node:ekr.20090502071837.55: *7* initOptionsFromSettings
-def initOptionsFromSettings (self):
-
-    c = self.c
-
-    d = self.defaultOptionsDict
-    keys = sorted(d)
-
-    for key in keys:
-        for getter,kind in (
-            (c.config.getBool,'@bool'),
-            (c.config.getString,'@string'),
-            (d.get,'default'),
-        ):
-            val = getter(key)
-            if kind == 'default' or val is not None:
-                self.setOption(key,val,'initOptionsFromSettings')
-                break
-
-    # 2010/08/12: Script settings override everything else.
-    d2 = self.scriptSettingsDict or {}
-    for key in d2.keys():
-        val = d2.get(key)
-        # g.trace(key,val)
-        self.setOption(key,val,'initOptionsFromSettings')
-
-    # Special case.
-    if self.getOption('http_server_support') and not mod_http:
-        g.es('No http_server_support: can not import mod_http plugin',color='red')
-        self.setOption('http_server_support',False)
-.. @+node:ekr.20090502071837.56: *7* handleSingleNodeOptions
-def handleSingleNodeOptions (self,p):
-
-    '''Init the settings of single-node options from the tnodeOptionsDict.
-
-    All such options default to False.'''
-
-    d = self.nodeOptionDict.get(p.v, {} )
-
-    for ivar in self.singleNodeOptions:
-        val = d.get(ivar,False)
-        #g.trace('%24s %8s %s' % (ivar,val,p.h))
-        self.setOption(ivar,val,p.h)
-
-.. @+node:ekr.20090502071837.42: *5* createDefaultOptionsDict
-def createDefaultOptionsDict(self):
-
-    # Important: these must be munged names.
-    self.defaultOptionsDict = {
-        # Http options...
-        'clear_http_attributes':   False,
-        'http_server_support':     False,
-        'http_attributename':      'rst_http_attribute',
-        'node_begin_marker':       'http-node-marker-',
-        # Path options...
-        'default_path': None, # New in Leo 4.4a4 # Bug fix: must be None, not ''.
-        'stylesheet_name': 'default.css',
-        'stylesheet_path': None, # Bug fix: must be None, not ''.
-        'stylesheet_embed': True,
-        'publish_argv_for_missing_stylesheets': None,
-        # Global options...
-        'call_docutils': True, # 2010/08/05
-        'code_block_string': '',
-        'number_code_lines': True,
-        'underline_characters': '''#=+*^~"'`-:><_''',
-        'verbose':True,
-        'write_intermediate_file': False, # Used only if generate_rst is True.
-        'write_intermediate_extension': '.txt',
-        # Mode options...
-        'code_mode': False, # True: generate rst markup from @code and @doc parts.
-        'doc_only_mode': False, # True: generate only from @doc parts.
-        'generate_rst': True, # True: generate rst markup.  False: generate plain text.
-        'generate_rst_header_comment': True,
-            # True generate header comment (requires generate_rst option)
-        # Formatting options that apply to both code and rst modes....
-        'expand_noweb_references': False,
-        'ignore_noweb_definitions': False,
-        'expand_noweb_recursively': True,
-        'show_headlines': True,  # Can be set by @rst-no-head headlines.
-        'show_organizer_nodes': True,
-        'show_options_nodes': False,
-        'show_sections': True,
-        'strip_at_file_prefixes': True,
-        'show_doc_parts_in_rst_mode': True,
-        # Formatting options that apply only to code mode.
-        'show_doc_parts_as_paragraphs': False,
-        'show_leo_directives': True,
-        'show_markup_doc_parts': False,
-        'show_options_doc_parts': False,
-    }
-.. @+node:ekr.20090502071837.71: *5* writeBody & helpers
-def writeBody (self,p):
-
-    trace = False and not g.unitTesting
-   
-    if self.getOption('ignore_noweb_definitions'):
-        # 2011/06/10: Ignore section definition nodes.
-        name = self.isSectionDef(p)
-        if name:
-            if trace: g.trace('section def: %s' % (repr(name)))
-            return
-
-    # remove trailing cruft and split into lines.
-    lines = g.splitLines(p.b)
-
-    if self.getOption('code_mode'):
-        # Important: code mode is no longer documented!
-        if not self.getOption('show_options_doc_parts'):
-            lines = self.handleSpecialDocParts(lines,'@rst-options',
-                retainContents=False)
-        if not self.getOption('show_markup_doc_parts'):
-            lines = self.handleSpecialDocParts(lines,'@rst-markup',
-                retainContents=False)
-        if not self.getOption('show_leo_directives'):
-            lines = self.removeLeoDirectives(lines)
-        lines = self.handleCodeMode(lines)
-    elif self.getOption('doc_only_mode'):
-        # New in version 1.15
-        lines = self.handleDocOnlyMode(p,lines)
-    else:
-        lines = self.handleSpecialDocParts(lines,'@rst-options',
-            retainContents=False)
-        lines = self.handleSpecialDocParts(lines,'@rst-markup',
-            retainContents=self.getOption('generate_rst'))
-        if self.getOption('show_doc_parts_in_rst_mode') is True:
-            pass  # original behaviour, treat as plain text
-        elif self.getOption('show_doc_parts_in_rst_mode'):
-            # use value as class for content
-            lines = self.handleSpecialDocParts(lines,None,
-                retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
-        else:  # option evaluates to false, cut them out
-            lines = self.handleSpecialDocParts(lines,None,
-                retainContents=False)
-        lines = self.removeLeoDirectives(lines)
-        if self.getOption('expand_noweb_references'):
-            # 2011/06/10.
-            lines = self.expandSectionRefs(lines,p,seen=[])
-        if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
-            lines = self.replaceCodeBlockDirectives(lines)
-
-    # Write the lines.
-    s = ''.join(lines)
-
-    # We no longer add newlines to the start of nodes because
-    # we write a blank line after all sections.
-    # s = g.ensureLeadingNewlines(s,1)
-    s = g.ensureTrailingNewlines(s,2)
-    self.write(s)
-.. @+node:ekr.20110610144305.6749: *6* isSectionDef/Ref
-def isSectionDef (self,p):
-    
-    return self.isSectionRef(p.h)
-    
-def isSectionRef (self,s):
-
-    n1 = s.find("<<",0)
-    n2 = s.find(">>",0)
-    return -1 < n1 < n2 and s[n1+2:n2].strip()
-.. @+node:ekr.20110610144305.6750: *6* expandSectionRefs
-def expandSectionRefs (self,lines,p,seen):
-    
-    trace = False and not g.unitTesting
-    
-    if trace: g.trace(p.h,g.callers())
-
-    result = []
-    for s in lines:
-        name = self.isSectionRef(s)
-        if name:
-            p2 = self.findSectionDef(name,p)
-            if p2:
-                g.trace('expanding: %s from %s' % (name,p2.h))
-                result.append(s) ### Maybe: append the section reference line.
-                lines2 = g.splitLines(p2.b)
-                if self.getOption('expand_noweb_recursively'):
-                    if name in seen:
-                        pass # Prevent unbounded recursion
-                    else:
-                        seen.append(name)
-                        result.extend(self.expandSectionRefs(lines2,p,seen))
-                else:
-                    result.extend(lines2)
-            else:
-                # Undefined reference.
-                result.append(s)
-        else:
-            result.append(s)
-
-    return result
-.. @+node:ekr.20110610144305.6751: *6* findSectionDef
-def findSectionDef (self,name,p):
-    
-    for p2 in p.subtree():
-        name2 = self.isSectionDef(p2)
-        if name2:
-            return p2
-    
-    return None
-.. @+node:ekr.20090502071837.72: *6* handleCodeMode & helper
-def handleCodeMode (self,lines):
-
-    '''Handle the preprocessed body text in code mode as follows:
-
-    - Blank lines are copied after being cleaned.
-    - @ @rst-markup lines get copied as is.
-    - Everything else gets put into a code-block directive.'''
-
-    trace = False and not g.unitTesting
-    result = [] ; n = 0 ; code = []
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if (
-            self.isSpecialDocPart(s,'@rst-markup') or (
-                self.getOption('show_doc_parts_as_paragraphs') and
-                self.isSpecialDocPart(s,None)
-            )
-        ):
-            if code:
-                self.finishCodePart(result,code)
-                code = []
-            result.append('')
-            n, lines2 = self.getDocPart(lines,n)
-            # A fix, perhaps dubious, to a bug discussed at
-            # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
-            # lines2 = [z.lstrip() for z in lines2]
-            # g.trace('lines2',lines2)
-            result.extend(lines2)
-        elif not s.strip() and not code:
-            pass # Ignore blank lines before the first code block.
-        else:
-            if not code: # Start the code block.
-                result.append('')
-                result.append(self.code_block_string)
-
-            if trace: g.trace('code line: %s' % repr(s))
-            code.append(s)
-       
-        # elif not code: # Start the code block.
-            # result.append('')
-            # result.append(self.code_block_string)
-            # if trace: g.trace('code line: %s' % repr(s))
-            # code.append(s)
-        # else: # Continue the code block.
-            # if trace: g.trace('code line: %s' % repr(s))
-            # code.append(s)
-
-    if code:
-        self.finishCodePart(result,code)
-        code = []
-
-    # Munge the result so as to keep docutils happy.
-    # Don't use self.rstripList: it's not the same.
-    # g.trace(result)
-    result2 = []
-    for z in result:
-        if z == '': result2.append('\n\n')
-        # 2010/08/27: Fix bug 618482.
-        # elif not z.rstrip(): pass
-        elif z.endswith('\n\n'): result2.append(z) # Leave alone.
-        else: result2.append('%s\n' % z.rstrip())
-
-    return result2
-.. @+node:ekr.20090502071837.73: *7* formatCodeModeLine
-def formatCodeModeLine (self,s,n,numberOption):
-
-    if not s.strip(): s = ''
-
-    if numberOption:
-        return '\t%d: %s' % (n,s)
-    else:
-        return '\t%s' % s
-.. @+node:ekr.20090502071837.74: *7* rstripList
-def rstripList (self,theList):
-
-    '''Removed trailing blank lines from theList.'''
-
-    # 2010/08/27: fix bug 618482.
-    s = ''.join(theList).rstrip()
-    return s.split('\n')
-.. @+node:ekr.20090502071837.75: *7* finishCodePart
-def finishCodePart (self,result,code):
-
-    numberOption = self.getOption('number_code_lines')
-    code = self.rstripList(code)
-    i = 0
-    for line in code:
-        i += 1
-        result.append(self.formatCodeModeLine(line,i,numberOption))
-.. @+node:ekr.20090502071837.76: *6* handleDocOnlyMode
-def handleDocOnlyMode (self,p,lines):
-
-    '''Handle the preprocessed body text in doc_only mode as follows:
-
-    - Blank lines are copied after being cleaned.
-    - @ @rst-markup lines get copied as is.
-    - All doc parts get copied.
-    - All code parts are ignored.'''
-
-    ignore              = self.getOption('ignore_this_headline')
-    showHeadlines       = self.getOption('show_headlines')
-    showThisHeadline    = self.getOption('show_this_headline')
-    showOrganizers      = self.getOption('show_organizer_nodes')
-
-    result = [] ; n = 0
-    while n < len(lines):
-        s = lines [n] ; n += 1
-        if self.isSpecialDocPart(s,'@rst-options'):
-            n, lines2 = self.getDocPart(lines,n) # ignore.
-        elif self.isAnyDocPart(s):
-            # Handle any other doc part, including @rst-markup.
-            n, lines2 = self.getDocPart(lines,n)
-            if lines2: result.extend(lines2)
-    if not result: result = []
-    if showHeadlines:
-        if result or showThisHeadline or showOrganizers or p == self.topNode:
-            # g.trace(len(result),p.h)
-            self.writeHeadlineHelper(p)
-    return result
+.. @+node:ekr.20111021105253.9478: *3* Most important
 .. @+node:ekr.20111010122531.15568: *4* * @render-rest, @render-html trees
 @language rest
 
@@ -5864,9 +3726,6 @@ I suppose for sophisticated users, something like show/hide-body pane
 would be good commands to have, but that doesn't matter: those
 commands to not increase the burden on the user while she is reading
 the (rendered) docs.
-.. @+node:ekr.20110921094450.6957: *4* Restart vim project
-This requires commands that can be composed.
-.. @+node:ekr.20111021105253.9478: *3* Most important
 .. @+node:ekr.20111019104425.15868: *4* * Render to tex, pdf, rst, etc.
 .. @+node:ekr.20111003232155.6988: *4* * Use c.db for marks & expansion bits
 This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
