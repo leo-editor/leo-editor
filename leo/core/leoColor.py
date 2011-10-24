@@ -299,7 +299,7 @@ leo_color_database = {
     "gray87": "#DEDEDE",
     "gray88": "#E0E0E0",
     "gray89": "#E3E3E3",
-    "gray9": "#171717",
+    "gray9":  "#171717",
     "gray90": "#E5E5E5",
     "gray91": "#E8E8E8",
     "gray92": "#EBEBEB",
@@ -742,10 +742,12 @@ def getColor(name, default=None):
     if name[0] == '#':
         return name
 
-    name = name.replace(' ', '').lower()
+    name = name.replace(' ', '').lower().strip()
 
     if name in leo_color_database:
-        return leo_color_database[name]
+        name2 = leo_color_database[name]
+        # g.trace(name,name2)
+        return name2
 
     if default:
         return getColor(default, default=None)

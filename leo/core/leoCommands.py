@@ -525,7 +525,7 @@ class Commands (object):
             ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
             ('wrap',        wrap,           g.scanAtWrapDirectives),
         )
-
+        
         # Set d by scanning all directives.
         aList = g.get_directives_dict_list(p)
         d = {}
@@ -549,6 +549,8 @@ class Commands (object):
         }
 
         if trace: g.trace(lang_dict.get('language'),g.callers())
+        
+        # g.trace(d.get('tabwidth'))
 
         return d
     #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives

@@ -1570,6 +1570,8 @@ class leoFrame:
         w = g.findTabWidthDirectives(c,p)
         if w is None: w = c.tab_width
         c.frame.setTabWidth(w)
+        c.tab_width = w # 2011/10/24
+        # g.trace(w)
     #@+node:ekr.20061119120006: *4* Icon area convenience methods
     def addIconButton (self,*args,**keys):
         if self.iconBar: return self.iconBar.add(*args,**keys)

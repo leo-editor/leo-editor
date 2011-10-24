@@ -5252,6 +5252,25 @@ A reasonable value is 5000.
 #@+node:ekr.20111003130143.15537: *4* @int colorizer_interrupt_count1 = 10
 The number of times the colorizer's main loop in colorOneChunk executes before pausing to check for events.
 A reasonable value is 10.
+#@+node:ekr.20111024091133.16662: *3* Common colors (At least some *are* used by new colorizer)
+#@+node:ekr.20111024091133.16663: *4* @@@color comment_color = firebrick3
+The color of comments in code parts.
+#@+node:ekr.20111024091133.16664: *4* @@@color cweb_section_name_color = red
+The color of name in @<name@>
+#@+node:ekr.20111024091133.16665: *4* @@@color directive_color = blue
+The color of C/C++ preprocessor directive lines.
+#@+node:ekr.20111024091133.16666: *4* @@@color forth_bracket_range_color = orange
+#@+node:ekr.20111024091133.16667: *4* @@@color keyword_color = blue
+The color of keywords of the present language.
+
+For example, the color of "if", "try" and "except" in Python.
+#@+node:ekr.20111024091133.16668: *4* @@@color latex_background_color = None
+#@+node:ekr.20111024091133.16669: *4* @@@color section_name_brackets_color = blue
+The color of the double angle brackets in << name >>
+
+#@+node:ekr.20111024091133.16670: *4* @@@color string_color = #00aa00
+The color of strings and their delimiters.
+
 #@+node:ekr.20031218072017.434: ** Unused code
 @ignore
 @language python
@@ -5928,5 +5947,32 @@ def remove_border(self,c,w):
         elif not s:
             s = white_border
             w.setStyleSheet(s)
+#@+node:ekr.20111023210405.16576: *3* Script: find color tags
+'''Find all tags arguments to colorRangeWithTag'''
+
+# Not useful: most tag arguments are non-literal.
+
+# .colorRangeWithTag(self,s,i,j,tag,delegate='',exclude_match=False):
+    
+for p in p.self_and_subtree():
+    s,i,tag = p.b,0,'.colorRangeWithTag('
+    while True:
+        progress = i
+        i = s.find(tag,i)
+        if i > -1:
+            j = s.find(')',i)
+            k = s.find('\n',i)
+            if -1 < j < k:
+                args = s[i+len(tag):j].strip()
+                print(args)
+                i = j
+            elif k > -1:
+                i = k
+            else:
+                break
+            assert progress < i
+        else:
+            break
+print('done')
 #@-all
 #@-leo

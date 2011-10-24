@@ -4803,6 +4803,8 @@ class editCommandsClass (baseEditCommandsClass):
     def doPlainTab(self,s,i,tab_width,w):
 
         '''Insert spaces equivalent to one tab.'''
+        
+        g.trace(tab_width)
 
         start,end = g.getLine(s,i)
         s2 = s[start:i]
@@ -4886,7 +4888,9 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051026171121.1: *5* updateAutoIndent (leoEditCommands)
     def updateAutoIndent (self,p,w):
 
-        c = self.c ; d = c.scanAllDirectives(p)
+        trace = False and not g.unitTesting
+        c = self.c
+        d = c.scanAllDirectives(p)
         tab_width = d.get("tabwidth",c.tab_width)
         # Get the previous line.
         s = w.getAllText()
@@ -4894,7 +4898,6 @@ class editCommandsClass (baseEditCommandsClass):
         i = g.skip_to_start_of_line(s,ins)
         i,j = g.getLine(s,i-1)
         s = s[i:j-1]
-        # g.trace(i,j,repr(s))
 
         # Add the leading whitespace to the present line.
         junk, width = g.skip_leading_ws_with_indent(s,0,tab_width)
@@ -4904,6 +4907,7 @@ class editCommandsClass (baseEditCommandsClass):
             # For Python: increase auto-indent after colons.
             if g.findLanguageDirectives(c,p) == 'python':
                 width += abs(tab_width)
+
         if self.smartAutoIndent:
             # Determine if prev line has unclosed parens/brackets/braces
             bracketWidths = [width] ; tabex = 0
@@ -4915,8 +4919,11 @@ class editCommandsClass (baseEditCommandsClass):
                 elif s [i] in '}])' and len(bracketWidths) > 1:
                     bracketWidths.pop()
             width = bracketWidths.pop()
+
         ws = g.computeLeadingWhitespace(width,tab_width)
         if ws:
+            if trace: g.trace('width: %s, tab_width: %s, ws: %s' % (
+                width,tab_width,repr(ws)))
             i = w.getInsertPoint()
             w.insert(i,ws)
             w.setInsertPoint(i+len(ws))
@@ -4953,7 +4960,8 @@ class editCommandsClass (baseEditCommandsClass):
                 w.setInsertPoint(i+1)
     #@+node:ekr.20051026092433: *5* updateTab
     def updateTab (self,p,w,smartTab=True):
-
+        
+        trace = False and not g.unitTesting
         c = self.c
 
         # g.trace('tab_width',tab_width)
@@ -4966,6 +4974,7 @@ class editCommandsClass (baseEditCommandsClass):
         else:
             d = c.scanAllDirectives(p)
             tab_width = d.get("tabwidth",c.tab_width)
+            if trace: g.trace(tab_width)
             # Get the preceeding characters.
             s = w.getAllText()
             # start = g.skip_to_start_of_line(s,i)
@@ -4980,7 +4989,9 @@ class editCommandsClass (baseEditCommandsClass):
             doSmartTab = (smartTab and c.smart_tab and i == start)
                 # Truly at the start of the line.
                 # and not after # Nothing *at all* after the cursor.
-            # g.trace(doSmartTab,'i %s start %s after %s' % (i,start,repr(after)))
+                
+            if trace: g.trace('smartTab',doSmartTab,'tab_width',tab_width)
+                # 'i %s start %s after %s' % (i,start,repr(after)))
 
             if doSmartTab:
                 self.updateAutoIndent(p,w)
