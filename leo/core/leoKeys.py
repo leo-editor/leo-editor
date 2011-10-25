@@ -2228,10 +2228,11 @@ class keyHandlerClass:
         result.append('\n'+legend)
         sep = '-' * n1
         for prefix in (
-            'Alt+Ctrl+Shift', 'Alt+Shift', 'Alt+Ctrl', 'Alt+Key','Alt',
-            'Ctrl+Shift', 'Ctrl', 'Shift',
-            'Meta+Ctrl+Shift', 'Meta+Shift', 'Meta+Ctrl', 'Meta+Key','Meta',
-            # Meta support
+            'Alt+Ctrl+Shift','Alt+Ctrl','Alt+Key','Alt+Shift','Alt',
+            'Ctrl+Meta+Shift','Ctrl+Meta','Ctrl+Shift','Ctrl',
+            'Meta+Key','Meta+Shift','Meta',
+            'Shift',
+            # 2011/10/25: Careful: longer prefixes must come before shorter prefixes.
         ):
             data2 = []
             for item in data:
@@ -4059,6 +4060,7 @@ class keyHandlerClass:
                 s = last
         if s.endswith(' '):
             s = s[:-1]+'Space' # 2010/11/06
+
         # g.trace(stroke,s)
         return g.choose(brief,s,'<%s>' % s)
     #@+node:ekr.20110606004638.16929: *4* k.stroke2char

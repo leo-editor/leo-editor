@@ -12489,6 +12489,16 @@ Something else about the undo code:
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/800312
+#@+node:ekr.20111025062953.16480: *4* Fixed Bug 880975: Binding Meta and print-bindings
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/880975
+
+Bug: The Meta+Ctrl section [of print-bindings] is always empty and this makes it
+misleading.
+
+Fix: the prefix list in k.printBindings must be sure that if two prefixes have a
+common leading part the longer prefix appears first in the lists.
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
@@ -22690,10 +22700,11 @@ legend:
     result.append('\n'+legend)
     sep = '-' * n1
     for prefix in (
-        'Alt+Ctrl+Shift', 'Alt+Shift', 'Alt+Ctrl', 'Alt+Key','Alt',
-        'Ctrl+Shift', 'Ctrl', 'Shift',
-        'Meta+Ctrl+Shift', 'Meta+Shift', 'Meta+Ctrl', 'Meta+Key','Meta',
-        # Meta support
+        'Alt+Ctrl+Shift','Alt+Ctrl','Alt+Key','Alt+Shift','Alt',
+        'Ctrl+Meta+Shift','Ctrl+Meta','Ctrl+Shift','Ctrl',
+        'Meta+Key','Meta+Shift','Meta',
+        'Shift',
+        # 2011/10/25: Careful: longer prefixes must come before shorter prefixes.
     ):
         data2 = []
         for item in data:
