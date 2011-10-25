@@ -22214,6 +22214,86 @@ def eventFilter(self, obj, event):
         self.traceEvent(obj,event,tkKey,override)
 
     return override
+#@+node:ekr.20111024175001.16476: *4* Applied patch for bug 800399: Leo should have smart word jumps/deletes
+@nocolor-node
+
+Some editors, such as Eclipse, vim, this Webkit form I type in, and even Word,
+allow to jump over, select and delete words, especially those containing or
+surrounded by special characters, in a smarter way than just "going to the
+beginning of the word before" (back-word) or "going to the end of the next word"
+(forward-word).
+
+E.g. in a line containing "i = ass" (note: multiple spaces) with the cursor at
+the end, Ctrl-BackSpace would delete everything up to the "=", leaving "i =",
+and if the cursor was right behind the "i", Ctrl-Right would position the cursor
+right before the "=", instead of before the "ass", as Leo does now.
+
+They also make deleting easy. Given a python method:
+
+def fun():
+    line1
+    line2
+
+Eclipse's and Webkit's Ctrl-BackSpace, beginning with the cursor behind "line2",
+used multiple times, yield (turn by turn):
+
+def fun():
+    line1
+    [4 spaces left of here]
+
+def fun():
+    line1
+[emtpy line]
+
+def fun():
+    line1
+
+def fun():
+    [4 spaces left of here]
+
+def fun():
+[empty line]
+
+def fun():
+
+def fun
+
+def [1 space left of here]
+
+[empty line]
+
+while Leo's backward-delete-word yields:
+
+def fun():
+    line1
+   [3 spaces left of here ?!]
+
+def fun():
+   [3 spaces left of here ?!]
+
+def
+
+[empty line]
+
+So to say, Leo's word-based commands jump, select and delete more than is useful
+for possibly many users coming from other editors, leaving them only with
+character-based commands.
+
+I have attached two patches that add "-smart" equivalents of the jump, select
+and delete commands.
+
+Users wanting to use these commands can set in their myLeoSettings.leo:
+
+  back-word-smart = Ctrl-LtArrow
+  back-word-smart-extend-selection = Ctrl-Shift-LtArrow
+
+  forward-word-smart = Ctrl-RtArrow
+  forward-word-smart-extend-selection = Ctrl-Shift-RtArrow
+
+  delete-word-smart = Ctrl-Delete
+  backward-delete-word-smart = Ctrl-BackSpace
+
+which overrides the default bindings.
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>

@@ -5916,7 +5916,7 @@ class editCommandsClass (baseEditCommandsClass):
         self.moveWordHelper(event,extend=False,forward=False)
 
     def backwardWordExtendSelection (self,event):
-        '''Extend the selection by moving the cursor to the next word.'''
+        '''Extend the selection by moving the cursor to the previous word.'''
         self.moveWordHelper(event,extend=True,forward=False)
 
     def forwardEndWord (self,event): # New in Leo 4.4.2
@@ -5924,7 +5924,7 @@ class editCommandsClass (baseEditCommandsClass):
         self.moveWordHelper(event,extend=False,forward=True,end=True)
 
     def forwardEndWordExtendSelection (self,event): # New in Leo 4.4.2
-        '''Extend the selection by moving the cursor to the previous word.'''
+        '''Extend the selection by moving the cursor to the next word.'''
         self.moveWordHelper(event,extend=True,forward=True,end=True)
 
     def forwardWord (self,event):
@@ -5932,7 +5932,7 @@ class editCommandsClass (baseEditCommandsClass):
         self.moveWordHelper(event,extend=False,forward=True)
 
     def forwardWordExtendSelection (self,event):
-        '''Extend the selection by moving the cursor to the previous word.'''
+        '''Extend the selection by moving the cursor to the end of the next word.'''
         self.moveWordHelper(event,extend=True,forward=True)
 
     def backwardWordSmart (self,event):
