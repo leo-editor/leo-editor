@@ -1959,6 +1959,9 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         bg = check(bg,'background','white')
         fg = check(fg,'foreground','black')
         
+        if hasattr(obj,'viewport'):
+            obj = obj.viewport()
+        
         obj.setStyleSheet('background-color:%s; color: %s' % (bg,fg))
     #@+node:ekr.20110605121601.18128: *5* setFocus
     def setFocus (self):
@@ -2983,6 +2986,9 @@ class leoQtBody (leoFrame.leoBody):
         bg = check(bg,'background','white')
         fg = check(fg,'foreground','black')
         
+        if hasattr(obj,'viewport'):
+            obj = obj.viewport()
+
         obj.setStyleSheet('background-color:%s; color: %s' % (bg,fg))
         
         # g.trace(obj.styleSheet())
@@ -7585,7 +7591,7 @@ class leoQtGui(leoGui.leoGui):
                 c.focus_border_width,c.focus_border_color))
        
     def remove_border(self,c,w):
-        
+
         if c.use_focus_border:
             if hasattr(w,'viewport'):
                 w = w.viewport()
