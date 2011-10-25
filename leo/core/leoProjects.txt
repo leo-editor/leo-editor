@@ -18949,6 +18949,9 @@ def setEditorColors (self,bg,fg):
     bg = check(bg,'background','white')
     fg = check(fg,'foreground','black')
     
+    if hasattr(obj,'viewport'):
+        obj = obj.viewport()
+
     obj.setStyleSheet('background-color:%s; color: %s' % (bg,fg))
     
     # g.trace(obj.styleSheet())
@@ -21749,6 +21752,9 @@ def setEditorColors(self,bg,fg):
     bg = check(bg,'background','white')
     fg = check(fg,'foreground','black')
     
+    if hasattr(obj,'viewport'):
+        obj = obj.viewport()
+    
     obj.setStyleSheet('background-color:%s; color: %s' % (bg,fg))
 #@+node:ekr.20110605121601.18187: *5* setEditorColors (qtBody)
 def setEditorColors (self,bg,fg):
@@ -21769,6 +21775,9 @@ def setEditorColors (self,bg,fg):
     bg = check(bg,'background','white')
     fg = check(fg,'foreground','black')
     
+    if hasattr(obj,'viewport'):
+        obj = obj.viewport()
+
     obj.setStyleSheet('background-color:%s; color: %s' % (bg,fg))
     
     # g.trace(obj.styleSheet())
@@ -22103,7 +22112,7 @@ def add_border(self,c,w):
             c.focus_border_width,c.focus_border_color))
    
 def remove_border(self,c,w):
-    
+
     if c.use_focus_border:
         if hasattr(w,'viewport'):
             w = w.viewport()

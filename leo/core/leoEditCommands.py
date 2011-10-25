@@ -1433,8 +1433,11 @@ class editCommandsClass (baseEditCommandsClass):
             'back-sentence-extend-selection':       self.backSentenceExtendSelection,
             'back-word':                            self.backwardWord,
             'back-word-extend-selection':           self.backwardWordExtendSelection,
+            'back-word-smart':                      self.backwardWordSmart,
+            'back-word-smart-extend-selection':     self.backwardWordSmartExtendSelection,
             'backward-delete-char':                 self.backwardDeleteCharacter,
             'backward-delete-word':                 self.backwardDeleteWord,
+            'backward-delete-word-smart':           self.backwardDeleteWordSmart,
             'backward-kill-paragraph':              self.backwardKillParagraph,
             'backward-find-character':              self.backwardFindCharacter,
             'backward-find-character-extend-selection': self.backwardFindCharacterExtendSelection,
@@ -1476,6 +1479,7 @@ class editCommandsClass (baseEditCommandsClass):
             'delete-node-icons':                    self.deleteNodeIcons,
             'delete-spaces':                        self.deleteSpaces,
             'delete-word':                          self.deleteWord,
+            'delete-word-smart':                    self.deleteWordSmart,
             'do-nothing':                           self.doNothing,
             'downcase-region':                      self.downCaseRegion,
             'downcase-word':                        self.downCaseWord,
@@ -1520,6 +1524,8 @@ class editCommandsClass (baseEditCommandsClass):
             'forward-end-word-extend-selection':    self.forwardEndWordExtendSelection, # New in Leo 4.4.2.
             'forward-word':                         self.forwardWord,
             'forward-word-extend-selection':        self.forwardWordExtendSelection,
+            'forward-word-smart':                   self.forwardWordSmart,
+            'forward-word-smart-extend-selection':  self.forwardWordSmartExtendSelection,
             'fully-expand-body-pane':               c.frame.fullyExpandBodyPane,
             'fully-expand-log-pane':                c.frame.fullyExpandLogPane,
             'fully-expand-pane':                    c.frame.fullyExpandPane,
@@ -4491,7 +4497,18 @@ class editCommandsClass (baseEditCommandsClass):
         '''Delete the word in front of the cursor.'''
         self.deleteWordHelper(event,forward=False)
 
-    def deleteWordHelper(self,event,forward):
+    # Patch by NH2.
+    def deleteWordSmart(self,event=None):
+        '''Delete the word at the cursor, treating whitespace
+        and symbols smartly.'''
+        self.deleteWordHelper(event,forward=True,smart=True)
+
+    def backwardDeleteWordSmart(self,event=None):
+        '''Delete the word in front of the cursor, treating whitespace
+        and symbols smartly.'''
+        self.deleteWordHelper(event,forward=False,smart=True)
+
+    def deleteWordHelper(self,event,forward,smart=False):
         c = self.c ; w = self.editWidget(event)
         if not w: return
 
@@ -4500,7 +4517,7 @@ class editCommandsClass (baseEditCommandsClass):
             from_pos,to_pos = w.getSelectionRange()
         else:
             from_pos = w.getInsertPoint()
-            self.moveWordHelper(event,extend=False,forward=forward)
+            self.moveWordHelper(event,extend=False,forward=forward,smart=smart)
             to_pos = w.getInsertPoint()
 
         # For Tk GUI, make sure to_pos > from_pos
@@ -5917,8 +5934,26 @@ class editCommandsClass (baseEditCommandsClass):
     def forwardWordExtendSelection (self,event):
         '''Extend the selection by moving the cursor to the previous word.'''
         self.moveWordHelper(event,extend=True,forward=True)
+
+    def backwardWordSmart (self,event):
+        '''Move the cursor to the beginning of the current or the end of the previous word.'''
+        self.moveWordHelper(event,extend=False,forward=False,smart=True)
+
+    def backwardWordSmartExtendSelection (self,event):
+        '''Extend the selection by moving the cursor to the beginning of the current
+        or the end of the previous word.'''
+        self.moveWordHelper(event,extend=True,forward=False,smart=True)
+
+    def forwardWordSmart (self,event):
+        '''Move the cursor to the end of the current or the beginning of the next word.'''
+        self.moveWordHelper(event,extend=False,forward=True,smart=True)
+
+    def forwardWordSmartExtendSelection (self,event):
+        '''Extend the selection by moving the cursor to the end of the current
+        or the beginning of the next word.'''
+        self.moveWordHelper(event,extend=True,forward=True,smart=True)
     #@+node:ekr.20051218121447: *5* moveWordHelper
-    def moveWordHelper (self,event,extend,forward,end=False):
+    def moveWordHelper (self,event,extend,forward,end=False,smart=False):
 
         '''Move the cursor to the next/previous word.
         The cursor is placed at the start of the word unless end=True'''
@@ -5931,25 +5966,81 @@ class editCommandsClass (baseEditCommandsClass):
         s = w.getAllText() ; n = len(s)
         i = w.getInsertPoint()
 
-        if forward:
-            # Unlike backward-word moves, there are two options...
-            if end:
-                while 0 <= i < n and not g.isWordChar(s[i]):
-                    i += 1
-                while 0 <= i < n and g.isWordChar(s[i]):
-                    i += 1
+        alphanumeric_re = re.compile("\w")
+        whitespace_re = re.compile("\s")
+        simple_whitespace_re = re.compile("[ \t]")
+
+        def is_alphanumeric(c):
+            return alphanumeric_re.match(c) is not None
+        def is_whitespace(c):
+            return whitespace_re.match(c) is not None
+        def is_simple_whitespace(c):
+            return simple_whitespace_re.match(c) is not None
+        def is_line_break(c):
+            return is_whitespace(c) and not is_simple_whitespace(c)
+        def is_special(c):
+            return not is_alphanumeric(c) and not is_whitespace(c)
+
+        def seek_until_changed(i, match_function, step):
+            while 0 <= i < n and match_function(s[i]):
+                i += step
+            return i
+
+        def seek_word_end(i): return seek_until_changed(i,is_alphanumeric,1)
+        def seek_word_start(i): return seek_until_changed(i,is_alphanumeric,-1)
+
+        def seek_simple_whitespace_end(i): return seek_until_changed(i,is_simple_whitespace,1)
+        def seek_simple_whitespace_start(i): return seek_until_changed(i,is_simple_whitespace,-1)
+
+        def seek_special_end(i): return seek_until_changed(i,is_special,1)
+        def seek_special_start(i): return seek_until_changed(i,is_special,-1)
+
+        if smart:
+            if forward:
+                if 0 <= i < n:
+                    if is_alphanumeric(s[i]):
+                        i = seek_word_end(i)
+                        i = seek_simple_whitespace_end(i)
+                    elif is_simple_whitespace(s[i]):
+                        i = seek_simple_whitespace_end(i)
+                    elif is_special(s[i]):
+                        i = seek_special_end(i)
+                        i = seek_simple_whitespace_end(i)
+                    else:
+                       i += 1  # e.g. for newlines
             else:
-                while 0 <= i < n and g.isWordChar(s[i]):
-                    i += 1
-                while 0 <= i < n and not g.isWordChar(s[i]):
-                    i += 1
+                i -= 1  # Shift cursor temporarily by -1 to get easy read access to the prev. char
+                if 0 <= i < n:
+                    if is_alphanumeric(s[i]):
+                        i = seek_word_start(i)
+                        # Do not seek further whitespace here
+                    elif is_simple_whitespace(s[i]):
+                        i = seek_simple_whitespace_start(i)
+                    elif is_special(s[i]):
+                        i = seek_special_start(i)
+                        # Do not seek further whitespace here
+                    else:
+                       i -= 1  # e.g. for newlines
+                i += 1
         else:
-            i -= 1
-            while 0 <= i < n and not g.isWordChar(s[i]):
+            if forward:
+                # Unlike backward-word moves, there are two options...
+                if end:
+                    while 0 <= i < n and not g.isWordChar(s[i]):
+                        i += 1
+                    while 0 <= i < n and g.isWordChar(s[i]):
+                        i += 1
+                else:
+                    while 0 <= i < n and g.isWordChar(s[i]):
+                        i += 1
+                    while 0 <= i < n and not g.isWordChar(s[i]):
+                        i += 1
+            else:
                 i -= 1
-            while 0 <= i < n and g.isWordChar(s[i]):
-                i -= 1
-            i += 1
+                while 0 <= i < n and not g.isWordChar(s[i]):
+                    i -= 1
+                while 0 <= i < n and g.isWordChar(s[i]):
+                    i -= 1
 
         self.moveToHelper(event,i,extend)
     #@+node:ekr.20050920084036.95: *3* paragraph...
