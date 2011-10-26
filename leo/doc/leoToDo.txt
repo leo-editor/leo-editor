@@ -4,8 +4,8 @@
 
 .. @+all
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
-.. @+node:ekr.20111019080436.15850: *3* First: Fix all significant bugs
-.. @+node:ekr.20111025062953.16477: *4* ***** Fix the scrolling bug!
+.. @+node:ekr.20111026091322.16502: *3* First
+.. @+node:ekr.20111025062953.16477: *4* ** Fix the scrolling bug!
 @nocolor-node
 
 Downloaded leo-editor-snapshot-201110240253.zip and tried it out. Noticed that
@@ -14,7 +14,523 @@ mouse cursor to the last line and left-clicked the body pane jumped backwards
 about 10 lines or so as though I had scrolled up. When I dragged the scroll
 button to the end of the pane, the insertion point was still at the end of the
 pane. This does not happen for all panes.
-.. @+node:ekr.20110929165422.15449: *4* ** Test bug fix: noweb expansions in rst3 command
+.. @+node:ekr.20111024170505.16459: *4* * Bug 879331: Redefining a key binding breaks menu items with same binding
+@nocolor-node
+
+http://mail.google.com/mail/#inbox/1331909dd653f3c9
+
+> Now I understand.  If I override the shortcut associated with the menu
+> item, in this case Alt-A, the menu breaks.
+
+This is a serious bug!  The menu item now executes the command bound
+to Alt-A!  Very bad.
+.. @+node:ekr.20111026091322.16500: *5* Report
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/879331
+
+Redefining a binding, say for Alt-a, in x.leo will cause the sort-siblings menu
+(bound to alt-a) to execute the command specified by the command bound to Alt-a!
+
+https://bugs.launchpad.net/leo-editor/+bug/815564
+
+This anomaly only occurs when all of the following conditions are true:
+
+1) There is a global command name X that is the "same" as the root name of the
+file containing a plugin Y. Here, "same" means equal after the command name is
+converted to lower case and all underlines in the root name are replaced by
+dashes.
+
+2) A shortcut (a.k.a. keystroke) is bound to command name X.
+
+When these conditions are true, then the Plugins dropdown menu shows the key
+binding next to the plugin name and left-clicking the plugin name executes the
+global command--and, there is no way to display the plugin's help.
+
+Plugin Help Rendering: Plugin help is rendered by the viewrendered plugin, not
+by the old scrolledmessage.py plugin.
+
+Leo-editor revision: 4433
+OS: Ubuntu 11.04 (natty)
+
+Startup log pane:
+Leo Log Window
+Leo 4.9 final, build 4411, June 21, 2011
+Python 2.7.1, qt version 4.7.2
+linux2
+.. @+node:ekr.20031218072017.2609: *5* app.closeLeoWindow
+def closeLeoWindow (self,frame):
+
+    """Attempt to close a Leo window.
+
+    Return False if the user veto's the close."""
+
+    c = frame.c
+
+    # g.trace('frame',frame,g.callers(4))
+
+    c.endEditing() # Commit any open edits.
+
+    if c.promptingForClose:
+        # There is already a dialog open asking what to do.
+        return False
+
+    g.app.config.writeRecentFilesFile(c)
+        # Make sure .leoRecentFiles.txt is written.
+
+    if c.changed:
+        c.promptingForClose = True
+        veto = frame.promptForSave()
+        c.promptingForClose = False
+        if veto: return False
+
+    g.app.setLog(None) # no log until we reactive a window.
+
+    g.doHook("close-frame",c=c)
+        # This may remove frame from the window list.
+
+    if frame in g.app.windowList:
+        g.app.destroyWindow(frame)
+
+    if g.app.windowList:
+        # Pick a window to activate so we can set the log.
+        frame = g.app.windowList[0]
+        frame.deiconify()
+        frame.lift()
+        frame.c.setLog()
+        frame.c.bodyWantsFocus()
+        frame.c.outerUpdate()
+    elif not g.app.unitTesting:
+        g.app.finishQuit()
+
+    return True # The window has been closed.
+.. @+node:ekr.20031218072017.1723: *5* createMenuEntries (leoMenu)
+def createMenuEntries (self,menu,table,dynamicMenu=False):
+
+    '''Create a menu entry from the table.
+    New in 4.4: this method shows the shortcut in the menu,
+    but this method **never** binds any shortcuts.'''
+
+    c = self.c ; f = c.frame ; k = c.k
+    if g.app.unitTesting: return
+
+    trace = False and not g.unitTesting
+    for data in table:
+        << get label & command or continue >>
+        << compute commandName & accel from label & command >>
+        # Bug fix: 2009/09/30: use canonical stroke.
+        accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
+        stroke = k.shortcutFromSetting(accel,addKey=True) or ''
+        if accelerator:
+            accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
+
+        if trace and commandName == 'sort-siblings':
+            g.trace(repr(stroke),repr(accelerator),commandName)
+            
+        # Add an entry for unit testing and masterMenuHandler.
+        
+        if stroke:
+            d = g.app.unitTestMenusDict
+            aSet = d.get(commandName,set())
+            aSet.add(stroke)
+            d[commandName] = aSet
+    
+        def masterMenuCallback (
+            c=c,k=k,stroke=stroke,
+            command=command,commandName=commandName,event=None
+        ):
+            if trace: g.trace('stroke',stroke)
+            return k.masterMenuHandler(stroke,command,commandName)
+
+        realLabel = self.getRealMenuName(label)
+        amp_index = realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        if sys.platform == 'darwin':
+            << clear accelerator if it is a plain key >>
+
+        # c.add_command ensures that c.outerUpdate is called.
+        if menu:
+            c.add_command(menu,label=realLabel,
+                accelerator=accelerator,
+                command=masterMenuCallback,
+                underline=amp_index)
+.. @+node:ekr.20051021091958: *6* << get label & command or continue >>
+if g.isString(data):
+    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
+    ok = True
+    s = data
+    removeHyphens = s and s[0]=='*'
+    if removeHyphens: s = s[1:]
+    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+    command = s.replace('&','').lower()
+    # if command == 'sort-siblings': g.trace('**1')
+    if label == '-':
+        self.add_separator(menu)
+        continue # That's all.
+else:
+    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+    if ok:
+        if len(data) == 2:
+            # New in 4.4b2: command can be a minibuffer-command name (a string)
+            label,command = data
+            # if command == 'sort-siblings': g.trace('**2')
+        else:
+            # New in 4.4: we ignore shortcuts bound in menu tables.
+            label,junk,command = data
+            # if command == 'sort-siblings': g.trace('**3')
+
+        if label in (None,'-'):
+            self.add_separator(menu)
+            continue # That's all.
+    else:
+        g.trace('bad data in menu table: %s' % repr(data))
+        continue # Ignore bad data
+.. @+node:ekr.20031218072017.1725: *6* << compute commandName & accel from label & command >>
+# New in 4.4b2: command can be a minibuffer-command name (a string)
+minibufferCommand = type(command) == type('')
+accel = None
+if minibufferCommand:
+    commandName = command 
+    command = c.commandsDict.get(commandName)
+    if command:
+        rawKey,bunchList = c.config.getShortcut(commandName)
+        # Pick the first entry that is not a mode.
+        for bunch in bunchList:
+            if not bunch.pane.endswith('-mode'):
+                accel = bunch and bunch.val
+                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+    else:
+        if not g.app.unitTesting and not dynamicMenu:
+            # Don't warn during unit testing.
+            # This may come from a plugin that normally isn't enabled.
+            if trace: g.trace('No inverse for %s' % commandName)
+        continue # There is no way to make this menu entry.
+else:
+    # First, get the old-style name.
+    commandName = self.computeOldStyleShortcutKey(label)
+    rawKey,bunchList = c.config.getShortcut(commandName)
+    for bunch in bunchList:
+        if not bunch.pane.endswith('-mode'):
+            if trace: g.trace('2','%20s' % (bunch.val),commandName)
+            accel = bunch and bunch.val ; break
+    # Second, get new-style name.
+    if not accel:
+        << compute emacs_name >>
+            # Contains the not-so-horrible kludge.
+        if emacs_name:
+            commandName = emacs_name
+            rawKey,bunchList = c.config.getShortcut(emacs_name)
+            # Pick the first entry that is not a mode.
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    accel = bunch.val
+                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    break
+        elif not dynamicMenu:
+            g.trace('No inverse for %s' % commandName)
+.. @+node:ekr.20051021100806.1: *7* << compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+.. @+node:ekr.20060216110502: *6* << clear accelerator if it is a plain key >>
+for z in ('Alt','Ctrl','Command'):
+    if accelerator.find(z) != -1:
+        break # Found.
+else:
+    accelerator = ''
+.. @+node:ekr.20041117083141: *5* get & allies (g.app.config)
+def get (self,c,setting,kind):
+
+    """Get the setting and make sure its type matches the expected type."""
+
+    trace = False and not g.unitTesting
+
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+
+    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+    if c and not isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                # if setting == 'targetlanguage':
+                    # g.trace(c.shortFileName(),setting,val,g.callers())
+                return val
+
+    for d in self.localOptionsList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            # kind2 = d.get('_hash','<no hash>')
+            # if setting == 'targetlanguage':
+                # g.trace(kind2,setting,val,g.callers())
+            return val
+
+    for d in self.dictList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            kind = d.get('_hash','<no hash>')
+            # if setting == 'targetlanguage':
+                # g.trace(kind,setting,val,g.callers())
+            return val
+
+    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+    if c and isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                # if setting == 'targetlanguage':
+                    # g.trace(c.shortFileName(),setting,val,g.callers())
+                return val
+
+    return None
+.. @+node:ekr.20041121143823: *6* getValFromDict
+def getValFromDict (self,d,setting,requestedType,warn=True):
+
+    '''Look up the setting in d. If warn is True, warn if the requested type
+    does not (loosely) match the actual type.
+    returns (val,exists)'''
+
+    bunch = d.get(self.munge(setting))
+    if not bunch: return None,False
+
+    # g.trace(setting,requestedType,bunch.toString())
+    val = bunch.val
+
+    # 2011/10/24: test for an explicit None.
+    if g.isPython3:
+        isNone = val in ('None','none','') # ,None)
+            
+    else:
+        isNone = val in (
+            unicode('None'),unicode('none'),unicode(''),
+            'None','none','') #,None)
+
+    if not self.typesMatch(bunch.kind,requestedType):
+        # New in 4.4: make sure the types match.
+        # A serious warning: one setting may have destroyed another!
+        # Important: this is not a complete test of conflicting settings:
+        # The warning is given only if the code tries to access the setting.
+        if warn:
+            g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
+            g.es_print('there may be conflicting settings!',color='red')
+        return None, False
+    # elif val in (u'None',u'none','None','none','',None):
+    elif isNone:
+        return '', True
+            # 2011/10/24: Exists, a *user-defined* empty value.
+    else:
+        # g.trace(setting,val)
+        return val, True
+.. @+node:ekr.20051015093141: *6* typesMatch
+def typesMatch (self,type1,type2):
+
+    '''
+    Return True if type1, the actual type, matches type2, the requeseted type.
+
+    The following equivalences are allowed:
+
+    - None matches anything.
+    - An actual type of string or strings matches anything *except* shortcuts.
+    - Shortcut matches shortcuts.
+    '''
+
+    shortcuts = ('shortcut','shortcuts',)
+
+    return (
+        type1 == None or type2 == None or
+        type1.startswith('string') and type2 not in shortcuts or
+        type1 == 'int' and type2 == 'size' or
+        (type1 in shortcuts and type2 in shortcuts) or
+        type1 == type2
+    )
+.. @+node:ekr.20041117062717.14: *5* getShortcut (g.app.config)
+def getShortcut (self,c,commandName):
+
+    '''Return rawKey,accel for shortcutName'''
+    
+    trace = False and commandName == 'sort-siblings' and not g.unitTesting
+
+    key = c.frame.menu.canonicalizeMenuName(commandName)
+    key = key.replace('&','') # Allow '&' in names.
+    
+    if c.k.new_bindings:
+        bunchList = self.getShortcutHelper(c,key) # 2011/02/11
+    else:
+        bunchList = self.get(c,key,'shortcut')
+
+    if bunchList:
+        bunchList = [bunch for bunch in bunchList
+            if bunch.val and bunch.val.lower() != 'none']
+        if trace: g.trace(key,bunchList)
+        return key,bunchList
+    else:
+        return key,[]
+.. @+node:ekr.20110211041914.15415: *6* getShortcutHelper(g.app.config)
+def getShortcutHelper (self,c,key):
+    
+    '''Like get, but return *all* the found bunchLists's.
+    
+    'key' is actually a commandname.'''
+
+    trace = False and not g.unitTesting
+    kind = 'shortcut'
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+    result = []
+
+    if c and not isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            bunchList,junk = self.getValFromDict(d,key,kind)
+            if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    for d in self.localOptionsList:
+        bunchList,junk = self.getValFromDict(d,key,kind)
+        if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    for d in self.dictList:
+        bunchList,junk = self.getValFromDict(d,key,kind)
+        if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    # Use settings in leoSettings.leo *last*.
+    if c and isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            bunchList,junk = self.getValFromDict(d,key,kind)
+            if bunchList: self.mergeShortcuts(result,bunchList,key)
+
+    return result
+.. @+node:ekr.20110211041914.15418: *6* mergeShortcuts
+def mergeShortcuts (self,result,aList,key):
+        # key is for debugging.
+        # key is a conical command name, *not* a keystroke.
+    
+    '''Append all non-conflicting entries of aList to result.'''
+    
+    trace = False and not g.unitTesting
+
+    # If there is a real override, **earlier** entries take precedence.
+    # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
+    
+    vals = [z.val for z in result]
+    aList = [z for z in aList if z.val not in vals]
+    result.extend(aList)
+
+    if trace and len(result) > 1:
+        g.trace(key,['%s %s' % (z.val,z.pane) for z in result])
+.. @+node:ekr.20111020144401.9584: *5* Changed
+.. @+node:ekr.20041117062717.2: *6* ctor (configClass)
+def __init__ (self):
+
+    # g.trace('g.app.config')
+    self.atCommonButtonsList = [] # List of info for common @buttons nodes.
+    self.atCommonCommandsList = [] # List of info for common @commands nodes.
+    self.buttonsFileName = ''
+    self.configsExist = False # True when we successfully open a setting file.
+    self.defaultFont = None # Set in gui.getDefaultConfigFont.
+    self.defaultFontFamily = None # Set in gui.getDefaultConfigFont.
+    self.enabledPluginsFileName = None
+    self.enabledPluginsString = '' 
+    self.globalConfigFile = None # Set in initSettingsFiles
+    self.homeFile = None # Set in initSettingsFiles
+    self.inited = False
+    self.menusList = []
+    self.menusFileName = ''
+    self.modeCommandsDict = {}
+        # For use by @mode logic. Keys are command names, values are g.Bunches.
+        # A special key: *mode-prompt* it the prompt to be given.
+    self.myGlobalConfigFile = None
+    self.myHomeConfigFile = None
+    self.machineConfigFile = None
+    self.presentBindingsDict = {}
+        # 2011/10/20
+        # The bindings in effect **for this commander only**.
+        # Keys are command-names, values are lists of bindings.
+    self.presentInverseBindingsDict = {}
+        # 2011/10/20
+        # A helper dict, used to create presentBindingsDict.
+        # Keys are keystrokes, values are lists of command names.
+    self.recentFilesFiles = [] # List of g.Bunches describing .leoRecentFiles.txt files.
+    self.write_recent_files_as_needed = False # Will be set later.
+    self.silent = g.app.silentMode
+    # g.trace('c.config.silent',self.silent)
+
+    # Inited later...
+    self.panes = None
+    self.sc = None
+    self.tree = None
+
+    self.initDicts()
+    self.initIvarsFromSettings()
+    self.initSettingsFiles()
+    self.initRecentFiles()
+.. @+node:ekr.20041120105609: *6* doShortcuts (ParserBaseClass)
+def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
+
+    trace = False and not g.unitTesting
+    c = self.c ; k = c.k
+    d = self.shortcutsDict
+    if s is None: s = p.b
+
+    theHash = d.get('_hash')
+    theHash = g.choose(theHash,g.shortFileName(theHash),'<no hash>')
+
+    if trace: g.trace('localFlag: %s d._hash: %s node: %s' % (
+        self.localFlag,theHash,junk_name))
+
+    for line in g.splitLines(s):
+        line = line.strip()
+        if line and not g.match(line,0,'#'):
+            name,bunch = self.parseShortcutLine(line)
+            if bunch:
+                bunch._hash = theHash
+                if bunch.val in (None,'none','None'):
+                    self.killOneShortcut(bunch,name,p)
+                else:
+                    self.doOneShortcut(bunch,name,p)
+.. @+node:ekr.20111020144401.9585: *7* doOneShortcut (ParserBaseClass)
+def doOneShortcut(self,bunch,name,p):
+    
+    '''Handle a regular shortcut.'''
+    
+    trace = False and name == 'sort-siblings' and not g.unitTesting
+    
+    if trace: g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
+        
+    d = self.shortcutsDict
+    bunchList = d.get(name,[])
+    bunchList.append(bunch)
+    d [name] = bunchList
+
+    self.set(p,"shortcut",name,bunchList)
+        ### Huh?????
+    self.setShortcut(name,bunchList)
+    
+    # if bunch.pane in ('kill','Kill'):
+        # munge = k.shortcutFromSetting
+        # if trace: g.trace('****** killing binding:',
+            # bunch.val,'to',name)
+        # bunchList = [z for z in bunchList
+            # if munge(z.val) != munge(bunch.val)]
+        # # g.trace(bunchList)
+.. @+node:ekr.20111020144401.9586: *7* killOneShortcut (ParserBaseClass)
+def killOneShortcut (self,bunch,name,p):
+    
+    if 0:
+        g.trace(bunch,name,p and p.h)
+.. @+node:ekr.20110929165422.15449: *4* Test bug fix: noweb expansions in rst3 command
 @nocolor-node
 
 *** Important *** This was all done in Leo 4.9
@@ -1672,7 +2188,7 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
-.. @+node:ekr.20111010162047.15678: *4* ** The @auto script *must* put @first nodes in root node
+.. @+node:ekr.20111010162047.15678: *4* The @auto script *must* put @first nodes in root node
 @nocolor-node
 
 Also the import commands.
@@ -1680,7 +2196,95 @@ Also the import commands.
 Especially:
     - Shebang line.
     - Python encoding line.
-.. @+node:ekr.20111020092529.15885: *4* ** Fix bug: menu-binding problem
+.. @+node:ekr.20111026075003.16481: *4* Support ~/.leo_config.py
+@language rest
+
+1. Imo, it is time to consider adding a typical "startup" file to Leo,
+~/leo_config.py, similar to ~/.emacs or ipython_config.py.  This will
+make Leo "thicker", that is more professional/standard.
+
+IPython adds lots of bells and whistles to configuration.  Leo
+emulates most of them, but .leo_config.py would be a good addition.
+Think of .leo_config.py as a lightweight plugin.
+
+leo_config.py should execute after settings have been parsed, but
+before plugins have been loaded.  If desired, leo_config.py may
+register "start2" event handlers, which execute after all plugins have
+been loaded, just before starting the main Qt event loop.
+
+2. Leo commands form a good framework for other solutions to Qt
+stylesheet issues.  Consider the following commands::
+
+- qt-stylesheet-set-global-stylesheet
+- qt-stylesheet-append-to-global-stylesheet
+- qt-stylesheet-set-widget-stylesheet
+- qt-stylesheet-append-to-widget-stylesheet
+
+@language python
+.. @+node:ekr.20111019080436.15850: *3* Next: Fix all significant bugs
+.. @+node:ekr.20111026091322.16503: *4* Recent/Easy
+.. @+node:ekr.20110619173515.14895: *5* Fix bug: realpath in g.openWithFileName
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/cd5e2125c9e13d8f
+
+g.openWithFileName needs
+
+   fileName = g.os_path_realpath(fileName)
+
+at the start of it, otherwise
+
+g.openWithFileName("/home/tbrown/.leo/.todo.leo", c) will open another
+instance of an already open "/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo"
+because it doesn't recognize them as being the same.
+
+It would be nice if the original attempt to open
+"/home/tbrown/.leo/.todo.leo" was not converted to
+"/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo", but I think the POSIX
+spec. insists on giving CPython the real path form, so this is hard to
+avoid.  You see this when selecting a file using a file dialog, in the
+dialog you choose /home/me/myfile.txt, but the return
+is /mnt/usr1/usr1/home/me/myfile.txt.
+
+Anyway, let me know if and when I can push that to trunk, impacts seem
+to be limited to (a) not failing to detect an already opened file in
+g.openWithFileName, which is a bug, and (b) sometimes less attractive
+apparent paths, which is annoying, but I think better than the bug.
+
+(this of course trips up UNLs
+if /mnt/usr1/usr1/home/tbrown/.leo/.todo.leo is already loaded and the
+UNL is /home/tbrown/.leo/.todo.leo#Home-->Paint roof)
+.. @+node:ekr.20110621085435.6531: *5* Fix bug: Improve the find panel and find menu
+@nocolor-node
+
+Recently, perhaps it was today, there was a remark made about Leo's
+Find panel being confusing for newbies.  I have some sympathy for the
+remarks.
+
+1.  Looking at Leo's Edit:Find menu, there is no obvious way of doing
+a search/replace operation.  I'll fix this soon after 4.9 final.
+
+2.  The Find tab should make it clearer that it is a summary/status
+tab only--not a way of actually initiating or continuing searches.
+Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
+for the find/change patterns would help a bit.
+.. @+node:ekr.20111018104244.15920: *5* Fix bug: Use QLocalSocket in LProtoClient.connect
+http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
+.. @+node:ekr.20111024170505.16457: *4* High priority
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/820019
+Shift-Ctrl-F (quicksearch) Sometimes leaves focus in body
+
+https://bugs.launchpad.net/leo-editor/+bug/823267
+when a tab is closed focus may go to a tab other than the visible one
+
+https://bugs.launchpad.net/leo-editor/+bug/831658
+@url doesn't leave Chapter
+
+https://bugs.launchpad.net/leo-editor/+bug/844940
+Different behavior when clicking on @url statement written either in headline or body of a node
+.. @+node:ekr.20111024170505.16459: *5* * Bug 879331: Redefining a key binding breaks menu items with same binding
 @nocolor-node
 
 http://mail.google.com/mail/#inbox/1331909dd653f3c9
@@ -1690,7 +2294,41 @@ http://mail.google.com/mail/#inbox/1331909dd653f3c9
 
 This is a serious bug!  The menu item now executes the command bound
 to Alt-A!  Very bad.
-.. @+node:ekr.20031218072017.2609: *5* app.closeLeoWindow
+.. @+node:ekr.20111026091322.16500: *6* Report
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/879331
+
+Redefining a binding, say for Alt-a, in x.leo will cause the sort-siblings menu
+(bound to alt-a) to execute the command specified by the command bound to Alt-a!
+
+https://bugs.launchpad.net/leo-editor/+bug/815564
+
+This anomaly only occurs when all of the following conditions are true:
+
+1) There is a global command name X that is the "same" as the root name of the
+file containing a plugin Y. Here, "same" means equal after the command name is
+converted to lower case and all underlines in the root name are replaced by
+dashes.
+
+2) A shortcut (a.k.a. keystroke) is bound to command name X.
+
+When these conditions are true, then the Plugins dropdown menu shows the key
+binding next to the plugin name and left-clicking the plugin name executes the
+global command--and, there is no way to display the plugin's help.
+
+Plugin Help Rendering: Plugin help is rendered by the viewrendered plugin, not
+by the old scrolledmessage.py plugin.
+
+Leo-editor revision: 4433
+OS: Ubuntu 11.04 (natty)
+
+Startup log pane:
+Leo Log Window
+Leo 4.9 final, build 4411, June 21, 2011
+Python 2.7.1, qt version 4.7.2
+linux2
+.. @+node:ekr.20031218072017.2609: *6* app.closeLeoWindow
 def closeLeoWindow (self,frame):
 
     """Attempt to close a Leo window.
@@ -1736,7 +2374,7 @@ def closeLeoWindow (self,frame):
         g.app.finishQuit()
 
     return True # The window has been closed.
-.. @+node:ekr.20031218072017.1723: *5* createMenuEntries (leoMenu)
+.. @+node:ekr.20031218072017.1723: *6* createMenuEntries (leoMenu)
 def createMenuEntries (self,menu,table,dynamicMenu=False):
 
     '''Create a menu entry from the table.
@@ -1786,7 +2424,7 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
                 accelerator=accelerator,
                 command=masterMenuCallback,
                 underline=amp_index)
-.. @+node:ekr.20051021091958: *6* << get label & command or continue >>
+.. @+node:ekr.20051021091958: *7* << get label & command or continue >>
 if g.isString(data):
     # New in Leo 4.4.2: Can use the same string for both the label and the command string.
     ok = True
@@ -1817,7 +2455,7 @@ else:
     else:
         g.trace('bad data in menu table: %s' % repr(data))
         continue # Ignore bad data
-.. @+node:ekr.20031218072017.1725: *6* << compute commandName & accel from label & command >>
+.. @+node:ekr.20031218072017.1725: *7* << compute commandName & accel from label & command >>
 # New in 4.4b2: command can be a minibuffer-command name (a string)
 minibufferCommand = type(command) == type('')
 accel = None
@@ -1860,7 +2498,7 @@ else:
                     break
         elif not dynamicMenu:
             g.trace('No inverse for %s' % commandName)
-.. @+node:ekr.20051021100806.1: *7* << compute emacs_name >>
+.. @+node:ekr.20051021100806.1: *8* << compute emacs_name >>
 @ One not-so-horrible kludge remains.
 
 The cut/copy/paste commands in the menu tables are not the same as the methods
@@ -1876,13 +2514,13 @@ else:
         emacs_name = k.inverseCommandsDict.get(command.__name__)
     except Exception:
         emacs_name = None
-.. @+node:ekr.20060216110502: *6* << clear accelerator if it is a plain key >>
+.. @+node:ekr.20060216110502: *7* << clear accelerator if it is a plain key >>
 for z in ('Alt','Ctrl','Command'):
     if accelerator.find(z) != -1:
         break # Found.
 else:
     accelerator = ''
-.. @+node:ekr.20041117083141: *5* get & allies (g.app.config)
+.. @+node:ekr.20041117083141: *6* get & allies (g.app.config)
 def get (self,c,setting,kind):
 
     """Get the setting and make sure its type matches the expected type."""
@@ -1928,7 +2566,7 @@ def get (self,c,setting,kind):
                 return val
 
     return None
-.. @+node:ekr.20041121143823: *6* getValFromDict
+.. @+node:ekr.20041121143823: *7* getValFromDict
 def getValFromDict (self,d,setting,requestedType,warn=True):
 
     '''Look up the setting in d. If warn is True, warn if the requested type
@@ -1966,7 +2604,7 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
     else:
         # g.trace(setting,val)
         return val, True
-.. @+node:ekr.20051015093141: *6* typesMatch
+.. @+node:ekr.20051015093141: *7* typesMatch
 def typesMatch (self,type1,type2):
 
     '''
@@ -1988,7 +2626,7 @@ def typesMatch (self,type1,type2):
         (type1 in shortcuts and type2 in shortcuts) or
         type1 == type2
     )
-.. @+node:ekr.20041117062717.14: *5* getShortcut (g.app.config)
+.. @+node:ekr.20041117062717.14: *6* getShortcut (g.app.config)
 def getShortcut (self,c,commandName):
 
     '''Return rawKey,accel for shortcutName'''
@@ -2010,7 +2648,7 @@ def getShortcut (self,c,commandName):
         return key,bunchList
     else:
         return key,[]
-.. @+node:ekr.20110211041914.15415: *6* getShortcutHelper(g.app.config)
+.. @+node:ekr.20110211041914.15415: *7* getShortcutHelper(g.app.config)
 def getShortcutHelper (self,c,key):
     
     '''Like get, but return *all* the found bunchLists's.
@@ -2044,7 +2682,7 @@ def getShortcutHelper (self,c,key):
             if bunchList: self.mergeShortcuts(result,bunchList,key)
 
     return result
-.. @+node:ekr.20110211041914.15418: *6* mergeShortcuts
+.. @+node:ekr.20110211041914.15418: *7* mergeShortcuts
 def mergeShortcuts (self,result,aList,key):
         # key is for debugging.
         # key is a conical command name, *not* a keystroke.
@@ -2062,8 +2700,8 @@ def mergeShortcuts (self,result,aList,key):
 
     if trace and len(result) > 1:
         g.trace(key,['%s %s' % (z.val,z.pane) for z in result])
-.. @+node:ekr.20111020144401.9584: *5* Changed
-.. @+node:ekr.20041117062717.2: *6* ctor (configClass)
+.. @+node:ekr.20111020144401.9584: *6* Changed
+.. @+node:ekr.20041117062717.2: *7* ctor (configClass)
 def __init__ (self):
 
     # g.trace('g.app.config')
@@ -2108,7 +2746,7 @@ def __init__ (self):
     self.initIvarsFromSettings()
     self.initSettingsFiles()
     self.initRecentFiles()
-.. @+node:ekr.20041120105609: *6* doShortcuts (ParserBaseClass)
+.. @+node:ekr.20041120105609: *7* doShortcuts (ParserBaseClass)
 def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
 
     trace = False and not g.unitTesting
@@ -2132,7 +2770,7 @@ def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
                     self.killOneShortcut(bunch,name,p)
                 else:
                     self.doOneShortcut(bunch,name,p)
-.. @+node:ekr.20111020144401.9585: *7* doOneShortcut (ParserBaseClass)
+.. @+node:ekr.20111020144401.9585: *8* doOneShortcut (ParserBaseClass)
 def doOneShortcut(self,bunch,name,p):
     
     '''Handle a regular shortcut.'''
@@ -2157,87 +2795,13 @@ def doOneShortcut(self,bunch,name,p):
         # bunchList = [z for z in bunchList
             # if munge(z.val) != munge(bunch.val)]
         # # g.trace(bunchList)
-.. @+node:ekr.20111020144401.9586: *7* killOneShortcut (ParserBaseClass)
+.. @+node:ekr.20111020144401.9586: *8* killOneShortcut (ParserBaseClass)
 def killOneShortcut (self,bunch,name,p):
     
     if 0:
         g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20111019104425.15866: *4* ** Fix all significant bug-tracker items
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/815564
-
-This anomaly only occurs when all of the following conditions are true:
-
-1) There is a global command name X that is the "same" as the root name of the file containing a plugin Y. Here, "same" means equal after the command name is converted to lower case and all underlines in the root name are replaced by dashes.
-
-2) A shortcut (a.k.a. keystroke) is bound to command name X.
-
-When these conditions are true, then the Plugins dropdown menu shows the key binding next to the plugin name and left-clicking the plugin name executes the global command--and, there is no way to display the plugin's help.
-
-Plugin Help Rendering: Plugin help is rendered by the viewrendered plugin, not by the old scrolledmessage.py plugin.
-
-Leo-editor revision: 4433
-OS: Ubuntu 11.04 (natty)
-
-Startup log pane:
-Leo Log Window
-Leo 4.9 final, build 4411, June 21, 2011
-Python 2.7.1, qt version 4.7.2
-linux2
-.. @+node:ekr.20111024170505.16457: *5* High priority: 2
-.. @+node:ekr.20111024170505.16458: *6* Bug 804960: Refreshing unlinks clones, just reopening connects them agai
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/804960
-
-When we clone a node inside an @shadow (containing @others) node and then
-refresh the @shadow node from file, the clone is unlinked and marked as changed.
-If we now save, close the .leo file and open it again, the nodes are linked
-again! (showing "cloned" symbol) User's thought: "How the heck can the file
-change _between save and re-open_ when I changed nothing?"
-
-I think what should be done about this is the check that Leo does when it opens
-the file again, and that check should be done immediately after the "refresh
-node from file" operation. Also, at this point, the "Recovered nodes" node
-should appear (if file and node have both changed), not only after the next .leo
-file close/reopen (as that happens quite infrequently, I guess, e.g. once a day
-for me). Otherwise, the user can easily lose data.
-.. @+node:ekr.20111024170505.16459: *6* Bug 879331: Redefining a key binding breaks menu items with same binding
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/879331
-
-Redefining a binding, say for Alt-a, in x.leo will cause the sort-siblings menu
-(bound to alt-a) to execute the command specified by the command bound to Alt-a!
-
-https://bugs.launchpad.net/leo-editor/+bug/815564
-
-This anomaly only occurs when all of the following conditions are true:
-
-1) There is a global command name X that is the "same" as the root name of the
-file containing a plugin Y. Here, "same" means equal after the command name is
-converted to lower case and all underlines in the root name are replaced by
-dashes.
-
-2) A shortcut (a.k.a. keystroke) is bound to command name X.
-
-When these conditions are true, then the Plugins dropdown menu shows the key
-binding next to the plugin name and left-clicking the plugin name executes the
-global command--and, there is no way to display the plugin's help.
-
-Plugin Help Rendering: Plugin help is rendered by the viewrendered plugin, not
-by the old scrolledmessage.py plugin.
-
-Leo-editor revision: 4433
-OS: Ubuntu 11.04 (natty)
-
-Startup log pane:
-Leo Log Window
-Leo 4.9 final, build 4411, June 21, 2011
-Python 2.7.1, qt version 4.7.2
-linux2
-.. @+node:ekr.20111026091322.16492: *7* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display 
+.. @+node:ekr.20111026091322.16501: *5* Probably same as key-binding bug
+.. @+node:ekr.20111026091322.16492: *6* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display 
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/815564
@@ -2268,8 +2832,68 @@ Leo Log Window
 Leo 4.9 final, build 4411, June 21, 2011
 Python 2.7.1, qt version 4.7.2
 linux2
-.. @+node:ekr.20111024170505.16461: *5* Medium priority
-.. @+node:ekr.20111025141618.16484: *6* Bug 879338: Global tables in leoApp.py should describe all languages known to the colorizer  
+.. @+node:ekr.20111024170505.16458: *5* Bug 804960: Refreshing unlinks clones, just reopening connects them agai
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/804960
+
+When we clone a node inside an @shadow (containing @others) node and then
+refresh the @shadow node from file, the clone is unlinked and marked as changed.
+If we now save, close the .leo file and open it again, the nodes are linked
+again! (showing "cloned" symbol) User's thought: "How the heck can the file
+change _between save and re-open_ when I changed nothing?"
+
+I think what should be done about this is the check that Leo does when it opens
+the file again, and that check should be done immediately after the "refresh
+node from file" operation. Also, at this point, the "Recovered nodes" node
+should appear (if file and node have both changed), not only after the next .leo
+file close/reopen (as that happens quite infrequently, I guess, e.g. once a day
+for me). Otherwise, the user can easily lose data.
+.. @+node:ekr.20111026091322.16494: *5* Bug 869429: Undo and Redo delete from context menu does not redo properly
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/869429
+
+Delete (node) in context_menu (right click on headline) has unexpected undo /
+redo effects. Redo after Undo often fails, but you can Undo again, without the
+ReDo taking effect, which mans an extra node is created. In essence: -1 delete,
++1 Undo (restore node), 0 ReDo (should redelete but does nothing), +1 Undo
+(again) = 1 Should = 0 (delete, undelete, redelete, undo redelete) Deleting a
+node through Outline menu works differently and properly. Thye undo code in the
+two delete methods must be different
+
+Terry:  The undo code in the two delete methods must be different
+
+It's different because the context menu delete can delete multiple
+nodes at once.
+
+I wrote the context menu delete, but I don't understand the undo system
+that well - it's possible it just doesn't support a redo of something
+like this.
+.. @+node:ekr.20111026091322.16496: *5* Bug 844953: copy-clone-pasted node appears in other tab
+https://bugs.launchpad.net/leo-editor/+bug/844953
+.. @+node:ekr.20111024170505.16461: *4* Medium priority
+.. @+node:ekr.20111026091322.16499: *5* Bug 824087: Alt+F4 is not the same as Alt+F, c
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/824087
+
+The file menu has an entry with label "Close Alt+F4" with the "C" in "Close"
+underlined indicating it is the shortcut.
+
+Command print-bindings shows:
+S Alt+F4 close-window
+
+That is, the binding is set in leoSettings.leo
+
+Left clicking this "File - Close" menu entry (or Alt+F, c) is NOT the same as Alt+F4.
+
+Left clicking this "File - Close" menu entry (or Alt+F, c) closes the current tab only.
+
+Alt+F4 closes the Leo-Editor application window (and of course, closes all the tabs).
+
+Is this a bug in the implementation or a bug in the documentation? Either way, the menu entry is misleading and the print-bindings information appears to be correct.
+.. @+node:ekr.20111025141618.16484: *5* Bug 879338: Global tables in leoApp.py should describe all languages known to the colorizer  
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/879338
@@ -2277,7 +2901,7 @@ https://bugs.launchpad.net/leo-editor/+bug/879338
 Having the colorizer colorize a language properly gives the false illusion that Leo "understands" the language.
 
 Supporting the language in the global tables in leoApp.py makes the illusion a reality.
-.. @+node:ekr.20111026091322.16491: *6* Bug 805288: ctr - tab locks up in log pane 
+.. @+node:ekr.20111026091322.16491: *5* Bug 805288: ctr - tab locks up in log pane 
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/805288
@@ -2285,58 +2909,100 @@ https://bugs.launchpad.net/leo-editor/+bug/805288
 if the log tab is active in the log pane ctrl-tab will toggle through the body,
 tree and log panes. If any other tab is active the key combination will freeze
 in the log pane.
-.. @+node:ekr.20111025062953.16479: *5* Low priority/Easy
+.. @+node:ekr.20111026091322.16498: *5* Bug 869098: Context menu settings lost if save as used
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/869098
+
+I I have a Leo file with settings for context menu:
+    
+@settings
+   @data contextmenu_commands
+       edit-headline Edit headline
+          copy-node Copy Node
+          cut-node Cut Node
+          paste-node Paste Node
+
+then these settings are lost if I save the leo file to a new name using
+File - Save as
+If I reload the leo file, they do return
+.. @+node:ekr.20111026091322.16504: *5* Bug 501636: Leo's import code should support non-ascii xml tags
+https://bugs.launchpad.net/leo-editor/+bug/501636
+
+@language rest
+
+Leo's present @auto import code for xml files supports only ascii tags.
+
+In particular, xmlScanner.isWordChar should allow non-ascii characters as specified in
+www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
+
+@language python
+
+NameStartChar ::= ":" | [A-Z] | "_" | [a-z] |
+    [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] |
+    [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] |
+    [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
+    [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+
+NameChar ::= NameStartChar | "-" | "." | [0-9] | #xB7 |
+    [#x0300-#x036F] | [#x203F-#x2040]
+
+The following script, presently in test.leo, may be useful:
+
+import unicodedata as u
+table = ('a','9','_',':','.',)
+table2 = (
+    (0xc0,0xd6),(0xd8,0xf6),(0xf8,0x2ff),(0x370,0x37d),(0x37f,0x1fff),
+    (0x200c,0x200d),(0x2070,0x218f),(0x2c00,0x2fef),(0x3001,0xd7ff),
+    (0xf900,0xfdcf),(0xfdf0,0xfffd),(0x10000,0xeffff),
+    # Valid only after the start of a word.
+    (0xb7,0xb7+1),(0x0300,0x036f),(0x203f,0x2040),
+)
+for ch in table:
+    ch = g.u(ch)
+    g.es(ch,u.category(ch))
+for i,j in table2:
+    g.es('*** range %xd %xd' % (i,j))
+    for n in range(i,min(i+5,j)):
+        if g.isPython3: ch = chr(n)
+        else: ch = unichr(n)
+        g.es(ch,u.category(ch))
+
+@language rest
+
+Clearly, however, the unicode category of these characters is not helpful.
+Instead, a dictionary lookup would be appropriate.
+.. @+node:ekr.20111026091322.16495: *5* A nest of bugs involving log, focus, chapters, quickmove
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/820019
+Shift-Ctrl-F (quicksearch) Sometimes leaves focus in body
+
+https://bugs.launchpad.net/leo-editor/+bug/823267
+when a tab is closed focus may go to a tab other than the visible one
+
+https://bugs.launchpad.net/leo-editor/+bug/831658
+@url doesn't leave Chapter
+
+https://bugs.launchpad.net/leo-editor/+bug/844940
+Different behavior when clicking on @url statement written either in headline or body of a node
+
+https://bugs.launchpad.net/leo-editor/+bug/869385
+Chapters make the nav_qt.py plugin useless.
+
+https://bugs.launchpad.net/leo-editor/+bug/875323
+Hoist an @chapter node leaves a non-visible node selected.
+
+https://bugs.launchpad.net/leo-editor/+bug/875327
+Positioning outside of hoisted outline" usually causes problems
+
+https://bugs.launchpad.net/leo-editor/+bug/875463
+Enabling quickmove.py sends to error messages to console on every outline open 
+.. @+node:ekr.20111025062953.16479: *4* Low priority/Easy
 .. @+node:ekr.20111017132257.15891: *4* Get IPython working again
 .. @+node:ekr.20111017132257.15890: *5* Investigate how IPython hijacks event loops
 http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
 .. @+node:ekr.20111009162434.7204: *5* Port ipy_leo.py to latest version of IPython
-.. @+node:ekr.20110619173515.14895: *4* Fix bug: realpath in g.openWithFileName
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/cd5e2125c9e13d8f
-
-g.openWithFileName needs
-
-   fileName = g.os_path_realpath(fileName)
-
-at the start of it, otherwise
-
-g.openWithFileName("/home/tbrown/.leo/.todo.leo", c) will open another
-instance of an already open "/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo"
-because it doesn't recognize them as being the same.
-
-It would be nice if the original attempt to open
-"/home/tbrown/.leo/.todo.leo" was not converted to
-"/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo", but I think the POSIX
-spec. insists on giving CPython the real path form, so this is hard to
-avoid.  You see this when selecting a file using a file dialog, in the
-dialog you choose /home/me/myfile.txt, but the return
-is /mnt/usr1/usr1/home/me/myfile.txt.
-
-Anyway, let me know if and when I can push that to trunk, impacts seem
-to be limited to (a) not failing to detect an already opened file in
-g.openWithFileName, which is a bug, and (b) sometimes less attractive
-apparent paths, which is annoying, but I think better than the bug.
-
-(this of course trips up UNLs
-if /mnt/usr1/usr1/home/tbrown/.leo/.todo.leo is already loaded and the
-UNL is /home/tbrown/.leo/.todo.leo#Home-->Paint roof)
-.. @+node:ekr.20110621085435.6531: *4* Fix bug: Improve the find panel and find menu
-@nocolor-node
-
-Recently, perhaps it was today, there was a remark made about Leo's
-Find panel being confusing for newbies.  I have some sympathy for the
-remarks.
-
-1.  Looking at Leo's Edit:Find menu, there is no obvious way of doing
-a search/replace operation.  I'll fix this soon after 4.9 final.
-
-2.  The Find tab should make it clearer that it is a summary/status
-tab only--not a way of actually initiating or continuing searches.
-Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
-for the find/change patterns would help a bit.
-.. @+node:ekr.20111018104244.15920: *4* Fix bug: Use QLocalSocket in LProtoClient.connect
-http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
 .. @+node:ekr.20111018220642.15858: *3* Docs
 .. @+node:ekr.20111019104425.15862: *4* ** Dynamic home page
 .. @+node:ekr.20111011175652.15696: *5* Register a domain name like leo-editor.org

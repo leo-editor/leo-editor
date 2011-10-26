@@ -12499,6 +12499,14 @@ misleading.
 
 Fix: the prefix list in k.printBindings must be sure that if two prefixes have a
 common leading part the longer prefix appears first in the lists.
+#@+node:ekr.20111026091322.16493: *4* Fixed bug 823601: cascade-windows fails
+exception executing command
+Traceback (most recent call last):
+  File "/home/bob/bzrWork/pluginPath/leo/core/leoCommands.py", line 408, in doCommand
+    val = command(event)
+  File "/home/bob/bzrWork/pluginPath/leo/plugins/qtGui.py", line 4965, in cascade
+    w.setGeometry(x,y,r.width(),r.height())
+TypeError: setGeometry() takes exactly 2 arguments (5 given)
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
@@ -22891,9 +22899,9 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
     # g.trace(setting,requestedType,bunch.toString())
     val = bunch.val
 
-    # 2011/10/24: test for an explicit None.  
+    # 2011/10/24: test for an explicit None.
     if g.isPython3:
-        isNone = val in ('None','none','') #,None)
+        isNone = val in ('None','none','') # ,None)
             
     else:
         isNone = val in (
