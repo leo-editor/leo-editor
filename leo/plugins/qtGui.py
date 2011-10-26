@@ -5026,7 +5026,8 @@ class leoQtFrame (leoFrame.leoFrame):
             w = frame and frame.top
             if w:
                 r = w.geometry() # a Qt.Rect
-                w.setGeometry(x,y,r.width(),r.height())
+                # 2011/10/26: Fix bug 823601: cascade-windows fails.
+                w.setGeometry(QtCore.QRect(x,y,r.width(),r.height()))
 
                 # Compute the new offsets.
                 x += 30 ; y += 30

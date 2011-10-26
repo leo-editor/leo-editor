@@ -2162,8 +2162,30 @@ def killOneShortcut (self,bunch,name,p):
     
     if 0:
         g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20111019104425.15866: *4* ** Fix all bug-tracker items
-.. @+node:ekr.20111024170505.16457: *5* High priority
+.. @+node:ekr.20111019104425.15866: *4* ** Fix all significant bug-tracker items
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/815564
+
+This anomaly only occurs when all of the following conditions are true:
+
+1) There is a global command name X that is the "same" as the root name of the file containing a plugin Y. Here, "same" means equal after the command name is converted to lower case and all underlines in the root name are replaced by dashes.
+
+2) A shortcut (a.k.a. keystroke) is bound to command name X.
+
+When these conditions are true, then the Plugins dropdown menu shows the key binding next to the plugin name and left-clicking the plugin name executes the global command--and, there is no way to display the plugin's help.
+
+Plugin Help Rendering: Plugin help is rendered by the viewrendered plugin, not by the old scrolledmessage.py plugin.
+
+Leo-editor revision: 4433
+OS: Ubuntu 11.04 (natty)
+
+Startup log pane:
+Leo Log Window
+Leo 4.9 final, build 4411, June 21, 2011
+Python 2.7.1, qt version 4.7.2
+linux2
+.. @+node:ekr.20111024170505.16457: *5* High priority: 2
 .. @+node:ekr.20111024170505.16458: *6* Bug 804960: Refreshing unlinks clones, just reopening connects them agai
 @nocolor-node
 
@@ -2215,6 +2237,37 @@ Leo Log Window
 Leo 4.9 final, build 4411, June 21, 2011
 Python 2.7.1, qt version 4.7.2
 linux2
+.. @+node:ekr.20111026091322.16492: *7* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display 
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/815564
+
+===== Probably the same as bug 879331 =====
+
+This anomaly only occurs when all of the following conditions are true:
+
+1) There is a global command name X that is the "same" as the root name of the
+file containing a plugin Y. Here, "same" means equal after the command name is
+converted to lower case and all underlines in the root name are replaced by
+dashes.
+
+2) A shortcut (a.k.a. keystroke) is bound to command name X.
+
+When these conditions are true, then the Plugins dropdown menu shows the key
+binding next to the plugin name and left-clicking the plugin name executes the
+global command--and, there is no way to display the plugin's help.
+
+Plugin Help Rendering: Plugin help is rendered by the viewrendered plugin, not
+by the old scrolledmessage.py plugin.
+
+Leo-editor revision: 4433
+OS: Ubuntu 11.04 (natty)
+
+Startup log pane:
+Leo Log Window
+Leo 4.9 final, build 4411, June 21, 2011
+Python 2.7.1, qt version 4.7.2
+linux2
 .. @+node:ekr.20111024170505.16461: *5* Medium priority
 .. @+node:ekr.20111025141618.16484: *6* Bug 879338: Global tables in leoApp.py should describe all languages known to the colorizer  
 @nocolor-node
@@ -2224,6 +2277,14 @@ https://bugs.launchpad.net/leo-editor/+bug/879338
 Having the colorizer colorize a language properly gives the false illusion that Leo "understands" the language.
 
 Supporting the language in the global tables in leoApp.py makes the illusion a reality.
+.. @+node:ekr.20111026091322.16491: *6* Bug 805288: ctr - tab locks up in log pane 
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/805288
+
+if the log tab is active in the log pane ctrl-tab will toggle through the body,
+tree and log panes. If any other tab is active the key combination will freeze
+in the log pane.
 .. @+node:ekr.20111025062953.16479: *5* Low priority/Easy
 .. @+node:ekr.20111017132257.15891: *4* Get IPython working again
 .. @+node:ekr.20111017132257.15890: *5* Investigate how IPython hijacks event loops
@@ -3770,6 +3831,7 @@ consult leoTest.py.
 
 It has been fun tracking this down.  I'll fix the documentation immediately. 
 .. @+node:ekr.20111018104244.15924: *4* Revise Leo's wiki
+.. @+node:ekr.20111026083456.16489: *4* Move UNL.py plugins docs somewhere else: it's no longer a plugin.
 .. @+node:ekr.20111021105253.9478: *3* Most important
 .. @+node:ekr.20111010122531.15568: *4* * @render-rest, @render-html trees
 @language rest
