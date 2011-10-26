@@ -5,6 +5,15 @@
 .. @+all
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 .. @+node:ekr.20111019080436.15850: *3* First: Fix all significant bugs
+.. @+node:ekr.20111025062953.16477: *4* ***** Fix the scrolling bug!
+@nocolor-node
+
+Downloaded leo-editor-snapshot-201110240253.zip and tried it out. Noticed that
+when I added a dozen or so blank lines at the end of a body pane and moved the
+mouse cursor to the last line and left-clicked the body pane jumped backwards
+about 10 lines or so as though I had scrolled up. When I dragged the scroll
+button to the end of the pane, the insertion point was still at the end of the
+pane. This does not happen for all panes.
 .. @+node:ekr.20110929165422.15449: *4* ** Test bug fix: noweb expansions in rst3 command
 @nocolor-node
 
@@ -1932,9 +1941,9 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
     # g.trace(setting,requestedType,bunch.toString())
     val = bunch.val
 
-    # 2011/10/24: test for an explicit None.  
+    # 2011/10/24: test for an explicit None.
     if g.isPython3:
-        isNone = val in ('None','none','') #,None)
+        isNone = val in ('None','none','') # ,None)
             
     else:
         isNone = val in (
@@ -2207,6 +2216,14 @@ Leo 4.9 final, build 4411, June 21, 2011
 Python 2.7.1, qt version 4.7.2
 linux2
 .. @+node:ekr.20111024170505.16461: *5* Medium priority
+.. @+node:ekr.20111025141618.16484: *6* Bug 879338: Global tables in leoApp.py should describe all languages known to the colorizer  
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/879338
+
+Having the colorizer colorize a language properly gives the false illusion that Leo "understands" the language.
+
+Supporting the language in the global tables in leoApp.py makes the illusion a reality.
 .. @+node:ekr.20111025062953.16479: *5* Low priority/Easy
 .. @+node:ekr.20111017132257.15891: *4* Get IPython working again
 .. @+node:ekr.20111017132257.15890: *5* Investigate how IPython hijacks event loops

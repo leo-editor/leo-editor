@@ -57,6 +57,8 @@
 </v>
 </v>
 </v>
+<v t="ekr.20111026083456.16490"><vh>Local commands</vh></v>
+<v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
 </v>
 <v t="ekr.20041119035137"><vh>About this file</vh>
 <v t="ekr.20041122163623"><vh>Note about canonicalized names</vh></v>
@@ -1783,6 +1785,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20070224073109.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4431,114 +4434,144 @@ This suggests that you refrain from putting @enabled-plugins nodes in any .leo f
 That way all your .leo files will use the same plugins.
 If you do put @enabled-plugins nodes in x.leo, be prepared for confusion from time to time. </t>
 <t tx="ekr.20070224073109.1"># Leo loads plugins in the order they appear here.
-# File names may be indented as desired.
 
-# Standard plugins enabled in official distributions....
+# **Important**: to change these defaults, put
+# an @enabled-plugins node in myLeoSettings.leo.
 
-# Essential plugins...
+# Highly-recommended plugins:
+
 plugins_menu.py
 free_layout.py # needs to be early
 
-# Recommended plugins.
-# Enable them in myLeoSettings.leo as desired.
+# Recommended plugins:
 
-# **Imortant** Enabling plugins here makes it
-# impossible to disable them in any .leo file.
+contextmenu.py
+leo_to_html.py
+mod_scripting.py
+nav_qt.py
+quicksearch.py
+stickynotes.py
+todo.py
+viewrendered.py
 
-# contextmenu.py
-# leo_to_html.py
-# mod_scripting.py
-# nav_qt.py
-# quicksearch.py
-# stickynotes.py
-# todo.py
-# viewrendered.py
+# Alphabetical list of all Leo plugins.
 
-# The plugins manager plugin does not
-# understand @enabled-plugins nodes.
-# plugin_manager.py
-
-# All other plugins.
-# Order is important for enabled plugins that
-# add items to the icon area.
-
-# ConceptualSort.py
-# EditAttributes.py
-# FileActions.py
-# Library.py
-# UASearch.py
-# UNL.py # moved to core, 20110220 TNB
-# URLloader.py
-# UniversalScrolling.py
+# active_path.py
 # add_directives.py
-# arrows.py
 # at_folder.py
+# at_produce.py
 # at_view.py
-# autotrees.py
-# base64Packager.py
+# attrib_edit.py
+# backlink.py
+# baseNativeTree.py
 # bibtex.py
+# bookmarks.py
+# bzr_qcommands.py
 # chapter_hoist.py
-# cleo.py
-# color_markup.py
+# codewisecompleter.py
 # colorize_headlines.py
+# contextmenu.py
 # ctagscompleter.py
+# cursesGui.py
 # datenodes.py
+# debugger_pudb.py
 # detect_urls.py
-# dyna_menu.py
-# fastGotoNode.py
-# footprints.py
-# groupOperations.py
-# hoist.py
-# image.py
+# dragdropgoodies.py
+# dtest.py
+# dump_globals.py
+# empty_leo_file.py
+# enable_gc.py
+# expfolder.py
+# FileActions.py
+# free_layout.py
+# ftp.py
+# geotag.py
+# gitarchive.py
+# graphcanvas.py
+# gtkDialogs.py
+# gtkGui.py
 # import_cisco_config.py
+# initinclass.py
+# interact.py
 # ipython.py
-# keybindings.py
+# ironPythonGui.py
+# jinjarender.py
 # leoOPML.py
+# leo_interface.py
+# leo_pdf.py
 # leo_to_html.py
 # leo_to_rtf.py
-# leoupdate.py
+# leocursor.py
+# leofeeds.py
+# leomail.py
+# leoremote.py
+# leoscreen.py
+# lineNumbers.py
 # macros.py
+# maximizeNewWindows.py
+# mime.py
+# mnplugins.py
 # mod_autosave.py
+# mod_framesize.py
 # mod_http.py
-# mod_labels.py
+# mod_leo2ascd.py
 # mod_read_dir_outline.py
-# mod_shadow.py
+# mod_scripting.py
+# mod_speedups.py
+# mod_tempfname.py
+# mod_timestamp.py
 # multifile.py
-# nav_buttons.py
-# newButtons.py
+# nav_qt.py
+# nested_splitter.py
 # niceNosent.py
 # nodeActions.py
-# nodebar.py
-# nodenavigator.py
 # open_shell.py
-# open_with.py
+# outline_export.py
 # paste_as_headlines.py
-# pie_menus.py
+# pluginsTest.py
+# plugins_menu.py
 # pretty_print.py
-# print_cp.py
+# projectwizard.py
+# qtGui.py
+# qt_main.py
+# qt_quicksearch.py
+# qtframecommands.py
 # quickMove.py
 # quicksearch.py
-# rClick.py
+# quit_leo.py
 # read_only_nodes.py
-# rowcol.py
-# rst3.py # The rst3 plugin has been moved to Leo's core.
+# redirect_to_log.py
+# rst3.py
 # run_nodes.py
-# s_menu.py
-# scheduler.py
-# searchbox.py
-# shortcut_button.py
+# screenshots.py
+# script_io_to_body.py
+# scripts_menu.py
+# setHomeDirectory.py
 # slideshow.py
-# table.py
-# templates.py
+# spydershell.py
+# startfile.py
+# stickynotes.py
+# stickynotes_plus.py
+# swing_gui.py
+# systray.py
+# testRegisterCommand.py
+# textnode.py
+# tkGui.py
+# todo.py
 # tomboy_import.py
+# trace_gc_plugin.py
+# trace_keys.py
 # trace_tags.py
+# valuespace.py
+# viewrendered.py
 # vim.py
 # word_count.py
 # word_export.py
-# xcc_nodes.py
+# wxGui.py
 # xemacs.py
+# xml_edit.py
 # xsltWithNodes.py
-# zodb.py
+# zenity_file_dialogs.py
 </t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
 False: Chapter commands do not exists.</t>
@@ -12231,6 +12264,17 @@ url_font_weight = bold
 
 configure_hard_tab_width now does a good, but not great,
 job of computing what the width of a hard tab should be.</t>
+<t tx="ekr.20111026083456.16490"></t>
+<t tx="ekr.20111026083456.16491">import glob
+
+path = g.os_path_finalize_join(
+    g.app.loadDir,'..','plugins','*.py')
+    
+aList = glob.glob(path)
+aList.sort()
+
+for fn in aList:
+    print(g.shortFileName(fn))</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
