@@ -501,7 +501,9 @@ class baseTextWidget:
     def setYScrollPosition (self,i):
 
         w = self
+        if g.app.trace_scroll: g.trace('(baseTextBrowser) setYPos',i)
         w._setYScrollPosition(i)
+        
     #@-others
 #@+node:ekr.20070228074228.1: *3* class stringTextWidget (baseTextWidget)
 class stringTextWidget (baseTextWidget):
@@ -773,7 +775,7 @@ class leoBody:
 
         f = self.createEditorFrame(pane)
         #@+<< create text widget w >>
-        #@+node:ekr.20060528110922: *7* << create text widget w >>
+        #@+node:ekr.20060528110922: *7* << create text widget w >> leoBody.addEditor
         w = self.createTextWidget(f,name=name,p=p)
         w.delete(0,'end')
         w.insert('end',p.b)
@@ -924,7 +926,7 @@ class leoBody:
             self.selectEditorLockout = False
 
         return val # Don't put a return in a finally clause.
-    #@+node:ekr.20070423102603: *7* selectEditorHelper
+    #@+node:ekr.20070423102603: *7* selectEditorHelper (leoBody)
     def selectEditorHelper (self,w):
 
         c = self.c ; cc = c.chapterController ; d = self.editorWidgets
@@ -940,7 +942,7 @@ class leoBody:
                 hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
                 hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
 
-        self.inactivateActiveEditor(w)
+        self.deactivateActiveEditor(w)
 
         # The actual switch.
         c.frame.body.bodyCtrl = w
@@ -962,13 +964,15 @@ class leoBody:
         c.redraw(w.leo_p)
         c.recolor()
         #@+<< restore the selection, insertion point and the scrollbar >>
-        #@+node:ekr.20061017083312.1: *8* << restore the selection, insertion point and the scrollbar >>
+        #@+node:ekr.20061017083312.1: *8* << restore the selection, insertion point and the scrollbar >> selectEditorHelper leoBody.selectEditorBody
         # g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
 
         if w.leo_insertSpot:
             w.setInsertPoint(w.leo_insertSpot)
         else:
             w.setInsertPoint(0)
+            
+        # g.trace('leoBody',g.callers())
             
         ### A bad change.
         ### w.seeInsertPoint() ### 2011/09/30
@@ -1047,8 +1051,8 @@ class leoBody:
                  # This *can* happen when selecting a deleted node.
                 w.leo_p = c.p
                 return False
-    #@+node:ekr.20070424080640: *6* inactivateActiveEditor
-    def inactivateActiveEditor(self,w):
+    #@+node:ekr.20070424080640: *6* deactivateActiveEditor (leoBody)
+    def deactivateActiveEditor(self,w):
 
         '''Inactivate the previously active editor.'''
 
@@ -1305,7 +1309,8 @@ class leoBody:
             first,last = scrollPosition
         else:
             first = scrollPosition
-            
+        
+        if g.app.trace_scroll: g.trace('(leoBody) setYPos',first)
         self.bodyCtrl.setYScrollPosition(first)
     #@+node:ekr.20070228080627: *4* Text Wrappers (leoBody)
     def getAllText (self):                  return self.bodyCtrl.getAllText()

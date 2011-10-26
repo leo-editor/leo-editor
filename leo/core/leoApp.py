@@ -110,6 +110,7 @@ class LeoApp:
         self.trace_gc_calls = False # defined in run()
         self.trace_gc_verbose = False # defined in run()
         self.trace_gc_inited = False
+        self.trace_scroll = False # True: trace calls to .see and .setYScrollPosition.
         self.tracePositions = False
         self.trace_list = [] # "Sherlock" argument list for tracing().
         self.translateToUpperCase = False

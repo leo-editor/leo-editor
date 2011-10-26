@@ -4900,10 +4900,10 @@ class editCommandsClass (baseEditCommandsClass):
                 self.updateAutoIndent(p,w)
 
         w.seeInsertPoint()
-    #@+node:ekr.20051026171121.1: *5* updateAutoIndent (leoEditCommands)
+    #@+node:ekr.20051026171121.1: *5* updateAutoIndent (leoEditCommands) (BUGGY??
     def updateAutoIndent (self,p,w):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c
         d = c.scanAllDirectives(p)
         tab_width = d.get("tabwidth",c.tab_width)
@@ -4942,6 +4942,7 @@ class editCommandsClass (baseEditCommandsClass):
             i = w.getInsertPoint()
             w.insert(i,ws)
             w.setInsertPoint(i+len(ws))
+            if g.app.trace_scroll: g.trace('seeInsertPoint',i)
             w.seeInsertPoint()
                 # 2011/10/02: Fix cursor-movement bug.
     #@+node:ekr.20051027172949: *5* updateAutomatchBracket
@@ -5608,6 +5609,7 @@ class editCommandsClass (baseEditCommandsClass):
         if hasattr(w,'leoMoveCursorHelper'):
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=spot,extend=extend)
+            if g.app.trace_scroll: g.trace('seeInsertPoint',spot)
             w.seeInsertPoint()
             c.frame.updateStatusLine()
         else:
@@ -6443,8 +6445,8 @@ class editCommandsClass (baseEditCommandsClass):
             row1 = g.choose(direction=='down',row+delta,row-delta)
             row1 = max(0,row1)
             spot = g.convertRowColToPythonIndex(s,row1,col)
-            # g.trace('spot',spot,'row1',row1)
             self.extendHelper(w,extend,spot)
+            if g.app.trace_scroll: g.trace('seeInsertPoint',spot)
             w.seeInsertPoint()
     #@+node:ekr.20060309060654.1: *4* scrollOutlineUp/Down/Line/Page
     def scrollOutlineDownLine (self,event=None):

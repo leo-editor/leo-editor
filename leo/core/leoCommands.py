@@ -2789,6 +2789,7 @@ class Commands (object):
 
             w.setInsertPoint(ins)
             c.bodyWantsFocus()
+            if g.app.trace_scroll: g.trace('seeInsertPoint',spot)
             w.seeInsertPoint()
         #@-others
     #@+node:EKR.20040612232221: *6* c.goToScriptLineNumber
@@ -3605,6 +3606,7 @@ class Commands (object):
         w.setSelectionRange(ins,ins,insert=ins)
         
         # Make the next line visible: this is a big improvement.
+        if g.app.trace_scroll: g.trace('see',ins)
         w.see(ins)
     #@+node:ekr.20101118113953.5843: *7* rp_wrap_all_lines
     def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):

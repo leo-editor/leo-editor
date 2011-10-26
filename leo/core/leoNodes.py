@@ -2412,7 +2412,7 @@ class vnode (baseVnode):
     def setIcon (self):
 
         pass # Compatibility routine for old scripts
-    #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll
+    #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll (??TO BE CHANGED??)
     def restoreCursorAndScroll (self,w):
 
         v = self
@@ -2420,6 +2420,7 @@ class vnode (baseVnode):
         if v and v.insertSpot != None:
             spot = v.insertSpot
             w.setInsertPoint(spot)
+            if g.app.trace_scroll: g.trace('see',spot)
             w.see(spot)
         else:
             w.setInsertPoint(0)
@@ -2430,6 +2431,7 @@ class vnode (baseVnode):
         # Restore the scroll spot after the call to w.see.
         if v and v.scrollBarSpot != None:
             first,last = v.scrollBarSpot
+            if g.app.trace_scroll: g.trace('setYPos',first)
             w.setYScrollPosition(first)
     #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll(w)
     def saveCursorAndScroll(self,w):
