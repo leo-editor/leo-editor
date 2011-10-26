@@ -404,7 +404,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         w = self
         sb = w.verticalScrollBar()
         i = pos or 0 # pos may be None.
-        # g.trace('(LeoQTextBrowser)',i)
+        if g.app.trace_scroll: g.trace('(LeoQTextBrowser) setYPos',i)
         sb.setSliderPosition(i)
     #@-others
 #@-<< define LeoQTextBrowser >>
@@ -1616,6 +1616,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             except TypeError:
                 pass
 
+        if g.app.trace_scroll: g.trace('(LeoQTextWidget) setYPos',pos)
         sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18099: *5*  PythonIndex
     #@+node:ekr.20110605121601.18100: *6* toPythonIndex
@@ -2972,8 +2973,6 @@ class leoQtBody (leoFrame.leoBody):
         
         obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
 
-        # g.trace('(leoQtBody)',bg,fg)
-
         def check(color,kind,default):
             if not QtGui.QColor(color).isValid():
                 if color not in self.badFocusColors:
@@ -2989,9 +2988,9 @@ class leoQtBody (leoFrame.leoBody):
         if hasattr(obj,'viewport'):
             obj = obj.viewport()
 
-        obj.setStyleSheet('background-color:%s; color: %s' % (bg,fg))
-        
-        # g.trace(obj.styleSheet())
+        sheet = 'background-color: %s; color: %s' % (bg,fg)
+        g.app.gui.update_style_sheet(obj,'colors',sheet)
+      
     #@+node:ekr.20110605121601.18190: *4* Do-nothings (qtBody)
     def oops (self):
         g.trace('qtBody',g.callers(3))
@@ -3221,7 +3220,7 @@ class leoQtBody (leoFrame.leoBody):
             self.unpackWidget(layout,w.leo_label)
 
         self.selectEditor(new_wrapper)
-    #@+node:ekr.20110605121601.18200: *6* findEditorForChapter (leoBody)
+    #@+node:ekr.20110605121601.18200: *6* findEditorForChapter (qtBody)
     def findEditorForChapter (self,chapter,p):
 
         '''Return an editor to be assigned to chapter.'''
@@ -3249,7 +3248,7 @@ class leoQtBody (leoFrame.leoBody):
         # As a last resort, return the present editor widget.
         if trace: g.trace('***',id(self.bodyCtrl),'no match',p.h)
         return c.frame.body.bodyCtrl
-    #@+node:ekr.20110605121601.18201: *6* select/unselectLabel (leoBody)
+    #@+node:ekr.20110605121601.18201: *6* select/unselectLabel (qtBody)
     def unselectLabel (self,wrapper):
 
         pass
@@ -3307,7 +3306,7 @@ class leoQtBody (leoFrame.leoBody):
             self.selectEditorLockout = False
 
         return val # Don't put a return in a finally clause.
-    #@+node:ekr.20110605121601.18203: *7* selectEditorHelper (leoBody)
+    #@+node:ekr.20110605121601.18203: *7* selectEditorHelper (qtBody)
     def selectEditorHelper (self,wrapper):
 
         trace = False and not g.unitTesting
@@ -3353,13 +3352,15 @@ class leoQtBody (leoFrame.leoBody):
         c.redraw()
         c.recolor_now()
         #@+<< restore the selection, insertion point and the scrollbar >>
-        #@+node:ekr.20110605121601.18204: *8* << restore the selection, insertion point and the scrollbar >>
+        #@+node:ekr.20110605121601.18204: *8* << restore the selection, insertion point and the scrollbar >> qtBody.selectEditorHelper
         # g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
 
         if hasattr(w,'leo_insertSpot') and w.leo_insertSpot:
             wrapper.setInsertPoint(w.leo_insertSpot)
         else:
             wrapper.setInsertPoint(0)
+            
+        # g.trace('qtBody',g.callers())
             
         ### A bad fix.
         ### wrapper.seeInsertPoint()
@@ -7584,19 +7585,22 @@ class leoQtGui(leoGui.leoGui):
         self.qtApp.exit()
     #@+node:ekr.20111022215436.16685: *4* Borders (qtGui)
     def add_border(self,c,w):
-        
+
         if c.use_focus_border:
-            if hasattr(w,'viewport'):
+            if True and hasattr(w,'viewport'):
                 w = w.viewport()
-            w.setStyleSheet("border: %spx solid %s;" % (
-                c.focus_border_width,c.focus_border_color))
-       
+            sheet = "border: %spx solid %s" % (
+                c.focus_border_width,c.focus_border_color)
+            self.update_style_sheet(w,'border',sheet)
+
     def remove_border(self,c,w):
 
         if c.use_focus_border:
-            if hasattr(w,'viewport'):
+            if True and hasattr(w,'viewport'):
                 w = w.viewport()
-            w.setStyleSheet("border: 1px solid white;")
+            sheet = "border: %spx solid white" % (
+                c.focus_border_width)
+            self.update_style_sheet(w,'border',sheet)
     #@+node:ekr.20110605121601.18485: *4* Clipboard (qtGui)
     def replaceClipboardWith (self,s):
 
@@ -8377,6 +8381,22 @@ class leoQtGui(leoGui.leoGui):
             self.badWidgetColors.append(colorName)
             g.es_print('bad widget color %s for %s' % (
                 colorName,widgetKind),color='blue')
+    #@+node:ekr.20111026115337.16528: *5* update_style_sheet (qtGui)
+    def update_style_sheet (self,w,key,value):
+        
+        trace = False and not g.unitTesting
+        
+        # Step one: update the dict.
+        d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
+        d[key] = value
+        aList = [d.get(key) for key in list(d.keys())]
+        w.leo_styles_dict = d
+        
+        # Step two: update the stylesheet.
+        s = ';'.join(aList)
+        if trace: g.trace('old: %40s new: %s' % (
+            str(w.styleSheet()),s))
+        w.setStyleSheet(s)
     #@+node:ekr.20110605121601.18526: *4* toUnicode (qtGui)
     def toUnicode (self,s):
 
