@@ -12,6 +12,23 @@
 <vnodes>
 <v t="ekr.20070417092935"><vh>Startup</vh>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
+<v t="ekr.20041121151002"><vh>@settings</vh>
+<v t="ekr.20110521073115.3494"><vh>colorizer colors</vh>
+<v t="ekr.20110521073115.3495"><vh>@@color keyword3_color = orange</vh></v>
+<v t="ekr.20110521073115.3496"><vh>@@color keyword4_color = pink</vh></v>
+</v>
+<v t="ekr.20111026111009.3972"><vh>@data import_xml_tags</vh></v>
+<v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
+<v t="ekr.20101009105124.6195"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
+<v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
+<v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
+<v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
+<v t="ekr.20050328101834"><vh>@page http plugin</vh>
+<v t="ekr.20050328101834.1"><vh>@bool http_active = False</vh></v>
+<v t="ekr.20050328101834.2"><vh>@int  port = 8080</vh></v>
+<v t="ekr.20050328101834.3"><vh>@string rst_http_attributename = ''</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
@@ -107,7 +124,8 @@
 <v t="ekr.20111021115306.3697"><vh>@file ../test/unittest/tex-error.tex</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"
+expanded="ekr.20090529141856.4780,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -132,6 +150,11 @@ code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
 </t>
+<t tx="ekr.20041121151002"></t>
+<t tx="ekr.20050328101834"></t>
+<t tx="ekr.20050328101834.1"></t>
+<t tx="ekr.20050328101834.2"></t>
+<t tx="ekr.20050328101834.3"></t>
 <t tx="ekr.20050618061835">@killcolor
 
 Here is a tutorial written by Roger Erens.
@@ -362,6 +385,7 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 <t tx="ekr.20050618061835.9">@color
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
+<t tx="ekr.20051013162226"></t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -513,6 +537,9 @@ else:
         sel = (i,i)
     return i,j</t>
 <t tx="ekr.20070417092935" str_leo_pos="5"></t>
+<t tx="ekr.20070503064257"></t>
+<t tx="ekr.20070528100318"># Required to make a typing test work.
+</t>
 <t tx="ekr.20071113140035">fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src','leoPy.leo'))
 flag,frame2 = g.openWithFileName(fileName,old_c=None,enableLog=False)
 c.frame.bringToFront()
@@ -541,6 +568,10 @@ for h in d2.keys():
     if not d1.get(h):
         g.pr(h)</t>
 <t tx="ekr.20071113203234"></t>
+<t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
+
+Important: this may cause crashes on some platforms.
+</t>
 <t tx="ekr.20080907123324.2">@language python
 @tabwidth -4
 @others
@@ -629,8 +660,23 @@ for p in c.all_unique_positions():
 
 s = "%d nodes" % count
 print s ; g.es(s)</t>
+<t tx="ekr.20101009105124.6195">True (recommended):
+    Write "E" attribute bits in &lt;v&gt; elements.
+    Leo outlines will record the expansion state of all nodes.
+
+False:
+    (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in &lt;v&gt; elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.
+</t>
 <t tx="ekr.20101220161557.6013"></t>
 <t tx="ekr.20101220161557.6016"></t>
+<t tx="ekr.20110521073115.3494"></t>
+<t tx="ekr.20110521073115.3495">builtins, including cython builtins
+</t>
+<t tx="ekr.20110521073115.3496">cython keywords
+</t>
 <t tx="ekr.20110615130436.3317">@language rest
 
 This file is part of a unit test that ensures that orphan bits are retained when
@@ -639,5 +685,20 @@ writing .leo files.
 The path is **supposed** not to exist.
 </t>
 <t tx="ekr.20110615130436.3318">Child content goes here.</t>
+<t tx="ekr.20111026111009.3972"># xml tags, one per line.
+
+html
+HTML
+body
+BODY
+head
+HEAD
+div
+DIV
+table
+TABLE
+nodeA
+nodeB
+</t>
 </tnodes>
 </leo_file>

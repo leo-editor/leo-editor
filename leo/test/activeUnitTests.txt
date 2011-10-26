@@ -11427,6 +11427,16 @@ s = '''\
 g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20111026105935.3966: *6* @test xml 2
+s = '''\
+<nodeA>
+<nodeB/>
+</nodeA>
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4784: *4*  Tests of @auto-rst
 #@+node:ekr.20090529141856.4785: *5* @test rST import test
 s = '''\

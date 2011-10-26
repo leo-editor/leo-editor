@@ -138,62 +138,6 @@ import leoTest
 
 leoTest.doTests(c,all=False)
 c.selectPosition(p)
-#@+node:ekr.20041121151002: ** @settings
-#@+node:ekr.20110521073115.3494: *3* colorizer colors
-#@+node:ekr.20110521073115.3495: *4* @color keyword3_color = orange
-builtins, including cython builtins
-#@+node:ekr.20110521073115.3496: *4* @color keyword4_color = pink
-cython keywords
-#@+node:ekr.20090629104856.4992: *3* @@bool big_outline_pane = True
-#@+node:ekr.20070303143846.1: *3* @@enabled-plugins
-# Plugin_manager.py needs plugins_menu.py
-# Plugins_manager is not functional at present.
-# plugin_manager.py
-
-# qtGui.py
-# tkGui.py
-
-plugins_menu.py
-
-# Standard plugins...
-open_with.py
-leo_to_html.py
-mod_scripting.py
-UNL.py
-
-# Other plugins...
-# vim.py
-
-# Tk plugins.
-# cleo.py
-# hoist.py
-# image.py
-# nav_buttons.py
-# rClick.py
-# threading_colorizer.py
-#@+node:ekr.20100507152400.5388: *3* @@string qt-toolbar-location=left
-#@+node:ekr.20080324133327.2: *3* @bool allow_middle_button_paste = True
-True: allow linux-like pastes using a mouse's middle button.
-
-Important: this may cause crashes on some platforms.
-#@+node:ekr.20101009105124.6195: *3* @bool put_expansion_bits_in_leo_files = False
-True (recommended):
-    Write "E" attribute bits in <v> elements.
-    Leo outlines will record the expansion state of all nodes.
-
-False:
-    (Good for files like unitTest.leo)
-    Suppress "E" attribute bits in <v> elements.
-    Only the ancestors of the presently selected node will
-    be expanded when Leo opens an outline.
-#@+node:ekr.20051013162226: *3* @bool test_setting = True
-#@+node:ekr.20070503064257: *3* @bool use_chapters = True
-#@+node:ekr.20070528100318: *3* @bool write_strips_blank_lines = False
-# Required to make a typing test work.
-#@+node:ekr.20050328101834: *3* @page http plugin
-#@+node:ekr.20050328101834.1: *4* @bool http_active = False
-#@+node:ekr.20050328101834.2: *4* @int  port = 8080
-#@+node:ekr.20050328101834.3: *4* @string rst_http_attributename = ''
 #@+node:ekr.20070515150433: ** @chapters
 #@+node:ekr.20111015113758.3721: *3* @chapter aaa
 #@+node:ekr.20111015113758.3722: *4* aaa node 1

@@ -4309,7 +4309,7 @@ class xmlScanner (baseScannerClass):
         '''return True if s[i:] starts a class or function.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
 
-        trace = self.trace ; verbose = False
+        trace = False and not g.unitTesting ; verbose = False
         self.codeEnd = self.sigEnd = self.sigId = None
 
         # Underindented lines can happen in any language, not just Python.
@@ -4326,7 +4326,9 @@ class xmlScanner (baseScannerClass):
         if not theId: return False
 
         if theId not in tags:
-            if trace and verbose: g.trace('**** %s theId: %s not in tags: %s' % (kind,theId,tags))
+            if trace and verbose:
+                g.trace('**** %s theId: %s not in tags: %s' % (
+                    kind,theId,tags))
             return False
 
         if trace and verbose: g.trace(theId)
@@ -4334,7 +4336,7 @@ class xmlScanner (baseScannerClass):
         sigId = theId
 
         # Complete the opening tag.
-        i, ok = self.skipToEndOfTag(s,i)
+        i, ok, complete = self.skipToEndOfTag(s,i)
         if not ok:
             if trace and verbose: g.trace('no tail',g.get_line(s,i))
             return False
@@ -4347,10 +4349,11 @@ class xmlScanner (baseScannerClass):
                 if trace and verbose: g.trace('extending sigEnd')
                 sigEnd = g.skip_line(s,sigEnd)
 
-        i,ok = self.skipToMatchingTag(s,i,theId)
-        if not ok:
-            if trace: g.trace('no matching tag',theId)
-            return False
+        if not complete:
+            i,ok = self.skipToMatchingTag(s,i,theId)
+            if not ok:
+                if trace: g.trace('no matching tag:',theId)
+                return False
 
         # Success: set the ivars.
         self.sigStart = self.adjustDefStart(s,self.sigStart)
@@ -4377,25 +4380,38 @@ class xmlScanner (baseScannerClass):
     #@+node:ekr.20071214072924.3: *5* skipToEndOfTag
     def skipToEndOfTag(self,s,i):
 
-        '''Skip to the end of an open tag.'''
+        '''Skip to the end of an open tag.
+        
+        return i,ok,complete
+        
+        where complete is True if the tag of the form <name/>
+        
+        '''
 
         while i < len(s):
             progress = i
             if i == '"':
                 i = self.skipString(s,i)
             elif g.match(s,i,'/>'):
-                return i,False # Starts a self-contained tag.
+                i += 2
+                if g.match(s,i,'\n'):
+                    i += 1 # Make sure the "class" contains a trailing newline.
+                return i,True,True # Starts a self-contained tag.
             elif g.match(s,i,'>'):
                 i += 1
                 if g.match(s,i,'\n'): i += 1
-                return i,True
+                return i,True,False
             else:
                 i += 1
             assert progress < i
 
         return i,False
-    #@+node:ekr.20071214075117: *5* skipToMatchingTag
+    #@+node:ekr.20071214075117: *5* skipToMatchingTag & helper
     def skipToMatchingTag (self,s,i,tag):
+        
+        trace = True and not g.unitTesting
+        
+        # if tag == 'nodeB': g.pdb()
 
         while i < len(s):
             progress = i
@@ -4406,7 +4422,7 @@ class xmlScanner (baseScannerClass):
                 i = self.skipId(s,j)
                 tag2 = s[j:i]
                 if tag2.lower() == tag.lower():
-                    i,ok = self.skipToEndOfTag(s,i)
+                    i,ok,complete = self.skipToEndOfTag(s,i)
                     return i,ok
             else:
                 i += 1
