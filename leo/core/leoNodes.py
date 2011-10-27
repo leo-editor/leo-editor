@@ -2412,27 +2412,23 @@ class vnode (baseVnode):
     def setIcon (self):
 
         pass # Compatibility routine for old scripts
-    #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll (??TO BE CHANGED??)
+    #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll (changed)
+    # Called only by setBodyTextAfterSelect.
+
     def restoreCursorAndScroll (self,w):
 
         v = self
-
-        if v and v.insertSpot != None:
-            spot = v.insertSpot
-            w.setInsertPoint(spot)
-            if g.app.trace_scroll: g.trace('see',spot)
-            w.see(spot)
-        else:
-            w.setInsertPoint(0)
+        spot = v and v.insertSpot or 0
+        w.setInsertPoint(spot)
             
-        ### A bad change.  We must save the scroll bar position.
-        ### w.seeInsertPoint() ### 2011/09/30
-
-        # Restore the scroll spot after the call to w.see.
+        # 2011/10/26: *only* restore the scrollbar setting.  Do not call see.
         if v and v.scrollBarSpot != None:
-            first,last = v.scrollBarSpot
-            if g.app.trace_scroll: g.trace('setYPos',first)
-            w.setYScrollPosition(first)
+            pos = v.scrollBarSpot
+            if g.app.trace_scroll: g.trace('(vnode)',pos)
+            w.setYScrollPosition(pos)
+            
+        # Never call w.see here.
+
     #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll(w)
     def saveCursorAndScroll(self,w):
 

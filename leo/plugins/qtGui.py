@@ -396,16 +396,16 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         w = self
         sb = w.verticalScrollBar()
         i = sb.sliderPosition()
-        # g.trace('(LeoQTextBrowser)',i)
+        if g.app.trace_scroll: g.trace('(LeoQTextBrowser)',i)
         return i
 
     def setYScrollPosition(self,pos):
 
         w = self
         sb = w.verticalScrollBar()
-        i = pos or 0 # pos may be None.
-        if g.app.trace_scroll: g.trace('(LeoQTextBrowser) setYPos',i)
-        sb.setSliderPosition(i)
+        if pos is None: pos = 0
+        if g.app.trace_scroll: g.trace('(LeoQTextBrowser)',pos)
+        sb.setSliderPosition(pos)
     #@-others
 #@-<< define LeoQTextBrowser >>
 #@+<< define leoQtBaseTextWidget class >>
@@ -1266,13 +1266,16 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         return i,j
     #@+node:ekr.20110605121601.18084: *5* getYScrollPosition (leoQTextEditWidget)
     def getYScrollPosition(self):
+        
+        # **Important**: There is a Qt bug here: the scrollbar position
+        # is valid only if cursor is visible.  Otherwise the *reported*
+        # scrollbar position will be such that the cursor *is* visible.
 
         w = self.widget
         sb = w.verticalScrollBar()
         i = sb.sliderPosition()
-
-        # Return a tuple, only the first of which is used.
-        return i,i 
+        if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',i)
+        return i
     #@+node:ekr.20110605121601.18085: *5* hasSelection (leoQTextEditWidget)
     def hasSelection(self):
         
@@ -1322,18 +1325,13 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18089: *5* insert (avoid call to setAllText) (leoQTextWidget)
     def insert(self,i,s):
 
-        
         c,w = self.c,self.widget
         colorer = c.frame.body.colorizer.highlighter.colorer
         n = colorer.recolorCount
 
         # Set a hook for the colorer.
         colorer.initFlag = True
-
         i = self.toGuiIndex(i)
-        ### 2011/10/12: Valid?
-        # sb = w.verticalScrollBar()
-        # pos = sb.sliderPosition()
         cursor = w.textCursor()
         try:
             self.changingText = True # Disable onTextChanged.
@@ -1342,11 +1340,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             w.setTextCursor(cursor) # Bug fix: 2010/01/27
         finally:
             self.changingText = False
-
-        ### 2011/10/12: Valid?
-        # sb.setSliderPosition(pos)
-
-        ### w.ensureCursorVisible() # This has no effect.
     #@+node:ekr.20110605121601.18090: *5* see (leoQTextEditWidget)
     def see(self,i):
 
@@ -1607,16 +1600,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         w = self.widget
         sb = w.verticalScrollBar()
-        if pos is None:
-            pos = 0
-        else:
-            try:
-                n1,n2 = pos
-                pos = n1
-            except TypeError:
-                pass
-
-        if g.app.trace_scroll: g.trace('(LeoQTextWidget) setYPos',pos)
+        if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
         sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18099: *5*  PythonIndex
     #@+node:ekr.20110605121601.18100: *6* toPythonIndex
@@ -3353,23 +3337,8 @@ class leoQtBody (leoFrame.leoBody):
         c.recolor_now()
         #@+<< restore the selection, insertion point and the scrollbar >>
         #@+node:ekr.20110605121601.18204: *8* << restore the selection, insertion point and the scrollbar >> qtBody.selectEditorHelper
-        # g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
-
-        if hasattr(w,'leo_insertSpot') and w.leo_insertSpot:
-            wrapper.setInsertPoint(w.leo_insertSpot)
-        else:
-            wrapper.setInsertPoint(0)
-            
-        # g.trace('qtBody',g.callers())
-            
-        ### A bad fix.
-        ### wrapper.seeInsertPoint()
-
-        if hasattr(w,'leo_scrollBarSpot') and w.leo_scrollBarSpot is not None:
-            first,last = w.leo_scrollBarSpot
-            wrapper.see(first)
-        else:
-            wrapper.seeInsertPoint()
+        spot = hasattr(w,'leo_insertSpot') and w.leo_insertSpot or 0
+        wrapper.setInsertPoint(spot)
 
         if hasattr(w,'leo_selection') and w.leo_selection:
             try:
@@ -3377,6 +3346,8 @@ class leoQtBody (leoFrame.leoBody):
                 wrapper.setSelectionRange(start,end)
             except Exception:
                 pass
+
+        # Don't restore the scrollbar here.
         #@-<< restore the selection, insertion point and the scrollbar >>
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18205: *6* updateEditors

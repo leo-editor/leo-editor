@@ -965,32 +965,17 @@ class leoBody:
         c.recolor()
         #@+<< restore the selection, insertion point and the scrollbar >>
         #@+node:ekr.20061017083312.1: *8* << restore the selection, insertion point and the scrollbar >> selectEditorHelper leoBody.selectEditorBody
-        # g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
-
-        if w.leo_insertSpot:
-            w.setInsertPoint(w.leo_insertSpot)
-        else:
-            w.setInsertPoint(0)
+        spot = hasattr(w,'leo_insertSpot') and w.leo_insertSpot or 0
+        w.setInsertPoint(0)
             
-        # g.trace('leoBody',g.callers())
-            
-        ### A bad change.
-        ### w.seeInsertPoint() ### 2011/09/30
-
-        if w.leo_scrollBarSpot is not None:
-            first,last = w.leo_scrollBarSpot
-            w.yview('moveto',first)
-        else:
-            w.seeInsertPoint()
-
-        if w.leo_selection:
+        if hasattr(w,'leo_selection') and w.leo_selection:
             try:
                 start,end = w.leo_selection
                 w.setSelectionRange(start,end)
-                ### Don't alter the scroll position.
-                ### w.see(start) ### 2011/09/30
             except Exception:
                 pass
+
+        # Don't restore the scrollbar here.
         #@-<< restore the selection, insertion point and the scrollbar >>
         c.bodyWantsFocus()
         return # (for Tk) 'break'
@@ -1064,11 +1049,9 @@ class leoBody:
             if w2 != w and w2.leo_active:
                 w2.leo_active = False
                 self.unselectLabel(w2)
-                w2.leo_scrollBarSpot = w2.yview()
+                w2.leo_scrollBarSpot = w2.getYScrollPosition()
                 w2.leo_insertSpot = w2.getInsertPoint()
                 w2.leo_selection = w2.getSelectionRange()
-                # g.trace('inactive:',id(w2),'scroll',w2.leo_scrollBarSpot,'ins',w2.leo_insertSpot)
-                # g.trace('inactivate',id(w2))
                 return
     #@+node:ekr.20060530204135: *6* recolorWidget
     def recolorWidget (self,p,w):
@@ -1301,17 +1284,14 @@ class leoBody:
     #@+node:ekr.20031218072017.4038: *5* get/setYScrollPosition (leoBody)
     def getYScrollPosition (self):
 
-        return self.bodyCtrl.getYScrollPosition()
+        i = self.bodyCtrl.getYScrollPosition()
+        if g.app.trace_scroll: g.trace('(leoBody)',i)
+        return i
 
-    def setYScrollPosition (self,scrollPosition):
+    def setYScrollPosition (self,i):
         
-        if len(scrollPosition) == 2:
-            first,last = scrollPosition
-        else:
-            first = scrollPosition
-        
-        if g.app.trace_scroll: g.trace('(leoBody) setYPos',first)
-        self.bodyCtrl.setYScrollPosition(first)
+        if g.app.trace_scroll: g.trace('(leoBody) setYPos',i)
+        self.bodyCtrl.setYScrollPosition(i)
     #@+node:ekr.20070228080627: *4* Text Wrappers (leoBody)
     def getAllText (self):                  return self.bodyCtrl.getAllText()
     def getInsertPoint(self):               return self.bodyCtrl.getInsertPoint()
@@ -2487,6 +2467,7 @@ class leoTree:
                 if body:
                     yview = body.getYScrollPosition()
                     insertSpot = c.frame.body.getInsertPoint()
+                    
                     # g.trace('set insert spot',insertSpot)
                 else:
                     g.trace('no body!','c.frame',c.frame,'old_p',old_p)
@@ -2500,6 +2481,8 @@ class leoTree:
                     # 2010/02/11: Don't change the *new* node's insert point!
                     old_p.v.scrollBarSpot = yview
                     old_p.v.insertSpot = insertSpot
+                    if g.app.trace_scroll: g.trace('old scroll: %s insert: %s' % (
+                        yview,insertSpot))
                 #@-<< unselect the old node >>
 
         g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
