@@ -118,8 +118,7 @@
 </v>
 <v t="ekr.20101025080245.5796"><vh>Reference</vh>
 <v t="ekr.20050831184021.5"><vh>Leo's Reference</vh>
-<v t="ekr.20100805001344.7253"
-expanded="ekr.20050828061213,"><vh>@file directives.txt</vh></v>
+<v t="ekr.20100805001344.7253"><vh>@file directives.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.161"><vh>Designing with Leo</vh>
 <v t="ekr.20100805165051.7156"><vh>@file design.txt</vh></v>
