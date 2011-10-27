@@ -475,7 +475,7 @@ and they must start at the leftmost column of the node.
 
     Ends any doc part and starts a code part.
 
-    \@code is a deprecated synonym for \@.
+    \@code is a deprecated synonym for \@c.
 
     Leo does not recognize this directive in \@asis trees or when the
     \@all or \@raw directives are in effect.
