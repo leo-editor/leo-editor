@@ -4903,7 +4903,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051026171121.1: *5* updateAutoIndent (leoEditCommands) (BUGGY??
     def updateAutoIndent (self,p,w):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         d = c.scanAllDirectives(p)
         tab_width = d.get("tabwidth",c.tab_width)
