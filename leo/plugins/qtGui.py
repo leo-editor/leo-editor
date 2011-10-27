@@ -8395,6 +8395,53 @@ class leoQtGui(leoGui.leoGui):
 
         # g.trace(id(w),name)
         return name
+    #@+node:ekr.20111027083744.16532: *4* enableSignalDebugging (qtGui)
+    # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.
+
+    _oldConnect     = QtCore.QObject.connect
+    _oldDisconnect  = QtCore.QObject.disconnect
+    _oldEmit        = QtCore.QObject.emit
+
+    def _wrapConnect(self,callableObject):
+        """Returns a wrapped call to the old version of QtCore.QObject.connect"""
+        @staticmethod
+        def call(*args):
+            callableObject(*args)
+            self._oldConnect(*args)
+        return call
+
+    def _wrapDisconnect(self,callableObject):
+        """Returns a wrapped call to the old version of QtCore.QObject.disconnect"""
+        @staticmethod
+        def call(*args):
+            callableObject(*args)
+            self._oldDisconnect(*args)
+        return call
+
+    def enableSignalDebugging(self,**kwargs):
+
+        """Call this to enable Qt Signal debugging. This will trap all
+        connect, and disconnect calls."""
+
+        f = lambda *args: None
+        connectCall     = kwargs.get('connectCall', f)
+        disconnectCall  = kwargs.get('disconnectCall', f)
+        emitCall        = kwargs.get('emitCall', f)
+
+        def printIt(msg):
+            def call(*args):
+                print(msg,args)
+            return call
+            
+        # Monkey-patch.
+        QtCore.QObject.connect    = self._wrapConnect(connectCall)
+        QtCore.QObject.disconnect = self._wrapDisconnect(disconnectCall)
+
+        def new_emit(self, *args):
+            emitCall(self, *args)
+            self._oldEmit(self, *args)
+
+        QtCore.QObject.emit = new_emit
     #@-others
 #@+node:ekr.20110605121601.18533: ** Non-essential
 #@+node:ekr.20110605121601.18534: *3* quickheadlines
@@ -8496,22 +8543,17 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20110605121601.18540: *3* eventFilter
     def eventFilter(self, obj, event):
 
-        trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
+        trace = (True or self.trace_masterKeyHandler) and not g.unitTesting
         verbose = True
-        traceEvent = True
-        traceKey = (True or self.trace_masterKeyHandler)
-        traceFocus = True
+        traceEvent = False # True: call self.traceEvent.
+        traceKey = (False or self.trace_masterKeyHandler)
         c = self.c ; k = c.k
         eventType = event.type()
         ev = QtCore.QEvent
         gui = g.app.gui
         aList = []
 
-        # if trace and verbose: g.trace('*****',eventType)
-
         kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
-
-        if trace and traceFocus: self.traceFocus(eventType,obj)
         
         # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
         lineEditKeyKinds = [ev.KeyPress,ev.KeyRelease]
@@ -8523,7 +8565,6 @@ class leoQtEventFilter(QtCore.QObject):
                 isEditWidget,
                 eventType == ev.KeyRelease,
                 eventType == ev.KeyPress)
-            # g.trace(isEditWidget,eventType,obj)
         else:
             self.keyIsActive = False
 
@@ -8533,25 +8574,19 @@ class leoQtEventFilter(QtCore.QObject):
         elif eventType == ev.WindowDeactivate:
             gui.onDeactivateEvent(event,c,obj,self.tag)
             override = False ; tkKey = None
-        # elif eventType == ev.LayoutRequest:
-            # g.trace(event,event.spontaneous())
-            # event.accept()
-            # override = True
-            # tkKey = None
         elif eventType in kinds:
             tkKey,ch,ignore = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
             if ignore:
                 override = False
-            # This is extremely bad.  At present, it is needed to handle tab properly.
+            # This is extremely bad.
+            # At present, it is needed to handle tab properly.
             elif self.isSpecialOverride(tkKey,ch):
                 override = True
             elif k.inState():
                 override = not ignore # allow all keystrokes.
             else:
                 override = len(aList) > 0
-            # if trace and verbose: g.trace(
-                # tkKey,len(aList),'ignore',ignore,'override',override)
         else:
             override = False ; tkKey = '<no key>'
             if self.tag == 'body':
@@ -8904,71 +8939,83 @@ class leoQtEventFilter(QtCore.QObject):
     def traceEvent (self,obj,event,tkKey,override):
 
         if g.unitTesting: return
-
-        c = self.c ; e = QtCore.QEvent
-        keys = True ; traceAll = True 
+        
+        traceFocus = False
+        traceKey   = False
+        traceLayout = False
+        traceMouse = True
+        
+        c,e = self.c,QtCore.QEvent
         eventType = event.type()
-
-        show = [
-            # (e.DynamicPropertyChange,'dynamic-property-change'), # 170
+        
+        show = []
+        
+        ignore = [
+            e.MetaCall, # 43
+            e.Timer, # 1
+            e.ToolTip, # 110
+        ]
+        
+        focus_events = (
             (e.Enter,'enter'),
             (e.Leave,'leave'),
             (e.FocusIn,'focus-in'),
             (e.FocusOut,'focus-out'),
-            (e.LayoutRequest,'layout-request'),
-            # (e.MouseMove,'mouse-move'),
-            (e.MouseButtonPress,'mouse-dn'),
-            (e.MouseButtonRelease,'mouse-up'),
-            # (e.Paint,'paint'), # 12
-            (e.Wheel,'wheel'), # 31
+            (e.Hide,'hide'), # 18
+            (e.HideToParent, 'hide-to-parent'), # 27
+            (e.HoverEnter, 'hover-enter'), # 127
+            (e.HoverLeave,'hover-leave'), # 128
+            (e.HoverMove,'hover-move'), # 129
+            (e.Show,'show'), # 17
+            (e.ShowToParent,'show-to-parent'), # 26
             (e.WindowActivate,'window-activate'), # 24
+            (e.WindowBlocked,'window-blocked'), # 103
+            (e.WindowUnblocked,'window-unblocked'), # 104
             (e.WindowDeactivate,'window-deactivate'), # 25
-        ]
-
-        if keys:
-            show2 = [
-                (e.KeyPress,'key-press'),
-                (e.KeyRelease,'key-release'),
-                (e.ShortcutOverride,'shortcut-override'),
-            ]
-            show.extend(show2)
-
-        # ignore = (
-            # 1,16,67,70,
-            # e.ChildPolished,
-            # e.DeferredDelete,
-            # e.Enter,e.Leave,
-            # e.FocusIn,e.FocusOut,
-            # e.Hide,e.HideToParent,
-            # e.Move,
-            # e.Resize,
-            # e.MouseMove,
-            # e.MouseButtonPress,
-            # e.MouseButtonRelease,
-            # e.ParentChange,
-            # e.Polish,e.PolishRequest,
-            # e.Show,e.ShowToParent,
-            # e.WindowBlocked,e.WindowUnblocked,
-            # e.ZOrderChange,
-        # )
-        
-        ignore = (
-            e.DynamicPropertyChange, # 170
-            e.FontChange, # 97
-            e.HoverEnter, # 127
-            e.HoverLeave, # 128
-            e.HoverMove, # 129
-            # e.LayoutRequest, # 76
-            e.MetaCall, # 43
-            e.MouseMove, # 155
-            e.Paint, # 12
-            e.PaletteChange, # 39
-            e.Resize, # 14
-            e.StyleChange, # 100
-            e.Timer, # 1
-            e.ToolTip, # 110
-            # e.Wheel, # 31
         )
+        key_events = (
+            (e.KeyPress,'key-press'),
+            (e.KeyRelease,'key-release'),
+            (e.ShortcutOverride,'shortcut-override'),
+        )
+        layout_events = (
+            (e.ChildPolished,'child-polished'), # 69
+            (e.CloseSoftwareInputPanel,'close-sip'), # 200
+            (e.ChildAdded,'child-added'), # 68
+            (e.DynamicPropertyChange,'dynamic-property-change'), # 170
+            (e.FontChange,'font-change'),# 97
+            (e.LayoutRequest,'layout-request'),
+            (e.Move,'move'), # 13 widget's position changed.
+            (e.PaletteChange,'palette-change'),# 39
+            (e.ParentChange,'parent-change'), # 21
+            (e.Paint,'paint'), # 12
+            (e.Polish,'polish'), # 75
+            (e.PolishRequest,'polish-request'), # 74
+            (e.RequestSoftwareInputPanel,'sip'), # 199
+            (e.Resize,'resize'), # 14
+            (e.StyleChange,'style-change'), # 100
+            (e.ZOrderChange,'z-order-change'), # 126
+        )
+        mouse_events = (
+            (e.MouseMove,'mouse-move'), # 155
+            (e.MouseButtonPress,'mouse-press'), # 2
+            (e.MouseButtonRelease,'mouse-release'), # 3
+            (e.Wheel,'mouse-wheel'), # 31
+        )
+        
+        option_table = (
+            (traceFocus,focus_events),
+            (traceKey,key_events),
+            (traceLayout,layout_events),
+            (traceMouse,mouse_events),
+        )
+        
+        for option,table in option_table:
+            if option:
+                show.extend(table)
+            else:
+                for n,tag in table:
+                    ignore.append(n)
 
         for val,kind in show:
             if eventType == val:
@@ -8977,29 +9024,8 @@ class leoQtEventFilter(QtCore.QObject):
                     self.tag,kind,repr(c.k and c.k.inState()),tkKey,override,obj))
                 return
 
-        if traceAll and eventType not in ignore:
+        if eventType not in ignore:
             g.trace('%3s:%s obj:%s' % (eventType,'unknown',obj))
-    #@+node:ekr.20110605121601.18549: *3* traceFocus
-    def traceFocus (self,eventType,obj):
-
-        ev = QtCore.QEvent
-
-        table = (
-            (ev.FocusIn,        'focus-in'),
-            (ev.FocusOut,       'focus-out'),
-            (ev.WindowActivate, 'activate'),
-            (ev.WindowDeactivate,'deactivate'),
-        )
-
-        for evKind,kind in table:
-            if eventType == evKind:
-                g.trace('%11s %s %s %s' % (
-                    (kind,id(obj),
-                    # event.reason(),
-                    obj.objectName(),obj)))
-                    # g.app.gui.widget_name(obj) or obj)))
-
-        # else: g.trace('unknown kind: %s' % eventType)
     #@-others
 #@+node:ekr.20110605121601.18550: ** Syntax coloring
 #@+node:ekr.20110605121601.18551: *3* leoQtColorizer

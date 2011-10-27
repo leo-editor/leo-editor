@@ -11894,22 +11894,17 @@ def onFocusColorHelper(self,kind,obj):
 #@+node:ekr.20110605121601.18540: *7* eventFilter
 def eventFilter(self, obj, event):
 
-    trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
+    trace = (True or self.trace_masterKeyHandler) and not g.unitTesting
     verbose = True
-    traceEvent = True
-    traceKey = (True or self.trace_masterKeyHandler)
-    traceFocus = True
+    traceEvent = False # True: call self.traceEvent.
+    traceKey = (False or self.trace_masterKeyHandler)
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
     gui = g.app.gui
     aList = []
 
-    # if trace and verbose: g.trace('*****',eventType)
-
     kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
-
-    if trace and traceFocus: self.traceFocus(eventType,obj)
     
     # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
     lineEditKeyKinds = [ev.KeyPress,ev.KeyRelease]
@@ -11921,7 +11916,6 @@ def eventFilter(self, obj, event):
             isEditWidget,
             eventType == ev.KeyRelease,
             eventType == ev.KeyPress)
-        # g.trace(isEditWidget,eventType,obj)
     else:
         self.keyIsActive = False
 
@@ -11931,25 +11925,19 @@ def eventFilter(self, obj, event):
     elif eventType == ev.WindowDeactivate:
         gui.onDeactivateEvent(event,c,obj,self.tag)
         override = False ; tkKey = None
-    # elif eventType == ev.LayoutRequest:
-        # g.trace(event,event.spontaneous())
-        # event.accept()
-        # override = True
-        # tkKey = None
     elif eventType in kinds:
         tkKey,ch,ignore = self.toTkKey(event)
         aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
         if ignore:
             override = False
-        # This is extremely bad.  At present, it is needed to handle tab properly.
+        # This is extremely bad.
+        # At present, it is needed to handle tab properly.
         elif self.isSpecialOverride(tkKey,ch):
             override = True
         elif k.inState():
             override = not ignore # allow all keystrokes.
         else:
             override = len(aList) > 0
-        # if trace and verbose: g.trace(
-            # tkKey,len(aList),'ignore',ignore,'override',override)
     else:
         override = False ; tkKey = '<no key>'
         if self.tag == 'body':
@@ -24989,22 +24977,17 @@ def remove_border(self,c,w):
 #@+node:ekr.20110605121601.18540: *5* eventFilter
 def eventFilter(self, obj, event):
 
-    trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
+    trace = (True or self.trace_masterKeyHandler) and not g.unitTesting
     verbose = True
-    traceEvent = True
-    traceKey = (True or self.trace_masterKeyHandler)
-    traceFocus = True
+    traceEvent = False # True: call self.traceEvent.
+    traceKey = (False or self.trace_masterKeyHandler)
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
     gui = g.app.gui
     aList = []
 
-    # if trace and verbose: g.trace('*****',eventType)
-
     kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
-
-    if trace and traceFocus: self.traceFocus(eventType,obj)
     
     # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
     lineEditKeyKinds = [ev.KeyPress,ev.KeyRelease]
@@ -25016,7 +24999,6 @@ def eventFilter(self, obj, event):
             isEditWidget,
             eventType == ev.KeyRelease,
             eventType == ev.KeyPress)
-        # g.trace(isEditWidget,eventType,obj)
     else:
         self.keyIsActive = False
 
@@ -25026,25 +25008,19 @@ def eventFilter(self, obj, event):
     elif eventType == ev.WindowDeactivate:
         gui.onDeactivateEvent(event,c,obj,self.tag)
         override = False ; tkKey = None
-    # elif eventType == ev.LayoutRequest:
-        # g.trace(event,event.spontaneous())
-        # event.accept()
-        # override = True
-        # tkKey = None
     elif eventType in kinds:
         tkKey,ch,ignore = self.toTkKey(event)
         aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
         if ignore:
             override = False
-        # This is extremely bad.  At present, it is needed to handle tab properly.
+        # This is extremely bad.
+        # At present, it is needed to handle tab properly.
         elif self.isSpecialOverride(tkKey,ch):
             override = True
         elif k.inState():
             override = not ignore # allow all keystrokes.
         else:
             override = len(aList) > 0
-        # if trace and verbose: g.trace(
-            # tkKey,len(aList),'ignore',ignore,'override',override)
     else:
         override = False ; tkKey = '<no key>'
         if self.tag == 'body':
