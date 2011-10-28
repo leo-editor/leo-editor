@@ -8,6 +8,8 @@
 .. @+node:ekr.20111024170505.16459: *4* * Bug 879331: Redefining a key binding breaks menu items with same binding
 @nocolor-node
 
+http://groups.google.com/group/leo-editor/browse_thread/thread/762e832909c3c530/d99d48eed45d1061
+
 http://mail.google.com/mail/#inbox/1331909dd653f3c9
 
 > Now I understand.  If I override the shortcut associated with the menu
@@ -2212,6 +2214,248 @@ stylesheet issues.  Consider the following commands::
 - qt-stylesheet-append-to-widget-stylesheet
 
 @language python
+.. @+node:ekr.20111027083744.16531: *4* Unit tests for scroll bug
+
+    @nocolor-node
+
+QSignalSpy: doesn't exist on PyQt?
+
+
+
+Unit testsing without QSignalSpy
+http://stackoverflow.com/questions/2045352/pyqt-unittest-testing-signal-and-slots
+
+**just call enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach**
+.. @+node:ekr.20111027083744.16532: *5* enableSignalDebugging (qtGui)
+# enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.
+
+_oldConnect     = QtCore.QObject.connect
+_oldDisconnect  = QtCore.QObject.disconnect
+_oldEmit        = QtCore.QObject.emit
+
+def _wrapConnect(self,callableObject):
+    """Returns a wrapped call to the old version of QtCore.QObject.connect"""
+    @staticmethod
+    def call(*args):
+        callableObject(*args)
+        self._oldConnect(*args)
+    return call
+
+def _wrapDisconnect(self,callableObject):
+    """Returns a wrapped call to the old version of QtCore.QObject.disconnect"""
+    @staticmethod
+    def call(*args):
+        callableObject(*args)
+        self._oldDisconnect(*args)
+    return call
+
+def enableSignalDebugging(self,**kwargs):
+
+    """Call this to enable Qt Signal debugging. This will trap all
+    connect, and disconnect calls."""
+
+    f = lambda *args: None
+    connectCall     = kwargs.get('connectCall', f)
+    disconnectCall  = kwargs.get('disconnectCall', f)
+    emitCall        = kwargs.get('emitCall', f)
+
+    def printIt(msg):
+        def call(*args):
+            print(msg,args)
+        return call
+        
+    # Monkey-patch.
+    QtCore.QObject.connect    = self._wrapConnect(connectCall)
+    QtCore.QObject.disconnect = self._wrapDisconnect(disconnectCall)
+
+    def new_emit(self, *args):
+        emitCall(self, *args)
+        self._oldEmit(self, *args)
+
+    QtCore.QObject.emit = new_emit
+.. @+node:ekr.20110605121601.18540: *5* eventFilter
+def eventFilter(self, obj, event):
+
+    trace = (True or self.trace_masterKeyHandler) and not g.unitTesting
+    verbose = True
+    traceEvent = False # True: call self.traceEvent.
+    traceKey = (False or self.trace_masterKeyHandler)
+    c = self.c ; k = c.k
+    eventType = event.type()
+    ev = QtCore.QEvent
+    gui = g.app.gui
+    aList = []
+
+    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
+    
+    # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
+    lineEditKeyKinds = [ev.KeyPress,ev.KeyRelease]
+        
+    if eventType in lineEditKeyKinds:
+        p = c.currentPosition()
+        isEditWidget = obj == c.frame.tree.edit_widget(p)
+        self.keyIsActive = g.choose(
+            isEditWidget,
+            eventType == ev.KeyRelease,
+            eventType == ev.KeyPress)
+    else:
+        self.keyIsActive = False
+
+    if eventType == ev.WindowActivate:
+        gui.onActivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    elif eventType == ev.WindowDeactivate:
+        gui.onDeactivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    elif eventType in kinds:
+        tkKey,ch,ignore = self.toTkKey(event)
+        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+        if ignore:
+            override = False
+        # This is extremely bad.
+        # At present, it is needed to handle tab properly.
+        elif self.isSpecialOverride(tkKey,ch):
+            override = True
+        elif k.inState():
+            override = not ignore # allow all keystrokes.
+        else:
+            override = len(aList) > 0
+    else:
+        override = False ; tkKey = '<no key>'
+        if self.tag == 'body':
+            if eventType == ev.FocusIn:
+                g.app.gui.add_border(c,obj)
+                c.frame.body.onFocusIn(obj)
+            elif eventType == ev.FocusOut:
+                g.app.gui.remove_border(c,obj)
+                c.frame.body.onFocusOut(obj)
+        if self.tag in ('tree','log'):
+            if eventType == ev.FocusIn:
+                g.app.gui.add_border(c,obj)
+            elif eventType == ev.FocusOut:
+                g.app.gui.remove_border(c,obj)
+
+    if self.keyIsActive:
+        stroke = self.toStroke(tkKey,ch)
+
+        if override:
+            if trace and traceKey and not ignore:
+                g.trace('bound',repr(stroke)) # repr(aList))
+            w = self.w # Pass the wrapper class, not the wrapped widget.
+            event = self.create_key_event(event,c,w,ch,tkKey,stroke)
+            ret = k.masterKeyHandler(event)
+            c.outerUpdate()
+        else:
+            if trace and traceKey and verbose:
+                g.trace(self.tag,'unbound',tkKey,stroke)
+        
+        if trace and traceKey:
+            # Trace key events.
+            self.traceEvent(obj,event,tkKey,override)
+
+    elif trace and traceEvent:
+        # Trace non-key events.
+        self.traceEvent(obj,event,tkKey,override)
+
+    return override
+.. @+node:ekr.20110605121601.18548: *5* traceEvent
+def traceEvent (self,obj,event,tkKey,override):
+
+    if g.unitTesting: return
+    
+    traceFocus = False
+    traceKey   = False
+    traceLayout = False
+    traceMouse = True
+    
+    c,e = self.c,QtCore.QEvent
+    eventType = event.type()
+    
+    show = []
+    
+    ignore = [
+        e.MetaCall, # 43
+        e.Timer, # 1
+        e.ToolTip, # 110
+    ]
+    
+    focus_events = (
+        (e.Enter,'enter'),
+        (e.Leave,'leave'),
+        (e.FocusIn,'focus-in'),
+        (e.FocusOut,'focus-out'),
+        (e.Hide,'hide'), # 18
+        (e.HideToParent, 'hide-to-parent'), # 27
+        (e.HoverEnter, 'hover-enter'), # 127
+        (e.HoverLeave,'hover-leave'), # 128
+        (e.HoverMove,'hover-move'), # 129
+        (e.Show,'show'), # 17
+        (e.ShowToParent,'show-to-parent'), # 26
+        (e.WindowActivate,'window-activate'), # 24
+        (e.WindowBlocked,'window-blocked'), # 103
+        (e.WindowUnblocked,'window-unblocked'), # 104
+        (e.WindowDeactivate,'window-deactivate'), # 25
+    )
+    key_events = (
+        (e.KeyPress,'key-press'),
+        (e.KeyRelease,'key-release'),
+        (e.ShortcutOverride,'shortcut-override'),
+    )
+    layout_events = (
+        (e.ChildPolished,'child-polished'), # 69
+        (e.CloseSoftwareInputPanel,'close-sip'), # 200
+        (e.ChildAdded,'child-added'), # 68
+        (e.DynamicPropertyChange,'dynamic-property-change'), # 170
+        (e.FontChange,'font-change'),# 97
+        (e.LayoutRequest,'layout-request'),
+        (e.Move,'move'), # 13 widget's position changed.
+        (e.PaletteChange,'palette-change'),# 39
+        (e.ParentChange,'parent-change'), # 21
+        (e.Paint,'paint'), # 12
+        (e.Polish,'polish'), # 75
+        (e.PolishRequest,'polish-request'), # 74
+        (e.RequestSoftwareInputPanel,'sip'), # 199
+        (e.Resize,'resize'), # 14
+        (e.StyleChange,'style-change'), # 100
+        (e.ZOrderChange,'z-order-change'), # 126
+    )
+    mouse_events = (
+        (e.MouseMove,'mouse-move'), # 155
+        (e.MouseButtonPress,'mouse-press'), # 2
+        (e.MouseButtonRelease,'mouse-release'), # 3
+        (e.Wheel,'mouse-wheel'), # 31
+    )
+    
+    option_table = (
+        (traceFocus,focus_events),
+        (traceKey,key_events),
+        (traceLayout,layout_events),
+        (traceMouse,mouse_events),
+    )
+    
+    for option,table in option_table:
+        if option:
+            show.extend(table)
+        else:
+            for n,tag in table:
+                ignore.append(n)
+
+    for val,kind in show:
+        if eventType == val:
+            g.trace(
+                '%5s %18s in-state: %5s key: %s override: %s: obj: %s' % (
+                self.tag,kind,repr(c.k and c.k.inState()),tkKey,override,obj))
+            return
+
+    if eventType not in ignore:
+        g.trace('%3s:%s obj:%s' % (eventType,'unknown',obj))
+.. @+node:ekr.20110605121601.18021: *5* mousePress/ReleaseEvent (LeoQTextBrowser)
+# def mousePressEvent (self,event):
+    # QtGui.QTextBrowser.mousePressEvent(self,event)
+    
+def mouseReleaseEvent(self,event):
+    self.onMouseUp(event)
+    QtGui.QTextBrowser.mouseReleaseEvent(self,event)
 .. @+node:ekr.20111019080436.15850: *3* Next: Fix all significant bugs
 .. @+node:ekr.20111026091322.16503: *4* Recent/Easy
 .. @+node:ekr.20110619173515.14895: *5* Fix bug: realpath in g.openWithFileName
@@ -2277,6 +2521,8 @@ https://bugs.launchpad.net/leo-editor/+bug/844940
 Different behavior when clicking on @url statement written either in headline or body of a node
 .. @+node:ekr.20111024170505.16459: *5* * Bug 879331: Redefining a key binding breaks menu items with same binding
 @nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/762e832909c3c530/d99d48eed45d1061
 
 http://mail.google.com/mail/#inbox/1331909dd653f3c9
 
@@ -2997,6 +3243,10 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
 .. @+node:ekr.20111018220642.15858: *3* Docs
 .. @+node:ekr.20111027103125.16540: *4*  Leo's home page and web site
 .. @+node:ekr.20111019104425.15862: *5* ** Dynamic home page
+@nocolor-node
+
+Leo google group feed summary for websit
+http://groups.google.com/group/leo-editor/browse_thread/thread/60677c927c898d2/0b408e0b939ad684
 .. @+node:ekr.20111011175652.15696: *6* Register a domain name like leo-editor.org
 .. @+node:ekr.20111018104244.15921: *6* * Leo google group feed summary for website
 http://groups.google.com/group/leo-editor/browse_thread/thread/060677c927c898d2
@@ -4586,6 +4836,52 @@ This requires commands that can be composed.
 http://groups.google.com/group/leo-editor/browse_thread/thread/b851e7d9855a57c2
 
 http://www.voom.net/pyqt-qtest-example
+.. @+node:ekr.20111027143736.16558: *4* Work-flow improvements
+@nocolor-node
+
+Considering leo.leo
+http://groups.google.com/group/leo-editor/browse_thread/thread/e3ddbe650fc9525b/290e97c593ee950a
+
+> > I think there's a way to search across Leo files: quicksearch multiple
+> > files ... ?
+
+> http://groups.google.com/group/leo-editor/browse_thread/thread/cf5ab5...
+
+Leo has to have this :-)  It's on my list.  It would be a great way to
+find @button nodes.
+
+Furthermore, global searches for attributes in docstrings have
+immediate uses.
+
+On the urgent to-do list: drive all aspects of the Nav pane using
+keystrokes.
+
+I just reviewed @bookmarks--it's perfect for leo.leo.  The following
+would replace all.bat:
+
+- @bookmarks
+  - leoPy.leo (url in body)
+  - leoPlugins.leo
+  - leoSettings.leo
+  - myLeoSettings.leo
+  - leoDocs.leo
+  - leoDist.leo
+  - scripts.leo
+
+This way could be said to be much better than all.bat: nothing gets
+loaded until needed.  Therefore, even more files could be added.
+
+Imo, URL's in bookmark trees should support {{expression}} notations.
+
+For example, I want the following to work in the body text of a node
+in an @bookmarks tree::
+
+file://{{g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo').replace('\\','/')}}
+
+Not bad, eh?  Or maybe the URL logic should do the replace('\\','/')
+automatically...
+
+Got to go.  We are nearing a tipping point in Leo's workflow... 
 .. @+node:ekr.20111019080436.15848: *3* Easy new features
 .. @+node:ekr.20111019104425.15869: *4* Convert @command nodes to official commands
 @nocolor-node
@@ -6440,6 +6736,12 @@ These commands attempt to deal with all of this.
    can be moved around by right clicking on the pane dividers if the
    ``viewrendered`` and ``free_layout`` plugins are enabled. 
 .. @+node:ekr.20111004090723.15495: *4* Finish leoOPML plugin
+.. @+node:ekr.20111027143736.16557: *4* Study leo_screen
+@nocolor-node
+
+Ville mentioned leoremote for driving Leo from the command line.
+There's also leoscreen, for driving the command line from Leo,
+providing you use screen, which is probably unix/cygwin only.
 .. @+node:ekr.20111018220642.15860: *3* Bugs/Minor
 .. @+node:ekr.20111014074810.15652: *4* viewrendered should work better when docutils does not exist
 .. @+node:ekr.20111008073427.15595: *4* Macro bug: really must have a shortcut for call-last-macro
