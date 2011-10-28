@@ -1217,149 +1217,54 @@ class leoMenu:
         '''Compute the old-style shortcut key for @shortcuts entries.'''
 
         return ''.join([ch for ch in s.strip().lower() if ch.isalnum()])
-    #@+node:ekr.20031218072017.1723: *4* createMenuEntries (leoMenu)
+    #@+node:ekr.20031218072017.1723: *4* createMenuEntries (leoMenu) & helpers
     def createMenuEntries (self,menu,table,dynamicMenu=False):
 
         '''Create a menu entry from the table.
         New in 4.4: this method shows the shortcut in the menu,
         but this method **never** binds any shortcuts.'''
 
-        c = self.c ; f = c.frame ; k = c.k
+        c = self.c ; k = c.k
         if g.app.unitTesting: return
+        
+        self.traceMenuTable(table)
 
-        trace = False and not g.unitTesting
         for data in table:
-            #@+<< get label & command or continue >>
-            #@+node:ekr.20051021091958: *5* << get label & command or continue >>
-            if g.isString(data):
-                # New in Leo 4.4.2: Can use the same string for both the label and the command string.
-                ok = True
-                s = data
-                removeHyphens = s and s[0]=='*'
-                if removeHyphens: s = s[1:]
-                label = self.capitalizeMinibufferMenuName(s,removeHyphens)
-                command = s.replace('&','').lower()
-                # if command == 'sort-siblings': g.trace('**1')
-                if label == '-':
-                    self.add_separator(menu)
-                    continue # That's all.
-            else:
-                ok = type(data) in (type(()), type([])) and len(data) in (2,3)
-                if ok:
-                    if len(data) == 2:
-                        # New in 4.4b2: command can be a minibuffer-command name (a string)
-                        label,command = data
-                        # if command == 'sort-siblings': g.trace('**2')
-                    else:
-                        # New in 4.4: we ignore shortcuts bound in menu tables.
-                        label,junk,command = data
-                        # if command == 'sort-siblings': g.trace('**3')
+            label,command,done = self.getMenuEntryInfo(data,menu)
+            if done: continue
+            accel,commandName,done = self.getMenuEntryBindings(command,dynamicMenu,label)
+            if done: continue
 
-                    if label in (None,'-'):
-                        self.add_separator(menu)
-                        continue # That's all.
-                else:
-                    g.trace('bad data in menu table: %s' % repr(data))
-                    continue # Ignore bad data
-            #@-<< get label & command or continue >>
-            #@+<< compute commandName & accel from label & command >>
-            #@+node:ekr.20031218072017.1725: *5* << compute commandName & accel from label & command >>
-            # New in 4.4b2: command can be a minibuffer-command name (a string)
-            minibufferCommand = type(command) == type('')
-            accel = None
-            if minibufferCommand:
-                commandName = command 
-                command = c.commandsDict.get(commandName)
-                if command:
-                    rawKey,bunchList = c.config.getShortcut(commandName)
-                    # Pick the first entry that is not a mode.
-                    for bunch in bunchList:
-                        if not bunch.pane.endswith('-mode'):
-                            accel = bunch and bunch.val
-                            if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
-                else:
-                    if not g.app.unitTesting and not dynamicMenu:
-                        # Don't warn during unit testing.
-                        # This may come from a plugin that normally isn't enabled.
-                        if trace: g.trace('No inverse for %s' % commandName)
-                    continue # There is no way to make this menu entry.
-            else:
-                # First, get the old-style name.
-                commandName = self.computeOldStyleShortcutKey(label)
-                rawKey,bunchList = c.config.getShortcut(commandName)
-                for bunch in bunchList:
-                    if not bunch.pane.endswith('-mode'):
-                        if trace: g.trace('2','%20s' % (bunch.val),commandName)
-                        accel = bunch and bunch.val ; break
-                # Second, get new-style name.
-                if not accel:
-                    #@+<< compute emacs_name >>
-                    #@+node:ekr.20051021100806.1: *6* << compute emacs_name >>
-                    #@+at One not-so-horrible kludge remains.
-                    # 
-                    # The cut/copy/paste commands in the menu tables are not the same as the methods
-                    # actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
-                    # of extra translation to discover whether the user has overridden their
-                    # bindings.
-                    #@@c
-
-                    if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
-                        emacs_name = '%s-text' % commandName
-                    else:
-                        try: # User errors in the table can cause this.
-                            emacs_name = k.inverseCommandsDict.get(command.__name__)
-                        except Exception:
-                            emacs_name = None
-                    #@-<< compute emacs_name >>
-                        # Contains the not-so-horrible kludge.
-                    if emacs_name:
-                        commandName = emacs_name
-                        rawKey,bunchList = c.config.getShortcut(emacs_name)
-                        # Pick the first entry that is not a mode.
-                        for bunch in bunchList:
-                            if not bunch.pane.endswith('-mode'):
-                                accel = bunch.val
-                                if trace: g.trace('3','%20s' % (bunch.val),commandName)
-                                break
-                    elif not dynamicMenu:
-                        g.trace('No inverse for %s' % commandName)
-            #@-<< compute commandName & accel from label & command >>
-            # Bug fix: 2009/09/30: use canonical stroke.
+            # Use canonical stroke.
             accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
             stroke = k.shortcutFromSetting(accel,addKey=True) or ''
             if accelerator:
                 accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
-
-            if trace and commandName == 'sort-siblings':
-                g.trace(repr(stroke),repr(accelerator),commandName)
                 
-            # Add an entry for unit testing and masterMenuHandler.
-            
+            # Add an entry for unit testing.
             if stroke:
                 d = g.app.unitTestMenusDict
                 aSet = d.get(commandName,set())
                 aSet.add(stroke)
                 d[commandName] = aSet
         
-            def masterMenuCallback (
-                c=c,k=k,stroke=stroke,
-                command=command,commandName=commandName,event=None
-            ):
-                if trace: g.trace('stroke',stroke)
-                return k.masterMenuHandler(stroke,command,commandName)
+            def masterMenuCallback (c=c,commandName=commandName):
+                # Bug fix: 2011/10/28.
+                # This was the only call to k.masterMenuHandler.
+                # Use only the command name to dispatch the command.
+                event = g.app.gui.create_key_event(c,None,None,None)
+                return c.k.masterCommand(commandName=commandName,event=event)
 
             realLabel = self.getRealMenuName(label)
             amp_index = realLabel.find("&")
             realLabel = realLabel.replace("&","")
             if sys.platform == 'darwin':
-                #@+<< clear accelerator if it is a plain key >>
-                #@+node:ekr.20060216110502: *5* << clear accelerator if it is a plain key >>
-                for z in ('Alt','Ctrl','Command'):
+                # clear accelerator if it is a plain key
+                for z in ('Alt','Ctrl','Command','Meta',):
                     if accelerator.find(z) != -1:
                         break # Found.
                 else:
                     accelerator = ''
-                #@-<< clear accelerator if it is a plain key >>
 
             # c.add_command ensures that c.outerUpdate is called.
             if menu:
@@ -1367,6 +1272,125 @@ class leoMenu:
                     accelerator=accelerator,
                     command=masterMenuCallback,
                     underline=amp_index)
+    #@+node:ekr.20111028060955.16568: *5* getMenuEntryBindings
+    def getMenuEntryBindings(self,command,dynamicMenu,label):
+        
+        '''Compute accel,commandName,done from command.'''
+
+        trace = False and not g.unitTesting
+        c = self.c ; f = c.frame
+        minibufferCommand = type(command) == type('')
+        accel,commandName,done = None,None,False
+
+        if minibufferCommand:
+            commandName = command 
+            command = c.commandsDict.get(commandName)
+            if command:
+                rawKey,bunchList = c.config.getShortcut(commandName)
+                # Pick the first entry that is not a mode.
+                for bunch in bunchList:
+                    if not bunch.pane.endswith('-mode'):
+                        accel = bunch and bunch.val
+                        if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+            else:
+                if not g.app.unitTesting and not dynamicMenu:
+                    # Don't warn during unit testing.
+                    # This may come from a plugin that normally isn't enabled.
+                    if trace: g.trace('No inverse for %s' % commandName)
+                done = True # There is no way to make this menu entry.
+        else:
+            # First, get the old-style name.
+            commandName = self.computeOldStyleShortcutKey(label)
+            rawKey,bunchList = c.config.getShortcut(commandName)
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    if trace: g.trace('2','%20s' % (bunch.val),commandName)
+                    accel = bunch and bunch.val ; break
+            # Second, get new-style name.
+            if not accel:
+                #@+<< compute emacs_name >>
+                #@+node:ekr.20111028060955.16569: *6* << compute emacs_name >>
+                #@+at One not-so-horrible kludge remains.
+                # 
+                # The cut/copy/paste commands in the menu tables are not the same as the methods
+                # actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+                # of extra translation to discover whether the user has overridden their
+                # bindings.
+                #@@c
+
+                if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+                    emacs_name = '%s-text' % commandName
+                else:
+                    try: # User errors in the table can cause this.
+                        emacs_name = k.inverseCommandsDict.get(command.__name__)
+                    except Exception:
+                        emacs_name = None
+                #@-<< compute emacs_name >>
+                    # Contains the not-so-horrible kludge.
+                if emacs_name:
+                    commandName = emacs_name
+                    rawKey,bunchList = c.config.getShortcut(emacs_name)
+                    # Pick the first entry that is not a mode.
+                    for bunch in bunchList:
+                        if not bunch.pane.endswith('-mode'):
+                            accel = bunch.val
+                            if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                            break
+                elif not dynamicMenu:
+                    if trace: g.trace('No inverse for %s' % commandName)
+                    
+        return accel,commandName,done
+    #@+node:ekr.20111028060955.16565: *5* getMenuEntryInfo
+    def getMenuEntryInfo (self,data,menu):
+        
+        done = False
+
+        if g.isString(data):
+            # A single string is both the label and the command.
+            s = data
+            removeHyphens = s and s[0]=='*'
+            if removeHyphens: s = s[1:]
+            label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+            command = s.replace('&','').lower()
+            if label == '-':
+                self.add_separator(menu)
+                done = True # That's all.
+        else:
+            ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+            if ok:
+                if len(data) == 2:
+                    # Command can be a minibuffer-command name.
+                    label,command = data
+                else:
+                    # Ignore shortcuts bound in menu tables.
+                    label,junk,command = data
+        
+                if label in (None,'-'):
+                    self.add_separator(menu)
+                    done = True # That's all.
+            else:
+                g.trace('bad data in menu table: %s' % repr(data))
+                done = True # Ignore bad data
+                
+        return label,command,done
+    #@+node:ekr.20111028060955.16563: *5* traceMenuTable
+    def traceMenuTable (self,table):
+        
+        trace = False and not g.unitTesting
+        
+        if not trace: return
+        format = '%40s %s'
+        g.trace('*'*40)
+        for data in table:
+            if type(data) in (type(()), type([])):
+                n = len(data)
+                if n == 2:
+                    print(format % (data[0],data[1]))
+                elif n == 3:
+                    name,junk,func = data
+                    print(format % (name,func and func.__name__ or '<NO FUNC>'))
+            else:
+                print(format % (data,''))
     #@+node:ekr.20031218072017.3784: *4* createMenuItemsFromTable
     def createMenuItemsFromTable (self,menuName,table,dynamicMenu=False):
 

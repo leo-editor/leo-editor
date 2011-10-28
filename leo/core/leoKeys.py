@@ -152,7 +152,7 @@ class AutoCompleterClass:
         if not force:
             # Ctrl-period does *not* insert a period.
             if trace: g.trace('not force')
-            k.masterCommand(event,func=None,stroke=None,commandName=None)
+            k.masterCommand(event=event)
 
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
@@ -222,7 +222,7 @@ class AutoCompleterClass:
             self.calltip()
         else:
             # Just insert the invocation character as usual.
-            k.masterCommand(event,func=None,stroke=None,commandName=None)
+            k.masterCommand(event=event)
 
         return # (for Tk) 'break'
     #@+node:ekr.20061031131434.14: *4* showCalltipsForce
@@ -2636,13 +2636,12 @@ class keyHandlerClass:
 
         if func:
             # g.trace(commandName,func.__name__)
-            stroke = None
             if commandName.startswith('specialCallback'):
                 event = None # A legacy function.
             else: # Create a dummy event as a signal.
                 event = g.app.gui.create_key_event(c,None,None,None)
                 
-            k.masterCommand(event,func,stroke,commandName=None)
+            k.masterCommand(event=event,func=func)
             if c.exists:
                 return k.funcReturn
             else:
@@ -2655,18 +2654,18 @@ class keyHandlerClass:
                 return None
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
     #@+node:ekr.20061031131434.105: *4* masterCommand & helpers
-    def masterCommand (self,event,func,stroke,commandName=None):
+    def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
 
         '''This is the central dispatching method.
         All commands and keystrokes pass through here.'''
 
         k = self ; c = k.c ; gui = g.app.gui
         trace = (False or k.traceMasterCommand) and not g.unitTesting
-        verbose = False
+        verbose = True
         traceGC = False
         if traceGC: g.printNewObjects('masterCom 1')
         
-        c.check_event(event)
+        if event: c.check_event(event)
 
         c.setLog()
         c.startRedrawCount = c.frame.tree.redrawCount
@@ -2674,10 +2673,15 @@ class keyHandlerClass:
 
         char = ch = event and event.char or ''
         w = event and event.w
-
+        
+        # 2011/10/28: compute func if not given.
+        if commandName and not func:
+            func = c.commandsDict.get(commandName)
+            
+        # Important: it is *not* an error for func to be None.
         k.func = func
-        k.funcReturn = None # For unit testing.
         commandName = commandName or func and func.__name__ or '<no function>'
+        k.funcReturn = None # For unit testing.
         #@+<< define specialKeysyms >>
         #@+node:ekr.20061031131434.106: *5* << define specialKeysyms >>
         specialKeysyms = (
@@ -2693,9 +2697,8 @@ class keyHandlerClass:
         inserted = not special
 
         if trace: # Useful.
-            g.trace('stroke: ',stroke,'ch:',repr(ch),
-                # 'w:',w and c.widget_name(w),
-                'func:',func and func.__name__)
+            g.trace('stroke: %s ch: %s func: %s' % (
+                stroke,repr(ch),func and func.__name__))
 
         if inserted:
             k.setLossage(ch,stroke)
@@ -2705,8 +2708,6 @@ class keyHandlerClass:
             c.macroCommands.startRecordingMacro(event)
             # 2011/06/06: Show the key, if possible.
             # return # (for Tk) 'break'
-
-        # g.trace(stroke,k.abortAllModesKey)
 
         if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
             k.keyboardQuit()
@@ -2743,9 +2744,6 @@ class keyHandlerClass:
             else:
                 # Call c.doCommand directly
                 if trace: g.trace('calling command directly',commandName)
-                # if commandName != 'repeat-complex-command': # 2010/01/11
-                    # k.mb_history.insert(0,commandName)
-                # if commandName == 'select-all': g.pdb()
                 c.doCommand(func,commandName,event=event)
             if c.exists:
                 k.endCommand(commandName)
@@ -2871,7 +2869,8 @@ class keyHandlerClass:
                 c.macroCommands.endMacro()
                 return # (for Tk) 'break'
             else:
-                return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+                return k.masterCommand(commandName='keyboard-quit',
+                    event=event,func=k.keyboardQuit,stroke=stroke)
 
         if k.inState():
             if trace: g.trace('   state %-10s %s' % (stroke,state))
@@ -2893,7 +2892,7 @@ class keyHandlerClass:
         if b:
             if traceGC: g.printNewObjects('masterKey 3')
             if trace: g.trace('   bound',stroke,b.func.__name__)
-            return k.masterCommand(event,b.func,b.stroke,b.commandName)
+            return k.masterCommand(commandName=b.commandName,event=event,func=b.func,stroke=b.stroke)
         else:
             if traceGC: g.printNewObjects('masterKey 4')
             if trace: g.trace(' unbound',stroke)
@@ -3063,13 +3062,14 @@ class keyHandlerClass:
                             if trace: g.trace('%s binding for replace-string' % (pane),stroke)
                             return False # Let getArg handle it.
                         elif b.commandName not in k.singleLineCommandList:
-                            if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                            if trace: g.trace('%s binding terminates minibuffer' % (
+                                pane),b.commandName,stroke)
                             k.keyboardQuit()
                         else:
                             if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                             c.minibufferWantsFocus() # New in Leo 4.5.
                         # Pass this on for macro recording.
-                        k.masterCommand(event,b.func,stroke,b.commandName)
+                        k.masterCommand(commandName=b.commandName,event=event,func=b.func,stroke=stroke)
                         # Careful: the command could exit.
                         if c.exists and not k.silentMode:
                             c.minibufferWantsFocus()
@@ -3122,7 +3122,7 @@ class keyHandlerClass:
         elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
             # insert/overwrite normal character.  <Return> is *not* a normal character.
             if trace: g.trace('plain key in insert mode',repr(stroke))
-            return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+            return k.masterCommand(event=event,stroke=stroke)
 
         elif (not self.enable_alt_ctrl_bindings and
             (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
@@ -3150,23 +3150,7 @@ class keyHandlerClass:
 
         else:
             if trace: g.trace('no func',repr(char),repr(stroke))
-            return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-    #@+node:ekr.20061031131434.155: *4* masterMenuHandler
-    def masterMenuHandler (self,stroke,func,commandName):
-
-        k = self ; c = k.c
-        w = c.frame.getFocus()
-
-        # g.trace('stroke',stroke,'func',func and func.__name__,commandName)
-
-        # Create a minimal event for commands that require them.
-        event = g.app.gui.create_key_event(c,None,stroke,w)
-        c.check_event(event)
-
-        if stroke:
-            return k.masterKeyHandler(event)
-        else:
-            return k.masterCommand(event,func,stroke,commandName)
+            return k.masterCommand(event=event,stroke=stroke)
     #@+node:ekr.20061031170011.3: *3* k.Minibuffer
     # These may be overridden, but this code is now gui-independent.
     #@+node:ekr.20061031131434.135: *4* k.minibufferWantsFocus
@@ -4426,7 +4410,7 @@ class keyHandlerClass:
                     'stroke',stroke,'widget',w)
                 for z in range(n):
                     event = g.app.gui.create_key_event(c,None,stroke,w)
-                    k.masterCommand(event,func=b.func,stroke=stroke,commandName=None)
+                    k.masterCommand(commandName=None,event=event,func=b.func,stroke=stroke)
             else:
                 for z in range(n):
                     k.masterKeyHandler(event)

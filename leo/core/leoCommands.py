@@ -729,7 +729,7 @@ class Commands (object):
 
         if func:
             event = g.app.gui.create_key_event(c,None,None,None)
-            k.masterCommand(event,func,stroke=None,commandName=None)
+            k.masterCommand(commandName=None,event=event,func=func)
             return k.funcReturn
         else:
             g.error('no such command: %s %s' % (commandName,g.callers()))

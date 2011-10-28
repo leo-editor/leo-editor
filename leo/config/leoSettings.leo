@@ -753,6 +753,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20070224073109.1"></v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
@@ -1785,7 +1786,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070224073109.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.

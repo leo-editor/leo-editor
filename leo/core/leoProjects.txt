@@ -7650,18 +7650,18 @@ def insert(self,i,s):
         self.changingText = False
 #@+node:ekr.20061031131434.145: *5* k.Master event handlers
 #@+node:ekr.20061031131434.105: *6* masterCommand & helpers
-def masterCommand (self,event,func,stroke,commandName=None):
+def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
 
     '''This is the central dispatching method.
     All commands and keystrokes pass through here.'''
 
     k = self ; c = k.c ; gui = g.app.gui
     trace = (False or k.traceMasterCommand) and not g.unitTesting
-    verbose = False
+    verbose = True
     traceGC = False
     if traceGC: g.printNewObjects('masterCom 1')
     
-    c.check_event(event)
+    if event: c.check_event(event)
 
     c.setLog()
     c.startRedrawCount = c.frame.tree.redrawCount
@@ -7669,19 +7669,23 @@ def masterCommand (self,event,func,stroke,commandName=None):
 
     char = ch = event and event.char or ''
     w = event and event.w
-
+    
+    # 2011/10/28: compute func if not given.
+    if commandName and not func:
+        func = c.commandsDict.get(commandName)
+        
+    # Important: it is *not* an error for func to be None.
     k.func = func
-    k.funcReturn = None # For unit testing.
     commandName = commandName or func and func.__name__ or '<no function>'
+    k.funcReturn = None # For unit testing.
     << define specialKeysyms >>
     special = char in specialKeysyms
     interesting = func is not None
     inserted = not special
 
     if trace: # Useful.
-        g.trace('stroke: ',stroke,'ch:',repr(ch),
-            # 'w:',w and c.widget_name(w),
-            'func:',func and func.__name__)
+        g.trace('stroke: %s ch: %s func: %s' % (
+            stroke,repr(ch),func and func.__name__))
 
     if inserted:
         k.setLossage(ch,stroke)
@@ -7691,8 +7695,6 @@ def masterCommand (self,event,func,stroke,commandName=None):
         c.macroCommands.startRecordingMacro(event)
         # 2011/06/06: Show the key, if possible.
         # return # (for Tk) 'break'
-
-    # g.trace(stroke,k.abortAllModesKey)
 
     if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
         k.keyboardQuit()
@@ -7729,9 +7731,6 @@ def masterCommand (self,event,func,stroke,commandName=None):
         else:
             # Call c.doCommand directly
             if trace: g.trace('calling command directly',commandName)
-            # if commandName != 'repeat-complex-command': # 2010/01/11
-                # k.mb_history.insert(0,commandName)
-            # if commandName == 'select-all': g.pdb()
             c.doCommand(func,commandName,event=event)
         if c.exists:
             k.endCommand(commandName)
@@ -7845,7 +7844,8 @@ def masterKeyHandler (self,event):
             c.macroCommands.endMacro()
             return # (for Tk) 'break'
         else:
-            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+            return k.masterCommand(commandName='keyboard-quit',
+                event=event,func=k.keyboardQuit,stroke=stroke)
 
     if k.inState():
         if trace: g.trace('   state %-10s %s' % (stroke,state))
@@ -7867,7 +7867,7 @@ def masterKeyHandler (self,event):
     if b:
         if traceGC: g.printNewObjects('masterKey 3')
         if trace: g.trace('   bound',stroke,b.func.__name__)
-        return k.masterCommand(event,b.func,b.stroke,b.commandName)
+        return k.masterCommand(commandName=b.commandName,event=event,func=b.func,stroke=b.stroke)
     else:
         if traceGC: g.printNewObjects('masterKey 4')
         if trace: g.trace(' unbound',stroke)
@@ -8056,13 +8056,14 @@ def handleMiniBindings (self,event,state,stroke):
                         if trace: g.trace('%s binding for replace-string' % (pane),stroke)
                         return False # Let getArg handle it.
                     elif b.commandName not in k.singleLineCommandList:
-                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        if trace: g.trace('%s binding terminates minibuffer' % (
+                            pane),b.commandName,stroke)
                         k.keyboardQuit()
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocus() # New in Leo 4.5.
                     # Pass this on for macro recording.
-                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    k.masterCommand(commandName=b.commandName,event=event,func=b.func,stroke=stroke)
                     # Careful: the command could exit.
                     if c.exists and not k.silentMode:
                         c.minibufferWantsFocus()
@@ -8115,7 +8116,7 @@ def handleUnboundKeys (self,event,char,stroke):
     elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
         # insert/overwrite normal character.  <Return> is *not* a normal character.
         if trace: g.trace('plain key in insert mode',repr(stroke))
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+        return k.masterCommand(event=event,stroke=stroke)
 
     elif (not self.enable_alt_ctrl_bindings and
         (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
@@ -8143,23 +8144,7 @@ def handleUnboundKeys (self,event,char,stroke):
 
     else:
         if trace: g.trace('no func',repr(char),repr(stroke))
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-#@+node:ekr.20061031131434.155: *6* masterMenuHandler
-def masterMenuHandler (self,stroke,func,commandName):
-
-    k = self ; c = k.c
-    w = c.frame.getFocus()
-
-    # g.trace('stroke',stroke,'func',func and func.__name__,commandName)
-
-    # Create a minimal event for commands that require them.
-    event = g.app.gui.create_key_event(c,None,stroke,w)
-    c.check_event(event)
-
-    if stroke:
-        return k.masterKeyHandler(event)
-    else:
-        return k.masterCommand(event,func,stroke,commandName)
+        return k.masterCommand(event=event,stroke=stroke)
 #@+node:ekr.20061031131434.111: *5* fullCommand (alt-x) & helper
 def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpHandler=None):
 
@@ -25350,6 +25335,10 @@ def skipToMatchingTag (self,s,i,tag):
         assert progress < i
 
     return i,False
+#@+node:ekr.20111019104425.15862: *4* Leo's home page now shows the latest postings from leo-editor.
+@nocolor-node
+
+Leo's home page now shows the latest postings on the leo-editor group.
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
@@ -25410,7 +25399,8 @@ def masterKeyHandler (self,event):
             c.macroCommands.endMacro()
             return # (for Tk) 'break'
         else:
-            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+            return k.masterCommand(commandName='keyboard-quit',
+                event=event,func=k.keyboardQuit,stroke=stroke)
 
     if k.inState():
         if trace: g.trace('   state %-10s %s' % (stroke,state))
@@ -25432,7 +25422,7 @@ def masterKeyHandler (self,event):
     if b:
         if traceGC: g.printNewObjects('masterKey 3')
         if trace: g.trace('   bound',stroke,b.func.__name__)
-        return k.masterCommand(event,b.func,b.stroke,b.commandName)
+        return k.masterCommand(commandName=b.commandName,event=event,func=b.func,stroke=b.stroke)
     else:
         if traceGC: g.printNewObjects('masterKey 4')
         if trace: g.trace(' unbound',stroke)
@@ -25621,13 +25611,14 @@ def handleMiniBindings (self,event,state,stroke):
                         if trace: g.trace('%s binding for replace-string' % (pane),stroke)
                         return False # Let getArg handle it.
                     elif b.commandName not in k.singleLineCommandList:
-                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        if trace: g.trace('%s binding terminates minibuffer' % (
+                            pane),b.commandName,stroke)
                         k.keyboardQuit()
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocus() # New in Leo 4.5.
                     # Pass this on for macro recording.
-                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    k.masterCommand(commandName=b.commandName,event=event,func=b.func,stroke=stroke)
                     # Careful: the command could exit.
                     if c.exists and not k.silentMode:
                         c.minibufferWantsFocus()
@@ -25680,7 +25671,7 @@ def handleUnboundKeys (self,event,char,stroke):
     elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
         # insert/overwrite normal character.  <Return> is *not* a normal character.
         if trace: g.trace('plain key in insert mode',repr(stroke))
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+        return k.masterCommand(event=event,stroke=stroke)
 
     elif (not self.enable_alt_ctrl_bindings and
         (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
@@ -25708,7 +25699,7 @@ def handleUnboundKeys (self,event,char,stroke):
 
     else:
         if trace: g.trace('no func',repr(char),repr(stroke))
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+        return k.masterCommand(event=event,stroke=stroke)
 #@+node:ekr.20061031131434.119: *5* k.printBindings & helper
 def printBindings (self,event=None):
 
