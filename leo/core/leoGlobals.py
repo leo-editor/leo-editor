@@ -50,6 +50,7 @@ else:
     StringIO = cStringIO.StringIO
     from urlparse import urlparse
 
+import imp
 import inspect
 import operator
 import re
@@ -5558,14 +5559,15 @@ def importFromPath (name,path,pluginName=None,verbose=False):
     moduleName,ext = g.os_path_splitext(fn)
     path = g.os_path_normpath(path)
     path = g.toEncodedString(path)
-    module = sys.modules.get(moduleName)
-    if module:
-        if trace: g.trace('already loaded',moduleName,module)
-        return module
+    
+    if 0: # Bug fix 2011/10/28: Always import the path from the specified path!
+        module = sys.modules.get(moduleName)
+        if module:
+            if trace: g.trace('already loaded',moduleName,module)
+            return module
 
     try:
         theFile = None
-        import imp
         try:
             data = imp.find_module(moduleName,[path]) # This can open the file.
             theFile,pathname,description = data
