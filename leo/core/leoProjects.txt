@@ -5290,11 +5290,11 @@ def __init__(self,c,colorizer,highlighter,w):
         
         # 8 Leo-specific tags.
         "blank",  # show_invisibles_space_color
-        "docPart",
-        "leoKeyword",
+        "docpart",
+        "leokeyword",
         "link",
         "name",
-        "nameBrackets",
+        "namebrackets",
         "tab", # show_invisibles_space_color
         "url",
         
@@ -5316,7 +5316,7 @@ def defineLeoKeywordsDict(self):
     self.leoKeywordsDict = {}
 
     for key in g.globalDirectiveList:
-        self.leoKeywordsDict [key] = 'leoKeyword'
+        self.leoKeywordsDict [key] = 'leokeyword'
 #@+node:ekr.20110605121601.18574: *9* defineDefaultColorsDict
 def defineDefaultColorsDict (self):
 
@@ -5327,11 +5327,11 @@ def defineDefaultColorsDict (self):
     
         # tag name      :( option name,                  default color),
         'blank'         :('show_invisibles_space_color', '#E5E5E5'), # gray90
-        'docPart'       :('doc_part_color',              'red'),
-        'leoKeyword'    :('leo_keyword_color',           'blue'),
+        'docpart'       :('doc_part_color',              'red'),
+        'leokeyword'    :('leo_keyword_color',           'blue'),
         'link'          :('section_name_color',          'red'),
         'name'          :('undefined_section_name_color','red'),
-        'nameBrackets'  :('section_name_brackets_color', 'blue'),
+        'namebrackets'  :('section_name_brackets_color', 'blue'),
         'tab'           :('show_invisibles_tab_color',   '#CCCCCC'), # gray80
         'url'           :('url_color',                   'purple'),
         
@@ -5375,11 +5375,11 @@ def defineDefaultFontDict (self):
         
             # tag name      : option name
             'blank'         :'show_invisibles_space_font', # 2011/10/24.
-            'docPart'       :'doc_part_font',
-            'leoKeyword'    :'leo_keyword_font',
+            'docpart'       :'doc_part_font',
+            'leokeyword'    :'leo_keyword_font',
             'link'          :'section_name_font',
             'name'          :'undefined_section_name_font',
-            'nameBrackets'  :'section_name_brackets_font',
+            'namebrackets'  :'section_name_brackets_font',
             'tab'           : 'show_invisibles_tab_font', # 2011/10/24.
             'url'           : 'url_font',
         
@@ -5819,7 +5819,7 @@ def setKeywords (self):
     for s in g.globalDirectiveList:
         key = '@' + s
         if key not in keys:
-            d [key] = 'leoKeyword'
+            d [key] = 'leokeyword'
 
     # Create a temporary chars list.  It will be converted to a dict later.
     chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
@@ -5991,7 +5991,7 @@ def match_at_color (self,s,i):
     if g.match_word(s,i,seq):
         self.colorizer.flag = True # Enable coloring.
         j = i + len(seq)
-        self.colorRangeWithTag(s,i,j,'leoKeyword')
+        self.colorRangeWithTag(s,i,j,'leokeyword')
         self.clearState()
         return j - i
     else:
@@ -6015,7 +6015,7 @@ def match_at_language (self,s,i):
         ok = self.init_mode(name)
         if trace: g.trace(ok,name)
         if ok:
-            self.colorRangeWithTag(s,i,k,'leoKeyword')
+            self.colorRangeWithTag(s,i,k,'leokeyword')
         self.clearState()
         return k - i
     else:
@@ -6114,8 +6114,8 @@ def match_doc_part (self,s,i):
     else:
         return 0
 
-    self.colorRangeWithTag(s,i,j,'leoKeyword')
-    self.colorRangeWithTag(s,j,len(s),'docPart')
+    self.colorRangeWithTag(s,i,j,'leokeyword')
+    self.colorRangeWithTag(s,j,len(s),'docpart')
     self.setRestart(self.restartDocPart)
 
     return len(s)
@@ -6125,12 +6125,12 @@ def restartDocPart (self,s):
     for tag in ('@c','@code'):
         if g.match_word(s,0,tag):
             j = len(tag)
-            self.colorRangeWithTag(s,0,j,'leoKeyword') # 'docPart')
+            self.colorRangeWithTag(s,0,j,'leokeyword') # 'docpart')
             self.clearState()
             return j
     else:
         self.setRestart(self.restartDocPart)
-        self.colorRangeWithTag(s,0,len(s),'docPart')
+        self.colorRangeWithTag(s,0,len(s),'docpart')
 
         return len(s)
 #@+node:ekr.20110605121601.18604: *9* match_leo_keywords
@@ -6168,7 +6168,7 @@ def match_leo_keywords(self,s,i):
         return 0 # Fail, but allow a rescan, as in objective_c.
 
     if self.leoKeywordsDict.get(word):
-        kind = 'leoKeyword'
+        kind = 'leokeyword'
         self.colorRangeWithTag(s,i,j,kind)
         self.prev = (i,j,kind)
         result = j-i+1 # Bug fix: skip the last character.
@@ -6203,7 +6203,7 @@ def match_section_ref (self,s,i):
     k = g.find_on_line(s,i+2,'>>')
     if k is not None:
         j = k + 2
-        self.colorRangeWithTag(s,i,i+2,'nameBrackets')
+        self.colorRangeWithTag(s,i,i+2,'namebrackets')
         ref = g.findReference(c,s[i:j],p)
         if ref:
             if self.use_hyperlinks:
@@ -6212,7 +6212,7 @@ def match_section_ref (self,s,i):
                 self.colorRangeWithTag(s,i+2,k,'link')
         else:
             self.colorRangeWithTag(s,i+2,k,'name')
-        self.colorRangeWithTag(s,k,j,'nameBrackets')
+        self.colorRangeWithTag(s,k,j,'namebrackets')
         return j - i
     else:
         return 0
@@ -9143,8 +9143,8 @@ def getPythonEncodingFromString(s):
 
 # 8 Leo-specific, not jEdit specific.
 blank
-docPart
-leoKeyword
+docpart
+leokeyword
 link
 name
 nameBrackets
@@ -9274,11 +9274,11 @@ def __init__(self,c,colorizer,highlighter,w):
         
         # 8 Leo-specific tags.
         "blank",  # show_invisibles_space_color
-        "docPart",
-        "leoKeyword",
+        "docpart",
+        "leokeyword",
         "link",
         "name",
-        "nameBrackets",
+        "namebrackets",
         "tab", # show_invisibles_space_color
         "url",
         
@@ -9300,7 +9300,7 @@ def defineLeoKeywordsDict(self):
     self.leoKeywordsDict = {}
 
     for key in g.globalDirectiveList:
-        self.leoKeywordsDict [key] = 'leoKeyword'
+        self.leoKeywordsDict [key] = 'leokeyword'
 #@+node:ekr.20110605121601.18574: *8* defineDefaultColorsDict
 def defineDefaultColorsDict (self):
 
@@ -9311,11 +9311,11 @@ def defineDefaultColorsDict (self):
     
         # tag name      :( option name,                  default color),
         'blank'         :('show_invisibles_space_color', '#E5E5E5'), # gray90
-        'docPart'       :('doc_part_color',              'red'),
-        'leoKeyword'    :('leo_keyword_color',           'blue'),
+        'docpart'       :('doc_part_color',              'red'),
+        'leokeyword'    :('leo_keyword_color',           'blue'),
         'link'          :('section_name_color',          'red'),
         'name'          :('undefined_section_name_color','red'),
-        'nameBrackets'  :('section_name_brackets_color', 'blue'),
+        'namebrackets'  :('section_name_brackets_color', 'blue'),
         'tab'           :('show_invisibles_tab_color',   '#CCCCCC'), # gray80
         'url'           :('url_color',                   'purple'),
         
@@ -9359,11 +9359,11 @@ def defineDefaultFontDict (self):
         
             # tag name      : option name
             'blank'         :'show_invisibles_space_font', # 2011/10/24.
-            'docPart'       :'doc_part_font',
-            'leoKeyword'    :'leo_keyword_font',
+            'docpart'       :'doc_part_font',
+            'leokeyword'    :'leo_keyword_font',
             'link'          :'section_name_font',
             'name'          :'undefined_section_name_font',
-            'nameBrackets'  :'section_name_brackets_font',
+            'namebrackets'  :'section_name_brackets_font',
             'tab'           : 'show_invisibles_tab_font', # 2011/10/24.
             'url'           : 'url_font',
         
@@ -9803,7 +9803,7 @@ def setKeywords (self):
     for s in g.globalDirectiveList:
         key = '@' + s
         if key not in keys:
-            d [key] = 'leoKeyword'
+            d [key] = 'leokeyword'
 
     # Create a temporary chars list.  It will be converted to a dict later.
     chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
@@ -9975,7 +9975,7 @@ def match_at_color (self,s,i):
     if g.match_word(s,i,seq):
         self.colorizer.flag = True # Enable coloring.
         j = i + len(seq)
-        self.colorRangeWithTag(s,i,j,'leoKeyword')
+        self.colorRangeWithTag(s,i,j,'leokeyword')
         self.clearState()
         return j - i
     else:
@@ -9999,7 +9999,7 @@ def match_at_language (self,s,i):
         ok = self.init_mode(name)
         if trace: g.trace(ok,name)
         if ok:
-            self.colorRangeWithTag(s,i,k,'leoKeyword')
+            self.colorRangeWithTag(s,i,k,'leokeyword')
         self.clearState()
         return k - i
     else:
@@ -10098,8 +10098,8 @@ def match_doc_part (self,s,i):
     else:
         return 0
 
-    self.colorRangeWithTag(s,i,j,'leoKeyword')
-    self.colorRangeWithTag(s,j,len(s),'docPart')
+    self.colorRangeWithTag(s,i,j,'leokeyword')
+    self.colorRangeWithTag(s,j,len(s),'docpart')
     self.setRestart(self.restartDocPart)
 
     return len(s)
@@ -10109,12 +10109,12 @@ def restartDocPart (self,s):
     for tag in ('@c','@code'):
         if g.match_word(s,0,tag):
             j = len(tag)
-            self.colorRangeWithTag(s,0,j,'leoKeyword') # 'docPart')
+            self.colorRangeWithTag(s,0,j,'leokeyword') # 'docpart')
             self.clearState()
             return j
     else:
         self.setRestart(self.restartDocPart)
-        self.colorRangeWithTag(s,0,len(s),'docPart')
+        self.colorRangeWithTag(s,0,len(s),'docpart')
 
         return len(s)
 #@+node:ekr.20110605121601.18604: *8* match_leo_keywords
@@ -10152,7 +10152,7 @@ def match_leo_keywords(self,s,i):
         return 0 # Fail, but allow a rescan, as in objective_c.
 
     if self.leoKeywordsDict.get(word):
-        kind = 'leoKeyword'
+        kind = 'leokeyword'
         self.colorRangeWithTag(s,i,j,kind)
         self.prev = (i,j,kind)
         result = j-i+1 # Bug fix: skip the last character.
@@ -10187,7 +10187,7 @@ def match_section_ref (self,s,i):
     k = g.find_on_line(s,i+2,'>>')
     if k is not None:
         j = k + 2
-        self.colorRangeWithTag(s,i,i+2,'nameBrackets')
+        self.colorRangeWithTag(s,i,i+2,'namebrackets')
         ref = g.findReference(c,s[i:j],p)
         if ref:
             if self.use_hyperlinks:
@@ -10196,7 +10196,7 @@ def match_section_ref (self,s,i):
                 self.colorRangeWithTag(s,i+2,k,'link')
         else:
             self.colorRangeWithTag(s,i+2,k,'name')
-        self.colorRangeWithTag(s,k,j,'nameBrackets')
+        self.colorRangeWithTag(s,k,j,'namebrackets')
         return j - i
     else:
         return 0
@@ -11113,11 +11113,11 @@ def defineDefaultFontDict (self):
         
             # tag name      : option name
             'blank'         :'show_invisibles_space_font', # 2011/10/24.
-            'docPart'       :'doc_part_font',
-            'leoKeyword'    :'leo_keyword_font',
+            'docpart'       :'doc_part_font',
+            'leokeyword'    :'leo_keyword_font',
             'link'          :'section_name_font',
             'name'          :'undefined_section_name_font',
-            'nameBrackets'  :'section_name_brackets_font',
+            'namebrackets'  :'section_name_brackets_font',
             'tab'           : 'show_invisibles_tab_font', # 2011/10/24.
             'url'           : 'url_font',
         
@@ -11165,11 +11165,11 @@ def defineDefaultColorsDict (self):
     
         # tag name      :( option name,                  default color),
         'blank'         :('show_invisibles_space_color', '#E5E5E5'), # gray90
-        'docPart'       :('doc_part_color',              'red'),
-        'leoKeyword'    :('leo_keyword_color',           'blue'),
+        'docpart'       :('doc_part_color',              'red'),
+        'leokeyword'    :('leo_keyword_color',           'blue'),
         'link'          :('section_name_color',          'red'),
         'name'          :('undefined_section_name_color','red'),
-        'nameBrackets'  :('section_name_brackets_color', 'blue'),
+        'namebrackets'  :('section_name_brackets_color', 'blue'),
         'tab'           :('show_invisibles_tab_color',   '#CCCCCC'), # gray80
         'url'           :('url_color',                   'purple'),
         
@@ -15359,6 +15359,8 @@ def deactivateActiveEditor(self,w):
 g.importFromPath ('html','C:/leo.repo/trunk/leo/modes/html.py')
 returned the standard Python html module!
 
+#@+node:ekr.20111029055127.16635: *4* Allow lower case keywords in colorizer
+# The fix was to use lowercase versions of docPart,leoKeyword,nameBrackets.
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
@@ -22744,11 +22746,11 @@ def __init__(self,c,colorizer,highlighter,w):
         
         # 8 Leo-specific tags.
         "blank",  # show_invisibles_space_color
-        "docPart",
-        "leoKeyword",
+        "docpart",
+        "leokeyword",
         "link",
         "name",
-        "nameBrackets",
+        "namebrackets",
         "tab", # show_invisibles_space_color
         "url",
         
@@ -22770,7 +22772,7 @@ def defineLeoKeywordsDict(self):
     self.leoKeywordsDict = {}
 
     for key in g.globalDirectiveList:
-        self.leoKeywordsDict [key] = 'leoKeyword'
+        self.leoKeywordsDict [key] = 'leokeyword'
 #@+node:ekr.20110605121601.18574: *8* defineDefaultColorsDict
 def defineDefaultColorsDict (self):
 
@@ -22781,11 +22783,11 @@ def defineDefaultColorsDict (self):
     
         # tag name      :( option name,                  default color),
         'blank'         :('show_invisibles_space_color', '#E5E5E5'), # gray90
-        'docPart'       :('doc_part_color',              'red'),
-        'leoKeyword'    :('leo_keyword_color',           'blue'),
+        'docpart'       :('doc_part_color',              'red'),
+        'leokeyword'    :('leo_keyword_color',           'blue'),
         'link'          :('section_name_color',          'red'),
         'name'          :('undefined_section_name_color','red'),
-        'nameBrackets'  :('section_name_brackets_color', 'blue'),
+        'namebrackets'  :('section_name_brackets_color', 'blue'),
         'tab'           :('show_invisibles_tab_color',   '#CCCCCC'), # gray80
         'url'           :('url_color',                   'purple'),
         
@@ -22829,11 +22831,11 @@ def defineDefaultFontDict (self):
         
             # tag name      : option name
             'blank'         :'show_invisibles_space_font', # 2011/10/24.
-            'docPart'       :'doc_part_font',
-            'leoKeyword'    :'leo_keyword_font',
+            'docpart'       :'doc_part_font',
+            'leokeyword'    :'leo_keyword_font',
             'link'          :'section_name_font',
             'name'          :'undefined_section_name_font',
-            'nameBrackets'  :'section_name_brackets_font',
+            'namebrackets'  :'section_name_brackets_font',
             'tab'           : 'show_invisibles_tab_font', # 2011/10/24.
             'url'           : 'url_font',
         
@@ -23273,7 +23275,7 @@ def setKeywords (self):
     for s in g.globalDirectiveList:
         key = '@' + s
         if key not in keys:
-            d [key] = 'leoKeyword'
+            d [key] = 'leokeyword'
 
     # Create a temporary chars list.  It will be converted to a dict later.
     chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
@@ -23445,7 +23447,7 @@ def match_at_color (self,s,i):
     if g.match_word(s,i,seq):
         self.colorizer.flag = True # Enable coloring.
         j = i + len(seq)
-        self.colorRangeWithTag(s,i,j,'leoKeyword')
+        self.colorRangeWithTag(s,i,j,'leokeyword')
         self.clearState()
         return j - i
     else:
@@ -23469,7 +23471,7 @@ def match_at_language (self,s,i):
         ok = self.init_mode(name)
         if trace: g.trace(ok,name)
         if ok:
-            self.colorRangeWithTag(s,i,k,'leoKeyword')
+            self.colorRangeWithTag(s,i,k,'leokeyword')
         self.clearState()
         return k - i
     else:
@@ -23568,8 +23570,8 @@ def match_doc_part (self,s,i):
     else:
         return 0
 
-    self.colorRangeWithTag(s,i,j,'leoKeyword')
-    self.colorRangeWithTag(s,j,len(s),'docPart')
+    self.colorRangeWithTag(s,i,j,'leokeyword')
+    self.colorRangeWithTag(s,j,len(s),'docpart')
     self.setRestart(self.restartDocPart)
 
     return len(s)
@@ -23579,12 +23581,12 @@ def restartDocPart (self,s):
     for tag in ('@c','@code'):
         if g.match_word(s,0,tag):
             j = len(tag)
-            self.colorRangeWithTag(s,0,j,'leoKeyword') # 'docPart')
+            self.colorRangeWithTag(s,0,j,'leokeyword') # 'docpart')
             self.clearState()
             return j
     else:
         self.setRestart(self.restartDocPart)
-        self.colorRangeWithTag(s,0,len(s),'docPart')
+        self.colorRangeWithTag(s,0,len(s),'docpart')
 
         return len(s)
 #@+node:ekr.20110605121601.18604: *8* match_leo_keywords
@@ -23622,7 +23624,7 @@ def match_leo_keywords(self,s,i):
         return 0 # Fail, but allow a rescan, as in objective_c.
 
     if self.leoKeywordsDict.get(word):
-        kind = 'leoKeyword'
+        kind = 'leokeyword'
         self.colorRangeWithTag(s,i,j,kind)
         self.prev = (i,j,kind)
         result = j-i+1 # Bug fix: skip the last character.
@@ -23657,7 +23659,7 @@ def match_section_ref (self,s,i):
     k = g.find_on_line(s,i+2,'>>')
     if k is not None:
         j = k + 2
-        self.colorRangeWithTag(s,i,i+2,'nameBrackets')
+        self.colorRangeWithTag(s,i,i+2,'namebrackets')
         ref = g.findReference(c,s[i:j],p)
         if ref:
             if self.use_hyperlinks:
@@ -23666,7 +23668,7 @@ def match_section_ref (self,s,i):
                 self.colorRangeWithTag(s,i+2,k,'link')
         else:
             self.colorRangeWithTag(s,i+2,k,'name')
-        self.colorRangeWithTag(s,k,j,'nameBrackets')
+        self.colorRangeWithTag(s,k,j,'namebrackets')
         return j - i
     else:
         return 0
@@ -25150,12 +25152,19 @@ which overrides the default bindings.
 
 The single-line nodes should end in a newline. Otherwise the created node will
 add a newline, and the checkers will complain.
-#@+node:ekr.20071214072145.1: *5* class xmlScanner
+#@+node:ekr.20071214072145.1: *5* class xmlScanner & htmlScanner(xmlScanner)
 class xmlScanner (baseScannerClass):
 
     @others
+
+class htmlScanner (xmlScanner):
+
+    def __init__ (self,importCommands,atAuto):
+
+        # Init the base class.
+        xmlScanner.__init__(self,importCommands,atAuto,'import_html_tags')
 #@+node:ekr.20071214072451: *6*  __init__ (xmlScanner)
-def __init__ (self,importCommands,atAuto):
+def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
 
     # Init the base class.
     baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='xml')
@@ -25178,9 +25187,11 @@ def __init__ (self,importCommands,atAuto):
     self.sigFailTokens = []
 
     # Overrides more attributes.
+    self.caseInsensitive = True
     self.hasClasses = True
     self.hasFunctions = False
     self.strict = False
+    self.tags_setting = tags_setting
     self.trace = False
 
     self.addTags()
@@ -25193,11 +25204,11 @@ def addTags (self):
     c = self.c
 
     for ivar,setting in (
-        ('classTags','import_xml_tags',),
-        # ('functionTags','import_xml_function_tags'),
+        ('classTags',self.tags_setting,),
     ):
         aList = getattr(self,ivar)
         aList2 = c.config.getData(setting) or []
+        aList2 = [z.lower() for z in aList2]
         aList.extend(aList2)
         if trace: g.trace(ivar,aList)
 #@+node:ekr.20091230062012.6238: *6* skipId (override base class) & helper

@@ -10524,6 +10524,22 @@ s = '''\
 g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.elispUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20111029112647.4099: *5* html tests
+#@+node:ekr.20111029112647.4101: *6* @test html 1
+s = '''\
+<html>
+<head>
+    <title>Bodystring</title>
+</head>
+<body class='bodystring'>
+<div id='bodydisplay'></div>
+</body>
+</html>
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20100803234640.5804: *5* ini tests
 #@+node:ekr.20100803234640.5805: *6* @test ini-test-1
 s = '''\

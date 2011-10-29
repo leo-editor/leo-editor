@@ -5,6 +5,8 @@
 .. @+all
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 .. @+node:ekr.20111026091322.16502: *3* First
+.. @+node:ekr.20111027103125.16538: *4* * Look at vim video
+http://video.google.com/videoplay?docid=8810772602188234059
 .. @+node:ekr.20111024170505.16459: *4* * Bug 879331: Redefining a key binding breaks menu items with same binding
 .. @+node:ekr.20111026091322.16501: *5* Probably same as key-binding bug
 .. @+node:ekr.20111026091322.16492: *6* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display 
@@ -3571,8 +3573,6 @@ def traceEvent (self,obj,event,tkKey,override):
 def mouseReleaseEvent(self,event):
     self.onMouseUp(event)
     QtGui.QTextBrowser.mouseReleaseEvent(self,event)
-.. @+node:ekr.20111027103125.16538: *4* Look at vim video
-http://video.google.com/videoplay?docid=8810772602188234059
 .. @+node:ekr.20111027195140.16561: *4* Create session commands
 # http://groups.google.com/group/leo-editor/browse_thread/thread/d5522e1075e746de
 

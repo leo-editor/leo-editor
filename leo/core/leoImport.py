@@ -169,8 +169,8 @@ class leoImportCommands (scanUtility):
             '.cfg':     self.scanIniText,
             '.cs':      self.scanCSharpText,
             '.el':      self.scanElispText,
-            '.htm':     self.scanXmlText,
-            '.html':    self.scanXmlText,
+            '.htm':     self.scanHtmlText,
+            '.html':    self.scanHtmlText,
             '.ini':     self.scanIniText,
             '.java':    self.scanJavaText,
             '.js':      self.scanJavaScriptText,
@@ -1601,6 +1601,14 @@ class leoImportCommands (scanUtility):
         scanner = elispScanner(importCommands=self,atAuto=atAuto)
 
         scanner.run(s,parent)
+    #@+node:ekr.20111029055127.16618: *4* scanHtmlText
+    def scanHtmlText (self,s,parent,atAuto=False):
+
+        # g.trace(atAuto,parent.h)
+
+        scanner = htmlScanner(importCommands=self,atAuto=atAuto)
+
+        scanner.run(s,parent)
     #@+node:ekr.20100803231223.5808: *4* scanIniText
     def scanIniText (self,s,parent,atAuto=False):
 
@@ -1789,6 +1797,7 @@ class baseScannerClass (scanUtility):
         self.blockDelim1 = '{'
         self.blockDelim2 = '}'
         self.blockDelim2Cruft = [] # Stuff that can follow .blockDelim2.
+        self.caseInsensitive = False
         self.classTags = ['class',] # tags that start a tag.
         self.functionTags = []
         self.hasClasses = True
@@ -2869,6 +2878,8 @@ class baseScannerClass (scanUtility):
         if not theId: return False
 
         if tags:
+            if self.caseInsensitive:
+                theId = theId.lower()
             if theId not in tags:
                 if trace and verbose: g.trace('**** %s theId: %s not in tags: %s' % (kind,theId,tags))
                 return False
@@ -4223,12 +4234,12 @@ class rstScanner (baseScannerClass):
 
         return i,j,nows,line
     #@-others
-#@+node:ekr.20071214072145.1: *3* class xmlScanner
+#@+node:ekr.20071214072145.1: *3* class xmlScanner & htmlScanner(xmlScanner)
 class xmlScanner (baseScannerClass):
 
     #@+others
     #@+node:ekr.20071214072451: *4*  __init__ (xmlScanner)
-    def __init__ (self,importCommands,atAuto):
+    def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
 
         # Init the base class.
         baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='xml')
@@ -4251,9 +4262,11 @@ class xmlScanner (baseScannerClass):
         self.sigFailTokens = []
 
         # Overrides more attributes.
+        self.caseInsensitive = True
         self.hasClasses = True
         self.hasFunctions = False
         self.strict = False
+        self.tags_setting = tags_setting
         self.trace = False
 
         self.addTags()
@@ -4266,11 +4279,11 @@ class xmlScanner (baseScannerClass):
         c = self.c
 
         for ivar,setting in (
-            ('classTags','import_xml_tags',),
-            # ('functionTags','import_xml_function_tags'),
+            ('classTags',self.tags_setting,),
         ):
             aList = getattr(self,ivar)
             aList2 = c.config.getData(setting) or []
+            aList2 = [z.lower() for z in aList2]
             aList.extend(aList2)
             if trace: g.trace(ivar,aList)
     #@+node:ekr.20091230062012.6238: *4* skipId (override base class) & helper
@@ -4430,6 +4443,13 @@ class xmlScanner (baseScannerClass):
 
         return i,False
     #@-others
+
+class htmlScanner (xmlScanner):
+
+    def __init__ (self,importCommands,atAuto):
+
+        # Init the base class.
+        xmlScanner.__init__(self,importCommands,atAuto,'import_html_tags')
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
 #@+node:ekr.20101103093942.5941: *3* @g.command(head-to-prev-node)
 @g.command('head-to-prev-node')
