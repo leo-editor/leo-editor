@@ -508,7 +508,8 @@ class parserBaseClass:
                     bunchList.append(bunch)
                     d [name] = bunchList
                     self.set(p,"shortcut",name,bunchList)
-                    self.setShortcut(name,bunchList)
+                    self.setShortcut(p,name,bunchList)
+                        ### Can we delete this??
 
         # Restore the global shortcutsDict.
         self.shortcutsDict = old_d
@@ -580,8 +581,11 @@ class parserBaseClass:
         d [name] = bunchList
 
         self.set(p,"shortcut",name,bunchList)
-            ### Huh?????
-        self.setShortcut(name,bunchList)
+            # Essential.
+            
+        ### 2011/10/28 Apparently not used!
+        self.setShortcut(p,name,bunchList)
+            ### Can we delete this?
         
         # if bunch.pane in ('kill','Kill'):
             # munge = k.shortcutFromSetting
@@ -590,7 +594,7 @@ class parserBaseClass:
             # bunchList = [z for z in bunchList
                 # if munge(z.val) != munge(bunch.val)]
             # # g.trace(bunchList)
-    #@+node:ekr.20111020144401.9586: *5* killOneShortcut (ParserBaseClass)
+    #@+node:ekr.20111020144401.9586: *5* killOneShortcut (ParserBaseClass) (Not ready yet)
     def killOneShortcut (self,bunch,name,p):
         
         if 0:
@@ -1005,8 +1009,8 @@ class parserBaseClass:
             # g.trace('id(d)',id(d),name)
 
         d [key] = g.Bunch(path=c.mFileName,kind=kind,val=val,tag='setting')
-    #@+node:ekr.20041227071423: *3* setShortcut (ParserBaseClass)
-    def setShortcut (self,name,bunchList):
+    #@+node:ekr.20041227071423: *3* setShortcut (ParserBaseClass) (** can we delete this?? **)
+    def setShortcut (self,p,name,bunchList):
         
         trace = False and not g.unitTesting
 
@@ -1015,7 +1019,7 @@ class parserBaseClass:
         # None is a valid value for val.
         key = c.frame.menu.canonicalizeMenuName(name)
         rawKey = key.replace('&','')
-        self.set(c,rawKey,"shortcut",bunchList)
+        self.set(p,rawKey,"shortcut",bunchList)
 
         if trace:
             for b in bunchList:
@@ -1445,12 +1449,14 @@ class configClass:
         # g.trace(setting,requestedType,bunch.toString())
         val = bunch.val
 
+        # 2011/10/24: test for an explicit None.
         if g.isPython3:
-            isNone = val in ('None','none','',None)
+            isNone = val in ('None','none','') # ,None)
+                
         else:
             isNone = val in (
                 unicode('None'),unicode('none'),unicode(''),
-                'None','none','',None)
+                'None','none','') #,None)
 
         if not self.typesMatch(bunch.kind,requestedType):
             # New in 4.4: make sure the types match.
@@ -1463,7 +1469,8 @@ class configClass:
             return None, False
         # elif val in (u'None',u'none','None','none','',None):
         elif isNone:
-            return None, True # Exists, but is None
+            return '', True
+                # 2011/10/24: Exists, a *user-defined* empty value.
         else:
             # g.trace(setting,val)
             return val, True
