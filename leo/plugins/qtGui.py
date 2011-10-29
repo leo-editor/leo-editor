@@ -9517,11 +9517,11 @@ class jEditColorizer:
             
             # 8 Leo-specific tags.
             "blank",  # show_invisibles_space_color
-            "docPart",
-            "leoKeyword",
+            "docpart",
+            "leokeyword",
             "link",
             "name",
-            "nameBrackets",
+            "namebrackets",
             "tab", # show_invisibles_space_color
             "url",
             
@@ -9543,7 +9543,7 @@ class jEditColorizer:
         self.leoKeywordsDict = {}
 
         for key in g.globalDirectiveList:
-            self.leoKeywordsDict [key] = 'leoKeyword'
+            self.leoKeywordsDict [key] = 'leokeyword'
     #@+node:ekr.20110605121601.18574: *6* defineDefaultColorsDict
     def defineDefaultColorsDict (self):
 
@@ -9554,11 +9554,11 @@ class jEditColorizer:
         
             # tag name      :( option name,                  default color),
             'blank'         :('show_invisibles_space_color', '#E5E5E5'), # gray90
-            'docPart'       :('doc_part_color',              'red'),
-            'leoKeyword'    :('leo_keyword_color',           'blue'),
+            'docpart'       :('doc_part_color',              'red'),
+            'leokeyword'    :('leo_keyword_color',           'blue'),
             'link'          :('section_name_color',          'red'),
             'name'          :('undefined_section_name_color','red'),
-            'nameBrackets'  :('section_name_brackets_color', 'blue'),
+            'namebrackets'  :('section_name_brackets_color', 'blue'),
             'tab'           :('show_invisibles_tab_color',   '#CCCCCC'), # gray80
             'url'           :('url_color',                   'purple'),
             
@@ -9602,11 +9602,11 @@ class jEditColorizer:
             
                 # tag name      : option name
                 'blank'         :'show_invisibles_space_font', # 2011/10/24.
-                'docPart'       :'doc_part_font',
-                'leoKeyword'    :'leo_keyword_font',
+                'docpart'       :'doc_part_font',
+                'leokeyword'    :'leo_keyword_font',
                 'link'          :'section_name_font',
                 'name'          :'undefined_section_name_font',
-                'nameBrackets'  :'section_name_brackets_font',
+                'namebrackets'  :'section_name_brackets_font',
                 'tab'           : 'show_invisibles_tab_font', # 2011/10/24.
                 'url'           : 'url_font',
             
@@ -10046,7 +10046,7 @@ class jEditColorizer:
         for s in g.globalDirectiveList:
             key = '@' + s
             if key not in keys:
-                d [key] = 'leoKeyword'
+                d [key] = 'leokeyword'
 
         # Create a temporary chars list.  It will be converted to a dict later.
         chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
@@ -10218,7 +10218,7 @@ class jEditColorizer:
         if g.match_word(s,i,seq):
             self.colorizer.flag = True # Enable coloring.
             j = i + len(seq)
-            self.colorRangeWithTag(s,i,j,'leoKeyword')
+            self.colorRangeWithTag(s,i,j,'leokeyword')
             self.clearState()
             return j - i
         else:
@@ -10242,7 +10242,7 @@ class jEditColorizer:
             ok = self.init_mode(name)
             if trace: g.trace(ok,name)
             if ok:
-                self.colorRangeWithTag(s,i,k,'leoKeyword')
+                self.colorRangeWithTag(s,i,k,'leokeyword')
             self.clearState()
             return k - i
         else:
@@ -10341,8 +10341,8 @@ class jEditColorizer:
         else:
             return 0
 
-        self.colorRangeWithTag(s,i,j,'leoKeyword')
-        self.colorRangeWithTag(s,j,len(s),'docPart')
+        self.colorRangeWithTag(s,i,j,'leokeyword')
+        self.colorRangeWithTag(s,j,len(s),'docpart')
         self.setRestart(self.restartDocPart)
 
         return len(s)
@@ -10352,12 +10352,12 @@ class jEditColorizer:
         for tag in ('@c','@code'):
             if g.match_word(s,0,tag):
                 j = len(tag)
-                self.colorRangeWithTag(s,0,j,'leoKeyword') # 'docPart')
+                self.colorRangeWithTag(s,0,j,'leokeyword') # 'docpart')
                 self.clearState()
                 return j
         else:
             self.setRestart(self.restartDocPart)
-            self.colorRangeWithTag(s,0,len(s),'docPart')
+            self.colorRangeWithTag(s,0,len(s),'docpart')
 
             return len(s)
     #@+node:ekr.20110605121601.18604: *6* match_leo_keywords
@@ -10395,7 +10395,7 @@ class jEditColorizer:
             return 0 # Fail, but allow a rescan, as in objective_c.
 
         if self.leoKeywordsDict.get(word):
-            kind = 'leoKeyword'
+            kind = 'leokeyword'
             self.colorRangeWithTag(s,i,j,kind)
             self.prev = (i,j,kind)
             result = j-i+1 # Bug fix: skip the last character.
@@ -10430,7 +10430,7 @@ class jEditColorizer:
         k = g.find_on_line(s,i+2,'>>')
         if k is not None:
             j = k + 2
-            self.colorRangeWithTag(s,i,i+2,'nameBrackets')
+            self.colorRangeWithTag(s,i,i+2,'namebrackets')
             ref = g.findReference(c,s[i:j],p)
             if ref:
                 if self.use_hyperlinks:
@@ -10453,7 +10453,7 @@ class jEditColorizer:
                     self.colorRangeWithTag(s,i+2,k,'link')
             else:
                 self.colorRangeWithTag(s,i+2,k,'name')
-            self.colorRangeWithTag(s,k,j,'nameBrackets')
+            self.colorRangeWithTag(s,k,j,'namebrackets')
             return j - i
         else:
             return 0
