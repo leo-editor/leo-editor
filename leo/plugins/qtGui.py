@@ -9745,13 +9745,12 @@ class jEditColorizer:
     def configure_tags (self):
 
         trace = False and not g.unitTesting
-        verbose = True
-        traceColor = False
-        traceFonts = True
+        traceColors = False
+        traceFonts = False
         c = self.c ; w = self.w
         isQt = g.app.gui.guiName().startswith('qt')
 
-        if trace: g.trace(self.colorizer.language) # ,g.callers(5))
+        if trace: g.trace(self.colorizer.language)
 
         if w and hasattr(w,'start_tag_configure'):
             w.start_tag_configure()
@@ -9766,13 +9765,13 @@ class jEditColorizer:
             self.fonts['default_body_font'] = defaultBodyfont
 
         # Configure fonts.
-        if trace: g.trace('*'*10,'configuring fonts')
+        if trace and traceFonts: g.trace('*'*10,'configuring fonts')
         keys = list(self.default_font_dict.keys()) ; keys.sort()
         for key in keys:
             option_name = self.default_font_dict[key]
             # First, look for the language-specific setting, then the general setting.
             for name in ('%s_%s' % (self.colorizer.language,option_name),(option_name)):
-                if trace: g.trace(name)
+                if trace and traceFonts: g.trace(name)
                 font = self.fonts.get(name)
                 if font:
                     if trace and traceFonts:
@@ -9810,7 +9809,7 @@ class jEditColorizer:
             if isQt and key == 'url' and font:
                 font.setUnderline(True) # 2011/03/04
 
-        if trace: g.trace('*'*10,'configuring colors')
+        if trace and traceColors: g.trace('*'*10,'configuring colors')
         keys = list(self.default_colors_dict.keys()) ; keys.sort()
         for name in keys:
             # if name == 'operator': g.pdb()
@@ -9820,7 +9819,7 @@ class jEditColorizer:
                 c.config.getColor(option_name) or
                 default_color
             )
-            if trace and traceColor: g.trace(option_name,color)
+            if trace and traceColors: g.trace(option_name,color)
 
             # Must use foreground, not fg.
             try:
@@ -9935,7 +9934,6 @@ class jEditColorizer:
         if not name: return False
         h = self.highlighter
         language,rulesetName = self.nameToRulesetName(name)
-        # if trace: g.trace(name,list(self.modes.keys()))
         bunch = self.modes.get(rulesetName)
         if bunch:
             if bunch.language == 'unknown-language':
@@ -9982,11 +9980,11 @@ class jEditColorizer:
             self.keywordsDict = hasattr(mode,'keywordsDictDict') and mode.keywordsDictDict.get(rulesetName,{}) or {}
             self.setKeywords()
             self.attributesDict = hasattr(mode,'attributesDictDict') and mode.attributesDictDict.get(rulesetName) or {}
-            # g.trace('*******',rulesetName,self.attributesDict)
+            # if trace: g.trace(rulesetName,self.attributesDict)
             self.setModeAttributes()
             self.rulesDict = hasattr(mode,'rulesDictDict') and mode.rulesDictDict.get(rulesetName) or {}
+            # if trace: g.trace(self.rulesDict)
             self.addLeoRules(self.rulesDict)
-
             self.defaultColor = 'null'
             self.mode = mode
             self.modes [rulesetName] = self.modeBunch = g.Bunch(
@@ -11190,15 +11188,15 @@ class jEditColorizer:
         '''Colorize a *single* line s, starting in state n.'''
 
         trace = False and not g.unitTesting
-        traceMatch = False
-        traceState = False
+        traceMatch = True
+        traceState = True
         verbose = False
         
         if trace:
             if traceState:
-                g.trace('** start',self.showState(n),repr(s))
+                g.trace('%-30s' % ('** start: %s' % self.showState(n)),repr(s))
             else:
-                g.trace(self.language_name,repr(s),g.callers())
+                g.trace(self.language_name,repr(s))
                     # Called from recolor.
 
         i = 0
@@ -11206,6 +11204,12 @@ class jEditColorizer:
             i = self.restart(n,s,trace and traceMatch)
         if i == 0:
             self.setState(self.prevState())
+            
+        if False and trace:
+            aList = self.rulesDict.get('<')
+            for f in aList:
+                g.trace(f.__name__)
+            
             
         while i < len(s):
             progress = i
@@ -11217,15 +11221,15 @@ class jEditColorizer:
                     break
                 elif n > 0: # Success.
                     if trace and traceMatch and f.__name__!='match_blanks':
-                        g.trace('match: %20s %s' % (
-                            f.__name__,s[i:i+n]))
+                        g.trace('%-30s' % ('   match: %s' % (f.__name__,)),
+                            repr(s[i:i+n]))
                     # The match has already been colored.
                     i += n
                     break # Stop searching the functions.
                 elif n < 0: # Fail and skip n chars.
                     if trace and traceMatch and verbose:
-                        g.trace('fail: %20s %s' % (
-                            f.__name__,s[i:i+n]))
+                        g.trace('fail: %-30s %s' % (
+                            f.__name__,repr(s[i:i+n])))
                     i += -n
                     break # Stop searching the functions.
                 else: # Fail. Try the next function.
@@ -11237,7 +11241,7 @@ class jEditColorizer:
         # Don't even *think* about clearing state here.
         # We remain in the starting state unless a match happens.
         if trace and traceState:
-            g.trace('** end',self.showCurrentState(),s)
+            g.trace('%-30s' % ('** end:   %s' % self.showCurrentState()),repr(s))
     #@+node:ekr.20110605121601.18639: *5* restart
     def restart (self,n,s,traceMatch):
 
@@ -11297,6 +11301,7 @@ class jEditColorizer:
             return
 
         w = self.w # A leoQTextEditWidget
+        tag = tag.lower() # 2011/10/28
         colorName = w.configDict.get(tag)
 
         # Munge the color name.
