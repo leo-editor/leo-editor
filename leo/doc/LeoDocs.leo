@@ -21,7 +21,8 @@
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
-<v t="ekr.20100808060203.4273"><vh>@file html/front.html</vh></v>
+<v t="ekr.20100808060203.4273"
+expanded="ekr.20100808060203.4282,"><vh>@file html/front.html</vh></v>
 <v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
 <v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
@@ -182,6 +183,7 @@
 <v t="ekr.20110620083705.14902"><vh>New in 4.9 final</vh></v>
 </v>
 <v t="ekr.20100817101952.4306"><vh>Installing Leo with bzr</vh></v>
+<v t="ekr.20111027223444.5621"><vh>&lt;&lt;feed2js script&gt;&gt;</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -1106,6 +1108,73 @@ Other changes
   instead of crashing if idlelib does not exist.
 </t>
 <t tx="ekr.20110620083705.14902">Fixed crash on mouse clicks in minibuffer.
+</t>
+<t tx="ekr.20111027223444.5621">@color
+@language html
+
+&lt;style type="text/css"  media="all"&gt;
+
+  &lt;!-- Past the CSS provided by the form at: http://feed2js.org/index.php?s=style --&gt;
+  
+  &lt;!--
+      rss-box       the bounding div for the entire display- use to define borders, fill, etc.
+      rss-title     the title of the feed and link style if displayed.
+                    Use with variants of rss-title a:link, rss-title a:hover, etc for rollowver styles
+      rss-items     the unordered list &lt;ul&gt;...&lt;/ul&gt; for the feed items.
+                    use to define the padding/margins for items.
+      rss-item      display of each feed item description and title, &lt;li&gt;...&lt;/li&gt;
+                    as well as the channel description, if displayed.
+      rss-item a:   variant for the item title and link style
+      rss-item-auth (new) span to define style for display of author name
+      rss-date      the display of item posting dates
+  --&gt;
+
+
+&lt;div class="pod-play-box"&gt;
+&lt;a class="pod-play" href="podcastURL"&gt;&lt;em&gt;Play&lt;/em&gt;&lt;span&gt; File&lt;/span&gt;&lt;/a&gt;
+&lt;/div&gt;
+
+Custom colors may be achieved by editing appropriate foreground and background colors from the base styles (emphasized below):
+
+.pod-play {
+   _width:12em;
+   margin: 0 0.2em; padding: 0.1em 0; _padding:0;
+   
+   white-space:nowrap;
+   text-decoration: none;
+   vertical-align:middle;
+   background: #fb6;
+   color: black;
+   }
+.pod-play em {
+   _width:1em; _cursor:hand;
+   font-style: normal;
+   margin:0; padding: 0.1em 0.5em;
+   background: white;
+   color: #222;  
+   }
+.pod-play span {
+   _width:1em; _cursor:hand;
+   margin:0; padding: 0.1em 0.5em 0.1em 0.3em;
+   }
+.pod-play:hover {
+   background: #666;
+   color: white;  
+   }
+.pod-play:hover em {
+   background: black;
+   color: white  
+   }
+
+
+
+
+&lt;/style&gt;
+
+&lt;script language="JavaScript"
+  src="http://itde.vccs.edu/rss2js/feed2js.php?src=http%3A%2F%2Fgroups.google.com%2Fgroup%2Fleo-editor%2Ffeed%2Frss_v2_0_msgs.xml&amp;chan=title&amp;num=5&amp;desc=0&amp;date=y&amp;targ=y"
+  type="text/javascript"&gt;
+&lt;/script&gt;
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os

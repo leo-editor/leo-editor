@@ -5974,5 +5974,106 @@ for p in p.self_and_subtree():
         else:
             break
 print('done')
+#@+node:ekr.20061031131434.155: *3* masterMenuHandler (No longer used)
+def masterMenuHandler (self,stroke,func,commandName):
+
+    k = self ; c = k.c
+    w = c.frame.getFocus()
+
+    # Create a minimal event for commands that require them.
+    event = g.app.gui.create_key_event(c,None,stroke,w)
+    c.check_event(event)
+
+    if stroke:
+        return k.masterKeyHandler(event)
+    else:
+        return k.masterCommand(commandName=commandName,event=event,func=func,stroke=stroke)
+#@+node:ekr.20031218072017.1725: *3* << compute commandName & accel from label & command >> (No longer used)
+# New in 4.4b2: command can be a minibuffer-command name (a string)
+minibufferCommand = type(command) == type('')
+accel = None
+if minibufferCommand:
+    commandName = command 
+    command = c.commandsDict.get(commandName)
+    if command:
+        rawKey,bunchList = c.config.getShortcut(commandName)
+        # Pick the first entry that is not a mode.
+        for bunch in bunchList:
+            if not bunch.pane.endswith('-mode'):
+                accel = bunch and bunch.val
+                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+    else:
+        if not g.app.unitTesting and not dynamicMenu:
+            # Don't warn during unit testing.
+            # This may come from a plugin that normally isn't enabled.
+            if trace: g.trace('No inverse for %s' % commandName)
+        continue # There is no way to make this menu entry.
+else:
+    # First, get the old-style name.
+    commandName = self.computeOldStyleShortcutKey(label)
+    rawKey,bunchList = c.config.getShortcut(commandName)
+    for bunch in bunchList:
+        if not bunch.pane.endswith('-mode'):
+            if trace: g.trace('2','%20s' % (bunch.val),commandName)
+            accel = bunch and bunch.val ; break
+    # Second, get new-style name.
+    if not accel:
+        << compute emacs_name >>
+            # Contains the not-so-horrible kludge.
+        if emacs_name:
+            commandName = emacs_name
+            rawKey,bunchList = c.config.getShortcut(emacs_name)
+            # Pick the first entry that is not a mode.
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    accel = bunch.val
+                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    break
+        elif not dynamicMenu:
+            g.trace('No inverse for %s' % commandName)
+#@+node:ekr.20051021100806.1: *4* << compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+#@+node:ekr.20051021091958: *3* << get label & command or continue >> (No longer used)
+if g.isString(data):
+    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
+    ok = True
+    s = data
+    removeHyphens = s and s[0]=='*'
+    if removeHyphens: s = s[1:]
+    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+    command = s.replace('&','').lower()
+    if label == '-':
+        self.add_separator(menu)
+        continue # That's all.
+else:
+    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+    if ok:
+        if len(data) == 2:
+            # New in 4.4b2: command can be a minibuffer-command name (a string)
+            label,command = data
+        else:
+            # New in 4.4: we ignore shortcuts bound in menu tables.
+            label,junk,command = data
+
+        if label in (None,'-'):
+            self.add_separator(menu)
+            continue # That's all.
+    else:
+        g.trace('bad data in menu table: %s' % repr(data))
+        continue # Ignore bad data
 #@-all
 #@-leo
