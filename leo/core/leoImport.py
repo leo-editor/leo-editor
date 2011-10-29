@@ -2375,7 +2375,7 @@ class baseScannerClass (scanUtility):
     def undentBy (self,s,undentVal):
 
         '''Remove leading whitespace equivalent to undentVal from each line.
-        add an underindentEscapeString for underindented line.'''
+        For strict languages, add an underindentEscapeString for underindented line.'''
 
         trace = False and not g.app.unitTesting
 
@@ -2389,7 +2389,8 @@ class baseScannerClass (scanUtility):
             lws = g.computeWidth(lws_s,tab_width)
             s = g.removeLeadingWhitespace(line,undentVal,tab_width)
             n = lws - undentVal
-            if s.strip() and lws < undentVal:
+            # 2011/10/29: Add underindentEscapeString only for strict languages.
+            if self.strict and s.strip() and lws < undentVal:
                 if trace: g.trace('undentVal: %s, lws: %s, %s' % (
                     undentVal,lws,repr(line)))
                 result.append("%s%s%s" % (tag,undentVal-lws,s.lstrip()))
