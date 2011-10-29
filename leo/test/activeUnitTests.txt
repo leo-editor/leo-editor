@@ -10525,7 +10525,7 @@ g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.elispUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20111029112647.4099: *5* html tests
-#@+node:ekr.20111029112647.4101: *6* @test html 1
+#@+node:ekr.20111029112647.4101: *6* @test html: lowercase tags
 s = '''\
 <html>
 <head>
@@ -10535,6 +10535,21 @@ s = '''\
 <div id='bodydisplay'></div>
 </body>
 </html>
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20111029120441.3982: *6* @test html: upperscase tags
+s = '''\
+<HTML>
+<HEAD>
+    <title>Bodystring</title>
+</HEAD>
+<BODY class='bodystring'>
+<DIV id='bodydisplay'></DIV>
+</BODY>
+</HTML>
 '''
 
 g.app.unitTestDict ['expectedErrors'] = 0

@@ -126,6 +126,160 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20090529141856.4682"><vh>leoImport (not valid when run externally)</vh>
+<v t="ekr.20090529141856.4684"><vh> Export tests</vh>
+<v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
+<v t="ekr.20090529141856.4686"><vh>exportTests</vh>
+<v t="ekr.20090529141856.4687"><vh>tempNode</vh></v>
+<v t="ekr.20090529141856.4688"><vh>exportHeadlines</vh>
+<v t="ekr.20090529141856.4689"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4690"><vh>flattenOutline</vh>
+<v t="ekr.20090529141856.4691"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4692"><vh>weave</vh>
+<v t="ekr.20090529141856.4693"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4694"><vh>outlineToNoweb</vh>
+<v t="ekr.20090529141856.4695"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4696"><vh>outlineToCWEB</vh>
+<v t="ekr.20090529141856.4697"><vh>dialog</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20090529141856.4698"><vh> Import tests</vh>
+<v t="ekr.20090529141856.4699"><vh>@suite Import tests</vh></v>
+<v t="ekr.20090529141856.4700"><vh>importTests</vh>
+<v t="ekr.20090529141856.4701"><vh>tempNode</vh></v>
+<v t="ekr.20090529141856.4702"><vh>importAtRoot</vh>
+<v t="ekr.20090529141856.4703"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4704"><vh>importDerivedFile</vh>
+<v t="ekr.20090529141856.4705"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4706"><vh>importNowebFiles</vh>
+<v t="ekr.20090529141856.4707"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4708"><vh>importFlattenedOutline</vh>
+<v t="ekr.20090529141856.4709"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4710"><vh>importCWEBFiles</vh>
+<v t="ekr.20090529141856.4711"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4712"><vh>removeSentinels</vh>
+<v t="ekr.20090529141856.4713"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4714"><vh>importAtFile</vh>
+<v t="ekr.20090529141856.4715"><vh>dialog</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
+<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
+<v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
+<v t="ekr.20090529141856.4717"><vh>C tests</vh>
+<v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
+<v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
+<v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
+<v t="ekr.20090529141856.4721"><vh>@test c test--comment follows arg list</vh></v>
+<v t="ekr.20090529141856.4722"><vh>@test c test--comment follows block delim</vh></v>
+<v t="ekr.20090529141856.4723"><vh>@test c test--intermixed blanks and tabs</vh></v>
+<v t="ekr.20090529141856.4724"><vh>@test c old-style decl 1</vh></v>
+<v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
+<v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
+</v>
+<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
+<v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
+<v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
+</v>
+<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
+<v t="ekr.20090529141856.4733"><vh>@test elisp 2</vh></v>
+</v>
+<v t="ekr.20111029112647.4099"><vh>html tests</vh>
+<v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
+<v t="ekr.20111029120441.3982"><vh>@test html: upperscase tags</vh></v>
+</v>
+<v t="ekr.20100803234640.5804"><vh>ini tests</vh>
+<v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
+</v>
+<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
+<v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
+<v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
+<v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
+<v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
+<v t="ekr.20090529141856.4772"><vh>Test BundleException.java</vh>
+<v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
+</v>
+</v>
+<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
+<v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
+<v t="ekr.20090529141856.4777"><vh>@test Javascript-2</vh></v>
+<v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
+<v t="ekr.20090529141856.4779"><vh>@@test javascript-test-js</vh></v>
+</v>
+<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
+</v>
+<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
+<v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
+<v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
+<v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
+</v>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20090529141856.4737"><vh>@@test nested class</vh></v>
+<v t="ekr.20090529141856.4738"><vh>@test comment after dict assign</vh></v>
+<v t="ekr.20090529141856.4739"><vh>@test decorator test</vh></v>
+<v t="ekr.20090529141856.4740"><vh>@test def inside def</vh></v>
+<v t="ekr.20090529141856.4741"><vh>@test docstring only</vh></v>
+<v t="ekr.20090529141856.4742"><vh>@test overindent def--no following def</vh></v>
+<v t="ekr.20090529141856.4743"><vh>@test overindent def--one following def</vh></v>
+<v t="ekr.20090529141856.4744"><vh>@test overindented def 3</vh></v>
+<v t="ekr.20090529141856.4745"><vh>@test python bad class test</vh></v>
+<v t="ekr.20101101034131.6042"><vh>@test python bug 603720</vh></v>
+<v t="ekr.20090529141856.4746"><vh>@test python class test 2</vh></v>
+<v t="ekr.20090529141856.4747"><vh>@test python class tests 1</vh></v>
+<v t="ekr.20090529141856.4748"><vh>@test python decls test 1</vh></v>
+<v t="ekr.20090529141856.4749"><vh>@test python def test 1</vh></v>
+<v t="ekr.20090529141856.4750"><vh>@test python def test 2</vh></v>
+<v t="ekr.20090529141856.4751"><vh>@test python empty decls</vh></v>
+<v t="ekr.20090529141856.4752"><vh>@test python extra leading ws test</vh></v>
+<v t="ekr.20090529141856.4753"><vh>@test python indent decls</vh></v>
+<v t="ekr.20090529141856.4754"><vh>@test python minimal class 1</vh></v>
+<v t="ekr.20090529141856.4755"><vh>@test python minimal class 2</vh></v>
+<v t="ekr.20090529141856.4756"><vh>@test python minimal class 3</vh></v>
+<v t="ekr.20090529141856.4757"><vh>@test python underindent method</vh></v>
+<v t="ekr.20090529141856.4758"><vh>@test scanPythonText: leoImportNosent.py</vh></v>
+<v t="ekr.20090529141856.4759"><vh>@test string test: extra indent</vh></v>
+<v t="ekr.20090529141856.4760"><vh>@test string underindent lines</vh></v>
+<v t="ekr.20090529141856.4761"><vh>@test string underindent lines 2</vh></v>
+<v t="ekr.20090529141856.4762"><vh>@test trailing comment</vh></v>
+<v t="ekr.20090529141856.4763"><vh>@test trailing comment--outer levels</vh></v>
+<v t="ekr.20090529141856.4764"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
+<v t="ekr.20090529141856.4765"><vh>@test unindent in triple string does not end function</vh></v>
+</v>
+<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
+<v t="ekr.20111026105935.3966"><vh>@test xml 2</vh></v>
+</v>
+</v>
+<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
+<v t="ekr.20090529141856.4786"><vh>@test rST import test (no double-underlines)</vh></v>
+<v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
+<v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
+<v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
+</v>
+<v t="ekr.20090529141856.4793"><vh>@@test test imports for modes</vh></v>
+<v t="ekr.20100131180007.5393"><vh>@test reportMismatch</vh></v>
+<v t="ekr.20090529141856.4792"><vh>Load tests for .leo files</vh></v>
+<v t="ekr.20090529141856.4791"><vh>Other tests</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -535,7 +689,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="5"></t>
+<t tx="ekr.20070417092935" str_leo_pos="6"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -584,6 +738,1331 @@ Important: this may cause crashes on some platforms.
 #
 #
 #
+</t>
+<t tx="ekr.20090529141856.4682"># These test are inconvenient to include in leoPy.leo
+# because they would need a @mark-for-unit-tests node,
+# and Alt-5 would execute all the tests.
+</t>
+<t tx="ekr.20090529141856.4684">@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20090529141856.4685"># Create unit tests in g.app.scriptDict["suite"]
+
+
+import unittest
+import leo.core.leoTest as leoTest
+
+@others
+
+suite = leoTest.makeImportExportSuite(c,"exportTests",doImport=False)
+
+g.app.scriptDict['suite'] = suite
+</t>
+<t tx="ekr.20090529141856.4686">@language plain
+</t>
+<t tx="ekr.20090529141856.4687"></t>
+<t tx="ekr.20090529141856.4688"></t>
+<t tx="ekr.20090529141856.4689">saveFileDialog
+test\\unittest\\output\\exportHeadlines.txt
+</t>
+<t tx="ekr.20090529141856.4690"></t>
+<t tx="ekr.20090529141856.4691">saveFileDialog
+test\\unittest\\output\\flattenOutline.txt
+</t>
+<t tx="ekr.20090529141856.4692"></t>
+<t tx="ekr.20090529141856.4693">saveFileDialog
+test\\unittest\\output\\weave.txt
+</t>
+<t tx="ekr.20090529141856.4694"></t>
+<t tx="ekr.20090529141856.4695">saveFileDialog
+test\\unittest\\output\\outlineToNoweb.txt
+</t>
+<t tx="ekr.20090529141856.4696"></t>
+<t tx="ekr.20090529141856.4697">saveFileDialog
+test\\unittest\\output\\outlineToCweb.txt
+</t>
+<t tx="ekr.20090529141856.4698"></t>
+<t tx="ekr.20090529141856.4699"># Create unit tests in g.app.scriptDict["suite"]
+
+import unittest
+import leo.core.leoTest as leoTest
+
+@others
+
+suite = leoTest.makeImportExportSuite(c,"importTests",doImport=True)
+
+g.app.scriptDict['suite'] = suite
+</t>
+<t tx="ekr.20090529141856.4700">@language plain
+</t>
+<t tx="ekr.20090529141856.4701"></t>
+<t tx="ekr.20090529141856.4702"></t>
+<t tx="ekr.20090529141856.4703">openFileDialog
+test\\unittest\\perfectImport\\formatter.py
+</t>
+<t tx="ekr.20090529141856.4704"></t>
+<t tx="ekr.20090529141856.4705">openFileDialog
+core\\runLeo.py
+</t>
+<t tx="ekr.20090529141856.4706"></t>
+<t tx="ekr.20090529141856.4707">openFileDialog
+test\\unittest\\input\\noweave.nw.txt
+</t>
+<t tx="ekr.20090529141856.4708"></t>
+<t tx="ekr.20090529141856.4709">openFileDialog
+test\\unittest\\input\\flat.txt
+</t>
+<t tx="ekr.20090529141856.4710"></t>
+<t tx="ekr.20090529141856.4711">openFileDialog
+test\\unittest\\input\\cweave.w
+</t>
+<t tx="ekr.20090529141856.4712"></t>
+<t tx="ekr.20090529141856.4713">openFileDialog
+test\\unittest\\input\\testLeoAtFile.py
+</t>
+<t tx="ekr.20090529141856.4714"></t>
+<t tx="ekr.20090529141856.4715">openFileDialog
+test\\unittest\\perfectImport\\formatter.py
+</t>
+<t tx="ekr.20090529141856.4716">@tabwidth -4
+@language python
+</t>
+<t tx="ekr.20090529141856.4717"></t>
+<t tx="ekr.20090529141856.4718">fileName = p.h
+
+s = '''\
+class cTestClass1 {
+
+    int foo (int a) {
+        a = 2 ;
+    }
+
+    char bar (float c) {
+        ;
+    }
+}
+'''
+
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4719">fileName = p.h
+
+s = '''\
+class cTestClass1 {
+
+    int foo (int a) {
+# an underindented line.
+        a = 2 ;
+    }
+
+    # This should go with the next function.
+
+    char bar (float c) {
+        ;
+    }
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 1
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4720">fileName = p.h
+
+s = '''\
+class cTestClass1 {
+
+    int foo (int a) {
+        a = 2 ;
+    }
+
+    char bar (float c) {
+        ;
+    }
+}
+'''
+
+c.importCommands.defaultImporterUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4721">fileName = p.h
+
+s = '''\
+void
+aaa::bbb::doit
+    (
+    awk* b
+    )
+{
+    assert(false);
+}
+
+bool
+aaa::bbb::dothat
+    (
+    xyz *b
+    ) //  &lt;---------------------problem
+{
+    return true;
+}
+'''
+
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4722">fileName = p.h
+
+s = '''\
+void
+aaa::bbb::doit
+    (
+    awk* b
+    )
+{
+    assert(false);
+}
+
+bool
+aaa::bbb::dothat
+    (
+    xyz *b
+    ) 
+{
+    return true;
+} //  &lt;---------------------problem
+'''
+
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4723">fileName = p.h
+
+s = '''
+void
+aaa::bbb::doit
+    (
+    awk* b  // leading blank
+    )
+{
+	assert(false); // leading tab
+}
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0 # Intermixed blanks and tabs are ok for C.
+
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4724">fileName = p.h
+
+s = '''\
+static void
+ReleaseCharSet(cset)
+    CharSet *cset;
+{
+    ckfree((char *)cset-&gt;chars);
+    if (cset-&gt;ranges) {
+    ckfree((char *)cset-&gt;ranges);
+    }
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4725">fileName = p.h
+
+s = '''\
+Tcl_Obj *
+Tcl_NewLongObj(longValue)
+    register long longValue;	/* Long integer used to initialize the
+         * new object. */
+{
+    return Tcl_DbNewLongObj(longValue, "unknown", 0);
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4726">fileName = p.h
+
+s = '''\
+extern  "C"
+{
+#include "stuff.h"
+void    init(void);
+#include "that.h"
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4727"></t>
+<t tx="ekr.20090529141856.4728">s = '''\
+namespace {
+    class cTestClass1 {
+        ;
+    }
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.cSharpUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4729">s = '''\
+namespace {
+class cTestClass1 {
+    ;
+}
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.cSharpUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4730">import sys
+
+if sys.platform.lower().startswith('win'):
+
+    fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','big-c#-test.c#'))
+
+    f = open(fileName)
+    s = f.read()
+    f.close()
+
+    c.importCommands.cSharpUnitTest(p,s=s,fileName=fileName,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4731"></t>
+<t tx="ekr.20090529141856.4732">s = '''\
+;;; a.el --- Test
+
+;; some other verbose comment
+;; some other verbose comment
+;; some other verbose comment
+
+(defun abc (a1 a2)
+  "Return blah blah."
+  (+ 1 2))
+
+(defun fgh (a1 a2)
+  "Return blah blah."
+  (- 1 2))
+
+;;; a.el ends here
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.elispUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4733">s = '''\
+;;; comment
+;;; continue
+;;;
+
+(defun abc (a b)
+   (+ 1 2 3))
+
+; comm
+(defun cde (a b)
+   (+ 1 2 3))
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.elispUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4734"></t>
+<t tx="ekr.20090529141856.4735">s = '''
+unit Unit1;
+
+interface
+
+uses
+Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,
+Forms,
+Dialogs;
+
+type
+TForm1 = class(TForm)
+procedure FormCreate(Sender: TObject);
+private
+{ Private declarations }
+public
+{ Public declarations }
+end;
+
+var
+Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+x,y: double;
+begin
+x:= 4;
+Y := x/2;
+end;
+
+end.
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pascalUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4736"># Warning: setting atAuto=True can wipe out unit tests.
+</t>
+<t tx="ekr.20090529141856.4737">s = '''\
+NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
+      's': 'http://www.w3.org/2000/svg',
+      'xlink' : 'http://www.w3.org/1999/xlink'}
+
+tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4738">s = '''\
+NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
+      's': 'http://www.w3.org/2000/svg',
+      'xlink' : 'http://www.w3.org/1999/xlink'}
+
+tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4739">s = '''\
+class Index:
+    """docstring"""
+    @cherrypy.nocolor
+    @cherrypy.expose
+    def index(self):
+        return "Hello world!"
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4740">s = '''\
+class aClass:
+    def outerDef(self):
+        """docstring.
+        line two."""
+
+        def pr(*args,**keys):
+            g.es_print(color='blue',*args,**keys)
+
+        a = 3
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4741">s = '''\
+"""A file consisting only of a docstring.
+"""
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4742">s = '''\
+class aClass:
+    def def1(self):
+        pass
+
+    if False or g.unitTesting:
+
+        def pr(*args,**keys): # reportMismatch test
+            g.es_print(color='blue',*args,**keys)
+
+        pr('input...')
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4743">s = '''\
+class aClass:
+    def def1(self):
+        pass
+
+    if False or g.unitTesting:
+
+        def pr(*args,**keys): # reportMismatch test
+            g.es_print(color='blue',*args,**keys)
+
+        pr('input...')
+
+    def def2(self):
+        pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4744">@language python
+
+# This caused PyParse.py not to be imported properly.
+
+s = '''\
+
+import re
+
+if 0: # Causes the 'overindent'
+   if 0:   # for throwaway debugging output
+      def dump(*stuff):
+        sys.__stdout__.write(" ".join(map(str, stuff)) + "\n")
+
+for ch in "({[":
+   _tran[ord(ch)] = '('
+
+class testClass1:
+    pass
+# '''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4745">s = '''\
+class testClass1 # no colon
+    pass
+
+def spam():
+    pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0 # Not really an error.
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4746">s = '''\
+class testClass2:
+    pass
+'''
+
+tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4747">s = '''\
+class testClass1:
+    """A docstring"""
+    def __init__ (self):
+        pass
+    def f1(self):
+        pass
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4748">s = '''\
+import leo.core.leoGlobals as g
+
+a = 3
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4749">s = '''\
+
+class test:
+
+    def importFilesCommand (self,files=None,treeType=None,
+        perfectImport=True,testing=False,verbose=False):
+            # Not a command.  It must *not* have an event arg.
+
+        c = self.c
+        if c == None: return
+        p = c.currentPosition()
+
+    # Used by paste logic.
+
+    def convertMoreStringToOutlineAfter (self,s,firstVnode):
+        s = string.replace(s,"\\r","")
+        strings = string.split(s,"\\n")
+        return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4750">s = '''\
+
+class test:
+    def spam(b):
+        pass
+
+    # Used by paste logic.
+
+    def foo(a):
+        pass
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4751">s = '''\
+import leo.core.leoGlobals as g
+
+a = 3
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4752">s = '''\
+
+class cls:
+     def fun(): # one extra space.
+        pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None # No error unless we get an unexpected mismatch line.
+g.app.unitTestDict ['expectedMismatchLine'] = 3 # The error happens before any lines are checked.
+g.app.unitTestDict ['expectedErrorMessage'] = 'leading whitespace not consistent with @tabwidth -4'
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4753">s = '''\
+
+class mammalProviderBase(object):
+    """Root class for content providers used by DWEtree.py"""
+    def __init__(self, params):
+        """store reference to parameters"""
+        self.params = params
+    def provide(self, what):
+        """default &lt;BASE&gt; value"""
+        if what == 'doctitle':
+            return ELE('base', href=self.params['/BASE/'])
+        return None
+
+    def imagePath(self, sppdat):
+        """return path to images and list of images for *species*"""
+        path = 'MNMammals/imglib/Mammalia'
+        for i in 'Order', 'Family', 'Genus', 'Species':
+            path = os.path.join(path, sppdat['%sName' % (i,)])
+        imglib = os.path.join('/var/www',path)
+        imglib = os.path.join(imglib, '*.[Jj][Pp][Gg]')
+        path = os.path.join('/',path)
+        lst = [os.path.split(i)[1] for i in glob.glob(imglib)]
+        lst.sort()
+        return path, lst
+
+class mainPages(mammalProviderBase):
+    """provide content for pages in 'main' folder"""
+    __parent = mammalProviderBase
+    def provide(self, what):
+        """add one layer to &lt;BASE&gt;"""
+        ans = self.__parent.provide(self, what)
+        if what == 'doctitle':
+            return ELE('base', href=self.params['/BASE/']+'main/')
+        return ans
+''' 
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4754">s = '''\
+
+class ItasException(Exception):
+
+    pass
+
+def gpRun(gp, cmd, args, log = None):
+
+    """Wrapper for making calls to the geoprocessor and reporting errors"""
+
+    if log:
+
+        log('gp: %s: %s\\n' % (cmd, str(args)))
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+
+
+</t>
+<t tx="ekr.20090529141856.4755">s = '''\
+
+class emptyClass: pass
+
+def followingDef():
+    pass
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4756">s = '''\
+
+class emptyClass: pass # comment
+
+def followingDef(): # comment
+    pass
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4757">s = '''\
+
+class emptyClass: 
+
+    def spam():
+
+        """docstring line 1
+under-indented docstring line"""
+        pass
+
+def followingDef(): # comment
+    pass
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4758">@encoding utf-8
+# leoImport.py uses unicode characters, so *this* test must have the directive above.
+
+fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'leoImport.py'))
+
+f = open(fileName)
+s = f.read()
+f.close()
+
+g.app.unitTestDict['testingLeoImport.py'] = True
+
+c.importCommands.pythonUnitTest(p,s=None,fileName=fileName,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4759">s = '''\
+class baseScannerClass:
+
+        """The base class for all import scanner classes."""
+
+        def __init__ (self,importCommands,language):
+
+            self.c = ic.c
+
+        def createHeadline (self,parent,body,headline):
+            # g.trace("parent,headline:",parent,headline)
+            return p
+'''
+
+# We expect mismatches because the indentation does not match @tabwidth -4.
+g.app.unitTestDict ['expectedErrors'] = None # No error unless we get an unexpected mismatch line.
+g.app.unitTestDict ['expectedMismatchLine'] = 3
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4760">s = '''\
+class baseScannerClass:
+    def containsUnderindentedComment(self):
+        a = 2
+    # A true underindented comment.
+        b = 3
+    # This underindented comment should be placed with next function.
+    def empty(self):
+        pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4761">s = '''\
+class baseScannerClass:
+    def containsUnderindentedComment(self):
+        a = 2
+    #
+        b = 3
+        # This comment is part of the present function.
+
+    def empty(self):
+        pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4762">s = '''\
+class aClass: # trailing comment
+
+
+    def def1(self):             # trailing comment
+        pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4763">s = '''\
+
+xyz = 6 # trailing comment
+pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4764">s = '''\
+
+def foo():
+    pass
+
+def bar():
+    pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4765">s = '''\
+
+def foo():
+
+    error("""line1
+line2.
+""")
+
+    a = 5
+
+def bar():
+    pass
+'''
+
+showTree = False
+keepTree = False
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=showTree)
+
+if showTree:
+    try:
+        child = p.firstChild()
+        n = child.numberOfChildren()
+        assert n == 2, 'expected 2 children, got %s' % n
+    finally:
+        if keepTree:
+            h = child.h
+            print('h',h)
+            child.setHeadString('@'+h)
+        else:
+            while p.hasChildren():
+                p.firstChild().doDelete()
+        c.redraw(p)
+</t>
+<t tx="ekr.20090529141856.4766"></t>
+<t tx="ekr.20090529141856.4767">s = '''\
+interface Bicycle {
+    void changeCadence(int newValue);
+    void changeGear(int newValue);
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4768">s = '''\
+interface Bicycle {
+void changeCadence(int newValue);
+void changeGear(int newValue);
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4769">import sys
+
+if sys.platform.lower().startswith('win'):
+
+    fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','constants.java'))
+
+    f = open(fileName)
+    s = f.read()
+    f.close()
+
+    c.importCommands.javaUnitTest(p,s=None,fileName=fileName,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4770">s = '''\
+/**
+ * Indicates the caller's authority to perform lifecycle operations on
+ */
+
+public final class AdminPermission extends BasicPermission
+{
+    /**
+     * Creates a new &lt;tt&gt;AdminPermission&lt;/tt&gt; object.
+     */
+    public AdminPermission()
+    {
+        super("AdminPermission");
+    }
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaUnitTest(p,s=s,showTree=False)
+
+</t>
+<t tx="ekr.20090529141856.4771">import sys
+
+if sys.platform.lower().startswith('win'):
+
+
+    fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','AdminPermission.java'))
+
+    f = open(fileName)
+    s = f.read()
+    f.close()
+
+    c.importCommands.javaUnitTest(p,s=s,fileName=fileName,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4772">@tabwidth 8
+</t>
+<t tx="ekr.20090529141856.4773">@language python
+
+s = '''\
+/*
+ * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $
+ * 
+ * Copyright (c) OSGi Alliance (2000, 2005). All Rights Reserved.
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this 
+ * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.
+ */
+
+package org.osgi.framework;
+
+/**
+ * A Framework exception used to indicate that a bundle lifecycle problem
+ * occurred.
+ * 
+ * &lt;p&gt;
+ * &lt;code&gt;BundleException&lt;/code&gt; object is created by the Framework to denote
+ * an exception condition in the lifecycle of a bundle.
+ * &lt;code&gt;BundleException&lt;/code&gt;s should not be created by bundle developers.
+ * 
+ * &lt;p&gt;
+ * This exception is updated to conform to the general purpose exception
+ * chaining mechanism.
+ * 
+ * @version $Revision: 1.247 $
+ */
+
+public class BundleException extends Exception {
+	static final long	serialVersionUID	= 3571095144220455665L;
+	/**
+	 * Nested exception.
+	 */
+	private Throwable	cause;
+
+	/**
+	 * Creates a &lt;code&gt;BundleException&lt;/code&gt; that wraps another exception.
+	 * 
+	 * @param msg The associated message.
+	 * @param cause The cause of this exception.
+	 */
+	public BundleException(String msg, Throwable cause) {
+		super(msg);
+		this.cause = cause;
+	}
+}
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4774"></t>
+<t tx="ekr.20090529141856.4775">@language javascript
+
+// regexps that look like section references.
+
+{
+	name: "macro",
+	match: "&lt;&lt;",
+	lookaheadRegExp: /&lt;&lt;([^&gt;\s]+)(?:\s*)((?:[^&gt;]|(?:&gt;(?!&gt;)))*)&gt;&gt;/mg,
+	handler: function(w)
+	{
+		this.lookaheadRegExp.lastIndex = w.matchStart;
+		var lookaheadMatch = this.lookaheadRegExp.exec(w.source);
+		if(lookaheadMatch &amp;&amp; lookaheadMatch.index == w.matchStart &amp;&amp; lookaheadMatch[1]) {
+			w.nextMatch = this.lookaheadRegExp.lastIndex;
+			invokeMacro(w.output,lookaheadMatch[1],lookaheadMatch[2],w,w.tiddler);
+		}
+	}
+},
+
+// Comments that look like section references.
+
+// &lt;&lt;gradient [[tiddler name]] vert|horiz rgb rgb rgb rgb... &gt;&gt;
+
+config.macros.gradient.handler = function(place,macroName,params,wikifier)
+{
+	var panel = wikifier ? createTiddlyElement(place,"div",null,"gradient") : place;
+	panel.style.position = "relative";
+	panel.style.overflow = "hidden";
+	panel.style.zIndex = "0";
+	if(wikifier) {
+		var styles = config.formatterHelpers.inlineCssHelper(wikifier);
+		config.formatterHelpers.applyCssHelper(panel,styles);
+	}
+	var colours = [];
+	for(var t=1; t&lt;params.length; t++) {
+		var c = new RGB(params[t]);
+		if(c)
+			colours.push(c);
+	}
+	drawGradient(panel,params[0] != "vert",colours);
+	if(wikifier)
+		wikifier.subWikify(panel,"&gt;&gt;");
+	if(document.all) {
+		panel.style.height = "100%";
+		panel.style.width = "100%";
+	}
+};
+
+// @Deprecated: Use &lt;br&gt; or &lt;br /&gt; instead of &lt;&lt;br&gt;&gt;
+config.macros.br = {};
+config.macros.br.handler = function(place)
+{
+	createTiddlyElement(place,"br");
+};
+</t>
+<t tx="ekr.20090529141856.4776">s = '''\
+
+String.prototype.toJSONString = function()
+{
+    if(/["\\\\\\x00-\\x1f]/.test(this))
+		return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
+
+	return '"' + this + '"';
+};
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4777">    s = '''\
+
+// Convert a string to it's JSON representation by encoding control characters, double quotes and backslash. See json.org
+String.prototype.toJSONString = function()
+{
+	var m = {
+		'\\b': '\\\\b',
+		'\\f': '\\\\f',
+		'\\n': '\\\\n',
+		'\\r': '\\\\r',
+		'\\t': '\\\\t',
+		'"' : '\\\\"',
+		'\\\\': '\\\\\\\\'
+		};
+	var replaceFn = function(a,b) {
+		var c = m[b];
+		if(c)
+			return c;
+		c = b.charCodeAt();
+		return '\\u00' + Math.floor(c / 16).toString(16) + (c % 16).toString(16);
+		};
+    if(/["\\\\\\x00-\\x1f]/.test(this))
+		return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
+
+	return '"' + this + '"';
+};
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4778">s = '''\
+
+// Restarting
+function restart()
+{
+	invokeParamifier(params,"onstart");
+	if(story.isEmpty()) {
+		var tiddlers = store.filterTiddlers(store.getTiddlerText("DefaultTiddlers"));
+		for(var t=0; t&lt;tiddlers.length; t++) {
+			story.displayTiddler("bottom",tiddlers[t].title);
+		}
+	}
+	window.scrollTo(0,0);
+}
+
+'''
+
+# Double each backslash (they are in a docstring).
+# chars = [z for z in s]
+# s = []
+# for z in char:
+    # if z == '\\': s.append('\\\\')
+    # else: s.append(z)
+# s = s.join('')
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4779">f = open('test.js')
+s = f.read()
+f.close()
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4780"></t>
+<t tx="ekr.20090529141856.4781">s = '''\
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+&lt;body class='bodystring'&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4782">@first # -*- coding: utf-8 -*-
+
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+runner = leoImport.baseScannerClass(ic,atAuto=True,language='python')
+runner.root = p.copy()
+
+g.app.unitTestDict ['expectedMismatchLine'] = 1
+
+s1 = g.toUnicode('line Ä, ڱ,  궯, 奠 end',encoding='utf-8')
+s2 = g.toUnicode('line Ä, ڱ,  궯, 奠 x end',encoding='utf-8')
+
+ok = runner.checkTrialWrite(s1=s1,s2=s2)
+
+assert ok
+</t>
+<t tx="ekr.20090529141856.4783">c.contractAllHeadlines()
+</t>
+<t tx="ekr.20090529141856.4784"></t>
+<t tx="ekr.20090529141856.4785">s = '''\
+.. toc
+
+====
+top
+====
+
+The top section
+
+section 1
+---------
+
+section 1, line 1
+--
+selction 1, line 2
+
+section 2
+---------
+
+section 2, line 1
+
+section 2.1
+~~~~~~~~~~~
+
+section 2.1, line 1
+
+section 2.1.1
+.............
+
+section 2.2.1 line 1
+
+section 3
+---------
+
+section 3, line 1
+
+section 3.1.1
+.............
+
+section 3.1.1, line 1
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4786">s = '''\
+.. toc
+
+top
+====
+
+The top section
+
+section 1
+---------
+
+section 1, line 1
+--
+selction 1, line 2
+
+section 2
+---------
+
+section 2, line 1
+
+section 2.1
+~~~~~~~~~~~
+
+section 2.1, line 1
+
+section 2.1.1
+.............
+
+section 2.2.1 line 1
+
+section 3
+---------
+
+section 3, line 1
+
+section 3.1.1
+.............
+
+section 3.1.1, line 1
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4787">s = '''\
+.. toc
+
+top
+-------------
+
+The top section
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4788">s = '''\
+.. toc
+
+======
+top
+======
+
+The top section
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4789">s = '''\
+.. toc
+
+.. The section name contains trailing whitespace.
+
+======
+top 
+======
+
+The top section.
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4790">import leo.core.leoImport as leoImport
+ic = c.importCommands
+runner = leoImport.baseScannerClass(ic,atAuto=True,language='python')
+i = 0
+lines1 = ['abc',]
+lines2 = ['xyz',]
+
+g.app.unitTestDict ['expectedErrors'] = 1
+g.app.unitTestDict ['expectedMismatchLine'] = 1
+
+runner.compareHelper(lines1,lines2,i,strict=True)
+</t>
+<t tx="ekr.20090529141856.4791">import leo.core.leoImport as leoImport
+ic = c.importCommands
+runner = leoImport.baseScannerClass(ic,atAuto=True,language='java')
+runner.tab_width = -4
+i = 0
+lines1 = ['abc',]
+lines2 = [' abc',]
+
+# g.unitTesting = False # force the warning.
+
+g.app.unitTestDict ['expectedErrors'] = 0
+g.app.unitTestDict ['expectedMismatchLine'] = 1
+
+runner.compareHelper(lines1,lines2,i,strict=False)
+</t>
+<t tx="ekr.20090529141856.4792">s = '''\
+    a
+\tb
+'''
+
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+runner = leoImport.pythonScanner(c.importCommands,atAuto=False)
+runner.tab_width = -4
+runner.regularizeWhitespace(s)
+assert runner.errors == 1
+</t>
+<t tx="ekr.20090529141856.4793">d = g.app.extra_extension_dict
+
+for ext in g.app.extension_dict.keys():
+    language =  c.importCommands.languageForExtension(ext)
+    language2 = c.importCommands.languageForExtension('.'+ext)
+    assert language == language2
+
+    # Now a many-one relationship.
+    if language:
+        # Do not test extensions that have 'none' as the value of d.get(ext)
+        # Otherwise, test only d.get(ext).
+        language2 = d.get(ext)
+        if language2 in ('None','none'):  continue
+        if language2: language = language2
+        # Made-up languages do not have mode files.
+        if not language.endswith('_language') and language not in ('autohotkey','rest',):
+            path = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
+            assert g.os_path_exists(path), 'for ext=%s does not exist: %s' % (ext,path)
+
+    if 0:
+        if language is None:
+            print('no language for ext=%s' % (ext))
 </t>
 <t tx="ekr.20090704085350.5007">@language python
 @others</t>
@@ -659,6 +2138,120 @@ for p in c.all_unique_positions():
 
 s = "%d nodes" % count
 print s ; g.es(s)</t>
+<t tx="ekr.20100131180007.5393">import leo.core.leoImport as leoImport
+
+ic = c.importCommands
+scanner = leoImport.rstScanner(importCommands=ic,atAuto=True)
+scanner.root = p
+s1 = ["abc",]
+s2 = ["xyz",]
+
+scanner.reportMismatch(s1,s2,1)
+
+# Why is leoSettings.leo scanned twice in dynamicUnitTest.leo?
+</t>
+<t tx="ekr.20100219080213.5365"></t>
+<t tx="ekr.20100219080213.5366">s = '''\
+&lt;?php
+
+$type = 'cc';
+$obj = new $type; // outputs "hi!"
+
+class cc {
+    function __construct() {
+        echo 'hi!';
+    }
+}
+
+?&gt;
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.phpUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20100219080213.5367">s = '''\
+&lt;?php
+
+if (expr) {
+    class cc {
+        // version 1
+    }
+} else {
+    class cc {
+        // version 2
+    }
+}
+
+?&gt;
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.phpUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20100219080213.5368">s = '''\
+&lt;?php
+class Enum {
+    protected $self = array();
+    public function __construct( /*...*/ ) {
+        $args = func_get_args();
+        for( $i=0, $n=count($args); $i&lt;$n; $i++ )
+            $this-&gt;add($args[$i]);
+    }
+
+    public function __get( /*string*/ $name = null ) {
+        return $this-&gt;self[$name];
+    }
+
+    public function add( /*string*/ $name = null, /*int*/ $enum = null ) {
+        if( isset($enum) )
+            $this-&gt;self[$name] = $enum;
+        else
+            $this-&gt;self[$name] = end($this-&gt;self) + 1;
+    }
+}
+
+class DefinedEnum extends Enum {
+    public function __construct( /*array*/ $itms ) {
+        foreach( $itms as $name =&gt; $enum )
+            $this-&gt;add($name, $enum);
+    }
+}
+
+class FlagsEnum extends Enum {
+    public function __construct( /*...*/ ) {
+        $args = func_get_args();
+        for( $i=0, $n=count($args), $f=0x1; $i&lt;$n; $i++, $f *= 0x2 )
+            $this-&gt;add($args[$i], $f);
+    }
+}
+?&gt;
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.phpUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20100803234640.5804"></t>
+<t tx="ekr.20100803234640.5805">s = '''\
+; last modified 1 April 2001 by John Doe
+[owner]
+name=John Doe
+organization=Acme Widgets Inc.
+
+[database]
+server=192.0.2.62     ; use IP address in case network name resolution is not working
+port=143
+file = "payroll.dat"
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.iniUnitTest(p,s=s,showTree=False)
+</t>
 <t tx="ekr.20101009105124.6195">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
@@ -668,6 +2261,34 @@ False:
     Suppress "E" attribute bits in &lt;v&gt; elements.
     Only the ancestors of the presently selected node will
     be expanded when Leo opens an outline.
+</t>
+<t tx="ekr.20101101034131.6042"># Leo bug 603720
+# Within the docstring we must change '\' to '\\'
+s = '''\
+def foo():
+    s = \\
+"""#!/bin/bash
+cd /tmp
+ls"""
+    file('/tmp/script', 'w').write(s)
+
+class bar:
+    pass
+
+foo()
+'''
+
+showTree = False
+
+tree = c.importCommands.pythonUnitTest(p,s=s,showTree=showTree)
+
+if showTree:
+    c.redraw_now()
+    foo = g.findNodeInTree(c,p,'foo')
+    assert foo
+    s = "file('/tmp/script', 'w').write(s)"
+    print('foo.b',repr(foo.b))
+    assert foo.b.find(s) &gt; -1,"foo.b: %s" % foo.b
 </t>
 <t tx="ekr.20101220161557.6013"></t>
 <t tx="ekr.20101220161557.6016"></t>
@@ -684,20 +2305,56 @@ writing .leo files.
 The path is **supposed** not to exist.
 </t>
 <t tx="ekr.20110615130436.3318">Child content goes here.</t>
-<t tx="ekr.20111026111009.3972"># xml tags, one per line.
+<t tx="ekr.20111026105935.3966">s = '''\
+&lt;nodeA&gt;
+&lt;nodeB/&gt;
+&lt;/nodeA&gt;
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
 
 html
-HTML
 body
-BODY
 head
-HEAD
 div
-DIV
 table
-TABLE
 nodeA
 nodeB
+</t>
+<t tx="ekr.20111029112647.4099"></t>
+<t tx="ekr.20111029112647.4101">s = '''\
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+&lt;body class='bodystring'&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20111029120441.3982">s = '''\
+&lt;HTML&gt;
+&lt;HEAD&gt;
+    &lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/HEAD&gt;
+&lt;BODY class='bodystring'&gt;
+&lt;DIV id='bodydisplay'&gt;&lt;/DIV&gt;
+&lt;/BODY&gt;
+&lt;/HTML&gt;
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
 </tnodes>
 </leo_file>
