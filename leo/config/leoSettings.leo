@@ -789,7 +789,8 @@
 </v>
 <v t="ekr.20071214132254"><vh>Import options</vh>
 <v t="ekr.20101104191857.8345"><vh>@bool at_auto_separate_non_def_nodes = False</vh></v>
-<v t="ekr.20071214132254.1"><vh>@data import_xml_tags</vh></v>
+<v t="ekr.20111029055127.16616"><vh>@data import_html_tags</vh></v>
+<v t="ekr.20111029055127.16614"><vh>@data import_xml_tags</vh></v>
 </v>
 <v t="ekr.20110611092035.16481"><vh>Scripting</vh>
 <v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
@@ -5171,19 +5172,6 @@ rst3_show_headline_prefix =    @rst-head</t>
 <t tx="ekr.20071213190345"></t>
 <t tx="ekr.20071213190345.1"></t>
 <t tx="ekr.20071214132254"></t>
-<t tx="ekr.20071214132254.1"># xml tags, one per line.
-
-html
-HTML
-body
-BODY
-head
-HEAD
-div
-DIV
-table
-TABLE
-</t>
 <t tx="ekr.20071217093419">The body text should contain the data, one string per line.
 Comments lines starting with '#' are ignored.</t>
 <t tx="ekr.20080204124255"># For testing only.
@@ -12272,6 +12260,103 @@ aList.sort()
 
 for fn in aList:
     print(g.shortFileName(fn))</t>
+<t tx="ekr.20111029055127.16614"># lowercase xml tags, one per line.
+
+html
+body
+head
+div
+table
+</t>
+<t tx="ekr.20111029055127.16616"># lowercase html tags, one per line.
+
+&lt;!DOCTYPE&gt;
+&lt;a&gt;
+&lt;abbr&gt;
+&lt;acronym&gt;
+&lt;address&gt;
+&lt;applet&gt;
+&lt;area&gt;
+&lt;b&gt;
+&lt;base&gt;
+&lt;basefont&gt;
+&lt;bdo&gt;
+&lt;big&gt;
+&lt;blockquote&gt;
+&lt;body&gt;
+&lt;br&gt;
+&lt;button&gt;
+&lt;caption&gt;
+&lt;center&gt;
+&lt;cite&gt;
+&lt;code&gt;
+&lt;col&gt;
+&lt;colgroup&gt;
+&lt;dd&gt;
+&lt;del&gt;
+&lt;dfn&gt;
+&lt;dir&gt;
+&lt;div&gt;
+&lt;dl&gt;
+&lt;dt&gt;
+&lt;em&gt;
+&lt;fieldset&gt;
+&lt;font&gt;
+&lt;form&gt;
+&lt;frame&gt;
+&lt;frameset&gt;
+&lt;head&gt;
+&lt;h1&gt; - &lt;h6&gt;
+&lt;hr&gt;
+&lt;html&gt;
+&lt;i&gt;
+&lt;iframe&gt;
+&lt;img&gt;
+&lt;input&gt;
+&lt;ins&gt;
+&lt;kbd&gt;
+&lt;label&gt;
+&lt;legend&gt;
+&lt;li&gt;
+&lt;link&gt;
+&lt;map&gt;
+&lt;menu&gt;
+&lt;meta&gt;
+&lt;noframes&gt;
+&lt;noscript&gt;
+&lt;object&gt;
+&lt;ol&gt;
+&lt;optgroup&gt;
+&lt;option&gt;
+&lt;p&gt;
+&lt;param&gt;
+&lt;pre&gt;
+&lt;q&gt;
+&lt;s&gt;
+&lt;samp&gt;
+&lt;script&gt;
+&lt;select&gt;
+&lt;small&gt;
+&lt;span&gt;
+&lt;strike&gt;
+&lt;strong&gt;
+&lt;style&gt;
+&lt;sub&gt;
+&lt;sup&gt;
+&lt;table&gt;
+&lt;tbody&gt;
+&lt;td&gt;
+&lt;textarea&gt;
+&lt;tfoot&gt;
+&lt;th&gt;
+&lt;thead&gt;
+&lt;title&gt;
+&lt;tr&gt;
+&lt;tt&gt;
+&lt;u&gt;
+&lt;ul&gt;
+&lt;var&gt;
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
