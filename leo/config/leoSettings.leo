@@ -158,7 +158,6 @@
 <v t="ekr.20111024091133.16671"><vh>@color url_color = purple</vh></v>
 </v>
 <v t="ekr.20111024091133.16651"><vh>Colors for standard jEdit tags</vh>
-<v t="ekr.20100102100353.8705"><vh>@@@color blank_color = grey</vh></v>
 <v t="ekr.20060504140351"><vh>@color comment1_color = firebrick3</vh></v>
 <v t="ekr.20060504140408"><vh>@color comment2_color = firebrick3</vh></v>
 <v t="ekr.20060504140408.1"><vh>@color comment3_color = plum3</vh></v>
@@ -174,7 +173,6 @@
 <v t="ekr.20060504134056.2"><vh>@color literal4_color = #00aa00</vh></v>
 <v t="ekr.20060826152759"><vh>@color markup_color = blue</vh></v>
 <v t="ekr.20060713101831"><vh>@color operator_color = None</vh></v>
-<v t="ekr.20100102100353.8706"><vh>@@@color tab_color = black</vh></v>
 </v>
 </v>
 <v t="ekr.20060828110551.1"><vh>Language-specific colors</vh>
@@ -1786,6 +1784,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20041119034357.70"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5974,8 +5973,6 @@ If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
 
 200000</t>
 <t tx="ekr.20090905151712.8546"></t>
-<t tx="ekr.20100102100353.8705"></t>
-<t tx="ekr.20100102100353.8706"></t>
 <t tx="ekr.20100102121150.6344">
 </t>
 <t tx="ekr.20100107060708.6390"></t>
