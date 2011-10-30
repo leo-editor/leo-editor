@@ -1802,6 +1802,9 @@ class baseScannerClass (scanUtility):
         self.functionTags = []
         self.hasClasses = True
         self.hasFunctions = True
+        self.ignoreBlankLines = False
+        self.ignoreLeadingWs = False
+        self.ignoreNewlines = False
         self.lineCommentDelim = None
         self.lineCommentDelim2 = None
         self.outerBlockDelim1 = None
@@ -1862,17 +1865,21 @@ class baseScannerClass (scanUtility):
         lines1 = g.splitLines(s1)
         lines2 = g.splitLines(s2)
 
-        if self.isRst:
-            lines1 = self.adjustRstLines(lines1)
-            lines2 = self.adjustRstLines(lines2)
-
-        n1,n2 = len(lines1), len(lines2)
-        ok = True ; bad_i = 0
-        for i in range(max(n1,n2)):
-            ok = self.compareHelper(lines1,lines2,i,self.strict)
-            if not ok:
-                bad_i = i
-                break
+        if self.ignoreBlankLines or self.ignoreLeadingWs: # was self.isRst:
+            lines1 = self.adjustTestLines(lines1)
+            lines2 = self.adjustTestLines(lines2)
+            
+        if False and self.ignoreNewlines:
+            ok,bad_i,bad_i2 = self.compareIgnoringLines(lines1,lines2)
+            g.trace(ok,bad_i,bad_i2)
+        else:
+            n1,n2 = len(lines1), len(lines2)
+            ok = True ; bad_i = 0
+            for i in range(max(n1,n2)):
+                ok = self.compareHelper(lines1,lines2,i,self.strict)
+                if not ok:
+                    bad_i = i
+                    break
 
         if g.app.unitTesting:
             d = g.app.unitTestDict
@@ -1885,6 +1892,83 @@ class baseScannerClass (scanUtility):
             self.reportMismatch(lines1,lines2,bad_i)
 
         return ok
+    #@+node:ekr.20111029153537.16649: *4* compareIgnoringLines (This doesn't work)
+    def compareIgnoringLines(self,lines1,lines2):
+        
+        lines1 = [z.replace('\n','') for z in lines1]
+        lines2 = [z.replace('\n','') for z in lines2]
+        
+        # lines1 = [z.strip() for z in lines1]
+        # lines2 = [z.strip() for z in lines2]
+        
+        # lines1 = [z.replace(' ','').replace('\t','') for z in lines1]
+        # lines2 = [z.replace(' ','').replace('\t','') for z in lines2]
+
+        def mismatch(i1,i2,prefix1,prefix2):
+            g.trace('prefix mismatch\n1:%s %s\n2:%s %s' % (
+                i1,repr(prefix1),i2,repr(prefix2)))
+        
+        i1,i2,n1,n2 = 0,0,len(lines1),len(lines2)
+        prefix1,prefix2 = "",""
+        while i1 < n1 and i2 < n2:
+            j1,j2 = i1,i2
+            s1,s2 = lines1[i1],lines2[i2]
+            if s1 == s2:
+                # A simple match.
+                i1 += 1 ; i2 += 1
+            elif prefix1 + s1 == prefix2:
+                # lines1 was split.
+                prefix1,prefix2 = "",""
+                i1 += 1
+            elif prefix2 + s2 == prefix1:
+                # lines2 was split.
+                prefix1,prefix2 = "",""
+                i2 += 1
+            elif len(prefix1) < len(prefix2):
+                prefix1 = prefix1 + s1
+                i1 += 1
+            elif len(prefix2) < len(prefix1):
+                prefix2 = prefix2 + s2
+                i2 += 1
+            elif prefix1 and prefix2:
+                if prefix1 != prefix2:
+                    mismatch(i1,i2,prefix1,prefix2)
+                    g.pdb()
+                    return False,i1,i2
+                else:
+                    # Pick either to append.
+                    prefix1 = prefix1 + s1
+                    i1 += 1
+            else:
+                # Pick either to append.
+                prefix1 = prefix1 + s1
+                i1 += 1
+                
+            # Check the prefixes immediately.
+            if (
+                (len(prefix1) == len(prefix2) and prefix1 != prefix2) or
+                (prefix2 and len(prefix1) > len(prefix2) and not prefix1.startswith(prefix2)) or
+                (prefix1 and len(prefix2) > len(prefix1) and not prefix2.startswith(prefix1))
+            ):
+                mismatch(i1,i2,prefix1,prefix2)
+                g.pdb()
+                return False,i1,i2
+                    
+            assert j1 < i1 or j2 < i2
+        # Complete the tail.
+        i1_end,i2_end = i1,i2
+        while i1 < n1:
+            s1 = lines1[i1].strip()
+            prefix1 = prefix1 + s1
+        while i2 < n2:
+            s2 = lines2[i2].strip()
+            prefix2 = prefix2 + s2
+        if prefix1 == prefix2:
+            return True,-1,-1
+        else:
+            mismatch(i1,i2,prefix1,prefix2)
+            g.pdb()
+            return False,i1_end,i2_end
     #@+node:ekr.20070730093735: *4* compareHelper & helpers
     def compareHelper (self,lines1,lines2,i,strict):
 
@@ -1958,14 +2042,20 @@ class baseScannerClass (scanUtility):
                 self.warning('mismatch in leading whitespace')
                 pr_mismatch(i,line1,line2)
             return messageKind in ('comment','warning') # Only errors are invalid.
-    #@+node:ekr.20091227115606.6468: *5* adjustRstLines
-    def adjustRstLines(self,lines):
+    #@+node:ekr.20091227115606.6468: *5* adjustTestLines
+    def adjustTestLines(self,lines):
 
         '''Ignore newlines.
 
         This fudge allows the rst code generators to insert needed newlines freely.'''
-
-        return [z for z in lines if z.strip() != '']
+        
+        if self.ignoreBlankLines:
+            lines = [z for z in lines if z.strip()]
+            
+        if self.ignoreLeadingWs:
+            lines = [z.lstrip() for z in lines]
+        
+        return lines
     #@+node:ekr.20090513073632.5735: *5* compareRstUnderlines
     def compareRstUnderlines(self,s1,s2):
 
@@ -2224,6 +2314,8 @@ class baseScannerClass (scanUtility):
             self.undentBy(decls,undentVal) +
             self.undentBy(ref,undentVal) +
             self.undentBy(trailing,undentVal))
+            
+        result = self.adjust_class_ref(result)
 
         # Append the result to the class node.
         self.appendTextToClassNode(class_node,result)
@@ -2231,6 +2323,12 @@ class baseScannerClass (scanUtility):
         # Exit the new class: restore the previous class info.
         self.methodName = oldMethodName
         self.startSigIndent = oldStartSigIndent
+    #@+node:ekr.20111029153537.16647: *5* adjust_class_ref
+    def adjust_class_ref(self,s):
+        
+        '''Over-ridden by xml and html scanners.'''
+
+        return s
     #@+node:ekr.20070707190351: *5* appendTextToClassNode
     def appendTextToClassNode (self,class_node,s):
 
@@ -2976,6 +3074,53 @@ class baseScannerClass (scanUtility):
     def startsString(self,s,i):
 
         return g.match(s,i,'"') or g.match(s,i,"'")
+    #@+node:ekr.20111030155153.16702: *3* Scanning
+    # The scanner defined here is used to verify the imported text.
+    #@+node:ekr.20111030155153.16703: *4* tokenize
+    def tokenize (self,s):
+
+        '''Tokenize string s and return a list of tokens (kind,value,line_number)
+
+        where kind is in ('comment,'id','nl','other','string','ws')
+        '''
+        
+        # Similar to scanHelper, but not enough to matter.
+        result,i,n = [],0,0
+        while i < len(s):
+            progress = j = i
+            if s[i] == '\n':
+                i,kind = i+1,'nl'
+            elif s[i].isspace():
+                i,kind = g.skip_ws(s,i),'ws'
+            elif self.startsComment(s,i):
+                i,kind = self.skipComment(s,i),'comment'
+            elif self.startsString(s,i):
+                i,kind = self.skipString(s,i),'string'
+            elif self.startsId(s,i):
+                i,kind = self.skipId(s,i),'id'
+            else:
+                i,kind = i+1,'other'
+                
+            assert progress < i and j == progress
+            val = s[j:i]
+            result.append((kind,val,n),)
+            n += val.count('\n')
+            # g.trace('%3s %7s %s' % (n,kind,repr(val[:20])))
+            
+        return result
+        
+    if g.app.unitTesting:
+        import leo.core.leoImport as leoImport
+        sc = leoImport.pythonScanner(c.importCommands,atAuto=False)
+        aList = tokenize(sc,p.b)
+        if 0:
+            for kind,val,n in aList:
+                print('%3s %7s %s' % (n,kind,repr(val)))
+        s2 = ''.join([val for (kind,val,n) in aList])
+        assert p.b == s2
+        print('pass')
+        
+       
     #@+node:ekr.20070707072749: *3* run (baseScannerClass)
     def run (self,s,parent):
 
@@ -3965,6 +4110,7 @@ class rstScanner (baseScannerClass):
         self.functionSpelling = 'section'
         self.functionTags = []
         self.hasClasses = False
+        self.ignoreBlankLines = True
         self.isRst = True
         self.lineCommentDelim = '..'
         self.outerBlockDelim1 = None
@@ -4266,6 +4412,9 @@ class xmlScanner (baseScannerClass):
         self.caseInsensitive = True
         self.hasClasses = True
         self.hasFunctions = False
+        self.ignoreBlankLines = True
+        self.ignoreLeadingWs = True
+        self.ignoreNewlines = True
         self.strict = False
         self.tags_setting = tags_setting
         self.trace = False
@@ -4280,7 +4429,7 @@ class xmlScanner (baseScannerClass):
         c = self.c
 
         for ivar,setting in (
-            ('classTags',self.tags_setting,),
+            ('classTags',self.tags_setting),
         ):
             aList = getattr(self,ivar)
             aList2 = c.config.getData(setting) or []
@@ -4451,6 +4600,20 @@ class htmlScanner (xmlScanner):
 
         # Init the base class.
         xmlScanner.__init__(self,importCommands,atAuto,'import_html_tags')
+        
+    def adjust_class_ref(self,s):
+        '''Ensure that @others appears at the start of a line.'''
+        
+        i = s.find('@others')
+        if i > -1:
+            i -= 1
+            while i >= 0 and s[i] == ' ':
+                i -= 1
+            if i > 0 and s[i] != '\n':
+                # g.trace('old',repr(s))
+                s = s[:i+1] + '\n' + s[i+1:]
+                # g.trace('new',repr(s))
+        return s
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
 #@+node:ekr.20101103093942.5941: *3* @g.command(head-to-prev-node)
 @g.command('head-to-prev-node')
