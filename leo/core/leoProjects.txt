@@ -1482,7 +1482,8 @@ for v in vnodeInfoDict:
 
 # g.trace('copiedBunchList',copiedBunchList)
 #@+node:ekr.20110705101348.14898: *4* Fixed bug in p.setAllAncestorAtFileNodesDirty
-@language rest
+@nocolor-node
+
 
 The code that marks descendant @<file> nodes dirty now tests
 p2.isAnyAtFileNode().  The old code tested p2.isAtThinFileNode().
@@ -25163,6 +25164,20 @@ class htmlScanner (xmlScanner):
 
         # Init the base class.
         xmlScanner.__init__(self,importCommands,atAuto,'import_html_tags')
+        
+    def adjust_class_ref(self,s):
+        '''Ensure that @others appears at the start of a line.'''
+        
+        i = s.find('@others')
+        if i > -1:
+            i -= 1
+            while i >= 0 and s[i] == ' ':
+                i -= 1
+            if i > 0 and s[i] != '\n':
+                # g.trace('old',repr(s))
+                s = s[:i+1] + '\n' + s[i+1:]
+                # g.trace('new',repr(s))
+        return s
 #@+node:ekr.20071214072451: *6*  __init__ (xmlScanner)
 def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
 
@@ -25190,6 +25205,9 @@ def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
     self.caseInsensitive = True
     self.hasClasses = True
     self.hasFunctions = False
+    self.ignoreBlankLines = True
+    self.ignoreLeadingWs = True
+    self.ignoreNewlines = True
     self.strict = False
     self.tags_setting = tags_setting
     self.trace = False
@@ -25204,7 +25222,7 @@ def addTags (self):
     c = self.c
 
     for ivar,setting in (
-        ('classTags',self.tags_setting,),
+        ('classTags',self.tags_setting),
     ):
         aList = getattr(self,ivar)
         aList2 = c.config.getData(setting) or []
