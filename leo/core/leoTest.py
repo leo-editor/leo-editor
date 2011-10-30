@@ -100,6 +100,12 @@ def doTests(c,all=None,p=None,verbosity=1):
                 p.moveToThreadNext()
 
         # Verbosity: 1: print just dots.
+        if not found:
+            # 2011/10/30: run the body of p as a unit test.
+            test = makeTestCase(c,c.p)
+            if test:
+                suite.addTest(test)
+                found = True
         if found:
             res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
             # put info to db as well
