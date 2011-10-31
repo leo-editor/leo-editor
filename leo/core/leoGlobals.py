@@ -114,6 +114,7 @@ tree_popup_handlers = [] # Set later.
 g = nullObject() # Set early in startup logic to this module.
 app = None # The singleton app object.
 debug = False # Set early in startup by the --debug command-line option.
+inScript = False # A synonym for app.inScript
 unitTesting = False # A synonym for app.unitTesting.
 unified_nodes = True # For compatibility with old scripts.
 
