@@ -65,14 +65,14 @@ def isTestNode (p):
     # h = p.h.lower()
     # return g.match_word(h,0,"@testcase") or g.match_word(h,0,"@test-case")
 #@+node:ekr.20051104075904.4: *3* doTests...
-def doTests(c,all=None,p=None,verbosity=1):
+def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
     trace = False ; verbose = False
     if all:
         p = c.rootPosition()
     elif not p:
         p = c.p
-    p1 = p.copy()
+    p1 = c.p.copy() # 2011/10/31: always restore the selected position.
 
     try:
         found = False
@@ -89,17 +89,22 @@ def doTests(c,all=None,p=None,verbosity=1):
         # New in Leo 4.4.8: ignore everything in @ignore trees.
         if all: last = None
         else:   last = p.nodeAfterTree()
-        if trace: g.trace('all',all,'root',p.h)
+        if trace: g.trace('all',all,'marked',marked,'root',p.h)
         seen = set()
         while p and p != last:
             # 2011/10/31: support for hidden tests: run tests only once.
             if p.v in seen:
+                if trace: g.trace('ignoring tree',p.h)
                 p.moveToNodeAfterTree()
                 continue
             seen.add(p.v)
             if g.match_word(p.h,0,'@ignore'):
+                # 2011/10/31: support for run-marked-unit-test command.
                 if trace: g.trace('ignoring tree',p.h)
                 p.moveToNodeAfterTree()
+            elif marked and not p.isMarked():
+                if trace: g.trace('ignoring unmarked node',p.h)
+                p.moveToThreadNext()
             elif isTestNode(p): # @test or contains "if g.app.unitTesting" or "if g.app.inScript"
                 if trace: g.trace('adding',p.h)
                 test = makeTestCase(c,p)
@@ -702,9 +707,9 @@ def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
     if trace: g.trace('*** spawning test process',path)
     os.spawnve(os.P_NOWAIT,sys.executable,args,env)
 #@+node:ekr.20070627135407: ** runTestsExternally
-def runTestsExternally (c,all):
+def runTestsExternally (c,all,marked):
 
-    runner = runTestExternallyHelperClass(c,all)
+    runner = runTestExternallyHelperClass(c,all,marked)
     runner.runTests()
 #@+node:ekr.20070627140344: ** class runTestExternallyHelperClass
 class runTestExternallyHelperClass:
@@ -713,10 +718,11 @@ class runTestExternallyHelperClass:
 
     #@+others
     #@+node:ekr.20070627140344.1: *3*  ctor: runTestHelperClass
-    def __init__(self,c,all):
+    def __init__(self,c,all,marked):
 
         self.c = c
         self.all = all
+        self.marked = marked
 
         self.copyRoot = None # The root of copied tree.
         self.fileName = 'dynamicUnitTest.leo'
@@ -741,7 +747,7 @@ class runTestExternallyHelperClass:
         - all children of any @mark-for-unit-tests node anywhere in the outline.
         - all @test and @suite nodes in p's outline.'''
 
-        trace = False ; verbose = False
+        trace = True ; verbose = False
         c = self.c ; markTag = '@mark-for-unit-tests'
         self.copyRoot = c2.rootPosition()
         self.copyRoot.initHeadString('All unit tests')
@@ -784,6 +790,9 @@ class runTestExternallyHelperClass:
                 elif p.v in self.seen:
                     if trace: g.trace('seen',p.h)
                     p.moveToNodeAfterTree()
+                elif self.marked and not p.isMarked():
+                    if trace: g.trace('ignoring unmarked node',p.h)
+                    p.moveToThreadNext()
                 elif lookForMark and p.h.startswith(markTag):
                     if trace: g.trace('add mark tree',p.h)
                     self.addMarkTree(p)

@@ -3118,7 +3118,7 @@ class baseScannerClass (scanUtility):
                 print('%3s %7s %s' % (n,kind,repr(val)))
         s2 = ''.join([val for (kind,val,n) in aList])
         assert p.b == s2
-        # print('pass')
+
     #@+node:ekr.20070707072749: *3* run (baseScannerClass)
     def run (self,s,parent):
 

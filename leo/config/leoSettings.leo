@@ -57,8 +57,9 @@
 </v>
 </v>
 </v>
-<v t="ekr.20111026083456.16490"><vh>Local commands</vh></v>
+<v t="ekr.20111026083456.16490"><vh>Local commands</vh>
 <v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
+</v>
 </v>
 <v t="ekr.20041119035137"><vh>About this file</vh>
 <v t="ekr.20041122163623"><vh>Note about canonicalized names</vh></v>
@@ -195,6 +196,214 @@
 <v t="ekr.20080703111151.12"><vh>@font forth keyword3_font</vh></v>
 <v t="ekr.20080703111151.14"><vh>@font forth keyword4_font</vh></v>
 <v t="ekr.20080703111151.15"><vh>@font forth keyword5_font</vh></v>
+</v>
+</v>
+<v t="ekr.20111022084527.16562"><vh>@ignore Solarized colorizing settings</vh>
+<v t="ekr.20111022084527.16764"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+<v t="ekr.20111022084527.16747"><vh>Body pane colors</vh>
+<v t="ekr.20111022084527.16748"><vh>@@@color body_text_background_color = None</vh></v>
+<v t="ekr.20111022084527.16749"><vh>@@@color body_text_foreground_color = None</vh></v>
+<v t="ekr.20111022084527.16750"><vh>@@@color body_text_selection_background_color = None</vh></v>
+<v t="ekr.20111022084527.16751"><vh>@@@color body_text_selection_foreground_color = red</vh></v>
+<v t="ekr.20111022084527.16752"><vh>@@@color command_mode_bg_color = None</vh></v>
+<v t="ekr.20111022084527.16753"><vh>@color body_cursor_background_color = None</vh></v>
+<v t="ekr.20111022084527.16754"><vh>@color body_cursor_foreground_color = None</vh></v>
+<v t="ekr.20111022084527.16755"><vh>@color body_insertion_cursor_color = None</vh></v>
+<v t="ekr.20111022084527.16756"><vh>@color command_mode_bg_color = #fdf6e3</vh></v>
+<v t="ekr.20111022084527.16757"><vh>@color command_mode_fg_color = #657b83</vh></v>
+<v t="ekr.20111022084527.16758"><vh>@color insert_mode_bg_color = #fdf6e3</vh></v>
+<v t="ekr.20111022084527.16759"><vh>@color insert_mode_fg_color = #657b83</vh></v>
+<v t="ekr.20111022084527.16760"><vh>@color overwrite_mode_bg_color = #fdf6e3</vh></v>
+<v t="ekr.20111022084527.16761"><vh>@color overwrite_mode_fg_color = #657b83</vh></v>
+<v t="ekr.20111022084527.16762"><vh>@color unselected_body_bg_color = #002b36</vh></v>
+<v t="ekr.20111022084527.16763"><vh>@color unselected_body_fg_color = #839496</vh></v>
+</v>
+<v t="ekr.20111022084527.16563"><vh>Solarized colors (Reference)</vh>
+<v t="ekr.20111022084527.16564"><vh>Syntax coloring</vh>
+<v t="ekr.20111022084527.16565"><vh>leoQtColorizer</vh>
+<v t="ekr.20111022084527.16566"><vh> ctor (leoQtColorizer)</vh></v>
+<v t="ekr.20111022084527.16567"><vh>colorize (leoQtColorizer)</vh></v>
+<v t="ekr.20111022084527.16568"><vh>enable/disable</vh></v>
+<v t="ekr.20111022084527.16569"><vh>minor entry points</vh></v>
+<v t="ekr.20111022084527.16570"><vh>scanColorDirectives (leoQtColorizer) &amp; helper</vh>
+<v t="ekr.20111022084527.16571"><vh>&lt;&lt; Test for @language &gt;&gt;</vh></v>
+<v t="ekr.20111022084527.16572"><vh>&lt;&lt; Test for @root, @root-doc or @root-code &gt;&gt;</vh></v>
+<v t="ekr.20111022084527.16573"><vh>findLanguageDirectives</vh></v>
+<v t="ekr.20111022084527.16574"><vh>isValidLanguage</vh></v>
+</v>
+<v t="ekr.20111022084527.16575"><vh>setHighlighter</vh></v>
+<v t="ekr.20111022084527.16576"><vh>updateSyntaxColorer</vh></v>
+<v t="ekr.20111022084527.16577"><vh>useSyntaxColoring &amp; helper</vh>
+<v t="ekr.20111022084527.16578"><vh>findColorDirectives</vh></v>
+</v>
+</v>
+<v t="ekr.20111022084527.16579"><vh>leoQtSyntaxHighlighter</vh>
+<v t="ekr.20111022084527.16580"><vh>ctor (leoQtSyntaxHighlighter)</vh></v>
+<v t="ekr.20111022084527.16581"><vh>highlightBlock</vh></v>
+<v t="ekr.20111022084527.16582"><vh>rehighlight</vh></v>
+</v>
+<v t="ekr.20111022084527.16656"><vh>class jeditColorizer</vh>
+<v t="ekr.20111022084527.16657"><vh>&lt;&lt; about the line-oriented jEdit colorizer &gt;&gt;</vh></v>
+<v t="ekr.20111022084527.16729"><vh> Birth &amp; init</vh>
+<v t="ekr.20111022084527.16730"><vh>__init__ (jeditColorizer)</vh>
+<v t="ekr.20111022084527.16731"><vh>defineLeoKeywordsDict</vh></v>
+<v t="ekr.20111022084527.16732"><vh>defineDefaultColorsDict</vh></v>
+<v t="ekr.20111022084527.16733"><vh>defineDefaultFontDict</vh></v>
+</v>
+<v t="ekr.20111022084527.16734"><vh>addImportedRules</vh></v>
+<v t="ekr.20111022084527.16735"><vh>addLeoRules</vh></v>
+<v t="ekr.20111022084527.16736"><vh>configure_tags</vh></v>
+<v t="ekr.20111022084527.16737"><vh>configure_variable_tags</vh></v>
+<v t="ekr.20111022084527.16738"><vh>init (jeditColorizer)</vh></v>
+<v t="ekr.20111022084527.16739"><vh>init_mode &amp; helpers</vh>
+<v t="ekr.20111022084527.16740"><vh>nameToRulesetName</vh></v>
+<v t="ekr.20111022084527.16741"><vh>setKeywords</vh></v>
+<v t="ekr.20111022084527.16742"><vh>setModeAttributes</vh></v>
+<v t="ekr.20111022084527.16743"><vh>initModeFromBunch</vh></v>
+<v t="ekr.20111022084527.16744"><vh>updateDelimsTables</vh></v>
+</v>
+<v t="ekr.20111022084527.16745"><vh>munge</vh></v>
+<v t="ekr.20111022084527.16746"><vh>setFontFromConfig</vh></v>
+</v>
+<v t="ekr.20111022084527.16676"><vh> Pattern matchers</vh>
+<v t="ekr.20111022084527.16677"><vh> About the pattern matchers</vh></v>
+<v t="ekr.20111022084527.16678"><vh>dump</vh></v>
+<v t="ekr.20111022084527.16679"><vh>Leo rule functions</vh>
+<v t="ekr.20111022084527.16680"><vh>match_at_color</vh></v>
+<v t="ekr.20111022084527.16681"><vh>match_at_language</vh></v>
+<v t="ekr.20111022084527.16682"><vh>match_at_nocolor &amp; restarter</vh>
+<v t="ekr.20111022084527.16683"><vh>restartNoColor</vh></v>
+</v>
+<v t="ekr.20111022084527.16684"><vh>match_at_killcolor &amp; restarter</vh>
+<v t="ekr.20111022084527.16685"><vh>restartKillColor</vh></v>
+</v>
+<v t="ekr.20111022084527.16686"><vh>match_at_nocolor_node &amp; restarter</vh>
+<v t="ekr.20111022084527.16687"><vh>restartNoColorNode</vh></v>
+</v>
+<v t="ekr.20111022084527.16688"><vh>match_blanks</vh></v>
+<v t="ekr.20111022084527.16689"><vh>match_doc_part &amp; restarter</vh>
+<v t="ekr.20111022084527.16690"><vh>restartDocPart</vh></v>
+</v>
+<v t="ekr.20111022084527.16691"><vh>match_leo_keywords</vh></v>
+<v t="ekr.20111022084527.16692"><vh>match_section_ref</vh>
+<v t="ekr.20111022084527.16693"><vh>&lt;&lt; set the hyperlink &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20111022084527.16694"><vh>match_tabs</vh></v>
+<v t="ekr.20111022084527.16695"><vh>match_url_any/f/h  (new)</vh></v>
+</v>
+<v t="ekr.20111022084527.16696"><vh>match_compiled_regexp (new)</vh>
+<v t="ekr.20111022084527.16697"><vh>match_compiled_regexp_helper</vh></v>
+</v>
+<v t="ekr.20111022084527.16698"><vh>match_eol_span</vh></v>
+<v t="ekr.20111022084527.16699"><vh>match_eol_span_regexp</vh></v>
+<v t="ekr.20111022084527.16700"><vh>match_everything</vh></v>
+<v t="ekr.20111022084527.16701"><vh>match_keywords</vh></v>
+<v t="ekr.20111022084527.16702"><vh>match_line</vh></v>
+<v t="ekr.20111022084527.16703"><vh>match_mark_following &amp; getNextToken</vh>
+<v t="ekr.20111022084527.16704"><vh>getNextToken</vh></v>
+</v>
+<v t="ekr.20111022084527.16705"><vh>match_mark_previous</vh></v>
+<v t="ekr.20111022084527.16706"><vh>match_regexp_helper</vh></v>
+<v t="ekr.20111022084527.16707"><vh>match_seq</vh></v>
+<v t="ekr.20111022084527.16708"><vh>match_seq_regexp</vh></v>
+<v t="ekr.20111022084527.16709"><vh>match_span &amp; helper &amp; restarter</vh>
+<v t="ekr.20111022084527.16710"><vh>match_span_helper</vh></v>
+<v t="ekr.20111022084527.16711"><vh>restart_match_span</vh></v>
+</v>
+<v t="ekr.20111022084527.16712"><vh>match_span_regexp</vh></v>
+<v t="ekr.20111022084527.16713"><vh>match_word_and_regexp</vh></v>
+<v t="ekr.20111022084527.16714"><vh>skip_line</vh></v>
+<v t="ekr.20111022084527.16715"><vh>trace_match</vh></v>
+</v>
+<v t="ekr.20111022084527.16716"><vh> State methods</vh>
+<v t="ekr.20111022084527.16717"><vh>clearState</vh></v>
+<v t="ekr.20111022084527.16718"><vh>computeState</vh></v>
+<v t="ekr.20111022084527.16719"><vh>currentState and prevState</vh></v>
+<v t="ekr.20111022084527.16720"><vh>setRestart</vh></v>
+<v t="ekr.20111022084527.16721"><vh>setState</vh></v>
+<v t="ekr.20111022084527.16722"><vh>showState &amp; showCurrentState</vh></v>
+<v t="ekr.20111022084527.16723"><vh>stateNameToStateNumber</vh></v>
+</v>
+<v t="ekr.20111022084527.16724"><vh>colorRangeWithTag</vh></v>
+<v t="ekr.20111022084527.16725"><vh>mainLoop &amp; restart</vh>
+<v t="ekr.20111022084527.16726"><vh>restart</vh></v>
+</v>
+<v t="ekr.20111022084527.16727"><vh>recolor</vh></v>
+<v t="ekr.20111022084527.16728"><vh>setTag</vh></v>
+</v>
+</v>
+<v t="ekr.20111022084527.16656"></v>
+<v t="ekr.20111022084527.16729"></v>
+</v>
+<v t="ekr.20111022084527.16828"><vh>Syntax colors &amp; options</vh>
+<v t="ekr.20111022084527.16829"><vh>Options</vh>
+<v t="ekr.20111022084527.16830"><vh>@bool color_cweb_comments_with_latex = True</vh></v>
+<v t="ekr.20111022084527.16831"><vh>@bool color_cweb_doc_parts_with_latex = True</vh></v>
+<v t="ekr.20111022084527.16832"><vh>@bool color_directives_in_plain_text = True</vh></v>
+<v t="ekr.20111022084527.16833"><vh>@bool show-invisibles-by-default = False</vh></v>
+<v t="ekr.20111022084527.16834"><vh>@bool underline_undefined_section_names = True</vh></v>
+<v t="ekr.20111022084527.16835"><vh>@bool use_hyperlinks = False</vh></v>
+<v t="ekr.20111022084527.16836"><vh>@bool use_syntax_coloring = True</vh></v>
+<v t="ekr.20111022084527.16837"><vh>@int qt_max_colorized_chars = 0</vh></v>
+</v>
+<v t="ekr.20111022084527.16838"><vh>Common colors (At least some *are* used by new colorizer)</vh>
+<v t="ekr.20111022084527.16839"><vh>@@@color comment_color = None</vh></v>
+<v t="ekr.20111022084527.16841"><vh>@@@color directive_color = None</vh></v>
+<v t="ekr.20111022084527.16844"><vh>@@@color keyword_color = None</vh></v>
+<v t="ekr.20111022084527.16851"><vh>@@@color string_color = None</vh></v>
+<v t="ekr.20111022084527.16853"><vh>@@@font php keyword fonts (old colorizer)</vh></v>
+<v t="ekr.20111022084527.16840"><vh>@color cweb_section_name_color = #dc322f</vh></v>
+<v t="ekr.20111022084527.16842"><vh>@color doc_part_color = #d33682</vh></v>
+<v t="ekr.20111022084527.16843"><vh>@color forth_bracket_range_color = orange</vh></v>
+<v t="ekr.20111022084527.16845"><vh>@color latex_background_color = None</vh></v>
+<v t="ekr.20111022084527.16846"><vh>@color leo_keyword_color = #6c71c4</vh></v>
+<v t="ekr.20111022084527.16847"><vh>@color section_name_brackets_color = #268bd2</vh></v>
+<v t="ekr.20111022084527.16848"><vh>@color section_name_color = red</vh></v>
+<v t="ekr.20111022084527.16849"><vh>@color show_invisibles_space_background_color = Gray90</vh></v>
+<v t="ekr.20111022084527.16850"><vh>@color show_invisibles_tab_foreground_color = Gray80</vh></v>
+<v t="ekr.20111022084527.16852"><vh>@color undefined_section_name_color = red</vh></v>
+</v>
+<v t="ekr.20111022084527.16854"><vh>Default colors, used if no language-specific color are in effect</vh>
+<v t="ekr.20111022084527.16855"><vh>@color blank_color = grey</vh></v>
+<v t="ekr.20111022084527.16856"><vh>@color tab_color = black</vh></v>
+<v t="ekr.20111022084527.16857"><vh>@color label_color = red</vh></v>
+<v t="ekr.20111022084527.16858"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="ekr.20111022084527.16859"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="ekr.20111022084527.16860"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="ekr.20111022084527.16861"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="ekr.20111022084527.16862"><vh>@color literal1_color = #859900</vh></v>
+<v t="ekr.20111022084527.16863"><vh>@color literal2_color = #859900</vh></v>
+<v t="ekr.20111022084527.16864"><vh>@color literal3_color = #859900</vh></v>
+<v t="ekr.20111022084527.16865"><vh>@color literal4_color = #859900</vh></v>
+<v t="ekr.20111022084527.16866"><vh>@color markup_color = blue</vh></v>
+<v t="ekr.20111022084527.16867"><vh>@color comment1_color = #d33682</vh></v>
+<v t="ekr.20111022084527.16868"><vh>@color comment2_color = #d33682</vh></v>
+<v t="ekr.20111022084527.16869"><vh>@color comment3_color = #d33682</vh></v>
+<v t="ekr.20111022084527.16870"><vh>@color comment4_color = #d33682</vh></v>
+<v t="ekr.20111022084527.16871"><vh>@color operator_color = None</vh></v>
+</v>
+<v t="ekr.20111022084527.16872"><vh>Language-specific colors</vh>
+<v t="ekr.20111022084527.16873"><vh>php</vh>
+<v t="ekr.20111022084527.16874"><vh>@color php_operator_color = DodgerBlue1</vh></v>
+<v t="ekr.20111022084527.16875"><vh>@font php keyword fonts</vh></v>
+</v>
+<v t="ekr.20111022084527.16876"><vh>Forth fonts, colors &amp; settings</vh>
+<v t="ekr.20111022084527.16877"><vh>@color forth_keyword3_color = black</vh></v>
+<v t="ekr.20111022084527.16878"><vh>@color forth_keyword4_color = black</vh></v>
+<v t="ekr.20111022084527.16879"><vh>@color forth_keyword5_color = black</vh></v>
+<v t="ekr.20111022084527.16880"><vh>@data forth-bold-italic-words</vh></v>
+<v t="ekr.20111022084527.16881"><vh>@data forth-bold-words</vh></v>
+<v t="ekr.20111022084527.16882"><vh>@data forth-defwords</vh></v>
+<v t="ekr.20111022084527.16883"><vh>@data forth-delimiter-pairs</vh></v>
+<v t="ekr.20111022084527.16884"><vh>@data forth-italic-words</vh></v>
+<v t="ekr.20111022084527.16885"><vh>@data forth-string-word-pairs</vh></v>
+<v t="ekr.20111022084527.16886"><vh>@data forth-words</vh></v>
+<v t="ekr.20111022084527.16887"><vh>@font forth keyword2_font</vh></v>
+<v t="ekr.20111022084527.16888"><vh>@font forth keyword3_font</vh></v>
+<v t="ekr.20111022084527.16889"><vh>@font forth keyword4_font</vh></v>
+<v t="ekr.20111022084527.16890"><vh>@font forth keyword5_font</vh></v>
+</v>
+</v>
 </v>
 </v>
 </v>
@@ -488,271 +697,7 @@
 <v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
 </v>
 </v>
-<v t="ekr.20111022084527.16562"><vh>@ignore Solarized colorizing settings</vh>
-<v t="ekr.20111022084527.16764"><vh>@data qt-gui-plugin-style-sheet</vh></v>
-<v t="ekr.20111022084527.16747"><vh>Body pane colors</vh>
-<v t="ekr.20111022084527.16748"><vh>@@@color body_text_background_color = None</vh></v>
-<v t="ekr.20111022084527.16749"><vh>@@@color body_text_foreground_color = None</vh></v>
-<v t="ekr.20111022084527.16750"><vh>@@@color body_text_selection_background_color = None</vh></v>
-<v t="ekr.20111022084527.16751"><vh>@@@color body_text_selection_foreground_color = red</vh></v>
-<v t="ekr.20111022084527.16752"><vh>@@@color command_mode_bg_color = None</vh></v>
-<v t="ekr.20111022084527.16753"><vh>@color body_cursor_background_color = None</vh></v>
-<v t="ekr.20111022084527.16754"><vh>@color body_cursor_foreground_color = None</vh></v>
-<v t="ekr.20111022084527.16755"><vh>@color body_insertion_cursor_color = None</vh></v>
-<v t="ekr.20111022084527.16756"><vh>@color command_mode_bg_color = #fdf6e3</vh></v>
-<v t="ekr.20111022084527.16757"><vh>@color command_mode_fg_color = #657b83</vh></v>
-<v t="ekr.20111022084527.16758"><vh>@color insert_mode_bg_color = #fdf6e3</vh></v>
-<v t="ekr.20111022084527.16759"><vh>@color insert_mode_fg_color = #657b83</vh></v>
-<v t="ekr.20111022084527.16760"><vh>@color overwrite_mode_bg_color = #fdf6e3</vh></v>
-<v t="ekr.20111022084527.16761"><vh>@color overwrite_mode_fg_color = #657b83</vh></v>
-<v t="ekr.20111022084527.16762"><vh>@color unselected_body_bg_color = #002b36</vh></v>
-<v t="ekr.20111022084527.16763"><vh>@color unselected_body_fg_color = #839496</vh></v>
-</v>
-<v t="ekr.20111022084527.16563"><vh>Solarized colors (Reference)</vh>
-<v t="ekr.20111022084527.16564"><vh>Syntax coloring</vh>
-<v t="ekr.20111022084527.16565"><vh>leoQtColorizer</vh>
-<v t="ekr.20111022084527.16566"><vh> ctor (leoQtColorizer)</vh></v>
-<v t="ekr.20111022084527.16567"><vh>colorize (leoQtColorizer)</vh></v>
-<v t="ekr.20111022084527.16568"><vh>enable/disable</vh></v>
-<v t="ekr.20111022084527.16569"><vh>minor entry points</vh></v>
-<v t="ekr.20111022084527.16570"><vh>scanColorDirectives (leoQtColorizer) &amp; helper</vh>
-<v t="ekr.20111022084527.16571"><vh>&lt;&lt; Test for @language &gt;&gt;</vh></v>
-<v t="ekr.20111022084527.16572"><vh>&lt;&lt; Test for @root, @root-doc or @root-code &gt;&gt;</vh></v>
-<v t="ekr.20111022084527.16573"><vh>findLanguageDirectives</vh></v>
-<v t="ekr.20111022084527.16574"><vh>isValidLanguage</vh></v>
-</v>
-<v t="ekr.20111022084527.16575"><vh>setHighlighter</vh></v>
-<v t="ekr.20111022084527.16576"><vh>updateSyntaxColorer</vh></v>
-<v t="ekr.20111022084527.16577"><vh>useSyntaxColoring &amp; helper</vh>
-<v t="ekr.20111022084527.16578"><vh>findColorDirectives</vh></v>
-</v>
-</v>
-<v t="ekr.20111022084527.16579"><vh>leoQtSyntaxHighlighter</vh>
-<v t="ekr.20111022084527.16580"><vh>ctor (leoQtSyntaxHighlighter)</vh></v>
-<v t="ekr.20111022084527.16581"><vh>highlightBlock</vh></v>
-<v t="ekr.20111022084527.16582"><vh>rehighlight</vh></v>
-</v>
-<v t="ekr.20111022084527.16656"><vh>class jeditColorizer</vh>
-<v t="ekr.20111022084527.16657"><vh>&lt;&lt; about the line-oriented jEdit colorizer &gt;&gt;</vh></v>
-<v t="ekr.20111022084527.16729"><vh> Birth &amp; init</vh>
-<v t="ekr.20111022084527.16730"><vh>__init__ (jeditColorizer)</vh>
-<v t="ekr.20111022084527.16731"><vh>defineLeoKeywordsDict</vh></v>
-<v t="ekr.20111022084527.16732"><vh>defineDefaultColorsDict</vh></v>
-<v t="ekr.20111022084527.16733"><vh>defineDefaultFontDict</vh></v>
-</v>
-<v t="ekr.20111022084527.16734"><vh>addImportedRules</vh></v>
-<v t="ekr.20111022084527.16735"><vh>addLeoRules</vh></v>
-<v t="ekr.20111022084527.16736"><vh>configure_tags</vh></v>
-<v t="ekr.20111022084527.16737"><vh>configure_variable_tags</vh></v>
-<v t="ekr.20111022084527.16738"><vh>init (jeditColorizer)</vh></v>
-<v t="ekr.20111022084527.16739"><vh>init_mode &amp; helpers</vh>
-<v t="ekr.20111022084527.16740"><vh>nameToRulesetName</vh></v>
-<v t="ekr.20111022084527.16741"><vh>setKeywords</vh></v>
-<v t="ekr.20111022084527.16742"><vh>setModeAttributes</vh></v>
-<v t="ekr.20111022084527.16743"><vh>initModeFromBunch</vh></v>
-<v t="ekr.20111022084527.16744"><vh>updateDelimsTables</vh></v>
-</v>
-<v t="ekr.20111022084527.16745"><vh>munge</vh></v>
-<v t="ekr.20111022084527.16746"><vh>setFontFromConfig</vh></v>
-</v>
-<v t="ekr.20111022084527.16676"><vh> Pattern matchers</vh>
-<v t="ekr.20111022084527.16677"><vh> About the pattern matchers</vh></v>
-<v t="ekr.20111022084527.16678"><vh>dump</vh></v>
-<v t="ekr.20111022084527.16679"><vh>Leo rule functions</vh>
-<v t="ekr.20111022084527.16680"><vh>match_at_color</vh></v>
-<v t="ekr.20111022084527.16681"><vh>match_at_language</vh></v>
-<v t="ekr.20111022084527.16682"><vh>match_at_nocolor &amp; restarter</vh>
-<v t="ekr.20111022084527.16683"><vh>restartNoColor</vh></v>
-</v>
-<v t="ekr.20111022084527.16684"><vh>match_at_killcolor &amp; restarter</vh>
-<v t="ekr.20111022084527.16685"><vh>restartKillColor</vh></v>
-</v>
-<v t="ekr.20111022084527.16686"><vh>match_at_nocolor_node &amp; restarter</vh>
-<v t="ekr.20111022084527.16687"><vh>restartNoColorNode</vh></v>
-</v>
-<v t="ekr.20111022084527.16688"><vh>match_blanks</vh></v>
-<v t="ekr.20111022084527.16689"><vh>match_doc_part &amp; restarter</vh>
-<v t="ekr.20111022084527.16690"><vh>restartDocPart</vh></v>
-</v>
-<v t="ekr.20111022084527.16691"><vh>match_leo_keywords</vh></v>
-<v t="ekr.20111022084527.16692"><vh>match_section_ref</vh>
-<v t="ekr.20111022084527.16693"><vh>&lt;&lt; set the hyperlink &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20111022084527.16694"><vh>match_tabs</vh></v>
-<v t="ekr.20111022084527.16695"><vh>match_url_any/f/h  (new)</vh></v>
-</v>
-<v t="ekr.20111022084527.16696"><vh>match_compiled_regexp (new)</vh>
-<v t="ekr.20111022084527.16697"><vh>match_compiled_regexp_helper</vh></v>
-</v>
-<v t="ekr.20111022084527.16698"><vh>match_eol_span</vh></v>
-<v t="ekr.20111022084527.16699"><vh>match_eol_span_regexp</vh></v>
-<v t="ekr.20111022084527.16700"><vh>match_everything</vh></v>
-<v t="ekr.20111022084527.16701"><vh>match_keywords</vh></v>
-<v t="ekr.20111022084527.16702"><vh>match_line</vh></v>
-<v t="ekr.20111022084527.16703"><vh>match_mark_following &amp; getNextToken</vh>
-<v t="ekr.20111022084527.16704"><vh>getNextToken</vh></v>
-</v>
-<v t="ekr.20111022084527.16705"><vh>match_mark_previous</vh></v>
-<v t="ekr.20111022084527.16706"><vh>match_regexp_helper</vh></v>
-<v t="ekr.20111022084527.16707"><vh>match_seq</vh></v>
-<v t="ekr.20111022084527.16708"><vh>match_seq_regexp</vh></v>
-<v t="ekr.20111022084527.16709"><vh>match_span &amp; helper &amp; restarter</vh>
-<v t="ekr.20111022084527.16710"><vh>match_span_helper</vh></v>
-<v t="ekr.20111022084527.16711"><vh>restart_match_span</vh></v>
-</v>
-<v t="ekr.20111022084527.16712"><vh>match_span_regexp</vh></v>
-<v t="ekr.20111022084527.16713"><vh>match_word_and_regexp</vh></v>
-<v t="ekr.20111022084527.16714"><vh>skip_line</vh></v>
-<v t="ekr.20111022084527.16715"><vh>trace_match</vh></v>
-</v>
-<v t="ekr.20111022084527.16716"><vh> State methods</vh>
-<v t="ekr.20111022084527.16717"><vh>clearState</vh></v>
-<v t="ekr.20111022084527.16718"><vh>computeState</vh></v>
-<v t="ekr.20111022084527.16719"><vh>currentState and prevState</vh></v>
-<v t="ekr.20111022084527.16720"><vh>setRestart</vh></v>
-<v t="ekr.20111022084527.16721"><vh>setState</vh></v>
-<v t="ekr.20111022084527.16722"><vh>showState &amp; showCurrentState</vh></v>
-<v t="ekr.20111022084527.16723"><vh>stateNameToStateNumber</vh></v>
-</v>
-<v t="ekr.20111022084527.16724"><vh>colorRangeWithTag</vh></v>
-<v t="ekr.20111022084527.16725"><vh>mainLoop &amp; restart</vh>
-<v t="ekr.20111022084527.16726"><vh>restart</vh></v>
-</v>
-<v t="ekr.20111022084527.16727"><vh>recolor</vh></v>
-<v t="ekr.20111022084527.16728"><vh>setTag</vh></v>
-</v>
-</v>
-<v t="ekr.20111022084527.16656"></v>
-<v t="ekr.20111022084527.16729"></v>
-</v>
-<v t="ekr.20111022084527.16828"><vh>Syntax colors &amp; options</vh>
-<v t="ekr.20111022084527.16829"><vh>Options</vh>
-<v t="ekr.20111022084527.16830"><vh>@bool color_cweb_comments_with_latex = True</vh></v>
-<v t="ekr.20111022084527.16831"><vh>@bool color_cweb_doc_parts_with_latex = True</vh></v>
-<v t="ekr.20111022084527.16832"><vh>@bool color_directives_in_plain_text = True</vh></v>
-<v t="ekr.20111022084527.16833"><vh>@bool show-invisibles-by-default = False</vh></v>
-<v t="ekr.20111022084527.16834"><vh>@bool underline_undefined_section_names = True</vh></v>
-<v t="ekr.20111022084527.16835"><vh>@bool use_hyperlinks = False</vh></v>
-<v t="ekr.20111022084527.16836"><vh>@bool use_syntax_coloring = True</vh></v>
-<v t="ekr.20111022084527.16837"><vh>@int qt_max_colorized_chars = 0</vh></v>
-</v>
-<v t="ekr.20111022084527.16838"><vh>Common colors (At least some *are* used by new colorizer)</vh>
-<v t="ekr.20111022084527.16839"><vh>@@@color comment_color = None</vh></v>
-<v t="ekr.20111022084527.16841"><vh>@@@color directive_color = None</vh></v>
-<v t="ekr.20111022084527.16844"><vh>@@@color keyword_color = None</vh></v>
-<v t="ekr.20111022084527.16851"><vh>@@@color string_color = None</vh></v>
-<v t="ekr.20111022084527.16853"><vh>@@@font php keyword fonts (old colorizer)</vh></v>
-<v t="ekr.20111022084527.16840"><vh>@color cweb_section_name_color = #dc322f</vh></v>
-<v t="ekr.20111022084527.16842"><vh>@color doc_part_color = #d33682</vh></v>
-<v t="ekr.20111022084527.16843"><vh>@color forth_bracket_range_color = orange</vh></v>
-<v t="ekr.20111022084527.16845"><vh>@color latex_background_color = None</vh></v>
-<v t="ekr.20111022084527.16846"><vh>@color leo_keyword_color = #6c71c4</vh></v>
-<v t="ekr.20111022084527.16847"><vh>@color section_name_brackets_color = #268bd2</vh></v>
-<v t="ekr.20111022084527.16848"><vh>@color section_name_color = red</vh></v>
-<v t="ekr.20111022084527.16849"><vh>@color show_invisibles_space_background_color = Gray90</vh></v>
-<v t="ekr.20111022084527.16850"><vh>@color show_invisibles_tab_foreground_color = Gray80</vh></v>
-<v t="ekr.20111022084527.16852"><vh>@color undefined_section_name_color = red</vh></v>
-</v>
-<v t="ekr.20111022084527.16854"><vh>Default colors, used if no language-specific color are in effect</vh>
-<v t="ekr.20111022084527.16855"><vh>@color blank_color = grey</vh></v>
-<v t="ekr.20111022084527.16856"><vh>@color tab_color = black</vh></v>
-<v t="ekr.20111022084527.16857"><vh>@color label_color = red</vh></v>
-<v t="ekr.20111022084527.16858"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="ekr.20111022084527.16859"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="ekr.20111022084527.16860"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="ekr.20111022084527.16861"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="ekr.20111022084527.16862"><vh>@color literal1_color = #859900</vh></v>
-<v t="ekr.20111022084527.16863"><vh>@color literal2_color = #859900</vh></v>
-<v t="ekr.20111022084527.16864"><vh>@color literal3_color = #859900</vh></v>
-<v t="ekr.20111022084527.16865"><vh>@color literal4_color = #859900</vh></v>
-<v t="ekr.20111022084527.16866"><vh>@color markup_color = blue</vh></v>
-<v t="ekr.20111022084527.16867"><vh>@color comment1_color = #d33682</vh></v>
-<v t="ekr.20111022084527.16868"><vh>@color comment2_color = #d33682</vh></v>
-<v t="ekr.20111022084527.16869"><vh>@color comment3_color = #d33682</vh></v>
-<v t="ekr.20111022084527.16870"><vh>@color comment4_color = #d33682</vh></v>
-<v t="ekr.20111022084527.16871"><vh>@color operator_color = None</vh></v>
-</v>
-<v t="ekr.20111022084527.16872"><vh>Language-specific colors</vh>
-<v t="ekr.20111022084527.16873"><vh>php</vh>
-<v t="ekr.20111022084527.16874"><vh>@color php_operator_color = DodgerBlue1</vh></v>
-<v t="ekr.20111022084527.16875"><vh>@font php keyword fonts</vh></v>
-</v>
-<v t="ekr.20111022084527.16876"><vh>Forth fonts, colors &amp; settings</vh>
-<v t="ekr.20111022084527.16877"><vh>@color forth_keyword3_color = black</vh></v>
-<v t="ekr.20111022084527.16878"><vh>@color forth_keyword4_color = black</vh></v>
-<v t="ekr.20111022084527.16879"><vh>@color forth_keyword5_color = black</vh></v>
-<v t="ekr.20111022084527.16880"><vh>@data forth-bold-italic-words</vh></v>
-<v t="ekr.20111022084527.16881"><vh>@data forth-bold-words</vh></v>
-<v t="ekr.20111022084527.16882"><vh>@data forth-defwords</vh></v>
-<v t="ekr.20111022084527.16883"><vh>@data forth-delimiter-pairs</vh></v>
-<v t="ekr.20111022084527.16884"><vh>@data forth-italic-words</vh></v>
-<v t="ekr.20111022084527.16885"><vh>@data forth-string-word-pairs</vh></v>
-<v t="ekr.20111022084527.16886"><vh>@data forth-words</vh></v>
-<v t="ekr.20111022084527.16887"><vh>@font forth keyword2_font</vh></v>
-<v t="ekr.20111022084527.16888"><vh>@font forth keyword3_font</vh></v>
-<v t="ekr.20111022084527.16889"><vh>@font forth keyword4_font</vh></v>
-<v t="ekr.20111022084527.16890"><vh>@font forth keyword5_font</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20080312075451.2"><vh>@commands</vh>
-<v t="ekr.20111016210000.15952"><vh>@ignore</vh>
-<v t="ekr.20111017085134.16213"><vh>@command clones-tab</vh>
-<v t="ekr.20111017085134.16214"><vh>class cloneNavigator</vh>
-<v t="ekr.20111017085134.16215"><vh>init</vh></v>
-<v t="ekr.20111017085134.16216"><vh>getAllClones</vh></v>
-<v t="ekr.20111017085134.16217"><vh>displayClones</vh>
-<v t="ekr.20111017085134.16218"><vh>&lt;&lt;Fill listbox with clone parent headlines&gt;&gt;</vh></v>
-<v t="ekr.20111017085134.16219"><vh>&lt;&lt;Goto selected position when listbox selection changes&gt;&gt;</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20111016210000.16011"><vh>@command redefine g.findReference</vh>
-<v t="ekr.20111016210000.16012"><vh>myFindReference</vh></v>
-</v>
-<v t="ekr.20111018162222.15853"><vh>Docstrings</vh>
-<v t="ekr.20111018162222.15855"><vh>@command print-cmd-docstrings</vh></v>
-</v>
-<v t="ekr.20111016210000.16001"><vh>Editing body text</vh>
-<v t="ekr.20111016210000.16002"><vh>@command align-to-col {modify as needed}</vh></v>
-<v t="ekr.20111016210000.16003"><vh>@command c-to-python-clean-docs</vh>
-<v t="ekr.20111016210000.16004"><vh>clean_doc</vh></v>
-</v>
-<v t="ekr.20111016210000.16005"><vh>@command clean-body</vh>
-<v t="ekr.20111016210000.16006"><vh>clean_head</vh></v>
-<v t="ekr.20111016210000.16007"><vh>clean_tail</vh></v>
-</v>
-<v t="ekr.20111016210000.16008"><vh>@command remove-newlines</vh></v>
-</v>
-<v t="ekr.20111016210000.15961"><vh>Importing files</vh>
-<v t="ekr.20111016210000.15962"><vh>@command create @auto nodes {path,types} @args C:\apps\pygments\pygments,.py,.c</vh>
-<v t="ekr.20111016210000.15963"><vh> importFiles (top-level)</vh></v>
-<v t="ekr.20111016210000.15964"><vh>createLastChildOf</vh></v>
-<v t="ekr.20111016210000.15965"><vh>disableAllNodes</vh></v>
-<v t="ekr.20111016210000.15966"><vh>importDir</vh></v>
-<v t="ekr.20111016210000.15967"><vh>loadAtAutoFiles</vh></v>
-<v t="ekr.20111016210000.15968"><vh>run</vh></v>
-</v>
-</v>
-<v t="ekr.20111016210000.15988"><vh>Node merging &amp; splitting</vh>
-<v t="ekr.20111016210000.15989"><vh>@command flatten script</vh></v>
-<v t="ekr.20111016210000.15990"><vh>@command join-node-above</vh></v>
-<v t="ekr.20111016210000.15991"><vh>@command join-node-below</vh></v>
-<v t="ekr.20111016210000.15992"><vh>@command promote-bodies</vh></v>
-<v t="ekr.20111018170513.15882"><vh>@command split-defs</vh>
-<v t="ekr.20111018170513.15883"><vh>make_node</vh></v>
-<v t="ekr.20111018170513.15884"><vh>remove_trailing_decorators</vh></v>
-<v t="ekr.20111018170513.15885"><vh>run</vh></v>
-</v>
-</v>
-<v t="ekr.20111017080453.16077"><vh>Testing</vh>
-<v t="ekr.20111017080453.16079"><vh>@command add-test</vh></v>
-</v>
-</v>
-</v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.70"></v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
@@ -810,7 +755,61 @@
 <v t="ekr.20070926082407"><vh>@buttons</vh></v>
 </v>
 <v t="ekr.20080312075451.1"><vh>Common @command nodes</vh>
-<v t="ekr.20080312075451.2"></v>
+<v t="ekr.20080312075451.2"><vh>@commands</vh>
+<v t="ekr.20111016210000.15952"><vh>@ignore</vh>
+<v t="ekr.20111017085134.16213"><vh>@command clones-tab</vh>
+<v t="ekr.20111017085134.16214"><vh>class cloneNavigator</vh>
+<v t="ekr.20111017085134.16215"><vh>init</vh></v>
+<v t="ekr.20111017085134.16216"><vh>getAllClones</vh></v>
+<v t="ekr.20111017085134.16217"><vh>displayClones</vh>
+<v t="ekr.20111017085134.16218"><vh>&lt;&lt;Fill listbox with clone parent headlines&gt;&gt;</vh></v>
+<v t="ekr.20111017085134.16219"><vh>&lt;&lt;Goto selected position when listbox selection changes&gt;&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20111016210000.16011"><vh>@command redefine g.findReference</vh>
+<v t="ekr.20111016210000.16012"><vh>myFindReference</vh></v>
+</v>
+<v t="ekr.20111018162222.15853"><vh>Docstrings</vh>
+<v t="ekr.20111018162222.15855"><vh>@command print-cmd-docstrings</vh></v>
+</v>
+<v t="ekr.20111016210000.16001"><vh>Editing body text</vh>
+<v t="ekr.20111016210000.16002"><vh>@command align-to-col {modify as needed}</vh></v>
+<v t="ekr.20111016210000.16003"><vh>@command c-to-python-clean-docs</vh>
+<v t="ekr.20111016210000.16004"><vh>clean_doc</vh></v>
+</v>
+<v t="ekr.20111016210000.16005"><vh>@command clean-body</vh>
+<v t="ekr.20111016210000.16006"><vh>clean_head</vh></v>
+<v t="ekr.20111016210000.16007"><vh>clean_tail</vh></v>
+</v>
+<v t="ekr.20111016210000.16008"><vh>@command remove-newlines</vh></v>
+</v>
+<v t="ekr.20111016210000.15961"><vh>Importing files</vh>
+<v t="ekr.20111016210000.15962"><vh>@command create @auto nodes {path,types} @args C:\apps\pygments\pygments,.py,.c</vh>
+<v t="ekr.20111016210000.15963"><vh> importFiles (top-level)</vh></v>
+<v t="ekr.20111016210000.15964"><vh>createLastChildOf</vh></v>
+<v t="ekr.20111016210000.15965"><vh>disableAllNodes</vh></v>
+<v t="ekr.20111016210000.15966"><vh>importDir</vh></v>
+<v t="ekr.20111016210000.15967"><vh>loadAtAutoFiles</vh></v>
+<v t="ekr.20111016210000.15968"><vh>run</vh></v>
+</v>
+</v>
+<v t="ekr.20111016210000.15988"><vh>Node merging &amp; splitting</vh>
+<v t="ekr.20111016210000.15989"><vh>@command flatten script</vh></v>
+<v t="ekr.20111016210000.15990"><vh>@command join-node-above</vh></v>
+<v t="ekr.20111016210000.15991"><vh>@command join-node-below</vh></v>
+<v t="ekr.20111016210000.15992"><vh>@command promote-bodies</vh></v>
+<v t="ekr.20111018170513.15882"><vh>@command split-defs</vh>
+<v t="ekr.20111018170513.15883"><vh>make_node</vh></v>
+<v t="ekr.20111018170513.15884"><vh>remove_trailing_decorators</vh></v>
+<v t="ekr.20111018170513.15885"><vh>run</vh></v>
+</v>
+</v>
+<v t="ekr.20111017080453.16077"><vh>Testing</vh>
+<v t="ekr.20111017080453.16079"><vh>@command add-test</vh></v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20041119034357.16"><vh>Compare panel</vh>
 <v t="ekr.20041119034357.17"><vh>files &amp; directories</vh>
@@ -1345,11 +1344,13 @@
 <v t="ekr.20070925144534.318"><vh>@menu Run Script/Tests...</vh>
 <v t="ekr.20070925144534.319"><vh>@item &amp;execute-script</vh></v>
 <v t="ekr.20110607054506.16837"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.320"><vh>@item &amp;run-unit-tests</vh></v>
-<v t="ekr.20110607054506.16836"><vh>@item run-all-unit-tests-locally</vh></v>
+<v t="ekr.20110607054506.16834"><vh>@item run-&amp;all-unit-tests-locally</vh></v>
+<v t="ekr.20110607054506.16836"><vh>@item run-&amp;selected-unit-tests-locally</vh></v>
+<v t="ekr.20110607054506.16835"><vh>@item run-&amp;unit-tests-locally</vh></v>
 <v t="ekr.20110607054506.16838"><vh>@item -</vh></v>
-<v t="ekr.20110607054506.16834"><vh>@item run-all-unit-tests</vh></v>
-<v t="ekr.20110607054506.16835"><vh>@item run-unit-tests-locally</vh></v>
+<v t="ekr.20111031083623.13745"><vh>@item run-&amp;all-unit-tests-externally</vh></v>
+<v t="ekr.20111031083623.13744"><vh>@item run-&amp;marked-unit-tests-externally</vh></v>
+<v t="ekr.20070925144534.320"><vh>@item run-&amp;selected-unit-tests-externally</vh></v>
 </v>
 <v t="ekr.20070925144534.321"><vh>@menu &amp;Scrolling...</vh>
 <v t="ekr.20070925144534.322"><vh>@item scroll-outline-down-&amp;line</vh></v>
@@ -3355,8 +3356,12 @@ reverse-region                      = None
 reverse-sort-lines                  = None
 reverse-sort-lines-ignoring-case    = None
 revert                              = None
-run-unit-tests                      = None
-run-unit-tests-locally              = None
+run-all-unit-tests-externally       = None
+run-all-unit-tests-locally          = None
+run-marked-unit-tests-externally    = None
+run-marked-unit-tests-locally       = None
+run-selected-unit-tests-externally  = None
+run-selected-unit-tests-locally     = None
 save-buffers-kill-leo               = None
 save-file                           = None
 save-file-as                        = None
@@ -4283,8 +4288,14 @@ execute-script              = Ctrl+B
 help-for-command            = F1
 open-spell-tab              = F7
 redo                        = Shift-Ctrl-Z
-run-unit-tests              = Alt-5
-run-unit-tests-locally      = Alt-4
+
+run-all-unit-tests-externally       = None
+run-all-unit-tests-locally          = None
+run-marked-unit-tests-externally    = None
+run-marked-unit-tests-locally       = None
+run-selected-unit-tests-externally  = None
+run-selected-unit-tests-locally     = Alt-4
+
 show-calltips               = parenleft
 show-calltips-force         = None # This command needs work before it is useful. Alt-parenleft
 sort-siblings               = Alt-A
@@ -12355,6 +12366,8 @@ tt
 u
 ul
 var</t>
+<t tx="ekr.20111031083623.13744"></t>
+<t tx="ekr.20111031083623.13745"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files

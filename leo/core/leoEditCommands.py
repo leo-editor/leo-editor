@@ -1172,15 +1172,19 @@ class debugCommandsClass (baseEditCommandsClass):
             'gc-trace-disable':         self.disableGcTrace,
             'gc-trace-enable':          self.enableGcTrace,
             
-            # Tk only.
-            # 'tk-free-tree-widgets':   self.freeTreeWidgets
-            # 'tk-print-stats':         self.printStats
+            # Unit tests run externally: deprecated.
+            'run-all-unit-tests-externally':        self.runAllUnitTestsExternally,
+                # was 'run-all-unit-tests.
+            'run-marked-unit-tests-externally':     self.runMarkedUnitTestsExternally,
+                # 2011/10/31: new.
+            'run-selected-unit-tests-externally':   self.runSelectedUnitTestsExternally,
+                # was 'run-unit-tests.
             
-            # Unit tests.
-            'run-all-unit-tests':           self.runAllUnitTests, # The new way...
-            'run-all-unit-tests-locally':   self.runAllUnitTestsLocally, # The old way...
-            'run-unit-tests':               self.runUnitTests,
-            'run-unit-tests-locally':       self.runUnitTestsLocally,
+            # Unit tests run locally.
+            'run-all-unit-tests-locally':       self.runAllUnitTestsLocally,
+            'run-marked-unit-tests-locally':    self.runMarkedUnitTestsLocally,
+                # 2011/10/31: new.
+            'run-selected-unit-tests-locally':  self.runSelectedUnitTestsLocally,
         }
     #@+node:ekr.20060205050659: *3* collectGarbage
     def collectGarbage (self,event=None):
@@ -1347,24 +1351,38 @@ class debugCommandsClass (baseEditCommandsClass):
         Tests are run in the outline's process, so tests *can* change the outline.'''
         c = self.c
         leoTest.doTests(c,all=True)
+        
+    def runMarkedUnitTestsLocally (self,event=None):
+        '''Run marked unit tests in the outline.
+        Tests are run in the outline's process, so tests *can* change the outline.'''
+        c = self.c
+        leoTest.doTests(c,all=True,marked=True)
 
-    def runUnitTestsLocally (self,event=None):
+    def runSelectedUnitTestsLocally (self,event=None):
         '''Run all unit tests contained in the presently selected outline.
         Tests are run in the outline's process, so tests *can* change the outline.'''
         c = self.c
-        leoTest.doTests(c,all=False)
+        leoTest.doTests(c,all=False,marked=False)
+        
+    # Externally run tests...
 
-    def runAllUnitTests (self,event=None):
+    def runAllUnitTestsExternally (self,event=None):
         '''Run all unit tests contained in the entire outline.
         Tests are run in an external process, so tests *cannot* change the outline.'''
         c = self.c
-        leoTest.runTestsExternally(c,all=True)
+        leoTest.runTestsExternally(c,all=True,marked=False)
+        
+    def runMarkedUnitTestsExternally(self,event=None):
+        '''Run all marked unit tests in the outline.
+        Tests are run in an external process, so tests *cannot* change the outline.'''
+        c = self.c
+        leoTest.runTestsExternally(c,all=True,marked=True)
 
-    def runUnitTests(self,event=None):
+    def runSelectedUnitTestsExternally(self,event=None):
         '''Run all unit tests contained in the presently selected outline
         Tests are run in an external process, so tests *cannot* change the outline.'''
         c = self.c
-        leoTest.runTestsExternally(c,all=False)
+        leoTest.runTestsExternally(c,all=False,marked=False)
     #@-others
 #@+node:ekr.20050920084036.53: ** editCommandsClass
 class editCommandsClass (baseEditCommandsClass):
