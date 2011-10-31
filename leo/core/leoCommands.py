@@ -2157,14 +2157,15 @@ class Commands (object):
                     if writeScriptFile:
                         scriptFile = self.writeScriptFile(script)
                         
-                        g.app.inScript = True
+                        # 2011/10/31: make g.inScript a synonym for g.app.inScript.
+                        g.inScript = g.app.inScript = True
                         try:
                             if g.isPython3:
                                 exec(compile(script,scriptFile,'exec'),d)
                             else:
                                 execfile(scriptFile,d)
                         finally:
-                            g.app.inScript = False
+                            g.inScript = g.app.inScript = False
                     else:
                         g.app.inScript = True
                         try:
@@ -4777,12 +4778,13 @@ class Commands (object):
     if g.app.inScript:
         
         cpp = CPrettyPrinter(c)
-        p2 = g.findNodeAnywhere(c,'c tokenize test')
+        fn = 'c tokenize test (do not delete)'
+        p2 = g.findNodeAnywhere(c,fn)
+        assert p2,'not found: %s' % (fn)
         
         if 1: # test of indent.
             # import os ; os.system('cls')
             cpp.indent(p2)
-            print('done')
         
         if 0: # test of tokenize.
             aList = cpp.tokenize(p2.b)
@@ -4793,7 +4795,7 @@ class Commands (object):
                 # print(''.join(aList))
                 for z in aList:
                     print(repr(z))
-            print('done')
+        print('done')
     #@+node:ekr.20040711135244.5: *7* class PythonPrettyPrinter
     class PythonPrettyPrinter:
 
