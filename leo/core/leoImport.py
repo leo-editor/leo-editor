@@ -3109,7 +3109,7 @@ class baseScannerClass (scanUtility):
             
         return result
         
-    if g.app.unitTesting:
+    if g.unitTesting:
         import leo.core.leoImport as leoImport
         sc = leoImport.pythonScanner(c.importCommands,atAuto=False)
         aList = tokenize(sc,p.b)
@@ -3118,9 +3118,7 @@ class baseScannerClass (scanUtility):
                 print('%3s %7s %s' % (n,kind,repr(val)))
         s2 = ''.join([val for (kind,val,n) in aList])
         assert p.b == s2
-        print('pass')
-        
-       
+        # print('pass')
     #@+node:ekr.20070707072749: *3* run (baseScannerClass)
     def run (self,s,parent):
 

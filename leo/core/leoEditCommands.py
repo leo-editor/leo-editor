@@ -3255,7 +3255,9 @@ class editCommandsClass (baseEditCommandsClass):
     if g.app.inScript:
         cpp = c.CPrettyPrinter(c)
         c2p = C_to_python(c)
-        p2 = g.findNodeAnywhere(c,'c tokenize test')
+        fn = 'c tokenize test (do not delete)'
+        p2 = g.findNodeAnywhere(c,fn)
+        assert p2,'not found: %s' % (fn)
         
         # import os ; os.system('cls')
         aList = cpp.tokenize(p2.b)

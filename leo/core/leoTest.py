@@ -23,6 +23,7 @@ import glob
 import os
 import cProfile as profile
 # import pstats
+import re
 import sys
 import timeit
 import tokenize
@@ -45,10 +46,20 @@ else:
 def isSuiteNode (p):
     h = p.h.lower()
     return g.match_word(h,0,"@suite")
+    
+test_pat_s = "^if(\s)+g(\.app)*\.(unitTesting|inScript):(\s)*$"
+test_pat = re.compile(test_pat_s,re.MULTILINE)
 
 def isTestNode (p):
+    '''
+    Return True if p is an @test node or p is *not* a section definition and
+    p's body text contains "if g.unitTesting, or g.app.unitTesting or
+    g.inScript or g.app.inScript.
+    '''
     h = p.h.lower()
-    return g.match_word(h,0,"@test")
+    hidden = not p.h.startswith('<<') and test_pat.search(p.b)
+    if hidden: print('Adding hidden test: %s' % (p.h))
+    return hidden or g.match_word(h,0,"@test")
 
 # def isTestCaseNode (p):
     # h = p.h.lower()
@@ -79,11 +90,17 @@ def doTests(c,all=None,p=None,verbosity=1):
         if all: last = None
         else:   last = p.nodeAfterTree()
         if trace: g.trace('all',all,'root',p.h)
+        seen = set()
         while p and p != last:
+            # 2011/10/31: support for hidden tests: run tests only once.
+            if p.v in seen:
+                p.moveToNodeAfterTree()
+                continue
+            seen.add(p.v)
             if g.match_word(p.h,0,'@ignore'):
                 if trace: g.trace('ignoring tree',p.h)
                 p.moveToNodeAfterTree()
-            elif isTestNode(p): # @test
+            elif isTestNode(p): # @test or contains "if g.app.unitTesting" or "if g.app.inScript"
                 if trace: g.trace('adding',p.h)
                 test = makeTestCase(c,p)
                 if test:

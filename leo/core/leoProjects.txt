@@ -1363,6 +1363,258 @@ ic.run(
     svg_fn=svg_fn, # Optional: Name of working svg file.
     template_fn=template_fn, # Optional: Name of template svg file.
 )
+#@+node:ekr.20110917193725.6973: *3* c tokenize test (do not delete)
+@language c
+
+static exit_values_ty indent_main_loop(void)
+{
+    codes_ty         hd_type         = code_eof;
+    char           * t_ptr           = NULL;
+    codes_ty         type_code       = start_token;
+    exit_values_ty   file_exit_value = total_success;
+    int              dec_ind         = 0; /* current indentation for declarations */
+
+    BOOLEAN          scase           = false; /* true when we've just see a "case";
+                                               * determines what to do with the
+                                               * following colon */
+    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
+                                               * a newline was passed over */
+    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
+                                               * while(...), etc. */
+    BOOLEAN          force_nl        = false;
+
+    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
+     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
+     * set to 2 in the middle of the main token reading loop and is decremented
+     * at the beginning of the loop, so it will reach zero when the second token
+     * after the ')' is read.
+     */
+
+    BOOLEAN          last_token_ends_sp = false;
+
+    BOOLEAN          last_else = false; /* true if last keyword was an else */
+
+    for (;;)
+    {
+        /* this is the main loop.  it will go until
+         * we reach eof */
+
+        BOOLEAN is_procname_definition;
+        bb_code_ty can_break;
+
+        if (type_code != newline)
+        {
+            can_break = parser_state_tos->can_break;
+        }
+
+        parser_state_tos->last_saw_nl = false;
+        parser_state_tos->can_break = bb_none;
+
+        type_code = lexi ();    /* lexi reads one token.  "token" points to
+                                 * the actual characters. lexi returns a code
+                                 * indicating the type of token */
+
+        /* If the last time around we output an identifier or
+         * a paren, then consider breaking the line here if it's
+         * too long.
+         *
+         * A similar check is performed at the end of the loop, after
+         * we've put the token on the line. */
+
+        if ((settings.max_col > 0) &&
+            (buf_break != NULL) &&
+            ( ( (parser_state_tos->last_token == ident) &&
+                (type_code != comma) &&
+                (type_code != semicolon) &&
+                (type_code != newline) &&
+                (type_code != form_feed) &&
+                (type_code != rparen) &&
+                (type_code != struct_delim)) ||
+              ( (parser_state_tos->last_token == rparen) &&
+                (type_code != comma) &&
+                (type_code != rparen) ) ) &&
+            (output_line_length () > settings.max_col))
+        {
+            break_line = 1;
+        }
+
+        if (last_token_ends_sp > 0)
+        {
+            last_token_ends_sp--;
+        }
+
+        is_procname_definition =
+                (((parser_state_tos->procname[0] != '\0') &&
+                  parser_state_tos->in_parameter_declaration) ||
+                 (parser_state_tos->classname[0] != '\0'));
+
+        /* The following code moves everything following an if (), while (),
+         * else, etc. up to the start of the following stmt to a buffer. This
+         * allows proper handling of both kinds of brace placement.
+         */
+
+        flushed_nl = false;
+
+        if (!search_brace(&type_code, &force_nl, &flushed_nl, &last_else, &is_procname_definition))
+        {
+            /* Hit EOF unexpectedly in comment. */
+            return indent_punt;
+        }
+        
+        if (type_code == code_eof)
+        {
+            /* we got eof */
+            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
+            {
+                dump_line(true, &paren_target);
+            }
+
+            if (parser_state_tos->tos > 1)      /* check for balanced braces */
+            {
+                ERROR (_("Unexpected end of file"), 0, 0);
+                file_exit_value = indent_error;
+            }
+
+            if (settings.verbose)
+            {
+                printf (_("There were %d non-blank output lines and %d comments\n"),
+                        (int) out_lines, (int) com_lines);
+                if (com_lines > 0 && code_lines > 0)
+                {
+                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
+                            (1.0 * com_lines) / code_lines);
+                }
+            }
+            flush_output ();
+
+            return file_exit_value;                                              /* RETURN */
+        }
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            if (force_nl &&
+                (type_code != semicolon) &&
+                ( (type_code != lbrace) ||
+                  (!parser_state_tos->in_decl && !settings.btype_2) ||
+                  (parser_state_tos->in_decl && !settings.braces_on_struct_decl_line) ||
+                  (parser_state_tos->last_token == rbrace)))
+            {
+                if (settings.verbose && !flushed_nl)
+                {
+                    WARNING (_("Line broken 2"), 0, 0);
+                }
+
+                flushed_nl = false;
+                dump_line(true, &paren_target);
+                parser_state_tos->want_blank = false;
+                force_nl = false;
+            }
+
+            parser_state_tos->in_stmt = true;   /* turn on flag which causes
+                                                 * an extra level of
+                                                 * indentation. this is
+                                                 * turned off by a ; or } */
+            if (s_com != e_com)
+            {
+                /* the code has an embedded comment in the
+                 * line. Move it from the com buffer to the
+                 * code buffer.
+                 *
+                 * Do not add a space before the comment if it is the first
+                 * thing on the line.
+                 */
+
+                if (e_code != s_code)
+                {
+                    set_buf_break (bb_embedded_comment_start, paren_target);
+                    *e_code++ = ' ';
+                    embedded_comment_on_line = 2;
+                }
+                else
+                {
+                    embedded_comment_on_line = 1;
+                }
+
+                for (t_ptr = s_com; *t_ptr; ++t_ptr)
+                {
+                    check_code_size();
+                    *e_code++ = *t_ptr;
+                }
+
+                set_buf_break (bb_embedded_comment_end, paren_target);
+                *e_code++ = ' ';
+                *e_code = '\0'; /* null terminate code sect */
+                parser_state_tos->want_blank = false;
+                e_com = s_com;
+            }
+        }
+        else if ((type_code != comment) &&
+                 (type_code != cplus_comment) &&
+                 !(settings.break_function_decl_args &&
+                   (parser_state_tos->last_token == comma)) &&
+                 !( (parser_state_tos->last_token == comma) &&
+                    !settings.leave_comma))
+        {
+            /* preserve force_nl thru a comment but
+             * cancel forced newline after newline, form feed, etc.
+             * however, don't cancel if last thing seen was comma-newline
+             * and -bc flag is on. */
+
+            force_nl = false;
+        }
+
+        /* Main switch on type of token scanned */
+
+        check_code_size();
+        
+        /* now, decide what to do with the token */
+
+        handle_the_token(type_code, &scase, &force_nl, &sp_sw, &flushed_nl,
+                         &hd_type, &dec_ind, &last_token_ends_sp, &file_exit_value,
+                         can_break, &last_else, is_procname_definition);
+        
+        *e_code = '\0';         /* make sure code section is null terminated */
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            parser_state_tos->last_token = type_code;
+        }
+
+        /* Now that we've put the token on the line (in most cases),
+         * consider breaking the line because it's too long.
+         *
+         * Don't consider the cases of `unary_op', newlines,
+         * declaration types (int, etc.), if, while, for,
+         * identifiers (handled at the beginning of the loop),
+         * periods, or preprocessor commands. */
+
+        if ((settings.max_col > 0) && (buf_break != NULL))
+        {
+            if ( ( (type_code == binary_op) ||
+                   (type_code == postop) ||
+                   (type_code == question) ||
+                   ((type_code == colon) && (scase || (squest <= 0))) ||
+                   (type_code == semicolon) ||
+                   (type_code == sp_nparen) ||
+                   (type_code == sp_else) ||
+                   ((type_code == ident) && (*token == '\"')) ||
+                   (type_code == struct_delim) ||
+                   (type_code == comma)) &&
+                 (output_line_length () > settings.max_col))
+            {
+                break_line = 1;
+            }
+        }
+    }                           /* end of main infinite loop */
+}
 #@+node:ekr.20110621074459.14908: ** 4.9.1
 #@+node:ekr.20110730093802.15134: *3* Bugs
 #@+node:ekr.20110621074459.14904: *4* Fixed ancient hanger in paste-retaining-clones
@@ -15503,618 +15755,9 @@ def skip_matching_c_delims(s,i,delim1,delim2,reverse=False):
 - Generates only @auto, does not do an actual import.
 - Creates @path nodes so actual @auto nodes are short.
 #@+node:ekr.20110917174948.6875: *4* Added beautify-c command
-#@+node:ekr.20110917174948.6903: *5* class CPrettyPrinter
-class CPrettyPrinter:
-    
-    @others
-    
-if g.app.inScript:
-    
-    cpp = CPrettyPrinter(c)
-    p2 = g.findNodeAnywhere(c,'c tokenize test')
-    
-    if 1: # test of indent.
-        # import os ; os.system('cls')
-        cpp.indent(p2)
-        print('done')
-    
-    if 0: # test of tokenize.
-        aList = cpp.tokenize(p2.b)
-        assert(p2.b == ''.join(aList))
-        if 0:
-            import os ; os.system('cls')
-            print('*' * 40)
-            # print(''.join(aList))
-            for z in aList:
-                print(repr(z))
-        print('done')
-#@+node:ekr.20110917174948.6904: *6* __init__
-def __init__ (self,c):
-    
-    self.c = c
-    self.p = None # Set in indent.
-    
-    self.brackets = 0
-        # The brackets indentation level.
-    self.parens = 0
-        # The parenthesis nesting level.
-    self.result = []
-        # The list of tokens that form the final result.
-    self.tab_width = 4
-        # The number of spaces in each unit of leading indentation.
-        
-    # No longer used.
-    
-    # self.ignored_brackets = 0
-        # # The number of '}' to ignore before reducing self.brackets.
-    # self.ignore_ws = False
-        # # True: ignore the next whitespace token if any.
-#@+node:ekr.20110917174948.6911: *6* indent & helpers
-def indent (self,p,toList=False):
+@nocolor-node
 
-    c = self.c
-    if not p.b: return
-    self.p = p.copy()
-    
-    aList = self.tokenize(p.b)
-    assert ''.join(aList) == p.b
-    
-    aList = self.add_statement_braces(aList)
-
-    self.bracketLevel = 0
-    self.parens = 0
-    self.result = []
-    for s in aList:
-        # g.trace(repr(s))
-        self.put_token(s)
-        
-    if 0:
-        for z in self.result:
-            print(repr(z))
-
-    if toList:
-        return self.result
-    else:
-        return ''.join(self.result)
-#@+node:ekr.20110918225821.6815: *7* add_statement_braces
-def add_statement_braces (self,s):
-    
-    p = self.p
-    trace = False
-    
-    def oops(message,i,j):
-        g.es('** changed ',p.h,color='red')
-        g.es('%s after\n%s' % (
-            message,repr(''.join(s[i:j]))))
-    
-    i,n,result = 0,len(s),[]
-    while i < n:
-        token = s[i]
-        progress = i
-        if token in ('if','for','while',):
-            j = self.skip_ws_and_comments(s,i+1)
-            if self.match(s,j,'('):
-                j = self.skip_parens(s,j)
-                if self.match(s,j,')'):
-                    old_j = j+1
-                    j = self.skip_ws_and_comments(s,j+1)
-                    if self.match(s,j,';'):
-                        # Example: while (*++prefix);
-                        result.extend(s[i:j])
-                    elif self.match(s,j,'{'):
-                        result.extend(s[i:j])
-                    else:
-                        oops("insert '{'",i,j)
-                        # Back up, and don't go past a newline or comment.
-                        j = self.skip_ws(s,old_j)
-                        result.extend(s[i:j])
-                        result.append(' ')
-                        result.append('{')
-                        result.append('\n')
-                        i = j
-                        j = self.skip_statement(s,i)
-                        result.extend(s[i:j])
-                        result.append('\n')
-                        result.append('}')
-                        oops("insert '}'",i,j)
-                else:
-                    oops("missing ')'",i,j)
-                    result.extend(s[i:j])
-            else:
-                oops("missing '('",i,j)
-                result.extend(s[i:j])
-            i = j
-        else:
-            result.append(token)
-            i += 1
-        assert progress < i
-            
-    if trace: g.trace(''.join(result))
-    return result
-            
-#@+node:ekr.20110919184022.6903: *8* skip_ws
-def skip_ws (self,s,i):
-    
-    while i < len(s):
-        token = s[i]
-        if token.startswith(' ') or token.startswith('\t'):
-            i += 1
-        else:
-            break
-        
-    return i
-#@+node:ekr.20110918225821.6820: *8* skip_ws_and_comments
-def skip_ws_and_comments (self,s,i):
-    
-    while i < len(s):
-        token = s[i]
-        if token.isspace():
-            i += 1
-        elif token.startswith('//') or token.startswith('/*'):
-            i += 1
-        else:
-            break
-        
-    return i
-#@+node:ekr.20110918225821.6817: *8* skip_parens
-def skip_parens(self,s,i):
-
-    '''Skips from the opening ( to the matching ).
-
-    If no matching is found i is set to len(s)'''
-
-    assert(self.match(s,i,'('))
-    
-    level = 0
-    while i < len(s):
-        ch = s[i]
-        if ch == '(':
-            level += 1 ; i += 1
-        elif ch == ')':
-            level -= 1
-            if level <= 0:  return i
-            i += 1
-        else: i += 1
-    return i
-#@+node:ekr.20110918225821.6818: *8* skip_statement
-def skip_statement (self,s,i):
-    
-    '''Skip to the next ';' or '}' token.'''
-    
-    while i < len(s):
-        if s[i] in ';}':
-            i += 1
-            break
-        else:
-            i += 1
-    return i
-#@+node:ekr.20110917204542.6967: *7* put_token & helpers
-def put_token (self,s):
-    
-    '''Append token s to self.result as is,
-    *except* for adjusting leading whitespace and comments.
-    
-    '{' tokens bump self.brackets or self.ignored_brackets.
-    self.brackets determines leading whitespace.
-    '''
-
-    if s == '{':
-        self.brackets += 1
-    elif s == '}':
-        self.brackets -= 1
-        self.remove_indent()
-    elif s == '(':
-        self.parens += 1
-    elif s == ')':
-        self.parens -= 1
-    elif s.startswith('\n'):
-        if self.parens <= 0:
-            s = '\n%s' % (' ' * self.brackets * self.tab_width)
-        else: pass # Use the existing indentation.
-    elif s.isspace():
-        if self.parens <= 0 and self.result and self.result[-1].startswith('\n'):
-            # Kill the whitespace.
-            s = ''
-        else: pass # Keep the whitespace.
-    elif s.startswith('/*'):
-        s = self.reformat_block_comment(s)
-    else:
-        pass # put s as it is.
-    
-    if s:
-        self.result.append(s)
-        
-@
-    # It doesn't hurt to increase indentation after *all* '{'.
-    if s == '{':
-        # Increase brackets unless '=' precedes it.
-        if self.prev_token('='):
-            self.ignored_brackets += 1
-        else:
-            self.brackets += 1
-    elif s == '}':
-        if self.ignored_brackets:
-            self.ignored_brackets -= 1
-        else:
-            self.brackets -= 1
-            self.remove_indent()
-#@+node:ekr.20110917204542.6968: *8* prev_token
-def prev_token (self,s):
-    
-    '''Return the previous token, ignoring whitespace and comments.'''
-    
-    i = len(self.result)-1
-    while i >= 0:
-        s2 = self.result[i]
-        if s == s2:
-            return True
-        elif s.isspace() or s.startswith('//') or s.startswith ('/*'):
-            i -= 1
-        else:
-            return False
-#@+node:ekr.20110918184425.6916: *8* reformat_block_comment
-def reformat_block_comment (self,s):
-    
-    return s
-#@+node:ekr.20110917204542.6969: *8* remove_indent
-def remove_indent (self):
-    
-    '''Remove one tab-width of blanks from the previous token.'''
-    
-    w = abs(self.tab_width)
-    
-    if self.result:
-        s = self.result[-1]
-        if s.isspace():
-            self.result.pop()
-            s = s.replace('\t',' ' * w)
-            if s.startswith('\n'):
-                s2 = s[1:]
-                self.result.append('\n'+s2[:-w])
-            else:
-                self.result.append(s[:-w])
-#@+node:ekr.20110918225821.6819: *6* match
-def match(self,s,i,pat):
-    
-    return i < len(s) and s[i] == pat
-#@+node:ekr.20110917174948.6930: *6* tokenize & helper
-def tokenize (self,s):
-    
-    '''Tokenize comments, strings, identifiers, whitespace and operators.'''
-
-    i,result = 0,[]
-    while i < len(s):
-        # Loop invariant: at end: j > i and s[i:j] is the new token.
-        j = i
-        ch = s[i]
-        if ch in '@\n': # Make *sure* these are separate tokens.
-            j += 1
-        elif ch == '#': # Preprocessor directive.
-            j = g.skip_to_end_of_line(s,i)
-        elif ch in ' \t':
-            j = g.skip_ws(s,i)
-        elif ch.isalpha() or ch == '_':
-            j = g.skip_c_id(s,i)
-        elif g.match(s,i,'//'):
-            j = g.skip_line(s,i)
-        elif g.match(s,i,'/*'):
-            j = self.skip_block_comment(s,i)
-        elif ch in "'\"":
-            j = g.skip_string(s,i)
-        else:
-            j += 1
-            
-        assert j > i
-        result.append(''.join(s[i:j]))
-        i = j # Advance.
-        
-    return result
-    
-@ The following could be added to the 'else' clause::
-    # Accumulate everything else.
-    while (
-        j < n and
-        not s[j].isspace() and
-        not s[j].isalpha() and
-        not s[j] in '"\'_@' and
-            # start of strings, identifiers, and single-character tokens.
-        not g.match(s,j,'//') and
-        not g.match(s,j,'/*') and
-        not g.match(s,j,'-->')
-    ):
-        j += 1
-#@+node:ekr.20110917193725.6974: *7* skip_block_comment
-def skip_block_comment (self,s,i):
-
-    assert(g.match(s,i,"/*"))
-
-    j = s.find("*/",i)
-    if j == -1:
-        return n
-    else:
-        return j + 2
-#@+node:ekr.20110917174948.6877: *5* beautifyCCode
-def beautifyCCode (self,event=None):
-
-    '''Reformat all C code in the selected tree.'''
-
-    c = self
-    pp = c.CPrettyPrinter(c)
-    u = c.undoer ; undoType = 'beautify-c'
-    
-    u.beforeChangeGroup(c.p,undoType)
-    dirtyVnodeList = []
-    changed = False
-
-    for p in c.p.self_and_subtree():
-        if g.scanForAtLanguage(c,p) == "c":
-            bunch = u.beforeChangeNodeContents(p,oldBody=p.b)
-            s = pp.indent(p)
-            if p.b != s:
-                # g.es('changed: %s' % (p.h))
-                p.b = s
-                p.v.setDirty()
-                dirtyVnodeList.append(p.v)
-                u.afterChangeNodeContents(p,undoType,bunch)
-                changed = True
-
-    if changed:
-        u.afterChangeGroup(c.p,undoType,
-            reportFlag=False,dirtyVnodeList=dirtyVnodeList)
-            
-    c.bodyWantsFocus()
-#@+node:ekr.20110917193725.6973: *5* c tokenize test
-@language c
-
-static exit_values_ty indent_main_loop(void)
-{
-    codes_ty         hd_type         = code_eof;
-    char           * t_ptr           = NULL;
-    codes_ty         type_code       = start_token;
-    exit_values_ty   file_exit_value = total_success;
-    int              dec_ind         = 0; /* current indentation for declarations */
-
-    BOOLEAN          scase           = false; /* true when we've just see a "case";
-                                               * determines what to do with the
-                                               * following colon */
-    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
-                                               * a newline was passed over */
-    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
-                                               * while(...), etc. */
-    BOOLEAN          force_nl        = false;
-
-    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
-     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
-     * set to 2 in the middle of the main token reading loop and is decremented
-     * at the beginning of the loop, so it will reach zero when the second token
-     * after the ')' is read.
-     */
-
-    BOOLEAN          last_token_ends_sp = false;
-
-    BOOLEAN          last_else = false; /* true if last keyword was an else */
-
-    for (;;)
-    {
-        /* this is the main loop.  it will go until
-         * we reach eof */
-
-        BOOLEAN is_procname_definition;
-        bb_code_ty can_break;
-
-        if (type_code != newline)
-        {
-            can_break = parser_state_tos->can_break;
-        }
-
-        parser_state_tos->last_saw_nl = false;
-        parser_state_tos->can_break = bb_none;
-
-        type_code = lexi ();    /* lexi reads one token.  "token" points to
-                                 * the actual characters. lexi returns a code
-                                 * indicating the type of token */
-
-        /* If the last time around we output an identifier or
-         * a paren, then consider breaking the line here if it's
-         * too long.
-         *
-         * A similar check is performed at the end of the loop, after
-         * we've put the token on the line. */
-
-        if ((settings.max_col > 0) &&
-            (buf_break != NULL) &&
-            ( ( (parser_state_tos->last_token == ident) &&
-                (type_code != comma) &&
-                (type_code != semicolon) &&
-                (type_code != newline) &&
-                (type_code != form_feed) &&
-                (type_code != rparen) &&
-                (type_code != struct_delim)) ||
-              ( (parser_state_tos->last_token == rparen) &&
-                (type_code != comma) &&
-                (type_code != rparen) ) ) &&
-            (output_line_length () > settings.max_col))
-        {
-            break_line = 1;
-        }
-
-        if (last_token_ends_sp > 0)
-        {
-            last_token_ends_sp--;
-        }
-
-        is_procname_definition =
-                (((parser_state_tos->procname[0] != '\0') &&
-                  parser_state_tos->in_parameter_declaration) ||
-                 (parser_state_tos->classname[0] != '\0'));
-
-        /* The following code moves everything following an if (), while (),
-         * else, etc. up to the start of the following stmt to a buffer. This
-         * allows proper handling of both kinds of brace placement.
-         */
-
-        flushed_nl = false;
-
-        if (!search_brace(&type_code, &force_nl, &flushed_nl, &last_else, &is_procname_definition))
-        {
-            /* Hit EOF unexpectedly in comment. */
-            return indent_punt;
-        }
-        
-        if (type_code == code_eof)
-        {
-            /* we got eof */
-            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
-            {
-                dump_line(true, &paren_target);
-            }
-
-            if (parser_state_tos->tos > 1)      /* check for balanced braces */
-            {
-                ERROR (_("Unexpected end of file"), 0, 0);
-                file_exit_value = indent_error;
-            }
-
-            if (settings.verbose)
-            {
-                printf (_("There were %d non-blank output lines and %d comments\n"),
-                        (int) out_lines, (int) com_lines);
-                if (com_lines > 0 && code_lines > 0)
-                {
-                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
-                            (1.0 * com_lines) / code_lines);
-                }
-            }
-            flush_output ();
-
-            return file_exit_value;                                              /* RETURN */
-        }
-
-        if ((type_code != comment) &&
-            (type_code != cplus_comment) &&
-            (type_code != newline) &&
-            (type_code != preesc) &&
-            (type_code != form_feed))
-        {
-            if (force_nl &&
-                (type_code != semicolon) &&
-                ( (type_code != lbrace) ||
-                  (!parser_state_tos->in_decl && !settings.btype_2) ||
-                  (parser_state_tos->in_decl && !settings.braces_on_struct_decl_line) ||
-                  (parser_state_tos->last_token == rbrace)))
-            {
-                if (settings.verbose && !flushed_nl)
-                {
-                    WARNING (_("Line broken 2"), 0, 0);
-                }
-
-                flushed_nl = false;
-                dump_line(true, &paren_target);
-                parser_state_tos->want_blank = false;
-                force_nl = false;
-            }
-
-            parser_state_tos->in_stmt = true;   /* turn on flag which causes
-                                                 * an extra level of
-                                                 * indentation. this is
-                                                 * turned off by a ; or } */
-            if (s_com != e_com)
-            {
-                /* the code has an embedded comment in the
-                 * line. Move it from the com buffer to the
-                 * code buffer.
-                 *
-                 * Do not add a space before the comment if it is the first
-                 * thing on the line.
-                 */
-
-                if (e_code != s_code)
-                {
-                    set_buf_break (bb_embedded_comment_start, paren_target);
-                    *e_code++ = ' ';
-                    embedded_comment_on_line = 2;
-                }
-                else
-                {
-                    embedded_comment_on_line = 1;
-                }
-
-                for (t_ptr = s_com; *t_ptr; ++t_ptr)
-                {
-                    check_code_size();
-                    *e_code++ = *t_ptr;
-                }
-
-                set_buf_break (bb_embedded_comment_end, paren_target);
-                *e_code++ = ' ';
-                *e_code = '\0'; /* null terminate code sect */
-                parser_state_tos->want_blank = false;
-                e_com = s_com;
-            }
-        }
-        else if ((type_code != comment) &&
-                 (type_code != cplus_comment) &&
-                 !(settings.break_function_decl_args &&
-                   (parser_state_tos->last_token == comma)) &&
-                 !( (parser_state_tos->last_token == comma) &&
-                    !settings.leave_comma))
-        {
-            /* preserve force_nl thru a comment but
-             * cancel forced newline after newline, form feed, etc.
-             * however, don't cancel if last thing seen was comma-newline
-             * and -bc flag is on. */
-
-            force_nl = false;
-        }
-
-        /* Main switch on type of token scanned */
-
-        check_code_size();
-        
-        /* now, decide what to do with the token */
-
-        handle_the_token(type_code, &scase, &force_nl, &sp_sw, &flushed_nl,
-                         &hd_type, &dec_ind, &last_token_ends_sp, &file_exit_value,
-                         can_break, &last_else, is_procname_definition);
-        
-        *e_code = '\0';         /* make sure code section is null terminated */
-
-        if ((type_code != comment) &&
-            (type_code != cplus_comment) &&
-            (type_code != newline) &&
-            (type_code != preesc) &&
-            (type_code != form_feed))
-        {
-            parser_state_tos->last_token = type_code;
-        }
-
-        /* Now that we've put the token on the line (in most cases),
-         * consider breaking the line because it's too long.
-         *
-         * Don't consider the cases of `unary_op', newlines,
-         * declaration types (int, etc.), if, while, for,
-         * identifiers (handled at the beginning of the loop),
-         * periods, or preprocessor commands. */
-
-        if ((settings.max_col > 0) && (buf_break != NULL))
-        {
-            if ( ( (type_code == binary_op) ||
-                   (type_code == postop) ||
-                   (type_code == question) ||
-                   ((type_code == colon) && (scase || (squest <= 0))) ||
-                   (type_code == semicolon) ||
-                   (type_code == sp_nparen) ||
-                   (type_code == sp_else) ||
-                   ((type_code == ident) && (*token == '\"')) ||
-                   (type_code == struct_delim) ||
-                   (type_code == comma)) &&
-                 (output_line_length () > settings.max_col))
-            {
-                break_line = 1;
-            }
-        }
-    }                           /* end of main infinite loop */
-}
+Added class CPrettyPrinter & beatifyCCode
 #@+node:ekr.20110916215321.7767: *4* Added c-to-python command
 #@+node:ekr.20110919184022.6900: *5* To do
 @nocolor-node
@@ -16162,1929 +15805,6 @@ What I did:
     }
     
 - Improved formatting of block comments.
-#@+node:ekr.20110917174948.6903: *5* class CPrettyPrinter
-class CPrettyPrinter:
-    
-    @others
-    
-if g.app.inScript:
-    
-    cpp = CPrettyPrinter(c)
-    p2 = g.findNodeAnywhere(c,'c tokenize test')
-    
-    if 1: # test of indent.
-        # import os ; os.system('cls')
-        cpp.indent(p2)
-        print('done')
-    
-    if 0: # test of tokenize.
-        aList = cpp.tokenize(p2.b)
-        assert(p2.b == ''.join(aList))
-        if 0:
-            import os ; os.system('cls')
-            print('*' * 40)
-            # print(''.join(aList))
-            for z in aList:
-                print(repr(z))
-        print('done')
-#@+node:ekr.20110917174948.6904: *6* __init__
-def __init__ (self,c):
-    
-    self.c = c
-    self.p = None # Set in indent.
-    
-    self.brackets = 0
-        # The brackets indentation level.
-    self.parens = 0
-        # The parenthesis nesting level.
-    self.result = []
-        # The list of tokens that form the final result.
-    self.tab_width = 4
-        # The number of spaces in each unit of leading indentation.
-        
-    # No longer used.
-    
-    # self.ignored_brackets = 0
-        # # The number of '}' to ignore before reducing self.brackets.
-    # self.ignore_ws = False
-        # # True: ignore the next whitespace token if any.
-#@+node:ekr.20110917174948.6911: *6* indent & helpers
-def indent (self,p,toList=False):
-
-    c = self.c
-    if not p.b: return
-    self.p = p.copy()
-    
-    aList = self.tokenize(p.b)
-    assert ''.join(aList) == p.b
-    
-    aList = self.add_statement_braces(aList)
-
-    self.bracketLevel = 0
-    self.parens = 0
-    self.result = []
-    for s in aList:
-        # g.trace(repr(s))
-        self.put_token(s)
-        
-    if 0:
-        for z in self.result:
-            print(repr(z))
-
-    if toList:
-        return self.result
-    else:
-        return ''.join(self.result)
-#@+node:ekr.20110918225821.6815: *7* add_statement_braces
-def add_statement_braces (self,s):
-    
-    p = self.p
-    trace = False
-    
-    def oops(message,i,j):
-        g.es('** changed ',p.h,color='red')
-        g.es('%s after\n%s' % (
-            message,repr(''.join(s[i:j]))))
-    
-    i,n,result = 0,len(s),[]
-    while i < n:
-        token = s[i]
-        progress = i
-        if token in ('if','for','while',):
-            j = self.skip_ws_and_comments(s,i+1)
-            if self.match(s,j,'('):
-                j = self.skip_parens(s,j)
-                if self.match(s,j,')'):
-                    old_j = j+1
-                    j = self.skip_ws_and_comments(s,j+1)
-                    if self.match(s,j,';'):
-                        # Example: while (*++prefix);
-                        result.extend(s[i:j])
-                    elif self.match(s,j,'{'):
-                        result.extend(s[i:j])
-                    else:
-                        oops("insert '{'",i,j)
-                        # Back up, and don't go past a newline or comment.
-                        j = self.skip_ws(s,old_j)
-                        result.extend(s[i:j])
-                        result.append(' ')
-                        result.append('{')
-                        result.append('\n')
-                        i = j
-                        j = self.skip_statement(s,i)
-                        result.extend(s[i:j])
-                        result.append('\n')
-                        result.append('}')
-                        oops("insert '}'",i,j)
-                else:
-                    oops("missing ')'",i,j)
-                    result.extend(s[i:j])
-            else:
-                oops("missing '('",i,j)
-                result.extend(s[i:j])
-            i = j
-        else:
-            result.append(token)
-            i += 1
-        assert progress < i
-            
-    if trace: g.trace(''.join(result))
-    return result
-            
-#@+node:ekr.20110919184022.6903: *8* skip_ws
-def skip_ws (self,s,i):
-    
-    while i < len(s):
-        token = s[i]
-        if token.startswith(' ') or token.startswith('\t'):
-            i += 1
-        else:
-            break
-        
-    return i
-#@+node:ekr.20110918225821.6820: *8* skip_ws_and_comments
-def skip_ws_and_comments (self,s,i):
-    
-    while i < len(s):
-        token = s[i]
-        if token.isspace():
-            i += 1
-        elif token.startswith('//') or token.startswith('/*'):
-            i += 1
-        else:
-            break
-        
-    return i
-#@+node:ekr.20110918225821.6817: *8* skip_parens
-def skip_parens(self,s,i):
-
-    '''Skips from the opening ( to the matching ).
-
-    If no matching is found i is set to len(s)'''
-
-    assert(self.match(s,i,'('))
-    
-    level = 0
-    while i < len(s):
-        ch = s[i]
-        if ch == '(':
-            level += 1 ; i += 1
-        elif ch == ')':
-            level -= 1
-            if level <= 0:  return i
-            i += 1
-        else: i += 1
-    return i
-#@+node:ekr.20110918225821.6818: *8* skip_statement
-def skip_statement (self,s,i):
-    
-    '''Skip to the next ';' or '}' token.'''
-    
-    while i < len(s):
-        if s[i] in ';}':
-            i += 1
-            break
-        else:
-            i += 1
-    return i
-#@+node:ekr.20110917204542.6967: *7* put_token & helpers
-def put_token (self,s):
-    
-    '''Append token s to self.result as is,
-    *except* for adjusting leading whitespace and comments.
-    
-    '{' tokens bump self.brackets or self.ignored_brackets.
-    self.brackets determines leading whitespace.
-    '''
-
-    if s == '{':
-        self.brackets += 1
-    elif s == '}':
-        self.brackets -= 1
-        self.remove_indent()
-    elif s == '(':
-        self.parens += 1
-    elif s == ')':
-        self.parens -= 1
-    elif s.startswith('\n'):
-        if self.parens <= 0:
-            s = '\n%s' % (' ' * self.brackets * self.tab_width)
-        else: pass # Use the existing indentation.
-    elif s.isspace():
-        if self.parens <= 0 and self.result and self.result[-1].startswith('\n'):
-            # Kill the whitespace.
-            s = ''
-        else: pass # Keep the whitespace.
-    elif s.startswith('/*'):
-        s = self.reformat_block_comment(s)
-    else:
-        pass # put s as it is.
-    
-    if s:
-        self.result.append(s)
-        
-@
-    # It doesn't hurt to increase indentation after *all* '{'.
-    if s == '{':
-        # Increase brackets unless '=' precedes it.
-        if self.prev_token('='):
-            self.ignored_brackets += 1
-        else:
-            self.brackets += 1
-    elif s == '}':
-        if self.ignored_brackets:
-            self.ignored_brackets -= 1
-        else:
-            self.brackets -= 1
-            self.remove_indent()
-#@+node:ekr.20110917204542.6968: *8* prev_token
-def prev_token (self,s):
-    
-    '''Return the previous token, ignoring whitespace and comments.'''
-    
-    i = len(self.result)-1
-    while i >= 0:
-        s2 = self.result[i]
-        if s == s2:
-            return True
-        elif s.isspace() or s.startswith('//') or s.startswith ('/*'):
-            i -= 1
-        else:
-            return False
-#@+node:ekr.20110918184425.6916: *8* reformat_block_comment
-def reformat_block_comment (self,s):
-    
-    return s
-#@+node:ekr.20110917204542.6969: *8* remove_indent
-def remove_indent (self):
-    
-    '''Remove one tab-width of blanks from the previous token.'''
-    
-    w = abs(self.tab_width)
-    
-    if self.result:
-        s = self.result[-1]
-        if s.isspace():
-            self.result.pop()
-            s = s.replace('\t',' ' * w)
-            if s.startswith('\n'):
-                s2 = s[1:]
-                self.result.append('\n'+s2[:-w])
-            else:
-                self.result.append(s[:-w])
-#@+node:ekr.20110918225821.6819: *6* match
-def match(self,s,i,pat):
-    
-    return i < len(s) and s[i] == pat
-#@+node:ekr.20110917174948.6930: *6* tokenize & helper
-def tokenize (self,s):
-    
-    '''Tokenize comments, strings, identifiers, whitespace and operators.'''
-
-    i,result = 0,[]
-    while i < len(s):
-        # Loop invariant: at end: j > i and s[i:j] is the new token.
-        j = i
-        ch = s[i]
-        if ch in '@\n': # Make *sure* these are separate tokens.
-            j += 1
-        elif ch == '#': # Preprocessor directive.
-            j = g.skip_to_end_of_line(s,i)
-        elif ch in ' \t':
-            j = g.skip_ws(s,i)
-        elif ch.isalpha() or ch == '_':
-            j = g.skip_c_id(s,i)
-        elif g.match(s,i,'//'):
-            j = g.skip_line(s,i)
-        elif g.match(s,i,'/*'):
-            j = self.skip_block_comment(s,i)
-        elif ch in "'\"":
-            j = g.skip_string(s,i)
-        else:
-            j += 1
-            
-        assert j > i
-        result.append(''.join(s[i:j]))
-        i = j # Advance.
-        
-    return result
-    
-@ The following could be added to the 'else' clause::
-    # Accumulate everything else.
-    while (
-        j < n and
-        not s[j].isspace() and
-        not s[j].isalpha() and
-        not s[j] in '"\'_@' and
-            # start of strings, identifiers, and single-character tokens.
-        not g.match(s,j,'//') and
-        not g.match(s,j,'/*') and
-        not g.match(s,j,'-->')
-    ):
-        j += 1
-#@+node:ekr.20110917193725.6974: *7* skip_block_comment
-def skip_block_comment (self,s,i):
-
-    assert(g.match(s,i,"/*"))
-
-    j = s.find("*/",i)
-    if j == -1:
-        return n
-    else:
-        return j + 2
-#@+node:ekr.20110916215321.8054: *5* cToPy (leoEditCommands)
-class C_to_python:
-    << docstring: theory of operation >>
-    @others
-
-def cToPy (self,event):
-    << docstring: c-to-python >>
-    self.C_to_python(self.c).go()
-    self.c.bodyWantsFocus()
-
-if g.app.inScript:
-    cpp = c.CPrettyPrinter(c)
-    c2p = C_to_python(c)
-    p2 = g.findNodeAnywhere(c,'c tokenize test')
-    
-    # import os ; os.system('cls')
-    aList = cpp.tokenize(p2.b)
-    c2p.convertCodeList(aList)
-    s = ''.join(aList)
-    if s != p.b:
-        g.es('changed')
-    # print(''.join(aList))
-    print('done')
-#@+node:ekr.20110916215321.7982: *6* << docstring: c-to-python >>
-''' The c-to-python command converts C or C++ text to python text. The
-conversion is not complete. Nevertheless, c2py eliminates much of the tedious
-text manipulation that would otherwise be required.
-
-The following is a list of the translations performed by convertCodeList:
-
-Prepass
-=======
-
-These translations happen before removing all curly braces.
-
-Suppose we are translating::
-
-    aTypeSpec aClass::aMethod(t1 v1,...,tn vn)
-    {
-        body
-    }
-
-Prepass part 1
---------------
-
-Translates the function prototype, i.e., translates::
-
-    aTypeSpec aClass::aMethod(t1 v1,...,tn vn)
-    
-to::
-    
-    def aMethod(v1,...vn):
-
-As a special case, c2py translates::
-
-    aTypeSpec aClass::aClass(t1 v1,...,tn vn)
-    
-to::
-    
-    aClass.__init__(t1 v1,...,tn vn)
-
-True, aClass.__init__ isn't proper Python, but retaining the class name is useful.
-
-Prepass part 2
---------------
-
-Let t denote any member of typeList or classList.  The code::
-
-    a) Removes all casts of the form (t) or (t*) or (t**), etc.
-    b) Converts t x, t *x, t **x, etc. to x.
-    c) Converts x = new t(...) to x = t(...)
-    d) For all i in ivarsDict[aClass] converts this -> i to self.i
-    e) For all i in ivarsDict[aClass] converts i to self.i
-
-Prepass part 3
---------------
-
-[No longer used.] Converts < < x > > = to @c. A Leo-specific translation.
-
-Main Pass
-=========
-
-This pass does the following simple translations everywhere except in comments
-and strings::
-
-    Changes all -> to .
-    Changes all this.self to self (This corrects problems during the prepass.)
-    Removes all curly braces
-    Changes all #if to if
-    Changes all else if to elif
-    Changes all #else to else:
-    Changes all else to else:
-    Removes all #endif
-    Changes all && to and
-    Changes all || to or
-    Changes all TRUE to True
-    Changes all FALSE to False
-    Changes all NULL to None
-    Changes all this to self
-    Changes all @code to @c.  [No longer used: aLeo-specific translation.]
-
-Complex Pass
-============
-
-This pass attempts more complex translations::
-
-    Converts if ( x ) to if x:
-    Converts elif ( x ) to elif x:
-    Converts while ( x ) to while x:
-    Converts for ( x ; y ; z ) to for x SEMI y SEMI z:
-
-Final Pass
-==========
-
-This pass completes the translation::
-
-    Removes all semicolons.
-    Removes @c if it starts the text.  [No longer used: a Leo-specific translation.]
-    Removes all blank lines.
-    Removes excess whitespace from all lines, leaving leading whitespace unchanged.
-    Replaces C/C++ comments by Python comments.
-    Removes trailing whitespace from all lines.
-
-'''
-#@+node:ekr.20110918184425.6914: *6* class C_to_python
-#@+node:ekr.20110916215321.7983: *7* << docstring: theory of operation >>
-@nocolor-node
-
-'''
-We use a single list for all changes to the text. This eliminates stress on the
-gc. Using multiple passes greatly simplifies the code and does not it down
-significantly. Anyway, speed is both good and unimportant.
-
-A convention: within this class only, s denotes a *sequence*, not just a string.
-We use this convention in methods that do not, in fact, change the sequence.
-
-No replacements are done within strings or comments. The idiom is::
-
-    def someScan(self,aList):
-        i = 0
-        while i < len(aList):
-            if self.is_string_or_comment(aList,i):
-                i = skip_string_or_comment(aList,i)
-            elif < found what we are looking for ?>:
-                <convert what we are looking for, setting i>
-            else: i += 1
-
-That's all.
-'''
-#@+node:ekr.20110916215321.8056: *7* Unused
-if 0:
-    @others
-#@+node:ekr.20110917104720.6871: *8* Drivers & helpers
-#@+node:ekr.20110916215321.7989: *9* convertLeo1to2 & helper
-def convertLeo1to2 (self):
-
-    for p in self.p.self_and_subtree():
-        g.es("converting:",p.h)
-        s=convertStringLeo1to2(p.b)
-        p.b = s
-
-    g.es("done")
-#@+node:ekr.20110916215321.7990: *10* convertStringLeo1to2
-def convertStringLeo1to2 (self,s):
-    
-    aList = [z for z in s]
-    outputList = []
-    i = 0
-    while i < len(aList):
-        j = skipCodePart(aList,i)
-        if j > i:
-            code = aList[i:j]
-            convertCodeList1to2(code)
-            i = j
-            #print "-----code:", listToString(code)
-            for item in code:
-                outputList.append(item)
-        j = skipDocPart(aList,i)
-        if j > i:
-            doc = aList[i:j]
-            convertDocList(doc) # same as in c2py
-            #print "-----doc:", listToString(doc)
-            i = j
-            for item in doc:
-                outputList.append(item)
-
-    result = listToString(outputList)
-    global printFlag
-    if printFlag: print("-----:\n", result)
-    return result
-#@+node:ekr.20110916215321.7994: *9* convertLeoTree
-def convertLeoTree (self):
-
-    for p2 in self.p.self_and_subtree():
-        print("converting:",v.h)
-        s = convertCStringToPython(p2.b,leoFlag=True)
-        p2.b = s
-
-    g.es('done')
-#@+node:ekr.20110916215321.7995: *9* convertCFileToPython
-def convertCFileToPython(fn):
-
-    f=open(fn, 'r')
-    if not f: return
-    s = f.read()
-    f.close()
-
-    f=open(fn + ".py", 'w')
-    if not f: return
-    s = convertCStringToPython(s,leoFlag=False)
-    f.write(s)
-    f.close()
-#@+node:ekr.20110916215321.7991: *9* convertCodeList1to2
-@ We do _not_ replace @root by @file or insert @others as needed.
-Inserting @others can be done easily enough by hand,
-and may take more global knowledge than we can reasonably expect to have.
-@c
-
-def convertCodeList1to2 (self,aList):
-
-    if 0: # There isn't much reason to do this.
-        removeAtRoot(aList)
-
-    self.safeReplace(aList,"@code","@c")
-    self.replaceSectionDefs(aList)
-    self.removeLeadingAtCode(aList)
-#@+node:ekr.20110916215321.7996: *9* convertCStringToPython
-def convertCStringToPython (self,s,leoFlag):
-
-    # print "convertCStringToPython:start\n", s
-    firstPart = True
-    aList = [z for z in s]
-
-    if not leoFlag:
-        self.convertCodeList(aList,firstPart,dontDoLeoTranslations)
-        return ''.join(aList)
-
-    outputList = []
-    i = 0
-    while i < len(aList):
-        j = skipCodePart(aList,i)
-        if j > i:
-            code = aList [i: j]
-            convertCodeList(code,firstPart,doLeoTranslations)
-            i = j
-            #print "-----code:", ''.join(code)
-            for item in code:
-                outputList.append(item)
-        firstPart = False # don't remove @c from here on.
-        j = skipDocPart(aList,i)
-        if j > i:
-            doc = aList [i: j]
-            convertDocList(doc)
-            #print "-----doc:", ''.join(doc)
-            i = j
-            for item in doc:
-                outputList.append(item)
-
-    result = ''.join(outputList)
-    global printFlag
-    if printFlag: print("-----:\n",result)
-    return result
-#@+node:ekr.20110917104720.6876: *9* get_default_user_types
-def get_default_user_types (self):
-    
-    '''Return default user types.'''
-    
-    self.class_list = [
-        # "vnode", "tnode", "Commands",
-        # "wxString", "wxTreeCtrl", "wxTextCtrl", "wxSplitterWindow",
-    ]
-
-    self.ivars_dict = {
-        # "atFile": [
-            # "mCommands", "mErrors", "mStructureErrors",
-            # "mTargetFileName", "mOutputFileName", "mOutputStream",
-            # "mStartSentinelComment", "mEndSentinelComment", "mRoot",
-        # ],
-        # "vnode": [
-            # "mCommands", "mJoinList", "mIconVal", "mTreeID", "mT", "mStatusBits",
-        # ],
-        # "tnode": [
-            # "mBodyString", "mBodyRTF", "mJoinHead", "mStatusBits", "mFileIndex",
-            # "mSelectionStart", "mSelectionLength", "mCloneIndex",
-        # ],
-        # "LeoFrame": [
-            # "mNextFrame", "mPrevFrame", "mCommands",
-        # ],
-        # "Commands": [
-            # # public
-            # "mCurrentVnode", "mLeoFrame", "mInhibitOnTreeChanged", "mMaxTnodeIndex",
-            # "mTreeCtrl", "mBodyCtrl", "mFirstWindowAndNeverSaved",
-            # #private
-            # "mTabWidth", "mChanged", "mOutlineExpansionLevel", "mUsingClipboard",
-            # "mFileName", "mMemoryInputStream", "mMemoryOutputStream", "mFileInputStream",
-            # "mInputFile", "mFileOutputStream", "mFileSize", "mTopVnode", "mTagList",
-            # "mMaxVnodeTag",
-            # "mUndoType", "mUndoVnode", "mUndoParent", "mUndoBack", "mUndoN",
-            # "mUndoDVnodes", "mUndoLastChild", "mUndoablyDeletedVnode",
-        # ],
-    }
-#@+node:ekr.20110919211949.6921: *8* Multi-character code
-# This is all fairly horrible code...
-
-# None of it has been tested...
-#@+node:ekr.20110919211949.6922: *9* match
-def match (self,s,i,pat):
-    
-    '''Return True if s[i:] matches the pat string.
-    
-    We can't use g.match because s is usually a list.
-    '''
-    
-    assert pat
-    
-    aList,i,n = [],0,0
-    while n < len(pat) and i < len(s):
-        token = s[i]
-        n += len(token)
-        aList.append(token)
-    
-    return pat.startswith(''.join(aList))
-#@+node:ekr.20110919211949.6923: *9* match_word
-def match_word (self,s,i,pat):
-    
-    '''Return True if s[i:] word matches the pat string.'''
-    
-    aList,i,n = [],0,0
-    while i < len(s) and n < len(pat):
-        token = s[i]
-        i += 1
-        n += len(token)
-        aList.append(token)
-    if n == len(pat):
-        return pat == ''.join(aList)
-    elif n > len(pat):
-        s2 = ''.join(aList)
-        if pat.startswith(s2):
-            ch = s2[len(pat)]
-            return not ch.isalnum() and not ch == '_'
-        else:
-            return False
-    else: # n < len(pat)
-        assert i == len(s)
-        return False
-#@+node:ekr.20110917104720.6873: *8* Scanning
-#@+node:ekr.20110916215321.8002: *9* convertLeadingBlanks
-def convertLeadingBlanks(self,aList):
-
-    w = self.tab_width
-    if w < 2: return
-
-    i = 0
-    while i < len(aList):
-        n = 0
-        while i < len(aList) and aList[i] == ' ':
-            n += 1 ; i += 1
-            if n == w:
-                aList[i-w:i] = ['\t']
-                i = i - w + 1
-                n = 0
-        i = self.skip_past_line(aList, i)
-#@+node:ekr.20110916215321.7998: *9* convertDocList
-def convertDocList (self,docList):
-
-    # print "convertDocList:", docList
-    if self.match_word(docList,0,"@doc"):
-        i = self.skip_ws(docList,4)
-        if self.match(docList,i,"\n"):
-            i += 1
-        docList [0: i] = [z for z in ("@ ")]
-#@+node:ekr.20110916215321.8000: *9* skipCodePart
-def skipCodePart (self,aList,i):
-
-    # print "skipCodePart", i
-    if self.match_word(aList,i,"@doc") or self.match_word(aList,i,"@"):
-        return i
-    while i < len(aList):
-        if self.match(aList,i,"//"):
-            i = skipPastLine(aList,i)
-        elif self.match(aList,i,"/*"):
-            i = skipCBlockComment(aList,i)
-        elif self.match(aList,i,'"') or self.match(aList,i,"'"):
-            i = skipString(aList,i)
-        elif self.match(aList,i,"\n"):
-            i += 1
-            if self.match_word(aList,i,"@doc") or self.match_word(aList,i,"@"):
-                break
-        else: i += 1
-    return i
-#@+node:ekr.20110916215321.7999: *9* skipDocPart
-def skipDocPart (self,aList,i):
-
-    # print "skipDocPart", i
-    while i < len(aList):
-        if self.match_word(aList,i,"@code") or self.match_word(aList,i,"@c"):
-            break
-        elif isSectionDef(aList,i):
-            break
-        else: i = skipPastLine(aList,i)
-    return i
-#@+node:ekr.20110917104720.6872: *8* Utils
-#@+node:ekr.20110916215321.8018: *9* findInCode
-def findInCode (self,aList,i,findString):
-
-    while i < len(aList):
-        if self.is_string_or_comment(aList,i):
-            i = self.skip_string_or_comment(aList,i)
-        elif self.match(aList,i,findString):
-            return i
-        else:
-            i += 1
-
-    return -1
-#@+node:ekr.20110916215321.8019: *9* findInList
-def findInList (self,aList,i,findString):
-
-    while i < len(aList):
-        if self.match(aList,i,findString):
-            return i
-        else:
-            i += 1
-
-    return-1
-#@+node:ekr.20110916215321.7986: *8* speedTest
-def speedTest (self,passes):
-
-    import time
-    fn = r"c:\prog\LeoPy\LeoPy.leo"
-    f=open(fn)
-    if not f:
-        print("not found: ",fn)
-        return
-    s=f.read()
-    f.close()
-    print("file:", fn, " size:", len(s), " passes:", passes)
-    print("speedTest start")
-    time1 = time.clock()
-    p = passes
-    while p > 0:
-        n = len(s) ; i = 0 ; lines = 0
-        while -1 < i < n:
-            if s[i] == '\n':
-                lines += 1 ; i += 1
-            else:
-                i = s.find('\n',i) # _much_ faster than list-based-find.
-            continue
-            # match is about 9 times slower than simple test.
-            if s[i]=='\n': # match(s,i,'\n'): # 
-                i += 1
-            else:
-                i += 1
-        p -= 1
-    time2 = time.clock()
-    print("lines:", lines)
-    print("speedTest done:")
-    print("elapsed time:", time2-time1)
-    print("time/pass:", (time2-time1)/passes)
-#@+node:ekr.20110916215321.7981: *8* test
-def test(self):
-    
-    << define test data >>
-    
-    self.print_flag = True
-    for s in testData:
-        self.convertCStringToPython(s,leoFlag=True)
-#@+node:ekr.20110917104720.6875: *9* << define test data >>
-testData = [
-"\n@doc\n\
-This is a doc part: format, whilest, {};->.\n\
-<<\
-section def>>=\n\
-LeoFrame::LeoFrame(vnode *v, char *s, int i)\n\
-{\n\
-    // test ; {} /* */.\n\
-    #if 0 //comment\n\
-        if(gLeoFrameList)gLeoFrameList -> mPrevFrame = this ;\n\
-        else\n\
-            this -> mNextFrame = gLeoFrameList ;\n\
-    #else\n\
-        \n\
-        vnode *v = new vnode(a,b);\n\
-        Commands *commander = (Commands) NULL ; // after cast\n\
-        this -> mPrevFrame = NULL ;\n\
-    #endif\n\
-    if (a==b)\n\
-        a = 2;\n\
-    else if (a ==c)\n\
-        a = 3;\n\
-    else return; \n\
-    /* Block comment test:\n\
-        if(2):while(1): end.*/\n\
-    for(int i = 1; i < limit; ++i){\n\
-        mVisible = FALSE ;\n\
-        mOnTop = TRUE ;\n\
-    }\n\
-    // trailing ws.	 \n\
-    mCommands = new Commands(this, mTreeCtrl, mTextCtrl) ;\n\
-    gActiveFrame = this ;\n\
-}\n\
-    ", "<<" +
-"vnode methods >>=\n\
-\n\
-void vnode::OnCopyNode(wxCommandEvent& WXUNUSED(event))\n\
-{\n\
-    mCommands -> copyOutline();\n\
-}\n\
-\n@doc\n\
-another doc part if, then, else, -> \n<<" +
-"vnode methods >>=\n\
-void vnode::OnPasteNode(wxCommandEvent& WXUNUSED(event))\n\
-{\n\
-    mCommands -> pasteOutline();\n\
-}\n" ]
-#@+node:ekr.20110916215321.8057: *7* ctor & helpers
-def __init__ (self,c):
-    
-    self.c = c
-    self.p = self.c.p.copy()
-    
-    aList = g.get_directives_dict_list(self.p)
-    self.tab_width = g.scanAtTabwidthDirectives(aList) or 4
-
-    # Internal state...
-    self.class_name = ''
-        # The class name for the present function.  Used to modify ivars.
-    self.ivars = []
-        # List of ivars to be converted to self.ivar
-    self.print_flag = False
-        
-    # Get user types.
-    self.get_user_types()
-#@+node:ekr.20110916215321.7984: *8* get_user_types
-@nocolor
-@
-
-Change the following lists so they contain the types and classes used by your
-program. c-to-python converts::
-    
-    new aType(...)
-
-to::
-    
-    aType(...)
-    
-Change ivarsDict so it represents the instance variables (ivars) used by your
-program's classes. ivarsDict is a dictionary used to translate ivar i of class c
-to self.i. It also translates this->i to self.i.
-
-@c
-@color
-        
-def get_user_types (self):
-    
-    c = self.c
-
-    self.class_list = c.config.getData('c-to-python-class-list') or []
-    
-    self.type_list  = (
-        c.config.getData('c-to-python-type-list') or
-        ["char", "void", "short", "long", "int", "double", "float"]
-    )
-    aList = c.config.getData('c-to-python-ivars-dict')
-    if aList:
-        self.ivars_dict = self.parse_ivars_data(aList)
-    else:
-        self.ivars_dict = {}
-    
-    if 0:
-        #g.trace('class_list',self.class_list)
-        #g.trace('type_list',self.type_list)
-        g.trace('ivars_dict...')
-        d = self.ivars_dict
-        keys = list(d.keys())
-        for key in sorted(keys):
-            print('%s:' % (key))
-            for val in d.get(key):
-                print('  %s' % (val))
-    
-#@+node:ekr.20110917104720.6877: *8* parse_ivars_data
-def parse_ivars_data (self,aList):
-    
-    d,key = {},None
-    aList = [z.strip() for z in aList if z.strip()]
-    for s in aList:
-        if s.endswith(':'):
-            key = s[:-1].strip()
-        elif key:
-            ivars = [z.strip() for z in s.split(',') if z.strip()]
-            aList = d.get(key,[])
-            aList.extend(ivars)
-            d [key] = aList
-        else:
-            g.es('invalid @data c-to-python-ivars-dict',repr(s),color='red')
-            return {}
-
-    return d
-#@+node:ekr.20110916215321.8058: *7* go
-def go (self):
-    
-    c = self.c
-    u = c.undoer ; undoType = 'c-to-python'
-    pp = c.CPrettyPrinter(c)
-    
-    u.beforeChangeGroup(c.p,undoType)
-    dirtyVnodeList = []
-    changed = False
-    
-    for p in self.p.self_and_subtree():
-        if p.b:
-            # g.es("converting:",p.h)
-            bunch = u.beforeChangeNodeContents(p,oldBody=p.b)
-            
-            s = pp.indent(p)
-            aList = list(s)
-            self.convertCodeList(aList)
-        
-            s = ''.join(aList)
-            if s != p.b:
-                p.b = s
-                p.v.setDirty()
-                dirtyVnodeList.append(p.v)
-                c.undoer.afterChangeNodeContents(p,undoType,bunch)
-                changed = True
-                    
-        if changed:
-            u.afterChangeGroup(c.p,undoType,
-                reportFlag=False,dirtyVnodeList=dirtyVnodeList)
-    g.es("done")
-#@+node:ekr.20110916215321.7997: *7* convertCodeList (main pattern function)
-def convertCodeList(self,aList):
-    
-    r,sr = self.replace,self.safe_replace
-
-    # First...
-    r(aList, "\r", '')
-    # self.convertLeadingBlanks(aList) # Now done by indent.
-    # if leoFlag: replaceSectionDefs(aList)
-    self.mungeAllFunctions(aList)
-    
-    # Next...
-    if 1:
-        # CC2 stuff:
-        sr(aList, "TRACEPB",   "if trace: g.trace")
-        sr(aList, "TRACEPN",   "if trace: g.trace")
-        sr(aList, "TRACEPX",   "if trace: g.trace")
-        sr(aList, "TICKB",     "if trace: g.trace")
-        sr(aList, "TICKN",     "if trace: g.trace")
-        sr(aList, "TICKX",     "if trace: g.trace")
-        sr(aList, "g.trace(ftag,", "g.trace(")
-        sr(aList, "ASSERT_TRACE", "assert")
-
-    sr(aList, "ASSERT","assert")
-    sr(aList, " -> ", '.')
-    sr(aList, "->", '.')
-    sr(aList, " . ", '.')
-    sr(aList, "this.self", "self")
-    sr(aList, "{", '')
-    sr(aList, "}", '')
-    sr(aList, "#if", "if")
-    sr(aList, "#else", "else")
-    sr(aList, "#endif", '')
-    sr(aList, "else if", "elif")
-    sr(aList, "else", "else:")
-    sr(aList, "&&", " and ")
-    sr(aList, "||", " or ")
-    sr(aList, "TRUE", "True")
-    sr(aList, "FALSE", "False")
-    sr(aList, "NULL", "None")
-    sr(aList, "this", "self")
-    sr(aList, "try", "try:")
-    sr(aList, "catch", "except:")
-    # if leoFlag: sr(aList, "@code", "@c")
-
-    # Next...
-    self.handle_all_keywords(aList)
-    self.insert_not(aList)
-    self.removeSemicolonsAtEndOfLines(aList)
-        # after processing for keywords
-
-    # Last...
-    # if firstPart and leoFlag: removeLeadingAtCode(aList)
-    self.removeBlankLines(aList)
-    self.removeExcessWs(aList)
-    # your taste may vary: in Python I don't like extra whitespace
-    sr(aList, " :", ":") 
-    sr(aList, ", ", ",")
-    sr(aList, " ,", ",")
-    sr(aList, " (", "(")
-    sr(aList, "( ", "(")
-    sr(aList, " )", ")")
-    sr(aList, ") ", ")")
-    sr(aList, "@language c","@language python")
-    self.replaceComments(aList) # should follow all calls to safe_replace
-    self.removeTrailingWs(aList)
-    r(aList, "\t ", "\t") # happens when deleting declarations.
-#@+node:ekr.20110916215321.8001: *7* Scanning
-#@+node:ekr.20110919211949.6920: *8* insert_not
-def insert_not (self,aList):
-    
-    '''Change "!" to "not" except before "="'''
-    
-    i = 0
-    while i < len(aList):
-        if self.is_string_or_comment(aList,i):
-            i = self.skip_string_or_comment(aList,i)
-        elif aList[i] == '!' and not self.match(aList,i+1,'='):
-            aList[i:i+1] = list('not ')
-            i += 4
-        else:
-            i += 1
-#@+node:ekr.20110916215321.8003: *8* mungeAllFunctions
-def mungeAllFunctions(self,aList):
-    
-    '''Scan for a '{' at the top level that is preceeded by ')' '''
-
-    prevSemi = 0 # Previous semicolon: header contains all previous text
-    i = 0
-    firstOpen = None
-    while i < len(aList):
-        progress = i
-        if self.is_string_or_comment(aList,i):
-            j = self.skip_string_or_comment(aList,i)
-            prevSemi = j
-        elif self.match(aList,i,'('):
-            if not firstOpen:
-                firstOpen = i
-            j = i + 1
-        elif self.match(aList,i,'#'):
-            # At this point, it is a preprocessor directive.
-            j = self.skip_past_line(aList, i)
-            prevSemi = j
-        elif self.match(aList,i,';'):
-            j = i + 1
-            prevSemi = j
-        elif self.match(aList,i,"{"):
-            j = self.handlePossibleFunctionHeader(aList,i,prevSemi,firstOpen)
-            prevSemi = j
-            firstOpen = None # restart the scan
-            # g.trace(repr(''.join(aList[prevSemi:prevSemi+20])))
-        else:
-            j = i + 1
-        
-        assert j > progress
-        i = j
-        
-# elif self.match_word(aList, i, "@code"):
-    # j = i + 5
-    # prevSemi = j # restart the scan
-# elif self.match_word(aList, i, "@c"):
-    # j = i + 2 ; prevSemi = j # restart the scan
-#@+node:ekr.20110916215321.8004: *9* handlePossibleFunctionHeader
-# converts function header lines from c++ format to python format.
-# That is, converts
-# x1..nn w::y ( t1 z1,..tn zn) {
-# to
-# def y (z1,..zn): {
-
-def handlePossibleFunctionHeader (self,aList,i,prevSemi,firstOpen):
-
-    trace = False
-    assert(self.match(aList,i,"{"))
-
-    prevSemi = self.skip_ws_and_nl(aList, prevSemi)
-    close = self.prevNonWsOrNlChar(aList,i)
-
-    if close < 0 or aList[close] != ')':
-        # Should not increase *Python* indent.
-        return 1 + self.skip_to_matching_bracket(aList,i)
-        
-    if not firstOpen:
-        return 1 + self.skip_to_matching_bracket(aList,i)
-
-    close2 = self.skip_to_matching_bracket(aList, firstOpen)
-    if close2 != close:
-        return 1 + self.skip_to_matching_bracket(aList,i)
-
-    open_paren = firstOpen
-    assert(aList[open_paren]=='(')
-    head = aList[prevSemi:open_paren]
-
-    # do nothing if the head starts with "if", "for" or "while"
-    k = self.skip_ws(head,0)
-    if k >= len(head) or not head[k].isalpha():
-        return 1 + self.skip_to_matching_bracket(aList,i)
-
-    kk = self.skip_past_word(head,k)
-    if kk > k:
-        headString = ''.join(head[k:kk])
-        # C keywords that might be followed by '{'
-        # print "headString:", headString
-        if headString in [ "class", "do", "for", "if", "struct", "switch", "while"]:
-            return 1 + self.skip_to_matching_bracket(aList, i)
-
-    args = aList[open_paren:close+1]
-    k = 1 + self.skip_to_matching_bracket(aList,i)
-    body = aList[close+1:k]
-    
-    if True and trace:
-        g.trace('\nhead: %s\nargs: %s\nbody: %s' % (
-            ''.join(head),''.join(args),''.join(body)))
-    
-    head = self.massageFunctionHead(head)
-    args = self.massageFunctionArgs(args)
-    body = self.massageFunctionBody(body)
-
-    if False and trace:
-        g.trace('\nhead2: %s\nargs2: %s\nbody2: %s' % (
-            ''.join(head),''.join(args),''.join(body)))
-
-    result = []
-    if head: result.extend(head)
-    if args: result.extend(args)
-    if body: result.extend(body)
-
-    aList[prevSemi:k] = result
-    return prevSemi + len(result)
-#@+node:ekr.20110916215321.8005: *9* massageFunctionArgs
-def massageFunctionArgs (self,args):
-
-    assert(args[0]=='(')
-    assert(args[-1]==')')
-
-    result = ['('] ; lastWord = []
-    if self.class_name:
-        for item in list("self,"): result.append(item) #can put extra comma
-
-    i = 1
-    while i < len(args):
-        i = self.skip_ws_and_nl(args, i)
-        c = args[i]
-        if c.isalpha():
-            j = self.skip_past_word(args,i)
-            lastWord = args[i:j]
-            i = j
-        elif c == ',' or c == ')':
-            for item in lastWord:
-                result.append(item)
-            if lastWord != [] and c == ',':
-                result.append(',')
-            lastWord = []
-            i += 1
-        else: i += 1
-    if result[-1] == ',':
-        del result[-1]
-    result.append(')')
-    result.append(':')
-    # print "new args:", ''.join(result)
-    return result
-#@+node:ekr.20110916215321.8006: *9* massageFunctionHead (sets .class_name)
-def massageFunctionHead (self,head):
-    
-    result = []
-    prevWord = []
-    self.class_name = ''
-    i = 0
-    # g.trace(repr(''.join(head)))
-    while i < len(head):
-        i = self.skip_ws_and_nl(head,i)
-        if i < len(head) and head[i].isalpha():
-            result = []
-            j = self.skip_past_word(head,i)
-            prevWord = head[i:j]
-            i = j
-            # look for ::word2
-            i = self.skip_ws(head,i)
-            if self.match(head,i,"::"):
-                # Set the global to the class name.
-                self.class_name = ''.join(prevWord)
-                # print(class name:", self.class_name)
-                i = self.skip_ws(head,i+2)
-                if i < len(head) and (head[i]=='~' or head[i].isalpha()):
-                    j = self.skip_past_word(head,i)
-                    if head[i:j] == prevWord:
-                        result.extend('__init__')
-                    elif head[i]=='~' and head[i+1:j] == prevWord:
-                        result.extend('__del__')
-                    else:
-                        # result.extend(list('::'))
-                        result.extend(head[i:j])
-                    i = j
-            else:
-                result.extend(prevWord)
-        else: i += 1
-
-    finalResult = list("def ")
-    finalResult.extend(result)
-    return finalResult
-#@+node:ekr.20110916215321.8007: *9* massageFunctionBody & helpers
-def massageFunctionBody (self,body):
-
-    body = self.massageIvars(body)
-    body = self.removeCasts(body)
-    body = self.removeTypeNames(body)
-    body = self.dedentBlocks(body)
-    return body
-#@+node:ekr.20110919224143.6928: *10* dedentBlocks
-def dedentBlocks (self,body):
-    
-    '''Look for '{' preceded by '{' or '}' or ';'
-    (with intervening whitespace and comments).
-    '''
-    
-    i = 0
-    while i < len(body):
-        j = i
-        ch = body[i]
-        if self.is_string_or_comment(body,i):
-            j = self.skip_string_or_comment(body,i)
-        elif ch in '{};':
-            # Look ahead ofr '{'
-            j += 1
-            while True:
-                k = j
-                j = self.skip_ws_and_nl(body,j)
-                if self.is_string_or_comment(body,j):
-                    j = self.skip_string_or_comment(body,j)
-                if k == j: break
-                assert k < j
-            if self.match(body,j,'{'):
-                k = j
-                j = self.skip_to_matching_bracket(body,j)
-                # g.trace('found block\n',''.join(body[k:j+1]))
-                m = '# <Start dedented block>...'
-                body[k:k+1] = list(m)
-                j += len(m)
-                while k < j:
-                    progress = k
-                    if body[k] == '\n':
-                        k += 1
-                        spaces = 0
-                        while spaces < 4 and k < j:
-                            if body[k] == ' ':
-                                spaces += 1
-                                k += 1
-                            else:
-                                break
-                        if spaces > 0:
-                            del body[k-spaces:k]
-                            k -= spaces
-                            j -= spaces
-                    else:
-                        k += 1
-                    assert progress < k
-                m = '    # <End dedented block>'
-                body[j:j+1] = list(m)
-                j += len(m)
-        else:
-            j = i + 1
-        assert i < j
-        i = j
-                
-    return body
-#@+node:ekr.20110916215321.8008: *10* massageIvars
-def massageIvars (self,body):
-
-    if self.class_name and self.ivars_dict.has_key(self.class_name):
-        ivars = self.ivars_dict.get(self.class_name)
-    else:
-        ivars = []
-
-    i = 0
-    while i < len(body):
-        if self.is_string_or_comment(body,i):
-            i = self.skip_string_or_comment(body,i)
-        elif body[i].isalpha():
-            j = self.skip_past_word(body,i)
-            word = ''.join(body[i:j])
-            # print "looking up:", word
-            if word in ivars:
-                # replace word by self.word
-                # print "replacing", word, " by self.", word
-                word = "self." + word
-                word = list(word)
-                body[i:j] = word
-                delta = len(word)-(j-i)
-                i = j + delta
-            else: i = j
-        else: i += 1
-    return body
-#@+node:ekr.20110916215321.8009: *10* removeCasts
-def removeCasts (self,body):
-
-    i = 0
-    while i < len(body):
-        if self.is_string_or_comment(body,i):
-            i = self.skip_string_or_comment(body,i)
-        elif self.match(body, i, '('):
-            start = i
-            i = self.skip_ws(body, i+1)
-            if body[i].isalpha():
-                j = self.skip_past_word(body,i)
-                word = ''.join(body[i:j])
-                i = j
-                if word in self.class_list or word in self.type_list:
-                    i = self.skip_ws(body, i)
-                    while self.match(body,i,'*'):
-                        i += 1
-                    i = self.skip_ws(body, i)
-                    if self.match(body,i,')'):
-                        i += 1
-                        # print "removing cast:", ''.join(body[start:i])
-                        del body[start:i]
-                        i = start
-        else: i += 1
-    return body
-#@+node:ekr.20110916215321.8010: *10* removeTypeNames
-# Do _not_ remove type names when preceeded by new.
-
-def removeTypeNames (self,body):
-
-    i = 0
-    while i < len(body):
-        if self.is_string_or_comment(body,i):
-            i = self.skip_string_or_comment(body,i)
-        elif self.match_word(body, i, "new"):
-            i = self.skip_past_word(body,i)
-            i = self.skip_ws(body,i)
-            # don't remove what follows new.
-            if body[i].isalpha():
-                i = self.skip_past_word(body,i)
-        elif body[i].isalpha():
-            j = self.skip_past_word(body,i)
-            word = ''.join(body[i:j])
-            if word in self.class_list or word in self.type_list:
-                j = self.skip_ws(body,j)
-                while self.match(body,j,'*'):
-                    j += 1
-                # print "Deleting type name:", ''.join(body[i:j])
-                j = self.skip_ws(body,j)
-                del body[i:j]
-            else:
-                i = j
-        else: i += 1
-    return body
-#@+node:ekr.20110916215321.8011: *8* handle_all_keywords
-def handle_all_keywords (self,aList):
-    
-    '''
-    converts if ( x ) to if x:
-    converts while ( x ) to while x:
-    '''
-
-    i = 0
-    while i < len(aList):
-        if self.is_string_or_comment(aList,i):
-            i = self.skip_string_or_comment(aList,i)
-        elif (
-            self.match_word(aList,i,"if") or
-            self.match_word(aList,i,"while") or
-            self.match_word(aList,i,"for") or
-            self.match_word(aList,i,"elif")
-        ):
-            i = self.handle_keyword(aList,i)
-        else:
-            i += 1
-    # print "handAllKeywords2:", ''.join(aList)
-#@+node:ekr.20110916215321.8012: *9* handle_keyword
-def handle_keyword (self,aList,i):
-
-    isFor = False
-    if self.match_word(aList,i,"if"):
-        i += 2
-    elif self.match_word(aList,i,"elif"):
-        i += 4
-    elif self.match_word(aList,i,"while"):
-        i += 5
-    elif self.match_word(aList,i,"for"):
-        i += 3
-        isFor = True
-    else: assert(0)
-
-    # Make sure one space follows the keyword.
-    k = i
-    i = self.skip_ws(aList,i)
-    if k == i:
-        c = aList[i]
-        aList[i:i+1] = [ ' ', c ]
-        i += 1
-
-    # Remove '(' and matching ')' and add a ':'
-    if aList[i] == "(":
-        # Look ahead.  Don't remove if we span a line.
-        j = self.skip_to_matching_bracket(aList, i)
-        k = i
-        found = False
-        while k < j and not found:
-            found = aList[k] == '\n'
-            k += 1
-        if not found:
-            j = self.removeMatchingBrackets(aList,i)
-        if j > i and j < len(aList):
-            ch = aList[j]
-            aList[j:j+1] = [ch,":", " "]
-            j = j + 2
-        return j
-    return i
-#@+node:ekr.20110916215321.8063: *7* Utils
-#@+node:ekr.20110916215321.8017: *8* match...
-#@+node:ekr.20110916215321.8020: *9* match
-def match (self,s,i,pat):
-    
-    '''Return True if s[i:] matches the pat string.
-    
-    We can't use g.match because s is usually a list.
-    '''
-    
-    assert pat
-
-    j = 0
-    while i+j < len(s) and j < len(pat):
-        if s[i+j] == pat[j]:
-            j += 1
-            if j == len(pat):
-                return True
-        else:
-            return False
-
-    return False
-#@+node:ekr.20110916215321.8021: *9* match_word
-def match_word (self,s,i,pat):
-    
-    '''Return True if s[i:] word matches the pat string.'''
-
-    if self.match(s,i,pat):
-        j = i + len(pat)
-        if j >= len(s):
-            # g.trace(i,pat)
-            return True
-        else:
-            ch = s[j]
-            return not ch.isalnum() and ch != '_'
-    else:
-        return False
-#@+node:ekr.20110916215321.8066: *8* is...
-#@+node:ekr.20110916215321.8015: *9* isSectionDef
-# returns the ending index if i points to < < x > > =
-def isSectionDef (self,aList,i):
-
-    i = self.skip_ws(aList,i)
-    if not self.match(aList,i,"<<"):
-        return False
-    while i < len(aList) and aList[i] != '\n':
-        if self.match(aList,i,">>="):
-            return i+3
-        else:
-            i += 1
-    return False
-#@+node:ekr.20110916215321.8016: *9* is_string_or_comment
-def is_string_or_comment (self,s,i):
-
-    # Does range checking.
-    m = self.match
-    return m(s,i,"'") or m(s,i,'"') or m(s,i,"//") or m(s,i,"/*")
-#@+node:ekr.20110916215321.8014: *9* is_ws and is_ws_or_nl
-def is_ws (self,ch):
-    return ch in ' \t'
-
-def is_ws_or_nl (self,ch):
-    return ch in ' \t\n'
-#@+node:ekr.20110916215321.8041: *8* prevNonWsChar and prevNonWsOrNlChar
-def prevNonWsChar (self,s,i):
-
-    i -= 1
-    while i >= 0 and self.is_ws(s[i]):
-        i -= 1
-    return i
-
-def prevNonWsOrNlChar (self,s,i):
-
-    i -= 1
-    while i >= 0 and self.is_ws_or_nl(s[i]):
-        i -= 1
-    return i
-#@+node:ekr.20110916215321.8022: *8* remove...
-#@+node:ekr.20110919113533.6821: *9* Not used
-if 0:
-    @others
-#@+node:ekr.20110916215321.8023: *10* removeAllCComments (Not used)
-def removeAllCComments (self,aList,delim):
-
-    i = 0
-    while i < len(aList):
-        progress = i
-        if self.match(aList,i,"'") or self.match(aList,i,'"'):
-            i = self.skip_string(aList,i)
-        elif self.match(aList,i,"//"):
-            j = self.skip_to_end_of_line(aList,i)
-            print("deleting single line comment:", ''.join(aList[i:j]))
-            del aList[i:j]
-        elif self.match(aList,i,"/*"):
-            j = self.skip_c_block_comment(aList,i)
-            print("deleting block comment:", ''.join(aList[i:j]))
-            del aList[i:j]
-        else:
-            i += 1
-        assert i > progress
-#@+node:ekr.20110916215321.8024: *10* removeAllCSentinels
-def removeAllCSentinels (self,aList,delim):
-
-    i = 0
-    while i < len(aList):
-        if self.match(aList,i,"'") or self.match(aList,i,'"'):
-            # string starts a line.
-            i = self.skip_string(aList,i)
-            i = self.skip_past_line(aList,i)
-        elif self.match(aList,i,"/*"):
-            # block comment starts a line
-            i = self.skip_c_block_comment(aList,i)
-            i = self.skip_past_line(line,i)
-        elif self.match(aList,i,"//@"):
-            j = self.skip_past_line(aList,i)
-            print("deleting sentinel:", ''.join(aList[i:j]))
-            del aList[i:j]
-        else:
-            i = self.skip_past_line(aList,i)
-#@+node:ekr.20110916215321.8025: *10* removeAllPythonComments
-def removeAllPythonComments (self,aList,delim):
-
-    i = 0
-    while i < len(aList):
-        if self.match(aList,i,"'") or self.match(aList,i,'"'):
-            i = self.skip_string(aList,i)
-        elif self.match(aList,i,"#"):
-            j = self.skip_past_line(aList,i)
-            print("deleting comment:", ''.join(aList[i:j]))
-            del aList[i:j]
-        else:
-            i += 1
-#@+node:ekr.20110916215321.8026: *10* removeAllPythonSentinels
-def removeAllPythonSentinels (self,aList,delim):
-
-    i = 0
-    while i < len(aList):
-        if self.match(aList,i,"'") or self.match(aList,i,'"'):
-            # string starts a line.
-            i = self.skip_string(aList,i)
-            i = self.skip_past_line(aList,i)
-        elif self.match(aList,i,"#@"):
-            j = self.skip_past_line(aList,i)
-            print("deleting sentinel:", ''.join(aList[i:j]))
-            del aList[i:j]
-        else:
-            i = self.skip_past_line(aList,i)
-#@+node:ekr.20110916215321.8027: *10* removeAtRoot
-def removeAtRoot (self,aList):
-
-    i = self.skip_ws(aList, 0)
-    if self.match_word(aList,i,"@root"):
-        j = self.skip_past_line(aList,i)
-        del aList[i:j]
-
-    while i < len(aList):
-        if self.is_string_or_comment(aList,i):
-            i = self.skip_string_or_comment(aList,i)
-        elif self.match(aList,i,"\n"):
-            i = self.skip_ws(aList, i+1)
-            if self.match_word (aList,i,"@root"):
-                j = self.skip_past_line(aList,i)
-                del aList[i:j]
-        else: i += 1
-#@+node:ekr.20110916215321.8031: *10* removeLeadingAtCode
-def removeLeadingAtCode (self,aList):
-
-    i = self.skip_ws_and_nl(aList,0)
-    if self.match_word(aList,i,"@code"):
-        i = self.skip_ws_and_nl(aList,5)
-        del aList[0:i]
-    elif self.match_word(aList,i,"@c"):
-        i = self.skip_ws_and_nl(aList,2)
-        del aList[0:i]
-#@+node:ekr.20110916215321.8028: *9* removeBlankLines
-def removeBlankLines (self,aList):
-
-    i = 0
-    while i < len(aList):
-        j = i
-        while j < len(aList) and aList[j] in " \t":
-            j += 1
-        if j == len(aList) or aList[j] == '\n':
-            del aList[i:j+1]
-        else:
-            i = self.skip_past_line(aList,i)
-#@+node:ekr.20110916215321.8029: *9* removeExcessWs
-def removeExcessWs (self,aList):
-
-    i = 0
-    i = self.removeExcessWsFromLine(aList,i)
-    while i < len(aList):
-        if self.is_string_or_comment(aList,i):
-            i = self.skip_string_or_comment(aList,i)
-        elif self.match(aList,i,'\n'):
-            i += 1
-            i = self.removeExcessWsFromLine(aList,i)
-        else: i += 1
-#@+node:ekr.20110916215321.8030: *9* removeExessWsFromLine
-def removeExcessWsFromLine (self,aList,i):
-
-    assert(i==0 or aList[i-1] == '\n')
-    i = self.skip_ws(aList,i)
-        # Retain the leading whitespace.
-
-    while i < len(aList):
-        if self.is_string_or_comment(aList,i):
-            break # safe
-        elif self.match(aList,i,'\n'):
-            break
-        elif self.match(aList,i,' ') or self.match(aList,i,'\t'):
-            # Replace all whitespace by one blank.
-            j = self.skip_ws(aList,i)
-            assert(j > i)
-            aList[i:j] = [' ']
-            i += 1 # make sure we don't go past a newline!
-        else: i += 1
-    return i
-#@+node:ekr.20110916215321.8032: *9* removeMatchingBrackets
-def removeMatchingBrackets (self,aList, i):
-
-    j = self.skip_to_matching_bracket(aList, i)
-    if j > i and j < len(aList):
-        # print "del brackets:", ''.join(aList[i:j+1])
-        c = aList[j]
-        if c == ')' or c == ']' or c == '}':
-            del aList[j:j+1]
-            del aList[i:i+1]
-            # print "returning:", ''.join(aList[i:j])
-            return j - 1
-        else: return j + 1
-    else: return j
-#@+node:ekr.20110916215321.8033: *9* removeSemicolonsAtEndOfLines
-def removeSemicolonsAtEndOfLines (self,aList):
-
-    i = 0
-    while i < len(aList):
-        if self.is_string_or_comment(aList,i):
-            i = self.skip_string_or_comment(aList,i)
-        elif aList[i] == ';':
-            j = self.skip_ws(aList,i+1)
-            if (
-                j >= len(aList) or
-                self.match(aList,j,'\n') or
-                self.match(aList,j,'#') or
-                self.match(aList,j,"//")
-            ):
-                del aList[i]
-            else: i += 1
-        else: i += 1
-#@+node:ekr.20110916215321.8034: *9* removeTrailingWs
-def removeTrailingWs (self,aList):
-
-    i = 0
-    while i < len(aList):
-        if self.is_ws(aList[i]):
-            j = i
-            i = self.skip_ws(aList,i)
-            assert(j < i)
-            if i >= len(aList) or aList[i] == '\n':
-                # print "removing trailing ws:", `i-j`
-                del aList[j:i]
-                i = j
-        else: i += 1
-#@+node:ekr.20110916215321.8035: *8* replace... & safe_replace
-#@+node:ekr.20110916215321.8036: *9* replace
-def replace (self,aList,findString,changeString):
-    
-    '''# Replaces all occurances of findString by changeString.
-    changeString may be the empty string, but not None.
-    '''
-
-    if not findString: return
-    
-    changeList = list(changeString)
-    i = 0
-    while i < len(aList):
-        if self.match(aList,i,findString):
-            aList[i:i+len(findString)] = changeList
-            i += len(changeList)
-        else:
-            i += 1
-#@+node:ekr.20110916215321.8037: *9* replaceComments
-def replaceComments (self,aList):
-
-    i = 0
-    while i < len(aList):
-        # Loop invariant: j > progress at end.
-        progress = i
-        if self.match(aList,i,"//"):
-            aList[i:i+2] = ['#']
-            j = self.skip_past_line(aList,i)
-        elif self.match(aList,i,"/*"):
-            j = self.skip_c_block_comment(aList,i)
-            k = i
-            while k-1 >= 0 and aList[k-1] in ' \t':
-                k -= 1
-            assert k == 0 or aList[k-1] not in ' \t'
-            lws = ''.join(aList[k:i])
-            comment_body = ''.join(aList[i+2:j-2])
-            comment_lines = g.splitLines(lws + comment_body)
-            comment_lines = self.munge_block_comment(comment_lines)
-            comment = '\n'.join(comment_lines) # A list of lines.
-            comment_list = list(comment) # A list of characters.
-            aList[k:j] = comment_list
-            j = k + len(comment_list)
-            progress = j - 1 # Disable the check below.
-        elif self.match(aList,i,'"') or self.match(aList,i,"'"):
-            j = self.skip_string(aList,i)
-        else:
-            j = i+1
-
-        assert j > progress
-        i = j
-#@+node:ekr.20110920063732.6935: *10* munge_block_comment
-def munge_block_comment (self,comment_lines):
-    
-    trace = False
-    n = len(comment_lines)
-    assert n > 0
-    
-    s = comment_lines[0]
-    junk,w = g.skip_leading_ws_with_indent(s,0,tab_width=4)
-
-    if n == 1:
-        return ['%s# %s' % ((' ' * (w-1)),s.strip())]
-    
-    junk,w = g.skip_leading_ws_with_indent(s,0,tab_width=4)
-    i,result = 0,[]
-    for i in range(len(comment_lines)):
-        s = comment_lines[i]
-        if s.strip():
-            result.append('%s# %s' % ((' ' * w),s.strip()))
-        elif i == n-1:
-            pass # Omit the line entirely.
-        else:
-            result.append('') # Add a blank line
-    
-    if trace:
-        g.trace()
-        for z in result: print(repr(z))
-
-    return result
-#@+node:ekr.20110916215321.8038: *9* replaceSectionDefs
-def replaceSectionDefs (self,aList):
-    
-    '''Replaces < < x > > = by @c (at the start of lines).'''
-
-    i = 0
-    j = self.isSectionDef(aList,i)
-    if j > 0: aList[i:j] = list("@c ")
-
-    while i < len(aList):
-        if self.is_string_or_comment(aList,i):
-            i = self.skip_string_or_comment(aList,i)
-        elif self.match(aList,i,"\n"):
-            i += 1
-            j = self.isSectionDef(aList,i)
-            if j > i: aList[i:j] = list("@c ")
-        else: i += 1
-#@+node:ekr.20110916215321.8039: *9* safe_replace
-def safe_replace (self,aList,findString,changeString):
-    
-    '''Replaces occurances of findString by changeString,
-    but only outside of C comments and strings.
-    changeString may be the empty string, but not None.
-    '''
-
-    if not findString: return
-
-    changeList = list(changeString)
-    i = 0
-    if findString[0].isalpha(): # use self.match_word
-        while i < len(aList):
-            if self.is_string_or_comment(aList,i):
-                i = self.skip_string_or_comment(aList,i)
-            elif self.match_word(aList,i,findString):
-                aList[i:i+len(findString)] = changeList
-                i += len(changeList)
-            else:
-                i += 1
-    else: #use self.match
-        while i < len(aList):
-            if self.match(aList,i,findString):
-                aList[i:i+len(findString)] = changeList
-                i += len(changeList)
-            else:
-                i += 1
-#@+node:ekr.20110916215321.8040: *8* skip
-#@+node:ekr.20110916215321.8042: *9* skip_c_block_comment
-def skip_c_block_comment (self,s,i):
-    
-    # if 'replaceComments' in g.callers():
-        # g.trace(repr(''.join(s[i:i+20])))
-
-    assert(self.match(s,i,"/*"))
-    i += 2
-
-    while i < len(s):
-        if self.match(s,i,"*/"):
-            return i + 2
-        else:
-            i += 1
-
-    return i
-#@+node:ekr.20110916215321.8043: *9* skip_past_line
-def skip_past_line (self,s,i):
-
-    while i < len(s) and s[i] != '\n':
-        i += 1
-    if i < len(s) and s[i] == '\n':
-        i += 1
-    return i
-#@+node:ekr.20110916215321.8044: *9* skip_past_word
-def skip_past_word (self,s,i):
-
-    assert(s[i].isalpha() or s[i]=='~')
-
-    # Kludge: this helps recognize dtors.
-    if s[i]=='~':
-        i += 1
-
-    while i < len(s):
-        ch = s[i]
-        if ch.isalnum() or ch =='_':
-            i += 1
-        else:
-            break
-    return i
-#@+node:ekr.20110916215321.8045: *9* skip_string
-def skip_string (self,s,i):
-
-    delim = s[i] # handle either single or double-quoted strings
-    assert(delim == '"' or delim == "'")
-    i += 1
-
-    while i < len(s):
-        if s[i] == delim:
-            return i + 1
-        elif s[i] == '\\':
-            i += 2
-        else:
-            i += 1
-    return i
-#@+node:ekr.20110916215321.8046: *9* skip_string_or_comment
-def skip_string_or_comment (self,s,i):
-
-    if self.match(s,i,"'") or self.match(s,i,'"'):
-        j = self.skip_string(s,i)
-    elif self.match(s,i,"//"):
-        j = self.skip_past_line(s,i)
-    elif self.match(s,i,"/*"):
-        j = self.skip_c_block_comment(s,i)
-    else: assert(0)
-    
-    # g.trace(repr(''.join(s[i:j])))
-    return j
-#@+node:ekr.20110916215321.8047: *9* skip_to_matching_bracket
-def skip_to_matching_bracket (self,s,i):
-
-    ch = s[i]
-    if   ch == '(': delim = ')'
-    elif ch == '{': delim = '}'
-    elif ch == '[': delim = ']'
-    else: assert(0)
-
-    i += 1
-    while i < len(s):
-        ch = s[i]
-        if self.is_string_or_comment(s,i):
-            i = self.skip_string_or_comment(s,i)
-        elif ch == delim:
-            return i
-        elif ch == '(' or ch == '[' or ch == '{':
-            i = self.skip_to_matching_bracket(s,i)
-            i += 1 # skip the closing bracket.
-        else: i += 1
-    return i
-#@+node:ekr.20110916215321.8048: *9* skip_ws and skip_ws_and_nl
-def skip_ws (self,aList,i):
-
-    while i < len(aList):
-        c = aList[i]
-        if c == ' ' or c == '\t':
-            i += 1
-        else: break
-    return i
-
-def skip_ws_and_nl (self,aList,i):
-
-    while i < len(aList):
-        c = aList[i]
-        if c == ' ' or c == '\t' or c == '\n':
-            i += 1
-        else: break
-    return i
 #@+node:ekr.20110916215321.8003: *5* mungeAllFunctions
 def mungeAllFunctions(self,aList):
     
@@ -18754,7 +16474,7 @@ def importOrgMode (self,event):
     self.ImportOrgMode(c).go(c.p)
     c.bodyWantsFocus()
 
-if g.app.inScript:
+if False and g.app.inScript:
     print('='*40)
     ImportOrgMode(c).test()
     print('done')
@@ -25389,6 +23109,250 @@ def skipToMatchingTag (self,s,i,tag):
 @nocolor-node
 
 Leo's home page now shows the latest postings on the leo-editor group.
+#@+node:ekr.20111031075748.10003: *4* Added support for hidden unit tests
+@nocolor-node
+
+A hidden unit test is a node that is *not* a section-definition node and whose
+body text contains one of the following guards at the start of a line::
+    
+    if g.unitTesting
+    if g.app.unitTesting:
+    if g.inScript:
+    if g.app.inScript:
+        
+Any one of the guards will prevent the unit testing code from being executing
+when importing a file.
+
+The typical usage pattern is::
+    
+    class myClass:
+        ...
+        
+    if g.unitTesting:
+        x = myClass()
+        x.test()
+        
+Redefined alt-4 to mean run-all-unit-tests-locally, which is just what is wanted.
+#@+node:ekr.20051104075904.4: *5* doTests...
+def doTests(c,all=None,p=None,verbosity=1):
+
+    trace = False ; verbose = False
+    if all:
+        p = c.rootPosition()
+    elif not p:
+        p = c.p
+    p1 = p.copy()
+
+    try:
+        found = False
+        g.unitTesting = g.app.unitTesting = True
+        g.app.unitTestDict["fail"] = False
+        g.app.unitTestDict['c'] = c
+        g.app.unitTestDict['g'] = g
+        g.app.unitTestDict['p'] = p and p.copy()
+
+        # c.undoer.clearUndoState() # New in 4.3.1.
+        changed = c.isChanged()
+        suite = unittest.makeSuite(unittest.TestCase)
+
+        # New in Leo 4.4.8: ignore everything in @ignore trees.
+        if all: last = None
+        else:   last = p.nodeAfterTree()
+        if trace: g.trace('all',all,'root',p.h)
+        seen = set()
+        while p and p != last:
+            # 2011/10/31: support for hidden tests: run tests only once.
+            if p.v in seen:
+                p.moveToNodeAfterTree()
+                continue
+            seen.add(p.v)
+            if g.match_word(p.h,0,'@ignore'):
+                if trace: g.trace('ignoring tree',p.h)
+                p.moveToNodeAfterTree()
+            elif isTestNode(p): # @test or contains "if g.app.unitTesting" or "if g.app.inScript"
+                if trace: g.trace('adding',p.h)
+                test = makeTestCase(c,p)
+                if test:
+                    suite.addTest(test) ; found = True
+                p.moveToThreadNext()
+            elif isSuiteNode(p): # @suite
+                if trace: g.trace('adding',p.h)
+                test = makeTestSuite(c,p)
+                if test:
+                    suite.addTest(test) ; found = True
+                p.moveToThreadNext()
+            else:
+                if trace and verbose: g.trace('skipping',p.h)
+                p.moveToThreadNext()
+
+        # Verbosity: 1: print just dots.
+        if not found:
+            # 2011/10/30: run the body of p as a unit test.
+            test = makeTestCase(c,c.p)
+            if test:
+                suite.addTest(test)
+                found = True
+        if found:
+            res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
+            # put info to db as well
+            if g.enableDB:
+                key = 'unittest/cur/fail'
+                archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
+                c.cacher.db[key] = archive
+        else:
+            g.es_print('no @test or @suite nodes in %s outline' % (
+                g.choose(all,'entire','selected')),color='red')
+    finally:
+        c.setChanged(changed) # Restore changed state.
+        if g.app.unitTestDict.get('restoreSelectedNode',True):
+            c.redraw(p1)
+        g.unitTesting = g.app.unitTesting = False
+#@+node:ekr.20051104075904.5: *6* class generalTestCase
+class generalTestCase(unittest.TestCase):
+
+    """Create a unit test from a snippet of code."""
+
+    @others
+#@+node:ekr.20051104075904.6: *7* __init__
+def __init__ (self,c,p):
+
+     # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.p = p.copy()
+#@+node:ekr.20051104075904.7: *7*  fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+#@+node:ekr.20051104075904.9: *7* tearDown
+def tearDown (self):
+
+    pass
+
+    # Restore the outline.
+    self.c.outerUpdate()
+#@+node:ekr.20051104075904.8: *7* setUp
+def setUp (self):
+
+    c = self.c ; p = self.p
+
+    c.selectPosition(p.copy()) # 2010/02/03
+#@+node:ekr.20051104075904.10: *7* runTest
+def runTest (self,define_g = True):
+
+    trace = False
+    c = self.c ; p = self.p.copy()
+    script = g.getScript(c,p).strip()
+    self.assert_(script)
+    writeScriptFile = c.config.getBool('write_script_file')
+
+    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    if define_g:
+        d = {'c':c,'g':g,'p':p and p.copy(),'self':self,}
+    else:
+        d = {'self':self,}
+
+    script = script + '\n'
+    if trace: g.trace('p',p and p.h,'\n',script)
+
+    # Execute the script. Let unit test handle any errors!
+    if writeScriptFile:
+        scriptFile = c.writeScriptFile(script)
+
+    exec(script,d)
+#@+node:ekr.20051104075904.11: *7* shortDescription
+def shortDescription (self):
+
+    s = self.p.h
+
+    # g.trace(s)
+
+    return s + '\n'
+#@+node:ekr.20051104075904.12: *6* makeTestSuite
+@ This code executes the script in an @suite node.  This code assumes:
+- The script creates a one or more unit tests.
+- The script puts the result in g.app.scriptDict["suite"]
+@c
+
+def makeTestSuite (c,p):
+
+    """Create a suite of test cases by executing the script in an @suite node."""
+
+    p = p.copy()
+
+    script = g.getScript(c,p).strip()
+    if not script:
+        print("no script in %s" % h)
+        return None
+    try:
+        if 0: #debugging
+            n,lines = 0,g.splitLines(script)
+            for line in lines:
+                print(n,line)
+                n += 1
+        exec(script + '\n',{'c':c,'g':g,'p':p})
+        suite = g.app.scriptDict.get("suite")
+        if not suite:
+            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+        return suite
+    except Exception:
+        print('makeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_exception()
+        return None
+#@+node:ekr.20051104075904.13: *6* makeTestCase
+def makeTestCase (c,p):
+
+    p = p.copy()
+
+    if p.b.strip():
+        return generalTestCase(c,p)
+    else:
+        return None
+#@+node:ekr.20051104075904.3: *5* isSuiteNode and isTestNode
+def isSuiteNode (p):
+    h = p.h.lower()
+    return g.match_word(h,0,"@suite")
+    
+test_pat_s = "^if(\s)+g(\.app)*\.(unitTesting|inScript):(\s)*$"
+test_pat = re.compile(test_pat_s,re.MULTILINE)
+
+def isTestNode (p):
+    '''
+    Return True if p is an @test node or p is *not* a section definition and
+    p's body text contains "if g.unitTesting, or g.app.unitTesting or
+    g.inScript or g.app.inScript.
+    '''
+    h = p.h.lower()
+    hidden = not p.h.startswith('<<') and test_pat.search(p.b)
+    if hidden: print('Adding hidden test: %s' % (p.h))
+    return hidden or g.match_word(h,0,"@test")
+
+# def isTestCaseNode (p):
+    # h = p.h.lower()
+    # return g.match_word(h,0,"@testcase") or g.match_word(h,0,"@test-case")
+#@+node:ekr.20111030155153.16705: *5* @@button find-hidden-tests
+'''Run all hidden tests in this file.
+
+Such tests have "if g.app.unitTesting:" or "if.g.app.inScript" in body text.
+'''
+
+import re
+
+s = "^if(\s)+g(\.app)*\.(unitTesting|inScript):(\s)*$"
+
+pat = re.compile(s,re.MULTILINE)
+
+for p in c.all_unique_positions():
+    if pat.search(p.b) and not p.h.startswith('<<'):
+        print(p.h)
+print('done')
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
