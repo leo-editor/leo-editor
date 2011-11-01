@@ -141,6 +141,7 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
     finally:
         c.setChanged(changed) # Restore changed state.
         if g.app.unitTestDict.get('restoreSelectedNode',True):
+            c.contractAllHeadlines()
             c.redraw(p1)
         g.unitTesting = g.app.unitTesting = False
 #@+node:ekr.20051104075904.5: *4* class generalTestCase
