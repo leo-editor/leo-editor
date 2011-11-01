@@ -2696,14 +2696,14 @@ class baseScannerClass (scanUtility):
                 level -= 1 ; i += len(delim2)
                 # Skip junk following Pascal 'end'
                 for z in self.blockDelim2Cruft:
-                    i2 = g.skip_ws(s,i)
+                    i2 = self.skipWs(s,i)
                     if g.match(s,i2,z):
                         i = i2 + len(z)
                         break
                 if level <= 0:
                     # 2010/09/20
                     # Skip a single-line comment if it exists.
-                    j = g.skip_ws(s,i)
+                    j = self.skipWs(s,i)
                     if (g.match(s,j,self.lineCommentDelim) or
                         g.match(s,j,self.lineCommentDelim2)
                     ):
@@ -2731,7 +2731,7 @@ class baseScannerClass (scanUtility):
         i = self.skipBlock(s,i,delim1=None,delim2=None)
 
         if self.sigFailTokens:
-            i = g.skip_ws(s,i)
+            i = self.skipWs(s,i)
             for z in self.sigFailTokens:
                 if g.match(s,i,z):
                     if trace: g.trace('failtoken',z)
@@ -2796,7 +2796,7 @@ class baseScannerClass (scanUtility):
             elif self.startsComment(s,i):
                 # Add the comment to the decl if it *doesn't* start the line.
                 i2,junk = g.getLine(s,i)
-                i2 = g.skip_ws(s,i2)
+                i2 = self.skipWs(s,i2)
                 if i2 == i and prefix is None:
                     prefix = i2 # Bug fix: must include leading whitespace in the comment.
                 i = self.skipComment(s,i)
@@ -2851,7 +2851,7 @@ class baseScannerClass (scanUtility):
         Issue an error if no newline is found.'''
 
         while i < len(s):
-            i = g.skip_ws(s,i)
+            i = self.skipWs(s,i)
             if self.startsComment(s,i):
                 i = self.skipComment(s,i)
             else: break
@@ -2879,6 +2879,10 @@ class baseScannerClass (scanUtility):
 
         # Returns len(s) on unterminated string.
         return g.skip_string(s,i,verbose=False)
+    #@+node:ekr.20111101052702.16720: *4* skipWs
+    def skipWs (self,s,i):
+        
+        return g.skip_ws(s,i)
     #@+node:ekr.20070711132314: *4* startsClass/Function (baseClass) & helpers
     # We don't expect to override this code, but subclasses may override the helpers.
 
@@ -2939,7 +2943,7 @@ class baseScannerClass (scanUtility):
 
         trace = False and self.trace
         start = i
-        i = g.skip_ws(s,i)
+        i = self.skipWs(s,i)
         for z in self.sigFailTokens:
             if g.match(s,i,z):
                 if trace: g.trace('failToken',z,'line',g.skip_line(s,i))
@@ -3091,7 +3095,7 @@ class baseScannerClass (scanUtility):
             if s[i] == '\n':
                 i,kind = i+1,'nl'
             elif s[i].isspace():
-                i,kind = g.skip_ws(s,i),'ws'
+                i,kind = self.skipWs(s,i)
             elif self.startsComment(s,i):
                 i,kind = self.skipComment(s,i),'comment'
             elif self.startsString(s,i):
