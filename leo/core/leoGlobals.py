@@ -68,7 +68,6 @@ import tempfile
 import traceback
 import types
 #@-<< imports >>
-print('*** isPython3: %s' % isPython3)
 #@+<< define globalDirectiveList >>
 #@+node:EKR.20040610094819: ** << define globalDirectiveList >>
 # Visible externally so plugins may add to the list of directives.
@@ -121,8 +120,13 @@ unified_nodes = True # For compatibility with old scripts.
 enableDB = True
     # Don't even think about eliminating this constant:
     # it is needed for debugging.
-if not enableDB:
-    print('** leoGlobals.py: caching disabled')
+    
+# 2011/11/02: The print statements have been moved to writeWaitingLog.
+# This allows for better --silent operation.
+if 0:
+    print('*** isPython3: %s' % isPython3)
+    if not enableDB:
+        print('** leoGlobals.py: caching disabled')
 
 #@+others
 #@+node:ekr.20031218072017.3095: ** Checking Leo Files...
@@ -3107,11 +3111,14 @@ def es(*args,**keys):
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
 
-    # text1 = ' '.join([str(a) for a in args])
-    # print(text1)
+    trace = False
 
     if not app or app.killed: return
     log = app.log
+    
+    if trace: # Effective for debugging.
+        print('***es',args,keys)
+        print('***es',g.callers())
 
     # Compute the effective args.
     d = {'color':'black','commas':False,'newline':True,'spaces':True,'tabName':'Log'}
