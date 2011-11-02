@@ -813,9 +813,14 @@ class LeoApp:
     #@+node:ekr.20031218072017.2619: ** app.writeWaitingLog
     def writeWaitingLog (self,c):
 
+        trace = False
         app = self
-        # Do not call g.es, g.es_print, g.pr or g.trace here!
-        # print('***** writeWaitingLog','unitTesting',g.unitTesting,c,g.callers())
+        
+        if trace:
+            # Do not call g.es, g.es_print, g.pr or g.trace here!
+            print('** writeWaitingLog','silent',app.silentMode,c.shortFileName())
+            # print('writeWaitingLog',g.callers())
+            # import sys ; print('writeWaitingLog: argv',sys.argv)
 
         if not c or not c.exists:
             return
@@ -835,21 +840,32 @@ class LeoApp:
 
         c.setLog() # 2010/10/20
         app.logInited = True # Prevent recursive call.
+        
+        if not app.silentMode:
+            print('** isPython3: %s' % g.isPython3)
+            if not g.enableDB:
+                print('** caching disabled')
+        
         if not app.signon_printed:
             app.signon_printed = True
-            print(app.signon)
-            print(app.signon2)
-        for s in app.printWaiting:
-            print(s)
+            if not app.silentMode: # 2011/11/02:
+                print(app.signon)
+                print(app.signon2)
+        if not app.silentMode: # 2011/11/02:
+            for s in app.printWaiting:
+                print(s)
         app.printWaiting = []
-        for s,color in table:
-            app.logWaiting.insert(0,(s+'\n',color),)
-        for s,color in app.logWaiting:
-            g.es('',s,color=color,newline=0)
-                # The caller must write the newlines.
+
+        if not app.silentMode:  # 2011/11/02:
+            for s,color in table:
+                app.logWaiting.insert(0,(s+'\n',color),)
+            for s,color in app.logWaiting:
+                g.es('',s,color=color,newline=0)
+                    # The caller must write the newlines.
+        app.logWaiting = []
 
         # Essential when opening multiple files...
-        app.logWaiting = []
+        
         g.app.setLog(None) 
     #@+node:ville.20090602181814.6219: ** app.commanders
     def commanders(self):
