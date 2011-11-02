@@ -1247,13 +1247,9 @@ class leoMenu:
                 aSet = d.get(commandName,set())
                 aSet.add(stroke)
                 d[commandName] = aSet
-        
-            def masterMenuCallback (c=c,commandName=commandName):
-                # Bug fix: 2011/10/28.
-                # This was the only call to k.masterMenuHandler.
-                # Use only the command name to dispatch the command.
-                event = g.app.gui.create_key_event(c,None,None,None)
-                return c.k.masterCommand(commandName=commandName,event=event)
+                
+            masterMenuCallback = self.createMasterMenuCallback(
+                dynamicMenu,command,commandName)
 
             realLabel = self.getRealMenuName(label)
             amp_index = realLabel.find("&")
@@ -1272,6 +1268,29 @@ class leoMenu:
                     accelerator=accelerator,
                     command=masterMenuCallback,
                     underline=amp_index)
+    #@+node:ekr.20111102072143.10016: *5* createMasterMenuCallback
+    def createMasterMenuCallback(self,dynamicMenu,command,commandName):
+        
+        c = self.c
+        
+        if dynamicMenu:
+            if command:
+                def masterDynamicMenuCallback (c=c,command=command):
+                    # g.trace(command.__name__)
+                    event = g.app.gui.create_key_event(c,None,None,None)
+                    return c.k.masterCommand(func=command,event=event)
+                return masterDynamicMenuCallback
+            else:
+                g.internalError('no callback for dynamic menu item.')
+                def dummyMasterMenuCallback():
+                    pass
+                return dummyMasterMenuCallback
+        else:
+            def masterStaticMenuCallback (c=c,commandName=commandName):
+                # 2011/10/28: Use only the command name to dispatch the command.
+                event = g.app.gui.create_key_event(c,None,None,None)
+                return c.k.masterCommand(commandName=commandName,event=event)
+            return masterStaticMenuCallback
     #@+node:ekr.20111028060955.16568: *5* getMenuEntryBindings
     def getMenuEntryBindings(self,command,dynamicMenu,label):
         
