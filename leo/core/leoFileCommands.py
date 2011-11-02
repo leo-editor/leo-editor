@@ -1438,7 +1438,7 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.3032: ** Writing
     #@+node:ekr.20070413045221.2: *3*  Top-level  (leoFileCommands)
     #@+node:ekr.20031218072017.1720: *4* save (fileCommands)
-    def save(self,fileName):
+    def save(self,fileName,silent=False):
 
         c = self.c ; v = c.currentVnode()
 
@@ -1453,7 +1453,8 @@ class baseFileCommands:
             if ok:
                 ok = self.write_Leo_file(fileName,False) # outlineOnlyFlag
             if ok:
-                self.putSavedMessage(fileName)
+                if not silent:
+                    self.putSavedMessage(fileName)
                 c.setChanged(False) # Clears all dirty bits.
                 if c.config.save_clears_undo_buffer:
                     g.es("clearing undo")
