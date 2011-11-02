@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20100120072650.6089: * @file leoProjects.txt
+#@+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 #@+all
 #@+node:ekr.20101127152442.5916: ** Testing
 #@+node:ekr.20110601190157.19176: *3* Pylint
@@ -22777,6 +22777,7 @@ def initConfigSettings (self):
         # Note: there is also a smart_auto_indent setting.
     c.tab_width             = c.config.getInt('tab_width') or -4
     c.use_focus_border      = c.config.getBool('use_focus_border',default=True)
+    c.write_script_file     = c.config.getBool('write_script_file')
 
     # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
     # g.trace(c.sparse_move)
@@ -23409,7 +23410,7 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
         # New in Leo 4.4.8: ignore everything in @ignore trees.
         if all: last = None
         else:   last = p.nodeAfterTree()
-        if trace: g.trace('all',all,'marked',marked,'root',p.h)
+        if trace and verbose: g.trace('all',all,'marked',marked,'root',p.h)
         seen = set()
         while p and p != last:
             # 2011/10/31: support for hidden tests: run tests only once.
@@ -23499,14 +23500,16 @@ def setUp (self):
     c = self.c ; p = self.p
 
     c.selectPosition(p.copy()) # 2010/02/03
-#@+node:ekr.20051104075904.10: *7* runTest
+#@+node:ekr.20051104075904.10: *7* runTest (generalTestCase)
 def runTest (self,define_g = True):
 
     trace = False
     c = self.c ; p = self.p.copy()
     script = g.getScript(c,p).strip()
     self.assert_(script)
-    writeScriptFile = c.config.getBool('write_script_file')
+    
+    if c.shortFileName() == 'dynamicUnitTest.leo':
+        c.write_script_file = True
 
     # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
     g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
@@ -23517,13 +23520,19 @@ def runTest (self,define_g = True):
         d = {'self':self,}
 
     script = script + '\n'
-    if trace: g.trace('p',p and p.h,'\n',script)
+    if trace: g.trace('p: %s c: %s write script: %s script:\n%s' % (
+        p and p.h,c.shortFileName(),c.write_script_file,script))
 
-    # Execute the script. Let unit test handle any errors!
-    if writeScriptFile:
+    # Execute the script. Let the unit test handle any errors!
+    # 2011/11/02: pass the script sources to exec or execfile.
+    if c.write_script_file:
         scriptFile = c.writeScriptFile(script)
-
-    exec(script,d)
+        if g.isPython3:
+            exec(compile(script,scriptFile,'exec'),d)
+        else:
+            execfile(scriptFile,d)
+    else:
+        exec(script,d)
 #@+node:ekr.20051104075904.11: *7* shortDescription
 def shortDescription (self):
 
@@ -23532,7 +23541,7 @@ def shortDescription (self):
     # g.trace(s)
 
     return s + '\n'
-#@+node:ekr.20051104075904.12: *6* makeTestSuite
+#@+node:ekr.20051104075904.12: *6* makeTestSuite (leoTest)
 @ This code executes the script in an @suite node.  This code assumes:
 - The script creates a one or more unit tests.
 - The script puts the result in g.app.scriptDict["suite"]
@@ -23543,7 +23552,7 @@ def makeTestSuite (c,p):
     """Create a suite of test cases by executing the script in an @suite node."""
 
     p = p.copy()
-
+    # g.trace('c.write_script_file',c.write_script_file)
     script = g.getScript(c,p).strip()
     if not script:
         print("no script in %s" % h)
@@ -23554,7 +23563,17 @@ def makeTestSuite (c,p):
             for line in lines:
                 print(n,line)
                 n += 1
-        exec(script + '\n',{'c':c,'g':g,'p':p})
+                
+        # 2011/11/02: make script sources available.
+        d = {'c':c,'g':g,'p':p}
+        if c.write_script_file:
+            scriptFile = c.writeScriptFile(script)
+            if g.isPython3:
+                exec(compile(script,scriptFile,'exec'),d)
+            else:
+                execfile(scriptFile,d)
+        else:
+            exec(script + '\n',d)
         suite = g.app.scriptDict.get("suite")
         if not suite:
             print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
@@ -23682,7 +23701,7 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
         # New in Leo 4.4.8: ignore everything in @ignore trees.
         if all: last = None
         else:   last = p.nodeAfterTree()
-        if trace: g.trace('all',all,'marked',marked,'root',p.h)
+        if trace and verbose: g.trace('all',all,'marked',marked,'root',p.h)
         seen = set()
         while p and p != last:
             # 2011/10/31: support for hidden tests: run tests only once.
@@ -23772,14 +23791,16 @@ def setUp (self):
     c = self.c ; p = self.p
 
     c.selectPosition(p.copy()) # 2010/02/03
-#@+node:ekr.20051104075904.10: *7* runTest
+#@+node:ekr.20051104075904.10: *7* runTest (generalTestCase)
 def runTest (self,define_g = True):
 
     trace = False
     c = self.c ; p = self.p.copy()
     script = g.getScript(c,p).strip()
     self.assert_(script)
-    writeScriptFile = c.config.getBool('write_script_file')
+    
+    if c.shortFileName() == 'dynamicUnitTest.leo':
+        c.write_script_file = True
 
     # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
     g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
@@ -23790,13 +23811,19 @@ def runTest (self,define_g = True):
         d = {'self':self,}
 
     script = script + '\n'
-    if trace: g.trace('p',p and p.h,'\n',script)
+    if trace: g.trace('p: %s c: %s write script: %s script:\n%s' % (
+        p and p.h,c.shortFileName(),c.write_script_file,script))
 
-    # Execute the script. Let unit test handle any errors!
-    if writeScriptFile:
+    # Execute the script. Let the unit test handle any errors!
+    # 2011/11/02: pass the script sources to exec or execfile.
+    if c.write_script_file:
         scriptFile = c.writeScriptFile(script)
-
-    exec(script,d)
+        if g.isPython3:
+            exec(compile(script,scriptFile,'exec'),d)
+        else:
+            execfile(scriptFile,d)
+    else:
+        exec(script,d)
 #@+node:ekr.20051104075904.11: *7* shortDescription
 def shortDescription (self):
 
@@ -23805,7 +23832,7 @@ def shortDescription (self):
     # g.trace(s)
 
     return s + '\n'
-#@+node:ekr.20051104075904.12: *6* makeTestSuite
+#@+node:ekr.20051104075904.12: *6* makeTestSuite (leoTest)
 @ This code executes the script in an @suite node.  This code assumes:
 - The script creates a one or more unit tests.
 - The script puts the result in g.app.scriptDict["suite"]
@@ -23816,7 +23843,7 @@ def makeTestSuite (c,p):
     """Create a suite of test cases by executing the script in an @suite node."""
 
     p = p.copy()
-
+    # g.trace('c.write_script_file',c.write_script_file)
     script = g.getScript(c,p).strip()
     if not script:
         print("no script in %s" % h)
@@ -23827,7 +23854,17 @@ def makeTestSuite (c,p):
             for line in lines:
                 print(n,line)
                 n += 1
-        exec(script + '\n',{'c':c,'g':g,'p':p})
+                
+        # 2011/11/02: make script sources available.
+        d = {'c':c,'g':g,'p':p}
+        if c.write_script_file:
+            scriptFile = c.writeScriptFile(script)
+            if g.isPython3:
+                exec(compile(script,scriptFile,'exec'),d)
+            else:
+                execfile(scriptFile,d)
+        else:
+            exec(script + '\n',d)
         suite = g.app.scriptDict.get("suite")
         if not suite:
             print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
@@ -23981,7 +24018,7 @@ def runTests (self,trace=False):
 
     trace = False or trace
     import time
-    kind = g.choose(self.all,'all ','selected')
+    kind = g.choose(self.all,'all','selected')
     c = self.c ; p = c.p
     t1 = time.time()
     found = self.searchOutline(p.copy())
@@ -23997,8 +24034,8 @@ def runTests (self,trace=False):
         if trace:
             print('created %s unit tests in %0.2fsec in %s' % (
                 kind,t2-t1,self.fileName))
-        g.es('created %s unit tests' % (kind),color='blue')
-        # 2010/09/09: allow a way to specify the 
+            g.es('created %s unit tests' % (kind),color='blue')
+        # 2010/09/09: allow a way to specify the gui.
         gui = g.app.unitTestGui or 'nullGui'
         runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo',silent=True)
         c.selectPosition(p.copy())
@@ -24075,7 +24112,7 @@ def runTests (self,trace=False):
 
     trace = False or trace
     import time
-    kind = g.choose(self.all,'all ','selected')
+    kind = g.choose(self.all,'all','selected')
     c = self.c ; p = c.p
     t1 = time.time()
     found = self.searchOutline(p.copy())
@@ -24091,8 +24128,8 @@ def runTests (self,trace=False):
         if trace:
             print('created %s unit tests in %0.2fsec in %s' % (
                 kind,t2-t1,self.fileName))
-        g.es('created %s unit tests' % (kind),color='blue')
-        # 2010/09/09: allow a way to specify the 
+            g.es('created %s unit tests' % (kind),color='blue')
+        # 2010/09/09: allow a way to specify the gui.
         gui = g.app.unitTestGui or 'nullGui'
         runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo',silent=True)
         c.selectPosition(p.copy())
@@ -24130,14 +24167,13 @@ def writeWaitingLog (self,c):
     c.setLog() # 2010/10/20
     app.logInited = True # Prevent recursive call.
     
-    if not app.silentMode:
-        print('** isPython3: %s' % g.isPython3)
-        if not g.enableDB:
-            print('** caching disabled')
-    
     if not app.signon_printed:
         app.signon_printed = True
         if not app.silentMode: # 2011/11/02:
+            print()
+            print('** isPython3: %s' % g.isPython3)
+            if not g.enableDB:
+                print('** caching disabled')
             print(app.signon)
             print(app.signon2)
     if not app.silentMode: # 2011/11/02:
@@ -24156,6 +24192,501 @@ def writeWaitingLog (self,c):
     # Essential when opening multiple files...
     
     g.app.setLog(None) 
+#@+node:ekr.20111102093435.10018: *4* Unit tests now always have the sources available
+#@+node:ekr.20031218072017.3138: *5* g.executeScript
+def executeScript (name):
+
+    """Execute a script whose short python file name is given.
+
+    This is called only from the scripts_menu plugin."""
+
+    mod_name,ext = g.os_path_splitext(name)
+    theFile = None
+    try:
+        # This code is in effect an import or a reload.
+        # This allows the user to modify scripts without leaving Leo.
+        import imp
+        theFile,filename,description = imp.find_module(mod_name)
+        imp.load_module(mod_name,theFile,filename,description)
+    except Exception:
+        g.es("exception executing",name,color="red")
+        g.es_exception()
+
+    if theFile:
+        theFile.close()
+#@+node:ekr.20031218072017.2140: *5* c.executeScript & helpers
+def executeScript(self,event=None,args=None,p=None,script=None,
+    useSelectedText=True,define_g=True,define_name='__main__',silent=False,
+    namespace=None):
+
+    """This executes body text as a Python script.
+
+    We execute the selected text, or the entire body text if no text is selected."""
+
+    c = self ; script1 = script
+    if not script:
+        script = g.getScript(c,p,useSelectedText=useSelectedText)
+    self.redirectScriptOutput()
+    try:
+        oldLog = g.app.log # 2011/01/19
+        log = c.frame.log
+        g.app.log = log
+        if script.strip():
+            sys.path.insert(0,c.frame.openDirectory)
+            script += '\n' # Make sure we end the script properly.
+            try:
+                p = c.p
+                if p: c.setCurrentDirectoryFromContext(p)
+                d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
+                if define_name: d['__name__'] = define_name
+                d['script_args'] = args or []
+                if namespace: d.update(namespace)
+                # if args: sys.argv = args
+                # A kludge: reset c.inCommand here to handle the case where we *never* return.
+                # (This can happen when there are multiple event loops.)
+                # This does not prevent zombie windows if the script puts up a dialog...
+                c.inCommand = False
+                if c.write_script_file:
+                    scriptFile = self.writeScriptFile(script)
+                    
+                    # 2011/10/31: make g.inScript a synonym for g.app.inScript.
+                    g.inScript = g.app.inScript = True
+                    try:
+                        if g.isPython3:
+                            exec(compile(script,scriptFile,'exec'),d)
+                        else:
+                            execfile(scriptFile,d)
+                    finally:
+                        g.inScript = g.app.inScript = False
+                else:
+                    g.app.inScript = True
+                    try:
+                        exec(script,d)
+                    finally:
+                        g.app.inScript = False
+                if 0: # This message switches panes, and can be disruptive.
+                    if not script1 and not silent:
+                        # Careful: the script may have changed the log tab.
+                        tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+                        g.es("end of script",color="purple",tabName=tabName)
+            except Exception:
+                g.handleScriptException(c,p,script,script1)
+            del sys.path[0]
+        else:
+            tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+            g.es("no script selected",color="blue",tabName=tabName)
+    finally:
+        g.app.log = oldLog # 2011/01/19
+        self.unredirectScriptOutput()
+#@+node:ekr.20031218072017.2143: *6* redirectScriptOutput
+def redirectScriptOutput (self):
+
+    c = self
+
+    # g.trace('original')
+
+    if c.config.redirect_execute_script_output_to_log_pane:
+
+        g.redirectStdout() # Redirect stdout
+        g.redirectStderr() # Redirect stderr
+#@+node:ekr.20110522121957.18230: *6* setCurrentDirectoryFromContext
+def setCurrentDirectoryFromContext(self,p):
+    
+    trace = False and not g.unitTesting
+    c = self
+    
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    
+    curDir = g.os_path_abspath(os.getcwd())
+
+    # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
+    
+    if path and path != curDir:
+        if trace: g.trace('calling os.chdir(%s)' % (path))
+        try:
+            os.chdir(path)
+        except Exception:
+            pass
+#@+node:EKR.20040627100424: *6* unredirectScriptOutput
+def unredirectScriptOutput (self):
+
+    c = self
+
+    # g.trace('original')
+
+    if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+
+        g.restoreStderr()
+        g.restoreStdout()
+#@+node:ekr.20070115135502: *5* c.writeScriptFile
+def writeScriptFile (self,script):
+
+    trace = False and not g.unitTesting
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script_file_path')
+    if path:
+        isAbsPath = os.path.isabs(path)
+        driveSpec, path = os.path.splitdrive(path)
+        parts = path.split('/')
+        # xxx bad idea, loadDir is often read only!
+        path = g.app.loadDir
+        if isAbsPath:
+            # make the first element absolute
+            parts[0] = driveSpec + os.sep + parts[0]
+        allParts = [path] + parts
+        path = c.os_path_finalize_join(*allParts)
+    else:
+        path = c.os_path_finalize_join(
+            g.app.homeLeoDir,'scriptFile.py')
+
+    if trace: g.trace(path)                
+
+    # Write the file.
+    try:
+        if g.isPython3:
+            # Use the default encoding.
+            f = open(path,encoding='utf-8',mode='w')
+        else:
+            f = open(path,'w')
+        s = script
+        if not g.isPython3: # 2010/08/27
+            s = g.toEncodedString(s,reportErrors=True)
+        f.write(s)
+        f.close()
+    except Exception:
+        g.es_exception()
+        g.es("Failed to write script to %s" % path)
+        # g.es("Check your configuration of script_file_path, currently %s" %
+            # c.config.getString('script_file_path'))
+        path = None
+
+    return path
+#@+node:ekr.20051104075904.4: *5* doTests...
+def doTests(c,all=None,marked=None,p=None,verbosity=1):
+
+    trace = False ; verbose = False
+    if all:
+        p = c.rootPosition()
+    elif not p:
+        p = c.p
+    p1 = c.p.copy() # 2011/10/31: always restore the selected position.
+
+    try:
+        found = False
+        g.unitTesting = g.app.unitTesting = True
+        g.app.unitTestDict["fail"] = False
+        g.app.unitTestDict['c'] = c
+        g.app.unitTestDict['g'] = g
+        g.app.unitTestDict['p'] = p and p.copy()
+
+        # c.undoer.clearUndoState() # New in 4.3.1.
+        changed = c.isChanged()
+        suite = unittest.makeSuite(unittest.TestCase)
+
+        # New in Leo 4.4.8: ignore everything in @ignore trees.
+        if all: last = None
+        else:   last = p.nodeAfterTree()
+        if trace and verbose: g.trace('all',all,'marked',marked,'root',p.h)
+        seen = set()
+        while p and p != last:
+            # 2011/10/31: support for hidden tests: run tests only once.
+            if p.v in seen:
+                if trace: g.trace('ignoring tree',p.h)
+                p.moveToNodeAfterTree()
+                continue
+            seen.add(p.v)
+            if g.match_word(p.h,0,'@ignore'):
+                # 2011/10/31: support for run-marked-unit-test command.
+                if trace: g.trace('ignoring tree',p.h)
+                p.moveToNodeAfterTree()
+            elif marked and not p.isMarked():
+                if trace: g.trace('ignoring unmarked node',p.h)
+                p.moveToThreadNext()
+            elif isTestNode(p): # @test or contains "if g.app.unitTesting" or "if g.app.inScript"
+                if trace: g.trace('adding',p.h)
+                test = makeTestCase(c,p)
+                if test:
+                    suite.addTest(test) ; found = True
+                p.moveToThreadNext()
+            elif isSuiteNode(p): # @suite
+                if trace: g.trace('adding',p.h)
+                test = makeTestSuite(c,p)
+                if test:
+                    suite.addTest(test) ; found = True
+                p.moveToThreadNext()
+            else:
+                if trace and verbose: g.trace('skipping',p.h)
+                p.moveToThreadNext()
+
+        # Verbosity: 1: print just dots.
+        if not found:
+            # 2011/10/30: run the body of p as a unit test.
+            test = makeTestCase(c,c.p)
+            if test:
+                suite.addTest(test)
+                found = True
+        if found:
+            res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
+            # put info to db as well
+            if g.enableDB:
+                key = 'unittest/cur/fail'
+                archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
+                c.cacher.db[key] = archive
+        else:
+            g.es_print('no @test or @suite nodes in %s outline' % (
+                g.choose(all,'entire','selected')),color='red')
+    finally:
+        c.setChanged(changed) # Restore changed state.
+        if g.app.unitTestDict.get('restoreSelectedNode',True):
+            c.contractAllHeadlines()
+            c.redraw(p1)
+        g.unitTesting = g.app.unitTesting = False
+#@+node:ekr.20051104075904.5: *6* class generalTestCase
+class generalTestCase(unittest.TestCase):
+
+    """Create a unit test from a snippet of code."""
+
+    @others
+#@+node:ekr.20051104075904.6: *7* __init__
+def __init__ (self,c,p):
+
+     # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.p = p.copy()
+#@+node:ekr.20051104075904.7: *7*  fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+#@+node:ekr.20051104075904.9: *7* tearDown
+def tearDown (self):
+
+    pass
+
+    # Restore the outline.
+    self.c.outerUpdate()
+#@+node:ekr.20051104075904.8: *7* setUp
+def setUp (self):
+
+    c = self.c ; p = self.p
+
+    c.selectPosition(p.copy()) # 2010/02/03
+#@+node:ekr.20051104075904.10: *7* runTest (generalTestCase)
+def runTest (self,define_g = True):
+
+    trace = False
+    c = self.c ; p = self.p.copy()
+    script = g.getScript(c,p).strip()
+    self.assert_(script)
+    
+    if c.shortFileName() == 'dynamicUnitTest.leo':
+        c.write_script_file = True
+
+    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    if define_g:
+        d = {'c':c,'g':g,'p':p and p.copy(),'self':self,}
+    else:
+        d = {'self':self,}
+
+    script = script + '\n'
+    if trace: g.trace('p: %s c: %s write script: %s script:\n%s' % (
+        p and p.h,c.shortFileName(),c.write_script_file,script))
+
+    # Execute the script. Let the unit test handle any errors!
+    # 2011/11/02: pass the script sources to exec or execfile.
+    if c.write_script_file:
+        scriptFile = c.writeScriptFile(script)
+        if g.isPython3:
+            exec(compile(script,scriptFile,'exec'),d)
+        else:
+            execfile(scriptFile,d)
+    else:
+        exec(script,d)
+#@+node:ekr.20051104075904.11: *7* shortDescription
+def shortDescription (self):
+
+    s = self.p.h
+
+    # g.trace(s)
+
+    return s + '\n'
+#@+node:ekr.20051104075904.12: *6* makeTestSuite (leoTest)
+@ This code executes the script in an @suite node.  This code assumes:
+- The script creates a one or more unit tests.
+- The script puts the result in g.app.scriptDict["suite"]
+@c
+
+def makeTestSuite (c,p):
+
+    """Create a suite of test cases by executing the script in an @suite node."""
+
+    p = p.copy()
+    # g.trace('c.write_script_file',c.write_script_file)
+    script = g.getScript(c,p).strip()
+    if not script:
+        print("no script in %s" % h)
+        return None
+    try:
+        if 0: #debugging
+            n,lines = 0,g.splitLines(script)
+            for line in lines:
+                print(n,line)
+                n += 1
+                
+        # 2011/11/02: make script sources available.
+        d = {'c':c,'g':g,'p':p}
+        if c.write_script_file:
+            scriptFile = c.writeScriptFile(script)
+            if g.isPython3:
+                exec(compile(script,scriptFile,'exec'),d)
+            else:
+                execfile(scriptFile,d)
+        else:
+            exec(script + '\n',d)
+        suite = g.app.scriptDict.get("suite")
+        if not suite:
+            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+        return suite
+    except Exception:
+        print('makeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_exception()
+        return None
+#@+node:ekr.20051104075904.13: *6* makeTestCase
+def makeTestCase (c,p):
+
+    p = p.copy()
+
+    if p.b.strip():
+        return generalTestCase(c,p)
+    else:
+        return None
+#@+node:ekr.20070115135502: *5* c.writeScriptFile
+def writeScriptFile (self,script):
+
+    trace = False and not g.unitTesting
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script_file_path')
+    if path:
+        isAbsPath = os.path.isabs(path)
+        driveSpec, path = os.path.splitdrive(path)
+        parts = path.split('/')
+        # xxx bad idea, loadDir is often read only!
+        path = g.app.loadDir
+        if isAbsPath:
+            # make the first element absolute
+            parts[0] = driveSpec + os.sep + parts[0]
+        allParts = [path] + parts
+        path = c.os_path_finalize_join(*allParts)
+    else:
+        path = c.os_path_finalize_join(
+            g.app.homeLeoDir,'scriptFile.py')
+
+    if trace: g.trace(path)                
+
+    # Write the file.
+    try:
+        if g.isPython3:
+            # Use the default encoding.
+            f = open(path,encoding='utf-8',mode='w')
+        else:
+            f = open(path,'w')
+        s = script
+        if not g.isPython3: # 2010/08/27
+            s = g.toEncodedString(s,reportErrors=True)
+        f.write(s)
+        f.close()
+    except Exception:
+        g.es_exception()
+        g.es("Failed to write script to %s" % path)
+        # g.es("Check your configuration of script_file_path, currently %s" %
+            # c.config.getString('script_file_path'))
+        path = None
+
+    return path
+#@+node:ekr.20051104075904.10: *5* runTest (generalTestCase)
+def runTest (self,define_g = True):
+
+    trace = False
+    c = self.c ; p = self.p.copy()
+    script = g.getScript(c,p).strip()
+    self.assert_(script)
+    
+    if c.shortFileName() == 'dynamicUnitTest.leo':
+        c.write_script_file = True
+
+    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    if define_g:
+        d = {'c':c,'g':g,'p':p and p.copy(),'self':self,}
+    else:
+        d = {'self':self,}
+
+    script = script + '\n'
+    if trace: g.trace('p: %s c: %s write script: %s script:\n%s' % (
+        p and p.h,c.shortFileName(),c.write_script_file,script))
+
+    # Execute the script. Let the unit test handle any errors!
+    # 2011/11/02: pass the script sources to exec or execfile.
+    if c.write_script_file:
+        scriptFile = c.writeScriptFile(script)
+        if g.isPython3:
+            exec(compile(script,scriptFile,'exec'),d)
+        else:
+            execfile(scriptFile,d)
+    else:
+        exec(script,d)
+#@+node:ekr.20051104075904.12: *5* makeTestSuite (leoTest)
+@ This code executes the script in an @suite node.  This code assumes:
+- The script creates a one or more unit tests.
+- The script puts the result in g.app.scriptDict["suite"]
+@c
+
+def makeTestSuite (c,p):
+
+    """Create a suite of test cases by executing the script in an @suite node."""
+
+    p = p.copy()
+    # g.trace('c.write_script_file',c.write_script_file)
+    script = g.getScript(c,p).strip()
+    if not script:
+        print("no script in %s" % h)
+        return None
+    try:
+        if 0: #debugging
+            n,lines = 0,g.splitLines(script)
+            for line in lines:
+                print(n,line)
+                n += 1
+                
+        # 2011/11/02: make script sources available.
+        d = {'c':c,'g':g,'p':p}
+        if c.write_script_file:
+            scriptFile = c.writeScriptFile(script)
+            if g.isPython3:
+                exec(compile(script,scriptFile,'exec'),d)
+            else:
+                execfile(scriptFile,d)
+        else:
+            exec(script + '\n',d)
+        suite = g.app.scriptDict.get("suite")
+        if not suite:
+            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+        return suite
+    except Exception:
+        print('makeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_exception()
+        return None
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
