@@ -6759,7 +6759,7 @@ class Commands (object):
         if command:
             
             # Command is always either:
-            # masterMenuCallback, defined in createMenuEntries or
+            # one of two callbacks defined in createMenuEntries or
             # recentFilesCallback, defined in createRecentFilesMenuItems.
 
             def add_commandCallback(c=c,command=command):
