@@ -23388,12 +23388,14 @@ Notes:
 #@+node:ekr.20051104075904.4: *5* doTests...
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
-    trace = False ; verbose = False
+    trace = False ; verbose = True
     if all:
         p = c.rootPosition()
     elif not p:
         p = c.p
     p1 = c.p.copy() # 2011/10/31: always restore the selected position.
+    
+    if trace: g.trace('marked',marked,'c',c)
 
     try:
         found = False
@@ -23413,6 +23415,7 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
         if trace and verbose: g.trace('all',all,'marked',marked,'root',p.h)
         seen = set()
         while p and p != last:
+            if trace and verbose: g.trace(p.h)
             # 2011/10/31: support for hidden tests: run tests only once.
             if p.v in seen:
                 if trace: g.trace('ignoring tree',p.h)
@@ -23426,20 +23429,41 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
             elif marked and not p.isMarked():
                 if trace: g.trace('ignoring unmarked node',p.h)
                 p.moveToThreadNext()
-            elif isTestNode(p): # @test or contains "if g.app.unitTesting" or "if g.app.inScript"
+            elif isTestNode(p):
                 if trace: g.trace('adding',p.h)
                 test = makeTestCase(c,p)
                 if test:
                     suite.addTest(test) ; found = True
-                p.moveToThreadNext()
+                # p.moveToThreadNext()
+                p.moveToNodeAfterTree() # 2011/11/02
             elif isSuiteNode(p): # @suite
                 if trace: g.trace('adding',p.h)
                 test = makeTestSuite(c,p)
                 if test:
                     suite.addTest(test) ; found = True
-                p.moveToThreadNext()
+                # p.moveToThreadNext()
+                p.moveToNodeAfterTree() # 2011/11/02
+            elif marked and p.hasChildren():
+                # Not any kind of test node: add all test nodes in subtree.
+                if trace: g.trace('adding subtree of marked non-test node',p.h)
+                after2 = p.nodeAfterTree()
+                p.moveToFirstChild()
+                while p and p != after2:
+                    if isTestNode(p):
+                        test = makeTestCase(c,p)
+                        p.moveToNodeAfterTree() # 2011/11/02
+                    elif isSuiteNode(p): # @suite
+                        test = makeTestSuite(c,p)
+                        p.moveToNodeAfterTree() # 2011/11/02
+                    else:
+                        test = None
+                        p.moveToThreadNext()
+                    if test:
+                        if trace: g.trace('adding in marked tree:',p.h)
+                        suite.addTest(test)
+                        found = True
             else:
-                if trace and verbose: g.trace('skipping',p.h)
+                if trace and verbose: g.trace('skipping:',p.h)
                 p.moveToThreadNext()
 
         # Verbosity: 1: print just dots.
@@ -23679,12 +23703,14 @@ def runSelectedUnitTestsExternally(self,event=None):
 #@+node:ekr.20051104075904.4: *5* doTests...
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
-    trace = False ; verbose = False
+    trace = False ; verbose = True
     if all:
         p = c.rootPosition()
     elif not p:
         p = c.p
     p1 = c.p.copy() # 2011/10/31: always restore the selected position.
+    
+    if trace: g.trace('marked',marked,'c',c)
 
     try:
         found = False
@@ -23704,6 +23730,7 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
         if trace and verbose: g.trace('all',all,'marked',marked,'root',p.h)
         seen = set()
         while p and p != last:
+            if trace and verbose: g.trace(p.h)
             # 2011/10/31: support for hidden tests: run tests only once.
             if p.v in seen:
                 if trace: g.trace('ignoring tree',p.h)
@@ -23717,20 +23744,41 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
             elif marked and not p.isMarked():
                 if trace: g.trace('ignoring unmarked node',p.h)
                 p.moveToThreadNext()
-            elif isTestNode(p): # @test or contains "if g.app.unitTesting" or "if g.app.inScript"
+            elif isTestNode(p):
                 if trace: g.trace('adding',p.h)
                 test = makeTestCase(c,p)
                 if test:
                     suite.addTest(test) ; found = True
-                p.moveToThreadNext()
+                # p.moveToThreadNext()
+                p.moveToNodeAfterTree() # 2011/11/02
             elif isSuiteNode(p): # @suite
                 if trace: g.trace('adding',p.h)
                 test = makeTestSuite(c,p)
                 if test:
                     suite.addTest(test) ; found = True
-                p.moveToThreadNext()
+                # p.moveToThreadNext()
+                p.moveToNodeAfterTree() # 2011/11/02
+            elif marked and p.hasChildren():
+                # Not any kind of test node: add all test nodes in subtree.
+                if trace: g.trace('adding subtree of marked non-test node',p.h)
+                after2 = p.nodeAfterTree()
+                p.moveToFirstChild()
+                while p and p != after2:
+                    if isTestNode(p):
+                        test = makeTestCase(c,p)
+                        p.moveToNodeAfterTree() # 2011/11/02
+                    elif isSuiteNode(p): # @suite
+                        test = makeTestSuite(c,p)
+                        p.moveToNodeAfterTree() # 2011/11/02
+                    else:
+                        test = None
+                        p.moveToThreadNext()
+                    if test:
+                        if trace: g.trace('adding in marked tree:',p.h)
+                        suite.addTest(test)
+                        found = True
             else:
-                if trace and verbose: g.trace('skipping',p.h)
+                if trace and verbose: g.trace('skipping:',p.h)
                 p.moveToThreadNext()
 
         # Verbosity: 1: print just dots.
@@ -23926,7 +23974,7 @@ def createOutline (self,c2):
     self.seen = []
     << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
 
-    # if trace: g.trace('all',self.all)
+    if trace: g.trace('all',self.all)
     self.copyRoot.expand()
     for n,p,limit,lookForMark,lookForNodes in (
         (1,p1,limit1,lookForMark1,lookForNodes1),
@@ -23956,6 +24004,18 @@ def createOutline (self,c2):
                 if trace: g.trace('add node',p.h)
                 self.addNode(p)
                 p.moveToNodeAfterTree()
+            elif lookForNodes and self.marked and p.hasChildren():
+                # Not any kind of test node: add all test nodes in subtree.
+                if trace: g.trace('adding subtree',p.h)
+                after2 = p.nodeAfterTree()
+                p.moveToFirstChild()
+                while p and p != after2:
+                    if self.isUnitTestNode(p):
+                        if trace: g.trace('add node',p.h)
+                        self.addNode(p)
+                        p.moveToNodeAfterTree()
+                    else:
+                        p.moveToThreadNext()
             else:
                 if trace and verbose: g.trace('skip',p.h)
                 p.moveToThreadNext()
@@ -23985,8 +24045,6 @@ def addNode(self,p):
     '''
     Add an @test, @suite or an @unit-tests tree as the last child of self.copyRoot.
     '''
-
-    # g.trace(p.h)
 
     p2 = p.copyTreeAfter()
     p2.moveToLastChildOf(self.copyRoot)
@@ -24366,12 +24424,14 @@ def writeScriptFile (self,script):
 #@+node:ekr.20051104075904.4: *5* doTests...
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
-    trace = False ; verbose = False
+    trace = False ; verbose = True
     if all:
         p = c.rootPosition()
     elif not p:
         p = c.p
     p1 = c.p.copy() # 2011/10/31: always restore the selected position.
+    
+    if trace: g.trace('marked',marked,'c',c)
 
     try:
         found = False
@@ -24391,6 +24451,7 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
         if trace and verbose: g.trace('all',all,'marked',marked,'root',p.h)
         seen = set()
         while p and p != last:
+            if trace and verbose: g.trace(p.h)
             # 2011/10/31: support for hidden tests: run tests only once.
             if p.v in seen:
                 if trace: g.trace('ignoring tree',p.h)
@@ -24404,20 +24465,41 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
             elif marked and not p.isMarked():
                 if trace: g.trace('ignoring unmarked node',p.h)
                 p.moveToThreadNext()
-            elif isTestNode(p): # @test or contains "if g.app.unitTesting" or "if g.app.inScript"
+            elif isTestNode(p):
                 if trace: g.trace('adding',p.h)
                 test = makeTestCase(c,p)
                 if test:
                     suite.addTest(test) ; found = True
-                p.moveToThreadNext()
+                # p.moveToThreadNext()
+                p.moveToNodeAfterTree() # 2011/11/02
             elif isSuiteNode(p): # @suite
                 if trace: g.trace('adding',p.h)
                 test = makeTestSuite(c,p)
                 if test:
                     suite.addTest(test) ; found = True
-                p.moveToThreadNext()
+                # p.moveToThreadNext()
+                p.moveToNodeAfterTree() # 2011/11/02
+            elif marked and p.hasChildren():
+                # Not any kind of test node: add all test nodes in subtree.
+                if trace: g.trace('adding subtree of marked non-test node',p.h)
+                after2 = p.nodeAfterTree()
+                p.moveToFirstChild()
+                while p and p != after2:
+                    if isTestNode(p):
+                        test = makeTestCase(c,p)
+                        p.moveToNodeAfterTree() # 2011/11/02
+                    elif isSuiteNode(p): # @suite
+                        test = makeTestSuite(c,p)
+                        p.moveToNodeAfterTree() # 2011/11/02
+                    else:
+                        test = None
+                        p.moveToThreadNext()
+                    if test:
+                        if trace: g.trace('adding in marked tree:',p.h)
+                        suite.addTest(test)
+                        found = True
             else:
-                if trace and verbose: g.trace('skipping',p.h)
+                if trace and verbose: g.trace('skipping:',p.h)
                 p.moveToThreadNext()
 
         # Verbosity: 1: print just dots.
@@ -24569,50 +24651,6 @@ def makeTestCase (c,p):
         return generalTestCase(c,p)
     else:
         return None
-#@+node:ekr.20070115135502: *5* c.writeScriptFile
-def writeScriptFile (self,script):
-
-    trace = False and not g.unitTesting
-    # Get the path to the file.
-    c = self
-    path = c.config.getString('script_file_path')
-    if path:
-        isAbsPath = os.path.isabs(path)
-        driveSpec, path = os.path.splitdrive(path)
-        parts = path.split('/')
-        # xxx bad idea, loadDir is often read only!
-        path = g.app.loadDir
-        if isAbsPath:
-            # make the first element absolute
-            parts[0] = driveSpec + os.sep + parts[0]
-        allParts = [path] + parts
-        path = c.os_path_finalize_join(*allParts)
-    else:
-        path = c.os_path_finalize_join(
-            g.app.homeLeoDir,'scriptFile.py')
-
-    if trace: g.trace(path)                
-
-    # Write the file.
-    try:
-        if g.isPython3:
-            # Use the default encoding.
-            f = open(path,encoding='utf-8',mode='w')
-        else:
-            f = open(path,'w')
-        s = script
-        if not g.isPython3: # 2010/08/27
-            s = g.toEncodedString(s,reportErrors=True)
-        f.write(s)
-        f.close()
-    except Exception:
-        g.es_exception()
-        g.es("Failed to write script to %s" % path)
-        # g.es("Check your configuration of script_file_path, currently %s" %
-            # c.config.getString('script_file_path'))
-        path = None
-
-    return path
 #@+node:ekr.20051104075904.10: *5* runTest (generalTestCase)
 def runTest (self,define_g = True):
 
@@ -24687,6 +24725,349 @@ def makeTestSuite (c,p):
         print('makeTestSuite: exception creating test cases for %s' % p.h)
         g.es_exception()
         return None
+#@+node:ekr.20111102093435.10017: *4* Support marking an entire tree
+#@+node:ekr.20070627135336.9: *5* createOutline & helpers
+def createOutline (self,c2):
+
+    '''Create a unit test ouline containing
+
+    - all children of any @mark-for-unit-tests node anywhere in the outline.
+    - all @test and @suite nodes in p's outline.'''
+
+    trace = False ; verbose = False
+    c = self.c ; markTag = '@mark-for-unit-tests'
+    self.copyRoot = c2.rootPosition()
+    self.copyRoot.initHeadString('All unit tests')
+    c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
+    self.seen = []
+    << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+
+    if trace: g.trace('all',self.all)
+    self.copyRoot.expand()
+    for n,p,limit,lookForMark,lookForNodes in (
+        (1,p1,limit1,lookForMark1,lookForNodes1),
+        (2,p2,limit2,lookForMark2,lookForNodes2),
+    ):
+        if n == 2 and self.all: return
+        if trace and verbose: g.trace(
+            'pass %s: mark %s nodes %s root %s limit %s' % (
+                n,lookForMark,lookForNodes,
+                p and p.h or '<none>',
+                limit and limit.h or '<none>'))
+        while p and p != limit:
+            if g.match_word(p.h,0,'@ignore'):
+                if trace and verbose: g.trace('ignoring tree',p.h)
+                p.moveToNodeAfterTree()
+            elif p.v in self.seen:
+                if trace and verbose: g.trace('seen',p.h)
+                p.moveToNodeAfterTree()
+            elif self.marked and not p.isMarked():
+                if trace and verbose: g.trace('ignoring unmarked node',p.h)
+                p.moveToThreadNext()
+            elif lookForMark and p.h.startswith(markTag):
+                if trace: g.trace('add mark tree',p.h)
+                self.addMarkTree(p)
+                p.moveToNodeAfterTree()
+            elif lookForNodes and self.isUnitTestNode(p):
+                if trace: g.trace('add node',p.h)
+                self.addNode(p)
+                p.moveToNodeAfterTree()
+            elif lookForNodes and self.marked and p.hasChildren():
+                # Not any kind of test node: add all test nodes in subtree.
+                if trace: g.trace('adding subtree',p.h)
+                after2 = p.nodeAfterTree()
+                p.moveToFirstChild()
+                while p and p != after2:
+                    if self.isUnitTestNode(p):
+                        if trace: g.trace('add node',p.h)
+                        self.addNode(p)
+                        p.moveToNodeAfterTree()
+                    else:
+                        p.moveToThreadNext()
+            else:
+                if trace and verbose: g.trace('skip',p.h)
+                p.moveToThreadNext()
+#@+node:ekr.20070705065154: *6* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+if self.all:
+    # A single pass looks for all tags everywhere.
+    p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,True
+    p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
+else:
+    # The first pass looks everywhere for only for @mark-for-unit-tests,
+    p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,False
+    # The second pass looks in the selected tree for everything except @mark-for-unit-tests.
+    # There is no second pass if the present node is an @mark-for-unit-test node.
+    p = c.p
+    if p.h.startswith(markTag):
+        p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
+    else:
+        p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
+#@+node:ekr.20070705080413: *6* addMarkTree
+def addMarkTree (self,p):
+
+    # Add the entire @mark-for-unit-tests tree.
+    self.addNode(p)
+#@+node:ekr.20070705065154.1: *6* addNode
+def addNode(self,p):
+
+    '''
+    Add an @test, @suite or an @unit-tests tree as the last child of self.copyRoot.
+    '''
+
+    p2 = p.copyTreeAfter()
+    p2.moveToLastChildOf(self.copyRoot)
+
+    for p2 in p.self_and_subtree():
+        self.seen.append(p2.v)
+#@+node:ekr.20070705075604.3: *6* isUnitTestNode
+def isUnitTestNode (self,p):
+    
+    h = p.h.lower()
+    hidden = not h.startswith('<<') and test_pat.search(p.b)
+    if hidden:
+        print('Adding hidden test: %s' % (p.h))
+        return True
+
+    for tag in self.tags:
+        if h.startswith(tag):
+            return True
+    else:
+        return False
+#@+node:ekr.20051104075904.4: *5* doTests...
+def doTests(c,all=None,marked=None,p=None,verbosity=1):
+
+    trace = False ; verbose = True
+    if all:
+        p = c.rootPosition()
+    elif not p:
+        p = c.p
+    p1 = c.p.copy() # 2011/10/31: always restore the selected position.
+    
+    if trace: g.trace('marked',marked,'c',c)
+
+    try:
+        found = False
+        g.unitTesting = g.app.unitTesting = True
+        g.app.unitTestDict["fail"] = False
+        g.app.unitTestDict['c'] = c
+        g.app.unitTestDict['g'] = g
+        g.app.unitTestDict['p'] = p and p.copy()
+
+        # c.undoer.clearUndoState() # New in 4.3.1.
+        changed = c.isChanged()
+        suite = unittest.makeSuite(unittest.TestCase)
+
+        # New in Leo 4.4.8: ignore everything in @ignore trees.
+        if all: last = None
+        else:   last = p.nodeAfterTree()
+        if trace and verbose: g.trace('all',all,'marked',marked,'root',p.h)
+        seen = set()
+        while p and p != last:
+            if trace and verbose: g.trace(p.h)
+            # 2011/10/31: support for hidden tests: run tests only once.
+            if p.v in seen:
+                if trace: g.trace('ignoring tree',p.h)
+                p.moveToNodeAfterTree()
+                continue
+            seen.add(p.v)
+            if g.match_word(p.h,0,'@ignore'):
+                # 2011/10/31: support for run-marked-unit-test command.
+                if trace: g.trace('ignoring tree',p.h)
+                p.moveToNodeAfterTree()
+            elif marked and not p.isMarked():
+                if trace: g.trace('ignoring unmarked node',p.h)
+                p.moveToThreadNext()
+            elif isTestNode(p):
+                if trace: g.trace('adding',p.h)
+                test = makeTestCase(c,p)
+                if test:
+                    suite.addTest(test) ; found = True
+                # p.moveToThreadNext()
+                p.moveToNodeAfterTree() # 2011/11/02
+            elif isSuiteNode(p): # @suite
+                if trace: g.trace('adding',p.h)
+                test = makeTestSuite(c,p)
+                if test:
+                    suite.addTest(test) ; found = True
+                # p.moveToThreadNext()
+                p.moveToNodeAfterTree() # 2011/11/02
+            elif marked and p.hasChildren():
+                # Not any kind of test node: add all test nodes in subtree.
+                if trace: g.trace('adding subtree of marked non-test node',p.h)
+                after2 = p.nodeAfterTree()
+                p.moveToFirstChild()
+                while p and p != after2:
+                    if isTestNode(p):
+                        test = makeTestCase(c,p)
+                        p.moveToNodeAfterTree() # 2011/11/02
+                    elif isSuiteNode(p): # @suite
+                        test = makeTestSuite(c,p)
+                        p.moveToNodeAfterTree() # 2011/11/02
+                    else:
+                        test = None
+                        p.moveToThreadNext()
+                    if test:
+                        if trace: g.trace('adding in marked tree:',p.h)
+                        suite.addTest(test)
+                        found = True
+            else:
+                if trace and verbose: g.trace('skipping:',p.h)
+                p.moveToThreadNext()
+
+        # Verbosity: 1: print just dots.
+        if not found:
+            # 2011/10/30: run the body of p as a unit test.
+            test = makeTestCase(c,c.p)
+            if test:
+                suite.addTest(test)
+                found = True
+        if found:
+            res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
+            # put info to db as well
+            if g.enableDB:
+                key = 'unittest/cur/fail'
+                archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
+                c.cacher.db[key] = archive
+        else:
+            g.es_print('no @test or @suite nodes in %s outline' % (
+                g.choose(all,'entire','selected')),color='red')
+    finally:
+        c.setChanged(changed) # Restore changed state.
+        if g.app.unitTestDict.get('restoreSelectedNode',True):
+            c.contractAllHeadlines()
+            c.redraw(p1)
+        g.unitTesting = g.app.unitTesting = False
+#@+node:ekr.20051104075904.5: *6* class generalTestCase
+class generalTestCase(unittest.TestCase):
+
+    """Create a unit test from a snippet of code."""
+
+    @others
+#@+node:ekr.20051104075904.6: *7* __init__
+def __init__ (self,c,p):
+
+     # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.p = p.copy()
+#@+node:ekr.20051104075904.7: *7*  fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+#@+node:ekr.20051104075904.9: *7* tearDown
+def tearDown (self):
+
+    pass
+
+    # Restore the outline.
+    self.c.outerUpdate()
+#@+node:ekr.20051104075904.8: *7* setUp
+def setUp (self):
+
+    c = self.c ; p = self.p
+
+    c.selectPosition(p.copy()) # 2010/02/03
+#@+node:ekr.20051104075904.10: *7* runTest (generalTestCase)
+def runTest (self,define_g = True):
+
+    trace = False
+    c = self.c ; p = self.p.copy()
+    script = g.getScript(c,p).strip()
+    self.assert_(script)
+    
+    if c.shortFileName() == 'dynamicUnitTest.leo':
+        c.write_script_file = True
+
+    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    if define_g:
+        d = {'c':c,'g':g,'p':p and p.copy(),'self':self,}
+    else:
+        d = {'self':self,}
+
+    script = script + '\n'
+    if trace: g.trace('p: %s c: %s write script: %s script:\n%s' % (
+        p and p.h,c.shortFileName(),c.write_script_file,script))
+
+    # Execute the script. Let the unit test handle any errors!
+    # 2011/11/02: pass the script sources to exec or execfile.
+    if c.write_script_file:
+        scriptFile = c.writeScriptFile(script)
+        if g.isPython3:
+            exec(compile(script,scriptFile,'exec'),d)
+        else:
+            execfile(scriptFile,d)
+    else:
+        exec(script,d)
+#@+node:ekr.20051104075904.11: *7* shortDescription
+def shortDescription (self):
+
+    s = self.p.h
+
+    # g.trace(s)
+
+    return s + '\n'
+#@+node:ekr.20051104075904.12: *6* makeTestSuite (leoTest)
+@ This code executes the script in an @suite node.  This code assumes:
+- The script creates a one or more unit tests.
+- The script puts the result in g.app.scriptDict["suite"]
+@c
+
+def makeTestSuite (c,p):
+
+    """Create a suite of test cases by executing the script in an @suite node."""
+
+    p = p.copy()
+    # g.trace('c.write_script_file',c.write_script_file)
+    script = g.getScript(c,p).strip()
+    if not script:
+        print("no script in %s" % h)
+        return None
+    try:
+        if 0: #debugging
+            n,lines = 0,g.splitLines(script)
+            for line in lines:
+                print(n,line)
+                n += 1
+                
+        # 2011/11/02: make script sources available.
+        d = {'c':c,'g':g,'p':p}
+        if c.write_script_file:
+            scriptFile = c.writeScriptFile(script)
+            if g.isPython3:
+                exec(compile(script,scriptFile,'exec'),d)
+            else:
+                execfile(scriptFile,d)
+        else:
+            exec(script + '\n',d)
+        suite = g.app.scriptDict.get("suite")
+        if not suite:
+            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+        return suite
+    except Exception:
+        print('makeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_exception()
+        return None
+#@+node:ekr.20051104075904.13: *6* makeTestCase
+def makeTestCase (c,p):
+
+    p = p.copy()
+
+    if p.b.strip():
+        return generalTestCase(c,p)
+    else:
+        return None
+#@+node:ekr.20111102123707.9629: *5* test of marked unit-test trees
+#@+node:ekr.20111102123707.9630: *6* @@test assert False
+assert False
+#@+node:ekr.20111102123707.9631: *6* @@test assert True
+assert True
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>

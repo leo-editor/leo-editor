@@ -5,7 +5,6 @@
 .. @+all
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 .. @+node:ekr.20111026091322.16502: *3* First
-.. @+node:ekr.20111102093435.10017: *4* DRY: use a common method to recognize external tests
 .. @+node:ekr.20111029055127.16609: *4* Fix html import problems
 @language python
 @nocolor-node
@@ -2459,7 +2458,7 @@ if g.unitTesting:
 http://video.google.com/videoplay?docid=8810772602188234059
 .. @+node:ekr.20111024170505.16459: *4* * Bug 879331: Redefining a key binding breaks menu items with same binding
 .. @+node:ekr.20111026091322.16501: *5* Probably same as key-binding bug
-.. @+node:ekr.20111026091322.16492: *6* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display 
+.. @+node:ekr.20111026091322.16492: *6* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/815564
@@ -6167,7 +6166,7 @@ https://bugs.launchpad.net/leo-editor/+bug/844940
 Different behavior when clicking on @url statement written either in headline or body of a node
 .. @+node:ekr.20111024170505.16459: *5* * Bug 879331: Redefining a key binding breaks menu items with same binding
 .. @+node:ekr.20111026091322.16501: *6* Probably same as key-binding bug
-.. @+node:ekr.20111026091322.16492: *7* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display 
+.. @+node:ekr.20111026091322.16492: *7* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/815564
@@ -7741,7 +7740,7 @@ Left clicking this "File - Close" menu entry (or Alt+F, c) closes the current ta
 Alt+F4 closes the Leo-Editor application window (and of course, closes all the tabs).
 
 Is this a bug in the implementation or a bug in the documentation? Either way, the menu entry is misleading and the print-bindings information appears to be correct.
-.. @+node:ekr.20111025141618.16484: *5* Bug 879338: Global tables in leoApp.py should describe all languages known to the colorizer  
+.. @+node:ekr.20111025141618.16484: *5* Bug 879338: Global tables in leoApp.py should describe all languages known to the colorizer
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/879338
@@ -7749,7 +7748,7 @@ https://bugs.launchpad.net/leo-editor/+bug/879338
 Having the colorizer colorize a language properly gives the false illusion that Leo "understands" the language.
 
 Supporting the language in the global tables in leoApp.py makes the illusion a reality.
-.. @+node:ekr.20111026091322.16491: *5* Bug 805288: ctr - tab locks up in log pane 
+.. @+node:ekr.20111026091322.16491: *5* Bug 805288: ctr - tab locks up in log pane
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/805288

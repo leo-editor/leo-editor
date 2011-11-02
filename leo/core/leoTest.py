@@ -69,12 +69,14 @@ def isTestNode (p):
 #@+node:ekr.20051104075904.4: *3* doTests...
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
-    trace = False ; verbose = False
+    trace = False ; verbose = True
     if all:
         p = c.rootPosition()
     elif not p:
         p = c.p
     p1 = c.p.copy() # 2011/10/31: always restore the selected position.
+    
+    if trace: g.trace('marked',marked,'c',c)
 
     try:
         found = False
@@ -94,6 +96,7 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
         if trace and verbose: g.trace('all',all,'marked',marked,'root',p.h)
         seen = set()
         while p and p != last:
+            if trace and verbose: g.trace(p.h)
             # 2011/10/31: support for hidden tests: run tests only once.
             if p.v in seen:
                 if trace: g.trace('ignoring tree',p.h)
@@ -107,20 +110,41 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
             elif marked and not p.isMarked():
                 if trace: g.trace('ignoring unmarked node',p.h)
                 p.moveToThreadNext()
-            elif isTestNode(p): # @test or contains "if g.app.unitTesting" or "if g.app.inScript"
+            elif isTestNode(p):
                 if trace: g.trace('adding',p.h)
                 test = makeTestCase(c,p)
                 if test:
                     suite.addTest(test) ; found = True
-                p.moveToThreadNext()
+                # p.moveToThreadNext()
+                p.moveToNodeAfterTree() # 2011/11/02
             elif isSuiteNode(p): # @suite
                 if trace: g.trace('adding',p.h)
                 test = makeTestSuite(c,p)
                 if test:
                     suite.addTest(test) ; found = True
-                p.moveToThreadNext()
+                # p.moveToThreadNext()
+                p.moveToNodeAfterTree() # 2011/11/02
+            elif marked and p.hasChildren():
+                # Not any kind of test node: add all test nodes in subtree.
+                if trace: g.trace('adding subtree of marked non-test node',p.h)
+                after2 = p.nodeAfterTree()
+                p.moveToFirstChild()
+                while p and p != after2:
+                    if isTestNode(p):
+                        test = makeTestCase(c,p)
+                        p.moveToNodeAfterTree() # 2011/11/02
+                    elif isSuiteNode(p): # @suite
+                        test = makeTestSuite(c,p)
+                        p.moveToNodeAfterTree() # 2011/11/02
+                    else:
+                        test = None
+                        p.moveToThreadNext()
+                    if test:
+                        if trace: g.trace('adding in marked tree:',p.h)
+                        suite.addTest(test)
+                        found = True
             else:
-                if trace and verbose: g.trace('skipping',p.h)
+                if trace and verbose: g.trace('skipping:',p.h)
                 p.moveToThreadNext()
 
         # Verbosity: 1: print just dots.
@@ -792,7 +816,7 @@ class runTestExternallyHelperClass:
                 p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
         #@-<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
 
-        # if trace: g.trace('all',self.all)
+        if trace: g.trace('all',self.all)
         self.copyRoot.expand()
         for n,p,limit,lookForMark,lookForNodes in (
             (1,p1,limit1,lookForMark1,lookForNodes1),
@@ -822,6 +846,18 @@ class runTestExternallyHelperClass:
                     if trace: g.trace('add node',p.h)
                     self.addNode(p)
                     p.moveToNodeAfterTree()
+                elif lookForNodes and self.marked and p.hasChildren():
+                    # Not any kind of test node: add all test nodes in subtree.
+                    if trace: g.trace('adding subtree',p.h)
+                    after2 = p.nodeAfterTree()
+                    p.moveToFirstChild()
+                    while p and p != after2:
+                        if self.isUnitTestNode(p):
+                            if trace: g.trace('add node',p.h)
+                            self.addNode(p)
+                            p.moveToNodeAfterTree()
+                        else:
+                            p.moveToThreadNext()
                 else:
                     if trace and verbose: g.trace('skip',p.h)
                     p.moveToThreadNext()
@@ -836,8 +872,6 @@ class runTestExternallyHelperClass:
         '''
         Add an @test, @suite or an @unit-tests tree as the last child of self.copyRoot.
         '''
-
-        # g.trace(p.h)
 
         p2 = p.copyTreeAfter()
         p2.moveToLastChildOf(self.copyRoot)
