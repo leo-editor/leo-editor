@@ -10265,10 +10265,10 @@ ic = c.importCommands
 runner = leoImport.baseScannerClass(ic,atAuto=True,language='python')
 runner.root = p.copy()
 
-g.app.unitTestDict ['expectedMismatchLine'] = 1
+g.app.unitTestDict ['expectedMismatchLine'] = 0
 
-s1 = g.toUnicode('line Ä, ڱ,  궯, 奠 end',encoding='utf-8')
-s2 = g.toUnicode('line Ä, ڱ,  궯, 奠 x end',encoding='utf-8')
+s1 = g.toUnicode('line Ä, 궯, 奠 end',encoding='utf-8')
+s2 = g.toUnicode('line Ä, 궯, end',encoding='utf-8')
 
 ok = runner.checkTrialWrite(s1=s1,s2=s2)
 
@@ -10540,7 +10540,7 @@ s = '''\
 g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20111029120441.3982: *6* @test html: upperscase tags
+#@+node:ekr.20111029120441.3982: *6* @test html: uppercase tags
 s = '''\
 <HTML>
 <HEAD>
@@ -11635,7 +11635,7 @@ scanner.root = p
 s1 = ["abc",]
 s2 = ["xyz",]
 
-scanner.reportMismatch(s1,s2,1)
+scanner.reportMismatch(s1,s2,1,1)
 
 # Why is leoSettings.leo scanned twice in dynamicUnitTest.leo?
 #@+node:ekr.20090529141856.4792: *4* Load tests for .leo files
