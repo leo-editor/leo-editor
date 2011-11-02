@@ -49,14 +49,14 @@ gBridgeController = None # The singleton bridge controller.
 
 #@+others
 #@+node:ekr.20070227092442: ** controller
-def controller(gui='nullGui',loadPlugins=True,readSettings=True,verbose=False):
+def controller(gui='nullGui',loadPlugins=True,readSettings=True,silent=False,verbose=False):
 
     '''Create an singleton instance of a bridge controller.'''
 
     global gBridgeController
 
     if not gBridgeController:
-        gBridgeController = bridgeController(gui,loadPlugins,readSettings,verbose)
+        gBridgeController = bridgeController(gui,loadPlugins,readSettings,silent,verbose)
 
     return gBridgeController
 #@+node:ekr.20070227092442.2: ** class bridgeController
@@ -66,13 +66,14 @@ class bridgeController:
 
     #@+others
     #@+node:ekr.20070227092442.3: *3* ctor (bridgeController)
-    def __init__ (self,guiName,loadPlugins,readSettings,verbose):
+    def __init__ (self,guiName,loadPlugins,readSettings,silent,verbose):
 
         self.g = None
         self.gui = None
         self.guiName = guiName
         self.loadPlugins = loadPlugins
         self.readSettings = readSettings
+        self.silent = silent
         self.verbose = verbose
 
         self.mainLoop = False # True only if a non-null-gui mainloop is active.
@@ -90,6 +91,7 @@ class bridgeController:
         '''Init the Leo app to which this class gives access.
         This code is based on leo.run().'''
 
+        trace = False
         if not self.isValidPython(): return
         #@+<< import leoGlobals and leoApp >>
         #@+node:ekr.20070227093629.1: *4* << import leoGlobals and leoApp >>
@@ -114,6 +116,11 @@ class bridgeController:
         # Set leoGlobals.g here, rather than in leoGlobals.
         leoGlobals.g = leoGlobals
         #@-<< import leoGlobals and leoApp >>
+        g.app.silentMode = self.silent # 2011/11/02.
+        if trace:
+            import sys
+            g.trace(sys.argv)
+            g.trace('g.app.silentMode',g.app.silentMode)
         # 2010/09/09: create the g.app.pluginsController here.
         import leo.core.leoPlugins as leoPlugins
         leoPlugins.init() # Necessary. Sets g.app.pluginsController.
