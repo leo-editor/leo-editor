@@ -603,7 +603,13 @@ try:
     assert False
 except AssertionError:
     fn,n = g.getLastTracebackFileAndLineNumber()
-assert fn == '<string>',repr(fn)
+    
+writeScriptFile = c.config.getBool('write_script_file')
+if writeScriptFile:
+    assert fn != '<string>',repr(fn)
+else:
+    assert fn == '<string>',repr(fn)
+
 assert n == 4,repr(n)
 #@+node:ekr.20100205230621.5383: *3* @test leoTest.checkFileSyntax
 import leo.core.leoTest as leoTest
@@ -17137,6 +17143,15 @@ class test:
 
 X = test()
 sendEmail(X)
+#@+node:ekr.20111102122424.3975: *4* @test all unit tests have access to sources
+if c.shortFileName() == 'dynamicUnitTest.leo':
+    
+    setting = 'c.write_script_file'
+    assert c.write_script_file is True,'fail1: %s should be hard set' % (setting)
+    
+else:
+    setting = "c.config.getBool('write_script_file')"
+    assert c.write_script_file is True,'fail2: check %s' % (setting)
 #@+node:ekr.20071113193729: *3* leoUndo (not valid when run externally)
 @
 
