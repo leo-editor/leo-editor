@@ -15614,6 +15614,199 @@ returned the standard Python html module!
 
 #@+node:ekr.20111029055127.16635: *4* Allow lower case keywords in colorizer
 # The fix was to use lowercase versions of docPart,leoKeyword,nameBrackets.
+#@+node:ekr.20111102072143.10017: *4* Fixed recent problem in createMenuEntries
+#@+node:ekr.20031218072017.1723: *5* createMenuEntries (leoMenu) & helpers
+def createMenuEntries (self,menu,table,dynamicMenu=False):
+
+    '''Create a menu entry from the table.
+    New in 4.4: this method shows the shortcut in the menu,
+    but this method **never** binds any shortcuts.'''
+
+    c = self.c ; k = c.k
+    if g.app.unitTesting: return
+    
+    self.traceMenuTable(table)
+
+    for data in table:
+        label,command,done = self.getMenuEntryInfo(data,menu)
+        if done: continue
+        accel,commandName,done = self.getMenuEntryBindings(command,dynamicMenu,label)
+        if done: continue
+
+        # Use canonical stroke.
+        accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
+        stroke = k.shortcutFromSetting(accel,addKey=True) or ''
+        if accelerator:
+            accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
+            
+        # Add an entry for unit testing.
+        if stroke:
+            d = g.app.unitTestMenusDict
+            aSet = d.get(commandName,set())
+            aSet.add(stroke)
+            d[commandName] = aSet
+            
+        masterMenuCallback = self.createMasterMenuCallback(
+            dynamicMenu,command,commandName)
+
+        realLabel = self.getRealMenuName(label)
+        amp_index = realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        if sys.platform == 'darwin':
+            # clear accelerator if it is a plain key
+            for z in ('Alt','Ctrl','Command','Meta',):
+                if accelerator.find(z) != -1:
+                    break # Found.
+            else:
+                accelerator = ''
+
+        # c.add_command ensures that c.outerUpdate is called.
+        if menu:
+            c.add_command(menu,label=realLabel,
+                accelerator=accelerator,
+                command=masterMenuCallback,
+                underline=amp_index)
+#@+node:ekr.20111102072143.10016: *6* createMasterMenuCallback
+def createMasterMenuCallback(self,dynamicMenu,command,commandName):
+    
+    c = self.c
+    
+    if dynamicMenu:
+        if command:
+            def masterDynamicMenuCallback (c=c,command=command):
+                # g.trace(command.__name__)
+                event = g.app.gui.create_key_event(c,None,None,None)
+                return c.k.masterCommand(func=command,event=event)
+            return masterDynamicMenuCallback
+        else:
+            g.internalError('no callback for dynamic menu item.')
+            def dummyMasterMenuCallback():
+                pass
+            return dummyMasterMenuCallback
+    else:
+        def masterStaticMenuCallback (c=c,commandName=commandName):
+            # 2011/10/28: Use only the command name to dispatch the command.
+            event = g.app.gui.create_key_event(c,None,None,None)
+            return c.k.masterCommand(commandName=commandName,event=event)
+        return masterStaticMenuCallback
+#@+node:ekr.20111028060955.16568: *6* getMenuEntryBindings
+def getMenuEntryBindings(self,command,dynamicMenu,label):
+    
+    '''Compute accel,commandName,done from command.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; f = c.frame
+    minibufferCommand = type(command) == type('')
+    accel,commandName,done = None,None,False
+
+    if minibufferCommand:
+        commandName = command 
+        command = c.commandsDict.get(commandName)
+        if command:
+            rawKey,bunchList = c.config.getShortcut(commandName)
+            # Pick the first entry that is not a mode.
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    accel = bunch and bunch.val
+                    if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+        else:
+            if not g.app.unitTesting and not dynamicMenu:
+                # Don't warn during unit testing.
+                # This may come from a plugin that normally isn't enabled.
+                if trace: g.trace('No inverse for %s' % commandName)
+            done = True # There is no way to make this menu entry.
+    else:
+        # First, get the old-style name.
+        commandName = self.computeOldStyleShortcutKey(label)
+        rawKey,bunchList = c.config.getShortcut(commandName)
+        for bunch in bunchList:
+            if not bunch.pane.endswith('-mode'):
+                if trace: g.trace('2','%20s' % (bunch.val),commandName)
+                accel = bunch and bunch.val ; break
+        # Second, get new-style name.
+        if not accel:
+            << compute emacs_name >>
+                # Contains the not-so-horrible kludge.
+            if emacs_name:
+                commandName = emacs_name
+                rawKey,bunchList = c.config.getShortcut(emacs_name)
+                # Pick the first entry that is not a mode.
+                for bunch in bunchList:
+                    if not bunch.pane.endswith('-mode'):
+                        accel = bunch.val
+                        if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                        break
+            elif not dynamicMenu:
+                if trace: g.trace('No inverse for %s' % commandName)
+                
+    return accel,commandName,done
+#@+node:ekr.20111028060955.16569: *7* << compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+#@+node:ekr.20111028060955.16565: *6* getMenuEntryInfo
+def getMenuEntryInfo (self,data,menu):
+    
+    done = False
+
+    if g.isString(data):
+        # A single string is both the label and the command.
+        s = data
+        removeHyphens = s and s[0]=='*'
+        if removeHyphens: s = s[1:]
+        label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+        command = s.replace('&','').lower()
+        if label == '-':
+            self.add_separator(menu)
+            done = True # That's all.
+    else:
+        ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+        if ok:
+            if len(data) == 2:
+                # Command can be a minibuffer-command name.
+                label,command = data
+            else:
+                # Ignore shortcuts bound in menu tables.
+                label,junk,command = data
+    
+            if label in (None,'-'):
+                self.add_separator(menu)
+                done = True # That's all.
+        else:
+            g.trace('bad data in menu table: %s' % repr(data))
+            done = True # Ignore bad data
+            
+    return label,command,done
+#@+node:ekr.20111028060955.16563: *6* traceMenuTable
+def traceMenuTable (self,table):
+    
+    trace = False and not g.unitTesting
+    
+    if not trace: return
+    format = '%40s %s'
+    g.trace('*'*40)
+    for data in table:
+        if type(data) in (type(()), type([])):
+            n = len(data)
+            if n == 2:
+                print(format % (data[0],data[1]))
+            elif n == 3:
+                name,junk,func = data
+                print(format % (name,func and func.__name__ or '<NO FUNC>'))
+        else:
+            print(format % (data,''))
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
@@ -22922,12 +23115,13 @@ def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
     self.sigFailTokens = []
 
     # Overrides more attributes.
+    self.atAutoWarnsAboutLeadingWhitespace = False
     self.caseInsensitive = True
     self.hasClasses = True
     self.hasFunctions = False
     self.ignoreBlankLines = True
     self.ignoreLeadingWs = True
-    self.ignoreNewlines = True
+    self.ignoreAllWs = True
     self.strict = False
     self.tags_setting = tags_setting
     self.trace = False
@@ -22980,12 +23174,13 @@ def isWordChar(self,ch):
     # At present, same as g.isWordChar.
     # This is not correct.
     return ch and (ch.isalnum() or ch == '_')
-#@+node:ekr.20071214072924.4: *6* startsHelper & helpers
+#@+node:ekr.20071214072924.4: *6* startsHelper & helpers (xmlScanner)
 def startsHelper(self,s,i,kind,tags):
     '''return True if s[i:] starts a class or function.
     Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
 
-    trace = False and not g.unitTesting ; verbose = False
+    trace = (False and kind == 'class') and not g.unitTesting
+    verbose = True
     self.codeEnd = self.sigEnd = self.sigId = None
 
     # Underindented lines can happen in any language, not just Python.
@@ -23002,7 +23197,7 @@ def startsHelper(self,s,i,kind,tags):
     if not theId: return False
 
     if theId not in tags:
-        if trace and verbose:
+        if False and trace and verbose:
             g.trace('**** %s theId: %s not in tags: %s' % (
                 kind,theId,tags))
         return False
@@ -23026,9 +23221,9 @@ def startsHelper(self,s,i,kind,tags):
             sigEnd = g.skip_line(s,sigEnd)
 
     if not complete:
-        i,ok = self.skipToMatchingTag(s,i,theId)
+        i,ok = self.skipToMatchingTag(s,i,theId,tags)
         if not ok:
-            if trace: g.trace('no matching tag:',theId)
+            if trace and verbose: g.trace('no matching tag:',theId)
             return False
 
     # Success: set the ivars.
@@ -23051,7 +23246,9 @@ def startsHelper(self,s,i,kind,tags):
             self.error('%s definition does not start a line\n%s' % (
                 kind,g.get_line(s,k)))
 
-    if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
+    if trace:
+        g.trace(kind,sigId,'returns\n'+s[self.sigStart:i])
+        # g.trace('**end',g.callers())
     return True
 #@+node:ekr.20071214072924.3: *7* skipToEndOfTag
 def skipToEndOfTag(self,s,i):
@@ -23068,8 +23265,12 @@ def skipToEndOfTag(self,s,i):
         progress = i
         if i == '"':
             i = self.skipString(s,i)
+        elif g.match(s,i,'<!--'):
+            i = self.skipComment(s,i)
+        elif g.match(s,i,'<'):
+            return i,False,False # An error.
         elif g.match(s,i,'/>'):
-            i += 2
+            i = g.skip_ws(s,i+2)
             if g.match(s,i,'\n'):
                 i += 1 # Make sure the "class" contains a trailing newline.
             return i,True,True # Starts a self-contained tag.
@@ -23081,30 +23282,61 @@ def skipToEndOfTag(self,s,i):
             i += 1
         assert progress < i
 
-    return i,False
-#@+node:ekr.20071214075117: *7* skipToMatchingTag & helper
-def skipToMatchingTag (self,s,i,tag):
+    return i,False,False
+#@+node:ekr.20071214075117: *7* skipToMatchingTag
+def skipToMatchingTag (self,s,i,tag,tags):
     
-    trace = True and not g.unitTesting
-    
-    # if tag == 'nodeB': g.pdb()
+    '''Skip the entire class definition.
+    Return i,ok.
+    '''
 
+    trace = True and not g.unitTesting; verbose = False
+    stack = [tag]
+    level = 1
     while i < len(s):
         progress = i
         if i == '"':
             i = self.skipString(s,i)
+        elif g.match(s,i,'<!--'):
+            i = self.skipComment(s,i)
         elif g.match(s,i,'</'):
-            i += 2 ; j = i
+            j = i+2
             i = self.skipId(s,j)
             tag2 = s[j:i]
-            if tag2.lower() == tag.lower():
-                i,ok,complete = self.skipToEndOfTag(s,i)
-                return i,ok
+            i,ok,complete = self.skipToEndOfTag(s,i)
+            if tag2 in tags:
+                tag = stack.pop()
+                if tag2.lower() == tag.lower():
+                    if trace and verbose: g.trace('%s exit <%s>' % (level-1,tag))
+                    level -= 1
+                    if level == 0:
+                        return i,True
+                else:
+                    g.trace('tag mismatch: %s!=%s' % (tag2,tag))
+                    return i,False # tag mismatch
+        elif g.match(s,i,'<'):
+            # Another open tag.
+            j = g.skip_ws_and_nl(s,i+1)
+            i = self.skipId(s,j)
+            word = s[j:i]
+            if word:
+                if word in tags:
+                    if trace and verbose: g.trace('%s enter <%s>' % (level+1,word))
+                    stack.append(word)
+                    level += 1
+            else:
+                g.trace('syntax error')
+                return i,False # Syntax error.
         else:
             i += 1
         assert progress < i
 
     return i,False
+#@+node:ekr.20111101204130.10009: *6* startsString
+def startsString(self,s,i):
+
+    # 2011/11/01: *only* double quotes start xml/html strings!
+    return g.match(s,i,'"')
 #@+node:ekr.20111019104425.15862: *4* Leo's home page now shows the latest postings from leo-editor.
 @nocolor-node
 
@@ -23344,9 +23576,6 @@ def makeTestCase (c,p):
 def isSuiteNode (p):
     h = p.h.lower()
     return g.match_word(h,0,"@suite")
-    
-test_pat_s = "^if(\s)+g(\.app)*\.(unitTesting|inScript):(\s)*$"
-test_pat = re.compile(test_pat_s,re.MULTILINE)
 
 def isTestNode (p):
     '''
@@ -23356,7 +23585,8 @@ def isTestNode (p):
     '''
     h = p.h.lower()
     hidden = not p.h.startswith('<<') and test_pat.search(p.b)
-    if hidden: print('Adding hidden test: %s' % (p.h))
+    if hidden and not g.app.silentMode:
+        print('Adding hidden test: %s' % (p.h))
     return hidden or g.match_word(h,0,"@test")
 
 # def isTestCaseNode (p):
@@ -23641,7 +23871,7 @@ def createFileFromOutline (self,c2):
 
     c2.selectPosition(c2.rootPosition())
     c2.mFileName = path
-    c2.fileCommands.save(path)
+    c2.fileCommands.save(path,silent=True)
     c2.close()
 #@+node:ekr.20070627135336.9: *6* createOutline & helpers
 def createOutline (self,c2):
@@ -23651,7 +23881,7 @@ def createOutline (self,c2):
     - all children of any @mark-for-unit-tests node anywhere in the outline.
     - all @test and @suite nodes in p's outline.'''
 
-    trace = True ; verbose = False
+    trace = False ; verbose = False
     c = self.c ; markTag = '@mark-for-unit-tests'
     self.copyRoot = c2.rootPosition()
     self.copyRoot.initHeadString('All unit tests')
@@ -23659,7 +23889,7 @@ def createOutline (self,c2):
     self.seen = []
     << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
 
-    if trace: g.trace('all',self.all)
+    # if trace: g.trace('all',self.all)
     self.copyRoot.expand()
     for n,p,limit,lookForMark,lookForNodes in (
         (1,p1,limit1,lookForMark1,lookForNodes1),
@@ -23673,13 +23903,13 @@ def createOutline (self,c2):
                 limit and limit.h or '<none>'))
         while p and p != limit:
             if g.match_word(p.h,0,'@ignore'):
-                if trace: g.trace('ignoring tree',p.h)
+                if trace and verbose: g.trace('ignoring tree',p.h)
                 p.moveToNodeAfterTree()
             elif p.v in self.seen:
-                if trace: g.trace('seen',p.h)
+                if trace and verbose: g.trace('seen',p.h)
                 p.moveToNodeAfterTree()
             elif self.marked and not p.isMarked():
-                if trace: g.trace('ignoring unmarked node',p.h)
+                if trace and verbose: g.trace('ignoring unmarked node',p.h)
                 p.moveToThreadNext()
             elif lookForMark and p.h.startswith(markTag):
                 if trace: g.trace('add mark tree',p.h)
@@ -23728,9 +23958,15 @@ def addNode(self,p):
         self.seen.append(p2.v)
 #@+node:ekr.20070705075604.3: *7* isUnitTestNode
 def isUnitTestNode (self,p):
+    
+    h = p.h.lower()
+    hidden = not h.startswith('<<') and test_pat.search(p.b)
+    if hidden:
+        print('Adding hidden test: %s' % (p.h))
+        return True
 
     for tag in self.tags:
-        if p.h.startswith(tag):
+        if h.startswith(tag):
             return True
     else:
         return False
@@ -23751,12 +23987,16 @@ def runTests (self,trace=False):
     found = self.searchOutline(p.copy())
     if found:
         theGui = leoGui.nullGui("nullGui")
+        old_silent_mode = g.app.silentMode
+        g.app.silentMode = True
         c2 = c.new(gui=theGui)
+        g.app.silentMode = old_silent_mode
         found = self.createOutline(c2)
         self.createFileFromOutline(c2)
         t2 = time.time()
-        print('created %s unit tests in %0.2fsec in %s' % (
-            kind,t2-t1,self.fileName))
+        if trace:
+            print('created %s unit tests in %0.2fsec in %s' % (
+                kind,t2-t1,self.fileName))
         g.es('created %s unit tests' % (kind),color='blue')
         # 2010/09/09: allow a way to specify the 
         gui = g.app.unitTestGui or 'nullGui'
@@ -23793,6 +24033,129 @@ def searchOutline (self,p):
             return True
 
     return False
+#@+node:ekr.20111102052204.10012: *4* Support hidden unit tests externally
+@nocolor-node
+
+Changed runTestExternallyHelperClass.isUnitTestNode
+#@+node:ekr.20111102065242.10014: *4* Disabled messages on external unit tests
+@nocolor-node
+
+1. Removing the signon message:
+
+    This was nasty to find. They were created by the call to
+    c.new (the non-testc!) in runTests.
+
+    The trace in g.es was the key to discovering what was happening.
+    
+2. Moved the print statements from leoGlobals.py to writeWaitingLog.
+
+    This allows g.app.silentMode to have effect.
+    
+3. fc.save now takes a 'silent' argument, set only by createFileFromOutline.
+
+#@+node:ekr.20070627135336.10: *5* createFileFromOutline
+def createFileFromOutline (self,c2):
+
+    '''Write c's outline to test/dynamicUnitTest.leo.'''
+
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test', self.fileName)
+
+    c2.selectPosition(c2.rootPosition())
+    c2.mFileName = path
+    c2.fileCommands.save(path,silent=True)
+    c2.close()
+#@+node:ekr.20070627140344.2: *5* runTests
+def runTests (self,trace=False):
+    # 2010/09/09: removed the gui arg: there is no way to set it.
+
+    '''
+    Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
+    in a separate process.
+    '''
+
+    trace = False or trace
+    import time
+    kind = g.choose(self.all,'all ','selected')
+    c = self.c ; p = c.p
+    t1 = time.time()
+    found = self.searchOutline(p.copy())
+    if found:
+        theGui = leoGui.nullGui("nullGui")
+        old_silent_mode = g.app.silentMode
+        g.app.silentMode = True
+        c2 = c.new(gui=theGui)
+        g.app.silentMode = old_silent_mode
+        found = self.createOutline(c2)
+        self.createFileFromOutline(c2)
+        t2 = time.time()
+        if trace:
+            print('created %s unit tests in %0.2fsec in %s' % (
+                kind,t2-t1,self.fileName))
+        g.es('created %s unit tests' % (kind),color='blue')
+        # 2010/09/09: allow a way to specify the 
+        gui = g.app.unitTestGui or 'nullGui'
+        runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo',silent=True)
+        c.selectPosition(p.copy())
+    else:
+        g.es_print('no @test or @suite nodes in %s outline' % (
+            g.choose(self.all,'entire','selected')),color='red')
+#@+node:ekr.20031218072017.2619: *5* app.writeWaitingLog
+def writeWaitingLog (self,c):
+
+    trace = False
+    app = self
+    
+    if trace:
+        # Do not call g.es, g.es_print, g.pr or g.trace here!
+        print('** writeWaitingLog','silent',app.silentMode,c.shortFileName())
+        # print('writeWaitingLog',g.callers())
+        # import sys ; print('writeWaitingLog: argv',sys.argv)
+
+    if not c or not c.exists:
+        return
+
+    if g.unitTesting:
+        app.printWaiting = []
+        app.logWaiting = []
+        g.app.setLog(None) # Prepare to requeue for other commanders.
+        return
+
+    table = [
+        ('Leo Log Window','red'),
+        (app.signon,'black'),
+        (app.signon2,'black'),
+    ]
+    table.reverse()
+
+    c.setLog() # 2010/10/20
+    app.logInited = True # Prevent recursive call.
+    
+    if not app.silentMode:
+        print('** isPython3: %s' % g.isPython3)
+        if not g.enableDB:
+            print('** caching disabled')
+    
+    if not app.signon_printed:
+        app.signon_printed = True
+        if not app.silentMode: # 2011/11/02:
+            print(app.signon)
+            print(app.signon2)
+    if not app.silentMode: # 2011/11/02:
+        for s in app.printWaiting:
+            print(s)
+    app.printWaiting = []
+
+    if not app.silentMode:  # 2011/11/02:
+        for s,color in table:
+            app.logWaiting.insert(0,(s+'\n',color),)
+        for s,color in app.logWaiting:
+            g.es('',s,color=color,newline=0)
+                # The caller must write the newlines.
+    app.logWaiting = []
+
+    # Essential when opening multiple files...
+    
+    g.app.setLog(None) 
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>

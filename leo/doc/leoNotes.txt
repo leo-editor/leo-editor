@@ -6075,5 +6075,82 @@ else:
     else:
         g.trace('bad data in menu table: %s' % repr(data))
         continue # Ignore bad data
+#@+node:ekr.20111029153537.16649: *3* compareIgnoringLines (This doesn't work)
+def compareIgnoringLines(self,lines1,lines2):
+    
+    lines1 = [z.replace('\n','') for z in lines1]
+    lines2 = [z.replace('\n','') for z in lines2]
+    
+    # lines1 = [z.strip() for z in lines1]
+    # lines2 = [z.strip() for z in lines2]
+    
+    # lines1 = [z.replace(' ','').replace('\t','') for z in lines1]
+    # lines2 = [z.replace(' ','').replace('\t','') for z in lines2]
+
+    def mismatch(i1,i2,prefix1,prefix2):
+        g.trace('prefix mismatch\n1:%s %s\n2:%s %s' % (
+            i1,repr(prefix1),i2,repr(prefix2)))
+    
+    i1,i2,n1,n2 = 0,0,len(lines1),len(lines2)
+    prefix1,prefix2 = "",""
+    while i1 < n1 and i2 < n2:
+        j1,j2 = i1,i2
+        s1,s2 = lines1[i1],lines2[i2]
+        if s1 == s2:
+            # A simple match.
+            i1 += 1 ; i2 += 1
+        elif prefix1 + s1 == prefix2:
+            # lines1 was split.
+            prefix1,prefix2 = "",""
+            i1 += 1
+        elif prefix2 + s2 == prefix1:
+            # lines2 was split.
+            prefix1,prefix2 = "",""
+            i2 += 1
+        elif len(prefix1) < len(prefix2):
+            prefix1 = prefix1 + s1
+            i1 += 1
+        elif len(prefix2) < len(prefix1):
+            prefix2 = prefix2 + s2
+            i2 += 1
+        elif prefix1 and prefix2:
+            if prefix1 != prefix2:
+                mismatch(i1,i2,prefix1,prefix2)
+                g.pdb()
+                return False,i1,i2
+            else:
+                # Pick either to append.
+                prefix1 = prefix1 + s1
+                i1 += 1
+        else:
+            # Pick either to append.
+            prefix1 = prefix1 + s1
+            i1 += 1
+            
+        # Check the prefixes immediately.
+        if (
+            (len(prefix1) == len(prefix2) and prefix1 != prefix2) or
+            (prefix2 and len(prefix1) > len(prefix2) and not prefix1.startswith(prefix2)) or
+            (prefix1 and len(prefix2) > len(prefix1) and not prefix2.startswith(prefix1))
+        ):
+            mismatch(i1,i2,prefix1,prefix2)
+            g.pdb()
+            return False,i1,i2
+                
+        assert j1 < i1 or j2 < i2
+    # Complete the tail.
+    i1_end,i2_end = i1,i2
+    while i1 < n1:
+        s1 = lines1[i1].strip()
+        prefix1 = prefix1 + s1
+    while i2 < n2:
+        s2 = lines2[i2].strip()
+        prefix2 = prefix2 + s2
+    if prefix1 == prefix2:
+        return True,-1,-1
+    else:
+        mismatch(i1,i2,prefix1,prefix2)
+        g.pdb()
+        return False,i1_end,i2_end
 #@-all
 #@-leo
