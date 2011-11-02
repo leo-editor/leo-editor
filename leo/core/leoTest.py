@@ -39,6 +39,10 @@ if g.app: # Make sure we can import this module stand-alone.
     newAtFile = g.app.pluginsController.isLoaded("___proto_atFile")
 else:
     newAtFile = False
+    
+# Pattern to find hidden unit tests.
+test_pat_s = "^if(\s)+g(\.app)*\.(unitTesting|inScript):(\s)*$"
+test_pat = re.compile(test_pat_s,re.MULTILINE)
 
 #@+others
 #@+node:ekr.20051104075904.2: ** Support @profile, @suite, @test, @timer
@@ -46,9 +50,6 @@ else:
 def isSuiteNode (p):
     h = p.h.lower()
     return g.match_word(h,0,"@suite")
-    
-test_pat_s = "^if(\s)+g(\.app)*\.(unitTesting|inScript):(\s)*$"
-test_pat = re.compile(test_pat_s,re.MULTILINE)
 
 def isTestNode (p):
     '''
@@ -58,7 +59,8 @@ def isTestNode (p):
     '''
     h = p.h.lower()
     hidden = not p.h.startswith('<<') and test_pat.search(p.b)
-    if hidden: print('Adding hidden test: %s' % (p.h))
+    if hidden and not g.app.silentMode:
+        print('Adding hidden test: %s' % (p.h))
     return hidden or g.match_word(h,0,"@test")
 
 # def isTestCaseNode (p):
@@ -738,7 +740,7 @@ class runTestExternallyHelperClass:
 
         c2.selectPosition(c2.rootPosition())
         c2.mFileName = path
-        c2.fileCommands.save(path)
+        c2.fileCommands.save(path,silent=True)
         c2.close()
     #@+node:ekr.20070627135336.9: *3* createOutline & helpers
     def createOutline (self,c2):
@@ -748,7 +750,7 @@ class runTestExternallyHelperClass:
         - all children of any @mark-for-unit-tests node anywhere in the outline.
         - all @test and @suite nodes in p's outline.'''
 
-        trace = True ; verbose = False
+        trace = False ; verbose = False
         c = self.c ; markTag = '@mark-for-unit-tests'
         self.copyRoot = c2.rootPosition()
         self.copyRoot.initHeadString('All unit tests')
@@ -772,7 +774,7 @@ class runTestExternallyHelperClass:
                 p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
         #@-<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
 
-        if trace: g.trace('all',self.all)
+        # if trace: g.trace('all',self.all)
         self.copyRoot.expand()
         for n,p,limit,lookForMark,lookForNodes in (
             (1,p1,limit1,lookForMark1,lookForNodes1),
@@ -786,13 +788,13 @@ class runTestExternallyHelperClass:
                     limit and limit.h or '<none>'))
             while p and p != limit:
                 if g.match_word(p.h,0,'@ignore'):
-                    if trace: g.trace('ignoring tree',p.h)
+                    if trace and verbose: g.trace('ignoring tree',p.h)
                     p.moveToNodeAfterTree()
                 elif p.v in self.seen:
-                    if trace: g.trace('seen',p.h)
+                    if trace and verbose: g.trace('seen',p.h)
                     p.moveToNodeAfterTree()
                 elif self.marked and not p.isMarked():
-                    if trace: g.trace('ignoring unmarked node',p.h)
+                    if trace and verbose: g.trace('ignoring unmarked node',p.h)
                     p.moveToThreadNext()
                 elif lookForMark and p.h.startswith(markTag):
                     if trace: g.trace('add mark tree',p.h)
@@ -826,9 +828,15 @@ class runTestExternallyHelperClass:
             self.seen.append(p2.v)
     #@+node:ekr.20070705075604.3: *4* isUnitTestNode
     def isUnitTestNode (self,p):
+        
+        h = p.h.lower()
+        hidden = not h.startswith('<<') and test_pat.search(p.b)
+        if hidden:
+            print('Adding hidden test: %s' % (p.h))
+            return True
 
         for tag in self.tags:
-            if p.h.startswith(tag):
+            if h.startswith(tag):
                 return True
         else:
             return False
@@ -849,12 +857,16 @@ class runTestExternallyHelperClass:
         found = self.searchOutline(p.copy())
         if found:
             theGui = leoGui.nullGui("nullGui")
+            old_silent_mode = g.app.silentMode
+            g.app.silentMode = True
             c2 = c.new(gui=theGui)
+            g.app.silentMode = old_silent_mode
             found = self.createOutline(c2)
             self.createFileFromOutline(c2)
             t2 = time.time()
-            print('created %s unit tests in %0.2fsec in %s' % (
-                kind,t2-t1,self.fileName))
+            if trace:
+                print('created %s unit tests in %0.2fsec in %s' % (
+                    kind,t2-t1,self.fileName))
             g.es('created %s unit tests' % (kind),color='blue')
             # 2010/09/09: allow a way to specify the 
             gui = g.app.unitTestGui or 'nullGui'
