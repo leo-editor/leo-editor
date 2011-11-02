@@ -1735,7 +1735,7 @@ class baseScannerClass (scanUtility):
     This class contains common utility methods.'''
 
     #@+others
-    #@+node:ekr.20070703122141.66: *3* baseScannerClass.__init__
+    #@+node:ekr.20070703122141.66: *3*  ctor (baseScannerClass)
     def __init__ (self,importCommands,atAuto,language):
 
         ic = importCommands
@@ -1802,9 +1802,9 @@ class baseScannerClass (scanUtility):
         self.functionTags = []
         self.hasClasses = True
         self.hasFunctions = True
+        self.ignoreAllWs = False
         self.ignoreBlankLines = False
         self.ignoreLeadingWs = False
-        self.ignoreNewlines = False
         self.lineCommentDelim = None
         self.lineCommentDelim2 = None
         self.outerBlockDelim1 = None
@@ -1833,12 +1833,13 @@ class baseScannerClass (scanUtility):
             return self.checkTrialWrite()
         else:
             return True
-    #@+node:ekr.20070703122141.104: *4* checkTrialWrite (baseScannerClass)
+    #@+node:ekr.20070703122141.104: *4* checkTrialWrite
     def checkTrialWrite (self,s1=None,s2=None):
 
         '''Return True if a trial write produces the original file.'''
 
         # s1 and s2 are for unit testing.
+        trace = False
         c = self.c ; at = c.atFileCommands
         if s1 is None and s2 is None:
             if self.isRst:
@@ -1861,35 +1862,38 @@ class baseScannerClass (scanUtility):
         if not s2.endswith('\n'): s2 = s2 + '\n'
 
         if s1 == s2: return True
+        
+        # lines1 = g.splitLines(s1)
+        # lines2 = g.splitLines(s2)
+        
+        # if self.ignoreBlankLines or self.ignoreLeadingWs: # was self.isRst:
+            # lines1 = self.adjustTestLines(lines1)
+            # lines2 = self.adjustTestLines(lines2)
+            # s1 = ''.join(lines1)
+            # s2 = ''.join(lines2)
 
-        lines1 = g.splitLines(s1)
-        lines2 = g.splitLines(s2)
-
-        if self.ignoreBlankLines or self.ignoreLeadingWs: # was self.isRst:
-            lines1 = self.adjustTestLines(lines1)
-            lines2 = self.adjustTestLines(lines2)
+        bad_i1,bad_i2,ok = self.scanAndCompare(s1,s2)
+        if ok: return ok
             
-        if False and self.ignoreNewlines:
-            ok,bad_i,bad_i2 = self.compareIgnoringLines(lines1,lines2)
-            g.trace(ok,bad_i,bad_i2)
-        else:
-            n1,n2 = len(lines1), len(lines2)
-            ok = True ; bad_i = 0
-            for i in range(max(n1,n2)):
-                ok = self.compareHelper(lines1,lines2,i,self.strict)
-                if not ok:
-                    bad_i = i
-                    break
+        # n1,n2 = len(lines1), len(lines2)
+        # ok = True ; bad_i = 0
+        # for i in range(max(n1,n2)):
+            # ok = self.compareHelper(lines1,lines2,i,self.strict)
+            # if not ok:
+                # bad_i = i
+                # break
 
+        # Unit tests do not generate errors unless the mismatch line does not match.
         if g.app.unitTesting:
             d = g.app.unitTestDict
-            # g.trace('expected',d.get('expectedMismatchLine'),'actual',d.get('actualMismatchLine'))
-            ok = d.get('expectedMismatchLine') == d.get('actualMismatchLine')
-            # Unit tests do not generate errors unless the mismatch line does not match.
-            if not ok: d['fail'] = g.callers() # 2008/10/3
+            ok = d.get('expectedMismatchLine') == bad_i1
+                # was d.get('actualMismatchLine')
+            if not ok: d['fail'] = g.callers()
 
-        if not ok:
-            self.reportMismatch(lines1,lines2,bad_i)
+        if trace or not ok:
+            lines1 = g.splitLines(s1)
+            lines2 = g.splitLines(s2)
+            self.reportMismatch(lines1,lines2,bad_i1,bad_i2)
 
         return ok
     #@+node:ekr.20111029153537.16649: *4* compareIgnoringLines (This doesn't work)
@@ -2088,25 +2092,163 @@ class baseScannerClass (scanUtility):
 
         return ok
     #@+node:ekr.20070911110507: *4* reportMismatch
-    def reportMismatch (self,lines1,lines2,bad_i):
+    def reportMismatch (self,lines1,lines2,bad_i1,bad_i2):
 
+        trace = False
         kind = g.choose(self.atAuto,'@auto','import command')
         n1,n2 = len(lines1),len(lines2)
-        self.error(
-            '%s did not import %s perfectly\nfirst mismatched line: %d' % (
-                kind,self.root.h,bad_i))
+        s1 = '%s did not import %s perfectly\n' % (
+            kind,self.root.h)
+        s2 = 'first mismatched line: %s (original)=%s (imported)' % (
+            bad_i1,bad_i2)
+        s = s1 + s2
+        
+        if trace: g.trace(s)
+        else:     self.error(s)
 
         aList = []
-        for i in range(max(0,bad_i-2),min(bad_i+3,max(n1,n2))):
-            for lines,n in ((lines1,n1),(lines2,n2)):
-                if i < n: line = repr(lines[i])
-                else: line = '<eof>'
-                aList.append('%4d %s' % (i,line))
+        aList.append('Original file...\n')
+        for i in range(max(0,bad_i1-2),min(bad_i1+3,n1)):
+            line = repr(lines1[i])
+            aList.append('%4d %s' % (i,line))
+            
+        aList.append('\nImported file...\n')
+        for i in range(max(0,bad_i2-2),min(bad_i2+3,n1)):
+            line = repr(lines2[i])
+            aList.append('%4d %s' % (i,line))
 
-        if not g.unitTesting:
+        if trace or not g.unitTesting:
             g.es_print('\n'.join(aList),color='blue')
 
         return False
+    #@+node:ekr.20111101052702.16721: *4* scanAndCompare & helpers
+    def scanAndCompare (self,s1,s2):
+        
+        '''Tokenize both s1 and s2, then perform a token-based comparison.
+        
+        Blank lines and leading whitespace has already been stripped
+        according to the ignoreBlankLines and ignoreLeadingWs ivars.
+        
+        Return (n,ok), where n is the first mismatched line in s1.
+        '''
+        
+        trace = False
+        tokens1 = self.tokenize(s1)
+        tokens2 = self.tokenize(s2)
+
+        if self.ignoreAllWs or self.ignoreLeadingWs or self.ignoreBlankLines:
+            tokens1 = self.filterWsTokens(tokens1)
+            tokens2 = self.filterWsTokens(tokens2)
+            
+        if tokens1 == tokens2:
+            if trace: g.trace('success')
+            return -1,-1,True # Success.
+        else:
+            n1,n2,ok = self.compareTokens(tokens1,tokens2)
+            if trace: g.trace(n1,n2,ok)
+            return n1,n2,ok # Success or failure.
+            
+    #@+node:ekr.20111101092301.16729: *5* compareTokens
+    def compareTokens(self,tokens1,tokens2):
+            
+        trace = False and not g.unitTesting
+        i,n1,n2 = 0,len(tokens1),len(tokens2)
+        fail_n1,fail_n2 = -1,-1
+        while i < max(n1,n2):
+            if trace:
+                for n,tokens in ((n1,tokens1),(n2,tokens2),):
+                    if i < n: kind,val,junk_n = tokens[i]
+                    else:     kind,val = 'eof',''
+                    print('%3s %7s %s' % (i,kind,repr(val)))
+            if i < n1: kind1,val1,tok_n1 = tokens1[i]
+            else:      kind1,val1 = 'eof','',n1
+            if i < n2: kind2,val2,tok_n2 = tokens2[i]
+            else:      kind2,val2,tok_n2 = 'eof','',n2
+            if fail_n1 == -1 and fail_n2 == -1 and (kind1 != kind2 or val1 != val2):
+                if trace: g.trace('fail at lines: %s,%s' % (tok_n1,tok_n2))
+                fail_n1,fail_n2 = tok_n1,tok_n1
+            i += 1
+        
+        if fail_n1 > -1 or fail_n2 > -1:
+            return fail_n1,fail_n2,False
+        elif n1 == n2:
+            if trace: g.trace('equal')
+            return -1,-1,True
+        else:
+            n = min(len(tokens1),len(tokens2))
+            if trace: g.trace('fail 2 at line: %s' % (n))
+            return n,n,False
+    #@+node:ekr.20111101052702.16722: *5* filterWsTokens & helpers
+    def filterWsTokens (self,tokens):
+        
+        if self.ignoreAllWs:
+            # Removes leading ws and blank lines.
+            return self.removeAllWsTokens(tokens)
+            
+        if self.ignoreBlankLines:
+            tokens = self.removeBlankLinesTokens(tokens)
+            
+        if self.ignoreLeadingWs:
+            tokens = self.removeLeadingWsTokens(tokens)
+
+        return tokens
+    #@+node:ekr.20111101092301.16726: *6* removeAllWsTokens
+    def removeAllWsTokens (self,tokens):
+        
+        '''Remove all whitespace and newline tokens.'''
+        
+        return [(kind,val,n) for kind,val,n in tokens
+            if kind not in ('nl','ws')]
+    #@+node:ekr.20111101092301.16727: *6* removeLeadingWsTokens
+    def removeLeadingWsTokens (self,tokens):
+        
+        '''Remove tokens representing leading whitespace.'''
+        
+        i,last,result = 0,'nl',[]
+        while i < len(tokens):
+            progress = i
+            kind,val,n = tok = tokens[i]
+            if kind == 'ws' and last == 'nl':
+                pass
+            else:
+                result.append(tok)
+            i += 1
+            last = kind
+            assert progress + 1 == i
+        
+        return result
+    #@+node:ekr.20111101092301.16728: *6* removeBlankLinesTokens
+    def removeBlankLinesTokens(self,tokens):
+        
+        '''Remove all tokens representing blank lines.'''
+        
+        trace = True
+        i,last,lws,result = 0,'nl',[],[]
+        while i < len(tokens):
+            progress = i
+            kind,val,n = tok = tokens[i]
+            if kind == 'ws':
+                if last in ('nl','ws'):
+                    # Continue to append leading whitespace.
+                    lws.append(tok)
+                else:
+                    # Not leading whitespace: add it.
+                    if lws: result.extend(lws)
+                    lws = []
+                    result.append(tok)
+            elif kind == 'nl':
+                # Ignore any previous blank line and remember *this* newline.
+                lws = [tok]
+            else:
+                # A non-blank line: append the leading whitespace.
+                if lws: result.extend(lws)
+                lws = []
+                result.append(tok)
+            last = kind
+            i += 1
+            assert i == progress+1
+            
+        return result
     #@+node:ekr.20070706084535: *3* Code generation
     #@+at None of these methods should ever need to be overridden in subclasses.
     # 
@@ -2493,6 +2635,7 @@ class baseScannerClass (scanUtility):
                     undentVal,lws,repr(line)))
                 result.append("%s%s%s" % (tag,undentVal-lws,s.lstrip()))
             else:
+                if trace: g.trace(repr(s))
                 result.append(s)
 
         return ''.join(result)
@@ -2958,9 +3101,11 @@ class baseScannerClass (scanUtility):
                 i += 1
         if trace: g.trace('no block delim')
         return i,False
-    #@+node:ekr.20070712112008: *5* startsHelper
-    def startsHelper(self,s,i,kind,tags):
-        '''return True if s[i:] starts a class or function.
+    #@+node:ekr.20070712112008: *5* startsHelper (baseScannerClass)
+    def startsHelper(self,s,i,kind,tags,tag=None):
+        '''
+        tags is a list of id's.  tag is a debugging tag.
+        return True if s[i:] starts a class or function.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
 
         # if not tags: return False
@@ -3078,14 +3223,14 @@ class baseScannerClass (scanUtility):
     def startsString(self,s,i):
 
         return g.match(s,i,'"') or g.match(s,i,"'")
-    #@+node:ekr.20111030155153.16702: *3* Scanning
-    # The scanner defined here is used to verify the imported text.
     #@+node:ekr.20111030155153.16703: *4* tokenize
     def tokenize (self,s):
 
         '''Tokenize string s and return a list of tokens (kind,value,line_number)
 
-        where kind is in ('comment,'id','nl','other','string','ws')
+        where kind is in ('comment,'id','nl','other','string','ws').
+        
+        This is used only to verify the imported text.
         '''
         
         # Similar to scanHelper, but not enough to matter.
@@ -3095,7 +3240,7 @@ class baseScannerClass (scanUtility):
             if s[i] == '\n':
                 i,kind = i+1,'nl'
             elif s[i].isspace():
-                i,kind = self.skipWs(s,i)
+                i,kind = self.skipWs(s,i),'ws'
             elif self.startsComment(s,i):
                 i,kind = self.skipComment(s,i),'comment'
             elif self.startsString(s,i):
@@ -3112,17 +3257,6 @@ class baseScannerClass (scanUtility):
             # g.trace('%3s %7s %s' % (n,kind,repr(val[:20])))
             
         return result
-        
-    if g.unitTesting:
-        import leo.core.leoImport as leoImport
-        sc = leoImport.pythonScanner(c.importCommands,atAuto=False)
-        aList = tokenize(sc,p.b)
-        if 0:
-            for kind,val,n in aList:
-                print('%3s %7s %s' % (n,kind,repr(val)))
-        s2 = ''.join([val for (kind,val,n) in aList])
-        assert p.b == s2
-
     #@+node:ekr.20070707072749: *3* run (baseScannerClass)
     def run (self,s,parent):
 
@@ -3374,7 +3508,7 @@ class iniScanner (baseScannerClass):
 
     #@+others
     #@+node:ekr.20100803231223.5810: *4* startsHelper
-    def startsHelper(self,s,i,kind,tags):
+    def startsHelper(self,s,i,kind,tags,tag=None):
         '''return True if s[i:] starts section.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
 
@@ -4269,7 +4403,7 @@ class rstScanner (baseScannerClass):
     def startsString (self,s,i):
         return False
     #@+node:ekr.20090501095634.45: *4* startsHelper
-    def startsHelper(self,s,i,kind,tags):
+    def startsHelper(self,s,i,kind,tags,tag=None):
 
         '''return True if s[i:] starts an rST section.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
@@ -4411,12 +4545,13 @@ class xmlScanner (baseScannerClass):
         self.sigFailTokens = []
 
         # Overrides more attributes.
+        self.atAutoWarnsAboutLeadingWhitespace = False
         self.caseInsensitive = True
         self.hasClasses = True
         self.hasFunctions = False
         self.ignoreBlankLines = True
         self.ignoreLeadingWs = True
-        self.ignoreNewlines = True
+        self.ignoreAllWs = True
         self.strict = False
         self.tags_setting = tags_setting
         self.trace = False
@@ -4469,12 +4604,13 @@ class xmlScanner (baseScannerClass):
         # At present, same as g.isWordChar.
         # This is not correct.
         return ch and (ch.isalnum() or ch == '_')
-    #@+node:ekr.20071214072924.4: *4* startsHelper & helpers
+    #@+node:ekr.20071214072924.4: *4* startsHelper & helpers (xmlScanner)
     def startsHelper(self,s,i,kind,tags):
         '''return True if s[i:] starts a class or function.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
 
-        trace = False and not g.unitTesting ; verbose = False
+        trace = (False and kind == 'class') and not g.unitTesting
+        verbose = True
         self.codeEnd = self.sigEnd = self.sigId = None
 
         # Underindented lines can happen in any language, not just Python.
@@ -4491,7 +4627,7 @@ class xmlScanner (baseScannerClass):
         if not theId: return False
 
         if theId not in tags:
-            if trace and verbose:
+            if False and trace and verbose:
                 g.trace('**** %s theId: %s not in tags: %s' % (
                     kind,theId,tags))
             return False
@@ -4515,9 +4651,9 @@ class xmlScanner (baseScannerClass):
                 sigEnd = g.skip_line(s,sigEnd)
 
         if not complete:
-            i,ok = self.skipToMatchingTag(s,i,theId)
+            i,ok = self.skipToMatchingTag(s,i,theId,tags)
             if not ok:
-                if trace: g.trace('no matching tag:',theId)
+                if trace and verbose: g.trace('no matching tag:',theId)
                 return False
 
         # Success: set the ivars.
@@ -4540,7 +4676,9 @@ class xmlScanner (baseScannerClass):
                 self.error('%s definition does not start a line\n%s' % (
                     kind,g.get_line(s,k)))
 
-        if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
+        if trace:
+            g.trace(kind,sigId,'returns\n'+s[self.sigStart:i])
+            # g.trace('**end',g.callers())
         return True
     #@+node:ekr.20071214072924.3: *5* skipToEndOfTag
     def skipToEndOfTag(self,s,i):
@@ -4557,8 +4695,12 @@ class xmlScanner (baseScannerClass):
             progress = i
             if i == '"':
                 i = self.skipString(s,i)
+            elif g.match(s,i,'<!--'):
+                i = self.skipComment(s,i)
+            elif g.match(s,i,'<'):
+                return i,False,False # An error.
             elif g.match(s,i,'/>'):
-                i += 2
+                i = g.skip_ws(s,i+2)
                 if g.match(s,i,'\n'):
                     i += 1 # Make sure the "class" contains a trailing newline.
                 return i,True,True # Starts a self-contained tag.
@@ -4570,30 +4712,61 @@ class xmlScanner (baseScannerClass):
                 i += 1
             assert progress < i
 
-        return i,False
-    #@+node:ekr.20071214075117: *5* skipToMatchingTag & helper
-    def skipToMatchingTag (self,s,i,tag):
+        return i,False,False
+    #@+node:ekr.20071214075117: *5* skipToMatchingTag
+    def skipToMatchingTag (self,s,i,tag,tags):
         
-        trace = True and not g.unitTesting
-        
-        # if tag == 'nodeB': g.pdb()
+        '''Skip the entire class definition.
+        Return i,ok.
+        '''
 
+        trace = True and not g.unitTesting; verbose = False
+        stack = [tag]
+        level = 1
         while i < len(s):
             progress = i
             if i == '"':
                 i = self.skipString(s,i)
+            elif g.match(s,i,'<!--'):
+                i = self.skipComment(s,i)
             elif g.match(s,i,'</'):
-                i += 2 ; j = i
+                j = i+2
                 i = self.skipId(s,j)
                 tag2 = s[j:i]
-                if tag2.lower() == tag.lower():
-                    i,ok,complete = self.skipToEndOfTag(s,i)
-                    return i,ok
+                i,ok,complete = self.skipToEndOfTag(s,i)
+                if tag2 in tags:
+                    tag = stack.pop()
+                    if tag2.lower() == tag.lower():
+                        if trace and verbose: g.trace('%s exit <%s>' % (level-1,tag))
+                        level -= 1
+                        if level == 0:
+                            return i,True
+                    else:
+                        g.trace('tag mismatch: %s!=%s' % (tag2,tag))
+                        return i,False # tag mismatch
+            elif g.match(s,i,'<'):
+                # Another open tag.
+                j = g.skip_ws_and_nl(s,i+1)
+                i = self.skipId(s,j)
+                word = s[j:i]
+                if word:
+                    if word in tags:
+                        if trace and verbose: g.trace('%s enter <%s>' % (level+1,word))
+                        stack.append(word)
+                        level += 1
+                else:
+                    g.trace('syntax error')
+                    return i,False # Syntax error.
             else:
                 i += 1
             assert progress < i
 
         return i,False
+    #@+node:ekr.20111101204130.10009: *4* startsString
+    def startsString(self,s,i):
+
+        # 2011/11/01: *only* double quotes start xml/html strings!
+        return g.match(s,i,'"')
     #@-others
 
 class htmlScanner (xmlScanner):
