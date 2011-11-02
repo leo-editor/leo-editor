@@ -272,6 +272,7 @@ class Commands (object):
             # Note: there is also a smart_auto_indent setting.
         c.tab_width             = c.config.getInt('tab_width') or -4
         c.use_focus_border      = c.config.getBool('use_focus_border',default=True)
+        c.write_script_file     = c.config.getBool('write_script_file')
 
         # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
         # g.trace(c.sparse_move)
@@ -2121,6 +2122,17 @@ class Commands (object):
             c.importCommands.weave(fileName)
     #@+node:ekr.20031218072017.2861: *4* Edit Menu...
     #@+node:ekr.20031218072017.2862: *5* Edit top level
+    #@+node:ekr.20031218072017.2090: *6* c.colorPanel
+    def colorPanel (self,event=None):
+
+        '''Open the color dialog.'''
+
+        c = self ; frame = c.frame
+
+        if not frame.colorPanel:
+            frame.colorPanel = g.app.gui.createColorPanel(c)
+
+        frame.colorPanel.bringToFront()
     #@+node:ekr.20031218072017.2140: *6* c.executeScript & helpers
     def executeScript(self,event=None,args=None,p=None,script=None,
         useSelectedText=True,define_g=True,define_name='__main__',silent=False,
@@ -2131,7 +2143,6 @@ class Commands (object):
         We execute the selected text, or the entire body text if no text is selected."""
 
         c = self ; script1 = script
-        writeScriptFile = c.config.getBool('write_script_file')
         if not script:
             script = g.getScript(c,p,useSelectedText=useSelectedText)
         self.redirectScriptOutput()
@@ -2154,7 +2165,7 @@ class Commands (object):
                     # (This can happen when there are multiple event loops.)
                     # This does not prevent zombie windows if the script puts up a dialog...
                     c.inCommand = False
-                    if writeScriptFile:
+                    if c.write_script_file:
                         scriptFile = self.writeScriptFile(script)
                         
                         # 2011/10/31: make g.inScript a synonym for g.app.inScript.
@@ -2227,7 +2238,64 @@ class Commands (object):
 
             g.restoreStderr()
             g.restoreStdout()
-    #@+node:ekr.20070115135502: *7* writeScriptFile (changed)
+    #@+node:ekr.20031218072017.2088: *6* c.fontPanel
+    def fontPanel (self,event=None):
+
+        '''Open the font dialog.'''
+
+        c = self ; frame = c.frame
+
+        if not frame.fontPanel:
+            frame.fontPanel = g.app.gui.createFontPanel(c)
+
+        frame.fontPanel.bringToFront()
+    #@+node:EKR.20040612232221: *6* c.goToScriptLineNumber
+    # Called from g.handleScriptException.
+
+    def goToScriptLineNumber (self,p,script,n):
+
+        """Go to line n of a script."""
+
+        c = self
+
+        scriptData = {'p':p.copy(),'lines':g.splitLines(script)}
+        c.goToLineNumber(c).go(n=n,scriptData=scriptData)
+    #@+node:ekr.20031218072017.2086: *6* c.preferences
+    def preferences (self,event=None):
+
+        '''Handle the preferences command.'''
+
+        c = self
+        c.openLeoSettings()
+    #@+node:ekr.20031218072017.2883: *6* c.show/hide/toggleInvisibles
+    def hideInvisibles (self,event=None):
+        '''Hide invisible (whitespace) characters.'''
+        c = self ; c.showInvisiblesHelper(False)
+
+    def showInvisibles (self,event=None):
+        '''Show invisible (whitespace) characters.'''
+        c = self ; c.showInvisiblesHelper(True)
+
+    def toggleShowInvisibles (self,event=None):
+        '''Toggle showing of invisible (whitespace) characters.'''
+        c = self ; colorizer = c.frame.body.getColorizer()
+        val = g.choose(colorizer.showInvisibles,0,1)
+        c.showInvisiblesHelper(val)
+
+    def showInvisiblesHelper (self,val):
+        c = self ; frame = c.frame ; p = c.p
+        colorizer = frame.body.getColorizer()
+        colorizer.showInvisibles = val
+
+         # It is much easier to change the menu name here than in the menu updater.
+        menu = frame.menu.getMenu("Edit")
+        index = frame.menu.getMenuLabel(menu,g.choose(val,'Hide Invisibles','Show Invisibles'))
+        if index is None:
+            if val: frame.menu.setMenuLabel(menu,"Show Invisibles","Hide Invisibles")
+            else:   frame.menu.setMenuLabel(menu,"Hide Invisibles","Show Invisibles")
+
+        c.frame.body.recolor(p)
+    #@+node:ekr.20070115135502: *6* c.writeScriptFile
     def writeScriptFile (self,script):
 
         trace = False and not g.unitTesting
@@ -2793,74 +2861,6 @@ class Commands (object):
             if g.app.trace_scroll: g.trace('seeInsertPoint',spot)
             w.seeInsertPoint()
         #@-others
-    #@+node:EKR.20040612232221: *6* c.goToScriptLineNumber
-    # Called from g.handleScriptException.
-
-    def goToScriptLineNumber (self,p,script,n):
-
-        """Go to line n of a script."""
-
-        c = self
-
-        scriptData = {'p':p.copy(),'lines':g.splitLines(script)}
-        c.goToLineNumber(c).go(n=n,scriptData=scriptData)
-    #@+node:ekr.20031218072017.2088: *6* fontPanel
-    def fontPanel (self,event=None):
-
-        '''Open the font dialog.'''
-
-        c = self ; frame = c.frame
-
-        if not frame.fontPanel:
-            frame.fontPanel = g.app.gui.createFontPanel(c)
-
-        frame.fontPanel.bringToFront()
-    #@+node:ekr.20031218072017.2090: *6* colorPanel
-    def colorPanel (self,event=None):
-
-        '''Open the color dialog.'''
-
-        c = self ; frame = c.frame
-
-        if not frame.colorPanel:
-            frame.colorPanel = g.app.gui.createColorPanel(c)
-
-        frame.colorPanel.bringToFront()
-    #@+node:ekr.20031218072017.2883: *6* show/hide/toggleInvisibles
-    def hideInvisibles (self,event=None):
-        '''Hide invisible (whitespace) characters.'''
-        c = self ; c.showInvisiblesHelper(False)
-
-    def showInvisibles (self,event=None):
-        '''Show invisible (whitespace) characters.'''
-        c = self ; c.showInvisiblesHelper(True)
-
-    def toggleShowInvisibles (self,event=None):
-        '''Toggle showing of invisible (whitespace) characters.'''
-        c = self ; colorizer = c.frame.body.getColorizer()
-        val = g.choose(colorizer.showInvisibles,0,1)
-        c.showInvisiblesHelper(val)
-
-    def showInvisiblesHelper (self,val):
-        c = self ; frame = c.frame ; p = c.p
-        colorizer = frame.body.getColorizer()
-        colorizer.showInvisibles = val
-
-         # It is much easier to change the menu name here than in the menu updater.
-        menu = frame.menu.getMenu("Edit")
-        index = frame.menu.getMenuLabel(menu,g.choose(val,'Hide Invisibles','Show Invisibles'))
-        if index is None:
-            if val: frame.menu.setMenuLabel(menu,"Show Invisibles","Hide Invisibles")
-            else:   frame.menu.setMenuLabel(menu,"Hide Invisibles","Show Invisibles")
-
-        c.frame.body.recolor(p)
-    #@+node:ekr.20031218072017.2086: *6* preferences
-    def preferences (self,event=None):
-
-        '''Handle the preferences command.'''
-
-        c = self
-        c.openLeoSettings()
     #@+node:ekr.20031218072017.2884: *5* Edit Body submenu
     #@+node:ekr.20031218072017.1827: *6* c.findMatchingBracket, helper and test
     def findMatchingBracket (self,event=None):

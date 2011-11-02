@@ -841,14 +841,13 @@ class LeoApp:
         c.setLog() # 2010/10/20
         app.logInited = True # Prevent recursive call.
         
-        if not app.silentMode:
-            print('** isPython3: %s' % g.isPython3)
-            if not g.enableDB:
-                print('** caching disabled')
-        
         if not app.signon_printed:
             app.signon_printed = True
             if not app.silentMode: # 2011/11/02:
+                print()
+                print('** isPython3: %s' % g.isPython3)
+                if not g.enableDB:
+                    print('** caching disabled')
                 print(app.signon)
                 print(app.signon2)
         if not app.silentMode: # 2011/11/02:

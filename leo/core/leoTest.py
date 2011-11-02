@@ -91,7 +91,7 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
         # New in Leo 4.4.8: ignore everything in @ignore trees.
         if all: last = None
         else:   last = p.nodeAfterTree()
-        if trace: g.trace('all',all,'marked',marked,'root',p.h)
+        if trace and verbose: g.trace('all',all,'marked',marked,'root',p.h)
         seen = set()
         while p and p != last:
             # 2011/10/31: support for hidden tests: run tests only once.
@@ -181,14 +181,16 @@ class generalTestCase(unittest.TestCase):
         c = self.c ; p = self.p
 
         c.selectPosition(p.copy()) # 2010/02/03
-    #@+node:ekr.20051104075904.10: *5* runTest
+    #@+node:ekr.20051104075904.10: *5* runTest (generalTestCase)
     def runTest (self,define_g = True):
 
         trace = False
         c = self.c ; p = self.p.copy()
         script = g.getScript(c,p).strip()
         self.assert_(script)
-        writeScriptFile = c.config.getBool('write_script_file')
+        
+        if c.shortFileName() == 'dynamicUnitTest.leo':
+            c.write_script_file = True
 
         # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
         g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
@@ -199,13 +201,19 @@ class generalTestCase(unittest.TestCase):
             d = {'self':self,}
 
         script = script + '\n'
-        if trace: g.trace('p',p and p.h,'\n',script)
+        if trace: g.trace('p: %s c: %s write script: %s script:\n%s' % (
+            p and p.h,c.shortFileName(),c.write_script_file,script))
 
-        # Execute the script. Let unit test handle any errors!
-        if writeScriptFile:
+        # Execute the script. Let the unit test handle any errors!
+        # 2011/11/02: pass the script sources to exec or execfile.
+        if c.write_script_file:
             scriptFile = c.writeScriptFile(script)
-
-        exec(script,d)
+            if g.isPython3:
+                exec(compile(script,scriptFile,'exec'),d)
+            else:
+                execfile(scriptFile,d)
+        else:
+            exec(script,d)
     #@+node:ekr.20051104075904.11: *5* shortDescription
     def shortDescription (self):
 
@@ -215,7 +223,7 @@ class generalTestCase(unittest.TestCase):
 
         return s + '\n'
     #@-others
-#@+node:ekr.20051104075904.12: *4* makeTestSuite
+#@+node:ekr.20051104075904.12: *4* makeTestSuite (leoTest)
 #@+at This code executes the script in an @suite node.  This code assumes:
 # - The script creates a one or more unit tests.
 # - The script puts the result in g.app.scriptDict["suite"]
@@ -226,7 +234,7 @@ def makeTestSuite (c,p):
     """Create a suite of test cases by executing the script in an @suite node."""
 
     p = p.copy()
-
+    # g.trace('c.write_script_file',c.write_script_file)
     script = g.getScript(c,p).strip()
     if not script:
         print("no script in %s" % h)
@@ -237,7 +245,17 @@ def makeTestSuite (c,p):
             for line in lines:
                 print(n,line)
                 n += 1
-        exec(script + '\n',{'c':c,'g':g,'p':p})
+                
+        # 2011/11/02: make script sources available.
+        d = {'c':c,'g':g,'p':p}
+        if c.write_script_file:
+            scriptFile = c.writeScriptFile(script)
+            if g.isPython3:
+                exec(compile(script,scriptFile,'exec'),d)
+            else:
+                execfile(scriptFile,d)
+        else:
+            exec(script + '\n',d)
         suite = g.app.scriptDict.get("suite")
         if not suite:
             print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
@@ -851,7 +869,7 @@ class runTestExternallyHelperClass:
 
         trace = False or trace
         import time
-        kind = g.choose(self.all,'all ','selected')
+        kind = g.choose(self.all,'all','selected')
         c = self.c ; p = c.p
         t1 = time.time()
         found = self.searchOutline(p.copy())
@@ -867,8 +885,8 @@ class runTestExternallyHelperClass:
             if trace:
                 print('created %s unit tests in %0.2fsec in %s' % (
                     kind,t2-t1,self.fileName))
-            g.es('created %s unit tests' % (kind),color='blue')
-            # 2010/09/09: allow a way to specify the 
+                g.es('created %s unit tests' % (kind),color='blue')
+            # 2010/09/09: allow a way to specify the gui.
             gui = g.app.unitTestGui or 'nullGui'
             runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo',silent=True)
             c.selectPosition(p.copy())
