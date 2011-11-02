@@ -129,15 +129,20 @@ class paramClass:
             self.params = self.findParameters(current)
             if not self.params: return
 
-        sr = body.getAllText()
+        sr = s = body.getAllText()
         sr = sr.split('\n')
 
-        t = str(g.app.gui.getInsertPoint(w)).split('.')
-        sr = sr [int(t[0]) -1]
-        sr = sr [: int(t[1])]
+        i = w.getInsertPoint()
+        row,col = g.convertPythonIndexToRowCol(s,i)
+        sr = sr[row]
+        sr = sr[:col]
         sr = sr.rstrip()
+        
         match = self.regex.search(sr)
-        if not match: return
+        if not match:
+            g.trace(self.regex)
+            g.trace('no match',repr(sr))
+            return
 
         sr = sr [match.start(): match.end()]
         for z in range(current.numberOfChildren()):
