@@ -291,6 +291,8 @@ def scanOptions():
 
     '''Handle all options and remove them from sys.argv.'''
     trace = False
+    
+    # print('scanOptions',sys.argv)
 
     # Note: this automatically implements the --help option.
     parser = optparse.OptionParser()
@@ -392,7 +394,7 @@ def scanOptions():
 
     # --no-cache
     if options.no_cache:
-        print('scanOptions: disabling caching')
+        if trace: print('scanOptions: disabling caching')
         g.enableDB = False
         
     # --no-splash
