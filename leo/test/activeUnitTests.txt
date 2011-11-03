@@ -10561,6 +10561,33 @@ s = '''\
 g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20111102164107.3975: *6* @test html: underindented comment
+s = '''\
+
+<td width="550">
+<table cellspacing="0" cellpadding="0" width="600" border="0">
+    <td class="blutopgrabot" height="28"></td>
+    
+    <!-- The indentation of this element causes the problem. -->
+    <table>
+    
+<!--
+<div align="center">
+<iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>
+</div>
+-->
+
+</table>
+</table>
+
+<p>Paragraph</p>
+</td>
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20100803234640.5804: *5* ini tests
 #@+node:ekr.20100803234640.5805: *6* @test ini-test-1
 s = '''\
