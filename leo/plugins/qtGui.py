@@ -7556,9 +7556,14 @@ class leoQtGui(leoGui.leoGui):
         self.qtApp.exit()
     #@+node:ekr.20111022215436.16685: *4* Borders (qtGui)
     def add_border(self,c,w):
+        
+        name = g.app.gui.widget_name(w)
+        
+        if name == 'richTextEdit' and not c.use_body_focus_border:
+            return
 
         if c.use_focus_border:
-            if True and hasattr(w,'viewport'):
+            if hasattr(w,'viewport'):
                 w = w.viewport()
             sheet = "border: %spx solid %s" % (
                 c.focus_border_width,c.focus_border_color)
@@ -7567,7 +7572,7 @@ class leoQtGui(leoGui.leoGui):
     def remove_border(self,c,w):
 
         if c.use_focus_border:
-            if True and hasattr(w,'viewport'):
+            if hasattr(w,'viewport'):
                 w = w.viewport()
             sheet = "border: %spx solid white" % (
                 c.focus_border_width)
