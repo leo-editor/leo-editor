@@ -271,6 +271,7 @@ class Commands (object):
         c.smart_tab             = c.config.getBool('smart_tab')
             # Note: there is also a smart_auto_indent setting.
         c.tab_width             = c.config.getInt('tab_width') or -4
+        c.use_body_focus_border = c.config.getBool('use_body_focus_border',default=True)
         c.use_focus_border      = c.config.getBool('use_focus_border',default=True)
         c.write_script_file     = c.config.getBool('write_script_file')
 
