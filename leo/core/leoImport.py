@@ -1802,7 +1802,6 @@ class baseScannerClass (scanUtility):
         self.functionTags = []
         self.hasClasses = True
         self.hasFunctions = True
-        self.ignoreAllWs = False
         self.ignoreBlankLines = False
         self.ignoreLeadingWs = False
         self.lineCommentDelim = None
@@ -1896,83 +1895,6 @@ class baseScannerClass (scanUtility):
             self.reportMismatch(lines1,lines2,bad_i1,bad_i2)
 
         return ok
-    #@+node:ekr.20111029153537.16649: *4* compareIgnoringLines (This doesn't work)
-    def compareIgnoringLines(self,lines1,lines2):
-        
-        lines1 = [z.replace('\n','') for z in lines1]
-        lines2 = [z.replace('\n','') for z in lines2]
-        
-        # lines1 = [z.strip() for z in lines1]
-        # lines2 = [z.strip() for z in lines2]
-        
-        # lines1 = [z.replace(' ','').replace('\t','') for z in lines1]
-        # lines2 = [z.replace(' ','').replace('\t','') for z in lines2]
-
-        def mismatch(i1,i2,prefix1,prefix2):
-            g.trace('prefix mismatch\n1:%s %s\n2:%s %s' % (
-                i1,repr(prefix1),i2,repr(prefix2)))
-        
-        i1,i2,n1,n2 = 0,0,len(lines1),len(lines2)
-        prefix1,prefix2 = "",""
-        while i1 < n1 and i2 < n2:
-            j1,j2 = i1,i2
-            s1,s2 = lines1[i1],lines2[i2]
-            if s1 == s2:
-                # A simple match.
-                i1 += 1 ; i2 += 1
-            elif prefix1 + s1 == prefix2:
-                # lines1 was split.
-                prefix1,prefix2 = "",""
-                i1 += 1
-            elif prefix2 + s2 == prefix1:
-                # lines2 was split.
-                prefix1,prefix2 = "",""
-                i2 += 1
-            elif len(prefix1) < len(prefix2):
-                prefix1 = prefix1 + s1
-                i1 += 1
-            elif len(prefix2) < len(prefix1):
-                prefix2 = prefix2 + s2
-                i2 += 1
-            elif prefix1 and prefix2:
-                if prefix1 != prefix2:
-                    mismatch(i1,i2,prefix1,prefix2)
-                    g.pdb()
-                    return False,i1,i2
-                else:
-                    # Pick either to append.
-                    prefix1 = prefix1 + s1
-                    i1 += 1
-            else:
-                # Pick either to append.
-                prefix1 = prefix1 + s1
-                i1 += 1
-                
-            # Check the prefixes immediately.
-            if (
-                (len(prefix1) == len(prefix2) and prefix1 != prefix2) or
-                (prefix2 and len(prefix1) > len(prefix2) and not prefix1.startswith(prefix2)) or
-                (prefix1 and len(prefix2) > len(prefix1) and not prefix2.startswith(prefix1))
-            ):
-                mismatch(i1,i2,prefix1,prefix2)
-                g.pdb()
-                return False,i1,i2
-                    
-            assert j1 < i1 or j2 < i2
-        # Complete the tail.
-        i1_end,i2_end = i1,i2
-        while i1 < n1:
-            s1 = lines1[i1].strip()
-            prefix1 = prefix1 + s1
-        while i2 < n2:
-            s2 = lines2[i2].strip()
-            prefix2 = prefix2 + s2
-        if prefix1 == prefix2:
-            return True,-1,-1
-        else:
-            mismatch(i1,i2,prefix1,prefix2)
-            g.pdb()
-            return False,i1_end,i2_end
     #@+node:ekr.20070730093735: *4* compareHelper & helpers
     def compareHelper (self,lines1,lines2,i,strict):
 
@@ -2099,7 +2021,7 @@ class baseScannerClass (scanUtility):
         n1,n2 = len(lines1),len(lines2)
         s1 = '%s did not import %s perfectly\n' % (
             kind,self.root.h)
-        s2 = 'first mismatched line: %s (original)=%s (imported)' % (
+        s2 = 'first mismatched line: %s (original) = %s (imported)' % (
             bad_i1,bad_i2)
         s = s1 + s2
         
@@ -2136,7 +2058,7 @@ class baseScannerClass (scanUtility):
         tokens1 = self.tokenize(s1)
         tokens2 = self.tokenize(s2)
 
-        if self.ignoreAllWs or self.ignoreLeadingWs or self.ignoreBlankLines:
+        if self.ignoreLeadingWs or self.ignoreBlankLines:
             tokens1 = self.filterWsTokens(tokens1)
             tokens2 = self.filterWsTokens(tokens2)
             
@@ -2147,15 +2069,15 @@ class baseScannerClass (scanUtility):
             n1,n2,ok = self.compareTokens(tokens1,tokens2)
             if trace: g.trace(n1,n2,ok)
             return n1,n2,ok # Success or failure.
-            
     #@+node:ekr.20111101092301.16729: *5* compareTokens
     def compareTokens(self,tokens1,tokens2):
             
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
+        verbose = True
         i,n1,n2 = 0,len(tokens1),len(tokens2)
         fail_n1,fail_n2 = -1,-1
         while i < max(n1,n2):
-            if trace:
+            if trace and verbose:
                 for n,tokens in ((n1,tokens1),(n2,tokens2),):
                     if i < n: kind,val,junk_n = tokens[i]
                     else:     kind,val = 'eof',''
@@ -2167,9 +2089,11 @@ class baseScannerClass (scanUtility):
             if fail_n1 == -1 and fail_n2 == -1 and (kind1 != kind2 or val1 != val2):
                 if trace: g.trace('fail at lines: %s,%s' % (tok_n1,tok_n2))
                 fail_n1,fail_n2 = tok_n1,tok_n1
+                break
             i += 1
         
         if fail_n1 > -1 or fail_n2 > -1:
+            if trace: g.trace('fail',n1,n2)
             return fail_n1,fail_n2,False
         elif n1 == n2:
             if trace: g.trace('equal')
@@ -2180,11 +2104,7 @@ class baseScannerClass (scanUtility):
             return n,n,False
     #@+node:ekr.20111101052702.16722: *5* filterWsTokens & helpers
     def filterWsTokens (self,tokens):
-        
-        if self.ignoreAllWs:
-            # Removes leading ws and blank lines.
-            return self.removeAllWsTokens(tokens)
-            
+
         if self.ignoreBlankLines:
             tokens = self.removeBlankLinesTokens(tokens)
             
@@ -2192,13 +2112,6 @@ class baseScannerClass (scanUtility):
             tokens = self.removeLeadingWsTokens(tokens)
 
         return tokens
-    #@+node:ekr.20111101092301.16726: *6* removeAllWsTokens
-    def removeAllWsTokens (self,tokens):
-        
-        '''Remove all whitespace and newline tokens.'''
-        
-        return [(kind,val,n) for kind,val,n in tokens
-            if kind not in ('nl','ws')]
     #@+node:ekr.20111101092301.16727: *6* removeLeadingWsTokens
     def removeLeadingWsTokens (self,tokens):
         
@@ -3294,7 +3207,8 @@ class baseScannerClass (scanUtility):
                 
             assert progress < i and j == progress
             result.append((kind,val,line_number),)
-            line_number += val.count('\n')
+            # Use the raw token, s[j:i] to count newlines, not the munged val.
+            line_number += s[j:i].count('\n')
             # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
             
         return result
@@ -4562,7 +4476,7 @@ class rstScanner (baseScannerClass):
 class xmlScanner (baseScannerClass):
 
     #@+others
-    #@+node:ekr.20071214072451: *4*  __init__ (xmlScanner)
+    #@+node:ekr.20071214072451: *4*  ctor_(xmlScanner)
     def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
 
         # Init the base class.
@@ -4590,9 +4504,8 @@ class xmlScanner (baseScannerClass):
         self.caseInsensitive = True
         self.hasClasses = True
         self.hasFunctions = False
-        self.ignoreBlankLines = True
-        self.ignoreLeadingWs = True
-        self.ignoreAllWs = True
+        self.ignoreBlankLines = False # The tokenizer handles this.
+        self.ignoreLeadingWs = False # The tokenizer handles this.
         self.strict = False
         self.tags_setting = tags_setting
         self.trace = False
@@ -4794,7 +4707,7 @@ class xmlScanner (baseScannerClass):
         Return i,ok.
         '''
 
-        trace = True and not g.unitTesting; verbose = False
+        trace = False and not g.unitTesting; verbose = False
         stack = [tag]
         level = 1
         while i < len(s):
@@ -4817,7 +4730,8 @@ class xmlScanner (baseScannerClass):
                             return i,True
                     else:
                         g.trace('tag mismatch: %s!=%s' % (tag2,tag))
-                        return i,False # tag mismatch
+                        return i,False # tag mismatch.
+                            # a user error, but not an import error.
             elif g.match(s,i,'<'):
                 # Another open tag.
                 j = g.skip_ws_and_nl(s,i+1)

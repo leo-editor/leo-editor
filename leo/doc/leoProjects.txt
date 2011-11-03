@@ -23103,7 +23103,7 @@ class htmlScanner (xmlScanner):
                 s = s[:i+1] + '\n' + s[i+1:]
                 # g.trace('new',repr(s))
         return s
-#@+node:ekr.20071214072451: *6*  __init__ (xmlScanner)
+#@+node:ekr.20071214072451: *6*  ctor_(xmlScanner)
 def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
 
     # Init the base class.
@@ -23131,9 +23131,8 @@ def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
     self.caseInsensitive = True
     self.hasClasses = True
     self.hasFunctions = False
-    self.ignoreBlankLines = True
-    self.ignoreLeadingWs = True
-    self.ignoreAllWs = True
+    self.ignoreBlankLines = False # The tokenizer handles this.
+    self.ignoreLeadingWs = False # The tokenizer handles this.
     self.strict = False
     self.tags_setting = tags_setting
     self.trace = False
@@ -23335,7 +23334,7 @@ def skipToMatchingTag (self,s,i,tag,tags):
     Return i,ok.
     '''
 
-    trace = True and not g.unitTesting; verbose = False
+    trace = False and not g.unitTesting; verbose = False
     stack = [tag]
     level = 1
     while i < len(s):
@@ -23358,7 +23357,8 @@ def skipToMatchingTag (self,s,i,tag,tags):
                         return i,True
                 else:
                     g.trace('tag mismatch: %s!=%s' % (tag2,tag))
-                    return i,False # tag mismatch
+                    return i,False # tag mismatch.
+                        # a user error, but not an import error.
         elif g.match(s,i,'<'):
             # Another open tag.
             j = g.skip_ws_and_nl(s,i+1)
@@ -25122,7 +25122,7 @@ def makeTestCase (c,p):
 assert False
 #@+node:ekr.20111102123707.9631: *6* @@test assert True
 assert True
-#@+node:ekr.20111103073536.16582: *4* Added support for @bool use_body_focus_border 
+#@+node:ekr.20111103073536.16582: *4* Added support for @bool use_body_focus_border
 #@+node:ekr.20111022215436.16685: *5* Borders (qtGui)
 def add_border(self,c,w):
     

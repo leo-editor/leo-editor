@@ -5271,6 +5271,82 @@ The color of the double angle brackets in << name >>
 #@+node:ekr.20111024091133.16670: *4* @@@color string_color = #00aa00
 The color of strings and their delimiters.
 
+#@+node:ekr.20111103102153.9715: ** Unused scripts
+#@+node:ekr.20111018143804.15945: *3* Not used from find-cmd-docstrings
+#@+node:ekr.20111017211256.15900: *4* find_all_commands_classes
+def find_all_commands_classes(c):
+    
+    g.trace(c.shortFileName())
+    result = []
+    
+    for p in c.all_positions():
+        if p.h.find('getPublicCommands') > -1:
+            for parent in p.parents():
+                if g.match_word(parent.h,0,'class'):
+                    g.trace('commands class',parent.h)
+                    result.append(parent.v)
+
+    return result
+#@+node:ekr.20111017211256.15902: *4* get_commanders
+def get_commanders (files):
+    
+    '''Return a list of commanders corresponding to the given files.'''
+    
+    def normalize(s):
+        return s.replace('\\','/').lower()
+    
+    paths = []
+    for fn in files:
+        args = [g.app.loadDir,'..']
+        args.extend(fn.split('/'))
+        paths.append(g.os_path_finalize_join(*args))
+        
+    result = []
+    for path in paths:
+        for f in g.app.windowList:
+            if normalize(path) == normalize(f.c.fileName()):
+                result.append(f.c) ; break
+
+    return result
+#@+node:ekr.20111017211256.15901: *4* find_all_docstrings
+def find_all_docstrings(commanders):
+
+    class_list = []
+    for c in commanders:
+        aList = find_all_commands_classes(c)
+        if aList:
+            class_list.extend([(c,v) for v in aList])
+            
+    result = []
+
+    return result
+#@+node:ekr.20111023210405.16576: *3* Script: find color tags
+'''Find all tags arguments to colorRangeWithTag'''
+
+# Not useful: most tag arguments are non-literal.
+
+# .colorRangeWithTag(self,s,i,j,tag,delegate='',exclude_match=False):
+    
+for p in p.self_and_subtree():
+    s,i,tag = p.b,0,'.colorRangeWithTag('
+    while True:
+        progress = i
+        i = s.find(tag,i)
+        if i > -1:
+            j = s.find(')',i)
+            k = s.find('\n',i)
+            if -1 < j < k:
+                args = s[i+len(tag):j].strip()
+                print(args)
+                i = j
+            elif k > -1:
+                i = k
+            else:
+                break
+            assert progress < i
+        else:
+            break
+print('done')
 #@+node:ekr.20031218072017.434: ** Unused code
 @ignore
 @language python
@@ -5763,217 +5839,6 @@ def getExternalCompletions (self,s,p=None,language='python'):
     theObject,tabList = self.theObject,self.tabList
     self.exit() # Not called from the autocompleter itself.
     return theObject,tabList
-#@+node:ekr.20111018143804.15945: *3* Not used from find-cmd-docstrings
-#@+node:ekr.20111017211256.15900: *4* find_all_commands_classes
-def find_all_commands_classes(c):
-    
-    g.trace(c.shortFileName())
-    result = []
-    
-    for p in c.all_positions():
-        if p.h.find('getPublicCommands') > -1:
-            for parent in p.parents():
-                if g.match_word(parent.h,0,'class'):
-                    g.trace('commands class',parent.h)
-                    result.append(parent.v)
-
-    return result
-#@+node:ekr.20111017211256.15902: *4* get_commanders
-def get_commanders (files):
-    
-    '''Return a list of commanders corresponding to the given files.'''
-    
-    def normalize(s):
-        return s.replace('\\','/').lower()
-    
-    paths = []
-    for fn in files:
-        args = [g.app.loadDir,'..']
-        args.extend(fn.split('/'))
-        paths.append(g.os_path_finalize_join(*args))
-        
-    result = []
-    for path in paths:
-        for f in g.app.windowList:
-            if normalize(path) == normalize(f.c.fileName()):
-                result.append(f.c) ; break
-
-    return result
-#@+node:ekr.20111017211256.15901: *4* find_all_docstrings
-def find_all_docstrings(commanders):
-
-    class_list = []
-    for c in commanders:
-        aList = find_all_commands_classes(c)
-        if aList:
-            class_list.extend([(c,v) for v in aList])
-            
-    result = []
-
-    return result
-#@+node:ekr.20111021211000.13207: *3* From qtBody.onFocusColorHelper
-        if 0: # Wrong.
-            # 2011/03/14: Also set the foreground color.
-            colorName = self.unselectedForegroundColor
-            # if trace: g.trace('%9s' % (kind),colorName)
-            self.setForegroundColorHelper(colorName,obj)
-            
-            colorName = self.unselectedBackgroundColor
-            # if trace: g.trace('%9s' % (kind),colorName)
-            self.setBackgroundColorHelper(colorName,obj)
-#@+node:ekr.20111021211000.13208: *3* From qtBody.setEditorColors
-    # Wrong: only one stylesheet can be in effect at once.
-    self.setForegroundColorHelper(fg,obj)
-    self.setBackgroundColorHelper(bg,obj)
-#@+node:ekr.20110605121601.18188: *4* setBackgroundColorHelper (qtBody)
-def setBackgroundColorHelper (self,colorName,obj):
-    
-    # obj is a QTextEdit or QTextBrowser.
-    
-    trace = True and not g.unitTesting
-    
-    if not colorName: return
-
-    styleSheet = 'QTextEdit#richTextEdit { background-color: %s; }' % (
-        colorName)
-        
-    if trace:
-        g.trace(colorName,g.callers())
-        # g.trace(colorName,str(obj.objectName()),obj.__class__)
-    
-    if QtGui.QColor(colorName).isValid():
-        obj.setStyleSheet(styleSheet)
-    elif colorName not in self.badFocusColors:
-        self.badFocusColors.append(colorName)
-        g.es_print('invalid body background color: %s' % (colorName),color='blue')
-#@+node:ekr.20110605121601.18189: *4* setForegroundColorHelper (qtBody)
-def setForegroundColorHelper (self,colorName,obj):
-    # obj is a QTextEdit or QTextBrowser.
-
-    trace = True and not g.unitTesting
-    if not colorName: return
-
-    styleSheet = 'QTextEdit#richTextEdit { color: %s; }' % (
-        colorName)
-        
-    if trace: g.trace(colorName,str(obj.objectName()),obj.__class__)
-    
-    if QtGui.QColor(colorName).isValid():
-        obj.setStyleSheet(styleSheet)
-    elif colorName not in self.badFocusColors:
-        self.badFocusColors.append(colorName)
-        g.es_print('invalid body foreground color: %s' % (colorName),color='blue')
-#@+node:ekr.20110605121601.18127: *3* setBackgroundColorHelper (leoQtHeadlineWidget)
-def setBackgroundColorHelper (self,colorName):
-    
-    trace = False and not g.unitTesting
-    
-    if not colorName: return
-    
-    w = self.widget # A QLineEdit
-
-    styleSheet = 'QTreeWidget QLineEdit { background-color: %s; }' % (
-        colorName)
-        
-    if trace: g.trace(colorName,w)
-
-    if QtGui.QColor(colorName).isValid():
-        w.setStyleSheet(styleSheet)
-    elif colorName not in self.badFocusColors:
-        self.badFocusColors.append(colorName)
-        g.warning('invalid headline background color: %s' % (colorName))
-#@+node:ekr.20111023165432.16575: *3* Borders (qtGui) (Complext)
-# red_border = "border: %spx solid %s;"
-# white_border  = "border: 1px solid white;"
-
-def add_border(self,c,w):
-    
-    if not c.use_focus_border:
-        return
-        
-    # g.trace(c.focus_border_width,c.focus_border_color)
-    
-   
-    if hasattr(w,'viewport'):
-        w = w.viewport()
-        
-    if 1: # Don't worry about restoring previous stylesheets.
-        w.setStyleSheet("border: %spx solid %s;" % (
-            c.focus_border_width,c.focus_border_color))
-    else:
-        white_border = self.white_border
-        red_border = self.red_border % (
-            c.focus_border_width,c.focus_border_color)
-
-        s = str(w.styleSheet()).strip() or ''
-        if s and s.find(white_border) > -1:
-            s = s.replace(white_border,red_border)
-            w.setStyleSheet(s)
-        elif s and s.find(red_border) > -1:
-            pass
-        elif s:
-            if s and not s.endswith(';'): s = s + ';'
-            s = s + red_border
-            w.setStyleSheet(s)
-        elif not s:
-            s = red_border
-            w.setStyleSheet(s)
-    
-def remove_border(self,c,w):
-    
-    if not c.use_focus_border:
-        return
-    
-    if hasattr(w,'viewport'):
-        w = w.viewport()
-        
-    if 1: # Don't worry about restoring previous stylesheets.
-        w.setStyleSheet("border: 1px solid white;")
-    else:
-        white_border = self.white_border
-        red_border = self.red_border % (
-        c.focus_border_width,c.focus_border_color)
-        s = str(w.styleSheet()).strip() or ''
-        
-        if s and s.find(red_border) > -1:
-            s = s.replace(red_border,white_border)
-            w.setStyleSheet(s)
-        elif s and s.find(white_border) > -1:
-            pass
-        elif s:
-            if s and not s.endswith(';'): s = s + ';'
-            s = s + white_border
-            w.setStyleSheet(s)
-        elif not s:
-            s = white_border
-            w.setStyleSheet(s)
-#@+node:ekr.20111023210405.16576: *3* Script: find color tags
-'''Find all tags arguments to colorRangeWithTag'''
-
-# Not useful: most tag arguments are non-literal.
-
-# .colorRangeWithTag(self,s,i,j,tag,delegate='',exclude_match=False):
-    
-for p in p.self_and_subtree():
-    s,i,tag = p.b,0,'.colorRangeWithTag('
-    while True:
-        progress = i
-        i = s.find(tag,i)
-        if i > -1:
-            j = s.find(')',i)
-            k = s.find('\n',i)
-            if -1 < j < k:
-                args = s[i+len(tag):j].strip()
-                print(args)
-                i = j
-            elif k > -1:
-                i = k
-            else:
-                break
-            assert progress < i
-        else:
-            break
-print('done')
 #@+node:ekr.20061031131434.155: *3* masterMenuHandler (No longer used)
 def masterMenuHandler (self,stroke,func,commandName):
 
@@ -6166,5 +6031,12 @@ def skipOtherToken (self,s,i):
     ):
         i += 1
     return i,s[j:i]
+#@+node:ekr.20111101092301.16726: *3* removeAllWsTokens (helper for filterWsTokens)
+def removeAllWsTokens (self,tokens):
+    
+    '''Remove all whitespace and newline tokens.'''
+    
+    return [(kind,val,n) for kind,val,n in tokens
+        if kind not in ('nl','ws')]
 #@-all
 #@-leo
