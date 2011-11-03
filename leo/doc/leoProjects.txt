@@ -11629,9 +11629,14 @@ total stylesheet as follows::
    w.setStyleSheet(s)
 #@+node:ekr.20111022215436.16685: *5* Borders (qtGui)
 def add_border(self,c,w):
+    
+    name = g.app.gui.widget_name(w)
+    
+    if name == 'richTextEdit' and not c.use_body_focus_border:
+        return
 
     if c.use_focus_border:
-        if True and hasattr(w,'viewport'):
+        if hasattr(w,'viewport'):
             w = w.viewport()
         sheet = "border: %spx solid %s" % (
             c.focus_border_width,c.focus_border_color)
@@ -11640,7 +11645,7 @@ def add_border(self,c,w):
 def remove_border(self,c,w):
 
     if c.use_focus_border:
-        if True and hasattr(w,'viewport'):
+        if hasattr(w,'viewport'):
             w = w.viewport()
         sheet = "border: %spx solid white" % (
             c.focus_border_width)
@@ -22776,6 +22781,7 @@ def initConfigSettings (self):
     c.smart_tab             = c.config.getBool('smart_tab')
         # Note: there is also a smart_auto_indent setting.
     c.tab_width             = c.config.getInt('tab_width') or -4
+    c.use_body_focus_border = c.config.getBool('use_body_focus_border',default=True)
     c.use_focus_border      = c.config.getBool('use_focus_border',default=True)
     c.write_script_file     = c.config.getBool('write_script_file')
 
@@ -22881,9 +22887,14 @@ def setWindowPosition (self):
         c.windowPosition = 500,700,50,50 # width,height,left,top.
 #@+node:ekr.20111022215436.16685: *5* Borders (qtGui)
 def add_border(self,c,w):
+    
+    name = g.app.gui.widget_name(w)
+    
+    if name == 'richTextEdit' and not c.use_body_focus_border:
+        return
 
     if c.use_focus_border:
-        if True and hasattr(w,'viewport'):
+        if hasattr(w,'viewport'):
             w = w.viewport()
         sheet = "border: %spx solid %s" % (
             c.focus_border_width,c.focus_border_color)
@@ -22892,7 +22903,7 @@ def add_border(self,c,w):
 def remove_border(self,c,w):
 
     if c.use_focus_border:
-        if True and hasattr(w,'viewport'):
+        if hasattr(w,'viewport'):
             w = w.viewport()
         sheet = "border: %spx solid white" % (
             c.focus_border_width)

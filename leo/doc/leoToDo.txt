@@ -43,6 +43,100 @@ require putting them on the list of known tags, but that would
 create nodes for them, and you might not want that.
 
 I'll have to think about this "pairing" problem... 
+.. @+node:ekr.20070713075450: *5* Unit tests
+# atAuto must be False for unit tests: otherwise the test gets wiped out.
+
+def cUnitTest(self,p,fileName=None,s=None,showTree=False):
+    return self.scannerUnitTest(p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.c')
+
+def cSharpUnitTest(self,p,fileName=None,s=None,showTree=False):
+    return self.scannerUnitTest(p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.c#')
+
+def elispUnitTest(self,p,fileName=None,s=None,showTree=False):
+    return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.el')
+
+def htmlUnitTest(self,p,fileName=None,s=None,showTree=False):
+    return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.htm')
+
+def iniUnitTest(self,p,fileName=None,s=None,showTree=False):
+    return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.ini')
+
+def javaUnitTest(self,p,fileName=None,s=None,showTree=False):
+    return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.java')
+
+def javaScriptUnitTest(self,p,fileName=None,s=None,showTree=False):
+    return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.js')
+
+def pascalUnitTest(self,p,fileName=None,s=None,showTree=False):
+    return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.pas')
+
+def phpUnitTest(self,p,fileName=None,s=None,showTree=False):
+    return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.php')
+
+def pythonUnitTest(self,p,fileName=None,s=None,showTree=False):
+    return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.py')
+
+def rstUnitTest(self,p,fileName=None,s=None,showTree=False):
+    return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.rst')
+
+def textUnitTest(self,p,fileName=None,s=None,showTree=False):
+    return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.txt')
+
+def xmlUnitTest(self,p,fileName=None,s=None,showTree=False):
+    return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.xml')
+
+def defaultImporterUnitTest(self,p,fileName=None,s=None,showTree=False):
+    return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.xxx')
+.. @+node:ekr.20070713082220: *6* scannerUnitTest
+def scannerUnitTest (self,p,atAuto=False,ext=None,fileName=None,s=None,showTree=False):
+
+    '''Run a unit test of an import scanner,
+    i.e., create a tree from string s at location p.'''
+
+    c = self.c ; h = p.h ; old_root = p.copy()
+    oldChanged = c.changed
+    d = g.app.unitTestDict
+    expectedErrors = d.get('expectedErrors')
+    expectedErrorMessage = d.get('expectedErrorMessage')
+    expectedMismatchLine = d.get('expectedMismatchLine')
+    g.app.unitTestDict = {
+        'expectedErrors':expectedErrors,
+        'expectedErrorMessage':expectedErrorMessage,
+        'expectedMismatchLine':expectedMismatchLine,
+    }
+    if not fileName: fileName = p.h
+    if not s: s = self.removeSentinelsCommand([fileName],toString=True)
+    title = g.choose(h.startswith('@test'),h[5:],h)
+    self.createOutline(title.strip(),p.copy(),atAuto=atAuto,s=s,ext=ext)
+    d = g.app.unitTestDict
+    ok = ((d.get('result') and expectedErrors in (None,0)) or
+        (
+            # checkTrialWrite returns *True* if the following match.
+            # d.get('result') == False and
+            d.get('actualErrors') == d.get('expectedErrors') and
+            d.get('actualMismatchLine') == d.get('expectedMismatchLine') and
+            (expectedErrorMessage is None or d.get('actualErrorMessage') == d.get('expectedErrorMessage'))
+        ))
+    if not ok:
+        g.trace('result',d.get('result'),
+            'actualErrors',d.get('actualErrors'),
+            'expectedErrors',d.get('expectedErrors'),
+            'actualMismatchLine',d.get('actualMismatchLine'),
+            'expectedMismatchLine', d.get('expectedMismatchLine'),
+            '\nactualErrorMessage  ',d.get('actualErrorMessage'),
+            '\nexpectedErrorMessage',d.get('expectedErrorMessage'),
+        )
+    if not showTree:
+        while old_root.hasChildren():
+            old_root.firstChild().doDelete()
+        c.setChanged(oldChanged)
+
+    c.redraw(old_root)
+
+    if g.app.unitTesting:
+        assert ok
+
+    return ok
 .. @+node:ekr.20070703122141.65: *5* << class baseScannerClass >>
 class baseScannerClass (scanUtility):
 
