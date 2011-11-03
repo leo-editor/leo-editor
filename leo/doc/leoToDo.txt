@@ -1110,6 +1110,12 @@ def getIndent (self,s,i):
     j,junk = g.getLine(s,i)
     junk,indent = g.skip_leading_ws_with_indent(s,j,self.tab_width)
     return indent
+.. @+node:ekr.20111103073536.16599: *7* isSpace
+def isSpace(self,s,i):
+    
+    '''Return true if s[i] is a tokenizer space.'''
+
+    return i < len(s) and s[i] != '\n' and s[i].isspace()
 .. @+node:ekr.20070706101600: *7* scan & scanHelper
 def scan (self,s,parent):
 
@@ -1632,6 +1638,36 @@ def startsId(self,s,i):
 def startsString(self,s,i):
 
     return g.match(s,i,'"') or g.match(s,i,"'")
+.. @+node:ekr.20111103073536.16583: *6* Tokenizing
+.. @+node:ekr.20111103073536.16586: *7* skip...Token (baseScannerClass)
+def skipCommentToken (self,s,i):
+    
+    j = self.skipComment(s,i)
+    return j,s[i:j]
+    
+def skipIdToken (self,s,i):
+    j = self.skipId(s,i)
+    return j,s[i:j]
+    
+def skipNewlineToken (self,s,i):
+    
+    return i+1,'\n'
+    
+def skipOtherToken (self,s,i):
+    
+    return i+1,s[i]
+    
+def skipStringToken(self,s,i):
+
+    j = self.skipString(s,i)
+    return j,s[i:j]
+    
+def skipWsToken(self,s,i):
+    j = i
+    while i < len(s) and s[i].isspace():
+        i += 1
+    return i,s[j:i]
+    
 .. @+node:ekr.20111030155153.16703: *7* tokenize
 def tokenize (self,s):
 
@@ -1641,29 +1677,34 @@ def tokenize (self,s):
     
     This is used only to verify the imported text.
     '''
-    
-    # Similar to scanHelper, but not enough to matter.
-    result,i,n = [],0,0
+
+    result,i,line_number = [],0,0
     while i < len(s):
         progress = j = i
-        if s[i] == '\n':
-            i,kind = i+1,'nl'
-        elif s[i].isspace():
-            i,kind = self.skipWs(s,i),'ws'
+        # Test isSpace first, so it can absorb newlines.
+        if self.isSpace(s,i):
+            kind = 'ws'
+            i,val = self.skipWsToken(s,i)
+        elif s[i] == '\n':
+            kind = 'nl'
+            i,val = self.skipNewlineToken(s,i)
         elif self.startsComment(s,i):
-            i,kind = self.skipComment(s,i),'comment'
+            kind = 'comment'
+            i,val = self.skipCommentToken(s,i)
         elif self.startsString(s,i):
-            i,kind = self.skipString(s,i),'string'
+            kind = 'string'
+            i,val = self.skipStringToken(s,i)
         elif self.startsId(s,i):
-            i,kind = self.skipId(s,i),'id'
+            kind = 'id'
+            i,val = self.skipIdToken(s,i)
         else:
-            i,kind = i+1,'other'
+            kind = 'other'
+            i,val = self.skipOtherToken(s,i)
             
         assert progress < i and j == progress
-        val = s[j:i]
-        result.append((kind,val,n),)
-        n += val.count('\n')
-        # g.trace('%3s %7s %s' % (n,kind,repr(val[:20])))
+        result.append((kind,val,line_number),)
+        line_number += val.count('\n')
+        # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
         
     return result
 .. @+node:ekr.20070707072749: *6* run (baseScannerClass)
@@ -1839,6 +1880,39 @@ def addTags (self):
         aList2 = [z.lower() for z in aList2]
         aList.extend(aList2)
         if trace: g.trace(ivar,aList)
+.. @+node:ekr.20111103073536.16601: *6* isSpace
+def isSpace(self,s,i):
+    
+    '''Return true if s[i] is a tokenizer space.'''
+
+    # Unlike the base-class method, xml space tokens include newlines.
+    return i < len(s) and s[i].isspace()
+.. @+node:ekr.20111103073536.16590: *6* skip...Token (xmlScanner overrides)
+def skipCommentToken(self,s,i):
+    
+    '''Return comment lines with all leading/trailing whitespace removed.'''
+    j = self.skipComment(s,i)
+    lines = g.splitLines(s[i:j])
+    lines = [z.strip() for z in lines]
+    return j,'\n'.join(lines)
+    
+# skipIdToken: no change.
+
+def skipNewlineToken(self,s,i):
+
+    assert False,'xml has no newline token'
+    
+# skipOtherToken: no change.
+    
+# skipStringToken: no change.
+
+def skipWsToken(self,s,i):
+    '''Return a single blank for all runs of whitespace, including newlines.'''
+    j = i
+    while i < len(s) and s[i].isspace():
+        i += 1
+    return i,' '
+    
 .. @+node:ekr.20091230062012.6238: *6* skipId (override base class) & helper
 @  For characters valid in names see:
    www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
@@ -2028,6 +2102,16 @@ def skipToMatchingTag (self,s,i,tag,tags):
         assert progress < i
 
     return i,False
+.. @+node:ekr.20111103073536.16595: *6* startsId (xmlScanner)
+def startsId(self,s,i):
+    
+    if i < len(s):
+        ch = s[i]
+        self.isWordChar(ch) or ch in '.-:'
+    else:
+        return False
+
+    # return g.is_c_id(s[i:i+1])
 .. @+node:ekr.20111101204130.10009: *6* startsString
 def startsString(self,s,i):
 
@@ -2351,40 +2435,61 @@ def removeBlankLinesTokens(self,tokens):
         assert i == progress+1
         
     return result
-.. @+node:ekr.20111030155153.16703: *6* tokenize
-def tokenize (self,s):
-
-    '''Tokenize string s and return a list of tokens (kind,value,line_number)
-
-    where kind is in ('comment,'id','nl','other','string','ws').
+.. @+node:ekr.20111103073536.16586: *6* skip...Token (baseScannerClass)
+def skipCommentToken (self,s,i):
     
-    This is used only to verify the imported text.
-    '''
+    j = self.skipComment(s,i)
+    return j,s[i:j]
     
-    # Similar to scanHelper, but not enough to matter.
-    result,i,n = [],0,0
-    while i < len(s):
-        progress = j = i
-        if s[i] == '\n':
-            i,kind = i+1,'nl'
-        elif s[i].isspace():
-            i,kind = self.skipWs(s,i),'ws'
-        elif self.startsComment(s,i):
-            i,kind = self.skipComment(s,i),'comment'
-        elif self.startsString(s,i):
-            i,kind = self.skipString(s,i),'string'
-        elif self.startsId(s,i):
-            i,kind = self.skipId(s,i),'id'
-        else:
-            i,kind = i+1,'other'
-            
-        assert progress < i and j == progress
-        val = s[j:i]
-        result.append((kind,val,n),)
-        n += val.count('\n')
-        # g.trace('%3s %7s %s' % (n,kind,repr(val[:20])))
-        
-    return result
+def skipIdToken (self,s,i):
+    j = self.skipId(s,i)
+    return j,s[i:j]
+    
+def skipNewlineToken (self,s,i):
+    
+    return i+1,'\n'
+    
+def skipOtherToken (self,s,i):
+    
+    return i+1,s[i]
+    
+def skipStringToken(self,s,i):
+
+    j = self.skipString(s,i)
+    return j,s[i:j]
+    
+def skipWsToken(self,s,i):
+    j = i
+    while i < len(s) and s[i].isspace():
+        i += 1
+    return i,s[j:i]
+    
+.. @+node:ekr.20111103073536.16590: *6* skip...Token (xmlScanner overrides)
+def skipCommentToken(self,s,i):
+    
+    '''Return comment lines with all leading/trailing whitespace removed.'''
+    j = self.skipComment(s,i)
+    lines = g.splitLines(s[i:j])
+    lines = [z.strip() for z in lines]
+    return j,'\n'.join(lines)
+    
+# skipIdToken: no change.
+
+def skipNewlineToken(self,s,i):
+
+    assert False,'xml has no newline token'
+    
+# skipOtherToken: no change.
+    
+# skipStringToken: no change.
+
+def skipWsToken(self,s,i):
+    '''Return a single blank for all runs of whitespace, including newlines.'''
+    j = i
+    while i < len(s) and s[i].isspace():
+        i += 1
+    return i,' '
+    
 .. @+node:ekr.20071214072924.4: *6* startsHelper & helpers (xmlScanner)
 def startsHelper(self,s,i,kind,tags):
     '''return True if s[i:] starts a class or function.
@@ -2543,10 +2648,60 @@ def skipToMatchingTag (self,s,i,tag,tags):
         assert progress < i
 
     return i,False
+.. @+node:ekr.20111103073536.16595: *6* startsId (xmlScanner)
+def startsId(self,s,i):
+    
+    if i < len(s):
+        ch = s[i]
+        self.isWordChar(ch) or ch in '.-:'
+    else:
+        return False
+
+    # return g.is_c_id(s[i:i+1])
+.. @+node:ekr.20111030155153.16703: *6* tokenize
+def tokenize (self,s):
+
+    '''Tokenize string s and return a list of tokens (kind,value,line_number)
+
+    where kind is in ('comment,'id','nl','other','string','ws').
+    
+    This is used only to verify the imported text.
+    '''
+
+    result,i,line_number = [],0,0
+    while i < len(s):
+        progress = j = i
+        # Test isSpace first, so it can absorb newlines.
+        if self.isSpace(s,i):
+            kind = 'ws'
+            i,val = self.skipWsToken(s,i)
+        elif s[i] == '\n':
+            kind = 'nl'
+            i,val = self.skipNewlineToken(s,i)
+        elif self.startsComment(s,i):
+            kind = 'comment'
+            i,val = self.skipCommentToken(s,i)
+        elif self.startsString(s,i):
+            kind = 'string'
+            i,val = self.skipStringToken(s,i)
+        elif self.startsId(s,i):
+            kind = 'id'
+            i,val = self.skipIdToken(s,i)
+        else:
+            kind = 'other'
+            i,val = self.skipOtherToken(s,i)
+            
+        assert progress < i and j == progress
+        result.append((kind,val,line_number),)
+        line_number += val.count('\n')
+        # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
+        
+    return result
 .. @+node:ekr.20111102052054.10009: *5* import dataN.html
 if g.unitTesting:
     # fn = r'c:\recent\test.html'
-    fn = r'c:\recent\data3.html'
+    # fn = r'c:\recent\data3.html'
+    fn = r'c:\recent\data.html'
     c.importCommands.importFilesCommand(files=[fn], treeType='@file')
 .. @+node:ekr.20111027103125.16538: *4* * Look at vim video
 http://video.google.com/videoplay?docid=8810772602188234059

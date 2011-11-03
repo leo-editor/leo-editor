@@ -6152,5 +6152,19 @@ def compareIgnoringLines(self,lines1,lines2):
         mismatch(i1,i2,prefix1,prefix2)
         g.pdb()
         return False,i1_end,i2_end
+#@+node:ekr.20111103073536.16597: *3* skipOtherToken
+def skipOtherToken (self,s,i):
+    
+    chars = ' \n\t"'
+    assert s[i] not in chars and not g.match(s,i,'<!--') and not self.startsId(s,i)
+    j = i ; i += 1 # Eat one character, whatever it is.
+    while (
+        i < len(s) and
+        s[i] not in chars and
+        not g.match(s,i,'<!--') and
+        not self.startsId(s,i)
+    ):
+        i += 1
+    return i,s[j:i]
 #@-all
 #@-leo

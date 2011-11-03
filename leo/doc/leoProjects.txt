@@ -23155,6 +23155,39 @@ def addTags (self):
         aList2 = [z.lower() for z in aList2]
         aList.extend(aList2)
         if trace: g.trace(ivar,aList)
+#@+node:ekr.20111103073536.16601: *6* isSpace
+def isSpace(self,s,i):
+    
+    '''Return true if s[i] is a tokenizer space.'''
+
+    # Unlike the base-class method, xml space tokens include newlines.
+    return i < len(s) and s[i].isspace()
+#@+node:ekr.20111103073536.16590: *6* skip...Token (xmlScanner overrides)
+def skipCommentToken(self,s,i):
+    
+    '''Return comment lines with all leading/trailing whitespace removed.'''
+    j = self.skipComment(s,i)
+    lines = g.splitLines(s[i:j])
+    lines = [z.strip() for z in lines]
+    return j,'\n'.join(lines)
+    
+# skipIdToken: no change.
+
+def skipNewlineToken(self,s,i):
+
+    assert False,'xml has no newline token'
+    
+# skipOtherToken: no change.
+    
+# skipStringToken: no change.
+
+def skipWsToken(self,s,i):
+    '''Return a single blank for all runs of whitespace, including newlines.'''
+    j = i
+    while i < len(s) and s[i].isspace():
+        i += 1
+    return i,' '
+    
 #@+node:ekr.20091230062012.6238: *6* skipId (override base class) & helper
 @  For characters valid in names see:
    www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
@@ -23344,6 +23377,16 @@ def skipToMatchingTag (self,s,i,tag,tags):
         assert progress < i
 
     return i,False
+#@+node:ekr.20111103073536.16595: *6* startsId (xmlScanner)
+def startsId(self,s,i):
+    
+    if i < len(s):
+        ch = s[i]
+        self.isWordChar(ch) or ch in '.-:'
+    else:
+        return False
+
+    # return g.is_c_id(s[i:i+1])
 #@+node:ekr.20111101204130.10009: *6* startsString
 def startsString(self,s,i):
 
@@ -25079,6 +25122,30 @@ def makeTestCase (c,p):
 assert False
 #@+node:ekr.20111102123707.9631: *6* @@test assert True
 assert True
+#@+node:ekr.20111103073536.16582: *4* Added support for @bool use_body_focus_border 
+#@+node:ekr.20111022215436.16685: *5* Borders (qtGui)
+def add_border(self,c,w):
+    
+    name = g.app.gui.widget_name(w)
+    
+    if name == 'richTextEdit' and not c.use_body_focus_border:
+        return
+
+    if c.use_focus_border:
+        if hasattr(w,'viewport'):
+            w = w.viewport()
+        sheet = "border: %spx solid %s" % (
+            c.focus_border_width,c.focus_border_color)
+        self.update_style_sheet(w,'border',sheet)
+
+def remove_border(self,c,w):
+
+    if c.use_focus_border:
+        if hasattr(w,'viewport'):
+            w = w.viewport()
+        sheet = "border: %spx solid white" % (
+            c.focus_border_width)
+        self.update_style_sheet(w,'border',sheet)
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
