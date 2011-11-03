@@ -1826,21 +1826,31 @@ class rstCommands:
 
         # Compute the args list if the stylesheet path does not exist.
         styleSheetArgsDict = self.handleMissingStyleSheetArgs()
-
-        for ext2,writer in (
-            ('.html','html'),
-            ('.htm','html'),
-            ('.tex','latex'),
-            ('.pdf','leo_pdf'),
-            ('.s5','s5'), # 2011/03/27
-            ('.odt','odt'), # 2011/03/27
-        ):
-            if ext2 == ext:
-                break
+        
+        if ext == '.pdf':
+            module = g.importFromPath(
+                name = 'leo_pdf.py',
+                path = g.os_path_finalize_join(g.app.loadDir,'..','plugins'),
+                pluginName = 'leo_pdf',
+                verbose = False)
+            writer = module.Writer() # Get an instance.
+            writer_name = None
         else:
-            g.es_print('unknown docutils extension: %s' % (ext),color='red')
-            return ''
-
+            writer = None
+            for ext2,writer_name in (
+                ('.html','html'),
+                ('.htm','html'),
+                ('.tex','latex'),
+                ('.pdf','leo.plugins.leo_pdf'), # 2011/11/03
+                ('.s5','s5'), # 2011/03/27
+                ('.odt','odt'), # 2011/03/27
+            ):
+                if ext2 == ext:
+                    break
+            else:
+                g.es_print('unknown docutils extension: %s' % (ext),color='red')
+                return ''
+        
         if ext in ('.html','.htm') and not SilverCity:
             if not self.silverCityWarningGiven:
                 self.silverCityWarningGiven = True
@@ -1889,7 +1899,8 @@ class rstCommands:
             result = docutils.core.publish_string(source=s,
                     reader_name='standalone',
                     parser_name='restructuredtext',
-                    writer_name=writer,
+                    writer=writer,
+                    writer_name=writer_name,
                     settings_overrides=overrides)
             if g.isBytes(result):
                 result = g.toUnicode(result)

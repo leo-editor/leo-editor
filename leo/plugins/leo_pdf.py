@@ -77,7 +77,7 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 # 
 # IV. About tracing and debugging.
 # 
-# As mentioned in the imports section, it is not necessary to import leo.core.leoGlobals as leoGlobals.
+# As mentioned in the imports section, it is not necessary to import leoGlobals.
 # This file is part of Leo, and contains debugging stuff such as g.trace and
 # g.toString. There are also g.splitLines, g.es_exception, etc. used by debugging
 # code.
@@ -211,8 +211,21 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 #@-others
 
 #@+at
-# 0.5 EKR: Define subclasses of docutils classes only if docutils can be imported.
-#          This supresses errors during unit tests.
+# 0.5 EKR:
+# - Define subclasses of docutils classes only if docutils can be imported.
+# - This supresses errors during unit tests.
+# 
+# 1.0 EKR 2011/11/03:
+# - Various changes to come accomodate docutils changes.
+#     - Added dummy Reporter class for use by get_language.
+#     - I suspect this should be logger class, but I don't much care.
+# - Incorporate getStyleSheet from stylesheet.py, obtained from:
+#     http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
+# 
+# Note: passing writer_name = leo.plugins.leo_pdf to docutils does not work,
+# presumably because __import__('leo.plugins.leo_pdf') returns the *leo* module,
+# and docutils seems not to be aware of it. Thus, the new rst3 code passes writer
+# = Writer() (an instance) instead.
 #@-<< version history >>
 #@+<< to do >>
 #@+node:ekr.20090704103932.5177: ** << to do >>
@@ -232,8 +245,9 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 # - Test rST raw: pdf feature.
 #@-<< to do >>
 
-__version__ = '0.5'
+__version__ = '1.0'
 __docformat__ = 'reStructuredText'
+
 #@+<< imports >>
 #@+node:ekr.20090704103932.5162: ** << imports >>
 import sys
@@ -249,12 +263,29 @@ try:
 
     # Formatting imports...
     import docutils
-    import reportlab.platypus
-    import reportlab.platypus.para
-    import stylesheet # To do: get this a better way.
 
 except ImportError:
+    print('leo_pdf.py: can not import docutils')
     docutils = None
+    
+try:
+    import reportlab.platypus
+    import reportlab.platypus.para
+except ImportError:
+    print('leo_pdf.py: can not import reportlab.platypus')
+    reportlab = None
+    
+try:
+    #copyright ReportLab Inc. 2000
+    #see rllicense.txt for license details
+    # http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
+    from reportlab.lib.styles import StyleSheet1, ParagraphStyle
+    from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT, TA_JUSTIFY
+    from reportlab.lib import colors
+
+except ImportError:
+    print('leo_pdf.py: can not import reportlab.lib styles info')
+    stylesheet = None
 
 if g.isPython3:
     import io
@@ -277,64 +308,281 @@ def init ():
     skip this file.'''
 
     return None
-#@+node:ekr.20090704103932.5179: ** class Bunch (object)
-#@+at From The Python Cookbook:  Often we want to just collect a bunch of stuff together, naming each item of the bunch; a dictionary's OK for that, but a small do-nothing class is even handier, and prettier to use.
-# 
-# Create a Bunch whenever you want to group a few variables:
-# 
-#     point = Bunch(datum=y, squared=y*y, coord=x)
-# 
-# You can read/write the named attributes you just created, add others, del some of them, etc:
-#     if point.squared > threshold:
-#         point.isok = True
-#@@c
+#@+node:ekr.20111103154150.9647: ** getStyleSheet
+# Copied from stylesheet.py, from # http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
+# standard stylesheet for our manuals
 
-class Bunch (object):
+def getStyleSheet():
+    """Returns a stylesheet object"""
+    stylesheet = StyleSheet1()
 
-    """A class that represents a colection of things.
+    stylesheet.add(ParagraphStyle(name='Normal',
+                                  fontName='Times-Roman',
+                                  fontSize=10,
+                                  leading=12,
+                                  spaceBefore=4,
+                                  spaceAfter=4)
+                   )
 
-    Especially useful for representing a collection of related variables."""
+    stylesheet.add(ParagraphStyle(name='DocInfo',
+                                  parent=stylesheet['Normal'],
+                                  leading=12,
+                                  spaceBefore=0,
+                                  spaceAfter=0)
+                   )
 
-    def __init__(self,**keywords):
-        self.__dict__.update (keywords)
+    stylesheet.add(ParagraphStyle(name='Comment',
+                                  fontName='Times-Italic')
+                   )
 
-    def __repr__(self):
-        return self.toString()
+    stylesheet.add(ParagraphStyle(name='Indent1',
+                                  leftIndent=36,
+                                  firstLineIndent=0)
+                   )
+    
+    stylesheet.add(ParagraphStyle(name='BodyText',
+                                  parent=stylesheet['Normal'],
+                                  spaceBefore=6)
+                   )
+    stylesheet.add(ParagraphStyle(name='Italic',
+                                  parent=stylesheet['BodyText'],
+                                  fontName = 'Times-Italic')
+                   )
 
-    def ivars(self):
-        return self.__dict__.keys()
+    stylesheet.add(ParagraphStyle(name='Heading1',
+                                  parent=stylesheet['Normal'],
+                                  fontName = 'Times-Bold',
+                                  fontSize=20,
+                                  leading=20,
+                                  spaceBefore=10,
+                                  spaceAfter=6),
+                   alias='h1')
 
-    def keys(self):
-        return self.__dict__.keys()
+    stylesheet.add(ParagraphStyle(name='Heading2',
+                                  parent=stylesheet['Normal'],
+                                  fontName = 'Times-Bold',
+                                  fontSize=18,
+                                  leading=18,
+                                  spaceBefore=10,
+                                  spaceAfter=6),
+                   alias='h2')
+    
+    stylesheet.add(ParagraphStyle(name='Heading3',
+                                  parent=stylesheet['Normal'],
+                                  fontName = 'Times-BoldItalic',
+                                  fontSize=16,
+                                  leading=16,
+                                  spaceBefore=10,
+                                  spaceAfter=6),
+                   alias='h3')
 
-    def toString(self):
-        tag = self.__dict__.get('tag')
-        entries = ["%s: %s" % (key,str(self.__dict__.get(key)))
-            for key in self.ivars() if key != 'tag']
-        if tag:
-            return "Bunch(tag=%s)...\n%s\n" % (tag,'\n'.join(entries))
-        else:
-            return "Bunch...\n%s\n" % '\n'.join(entries)
+    stylesheet.add(ParagraphStyle(name='Heading4',
+                                  parent=stylesheet['Normal'],
+                                  fontName = 'Times-BoldItalic',
+                                  fontsize=14,
+                                  leading=14,
+                                  spaceBefore=8,
+                                  spaceAfter=4),
+                   alias='h4')
 
-    # Used by new undo code.
-    def __setitem__ (self,key,value):
-        '''Support aBunch[key] = val'''
-        return operator.setitem(self.__dict__,key,value)
+    stylesheet.add(ParagraphStyle(name='Heading5',
+                                  parent=stylesheet['Normal'],
+                                  fontName = 'Times-BoldItalic',
+                                  fontsize=13,
+                                  leading=13,
+                                  spaceBefore=8,
+                                  spaceAfter=4),
+                   alias='h5')
 
-    def __getitem__ (self,key):
-        '''Support aBunch[key]'''
-        return operator.getitem(self.__dict__,key)
+    stylesheet.add(ParagraphStyle(name='Heading6',
+                                  parent=stylesheet['Normal'],
+                                  fontName = 'Times-BoldItalic',
+                                  fontsize=12,
+                                  leading=12,
+                                  spaceBefore=8,
+                                  spaceAfter=4),
+                   alias='h6')
 
-    def get (self,key,theDefault=None):
-        return self.__dict__.get(key,theDefault)
+    stylesheet.add(ParagraphStyle(name='Title',
+                                  parent=stylesheet['Normal'],
+                                  fontName = 'Times-Bold',
+                                  fontSize=22,
+                                  leading=22,
+                                  spaceAfter=8,
+                                  alignment=TA_CENTER
+                                  ),
+                   alias='title')
 
-bunch = Bunch
+    stylesheet.add(ParagraphStyle(name='Subtitle',
+                                  parent=stylesheet['Normal'],
+                                  fontName = 'Times-Bold',
+                                  fontSize=20,
+                                  leading=20,
+                                  spaceAfter=6,
+                                  alignment=TA_CENTER
+                                  ),
+                   alias='subtitle')
+
+    stylesheet.add(ParagraphStyle(name='TopicTitle',
+                                  parent=stylesheet['Normal'],
+                                  fontName = 'Times-Bold',
+                                  fontSize=18,
+                                  leading=14,
+                                  spaceAfter=6,
+                                  ),
+                   alias='topic-title')
+
+    for i in range(0, 15):
+        indent = 18*i
+        stylesheet.add(ParagraphStyle(name='TopicItem%s' % i,
+                                  parent=stylesheet['Normal'],
+                                  fontName = 'Times-Roman',
+                                  fontSize=12,
+                                  leftIndent=indent,
+                                  spaceBefore=0,
+                                  spaceAfter=0,
+                                  ),
+                   alias='topic-item-%s' % i)
+
+    stylesheet.add(ParagraphStyle(name='UnorderedList',
+                                  parent=stylesheet['Normal'],
+                                  firstLineIndent=0,
+                                  leftIndent=18,
+                                  bulletIndent=9,
+                                  spaceBefore=0,
+                                  bulletFontName='Symbol'),
+                   alias='ul')
+
+    stylesheet.add(ParagraphStyle(name='Definition',
+                                  parent=stylesheet['Normal'],
+                                  firstLineIndent=0,
+                                  leftIndent=36,
+                                  bulletIndent=0,
+                                  spaceAfter=2,
+                                  spaceBefore=2,
+                                  bulletFontName='Times-BoldItalic'),
+                   alias='dl')
+
+    stylesheet.add(ParagraphStyle(name='OrderedList',
+                                  parent=stylesheet['Definition']),
+                   alias='ol')
+
+    stylesheet.add(ParagraphStyle(name='Code',
+                                  parent=stylesheet['Normal'],
+                                  fontName='Courier',
+                                  textColor=colors.navy,
+                                  fontSize=8,
+                                  leading=8.8,
+                                  leftIndent=36,
+                                  firstLineIndent=0))
+
+    stylesheet.add(ParagraphStyle(name='FunctionHeader',
+                                  parent=stylesheet['Normal'],
+                                  fontName='Courier-Bold',
+                                  fontSize=8,
+                                  leading=8.8))
+
+    stylesheet.add(ParagraphStyle(name='DocString',
+                                  parent=stylesheet['Normal'],
+                                  fontName='Courier',
+                                  fontSize=8,
+                                  leftIndent=18,
+                                  leading=8.8))
+
+    stylesheet.add(ParagraphStyle(name='DocStringIndent',
+                                  parent=stylesheet['Normal'],
+                                  fontName='Courier',
+                                  fontSize=8,
+                                  leftIndent=36,
+                                  leading=8.8))
+
+    stylesheet.add(ParagraphStyle(name='URL',
+                                  parent=stylesheet['Normal'],
+                                  fontName='Courier',
+                                  textColor=colors.navy,
+                                  alignment=TA_CENTER),
+                   alias='u')
+ 
+    stylesheet.add(ParagraphStyle(name='Centred',
+                                  parent=stylesheet['Normal'],
+                                  alignment=TA_CENTER
+                                  ))
+
+    stylesheet.add(ParagraphStyle(name='Caption',
+                                  parent=stylesheet['Centred'],
+                                  fontName='Times-Italic'
+                                  ))
+    
+    return stylesheet
 #@-others
 
 if docutils:
     #@+<< define subclasses of docutils classes >>
-    #@+node:ekr.20090704103932.5180: ** << define subclasses of docutils classes >>
+    #@+node:ekr.20111103122912.9783: ** << define subclasses of docutils classes >>
     #@+others
+    #@+node:ekr.20090704103932.5179: *3* class Bunch (object)
+    #@+at
+    # 
+    # From The Python Cookbook: Often we want to just collect a bunch of stuff
+    # together, naming each item of the bunch; a dictionary's OK for that, but a small
+    # do-nothing class is even handier, and prettier to use.
+    # 
+    # Create a Bunch whenever you want to group a few variables:
+    # 
+    #     point = Bunch(datum=y, squared=y*y, coord=x)
+    # 
+    # You can read/write the named attributes you just created, add others, del some
+    # of them, etc::
+    #     
+    #     if point.squared > threshold:
+    #         point.isok = True
+    #@@c
+
+    class Bunch (object):
+
+        """A class that represents a colection of things.
+
+        Especially useful for representing a collection of related variables."""
+
+        def __init__(self,**keywords):
+            self.__dict__.update (keywords)
+
+        def __repr__(self):
+            return self.toString()
+
+        def ivars(self):
+            return self.__dict__.keys()
+
+        def keys(self):
+            return self.__dict__.keys()
+
+        def toString(self):
+            tag = self.__dict__.get('tag')
+            entries = ["%s: %s" % (key,str(self.__dict__.get(key)))
+                for key in self.ivars() if key != 'tag']
+            if tag:
+                return "Bunch(tag=%s)...\n%s\n" % (tag,'\n'.join(entries))
+            else:
+                return "Bunch...\n%s\n" % '\n'.join(entries)
+
+        # Used by new undo code.
+        def __setitem__ (self,key,value):
+            '''Support aBunch[key] = val'''
+            return operator.setitem(self.__dict__,key,value)
+
+        def __getitem__ (self,key):
+            '''Support aBunch[key]'''
+            return operator.getitem(self.__dict__,key)
+
+        def get (self,key,theDefault=None):
+            return self.__dict__.get(key,theDefault)
+
+    bunch = Bunch
+    #@+node:ekr.20111103154150.9646: *3* class Reporter(object)
+    class Reporter (object):
+        
+        def warning(s):
+            print('Reporter.warning',s)
     #@+node:ekr.20090704103932.5181: *3* class Writer (docutils.writers.Writer)
     class Writer (docutils.writers.Writer):
 
@@ -385,27 +633,37 @@ if docutils:
             if 0: # Not needed now that putParaFromIntermediateFile is in the visitor.
                 self.styleSheet = visitor.styleSheet
                 self.encode = visitor.encode
+                
+            if reportlab:
 
-            out = StringIO.StringIO()
-
-            doc = reportlab.platypus.SimpleDocTemplate(out,
-                pagesize=reportlab.lib.pagesizes.A4)
-
-            # The 'real' code is doc.build(story)
-            visitor.buildFromIntermediateFile(s,story,visitor)
-
-            return out.getvalue()
+                out = StringIO.StringIO()
+            
+                doc = reportlab.platypus.SimpleDocTemplate(out,
+                    pagesize=reportlab.lib.pagesizes.A4)
+            
+                # The 'real' code is doc.build(story)
+                visitor.buildFromIntermediateFile(s,story,visitor)
+            
+                return out.getvalue()
+                
+            else:
+                return ''
         #@+node:ekr.20090704103932.5185: *4* createPDF_usingPlatypus
         def createPDF_usingPlatypus (self,story):
+            
+            if reportlab:
 
-            out = StringIO.StringIO()
-
-            doc = reportlab.platypus.SimpleDocTemplate(out,
-                pagesize=reportlab.lib.pagesizes.A4)
-
-            doc.build(story)
-
-            return out.getvalue()
+                out = StringIO.StringIO()
+            
+                doc = reportlab.platypus.SimpleDocTemplate(out,
+                    pagesize=reportlab.lib.pagesizes.A4)
+            
+                doc.build(story)
+            
+                return out.getvalue()
+                
+            else:
+                return ''
         #@+node:ekr.20090704103932.5186: *4* lower
         def lower(self):
 
@@ -457,13 +715,15 @@ if docutils:
 
             self.writer = writer
             self.contents = contents
+            self.reporter = Reporter()
             self.story = []
 
             # Some of these may be needed, even though they are not referenced directly.
             self.settings = settings = doctree.settings
-            self.styleSheet = stylesheet.getStyleSheet()
+            ### self.styleSheet = stylesheet and stylesheet.getStyleSheet()
+            self.styleSheet = getStyleSheet()
             docutils.nodes.NodeVisitor.__init__(self, doctree) # Init the base class.
-            self.language = docutils.languages.get_language(doctree.settings.language_code)
+            self.language = docutils.languages.get_language(doctree.settings.language_code,self.reporter)
         #@+node:ekr.20090704103932.5190: *4* as_what
         def as_what(self):
 
@@ -513,13 +773,14 @@ if docutils:
                 self.putParaFromIntermediateFile(para,style)
         #@+node:ekr.20090704103932.5194: *4* putParaFromIntermediateFile
         def putParaFromIntermediateFile (self,lines,style):
+            
+            if not reportlab:
+                return
 
             bulletText = None
             text = '\n'.join(lines)
 
-            # g.trace(style,repr(text))
-
-            style = self.styleSheet [style]
+            style = self.styleSheet.get(style)
 
             self.story.append(
                 reportlab.platypus.para.Paragraph (
@@ -534,11 +795,13 @@ if docutils:
         #@+node:ekr.20090704103932.5196: *4*    __init__ (PDFTranslator)
         def __init__(self, writer,doctree):
 
+            self.reporter = Reporter()
             self.writer = writer
             self.settings = settings = doctree.settings
-            self.styleSheet = stylesheet.getStyleSheet()
+            # self.styleSheet = stylesheet and stylesheet.getStyleSheet()
+            self.styleSheet = getStyleSheet()
             docutils.nodes.NodeVisitor.__init__(self, doctree) # Init the base class.
-            self.language = docutils.languages.get_language(doctree.settings.language_code)
+            self.language = docutils.languages.get_language(doctree.settings.language_code,self.reporter)
 
             self.in_docinfo = False
             self.head = [] # Set only by meta() method.  
@@ -808,6 +1071,9 @@ if docutils:
             return self.story
         #@+node:ekr.20090704103932.5216: *5* createParagraph
         def createParagraph (self,text,style='Normal',bulletText=None):
+            
+            if not reportlab:
+                return
 
             if type(text) in (types.ListType,types.TupleType):
                 text = ''.join([self.encode(t) for t in text])
@@ -825,7 +1091,7 @@ if docutils:
                     g.trace('%8s\n\n%s' % (style,s))
                 g.pr('')
 
-            style = self.styleSheet [style]
+            style = self.styleSheet.get(style)
 
             try:
                 self.story.append(
@@ -913,8 +1179,8 @@ if docutils:
 
             """Encode special characters in `text` & return."""
             if type(text) is types.UnicodeType:
-                text = text.replace(g.u('\u2020'),g.u(' '))
-                text = text.replace(g.u('\xa0'), g.u(' '))
+                ###text = text.replace(g.u('\u2020'),g.u(' '))
+                ###text = text.replace(g.u('\xa0'), g.u(' '))
                 text = text.encode('utf-8')
             #text = text.replace("&", "&amp;")
             #text = text.replace("<", '"')
@@ -1480,10 +1746,11 @@ if docutils:
             raise docutils.nodes.SkipNode
         #@+node:ekr.20090704103932.5292: *6*  literal_blocks...
         def visit_literal_block(self, node):
-
-            self.story.append(
-                reportlab.platypus.Preformatted(
-                    node.astext(),self.styleSheet['Code']))
+            
+            if reportlab:
+                self.story.append(
+                    reportlab.platypus.Preformatted(
+                        node.astext(),self.styleSheet.get('Code')))
 
             raise docutils.nodes.SkipNode
 
