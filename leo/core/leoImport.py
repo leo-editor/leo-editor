@@ -1571,7 +1571,7 @@ class leoImportCommands (scanUtility):
                 '\nactualErrorMessage  ',d.get('actualErrorMessage'),
                 '\nexpectedErrorMessage',d.get('expectedErrorMessage'),
             )
-        if not showTree and ok:
+        if not showTree:
             while old_root.hasChildren():
                 old_root.firstChild().doDelete()
             c.setChanged(oldChanged)
