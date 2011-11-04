@@ -48,13 +48,11 @@ test_pat = re.compile(test_pat_s,re.MULTILINE)
 #@+node:ekr.20051104075904.2: ** Support @profile, @suite, @test, @timer
 #@+node:ekr.20051104075904.3: *3* isSuiteNode and isTestNode
 def isSuiteNode (p):
-    h = p.h.lower()
-    return g.match_word(h,0,"@suite")
+    return g.match_word(p.h.lower(),0,"@suite")
 
 def isTestNode (p):
     '''Return True if p is an @test node'''
-    h = p.h.lower()
-    return g.match_word(h,0,"@test")
+    return g.match_word(p.h.lower(),0,"@test")
     
     # Hidden test nodes are an anti-pattern.
 
@@ -82,7 +80,6 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
     if trace: g.trace('marked',marked,'c',c)
 
     try:
-        found = False
         g.unitTesting = g.app.unitTesting = True
         g.app.unitTestDict["fail"] = False
         g.app.unitTestDict['c'] = c
@@ -94,62 +91,25 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
         suite = unittest.makeSuite(unittest.TestCase)
 
         # New in Leo 4.4.8: ignore everything in @ignore trees.
-        if all: last = None
-        else:   last = p.nodeAfterTree()
-        if trace and verbose: g.trace('all',all,'marked',marked,'root',p.h)
-        seen = set()
-        while p and p != last:
-            if trace and verbose: g.trace(p.h)
-            # 2011/10/31: support for hidden tests: run tests only once.
-            if p.v in seen:
-                if trace: g.trace('ignoring tree',p.h)
-                p.moveToNodeAfterTree()
-                continue
-            seen.add(p.v)
-            if g.match_word(p.h,0,'@ignore'):
-                # 2011/10/31: support for run-marked-unit-test command.
-                if trace: g.trace('ignoring tree',p.h)
-                p.moveToNodeAfterTree()
-            elif marked and not p.isMarked():
-                if trace: g.trace('ignoring unmarked node',p.h)
-                p.moveToThreadNext()
-            elif isTestNode(p):
+        last = None if all else p.nodeAfterTree()
+        
+        aList = findAllUnitTestNodes(c,p,last,all,marked,
+            lookForMark=False,lookForNodes=True)
+       
+        found = False
+        for p in aList:
+            if isTestNode(p):
                 if trace: g.trace('adding',p.h)
                 test = makeTestCase(c,p)
-                if test:
-                    suite.addTest(test) ; found = True
-                # p.moveToThreadNext()
-                p.moveToNodeAfterTree() # 2011/11/02
             elif isSuiteNode(p): # @suite
                 if trace: g.trace('adding',p.h)
                 test = makeTestSuite(c,p)
-                if test:
-                    suite.addTest(test) ; found = True
-                # p.moveToThreadNext()
-                p.moveToNodeAfterTree() # 2011/11/02
-            elif marked and p.hasChildren():
-                # Not any kind of test node: add all test nodes in subtree.
-                if trace: g.trace('adding subtree of marked non-test node',p.h)
-                after2 = p.nodeAfterTree()
-                p.moveToFirstChild()
-                while p and p != after2:
-                    if isTestNode(p):
-                        test = makeTestCase(c,p)
-                        p.moveToNodeAfterTree() # 2011/11/02
-                    elif isSuiteNode(p): # @suite
-                        test = makeTestSuite(c,p)
-                        p.moveToNodeAfterTree() # 2011/11/02
-                    else:
-                        test = None
-                        p.moveToThreadNext()
-                    if test:
-                        if trace: g.trace('adding in marked tree:',p.h)
-                        suite.addTest(test)
-                        found = True
             else:
-                if trace and verbose: g.trace('skipping:',p.h)
-                p.moveToThreadNext()
-
+                test = None
+            if test:
+                suite.addTest(test)
+                found = True
+        
         # Verbosity: 1: print just dots.
         if not found:
             # 2011/10/30: run the body of p as a unit test.
@@ -698,6 +658,73 @@ def fail ():
     import leo.core.leoGlobals as g
 
     g.app.unitTestDict["fail"] = g.callers()
+#@+node:ekr.20111104132424.9907: ** findAllUnitTestNodes
+def findAllUnitTestNodes(c,p,limit,all,marked,lookForMark,lookForNodes):
+
+    trace = False and not g.unitTesting ; verbose = False
+    p = p.copy() # Don't change p in the caller.
+    
+    if trace and verbose:
+        g.trace(
+            'all',all,'marked',marked,
+            'lookForMark',lookForMark,'lookForNodes',lookForNodes,
+            'root',p.h)
+
+    assert all in (True,False,None) # Caution: all is also builtin function.
+    markTag = '@mark-for-unit-tests'
+    seen = set() # A set of vnodes.
+    result = [] # A list of (copies of) positions.
+    while p and p != limit:
+        # Run tests only once.
+        if p.v in seen:
+            if trace and verbose: g.trace('ignoring seen tree',p.h)
+            p.moveToNodeAfterTree()
+            continue
+        seen.add(p.v)
+        if g.match_word(p.h,0,'@ignore'):
+            if trace and verbose: g.trace('ignoring seen tree',p.h)
+            p.moveToNodeAfterTree()
+        elif marked and not p.isMarked():
+            if trace and verbose: g.trace('ignoring unmarked node',p.h)
+            p.moveToThreadNext()
+        elif lookForMark and p.h.startswith(markTag):
+            if trace: g.trace('add mark tree',p.h)
+            result.append(p.copy())
+            p.moveToNodeAfterTree()
+        elif lookForNodes and isTestNode(p): # @test
+            if trace: g.trace('adding',p.h)
+            result.append(p.copy())
+            p.moveToNodeAfterTree()
+        elif lookForNodes and isSuiteNode(p): # @suite
+            if trace: g.trace('adding',p.h)
+            result.append(p.copy())
+            p.moveToNodeAfterTree()
+        elif lookForNodes and marked and p.hasChildren():
+            # Not any kind of test node: add all test nodes in subtree.
+            if trace: g.trace('adding subtree of marked non-test node',p.h)
+            after2 = p.nodeAfterTree()
+            p.moveToFirstChild()
+            while p and p != after2:
+                if p.v in seen:
+                    if trace: g.trace('ignoring unmarked tree',p.h)
+                    p.moveToNodeAfterTree()
+                else:
+                    seen.add(p.v)
+                    message = 'adding in marked tree' % (p.h)
+                    if isTestNode(p): # @test
+                        if trace: g.trace(message)
+                        result.append(p.copy())
+                        p.moveToNodeAfterTree()
+                    elif isSuiteNode(p): # @suite
+                        if trace: g.trace(message)
+                        result.append(p.copy())
+                        p.moveToNodeAfterTree()
+                    else:
+                        p.moveToThreadNext()
+        else:
+            if trace and verbose: g.trace('skipping:',p.h)
+            p.moveToThreadNext()
+    return result
 #@+node:ekr.20051104075904.42: ** runLeoTest
 def runLeoTest(c,path,verbose=False,full=False):
 
@@ -835,39 +862,11 @@ class runTestExternallyHelperClass:
                     n,lookForMark,lookForNodes,
                     p and p.h or '<none>',
                     limit and limit.h or '<none>'))
-            while p and p != limit:
-                if g.match_word(p.h,0,'@ignore'):
-                    if trace and verbose: g.trace('ignoring tree',p.h)
-                    p.moveToNodeAfterTree()
-                elif p.v in self.seen:
-                    if trace and verbose: g.trace('seen',p.h)
-                    p.moveToNodeAfterTree()
-                elif self.marked and not p.isMarked():
-                    if trace and verbose: g.trace('ignoring unmarked node',p.h)
-                    p.moveToThreadNext()
-                elif lookForMark and p.h.startswith(markTag):
-                    if trace: g.trace('add mark tree',p.h)
-                    self.addMarkTree(p)
-                    p.moveToNodeAfterTree()
-                elif lookForNodes and self.isUnitTestNode(p):
-                    if trace: g.trace('add node',p.h)
-                    self.addNode(p)
-                    p.moveToNodeAfterTree()
-                elif lookForNodes and self.marked and p.hasChildren():
-                    # Not any kind of test node: add all test nodes in subtree.
-                    if trace: g.trace('adding subtree',p.h)
-                    after2 = p.nodeAfterTree()
-                    p.moveToFirstChild()
-                    while p and p != after2:
-                        if self.isUnitTestNode(p):
-                            if trace: g.trace('add node',p.h)
-                            self.addNode(p)
-                            p.moveToNodeAfterTree()
-                        else:
-                            p.moveToThreadNext()
-                else:
-                    if trace and verbose: g.trace('skip',p.h)
-                    p.moveToThreadNext()
+                    
+            aList = findAllUnitTestNodes(c,p,limit,self.all,self.marked,lookForMark,lookForNodes)
+            for p2 in aList:
+                self.addNode(p2)
+            
     #@+node:ekr.20070705080413: *4* addMarkTree
     def addMarkTree (self,p):
 

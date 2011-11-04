@@ -4840,7 +4840,6 @@ def session_load_snapshot():
 @nocolor-node
 
 Like @color html::tags_markup_color = blue
-.. @+node:ekr.20111031081645.9998: *4* To do: script that copies hidden tests to unitTest.leo
 .. @+node:ekr.20111101050427.16716: *4* Make g.openWithFileName "reentrant"
 @nocolor-node
 

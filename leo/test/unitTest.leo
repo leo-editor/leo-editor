@@ -124,20 +124,7 @@
 <v t="ekr.20111021115306.3697"><vh>@file ../test/unittest/tex-error.tex</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"
-marks="ekr.20111102122424.3975,"><vh>@file activeUnitTests.txt</vh></v>
-</v>
-<v t="ekr.20111103213154.3822"><vh>Recent unit tests</vh>
-<v t="ekr.20111103213154.3823"><vh>@test writeToDocutils: pdf</vh></v>
-<v t="ekr.20111103213154.3824"><vh>@test g.importFromPath</vh></v>
-<v t="ekr.20111103213154.3825"><vh>@test imports needed for unit tests</vh></v>
-<v t="ekr.20111104112332.3953"><vh>@test g.os_path_finalize_join with thumb drive</vh></v>
-<v t="ekr.20111104112332.3954"><vh>@test htmlScanner.adjust_class_ref</vh></v>
-<v t="ekr.20111104112332.3955"><vh>@test ic.skip...Token (htmlScanner)</vh></v>
-<v t="ekr.20111104112332.3956"><vh>@test ic.skip...Token (pythonScanner)</vh></v>
-<v t="ekr.20111104114406.3833"><vh>@test ic.tokenize (htmlScanner)</vh>
-<v t="ekr.20111104114406.3834"><vh>&lt;&lt; define expected &gt;&gt;</vh></v>
-</v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -683,7 +670,7 @@ False:
     be expanded when Leo opens an outline.
 </t>
 <t tx="ekr.20101220161557.6013"></t>
-<t tx="ekr.20101220161557.6016"></t>
+<t tx="ekr.20101220161557.6016"># 752 tests with Python 3.x.  A few less with Python 2.x.</t>
 <t tx="ekr.20110521073115.3494"></t>
 <t tx="ekr.20110521073115.3495">builtins, including cython builtins
 </t>
@@ -706,178 +693,6 @@ div
 table
 nodeA
 nodeB
-</t>
-<t tx="ekr.20111103213154.3822"></t>
-<t tx="ekr.20111103213154.3823">@first # -*- coding: utf-8 -*-
-@encoding utf-8
-
-'''Test the interface between docutils and leo_pdf.py.
-No file is written.
-'''
-
-# g.cls()
-
-path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
-
-module = g.importFromPath(name = 'leo_pdf.py',
-    path=path,
-    pluginName = 'leo_pdf',
-    verbose = False)
-
-if module:
-    s = '''This is a test.'''
-    result = c.rstCommands.writeToDocutils(s,'.pdf')
-    # print(result)
-    assert result,result
-else:
-    print('%s: %s' % (p.h,'can not import leo_pdf'))
-</t>
-<t tx="ekr.20111103213154.3824">'''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
-
-path = g.os_path_finalize_join(g.app.loadDir,'does_not_exist')
-assert not g.os_path_exists(path)
-module = g.importFromPath ('xyz',path,pluginName='xyz',verbose=False)
-assert not module,repr(module)
-</t>
-<t tx="ekr.20111103213154.3825">import docutils
-</t>
-<t tx="ekr.20111104112332.3953">import os
-
-path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
-path2 = r'\N:Home\PTC_Creo\Creo.wmv'
-path3 = r'N:\Home\PTC_Creo\Creo.wmv'
-
-path12 = os.path.join(path1,path2)
-path13 = os.path.join(path1,path3)
-
-if 0:
-
-    print(path12,g.os.path.abspath(path12))
-    print(path13,g.os.path.abspath(path13))
-</t>
-<t tx="ekr.20111104112332.3954">import leo.core.leoImport as leoImport
-ic = c.importCommands
-hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
-
-s = '''
-&lt;aTag&gt;  @others
-&lt;/aTag&gt;
-'''
-
-# Avoid probems with representation of @others in scripts.
-expected = '\n&lt;aTag&gt;\n@others\n&lt;/aTag&gt;\n'
-
-result = hs.adjust_class_ref(s)
-assert result == expected,'expected...\n%s\ngot...\n%s' % (
-    repr(expected),repr(result))
-</t>
-<t tx="ekr.20111104112332.3955">import leo.core.leoImport as leoImport
-ic = c.importCommands
-scanner = leoImport.htmlScanner(importCommands=ic,atAuto=True)
-
-tails = (
-    '&lt;whatever&gt;',
-    '+ abc', # don't concatenate with id or whitespace.
-    '&lt;!-- tail comment --&gt;',
-    '"tail string"',
-)
-    
-table = (
-    (scanner.skipCommentToken,  '&lt;!-- Test --&gt;'),
-    (scanner.skipIdToken,       'a_b-c.d:e'), # Valid in xml ids:  ".-:"
-    # (scanner.skipNewlineToken,'\n'),
-        # xmlScanner.skipNewlineToken throws exception (on purpose).
-    (scanner.skipOtherToken,    '+'),
-    (scanner.skipOtherToken,    '#'),
-    (scanner.skipStringToken,   '"A string"'),
-    (scanner.skipWsToken,       ' '),
-)
-
-# Special test for whitespace: Converts all runs of whitespace to a single blank.
-if 1:
-    s = ' \n\t\t \n'
-    i,result = scanner.skipWsToken(s+tails[0],0)
-    assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
-    expected = ' '
-    assert result == expected,'expected...\n%s\ngot...\n%s' % (
-        repr(expected),repr(result))
-    
-for f,s in table:
-    for tail in tails:
-        i,result = f(s+tail,0)
-        expected = s
-        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
-        assert result == expected,'expected...\n%s\ngot...\n%s' % (
-            repr(expected),repr(result))
-</t>
-<t tx="ekr.20111104112332.3956">import leo.core.leoImport as leoImport
-ic = c.importCommands
-scanner = leoImport.pythonScanner(importCommands=ic,atAuto=True)
-    
-tails = (
-    '+ abc', # don't concatenate with id or whitespace.
-    '# tail comment',
-    '"tail string"',
-    "'tail string'",
-)
-
-table = (
-    (scanner.skipCommentToken,  '# Test'),
-    (scanner.skipIdToken,       'ab_c'),
-    (scanner.skipNewlineToken,  '\n'),
-    (scanner.skipOtherToken,    '+'),
-    (scanner.skipOtherToken,    '#'),
-    (scanner.skipStringToken,   '"A string"'),
-    (scanner.skipWsToken,       ' '),
-    (scanner.skipWsToken,       '\n'),
-    (scanner.skipWsToken,       '\t\n \n'),
-)
-    
-for f,s in table:
-    for tail in tails:
-        if f.__name__ == 'skipCommentToken':
-            i,result = f(s,0)
-        else:
-            i,result = f(s+tail,0)
-        expected = s
-        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
-        assert result == expected,'expected...\n%s\ngot...\n%s' % (
-            repr(expected),repr(result))
-</t>
-<t tx="ekr.20111104114406.3833">import leo.core.leoImport as leoImport
-ic = c.importCommands
-hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
-
-s = '''
-&lt;!-- a comment --&gt;
-&lt;html "string"&gt;
-Test.
-&lt;/html&gt;
-'''
-
-&lt;&lt; define expected &gt;&gt;
-
-result = hs.tokenize(s)
-
-if 1:
-    assert result == expected,'expected...\n%s\ngot...\n%s' % (
-        repr(expected),repr(result))
-else:
-    print(result)
-</t>
-<t tx="ekr.20111104114406.3834">expected = [
-    ('ws', ' ', 0),
-    ('comment', '&lt;!-- a comment --&gt;', 1),
-    ('ws', ' ', 1),
-    ('other', '&lt;', 2), ('id', 'html', 2),
-    ('ws', ' ',2), ('string', '"string"', 2),
-    ('other', '&gt;', 2),
-    ('ws', ' ', 2),
-    ('id', 'Test.', 3),
-    ('ws', ' ', 3),
-    ('other', '&lt;', 4), ('other', '/', 4), ('id', 'html', 4), ('other', '&gt;', 4),
-    ('ws', ' ', 4),
-]
 </t>
 </tnodes>
 </leo_file>

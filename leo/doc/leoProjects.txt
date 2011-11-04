@@ -1330,9 +1330,6 @@ W0601:749:lleo_f: Global variable '_request_immediate_connect' undefined at the 
 
 ************* Module leo.external.lproto
 E1101:137:LProtoClient.__init__: Module 'socket' has no 'AF_UNIX' member
-#@+node:ekr.20100907092144.5901: *3* Unit tests
-# These are intended to be temporary tests,
-# to be copied eventually to unitTest.leo
 #@+node:ekr.20110621074459.14908: ** 4.9.1
 #@+node:ekr.20110730093802.15134: *3* Bugs
 #@+node:ekr.20110621074459.14904: *4* Fixed ancient hanger in paste-retaining-clones
@@ -15534,6 +15531,10 @@ def traceMenuTable (self,table):
 @nocolor-node
 
 Worked around docutils problem in writeToDocutils.
+#@+node:ekr.20111104132424.9670: *4* Used common code to discover unit tests
+@nocolor-node
+
+Created findAllUnitTestNodes, used by createOutline & doTests.
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
@@ -23193,7 +23194,6 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
     if trace: g.trace('marked',marked,'c',c)
 
     try:
-        found = False
         g.unitTesting = g.app.unitTesting = True
         g.app.unitTestDict["fail"] = False
         g.app.unitTestDict['c'] = c
@@ -23205,62 +23205,25 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
         suite = unittest.makeSuite(unittest.TestCase)
 
         # New in Leo 4.4.8: ignore everything in @ignore trees.
-        if all: last = None
-        else:   last = p.nodeAfterTree()
-        if trace and verbose: g.trace('all',all,'marked',marked,'root',p.h)
-        seen = set()
-        while p and p != last:
-            if trace and verbose: g.trace(p.h)
-            # 2011/10/31: support for hidden tests: run tests only once.
-            if p.v in seen:
-                if trace: g.trace('ignoring tree',p.h)
-                p.moveToNodeAfterTree()
-                continue
-            seen.add(p.v)
-            if g.match_word(p.h,0,'@ignore'):
-                # 2011/10/31: support for run-marked-unit-test command.
-                if trace: g.trace('ignoring tree',p.h)
-                p.moveToNodeAfterTree()
-            elif marked and not p.isMarked():
-                if trace: g.trace('ignoring unmarked node',p.h)
-                p.moveToThreadNext()
-            elif isTestNode(p):
+        last = None if all else p.nodeAfterTree()
+        
+        aList = findAllUnitTestNodes(c,p,last,all,marked,
+            lookForMark=False,lookForNodes=True)
+       
+        found = False
+        for p in aList:
+            if isTestNode(p):
                 if trace: g.trace('adding',p.h)
                 test = makeTestCase(c,p)
-                if test:
-                    suite.addTest(test) ; found = True
-                # p.moveToThreadNext()
-                p.moveToNodeAfterTree() # 2011/11/02
             elif isSuiteNode(p): # @suite
                 if trace: g.trace('adding',p.h)
                 test = makeTestSuite(c,p)
-                if test:
-                    suite.addTest(test) ; found = True
-                # p.moveToThreadNext()
-                p.moveToNodeAfterTree() # 2011/11/02
-            elif marked and p.hasChildren():
-                # Not any kind of test node: add all test nodes in subtree.
-                if trace: g.trace('adding subtree of marked non-test node',p.h)
-                after2 = p.nodeAfterTree()
-                p.moveToFirstChild()
-                while p and p != after2:
-                    if isTestNode(p):
-                        test = makeTestCase(c,p)
-                        p.moveToNodeAfterTree() # 2011/11/02
-                    elif isSuiteNode(p): # @suite
-                        test = makeTestSuite(c,p)
-                        p.moveToNodeAfterTree() # 2011/11/02
-                    else:
-                        test = None
-                        p.moveToThreadNext()
-                    if test:
-                        if trace: g.trace('adding in marked tree:',p.h)
-                        suite.addTest(test)
-                        found = True
             else:
-                if trace and verbose: g.trace('skipping:',p.h)
-                p.moveToThreadNext()
-
+                test = None
+            if test:
+                suite.addTest(test)
+                found = True
+        
         # Verbosity: 1: print just dots.
         if not found:
             # 2011/10/30: run the body of p as a unit test.
@@ -23467,39 +23430,11 @@ def createOutline (self,c2):
                 n,lookForMark,lookForNodes,
                 p and p.h or '<none>',
                 limit and limit.h or '<none>'))
-        while p and p != limit:
-            if g.match_word(p.h,0,'@ignore'):
-                if trace and verbose: g.trace('ignoring tree',p.h)
-                p.moveToNodeAfterTree()
-            elif p.v in self.seen:
-                if trace and verbose: g.trace('seen',p.h)
-                p.moveToNodeAfterTree()
-            elif self.marked and not p.isMarked():
-                if trace and verbose: g.trace('ignoring unmarked node',p.h)
-                p.moveToThreadNext()
-            elif lookForMark and p.h.startswith(markTag):
-                if trace: g.trace('add mark tree',p.h)
-                self.addMarkTree(p)
-                p.moveToNodeAfterTree()
-            elif lookForNodes and self.isUnitTestNode(p):
-                if trace: g.trace('add node',p.h)
-                self.addNode(p)
-                p.moveToNodeAfterTree()
-            elif lookForNodes and self.marked and p.hasChildren():
-                # Not any kind of test node: add all test nodes in subtree.
-                if trace: g.trace('adding subtree',p.h)
-                after2 = p.nodeAfterTree()
-                p.moveToFirstChild()
-                while p and p != after2:
-                    if self.isUnitTestNode(p):
-                        if trace: g.trace('add node',p.h)
-                        self.addNode(p)
-                        p.moveToNodeAfterTree()
-                    else:
-                        p.moveToThreadNext()
-            else:
-                if trace and verbose: g.trace('skip',p.h)
-                p.moveToThreadNext()
+                
+        aList = findAllUnitTestNodes(c,p,limit,self.all,self.marked,lookForMark,lookForNodes)
+        for p2 in aList:
+            self.addNode(p2)
+        
 #@+node:ekr.20070705065154: *7* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
 if self.all:
     # A single pass looks for all tags everywhere.
@@ -23923,7 +23858,6 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
     if trace: g.trace('marked',marked,'c',c)
 
     try:
-        found = False
         g.unitTesting = g.app.unitTesting = True
         g.app.unitTestDict["fail"] = False
         g.app.unitTestDict['c'] = c
@@ -23935,62 +23869,25 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
         suite = unittest.makeSuite(unittest.TestCase)
 
         # New in Leo 4.4.8: ignore everything in @ignore trees.
-        if all: last = None
-        else:   last = p.nodeAfterTree()
-        if trace and verbose: g.trace('all',all,'marked',marked,'root',p.h)
-        seen = set()
-        while p and p != last:
-            if trace and verbose: g.trace(p.h)
-            # 2011/10/31: support for hidden tests: run tests only once.
-            if p.v in seen:
-                if trace: g.trace('ignoring tree',p.h)
-                p.moveToNodeAfterTree()
-                continue
-            seen.add(p.v)
-            if g.match_word(p.h,0,'@ignore'):
-                # 2011/10/31: support for run-marked-unit-test command.
-                if trace: g.trace('ignoring tree',p.h)
-                p.moveToNodeAfterTree()
-            elif marked and not p.isMarked():
-                if trace: g.trace('ignoring unmarked node',p.h)
-                p.moveToThreadNext()
-            elif isTestNode(p):
+        last = None if all else p.nodeAfterTree()
+        
+        aList = findAllUnitTestNodes(c,p,last,all,marked,
+            lookForMark=False,lookForNodes=True)
+       
+        found = False
+        for p in aList:
+            if isTestNode(p):
                 if trace: g.trace('adding',p.h)
                 test = makeTestCase(c,p)
-                if test:
-                    suite.addTest(test) ; found = True
-                # p.moveToThreadNext()
-                p.moveToNodeAfterTree() # 2011/11/02
             elif isSuiteNode(p): # @suite
                 if trace: g.trace('adding',p.h)
                 test = makeTestSuite(c,p)
-                if test:
-                    suite.addTest(test) ; found = True
-                # p.moveToThreadNext()
-                p.moveToNodeAfterTree() # 2011/11/02
-            elif marked and p.hasChildren():
-                # Not any kind of test node: add all test nodes in subtree.
-                if trace: g.trace('adding subtree of marked non-test node',p.h)
-                after2 = p.nodeAfterTree()
-                p.moveToFirstChild()
-                while p and p != after2:
-                    if isTestNode(p):
-                        test = makeTestCase(c,p)
-                        p.moveToNodeAfterTree() # 2011/11/02
-                    elif isSuiteNode(p): # @suite
-                        test = makeTestSuite(c,p)
-                        p.moveToNodeAfterTree() # 2011/11/02
-                    else:
-                        test = None
-                        p.moveToThreadNext()
-                    if test:
-                        if trace: g.trace('adding in marked tree:',p.h)
-                        suite.addTest(test)
-                        found = True
             else:
-                if trace and verbose: g.trace('skipping:',p.h)
-                p.moveToThreadNext()
-
+                test = None
+            if test:
+                suite.addTest(test)
+                found = True
+        
         # Verbosity: 1: print just dots.
         if not found:
             # 2011/10/30: run the body of p as a unit test.
@@ -24244,39 +24141,11 @@ def createOutline (self,c2):
                 n,lookForMark,lookForNodes,
                 p and p.h or '<none>',
                 limit and limit.h or '<none>'))
-        while p and p != limit:
-            if g.match_word(p.h,0,'@ignore'):
-                if trace and verbose: g.trace('ignoring tree',p.h)
-                p.moveToNodeAfterTree()
-            elif p.v in self.seen:
-                if trace and verbose: g.trace('seen',p.h)
-                p.moveToNodeAfterTree()
-            elif self.marked and not p.isMarked():
-                if trace and verbose: g.trace('ignoring unmarked node',p.h)
-                p.moveToThreadNext()
-            elif lookForMark and p.h.startswith(markTag):
-                if trace: g.trace('add mark tree',p.h)
-                self.addMarkTree(p)
-                p.moveToNodeAfterTree()
-            elif lookForNodes and self.isUnitTestNode(p):
-                if trace: g.trace('add node',p.h)
-                self.addNode(p)
-                p.moveToNodeAfterTree()
-            elif lookForNodes and self.marked and p.hasChildren():
-                # Not any kind of test node: add all test nodes in subtree.
-                if trace: g.trace('adding subtree',p.h)
-                after2 = p.nodeAfterTree()
-                p.moveToFirstChild()
-                while p and p != after2:
-                    if self.isUnitTestNode(p):
-                        if trace: g.trace('add node',p.h)
-                        self.addNode(p)
-                        p.moveToNodeAfterTree()
-                    else:
-                        p.moveToThreadNext()
-            else:
-                if trace and verbose: g.trace('skip',p.h)
-                p.moveToThreadNext()
+                
+        aList = findAllUnitTestNodes(c,p,limit,self.all,self.marked,lookForMark,lookForNodes)
+        for p2 in aList:
+            self.addNode(p2)
+        
 #@+node:ekr.20070705065154: *6* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
 if self.all:
     # A single pass looks for all tags everywhere.
@@ -24342,7 +24211,6 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
     if trace: g.trace('marked',marked,'c',c)
 
     try:
-        found = False
         g.unitTesting = g.app.unitTesting = True
         g.app.unitTestDict["fail"] = False
         g.app.unitTestDict['c'] = c
@@ -24354,62 +24222,25 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
         suite = unittest.makeSuite(unittest.TestCase)
 
         # New in Leo 4.4.8: ignore everything in @ignore trees.
-        if all: last = None
-        else:   last = p.nodeAfterTree()
-        if trace and verbose: g.trace('all',all,'marked',marked,'root',p.h)
-        seen = set()
-        while p and p != last:
-            if trace and verbose: g.trace(p.h)
-            # 2011/10/31: support for hidden tests: run tests only once.
-            if p.v in seen:
-                if trace: g.trace('ignoring tree',p.h)
-                p.moveToNodeAfterTree()
-                continue
-            seen.add(p.v)
-            if g.match_word(p.h,0,'@ignore'):
-                # 2011/10/31: support for run-marked-unit-test command.
-                if trace: g.trace('ignoring tree',p.h)
-                p.moveToNodeAfterTree()
-            elif marked and not p.isMarked():
-                if trace: g.trace('ignoring unmarked node',p.h)
-                p.moveToThreadNext()
-            elif isTestNode(p):
+        last = None if all else p.nodeAfterTree()
+        
+        aList = findAllUnitTestNodes(c,p,last,all,marked,
+            lookForMark=False,lookForNodes=True)
+       
+        found = False
+        for p in aList:
+            if isTestNode(p):
                 if trace: g.trace('adding',p.h)
                 test = makeTestCase(c,p)
-                if test:
-                    suite.addTest(test) ; found = True
-                # p.moveToThreadNext()
-                p.moveToNodeAfterTree() # 2011/11/02
             elif isSuiteNode(p): # @suite
                 if trace: g.trace('adding',p.h)
                 test = makeTestSuite(c,p)
-                if test:
-                    suite.addTest(test) ; found = True
-                # p.moveToThreadNext()
-                p.moveToNodeAfterTree() # 2011/11/02
-            elif marked and p.hasChildren():
-                # Not any kind of test node: add all test nodes in subtree.
-                if trace: g.trace('adding subtree of marked non-test node',p.h)
-                after2 = p.nodeAfterTree()
-                p.moveToFirstChild()
-                while p and p != after2:
-                    if isTestNode(p):
-                        test = makeTestCase(c,p)
-                        p.moveToNodeAfterTree() # 2011/11/02
-                    elif isSuiteNode(p): # @suite
-                        test = makeTestSuite(c,p)
-                        p.moveToNodeAfterTree() # 2011/11/02
-                    else:
-                        test = None
-                        p.moveToThreadNext()
-                    if test:
-                        if trace: g.trace('adding in marked tree:',p.h)
-                        suite.addTest(test)
-                        found = True
             else:
-                if trace and verbose: g.trace('skipping:',p.h)
-                p.moveToThreadNext()
-
+                test = None
+            if test:
+                suite.addTest(test)
+                found = True
+        
         # Verbosity: 1: print just dots.
         if not found:
             # 2011/10/30: run the body of p as a unit test.
@@ -25507,143 +25338,10 @@ ic.run(
 assert False
 #@+node:ekr.20111102123707.9631: *5* @test assert True
 assert True
-#@+node:ekr.20111103212836.9676: *3* @test g.os_path_finalize_join with thumb drive
-import os
+#@+node:ekr.20111104132424.9909: *3* @test assert True
+# It's useful to have this do-nothing test.
 
-path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
-path2 = r'\N:Home\PTC_Creo\Creo.wmv'
-path3 = r'N:\Home\PTC_Creo\Creo.wmv'
-
-path12 = os.path.join(path1,path2)
-path13 = os.path.join(path1,path3)
-
-if False:
-    print(path12,g.os.path.abspath(path12))
-    print(path13,g.os.path.abspath(path13))
-#@+node:ekr.20111104032034.9872: *3* @test htmlScanner.adjust_class_ref
-import leo.core.leoImport as leoImport
-ic = c.importCommands
-hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
-
-s = '''
-<aTag>  @others
-</aTag>
-'''
-
-# Avoid probems with representation of @others in scripts.
-expected = '\n<aTag>\n@others\n</aTag>\n'
-
-result = hs.adjust_class_ref(s)
-assert result == expected,'expected...\n%s\ngot...\n%s' % (
-    repr(expected),repr(result))
-#@+node:ekr.20111104101842.9680: *3* @test ic.skip...Token (pythonScanner)
-import leo.core.leoImport as leoImport
-ic = c.importCommands
-scanner = leoImport.pythonScanner(importCommands=ic,atAuto=True)
-    
-tails = (
-    '+ abc', # don't concatenate with id or whitespace.
-    '# tail comment',
-    '"tail string"',
-    "'tail string'",
-)
-
-table = (
-    (scanner.skipCommentToken,  '# Test'),
-    (scanner.skipIdToken,       'ab_c'),
-    (scanner.skipNewlineToken,  '\n'),
-    (scanner.skipOtherToken,    '+'),
-    (scanner.skipOtherToken,    '#'),
-    (scanner.skipStringToken,   '"A string"'),
-    (scanner.skipWsToken,       ' '),
-    (scanner.skipWsToken,       '\n'),
-    (scanner.skipWsToken,       '\t\n \n'),
-)
-    
-for f,s in table:
-    for tail in tails:
-        if f.__name__ == 'skipCommentToken':
-            i,result = f(s,0)
-        else:
-            i,result = f(s+tail,0)
-        expected = s
-        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
-        assert result == expected,'expected...\n%s\ngot...\n%s' % (
-            repr(expected),repr(result))
-#@+node:ekr.20111104101842.9670: *3* @test ic.skip...Token (htmlScanner)
-import leo.core.leoImport as leoImport
-ic = c.importCommands
-scanner = leoImport.htmlScanner(importCommands=ic,atAuto=True)
-
-tails = (
-    '<whatever>',
-    '+ abc', # don't concatenate with id or whitespace.
-    '<!-- tail comment -->',
-    '"tail string"',
-)
-    
-table = (
-    (scanner.skipCommentToken,  '<!-- Test -->'),
-    (scanner.skipIdToken,       'a_b-c.d:e'), # Valid in xml ids:  ".-:"
-    # (scanner.skipNewlineToken,'\n'),
-        # xmlScanner.skipNewlineToken throws exception (on purpose).
-    (scanner.skipOtherToken,    '+'),
-    (scanner.skipOtherToken,    '#'),
-    (scanner.skipStringToken,   '"A string"'),
-    (scanner.skipWsToken,       ' '),
-)
-
-# Special test for whitespace: Converts all runs of whitespace to a single blank.
-if 1:
-    s = ' \n\t\t \n'
-    i,result = scanner.skipWsToken(s+tails[0],0)
-    assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
-    expected = ' '
-    assert result == expected,'expected...\n%s\ngot...\n%s' % (
-        repr(expected),repr(result))
-    
-for f,s in table:
-    for tail in tails:
-        i,result = f(s+tail,0)
-        expected = s
-        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
-        assert result == expected,'expected...\n%s\ngot...\n%s' % (
-            repr(expected),repr(result))
-#@+node:ekr.20111104032034.9751: *3* @test ic.tokenize (htmlScanner)
-import leo.core.leoImport as leoImport
-ic = c.importCommands
-hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
-
-s = '''
-<!-- a comment -->
-<html "string">
-Test.
-</html>
-'''
-
-<< define expected >>
-
-result = hs.tokenize(s)
-
-if 1:
-    assert result == expected,'expected...\n%s\ngot...\n%s' % (
-        repr(expected),repr(result))
-else:
-    print(result)
-#@+node:ekr.20111104104831.9802: *4* << define expected >>
-expected = [
-    ('ws', ' ', 0),
-    ('comment', '<!-- a comment -->', 1),
-    ('ws', ' ', 1),
-    ('other', '<', 2), ('id', 'html', 2),
-    ('ws', ' ',2), ('string', '"string"', 2),
-    ('other', '>', 2),
-    ('ws', ' ', 2),
-    ('id', 'Test.', 3),
-    ('ws', ' ', 3),
-    ('other', '<', 4), ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4),
-    ('ws', ' ', 4),
-]
+assert True
 #@+node:ekr.20111104132424.9672: *3* @test CPrettyPrinter
 cpp = c.CPrettyPrinter(c)
 fn = 'c tokenize test'
@@ -26176,11 +25874,19 @@ static exit_values_ty indent_main_loop(void)
         }
     }                           /* end of main infinite loop */
 }
-#@+node:ekr.20111102052054.10009: *3* @test import dataN.html
-# fn = r'c:\recent\test.html'
-# fn = r'c:\recent\data3.html'
-fn = r'c:\recent\data.html'
-c.importCommands.importFilesCommand(files=[fn], treeType='@file')
+#@+node:ekr.20111103212836.9676: *3* @test g.os_path_finalize_join with thumb drive
+import os
+
+path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
+path2 = r'\N:Home\PTC_Creo\Creo.wmv'
+path3 = r'N:\Home\PTC_Creo\Creo.wmv'
+
+path12 = os.path.join(path1,path2)
+path13 = os.path.join(path1,path3)
+
+if False:
+    print(path12,g.os.path.abspath(path12))
+    print(path13,g.os.path.abspath(path13))
 #@+node:ekr.20111104032034.9754: *3* @test html: underindented comment
 s = '''\
 
@@ -26209,6 +25915,155 @@ g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
     # Showtree doesn't do anything when run externally.
+#@+node:ekr.20111104032034.9872: *3* @test htmlScanner.adjust_class_ref
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+s = '''
+<aTag>  @others
+</aTag>
+'''
+
+# Avoid probems with representation of @others in scripts.
+expected = '\n<aTag>\n@others\n</aTag>\n'
+
+result = hs.adjust_class_ref(s)
+assert result == expected,'expected...\n%s\ngot...\n%s' % (
+    repr(expected),repr(result))
+#@+node:ekr.20111104101842.9670: *3* @test ic.skip...Token (htmlScanner)
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+scanner = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+tails = (
+    '<whatever>',
+    '+ abc', # don't concatenate with id or whitespace.
+    '<!-- tail comment -->',
+    '"tail string"',
+)
+    
+table = (
+    (scanner.skipCommentToken,  '<!-- Test -->'),
+    (scanner.skipIdToken,       'a_b-c.d:e'), # Valid in xml ids:  ".-:"
+    # (scanner.skipNewlineToken,'\n'),
+        # xmlScanner.skipNewlineToken throws exception (on purpose).
+    (scanner.skipOtherToken,    '+'),
+    (scanner.skipOtherToken,    '#'),
+    (scanner.skipStringToken,   '"A string"'),
+    (scanner.skipWsToken,       ' '),
+)
+
+# Special test for whitespace: Converts all runs of whitespace to a single blank.
+if 1:
+    s = ' \n\t\t \n'
+    i,result = scanner.skipWsToken(s+tails[0],0)
+    assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+    expected = ' '
+    assert result == expected,'expected...\n%s\ngot...\n%s' % (
+        repr(expected),repr(result))
+    
+for f,s in table:
+    for tail in tails:
+        i,result = f(s+tail,0)
+        expected = s
+        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+        assert result == expected,'expected...\n%s\ngot...\n%s' % (
+            repr(expected),repr(result))
+#@+node:ekr.20111104101842.9680: *3* @test ic.skip...Token (pythonScanner)
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+scanner = leoImport.pythonScanner(importCommands=ic,atAuto=True)
+    
+tails = (
+    '+ abc', # don't concatenate with id or whitespace.
+    '# tail comment',
+    '"tail string"',
+    "'tail string'",
+)
+
+table = (
+    (scanner.skipCommentToken,  '# Test'),
+    (scanner.skipIdToken,       'ab_c'),
+    (scanner.skipNewlineToken,  '\n'),
+    (scanner.skipOtherToken,    '+'),
+    (scanner.skipOtherToken,    '#'),
+    (scanner.skipStringToken,   '"A string"'),
+    (scanner.skipWsToken,       ' '),
+    (scanner.skipWsToken,       '\n'),
+    (scanner.skipWsToken,       '\t\n \n'),
+)
+    
+for f,s in table:
+    for tail in tails:
+        if f.__name__ == 'skipCommentToken':
+            i,result = f(s,0)
+        else:
+            i,result = f(s+tail,0)
+        expected = s
+        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+        assert result == expected,'expected...\n%s\ngot...\n%s' % (
+            repr(expected),repr(result))
+#@+node:ekr.20111104032034.9751: *3* @test ic.tokenize (htmlScanner)
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+s = '''
+<!-- a comment -->
+<html "string">
+Test.
+</html>
+'''
+
+<< define expected >>
+
+result = hs.tokenize(s)
+
+if 1:
+    assert result == expected,'expected...\n%s\ngot...\n%s' % (
+        repr(expected),repr(result))
+else:
+    print(result)
+#@+node:ekr.20111104104831.9802: *4* << define expected >>
+expected = [
+    ('ws', ' ', 0),
+    ('comment', '<!-- a comment -->', 1),
+    ('ws', ' ', 1),
+    ('other', '<', 2), ('id', 'html', 2),
+    ('ws', ' ',2), ('string', '"string"', 2),
+    ('other', '>', 2),
+    ('ws', ' ', 2),
+    ('id', 'Test.', 3),
+    ('ws', ' ', 3),
+    ('other', '<', 4), ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4),
+    ('ws', ' ', 4),
+]
+#@+node:ekr.20111102052054.10009: *3* @test import dataN.html
+# fn = r'c:\recent\test.html'
+# fn = r'c:\recent\data3.html'
+fn = r'c:\recent\data.html'
+c.importCommands.importFilesCommand(files=[fn], treeType='@file')
+#@+node:ekr.20111104132424.9908: *3* @test findAllUnitTestNodes
+import leo.core.leoTest as leoTest
+
+p1 = p.copy()
+
+def found(p,result):
+    for p2 in result:
+        if p == p2: return True
+    else: return False
+
+table = (('all',None,True,False),('marked',None,False,True))
+
+try:
+    p.setMarked()
+    for kind,limit,all,marked in table:
+        result = leoTest.findAllUnitTestNodes(c,p,limit,all,marked,lookForMark=False,lookForNodes=True)
+        assert found(p,result)
+    assert p == p1
+finally:
+    p1.clearMarked()
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

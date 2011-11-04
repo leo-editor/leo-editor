@@ -6038,5 +6038,93 @@ def removeAllWsTokens (self,tokens):
     
     return [(kind,val,n) for kind,val,n in tokens
         if kind not in ('nl','ws')]
+#@+node:ekr.20111104165311.9723: *3* Duplicate code eliminated by findAllUnitTestNodes
+#@+node:ekr.20111104165311.9721: *4* From createOutline
+       # while p and p != limit:
+            # if g.match_word(p.h,0,'@ignore'):
+                # if trace and verbose: g.trace('ignoring tree',p.h)
+                # p.moveToNodeAfterTree()
+            # elif p.v in self.seen:
+                # if trace and verbose: g.trace('seen',p.h)
+                # p.moveToNodeAfterTree()
+            # elif self.marked and not p.isMarked():
+                # if trace and verbose: g.trace('ignoring unmarked node',p.h)
+                # p.moveToThreadNext()
+            # elif lookForMark and p.h.startswith(markTag):
+                # if trace: g.trace('add mark tree',p.h)
+                # self.addMarkTree(p)
+                # p.moveToNodeAfterTree()
+            # elif lookForNodes and self.isUnitTestNode(p):
+                # if trace: g.trace('add node',p.h)
+                # self.addNode(p)
+                # p.moveToNodeAfterTree()
+            # elif lookForNodes and self.marked and p.hasChildren():
+                # # Not any kind of test node: add all test nodes in subtree.
+                # if trace: g.trace('adding subtree',p.h)
+                # after2 = p.nodeAfterTree()
+                # p.moveToFirstChild()
+                # while p and p != after2:
+                    # if self.isUnitTestNode(p):
+                        # if trace: g.trace('add node',p.h)
+                        # self.addNode(p)
+                        # p.moveToNodeAfterTree()
+                    # else:
+                        # p.moveToThreadNext()
+            # else:
+                # if trace and verbose: g.trace('skip',p.h)
+                # p.moveToThreadNext()
+#@+node:ekr.20111104165311.9722: *4* From doTests
+       # seen = set()
+        # while p and p != last:
+            # if trace and verbose: g.trace(p.h)
+            # # 2011/10/31: support for hidden tests: run tests only once.
+            # if p.v in seen:
+                # if trace: g.trace('ignoring tree',p.h)
+                # p.moveToNodeAfterTree()
+                # continue
+            # seen.add(p.v)
+            # if g.match_word(p.h,0,'@ignore'):
+                # # 2011/10/31: support for run-marked-unit-test command.
+                # if trace: g.trace('ignoring tree',p.h)
+                # p.moveToNodeAfterTree()
+            # elif marked and not p.isMarked():
+                # if trace: g.trace('ignoring unmarked node',p.h)
+                # p.moveToThreadNext()
+            # elif isTestNode(p):
+                # if trace: g.trace('adding',p.h)
+                # test = makeTestCase(c,p)
+                # if test:
+                    # suite.addTest(test) ; found = True
+                # # p.moveToThreadNext()
+                # p.moveToNodeAfterTree() # 2011/11/02
+            # elif isSuiteNode(p): # @suite
+                # if trace: g.trace('adding',p.h)
+                # test = makeTestSuite(c,p)
+                # if test:
+                    # suite.addTest(test) ; found = True
+                # # p.moveToThreadNext()
+                # p.moveToNodeAfterTree() # 2011/11/02
+            # elif marked and p.hasChildren():
+                # # Not any kind of test node: add all test nodes in subtree.
+                # if trace: g.trace('adding subtree of marked non-test node',p.h)
+                # after2 = p.nodeAfterTree()
+                # p.moveToFirstChild()
+                # while p and p != after2:
+                    # if isTestNode(p):
+                        # test = makeTestCase(c,p)
+                        # p.moveToNodeAfterTree() # 2011/11/02
+                    # elif isSuiteNode(p): # @suite
+                        # test = makeTestSuite(c,p)
+                        # p.moveToNodeAfterTree() # 2011/11/02
+                    # else:
+                        # test = None
+                        # p.moveToThreadNext()
+                    # if test:
+                        # if trace: g.trace('adding in marked tree:',p.h)
+                        # suite.addTest(test)
+                        # found = True
+            # else:
+                # if trace and verbose: g.trace('skipping:',p.h)
+                # p.moveToThreadNext()
 #@-all
 #@-leo
