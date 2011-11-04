@@ -26024,6 +26024,79 @@ expected = '\n<aTag>\n@others\n</aTag>\n'
 result = hs.adjust_class_ref(s)
 assert result == expected,'expected...\n%s\ngot...\n%s' % (
     repr(expected),repr(result))
+#@+node:ekr.20111104101842.9670: *3* @test ic.skip...Token (htmlScanner)
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+scanner = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+tails = (
+    '<whatever>',
+    '+ abc', # don't concatenate with id or whitespace.
+    '<!-- tail comment -->',
+    '"tail string"',
+)
+    
+table = (
+    (scanner.skipCommentToken,  '<!-- Test -->'),
+    (scanner.skipIdToken,       'a_b-c.d:e'), # Valid in xml ids:  ".-:"
+    # (scanner.skipNewlineToken,'\n'),
+        # xmlScanner.skipNewlineToken throws exception (on purpose).
+    (scanner.skipOtherToken,    '+'),
+    (scanner.skipOtherToken,    '#'),
+    (scanner.skipStringToken,   '"A string"'),
+    (scanner.skipWsToken,       ' '),
+)
+
+# Special test for whitespace: Converts all runs of whitespace to a single blank.
+if 1:
+    s = ' \n\t\t \n'
+    i,result = scanner.skipWsToken(s+tails[0],0)
+    assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+    expected = ' '
+    assert result == expected,'expected...\n%s\ngot...\n%s' % (
+        repr(expected),repr(result))
+    
+for f,s in table:
+    for tail in tails:
+        i,result = f(s+tail,0)
+        expected = s
+        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+        assert result == expected,'expected...\n%s\ngot...\n%s' % (
+            repr(expected),repr(result))
+#@+node:ekr.20111104101842.9680: *3* @test ic.skip...Token (pythonScanner)
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+scanner = leoImport.pythonScanner(importCommands=ic,atAuto=True)
+    
+tails = (
+    '+ abc', # don't concatenate with id or whitespace.
+    '# tail comment',
+    '"tail string"',
+    "'tail string'",
+)
+
+table = (
+    (scanner.skipCommentToken,  '# Test'),
+    (scanner.skipIdToken,       'ab_c'),
+    (scanner.skipNewlineToken,  '\n'),
+    (scanner.skipOtherToken,    '+'),
+    (scanner.skipOtherToken,    '#'),
+    (scanner.skipStringToken,   '"A string"'),
+    (scanner.skipWsToken,       ' '),
+    (scanner.skipWsToken,       '\n'),
+    (scanner.skipWsToken,       '\t\n \n'),
+)
+    
+for f,s in table:
+    for tail in tails:
+        if f.__name__ == 'skipCommentToken':
+            i,result = f(s,0)
+        else:
+            i,result = f(s+tail,0)
+        expected = s
+        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+        assert result == expected,'expected...\n%s\ngot...\n%s' % (
+            repr(expected),repr(result))
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

@@ -17906,6 +17906,109 @@ module = g.importFromPath ('xyz',path,pluginName='xyz',verbose=False)
 assert not module,repr(module)
 #@+node:ekr.20111103213154.3825: *3* @test imports needed for unit tests
 import docutils
+#@+node:ekr.20111104112332.3953: *3* @test g.os_path_finalize_join with thumb drive
+import os
+
+path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
+path2 = r'\N:Home\PTC_Creo\Creo.wmv'
+path3 = r'N:\Home\PTC_Creo\Creo.wmv'
+
+path12 = os.path.join(path1,path2)
+path13 = os.path.join(path1,path3)
+
+if 0:
+
+    print(path12,g.os.path.abspath(path12))
+    print(path13,g.os.path.abspath(path13))
+#@+node:ekr.20111104112332.3954: *3* @test htmlScanner.adjust_class_ref
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+s = '''
+<aTag>  @others
+</aTag>
+'''
+
+# Avoid probems with representation of @others in scripts.
+expected = '\n<aTag>\n@others\n</aTag>\n'
+
+result = hs.adjust_class_ref(s)
+assert result == expected,'expected...\n%s\ngot...\n%s' % (
+    repr(expected),repr(result))
+#@+node:ekr.20111104112332.3955: *3* @test ic.skip...Token (htmlScanner)
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+scanner = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+tails = (
+    '<whatever>',
+    '+ abc', # don't concatenate with id or whitespace.
+    '<!-- tail comment -->',
+    '"tail string"',
+)
+    
+table = (
+    (scanner.skipCommentToken,  '<!-- Test -->'),
+    (scanner.skipIdToken,       'a_b-c.d:e'), # Valid in xml ids:  ".-:"
+    # (scanner.skipNewlineToken,'\n'),
+        # xmlScanner.skipNewlineToken throws exception (on purpose).
+    (scanner.skipOtherToken,    '+'),
+    (scanner.skipOtherToken,    '#'),
+    (scanner.skipStringToken,   '"A string"'),
+    (scanner.skipWsToken,       ' '),
+)
+
+# Special test for whitespace: Converts all runs of whitespace to a single blank.
+if 1:
+    s = ' \n\t\t \n'
+    i,result = scanner.skipWsToken(s+tails[0],0)
+    assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+    expected = ' '
+    assert result == expected,'expected...\n%s\ngot...\n%s' % (
+        repr(expected),repr(result))
+    
+for f,s in table:
+    for tail in tails:
+        i,result = f(s+tail,0)
+        expected = s
+        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+        assert result == expected,'expected...\n%s\ngot...\n%s' % (
+            repr(expected),repr(result))
+#@+node:ekr.20111104112332.3956: *3* @test ic.skip...Token (pythonScanner)
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+scanner = leoImport.pythonScanner(importCommands=ic,atAuto=True)
+    
+tails = (
+    '+ abc', # don't concatenate with id or whitespace.
+    '# tail comment',
+    '"tail string"',
+    "'tail string'",
+)
+
+table = (
+    (scanner.skipCommentToken,  '# Test'),
+    (scanner.skipIdToken,       'ab_c'),
+    (scanner.skipNewlineToken,  '\n'),
+    (scanner.skipOtherToken,    '+'),
+    (scanner.skipOtherToken,    '#'),
+    (scanner.skipStringToken,   '"A string"'),
+    (scanner.skipWsToken,       ' '),
+    (scanner.skipWsToken,       '\n'),
+    (scanner.skipWsToken,       '\t\n \n'),
+)
+    
+for f,s in table:
+    for tail in tails:
+        if f.__name__ == 'skipCommentToken':
+            i,result = f(s,0)
+        else:
+            i,result = f(s+tail,0)
+        expected = s
+        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+        assert result == expected,'expected...\n%s\ngot...\n%s' % (
+            repr(expected),repr(result))
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
