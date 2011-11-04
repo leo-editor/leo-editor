@@ -1333,288 +1333,6 @@ E1101:137:LProtoClient.__init__: Module 'socket' has no 'AF_UNIX' member
 #@+node:ekr.20100907092144.5901: *3* Unit tests
 # These are intended to be temporary tests,
 # to be copied eventually to unitTest.leo
-#@+node:ekr.20100907115157.5905: *4* @ignore
-#@+node:ekr.20100208095423.5940: *5* @test leoCache
-import leo.core.leoCache as leoCache
-
-cacher = leoCache.cacher(c)
-
-if 0:
-    import os
-    os.system('cls')
-
-assert cacher.test()
-#@+node:ekr.20100906165118.5915: *5* @test leoInkCommands
-ic = c.inkscapeCommands
-screenshot = r'c:\leo.repo\inkcall\some_screen_shot.png'
-template_fn = r'c:\leo.repo\inkcall\template.svg'
-png_fn = r'c:\leo.repo\inkcall\output.png'
-svg_fn = r'c:\leo.repo\inkcall\temp.svg'
-callouts = [
-        "This goes here",
-        "These are those, but slightly longer",
-        "Then you pull this, but this text needs to be longer for testing",]
-ic.run(
-    screenshot,
-    callouts=callouts,
-    numbers=[2,4,17],
-    edit_flag = True, # True: call inkscape to edit the working file.
-    png_fn=png_fn, # Optional: Name of output png file.
-    svg_fn=svg_fn, # Optional: Name of working svg file.
-    template_fn=template_fn, # Optional: Name of template svg file.
-)
-#@+node:ekr.20110917193725.6973: *3* c tokenize test (do not delete)
-@language c
-
-static exit_values_ty indent_main_loop(void)
-{
-    codes_ty         hd_type         = code_eof;
-    char           * t_ptr           = NULL;
-    codes_ty         type_code       = start_token;
-    exit_values_ty   file_exit_value = total_success;
-    int              dec_ind         = 0; /* current indentation for declarations */
-
-    BOOLEAN          scase           = false; /* true when we've just see a "case";
-                                               * determines what to do with the
-                                               * following colon */
-    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
-                                               * a newline was passed over */
-    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
-                                               * while(...), etc. */
-    BOOLEAN          force_nl        = false;
-
-    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
-     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
-     * set to 2 in the middle of the main token reading loop and is decremented
-     * at the beginning of the loop, so it will reach zero when the second token
-     * after the ')' is read.
-     */
-
-    BOOLEAN          last_token_ends_sp = false;
-
-    BOOLEAN          last_else = false; /* true if last keyword was an else */
-
-    for (;;)
-    {
-        /* this is the main loop.  it will go until
-         * we reach eof */
-
-        BOOLEAN is_procname_definition;
-        bb_code_ty can_break;
-
-        if (type_code != newline)
-        {
-            can_break = parser_state_tos->can_break;
-        }
-
-        parser_state_tos->last_saw_nl = false;
-        parser_state_tos->can_break = bb_none;
-
-        type_code = lexi ();    /* lexi reads one token.  "token" points to
-                                 * the actual characters. lexi returns a code
-                                 * indicating the type of token */
-
-        /* If the last time around we output an identifier or
-         * a paren, then consider breaking the line here if it's
-         * too long.
-         *
-         * A similar check is performed at the end of the loop, after
-         * we've put the token on the line. */
-
-        if ((settings.max_col > 0) &&
-            (buf_break != NULL) &&
-            ( ( (parser_state_tos->last_token == ident) &&
-                (type_code != comma) &&
-                (type_code != semicolon) &&
-                (type_code != newline) &&
-                (type_code != form_feed) &&
-                (type_code != rparen) &&
-                (type_code != struct_delim)) ||
-              ( (parser_state_tos->last_token == rparen) &&
-                (type_code != comma) &&
-                (type_code != rparen) ) ) &&
-            (output_line_length () > settings.max_col))
-        {
-            break_line = 1;
-        }
-
-        if (last_token_ends_sp > 0)
-        {
-            last_token_ends_sp--;
-        }
-
-        is_procname_definition =
-                (((parser_state_tos->procname[0] != '\0') &&
-                  parser_state_tos->in_parameter_declaration) ||
-                 (parser_state_tos->classname[0] != '\0'));
-
-        /* The following code moves everything following an if (), while (),
-         * else, etc. up to the start of the following stmt to a buffer. This
-         * allows proper handling of both kinds of brace placement.
-         */
-
-        flushed_nl = false;
-
-        if (!search_brace(&type_code, &force_nl, &flushed_nl, &last_else, &is_procname_definition))
-        {
-            /* Hit EOF unexpectedly in comment. */
-            return indent_punt;
-        }
-        
-        if (type_code == code_eof)
-        {
-            /* we got eof */
-            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
-            {
-                dump_line(true, &paren_target);
-            }
-
-            if (parser_state_tos->tos > 1)      /* check for balanced braces */
-            {
-                ERROR (_("Unexpected end of file"), 0, 0);
-                file_exit_value = indent_error;
-            }
-
-            if (settings.verbose)
-            {
-                printf (_("There were %d non-blank output lines and %d comments\n"),
-                        (int) out_lines, (int) com_lines);
-                if (com_lines > 0 && code_lines > 0)
-                {
-                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
-                            (1.0 * com_lines) / code_lines);
-                }
-            }
-            flush_output ();
-
-            return file_exit_value;                                              /* RETURN */
-        }
-
-        if ((type_code != comment) &&
-            (type_code != cplus_comment) &&
-            (type_code != newline) &&
-            (type_code != preesc) &&
-            (type_code != form_feed))
-        {
-            if (force_nl &&
-                (type_code != semicolon) &&
-                ( (type_code != lbrace) ||
-                  (!parser_state_tos->in_decl && !settings.btype_2) ||
-                  (parser_state_tos->in_decl && !settings.braces_on_struct_decl_line) ||
-                  (parser_state_tos->last_token == rbrace)))
-            {
-                if (settings.verbose && !flushed_nl)
-                {
-                    WARNING (_("Line broken 2"), 0, 0);
-                }
-
-                flushed_nl = false;
-                dump_line(true, &paren_target);
-                parser_state_tos->want_blank = false;
-                force_nl = false;
-            }
-
-            parser_state_tos->in_stmt = true;   /* turn on flag which causes
-                                                 * an extra level of
-                                                 * indentation. this is
-                                                 * turned off by a ; or } */
-            if (s_com != e_com)
-            {
-                /* the code has an embedded comment in the
-                 * line. Move it from the com buffer to the
-                 * code buffer.
-                 *
-                 * Do not add a space before the comment if it is the first
-                 * thing on the line.
-                 */
-
-                if (e_code != s_code)
-                {
-                    set_buf_break (bb_embedded_comment_start, paren_target);
-                    *e_code++ = ' ';
-                    embedded_comment_on_line = 2;
-                }
-                else
-                {
-                    embedded_comment_on_line = 1;
-                }
-
-                for (t_ptr = s_com; *t_ptr; ++t_ptr)
-                {
-                    check_code_size();
-                    *e_code++ = *t_ptr;
-                }
-
-                set_buf_break (bb_embedded_comment_end, paren_target);
-                *e_code++ = ' ';
-                *e_code = '\0'; /* null terminate code sect */
-                parser_state_tos->want_blank = false;
-                e_com = s_com;
-            }
-        }
-        else if ((type_code != comment) &&
-                 (type_code != cplus_comment) &&
-                 !(settings.break_function_decl_args &&
-                   (parser_state_tos->last_token == comma)) &&
-                 !( (parser_state_tos->last_token == comma) &&
-                    !settings.leave_comma))
-        {
-            /* preserve force_nl thru a comment but
-             * cancel forced newline after newline, form feed, etc.
-             * however, don't cancel if last thing seen was comma-newline
-             * and -bc flag is on. */
-
-            force_nl = false;
-        }
-
-        /* Main switch on type of token scanned */
-
-        check_code_size();
-        
-        /* now, decide what to do with the token */
-
-        handle_the_token(type_code, &scase, &force_nl, &sp_sw, &flushed_nl,
-                         &hd_type, &dec_ind, &last_token_ends_sp, &file_exit_value,
-                         can_break, &last_else, is_procname_definition);
-        
-        *e_code = '\0';         /* make sure code section is null terminated */
-
-        if ((type_code != comment) &&
-            (type_code != cplus_comment) &&
-            (type_code != newline) &&
-            (type_code != preesc) &&
-            (type_code != form_feed))
-        {
-            parser_state_tos->last_token = type_code;
-        }
-
-        /* Now that we've put the token on the line (in most cases),
-         * consider breaking the line because it's too long.
-         *
-         * Don't consider the cases of `unary_op', newlines,
-         * declaration types (int, etc.), if, while, for,
-         * identifiers (handled at the beginning of the loop),
-         * periods, or preprocessor commands. */
-
-        if ((settings.max_col > 0) && (buf_break != NULL))
-        {
-            if ( ( (type_code == binary_op) ||
-                   (type_code == postop) ||
-                   (type_code == question) ||
-                   ((type_code == colon) && (scase || (squest <= 0))) ||
-                   (type_code == semicolon) ||
-                   (type_code == sp_nparen) ||
-                   (type_code == sp_else) ||
-                   ((type_code == ident) && (*token == '\"')) ||
-                   (type_code == struct_delim) ||
-                   (type_code == comma)) &&
-                 (output_line_length () > settings.max_col))
-            {
-                break_line = 1;
-            }
-        }
-    }                           /* end of main infinite loop */
-}
 #@+node:ekr.20110621074459.14908: ** 4.9.1
 #@+node:ekr.20110730093802.15134: *3* Bugs
 #@+node:ekr.20110621074459.14904: *4* Fixed ancient hanger in paste-retaining-clones
@@ -23410,319 +23128,6 @@ def adjust_class_ref(self,s):
 @nocolor-node
 
 Leo's home page now shows the latest postings on the leo-editor group.
-#@+node:ekr.20111031075748.10003: *4* Added support for hidden unit tests
-@nocolor-node
-
-As of rev 4690, Leo supports "hidden" unit tests. This just may be the missing
-piece of Leo's unit testing arsenal.
-
-A hidden unit test is a node that is *not* a section-definition node and whose
-body text contains one of the following guards at the start of a line::
-    
-    if g.unitTesting
-    if g.app.unitTesting:
-    if g.inScript:
-    if g.app.inScript:
-        
-The typical usage pattern is::
-    
-    class myClass:
-        ...
-        
-    if g.unitTesting:
-        x = myClass()
-        x.test()
-
-For this reason, hidden unit tests could also be called "in place" unit tests:
-they appear in the Leo source file, next to the code being tested.
-
-Notes:
-
-1. [Important]: Any one of the guards above will prevent the unit testing code
-   from being executing when importing a file. Thus, you can insert a unit test
-   just after the code you want to test.
-
-2. [Spectacular]: The test tests the latest code *without* you having to reload
-   Leo. The reason is simple: the code being tests (myClass, in the example
-   above), is defined by either the unit tests or the execute-script command.
-
-3. [Happy]: Within leoPy.leo I redefined alt-4 to mean
-   run-all-unit-tests-locally, which is the most convenient way to run the test
-   I am working on: running the other tests doesn't matter, and in fact is a
-   good check.
-
-4. Because hidden unit tests are not marked with @test, Leo always tells which
-   hidden tests have been found.
-#@+node:ekr.20051104075904.4: *5* doTests...
-def doTests(c,all=None,marked=None,p=None,verbosity=1):
-
-    trace = False ; verbose = True
-    if all:
-        p = c.rootPosition()
-    elif not p:
-        p = c.p
-    p1 = c.p.copy() # 2011/10/31: always restore the selected position.
-    
-    # This seems a bit risky when run in unitTest.leo.
-    # c.save() # Eliminate the need for ctrl-s.
-    
-    if trace: g.trace('marked',marked,'c',c)
-
-    try:
-        found = False
-        g.unitTesting = g.app.unitTesting = True
-        g.app.unitTestDict["fail"] = False
-        g.app.unitTestDict['c'] = c
-        g.app.unitTestDict['g'] = g
-        g.app.unitTestDict['p'] = p and p.copy()
-
-        # c.undoer.clearUndoState() # New in 4.3.1.
-        changed = c.isChanged()
-        suite = unittest.makeSuite(unittest.TestCase)
-
-        # New in Leo 4.4.8: ignore everything in @ignore trees.
-        if all: last = None
-        else:   last = p.nodeAfterTree()
-        if trace and verbose: g.trace('all',all,'marked',marked,'root',p.h)
-        seen = set()
-        while p and p != last:
-            if trace and verbose: g.trace(p.h)
-            # 2011/10/31: support for hidden tests: run tests only once.
-            if p.v in seen:
-                if trace: g.trace('ignoring tree',p.h)
-                p.moveToNodeAfterTree()
-                continue
-            seen.add(p.v)
-            if g.match_word(p.h,0,'@ignore'):
-                # 2011/10/31: support for run-marked-unit-test command.
-                if trace: g.trace('ignoring tree',p.h)
-                p.moveToNodeAfterTree()
-            elif marked and not p.isMarked():
-                if trace: g.trace('ignoring unmarked node',p.h)
-                p.moveToThreadNext()
-            elif isTestNode(p):
-                if trace: g.trace('adding',p.h)
-                test = makeTestCase(c,p)
-                if test:
-                    suite.addTest(test) ; found = True
-                # p.moveToThreadNext()
-                p.moveToNodeAfterTree() # 2011/11/02
-            elif isSuiteNode(p): # @suite
-                if trace: g.trace('adding',p.h)
-                test = makeTestSuite(c,p)
-                if test:
-                    suite.addTest(test) ; found = True
-                # p.moveToThreadNext()
-                p.moveToNodeAfterTree() # 2011/11/02
-            elif marked and p.hasChildren():
-                # Not any kind of test node: add all test nodes in subtree.
-                if trace: g.trace('adding subtree of marked non-test node',p.h)
-                after2 = p.nodeAfterTree()
-                p.moveToFirstChild()
-                while p and p != after2:
-                    if isTestNode(p):
-                        test = makeTestCase(c,p)
-                        p.moveToNodeAfterTree() # 2011/11/02
-                    elif isSuiteNode(p): # @suite
-                        test = makeTestSuite(c,p)
-                        p.moveToNodeAfterTree() # 2011/11/02
-                    else:
-                        test = None
-                        p.moveToThreadNext()
-                    if test:
-                        if trace: g.trace('adding in marked tree:',p.h)
-                        suite.addTest(test)
-                        found = True
-            else:
-                if trace and verbose: g.trace('skipping:',p.h)
-                p.moveToThreadNext()
-
-        # Verbosity: 1: print just dots.
-        if not found:
-            # 2011/10/30: run the body of p as a unit test.
-            test = makeTestCase(c,c.p)
-            if test:
-                suite.addTest(test)
-                found = True
-        if found:
-            res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
-            # put info to db as well
-            if g.enableDB:
-                key = 'unittest/cur/fail'
-                archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
-                c.cacher.db[key] = archive
-        else:
-            g.es_print('no %s@test or @suite nodes in %s outline' % (
-                g.choose(marked,'marked ',''),
-                g.choose(all,'entire','selected')),color='red')
-    finally:
-        c.setChanged(changed) # Restore changed state.
-        if g.app.unitTestDict.get('restoreSelectedNode',True):
-            c.contractAllHeadlines()
-            c.redraw(p1)
-        g.unitTesting = g.app.unitTesting = False
-#@+node:ekr.20051104075904.5: *6* class generalTestCase
-class generalTestCase(unittest.TestCase):
-
-    """Create a unit test from a snippet of code."""
-
-    @others
-#@+node:ekr.20051104075904.6: *7* __init__
-def __init__ (self,c,p):
-
-     # Init the base class.
-    unittest.TestCase.__init__(self)
-
-    self.c = c
-    self.p = p.copy()
-#@+node:ekr.20051104075904.7: *7*  fail
-def fail (self,msg=None):
-
-    """Mark a unit test as having failed."""
-
-    import leo.core.leoGlobals as g
-
-    g.app.unitTestDict["fail"] = g.callers()
-#@+node:ekr.20051104075904.9: *7* tearDown
-def tearDown (self):
-
-    pass
-
-    # Restore the outline.
-    self.c.outerUpdate()
-#@+node:ekr.20051104075904.8: *7* setUp
-def setUp (self):
-
-    c = self.c ; p = self.p
-
-    c.selectPosition(p.copy()) # 2010/02/03
-#@+node:ekr.20051104075904.10: *7* runTest (generalTestCase)
-def runTest (self,define_g = True):
-
-    trace = False
-    c = self.c ; p = self.p.copy()
-    script = g.getScript(c,p).strip()
-    self.assert_(script)
-    
-    if c.shortFileName() == 'dynamicUnitTest.leo':
-        c.write_script_file = True
-
-    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
-    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
-
-    if define_g:
-        d = {'c':c,'g':g,'p':p and p.copy(),'self':self,}
-    else:
-        d = {'self':self,}
-
-    script = script + '\n'
-    if trace: g.trace('p: %s c: %s write script: %s script:\n%s' % (
-        p and p.h,c.shortFileName(),c.write_script_file,script))
-
-    # Execute the script. Let the unit test handle any errors!
-    # 2011/11/02: pass the script sources to exec or execfile.
-    if c.write_script_file:
-        scriptFile = c.writeScriptFile(script)
-        if g.isPython3:
-            exec(compile(script,scriptFile,'exec'),d)
-        else:
-            execfile(scriptFile,d)
-    else:
-        exec(script,d)
-#@+node:ekr.20051104075904.11: *7* shortDescription
-def shortDescription (self):
-
-    s = self.p.h
-
-    # g.trace(s)
-
-    return s + '\n'
-#@+node:ekr.20051104075904.12: *6* makeTestSuite (leoTest)
-@ This code executes the script in an @suite node.  This code assumes:
-- The script creates a one or more unit tests.
-- The script puts the result in g.app.scriptDict["suite"]
-@c
-
-def makeTestSuite (c,p):
-
-    """Create a suite of test cases by executing the script in an @suite node."""
-
-    p = p.copy()
-    # g.trace('c.write_script_file',c.write_script_file)
-    script = g.getScript(c,p).strip()
-    if not script:
-        print("no script in %s" % h)
-        return None
-    try:
-        if 0: #debugging
-            n,lines = 0,g.splitLines(script)
-            for line in lines:
-                print(n,line)
-                n += 1
-                
-        # 2011/11/02: make script sources available.
-        d = {'c':c,'g':g,'p':p}
-        if c.write_script_file:
-            scriptFile = c.writeScriptFile(script)
-            if g.isPython3:
-                exec(compile(script,scriptFile,'exec'),d)
-            else:
-                execfile(scriptFile,d)
-        else:
-            exec(script + '\n',d)
-        suite = g.app.scriptDict.get("suite")
-        if not suite:
-            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
-        return suite
-    except Exception:
-        print('makeTestSuite: exception creating test cases for %s' % p.h)
-        g.es_exception()
-        return None
-#@+node:ekr.20051104075904.13: *6* makeTestCase
-def makeTestCase (c,p):
-
-    p = p.copy()
-
-    if p.b.strip():
-        return generalTestCase(c,p)
-    else:
-        return None
-#@+node:ekr.20051104075904.3: *5* isSuiteNode and isTestNode
-def isSuiteNode (p):
-    h = p.h.lower()
-    return g.match_word(h,0,"@suite")
-
-def isTestNode (p):
-    '''
-    Return True if p is an @test node or p is *not* a section definition and
-    p's body text contains "if g.unitTesting, or g.app.unitTesting or
-    g.inScript or g.app.inScript.
-    '''
-    h = p.h.lower()
-    hidden = not p.h.startswith('<<') and test_pat.search(p.b)
-    if hidden and not g.app.silentMode:
-        print('Adding hidden test: %s' % (p.h))
-    return hidden or g.match_word(h,0,"@test")
-
-# def isTestCaseNode (p):
-    # h = p.h.lower()
-    # return g.match_word(h,0,"@testcase") or g.match_word(h,0,"@test-case")
-#@+node:ekr.20111030155153.16705: *5* @@button find-hidden-tests
-'''Run all hidden tests in this file.
-
-Such tests have "if g.app.unitTesting:" or "if.g.app.inScript" in body text.
-'''
-
-import re
-
-s = "^if(\s)+g(\.app)*\.(unitTesting|inScript):(\s)*$"
-
-pat = re.compile(s,re.MULTILINE)
-
-for p in c.all_unique_positions():
-    if pat.search(p.b) and not p.h.startswith('<<'):
-        print(p.h)
-print('done')
 #@+node:ekr.20111031083623.13746: *4* Support run-marked-unit-tests-locally/externally
 @nocolor-node
 
@@ -24131,10 +23536,13 @@ def addNode(self,p):
 def isUnitTestNode (self,p):
     
     h = p.h.lower()
-    hidden = not h.startswith('<<') and test_pat.search(p.b)
-    if hidden:
-        print('Adding hidden test: %s' % (p.h))
-        return True
+    
+    # Hidden tests nodes are an anti-pattern.
+
+        # hidden = not h.startswith('<<') and test_pat.search(p.b)
+        # if hidden:
+            # print('Adding hidden test: %s' % (p.h))
+            # return True
 
     for tag in self.tags:
         if h.startswith(tag):
@@ -24905,10 +24313,13 @@ def addNode(self,p):
 def isUnitTestNode (self,p):
     
     h = p.h.lower()
-    hidden = not h.startswith('<<') and test_pat.search(p.b)
-    if hidden:
-        print('Adding hidden test: %s' % (p.h))
-        return True
+    
+    # Hidden tests nodes are an anti-pattern.
+
+        # hidden = not h.startswith('<<') and test_pat.search(p.b)
+        # if hidden:
+            # print('Adding hidden test: %s' % (p.h))
+            # return True
 
     for tag in self.tags:
         if h.startswith(tag):
@@ -25149,11 +24560,6 @@ def makeTestCase (c,p):
         return generalTestCase(c,p)
     else:
         return None
-#@+node:ekr.20111102123707.9629: *5* test of marked unit-test trees
-#@+node:ekr.20111102123707.9630: *6* @@test assert False
-assert False
-#@+node:ekr.20111102123707.9631: *6* @@test assert True
-assert True
 #@+node:ekr.20111103073536.16582: *4* Added support for @bool use_body_focus_border
 #@+node:ekr.20111022215436.16685: *5* Borders (qtGui)
 def add_border(self,c,w):
@@ -25178,6 +24584,69 @@ def remove_border(self,c,w):
         sheet = "border: %spx solid white" % (
             c.focus_border_width)
         self.update_style_sheet(w,'border',sheet)
+#@+node:ekr.20111104132424.9671: *4* Removed support for hidden unit tests
+@nocolor-node
+
+The are an anti-pattern in the new testing scheme.
+#@+node:ekr.20111031075748.10003: *5* Added support for hidden unit tests
+@nocolor-node
+
+As of rev 4690, Leo supports "hidden" unit tests. This just may be the missing
+piece of Leo's unit testing arsenal.
+
+A hidden unit test is a node that is *not* a section-definition node and whose
+body text contains one of the following guards at the start of a line::
+    
+    if g.unitTesting
+    if g.app.unitTesting:
+    if g.inScript:
+    if g.app.inScript:
+        
+The typical usage pattern is::
+    
+    class myClass:
+        ...
+        
+    if g.unitTesting:
+        x = myClass()
+        x.test()
+
+For this reason, hidden unit tests could also be called "in place" unit tests:
+they appear in the Leo source file, next to the code being tested.
+
+Notes:
+
+1. [Important]: Any one of the guards above will prevent the unit testing code
+   from being executing when importing a file. Thus, you can insert a unit test
+   just after the code you want to test.
+
+2. [Spectacular]: The test tests the latest code *without* you having to reload
+   Leo. The reason is simple: the code being tests (myClass, in the example
+   above), is defined by either the unit tests or the execute-script command.
+
+3. [Happy]: Within leoPy.leo I redefined alt-4 to mean
+   run-all-unit-tests-locally, which is the most convenient way to run the test
+   I am working on: running the other tests doesn't matter, and in fact is a
+   good check.
+
+4. Because hidden unit tests are not marked with @test, Leo always tells which
+   hidden tests have been found.
+#@+node:ekr.20111030155153.16705: *6* @@button find-hidden-tests
+'''Run all hidden tests in this file.
+
+Such tests have "if g.app.unitTesting:" or "if.g.app.inScript" in body text.
+'''
+
+import re
+
+s = "^if(\s)+g(\.app)*\.(unitTesting|inScript):(\s)*$"
+
+pat = re.compile(s,re.MULTILINE)
+
+for p in c.all_unique_positions():
+    if pat.search(p.b) and not p.h.startswith('<<'):
+        print(p.h)
+print('done')
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
@@ -26002,7 +25471,42 @@ Short summary:  Not a Leo problem::
     
     os.path.abspath(r'N:\whatever') yields valid file name.
     os.path.abspath(r'\N:\watever') yields invalid file name.
-#@+node:ekr.20111103205308.9698: ** Recent unit tests
+#@+node:ekr.20111103205308.9698: ** Unit tests
+#@+node:ekr.20100907115157.5905: *3* @ignore
+#@+node:ekr.20100208095423.5940: *4* @test leoCache
+import leo.core.leoCache as leoCache
+
+cacher = leoCache.cacher(c)
+
+if 0:
+    import os
+    os.system('cls')
+
+assert cacher.test()
+#@+node:ekr.20100906165118.5915: *4* @test leoInkCommands
+ic = c.inkscapeCommands
+screenshot = r'c:\leo.repo\inkcall\some_screen_shot.png'
+template_fn = r'c:\leo.repo\inkcall\template.svg'
+png_fn = r'c:\leo.repo\inkcall\output.png'
+svg_fn = r'c:\leo.repo\inkcall\temp.svg'
+callouts = [
+        "This goes here",
+        "These are those, but slightly longer",
+        "Then you pull this, but this text needs to be longer for testing",]
+ic.run(
+    screenshot,
+    callouts=callouts,
+    numbers=[2,4,17],
+    edit_flag = True, # True: call inkscape to edit the working file.
+    png_fn=png_fn, # Optional: Name of output png file.
+    svg_fn=svg_fn, # Optional: Name of working svg file.
+    template_fn=template_fn, # Optional: Name of template svg file.
+)
+#@+node:ekr.20111102123707.9629: *4* @ignore test of marked unit-test trees
+#@+node:ekr.20111102123707.9630: *5* @test assert False
+assert False
+#@+node:ekr.20111102123707.9631: *5* @test assert True
+assert True
 #@+node:ekr.20111103212836.9676: *3* @test g.os_path_finalize_join with thumb drive
 import os
 
@@ -26013,8 +25517,9 @@ path3 = r'N:\Home\PTC_Creo\Creo.wmv'
 path12 = os.path.join(path1,path2)
 path13 = os.path.join(path1,path3)
 
-print(path12,g.os.path.abspath(path12))
-print(path13,g.os.path.abspath(path13))
+if False:
+    print(path12,g.os.path.abspath(path12))
+    print(path13,g.os.path.abspath(path13))
 #@+node:ekr.20111104032034.9872: *3* @test htmlScanner.adjust_class_ref
 import leo.core.leoImport as leoImport
 ic = c.importCommands
@@ -26139,6 +25644,571 @@ expected = [
     ('other', '<', 4), ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4),
     ('ws', ' ', 4),
 ]
+#@+node:ekr.20111104132424.9672: *3* @test CPrettyPrinter
+cpp = c.CPrettyPrinter(c)
+fn = 'c tokenize test'
+p2 = g.findNodeInTree(c,p,fn)
+assert p2,'not found: %s' % (fn)
+
+if 1: # test of indent.
+    # import os ; os.system('cls')
+    cpp.indent(p2)
+
+if 0: # test of tokenize.
+    aList = cpp.tokenize(p2.b)
+    assert(p2.b == ''.join(aList))
+    if 0:
+        import os ; os.system('cls')
+        print('*' * 40)
+        # print(''.join(aList))
+        for z in aList:
+            print(repr(z))
+#@+node:ekr.20110917193725.6973: *4* c tokenize test
+@language c
+
+static exit_values_ty indent_main_loop(void)
+{
+    codes_ty         hd_type         = code_eof;
+    char           * t_ptr           = NULL;
+    codes_ty         type_code       = start_token;
+    exit_values_ty   file_exit_value = total_success;
+    int              dec_ind         = 0; /* current indentation for declarations */
+
+    BOOLEAN          scase           = false; /* true when we've just see a "case";
+                                               * determines what to do with the
+                                               * following colon */
+    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
+                                               * a newline was passed over */
+    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
+                                               * while(...), etc. */
+    BOOLEAN          force_nl        = false;
+
+    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
+     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
+     * set to 2 in the middle of the main token reading loop and is decremented
+     * at the beginning of the loop, so it will reach zero when the second token
+     * after the ')' is read.
+     */
+
+    BOOLEAN          last_token_ends_sp = false;
+
+    BOOLEAN          last_else = false; /* true if last keyword was an else */
+
+    for (;;)
+    {
+        /* this is the main loop.  it will go until
+         * we reach eof */
+
+        BOOLEAN is_procname_definition;
+        bb_code_ty can_break;
+
+        if (type_code != newline)
+        {
+            can_break = parser_state_tos->can_break;
+        }
+
+        parser_state_tos->last_saw_nl = false;
+        parser_state_tos->can_break = bb_none;
+
+        type_code = lexi ();    /* lexi reads one token.  "token" points to
+                                 * the actual characters. lexi returns a code
+                                 * indicating the type of token */
+
+        /* If the last time around we output an identifier or
+         * a paren, then consider breaking the line here if it's
+         * too long.
+         *
+         * A similar check is performed at the end of the loop, after
+         * we've put the token on the line. */
+
+        if ((settings.max_col > 0) &&
+            (buf_break != NULL) &&
+            ( ( (parser_state_tos->last_token == ident) &&
+                (type_code != comma) &&
+                (type_code != semicolon) &&
+                (type_code != newline) &&
+                (type_code != form_feed) &&
+                (type_code != rparen) &&
+                (type_code != struct_delim)) ||
+              ( (parser_state_tos->last_token == rparen) &&
+                (type_code != comma) &&
+                (type_code != rparen) ) ) &&
+            (output_line_length () > settings.max_col))
+        {
+            break_line = 1;
+        }
+
+        if (last_token_ends_sp > 0)
+        {
+            last_token_ends_sp--;
+        }
+
+        is_procname_definition =
+                (((parser_state_tos->procname[0] != '\0') &&
+                  parser_state_tos->in_parameter_declaration) ||
+                 (parser_state_tos->classname[0] != '\0'));
+
+        /* The following code moves everything following an if (), while (),
+         * else, etc. up to the start of the following stmt to a buffer. This
+         * allows proper handling of both kinds of brace placement.
+         */
+
+        flushed_nl = false;
+
+        if (!search_brace(&type_code, &force_nl, &flushed_nl, &last_else, &is_procname_definition))
+        {
+            /* Hit EOF unexpectedly in comment. */
+            return indent_punt;
+        }
+        
+        if (type_code == code_eof)
+        {
+            /* we got eof */
+            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
+            {
+                dump_line(true, &paren_target);
+            }
+
+            if (parser_state_tos->tos > 1)      /* check for balanced braces */
+            {
+                ERROR (_("Unexpected end of file"), 0, 0);
+                file_exit_value = indent_error;
+            }
+
+            if (settings.verbose)
+            {
+                printf (_("There were %d non-blank output lines and %d comments\n"),
+                        (int) out_lines, (int) com_lines);
+                if (com_lines > 0 && code_lines > 0)
+                {
+                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
+                            (1.0 * com_lines) / code_lines);
+                }
+            }
+            flush_output ();
+
+            return file_exit_value;                                              /* RETURN */
+        }
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            if (force_nl &&
+                (type_code != semicolon) &&
+                ( (type_code != lbrace) ||
+                  (!parser_state_tos->in_decl && !settings.btype_2) ||
+                  (parser_state_tos->in_decl && !settings.braces_on_struct_decl_line) ||
+                  (parser_state_tos->last_token == rbrace)))
+            {
+                if (settings.verbose && !flushed_nl)
+                {
+                    WARNING (_("Line broken 2"), 0, 0);
+                }
+
+                flushed_nl = false;
+                dump_line(true, &paren_target);
+                parser_state_tos->want_blank = false;
+                force_nl = false;
+            }
+
+            parser_state_tos->in_stmt = true;   /* turn on flag which causes
+                                                 * an extra level of
+                                                 * indentation. this is
+                                                 * turned off by a ; or } */
+            if (s_com != e_com)
+            {
+                /* the code has an embedded comment in the
+                 * line. Move it from the com buffer to the
+                 * code buffer.
+                 *
+                 * Do not add a space before the comment if it is the first
+                 * thing on the line.
+                 */
+
+                if (e_code != s_code)
+                {
+                    set_buf_break (bb_embedded_comment_start, paren_target);
+                    *e_code++ = ' ';
+                    embedded_comment_on_line = 2;
+                }
+                else
+                {
+                    embedded_comment_on_line = 1;
+                }
+
+                for (t_ptr = s_com; *t_ptr; ++t_ptr)
+                {
+                    check_code_size();
+                    *e_code++ = *t_ptr;
+                }
+
+                set_buf_break (bb_embedded_comment_end, paren_target);
+                *e_code++ = ' ';
+                *e_code = '\0'; /* null terminate code sect */
+                parser_state_tos->want_blank = false;
+                e_com = s_com;
+            }
+        }
+        else if ((type_code != comment) &&
+                 (type_code != cplus_comment) &&
+                 !(settings.break_function_decl_args &&
+                   (parser_state_tos->last_token == comma)) &&
+                 !( (parser_state_tos->last_token == comma) &&
+                    !settings.leave_comma))
+        {
+            /* preserve force_nl thru a comment but
+             * cancel forced newline after newline, form feed, etc.
+             * however, don't cancel if last thing seen was comma-newline
+             * and -bc flag is on. */
+
+            force_nl = false;
+        }
+
+        /* Main switch on type of token scanned */
+
+        check_code_size();
+        
+        /* now, decide what to do with the token */
+
+        handle_the_token(type_code, &scase, &force_nl, &sp_sw, &flushed_nl,
+                         &hd_type, &dec_ind, &last_token_ends_sp, &file_exit_value,
+                         can_break, &last_else, is_procname_definition);
+        
+        *e_code = '\0';         /* make sure code section is null terminated */
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            parser_state_tos->last_token = type_code;
+        }
+
+        /* Now that we've put the token on the line (in most cases),
+         * consider breaking the line because it's too long.
+         *
+         * Don't consider the cases of `unary_op', newlines,
+         * declaration types (int, etc.), if, while, for,
+         * identifiers (handled at the beginning of the loop),
+         * periods, or preprocessor commands. */
+
+        if ((settings.max_col > 0) && (buf_break != NULL))
+        {
+            if ( ( (type_code == binary_op) ||
+                   (type_code == postop) ||
+                   (type_code == question) ||
+                   ((type_code == colon) && (scase || (squest <= 0))) ||
+                   (type_code == semicolon) ||
+                   (type_code == sp_nparen) ||
+                   (type_code == sp_else) ||
+                   ((type_code == ident) && (*token == '\"')) ||
+                   (type_code == struct_delim) ||
+                   (type_code == comma)) &&
+                 (output_line_length () > settings.max_col))
+            {
+                break_line = 1;
+            }
+        }
+    }                           /* end of main infinite loop */
+}
+#@+node:ekr.20111104132424.9780: *3* @test cToPy
+cpp = c.CPrettyPrinter(c)
+c2p = c.editCommands.C_to_python(c)
+fn = 'c tokenize test'
+p2 = g.findNodeInTree(c,p,fn)
+assert p2,'not found: %s' % (fn)
+aList = cpp.tokenize(p2.b)
+c2p.convertCodeList(aList)
+s = ''.join(aList)
+#@+node:ekr.20110917193725.6973: *4* c tokenize test
+@language c
+
+static exit_values_ty indent_main_loop(void)
+{
+    codes_ty         hd_type         = code_eof;
+    char           * t_ptr           = NULL;
+    codes_ty         type_code       = start_token;
+    exit_values_ty   file_exit_value = total_success;
+    int              dec_ind         = 0; /* current indentation for declarations */
+
+    BOOLEAN          scase           = false; /* true when we've just see a "case";
+                                               * determines what to do with the
+                                               * following colon */
+    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
+                                               * a newline was passed over */
+    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
+                                               * while(...), etc. */
+    BOOLEAN          force_nl        = false;
+
+    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
+     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
+     * set to 2 in the middle of the main token reading loop and is decremented
+     * at the beginning of the loop, so it will reach zero when the second token
+     * after the ')' is read.
+     */
+
+    BOOLEAN          last_token_ends_sp = false;
+
+    BOOLEAN          last_else = false; /* true if last keyword was an else */
+
+    for (;;)
+    {
+        /* this is the main loop.  it will go until
+         * we reach eof */
+
+        BOOLEAN is_procname_definition;
+        bb_code_ty can_break;
+
+        if (type_code != newline)
+        {
+            can_break = parser_state_tos->can_break;
+        }
+
+        parser_state_tos->last_saw_nl = false;
+        parser_state_tos->can_break = bb_none;
+
+        type_code = lexi ();    /* lexi reads one token.  "token" points to
+                                 * the actual characters. lexi returns a code
+                                 * indicating the type of token */
+
+        /* If the last time around we output an identifier or
+         * a paren, then consider breaking the line here if it's
+         * too long.
+         *
+         * A similar check is performed at the end of the loop, after
+         * we've put the token on the line. */
+
+        if ((settings.max_col > 0) &&
+            (buf_break != NULL) &&
+            ( ( (parser_state_tos->last_token == ident) &&
+                (type_code != comma) &&
+                (type_code != semicolon) &&
+                (type_code != newline) &&
+                (type_code != form_feed) &&
+                (type_code != rparen) &&
+                (type_code != struct_delim)) ||
+              ( (parser_state_tos->last_token == rparen) &&
+                (type_code != comma) &&
+                (type_code != rparen) ) ) &&
+            (output_line_length () > settings.max_col))
+        {
+            break_line = 1;
+        }
+
+        if (last_token_ends_sp > 0)
+        {
+            last_token_ends_sp--;
+        }
+
+        is_procname_definition =
+                (((parser_state_tos->procname[0] != '\0') &&
+                  parser_state_tos->in_parameter_declaration) ||
+                 (parser_state_tos->classname[0] != '\0'));
+
+        /* The following code moves everything following an if (), while (),
+         * else, etc. up to the start of the following stmt to a buffer. This
+         * allows proper handling of both kinds of brace placement.
+         */
+
+        flushed_nl = false;
+
+        if (!search_brace(&type_code, &force_nl, &flushed_nl, &last_else, &is_procname_definition))
+        {
+            /* Hit EOF unexpectedly in comment. */
+            return indent_punt;
+        }
+        
+        if (type_code == code_eof)
+        {
+            /* we got eof */
+            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
+            {
+                dump_line(true, &paren_target);
+            }
+
+            if (parser_state_tos->tos > 1)      /* check for balanced braces */
+            {
+                ERROR (_("Unexpected end of file"), 0, 0);
+                file_exit_value = indent_error;
+            }
+
+            if (settings.verbose)
+            {
+                printf (_("There were %d non-blank output lines and %d comments\n"),
+                        (int) out_lines, (int) com_lines);
+                if (com_lines > 0 && code_lines > 0)
+                {
+                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
+                            (1.0 * com_lines) / code_lines);
+                }
+            }
+            flush_output ();
+
+            return file_exit_value;                                              /* RETURN */
+        }
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            if (force_nl &&
+                (type_code != semicolon) &&
+                ( (type_code != lbrace) ||
+                  (!parser_state_tos->in_decl && !settings.btype_2) ||
+                  (parser_state_tos->in_decl && !settings.braces_on_struct_decl_line) ||
+                  (parser_state_tos->last_token == rbrace)))
+            {
+                if (settings.verbose && !flushed_nl)
+                {
+                    WARNING (_("Line broken 2"), 0, 0);
+                }
+
+                flushed_nl = false;
+                dump_line(true, &paren_target);
+                parser_state_tos->want_blank = false;
+                force_nl = false;
+            }
+
+            parser_state_tos->in_stmt = true;   /* turn on flag which causes
+                                                 * an extra level of
+                                                 * indentation. this is
+                                                 * turned off by a ; or } */
+            if (s_com != e_com)
+            {
+                /* the code has an embedded comment in the
+                 * line. Move it from the com buffer to the
+                 * code buffer.
+                 *
+                 * Do not add a space before the comment if it is the first
+                 * thing on the line.
+                 */
+
+                if (e_code != s_code)
+                {
+                    set_buf_break (bb_embedded_comment_start, paren_target);
+                    *e_code++ = ' ';
+                    embedded_comment_on_line = 2;
+                }
+                else
+                {
+                    embedded_comment_on_line = 1;
+                }
+
+                for (t_ptr = s_com; *t_ptr; ++t_ptr)
+                {
+                    check_code_size();
+                    *e_code++ = *t_ptr;
+                }
+
+                set_buf_break (bb_embedded_comment_end, paren_target);
+                *e_code++ = ' ';
+                *e_code = '\0'; /* null terminate code sect */
+                parser_state_tos->want_blank = false;
+                e_com = s_com;
+            }
+        }
+        else if ((type_code != comment) &&
+                 (type_code != cplus_comment) &&
+                 !(settings.break_function_decl_args &&
+                   (parser_state_tos->last_token == comma)) &&
+                 !( (parser_state_tos->last_token == comma) &&
+                    !settings.leave_comma))
+        {
+            /* preserve force_nl thru a comment but
+             * cancel forced newline after newline, form feed, etc.
+             * however, don't cancel if last thing seen was comma-newline
+             * and -bc flag is on. */
+
+            force_nl = false;
+        }
+
+        /* Main switch on type of token scanned */
+
+        check_code_size();
+        
+        /* now, decide what to do with the token */
+
+        handle_the_token(type_code, &scase, &force_nl, &sp_sw, &flushed_nl,
+                         &hd_type, &dec_ind, &last_token_ends_sp, &file_exit_value,
+                         can_break, &last_else, is_procname_definition);
+        
+        *e_code = '\0';         /* make sure code section is null terminated */
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            parser_state_tos->last_token = type_code;
+        }
+
+        /* Now that we've put the token on the line (in most cases),
+         * consider breaking the line because it's too long.
+         *
+         * Don't consider the cases of `unary_op', newlines,
+         * declaration types (int, etc.), if, while, for,
+         * identifiers (handled at the beginning of the loop),
+         * periods, or preprocessor commands. */
+
+        if ((settings.max_col > 0) && (buf_break != NULL))
+        {
+            if ( ( (type_code == binary_op) ||
+                   (type_code == postop) ||
+                   (type_code == question) ||
+                   ((type_code == colon) && (scase || (squest <= 0))) ||
+                   (type_code == semicolon) ||
+                   (type_code == sp_nparen) ||
+                   (type_code == sp_else) ||
+                   ((type_code == ident) && (*token == '\"')) ||
+                   (type_code == struct_delim) ||
+                   (type_code == comma)) &&
+                 (output_line_length () > settings.max_col))
+            {
+                break_line = 1;
+            }
+        }
+    }                           /* end of main infinite loop */
+}
+#@+node:ekr.20111102052054.10009: *3* @test import dataN.html
+# fn = r'c:\recent\test.html'
+# fn = r'c:\recent\data3.html'
+fn = r'c:\recent\data.html'
+c.importCommands.importFilesCommand(files=[fn], treeType='@file')
+#@+node:ekr.20111104032034.9754: *3* @test html: underindented comment
+s = '''\
+
+<td width="550">
+<table cellspacing="0" cellpadding="0" width="600" border="0">
+    <td class="blutopgrabot" height="28"></td>
+    
+    <!-- The indentation of this element causes the problem. -->
+    <table>
+    
+<!--
+<div align="center">
+<iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>
+</div>
+-->
+
+</table>
+</table>
+
+<p>Paragraph</p>
+</td>
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+    # Showtree doesn't do anything when run externally.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

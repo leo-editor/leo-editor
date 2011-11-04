@@ -52,16 +52,16 @@ def isSuiteNode (p):
     return g.match_word(h,0,"@suite")
 
 def isTestNode (p):
-    '''
-    Return True if p is an @test node or p is *not* a section definition and
-    p's body text contains "if g.unitTesting, or g.app.unitTesting or
-    g.inScript or g.app.inScript.
-    '''
+    '''Return True if p is an @test node'''
     h = p.h.lower()
-    hidden = not p.h.startswith('<<') and test_pat.search(p.b)
-    if hidden and not g.app.silentMode:
-        print('Adding hidden test: %s' % (p.h))
-    return hidden or g.match_word(h,0,"@test")
+    return g.match_word(h,0,"@test")
+    
+    # Hidden test nodes are an anti-pattern.
+
+        # hidden = not p.h.startswith('<<') and test_pat.search(p.b)
+        # if hidden and not g.app.silentMode:
+            # print('Adding hidden test: %s' % (p.h))
+        # return hidden or g.match_word(h,0,"@test")
 
 # def isTestCaseNode (p):
     # h = p.h.lower()
@@ -889,10 +889,13 @@ class runTestExternallyHelperClass:
     def isUnitTestNode (self,p):
         
         h = p.h.lower()
-        hidden = not h.startswith('<<') and test_pat.search(p.b)
-        if hidden:
-            print('Adding hidden test: %s' % (p.h))
-            return True
+        
+        # Hidden tests nodes are an anti-pattern.
+
+            # hidden = not h.startswith('<<') and test_pat.search(p.b)
+            # if hidden:
+                # print('Adding hidden test: %s' % (p.h))
+                # return True
 
         for tag in self.tags:
             if h.startswith(tag):

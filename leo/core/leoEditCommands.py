@@ -3269,22 +3269,6 @@ class editCommandsClass (baseEditCommandsClass):
         #@-<< docstring: c-to-python >>
         self.C_to_python(self.c).go()
         self.c.bodyWantsFocus()
-
-    if g.app.inScript:
-        cpp = c.CPrettyPrinter(c)
-        c2p = C_to_python(c)
-        fn = 'c tokenize test (do not delete)'
-        p2 = g.findNodeAnywhere(c,fn)
-        assert p2,'not found: %s' % (fn)
-        
-        # import os ; os.system('cls')
-        aList = cpp.tokenize(p2.b)
-        c2p.convertCodeList(aList)
-        s = ''.join(aList)
-        if s != p.b:
-            g.es('changed')
-        # print(''.join(aList))
-        print('done')
     #@+node:ekr.20100209160132.5763: *3* cache (leoEditCommands)
     def clearAllCaches (self,event=None):
         

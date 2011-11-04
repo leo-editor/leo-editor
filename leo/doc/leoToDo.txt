@@ -43,19 +43,6 @@ require putting them on the list of known tags, but that would
 create nodes for them, and you might not want that.
 
 I'll have to think about this "pairing" problem... 
-.. @+node:ekr.20111102052054.10009: *5* import dataN.html
-# fn = r'c:\recent\test.html'
-# fn = r'c:\recent\data3.html'
-fn = r'c:\recent\data.html'
-
-if g.unitTesting:
-   
-    c.importCommands.importFilesCommand(files=[fn], treeType='@file')
-    
-if g.inScript and not g.unitTesting:
-    
-    import os ; os.system('cls')
-    c.importCommands.importFilesCommand(files=[fn], treeType='@file')
 .. @+node:ekr.20111103102153.9714: *5* Need unit tests
 .. @+node:ekr.20111103073536.16586: *6* skip...Token (baseScannerClass)
 def skipCommentToken (self,s,i):

@@ -4775,28 +4775,6 @@ class Commands (object):
             else:
                 return j + 2
         #@-others
-        
-    if g.app.inScript:
-        
-        cpp = CPrettyPrinter(c)
-        fn = 'c tokenize test (do not delete)'
-        p2 = g.findNodeAnywhere(c,fn)
-        assert p2,'not found: %s' % (fn)
-        
-        if 1: # test of indent.
-            # import os ; os.system('cls')
-            cpp.indent(p2)
-        
-        if 0: # test of tokenize.
-            aList = cpp.tokenize(p2.b)
-            assert(p2.b == ''.join(aList))
-            if 0:
-                import os ; os.system('cls')
-                print('*' * 40)
-                # print(''.join(aList))
-                for z in aList:
-                    print(repr(z))
-        print('done')
     #@+node:ekr.20040711135244.5: *7* class PythonPrettyPrinter
     class PythonPrettyPrinter:
 
