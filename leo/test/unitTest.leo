@@ -135,6 +135,9 @@ marks="ekr.20111102122424.3975,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20111104112332.3954"><vh>@test htmlScanner.adjust_class_ref</vh></v>
 <v t="ekr.20111104112332.3955"><vh>@test ic.skip...Token (htmlScanner)</vh></v>
 <v t="ekr.20111104112332.3956"><vh>@test ic.skip...Token (pythonScanner)</vh></v>
+<v t="ekr.20111104114406.3833"><vh>@test ic.tokenize (htmlScanner)</vh>
+<v t="ekr.20111104114406.3834"><vh>&lt;&lt; define expected &gt;&gt;</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -840,6 +843,41 @@ for f,s in table:
         assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
         assert result == expected,'expected...\n%s\ngot...\n%s' % (
             repr(expected),repr(result))
+</t>
+<t tx="ekr.20111104114406.3833">import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+s = '''
+&lt;!-- a comment --&gt;
+&lt;html "string"&gt;
+Test.
+&lt;/html&gt;
+'''
+
+&lt;&lt; define expected &gt;&gt;
+
+result = hs.tokenize(s)
+
+if 1:
+    assert result == expected,'expected...\n%s\ngot...\n%s' % (
+        repr(expected),repr(result))
+else:
+    print(result)
+</t>
+<t tx="ekr.20111104114406.3834">expected = [
+    ('ws', ' ', 0),
+    ('comment', '&lt;!-- a comment --&gt;', 1),
+    ('ws', ' ', 1),
+    ('other', '&lt;', 2), ('id', 'html', 2),
+    ('ws', ' ',2), ('string', '"string"', 2),
+    ('other', '&gt;', 2),
+    ('ws', ' ', 2),
+    ('id', 'Test.', 3),
+    ('ws', ' ', 3),
+    ('other', '&lt;', 4), ('other', '/', 4), ('id', 'html', 4), ('other', '&gt;', 4),
+    ('ws', ' ', 4),
+]
 </t>
 </tnodes>
 </leo_file>

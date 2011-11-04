@@ -23369,7 +23369,8 @@ def startsId(self,s,i):
     
     if i < len(s):
         ch = s[i]
-        self.isWordChar(ch) or ch in '.-:'
+        # Recent bug fix: 2011/11/04:
+        return self.isWordChar(ch) or ch in '.-:'
     else:
         return False
 
@@ -26024,6 +26025,40 @@ expected = '\n<aTag>\n@others\n</aTag>\n'
 result = hs.adjust_class_ref(s)
 assert result == expected,'expected...\n%s\ngot...\n%s' % (
     repr(expected),repr(result))
+#@+node:ekr.20111104101842.9680: *3* @test ic.skip...Token (pythonScanner)
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+scanner = leoImport.pythonScanner(importCommands=ic,atAuto=True)
+    
+tails = (
+    '+ abc', # don't concatenate with id or whitespace.
+    '# tail comment',
+    '"tail string"',
+    "'tail string'",
+)
+
+table = (
+    (scanner.skipCommentToken,  '# Test'),
+    (scanner.skipIdToken,       'ab_c'),
+    (scanner.skipNewlineToken,  '\n'),
+    (scanner.skipOtherToken,    '+'),
+    (scanner.skipOtherToken,    '#'),
+    (scanner.skipStringToken,   '"A string"'),
+    (scanner.skipWsToken,       ' '),
+    (scanner.skipWsToken,       '\n'),
+    (scanner.skipWsToken,       '\t\n \n'),
+)
+    
+for f,s in table:
+    for tail in tails:
+        if f.__name__ == 'skipCommentToken':
+            i,result = f(s,0)
+        else:
+            i,result = f(s+tail,0)
+        expected = s
+        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+        assert result == expected,'expected...\n%s\ngot...\n%s' % (
+            repr(expected),repr(result))
 #@+node:ekr.20111104101842.9670: *3* @test ic.skip...Token (htmlScanner)
 import leo.core.leoImport as leoImport
 ic = c.importCommands
@@ -26063,40 +26098,41 @@ for f,s in table:
         assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
         assert result == expected,'expected...\n%s\ngot...\n%s' % (
             repr(expected),repr(result))
-#@+node:ekr.20111104101842.9680: *3* @test ic.skip...Token (pythonScanner)
+#@+node:ekr.20111104032034.9751: *3* @test ic.tokenize (htmlScanner)
 import leo.core.leoImport as leoImport
 ic = c.importCommands
-scanner = leoImport.pythonScanner(importCommands=ic,atAuto=True)
-    
-tails = (
-    '+ abc', # don't concatenate with id or whitespace.
-    '# tail comment',
-    '"tail string"',
-    "'tail string'",
-)
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
 
-table = (
-    (scanner.skipCommentToken,  '# Test'),
-    (scanner.skipIdToken,       'ab_c'),
-    (scanner.skipNewlineToken,  '\n'),
-    (scanner.skipOtherToken,    '+'),
-    (scanner.skipOtherToken,    '#'),
-    (scanner.skipStringToken,   '"A string"'),
-    (scanner.skipWsToken,       ' '),
-    (scanner.skipWsToken,       '\n'),
-    (scanner.skipWsToken,       '\t\n \n'),
-)
-    
-for f,s in table:
-    for tail in tails:
-        if f.__name__ == 'skipCommentToken':
-            i,result = f(s,0)
-        else:
-            i,result = f(s+tail,0)
-        expected = s
-        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
-        assert result == expected,'expected...\n%s\ngot...\n%s' % (
-            repr(expected),repr(result))
+s = '''
+<!-- a comment -->
+<html "string">
+Test.
+</html>
+'''
+
+<< define expected >>
+
+result = hs.tokenize(s)
+
+if 1:
+    assert result == expected,'expected...\n%s\ngot...\n%s' % (
+        repr(expected),repr(result))
+else:
+    print(result)
+#@+node:ekr.20111104104831.9802: *4* << define expected >>
+expected = [
+    ('ws', ' ', 0),
+    ('comment', '<!-- a comment -->', 1),
+    ('ws', ' ', 1),
+    ('other', '<', 2), ('id', 'html', 2),
+    ('ws', ' ',2), ('string', '"string"', 2),
+    ('other', '>', 2),
+    ('ws', ' ', 2),
+    ('id', 'Test.', 3),
+    ('ws', ' ', 3),
+    ('other', '<', 4), ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4),
+    ('ws', ' ', 4),
+]
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

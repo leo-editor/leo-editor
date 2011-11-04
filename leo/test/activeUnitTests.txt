@@ -18009,6 +18009,41 @@ for f,s in table:
         assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
         assert result == expected,'expected...\n%s\ngot...\n%s' % (
             repr(expected),repr(result))
+#@+node:ekr.20111104114406.3833: *3* @test ic.tokenize (htmlScanner)
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+s = '''
+<!-- a comment -->
+<html "string">
+Test.
+</html>
+'''
+
+<< define expected >>
+
+result = hs.tokenize(s)
+
+if 1:
+    assert result == expected,'expected...\n%s\ngot...\n%s' % (
+        repr(expected),repr(result))
+else:
+    print(result)
+#@+node:ekr.20111104114406.3834: *4* << define expected >>
+expected = [
+    ('ws', ' ', 0),
+    ('comment', '<!-- a comment -->', 1),
+    ('ws', ' ', 1),
+    ('other', '<', 2), ('id', 'html', 2),
+    ('ws', ' ',2), ('string', '"string"', 2),
+    ('other', '>', 2),
+    ('ws', ' ', 2),
+    ('id', 'Test.', 3),
+    ('ws', ' ', 3),
+    ('other', '<', 4), ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4),
+    ('ws', ' ', 4),
+]
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):

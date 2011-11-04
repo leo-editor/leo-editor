@@ -117,7 +117,8 @@ def startsId(self,s,i):
     
     if i < len(s):
         ch = s[i]
-        self.isWordChar(ch) or ch in '.-:'
+        # Recent bug fix: 2011/11/04:
+        return self.isWordChar(ch) or ch in '.-:'
     else:
         return False
 
@@ -655,7 +656,8 @@ def startsId(self,s,i):
     
     if i < len(s):
         ch = s[i]
-        self.isWordChar(ch) or ch in '.-:'
+        # Recent bug fix: 2011/11/04:
+        return self.isWordChar(ch) or ch in '.-:'
     else:
         return False
 
@@ -948,7 +950,8 @@ def startsId(self,s,i):
     
     if i < len(s):
         ch = s[i]
-        self.isWordChar(ch) or ch in '.-:'
+        # Recent bug fix: 2011/11/04:
+        return self.isWordChar(ch) or ch in '.-:'
     else:
         return False
 
@@ -1158,6 +1161,17 @@ def skipWsToken(self,s,i):
         i += 1
     return i,' '
     
+.. @+node:ekr.20111103073536.16595: *6* startsId (xmlScanner)
+def startsId(self,s,i):
+    
+    if i < len(s):
+        ch = s[i]
+        # Recent bug fix: 2011/11/04:
+        return self.isWordChar(ch) or ch in '.-:'
+    else:
+        return False
+
+    # return g.is_c_id(s[i:i+1])
 .. @+node:ekr.20111030155153.16703: *6* tokenize
 def tokenize (self,s):
 
