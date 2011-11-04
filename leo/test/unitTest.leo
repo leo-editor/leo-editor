@@ -123,7 +123,6 @@
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 <v t="ekr.20111021115306.3697"><vh>@file ../test/unittest/tex-error.tex</vh></v>
 </v>
-<v t="ekr.20111031061500.3989"><vh>To do: Script: Copy all hidden unit tests in leoPy.leo</vh></v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"
 marks="ekr.20111102122424.3975,"><vh>@file activeUnitTests.txt</vh></v>
@@ -542,7 +541,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7"></t>
+<t tx="ekr.20070417092935" str_leo_pos="5"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -701,17 +700,6 @@ table
 nodeA
 nodeB
 </t>
-<t tx="ekr.20111031061500.3989">import leo.core.leoGui as leoGui
-
-fn = g.os_path_finalize_join(g.app.loadDir,'leoPy.leo')
-gui = leoGui.nullGui("nullGui")
-print('%s opening: %s' % (p.h,g.shortFileName(fn)))
-f = g.openWithFileName(fn,c,enableLog=False,gui=gui,readAtFileNodesFlag=True)
-print('%s open:    %s' % (p.h,g.shortFileName(fn)))
-
-c.setLog()
-print('%s done' % (p.h))
-</t>
 <t tx="ekr.20111103213154.3822"></t>
 <t tx="ekr.20111103213154.3823">@first # -*- coding: utf-8 -*-
 @encoding utf-8
@@ -742,7 +730,8 @@ else:
 path = g.os_path_finalize_join(g.app.loadDir,'does_not_exist')
 assert not g.os_path_exists(path)
 module = g.importFromPath ('xyz',path,pluginName='xyz',verbose=False)
-assert not module,repr(module)</t>
+assert not module,repr(module)
+</t>
 <t tx="ekr.20111103213154.3825">import docutils
 </t>
 </tnodes>

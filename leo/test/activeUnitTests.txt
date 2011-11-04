@@ -17872,6 +17872,40 @@ if p:
     c.redraw()
 
 print('\nEnd of plugins unit tests')
+#@+node:ekr.20111103213154.3822: ** Recent unit tests
+#@+node:ekr.20111103213154.3823: *3* @test writeToDocutils: pdf
+@first # -*- coding: utf-8 -*-
+@encoding utf-8
+
+'''Test the interface between docutils and leo_pdf.py.
+No file is written.
+'''
+
+# g.cls()
+
+path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
+
+module = g.importFromPath(name = 'leo_pdf.py',
+    path=path,
+    pluginName = 'leo_pdf',
+    verbose = False)
+
+if module:
+    s = '''This is a test.'''
+    result = c.rstCommands.writeToDocutils(s,'.pdf')
+    # print(result)
+    assert result,result
+else:
+    print('%s: %s' % (p.h,'can not import leo_pdf'))
+#@+node:ekr.20111103213154.3824: *3* @test g.importFromPath
+'''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
+
+path = g.os_path_finalize_join(g.app.loadDir,'does_not_exist')
+assert not g.os_path_exists(path)
+module = g.importFromPath ('xyz',path,pluginName='xyz',verbose=False)
+assert not module,repr(module)
+#@+node:ekr.20111103213154.3825: *3* @test imports needed for unit tests
+import docutils
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
