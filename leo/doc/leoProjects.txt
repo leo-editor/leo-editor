@@ -15812,6 +15812,10 @@ def traceMenuTable (self,table):
                 print(format % (name,func and func.__name__ or '<NO FUNC>'))
         else:
             print(format % (data,''))
+#@+node:ekr.20111103102153.9716: *4* Fixed rst3 pdf problem
+@nocolor-node
+
+Worked around docutils problem in writeToDocutils.
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
@@ -23449,6 +23453,9 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
         p = c.p
     p1 = c.p.copy() # 2011/10/31: always restore the selected position.
     
+    # This seems a bit risky when run in unitTest.leo.
+    # c.save() # Eliminate the need for ctrl-s.
+    
     if trace: g.trace('marked',marked,'c',c)
 
     try:
@@ -23763,6 +23770,9 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
     elif not p:
         p = c.p
     p1 = c.p.copy() # 2011/10/31: always restore the selected position.
+    
+    # This seems a bit risky when run in unitTest.leo.
+    # c.save() # Eliminate the need for ctrl-s.
     
     if trace: g.trace('marked',marked,'c',c)
 
@@ -24485,6 +24495,9 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
         p = c.p
     p1 = c.p.copy() # 2011/10/31: always restore the selected position.
     
+    # This seems a bit risky when run in unitTest.leo.
+    # c.save() # Eliminate the need for ctrl-s.
+    
     if trace: g.trace('marked',marked,'c',c)
 
     try:
@@ -24896,6 +24909,9 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
     elif not p:
         p = c.p
     p1 = c.p.copy() # 2011/10/31: always restore the selected position.
+    
+    # This seems a bit risky when run in unitTest.leo.
+    # c.save() # Eliminate the need for ctrl-s.
     
     if trace: g.trace('marked',marked,'c',c)
 
