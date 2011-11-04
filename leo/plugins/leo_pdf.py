@@ -267,6 +267,7 @@ try:
 except ImportError:
     print('leo_pdf.py: can not import docutils')
     docutils = None
+    raise
     
 try:
     import reportlab.platypus
@@ -274,6 +275,7 @@ try:
 except ImportError:
     print('leo_pdf.py: can not import reportlab.platypus')
     reportlab = None
+    raise
     
 try:
     #copyright ReportLab Inc. 2000
@@ -286,6 +288,7 @@ try:
 except ImportError:
     print('leo_pdf.py: can not import reportlab.lib styles info')
     stylesheet = None
+    raise
 
 if g.isPython3:
     import io
