@@ -1833,6 +1833,8 @@ class rstCommands:
                 path = g.os_path_finalize_join(g.app.loadDir,'..','plugins'),
                 pluginName = 'leo_pdf',
                 verbose = False)
+            if not module:
+                return None
             writer = module.Writer() # Get an instance.
             writer_name = None
         else:
@@ -1849,7 +1851,7 @@ class rstCommands:
                     break
             else:
                 g.es_print('unknown docutils extension: %s' % (ext),color='red')
-                return ''
+                return None
         
         if ext in ('.html','.htm') and not SilverCity:
             if not self.silverCityWarningGiven:
