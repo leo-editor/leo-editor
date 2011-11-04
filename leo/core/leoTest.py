@@ -76,6 +76,9 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
         p = c.p
     p1 = c.p.copy() # 2011/10/31: always restore the selected position.
     
+    # This seems a bit risky when run in unitTest.leo.
+    # c.save() # Eliminate the need for ctrl-s.
+    
     if trace: g.trace('marked',marked,'c',c)
 
     try:
@@ -753,6 +756,8 @@ def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
     os.spawnve(os.P_NOWAIT,sys.executable,args,env)
 #@+node:ekr.20070627135407: ** runTestsExternally
 def runTestsExternally (c,all,marked):
+    
+    c.save() # Eliminate the need for ctrl-s.
 
     runner = runTestExternallyHelperClass(c,all,marked)
     runner.runTests()
