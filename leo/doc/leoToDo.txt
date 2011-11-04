@@ -4858,6 +4858,12 @@ Like @color html::tags_markup_color = blue
 @nocolor-node
 
 That is, make sure it works when called from within itself.
+.. @+node:ekr.20111104104831.9823: *4* Subsytem tests for (standard) plugins
+@nocolor-node
+
+- The tests should not register the plugin.
+
+- There should be a test that top-level code does not register the plugin.
 .. @+node:ekr.20111019080436.15850: *3* Next: Fix all significant bugs
 .. @+node:ekr.20111026091322.16503: *4* Recent/Easy
 .. @+node:ekr.20110619173515.14895: *5* Fix bug: realpath in g.openWithFileName

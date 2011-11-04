@@ -165,7 +165,8 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
                 archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
                 c.cacher.db[key] = archive
         else:
-            g.es_print('no @test or @suite nodes in %s outline' % (
+            g.es_print('no %s@test or @suite nodes in %s outline' % (
+                g.choose(marked,'marked ',''),
                 g.choose(all,'entire','selected')),color='red')
     finally:
         c.setChanged(changed) # Restore changed state.
@@ -768,7 +769,7 @@ class runTestExternallyHelperClass:
     '''A helper class to run tests externally.'''
 
     #@+others
-    #@+node:ekr.20070627140344.1: *3*  ctor: runTestHelperClass
+    #@+node:ekr.20070627140344.1: *3*  ctor: runTestExternallyHelperClass
     def __init__(self,c,all,marked):
 
         self.c = c
@@ -909,7 +910,6 @@ class runTestExternallyHelperClass:
 
         trace = False or trace
         import time
-        kind = g.choose(self.all,'all','selected')
         c = self.c ; p = c.p
         t1 = time.time()
         found = self.searchOutline(p.copy())
@@ -919,10 +919,11 @@ class runTestExternallyHelperClass:
             g.app.silentMode = True
             c2 = c.new(gui=theGui)
             g.app.silentMode = old_silent_mode
-            found = self.createOutline(c2)
+            self.createOutline(c2)
             self.createFileFromOutline(c2)
             t2 = time.time()
             if trace:
+                kind = g.choose(self.all,'all','selected')
                 print('created %s unit tests in %0.2fsec in %s' % (
                     kind,t2-t1,self.fileName))
                 g.es('created %s unit tests' % (kind),color='blue')
@@ -931,8 +932,9 @@ class runTestExternallyHelperClass:
             runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo',silent=True)
             c.selectPosition(p.copy())
         else:
-            g.es_print('no @test or @suite nodes in %s outline' % (
-                g.choose(self.all,'entire','selected')),color='red')
+            g.es_print('no %s@test or @suite nodes in %s outline' % (
+                g.choose(self.marked,'marked',''),
+                g.choose(self.all,'entire','selected')))
     #@+node:ekr.20070627135336.8: *3* searchOutline
     def searchOutline (self,p):
 
