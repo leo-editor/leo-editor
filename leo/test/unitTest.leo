@@ -128,6 +128,11 @@
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735805000000302e372e35710d7d710e5808000000616e6e6f74617465710f7d711073752e"
 marks="ekr.20111102122424.3975,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20111103213154.3822"><vh>Recent unit tests</vh>
+<v t="ekr.20111103213154.3823"><vh>@test writeToDocutils: pdf</vh></v>
+<v t="ekr.20111103213154.3824"><vh>@test g.importFromPath</vh></v>
+<v t="ekr.20111103213154.3825"><vh>@test imports needed for unit tests</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -537,7 +542,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935" str_leo_pos="7"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -706,6 +711,39 @@ print('%s open:    %s' % (p.h,g.shortFileName(fn)))
 
 c.setLog()
 print('%s done' % (p.h))
+</t>
+<t tx="ekr.20111103213154.3822"></t>
+<t tx="ekr.20111103213154.3823">@first # -*- coding: utf-8 -*-
+@encoding utf-8
+
+'''Test the interface between docutils and leo_pdf.py.
+No file is written.
+'''
+
+# g.cls()
+
+path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
+
+module = g.importFromPath(name = 'leo_pdf.py',
+    path=path,
+    pluginName = 'leo_pdf',
+    verbose = False)
+
+if module:
+    s = '''This is a test.'''
+    result = c.rstCommands.writeToDocutils(s,'.pdf')
+    # print(result)
+    assert result,result
+else:
+    print('%s: %s' % (p.h,'can not import leo_pdf'))
+</t>
+<t tx="ekr.20111103213154.3824">'''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
+
+path = g.os_path_finalize_join(g.app.loadDir,'does_not_exist')
+assert not g.os_path_exists(path)
+module = g.importFromPath ('xyz',path,pluginName='xyz',verbose=False)
+assert not module,repr(module)</t>
+<t tx="ekr.20111103213154.3825">import docutils
 </t>
 </tnodes>
 </leo_file>
