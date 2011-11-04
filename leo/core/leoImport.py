@@ -4757,7 +4757,8 @@ class xmlScanner (baseScannerClass):
         
         if i < len(s):
             ch = s[i]
-            self.isWordChar(ch) or ch in '.-:'
+            # Recent bug fix: 2011/11/04:
+            return self.isWordChar(ch) or ch in '.-:'
         else:
             return False
 
