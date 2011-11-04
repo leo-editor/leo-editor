@@ -25919,8 +25919,9 @@ def os_path_finalize (path,**keys):
     if c: path = g.os_path_expandExpression(path,**keys)
 
     path = g.os_path_expanduser(path)
-
-    return os.path.normpath(os.path.abspath(path))
+    path = os.path.abspath(path)
+    path = os.path.normpath(path)
+    return path
 
 def os_path_finalize_join (*args,**keys):
 
@@ -25976,6 +25977,28 @@ def writeFile(self,p,fileKey):
         self.db[fileKey] = self.makeCacheList(p)
         
     # if trace: g.trace('* callers',g.callers(4))
+#@+node:ekr.20111028111441.16583: *4* Investigated viewrendered problem: file not found
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/928b7222cebf1b7c
+
+Short summary:  Not a Leo problem::
+    
+    os.path.abspath(r'N:\whatever') yields valid file name.
+    os.path.abspath(r'\N:\watever') yields invalid file name.
+#@+node:ekr.20111103205308.9698: ** Recent unit tests
+#@+node:ekr.20111103212836.9676: *3* @test g.os_path_finalize_join with thumb drive
+import os
+
+path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
+path2 = r'\N:Home\PTC_Creo\Creo.wmv'
+path3 = r'N:\Home\PTC_Creo\Creo.wmv'
+
+path12 = os.path.join(path1,path2)
+path13 = os.path.join(path1,path3)
+
+print(path12,g.os.path.abspath(path12))
+print(path13,g.os.path.abspath(path13))
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

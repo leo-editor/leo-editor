@@ -2510,143 +2510,6 @@ def killOneShortcut (self,bunch,name,p):
     
     if 0:
         g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20111028111441.16583: *4* Investigate lewis's viewrendered problem: file not found
-@nocolor-node
-
-I just ran build 4446 and noticed Leo now seems to add
-the python folder path before the file location.
-
-Select an @movie node alt-x vr
-A rendered view window opens:
- Movie
-
- file not found: C:\Python32\Lib\site-packages\leo-editor\leo\core
-\C:Users\Lewisn\Downloads\introducing-creo_5mb.wmv
-
-No such problem with build 4445. I couldn't find a bug reference for
-build 4446  - can you point to what bug was fixed?
-.. @+node:ekr.20111028111441.16584: *5* Before/After
-# Before
-
-#@+node:ekr.20110320233639.5776: *5* get_fn
-    def get_fn (self,s,tag):
-        
-        pc = self ; p = pc.c.p
-        fn = s or p.h[len(tag):]
-        fn = fn.strip()
-
-        path = g.os_path_finalize_join(g.app.loadDir,fn)
-        
-        ok = g.os_path_exists(path)
-        return ok,path
-        
-# After
-
- def get_fn (self,s,tag):
-
-        pc = self ; c = pc.c
-        fn = s or c.p.h[len(tag):]
-        fn = fn.strip()
-        
-        # path = g.os_path_finalize_join(g.app.loadDir,fn)
-        fn = fn.replace('\\','/')
-        parts = fn.split('/')
-        args = [g.app.loadDir]
-        args.extend(parts)
-        path = g.os_path_finalize_join(*args,c=c)
-
-        ok = g.os_path_exists(path)
-        return ok,path
-.. @+node:ekr.20111028111441.16586: *5* Post, summarizing the situation so far
-@nocolor-node
-
-My guess is that the issue is confined to the get_fn
-method in viewrendered.py.
-
-Oops.  I just now took a good look at the error:
-
- file not found: C:\Python32\Lib\site-packages\leo-editor\leo\core
-\C:Users\Lewisn\Downloads\introducing-creo_5mb.wmv
-
-There are two instances of \C: here!  Obviously, this is the proximate
-cause of the failure to open the file: the filename is bad.
-
-Earlier you said:
-
-@movie Creo.wmv   >   N:\Home\PTC_Creo\Creo.wmv
-
-I suspect that N:\Home is not getting translated properly;
-We may have another instance of bug 613153:
-unable to describe root directory on thumb drive
-https://bugs.launchpad.net/leo-editor/+bug/613153
-
-Anyway, let's press on...
-
-Here is the before/after version of the code, slightly reformatted to
-make the similarities and differences clearer::
-
-   # Before
-
-   #@+node:ekr.20110320233639.5776: *5* get_fn
-       def get_fn (self,s,tag):
-
-           pc = self ; p = pc.c.p
-           fn = s or p.h[len(tag):]
-           fn = fn.strip()
-
-           path = g.os_path_finalize_join(g.app.loadDir,fn)
-
-           ok = g.os_path_exists(path)
-           return ok,path
-
-   # After
-
-    def get_fn (self,s,tag):
-
-           pc = self ; c = pc.c
-           fn = s or c.p.h[len(tag):]
-           fn = fn.strip()
-
-           # path = g.os_path_finalize_join(g.app.loadDir,fn)
-           fn = fn.replace('\\','/')
-           parts = fn.split('/')
-           args = [g.app.loadDir]
-           args.extend(parts)
-           path = g.os_path_finalize_join(*args,c=c)
-
-           ok = g.os_path_exists(path)
-           return ok,pat
-
-In other words, the only difference is replacing::
-
-   path = g.os_path_finalize_join(g.app.loadDir,fn)
-
-by::
-
-    fn = fn.replace('\\','/')
-    parts = fn.split('/')
-    args = [g.app.loadDir]
-    args.extend(parts)
-    path = g.os_path_finalize_join(*args,c=c)
-
-Perhaps replacing back slashes with forward slashes may have the
-original problem, and then you used a "fancy" path that caused even
-more problems.
-
-To find out, please insert the following (tested) trace and report the
-output (it will go to the console):
-
-   # Put this at the start of the method, before changing fn.
-   old_path = g.os_path_finalize_join(g.app.loadDir,fn)
-
-   # Put this after path has been computed.
-   g.trace('old_path: %s\nnew_path: %s' % (
-       repr(old_path),repr(path)))
-
-Please try this with both these nodes::
-
-   @movie Creo.wmv
-   @movie N:\Home\PTC_Creo\Creo.wmv  (or something similar)
 .. @+node:ekr.20110929165422.15449: *4* Test bug fix: noweb expansions in rst3 command
 @nocolor-node
 
@@ -7880,6 +7743,86 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/4686ebad81bb1ea1
 - Clicking a node or hitting <return> puts focus in body pane.
 
 - Still to do: support Ctrl-G in Nav Tab.
+.. @+node:ekr.20111104032034.9747: *5* Hidden unit tests
+As of rev 4690, Leo supports "hidden" unit tests.  This just may be
+the missing piece of Leo's unit testing arsenal.
+
+A hidden unit test is a node that is *not* a section-definition node
+and whose body text contains one of the following guards at the start
+of a line::
+
+    if g.unitTesting
+    if g.app.unitTesting:
+    if g.inScript:
+    if g.app.inScript:
+
+The typical usage pattern is::
+
+    class myClass:
+        ...
+
+    if g.unitTesting:
+        x = myClass()
+        x.test()
+
+For this reason, hidden unit tests could also be called "in place"
+unit tests: they appear in the Leo source file, next to the code being
+tested.
+
+Notes:
+
+1. [Important]: Any one of the guards above will prevent the unit
+testing code from being executing when importing a file.  Thus, you
+can insert a unit test just after the code you want to test.
+
+2. [Spectacular]: The test tests the latest code *without* you having
+to reload Leo.  The reason is simple: the code being tests (myClass,
+in the example above), is defined by either the unit tests or the
+execute-script command.
+
+3. [Happy]:  Within leoPy.leo I redefined alt-4 to mean run-all-unit-
+tests-locally, which is the most convenient way to run the test I am
+working on: running the other tests doesn't matter, and in fact is a
+good check.
+
+4. Because hidden unit tests are not marked with @test, Leo always
+tells which hidden tests have been found.
+
+A good day for unit testing in Leo. 
+.. @+node:ekr.20111104032034.9748: *5* Use Alt-4 for all unit tests
+There is a collapse in complexity here that I just discovered: use
+Alt-4 for all tests.
+
+    unitTest.leo: bind Alt-4 to run-selected-unit-tests-externally
+    leoPy.leo:    bind Alt-4 to run-marked-unit-tests-locally 
+
+run-marked-unit-tests-externally is the simplest thing that could possibly work.
+Bind Alt-4 to this command, marked just the desired tests and then run them with
+one keystroke. Brilliantly simple.
+
+Experience shows that being able to run the desired unit tests
+*without* selecting any particular node makes an amazingly large
+difference.  Being able to run all and only marked unit tests is a big
+step forward.
+.. @+node:ekr.20111104032034.9746: *5* Weightless unit testsing
+As of rev 4725, unit testing in leoPy.leo feels *completely*
+weightless.  The last change: running any unit test externally saves
+the .leo file automatically first.
+
+Thus, Alt-4 runs all desired unit tests immediately.  To select/
+deselect unit tests, just mark/unmark @test nodes.
+
+The difference in workflow is *huge*.  There is no need to select
+@test nodes in any way, except for marking them.
+
+So I create an @test node, make changes to that node, or to the code
+being tested, and hit Alt-4.  Done.
+
+When I am satisfied with the @test node, I can leave it where it is
+(unmarked) or move it to unitTest.leo.
+
+The energy difference between weightless and heavy is astounding.  Try
+the new way: you will surely like it. 
 .. @+node:ekr.20111027103125.16543: *4* Code related to docs
 .. @+node:ekr.20111018104244.15931: *5* Added @command print-cmd-docstrings
 Leo must have a check-doc-strings script that will verify that all

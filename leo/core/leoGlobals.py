@@ -3531,8 +3531,9 @@ def os_path_finalize (path,**keys):
     if c: path = g.os_path_expandExpression(path,**keys)
 
     path = g.os_path_expanduser(path)
-
-    return os.path.normpath(os.path.abspath(path))
+    path = os.path.abspath(path)
+    path = os.path.normpath(path)
+    return path
 
 def os_path_finalize_join (*args,**keys):
 
