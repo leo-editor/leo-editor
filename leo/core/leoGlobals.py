@@ -4769,9 +4769,14 @@ def toUnicode (s,encoding='utf-8',reportErrors=False):
     elif mustConvert(s):
         try:
             s = f(s,encoding,'strict')
-        except (UnicodeError,Exception):
-            s = f(s,encoding,'replace')
-            if reportErrors: g.reportBadChars(s,encoding)
+        # except (UnicodeError,UnicodeDecodeError,Exception):
+        except Exception:
+            try:
+                s = f(s,encoding,'replace')
+                if reportErrors: g.reportBadChars(s,encoding)
+            except Exception:
+                g.error('can not convert to unicode!')
+                s = ''
     else:
         pass
 
@@ -5137,6 +5142,16 @@ class UiTypeException(Exception):
 def assertUi(uitype):
     if not g.app.gui.guiName() == uitype:
         raise UiTypeException
+#@+node:ekr.20111103205308.9657: *3* g.cls
+def cls():
+    
+    '''Clear the screen.'''
+    
+    import os
+    import sys
+    
+    if sys.platform.lower().startswith('win'):
+        os.system('cls')
 #@+node:ekr.20031218072017.3103: *3* g.computeWindowTitle
 def computeWindowTitle (fileName):
 
@@ -5575,7 +5590,7 @@ def importFromPath (name,path,pluginName=None,verbose=False):
             return module
 
     try:
-        theFile = None
+        module,theFile = None,None
         try:
             data = imp.find_module(moduleName,[path]) # This can open the file.
             theFile,pathname,description = data
