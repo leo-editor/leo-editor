@@ -10587,7 +10587,7 @@ s = '''\
 
 g.app.unitTestDict ['expectedErrors'] = 0
 
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+c.importCommands.htmlUnitTest(p,s=s,showTree=True)
 #@+node:ekr.20100803234640.5804: *5* ini tests
 #@+node:ekr.20100803234640.5805: *6* @test ini-test-1
 s = '''\

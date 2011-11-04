@@ -281,7 +281,7 @@ def removeBlankLinesTokens(self,tokens):
         assert i == progress+1
         
     return result
-.. @+node:ekr.20111029055127.16612: *5* Changed/new
+.. @+node:ekr.20111029055127.16612: *5* Changed
 .. @+node:ekr.20070703122141.66: *6*  ctor (baseScannerClass)
 def __init__ (self,importCommands,atAuto,language):
 
@@ -491,6 +491,499 @@ def reportMismatch (self,lines1,lines2,bad_i1,bad_i2):
         g.es_print('\n'.join(aList),color='blue')
 
     return False
+.. @+node:ekr.20071214072924.4: *6* startsHelper & helpers (xmlScanner)
+def startsHelper(self,s,i,kind,tags):
+    '''return True if s[i:] starts a class or function.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+
+    trace = (False and kind == 'class') and not g.unitTesting
+    verbose = True
+    self.codeEnd = self.sigEnd = self.sigId = None
+
+    # Underindented lines can happen in any language, not just Python.
+    # The skipBlock method of the base class checks for such lines.
+    self.startSigIndent = self.getLeadingIndent(s,i)
+
+    # Get the tag that starts the class or function.
+    if not g.match(s,i,'<'): return False
+    self.sigStart = i
+    i += 1
+    j = g.skip_ws_and_nl(s,i)
+    i = self.skipId(s,j)
+    self.sigId = theId = s[j:i] # Set sigId ivar 'early' for error messages.
+    if not theId: return False
+
+    if theId not in tags:
+        if False and trace and verbose:
+            g.trace('**** %s theId: %s not in tags: %s' % (
+                kind,theId,tags))
+        return False
+
+    if trace and verbose: g.trace(theId)
+    classId = '' 
+    sigId = theId
+
+    # Complete the opening tag.
+    i, ok, complete = self.skipToEndOfTag(s,i)
+    if not ok:
+        if trace and verbose: g.trace('no tail',g.get_line(s,i))
+        return False
+    sigEnd = i
+
+    # A trick: make sure the signature ends in a newline,
+    # even if it overlaps the start of the block.
+    if 0:
+        if not g.match(s,sigEnd,'\n') and not g.match(s,sigEnd-1,'\n'):
+            if trace and verbose: g.trace('extending sigEnd')
+            sigEnd = g.skip_line(s,sigEnd)
+
+    if not complete:
+        i,ok = self.skipToMatchingTag(s,i,theId,tags)
+        if not ok:
+            if trace and verbose: g.trace('no matching tag:',theId)
+            return False
+
+    # Success: set the ivars.
+    self.sigStart = self.adjustDefStart(s,self.sigStart)
+    self.codeEnd = i
+    self.sigEnd = sigEnd
+    self.sigId = sigId
+    self.classId = classId
+
+    # Note: backing up here is safe because
+    # we won't back up past scan's 'start' point.
+    # Thus, characters will never be output twice.
+    k = self.sigStart
+    if not g.match(s,k,'\n'):
+        self.sigStart = g.find_line_start(s,k)
+
+    # Issue this warning only if we have a real class or function.
+    if 0: # wrong.if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
+        if s[self.sigStart:k].strip():
+            self.error('%s definition does not start a line\n%s' % (
+                kind,g.get_line(s,k)))
+
+    if trace:
+        g.trace(kind,sigId,'returns\n'+s[self.sigStart:i])
+        # g.trace('**end',g.callers())
+    return True
+.. @+node:ekr.20071214072924.3: *7* skipToEndOfTag
+def skipToEndOfTag(self,s,i):
+
+    '''Skip to the end of an open tag.
+    
+    return i,ok,complete
+    
+    where complete is True if the tag of the form <name/>
+    
+    '''
+
+    while i < len(s):
+        progress = i
+        if i == '"':
+            i = self.skipString(s,i)
+        elif g.match(s,i,'<!--'):
+            i = self.skipComment(s,i)
+        elif g.match(s,i,'<'):
+            return i,False,False # An error.
+        elif g.match(s,i,'/>'):
+            i = g.skip_ws(s,i+2)
+            if g.match(s,i,'\n'):
+                i += 1 # Make sure the "class" contains a trailing newline.
+            return i,True,True # Starts a self-contained tag.
+        elif g.match(s,i,'>'):
+            i += 1
+            if g.match(s,i,'\n'): i += 1
+            return i,True,False
+        else:
+            i += 1
+        assert progress < i
+
+    return i,False,False
+.. @+node:ekr.20071214075117: *7* skipToMatchingTag
+def skipToMatchingTag (self,s,i,tag,tags):
+    
+    '''Skip the entire class definition.
+    Return i,ok.
+    '''
+
+    trace = False and not g.unitTesting; verbose = False
+    stack = [tag]
+    level = 1
+    while i < len(s):
+        progress = i
+        if i == '"':
+            i = self.skipString(s,i)
+        elif g.match(s,i,'<!--'):
+            i = self.skipComment(s,i)
+        elif g.match(s,i,'</'):
+            j = i+2
+            i = self.skipId(s,j)
+            tag2 = s[j:i]
+            i,ok,complete = self.skipToEndOfTag(s,i)
+            if tag2 in tags:
+                tag = stack.pop()
+                if tag2.lower() == tag.lower():
+                    if trace and verbose: g.trace('%s exit <%s>' % (level-1,tag))
+                    level -= 1
+                    if level == 0:
+                        return i,True
+                else:
+                    g.trace('tag mismatch: %s!=%s' % (tag2,tag))
+                    return i,False # tag mismatch.
+                        # a user error, but not an import error.
+        elif g.match(s,i,'<'):
+            # Another open tag.
+            j = g.skip_ws_and_nl(s,i+1)
+            i = self.skipId(s,j)
+            word = s[j:i]
+            if word:
+                if word in tags:
+                    if trace and verbose: g.trace('%s enter <%s>' % (level+1,word))
+                    stack.append(word)
+                    level += 1
+            else:
+                g.trace('syntax error')
+                return i,False # Syntax error.
+        else:
+            i += 1
+        assert progress < i
+
+    return i,False
+.. @+node:ekr.20111103073536.16595: *6* startsId (xmlScanner)
+def startsId(self,s,i):
+    
+    if i < len(s):
+        ch = s[i]
+        self.isWordChar(ch) or ch in '.-:'
+    else:
+        return False
+
+    # return g.is_c_id(s[i:i+1])
+.. @+node:ekr.20111104032034.9752: *5* New
+.. @+node:ekr.20071214072145.1: *6* class xmlScanner & htmlScanner(xmlScanner)
+<< class xmlScanner (baseScannerClass) >>
+
+<< class htmlScanner (xmlScanner) >>
+.. @+node:ekr.20111104032034.9866: *7* << class xmlScanner (baseScannerClass) >>
+class xmlScanner (baseScannerClass):
+
+    @others
+.. @+node:ekr.20071214072451: *8*  ctor_(xmlScanner)
+def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
+
+    # Init the base class.
+    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='xml')
+        # sets self.c
+
+    # Set the parser delims.
+    self.blockCommentDelim1 = '<!--'
+    self.blockCommentDelim2 = '-->'
+    self.blockDelim1 = None 
+    self.blockDelim2 = None
+    self.classTags = [] # Inited by import_xml_tags setting.
+    self.extraIdChars = None
+    self.functionTags = []
+    self.lineCommentDelim = None
+    self.lineCommentDelim2 = None
+    self.outerBlockDelim1 = None
+    self.outerBlockDelim2 = None
+    self.outerBlockEndsDecls = False
+    self.sigHeadExtraTokens = []
+    self.sigFailTokens = []
+
+    # Overrides more attributes.
+    self.atAutoWarnsAboutLeadingWhitespace = False
+    self.caseInsensitive = True
+    self.hasClasses = True
+    self.hasFunctions = False
+    self.ignoreBlankLines = False # The tokenizer handles this.
+    self.ignoreLeadingWs = False # The tokenizer handles this.
+    self.strict = False
+    self.tags_setting = tags_setting
+    self.trace = False
+
+    self.addTags()
+.. @+node:ekr.20071214131818: *8* addTags
+def addTags (self):
+
+    '''Add items to self.class/functionTags and from settings.'''
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    for ivar,setting in (
+        ('classTags',self.tags_setting),
+    ):
+        aList = getattr(self,ivar)
+        aList2 = c.config.getData(setting) or []
+        aList2 = [z.lower() for z in aList2]
+        aList.extend(aList2)
+        if trace: g.trace(ivar,aList)
+.. @+node:ekr.20111103073536.16601: *8* isSpace
+def isSpace(self,s,i):
+    
+    '''Return true if s[i] is a tokenizer space.'''
+
+    # Unlike the base-class method, xml space tokens include newlines.
+    return i < len(s) and s[i].isspace()
+.. @+node:ekr.20111103073536.16590: *8* skip...Token (xmlScanner overrides)
+def skipCommentToken(self,s,i):
+    
+    '''Return comment lines with all leading/trailing whitespace removed.'''
+    j = self.skipComment(s,i)
+    lines = g.splitLines(s[i:j])
+    lines = [z.strip() for z in lines]
+    return j,'\n'.join(lines)
+    
+# skipIdToken: no change.
+
+def skipNewlineToken(self,s,i):
+
+    assert False,'xml has no newline token'
+    
+# skipOtherToken: no change.
+    
+# skipStringToken: no change.
+
+def skipWsToken(self,s,i):
+    '''Return a single blank for all runs of whitespace, including newlines.'''
+    j = i
+    while i < len(s) and s[i].isspace():
+        i += 1
+    return i,' '
+    
+.. @+node:ekr.20091230062012.6238: *8* skipId (override base class) & helper
+@  For characters valid in names see:
+   www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
+@c
+
+def skipId (self,s,i):
+
+    # Fix bug 497332: @data import_xml_tags does not allow dashes in tag.
+    chars = '.-:' # Allow : anywhere.
+    n = len(s)
+    while i < n and (self.isWordChar(s[i]) or s[i] in chars):
+        i += 1
+    return i
+.. @+node:ekr.20091230062012.6239: *9* isWordChar
+@ From www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
+
+NameStartChar    ::= ":" | [A-Z] | "_" | [a-z] |
+    [#xC0-#xD6]     | [#xD8-#xF6]     | [#xF8-#x2FF]    |
+    [#x370-#x37D]   | [#x37F-#x1FFF]  | [#x200C-#x200D] |
+    [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
+    [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+
+NameChar    ::= NameStartChar | "-" | "." | [0-9] | #xB7 |
+    [#x0300-#x036F] | [#x203F-#x2040]
+@c
+
+def isWordChar(self,ch):
+
+    # At present, same as g.isWordChar.
+    # This is not correct.
+    return ch and (ch.isalnum() or ch == '_')
+.. @+node:ekr.20071214072924.4: *8* startsHelper & helpers (xmlScanner)
+def startsHelper(self,s,i,kind,tags):
+    '''return True if s[i:] starts a class or function.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+
+    trace = (False and kind == 'class') and not g.unitTesting
+    verbose = True
+    self.codeEnd = self.sigEnd = self.sigId = None
+
+    # Underindented lines can happen in any language, not just Python.
+    # The skipBlock method of the base class checks for such lines.
+    self.startSigIndent = self.getLeadingIndent(s,i)
+
+    # Get the tag that starts the class or function.
+    if not g.match(s,i,'<'): return False
+    self.sigStart = i
+    i += 1
+    j = g.skip_ws_and_nl(s,i)
+    i = self.skipId(s,j)
+    self.sigId = theId = s[j:i] # Set sigId ivar 'early' for error messages.
+    if not theId: return False
+
+    if theId not in tags:
+        if False and trace and verbose:
+            g.trace('**** %s theId: %s not in tags: %s' % (
+                kind,theId,tags))
+        return False
+
+    if trace and verbose: g.trace(theId)
+    classId = '' 
+    sigId = theId
+
+    # Complete the opening tag.
+    i, ok, complete = self.skipToEndOfTag(s,i)
+    if not ok:
+        if trace and verbose: g.trace('no tail',g.get_line(s,i))
+        return False
+    sigEnd = i
+
+    # A trick: make sure the signature ends in a newline,
+    # even if it overlaps the start of the block.
+    if 0:
+        if not g.match(s,sigEnd,'\n') and not g.match(s,sigEnd-1,'\n'):
+            if trace and verbose: g.trace('extending sigEnd')
+            sigEnd = g.skip_line(s,sigEnd)
+
+    if not complete:
+        i,ok = self.skipToMatchingTag(s,i,theId,tags)
+        if not ok:
+            if trace and verbose: g.trace('no matching tag:',theId)
+            return False
+
+    # Success: set the ivars.
+    self.sigStart = self.adjustDefStart(s,self.sigStart)
+    self.codeEnd = i
+    self.sigEnd = sigEnd
+    self.sigId = sigId
+    self.classId = classId
+
+    # Note: backing up here is safe because
+    # we won't back up past scan's 'start' point.
+    # Thus, characters will never be output twice.
+    k = self.sigStart
+    if not g.match(s,k,'\n'):
+        self.sigStart = g.find_line_start(s,k)
+
+    # Issue this warning only if we have a real class or function.
+    if 0: # wrong.if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
+        if s[self.sigStart:k].strip():
+            self.error('%s definition does not start a line\n%s' % (
+                kind,g.get_line(s,k)))
+
+    if trace:
+        g.trace(kind,sigId,'returns\n'+s[self.sigStart:i])
+        # g.trace('**end',g.callers())
+    return True
+.. @+node:ekr.20071214072924.3: *9* skipToEndOfTag
+def skipToEndOfTag(self,s,i):
+
+    '''Skip to the end of an open tag.
+    
+    return i,ok,complete
+    
+    where complete is True if the tag of the form <name/>
+    
+    '''
+
+    while i < len(s):
+        progress = i
+        if i == '"':
+            i = self.skipString(s,i)
+        elif g.match(s,i,'<!--'):
+            i = self.skipComment(s,i)
+        elif g.match(s,i,'<'):
+            return i,False,False # An error.
+        elif g.match(s,i,'/>'):
+            i = g.skip_ws(s,i+2)
+            if g.match(s,i,'\n'):
+                i += 1 # Make sure the "class" contains a trailing newline.
+            return i,True,True # Starts a self-contained tag.
+        elif g.match(s,i,'>'):
+            i += 1
+            if g.match(s,i,'\n'): i += 1
+            return i,True,False
+        else:
+            i += 1
+        assert progress < i
+
+    return i,False,False
+.. @+node:ekr.20071214075117: *9* skipToMatchingTag
+def skipToMatchingTag (self,s,i,tag,tags):
+    
+    '''Skip the entire class definition.
+    Return i,ok.
+    '''
+
+    trace = False and not g.unitTesting; verbose = False
+    stack = [tag]
+    level = 1
+    while i < len(s):
+        progress = i
+        if i == '"':
+            i = self.skipString(s,i)
+        elif g.match(s,i,'<!--'):
+            i = self.skipComment(s,i)
+        elif g.match(s,i,'</'):
+            j = i+2
+            i = self.skipId(s,j)
+            tag2 = s[j:i]
+            i,ok,complete = self.skipToEndOfTag(s,i)
+            if tag2 in tags:
+                tag = stack.pop()
+                if tag2.lower() == tag.lower():
+                    if trace and verbose: g.trace('%s exit <%s>' % (level-1,tag))
+                    level -= 1
+                    if level == 0:
+                        return i,True
+                else:
+                    g.trace('tag mismatch: %s!=%s' % (tag2,tag))
+                    return i,False # tag mismatch.
+                        # a user error, but not an import error.
+        elif g.match(s,i,'<'):
+            # Another open tag.
+            j = g.skip_ws_and_nl(s,i+1)
+            i = self.skipId(s,j)
+            word = s[j:i]
+            if word:
+                if word in tags:
+                    if trace and verbose: g.trace('%s enter <%s>' % (level+1,word))
+                    stack.append(word)
+                    level += 1
+            else:
+                g.trace('syntax error')
+                return i,False # Syntax error.
+        else:
+            i += 1
+        assert progress < i
+
+    return i,False
+.. @+node:ekr.20111103073536.16595: *8* startsId (xmlScanner)
+def startsId(self,s,i):
+    
+    if i < len(s):
+        ch = s[i]
+        self.isWordChar(ch) or ch in '.-:'
+    else:
+        return False
+
+    # return g.is_c_id(s[i:i+1])
+.. @+node:ekr.20111101204130.10009: *8* startsString
+def startsString(self,s,i):
+
+    # 2011/11/01: *only* double quotes start xml/html strings!
+    return g.match(s,i,'"')
+.. @+node:ekr.20111104032034.9867: *7* << class htmlScanner (xmlScanner) >>
+class htmlScanner (xmlScanner):
+
+    def __init__ (self,importCommands,atAuto):
+
+        # Init the base class.
+        xmlScanner.__init__(self,importCommands,atAuto,tags_setting='import_html_tags')
+        
+    @others
+.. @+node:ekr.20111104032034.9868: *8* adjust_class_ref
+def adjust_class_ref(self,s):
+
+    '''Ensure that @others appears at the start of a line.'''
+
+    i = s.find('@others')
+    if i > -1:
+        j = i
+        i -= 1
+        while i >= 0 and s[i] in '\t ':
+            i -= 1
+        if i > 0 and s[i] != '\n':
+            # g.trace('old',repr(s))
+            # 2011/11/04: Never put lws before @others.
+            s = s[:i+1] + '\n' + s[j:]
+            # g.trace('new',repr(s))
+    return s
 .. @+node:ekr.20111101052702.16721: *6* scanAndCompare & helpers
 def scanAndCompare (self,s1,s2):
     
@@ -665,175 +1158,6 @@ def skipWsToken(self,s,i):
         i += 1
     return i,' '
     
-.. @+node:ekr.20071214072924.4: *6* startsHelper & helpers (xmlScanner)
-def startsHelper(self,s,i,kind,tags):
-    '''return True if s[i:] starts a class or function.
-    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
-
-    trace = (False and kind == 'class') and not g.unitTesting
-    verbose = True
-    self.codeEnd = self.sigEnd = self.sigId = None
-
-    # Underindented lines can happen in any language, not just Python.
-    # The skipBlock method of the base class checks for such lines.
-    self.startSigIndent = self.getLeadingIndent(s,i)
-
-    # Get the tag that starts the class or function.
-    if not g.match(s,i,'<'): return False
-    self.sigStart = i
-    i += 1
-    j = g.skip_ws_and_nl(s,i)
-    i = self.skipId(s,j)
-    self.sigId = theId = s[j:i] # Set sigId ivar 'early' for error messages.
-    if not theId: return False
-
-    if theId not in tags:
-        if False and trace and verbose:
-            g.trace('**** %s theId: %s not in tags: %s' % (
-                kind,theId,tags))
-        return False
-
-    if trace and verbose: g.trace(theId)
-    classId = '' 
-    sigId = theId
-
-    # Complete the opening tag.
-    i, ok, complete = self.skipToEndOfTag(s,i)
-    if not ok:
-        if trace and verbose: g.trace('no tail',g.get_line(s,i))
-        return False
-    sigEnd = i
-
-    # A trick: make sure the signature ends in a newline,
-    # even if it overlaps the start of the block.
-    if 0:
-        if not g.match(s,sigEnd,'\n') and not g.match(s,sigEnd-1,'\n'):
-            if trace and verbose: g.trace('extending sigEnd')
-            sigEnd = g.skip_line(s,sigEnd)
-
-    if not complete:
-        i,ok = self.skipToMatchingTag(s,i,theId,tags)
-        if not ok:
-            if trace and verbose: g.trace('no matching tag:',theId)
-            return False
-
-    # Success: set the ivars.
-    self.sigStart = self.adjustDefStart(s,self.sigStart)
-    self.codeEnd = i
-    self.sigEnd = sigEnd
-    self.sigId = sigId
-    self.classId = classId
-
-    # Note: backing up here is safe because
-    # we won't back up past scan's 'start' point.
-    # Thus, characters will never be output twice.
-    k = self.sigStart
-    if not g.match(s,k,'\n'):
-        self.sigStart = g.find_line_start(s,k)
-
-    # Issue this warning only if we have a real class or function.
-    if 0: # wrong.if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
-        if s[self.sigStart:k].strip():
-            self.error('%s definition does not start a line\n%s' % (
-                kind,g.get_line(s,k)))
-
-    if trace:
-        g.trace(kind,sigId,'returns\n'+s[self.sigStart:i])
-        # g.trace('**end',g.callers())
-    return True
-.. @+node:ekr.20071214072924.3: *7* skipToEndOfTag
-def skipToEndOfTag(self,s,i):
-
-    '''Skip to the end of an open tag.
-    
-    return i,ok,complete
-    
-    where complete is True if the tag of the form <name/>
-    
-    '''
-
-    while i < len(s):
-        progress = i
-        if i == '"':
-            i = self.skipString(s,i)
-        elif g.match(s,i,'<!--'):
-            i = self.skipComment(s,i)
-        elif g.match(s,i,'<'):
-            return i,False,False # An error.
-        elif g.match(s,i,'/>'):
-            i = g.skip_ws(s,i+2)
-            if g.match(s,i,'\n'):
-                i += 1 # Make sure the "class" contains a trailing newline.
-            return i,True,True # Starts a self-contained tag.
-        elif g.match(s,i,'>'):
-            i += 1
-            if g.match(s,i,'\n'): i += 1
-            return i,True,False
-        else:
-            i += 1
-        assert progress < i
-
-    return i,False,False
-.. @+node:ekr.20071214075117: *7* skipToMatchingTag
-def skipToMatchingTag (self,s,i,tag,tags):
-    
-    '''Skip the entire class definition.
-    Return i,ok.
-    '''
-
-    trace = False and not g.unitTesting; verbose = False
-    stack = [tag]
-    level = 1
-    while i < len(s):
-        progress = i
-        if i == '"':
-            i = self.skipString(s,i)
-        elif g.match(s,i,'<!--'):
-            i = self.skipComment(s,i)
-        elif g.match(s,i,'</'):
-            j = i+2
-            i = self.skipId(s,j)
-            tag2 = s[j:i]
-            i,ok,complete = self.skipToEndOfTag(s,i)
-            if tag2 in tags:
-                tag = stack.pop()
-                if tag2.lower() == tag.lower():
-                    if trace and verbose: g.trace('%s exit <%s>' % (level-1,tag))
-                    level -= 1
-                    if level == 0:
-                        return i,True
-                else:
-                    g.trace('tag mismatch: %s!=%s' % (tag2,tag))
-                    return i,False # tag mismatch.
-                        # a user error, but not an import error.
-        elif g.match(s,i,'<'):
-            # Another open tag.
-            j = g.skip_ws_and_nl(s,i+1)
-            i = self.skipId(s,j)
-            word = s[j:i]
-            if word:
-                if word in tags:
-                    if trace and verbose: g.trace('%s enter <%s>' % (level+1,word))
-                    stack.append(word)
-                    level += 1
-            else:
-                g.trace('syntax error')
-                return i,False # Syntax error.
-        else:
-            i += 1
-        assert progress < i
-
-    return i,False
-.. @+node:ekr.20111103073536.16595: *6* startsId (xmlScanner)
-def startsId(self,s,i):
-    
-    if i < len(s):
-        ch = s[i]
-        self.isWordChar(ch) or ch in '.-:'
-    else:
-        return False
-
-    # return g.is_c_id(s[i:i+1])
 .. @+node:ekr.20111030155153.16703: *6* tokenize
 def tokenize (self,s):
 
@@ -874,6 +1198,23 @@ def tokenize (self,s):
         # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
         
     return result
+.. @+node:ekr.20111104032034.9868: *6* adjust_class_ref
+def adjust_class_ref(self,s):
+
+    '''Ensure that @others appears at the start of a line.'''
+
+    i = s.find('@others')
+    if i > -1:
+        j = i
+        i -= 1
+        while i >= 0 and s[i] in '\t ':
+            i -= 1
+        if i > 0 and s[i] != '\n':
+            # g.trace('old',repr(s))
+            # 2011/11/04: Never put lws before @others.
+            s = s[:i+1] + '\n' + s[j:]
+            # g.trace('new',repr(s))
+    return s
 .. @+node:ekr.20111101052702.16721: *5* scanAndCompare & helpers
 def scanAndCompare (self,s1,s2):
     

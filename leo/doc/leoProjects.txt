@@ -23083,31 +23083,14 @@ which overrides the default bindings.
 The single-line nodes should end in a newline. Otherwise the created node will
 add a newline, and the checkers will complain.
 #@+node:ekr.20071214072145.1: *5* class xmlScanner & htmlScanner(xmlScanner)
+<< class xmlScanner (baseScannerClass) >>
+
+<< class htmlScanner (xmlScanner) >>
+#@+node:ekr.20111104032034.9866: *6* << class xmlScanner (baseScannerClass) >>
 class xmlScanner (baseScannerClass):
 
     @others
-
-class htmlScanner (xmlScanner):
-
-    def __init__ (self,importCommands,atAuto):
-
-        # Init the base class.
-        xmlScanner.__init__(self,importCommands,atAuto,'import_html_tags')
-        
-    def adjust_class_ref(self,s):
-        '''Ensure that @others appears at the start of a line.'''
-        
-        i = s.find('@others')
-        if i > -1:
-            i -= 1
-            while i >= 0 and s[i] == ' ':
-                i -= 1
-            if i > 0 and s[i] != '\n':
-                # g.trace('old',repr(s))
-                s = s[:i+1] + '\n' + s[i+1:]
-                # g.trace('new',repr(s))
-        return s
-#@+node:ekr.20071214072451: *6*  ctor_(xmlScanner)
+#@+node:ekr.20071214072451: *7*  ctor_(xmlScanner)
 def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
 
     # Init the base class.
@@ -23142,7 +23125,7 @@ def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
     self.trace = False
 
     self.addTags()
-#@+node:ekr.20071214131818: *6* addTags
+#@+node:ekr.20071214131818: *7* addTags
 def addTags (self):
 
     '''Add items to self.class/functionTags and from settings.'''
@@ -23158,14 +23141,14 @@ def addTags (self):
         aList2 = [z.lower() for z in aList2]
         aList.extend(aList2)
         if trace: g.trace(ivar,aList)
-#@+node:ekr.20111103073536.16601: *6* isSpace
+#@+node:ekr.20111103073536.16601: *7* isSpace
 def isSpace(self,s,i):
     
     '''Return true if s[i] is a tokenizer space.'''
 
     # Unlike the base-class method, xml space tokens include newlines.
     return i < len(s) and s[i].isspace()
-#@+node:ekr.20111103073536.16590: *6* skip...Token (xmlScanner overrides)
+#@+node:ekr.20111103073536.16590: *7* skip...Token (xmlScanner overrides)
 def skipCommentToken(self,s,i):
     
     '''Return comment lines with all leading/trailing whitespace removed.'''
@@ -23191,7 +23174,7 @@ def skipWsToken(self,s,i):
         i += 1
     return i,' '
     
-#@+node:ekr.20091230062012.6238: *6* skipId (override base class) & helper
+#@+node:ekr.20091230062012.6238: *7* skipId (override base class) & helper
 @  For characters valid in names see:
    www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
 @c
@@ -23204,7 +23187,7 @@ def skipId (self,s,i):
     while i < n and (self.isWordChar(s[i]) or s[i] in chars):
         i += 1
     return i
-#@+node:ekr.20091230062012.6239: *7* isWordChar
+#@+node:ekr.20091230062012.6239: *8* isWordChar
 @ From www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
 
 NameStartChar    ::= ":" | [A-Z] | "_" | [a-z] |
@@ -23222,7 +23205,7 @@ def isWordChar(self,ch):
     # At present, same as g.isWordChar.
     # This is not correct.
     return ch and (ch.isalnum() or ch == '_')
-#@+node:ekr.20071214072924.4: *6* startsHelper & helpers (xmlScanner)
+#@+node:ekr.20071214072924.4: *7* startsHelper & helpers (xmlScanner)
 def startsHelper(self,s,i,kind,tags):
     '''return True if s[i:] starts a class or function.
     Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
@@ -23298,7 +23281,7 @@ def startsHelper(self,s,i,kind,tags):
         g.trace(kind,sigId,'returns\n'+s[self.sigStart:i])
         # g.trace('**end',g.callers())
     return True
-#@+node:ekr.20071214072924.3: *7* skipToEndOfTag
+#@+node:ekr.20071214072924.3: *8* skipToEndOfTag
 def skipToEndOfTag(self,s,i):
 
     '''Skip to the end of an open tag.
@@ -23331,7 +23314,7 @@ def skipToEndOfTag(self,s,i):
         assert progress < i
 
     return i,False,False
-#@+node:ekr.20071214075117: *7* skipToMatchingTag
+#@+node:ekr.20071214075117: *8* skipToMatchingTag
 def skipToMatchingTag (self,s,i,tag,tags):
     
     '''Skip the entire class definition.
@@ -23381,7 +23364,7 @@ def skipToMatchingTag (self,s,i,tag,tags):
         assert progress < i
 
     return i,False
-#@+node:ekr.20111103073536.16595: *6* startsId (xmlScanner)
+#@+node:ekr.20111103073536.16595: *7* startsId (xmlScanner)
 def startsId(self,s,i):
     
     if i < len(s):
@@ -23391,11 +23374,37 @@ def startsId(self,s,i):
         return False
 
     # return g.is_c_id(s[i:i+1])
-#@+node:ekr.20111101204130.10009: *6* startsString
+#@+node:ekr.20111101204130.10009: *7* startsString
 def startsString(self,s,i):
 
     # 2011/11/01: *only* double quotes start xml/html strings!
     return g.match(s,i,'"')
+#@+node:ekr.20111104032034.9867: *6* << class htmlScanner (xmlScanner) >>
+class htmlScanner (xmlScanner):
+
+    def __init__ (self,importCommands,atAuto):
+
+        # Init the base class.
+        xmlScanner.__init__(self,importCommands,atAuto,tags_setting='import_html_tags')
+        
+    @others
+#@+node:ekr.20111104032034.9868: *7* adjust_class_ref
+def adjust_class_ref(self,s):
+
+    '''Ensure that @others appears at the start of a line.'''
+
+    i = s.find('@others')
+    if i > -1:
+        j = i
+        i -= 1
+        while i >= 0 and s[i] in '\t ':
+            i -= 1
+        if i > 0 and s[i] != '\n':
+            # g.trace('old',repr(s))
+            # 2011/11/04: Never put lws before @others.
+            s = s[:i+1] + '\n' + s[j:]
+            # g.trace('new',repr(s))
+    return s
 #@+node:ekr.20111019104425.15862: *4* Leo's home page now shows the latest postings from leo-editor.
 @nocolor-node
 
@@ -25999,6 +26008,22 @@ path13 = os.path.join(path1,path3)
 
 print(path12,g.os.path.abspath(path12))
 print(path13,g.os.path.abspath(path13))
+#@+node:ekr.20111104032034.9872: *3* @test htmlScanner.adjust_class_ref
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+s = '''
+<aTag>  @others
+</aTag>
+'''
+
+# Avoid probems with representation of @others in scripts.
+expected = '\n<aTag>\n@others\n</aTag>\n'
+
+result = hs.adjust_class_ref(s)
+assert result == expected,'expected...\n%s\ngot...\n%s' % (
+    repr(expected),repr(result))
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

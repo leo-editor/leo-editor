@@ -757,7 +757,8 @@ def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
 #@+node:ekr.20070627135407: ** runTestsExternally
 def runTestsExternally (c,all,marked):
     
-    c.save() # Eliminate the need for ctrl-s.
+    if c.isChanged():
+        c.save() # Eliminate the need for ctrl-s.
 
     runner = runTestExternallyHelperClass(c,all,marked)
     runner.runTests()

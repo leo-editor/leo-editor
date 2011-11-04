@@ -4473,10 +4473,12 @@ class rstScanner (baseScannerClass):
         return i,j,nows,line
     #@-others
 #@+node:ekr.20071214072145.1: *3* class xmlScanner & htmlScanner(xmlScanner)
+#@+<< class xmlScanner (baseScannerClass) >>
+#@+node:ekr.20111104032034.9866: *4* << class xmlScanner (baseScannerClass) >>
 class xmlScanner (baseScannerClass):
 
     #@+others
-    #@+node:ekr.20071214072451: *4*  ctor_(xmlScanner)
+    #@+node:ekr.20071214072451: *5*  ctor_(xmlScanner)
     def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
 
         # Init the base class.
@@ -4511,7 +4513,7 @@ class xmlScanner (baseScannerClass):
         self.trace = False
 
         self.addTags()
-    #@+node:ekr.20071214131818: *4* addTags
+    #@+node:ekr.20071214131818: *5* addTags
     def addTags (self):
 
         '''Add items to self.class/functionTags and from settings.'''
@@ -4527,14 +4529,14 @@ class xmlScanner (baseScannerClass):
             aList2 = [z.lower() for z in aList2]
             aList.extend(aList2)
             if trace: g.trace(ivar,aList)
-    #@+node:ekr.20111103073536.16601: *4* isSpace
+    #@+node:ekr.20111103073536.16601: *5* isSpace
     def isSpace(self,s,i):
         
         '''Return true if s[i] is a tokenizer space.'''
 
         # Unlike the base-class method, xml space tokens include newlines.
         return i < len(s) and s[i].isspace()
-    #@+node:ekr.20111103073536.16590: *4* skip...Token (xmlScanner overrides)
+    #@+node:ekr.20111103073536.16590: *5* skip...Token (xmlScanner overrides)
     def skipCommentToken(self,s,i):
         
         '''Return comment lines with all leading/trailing whitespace removed.'''
@@ -4560,7 +4562,7 @@ class xmlScanner (baseScannerClass):
             i += 1
         return i,' '
         
-    #@+node:ekr.20091230062012.6238: *4* skipId (override base class) & helper
+    #@+node:ekr.20091230062012.6238: *5* skipId (override base class) & helper
     #@+at  For characters valid in names see:
     #    www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
     #@@c
@@ -4573,7 +4575,7 @@ class xmlScanner (baseScannerClass):
         while i < n and (self.isWordChar(s[i]) or s[i] in chars):
             i += 1
         return i
-    #@+node:ekr.20091230062012.6239: *5* isWordChar
+    #@+node:ekr.20091230062012.6239: *6* isWordChar
     #@+at From www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
     # 
     # NameStartChar    ::= ":" | [A-Z] | "_" | [a-z] |
@@ -4591,7 +4593,7 @@ class xmlScanner (baseScannerClass):
         # At present, same as g.isWordChar.
         # This is not correct.
         return ch and (ch.isalnum() or ch == '_')
-    #@+node:ekr.20071214072924.4: *4* startsHelper & helpers (xmlScanner)
+    #@+node:ekr.20071214072924.4: *5* startsHelper & helpers (xmlScanner)
     def startsHelper(self,s,i,kind,tags):
         '''return True if s[i:] starts a class or function.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
@@ -4667,7 +4669,7 @@ class xmlScanner (baseScannerClass):
             g.trace(kind,sigId,'returns\n'+s[self.sigStart:i])
             # g.trace('**end',g.callers())
         return True
-    #@+node:ekr.20071214072924.3: *5* skipToEndOfTag
+    #@+node:ekr.20071214072924.3: *6* skipToEndOfTag
     def skipToEndOfTag(self,s,i):
 
         '''Skip to the end of an open tag.
@@ -4700,7 +4702,7 @@ class xmlScanner (baseScannerClass):
             assert progress < i
 
         return i,False,False
-    #@+node:ekr.20071214075117: *5* skipToMatchingTag
+    #@+node:ekr.20071214075117: *6* skipToMatchingTag
     def skipToMatchingTag (self,s,i,tag,tags):
         
         '''Skip the entire class definition.
@@ -4750,7 +4752,7 @@ class xmlScanner (baseScannerClass):
             assert progress < i
 
         return i,False
-    #@+node:ekr.20111103073536.16595: *4* startsId (xmlScanner)
+    #@+node:ekr.20111103073536.16595: *5* startsId (xmlScanner)
     def startsId(self,s,i):
         
         if i < len(s):
@@ -4760,33 +4762,43 @@ class xmlScanner (baseScannerClass):
             return False
 
         # return g.is_c_id(s[i:i+1])
-    #@+node:ekr.20111101204130.10009: *4* startsString
+    #@+node:ekr.20111101204130.10009: *5* startsString
     def startsString(self,s,i):
 
         # 2011/11/01: *only* double quotes start xml/html strings!
         return g.match(s,i,'"')
     #@-others
+#@-<< class xmlScanner (baseScannerClass) >>
 
+#@+<< class htmlScanner (xmlScanner) >>
+#@+node:ekr.20111104032034.9867: *4* << class htmlScanner (xmlScanner) >>
 class htmlScanner (xmlScanner):
 
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        xmlScanner.__init__(self,importCommands,atAuto,'import_html_tags')
+        xmlScanner.__init__(self,importCommands,atAuto,tags_setting='import_html_tags')
         
+    #@+others
+    #@+node:ekr.20111104032034.9868: *5* adjust_class_ref
     def adjust_class_ref(self,s):
+
         '''Ensure that @others appears at the start of a line.'''
-        
+
         i = s.find('@others')
         if i > -1:
+            j = i
             i -= 1
-            while i >= 0 and s[i] == ' ':
+            while i >= 0 and s[i] in '\t ':
                 i -= 1
             if i > 0 and s[i] != '\n':
                 # g.trace('old',repr(s))
-                s = s[:i+1] + '\n' + s[i+1:]
+                # 2011/11/04: Never put lws before @others.
+                s = s[:i+1] + '\n' + s[j:]
                 # g.trace('new',repr(s))
         return s
+    #@-others
+#@-<< class htmlScanner (xmlScanner) >>
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
 #@+node:ekr.20101103093942.5941: *3* @g.command(head-to-prev-node)
 @g.command('head-to-prev-node')
