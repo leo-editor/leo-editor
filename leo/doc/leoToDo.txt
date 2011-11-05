@@ -55,386 +55,6 @@ require putting them on the list of known tags, but that would
 create nodes for them, and you might not want that.
 
 I'll have to think about this "pairing" problem... 
-.. @+node:ekr.20111029055127.16612: *5* Changed
-.. @+node:ekr.20070703122141.66: *6*  ctor (baseScannerClass)
-def __init__ (self,importCommands,atAuto,language):
-
-    ic = importCommands
-
-    self.atAuto = atAuto
-    self.c = c = ic.c
-
-    self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool('at_auto_warns_about_leading_whitespace')
-    self.atAutoSeparateNonDefNodes = c.config.getBool('at_auto_separate_non_def_nodes',default=False)
-    self.classId = None # The identifier containing the class tag: 'class', 'interface', 'namespace', etc.
-    self.codeEnd = None
-        # The character after the last character of the class, method or function.
-        # An error will be given if this is not a newline.
-    self.encoding = ic.encoding
-    self.errors = 0
-    ic.errors = 0
-    self.errorLines = []
-    self.escapeSectionRefs = True
-    self.extraIdChars = ''
-    self.fileName = ic.fileName # The original filename.
-    self.fileType = ic.fileType # The extension,  '.py', '.c', etc.
-    self.file_s = '' # The complete text to be parsed.
-    self.fullChecks = c.config.getBool('full_import_checks')
-    self.functionSpelling = 'function' # for error message.
-    self.importCommands = ic
-    self.indentRefFlag = None # None, True or False.
-    self.isRst = False
-    self.language = language
-    self.lastParent = None # The last generated parent node (used only by rstScanner).
-    self.methodName = ic.methodName # x, as in < < x methods > > =
-    self.methodsSeen = False
-    self.mismatchWarningGiven = False
-    self.output_newline = ic.output_newline # = c.config.getBool('output_newline')
-    self.output_indent = 0 # The minimum indentation presently in effect.
-    self.root = None # The top-level node of the generated tree.
-    self.rootLine = ic.rootLine # '' or @root + self.fileName
-    self.sigEnd = None # The index of the end of the signature.
-    self.sigId = None # The identifier contained in the signature, i.e., the function or method name.
-    self.sigStart = None
-        # The start of the line containing the signature.
-        # An error will be given if something other than whitespace precedes the signature.
-    self.startSigIndent = None
-    self.tab_width = None # Set in run: the tab width in effect in the c.currentPosition.
-    self.tab_ws = '' # Set in run: the whitespace equivalent to one tab.
-    self.trace = False or ic.trace # = c.config.getBool('trace_import')
-    self.treeType = ic.treeType # '@root' or '@file'
-    self.webType = ic.webType # 'cweb' or 'noweb'
-
-    # Compute language ivars.
-    delim1,junk,junk = g.set_delims_from_language(language)
-    self.comment_delim = delim1
-
-    # May be overridden in subclasses.
-    self.anonymousClasses = [] # For Delphi Pascal interfaces.
-    self.blockCommentDelim1 = None
-    self.blockCommentDelim2 = None
-    self.blockCommentDelim1_2 = None
-    self.blockCommentDelim2_2 = None
-    self.blockDelim1 = '{'
-    self.blockDelim2 = '}'
-    self.blockDelim2Cruft = [] # Stuff that can follow .blockDelim2.
-    self.caseInsensitive = False
-    self.classTags = ['class',] # tags that start a tag.
-    self.functionTags = []
-    self.hasClasses = True
-    self.hasFunctions = True
-    self.ignoreBlankLines = False
-    self.ignoreLeadingWs = False
-    self.lineCommentDelim = None
-    self.lineCommentDelim2 = None
-    self.outerBlockDelim1 = None
-    self.outerBlockDelim2 = None
-    self.outerBlockEndsDecls = True
-    self.sigHeadExtraTokens = [] # Extra tokens valid in head of signature.
-    self.sigFailTokens = []
-        # A list of strings that abort a signature when seen in a tail.
-        # For example, ';' and '=' in C.
-
-    self.strict = False # True if leading whitespace is very significant.
-    self.warnAboutUnderindentedLines = True
-.. @+node:ekr.20071214072451: *6*  ctor_(xmlScanner)
-def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
-
-    # Init the base class.
-    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='xml')
-        # sets self.c
-
-    # Set the parser delims.
-    self.blockCommentDelim1 = '<!--'
-    self.blockCommentDelim2 = '-->'
-    self.blockDelim1 = None 
-    self.blockDelim2 = None
-    self.classTags = [] # Inited by import_xml_tags setting.
-    self.extraIdChars = None
-    self.functionTags = []
-    self.lineCommentDelim = None
-    self.lineCommentDelim2 = None
-    self.outerBlockDelim1 = None
-    self.outerBlockDelim2 = None
-    self.outerBlockEndsDecls = False
-    self.sigHeadExtraTokens = []
-    self.sigFailTokens = []
-
-    # Overrides more attributes.
-    self.atAutoWarnsAboutLeadingWhitespace = False
-    self.caseInsensitive = True
-    self.hasClasses = True
-    self.hasFunctions = False
-    self.ignoreBlankLines = False # The tokenizer handles this.
-    self.ignoreLeadingWs = False # The tokenizer handles this.
-    self.strict = False
-    self.tags_setting = tags_setting
-    self.trace = False
-
-    self.addTags()
-.. @+node:ekr.20070703122141.104: *6* checkTrialWrite
-def checkTrialWrite (self,s1=None,s2=None):
-
-    '''Return True if a trial write produces the original file.'''
-
-    # s1 and s2 are for unit testing.
-    trace = False
-    c = self.c ; at = c.atFileCommands
-    if s1 is None and s2 is None:
-        if self.isRst:
-            outputFile = StringIO()
-            c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
-            s1,s2 = self.file_s,outputFile.getvalue()
-        else:
-            at.write(self.root,
-                nosentinels=True,thinFile=False,
-                scriptWrite=False,toString=True)
-            s1,s2 = self.file_s, at.stringOutput
-
-    s1 = g.toUnicode(s1,self.encoding)
-    s2 = g.toUnicode(s2,self.encoding)
-
-    # Make sure we have a trailing newline in both strings.
-    s1 = s1.replace('\r','')
-    s2 = s2.replace('\r','')
-    if not s1.endswith('\n'): s1 = s1 + '\n'
-    if not s2.endswith('\n'): s2 = s2 + '\n'
-
-    if s1 == s2: return True
-    
-    # lines1 = g.splitLines(s1)
-    # lines2 = g.splitLines(s2)
-    
-    # if self.ignoreBlankLines or self.ignoreLeadingWs: # was self.isRst:
-        # lines1 = self.adjustTestLines(lines1)
-        # lines2 = self.adjustTestLines(lines2)
-        # s1 = ''.join(lines1)
-        # s2 = ''.join(lines2)
-
-    bad_i1,bad_i2,ok = self.scanAndCompare(s1,s2)
-    if ok: return ok
-        
-    # n1,n2 = len(lines1), len(lines2)
-    # ok = True ; bad_i = 0
-    # for i in range(max(n1,n2)):
-        # ok = self.compareHelper(lines1,lines2,i,self.strict)
-        # if not ok:
-            # bad_i = i
-            # break
-
-    # Unit tests do not generate errors unless the mismatch line does not match.
-    if g.app.unitTesting:
-        d = g.app.unitTestDict
-        ok = d.get('expectedMismatchLine') == bad_i1
-            # was d.get('actualMismatchLine')
-        if not ok: d['fail'] = g.callers()
-
-    if trace or not ok:
-        lines1 = g.splitLines(s1)
-        lines2 = g.splitLines(s2)
-        self.reportMismatch(lines1,lines2,bad_i1,bad_i2)
-
-    return ok
-.. @+node:ekr.20070911110507: *6* reportMismatch
-def reportMismatch (self,lines1,lines2,bad_i1,bad_i2):
-
-    trace = False
-    kind = g.choose(self.atAuto,'@auto','import command')
-    n1,n2 = len(lines1),len(lines2)
-    s1 = '%s did not import %s perfectly\n' % (
-        kind,self.root.h)
-    s2 = 'first mismatched line: %s (original) = %s (imported)' % (
-        bad_i1,bad_i2)
-    s = s1 + s2
-    
-    if trace: g.trace(s)
-    else:     self.error(s)
-
-    aList = []
-    aList.append('Original file...\n')
-    for i in range(max(0,bad_i1-2),min(bad_i1+3,n1)):
-        line = repr(lines1[i])
-        aList.append('%4d %s' % (i,line))
-        
-    aList.append('\nImported file...\n')
-    for i in range(max(0,bad_i2-2),min(bad_i2+3,n1)):
-        line = repr(lines2[i])
-        aList.append('%4d %s' % (i,line))
-
-    if trace or not g.unitTesting:
-        g.es_print('\n'.join(aList),color='blue')
-
-    return False
-.. @+node:ekr.20071214072924.4: *6* startsHelper & helpers (xmlScanner)
-def startsHelper(self,s,i,kind,tags):
-    '''return True if s[i:] starts a class or function.
-    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
-
-    trace = (False and kind == 'class') and not g.unitTesting
-    verbose = True
-    self.codeEnd = self.sigEnd = self.sigId = None
-
-    # Underindented lines can happen in any language, not just Python.
-    # The skipBlock method of the base class checks for such lines.
-    self.startSigIndent = self.getLeadingIndent(s,i)
-
-    # Get the tag that starts the class or function.
-    if not g.match(s,i,'<'): return False
-    self.sigStart = i
-    i += 1
-    j = g.skip_ws_and_nl(s,i)
-    i = self.skipId(s,j)
-    self.sigId = theId = s[j:i] # Set sigId ivar 'early' for error messages.
-    if not theId: return False
-
-    if theId not in tags:
-        if False and trace and verbose:
-            g.trace('**** %s theId: %s not in tags: %s' % (
-                kind,theId,tags))
-        return False
-
-    if trace and verbose: g.trace(theId)
-    classId = '' 
-    sigId = theId
-
-    # Complete the opening tag.
-    i, ok, complete = self.skipToEndOfTag(s,i)
-    if not ok:
-        if trace and verbose: g.trace('no tail',g.get_line(s,i))
-        return False
-    sigEnd = i
-
-    # A trick: make sure the signature ends in a newline,
-    # even if it overlaps the start of the block.
-    if 0:
-        if not g.match(s,sigEnd,'\n') and not g.match(s,sigEnd-1,'\n'):
-            if trace and verbose: g.trace('extending sigEnd')
-            sigEnd = g.skip_line(s,sigEnd)
-
-    if not complete:
-        i,ok = self.skipToMatchingTag(s,i,theId,tags)
-        if not ok:
-            if trace and verbose: g.trace('no matching tag:',theId)
-            return False
-
-    # Success: set the ivars.
-    self.sigStart = self.adjustDefStart(s,self.sigStart)
-    self.codeEnd = i
-    self.sigEnd = sigEnd
-    self.sigId = sigId
-    self.classId = classId
-
-    # Note: backing up here is safe because
-    # we won't back up past scan's 'start' point.
-    # Thus, characters will never be output twice.
-    k = self.sigStart
-    if not g.match(s,k,'\n'):
-        self.sigStart = g.find_line_start(s,k)
-
-    # Issue this warning only if we have a real class or function.
-    if 0: # wrong.if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
-        if s[self.sigStart:k].strip():
-            self.error('%s definition does not start a line\n%s' % (
-                kind,g.get_line(s,k)))
-
-    if trace:
-        g.trace(kind,sigId,'returns\n'+s[self.sigStart:i])
-        # g.trace('**end',g.callers())
-    return True
-.. @+node:ekr.20071214072924.3: *7* skipToEndOfTag
-def skipToEndOfTag(self,s,i):
-
-    '''Skip to the end of an open tag.
-    
-    return i,ok,complete
-    
-    where complete is True if the tag of the form <name/>
-    
-    '''
-
-    while i < len(s):
-        progress = i
-        if i == '"':
-            i = self.skipString(s,i)
-        elif g.match(s,i,'<!--'):
-            i = self.skipComment(s,i)
-        elif g.match(s,i,'<'):
-            return i,False,False # An error.
-        elif g.match(s,i,'/>'):
-            i = g.skip_ws(s,i+2)
-            if g.match(s,i,'\n'):
-                i += 1 # Make sure the "class" contains a trailing newline.
-            return i,True,True # Starts a self-contained tag.
-        elif g.match(s,i,'>'):
-            i += 1
-            if g.match(s,i,'\n'): i += 1
-            return i,True,False
-        else:
-            i += 1
-        assert progress < i
-
-    return i,False,False
-.. @+node:ekr.20071214075117: *7* skipToMatchingTag
-def skipToMatchingTag (self,s,i,tag,tags):
-    
-    '''Skip the entire class definition.
-    Return i,ok.
-    '''
-
-    trace = False and not g.unitTesting; verbose = False
-    stack = [tag]
-    level = 1
-    while i < len(s):
-        progress = i
-        if i == '"':
-            i = self.skipString(s,i)
-        elif g.match(s,i,'<!--'):
-            i = self.skipComment(s,i)
-        elif g.match(s,i,'</'):
-            j = i+2
-            i = self.skipId(s,j)
-            tag2 = s[j:i]
-            i,ok,complete = self.skipToEndOfTag(s,i)
-            if tag2 in tags:
-                tag = stack.pop()
-                if tag2.lower() == tag.lower():
-                    if trace and verbose: g.trace('%s exit <%s>' % (level-1,tag))
-                    level -= 1
-                    if level == 0:
-                        return i,True
-                else:
-                    if trace: g.trace('tag mismatch: %s!=%s' % (tag2,tag))
-                    return i,False # tag mismatch.
-                        # a user error, but not an import error.
-        elif g.match(s,i,'<'):
-            # Another open tag.
-            j = g.skip_ws_and_nl(s,i+1)
-            i = self.skipId(s,j)
-            word = s[j:i]
-            if word:
-                if word in tags:
-                    if trace and verbose: g.trace('%s enter <%s>' % (level+1,word))
-                    stack.append(word)
-                    level += 1
-            else:
-                g.trace('syntax error')
-                return i,False # Syntax error.
-        else:
-            i += 1
-        assert progress < i
-
-    return i,False
-.. @+node:ekr.20111103073536.16595: *6* startsId (xmlScanner)
-def startsId(self,s,i):
-    
-    if i < len(s):
-        ch = s[i]
-        # Recent bug fix: 2011/11/04:
-        return self.isWordChar(ch) or ch in '.-:'
-    else:
-        return False
-
-    # return g.is_c_id(s[i:i+1])
 .. @+node:ekr.20111104032034.9752: *5* New
 .. @+node:ekr.20071214072145.1: *6* class xmlScanner & htmlScanner(xmlScanner)
 << class xmlScanner (baseScannerClass) >>
@@ -1010,6 +630,395 @@ def adjust_class_ref(self,s):
             s = s[:i+1] + '\n' + s[j:]
             # g.trace('new',repr(s))
     return s
+.. @+node:ekr.20111029055127.16612: *5* Changed
+.. @+node:ekr.20070703122141.66: *6*  ctor (baseScannerClass)
+def __init__ (self,importCommands,atAuto,language):
+
+    ic = importCommands
+
+    self.atAuto = atAuto
+    self.c = c = ic.c
+
+    self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool('at_auto_warns_about_leading_whitespace')
+    self.atAutoSeparateNonDefNodes = c.config.getBool('at_auto_separate_non_def_nodes',default=False)
+    self.classId = None # The identifier containing the class tag: 'class', 'interface', 'namespace', etc.
+    self.codeEnd = None
+        # The character after the last character of the class, method or function.
+        # An error will be given if this is not a newline.
+    self.encoding = ic.encoding
+    self.errors = 0
+    ic.errors = 0
+    self.errorLines = []
+    self.escapeSectionRefs = True
+    self.extraIdChars = ''
+    self.fileName = ic.fileName # The original filename.
+    self.fileType = ic.fileType # The extension,  '.py', '.c', etc.
+    self.file_s = '' # The complete text to be parsed.
+    self.fullChecks = c.config.getBool('full_import_checks')
+    self.functionSpelling = 'function' # for error message.
+    self.importCommands = ic
+    self.indentRefFlag = None # None, True or False.
+    self.isRst = False
+    self.language = language
+    self.lastParent = None # The last generated parent node (used only by rstScanner).
+    self.methodName = ic.methodName # x, as in < < x methods > > =
+    self.methodsSeen = False
+    self.mismatchWarningGiven = False
+    self.output_newline = ic.output_newline # = c.config.getBool('output_newline')
+    self.output_indent = 0 # The minimum indentation presently in effect.
+    self.root = None # The top-level node of the generated tree.
+    self.rootLine = ic.rootLine # '' or @root + self.fileName
+    self.sigEnd = None # The index of the end of the signature.
+    self.sigId = None # The identifier contained in the signature, i.e., the function or method name.
+    self.sigStart = None
+        # The start of the line containing the signature.
+        # An error will be given if something other than whitespace precedes the signature.
+    self.startSigIndent = None
+    self.tab_width = None # Set in run: the tab width in effect in the c.currentPosition.
+    self.tab_ws = '' # Set in run: the whitespace equivalent to one tab.
+    self.trace = False or ic.trace # = c.config.getBool('trace_import')
+    self.treeType = ic.treeType # '@root' or '@file'
+    self.webType = ic.webType # 'cweb' or 'noweb'
+
+    # Compute language ivars.
+    delim1,junk,junk = g.set_delims_from_language(language)
+    self.comment_delim = delim1
+
+    # May be overridden in subclasses.
+    self.anonymousClasses = [] # For Delphi Pascal interfaces.
+    self.blockCommentDelim1 = None
+    self.blockCommentDelim2 = None
+    self.blockCommentDelim1_2 = None
+    self.blockCommentDelim2_2 = None
+    self.blockDelim1 = '{'
+    self.blockDelim2 = '}'
+    self.blockDelim2Cruft = [] # Stuff that can follow .blockDelim2.
+    self.caseInsensitive = False
+    self.classTags = ['class',] # tags that start a tag.
+    self.functionTags = []
+    self.hasClasses = True
+    self.hasFunctions = True
+    self.ignoreBlankLines = False
+    self.ignoreLeadingWs = False
+    self.lineCommentDelim = None
+    self.lineCommentDelim2 = None
+    self.outerBlockDelim1 = None
+    self.outerBlockDelim2 = None
+    self.outerBlockEndsDecls = True
+    self.sigHeadExtraTokens = [] # Extra tokens valid in head of signature.
+    self.sigFailTokens = []
+        # A list of strings that abort a signature when seen in a tail.
+        # For example, ';' and '=' in C.
+
+    self.strict = False # True if leading whitespace is very significant.
+    self.warnAboutUnderindentedLines = True
+.. @+node:ekr.20071214072451: *6*  ctor_(xmlScanner)
+def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
+
+    # Init the base class.
+    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='xml')
+        # sets self.c
+
+    # Set the parser delims.
+    self.blockCommentDelim1 = '<!--'
+    self.blockCommentDelim2 = '-->'
+    self.blockDelim1 = None 
+    self.blockDelim2 = None
+    self.classTags = [] # Inited by import_xml_tags setting.
+    self.extraIdChars = None
+    self.functionTags = []
+    self.lineCommentDelim = None
+    self.lineCommentDelim2 = None
+    self.outerBlockDelim1 = None
+    self.outerBlockDelim2 = None
+    self.outerBlockEndsDecls = False
+    self.sigHeadExtraTokens = []
+    self.sigFailTokens = []
+
+    # Overrides more attributes.
+    self.atAutoWarnsAboutLeadingWhitespace = False
+    self.caseInsensitive = True
+    self.hasClasses = True
+    self.hasFunctions = False
+    self.ignoreBlankLines = False # The tokenizer handles this.
+    self.ignoreLeadingWs = False # The tokenizer handles this.
+    self.strict = False
+    self.tags_setting = tags_setting
+    self.trace = False
+
+    self.addTags()
+.. @+node:ekr.20070703122141.104: *6* checkTrialWrite
+def checkTrialWrite (self,s1=None,s2=None):
+
+    '''Return True if a trial write produces the original file.'''
+
+    # s1 and s2 are for unit testing.
+    trace = False
+    c = self.c ; at = c.atFileCommands
+    if s1 is None and s2 is None:
+        if self.isRst:
+            outputFile = StringIO()
+            c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
+            s1,s2 = self.file_s,outputFile.getvalue()
+        else:
+            at.write(self.root,
+                nosentinels=True,thinFile=False,
+                scriptWrite=False,toString=True)
+            s1,s2 = self.file_s, at.stringOutput
+
+    s1 = g.toUnicode(s1,self.encoding)
+    s2 = g.toUnicode(s2,self.encoding)
+
+    # Make sure we have a trailing newline in both strings.
+    s1 = s1.replace('\r','')
+    s2 = s2.replace('\r','')
+    if not s1.endswith('\n'): s1 = s1 + '\n'
+    if not s2.endswith('\n'): s2 = s2 + '\n'
+
+    if s1 == s2: return True
+    
+    # lines1 = g.splitLines(s1)
+    # lines2 = g.splitLines(s2)
+    
+    # if self.ignoreBlankLines or self.ignoreLeadingWs: # was self.isRst:
+        # lines1 = self.adjustTestLines(lines1)
+        # lines2 = self.adjustTestLines(lines2)
+        # s1 = ''.join(lines1)
+        # s2 = ''.join(lines2)
+
+    bad_i1,bad_i2,ok = self.scanAndCompare(s1,s2)
+    if ok: return ok
+        
+    # n1,n2 = len(lines1), len(lines2)
+    # ok = True ; bad_i = 0
+    # for i in range(max(n1,n2)):
+        # ok = self.compareHelper(lines1,lines2,i,self.strict)
+        # if not ok:
+            # bad_i = i
+            # break
+
+    # Unit tests do not generate errors unless the mismatch line does not match.
+    if g.app.unitTesting:
+        d = g.app.unitTestDict
+        ok = d.get('expectedMismatchLine') == bad_i1
+            # was d.get('actualMismatchLine')
+        if not ok: d['fail'] = g.callers()
+
+    if trace or not ok:
+        lines1 = g.splitLines(s1)
+        lines2 = g.splitLines(s2)
+        self.reportMismatch(lines1,lines2,bad_i1,bad_i2)
+
+    return ok
+.. @+node:ekr.20070911110507: *6* reportMismatch
+def reportMismatch (self,lines1,lines2,bad_i1,bad_i2):
+
+    trace = False
+    kind = g.choose(self.atAuto,'@auto','import command')
+    n1,n2 = len(lines1),len(lines2)
+    s1 = '%s did not import %s perfectly\n' % (
+        kind,self.root.h)
+    s2 = 'first mismatched line: %s (original) = %s (imported)' % (
+        bad_i1,bad_i2)
+    s = s1 + s2
+    
+    if trace: g.trace(s)
+    else:     self.error(s)
+
+    aList = []
+    aList.append('Original file...\n')
+    for i in range(max(0,bad_i1-2),min(bad_i1+3,n1)):
+        line = repr(lines1[i])
+        aList.append('%4d %s' % (i,line))
+        
+    aList.append('\nImported file...\n')
+    for i in range(max(0,bad_i2-2),min(bad_i2+3,n1)):
+        line = repr(lines2[i])
+        aList.append('%4d %s' % (i,line))
+
+    if trace or not g.unitTesting:
+        g.es_print('\n'.join(aList),color='blue')
+
+    return False
+.. @+node:ekr.20071214072924.4: *6* startsHelper & helpers (xmlScanner)
+def startsHelper(self,s,i,kind,tags):
+    '''return True if s[i:] starts a class or function.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+
+    trace = (False and kind == 'class') and not g.unitTesting
+    verbose = True
+    self.codeEnd = self.sigEnd = self.sigId = None
+
+    # Underindented lines can happen in any language, not just Python.
+    # The skipBlock method of the base class checks for such lines.
+    self.startSigIndent = self.getLeadingIndent(s,i)
+
+    # Get the tag that starts the class or function.
+    if not g.match(s,i,'<'): return False
+    self.sigStart = i
+    i += 1
+    j = g.skip_ws_and_nl(s,i)
+    i = self.skipId(s,j)
+    self.sigId = theId = s[j:i] # Set sigId ivar 'early' for error messages.
+    if not theId: return False
+
+    if theId not in tags:
+        if False and trace and verbose:
+            g.trace('**** %s theId: %s not in tags: %s' % (
+                kind,theId,tags))
+        return False
+
+    if trace and verbose: g.trace(theId)
+    classId = '' 
+    sigId = theId
+
+    # Complete the opening tag.
+    i, ok, complete = self.skipToEndOfTag(s,i)
+    if not ok:
+        if trace and verbose: g.trace('no tail',g.get_line(s,i))
+        return False
+    sigEnd = i
+
+    # A trick: make sure the signature ends in a newline,
+    # even if it overlaps the start of the block.
+    if 0:
+        if not g.match(s,sigEnd,'\n') and not g.match(s,sigEnd-1,'\n'):
+            if trace and verbose: g.trace('extending sigEnd')
+            sigEnd = g.skip_line(s,sigEnd)
+
+    if not complete:
+        i,ok = self.skipToMatchingTag(s,i,theId,tags)
+        if not ok:
+            if trace and verbose: g.trace('no matching tag:',theId)
+            return False
+
+    # Success: set the ivars.
+    self.sigStart = self.adjustDefStart(s,self.sigStart)
+    self.codeEnd = i
+    self.sigEnd = sigEnd
+    self.sigId = sigId
+    self.classId = classId
+
+    # Note: backing up here is safe because
+    # we won't back up past scan's 'start' point.
+    # Thus, characters will never be output twice.
+    k = self.sigStart
+    if not g.match(s,k,'\n'):
+        self.sigStart = g.find_line_start(s,k)
+
+    # Issue this warning only if we have a real class or function.
+    if 0: # wrong.if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
+        if s[self.sigStart:k].strip():
+            self.error('%s definition does not start a line\n%s' % (
+                kind,g.get_line(s,k)))
+
+    if trace:
+        g.trace(kind,sigId,'returns\n'+s[self.sigStart:i])
+        # g.trace('**end',g.callers())
+    return True
+.. @+node:ekr.20071214072924.3: *7* skipToEndOfTag
+def skipToEndOfTag(self,s,i):
+
+    '''Skip to the end of an open tag.
+    
+    return i,ok,complete
+    
+    where complete is True if the tag of the form <name/>
+    
+    '''
+
+    while i < len(s):
+        progress = i
+        if i == '"':
+            i = self.skipString(s,i)
+        elif g.match(s,i,'<!--'):
+            i = self.skipComment(s,i)
+        elif g.match(s,i,'<'):
+            return i,False,False # An error.
+        elif g.match(s,i,'/>'):
+            i = g.skip_ws(s,i+2)
+            if g.match(s,i,'\n'):
+                i += 1 # Make sure the "class" contains a trailing newline.
+            return i,True,True # Starts a self-contained tag.
+        elif g.match(s,i,'>'):
+            i += 1
+            if g.match(s,i,'\n'): i += 1
+            return i,True,False
+        else:
+            i += 1
+        assert progress < i
+
+    return i,False,False
+.. @+node:ekr.20071214075117: *7* skipToMatchingTag
+def skipToMatchingTag (self,s,i,tag,tags):
+    
+    '''Skip the entire class definition.
+    Return i,ok.
+    '''
+
+    trace = False and not g.unitTesting; verbose = False
+    stack = [tag]
+    level = 1
+    while i < len(s):
+        progress = i
+        if i == '"':
+            i = self.skipString(s,i)
+        elif g.match(s,i,'<!--'):
+            i = self.skipComment(s,i)
+        elif g.match(s,i,'</'):
+            j = i+2
+            i = self.skipId(s,j)
+            tag2 = s[j:i]
+            i,ok,complete = self.skipToEndOfTag(s,i)
+            if tag2 in tags:
+                tag = stack.pop()
+                if tag2.lower() == tag.lower():
+                    if trace and verbose: g.trace('%s exit <%s>' % (level-1,tag))
+                    level -= 1
+                    if level == 0:
+                        return i,True
+                else:
+                    if trace: g.trace('tag mismatch: %s!=%s' % (tag2,tag))
+                    return i,False # tag mismatch.
+                        # a user error, but not an import error.
+        elif g.match(s,i,'<'):
+            # Another open tag.
+            j = g.skip_ws_and_nl(s,i+1)
+            i = self.skipId(s,j)
+            word = s[j:i]
+            if word:
+                if word in tags:
+                    if trace and verbose: g.trace('%s enter <%s>' % (level+1,word))
+                    stack.append(word)
+                    level += 1
+            else:
+                g.trace('syntax error')
+                return i,False # Syntax error.
+        else:
+            i += 1
+        assert progress < i
+
+    return i,False
+.. @+node:ekr.20111103073536.16595: *6* startsId (xmlScanner)
+def startsId(self,s,i):
+    
+    if i < len(s):
+        ch = s[i]
+        # Recent bug fix: 2011/11/04:
+        return self.isWordChar(ch) or ch in '.-:'
+    else:
+        return False
+
+    # return g.is_c_id(s[i:i+1])
+.. @+node:ekr.20070705085335: *6* insertIgnoreDirective
+def insertIgnoreDirective (self,parent):
+
+    self.appendStringToBody(parent,'@ignore')
+
+    if g.unitTesting:
+        g.app.unitTestDict['fail'] = g.callers()
+    else:
+        g.es_print('inserting @ignore',color='blue')
 .. @+node:ekr.20111024170505.16459: *4* * Bug 879331: Redefining a key binding breaks menu items with same binding
 .. @+node:ekr.20111026091322.16501: *5* Probably same as key-binding bug
 .. @+node:ekr.20111026091322.16492: *6* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display

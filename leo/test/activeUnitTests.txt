@@ -10587,38 +10587,7 @@ s = '''\
 
 g.app.unitTestDict ['expectedErrors'] = 0
 
-c.importCommands.htmlUnitTest(p,s=s,showTree=True)
-#@+node:ekr.20111104171322.4169: *7* @file c:\leo.repo\trunk\leo\test\html: underindented comment
-@language xml
-@tabwidth -4
-@others
-
-#@+node:ekr.20111104171322.4170: *8* td
-
-<td width="550">
-@others
-</td>
-#@+node:ekr.20111104171322.4171: *9* table
-<table cellspacing="0" cellpadding="0" width="600" border="0">
-    @others
-</table>
-#@+node:ekr.20111104171322.4172: *10* td
-<td class="blutopgrabot" height="28"></td>
-#@+node:ekr.20111104171322.4173: *10* table
-
-<!-- The indentation of this element causes the problem. -->
-<table>
-
-<!--
-<div align="center">
-<iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>
-</div>
--->
-
-</table>
-#@+node:ekr.20111104171322.4174: *9* p
-
-<p>Paragraph</p>
+c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20100803234640.5804: *5* ini tests
 #@+node:ekr.20100803234640.5805: *6* @test ini-test-1
 s = '''\

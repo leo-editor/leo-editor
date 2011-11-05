@@ -997,39 +997,34 @@ class leoImportCommands (scanUtility):
     def importFilesCommand (self,files=None,treeType=None):
         # Not a command.  It must *not* have an event arg.
 
-        c = self.c
-        if c == None: return
-        v = current = c.currentVnode()
-        if current == None: return
-        if len(files) < 1: return
+        
+        c = self.c ; current = c.p
+        if not c or not current or not files: return
         self.tab_width = self.getTabWidth() # New in 4.3.
         self.treeType = treeType
         if len(files) == 2:
             #@+<< Create a parent for two files having a common prefix >>
             #@+node:ekr.20031218072017.3213: *5* << Create a parent for two files having a common prefix >>
-            #@+at The two filenames have a common prefix everything before the last
-            # period is the same. For example, x.h and x.cpp.
-            #@@c
+            # The two filenames have a common prefix: x.h and x.cpp.
 
-            name0 = files[0]
-            name1 = files[1]
+            name0,name1 = files
             prefix0, junk = g.os_path_splitext(name0)
             prefix1, junk = g.os_path_splitext(name1)
-            if len(prefix0) > 0 and prefix0 == prefix1:
+
+            if prefix0 and prefix0 == prefix1:
                 current = current.insertAsLastChild()
-                # junk, nameExt = g.os_path_split(prefix1)
                 name,junk = g.os_path_splitext(prefix1)
                 current.initHeadString(name)
             #@-<< Create a parent for two files having a common prefix >>
-        for fileName in files:
-            g.setGlobalOpenDir(fileName)
-            v = self.createOutline(fileName,current)
-            if v: # createOutline may fail.
-                if not g.unitTesting:
-                    g.es("imported",fileName,color="blue")
-                v.contract()
-                v.setDirty()
+        for fn in files:
+            g.setGlobalOpenDir(fn)
+            p = self.createOutline(fn,current)
+            if p: # createOutline may fail.
+                if not g.unitTesting: g.es("imported",fn,color="blue")
+                p.contract()
+                p.setDirty()
                 c.setChanged(True)
+            if g.unitTesting: assert p,'import failed: %s' % (fn)
         c.validateOutline()
         current.expand()
         c.redraw(current)
@@ -1828,6 +1823,7 @@ class baseScannerClass (scanUtility):
         Return True if the nodes are equivalent to the original file.
         '''
 
+        # Note: running full checks on all unit tests is slow.
         if self.fullChecks and self.treeType in (None,'@file'):
             return self.checkTrialWrite()
         else:
@@ -2309,7 +2305,9 @@ class baseScannerClass (scanUtility):
 
         self.appendStringToBody(parent,'@ignore')
 
-        if not g.unitTesting:
+        if g.unitTesting:
+            g.app.unitTestDict['fail'] = g.callers()
+        else:
             g.es_print('inserting @ignore',color='blue')
     #@+node:ekr.20070707113832.1: *4* putClass & helpers
     def putClass (self,s,i,sigEnd,codeEnd,start,parent):
