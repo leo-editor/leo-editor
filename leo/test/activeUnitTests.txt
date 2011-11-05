@@ -17546,15 +17546,21 @@ def makePluginsTestSuite(c):
     suite = unittest.makeSuite(unittest.TestCase)
 
     # Add a test case for every plugin.
-    plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
-    plugins = g.os_path_abspath(plugins)
-    files = glob.glob(plugins)
-    files = [g.os_path_abspath(f) for f in files]
-    files.sort()
+    paths = (
+        g.os_path_join(g.app.loadDir,'..','plugins','*.py'),
+        g.os_path_join(g.app.loadDir,'..','plugins','examples','*.py'),
+    )
+    all_files = []
+    for path in paths:
+        plugins = g.os_path_join(path)
+        plugins = g.os_path_abspath(plugins)
+        files = glob.glob(plugins)
+        files = [g.os_path_abspath(f) for f in files]
+        all_files.extend(files)
+    all_files.sort()
     
-    for fn in files:
+    for fn in all_files:
         test = pluginTestCase(c,fn)
-        # g.trace(test.shortDescription())
         suite.addTest(test)
 
     if 0:
@@ -17594,6 +17600,8 @@ def runTest(self):
     fn = base[:-3]
     
     ignore = (
+        # Read error.
+        'chinese_menu',
         # Unfinished/obsolute gui's.
         'gtkDialogs','gtkGui','ironPython','ironPythonGui',
         'swing_gui','tkGui','wxGui','temacs',
