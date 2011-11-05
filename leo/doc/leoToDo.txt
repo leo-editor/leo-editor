@@ -522,7 +522,7 @@ def skipNewlineToken(self,s,i):
 # skipStringToken: no change.
 
 def skipWsToken(self,s,i):
-    '''Return a single blank for all runs of whitespace, including newlines.'''
+    '''Return a single blank for all runs of whitespace, *including* newlines.'''
     j = i
     while i < len(s) and s[i].isspace():
         i += 1
@@ -787,9 +787,9 @@ def scanAndCompare (self,s1,s2):
         if trace: g.trace(n1,n2,ok)
         return n1,n2,ok # Success or failure.
 .. @+node:ekr.20111101092301.16729: *7* compareTokens
-def compareTokens(self,tokens1,tokens2):
+def compareTokens(self,tokens1,tokens2,trace=False):
         
-    trace = True and not g.unitTesting
+    # trace = (True and not g.unitTesting
     verbose = True
     i,n1,n2 = 0,len(tokens1),len(tokens2)
     fail_n1,fail_n2 = -1,-1
@@ -852,7 +852,9 @@ def removeBlankLinesTokens(self,tokens):
     
     '''Remove all tokens representing blank lines.'''
     
-    trace = True
+    trace = False
+    if trace: g.trace('\nbefore:',tokens)
+
     i,last,lws,result = 0,'nl',[],[]
     while i < len(tokens):
         progress = i
@@ -860,6 +862,7 @@ def removeBlankLinesTokens(self,tokens):
         if kind == 'ws':
             if last in ('nl','ws'):
                 # Continue to append leading whitespace.
+                # Wrong, if ws tok ends in newline.
                 lws.append(tok)
             else:
                 # Not leading whitespace: add it.
@@ -877,7 +880,10 @@ def removeBlankLinesTokens(self,tokens):
         last = kind
         i += 1
         assert i == progress+1
+    # Add any remaining ws.
+    if lws: result.extend(lws)
         
+    if trace: g.trace('\nafter: ',result)
     return result
 .. @+node:ekr.20111103073536.16586: *6* skip...Token (baseScannerClass)
 def skipCommentToken (self,s,i):
@@ -904,7 +910,7 @@ def skipStringToken(self,s,i):
     
 def skipWsToken(self,s,i):
     j = i
-    while i < len(s) and s[i].isspace():
+    while i < len(s) and s[i] != '\n' and s[i].isspace():
         i += 1
     return i,s[j:i]
     
@@ -928,7 +934,7 @@ def skipNewlineToken(self,s,i):
 # skipStringToken: no change.
 
 def skipWsToken(self,s,i):
-    '''Return a single blank for all runs of whitespace, including newlines.'''
+    '''Return a single blank for all runs of whitespace, *including* newlines.'''
     j = i
     while i < len(s) and s[i].isspace():
         i += 1
@@ -983,6 +989,8 @@ def tokenize (self,s):
         # Use the raw token, s[j:i] to count newlines, not the munged val.
         line_number += s[j:i].count('\n')
         # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
+        
+    # g.trace(result)
         
     return result
 .. @+node:ekr.20111104032034.9868: *6* adjust_class_ref

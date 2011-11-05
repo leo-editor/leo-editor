@@ -2070,9 +2070,9 @@ class baseScannerClass (scanUtility):
             if trace: g.trace(n1,n2,ok)
             return n1,n2,ok # Success or failure.
     #@+node:ekr.20111101092301.16729: *5* compareTokens
-    def compareTokens(self,tokens1,tokens2):
+    def compareTokens(self,tokens1,tokens2,trace=False):
             
-        trace = True and not g.unitTesting
+        # trace = (True and not g.unitTesting
         verbose = True
         i,n1,n2 = 0,len(tokens1),len(tokens2)
         fail_n1,fail_n2 = -1,-1
@@ -2135,7 +2135,9 @@ class baseScannerClass (scanUtility):
         
         '''Remove all tokens representing blank lines.'''
         
-        trace = True
+        trace = False
+        if trace: g.trace('\nbefore:',tokens)
+
         i,last,lws,result = 0,'nl',[],[]
         while i < len(tokens):
             progress = i
@@ -2143,6 +2145,7 @@ class baseScannerClass (scanUtility):
             if kind == 'ws':
                 if last in ('nl','ws'):
                     # Continue to append leading whitespace.
+                    # Wrong, if ws tok ends in newline.
                     lws.append(tok)
                 else:
                     # Not leading whitespace: add it.
@@ -2160,7 +2163,10 @@ class baseScannerClass (scanUtility):
             last = kind
             i += 1
             assert i == progress+1
+        # Add any remaining ws.
+        if lws: result.extend(lws)
             
+        if trace: g.trace('\nafter: ',result)
         return result
     #@+node:ekr.20070706084535: *3* Code generation
     #@+at None of these methods should ever need to be overridden in subclasses.
@@ -2614,10 +2620,12 @@ class baseScannerClass (scanUtility):
         j,junk = g.getLine(s,i)
         junk,indent = g.skip_leading_ws_with_indent(s,j,self.tab_width)
         return indent
-    #@+node:ekr.20111103073536.16599: *4* isSpace
+    #@+node:ekr.20111103073536.16599: *4* isSpace (baseScannerClass)
     def isSpace(self,s,i):
         
         '''Return true if s[i] is a tokenizer space.'''
+        
+        # g.trace(repr(s[i]),i < len(s) and s[i] != '\n' and s[i].isspace())
 
         return i < len(s) and s[i] != '\n' and s[i].isspace()
     #@+node:ekr.20070706101600: *4* scan & scanHelper
@@ -3168,7 +3176,7 @@ class baseScannerClass (scanUtility):
         
     def skipWsToken(self,s,i):
         j = i
-        while i < len(s) and s[i].isspace():
+        while i < len(s) and s[i] != '\n' and s[i].isspace():
             i += 1
         return i,s[j:i]
         
@@ -3210,6 +3218,8 @@ class baseScannerClass (scanUtility):
             # Use the raw token, s[j:i] to count newlines, not the munged val.
             line_number += s[j:i].count('\n')
             # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
+            
+        # g.trace(result)
             
         return result
     #@+node:ekr.20070707072749: *3* run (baseScannerClass)
@@ -4556,7 +4566,7 @@ class xmlScanner (baseScannerClass):
     # skipStringToken: no change.
 
     def skipWsToken(self,s,i):
-        '''Return a single blank for all runs of whitespace, including newlines.'''
+        '''Return a single blank for all runs of whitespace, *including* newlines.'''
         j = i
         while i < len(s) and s[i].isspace():
             i += 1
