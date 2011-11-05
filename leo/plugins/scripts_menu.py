@@ -7,17 +7,20 @@
 #@@language python
 #@@tabwidth -4
 
-#@+<< imports >>
-#@+node:ekr.20050111115429: ** << imports >>
 import leo.core.leoGlobals as g
-
 import glob
 import os
-#@-<< imports >>
 
-__version__ = "1.4"
+__version__ = "1.5"
 
 #@+others
+#@+node:ekr.20111104210837.9694: ** init
+def init():
+
+    # Ok for unit testing: creates menu.
+    g.registerHandler("create-optional-menus",createScriptsMenu)
+    g.plugin_signon(__name__)
+    return True
 #@+node:EKR.20040517080555.37: ** createScriptsMenu
 def createScriptsMenu (tag,keywords):
 
@@ -77,8 +80,4 @@ def createScriptsMenu (tag,keywords):
                 c.frame.menu.createMenuEntries(menu, table,dynamicMenu=True)
                 #@-<< Create a submenu for dir containing each file in files >>
 #@-others
-
-if 1: # Ok for unit testing: creates menu.
-    g.registerHandler("create-optional-menus",createScriptsMenu)
-    g.plugin_signon(__name__)
 #@-leo

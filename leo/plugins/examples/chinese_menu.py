@@ -29,6 +29,17 @@ import leo.core.leoGlobals as g
 __version__ = "1.1" # Set version for the plugin handler.
 
 #@+others
+#@+node:ekr.20111104210837.9689: ** init
+def init():
+
+    ok = not g.app.unitTesting
+        # Unpleasant for unit testing.
+
+    if ok:
+        g.registerHandler("menu2", onMenu)
+        g.plugin_signon(__name__)
+
+    return ok
 #@+node:ekr.20040828105233.1: ** onMenu
 def onMenu (tag,keywords):
 
@@ -212,8 +223,4 @@ def onMenu (tag,keywords):
     # Call the convenience routine to do the work.
     c.frame.menu.setRealMenuNamesFromTable(table)
 #@-others
-
-if not g.app.unitTesting: # Unpleasant for unit testing.
-    g.registerHandler("menu2", onMenu)
-    g.plugin_signon(__name__)
 #@-leo

@@ -13,9 +13,9 @@ import leo.core.leoGlobals as g
 def init ():
 
     if g.app.gui is None:
-        g.app.createTkGui(__file__)
+        g.app.createQtGui(__file__)
 
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = g.app.gui.guiName().startswith('qt')
 
     if ok:
         # g.registerHandler('after-create-leo-frame',onCreate)

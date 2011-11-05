@@ -157,13 +157,7 @@ __version__ = '2.5'
 def init ():
 
     if g.app.gui is None:
-        # g.app.createTkGui(__file__)
         g.app.createQtGui(__file__)
-    ###
-    # else:
-        # if g.app.gui.guiName() == 'tkinter':
-            # global Pmw
-            # Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True)
 
     # This plugin is now gui-independent.            
     ok = g.app.gui and g.app.gui.guiName() in ('qt','qttabs','nullGui')

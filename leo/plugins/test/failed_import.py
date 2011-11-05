@@ -4,17 +4,19 @@
 
 import leo.core.leoGlobals as g
 
-__version__ = "1.0"
+__version__ = "1.1"
 
 def onStart(tag,keywords):
     pass
-    # g.trace(tag)
 
 try:
     import xyzzy
 except ImportError:
     g.cantImport('xyzzy',pluginName='failed_import')
-
-g.registerHandler("start2", onStart) # Needed to have the plugin show in the Plugin Manager list.
-g.plugin_signon(__name__)
+    
+def init():
+    g.registerHandler("start2", onStart)
+        # Needed to have the plugin show in the Plugin Manager list.
+    g.plugin_signon(__name__)
+    return True
 #@-leo

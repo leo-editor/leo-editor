@@ -5,26 +5,31 @@
 #@@language python
 #@@tabwidth -4
 
-#@+<< imports >>
-#@+node:ekr.20050101090207.6: ** << imports >>
 import leo.core.leoGlobals as g
 
-Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-#@-<< imports >>
-
-__version__ = "1.2"
+__version__ = "1.4"
 
 #@+others
+#@+node:ekr.20111104210837.9690: ** init
+def init():
+
+    ok = not g.app.unitTesting
+        # Not for unit testing: overrides core methods.
+
+    if ok:
+        g.registerHandler("start2", onStart)
+        g.plugin_signon(__name__)
+
+    return ok
 #@+node:edream.110203113231.922: ** onStart
-#@+at This code illustrates how to redefine _any_ method of Leo.
+#@+at
+# This code illustrates how to redefine _any_ method of Leo.
 # Python makes this is almost too easy :-)
 #@@c
 
 def onStart (tag,keywords):
-
-    import leo.plugins.tkGui as tkGui
-    leoTkinterFrame = tkGui.leoTkinterFrame
-    log = leoTkinterFrame.leoTkinterLog
+    
+    log = c.frame.log
 
     # Replace frame.put with newPut.
     g.funcToMethod(newPut,log,"put")
@@ -57,9 +62,4 @@ def newPutNl (self):
         t.update_idletasks()
     else: g.pr('')
 #@-others
-
-if Tk and not g.app.unitTesting: # Not for unit testing: overrides core methods.
-
-    g.registerHandler("start2", onStart)
-    g.plugin_signon(__name__)
 #@-leo

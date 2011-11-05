@@ -23,7 +23,7 @@ This plugin also accumulates the effect of all \@path nodes.
 #@@tabwidth -4
 #@@pagewidth 80
 
-__version__ = "0.7"
+__version__ = "0.8"
 #@+<< version history >>
 #@+node:ktenney.20041211072654.3: ** << version history >>
 #@+at
@@ -49,6 +49,8 @@ __version__ = "0.7"
 #     - Added better error message if can't load extensions.
 # 0.7 EKR:
 #     - Simplified code, fixed bugs and improved error messages.
+# 0.8 EKR:
+#     - Added init method.
 #@-<< version history >>
 #@+<< imports >>
 #@+node:ktenney.20041211072654.4: ** << imports >>
@@ -59,6 +61,20 @@ win32clipboard = g.importExtension('win32clipboard',pluginName=__name__,verbose=
 #@-<< imports >>
 
 #@+others
+#@+node:ekr.20111104210837.9693: ** init
+def init():
+
+    ok = path and win32clipboard
+        # Ok for unit testing.
+        
+    if ok:
+        g.registerHandler("after-create-leo-frame",onCreate)
+    else:
+        if not g.app.unitTesting:
+            s = 'at_view plugin not loaded: win32Clipboard not present.'
+            g.es_print(s)
+
+    return ok
 #@+node:ktenney.20041211072654.6: ** onCreate
 def onCreate(tag, keywords):
 
@@ -257,10 +273,4 @@ class View:
             c.setHeadString(child,'@view %s' % file.name)
     #@-others
 #@-others
-
-if path and win32clipboard: # Ok for unit testing.
-    g.registerHandler("after-create-leo-frame",onCreate)
-elif not g.app.unitTesting:
-    s = 'at_view plugin not loaded: win32Clipboard not present.'
-    g.es_print(s)
 #@-leo

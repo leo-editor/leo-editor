@@ -10,6 +10,18 @@ import leo.core.leoGlobals as g
 __version__ = "1.2"
 
 #@+others
+#@+node:ekr.20111104210837.9691: ** init
+def init():
+    
+    ok = g.app.unitTesting
+        # Not for unit testing: overrides core methods.
+
+    if ok:
+        # Register the handlers...
+        g.registerHandler("command1", onCommand)
+        g.plugin_signon(__name__)
+
+    return ok
 #@+node:edream.110203113231.920: ** onCommand
 def onCommand (tag,keywords):
 
@@ -17,10 +29,4 @@ def onCommand (tag,keywords):
         g.es("over-riding Equal Sized Panes")
         return "override" # Anything other than None overrides.
 #@-others
-
-if not g.app.unitTesting: # Not for unit testing: overrides core methods.
-
-    # Register the handlers...
-    g.registerHandler("command1", onCommand)
-    g.plugin_signon(__name__)
 #@-leo
