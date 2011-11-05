@@ -2929,7 +2929,8 @@ class atFile:
                     root.setOrphan()
                     root.setDirty()
                     # Delete the temp file.
-                    self.remove(at.outputFileName) 
+                    if at.outputFileName:
+                        self.remove(at.outputFileName) 
 
                     #@-<< set dirty and orphan bits >>
                     #@afterref
@@ -2960,7 +2961,8 @@ class atFile:
                     root.setOrphan()
                     root.setDirty()
                     # Delete the temp file.
-                    self.remove(at.outputFileName) 
+                    if at.outputFileName:
+                        self.remove(at.outputFileName) 
 
                     #@-<< set dirty and orphan bits >>
                     g.es("not written:",at.outputFileName)
@@ -5275,6 +5277,10 @@ class atFile:
             return False
     #@+node:ekr.20050104132018: *4* atFile.remove
     def remove (self,fileName,verbose=True):
+        
+        if not fileName:
+            g.trace('No file name',g.callers())
+            return False
 
         try:
             os.remove(fileName)

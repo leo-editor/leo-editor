@@ -15554,6 +15554,127 @@ Top-level calls to registerHandler:
         at_view.py
         test/failed_import.py
         scripts_menu.py
+#@+node:ekr.20111105054152.9949: *4* Removed traceback when cancelling a write
+not written: c:\recent\data3.html
+exception removing: 
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 5280, in remove
+    os.remove(fileName)
+WindowsError: [Error 3] The system cannot find the path specified: ''
+#@+node:ekr.20041005105605.144: *5* at.write & helper
+def write (self,root,
+    kind = '@unknown', # Should not happen.
+    nosentinels = False,
+    thinFile = False,
+    scriptWrite = False,
+    toString = False,
+):
+    """Write a 4.x derived file.
+    root is the position of an @<file> node"""
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c
+    c.endEditing() # Capture the current headline.
+
+    << set at.targetFileName >>
+    at.initWriteIvars(root,at.targetFileName,
+        nosentinels = nosentinels, thinFile = thinFile,
+        scriptWrite = scriptWrite, toString = toString)
+
+    # "look ahead" computation of eventual fileName.
+    eventualFileName = c.os_path_finalize_join(
+        at.default_directory,at.targetFileName)
+    exists = g.os_path_exists(eventualFileName)
+
+    if trace:
+        g.trace('default_dir',
+            g.os_path_exists(at.default_directory),
+            at.default_directory)
+        g.trace('eventual_fn',exists,eventualFileName)
+
+    if not scriptWrite and not toString:
+        # 2010/7/28: The read logic now sets the at_read bit for @nosent nodes,
+        # so we can just use promptForDangerousWrite.
+        if not hasattr(root.v,'at_read') and exists:
+            # Prompt if writing a new @file or @thin node would
+            # overwrite an existing file.
+            ok = self.promptForDangerousWrite(eventualFileName,kind)
+            if ok:
+                root.v.at_read = True # Create the attribute for all clones.
+            else:
+                g.es("not written:",eventualFileName)
+                << set dirty and orphan bits >> # 2010/10/21.
+                return
+
+    if not at.openFileForWriting(root,at.targetFileName,toString):
+        # openFileForWriting calls root.setDirty() if there are errors.
+        if trace: g.trace('open failed',eventualFileName)
+        return
+
+    try:
+        at.writeOpenFile(root,nosentinels=nosentinels,toString=toString)
+        assert root==at.root,'write'
+        if toString:
+            at.closeWriteFile() # sets self.stringOutput
+            # Major bug: failure to clear this wipes out headlines!
+            # Minor bug: sometimes this causes slight problems...
+            if hasattr(self.root.v,'tnodeList'):
+                delattr(self.root.v,'tnodeList')
+            root.v._p_changed = True
+        else:
+            at.closeWriteFile()
+            if at.errors > 0 or root.isOrphan():
+                << set dirty and orphan bits >>
+                g.es("not written:",at.outputFileName)
+            else:
+                root.v.at_read = True # 2011/05/24.
+                at.replaceTargetFileIfDifferent(root)
+                    # Sets/clears dirty and orphan bits.
+
+    except Exception:
+        if hasattr(self.root.v,'tnodeList'):
+            delattr(self.root.v,'tnodeList')
+        if toString:
+            at.exception("exception preprocessing script")
+            root.v._p_changed = True
+        else:
+            at.writeException() # Sets dirty and orphan bits.
+#@+node:ekr.20041005105605.145: *6* << set at.targetFileName >>
+if toString:
+    at.targetFileName = "<string-file>"
+elif nosentinels:
+    at.targetFileName = root.atNoSentFileNodeName()
+elif thinFile:
+    at.targetFileName = root.atThinFileNodeName()
+    if not at.targetFileName:
+        # We have an @file node.
+        at.targetFileName = root.atFileNodeName()
+else:
+    at.targetFileName = root.atFileNodeName()
+#@+node:ekr.20041005105605.146: *6* << set dirty and orphan bits >>
+# Setting the orphan and dirty flags tells Leo to write the tree..
+root.setOrphan()
+root.setDirty()
+# Delete the temp file.
+if at.outputFileName:
+    self.remove(at.outputFileName) 
+
+#@+node:ekr.20050104132018: *5* atFile.remove
+def remove (self,fileName,verbose=True):
+    
+    if not fileName:
+        g.trace('No file name',g.callers())
+        return False
+
+    try:
+        os.remove(fileName)
+        return True
+    except Exception:
+        if verbose:
+            self.error("exception removing: %s" % fileName)
+            g.es_exception()
+            g.trace(g.callers(5))
+        return False
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
@@ -26058,11 +26179,6 @@ expected = [
     ('other', '<', 4), ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4),
     ('ws', ' ', 4),
 ]
-#@+node:ekr.20111102052054.10009: *3* @test import dataN.html
-# fn = r'c:\recent\test.html'
-# fn = r'c:\recent\data3.html'
-fn = r'c:\recent\data.html'
-c.importCommands.importFilesCommand(files=[fn], treeType='@file')
 #@+node:ekr.20111104132424.9908: *3* @test findAllUnitTestNodes
 import leo.core.leoTest as leoTest
 
