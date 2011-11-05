@@ -4741,7 +4741,7 @@ class xmlScanner (baseScannerClass):
                         if level == 0:
                             return i,True
                     else:
-                        g.trace('tag mismatch: %s!=%s' % (tag2,tag))
+                        if trace: g.trace('tag mismatch: %s!=%s' % (tag2,tag))
                         return i,False # tag mismatch.
                             # a user error, but not an import error.
             elif g.match(s,i,'<'):

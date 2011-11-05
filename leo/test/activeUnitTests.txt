@@ -18693,6 +18693,16 @@ if not g.isPython3:
     # print(result)
     assert result,result
     
+#@+node:ekr.20111105124216.3840: *3* @test g.app.config.set with c==None
+setting = 'import_html_tags'
+html_tags = ('body','head','html','table','xxx')
+
+# When run externally, c.config.getData will return None.
+existing_tags = c.config.getData(setting)
+if not existing_tags:
+    g.app.config.set(None,setting,'data',html_tags)
+    tags = c.config.getData(setting)
+    assert c.config.getData(setting) == html_tags
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):

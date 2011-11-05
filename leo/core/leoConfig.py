@@ -1822,31 +1822,16 @@ class configClass:
 
         '''Set the setting.  Not called during initialization.'''
 
-        trace = False and not g.unitTesting # and setting == 'create_nonexistent_directories'
-        # if trace: g.pdb()
+        key = self.munge(setting)
 
-        found = False ;  key = self.munge(setting)
-        if trace: g.trace(setting,kind,val)
+        # g.trace('(g.app.config)',setting,kind,val)
 
         if c:
             d = self.localOptionsDict.get(c.hash())
-            found = True # Bug fix: 2010/08/30.
-
-        if not found:
-            theHash = c.hash()
-            for d in self.localOptionsList:
-                hash2 = d.get('_hash')
-                if theHash == hash2:
-                    found = True ; break
-
-        if not found:
+        else:
             d = self.dictList [0]
 
         d[key] = g.Bunch(setting=setting,kind=kind,val=val,tag='setting')
-
-        if 0:
-            dkind = d.get('_hash','<no hash: %s>' % c.hash())
-            g.trace(dkind,setting,kind,val)
     #@+node:ekr.20041118084241: *4* setString
     def setString (self,c,setting,val):
 
