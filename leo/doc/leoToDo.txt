@@ -5,6 +5,18 @@
 .. @+all
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 .. @+node:ekr.20111026091322.16502: *3* First
+.. @+node:ekr.20111028195854.16607: *4* Allow ruleset-specific colors
+@nocolor-node
+
+Like @color html::tags_markup_color = blue
+.. @+node:ekr.20111010162047.15678: *4* The @auto script *must* put @first nodes in root node
+@nocolor-node
+
+Also the import commands.
+
+Especially:
+    - Shebang line.
+    - Python encoding line.
 .. @+node:ekr.20111029055127.16609: *4* Fix html import problems
 @language python
 @nocolor-node
@@ -1335,8 +1347,6 @@ def removeBlankLinesTokens(self,tokens):
         assert i == progress+1
         
     return result
-.. @+node:ekr.20111027103125.16538: *4* * Look at vim video
-http://video.google.com/videoplay?docid=8810772602188234059
 .. @+node:ekr.20111024170505.16459: *4* * Bug 879331: Redefining a key binding breaks menu items with same binding
 .. @+node:ekr.20111026091322.16501: *5* Probably same as key-binding bug
 .. @+node:ekr.20111026091322.16492: *6* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
@@ -4510,39 +4520,6 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
-.. @+node:ekr.20111010162047.15678: *4* The @auto script *must* put @first nodes in root node
-@nocolor-node
-
-Also the import commands.
-
-Especially:
-    - Shebang line.
-    - Python encoding line.
-.. @+node:ekr.20111026075003.16481: *4* Support ~/.leo_config.py
-@language rest
-
-1. Imo, it is time to consider adding a typical "startup" file to Leo,
-~/leo_config.py, similar to ~/.emacs or ipython_config.py.  This will
-make Leo "thicker", that is more professional/standard.
-
-IPython adds lots of bells and whistles to configuration.  Leo
-emulates most of them, but .leo_config.py would be a good addition.
-Think of .leo_config.py as a lightweight plugin.
-
-leo_config.py should execute after settings have been parsed, but
-before plugins have been loaded.  If desired, leo_config.py may
-register "start2" event handlers, which execute after all plugins have
-been loaded, just before starting the main Qt event loop.
-
-2. Leo commands form a good framework for other solutions to Qt
-stylesheet issues.  Consider the following commands::
-
-- qt-stylesheet-set-global-stylesheet
-- qt-stylesheet-append-to-global-stylesheet
-- qt-stylesheet-set-widget-stylesheet
-- qt-stylesheet-append-to-widget-stylesheet
-
-@language python
 .. @+node:ekr.20111027083744.16531: *4* Unit tests for scroll bug
 
     @nocolor-node
@@ -4836,20 +4813,10 @@ def session_load_snapshot():
    with file('leo.session') as f:
        session = json.loads(f.read())
    return session
-.. @+node:ekr.20111028195854.16607: *4* Allow ruleset-specific colors
-@nocolor-node
-
-Like @color html::tags_markup_color = blue
 .. @+node:ekr.20111101050427.16716: *4* Make g.openWithFileName "reentrant"
 @nocolor-node
 
 That is, make sure it works when called from within itself.
-.. @+node:ekr.20111104104831.9823: *4* Subsytem tests for (standard) plugins
-@nocolor-node
-
-- The tests should not register the plugin.
-
-- There should be a test that top-level code does not register the plugin.
 .. @+node:ekr.20111019080436.15850: *3* Next: Fix all significant bugs
 .. @+node:ekr.20111026091322.16503: *4* Recent/Easy
 .. @+node:ekr.20110619173515.14895: *5* Fix bug: realpath in g.openWithFileName
@@ -8262,6 +8229,8 @@ the (rendered) docs.
 This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
 .. @+node:ekr.20110921094450.6957: *4* Restart vim project
 This requires commands that can be composed.
+.. @+node:ekr.20111027103125.16538: *5* * Look at vim video
+http://video.google.com/videoplay?docid=8810772602188234059
 .. @+node:ekr.20111021035504.9467: *4* Play with PyQt Qtest framework
 http://groups.google.com/group/leo-editor/browse_thread/thread/b851e7d9855a57c2
 
@@ -8990,6 +8959,31 @@ try:
 except:
     g.es("exception opening",url)
     g.es_exception()
+.. @+node:ekr.20111026075003.16481: *4* Support ~/.leo_config.py
+@language rest
+
+1. Imo, it is time to consider adding a typical "startup" file to Leo,
+~/leo_config.py, similar to ~/.emacs or ipython_config.py.  This will
+make Leo "thicker", that is more professional/standard.
+
+IPython adds lots of bells and whistles to configuration.  Leo
+emulates most of them, but .leo_config.py would be a good addition.
+Think of .leo_config.py as a lightweight plugin.
+
+leo_config.py should execute after settings have been parsed, but
+before plugins have been loaded.  If desired, leo_config.py may
+register "start2" event handlers, which execute after all plugins have
+been loaded, just before starting the main Qt event loop.
+
+2. Leo commands form a good framework for other solutions to Qt
+stylesheet issues.  Consider the following commands::
+
+- qt-stylesheet-set-global-stylesheet
+- qt-stylesheet-append-to-global-stylesheet
+- qt-stylesheet-set-widget-stylesheet
+- qt-stylesheet-append-to-widget-stylesheet
+
+@language python
 .. @+node:ekr.20111019104425.15861: *3* Scripts
 .. @+node:ekr.20111019080436.15849: *4*  Doc scripts: 2
 .. @+node:ekr.20111018104244.15932: *5* Write create-command-docs script

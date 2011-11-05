@@ -15535,6 +15535,25 @@ Worked around docutils problem in writeToDocutils.
 @nocolor-node
 
 Created findAllUnitTestNodes, used by createOutline & doTests.
+#@+node:ekr.20111104104831.9823: *4* Added unit test that all plugins have an init method
+@nocolor-node
+
+- The tests should not register the plugin.
+
+- There should be a test that top-level code does not register the plugin.
+
+Top-level calls to registerHandler:
+    
+    Fixed:
+        examples/__overrideClasses.py
+        examples/override_commands.py
+        examples/redefine_put.py  (Tk)
+        examples/chinese_menu.py
+        examples/french_fm.py
+    
+        at_view.py
+        test/failed_import.py
+        scripts_menu.py
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution

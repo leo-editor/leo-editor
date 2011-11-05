@@ -17887,6 +17887,36 @@ controller = macros.paramClass(c)
 controller.parameterize()
     # Not much will happen because there are no children.
     # However, this does test recent changes.
+#@+node:ekr.20111104214341.3835: *3* @test all plugins have top-level init method
+'''Ensure all plugins have top-level init method *without* importing them.'''
+
+import glob
+import inspect
+
+# Get a list of all plugins.
+plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
+plugins = g.os_path_abspath(plugins)
+files = glob.glob(plugins)
+files = [g.os_path_abspath(z) for z in files]
+files = [z for z in files if not z.endswith('__init__.py')]
+files.sort()
+
+exclude = [
+    # These are not real plugins...
+    'baseNativeTree.py','leocursor.py',
+    'qt_main.py','qt_quicksearch.py',
+    'swing_gui.py',
+]
+
+for fn in files:
+    if not g.shortFileName(fn) in exclude:
+        f = open(fn,'r')
+        s = f.read()
+        f.close()
+        ok1 = s.find('def init():') > -1
+        ok2 = s.find('def init ():') > -1
+        assert ok1 or ok2,'fail: %s' % (fn)
+    
 #@+node:ekr.20100131171342.5501: *3* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
