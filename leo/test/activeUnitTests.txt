@@ -18665,7 +18665,11 @@ No file is written.
 
 # g.cls()
 
-if not g.isPython3:
+if g.isPython3:
+    
+    print('\n"%s": not tested' % (p.h))
+
+else:
 
     path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
     

@@ -518,7 +518,7 @@ def getStyleSheet():
     
     return stylesheet
 #@+node:ekr.20111106070228.12430: ** get_language
-def get_language (self):
+def get_language (doctree):
     
     '''A wrapper for changing docutils get_language method.'''
     
@@ -527,7 +527,8 @@ def get_language (self):
             g.es_print('Reporter.warning',s)
     
     try:
-        language = docutils.languages.get_language(doctree.settings.language_code,self.reporter)
+        reporter = Reporter()
+        language = docutils.languages.get_language(doctree.settings.language_code,reporter)
     except TypeError:
         language = docutils.languages.get_language(doctree.settings.language_code)
         
@@ -728,7 +729,6 @@ if docutils:
 
             self.writer = writer
             self.contents = contents
-            self.reporter = Reporter()
             self.story = []
 
             # Some of these may be needed, even though they are not referenced directly.
@@ -736,7 +736,7 @@ if docutils:
             ### self.styleSheet = stylesheet and stylesheet.getStyleSheet()
             self.styleSheet = getStyleSheet()
             docutils.nodes.NodeVisitor.__init__(self, doctree) # Init the base class.
-            self.language = get_language()
+            self.language = get_language(doctree)
                 ### docutils.languages.get_language(doctree.settings.language_code,self.reporter)
         #@+node:ekr.20090704103932.5190: *4* as_what
         def as_what(self):
@@ -809,13 +809,12 @@ if docutils:
         #@+node:ekr.20090704103932.5196: *4*    __init__ (PDFTranslator)
         def __init__(self, writer,doctree):
 
-            self.reporter = Reporter()
             self.writer = writer
             self.settings = settings = doctree.settings
             # self.styleSheet = stylesheet and stylesheet.getStyleSheet()
             self.styleSheet = getStyleSheet()
             docutils.nodes.NodeVisitor.__init__(self, doctree) # Init the base class.
-            self.language = get_language()
+            self.language = get_language(doctree)
                 ### docutils.languages.get_language(doctree.settings.language_code,self.reporter)
 
             self.in_docinfo = False

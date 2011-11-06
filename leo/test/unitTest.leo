@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.46" body_secondary_ratio="0.71">
-	<global_window_position top="42" left="117" height="977" width="879"/>
+	<global_window_position top="30" left="450" height="977" width="879"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -126,6 +126,7 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285805000000302e372e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31302e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31342e34710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20111103213154.3823"><vh>@test writeToDocutils: pdf</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -535,7 +536,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="5"></t>
+<t tx="ekr.20070417092935" str_leo_pos="6"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -693,6 +694,35 @@ div
 table
 nodeA
 nodeB
+</t>
+<t tx="ekr.20111103213154.3823">@first # -*- coding: utf-8 -*-
+@encoding utf-8
+
+'''Test the interface between docutils and leo_pdf.py.
+No file is written.
+'''
+
+# g.cls()
+
+if g.isPython3:
+    
+    print('\n"%s": not tested' % (p.h))
+
+else:
+
+    path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
+    
+    module = g.importFromPath(name = 'leo_pdf.py',
+        path=path,
+        pluginName = 'leo_pdf',
+        verbose = False)
+
+    assert module
+    s = '''This is a test.'''
+    result = c.rstCommands.writeToDocutils(s,'.pdf')
+    # print(result)
+    assert result,result
+    
 </t>
 </tnodes>
 </leo_file>

@@ -5,6 +5,16 @@
 .. @+all
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 .. @+node:ekr.20111026091322.16502: *3* First
+.. @+node:ekr.20111106070228.12431: *4* New unit tests
+.. @+node:ekr.20111105222316.9706: *5* Unit test: no unit tests omitted
+@nocolor-node
+
+Create a "registry" of unit tests.  Verify that unitTest.leo contains them all.
+.. @+node:ekr.20111105222316.9707: *5* Unit test: importing a plugin changes nothing
+@nocolor-node
+
+Menu and plugin registry methods can fail if that *particular* unit test is running.
+.. @+node:ekr.20111105222316.9708: *5* Add setUnitTestSetting helper method
 .. @+node:ekr.20111028195854.16607: *4* Allow ruleset-specific colors
 @nocolor-node
 
@@ -25,7 +35,7 @@ There were two bugs:
 1. Only double quotes start an xml/html string.
 
 2. 
-.. @+node:ekr.20111105210959.9940: *5* What I did
+.. @+node:ekr.20111105210959.9940: *5*  What I did
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/3c319daba37cd0ef
@@ -62,6 +72,38 @@ require putting them on the list of known tags, but that would
 create nodes for them, and you might not want that.
 
 I'll have to think about this "pairing" problem... 
+.. @+node:ekr.20111106070228.9716: *5*  Hurray: Leo *may* insert newlines when importing html
+@language rest
+
+http://www.w3.org/TR/html401/struct/text.html#line-breaks
+
+A line break is defined to be a carriage return (&#x000D;), a line feed (&#x000A;), or a carriage return/line feed pair. All line breaks constitute white space.
+
+For more information about SGML's specification of line breaks, please consult the notes on line breaks in the appendix.
+
+
+http://www.w3.org/TR/html401/appendix/notes.html#notes-line-breaks
+
+SGML (see [ISO8879], section 7.6.1) specifies that a line break immediately
+following a start tag must be ignored, as must a line break immediately before
+an end tag. This applies to all HTML elements without exception.
+
+The following two HTML examples must be rendered identically::
+
+<P>Thomas is watching TV.</P>
+
+<P>
+Thomas is watching TV.
+</P>
+
+So must the following two examples:
+
+<A>My favorite Website</A>
+
+<A>
+My favorite Website
+</A>
+
 .. @+node:ekr.20070703122141.66: *5*  ctor (baseScannerClass)
 def __init__ (self,importCommands,atAuto,language):
 
