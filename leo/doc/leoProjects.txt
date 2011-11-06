@@ -7585,17 +7585,20 @@ def cycleEditorFocus (self,event=None):
 - Alt-x resets the scrollbar position!
     The focus gets pulled away, but the scrollbar position does not get saved.
 #@+node:ekr.20070423101911: *5* selectHelper (leoTree)
-#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+# Do **not** try to "optimize" this by returning if p==c.p.
+# 2011/11/06: *event handlers* are called only if p != c.p.
 
 def selectHelper (self,p,scroll):
 
     trace = False and not g.unitTesting
-    verbose = True
+    verbose = False
     c = self.c ; frame = c.frame
     body = w = frame.body.bodyCtrl
     if not w: return # Defensive.
 
     old_p = c.p
+    
+    call_event_handlers = p != old_p
 
     if p:
         # 2009/10/10: selecting a foreign position
@@ -7606,36 +7609,60 @@ def selectHelper (self,p,scroll):
         # We may be in the process of changing roots.
         return None # Not an error.
 
-    if trace:
-        if old_p:
-            g.trace('old: %s %s new: %s %s' % (
-                len(old_p.b),old_p.h,len(p.b),p.h))
+    if trace and (verbose or call_event_handlers):
+        g.trace(p and p.h)
+        # if old_p:
+            # g.trace('old: %s %s new: %s %s' % (
+                # len(old_p.b),old_p.h,len(p.b),p.h))
+        # else:
+            # g.trace('old: <none> new: %s %s' % (len(p.b),p.h))
+            
+            
+    if 1: # 2011/11/06
+        if call_event_handlers:
+            unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         else:
-            g.trace('old: <none> new: %s %s' % (len(p.b),p.h))
-
-    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-        if old_p:
+            unselect = True
+        if unselect:
             << unselect the old node >>
-
-    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-
-    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-        << select the new node >>
-        c.nodeHistory.update(p) # Remember this position.
+        
+    else: # Old code
+        if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+            if old_p:
+                << unselect the old node >>
+    
+    if call_event_handlers: # 2011/11/06
+        g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        
+    if call_event_handlers: # 2011/11/06
+        if call_event_handlers:
+            select = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        else:
+            select = True
+        if select:
+            << select the new node >>
+            c.nodeHistory.update(p) # Remember this position.
+    else: # old code
+        if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+            << select the new node >>
+            c.nodeHistory.update(p) # Remember this position.
+        
     c.setCurrentPosition(p)
     << set the current node >>
     c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
     c.frame.updateStatusLine() # New in Leo 4.4.1.
 
-    if trace: g.trace('**** after old: %s new %s' % (
-        old_p and len(old_p.b),len(p.b)))
+    # if trace and (verbose or call_event_handlers):
+        # g.trace('**** after old: %s new %s' % (
+            # old_p and len(old_p.b),len(p.b)))
 
     # what UNL.py used to do
     c.frame.clearStatusLine()
     c.frame.putStatusLine(p.get_UNL())
 
-    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    if call_event_handlers: # 2011/11/06
+        g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
 
     return # (for Tk) 'break' # Supresses unwanted selection.
 #@+node:ekr.20040803072955.129: *6* << unselect the old node >>
@@ -12447,17 +12474,20 @@ if hasattr(w,'leo_selection') and w.leo_selection:
 
 # Don't restore the scrollbar here.
 #@+node:ekr.20070423101911: *7* selectHelper (leoTree)
-#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+# Do **not** try to "optimize" this by returning if p==c.p.
+# 2011/11/06: *event handlers* are called only if p != c.p.
 
 def selectHelper (self,p,scroll):
 
     trace = False and not g.unitTesting
-    verbose = True
+    verbose = False
     c = self.c ; frame = c.frame
     body = w = frame.body.bodyCtrl
     if not w: return # Defensive.
 
     old_p = c.p
+    
+    call_event_handlers = p != old_p
 
     if p:
         # 2009/10/10: selecting a foreign position
@@ -12468,36 +12498,60 @@ def selectHelper (self,p,scroll):
         # We may be in the process of changing roots.
         return None # Not an error.
 
-    if trace:
-        if old_p:
-            g.trace('old: %s %s new: %s %s' % (
-                len(old_p.b),old_p.h,len(p.b),p.h))
+    if trace and (verbose or call_event_handlers):
+        g.trace(p and p.h)
+        # if old_p:
+            # g.trace('old: %s %s new: %s %s' % (
+                # len(old_p.b),old_p.h,len(p.b),p.h))
+        # else:
+            # g.trace('old: <none> new: %s %s' % (len(p.b),p.h))
+            
+            
+    if 1: # 2011/11/06
+        if call_event_handlers:
+            unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         else:
-            g.trace('old: <none> new: %s %s' % (len(p.b),p.h))
-
-    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-        if old_p:
+            unselect = True
+        if unselect:
             << unselect the old node >>
-
-    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-
-    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-        << select the new node >>
-        c.nodeHistory.update(p) # Remember this position.
+        
+    else: # Old code
+        if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+            if old_p:
+                << unselect the old node >>
+    
+    if call_event_handlers: # 2011/11/06
+        g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        
+    if call_event_handlers: # 2011/11/06
+        if call_event_handlers:
+            select = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        else:
+            select = True
+        if select:
+            << select the new node >>
+            c.nodeHistory.update(p) # Remember this position.
+    else: # old code
+        if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+            << select the new node >>
+            c.nodeHistory.update(p) # Remember this position.
+        
     c.setCurrentPosition(p)
     << set the current node >>
     c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
     c.frame.updateStatusLine() # New in Leo 4.4.1.
 
-    if trace: g.trace('**** after old: %s new %s' % (
-        old_p and len(old_p.b),len(p.b)))
+    # if trace and (verbose or call_event_handlers):
+        # g.trace('**** after old: %s new %s' % (
+            # old_p and len(old_p.b),len(p.b)))
 
     # what UNL.py used to do
     c.frame.clearStatusLine()
     c.frame.putStatusLine(p.get_UNL())
 
-    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    if call_event_handlers: # 2011/11/06
+        g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
 
     return # (for Tk) 'break' # Supresses unwanted selection.
 #@+node:ekr.20040803072955.129: *8* << unselect the old node >>

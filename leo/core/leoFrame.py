@@ -2431,17 +2431,20 @@ class leoTree:
 
         return val  # Don't put a return in a finally clause.
     #@+node:ekr.20070423101911: *4* selectHelper (leoTree)
-    #  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+    # Do **not** try to "optimize" this by returning if p==c.p.
+    # 2011/11/06: *event handlers* are called only if p != c.p.
 
     def selectHelper (self,p,scroll):
 
         trace = False and not g.unitTesting
-        verbose = True
+        verbose = False
         c = self.c ; frame = c.frame
         body = w = frame.body.bodyCtrl
         if not w: return # Defensive.
 
         old_p = c.p
+        
+        call_event_handlers = p != old_p
 
         if p:
             # 2009/10/10: selecting a foreign position
@@ -2452,15 +2455,21 @@ class leoTree:
             # We may be in the process of changing roots.
             return None # Not an error.
 
-        if trace:
-            if old_p:
-                g.trace('old: %s %s new: %s %s' % (
-                    len(old_p.b),old_p.h,len(p.b),p.h))
+        if trace and (verbose or call_event_handlers):
+            g.trace(p and p.h)
+            # if old_p:
+                # g.trace('old: %s %s new: %s %s' % (
+                    # len(old_p.b),old_p.h,len(p.b),p.h))
+            # else:
+                # g.trace('old: <none> new: %s %s' % (len(p.b),p.h))
+                
+                
+        if 1: # 2011/11/06
+            if call_event_handlers:
+                unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
             else:
-                g.trace('old: <none> new: %s %s' % (len(p.b),p.h))
-
-        if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-            if old_p:
+                unselect = True
+            if unselect:
                 #@+<< unselect the old node >>
                 #@+node:ekr.20040803072955.129: *5* << unselect the old node >>
                 # Remember the position of the scrollbar before making any changes.
@@ -2484,18 +2493,62 @@ class leoTree:
                     if g.app.trace_scroll: g.trace('old scroll: %s insert: %s' % (
                         yview,insertSpot))
                 #@-<< unselect the old node >>
+            
+        else: # Old code
+            if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+                if old_p:
+                    #@+<< unselect the old node >>
+                    #@+node:ekr.20040803072955.129: *5* << unselect the old node >>
+                    # Remember the position of the scrollbar before making any changes.
+                    if body:
+                        yview = body.getYScrollPosition()
+                        insertSpot = c.frame.body.getInsertPoint()
+                        
+                        # g.trace('set insert spot',insertSpot)
+                    else:
+                        g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+                        yview,insertSpot = None,0
 
-        g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+                    if old_p != p:
+                        self.endEditLabel() # sets editPosition = None
+                        self.setUnselectedLabelState(old_p)
 
-        if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-            #@+<< select the new node >>
-            #@+node:ekr.20040803072955.130: *5* << select the new node >>
-            # Bug fix: we must always set this, even if we never edit the node.
-            self.revertHeadline = p.h
-            frame.setWrap(p)
-            self.setBodyTextAfterSelect(p,old_p)
-            #@-<< select the new node >>
-            c.nodeHistory.update(p) # Remember this position.
+                    if old_p and old_p != p:
+                        # 2010/02/11: Don't change the *new* node's insert point!
+                        old_p.v.scrollBarSpot = yview
+                        old_p.v.insertSpot = insertSpot
+                        if g.app.trace_scroll: g.trace('old scroll: %s insert: %s' % (
+                            yview,insertSpot))
+                    #@-<< unselect the old node >>
+        
+        if call_event_handlers: # 2011/11/06
+            g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+            
+        if call_event_handlers: # 2011/11/06
+            if call_event_handlers:
+                select = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+            else:
+                select = True
+            if select:
+                #@+<< select the new node >>
+                #@+node:ekr.20040803072955.130: *5* << select the new node >>
+                # Bug fix: we must always set this, even if we never edit the node.
+                self.revertHeadline = p.h
+                frame.setWrap(p)
+                self.setBodyTextAfterSelect(p,old_p)
+                #@-<< select the new node >>
+                c.nodeHistory.update(p) # Remember this position.
+        else: # old code
+            if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+                #@+<< select the new node >>
+                #@+node:ekr.20040803072955.130: *5* << select the new node >>
+                # Bug fix: we must always set this, even if we never edit the node.
+                self.revertHeadline = p.h
+                frame.setWrap(p)
+                self.setBodyTextAfterSelect(p,old_p)
+                #@-<< select the new node >>
+                c.nodeHistory.update(p) # Remember this position.
+            
         c.setCurrentPosition(p)
         #@+<< set the current node >>
         #@+node:ekr.20040803072955.133: *5* << set the current node >>
@@ -2516,15 +2569,17 @@ class leoTree:
         c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
         c.frame.updateStatusLine() # New in Leo 4.4.1.
 
-        if trace: g.trace('**** after old: %s new %s' % (
-            old_p and len(old_p.b),len(p.b)))
+        # if trace and (verbose or call_event_handlers):
+            # g.trace('**** after old: %s new %s' % (
+                # old_p and len(old_p.b),len(p.b)))
 
         # what UNL.py used to do
         c.frame.clearStatusLine()
         c.frame.putStatusLine(p.get_UNL())
 
-        g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-        g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        if call_event_handlers: # 2011/11/06
+            g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+            g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
 
         return # (for Tk) 'break' # Supresses unwanted selection.
     #@+node:ekr.20090608081524.6109: *4* setBodyTextAfterSelect
