@@ -517,75 +517,85 @@ def getStyleSheet():
                                   ))
     
     return stylesheet
+#@+node:ekr.20111106070228.12430: ** get_language
+def get_language (self):
+    
+    '''A wrapper for changing docutils get_language method.'''
+    
+    class Reporter (object):
+        def warning(s):
+            g.es_print('Reporter.warning',s)
+    
+    try:
+        language = docutils.languages.get_language(doctree.settings.language_code,self.reporter)
+    except TypeError:
+        language = docutils.languages.get_language(doctree.settings.language_code)
+        
+    return language
+#@+node:ekr.20090704103932.5179: ** class Bunch (object)
+#@+at
+# 
+# From The Python Cookbook: Often we want to just collect a bunch of stuff
+# together, naming each item of the bunch; a dictionary's OK for that, but a small
+# do-nothing class is even handier, and prettier to use.
+# 
+# Create a Bunch whenever you want to group a few variables:
+# 
+#     point = Bunch(datum=y, squared=y*y, coord=x)
+# 
+# You can read/write the named attributes you just created, add others, del some
+# of them, etc::
+#     
+#     if point.squared > threshold:
+#         point.isok = True
+#@@c
+
+class Bunch (object):
+
+    """A class that represents a colection of things.
+
+    Especially useful for representing a collection of related variables."""
+
+    def __init__(self,**keywords):
+        self.__dict__.update (keywords)
+
+    def __repr__(self):
+        return self.toString()
+
+    def ivars(self):
+        return self.__dict__.keys()
+
+    def keys(self):
+        return self.__dict__.keys()
+
+    def toString(self):
+        tag = self.__dict__.get('tag')
+        entries = ["%s: %s" % (key,str(self.__dict__.get(key)))
+            for key in self.ivars() if key != 'tag']
+        if tag:
+            return "Bunch(tag=%s)...\n%s\n" % (tag,'\n'.join(entries))
+        else:
+            return "Bunch...\n%s\n" % '\n'.join(entries)
+
+    # Used by new undo code.
+    def __setitem__ (self,key,value):
+        '''Support aBunch[key] = val'''
+        return operator.setitem(self.__dict__,key,value)
+
+    def __getitem__ (self,key):
+        '''Support aBunch[key]'''
+        return operator.getitem(self.__dict__,key)
+
+    def get (self,key,theDefault=None):
+        return self.__dict__.get(key,theDefault)
+
+bunch = Bunch
 #@-others
 
 if docutils:
     #@+<< define subclasses of docutils classes >>
     #@+node:ekr.20111103122912.9783: ** << define subclasses of docutils classes >>
     #@+others
-    #@+node:ekr.20090704103932.5179: *3* class Bunch (object)
-    #@+at
-    # 
-    # From The Python Cookbook: Often we want to just collect a bunch of stuff
-    # together, naming each item of the bunch; a dictionary's OK for that, but a small
-    # do-nothing class is even handier, and prettier to use.
-    # 
-    # Create a Bunch whenever you want to group a few variables:
-    # 
-    #     point = Bunch(datum=y, squared=y*y, coord=x)
-    # 
-    # You can read/write the named attributes you just created, add others, del some
-    # of them, etc::
-    #     
-    #     if point.squared > threshold:
-    #         point.isok = True
-    #@@c
-
-    class Bunch (object):
-
-        """A class that represents a colection of things.
-
-        Especially useful for representing a collection of related variables."""
-
-        def __init__(self,**keywords):
-            self.__dict__.update (keywords)
-
-        def __repr__(self):
-            return self.toString()
-
-        def ivars(self):
-            return self.__dict__.keys()
-
-        def keys(self):
-            return self.__dict__.keys()
-
-        def toString(self):
-            tag = self.__dict__.get('tag')
-            entries = ["%s: %s" % (key,str(self.__dict__.get(key)))
-                for key in self.ivars() if key != 'tag']
-            if tag:
-                return "Bunch(tag=%s)...\n%s\n" % (tag,'\n'.join(entries))
-            else:
-                return "Bunch...\n%s\n" % '\n'.join(entries)
-
-        # Used by new undo code.
-        def __setitem__ (self,key,value):
-            '''Support aBunch[key] = val'''
-            return operator.setitem(self.__dict__,key,value)
-
-        def __getitem__ (self,key):
-            '''Support aBunch[key]'''
-            return operator.getitem(self.__dict__,key)
-
-        def get (self,key,theDefault=None):
-            return self.__dict__.get(key,theDefault)
-
-    bunch = Bunch
-    #@+node:ekr.20111103154150.9646: *3* class Reporter(object)
-    class Reporter (object):
-        
-        def warning(s):
-            print('Reporter.warning',s)
     #@+node:ekr.20090704103932.5181: *3* class Writer (docutils.writers.Writer)
     class Writer (docutils.writers.Writer):
 
@@ -726,7 +736,8 @@ if docutils:
             ### self.styleSheet = stylesheet and stylesheet.getStyleSheet()
             self.styleSheet = getStyleSheet()
             docutils.nodes.NodeVisitor.__init__(self, doctree) # Init the base class.
-            self.language = docutils.languages.get_language(doctree.settings.language_code,self.reporter)
+            self.language = get_language()
+                ### docutils.languages.get_language(doctree.settings.language_code,self.reporter)
         #@+node:ekr.20090704103932.5190: *4* as_what
         def as_what(self):
 
@@ -804,7 +815,8 @@ if docutils:
             # self.styleSheet = stylesheet and stylesheet.getStyleSheet()
             self.styleSheet = getStyleSheet()
             docutils.nodes.NodeVisitor.__init__(self, doctree) # Init the base class.
-            self.language = docutils.languages.get_language(doctree.settings.language_code,self.reporter)
+            self.language = get_language()
+                ### docutils.languages.get_language(doctree.settings.language_code,self.reporter)
 
             self.in_docinfo = False
             self.head = [] # Set only by meta() method.  
