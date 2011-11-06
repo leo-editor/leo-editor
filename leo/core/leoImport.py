@@ -993,29 +993,15 @@ class leoImportCommands (scanUtility):
         if command: u.afterChangeGroup(p,command)
         c.redraw(current)
         return p
-    #@+node:ekr.20031218072017.3212: *4* importFilesCommand
+    #@+node:ekr.20031218072017.3212: *4* importFilesCommand & helper
     def importFilesCommand (self,files=None,treeType=None):
         # Not a command.  It must *not* have an event arg.
-
-        
         c = self.c ; current = c.p
         if not c or not current or not files: return
-        self.tab_width = self.getTabWidth() # New in 4.3.
+        self.tab_width = self.getTabWidth()
         self.treeType = treeType
         if len(files) == 2:
-            #@+<< Create a parent for two files having a common prefix >>
-            #@+node:ekr.20031218072017.3213: *5* << Create a parent for two files having a common prefix >>
-            # The two filenames have a common prefix: x.h and x.cpp.
-
-            name0,name1 = files
-            prefix0, junk = g.os_path_splitext(name0)
-            prefix1, junk = g.os_path_splitext(name1)
-
-            if prefix0 and prefix0 == prefix1:
-                current = current.insertAsLastChild()
-                name,junk = g.os_path_splitext(prefix1)
-                current.initHeadString(name)
-            #@-<< Create a parent for two files having a common prefix >>
+            current = self.createImportParent(current,files)
         for fn in files:
             g.setGlobalOpenDir(fn)
             p = self.createOutline(fn,current)
@@ -1024,10 +1010,24 @@ class leoImportCommands (scanUtility):
                 p.contract()
                 p.setDirty()
                 c.setChanged(True)
-            if g.unitTesting: assert p,'import failed: %s' % (fn)
         c.validateOutline()
         current.expand()
         c.redraw(current)
+    #@+node:ekr.20031218072017.3213: *5* createImportParent
+    def createImportParent (self,current,files):
+        
+        '''Create a parent node for nodes with a common prefix: x.h & x.cpp.'''
+
+        name0,name1 = files
+        prefix0, junk = g.os_path_splitext(name0)
+        prefix1, junk = g.os_path_splitext(name1)
+        
+        if prefix0 and prefix0 == prefix1:
+            current = current.insertAsLastChild()
+            name,junk = g.os_path_splitext(prefix1)
+            current.initHeadString(name)
+
+        return current
     #@+node:ekr.20031218072017.3214: *4* importFlattenedOutline & allies
     #@+node:ekr.20031218072017.3215: *5* convertMoreString/StringsToOutlineAfter
     # Used by paste logic.
@@ -1824,7 +1824,7 @@ class baseScannerClass (scanUtility):
         '''
 
         # Note: running full checks on all unit tests is slow.
-        if self.fullChecks and self.treeType in (None,'@file'):
+        if (g.unitTesting or self.fullChecks) and self.treeType in (None,'@file'):
             return self.checkTrialWrite()
         else:
             return True
@@ -1834,7 +1834,7 @@ class baseScannerClass (scanUtility):
         '''Return True if a trial write produces the original file.'''
 
         # s1 and s2 are for unit testing.
-        trace = False
+        trace = True
         c = self.c ; at = c.atFileCommands
         if s1 is None and s2 is None:
             if self.isRst:
@@ -2050,7 +2050,6 @@ class baseScannerClass (scanUtility):
         Return (n,ok), where n is the first mismatched line in s1.
         '''
         
-        trace = False
         tokens1 = self.tokenize(s1)
         tokens2 = self.tokenize(s2)
 
@@ -2059,16 +2058,16 @@ class baseScannerClass (scanUtility):
             tokens2 = self.filterWsTokens(tokens2)
             
         if tokens1 == tokens2:
-            if trace: g.trace('success')
+            # g.trace('success')
             return -1,-1,True # Success.
         else:
             n1,n2,ok = self.compareTokens(tokens1,tokens2)
-            if trace: g.trace(n1,n2,ok)
+            # g.trace(n1,n2,ok)
             return n1,n2,ok # Success or failure.
     #@+node:ekr.20111101092301.16729: *5* compareTokens
-    def compareTokens(self,tokens1,tokens2,trace=False):
+    def compareTokens(self,tokens1,tokens2):
             
-        # trace = (True and not g.unitTesting
+        trace = False # and not g.unitTesting
         verbose = True
         i,n1,n2 = 0,len(tokens1),len(tokens2)
         fail_n1,fail_n2 = -1,-1
@@ -2208,7 +2207,7 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20090512153903.5806: *4* computeBody (baseScannerClass)
     def computeBody (self,s,start,sigStart,codeEnd):
 
-        trace = False and not g.unitTesting
+        trace = False
 
         body1 = s[start:sigStart]
         # Adjust start backwards to get a better undent.
@@ -2315,10 +2314,10 @@ class baseScannerClass (scanUtility):
         '''Creates a child node c of parent for the class,
         and a child of c for each def in the class.'''
 
-        trace = False and not g.unitTesting
+        trace = False
         if trace:
             # g.trace('tab_width',self.tab_width)
-            g.trace('sig',s[i:sigEnd])
+            g.trace('sig',repr(s[i:sigEnd]))
 
         # Enter a new class 1: save the old class info.
         oldMethodName = self.methodName
@@ -4606,7 +4605,7 @@ class xmlScanner (baseScannerClass):
         '''return True if s[i:] starts a class or function.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
 
-        trace = (False and kind == 'class') and not g.unitTesting
+        trace = (False and kind == 'class') # and not g.unitTesting
         verbose = True
         self.codeEnd = self.sigEnd = self.sigId = None
 
@@ -4640,12 +4639,11 @@ class xmlScanner (baseScannerClass):
             return False
         sigEnd = i
 
-        # A trick: make sure the signature ends in a newline,
-        # even if it overlaps the start of the block.
-        if 0:
-            if not g.match(s,sigEnd,'\n') and not g.match(s,sigEnd-1,'\n'):
-                if trace and verbose: g.trace('extending sigEnd')
-                sigEnd = g.skip_line(s,sigEnd)
+        # Bug fix: 2011/11/05.
+        # For xml/html, make sure the signature includes any trailing whitespace.
+        if not g.match(s,sigEnd,'\n') and not g.match(s,sigEnd-1,'\n'):
+            # sigEnd = g.skip_line(s,sigEnd)
+            sigEnd = g.skip_ws(s,sigEnd)
 
         if not complete:
             i,ok = self.skipToMatchingTag(s,i,theId,tags)
@@ -4794,6 +4792,9 @@ class htmlScanner (xmlScanner):
 
         '''Ensure that @others appears at the start of a line.'''
 
+        trace = False
+        if trace: g.trace('old',repr(s))
+
         i = s.find('@others')
         if i > -1:
             j = i
@@ -4801,10 +4802,11 @@ class htmlScanner (xmlScanner):
             while i >= 0 and s[i] in '\t ':
                 i -= 1
             if i > 0 and s[i] != '\n':
-                # g.trace('old',repr(s))
+                
                 # 2011/11/04: Never put lws before @others.
                 s = s[:i+1] + '\n' + s[j:]
-                # g.trace('new',repr(s))
+        
+        if trace: g.trace('new',repr(s))
         return s
     #@-others
 #@-<< class htmlScanner (xmlScanner) >>

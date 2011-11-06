@@ -11671,33 +11671,6 @@ s2 = ["xyz",]
 scanner.reportMismatch(s1,s2,1,1)
 
 # Why is leoSettings.leo scanned twice in dynamicUnitTest.leo?
-#@+node:ekr.20090529141856.4792: *4* Load tests for .leo files
-s = '''\
-    a
-\tb
-'''
-
-import leo.core.leoImport as leoImport
-ic = c.importCommands
-runner = leoImport.pythonScanner(c.importCommands,atAuto=False)
-runner.tab_width = -4
-runner.regularizeWhitespace(s)
-assert runner.errors == 1
-#@+node:ekr.20090529141856.4791: *4* Other tests
-import leo.core.leoImport as leoImport
-ic = c.importCommands
-runner = leoImport.baseScannerClass(ic,atAuto=True,language='java')
-runner.tab_width = -4
-i = 0
-lines1 = ['abc',]
-lines2 = [' abc',]
-
-# g.unitTesting = False # force the warning.
-
-g.app.unitTestDict ['expectedErrors'] = 0
-g.app.unitTestDict ['expectedMismatchLine'] = 1
-
-runner.compareHelper(lines1,lines2,i,strict=False)
 #@+node:ekr.20100131171342.5604: *3* leoKeys
 #@+node:ekr.20100131171342.5606: *4* @@test k.autoCompleterClass.calltip
 # This test is difficult to get right on all platforms.
@@ -18182,6 +18155,21 @@ static exit_values_ty indent_main_loop(void)
         }
     }                           /* end of main infinite loop */
 }
+#@+node:ekr.20111105221757.3831: *3* @test createImportParent
+files = ('x.h','x.cpp')
+
+while p.hasChildren():
+    p.firstChild().doDelete()
+
+try:
+    current = c.importCommands.createImportParent(c.p,files)
+    assert current
+    assert current.h == 'x'
+    assert p.firstChild() == current
+finally:
+    while p.hasChildren():
+        p.firstChild().doDelete()
+    c.redraw()
 #@+node:ekr.20111104171708.3847: *3* @test cToPy
 cpp = c.CPrettyPrinter(c)
 c2p = c.editCommands.C_to_python(c)
@@ -18443,6 +18431,36 @@ static exit_values_ty indent_main_loop(void)
         }
     }                           /* end of main infinite loop */
 }
+#@+node:ekr.20111105221757.3833: *3* @test findAllUnitTestNodes
+import leo.core.leoTest as leoTest
+
+p1 = p.copy()
+
+def found(p,result):
+    for p2 in result:
+        if p == p2: return True
+    else: return False
+
+table = (('all',None,True,False),('marked',None,False,True))
+
+try:
+    p.setMarked()
+    for kind,limit,all,marked in table:
+        result = leoTest.findAllUnitTestNodes(c,p,limit,all,marked,lookForMark=False,lookForNodes=True)
+        assert found(p,result)
+    assert p == p1
+finally:
+    p1.clearMarked()
+#@+node:ekr.20111105124216.3840: *3* @test g.app.config.set with c==None
+setting = 'import_html_tags'
+html_tags = ('body','head','html','table','xxx')
+
+# When run externally, c.config.getData will return None.
+existing_tags = c.config.getData(setting)
+if not existing_tags:
+    g.app.config.set(None,setting,'data',html_tags)
+    tags = c.config.getData(setting)
+    assert c.config.getData(setting) == html_tags
 #@+node:ekr.20111103213154.3824: *3* @test g.importFromPath
 '''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
 
@@ -18662,16 +18680,6 @@ if not g.isPython3:
     # print(result)
     assert result,result
     
-#@+node:ekr.20111105124216.3840: *3* @test g.app.config.set with c==None
-setting = 'import_html_tags'
-html_tags = ('body','head','html','table','xxx')
-
-# When run externally, c.config.getData will return None.
-existing_tags = c.config.getData(setting)
-if not existing_tags:
-    g.app.config.set(None,setting,'data',html_tags)
-    tags = c.config.getData(setting)
-    assert c.config.getData(setting) == html_tags
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
