@@ -18684,6 +18684,24 @@ else:
     # print(result)
     assert result,result
     
+#@+node:ekr.20111107065245.3833: *3* @test minimize-all
+# The actual code contains the unit test.
+# This test will have effect only when run locally.
+
+d = g.app.unitTestDict
+tag = 'minimize-all'
+assert not d.get(tag)
+c.frame.minimizeAll()
+assert d.get(tag) is True
+#@+node:ekr.20111107065530.3833: *3* @test resize-to-screen
+# The actual code contains the unit test.
+# This test will have effect only when run locally.
+
+d = g.app.unitTestDict
+tag = 'resize-to-screen'
+assert not d.get(tag)
+c.frame.resizeToScreen()
+assert d.get(tag) is True
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):

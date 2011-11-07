@@ -5019,22 +5019,30 @@ class leoQtFrame (leoFrame.leoFrame):
         frame = self
 
         frame.divideLeoSplitter2(0.99, not frame.splitVerticalFlag)
-    #@+node:ekr.20110605121601.18306: *6* minimizeAll
+    #@+node:ekr.20110605121601.18306: *6* minimizeAll (qtFrame)
     def minimizeAll (self,event=None):
 
         '''Minimize all Leo's windows.'''
 
         self.minimize(g.app.pythonFrame)
+        
         for frame in g.app.windowList:
             self.minimize(frame)
-            self.minimize(frame.findPanel)
 
     def minimize(self,frame):
-
-        w = frame and frame.top
-
-        if w:
-            w.setWindowState(QtCore.Qt.WindowMinimized)
+        
+        # This unit test will fail when run externally.
+        
+        if frame and frame.top:
+        
+            # For --gui=qttabs, frame.top.leo_master is a LeoTabbedTopLevel.
+            # For --gui=qt,     frame.top is a DynamicWindow.
+            w = frame.top.leo_master or frame.top
+            if g.unitTesting:
+                g.app.unitTestDict['minimize-all'] = True
+                assert hasattr(w,'setWindowState'),w
+            else:
+                w.setWindowState(QtCore.Qt.WindowMinimized)
     #@+node:ekr.20110605121601.18307: *6* toggleSplitDirection (qtFrame)
     def toggleSplitDirection (self,event=None):
 
@@ -5098,12 +5106,25 @@ class leoQtFrame (leoFrame.leoFrame):
         c.frame.tree.setItemForCurrentPosition(scroll=True)
         w = c.frame.body.bodyCtrl.widget
         w.ensureCursorVisible()
-    #@+node:ekr.20110605121601.18308: *6* resizeToScreen
+    #@+node:ekr.20110605121601.18308: *6* resizeToScreen (qtFrame)
     def resizeToScreen (self,event=None):
 
         '''Resize the Leo window so it fill the entire screen.'''
 
-        top = self.top
+        frame = self
+        
+        # This unit test will fail when run externally.
+        
+        if frame and frame.top:
+        
+            # For --gui=qttabs, frame.top.leo_master is a LeoTabbedTopLevel.
+            # For --gui=qt,     frame.top is a DynamicWindow.
+            w = frame.top.leo_master or frame.top
+            if g.unitTesting:
+                g.app.unitTestDict['resize-to-screen'] = True
+                assert hasattr(w,'setWindowState'),w
+            else:
+                w.setWindowState(QtCore.Qt.WindowMaximized)
     #@+node:ekr.20110605121601.18309: *5* Help Menu...
     #@+node:ekr.20110605121601.18310: *6* leoHelp
     def leoHelp (self,event=None):

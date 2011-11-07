@@ -15,6 +15,11 @@ Create a "registry" of unit tests.  Verify that unitTest.leo contains them all.
 
 Menu and plugin registry methods can fail if that *particular* unit test is running.
 .. @+node:ekr.20111105222316.9708: *5* Add setUnitTestSetting helper method
+.. @+node:ekr.20111106070228.9715: *4* Posts
+.. @+node:ekr.20111106070228.9712: *5* Post: print(s) not the same as print('%s%s')
+print ('%s%s' % (s1,s2)) may fail even though print(s1) and print(s2) both succeed.
+.. @+node:ekr.20111106070228.9713: *5* Post: the stupdendous Aha revisited
+.. @+node:ekr.20111106070228.9714: *5* Post: Nature article
 .. @+node:ekr.20111028195854.16607: *4* Allow ruleset-specific colors
 @nocolor-node
 
