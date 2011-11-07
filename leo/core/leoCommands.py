@@ -8304,9 +8304,17 @@ class configSettings:
         '''Return the value of @string setting.'''
         return g.app.config.getString(self.c,setting)
     #@+node:ekr.20041118195812: *3* Setters... (c.configSettings)
+    def set (self,setting,kind,val):
+        
+        '''Not used during startup: useful for unit tests.'''
+
+        c = self.c
+        g.app.config.set(c,setting,kind,val)
+
     def setRecentFiles (self,files):
+        
         '''Update the recent files list.'''
-        # Append the files to the global list.
+
         g.app.config.appendToRecentFiles(files)
     #@-others
 #@+node:ekr.20070615131604: ** class nodeHistory
