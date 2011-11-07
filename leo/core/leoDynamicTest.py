@@ -39,7 +39,7 @@ def main ():
     # Not loading plugins and not reading settings speeds things up considerably.
     bridge = leoBridge.controller(gui=gui,
         loadPlugins=False, # Must be False: plugins will fail when run externally.
-        readSettings=True, # True adds about 0.3 seconds.  Is it useful?
+        readSettings=False, # True adds about 0.3 seconds.  Is it useful?
         silent=True,
         verbose=False)
 

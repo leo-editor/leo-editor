@@ -14,7 +14,150 @@ Create a "registry" of unit tests.  Verify that unitTest.leo contains them all.
 @nocolor-node
 
 Menu and plugin registry methods can fail if that *particular* unit test is running.
-.. @+node:ekr.20111105222316.9708: *5* Add setUnitTestSetting helper method
+.. @+node:ekr.20111107092526.9783: *5* Test g.app.config get/set
+.. @+node:ekr.20041118195812: *6* Setters... (c.configSettings)
+def set (self,setting,kind,val):
+    
+    '''Not used during startup: useful for unit tests.'''
+
+    c = self.c
+    g.app.config.set(c,setting,kind,val)
+
+def setRecentFiles (self,files):
+    
+    '''Update the recent files list.'''
+
+    g.app.config.appendToRecentFiles(files)
+.. @+node:ekr.20041118084146.1: *6* set (g.app.config)
+def set (self,c,setting,kind,val):
+
+    '''Set the setting.  Not called during initialization.'''
+
+    key = self.munge(setting)
+
+    # g.trace('(g.app.config)',setting,kind,val,c)
+
+    # 2011/11/07: Multiple bug fixes.
+    if c:
+        h = c.hash()
+        d = self.localOptionsDict.get(h,{})
+        d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+        self.localOptionsDict[h] = d
+    else:
+        d = self.dictList [0]
+        d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+        self.dictList[0] = d
+.. @+node:ekr.20041117083141: *6* get & allies (g.app.config)
+def get (self,c,setting,kind):
+
+    """Get the setting and make sure its type matches the expected type."""
+    
+    trace = False and not g.unitTesting
+
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+
+    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+    if c and not isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                if trace:
+                    kind = d.get('_hash','<no hash>')
+                    g.trace('**1',setting,val,kind)
+                return val
+
+    for d in self.localOptionsList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            if trace:
+                kind = d.get('_hash','<no hash>')
+                g.trace('**2',setting,val,kind)
+            return val
+
+    for d in self.dictList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            if trace:
+                kind = d.get('_hash','<no hash>')
+                g.trace('**3',setting,val,kind)
+            return val
+
+    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+    if c and isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                if trace:
+                    kind = d.get('_hash','<no hash>')
+                    g.trace('**4',setting,val,kind)
+                return val
+
+    if trace:
+        fn = c and c.shortFileName() or '<no file>'
+        g.trace(setting,None,fn)
+    return None
+.. @+node:ekr.20041121143823: *7* getValFromDict
+def getValFromDict (self,d,setting,requestedType,warn=True):
+
+    '''Look up the setting in d. If warn is True, warn if the requested type
+    does not (loosely) match the actual type.
+    returns (val,exists)'''
+
+    bunch = d.get(self.munge(setting))
+    if not bunch: return None,False
+
+    # g.trace(setting,requestedType,bunch.toString())
+    val = bunch.val
+
+    # 2011/10/24: test for an explicit None.
+    if g.isPython3:
+        isNone = val in ('None','none','') # ,None)
+            
+    else:
+        isNone = val in (
+            unicode('None'),unicode('none'),unicode(''),
+            'None','none','') #,None)
+
+    if not self.typesMatch(bunch.kind,requestedType):
+        # New in 4.4: make sure the types match.
+        # A serious warning: one setting may have destroyed another!
+        # Important: this is not a complete test of conflicting settings:
+        # The warning is given only if the code tries to access the setting.
+        if warn:
+            g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
+            g.es_print('there may be conflicting settings!',color='red')
+        return None, False
+    # elif val in (u'None',u'none','None','none','',None):
+    elif isNone:
+        return '', True
+            # 2011/10/24: Exists, a *user-defined* empty value.
+    else:
+        # g.trace(setting,val)
+        return val, True
+.. @+node:ekr.20051015093141: *7* typesMatch
+def typesMatch (self,type1,type2):
+
+    '''
+    Return True if type1, the actual type, matches type2, the requeseted type.
+
+    The following equivalences are allowed:
+
+    - None matches anything.
+    - An actual type of string or strings matches anything *except* shortcuts.
+    - Shortcut matches shortcuts.
+    '''
+
+    shortcuts = ('shortcut','shortcuts',)
+
+    return (
+        type1 == None or type2 == None or
+        type1.startswith('string') and type2 not in shortcuts or
+        type1 == 'int' and type2 == 'size' or
+        (type1 in shortcuts and type2 in shortcuts) or
+        type1 == type2
+    )
 .. @+node:ekr.20111106070228.9715: *4* Posts
 .. @+node:ekr.20111106070228.9712: *5* Post: print(s) not the same as print('%s%s')
 print ('%s%s' % (s1,s2)) may fail even though print(s1) and print(s2) both succeed.
