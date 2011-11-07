@@ -2,7 +2,9 @@
 #@+node:ekr.20080730161153.5: * @file leoDynamicTest.py
 '''A program to run dynamic unit tests with the leoBridge module.'''
 
-trace = False
+trace = True
+trace_args = False
+trace_time = True
 
 import optparse
 import os
@@ -13,7 +15,7 @@ cwd = os.getcwd()
 if cwd not in sys.path:
     sys.path.append(cwd)
 
-if trace:
+if trace and trace_args:
     print('leoDynamicTest:curdir',cwd)
 
 import time
@@ -22,10 +24,11 @@ import leo.core.leoBridge as leoBridge
 # Do not define g here. Use the g returned by the bridge.
 
 #@+others
-#@+node:ekr.20080730161153.6: ** main & helpers
+#@+node:ekr.20080730161153.6: ** main & helpers (leoDynamicTest.py)
 def main ():
 
     trace = False
+    readSettings = True 
     tag = 'leoDynamicTests.leo'
     if trace: t1 = time.time()
 
@@ -35,18 +38,24 @@ def main ():
 
     # Not loading plugins and not reading settings speeds things up considerably.
     bridge = leoBridge.controller(gui=gui,
-        loadPlugins=False,readSettings=False,silent=True,verbose=False)
+        loadPlugins=False, # Must be False: plugins will fail when run externally.
+        readSettings=True, # True adds about 0.3 seconds.  Is it useful?
+        silent=True,
+        verbose=False)
 
     if trace:
-         t2 = time.time() ; print('%s open bridge:  %0.2fsec' % (tag,t2-t1))
+         t2 = time.time()
+         print('%s open bridge:  %0.2fsec' % (tag,t2-t1))
 
     if bridge.isOpen():
         g = bridge.globals()
         g.app.silentMode = silent
+        g.app.isExternalUnitTest = True
         path = g.os_path_finalize_join(g.app.loadDir,'..','test',path)
         c = bridge.openLeoFile(path)
         if trace:
-            t3 = time.time() ; print('%s open file: %0.2fsec' % (tag,t3-t2))
+            t3 = time.time()
+            print('%s open file: %0.2fsec' % (tag,t3-t2))
         runUnitTests(c,g)
 #@+node:ekr.20080730161153.7: *3* runUnitTests
 def runUnitTests (c,g):
@@ -86,8 +95,14 @@ def scanOptions():
 #@-others
 
 if __name__ == '__main__':
-    if trace:
+    if trace and trace_time:
+        t1 = time.time()
+    if trace and trace_args:
         print('leoDynamicTest.py: argv...')
         for z in sys.argv[2:]: print('  %s' % repr(z))
     main()
+    if trace and trace_time:
+        t2 = time.time()
+        print('leoDynamicUnittest.py: %0.2fsec' % (t2-t1))
+        
 #@-leo

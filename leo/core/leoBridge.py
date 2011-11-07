@@ -148,8 +148,12 @@ class bridgeController:
         self.createGui() # Create the gui *before* loading plugins.
         if self.verbose: self.reportDirectories()
         self.adjustSysPath()
-        if self.loadPlugins:
-            g.doHook("start1") # Load plugins.
+        # 2011/11/07: Kill all event handling if plugins not loaded.
+        if not self.loadPlugins:
+            def dummyDoHook(tag,*args,**keys):
+                pass
+            g.doHook = dummyDoHook
+        g.doHook("start1") # Load plugins.
         g.app.computeSignon()
         g.init_sherlock(args=[])
         g.app.initing = False
@@ -314,7 +318,7 @@ class bridgeController:
 
         g = self.g
 
-        useLog = True
+        useLog = False
 
         if self.isOpen():
             fileName = self.completeFileName(fileName)
@@ -371,6 +375,7 @@ class bridgeController:
         frame.setInitialWindowGeometry()
         frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
         # Call the 'new' hook for compatibility with plugins.
+        # 2011/11/07: Do this only if plugins have been loaded.
         g.doHook("new",old_c=None,c=c,new_c=c)
         return c
     #@-others

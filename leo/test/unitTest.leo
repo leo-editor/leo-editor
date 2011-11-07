@@ -670,7 +670,7 @@ False:
     be expanded when Leo opens an outline.
 </t>
 <t tx="ekr.20101220161557.6013"></t>
-<t tx="ekr.20101220161557.6016"># 752 tests with Python 3.x.  A few less with Python 2.x.</t>
+<t tx="ekr.20101220161557.6016"># 770 tests with Python 3.x.  A few less with Python 2.x.</t>
 <t tx="ekr.20110521073115.3494"></t>
 <t tx="ekr.20110521073115.3495">builtins, including cython builtins
 </t>

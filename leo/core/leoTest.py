@@ -67,7 +67,7 @@ def isTestNode (p):
 #@+node:ekr.20051104075904.4: *3* doTests...
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
-    trace = False ; verbose = True
+    trace = False ; verbose = False
     if all:
         p = c.rootPosition()
     elif not p:

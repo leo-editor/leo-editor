@@ -18431,6 +18431,282 @@ static exit_values_ty indent_main_loop(void)
         }
     }                           /* end of main infinite loop */
 }
+#@+node:ekr.20111107082822.3848: *3* @test detection of external unit tests
+# print('g.app.isExternalUnitTest',g.app.isExternalUnitTest)
+if g.app.isExternalUnitTest:
+    fn = c.shortFileName()
+    assert fn.endswith('dynamicUnitTest.leo'),fn
+    data = c.config.getData('import_html_tags')
+    assert len(data) == 85 # length of data in leoSettings.leo.
+else:
+    data = c.config.getData('import_html_tags')
+    assert len(data) == 85,len(data)
+#@+node:ekr.20111107082822.3849: *4* doTests...
+def doTests(c,all=None,marked=None,p=None,verbosity=1):
+
+    trace = False ; verbose = False
+    if all:
+        p = c.rootPosition()
+    elif not p:
+        p = c.p
+    p1 = c.p.copy() # 2011/10/31: always restore the selected position.
+    
+    g.trace(g.app.isExternalUnitTest)
+    
+    # This seems a bit risky when run in unitTest.leo.
+    # c.save() # Eliminate the need for ctrl-s.
+    
+    if trace: g.trace('marked',marked,'c',c)
+
+    try:
+        g.unitTesting = g.app.unitTesting = True
+        g.app.unitTestDict["fail"] = False
+        g.app.unitTestDict['c'] = c
+        g.app.unitTestDict['g'] = g
+        g.app.unitTestDict['p'] = p and p.copy()
+
+        # c.undoer.clearUndoState() # New in 4.3.1.
+        changed = c.isChanged()
+        suite = unittest.makeSuite(unittest.TestCase)
+
+        # New in Leo 4.4.8: ignore everything in @ignore trees.
+        last = None if all else p.nodeAfterTree()
+        
+        aList = findAllUnitTestNodes(c,p,last,all,marked,
+            lookForMark=False,lookForNodes=True)
+       
+        found = False
+        for p in aList:
+            if isTestNode(p):
+                if trace: g.trace('adding',p.h)
+                test = makeTestCase(c,p)
+            elif isSuiteNode(p): # @suite
+                if trace: g.trace('adding',p.h)
+                test = makeTestSuite(c,p)
+            else:
+                test = None
+            if test:
+                suite.addTest(test)
+                found = True
+        
+        # Verbosity: 1: print just dots.
+        if not found:
+            # 2011/10/30: run the body of p as a unit test.
+            test = makeTestCase(c,c.p)
+            if test:
+                suite.addTest(test)
+                found = True
+        if found:
+            res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
+            # put info to db as well
+            if g.enableDB:
+                key = 'unittest/cur/fail'
+                archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
+                c.cacher.db[key] = archive
+        else:
+            g.es_print('no %s@test or @suite nodes in %s outline' % (
+                g.choose(marked,'marked ',''),
+                g.choose(all,'entire','selected')),color='red')
+    finally:
+        c.setChanged(changed) # Restore changed state.
+        if g.app.unitTestDict.get('restoreSelectedNode',True):
+            c.contractAllHeadlines()
+            c.redraw(p1)
+        g.unitTesting = g.app.unitTesting = False
+#@+node:ekr.20111107082822.3850: *5* class generalTestCase
+class generalTestCase(unittest.TestCase):
+
+    """Create a unit test from a snippet of code."""
+
+    @others
+#@+node:ekr.20111107082822.3851: *6* __init__
+def __init__ (self,c,p):
+
+     # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.p = p.copy()
+#@+node:ekr.20111107082822.3852: *6*  fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+#@+node:ekr.20111107082822.3853: *6* tearDown
+def tearDown (self):
+
+    pass
+
+    # Restore the outline.
+    self.c.outerUpdate()
+#@+node:ekr.20111107082822.3854: *6* setUp
+def setUp (self):
+
+    c = self.c ; p = self.p
+
+    c.selectPosition(p.copy()) # 2010/02/03
+#@+node:ekr.20111107082822.3855: *6* runTest (generalTestCase)
+def runTest (self,define_g = True):
+
+    trace = False
+    c = self.c ; p = self.p.copy()
+    script = g.getScript(c,p).strip()
+    self.assert_(script)
+    
+    if c.shortFileName() == 'dynamicUnitTest.leo':
+        c.write_script_file = True
+
+    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    if define_g:
+        d = {'c':c,'g':g,'p':p and p.copy(),'self':self,}
+    else:
+        d = {'self':self,}
+
+    script = script + '\n'
+    if trace: g.trace('p: %s c: %s write script: %s script:\n%s' % (
+        p and p.h,c.shortFileName(),c.write_script_file,script))
+
+    # Execute the script. Let the unit test handle any errors!
+    # 2011/11/02: pass the script sources to exec or execfile.
+    if c.write_script_file:
+        scriptFile = c.writeScriptFile(script)
+        if g.isPython3:
+            exec(compile(script,scriptFile,'exec'),d)
+        else:
+            execfile(scriptFile,d)
+    else:
+        exec(script,d)
+#@+node:ekr.20111107082822.3856: *6* shortDescription
+def shortDescription (self):
+
+    s = self.p.h
+
+    # g.trace(s)
+
+    return s + '\n'
+#@+node:ekr.20111107082822.3857: *5* makeTestSuite (leoTest)
+@ This code executes the script in an @suite node.  This code assumes:
+- The script creates a one or more unit tests.
+- The script puts the result in g.app.scriptDict["suite"]
+@c
+
+def makeTestSuite (c,p):
+
+    """Create a suite of test cases by executing the script in an @suite node."""
+
+    p = p.copy()
+    # g.trace('c.write_script_file',c.write_script_file)
+    script = g.getScript(c,p).strip()
+    if not script:
+        print("no script in %s" % h)
+        return None
+    try:
+        if 0: #debugging
+            n,lines = 0,g.splitLines(script)
+            for line in lines:
+                print(n,line)
+                n += 1
+                
+        # 2011/11/02: make script sources available.
+        d = {'c':c,'g':g,'p':p}
+        if c.write_script_file:
+            scriptFile = c.writeScriptFile(script)
+            if g.isPython3:
+                exec(compile(script,scriptFile,'exec'),d)
+            else:
+                execfile(scriptFile,d)
+        else:
+            exec(script + '\n',d)
+        suite = g.app.scriptDict.get("suite")
+        if not suite:
+            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+        return suite
+    except Exception:
+        print('makeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_exception()
+        return None
+#@+node:ekr.20111107082822.3858: *5* makeTestCase
+def makeTestCase (c,p):
+
+    p = p.copy()
+
+    if p.b.strip():
+        return generalTestCase(c,p)
+    else:
+        return None
+#@+node:ekr.20111107082822.3859: *4* main & helpers (leoDynamicTest.py)
+def main ():
+
+    trace = False
+    readSettings = True 
+    tag = 'leoDynamicTests.leo'
+    if trace: t1 = time.time()
+
+    # Setting verbose=True prints messages that would be sent to the log pane.
+    path,gui,silent = scanOptions()
+    # print('(leoDynamicTest.py:main)','silent',silent)
+
+    # Not loading plugins and not reading settings speeds things up considerably.
+    bridge = leoBridge.controller(gui=gui,
+        loadPlugins=False, # Must be False: plugins will fail when run externally.
+        readSettings=True, # True adds about 0.3 seconds.  Is it useful?
+        silent=True,
+        verbose=False)
+
+    if trace:
+         t2 = time.time()
+         print('%s open bridge:  %0.2fsec' % (tag,t2-t1))
+
+    if bridge.isOpen():
+        g = bridge.globals()
+        g.app.silentMode = silent
+        g.app.isExternalUnitTest = True
+        path = g.os_path_finalize_join(g.app.loadDir,'..','test',path)
+        c = bridge.openLeoFile(path)
+        if trace:
+            t3 = time.time()
+            print('%s open file: %0.2fsec' % (tag,t3-t2))
+        runUnitTests(c,g)
+#@+node:ekr.20111107082822.3860: *5* runUnitTests
+def runUnitTests (c,g):
+
+    p = c.rootPosition()
+    #g.es_print('running dynamic unit tests...')
+    c.selectPosition(p)
+    c.debugCommands.runAllUnitTestsLocally()
+#@+node:ekr.20111107082822.3861: *5* scanOptions
+def scanOptions():
+
+    '''Handle all options and remove them from sys.argv.'''
+
+    parser = optparse.OptionParser()
+    parser.add_option('--path',dest='path')
+    parser.add_option('--gui',dest="gui")
+    parser.add_option('--silent',action="store_true",dest="silent")
+
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+
+    # -- path
+    # We can't finalize the path here, because g does not exist ye.
+    path = options.path or 'dynamicUnitTest.leo'
+
+    # -- gui
+    gui = options.gui
+    if gui: gui = gui.lower()
+    if gui not in ('qttabs','qt'):
+        gui = 'nullGui'
+
+    # --silent
+    silent = options.silent
+
+    return path,gui,silent
 #@+node:ekr.20111105221757.3833: *3* @test findAllUnitTestNodes
 import leo.core.leoTest as leoTest
 
@@ -18482,6 +18758,25 @@ if 0:
 
     print(path12,g.os.path.abspath(path12))
     print(path13,g.os.path.abspath(path13))
+#@+node:ekr.20111107102431.3849: *3* @test html whitespace bug
+# fn = r'c:\recent\data4.html'
+fn = r'c:\recent\data.html'
+
+# Fails with more tags: a newline gets inserted between tags.
+
+html_tags = ('body','head','html','table','xxx',)
+setting = 'import_html_tags'
+
+if g.app.isExternalUnitTest:
+
+    g.app.config.set(c,setting,'data',html_tags)
+    tags = c.config.getData(setting)
+    assert tags == html_tags,len(tags)
+    
+    c.importCommands.importFilesCommand(files=[fn],treeType='@file')
+    
+    fail = g.app.unitTestDict.get('fail')
+    assert not fail
 #@+node:ekr.20111104112332.3954: *3* @test htmlScanner.adjust_class_ref
 import leo.core.leoImport as leoImport
 ic = c.importCommands
@@ -18607,6 +18902,15 @@ expected = [
 ]
 #@+node:ekr.20111103213154.3825: *3* @test imports needed for unit tests
 import docutils
+#@+node:ekr.20111107065245.3833: *3* @test minimize-all
+# The actual code contains the unit test.
+# This test will have effect only when run locally.
+
+d = g.app.unitTestDict
+tag = 'minimize-all'
+assert not d.get(tag)
+c.frame.minimizeAll()
+assert d.get(tag) is True
 #@+node:ekr.20111105065243.3837: *3* @test removeBlankLinesTokens (rst)
 # Important: at present only the rstScanner sets ignoreBlankLines == True
 import leo.core.leoImport as leoImport
@@ -18655,6 +18959,15 @@ for s,expected in table:
     # C: Removing blank tokens from already-compressed tokens should have no effect.
     tokens4 = sc.removeBlankLinesTokens(tokens3)
     assert tokens4 == tokens3,'fail3'
+#@+node:ekr.20111107065530.3833: *3* @test resize-to-screen
+# The actual code contains the unit test.
+# This test will have effect only when run locally.
+
+d = g.app.unitTestDict
+tag = 'resize-to-screen'
+assert not d.get(tag)
+c.frame.resizeToScreen()
+assert d.get(tag) is True
 #@+node:ekr.20111103213154.3823: *3* @test writeToDocutils: pdf
 @first # -*- coding: utf-8 -*-
 @encoding utf-8
@@ -18684,24 +18997,6 @@ else:
     # print(result)
     assert result,result
     
-#@+node:ekr.20111107065245.3833: *3* @test minimize-all
-# The actual code contains the unit test.
-# This test will have effect only when run locally.
-
-d = g.app.unitTestDict
-tag = 'minimize-all'
-assert not d.get(tag)
-c.frame.minimizeAll()
-assert d.get(tag) is True
-#@+node:ekr.20111107065530.3833: *3* @test resize-to-screen
-# The actual code contains the unit test.
-# This test will have effect only when run locally.
-
-d = g.app.unitTestDict
-tag = 'resize-to-screen'
-assert not d.get(tag)
-c.frame.resizeToScreen()
-assert d.get(tag) is True
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):

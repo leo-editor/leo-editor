@@ -2,7 +2,7 @@
 #@+node:ekr.20101220161557.6014: * @file inactiveTests.txt
 #@@language python
 #@+all
-#@+node:ekr.20040712101754.2: ** Load tests for .leo files
+#@+node:ekr.20040712101754.2: ** @ignore Load tests for .leo files
 @language python
 @tabwidth -4
 #@+node:ekr.20040712101754.3: *3* @test test.leo
@@ -51,17 +51,6 @@ import leo.core.leoTest as leoTest
 
 path = g.os_path_join(g.app.loadDir,"..","test","unittest","minimalLeoFile3.leo")
 leoTest.runLeoTest(c,path,verbose=False,full=True)
-#@+node:ekr.20110728154927.3324: ** Test position > operator
-aList = [z.copy() for z in c.all_positions()]
-
-total = 0
-
-for i in range(len(aList)):
-    for j in range(0,i):
-        assert aList[j] < aList[i],(i,j)
-        total += 1
-
-g.es('done',total)
 #@+node:ekr.20080405085247.1: ** @ignore
 #@+node:ekr.20060208195054: *3* @@test k.inverseCommandsDict is inverse of c.commandsDict
 # c.commandsDict: keys are emacs command names, values are functions f.
@@ -152,6 +141,18 @@ def mungeKey (h,kind,substitute=True):
     return key
 
 
+#@+node:ekr.20110728154927.3324: *3* @test position > operator
+# Disabled because very slow
+aList = [z.copy() for z in c.all_positions()]
+
+total = 0
+
+for i in range(len(aList)):
+    for j in range(0,i):
+        assert aList[j] < aList[i],(i,j)
+        total += 1
+
+g.es('done',total)
 #@+node:ekr.20080703104536.1: *3* Mini tests
 #@+node:ekr.20051104081502.108: *4* runProfile button mini-test
 for i in range(10000):

@@ -68,6 +68,7 @@ class LeoApp:
         self.inBridge = False # True: running from leoBridge module.
         self.inScript = False # True: executing a script.
         self.initing = True # True: we are initiing the app.
+        self.isExternalUnitTest = False # True: we are running a unit test externally.
         self.killed = False # True: we are about to destroy the root window.
         self.leoID = None # The id part of gnx's.
         self.loadDir = None # The directory from which Leo was loaded.

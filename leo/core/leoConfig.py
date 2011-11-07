@@ -1394,7 +1394,7 @@ class configClass:
     def get (self,c,setting,kind):
 
         """Get the setting and make sure its type matches the expected type."""
-
+        
         trace = False and not g.unitTesting
 
         isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
@@ -1405,24 +1405,25 @@ class configClass:
             if d:
                 val,junk = self.getValFromDict(d,setting,kind)
                 if val is not None:
-                    # if setting == 'targetlanguage':
-                        # g.trace(c.shortFileName(),setting,val,g.callers())
+                    if trace:
+                        kind = d.get('_hash','<no hash>')
+                        g.trace('**1',setting,val,kind)
                     return val
 
         for d in self.localOptionsList:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                # kind2 = d.get('_hash','<no hash>')
-                # if setting == 'targetlanguage':
-                    # g.trace(kind2,setting,val,g.callers())
+                if trace:
+                    kind = d.get('_hash','<no hash>')
+                    g.trace('**2',setting,val,kind)
                 return val
 
         for d in self.dictList:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                kind = d.get('_hash','<no hash>')
-                # if setting == 'targetlanguage':
-                    # g.trace(kind,setting,val,g.callers())
+                if trace:
+                    kind = d.get('_hash','<no hash>')
+                    g.trace('**3',setting,val,kind)
                 return val
 
         # New in Leo 4.6. Use settings in leoSettings.leo *last*.
@@ -1431,10 +1432,14 @@ class configClass:
             if d:
                 val,junk = self.getValFromDict(d,setting,kind)
                 if val is not None:
-                    # if setting == 'targetlanguage':
-                        # g.trace(c.shortFileName(),setting,val,g.callers())
+                    if trace:
+                        kind = d.get('_hash','<no hash>')
+                        g.trace('**4',setting,val,kind)
                     return val
 
+        if trace:
+            fn = c and c.shortFileName() or '<no file>'
+            g.trace(setting,None,fn)
         return None
     #@+node:ekr.20041121143823: *5* getValFromDict
     def getValFromDict (self,d,setting,requestedType,warn=True):
@@ -1824,14 +1829,18 @@ class configClass:
 
         key = self.munge(setting)
 
-        # g.trace('(g.app.config)',setting,kind,val)
+        # g.trace('(g.app.config)',setting,kind,val,c)
 
+        # 2011/11/07: Multiple bug fixes.
         if c:
-            d = self.localOptionsDict.get(c.hash())
+            h = c.hash()
+            d = self.localOptionsDict.get(h,{})
+            d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+            self.localOptionsDict[h] = d
         else:
             d = self.dictList [0]
-
-        d[key] = g.Bunch(setting=setting,kind=kind,val=val,tag='setting')
+            d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+            self.dictList[0] = d
     #@+node:ekr.20041118084241: *4* setString
     def setString (self,c,setting,val):
 

@@ -12702,6 +12702,7 @@ def __init__(self):
     self.inBridge = False # True: running from leoBridge module.
     self.inScript = False # True: executing a script.
     self.initing = True # True: we are initiing the app.
+    self.isExternalUnitTest = False # True: we are running a unit test externally.
     self.killed = False # True: we are about to destroy the root window.
     self.leoID = None # The id part of gnx's.
     self.loadDir = None # The directory from which Leo was loaded.
@@ -15813,6 +15814,50 @@ There were two bugs:
 - tokenize must add any remaining whitespace at the end of the loop.
 #@+node:ekr.20111105110308.9717: *4* Fixed crasher in config.set
 # The code didn't work for c == None.
+#@+node:ekr.20111107055809.9704: *4* Fixed resize-to-screen and minimize-all
+#@+node:ekr.20110605121601.18306: *5* minimizeAll (qtFrame)
+def minimizeAll (self,event=None):
+
+    '''Minimize all Leo's windows.'''
+
+    self.minimize(g.app.pythonFrame)
+    
+    for frame in g.app.windowList:
+        self.minimize(frame)
+
+def minimize(self,frame):
+    
+    # This unit test will fail when run externally.
+    
+    if frame and frame.top:
+    
+        # For --gui=qttabs, frame.top.leo_master is a LeoTabbedTopLevel.
+        # For --gui=qt,     frame.top is a DynamicWindow.
+        w = frame.top.leo_master or frame.top
+        if g.unitTesting:
+            g.app.unitTestDict['minimize-all'] = True
+            assert hasattr(w,'setWindowState'),w
+        else:
+            w.setWindowState(QtCore.Qt.WindowMinimized)
+#@+node:ekr.20110605121601.18308: *5* resizeToScreen (qtFrame)
+def resizeToScreen (self,event=None):
+
+    '''Resize the Leo window so it fill the entire screen.'''
+
+    frame = self
+    
+    # This unit test will fail when run externally.
+    
+    if frame and frame.top:
+    
+        # For --gui=qttabs, frame.top.leo_master is a LeoTabbedTopLevel.
+        # For --gui=qt,     frame.top is a DynamicWindow.
+        w = frame.top.leo_master or frame.top
+        if g.unitTesting:
+            g.app.unitTestDict['resize-to-screen'] = True
+            assert hasattr(w,'setWindowState'),w
+        else:
+            w.setWindowState(QtCore.Qt.WindowMaximized)
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
@@ -23462,7 +23507,7 @@ def runSelectedUnitTestsExternally(self,event=None):
 #@+node:ekr.20051104075904.4: *5* doTests...
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
-    trace = False ; verbose = True
+    trace = False ; verbose = False
     if all:
         p = c.rootPosition()
     elif not p:
@@ -24126,7 +24171,7 @@ def writeScriptFile (self,script):
 #@+node:ekr.20051104075904.4: *5* doTests...
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
-    trace = False ; verbose = True
+    trace = False ; verbose = False
     if all:
         p = c.rootPosition()
     elif not p:
@@ -24479,7 +24524,7 @@ def isUnitTestNode (self,p):
 #@+node:ekr.20051104075904.4: *5* doTests...
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
-    trace = False ; verbose = True
+    trace = False ; verbose = False
     if all:
         p = c.rootPosition()
     elif not p:
@@ -25432,7 +25477,7 @@ def mergeShortcuts (self,result,aList,key):
 def get (self,c,setting,kind):
 
     """Get the setting and make sure its type matches the expected type."""
-
+    
     trace = False and not g.unitTesting
 
     isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
@@ -25443,24 +25488,25 @@ def get (self,c,setting,kind):
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                # if setting == 'targetlanguage':
-                    # g.trace(c.shortFileName(),setting,val,g.callers())
+                if trace:
+                    kind = d.get('_hash','<no hash>')
+                    g.trace('**1',setting,val,kind)
                 return val
 
     for d in self.localOptionsList:
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
-            # kind2 = d.get('_hash','<no hash>')
-            # if setting == 'targetlanguage':
-                # g.trace(kind2,setting,val,g.callers())
+            if trace:
+                kind = d.get('_hash','<no hash>')
+                g.trace('**2',setting,val,kind)
             return val
 
     for d in self.dictList:
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
-            kind = d.get('_hash','<no hash>')
-            # if setting == 'targetlanguage':
-                # g.trace(kind,setting,val,g.callers())
+            if trace:
+                kind = d.get('_hash','<no hash>')
+                g.trace('**3',setting,val,kind)
             return val
 
     # New in Leo 4.6. Use settings in leoSettings.leo *last*.
@@ -25469,10 +25515,14 @@ def get (self,c,setting,kind):
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                # if setting == 'targetlanguage':
-                    # g.trace(c.shortFileName(),setting,val,g.callers())
+                if trace:
+                    kind = d.get('_hash','<no hash>')
+                    g.trace('**4',setting,val,kind)
                 return val
 
+    if trace:
+        fn = c and c.shortFileName() or '<no file>'
+        g.trace(setting,None,fn)
     return None
 #@+node:ekr.20041121143823: *6* getValFromDict
 def getValFromDict (self,d,setting,requestedType,warn=True):
