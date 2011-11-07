@@ -1370,41 +1370,6 @@ assert True
 # It's useful to have this do-nothing test.
 
 assert True
-#@+node:ekr.20111104032034.9751: *3* @test ic.tokenize (htmlScanner)
-import leo.core.leoImport as leoImport
-ic = c.importCommands
-hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
-
-s = '''
-<!-- a comment -->
-<html "string">
-Test.
-</html>
-'''
-
-<< define expected >>
-
-result = hs.tokenize(s)
-
-if 1:
-    assert result == expected,'expected...\n%s\ngot...\n%s' % (
-        repr(expected),repr(result))
-else:
-    print(result)
-#@+node:ekr.20111104104831.9802: *4* << define expected >>
-expected = [
-    ('ws', ' ', 0),
-    ('comment', '<!-- a comment -->', 1),
-    ('ws', ' ', 1),
-    ('other', '<', 2), ('id', 'html', 2),
-    ('ws', ' ',2), ('string', '"string"', 2),
-    ('other', '>', 2),
-    ('ws', ' ', 2),
-    ('id', 'Test.', 3),
-    ('ws', ' ', 3),
-    ('other', '<', 4), ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4),
-    ('ws', ' ', 4),
-]
 #@+node:ekr.20110621074459.14908: ** 4.9.1
 #@+node:ekr.20110730093802.15134: *3* Bugs
 #@+node:ekr.20110621074459.14904: *4* Fixed ancient hanger in paste-retaining-clones
@@ -24943,6 +24908,21 @@ if self.use_chapters:
 
 c.treeFocusHelper() # 2010/12/14
 c.undoer.onSelect(old_p,p)
+#@+node:ekr.20111107055809.9733: *4* Added g.app.isExternalUnitTest
+Unit tests can test this ivar.
+#@+node:ekr.20111107082312.9850: *4* External unit tests now *do* read settings
+@nocolor-node
+
+This adds about 0.35 seconds. This is not important with the new meaning of Alt-4.
+#@+node:ekr.20111107082312.9851: *4* bridgeController.initLeo now kills events if plugins not loaded
+@nocolor-node
+
+The new code monkey-patches g.doHook to a do-nothing::
+    
+    if not self.loadPlugins:
+        def dummyDoHook(tag,*args,**keys):
+            pass
+        g.doHook = dummyDoHook
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>

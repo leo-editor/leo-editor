@@ -2,9 +2,11 @@
 #@+node:ekr.20101220161557.6014: * @file inactiveTests.txt
 #@@language python
 #@+all
-#@+node:ekr.20040712101754.2: ** @ignore Load tests for .leo files
+#@+node:ekr.20040712101754.2: ** Load tests for .leo files
 @language python
 @tabwidth -4
+
+# These work well with the qttabs gui.
 #@+node:ekr.20040712101754.3: *3* @test test.leo
 import leo.core.leoTest as leoTest
 
@@ -51,7 +53,7 @@ import leo.core.leoTest as leoTest
 
 path = g.os_path_join(g.app.loadDir,"..","test","unittest","minimalLeoFile3.leo")
 leoTest.runLeoTest(c,path,verbose=False,full=True)
-#@+node:ekr.20080405085247.1: ** @ignore
+#@+node:ekr.20080405085247.1: ** slow tests
 #@+node:ekr.20060208195054: *3* @@test k.inverseCommandsDict is inverse of c.commandsDict
 # c.commandsDict: keys are emacs command names, values are functions f.
 # k.inverseCommandsDict: keys are f.__name__, values are emacs command names.
@@ -141,7 +143,7 @@ def mungeKey (h,kind,substitute=True):
     return key
 
 
-#@+node:ekr.20110728154927.3324: *3* @test position > operator
+#@+node:ekr.20110728154927.3324: *3* @@test position > operator
 # Disabled because very slow
 aList = [z.copy() for z in c.all_positions()]
 
@@ -152,18 +154,18 @@ for i in range(len(aList)):
         assert aList[j] < aList[i],(i,j)
         total += 1
 
-g.es('done',total)
-#@+node:ekr.20080703104536.1: *3* Mini tests
-#@+node:ekr.20051104081502.108: *4* runProfile button mini-test
+g.es('"%s": total tests: %s' % (p.h,total))
+#@+node:ekr.20080703104536.1: ** @ignore mini tests
+#@+node:ekr.20051104081502.108: *3* runProfile button mini-test
 for i in range(10000):
     if i and (i % 1000) == 0:
         g.pr(i)
-#@+node:ekr.20051104081502.109: *4* runTimeit mini-test
+#@+node:ekr.20051104081502.109: *3* runTimeit mini-test
 i = 0
 for i in range(100000):
     i += 1
     i -= 1
-#@+node:ekr.20080821123427.2: *4* Standard print test
+#@+node:ekr.20080821123427.2: *3* Standard print test
 @first # -*- coding: utf-8 -*-
 
 import sys
@@ -187,7 +189,7 @@ for s in table:
         s = unicode(s,e)
     print('print     ',s)
     print('repr(s)   ',repr(s))
-#@+node:ekr.20100125180231.5120: *4* Print a unicode character
+#@+node:ekr.20100125180231.5120: *3* Print a unicode character
 @first # -*- coding: utf-8 -*-
 
 s = g.ue('炰','utf-8')
@@ -195,7 +197,7 @@ g.es(s)
 g.pr(s)
 s = '炰'
 g.pr(s)
-#@+node:ekr.20100127162342.5123: *4* Import all plugins script
+#@+node:ekr.20100127162342.5123: *3* Import all plugins script
 import glob,os
 
 tkPass = (
@@ -285,7 +287,7 @@ for fn in files:
         except Exception:
             if 1: g.es_exception()
             if 1: print('error %s' % m)
-#@+node:ekr.20100203163606.5365: *4* 2to3 script
+#@+node:ekr.20100203163606.5365: *3* 2to3 script
 import os
 
 def run(files):
@@ -366,8 +368,8 @@ for theDir,aList in table:
 
 run(files)
 print('done: results are in out2')
-#@+node:ekr.20051104081502.99: *4* Manual tests...
-#@+node:ekr.20051104081502.101: *5* Other Reformat Paragraph tests
+#@+node:ekr.20051104081502.99: *3* Manual tests...
+#@+node:ekr.20051104081502.101: *4* Other Reformat Paragraph tests
 @language plain
 @pagewidth 40
 
@@ -398,7 +400,7 @@ There are several difference between @rawfile and @silentfile trees:
   3. This is an exxxxxxxxxxxxxxxxxxxxxxxxtrrrrrrrrrrrrrrreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeemlylong
      word.
 And it too has a hanging indentation.
-#@+node:ekr.20051104081502.102: *5* Test of @tabwidth
+#@+node:ekr.20051104081502.102: *4* Test of @tabwidth
 @tabwidth -4
 @language plain
 
@@ -408,7 +410,7 @@ a   b   c   d
 aa  b   c   d
 aaa b   c   d
 end
-#@+node:ekr.20051104081502.103: *5* Test of pasting into big node
+#@+node:ekr.20051104081502.103: *4* Test of pasting into big node
 @killcolor
 @language plain
 
@@ -422,13 +424,13 @@ The test:  Copy the following and paste it into a headline.  Leo should give 2 t
 About a year ago I found the website at www.literateprogamming.com and was immediately convinced that the basic idea of Literate Programming is an important breakthrough. At the time I was working on a contract trying to decipher a true masterpiece of over-engineering, and if at any time during the construction of this masterpiece the perpetrators had been required to explain themselves in English, my client would have saved millions of dollars.
 
 I never did try CWEB or NOWEB though, because on the literate programming site I read about a tool named “Leo” that combined outlines with Literate Programming techniques. Since I’ve always found outlining tools very useful I downloaded and tried this. I found that using this tool completely changed my programming practice and brought out all of the power inherent in the original Literate Programming idea as I understood it.
-#@+node:ekr.20051104081502.104: *5* Test of Remove sentinels
+#@+node:ekr.20051104081502.104: *4* Test of Remove sentinels
 import os
 
 g.pr(os.getcwd())
 name = g.os_path_join("test","removeSentTest.txt")
 c.importCommands.removeSentinelsCommand(name)
-#@+node:ekr.20051104081502.105: *5* Test new docutils stull
+#@+node:ekr.20051104081502.105: *4* Test new docutils stull
 import leoTest
 import glob
 
@@ -455,7 +457,7 @@ if 0:
     modules = leoTest.importAllModulesInPathList(files)
     for module in modules:
         g.pr(module)
-#@+node:ekr.20040712101754.221: *5* Manual test of testUtils.replaceOutline
+#@+node:ekr.20040712101754.221: *4* Manual test of testUtils.replaceOutline
 import leoTest
 
 u = leoTest.testUtils(c)
@@ -467,11 +469,11 @@ assert(outline2.h=="outline2")
 u.replaceOutline(outline1,outline2)
 c.redraw()
 c.checkOutline()
-#@+node:ekr.20040712101754.222: *6* outline1
-#@+node:ekr.20040712101754.223: *7* a
-#@+node:ekr.20040712101754.224: *6* outline2
-#@+node:ekr.20040712101754.225: *7* b
-#@+node:ekr.20051104081502.220: *4* Mini test arguments to hooks
+#@+node:ekr.20040712101754.222: *5* outline1
+#@+node:ekr.20040712101754.223: *6* a
+#@+node:ekr.20040712101754.224: *5* outline2
+#@+node:ekr.20040712101754.225: *6* b
+#@+node:ekr.20051104081502.220: *3* Mini test arguments to hooks
 """Mini test that documentation of hooks in leoDocs.leo is correct.
 
 hookData should match that documentation for this test to be effective.
@@ -498,7 +500,7 @@ if 0: # print all hooks.
         g.pr("-" * 20)
         for h in handlers:
             g.pr(h)
-#@+node:ekr.20051104081502.221: *5* << imports >>
+#@+node:ekr.20051104081502.221: *4* << imports >>
 import leoColor
 import leoCommands
 import leoNodes
@@ -507,7 +509,7 @@ import leoTkinterTree
 
 import types
 import Tkinter as Tk
-#@+node:ekr.20051104081502.222: *5* << define hookData >>
+#@+node:ekr.20051104081502.222: *4* << define hookData >>
 hookData = (
     ("bodyclick1",   ("c","p","v","event")),
     ("bodyclick2",   ("c","p","v","event")),
@@ -587,7 +589,7 @@ hookData = (
     ("set-mark",                     ("c","p","v" )),
     ("show-popup-menu",              ("c","p","v","event")),
 )
-#@+node:ekr.20051104081502.223: *5* << define typeData >>
+#@+node:ekr.20051104081502.223: *4* << define typeData >>
 typeData = {
     "arg":      types.StringType,
     "c":        leoCommands.Commands,
@@ -621,7 +623,7 @@ typeData = {
     "x":        types.IntType,
     "y":        types.IntType,
 }
-#@+node:ekr.20051104081502.224: *5* << defineCheckHook >>
+#@+node:ekr.20051104081502.224: *4* << defineCheckHook >>
 def checkHook (tag,keywords,args=args):
 
     """Check to see that the keywords passed to the hook are as described in args.
@@ -652,7 +654,7 @@ def checkHook (tag,keywords,args=args):
                 ok = False
     if ok:
         g.pr(tag)
-#@+node:ekr.20051104081502.225: *5* checkOneHook
+#@+node:ekr.20051104081502.225: *4* checkOneHook
 def checkOneHook (arg_type, val):
 
     if 0:
@@ -663,16 +665,16 @@ def checkOneHook (arg_type, val):
         (arg_type is type(val)) or
         (arg_type == types.StringType and type(val) is types.UnicodeType) or
         (type(arg_type) == types.ClassType and isinstance(val,arg_type)))
-#@+node:ekr.20051104081502.312: *4* Mini test of g.es_exception
+#@+node:ekr.20051104081502.312: *3* Mini test of g.es_exception
 try:
     assert False, 'Assert False'
 except AssertionError:
     g.es_exception()
-#@+node:ekr.20051104081502.311: *4* Mini test of g.pdb
+#@+node:ekr.20051104081502.311: *3* Mini test of g.pdb
 # Running this as a unit test would hang the unit tests!
 g.pdb()
-#@+node:ekr.20051104081502.106: *4* Mini tests of script buttons
-#@+node:ekr.20051104081502.107: *5* Redundant: @suite run all doctests in @file nodes
+#@+node:ekr.20051104081502.106: *3* Mini tests of script buttons
+#@+node:ekr.20051104081502.107: *4* Redundant: @suite run all doctests in @file nodes
 import doctest
 import unittest
 import leoTest
@@ -695,22 +697,22 @@ else:
 
 if suite:
     g.app.scriptDict['suite'] = suite
-#@+node:ekr.20051104081502.108: *5* runProfile button mini-test
+#@+node:ekr.20051104081502.108: *4* runProfile button mini-test
 for i in range(10000):
     if i and (i % 1000) == 0:
         g.pr(i)
-#@+node:ekr.20051104081502.109: *5* runTimeit mini-test
+#@+node:ekr.20051104081502.109: *4* runTimeit mini-test
 i = 0
 for i in range(100000):
     i += 1
     i -= 1
-#@+node:ekr.20051104081502.110: *5* profile redraws
+#@+node:ekr.20051104081502.110: *4* profile redraws
 # c.redraw just schedules the actual drawing.
 # We want to profile the actual idle-time drawing.
 
 c.frame.tree.idle_redraw()
-#@+node:ekr.20051104081502.160: *4* User Icon tests
-#@+node:ekr.20051104081502.161: *5* Delete user icons
+#@+node:ekr.20051104081502.160: *3* User Icon tests
+#@+node:ekr.20051104081502.161: *4* Delete user icons
 for p in c.allNodes_iter():
 
     if hasattr(p.v.t,"unknownAttributes"):
@@ -721,7 +723,7 @@ for p in c.allNodes_iter():
             a["lineYOffset"] = 0
 
 c.redraw()
-#@+node:ekr.20051104081502.162: *5* Test of user icons
+#@+node:ekr.20051104081502.162: *4* Test of user icons
 p.v.t.unknownAttributes = {}
 a = p.v.t.unknownAttributes
 
@@ -755,7 +757,7 @@ a["icons"] = [d1,d2] # [d1,d2]
 a["lineYOffset"] = 3
 
 c.redraw()
-#@+node:ekr.20051104081502.163: *6* << define event callbacks >>
+#@+node:ekr.20051104081502.163: *5* << define event callbacks >>
 def onClick(p=p):
 
     g.trace(p)
@@ -767,23 +769,23 @@ def onRightClick(p=p):
 def onDoubleClick(p=p):
 
     g.trace(p)
-#@+node:ekr.20051104081502: *4* Other tests
+#@+node:ekr.20051104081502: *3* Other tests
 @language python
 @tabwidth -4
-#@+node:ekr.20051104081502.542: *5* @@nosent test-niceNosent
-#@+node:ekr.20051104081502.543: *6* part 1
+#@+node:ekr.20051104081502.542: *4* @@nosent test-niceNosent
+#@+node:ekr.20051104081502.543: *5* part 1
 part 1, line 1
 part 2, line 2, no newline
-#@+node:ekr.20051104081502.544: *6* part 2
+#@+node:ekr.20051104081502.544: *5* part 2
 part 2, line 1, no newline
-#@+node:ekr.20051104081502.545: *6* part 3
+#@+node:ekr.20051104081502.545: *5* part 3
 part 3, line 1
 part 3, line 2, newline
-#@+node:ekr.20051104081502.320: *5* @nowrap tests
+#@+node:ekr.20051104081502.320: *4* @nowrap tests
 @nowrap
 aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbb cccccccccccccccccccc ddddddddddddddd eeeeeeeeeeeeeee ffffffffffffffff 
-#@+node:ekr.20051104081502.22: *5* Experiments
-#@+node:ekr.20051104081502.23: *6* Test of moving positions
+#@+node:ekr.20051104081502.22: *4* Experiments
+#@+node:ekr.20051104081502.23: *5* Test of moving positions
 class position:
     def __init__(self):
         self.v = "a"
@@ -795,7 +797,7 @@ v = p.v
 g.pr("before", v, p.v, v is p.v)
 p.move()
 g.pr("after ", v, p.v, v is p.v)
-#@+node:ekr.20051104081502.24: *6* Test of using an iterator inside a list comprehension
+#@+node:ekr.20051104081502.24: *5* Test of using an iterator inside a list comprehension
 class test_iter_class:
     def __init__ (self):
         self.vals = ("a","b","c")
@@ -815,7 +817,7 @@ def test_iter(): return test_iter_class()
 vals = [val for val in test_iter()]
 
 g.pr(vals)
-#@+node:ekr.20051104081502.25: *6* Test of using c.allNodes_iter to create a list of all positions
+#@+node:ekr.20051104081502.25: *5* Test of using c.allNodes_iter to create a list of all positions
 g.pr('-'*20)
 
 # These are equivalent.
@@ -830,7 +832,7 @@ if 0:
     for p in positions1:
         g.pr(p)
 g.pr("done")
-#@+node:ekr.20051104081502.26: *6* Creating a list of distinct vnodes
+#@+node:ekr.20051104081502.26: *5* Creating a list of distinct vnodes
 g.pr('-'*20)
 
 positions = [p.copy() for p in c.allNodes_iter()]
@@ -846,7 +848,7 @@ g.pr(len(positions),len(vnodes))
 
 for v in vnodes:
     g.pr(v)
-#@+node:ekr.20051104081502.28: *6* test of list comparisons
+#@+node:ekr.20051104081502.28: *5* test of list comparisons
 stack1 = ["a","b","c"]
 stack2 = ["a","b","c"]
 stack3 = ["a","b","d"]
@@ -854,11 +856,11 @@ stack4 = ["a","b"]
 g.pr(stack1 == stack2)
 g.pr(stack1 == stack3)
 g.pr(stack1 == stack4)
-#@+node:ekr.20051104081502.29: *6* test that childIndex doesn't mess with p
+#@+node:ekr.20051104081502.29: *5* test that childIndex doesn't mess with p
 g.pr(p.h)
 g.pr(p.childIndex())
 g.pr(p.h)
-#@+node:ekr.20051104081502.30: *6* Test of __cmp__ vrs equal
+#@+node:ekr.20051104081502.30: *5* Test of __cmp__ vrs equal
 import timeit
 
 s1 = '''\
@@ -882,7 +884,7 @@ for s in (s1,s2,s3):
     t1 = timeit.Timer(stmt='p1==p2',setup=s).timeit()
     t2 = timeit.Timer(stmt='p1.equal(p2)',setup=s).timeit()
     g.pr("%2.2f,%2.2f,%0.2f" % (t1,t2,t1/t2))
-#@+node:ekr.20051104081502.31: *6* Test print
+#@+node:ekr.20051104081502.31: *5* Test print
 # "LPT1:", "PRN:" and "PRN" all freeze
 
 s = 'stuff\n'
@@ -896,11 +898,11 @@ try:
     g.pr("done")
 except IOError:
     g.pr("Can not open",port)
-#@+node:ekr.20051104081502.32: *6* String-based imports...
+#@+node:ekr.20051104081502.32: *5* String-based imports...
 @ By far the simplest way is just to write the string to a temp file, then import the temp files.
 
 All other approaches quickly get deeply involved with Leo's internals...
-#@+node:ekr.20051104081502.33: *7* import from string
+#@+node:ekr.20051104081502.33: *6* import from string
 @language plain
 
 The first idea was to use Python's imp module to simulate an import from a file.  This does not work well because imp expects a file, not a StringIO object.
@@ -912,7 +914,7 @@ A third idea would be to subclass the file type to fool the imp module.
 A fourth idea would be to use the ihooks module.  Apparently this module was designed to do something like what I am trying to do!  However, there doesn't seem to be docs for it, so I have imported the code...
 
 @color
-#@+node:ekr.20051104081502.34: *8* @@test import from string
+#@+node:ekr.20051104081502.34: *7* @@test import from string
 import imp
 import StringIO
 
@@ -947,7 +949,7 @@ except:
 
 
 
-#@+node:ekr.20051104081502.35: *7* Subclass the file type for use with imp module
+#@+node:ekr.20051104081502.35: *6* Subclass the file type for use with imp module
 if 0:
     class myFile(file):
         pass
@@ -970,7 +972,7 @@ if 0:
 
 mod = __import__("leoApp")
 g.pr(mod)
-#@+node:ekr.20051104081502.36: *7* Use parser module to simulate import from string
+#@+node:ekr.20051104081502.36: *6* Use parser module to simulate import from string
 import compiler
 
 for child in p.children_iter():
@@ -983,10 +985,10 @@ for child in p.children_iter():
         g.pr(val)
     except SyntaxError:
         g.es("Syntax error: %s" % h,color="blue")
-#@+node:ekr.20051104081502.37: *8* test1
+#@+node:ekr.20051104081502.37: *7* test1
 import doctest
 g.pr(doctest)
-#@+node:ekr.20051104081502.209: *5* Make sure openWith changes are benign
+#@+node:ekr.20051104081502.209: *4* Make sure openWith changes are benign
 arg = "arg" ; filename = "fileName"
 path = "path" ; shortPath = "shortPath"
 vtuple = "vtuple"
@@ -1009,10 +1011,10 @@ test(
 test(
     "os.spawnv("+arg[0]+","+repr(vtuple)+")",
     "os.spawnv(%s,%s)" % (arg[0],repr(vtuple)))
-#@+node:ekr.20051104081502.111: *5* Perfect import stuff...
+#@+node:ekr.20051104081502.111: *4* Perfect import stuff...
 @language python
 @tabwidth -4
-#@+node:ekr.20051104081502.112: *6* Mulder Update script
+#@+node:ekr.20051104081502.112: *5* Mulder Update script
 # EKR: I don't remember the status of this.
 
 @language python
@@ -1030,7 +1032,7 @@ files = [(s1,t1)]
 
 g.pr('\n' + '-' * 20)
 sync(files) # push or pull, depending on date.
-#@+node:ekr.20051104081502.113: *7* sync
+#@+node:ekr.20051104081502.113: *6* sync
 def sync(files):
 
     """Do a pull or a push, depending on the date of the files."""
@@ -1053,7 +1055,7 @@ def sync(files):
                 mu.copy_time(targetfilename,sourcefilename)
             else:
                 shutil.copy2(targetfilename,sourcefilename)
-#@+node:ekr.20051104081502.114: *8* << compute sourcetime and targettime >>
+#@+node:ekr.20051104081502.114: *7* << compute sourcetime and targettime >>
 sourcetime = targettime = None
 
 if g.os_path_exists(sourcefilename):
@@ -1061,7 +1063,7 @@ if g.os_path_exists(sourcefilename):
 
 if g.os_path_exists(targetfilename):
     targettime = g.os_path_getmtime(targetfilename)
-#@+node:ekr.20051104081502.115: *8* << compute operation >>
+#@+node:ekr.20051104081502.115: *7* << compute operation >>
 operation = None
 if sourcetime:
     if targettime:
@@ -1073,7 +1075,7 @@ if sourcetime:
         operation = push
 elif targettime:
     operation = pull
-#@+node:ekr.20051104081502.116: *6* Perfect Import Script
+#@+node:ekr.20051104081502.116: *5* Perfect Import Script
 # Run this script to import a file.
 # This is undoable because the Import @file command is undoable.
 
@@ -1086,8 +1088,8 @@ names = [name1]
 
 c.importCommands.importFilesCommand (names,"@file",
     perfectImport=True,testing=False,verbose=True)
-#@+node:ekr.20051104081502.117: *5* Printing tests...
-#@+node:ekr.20051104081502.118: *6* Print findAllPotentiallyDirtyNodes
+#@+node:ekr.20051104081502.117: *4* Printing tests...
+#@+node:ekr.20051104081502.118: *5* Print findAllPotentiallyDirtyNodes
 g.pr('-'*20)
 
 for p in c.allNodes_iter():
@@ -1098,7 +1100,7 @@ for p in c.allNodes_iter():
             g.pr(v)
 
 g.pr("done")
-#@+node:ekr.20051104081502.119: *6* Print iterations: do not delete
+#@+node:ekr.20051104081502.119: *5* Print iterations: do not delete
 import leoNodes
 
 position = leoNodes.position
@@ -1125,30 +1127,30 @@ if 1:
     g.pr('-'*10, "all nodes")
     for p in c.allNodes_iter():
         g.pr(p.isCloned(),p)
-#@+node:ekr.20051104081502.120: *7* b
-#@+node:ekr.20051104081502.121: *8* c
-#@+node:ekr.20051104081502.122: *9* c2
-#@+node:ekr.20051104081502.123: *10* c3
-#@+node:ekr.20051104081502.124: *10* c4
-#@+node:ekr.20051104081502.125: *7* Clone test data
-#@+node:ekr.20051104081502.126: *8* aa
+#@+node:ekr.20051104081502.120: *6* b
+#@+node:ekr.20051104081502.121: *7* c
+#@+node:ekr.20051104081502.122: *8* c2
+#@+node:ekr.20051104081502.123: *9* c3
+#@+node:ekr.20051104081502.124: *9* c4
+#@+node:ekr.20051104081502.125: *6* Clone test data
+#@+node:ekr.20051104081502.126: *7* aa
+#@+node:ekr.20051104081502.127: *7* a
+#@+node:ekr.20051104081502.120: *8* b
+#@+node:ekr.20051104081502.121: *9* c
+#@+node:ekr.20051104081502.122: *10* c2
+#@+node:ekr.20051104081502.123: *11* c3
+#@+node:ekr.20051104081502.124: *11* c4
+#@+node:ekr.20051104081502.128: *7* d
 #@+node:ekr.20051104081502.127: *8* a
 #@+node:ekr.20051104081502.120: *9* b
 #@+node:ekr.20051104081502.121: *10* c
 #@+node:ekr.20051104081502.122: *11* c2
 #@+node:ekr.20051104081502.123: *12* c3
 #@+node:ekr.20051104081502.124: *12* c4
-#@+node:ekr.20051104081502.128: *8* d
-#@+node:ekr.20051104081502.127: *9* a
-#@+node:ekr.20051104081502.120: *10* b
-#@+node:ekr.20051104081502.121: *11* c
-#@+node:ekr.20051104081502.122: *12* c2
-#@+node:ekr.20051104081502.123: *13* c3
-#@+node:ekr.20051104081502.124: *13* c4
-#@+node:ekr.20051104081502.129: *8* e
-#@+node:ekr.20051104081502.130: *8* z
-#@+node:ekr.20051104081502.131: *7* last node
-#@+node:ekr.20051104081502.145: *6* Print isAnyAtFileNode
+#@+node:ekr.20051104081502.129: *7* e
+#@+node:ekr.20051104081502.130: *7* z
+#@+node:ekr.20051104081502.131: *6* last node
+#@+node:ekr.20051104081502.145: *5* Print isAnyAtFileNode
 g.pr('-'*20)
 
 for p in c.allNodes_iter():
@@ -1156,7 +1158,7 @@ for p in c.allNodes_iter():
         g.pr(p)
 
 g.pr("done")
-#@+node:ekr.20051104081502.146: *6* Print fundChildrenOf and
+#@+node:ekr.20051104081502.146: *5* Print fundChildrenOf and
 import leoTest
 
 u = leoTest.testUtils(c)
@@ -1168,7 +1170,7 @@ for child in children: g.pr(child.h)
 g.pr("subtree", '-' * 20)
 descendants = u.findSubnodesOf(p)
 for descendant in descendants: g.pr(descendant.h)
-#@+node:ekr.20051104081502.147: *6* Tests of pickle & hexlify
+#@+node:ekr.20051104081502.147: *5* Tests of pickle & hexlify
 import binascii
 import pickle
 
@@ -1185,7 +1187,7 @@ d2 = cPickle.loads(s3)
 
 g.pr(`d2`)
 g.pr(d == d2, d is d2)
-#@+node:ekr.20051104081502.148: *6* Test of undo registration
+#@+node:ekr.20051104081502.148: *5* Test of undo registration
 def redoBletch(self):
     g.trace()
 
@@ -1204,7 +1206,7 @@ else:
 u.setUndoParams("Bletch",p)
 
 # Selecting "Undo Bletch" will enable "Redo Bletch", etc.
-#@+node:ekr.20051104081502.149: *6* Test of unknownAttributes
+#@+node:ekr.20051104081502.149: *5* Test of unknownAttributes
 d = { "a":True }
 
 if 1:
@@ -1212,7 +1214,7 @@ if 1:
     p.v.unknownAttributes = { "myPlugin" : d }
 
 g.pr(repr(p.v.unknownAttributes))
-#@+node:ekr.20051104081502.150: *6* Test of "end1" hook
+#@+node:ekr.20051104081502.150: *5* Test of "end1" hook
 import leoPlugins
 
 def onEnd (tag,keys):
@@ -1230,12 +1232,12 @@ g.pr("onEnd registered as end1 hook")
 
 leoPlugins.registerHandler("idle", onIdle)
 g.pr("onIdle registered as idle hook")
-#@+node:ekr.20051104081502.151: *6* Print timestamps of all nodes
+#@+node:ekr.20051104081502.151: *5* Print timestamps of all nodes
 for p in c.all_positions_iter():
     g.pr(p.v.t.fileIndex)
-#@+node:ekr.20051104081502.152: *6* test of focus
+#@+node:ekr.20051104081502.152: *5* test of focus
 g.pr(c.frame.bodyCtrl.focus())
-#@+node:ekr.20051104081502.153: *6* Using a generator instead of readLinesClass
+#@+node:ekr.20051104081502.153: *5* Using a generator instead of readLinesClass
 # This kind of code is used in the prototypes of new commands.
 
 from __future__ import generators
@@ -1261,15 +1263,15 @@ else:
         else: break
 
 g.pr('\n' + '-' * 20)
-#@+node:ekr.20051104081502.154: *6* Test of better error messages in Execute Script command
+#@+node:ekr.20051104081502.154: *5* Test of better error messages in Execute Script command
 # Test
 @others
 # Last
-#@+node:ekr.20051104081502.155: *7* Contains error
+#@+node:ekr.20051104081502.155: *6* Contains error
 a = 1
 g.pr("hello")
 c = b
-#@+node:ekr.20051104081502.157: *6* print all docstrings from a module
+#@+node:ekr.20051104081502.157: *5* print all docstrings from a module
 import leoTest
 import types
 
@@ -1298,7 +1300,7 @@ if 1:
                             printDoc(x2,s2)
 else:
     << print names sorted by type >>
-#@+node:ekr.20051104081502.158: *7* << print names sorted by type >>
+#@+node:ekr.20051104081502.158: *6* << print names sorted by type >>
 for theType,typeName in (
     (types.ModuleType,"modules"),
     (types.ClassType,"classes"),
@@ -1319,8 +1321,8 @@ for theType,typeName in (
                         if s2 not in specialDictNames:
                             g.pr("\t",newline=False)
                             printDoc(x2,s2)
-#@+node:ekr.20051104081502.216: *5* Registering & unregistering the "new" drawing hooks
-#@+node:ekr.20051104081502.217: *6* Register all new hooks
+#@+node:ekr.20051104081502.216: *4* Registering & unregistering the "new" drawing hooks
+#@+node:ekr.20051104081502.217: *5* Register all new hooks
 import leoPlugins as plugins
 
 def traceHook(tag,event):
@@ -1343,7 +1345,7 @@ if handlers:
     g.pr("-" * 20)
     for h in handlers:
         g.pr(h)
-#@+node:ekr.20051104081502.218: *6* Unregister all new hooks
+#@+node:ekr.20051104081502.218: *5* Unregister all new hooks
 import leoPlugins as plugins
 
 tags = (
@@ -1368,7 +1370,7 @@ if handlers:
     g.pr("-" * 20)
     for h in handlers:
         g.pr(h)
-#@+node:ekr.20051104081502.219: *6* Print all new hooks
+#@+node:ekr.20051104081502.219: *5* Print all new hooks
 import leoPlugins as plugins
 
 tags = (
@@ -1386,7 +1388,7 @@ if handlers:
     g.pr("-" * 20)
     for h in handlers:
         g.pr(h)
-#@+node:ekr.20051104081502.538: *5* ReportLab sample scripts
+#@+node:ekr.20051104081502.538: *4* ReportLab sample scripts
 import sys
 sys.path.append(r'c:\reportlab_1_20')
 
@@ -1408,10 +1410,10 @@ c.addOutlineEntry('OutlineEntry',key)
 
 c.showPage()
 c.save()
-#@+node:ekr.20051104081502.539: *6* text
+#@+node:ekr.20051104081502.539: *5* text
 def text(c,text,i=100,j=100):
     c.drawString(i,j,text)
-#@+node:ekr.20051104081502.540: *6* pencil
+#@+node:ekr.20051104081502.540: *5* pencil
 def pencil(canvas, text="No.2"):
     from reportlab.lib.colors import yellow, red, black,white
     from reportlab.lib.units import inch
@@ -1438,7 +1440,7 @@ def pencil(canvas, text="No.2"):
     canvas.setDash([10,5,16,10],0)
     canvas.line(11*u,2.5*u,22*u,2.5*u)
     canvas.line(22*u,7.5*u,12*u,7.5*u)
-#@+node:ekr.20051104081502.541: *6* penciltip
+#@+node:ekr.20051104081502.541: *5* penciltip
 def penciltip(canvas, debug=1):
     from reportlab.lib.colors import tan, black, green
     from reportlab.lib.units import inch
@@ -1467,8 +1469,8 @@ def penciltip(canvas, debug=1):
     if debug:
         canvas.setStrokeColor(green) # put in a frame of reference
         canvas.grid([0,5*u,10*u,15*u], [0,5*u,10*u])
-#@+node:ekr.20051104081502.272: *5* Standalone imports
-#@+node:ekr.20051104081502.273: *6* test that of standalone imports of leo files
+#@+node:ekr.20051104081502.272: *4* Standalone imports
+#@+node:ekr.20051104081502.273: *5* test that of standalone imports of leo files
 import glob,sys,traceback
 
 def printModules():
@@ -1500,7 +1502,7 @@ def test():
 delLeoModules()        
 test()
 # printModules()
-#@+node:ekr.20051104081502.274: *6* Script to run in Idle
+#@+node:ekr.20051104081502.274: *5* Script to run in Idle
 def test():
     '''Tests whether all files can be imported.'''
     import glob, os, sys, traceback
@@ -1526,19 +1528,19 @@ def printModules():
     mods.sort()
     for mod in mods: g.pr(mod)
 
-#@+node:ekr.20051104081502.307: *5* test local settings (c.redirect_execute_script_output_to_log_pane)
+#@+node:ekr.20051104081502.307: *4* test local settings (c.redirect_execute_script_output_to_log_pane)
 g.es(c.redirect_execute_script_output_to_log_pane)
 g.es(c.config.redirect_execute_script_output_to_log_pane)
 g.pr('hello')
 
 #assert c.redirect_execute_script_output_to_log_pane is True
 #assert c.config.redirect_execute_script_output_to_log_pane is True
-#@+node:ekr.20051104081502.164: *5* test of 4.3 str_ attributes
-#@+node:ekr.20051104081502.165: *6* set
+#@+node:ekr.20051104081502.164: *4* test of 4.3 str_ attributes
+#@+node:ekr.20051104081502.165: *5* set
 # Set the attribute.
 d = {'str_ekr_attribute': 'abc'}
 p.v.t.unknownAttributes = d
-#@+node:ekr.20051104081502.166: *6* get
+#@+node:ekr.20051104081502.166: *5* get
 for p in c.allNodes_iter():
     h = p.h
     if hasattr(p.v.t,'unknownAttributes'):
@@ -1546,11 +1548,11 @@ for p in c.allNodes_iter():
         val = d.get('str_ekr_attribute')
         if val:
            g.es('str_ekr_attribute is: %s' % val)
-#@+node:ekr.20051104081502.316: *5* test of an exception in another module
+#@+node:ekr.20051104081502.316: *4* test of an exception in another module
 import leoTest
 
 leoTest.throwAssertionError()
-#@+node:ekr.20051104081502.210: *5* Test of autocompleter
+#@+node:ekr.20051104081502.210: *4* Test of autocompleter
 @language python
 
 # Type a period to autocomplete
@@ -1558,22 +1560,22 @@ leoTest
 
 # Type an open paren to bring up calltip.
 leoTest.findAllAtFileNodes
-#@+node:ekr.20051104081502.322: *5* Test of g.getScript with forcePythonSentinels = False
+#@+node:ekr.20051104081502.322: *4* Test of g.getScript with forcePythonSentinels = False
 @language html
-#@+node:ekr.20051104081502.323: *6* g.getScript
+#@+node:ekr.20051104081502.323: *5* g.getScript
 g.pr('-'*20)
 g.pr(g.getScript(c,p,forcePythonSentinels=False))
-#@+node:ekr.20051104081502.324: *6* html stuff
+#@+node:ekr.20051104081502.324: *5* html stuff
 <body>
 @others
 </body>
-#@+node:ekr.20051104081502.325: *7* body
+#@+node:ekr.20051104081502.325: *6* body
 This is a body
-#@+node:ekr.20051104081502.315: *5* test of NameError traceback
+#@+node:ekr.20051104081502.315: *4* test of NameError traceback
 # Comment
 
 g.pr(z)
-#@+node:ekr.20051104081502.318: *5* Test of os.spawnv calls to c.openWith
+#@+node:ekr.20051104081502.318: *4* Test of os.spawnv calls to c.openWith
 table = ('spawnv',None,(
     'os.spawnv',[
     r'c:\vim\vim63\gvim.exe',
@@ -1583,39 +1585,39 @@ table = ('spawnv',None,(
     ".py")),
 
 c.frame.menu.createOpenWithMenuFromTable(table)
-#@+node:ekr.20051104081502.321: *5* Test of redirected scipt with error
+#@+node:ekr.20051104081502.321: *4* Test of redirected scipt with error
 # To run this test, set @bool redirect_execute_script_output_to_log_pane = True in the @settings tree.
 
 g.pr('hi')
 g.pr(c.config.redirect_execute_script_output_to_log_pane)
 g.pr(c.xyzzy)
-#@+node:ekr.20051104081502.183: *5* Test of reportBadChars
+#@+node:ekr.20051104081502.183: *4* Test of reportBadChars
 s = u"ß"
 
 g.reportBadChars(s,"latin_1")
 
 g.pr(g.toEncodedString(s,"latin_1"))
-#@+node:ekr.20051104081502.234: *5* test of tab_width & tab_width ivars
+#@+node:ekr.20051104081502.234: *4* test of tab_width & tab_width ivars
 g.pr(c)
 g.pr('use_plugins',c.use_plugins)
 g.pr('tab_width',c.tab_width)
 g.pr('page_width',c.page_width)
-#@+node:ekr.20051104081502.211: *5* Test of template plugin
-#@+node:ekr.20051104081502.213: *6* A node that uses the template
-#@+node:ekr.20051104081502.214: *5* test of using changes to Go To Line number to handle scripts
+#@+node:ekr.20051104081502.211: *4* Test of template plugin
+#@+node:ekr.20051104081502.213: *5* A node that uses the template
+#@+node:ekr.20051104081502.214: *4* test of using changes to Go To Line number to handle scripts
 # Go To Line number now assumes that selected node is
 # the root of a script if there is no ancestor @file node.
 
 @others
 
 # last line
-#@+node:ekr.20051104081502.215: *6* node that throws exception
+#@+node:ekr.20051104081502.215: *5* node that throws exception
 # We should also be able to use the goto line number command to get to the erroneous line.
 
 a = 1/0 # ZeroDivisionError
 
 b = 2
-#@+node:ekr.20051104081502.547: *5* Test of warnings of conflicting shortcuts
+#@+node:ekr.20051104081502.547: *4* Test of warnings of conflicting shortcuts
 # This problem has been around forever.
 g.pr('-' * 40)
 # Yes. We *do* want to warn in c.config.exists.
@@ -1624,7 +1626,7 @@ val = c.config.getBool('showMinibuffer')
 g.pr('bool:showMinibuffer',val)
 val = c.config.getShortcut('showMinibuffer')
 g.pr('shortcut:showMinibuffer',val)
-#@+node:ekr.20051104081502.551: *5* test k.registerCommand
+#@+node:ekr.20051104081502.551: *4* test k.registerCommand
 k = c.keyHandler
 
 def f (event):
@@ -1635,25 +1637,25 @@ def f2 (event):
 
 k.registerCommand('print-hello','Alt-Ctrl-Shift-p',f)
 k.registerCommand('print-hello2',None,f2)
-#@+node:ekr.20051104081502.226: *5* Tests of leoGlobals
-#@+node:ekr.20051104081502.227: *6* @test g.rawPrint
+#@+node:ekr.20051104081502.226: *4* Tests of leoGlobals
+#@+node:ekr.20051104081502.227: *5* @test g.rawPrint
 g.rawPrint("Test of g.rawPrint")
 g.redirectStdout()
 g.rawPrint("Test of g.rawPrint")
 g.restoreStdout()
-#@+node:ekr.20051104081502.232: *6* test of g.pdb
+#@+node:ekr.20051104081502.232: *5* test of g.pdb
 g.pdb()
-#@+node:ekr.20051104081502.233: *6* Test of g.app.debugSwitch
+#@+node:ekr.20051104081502.233: *5* Test of g.app.debugSwitch
 g.pr(g.app.debugSwitch)
 
 g.app.debugSwitch = 0 # 2: drop into pdb
 
 zerodivide = 1 / 0
-#@+node:ekr.20051104081502.326: *5* Tests of rst3 plugin
+#@+node:ekr.20051104081502.326: *4* Tests of rst3 plugin
 @nocolor
 @pagewidth 100
 @language python
-#@+node:ekr.20051104081502.327: *6* @rst ../doc/ListManagerDocs.html
+#@+node:ekr.20051104081502.327: *5* @rst ../doc/ListManagerDocs.html
 @language python
 
 @ @rst-options
@@ -1686,7 +1688,7 @@ to ListManager for inclusion in lists and uses Outlook to mail messages to
 users.
 
 .. contents:: Table of Contents
-#@+node:ekr.20051104081502.328: *7* wxListManager.py
+#@+node:ekr.20051104081502.328: *6* wxListManager.py
 @language python
 @color
 @others
@@ -1694,11 +1696,11 @@ users.
 @ @rst-options
 code_mode = True
 @c
-#@+node:ekr.20051104081502.329: *8* Initial stuff
+#@+node:ekr.20051104081502.329: *7* Initial stuff
 @ @rst-markup
 
 Nothing unusual in what follows:  we start with the module imports, setting some global constants including Menu Ids and read the ListManager.ini file.
-#@+node:ekr.20051104081502.330: *9* Module Imports
+#@+node:ekr.20051104081502.330: *8* Module Imports
 from wxPython.wx import *
 from wxPython.lib.mixins.listctrl import wxListCtrlAutoWidthMixin
 
@@ -1727,7 +1729,7 @@ from LMDialogs import CalendarDialog, ModifierDialog, TicklerDialog, MailDialog,
 #from wxTreeCtrl import TreeDialog
 
 from printout import PrintTable
-#@+node:ekr.20051104081502.331: *10* @rst-no-head About imports
+#@+node:ekr.20051104081502.331: *9* @rst-no-head About imports
 @nocolor
 
 os
@@ -1783,7 +1785,7 @@ printout.PrintTable
 
 *#from win32com.client import constants*
     probably not wise but since the app only needs two constants from this module, just set the directly.  If MSFT decides to change the api, this is not good.
-#@+node:ekr.20051104081502.332: *9* Constants
+#@+node:ekr.20051104081502.332: *8* Constants
 cwd = os.getcwd()
 DIRECTORY = os.path.split(cwd)[0]
 os.chdir(DIRECTORY)
@@ -1805,7 +1807,7 @@ The following two global constants are needed to create emails through Outlook v
     olFlagMarked = 0x2
 
 For some reason, it seemed easier to just include them explicitly rather than worrying about generating all the Outlook constants in order to use early binding.  I supppose if MSFT changes the api, that would be a problem.
-#@+node:ekr.20051104081502.333: *9* Menu IDs
+#@+node:ekr.20051104081502.333: *8* Menu IDs
 @ @rst-markup
 Menu Ids -- not much more to say although there should be something to say.
 @c
@@ -1860,7 +1862,7 @@ idABOUT = 1175
 idHELP = 1180
 
 
-#@+node:ekr.20051104081502.334: *9* Read Config File
+#@+node:ekr.20051104081502.334: *8* Read Config File
 config_file = os.path.join(DIRECTORY, "List Manager.ini")
 defaults = dict(pw='python', db='listmanager', ext='txt', local='wxLMDB:sqlite', x='700', y='400')
 cp = ConfigParser.ConfigParser(defaults=defaults)
@@ -1900,7 +1902,7 @@ if cp.has_section('Synchronization'):
 else:
     SYNC_TABLES = ['follow_ups']
 
-#@+node:ekr.20051104081502.335: *10* @rst-no-head About configuration files
+#@+node:ekr.20051104081502.335: *9* @rst-no-head About configuration files
 @nocolor
 
 .. sidebar:: A typical *List Manager.ini* file:
@@ -1952,7 +1954,7 @@ The application will work fine if there is no ini file. In an effort to save som
     ``QUICK_LIST = cp.has_option('User','quicklist') and cp.get('User','quicklist') or None``
 
     ``OUTLOOK = cp.has_option('Mail','outlook') and cp.getboolean('Mail,'outlook')``
-#@+node:ekr.20051104081502.336: *8* class ListManager
+#@+node:ekr.20051104081502.336: *7* class ListManager
 class ListManager(wxFrame):
     @others
 
@@ -1961,8 +1963,8 @@ class ListManager(wxFrame):
 ListManager is the main class in the application and is a sublass of ``wxFrame``, which is typical for a wxPython application.  From a GUI standpoint, the main child window of the ListManager object is a ``wxNoteBook`` object that holds one ``wxListCtrl`` per notebook page and one ``wxListBox``.  The ``wxListCtrl``\s display item information (e.g., name of the item, owners of the item, etc.) for a particular List and the ``wxListBox``\es displays a list of owners that is used to filter the items displayed by the ``wxListCtrl`` object.
 
 Each ``wxListCtrl`` object has its own set of events that it is hooked to (see CreateNewNotebookPage`<< ListControl Events >>`_.
-#@+node:ekr.20051104081502.337: *9* Instantiation
-#@+node:ekr.20051104081502.338: *10* def __init__
+#@+node:ekr.20051104081502.337: *8* Instantiation
+#@+node:ekr.20051104081502.338: *9* def __init__
 def __init__(self, parent, id, title, size):
     wxFrame.__init__(self, parent, id, title, size = size)
 
@@ -1985,7 +1987,7 @@ def __init__(self, parent, id, title, size):
     ownerthread.start()
     self.ModifierDialog = None
 
-#@+node:ekr.20051104081502.339: *11* @rst-no-head About the ctor
+#@+node:ekr.20051104081502.339: *10* @rst-no-head About the ctor
 @nocolor
 
 The ListManager ``__init__`` method is pretty straightforward.  The ``__init__`` arguments are the ones that need to be passed to ``wxFrame __init__`` method. The wxFrame class has the following form:
@@ -2019,7 +2021,7 @@ The various sections of ``__init__`` are explained in their corresponding sectio
     << GUI Instance Objects >>
     << Create Socket >>
     << Load Recent Files >>
-#@+node:ekr.20051104081502.340: *11* << List Manager Attributes >>
+#@+node:ekr.20051104081502.340: *10* << List Manager Attributes >>
 self.PropertyDicts = []
 self.ItemLists = []
 self.ListCtrls = []
@@ -2056,7 +2058,7 @@ self.attr2col_num = {'priority':0, 'name':1,'owners':2, 'date':3}
 
 self.FindDialog = FindDialog(self, "Find...", "")
 self.EvalDialog = EvalDialog(self, "Evaluate...", "")
-#@+node:ekr.20051104081502.341: *12* @rst
+#@+node:ekr.20051104081502.341: *11* @rst
 @nocolor
 
 self.PropertyDicts
@@ -2192,7 +2194,7 @@ The following lines construct the Find Dialog and the Dialog that catches errors
 
     self.FindDialog = FindDialog(self, "Find...", "")
     self.EvalDialog = EvalDialog(self, "Evaluate...", "")
-#@+node:ekr.20051104081502.342: *11* << Menu Setup >>
+#@+node:ekr.20051104081502.342: *10* << Menu Setup >>
 filemenu = wxMenu()
 filemenu.Append(idNEWLIST, "New List...", "Create a new List")
 filemenu.Append(idOPENLIST, "Open List...", "Open a List")
@@ -2269,7 +2271,7 @@ filemenu.Check(idOFFLINE,OFFLINE_ONLY)
 self.filehistory = wxFileHistory()
 self.filehistory.UseMenu(filemenu)
 
-#@+node:ekr.20051104081502.343: *12* @rst
+#@+node:ekr.20051104081502.343: *11* @rst
 @nocolor
 
 +------------------------+------------------------------------------------+
@@ -2359,7 +2361,7 @@ self.filehistory.UseMenu(filemenu)
 
 
 
-#@+node:ekr.20051104081502.344: *11* << Toolbar Setup >>
+#@+node:ekr.20051104081502.344: *10* << Toolbar Setup >>
 tb = self.CreateToolBar(wxTB_HORIZONTAL|wxTB_FLAT)
 
 tb.AddLabelTool(idNEWLIST, "New (local) List", wxBitmap('bitmaps\\new.bmp'), shortHelp="Create New List")
@@ -2393,7 +2395,7 @@ if QUICK_LIST:
     tb.AddLabelTool(idSENDTO, "Send to", wxBitmap('bitmaps\\sendto.bmp'), shortHelp="Send to %s"%QUICK_LIST)
 
 tb.Realize()
-#@+node:ekr.20051104081502.346: *11* << Menu/Toolbar Events >>
+#@+node:ekr.20051104081502.346: *10* << Menu/Toolbar Events >>
 #File Menu ------------------------------------
 EVT_MENU(self, idNEWLIST, self.OnNewList)
 EVT_MENU(self, idOPENLIST, self.OnOpenList)
@@ -2441,7 +2443,7 @@ EVT_TOOL(self, idTOOLPRINT, lambda e: self.OnPrint(e,showprtdlg=False))
 
 if QUICK_LIST:
     EVT_TOOL(self, idSENDTO, lambda e: self.OnMoveToSpecificList(e,QUICK_LIST))
-#@+node:ekr.20051104081502.348: *11* << Create Controls>>
+#@+node:ekr.20051104081502.348: *10* << Create Controls>>
 upper_panel = wxPanel(self, -1)   #size = (900,400)
 bottom_panel = wxPanel(self, -1, size = (900,150)) #900 note that 000 seems to work???
 
@@ -2456,7 +2458,7 @@ self.owners.SetDefaultStyle(wxTextAttr("BLACK", font = f))
 
 self.note = wxTextCtrl(bottom_panel, -1, size = (400,50), style=wxTE_MULTILINE)
 
-#@+node:ekr.20051104081502.350: *11* << Other Events >>
+#@+node:ekr.20051104081502.350: *10* << Other Events >>
 EVT_TEXT(self, self.name.GetId(), lambda e: self.modified.update({'name':1}))
 EVT_TEXT(self, self.note.GetId(), lambda e: self.modified.update({'note':1}))
 EVT_TEXT(self, self.owners.GetId(), lambda e: self.modified.update({'owners':1}))
@@ -2465,7 +2467,7 @@ EVT_CLOSE(self, self.OnWindowExit)
 
 EVT_IDLE(self, self.OnIdle)
 
-#@+node:ekr.20051104081502.352: *11* << Layout Stuff >>
+#@+node:ekr.20051104081502.352: *10* << Layout Stuff >>
 #Appears necessary to really get the listcontrol to size with the overall window  
 #upper_panel sizer
 sizer = wxBoxSizer(wxHORIZONTAL)
@@ -2490,18 +2492,18 @@ sizer.Add(bottom_panel,0,wxALIGN_TOP|wxEXPAND)
 self.SetAutoLayout(1)
 self.SetSizer(sizer)
 #sizer.Fit(self) #actively does bad things to the dimensions on startup
-#@+node:ekr.20051104081502.354: *11* << GUI Instance Objects >>
+#@+node:ekr.20051104081502.354: *10* << GUI Instance Objects >>
 self.toolmenu = toolmenu
 self.filemenu = filemenu
 self.nb = nb
 self.tb = tb
-#@+node:ekr.20051104081502.356: *11* << Create Socket >>
+#@+node:ekr.20051104081502.356: *10* << Create Socket >>
 if OUTLOOK:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Create a TCP socket
     s.bind(('localhost',8888)) # Bind to port 8888
     s.listen(5) # Listen, but allow no more than
     self.sock = s
-#@+node:ekr.20051104081502.358: *11* << Load Recent Files >>
+#@+node:ekr.20051104081502.358: *10* << Load Recent Files >>
 try:
     pathlist = [f[1] for f in cp.items('Files')]
 except:
@@ -2522,13 +2524,13 @@ else:
 
 
 
-#@+node:ekr.20051104081502.360: *11* << Idle Timer >>
+#@+node:ekr.20051104081502.360: *10* << Idle Timer >>
 ID_TIMER = wxNewId()
 self.timer = wxTimer(self, ID_TIMER) 
 EVT_TIMER(self,  ID_TIMER, self.OnIdle)
 self.timer.Start(3000)
-#@+node:ekr.20051104081502.362: *9* Ownerlist creation methods (used by thread)
-#@+node:ekr.20051104081502.364: *10* def createownerlist
+#@+node:ekr.20051104081502.362: *8* Ownerlist creation methods (used by thread)
+#@+node:ekr.20051104081502.364: *9* def createownerlist
 def createownerlist(self):
 
     if REMOTE_HOST and OFFLINE_ONLY is False:
@@ -2568,13 +2570,13 @@ def createownerlist(self):
     self.Connect(-1, -1, evt_id, self.createownerdialog)
     wxPostEvent(self, evt)
 
-#@+node:ekr.20051104081502.366: *10* def createownerdialog
+#@+node:ekr.20051104081502.366: *9* def createownerdialog
 def createownerdialog(self, evt=None):
     self.ModifierDialog = ModifierDialog(parent=self, title="Select owner(s)", size=(180,300), style=wxCAPTION, modifierlist = self._list)
     del self._list
 
-#@+node:ekr.20051104081502.368: *9* Notebook methods
-#@+node:ekr.20051104081502.370: *10* def CreateNewNotebookPage
+#@+node:ekr.20051104081502.368: *8* Notebook methods
+#@+node:ekr.20051104081502.370: *9* def CreateNewNotebookPage
 def CreateNewNotebookPage(self, host, table):
 
     Properties = {'owner':'*ALL',
@@ -2632,7 +2634,7 @@ def CreateNewNotebookPage(self, host, table):
 
     self.SetStatusText("Successfully loaded %s"%tab_title)
 
-#@+node:ekr.20051104081502.372: *11* << Fill OwnerListBox >>
+#@+node:ekr.20051104081502.372: *10* << Fill OwnerListBox >>
 cursor = self.GetCursor(host)
 if cursor is None:
     g.pr("Couldn't get cursor to fill OwnerListBox")
@@ -2653,7 +2655,7 @@ for name in owners:
 OLBox.Append('*ALL')
 OLBox.SetSelection(0)
 
-#@+node:ekr.20051104081502.374: *11* << ListControl Events >>
+#@+node:ekr.20051104081502.374: *10* << ListControl Events >>
 LCId = LCtrl.GetId()
 EVT_LIST_ITEM_SELECTED(self, LCId, self.OnItemSelected)
 EVT_LIST_ITEM_ACTIVATED(self, LCId, self.OnDisplayInPlaceEditor)
@@ -2666,7 +2668,7 @@ EVT_LIST_COL_RIGHT_CLICK(self, LCId, self.OnColumnRightClick)
 # the following is a ListBox event
 EVT_LISTBOX(self, OLBox.GetId(), self.OnFilterOwners)
 
-#@+node:ekr.20051104081502.376: *10* def OnPageChange
+#@+node:ekr.20051104081502.376: *9* def OnPageChange
 def OnPageChange(self, evt=None):
     if self.modified:
         self.OnUpdate()
@@ -2678,7 +2680,7 @@ def OnPageChange(self, evt=None):
 
     evt.Skip() #051403
 
-#@+node:ekr.20051104081502.378: *11* << Find Highlighted Row >>
+#@+node:ekr.20051104081502.378: *10* << Find Highlighted Row >>
 idx = self.ListCtrls[L].GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)
 if idx != -1:
     self.curIdx = idx
@@ -2691,13 +2693,13 @@ elif self.ItemLists[L]:
 else:
     self.curIdx = -1
 
-#@+node:ekr.20051104081502.380: *11* << Update Title >>
+#@+node:ekr.20051104081502.380: *10* << Update Title >>
 location,rdbms = self.PropertyDicts[L]['host'].split(':')
 table = self.PropertyDicts[L]['table']
 self.SetTitle("List Manager:  %s:  %s:  %s"%(location,rdbms,table))
 
-#@+node:ekr.20051104081502.382: *9* Tickler methods
-#@+node:ekr.20051104081502.383: *10* def OnShowTickler
+#@+node:ekr.20051104081502.382: *8* Tickler methods
+#@+node:ekr.20051104081502.383: *9* def OnShowTickler
 def OnShowTickler(self, evt=None):
     if self.popupvisible:
         return
@@ -2797,14 +2799,14 @@ def OnShowTickler(self, evt=None):
     elif result==wxID_FORWARD:
         self.OnShowTickler()
 
-#@+node:ekr.20051104081502.384: *10* def OnActivateTickler
+#@+node:ekr.20051104081502.384: *9* def OnActivateTickler
 def OnActivateTickler(self, evt):
     self.tickler_active = not self.tickler_active
     self.toolmenu.Enable(idSHOWNEXT,self.tickler_active)
 
 
-#@+node:ekr.20051104081502.385: *9* Email methods
-#@+node:ekr.20051104081502.386: *10* OnMailItem
+#@+node:ekr.20051104081502.385: *8* Email methods
+#@+node:ekr.20051104081502.386: *9* OnMailItem
 def OnMailItem(self, evt=None, item=None):
     if item is None:
         if self.curIdx == -1:
@@ -2839,7 +2841,7 @@ def OnMailItem(self, evt=None, item=None):
         self.note.WriteText("%s\n"%body)
         self.note.WriteText("**************************************************\n")
 
-#@+node:ekr.20051104081502.387: *10* OnMailView
+#@+node:ekr.20051104081502.387: *9* OnMailView
 def OnMailView(self, evt=None):
     recipients = [self.PropertyDicts[self.L]['owner']]
 
@@ -2870,8 +2872,8 @@ def OnMailView(self, evt=None):
 
         #del outlook
 
-#@+node:ekr.20051104081502.388: *9* Cut/Copy/Paste methods
-#@+node:ekr.20051104081502.389: *10* OnCopyItems
+#@+node:ekr.20051104081502.388: *8* Cut/Copy/Paste methods
+#@+node:ekr.20051104081502.389: *9* OnCopyItems
 def OnCopyItems(self, event=None, cut=False):
     if self.curIdx == -1:
         return
@@ -2886,7 +2888,7 @@ def OnCopyItems(self, event=None, cut=False):
     if cut:
         self.OnDeleteItems()
 
-#@+node:ekr.20051104081502.390: *11* << Find Highlighted Items >>
+#@+node:ekr.20051104081502.390: *10* << Find Highlighted Items >>
 copyitems = []
 i = -1
 while 1:
@@ -2898,7 +2900,7 @@ while 1:
     copyitems.append(item)
 
 self.copyitems = copyitems
-#@+node:ekr.20051104081502.391: *10* OnPasteItems
+#@+node:ekr.20051104081502.391: *9* OnPasteItems
 def OnPasteItems(self, evt=None, L=None): #noselect 051603
     #used by OnMoveToList, OnMoveToSpecificList and called directly
     if not self.copyitems:
@@ -2953,7 +2955,7 @@ def OnPasteItems(self, evt=None, L=None): #noselect 051603
 
 
 
-#@+node:ekr.20051104081502.392: *10* OnDeleteItems
+#@+node:ekr.20051104081502.392: *9* OnDeleteItems
 def OnDeleteItems(self, event=None):
     """Called directly and by OnCopyItems (cut = true)
     """
@@ -2996,8 +2998,8 @@ def OnDeleteItems(self, event=None):
     self.modified = {}
     self.curIdx = -1
 
-#@+node:ekr.20051104081502.393: *9* MouseDown methods
-#@+node:ekr.20051104081502.394: *10* OnLeftDown (Action depends on x coordinate)
+#@+node:ekr.20051104081502.393: *8* MouseDown methods
+#@+node:ekr.20051104081502.394: *9* OnLeftDown (Action depends on x coordinate)
 def OnLeftDown(self, evt):
     g.pr("Here")
     if self.modified:
@@ -3036,7 +3038,7 @@ def OnLeftDown(self, evt):
 
 
 
-#@+node:ekr.20051104081502.395: *10* OnRightDown (Display popup sendto menu)
+#@+node:ekr.20051104081502.395: *9* OnRightDown (Display popup sendto menu)
 def OnRightDown(self, evt):
     x,y = evt.GetPosition()
 
@@ -3075,8 +3077,8 @@ def OnRightDown(self, evt):
     self.PopupMenu(sendtomenu,(x+125,y+40))
     sendtomenu.Destroy()
 
-#@+node:ekr.20051104081502.396: *9* Move/Combine items methods
-#@+node:ekr.20051104081502.397: *10* OnCombineItems
+#@+node:ekr.20051104081502.396: *8* Move/Combine items methods
+#@+node:ekr.20051104081502.397: *9* OnCombineItems
 def OnCombineItems(self, evt):
     L = self.L
     idx = self.curIdx
@@ -3157,7 +3159,7 @@ def OnCombineItems(self, evt):
 
     dlg.Destroy()
 
-#@+node:ekr.20051104081502.398: *10* OnMoveToList
+#@+node:ekr.20051104081502.398: *9* OnMoveToList
 def OnMoveToList(self, evt=None, page=0):
     self.OnCopyItems(cut=True)
     pc = self.nb.GetPageCount()
@@ -3179,7 +3181,7 @@ def OnMoveToList(self, evt=None, page=0):
 
     self.copyitems = []
 
-#@+node:ekr.20051104081502.399: *10* OnMoveToSpecificList
+#@+node:ekr.20051104081502.399: *9* OnMoveToSpecificList
 def OnMoveToSpecificList(self, evt=None, table='follow_ups'):
     matches = {}
     for page,Properties in enumerate(self.PropertyDicts):
@@ -3212,8 +3214,8 @@ def OnMoveToSpecificList(self, evt=None, table='follow_ups'):
 
 
 
-#@+node:ekr.20051104081502.400: *9* Change/update items methods
-#@+node:ekr.20051104081502.401: *10* OnToggleFinished
+#@+node:ekr.20051104081502.400: *8* Change/update items methods
+#@+node:ekr.20051104081502.401: *9* OnToggleFinished
 def OnToggleFinished(self, evt=None):
     L = self.L
     LCtrl = self.ListCtrls[L]
@@ -3248,7 +3250,7 @@ def OnToggleFinished(self, evt=None):
 
 
 
-#@+node:ekr.20051104081502.402: *11* << draw item >>
+#@+node:ekr.20051104081502.402: *10* << draw item >>
 if item.finisheddate:
     #It appears that SetTextColour resets font weight to Normal but this makes no sense
     #This means that all finished items have Normal weight whether they are priority 3,2 or 1
@@ -3275,7 +3277,7 @@ else:
     f.SetWeight(wxNORMAL) # resetting font weight
 
 LCtrl.SetItem(LC_Item)
-#@+node:ekr.20051104081502.403: *10* OnPriority
+#@+node:ekr.20051104081502.403: *9* OnPriority
 def OnPriority(self, event=None, input=None):
     L = self.L
     idx = self.curIdx
@@ -3311,7 +3313,7 @@ def OnPriority(self, event=None, input=None):
 
     wxCallAfter(LCtrl.SetFocus)
 
-#@+node:ekr.20051104081502.404: *11* << draw item >>
+#@+node:ekr.20051104081502.404: *10* << draw item >>
 if item.finisheddate:
     #It appears that SetTextColour resets font weight to Normal but this makes no sense
     #This means that all finished items have Normal weight whether they are priority 3,2 or 1
@@ -3338,8 +3340,8 @@ else:
     f.SetWeight(wxNORMAL) # resetting font weight
 
 LCtrl.SetItem(LC_Item)
-#@+node:ekr.20051104081502.405: *10* Inplace Edit Methods
-#@+node:ekr.20051104081502.406: *11* OnDisplayInPlaceEditor
+#@+node:ekr.20051104081502.405: *9* Inplace Edit Methods
+#@+node:ekr.20051104081502.406: *10* OnDisplayInPlaceEditor
 def OnDisplayInPlaceEditor(self,evt=None):
     L = self.L
     LCtrl = self.ListCtrls[L]
@@ -3375,7 +3377,7 @@ def OnDisplayInPlaceEditor(self,evt=None):
 
 
 
-#@+node:ekr.20051104081502.407: *11* OnCloseInPlaceEditor
+#@+node:ekr.20051104081502.407: *10* OnCloseInPlaceEditor
 def OnCloseInPlaceEditor(self,evt=None):
     L = self.L
     LCtrl = self.ListCtrls[L]
@@ -3412,7 +3414,7 @@ def OnCloseInPlaceEditor(self,evt=None):
 
 
 
-#@+node:ekr.20051104081502.408: *10* OnDueDate
+#@+node:ekr.20051104081502.408: *9* OnDueDate
 def OnDueDate(self, evt=None):
     idx = self.curIdx
     if idx == -1:
@@ -3450,7 +3452,7 @@ def OnDueDate(self, evt=None):
     dlg.cal.Destroy()
     dlg.Destroy()
 
-#@+node:ekr.20051104081502.409: *10* OnEditOwner
+#@+node:ekr.20051104081502.409: *9* OnEditOwner
 def OnEditOwner(self, evt=None): #, new=False) removed Aug. 31 for simplicity
     idx = self.curIdx
     if idx == -1:
@@ -3495,14 +3497,14 @@ def OnEditOwner(self, evt=None): #, new=False) removed Aug. 31 for simplicity
 
     wxCallAfter(LCtrl.SetFocus)
 
-#@+node:ekr.20051104081502.410: *11* << Common Owner Code >>
+#@+node:ekr.20051104081502.410: *10* << Common Owner Code >>
 owner_str = '; '.join(item.owners)
 LCtrl.SetStringItem(idx, self.attr2col_num['owners'], owner_str)
 self.owners.Clear()
 self.owners.AppendText(owner_str)
 
 z = item.owners+[None,None,None] #note that + creates a new list
-#@+node:ekr.20051104081502.411: *10* OnUpdate
+#@+node:ekr.20051104081502.411: *9* OnUpdate
 def OnUpdate(self, evt=None):
     if 'inplace' in self.modified:
         self.OnCloseInPlaceEditor()
@@ -3566,14 +3568,14 @@ def OnUpdate(self, evt=None):
     self.modified = {}
 
 
-#@+node:ekr.20051104081502.412: *11* << Common Owner Code >>
+#@+node:ekr.20051104081502.412: *10* << Common Owner Code >>
 owner_str = '; '.join(item.owners)
 LCtrl.SetStringItem(idx, self.attr2col_num['owners'], owner_str)
 self.owners.Clear()
 self.owners.AppendText(owner_str)
 
 z = item.owners+[None,None,None] #note that + creates a new list
-#@+node:ekr.20051104081502.413: *10* OnNewItem
+#@+node:ekr.20051104081502.413: *9* OnNewItem
 def OnNewItem(self, evt=None):
     L=self.L
     LCtrl = self.ListCtrls[L]
@@ -3636,11 +3638,11 @@ def OnNewItem(self, evt=None):
     LCtrl.SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED)
 
     self.OnDisplayInPlaceEditor() #(new=True)
-#@+node:ekr.20051104081502.414: *11* << Clear data fields >>
+#@+node:ekr.20051104081502.414: *10* << Clear data fields >>
 self.name.Clear()
 self.owners.Clear()
 self.note.Clear()
-#@+node:ekr.20051104081502.415: *10* Conflict (not in use)
+#@+node:ekr.20051104081502.415: *9* Conflict (not in use)
 @ Need to decide if we are going to have timestamp checking to be sure something hasn't changed
 Note that there would not need to be timestamp checking on a new node
 Also  there is no need to timestamp check on a local DB
@@ -3656,7 +3658,7 @@ def Conflict(self, host, cursor, table, item):
         return True
     else:
         return False
-#@+node:ekr.20051104081502.416: *10* OnEditNote
+#@+node:ekr.20051104081502.416: *9* OnEditNote
 def OnEditNote(self, evt=None):
     if self.modified:
         self.OnUpdate()
@@ -3704,8 +3706,8 @@ def OnEditNote(self, evt=None):
     self.editor.append(ed)
 
     time.sleep(.1)
-#@+node:ekr.20051104081502.417: *9* File menu methods
-#@+node:ekr.20051104081502.418: *10* OnNewList
+#@+node:ekr.20051104081502.417: *8* File menu methods
+#@+node:ekr.20051104081502.418: *9* OnNewList
 def OnNewList(self, event=None):
     if self.modified:
         self.OnUpdate()
@@ -3770,7 +3772,7 @@ def OnNewList(self, event=None):
     dlg.Destroy()
 
 
-#@+node:ekr.20051104081502.419: *10* OnFileList
+#@+node:ekr.20051104081502.419: *9* OnFileList
 def OnFileList(self, evt=None, path=None):
     if self.modified:
         self.OnUpdate()
@@ -3813,7 +3815,7 @@ def OnFileList(self, evt=None, path=None):
 
     self.CreateNewNotebookPage(host,table)
 
-#@+node:ekr.20051104081502.420: *10* OnOpenList
+#@+node:ekr.20051104081502.420: *9* OnOpenList
 def OnOpenList(self, evt=None):
     if self.modified:
         self.OnUpdate()
@@ -3855,7 +3857,7 @@ def OnOpenList(self, evt=None):
 
         if host in hosts: #takes care of highlighting root or hosts
             self.CreateNewNotebookPage(host,table)
-#@+node:ekr.20051104081502.421: *10* OnDeleteList
+#@+node:ekr.20051104081502.421: *9* OnDeleteList
 def OnDeleteList(self, evt=None):
     #ini controls whether the menu item is enabled
     Properties = self.PropertyDicts[self.L]
@@ -3891,7 +3893,7 @@ def OnDeleteList(self, evt=None):
 
     self.OnCloseList()
 
-#@+node:ekr.20051104081502.422: *10* OnCloseList
+#@+node:ekr.20051104081502.422: *9* OnCloseList
 def OnCloseList(self, evt=None):
     if self.modified:
         self.OnUpdate()
@@ -3915,7 +3917,7 @@ def OnCloseList(self, evt=None):
 
 
 
-#@+node:ekr.20051104081502.423: *10* OnCloseAll
+#@+node:ekr.20051104081502.423: *9* OnCloseAll
 def OnCloseAll(self, evt=None):
     if self.modified:
         self.OnUpdate()
@@ -3929,7 +3931,7 @@ def OnCloseAll(self, evt=None):
     #note that Clearing does set self.modified (eg {'name':1})
     self.modified = {}
 
-#@+node:ekr.20051104081502.424: *10* OnSaveAsText
+#@+node:ekr.20051104081502.424: *9* OnSaveAsText
 def OnSaveAsText(self, evt=None):
     if self.modified:
         self.OnUpdate()
@@ -3957,7 +3959,7 @@ def OnSaveAsText(self, evt=None):
 
     self.SetStatusText("Saved file %s"%path)
 
-#@+node:ekr.20051104081502.425: *10* OnArchive
+#@+node:ekr.20051104081502.425: *9* OnArchive
 def OnArchive(self, evt=None):
     if self.modified:
         self.OnUpdate()
@@ -4045,7 +4047,7 @@ def OnArchive(self, evt=None):
                         "Archiving successful...",
                         wxICON_INFORMATION|wxOK)
     dlg.ShowModal()
-#@+node:ekr.20051104081502.426: *10* OnWorkOffline
+#@+node:ekr.20051104081502.426: *9* OnWorkOffline
 def OnWorkOffline(self, evt=None):
     global OFFLINE_ONLY
     OFFLINE_ONLY = not OFFLINE_ONLY
@@ -4063,8 +4065,8 @@ def OnWorkOffline(self, evt=None):
 
     self.filemenu.Check(idOFFLINE,OFFLINE_ONLY)
 
-#@+node:ekr.20051104081502.428: *9* Display methods
-#@+node:ekr.20051104081502.429: *10* OnItemSelected
+#@+node:ekr.20051104081502.428: *8* Display methods
+#@+node:ekr.20051104081502.429: *9* OnItemSelected
 def OnItemSelected(self, evt=None):
     if self.modified:
         self.OnUpdate()
@@ -4104,11 +4106,11 @@ def OnItemSelected(self, evt=None):
     #writing to text widgets caused wxEVT_COMMAND_TEXT_UPDATED which is caught by EVT_TEXT, which updates self.modified
     self.modified={}
 
-#@+node:ekr.20051104081502.430: *10* OnItemActivated
+#@+node:ekr.20051104081502.430: *9* OnItemActivated
 def OnItemActivated(self,evt):
     g.pr("On Activated")
 
-#@+node:ekr.20051104081502.431: *10* OnShowAll
+#@+node:ekr.20051104081502.431: *9* OnShowAll
 def OnShowAll(self, evt=None):
     L = self.L
     OLBox = self.OwnerLBoxes[L]
@@ -4120,7 +4122,7 @@ def OnShowAll(self, evt=None):
     OLBox.SetStringSelection('*ALL')
 
     self.OnRefresh()
-#@+node:ekr.20051104081502.432: *10* OnRefresh
+#@+node:ekr.20051104081502.432: *9* OnRefresh
 def OnRefresh(self, evt=None):
     #OnItemSelected should be able to handle no items so this could be very short
     L = self.L
@@ -4135,7 +4137,7 @@ def OnRefresh(self, evt=None):
         self.curIdx = -1		
 
     self.OnItemSelected()
-#@+node:ekr.20051104081502.433: *10* OnFilterOwners
+#@+node:ekr.20051104081502.433: *9* OnFilterOwners
 def OnFilterOwners(self, evt=None):
     if self.modified:
         self.OnUpdate()
@@ -4144,7 +4146,7 @@ def OnFilterOwners(self, evt=None):
     if sel:
         self.PropertyDicts[self.L]['owner'] = sel
         self.OnRefresh()
-#@+node:ekr.20051104081502.434: *10* OnColumnClick (to sort columns)
+#@+node:ekr.20051104081502.434: *9* OnColumnClick (to sort columns)
 def OnColumnClick(self, evt):
     col_num = evt.GetColumn()
     L = self.L
@@ -4169,7 +4171,7 @@ def OnColumnClick(self, evt):
     img_num = LCtrl.arrows[Sort['direction']]
     LCtrl.SetColumnImage(col_num, img_num)
 
-#@+node:ekr.20051104081502.435: *10* OnShowFinished
+#@+node:ekr.20051104081502.435: *9* OnShowFinished
 def OnShowFinished(self,evt):
     Properties = self.PropertyDicts[self.L]
     label1 = "Enter the number of days to retain\ncompleted tasks in the display:"
@@ -4184,7 +4186,7 @@ def OnShowFinished(self,evt):
         self.OnRefresh()
     dlg.Destroy()
 
-#@+node:ekr.20051104081502.436: *10* OnColumnRightClick (popup to change date displayed)
+#@+node:ekr.20051104081502.436: *9* OnColumnRightClick (popup to change date displayed)
 def OnColumnRightClick(self, evt=None):
     col = evt.GetColumn()
     if col != self.attr2col_num['date']:
@@ -4206,7 +4208,7 @@ def OnColumnRightClick(self, evt=None):
     datemenu.Destroy()
 
 
-#@+node:ekr.20051104081502.437: *10* OnDisplayDateCategory
+#@+node:ekr.20051104081502.437: *9* OnDisplayDateCategory
 def OnDisplayDateCategory(self, evt=None):
     dlg = wxSingleChoiceDialog(self, 'Date Display', 'Choose a date to display:',
                     ['Create Date','Last Modified','Due Date','Completion Date']
@@ -4218,7 +4220,7 @@ def OnDisplayDateCategory(self, evt=None):
         idx = dlg.GetSelection()
         self.ChangeDateDisplayed(i=idx)
 
-#@+node:ekr.20051104081502.438: *10* ChangeDateDisplayed
+#@+node:ekr.20051104081502.438: *9* ChangeDateDisplayed
 def ChangeDateDisplayed(self, evt=None, i=0):
     L = self.L
     LCtrl = self.ListCtrls[L]
@@ -4229,7 +4231,7 @@ def ChangeDateDisplayed(self, evt=None, i=0):
     LCtrl.SetColumn(col_num,col_info)
     self.DisplayList(self.ItemLists[L])
     #self.OnRefresh() #have gone back and forth but think that it should be self.DisplayList
-#@+node:ekr.20051104081502.439: *10* DisplayList
+#@+node:ekr.20051104081502.439: *9* DisplayList
 def DisplayList(self, List, L=None):
     #OnPasteItems needs to be able to have an L that is not self.L
     if L is None:
@@ -4246,7 +4248,7 @@ def DisplayList(self, List, L=None):
         << draw item >>
 
 
-#@+node:ekr.20051104081502.440: *11* << draw item >>
+#@+node:ekr.20051104081502.440: *10* << draw item >>
 LCtrl.InsertImageStringItem(x, str(item.priority), LCtrl.idx1)
 LCtrl.SetStringItem(x,1,item.name)
 LCtrl.SetStringItem(x,2,'; '.join(item.owners))
@@ -4275,8 +4277,8 @@ elif item.priority==3:
     f.SetWeight(wxNORMAL) #return to normal
     LC_Item.SetTextColour(wxRED)
     LCtrl.SetItem(LC_Item)
-#@+node:ekr.20051104081502.441: *9* Printing methods
-#@+node:ekr.20051104081502.442: *10* OnPageSetup
+#@+node:ekr.20051104081502.441: *8* Printing methods
+#@+node:ekr.20051104081502.442: *9* OnPageSetup
 def OnPageSetup(self, evt):
     #need to pass printdata to tableprint
 
@@ -4291,7 +4293,7 @@ def OnPageSetup(self, evt):
     if dlg.ShowModal() == wxID_OK:
         self.printdata = dlg.GetPageSetupData().GetPrintData()
         dlg.Destroy()
-#@+node:ekr.20051104081502.443: *10* OnPrint
+#@+node:ekr.20051104081502.443: *9* OnPrint
 def OnPrint(self, evt=None, prev=False, showprtdlg=True): 		#???self.psdata = psdata
     IList = self.ItemLists[self.L]
     Properties = self.PropertyDicts[self.L]
@@ -4337,22 +4339,22 @@ def OnPrint(self, evt=None, prev=False, showprtdlg=True): 		#???self.psdata = ps
         prt.Preview()
     else:
         prt.Print(prompt=showprtdlg)
-#@+node:ekr.20051104081502.444: *9* Exiting methods
-#@+node:ekr.20051104081502.445: *10* OnWindowExit
+#@+node:ekr.20051104081502.444: *8* Exiting methods
+#@+node:ekr.20051104081502.445: *9* OnWindowExit
 def OnWindowExit(self, evt):
     #this is called if you close the ListManager Window with the X
     if evt.CanVeto():
         self.OnExit()
     else:
         evt.Skip()
-#@+node:ekr.20051104081502.446: *10* OnExit
+#@+node:ekr.20051104081502.446: *9* OnExit
 def OnExit(self, event=None):   
     << save configuration file >>
     sys.stderr.dlg.Destroy() #destroys the error dialog; need to do this to shut down correctly
     if self.ModifierDialog: #only reason to check is if closed before ModifierDialog is constructed
         self.ModifierDialog.Destroy()
     self.Close(1)
-#@+node:ekr.20051104081502.447: *11* <<save configuration file>>
+#@+node:ekr.20051104081502.447: *10* <<save configuration file>>
 cp.remove_section('Files')
 cp.add_section("Files")
 
@@ -4374,15 +4376,15 @@ try:
 except IOError:
     g.pr("The configuration file can't be written!")
     time.sleep(10) #so you can see that there was a problem
-#@+node:ekr.20051104081502.448: *9* Find methods
-#@+node:ekr.20051104081502.449: *10* OnFind
+#@+node:ekr.20051104081502.448: *8* Find methods
+#@+node:ekr.20051104081502.449: *9* OnFind
 def OnFind(self, evt=None):
     self.FindDialog.Show(True)
     self.FindDialog.FindText.SetSelection(-1,-1)
     self.FindDialog.FindText.SetFocus()
 
 
-#@+node:ekr.20051104081502.450: *10* FindString
+#@+node:ekr.20051104081502.450: *9* FindString
 def FindString(self, evt=None):
     L = self.L
     Properties = self.PropertyDicts[L]
@@ -4456,7 +4458,7 @@ def FindString(self, evt=None):
         self.OwnerLBoxes[L].SetSelection(owner_idx, 0) #get exception if index = -1
 
     self.SetStatusText("Found %d items"%len(IList))
-#@+node:ekr.20051104081502.451: *10* FindNode
+#@+node:ekr.20051104081502.451: *9* FindNode
 def FindNode(self, item, showfinished=True):
     L = self.L
     LCtrl = self.ListCtrls[L]
@@ -4481,8 +4483,8 @@ def FindNode(self, item, showfinished=True):
         LCtrl.EnsureVisible(idx)
     self.curIdx = idx
 
-#@+node:ekr.20051104081502.452: *9* Database-related methods
-#@+node:ekr.20051104081502.453: *10* GetCursor
+#@+node:ekr.20051104081502.452: *8* Database-related methods
+#@+node:ekr.20051104081502.453: *9* GetCursor
 def GetCursor(self, host):
     cursor = self.Cursors.get(host)
     if cursor:
@@ -4524,7 +4526,7 @@ def GetCursor(self, host):
     return cursor
 
 
-#@+node:ekr.20051104081502.454: *10* GetNote
+#@+node:ekr.20051104081502.454: *9* GetNote
 def GetNote(self, L=None, item=None):
     if L is None:
         L = self.L
@@ -4552,7 +4554,7 @@ def GetNote(self, L=None, item=None):
         note = ''
     return note
 
-#@+node:ekr.20051104081502.455: *10* CreateTable
+#@+node:ekr.20051104081502.455: *9* CreateTable
 def CreateTable(self, host, table):
     cursor = self.Cursors[host]
     rdbms = host.split(':')[1]
@@ -4582,7 +4584,7 @@ def CreateTable(self, host, table):
 `timestamp` timestamp(14) NOT NULL,PRIMARY KEY  (`id`)) TYPE=MyISAM"""%table
 
     cursor.execute(sql)
-#@+node:ekr.20051104081502.456: *10* ReadFromDB (returns db results)
+#@+node:ekr.20051104081502.456: *9* ReadFromDB (returns db results)
 def ReadFromDB(self):
     L = self.L
     Properties = self.PropertyDicts[L]
@@ -4639,7 +4641,7 @@ def ReadFromDB(self):
 
 
 
-#@+node:ekr.20051104081502.457: *10* CreateAndDisplayList (returns Item List)
+#@+node:ekr.20051104081502.457: *9* CreateAndDisplayList (returns Item List)
 def CreateAndDisplayList(self, results):
     LCtrl = self.ListCtrls[self.L]
     LCdate = self.PropertyDicts[self.L]['LCdate']
@@ -4663,7 +4665,7 @@ def CreateAndDisplayList(self, results):
     return itemlist
 
 
-#@+node:ekr.20051104081502.458: *11* << assign item attributes >>
+#@+node:ekr.20051104081502.458: *10* << assign item attributes >>
 item.priority = int(row[0]) #int(row[0]) needs int because it seems to come back as a long from MySQL
 item.name = row[1]
 item.createdate = row[2]
@@ -4673,7 +4675,7 @@ item.owners = [y for y in row[5:8] if y] #if you carry around ['tom',None,None] 
 item.id = row[8]
 item.timestamp = row[9]
 
-#@+node:ekr.20051104081502.459: *11* << draw item >>
+#@+node:ekr.20051104081502.459: *10* << draw item >>
 LCtrl.InsertImageStringItem(x, str(item.priority), LCtrl.idx1)
 LCtrl.SetStringItem(x,1,item.name)
 LCtrl.SetStringItem(x,2,'; '.join(item.owners))
@@ -4702,7 +4704,7 @@ elif item.priority==3:
     f.SetWeight(wxNORMAL) #return to normal
     LC_Item.SetTextColour(wxRED)
     LCtrl.SetItem(LC_Item)
-#@+node:ekr.20051104081502.460: *10* OnSync
+#@+node:ekr.20051104081502.460: *9* OnSync
 def OnSync(self, evt=None):
     if self.modified:
         self.OnUpdate()
@@ -4825,7 +4827,7 @@ def OnSync(self, evt=None):
 
     g.pr("Synchronization completed")
 
-#@+node:ekr.20051104081502.461: *10* TimeStamper
+#@+node:ekr.20051104081502.461: *9* TimeStamper
 def TimeStamper(self, host, cursor, table, id):
     #note that you can insert a timestamp value into an mysql timestamp field
     if host.split(':')[1] == 'sqlite': #host -> location:rdbms
@@ -4836,44 +4838,44 @@ def TimeStamper(self, host, cursor, table, id):
         timestamp = cursor.fetchone()[0]
 
     return timestamp
-#@+node:ekr.20051104081502.462: *9* Evaluate methods
-#@+node:ekr.20051104081502.463: *10* OnShowEvaluate
+#@+node:ekr.20051104081502.462: *8* Evaluate methods
+#@+node:ekr.20051104081502.463: *9* OnShowEvaluate
 def OnShowEvaluate(self, evt=None):
 
     self.EvalDialog.Show(True)
     self.EvalDialog.EvalText.SetSelection(-1,-1)
     self.EvalDialog.EvalText.SetFocus()
 
-#@+node:ekr.20051104081502.464: *10* OnEvaluate
+#@+node:ekr.20051104081502.464: *9* OnEvaluate
 def OnEvaluate(self, evt=None):
     expr = self.EvalDialog.EvalText.GetValue()
     g.pr("%s => "%expr,newline=False)
     g.pr(eval(expr))
 
-#@+node:ekr.20051104081502.465: *9* Help menu methods
-#@+node:ekr.20051104081502.466: *10* OnShowAbout
+#@+node:ekr.20051104081502.465: *8* Help menu methods
+#@+node:ekr.20051104081502.466: *9* OnShowAbout
 def OnShowAbout(self, evt=None):
     from about import AboutBox
     dlg = AboutBox(self, app_version = VERSION)
     dlg.ShowModal()
     dlg.Destroy()
 
-#@+node:ekr.20051104081502.467: *10* OnShowHelp
+#@+node:ekr.20051104081502.467: *9* OnShowHelp
 def OnShowHelp(self, evt=None):
     os.startfile('ListManager.chm')
 
-#@+node:ekr.20051104081502.468: *9* GetUID
+#@+node:ekr.20051104081502.468: *8* GetUID
 def GetUID(self):
     pyiid = CreateGuid()
     # the str(pyiid) looks like {....} and doing [1:-1] strips that off
     return str(pyiid)[1:-1]
 
-#@+node:ekr.20051104081502.469: *9* OnIdle
+#@+node:ekr.20051104081502.469: *8* OnIdle
 def OnIdle(self, evt):	
     << Check for Transfers From Outlook >>
     << Check if Edited File has Changed >>
 
-#@+node:ekr.20051104081502.471: *10* << Check for Transfers From Outlook >>
+#@+node:ekr.20051104081502.471: *9* << Check for Transfers From Outlook >>
 if OUTLOOK:
     input,output,exc = select.select([self.sock],[],[],0)
     if input:
@@ -4944,7 +4946,7 @@ if OUTLOOK:
         LCtrl.SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED)
         self.curIdx = 0 
 
-#@+node:ekr.20051104081502.473: *10* << Check if Edited File has Changed >>
+#@+node:ekr.20051104081502.473: *9* << Check if Edited File has Changed >>
 for ed in self.editor:
     path = ed['path']
     t = os.path.getmtime(path)
@@ -4976,10 +4978,10 @@ for ed in self.editor:
                 if 'note' in self.modified: #if necessary only if somehow note text didn't change
                     del self.modified['note']
 
-#@+node:ekr.20051104081502.475: *8* class ListCtrl
+#@+node:ekr.20051104081502.475: *7* class ListCtrl
 class ListCtrl(wxListCtrl, wxListCtrlAutoWidthMixin):
     @others
-#@+node:ekr.20051104081502.476: *9* __init__
+#@+node:ekr.20051104081502.476: *8* __init__
 def __init__(self, parent, ID, pos=wxDefaultPosition, size=wxDefaultSize, style=0):
     wxListCtrl.__init__(self, parent, ID, pos, size, style)
     wxListCtrlAutoWidthMixin.__init__(self)
@@ -4999,7 +5001,7 @@ def __init__(self, parent, ID, pos=wxDefaultPosition, size=wxDefaultSize, style=
 
     self.SetUpColumns()
 
-#@+node:ekr.20051104081502.477: *9* SetUpColumns
+#@+node:ekr.20051104081502.477: *8* SetUpColumns
 def SetUpColumns(self):
     #Need to to construct column heads for columns with sorting by hand to get sorting images on columns
     info = wxListItem()
@@ -5024,15 +5026,15 @@ def SetUpColumns(self):
     self.InsertColumnInfo(3, info)
     self.SetColumnWidth(3, 75)                
 
-#@+node:ekr.20051104081502.478: *9* OnColBeginDrag
+#@+node:ekr.20051104081502.478: *8* OnColBeginDrag
 def OnColBeginDrag(self, evt):
     #if inplace editor then change its dimensions
     if evt.GetColumn() == 0:
         evt.Veto()
-#@+node:ekr.20051104081502.479: *8* class MyApp
+#@+node:ekr.20051104081502.479: *7* class MyApp
 class MyApp(wxApp):
     @others
-#@+node:ekr.20051104081502.480: *9* OnInit
+#@+node:ekr.20051104081502.480: *8* OnInit
 def OnInit(self):
     global OFFLINE_ONLY, CANCEL
     wxInitAllImageHandlers()
@@ -5066,7 +5068,7 @@ def OnInit(self):
     return True
 
 
-#@+node:ekr.20051104081502.481: *8* class Logger
+#@+node:ekr.20051104081502.481: *7* class Logger
 class Logger:
     def __init__(self):
         self.dlg = LoggerDialog(None, "", "Alerts and Exceptions", dir=DIRECTORY)
@@ -5077,7 +5079,7 @@ class Logger:
 
         self.dlg.text.AppendText(error_msg)
 
-#@+node:ekr.20051104081502.482: *8* run
+#@+node:ekr.20051104081502.482: *7* run
 def run():
     app = MyApp(0)
     if not CANCEL:
@@ -5086,7 +5088,7 @@ def run():
 
 if __name__ == '__main__':
     run()
-#@+node:ekr.20051104081502.483: *7* LMDialogs.py
+#@+node:ekr.20051104081502.483: *6* LMDialogs.py
 @ @rst-options
 code_mode = True
 @c
@@ -5099,10 +5101,10 @@ from wxPython.calendar import *
 from wxPython.utils import *
 import os
 @others
-#@+node:ekr.20051104081502.484: *8* class PopDialog
+#@+node:ekr.20051104081502.484: *7* class PopDialog
 class TicklerDialog(wxDialog):
     @others
-#@+node:ekr.20051104081502.485: *9* __init__
+#@+node:ekr.20051104081502.485: *8* __init__
 def __init__(self, parent, msg, caption, pos = wxDefaultPosition, size = wxDefaultSize):
     wxDialog.__init__(self, parent, -1, caption, pos, size, style=wxSTAY_ON_TOP | wxTHICK_FRAME | wxCAPTION)
 
@@ -5142,19 +5144,19 @@ def __init__(self, parent, msg, caption, pos = wxDefaultPosition, size = wxDefau
     TC.SetCursor(wxStockCursor(wxCURSOR_ARROW))        
 
     self.TC = TC
-#@+node:ekr.20051104081502.486: *9* OnLeftDown
+#@+node:ekr.20051104081502.486: *8* OnLeftDown
 def OnLeftDown(self, evt):
     self.EndModal(wxID_OK)
-#@+node:ekr.20051104081502.487: *9* OnForward
+#@+node:ekr.20051104081502.487: *8* OnForward
 def OnForward(self, evt):
     self.EndModal(wxID_FORWARD)
-#@+node:ekr.20051104081502.488: *9* OnMail
+#@+node:ekr.20051104081502.488: *8* OnMail
 def OnMail(self, evt):
     self.EndModal(wxID_APPLY)        
-#@+node:ekr.20051104081502.489: *8* class StartupDialog
+#@+node:ekr.20051104081502.489: *7* class StartupDialog
 class StartupDialog(wxDialog):
     @others
-#@+node:ekr.20051104081502.490: *9* __init__
+#@+node:ekr.20051104081502.490: *8* __init__
 def __init__(self, parent, caption, pos=wxDefaultPosition, size=(300,115)):
     wxDialog.__init__(self, parent, -1, caption, pos, size, style=wxSTAY_ON_TOP|wxCAPTION)
 
@@ -5188,14 +5190,14 @@ def __init__(self, parent, caption, pos=wxDefaultPosition, size=(300,115)):
     EVT_BUTTON(self, wxID_NO, self.OnSelection)
     EVT_BUTTON(self, wxID_YES, self.OnSelection)
     EVT_BUTTON(self, wxID_CANCEL, self.OnSelection)
-#@+node:ekr.20051104081502.491: *9* OnSelection
+#@+node:ekr.20051104081502.491: *8* OnSelection
 def OnSelection(self,evt):
     val = evt.GetId()
     self.EndModal(val)
-#@+node:ekr.20051104081502.492: *8* class ModifierDialog
+#@+node:ekr.20051104081502.492: *7* class ModifierDialog
 class ModifierDialog(wxDialog):
     @others
-#@+node:ekr.20051104081502.493: *9* __init__
+#@+node:ekr.20051104081502.493: *8* __init__
 def __init__(self, parent, title,
              pos=wxDefaultPosition,
              size=wxDefaultSize,
@@ -5244,7 +5246,7 @@ def __init__(self, parent, title,
     EVT_BUTTON(self, wxID_CANCEL, self.ClearSelections)
 
 
-#@+node:ekr.20051104081502.494: *9* GetUserInput
+#@+node:ekr.20051104081502.494: *8* GetUserInput
 def GetUserInput(self):
     idx_list = self.lb.GetSelections()
     mod_list =[]
@@ -5265,7 +5267,7 @@ def GetUserInput(self):
 
 
     return (mod_list, new_list)
-#@+node:ekr.20051104081502.495: *9* SelectCurrent
+#@+node:ekr.20051104081502.495: *8* SelectCurrent
 def SelectCurrent(self, cur_sel):
     for sel in cur_sel:
         index = self.lb.FindString(sel)
@@ -5273,17 +5275,17 @@ def SelectCurrent(self, cur_sel):
             self.lb.SetSelection(index)
 
 
-#@+node:ekr.20051104081502.496: *9* ClearSelections
+#@+node:ekr.20051104081502.496: *8* ClearSelections
 def ClearSelections(self, evt=None):
     idx_list = self.lb.GetSelections() #note you can't just use the indexes of the SelectCurrent since they may have clicked before cancelling
     for i in idx_list:
         self.lb.Deselect(i)
 
     evt.Skip()
-#@+node:ekr.20051104081502.497: *8* class MailDialog
+#@+node:ekr.20051104081502.497: *7* class MailDialog
 class MailDialog(wxDialog):
     @others
-#@+node:ekr.20051104081502.498: *9* __init__
+#@+node:ekr.20051104081502.498: *8* __init__
 def __init__(self, parent, title,
              pos=wxDefaultPosition,
              size=wxDefaultSize,
@@ -5337,10 +5339,10 @@ def __init__(self, parent, title,
     self.STC = STC
     self.BTC = BTC
 
-#@+node:ekr.20051104081502.499: *8* class CalendarDialog
+#@+node:ekr.20051104081502.499: *7* class CalendarDialog
 class CalendarDialog(wxDialog):
     @others
-#@+node:ekr.20051104081502.500: *9* __init__
+#@+node:ekr.20051104081502.500: *8* __init__
 def __init__(self, parent, title,
              pos=wxDefaultPosition,
              size=wxDefaultSize,
@@ -5390,28 +5392,28 @@ def __init__(self, parent, title,
     self.SetSizer(sizer1)
     self.SetAutoLayout(True)
     sizer1.Fit(self)
-#@+node:ekr.20051104081502.501: *9* OnCalSelected
+#@+node:ekr.20051104081502.501: *8* OnCalSelected
 def OnCalSelected(self, evt):
     self.result = evt.GetDate()
     self.EndModal(wxID_OK)
-#@+node:ekr.20051104081502.502: *9* OnChangeMonth
+#@+node:ekr.20051104081502.502: *8* OnChangeMonth
 def OnChangeMonth(self, evt=None):
     cur_month = self.cal.GetDate().GetMonth() + 1   # convert wxDateTime 0-11 => 1-12
     for month, day in self.holidays:
         if month == cur_month:
             self.cal.SetHoliday(day)        
-#@+node:ekr.20051104081502.503: *9* OnCloseWindow
+#@+node:ekr.20051104081502.503: *8* OnCloseWindow
 def OnCloseWindow(self, event):
     #self.cal.Destroy
     #self.Destroy()
     g.pr("I got to close window")
-#@+node:ekr.20051104081502.504: *9* GetDate
+#@+node:ekr.20051104081502.504: *8* GetDate
 def GetDate(self):
     return self.result
-#@+node:ekr.20051104081502.505: *8* class FindDialog
+#@+node:ekr.20051104081502.505: *7* class FindDialog
 class FindDialog(wxDialog):
     @others
-#@+node:ekr.20051104081502.506: *9* __init__
+#@+node:ekr.20051104081502.506: *8* __init__
 def __init__(self, parent, caption, msg, pos=wxDefaultPosition, size=(300,120)):
     wxDialog.__init__(self, parent, -1, caption, pos, size, style=wxSTAY_ON_TOP|wxCAPTION)    
 
@@ -5455,10 +5457,10 @@ def __init__(self, parent, caption, msg, pos=wxDefaultPosition, size=(300,120)):
     EVT_BUTTON(self, wxID_OK, parent.FindString)
 
 
-#@+node:ekr.20051104081502.507: *8* class EvalDialog
+#@+node:ekr.20051104081502.507: *7* class EvalDialog
 class EvalDialog(wxDialog):
     @others
-#@+node:ekr.20051104081502.508: *9* __init__
+#@+node:ekr.20051104081502.508: *8* __init__
 def __init__(self, parent, caption, msg, pos=wxDefaultPosition, size=(300,80)):
     wxDialog.__init__(self, parent, -1, caption, pos, size, style=wxSTAY_ON_TOP|wxCAPTION)    
 
@@ -5488,13 +5490,13 @@ def __init__(self, parent, caption, msg, pos=wxDefaultPosition, size=(300,80)):
 
 
 
-#@+node:ekr.20051104081502.509: *9* PostOKEvent
+#@+node:ekr.20051104081502.509: *8* PostOKEvent
 def PostOKEvent(self, evt=None):
     wxPostEvent(self.parent, evt)
-#@+node:ekr.20051104081502.510: *8* class LoggerDialog
+#@+node:ekr.20051104081502.510: *7* class LoggerDialog
 class LoggerDialog(wxDialog):
     @others
-#@+node:ekr.20051104081502.511: *9* __init__
+#@+node:ekr.20051104081502.511: *8* __init__
 def __init__(self, parent, msg, caption, pos=(-1,-1), size=(500,300), dir=None):
     wxDialog.__init__(self, parent, -1, caption, pos, size)
     #if pos == (-1,-1):
@@ -5529,7 +5531,7 @@ def __init__(self, parent, msg, caption, pos=(-1,-1), size=(500,300), dir=None):
     self.text = text
 
     EVT_BUTTON(self, ID_SAVE, self.OnSave)
-#@+node:ekr.20051104081502.512: *9* OnSave
+#@+node:ekr.20051104081502.512: *8* OnSave
 def OnSave(self, evt):
 
     path = os.path.join(self.dir, 'logfile.txt')
@@ -5543,10 +5545,10 @@ def OnSave(self, evt):
     dlg.Destroy()
 
     self.text.Clear()
-#@+node:ekr.20051104081502.513: *8* class FinishedDialog
+#@+node:ekr.20051104081502.513: *7* class FinishedDialog
 class FinishedDialog(wxDialog):
     @others
-#@+node:ekr.20051104081502.514: *9* __init__
+#@+node:ekr.20051104081502.514: *8* __init__
 def __init__(self, parent, title,
             pos=wxDefaultPosition,
             size=wxDefaultSize,
@@ -5605,10 +5607,10 @@ def __init__(self, parent, title,
     self.Layout() #doesn't appear necessary
 
 
-#@+node:ekr.20051104081502.515: *9* OnSpin
+#@+node:ekr.20051104081502.515: *8* OnSpin
 def OnSpin(self, evt):
     self.text.SetValue(str(evt.GetPosition()))
-#@+node:ekr.20051104081502.516: *9* OnCheck
+#@+node:ekr.20051104081502.516: *8* OnCheck
 def OnCheck(self, evt=None):
     if self.check.GetValue():
         self.spin.Enable(False)
@@ -5616,10 +5618,10 @@ def OnCheck(self, evt=None):
     else:
         self.spin.Enable(True)
         self.text.Enable(True)
-#@+node:ekr.20051104081502.517: *8* class TreeDialog
+#@+node:ekr.20051104081502.517: *7* class TreeDialog
 class TreeDialog(wxDialog):
     @others
-#@+node:ekr.20051104081502.518: *9* __init__
+#@+node:ekr.20051104081502.518: *8* __init__
 def __init__(self, parent, caption, pos=wxDefaultPosition, size=(300,400), tree={}):
     wxDialog.__init__(self, parent, -1, caption, pos, size, style=wxSTAY_ON_TOP|wxCAPTION)
 
@@ -5667,10 +5669,10 @@ def __init__(self, parent, caption, pos=wxDefaultPosition, size=(300,400), tree=
     self.il = il #? prevents GC
 
     EVT_LEFT_DCLICK(TreeCtrl, self.OnLeftDClick)
-#@+node:ekr.20051104081502.519: *9* OnLeftDClick:
+#@+node:ekr.20051104081502.519: *8* OnLeftDClick:
 def OnLeftDClick(self, event=None):
     self.EndModal(wxID_OK)
-#@+node:ekr.20051104081502.520: *7* outlookAddin.py
+#@+node:ekr.20051104081502.520: *6* outlookAddin.py
 @ @rst-options
 code_mode = True
 @c
@@ -5686,7 +5688,7 @@ if __name__ == '__main__':
         UnregisterAddin(OutlookAddin)
     else:
         RegisterAddin(OutlookAddin)
-#@+node:ekr.20051104081502.521: *8* << outlookAddin declarations >>
+#@+node:ekr.20051104081502.521: *7* << outlookAddin declarations >>
 # This is mainly stolen from Mark Hammond's demo plugin for win32com.client
 # A demo plugin for Microsoft Outlook (NOT Outlook Express)
 
@@ -5716,10 +5718,10 @@ universal.RegisterInterfaces('{AC0714F2-3D04-11D1-AE7D-00A0C90F26F4}', 0, 1, 0, 
 Target = 'mail_transfer'
 
 
-#@+node:ekr.20051104081502.522: *8* class ButtonEvent
+#@+node:ekr.20051104081502.522: *7* class ButtonEvent
 class ButtonEvent:
     @others
-#@+node:ekr.20051104081502.523: *9* OnClick
+#@+node:ekr.20051104081502.523: *8* OnClick
 def OnClick(self, button, cancel):
     #activeExplorer and MailTransferFolder are globals defined in OnConnection
     sel = activeExplorer.Selection
@@ -5730,10 +5732,10 @@ def OnClick(self, button, cancel):
 
     return cancel
 
-#@+node:ekr.20051104081502.524: *8* class FolderEvent
+#@+node:ekr.20051104081502.524: *7* class FolderEvent
 class FolderEvent:
     @others
-#@+node:ekr.20051104081502.525: *9* OnItemAdd
+#@+node:ekr.20051104081502.525: *8* OnItemAdd
 def OnItemAdd(self, item):
     try:
         s = socket(AF_INET,SOCK_STREAM)
@@ -5750,18 +5752,18 @@ def OnItemAdd(self, item):
         win32ui.MessageBox("Sent %s to ListManager"%item.Subject)
     except:
         pass
-#@+node:ekr.20051104081502.526: *8* class OutlookAddin
+#@+node:ekr.20051104081502.526: *7* class OutlookAddin
 class OutlookAddin:
     << class OutlookAddin declarations >>
     @others
-#@+node:ekr.20051104081502.527: *9* << class OutlookAddin declarations >>
+#@+node:ekr.20051104081502.527: *8* << class OutlookAddin declarations >>
 _com_interfaces_ = ['_IDTExtensibility2']
 _public_methods_ = []
 _reg_clsctx_ = pythoncom.CLSCTX_INPROC_SERVER
 _reg_clsid_ = "{0F47D9F3-598B-4d24-B7E3-92AC15ED27E2}"
 _reg_progid_ = "Python.Test.OutlookAddin"
 _reg_policy_spec_ = "win32com.server.policy.EventHandlerPolicy"
-#@+node:ekr.20051104081502.528: *9* OnConnection
+#@+node:ekr.20051104081502.528: *8* OnConnection
 def OnConnection(self, application, connectMode, addin, custom):
     global MailTransferFolder
     global activeExplorer
@@ -5796,19 +5798,19 @@ def OnConnection(self, application, connectMode, addin, custom):
             break
     else:
         win32ui.MessageBox("Could not find mail folder: %s\nOutlookAddin3"%Target)
-#@+node:ekr.20051104081502.529: *9* OnDisconnection
+#@+node:ekr.20051104081502.529: *8* OnDisconnection
 def OnDisconnection(self, mode, custom):
     g.pr("OnDisconnection")
-#@+node:ekr.20051104081502.530: *9* OnAddInsUpdate
+#@+node:ekr.20051104081502.530: *8* OnAddInsUpdate
 def OnAddInsUpdate(self, custom):
     g.pr("OnAddInsUpdate", custom)
-#@+node:ekr.20051104081502.531: *9* OnStartupComplete
+#@+node:ekr.20051104081502.531: *8* OnStartupComplete
 def OnStartupComplete(self, custom):
     g.pr("OnStartupComplete", custom)
-#@+node:ekr.20051104081502.532: *9* OnBeginShutdown
+#@+node:ekr.20051104081502.532: *8* OnBeginShutdown
 def OnBeginShutdown(self, custom):
     g.pr("OnBeginShutdown", custom)
-#@+node:ekr.20051104081502.533: *8* RegisterAddin
+#@+node:ekr.20051104081502.533: *7* RegisterAddin
 def RegisterAddin(klass):
     import _winreg
     key = _winreg.CreateKey(_winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Office\\Outlook\\Addins")
@@ -5817,14 +5819,14 @@ def RegisterAddin(klass):
     _winreg.SetValueEx(subkey, "LoadBehavior", 0, _winreg.REG_DWORD, 3)
     _winreg.SetValueEx(subkey, "Description", 0, _winreg.REG_SZ, klass._reg_progid_)
     _winreg.SetValueEx(subkey, "FriendlyName", 0, _winreg.REG_SZ, klass._reg_progid_)
-#@+node:ekr.20051104081502.534: *8* UnregisterAddin
+#@+node:ekr.20051104081502.534: *7* UnregisterAddin
 def UnregisterAddin(klass):
     import _winreg
     try:
         _winreg.DeleteKey(_winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Office\\Outlook\\Addins\\" + klass._reg_progid_)
     except WindowsError:
         pass
-#@+node:ekr.20051104081502.535: *6* @rst ../doc/pdfTest.pdf
+#@+node:ekr.20051104081502.535: *5* @rst ../doc/pdfTest.pdf
 ########
 Headline
 ########
@@ -5845,13 +5847,13 @@ verbose=True
 This is a test of pdf stuff
 
 .. contents::
-#@+node:ekr.20051104081502.536: *7* child node
-#@+node:ekr.20051104081502.537: *8* @rst
+#@+node:ekr.20051104081502.536: *6* child node
+#@+node:ekr.20051104081502.537: *7* @rst
 child node text
-#@+node:ekr.20051104081502.546: *5* Tests of settings when opened from another .leo file
+#@+node:ekr.20051104081502.546: *4* Tests of settings when opened from another .leo file
 # g.app.config.updateSettings(c)
 g.es('test_setting',c.config.getBool('test_setting'))
-#@+node:ekr.20051104081502.159: *5* Tk bindtags test
+#@+node:ekr.20051104081502.159: *4* Tk bindtags test
 import Tkinter as Tk
 
 root = Tk.Tk()
@@ -5874,22 +5876,22 @@ if 0:
     btags = body.bindtags()
     btags =(ctags[0],btags[0],btags[1],btags[2],btags[3])
     body.bindtags(btags)
-#@+node:ekr.20051104081502.305: *5* Unicode stuff
+#@+node:ekr.20051104081502.305: *4* Unicode stuff
 stuff = g.toEncodedString(u'∑','utf-8')
 g.pr(type(stuff))
 g.pr('*' * 10)
 for ch in stuff:
     g.pr(ch, ord(ch),newline=False)
 g.pr()
-#@+node:ekr.20051104081502.549: *5* Write to log tab
+#@+node:ekr.20051104081502.549: *4* Write to log tab
 c.frame.log.selectTab('Log')
 g.es('Test',color='blue')
-#@+node:ekr.20051104081502.548: *5* Write to test tab
+#@+node:ekr.20051104081502.548: *4* Write to test tab
 c.frame.log.selectTab('Test')
 g.es('Test',color='red',tabName='Test')
-#@+node:ekr.20100806211747.5792: *3* Unused tests
-#@+node:ekr.20101021205258.6013: *4* general file stuff
-#@+node:ekr.20100204153116.5369: *5* @@test raw file copy
+#@+node:ekr.20111107113442.3849: ** @ignore unused tests
+#@+node:ekr.20101021205258.6013: *3* general file stuff
+#@+node:ekr.20100204153116.5369: *4* @@test raw file copy
 import tempfile
 import os
 
@@ -5904,7 +5906,7 @@ f.close()
 assert s==s2
 os.remove(fn)
 print('deleted',fn)
-#@+node:ekr.20080806211453.5: *5* @@test round-trip-uAs for @shadow
+#@+node:ekr.20080806211453.5: *4* @@test round-trip-uAs for @shadow
 root = p.firstChild()
 uA = 'unknownAttributes'
 tag = 'round-trip-u.uA'
@@ -5926,15 +5928,15 @@ else: # Test the uA's.
         d = {tag: v.h}
         if trace: print(d)
         assert a == d, 'expected v.uA: "%s", got "%s"' % (d,a)
-#@+node:ekr.20080806211453.1: *6* @@shadow uA_test_shadow_file.py
+#@+node:ekr.20080806211453.1: *5* @@shadow uA_test_shadow_file.py
 @language python
 @tabwidth -4
 @others
-#@+node:ekr.20080822160527.1: *7* uA_test_shadow_file declarations
+#@+node:ekr.20080822160527.1: *6* uA_test_shadow_file declarations
 pass
 pass
 pass
-#@+node:ekr.20080806095923.2: *5* @@test round-trip-uAs for @thin
+#@+node:ekr.20080806095923.2: *4* @@test round-trip-uAs for @thin
 root = p.firstChild()
 uA = 'unknownAttributes'
 tag = 'round-trip-u.uA'
@@ -5956,16 +5958,16 @@ else: # Test the uA's.
         d = {tag: v.h}
         if trace: print(d)
         assert a == d, 'expected v.uA: "%s", got "%s"' % (d,a)
-#@+node:ekr.20080806084924.2: *6* @@thin uA_test_file.py
+#@+node:ekr.20080806084924.2: *5* @@thin uA_test_file.py
 @others
-#@+node:ekr.20080806084924.3: *7* child1
+#@+node:ekr.20080806084924.3: *6* child1
 pass
-#@+node:ekr.20080806084924.4: *8* grandChild1
+#@+node:ekr.20080806084924.4: *7* grandChild1
 pass
-#@+node:ekr.20080806084924.5: *9* greatGrandChild1
+#@+node:ekr.20080806084924.5: *8* greatGrandChild1
 pass
-#@+node:ekr.20100223094723.5375: *4* New import tests
-#@+node:ekr.20100223094723.5376: *5* @test skipToTheNextClassOrFunction (a class next)
+#@+node:ekr.20100223094723.5375: *3* New import tests
+#@+node:ekr.20100223094723.5376: *4* @test skipToTheNextClassOrFunction (a class next)
 import leo.core.leoImport as leoImport
 ic = c.importCommands
 
@@ -6002,7 +6004,7 @@ assert i > -1
 i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
 assert i==expected,'expected %s, got %s %s' % (
     expected,i,repr(s[i:]))
-#@+node:ekr.20100223094723.5377: *5* @test skipToTheNextClassOrFunction (a function next)
+#@+node:ekr.20100223094723.5377: *4* @test skipToTheNextClassOrFunction (a function next)
 import leo.core.leoImport as leoImport
 ic = c.importCommands
 
@@ -6034,7 +6036,7 @@ assert i > -1
 i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
 assert i==expected,'expected %s, got %s %s' % (
     expected,i,repr(s[i:]))
-#@+node:ekr.20100223094723.5378: *5* @test skipToTheNextClassOrFunction (nothing next)
+#@+node:ekr.20100223094723.5378: *4* @test skipToTheNextClassOrFunction (nothing next)
 import leo.core.leoImport as leoImport
 ic = c.importCommands
 
@@ -6068,7 +6070,7 @@ assert i > -1
 i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
 assert i==expected,'expected %s, got %s %s' % (
     expected,i,repr(s[i:]))
-#@+node:ekr.20100223094723.5379: *5* @test skipToTheNextClassOrFunction (indented def next)
+#@+node:ekr.20100223094723.5379: *4* @test skipToTheNextClassOrFunction (indented def next)
 import leo.core.leoImport as leoImport
 ic = c.importCommands
 
@@ -6095,7 +6097,7 @@ assert i > -1
 i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
 assert i==expected,'expected %s, got %s %s' % (
     expected,i,repr(s[i:]))
-#@+node:ekr.20100225094004.5405: *4* @@test loading .leo file with @file nodes
+#@+node:ekr.20100225094004.5405: *3* @@test loading .leo file with @file nodes
 # test/at-file-test.leo contains tnodeList.
 # test/at-file-test.py contains file-like sentinels.
 g.app.unitTestDict={}
@@ -6117,7 +6119,7 @@ finally:
         g.app.destroyWindow(frame)
         c.setLog()
         c.bodyWantsFocus()
-#@+node:ekr.20061008162912: *4* @@test write .leo file with @ignore node
+#@+node:ekr.20061008162912: *3* @@test write .leo file with @ignore node
 assert p.firstChild(), 'no child node'
 assert p.firstChild().b.startswith('@ignore'), 'No @ignore in child'
 ok = c.fileCommands.write_Leo_file(
@@ -6129,7 +6131,7 @@ for line in g.splitLines(s):
     if line.find('@ignore') != -1:
         count += 1
 assert count >=1, "not enough @ignore's in written file: count: %s, lines:\n%s" % (count,s)
-#@+node:ekr.20061008162912.1: *5* child
+#@+node:ekr.20061008162912.1: *4* child
 @ignore # Test that this node gets written.
 #@-all
 #@-leo
