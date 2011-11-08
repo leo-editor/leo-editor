@@ -241,36 +241,40 @@ Edward
 #@+node:ekr.20080917153158.10: *3* Bzr notes
 @nocolor
 
-How to create launchpad key pairs:
+How to create launchpad key pairs
+=================================
 
 http://help.launchpad.net/YourAccount/CreatingAnSSHKeyPair
 
 How to create/use branches
+=========================
 
-===== pushes a branch after it has been created on launchpad
+pushes a branch after it has been created on launchpad::
 
-bzr push --use-existing-dir lp:leo-editor/whatever (private)
+    bzr push --use-existing-dir lp:leo-editor/whatever (private)
 
-bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever (private)
+    bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever (private)
 
-====== remembers the push
+remembers the push::
 
-bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
+    bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
 
-===== creates branch on local machine: do this from leo.repo directo
+creates branch on local machine: do this from leo.repo directory::
 
-bzr branch old-branch-name new-branch-name
+    bzr branch old-branch-name new-branch-name
 
-bzr branch lp:leo-editor new-branch-name 
+    bzr branch lp:leo-editor new-branch-name 
 
-bzr branch bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever new-branch-name
+    bzr branch bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever new-branch-name
 
-====== To resolve conflicts
+To resolve conflicts
+====================
 
 kdiff3 file1 file2 file3 -m
 
 
-Docs:
+Docs
+====
 - http://doc.bazaar-vcs.org/latest/en/user-guide/index.html
     - http://bazaar-vcs.org/BzrWhy (referenced in sec 1.1.3 of the guide)
         - http://ianclatworthy.files.wordpress.com/2007/10/dvcs-why-and-how3.pdf
@@ -279,16 +283,17 @@ Docs:
         - Spike solution: http://www.extremeprogramming.org/rules/spike.html (google)
 - My log was at: http://bzr.arbash-meinel.com/irc_log/bzr/2008/02/bzr-2008-02-25.html
 
-Windows
+
+Configuration files
+===================
+
+.bzrignore in each repository contains the patterns to ignore.
 
 EKR:  do ed-bzr
 
-- Configuration file is .bazaar in XP
-C:\Documents and Settings\HP_Administrator\Application Data\bazaar\2.0
+Windows: C:\Documents and Settings\HP_Administrator\Application Data\bazaar\2.0\.bazaar.conf
 
-Linux:
-
-- Configuration file is bazaar.conf in ~/.bazaar directory
+Linux:  ~/.bazaar/bazaar.conf
 #@+node:ekr.20090713080429.6042: *3* Bzr workflow notes
 @nocolor-node
 
