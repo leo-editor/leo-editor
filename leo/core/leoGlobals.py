@@ -1129,6 +1129,24 @@ def es_exception (full=True,c=None,color="red"):
     fileName,n = g.getLastTracebackFileAndLineNumber()
 
     return fileName,n
+#@+node:ekr.20111107181638.9741: *4* es_print_exception
+def es_print_exception (full=True,c=None,color="red"):
+
+    typ,val,tb = sys.exc_info()
+
+    # val is the second argument to the raise statement.
+
+    if full or g.app.debugSwitch > 0:
+        lines = traceback.format_exception(typ,val,tb)
+    else:
+        lines = traceback.format_exception_only(typ,val)
+
+    for line in lines:
+        print(line)
+
+    fileName,n = g.getLastTracebackFileAndLineNumber()
+
+    return fileName,n
 #@+node:ekr.20061015090538: *4* es_exception_type
 def es_exception_type (c=None,color="red"):
 
