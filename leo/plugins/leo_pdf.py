@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
 #! /usr/bin/env python
 #@+leo-ver=5-thin
 #@+node:ekr.20090704103932.5160: * @file leo_pdf.py
+#@@first
 #@@first
 
 #@+<< docstring >>
@@ -742,14 +744,14 @@ if docutils:
         def as_what(self):
 
             return self.story
-        #@+node:ekr.20090704103932.5191: *4* encode
+        #@+node:ekr.20090704103932.5191: *4* encode (dummyPDFTranslator)
         def encode(self, text):
 
             """Encode special characters in `text` & return."""
 
             if type(text) is types.UnicodeType:
-                text = text.replace(g.u('\u2020'),g.u(' '))
-                text = text.replace(g.u('\xa0'), g.u(' '))
+                # text = text.replace(g.u('\u2020'),g.u(' '))
+                # text = text.replace(g.u('\xa0'), g.u(' '))
                 text = text.encode('utf-8')
 
             return text
@@ -825,9 +827,7 @@ if docutils:
             self.context = []
 
             self.story = []
-            self.bulletText = '\267'
-                # maybe move this into stylesheet.
-                # This looks like the wrong glyph.
+            self.bulletText = '•' # Bullet: U+2022
 
             if 0: # no longer used.
                 self.topic_class = ''
@@ -1041,7 +1041,12 @@ if docutils:
             for z in b.markup:
                 self.body.append(z)
 
-            self.putTail(b.start,style=b.style)
+            try:
+                style = b.style
+            except AttributeError:
+                style = 'Normal'
+                
+            self.putTail(b.start,style)
         #@+node:ekr.20090704103932.5213: *4* Helpers
         #@+node:ekr.20090704103932.5214: *5*  starttag
         # The suffix is always '\n' except for a cant-happen situation.
@@ -1090,44 +1095,45 @@ if docutils:
                 return
 
             if type(text) in (types.ListType,types.TupleType):
-                text = ''.join([self.encode(t) for t in text])
+                text = ''.join(text)
+            
+            #### text = self.encode(text)
+            
+            # This escapes too much.
+            # text = self.escape(text)
 
             if not style.strip():
                 style = 'Normal'
 
-            if 0:
-                s = text.split('>')
-                s = '>\n'.join(s)
-                g.pr('')
-                if 1: # just print the text.
-                    g.pr(s)
-                else:
-                    g.trace('%8s\n\n%s' % (style,s))
-                g.pr('')
-
             style = self.styleSheet.get(style)
 
             try:
-                self.story.append(
-                    reportlab.platypus.para.Paragraph (
-                        self.encode(text), style,
-                        bulletText = bulletText,
-                        context = self.styleSheet))
+                s = reportlab.platypus.para.Paragraph (
+                    text, ### self.encode(text),
+                    style,
+                    bulletText = bulletText,
+                    context = self.styleSheet,
+                )
+                self.story.append(s)
             except Exception:
-                g.es_print('Exception in createParagraph')
-                g.es_exception()
-                self.dumpContext()
-                raise
+                g.es_print('\nreportlab error...\n',color='orange')
+                g.es_print_exception(full=False)
+                g.es_exception(full=False)
+                print(repr(text))
+                
+                # self.dumpContext()
         #@+node:ekr.20090704103932.5217: *5* dumpContext
         def dumpContext (self):
+            
+            if self.context:
 
-            g.pr('\n','-' * 40)
-            g.pr('Dump of context')
-
-            i = 0
-            for bunch in self.context:
-                g.pr('%2d %s' % (i,bunch))
-                i += 1
+                print('-' * 40)
+                print('Dump of context...')
+            
+                i = 0
+                for bunch in self.context:
+                    print('%2d %s' % (i,bunch))
+                    i += 1
         #@+node:ekr.20090704103932.5218: *5* dumpNode
         def dumpNode (self,node,tag=''):
 
@@ -1188,7 +1194,7 @@ if docutils:
                     g.pr(nkey,':',g.toString(val,verbose=False,indent='\t'))
 
             g.pr('\ndone', '-' * 25)
-        #@+node:ekr.20090704103932.5220: *5* encode
+        #@+node:ekr.20090704103932.5220: *5* encode (PDFTranslator) (No longer used)
         def encode(self, text):
 
             """Encode special characters in `text` & return."""
@@ -1196,12 +1202,11 @@ if docutils:
                 ###text = text.replace(g.u('\u2020'),g.u(' '))
                 ###text = text.replace(g.u('\xa0'), g.u(' '))
                 text = text.encode('utf-8')
-            #text = text.replace("&", "&amp;")
-            #text = text.replace("<", '"')
-            #text = text.replace('"', "(quot)")
-            #text = text.replace(">", '"')
-            # footnotes have character values above 128 ?
             return text
+        #@+node:ekr.20111107181638.9742: *5* escape (PDFTranslator)
+        def escape (self,s):
+            
+            return s.replace('<','&lt').replace('>','&gt')
         #@+node:ekr.20090704103932.5221: *5* inContext
         def inContext (self,kind):
 
@@ -1232,7 +1237,10 @@ if docutils:
         #@+node:ekr.20090704103932.5223: *5* push, pop, peek
         def push (self,**keys):
 
-            self.context.append(Bunch(**keys))
+            bunch = Bunch(**keys)
+            self.context.append(bunch)
+            # g.trace(bunch)
+            
 
         def pop (self,kind):
 
@@ -1698,8 +1706,13 @@ if docutils:
         def depart_subtitle(self, node):
 
             b = self.pop('subtitle')
+            
+            try:
+                style = b.style
+            except AttributeError:
+                style = 'Normal'
 
-            self.putTail(b.start,b.style)
+            self.putTail(b.start,style)
         #@+node:ekr.20090704103932.5283: *5* term
         def visit_term (self,node):
 
