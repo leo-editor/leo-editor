@@ -253,6 +253,8 @@ class Commands (object):
         c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
         c.collapse_nodes_after_move = c.config.getBool('collapse_nodes_after_move')
             # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
+        c.collapse_on_lt_arrow  = c.config.getBool('collapse_on_lt_arrow',default=True)
+            # 2011/11/09: An excellent, subliminal, improvement.
         c.contractVisitedNodes  = c.config.getBool('contractVisitedNodes')
         c.fixed                 = c.config.getBool('fixedWindow',default=False)
         c.fixedWindowPosition   = c.config.getData('fixedWindowPosition')
@@ -5304,12 +5306,33 @@ class Commands (object):
         """Simulate the left Arrow Key in folder of Windows Explorer."""
 
         c = self ; p = c.p
+        
+        parent = p.parent()
+        redraw = False
 
         if p.hasChildren() and p.isExpanded():
             c.contractNode()
-
-        elif p.hasParent() and p.parent().isVisible(c):
+            
+        elif parent and parent.isVisible(c):
+            # New in Leo 4.9.1: contract all children first.
+            if c.collapse_on_lt_arrow:
+                for child in parent.children():
+                    if child.isExpanded():
+                        child.contract()
+                        redraw = True
             c.goToParent()
+            
+        # This is a bit off-putting.
+        # elif not parent and not c.hoistStack:
+            # p = c.rootPosition()
+            # while p:
+                # if p.isExpanded():
+                    # p.contract()
+                    # redraw = True
+                # p.moveToNext()
+
+        if redraw:
+            c.redraw()
     #@+node:ekr.20031218072017.2902: *7* contractParent
     def contractParent (self,event=None):
 

@@ -5,476 +5,6 @@
 .. @+all
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
 .. @+node:ekr.20111026091322.16502: *3* First
-.. @+node:ekr.20111108081936.12524: *4* Create unit tests illustrating path ops
-.. @+node:ekr.20031218072017.2145: *5* os.path wrappers (leoGlobals.py)
-@ Note: all these methods return Unicode strings. It is up to the user to
-convert to an encoded string as needed, say when opening a file.
-.. @+node:ekr.20031218072017.2146: *6* os_path_abspath
-def os_path_abspath(path):
-
-    """Convert a path to an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.abspath(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2147: *6* os_path_basename
-def os_path_basename(path):
-
-    """Return the second half of the pair returned by split(path)."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.basename(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2148: *6* os_path_dirname
-def os_path_dirname(path):
-
-    """Return the first half of the pair returned by split(path)."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.dirname(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2149: *6* os_path_exists
-def os_path_exists(path):
-
-    """Return True if path exists."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.exists(path)
-.. @+node:ekr.20080922124033.6: *6* os_path_expandExpression
-def os_path_expandExpression (s,**keys):
-
-    '''Expand {{anExpression}} in c's context.'''
-
-    trace = False
-    
-    s1 = s
-    c = keys.get('c')
-    if not c:
-        g.trace('can not happen: no c',g.callers())
-        return s
-
-    if not s:
-        if trace: g.trace('no s')
-        return ''
-
-    i = s.find('{{')
-    j = s.find('}}')
-    if -1 < i < j:
-        exp = s[i+2:j].strip()
-        if exp:
-            try:
-                import os
-                import sys
-                p = c.p
-                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
-                val = eval(exp,d)
-                s = s[:i] + str(val) + s[j+2:]
-                if trace: g.trace(s1,s)
-            except Exception:
-                g.trace(g.callers())
-                g.es_exception(full=True, c=c, color='red')
-
-    return s
-.. @+node:ekr.20080921060401.13: *6* os_path_expanduser
-def os_path_expanduser(path):
-
-    """wrap os.path.expanduser"""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    result = os.path.normpath(os.path.expanduser(path))
-
-    return result
-.. @+node:ekr.20080921060401.14: *6* g.os_path_finalize & os_path_finalize_join
-def os_path_finalize (path,**keys):
-
-    '''
-    Expand '~', then return os.path.normpath, os.path.abspath of the path.
-
-    There is no corresponding os.path method'''
-
-    c = keys.get('c')
-
-    if c: path = g.os_path_expandExpression(path,**keys)
-
-    path = g.os_path_expanduser(path)
-    path = os.path.abspath(path)
-    path = os.path.normpath(path)
-    return path
-
-def os_path_finalize_join (*args,**keys):
-
-    '''Do os.path.join(*args), then finalize the result.'''
-
-    c = keys.get('c')
-
-    if c:
-        args = [g.os_path_expandExpression(z,**keys)
-            for z in args if z]
-
-    return os.path.normpath(os.path.abspath(
-        g.os_path_join(*args,**keys))) # Handles expanduser
-.. @+node:ekr.20031218072017.2150: *6* os_path_getmtime
-def os_path_getmtime(path):
-
-    """Return the modification time of path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.getmtime(path)
-.. @+node:ekr.20080729142651.2: *6* os_path_getsize
-def os_path_getsize (path):
-
-    '''Return the size of path.'''
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.getsize(path)
-.. @+node:ekr.20031218072017.2151: *6* os_path_isabs
-def os_path_isabs(path):
-
-    """Return True if path is an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isabs(path)
-.. @+node:ekr.20031218072017.2152: *6* os_path_isdir
-def os_path_isdir(path):
-
-    """Return True if the path is a directory."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isdir(path)
-.. @+node:ekr.20031218072017.2153: *6* os_path_isfile
-def os_path_isfile(path):
-
-    """Return True if path is a file."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isfile(path)
-.. @+node:ekr.20031218072017.2154: *6* os_path_join
-def os_path_join(*args,**keys):
-
-    trace = False and not g.unitTesting
-    c = keys.get('c')
-
-    uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
-
-    if trace: g.trace('1',uargs)
-
-    # Note:  This is exactly the same convention as used by getBaseDirectory.
-    if uargs and uargs[0] == '!!':
-        uargs[0] = g.app.loadDir
-    elif uargs and uargs[0] == '.':
-        c = keys.get('c')
-        if c and c.openDirectory:
-            uargs[0] = c.openDirectory
-            # g.trace(c.openDirectory)
-
-    uargs = [g.os_path_expanduser(z) for z in uargs if z]
-
-    if trace: g.trace('2',uargs)
-
-    path = os.path.join(*uargs)
-
-    if trace: g.trace('3',path)
-
-    # May not be needed on some Pythons.
-    path = g.toUnicodeFileEncoding(path)
-    return path
-.. @+node:ekr.20031218072017.2156: *6* os_path_normcase
-def os_path_normcase(path):
-
-    """Normalize the path's case."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.normcase(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2157: *6* os_path_normpath
-def os_path_normpath(path):
-
-    """Normalize the path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.normpath(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20080605064555.2: *6* os_path_realpath
-def os_path_realpath(path):
-
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.realpath(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2158: *6* os_path_split
-def os_path_split(path):
-
-    path = g.toUnicodeFileEncoding(path)
-
-    head,tail = os.path.split(path)
-
-    head = g.toUnicodeFileEncoding(head)
-    tail = g.toUnicodeFileEncoding(tail)
-
-    return head,tail
-.. @+node:ekr.20031218072017.2159: *6* os_path_splitext
-def os_path_splitext(path):
-
-    path = g.toUnicodeFileEncoding(path)
-
-    head,tail = os.path.splitext(path)
-
-    head = g.toUnicodeFileEncoding(head)
-    tail = g.toUnicodeFileEncoding(tail)
-
-    return head,tail
-.. @+node:ekr.20090829140232.6036: *6* os_startfile
-def os_startfile(fname):
-    if sys.platform.startswith('win'):
-        os.startfile(fname)
-    elif sys.platform == 'darwin':
-        # From Marc-Antoine Parent.
-        try:
-            subprocess.call(['open', fname])
-        except OSError:
-            pass # There may be a spurious "Interrupted system call"
-        except ImportError:
-            os.system("open '%s'" % (fname,))
-    else:
-        os.system('xdg-open "%s"'%fname)
-.. @+node:ekr.20031218072017.2160: *6* toUnicodeFileEncoding
-def toUnicodeFileEncoding(path):
-
-    if path: path = path.replace('\\', os.sep)
-
-    # Yes, this is correct.  All os_path_x functions return Unicode strings.
-    return g.toUnicode(path)
-.. @+node:ekr.20111108081936.9750: *5* @test path computations
-fj = g.os_path_finalize_join
-f  = g.os_path_finalize
-eu = g.os_path_expanduser
-
-if g.app.isExternalUnitTest:
-    loadDir = fj(g.app.loadDir,'..','test')
-else:
-    loadDir = g.app.loadDir
-
-table = (
-    (fj,'@@file fj-test-1',fj(loadDir,'rel-path')),
-)
-
-for func,h,expected in table:
-    p = g.findNodeAnywhere(c,h)
-    assert p,'not found: "%s"' % (h)
-    assert p.h.startswith('@@')
-    p.h = p.h[1:] # Remove the first @ sign.
-    
-    try:
-        d = c.scanAllDirectives(p)
-        result = d.get('path')
-        assert result == expected,'expected "%s", got "%s"' % (
-            expected,result)
-    finally:
-        p.h = '@' + p.h
-        c.redraw()
-.. @+node:ekr.20111108081936.9768: *6* @path rel-path
-.. @+node:ekr.20111108081936.9751: *7* @@file fj-test-1
-.. @+node:ekr.20111106070228.12431: *4* New unit tests
-.. @+node:ekr.20111105222316.9706: *5* Unit test: no unit tests omitted
-@nocolor-node
-
-Create a "registry" of unit tests.  Verify that unitTest.leo contains them all.
-.. @+node:ekr.20111105222316.9707: *5* Unit test: importing a plugin changes nothing
-@nocolor-node
-
-Menu and plugin registry methods can fail if that *particular* unit test is running.
-.. @+node:ekr.20111107092526.9783: *5* Test g.app.config get/set
-.. @+node:ekr.20041118195812: *6* Setters... (c.configSettings)
-def set (self,setting,kind,val):
-    
-    '''Not used during startup: useful for unit tests.'''
-
-    c = self.c
-    g.app.config.set(c,setting,kind,val)
-
-def setRecentFiles (self,files):
-    
-    '''Update the recent files list.'''
-
-    g.app.config.appendToRecentFiles(files)
-.. @+node:ekr.20041118084146.1: *6* set (g.app.config)
-def set (self,c,setting,kind,val):
-
-    '''Set the setting.  Not called during initialization.'''
-
-    key = self.munge(setting)
-
-    # g.trace('(g.app.config)',setting,kind,val,c)
-
-    # 2011/11/07: Multiple bug fixes.
-    if c:
-        h = c.hash()
-        d = self.localOptionsDict.get(h,{})
-        d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
-        self.localOptionsDict[h] = d
-    else:
-        d = self.dictList [0]
-        d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
-        self.dictList[0] = d
-.. @+node:ekr.20041117083141: *6* get & allies (g.app.config)
-def get (self,c,setting,kind):
-
-    """Get the setting and make sure its type matches the expected type."""
-    
-    trace = False and not g.unitTesting
-
-    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
-
-    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-    if c and not isLeoSettings:
-        d = self.localOptionsDict.get(c.hash())
-        if d:
-            val,junk = self.getValFromDict(d,setting,kind)
-            if val is not None:
-                if trace:
-                    kind = d.get('_hash','<no hash>')
-                    g.trace('**1',setting,val,kind)
-                return val
-
-    for d in self.localOptionsList:
-        val,junk = self.getValFromDict(d,setting,kind)
-        if val is not None:
-            if trace:
-                kind = d.get('_hash','<no hash>')
-                g.trace('**2',setting,val,kind)
-            return val
-
-    for d in self.dictList:
-        val,junk = self.getValFromDict(d,setting,kind)
-        if val is not None:
-            if trace:
-                kind = d.get('_hash','<no hash>')
-                g.trace('**3',setting,val,kind)
-            return val
-
-    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-    if c and isLeoSettings:
-        d = self.localOptionsDict.get(c.hash())
-        if d:
-            val,junk = self.getValFromDict(d,setting,kind)
-            if val is not None:
-                if trace:
-                    kind = d.get('_hash','<no hash>')
-                    g.trace('**4',setting,val,kind)
-                return val
-
-    if trace:
-        fn = c and c.shortFileName() or '<no file>'
-        g.trace(setting,None,fn)
-    return None
-.. @+node:ekr.20041121143823: *7* getValFromDict
-def getValFromDict (self,d,setting,requestedType,warn=True):
-
-    '''Look up the setting in d. If warn is True, warn if the requested type
-    does not (loosely) match the actual type.
-    returns (val,exists)'''
-
-    bunch = d.get(self.munge(setting))
-    if not bunch: return None,False
-
-    # g.trace(setting,requestedType,bunch.toString())
-    val = bunch.val
-
-    # 2011/10/24: test for an explicit None.
-    if g.isPython3:
-        isNone = val in ('None','none','') # ,None)
-            
-    else:
-        isNone = val in (
-            unicode('None'),unicode('none'),unicode(''),
-            'None','none','') #,None)
-
-    if not self.typesMatch(bunch.kind,requestedType):
-        # New in 4.4: make sure the types match.
-        # A serious warning: one setting may have destroyed another!
-        # Important: this is not a complete test of conflicting settings:
-        # The warning is given only if the code tries to access the setting.
-        if warn:
-            g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
-            g.es_print('there may be conflicting settings!',color='red')
-        return None, False
-    # elif val in (u'None',u'none','None','none','',None):
-    elif isNone:
-        return '', True
-            # 2011/10/24: Exists, a *user-defined* empty value.
-    else:
-        # g.trace(setting,val)
-        return val, True
-.. @+node:ekr.20051015093141: *7* typesMatch
-def typesMatch (self,type1,type2):
-
-    '''
-    Return True if type1, the actual type, matches type2, the requeseted type.
-
-    The following equivalences are allowed:
-
-    - None matches anything.
-    - An actual type of string or strings matches anything *except* shortcuts.
-    - Shortcut matches shortcuts.
-    '''
-
-    shortcuts = ('shortcut','shortcuts',)
-
-    return (
-        type1 == None or type2 == None or
-        type1.startswith('string') and type2 not in shortcuts or
-        type1 == 'int' and type2 == 'size' or
-        (type1 in shortcuts and type2 in shortcuts) or
-        type1 == type2
-    )
-.. @+node:ekr.20111106070228.9715: *4* Posts
-.. @+node:ekr.20111106070228.9712: *5* Post: print(s) not the same as print('%s%s')
-print ('%s%s' % (s1,s2)) may fail even though print(s1) and print(s2) both succeed.
-.. @+node:ekr.20111106070228.9713: *5* Post: the stupdendous Aha revisited
-.. @+node:ekr.20111106070228.9714: *5* Post: Nature article
-.. @+node:ekr.20111028195854.16607: *4* Allow ruleset-specific colors
-@nocolor-node
-
-Like @color html::tags_markup_color = blue
-.. @+node:ekr.20111010162047.15678: *4* The @auto script *must* put @first nodes in root node
-@nocolor-node
-
-Also the import commands.
-
-Especially:
-    - Shebang line.
-    - Python encoding line.
 .. @+node:ekr.20111029055127.16609: *4* Fix html import problems
 @nocolor-node
 
@@ -1176,9 +706,350 @@ def skipCommentToken(self,s,i):
             # i += 1
         # return i,' '
         
-.. @+node:ekr.20111024170505.16459: *4* * Bug 879331: Redefining a key binding breaks menu items with same binding
-.. @+node:ekr.20111026091322.16501: *5* Probably same as key-binding bug
-.. @+node:ekr.20111026091322.16492: *6* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
+.. @+node:ekr.20111102052054.10009: *5* @test html whitespace bug
+# fn = r'c:\recent\data4.html'
+fn = r'c:\recent\data.html'
+
+# Fails with more tags: a newline gets inserted between tags.
+<< define html tags >>
+
+setting = 'import_html_tags'
+c.config.set(setting,'data',html_tags)
+tags = c.config.getData(setting)
+assert tags == html_tags,len(tags)
+
+c.importCommands.importFilesCommand(files=[fn],treeType='@file')
+
+fail = g.app.unitTestDict.get('fail')
+assert not fail
+.. @+node:ekr.20111108081936.12527: *6* << define html tags >>
+# html_tags = ('body','head','html','table','xxx',)
+html_tags =  (
+  "a","abbr","acronym","address","applet","area",
+  "b","base","basefont","bdo","big","blockquote","body","br","button",
+  "caption","center","cite","code","col","colgroup",
+  "dd","del","dfn","dir","div","dl","dt",
+  "em",
+  "fieldset","font","form","frame","frameset",
+  "head","h1","h2","h3","h4","h5","h6","hr","html",
+  "i","iframe","img","input","ins",
+  "kbd",
+  "label","legend","li","link",
+  "map","menu","meta",
+  "noframes","noscript",
+  "object","ol","optgroup","option",
+  "p","param","pre",
+  "q",
+  "s","samp","script","select","small","span","strike","strong","style","sub","sup",
+  "table","tbody","td","textarea","tfoot","th","thead","title","tr","tt",
+  "u","ul",
+  "var",
+)
+.. @+node:ekr.20111109035455.9786: *4* Why does leo2k print "()" at startup??
+.. @+node:ekr.20111108081936.12524: *4* Create unit tests illustrating path ops
+.. @+node:ekr.20031218072017.2145: *5* os.path wrappers (leoGlobals.py)
+@ Note: all these methods return Unicode strings. It is up to the user to
+convert to an encoded string as needed, say when opening a file.
+.. @+node:ekr.20031218072017.2146: *6* os_path_abspath
+def os_path_abspath(path):
+
+    """Convert a path to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.abspath(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20031218072017.2147: *6* os_path_basename
+def os_path_basename(path):
+
+    """Return the second half of the pair returned by split(path)."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.basename(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20031218072017.2148: *6* os_path_dirname
+def os_path_dirname(path):
+
+    """Return the first half of the pair returned by split(path)."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.dirname(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20031218072017.2149: *6* os_path_exists
+def os_path_exists(path):
+
+    """Return True if path exists."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.exists(path)
+.. @+node:ekr.20080922124033.6: *6* os_path_expandExpression
+def os_path_expandExpression (s,**keys):
+
+    '''Expand {{anExpression}} in c's context.'''
+
+    trace = False
+    
+    s1 = s
+    c = keys.get('c')
+    if not c:
+        g.trace('can not happen: no c',g.callers())
+        return s
+
+    if not s:
+        if trace: g.trace('no s')
+        return ''
+
+    i = s.find('{{')
+    j = s.find('}}')
+    if -1 < i < j:
+        exp = s[i+2:j].strip()
+        if exp:
+            try:
+                import os
+                import sys
+                p = c.p
+                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
+                val = eval(exp,d)
+                s = s[:i] + str(val) + s[j+2:]
+                if trace: g.trace(s1,s)
+            except Exception:
+                g.trace(g.callers())
+                g.es_exception(full=True, c=c, color='red')
+
+    return s
+.. @+node:ekr.20080921060401.13: *6* os_path_expanduser
+def os_path_expanduser(path):
+
+    """wrap os.path.expanduser"""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    result = os.path.normpath(os.path.expanduser(path))
+
+    return result
+.. @+node:ekr.20080921060401.14: *6* g.os_path_finalize & os_path_finalize_join
+def os_path_finalize (path,**keys):
+
+    '''
+    Expand '~', then return os.path.normpath, os.path.abspath of the path.
+
+    There is no corresponding os.path method'''
+
+    c = keys.get('c')
+
+    if c: path = g.os_path_expandExpression(path,**keys)
+
+    path = g.os_path_expanduser(path)
+    path = os.path.abspath(path)
+    path = os.path.normpath(path)
+    return path
+
+def os_path_finalize_join (*args,**keys):
+
+    '''Do os.path.join(*args), then finalize the result.'''
+
+    c = keys.get('c')
+
+    if c:
+        args = [g.os_path_expandExpression(z,**keys)
+            for z in args if z]
+
+    return os.path.normpath(os.path.abspath(
+        g.os_path_join(*args,**keys))) # Handles expanduser
+.. @+node:ekr.20031218072017.2150: *6* os_path_getmtime
+def os_path_getmtime(path):
+
+    """Return the modification time of path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.getmtime(path)
+.. @+node:ekr.20080729142651.2: *6* os_path_getsize
+def os_path_getsize (path):
+
+    '''Return the size of path.'''
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.getsize(path)
+.. @+node:ekr.20031218072017.2151: *6* os_path_isabs
+def os_path_isabs(path):
+
+    """Return True if path is an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isabs(path)
+.. @+node:ekr.20031218072017.2152: *6* os_path_isdir
+def os_path_isdir(path):
+
+    """Return True if the path is a directory."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isdir(path)
+.. @+node:ekr.20031218072017.2153: *6* os_path_isfile
+def os_path_isfile(path):
+
+    """Return True if path is a file."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isfile(path)
+.. @+node:ekr.20031218072017.2154: *6* os_path_join
+def os_path_join(*args,**keys):
+
+    trace = False and not g.unitTesting
+    c = keys.get('c')
+
+    uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
+
+    if trace: g.trace('1',uargs)
+
+    # Note:  This is exactly the same convention as used by getBaseDirectory.
+    if uargs and uargs[0] == '!!':
+        uargs[0] = g.app.loadDir
+    elif uargs and uargs[0] == '.':
+        c = keys.get('c')
+        if c and c.openDirectory:
+            uargs[0] = c.openDirectory
+            # g.trace(c.openDirectory)
+
+    uargs = [g.os_path_expanduser(z) for z in uargs if z]
+
+    if trace: g.trace('2',uargs)
+
+    path = os.path.join(*uargs)
+
+    if trace: g.trace('3',path)
+
+    # May not be needed on some Pythons.
+    path = g.toUnicodeFileEncoding(path)
+    return path
+.. @+node:ekr.20031218072017.2156: *6* os_path_normcase
+def os_path_normcase(path):
+
+    """Normalize the path's case."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.normcase(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20031218072017.2157: *6* os_path_normpath
+def os_path_normpath(path):
+
+    """Normalize the path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.normpath(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20080605064555.2: *6* os_path_realpath
+def os_path_realpath(path):
+
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.realpath(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20031218072017.2158: *6* os_path_split
+def os_path_split(path):
+
+    path = g.toUnicodeFileEncoding(path)
+
+    head,tail = os.path.split(path)
+
+    head = g.toUnicodeFileEncoding(head)
+    tail = g.toUnicodeFileEncoding(tail)
+
+    return head,tail
+.. @+node:ekr.20031218072017.2159: *6* os_path_splitext
+def os_path_splitext(path):
+
+    path = g.toUnicodeFileEncoding(path)
+
+    head,tail = os.path.splitext(path)
+
+    head = g.toUnicodeFileEncoding(head)
+    tail = g.toUnicodeFileEncoding(tail)
+
+    return head,tail
+.. @+node:ekr.20090829140232.6036: *6* os_startfile
+def os_startfile(fname):
+    if sys.platform.startswith('win'):
+        os.startfile(fname)
+    elif sys.platform == 'darwin':
+        # From Marc-Antoine Parent.
+        try:
+            subprocess.call(['open', fname])
+        except OSError:
+            pass # There may be a spurious "Interrupted system call"
+        except ImportError:
+            os.system("open '%s'" % (fname,))
+    else:
+        os.system('xdg-open "%s"'%fname)
+.. @+node:ekr.20031218072017.2160: *6* toUnicodeFileEncoding
+def toUnicodeFileEncoding(path):
+
+    if path: path = path.replace('\\', os.sep)
+
+    # Yes, this is correct.  All os_path_x functions return Unicode strings.
+    return g.toUnicode(path)
+.. @+node:ekr.20111108081936.9750: *5* @test path computations
+fj = g.os_path_finalize_join
+f  = g.os_path_finalize
+eu = g.os_path_expanduser
+
+if g.app.isExternalUnitTest:
+    loadDir = fj(g.app.loadDir,'..','test')
+else:
+    loadDir = g.app.loadDir
+
+table = (
+    (fj,'@@file fj-test-1',fj(loadDir,'rel-path')),
+)
+
+for func,h,expected in table:
+    p = g.findNodeAnywhere(c,h)
+    assert p,'not found: "%s"' % (h)
+    assert p.h.startswith('@@')
+    p.h = p.h[1:] # Remove the first @ sign.
+    
+    try:
+        d = c.scanAllDirectives(p)
+        result = d.get('path')
+        assert result == expected,'expected "%s", got "%s"' % (
+            expected,result)
+    finally:
+        p.h = '@' + p.h
+        c.redraw()
+.. @+node:ekr.20111108081936.9768: *6* @path rel-path
+.. @+node:ekr.20111108081936.9751: *7* @@file fj-test-1
+.. @+node:ekr.20111109083738.9797: *4* Bugs
+.. @+node:ekr.20111024170505.16459: *5* * Bug 879331: Redefining a key binding breaks menu items with same binding
+.. @+node:ekr.20111026091322.16501: *6* Probably same as key-binding bug
+.. @+node:ekr.20111026091322.16492: *7* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/815564
@@ -1209,7 +1080,7 @@ Leo Log Window
 Leo 4.9 final, build 4411, June 21, 2011
 Python 2.7.1, qt version 4.7.2
 linux2
-.. @+node:ekr.20111026091322.16500: *5* Report
+.. @+node:ekr.20111026091322.16500: *6* Report
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/879331
@@ -1255,8 +1126,8 @@ Leo Log Window
 Leo 4.9 final, build 4411, June 21, 2011
 Python 2.7.1, qt version 4.7.2
 linux2
-.. @+node:ekr.20111020144401.9584: *5* Changed
-.. @+node:ekr.20041117062717.2: *6* ctor (configClass)
+.. @+node:ekr.20111020144401.9584: *6* Changed
+.. @+node:ekr.20041117062717.2: *7* ctor (configClass)
 def __init__ (self):
 
     # g.trace('g.app.config')
@@ -1301,7 +1172,7 @@ def __init__ (self):
     self.initIvarsFromSettings()
     self.initSettingsFiles()
     self.initRecentFiles()
-.. @+node:ekr.20041120105609: *6* doShortcuts (ParserBaseClass)
+.. @+node:ekr.20041120105609: *7* doShortcuts (ParserBaseClass)
 def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
 
     trace = False and not g.unitTesting
@@ -1325,7 +1196,7 @@ def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
                     self.killOneShortcut(bunch,name,p)
                 else:
                     self.doOneShortcut(bunch,name,p)
-.. @+node:ekr.20111020144401.9585: *7* doOneShortcut (ParserBaseClass)
+.. @+node:ekr.20111020144401.9585: *8* doOneShortcut (ParserBaseClass)
 def doOneShortcut(self,bunch,name,p):
     
     '''Handle a regular shortcut.'''
@@ -1353,12 +1224,12 @@ def doOneShortcut(self,bunch,name,p):
         # bunchList = [z for z in bunchList
             # if munge(z.val) != munge(bunch.val)]
         # # g.trace(bunchList)
-.. @+node:ekr.20111020144401.9586: *7* killOneShortcut (ParserBaseClass) (Not ready yet)
+.. @+node:ekr.20111020144401.9586: *8* killOneShortcut (ParserBaseClass) (Not ready yet)
 def killOneShortcut (self,bunch,name,p):
     
     if 0:
         g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20061031131434.105: *6* masterCommand & helpers
+.. @+node:ekr.20061031131434.105: *7* masterCommand & helpers
 def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
 
     '''This is the central dispatching method.
@@ -1455,7 +1326,7 @@ def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
             c.frame.updateStatusLine()
         if traceGC: g.printNewObjects('masterCom 4')
         return val
-.. @+node:ekr.20061031131434.106: *7* << define specialKeysyms >>
+.. @+node:ekr.20061031131434.106: *8* << define specialKeysyms >>
 specialKeysyms = (
     'Alt_L','Alt_R',
     'Meta_L','Meta_R', # Meta support.
@@ -1463,7 +1334,7 @@ specialKeysyms = (
     'Num_Lock',
     'Shift_L','Shift_R',
 )
-.. @+node:ekr.20061031131434.109: *7* callKeystrokeFunction (not used)
+.. @+node:ekr.20061031131434.109: *8* callKeystrokeFunction (not used)
 def callKeystrokeFunction (self,event):
 
     '''Handle a quick keystroke function.
@@ -1478,7 +1349,7 @@ def callKeystrokeFunction (self,event):
         k.endCommand(commandName)
 
     return func
-.. @+node:ekr.20061031131434.110: *7* k.handleDefaultChar
+.. @+node:ekr.20061031131434.110: *8* k.handleDefaultChar
 def handleDefaultChar(self,event,stroke):
     k = self ; c = k.c
     w = event and event.widget
@@ -1522,7 +1393,7 @@ def handleDefaultChar(self,event,stroke):
     else:
         # Let the widget handle the event.
         return # None
-.. @+node:ekr.20031218072017.1723: *6* createMenuEntries (leoMenu) & helpers
+.. @+node:ekr.20031218072017.1723: *7* createMenuEntries (leoMenu) & helpers
 def createMenuEntries (self,menu,table,dynamicMenu=False):
 
     '''Create a menu entry from the table.
@@ -1573,7 +1444,7 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
                 accelerator=accelerator,
                 command=masterMenuCallback,
                 underline=amp_index)
-.. @+node:ekr.20111102072143.10016: *7* createMasterMenuCallback
+.. @+node:ekr.20111102072143.10016: *8* createMasterMenuCallback
 def createMasterMenuCallback(self,dynamicMenu,command,commandName):
     
     c = self.c
@@ -1596,7 +1467,7 @@ def createMasterMenuCallback(self,dynamicMenu,command,commandName):
             event = g.app.gui.create_key_event(c,None,None,None)
             return c.k.masterCommand(commandName=commandName,event=event)
         return masterStaticMenuCallback
-.. @+node:ekr.20111028060955.16568: *7* getMenuEntryBindings
+.. @+node:ekr.20111028060955.16568: *8* getMenuEntryBindings
 def getMenuEntryBindings(self,command,dynamicMenu,label):
     
     '''Compute accel,commandName,done from command.'''
@@ -1647,7 +1518,7 @@ def getMenuEntryBindings(self,command,dynamicMenu,label):
                 if trace: g.trace('No inverse for %s' % commandName)
                 
     return accel,commandName,done
-.. @+node:ekr.20111028060955.16569: *8* << compute emacs_name >>
+.. @+node:ekr.20111028060955.16569: *9* << compute emacs_name >>
 @ One not-so-horrible kludge remains.
 
 The cut/copy/paste commands in the menu tables are not the same as the methods
@@ -1663,7 +1534,7 @@ else:
         emacs_name = k.inverseCommandsDict.get(command.__name__)
     except Exception:
         emacs_name = None
-.. @+node:ekr.20111028060955.16565: *7* getMenuEntryInfo
+.. @+node:ekr.20111028060955.16565: *8* getMenuEntryInfo
 def getMenuEntryInfo (self,data,menu):
     
     done = False
@@ -1696,7 +1567,7 @@ def getMenuEntryInfo (self,data,menu):
             done = True # Ignore bad data
             
     return label,command,done
-.. @+node:ekr.20111028060955.16563: *7* traceMenuTable
+.. @+node:ekr.20111028060955.16563: *8* traceMenuTable
 def traceMenuTable (self,table):
     
     trace = False and not g.unitTesting
@@ -1714,8 +1585,8 @@ def traceMenuTable (self,table):
                 print(format % (name,func and func.__name__ or '<NO FUNC>'))
         else:
             print(format % (data,''))
-.. @+node:ekr.20111028111441.16582: *5* Reference
-.. @+node:ekr.20060102103625.1: *6* doMode (ParserBaseClass)
+.. @+node:ekr.20111028111441.16582: *6* Reference
+.. @+node:ekr.20060102103625.1: *7* doMode (ParserBaseClass)
 def doMode(self,p,kind,name,val):
 
     '''Parse an @mode node and create the enter-<name>-mode command.'''
@@ -1762,7 +1633,7 @@ def doMode(self,p,kind,name,val):
 
     # Create the command, but not any bindings to it.
     self.createModeCommand(modeName,name1,d)
-.. @+node:ekr.20041227071423: *6* setShortcut (ParserBaseClass) (** can we delete this?? **)
+.. @+node:ekr.20041227071423: *7* setShortcut (ParserBaseClass) (** can we delete this?? **)
 def setShortcut (self,p,name,bunchList):
     
     trace = False and not g.unitTesting
@@ -1777,7 +1648,7 @@ def setShortcut (self,p,name,bunchList):
     if trace:
         for b in bunchList:
             g.trace('%20s %45s %s %s' % (b.val,rawKey,b.pane,b._hash))
-.. @+node:ekr.20041120094940.9: *6* set (parserBaseClass)
+.. @+node:ekr.20041120094940.9: *7* set (parserBaseClass)
 def set (self,p,kind,name,val):
 
     """Init the setting for name to val."""
@@ -1804,7 +1675,7 @@ def set (self,p,kind,name,val):
         # g.trace('id(d)',id(d),name)
 
     d [key] = g.Bunch(path=c.mFileName,kind=kind,val=val,tag='setting')
-.. @+node:ekr.20041117083141: *6* get & allies (g.app.config)
+.. @+node:ekr.20041117083141: *7* get & allies (g.app.config)
 def get (self,c,setting,kind):
 
     """Get the setting and make sure its type matches the expected type."""
@@ -1855,7 +1726,7 @@ def get (self,c,setting,kind):
         fn = c and c.shortFileName() or '<no file>'
         g.trace(setting,None,fn)
     return None
-.. @+node:ekr.20041121143823: *7* getValFromDict
+.. @+node:ekr.20041121143823: *8* getValFromDict
 def getValFromDict (self,d,setting,requestedType,warn=True):
 
     '''Look up the setting in d. If warn is True, warn if the requested type
@@ -1893,7 +1764,7 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
     else:
         # g.trace(setting,val)
         return val, True
-.. @+node:ekr.20051015093141: *7* typesMatch
+.. @+node:ekr.20051015093141: *8* typesMatch
 def typesMatch (self,type1,type2):
 
     '''
@@ -1915,7 +1786,7 @@ def typesMatch (self,type1,type2):
         (type1 in shortcuts and type2 in shortcuts) or
         type1 == type2
     )
-.. @+node:ekr.20041117062717.14: *6* getShortcut (g.app.config)
+.. @+node:ekr.20041117062717.14: *7* getShortcut (g.app.config)
 def getShortcut (self,c,commandName):
 
     '''Return rawKey,accel for shortcutName'''
@@ -1937,7 +1808,7 @@ def getShortcut (self,c,commandName):
         return key,bunchList
     else:
         return key,[]
-.. @+node:ekr.20110211041914.15415: *7* getShortcutHelper(g.app.config)
+.. @+node:ekr.20110211041914.15415: *8* getShortcutHelper(g.app.config)
 def getShortcutHelper (self,c,key):
     
     '''Like get, but return *all* the found bunchLists's.
@@ -1971,7 +1842,7 @@ def getShortcutHelper (self,c,key):
             if bunchList: self.mergeShortcuts(result,bunchList,key)
 
     return result
-.. @+node:ekr.20110211041914.15418: *7* mergeShortcuts
+.. @+node:ekr.20110211041914.15418: *8* mergeShortcuts
 def mergeShortcuts (self,result,aList,key):
         # key is for debugging.
         # key is a conical command name, *not* a keystroke.
@@ -1989,8 +1860,8 @@ def mergeShortcuts (self,result,aList,key):
 
     if trace and len(result) > 1:
         g.trace(key,['%s %s' % (z.val,z.pane) for z in result])
-.. @+node:ekr.20041120094940: *6* kind handlers (parserBaseClass)
-.. @+node:ekr.20060608221203: *7* doAbbrev
+.. @+node:ekr.20041120094940: *7* kind handlers (parserBaseClass)
+.. @+node:ekr.20060608221203: *8* doAbbrev
 def doAbbrev (self,p,kind,name,val):
 
     d = {}
@@ -2003,7 +1874,7 @@ def doAbbrev (self,p,kind,name,val):
             if name: d [val] = name
 
     self.set (p,'abbrev','abbrev',d)
-.. @+node:ekr.20041120094940.1: *7* doBool
+.. @+node:ekr.20041120094940.1: *8* doBool
 def doBool (self,p,kind,name,val):
 
     if val in ('True','true','1'):
@@ -2012,7 +1883,7 @@ def doBool (self,p,kind,name,val):
         self.set(p,kind,name,False)
     else:
         self.valueError(p,kind,name,val)
-.. @+node:ekr.20070925144337: *7* doButtons
+.. @+node:ekr.20070925144337: *8* doButtons
 def doButtons (self,p,kind,name,val):
 
     '''Handle an @buttons tree.'''
@@ -2041,7 +1912,7 @@ def doButtons (self,p,kind,name,val):
     g.app.config.atCommonButtonsList = aList
     g.app.config.buttonsFileName = c and c.shortFileName() or '<no settings file>'
 
-.. @+node:ekr.20080312071248.6: *7* doCommands
+.. @+node:ekr.20080312071248.6: *8* doCommands
 def doCommands (self,p,kind,name,val):
 
     '''Handle an @commands tree.'''
@@ -2067,7 +1938,7 @@ def doCommands (self,p,kind,name,val):
     g.app.config.atCommonCommandsList = aList
 
 
-.. @+node:ekr.20041120094940.2: *7* doColor
+.. @+node:ekr.20041120094940.2: *8* doColor
 def doColor (self,p,kind,name,val):
 
     # At present no checking is done.
@@ -2075,7 +1946,7 @@ def doColor (self,p,kind,name,val):
     val = val.lstrip("'").rstrip("'")
 
     self.set(p,kind,name,val)
-.. @+node:ekr.20071214140900: *7* doData
+.. @+node:ekr.20071214140900: *8* doData
 def doData (self,p,kind,name,val):
 
     s = p.b
@@ -2083,14 +1954,14 @@ def doData (self,p,kind,name,val):
     data = [z.strip() for z in lines if z.strip() and not z.startswith('#')]
 
     self.set(p,kind,name,data)
-.. @+node:ekr.20041120094940.3: *7* doDirectory & doPath
+.. @+node:ekr.20041120094940.3: *8* doDirectory & doPath
 def doDirectory (self,p,kind,name,val):
 
     # At present no checking is done.
     self.set(p,kind,name,val)
 
 doPath = doDirectory
-.. @+node:ekr.20070224075914: *7* doEnabledPlugins
+.. @+node:ekr.20070224075914: *8* doEnabledPlugins
 def doEnabledPlugins (self,p,kind,name,val):
 
     c = self.c
@@ -2112,7 +1983,7 @@ def doEnabledPlugins (self,p,kind,name,val):
     # Set the global config ivars.
     g.app.config.enabledPluginsString = s
     g.app.config.enabledPluginsFileName = c and c.shortFileName() or '<no settings file>'
-.. @+node:ekr.20041120094940.6: *7* doFloat
+.. @+node:ekr.20041120094940.6: *8* doFloat
 def doFloat (self,p,kind,name,val):
 
     try:
@@ -2120,7 +1991,7 @@ def doFloat (self,p,kind,name,val):
         self.set(p,kind,name,val)
     except ValueError:
         self.valueError(p,kind,name,val)
-.. @+node:ekr.20041120094940.4: *7* doFont
+.. @+node:ekr.20041120094940.4: *8* doFont
 def doFont (self,p,kind,name,val):
 
     trace = False
@@ -2137,12 +2008,12 @@ def doFont (self,p,kind,name,val):
             setKind = key
             self.set(p,setKind,name,val)
             if trace and val not in (None,'none','None'): g.trace(key,val)
-.. @+node:ekr.20041120103933: *7* doIf
+.. @+node:ekr.20041120103933: *8* doIf
 def doIf(self,p,kind,name,val):
 
     g.trace("'if' not supported yet")
     return None
-.. @+node:ekr.20041121125416: *7* doIfGui (can never work)
+.. @+node:ekr.20041121125416: *8* doIfGui (can never work)
 @
 Alas, @if-gui can't be made to work. The problem is that plugins can
 set g.app.gui, but plugins need settings so the leoSettings.leo files
@@ -2161,7 +2032,7 @@ if 0:
             return None
         else:
             return "skip"
-.. @+node:dan.20080410121257.2: *7* doIfHostname
+.. @+node:dan.20080410121257.2: *8* doIfHostname
 def doIfHostname (self,p,kind,name,val):
     """headline: @ifhostname bob,!harry,joe
 
@@ -2181,18 +2052,18 @@ def doIfHostname (self,p,kind,name,val):
 
     return None
 
-.. @+node:ekr.20041120104215: *7* doIfPlatform
+.. @+node:ekr.20041120104215: *8* doIfPlatform
 def doIfPlatform (self,p,kind,name,val):
 
     if sys.platform.lower() == name.lower():
         return None
     else:
         return "skip"
-.. @+node:ekr.20041120104215.1: *7* doIgnore
+.. @+node:ekr.20041120104215.1: *8* doIgnore
 def doIgnore(self,p,kind,name,val):
 
     return "skip"
-.. @+node:ekr.20041120094940.5: *7* doInt
+.. @+node:ekr.20041120094940.5: *8* doInt
 def doInt (self,p,kind,name,val):
 
     try:
@@ -2200,7 +2071,7 @@ def doInt (self,p,kind,name,val):
         self.set(p,kind,name,val)
     except ValueError:
         self.valueError(p,kind,name,val)
-.. @+node:ekr.20041217132253: *7* doInts
+.. @+node:ekr.20041217132253: *8* doInts
 def doInts (self,p,kind,name,val):
 
     '''We expect either:
@@ -2238,7 +2109,7 @@ def doInts (self,p,kind,name,val):
 
         # At present no checking is done.
         self.set(p,kind,name,val)
-.. @+node:ekr.20070925144337.2: *7* doMenus & helpers (ParserBaseClass)
+.. @+node:ekr.20070925144337.2: *8* doMenus & helpers (ParserBaseClass)
 def doMenus (self,p,kind,name,val):
 
     c = self.c ; aList = [] ; tag = '@menu' ; trace = False and g.isPython3
@@ -2274,7 +2145,7 @@ def doMenus (self,p,kind,name,val):
             g.es_print(s,color='blue')
         g.app.config.menusList = aList
         g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
-.. @+node:ekr.20070926141716: *8* doItems
+.. @+node:ekr.20070926141716: *9* doItems
 def doItems (self,p,aList):
 
     trace = False and g.isPython3
@@ -2315,7 +2186,7 @@ def doItems (self,p,aList):
         else:
             # g.trace('***skipping***',p.h)
             p.moveToThreadNext()
-.. @+node:ekr.20070926142312: *8* dumpMenuList
+.. @+node:ekr.20070926142312: *9* dumpMenuList
 def dumpMenuList (self,aList,level=0):
 
     for z in aList:
@@ -2326,7 +2197,7 @@ def dumpMenuList (self,aList,level=0):
             g.pr('')
             g.trace(level,kind,'...')
             self.dumpMenuList(val,level+1)
-.. @+node:ekr.20060102103625.1: *7* doMode (ParserBaseClass)
+.. @+node:ekr.20060102103625.1: *8* doMode (ParserBaseClass)
 def doMode(self,p,kind,name,val):
 
     '''Parse an @mode node and create the enter-<name>-mode command.'''
@@ -2373,7 +2244,7 @@ def doMode(self,p,kind,name,val):
 
     # Create the command, but not any bindings to it.
     self.createModeCommand(modeName,name1,d)
-.. @+node:ekr.20070411101643.1: *7* doOpenWith (ParserBaseClass)
+.. @+node:ekr.20070411101643.1: *8* doOpenWith (ParserBaseClass)
 def doOpenWith (self,p,kind,name,val):
 
     # g.trace('kind',kind,'name',name,'val',val,'c',self.c)
@@ -2384,11 +2255,11 @@ def doOpenWith (self,p,kind,name,val):
     name = kind = 'openwithtable'
     self.openWithList.append(d)
     self.set(p,kind,name,self.openWithList)
-.. @+node:ekr.20041120104215.2: *7* doPage
+.. @+node:ekr.20041120104215.2: *8* doPage
 def doPage(self,p,kind,name,val):
 
     pass # Ignore @page this while parsing settings.
-.. @+node:ekr.20041121125741: *7* doRatio
+.. @+node:ekr.20041121125741: *8* doRatio
 def doRatio (self,p,kind,name,val):
 
     try:
@@ -2399,7 +2270,7 @@ def doRatio (self,p,kind,name,val):
             self.valueError(p,kind,name,val)
     except ValueError:
         self.valueError(p,kind,name,val)
-.. @+node:ekr.20041120105609: *7* doShortcuts (ParserBaseClass)
+.. @+node:ekr.20041120105609: *8* doShortcuts (ParserBaseClass)
 def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
 
     trace = False and not g.unitTesting
@@ -2423,7 +2294,7 @@ def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
                     self.killOneShortcut(bunch,name,p)
                 else:
                     self.doOneShortcut(bunch,name,p)
-.. @+node:ekr.20111020144401.9585: *8* doOneShortcut (ParserBaseClass)
+.. @+node:ekr.20111020144401.9585: *9* doOneShortcut (ParserBaseClass)
 def doOneShortcut(self,bunch,name,p):
     
     '''Handle a regular shortcut.'''
@@ -2451,17 +2322,17 @@ def doOneShortcut(self,bunch,name,p):
         # bunchList = [z for z in bunchList
             # if munge(z.val) != munge(bunch.val)]
         # # g.trace(bunchList)
-.. @+node:ekr.20111020144401.9586: *8* killOneShortcut (ParserBaseClass) (Not ready yet)
+.. @+node:ekr.20111020144401.9586: *9* killOneShortcut (ParserBaseClass) (Not ready yet)
 def killOneShortcut (self,bunch,name,p):
     
     if 0:
         g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20041217132028: *7* doString
+.. @+node:ekr.20041217132028: *8* doString
 def doString (self,p,kind,name,val):
 
     # At present no checking is done.
     self.set(p,kind,name,val)
-.. @+node:ekr.20041120094940.8: *7* doStrings
+.. @+node:ekr.20041120094940.8: *8* doStrings
 def doStrings (self,p,kind,name,val):
 
     '''We expect one of the following:
@@ -2482,7 +2353,7 @@ def doStrings (self,p,kind,name,val):
 
         # At present no checking is done.
         self.set(p,kind,name,val)
-.. @+node:bobjack.20080324141020.4: *7* doPopup & helper
+.. @+node:bobjack.20080324141020.4: *8* doPopup & helper
 def doPopup (self,p,kind,name,val):
 
     """
@@ -2509,7 +2380,7 @@ def doPopup (self,p,kind,name,val):
 
 
     g.app.config.context_menus[popupName] = aList
-.. @+node:bobjack.20080324141020.5: *8* doPopupItems
+.. @+node:bobjack.20080324141020.5: *9* doPopupItems
 def doPopupItems (self,p,aList):
 
     p = p.copy() ; after = p.nodeAfterTree()
@@ -2538,7 +2409,7 @@ def doPopupItems (self,p,aList):
         else:
             # g.trace('***skipping***',p.h)
             p.moveToThreadNext()
-.. @+node:tbrown.20080514112857.124: *7* doMenuat
+.. @+node:tbrown.20080514112857.124: *8* doMenuat
 def doMenuat (self,p,kind,name,val):
 
     if g.app.config.menusList:
@@ -2598,14 +2469,14 @@ def doMenuat (self,p,kind,name,val):
 
     else:
         g.es_print("ERROR: @menuat found but no menu tree to patch")
-.. @+node:tbrown.20080514180046.9: *8* getName
+.. @+node:tbrown.20080514180046.9: *9* getName
 def getName(self, val, val2=None):
     if val2 and val2.strip(): val = val2
     val = val.split('\n',1)[0]
     for i in "*.-& \t\n":
         val = val.replace(i,'')
     return val.lower()
-.. @+node:tbrown.20080514180046.2: *8* dumpMenuTree
+.. @+node:tbrown.20080514180046.2: *9* dumpMenuTree
 def dumpMenuTree (self,aList,level=0,path=''):
 
     for z in aList:
@@ -2617,7 +2488,7 @@ def dumpMenuTree (self,aList,level=0,path=''):
             name = self.getName(kind.replace('@menu ',''))
             g.es_print('%s %s... [%s]' % ('    '*(level), kind, path+'/'+name))
             self.dumpMenuTree(val,level+1,path=path+'/'+name)
-.. @+node:tbrown.20080514180046.8: *8* patchMenuTree
+.. @+node:tbrown.20080514180046.8: *9* patchMenuTree
 def patchMenuTree(self, orig, targetPath, path=''):
 
     for n,z in enumerate(orig):
@@ -2639,7 +2510,7 @@ def patchMenuTree(self, orig, targetPath, path=''):
                 return ans
 
     return None
-.. @+node:ekr.20041120105609: *6* doShortcuts (ParserBaseClass)
+.. @+node:ekr.20041120105609: *7* doShortcuts (ParserBaseClass)
 def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
 
     trace = False and not g.unitTesting
@@ -2663,7 +2534,7 @@ def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
                     self.killOneShortcut(bunch,name,p)
                 else:
                     self.doOneShortcut(bunch,name,p)
-.. @+node:ekr.20111020144401.9585: *7* doOneShortcut (ParserBaseClass)
+.. @+node:ekr.20111020144401.9585: *8* doOneShortcut (ParserBaseClass)
 def doOneShortcut(self,bunch,name,p):
     
     '''Handle a regular shortcut.'''
@@ -2691,12 +2562,21 @@ def doOneShortcut(self,bunch,name,p):
         # bunchList = [z for z in bunchList
             # if munge(z.val) != munge(bunch.val)]
         # # g.trace(bunchList)
-.. @+node:ekr.20111020144401.9586: *7* killOneShortcut (ParserBaseClass) (Not ready yet)
+.. @+node:ekr.20111020144401.9586: *8* killOneShortcut (ParserBaseClass) (Not ready yet)
 def killOneShortcut (self,bunch,name,p):
     
     if 0:
         g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20110929165422.15449: *4* Test bug fix: noweb expansions in rst3 command
+.. @+node:ekr.20111010162047.15678: *5* The @auto script *must* put @first nodes in root node
+@nocolor-node
+
+Also the import commands.
+
+Especially:
+    - Shebang line.
+    - Python encoding line.
+.. @+node:ekr.20111109083738.9798: *4* Testing
+.. @+node:ekr.20110929165422.15449: *5* Test bug fix: noweb expansions in rst3 command
 @nocolor-node
 
 *** Important *** This was all done in Leo 4.9
@@ -2713,7 +2593,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
 - When expand_noweb_references is True, definitions (typically clones)
   must be descendants of the referencing node (in the @rst tree)
-.. @+node:ekr.20111018104244.15918: *5* Report
+.. @+node:ekr.20111018104244.15918: *6* Report
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/15239f5f504cee6f
@@ -2755,8 +2635,8 @@ But now I can go see what happens in the code for debugging, since the
 option gives a pointer into the code.
 
 Thanks!
-.. @+node:ekr.20100813041139.5920: *5* Entry points
-.. @+node:ekr.20100812082517.5945: *6* code_to_rst_command & helpers
+.. @+node:ekr.20100813041139.5920: *6* Entry points
+.. @+node:ekr.20100812082517.5945: *7* code_to_rst_command & helpers
 def code_to_rst_command (self,event=None,p=None,scriptSettingsDict=None,toString=False):
 
     '''Format the presently selected node as computer code.
@@ -2803,7 +2683,7 @@ def code_to_rst_command (self,event=None,p=None,scriptSettingsDict=None,toString
 
     if callDocutils or writeIntermediateFile:
         self.write_files(ext,fn,callDocutils,toString,writeIntermediateFile)
-.. @+node:ekr.20100812082517.5963: *7* write_code_body & helpers
+.. @+node:ekr.20100812082517.5963: *8* write_code_body & helpers
 def write_code_body (self,p):
 
     trace = False
@@ -2836,7 +2716,7 @@ def write_code_body (self,p):
     # Write the lines with exactly two trailing newlines.
     s = ''.join(result).rstrip() + '\n\n'
     self.write(s)
-.. @+node:ekr.20100812082517.5964: *8* split_parts
+.. @+node:ekr.20100812082517.5964: *9* split_parts
 def split_parts (self,lines,showDocsAsParagraphs):
 
     '''Split a list of body lines into a list of tuples (kind,lines).'''
@@ -2874,7 +2754,7 @@ def split_parts (self,lines,showDocsAsParagraphs):
         parts.append((kind,part_lines[:]),)
 
     return parts
-.. @+node:ekr.20100812082517.5965: *8* write_code_block
+.. @+node:ekr.20100812082517.5965: *9* write_code_block
 def write_code_block (self,lines):
 
     result = ['::\n\n'] # ['[**code block**]\n\n']
@@ -2889,7 +2769,7 @@ def write_code_block (self,lines):
 
     s = ''.join(result).rstrip()+'\n\n'
     return g.splitLines(s)
-.. @+node:ekr.20100812082517.5966: *7* write_code_headline & helper
+.. @+node:ekr.20100812082517.5966: *8* write_code_headline & helper
 def write_code_headline (self,p):
 
     '''Generate an rST section if options permit it.
@@ -2915,7 +2795,7 @@ def write_code_headline (self,p):
         return
 
     self.write_code_headline_helper(p)
-.. @+node:ekr.20100812082517.5967: *8* write_code_headline_helper
+.. @+node:ekr.20100812082517.5967: *9* write_code_headline_helper
 def write_code_headline_helper (self,p):
 
     h = p.h.strip()
@@ -2940,7 +2820,7 @@ def write_code_headline_helper (self,p):
         self.write(self.underline(h,p))
     else:
         self.write('\n**%s**\n\n' % h.replace('*',''))
-.. @+node:ekr.20100812082517.5968: *7* write_code_node
+.. @+node:ekr.20100812082517.5968: *8* write_code_node
 def write_code_node (self,p):
 
     '''Format a node according to the options presently in effect.
@@ -2961,7 +2841,7 @@ def write_code_node (self,p):
         self.write_code_headline(p)
         self.write_code_body(p)
         p.moveToThreadNext()
-.. @+node:ekr.20100812082517.5939: *7* write_code_tree
+.. @+node:ekr.20100812082517.5939: *8* write_code_tree
 def write_code_tree (self,p,fn):
 
     '''Write p's tree as code to self.outputFile.'''
@@ -2977,13 +2857,13 @@ def write_code_tree (self,p,fn):
     after = p.nodeAfterTree()
     while p and p != after:
         self.write_code_node(p) # Side effect: advances p.
-.. @+node:ekr.20090511055302.5793: *6* rst3 command & helpers
+.. @+node:ekr.20090511055302.5793: *7* rst3 command & helpers
 def rst3 (self,event=None):
 
     '''Write all @rst nodes.'''
 
     self.processTopTree(self.c.p)
-.. @+node:ekr.20090502071837.62: *7* processTopTree
+.. @+node:ekr.20090502071837.62: *8* processTopTree
 def processTopTree (self,p,justOneFile=False):
 
     c = self.c ; current = p.copy()
@@ -3001,7 +2881,7 @@ def processTopTree (self,p,justOneFile=False):
         self.processTree(current,ext=None,toString=False,justOneFile=justOneFile)
 
     g.es_print('done',color='blue')
-.. @+node:ekr.20090502071837.63: *7* processTree
+.. @+node:ekr.20090502071837.63: *8* processTree
 def processTree(self,p,ext=None,toString=False,justOneFile=False):
 
     '''Process all @rst nodes in a tree.
@@ -3035,7 +2915,7 @@ def processTree(self,p,ext=None,toString=False,justOneFile=False):
     if not found:
         g.es('No @rst or @slides nodes in selected tree',color='blue')
     return None,None
-.. @+node:ekr.20090502071837.64: *7* write_rst_tree
+.. @+node:ekr.20090502071837.64: *8* write_rst_tree
 def write_rst_tree (self,p,ext,fn,toString=False,justOneFile=False):
 
     '''Convert p's tree to rst sources.
@@ -3071,7 +2951,7 @@ def write_rst_tree (self,p,ext,fn,toString=False,justOneFile=False):
 
     if callDocutils or writeIntermediateFile:
         self.write_files(ext,fn,callDocutils,toString,writeIntermediateFile)
-.. @+node:ekr.20100822092546.5835: *7* write_slides & helper
+.. @+node:ekr.20100822092546.5835: *8* write_slides & helper
 def write_slides (self,p,toString=False):
 
     '''Convert p's children to slides.'''
@@ -3102,7 +2982,7 @@ def write_slides (self,p,toString=False):
             callDocutils=self.getOption('call_docutils'),
             toString=toString,
             writeIntermediateFile=self.getOption('write_intermediate_file'))
-.. @+node:ekr.20100822174725.5836: *8* writeSlideTitle
+.. @+node:ekr.20100822174725.5836: *9* writeSlideTitle
 def writeSlideTitle (self,title,n,n_tot):
 
     '''Write the title, underlined with the '#' character.'''
@@ -3114,8 +2994,8 @@ def writeSlideTitle (self,title,n,n_tot):
         encoding=self.encoding,reportErrors=False)))
 
     self.write('%s\n%s \n\n' % (title,('#'*width)))
-.. @+node:ekr.20090502071837.58: *7* write methods (rst3 command)
-.. @+node:ekr.20090502071837.68: *8* getDocPart
+.. @+node:ekr.20090502071837.58: *8* write methods (rst3 command)
+.. @+node:ekr.20090502071837.68: *9* getDocPart
 def getDocPart (self,lines,n):
 
     # g.trace('n',n,repr(''.join(lines)))
@@ -3128,7 +3008,7 @@ def getDocPart (self,lines,n):
             break
         result.append(s)
     return n, result
-.. @+node:ekr.20090502071837.69: *9* << Append whatever follows @doc or @space to result >>
+.. @+node:ekr.20090502071837.69: *10* << Append whatever follows @doc or @space to result >>
 if n > 0:
     line = lines[n-1]
     if line.startswith('@doc'):
@@ -3145,7 +3025,7 @@ if n > 0:
 
     if s.strip():
         result.append(s)
-.. @+node:ekr.20090502071837.81: *8* handleSpecialDocParts
+.. @+node:ekr.20090502071837.81: *9* handleSpecialDocParts
 def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
 
     # g.trace(kind,g.listToString(lines))
@@ -3172,7 +3052,7 @@ def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
             result.append(s)
 
     return result
-.. @+node:ekr.20090502071837.77: *8* isAnyDocPart
+.. @+node:ekr.20090502071837.77: *9* isAnyDocPart
 def isAnyDocPart (self,s):
 
     if s.startswith('@doc'):
@@ -3181,7 +3061,7 @@ def isAnyDocPart (self,s):
         return False
     else:
         return len(s) == 1 or s[1].isspace()
-.. @+node:ekr.20090502071837.79: *8* isAnySpecialDocPart
+.. @+node:ekr.20090502071837.79: *9* isAnySpecialDocPart
 def isAnySpecialDocPart (self,s):
 
     for kind in (
@@ -3193,7 +3073,7 @@ def isAnySpecialDocPart (self,s):
             return True
 
     return False
-.. @+node:ekr.20090502071837.78: *8* isSpecialDocPart
+.. @+node:ekr.20090502071837.78: *9* isSpecialDocPart
 def isSpecialDocPart (self,s,kind):
 
     '''Return True if s is a special doc part of the indicated kind.
@@ -3215,7 +3095,7 @@ def isSpecialDocPart (self,s,kind):
         # repr(kind),result,repr(s)))
 
     return result
-.. @+node:ekr.20090502071837.80: *8* removeLeoDirectives
+.. @+node:ekr.20090502071837.80: *9* removeLeoDirectives
 def removeLeoDirectives (self,lines):
 
     '''Remove all Leo directives, except within literal blocks.'''
@@ -3237,7 +3117,7 @@ def removeLeoDirectives (self,lines):
             result.append(s)
 
     return result
-.. @+node:ekr.20090502071837.82: *8* replaceCodeBlockDirectives
+.. @+node:ekr.20090502071837.82: *9* replaceCodeBlockDirectives
 def replaceCodeBlockDirectives (self,lines):
 
     '''Replace code-block directive, but not in literal blocks.'''
@@ -3263,7 +3143,7 @@ def replaceCodeBlockDirectives (self,lines):
                 result.append(s)
 
     return result
-.. @+node:ekr.20090502071837.70: *8* skip_literal_block
+.. @+node:ekr.20090502071837.70: *9* skip_literal_block
 def skip_literal_block (self,lines,n):
 
     s = lines[n] ; result = [s] ; n += 1
@@ -3280,7 +3160,7 @@ def skip_literal_block (self,lines,n):
 
     # g.printList(result,tag='literal block')
     return n, result
-.. @+node:ekr.20090502071837.71: *8* writeBody & helpers
+.. @+node:ekr.20090502071837.71: *9* writeBody & helpers
 def writeBody (self,p):
 
     trace = False and not g.unitTesting
@@ -3338,7 +3218,7 @@ def writeBody (self,p):
     # s = g.ensureLeadingNewlines(s,1)
     s = g.ensureTrailingNewlines(s,2)
     self.write(s)
-.. @+node:ekr.20110610144305.6749: *9* isSectionDef/Ref
+.. @+node:ekr.20110610144305.6749: *10* isSectionDef/Ref
 def isSectionDef (self,p):
     
     return self.isSectionRef(p.h)
@@ -3348,7 +3228,7 @@ def isSectionRef (self,s):
     n1 = s.find("<<",0)
     n2 = s.find(">>",0)
     return -1 < n1 < n2 and s[n1+2:n2].strip()
-.. @+node:ekr.20110610144305.6750: *9* expandSectionRefs
+.. @+node:ekr.20110610144305.6750: *10* expandSectionRefs
 def expandSectionRefs (self,lines,p,seen):
     
     trace = False and not g.unitTesting
@@ -3379,7 +3259,7 @@ def expandSectionRefs (self,lines,p,seen):
             result.append(s)
 
     return result
-.. @+node:ekr.20110610144305.6751: *9* findSectionDef
+.. @+node:ekr.20110610144305.6751: *10* findSectionDef
 def findSectionDef (self,name,p):
     
     for p2 in p.subtree():
@@ -3388,7 +3268,7 @@ def findSectionDef (self,name,p):
             return p2
     
     return None
-.. @+node:ekr.20090502071837.72: *9* handleCodeMode & helper
+.. @+node:ekr.20090502071837.72: *10* handleCodeMode & helper
 def handleCodeMode (self,lines):
 
     '''Handle the preprocessed body text in code mode as follows:
@@ -3452,7 +3332,7 @@ def handleCodeMode (self,lines):
         else: result2.append('%s\n' % z.rstrip())
 
     return result2
-.. @+node:ekr.20090502071837.73: *10* formatCodeModeLine
+.. @+node:ekr.20090502071837.73: *11* formatCodeModeLine
 def formatCodeModeLine (self,s,n,numberOption):
 
     if not s.strip(): s = ''
@@ -3461,7 +3341,7 @@ def formatCodeModeLine (self,s,n,numberOption):
         return '\t%d: %s' % (n,s)
     else:
         return '\t%s' % s
-.. @+node:ekr.20090502071837.74: *10* rstripList
+.. @+node:ekr.20090502071837.74: *11* rstripList
 def rstripList (self,theList):
 
     '''Removed trailing blank lines from theList.'''
@@ -3469,7 +3349,7 @@ def rstripList (self,theList):
     # 2010/08/27: fix bug 618482.
     s = ''.join(theList).rstrip()
     return s.split('\n')
-.. @+node:ekr.20090502071837.75: *10* finishCodePart
+.. @+node:ekr.20090502071837.75: *11* finishCodePart
 def finishCodePart (self,result,code):
 
     numberOption = self.getOption('number_code_lines')
@@ -3478,7 +3358,7 @@ def finishCodePart (self,result,code):
     for line in code:
         i += 1
         result.append(self.formatCodeModeLine(line,i,numberOption))
-.. @+node:ekr.20090502071837.76: *9* handleDocOnlyMode
+.. @+node:ekr.20090502071837.76: *10* handleDocOnlyMode
 def handleDocOnlyMode (self,p,lines):
 
     '''Handle the preprocessed body text in doc_only mode as follows:
@@ -3508,7 +3388,7 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
-.. @+node:ekr.20090502071837.83: *8* writeHeadline & helper
+.. @+node:ekr.20090502071837.83: *9* writeHeadline & helper
 def writeHeadline (self,p):
 
     '''Generate an rST section if options permit it.
@@ -3535,7 +3415,7 @@ def writeHeadline (self,p):
         return
 
     self.writeHeadlineHelper(p)
-.. @+node:ekr.20090502071837.84: *9* writeHeadlineHelper
+.. @+node:ekr.20090502071837.84: *10* writeHeadlineHelper
 def writeHeadlineHelper (self,p):
 
     h = p.h
@@ -3576,7 +3456,7 @@ def writeHeadlineHelper (self,p):
             self.write('\n%s\n\n' % h)
     else:
         self.write('\n**%s**\n\n' % h.replace('*',''))
-.. @+node:ekr.20090502071837.85: *8* writeNode (leoRst)
+.. @+node:ekr.20090502071837.85: *9* writeNode (leoRst)
 def writeNode (self,p):
 
     '''Format a node according to the options presently in effect.'''
@@ -3604,7 +3484,7 @@ def writeNode (self,p):
         self.writeHeadline(p)
         self.writeBody(p)
         p.moveToThreadNext()
-.. @+node:ekr.20090502071837.86: *8* writePreformat
+.. @+node:ekr.20090502071837.86: *9* writePreformat
 def writePreformat (self,p):
 
     '''Write p's body text lines as if preformatted.
@@ -3624,7 +3504,7 @@ def writePreformat (self,p):
     s = '\n'.join(lines)
     if s.strip():
         self.write('%s\n\n' % s)
-.. @+node:ekr.20090502071837.87: *8* writeTree
+.. @+node:ekr.20090502071837.87: *9* writeTree
 def writeTree(self,p,fn):
 
     '''Write p's tree to self.outputFile.'''
@@ -3641,7 +3521,7 @@ def writeTree(self,p,fn):
     after = p.nodeAfterTree()
     while p and p != after:
         self.writeNode(p) # Side effect: advances p.
-.. @+node:ekr.20090502071837.67: *6* writeNodeToString
+.. @+node:ekr.20090502071837.67: *7* writeNodeToString
 def writeNodeToString (self,p=None,ext=None):
 
     '''Scan p's tree (defaults to presently selected tree) looking for @rst nodes.
@@ -3661,7 +3541,7 @@ def writeNodeToString (self,p=None,ext=None):
             return self.processTree(p,ext=ext,toString=True,justOneFile=True)
     else:
         return self.processTree(current,ext=ext,toString=True,justOneFile=True)
-.. @+node:ekr.20090512153903.5803: *6* writeAtAutoFile
+.. @+node:ekr.20090512153903.5803: *7* writeAtAutoFile
 def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
 
     '''Write an @auto tree containing imported rST code.
@@ -3682,7 +3562,7 @@ def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
     finally:
         self.atAutoWrite = False
     return ok
-.. @+node:ekr.20090513073632.5733: *7* initAtAutoWrite (rstCommands)
+.. @+node:ekr.20090513073632.5733: *8* initAtAutoWrite (rstCommands)
 def initAtAutoWrite(self,p,fileName,outputFile):
 
     # Set up for a standard write.
@@ -3715,7 +3595,7 @@ def initAtAutoWrite(self,p,fileName,outputFile):
     self.atAutoWriteUnderlines   = underlines2 + underlines1
     self.underlines1 = underlines1
     self.underlines2 = underlines2
-.. @+node:ekr.20091228080620.6499: *7* isSafeWrite
+.. @+node:ekr.20091228080620.6499: *8* isSafeWrite
 def isSafeWrite (self,p):
 
     '''Return True if node p contributes nothing but
@@ -3733,8 +3613,8 @@ def isSafeWrite (self,p):
             return False
     else:
         return True
-.. @+node:ekr.20090502071837.41: *5* Options
-.. @+node:ekr.20090502071837.42: *6* createDefaultOptionsDict
+.. @+node:ekr.20090502071837.41: *6* Options
+.. @+node:ekr.20090502071837.42: *7* createDefaultOptionsDict
 def createDefaultOptionsDict(self):
 
     # Important: these must be munged names.
@@ -3780,7 +3660,7 @@ def createDefaultOptionsDict(self):
         'show_markup_doc_parts': False,
         'show_options_doc_parts': False,
     }
-.. @+node:ekr.20090502071837.43: *6* dumpSettings (debugging)
+.. @+node:ekr.20090502071837.43: *7* dumpSettings (debugging)
 def dumpSettings (self):
 
     d = self.optionsDict
@@ -3789,7 +3669,7 @@ def dumpSettings (self):
     g.pr('present settings...')
     for key in keys:
         g.pr('%20s %s' % (key,d.get(key)))
-.. @+node:ekr.20090502071837.44: *6* getOption & setOption
+.. @+node:ekr.20090502071837.44: *7* getOption & setOption
 def getOption (self,name):
 
     # 2010/08/12: munging names here is safe because setOption munges.
@@ -3799,7 +3679,7 @@ def getOption (self,name):
 def setOption (self,name,val,tag):
 
     self.optionsDict [self.munge(name)] = val
-.. @+node:ekr.20090502071837.45: *6* initCodeBlockString
+.. @+node:ekr.20090502071837.45: *7* initCodeBlockString
 def initCodeBlockString(self,p):
 
     trace = False and not g.unitTesting
@@ -3822,7 +3702,7 @@ def initCodeBlockString(self,p):
             language.title())
     else:
         self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n\n'
-.. @+node:ekr.20090502071837.46: *6* preprocessTree & helpers
+.. @+node:ekr.20090502071837.46: *7* preprocessTree & helpers
 def preprocessTree (self,root):
 
     self.nodeOptionDict = {}
@@ -3839,14 +3719,14 @@ def preprocessTree (self,root):
         for key in self.nodeOptionDict.keys():
             g.trace(key)
             g.printDict(self.nodeOptionDict.get(key))
-.. @+node:ekr.20090502071837.47: *7* preprocessNode
+.. @+node:ekr.20090502071837.47: *8* preprocessNode
 def preprocessNode (self,p):
 
     d = self.nodeOptionDict.get(p.v)
     if d is None:
         d = self.scanNodeForOptions(p)
         self.nodeOptionDict [p.v] = d
-.. @+node:ekr.20090502071837.48: *7* parseOptionLine
+.. @+node:ekr.20090502071837.48: *8* parseOptionLine
 def parseOptionLine (self,s):
 
     '''Parse a line containing name=val and return (name,value) or None.
@@ -3867,7 +3747,7 @@ def parseOptionLine (self,s):
     else:
         # g.trace('*True')
         return name,'True'
-.. @+node:ekr.20090502071837.49: *7* scanForOptionDocParts
+.. @+node:ekr.20090502071837.49: *8* scanForOptionDocParts
 def scanForOptionDocParts (self,p,s):
 
     '''Return a dictionary containing all options from @rst-options doc parts in p.
@@ -3896,7 +3776,7 @@ def scanForOptionDocParts (self,p,s):
                             d.update(self.scanOption(p,line))
                     break
     return d
-.. @+node:ekr.20090502071837.50: *7* scanHeadlineForOptions
+.. @+node:ekr.20090502071837.50: *8* scanHeadlineForOptions
 def scanHeadlineForOptions (self,p):
 
     '''Return a dictionary containing the options implied by p's headline.'''
@@ -3945,7 +3825,7 @@ def scanHeadlineForOptions (self,p):
             g.trace('unknown kind of @rst headline',p.h,g.callers(4))
 
         return {}
-.. @+node:ekr.20090502071837.51: *7* scanNodeForOptions
+.. @+node:ekr.20090502071837.51: *8* scanNodeForOptions
 def scanNodeForOptions (self,p):
 
     '''Return a dictionary containing all the option-name:value entries in p.
@@ -3970,7 +3850,7 @@ def scanNodeForOptions (self,p):
             print('    %s: %s' % (z,d.get(z)))
 
     return d
-.. @+node:ekr.20090502071837.52: *7* scanOption
+.. @+node:ekr.20090502071837.52: *8* scanOption
 def scanOption (self,p,s):
 
     '''Return { name:val } if s is a line of the form name=val.
@@ -3995,7 +3875,7 @@ def scanOption (self,p,s):
         s2 = 'bad rst3 option in %s: %s' % (p.h,s)
         g.es_print(s2,color='red')
         return {}
-.. @+node:ekr.20090502071837.53: *7* scanOptions
+.. @+node:ekr.20090502071837.53: *8* scanOptions
 def scanOptions (self,p,s):
 
     '''Return a dictionary containing all the options in s.'''
@@ -4007,7 +3887,7 @@ def scanOptions (self,p,s):
         if d2: d.update(d2)
 
     return d
-.. @+node:ekr.20090502071837.54: *6* scanAllOptions & helpers
+.. @+node:ekr.20090502071837.54: *7* scanAllOptions & helpers
 # Once an option is seen, no other related options in ancestor nodes have any effect.
 
 def scanAllOptions(self,p):
@@ -4036,7 +3916,7 @@ def scanAllOptions(self,p):
         self.setOption("generate_rst_header_comment",True, "rst3_all")
         self.setOption("http_server_support", True, "rst3_all")
         self.setOption("write_intermediate_file", True, "rst3_all")
-.. @+node:ekr.20090502071837.55: *7* initOptionsFromSettings
+.. @+node:ekr.20090502071837.55: *8* initOptionsFromSettings
 def initOptionsFromSettings (self):
 
     c = self.c
@@ -4066,7 +3946,7 @@ def initOptionsFromSettings (self):
     if self.getOption('http_server_support') and not mod_http:
         g.es('No http_server_support: can not import mod_http plugin',color='red')
         self.setOption('http_server_support',False)
-.. @+node:ekr.20090502071837.56: *7* handleSingleNodeOptions
+.. @+node:ekr.20090502071837.56: *8* handleSingleNodeOptions
 def handleSingleNodeOptions (self,p):
 
     '''Init the settings of single-node options from the tnodeOptionsDict.
@@ -4080,7 +3960,7 @@ def handleSingleNodeOptions (self,p):
         #g.trace('%24s %8s %s' % (ivar,val,p.h))
         self.setOption(ivar,val,p.h)
 
-.. @+node:ekr.20090502071837.42: *5* createDefaultOptionsDict
+.. @+node:ekr.20090502071837.42: *6* createDefaultOptionsDict
 def createDefaultOptionsDict(self):
 
     # Important: these must be munged names.
@@ -4126,7 +4006,7 @@ def createDefaultOptionsDict(self):
         'show_markup_doc_parts': False,
         'show_options_doc_parts': False,
     }
-.. @+node:ekr.20090502071837.71: *5* writeBody & helpers
+.. @+node:ekr.20090502071837.71: *6* writeBody & helpers
 def writeBody (self,p):
 
     trace = False and not g.unitTesting
@@ -4184,7 +4064,7 @@ def writeBody (self,p):
     # s = g.ensureLeadingNewlines(s,1)
     s = g.ensureTrailingNewlines(s,2)
     self.write(s)
-.. @+node:ekr.20110610144305.6749: *6* isSectionDef/Ref
+.. @+node:ekr.20110610144305.6749: *7* isSectionDef/Ref
 def isSectionDef (self,p):
     
     return self.isSectionRef(p.h)
@@ -4194,7 +4074,7 @@ def isSectionRef (self,s):
     n1 = s.find("<<",0)
     n2 = s.find(">>",0)
     return -1 < n1 < n2 and s[n1+2:n2].strip()
-.. @+node:ekr.20110610144305.6750: *6* expandSectionRefs
+.. @+node:ekr.20110610144305.6750: *7* expandSectionRefs
 def expandSectionRefs (self,lines,p,seen):
     
     trace = False and not g.unitTesting
@@ -4225,7 +4105,7 @@ def expandSectionRefs (self,lines,p,seen):
             result.append(s)
 
     return result
-.. @+node:ekr.20110610144305.6751: *6* findSectionDef
+.. @+node:ekr.20110610144305.6751: *7* findSectionDef
 def findSectionDef (self,name,p):
     
     for p2 in p.subtree():
@@ -4234,7 +4114,7 @@ def findSectionDef (self,name,p):
             return p2
     
     return None
-.. @+node:ekr.20090502071837.72: *6* handleCodeMode & helper
+.. @+node:ekr.20090502071837.72: *7* handleCodeMode & helper
 def handleCodeMode (self,lines):
 
     '''Handle the preprocessed body text in code mode as follows:
@@ -4298,7 +4178,7 @@ def handleCodeMode (self,lines):
         else: result2.append('%s\n' % z.rstrip())
 
     return result2
-.. @+node:ekr.20090502071837.73: *7* formatCodeModeLine
+.. @+node:ekr.20090502071837.73: *8* formatCodeModeLine
 def formatCodeModeLine (self,s,n,numberOption):
 
     if not s.strip(): s = ''
@@ -4307,7 +4187,7 @@ def formatCodeModeLine (self,s,n,numberOption):
         return '\t%d: %s' % (n,s)
     else:
         return '\t%s' % s
-.. @+node:ekr.20090502071837.74: *7* rstripList
+.. @+node:ekr.20090502071837.74: *8* rstripList
 def rstripList (self,theList):
 
     '''Removed trailing blank lines from theList.'''
@@ -4315,7 +4195,7 @@ def rstripList (self,theList):
     # 2010/08/27: fix bug 618482.
     s = ''.join(theList).rstrip()
     return s.split('\n')
-.. @+node:ekr.20090502071837.75: *7* finishCodePart
+.. @+node:ekr.20090502071837.75: *8* finishCodePart
 def finishCodePart (self,result,code):
 
     numberOption = self.getOption('number_code_lines')
@@ -4324,7 +4204,7 @@ def finishCodePart (self,result,code):
     for line in code:
         i += 1
         result.append(self.formatCodeModeLine(line,i,numberOption))
-.. @+node:ekr.20090502071837.76: *6* handleDocOnlyMode
+.. @+node:ekr.20090502071837.76: *7* handleDocOnlyMode
 def handleDocOnlyMode (self,p,lines):
 
     '''Handle the preprocessed body text in doc_only mode as follows:
@@ -4354,7 +4234,7 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
-.. @+node:ekr.20111027083744.16531: *4* Unit tests for scroll bug
+.. @+node:ekr.20111027083744.16531: *5* Unit tests for scroll bug
 
     @nocolor-node
 
@@ -4366,7 +4246,7 @@ Unit testsing without QSignalSpy
 http://stackoverflow.com/questions/2045352/pyqt-unittest-testing-signal-and-slots
 
 **just call enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach**
-.. @+node:ekr.20111027083744.16532: *5* enableSignalDebugging (qtGui)
+.. @+node:ekr.20111027083744.16532: *6* enableSignalDebugging (qtGui)
 # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.
 
 _oldConnect     = QtCore.QObject.connect
@@ -4413,7 +4293,7 @@ def enableSignalDebugging(self,**kwargs):
         self._oldEmit(self, *args)
 
     QtCore.QObject.emit = new_emit
-.. @+node:ekr.20110605121601.18540: *5* eventFilter
+.. @+node:ekr.20110605121601.18540: *6* eventFilter
 def eventFilter(self, obj, event):
 
     trace = (True or self.trace_masterKeyHandler) and not g.unitTesting
@@ -4498,7 +4378,7 @@ def eventFilter(self, obj, event):
         self.traceEvent(obj,event,tkKey,override)
 
     return override
-.. @+node:ekr.20110605121601.18548: *5* traceEvent
+.. @+node:ekr.20110605121601.18548: *6* traceEvent
 def traceEvent (self,obj,event,tkKey,override):
 
     if g.unitTesting: return
@@ -4589,14 +4469,172 @@ def traceEvent (self,obj,event,tkKey,override):
 
     if eventType not in ignore:
         g.trace('%3s:%s obj:%s' % (eventType,'unknown',obj))
-.. @+node:ekr.20110605121601.18021: *5* mousePress/ReleaseEvent (LeoQTextBrowser)
+.. @+node:ekr.20110605121601.18021: *6* mousePress/ReleaseEvent (LeoQTextBrowser)
 # def mousePressEvent (self,event):
     # QtGui.QTextBrowser.mousePressEvent(self,event)
     
 def mouseReleaseEvent(self,event):
     self.onMouseUp(event)
     QtGui.QTextBrowser.mouseReleaseEvent(self,event)
-.. @+node:ekr.20111027195140.16561: *4* Create session commands
+.. @+node:ekr.20111106070228.12431: *5* New unit tests
+.. @+node:ekr.20111105222316.9706: *6* Unit test: no unit tests omitted
+@nocolor-node
+
+Create a "registry" of unit tests.  Verify that unitTest.leo contains them all.
+.. @+node:ekr.20111105222316.9707: *6* Unit test: importing a plugin changes nothing
+@nocolor-node
+
+Menu and plugin registry methods can fail if that *particular* unit test is running.
+.. @+node:ekr.20111107092526.9783: *6* Test g.app.config get/set
+.. @+node:ekr.20041118195812: *7* Setters... (c.configSettings)
+def set (self,setting,kind,val):
+    
+    '''Not used during startup: useful for unit tests.'''
+
+    c = self.c
+    g.app.config.set(c,setting,kind,val)
+
+def setRecentFiles (self,files):
+    
+    '''Update the recent files list.'''
+
+    g.app.config.appendToRecentFiles(files)
+.. @+node:ekr.20041118084146.1: *7* set (g.app.config)
+def set (self,c,setting,kind,val):
+
+    '''Set the setting.  Not called during initialization.'''
+
+    key = self.munge(setting)
+
+    # g.trace('(g.app.config)',setting,kind,val,c)
+
+    # 2011/11/07: Multiple bug fixes.
+    if c:
+        h = c.hash()
+        d = self.localOptionsDict.get(h,{})
+        d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+        self.localOptionsDict[h] = d
+    else:
+        d = self.dictList [0]
+        d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+        self.dictList[0] = d
+.. @+node:ekr.20041117083141: *7* get & allies (g.app.config)
+def get (self,c,setting,kind):
+
+    """Get the setting and make sure its type matches the expected type."""
+    
+    trace = False and not g.unitTesting
+
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+
+    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+    if c and not isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                if trace:
+                    kind = d.get('_hash','<no hash>')
+                    g.trace('**1',setting,val,kind)
+                return val
+
+    for d in self.localOptionsList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            if trace:
+                kind = d.get('_hash','<no hash>')
+                g.trace('**2',setting,val,kind)
+            return val
+
+    for d in self.dictList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            if trace:
+                kind = d.get('_hash','<no hash>')
+                g.trace('**3',setting,val,kind)
+            return val
+
+    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+    if c and isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                if trace:
+                    kind = d.get('_hash','<no hash>')
+                    g.trace('**4',setting,val,kind)
+                return val
+
+    if trace:
+        fn = c and c.shortFileName() or '<no file>'
+        g.trace(setting,None,fn)
+    return None
+.. @+node:ekr.20041121143823: *8* getValFromDict
+def getValFromDict (self,d,setting,requestedType,warn=True):
+
+    '''Look up the setting in d. If warn is True, warn if the requested type
+    does not (loosely) match the actual type.
+    returns (val,exists)'''
+
+    bunch = d.get(self.munge(setting))
+    if not bunch: return None,False
+
+    # g.trace(setting,requestedType,bunch.toString())
+    val = bunch.val
+
+    # 2011/10/24: test for an explicit None.
+    if g.isPython3:
+        isNone = val in ('None','none','') # ,None)
+            
+    else:
+        isNone = val in (
+            unicode('None'),unicode('none'),unicode(''),
+            'None','none','') #,None)
+
+    if not self.typesMatch(bunch.kind,requestedType):
+        # New in 4.4: make sure the types match.
+        # A serious warning: one setting may have destroyed another!
+        # Important: this is not a complete test of conflicting settings:
+        # The warning is given only if the code tries to access the setting.
+        if warn:
+            g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
+            g.es_print('there may be conflicting settings!',color='red')
+        return None, False
+    # elif val in (u'None',u'none','None','none','',None):
+    elif isNone:
+        return '', True
+            # 2011/10/24: Exists, a *user-defined* empty value.
+    else:
+        # g.trace(setting,val)
+        return val, True
+.. @+node:ekr.20051015093141: *8* typesMatch
+def typesMatch (self,type1,type2):
+
+    '''
+    Return True if type1, the actual type, matches type2, the requeseted type.
+
+    The following equivalences are allowed:
+
+    - None matches anything.
+    - An actual type of string or strings matches anything *except* shortcuts.
+    - Shortcut matches shortcuts.
+    '''
+
+    shortcuts = ('shortcut','shortcuts',)
+
+    return (
+        type1 == None or type2 == None or
+        type1.startswith('string') and type2 not in shortcuts or
+        type1 == 'int' and type2 == 'size' or
+        (type1 in shortcuts and type2 in shortcuts) or
+        type1 == type2
+    )
+.. @+node:ekr.20111109083738.9796: *4* Features
+.. @+node:ekr.20111028195854.16607: *5* Allow ruleset-specific colors
+@nocolor-node
+
+Like @color html::tags_markup_color = blue
+.. @+node:ekr.20111027195140.16561: *5* Create session commands
 # http://groups.google.com/group/leo-editor/browse_thread/thread/d5522e1075e746de
 
 def get_session():
@@ -4647,7 +4685,7 @@ def session_load_snapshot():
    with file('leo.session') as f:
        session = json.loads(f.read())
    return session
-.. @+node:ekr.20111101050427.16716: *4* Make g.openWithFileName "reentrant"
+.. @+node:ekr.20111101050427.16716: *5* Make g.openWithFileName "reentrant"
 @nocolor-node
 
 That is, make sure it works when called from within itself.

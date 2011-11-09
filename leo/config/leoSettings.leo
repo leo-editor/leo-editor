@@ -497,6 +497,7 @@
 <v t="ekr.20110611092035.16463"><vh>Tree operation</vh>
 <v t="ekr.20041119050749.3"><vh>@bool allow_clone_drags = False</vh></v>
 <v t="nh910.20110621123823.3423"><vh>@bool collapse_nodes_after_move = True</vh></v>
+<v t="ekr.20111109104336.12503"><vh>@bool collapse_on_lt_arrow = True</vh></v>
 <v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
 <v t="ekr.20080315083057.7"><vh>@bool collapse_nodes_while_spelling = True</vh></v>
 <v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
@@ -9496,6 +9497,11 @@ var</t>
 <t tx="ekr.20111031083623.13744"></t>
 <t tx="ekr.20111031083623.13745"></t>
 <t tx="ekr.20111103073536.16580"></t>
+<t tx="ekr.20111109104336.12503">New in Leo 4.9.1.
+
+True (Recommended): The contract-or-goto-parent (Alt-RtArrow) contracts all
+children of the to-be-selected parent.
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files

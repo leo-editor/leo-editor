@@ -23126,6 +23126,8 @@ def initConfigSettings (self):
     c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
     c.collapse_nodes_after_move = c.config.getBool('collapse_nodes_after_move')
         # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
+    c.collapse_on_lt_arrow  = c.config.getBool('collapse_on_lt_arrow',default=True)
+        # 2011/11/09: An excellent, subliminal, improvement.
     c.contractVisitedNodes  = c.config.getBool('contractVisitedNodes')
     c.fixed                 = c.config.getBool('fixedWindow',default=False)
     c.fixedWindowPosition   = c.config.getData('fixedWindowPosition')
@@ -25323,6 +25325,86 @@ The new code monkey-patches g.doHook to a do-nothing::
 @nocolor-node
 
 An useful convenience method now that external unit tests can use config settings.
+#@+node:ekr.20111109083738.9799: *4* Alt-left-arrow collapses all children when selecting the parent
+Under control of @bool collapse_on_lt_arrow option, default *True*.
+#@+node:ekr.20031218072017.2920: *5* goToParent
+def goToParent (self,event=None):
+
+    '''Select the parent of the selected node.'''
+
+    c = self ; p = c.p
+
+    # g.trace(p.parent())
+
+    c.treeSelectHelper(p and p.parent())
+#@+node:ekr.20090213065933.6: *5* c.initConfigSettings
+def initConfigSettings (self):
+
+    '''Init all cached commander config settings.'''
+
+    c = self
+    c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
+    c.collapse_nodes_after_move = c.config.getBool('collapse_nodes_after_move')
+        # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
+    c.collapse_on_lt_arrow  = c.config.getBool('collapse_on_lt_arrow',default=True)
+        # 2011/11/09: An excellent, subliminal, improvement.
+    c.contractVisitedNodes  = c.config.getBool('contractVisitedNodes')
+    c.fixed                 = c.config.getBool('fixedWindow',default=False)
+    c.fixedWindowPosition   = c.config.getData('fixedWindowPosition')
+    c.focus_border_color    = c.config.getColor('focus_border_color') or 'red'
+    c.focus_border_width    = c.config.getInt('focus_border_width') or 1 # pixels
+    c.outlineHasInitialFocus= c.config.getBool('outline_pane_has_initial_focus')
+    c.showMinibuffer        = c.config.getBool('useMinibuffer')
+        # This option is a bad idea.
+    c.putBitsFlag           = c.config.getBool('put_expansion_bits_in_leo_files',default=True)
+    # g.trace('putBitsFlag',c.putBitsFlag,c.fileName())
+    c.sparse_move           = c.config.getBool('sparse_move_outline_left')
+    c.sparse_find           = c.config.getBool('collapse_nodes_during_finds')
+    c.sparce_spell          = c.config.getBool('collapse_nodes_while_spelling')
+    c.stayInTreeAfterSelect = c.config.getBool('stayInTreeAfterSelect')
+    c.stayInTreeAfterEdit   = c.config.getBool('stayInTreeAfterEditHeadline')
+    c.smart_tab             = c.config.getBool('smart_tab')
+        # Note: there is also a smart_auto_indent setting.
+    c.tab_width             = c.config.getInt('tab_width') or -4
+    c.use_body_focus_border = c.config.getBool('use_body_focus_border',default=True)
+    c.use_focus_border      = c.config.getBool('use_focus_border',default=True)
+    c.write_script_file     = c.config.getBool('write_script_file')
+
+    # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
+    # g.trace(c.sparse_move)
+#@+node:ekr.20040930064232: *5* contractNodeOrGoToParent
+def contractNodeOrGoToParent (self,event=None):
+
+    """Simulate the left Arrow Key in folder of Windows Explorer."""
+
+    c = self ; p = c.p
+    
+    parent = p.parent()
+    redraw = False
+
+    if p.hasChildren() and p.isExpanded():
+        c.contractNode()
+        
+    elif parent and parent.isVisible(c):
+        # New in Leo 4.9.1: contract all children first.
+        if c.collapse_on_lt_arrow:
+            for child in parent.children():
+                if child.isExpanded():
+                    child.contract()
+                    redraw = True
+        c.goToParent()
+        
+    # This is a bit off-putting.
+    # elif not parent and not c.hoistStack:
+        # p = c.rootPosition()
+        # while p:
+            # if p.isExpanded():
+                # p.contract()
+                # redraw = True
+            # p.moveToNext()
+
+    if redraw:
+        c.redraw()
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
