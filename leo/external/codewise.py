@@ -370,14 +370,15 @@ def pr(*args,**keys):
             s2 = g.toUnicode(s3,encoding=encoding,reportErrors=False)
     else:
         s2 = g.toEncodedString(s,encoding,reportErrors=False)
+        
+    print(s2)
 
-    try: # We can't use any print keyword args in Python 2.x!
-        sys.stdout.write(s2)
-    except Exception:
-        # This can fail when running pythonw.ese.
-        # print('unexpected exception in g.pr')
-        print(s2)
-           
+    # try: # We can't use any print keyword args in Python 2.x!
+        # sys.stdout.write(s2)
+    # except Exception:
+        # # This can fail when running pythonw.ese.
+        # # print('unexpected exception in g.pr')
+        # print(s2)
 #@+node:ekr.20110310093050.14268: *5* trace (codewise)
 # Convert all args to strings.
 
