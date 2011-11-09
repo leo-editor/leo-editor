@@ -327,7 +327,8 @@ class atFile:
         at.scanAllDirectives(root,
             scripting=scriptWrite,
             forcePythonSentinels=forcePythonSentinels,
-            issuePathWarning=True)
+            issuePathWarning=True,
+        )
         # Sets the following ivars:
             # at.default_directory
             # at.encoding
@@ -2899,7 +2900,8 @@ class atFile:
         #@-<< set at.targetFileName >>
         at.initWriteIvars(root,at.targetFileName,
             nosentinels = nosentinels, thinFile = thinFile,
-            scriptWrite = scriptWrite, toString = toString)
+            scriptWrite = scriptWrite, toString = toString,
+        )
 
         # "look ahead" computation of eventual fileName.
         eventualFileName = c.os_path_finalize_join(
@@ -3133,7 +3135,7 @@ class atFile:
             g.es("no dirty @auto nodes in the selected tree")
         else:
             g.es("no @auto nodes in the selected tree")
-    #@+node:ekr.20070806141607: *5* at.writeOneAtAutoNode & helpers
+    #@+node:ekr.20070806141607: *5* at.writeOneAtAutoNode
     def writeOneAtAutoNode(self,p,toString,force):
 
         '''Write p, an @auto node.

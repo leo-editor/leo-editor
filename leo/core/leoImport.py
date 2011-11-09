@@ -184,7 +184,7 @@ class leoImportCommands (scanUtility):
             '.xml':     self.scanXmlText,
         }
     #@+node:ekr.20031218072017.3289: *3* Export
-    #@+node:ekr.20031218072017.3290: *4* convertCodePartToWeb
+    #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb
     # Headlines not containing a section reference are ignored in noweb and generate index index in cweb.
 
     def convertCodePartToWeb (self,s,i,v,result):
@@ -310,7 +310,7 @@ class leoImportCommands (scanUtility):
         return i, result.strip() + nl
 
     #@+at %defs a b c
-    #@+node:ekr.20031218072017.3296: *4* convertDocPartToWeb (handle @ %def)
+    #@+node:ekr.20031218072017.3296: *4* ic.convertDocPartToWeb (handle @ %def)
     def convertDocPartToWeb (self,s,i,result):
 
         nl = self.output_newline
@@ -333,7 +333,7 @@ class leoImportCommands (scanUtility):
             # All nodes should start with '@', even if the doc part is empty.
             result += g.choose(self.webType=="cweb",nl+"@ ",nl+"@"+nl)
         return i, result
-    #@+node:ekr.20031218072017.3297: *4* convertVnodeToWeb
+    #@+node:ekr.20031218072017.3297: *4* ic.convertVnodeToWeb
     #@+at This code converts a vnode to noweb text as follows:
     # 
     # Convert @doc to @
@@ -384,7 +384,7 @@ class leoImportCommands (scanUtility):
         if len(result) > 0:
             result += nl
         return result
-    #@+node:ekr.20031218072017.3299: *4* copyPart
+    #@+node:ekr.20031218072017.3299: *4* ic.copyPart
     # Copies characters to result until the end of the present section is seen.
 
     def copyPart (self,s,i,result):
@@ -424,7 +424,7 @@ class leoImportCommands (scanUtility):
                 result += line
             assert(progress < i)
         return i, result.rstrip()
-    #@+node:ekr.20031218072017.1462: *4* exportHeadlines (changed)
+    #@+node:ekr.20031218072017.1462: *4* ic.exportHeadlines
     def exportHeadlines (self,fileName):
 
         c = self.c ; nl = g.u(self.output_newline)
@@ -448,7 +448,7 @@ class leoImportCommands (scanUtility):
                 s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
             theFile.write(s)
         theFile.close()
-    #@+node:ekr.20031218072017.1147: *4* flattenOutline (changed)
+    #@+node:ekr.20031218072017.1147: *4* ic.flattenOutline
     def flattenOutline (self,fileName):
 
         c = self.c ; nl = g.u(self.output_newline)
@@ -479,7 +479,7 @@ class leoImportCommands (scanUtility):
                 s = g.toEncodedString(body + nl,self.encoding,reportErrors=True)
                 theFile.write(s)
         theFile.close()
-    #@+node:ekr.20031218072017.1148: *4* outlineToWeb (changed)
+    #@+node:ekr.20031218072017.1148: *4* ic.outlineToWeb
     def outlineToWeb (self,fileName,webType):
 
         c = self.c ; nl = self.output_newline
@@ -513,7 +513,7 @@ class leoImportCommands (scanUtility):
                 theFile.write(s)
                 if s[-1] != '\n': theFile.write(nl)
         theFile.close()
-    #@+node:ekr.20031218072017.3300: *4* removeSentinelsCommand
+    #@+node:ekr.20031218072017.3300: *4* ic.removeSentinelsCommand
     def removeSentinelsCommand (self,paths,toString=False):
 
         c = self.c
@@ -580,8 +580,8 @@ class leoImportCommands (scanUtility):
                     g.es_exception()
                 #@-<< Write s into newFileName >>
                 return None
-    #@+node:ekr.20031218072017.3303: *4* removeSentinelLines
-    # This does not handle @nonl properly, but that's a nit...
+    #@+node:ekr.20031218072017.3303: *4* ic.removeSentinelLines
+    # This does not handle @nonl properly, but that no longer matters.
 
     def removeSentinelLines(self,s,line_delim,start_delim,unused_end_delim):
 
@@ -594,14 +594,14 @@ class leoImportCommands (scanUtility):
             i = g.skip_ws(line,0)
             if not verbatimFlag and g.match(line,i,delim):
                 if g.match(line,i,verbatim):
-                    verbatimFlag = True # Force the next line to be in the result.
-                # g.trace(repr(line))
+                    # Force the next line to be in the result.
+                    verbatimFlag = True 
             else:
                 result.append(line)
                 verbatimFlag = False
         result = ''.join(result)
         return result
-    #@+node:ekr.20031218072017.1464: *4* weave (changed)
+    #@+node:ekr.20031218072017.1464: *4* ic.weave
     def weave (self,filename):
 
         c = self.c ; nl = self.output_newline
@@ -1842,10 +1842,21 @@ class baseScannerClass (scanUtility):
                 c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
                 s1,s2 = self.file_s,outputFile.getvalue()
             else:
+                # 2011/11/09: We must write sentinels in s2 to handle @others correctly.
                 at.write(self.root,
-                    nosentinels=True,thinFile=False,
-                    scriptWrite=False,toString=True)
+                    # nosentinels=True,thinFile=False,
+                    nosentinels=False,thinFile=True,
+                    scriptWrite=False,toString=True,
+                )
                 s1,s2 = self.file_s, at.stringOutput
+                
+                # Now remove sentinels from s2.
+                line_delim = self.lineCommentDelim or self.lineCommentDelim2 or ''
+                start_delim = self.blockCommentDelim1 or self.blockCommentDelim2 or ''
+                # g.trace(self.language,line_delim,start_delim)
+                assert line_delim or start_delim
+                s2 = self.importCommands.removeSentinelLines(s2,
+                    line_delim,start_delim,unused_end_delim=None)
 
         s1 = g.toUnicode(s1,self.encoding)
         s2 = g.toUnicode(s2,self.encoding)
@@ -1865,17 +1876,19 @@ class baseScannerClass (scanUtility):
             lines2 = self.adjustTestLines(lines2)
             s1 = ''.join(lines1)
             s2 = ''.join(lines2)
-
-        bad_i1,bad_i2,ok = self.scanAndCompare(s1,s2)
-        if ok: return ok
             
-        # n1,n2 = len(lines1), len(lines2)
-        # ok = True ; bad_i = 0
-        # for i in range(max(n1,n2)):
-            # ok = self.compareHelper(lines1,lines2,i,self.strict)
-            # if not ok:
-                # bad_i = i
-                # break
+        if 1: # Token-based comparison.
+            bad_i1,bad_i2,ok = self.scanAndCompare(s1,s2)
+            if ok: return ok
+            
+        else: # Line-based comparison: can not possibly work for html.
+            n1,n2 = len(lines1), len(lines2)
+            ok = True ; bad_i = 0
+            for i in range(max(n1,n2)):
+                ok = self.compareHelper(lines1,lines2,i,self.strict)
+                if not ok:
+                    bad_i = i
+                    break
 
         # Unit tests do not generate errors unless the mismatch line does not match.
         if g.app.unitTesting:
@@ -2056,12 +2069,9 @@ class baseScannerClass (scanUtility):
         tokens2 = self.filterTokens(tokens2)
 
         if tokens1 == tokens2:
-            # g.trace('success')
             return -1,-1,True # Success.
         else:
-           
             n1,n2,ok = self.compareTokens(tokens1,tokens2)
-            # g.trace(n1,n2,ok)
             return n1,n2,ok # Success or failure.
     #@+node:ekr.20111101092301.16729: *5* compareTokens
     def compareTokens(self,tokens1,tokens2):
@@ -4549,6 +4559,60 @@ class xmlScanner (baseScannerClass):
             aList2 = [z.lower() for z in aList2]
             aList.extend(aList2)
             if trace: g.trace(ivar,aList)
+    #@+node:ekr.20111104032034.9868: *5* adjust_class_ref (xmlScanner)
+    def adjust_class_ref(self,s):
+
+        '''Ensure that @others appears at the start of a line.'''
+        
+
+        trace = False
+        if trace: g.trace('old',repr(s))
+
+        i = s.find('@others')
+        if i > -1:
+            j = i
+            i -= 1
+            while i >= 0 and s[i] in '\t ':
+                i -= 1
+            if i < j:
+                # 2011/11/04: Never put lws before @others.
+                s = s[:i+1] + s[j:]
+            if i > 0 and s[i] != '\n':
+                s = s[:i+1] + '\n' + s [i+1:]
+        
+        if trace: g.trace('new',repr(s))
+        return s
+    #@+node:ekr.20111108111156.9922: *5* adjustTestLines (xmlScanner)
+    def adjustTestLines(self,lines):
+        
+        # This is a desparation measure to attempt reasonable comparisons.
+        
+        # self.ignoreBlankLines:
+        lines = [z for z in lines if z.strip()]
+            
+        # if self.ignoreLeadingWs:
+        lines = [z.lstrip() for z in lines]
+        
+        lines = [z.replace('@others','') for z in lines]
+        
+        # lines = [z.replace('>\n','>').replace('\n<','<') for z in lines]
+        
+        return lines
+    #@+node:ekr.20111108111156.9935: *5* filterTokens (xmlScanner)
+    def filterTokens (self,tokens):
+        
+        '''Filter tokens as needed for correct comparisons.'''
+
+        # if self.ignoreBlankLines:
+            # tokens = self.removeBlankLinesTokens(tokens)
+            
+        # if self.ignoreLeadingWs:
+            # tokens = self.removeLeadingWsTokens(tokens)
+            
+        tokens = [(kind,val,line_number) for (kind,val,line_number) in tokens
+            if kind not in ('nl','ws')]
+
+        return tokens
     #@+node:ekr.20111103073536.16601: *5* isSpace (xmlScanner) (Use the base class now)
     # def isSpace(self,s,i):
         
@@ -4812,59 +4876,6 @@ class htmlScanner (xmlScanner):
         xmlScanner.__init__(self,importCommands,atAuto,tags_setting='import_html_tags')
         
     #@+others
-    #@+node:ekr.20111104032034.9868: *5* adjust_class_ref (xmlScanner)
-    def adjust_class_ref(self,s):
-
-        '''Ensure that @others appears at the start of a line.'''
-        
-        return s ### This has no chance of being helpful.
-
-        trace = True
-        if trace: g.trace('old',repr(s))
-
-        i = s.find('@others')
-        if i > -1:
-            j = i
-            i -= 1
-            while i >= 0 and s[i] in '\t ':
-                i -= 1
-            if i < j:
-                # 2011/11/04: Never put lws before @others.
-                s = s[:i+1] + s[j:]
-        
-        if trace: g.trace('new',repr(s))
-        return s
-    #@+node:ekr.20111108111156.9922: *5* adjustTestLines (xmlScanner)
-    def adjustTestLines(self,lines):
-        
-        # This is a desparation measure to attempt reasonable comparisons.
-        
-        # self.ignoreBlankLines:
-        lines = [z for z in lines if z.strip()]
-            
-        # if self.ignoreLeadingWs:
-        lines = [z.lstrip() for z in lines]
-        
-        lines = [z.replace('@others','') for z in lines]
-        
-        # lines = [z.replace('>\n','>').replace('\n<','<') for z in lines]
-        
-        return lines
-    #@+node:ekr.20111108111156.9935: *5* filterTokens (xmlScanner)
-    def filterTokens (self,tokens):
-        
-        '''Filter tokens as needed for correct comparisons.'''
-
-        # if self.ignoreBlankLines:
-            # tokens = self.removeBlankLinesTokens(tokens)
-            
-        # if self.ignoreLeadingWs:
-            # tokens = self.removeLeadingWsTokens(tokens)
-            
-        tokens = [(kind,val,line_number) for (kind,val,line_number) in tokens
-            if kind not in ('nl','ws')]
-
-        return tokens
     #@-others
 #@-<< class htmlScanner (xmlScanner) >>
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
