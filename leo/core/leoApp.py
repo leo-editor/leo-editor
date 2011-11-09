@@ -845,7 +845,7 @@ class LeoApp:
         if not app.signon_printed:
             app.signon_printed = True
             if not app.silentMode: # 2011/11/02:
-                print()
+                print('')
                 print('** isPython3: %s' % g.isPython3)
                 if not g.enableDB:
                     print('** caching disabled')
