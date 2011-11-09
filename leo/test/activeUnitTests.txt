@@ -20204,12 +20204,21 @@ else:
 table = (
     'test',
     'Ä 궯 奠',
-    # 'Ä 궯 奠 after', # fails: after is duplicated.
+    'Ä 궯 奠 after', # fails with cp6501: after is duplicated.
 )
 
+print('*'*20)
+print('isPython3: %s' % g.isPython3)
+
 for s in table:
+    if g.isPython3:
+        s = s.encode('ascii','replace') # create bytes.
+    g.es(repr(s))
     g.es(s)
-    g.pr(s)
+    g.pr ('g.pr(s)       : %s' % s)
+    g.pr ('g.pr(repr(s)) : %s' % repr(s))
+    print('print(s)      : %s' % s)
+    print('print(repr(s)): %s' % s)
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):

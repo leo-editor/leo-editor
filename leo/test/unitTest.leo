@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.46" body_secondary_ratio="0.58">
+<globals body_outline_ratio="0.46" body_secondary_ratio="0.39">
 	<global_window_position top="30" left="450" height="977" width="1034"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -124,7 +124,7 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285805000000302e372e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31302e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31342e34710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3671017d71025808000000616e6e6f7461746571037d7104735508302e362e31362e3671057d71065808000000616e6e6f7461746571077d7108735508302e362e31302e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735508302e362e31342e34710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20111108170253.3968"><vh>@@test unicode stuff</vh></v>
 </vnodes>
@@ -536,7 +536,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="5"></t>
+<t tx="ekr.20070417092935" str_leo_pos="6"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -700,12 +700,21 @@ nodeB
 table = (
     'test',
     'Ä 궯 奠',
-    # 'Ä 궯 奠 after', # fails: after is duplicated.
+    'Ä 궯 奠 after', # fails with cp6501: after is duplicated.
 )
 
+print('*'*20)
+print('isPython3: %s' % g.isPython3)
+
 for s in table:
+    if g.isPython3:
+        s = s.encode('ascii','replace') # create bytes.
+    g.es(repr(s))
     g.es(s)
-    g.pr(s)
+    g.pr ('g.pr(s)       : %s' % s)
+    g.pr ('g.pr(repr(s)) : %s' % repr(s))
+    print('print(s)      : %s' % s)
+    print('print(repr(s)): %s' % s)
 </t>
 </tnodes>
 </leo_file>
