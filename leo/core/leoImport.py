@@ -1808,7 +1808,6 @@ class baseScannerClass (scanUtility):
         self.sigFailTokens = []
             # A list of strings that abort a signature when seen in a tail.
             # For example, ';' and '=' in C.
-
         self.strict = False # True if leading whitespace is very significant.
         self.warnAboutUnderindentedLines = True
     #@+node:ekr.20070808115837: *3* Checking
@@ -1834,8 +1833,9 @@ class baseScannerClass (scanUtility):
         '''Return True if a trial write produces the original file.'''
 
         # s1 and s2 are for unit testing.
-        trace = True
+        trace = False
         c = self.c ; at = c.atFileCommands
+
         if s1 is None and s2 is None:
             if self.isRst:
                 outputFile = StringIO()
@@ -1858,14 +1858,13 @@ class baseScannerClass (scanUtility):
 
         if s1 == s2: return True
         
-        # lines1 = g.splitLines(s1)
-        # lines2 = g.splitLines(s2)
-        
-        # if self.ignoreBlankLines or self.ignoreLeadingWs: # was self.isRst:
-            # lines1 = self.adjustTestLines(lines1)
-            # lines2 = self.adjustTestLines(lines2)
-            # s1 = ''.join(lines1)
-            # s2 = ''.join(lines2)
+        if self.ignoreBlankLines or self.ignoreLeadingWs:
+            lines1 = g.splitLines(s1)
+            lines2 = g.splitLines(s2)
+            lines1 = self.adjustTestLines(lines1)
+            lines2 = self.adjustTestLines(lines2)
+            s1 = ''.join(lines1)
+            s2 = ''.join(lines2)
 
         bad_i1,bad_i2,ok = self.scanAndCompare(s1,s2)
         if ok: return ok
@@ -2012,7 +2011,7 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20070911110507: *4* reportMismatch
     def reportMismatch (self,lines1,lines2,bad_i1,bad_i2):
 
-        trace = False
+        trace = False # This causes traces for *non-failing* unit tests.
         kind = g.choose(self.atAuto,'@auto','import command')
         n1,n2 = len(lines1),len(lines2)
         s1 = '%s did not import %s perfectly\n' % (
@@ -2052,15 +2051,15 @@ class baseScannerClass (scanUtility):
         
         tokens1 = self.tokenize(s1)
         tokens2 = self.tokenize(s2)
+        
+        tokens1 = self.filterTokens(tokens1)
+        tokens2 = self.filterTokens(tokens2)
 
-        if self.ignoreLeadingWs or self.ignoreBlankLines:
-            tokens1 = self.filterWsTokens(tokens1)
-            tokens2 = self.filterWsTokens(tokens2)
-            
         if tokens1 == tokens2:
             # g.trace('success')
             return -1,-1,True # Success.
         else:
+           
             n1,n2,ok = self.compareTokens(tokens1,tokens2)
             # g.trace(n1,n2,ok)
             return n1,n2,ok # Success or failure.
@@ -2074,9 +2073,13 @@ class baseScannerClass (scanUtility):
         while i < max(n1,n2):
             if trace and verbose:
                 for n,tokens in ((n1,tokens1),(n2,tokens2),):
-                    if i < n: kind,val,junk_n = tokens[i]
-                    else:     kind,val = 'eof',''
-                    print('%3s %7s %s' % (i,kind,repr(val)))
+                    if i < n: kind,val,line_number = tokens[i]
+                    else:     kind,val,line_number = 'eof','',''
+                    try:
+                        print('%3s %3s %7s' % (i,line_number,kind),repr(val))
+                    except UnicodeEncodeError:
+                        print('%3s %3s %7s' % (i,line_number,kind),'unicode error!')
+                        # print(val)
             if i < n1: kind1,val1,tok_n1 = tokens1[i]
             else:      kind1,val1 = 'eof','',n1
             if i < n2: kind2,val2,tok_n2 = tokens2[i]
@@ -2084,6 +2087,16 @@ class baseScannerClass (scanUtility):
             if fail_n1 == -1 and fail_n2 == -1 and (kind1 != kind2 or val1 != val2):
                 if trace: g.trace('fail at lines: %s,%s' % (tok_n1,tok_n2))
                 fail_n1,fail_n2 = tok_n1,tok_n1
+                if trace and verbose:
+                    n3 = 0
+                    i += 1
+                    while n3 < 10 and i < max(n1,n2):
+                        for n,tokens in ((n1,tokens1),(n2,tokens2),):
+                            if i < n: kind,val,junk_n = tokens[i]
+                            else:     kind,val = 'eof',''
+                            print('%3s %7s %s' % (i,kind,repr(val)))
+                        n3 += 1
+                        i += 1
                 break
             i += 1
         
@@ -2097,15 +2110,13 @@ class baseScannerClass (scanUtility):
             n = min(len(tokens1),len(tokens2))
             if trace: g.trace('fail 2 at line: %s' % (n))
             return n,n,False
-    #@+node:ekr.20111101052702.16722: *5* filterWsTokens & helpers
-    def filterWsTokens (self,tokens):
-
-        if self.ignoreBlankLines:
-            tokens = self.removeBlankLinesTokens(tokens)
-            
-        if self.ignoreLeadingWs:
-            tokens = self.removeLeadingWsTokens(tokens)
-
+    #@+node:ekr.20111101052702.16722: *5* filterTokens & helpers
+    def filterTokens (self,tokens):
+        
+        '''Filter tokens as needed for correct comparisons.
+        
+        May be overridden in subclasses.'''
+        
         return tokens
     #@+node:ekr.20111101092301.16727: *6* removeLeadingWsTokens
     def removeLeadingWsTokens (self,tokens):
@@ -2617,14 +2628,6 @@ class baseScannerClass (scanUtility):
         j,junk = g.getLine(s,i)
         junk,indent = g.skip_leading_ws_with_indent(s,j,self.tab_width)
         return indent
-    #@+node:ekr.20111103073536.16599: *4* isSpace (baseScannerClass)
-    def isSpace(self,s,i):
-        
-        '''Return true if s[i] is a tokenizer space.'''
-        
-        # g.trace(repr(s[i]),i < len(s) and s[i] != '\n' and s[i].isspace())
-
-        return i < len(s) and s[i] != '\n' and s[i].isspace()
     #@+node:ekr.20070706101600: *4* scan & scanHelper
     def scan (self,s,parent):
 
@@ -2696,7 +2699,16 @@ class baseScannerClass (scanUtility):
             assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
 
         return start,putRef,bodyIndent
-    #@+node:ekr.20070712075148: *4* skipArgs
+    #@+node:ekr.20111108111156.9785: *4* Parser skip methods (baseScannerClass)
+    #@+node:ekr.20111103073536.16599: *5* isSpace
+    def isSpace(self,s,i):
+        
+        '''Return true if s[i] is a tokenizer space.'''
+        
+        # g.trace(repr(s[i]),i < len(s) and s[i] != '\n' and s[i].isspace())
+
+        return i < len(s) and s[i] != '\n' and s[i].isspace()
+    #@+node:ekr.20070712075148: *5* skipArgs
     def skipArgs (self,s,i,kind):
 
         '''Skip the argument or class list.  Return i, ok
@@ -2714,7 +2726,7 @@ class baseScannerClass (scanUtility):
             return start,False
         else:
             return i,True 
-    #@+node:ekr.20070707073859: *4* skipBlock
+    #@+node:ekr.20070707073859: *5* skipBlock
     def skipBlock(self,s,i,delim1=None,delim2=None):
 
         '''Skip from the opening delim to *past* the matching closing delim.
@@ -2788,7 +2800,7 @@ class baseScannerClass (scanUtility):
         else:
             if trace: g.trace('** no block')
         return start
-    #@+node:ekr.20070712091019: *4* skipCodeBlock
+    #@+node:ekr.20070712091019: *5* skipCodeBlock
     def skipCodeBlock (self,s,i,kind):
 
         '''Skip the code block in a function or class definition.'''
@@ -2812,7 +2824,7 @@ class baseScannerClass (scanUtility):
             g.trace('returns...\n',g.listToString(g.splitLines(s[start:i])))
 
         return i,True
-    #@+node:ekr.20070711104014: *4* skipComment & helper
+    #@+node:ekr.20070711104014: *5* skipComment & helper
     def skipComment (self,s,i):
 
         '''Skip a comment and return the index of the following character.'''
@@ -2821,7 +2833,7 @@ class baseScannerClass (scanUtility):
             return g.skip_to_end_of_line(s,i)
         else:
             return self.skipBlockComment(s,i)
-    #@+node:ekr.20070707074541: *5* skipBlockComment
+    #@+node:ekr.20070707074541: *6* skipBlockComment
     def skipBlockComment (self,s,i):
 
         '''Skip past a block comment.'''
@@ -2845,7 +2857,7 @@ class baseScannerClass (scanUtility):
             return len(s)
         else:
             return k + len(delim2)
-    #@+node:ekr.20070707080042: *4* skipDecls
+    #@+node:ekr.20070707080042: *5* skipDecls
     def skipDecls (self,s,i,end,inClass):
 
         '''Skip everything until the start of the next class or function.
@@ -2907,11 +2919,11 @@ class baseScannerClass (scanUtility):
             return i
         else: # Ignore empty decls.
             return start
-    #@+node:ekr.20070707094858.1: *4* skipId
+    #@+node:ekr.20070707094858.1: *5* skipId
     def skipId (self,s,i):
 
         return g.skip_id(s,i,chars=self.extraIdChars)
-    #@+node:ekr.20070730134936: *4* skipNewline
+    #@+node:ekr.20070730134936: *5* skipNewline
     def skipNewline(self,s,i,kind):
 
         '''Skip whitespace and comments up to a newline, then skip the newline.
@@ -2935,18 +2947,18 @@ class baseScannerClass (scanUtility):
             # g.trace(g.callers())
 
         return i
-    #@+node:ekr.20070712081451: *4* skipParens
+    #@+node:ekr.20070712081451: *5* skipParens
     def skipParens (self,s,i):
 
         '''Skip a parenthisized list, that might contain strings or comments.'''
 
         return self.skipBlock(s,i,delim1='(',delim2=')')
-    #@+node:ekr.20070707073627.2: *4* skipString
+    #@+node:ekr.20070707073627.2: *5* skipString
     def skipString (self,s,i):
 
         # Returns len(s) on unterminated string.
         return g.skip_string(s,i,verbose=False)
-    #@+node:ekr.20111101052702.16720: *4* skipWs
+    #@+node:ekr.20111101052702.16720: *5* skipWs
     def skipWs (self,s,i):
         
         return g.skip_ws(s,i)
@@ -3147,7 +3159,7 @@ class baseScannerClass (scanUtility):
     def startsString(self,s,i):
 
         return g.match(s,i,'"') or g.match(s,i,"'")
-    #@+node:ekr.20111103073536.16583: *3* Tokenizing
+    #@+node:ekr.20111103073536.16583: *3* Tokenizing (baseScannerClass)
     #@+node:ekr.20111103073536.16586: *4* skip...Token (baseScannerClass)
     def skipCommentToken (self,s,i):
         
@@ -3190,13 +3202,13 @@ class baseScannerClass (scanUtility):
         result,i,line_number = [],0,0
         while i < len(s):
             progress = j = i
-            # Test isSpace first, so it can absorb newlines.
-            if self.isSpace(s,i):
-                kind = 'ws'
-                i,val = self.skipWsToken(s,i)
-            elif s[i] == '\n':
+            ch = s[i]
+            if ch == '\n':
                 kind = 'nl'
                 i,val = self.skipNewlineToken(s,i)
+            elif ch in ' \t': # self.isSpace(s,i):
+                kind = 'ws'
+                i,val = self.skipWsToken(s,i)
             elif self.startsComment(s,i):
                 kind = 'comment'
                 i,val = self.skipCommentToken(s,i)
@@ -3211,7 +3223,8 @@ class baseScannerClass (scanUtility):
                 i,val = self.skipOtherToken(s,i)
                 
             assert progress < i and j == progress
-            result.append((kind,val,line_number),)
+            if val:
+                result.append((kind,val,line_number),)
             # Use the raw token, s[j:i] to count newlines, not the munged val.
             line_number += s[j:i].count('\n')
             # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
@@ -4514,7 +4527,7 @@ class xmlScanner (baseScannerClass):
         self.hasClasses = True
         self.hasFunctions = False
         self.ignoreBlankLines = False # The tokenizer handles this.
-        self.ignoreLeadingWs = False # The tokenizer handles this.
+        self.ignoreLeadingWs = True # A drastic step, but there seems to be no other way.
         self.strict = False
         self.tags_setting = tags_setting
         self.trace = False
@@ -4536,13 +4549,13 @@ class xmlScanner (baseScannerClass):
             aList2 = [z.lower() for z in aList2]
             aList.extend(aList2)
             if trace: g.trace(ivar,aList)
-    #@+node:ekr.20111103073536.16601: *5* isSpace
-    def isSpace(self,s,i):
+    #@+node:ekr.20111103073536.16601: *5* isSpace (xmlScanner) (Use the base class now)
+    # def isSpace(self,s,i):
         
-        '''Return true if s[i] is a tokenizer space.'''
+        # '''Return true if s[i] is a tokenizer space.'''
 
-        # Unlike the base-class method, xml space tokens include newlines.
-        return i < len(s) and s[i].isspace()
+        # # Unlike the base-class method, xml space tokens include newlines.
+        # return i < len(s) and s[i].isspace()
     #@+node:ekr.20111103073536.16590: *5* skip...Token (xmlScanner overrides)
     def skipCommentToken(self,s,i):
         
@@ -4554,21 +4567,33 @@ class xmlScanner (baseScannerClass):
         
     # skipIdToken: no change.
 
-    def skipNewlineToken(self,s,i):
+    # skipNewlineToken: no change.
 
-        assert False,'xml has no newline token'
+        # def skipNewlineToken(self,s,i):
+            
+            # assert g.match(s,i,'\n')
+            # if i > 0 and s[i-1] == '>':
+                # # Ignore newlines after an element.
+                # return i+1,''
+            # elif i+1 < len(s) and s[i+1] == '<':
+                # # ignore newlines before an element.
+                # return i+1,''
+            # else:
+                # return i+1,'\n'
         
     # skipOtherToken: no change.
         
     # skipStringToken: no change.
 
-    def skipWsToken(self,s,i):
-        '''Return a single blank for all runs of whitespace, *including* newlines.'''
-        j = i
-        while i < len(s) and s[i].isspace():
-            i += 1
-        return i,' '
-        
+    # skipWsToken: no change.
+
+        # def skipWsToken(self,s,i):
+            # '''Return a single blank for all runs of whitespace, *including* newlines.'''
+            # j = i
+            # while i < len(s) and s[i].isspace():
+                # i += 1
+            # return i,' '
+            
     #@+node:ekr.20091230062012.6238: *5* skipId (override base class) & helper
     #@+at  For characters valid in names see:
     #    www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
@@ -4787,12 +4812,14 @@ class htmlScanner (xmlScanner):
         xmlScanner.__init__(self,importCommands,atAuto,tags_setting='import_html_tags')
         
     #@+others
-    #@+node:ekr.20111104032034.9868: *5* adjust_class_ref
+    #@+node:ekr.20111104032034.9868: *5* adjust_class_ref (xmlScanner)
     def adjust_class_ref(self,s):
 
         '''Ensure that @others appears at the start of a line.'''
+        
+        return s ### This has no chance of being helpful.
 
-        trace = False
+        trace = True
         if trace: g.trace('old',repr(s))
 
         i = s.find('@others')
@@ -4801,13 +4828,43 @@ class htmlScanner (xmlScanner):
             i -= 1
             while i >= 0 and s[i] in '\t ':
                 i -= 1
-            if i > 0 and s[i] != '\n':
-                
+            if i < j:
                 # 2011/11/04: Never put lws before @others.
-                s = s[:i+1] + '\n' + s[j:]
+                s = s[:i+1] + s[j:]
         
         if trace: g.trace('new',repr(s))
         return s
+    #@+node:ekr.20111108111156.9922: *5* adjustTestLines (xmlScanner)
+    def adjustTestLines(self,lines):
+        
+        # This is a desparation measure to attempt reasonable comparisons.
+        
+        # self.ignoreBlankLines:
+        lines = [z for z in lines if z.strip()]
+            
+        # if self.ignoreLeadingWs:
+        lines = [z.lstrip() for z in lines]
+        
+        lines = [z.replace('@others','') for z in lines]
+        
+        # lines = [z.replace('>\n','>').replace('\n<','<') for z in lines]
+        
+        return lines
+    #@+node:ekr.20111108111156.9935: *5* filterTokens (xmlScanner)
+    def filterTokens (self,tokens):
+        
+        '''Filter tokens as needed for correct comparisons.'''
+
+        # if self.ignoreBlankLines:
+            # tokens = self.removeBlankLinesTokens(tokens)
+            
+        # if self.ignoreLeadingWs:
+            # tokens = self.removeLeadingWsTokens(tokens)
+            
+        tokens = [(kind,val,line_number) for (kind,val,line_number) in tokens
+            if kind not in ('nl','ws')]
+
+        return tokens
     #@-others
 #@-<< class htmlScanner (xmlScanner) >>
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
