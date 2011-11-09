@@ -3170,19 +3170,6 @@ def es(*args,**keys):
             app.logWaiting.append((s+'\n',color),)
         else:
             app.logWaiting.append((s,color),)
-#@+node:ekr.20071024101611: *4* mini test of es
-#@@nocolor
-#@+at
-# 
-# This doesn't work as an external unit test.
-# To test, select all following lines and do execute-script.
-# 
-# s1 = 'line1 Ä, ڱ,  궯, 奠 end'
-# s2 = g.toUnicode(s1,'utf-8')
-# 
-# for s in (s1,s2):
-#     g.es(s)
-#     g.es_print(s)
 #@+node:ekr.20050707064040: *3* g.es_print
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
