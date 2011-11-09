@@ -250,7 +250,7 @@ def cmd_tags(args):
 
 #@+node:ekr.20110310093050.14234: *3* functions from leoGlobals
 #@+node:ekr.20110310093050.14291: *4* Most common functions...
-#@+node:ekr.20110310093050.14296: *5* callers & _callerName
+#@+node:ekr.20110310093050.14296: *5* callers & _callerName (codewise)
 def callers (n=4,count=0,excludeCaller=True,files=False):
 
     '''Return a list containing the callers of the function that called g.callerList.
@@ -295,12 +295,12 @@ def _callerName (n=1,files=False):
     except Exception:
         g.es_exception()
         return '' # "<no caller name>"
-#@+node:ekr.20110310093050.14252: *5* g.choose
+#@+node:ekr.20110310093050.14252: *5* choose (codewise)
 def choose(cond, a, b): # warning: evaluates all arguments
 
     if cond: return a
     else: return b
-#@+node:ekr.20110310093050.14253: *5* g.doKeywordArgs
+#@+node:ekr.20110310093050.14253: *5* doKeywordArgs (codewise)
 def doKeywordArgs (keys,d=None):
 
     '''Return a result dict that is a copy of the keys dict
@@ -322,7 +322,7 @@ def doKeywordArgs (keys,d=None):
             result[key] = val
 
     return result 
-#@+node:ekr.20110310093050.14293: *5* g.pdb
+#@+node:ekr.20110310093050.14293: *5* pdb (codewise)
 def pdb (message=''):
 
     """Fall into pdb."""
@@ -332,7 +332,7 @@ def pdb (message=''):
     if message:
         print(message)
     pdb.set_trace()
-#@+node:ekr.20110310093050.14263: *5* g.pr
+#@+node:ekr.20110310093050.14263: *5* pr (codewise)
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
 pr_warning_given = False
@@ -378,7 +378,7 @@ def pr(*args,**keys):
         # print('unexpected exception in g.pr')
         print(s2)
            
-#@+node:ekr.20110310093050.14268: *5* g.trace
+#@+node:ekr.20110310093050.14268: *5* trace (codewise)
 # Convert all args to strings.
 
 def trace (*args,**keys):
@@ -425,7 +425,7 @@ def trace (*args,**keys):
 
     # 'print s,' is not valid syntax in Python 3.x.
     g.pr(s,newline=newline)
-#@+node:ekr.20110310093050.14264: *5* g.translateArgs
+#@+node:ekr.20110310093050.14264: *5* translateArgs (codewise)
 def translateArgs(args,d):
 
     '''Return the concatenation of all args, with odd args translated.'''
@@ -455,7 +455,7 @@ def translateArgs(args,d):
 
     return ''.join(result)
 #@+node:ekr.20110310093050.14280: *4* Unicode utils...
-#@+node:ekr.20110310093050.14282: *5* g.isBytes, isCallable, isChar, isString & isUnicode
+#@+node:ekr.20110310093050.14282: *5* isBytes, isCallable, isChar, isString & isUnicode (codewise)
 # The syntax of these functions must be valid on Python2K and Python3K.
 
 def isBytes(s):
@@ -492,7 +492,7 @@ def isUnicode(s):
         return type(s) == type('a')
     else:
         return type(s) == types.UnicodeType
-#@+node:ekr.20110310093050.14283: *5* g.isValidEncoding
+#@+node:ekr.20110310093050.14283: *5* isValidEncoding (codewise)
 def isValidEncoding (encoding):
 
     if not encoding:
@@ -510,7 +510,7 @@ def isValidEncoding (encoding):
         return False
     except AttributeError: # Linux.
         return False
-#@+node:ekr.20110310093050.14285: *5* g.reportBadChars
+#@+node:ekr.20110310093050.14285: *5* reportBadChars (codewise)
 def reportBadChars (s,encoding):
 
     if g.isPython3:
@@ -554,7 +554,7 @@ def reportBadChars (s,encoding):
                 print("%d errors converting %s (%s encoding) to unicode" % (
                     errors, unicode(s,encoding,'replace'),
                     encoding.encode('ascii','replace')))
-#@+node:ekr.20110310093050.14286: *5* g.toEncodedString
+#@+node:ekr.20110310093050.14286: *5* toEncodedString (codewise)
 def toEncodedString (s,encoding='utf-8',reportErrors=False):
 
     if encoding is None:
@@ -567,7 +567,7 @@ def toEncodedString (s,encoding='utf-8',reportErrors=False):
             if reportErrors: g.reportBadChars(s,encoding)
             s = s.encode(encoding,"replace")
     return s
-#@+node:ekr.20110310093050.14287: *5* g.toUnicode
+#@+node:ekr.20110310093050.14287: *5* toUnicode (codewise)
 def toUnicode (s,encoding='utf-8',reportErrors=False):
 
     # The encoding is usually 'utf-8'
@@ -594,7 +594,7 @@ def toUnicode (s,encoding='utf-8',reportErrors=False):
         pass
 
     return s
-#@+node:ekr.20110310093050.14288: *5* g.u & g.ue
+#@+node:ekr.20110310093050.14288: *5* u & ue (codewise)
 if isPython3: # g.not defined yet.
     def u(s):
         return s
