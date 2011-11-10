@@ -9595,26 +9595,6 @@ for i in range(3):
 
 if 0: # Not usually enabled.
     g.es_trace('\ntest of es_trace: Ă',color='red')
-#@+node:ekr.20111018163546.3690: *4* @test g.getDocString
-s1 = 'no docstring'
-s2 = '''
-# comment
-"""docstring2."""
-'''
-s3 = '''
-"""docstring3."""
-\'\'\'docstring2.\'\'\'
-'''
-
-table = (
-    (s1,''),
-    (s2,'docstring2.'),
-    (s3,'docstring3.'),
-)
-
-for s,result in table:
-    s2 = g.getDocString(s)
-    assert s2 == result,'Expected %s, got %s' % (repr(result),repr(s2))
 #@+node:ekr.20071113090055.5: *4* @test g.get_directives_dict
 # This will work regardless of where this method is.
 @language python
@@ -9649,6 +9629,26 @@ assert d.get('encoding') == 'utf-8'
 assert d.get('comment') == 'a b c'
 assert not d.get('path'),d.get('path')
 # assert d.get('path').endswith('xyzzy')
+#@+node:ekr.20111018163546.3690: *4* @test g.getDocString
+s1 = 'no docstring'
+s2 = '''
+# comment
+"""docstring2."""
+'''
+s3 = '''
+"""docstring3."""
+\'\'\'docstring2.\'\'\'
+'''
+
+table = (
+    (s1,''),
+    (s2,'docstring2.'),
+    (s3,'docstring3.'),
+)
+
+for s,result in table:
+    s2 = g.getDocString(s)
+    assert s2 == result,'Expected %s, got %s' % (repr(result),repr(s2))
 #@+node:ekr.20061104172236.18: *4* @test g.getLine
 s = 'a\ncd\n\ne'
 
@@ -9717,6 +9717,22 @@ try:
 except Exception:
     restore()
     raise
+#@+node:ekr.20111110073528.3843: *4* @test g.pr
+'''Make sure that g.trace doesn't add an extra newline.'''
+
+import sys
+
+def test():
+    g.pr('a')
+    g.pr('b')
+
+try:
+    sys.stdout = g.fileLikeObject()
+    test()
+    result = sys.stdout.get()
+    assert result == 'a\nb\n',repr(result)
+finally:
+    sys.stdout = sys.__stdout__
 #@+node:ekr.20100212112056.5361: *4* @test g.printGcAll
 g.printGcAll()
 #@+node:ekr.20100131180007.5396: *4* @test g.removeBlankLines
@@ -9996,6 +10012,22 @@ table =  (
 for path,expected in table:
     result = g.stripPathCruft(path)
     assert result == expected
+#@+node:ekr.20111110072415.3841: *4* @test g.trace
+'''Make sure that g.trace doesn't add an extra newline.'''
+
+import sys
+
+def test():
+    g.trace('a')
+    g.trace('b')
+
+try:
+    sys.stdout = g.fileLikeObject()
+    test()
+    result = sys.stdout.get()
+    assert result == 'test a\ntest b\n',repr(result)
+finally:
+    sys.stdout = sys.__stdout__
 #@+node:ekr.20050105084757.1: *4* @test g.utils_remove
 import os
 
