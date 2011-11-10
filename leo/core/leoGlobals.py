@@ -3307,7 +3307,8 @@ def pr(*args,**keys):
         s2 = g.toEncodedString(s,encoding,reportErrors=False)
 
     if app.logInited:
-        print(s2)
+        # Print s2 *without* an additional trailing newline.
+        sys.stdout.write(s2)
     else:
         app.printWaiting.append(s2)
 #@+node:ekr.20031218072017.2317: *3* g.trace
