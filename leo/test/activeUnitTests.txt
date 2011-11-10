@@ -9590,6 +9590,22 @@ for i in range(3):
     val = s2 + ('\n' * i)
     assert result == val, 'expected %s, got %s' % (
         repr(val),repr(result))
+#@+node:ekr.20111110073834.3843: *4* @test g.es_print
+'''Make sure that g.trace doesn't add an extra newline.'''
+
+import sys
+
+def test():
+    g.es_print('a')
+    g.es_print('b')
+
+try:
+    sys.stdout = g.fileLikeObject()
+    test()
+    result = sys.stdout.get()
+    assert result == 'a\nb\n',repr(result)
+finally:
+    sys.stdout = sys.__stdout__
 #@+node:ekr.20071113145804.22: *4* @test g.es_trace
 @first # -*- coding: utf-8 -*-
 
