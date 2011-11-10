@@ -1796,6 +1796,7 @@ class baseScannerClass (scanUtility):
         self.classTags = ['class',] # tags that start a tag.
         self.functionTags = []
         self.hasClasses = True
+        self.hasDecls = True
         self.hasFunctions = True
         self.ignoreBlankLines = False
         self.ignoreLeadingWs = False
@@ -2090,10 +2091,13 @@ class baseScannerClass (scanUtility):
                     except UnicodeEncodeError:
                         print('%3s %3s %7s' % (i,line_number,kind),'unicode error!')
                         # print(val)
+
             if i < n1: kind1,val1,tok_n1 = tokens1[i]
-            else:      kind1,val1 = 'eof','',n1
+            else:      kind1,val1,tok_n1 = 'eof','',n1
+
             if i < n2: kind2,val2,tok_n2 = tokens2[i]
             else:      kind2,val2,tok_n2 = 'eof','',n2
+
             if fail_n1 == -1 and fail_n2 == -1 and (kind1 != kind2 or val1 != val2):
                 if trace: g.trace('fail at lines: %s,%s' % (tok_n1,tok_n2))
                 fail_n1,fail_n2 = tok_n1,tok_n1
@@ -2656,8 +2660,11 @@ class baseScannerClass (scanUtility):
         self.putRootText(parent)
 
         # Parse the decls.
-        i = self.skipDecls(s,0,len(s),inClass=False)
-        decls = s[:i]
+        if self.hasDecls:
+            i = self.skipDecls(s,0,len(s),inClass=False)
+            decls = s[:i]
+        else:
+            i,decls = 0,''
 
         # Create the decls node.
         if decls: self.createDeclsNode(parent,decls)
@@ -3170,6 +3177,24 @@ class baseScannerClass (scanUtility):
 
         return g.match(s,i,'"') or g.match(s,i,"'")
     #@+node:ekr.20111103073536.16583: *3* Tokenizing (baseScannerClass)
+    #@+node:ekr.20111109151106.9782: *4* dump_tokens (baseScannerClass)
+    def format_tokens(self,tokens):
+        
+        '''Format tokens for printing or dumping.'''
+        
+        i,result = 0,[]
+        for kind,val,line_number in tokens:
+            s = '%3s %3s %6s %s' % (i,line_number,kind,repr(val))
+            result.append(s)
+            i += 1
+            
+        return '\n'.join(result)
+    #@+node:ekr.20111109151106.9781: *4* strip_token (baseScannerClass)
+    def strip_tokens(self,tokens):
+        
+        '''Remove the line_number from all tokens.'''
+
+        return [(kind,val) for (kind,val,line_number) in tokens]
     #@+node:ekr.20111103073536.16586: *4* skip...Token (baseScannerClass)
     def skipCommentToken (self,s,i):
         
@@ -4535,6 +4560,7 @@ class xmlScanner (baseScannerClass):
         self.atAutoWarnsAboutLeadingWhitespace = False
         self.caseInsensitive = True
         self.hasClasses = True
+        self.hasDecls = False
         self.hasFunctions = False
         self.ignoreBlankLines = False # The tokenizer handles this.
         self.ignoreLeadingWs = True # A drastic step, but there seems to be no other way.
@@ -4548,7 +4574,7 @@ class xmlScanner (baseScannerClass):
 
         '''Add items to self.class/functionTags and from settings.'''
 
-        trace = False and not g.unitTesting
+        trace = False # and not g.unitTesting
         c = self.c
 
         for ivar,setting in (
@@ -4558,6 +4584,7 @@ class xmlScanner (baseScannerClass):
             aList2 = c.config.getData(setting) or []
             aList2 = [z.lower() for z in aList2]
             aList.extend(aList2)
+            setattr(self,ivar,aList)
             if trace: g.trace(ivar,aList)
     #@+node:ekr.20111104032034.9868: *5* adjust_class_ref (xmlScanner)
     def adjust_class_ref(self,s):
@@ -4601,18 +4628,77 @@ class xmlScanner (baseScannerClass):
     #@+node:ekr.20111108111156.9935: *5* filterTokens (xmlScanner)
     def filterTokens (self,tokens):
         
-        '''Filter tokens as needed for correct comparisons.'''
-
-        # if self.ignoreBlankLines:
-            # tokens = self.removeBlankLinesTokens(tokens)
+        '''Filter tokens as needed for correct comparisons.
+        
+        For xml, this means:
             
-        # if self.ignoreLeadingWs:
-            # tokens = self.removeLeadingWsTokens(tokens)
-            
-        tokens = [(kind,val,line_number) for (kind,val,line_number) in tokens
-            if kind not in ('nl','ws')]
+        1. Removing newlines after opening elements.
+        2. Removing newlines before closing elements.
+        3. Converting sequences of whitespace to a single blank.
+        '''
+        
+        trace = False
+        
+        if 1: # Permissive code.
 
-        return tokens
+            return [(kind,val,line_number) for (kind,val,line_number) in tokens
+                if kind not in ('nl','ws')]
+
+        else: # Accurate code.
+
+            # Pass 1.  Remove newlines before and after elements, and collapse whitespace.
+            i,n,result = 0,len(tokens),[]
+            while i < n:
+                progress = i
+                # Compute lookahead tokens.
+                kind1,val1,n1 = tokens[i]
+                kind2,val2,n2 = None,None,None
+                kind3,val3,n3 = None,None,None
+                kind4,val4,n4 = None,None,None
+                if i + 1 < n: kind2,val2,n2 = tokens[i+1]
+                if i + 2 < n: kind3,val3,n3 = tokens[i+2]
+                if i + 3 < n: kind4,val4,n4 = tokens[i+3]
+        
+                if (
+                    kind1 == 'other' and val1 == '>' and
+                    kind2 == 'nl'
+                ):
+                    # Remove nl after >
+                    if trace: g.trace('** remove nl after >')
+                    result.append((kind1,val1,n1),)
+                    i += 2
+                elif (
+                    kind1 == 'nl'    and
+                    kind2 == 'other' and val2 == '<' and
+                    kind3 == 'other' and val3 == '/' and
+                    kind4 == 'id'
+                ):
+                    # Remove nl before </id
+                    if trace: g.trace('** remove nl before </%s' % (val4))
+                    i += 1
+                else:
+                    i += 1
+                    result.append((kind1,val1,n1),)
+        
+                assert progress < i
+        
+            # Pass 2: collapse newlines and whitespace into a single space.
+            tokens = result[:]
+            i,n,result = 0,len(tokens),[]
+            while i < n:
+                progress = i
+                kind1,val1,n1 = tokens[i]
+                if kind1 in ('nl','ws'):
+                    while i < n and tokens[i][0] in ('nl','ws'):
+                        i += 1
+                    result.append(('ws',' ',n1),)
+                else:
+                    result.append((kind1,val1,n1),)
+                    i += 1
+        
+                assert progress < i
+        
+            return result
     #@+node:ekr.20111103073536.16601: *5* isSpace (xmlScanner) (Use the base class now)
     # def isSpace(self,s,i):
         
@@ -4708,11 +4794,13 @@ class xmlScanner (baseScannerClass):
         i += 1
         j = g.skip_ws_and_nl(s,i)
         i = self.skipId(s,j)
-        self.sigId = theId = s[j:i] # Set sigId ivar 'early' for error messages.
+        self.sigId = theId = s[j:i].lower()
+            # Set sigId ivar 'early' for error messages.
+            # Bug fix: html case does not matter.
         if not theId: return False
 
         if theId not in tags:
-            if False and trace and verbose:
+            if True and trace and verbose:
                 g.trace('**** %s theId: %s not in tags: %s' % (
                     kind,theId,tags))
             return False
@@ -4805,6 +4893,7 @@ class xmlScanner (baseScannerClass):
         '''
 
         trace = False and not g.unitTesting; verbose = False
+        tag = tag.lower()
         stack = [tag]
         level = 1
         while i < len(s):
@@ -4816,11 +4905,11 @@ class xmlScanner (baseScannerClass):
             elif g.match(s,i,'</'):
                 j = i+2
                 i = self.skipId(s,j)
-                tag2 = s[j:i]
+                tag2 = s[j:i].lower()
                 i,ok,complete = self.skipToEndOfTag(s,i)
                 if tag2 in tags:
                     tag = stack.pop()
-                    if tag2.lower() == tag.lower():
+                    if tag2 == tag:
                         if trace and verbose: g.trace('%s exit <%s>' % (level-1,tag))
                         level -= 1
                         if level == 0:

@@ -126,6 +126,9 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285805000000302e372e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31302e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31342e34710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20111110095621.3971"><vh>Failing unit tests</vh>
+<v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -694,5 +697,81 @@ table
 nodeA
 nodeB
 </t>
+<t tx="ekr.20111109143012.3839">@language html
+    # Essential for the unit test.
+    
+# This part of the test file caused lots of problems.
+
+s = '''
+
+&lt;html&gt;
+
+&lt;body&gt;
+
+&lt;table id="0"&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="619"&gt;
+	&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;
+		&lt;table id="3"&gt;
+		&lt;tr&gt;
+		&lt;td width="368"&gt;
+			&lt;table id="4"&gt;
+
+&lt;tbody id="5"&gt;
+
+&lt;tr valign="top"&gt;
+&lt;td width="550"&gt;
+&lt;table id="6"&gt;
+
+&lt;tbody id="6"&gt;
+&lt;tr&gt;
+
+&lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+
+&lt;/table&gt;
+
+&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+&lt;td width="100%" colspan="2"&gt;
+
+
+&lt;br /&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;	
+							&lt;/td&gt;
+						&lt;/tr&gt;
+						&lt;/table&gt;
+
+	&lt;!-- View First part --&gt;	&lt;/td&gt;	&lt;td width="242"&gt;	&lt;!-- View Second part --&gt;
+
+	&lt;!-- View Second part --&gt;	&lt;/td&gt;	&lt;/tr&gt;&lt;/table&gt;										
+
+
+&lt;DIV class="webonly"&gt;
+
+&lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
+	
+&lt;/DIV&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
+&lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
+&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20111110095621.3971"></t>
 </tnodes>
 </leo_file>

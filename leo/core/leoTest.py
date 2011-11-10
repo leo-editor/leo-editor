@@ -710,7 +710,7 @@ def findAllUnitTestNodes(c,p,limit,all,marked,lookForMark,lookForNodes):
                     p.moveToNodeAfterTree()
                 else:
                     seen.add(p.v)
-                    message = 'adding in marked tree' % (p.h)
+                    message = 'adding in marked tree: %s' % (p.h)
                     if isTestNode(p): # @test
                         if trace: g.trace(message)
                         result.append(p.copy())

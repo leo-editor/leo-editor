@@ -4,6 +4,15 @@
 
 .. @+all
 .. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
+Top 10:
+
+* Fix all significant bugs.
+    - Fix key bindings after redefining keys.
+    - Fix serious clone bug
+    - Eliminate (somehow!) spellpyx.txt from bzr repo
+* Rendering to tex,pdf, etc.
+* Use c.db for marks and expansion bits.
+* Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
 .. @+node:ekr.20111109122014.9792: *4* Allow @all only in top-level @<file> nodes
 .. @+node:ekr.20111108081936.12524: *4* Create unit tests illustrating path ops
@@ -306,6 +315,14 @@ for func,h,expected in table:
         c.redraw()
 .. @+node:ekr.20111108081936.9768: *6* @path rel-path
 .. @+node:ekr.20111108081936.9751: *7* @@file fj-test-1
+.. @+node:ekr.20111010162047.15678: *4* The @auto script *must* put @first nodes in root node
+@nocolor-node
+
+Also the import commands.
+
+Especially:
+    - Shebang line.
+    - Python encoding line.
 .. @+node:ekr.20111109083738.9797: *4* Bugs
 .. @+node:ekr.20111024170505.16459: *5* * Bug 879331: Redefining a key binding breaks menu items with same binding
 .. @+node:ekr.20111026091322.16501: *6* Probably same as key-binding bug
@@ -1827,14 +1844,6 @@ def killOneShortcut (self,bunch,name,p):
     
     if 0:
         g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20111010162047.15678: *5* The @auto script *must* put @first nodes in root node
-@nocolor-node
-
-Also the import commands.
-
-Especially:
-    - Shebang line.
-    - Python encoding line.
 .. @+node:ekr.20111109105907.9800: *5* Find out (or create) a way to eliminate spellpyx.txt from bzr repo
 .. @+node:ekr.20111109083738.9798: *4* Testing
 .. @+node:ekr.20110929165422.15449: *5* Test bug fix: noweb expansions in rst3 command
@@ -7336,89 +7345,6 @@ def import_module(module_name,modes_path):
     module = imp.load_module(module_name,theFile,pathname,description)
     return module
 .. @+node:ekr.20111019104425.15865: *5* Make sure docstrings include present documentation
-.. @+node:ekr.20111021105253.9478: *3* Most important
-.. @+node:ekr.20111010122531.15568: *4* * @render-rest, @render-html trees
-@language rest
-
-The free_layout and viewrendered plugins are a huge step forward.  But
-the lighter/heavier distinction suggests a new way to use them.
-
-Suppose Leo supports @render-rest or @render-html.
-
-This means that all nodes in the tree will have the body pane become a
-rendering pane for rST or html.
-
-Imagine LeoDocs completely rendered at all times.
-
-Of course, for specific purposes, say in Leo's scripting chapter, we
-might want to override these rendering directives (which should be
-allowed in headlines too) with @no-render.
-
-The point is that having *both* the original text *and* the rendered
-text be visible is often too heavy: the user usually does not want to
-know about the sources: the rendering is good enough.
-
-I suppose for sophisticated users, something like show/hide-body pane
-would be good commands to have, but that doesn't matter: those
-commands to not increase the burden on the user while she is reading
-the (rendered) docs.
-.. @+node:ekr.20111019104425.15868: *4* * Render to tex, pdf, rst, etc.
-.. @+node:ekr.20111003232155.6988: *4* * Use c.db for marks & expansion bits
-This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
-.. @+node:ekr.20110921094450.6957: *4* Restart vim project
-This requires commands that can be composed.
-.. @+node:ekr.20111027103125.16538: *5* * Look at vim video
-http://video.google.com/videoplay?docid=8810772602188234059
-.. @+node:ekr.20111021035504.9467: *4* Play with PyQt Qtest framework
-http://groups.google.com/group/leo-editor/browse_thread/thread/b851e7d9855a57c2
-
-http://www.voom.net/pyqt-qtest-example
-.. @+node:ekr.20111027143736.16558: *4* Work-flow improvements
-@nocolor-node
-
-Considering leo.leo
-http://groups.google.com/group/leo-editor/browse_thread/thread/e3ddbe650fc9525b/290e97c593ee950a
-
-> > I think there's a way to search across Leo files: quicksearch multiple
-> > files ... ?
-
-> http://groups.google.com/group/leo-editor/browse_thread/thread/cf5ab5...
-
-Leo has to have this :-)  It's on my list.  It would be a great way to
-find @button nodes.
-
-Furthermore, global searches for attributes in docstrings have
-immediate uses.
-
-On the urgent to-do list: drive all aspects of the Nav pane using
-keystrokes.
-
-I just reviewed @bookmarks--it's perfect for leo.leo.  The following
-would replace all.bat:
-
-- @bookmarks
-  - leoPy.leo (url in body)
-  - leoPlugins.leo
-  - leoSettings.leo
-  - myLeoSettings.leo
-  - leoDocs.leo
-  - leoDist.leo
-  - scripts.leo
-
-This way could be said to be much better than all.bat: nothing gets
-loaded until needed.  Therefore, even more files could be added.
-
-Imo, URL's in bookmark trees should support {{expression}} notations.
-
-For example, I want the following to work in the body text of a node
-in an @bookmarks tree::
-
-file://{{g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo').replace('\\','/')}}
-
-Not bad, eh?  Or maybe the URL logic should do the replace('\\','/')
-automatically...
-
-Got to go.  We are nearing a tipping point in Leo's workflow... 
 .. @+node:ekr.20111019080436.15848: *3* Easy new features
 .. @+node:ekr.20111019104425.15869: *4* Convert @command nodes to official commands
 @nocolor-node
@@ -8122,6 +8048,89 @@ stylesheet issues.  Consider the following commands::
 - qt-stylesheet-append-to-widget-stylesheet
 
 @language python
+.. @+node:ekr.20111021105253.9478: *3* Most important
+.. @+node:ekr.20111010122531.15568: *4* * @render-rest, @render-html trees
+@language rest
+
+The free_layout and viewrendered plugins are a huge step forward.  But
+the lighter/heavier distinction suggests a new way to use them.
+
+Suppose Leo supports @render-rest or @render-html.
+
+This means that all nodes in the tree will have the body pane become a
+rendering pane for rST or html.
+
+Imagine LeoDocs completely rendered at all times.
+
+Of course, for specific purposes, say in Leo's scripting chapter, we
+might want to override these rendering directives (which should be
+allowed in headlines too) with @no-render.
+
+The point is that having *both* the original text *and* the rendered
+text be visible is often too heavy: the user usually does not want to
+know about the sources: the rendering is good enough.
+
+I suppose for sophisticated users, something like show/hide-body pane
+would be good commands to have, but that doesn't matter: those
+commands to not increase the burden on the user while she is reading
+the (rendered) docs.
+.. @+node:ekr.20111019104425.15868: *4* * Render to tex, pdf, rst, etc.
+.. @+node:ekr.20111003232155.6988: *4* * Use c.db for marks & expansion bits
+This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
+.. @+node:ekr.20110921094450.6957: *4* Restart vim project
+This requires commands that can be composed.
+.. @+node:ekr.20111027103125.16538: *5* * Look at vim video
+http://video.google.com/videoplay?docid=8810772602188234059
+.. @+node:ekr.20111021035504.9467: *4* Play with PyQt Qtest framework
+http://groups.google.com/group/leo-editor/browse_thread/thread/b851e7d9855a57c2
+
+http://www.voom.net/pyqt-qtest-example
+.. @+node:ekr.20111027143736.16558: *4* Work-flow improvements
+@nocolor-node
+
+Considering leo.leo
+http://groups.google.com/group/leo-editor/browse_thread/thread/e3ddbe650fc9525b/290e97c593ee950a
+
+> > I think there's a way to search across Leo files: quicksearch multiple
+> > files ... ?
+
+> http://groups.google.com/group/leo-editor/browse_thread/thread/cf5ab5...
+
+Leo has to have this :-)  It's on my list.  It would be a great way to
+find @button nodes.
+
+Furthermore, global searches for attributes in docstrings have
+immediate uses.
+
+On the urgent to-do list: drive all aspects of the Nav pane using
+keystrokes.
+
+I just reviewed @bookmarks--it's perfect for leo.leo.  The following
+would replace all.bat:
+
+- @bookmarks
+  - leoPy.leo (url in body)
+  - leoPlugins.leo
+  - leoSettings.leo
+  - myLeoSettings.leo
+  - leoDocs.leo
+  - leoDist.leo
+  - scripts.leo
+
+This way could be said to be much better than all.bat: nothing gets
+loaded until needed.  Therefore, even more files could be added.
+
+Imo, URL's in bookmark trees should support {{expression}} notations.
+
+For example, I want the following to work in the body text of a node
+in an @bookmarks tree::
+
+file://{{g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo').replace('\\','/')}}
+
+Not bad, eh?  Or maybe the URL logic should do the replace('\\','/')
+automatically...
+
+Got to go.  We are nearing a tipping point in Leo's workflow... 
 .. @+node:ekr.20111019104425.15861: *3* Scripts
 .. @+node:ekr.20111019080436.15849: *4*  Doc scripts: 2
 .. @+node:ekr.20111018104244.15932: *5* Write create-command-docs script

@@ -10212,7 +10212,7 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 # print('\nEnd of leoGui tests.')
-#@+node:ekr.20090529141856.4682: *3* leoImport (not valid when run externally)
+#@+node:ekr.20090529141856.4682: *3* leoImport
 # These test are inconvenient to include in leoPy.leo
 # because they would need a @mark-for-unit-tests node,
 # and Alt-5 would execute all the tests.
@@ -11824,7 +11824,39 @@ for ext in g.app.extension_dict.keys():
     if 0:
         if language is None:
             print('no language for ext=%s' % (ext))
-#@+node:ekr.20100131180007.5393: *4* @test reportMismatch
+#@+node:ekr.20111110095252.3845: *4* @test ic.compareTokens: mismatched length
+import leo.core.leoImport as leoImport
+
+ic = c.importCommands
+bs = leoImport.baseScannerClass(ic,atAuto=True,language='html')
+
+<< define tokens >>
+
+table = (
+    (tokens11,tokens12),
+    (tokens21,tokens22),
+)
+
+for tokens1,tokens2 in table:
+    bs.compareTokens(tokens1,tokens2)
+#@+node:ekr.20111110095252.3846: *5* << define tokens >>
+@ 2011/11/10:
+
+File "/usr/fetching/leo-editor/leo/core/leoImport.py", line 2074, in scanAndCompare
+n1,n2,ok = self.compareTokens(tokens1,tokens2)
+File "/usr/fetching/leo-editor/leo/core/leoImport.py", line 2094, in compareTokens
+else:      kind1,val1 = 'eof','',n1
+ValueError: too many values to unpack
+@c
+
+tokens11 = ()
+tokens12 = (('id','abc',0),)
+
+# Test similar situation, reversed.
+
+tokens21 = (('id','abc',0),)
+tokens22 = ()
+#@+node:ekr.20100131180007.5393: *4* @test ic.reportMismatch
 import leo.core.leoImport as leoImport
 
 ic = c.importCommands

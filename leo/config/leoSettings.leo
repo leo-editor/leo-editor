@@ -1160,8 +1160,8 @@
 <v t="ekr.20070925144534.319"><vh>@item &amp;execute-script</vh></v>
 <v t="ekr.20110607054506.16837"><vh>@item -</vh></v>
 <v t="ekr.20110607054506.16834"><vh>@item run-&amp;all-unit-tests-locally</vh></v>
+<v t="ekr.20110607054506.16835"><vh>@item run-&amp;marked-unit-tests-locally</vh></v>
 <v t="ekr.20110607054506.16836"><vh>@item run-&amp;selected-unit-tests-locally</vh></v>
-<v t="ekr.20110607054506.16835"><vh>@item run-&amp;unit-tests-locally</vh></v>
 <v t="ekr.20110607054506.16838"><vh>@item -</vh></v>
 <v t="ekr.20111031083623.13745"><vh>@item run-&amp;all-unit-tests-externally</vh></v>
 <v t="ekr.20111031083623.13744"><vh>@item run-&amp;marked-unit-tests-externally</vh></v>
