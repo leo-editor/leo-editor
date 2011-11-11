@@ -161,16 +161,26 @@ class BookMarkDisplay:
         te.setReadOnly(True)
         te.setOpenLinks(False)
         
-        def anchorClicked(url, c=self.c, p=p):
-            g.handleUrlInUrlNode(str(url.toString()), c=c, p=p)
+        def capture_modifiers(event, te=te, prev=te.mousePressEvent):
+            te.modifiers = event.modifiers()
+            return prev(event)
+        
+        te.mousePressEvent = capture_modifiers
+        
+        def anchorClicked(url, c=self.c, p=p, te=te):
+            url = str(url.toString())
+            if QtCore.Qt.ShiftModifier & te.modifiers:
+                sep = '\\' if '\\' in url else '/'
+                url = sep.join(url.split(sep)[:-1])
+            g.handleUrlInUrlNode(url, c=c, p=p)
         
         te.connect(te, QtCore.SIGNAL("anchorClicked(const QUrl &)"), anchorClicked)
         
         html = []
         
         for name, link in links:
-            html.append("<a href='%s' style='background: #%s; color: black; text-decoration: none;'>%s</a>"
-                % (link, self.color(name), name.replace(' ', '&nbsp;')))
+            html.append("<a title='%s' href='%s' style='background: #%s; color: black; text-decoration: none;'>%s</a>"
+                % (link, link, self.color(name), name.replace(' ', '&nbsp;')))
         
         html = '\n'.join(html)
         
