@@ -4708,24 +4708,6 @@ class xmlScanner (baseScannerClass):
                 assert progress < i
 
             return result
-            
-    #@+at Old code:
-    #     
-    #         # Pass 2: collapse newlines and whitespace into a single space.
-    #         tokens = result[:]
-    #         i,n,result = 0,len(tokens),[]
-    #         while i < n:
-    #             progress = i
-    #             kind1,val1,n1 = tokens[i]
-    #             if kind1 in ('nl','ws'):
-    #                 while i < n and tokens[i][0] in ('nl','ws'):
-    #                     i += 1
-    #                 result.append(('ws',' ',n1),)
-    #             else:
-    #                 result.append((kind1,val1,n1),)
-    #                 i += 1
-    #     
-    #             assert progress < i
     #@+node:ekr.20111103073536.16601: *5* isSpace (xmlScanner) (Use the base class now)
     # def isSpace(self,s,i):
         
@@ -4904,6 +4886,8 @@ class xmlScanner (baseScannerClass):
         
         '''
 
+        trace = False
+        start = i
         while i < len(s):
             progress = i
             if i == '"':
@@ -4911,11 +4895,11 @@ class xmlScanner (baseScannerClass):
             elif g.match(s,i,'<!--'):
                 i = self.skipComment(s,i)
             elif g.match(s,i,'<'):
+                if trace: g.trace('*** error',repr(s[start:i]))
                 return i,False,False # An error.
             elif g.match(s,i,'/>'):
                 i = g.skip_ws(s,i+2)
-                if g.match(s,i,'\n'):
-                    i += 1 # Make sure the "class" contains a trailing newline.
+                ### if g.match(s,i,'\n'): i += 1 # Make sure the "class" contains a trailing newline.
                 return i,True,True # Starts a self-contained tag.
             elif g.match(s,i,'>'):
                 i += 1
@@ -4925,6 +4909,7 @@ class xmlScanner (baseScannerClass):
                 i += 1
             assert progress < i
 
+        g.trace('*** error',repr(s[start:i]))
         return i,False,False
     #@+node:ekr.20071214075117: *6* skipToMatchingTag
     def skipToMatchingTag (self,s,i,tag,tags):
@@ -4933,50 +4918,74 @@ class xmlScanner (baseScannerClass):
         Return i,ok.
         '''
 
-        trace = False and tag.lower() == 'html'
-        verbose = True
+        trace = False and tag.lower() == 'body'
+        verbose = False
+        start = i
         tag = tag.lower()
         stack = [tag]
-        level = 1
+        if trace and verbose: g.trace('init  %s' % (stack))
         while i < len(s):
             progress = i
-            if i == '"':
+            if s[i] == '"':
                 i = self.skipString(s,i)
             elif g.match(s,i,'<!--'):
                 i = self.skipComment(s,i)
+            elif g.match(s,i,'/>'):
+                i += 2
+                stack.pop()
+                if trace and verbose:
+                    g.trace('exit  %s' % (stack))
+                if not stack:
+                    if trace: g.trace(s[start:i])
+                    return i,True
             elif g.match(s,i,'</'):
                 j = i+2
                 i = self.skipId(s,j)
                 tag2 = s[j:i].lower()
                 i,ok,complete = self.skipToEndOfTag(s,i)
-                if tag2 in tags:
-                    tag = stack.pop()
-                    if tag2 == tag:
-                        if trace and verbose: g.trace('%s exit <%s>' % (level-1,tag))
-                        level -= 1
-                        if level == 0:
+                if True: ### tag2 in tags:
+                    tag3 = stack.pop()
+                    if tag2 == tag3:
+                        if trace and verbose:
+                            g.trace('exit  %s' % (stack))
+                        if not stack:
+                            if trace: g.trace(s[start:i])
                             return i,True
                     else:
-                        if trace: g.trace('tag mismatch: %s!=%s' % (tag2,tag))
-                        return i,False # tag mismatch.
+                        if trace: g.trace('tag mismatch: %s!=%s\n%s' % (
+                            tag2,tag3,stack))
+                        # Terminate all tags until a match is found.
+                        found = False
+                        while stack:
+                            tag3 = stack.pop()
+                            if tag2 == tag3:
+                                found = True
+                                break
+                        if found:
+                            if not stack:
+                                if trace: g.trace(s[start:i])
+                                return i,True
+                        else:
+                            if trace: g.trace('*** tag mismatch***',s[start:i])
+                            return i,False # tag mismatch.
                             # a user error, but not an import error.
             elif g.match(s,i,'<'):
                 # Another open tag.
                 j = g.skip_ws_and_nl(s,i+1)
                 i = self.skipId(s,j)
-                word = s[j:i]
+                word = s[j:i].lower() ###
                 if word:
-                    if word in tags:
-                        if trace and verbose: g.trace('%s enter <%s>' % (level+1,word))
+                    if True: ### word in tags:
                         stack.append(word)
-                        level += 1
+                        if trace and verbose: g.trace('enter %s' % (stack))
                 else:
-                    g.trace('syntax error')
+                    if trace: g.trace('syntax error')
                     return i,False # Syntax error.
             else:
                 i += 1
             assert progress < i
 
+        if trace: g.trace('*** no match\n\n',s[start:i])
         return i,False
     #@+node:ekr.20111103073536.16595: *5* startsId (xmlScanner)
     def startsId(self,s,i):
@@ -4989,11 +4998,6 @@ class xmlScanner (baseScannerClass):
             return False
 
         # return g.is_c_id(s[i:i+1])
-    #@+node:ekr.20111101204130.10009: *5* startsString
-    def startsString(self,s,i):
-
-        # 2011/11/01: *only* double quotes start xml/html strings!
-        return g.match(s,i,'"')
     #@-others
 #@-<< class xmlScanner (baseScannerClass) >>
 

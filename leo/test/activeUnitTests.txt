@@ -11868,6 +11868,31 @@ s2 = ["xyz",]
 scanner.reportMismatch(s1,s2,1,1)
 
 # Why is leoSettings.leo scanned twice in dynamicUnitTest.leo?
+#@+node:ekr.20111111074026.3972: *4* @test htmlScanner.skipComment/Id/String
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+table = (
+    # Yes, both single and double quotes are valid in html.
+    (hs.skipComment, '<!-- comment --> after',  '<!-- comment -->'),
+    (hs.skipComment, '<!-- a\nb --> after',     '<!-- a\nb -->'),
+    (hs.skipId,      'abc>',                    'abc'),
+    (hs.skipId,      'abc"',                    'abc'),
+    (hs.skipId,      'abc<!--',                 'abc'),
+    (hs.skipId,      'a.b-c9:d after',          'a.b-c9:d'),
+    (hs.skipString,  '"a string" after',        '"a string"'),
+    (hs.skipString,  "'a string2' after",       "'a string2'"),
+    (hs.skipString,  "'a string<'>",            "'a string<'"),
+    (hs.skipString,  "'a string>'<",            "'a string>'"),
+)
+
+for func,s,expected in table:
+    
+    i = func(s,0)
+    result = s[0:i]
+    assert result == expected,'expected %s got %s' % (
+        repr(expected),repr(result))
 #@+node:ekr.20100131171342.5604: *3* leoKeys
 #@+node:ekr.20100131171342.5606: *4* @@test k.autoCompleterClass.calltip
 # This test is difficult to get right on all platforms.
