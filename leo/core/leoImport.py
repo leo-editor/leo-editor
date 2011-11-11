@@ -1828,6 +1828,19 @@ class baseScannerClass (scanUtility):
             return self.checkTrialWrite()
         else:
             return True
+    #@+node:ekr.20071110144948: *4* checkLeadingWhitespace
+    def checkLeadingWhitespace (self,line):
+
+        tab_width = self.tab_width
+        lws = line[0:g.skip_ws(line,0)]
+        w = g.computeWidth(lws,tab_width)
+        ok = (w % abs(tab_width)) == 0
+
+        if not ok:
+            self.report('leading whitespace not consistent with @tabwidth %d' % tab_width)
+            g.es_print('line:',repr(line),color='red')
+
+        return ok
     #@+node:ekr.20070703122141.104: *4* checkTrialWrite
     def checkTrialWrite (self,s1=None,s2=None):
 
@@ -2009,19 +2022,18 @@ class baseScannerClass (scanUtility):
             s2 == ch2 * n2)
 
         return val
-    #@+node:ekr.20071110144948: *4* checkLeadingWhitespace
-    def checkLeadingWhitespace (self,line):
-
-        tab_width = self.tab_width
-        lws = line[0:g.skip_ws(line,0)]
-        w = g.computeWidth(lws,tab_width)
-        ok = (w % abs(tab_width)) == 0
-
-        if not ok:
-            self.report('leading whitespace not consistent with @tabwidth %d' % tab_width)
-            g.es_print('line:',repr(line),color='red')
-
-        return ok
+    #@+node:ekr.20111109151106.9782: *4* formatTokens (baseScannerClass)
+    def formatTokens(self,tokens):
+        
+        '''Format tokens for printing or dumping.'''
+        
+        i,result = 0,[]
+        for kind,val,line_number in tokens:
+            s = '%3s %3s %6s %s' % (i,line_number,kind,repr(val))
+            result.append(s)
+            i += 1
+            
+        return '\n'.join(result)
     #@+node:ekr.20070911110507: *4* reportMismatch
     def reportMismatch (self,lines1,lines2,bad_i1,bad_i2):
 
@@ -2069,11 +2081,12 @@ class baseScannerClass (scanUtility):
         tokens1 = self.filterTokens(tokens1)
         tokens2 = self.filterTokens(tokens2)
 
-        if tokens1 == tokens2:
-            return -1,-1,True # Success.
+        if self.stripTokens(tokens1) == self.stripTokens(tokens2):
+            # g.trace('stripped tokens are equal')
+            return -1,-1,True
         else:
-            n1,n2,ok = self.compareTokens(tokens1,tokens2)
-            return n1,n2,ok # Success or failure.
+            n1,n2 = self.compareTokens(tokens1,tokens2)
+            return n1,n2,False
     #@+node:ekr.20111101092301.16729: *5* compareTokens
     def compareTokens(self,tokens1,tokens2):
             
@@ -2116,14 +2129,14 @@ class baseScannerClass (scanUtility):
         
         if fail_n1 > -1 or fail_n2 > -1:
             if trace: g.trace('fail',n1,n2)
-            return fail_n1,fail_n2,False
+            return fail_n1,fail_n2
         elif n1 == n2:
             if trace: g.trace('equal')
-            return -1,-1,True
+            return -1,-1
         else:
             n = min(len(tokens1),len(tokens2))
             if trace: g.trace('fail 2 at line: %s' % (n))
-            return n,n,False
+            return n,n
     #@+node:ekr.20111101052702.16722: *5* filterTokens & helpers
     def filterTokens (self,tokens):
         
@@ -2188,6 +2201,12 @@ class baseScannerClass (scanUtility):
             
         if trace: g.trace('\nafter: ',result)
         return result
+    #@+node:ekr.20111109151106.9781: *4* stripTokens (baseScannerClass)
+    def stripTokens(self,tokens):
+        
+        '''Remove the line_number from all tokens.'''
+
+        return [(kind,val) for (kind,val,line_number) in tokens]
     #@+node:ekr.20070706084535: *3* Code generation
     #@+at None of these methods should ever need to be overridden in subclasses.
     # 
@@ -3177,24 +3196,6 @@ class baseScannerClass (scanUtility):
 
         return g.match(s,i,'"') or g.match(s,i,"'")
     #@+node:ekr.20111103073536.16583: *3* Tokenizing (baseScannerClass)
-    #@+node:ekr.20111109151106.9782: *4* dump_tokens (baseScannerClass)
-    def format_tokens(self,tokens):
-        
-        '''Format tokens for printing or dumping.'''
-        
-        i,result = 0,[]
-        for kind,val,line_number in tokens:
-            s = '%3s %3s %6s %s' % (i,line_number,kind,repr(val))
-            result.append(s)
-            i += 1
-            
-        return '\n'.join(result)
-    #@+node:ekr.20111109151106.9781: *4* strip_token (baseScannerClass)
-    def strip_tokens(self,tokens):
-        
-        '''Remove the line_number from all tokens.'''
-
-        return [(kind,val) for (kind,val,line_number) in tokens]
     #@+node:ekr.20111103073536.16586: *4* skip...Token (baseScannerClass)
     def skipCommentToken (self,s,i):
         
@@ -4639,6 +4640,8 @@ class xmlScanner (baseScannerClass):
         
         trace = False
         
+        if trace: g.trace(tokens)
+        
         if 1: # Permissive code.
 
             return [(kind,val,line_number) for (kind,val,line_number) in tokens
@@ -4646,7 +4649,7 @@ class xmlScanner (baseScannerClass):
 
         else: # Accurate code.
 
-            # Pass 1.  Remove newlines before and after elements, and collapse whitespace.
+            # Pass 1. Insert newlines before and after elements.
             i,n,result = 0,len(tokens),[]
             while i < n:
                 progress = i
@@ -4658,38 +4661,44 @@ class xmlScanner (baseScannerClass):
                 if i + 1 < n: kind2,val2,n2 = tokens[i+1]
                 if i + 2 < n: kind3,val3,n3 = tokens[i+2]
                 if i + 3 < n: kind4,val4,n4 = tokens[i+3]
+                
+                # Always insert the present token.
+                result.append((kind1,val1,n1),)
+                i += 1
         
                 if (
                     kind1 == 'other' and val1 == '>' and
-                    kind2 == 'nl'
+                    kind2 != 'nl'
                 ):
-                    # Remove nl after >
-                    if trace: g.trace('** remove nl after >')
-                    result.append((kind1,val1,n1),)
-                    i += 2
+                    # insert nl after >
+                    if trace: g.trace('** insert nl after >')
+                    result.append(('nl','\n',n1),)
                 elif (
-                    kind1 == 'nl'    and
+                    kind1 != 'nl'    and
                     kind2 == 'other' and val2 == '<' and
                     kind3 == 'other' and val3 == '/' and
                     kind4 == 'id'
                 ):
-                    # Remove nl before </id
-                    if trace: g.trace('** remove nl before </%s' % (val4))
-                    i += 1
+                    # Insert nl before </id
+                    if trace: g.trace('** insert nl before </%s' % (val4))
+                    result.append(('nl','\n',n1),)
                 else:
-                    i += 1
-                    result.append((kind1,val1,n1),)
+                    pass
         
-                assert progress < i
-        
-            # Pass 2: collapse newlines and whitespace into a single space.
-            tokens = result[:]
+                assert progress == i-1
+                
+            # Pass 2: collapse newlines and whitespace separately.
+            tokens = result
             i,n,result = 0,len(tokens),[]
             while i < n:
                 progress = i
                 kind1,val1,n1 = tokens[i]
-                if kind1 in ('nl','ws'):
-                    while i < n and tokens[i][0] in ('nl','ws'):
+                if kind1 == 'nl':
+                    while i < n and tokens[i][0] == 'nl':
+                        i += 1
+                    result.append(('nl','\n',n1),)
+                elif kind1 == 'ws':
+                    while i < n and tokens[i][0] == 'ws':
                         i += 1
                     result.append(('ws',' ',n1),)
                 else:
@@ -4697,8 +4706,26 @@ class xmlScanner (baseScannerClass):
                     i += 1
         
                 assert progress < i
-        
+
             return result
+            
+    #@+at Old code:
+    #     
+    #         # Pass 2: collapse newlines and whitespace into a single space.
+    #         tokens = result[:]
+    #         i,n,result = 0,len(tokens),[]
+    #         while i < n:
+    #             progress = i
+    #             kind1,val1,n1 = tokens[i]
+    #             if kind1 in ('nl','ws'):
+    #                 while i < n and tokens[i][0] in ('nl','ws'):
+    #                     i += 1
+    #                 result.append(('ws',' ',n1),)
+    #             else:
+    #                 result.append((kind1,val1,n1),)
+    #                 i += 1
+    #     
+    #             assert progress < i
     #@+node:ekr.20111103073536.16601: *5* isSpace (xmlScanner) (Use the base class now)
     # def isSpace(self,s,i):
         
@@ -4800,7 +4827,7 @@ class xmlScanner (baseScannerClass):
         if not theId: return False
 
         if theId not in tags:
-            if True and trace and verbose:
+            if trace and verbose:
                 g.trace('**** %s theId: %s not in tags: %s' % (
                     kind,theId,tags))
             return False
@@ -4829,28 +4856,42 @@ class xmlScanner (baseScannerClass):
                 return False
 
         # Success: set the ivars.
-        self.sigStart = self.adjustDefStart(s,self.sigStart)
+        # Not used in xml/html.
+        # self.sigStart = self.adjustDefStart(s,self.sigStart)
         self.codeEnd = i
         self.sigEnd = sigEnd
         self.sigId = sigId
         self.classId = classId
+                
+        # Scan to the start of the next tag.
+        done = False
+        while not done and i < len(s):
+            progress = i
+            if self.startsComment(s,i):
+                i = self.skipComment(s,i)
+            elif self.startsString(s,i):
+                i = self.skipString(s,i)
+            elif s[i] == '<':
+                start = i
+                i += 1
+                if i < len(s) and s[i] == '/':
+                    i += 1
+                j = g.skip_ws_and_nl(s,i)
+                if self.startsId(s,j):
+                    i = self.skipId(s,j)
+                    word = s[j:i].lower()
+                    if word in tags:
+                        self.codeEnd = start
+                        done = True
+                        break
+                else:
+                    i = j
+            else:
+                i += 1
+            
+            assert done or progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
 
-        # Note: backing up here is safe because
-        # we won't back up past scan's 'start' point.
-        # Thus, characters will never be output twice.
-        k = self.sigStart
-        if not g.match(s,k,'\n'):
-            self.sigStart = g.find_line_start(s,k)
-
-        # Issue this warning only if we have a real class or function.
-        if 0: # wrong.if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
-            if s[self.sigStart:k].strip():
-                self.error('%s definition does not start a line\n%s' % (
-                    kind,g.get_line(s,k)))
-
-        if trace:
-            g.trace(kind,sigId,'returns\n'+s[self.sigStart:i])
-            # g.trace('**end',g.callers())
+        if trace: g.trace(repr(s[self.sigStart:self.codeEnd]))
         return True
     #@+node:ekr.20071214072924.3: *6* skipToEndOfTag
     def skipToEndOfTag(self,s,i):
@@ -4878,7 +4919,7 @@ class xmlScanner (baseScannerClass):
                 return i,True,True # Starts a self-contained tag.
             elif g.match(s,i,'>'):
                 i += 1
-                if g.match(s,i,'\n'): i += 1
+                ### if g.match(s,i,'\n'): i += 1
                 return i,True,False
             else:
                 i += 1
@@ -4892,7 +4933,8 @@ class xmlScanner (baseScannerClass):
         Return i,ok.
         '''
 
-        trace = False and not g.unitTesting; verbose = False
+        trace = False and tag.lower() == 'html'
+        verbose = True
         tag = tag.lower()
         stack = [tag]
         level = 1

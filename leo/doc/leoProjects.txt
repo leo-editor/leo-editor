@@ -23662,6 +23662,8 @@ def filterTokens (self,tokens):
     
     trace = False
     
+    if trace: g.trace(tokens)
+    
     if 1: # Permissive code.
 
         return [(kind,val,line_number) for (kind,val,line_number) in tokens
@@ -23669,7 +23671,7 @@ def filterTokens (self,tokens):
 
     else: # Accurate code.
 
-        # Pass 1.  Remove newlines before and after elements, and collapse whitespace.
+        # Pass 1. Insert newlines before and after elements.
         i,n,result = 0,len(tokens),[]
         while i < n:
             progress = i
@@ -23681,29 +23683,55 @@ def filterTokens (self,tokens):
             if i + 1 < n: kind2,val2,n2 = tokens[i+1]
             if i + 2 < n: kind3,val3,n3 = tokens[i+2]
             if i + 3 < n: kind4,val4,n4 = tokens[i+3]
+            
+            # Always insert the present token.
+            result.append((kind1,val1,n1),)
+            i += 1
     
             if (
                 kind1 == 'other' and val1 == '>' and
-                kind2 == 'nl'
+                kind2 != 'nl'
             ):
-                # Remove nl after >
-                if trace: g.trace('** remove nl after >')
-                result.append((kind1,val1,n1),)
-                i += 2
+                # insert nl after >
+                if trace: g.trace('** insert nl after >')
+                result.append(('nl','\n',n1),)
             elif (
-                kind1 == 'nl'    and
+                kind1 != 'nl'    and
                 kind2 == 'other' and val2 == '<' and
                 kind3 == 'other' and val3 == '/' and
                 kind4 == 'id'
             ):
-                # Remove nl before </id
-                if trace: g.trace('** remove nl before </%s' % (val4))
-                i += 1
+                # Insert nl before </id
+                if trace: g.trace('** insert nl before </%s' % (val4))
+                result.append(('nl','\n',n1),)
             else:
-                i += 1
+                pass
+    
+            assert progress == i-1
+            
+        # Pass 2: collapse newlines and whitespace separately.
+        tokens = result
+        i,n,result = 0,len(tokens),[]
+        while i < n:
+            progress = i
+            kind1,val1,n1 = tokens[i]
+            if kind1 == 'nl':
+                while i < n and tokens[i][0] == 'nl':
+                    i += 1
+                result.append(('nl','\n',n1),)
+            elif kind1 == 'ws':
+                while i < n and tokens[i][0] == 'ws':
+                    i += 1
+                result.append(('ws',' ',n1),)
+            else:
                 result.append((kind1,val1,n1),)
+                i += 1
     
             assert progress < i
+
+        return result
+        
+@ Old code:
     
         # Pass 2: collapse newlines and whitespace into a single space.
         tokens = result[:]
@@ -23720,8 +23748,6 @@ def filterTokens (self,tokens):
                 i += 1
     
             assert progress < i
-    
-        return result
 #@+node:ekr.20111103073536.16601: *7* isSpace (xmlScanner) (Use the base class now)
 # def isSpace(self,s,i):
     
@@ -23823,7 +23849,7 @@ def startsHelper(self,s,i,kind,tags):
     if not theId: return False
 
     if theId not in tags:
-        if True and trace and verbose:
+        if trace and verbose:
             g.trace('**** %s theId: %s not in tags: %s' % (
                 kind,theId,tags))
         return False
@@ -23852,28 +23878,42 @@ def startsHelper(self,s,i,kind,tags):
             return False
 
     # Success: set the ivars.
-    self.sigStart = self.adjustDefStart(s,self.sigStart)
+    # Not used in xml/html.
+    # self.sigStart = self.adjustDefStart(s,self.sigStart)
     self.codeEnd = i
     self.sigEnd = sigEnd
     self.sigId = sigId
     self.classId = classId
+            
+    # Scan to the start of the next tag.
+    done = False
+    while not done and i < len(s):
+        progress = i
+        if self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        elif self.startsString(s,i):
+            i = self.skipString(s,i)
+        elif s[i] == '<':
+            start = i
+            i += 1
+            if i < len(s) and s[i] == '/':
+                i += 1
+            j = g.skip_ws_and_nl(s,i)
+            if self.startsId(s,j):
+                i = self.skipId(s,j)
+                word = s[j:i].lower()
+                if word in tags:
+                    self.codeEnd = start
+                    done = True
+                    break
+            else:
+                i = j
+        else:
+            i += 1
+        
+        assert done or progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
 
-    # Note: backing up here is safe because
-    # we won't back up past scan's 'start' point.
-    # Thus, characters will never be output twice.
-    k = self.sigStart
-    if not g.match(s,k,'\n'):
-        self.sigStart = g.find_line_start(s,k)
-
-    # Issue this warning only if we have a real class or function.
-    if 0: # wrong.if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
-        if s[self.sigStart:k].strip():
-            self.error('%s definition does not start a line\n%s' % (
-                kind,g.get_line(s,k)))
-
-    if trace:
-        g.trace(kind,sigId,'returns\n'+s[self.sigStart:i])
-        # g.trace('**end',g.callers())
+    if trace: g.trace(repr(s[self.sigStart:self.codeEnd]))
     return True
 #@+node:ekr.20071214072924.3: *8* skipToEndOfTag
 def skipToEndOfTag(self,s,i):
@@ -23901,7 +23941,7 @@ def skipToEndOfTag(self,s,i):
             return i,True,True # Starts a self-contained tag.
         elif g.match(s,i,'>'):
             i += 1
-            if g.match(s,i,'\n'): i += 1
+            ### if g.match(s,i,'\n'): i += 1
             return i,True,False
         else:
             i += 1
@@ -23915,7 +23955,8 @@ def skipToMatchingTag (self,s,i,tag,tags):
     Return i,ok.
     '''
 
-    trace = False and not g.unitTesting; verbose = False
+    trace = False and tag.lower() == 'html'
+    verbose = True
     tag = tag.lower()
     stack = [tag]
     level = 1
