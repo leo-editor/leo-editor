@@ -9609,8 +9609,21 @@ finally:
 #@+node:ekr.20071113145804.22: *4* @test g.es_trace
 @first # -*- coding: utf-8 -*-
 
-if 0: # Not usually enabled.
-    g.es_trace('\ntest of es_trace: Ă',color='red')
+import sys
+
+s = 'test ɯ'
+
+def test():
+    g.es_trace(s,color='red')
+
+try:
+    # Don't worry about the exact output.
+    # Just test that it doesn't throw an exception.
+    sys.stdout = g.fileLikeObject()
+    test()
+
+finally:
+    sys.stdout = sys.__stdout__
 #@+node:ekr.20071113090055.5: *4* @test g.get_directives_dict
 # This will work regardless of where this method is.
 @language python
