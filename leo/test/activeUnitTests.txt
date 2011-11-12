@@ -10226,9 +10226,6 @@ g.app.unitTestDict['restoreSelectedNode']=False
 
 # print('\nEnd of leoGui tests.')
 #@+node:ekr.20090529141856.4682: *3* leoImport
-# These test are inconvenient to include in leoPy.leo
-# because they would need a @mark-for-unit-tests node,
-# and Alt-5 would execute all the tests.
 #@+node:ekr.20111112092813.4060: *4* @mark-for-unit-tests
 #@+node:ekr.20090529141856.4700: *5* importTests
 @language plain
@@ -10845,10 +10842,10 @@ if sys.platform.lower().startswith('win'):
     f.close()
 
     c.importCommands.javaUnitTest(p,s=s,fileName=fileName,showTree=False)
-#@+node:ekr.20090529141856.4772: *6* Test BundleException.java
-@tabwidth 8
-#@+node:ekr.20090529141856.4773: *7* @test from BundleException.java
+#@+node:ekr.20090529141856.4773: *6* @test from BundleException.java
 @language python
+@tabwidth 8
+    # Must be in this node when run externally.
 
 s = '''\
 /*
@@ -11179,7 +11176,10 @@ tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20090529141856.4738: *6* @test comment after dict assign
+#@+node:ekr.20090529141856.4738: *6* @test python comment after dict assign
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
       's': 'http://www.w3.org/2000/svg',
@@ -11191,7 +11191,10 @@ tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20090529141856.4739: *6* @test decorator test
+#@+node:ekr.20090529141856.4739: *6* @test python decorator
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 class Index:
     """docstring"""
@@ -11204,7 +11207,10 @@ class Index:
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20090529141856.4740: *6* @test def inside def
+#@+node:ekr.20090529141856.4740: *6* @test python def inside def
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 class aClass:
     def outerDef(self):
@@ -11221,6 +11227,9 @@ g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4741: *6* @test docstring only
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 """A file consisting only of a docstring.
 """
@@ -11230,6 +11239,9 @@ g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4742: *6* @test overindent def--no following def
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 class aClass:
     def def1(self):
@@ -11247,6 +11259,9 @@ g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4743: *6* @test overindent def--one following def
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 class aClass:
     def def1(self):
@@ -11267,7 +11282,8 @@ g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4744: *6* @test overindented def 3
-@language python
+@tabwidth -4
+    # Required when running unit tests externally.
 
 # This caused PyParse.py not to be imported properly.
 
@@ -11289,6 +11305,9 @@ class testClass1:
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4745: *6* @test python bad class test
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 class testClass1 # no colon
     pass
@@ -11301,6 +11320,9 @@ g.app.unitTestDict ['expectedErrors'] = 0 # Not really an error.
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20101101034131.6042: *6* @test python bug 603720
+@tabwidth -4
+    # Required when running unit tests externally.
+
 # Leo bug 603720
 # Within the docstring we must change '\' to '\\'
 s = '''\
@@ -11329,6 +11351,9 @@ if showTree:
     print('foo.b',repr(foo.b))
     assert foo.b.find(s) > -1,"foo.b: %s" % foo.b
 #@+node:ekr.20090529141856.4746: *6* @test python class test 2
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 class testClass2:
     pass
@@ -11336,6 +11361,9 @@ class testClass2:
 
 tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4747: *6* @test python class tests 1
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 class testClass1:
     """A docstring"""
@@ -11347,6 +11375,9 @@ class testClass1:
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4748: *6* @test python decls test 1
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 import leo.core.leoGlobals as g
 
@@ -11355,6 +11386,9 @@ a = 3
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4749: *6* @test python def test 1
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 
 class test:
@@ -11377,6 +11411,9 @@ class test:
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4750: *6* @test python def test 2
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 
 class test:
@@ -11391,6 +11428,9 @@ class test:
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4751: *6* @test python empty decls
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 import leo.core.leoGlobals as g
 
@@ -11399,6 +11439,9 @@ a = 3
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4752: *6* @test python extra leading ws test
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 
 class cls:
@@ -11412,6 +11455,9 @@ g.app.unitTestDict ['expectedErrorMessage'] = 'leading whitespace not consistent
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4753: *6* @test python indent decls
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 
 class mammalProviderBase(object):
@@ -11452,6 +11498,9 @@ g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4754: *6* @test python minimal class 1
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 
 class ItasException(Exception):
@@ -11471,6 +11520,9 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 
 
 #@+node:ekr.20090529141856.4755: *6* @test python minimal class 2
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 
 class emptyClass: pass
@@ -11481,6 +11533,9 @@ def followingDef():
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4756: *6* @test python minimal class 3
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 
 class emptyClass: pass # comment
@@ -11491,6 +11546,9 @@ def followingDef(): # comment
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4757: *6* @test python underindent method
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 
 class emptyClass: 
@@ -11510,6 +11568,9 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 @encoding utf-8
 # leoImport.py uses unicode characters, so *this* test must have the directive above.
 
+@tabwidth -4
+    # Required when running unit tests externally.
+
 fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'leoImport.py'))
 
 f = open(fileName)
@@ -11520,6 +11581,9 @@ g.app.unitTestDict['testingLeoImport.py'] = True
 
 c.importCommands.pythonUnitTest(p,s=None,fileName=fileName,showTree=False)
 #@+node:ekr.20090529141856.4759: *6* @test string test: extra indent
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 class baseScannerClass:
 
@@ -11539,6 +11603,9 @@ g.app.unitTestDict ['expectedErrors'] = None # No error unless we get an unexpec
 g.app.unitTestDict ['expectedMismatchLine'] = 3
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4760: *6* @test string underindent lines
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 class baseScannerClass:
     def containsUnderindentedComment(self):
@@ -11553,6 +11620,9 @@ class baseScannerClass:
 g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4761: *6* @test string underindent lines 2
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 class baseScannerClass:
     def containsUnderindentedComment(self):
@@ -11568,6 +11638,9 @@ class baseScannerClass:
 g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4762: *6* @test trailing comment
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 class aClass: # trailing comment
 
@@ -11580,6 +11653,9 @@ g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4763: *6* @test trailing comment--outer levels
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 
 xyz = 6 # trailing comment
@@ -11590,6 +11666,9 @@ g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4764: *6* @test two functions (for comparison with unindent does not end function)
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 
 def foo():
@@ -11603,6 +11682,9 @@ g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4765: *6* @test unindent in triple string does not end function
+@tabwidth -4
+    # Required when running unit tests externally.
+
 s = '''\
 
 def foo():
