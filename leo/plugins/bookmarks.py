@@ -10,11 +10,11 @@ of bookmarks (including UNLs) this gives a clean presentation with no '@url'
 markup repeated on every line etc.
 
 The bookmarks_show command will add a tab or pane (if free_layout is enabled)
-showing the bookmarks with unique colors.  You can very quickly jump around between
-nodes in a file using this.  The free_layout Action button context menu will also
-allow you to add one of these bookmark panes, and the should be saved and loaded
-again if the layout is saved and loaded.
-'''
+showing the bookmarks **in the current subtree** with unique colors. You can
+very quickly jump around between nodes in a file using this. The free_layout
+Action button context menu will also allow you to add one of these bookmark
+panes, and the should be saved and loaded again if the layout is saved and
+loaded.'''
 #@-<< docstring >>
 
 #@@language python
@@ -111,7 +111,7 @@ class BookMarkDisplay:
             
             # stuff for pane persistence
             self.w._ns_id = '_leo_bookmarks_show:'
-            c.db['_leo_bookmarks_show'] = str(v.gnx)
+            c.db['_leo_bookmarks_show'] = str(self.v.gnx)
             
         else:
             c.frame.log.createTab(c.p.h[:10])
@@ -161,16 +161,26 @@ class BookMarkDisplay:
         te.setReadOnly(True)
         te.setOpenLinks(False)
         
-        def anchorClicked(url, c=self.c, p=p):
-            g.handleUrlInUrlNode(str(url.toString()), c=c, p=p)
+        def capture_modifiers(event, te=te, prev=te.mousePressEvent):
+            te.modifiers = event.modifiers()
+            return prev(event)
+        
+        te.mousePressEvent = capture_modifiers
+        
+        def anchorClicked(url, c=self.c, p=p, te=te):
+            url = str(url.toString())
+            if QtCore.Qt.ShiftModifier & te.modifiers:
+                sep = '\\' if '\\' in url else '/'
+                url = sep.join(url.split(sep)[:-1])
+            g.handleUrlInUrlNode(url, c=c, p=p)
         
         te.connect(te, QtCore.SIGNAL("anchorClicked(const QUrl &)"), anchorClicked)
         
         html = []
         
         for name, link in links:
-            html.append("<a href='%s' style='background: #%s; color: black; text-decoration: none;'>%s</a>"
-                % (link, self.color(name), name.replace(' ', '&nbsp;')))
+            html.append("<a title='%s' href='%s' style='background: #%s; color: black; text-decoration: none;'>%s</a>"
+                % (link, link, self.color(name), name.replace(' ', '&nbsp;')))
         
         html = '\n'.join(html)
         

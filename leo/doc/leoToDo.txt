@@ -14,6 +14,9 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
+.. @+node:ekr.20111111065410.12913: *4* Fix add/delete html comments!
+.. @+node:ekr.20111112105048.9754: *4* Make all unit tests work when run externally
+.. @+node:ekr.20111112105048.9755: *4* Get Linux machine working again
 .. @+node:ekr.20111109122014.9792: *4* Allow @all only in top-level @<file> nodes
 .. @+node:ekr.20111108081936.12524: *4* Create unit tests illustrating path ops
 .. @+node:ekr.20031218072017.2145: *5* os.path wrappers (leoGlobals.py)
@@ -10519,6 +10522,7 @@ self.language_delims_dict = {
     "html"          : "<!-- -->",
     "ini"           : ";",
     "java"          : "// /* */",
+    "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
     "kshell"        : "#", # Leo 4.5.1.
     "latex"         : "%",
     "lisp"          : ";", # EKR: 2010/09/29
@@ -10575,6 +10579,7 @@ self.language_extension_dict = {
     "html"          : "html",
     "ini"           : "ini",
     "java"          : "java",
+    "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
     "kshell"        : "ksh", # Leo 4.5.1.
     "latex"         : "tex", # 1/8/04
     "lua"           : "lua",  # ddm 13/02/06
@@ -10625,6 +10630,7 @@ self.extension_dict = {
     "hs"    : "haskell",
     "ini"   : "ini",
     "java"  : "java",
+    "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
     "ksh"   : "kshell", # Leo 4.5.1.
     "lua"   : "lua",  # ddm 13/02/06
     "m"     : "matlab", # EKR 2011/10/21

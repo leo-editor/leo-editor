@@ -64,7 +64,7 @@ def isTestNode (p):
 # def isTestCaseNode (p):
     # h = p.h.lower()
     # return g.match_word(h,0,"@testcase") or g.match_word(h,0,"@test-case")
-#@+node:ekr.20051104075904.4: *3* doTests...
+#@+node:ekr.20051104075904.4: *3* doTests & helpers
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
     trace = False ; verbose = False
@@ -246,11 +246,11 @@ def makeTestSuite (c,p):
             exec(script + '\n',d)
         suite = g.app.scriptDict.get("suite")
         if not suite:
-            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+            print("\nmakeTestSuite: %s script did not set g.app.scriptDict" % p.h)
         return suite
     except Exception:
-        print('makeTestSuite: exception creating test cases for %s' % p.h)
-        g.es_exception()
+        print('\nmakeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_print_exception()
         return None
 #@+node:ekr.20051104075904.13: *4* makeTestCase
 def makeTestCase (c,p):
@@ -1306,7 +1306,7 @@ class editBodyTestCase(unittest.TestCase):
         try:
             return "EditBodyTestCase: %s" % (self.parent.h)
         except Exception:
-            g.es_exception()
+            g.es_print_exception()
             return "EditBodyTestCase"
     #@+node:ekr.20051104075904.76: *5* tearDown
     def tearDown (self):
@@ -1506,13 +1506,13 @@ def checkFileSyntax (fileName,s,reraise=True,suppress=False):
     except SyntaxError:
         if not suppress:
             g.es("syntax error in:",fileName,color="blue")
-            g.es_exception(full=True,color="black")
+            g.es_print_exception(full=True,color="black")
         if reraise: raise
         return False
     except Exception:
         if not suppress:
             g.es("unexpected error in:",fileName,color="blue")
-            # g.es_exception(full=False,color="black")
+            # g.es_print_exception(full=False,color="black")
         if reraise: raise
         return False
 #@+node:ekr.20051104075904.94: *4* checkFileTabs
@@ -1539,7 +1539,7 @@ def checkFileTabs (fileName,s):
 
     except Exception:
         g.trace("unexpected exception")
-        g.es_exception()
+        g.es_print_exception()
         assert 0, "test failed"
 #@+node:ekr.20061008140603: *3* runEditCommandTest
 def runEditCommandTest (c,p):

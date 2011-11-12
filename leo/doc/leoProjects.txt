@@ -1672,54 +1672,86 @@ def scanOptions():
 assert True
 #@+node:ekr.20111107092526.9819: *3* @test cls
 g.cls() # Clear the screen
-#@+node:ekr.20111110073059.9782: *3* @test g.es_print
-'''Make sure that g.trace doesn't add an extra newline.'''
+#@+node:ekr.20111110085739.10265: *3* @test html string
+s = '''\
+<HTML>
+<head>
+    <title>Bodystring</title>
+</head>
+<body class='bodystring'>
+<div id='bodydisplay'></div>
+</body>
+</html>
+'''
 
-import sys
+html_tags = ('body','head','html','table',) # 'div',
+setting = 'import_html_tags'
 
-def test():
-    g.es_print('a')
-    g.es_print('b')
+# Settings now work when run externally.
+c.config.set(setting,'data',html_tags)
+tags = c.config.getData(setting)
+assert tags == html_tags,len(tags)
 
-try:
-    sys.stdout = g.fileLikeObject()
-    test()
-    result = sys.stdout.get()
-    assert result == 'a\nb\n',repr(result)
-finally:
-    sys.stdout = sys.__stdout__
-#@+node:ekr.20111110073059.9774: *3* @test g.pr
-'''Make sure that g.trace doesn't add an extra newline.'''
+g.app.unitTestDict ['expectedErrors'] = 0
 
-import sys
+showTree = True
 
-def test():
-    g.pr('a')
-    g.pr('b')
+c.importCommands.htmlUnitTest(p,s=s,showTree=showTree)
 
-try:
-    sys.stdout = g.fileLikeObject()
-    test()
-    result = sys.stdout.get()
-    assert result == 'a\nb\n',repr(result)
-finally:
-    sys.stdout = sys.__stdout__
-#@+node:ekr.20111110065655.9758: *3* @test g.trace
-'''Make sure that g.trace doesn't add an extra newline.'''
+if showTree:
+    # g.cls()
+    for p in p.subtree():
+        print('\n***** %s\n' %p.h)
+        print(p.b)
+#@+node:ekr.20111109151106.9746: *3* @test htmlScanner.filterTokens
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+strip = hs.stripTokens
+dump  = hs.formatTokens
 
-import sys
+s1 = '''<table id="1"><table id="2">
+<contents/>
+</table>
+</table>'''
 
-def test():
-    g.trace('a')
-    g.trace('b')
+s2 = '<table id="1"><table id="2"><contents/></table></table>'
+    
+t1 = hs.tokenize(s1)
+t2 = hs.tokenize(s2)
+f1 = hs.filterTokens(t1)
+f2 = hs.filterTokens(t2)
 
-try:
-    sys.stdout = g.fileLikeObject()
-    test()
-    result = sys.stdout.get()
-    assert result == 'test a\ntest b\n',repr(result)
-finally:
-    sys.stdout = sys.__stdout__
+assert strip(f1) == strip(f2),'f1...\n%s\nf2...\n%s' % (
+    dump(f1),dump(f2))
+    
+if 0:
+    print(dump(f1))
+#@+node:ekr.20111110084957.10092: *3* @test import dataN.html
+fn = r'c:\recent\data.html'
+
+# fn = r'c:\recent\data-smaller.html'
+# fn = r'c:\recent\data666.html'
+
+# These all pass on data.html:
+    # html_tags = ('html','head','body',)
+    # html_tags = ('html','head','body','table',)
+    # html_tags = ('html','head','body','table','div',)
+    # html_tags = ('html','head','body','table','div','script',)
+    # html_tags = ('html','head','body','table','div','script','link',)
+    # html_tags = ('html','head','body','table','div','script','link','p',)
+
+html_tags = ('html','head','body','table','div','script','p','td','tr',)
+
+# Settings now work when run externally.
+setting = 'import_html_tags'
+c.config.set(setting,'data',html_tags)
+tags = c.config.getData(setting)
+assert tags == html_tags,len(tags)
+
+g.cls()
+
+c.importCommands.importFilesCommand(files=[fn], treeType='@file')
 #@+node:ekr.20110621074459.14908: ** 4.9.1
 #@+node:ekr.20110730093802.15134: *3* Bugs
 #@+node:ekr.20110621074459.14904: *4* Fixed ancient hanger in paste-retaining-clones
@@ -4999,6 +5031,7 @@ self.language_delims_dict = {
     "html"          : "<!-- -->",
     "ini"           : ";",
     "java"          : "// /* */",
+    "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
     "kshell"        : "#", # Leo 4.5.1.
     "latex"         : "%",
     "lisp"          : ";", # EKR: 2010/09/29
@@ -5055,6 +5088,7 @@ self.language_extension_dict = {
     "html"          : "html",
     "ini"           : "ini",
     "java"          : "java",
+    "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
     "kshell"        : "ksh", # Leo 4.5.1.
     "latex"         : "tex", # 1/8/04
     "lua"           : "lua",  # ddm 13/02/06
@@ -5105,6 +5139,7 @@ self.extension_dict = {
     "hs"    : "haskell",
     "ini"   : "ini",
     "java"  : "java",
+    "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
     "ksh"   : "kshell", # Leo 4.5.1.
     "lua"   : "lua",  # ddm 13/02/06
     "m"     : "matlab", # EKR 2011/10/21
@@ -13117,6 +13152,7 @@ self.language_delims_dict = {
     "html"          : "<!-- -->",
     "ini"           : ";",
     "java"          : "// /* */",
+    "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
     "kshell"        : "#", # Leo 4.5.1.
     "latex"         : "%",
     "lisp"          : ";", # EKR: 2010/09/29
@@ -13173,6 +13209,7 @@ self.language_extension_dict = {
     "html"          : "html",
     "ini"           : "ini",
     "java"          : "java",
+    "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
     "kshell"        : "ksh", # Leo 4.5.1.
     "latex"         : "tex", # 1/8/04
     "lua"           : "lua",  # ddm 13/02/06
@@ -13223,6 +13260,7 @@ self.extension_dict = {
     "hs"    : "haskell",
     "ini"   : "ini",
     "java"  : "java",
+    "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
     "ksh"   : "kshell", # Leo 4.5.1.
     "lua"   : "lua",  # ddm 13/02/06
     "m"     : "matlab", # EKR 2011/10/21
@@ -16280,6 +16318,62 @@ scanAndCompare
 compareTokens
    else:      kind1,val1 = 'eof','',n1
 ValueError: too many values to unpack
+#@+node:ekr.20111109151106.9745: *4* Finished import work
+@nocolor-node
+
+
+- Created stand-alone unit tests from @test import dataN.html.
+- All leoImport unit tests may now be run externally.
+    The Python unit tests were failing because of intermixed tabs and blanks.
+    This was fixed by putting @tabwidth -4 in all @test nodes for Python.
+- Made sure lines are printed when unit tests fail unexpectedly.
+- Added .js & javascript entries to global data structures for javascript unit tests.
+- Completed xmlScanner.filterTokens.
+- Don't create declaration nodes for html.
+- Make sure html tags are as expected.
+- Ignore case of html/xml tags.
+#@+node:ekr.20111112064924.9777: *5* What I did
+@language rest
+
+Rev 4774.1.1:
+=============
+
+Fixed all known html-import problems in a clean way. Unit tests exists, but they
+use external files. They will be converted soon.
+
+Important changes:
+
+1. Added hasNestedClasses ivar in the baseScannerClass, True only for xml/html scanners.
+
+When True, scanHelper and skipDecls allocate a substring to be used for all further scanning.
+This is the *only* way to limit Leo's scanners properly.
+
+This was, in essence, the fix for duplicate code generation arising from unbalanced tags:
+skipToEndOfTag and skipToMatchingTag can't match outside the present tag because
+the 's' argument passed to those methods has already been truncated.
+
+This is a simple, elegant solution, and in essence the *only* proper solution.
+For example, it would not work to past an 'end' argument to skipToEndOfTag and skipToMatchingTag
+because the scanners inside those methods do not understand an 'end' argument.
+
+Thus, the simplest, most efficient solution is for scanHelper and skipDecls to truncate the
+string to be scanned. That way, the truncation happens at most once per "class".
+
+2. Added hasDecls in the baseScannerClass, False only for xml/html scanners.
+
+Various methods call skipDecls only if this ivar is True.
+
+Rev 4773:
+=========
+
+Fixed recent botch: both single and double quotes are allowed in html. 
+
+Rev 4772:
+=========
+
+Solved "between element" problem by extending classes up to the next class.
+data.html imports "correctly", but not perfectly due to tag mismatches in
+skipToMatchingTag.
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
@@ -23585,6 +23679,7 @@ def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
     self.hasClasses = True
     self.hasDecls = False
     self.hasFunctions = False
+    self.hasNestedClasses = True
     self.ignoreBlankLines = False # The tokenizer handles this.
     self.ignoreLeadingWs = True # A drastic step, but there seems to be no other way.
     self.strict = False
@@ -23662,6 +23757,8 @@ def filterTokens (self,tokens):
     
     trace = False
     
+    if trace: g.trace(tokens)
+    
     if 1: # Permissive code.
 
         return [(kind,val,line_number) for (kind,val,line_number) in tokens
@@ -23669,7 +23766,7 @@ def filterTokens (self,tokens):
 
     else: # Accurate code.
 
-        # Pass 1.  Remove newlines before and after elements, and collapse whitespace.
+        # Pass 1. Insert newlines before and after elements.
         i,n,result = 0,len(tokens),[]
         while i < n:
             progress = i
@@ -23681,38 +23778,44 @@ def filterTokens (self,tokens):
             if i + 1 < n: kind2,val2,n2 = tokens[i+1]
             if i + 2 < n: kind3,val3,n3 = tokens[i+2]
             if i + 3 < n: kind4,val4,n4 = tokens[i+3]
+            
+            # Always insert the present token.
+            result.append((kind1,val1,n1),)
+            i += 1
     
             if (
                 kind1 == 'other' and val1 == '>' and
-                kind2 == 'nl'
+                kind2 != 'nl'
             ):
-                # Remove nl after >
-                if trace: g.trace('** remove nl after >')
-                result.append((kind1,val1,n1),)
-                i += 2
+                # insert nl after >
+                if trace: g.trace('** insert nl after >')
+                result.append(('nl','\n',n1),)
             elif (
-                kind1 == 'nl'    and
+                kind1 != 'nl'    and
                 kind2 == 'other' and val2 == '<' and
                 kind3 == 'other' and val3 == '/' and
                 kind4 == 'id'
             ):
-                # Remove nl before </id
-                if trace: g.trace('** remove nl before </%s' % (val4))
-                i += 1
+                # Insert nl before </id
+                if trace: g.trace('** insert nl before </%s' % (val4))
+                result.append(('nl','\n',n1),)
             else:
-                i += 1
-                result.append((kind1,val1,n1),)
+                pass
     
-            assert progress < i
-    
-        # Pass 2: collapse newlines and whitespace into a single space.
-        tokens = result[:]
+            assert progress == i-1
+            
+        # Pass 2: collapse newlines and whitespace separately.
+        tokens = result
         i,n,result = 0,len(tokens),[]
         while i < n:
             progress = i
             kind1,val1,n1 = tokens[i]
-            if kind1 in ('nl','ws'):
-                while i < n and tokens[i][0] in ('nl','ws'):
+            if kind1 == 'nl':
+                while i < n and tokens[i][0] == 'nl':
+                    i += 1
+                result.append(('nl','\n',n1),)
+            elif kind1 == 'ws':
+                while i < n and tokens[i][0] == 'ws':
                     i += 1
                 result.append(('ws',' ',n1),)
             else:
@@ -23720,7 +23823,7 @@ def filterTokens (self,tokens):
                 i += 1
     
             assert progress < i
-    
+
         return result
 #@+node:ekr.20111103073536.16601: *7* isSpace (xmlScanner) (Use the base class now)
 # def isSpace(self,s,i):
@@ -23815,7 +23918,7 @@ def startsHelper(self,s,i,kind,tags):
     if not g.match(s,i,'<'): return False
     self.sigStart = i
     i += 1
-    j = g.skip_ws_and_nl(s,i)
+    sigIdStart = j = g.skip_ws_and_nl(s,i)
     i = self.skipId(s,j)
     self.sigId = theId = s[j:i].lower()
         # Set sigId ivar 'early' for error messages.
@@ -23823,7 +23926,7 @@ def startsHelper(self,s,i,kind,tags):
     if not theId: return False
 
     if theId not in tags:
-        if True and trace and verbose:
+        if trace and verbose:
             g.trace('**** %s theId: %s not in tags: %s' % (
                 kind,theId,tags))
         return False
@@ -23833,7 +23936,7 @@ def startsHelper(self,s,i,kind,tags):
     sigId = theId
 
     # Complete the opening tag.
-    i, ok, complete = self.skipToEndOfTag(s,i)
+    i, ok, complete = self.skipToEndOfTag(s,i,start=sigIdStart)
     if not ok:
         if trace and verbose: g.trace('no tail',g.get_line(s,i))
         return False
@@ -23846,82 +23949,92 @@ def startsHelper(self,s,i,kind,tags):
         sigEnd = g.skip_ws(s,sigEnd)
 
     if not complete:
-        i,ok = self.skipToMatchingTag(s,i,theId,tags)
+        i,ok = self.skipToMatchingTag(s,i,theId,tags,start=sigIdStart)
         if not ok:
             if trace and verbose: g.trace('no matching tag:',theId)
             return False
 
     # Success: set the ivars.
-    self.sigStart = self.adjustDefStart(s,self.sigStart)
+    # Not used in xml/html.
+    # self.sigStart = self.adjustDefStart(s,self.sigStart)
     self.codeEnd = i
     self.sigEnd = sigEnd
     self.sigId = sigId
     self.classId = classId
+            
+    # Scan to the start of the next tag.
+    done = False
+    while not done and i < len(s):
+        progress = i
+        if self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        elif self.startsString(s,i):
+            i = self.skipString(s,i)
+        elif s[i] == '<':
+            start = i
+            i += 1
+            if i < len(s) and s[i] == '/':
+                i += 1
+            j = g.skip_ws_and_nl(s,i)
+            if self.startsId(s,j):
+                i = self.skipId(s,j)
+                word = s[j:i].lower()
+                if word in tags:
+                    self.codeEnd = start
+                    done = True
+                    break
+            else:
+                i = j
+        else:
+            i += 1
+        
+        assert done or progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
 
-    # Note: backing up here is safe because
-    # we won't back up past scan's 'start' point.
-    # Thus, characters will never be output twice.
-    k = self.sigStart
-    if not g.match(s,k,'\n'):
-        self.sigStart = g.find_line_start(s,k)
-
-    # Issue this warning only if we have a real class or function.
-    if 0: # wrong.if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
-        if s[self.sigStart:k].strip():
-            self.error('%s definition does not start a line\n%s' % (
-                kind,g.get_line(s,k)))
-
-    if trace:
-        g.trace(kind,sigId,'returns\n'+s[self.sigStart:i])
-        # g.trace('**end',g.callers())
+    if trace: g.trace(repr(s[self.sigStart:self.codeEnd]))
     return True
-#@+node:ekr.20071214072924.3: *8* skipToEndOfTag
-def skipToEndOfTag(self,s,i):
+#@+node:ekr.20071214072924.3: *8* skipToEndOfTag (xmlScanner)
+def skipToEndOfTag(self,s,i,start):
 
     '''Skip to the end of an open tag.
     
     return i,ok,complete
     
     where complete is True if the tag of the form <name/>
-    
     '''
 
-    while i < len(s):
+    trace = False
+    complete,ok = False,False
+    while i < len(s): 
         progress = i
         if i == '"':
             i = self.skipString(s,i)
         elif g.match(s,i,'<!--'):
             i = self.skipComment(s,i)
         elif g.match(s,i,'<'):
-            return i,False,False # An error.
+            complete,ok = False,False ; break
         elif g.match(s,i,'/>'):
             i = g.skip_ws(s,i+2)
-            if g.match(s,i,'\n'):
-                i += 1 # Make sure the "class" contains a trailing newline.
-            return i,True,True # Starts a self-contained tag.
+            complete,ok = True,True ; break
         elif g.match(s,i,'>'):
             i += 1
-            if g.match(s,i,'\n'): i += 1
-            return i,True,False
+            complete,ok = False,True ; break
         else:
             i += 1
         assert progress < i
 
-    return i,False,False
-#@+node:ekr.20071214075117: *8* skipToMatchingTag
-def skipToMatchingTag (self,s,i,tag,tags):
+    if trace: g.trace('ok',ok,repr(s[start:i]))
+    return i,ok,complete
+#@+node:ekr.20071214075117: *8* skipToMatchingTag (xmlScanner)
+def skipToMatchingTag (self,s,i,tag,tags,start):
     
-    '''Skip the entire class definition.
-    Return i,ok.
+    '''Skip the entire class definition. Return i,ok.
     '''
 
-    trace = False and not g.unitTesting; verbose = False
-    tag = tag.lower()
-    stack = [tag]
-    level = 1
-    while i < len(s):
+    trace = False
+    found,level,target_tag = False,1,tag.lower()
+    while i < len(s): 
         progress = i
-        if i == '"':
+        if s[i] == '"':
             i = self.skipString(s,i)
         elif g.match(s,i,'<!--'):
             i = self.skipComment(s,i)
@@ -23929,36 +24042,36 @@ def skipToMatchingTag (self,s,i,tag,tags):
             j = i+2
             i = self.skipId(s,j)
             tag2 = s[j:i].lower()
-            i,ok,complete = self.skipToEndOfTag(s,i)
-            if tag2 in tags:
-                tag = stack.pop()
-                if tag2 == tag:
-                    if trace and verbose: g.trace('%s exit <%s>' % (level-1,tag))
-                    level -= 1
-                    if level == 0:
-                        return i,True
-                else:
-                    if trace: g.trace('tag mismatch: %s!=%s' % (tag2,tag))
-                    return i,False # tag mismatch.
-                        # a user error, but not an import error.
+            i,ok,complete = self.skipToEndOfTag(s,i,start=j)
+                # Sets complete if /> terminates the tag.
+            if ok and tag2 == target_tag:
+                level -= 1
+                if level == 0:
+                    found = True ; break
         elif g.match(s,i,'<'):
-            # Another open tag.
+            # An open tag.
             j = g.skip_ws_and_nl(s,i+1)
             i = self.skipId(s,j)
-            word = s[j:i]
-            if word:
-                if word in tags:
-                    if trace and verbose: g.trace('%s enter <%s>' % (level+1,word))
-                    stack.append(word)
-                    level += 1
-            else:
-                g.trace('syntax error')
-                return i,False # Syntax error.
+            word = s[j:i].lower()
+            i,ok,complete = self.skipToEndOfTag(s,i,start=j)
+            # **Important**: only bump level for nested *target* tags.
+            # This avoids problems when interior tags are not properly nested.
+            if ok and word == target_tag and not complete:
+                level += 1
+        elif g.match(s,i,'/>'):
+            # This is a syntax error.
+            # This should have been eaten by skipToEndOfTag.
+            i += 2
+            g.trace('syntax error: unmatched "/>"')
         else:
             i += 1
-        assert progress < i
 
-    return i,False
+        assert progress < i
+        
+    if trace: g.trace('%sfound:%s\n%s\n\n*****end %s\n' % (
+        g.choose(found,'','not '),target_tag,s[start:i],target_tag))
+
+    return i,found
 #@+node:ekr.20111103073536.16595: *7* startsId (xmlScanner)
 def startsId(self,s,i):
     
@@ -23970,11 +24083,6 @@ def startsId(self,s,i):
         return False
 
     # return g.is_c_id(s[i:i+1])
-#@+node:ekr.20111101204130.10009: *7* startsString
-def startsString(self,s,i):
-
-    # 2011/11/01: *only* double quotes start xml/html strings!
-    return g.match(s,i,'"')
 #@+node:ekr.20111104032034.9867: *6* << class htmlScanner (xmlScanner) >>
 class htmlScanner (xmlScanner):
 
@@ -24037,7 +24145,7 @@ def runSelectedUnitTestsExternally(self,event=None):
     Tests are run in an external process, so tests *cannot* change the outline.'''
     c = self.c
     leoTest.runTestsExternally(c,all=False,marked=False)
-#@+node:ekr.20051104075904.4: *5* doTests...
+#@+node:ekr.20051104075904.4: *5* doTests & helpers
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
     trace = False ; verbose = False
@@ -24218,11 +24326,11 @@ def makeTestSuite (c,p):
             exec(script + '\n',d)
         suite = g.app.scriptDict.get("suite")
         if not suite:
-            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+            print("\nmakeTestSuite: %s script did not set g.app.scriptDict" % p.h)
         return suite
     except Exception:
-        print('makeTestSuite: exception creating test cases for %s' % p.h)
-        g.es_exception()
+        print('\nmakeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_print_exception()
         return None
 #@+node:ekr.20051104075904.13: *6* makeTestCase
 def makeTestCase (c,p):
@@ -24701,7 +24809,7 @@ def writeScriptFile (self,script):
         path = None
 
     return path
-#@+node:ekr.20051104075904.4: *5* doTests...
+#@+node:ekr.20051104075904.4: *5* doTests & helpers
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
     trace = False ; verbose = False
@@ -24882,11 +24990,11 @@ def makeTestSuite (c,p):
             exec(script + '\n',d)
         suite = g.app.scriptDict.get("suite")
         if not suite:
-            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+            print("\nmakeTestSuite: %s script did not set g.app.scriptDict" % p.h)
         return suite
     except Exception:
-        print('makeTestSuite: exception creating test cases for %s' % p.h)
-        g.es_exception()
+        print('\nmakeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_print_exception()
         return None
 #@+node:ekr.20051104075904.13: *6* makeTestCase
 def makeTestCase (c,p):
@@ -24965,11 +25073,11 @@ def makeTestSuite (c,p):
             exec(script + '\n',d)
         suite = g.app.scriptDict.get("suite")
         if not suite:
-            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+            print("\nmakeTestSuite: %s script did not set g.app.scriptDict" % p.h)
         return suite
     except Exception:
-        print('makeTestSuite: exception creating test cases for %s' % p.h)
-        g.es_exception()
+        print('\nmakeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_print_exception()
         return None
 #@+node:ekr.20111102093435.10017: *4* Support marking an entire tree
 #@+node:ekr.20070627135336.9: *5* createOutline & helpers
@@ -25054,7 +25162,7 @@ def isUnitTestNode (self,p):
             return True
     else:
         return False
-#@+node:ekr.20051104075904.4: *5* doTests...
+#@+node:ekr.20051104075904.4: *5* doTests & helpers
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
     trace = False ; verbose = False
@@ -25235,11 +25343,11 @@ def makeTestSuite (c,p):
             exec(script + '\n',d)
         suite = g.app.scriptDict.get("suite")
         if not suite:
-            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+            print("\nmakeTestSuite: %s script did not set g.app.scriptDict" % p.h)
         return suite
     except Exception:
-        print('makeTestSuite: exception creating test cases for %s' % p.h)
-        g.es_exception()
+        print('\nmakeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_print_exception()
         return None
 #@+node:ekr.20051104075904.13: *6* makeTestCase
 def makeTestCase (c,p):
@@ -25575,6 +25683,10 @@ def contractNodeOrGoToParent (self,event=None):
 
     if redraw:
         c.redraw()
+#@+node:ekr.20111112064924.9779: *4* Improved scannerUnitTest
+@nocolor-node
+
+The error message is now part of the failed assert.  Very helpful.
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
