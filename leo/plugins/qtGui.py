@@ -6927,28 +6927,36 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w = self.treeWidget
         vScroll = w.verticalScrollBar()
         vScroll.setValue(vPos)
-    #@+node:ekr.20110605121601.18436: *6* scrollDelegate (leoQtTree)
+    #@+node:btheado.20111110215920.7164: *6* scrollDelegate (leoQtTree)
     def scrollDelegate (self,kind):
 
-        '''Scroll a QTreeWidget up or down.
-        kind is in ('down-line','down-page','up-line','up-page')
+        '''Scroll a QTreeWidget up or down or right or left.
+        kind is in ('down-line','down-page','up-line','up-page', 'right', 'left')
         '''
         c = self.c ; w = self.treeWidget
-        vScroll = w.verticalScrollBar()
-        h = w.size().height()
-        lineSpacing = w.fontMetrics().lineSpacing()
-        n = h/lineSpacing
-        if   kind == 'down-half-page': delta = n/2
-        elif kind == 'down-line':      delta = 1
-        elif kind == 'down-page':      delta = n
-        elif kind == 'up-half-page':   delta = -n/2
-        elif kind == 'up-line':        delta = -1
-        elif kind == 'up-page':        delta = -n
+        if kind in ('left', 'right'):
+            hScroll = w.horizontalScrollBar()
+            if kind == 'right':
+                delta = hScroll.pageStep()
+            else: 
+                delta = -hScroll.pageStep()
+            hScroll.setValue(hScroll.value() + delta)
         else:
-            delta = 0 ; g.trace('bad kind:',kind)
-        val = vScroll.value()
-        # g.trace(kind,n,h,lineSpacing,delta,val)
-        vScroll.setValue(val+delta)
+            vScroll = w.verticalScrollBar()
+            h = w.size().height()
+            lineSpacing = w.fontMetrics().lineSpacing()
+            n = h/lineSpacing
+            if   kind == 'down-half-page': delta = n/2
+            elif kind == 'down-line':      delta = 1
+            elif kind == 'down-page':      delta = n
+            elif kind == 'up-half-page':   delta = -n/2
+            elif kind == 'up-line':        delta = -1
+            elif kind == 'up-page':        delta = -n
+            else:
+                delta = 0 ; g.trace('bad kind:',kind)
+            val = vScroll.value()
+            # g.trace(kind,n,h,lineSpacing,delta,val)
+            vScroll.setValue(val+delta)
         c.treeWantsFocus()
     #@+node:ekr.20110605121601.18437: *5* onContextMenu (leoQtTree)
     def onContextMenu(self, point):
