@@ -10229,56 +10229,7 @@ g.app.unitTestDict['restoreSelectedNode']=False
 # These test are inconvenient to include in leoPy.leo
 # because they would need a @mark-for-unit-tests node,
 # and Alt-5 would execute all the tests.
-#@+node:ekr.20090529141856.4684: *4*  Export tests
-@language python
-@tabwidth -4
-#@+node:ekr.20090529141856.4685: *5* @suite Export tests
-# Create unit tests in g.app.scriptDict["suite"]
-
-
-import unittest
-import leo.core.leoTest as leoTest
-
-@others
-
-suite = leoTest.makeImportExportSuite(c,"exportTests",doImport=False)
-
-g.app.scriptDict['suite'] = suite
-#@+node:ekr.20090529141856.4686: *5* exportTests
-@language plain
-#@+node:ekr.20090529141856.4687: *6* tempNode
-#@+node:ekr.20090529141856.4688: *6* exportHeadlines
-#@+node:ekr.20090529141856.4689: *7* dialog
-saveFileDialog
-test\\unittest\\output\\exportHeadlines.txt
-#@+node:ekr.20090529141856.4690: *6* flattenOutline
-#@+node:ekr.20090529141856.4691: *7* dialog
-saveFileDialog
-test\\unittest\\output\\flattenOutline.txt
-#@+node:ekr.20090529141856.4692: *6* weave
-#@+node:ekr.20090529141856.4693: *7* dialog
-saveFileDialog
-test\\unittest\\output\\weave.txt
-#@+node:ekr.20090529141856.4694: *6* outlineToNoweb
-#@+node:ekr.20090529141856.4695: *7* dialog
-saveFileDialog
-test\\unittest\\output\\outlineToNoweb.txt
-#@+node:ekr.20090529141856.4696: *6* outlineToCWEB
-#@+node:ekr.20090529141856.4697: *7* dialog
-saveFileDialog
-test\\unittest\\output\\outlineToCweb.txt
-#@+node:ekr.20090529141856.4698: *4*  Import tests
-#@+node:ekr.20090529141856.4699: *5* @suite Import tests
-# Create unit tests in g.app.scriptDict["suite"]
-
-import unittest
-import leo.core.leoTest as leoTest
-
-@others
-
-suite = leoTest.makeImportExportSuite(c,"importTests",doImport=True)
-
-g.app.scriptDict['suite'] = suite
+#@+node:ekr.20111112092813.4060: *4* @mark-for-unit-tests
 #@+node:ekr.20090529141856.4700: *5* importTests
 @language plain
 #@+node:ekr.20090529141856.4701: *6* tempNode
@@ -10310,6 +10261,56 @@ test\\unittest\\input\\testLeoAtFile.py
 #@+node:ekr.20090529141856.4715: *7* dialog
 openFileDialog
 test\\unittest\\perfectImport\\formatter.py
+#@+node:ekr.20090529141856.4686: *5* exportTests
+@language plain
+#@+node:ekr.20090529141856.4687: *6* tempNode
+#@+node:ekr.20090529141856.4688: *6* exportHeadlines
+#@+node:ekr.20090529141856.4689: *7* dialog
+saveFileDialog
+test\\unittest\\output\\exportHeadlines.txt
+#@+node:ekr.20090529141856.4690: *6* flattenOutline
+#@+node:ekr.20090529141856.4691: *7* dialog
+saveFileDialog
+test\\unittest\\output\\flattenOutline.txt
+#@+node:ekr.20090529141856.4692: *6* weave
+#@+node:ekr.20090529141856.4693: *7* dialog
+saveFileDialog
+test\\unittest\\output\\weave.txt
+#@+node:ekr.20090529141856.4694: *6* outlineToNoweb
+#@+node:ekr.20090529141856.4695: *7* dialog
+saveFileDialog
+test\\unittest\\output\\outlineToNoweb.txt
+#@+node:ekr.20090529141856.4696: *6* outlineToCWEB
+#@+node:ekr.20090529141856.4697: *7* dialog
+saveFileDialog
+test\\unittest\\output\\outlineToCweb.txt
+#@+node:ekr.20090529141856.4684: *4*  Export tests
+@language python
+@tabwidth -4
+#@+node:ekr.20090529141856.4685: *5* @suite Export tests
+# Create unit tests in g.app.scriptDict["suite"]
+
+
+import unittest
+import leo.core.leoTest as leoTest
+
+@others
+
+suite = leoTest.makeImportExportSuite(c,"exportTests",doImport=False)
+
+g.app.scriptDict['suite'] = suite
+#@+node:ekr.20090529141856.4698: *4*  Import tests
+#@+node:ekr.20090529141856.4699: *5* @suite Import tests
+# Create unit tests in g.app.scriptDict["suite"]
+
+import unittest
+import leo.core.leoTest as leoTest
+
+@others
+
+suite = leoTest.makeImportExportSuite(c,"importTests",doImport=True)
+
+g.app.scriptDict['suite'] = suite
 #@+node:ekr.20090529141856.4790: *4*  Test files
 import leo.core.leoImport as leoImport
 ic = c.importCommands
@@ -10903,6 +10904,7 @@ g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4774: *5* Javascript tests
+@language python
 #@+node:ekr.20090529141856.4775: *6* Problems
 @language javascript
 
@@ -10959,9 +10961,6 @@ config.macros.br.handler = function(place)
 	createTiddlyElement(place,"br");
 };
 #@+node:ekr.20090529141856.4776: *6* @test Javascript-regex-1
-@language javascript
-    # Required for the unit test.
-
 s = '''\
 
 String.prototype.toJSONString = function()
@@ -10978,9 +10977,6 @@ g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4777: *6* @test Javascript-2
-@language javascript
-    # Required for the unit test.
-
 s = '''\
 
 // Convert a string to it's JSON representation by encoding control characters, double quotes and backslash. See json.org
@@ -11014,9 +11010,6 @@ g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4778: *6* @test Javascript-3
-@language javascript
-    # Required for the unit test.
-
 s = '''\
 
 // Restarting
@@ -11041,14 +11034,6 @@ function restart()
     # if z == '\\': s.append('\\\\')
     # else: s.append(z)
 # s = s.join('')
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20090529141856.4779: *6* @@test javascript-test-js
-f = open('test.js')
-s = f.read()
-f.close()
 
 g.app.unitTestDict ['expectedErrors'] = 0
 
