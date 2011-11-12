@@ -1306,7 +1306,7 @@ class editBodyTestCase(unittest.TestCase):
         try:
             return "EditBodyTestCase: %s" % (self.parent.h)
         except Exception:
-            g.es_exception()
+            g.es_print_exception()
             return "EditBodyTestCase"
     #@+node:ekr.20051104075904.76: *5* tearDown
     def tearDown (self):
@@ -1506,13 +1506,13 @@ def checkFileSyntax (fileName,s,reraise=True,suppress=False):
     except SyntaxError:
         if not suppress:
             g.es("syntax error in:",fileName,color="blue")
-            g.es_exception(full=True,color="black")
+            g.es_print_exception(full=True,color="black")
         if reraise: raise
         return False
     except Exception:
         if not suppress:
             g.es("unexpected error in:",fileName,color="blue")
-            # g.es_exception(full=False,color="black")
+            # g.es_print_exception(full=False,color="black")
         if reraise: raise
         return False
 #@+node:ekr.20051104075904.94: *4* checkFileTabs
@@ -1539,7 +1539,7 @@ def checkFileTabs (fileName,s):
 
     except Exception:
         g.trace("unexpected exception")
-        g.es_exception()
+        g.es_print_exception()
         assert 0, "test failed"
 #@+node:ekr.20061008140603: *3* runEditCommandTest
 def runEditCommandTest (c,p):

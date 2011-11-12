@@ -577,7 +577,7 @@ class leoImportCommands (scanUtility):
                         g.es("created:",newFileName)
                 except Exception:
                     g.es("exception creating:",newFileName)
-                    g.es_exception()
+                    g.es_print_exception()
                 #@-<< Write s into newFileName >>
                 return None
     #@+node:ekr.20031218072017.3303: *4* ic.removeSentinelLines
@@ -625,7 +625,7 @@ class leoImportCommands (scanUtility):
 
         except Exception:
             g.es("exception opening:",filename)
-            g.es_exception()
+            g.es_print_exception()
             return
         #@-<< open filename to f, or return >>
         for p in p.self_and_subtree():
