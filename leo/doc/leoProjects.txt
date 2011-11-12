@@ -25627,6 +25627,10 @@ def contractNodeOrGoToParent (self,event=None):
 
     if redraw:
         c.redraw()
+#@+node:ekr.20111112064924.9779: *4* Improved scannerUnitTest
+@nocolor-node
+
+The error message is now part of the failed assert.  Very helpful.
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>

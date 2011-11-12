@@ -1690,25 +1690,21 @@ class leoImportCommands (scanUtility):
         if not fileName: fileName = p.h
         if not s: s = self.removeSentinelsCommand([fileName],toString=True)
         title = g.choose(h.startswith('@test'),h[5:],h)
+        
+        # Run the actual test.
         self.createOutline(title.strip(),p.copy(),atAuto=atAuto,s=s,ext=ext)
+        
+        # Set ok.
         d = g.app.unitTestDict
         ok = ((d.get('result') and expectedErrors in (None,0)) or
             (
                 # checkTrialWrite returns *True* if the following match.
-                # d.get('result') == False and
                 d.get('actualErrors') == d.get('expectedErrors') and
                 d.get('actualMismatchLine') == d.get('expectedMismatchLine') and
                 (expectedErrorMessage is None or d.get('actualErrorMessage') == d.get('expectedErrorMessage'))
             ))
-        if not ok:
-            g.trace('result',d.get('result'),
-                'actualErrors',d.get('actualErrors'),
-                'expectedErrors',d.get('expectedErrors'),
-                'actualMismatchLine',d.get('actualMismatchLine'),
-                'expectedMismatchLine', d.get('expectedMismatchLine'),
-                '\nactualErrorMessage  ',d.get('actualErrorMessage'),
-                '\nexpectedErrorMessage',d.get('expectedErrorMessage'),
-            )
+                
+        # Clean up.
         if not showTree:
             while old_root.hasChildren():
                 old_root.firstChild().doDelete()
@@ -1717,7 +1713,19 @@ class leoImportCommands (scanUtility):
         c.redraw(old_root)
 
         if g.app.unitTesting:
-            assert ok
+            # Put all the info in the assertion message.
+            table = (
+                '',
+                'fileName:             %s' % (fileName),
+                'result:               %s' % (d.get('result')),
+                'actual errors:        %s' % (d.get('actualErrors')),
+                'expected errors:      %s' % (d.get('expectedErrors')),
+                'actualMismatchLine:   %s' % (repr(d.get('actualMismatchLine'))),
+                'expectedMismatchLine: %s' % (repr(d.get('expectedMismatchLine'))),
+                'actualErrorMessage:   %s' % (repr(d.get('actualErrorMessage'))),
+                'expectedErrorMessage: %s' % (repr(d.get('expectedErrorMessage'))),
+            )
+            assert ok,'\n'.join(table)
 
         return ok
     #@-others
