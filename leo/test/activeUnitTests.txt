@@ -8,17 +8,23 @@ import unittest
 import leo.core.leoTest as leoTest
 import sys
 
-# WARNING: this causes strange problems when run externally.
 if g.isPython3:
     # Some tests now fail on Python 2.x.
     path = g.os_path_join(g.app.loadDir,"..","core")
+    
     if 0:
         << define exclude >>
     else:
         exclude = []
+    
     modules = leoTest.importAllModulesInPath(path,exclude=exclude)
     suite = leoTest.createUnitTestsFromDoctests(modules)
-    if suite: g.app.scriptDict['suite'] = suite
+else:
+    # Create a dummy suite.
+    suite = leoTest.generalTestCase(c,p)
+    
+if suite: g.app.scriptDict['suite'] = suite
+    
 #@+node:ekr.20090703093925.5003: *3* << define exclude >>
 exclude = [
     # These cause no problems, but will not have unit tests.
@@ -30,30 +36,6 @@ exclude = [
     'leoDynamicTest.py',
     'leoBridge.py',
     'leoBridgeTest.py',
-    # 'leoApp.py','leoChapters.py',
-    # 'leoAtFile.py',
-    # 'leoColor.py',
-    # 'leoCommands.py',
-    # 'leoCompare.py',
-    # 'leoConfig.py',
-    # 'leoDebugger.py',
-    # 'leoEditCommands.py',
-    ####'leoFileCommands.py', # Causes problems!
-    # 'leoFind.py',
-    # 'leoFrame.py',
-    # 'leoGlobals.py',
-    # 'leoGui.py',
-    # 'leoImport.py',
-    # 'leoKeys.py',
-    # 'leoMenu.py',
-    # 'leoNodes.py',
-    # 'leoPlugins.py',
-    # 'leoPymacs.py',
-    # 'leoRst.py',
-    # 'leoShadow.py',
-    # 'leoTangle.py',
-    # 'leoTest.py',
-    # 'leoUndo.py',
 ]
 #@+node:ekr.20100210222021.5388: ** @test save new file
 import os

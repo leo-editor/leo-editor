@@ -15,6 +15,8 @@ Top 10:
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
 .. @+node:ekr.20111111065410.12913: *4* Fix add/delete html comments!
+.. @+node:ekr.20111112105048.9754: *4* Make all unit tests work when run externally
+.. @+node:ekr.20111112105048.9755: *4* Get Linux machine working again
 .. @+node:ekr.20111109122014.9792: *4* Allow @all only in top-level @<file> nodes
 .. @+node:ekr.20111108081936.12524: *4* Create unit tests illustrating path ops
 .. @+node:ekr.20031218072017.2145: *5* os.path wrappers (leoGlobals.py)
