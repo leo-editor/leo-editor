@@ -5031,6 +5031,7 @@ self.language_delims_dict = {
     "html"          : "<!-- -->",
     "ini"           : ";",
     "java"          : "// /* */",
+    "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
     "kshell"        : "#", # Leo 4.5.1.
     "latex"         : "%",
     "lisp"          : ";", # EKR: 2010/09/29
@@ -5087,6 +5088,7 @@ self.language_extension_dict = {
     "html"          : "html",
     "ini"           : "ini",
     "java"          : "java",
+    "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
     "kshell"        : "ksh", # Leo 4.5.1.
     "latex"         : "tex", # 1/8/04
     "lua"           : "lua",  # ddm 13/02/06
@@ -5137,6 +5139,7 @@ self.extension_dict = {
     "hs"    : "haskell",
     "ini"   : "ini",
     "java"  : "java",
+    "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
     "ksh"   : "kshell", # Leo 4.5.1.
     "lua"   : "lua",  # ddm 13/02/06
     "m"     : "matlab", # EKR 2011/10/21
@@ -13149,6 +13152,7 @@ self.language_delims_dict = {
     "html"          : "<!-- -->",
     "ini"           : ";",
     "java"          : "// /* */",
+    "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
     "kshell"        : "#", # Leo 4.5.1.
     "latex"         : "%",
     "lisp"          : ";", # EKR: 2010/09/29
@@ -13205,6 +13209,7 @@ self.language_extension_dict = {
     "html"          : "html",
     "ini"           : "ini",
     "java"          : "java",
+    "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
     "kshell"        : "ksh", # Leo 4.5.1.
     "latex"         : "tex", # 1/8/04
     "lua"           : "lua",  # ddm 13/02/06
@@ -13255,6 +13260,7 @@ self.extension_dict = {
     "hs"    : "haskell",
     "ini"   : "ini",
     "java"  : "java",
+    "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
     "ksh"   : "kshell", # Leo 4.5.1.
     "lua"   : "lua",  # ddm 13/02/06
     "m"     : "matlab", # EKR 2011/10/21
@@ -24083,7 +24089,7 @@ def runSelectedUnitTestsExternally(self,event=None):
     Tests are run in an external process, so tests *cannot* change the outline.'''
     c = self.c
     leoTest.runTestsExternally(c,all=False,marked=False)
-#@+node:ekr.20051104075904.4: *5* doTests...
+#@+node:ekr.20051104075904.4: *5* doTests & helpers
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
     trace = False ; verbose = False
@@ -24264,11 +24270,11 @@ def makeTestSuite (c,p):
             exec(script + '\n',d)
         suite = g.app.scriptDict.get("suite")
         if not suite:
-            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+            print("\nmakeTestSuite: %s script did not set g.app.scriptDict" % p.h)
         return suite
     except Exception:
-        print('makeTestSuite: exception creating test cases for %s' % p.h)
-        g.es_exception()
+        print('\nmakeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_print_exception()
         return None
 #@+node:ekr.20051104075904.13: *6* makeTestCase
 def makeTestCase (c,p):
@@ -24747,7 +24753,7 @@ def writeScriptFile (self,script):
         path = None
 
     return path
-#@+node:ekr.20051104075904.4: *5* doTests...
+#@+node:ekr.20051104075904.4: *5* doTests & helpers
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
     trace = False ; verbose = False
@@ -24928,11 +24934,11 @@ def makeTestSuite (c,p):
             exec(script + '\n',d)
         suite = g.app.scriptDict.get("suite")
         if not suite:
-            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+            print("\nmakeTestSuite: %s script did not set g.app.scriptDict" % p.h)
         return suite
     except Exception:
-        print('makeTestSuite: exception creating test cases for %s' % p.h)
-        g.es_exception()
+        print('\nmakeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_print_exception()
         return None
 #@+node:ekr.20051104075904.13: *6* makeTestCase
 def makeTestCase (c,p):
@@ -25011,11 +25017,11 @@ def makeTestSuite (c,p):
             exec(script + '\n',d)
         suite = g.app.scriptDict.get("suite")
         if not suite:
-            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+            print("\nmakeTestSuite: %s script did not set g.app.scriptDict" % p.h)
         return suite
     except Exception:
-        print('makeTestSuite: exception creating test cases for %s' % p.h)
-        g.es_exception()
+        print('\nmakeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_print_exception()
         return None
 #@+node:ekr.20111102093435.10017: *4* Support marking an entire tree
 #@+node:ekr.20070627135336.9: *5* createOutline & helpers
@@ -25100,7 +25106,7 @@ def isUnitTestNode (self,p):
             return True
     else:
         return False
-#@+node:ekr.20051104075904.4: *5* doTests...
+#@+node:ekr.20051104075904.4: *5* doTests & helpers
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
 
     trace = False ; verbose = False
@@ -25281,11 +25287,11 @@ def makeTestSuite (c,p):
             exec(script + '\n',d)
         suite = g.app.scriptDict.get("suite")
         if not suite:
-            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+            print("\nmakeTestSuite: %s script did not set g.app.scriptDict" % p.h)
         return suite
     except Exception:
-        print('makeTestSuite: exception creating test cases for %s' % p.h)
-        g.es_exception()
+        print('\nmakeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_print_exception()
         return None
 #@+node:ekr.20051104075904.13: *6* makeTestCase
 def makeTestCase (c,p):
