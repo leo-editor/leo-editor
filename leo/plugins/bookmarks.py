@@ -10,11 +10,11 @@ of bookmarks (including UNLs) this gives a clean presentation with no '@url'
 markup repeated on every line etc.
 
 The bookmarks_show command will add a tab or pane (if free_layout is enabled)
-showing the bookmarks with unique colors.  You can very quickly jump around between
-nodes in a file using this.  The free_layout Action button context menu will also
-allow you to add one of these bookmark panes, and the should be saved and loaded
-again if the layout is saved and loaded.
-'''
+showing the bookmarks **in the current subtree** with unique colors. You can
+very quickly jump around between nodes in a file using this. The free_layout
+Action button context menu will also allow you to add one of these bookmark
+panes, and the should be saved and loaded again if the layout is saved and
+loaded.'''
 #@-<< docstring >>
 
 #@@language python
@@ -111,7 +111,7 @@ class BookMarkDisplay:
             
             # stuff for pane persistence
             self.w._ns_id = '_leo_bookmarks_show:'
-            c.db['_leo_bookmarks_show'] = str(v.gnx)
+            c.db['_leo_bookmarks_show'] = str(self.v.gnx)
             
         else:
             c.frame.log.createTab(c.p.h[:10])
