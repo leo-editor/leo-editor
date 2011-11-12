@@ -168,6 +168,7 @@ class LeoApp:
             "html"          : "<!-- -->",
             "ini"           : ";",
             "java"          : "// /* */",
+            "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
             "kshell"        : "#", # Leo 4.5.1.
             "latex"         : "%",
             "lisp"          : ";", # EKR: 2010/09/29
@@ -224,6 +225,7 @@ class LeoApp:
             "html"          : "html",
             "ini"           : "ini",
             "java"          : "java",
+            "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
             "kshell"        : "ksh", # Leo 4.5.1.
             "latex"         : "tex", # 1/8/04
             "lua"           : "lua",  # ddm 13/02/06
@@ -274,6 +276,7 @@ class LeoApp:
             "hs"    : "haskell",
             "ini"   : "ini",
             "java"  : "java",
+            "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
             "ksh"   : "kshell", # Leo 4.5.1.
             "lua"   : "lua",  # ddm 13/02/06
             "m"     : "matlab", # EKR 2011/10/21
