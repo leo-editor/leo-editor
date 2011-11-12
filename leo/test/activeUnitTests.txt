@@ -10755,6 +10755,65 @@ s = '''\
 g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20111112103320.3849: *6* @test html: improperly nested tags
+s = '''\
+<body>
+
+<!-- OOPS: the div and p elements not properly nested.-->
+<!-- OOPS: this table got generated twice. -->
+
+<p id="P1">
+<div id="D666">Paragraph</p> <!-- P1 -->
+<p id="P2">
+
+<TABLE id="T666"></TABLE></p> <!-- P2 -->
+</div>
+</p> <!-- orphan -->
+
+</body>
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20111112103320.3887: *6* @test html: improperly terminated tags
+s = '''\
+<html>
+
+<head>
+    <!-- oops: link elements terminated two different ways -->
+    <link id="L1">
+    <link id="L2">
+    <link id="L3" />
+    <link id='L4' />
+    
+    <title>TITLE</title>
+    
+<!-- oops: missing tags. -->
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20111112103320.3893: *6* @test html: improperly terminated tags2
+s = '''\
+<html>
+<head>
+    <!-- oops: link elements terminated two different ways -->
+    <link id="L1">
+    <link id="L2">
+    <link id="L3" />
+    <link id='L4' />
+    
+    <title>TITLE</title>
+    
+</head>
+<html>
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20100803234640.5804: *5* ini tests
 #@+node:ekr.20100803234640.5805: *6* @test ini-test-1
 s = '''\
