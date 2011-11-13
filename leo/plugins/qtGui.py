@@ -3163,7 +3163,7 @@ class leoQtBody (leoFrame.leoBody):
             # self.selectEditor(w2)
             # c.frame.body.bodyCtrl = w2
             
-    #@+node:ekr.20110605121601.18199: *6* deleteEditor
+    #@+node:ekr.20110605121601.18199: *6* deleteEditor (qtBody)
     def deleteEditor (self,event=None):
 
         '''Delete the presently selected body text editor.'''
@@ -3174,7 +3174,8 @@ class leoQtBody (leoFrame.leoBody):
         w = wrapper.widget
         name = w.leo_name
         assert name
-        assert wrapper == d.get(name),'wrong wrapper'
+        ### This seems not to be a valid assertion.
+        ### assert wrapper == d.get(name),'wrong wrapper'
         assert isinstance(wrapper,leoQTextEditWidget),wrapper
         assert isinstance(w,QtGui.QTextEdit),w
 
@@ -3193,7 +3194,9 @@ class leoQtBody (leoFrame.leoBody):
         f = c.frame.top.leo_ui.leo_body_inner_frame
         layout = f.layout()
         for z in (w,w.leo_label):
-            self.unpackWidget(layout,z)
+            if z: # 2011/11/12
+                self.unpackWidget(layout,z)
+        w.leo_label = None # 2011/11/12
 
         # Select another editor.
         new_wrapper = list(d.values())[0]
@@ -3201,7 +3204,9 @@ class leoQtBody (leoFrame.leoBody):
         self.numberOfEditors -= 1
         if self.numberOfEditors == 1:
             w = new_wrapper.widget
-            self.unpackWidget(layout,w.leo_label)
+            if w.leo_label: # 2011/11/12
+                self.unpackWidget(layout,w.leo_label)
+                w.leo_label = None # 2011/11/12
 
         self.selectEditor(new_wrapper)
     #@+node:ekr.20110605121601.18200: *6* findEditorForChapter (qtBody)
@@ -3379,10 +3384,10 @@ class leoQtBody (leoFrame.leoBody):
         w0.setSelectionRange(i,j,ins=ins)
         sb0.setSliderPosition(pos0)
     #@+node:ekr.20110605121601.18206: *5* utils
-    #@+node:ekr.20110605121601.18207: *6* computeLabel
+    #@+node:ekr.20110605121601.18207: *6* computeLabel (qtBody)
     def computeLabel (self,w):
 
-        if hasattr(w,'leo_label'):
+        if hasattr(w,'leo_label') and w.leo_label: # 2011/11/12
             s = w.leo_label.text()
         else:
             s = ''
@@ -3391,7 +3396,7 @@ class leoQtBody (leoFrame.leoBody):
             s = '%s: %s' % (w.leo_chapter,s)
 
         return s
-    #@+node:ekr.20110605121601.18208: *6* createChapterIvar
+    #@+node:ekr.20110605121601.18208: *6* createChapterIvar (qtBody)
     def createChapterIvar (self,w):
 
         c = self.c ; cc = c.chapterController
@@ -3427,7 +3432,7 @@ class leoQtBody (leoFrame.leoBody):
                 if trace: g.trace('**deactivate wrapper %s w %s' % (
                     id(wrapper2),id(w2)))
                 self.onFocusOut(w2)
-    #@+node:ekr.20110605121601.18210: *6* ensurePositionExists
+    #@+node:ekr.20110605121601.18210: *6* ensurePositionExists (qtBody)
     def ensurePositionExists(self,w):
 
         '''Return True if w.leo_p exists or can be reconstituted.'''
@@ -3478,9 +3483,10 @@ class leoQtBody (leoFrame.leoBody):
         w.leo_scrollBarSpot = None
         w.leo_selection = None
         w.leo_wrapper = wrapper
-    #@+node:ekr.20110605121601.18212: *6* packLabel
+    #@+node:ekr.20110605121601.18212: *6* packLabel (qtBody)
     def packLabel (self,w,n=None):
 
+        trace = False and not g.unitTesting
         c = self.c
         f = c.frame.top.leo_ui.leo_body_inner_frame
             # Valid regardless of qtGui.useUI
@@ -3502,7 +3508,8 @@ class leoQtBody (leoFrame.leoBody):
         layout.setRowStretch(1,1) # Give row 1 as much as possible.
 
         w.leo_label = lab # Inject the ivar.
-    #@+node:ekr.20110605121601.18213: *6* recolorWidget
+        if trace: g.trace('w.leo_label',w,lab)
+    #@+node:ekr.20110605121601.18213: *6* recolorWidget (qtBody)
     def recolorWidget (self,p,wrapper):
 
         trace = False and not g.unitTesting
@@ -3543,7 +3550,7 @@ class leoQtBody (leoFrame.leoBody):
                 if trace: g.trace('***old',oldChapter.name,'new',name,w.leo_p)
                 cc.selectChapterByName(name)
                 c.bodyWantsFocus()
-    #@+node:ekr.20110605121601.18215: *6* updateInjectedIvars
+    #@+node:ekr.20110605121601.18215: *6* updateInjectedIvars (qtBody)
     def updateInjectedIvars (self,w,p):
 
         trace = False and not g.unitTesting
@@ -3559,15 +3566,21 @@ class leoQtBody (leoFrame.leoBody):
             w.leo_chapter = None
 
         w.leo_p = p.copy()
-    #@+node:ekr.20110605121601.18216: *6* unpackWidget
+    #@+node:ekr.20110605121601.18216: *6* unpackWidget (qtBody)
     def unpackWidget (self,layout,w):
+
+        trace = False and not g.unitTesting
+        
+        if trace: g.trace(w)
 
         index = layout.indexOf(w)
         item = layout.itemAt(index)
         item.setGeometry(QtCore.QRect(0,0,0,0))
         layout.removeItem(item)
+        
+        
     #@+node:ekr.20110605121601.18217: *4* Renderer panes (qtBody)
-    #@+node:ekr.20110605121601.18218: *5* hideCanvasRenderer
+    #@+node:ekr.20110605121601.18218: *5* hideCanvasRenderer (qtBody)
     def hideCanvasRenderer (self,event=None):
 
         '''Hide canvas pane.'''
@@ -3597,7 +3610,9 @@ class leoQtBody (leoFrame.leoBody):
         f = c.frame.top.leo_ui.leo_body_inner_frame
         layout = f.layout()
         for z in (w,w.leo_label):
-            self.unpackWidget(layout,z)
+            if z: # 2011/11/12
+                self.unpackWidget(layout,z)
+        w.leo_label = None # 2011/11/12
 
         # Select another editor.
         new_wrapper = list(d.values())[0]
@@ -3605,10 +3620,12 @@ class leoQtBody (leoFrame.leoBody):
         self.numberOfEditors -= 1
         if self.numberOfEditors == 1:
             w = new_wrapper.widget
-            self.unpackWidget(layout,w.leo_label)
+            if w.leo_label: # 2011/11/12
+                self.unpackWidget(layout,w.leo_label)
+                w.leo_label = None # 2011/11/12
 
         self.selectEditor(new_wrapper)
-    #@+node:ekr.20110605121601.18219: *5* hideTextRenderer
+    #@+node:ekr.20110605121601.18219: *5* hideTextRenderer (qtBody)
     def hideCanvas (self,event=None):
 
         '''Hide canvas pane.'''
@@ -3638,7 +3655,9 @@ class leoQtBody (leoFrame.leoBody):
         f = c.frame.top.leo_ui.leo_body_inner_frame
         layout = f.layout()
         for z in (w,w.leo_label):
-            self.unpackWidget(layout,z)
+            if z: # 2011/11/12
+                self.unpackWidget(layout,z)
+        w.leo_label = None  # 2011/11/12
 
         # Select another editor.
         new_wrapper = list(d.values())[0]
@@ -3646,10 +3665,12 @@ class leoQtBody (leoFrame.leoBody):
         self.numberOfEditors -= 1
         if self.numberOfEditors == 1:
             w = new_wrapper.widget
-            self.unpackWidget(layout,w.leo_label)
+            if w.leo_label:  # 2011/11/12
+                self.unpackWidget(layout,w.leo_label)
+                w.leo_label = None # 2011/11/12
 
         self.selectEditor(new_wrapper)
-    #@+node:ekr.20110605121601.18220: *5* packRenderer
+    #@+node:ekr.20110605121601.18220: *5* packRenderer (qtBody)
     def packRenderer (self,f,name,w):
 
         c = self.c ; n = max(1,self.numberOfEditors)
@@ -3671,7 +3692,7 @@ class leoQtBody (leoFrame.leoBody):
         
         return lab
 
-    #@+node:ekr.20110605121601.18221: *5* showCanvasRenderer
+    #@+node:ekr.20110605121601.18221: *5* showCanvasRenderer (qtBody)
     # An override of leoFrame.addEditor.
 
     def showCanvasRenderer (self,event=None):
@@ -3694,7 +3715,7 @@ class leoQtBody (leoFrame.leoBody):
         if not self.canvasRendererVisible:
             self.canvasRendererLabel = self.packRenderer(f,name,w)
             self.canvasRendererVisible = True
-    #@+node:ekr.20110605121601.18222: *5* showTextRenderer
+    #@+node:ekr.20110605121601.18222: *5* showTextRenderer (qtBody)
     # An override of leoFrame.addEditor.
 
     def showTextRenderer (self,event=None):
@@ -7197,7 +7218,7 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
 class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
         
     #@+others
-    #@+node:ekr.20110605121601.18459: *4* ctor and __repr__
+    #@+node:ekr.20110605121601.18459: *4* ctor and __repr__(QtMenuWrapper)
     def __init__ (self,c,frame,parent):
 
         assert c

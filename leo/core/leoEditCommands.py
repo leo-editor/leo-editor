@@ -7036,7 +7036,7 @@ class editFileCommandsClass (baseEditCommandsClass):
                 p = d.get(key)
                 clone = p.clone()
                 clone.moveToLastChildOf(parent)
-    #@+node:ekr.20070921070101: *4* createHiddenCommander
+    #@+node:ekr.20070921070101: *4* createHiddenCommander (editFileCommandsClass)
     def createHiddenCommander(self,fileName):
 
         # Read the file into a hidden commander (Similar to g.openWithFileName).

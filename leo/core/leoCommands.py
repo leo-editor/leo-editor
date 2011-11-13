@@ -3263,7 +3263,7 @@ class Commands (object):
             name = s[head1:head2+2]
 
         return name
-    #@+node:ekr.20031218072017.1829: *6* getBodyLines
+    #@+node:ekr.20031218072017.1829: *6* c.getBodyLines
     def getBodyLines (self,expandSelection=False):
 
         """Return head,lines,tail where:
@@ -3316,7 +3316,7 @@ class Commands (object):
         if changed:
             result = ''.join(result)
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
-    #@+node:ekr.20050312114529: *6* insert/removeComments
+    #@+node:ekr.20050312114529: *6* c.insert/removeComments
     #@+node:ekr.20050312114529.1: *7* addComments
     def addComments (self,event=None):
 
@@ -3332,14 +3332,15 @@ class Commands (object):
 
         d2 = d2 or '' ; d3 = d3 or ''
         if d1: openDelim,closeDelim = d1+' ',''
-        else:  openDelim,closeDelim = d2+' ',d3+' '
+        else:  openDelim,closeDelim = d2+' ',' '+d3
 
         # Comment out non-blank lines.
         result = []
         for line in lines:
             if line.strip():
                 i = g.skip_ws(line,0)
-                result.append(line[0:i]+openDelim+line[i:]+closeDelim)
+                # result.append(line[0:i]+openDelim+line[i:]+closeDelim)
+                result.append(openDelim+line.rstrip()+closeDelim+'\n')
             else:
                 result.append(line)
 
@@ -3363,36 +3364,48 @@ class Commands (object):
 
         if d1:
             # Remove the single-line comment delim in front of each line
-            for line in lines:
-                i = g.skip_ws(line,0)
-                if g.match(line,i,d1):
-                    j = g.skip_ws(line,i + len(d1))
-                    result.append(line[0:i] + line[j:])
+            d1 = d1 + ' '
+            n1 = len(d1)
+            for s in lines:
+                i = g.skip_ws(s,0)
+                if g.match(s,i,d1):
+                    result.append(s[:i] + s[i+n1:])
                 else:
-                    result.append(line)
+                    result.append(s)
         else:
-            n = len(lines)
-            for i in range(n):
-                line = lines[i]
-                if i not in (0,n-1):
-                    result.append(line)
-                if i == 0:
-                    j = g.skip_ws(line,0)
-                    if g.match(line,j,d2):
-                        k = g.skip_ws(line,j + len(d2))
-                        result.append(line[0:j] + line[k:])
-                    else:
-                        g.es('',"'%s'" % (d2),"not found",color='blue')
-                        return
-                if i == n-1:
-                    if i == 0:
-                        line = result[0] ; result = []
-                    s = line.rstrip()
-                    if s.endswith(d3):
-                        result.append(s[:-len(d3)].rstrip())
-                    else:
-                        g.es('',"'%s'" % (d3),"not found",color='blue')
-                        return
+            # Remove the block comment delimiters from each line.
+            d2,d3 = d2+' ',' '+d3
+            n2,n3 = len(d2),len(d3)
+            for s in lines:
+                s2 = s.rstrip()
+                i = g.skip_ws(s,0)
+                if g.match(s,i,d2) and g.match(s2,len(s2)-n3,d3):
+                    result.append(s[:i] + s[i+n2:-n3]+'\n')
+                else:
+                    result.append(s)
+                        
+            # n = len(lines)
+            # for i in range(n):
+                # line = lines[i]
+                # if i not in (0,n-1):
+                    # result.append(line)
+                # if i == 0:
+                    # j = g.skip_ws(line,0)
+                    # if g.match(line,j,d2):
+                        # k = g.skip_ws(line,j + len(d2))
+                        # result.append(line[0:j] + line[k:])
+                    # else:
+                        # g.es('',"'%s'" % (d2),"not found",color='blue')
+                        # return
+                # if i == n-1:
+                    # if i == 0:
+                        # line = result[0] ; result = []
+                    # s = line.rstrip()
+                    # if s.endswith(d3):
+                        # result.append(s[:-len(d3)].rstrip())
+                    # else:
+                        # g.es('',"'%s'" % (d3),"not found",color='blue')
+                        # return
 
         result = ''.join(result)
         c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)

@@ -3949,6 +3949,58 @@ assert not val,repr(val)
 c.setFileTimeStamp(path)
 val = c.checkFileTimeStamp(path)
 assert val,repr(val)
+#@+node:ekr.20111112171235.3854: *4* @test add/delete html comments
+# Can't be run externally.
+w = c.frame.body
+p = g.findNodeInTree(c,p,'html')
+assert p,'no test node'
+s = p.b
+
+try:
+    i = p.b.find('text')
+    assert i > -1,'fail1: %s' % (repr(p.b))
+    c.selectPosition(p)
+    w.setSelectionRange(i,i+4)
+    c.addComments()
+    i = p.b.find('<!-- text')
+    assert i > -1,'fail2: %s' % (repr(p.b))
+    c.deleteComments()
+    assert p.b == s,'fail3: %s' % (repr(p.b))
+finally:
+    # print('\n'.join([repr(z) for z in g.splitLines(p.b)]))
+    p.b = s
+#@+node:ekr.20111112171235.3855: *5* html
+@language html
+<html>
+text 
+</html>
+#@+node:ekr.20111112171235.3858: *4* @test add/delete python comments
+# Can't be run externally.
+w = c.frame.body
+p = g.findNodeInTree(c,p,'python')
+assert p,'no test node'
+s = p.b
+
+try:
+    i = p.b.find('pass')
+    assert i > -1,'fail1: %s' % (repr(p.b))
+    c.selectPosition(p)
+    w.setSelectionRange(i,i+4)
+    c.addComments()
+    i = p.b.find('#     pass')
+    assert i > -1,'fail2: %s' % (repr(p.b))
+    c.deleteComments()
+    assert p.b == s,'fail3: %s' % (repr(p.b))
+finally:
+    # print('\n'.join([repr(z) for z in g.splitLines(p.b)]))
+    p.b = s
+#@+node:ekr.20111112171235.3859: *5* python
+@language python
+
+def spam():
+    pass
+
+# after
 #@+node:ekr.20110510054817.3475: *4* @test c.alert
 c.alert('test of c.alert')
 #@+node:ekr.20071113145804.10: *4* @test c.contractAllHeadlines
@@ -17525,6 +17577,7 @@ suite = leoTest.makeEditBodySuite(c,p)
 g.app.scriptDict['suite'] = suite
 #@+node:ekr.20040712101754.38: *5* editBodyTests
 @language plain
+@
 
 The names of child nodes are the names of commander methods to be called to do the test.
 
@@ -17551,9 +17604,9 @@ def addCommentTest():
 
 def addCommentTest():
 
-    # if 1:
-        # a = 2
-        # b = 3
+#     if 1:
+#         a = 2
+#         b = 3
 
     pass
 #@+node:ekr.20050417202713.3: *7* selection
@@ -17646,14 +17699,15 @@ line 4
 2.0
 3.5
 #@+node:ekr.20050417202817: *6* deleteComments
+# created by new add-comments
 #@+node:ekr.20050417202817.1: *7* before
 @language python
 
 def deleteCommentTest():
 
-    # if 1:
-        # a = 2
-        # b = 3
+#     if 1:
+#         a = 2
+#         b = 3
 
     pass
 #@+node:ekr.20050417202817.2: *7* after
@@ -17669,6 +17723,39 @@ def deleteCommentTest():
 #@+node:ekr.20050417202817.3: *7* selection
 5.0
 7.8
+#@+node:ekr.20111112211307.3910: *6* deleteComments
+# created by old and new add-comments.
+#@+node:ekr.20111112211307.3911: *7* before
+@language python
+
+def deleteCommentTest():
+
+#     if 1:
+#         a = 2
+#         b = 3
+
+    # if 1:
+        # a = 2
+        # b = 3
+
+    pass
+#@+node:ekr.20111112211307.3912: *7* after
+@language python
+
+def deleteCommentTest():
+
+    if 1:
+        a = 2
+        b = 3
+
+    if 1:
+        a = 2
+        b = 3
+
+    pass
+#@+node:ekr.20111112211307.3913: *7* selection
+5.0
+12.8
 #@+node:ekr.20050417201845: *6* extract test1
 #@+node:ekr.20050417201845.1: *7* before
 before

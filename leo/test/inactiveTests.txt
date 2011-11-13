@@ -6133,5 +6133,15 @@ for line in g.splitLines(s):
 assert count >=1, "not enough @ignore's in written file: count: %s, lines:\n%s" % (count,s)
 #@+node:ekr.20061008162912.1: *4* child
 @ignore # Test that this node gets written.
+#@+node:ekr.20111112193817.3908: *3* @@test delete-body-editor 3 times
+if 0:
+    # This works, but the label sticks, presumably because of a race condition.
+    # Therefore, this is best left as a mini-test.
+
+    w = c.frame.body
+    for i in range(4):
+        print(i)
+        w.addEditor()
+        w.deleteEditor()
 #@-all
 #@-leo
