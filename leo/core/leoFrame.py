@@ -801,7 +801,7 @@ class leoBody:
         self.selectEditor(w)
         self.updateEditors()
         c.bodyWantsFocus()
-    #@+node:ekr.20060528132829: *6* assignPositionToEditor
+    #@+node:ekr.20060528132829: *6* assignPositionToEditor (leoBody)
     def assignPositionToEditor (self,p):
 
         '''Called *only* from tree.select to select the present body editor.'''
@@ -827,7 +827,7 @@ class leoBody:
             assert(w!=w2)
             self.selectEditor(w2)
             c.frame.body.bodyCtrl = w2
-    #@+node:ekr.20060528113806: *6* deleteEditor
+    #@+node:ekr.20060528113806: *6* deleteEditor (leoBody)
     def deleteEditor (self,event=None):
 
         '''Delete the presently selected body text editor.'''
@@ -877,7 +877,7 @@ class leoBody:
         # As a last resort, return the present editor widget.
         # g.trace('***',id(self.bodyCtrl),'no match',p.h)
         return c.frame.body.bodyCtrl
-    #@+node:ekr.20060530210057: *6* select/unselectLabel
+    #@+node:ekr.20060530210057: *6* select/unselectLabel (leoBody)
     def unselectLabel (self,w):
 
         self.createChapterIvar(w)
@@ -898,7 +898,7 @@ class leoBody:
         elif hasattr(w,'leo_label') and w.leo_label:
             w.leo_label.pack_forget()
             w.leo_label = None
-    #@+node:ekr.20061017083312: *6* selectEditor & helpers
+    #@+node:ekr.20061017083312: *6* selectEditor & helpers (leoBody)
     selectEditorLockout = False
 
     def selectEditor(self,w):
@@ -979,7 +979,7 @@ class leoBody:
         #@-<< restore the selection, insertion point and the scrollbar >>
         c.bodyWantsFocus()
         return # (for Tk) 'break'
-    #@+node:ekr.20060528131618: *6* updateEditors
+    #@+node:ekr.20060528131618: *6* updateEditors (leoBody)
     # Called from addEditor and assignPositionToEditor
 
     def updateEditors (self):
@@ -998,7 +998,7 @@ class leoBody:
                 self.recolorWidget(p,w)
         c.bodyWantsFocus()
     #@+node:ekr.20070424053629.1: *5* utils
-    #@+node:ekr.20070422093128: *6* computeLabel
+    #@+node:ekr.20070422093128: *6* computeLabel (leoBody)
     def computeLabel (self,w):
 
         s = w.leo_label_s
@@ -1007,7 +1007,7 @@ class leoBody:
             s = '%s: %s' % (w.leo_chapter.name,s)
 
         return s
-    #@+node:ekr.20070422094710: *6* createChapterIvar
+    #@+node:ekr.20070422094710: *6* createChapterIvar (leoBody)
     def createChapterIvar (self,w):
 
         c = self.c ; cc = c.chapterController
@@ -1017,7 +1017,7 @@ class leoBody:
                 w.leo_chapter = cc.getSelectedChapter()
             else:
                 w.leo_chapter = None
-    #@+node:ekr.20070424084651: *6* ensurePositionExists
+    #@+node:ekr.20070424084651: *6* ensurePositionExists (leoBody)
     def ensurePositionExists(self,w):
 
         '''Return True if w.leo_p exists or can be reconstituted.'''
@@ -1053,7 +1053,7 @@ class leoBody:
                 w2.leo_insertSpot = w2.getInsertPoint()
                 w2.leo_selection = w2.getSelectionRange()
                 return
-    #@+node:ekr.20060530204135: *6* recolorWidget
+    #@+node:ekr.20060530204135: *6* recolorWidget (leoBody)
     def recolorWidget (self,p,w):
 
         c = self.c ; old_w = c.frame.body.bodyCtrl
@@ -1082,7 +1082,7 @@ class leoBody:
                 # g.trace('===','old',oldChapter.name,'new',name,w.leo_p)
                 cc.selectChapterByName(name)
                 c.bodyWantsFocus()
-    #@+node:ekr.20070424092855: *6* updateInjectedIvars
+    #@+node:ekr.20070424092855: *6* updateInjectedIvars (leoBody)
     # Called from addEditor and assignPositionToEditor.
 
     def updateInjectedIvars (self,w,p):
