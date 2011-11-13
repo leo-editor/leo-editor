@@ -80,12 +80,15 @@ class searchWidget:
     def getInsertPoint (self):      return self.i       # Returns Python index.
     def getSelectionRange(self):    return self.sel     # Returns Python indices.
 
-    #@+node:ekr.20070105102419: *3* setters
+    #@+node:ekr.20070105102419: *3* setters (leoFind)
     def delete(self,i,j=None):
         i = self.toPythonIndex(i)
         if j is None: j = i + 1
         else: j = self.toPythonIndex(j)
         self.s = self.s[:i] + self.s[j:]
+        # Bug fix: 2011/11/13: Significant in external tests.
+        self.i = i
+        self.sel = i,i
 
     def insert(self,i,s):
         if not s: return
@@ -1297,7 +1300,7 @@ class leoFind:
             insert,start,end = None,None,None
 
         return (self.in_headline,p,w,insert,start,end)
-    #@+node:ekr.20031218072017.3091: *4* showSuccess (leoFind) (changed)
+    #@+node:ekr.20031218072017.3091: *4* showSuccess (leoFind)
     def showSuccess(self,pos,newpos,showState=True):
 
         '''Display the result of a successful find operation.'''
@@ -1520,14 +1523,14 @@ class nullFindTab (findTab):
     #@+others
     #@+node:ekr.20070302090616.1: *3* Birth (nullFindTab)
     #@+node:ekr.20070302090616.2: *4*  ctor (nullFindTab)
-    if 0: # Use the base-class ctor.
+    if 0: # Use the base class ctor.
 
         def __init__ (self,c,parentFrame):
-
+        
             findTab.__init__(self,c,parentFrame)
-                # Init the base class.
+            # Init the base class.
                 # Calls initGui, createFrame, createBindings & init(c), in that order.
-    #@+node:ekr.20070302090616.3: *4* initGui
+    #@+node:ekr.20070302090616.3: *4* initGui (nullFindTab)
     # Called from findTab.ctor.
 
     def initGui (self):
@@ -1539,7 +1542,11 @@ class nullFindTab (findTab):
 
         for key in self.newStringKeys:
             self.svarDict[key] = self.svar() # Was Tk.StringVar.
-    #@+node:ekr.20070302090616.4: *4* init
+            
+        # Bug fix: 2011/11/13: significant for external unit tests.
+        # Add the same hack as in the qtGui for the 'entire_outline' radio button.
+        self.svarDict['entire-outline'] = self.svar()
+    #@+node:ekr.20070302090616.4: *4* init (nullFindTab)
     # Called from findTab.ctor.
 
     def init (self,c):
@@ -1617,7 +1624,8 @@ class nullFindTab (findTab):
             'whole_word',
             'wrap',
         ):
-            svar = self.svarDict[ivar].get()
+            # Bug fix: 2011/11/13: significant for external unit tests.
+            svar = self.svarDict[ivar]
             if svar:
                 svar.set(True)
                 # w = self.widgetsDict.get(ivar)
@@ -1690,7 +1698,9 @@ class nullFindTab (findTab):
         '''Create two columns of buttons.'''
     #@+node:ekr.20070302090616.8: *3* class svar (nullFindTab)
     class svar:
+
         '''A class like Tk's IntVar and StringVar classes.'''
+
         def __init__(self):
             self.val = None
         def get (self):

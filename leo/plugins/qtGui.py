@@ -619,7 +619,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         s2 = self.getAllText()
         self.setAllText(s2+s,insert=len(s2))
 
-    #@+node:ekr.20110605121601.18038: *6* delete
+    #@+node:ekr.20110605121601.18038: *6* delete (leoQtBaseTextWidget)
     def delete (self,i,j=None):
 
         w = self.widget
@@ -707,7 +707,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         return self.setSelectionRangeHelper(i,j,insert)
     #@+node:ekr.20110605121601.18046: *7* setSelectionRangeHelper
-    def setSelectionRangeHelper(self,i,j,insert):
+    def setSelectionRangeHelper(self,i,j,insert=None):
 
         self.oops()
     #@+node:ekr.20110605121601.18047: *5* getName (leoQtBaseTextWidget)
@@ -1012,7 +1012,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
     #@+node:ekr.20110605121601.18070: *5* setSelectionRangeHelper (leoQLineEdit)
-    def setSelectionRangeHelper(self,i,j,insert):
+    def setSelectionRangeHelper(self,i,j,insert=None):
 
         w = self.widget
         # g.trace(i,j,insert,w)
@@ -1144,7 +1144,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 w.setTextCursor(cursor)
             w.moveCursor(op,mode)
     #@+node:ekr.20110605121601.18078: *4* Widget-specific overrides (leoQTextEditWidget)
-    #@+node:ekr.20110605121601.18079: *5* delete (avoid call to setAllText)
+    #@+node:ekr.20110605121601.18079: *5* delete (avoid call to setAllText) (leoQTextEditWidget)
     def delete(self,i,j=None):
 
         trace = False and not g.unitTesting
@@ -1551,7 +1551,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         cursor.setPosition(i)
         w.setTextCursor(cursor)
     #@+node:ekr.20110605121601.18096: *5* setSelectionRangeHelper & helper (leoQTextEditWidget)
-    def setSelectionRangeHelper(self,i,j,insert):
+    def setSelectionRangeHelper(self,i,j,insert=None):
 
         trace = False and not g.unitTesting
         w = self.widget
@@ -1819,7 +1819,7 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
         w.SendScintilla(w.SCI_SETCURRENTPOS,i)
         w.SendScintilla(w.SCI_SETANCHOR,i)
     #@+node:ekr.20110605121601.18115: *5* setSelectionRangeHelper (QScintilla)
-    def setSelectionRangeHelper(self,i,j,insert):
+    def setSelectionRangeHelper(self,i,j,insert=None):
 
         w = self.widget
 
@@ -1965,7 +1965,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
     #@+node:ekr.20110605121601.18130: *5* setSelectionRangeHelper (leoQLineEdit)
-    def setSelectionRangeHelper(self,i,j,insert):
+    def setSelectionRangeHelper(self,i,j,insert=None):
 
         if not self.check(): return
         w = self.widget
@@ -3979,7 +3979,7 @@ class leoQtFindTab (leoFind.findTab):
         if w: w.setChecked(True)
 
         # g.trace(scopeSvar.get())
-    #@+node:ekr.20110605121601.18234: *4* class svar
+    #@+node:ekr.20110605121601.18234: *4* class svar (qtFindTab)
     class svar:
         '''A class like Tk's IntVar and StringVar classes.'''
 
@@ -4063,7 +4063,6 @@ class leoQtFindTab (leoFind.findTab):
 
             self.w = w
         #@-others
-
     #@+node:ekr.20110605121601.18241: *4* Support for minibufferFind class (qtFindTab)
     # This is the same as the Tk code because we simulate Tk svars.
     #@+node:ekr.20110605121601.18242: *5* getOption
@@ -5714,7 +5713,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         if menu:
             menu.addSeparator()
-    #@+node:ekr.20110605121601.18347: *6* delete
+    #@+node:ekr.20110605121601.18347: *6* delete (leoQtMenu)
     def delete (self,menu,realItemName='<no name>'):
 
         """Wrapper for the Tkinter delete menu method."""
@@ -7140,7 +7139,7 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
             self.addTab(w, name)
             self.factory.leoFrames[w] = w.leo_c.frame
         self.detached = []
-    #@+node:ekr.20110605121601.18452: *4* delete
+    #@+node:ekr.20110605121601.18452: *4* delete (LeoTabbedTopLevel)
     def delete(self, w):
         """called by TabbedFrameFactory to tell us a detached tab
         has been deleted"""
