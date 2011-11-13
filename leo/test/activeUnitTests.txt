@@ -3,6 +3,347 @@
 # All the following should pass when run locally (Alt-4).
 #@@language python
 #@+all
+#@+node:ekr.20111112092813.4060: ** @mark-for-unit-tests
+@nocolor-node
+
+All support code should be placed as a child of this @mark-for-unit-test node
+so that it will be copied to dynamicUnitTest.leo when running tests externally.
+#@+node:ekr.20090529141856.4700: *3* importTests
+@language plain
+#@+node:ekr.20090529141856.4701: *4* tempNode
+#@+node:ekr.20090529141856.4702: *4* importAtRoot
+#@+node:ekr.20090529141856.4703: *5* dialog
+openFileDialog
+test\\unittest\\perfectImport\\formatter.py
+#@+node:ekr.20090529141856.4704: *4* importDerivedFile
+#@+node:ekr.20090529141856.4705: *5* dialog
+openFileDialog
+core\\runLeo.py
+#@+node:ekr.20090529141856.4706: *4* importNowebFiles
+#@+node:ekr.20090529141856.4707: *5* dialog
+openFileDialog
+test\\unittest\\input\\noweave.nw.txt
+#@+node:ekr.20090529141856.4708: *4* importFlattenedOutline
+#@+node:ekr.20090529141856.4709: *5* dialog
+openFileDialog
+test\\unittest\\input\\flat.txt
+#@+node:ekr.20090529141856.4710: *4* importCWEBFiles
+#@+node:ekr.20090529141856.4711: *5* dialog
+openFileDialog
+test\\unittest\\input\\cweave.w
+#@+node:ekr.20090529141856.4712: *4* removeSentinels
+#@+node:ekr.20090529141856.4713: *5* dialog
+openFileDialog
+test\\unittest\\input\\testLeoAtFile.py
+#@+node:ekr.20090529141856.4714: *4* importAtFile
+#@+node:ekr.20090529141856.4715: *5* dialog
+openFileDialog
+test\\unittest\\perfectImport\\formatter.py
+#@+node:ekr.20090529141856.4686: *3* exportTests
+@language plain
+#@+node:ekr.20090529141856.4687: *4* tempNode
+#@+node:ekr.20090529141856.4688: *4* exportHeadlines
+#@+node:ekr.20090529141856.4689: *5* dialog
+saveFileDialog
+test\\unittest\\output\\exportHeadlines.txt
+#@+node:ekr.20090529141856.4690: *4* flattenOutline
+#@+node:ekr.20090529141856.4691: *5* dialog
+saveFileDialog
+test\\unittest\\output\\flattenOutline.txt
+#@+node:ekr.20090529141856.4692: *4* weave
+#@+node:ekr.20090529141856.4693: *5* dialog
+saveFileDialog
+test\\unittest\\output\\weave.txt
+#@+node:ekr.20090529141856.4694: *4* outlineToNoweb
+#@+node:ekr.20090529141856.4695: *5* dialog
+saveFileDialog
+test\\unittest\\output\\outlineToNoweb.txt
+#@+node:ekr.20090529141856.4696: *4* outlineToCWEB
+#@+node:ekr.20090529141856.4697: *5* dialog
+saveFileDialog
+test\\unittest\\output\\outlineToCweb.txt
+#@+node:ekr.20100830114008.5967: *3* @common leoEditCommands test code
+@others
+#@+node:ekr.20100830114008.5968: *4* runEditCommandTest
+import leo.core.leoTest as leoTest
+
+@
+This is an updated version of leo.core.leoTest.runEditCommandTest,
+moved here to take advantage of EKR's new common-test-code-sharing
+mechanism. It should be okay to delete the old code and replace
+all uses with:
+
+    exec(g.findTestScript(c,'@common leoEditCommands test code'))
+    runEditCommandTest(c,p)
+@c
+
+def runEditCommandTest (c,p,inHeadline=False):
+    '''
+    This is a helper for testing edit commands. It takes the name of the
+    command from the title of the test and the before and after conditions
+    from child nodes.
+
+    :param inHeadline: if True, tests the command in the headline; if False,
+    tests the command in the body.
+    '''
+
+    u = leoTest.testUtils(c) ; atTest = p.copy()
+
+    h = atTest.h
+    assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
+    commandName = h[6:].strip()
+    # Ignore everything after the actual command name.
+    i = g.skip_id(commandName, 0, chars='-')
+    commandName = commandName[:i]
+    assert commandName, 'empty command name'
+    command = c.commandsDict.get(commandName)
+    assert command, 'no command: %s' % (commandName)
+
+    work,before,after = u.findChildrenOf(atTest)
+    before_h = 'before sel='
+    after_h = 'after sel='
+    for node,h in ((work,'work'),(before,before_h),(after,after_h)):
+        h2 = node.h
+        assert h2.startswith(h),'expected head: %s, got: %s' % (h,h2)
+
+    sels = []
+    for node,h in ((before,before_h),(after,after_h)):
+        sel = node.h[len(h):].strip()
+        aList = [str(z) for z in sel.split(',')]
+        sels.append(tuple(aList))
+    sel1,sel2 = sels
+    #g.trace(repr(sels))
+
+    c.selectPosition(work)
+
+    if inHeadline:
+        c.setHeadString(work,before.b)
+        # To make the node visible, and edit the label
+        c.redrawAndEdit(work)
+        w = c.edit_widget(work)
+        g.app.gui.set_focus(c,w)
+    else:
+        w = c.frame.body.bodyCtrl
+        c.setBodyString(work,before.b)
+
+    try:
+        #g.trace(repr(sel1[0]),repr(sel1[1]))
+        w.setSelectionRange(sel1[0],sel1[1],insert=sel1[1])
+        if inHeadline:
+            # simulateCommand doesn't seem to work when editing a headline
+            c.k.manufactureKeyPressForCommandName(w,commandName)
+        else:
+            c.k.simulateCommand(commandName)
+
+        # Exit headline-editing mode
+        if inHeadline:
+            g.app.gui.event_generate(c,'\n','Return',w)
+
+        location = 'headline' if inHeadline else 'body'
+        s1 = work.h if inHeadline else work.b
+        s2 = after.b
+
+        assert s1 == s2, 'mismatch in %s\nexpected: %s\n     got: %s' % (location,repr(s2),repr(s1))
+        sel3 = w.getSelectionRange()
+        ins = w.toGuiIndex(w.getInsertPoint())
+        #g.trace('ins',ins,'s1[j:...]',repr(s1[j:j+10]))
+        # Convert both selection ranges to gui indices.
+        sel2_orig = sel2
+        # g.trace(w)
+        assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
+        i,j = sel2 ; sel2 = w.toGuiIndex(i),w.toGuiIndex(j)
+        assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
+        i,j = sel3 ; sel3 = w.toGuiIndex(i),w.toGuiIndex(j)
+        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
+        c.selectPosition(atTest)
+        atTest.contract()
+        # Don't redraw.
+    finally:
+        # Make sure to restore the headline so it can be used for future tests
+        if inHeadline:
+            c.setHeadString(work,'work')
+#@+node:ekr.20111006072734.3640: *3* @common x-marked-nodes test code
+@others
+#@+node:ekr.20111006072734.3641: *4* setup_test
+def setup_test(target):
+    
+    c.unmarkAll() # Make sure we move only the test nodes!
+    
+    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
+    assert common,'no common'
+    data = g.findNodeInTree(c,common,'data')
+    assert data,'no data'
+    
+    delete_children(target)
+
+    # Copy the nodes.
+    c.selectPosition(data)
+    c.copyOutline()
+    c.selectPosition(target)
+    c.pasteOutline()
+    c.moveOutlineRight()
+    c.promote()
+    c.deleteOutline()
+    c.redraw()
+        
+    for h in ('a','b','c'):
+        p2 = g.findNodeInTree(c,target,h)
+        assert p2,'not found: %s' % (h)
+        p2.setMarked()
+        
+    for child in target.children():
+        if child.h == 'a':
+            assert child.isCloned(),'not cloned!: %s' % (child)
+        else:
+            assert not child.isCloned(),'cloned!: %s' % (child)
+        
+    # g.trace('setup complete')
+    
+#@+node:ekr.20111006115024.3613: *4* tear_down
+def tear_down(p,h=None):
+    
+    delete_children(p)
+    
+    if h:
+        node = g.findNodeAnywhere(c,h)
+        if node:
+            node.doDelete()
+            # g.trace('deleted',node.h)
+
+    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
+    common.contract()
+
+    c.redraw()
+#@+node:ekr.20111006105711.3734: *4* delete_children
+def delete_children(p):
+
+    while p.hasChildren():
+        p.firstChild().doDelete()
+#@+node:ekr.20111006072734.3642: *4* test_children
+def test_children(p):
+    
+    n = p.numberOfChildren()
+    assert n == 3 ,'children: %s' % (n)
+    
+    child = p.firstChild()
+    assert child.h == 'a','child1: %s' % (child)
+    
+    child = child.next()
+    assert child.h == 'c','child2: %s' % (child)
+    
+    child = child.next()
+    assert child.h == 'a','child3: %s' % (child)
+#@+node:ekr.20111006072734.3643: *4* test_undo (not used)
+# def test_undo(p):
+    
+    # n = p.numberOfChildren()
+    # assert n == 4 ,'undo children: %s' % (n)
+#@+node:ekr.20111006072734.3592: *4* data
+#@+node:ekr.20111006072734.3600: *5* a
+#@+node:ekr.20111006072734.3601: *6* b
+#@+node:ekr.20111006072734.3597: *5* c
+#@+node:ekr.20111006072734.3598: *5* d
+#@+node:ekr.20111006072734.3599: *5* e
+#@+node:ekr.20111006072734.3600: *6* a
+#@+node:ekr.20111006072734.3601: *7* b
+#@+node:ekr.20100812172232.5800: *3* @common leoRst test code
+@others
+#@+node:ekr.20100812182942.5804: *4* class rst3Test
+class rst3Test:
+
+    def __init__ (self,c,p):
+        self.c = c
+        self.p = p.copy()
+        self.run()
+
+    @others
+#@+node:ekr.20100827194549.5963: *5* report
+def report (self,expected,got):
+
+    verbose = True
+    expected_lines = g.splitLines(expected.b)
+    got_lines = g.splitLines(got.b)
+
+    for i in range(min(len(expected_lines),len(got_lines))):
+        match = expected_lines[i]==got_lines[i]
+        if verbose or not match:
+            tag = g.choose(match,'  ','**')
+            print ('%3d%s %s' % (i,tag,repr(expected_lines[i])))
+            print ('%3d%s %s' % (i,tag,repr(got_lines[i])))
+        if not verbose and not match:
+            break
+#@+node:ekr.20100827183358.5957: *5* run
+def run(self):
+    import sys
+    if not sys.platform.startswith('win') and \
+        g.isPython3: return
+    def clean(s):
+        return s.replace('\r','')
+    c,p = self.c,self.p
+    rc = c.rstCommands
+    expected,got,source = self.setup()
+    rc.processTree(p=source.firstChild(),ext='.html',toString=True,justOneFile=True)
+    rst = clean(rc.source)
+    html = clean(rc.stringOutput)
+    assert rst,'rst'
+    assert html,'html'
+    # Kludge: disregard version of docutils.
+    html = html.replace('Docutils 0.8.1:','Docutils 0.8:')
+    html = html.replace('Docutils 0.6:','Docutils 0.8:')
+    html = html.replace('Docutils 0.7:','Docutils 0.8:')
+    if expected.hasChildren():
+        child1 = expected.firstChild()
+        child2 = expected.firstChild().next()
+        child1_b = clean(child1.b)
+        child2_b = clean(child2.b)
+        ok = rst == child1_b and html == child2_b
+        if not ok:
+            got_html,got_rst = self.set_got(expected,got)
+            got_html.b = html
+            got_rst.b = rst
+        if rst != child1_b:
+            self.report(child1,got_rst)
+        if html != child2_b:
+            self.report(child2,got_html)
+        assert rst == child1_b,'rst mismatch'
+        assert html == child2_b,'html mismatch'
+    else:
+        child = expected.insertAsNthChild(0)
+        child.h,child.b = 'rst',rst
+        child = expected.insertAsNthChild(1)
+        child.h,child.b = ' html',html
+#@+node:ekr.20100827183358.5958: *5* setup
+def setup (self):
+
+    c,p = self.c, self.p
+
+    expected = g.findNodeInTree(c,p,'expected')
+    got = g.findNodeInTree(c,p,'got')
+    source = g.findNodeInTree(c,p,'source')
+
+    assert source,'source'
+    assert expected,'expected'
+
+    return expected,got,source
+#@+node:ekr.20100827183358.5959: *5* set_got
+def set_got (self,expected,got):
+
+    c,p = self.c, self.p
+
+    if got:
+        got_rst = g.findNodeInTree(c,got,'rst')
+        got_html = g.findNodeInTree(c,got,'html')
+        assert got_rst
+        assert got_html
+    else:
+        got = p.insertAsLastChild()
+        got.h = 'got'
+        got_rst = got.insertAsNthChild(0)
+        got_rst.h = 'rst'
+        got_html = got.insertAsNthChild(1)
+        got_html.h = 'html'
+
+    return got_html,got_rst
 #@+node:ekr.20090703080553.5000: ** @suite run all doctests
 import unittest
 import leo.core.leoTest as leoTest
@@ -903,8 +1244,12 @@ assert g.os_path_exists(name)
 #@+node:ekr.20100223123103.5382: *3* @test expand/contract-pane
 import leo.core.leoFrame as leoFrame
 
-# The test is not valid when run externally.
-if not isinstance(c.frame,leoFrame.nullFrame):
+# Do nothing when run externally.
+if g.app.isExternalUnitTest:
+    pass
+    
+else:
+    assert not isinstance(c.frame,leoFrame.nullFrame)
     
     # These commands are implemented by qtGui.py
     def closeEnough(f1,f2):
@@ -6612,30 +6957,6 @@ for n,node,index in table:
             print('at line %s, index %s, node %s\ngot line %s\nexpected %s' % (
                 n,n2,p2.h,repr(lines2[n2].lstrip()),repr(lines[n].lstrip())))
         assert ok
-#@+node:ekr.20110610122533.3407: *8* @auto ../test/at-auto-unit-test.py
-@language python
-@tabwidth -4
-@others
-# last line
-#@+node:ekr.20110610122533.3408: *9* class child1
-class child1:
-    @others
-    # After @others in child1.
-#@+node:ekr.20110610122533.3409: *10* child1_method1
-def child1_method1():
-    pass
-#@+node:ekr.20110610122533.3410: *10* child1_method2
-def child1_method2():
-    pass
-#@+node:ekr.20110610122533.3411: *9* class child2
-class child2:
-    @others
-#@+node:ekr.20110610122533.3412: *10* child2_method1
-def child2_method1():
-    pass
-#@+node:ekr.20110610122533.3413: *10* child2_method2
-def child2_method2():
-    pass
 #@+node:ekr.20110610122533.3393: *6* Tests with @file as the root
 #@+node:ekr.20110610122533.3394: *7* @test goto-global-line @file 1
 root = p.parent().parent()
@@ -8690,190 +9011,6 @@ c.contractAllHeadlines()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 
-#@+node:ekr.20100830114008.5967: *4* @common leoEditCommands test code
-@others
-#@+node:ekr.20100830114008.5968: *5* runEditCommandTest
-import leo.core.leoTest as leoTest
-
-@
-This is an updated version of leo.core.leoTest.runEditCommandTest,
-moved here to take advantage of EKR's new common-test-code-sharing
-mechanism. It should be okay to delete the old code and replace
-all uses with:
-
-    exec(g.findTestScript(c,'@common leoEditCommands test code'))
-    runEditCommandTest(c,p)
-@c
-
-def runEditCommandTest (c,p,inHeadline=False):
-    '''
-    This is a helper for testing edit commands. It takes the name of the
-    command from the title of the test and the before and after conditions
-    from child nodes.
-
-    :param inHeadline: if True, tests the command in the headline; if False,
-    tests the command in the body.
-    '''
-
-    u = leoTest.testUtils(c) ; atTest = p.copy()
-
-    h = atTest.h
-    assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
-    commandName = h[6:].strip()
-    # Ignore everything after the actual command name.
-    i = g.skip_id(commandName, 0, chars='-')
-    commandName = commandName[:i]
-    assert commandName, 'empty command name'
-    command = c.commandsDict.get(commandName)
-    assert command, 'no command: %s' % (commandName)
-
-    work,before,after = u.findChildrenOf(atTest)
-    before_h = 'before sel='
-    after_h = 'after sel='
-    for node,h in ((work,'work'),(before,before_h),(after,after_h)):
-        h2 = node.h
-        assert h2.startswith(h),'expected head: %s, got: %s' % (h,h2)
-
-    sels = []
-    for node,h in ((before,before_h),(after,after_h)):
-        sel = node.h[len(h):].strip()
-        aList = [str(z) for z in sel.split(',')]
-        sels.append(tuple(aList))
-    sel1,sel2 = sels
-    #g.trace(repr(sels))
-
-    c.selectPosition(work)
-
-    if inHeadline:
-        c.setHeadString(work,before.b)
-        # To make the node visible, and edit the label
-        c.redrawAndEdit(work)
-        w = c.edit_widget(work)
-        g.app.gui.set_focus(c,w)
-    else:
-        w = c.frame.body.bodyCtrl
-        c.setBodyString(work,before.b)
-
-    try:
-        #g.trace(repr(sel1[0]),repr(sel1[1]))
-        w.setSelectionRange(sel1[0],sel1[1],insert=sel1[1])
-        if inHeadline:
-            # simulateCommand doesn't seem to work when editing a headline
-            c.k.manufactureKeyPressForCommandName(w,commandName)
-        else:
-            c.k.simulateCommand(commandName)
-
-        # Exit headline-editing mode
-        if inHeadline:
-            g.app.gui.event_generate(c,'\n','Return',w)
-
-        location = 'headline' if inHeadline else 'body'
-        s1 = work.h if inHeadline else work.b
-        s2 = after.b
-
-        assert s1 == s2, 'mismatch in %s\nexpected: %s\n     got: %s' % (location,repr(s2),repr(s1))
-        sel3 = w.getSelectionRange()
-        ins = w.toGuiIndex(w.getInsertPoint())
-        #g.trace('ins',ins,'s1[j:...]',repr(s1[j:j+10]))
-        # Convert both selection ranges to gui indices.
-        sel2_orig = sel2
-        # g.trace(w)
-        assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
-        i,j = sel2 ; sel2 = w.toGuiIndex(i),w.toGuiIndex(j)
-        assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
-        i,j = sel3 ; sel3 = w.toGuiIndex(i),w.toGuiIndex(j)
-        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-        c.selectPosition(atTest)
-        atTest.contract()
-        # Don't redraw.
-    finally:
-        # Make sure to restore the headline so it can be used for future tests
-        if inHeadline:
-            c.setHeadString(work,'work')
-#@+node:ekr.20111006072734.3640: *4* @common x-marked-nodes test code
-@others
-#@+node:ekr.20111006072734.3641: *5* setup_test
-def setup_test(target):
-    
-    c.unmarkAll() # Make sure we move only the test nodes!
-    
-    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
-    assert common,'no common'
-    data = g.findNodeInTree(c,common,'data')
-    assert data,'no data'
-    
-    delete_children(target)
-
-    # Copy the nodes.
-    c.selectPosition(data)
-    c.copyOutline()
-    c.selectPosition(target)
-    c.pasteOutline()
-    c.moveOutlineRight()
-    c.promote()
-    c.deleteOutline()
-    c.redraw()
-        
-    for h in ('a','b','c'):
-        p2 = g.findNodeInTree(c,target,h)
-        assert p2,'not found: %s' % (h)
-        p2.setMarked()
-        
-    for child in target.children():
-        if child.h == 'a':
-            assert child.isCloned(),'not cloned!: %s' % (child)
-        else:
-            assert not child.isCloned(),'cloned!: %s' % (child)
-        
-    # g.trace('setup complete')
-    
-#@+node:ekr.20111006115024.3613: *5* tear_down
-def tear_down(p,h=None):
-    
-    delete_children(p)
-    
-    if h:
-        node = g.findNodeAnywhere(c,h)
-        if node:
-            node.doDelete()
-            # g.trace('deleted',node.h)
-
-    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
-    common.contract()
-
-    c.redraw()
-#@+node:ekr.20111006105711.3734: *5* delete_children
-def delete_children(p):
-
-    while p.hasChildren():
-        p.firstChild().doDelete()
-#@+node:ekr.20111006072734.3642: *5* test_children
-def test_children(p):
-    
-    n = p.numberOfChildren()
-    assert n == 3 ,'children: %s' % (n)
-    
-    child = p.firstChild()
-    assert child.h == 'a','child1: %s' % (child)
-    
-    child = child.next()
-    assert child.h == 'c','child2: %s' % (child)
-    
-    child = child.next()
-    assert child.h == 'a','child3: %s' % (child)
-#@+node:ekr.20111006072734.3643: *5* test_undo (not used)
-# def test_undo(p):
-    
-    # n = p.numberOfChildren()
-    # assert n == 4 ,'undo children: %s' % (n)
-#@+node:ekr.20111006072734.3592: *5* data
-#@+node:ekr.20111006072734.3600: *6* a
-#@+node:ekr.20111006072734.3601: *7* b
-#@+node:ekr.20111006072734.3597: *6* c
-#@+node:ekr.20111006072734.3598: *6* d
-#@+node:ekr.20111006072734.3599: *6* e
-#@+node:ekr.20111006072734.3600: *7* a
-#@+node:ekr.20111006072734.3601: *8* b
 #@+node:ekr.20100131180007.5453: *4* @test dynamicExpandHelper
 # A totally wimpy test.
 c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',rlist=None,w=None)
@@ -9284,10 +9421,13 @@ try:
 finally:
     c2.setChanged(False)
     c2.close()
-#@+node:ekr.20090507084947.5152: *4* @test t.fileIndex remains the same (not valid when run externally)
-# print(p.v.fileIndex) 
+#@+node:ekr.20090507084947.5152: *4* @test t.fileIndex remains the same
+# print(p.v.fileIndex)
 
-assert p.v.fileIndex == ('ekr', '20090507084947', 5152)
+if g.app.isExternalUnitTest:
+    pass # Not a valid test when run externally.
+else:
+    assert p.v.fileIndex == ('ekr', '20090507084947', 5152)
 #@+node:ekr.20071113202045: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
@@ -10164,15 +10304,16 @@ g.app.unitTestDict['restoreSelectedNode']=False
 #@+node:ekr.20111003145300.3466: *4* @test illegal drag gives warning
 '''Test that dragging this node onto the child node generates a warning.'''
 
-fn = '<file name>'
-p2 = p.firstChild()
-
-# Not valid for nullTree (dynamic unit tests).
-tree = c.frame.tree
-if hasattr(tree,'treeWidget'):
-    for cloneDrag in (True,False):
-        tree.treeWidget.intraFileDrop(cloneDrag,fn,p,p2)
-        assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
+if g.app.isExternalUnitTest:
+    pass # Not a valid test when run externally.
+else:
+    fn = '<file name>'
+    p2 = p.firstChild()
+    tree = c.frame.tree
+    if hasattr(tree,'treeWidget'):
+        for cloneDrag in (True,False):
+            tree.treeWidget.intraFileDrop(cloneDrag,fn,p,p2)
+            assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
 #@+node:ekr.20111003145300.3467: *5* a
 #@+node:ekr.20100131171342.5602: *4* @test leoTextWidget
 if g.app.gui.guiName() == 'tkinter':
@@ -10260,61 +10401,6 @@ g.app.unitTestDict['restoreSelectedNode']=False
 
 # print('\nEnd of leoGui tests.')
 #@+node:ekr.20090529141856.4682: *3* leoImport
-#@+node:ekr.20111112092813.4060: *4* @mark-for-unit-tests
-#@+node:ekr.20090529141856.4700: *5* importTests
-@language plain
-#@+node:ekr.20090529141856.4701: *6* tempNode
-#@+node:ekr.20090529141856.4702: *6* importAtRoot
-#@+node:ekr.20090529141856.4703: *7* dialog
-openFileDialog
-test\\unittest\\perfectImport\\formatter.py
-#@+node:ekr.20090529141856.4704: *6* importDerivedFile
-#@+node:ekr.20090529141856.4705: *7* dialog
-openFileDialog
-core\\runLeo.py
-#@+node:ekr.20090529141856.4706: *6* importNowebFiles
-#@+node:ekr.20090529141856.4707: *7* dialog
-openFileDialog
-test\\unittest\\input\\noweave.nw.txt
-#@+node:ekr.20090529141856.4708: *6* importFlattenedOutline
-#@+node:ekr.20090529141856.4709: *7* dialog
-openFileDialog
-test\\unittest\\input\\flat.txt
-#@+node:ekr.20090529141856.4710: *6* importCWEBFiles
-#@+node:ekr.20090529141856.4711: *7* dialog
-openFileDialog
-test\\unittest\\input\\cweave.w
-#@+node:ekr.20090529141856.4712: *6* removeSentinels
-#@+node:ekr.20090529141856.4713: *7* dialog
-openFileDialog
-test\\unittest\\input\\testLeoAtFile.py
-#@+node:ekr.20090529141856.4714: *6* importAtFile
-#@+node:ekr.20090529141856.4715: *7* dialog
-openFileDialog
-test\\unittest\\perfectImport\\formatter.py
-#@+node:ekr.20090529141856.4686: *5* exportTests
-@language plain
-#@+node:ekr.20090529141856.4687: *6* tempNode
-#@+node:ekr.20090529141856.4688: *6* exportHeadlines
-#@+node:ekr.20090529141856.4689: *7* dialog
-saveFileDialog
-test\\unittest\\output\\exportHeadlines.txt
-#@+node:ekr.20090529141856.4690: *6* flattenOutline
-#@+node:ekr.20090529141856.4691: *7* dialog
-saveFileDialog
-test\\unittest\\output\\flattenOutline.txt
-#@+node:ekr.20090529141856.4692: *6* weave
-#@+node:ekr.20090529141856.4693: *7* dialog
-saveFileDialog
-test\\unittest\\output\\weave.txt
-#@+node:ekr.20090529141856.4694: *6* outlineToNoweb
-#@+node:ekr.20090529141856.4695: *7* dialog
-saveFileDialog
-test\\unittest\\output\\outlineToNoweb.txt
-#@+node:ekr.20090529141856.4696: *6* outlineToCWEB
-#@+node:ekr.20090529141856.4697: *7* dialog
-saveFileDialog
-test\\unittest\\output\\outlineToCweb.txt
 #@+node:ekr.20090529141856.4684: *4*  Export tests
 @language python
 @tabwidth -4
@@ -12439,7 +12525,7 @@ def moreBody (self):
                 s = s[:i] + '\\' + s[i:]
         result.append(s)
     return string.join(result,'\n')
-#@+node:ville.20090312195309.2: *4* @test find_h / find_b / filter_h / filter_b
+#@+node:ville.20090312195309.2: *4* @@@test find_h / find_b / filter_h / filter_b
 #if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
@@ -13390,104 +13476,6 @@ for fn,expected in table:
     assert result2==result
 #@+node:ekr.20091219122958.5066: *3* leoRst
 # Warning: these depend on the .css files in leo\test\unittest.
-#@+node:ekr.20100812172232.5800: *4* @common leoRst test code
-@others
-#@+node:ekr.20100812182942.5804: *5* class rst3Test
-class rst3Test:
-
-    def __init__ (self,c,p):
-        self.c = c
-        self.p = p.copy()
-        self.run()
-
-    @others
-#@+node:ekr.20100827194549.5963: *6* report
-def report (self,expected,got):
-
-    verbose = True
-    expected_lines = g.splitLines(expected.b)
-    got_lines = g.splitLines(got.b)
-
-    for i in range(min(len(expected_lines),len(got_lines))):
-        match = expected_lines[i]==got_lines[i]
-        if verbose or not match:
-            tag = g.choose(match,'  ','**')
-            print ('%3d%s %s' % (i,tag,repr(expected_lines[i])))
-            print ('%3d%s %s' % (i,tag,repr(got_lines[i])))
-        if not verbose and not match:
-            break
-#@+node:ekr.20100827183358.5957: *6* run
-def run(self):
-    import sys
-    if not sys.platform.startswith('win') and \
-        g.isPython3: return
-    def clean(s):
-        return s.replace('\r','')
-    c,p = self.c,self.p
-    rc = c.rstCommands
-    expected,got,source = self.setup()
-    rc.processTree(p=source.firstChild(),ext='.html',toString=True,justOneFile=True)
-    rst = clean(rc.source)
-    html = clean(rc.stringOutput)
-    assert rst,'rst'
-    assert html,'html'
-    # Kludge: disregard version of docutils.
-    html = html.replace('Docutils 0.8.1:','Docutils 0.8:')
-    html = html.replace('Docutils 0.6:','Docutils 0.8:')
-    html = html.replace('Docutils 0.7:','Docutils 0.8:')
-    if expected.hasChildren():
-        child1 = expected.firstChild()
-        child2 = expected.firstChild().next()
-        child1_b = clean(child1.b)
-        child2_b = clean(child2.b)
-        ok = rst == child1_b and html == child2_b
-        if not ok:
-            got_html,got_rst = self.set_got(expected,got)
-            got_html.b = html
-            got_rst.b = rst
-        if rst != child1_b:
-            self.report(child1,got_rst)
-        if html != child2_b:
-            self.report(child2,got_html)
-        assert rst == child1_b,'rst mismatch'
-        assert html == child2_b,'html mismatch'
-    else:
-        child = expected.insertAsNthChild(0)
-        child.h,child.b = 'rst',rst
-        child = expected.insertAsNthChild(1)
-        child.h,child.b = ' html',html
-#@+node:ekr.20100827183358.5958: *6* setup
-def setup (self):
-
-    c,p = self.c, self.p
-
-    expected = g.findNodeInTree(c,p,'expected')
-    got = g.findNodeInTree(c,p,'got')
-    source = g.findNodeInTree(c,p,'source')
-
-    assert source,'source'
-    assert expected,'expected'
-
-    return expected,got,source
-#@+node:ekr.20100827183358.5959: *6* set_got
-def set_got (self,expected,got):
-
-    c,p = self.c, self.p
-
-    if got:
-        got_rst = g.findNodeInTree(c,got,'rst')
-        got_html = g.findNodeInTree(c,got,'html')
-        assert got_rst
-        assert got_html
-    else:
-        got = p.insertAsLastChild()
-        got.h = 'got'
-        got_rst = got.insertAsNthChild(0)
-        got_rst.h = 'rst'
-        got_html = got.insertAsNthChild(1)
-        got_html.h = 'html'
-
-    return got_html,got_rst
 #@+node:ekr.20091219121039.5065: *4* @test rst3 handleMissingStyleSheetArgs
 x = c.rstCommands
 
