@@ -17699,6 +17699,7 @@ line 4
 2.0
 3.5
 #@+node:ekr.20050417202817: *6* deleteComments
+# created by new add-comments
 #@+node:ekr.20050417202817.1: *7* before
 @language python
 
@@ -17722,6 +17723,39 @@ def deleteCommentTest():
 #@+node:ekr.20050417202817.3: *7* selection
 5.0
 7.8
+#@+node:ekr.20111112211307.3910: *6* deleteComments
+# created by old and new add-comments.
+#@+node:ekr.20111112211307.3911: *7* before
+@language python
+
+def deleteCommentTest():
+
+#     if 1:
+#         a = 2
+#         b = 3
+
+    # if 1:
+        # a = 2
+        # b = 3
+
+    pass
+#@+node:ekr.20111112211307.3912: *7* after
+@language python
+
+def deleteCommentTest():
+
+    if 1:
+        a = 2
+        b = 3
+
+    if 1:
+        a = 2
+        b = 3
+
+    pass
+#@+node:ekr.20111112211307.3913: *7* selection
+5.0
+12.8
 #@+node:ekr.20050417201845: *6* extract test1
 #@+node:ekr.20050417201845.1: *7* before
 before

@@ -3367,25 +3367,20 @@ class Commands (object):
             d1 = d1 + ' '
             n1 = len(d1)
             for s in lines:
-                if g.match(s,0,d1):
-                    result.append(s[n1:])
+                i = g.skip_ws(s,0)
+                if g.match(s,i,d1):
+                    result.append(s[:i] + s[i+n1:])
                 else:
                     result.append(s)
-            # for line in lines:
-                # i = g.skip_ws(line,0)
-                # if g.match(line,i,d1):
-                    # j = g.skip_ws(line,i + len(d1))
-                    # result.append(line[0:i] + line[j:])
-                # else:
-                    # result.append(line)
         else:
             # Remove the block comment delimiters from each line.
             d2,d3 = d2+' ',' '+d3
             n2,n3 = len(d2),len(d3)
             for s in lines:
                 s2 = s.rstrip()
-                if g.match(s,0,d2) and g.match(s2,len(s2)-n3,d3):
-                    result.append(s[n2:-n3]+'\n')
+                i = g.skip_ws(s,0)
+                if g.match(s,i,d2) and g.match(s2,len(s2)-n3,d3):
+                    result.append(s[:i] + s[i+n2:-n3]+'\n')
                 else:
                     result.append(s)
                         

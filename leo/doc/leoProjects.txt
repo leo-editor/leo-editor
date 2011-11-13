@@ -16374,6 +16374,129 @@ Rev 4772:
 Solved "between element" problem by extending classes up to the next class.
 data.html imports "correctly", but not perfectly due to tag mismatches in
 skipToMatchingTag.
+#@+node:ekr.20111112193858.9831: *4* Fixed hard crash when deleting body editor 3 times
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/421ebf4c3f2d5f59
+
+Adding/deleting body editor 3 times hard-crashed Python
+
+The changes were straightforward:
+    
+- set w.leo_label to None when calling unpackWidget.
+
+- Test for w.leo_label before using it.
+
+Added a minitest.  To test by hand, add the following @button nodes:
+    
+    @button add-ed
+    w = c.frame.body.addEditor()
+    
+    @button del-ed
+    w = c.frame.body.deleteEditor()
+    
+Click away in any order...
+
+#@+node:ekr.20111111065410.12913: *4* Fixed add/delete html comments
+@nocolor-node
+
+The new add-comments command adds the comment character at the leftmost column.
+
+The new delete-comments command will remove the comment characters inserted by
+either the old or new version of the add-comments command.
+#@+node:ekr.20050312114529: *5* c.insert/removeComments
+#@+node:ekr.20050312114529.1: *6* addComments
+def addComments (self,event=None):
+
+    '''Convert all selected lines in the body text to comment lines.'''
+
+    c = self ; p = c.p
+    d = c.scanAllDirectives(p)
+    d1,d2,d3 = d.get('delims') # d1 is the line delim.
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    if not lines:
+        g.es('no text selected',color='blue')
+        return
+
+    d2 = d2 or '' ; d3 = d3 or ''
+    if d1: openDelim,closeDelim = d1+' ',''
+    else:  openDelim,closeDelim = d2+' ',' '+d3
+
+    # Comment out non-blank lines.
+    result = []
+    for line in lines:
+        if line.strip():
+            i = g.skip_ws(line,0)
+            # result.append(line[0:i]+openDelim+line[i:]+closeDelim)
+            result.append(openDelim+line.rstrip()+closeDelim+'\n')
+        else:
+            result.append(line)
+
+    result = ''.join(result)
+    c.updateBodyPane(head,result,tail,undoType='Add Comments',oldSel=None,oldYview=oldYview)
+#@+node:ekr.20050312114529.2: *6* deleteComments
+def deleteComments (self,event=None):
+
+    '''Remove one level of comment delimiters from all selected lines in the body text.'''
+
+    c = self ; p = c.p
+    d = c.scanAllDirectives(p)
+    # d1 is the line delim.
+    d1,d2,d3 = d.get('delims')
+
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    result = []
+    if not lines:
+        g.es('no text selected',color='blue')
+        return
+
+    if d1:
+        # Remove the single-line comment delim in front of each line
+        d1 = d1 + ' '
+        n1 = len(d1)
+        for s in lines:
+            i = g.skip_ws(s,0)
+            if g.match(s,i,d1):
+                result.append(s[:i] + s[i+n1:])
+            else:
+                result.append(s)
+    else:
+        # Remove the block comment delimiters from each line.
+        d2,d3 = d2+' ',' '+d3
+        n2,n3 = len(d2),len(d3)
+        for s in lines:
+            s2 = s.rstrip()
+            i = g.skip_ws(s,0)
+            if g.match(s,i,d2) and g.match(s2,len(s2)-n3,d3):
+                result.append(s[:i] + s[i+n2:-n3]+'\n')
+            else:
+                result.append(s)
+                    
+        # n = len(lines)
+        # for i in range(n):
+            # line = lines[i]
+            # if i not in (0,n-1):
+                # result.append(line)
+            # if i == 0:
+                # j = g.skip_ws(line,0)
+                # if g.match(line,j,d2):
+                    # k = g.skip_ws(line,j + len(d2))
+                    # result.append(line[0:j] + line[k:])
+                # else:
+                    # g.es('',"'%s'" % (d2),"not found",color='blue')
+                    # return
+            # if i == n-1:
+                # if i == 0:
+                    # line = result[0] ; result = []
+                # s = line.rstrip()
+                # if s.endswith(d3):
+                    # result.append(s[:-len(d3)].rstrip())
+                # else:
+                    # g.es('',"'%s'" % (d3),"not found",color='blue')
+                    # return
+
+    result = ''.join(result)
+    c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
