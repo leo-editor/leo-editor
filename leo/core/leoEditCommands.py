@@ -5242,7 +5242,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         w.seeInsertPoint()
         c.frame.updateStatusLine()
-    #@+node:ekr.20051218122116: *5* moveToHelper
+    #@+node:ekr.20051218122116: *5* moveToHelper (leoEditCommands)
     def moveToHelper (self,event,spot,extend):
 
         '''Common helper method for commands the move the cursor
@@ -5623,7 +5623,8 @@ class editCommandsClass (baseEditCommandsClass):
             if spot == 'start-line':
                 self.moveToHelper(event,i,extend=extend)
             elif spot == 'end-line':
-                # if g.match(s,i-1,'\n'): i -= 1
+                # Bug fix: 2011/11/13: Significant in external tests.
+                if g.match(s,j-1,'\n'): j -= 1
                 self.moveToHelper(event,j,extend=extend)
             else:
                 g.trace('can not happen: bad spot: %s' % spot)
@@ -6410,7 +6411,7 @@ class editCommandsClass (baseEditCommandsClass):
     def scrollUpPage (self,event):
         '''Scroll the presently selected pane up one page.'''
         self.scrollHelper(event,'up','page')
-    #@+node:ekr.20060113082917: *5* scrollHelper
+    #@+node:ekr.20060113082917: *5* scrollHelper (leoEditCommands)
     def scrollHelper (self,event,direction,distance):
 
         '''Scroll the present pane up or down one page
@@ -6424,11 +6425,13 @@ class editCommandsClass (baseEditCommandsClass):
             kind = direction + '-' + distance
             w.scrollDelegate(kind)
         else:
-            self.tkScrollHelper(event,direction,distance)
+            self.scrollHelperHelper(event,direction,distance)
 
-    def tkScrollHelper (self,event,direction,distance,extend=None):
-        #Scroll body pane up/down (direction) by page/half-page/line (distance)
-        #Note: Currently moves cursor, scrolls if needed to keep cursor visible
+    def scrollHelperHelper (self,event,direction,distance,extend=None):
+        '''
+        Scroll body pane up/down (direction) by page/half-page/line (distance)
+        Note: Currently moves cursor, scrolls if needed to keep cursor visible.
+        '''
         k = self.k ; c = k.c ; gui = g.app.gui
         w = event and event.w
         if not w: return #  This does **not** require a text widget.
@@ -6439,8 +6442,7 @@ class editCommandsClass (baseEditCommandsClass):
             ins1 = w.getInsertPoint()
             s = w.getAllText()
             row,col = g.convertPythonIndexToRowCol(s,ins1)
-            # Compute the spot.
-            # assume scroll by "page"
+            # Compute the spot. The default is scroll by "page"
             delta = self.measure(w)
             if distance == 'half-page':
                 delta = delta / 2
@@ -6448,7 +6450,8 @@ class editCommandsClass (baseEditCommandsClass):
                 delta = 1
             row1 = g.choose(direction=='down',row+delta,row-delta)
             row1 = max(0,row1)
-            spot = g.convertRowColToPythonIndex(s,row1,col)
+            # Bug fix: 2011/11/13: Significant in external tests.
+            spot = g.convertRowColToPythonIndex(s,int(row1),int(col))
             self.extendHelper(w,extend,spot)
             if g.app.trace_scroll: g.trace('seeInsertPoint',spot)
             w.seeInsertPoint()

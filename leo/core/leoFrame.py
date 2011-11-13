@@ -219,7 +219,7 @@ class baseTextWidget:
         i = w.toPythonIndex(index)
         row,col = g.convertPythonIndexToRowCol(s,i)
         return i,row,col
-    #@+node:ekr.20070228074312.13: *5* delete
+    #@+node:ekr.20070228074312.13: *5* delete (baseTextWidget)
     def delete(self,i,j=None):
 
         w = self
@@ -230,7 +230,10 @@ class baseTextWidget:
         # g.trace(i,j,len(s),repr(s[:20]))
         s = w.getAllText()
         w.setAllText(s[:i] + s[j:])
-    #@+node:ekr.20070228074312.14: *5* deleteTextSelection
+        
+        # Bug fix: 2011/11/13: Significant in external tests.
+        w.setSelectionRange(i,i,insert=i)
+    #@+node:ekr.20070228074312.14: *5* deleteTextSelection (baseTextWidget)
     def deleteTextSelection (self):
 
         i,j = self.getSelectionRange()
@@ -1306,7 +1309,10 @@ class leoBody:
     def setInsertPoint (self,pos):          return self.bodyCtrl.setInsertPoint(pos)
         # was getInsertPoint.
     def setFocus(self):                     return self.bodyCtrl.setFocus()
+
     def setSelectionRange (self,sel):       i,j = sel ; self.bodyCtrl.setSelectionRange(i,j)
+    # def setSelectionRange(self,i,j,insert=None):
+    #     self.bodyCtrl.setSelectionRange(i,j,insert=insert)
     #@+node:ekr.20081005065934.6: *3* leoBody: may be defined in subclasses
     def forceFullRecolor (self):
         self.forceFullRecolorFlag = True
@@ -2744,9 +2750,12 @@ class nullColorizer: ### (colorizer):
         ### colorizer.__init__(self,c) # init the base class.
 
         self.c = c
+        self.count = 0
         self.enabled = False
+
     #@+node:ekr.20031218072017.2220: *3* entry points
     def colorize(self,p,incremental=False,interruptable=True):
+        self.count += 1 # Used by unit tests.
         return 'ok' # Used by unit tests.
 
     def disable(self): pass
@@ -2765,6 +2774,9 @@ class nullColorizer: ### (colorizer):
         self.image_references = []
 
     def updateSyntaxColorer (self,p): pass
+
+    def useSyntaxColoring(self,p):
+        return None
     #@-others
 #@+node:ekr.20031218072017.2222: ** class nullFrame
 class nullFrame (leoFrame):
