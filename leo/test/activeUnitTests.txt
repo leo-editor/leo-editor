@@ -694,8 +694,8 @@ table = (
 # Check existence.
 for tag,aList in table:
     for z in aList:
-        assert hasattr(c.frame.log,z),'%s %s' % (tag,z)
-        assert hasattr(c.frame.body,z),'%s %s' % (tag,z)
+        assert hasattr(c.frame.log,z),'%s %s %s' % (tag,c.frame.log,z)
+        assert hasattr(c.frame.body,z),'%s %s %s' % (tag,c.frame.body,z)
 
 # Check signatures.
 import inspect
@@ -8889,7 +8889,7 @@ if not g.app.isExternalUnitTest:
         w.setSelectionRange('end','end')
         k.manufactureKeyPressForCommandName(w,'paste-text')
         g.app.gui.event_generate(c,'\n','Return',w)
-        w.update()
+        ### w.update()
         if 1:
             assert p.h == h + paste,'Expected: %s, got %s' % (
                 h + paste,p.h)
@@ -9113,36 +9113,6 @@ if g.app.gui.guiName() != 'tkinter':
         if 1:
             c.setBodyString(p,'')
             c.redraw(p)
-#@+node:ekr.20051107115231.25: *5* @test typing in headline recomputes width
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-k = c.keyHandler
-h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.redraw(p) # To make node visible
-c.frame.tree.editLabel(p)
-w = c.edit_widget(p)
-try:
-    assert w
-    g.app.gui.set_focus(c,w)
-    w2 = g.app.gui.get_focus(c)
-    # assert w == w2 or hasattr(w,'widget') and w.widget == w2,'w: %s\nw2: %s' % (w,w2)
-    w.setSelectionRange('end','end')
-    n = w.getWidth()
-    g.app.gui.event_generate(c,'X','Shift+X',w)
-    g.app.gui.event_generate(c,'Y','Shift+Y',w)
-    g.app.gui.event_generate(c,'Z','Shift+Z',w)
-    g.app.gui.event_generate(c,'\n','Return',w)
-    w.update()
-    assert w, 'fail 2'
-    # n2 = w.getWidth()
-    # if g.app.gui.guiName() == 'tkinter':
-        # assert n2 > n, '%s %s' % (n2,n)
-    # g.trace(n,n2)
-finally:
-    if 1:
-        c.setHeadString(p,h) # Essential
-        c.redraw(p)
 #@+node:ekr.20051109091731: *5* @test typing in non-empty body text does not redraw the screen
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
@@ -9821,12 +9791,6 @@ assert after == s[end:]
 # end.
 #@+node:ekr.20100131180007.5359: *4* @test OnIconDoubleClick
 c.frame.tree.OnIconDoubleClick(p)
-#@+node:ekr.20061104172236.23: *4* @test tkBody.onClick
-w = c.frame.body.bodyCtrl
-y = 10
-for x in range(0,100,10):
-    event = g.app.gui.create_key_event(c,None,None,w,x=x,y=y)
-    c.frame.body.onClick(event)
 #@+node:ekr.20071113202153.1: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

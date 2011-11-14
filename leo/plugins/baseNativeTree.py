@@ -108,7 +108,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     # These can be over-ridden if desired,
     # but they do not have to be over-ridden.
 
-    def bind (self,*args,**keys):               pass
+    ### def bind (self,*args,**keys):               pass
 
     def headWidth(self,p=None,s=''):            return 0
     def widthInPixels(self,s):                  return 0

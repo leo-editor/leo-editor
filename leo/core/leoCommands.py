@@ -6764,9 +6764,7 @@ class Commands (object):
         c.redraw(p)
         c.updateSyntaxColorer(clone) # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2949: *3* Drawing Utilities (commands)
-    #@+node:ekr.20080515053412.1: *4* c.add_command, c.bind, c.bind2 & c.tag_bind
-    # These wrappers ensure that c.outerUpdate get called.
-    #@+node:ekr.20080610085158.2: *5* c.add_command
+    #@+node:ekr.20080610085158.2: *4* c.add_command
     def add_command (self,menu,**keys):
 
         c = self ; command = keys.get('command')
@@ -6790,49 +6788,6 @@ class Commands (object):
 
         else:
             g.trace('can not happen: no "command" arg')
-    #@+node:ekr.20080610085158.3: *5* c.bind and c.bind2
-    def bind (self,w,pattern,func,*args,**keys):
-
-        c = self ; callers = g.callers()
-
-        def bindCallback(event,c=c,func=func,callers=callers):
-            # g.trace('func',func.__name__)
-            
-            # A possible hook for the Tk gui.
-            # if hasattr(g.app.gui,'leoTkKeyEvent'):
-                # g.trace('creating wrapper event')
-                # stroke = keys.get('stroke','')  
-                # event = g.app.gui.leoTkKeyEvent(event,c,stroke=stroke)
-
-            val = func(event)
-            # Careful: func may destroy c.
-            if c.exists: c.outerUpdate()
-            return val
-
-        w.bind(pattern,bindCallback,*args,**keys)
-
-    def bind2 (self,w,pattern,func,*args,**keys):
-
-        c = self
-
-        def bindCallback2(event,c=c,func=func):
-            val = func(event)
-            # Careful: func may destroy c.
-            if c.exists: c.outerUpdate()
-            return val
-
-        w.bind(pattern,bindCallback2,*args,**keys)
-    #@+node:ekr.20080610085158.4: *5* c.tag_bind
-    def tag_bind (self,w,tag,event_kind,func):
-
-        c = self
-        def tag_bindCallback(event,c=c,func=func):
-            val = func(event)
-            # Careful: func may destroy c.
-            if c.exists: c.outerUpdate()
-            return val
-
-        w.tag_bind(tag,event_kind,tag_bindCallback)
     #@+node:ekr.20080514131122.7: *4* c.begin/endUpdate
 
     def beginUpdate(self):
@@ -8458,7 +8413,7 @@ class nodeHistory:
 
         if cc and chapter and chapter != cc.getSelectedChapter():
             cc.selectChapterByName(chapter.name)
-    #@+node:ville.20090724234020.14676: *3* update
+    #@+node:ville.20090724234020.14676: *3* update (leoCommands)
     def update (self,p):
         
         trace = (False or self.trace) and not g.unitTesting

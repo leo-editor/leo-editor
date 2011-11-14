@@ -4838,7 +4838,7 @@ class editCommandsClass (baseEditCommandsClass):
             ins = i+n
 
         w.setSelectionRange(ins,ins,insert=ins)
-    #@+node:ekr.20060627091557: *5* flashCharacter
+    #@+node:ekr.20060627091557: *5* flashCharacter (leoEditCommands)
     def flashCharacter(self,w,i):
 
         bg      = self.bracketsFlashBg or 'DodgerBlue1'
@@ -4904,7 +4904,7 @@ class editCommandsClass (baseEditCommandsClass):
                 self.updateAutoIndent(p,w)
 
         w.seeInsertPoint()
-    #@+node:ekr.20051026171121.1: *5* updateAutoIndent (leoEditCommands) (BUGGY??
+    #@+node:ekr.20051026171121.1: *5* updateAutoIndent (leoEditCommands)
     def updateAutoIndent (self,p,w):
 
         trace = False and not g.unitTesting
@@ -6366,27 +6366,6 @@ class editCommandsClass (baseEditCommandsClass):
         self.endCommand(changed=changed,setLabel=True)
     #@-others
     #@+node:ekr.20060309060654: *3* scrolling...
-    #@+node:ekr.20050920084036.147: *4* measure
-    def measure (self,w):
-
-        if hasattr(w,'linesPerPage'):
-            # Preferred.  Qt implements this.
-            n = w.linesPerPage()
-            return max(2,n-3)
-        else:
-            s = w.getAllText()
-            ins = w.getInsertPoint()
-            start, junk = g.convertPythonIndexToRowCol(s,ins)
-            start += 1 ; delta = 0
-            ustart = start - 1
-            while ustart >= 1 and w.indexIsVisible('%s.0' % ustart):
-                delta += 1 ; ustart -= 1
-
-            ustart = start + 1
-            while w.indexIsVisible('%s.0' % ustart):
-                delta += 1 ; ustart += 1
-
-            return delta
     #@+node:ekr.20050920084036.116: *4* scrollUp/Down & helper
     def scrollDownHalfPage (self,event):
         '''Scroll the presently selected pane down one lline.'''
@@ -6425,36 +6404,8 @@ class editCommandsClass (baseEditCommandsClass):
             kind = direction + '-' + distance
             w.scrollDelegate(kind)
         else:
-            self.scrollHelperHelper(event,direction,distance)
-
-    def scrollHelperHelper (self,event,direction,distance,extend=None):
-        '''
-        Scroll body pane up/down (direction) by page/half-page/line (distance)
-        Note: Currently moves cursor, scrolls if needed to keep cursor visible.
-        '''
-        k = self.k ; c = k.c ; gui = g.app.gui
-        w = event and event.w
-        if not w: return #  This does **not** require a text widget.
-
-        if gui.isTextWidget(w):
-            c.widgetWantsFocusNow(w)
-            # Remember the original insert point.  This may become the moveSpot.
-            ins1 = w.getInsertPoint()
-            s = w.getAllText()
-            row,col = g.convertPythonIndexToRowCol(s,ins1)
-            # Compute the spot. The default is scroll by "page"
-            delta = self.measure(w)
-            if distance == 'half-page':
-                delta = delta / 2
-            elif distance == 'line':
-                delta = 1
-            row1 = g.choose(direction=='down',row+delta,row-delta)
-            row1 = max(0,row1)
-            # Bug fix: 2011/11/13: Significant in external tests.
-            spot = g.convertRowColToPythonIndex(s,int(row1),int(col))
-            self.extendHelper(w,extend,spot)
-            if g.app.trace_scroll: g.trace('seeInsertPoint',spot)
-            w.seeInsertPoint()
+            pass
+            ### self.scrollHelperHelper(event,direction,distance)
     #@+node:ekr.20060309060654.1: *4* scrollOutlineUp/Down/Line/Page
     def scrollOutlineDownLine (self,event=None):
         '''Scroll the outline pane down one line.'''

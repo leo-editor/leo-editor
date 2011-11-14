@@ -123,7 +123,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 </v>
-<v t="ekr.20101220161557.6013"><vh>Slow tests</vh>
+<v t="ekr.20101220161557.6013"><vh>Slow and unused tests</vh>
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
@@ -675,8 +675,8 @@ table = (
 # Check existence.
 for tag,aList in table:
     for z in aList:
-        assert hasattr(c.frame.log,z),'%s %s' % (tag,z)
-        assert hasattr(c.frame.body,z),'%s %s' % (tag,z)
+        assert hasattr(c.frame.log,z),'%s %s %s' % (tag,c.frame.log,z)
+        assert hasattr(c.frame.body,z),'%s %s %s' % (tag,c.frame.body,z)
 
 # Check signatures.
 import inspect

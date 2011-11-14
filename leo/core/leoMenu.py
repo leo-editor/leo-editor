@@ -1732,8 +1732,8 @@ class leoMenu:
     def add_separator(self,menu):
         self.oops()
 
-    def bind (self,bind_shortcut,callback):
-        self.oops()
+    # def bind (self,bind_shortcut,callback):
+    #     self.oops()
 
     def delete (self,menu,realItemName):
         self.oops()

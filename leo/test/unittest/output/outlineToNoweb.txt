@@ -1,0 +1,983 @@
+@
+<<@others>>=
+@@nocolor-node
+
+All support code should be placed as a child of this @mark-for-unit-test node
+so that it will be copied to dynamicUnitTest.leo when running tests externally.
+@
+<<@others>>=
+@@language plain
+@
+<<@others>>=
+openFileDialog
+test\\unittest\\perfectImport\\formatter.py
+@
+<<@others>>=
+openFileDialog
+core\\runLeo.py
+@
+<<@others>>=
+openFileDialog
+test\\unittest\\input\\noweave.nw.txt
+@
+<<@others>>=
+openFileDialog
+test\\unittest\\input\\flat.txt
+@
+<<@others>>=
+openFileDialog
+test\\unittest\\input\\cweave.w
+@
+<<@others>>=
+openFileDialog
+test\\unittest\\input\\testLeoAtFile.py
+@
+<<@others>>=
+openFileDialog
+test\\unittest\\perfectImport\\formatter.py
+@
+<<@others>>=
+@@language plain
+@
+<<@others>>=
+saveFileDialog
+test\\unittest\\output\\exportHeadlines.txt
+@
+<<@others>>=
+saveFileDialog
+test\\unittest\\output\\flattenOutline.txt
+@
+<<@others>>=
+saveFileDialog
+test\\unittest\\output\\weave.txt
+@
+<<@others>>=
+saveFileDialog
+test\\unittest\\output\\outlineToNoweb.txt
+@
+<<@others>>=
+saveFileDialog
+test\\unittest\\output\\outlineToCweb.txt
+@
+<<@others>>=
+<<@others>>
+@
+<<@others>>=
+import leo.core.leoTest as leoTest
+
+@
+This is an updated version of leo.core.leoTest.runEditCommandTest,
+moved here to take advantage of EKR's new common-test-code-sharing
+mechanism.
+It should be okay to delete the old code and replace
+all uses with:
+
+    exec(g.findTestScript(c,'@common leoEditCommands test code'))
+    runEditCommandTest(c,p)
+
+<<@others>>=
+
+def runEditCommandTest (c,p,inHeadline=False):
+    '''
+    This is a helper for testing edit commands. It takes the name of the
+    command from the title of the test and the before and after conditions
+    from child nodes.
+
+    :param inHeadline: if True, tests the command in the headline; if False,
+    tests the command in the body.
+    '''
+
+    u = leoTest.testUtils(c) ; atTest = p.copy()
+
+    h = atTest.h
+    assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
+    commandName = h[6:].strip()
+    # Ignore everything after the actual command name.
+    i = g.skip_id(commandName, 0, chars='-')
+    commandName = commandName[:i]
+    assert commandName, 'empty command name'
+    command = c.commandsDict.get(commandName)
+    assert command, 'no command: %s' % (commandName)
+
+    work,before,after = u.findChildrenOf(atTest)
+    before_h = 'before sel='
+    after_h = 'after sel='
+    for node,h in ((work,'work'),(before,before_h),(after,after_h)):
+        h2 = node.h
+        assert h2.startswith(h),'expected head: %s, got: %s' % (h,h2)
+
+    sels = []
+    for node,h in ((before,before_h),(after,after_h)):
+        sel = node.h[len(h):].strip()
+        aList = [str(z) for z in sel.split(',')]
+        sels.append(tuple(aList))
+    sel1,sel2 = sels
+    #g.trace(repr(sels))
+
+    c.selectPosition(work)
+
+    if inHeadline:
+        c.setHeadString(work,before.b)
+        # To make the node visible, and edit the label
+        c.redrawAndEdit(work)
+        w = c.edit_widget(work)
+        g.app.gui.set_focus(c,w)
+    else:
+        w = c.frame.body.bodyCtrl
+        c.setBodyString(work,before.b)
+
+    try:
+        #g.trace(repr(sel1[0]),repr(sel1[1]))
+        w.setSelectionRange(sel1[0],sel1[1],insert=sel1[1])
+        if inHeadline:
+            # simulateCommand doesn't seem to work when editing a headline
+            c.k.manufactureKeyPressForCommandName(w,commandName)
+        else:
+            c.k.simulateCommand(commandName)
+
+        # Exit headline-editing mode
+        if inHeadline:
+            g.app.gui.event_generate(c,'\n','Return',w)
+
+        location = 'headline' if inHeadline else 'body'
+        s1 = work.h if inHeadline else work.b
+        s2 = after.b
+
+        assert s1 == s2, 'mismatch in %s\nexpected: %s\n     got: %s' % (location,repr(s2),repr(s1))
+        sel3 = w.getSelectionRange()
+        ins = w.toGuiIndex(w.getInsertPoint())
+        #g.trace('ins',ins,'s1[j:...]',repr(s1[j:j+10]))
+        # Convert both selection ranges to gui indices.
+        sel2_orig = sel2
+        # g.trace(w)
+        assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
+        i,j = sel2 ; sel2 = w.toGuiIndex(i),w.toGuiIndex(j)
+        assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
+        i,j = sel3 ; sel3 = w.toGuiIndex(i),w.toGuiIndex(j)
+        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
+        c.selectPosition(atTest)
+        atTest.contract()
+        # Don't redraw.
+    finally:
+        # Make sure to restore the headline so it can be used for future tests
+        if inHeadline:
+            c.setHeadString(work,'work')
+@
+<<@others>>=
+<<@others>>
+@
+<<@others>>=
+def setup_test(target):
+    
+    c.unmarkAll() # Make sure we move only the test nodes!
+    
+    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
+    assert common,'no common'
+    data = g.findNodeInTree(c,common,'data')
+    assert data,'no data'
+    
+    delete_children(target)
+
+    # Copy the nodes.
+    c.selectPosition(data)
+    c.copyOutline()
+    c.selectPosition(target)
+    c.pasteOutline()
+    c.moveOutlineRight()
+    c.promote()
+    c.deleteOutline()
+    c.redraw()
+        
+    for h in ('a','b','c'):
+        p2 = g.findNodeInTree(c,target,h)
+        assert p2,'not found: %s' % (h)
+        p2.setMarked()
+        
+    for child in target.children():
+        if child.h == 'a':
+            assert child.isCloned(),'not cloned!: %s' % (child)
+        else:
+            assert not child.isCloned(),'cloned!: %s' % (child)
+        
+    # g.trace('setup complete')
+@
+<<@others>>=
+def tear_down(p,h=None):
+    
+    delete_children(p)
+    
+    if h:
+        node = g.findNodeAnywhere(c,h)
+        if node:
+            node.doDelete()
+            # g.trace('deleted',node.h)
+
+    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
+    common.contract()
+
+    c.redraw()
+@
+<<@others>>=
+def delete_children(p):
+
+    while p.hasChildren():
+        p.firstChild().doDelete()
+@
+<<@others>>=
+def test_children(p):
+    
+    n = p.numberOfChildren()
+    assert n == 3 ,'children: %s' % (n)
+    
+    child = p.firstChild()
+    assert child.h == 'a','child1: %s' % (child)
+    
+    child = child.next()
+    assert child.h == 'c','child2: %s' % (child)
+    
+    child = child.next()
+    assert child.h == 'a','child3: %s' % (child)
+@
+<<@others>>=
+# def test_undo(p):
+    
+    # n = p.numberOfChildren()
+    # assert n == 4 ,'undo children: %s' % (n)
+@
+<<@others>>=
+<<@others>>
+@
+<<@others>>=
+class rst3Test:
+
+    def __init__ (self,c,p):
+        self.c = c
+        self.p = p.copy()
+        self.run()
+
+    <<@others>>
+@
+<<@others>>=
+def report (self,expected,got):
+
+    verbose = True
+    expected_lines = g.splitLines(expected.b)
+    got_lines = g.splitLines(got.b)
+
+    for i in range(min(len(expected_lines),len(got_lines))):
+        match = expected_lines[i]==got_lines[i]
+        if verbose or not match:
+            tag = g.choose(match,'  ','**')
+            print ('%3d%s %s' % (i,tag,repr(expected_lines[i])))
+            print ('%3d%s %s' % (i,tag,repr(got_lines[i])))
+        if not verbose and not match:
+            break
+@
+<<@others>>=
+def run(self):
+    import sys
+    if not sys.platform.startswith('win') and \
+        g.isPython3: return
+    def clean(s):
+        return s.replace('\r','')
+    c,p = self.c,self.p
+    rc = c.rstCommands
+    expected,got,source = self.setup()
+    rc.processTree(p=source.firstChild(),ext='.html',toString=True,justOneFile=True)
+    rst = clean(rc.source)
+    html = clean(rc.stringOutput)
+    assert rst,'rst'
+    assert html,'html'
+    # Kludge: disregard version of docutils.
+    html = html.replace('Docutils 0.8.1:','Docutils 0.8:')
+    html = html.replace('Docutils 0.6:','Docutils 0.8:')
+    html = html.replace('Docutils 0.7:','Docutils 0.8:')
+    if expected.hasChildren():
+        child1 = expected.firstChild()
+        child2 = expected.firstChild().next()
+        child1_b = clean(child1.b)
+        child2_b = clean(child2.b)
+        ok = rst == child1_b and html == child2_b
+        if not ok:
+            got_html,got_rst = self.set_got(expected,got)
+            got_html.b = html
+            got_rst.b = rst
+        if rst != child1_b:
+            self.report(child1,got_rst)
+        if html != child2_b:
+            self.report(child2,got_html)
+        assert rst == child1_b,'rst mismatch'
+        assert html == child2_b,'html mismatch'
+    else:
+        child = expected.insertAsNthChild(0)
+        child.h,child.b = 'rst',rst
+        child = expected.insertAsNthChild(1)
+        child.h,child.b = ' html',html
+@
+<<@others>>=
+def setup (self):
+
+    c,p = self.c, self.p
+
+    expected = g.findNodeInTree(c,p,'expected')
+    got = g.findNodeInTree(c,p,'got')
+    source = g.findNodeInTree(c,p,'source')
+
+    assert source,'source'
+    assert expected,'expected'
+
+    return expected,got,source
+@
+<<@others>>=
+def set_got (self,expected,got):
+
+    c,p = self.c, self.p
+
+    if got:
+        got_rst = g.findNodeInTree(c,got,'rst')
+        got_html = g.findNodeInTree(c,got,'html')
+        assert got_rst
+        assert got_html
+    else:
+        got = p.insertAsLastChild()
+        got.h = 'got'
+        got_rst = got.insertAsNthChild(0)
+        got_rst.h = 'rst'
+        got_html = got.insertAsNthChild(1)
+        got_html.h = 'html'
+
+    return got_html,got_rst
+@
+<<@others>>=
+import unittest
+import leo.core.leoTest as leoTest
+import sys
+
+if g.isPython3:
+    # Some tests now fail on Python 2.x.
+    path = g.os_path_join(g.app.loadDir,"..","core")
+    
+    if 0:
+        << define exclude >>
+    else:
+        exclude = []
+    
+    modules = leoTest.importAllModulesInPath(path,exclude=exclude)
+    suite = leoTest.createUnitTestsFromDoctests(modules)
+else:
+    # Create a dummy suite.
+    suite = leoTest.generalTestCase(c,p)
+    
+if suite: g.app.scriptDict['suite'] = suite
+@
+<<define exclude>>=
+exclude = [
+    # These cause no problems, but will not have unit tests.
+    'leo_Debugger.py',
+    'leo_FileList.py',
+    'leo_RemoteDebugger.py',
+    'leo_run.py',
+    'leo_Shell.py',
+    'leoDynamicTest.py',
+    'leoBridge.py',
+    'leoBridgeTest.py',
+]
+@
+<<@others>>=
+import os
+c1 = c
+fn = g.os_path_finalize_join(g.app.loadDir,'..','test','save-new-test.py')
+# print(fn)
+if g.os_path_exists(fn):
+    os.remove(fn)
+assert not g.os_path_exists(fn)
+try:
+    c = c1.new()
+    assert not c.cacher.db
+    # Not a perfect unit test, but it similar to c.save.
+    c.mFileName = fn
+    c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
+    print(c.mFileName)
+    c.fileCommands.save(c.mFileName)
+    c.close()
+    assert g.os_path_exists(fn)
+finally:
+    if g.os_path_exists(fn):
+        os.remove(fn)
+@
+<<@others>>=
+import inspect
+
+d = c.commandsDict ; keys = list(d.keys()) ; keys.sort()
+
+for key in keys:
+    f = d.get(key) ; name = f and f.__name__
+    args, varargs, varkw, defaults = data = inspect.getargspec(f)
+    # print('%-28s' % (name),data)
+    arg0 = len(args) > 0 and args[0]
+    arg1 = len(args) > 1 and args[1]
+    assert arg0 == 'self' and arg1 == 'event' or arg0 == 'event',\
+       'no event arg for %s, args: %s' % (name,data)
+@
+We want to ensure that when masterMenuHandler does::
+    
+    event = g.app.gui.create_key_event(c,None,stroke,w)
+    return k.masterKeyHandler(event)
+    
+that the effect will be to call commandName, where commandName
+is the arg passed to masterMenuHandler.
+
+createMenuEntries creates the association of stroke to commandName.
+
+<<@others>>=
+
+trace = False # False: the unit test can fail.
+k = c.k
+d = g.app.unitTestMenusDict
+d2 = k.bindingsDict ### c.k.masterGuiBindingsDict
+d2name = 'k.bindingsDict'
+commandNames = list(d.keys())
+commandNames.sort()
+exclude_strokes = ('Alt+F4','Ctrl+q','Ctrl+Shift+Tab',)
+
+for name in commandNames:
+    assert name in c.commandsDict,'unexpected command name: %s' % (
+        repr(name))
+    aSet = d.get(name)
+    aList = list(aSet)
+    aList.sort()
+    for z in exclude_strokes:
+        if z in aList:
+            aList.remove(z)
+    for stroke in aList:
+        aList2 = d2.get(stroke)
+        assert aList2,'stroke %s not in %s' % (
+            repr(stroke),d2name)
+        for b in aList2:
+            if b.commandName == name:
+                break
+        else:
+            if trace:
+                inverseBindingDict = k.computeInverseBindingDict()
+                print('%s: stroke %s not bound to %s in %s' % (
+                    p.h,repr(stroke),repr(name),d2name))
+                print('%s: inverseBindingDict.get(%s): %s' % (
+                    p.h,name,inverseBindingDict.get(name)))
+            else:
+                assert False,'stroke %s not bound to %s in %s' % (
+                    repr(stroke),repr(name),d2name)
+@
+<<@others>>=
+import os
+import sys
+
+trace = False
+
+python_interp = sys.executable
+test_path = g.os_path_join(g.app.loadDir,"..","test","unittest")
+src_path  = g.os_path_join(g.app.loadDir,"..","..")
+
+leo_file   = g.os_path_join(src_path,"launchLeo.py")
+batch_file = g.os_path_join(test_path,"batchTest.py")
+test_file  = g.os_path_join(test_path,"createdFile.txt")
+
+# Execute this command: python launchLeo.py --script test\unittest\batchTest.py
+
+if 1:
+    command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
+else:
+    command = r"%s %s --script %s" % (python_interp,leo_file,batch_file)
+
+<<@others>>
+
+if trace:
+    print('@test batch mode: loadDir: %s' % g.app.loadDir)
+
+removeFile(test_file)
+os.system(command)
+
+assert(g.os_path_exists(test_file))
+@
+<<@others>>=
+def removeFile(path):
+
+    trace = False
+
+    if os.path.exists(test_file):
+        if trace:
+            print("@test batch mode: removeFile: deleting",test_file)
+        os.remove(test_file)
+    else:
+        if trace:
+            print("@test batch mode: removeFile: not found:",test_file)
+@
+<<@others>>=
+if g.app.gui.guiName() == 'tkinter':
+
+    pc = g.app.pluginsController
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
+    assert(tkGui)
+
+    import leo.core.leoFrame as leoFrame
+    import inspect,sys
+
+    baseClass = leoFrame.leoBody
+    subClasses  = (tkGui.leoTkinterBody,leoFrame.nullBody)
+    baseObject = c.frame.body
+
+    methods = inspect.getmembers(baseClass,inspect.ismethod)
+    methodNames = [z[0] for z in methods]
+
+    for name in baseObject.mustBeDefinedOnlyInBaseClass:
+        try:
+            assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
+        except AssertionError:
+            exctype, value = sys.exc_info()[:2]
+            print(value)
+            raise
+
+    for subClass in subClasses:
+        subclassName = subClass.__name__
+        for name in methodNames:
+            base_func = getattr(baseClass,name)
+            sub_func =  getattr(subClass,name)
+            try:
+                if name in baseObject.mustBeDefinedOnlyInBaseClass:
+                    assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
+                if name in baseObject.mustBeDefinedInSubclasses:
+                    assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
+            except AssertionError:
+                #raise
+                exctype, value = sys.exc_info()[:2]
+                print(value)
+@
+<<@others>>=
+if g.app.gui.guiName() == 'tkinter':
+
+    pc = g.app.pluginsController
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
+
+    import leo.core.leoFrame as leoFrame
+    import inspect
+
+    baseClass = leoFrame.leoFrame
+    subClasses  = (tkGui.leoTkinterFrame,leoFrame.nullFrame)
+    baseObject = c.frame
+
+    methods = inspect.getmembers(baseClass,inspect.ismethod)
+    methodNames = [z[0] for z in methods]
+
+    for name in baseObject.mustBeDefinedOnlyInBaseClass:
+        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
+
+    for subClass in subClasses:
+        subclassName = subClass.__name__
+        for name in methodNames:
+            base_func = getattr(baseClass,name)
+            sub_func =  getattr(subClass,name)
+            if name in baseObject.mustBeDefinedOnlyInBaseClass:
+                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
+            if name in baseObject.mustBeDefinedInSubclasses:
+                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
+@
+<<@others>>=
+if g.app.gui.guiName() == 'tkinter':
+
+    pc = g.app.pluginsController
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
+
+    import leo.core.leoGui as leoGui
+    import inspect
+
+    baseClass = leoGui.leoGui
+    subClasses  = (tkGui.tkinterGui,) # nullGui can inherit almost all leoGui dummy methods.
+    baseObject = g.app.gui
+
+    methods = inspect.getmembers(baseClass,inspect.ismethod)
+    methodNames = [z[0] for z in methods]
+
+    for name in baseObject.mustBeDefinedOnlyInBaseClass:
+        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
+
+    for subClass in subClasses:
+        subclassName = subClass.__name__
+        for name in methodNames:
+            base_func = getattr(baseClass,name)
+            sub_func =  getattr(subClass,name)
+            try:
+                if name in baseObject.mustBeDefinedOnlyInBaseClass:
+                    assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
+                if name in baseObject.mustBeDefinedInSubclasses:
+                    assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
+            except AssertionError:
+                raise
+@
+<<@others>>=
+if g.app.gui.guiName() == 'tkinter':
+
+    pc = g.app.pluginsController
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
+
+    import leo.core.leoFrame as leoFrame
+    import inspect
+
+    baseClass = leoFrame.leoTree
+    subClasses  = (tkGui.leoTkinterTree,leoFrame.nullTree)
+    baseObject = c.frame.tree
+
+    methods = inspect.getmembers(baseClass,inspect.ismethod)
+    methodNames = [z[0] for z in methods]
+
+    for name in baseObject.mustBeDefinedOnlyInBaseClass:
+        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
+
+    for subClass in subClasses:
+        subclassName = subClass.__name__
+        for name in methodNames:
+            base_func = getattr(baseClass,name)
+            sub_func =  getattr(subClass,name)
+            if name in baseObject.mustBeDefinedOnlyInBaseClass:
+                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
+            if name in baseObject.mustBeDefinedInSubclasses:
+                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
+@
+<<@others>>=
+logCtrl = c.frame.log.logCtrl
+
+table = (
+    ('mustBeDefinedInSubclasses',logCtrl.mustBeDefinedInSubclasses),
+    ('mustBeDefinedInBaseClass',logCtrl.mustBeDefinedOnlyInBaseClass),
+    ('mustBeDefined',logCtrl.mustBeDefined),
+)
+
+# Check existence.
+for tag,aList in table:
+    for z in aList:
+        assert hasattr(c.frame.log,z),'%s %s %s' % (tag,c.frame.log,z)
+        assert hasattr(c.frame.body,z),'%s %s %s' % (tag,c.frame.body,z)
+
+# Check signatures.
+import inspect
+for tag,aList in table:
+    for z in aList:
+        func = getattr(c.frame.body.bodyCtrl,z)
+        func2 = getattr(c.frame.log.logCtrl,z)
+        assert func,z
+        assert func2,z
+        d1 = inspect.getargspec(func)
+        d2 = inspect.getargspec(func2)
+        assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
+@
+<<@others>>=
+f = c.frame
+assert(f.c==c)
+assert(c.frame==f)
+
+ivars = (
+    # Subcommanders...
+    'atFileCommands','fileCommands','importCommands','tangleCommands','undoer',
+    # Positions...
+    '_currentPosition','_topPosition',
+    # '_rootPosition'
+    # Data structures...
+    'hoistStack','recentFiles',
+    # Args...
+    'output_doc_flag','page_width','tab_width',
+    # 'tangle_directory',
+    'tangle_errors','tangle_batch_flag','target_language',
+    'untangle_batch_flag','use_header_flag',
+    # Others...
+    'mFileName',
+)
+
+for ivar in ivars:
+    assert hasattr(c,ivar), 'missing commander ivar: %s' % ivar
+    val = getattr(c,ivar)
+    assert val is not None,'null commander ivar: %s'% ivar
+@
+<<@others>>=
+f = c.frame
+assert(f.c==c)
+assert(c.frame==f)
+
+if g.app.gui.guiName() == 'tkinter':
+    ivars = (
+        'bar1','bar2',
+        'body',
+        #'bodyBar','bodyXBar', # 2007: 10/31: There are now injected in c.frame.body.bodyCtrl.
+        #'bodyCtrl', # 2007/10/27: this ivar is evil and has been removed.
+        'canvas',
+        'f1','f2',
+        'iconBar','iconFrame',
+        'log','outerFrame',
+        'statusLine','statusFrame','statusLabel','statusText',
+        'title','top','tree',
+        #'treeBar', # leo_treeBar is now injected into frame.canvas.
+    )
+else: ivars = ()
+
+for ivar in ivars:
+    assert hasattr(f,ivar), 'missing frame ivar: %s' % ivar
+    val = getattr(f,ivar)
+    assert val is not None,'null frame ivar: %s'% ivar
+
+# These do not have to be initied.
+for ivar in ('findPanel',):
+    assert hasattr(f,ivar), 'missing frame ivar: %s' % ivar
+@
+<<@others>>=
+ivars = ('extensionsDir','globalConfigDir','loadDir','testDir')
+
+for ivar in ivars:
+    assert hasattr(g.app,ivar), 'missing g.app directory: %s' % ivar
+    val = getattr(g.app,ivar)
+    assert val is not None, 'null g.app directory: %s'% ivar
+    assert g.os_path_exists(g.os_path_abspath(val)), 'non-existent g.app directory: %s' % ivar
+
+assert hasattr(g.app,'homeDir') # May well be None.
+@
+<<@others>>=
+ivars = (
+    # These are non-official and might be removed...
+    'batchMode','config',
+    'debug','debugSwitch','disableSave',
+    'gui','hasOpenWithMenu','hookError','hookFunction',
+    'idle_imported','idleTimeDelay','idleTimeHook','initing','killed',
+    # 'loadedPlugins',
+    'leoID','log','logIsLocked','logWaiting',
+    'nodeIndices','numberOfWindows',
+    'quitting','realMenuNameDict','searchDict','scriptDict',
+    'trace','tracePositions','trace_list',
+    'unitTestDict','unitTesting','use_psyco','windowList',
+)
+
+for ivar in ivars:
+    assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar
+    val = getattr(g.app,ivar)
+    assert val is not None, 'null app ivar: %s'% ivar
+
+# These do not have to be initied.
+for ivar in (
+    'commandName',
+    'openWithFiles','openWithFileNum','openWithTable',
+    'root',
+):
+    assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar
+@
+<<@others>>=
+at = c.atFileCommands
+
+s = '''
+# no error
+def spam():
+    pass
+'''
+
+assert at.checkPythonSyntax(p,s),'fail 1'
+
+s2 = '''
+# syntax error
+def spam:
+    pass
+'''
+
+assert not at.checkPythonSyntax(p,s2,supress=True),'fail2'
+
+if not g.unitTesting: # A hand test of at.syntaxError
+    at.checkPythonSyntax(p,s2)
+@
+<<@others>>=
+@@tabwidth -4
+
+at = c.atFileCommands
+
+s = '''
+# no error
+def spam():
+    pass
+'''
+
+at.tabNannyNode (p,body=s,suppress=True)
+
+s2 = '''
+# syntax error
+def spam:
+    pass
+  a = 2
+'''
+
+try:
+    at.tabNannyNode(p,body=s2,suppress=True)
+except IndentationError:
+    pass
+@
+<<@others>>=
+c.checkPythonCode(event=None,
+    unittest=True,ignoreAtIgnore=False,
+    suppressErrors=True,checkOnSave=False)
+@
+<<@others>>=
+table = (
+    ('syntax-error','error'),
+)
+
+for h,expected in table:
+    p2 = g.findNodeInTree(c,p,h)
+    assert p2,'node not found: %s' % h
+    result = c.checkPythonCode(event=None,
+        unittest=True,ignoreAtIgnore=True,
+        suppressErrors=True,checkOnSave=False)
+    assert result==expected, 'expected %s got %s' % (
+        expected,result)
+@
+<<@others>>=
+def abc
+    pass
+@
+<<@others>>=
+@@tabwidth -4
+
+s = '''
+# no error
+def spam():
+    pass
+'''
+
+c.tabNannyNode(p,headline=p.h,body=s,unittest=True,suppressErrors=True)
+
+s2 = '''
+# syntax error
+def spam:
+    pass
+  a = 2
+'''
+
+try:
+    c.tabNannyNode(p,headline=p.h,body=s2,unittest=True,suppressErrors=True)
+except IndentationError:
+    pass
+@
+<<@others>>=
+# This is just a hand test.
+if not g.unitTesting:
+    try:
+        assert False
+    except AssertionError:
+        g.es_exception(full=True,c=None,color='red')
+@
+<<@others>>=
+try:
+    assert False
+except AssertionError:
+    fn,n = g.getLastTracebackFileAndLineNumber()
+    
+writeScriptFile = c.config.getBool('write_script_file')
+if writeScriptFile:
+    assert fn != '<string>',repr(fn)
+else:
+    assert fn == '<string>',repr(fn)
+
+assert n == 4,repr(n)
+@
+<<@others>>=
+import leo.core.leoTest as leoTest
+
+s = '''
+# syntax error
+def spam:
+    pass
+'''
+
+try:
+    leoTest.checkFileSyntax('<fileName>',s,suppress=True)
+    assert False
+except SyntaxError:
+    pass
+@
+<<@others>>=
+import leo.core.leoTest as leoTest
+import os
+
+tkPass = (
+    'EditAttributes','Library',
+    'URLloader','UniversalScrolling','UASearch',
+    'autotrees','base64Packager','chapter_hoist','cleo','dump_globals',
+    'expfolder','geotag','graphed','groupOperations',
+    'hoist','import_cisco_config','leoupdate',
+    'maximizeNewWindows', 'mnplugins','mod_labels',
+    'mod_read_dir_outline','mod_tempfname','multifile',
+    'nav_buttons','newButtons','nodeActions','nodebar','nodenavigator',
+    'open_with','pie_menus','pluginsTest',
+    'read_only_nodes','rClick','rClickBasePluginClasses',
+    'scheduler','searchbar','searchbox','shortcut_button',
+    'script_io_to_body','searchbox',
+    'templates','textnode','tkGui','toolbar',
+    'UNL','xcc_nodes',
+)
+passList = (
+    '__init__','FileActions',
+    'active_path','add_directives','attrib_edit',
+    'backlink','baseNativeTree','bibtex','bookmarks',
+    'codewisecompleter','colorize_headlines','contextmenu',
+    'ctagscompleter','cursesGui','datenodes','debugger_pudb',
+    'detect_urls','dtest','empty_leo_file','enable_gc','initinclass',
+    'leo_to_html','leo_interface','leo_pdf','leo_to_rtf',
+    # 'leoN',
+    'leoOPML','leoremote','lineNumbers',
+    'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
+    'mod_scripting','mod_speedups','mod_timestamp',
+    'nav_qt','niceNosent','nodeActions',
+    'open_shell','outline_export','quit_leo',
+    'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
+    'qtGui','qt_main','qt_quicksearch','qtframecommands',
+    'quickMove','quicksearch','redirect_to_log','rst3','run_nodes',
+    'screenshots',
+    # 'scrolledmessage',
+    'setHomeDirectory','slideshow','spydershell','startfile',
+    'testRegisterCommand','todo','trace_gc_plugin','trace_keys','trace_tags',
+    'vim','xemacs',
+)
+core_files = (
+    'leoApp','leoAtFile','leoCache','leoChapters','leoCommands',
+    'leoEditCommands','leoFileCommands','leoFind','leoFrame',
+    'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
+    'leoPlugins','leoShadow','leoTangle','leoUndo',
+)
+external_files = (
+    'ipy_leo','lproto',
+)
+recent = (
+    #'leo_interface',
+)
+table = (
+    ('plugins',recent),
+    ('plugins',passList),
+    # ('plugins',tkPass),
+    ('core',core_files),
+    ('external',external_files),
+)
+files = []
+for theDir,aList in table:
+    for z in aList:
+        if not z.endswith('.py'): z = z + '.py'
+        fn = os.path.abspath(os.path.join('leo',theDir,z))
+        if os.path.exists(fn): files.append(fn)
+        else: print('*** file not found: %s' % (fn))
+
+failed = []
+for z in files:
+    fn = g.shortFileName(z)
+    s,e = g.readFileIntoString(z)
+    if not leoTest.checkFileSyntax(fn,s,reraise=False,suppress=False):
+        failed.append(fn)
+
+assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
+@
+<<@others>>=
+import leo.core.leoTest as leoTest
+fn = g.os_path_finalize_join(g.app.loadDir,'..','..','setup.py')
+
+# Only run this test if setup.py exists: it may not in the actual distribution.
+if g.os_path_exists(fn):
+    s,e = g.readFileIntoString(fn)
+    leoTest.checkFileSyntax(fn,s,reraise=True,suppress=False)

@@ -92,7 +92,8 @@ def colorizeURLs(tag,keywords):
         for match in url_regex.finditer(line):
             start, end = match.start(), match.end()
             i,j = w.toGuiIndex(n+start),w.toGuiIndex(n+end)
-            c.frame.body.tag_add('URL',i,j)
+            # 2011/11/14: tag_add does nothing!
+            ### c.frame.body.tag_add('URL',i,j)
         n += len(line) + 1
 #@-others
 #@-leo

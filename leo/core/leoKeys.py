@@ -1948,15 +1948,17 @@ class keyHandlerClass:
             if w not in aList:
                 aList.append(w)
                 k.masterGuiBindingsDict [bindStroke] = aList
-                try:
-                    c.bind(w,bindStroke,masterBindKeyCallback)
-                    # g.trace(stroke,bindStroke,g.app.gui.widget_name(w))
-                except Exception:
-                    if self.trace_bind_key_exceptions:
-                        g.es_exception()
-                    g.es_print('exception binding',bindStroke,'to',c.widget_name(w),color='blue')
-
-                    if g.app.unitTesting: raise
+                
+                if 0: ### To be removed
+                    try:
+                        c.bind(w,bindStroke,masterBindKeyCallback)
+                        # g.trace(stroke,bindStroke,g.app.gui.widget_name(w))
+                    except Exception:
+                        if self.trace_bind_key_exceptions:
+                            g.es_exception()
+                        g.es_print('exception binding',bindStroke,'to',c.widget_name(w),color='blue')
+        
+                        if g.app.unitTesting: raise
     #@+node:ekr.20061031131434.104: *3* k.Dispatching
     #@+node:ekr.20061031131434.111: *4* fullCommand (alt-x) & helper
     def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpHandler=None):
@@ -2084,11 +2086,11 @@ class keyHandlerClass:
                 # Do the import here to break a circular dependency at the top level.
                 import leo.core.leoEditCommands as leoEditCommands
                 leoEditCommands.initAllEditCommanders(c)
-                try:
-                    bodyCtrl.tag_delete('color')
-                    bodyCtrl.tag_delete('color1')
-                except Exception:
-                    pass
+    #             try:
+    #                 bodyCtrl.tag_delete('color')
+    #                 bodyCtrl.tag_delete('color1')
+    #             except Exception:
+    #                 pass
             if 0: # Do *not* call this by default.  It interferes with undo.
                 c.frame.body.onBodyChanged(undoType='Typing')
             if k.newMinibufferWidget:

@@ -6143,5 +6143,39 @@ if 0:
         print(i)
         w.addEditor()
         w.deleteEditor()
+#@+node:ekr.20051107115231.25: *3* @@test typing in headline recomputes width
+# getWidth no longer exists.
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+k = c.keyHandler
+h = 'Test headline abc'
+p = u.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.redraw(p) # To make node visible
+c.frame.tree.editLabel(p)
+w = c.edit_widget(p)
+try:
+    assert w
+    g.app.gui.set_focus(c,w)
+    w2 = g.app.gui.get_focus(c)
+    # assert w == w2 or hasattr(w,'widget') and w.widget == w2,'w: %s\nw2: %s' % (w,w2)
+    w.setSelectionRange('end','end')
+    n = w.getWidth()
+    g.app.gui.event_generate(c,'X','Shift+X',w)
+    g.app.gui.event_generate(c,'Y','Shift+Y',w)
+    g.app.gui.event_generate(c,'Z','Shift+Z',w)
+    g.app.gui.event_generate(c,'\n','Return',w)
+    w.update()
+    assert w, 'fail 2'
+   
+finally:
+    if 1:
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)
+#@+node:ekr.20061104172236.23: *3* @@test tkBody.onClick
+w = c.frame.body.bodyCtrl
+y = 10
+for x in range(0,100,10):
+    event = g.app.gui.create_key_event(c,None,None,w,x=x,y=y)
+    c.frame.body.onClick(event)
 #@-all
 #@-leo

@@ -741,7 +741,7 @@ class parserBaseClass:
 
         else:
             g.es_print("ERROR: @menuat found but no menu tree to patch")
-    #@+node:tbrown.20080514180046.9: *5* getName
+    #@+node:tbrown.20080514180046.9: *5* getName (ParserBaseClass)
     def getName(self, val, val2=None):
         if val2 and val2.strip(): val = val2
         val = val.split('\n',1)[0]

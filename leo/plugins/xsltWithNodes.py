@@ -205,8 +205,8 @@ def addXSLTElement( c , element):
     '''adds some xslt to the text node'''
     bodyCtrl = c.frame.body.bodyCtrl
     bodyCtrl.insert( 'insert', element )
-    bodyCtrl.event_generate( '<Key>' )
-    bodyCtrl.update_idletasks()
+    ### bodyCtrl.event_generate( '<Key>' )
+    ### bodyCtrl.update_idletasks()
 
 #@+node:mork.20041025113021: ** getString
 def getString (c):

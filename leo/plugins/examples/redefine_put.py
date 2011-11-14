@@ -46,10 +46,11 @@ def newPut (self,s,color="black"):
     s = s.upper()
     t = self.logCtrl
     if t:
-            t.insert("end",s)
-            t.see("end")
-            t.update_idletasks()
-    else: g.pr(s,newline=False)
+        t.insert("end",s)
+        t.see("end")
+        ### t.update_idletasks()
+    else:
+        g.pr(s,newline=False)
 
 # Same as frame.putnl except writes two newlines.
 def newPutNl (self):
@@ -59,7 +60,7 @@ def newPutNl (self):
     if t:
         t.insert("end","\n\n")
         t.see("end")
-        t.update_idletasks()
+        ### t.update_idletasks()
     else: g.pr('')
 #@-others
 #@-leo

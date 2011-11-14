@@ -528,8 +528,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         return w
     #@+node:ekr.20110605121601.18028: *4*  Do nothings
-    def bind (self,stroke,command,**keys):
-        pass # eventFilter handles all keys.
+    ###def bind (self,stroke,command,**keys):
+    ###    pass # eventFilter handles all keys.
     #@+node:ekr.20110605121601.18029: *4* signals (leoQtBaseTextWidget)
     #@+node:ekr.20110605121601.18030: *5* onCursorPositionChanged (leoQtBaseTextWidget)
     def onCursorPositionChanged(self,event=None):
@@ -544,8 +544,9 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         if name.startswith('body'):
             if hasattr(c.frame,'statusLine'):
                 c.frame.statusLine.update()
-    #@+node:ekr.20110605121601.18031: *4*  Must be defined in base class (leoQtBaseTextWidget)
-    #@+node:ekr.20110605121601.18032: *5*  Focus (leoQtBaseTextWidget)
+    #@+node:ekr.20111114013726.9968: *4* High-level interface (leoQtBaseTextWidget)
+    #@+node:ekr.20110605121601.18031: *5*  Must be defined in base class (leoQtBaseTextWidget)
+    #@+node:ekr.20110605121601.18032: *6*  Focus (leoQtBaseTextWidget)
     def getFocus(self):
 
         # g.trace('leoQtBody',self.widget,g.callers(4))
@@ -573,8 +574,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             isinstance(self.widget,QtGui.QLineEdit) or
             isinstance(self.widget,QtGui.QTextEdit)),self.widget
         QtGui.QTextBrowser.setFocus(self.widget)
-    #@+node:ekr.20110605121601.18033: *5*  Indices
-    #@+node:ekr.20110605121601.18034: *6* toPythonIndex
+    #@+node:ekr.20110605121601.18033: *6*  Indices
+    #@+node:ekr.20110605121601.18034: *7* toPythonIndex
     def toPythonIndex (self,index):
 
         w = self
@@ -601,7 +602,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 return 0
 
     toGuiIndex = toPythonIndex
-    #@+node:ekr.20110605121601.18035: *6* toPythonIndexToRowCol
+    #@+node:ekr.20110605121601.18035: *7* toPythonIndexToRowCol
     def toPythonIndexRowCol(self,index):
         """ Slow 'default' implementation """
         #g.trace('slow toPythonIndexRowCol', g.callers(5))
@@ -610,18 +611,18 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         i = w.toPythonIndex(index)
         row,col = g.convertPythonIndexToRowCol(s,i)
         return i,row,col
-    #@+node:ekr.20110605121601.18036: *5*  Text getters/settters
-    #@+node:ekr.20110605121601.18037: *6* appendText
+    #@+node:ekr.20110605121601.18036: *6*  Text getters/settters
+    #@+node:ekr.20110605121601.18037: *7* appendText (leoQtBaseTextWidget)
     def appendText(self,s):
 
         s2 = self.getAllText()
         self.setAllText(s2+s,insert=len(s2))
 
-    #@+node:ekr.20110605121601.18040: *6* getLastPosition
+    #@+node:ekr.20110605121601.18040: *7* getLastPosition
     def getLastPosition(self):
 
         return len(self.getAllText())
-    #@+node:ekr.20110605121601.18041: *6* getSelectedText (leoQtBaseTextWidget)
+    #@+node:ekr.20110605121601.18041: *7* getSelectedText (leoQtBaseTextWidget)
     def getSelectedText(self):
 
         w = self.widget
@@ -635,7 +636,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             s = self.getAllText()
             # g.trace(repr(s[i:j]))
             return s[i:j]
-    #@+node:ekr.20110605121601.18042: *6* get
+    #@+node:ekr.20110605121601.18042: *7* get
     def get(self,i,j=None):
         """ Slow implementation of get() - ok for QLineEdit """
         #g.trace('Slow get', g.callers(5))
@@ -648,14 +649,14 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         j = self.toGuiIndex(j)
         return s[i:j]
-    #@+node:ekr.20110605121601.18043: *6* insert
+    #@+node:ekr.20110605121601.18043: *7* insert
     def insert(self,i,s):
 
         s2 = self.getAllText()
         i = self.toGuiIndex(i)
         self.setAllText(s2[:i] + s + s2[i:],insert=i+len(s))
         return i
-    #@+node:ekr.20110605121601.18044: *6* selectAllText
+    #@+node:ekr.20110605121601.18044: *7* selectAllText
     def selectAllText(self,insert=None):
 
         w = self.widget
@@ -664,7 +665,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             self.setInsertPoint(insert)
         # g.trace('insert',insert)
 
-    #@+node:ekr.20110605121601.18045: *6* setSelectionRange & dummy helper (leoQtBaseTextWidget)
+    #@+node:ekr.20110605121601.18045: *7* setSelectionRange & dummy helper (leoQtBaseTextWidget)
     def setSelectionRange(self,*args,**keys):
 
         # A kludge to allow a single arg containing i,j
@@ -681,17 +682,17 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         i,j = self.toGuiIndex(i),self.toGuiIndex(j)
 
         return self.setSelectionRangeHelper(i,j,insert)
-    #@+node:ekr.20110605121601.18046: *7* setSelectionRangeHelper
+    #@+node:ekr.20110605121601.18046: *8* setSelectionRangeHelper
     def setSelectionRangeHelper(self,i,j,insert=None):
 
         self.oops()
-    #@+node:ekr.20110605121601.18047: *5* getName (leoQtBaseTextWidget)
+    #@+node:ekr.20110605121601.18047: *6* getName (leoQtBaseTextWidget)
     def getName (self):
 
         # g.trace('leoQtBaseTextWidget',self.name,g.callers())
 
         return self.name
-    #@+node:ekr.20110605121601.18048: *5* onTextChanged (leoQtBaseTextWidget)
+    #@+node:ekr.20110605121601.18048: *6* onTextChanged (leoQtBaseTextWidget)
     def onTextChanged (self):
 
         '''Update Leo after the body has been changed.
@@ -775,13 +776,14 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # Allow incremental recoloring.
             c.incrementalRecolorFlag = True
             c.outerUpdate()
-    #@+node:ekr.20110605121601.18049: *5* indexWarning
+    #@+node:ekr.20110605121601.18049: *6* indexWarning
     warningsDict = {}
 
     def indexWarning (self,s):
 
         return
-    #@+node:ekr.20110605121601.18050: *4*  May be overridden in subclasses (leoQtBaseTextWidget)
+    #@+node:ekr.20110605121601.18050: *5*  May be overridden in subclasses (leoQtBaseTextWidget)
+    # Do not delete: these are defined in leoQTextEditWidget.
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
         pass
 
@@ -794,17 +796,16 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def setYScrollPosition(self,pos):
         pass
 
-    def scrollLines(self,n):
-        pass
+    ### def scrollLines(self,n): pass
 
-    #@+node:ekr.20110605121601.18051: *5* Configuration
+    #@+node:ekr.20110605121601.18051: *6* Configuration
     # Configuration will be handled by style sheets.
-    def cget(self,*args,**keys):            return None
-    def configure (self,*args,**keys):      pass
+    ### def cget(self,*args,**keys):            return None
+    ### def configure (self,*args,**keys):      pass
     def setBackgroundColor(self,color):     pass
     def setEditorColors (self,bg,fg):       pass
     def setForegroundColor(self,color):     pass
-    #@+node:ekr.20110605121601.18052: *5* Idle time (leoQtBaseTextWidget)
+    #@+node:ekr.20110605121601.18052: *6* Idle time (leoQtBaseTextWidget)
     def after_idle(self,func,threadCount):
         # g.trace(func.__name__,'threadCount',threadCount)
         return func(threadCount)
@@ -819,16 +820,15 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         g.trace()
         # if not g.app.unitTesting:
             # self.widget.after_idle(function,*args,**keys)
-    #@+node:ekr.20110605121601.18053: *5* Coloring (leoQtBaseTextWidget)
+    #@+node:ekr.20110605121601.18053: *6* Coloring (leoQtBaseTextWidget)
     # These *are* used.
 
-    def removeAllTags(self):
-        s = self.getAllText()
-        self.colorSelection(0,len(s),'black')
+    ### def removeAllTags(self):
+    ###    s = self.getAllText()
+    ###    self.colorSelection(0,len(s),'black')
 
-    def tag_names (self):
-        return []
-    #@+node:ekr.20110605121601.18054: *6* colorSelection
+    ### def tag_names (self): return []
+    #@+node:ekr.20110605121601.18054: *7* colorSelection
     def colorSelection (self,i,j,colorName):
 
         w = self.widget
@@ -855,20 +855,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         w.setTextColor(color)
         self.setSelectionRange(old_i,old_j,insert=old_ins)
         sb.setSliderPosition(pos)
-    #@+node:ekr.20110605121601.18055: *6* tag_add (not used)
-    if 0: # This appears never to be called.
-
-        def tag_add(self,tagName,i,j=None,*args):
-        
-            if j is None: j = i+1
-        
-            # g.trace(tagName,i,j)
-        
-            val = self.configDict.get(tagName)
-            if val:
-                self.colorSelection(i,j,val)
-    #@+node:ekr.20110605121601.18056: *6* tag_config & tag_configure (baseTextWidget)
-    def tag_config (self,*args,**keys):
+    #@+node:ekr.20110605121601.18056: *7* tag_config (leoQtBaseTextWidget)
+    def tag_configure (self,*args,**keys):
 
         trace = False and not g.unitTesting
         if trace: g.trace(args,keys)
@@ -886,8 +874,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         else:
             g.trace('oops',args,keys)
 
-    tag_configure = tag_config
-    #@+node:ekr.20110605121601.18057: *4*  Must be overridden in subclasses (leoQtBaseTextWidget)
+    ### tag_config = tag_configure
+    #@+node:ekr.20110605121601.18057: *5*  Must be overridden in subclasses (leoQtBaseTextWidget)
     # These methods avoid calls to setAllText.
 
     def getAllText(self):                           self.oops()
@@ -1045,9 +1033,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             c.config.defaultBodyFontSize)
 
         self.fontRef = font # ESSENTIAL: retain a link to font.
-        # w.configure(font=font)
-
-        # g.trace("BODY",body.cget("font"),font.cget("family"),font.cget("weight"))
     #@+node:ekr.20110605121601.18075: *5* setColorFromConfig
     def setColorFromConfig (self,w=None):
 
@@ -1259,8 +1244,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18086: *5* scrolling (QTextEditWidget)
     #@+node:ekr.20110605121601.18087: *6* indexIsVisible and linesPerPage
     # This is not used if linesPerPage exists.
-    def indexIsVisible (self,i):
-        return False
+    ### def indexIsVisible (self,i): return False
 
     def linesPerPage (self):
 
@@ -2954,72 +2938,63 @@ class leoQtBody (leoFrame.leoBody):
         g.trace('qtBody',g.callers(3))
 
     # Configuration will be handled by style sheets.
-    def cget(self,*args,**keys):                return None
-    def configure (self,*args,**keys):          pass
+    ###def cget(self,*args,**keys):                return None
+    ### def configure (self,*args,**keys):          pass
     #@+node:ekr.20110605121601.18191: *4* High-level interface (qtBody)
-    # Part 1: Corresponding to mustBeDefinedInSubclasses.
-    def appendText (self,s):            return self.widget.appendText(s)
-    def delete(self,i,j=None):          self.widget.delete(i,j)
-    def insert(self,i,s):               return self.widget.insert(i,s)
-    def get(self,i,j=None):             return self.widget.get(i,j)
-    def getAllText (self):              return self.widget.getAllText()
-    def getFocus (self):                return self.widget.getFocus()
-    def getInsertPoint(self):           return self.widget.getInsertPoint()
-    def getSelectedText (self):         return self.widget.getSelectedText()
-    def getSelectionRange(self):        return self.widget.getSelectionRange()
-    def getYScrollPosition (self):      return self.widget.getYScrollPosition()
-    def hasSelection (self):            return self.widget.hasSelection()
-    def scrollLines (self,n):           return self.widget.scrollLines(n)
-    def see(self,index):                return self.widget.see(index)
-    def seeInsertPoint(self):           return self.widget.seeInsertPoint()
-    def setAllText (self,s,new_p=None): return self.widget.setAllText(s,new_p=new_p)
-    def setBackgroundColor (self,color):return self.widget.setBackgroundColor(color)
-    def setFocus (self):                return self.widget.setFocus()
-    set_focus = setFocus
-    def setForegroundColor (self,color):return self.widget.setForegroundColor(color)
-    def setInsertPoint (self,pos):      return self.widget.setInsertPoint(pos)
-    def setSelectionRange(self,*args,**keys):   self.widget.setSelectionRange(*args,**keys)
-    def setYScrollPosition (self,i):    return self.widget.setYScrollPosition(i)
-
-    # Part 2: corresponding to mustBeDefinedInBaseClass.
-    def clipboard_append(self,s):   return self.widget.clipboard_append(s)
-    def clipboard_clear(self):      return self.widget.clipboard_append()
-    def onChar (self, event):       return self.widget.onChar(event)
-
-    # Part 3: do-nothings in mayBeDefinedInSubclasses.
-    def bind (self,kind,*args,**keys):          return self.widget.bind(kind,*args,**keys)
-    # def event_generate(self,stroke):            pass
-    def getWidth (self):                        return 0
-    def mark_set(self,markName,i):              pass
-    def setWidth (self,width):                  pass
-    def tag_add(self,tagName,i,j=None,*args):   pass
-    def tag_config (self,colorName,**keys):     pass
-    def tag_configure (self,colorName,**keys):  pass
-    def tag_delete (self,tagName,*args,**keys): pass
-    def tag_names (self, *args):                return []
-    def tag_ranges(self,tagName):               return tuple()
-    def tag_remove(self,tagName,i,j=None,*args):pass
-    def update (self,*args,**keys):             pass
-    def update_idletasks (self,*args,**keys):   pass
-    def xyToPythonIndex (self,x,y):             return 0
-    def yview (self,*args):                     return 0,0
-
-    # Part 4: corresponding to mayBeDefinedInSubclasses.
-
-    def deleteTextSelection (self): return self.widget.deleteTextSelection()
-
-    def indexIsVisible(self,i):  # Added: 2009/7/9.
-        return self.widget.indexIsVisible(i)
-
-    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
-        return self.widget(i,bg,fg,flashes,delay)
-
+    # The required high-level interface.
+    def appendText (self,s):                return self.widget.appendText(s)
+    def clipboard_append(self,s):           return self.widget.clipboard_append(s)
+    def clipboard_clear(self):              return self.widget.clipboard_append()
+    def delete(self,i,j=None):              self.widget.delete(i,j)
+    def deleteTextSelection (self):         return self.widget.deleteTextSelection()
+    def flashCharacter(self,i,
+        bg='white',fg='red',
+        flashes=3,delay=75):                return self.widget(i,bg,fg,flashes,delay)
+    def get(self,i,j=None):                 return self.widget.get(i,j)
+    def getAllText (self):                  return self.widget.getAllText()
+    def getFocus (self):                    return self.widget.getFocus()
+    def getInsertPoint(self):               return self.widget.getInsertPoint()
+    def getSelectedText (self):             return self.widget.getSelectedText()
+    def getSelectionRange(self):            return self.widget.getSelectionRange()
+    def getYScrollPosition (self):          return self.widget.getYScrollPosition()
+    def hasSelection (self):                return self.widget.hasSelection()
+    def insert(self,i,s):                   return self.widget.insert(i,s)
     def replace (self,i,j,s):               self.widget.replace (i,j,s)
     def rowColToGuiIndex (self,s,row,col):  return self.widget.rowColToGuiIndex(s,row,col)
+    def see(self,index):                    return self.widget.see(index)
+    def seeInsertPoint(self):               return self.widget.seeInsertPoint()
     def selectAllText (self,insert=None):   self.widget.selectAllText(insert)
-    def toPythonIndex (self,index):         return self.widget.toPythonIndex(index)
-    toGuiIndex = toPythonIndex
+    def setAllText (self,s,new_p=None):     return self.widget.setAllText(s,new_p=new_p)
+    def setBackgroundColor (self,color):    return self.widget.setBackgroundColor(color)
+    def setFocus (self):                    return self.widget.setFocus()
+    def setForegroundColor (self,color):    return self.widget.setForegroundColor(color)
+    def setInsertPoint (self,pos):          return self.widget.setInsertPoint(pos)
+    def setSelectionRange(self,*args,**keys):self.widget.setSelectionRange(*args,**keys)
+    def setYScrollPosition (self,i):        return self.widget.setYScrollPosition(i)
+    def tag_configure(self,colorName,**keys):pass
+    def toPythonIndex(self,index):          return self.widget.toPythonIndex(index)
     def toPythonIndexRowCol(self,index):    return self.widget.toPythonIndexRowCol(index)
+
+    set_focus = setFocus
+    toGuiIndex = toPythonIndex
+
+    ### def bind (self,kind,*args,**keys):          return self.widget.bind(kind,*args,**keys)
+    ### def event_generate(self,stroke):            pass
+    ### def getWidth (self):                        return 0
+    ### def indexIsVisible(self,i):                 return self.widget.indexIsVisible(i)
+    ### def mark_set(self,markName,i):              pass
+    ### def onChar (self, event):                   return self.widget.onChar(event)
+    ### def scrollLines (self,n):                   return self.widget.scrollLines(n)
+    ### def setWidth (self,width):                  pass
+    ### def tag_add(self,tagName,i,j=None,*args):   pass
+    ### def tag_add (self,colorName,**keys):     pass
+    ### def tag_delete (self,tagName,*args,**keys): pass
+    ### def tag_names (self, *args):                return []
+    ### def tag_ranges(self,tagName):               return tuple()
+    ### def tag_remove(self,tagName,i,j=None,*args):pass
+    ### def update_idletasks (self,*args,**keys):   pass
+    ### def xyToPythonIndex (self,x,y):             return 0
+    ### def yview (self,*args):                     return 0,0
     #@+node:ekr.20110605121601.18192: *4* hasFocus (qtBody)
     def hasFocus(self):
         
@@ -4283,13 +4258,12 @@ class leoQtFrame (leoFrame.leoFrame):
         def getFrame (self):                return None
         def isEnabled(self):                return True
         def onActivate (self,event=None):   pass
-        def pack (self):                    pass
+        ### def pack (self):                    pass
         def setBindings (self):             pass
-        def unpack (self):                  pass
+        ### def unpack (self):                  pass
 
-        hide = unpack
-        show = pack
-
+        ### hide = unpack
+        ### show = pack
         #@+node:ekr.20110605121601.18260: *5* clear, get & put/1
         def clear (self):
             self.put('')
@@ -4365,11 +4339,11 @@ class leoQtFrame (leoFrame.leoFrame):
         def addRow(self,height=None):   pass
         def getFrame (self):            return None
         def getNewFrame (self):         return None
-        def pack (self):                pass
-        def unpack (self):              pass
+        ### def pack (self):                pass
+        ### def unpack (self):              pass
 
-        hide = unpack
-        show = pack
+        ### hide = unpack
+        ### show = pack
         #@+node:ekr.20110605121601.18265: *5* add
         def add(self,*args,**keys):
 
@@ -5173,8 +5147,10 @@ class leoQtFrame (leoFrame.leoFrame):
             self.top.showNormal()
         self.top.activateWindow()
         self.top.raise_()
-    def update (self):
-        pass
+    ###
+    # def update (self):
+    #     g.trace('(leoQtFrame)',g.callers())
+    #     pass
     def getTitle (self):
         s = g.u(self.top.windowTitle())
         # g.trace('(qtFrame)',repr(s))
@@ -5277,56 +5253,54 @@ class leoQtLog (leoFrame.leoLog):
     def hasFocus (self):                    return None
     def forceLogUpdate (self,s):            pass
     #@+node:ekr.20110605121601.18320: *4* High-level interface (qtLog)
-    # Part 1: Corresponding to mustBeDefinedInSubclasses.
-    def appendText(self,s):             self.logCtrl.appendText(s)
-    def delete(self,i,j=None):          self.logCtrl.delete(i,j)
-    def insert(self,i,s):               self.logCtrl.insert(i,s)
-    def get(self,i,j):                  return self.logCtrl.get(i,j)
-    def getAllText(self):               return self.logCtrl.getAllText()
-    def getFocus(self):                 return self.logCtrl.getFocus()
-    def getInsertPoint(self):           return self.logCtrl.getInsertPoint()
-    def getSelectedText(self):          return self.logCtrl.getSelectedText()
-    def getSelectionRange (self):       return self.logCtrl.getSelectionRange()
-    def getYScrollPosition (self):      return self.logCtrl.getYScrollPosition()
-    def hasSelection(self):             return self.logCtrl.hasSelection()
-    def scrollLines(self,n):            self.logCtrl.scrollLines(n)
-    def see(self,i):                    self.logCtrl.see(i)
-    def seeInsertPoint (self):          self.logCtrl.seeInsertPoint()
-    def setAllText (self,s):            self.logCtrl.setAllText(s)
-    def setBackgroundColor(self,color): self.logCtrl.setBackgroundColor(color)
-    def setFocus(self):                 self.logCtrl.setFocus()
-    set_focus = setFocus
-    def setForegroundColor(self,color): self.logCtrl.setForegroundColor(color)
-    def setInsertPoint(self,pos):       self.logCtrl.setInsertPoint(pos)
-    def setSelectionRange(self,*args,**keys):
-        self.logCtrl.setSelectionRange(*args,**keys)
-    def setYScrollPosition (self,i):    self.logCtrl.setYScrollPosition(i)
+    # The required high-level interface.
+    def appendText(self,s):                     self.logCtrl.appendText(s)
+    def clipboard_append(self,s):               self.logCtrl.clipboard_append(s)
+    def clipboard_clear (self):                 self.logCtrl.clipboard_clear()
+    def delete(self,i,j=None):                  self.logCtrl.delete(i,j)
+    def insert(self,i,s):                       self.logCtrl.insert(i,s)
+    def flashCharacter(self,i,
+        bg='white',fg='red',
+        flashes=3,delay=75):                    pass
+    def get(self,i,j):                          return self.logCtrl.get(i,j)
+    def getAllText(self):                       return self.logCtrl.getAllText()
+    def getFocus(self):                         return self.logCtrl.getFocus()
+    def getInsertPoint(self):                   return self.logCtrl.getInsertPoint()
+    def getSelectedText(self):                  return self.logCtrl.getSelectedText()
+    def getSelectionRange (self):               return self.logCtrl.getSelectionRange()
+    def getYScrollPosition (self):              return self.logCtrl.getYScrollPosition()
+    def hasSelection(self):                     return self.logCtrl.hasSelection()
+    def see(self,i):                            self.logCtrl.see(i)
+    def seeInsertPoint (self):                  self.logCtrl.seeInsertPoint()
+    def setAllText (self,s):                    self.logCtrl.setAllText(s)
+    def setBackgroundColor(self,color):         self.logCtrl.setBackgroundColor(color)
+    def setFocus(self):                         self.logCtrl.setFocus()
+    def setForegroundColor(self,color):         self.logCtrl.setForegroundColor(color)
+    def setInsertPoint(self,pos):               self.logCtrl.setInsertPoint(pos)
+    def setSelectionRange(self,*args,**keys):   self.logCtrl.setSelectionRange(*args,**keys)
+    def setYScrollPosition (self,i):            self.logCtrl.setYScrollPosition(i)
+    def tag_configure (self,colorName,**keys):  pass
 
-    # Part 2: corresponding to mustBeDefinedInBaseClass.
-    def clipboard_append(self,s):       self.logCtrl.clipboard_append(s)
-    def clipboard_clear (self):         self.logCtrl.clipboard_clear()
-    def onChar (self,event):            self.logCtrl.onChar(event)
+    set_focus = setFocus
 
     # Part 3: do-nothings in mayBeDefinedInSubclasses.
-    def bind (self,kind,*args,**keys):          pass
-    def getWidth (self):                        return 0
-    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
-        pass
-    def indexIsVisible (self,i):                return False
-        # Code will loop if this returns True forever.
-    def mark_set(self,markName,i):              pass
-    def setWidth (self,width):                  pass
-    def tag_add(self,tagName,i,j=None,*args):   pass
-    def tag_config (self,colorName,**keys):     pass
-    def tag_configure (self,colorName,**keys):  pass
-    def tag_delete (self,tagName,*args,**keys): pass
-    def tag_names (self, *args):                return []
-    def tag_ranges(self,tagName):               return tuple()
-    def tag_remove(self,tagName,i,j=None,*args):pass
-    def update (self,*args,**keys):             pass
-    def update_idletasks (self,*args,**keys):   pass
-    def xyToPythonIndex (self,x,y):             return 0
-    def yview (self,*args):                     return 0,0
+    ### def bind (self,kind,*args,**keys):          pass
+    ### def getWidth (self):                        return 0
+    ### def indexIsVisible (self,i):                return False
+    ### def mark_set(self,markName,i):              pass
+    ### def onChar (self,event):                    self.logCtrl.onChar(event)
+    ### def scrollLines(self,n):                    self.logCtrl.scrollLines(n)
+    ### def setWidth (self,width):                  pass
+    ### def tag_add(self,tagName,i,j=None,*args):   pass
+    ### def tag_add (self,colorName,**keys):        pass
+    ### def tag_delete (self,tagName,*args,**keys): pass
+    ### def tag_names (self, *args):                return []
+    ### def tag_ranges(self,tagName):               return tuple()
+    ### def tag_remove(self,tagName,i,j=None,*args):pass
+
+    ### def update_idletasks (self,*args,**keys):   pass
+    ### def xyToPythonIndex (self,x,y):             return 0
+    ### def yview (self,*args):                     return 0,0
 
     # Part 4: corresponding to mayBeDefinedInSubclasses.
     def deleteTextSelection (self):         self.logCtrl.deleteTextSelection ()
@@ -6379,7 +6353,7 @@ class leoQtSpellTab:
     #@+node:ekr.20110605121601.18387: *4* createBindings (leoQtSpellTab)
     def createBindings (self):
         pass
-    #@+node:ekr.20110605121601.18388: *4* createFrame (leoQtSpellTabl)
+    #@+node:ekr.20110605121601.18388: *4* createFrame (leoQtSpellTab)
     def createFrame (self):
         pass
 
@@ -6471,7 +6445,7 @@ class leoQtSpellTab:
         idx = self.listBox.currentRow()
         value = self.suggestions[idx]
         return value
-    #@+node:ekr.20110605121601.18401: *5* update
+    #@+node:ekr.20110605121601.18401: *5* update (leoQtSpellTab)
     def update(self,show=True,fill=False):
 
         """Update the Spell Check dialog."""
@@ -8311,7 +8285,7 @@ class leoQtGui(leoGui.leoGui):
             # Do not assume the script will want to remain in this commander.
         #@-<< define the callbacks for b >>
         b.configure(command=executeScriptCallback)
-        c.bind(b,'<3>',deleteButtonCallback)
+        ### c.bind(b,'<3>',deleteButtonCallback)
         if shortcut:
             #@+<< bind the shortcut to executeScriptCallback >>
             #@+node:ekr.20110605121601.18531: *5* << bind the shortcut to executeScriptCallback >>
@@ -9804,7 +9778,7 @@ class jEditColorizer:
                 if font:
                     if trace and traceFonts:
                         g.trace('**found',name,id(font))
-                    w.tag_config(key,font=font)
+                    w.tag_configure(key,font=font)
                     break
                 else:
                     family = c.config.get(name + '_family','family')
@@ -9821,7 +9795,7 @@ class jEditColorizer:
                         self.fonts[key] = font
                         if trace and traceFonts:
                             g.trace('**found',key,name,family,size,slant,weight,id(font))
-                        w.tag_config(key,font=font)
+                        w.tag_configure(key,font=font)
                         break
 
             else: # Neither the general setting nor the language-specific setting exists.
@@ -9829,7 +9803,7 @@ class jEditColorizer:
                     if trace and traceFonts:
                         g.trace('default',key,font)
                     self.fonts[key] = font # 2010/02/19: Essential
-                    w.tag_config(key,font=defaultBodyfont)
+                    w.tag_configure(key,font=defaultBodyfont)
                 else:
                     if trace and traceFonts:
                         g.trace('no fonts')
@@ -9868,26 +9842,6 @@ class jEditColorizer:
                 w.tag_configure("name",underline=0)
 
         self.configure_variable_tags()
-
-        # 2011/10/24: These were used only by the old colorizer.
-            # Colors for latex characters.
-            # if 1: # Alas, the selection doesn't show if a background color is specified.
-                # w.tag_configure("latexModeBackground",foreground="black")
-                # w.tag_configure("latexModeKeyword",foreground="blue")
-                # w.tag_configure("latexBackground",foreground="black")
-                # w.tag_configure("latexKeyword",foreground="blue")
-            # else: # Looks cool, and good for debugging.
-                # w.tag_configure("latexModeBackground",foreground="black",background="seashell1")
-                # w.tag_configure("latexModeKeyword",foreground="blue",background="seashell1")
-                # w.tag_configure("latexBackground",foreground="black",background="white")
-                # w.tag_configure("latexKeyword",foreground="blue",background="white")
-
-            # Tags for wiki coloring.
-            # w.tag_configure("bold",font=self.bold_font)
-            # w.tag_configure("italic",font=self.italic_font)
-            # w.tag_configure("bolditalic",font=self.bolditalic_font)
-            # for name in self.color_tags_list:
-                # w.tag_configure(name,foreground=name)
 
         try:
             w.end_tag_configure()
@@ -10171,34 +10125,23 @@ class jEditColorizer:
     def setFontFromConfig (self):
 
         c = self.c
-        # isQt = g.app.gui.guiName() == 'qt'
 
         self.bold_font = c.config.getFontFromParams(
             "body_text_font_family", "body_text_font_size",
             "body_text_font_slant",  "body_text_font_weight",
-            c.config.defaultBodyFontSize) # , tag = "colorer bold")
-
-        # if self.bold_font and not isQt:
-            # self.bold_font.configure(weight="bold")
+            c.config.defaultBodyFontSize)
 
         self.italic_font = c.config.getFontFromParams(
             "body_text_font_family", "body_text_font_size",
             "body_text_font_slant",  "body_text_font_weight",
-            c.config.defaultBodyFontSize) # , tag = "colorer italic")
-
-        # if self.italic_font and not isQt:
-            # self.italic_font.configure(slant="italic",weight="normal")
+            c.config.defaultBodyFontSize)
 
         self.bolditalic_font = c.config.getFontFromParams(
             "body_text_font_family", "body_text_font_size",
             "body_text_font_slant",  "body_text_font_weight",
-            c.config.defaultBodyFontSize) # , tag = "colorer bold italic")
-
-        # if self.bolditalic_font and not isQt:
-            # self.bolditalic_font.configure(weight="bold",slant="italic")
+            c.config.defaultBodyFontSize)
 
         self.color_tags_list = []
-        # self.image_references = []
     #@+node:ekr.20110605121601.18589: *4*  Pattern matchers
     #@+node:ekr.20110605121601.18590: *5*  About the pattern matchers
     #@@nocolor-node
@@ -10469,13 +10412,15 @@ class jEditColorizer:
                     # Create the tag name.
                     tagName = "hyper" + str(self.hyperCount)
                     self.hyperCount += 1
-                    w.tag_delete(tagName)
-                    w.tag_add(tagName,i+2,j)
+
+                    ### w.tag_delete(tagName)
+                    ### w.tag_add(tagName,i+2,j)
 
                     ref.tagName = tagName
-                    c.tag_bind(w,tagName,"<Control-1>",ref.OnHyperLinkControlClick)
-                    c.tag_bind(w,tagName,"<Any-Enter>",ref.OnHyperLinkEnter)
-                    c.tag_bind(w,tagName,"<Any-Leave>",ref.OnHyperLinkLeave)
+
+                    ### c.tag_bind(w,tagName,"<Control-1>",ref.OnHyperLinkControlClick)
+                    ### c.tag_bind(w,tagName,"<Any-Enter>",ref.OnHyperLinkEnter)
+                    ### c.tag_bind(w,tagName,"<Any-Leave>",ref.OnHyperLinkLeave)
                     #@-<< set the hyperlink >>
                 else:
                     self.colorRangeWithTag(s,i+2,k,'link')
