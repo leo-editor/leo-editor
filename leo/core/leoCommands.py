@@ -131,11 +131,7 @@ class Commands (object):
 
         if trace: t3 = g.printDiffTime('%s: after controllers created' % (tag),t2)
 
-        if 0:
-            g.pr("\n*** using Null undoer ***\n")
-            self.undoer = leoUndo.nullUndoer(self)
-        else:
-            self.undoer = leoUndo.undoer(self)
+        self.undoer = leoUndo.undoer(self)
             
     #@+node:ekr.20031218072017.2814: *4* c.__repr__ & __str__
     def __repr__ (self):
@@ -3244,7 +3240,8 @@ class Commands (object):
             g.es("selected text should contain section names",color="blue")
 
         # Restore the selection.
-        body.setSelectionRange(oldSel)
+        i,j = oldSel
+        body.setSelectionRange(i,j)
         body.setFocus()
     #@+node:ekr.20031218072017.1711: *8* findSectionName
     def findSectionName(self,s):
@@ -3479,7 +3476,7 @@ class Commands (object):
             c.notValidInBatchMode("xxx")
             return
 
-        if body.hasTextSelection():
+        if body.hasSelection():
             i,j = w.getSelectionRange()
             w.setInsertPoint(i)
 
@@ -3664,7 +3661,7 @@ class Commands (object):
         i = len(head)
         j = max(i,len(head)+len(middle)-1)
         newSel = i,j
-        body.setSelectionRange(newSel)
+        body.setSelectionRange(i,j)
 
         # This handles the undo.
         body.onBodyChanged(undoType,oldSel=oldSel or newSel,oldYview=oldYview)
@@ -4075,7 +4072,7 @@ class Commands (object):
         u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
         c.redrawAndEdit(p,selectAll=True)
 
-        return p # for mod_labels plugin.
+        return p
     #@+node:ekr.20071005173203.1: *7* c.insertChild
     def insertChild (self,event=None):
 
@@ -7233,7 +7230,7 @@ class Commands (object):
     def canExtract (self):
 
         c = self ; body = c.frame.body
-        return body and body.hasTextSelection()
+        return body and body.hasSelection()
 
     canExtractSectionNames = canExtract
 

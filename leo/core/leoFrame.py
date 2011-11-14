@@ -139,6 +139,9 @@ class baseTextWidget:
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
         pass
         
+    def getName(self):
+        return self.name # Essential.
+        
     def getFocus(self):                         return None
     def getYScrollPosition (self):              return 0
     def see(self,i):                            pass
@@ -454,7 +457,8 @@ class leoBody:
         'getSelectionAreas',
         'getSelectionLines',
         'getYScrollPosition',
-        'hasTextSelection',
+        ### 'hasTextSelection',
+        'hasSelection',
         'oops',
         'onBodyChanged',
         ### 'onClick',
@@ -508,7 +512,6 @@ class leoBody:
     def scheduleIdleTimeRoutine (self,function,*args,**keys): self.oops()
     #@+node:ekr.20061109173021: *3* leoBody: must be defined in the base class
     #@+node:ekr.20031218072017.3677: *4* Coloring (leoBody)
-
     def getColorizer(self):
 
         return self.colorizer
@@ -1054,23 +1057,26 @@ class leoBody:
         if g.app.trace_scroll: g.trace('(leoBody) setYPos',i)
         self.bodyCtrl.setYScrollPosition(i)
     #@+node:ekr.20070228080627: *4* Text Wrappers (leoBody)
+    ### Where is the rest of the high-level interface???
+
     def getAllText (self):                  return self.bodyCtrl.getAllText()
     def getInsertPoint(self):               return self.bodyCtrl.getInsertPoint()
     def getSelectedText (self):             return self.bodyCtrl.getSelectedText()
     def getSelectionRange (self,sort=True): return self.bodyCtrl.getSelectionRange(sort)
-    def hasSelection(self):                 return self.bodyCtrl.hasSelection() # 2010/11/01
-    def hasTextSelection (self):            return self.bodyCtrl.hasSelection()
+    def hasSelection(self):                 return self.bodyCtrl.hasSelection()
+    ### def hasTextSelection (self):        return self.bodyCtrl.hasSelection()
     def see (self,index):                   self.bodyCtrl.see(index)
     def seeInsertPoint (self):              self.bodyCtrl.seeInsertPoint()
     def selectAllText (self,event=None):    return self.bodyCtrl.selectAllText()
-        # This is a command.
     def setInsertPoint (self,pos):          return self.bodyCtrl.setInsertPoint(pos)
-        # was getInsertPoint.
     def setFocus(self):                     return self.bodyCtrl.setFocus()
 
-    def setSelectionRange (self,sel):       i,j = sel ; self.bodyCtrl.setSelectionRange(i,j)
-    # def setSelectionRange(self,i,j,insert=None):
-    #     self.bodyCtrl.setSelectionRange(i,j,insert=insert)
+    #####
+    # def setSelectionRange (self,sel):
+    #     i,j = sel
+    #     self.bodyCtrl.setSelectionRange(i,j)
+    def setSelectionRange(self,i,j,insert=None):
+        self.bodyCtrl.setSelectionRange(i,j,insert=insert)
     #@+node:ekr.20081005065934.6: *3* leoBody: may be defined in subclasses
     def forceFullRecolor (self):
         self.forceFullRecolorFlag = True
@@ -2524,7 +2530,8 @@ class nullBody (leoBody):
     def setFocus(self):                         self.bodyCtrl.setFocus()
     def setForegroundColor(self,color):         self.bodyCtrl.setForegroundColor(color)
     def setInsertPoint(self,pos):               self.bodyCtrl.setInsertPoint(pos)
-    def setSelectionRange(self,*args,**keys):   self.bodyCtrl.setSelectionRange(*args,**keys)
+    def setSelectionRange (self,i,j,insert=None):
+        self.bodyCtrl.setSelectionRange(i,j,insert=insert)
     def setYScrollPosition (self,i):            self.bodyCtrl.setYScrollPosition(i)
     def tag_configure (self,colorName,**keys):  pass
     def toPythonIndex (self,index):             return self.bodyCtrl.toPythonIndex(index)
@@ -2558,6 +2565,9 @@ class nullColorizer: ### (colorizer):
     def enable(self): pass
 
     def interrupt(self): pass
+
+    def isSameColorState (self): return True
+        # Disable some logic in leoTree.select.
 
     def scanColorDirectives(self,p): pass
 
@@ -2623,8 +2633,9 @@ class nullFrame (leoFrame):
         # c.setLog()
 
         assert(c.undoer)
-        if self.useNullUndoer:
-            c.undoer = leoUndo.nullUndoer(c)
+        
+        ###if self.useNullUndoer:
+        ###    c.undoer = leoUndo.nullUndoer(c)
     #@+node:ekr.20061109124552: *3* Overrides
     #@+node:ekr.20061109123828: *4* Config...
     def resizePanesToRatio (self,ratio,secondary_ratio):    pass
@@ -2850,7 +2861,8 @@ class nullLog (leoLog):
     def setFocus(self):                         self.logCtrl.setFocus()
     def setForegroundColor(self,color):         self.logCtrl.setForegroundColor(color)
     def setInsertPoint(self,pos):               self.logCtrl.setInsertPoint(pos)
-    def setSelectionRange(self,*args,**keys):   self.logCtrl.setSelectionRange(*args,**keys)
+    def setSelectionRange (self,i,j,insert=None):
+        self.logCtrl.setSelectionRange(i,j,insert=insert)
     def setYScrollPosition (self,i):            self.logCtrl.setYScrollPosition(i)
     def tag_configure (self,colorName,**keys):  pass
     def toPythonIndex (self,index):             return self.logCtrl.toPythonIndex(index)
@@ -2970,8 +2982,9 @@ class nullTree (leoTree):
     def scrollTo(self,p):
         pass
 
-    def select (self,p,scroll=True):
-        pass
+    ### 2011/11/14: use leoFrame.select!
+    ### def select (self,p,scroll=True):
+    ###    pass
     #@+node:ekr.20070228163350.2: *4* Headlines (nullTree)
     def edit_widget (self,p):
         d = self.editWidgetsDict

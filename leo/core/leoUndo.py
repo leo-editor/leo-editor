@@ -1588,7 +1588,9 @@ class undoer:
             g.es("redo",count,"instances")
 
         c.selectPosition(p)
-        if newSel: c.frame.body.setSelectionRange(newSel)
+        if newSel:
+            i,j = newSel
+            c.frame.body.setSelectionRange(i,j)
     #@+node:ekr.20050412085138.1: *4* redoHoistNode & redoDehoistNode
     def redoHoistNode (self):
 
@@ -1690,7 +1692,8 @@ class undoer:
         # g.trace('newHead',u.newHead,'revert',c.frame.tree.revertHeadline)
 
         if u.groupCount == 0 and u.newSel:
-            u.c.frame.body.setSelectionRange(u.newSel)
+            i,j = u.newSel
+            u.c.frame.body.setSelectionRange(i,j)
 
         u.updateMarks('new')
 
@@ -1751,7 +1754,8 @@ class undoer:
         u.p = self.undoRedoTree(u.p,u.oldTree,u.newTree)
         c.selectPosition(u.p) # Does full recolor.
         if u.newSel:
-            c.frame.body.setSelectionRange(u.newSel)
+            i,j = newSel
+            c.frame.body.setSelectionRange(i,j)
     #@+node:EKR.20040526075238.5: *4* redoTyping
     def redoTyping (self):
 
@@ -1967,7 +1971,9 @@ class undoer:
             g.es("undo",count,"instances")
 
         c.selectPosition(p)
-        if oldSel: c.frame.body.setSelectionRange(oldSel)
+        if oldSel:
+            i,j = oldSel
+            c.frame.body.setSelectionRange(i,j)
     #@+node:ekr.20050412083244: *4* undoHoistNode & undoDehoistNode
     def undoHoistNode (self):
 
@@ -2063,7 +2069,8 @@ class undoer:
         c.frame.tree.setHeadline(u.p,u.oldHead)
 
         if u.groupCount == 0 and u.oldSel:
-            u.c.frame.body.setSelectionRange(u.oldSel)
+            i,j = u.oldSel
+            u.c.frame.body.setSelectionRange(i,j)
 
         u.updateMarks('old')
 
@@ -2209,7 +2216,8 @@ class undoer:
         u.p = self.undoRedoTree(u.p,u.newTree,u.oldTree)
         c.selectPosition(u.p) # Does full recolor.
         if u.oldSel:
-            c.frame.body.setSelectionRange(u.oldSel)
+            i,j = u.oldSel
+            c.frame.body.setSelectionRange(i,j)
     #@+node:EKR.20040526090701.4: *4* undoTyping
     def undoTyping (self):
 
@@ -2242,78 +2250,80 @@ class undoer:
             c.frame.body.setYScrollPosition(u.yview)
     #@-others
 #@+node:ekr.20031218072017.2243: ** class nullUndoer (undoer)
-class nullUndoer (undoer):
+if 0: # To be removed.
 
-    def __init__ (self,c):
+    class nullUndoer (undoer):
+    
+        def __init__ (self,c):
+    
+            undoer.__init__(self,c) # init the base class.
+    
+        #@+others
+        #@+node:ekr.20050415165731: *3* other methods
+        def clearUndoState (self):
+            pass
 
-        undoer.__init__(self,c) # init the base class.
+        def canRedo (self):
+            return False
 
-    #@+others
-    #@+node:ekr.20050415165731: *3* other methods
-    def clearUndoState (self):
-        pass
+        def canUndo (self):
+            return False
 
-    def canRedo (self):
-        return False
+        def enableMenuItems (self):
+            pass
+            
+        def onSelect(self,old_p,p):
+            pass
 
-    def canUndo (self):
-        return False
+        def setUndoTypingParams (self,p,undo_type,oldText,newText,oldSel,newSel,oldYview=None):
+            pass
 
-    def enableMenuItems (self):
-        pass
-        
-    def onSelect(self,old_p,p):
-        pass
+        def setUndoTypes (self):
+            pass
+        #@+node:ekr.20050415165731.1: *3* before undo handlers...
+        def beforeChangeNodeContents (self,p,oldBody=None,oldHead=None):
+            pass
+        def beforeChangeTree (self,p):
+            pass
+        def beforeChangeGroup (self,p,command):
+            pass
+        def beforeClearRecentFiles (self):
+            pass
+        def beforeCloneNode (self,p):
+            pass
+        def beforeDeleteNode (self,p):
+            pass
+        def beforeInsertNode (self,p,pasteAsClone=False,copiedBunchList=[]):
+            pass
+        def beforeMark (self,p,command):
+            pass
+        def beforeMoveNode (self,p):
+            pass
+        #@+node:ekr.20050415170018: *3* after undo handlers...
+        def afterChangeNodeContents (self,p,command,bunch,dirtyVnodeList=[]):
+            pass
+        def afterChangeTree (self,p,command,bunch):
+            pass
+        def afterChangeGroup (self,p,command,reportFlag=False,dirtyVnodeList=[]):
+            pass
+        def afterClearRecentFiles (self,bunch):
+            pass
+        def afterCloneNode (self,p,command,bunch,dirtyVnodeList=[]):
+            pass
+        def afterDehoist (self,p,command):
+            pass
+        def afterHoist (self,p,command):
+            pass
+        def afterDeleteNode (self,p,command,bunch,dirtyVnodeList=[]):
+            pass
+        def afterInsertNode (self,p,command,bunch,dirtyVnodeList=[]):
+            pass
 
-    def setUndoTypingParams (self,p,undo_type,oldText,newText,oldSel,newSel,oldYview=None):
-        pass
+        def afterMark (self,p,command,bunch,dirtyVnodeList=[]):
+            pass
 
-    def setUndoTypes (self):
-        pass
-    #@+node:ekr.20050415165731.1: *3* before undo handlers...
-    def beforeChangeNodeContents (self,p,oldBody=None,oldHead=None):
-        pass
-    def beforeChangeTree (self,p):
-        pass
-    def beforeChangeGroup (self,p,command):
-        pass
-    def beforeClearRecentFiles (self):
-        pass
-    def beforeCloneNode (self,p):
-        pass
-    def beforeDeleteNode (self,p):
-        pass
-    def beforeInsertNode (self,p,pasteAsClone=False,copiedBunchList=[]):
-        pass
-    def beforeMark (self,p,command):
-        pass
-    def beforeMoveNode (self,p):
-        pass
-    #@+node:ekr.20050415170018: *3* after undo handlers...
-    def afterChangeNodeContents (self,p,command,bunch,dirtyVnodeList=[]):
-        pass
-    def afterChangeTree (self,p,command,bunch):
-        pass
-    def afterChangeGroup (self,p,command,reportFlag=False,dirtyVnodeList=[]):
-        pass
-    def afterClearRecentFiles (self,bunch):
-        pass
-    def afterCloneNode (self,p,command,bunch,dirtyVnodeList=[]):
-        pass
-    def afterDehoist (self,p,command):
-        pass
-    def afterHoist (self,p,command):
-        pass
-    def afterDeleteNode (self,p,command,bunch,dirtyVnodeList=[]):
-        pass
-    def afterInsertNode (self,p,command,bunch,dirtyVnodeList=[]):
-        pass
-
-    def afterMark (self,p,command,bunch,dirtyVnodeList=[]):
-        pass
-
-    def afterMoveNode (self,p,command,bunch,dirtyVnodeList=[]):
-        pass
-    #@-others
+        def afterMoveNode (self,p,command,bunch,dirtyVnodeList=[]):
+            pass
+        #@-others
 #@-others
 #@-leo

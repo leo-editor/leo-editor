@@ -106,7 +106,7 @@ class baseEditCommandsClass:
             self.undoData = None
 
         return w
-    #@+node:ekr.20051214133130.1: *4* endCommand
+    #@+node:ekr.20051214133130.1: *4* endCommand (baseEditCommand)
     # New in Leo 4.4b4: calling endCommand is valid for all widgets,
     # but handles undo only if we are in body pane.
 
