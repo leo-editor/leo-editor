@@ -187,30 +187,25 @@ class baseTextWidget:
     #@+node:ekr.20070228074312.7: *5* toGuiIndex & toPythonIndex (baseTextWidget)
     def toPythonIndex (self,index):
 
-        w = self
-
         if type(index) == type(99):
             return index
         elif index == '1.0':
             return 0
         elif index == 'end':
-            return w._getLastPosition()
+            return len(self.s)
         else:
-            # g.trace(repr(index))
-            s = w._getAllText()
+            s = self.s
             row,col = index.split('.')
             row,col = int(row),int(col)
             i = g.convertRowColToPythonIndex(s,row-1,col)
-            # g.trace(index,row,col,i,g.callers(6))
             return i
 
     toGuiIndex = toPythonIndex
     #@+node:ekr.20090320055710.4: *5* toPythonIndexToRowCol (baseTextWidget)
     def toPythonIndexRowCol(self,index):
 
-        w = self
-        s = w.getAllText()
-        i = w.toPythonIndex(index)
+        s = self.getAllText()
+        i = self.toPythonIndex(index)
         row,col = g.convertPythonIndexToRowCol(s,i)
         return i,row,col
     #@+node:ekr.20111113141805.10058: *4* Insert point & selection Range (baseTextWidget)
@@ -290,20 +285,19 @@ class baseTextWidget:
     #@+node:ekr.20070228074312.13: *5* delete (baseTextWidget)
     def delete(self,i,j=None):
 
-        w = self
-        i = w.toPythonIndex(i)
+        i = self.toPythonIndex(i)
         if j is None: j = i+ 1
-        j = w.toPythonIndex(j)
+        j = self.toPythonIndex(j)
         
         # 2011/11/13: This allows subclasses to use this base class method.
         if i > j: i,j = j,i
 
         # g.trace(i,j,len(s),repr(s[:20]))
-        s = w.getAllText()
-        w.setAllText(s[:i] + s[j:])
+        s = self.getAllText()
+        self.setAllText(s[:i] + s[j:])
         
         # Bug fix: 2011/11/13: Significant in external tests.
-        w.setSelectionRange(i,i,insert=i)
+        self.setSelectionRange(i,i,insert=i)
     #@+node:ekr.20070228074312.14: *5* deleteTextSelection (baseTextWidget)
     def deleteTextSelection (self):
 
