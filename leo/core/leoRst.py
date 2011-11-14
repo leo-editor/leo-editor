@@ -850,7 +850,7 @@ class rstCommands:
                 p2 = self.findSectionDef(name,p)
                 if p2:
                     g.trace('expanding: %s from %s' % (name,p2.h))
-                    result.append(s) ### Maybe: append the section reference line.
+                    result.append(s) # Append the section reference line.
                     lines2 = g.splitLines(p2.b)
                     if self.getOption('expand_noweb_recursively'):
                         if name in seen:

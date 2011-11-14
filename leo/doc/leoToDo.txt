@@ -16,27 +16,6 @@ Top 10:
 .. @+node:ekr.20111026091322.16502: *3* First
 .. @+node:ekr.20111113191715.10085: *4* Make sure the "mustBeDefined" unit tests are fully functional
 .. @+node:ekr.20111113064104.9854: *4* why is w.setAllText(p.b) needed in some unit tests?
-.. @+node:ekr.20111113064104.9858: *4* Cleanup: Fix setSelectionRange calls
-@nocolor-node
-
-c.frame.body.setSelectionRange takes *one* arg, a tuple.
-    This is used by the undoer.
-    
-c.frame.body.bodyCtrl.setSelectionRange takes two required args and an optional "insert" arg.
-.. @+node:ekr.20070228080627: *5* Text Wrappers (leoBody)
-if 0: ### Now defined by the HighLevelInterface
-
-    def getAllText (self):                      return self.bodyCtrl.getAllText()
-    def getInsertPoint(self):                   return self.bodyCtrl.getInsertPoint()
-    def getSelectedText (self):                 return self.bodyCtrl.getSelectedText()
-    def getSelectionRange (self,sort=True):     return self.bodyCtrl.getSelectionRange(sort)
-    def hasSelection(self):                     return self.bodyCtrl.hasSelection()
-    def see (self,index):                       self.bodyCtrl.see(index)
-    def seeInsertPoint (self):                  self.bodyCtrl.seeInsertPoint()
-    def selectAllText (self,event=None):        return self.bodyCtrl.selectAllText()
-    def setInsertPoint (self,pos):              return self.bodyCtrl.setInsertPoint(pos)
-    def setFocus(self):                         return self.bodyCtrl.setFocus()
-    def setSelectionRange(self,i,j,insert=None):self.bodyCtrl.setSelectionRange(i,j,insert=insert)
 .. @+node:ekr.20111112131605.9756: *4* Run unit tests should leave focus in body
 .. @+node:ekr.20111112105048.9755: *4* Get Linux machine working again
 .. @+node:ekr.20111109122014.9792: *4* Allow @all only in top-level @<file> nodes
@@ -515,9 +494,9 @@ def doOneShortcut(self,bunch,name,p):
     self.set(p,"shortcut",name,bunchList)
         # Essential.
         
-    ### 2011/10/28 Apparently not used!
+    # 2011/10/28 Apparently not used!
     self.setShortcut(p,name,bunchList)
-        ### Can we delete this?
+        # Can we delete this?
     
     # if bunch.pane in ('kill','Kill'):
         # munge = k.shortcutFromSetting
@@ -928,7 +907,7 @@ def doMode(self,p,kind,name,val):
                 d [name] = bunchList
                 self.set(p,"shortcut",name,bunchList)
                 self.setShortcut(p,name,bunchList)
-                    ### Can we delete this??
+                    # Can we delete this??
 
     # Restore the global shortcutsDict.
     self.shortcutsDict = old_d
@@ -1539,7 +1518,7 @@ def doMode(self,p,kind,name,val):
                 d [name] = bunchList
                 self.set(p,"shortcut",name,bunchList)
                 self.setShortcut(p,name,bunchList)
-                    ### Can we delete this??
+                    # Can we delete this??
 
     # Restore the global shortcutsDict.
     self.shortcutsDict = old_d
@@ -1613,9 +1592,9 @@ def doOneShortcut(self,bunch,name,p):
     self.set(p,"shortcut",name,bunchList)
         # Essential.
         
-    ### 2011/10/28 Apparently not used!
+    # 2011/10/28 Apparently not used!
     self.setShortcut(p,name,bunchList)
-        ### Can we delete this?
+        # Can we delete this?
     
     # if bunch.pane in ('kill','Kill'):
         # munge = k.shortcutFromSetting
@@ -1853,9 +1832,9 @@ def doOneShortcut(self,bunch,name,p):
     self.set(p,"shortcut",name,bunchList)
         # Essential.
         
-    ### 2011/10/28 Apparently not used!
+    # 2011/10/28 Apparently not used!
     self.setShortcut(p,name,bunchList)
-        ### Can we delete this?
+        # Can we delete this?
     
     # if bunch.pane in ('kill','Kill'):
         # munge = k.shortcutFromSetting
@@ -2537,7 +2516,7 @@ def expandSectionRefs (self,lines,p,seen):
             p2 = self.findSectionDef(name,p)
             if p2:
                 g.trace('expanding: %s from %s' % (name,p2.h))
-                result.append(s) ### Maybe: append the section reference line.
+                result.append(s) # Append the section reference line.
                 lines2 = g.splitLines(p2.b)
                 if self.getOption('expand_noweb_recursively'):
                     if name in seen:
@@ -3383,7 +3362,7 @@ def expandSectionRefs (self,lines,p,seen):
             p2 = self.findSectionDef(name,p)
             if p2:
                 g.trace('expanding: %s from %s' % (name,p2.h))
-                result.append(s) ### Maybe: append the section reference line.
+                result.append(s) # Append the section reference line.
                 lines2 = g.splitLines(p2.b)
                 if self.getOption('expand_noweb_recursively'):
                     if name in seen:
@@ -4213,9 +4192,9 @@ def doOneShortcut(self,bunch,name,p):
     self.set(p,"shortcut",name,bunchList)
         # Essential.
         
-    ### 2011/10/28 Apparently not used!
+    # 2011/10/28 Apparently not used!
     self.setShortcut(p,name,bunchList)
-        ### Can we delete this?
+        # Can we delete this?
     
     # if bunch.pane in ('kill','Kill'):
         # munge = k.shortcutFromSetting
@@ -4626,7 +4605,7 @@ def doMode(self,p,kind,name,val):
                 d [name] = bunchList
                 self.set(p,"shortcut",name,bunchList)
                 self.setShortcut(p,name,bunchList)
-                    ### Can we delete this??
+                    # Can we delete this??
 
     # Restore the global shortcutsDict.
     self.shortcutsDict = old_d
@@ -5237,7 +5216,7 @@ def doMode(self,p,kind,name,val):
                 d [name] = bunchList
                 self.set(p,"shortcut",name,bunchList)
                 self.setShortcut(p,name,bunchList)
-                    ### Can we delete this??
+                    # Can we delete this??
 
     # Restore the global shortcutsDict.
     self.shortcutsDict = old_d
@@ -5311,9 +5290,9 @@ def doOneShortcut(self,bunch,name,p):
     self.set(p,"shortcut",name,bunchList)
         # Essential.
         
-    ### 2011/10/28 Apparently not used!
+    # 2011/10/28 Apparently not used!
     self.setShortcut(p,name,bunchList)
-        ### Can we delete this?
+        # Can we delete this?
     
     # if bunch.pane in ('kill','Kill'):
         # munge = k.shortcutFromSetting
@@ -5551,9 +5530,9 @@ def doOneShortcut(self,bunch,name,p):
     self.set(p,"shortcut",name,bunchList)
         # Essential.
         
-    ### 2011/10/28 Apparently not used!
+    # 2011/10/28 Apparently not used!
     self.setShortcut(p,name,bunchList)
-        ### Can we delete this?
+        # Can we delete this?
     
     # if bunch.pane in ('kill','Kill'):
         # munge = k.shortcutFromSetting

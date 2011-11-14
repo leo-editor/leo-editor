@@ -5470,6 +5470,34 @@ def stripBrackets (s):
     if s.endswith('>'):
         s = s[:-1]
     return s
+#@+node:ekr.20111114151846.9847: *3* g.toPythonIndex
+def toPythonIndex (s,index):
+    
+    '''Convert index to a Python int.
+    
+    index may be a Tk index (x.y) or 'end'.
+    '''
+    
+    if index is None:
+        return 0
+    elif type(index) == type(99):
+        return index
+    elif index == '1.0':
+        return 0
+    elif index == 'end':
+        return len(s)
+    else:
+        data = index.split('.')
+        if len(data) == 2:
+            row,col = data
+            row,col = int(row),int(col)
+            i = g.convertRowColToPythonIndex(s,row-1,col)
+            return i
+        else:
+            g.trace('bad string index: %s' % index)
+            return 0
+
+toGuiIndex = toPythonIndex
 #@+node:ekr.20041219095213: *3* import wrappers
 #@+node:ekr.20040917061619: *4* g.cantImport
 def cantImport (moduleName,pluginName=None,verbose=True):

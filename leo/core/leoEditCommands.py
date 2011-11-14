@@ -6403,9 +6403,6 @@ class editCommandsClass (baseEditCommandsClass):
         if hasattr(w,'scrollDelegate'):
             kind = direction + '-' + distance
             w.scrollDelegate(kind)
-        else:
-            pass
-            ### self.scrollHelperHelper(event,direction,distance)
     #@+node:ekr.20060309060654.1: *4* scrollOutlineUp/Down/Line/Page
     def scrollOutlineDownLine (self,event=None):
         '''Scroll the outline pane down one line.'''

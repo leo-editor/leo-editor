@@ -79,56 +79,6 @@ class leoGui:
 
         # To keep pylint happy.
         self.ScriptingControllerClass = nullScriptingControllerClass
-    #@+node:ekr.20061109211054: *4* leoGui.mustBeDefinedOnlyInBaseClass
-    mustBeDefinedOnlyInBaseClass = (
-        'guiName',
-        'oops',
-        'setScript',
-        'widget_name',
-    )
-    #@+node:ekr.20061109211022: *4* leoGui.mustBeDefinedInSubclasses
-    mustBeDefinedInSubclasses = (
-        # Startup & shutdown
-        'attachLeoIcon',
-        'center_dialog',
-        'color',
-        #'createComparePanel',          # optional
-        #'createFindPanel',             # optional
-        'createFindTab',
-        'createKeyHandlerClass',
-        'createLeoFrame',
-        'createRootWindow',
-        'create_labeled_frame',
-        'destroySelf',
-        #'eventChar',
-        #'eventKeysym',
-        'eventWidget',
-        # 'eventXY',
-        # 'finishCreate', # optional.
-        # 'getFontFromParams', # optional
-        # 'getFullVersion', # optional.
-        'getTextFromClipboard',
-        'get_focus',
-        'get_window_info',
-        'isTextWidget',
-        # 'keysym',
-        'killGui',
-        # 'makeScriptButton', # optional
-        'recreateRootWindow',
-        'replaceClipboardWith',
-        'runAboutLeoDialog',
-        'runAskLeoIDDialog',
-        'runAskOkCancelNumberDialog',
-        'runAskOkDialog',
-        'runAskYesNoCancelDialog',
-        'runAskYesNoDialog',
-        'runMainLoop',
-        'runOpenFileDialog',
-        'runSaveFileDialog',
-        'set_focus',
-        #'setIdleTimeHook',             # optional       
-        #'setIdleTimeHookAfterDelay',   # optional
-    )
     #@+node:ekr.20061109212618.1: *3* Must be defined only in base class
     #@+node:ekr.20110605121601.18847: *4* create_key_event (leoGui)
     def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None):

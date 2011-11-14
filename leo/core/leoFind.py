@@ -111,24 +111,8 @@ class searchWidget:
             self.i = self.toPythonIndex(insert)
     #@+node:ekr.20070105092022.4: *3* toPythonIndex (leoFind)
     def toPythonIndex (self,i):
-
-        '''Make sure i is a Python index.'''
-
-        if i is None:
-            return 0
-
-        if g.isString(i):
-            row,col = i.split('.')
-            row,col = int(row),int(col)
-            row -= 1
-            i = g.convertRowColToPythonIndex(self.s,row,col)
-        elif type(i) == type(9):
-            pass
-        else:
-            g.trace('can not happen: %s' % (i))
-            i = 0 # Should never happen.
-
-        return i
+        
+        return g.toPythonIndex(self.s,i)
     #@-others
 #@+node:ekr.20061212084717: ** class leoFind
 class leoFind:

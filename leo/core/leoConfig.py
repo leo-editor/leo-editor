@@ -509,7 +509,7 @@ class parserBaseClass:
                     d [name] = bunchList
                     self.set(p,"shortcut",name,bunchList)
                     self.setShortcut(p,name,bunchList)
-                        ### Can we delete this??
+                        # Can we delete this??
 
         # Restore the global shortcutsDict.
         self.shortcutsDict = old_d
@@ -583,9 +583,9 @@ class parserBaseClass:
         self.set(p,"shortcut",name,bunchList)
             # Essential.
             
-        ### 2011/10/28 Apparently not used!
+        # 2011/10/28 Apparently not used!
         self.setShortcut(p,name,bunchList)
-            ### Can we delete this?
+            # Can we delete this?
         
         # if bunch.pane in ('kill','Kill'):
             # munge = k.shortcutFromSetting

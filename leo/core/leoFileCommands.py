@@ -396,7 +396,7 @@ if sys.platform != 'cli':
                 c.frame.setTopGeometry(w,h,x,y)
                 c.frame.deiconify()
                 c.frame.lift()
-                ### c.frame.update()
+                # c.frame.update()
 
             # Causes window to appear.
             # g.trace('ratio',c.frame.ratio,c)

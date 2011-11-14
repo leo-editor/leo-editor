@@ -976,9 +976,6 @@ class chapter:
             chaptersNode.contract()
 
         c.hoistStack = self.hoistStack[:]
-
-        ### c.selectPosition(p)
-        ### c.redraw_after_select(p)
         c.selectPosition(p)
         g.doHook('hoist-changed',c=c)
         c.redraw_now(p)

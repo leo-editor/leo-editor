@@ -555,7 +555,7 @@ def removeFile(path):
         if trace:
             print("@test batch mode: removeFile: not found:",test_file)
 #@+node:ekr.20100131171342.5472: *3* Check base classes & ivars
-#@+node:ekr.20100131171342.5478: *4* @test that log and body implements high-level interface
+#@+node:ekr.20100131171342.5478: *4* @@@test that log and body implements high-level interface
 logCtrl = c.frame.log.logCtrl
 
 table = (
