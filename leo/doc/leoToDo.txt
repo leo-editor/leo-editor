@@ -24,26 +24,19 @@ c.frame.body.setSelectionRange takes *one* arg, a tuple.
     
 c.frame.body.bodyCtrl.setSelectionRange takes two required args and an optional "insert" arg.
 .. @+node:ekr.20070228080627: *5* Text Wrappers (leoBody)
-### Where is the rest of the high-level interface???
+if 0: ### Now defined by the HighLevelInterface
 
-def getAllText (self):                  return self.bodyCtrl.getAllText()
-def getInsertPoint(self):               return self.bodyCtrl.getInsertPoint()
-def getSelectedText (self):             return self.bodyCtrl.getSelectedText()
-def getSelectionRange (self,sort=True): return self.bodyCtrl.getSelectionRange(sort)
-def hasSelection(self):                 return self.bodyCtrl.hasSelection()
-### def hasTextSelection (self):        return self.bodyCtrl.hasSelection()
-def see (self,index):                   self.bodyCtrl.see(index)
-def seeInsertPoint (self):              self.bodyCtrl.seeInsertPoint()
-def selectAllText (self,event=None):    return self.bodyCtrl.selectAllText()
-def setInsertPoint (self,pos):          return self.bodyCtrl.setInsertPoint(pos)
-def setFocus(self):                     return self.bodyCtrl.setFocus()
-
-#####
-# def setSelectionRange (self,sel):
-#     i,j = sel
-#     self.bodyCtrl.setSelectionRange(i,j)
-def setSelectionRange(self,i,j,insert=None):
-    self.bodyCtrl.setSelectionRange(i,j,insert=insert)
+    def getAllText (self):                      return self.bodyCtrl.getAllText()
+    def getInsertPoint(self):                   return self.bodyCtrl.getInsertPoint()
+    def getSelectedText (self):                 return self.bodyCtrl.getSelectedText()
+    def getSelectionRange (self,sort=True):     return self.bodyCtrl.getSelectionRange(sort)
+    def hasSelection(self):                     return self.bodyCtrl.hasSelection()
+    def see (self,index):                       self.bodyCtrl.see(index)
+    def seeInsertPoint (self):                  self.bodyCtrl.seeInsertPoint()
+    def selectAllText (self,event=None):        return self.bodyCtrl.selectAllText()
+    def setInsertPoint (self,pos):              return self.bodyCtrl.setInsertPoint(pos)
+    def setFocus(self):                         return self.bodyCtrl.setFocus()
+    def setSelectionRange(self,i,j,insert=None):self.bodyCtrl.setSelectionRange(i,j,insert=insert)
 .. @+node:ekr.20111112131605.9756: *4* Run unit tests should leave focus in body
 .. @+node:ekr.20111112105048.9755: *4* Get Linux machine working again
 .. @+node:ekr.20111109122014.9792: *4* Allow @all only in top-level @<file> nodes

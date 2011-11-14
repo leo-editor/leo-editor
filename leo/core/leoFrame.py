@@ -43,16 +43,120 @@ import leo.core.leoUndo as leoUndo
 #     Called by commands throughout Leo's core that change the body or headline.
 #     These are thin wrappers for updateBody and updateTree.
 #@-<< About handling events >>
-#@+<< define text classes >>
-#@+node:ekr.20070228074228: ** << define text classes >>
-#@+others
-#@+node:ekr.20070228074312: *3* class baseTextWidget
+#@+<< define class HighLevelInterface >>
+#@+node:ekr.20111114102224.9936: ** << define class HighLevelInterface >>
+class HighLevelInterface:
+    
+    '''A class to specify Leo's high-level editing interface
+    used throughout Leo's core.
+    
+    The interface has two parts:
+        
+    1. Standard (immutable) methods that will never be overridden.
+    
+    2. Other (mutable) methods that subclasses may override.
+    '''
+    
+    #@+others
+    #@+node:ekr.20111114102224.9950: *3* ctor (HighLevelInterface)
+    def __init__ (self,c):
+        
+        self.c = c
+        
+        self.mutable_methods = (
+            'flashCharacter',
+            'toPythonIndex',
+            'toPythonIndexRowCol',
+            # 'toGuiIndex', # A synonym.
+        )
+    #@+node:ekr.20111114102224.9935: *3* mutable methods (HighLevelInterface)
+    #@+node:ekr.20111114102224.9946: *4* flashCharacter
+    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+        pass
+        
+    #@+node:ekr.20111114102224.9943: *4* toPythonIndex (HighLevelInterface)
+    def toPythonIndex (self,index):
+        
+        # This works, but is much slower that the leoQTextEditWidget method.
+        if type(index) == type(99):
+            return index
+        elif index == '1.0':
+            return 0
+        elif index == 'end':
+            return self.getLastPosition()
+        else:
+            s = self.getAllText()
+            data = index.split('.')
+            if len(data) == 2:
+                row,col = data
+                row,col = int(row),int(col)
+                i = g.convertRowColToPythonIndex(s,row-1,col)
+                return i
+            else:
+                g.trace('bad string index: %s' % index)
+                return 0
+
+    toGuiIndex = toPythonIndex
+    #@+node:ekr.20111114102224.9945: *4* toPythonIndexRowCol (baseTextWidget)
+    def toPythonIndexRowCol(self,index):
+        
+        # This works, but is much slower that the leoQTextEditWidget method.
+        s = self.getAllText()
+        i = self.toPythonIndex(index)
+        row,col = g.convertPythonIndexToRowCol(s,i)
+        return i,row,col
+    #@+node:ekr.20111114102224.9937: *3* immutable redirection methods (HighLevelInterface)
+    def appendText(self,s):                         self.widget.appendText(s)
+    def delete(self,i,j=None):                      self.widget.delete(i,j)
+    def deleteTextSelection (self):                 self.widget.deleteTextSelection()
+    def get(self,i,j):                              return self.widget.get(i,j)
+    def getAllText(self):                           return self.widget.getAllText()
+    def getInsertPoint(self):                       return self.widget.getInsertPoint()
+    def getSelectedText(self):                      return self.widget.getSelectedText()
+    def getSelectionRange (self):                   return self.widget.getSelectionRange()
+    def getYScrollPosition (self):                  return self.widget.getYScrollPosition()
+    def hasSelection(self):                         return self.widget.hasSelection()
+    def insert(self,i,s):                           self.widget.insert(i,s)    
+    def replace (self,i,j,s):                       self.widget.replace(i,j,s)
+    def rowColToGuiIndex (self,s,row,col):          return self.widget.rowColToGuiIndex(s,row,col)
+    def see(self,i):                                self.widget.see(i)
+    def seeInsertPoint (self):                      self.widget.seeInsertPoint()
+    def selectAllText (self,insert=None):           self.widget.selectAllText(insert)
+    def setAllText (self,s):                        self.widget.setAllText(s)
+    def setBackgroundColor(self,color):             self.widget.setBackgroundColor(color)
+    def setFocus(self):                             self.widget.setFocus()
+    def setForegroundColor(self,color):             self.widget.setForegroundColor(color)
+    def setInsertPoint(self,pos):                   self.widget.setInsertPoint(pos)
+    def setSelectionRange (self,i,j,insert=None):   self.widget.setSelectionRange(i,j,insert=insert)
+    def setYScrollPosition (self,i):                self.widget.setYScrollPosition(i)
+    def tag_configure (self,colorName,**keys):      self.widget.tag_configure(colorName,**keys)
+    #@+node:ekr.20111114102224.9940: *3* other immutable methods (HighLevelInterface)
+    # The all use leoGlobals functions or leoGui methods.
+
+    def clipboard_append(self,s):
+        s1 = g.app.gui.getTextFromClipboard()
+        g.app.gui.replaceClipboardWith(s1 + s)
+        
+    def clipboard_clear (self):
+        g.app.gui.replaceClipboardWith('')
+        
+    def getFocus(self):
+        return g.app.gui.get_focus(self.c)
+        
+    def rowColToGuiIndex (self,s,row,col):
+        return g.convertRowColToPythonIndex(s,row,col)    
+
+    set_focus = setFocus
+    #@-others
+#@-<< define class HighLevelInterface >>
+#@+<< define class baseTextWidget >>
+#@+node:ekr.20070228074312: ** << define class baseTextWidget >>
 class baseTextWidget:
 
     '''The base class for all wrapper classes for leo Text widgets.'''
 
     #@+others
-    #@+node:ekr.20070228074312.1: *4* Birth & special methods (baseTextWidget)
+    #@+node:ekr.20070228074312.1: *3* Birth & special methods (baseTextWidget)
     def __init__ (self,c,baseClassName,name,widget):
 
         self.baseClassName = baseClassName
@@ -63,12 +167,12 @@ class baseTextWidget:
 
     def __repr__(self):
         return '%s: %s' % (self.baseClassName,id(self))
-    #@+node:ekr.20081031074455.3: *5* baseTextWidget.mustBeDefinedOnlyInBaseClass
+    #@+node:ekr.20081031074455.3: *4* baseTextWidget.mustBeDefinedOnlyInBaseClass
     mustBeDefinedOnlyInBaseClass = (
         'clipboard_append', # uses g.app.gui method.
         'clipboard_clear', # usesg.app.gui method.
     )
-    #@+node:ekr.20081031074455.4: *5* baseTextWidget.mustBeDefinedInSubclasses
+    #@+node:ekr.20081031074455.4: *4* baseTextWidget.mustBeDefinedInSubclasses
     mustBeDefinedInSubclasses = (
         'appendText',
         'delete',
@@ -93,7 +197,7 @@ class baseTextWidget:
         'setYScrollPosition',
     )
 
-    #@+node:ekr.20081031074455.5: *5* baseTextWidget.mustBeDefined
+    #@+node:ekr.20081031074455.5: *4* baseTextWidget.mustBeDefined
     # These can be do-nothings
     mustBeDefined = (
         ### 'bind',
@@ -122,7 +226,7 @@ class baseTextWidget:
         ### 'yview',
         # 'xyzzy', # to make test fail.
     )
-    #@+node:ekr.20070228074312.12: *4* Clipboard (baseTextWidget)
+    #@+node:ekr.20070228074312.12: *3* Clipboard (baseTextWidget)
     # There is no need to override these in subclasses.
 
     def clipboard_clear (self):
@@ -134,15 +238,20 @@ class baseTextWidget:
         s1 = g.app.gui.getTextFromClipboard()
 
         g.app.gui.replaceClipboardWith(s1 + s)
-    #@+node:ekr.20081031074455.13: *4* Do-nothings (baseTextWidget)
-    # Do not delete: these are part of the high-level interface.
+    #@+node:ekr.20081031074455.13: *3* Do-nothings (baseTextWidget)
+    #@+at
+    # Important: leoQtBaseTextWidget is **not** a subclass of HighLevelInterface.
+    # 
+    # Indeed, the redirection methods of HighLevelInterface redirect calls
+    # from leoBody & leoLog to *this* class.
+    #@@c
+
+    # Do not delete: HighLevelInterface calls these methods.
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
         pass
-        
-    def getName(self):
-        return self.name # Essential.
-        
+
     def getFocus(self):                         return None
+    def getName(self):                          return self.name # Essential.
     def getYScrollPosition (self):              return 0
     def see(self,i):                            pass
     def seeInsertPoint(self):                   pass
@@ -181,15 +290,15 @@ class baseTextWidget:
     ### def yview (self,*args):                     return 0,0
     ### tag_config = tag_configure
 
-    #@+node:ekr.20111113141805.10060: *4* Indices (baseTextWidget)
-    #@+node:ekr.20070228074312.8: *5* rowColToGuiIndex (baseTextWidget)
+    #@+node:ekr.20111113141805.10060: *3* Indices (baseTextWidget)
+    #@+node:ekr.20070228074312.8: *4* rowColToGuiIndex (baseTextWidget)
     # This method is called only from the colorizer.
     # It provides a huge speedup over naive code.
 
     def rowColToGuiIndex (self,s,row,col):
 
         return g.convertRowColToPythonIndex(s,row,col)    
-    #@+node:ekr.20070228074312.7: *5* toGuiIndex & toPythonIndex (baseTextWidget)
+    #@+node:ekr.20070228074312.7: *4* toPythonIndex (baseTextWidget)
     def toPythonIndex (self,index):
 
         if type(index) == type(99):
@@ -206,15 +315,15 @@ class baseTextWidget:
             return i
 
     toGuiIndex = toPythonIndex
-    #@+node:ekr.20090320055710.4: *5* toPythonIndexToRowCol (baseTextWidget)
+    #@+node:ekr.20090320055710.4: *4* toPythonIndexToRowCol (baseTextWidget)
     def toPythonIndexRowCol(self,index):
 
         s = self.getAllText()
         i = self.toPythonIndex(index)
         row,col = g.convertPythonIndexToRowCol(s,i)
         return i,row,col
-    #@+node:ekr.20111113141805.10058: *4* Insert point & selection Range (baseTextWidget)
-    #@+node:ekr.20070228074312.20: *5* getInsertPoint (baseTextWidget)
+    #@+node:ekr.20111113141805.10058: *3* Insert point & selection Range (baseTextWidget)
+    #@+node:ekr.20070228074312.20: *4* getInsertPoint (baseTextWidget)
     def getInsertPoint(self):
 
         i = self.ins
@@ -228,7 +337,7 @@ class baseTextWidget:
 
         # g.trace('baseTextWidget): i:',i,'virtual',self.virtualInsertPoint)
         return i
-    #@+node:ekr.20070228074312.22: *5* getSelectionRange (baseTextWidget)
+    #@+node:ekr.20070228074312.22: *4* getSelectionRange (baseTextWidget)
     def getSelectionRange (self,sort=True):
 
         """Return a tuple representing the selected range of the widget.
@@ -245,18 +354,18 @@ class baseTextWidget:
             i = self.ins
             return i,i
 
-    #@+node:ekr.20070228074312.25: *5* hasSelection
+    #@+node:ekr.20070228074312.25: *4* hasSelection
     def hasSelection (self):
 
         i,j = self.getSelectionRange()
         return i != j
-    #@+node:ekr.20070228074312.35: *5* setInsertPoint (baseTextWidget)
+    #@+node:ekr.20070228074312.35: *4* setInsertPoint (baseTextWidget)
     def setInsertPoint (self,pos):
 
         self.virtualInsertPoint = i = self.toPythonIndex(pos)
         self.ins = i
         self.sel = i,i
-    #@+node:ekr.20070228074312.36: *5* setSelectionRange (baseTextWidget)
+    #@+node:ekr.20070228074312.36: *4* setSelectionRange (baseTextWidget)
     def setSelectionRange (self,i,j,insert=None):
 
         i1, j1, insert1 = i,j,insert
@@ -269,25 +378,25 @@ class baseTextWidget:
             ins = self.toPythonIndex(insert)
             if ins in (i,j):
                 self.virtualInsertPoint = ins
-    #@+node:ekr.20070228074312.31: *5* selectAllText (baseTextWidget)
+    #@+node:ekr.20070228074312.31: *4* selectAllText (baseTextWidget)
     def selectAllText (self,insert=None):
 
         '''Select all text of the widget.'''
 
         self.setSelectionRange(0,'end',insert=insert)
-    #@+node:ekr.20070228074312.5: *4* oops (baseTextWidget)
+    #@+node:ekr.20070228074312.5: *3* oops (baseTextWidget)
     def oops (self):
 
         g.pr('baseTextWidget oops:',self,g.callers(4),
             'must be overridden in subclass')
-    #@+node:ekr.20111113141805.10057: *4* Text (baseTextWidget)
-    #@+node:ekr.20070228074312.10: *5* appendText (baseTextWidget)
+    #@+node:ekr.20111113141805.10057: *3* Text (baseTextWidget)
+    #@+node:ekr.20070228074312.10: *4* appendText (baseTextWidget)
     def appendText (self,s):
 
         self.s = self.s + s
         self.ins = len(self.s)
         self.sel = self.ins,self.ins
-    #@+node:ekr.20070228074312.13: *5* delete (baseTextWidget)
+    #@+node:ekr.20070228074312.13: *4* delete (baseTextWidget)
     def delete(self,i,j=None):
 
         i = self.toPythonIndex(i)
@@ -303,12 +412,12 @@ class baseTextWidget:
         
         # Bug fix: 2011/11/13: Significant in external tests.
         self.setSelectionRange(i,i,insert=i)
-    #@+node:ekr.20070228074312.14: *5* deleteTextSelection (baseTextWidget)
+    #@+node:ekr.20070228074312.14: *4* deleteTextSelection (baseTextWidget)
     def deleteTextSelection (self):
 
         i,j = self.getSelectionRange()
         self.delete(i,j)
-    #@+node:ekr.20070228074312.18: *5* get (baseTextWidget)
+    #@+node:ekr.20070228074312.18: *4* get (baseTextWidget)
     def get(self,i,j=None):
 
         i = self.toPythonIndex(i)
@@ -316,18 +425,18 @@ class baseTextWidget:
         j = self.toPythonIndex(j)
         s = self.s[i:j]
         return g.toUnicode(s)
-    #@+node:ekr.20070228074312.19: *5* getAllText (baseTextWidget)
+    #@+node:ekr.20070228074312.19: *4* getAllText (baseTextWidget)
     def getAllText (self):
 
         s = self.s
         return g.toUnicode(s)
-    #@+node:ekr.20070228074312.21: *5* getSelectedText (baseTextWidget)
+    #@+node:ekr.20070228074312.21: *4* getSelectedText (baseTextWidget)
     def getSelectedText (self):
 
         i,j = self.sel
         s = self.s[i:j]
         return g.toUnicode(s)
-    #@+node:ekr.20070228074312.26: *5* insert (baseTextWidget)
+    #@+node:ekr.20070228074312.26: *4* insert (baseTextWidget)
     def insert(self,i,s):
 
         i = self.toPythonIndex(i)
@@ -336,12 +445,12 @@ class baseTextWidget:
         i += len(s1)
         self.ins = i
         self.sel = i,i
-    #@+node:ekr.20070228074312.28: *5* replace (baseTextWidget)
+    #@+node:ekr.20070228074312.28: *4* replace (baseTextWidget)
     def replace (self,i,j,s):
 
         self.delete(i,j)
         self.insert(i,s)
-    #@+node:ekr.20070228074312.32: *5* setAllText (baseTextWidget)
+    #@+node:ekr.20070228074312.32: *4* setAllText (baseTextWidget)
     def setAllText (self,s,new_p=None):
 
         self.s = s
@@ -349,13 +458,15 @@ class baseTextWidget:
         self.ins = i
         self.sel = i,i
     #@-others
-#@+node:ekr.20070228074228.1: *3* class stringTextWidget (baseTextWidget)
+#@-<< define class baseTextWidget >>
+#@+<< define class stringTextWidget >>
+#@+node:ekr.20070228074228.1: ** << define class stringTextWidget >>
 class stringTextWidget (baseTextWidget):
 
     '''A class that represents text as a Python string.'''
 
     #@+others
-    #@+node:ekr.20070228074228.2: *4* ctor
+    #@+node:ekr.20070228074228.2: *3* ctor
     def __init__ (self,c,name):
 
         # Init the base class
@@ -366,7 +477,7 @@ class stringTextWidget (baseTextWidget):
         self.sel = 0,0
         self.s = ''
         self.trace = False
-    #@+node:ekr.20070228111853: *4* setSelectionRange (stringText)
+    #@+node:ekr.20070228111853: *3* setSelectionRange (stringText)
     def setSelectionRange (self,i,j,insert=None):
 
         i1, j1, insert1 = i,j,insert
@@ -381,21 +492,25 @@ class stringTextWidget (baseTextWidget):
 
         if self.trace: g.trace('i',i,'j',j,'insert',repr(insert))
     #@-others
-#@-others
-#@-<< define text classes >>
+#@-<< define class stringTextWidget >>
 
 #@+others
-#@+node:ekr.20031218072017.3656: ** class leoBody
-class leoBody:
+#@+node:ekr.20031218072017.3656: ** class leoBody (HighLevelInterface)
+class leoBody (HighLevelInterface):
 
     """The base class for the body pane in Leo windows."""
 
     #@+others
     #@+node:ekr.20031218072017.3657: *3* leoBody.__init__
     def __init__ (self,frame,parentFrame):
+        
+        c = frame.c
+        
+        HighLevelInterface.__init__(self,c)
+            # Init the base class
 
         frame.body = self
-        self.c = c = frame.c
+        self.c = c
         self.editorWidgets = {} # keys are pane names, values are text widgets
         self.forceFullRecolorFlag = False
         self.frame = frame
@@ -486,14 +601,6 @@ class leoBody:
     # These are optional.
     def after_idle (self,idle_handler,thread_count):
         pass
-
-    ### def tag_add(self,tagName,i,j=None,*args):   pass
-    ### def tag_bind (self,tagName,event,callback): pass
-    ### def tag_config (self,colorName,**keys):     pass
-    ### def tag_configure (self,colorName,**keys):  pass
-    ### def tag_delete(self,tagName):               pass
-    ### def tag_names(self,*args):                  return []
-    ### def tag_remove (self,tagName,index1,index2):pass
     #@+node:ekr.20061109173122: *3* leoBody: must be defined in subclasses
     # Birth, death & config
     def createBindings (self,w=None):               self.oops()
@@ -1057,26 +1164,19 @@ class leoBody:
         if g.app.trace_scroll: g.trace('(leoBody) setYPos',i)
         self.bodyCtrl.setYScrollPosition(i)
     #@+node:ekr.20070228080627: *4* Text Wrappers (leoBody)
-    ### Where is the rest of the high-level interface???
+    if 0: ### Now defined by the HighLevelInterface
 
-    def getAllText (self):                  return self.bodyCtrl.getAllText()
-    def getInsertPoint(self):               return self.bodyCtrl.getInsertPoint()
-    def getSelectedText (self):             return self.bodyCtrl.getSelectedText()
-    def getSelectionRange (self,sort=True): return self.bodyCtrl.getSelectionRange(sort)
-    def hasSelection(self):                 return self.bodyCtrl.hasSelection()
-    ### def hasTextSelection (self):        return self.bodyCtrl.hasSelection()
-    def see (self,index):                   self.bodyCtrl.see(index)
-    def seeInsertPoint (self):              self.bodyCtrl.seeInsertPoint()
-    def selectAllText (self,event=None):    return self.bodyCtrl.selectAllText()
-    def setInsertPoint (self,pos):          return self.bodyCtrl.setInsertPoint(pos)
-    def setFocus(self):                     return self.bodyCtrl.setFocus()
-
-    #####
-    # def setSelectionRange (self,sel):
-    #     i,j = sel
-    #     self.bodyCtrl.setSelectionRange(i,j)
-    def setSelectionRange(self,i,j,insert=None):
-        self.bodyCtrl.setSelectionRange(i,j,insert=insert)
+        def getAllText (self):                      return self.bodyCtrl.getAllText()
+        def getInsertPoint(self):                   return self.bodyCtrl.getInsertPoint()
+        def getSelectedText (self):                 return self.bodyCtrl.getSelectedText()
+        def getSelectionRange (self,sort=True):     return self.bodyCtrl.getSelectionRange(sort)
+        def hasSelection(self):                     return self.bodyCtrl.hasSelection()
+        def see (self,index):                       self.bodyCtrl.see(index)
+        def seeInsertPoint (self):                  self.bodyCtrl.seeInsertPoint()
+        def selectAllText (self,event=None):        return self.bodyCtrl.selectAllText()
+        def setInsertPoint (self,pos):              return self.bodyCtrl.setInsertPoint(pos)
+        def setFocus(self):                         return self.bodyCtrl.setFocus()
+        def setSelectionRange(self,i,j,insert=None):self.bodyCtrl.setSelectionRange(i,j,insert=insert)
     #@+node:ekr.20081005065934.6: *3* leoBody: may be defined in subclasses
     def forceFullRecolor (self):
         self.forceFullRecolorFlag = True
@@ -1658,8 +1758,8 @@ class leoFrame:
     def minibufferWantsFocus(self):
         return self.c.minibufferWantsFocus()
     #@-others
-#@+node:ekr.20031218072017.3694: ** class leoLog
-class leoLog:
+#@+node:ekr.20031218072017.3694: ** class leoLog (HighLevelInterface)
+class leoLog (HighLevelInterface):
 
     """The base class for the log pane in Leo windows."""
 
@@ -1668,17 +1768,18 @@ class leoLog:
     def __init__ (self,frame,parentFrame):
 
         self.frame = frame
-        if frame: # 7/16/05: Allow no commander for Null logs.
-            self.c = frame.c
-        else:
-            self.c = None
+        self.c = c = frame and frame.c or None
+            
+        HighLevelInterface.__init__(self,c)
+            # Init the base class
+            
         self.enabled = True
         self.newlines = 0
         self.isNull = False
 
         # Official status variables.  Can be used by client code.
         self.canvasCtrl = None # Set below. Same as self.canvasDict.get(self.tabName)
-        self.logCtrl = None # Set below. Same as self.textDict.get(self.tabName)
+        self.logCtrl = self.widget = None # Set below. Same as self.textDict.get(self.tabName)
         self.tabName = None # The name of the active tab.
         self.tabFrame = None # Same as self.frameDict.get(self.tabName)
 
@@ -1812,7 +1913,7 @@ class leoLog:
         # Update the status vars.
         self.tabName = tabName
         self.canvasCtrl = self.canvasDict.get(tabName)
-        self.logCtrl = self.textDict.get(tabName)
+        self.logCtrl = self.widget = self.textDict.get(tabName)
         self.tabFrame = self.frameDict.get(tabName)
 
         if 0:
@@ -2422,8 +2523,9 @@ class leoTreeTab:
 
         g.pr("leoTreeTree oops:", g.callers(4), "should be overridden in subclass")
     #@-others
-#@+node:ekr.20031218072017.2191: ** class nullBody (leoBody)
+#@+node:ekr.20031218072017.2191: ** class nullBody (leoBody:HighLevelInterface)
 class nullBody (leoBody):
+    # LeoBody is a subclass of HighLevelInterface.
 
     #@+others
     #@+node:ekr.20031218072017.2192: *3*  nullBody.__init__
@@ -2502,43 +2604,45 @@ class nullBody (leoBody):
     def hasFocus (self):                        pass
     def setFocus (self):                        pass
     #@+node:ekr.20111114042523.9971: *3* The high-level interface (nullBody)
-    # The required high-level interface.
-    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
-        pass 
-
-    def appendText(self,s):                     self.bodyCtrl.appendText(s)
-    def clipboard_append(self,s):               self.bodyCtrl.clipboard_append(s)
-    def clipboard_clear (self):                 self.bodyCtrl.clipboard_clear()
-    def delete(self,i,j=None):                  self.bodyCtrl.delete(i,j)
-    def deleteTextSelection (self):             self.bodyCtrl.deleteTextSelection ()
-    def get(self,i,j):                          return self.bodyCtrl.get(i,j)
-    def getAllText(self):                       return self.bodyCtrl.getAllText()
-    def getFocus(self):                         return self.bodyCtrl.getFocus()
-    def getInsertPoint(self):                   return self.bodyCtrl.getInsertPoint()
-    def getSelectedText(self):                  return self.bodyCtrl.getSelectedText()
-    def getSelectionRange (self):               return self.bodyCtrl.getSelectionRange()
-    def getYScrollPosition (self):              return self.bodyCtrl.getYScrollPosition()
-    def hasSelection(self):                     return self.bodyCtrl.hasSelection()
-    def insert(self,i,s):                       self.bodyCtrl.insert(i,s)    
-    def replace (self,i,j,s):                   self.bodyCtrl.replace (i,j,s)
-    def rowColToGuiIndex (self,s,row,col):      return self.bodyCtrl.rowColToGuiIndex(s,row,col)
-    def see(self,i):                            self.bodyCtrl.see(i)
-    def seeInsertPoint (self):                  self.bodyCtrl.seeInsertPoint()
-    def selectAllText (self,insert=None):       self.bodyCtrl.selectAllText(insert)
-    def setAllText (self,s):                    self.bodyCtrl.setAllText(s)
-    def setBackgroundColor(self,color):         self.bodyCtrl.setBackgroundColor(color)
-    def setFocus(self):                         self.bodyCtrl.setFocus()
-    def setForegroundColor(self,color):         self.bodyCtrl.setForegroundColor(color)
-    def setInsertPoint(self,pos):               self.bodyCtrl.setInsertPoint(pos)
-    def setSelectionRange (self,i,j,insert=None):
-        self.bodyCtrl.setSelectionRange(i,j,insert=insert)
-    def setYScrollPosition (self,i):            self.bodyCtrl.setYScrollPosition(i)
-    def tag_configure (self,colorName,**keys):  pass
-    def toPythonIndex (self,index):             return self.bodyCtrl.toPythonIndex(index)
-    def toPythonIndexRowCol(self,index):        return self.bodyCtrl.toPythonIndexRowCol(index)
-
-    set_focus = setFocus
-    toGuiIndex = toPythonIndex
+    if 0: # Now defined in the HighLevelInterface.
+        
+        # The required high-level interface.
+        def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+            pass 
+        
+        def appendText(self,s):                     self.bodyCtrl.appendText(s)
+        def clipboard_append(self,s):               self.bodyCtrl.clipboard_append(s)
+        def clipboard_clear (self):                 self.bodyCtrl.clipboard_clear()
+        def delete(self,i,j=None):                  self.bodyCtrl.delete(i,j)
+        def deleteTextSelection (self):             self.bodyCtrl.deleteTextSelection ()
+        def get(self,i,j):                          return self.bodyCtrl.get(i,j)
+        def getAllText(self):                       return self.bodyCtrl.getAllText()
+        def getFocus(self):                         return self.bodyCtrl.getFocus()
+        def getInsertPoint(self):                   return self.bodyCtrl.getInsertPoint()
+        def getSelectedText(self):                  return self.bodyCtrl.getSelectedText()
+        def getSelectionRange (self):               return self.bodyCtrl.getSelectionRange()
+        def getYScrollPosition (self):              return self.bodyCtrl.getYScrollPosition()
+        def hasSelection(self):                     return self.bodyCtrl.hasSelection()
+        def insert(self,i,s):                       self.bodyCtrl.insert(i,s)    
+        def replace (self,i,j,s):                   self.bodyCtrl.replace (i,j,s)
+        def rowColToGuiIndex (self,s,row,col):      return self.bodyCtrl.rowColToGuiIndex(s,row,col)
+        def see(self,i):                            self.bodyCtrl.see(i)
+        def seeInsertPoint (self):                  self.bodyCtrl.seeInsertPoint()
+        def selectAllText (self,insert=None):       self.bodyCtrl.selectAllText(insert)
+        def setAllText (self,s):                    self.bodyCtrl.setAllText(s)
+        def setBackgroundColor(self,color):         self.bodyCtrl.setBackgroundColor(color)
+        def setFocus(self):                         self.bodyCtrl.setFocus()
+        def setForegroundColor(self,color):         self.bodyCtrl.setForegroundColor(color)
+        def setInsertPoint(self,pos):               self.bodyCtrl.setInsertPoint(pos)
+        def setSelectionRange (self,i,j,insert=None):
+            self.bodyCtrl.setSelectionRange(i,j,insert=insert)
+        def setYScrollPosition (self,i):            self.bodyCtrl.setYScrollPosition(i)
+        def tag_configure (self,colorName,**keys):  pass
+        def toPythonIndex (self,index):             return self.bodyCtrl.toPythonIndex(index)
+        def toPythonIndexRowCol(self,index):        return self.bodyCtrl.toPythonIndexRowCol(index)
+        
+        set_focus = setFocus
+        toGuiIndex = toPythonIndex
     #@-others
 #@+node:ekr.20031218072017.2218: ** class nullColorizer
 class nullColorizer: ### (colorizer):
@@ -2782,7 +2886,7 @@ class nullLog (leoLog):
 
         self.isNull = True
         self.logNumber = 0
-        self.logCtrl = self.createControl(parentFrame)
+        self.logCtrl = self.widget = self.createControl(parentFrame)
     #@+node:ekr.20041012083237.1: *4* createControl
     def createControl (self,parentFrame):
 
@@ -2833,43 +2937,44 @@ class nullLog (leoLog):
     def selectTab (self,tabName,createText=True,wrap='none'):   pass
     def setTabBindings  (self,tabName):                         pass
     #@+node:ekr.20111114042523.9969: *3* The high-level interface (nullLog)
-    # The required high-level interface.
-    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
-        pass
-
-    def appendText(self,s):                     self.logCtrl.appendText(s)
-    def clipboard_append(self,s):               self.logCtrl.clipboard_append(s)
-    def clipboard_clear (self):                 self.logCtrl.clipboard_clear()
-    def delete(self,i,j=None):                  self.logCtrl.delete(i,j)
-    def deleteTextSelection (self):             self.logCtrl.deleteTextSelection ()
-    def get(self,i,j):                          return self.logCtrl.get(i,j)
-    def getAllText(self):                       return self.logCtrl.getAllText()
-    def getFocus(self):                         return self.logCtrl.getFocus()
-    def getInsertPoint(self):                   return self.logCtrl.getInsertPoint()
-    def getSelectedText(self):                  return self.logCtrl.getSelectedText()
-    def getSelectionRange (self):               return self.logCtrl.getSelectionRange()
-    def getYScrollPosition (self):              return self.logCtrl.getYScrollPosition()
-    def hasSelection(self):                     return self.logCtrl.hasSelection()
-    def insert(self,i,s):                       self.logCtrl.insert(i,s)
-    def replace (self,i,j,s):                   self.logCtrl.replace (i,j,s)
-    def rowColToGuiIndex (self,s,row,col):      return self.logCtrl.rowColToGuiIndex(s,row,col)
-    def see(self,i):                            self.logCtrl.see(i)
-    def seeInsertPoint (self):                  self.logCtrl.seeInsertPoint()
-    def selectAllText (self,insert=None):       self.logCtrl.selectAllText(insert)
-    def setAllText (self,s):                    self.logCtrl.setAllText(s)
-    def setBackgroundColor(self,color):         self.logCtrl.setBackgroundColor(color)
-    def setFocus(self):                         self.logCtrl.setFocus()
-    def setForegroundColor(self,color):         self.logCtrl.setForegroundColor(color)
-    def setInsertPoint(self,pos):               self.logCtrl.setInsertPoint(pos)
-    def setSelectionRange (self,i,j,insert=None):
-        self.logCtrl.setSelectionRange(i,j,insert=insert)
-    def setYScrollPosition (self,i):            self.logCtrl.setYScrollPosition(i)
-    def tag_configure (self,colorName,**keys):  pass
-    def toPythonIndex (self,index):             return self.logCtrl.toPythonIndex(index)
-    def toPythonIndexRowCol(self,index):        return self.logCtrl.toPythonIndexRowCol(index)
-
-    set_focus = setFocus
-    toGuiIndex = toPythonIndex
+    if 0:  ### Now defined by the HighLevelInterface.
+        # The required high-level interface.
+        def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+            pass
+        
+        def appendText(self,s):                     self.logCtrl.appendText(s)
+        def clipboard_append(self,s):               self.logCtrl.clipboard_append(s)
+        def clipboard_clear (self):                 self.logCtrl.clipboard_clear()
+        def delete(self,i,j=None):                  self.logCtrl.delete(i,j)
+        def deleteTextSelection (self):             self.logCtrl.deleteTextSelection ()
+        def get(self,i,j):                          return self.logCtrl.get(i,j)
+        def getAllText(self):                       return self.logCtrl.getAllText()
+        def getFocus(self):                         return self.logCtrl.getFocus()
+        def getInsertPoint(self):                   return self.logCtrl.getInsertPoint()
+        def getSelectedText(self):                  return self.logCtrl.getSelectedText()
+        def getSelectionRange (self):               return self.logCtrl.getSelectionRange()
+        def getYScrollPosition (self):              return self.logCtrl.getYScrollPosition()
+        def hasSelection(self):                     return self.logCtrl.hasSelection()
+        def insert(self,i,s):                       self.logCtrl.insert(i,s)
+        def replace (self,i,j,s):                   self.logCtrl.replace (i,j,s)
+        def rowColToGuiIndex (self,s,row,col):      return self.logCtrl.rowColToGuiIndex(s,row,col)
+        def see(self,i):                            self.logCtrl.see(i)
+        def seeInsertPoint (self):                  self.logCtrl.seeInsertPoint()
+        def selectAllText (self,insert=None):       self.logCtrl.selectAllText(insert)
+        def setAllText (self,s):                    self.logCtrl.setAllText(s)
+        def setBackgroundColor(self,color):         self.logCtrl.setBackgroundColor(color)
+        def setFocus(self):                         self.logCtrl.setFocus()
+        def setForegroundColor(self,color):         self.logCtrl.setForegroundColor(color)
+        def setInsertPoint(self,pos):               self.logCtrl.setInsertPoint(pos)
+        def setSelectionRange (self,i,j,insert=None):
+            self.logCtrl.setSelectionRange(i,j,insert=insert)
+        def setYScrollPosition (self,i):            self.logCtrl.setYScrollPosition(i)
+        def tag_configure (self,colorName,**keys):  pass
+        def toPythonIndex (self,index):             return self.logCtrl.toPythonIndex(index)
+        def toPythonIndexRowCol(self,index):        return self.logCtrl.toPythonIndexRowCol(index)
+        
+        set_focus = setFocus
+        toGuiIndex = toPythonIndex
     #@-others
 #@+node:ekr.20070302171509: ** class nullStatusLineClass
 class nullStatusLineClass:

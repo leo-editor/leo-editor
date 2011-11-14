@@ -8740,100 +8740,54 @@ toGuiIndex = toPythonIndex
 ### def xyToPythonIndex (self,x,y):             return 0
 ### def yview (self,*args):                     return 0,0
 #@+node:ekr.20070228080627: *8* Text Wrappers (leoBody)
-### Where is the rest of the high-level interface???
+if 0: ### Now defined by the HighLevelInterface
 
-def getAllText (self):                  return self.bodyCtrl.getAllText()
-def getInsertPoint(self):               return self.bodyCtrl.getInsertPoint()
-def getSelectedText (self):             return self.bodyCtrl.getSelectedText()
-def getSelectionRange (self,sort=True): return self.bodyCtrl.getSelectionRange(sort)
-def hasSelection(self):                 return self.bodyCtrl.hasSelection()
-### def hasTextSelection (self):        return self.bodyCtrl.hasSelection()
-def see (self,index):                   self.bodyCtrl.see(index)
-def seeInsertPoint (self):              self.bodyCtrl.seeInsertPoint()
-def selectAllText (self,event=None):    return self.bodyCtrl.selectAllText()
-def setInsertPoint (self,pos):          return self.bodyCtrl.setInsertPoint(pos)
-def setFocus(self):                     return self.bodyCtrl.setFocus()
+    def getAllText (self):                      return self.bodyCtrl.getAllText()
+    def getInsertPoint(self):                   return self.bodyCtrl.getInsertPoint()
+    def getSelectedText (self):                 return self.bodyCtrl.getSelectedText()
+    def getSelectionRange (self,sort=True):     return self.bodyCtrl.getSelectionRange(sort)
+    def hasSelection(self):                     return self.bodyCtrl.hasSelection()
+    def see (self,index):                       self.bodyCtrl.see(index)
+    def seeInsertPoint (self):                  self.bodyCtrl.seeInsertPoint()
+    def selectAllText (self,event=None):        return self.bodyCtrl.selectAllText()
+    def setInsertPoint (self,pos):              return self.bodyCtrl.setInsertPoint(pos)
+    def setFocus(self):                         return self.bodyCtrl.setFocus()
+    def setSelectionRange(self,i,j,insert=None):self.bodyCtrl.setSelectionRange(i,j,insert=insert)
+#@+node:ekr.20110605121601.18050: *8* HighLevelInterface (leoQtBaseTextWidget)
+@
 
-#####
-# def setSelectionRange (self,sel):
-#     i,j = sel
-#     self.bodyCtrl.setSelectionRange(i,j)
-def setSelectionRange(self,i,j,insert=None):
-    self.bodyCtrl.setSelectionRange(i,j,insert=insert)
-#@+node:ekr.20110605121601.18050: *8*  May be overridden in subclasses (leoQtBaseTextWidget)
-# Do not delete: these are defined in leoQTextEditWidget.
+Important: leoQtBaseTextWidget is **not** a subclass of HighLevelInterface.
+
+Indeed, the redirection methods of HighLevelInterface redirect calls
+from leoBody & leoLog to *this* class.
+
+Do not delete: HighLevelInterface calls these methods.
+@c
+
+# Essential methods...
+def getName (self):
+    return self.name
+
+# Optional methods...
 def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
     pass
 
-def getYScrollPosition(self):
-    return None # A flag
-
-def seeInsertPoint (self):
-    self.see(self.getInsertPoint())
-
-def setYScrollPosition(self,pos):
-    pass
-
-### def scrollLines(self,n): pass
-
-#@+node:ekr.20110605121601.18051: *9* Configuration
-# Configuration will be handled by style sheets.
-### def cget(self,*args,**keys):            return None
-### def configure (self,*args,**keys):      pass
+def getYScrollPosition(self):           return None # A flag
+def seeInsertPoint (self):              self.see(self.getInsertPoint())
 def setBackgroundColor(self,color):     pass
 def setEditorColors (self,bg,fg):       pass
 def setForegroundColor(self,color):     pass
-#@+node:ekr.20110605121601.18052: *9* Idle time (leoQtBaseTextWidget)
-def after_idle(self,func,threadCount):
-    # g.trace(func.__name__,'threadCount',threadCount)
-    return func(threadCount)
+def setYScrollPosition(self,pos):       pass
 
-def after(self,n,func,threadCount):
-    def after_callback(func=func,threadCount=threadCount):
-        # g.trace(func.__name__,threadCount)
-        return func(threadCount)
-    QtCore.QTimer.singleShot(n,after_callback)
-
-def scheduleIdleTimeRoutine (self,function,*args,**keys):
-    g.trace()
-    # if not g.app.unitTesting:
-        # self.widget.after_idle(function,*args,**keys)
-#@+node:ekr.20110605121601.18053: *9* Coloring (leoQtBaseTextWidget)
-# These *are* used.
-
-### def removeAllTags(self):
-###    s = self.getAllText()
-###    self.colorSelection(0,len(s),'black')
-
-### def tag_names (self): return []
-#@+node:ekr.20110605121601.18054: *10* colorSelection
-def colorSelection (self,i,j,colorName):
-
-    w = self.widget
-    if not colorName: return
-    if g.unitTesting: return
-
-@
-    # Unlike Tk names, Qt names don't end in a digit.
-    if colorName[-1].isdigit() and colorName[0] != '#':
-        color = QtGui.QColor(colorName[:-1])
-    else:
-        color = QtGui.QColor(colorName)
-@c
-    color = QtGui.QColor(leoColor.getColor(colorName, 'black'))
-    if not color.isValid():
-        # g.trace('unknown color name',colorName)
-        return
-
-    sb = w.verticalScrollBar()
-    pos = sb.sliderPosition()
-    old_i,old_j = self.getSelectionRange()
-    old_ins = self.getInsertPoint()
-    self.setSelectionRange(i,j)
-    w.setTextColor(color)
-    self.setSelectionRange(old_i,old_j,insert=old_ins)
-    sb.setSliderPosition(pos)
-#@+node:ekr.20110605121601.18056: *10* tag_config (leoQtBaseTextWidget)
+# Must be defined in subclasses.
+def getAllText(self):                           self.oops()
+def getInsertPoint(self):                       self.oops()
+def getSelectionRange(self,sort=True):          self.oops()
+def hasSelection(self):                         self.oops()
+def see(self,i):                                self.oops()
+def setAllText(self,s,insert=None,new_p=None):  self.oops()
+def setInsertPoint(self,i):                     self.oops()
+#@+node:ekr.20110605121601.18056: *9* tag_config (leoQtBaseTextWidget)
 def tag_configure (self,*args,**keys):
 
     trace = False and not g.unitTesting
@@ -8854,140 +8808,103 @@ def tag_configure (self,*args,**keys):
 
 ### tag_config = tag_configure
 #@+node:ekr.20110605121601.18320: *8* High-level interface (qtLog)
-# The required high-level interface.
-def appendText(self,s):                     self.logCtrl.appendText(s)
-def clipboard_append(self,s):               self.logCtrl.clipboard_append(s)
-def clipboard_clear (self):                 self.logCtrl.clipboard_clear()
-def delete(self,i,j=None):                  self.logCtrl.delete(i,j)
-def insert(self,i,s):                       self.logCtrl.insert(i,s)
-def flashCharacter(self,i,
-    bg='white',fg='red',
-    flashes=3,delay=75):                    pass
-def get(self,i,j):                          return self.logCtrl.get(i,j)
-def getAllText(self):                       return self.logCtrl.getAllText()
-def getFocus(self):                         return self.logCtrl.getFocus()
-def getInsertPoint(self):                   return self.logCtrl.getInsertPoint()
-def getSelectedText(self):                  return self.logCtrl.getSelectedText()
-def getSelectionRange (self):               return self.logCtrl.getSelectionRange()
-def getYScrollPosition (self):              return self.logCtrl.getYScrollPosition()
-def hasSelection(self):                     return self.logCtrl.hasSelection()
-def see(self,i):                            self.logCtrl.see(i)
-def seeInsertPoint (self):                  self.logCtrl.seeInsertPoint()
-def setAllText (self,s):                    self.logCtrl.setAllText(s)
-def setBackgroundColor(self,color):         self.logCtrl.setBackgroundColor(color)
-def setFocus(self):                         self.logCtrl.setFocus()
-def setForegroundColor(self,color):         self.logCtrl.setForegroundColor(color)
-def setInsertPoint(self,pos):               self.logCtrl.setInsertPoint(pos)
-def setSelectionRange (self,i,j,insert=None):
-    self.logCtrl.setSelectionRange(i,j,insert=insert)
-def setYScrollPosition (self,i):            self.logCtrl.setYScrollPosition(i)
-def tag_configure (self,colorName,**keys):  pass
-
-set_focus = setFocus
-
-# Part 3: do-nothings in mayBeDefinedInSubclasses.
-### def bind (self,kind,*args,**keys):          pass
-### def getWidth (self):                        return 0
-### def indexIsVisible (self,i):                return False
-### def mark_set(self,markName,i):              pass
-### def onChar (self,event):                    self.logCtrl.onChar(event)
-### def scrollLines(self,n):                    self.logCtrl.scrollLines(n)
-### def setWidth (self,width):                  pass
-### def tag_add(self,tagName,i,j=None,*args):   pass
-### def tag_add (self,colorName,**keys):        pass
-### def tag_delete (self,tagName,*args,**keys): pass
-### def tag_names (self, *args):                return []
-### def tag_ranges(self,tagName):               return tuple()
-### def tag_remove(self,tagName,i,j=None,*args):pass
-
-### def update_idletasks (self,*args,**keys):   pass
-### def xyToPythonIndex (self,x,y):             return 0
-### def yview (self,*args):                     return 0,0
-
-# Part 4: corresponding to mayBeDefinedInSubclasses.
-def deleteTextSelection (self):         self.logCtrl.deleteTextSelection ()
-# def event_generate(self,stroke):        pass
-def replace (self,i,j,s):               self.logCtrl.replace (i,j,s)
-def rowColToGuiIndex (self,s,row,col):  return self.logCtrl.rowColToGuiIndex(s,row,col)
-def selectAllText (self,insert=None):   self.logCtrl.selectAllText(insert)
-def toPythonIndex (self,index):         return self.logCtrl.toPythonIndex(index)
-toGuiIndex = toPythonIndex
-def toPythonIndexRowCol(self,index):    return self.logCtrl.toPythonIndexRowCol(index)
+if 0: ### Now defined by the HighLevelInterface.
+    
+    # The required high-level interface.
+    def appendText(self,s):                     self.logCtrl.appendText(s)
+    def clipboard_append(self,s):               self.logCtrl.clipboard_append(s)
+    def clipboard_clear (self):                 self.logCtrl.clipboard_clear()
+    def delete(self,i,j=None):                  self.logCtrl.delete(i,j)
+    def insert(self,i,s):                       self.logCtrl.insert(i,s)
+    def flashCharacter(self,i,
+        bg='white',fg='red',
+        flashes=3,delay=75):                    pass
+    def get(self,i,j):                          return self.logCtrl.get(i,j)
+    def getAllText(self):                       return self.logCtrl.getAllText()
+    def getFocus(self):                         return self.logCtrl.getFocus()
+    def getInsertPoint(self):                   return self.logCtrl.getInsertPoint()
+    def getSelectedText(self):                  return self.logCtrl.getSelectedText()
+    def getSelectionRange (self):               return self.logCtrl.getSelectionRange()
+    def getYScrollPosition (self):              return self.logCtrl.getYScrollPosition()
+    def hasSelection(self):                     return self.logCtrl.hasSelection()
+    def see(self,i):                            self.logCtrl.see(i)
+    def seeInsertPoint (self):                  self.logCtrl.seeInsertPoint()
+    def setAllText (self,s):                    self.logCtrl.setAllText(s)
+    def setBackgroundColor(self,color):         self.logCtrl.setBackgroundColor(color)
+    def setFocus(self):                         self.logCtrl.setFocus()
+    def setForegroundColor(self,color):         self.logCtrl.setForegroundColor(color)
+    def setInsertPoint(self,pos):               self.logCtrl.setInsertPoint(pos)
+    def setSelectionRange (self,i,j,insert=None):
+        self.logCtrl.setSelectionRange(i,j,insert=insert)
+    def setYScrollPosition (self,i):            self.logCtrl.setYScrollPosition(i)
+    def tag_configure (self,colorName,**keys):  pass
+    
+    set_focus = setFocus
+    
+    # Part 3: do-nothings in mayBeDefinedInSubclasses.
+    ### def bind (self,kind,*args,**keys):          pass
+    ### def getWidth (self):                        return 0
+    ### def indexIsVisible (self,i):                return False
+    ### def mark_set(self,markName,i):              pass
+    ### def onChar (self,event):                    self.logCtrl.onChar(event)
+    ### def scrollLines(self,n):                    self.logCtrl.scrollLines(n)
+    ### def setWidth (self,width):                  pass
+    ### def tag_add(self,tagName,i,j=None,*args):   pass
+    ### def tag_add (self,colorName,**keys):        pass
+    ### def tag_delete (self,tagName,*args,**keys): pass
+    ### def tag_names (self, *args):                return []
+    ### def tag_ranges(self,tagName):               return tuple()
+    ### def tag_remove(self,tagName,i,j=None,*args):pass
+    
+    ### def update_idletasks (self,*args,**keys):   pass
+    ### def xyToPythonIndex (self,x,y):             return 0
+    ### def yview (self,*args):                     return 0,0
+    
+    # Part 4: corresponding to mayBeDefinedInSubclasses.
+    def deleteTextSelection (self):         self.logCtrl.deleteTextSelection ()
+    # def event_generate(self,stroke):        pass
+    def replace (self,i,j,s):               self.logCtrl.replace (i,j,s)
+    def rowColToGuiIndex (self,s,row,col):  return self.logCtrl.rowColToGuiIndex(s,row,col)
+    def selectAllText (self,insert=None):   self.logCtrl.selectAllText(insert)
+    def toPythonIndex (self,index):         return self.logCtrl.toPythonIndex(index)
+    toGuiIndex = toPythonIndex
+    def toPythonIndexRowCol(self,index):    return self.logCtrl.toPythonIndexRowCol(index)
 #@+node:ekr.20111026115337.16517: *7* Interfaces (setYScrollPosition)
-#@+node:ekr.20110605121601.18050: *8*  May be overridden in subclasses (leoQtBaseTextWidget)
-# Do not delete: these are defined in leoQTextEditWidget.
+#@+node:ekr.20110605121601.18050: *8* HighLevelInterface (leoQtBaseTextWidget)
+@
+
+Important: leoQtBaseTextWidget is **not** a subclass of HighLevelInterface.
+
+Indeed, the redirection methods of HighLevelInterface redirect calls
+from leoBody & leoLog to *this* class.
+
+Do not delete: HighLevelInterface calls these methods.
+@c
+
+# Essential methods...
+def getName (self):
+    return self.name
+
+# Optional methods...
 def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
     pass
 
-def getYScrollPosition(self):
-    return None # A flag
-
-def seeInsertPoint (self):
-    self.see(self.getInsertPoint())
-
-def setYScrollPosition(self,pos):
-    pass
-
-### def scrollLines(self,n): pass
-
-#@+node:ekr.20110605121601.18051: *9* Configuration
-# Configuration will be handled by style sheets.
-### def cget(self,*args,**keys):            return None
-### def configure (self,*args,**keys):      pass
+def getYScrollPosition(self):           return None # A flag
+def seeInsertPoint (self):              self.see(self.getInsertPoint())
 def setBackgroundColor(self,color):     pass
 def setEditorColors (self,bg,fg):       pass
 def setForegroundColor(self,color):     pass
-#@+node:ekr.20110605121601.18052: *9* Idle time (leoQtBaseTextWidget)
-def after_idle(self,func,threadCount):
-    # g.trace(func.__name__,'threadCount',threadCount)
-    return func(threadCount)
+def setYScrollPosition(self,pos):       pass
 
-def after(self,n,func,threadCount):
-    def after_callback(func=func,threadCount=threadCount):
-        # g.trace(func.__name__,threadCount)
-        return func(threadCount)
-    QtCore.QTimer.singleShot(n,after_callback)
-
-def scheduleIdleTimeRoutine (self,function,*args,**keys):
-    g.trace()
-    # if not g.app.unitTesting:
-        # self.widget.after_idle(function,*args,**keys)
-#@+node:ekr.20110605121601.18053: *9* Coloring (leoQtBaseTextWidget)
-# These *are* used.
-
-### def removeAllTags(self):
-###    s = self.getAllText()
-###    self.colorSelection(0,len(s),'black')
-
-### def tag_names (self): return []
-#@+node:ekr.20110605121601.18054: *10* colorSelection
-def colorSelection (self,i,j,colorName):
-
-    w = self.widget
-    if not colorName: return
-    if g.unitTesting: return
-
-@
-    # Unlike Tk names, Qt names don't end in a digit.
-    if colorName[-1].isdigit() and colorName[0] != '#':
-        color = QtGui.QColor(colorName[:-1])
-    else:
-        color = QtGui.QColor(colorName)
-@c
-    color = QtGui.QColor(leoColor.getColor(colorName, 'black'))
-    if not color.isValid():
-        # g.trace('unknown color name',colorName)
-        return
-
-    sb = w.verticalScrollBar()
-    pos = sb.sliderPosition()
-    old_i,old_j = self.getSelectionRange()
-    old_ins = self.getInsertPoint()
-    self.setSelectionRange(i,j)
-    w.setTextColor(color)
-    self.setSelectionRange(old_i,old_j,insert=old_ins)
-    sb.setSliderPosition(pos)
-#@+node:ekr.20110605121601.18056: *10* tag_config (leoQtBaseTextWidget)
+# Must be defined in subclasses.
+def getAllText(self):                           self.oops()
+def getInsertPoint(self):                       self.oops()
+def getSelectionRange(self,sort=True):          self.oops()
+def hasSelection(self):                         self.oops()
+def see(self,i):                                self.oops()
+def setAllText(self,s,insert=None,new_p=None):  self.oops()
+def setInsertPoint(self,i):                     self.oops()
+#@+node:ekr.20110605121601.18056: *9* tag_config (leoQtBaseTextWidget)
 def tag_configure (self,*args,**keys):
 
     trace = False and not g.unitTesting
@@ -9008,65 +8925,67 @@ def tag_configure (self,*args,**keys):
 
 ### tag_config = tag_configure
 #@+node:ekr.20110605121601.18320: *8* High-level interface (qtLog)
-# The required high-level interface.
-def appendText(self,s):                     self.logCtrl.appendText(s)
-def clipboard_append(self,s):               self.logCtrl.clipboard_append(s)
-def clipboard_clear (self):                 self.logCtrl.clipboard_clear()
-def delete(self,i,j=None):                  self.logCtrl.delete(i,j)
-def insert(self,i,s):                       self.logCtrl.insert(i,s)
-def flashCharacter(self,i,
-    bg='white',fg='red',
-    flashes=3,delay=75):                    pass
-def get(self,i,j):                          return self.logCtrl.get(i,j)
-def getAllText(self):                       return self.logCtrl.getAllText()
-def getFocus(self):                         return self.logCtrl.getFocus()
-def getInsertPoint(self):                   return self.logCtrl.getInsertPoint()
-def getSelectedText(self):                  return self.logCtrl.getSelectedText()
-def getSelectionRange (self):               return self.logCtrl.getSelectionRange()
-def getYScrollPosition (self):              return self.logCtrl.getYScrollPosition()
-def hasSelection(self):                     return self.logCtrl.hasSelection()
-def see(self,i):                            self.logCtrl.see(i)
-def seeInsertPoint (self):                  self.logCtrl.seeInsertPoint()
-def setAllText (self,s):                    self.logCtrl.setAllText(s)
-def setBackgroundColor(self,color):         self.logCtrl.setBackgroundColor(color)
-def setFocus(self):                         self.logCtrl.setFocus()
-def setForegroundColor(self,color):         self.logCtrl.setForegroundColor(color)
-def setInsertPoint(self,pos):               self.logCtrl.setInsertPoint(pos)
-def setSelectionRange (self,i,j,insert=None):
-    self.logCtrl.setSelectionRange(i,j,insert=insert)
-def setYScrollPosition (self,i):            self.logCtrl.setYScrollPosition(i)
-def tag_configure (self,colorName,**keys):  pass
-
-set_focus = setFocus
-
-# Part 3: do-nothings in mayBeDefinedInSubclasses.
-### def bind (self,kind,*args,**keys):          pass
-### def getWidth (self):                        return 0
-### def indexIsVisible (self,i):                return False
-### def mark_set(self,markName,i):              pass
-### def onChar (self,event):                    self.logCtrl.onChar(event)
-### def scrollLines(self,n):                    self.logCtrl.scrollLines(n)
-### def setWidth (self,width):                  pass
-### def tag_add(self,tagName,i,j=None,*args):   pass
-### def tag_add (self,colorName,**keys):        pass
-### def tag_delete (self,tagName,*args,**keys): pass
-### def tag_names (self, *args):                return []
-### def tag_ranges(self,tagName):               return tuple()
-### def tag_remove(self,tagName,i,j=None,*args):pass
-
-### def update_idletasks (self,*args,**keys):   pass
-### def xyToPythonIndex (self,x,y):             return 0
-### def yview (self,*args):                     return 0,0
-
-# Part 4: corresponding to mayBeDefinedInSubclasses.
-def deleteTextSelection (self):         self.logCtrl.deleteTextSelection ()
-# def event_generate(self,stroke):        pass
-def replace (self,i,j,s):               self.logCtrl.replace (i,j,s)
-def rowColToGuiIndex (self,s,row,col):  return self.logCtrl.rowColToGuiIndex(s,row,col)
-def selectAllText (self,insert=None):   self.logCtrl.selectAllText(insert)
-def toPythonIndex (self,index):         return self.logCtrl.toPythonIndex(index)
-toGuiIndex = toPythonIndex
-def toPythonIndexRowCol(self,index):    return self.logCtrl.toPythonIndexRowCol(index)
+if 0: ### Now defined by the HighLevelInterface.
+    
+    # The required high-level interface.
+    def appendText(self,s):                     self.logCtrl.appendText(s)
+    def clipboard_append(self,s):               self.logCtrl.clipboard_append(s)
+    def clipboard_clear (self):                 self.logCtrl.clipboard_clear()
+    def delete(self,i,j=None):                  self.logCtrl.delete(i,j)
+    def insert(self,i,s):                       self.logCtrl.insert(i,s)
+    def flashCharacter(self,i,
+        bg='white',fg='red',
+        flashes=3,delay=75):                    pass
+    def get(self,i,j):                          return self.logCtrl.get(i,j)
+    def getAllText(self):                       return self.logCtrl.getAllText()
+    def getFocus(self):                         return self.logCtrl.getFocus()
+    def getInsertPoint(self):                   return self.logCtrl.getInsertPoint()
+    def getSelectedText(self):                  return self.logCtrl.getSelectedText()
+    def getSelectionRange (self):               return self.logCtrl.getSelectionRange()
+    def getYScrollPosition (self):              return self.logCtrl.getYScrollPosition()
+    def hasSelection(self):                     return self.logCtrl.hasSelection()
+    def see(self,i):                            self.logCtrl.see(i)
+    def seeInsertPoint (self):                  self.logCtrl.seeInsertPoint()
+    def setAllText (self,s):                    self.logCtrl.setAllText(s)
+    def setBackgroundColor(self,color):         self.logCtrl.setBackgroundColor(color)
+    def setFocus(self):                         self.logCtrl.setFocus()
+    def setForegroundColor(self,color):         self.logCtrl.setForegroundColor(color)
+    def setInsertPoint(self,pos):               self.logCtrl.setInsertPoint(pos)
+    def setSelectionRange (self,i,j,insert=None):
+        self.logCtrl.setSelectionRange(i,j,insert=insert)
+    def setYScrollPosition (self,i):            self.logCtrl.setYScrollPosition(i)
+    def tag_configure (self,colorName,**keys):  pass
+    
+    set_focus = setFocus
+    
+    # Part 3: do-nothings in mayBeDefinedInSubclasses.
+    ### def bind (self,kind,*args,**keys):          pass
+    ### def getWidth (self):                        return 0
+    ### def indexIsVisible (self,i):                return False
+    ### def mark_set(self,markName,i):              pass
+    ### def onChar (self,event):                    self.logCtrl.onChar(event)
+    ### def scrollLines(self,n):                    self.logCtrl.scrollLines(n)
+    ### def setWidth (self,width):                  pass
+    ### def tag_add(self,tagName,i,j=None,*args):   pass
+    ### def tag_add (self,colorName,**keys):        pass
+    ### def tag_delete (self,tagName,*args,**keys): pass
+    ### def tag_names (self, *args):                return []
+    ### def tag_ranges(self,tagName):               return tuple()
+    ### def tag_remove(self,tagName,i,j=None,*args):pass
+    
+    ### def update_idletasks (self,*args,**keys):   pass
+    ### def xyToPythonIndex (self,x,y):             return 0
+    ### def yview (self,*args):                     return 0,0
+    
+    # Part 4: corresponding to mayBeDefinedInSubclasses.
+    def deleteTextSelection (self):         self.logCtrl.deleteTextSelection ()
+    # def event_generate(self,stroke):        pass
+    def replace (self,i,j,s):               self.logCtrl.replace (i,j,s)
+    def rowColToGuiIndex (self,s,row,col):  return self.logCtrl.rowColToGuiIndex(s,row,col)
+    def selectAllText (self,insert=None):   self.logCtrl.selectAllText(insert)
+    def toPythonIndex (self,index):         return self.logCtrl.toPythonIndex(index)
+    toGuiIndex = toPythonIndex
+    def toPythonIndexRowCol(self,index):    return self.logCtrl.toPythonIndexRowCol(index)
 #@+node:ekr.20110605121601.18191: *8* High-level interface (qtBody)
 # The required high-level interface.
 def appendText (self,s):                return self.widget.appendText(s)
@@ -9241,86 +9160,81 @@ toGuiIndex = toPythonIndex
 ### def xyToPythonIndex (self,x,y):             return 0
 ### def yview (self,*args):                     return 0,0
 #@+node:ekr.20110605121601.18320: *8* High-level interface (qtLog)
-# The required high-level interface.
-def appendText(self,s):                     self.logCtrl.appendText(s)
-def clipboard_append(self,s):               self.logCtrl.clipboard_append(s)
-def clipboard_clear (self):                 self.logCtrl.clipboard_clear()
-def delete(self,i,j=None):                  self.logCtrl.delete(i,j)
-def insert(self,i,s):                       self.logCtrl.insert(i,s)
-def flashCharacter(self,i,
-    bg='white',fg='red',
-    flashes=3,delay=75):                    pass
-def get(self,i,j):                          return self.logCtrl.get(i,j)
-def getAllText(self):                       return self.logCtrl.getAllText()
-def getFocus(self):                         return self.logCtrl.getFocus()
-def getInsertPoint(self):                   return self.logCtrl.getInsertPoint()
-def getSelectedText(self):                  return self.logCtrl.getSelectedText()
-def getSelectionRange (self):               return self.logCtrl.getSelectionRange()
-def getYScrollPosition (self):              return self.logCtrl.getYScrollPosition()
-def hasSelection(self):                     return self.logCtrl.hasSelection()
-def see(self,i):                            self.logCtrl.see(i)
-def seeInsertPoint (self):                  self.logCtrl.seeInsertPoint()
-def setAllText (self,s):                    self.logCtrl.setAllText(s)
-def setBackgroundColor(self,color):         self.logCtrl.setBackgroundColor(color)
-def setFocus(self):                         self.logCtrl.setFocus()
-def setForegroundColor(self,color):         self.logCtrl.setForegroundColor(color)
-def setInsertPoint(self,pos):               self.logCtrl.setInsertPoint(pos)
-def setSelectionRange (self,i,j,insert=None):
-    self.logCtrl.setSelectionRange(i,j,insert=insert)
-def setYScrollPosition (self,i):            self.logCtrl.setYScrollPosition(i)
-def tag_configure (self,colorName,**keys):  pass
-
-set_focus = setFocus
-
-# Part 3: do-nothings in mayBeDefinedInSubclasses.
-### def bind (self,kind,*args,**keys):          pass
-### def getWidth (self):                        return 0
-### def indexIsVisible (self,i):                return False
-### def mark_set(self,markName,i):              pass
-### def onChar (self,event):                    self.logCtrl.onChar(event)
-### def scrollLines(self,n):                    self.logCtrl.scrollLines(n)
-### def setWidth (self,width):                  pass
-### def tag_add(self,tagName,i,j=None,*args):   pass
-### def tag_add (self,colorName,**keys):        pass
-### def tag_delete (self,tagName,*args,**keys): pass
-### def tag_names (self, *args):                return []
-### def tag_ranges(self,tagName):               return tuple()
-### def tag_remove(self,tagName,i,j=None,*args):pass
-
-### def update_idletasks (self,*args,**keys):   pass
-### def xyToPythonIndex (self,x,y):             return 0
-### def yview (self,*args):                     return 0,0
-
-# Part 4: corresponding to mayBeDefinedInSubclasses.
-def deleteTextSelection (self):         self.logCtrl.deleteTextSelection ()
-# def event_generate(self,stroke):        pass
-def replace (self,i,j,s):               self.logCtrl.replace (i,j,s)
-def rowColToGuiIndex (self,s,row,col):  return self.logCtrl.rowColToGuiIndex(s,row,col)
-def selectAllText (self,insert=None):   self.logCtrl.selectAllText(insert)
-def toPythonIndex (self,index):         return self.logCtrl.toPythonIndex(index)
-toGuiIndex = toPythonIndex
-def toPythonIndexRowCol(self,index):    return self.logCtrl.toPythonIndexRowCol(index)
+if 0: ### Now defined by the HighLevelInterface.
+    
+    # The required high-level interface.
+    def appendText(self,s):                     self.logCtrl.appendText(s)
+    def clipboard_append(self,s):               self.logCtrl.clipboard_append(s)
+    def clipboard_clear (self):                 self.logCtrl.clipboard_clear()
+    def delete(self,i,j=None):                  self.logCtrl.delete(i,j)
+    def insert(self,i,s):                       self.logCtrl.insert(i,s)
+    def flashCharacter(self,i,
+        bg='white',fg='red',
+        flashes=3,delay=75):                    pass
+    def get(self,i,j):                          return self.logCtrl.get(i,j)
+    def getAllText(self):                       return self.logCtrl.getAllText()
+    def getFocus(self):                         return self.logCtrl.getFocus()
+    def getInsertPoint(self):                   return self.logCtrl.getInsertPoint()
+    def getSelectedText(self):                  return self.logCtrl.getSelectedText()
+    def getSelectionRange (self):               return self.logCtrl.getSelectionRange()
+    def getYScrollPosition (self):              return self.logCtrl.getYScrollPosition()
+    def hasSelection(self):                     return self.logCtrl.hasSelection()
+    def see(self,i):                            self.logCtrl.see(i)
+    def seeInsertPoint (self):                  self.logCtrl.seeInsertPoint()
+    def setAllText (self,s):                    self.logCtrl.setAllText(s)
+    def setBackgroundColor(self,color):         self.logCtrl.setBackgroundColor(color)
+    def setFocus(self):                         self.logCtrl.setFocus()
+    def setForegroundColor(self,color):         self.logCtrl.setForegroundColor(color)
+    def setInsertPoint(self,pos):               self.logCtrl.setInsertPoint(pos)
+    def setSelectionRange (self,i,j,insert=None):
+        self.logCtrl.setSelectionRange(i,j,insert=insert)
+    def setYScrollPosition (self,i):            self.logCtrl.setYScrollPosition(i)
+    def tag_configure (self,colorName,**keys):  pass
+    
+    set_focus = setFocus
+    
+    # Part 3: do-nothings in mayBeDefinedInSubclasses.
+    ### def bind (self,kind,*args,**keys):          pass
+    ### def getWidth (self):                        return 0
+    ### def indexIsVisible (self,i):                return False
+    ### def mark_set(self,markName,i):              pass
+    ### def onChar (self,event):                    self.logCtrl.onChar(event)
+    ### def scrollLines(self,n):                    self.logCtrl.scrollLines(n)
+    ### def setWidth (self,width):                  pass
+    ### def tag_add(self,tagName,i,j=None,*args):   pass
+    ### def tag_add (self,colorName,**keys):        pass
+    ### def tag_delete (self,tagName,*args,**keys): pass
+    ### def tag_names (self, *args):                return []
+    ### def tag_ranges(self,tagName):               return tuple()
+    ### def tag_remove(self,tagName,i,j=None,*args):pass
+    
+    ### def update_idletasks (self,*args,**keys):   pass
+    ### def xyToPythonIndex (self,x,y):             return 0
+    ### def yview (self,*args):                     return 0,0
+    
+    # Part 4: corresponding to mayBeDefinedInSubclasses.
+    def deleteTextSelection (self):         self.logCtrl.deleteTextSelection ()
+    # def event_generate(self,stroke):        pass
+    def replace (self,i,j,s):               self.logCtrl.replace (i,j,s)
+    def rowColToGuiIndex (self,s,row,col):  return self.logCtrl.rowColToGuiIndex(s,row,col)
+    def selectAllText (self,insert=None):   self.logCtrl.selectAllText(insert)
+    def toPythonIndex (self,index):         return self.logCtrl.toPythonIndex(index)
+    toGuiIndex = toPythonIndex
+    def toPythonIndexRowCol(self,index):    return self.logCtrl.toPythonIndexRowCol(index)
 #@+node:ekr.20070228080627: *8* Text Wrappers (leoBody)
-### Where is the rest of the high-level interface???
+if 0: ### Now defined by the HighLevelInterface
 
-def getAllText (self):                  return self.bodyCtrl.getAllText()
-def getInsertPoint(self):               return self.bodyCtrl.getInsertPoint()
-def getSelectedText (self):             return self.bodyCtrl.getSelectedText()
-def getSelectionRange (self,sort=True): return self.bodyCtrl.getSelectionRange(sort)
-def hasSelection(self):                 return self.bodyCtrl.hasSelection()
-### def hasTextSelection (self):        return self.bodyCtrl.hasSelection()
-def see (self,index):                   self.bodyCtrl.see(index)
-def seeInsertPoint (self):              self.bodyCtrl.seeInsertPoint()
-def selectAllText (self,event=None):    return self.bodyCtrl.selectAllText()
-def setInsertPoint (self,pos):          return self.bodyCtrl.setInsertPoint(pos)
-def setFocus(self):                     return self.bodyCtrl.setFocus()
-
-#####
-# def setSelectionRange (self,sel):
-#     i,j = sel
-#     self.bodyCtrl.setSelectionRange(i,j)
-def setSelectionRange(self,i,j,insert=None):
-    self.bodyCtrl.setSelectionRange(i,j,insert=insert)
+    def getAllText (self):                      return self.bodyCtrl.getAllText()
+    def getInsertPoint(self):                   return self.bodyCtrl.getInsertPoint()
+    def getSelectedText (self):                 return self.bodyCtrl.getSelectedText()
+    def getSelectionRange (self,sort=True):     return self.bodyCtrl.getSelectionRange(sort)
+    def hasSelection(self):                     return self.bodyCtrl.hasSelection()
+    def see (self,index):                       self.bodyCtrl.see(index)
+    def seeInsertPoint (self):                  self.bodyCtrl.seeInsertPoint()
+    def selectAllText (self,event=None):        return self.bodyCtrl.selectAllText()
+    def setInsertPoint (self,pos):              return self.bodyCtrl.setInsertPoint(pos)
+    def setFocus(self):                         return self.bodyCtrl.setFocus()
+    def setSelectionRange(self,i,j,insert=None):self.bodyCtrl.setSelectionRange(i,j,insert=insert)
 #@+node:ekr.20111026115337.16511: *6* Found: .see
 #@+node:ekr.20111026115337.16512: *7* Commands: not part of most problems
 #@+node:ekr.20031218072017.1827: *8* c.findMatchingBracket, helper and test
@@ -13789,6 +13703,2527 @@ Created findAllUnitTestNodes, used by createOutline & doTests.
 @nocolor-node
 
 Only the high-level interface (baseTextWidget) used the low-level interface.
+#@+node:ekr.20111114013726.9967: *4* Removed unused cruft from high-level interface
+@nocolor-node
+
+Removed the following unused methods::
+    
+    bind                c.bind also removed.
+    configure
+    cget
+    event_generate      g.app.gui.event_generate does exist.
+    getWidth
+    indexIsVisible      Also removed for leoEditCommands: scrollHelper and measure.
+    mark_set
+    onChar              Fortunately, never used anywhere
+    pack                Used only in Tk code
+    scrollLines
+    set_width           Removed do-nothing calls in Leo's core.
+    tag_add             Removed do-nothing calls in qt colorizer.
+    tag_bind            Removed do-nothing calls in qt colorizer.
+    tag_delete          Removed do-nothing calls in qt colorizer.
+    tag_names
+    tag_ranges
+    tag_remove
+    update
+    update_idletasks
+    xyToPythonIndex
+    yview
+#@+node:ekr.20111112131605.9787: *4* Most unit tests may now be run externally
+@nocolor-node
+
+What I did:
+    
+- The nullGui now uses a fully capable string-based body widget.
+- The nullGui now uses the regular undoer.
+#@+node:ekr.20111113064104.9856: *5* Fixes
+#@+node:ekr.20111113064104.9850: *6* Fixed baseTextWidget/leoFind.delete
+# leoFind.delete probably needs the same fix.
+#@+node:ekr.20070105102419: *7* setters (leoFind)
+def delete(self,i,j=None):
+    i = self.toPythonIndex(i)
+    if j is None: j = i + 1
+    else: j = self.toPythonIndex(j)
+    self.s = self.s[:i] + self.s[j:]
+    # Bug fix: 2011/11/13: Significant in external tests.
+    self.i = i
+    self.sel = i,i
+
+def insert(self,i,s):
+    if not s: return
+    i = self.toPythonIndex(i)
+    self.s = self.s[:i] + s + self.s[i:]
+    self.i = i
+    self.sel = i,i
+
+def setAllText (self,s,new_p=None):
+    self.s = s
+    self.i = 0
+    self.sel = 0,0
+
+def setInsertPoint (self,i):
+    self.i = i
+
+def setSelectionRange (self,i,j,insert=None):
+    self.sel = self.toPythonIndex(i),self.toPythonIndex(j)
+    if insert is not None:
+        self.i = self.toPythonIndex(insert)
+#@+node:ekr.20110605121601.18079: *7* delete (avoid call to setAllText) (leoQTextEditWidget)
+def delete(self,i,j=None):
+
+    trace = False and not g.unitTesting
+    c,w = self.c,self.widget
+    colorer = c.frame.body.colorizer.highlighter.colorer
+    n = colorer.recolorCount
+
+    if trace: g.trace(self.getSelectionRange())
+
+    i = self.toGuiIndex(i)
+    if j is None: j = i+1
+    j = self.toGuiIndex(j)
+    if i > j: i,j = j,i
+
+    if trace: g.trace(i,j)
+
+    # Set a hook for the colorer.
+    colorer.initFlag = True
+
+    sb = w.verticalScrollBar()
+    pos = sb.sliderPosition()
+    cursor = w.textCursor()
+
+    try:
+        self.changingText = True # Disable onTextChanged
+
+        old_i,old_j = self.getSelectionRange()
+        if i == old_i and j == old_j:
+            # Work around an apparent bug in cursor.movePosition.
+            cursor.removeSelectedText()
+        elif i == j:
+            pass
+        else:
+            # g.trace('*** using dubious code')
+            cursor.setPosition(i)
+            moveCount = abs(j-i)
+            cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
+            w.setTextCursor(cursor)  # Bug fix: 2010/01/27
+            if trace:
+                i,j = self.getSelectionRange()
+                g.trace(i,j)
+            cursor.removeSelectedText()
+            if trace: g.trace(self.getSelectionRange())
+    finally:
+        self.changingText = False
+
+    sb.setSliderPosition(pos)
+
+    # g.trace('%s calls to recolor' % (colorer.recolorCount-n))
+#@+node:ekr.20110605121601.18191: *7* High-level interface (qtBody)
+# The required high-level interface.
+def appendText (self,s):                return self.widget.appendText(s)
+def clipboard_append(self,s):           return self.widget.clipboard_append(s)
+def clipboard_clear(self):              return self.widget.clipboard_append()
+def delete(self,i,j=None):              self.widget.delete(i,j)
+def deleteTextSelection (self):         return self.widget.deleteTextSelection()
+def flashCharacter(self,i,
+    bg='white',fg='red',
+    flashes=3,delay=75):                return self.widget(i,bg,fg,flashes,delay)
+def get(self,i,j=None):                 return self.widget.get(i,j)
+def getAllText (self):                  return self.widget.getAllText()
+def getFocus (self):                    return self.widget.getFocus()
+def getInsertPoint(self):               return self.widget.getInsertPoint()
+def getSelectedText (self):             return self.widget.getSelectedText()
+def getSelectionRange(self):            return self.widget.getSelectionRange()
+def getYScrollPosition (self):          return self.widget.getYScrollPosition()
+def hasSelection (self):                return self.widget.hasSelection()
+def insert(self,i,s):                   return self.widget.insert(i,s)
+def replace (self,i,j,s):               self.widget.replace (i,j,s)
+def rowColToGuiIndex (self,s,row,col):  return self.widget.rowColToGuiIndex(s,row,col)
+def see(self,index):                    return self.widget.see(index)
+def seeInsertPoint(self):               return self.widget.seeInsertPoint()
+def selectAllText (self,insert=None):   self.widget.selectAllText(insert)
+def setAllText (self,s,new_p=None):     return self.widget.setAllText(s,new_p=new_p)
+def setBackgroundColor (self,color):    return self.widget.setBackgroundColor(color)
+def setFocus (self):                    return self.widget.setFocus()
+def setForegroundColor (self,color):    return self.widget.setForegroundColor(color)
+def setInsertPoint (self,pos):          return self.widget.setInsertPoint(pos)
+def setSelectionRange (self,i,j,insert=None):
+    self.widget.setSelectionRange(i,j,insert=insert)
+def setYScrollPosition (self,i):        return self.widget.setYScrollPosition(i)
+def tag_configure(self,colorName,**keys):pass
+def toPythonIndex(self,index):          return self.widget.toPythonIndex(index)
+def toPythonIndexRowCol(self,index):    return self.widget.toPythonIndexRowCol(index)
+
+set_focus = setFocus
+toGuiIndex = toPythonIndex
+
+### def bind (self,kind,*args,**keys):          return self.widget.bind(kind,*args,**keys)
+### def event_generate(self,stroke):            pass
+### def getWidth (self):                        return 0
+### def indexIsVisible(self,i):                 return self.widget.indexIsVisible(i)
+### def mark_set(self,markName,i):              pass
+### def onChar (self, event):                   return self.widget.onChar(event)
+### def scrollLines (self,n):                   return self.widget.scrollLines(n)
+### def setWidth (self,width):                  pass
+### def tag_add(self,tagName,i,j=None,*args):   pass
+### def tag_add (self,colorName,**keys):     pass
+### def tag_delete (self,tagName,*args,**keys): pass
+### def tag_names (self, *args):                return []
+### def tag_ranges(self,tagName):               return tuple()
+### def tag_remove(self,tagName,i,j=None,*args):pass
+### def update_idletasks (self,*args,**keys):   pass
+### def xyToPythonIndex (self,x,y):             return 0
+### def yview (self,*args):                     return 0,0
+#@+node:ekr.20070228074312.13: *7* delete (baseTextWidget)
+def delete(self,i,j=None):
+
+    i = self.toPythonIndex(i)
+    if j is None: j = i+ 1
+    j = self.toPythonIndex(j)
+    
+    # 2011/11/13: This allows subclasses to use this base class method.
+    if i > j: i,j = j,i
+
+    # g.trace(i,j,len(s),repr(s[:20]))
+    s = self.getAllText()
+    self.setAllText(s[:i] + s[j:])
+    
+    # Bug fix: 2011/11/13: Significant in external tests.
+    self.setSelectionRange(i,i,insert=i)
+#@+node:ekr.20070228074312.14: *7* deleteTextSelection (baseTextWidget)
+def deleteTextSelection (self):
+
+    i,j = self.getSelectionRange()
+    self.delete(i,j)
+#@+node:ekr.20111113064104.9851: *6* Fixed end-of-line when run externally
+#@+node:ekr.20100109094541.6231: *7* moveWithinLineHelper
+def moveWithinLineHelper (self,event,spot,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    # g.trace(hasattr(w,'leoMoveCursorHelper'))
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(kind=spot,extend=extend)
+        if g.app.trace_scroll: g.trace('seeInsertPoint',spot)
+        w.seeInsertPoint()
+        c.frame.updateStatusLine()
+    else:
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i,j = g.getLine(s,ins)
+        if spot == 'start-line':
+            self.moveToHelper(event,i,extend=extend)
+        elif spot == 'end-line':
+            # Bug fix: 2011/11/13: Significant in external tests.
+            if g.match(s,j-1,'\n'): j -= 1
+            self.moveToHelper(event,j,extend=extend)
+        else:
+            g.trace('can not happen: bad spot: %s' % spot)
+#@+node:ekr.20111113064104.9853: *6* Fixed findWordInLine
+#@+node:ekr.20080408060320.1: *7* findWordHelper
+def findWordHelper (self,event,oneLine):
+
+    k = self.k ; tag = 'find-word' ; state = k.getState(tag)
+
+    if state == 0:
+        w = self.editWidget(event) # Sets self.w
+        if not w: return
+        self.oneLineFlag = oneLine
+        k.setLabelBlue('Find word %sstarting with: ' % (
+            g.choose(oneLine,'in line ','')))
+        k.getArg(event,tag,1,self.findWord,oneCharacter=True)
+    else:        
+        ch = k.arg ; w = self.w ; c = k.c
+        if ch:
+            i = w.getInsertPoint()
+            s = w.getAllText()
+            if self.oneLineFlag:
+                end = s.find('\n',i) # Limit searches to this line.
+                if end == -1: end = len(s)
+            else:
+                end = len(s)
+
+            while i < end:
+                i = s.find(ch,i+1,end) # Ensure progress and i > 0.
+                if i == -1:
+                    break
+                elif not g.isWordChar(s[i-1]):
+                    w.setSelectionRange(i,i,insert=i)
+                    break
+
+        k.resetLabel()
+        k.clearState()
+#@+node:ekr.20111113064104.9855: *6* Fixed scrollHelper for external tests
+#@+node:ekr.20060113082917: *7* scrollHelper (leoEditCommands)
+def scrollHelper (self,event,direction,distance):
+
+    '''Scroll the present pane up or down one page
+    kind is in ('up/down-half-page/line/page)'''
+
+    k = self.k ; c = k.c ; gui = g.app.gui
+    w = event and event.w
+    if not w: return
+
+    if hasattr(w,'scrollDelegate'):
+        kind = direction + '-' + distance
+        w.scrollDelegate(kind)
+    else:
+        pass
+        ### self.scrollHelperHelper(event,direction,distance)
+#@+node:ekr.20111113064104.9857: *6* fixed nullFindTab problems
+#@+node:ekr.20061212084717: *7* class leoFind
+class leoFind:
+
+    """The base class for Leo's Find commands."""
+
+    @others
+#@+node:ekr.20031218072017.3053: *8* leoFind.__init__ & helpers
+def __init__ (self,c,title=None):
+
+    self.c = c
+    self.trace = False
+
+    # g.trace('leoFind',c)
+
+    # Spell checkers use this class, so we can't always compute a title.
+    if title:
+        self.title = title
+    else:
+        << compute self.title >>
+
+    << init the gui-independent ivars >>
+
+def init (self,c):
+    self.oops()
+#@+node:ekr.20041121145452: *9* << compute self.title >>
+if not c.mFileName:
+    s = "untitled"
+else:
+    path,s = g.os_path_split(c.mFileName)
+
+self.title = "Find/Change for %s" %  s
+#@+node:ekr.20031218072017.3054: *9* << init the gui-independent ivars >>
+self.backwardAttempts = 0
+self.wrapPosition = None
+self.onlyPosition = None
+self.find_text = ""
+self.change_text = ""
+self.unstick = False
+self.re_obj = None
+
+@
+New in 4.3:
+- These are the names of leoFind ivars. (no more _flag hack).
+- There are no corresponding commander ivars to keep in synch (hurray!)
+- These ivars are inited (in the subclass by init) when this class is created.
+- These ivars are updated by update_ivars just before doing any find.
+@c
+
+<< do dummy initialization to keep Pychecker happy >>
+
+self.intKeys = [
+    "batch","ignore_case", "node_only",
+    "pattern_match", "search_headline", "search_body",
+    "suboutline_only", "mark_changes", "mark_finds", "reverse",
+    "script_search","script_change","selection_only",
+    "wrap", "whole_word",
+]
+
+self.newStringKeys = ["radio-find-type", "radio-search-scope"]
+
+# Ivars containing internal state...
+self.c = None # The commander for this search.
+self.clone_find_all = False
+self.p = None # The position being searched.  Never saved between searches!
+self.in_headline = False # True: searching headline text.
+self.s_ctrl = searchWidget() # The search text for this search.
+self.wrapping = False # True: wrapping is enabled.
+    # This is _not_ the same as self.wrap for batch searches.
+
+@
+Initializing a wrapped search is tricky. The search() method will fail
+if p==wrapPosition and pos >= wrapPos. selectNextPosition() will fail
+if p == wrapPosition. We set wrapPos on entry, before the first
+search. We set wrapPosition in selectNextPosition after the first
+search fails. We also set wrapPosition on exit if the first search
+suceeds.
+
+2011/06/13: wrapPosition must be reset when the find pattern changes.
+@c
+
+self.wrapPosition = None # The start of wrapped searches: persists between calls.
+self.onlyPosition = None # The starting node for suboutline-only searches.
+self.wrapPos = None # The starting position of the wrapped search: persists between calls.
+self.errors = 0
+#@+node:ekr.20050123164539: *10* << do dummy initialization to keep Pychecker happy >>
+if 1:
+    self.batch = None
+    self.clone_find_all = None
+    self.ignore_case = None
+    self.node_only = None
+    self.pattern_match = None
+    self.search_headline = None
+    self.search_body = None
+    self.suboutline_only = None
+    self.mark_changes = None
+    self.mark_finds = None
+    self.reverse = None
+    self.script_search = None
+    self.script_change = None
+    self.wrap = None
+    self.whole_word = None
+
+if 1:
+    self.change_ctrl = None
+    self.find_ctrl = None
+    self.frame = None
+    self.svarDict = {}
+#@+node:ekr.20060123065756.1: *8* Top Level Buttons
+#@+node:ekr.20031218072017.3057: *9* changeAllButton
+# The user has pushed the "Change All" button from the find panel.
+
+def changeAllButton(self):
+
+    c = self.c
+    self.setup_button()
+    c.clearAllVisited() # Clear visited for context reporting.
+
+    if self.script_change:
+        self.doChangeAllScript()
+    else:
+        self.changeAll()
+#@+node:ekr.20031218072017.3056: *9* changeButton
+# The user has pushed the "Change" button from the find panel.
+
+def changeButton(self):
+
+    self.setup_button()
+
+    if self.script_change:
+        self.doChangeScript()
+    else:
+        self.change()
+#@+node:ekr.20031218072017.3058: *9* changeThenFindButton
+# The user has pushed the "Change Then Find" button from the find panel.
+
+def changeThenFindButton(self):
+
+    self.setup_button()
+
+    if self.script_change:
+        self.doChangeScript()
+        if self.script_search:
+            self.doFindScript()
+        else:
+            self.findNext()
+    else:
+        if self.script_search:
+            self.change()
+            self.doFindScript()
+        else:
+            self.changeThenFind()
+#@+node:ekr.20031218072017.3060: *9* findAllButton
+# The user has pushed the "Find All" button from the find panel.
+
+def findAllButton(self):
+
+    c = self.c
+    self.setup_button()
+    c.clearAllVisited() # Clear visited for context reporting.
+
+    if self.script_search:
+        self.doFindAllScript()
+    else:
+        self.findAll()
+#@+node:ekr.20031218072017.3059: *9* findButton
+# The user has pushed the "Find" button from the find panel.
+
+def findButton(self):
+
+    self.setup_button()
+
+    if self.script_search:
+        self.doFindScript()
+    else:
+        self.findNext()
+#@+node:ekr.20031218072017.3065: *9* setup_button
+# Initializes a search when a button is pressed in the Find panel.
+
+def setup_button(self):
+
+    c = self.c
+    self.p = c.p
+
+    c.bringToFront()
+    if 0: # We _must_ retain the editing status for incremental searches!
+        c.endEditing()
+
+    self.update_ivars()
+#@+node:ekr.20031218072017.3055: *8* Top Level Commands
+#@+node:ekr.20031218072017.3061: *9* changeCommand
+# The user has selected the "Replace" menu item.
+
+def changeCommand(self,c):
+
+    self.setup_command()
+
+    if self.script_search:
+        self.doChangeScript()
+    else:
+        self.change()
+#@+node:ekr.20031218072017.3062: *9* changeThenFindCommand
+# The user has pushed the "Change Then Find" button from the Find menu.
+
+def changeThenFindCommand(self,c):
+
+    self.setup_command()
+
+    if self.script_search:
+        self.doChangeScript()
+        self.doFindScript()
+    else:
+        self.changeThenFind()
+#@+node:ekr.20051013084200.1: *9* dismiss: defined in subclass class
+def dismiss (self):
+    pass
+#@+node:ekr.20031218072017.3063: *9* findNextCommand
+# The user has selected the "Find Next" menu item.
+
+def findNextCommand(self,c):
+
+    self.setup_command()
+
+    if self.script_search:
+        self.doFindScript()
+    else:
+        self.findNext()
+#@+node:ekr.20031218072017.3064: *9* findPreviousCommand
+# The user has selected the "Find Previous" menu item.
+
+def findPreviousCommand(self,c):
+
+    self.setup_command()
+
+    self.reverse = not self.reverse
+
+    if self.script_search:
+        self.doFindScript()
+    else:
+        self.findNext()
+
+    self.reverse = not self.reverse
+#@+node:EKR.20040503070514: *9* handleUserClick
+def handleUserClick (self,p):
+
+    """Reset suboutline-only search when the user clicks a headline."""
+
+    try:
+        if self.c and self.suboutline_only:
+            # g.trace(p)
+            self.onlyPosition = p.copy()
+    except: pass
+#@+node:ekr.20031218072017.3066: *9* setup_command
+# Initializes a search when a command is invoked from the menu.
+
+def setup_command(self):
+
+    # g.trace('leoFind')
+
+    if 0: # We _must_ retain the editing status for incremental searches!
+        self.c.endEditing()
+
+    self.update_ivars()
+#@+node:ekr.20031218072017.3067: *8* Find/change utils
+#@+node:ekr.20031218072017.2293: *9* batchChange (sets start of change-all group)
+@ This routine performs a single batch change operation, updating the
+head or body string of p and leaving the result in s_ctrl. We update
+the body if we are changing the body text of c.currentVnode().
+
+s_ctrl contains the found text on entry and contains the changed text
+on exit. pos and pos2 indicate the selection. The selection will never
+be empty. NB: we can not assume that self.p is visible.
+@c
+
+def batchChange (self,pos1,pos2):
+
+    c = self.c ; u = c.undoer
+    p = self.p ; w = self.s_ctrl
+    # Replace the selection with self.change_text
+    if pos1 > pos2: pos1,pos2=pos2,pos1
+    s = w.getAllText()
+    if pos1 != pos2: w.delete(pos1,pos2)
+    w.insert(pos1,self.change_text)
+    # Update the selection.
+    insert=g.choose(self.reverse,pos1,pos1+len(self.change_text))
+    w.setSelectionRange(insert,insert)
+    w.setInsertPoint(insert)
+    # Update the node
+    s = w.getAllText() # Used below.
+    if self.in_headline:
+        << change headline >>
+    else:
+        << change body >>
+#@+node:ekr.20031218072017.2294: *10* << change headline >>
+if len(s) > 0 and s[-1]=='\n': s = s[:-1]
+
+if s != p.h:
+
+    undoData = u.beforeChangeNodeContents(p)
+
+    p.initHeadString(s)
+    if self.mark_changes:
+        p.setMarked()
+    p.setDirty()
+    if not c.isChanged():
+        c.setChanged(True)
+
+    u.afterChangeNodeContents(p,'Change Headline',undoData)
+#@+node:ekr.20031218072017.2295: *10* << change body >>
+if len(s) > 0 and s[-1]=='\n': s = s[:-1]
+
+if s != p.b:
+
+    undoData = u.beforeChangeNodeContents(p)
+
+    c.setBodyString(p,s)
+    if self.mark_changes:
+        p.setMarked()
+    p.setDirty()
+    if not c.isChanged():
+        c.setChanged(True)
+
+    u.afterChangeNodeContents(p,'Change Body',undoData)
+#@+node:ekr.20031218072017.3068: *9* change
+def change(self,event=None):
+
+    if self.checkArgs():
+        self.initInHeadline()
+        self.changeSelection()
+#@+node:ekr.20031218072017.3069: *9* changeAll (leoFind)
+def changeAll(self):
+
+    # g.trace('leoFind',g.callers())
+
+    c = self.c ; u = c.undoer ; undoType = 'Change All'
+    current = c.p
+    w = self.s_ctrl
+    if not self.checkArgs(): return
+    self.initInHeadline()
+    saveData = self.save()
+    self.initBatchCommands()
+    count = 0
+    u.beforeChangeGroup(current,undoType)
+    while 1:
+        pos1, pos2 = self.findNextMatch()
+        if pos1 is None: break
+        count += 1
+        self.batchChange(pos1,pos2)
+        s = w.getAllText()
+        i,j = g.getLine(s,pos1)
+        line = s[i:j]
+        # self.printLine(line,allFlag=True)
+    p = c.p
+    u.afterChangeGroup(p,undoType,reportFlag=True)
+    g.es("changed:",count,"instances")
+    c.redraw(p)
+    self.restore(saveData)
+#@+node:ekr.20031218072017.3070: *9* changeSelection
+# Replace selection with self.change_text.
+# If no selection, insert self.change_text at the cursor.
+
+def changeSelection(self):
+
+    c = self.c ; p = self.p
+    bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
+    w = g.choose(self.in_headline,c.edit_widget(p),bodyCtrl)
+    if not w:
+        self.in_headline = False
+        w = bodyCtrl
+    if not w: return
+
+    oldSel = sel = w.getSelectionRange()
+    start,end = sel
+    if start > end: start,end = end,start
+    if start == end:
+        g.es("no text selected") ; return False
+
+    # g.trace(start,end)
+
+    # Replace the selection in _both_ controls.
+    start,end = oldSel
+    change_text = self.change_text
+
+    # Perform regex substitutions of \1, \2, ...\9 in the change text.
+    if self.pattern_match and self.match_obj:
+        groups = self.match_obj.groups()
+        if groups:
+            change_text = self.makeRegexSubs(change_text,groups)
+    # change_text = change_text.replace('\\n','\n').replace('\\t','\t')
+    change_text = self.replaceBackSlashes(change_text)
+
+    for w2 in (w,self.s_ctrl):
+        if start != end: w2.delete(start,end)
+        w2.insert(start,change_text)
+        w2.setInsertPoint(g.choose(self.reverse,start,start+len(change_text)))
+
+    # Update the selection for the next match.
+    w.setSelectionRange(start,start+len(change_text))
+    c.widgetWantsFocus(w)
+
+    # No redraws here: they would destroy the headline selection.
+    if self.mark_changes:
+        p.setMarked()
+    if self.in_headline:
+        c.frame.tree.onHeadChanged(p,'Change')
+    else:
+        c.frame.body.onBodyChanged('Change',oldSel=oldSel)
+
+    c.frame.tree.drawIcon(p) # redraw only the icon.
+
+    return True
+#@+node:ekr.20060526201951: *10* makeRegexSubs
+def makeRegexSubs(self,s,groups):
+
+    '''Carefully substitute group[i-1] for \i strings in s.
+    The group strings may contain \i strings: they are *not* substituted.'''
+
+    digits = '123456789'
+    result = [] ; n = len(s)
+    i = j = 0 # s[i:j] is the text between \i markers.
+    while j < n:
+        k = s.find('\\',j)
+        if k == -1 or k + 1 >= n:
+            break
+        j = k + 1 ; ch = s[j]
+        if ch in digits:
+            j += 1
+            result.append(s[i:k]) # Append up to \i
+            i = j
+            gn = int(ch)-1
+            if gn < len(groups):
+                result.append(groups[gn]) # Append groups[i-1]
+            else:
+                result.append('\\%s' % ch) # Append raw '\i'
+    result.append(s[i:])
+    return ''.join(result)
+#@+node:ekr.20031218072017.3071: *9* changeThenFind
+def changeThenFind(self):
+
+    if not self.checkArgs():
+        return
+
+    self.initInHeadline()
+    if self.changeSelection():
+        self.findNext(False) # don't reinitialize
+#@+node:ekr.20031218072017.2417: *9* doChange...Script
+def doChangeScript (self):
+
+    g.app.searchDict["type"] = "change"
+    self.runChangeScript()
+
+def doChangeAllScript (self):
+
+    """The user has just pressed the Change All button with script-change box checked.
+
+    N.B. Only this code is executed."""
+
+    g.app.searchDict["type"] = "changeAll"
+    while 1:
+        self.runChangeScript()
+        if not g.app.searchDict.get("continue"):
+            break
+
+def runChangeScript (self):
+
+    try:
+        assert(self.script_change)
+        exec(self.change_text,{},{})
+    except Exception:
+        g.es("exception executing change script")
+        g.es_exception(full=False)
+        g.app.searchDict["continue"] = False # 2/1/04
+#@+node:ekr.20031218072017.3072: *9* doFind...Script
+def doFindScript (self):
+
+    g.app.searchDict["type"] = "find"
+    self.runFindScript()
+
+def doFindAllScript (self):
+
+    """The user has just pressed the Find All button with script-find radio button checked.
+
+    N.B. Only this code is executed."""
+
+    g.app.searchDict["type"] = "findAll"
+    while 1:
+        self.runFindScript()
+        if not g.app.searchDict.get("continue"):
+            break
+
+def runFindScript (self):
+
+    try:
+        exec(self.find_text,{},{})
+    except:
+        g.es("exception executing find script")
+        g.es_exception(full=False)
+        g.app.searchDict["continue"] = False # 2/1/04
+#@+node:ekr.20031218072017.3073: *9* findAll & helper
+def findAll(self):
+
+    c = self.c ; w = self.s_ctrl ; u = c.undoer
+    undoType = 'Clone Find All'
+    if not self.checkArgs():
+        return
+    self.initInHeadline()
+    if self.clone_find_all:
+        self.p = None # Restore will select the root position.
+    data = self.save()
+    self.initBatchCommands()
+    skip = {} # Nodes that should be skipped.
+        # Keys are vnodes, values not important.
+    count,found = 0,None
+    while 1:
+        pos, newpos = self.findNextMatch() # sets self.p.
+        if pos is None: break
+        if self.clone_find_all and self.p.v in skip:
+            continue
+        count += 1
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if self.clone_find_all:
+            if not skip:
+                undoData = u.beforeInsertNode(c.p)
+                found = self.createCloneFindAllNode()
+            # Don't look at the node or it's descendants.
+            for p2 in self.p.self_and_subtree():
+                skip[p2.v] = True
+            # Create a clone of self.p under the find node.
+            p2 = self.p.clone()
+            p2.moveToLastChildOf(found)
+        else:
+            self.printLine(line,allFlag=True)
+
+    if self.clone_find_all and skip:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        c.selectPosition(found)
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw()
+    g.es("found",count,"matches")
+#@+node:ekr.20051113110735: *10* createCloneFindAllNode
+def createCloneFindAllNode(self):
+    
+    c = self.c
+    oldRoot = c.rootPosition()
+    found = oldRoot.insertAfter()
+    found.moveToRoot(oldRoot)
+    c.setHeadString(found,'Found: ' + self.find_text)
+    return found
+#@+node:ekr.20031218072017.3074: *9* findNext
+def findNext(self,initFlag=True):
+
+    c = self.c
+    if not self.checkArgs():
+        return
+
+    if initFlag:
+        self.initInHeadline()
+        data = self.save()
+        self.initInteractiveCommands()
+    else:
+        data = self.save()
+
+    pos, newpos = self.findNextMatch()
+
+    if pos is None:
+        if self.wrapping:
+            g.es("end of wrapped search")
+        else:
+            g.es("not found","'%s'" % (self.find_text))
+        self.restore(data)
+    else:
+        self.showSuccess(pos,newpos)
+#@+node:ekr.20031218072017.3075: *9* findNextMatch
+# Resumes the search where it left off.
+# The caller must call set_first_incremental_search or set_first_batch_search.
+
+def findNextMatch(self):
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = self.p
+
+    if trace: g.trace('entry','p',p and p.h,
+        'search_headline',self.search_headline,
+        'search_body',self.search_body)
+
+    if not self.search_headline and not self.search_body:
+        if trace: g.trace('nothing to search')
+        return None, None
+
+    if len(self.find_text) == 0:
+        if trace: g.trace('no find text')
+        return None, None
+
+    self.errors = 0
+    attempts = 0
+    self.backwardAttempts = 0
+
+    # New in Leo 4.4.8: precompute the regexp for regexHelper.
+    if self.pattern_match:
+        try: # Precompile the regexp.
+            flags = re.MULTILINE
+            if self.ignore_case: flags |= re.IGNORECASE
+            # New in Leo 4.5: escape the search text.
+            b,s = '\\b',self.find_text
+            if self.whole_word:
+                if not s.startswith(b): s = b + s
+                if not s.endswith(b): s = s + b
+            # g.trace(self.whole_word,repr(s))
+                
+            self.re_obj = re.compile(s,flags)
+            # self.re_obj = re.compile(re.escape(self.find_text),flags)
+        except Exception:
+            g.es('invalid regular expression:',self.find_text,color='blue')
+            self.errors += 1 # Abort the search.
+            return None,None
+
+    while p:
+        pos, newpos = self.search()
+        if trace: g.trace('attempt','pos',pos,'p',p.h,'in_headline',self.in_headline)
+        if pos is not None:
+            if self.mark_finds:
+                p.setMarked()
+                c.frame.tree.drawIcon(p) # redraw only the icon.
+            if trace: g.trace('success',pos,newpos)
+            return pos, newpos
+        elif self.errors:
+            g.trace('find errors')
+            return None,None # Abort the search.
+        elif self.node_only:
+            # Bug fix: 2009-5-31.
+            # Attempt to switch from headline to body.
+            if self.in_headline:
+                self.in_headline = False
+                self.initNextText()
+            else: 
+                if trace: g.trace('fail: node only')
+                return None,None # We are only searching one node.
+        else:
+            if trace: g.trace('failed attempt',p)
+            attempts += 1
+            p = self.p = self.selectNextPosition()
+
+    if trace: g.trace('attempts',attempts,'backwardAttempts',self.backwardAttempts)
+    return None, None
+#@+node:ekr.20031218072017.3076: *9* resetWrap
+def resetWrap (self,event=None):
+
+    self.wrapPosition = None
+    self.onlyPosition = None
+#@+node:ekr.20031218072017.3077: *9* search & helpers
+def search (self):
+
+    """Search s_ctrl for self.find_text under the control of the
+    whole_word, ignore_case, and pattern_match ivars.
+
+    Returns (pos, newpos) or (None,None)."""
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = self.p ; w = self.s_ctrl
+    index = w.getInsertPoint()
+    s = w.getAllText()
+
+    if trace: g.trace(index,repr(s[index:index+20]))
+    stopindex = g.choose(self.reverse,0,len(s)) # 'end' doesn't work here.
+    pos,newpos = self.searchHelper(s,index,stopindex,self.find_text,
+        backwards=self.reverse,nocase=self.ignore_case,
+        regexp=self.pattern_match,word=self.whole_word)
+
+    if trace: g.trace('pos,newpos',pos,newpos)
+    if pos == -1:
+        if trace: g.trace('** pos is -1',pos,newpos)
+        return None,None
+    << fail if we are passed the wrap point >>
+    insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
+    w.setSelectionRange(pos,newpos,insert=insert)
+
+    if trace: g.trace('** returns',pos,newpos)
+    return pos,newpos
+#@+node:ekr.20060526140328: *10* << fail if we are passed the wrap point >>
+if self.wrapping and self.wrapPos is not None and self.wrapPosition and p == self.wrapPosition:
+
+    if self.reverse and pos < self.wrapPos:
+        if trace: g.trace("** reverse wrap done",pos,newpos)
+        return None, None
+
+    if not self.reverse and newpos > self.wrapPos:
+        if trace: g.trace('** wrap done',pos,newpos)
+        return None, None
+#@+node:ekr.20060526081931: *10* searchHelper & allies
+def searchHelper (self,s,i,j,pattern,backwards,nocase,regexp,word,swapij=True):
+
+    trace = self.trace
+
+    if swapij and backwards: i,j = j,i
+
+    if trace: g.trace('back,nocase,regexp,word,',
+        backwards,nocase,regexp,word,i,j,repr(s[i:i+20]))
+
+    if not s[i:j] or not pattern:
+        if trace: g.trace('empty',i,j,'len(s)',len(s),'pattern',pattern)
+        return -1,-1
+
+    if regexp:
+        pos,newpos = self.regexHelper(s,i,j,pattern,backwards,nocase)
+    elif backwards:
+        pos,newpos = self.backwardsHelper(s,i,j,pattern,nocase,word)
+    else:
+        pos,newpos = self.plainHelper(s,i,j,pattern,nocase,word)
+
+    if trace: g.trace('returns',pos,newpos)
+    return pos,newpos
+#@+node:ekr.20060526092203: *11* regexHelper
+def regexHelper (self,s,i,j,pattern,backwards,nocase):
+
+    re_obj = self.re_obj # Use the pre-compiled object
+    if not re_obj:
+        g.trace('can not happen: no re_obj')
+        return -1,-1
+
+    if backwards: # Scan to the last match.  We must use search here.
+        last_mo = None ; i = 0
+        while i < len(s):
+            mo = re_obj.search(s,i,j)
+            if not mo: break
+            i += 1 ; last_mo = mo
+        mo = last_mo
+    else:
+        mo = re_obj.search(s,i,j)
+
+    if 0:
+        g.trace('i',i,'j',j,'s[i:j]',repr(s[i:j]),
+            'mo.start',mo and mo.start(),'mo.end',mo and mo.end())
+
+    while mo and 0 <= i < len(s):
+        if mo.start() == mo.end():
+            if backwards:
+                # Search backward using match instead of search.
+                i -= 1
+                while 0 <= i < len(s):
+                    mo = re_obj.match(s,i,j)
+                    if mo: break
+                    i -= 1
+            else:
+                i += 1 ; mo = re_obj.search(s,i,j)
+        else:
+            self.match_obj = mo
+            return mo.start(),mo.end()
+    self.match_obj = None
+    return -1,-1
+#@+node:ekr.20060526140744: *11* backwardsHelper
+debugIndices = []
+
+@
+rfind(sub [,start [,end]])
+
+Return the highest index in the string where substring sub is found, such that
+sub is contained within s[start,end]. Optional arguments start and end are
+interpreted as in slice notation. Return -1 on failure.
+@c
+
+def backwardsHelper (self,s,i,j,pattern,nocase,word):
+
+    debug = False
+    if nocase:
+        s = s.lower() ; pattern = pattern.lower() # Bug fix: 10/5/06: At last the bug is found!
+    pattern = self.replaceBackSlashes(pattern)
+    n = len(pattern)
+
+    if i < 0 or i > len(s) or j < 0 or j > len(s):
+        g.trace('bad index: i = %s, j = %s' % (i,j))
+        i = 0 ; j = len(s)
+
+    if debug and (s and i == 0 and j == 0):
+        g.trace('two zero indices')
+
+    self.backwardAttempts += 1
+
+    # short circuit the search: helps debugging.
+    if s.find(pattern) == -1:
+        if debug:
+            self.debugCount += 1
+            if self.debugCount < 50:
+                g.trace(i,j,'len(s)',len(s),self.p.h)
+        return -1,-1
+
+    if word:
+        while 1:
+            k = s.rfind(pattern,i,j)
+            if debug: g.trace('**word** %3s %3s %5s -> %s %s' % (i,j,g.choose(j==len(s),'(end)',''),k,self.p.h))
+            if k == -1: return -1, -1
+            if self.matchWord(s,k,pattern):
+                return k,k+n
+            else:
+                j = max(0,k-1)
+    else:
+        k = s.rfind(pattern,i,j)
+        if debug: g.trace('%3s %3s %5s -> %s %s' % (i,j,g.choose(j==len(s),'(end)',''),k,self.p.h))
+        if k == -1:
+            return -1, -1
+        else:
+            return k,k+n
+#@+node:ekr.20060526093531: *11* plainHelper
+def plainHelper (self,s,i,j,pattern,nocase,word):
+
+    trace = self.trace
+
+    # if trace: g.trace(i,j,repr(s[i:i+20]),'pattern',repr(pattern),'word',repr(word))
+    if trace: g.trace(i,j,repr(s[i:i+20]))
+
+    if nocase:
+        s = s.lower() ; pattern = pattern.lower()
+    pattern = self.replaceBackSlashes(pattern)
+    n = len(pattern)
+    if word:
+        while 1:
+            k = s.find(pattern,i,j)
+            # g.trace(k,n)
+            if k == -1:
+                if trace: g.trace('no match word',i)
+                return -1, -1
+            elif self.matchWord(s,k,pattern):
+                if trace: g.trace('match word',k)
+                return k, k + n
+            else: i = k + n
+    else:
+        k = s.find(pattern,i,j)
+        if k == -1:
+            if trace: g.trace('no match word',i)
+            return -1, -1
+        else:
+            if trace: g.trace('match', k)
+            return k, k + n
+#@+node:ekr.20060526140744.1: *11* matchWord
+def matchWord(self,s,i,pattern):
+
+    trace = self.trace
+
+    pattern = self.replaceBackSlashes(pattern)
+    if not s or not pattern or not g.match(s,i,pattern):
+        if trace: g.trace('empty')
+        return False
+
+    pat1,pat2 = pattern[0],pattern[-1]
+    # n = self.patternLen(pattern)
+    n = len(pattern)
+    ch1 = 0 <= i-1 < len(s) and s[i-1] or '.'
+    ch2 = 0 <= i+n < len(s) and s[i+n] or '.'
+
+    isWordPat1 = g.isWordChar(pat1)
+    isWordPat2 = g.isWordChar(pat2)
+    isWordCh1 = g.isWordChar(ch1)
+    isWordCh2 = g.isWordChar(ch2)
+
+    # g.trace('i',i,'ch1,ch2,pat',repr(ch1),repr(ch2),repr(pattern))
+
+    inWord = isWordPat1 and isWordCh1 or isWordPat2 and isWordCh2
+    if trace: g.trace('returns',not inWord)
+    return not inWord
+
+#@+node:ekr.20070105165924: *11* replaceBackSlashes
+def replaceBackSlashes (self,s):
+
+    '''Carefully replace backslashes in a search pattern.'''
+
+    # This is NOT the same as s.replace('\\n','\n').replace('\\t','\t').replace('\\\\','\\')
+    # because there is no rescanning.
+
+    i = 0
+    while i + 1 < len(s):
+        if s[i] == '\\':
+            ch = s[i+1]
+            if ch == '\\':
+                s = s[:i] + s[i+1:] # replace \\ by \
+            elif ch == 'n':
+                s = s[:i] + '\n' + s[i+2:] # replace the \n by a newline
+            elif ch == 't':
+                s = s[:i] + '\t' + s[i+2:] # replace \t by a tab
+            else:
+                i += 1 # Skip the escaped character.
+        i += 1
+
+    if self.trace: g.trace(repr(s))
+    return s
+#@+node:ekr.20031218072017.3081: *9* selectNextPosition
+# Selects the next node to be searched.
+
+def selectNextPosition(self):
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = self.p
+
+    # Start suboutline only searches.
+    if self.suboutline_only and not self.onlyPosition:
+        # p.copy not needed because the find code never calls p.moveToX.
+        # Furthermore, p might be None, so p.copy() would be wrong!
+        self.onlyPosition = p 
+
+    # Start wrapped searches.
+    if self.wrapping and not self.wrapPosition:
+        assert(self.wrapPos != None)
+        # p.copy not needed because the find code never calls p.moveToX.
+        # Furthermore, p might be None, so p.copy() would be wrong!
+        self.wrapPosition = p 
+
+    if self.in_headline and self.search_body:
+        # just switch to body pane.
+        self.in_headline = False
+        self.initNextText()
+        if trace: g.trace('switching to body',g.callers(5))
+        return p
+
+    if self.reverse: p = p.threadBack()
+    else:            p = p.threadNext()
+
+    # if trace: g.trace(p and p.h or 'None')
+
+    # New in 4.3: restrict searches to hoisted area.
+    # End searches outside hoisted area.
+    if c.hoistStack:
+        if not p:
+            if self.wrapping:
+                g.es('wrap disabled in hoisted outlines',color='blue')
+            return
+        bunch = c.hoistStack[-1]
+        if not bunch.p.isAncestorOf(p):
+            g.es('found match outside of hoisted outline',color='blue')
+            return None
+
+    # Wrap if needed.
+    if not p and self.wrapping and not self.suboutline_only:
+        p = c.rootPosition()
+        if self.reverse:
+            # Set search_v to the last node of the tree.
+            while p and p.next():
+                p = p.next()
+            if p: p = p.lastNode()
+
+    # End wrapped searches.
+    if self.wrapping and p and p == self.wrapPosition:
+        if trace: g.trace("ending wrapped search")
+        p = None ; self.resetWrap()
+
+    # End suboutline only searches.
+    if (self.suboutline_only and self.onlyPosition and p and
+        (p == self.onlyPosition or not self.onlyPosition.isAncestorOf(p))):
+        # g.trace("end outline-only")
+        p = None ; self.onlyPosition = None
+
+    # p.copy not needed because the find code never calls p.moveToX.
+    # Furthermore, p might be None, so p.copy() would be wrong!
+    self.p = p # used in initNextText().
+    if p: # select p and set the search point within p.
+        self.in_headline = self.search_headline
+        self.initNextText()
+    return p
+#@+node:ekr.20061212095134.1: *8* General utils
+#@+node:ekr.20051020120306.26: *9* bringToFront (leoFind)
+def bringToFront (self):
+
+    """Bring the Find Tab to the front and select the entire find text."""
+
+    c = self.c ; w = self.find_ctrl
+
+    g.trace(g.callers(4))
+
+    c.widgetWantsFocusNow(w)
+    # g.app.gui.selectAllText(w)
+    w.selectAllText()
+    c.widgetWantsFocus(w)
+#@+node:ekr.20061111084423.1: *9* oops (leoFind)
+def oops(self):
+    g.pr(("leoFind oops:",
+        g.callers(10),"should be overridden in subclass"))
+#@+node:ekr.20051020120306.27: *9* selectAllFindText (leoFind)
+def selectAllFindText (self,event=None):
+
+    # This is called only when the user presses ctrl-a in the find panel.
+
+    w = self.frame.focus_get()
+    if g.app.gui.isTextWidget(w):
+        w.selectAllText()
+
+    return # (for Tk) "break"
+#@+node:ekr.20031218072017.3082: *8* Initing & finalizing
+#@+node:ekr.20031218072017.3083: *9* checkArgs
+def checkArgs (self):
+
+    val = True
+    if not self.search_headline and not self.search_body:
+        g.es("not searching headline or body")
+        val = False
+    if len(self.find_text) == 0:
+        g.es("empty find patttern")
+        val = False
+    return val
+#@+node:ekr.20031218072017.3084: *9* initBatchCommands
+# Initializes for the Find All and Change All commands.
+
+def initBatchCommands (self):
+
+    c = self.c
+    self.in_headline = self.search_headline # Search headlines first.
+    self.errors = 0
+
+    # Select the first node.
+    if self.suboutline_only or self.node_only:
+        self.p = c.p
+    else:
+        p = c.rootPosition()
+        if self.reverse:
+            while p and p.next():
+                p = p.next()
+            p = p.lastNode()
+        self.p = p
+
+    # Set the insert point.
+    self.initBatchText()
+#@+node:ekr.20031218072017.3085: *9* initBatchText, initNextText & init_s_ctrl
+# Returns s_ctrl with "insert" point set properly for batch searches.
+def initBatchText(self,ins=None):
+    p = self.p
+    self.wrapping = False # Only interactive commands allow wrapping.
+    s = g.choose(self.in_headline,p.h, p.b)
+    self.init_s_ctrl(s,ins)
+
+# Call this routine when moving to the next node when a search fails.
+# Same as above except we don't reset wrapping flag.
+def initNextText(self,ins=None):
+    c,p = self.c,self.p
+    s = g.choose(self.in_headline,p.h, p.b)
+    if True:
+        tree = c.frame and c.frame.tree
+        if tree and hasattr(tree,'killEditing'):
+            # g.trace('kill editing before find')
+            tree.killEditing()
+    self.init_s_ctrl(s,ins)
+
+def init_s_ctrl (self,s,ins):
+
+    w = self.s_ctrl
+    w.setAllText(s)
+    if ins is None:
+        ins = g.choose(self.reverse,len(s),0)
+        # print(g.choose(self.reverse,'.','*'),)
+    else:
+        pass # g.trace('ins',ins)
+    w.setInsertPoint(ins)
+#@+node:ekr.20031218072017.3086: *9* initInHeadline
+# Guesses which pane to start in for incremental searches and changes.
+# This must not alter the current "insert" or "sel" marks.
+
+def initInHeadline (self):
+
+    trace = False
+    c = self.c ; p = self.p
+
+    # Do not change this without careful thought and extensive testing!
+    if self.search_headline and self.search_body:
+        # A temporary expedient.
+        if self.reverse:
+            self.in_headline = False
+        else:
+            editPosition = c.frame.tree.editPosition()
+            focus = c.get_focus()
+            # Search headline first.
+            self.in_headline = (
+                p == editPosition and
+                focus != c.frame.body.bodyCtrl)
+            if trace: g.trace(
+                '** p: %s, editPosition: %s, focus: %s, bodyCtrl: %s' % (
+                p and p.h,editPosition,focus, c.frame.body.bodyCtrl))
+    else:
+        self.in_headline = self.search_headline
+#@+node:ekr.20031218072017.3087: *9* initInteractiveCommands
+def initInteractiveCommands(self):
+
+    c = self.c ; p = self.p
+    bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
+
+    w = g.choose(self.in_headline,c.edit_widget(p),bodyCtrl)
+    if not w:
+        self.in_headline = False
+        w = bodyCtrl
+    if not w: return
+
+    self.errors = 0
+
+    # We only use the insert point, *never* the selection range.
+    ins = w.getInsertPoint()
+    # g.trace('ins',ins)
+    self.debugCount = 0
+    self.initNextText(ins=ins)
+    c.widgetWantsFocus(w)
+
+    self.wrapping = self.wrap
+    if self.wrap and self.wrapPosition == None:
+        self.wrapPos = ins
+        # Do not set self.wrapPosition here: that must be done after the first search.
+#@+node:ekr.20031218072017.3088: *9* printLine
+def printLine (self,line,allFlag=False):
+
+    both = self.search_body and self.search_headline
+    context = self.batch # "batch" now indicates context
+
+    if allFlag and both and context:
+        g.es('','-' * 20,'',self.p.h)
+        theType = g.choose(self.in_headline,"head: ","body: ")
+        g.es('',theType + line)
+    elif allFlag and context and not self.p.isVisited():
+        # We only need to print the context once.
+        g.es('','-' * 20,'',self.p.h)
+        g.es('',line)
+        self.p.setVisited()
+    else:
+        g.es('',line)
+#@+node:ekr.20031218072017.3089: *9* restore
+# Restores the screen after a search fails
+
+def restore (self,data):
+
+    c = self.c
+    in_headline,p,t,insert,start,end = data
+
+    c.frame.bringToFront() # Needed on the Mac
+
+    # Don't try to reedit headline.
+    if p:
+        c.selectPosition(p)
+    else:
+        c.selectPosition(c.rootPosition()) # New in Leo 4.5.
+
+    if not in_headline:
+        # Looks good and provides clear indication of failure or termination.
+        t.setSelectionRange(insert,insert)
+        t.setInsertPoint(insert)
+        t.seeInsertPoint()
+
+    if 1: # I prefer always putting the focus in the body.
+        c.invalidateFocus()
+        c.bodyWantsFocus()
+        c.k.showStateAndMode(c.frame.body.bodyCtrl)
+    else:
+        c.widgetWantsFocus(t)
+#@+node:ekr.20031218072017.3090: *9* save (leoFind)
+def save (self):
+
+    c = self.c ; p = self.p
+
+    w = g.choose(self.in_headline,c.edit_widget(p),c.frame.body.bodyCtrl)
+
+    if w:
+        insert = w.getInsertPoint()
+        sel = w.getSelectionRange()
+        if len(sel) == 2:
+            start,end = sel
+        else:
+            start,end = None,None
+    else:
+        insert,start,end = None,None,None
+
+    return (self.in_headline,p,w,insert,start,end)
+#@+node:ekr.20031218072017.3091: *9* showSuccess (leoFind)
+def showSuccess(self,pos,newpos,showState=True):
+
+    '''Display the result of a successful find operation.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = self.p
+    if not p:
+        return g.trace('can not happen: self.p is None')
+
+    current = c.p
+    c.frame.bringToFront() # Needed on the Mac
+
+    # Expand ancestors and set redraw if a redraw is needed.
+    redraw1 = not p.isVisible(c)
+    if c.sparse_find:
+        # Show only the 'sparse' tree when redrawing.
+        for p2 in c.p.self_and_parents():
+            if p2.isAncestorOf(p):
+                break
+            p2.contract()
+            redraw1 = True # Important bug fix. Was redraw = True.
+
+    redraw2 = c.expandAllAncestors(self.p)
+    redraw = redraw1 or redraw2
+
+    # Set state vars.
+    # Ensure progress in backwards searches.
+    insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
+    if self.wrap and not self.wrapPosition:
+        self.wrapPosition = self.p
+
+    if trace: g.trace('in_headline',self.in_headline)
+    if self.in_headline:
+        c.endEditing() # 2011/06/10: A major bug fix.
+        selection = pos,newpos,insert
+        c.redrawAndEdit(p,
+            selection=selection,
+            keepMinibuffer=True)
+        w = c.edit_widget(p)
+    else:
+        w = c.frame.body.bodyCtrl
+        # This is like the logic in c.selectPosition.
+        if redraw:
+            c.redraw(p)
+        else:
+            c.selectPosition(p)
+            c.redraw_after_select(p)
+        c.bodyWantsFocus()
+        if showState:
+            c.k.showStateAndMode(w)
+        # g.trace(pos,newpos,insert)
+        w.setSelectionRange(pos,newpos,insert=insert)
+        w.seeInsertPoint()
+        c.outerUpdate()
+    return w # Support for isearch.
+#@+node:ekr.20031218072017.1460: *9* update_ivars (leoFind)
+# New in Leo 4.4.3: This is now gui-independent code.
+
+def update_ivars (self):
+
+    """Called just before doing a find to update ivars from the find panel."""
+
+    trace = False and not g.unitTesting
+
+    self.p = self.c.p
+    self.v = self.p.v
+
+    for key in self.intKeys:
+        val = self.svarDict[key].get()
+        # if trace: g.trace(self.svarDict.get(key),val)
+        setattr(self, key, val) # No more _flag hack.
+
+    # Set ivars from radio buttons. Convert these to 1 or 0.
+    search_scope = self.svarDict["radio-search-scope"].get()
+    # g.trace('radio-search-scope',search_scope)
+    self.suboutline_only = g.choose(search_scope == "suboutline-only",1,0)
+    self.node_only       = g.choose(search_scope == "node-only",1,0)
+    self.selection       = g.choose(search_scope == "selection-only",1,0)
+
+    # New in 4.3: The caller is responsible for removing most trailing cruft.
+    # Among other things, this allows Leo to search for a single trailing space.
+    s = self.find_ctrl.getAllText()
+    s = g.toUnicode(s)
+    if trace: g.trace('find',repr(s),self.find_ctrl)
+    if s and s[-1] in ('\r','\n'):
+        s = s[:-1]
+        
+    # 2011/06/13: clear wrap_pos if the find_text changes.
+    if s != self.find_text:
+        # g.trace('clearing self.wrap_pos')
+        self.wrapPosition = None
+    self.find_text = s
+
+    s = self.change_ctrl.getAllText()
+    if s and s[-1] in ('\r','\n'):
+        s = s[:-1]
+    s = g.toUnicode(s)
+    self.change_text = s
+    if trace: g.trace('change',repr(s))
+#@+node:ekr.20051020120306.6: *7* class findTab (leoFind)
+class findTab (leoFind):
+
+    '''An adapter class that implements Leo's Find tab.'''
+
+    @others
+#@+node:ekr.20051020120306.11: *8* __init__ & initGui
+def __init__(self,c,parentFrame):
+
+    # g.trace('findTab',c)
+
+    # Init the base class...
+    leoFind.__init__(self,c,title='Find Tab')
+
+    self.c = c
+    self.parentFrame = parentFrame
+    self.frame = self.outerFrame = self.top = None
+
+    self.optionsOnly = c.config.getBool('show_only_find_tab_options')
+
+    # These are created later.
+    self.find_ctrl = None
+    self.change_ctrl = None 
+    self.outerScrolledFrame = None
+
+    self.initGui()
+    self.createFrame(parentFrame)
+    self.createBindings()
+    self.init(c) # New in 4.3: init only once.
+#@+node:ekr.20060221074900: *8* Callbacks
+#@+node:ekr.20060221074900.1: *9* findButtonCallback
+def findButtonCallback(self,event=None):
+
+    self.findButton()
+    return # (for Tk) 'break'
+#@+node:ekr.20051020120306.25: *9* hideTab
+def hideTab (self,event=None):
+
+    c = self.c
+    c.frame.log.selectTab('Log')
+    c.bodyWantsFocus()
+#@+node:ekr.20051024192602: *8*  Top level
+#@+node:ekr.20051024192642.3: *9* change/ThenFindCommand
+def changeCommand (self,event=None):
+
+    self.setup_command()
+    self.change()
+
+def changeThenFindCommand(self,event=None):
+
+    self.setup_command()
+    self.changeThenFind()
+#@+node:ekr.20070105123638: *9* changeAllCommand
+def changeAllCommand (self,event=None):
+
+    self.setup_command()
+    self.changeAll()
+#@+node:ekr.20060128075225: *9* cloneFindAllCommand
+def cloneFindAllCommand (self,event=None):
+
+    self.setup_command()
+    self.clone_find_all = True
+    self.findAll()
+    self.clone_find_all = False
+#@+node:ekr.20060204120158.1: *9* findAgainCommand
+def findAgainCommand (self):
+
+    s = self.find_ctrl.getAllText()
+
+    if s and s != '<find pattern here>':
+        self.findNextCommand()
+        return True
+    else:
+        # Tell the caller that to get the find args.
+        return False
+#@+node:ekr.20060209064832: *9* findAllCommand
+def findAllCommand (self,event=None):
+
+    self.setup_command()
+    self.findAll()
+#@+node:ekr.20051024192642.2: *9* findNext/PrefCommand
+def findNextCommand (self,event=None):
+
+    self.setup_command()
+    self.findNext()
+
+def findPrevCommand (self,event=None):
+
+    self.setup_command()
+    self.reverse = not self.reverse
+    self.findNext()
+    self.reverse = not self.reverse
+#@+node:ekr.20061212092124: *8* Defined in subclasses
+def createBindings (self):
+    self.oops()
+
+def createFrame (self,parent):
+    self.oops()
+
+def getOption (self,ivar):
+    self.oops()
+
+def init (self,c):
+    self.oops()
+
+def initGui (self):
+    pass # Optional method.
+
+def setOption (self,ivar,val):
+    self.oops()
+
+def toggleOption (self,ivar):
+    self.oops()
+
+# self.oops is defined in the leoFind class.
+#@+node:ekr.20070302090616: *7* class nullFindTab class (findTab)
+class nullFindTab (findTab):
+
+    @others
+#@+node:ekr.20070302090616.1: *8* Birth (nullFindTab)
+#@+node:ekr.20070302090616.2: *9*  ctor (nullFindTab)
+if 0: # Use the base class ctor.
+
+    def __init__ (self,c,parentFrame):
+    
+        findTab.__init__(self,c,parentFrame)
+        # Init the base class.
+            # Calls initGui, createFrame, createBindings & init(c), in that order.
+#@+node:ekr.20070302090616.3: *9* initGui (nullFindTab)
+# Called from findTab.ctor.
+
+def initGui (self):
+
+    self.svarDict = {} # Keys are ivar names, values are svar objects.
+
+    for key in self.intKeys:
+        self.svarDict[key] = self.svar() # Was Tk.IntVar.
+
+    for key in self.newStringKeys:
+        self.svarDict[key] = self.svar() # Was Tk.StringVar.
+        
+    # Bug fix: 2011/11/13: significant for external unit tests.
+    # Add the same hack as in the qtGui for the 'entire_outline' radio button.
+    self.svarDict['entire-outline'] = self.svar()
+#@+node:ekr.20070302090616.4: *9* init (nullFindTab)
+# Called from findTab.ctor.
+
+def init (self,c):
+
+    # Separate c.ivars are much more convenient than a svarDict.
+    for key in self.intKeys:
+        # Get ivars from @settings.
+        val = c.config.getBool(key)
+        setattr(self,key,val)
+        val = g.choose(val,1,0)
+        svar = self.svarDict.get(key)
+        if svar: svar.set(val)
+        #g.trace(key,val)
+
+    << set find/change widgets >>
+    << set radio buttons from ivars >>
+    << set checkboxes from ivars >>
+#@+node:ekr.20070302090616.5: *10* << set find/change widgets >>
+self.find_ctrl.delete(0,"end")
+self.change_ctrl.delete(0,"end")
+
+# Get setting from @settings.
+for w,setting,defaultText in (
+    (self.find_ctrl,"find_text",'<find pattern here>'),
+    (self.change_ctrl,"change_text",''),
+):
+    s = c.config.getString(setting)
+    if not s: s = defaultText
+    w.insert("end",s)
+#@+node:ekr.20070302090616.6: *10* << set radio buttons from ivars >>
+# In Tk, setting the var also sets the widget.
+# Here, we do so explicitly.
+d = self.widgetsDict
+for ivar,key in (
+    ("pattern_match","pattern-search"),
+    #("script_search","script-search")
+):
+    svar = self.svarDict[ivar].get()
+    if svar:
+        self.svarDict["radio-find-type"].set(key)
+        # w = d.get(key)
+        # if w: w.set(True)
+        break
+else:
+    self.svarDict["radio-find-type"].set("plain-search")
+
+for ivar,key in (
+    ("suboutline_only","suboutline-only"),
+    ("node_only","node-only"),
+    # ("selection_only","selection-only")
+):
+    svar = self.svarDict[ivar].get()
+    if svar:
+        self.svarDict["radio-search-scope"].set(key)
+        break
+else:
+    key = ivar = 'entire-outline'
+    svar = self.svarDict[ivar].get()
+    if svar:
+        self.svarDict["radio-search-scope"].set(key)
+    # self.svarDict["radio-search-scope"].set(key)
+    # w = self.widgetsDict.get(key)
+    # if w: w.set(True)
+#@+node:ekr.20070302090616.7: *10* << set checkboxes from ivars >>
+for ivar in (
+    'ignore_case',
+    'mark_changes',
+    'mark_finds',
+    'pattern_match',
+    'reverse',
+    'search_body',
+    'search_headline',
+    'whole_word',
+    'wrap',
+):
+    # Bug fix: 2011/11/13: significant for external unit tests.
+    svar = self.svarDict[ivar]
+    if svar:
+        svar.set(True)
+        # w = self.widgetsDict.get(ivar)
+        # if w: w.set(True)
+#@+node:ekr.20070302090616.15: *9* createBindings
+def createBindings (self):
+    pass
+#@+node:ekr.20070302090616.9: *9* createFrame
+def createFrame (self,parentFrame):
+
+    self.parentFrame = self.top = parentFrame
+
+    self.createFindChangeAreas()
+    self.createBoxes()
+#@+node:ekr.20070302090616.10: *10* createFindChangeAreas
+def createFindChangeAreas (self):
+
+    c = self.c
+
+    # A plainTextWidget must be a stringTextWidget
+    plainTextWidget = g.app.gui.plainTextWidget
+
+    import leo.core.leoFrame as leoFrame
+    assert issubclass(plainTextWidget,leoFrame.stringTextWidget)
+
+    self.find_ctrl   = plainTextWidget(c,name='find-text')
+    self.change_ctrl = plainTextWidget(c,name='change-text')
+#@+node:ekr.20070302090616.12: *10* createBoxes
+def createBoxes (self):
+
+    '''Create two columns of radio buttons & check boxes.'''
+
+    c = self.c
+    # f = self.parentFrame
+    self.boxes = []
+    self.widgetsDict = {} # Keys are ivars, values are checkboxes or radio buttons.
+
+    data = ( # Leading star denotes a radio button.
+        ('Whole &Word', 'whole_word',),
+        ('&Ignore Case','ignore_case'),
+        ('Wrap &Around','wrap'),
+        ('&Reverse',    'reverse'),
+        ('Rege&xp',     'pattern_match'),
+        ('Mark &Finds', 'mark_finds'),
+        ("*&Entire Outline","entire-outline"),
+        ("*&Suboutline Only","suboutline-only"),  
+        ("*&Node Only","node-only"),
+        ('Search &Headline','search_headline'),
+        ('Search &Body','search_body'),
+        ('Mark &Changes','mark_changes'),
+    )
+
+    # Important: changing these controls merely changes entries in self.svarDict.
+    # First, leoFind.update_ivars sets the find ivars from self.svarDict.
+    # Second, self.init sets the values of widgets from the ivars.
+    # inGroup = False
+    for label,ivar in data:
+        if label.startswith('*'):
+            label = label[1:]
+            w = self.buttonWidget(label)
+            self.widgetsDict[ivar] = w
+        else:
+            w = self.buttonWidget(label)
+            self.widgetsDict[ivar] = w
+        self.boxes.append(w)
+#@+node:ekr.20070302090616.14: *10* createButtons (not used)
+def createButtons (self):
+
+    '''Create two columns of buttons.'''
+#@+node:ekr.20070302090616.8: *8* class svar (nullFindTab)
+class svar:
+
+    '''A class like Tk's IntVar and StringVar classes.'''
+
+    def __init__(self):
+        self.val = None
+    def get (self):
+        return self.val
+    def set (self,val):
+        self.val = val
+
+    SetValue = set # SetValue is the wxWidgets spelling.
+#@+node:ekr.20070302092907: *8* class buttonWidget (nullFindTab)
+class buttonWidget:
+
+    '''A class to simulate a Tk.Button.'''
+
+    def __init__ (self,label):
+        self.label = label
+        self.val = False
+
+    def __repr (self):
+        return 'nullFindTab.buttonWidget: %s' % self.label
+
+    def get (self):
+        return self.val
+
+    def set (self,val):
+        self.val = val
+#@+node:ekr.20070302090616.16: *8* Options
+# This is the same as the Tk code because we simulate Tk svars.
+#@+node:ekr.20070302090616.17: *9* getOption
+def getOption (self,ivar):
+
+    var = self.svarDict.get(ivar)
+
+    if var:
+        val = var.get()
+        # g.trace('%s = %s' % (ivar,val))
+        return val
+    else:
+        g.trace('bad ivar name: %s' % ivar)
+        return None
+#@+node:ekr.20070302090616.18: *9* setOption
+def setOption (self,ivar,val):
+
+    trace = False and not g.unitTesting
+
+    if ivar in self.intKeys:
+        if val is not None:
+            var = self.svarDict.get(ivar)
+            var.set(val)
+            if trace: g.trace('nullFindTab: %s = %s' % (ivar,val))
+
+    elif not g.app.unitTesting:
+        g.trace('oops: bad find ivar %s' % ivar)
+#@+node:ekr.20070302090616.19: *9* toggleOption
+def toggleOption (self,ivar):
+
+    if ivar in self.intKeys:
+        var = self.svarDict.get(ivar)
+        val = not var.get()
+        var.set(val)
+        # g.trace('%s = %s' % (ivar,val),var)
+    else:
+        g.trace('oops: bad find ivar %s' % ivar)
+#@+node:ekr.20110605121601.18225: *7* class leoQtFindTab (findTab)
+class leoQtFindTab (leoFind.findTab):
+
+    '''A subclass of the findTab class containing all Qt Gui code.'''
+
+    if 0: # We can use the base-class ctor.
+        def __init__ (self,c,parentFrame):
+            leoFind.findTab.__init__(self,c,parentFrame)
+                # Init the base class.
+                # Calls initGui, createFrame, createBindings & init(c), in that order.
+
+    # Define these to suppress oops messages.
+    def createBindings (self): pass
+    def createFindTab (self,c,parentFrame): pass
+    def createFrame (self,parentFrame): pass
+
+    @others
+#@+node:ekr.20110605121601.18226: *8*  Birth: called from leoFind ctor
+# leoFind.__init__ calls initGui, createFrame, createBindings & init, in that order.
+#@+node:ekr.20110605121601.18227: *9* initGui
+def initGui (self):
+
+    owner = self
+
+    self.svarDict = {}
+        # Keys are ivar names, values are svar objects.
+
+    # Keys are option names; values are <svars>.
+    for ivar in self.intKeys:
+        self.svarDict[ivar] = self.svar(owner,ivar)
+    
+    # g.trace(self.svarDict)
+
+    # Add a hack for 'entire_outline' radio button.
+    ivar = 'entire_outline'
+    self.svarDict[ivar] = self.svar(owner,ivar)
+
+    for ivar in self.newStringKeys:
+        # "radio-find-type", "radio-search-scope"
+        self.svarDict[ivar] = self.svar(owner,ivar)
+#@+node:ekr.20110605121601.18228: *9* init (qtFindTab) & helpers
+def init (self,c):
+
+    '''Init the widgets of the 'Find' tab.'''
+
+    # g.trace('leoQtFindTab.init')
+
+    self.createIvars()
+    self.initIvars()
+    self.initTextWidgets()
+    self.initCheckBoxes()
+    self.initRadioButtons()
+#@+node:ekr.20110605121601.18229: *10* createIvars (qtFindTab)
+def createIvars (self):
+
+    c = self.c ; w = c.frame.top.leo_ui # A Window ui object.
+
+    # Bind boxes to Window objects.
+    self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
+    findWidget   = leoQLineEditWidget(w.findPattern,'find-widget',c)
+    changeWidget = leoQLineEditWidget(w.findChange,'change-widget',c)
+    data = (
+        ('find_ctrl',       findWidget),
+        ('change_ctrl',     changeWidget),
+        ('whole_word',      w.checkBoxWholeWord),
+        ('ignore_case',     w.checkBoxIgnoreCase),
+        ('wrap',            w.checkBoxWrapAround),
+        ## ('reverse',         w.checkBoxReverse),
+        ('pattern_match',   w.checkBoxRegexp),
+        ('mark_finds',      w.checkBoxMarkFinds),
+        ('entire_outline',  w.checkBoxEntireOutline),
+        ('suboutline_only', w.checkBoxSuboutlineOnly),  
+        ('node_only',       w.checkBoxNodeOnly),
+        ('search_headline', w.checkBoxSearchHeadline),
+        ('search_body',     w.checkBoxSearchBody),
+        ('mark_changes',    w.checkBoxMarkChanges),
+        ('batch', None),
+    )
+    for ivar,widget in data:
+        setattr(self,ivar,widget)
+        self.widgetsDict[ivar] = widget
+        # g.trace(ivar,widget)
+#@+node:ekr.20110605121601.18230: *10* initIvars
+def initIvars(self):
+
+    c = self.c
+
+    # Separate c.ivars are much more convenient than a svarDict.
+    for ivar in self.intKeys:
+        # Get ivars from @settings.
+        val = c.config.getBool(ivar)
+        setattr(self,ivar,val)
+        val = g.choose(val,1,0)
+        svar = self.svarDict.get(ivar)
+        if svar:
+            svar.set(val)
+
+        # g.trace(ivar,val)
+#@+node:ekr.20110605121601.18231: *10* initTextWidgets (qtFindTab)
+def initTextWidgets(self):
+
+    '''Init the find/change text areas.'''
+
+    c = self.c
+
+    table = (
+        (self.find_ctrl,    "find_text",    '<find pattern here>'),
+        (self.change_ctrl,  "change_text",  ''),
+    )
+
+    for w,setting,defaultText in table:
+        # w is a textWrapper object
+        w.setAllText(c.config.getString(setting) or defaultText)
+#@+node:ekr.20110605121601.18232: *10* initCheckBoxes
+def initCheckBoxes (self):
+
+    for ivar,key in (
+        ("pattern_match","pattern-search"),
+    ):
+        svar = self.svarDict[ivar].get()
+        if svar:
+            self.svarDict["radio-find-type"].set(key)
+            w = self.widgetsDict.get(key)
+            if w: w.setChecked(True)
+            break
+    else:
+        self.svarDict["radio-find-type"].set("plain-search")
+
+    aList = (
+        'ignore_case','mark_changes','mark_finds',
+        'pattern_match',
+        # 'reverse',
+        'search_body','search_headline',
+        'whole_word','wrap',
+        'node_only','suboutline_only','entire_outline',
+    )
+
+    for ivar in aList:
+        svar = self.svarDict.get(ivar)
+        if svar:
+            # w is a QCheckBox or a QRadioButton.
+            w = self.widgetsDict.get(ivar)
+            if w:
+                val = svar.get()
+                svar.setWidget(w)
+                svar.set(val)
+                if isinstance(w,QtGui.QCheckBox):
+                    def checkBoxCallback(val,svar=svar):
+                        svar.set(val)
+                    w.connect(w,
+                        QtCore.SIGNAL("stateChanged(int)"),
+                        checkBoxCallback)
+                else:
+                    def radioButtonCallback(val,svar=svar):
+                        svar.set(val)
+                    w.connect(w,
+                        QtCore.SIGNAL("clicked(bool)"),
+                        radioButtonCallback)
+            else: g.trace('*** no w',ivar)
+        else: g.trace('*** no svar',ivar)
+#@+node:ekr.20110605121601.18233: *10* initRadioButtons
+def initRadioButtons (self):
+
+    scopeSvar = self.svarDict.get('radio-search-scope')
+
+    table = (
+        ("suboutline_only","suboutline-only"),
+        ("node_only","node-only"))
+
+    for ivar,key in table:
+        svar = self.svarDict.get(ivar)
+        if svar:
+            val = svar.get()
+            if val:
+                scopeSvar.init(key)
+                break
+    else:
+        scopeSvar.init('entire-outline')
+        self.svarDict.get('entire_outline').init(True)
+
+    w = self.widgetsDict.get(key)
+    if w: w.setChecked(True)
+
+    # g.trace(scopeSvar.get())
+#@+node:ekr.20110605121601.18234: *8* class svar (qtFindTab)
+class svar:
+    '''A class like Tk's IntVar and StringVar classes.'''
+
+    @others
+#@+node:ekr.20110605121601.18235: *9* svar.ctor
+def __init__(self,owner,ivar):
+
+    self.ivar = ivar
+    self.owner = owner
+    self.radioButtons = ['node_only','suboutline_only','entire_outline']
+    self.trace = False
+    self.val = None
+    self.w = None
+
+def __repr__(self):
+    return '<svar %s>' % self.ivar
+#@+node:ekr.20110605121601.18236: *9* get
+def get (self):
+
+    trace = False and not g.unitTesting
+
+    if self.w:
+        val = self.w.isChecked()
+        if trace:
+            g.trace('qt svar %15s = %s' % (
+                self.ivar,val),g.callers(5))        
+    else:
+        val = self.val
+    return val
+#@+node:ekr.20110605121601.18237: *9* init
+def init (self,val):
+
+    '''Init the svar, but do *not* init radio buttons.
+    (This is called from initRadioButtons).'''
+
+    trace = False and not g.unitTesting
+
+    if val in (0,1):
+        self.val = bool(val)
+    else:
+        self.val = val # Don't contain the scope values!
+
+    if self.w:
+        self.w.setChecked(bool(val))
+
+    if trace: g.trace('qt svar %15s = %s' % (
+        self.ivar,val),g.callers(5))
+#@+node:ekr.20110605121601.18238: *9* set
+def set (self,val):
+
+    '''Init the svar and update the radio buttons.'''
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(val)
+
+    self.init(val)
+
+    if self.ivar in self.radioButtons:
+        self.owner.initRadioButtons()
+    elif self.ivar == 'radio-search-scope':
+        self.setRadioScope(val)
+
+
+#@+node:ekr.20110605121601.18239: *9* setRadioScope
+def setRadioScope (self,val):
+
+    '''Update the svars corresponding to the scope value.'''
+
+    table = (
+        ("suboutline_only","suboutline-only"),
+        ("node_only","node-only"),
+        ("entire_outline","entire-outline"))
+
+    for ivar,val2 in table:
+        if val == val2:
+            svar = self.owner.svarDict.get(ivar)
+            val = svar.get()
+            svar.init(True)
+#@+node:ekr.20110605121601.18240: *9* setWidget
+def setWidget(self,w):
+
+    self.w = w
+#@+node:ekr.20110605121601.18241: *8* Support for minibufferFind class (qtFindTab)
+# This is the same as the Tk code because we simulate Tk svars.
+#@+node:ekr.20110605121601.18242: *9* getOption
+def getOption (self,ivar):
+
+    var = self.svarDict.get(ivar)
+
+    if var:
+        val = var.get()
+        # g.trace('ivar %s = %s' % (ivar,val))
+        return val
+    else:
+        # g.trace('bad ivar name: %s' % ivar)
+        return None
+#@+node:ekr.20110605121601.18243: *9* setOption (findTab)
+def setOption (self,ivar,val):
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(ivar,val)
+
+    if ivar in self.intKeys:
+        if val is not None:
+            svar = self.svarDict.get(ivar)
+            svar.set(val)
+            if trace: g.trace('qtFindTab: ivar %s = %s' % (
+                ivar,val))
+
+    elif not g.app.unitTesting:
+        g.trace('oops: bad find ivar %s' % ivar)
+#@+node:ekr.20110605121601.18244: *9* toggleOption
+def toggleOption (self,ivar):
+
+    if ivar in self.intKeys:
+        var = self.svarDict.get(ivar)
+        val = not var.get()
+        var.set(val)
+        # g.trace('%s = %s' % (ivar,val),var)
+    else:
+        g.trace('oops: bad find ivar %s' % ivar)
+#@+node:ekr.20110605121601.18228: *7* init (qtFindTab) & helpers
+def init (self,c):
+
+    '''Init the widgets of the 'Find' tab.'''
+
+    # g.trace('leoQtFindTab.init')
+
+    self.createIvars()
+    self.initIvars()
+    self.initTextWidgets()
+    self.initCheckBoxes()
+    self.initRadioButtons()
+#@+node:ekr.20110605121601.18229: *8* createIvars (qtFindTab)
+def createIvars (self):
+
+    c = self.c ; w = c.frame.top.leo_ui # A Window ui object.
+
+    # Bind boxes to Window objects.
+    self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
+    findWidget   = leoQLineEditWidget(w.findPattern,'find-widget',c)
+    changeWidget = leoQLineEditWidget(w.findChange,'change-widget',c)
+    data = (
+        ('find_ctrl',       findWidget),
+        ('change_ctrl',     changeWidget),
+        ('whole_word',      w.checkBoxWholeWord),
+        ('ignore_case',     w.checkBoxIgnoreCase),
+        ('wrap',            w.checkBoxWrapAround),
+        ## ('reverse',         w.checkBoxReverse),
+        ('pattern_match',   w.checkBoxRegexp),
+        ('mark_finds',      w.checkBoxMarkFinds),
+        ('entire_outline',  w.checkBoxEntireOutline),
+        ('suboutline_only', w.checkBoxSuboutlineOnly),  
+        ('node_only',       w.checkBoxNodeOnly),
+        ('search_headline', w.checkBoxSearchHeadline),
+        ('search_body',     w.checkBoxSearchBody),
+        ('mark_changes',    w.checkBoxMarkChanges),
+        ('batch', None),
+    )
+    for ivar,widget in data:
+        setattr(self,ivar,widget)
+        self.widgetsDict[ivar] = widget
+        # g.trace(ivar,widget)
+#@+node:ekr.20110605121601.18230: *8* initIvars
+def initIvars(self):
+
+    c = self.c
+
+    # Separate c.ivars are much more convenient than a svarDict.
+    for ivar in self.intKeys:
+        # Get ivars from @settings.
+        val = c.config.getBool(ivar)
+        setattr(self,ivar,val)
+        val = g.choose(val,1,0)
+        svar = self.svarDict.get(ivar)
+        if svar:
+            svar.set(val)
+
+        # g.trace(ivar,val)
+#@+node:ekr.20110605121601.18231: *8* initTextWidgets (qtFindTab)
+def initTextWidgets(self):
+
+    '''Init the find/change text areas.'''
+
+    c = self.c
+
+    table = (
+        (self.find_ctrl,    "find_text",    '<find pattern here>'),
+        (self.change_ctrl,  "change_text",  ''),
+    )
+
+    for w,setting,defaultText in table:
+        # w is a textWrapper object
+        w.setAllText(c.config.getString(setting) or defaultText)
+#@+node:ekr.20110605121601.18232: *8* initCheckBoxes
+def initCheckBoxes (self):
+
+    for ivar,key in (
+        ("pattern_match","pattern-search"),
+    ):
+        svar = self.svarDict[ivar].get()
+        if svar:
+            self.svarDict["radio-find-type"].set(key)
+            w = self.widgetsDict.get(key)
+            if w: w.setChecked(True)
+            break
+    else:
+        self.svarDict["radio-find-type"].set("plain-search")
+
+    aList = (
+        'ignore_case','mark_changes','mark_finds',
+        'pattern_match',
+        # 'reverse',
+        'search_body','search_headline',
+        'whole_word','wrap',
+        'node_only','suboutline_only','entire_outline',
+    )
+
+    for ivar in aList:
+        svar = self.svarDict.get(ivar)
+        if svar:
+            # w is a QCheckBox or a QRadioButton.
+            w = self.widgetsDict.get(ivar)
+            if w:
+                val = svar.get()
+                svar.setWidget(w)
+                svar.set(val)
+                if isinstance(w,QtGui.QCheckBox):
+                    def checkBoxCallback(val,svar=svar):
+                        svar.set(val)
+                    w.connect(w,
+                        QtCore.SIGNAL("stateChanged(int)"),
+                        checkBoxCallback)
+                else:
+                    def radioButtonCallback(val,svar=svar):
+                        svar.set(val)
+                    w.connect(w,
+                        QtCore.SIGNAL("clicked(bool)"),
+                        radioButtonCallback)
+            else: g.trace('*** no w',ivar)
+        else: g.trace('*** no svar',ivar)
+#@+node:ekr.20110605121601.18233: *8* initRadioButtons
+def initRadioButtons (self):
+
+    scopeSvar = self.svarDict.get('radio-search-scope')
+
+    table = (
+        ("suboutline_only","suboutline-only"),
+        ("node_only","node-only"))
+
+    for ivar,key in table:
+        svar = self.svarDict.get(ivar)
+        if svar:
+            val = svar.get()
+            if val:
+                scopeSvar.init(key)
+                break
+    else:
+        scopeSvar.init('entire-outline')
+        self.svarDict.get('entire_outline').init(True)
+
+    w = self.widgetsDict.get(key)
+    if w: w.setChecked(True)
+
+    # g.trace(scopeSvar.get())
+#@+node:ekr.20070302090616.4: *7* init (nullFindTab)
+# Called from findTab.ctor.
+
+def init (self,c):
+
+    # Separate c.ivars are much more convenient than a svarDict.
+    for key in self.intKeys:
+        # Get ivars from @settings.
+        val = c.config.getBool(key)
+        setattr(self,key,val)
+        val = g.choose(val,1,0)
+        svar = self.svarDict.get(key)
+        if svar: svar.set(val)
+        #g.trace(key,val)
+
+    << set find/change widgets >>
+    << set radio buttons from ivars >>
+    << set checkboxes from ivars >>
+#@+node:ekr.20070302090616.5: *8* << set find/change widgets >>
+self.find_ctrl.delete(0,"end")
+self.change_ctrl.delete(0,"end")
+
+# Get setting from @settings.
+for w,setting,defaultText in (
+    (self.find_ctrl,"find_text",'<find pattern here>'),
+    (self.change_ctrl,"change_text",''),
+):
+    s = c.config.getString(setting)
+    if not s: s = defaultText
+    w.insert("end",s)
+#@+node:ekr.20070302090616.6: *8* << set radio buttons from ivars >>
+# In Tk, setting the var also sets the widget.
+# Here, we do so explicitly.
+d = self.widgetsDict
+for ivar,key in (
+    ("pattern_match","pattern-search"),
+    #("script_search","script-search")
+):
+    svar = self.svarDict[ivar].get()
+    if svar:
+        self.svarDict["radio-find-type"].set(key)
+        # w = d.get(key)
+        # if w: w.set(True)
+        break
+else:
+    self.svarDict["radio-find-type"].set("plain-search")
+
+for ivar,key in (
+    ("suboutline_only","suboutline-only"),
+    ("node_only","node-only"),
+    # ("selection_only","selection-only")
+):
+    svar = self.svarDict[ivar].get()
+    if svar:
+        self.svarDict["radio-search-scope"].set(key)
+        break
+else:
+    key = ivar = 'entire-outline'
+    svar = self.svarDict[ivar].get()
+    if svar:
+        self.svarDict["radio-search-scope"].set(key)
+    # self.svarDict["radio-search-scope"].set(key)
+    # w = self.widgetsDict.get(key)
+    # if w: w.set(True)
+#@+node:ekr.20070302090616.7: *8* << set checkboxes from ivars >>
+for ivar in (
+    'ignore_case',
+    'mark_changes',
+    'mark_finds',
+    'pattern_match',
+    'reverse',
+    'search_body',
+    'search_headline',
+    'whole_word',
+    'wrap',
+):
+    # Bug fix: 2011/11/13: significant for external unit tests.
+    svar = self.svarDict[ivar]
+    if svar:
+        svar.set(True)
+        # w = self.widgetsDict.get(ivar)
+        # if w: w.set(True)
+#@+node:ekr.20110605121601.18234: *7* class svar (qtFindTab)
+class svar:
+    '''A class like Tk's IntVar and StringVar classes.'''
+
+    @others
+#@+node:ekr.20110605121601.18235: *8* svar.ctor
+def __init__(self,owner,ivar):
+
+    self.ivar = ivar
+    self.owner = owner
+    self.radioButtons = ['node_only','suboutline_only','entire_outline']
+    self.trace = False
+    self.val = None
+    self.w = None
+
+def __repr__(self):
+    return '<svar %s>' % self.ivar
+#@+node:ekr.20110605121601.18236: *8* get
+def get (self):
+
+    trace = False and not g.unitTesting
+
+    if self.w:
+        val = self.w.isChecked()
+        if trace:
+            g.trace('qt svar %15s = %s' % (
+                self.ivar,val),g.callers(5))        
+    else:
+        val = self.val
+    return val
+#@+node:ekr.20110605121601.18237: *8* init
+def init (self,val):
+
+    '''Init the svar, but do *not* init radio buttons.
+    (This is called from initRadioButtons).'''
+
+    trace = False and not g.unitTesting
+
+    if val in (0,1):
+        self.val = bool(val)
+    else:
+        self.val = val # Don't contain the scope values!
+
+    if self.w:
+        self.w.setChecked(bool(val))
+
+    if trace: g.trace('qt svar %15s = %s' % (
+        self.ivar,val),g.callers(5))
+#@+node:ekr.20110605121601.18238: *8* set
+def set (self,val):
+
+    '''Init the svar and update the radio buttons.'''
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(val)
+
+    self.init(val)
+
+    if self.ivar in self.radioButtons:
+        self.owner.initRadioButtons()
+    elif self.ivar == 'radio-search-scope':
+        self.setRadioScope(val)
+
+
+#@+node:ekr.20110605121601.18239: *8* setRadioScope
+def setRadioScope (self,val):
+
+    '''Update the svars corresponding to the scope value.'''
+
+    table = (
+        ("suboutline_only","suboutline-only"),
+        ("node_only","node-only"),
+        ("entire_outline","entire-outline"))
+
+    for ivar,val2 in table:
+        if val == val2:
+            svar = self.owner.svarDict.get(ivar)
+            val = svar.get()
+            svar.init(True)
+#@+node:ekr.20110605121601.18240: *8* setWidget
+def setWidget(self,w):
+
+    self.w = w
+#@+node:ekr.20070302090616.8: *7* class svar (nullFindTab)
+class svar:
+
+    '''A class like Tk's IntVar and StringVar classes.'''
+
+    def __init__(self):
+        self.val = None
+    def get (self):
+        return self.val
+    def set (self,val):
+        self.val = val
+
+    SetValue = set # SetValue is the wxWidgets spelling.
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution

@@ -109,7 +109,7 @@ class searchWidget:
         self.sel = self.toPythonIndex(i),self.toPythonIndex(j)
         if insert is not None:
             self.i = self.toPythonIndex(insert)
-    #@+node:ekr.20070105092022.4: *3* toPythonIndex
+    #@+node:ekr.20070105092022.4: *3* toPythonIndex (leoFind)
     def toPythonIndex (self,i):
 
         '''Make sure i is a Python index.'''
