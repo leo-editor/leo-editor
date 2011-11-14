@@ -9705,6 +9705,27 @@ time.sleep(0.5)
 
 if 0:
     c.frame.body.deleteEditor()
+#@+node:ekr.20111113194727.3869: *4* @test bastTextWidget methods
+import leo.core.leoFrame as leoFrame
+
+w = leoFrame.baseTextWidget(c,'base-name','class-name',widget=None)
+
+def check(expected):
+    s = w.getAllText()
+    assert s == expected,'expected %s got %s' % (expected,s)
+
+w.setAllText('')        ; check('')
+w.appendText('abc')     ; check('abc')
+w.delete(1,2)           ; check('ac')
+w.insert(0,'xy')        ; check('xyac')
+w.insert(1,'z')         ; check('xzyac')
+w.replace(2,4,'ABCD')   ; check('xzABCDc')
+
+w.setSelectionRange(3,6)
+s = w.getSelectedText()
+assert s == 'BCD',repr(s)
+
+w.deleteTextSelection() ; check('xzAc')
 #@+node:ekr.20061104172236.22: *4* @test c.frame.pasteText
 # target.
 
