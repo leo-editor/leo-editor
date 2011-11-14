@@ -5961,5 +5961,138 @@ def startsString(self,s,i):
 
     # 2011/11/01: *only* double quotes start xml/html strings!
     return g.match(s,i,'"')
+#@+node:ekr.20111113140150.9976: *3* Removed the low-level interface
+#@+node:ekr.20111113141805.10055: *4* mustBeDefinedInLowLevelSubclasses
+# Not used.
+mustBeDefinedInLowLevelSubclasses = (
+    '_appendText',
+    '_get',
+    '_getAllText',
+    '_getFocus',
+    '_getInsertPoint',
+    '_getLastPosition',
+    '_getSelectedText',
+    '_getSelectionRange',
+    '_getYScrollPosition',
+    '_hitTest',
+    '_insertText',
+    '_scrollLines',
+    '_see',
+    '_setAllText',
+    '_setBackgroundColor',
+    '_setFocus',
+    '_setForegroundColor',
+    '_setInsertPoint',
+    '_setSelectionRange',
+    '_setYScrollPosition',
+)
+#@+node:ekr.20081031074455.9: *4* Must be defined in subclasses (low-level interface) (baseTextWidget)
+# This is the low-level interface.
+
+# # Define these here to keep pylint happy.
+def _appendText(self,s):            self.oops()
+def _get(self,i,j):                 self.oops() ; return ''
+def _getAllText(self):              self.oops() ; return ''
+def _getFocus(self):                self.oops() ; return None
+def _getInsertPoint(self):          self.oops() ; return 0
+def _getLastPosition(self):         self.oops() ; return 0
+def _getSelectedText(self):         self.oops() ; return ''
+def _getSelectionRange(self):       self.oops() ; return (0,0)
+def _getYScrollPosition(self):      self.oops() ; return None # A flag
+def _hitTest(self,pos):             self.oops()
+def _insertText(self,i,s):          self.oops()
+def _scrollLines(self,n):           self.oops()
+def _see(self,i):                   self.oops()
+def _setAllText(self,s,new_p=None): self.oops()
+def _setBackgroundColor(self,color): self.oops()
+def _setForegroundColor(self,color): self.oops()
+def _setFocus(self):                self.oops()
+def _setInsertPoint(self,i):        self.oops()
+def _setSelectionRange(self,i,j):   self.oops()
+def _setYScrollPosition(self,i):    self.oops()
+
+_findFocus = _getFocus
+#@+node:ekr.20111113141805.10056: *4* From baseTextWidget ctor
+    # For unit testing.
+    aList = g.choose(highLevelInterface,
+        self.mustBeDefinedInHighLevelSubclasses,
+        self.mustBeDefinedInLowLevelSubclasses)
+    self.mustBeDefinedInSubclasses.extend(aList)
+    g.trace(g.listToString(self.mustBeDefinedInSubclasses))
+#@+node:ekr.20070228074228.3: *4* Overrides (baseTextWidget)
+if 0: # This is the only implementation of the low-level interface
+        
+    def _appendText(self,s):
+        #if self.trace: g.trace(self,'len(s)',len(s))
+        if self.trace: g.trace(self,'ins',self.ins,'s',repr(s[-10:]),g.callers())
+        # g.trace(repr(s),g.callers())
+        self.s = self.s + s
+        self.ins = len(self.s)
+        self.sel = self.ins,self.ins
+    def _get(self,i,j):                 return self.s[i:j]
+    def _getAllText(self):              return self.s
+    def _getFocus(self):                return self
+    def _getInsertPoint(self):
+        # if self.trace: g.trace(self,self.ins)
+        return self.ins
+    def _getLastPosition(self):         return len(self.s)
+    def _getSelectedText(self):         i,j = self.sel ; return self.s[i:j]
+    def _getSelectionRange(self):       return self.sel
+    def _getYScrollPosition(self):      return None # A flag.
+    def _hitTest(self,pos):             pass
+    def _insertText(self,i,s):
+        s1 = s
+        self.s = self.s[:i] + s1 + self.s[i:]
+        # if self.trace: g.trace(self,'s',repr(s),'self.s',repr(self.s))
+        # if self.trace: g.trace(self,'i',i,'len(s)',len(s),g.callers())
+        if self.trace: g.trace(self,'i',i,'s',repr(s[-10:]),g.callers())
+        # g.trace(repr(s),g.callers())
+        i += len(s1)
+        self.ins = i
+        self.sel = i,i
+    def _scrollLines(self,n):           pass
+    def _see(self,i):                   pass
+    def _setAllText(self,s,new_p=None):
+        if self.trace: g.trace(self,'len(s)',len(s),g.callers())
+        if self.trace: g.trace(self,'s',repr(s[-10:]),g.callers())
+        # g.trace(repr(s),g.callers())
+        self.s = s
+        i = len(self.s)
+        self.ins = i
+        self.sel = i,i
+    def _setBackgroundColor(self,color): pass
+    def _setForegroundColor(self,color): pass
+    def _setFocus(self):                pass
+    def _setInsertPoint(self,i):
+        if self.trace: g.trace(self,'i',i)
+        self.ins = i
+        self.sel = i,i
+#@+node:ekr.20110605121601.18038: *3* delete (leoQtBaseTextWidget)
+if 0: # 2011/11/13: use the base class method.
+    
+    def delete (self,i,j=None):
+
+        # w = self.widget
+        s = self.getAllText()
+    
+        i = self.toGuiIndex(i)
+        if j is None: j = i+1
+        j = self.toGuiIndex(j)
+        if i > j: i,j = j,i
+    
+        # g.trace('i',i,'j',j)
+    
+        s = s[:i] + s[j:]
+        self.setAllText(s,insert=i)
+    
+        if i > 0 or j > 0: self.indexWarning('leoQtBody.delete')
+        return i
+#@+node:ekr.20110605121601.18039: *3* deleteTextSelection (leoQtBaseTextWidget)
+if 0: # 2011/11/13: use the base class method.
+
+    def deleteTextSelection (self):
+
+        i,j = self.getSelectionRange()
+        self.delete(i,j)
 #@-all
 #@-leo

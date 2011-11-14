@@ -52,42 +52,27 @@ class baseTextWidget:
     '''The base class for all wrapper classes for leo Text widgets.'''
 
     #@+others
-    #@+node:ekr.20070228074312.1: *4* Birth & special methods (baseText)
-    def __init__ (self,c,baseClassName,name,widget,highLevelInterface=False):
+    #@+node:ekr.20070228074312.1: *4* Birth & special methods (baseTextWidget)
+    def __init__ (self,c,baseClassName,name,widget):
 
         self.baseClassName = baseClassName
         self.c = c
-        self.highLevelInterface = highLevelInterface
         self.name = name
         self.virtualInsertPoint = None
         self.widget = widget # Not used at present.
 
-        # For unit testing.
-        aList = g.choose(highLevelInterface,
-            self.mustBeDefinedInHighLevelSubclasses,
-            self.mustBeDefinedInLowLevelSubclasses)
-        self.mustBeDefinedInSubclasses.extend(aList)
-        # g.trace(g.listToString(self.mustBeDefinedInSubclasses))
-
     def __repr__(self):
         return '%s: %s' % (self.baseClassName,id(self))
-    #@+node:ekr.20081031074455.3: *5* baseTextWidget: must be defined in base class
+    #@+node:ekr.20081031074455.3: *5* baseTextWidget.mustBeDefinedOnlyInBaseClass
     mustBeDefinedOnlyInBaseClass = (
         'clipboard_append', # uses g.app.gui method.
         'clipboard_clear', # usesg.app.gui method.
-        'onChar',
     )
-    #@+node:ekr.20081031074455.4: *5* baseTextWidget: must be defined in subclasses
-    #@+at The subclass must implement all high-level wrappers or all low-level wrappers,
-    # depending on the highLevelWrapper ivar. The ctor extends .mustBeDefinedInSubclasses
-    # by one of the following lists:
-    #@@c
-
-    mustBeDefinedInSubclasses = [
-    ]
-
-    mustBeDefinedInHighLevelSubclasses = (
+    #@+node:ekr.20081031074455.4: *5* baseTextWidget.mustBeDefinedInSubclasses
+    mustBeDefinedInSubclasses = (
         'appendText',
+        'delete',
+        'deleteTextSelection',
         'get',
         'getAllText',
         'getFocus',
@@ -108,37 +93,18 @@ class baseTextWidget:
         'setYScrollPosition',
     )
 
-    mustBeDefinedInLowLevelSubclasses = (
-        '_appendText',
-        '_get',
-        '_getAllText',
-        '_getFocus',
-        '_getInsertPoint',
-        '_getLastPosition',
-        '_getSelectedText',
-        '_getSelectionRange',
-        '_getYScrollPosition',
-        '_hitTest',
-        '_insertText',
-        '_scrollLines',
-        '_see',
-        '_setAllText',
-        '_setBackgroundColor',
-        '_setFocus',
-        '_setForegroundColor',
-        '_setInsertPoint',
-        '_setSelectionRange',
-        '_setYScrollPosition',
-    )
-    #@+node:ekr.20081031074455.5: *5* baseTextWidget: mustBeDefined
+    #@+node:ekr.20081031074455.5: *5* baseTextWidget.mustBeDefined
+    # These can be do-nothings
     mustBeDefined = (
         'bind',
         'flashCharacter',
-        'deleteTextSelection',
-        # These can be do-nothings
         'getWidth',
+        'hasSelection',
         'indexIsVisible',
         'mark_set',
+        'replace',
+        'rowColToGuiIndex',
+        'selectAllText',
         'setWidth',
         'tag_add',
         'tag_config',
@@ -147,36 +113,18 @@ class baseTextWidget:
         'tag_names',
         'tag_ranges',
         'tag_remove',
-        'update',
-        'update_idletasks',
-        'xyToPythonIndex',
-        'yview',
-        # mayBeDefinedInSubclasses.
-        'delete',
-        'deleteTextSelection',
-        # 'event_generate',
-    #     'getName()
-    #     'GetName()
-        'hasSelection',
-        'replace',
-        'rowColToGuiIndex',
-        'selectAllText',
         'toGuiIndex',
         'toPythonIndex',
         'toPythonIndexRowCol',
+        # 'update',
+        # 'update_idletasks',
+        'xyToPythonIndex',
+        'yview',
         # 'xyzzy', # to make test fail.
     )
-    #@+node:ekr.20081031074455.6: *4* must be defined in base class
-    #@+node:ekr.20070228074312.2: *5* onChar (baseTextWidget)
-    # Don't even think of using key up/down events.
-    # They don't work reliably and don't support auto-repeat.
+    #@+node:ekr.20070228074312.12: *4* Clipboard (baseTextWidget)
+    # There is no need to override these in subclasses.
 
-    # Must be defined in subclasses.
-
-    def onChar (self, event):
-        
-        g.trace('can not happen: must be defined in subclasses')
-    #@+node:ekr.20070228074312.12: *5* clipboard_clear & clipboard_append
     def clipboard_clear (self):
 
         g.app.gui.replaceClipboardWith('')
@@ -186,18 +134,31 @@ class baseTextWidget:
         s1 = g.app.gui.getTextFromClipboard()
 
         g.app.gui.replaceClipboardWith(s1 + s)
-    #@+node:ekr.20081031074455.8: *4* May be defined in subclasses
-    # These are high-level interface methods that do not call low-level methods.
-    #@+node:ekr.20081031074455.13: *5*  do-nothings
+    #@+node:ekr.20081031074455.13: *4* Do-nothings (baseTextWidget)
     def bind (self,kind,*args,**keys):          pass
     def configure(self,*args,**keys):           pass
-    def getWidth (self):                        return 0
-    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+    def event_generate(self,stroke,keysym=None):pass
+    def flashCharacter(self,i,
+        bg='white',fg='red',
+        flashes=3,delay=75
+    ):
         pass
+    def getName(self):                          return self.name
+    def getFocus (self):                        return self
+    def getYScrollPosition (self):              return None # A flag.
+    def getWidth (self):                        return 0
     def indexIsVisible (self,i):                return False
         # Code will loop if this returns True forever.
     def mark_set(self,markName,i):              pass
+    def onChar (self, event):                   self.oops()
     def pack(self,*args,**keys):                pass
+    def scrollLines (self,n):                   pass
+    def see(self,index):                        pass
+    def seeInsertPoint(self):                   pass
+    def setBackgroundColor (self,color):        pass
+    def setForegroundColor (self,color):        pass
+    def setFocus (self):                        pass
+    def setYScrollPosition (self,i):            pass
     def setWidth (self,width):                  pass
     def tag_add(self,tagName,i,j=None,*args):   pass
     def tag_configure (self,colorName,**keys):  pass
@@ -210,77 +171,20 @@ class baseTextWidget:
     def xyToPythonIndex (self,x,y):             return 0
     def yview (self,*args):                     return 0,0
 
+    # Compatibility
+    findFocus  = getFocus
+    GetName    = getName
+    SetFocus   = setFocus
     tag_config = tag_configure
-    #@+node:ekr.20090320055710.4: *5* toPythonIndexToRowCol (baseText) (may be overridden)
-    def toPythonIndexRowCol(self,index):
-
-        w = self
-        s = w.getAllText()
-        i = w.toPythonIndex(index)
-        row,col = g.convertPythonIndexToRowCol(s,i)
-        return i,row,col
-    #@+node:ekr.20070228074312.13: *5* delete (baseTextWidget)
-    def delete(self,i,j=None):
-
-        w = self
-        i = w.toPythonIndex(i)
-        if j is None: j = i+ 1
-        j = w.toPythonIndex(j)
-
-        # g.trace(i,j,len(s),repr(s[:20]))
-        s = w.getAllText()
-        w.setAllText(s[:i] + s[j:])
-        
-        # Bug fix: 2011/11/13: Significant in external tests.
-        w.setSelectionRange(i,i,insert=i)
-    #@+node:ekr.20070228074312.14: *5* deleteTextSelection (baseTextWidget)
-    def deleteTextSelection (self):
-
-        i,j = self.getSelectionRange()
-        self.delete(i,j)
-    #@+node:ekr.20070228074312.15: *5* event_generate (baseTextWidget)
-    def event_generate(self,stroke,keysym=None):
-        
-        g.trace('can not happen: must be defined in subclasses')
-        return
-    #@+node:ekr.20070228102413: *5* getName & GetName
-    def GetName(self):
-
-        return self.name
-
-    getName = GetName
-    #@+node:ekr.20070228074312.25: *5* hasSelection
-    def hasSelection (self):
-
-        w = self
-        i,j = w.getSelectionRange()
-        return i != j
-    #@+node:ekr.20070228074312.5: *5* oops
-    def oops (self):
-
-        g.pr('baseTextWidget oops:',self,g.callers(4),
-            'must be overridden in subclass')
-    #@+node:ekr.20070228074312.28: *5* replace
-    def replace (self,i,j,s):
-
-        w = self
-        w.delete(i,j)
-        w.insert(i,s)
-    #@+node:ekr.20070228074312.31: *5* selectAllText
-    def selectAllText (self,insert=None):
-
-        '''Select all text of the widget.'''
-
-        w = self
-        w.setSelectionRange(0,'end',insert=insert)
-    #@+node:ekr.20070228074312.8: *5* w.rowColToGuiIndex
+    #@+node:ekr.20111113141805.10060: *4* Indices (baseTextWidget)
+    #@+node:ekr.20070228074312.8: *5* rowColToGuiIndex (baseTextWidget)
     # This method is called only from the colorizer.
     # It provides a huge speedup over naive code.
 
     def rowColToGuiIndex (self,s,row,col):
 
         return g.convertRowColToPythonIndex(s,row,col)    
-    #@+node:ekr.20070228074312.7: *5* w.toGuiIndex & toPythonIndex
+    #@+node:ekr.20070228074312.7: *5* toGuiIndex & toPythonIndex (baseTextWidget)
     def toPythonIndex (self,index):
 
         w = self
@@ -301,88 +205,29 @@ class baseTextWidget:
             return i
 
     toGuiIndex = toPythonIndex
-    #@+node:ekr.20081031074455.9: *4* Must be defined in subclasses (low-level interface)
-    # Define these here to keep pylint happy.
-
-    def _appendText(self,s):            self.oops()
-    def _get(self,i,j):                 self.oops() ; return ''
-    def _getAllText(self):              self.oops() ; return ''
-    def _getFocus(self):                self.oops() ; return None
-    def _getInsertPoint(self):          self.oops() ; return 0
-    def _getLastPosition(self):         self.oops() ; return 0
-    def _getSelectedText(self):         self.oops() ; return ''
-    def _getSelectionRange(self):       self.oops() ; return (0,0)
-    def _getYScrollPosition(self):      self.oops() ; return None # A flag
-    def _hitTest(self,pos):             self.oops()
-    def _insertText(self,i,s):          self.oops()
-    def _scrollLines(self,n):           self.oops()
-    def _see(self,i):                   self.oops()
-    def _setAllText(self,s,new_p=None): self.oops()
-    def _setBackgroundColor(self,color): self.oops()
-    def _setForegroundColor(self,color): self.oops()
-    def _setFocus(self):                self.oops()
-    def _setInsertPoint(self,i):        self.oops()
-    def _setSelectionRange(self,i,j):   self.oops()
-    def _setYScrollPosition(self,i):    self.oops()
-
-    _findFocus = _getFocus
-    #@+node:ekr.20081031074455.2: *4* Must be defined in subclasses (high-level interface)
-    # These methods are widget-independent because they call the corresponding _xxx methods.
-    #@+node:ekr.20070228074312.10: *5* appendText
-    def appendText (self,s):
+    #@+node:ekr.20090320055710.4: *5* toPythonIndexToRowCol (baseTextWidget)
+    def toPythonIndexRowCol(self,index):
 
         w = self
-        w._appendText(s)
-    #@+node:ekr.20070228074312.18: *5* get
-    def get(self,i,j=None):
-
-        w = self
-
-        i = w.toPythonIndex(i)
-        if j is None: j = i+ 1
-        j = w.toPythonIndex(j)
-
-        s = w._get(i,j)
-        return g.toUnicode(s)
-    #@+node:ekr.20070228074312.19: *5* getAllText
-    def getAllText (self):
-
-        w = self
-
-        s = w._getAllText()
-        return g.toUnicode(s)
-    #@+node:ekr.20070228074312.17: *5* getFocus
-    def getFocus (self):
-
-        w = self
-        w2 = w._getFocus()
-        # g.trace('w',w,'focus',w2)
-        return w2
-
-    findFocus = getFocus
+        s = w.getAllText()
+        i = w.toPythonIndex(index)
+        row,col = g.convertPythonIndexToRowCol(s,i)
+        return i,row,col
+    #@+node:ekr.20111113141805.10058: *4* Insert point & selection Range (baseTextWidget)
     #@+node:ekr.20070228074312.20: *5* getInsertPoint (baseTextWidget)
     def getInsertPoint(self):
 
-        w = self
-        i = w._getInsertPoint()
-
-        # g.trace(self,'baseWidget: i:',i,'virtual',w.virtualInsertPoint)
-
+        i = self.ins
         if i is None:
-            if w.virtualInsertPoint is None:
+            if self.virtualInsertPoint is None:
                 i = 0
             else:
-                i = w.virtualInsertPoint
+                i = self.virtualInsertPoint
 
-        w.virtualInsertPoint = i
+        self.virtualInsertPoint = i
 
+        # g.trace('baseTextWidget): i:',i,'virtual',self.virtualInsertPoint)
         return i
-    #@+node:ekr.20070228074312.21: *5* getSelectedText (baseTextWidget)
-    def getSelectedText (self):
-
-        w = self
-        s = w._getSelectedText()
-        return g.toUnicode(s)
     #@+node:ekr.20070228074312.22: *5* getSelectionRange (baseTextWidget)
     def getSelectionRange (self,sort=True):
 
@@ -390,123 +235,120 @@ class baseTextWidget:
 
         Return a tuple giving the insertion point if no range of text is selected."""
 
-        w = self
-
-        sel = w._getSelectionRange() # wx.richtext.RichTextCtrl returns (-1,-1) on no selection.
+        sel = self.sel
+        
         if len(sel) == 2 and sel[0] >= 0 and sel[1] >= 0:
-            #g.trace(self,'baseWidget: sel',repr(sel),g.callers(6))
             i,j = sel
             if sort and i > j: sel = j,i # Bug fix: 10/5/07
             return sel
         else:
-            # Return the insertion point if there is no selected text.
-            i =  w._getInsertPoint()
-            #g.trace(self,'baseWidget: i',i,g.callers(6))
+            i = self.ins
             return i,i
-    #@+node:ekr.20070228074312.23: *5* getYScrollPosition
-    def getYScrollPosition (self):
 
-        w = self
-        return w._getYScrollPosition()
-    #@+node:ekr.20070228074312.26: *5* insert
-    # The signature is more restrictive than the Tk.Text.insert method.
+    #@+node:ekr.20070228074312.25: *5* hasSelection
+    def hasSelection (self):
 
-    def insert(self,i,s):
-
-        w = self
-        i = w.toPythonIndex(i)
-        # w._setInsertPoint(i)
-        w._insertText(i,s)
-    #@+node:ekr.20070228074312.29: *5* scrollLines
-    def scrollLines (self,n):
-
-        w = self
-        w._scrollLines(n)
-    #@+node:ekr.20070228074312.30: *5* see & seeInsertPoint
-    def see(self,index):
-
-        w = self
-        i = self.toPythonIndex(index)
-        w._see(i)
-
-    def seeInsertPoint(self):
-
-        w = self
-        i = w._getInsertPoint()
-        w._see(i)
-    #@+node:ekr.20070228074312.32: *5* setAllText
-    def setAllText (self,s,new_p=None):
-
-        w = self
-        w._setAllText(s,new_p=new_p)
-    #@+node:ekr.20070228074312.33: *5* setBackgroundColor
-    def setBackgroundColor (self,color):
-
-        w = self
-
-        # Huh?
-        # Translate tk colors to wx colors.
-        d = { 'lightgrey': 'light grey', 'lightblue': 'leo blue',}
-
-        color = d.get(color,color)
-
-        return w._setBackgroundColor(color)
-
-    SetBackgroundColour = setBackgroundColor
-    #@+node:ekr.20070228074312.34: *5* setFocus
-    def setFocus (self):
-
-        w = self
-        # g.trace('baseText')
-        return w._setFocus()
-
-    SetFocus = setFocus
-    #@+node:ekr.20080510153327.3: *5* setForegroundColor
-    def setForegroundColor (self,color):
-
-        w = self
-
-        # Huh?
-        # Translate tk colors to wx colors.
-        d = { 'lightgrey': 'light grey', 'lightblue': 'leo blue',}
-
-        color = d.get(color,color)
-
-        return w._setForegroundColor(color)
-
-    SetForegroundColour = setForegroundColor
-    #@+node:ekr.20070228074312.35: *5* setInsertPoint
+        i,j = self.getSelectionRange()
+        return i != j
+    #@+node:ekr.20070228074312.35: *5* setInsertPoint (baseTextWidget)
     def setInsertPoint (self,pos):
 
-        w = self
-        w.virtualInsertPoint = i = w.toPythonIndex(pos)
-        # g.trace(self,i)
-        w._setInsertPoint(i)
+        self.virtualInsertPoint = i = self.toPythonIndex(pos)
+        self.ins = i
+        self.sel = i,i
     #@+node:ekr.20070228074312.36: *5* setSelectionRange (baseTextWidget)
     def setSelectionRange (self,i,j,insert=None):
 
-        w = self
         i1, j1, insert1 = i,j,insert
-        i,j = w.toPythonIndex(i),w.toPythonIndex(j)
+        i,j = self.toPythonIndex(i),self.toPythonIndex(j)
 
-        # g.trace(self,'baseWidget',repr(i1),'=',repr(i),repr(j1),'=',repr(j),repr(insert1),'=',repr(insert),g.callers(4))
-
-        if i == j:
-            w._setInsertPoint(j)
-        else:
-            w._setSelectionRange(i,j)
+        self.sel = i,j
+        self.ins = j
 
         if insert is not None and insert in (i,j):
-            ins = w.toPythonIndex(insert)
+            ins = self.toPythonIndex(insert)
             if ins in (i,j):
                 self.virtualInsertPoint = ins
-    #@+node:ekr.20070228074312.38: *5* setYScrollPosition (baseTextWidget)
-    def setYScrollPosition (self,i):
+    #@+node:ekr.20070228074312.31: *5* selectAllText (baseTextWidget)
+    def selectAllText (self,insert=None):
+
+        '''Select all text of the widget.'''
+
+        self.setSelectionRange(0,'end',insert=insert)
+    #@+node:ekr.20070228074312.5: *4* oops (baseTextWidget)
+    def oops (self):
+
+        g.pr('baseTextWidget oops:',self,g.callers(4),
+            'must be overridden in subclass')
+    #@+node:ekr.20111113141805.10057: *4* Text (baseTextWidget)
+    #@+node:ekr.20070228074312.10: *5* appendText (baseTextWidget)
+    def appendText (self,s):
+
+        self.s = self.s + s
+        self.ins = len(self.s)
+        self.sel = self.ins,self.ins
+    #@+node:ekr.20070228074312.13: *5* delete (baseTextWidget)
+    def delete(self,i,j=None):
 
         w = self
-        if g.app.trace_scroll: g.trace('(baseTextBrowser) setYPos',i)
-        w._setYScrollPosition(i)
+        i = w.toPythonIndex(i)
+        if j is None: j = i+ 1
+        j = w.toPythonIndex(j)
         
+        # 2011/11/13: This allows subclasses to use this base class method.
+        if i > j: i,j = j,i
+
+        # g.trace(i,j,len(s),repr(s[:20]))
+        s = w.getAllText()
+        w.setAllText(s[:i] + s[j:])
+        
+        # Bug fix: 2011/11/13: Significant in external tests.
+        w.setSelectionRange(i,i,insert=i)
+    #@+node:ekr.20070228074312.14: *5* deleteTextSelection (baseTextWidget)
+    def deleteTextSelection (self):
+
+        i,j = self.getSelectionRange()
+        self.delete(i,j)
+    #@+node:ekr.20070228074312.18: *5* get (baseTextWidget)
+    def get(self,i,j=None):
+
+        i = self.toPythonIndex(i)
+        if j is None: j = i+ 1
+        j = self.toPythonIndex(j)
+        s = self.s[i:j]
+        return g.toUnicode(s)
+    #@+node:ekr.20070228074312.19: *5* getAllText (baseTextWidget)
+    def getAllText (self):
+
+        s = self.s
+        return g.toUnicode(s)
+    #@+node:ekr.20070228074312.21: *5* getSelectedText (baseTextWidget)
+    def getSelectedText (self):
+
+        i,j = self.sel
+        s = self.s[i:j]
+        return g.toUnicode(s)
+    #@+node:ekr.20070228074312.26: *5* insert (baseTextWidget)
+    def insert(self,i,s):
+
+        i = self.toPythonIndex(i)
+        s1 = s
+        self.s = self.s[:i] + s1 + self.s[i:]
+        i += len(s1)
+        self.ins = i
+        self.sel = i,i
+    #@+node:ekr.20070228074312.28: *5* replace (baseTextWidget)
+    def replace (self,i,j,s):
+
+        self.delete(i,j)
+        self.insert(i,s)
+    #@+node:ekr.20070228074312.32: *5* setAllText (baseTextWidget)
+    def setAllText (self,s,new_p=None):
+
+        self.s = s
+        i = len(self.s)
+        self.ins = i
+        self.sel = i,i
     #@-others
 #@+node:ekr.20070228074228.1: *3* class stringTextWidget (baseTextWidget)
 class stringTextWidget (baseTextWidget):
@@ -525,63 +367,16 @@ class stringTextWidget (baseTextWidget):
         self.sel = 0,0
         self.s = ''
         self.trace = False
-    #@+node:ekr.20070228074228.3: *4* Overrides
-    def _appendText(self,s):
-        #if self.trace: g.trace(self,'len(s)',len(s))
-        if self.trace: g.trace(self,'ins',self.ins,'s',repr(s[-10:]),g.callers())
-        # g.trace(repr(s),g.callers())
-        self.s = self.s + s
-        self.ins = len(self.s)
-        self.sel = self.ins,self.ins
-    def _get(self,i,j):                 return self.s[i:j]
-    def _getAllText(self):              return self.s
-    def _getFocus(self):                return self
-    def _getInsertPoint(self):
-        # if self.trace: g.trace(self,self.ins)
-        return self.ins
-    def _getLastPosition(self):         return len(self.s)
-    def _getSelectedText(self):         i,j = self.sel ; return self.s[i:j]
-    def _getSelectionRange(self):       return self.sel
-    def _getYScrollPosition(self):      return None # A flag.
-    def _hitTest(self,pos):             pass
-    def _insertText(self,i,s):
-        s1 = s
-        self.s = self.s[:i] + s1 + self.s[i:]
-        # if self.trace: g.trace(self,'s',repr(s),'self.s',repr(self.s))
-        # if self.trace: g.trace(self,'i',i,'len(s)',len(s),g.callers())
-        if self.trace: g.trace(self,'i',i,'s',repr(s[-10:]),g.callers())
-        # g.trace(repr(s),g.callers())
-        i += len(s1)
-        self.ins = i
-        self.sel = i,i
-    def _scrollLines(self,n):           pass
-    def _see(self,i):                   pass
-    def _setAllText(self,s,new_p=None):
-        if self.trace: g.trace(self,'len(s)',len(s),g.callers())
-        if self.trace: g.trace(self,'s',repr(s[-10:]),g.callers())
-        # g.trace(repr(s),g.callers())
-        self.s = s
-        i = len(self.s)
-        self.ins = i
-        self.sel = i,i
-    def _setBackgroundColor(self,color): pass
-    def _setForegroundColor(self,color): pass
-    def _setFocus(self):                pass
-    def _setInsertPoint(self,i):
-        if self.trace: g.trace(self,'i',i)
-        self.ins = i
-        self.sel = i,i
     #@+node:ekr.20070228111853: *4* setSelectionRange (stringText)
     def setSelectionRange (self,i,j,insert=None):
 
-        w = self
         i1, j1, insert1 = i,j,insert
-        i,j = w.toPythonIndex(i),w.toPythonIndex(j)
+        i,j = self.toPythonIndex(i),self.toPythonIndex(j)
 
         self.sel = i,j
 
         if insert is not None: 
-            self.ins = w.toPythonIndex(insert)
+            self.ins = self.toPythonIndex(insert)
         else:
             self.ins = j
 

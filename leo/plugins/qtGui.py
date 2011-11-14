@@ -425,9 +425,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         # Init the base class.
         leoFrame.baseTextWidget.__init__(
             self,c,baseClassName='leoQtBaseTextWidget',
-            name=name,
-            widget=widget,
-            highLevelInterface=True)
+            name=name,widget=widget,)
 
         # Init ivars.
         self.changingText = False # A lockout for onTextChanged.
@@ -546,7 +544,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         if name.startswith('body'):
             if hasattr(c.frame,'statusLine'):
                 c.frame.statusLine.update()
-    #@+node:ekr.20110605121601.18031: *4*  Must be defined in base class
+    #@+node:ekr.20110605121601.18031: *4*  Must be defined in base class (leoQtBaseTextWidget)
     #@+node:ekr.20110605121601.18032: *5*  Focus (leoQtBaseTextWidget)
     def getFocus(self):
 
@@ -619,29 +617,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         s2 = self.getAllText()
         self.setAllText(s2+s,insert=len(s2))
 
-    #@+node:ekr.20110605121601.18038: *6* delete (leoQtBaseTextWidget)
-    def delete (self,i,j=None):
-
-        w = self.widget
-        s = self.getAllText()
-
-        i = self.toGuiIndex(i)
-        if j is None: j = i+1
-        j = self.toGuiIndex(j)
-        if i > j: i,j = j,i
-
-        # g.trace('i',i,'j',j)
-
-        s = s[:i] + s[j:]
-        self.setAllText(s,insert=i)
-
-        if i > 0 or j > 0: self.indexWarning('leoQtBody.delete')
-        return i
-    #@+node:ekr.20110605121601.18039: *6* deleteTextSelection
-    def deleteTextSelection (self):
-
-        i,j = self.getSelectionRange()
-        self.delete(i,j)
     #@+node:ekr.20110605121601.18040: *6* getLastPosition
     def getLastPosition(self):
 
@@ -806,7 +781,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def indexWarning (self,s):
 
         return
-    #@+node:ekr.20110605121601.18050: *4*  May be overridden in subclasses
+    #@+node:ekr.20110605121601.18050: *4*  May be overridden in subclasses (leoQtBaseTextWidget)
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
         pass
 
@@ -912,17 +887,16 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             g.trace('oops',args,keys)
 
     tag_configure = tag_config
-    #@+node:ekr.20110605121601.18057: *4*  Must be overridden in subclasses
+    #@+node:ekr.20110605121601.18057: *4*  Must be overridden in subclasses (leoQtBaseTextWidget)
     # These methods avoid calls to setAllText.
 
-    def getAllText(self):                   self.oops()
-    def getInsertPoint(self):               self.oops()
-    def getSelectionRange(self,sort=True):  self.oops()
-    def hasSelection(self):                 self.oops()
-    def see(self,i):                        self.oops()
-    def setAllText(self,s,insert=None,new_p=None):
-        self.oops()
-    def setInsertPoint(self,i):             self.oops()
+    def getAllText(self):                           self.oops()
+    def getInsertPoint(self):                       self.oops()
+    def getSelectionRange(self,sort=True):          self.oops()
+    def hasSelection(self):                         self.oops()
+    def see(self,i):                                self.oops()
+    def setAllText(self,s,insert=None,new_p=None):  self.oops()
+    def setInsertPoint(self,i):                     self.oops()
     #@-others
 #@-<< define leoQtBaseTextWidget class >>
 #@+<< define leoQLineEditWidget class >>
