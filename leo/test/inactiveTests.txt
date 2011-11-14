@@ -6177,5 +6177,132 @@ y = 10
 for x in range(0,100,10):
     event = g.app.gui.create_key_event(c,None,None,w,x=x,y=y)
     c.frame.body.onClick(event)
+#@+node:ekr.20100131171342.5473: *3* Tk gui tests
+#@+node:ekr.20100131171342.5474: *4* @test leoBody is subset of leoTkBody
+if g.app.gui.guiName() == 'tkinter':
+
+    pc = g.app.pluginsController
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
+    assert(tkGui)
+
+    import leo.core.leoFrame as leoFrame
+    import inspect,sys
+
+    baseClass = leoFrame.leoBody
+    subClasses  = (tkGui.leoTkinterBody,leoFrame.nullBody)
+    baseObject = c.frame.body
+
+    methods = inspect.getmembers(baseClass,inspect.ismethod)
+    methodNames = [z[0] for z in methods]
+
+    for name in baseObject.mustBeDefinedOnlyInBaseClass:
+        try:
+            assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
+        except AssertionError:
+            exctype, value = sys.exc_info()[:2]
+            print(value)
+            raise
+
+    for subClass in subClasses:
+        subclassName = subClass.__name__
+        for name in methodNames:
+            base_func = getattr(baseClass,name)
+            sub_func =  getattr(subClass,name)
+            try:
+                if name in baseObject.mustBeDefinedOnlyInBaseClass:
+                    assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
+                if name in baseObject.mustBeDefinedInSubclasses:
+                    assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
+            except AssertionError:
+                #raise
+                exctype, value = sys.exc_info()[:2]
+                print(value)
+#@+node:ekr.20100131171342.5475: *4* @test leoFrame is subset of leoTkFrame
+if g.app.gui.guiName() == 'tkinter':
+
+    pc = g.app.pluginsController
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
+
+    import leo.core.leoFrame as leoFrame
+    import inspect
+
+    baseClass = leoFrame.leoFrame
+    subClasses  = (tkGui.leoTkinterFrame,leoFrame.nullFrame)
+    baseObject = c.frame
+
+    methods = inspect.getmembers(baseClass,inspect.ismethod)
+    methodNames = [z[0] for z in methods]
+
+    for name in baseObject.mustBeDefinedOnlyInBaseClass:
+        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
+
+    for subClass in subClasses:
+        subclassName = subClass.__name__
+        for name in methodNames:
+            base_func = getattr(baseClass,name)
+            sub_func =  getattr(subClass,name)
+            if name in baseObject.mustBeDefinedOnlyInBaseClass:
+                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
+            if name in baseObject.mustBeDefinedInSubclasses:
+                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
+#@+node:ekr.20100131171342.5476: *4* @test leoGui is subset of leoTkGui
+if g.app.gui.guiName() == 'tkinter':
+
+    pc = g.app.pluginsController
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
+
+    import leo.core.leoGui as leoGui
+    import inspect
+
+    baseClass = leoGui.leoGui
+    subClasses  = (tkGui.tkinterGui,) # nullGui can inherit almost all leoGui dummy methods.
+    baseObject = g.app.gui
+
+    methods = inspect.getmembers(baseClass,inspect.ismethod)
+    methodNames = [z[0] for z in methods]
+
+    for name in baseObject.mustBeDefinedOnlyInBaseClass:
+        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
+
+    for subClass in subClasses:
+        subclassName = subClass.__name__
+        for name in methodNames:
+            base_func = getattr(baseClass,name)
+            sub_func =  getattr(subClass,name)
+            try:
+                if name in baseObject.mustBeDefinedOnlyInBaseClass:
+                    assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
+                if name in baseObject.mustBeDefinedInSubclasses:
+                    assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
+            except AssertionError:
+                raise
+#@+node:ekr.20100131171342.5477: *4* @test leoTree is subset of leoTkTree
+if g.app.gui.guiName() == 'tkinter':
+
+    pc = g.app.pluginsController
+    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
+
+    import leo.core.leoFrame as leoFrame
+    import inspect
+
+    baseClass = leoFrame.leoTree
+    subClasses  = (tkGui.leoTkinterTree,leoFrame.nullTree)
+    baseObject = c.frame.tree
+
+    methods = inspect.getmembers(baseClass,inspect.ismethod)
+    methodNames = [z[0] for z in methods]
+
+    for name in baseObject.mustBeDefinedOnlyInBaseClass:
+        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
+
+    for subClass in subClasses:
+        subclassName = subClass.__name__
+        for name in methodNames:
+            base_func = getattr(baseClass,name)
+            sub_func =  getattr(subClass,name)
+            if name in baseObject.mustBeDefinedOnlyInBaseClass:
+                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
+            if name in baseObject.mustBeDefinedInSubclasses:
+                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
 #@-all
 #@-leo

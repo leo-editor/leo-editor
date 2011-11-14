@@ -666,19 +666,21 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         # g.trace('insert',insert)
 
     #@+node:ekr.20110605121601.18045: *7* setSelectionRange & dummy helper (leoQtBaseTextWidget)
-    def setSelectionRange(self,*args,**keys):
+    # def setSelectionRange(self,*args,**keys):
+    def setSelectionRange (self,i,j,insert=None):
 
         # A kludge to allow a single arg containing i,j
-        w = self.widget
+        # w = self.widget
 
-        if len(args) == 1:
-            i,j = args[0]
-        elif len(args) == 2:
-            i,j = args
-        else:
-            g.trace('can not happen',args)
+    #     if len(args) == 1:
+    #         i,j = args[0]
+    #     elif len(args) == 2:
+    #         i,j = args
+    #     else:
+    #         g.trace('can not happen',args)
 
-        insert = keys.get('insert')
+    #     insert = keys.get('insert')
+
         i,j = self.toGuiIndex(i),self.toGuiIndex(j)
 
         return self.setSelectionRangeHelper(i,j,insert)
@@ -2969,7 +2971,8 @@ class leoQtBody (leoFrame.leoBody):
     def setFocus (self):                    return self.widget.setFocus()
     def setForegroundColor (self,color):    return self.widget.setForegroundColor(color)
     def setInsertPoint (self,pos):          return self.widget.setInsertPoint(pos)
-    def setSelectionRange(self,*args,**keys):self.widget.setSelectionRange(*args,**keys)
+    def setSelectionRange (self,i,j,insert=None):
+        self.widget.setSelectionRange(i,j,insert=insert)
     def setYScrollPosition (self,i):        return self.widget.setYScrollPosition(i)
     def tag_configure(self,colorName,**keys):pass
     def toPythonIndex(self,index):          return self.widget.toPythonIndex(index)
@@ -5277,7 +5280,8 @@ class leoQtLog (leoFrame.leoLog):
     def setFocus(self):                         self.logCtrl.setFocus()
     def setForegroundColor(self,color):         self.logCtrl.setForegroundColor(color)
     def setInsertPoint(self,pos):               self.logCtrl.setInsertPoint(pos)
-    def setSelectionRange(self,*args,**keys):   self.logCtrl.setSelectionRange(*args,**keys)
+    def setSelectionRange (self,i,j,insert=None):
+        self.logCtrl.setSelectionRange(i,j,insert=insert)
     def setYScrollPosition (self,i):            self.logCtrl.setYScrollPosition(i)
     def tag_configure (self,colorName,**keys):  pass
 

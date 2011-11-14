@@ -555,133 +555,6 @@ def removeFile(path):
         if trace:
             print("@test batch mode: removeFile: not found:",test_file)
 #@+node:ekr.20100131171342.5472: *3* Check base classes & ivars
-#@+node:ekr.20100131171342.5473: *4* Tk gui tests
-#@+node:ekr.20100131171342.5474: *5* @test leoBody is subset of leoTkBody
-if g.app.gui.guiName() == 'tkinter':
-
-    pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
-    assert(tkGui)
-
-    import leo.core.leoFrame as leoFrame
-    import inspect,sys
-
-    baseClass = leoFrame.leoBody
-    subClasses  = (tkGui.leoTkinterBody,leoFrame.nullBody)
-    baseObject = c.frame.body
-
-    methods = inspect.getmembers(baseClass,inspect.ismethod)
-    methodNames = [z[0] for z in methods]
-
-    for name in baseObject.mustBeDefinedOnlyInBaseClass:
-        try:
-            assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
-        except AssertionError:
-            exctype, value = sys.exc_info()[:2]
-            print(value)
-            raise
-
-    for subClass in subClasses:
-        subclassName = subClass.__name__
-        for name in methodNames:
-            base_func = getattr(baseClass,name)
-            sub_func =  getattr(subClass,name)
-            try:
-                if name in baseObject.mustBeDefinedOnlyInBaseClass:
-                    assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
-                if name in baseObject.mustBeDefinedInSubclasses:
-                    assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
-            except AssertionError:
-                #raise
-                exctype, value = sys.exc_info()[:2]
-                print(value)
-#@+node:ekr.20100131171342.5475: *5* @test leoFrame is subset of leoTkFrame
-if g.app.gui.guiName() == 'tkinter':
-
-    pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
-
-    import leo.core.leoFrame as leoFrame
-    import inspect
-
-    baseClass = leoFrame.leoFrame
-    subClasses  = (tkGui.leoTkinterFrame,leoFrame.nullFrame)
-    baseObject = c.frame
-
-    methods = inspect.getmembers(baseClass,inspect.ismethod)
-    methodNames = [z[0] for z in methods]
-
-    for name in baseObject.mustBeDefinedOnlyInBaseClass:
-        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
-
-    for subClass in subClasses:
-        subclassName = subClass.__name__
-        for name in methodNames:
-            base_func = getattr(baseClass,name)
-            sub_func =  getattr(subClass,name)
-            if name in baseObject.mustBeDefinedOnlyInBaseClass:
-                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
-            if name in baseObject.mustBeDefinedInSubclasses:
-                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
-#@+node:ekr.20100131171342.5476: *5* @test leoGui is subset of leoTkGui
-if g.app.gui.guiName() == 'tkinter':
-
-    pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
-
-    import leo.core.leoGui as leoGui
-    import inspect
-
-    baseClass = leoGui.leoGui
-    subClasses  = (tkGui.tkinterGui,) # nullGui can inherit almost all leoGui dummy methods.
-    baseObject = g.app.gui
-
-    methods = inspect.getmembers(baseClass,inspect.ismethod)
-    methodNames = [z[0] for z in methods]
-
-    for name in baseObject.mustBeDefinedOnlyInBaseClass:
-        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
-
-    for subClass in subClasses:
-        subclassName = subClass.__name__
-        for name in methodNames:
-            base_func = getattr(baseClass,name)
-            sub_func =  getattr(subClass,name)
-            try:
-                if name in baseObject.mustBeDefinedOnlyInBaseClass:
-                    assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
-                if name in baseObject.mustBeDefinedInSubclasses:
-                    assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
-            except AssertionError:
-                raise
-#@+node:ekr.20100131171342.5477: *5* @test leoTree is subset of leoTkTree
-if g.app.gui.guiName() == 'tkinter':
-
-    pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
-
-    import leo.core.leoFrame as leoFrame
-    import inspect
-
-    baseClass = leoFrame.leoTree
-    subClasses  = (tkGui.leoTkinterTree,leoFrame.nullTree)
-    baseObject = c.frame.tree
-
-    methods = inspect.getmembers(baseClass,inspect.ismethod)
-    methodNames = [z[0] for z in methods]
-
-    for name in baseObject.mustBeDefinedOnlyInBaseClass:
-        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
-
-    for subClass in subClasses:
-        subclassName = subClass.__name__
-        for name in methodNames:
-            base_func = getattr(baseClass,name)
-            sub_func =  getattr(subClass,name)
-            if name in baseObject.mustBeDefinedOnlyInBaseClass:
-                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
-            if name in baseObject.mustBeDefinedInSubclasses:
-                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
 #@+node:ekr.20100131171342.5478: *4* @test that log and body implements high-level interface
 logCtrl = c.frame.log.logCtrl
 
@@ -779,9 +652,10 @@ ivars = (
     # These are non-official and might be removed...
     'batchMode','config',
     'debug','debugSwitch','disableSave',
-    'gui','hasOpenWithMenu','hookError','hookFunction',
-    'idle_imported','idleTimeDelay','idleTimeHook','initing','killed',
-    # 'loadedPlugins',
+    'gui','hasOpenWithMenu','hookError',
+    'hookFunction',
+    'idle_imported','idleTimeDelay','idleTimeHook',
+    'initing','killed',
     'leoID','log','logIsLocked','logWaiting',
     'nodeIndices','numberOfWindows',
     'quitting','realMenuNameDict','searchDict','scriptDict',
@@ -789,10 +663,16 @@ ivars = (
     'unitTestDict','unitTesting','use_psyco','windowList',
 )
 
+if g.app.isExternalUnitTest:
+    mayBeNone = ('hookFunction','log')
+else:
+    mayBeNone = ('hookFunction',)
+
 for ivar in ivars:
     assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar
-    val = getattr(g.app,ivar)
-    assert val is not None, 'null app ivar: %s'% ivar
+    if ivar not in mayBeNone:
+        val = getattr(g.app,ivar)
+        assert val is not None, 'null app ivar: %s'% ivar
 
 # These do not have to be initied.
 for ivar in (
@@ -927,7 +807,11 @@ try:
 except AssertionError:
     fn,n = g.getLastTracebackFileAndLineNumber()
     
-writeScriptFile = c.config.getBool('write_script_file')
+if g.app.isExternalUnitTest:
+    writeScriptFile = True
+else:
+    writeScriptFile = c.config.getBool('write_script_file')
+
 if writeScriptFile:
     assert fn != '<string>',repr(fn)
 else:
@@ -1246,7 +1130,6 @@ import leo.core.leoFrame as leoFrame
 # Do nothing when run externally.
 if g.app.isExternalUnitTest:
     pass
-    
 else:
     assert not isinstance(c.frame,leoFrame.nullFrame)
     
@@ -4834,18 +4717,20 @@ w = g.app.config.get(None,'global_setting_for_unit_tests','int')
 
 assert w in (None,132) # Will be None when tests run dynamically.
 #@+node:ekr.20060325071703.1: *4* @test ifplatform
-import sys
+if not g.app.isExternalUnitTest:
 
-win32  = c.config.getBool('test_win32_setting')
-darwin = c.config.getBool('test_darwin_setting')
-
-if sys.platform == 'win32':
-    assert(win32)
-    assert(not darwin)
-
-elif sys.platform== 'darwin':
-    assert(not win32)
-    assert(darwin)
+    import sys
+    
+    win32  = c.config.getBool('test_win32_setting')
+    darwin = c.config.getBool('test_darwin_setting')
+    
+    if sys.platform == 'win32':
+        assert(win32)
+        assert(not darwin)
+    
+    elif sys.platform== 'darwin':
+        assert(not win32)
+        assert(darwin)
 
 #@+node:ekr.20050203001146: *4* @test local settings (c.page_width)
 # print(c.page_width)
@@ -8753,7 +8638,9 @@ try:
     w.setInsertPoint('end')
     g.app.gui.event_generate(c,'\b','BackSpace',w)
     n2 = c.frame.tree.redrawCount
-    assert n2 == n + 1,'too many or too few redraws: %d' % (n2-n)
+    if not g.app.isExternalUnitTest:
+        # This test is meaningless with a nullGui.
+        assert n2 == n + 1,'too many or too few redraws: %d' % (n2-n)
 finally:
     if 1:
         c.setBodyString(p,'')
@@ -9237,15 +9124,22 @@ ed = c.editCommands
     # 'toggle-mini-buffer'),
     # 'toggle-split-direction'),
 
-table = (
+table = [
     (k,'abbrevOn','toggle-abbrev-mode'),
+    (ed,'extendMode','toggle-extend-mode'),
+]
+
+# Not valid for external tests.
+table2 = [
     (k,'enable_autocompleter','toggle-autocompleter'),
     (k,'enable_calltips','toggle-calltips'),
-    (ed,'extendMode','toggle-extend-mode'),
     (c,'sparse_find','toggle-find-collapses-nodes'),
     (colorizer,'showInvisibles','toggle-invisibles'),
     (c,'sparse_move','toggle-sparse-move'),
-)
+]
+
+if not g.app.isExternalUnitTest:
+    table.extend(table2)
 
 for obj,ivar,command in table:
     val1 = getattr(obj,ivar)
@@ -12441,7 +12335,7 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 # print('\nEnd of leoKeys tests.')
-#@+node:ekr.20071113194424.1: *3* leoNodes (not valid when run externally)
+#@+node:ekr.20071113194424.1: *3* leoNodes
 #@+node:ekr.20040712101754.181: *4*  inner @test: Test consistency between parents iter and v.parents
 # The actual test is in a child node.
 #@+node:ekr.20040712101754.182: *5* parent
@@ -12997,25 +12891,25 @@ if 0: # subtree of root node:
 if 0: # child1's tree.  child2 should not be included.
     for v in child.vnodes_iter(): print(v)
     for t in child.tnodes_iter(): print(t)
-#@+node:ekr.20040802071519: *4* @test p.setBodyStringOrPane
+#@+node:ekr.20040802071519: *4* @test p.setBodyString
 # Tests that c.setBodyString works immediately.
 h = p.h
 
 try:
+    w = c.frame.body.bodyCtrl
     child = p.firstChild()
     before = child.b
     after = "after"
     c.setBodyString(child,"after")
     c.selectPosition(child)
-    t = c.frame.body.bodyCtrl
-    s = t.get("1.0","end")
-    assert s.rstrip() == after.rstrip(), \
-        "c.setBodyString failed: %s, %s" % (repr(s),repr(after))
+    s = w.get("1.0","end")
+    assert s.rstrip() == after.rstrip(), 'expected %s, got %s' % (
+        repr(after),repr(s))
 finally:
     c.setBodyString(child,before)
     c.selectPosition(p)
-#@+node:ekr.20040802071519.1: *5* Test
-after
+#@+node:ekr.20040802071519.1: *5* child
+before
 #@+node:ekr.20110502130500.3471: *4* @test p.unique_nodes
 aList = [z for z in p.unique_nodes()]
 assert len(aList) == 3,len(aList)
@@ -13054,7 +12948,7 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoNodes tests.')
-#@+node:ekr.20080501121449.1: *4* Fundamental node operations
+#@+node:ekr.20080501121449.1: *4* Fundamental node operations (undo operations fail)
 #@+node:ekr.20080423110627.2: *5* @test at most one vnode has str_leo_pos attribute
 n = 0
 for v in c.all_unique_vnodes_iter():
@@ -13151,29 +13045,32 @@ finally:
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
 #@+node:ekr.20080423110627.13: *5* @test deleting the root should select another node
-import leo.core.leoNodes as leoNodes
+# Do not change the root during external unit tests!
+if not g.app.isExternalUnitTest:
 
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-
-child = p.insertAsNthChild(0)
-child.setHeadString('child')
-
-try:
-    oldRoot = c.rootPosition()
-    child.moveToRoot(oldRoot=oldRoot) # Does not change child position.
-    c.setRootPosition(child)
-    assert c.positionExists(child)
-    assert c.rootPosition().h == 'child', 'fail 1'
-    next = c.rootPosition().next()
-    assert next.h == 'Startup', 'fail 2: next: %s' % next
-    c.rootPosition().doDelete(newNode=next)
-    c.setRootPosition(next)
-finally:
+    import leo.core.leoNodes as leoNodes
+    
     while p.hasChildren():
         p.firstChild().doDelete(newNode=None)
-    # c.selectPosition(p)
-    c.redraw_now()
+    
+    child = p.insertAsNthChild(0)
+    child.setHeadString('child')
+    
+    try:
+        oldRoot = c.rootPosition()
+        child.moveToRoot(oldRoot=oldRoot) # Does not change child position.
+        c.setRootPosition(child)
+        assert c.positionExists(child)
+        assert c.rootPosition().h == 'child', 'fail 1'
+        next = c.rootPosition().next()
+        assert next.h == 'Startup', 'fail 2: next: %s' % next
+        c.rootPosition().doDelete(newNode=next)
+        c.setRootPosition(next)
+    finally:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+        # c.selectPosition(p)
+        c.redraw_now()
 #@+node:ekr.20080503082625.5: *5* @test demote
 root = p.copy()
 while p.hasChildren():
@@ -13225,20 +13122,25 @@ finally:
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
 #@+node:ekr.20080501121449.3: *5* @test insert node
+assert p.h == '@test insert node',repr(p.h)
 root = p.copy()
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
 
 try:
+    assert p.h == '@test insert node',repr(p.h)
     p2 = p.insertAsNthChild(0)
     p2.setHeadString('A')
     p3 = p.insertAsNthChild(1)
     p3.setHeadString('B')
     p.expand()
     c.setCurrentPosition(p2)
-    c.insertHeadline()
+    p4 = c.insertHeadline()
+    assert p4 == c.p
     p = c.p
+    assert p,'no p'
     p.setHeadString('inserted')
+    assert p.back(),'no p.back(): %s' % (p)
     assert p.back().h == 'A', 'fail 1'
     assert p.next().h == 'B', 'fail 2'
     c.undoer.undo()
@@ -19239,11 +19141,12 @@ import docutils
 # The actual code contains the unit test.
 # This test will have effect only when run locally.
 
-d = g.app.unitTestDict
-tag = 'minimize-all'
-assert not d.get(tag)
-c.frame.minimizeAll()
-assert d.get(tag) is True
+if not g.app.isExternalUnitTest:
+    d = g.app.unitTestDict
+    tag = 'minimize-all'
+    assert not d.get(tag)
+    c.frame.minimizeAll()
+    assert d.get(tag) is True
 #@+node:ekr.20111105065243.3837: *3* @test removeBlankLinesTokens (rst)
 # Important: at present only the rstScanner sets ignoreBlankLines == True
 import leo.core.leoImport as leoImport
@@ -19296,11 +19199,13 @@ for s,expected in table:
 # The actual code contains the unit test.
 # This test will have effect only when run locally.
 
-d = g.app.unitTestDict
-tag = 'resize-to-screen'
-assert not d.get(tag)
-c.frame.resizeToScreen()
-assert d.get(tag) is True
+if not g.app.isExternalUnitTest:
+
+    d = g.app.unitTestDict
+    tag = 'resize-to-screen'
+    assert not d.get(tag)
+    c.frame.resizeToScreen()
+    assert d.get(tag) is True
 #@+node:ekr.20111103213154.3823: *3* @test writeToDocutils: pdf
 @first # -*- coding: utf-8 -*-
 @encoding utf-8
