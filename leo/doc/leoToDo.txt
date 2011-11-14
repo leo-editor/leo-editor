@@ -14,6 +14,33 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
+.. @+node:ekr.20111113191715.10085: *4* Make sure the "mustBeDefined" unit tests are fully functional
+.. @+node:ekr.20111113064104.9854: *4* why is w.setAllText(p.b) needed in some unit tests?
+.. @+node:ekr.20111113064104.9858: *4* Cleanup: Fix setSelectionRange calls
+@nocolor-node
+
+c.frame.body.setSelectionRange takes *one* arg, a tuple.
+    This is used by the undoer.
+    
+c.frame.body.bodyCtrl.setSelectionRange takes two required args and an optional "insert" arg.
+.. @+node:ekr.20070228080627: *5* Text Wrappers (leoBody)
+def getAllText (self):                  return self.bodyCtrl.getAllText()
+def getInsertPoint(self):               return self.bodyCtrl.getInsertPoint()
+def getSelectedText (self):             return self.bodyCtrl.getSelectedText()
+def getSelectionRange (self,sort=True): return self.bodyCtrl.getSelectionRange(sort)
+def hasSelection(self):                 return self.bodyCtrl.hasSelection() # 2010/11/01
+def hasTextSelection (self):            return self.bodyCtrl.hasSelection()
+def see (self,index):                   self.bodyCtrl.see(index)
+def seeInsertPoint (self):              self.bodyCtrl.seeInsertPoint()
+def selectAllText (self,event=None):    return self.bodyCtrl.selectAllText()
+    # This is a command.
+def setInsertPoint (self,pos):          return self.bodyCtrl.setInsertPoint(pos)
+    # was getInsertPoint.
+def setFocus(self):                     return self.bodyCtrl.setFocus()
+
+def setSelectionRange (self,sel):       i,j = sel ; self.bodyCtrl.setSelectionRange(i,j)
+# def setSelectionRange(self,i,j,insert=None):
+#     self.bodyCtrl.setSelectionRange(i,j,insert=insert)
 .. @+node:ekr.20111112131605.9756: *4* Run unit tests should leave focus in body
 .. @+node:ekr.20111112105048.9755: *4* Get Linux machine working again
 .. @+node:ekr.20111109122014.9792: *4* Allow @all only in top-level @<file> nodes
