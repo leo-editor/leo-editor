@@ -2319,7 +2319,7 @@ class nullFrame (leoFrame):
 
     #@+others
     #@+node:ekr.20040327105706: *3*  ctor
-    def __init__ (self,title,gui,useNullUndoer=False):
+    def __init__ (self,title,gui):
 
         # g.trace('nullFrame')
 
@@ -2334,7 +2334,6 @@ class nullFrame (leoFrame):
         self.statusLineClass = nullStatusLineClass
         self.title = title
         self.tree = nullTree(frame=self) # New in Leo 4.4.4 b3.
-        self.useNullUndoer = useNullUndoer
 
         # Default window position.
         self.w = 600

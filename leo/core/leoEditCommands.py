@@ -6996,7 +6996,7 @@ class editFileCommandsClass (baseEditCommandsClass):
         import leo.core.leoCommands as leoCommands
 
         nullGui = leoGui.nullGui('nullGui')
-        frame = leoFrame.nullFrame('nullFrame',nullGui,useNullUndoer=True)
+        frame = leoFrame.nullFrame('nullFrame',nullGui)
         c2 = leoCommands.Commands(frame,fileName)
         frame.c = c2
         frame.tree.c = c2

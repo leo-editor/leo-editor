@@ -1795,7 +1795,7 @@ else:
     
     # Important: external unit tests should execute in this environment.
     nullGui   = leoGui.nullGui('null gui')
-    nullFrame = leoFrame.nullFrame(title='nullFrame title',gui=nullGui,useNullUndoer=True)
+    nullFrame = leoFrame.nullFrame(title='nullFrame title',gui=nullGui)
     c2 = leoCommands.Commands(nullFrame,fileName='<empty fileName>')
     nullFrame.c = c2
     body = leoFrame.nullBody(frame=nullFrame,parentFrame=None)
