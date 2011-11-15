@@ -860,6 +860,25 @@ controls where output for each stream goes.
     g.restoreStdout()
     print("stdout isRedirected: %s" % g.stdOutIsRedirected())
     print("stderr isRedirected: %s" % g.stdErrIsRedirected())
+.. @+node:ekr.20111115063523.13619: *4* Creating Qt Windows from Leo scripts
+The following puts up a test window when run as a Leo script::
+
+    from PyQt4 import QtGui
+    w = QtGui.QWidget()
+    w.resize(250, 150)
+    w.move(300, 300)
+    w.setWindowTitle('Simple test')
+    w.show()
+    c.my_test = w # <-- Keep a reference to the window!
+    
+**Important**: Something like the last line is essential. Without it, the window
+would immediately disappear after being created.  The assignment::
+
+    c.my_test = w
+    
+creates a permanent reference to the window so the window won't be garbage
+collected after the Leo script exits.
+    
 .. @+node:ekr.20061003204952: *4* Writing to different log tabs
 Plugins and scripts can create new tabs in the log panel.
 The following creates a tab named test or make it visible if it already exists::
