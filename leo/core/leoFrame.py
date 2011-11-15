@@ -400,7 +400,7 @@ class leoBody (HighLevelInterface):
         self.totalNumberOfEditors = 0
 
         # May be overridden in subclasses...
-        self.bodyCtrl = self.widget = None
+        self.widget = None # self.bodyCtrl is now a property.
         self.numberOfEditors = 1
         self.pb = None # paned body widget.
 
@@ -493,7 +493,7 @@ class leoBody (HighLevelInterface):
             self.pb.configurepane(pane,size=minSize)
 
         self.pb.updatelayout()
-        c.frame.body.bodyCtrl = w
+        c.frame.body.widget = w # bodyCtrl is now a property.
 
         self.updateInjectedIvars(w,p)
         self.selectLabel(w)
@@ -505,7 +505,10 @@ class leoBody (HighLevelInterface):
 
         '''Called *only* from tree.select to select the present body editor.'''
 
-        c = self.c ; cc = c.chapterController ; w = c.frame.body.bodyCtrl
+        c = self.c ; cc = c.chapterController
+
+        assert (c.frame.body.bodyCtrl == c.frame.body.widget)
+        w = c.frame.body.widget
 
         self.updateInjectedIvars(w,p)
         self.selectLabel(w)
@@ -981,6 +984,21 @@ class leoBody (HighLevelInterface):
 
     def initAfterLoad (self):
         pass
+    #@+node:ekr.20111115100829.9789: *3* body.bodyCtrl property
+    def __get_bodyCtrl(self):
+
+        return self.widget
+
+    def __set_bodyCtrl(self,val):
+        
+        self.widget = val
+
+
+    b = property(
+        __get_bodyCtrl,
+        __set_bodyCtrl,
+        doc = "body.bodyCtrl property"
+    )
     #@-others
 #@+node:ekr.20031218072017.3678: ** class leoFrame
 class leoFrame:
@@ -1490,7 +1508,7 @@ class leoLog (HighLevelInterface):
 
         # Official status variables.  Can be used by client code.
         self.canvasCtrl = None # Set below. Same as self.canvasDict.get(self.tabName)
-        self.logCtrl = self.widget = None # Set below. Same as self.textDict.get(self.tabName)
+        self.widget = None # Set below. Same as self.textDict.get(self.tabName)
         self.tabName = None # The name of the active tab.
         self.tabFrame = None # Same as self.frameDict.get(self.tabName)
 
@@ -1624,7 +1642,8 @@ class leoLog (HighLevelInterface):
         # Update the status vars.
         self.tabName = tabName
         self.canvasCtrl = self.canvasDict.get(tabName)
-        self.logCtrl = self.widget = self.textDict.get(tabName)
+        self.widget = self.textDict.get(tabName)
+            # logCtrl is now a property.
         self.tabFrame = self.frameDict.get(tabName)
 
         if 0:
@@ -1637,6 +1656,21 @@ class leoLog (HighLevelInterface):
     def oops (self):
 
         g.pr("leoLog oops:", g.callers(4), "should be overridden in subclass")
+    #@+node:ekr.20111115100829.9785: *3* log.logCtrl property
+    def __get_logCtrl(self):
+
+        return self.widget
+
+    def __set_logCtrl(self,val):
+        
+        self.widget = val
+
+
+    b = property(
+        __get_logCtrl,
+        __set_logCtrl,
+        doc = "log.logCtrl property"
+    )
     #@-others
 #@+node:ekr.20031218072017.3704: ** class leoTree
 # This would be useful if we removed all the tree redirection routines.

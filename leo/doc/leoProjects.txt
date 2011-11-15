@@ -10185,6 +10185,11 @@ def toPythonIndex (s,index):
             return 0
 
 toGuiIndex = toPythonIndex
+#@+node:ekr.20111115090357.9805: *4* Create properties for logCtrl & bodyCtrl
+@nocolor-node
+
+This is an important addition to reliability.
+It ensures that body/log.widget and body.bodyCtrl/log.logCtrl are always in synch.
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
