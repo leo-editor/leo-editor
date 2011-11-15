@@ -1386,6 +1386,7 @@
 <v t="tbrown.20091129085043.11790"><vh>@string active_path_attype = auto</vh></v>
 <v t="tbrown.20091129085043.11792"><vh>@string active_path_event = icondclick1</vh></v>
 <v t="tbrown.20091129085043.11793"><vh>@data active_path_ignore</vh></v>
+<v t="tbrown.20111114201921.23020"><vh>@data active_path_bin_open</vh></v>
 <v t="tbrown.20091129085043.11795"><vh>@data active_path_autoload</vh></v>
 <v t="tbrown.20100304170159.5189"><vh>@bool active_path_load_docstring = False</vh></v>
 <v t="tbrown.20100401100336.16108"><vh>@float active_path_timeout_seconds = 10.</vh></v>
@@ -9573,6 +9574,11 @@ which is not helpful.  By setting this value to 1, you would see
     &lt;- taxa &lt; record
 
 where the extra information is the name of the linked node's parent.
+</t>
+<t tx="tbrown.20111114201921.23020"># extensions for files/directories
+# active_path will load as binary, i.e. using external software
+# use lower case only
+.pdf
 </t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 cm-external-editor = Alt-v</t>

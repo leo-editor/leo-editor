@@ -373,18 +373,26 @@ def openFile(c,parent,d, autoload=False):
         return
 
     if not autoload:
+        binary_open = g.os_path_splitext(path)[-1].lower() in (
+            c.config.getData('active_path_bin_open') or '')
+            
+        if not binary_open:
+            start = open(path).read(100)
+            for i in start:
+                if ord(i) == 0:
+                    binary_open = True
+                    break
+                    
+        if binary_open:
+            g.es('Treating file as binary')
+            g.handleUrlInUrlNode(path)
+            # if not query(c, "File may be binary, continue?"):
+            #     return
+            return
+
         if os.stat(path).st_size > c.__active_path['max_size']:
             if not query(c, "File size greater than %d bytes, continue?" %
               c.__active_path['max_size']):
-                return
-
-        start = open(path).read(100)
-        for i in start:
-            if ord(i) == 0:
-                g.es('Treating file as binary')
-                g.handleUrlInUrlNode(path)
-                # if not query(c, "File may be binary, continue?"):
-                #     return
                 return
 
     c.importCommands.createOutline(d,parent=parent,atAuto=True)
