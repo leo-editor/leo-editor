@@ -4197,7 +4197,14 @@ try:
         i = p.b.find('<!--     text')
     assert i > -1,'fail2: %s' % (repr(p.b))
     c.deleteComments()
-    assert p.b == s,'fail3: %s' % (repr(p.b))
+    assert p.b == s,'fail3: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
+    # Add a comment delim without a blank.
+    c.addComments()
+    p.b = p.b.replace('<!-- ','<!--')
+    i = p.b.find('<!--')
+    w.setSelectionRange(i,i+4)
+    c.deleteComments()
+    assert p.b == s,'fail5: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
 finally:
     # print('\n'.join([repr(z) for z in g.splitLines(p.b)]))
     p.b = s
@@ -4227,6 +4234,13 @@ try:
     assert i > -1,'fail2: %s' % (repr(p.b))
     c.deleteComments()
     assert p.b == s,'fail3: %s' % (repr(p.b))
+    # Add a comment delim without a blank.
+    c.addComments()
+    p.b = p.b.replace('# pass','#pass')
+    i = p.b.find('#')
+    w.setSelectionRange(i,i+4)
+    c.deleteComments()
+    assert p.b == s,'fail5: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
 finally:
     # print('\n'.join([repr(z) for z in g.splitLines(p.b)]))
     p.b = s

@@ -3360,9 +3360,9 @@ class Commands (object):
             if line.strip():
                 i = g.skip_ws(line,0)
                 if indent:
-                    result.append(line[0:i]+openDelim+line[i:].rstrip()+closeDelim+'\n')
+                    result.append(line[0:i]+openDelim+line[i:].replace('\n','')+closeDelim+'\n')
                 else:
-                    result.append(openDelim+line.rstrip()+closeDelim+'\n')
+                    result.append(openDelim+line.replace('\n','')+closeDelim+'\n')
             else:
                 result.append(line)
 
@@ -3401,23 +3401,28 @@ class Commands (object):
 
         if d1:
             # Remove the single-line comment delim in front of each line
-            d1 = d1 + ' '
-            n1 = len(d1)
+            d1b = d1 + ' '
+            n1,n1b = len(d1),len(d1b)
             for s in lines:
                 i = g.skip_ws(s,0)
-                if g.match(s,i,d1):
+                if g.match(s,i,d1b):
+                    result.append(s[:i] + s[i+n1b:])
+                elif g.match(s,i,d1):
                     result.append(s[:i] + s[i+n1:])
                 else:
                     result.append(s)
         else:
             # Remove the block comment delimiters from each line.
-            d2,d3 = d2+' ',' '+d3
             n2,n3 = len(d2),len(d3)
             for s in lines:
-                s2 = s.rstrip()
                 i = g.skip_ws(s,0)
-                if g.match(s,i,d2) and g.match(s2,len(s2)-n3,d3):
-                    result.append(s[:i] + s[i+n2:-n3]+'\n')
+                j = s.find(d3,i+n2)
+                if g.match(s,i,d2) and j > -1:
+                    first = i + n2
+                    if g.match(s,first,' '): first += 1
+                    last = j
+                    if g.match(s,last-1,' '): last -= 1
+                    result.append(s[:i] + s[first:last] + s[j+n3:])
                 else:
                     result.append(s)
 

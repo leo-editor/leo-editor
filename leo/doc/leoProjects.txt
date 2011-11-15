@@ -5507,9 +5507,9 @@ def addComments (self,event=None):
         if line.strip():
             i = g.skip_ws(line,0)
             if indent:
-                result.append(line[0:i]+openDelim+line[i:].rstrip()+closeDelim+'\n')
+                result.append(line[0:i]+openDelim+line[i:].replace('\n','')+closeDelim+'\n')
             else:
-                result.append(openDelim+line.rstrip()+closeDelim+'\n')
+                result.append(openDelim+line.replace('\n','')+closeDelim+'\n')
         else:
             result.append(line)
 
@@ -5554,23 +5554,28 @@ def deleteComments (self,event=None):
 
     if d1:
         # Remove the single-line comment delim in front of each line
-        d1 = d1 + ' '
-        n1 = len(d1)
+        d1b = d1 + ' '
+        n1,n1b = len(d1),len(d1b)
         for s in lines:
             i = g.skip_ws(s,0)
-            if g.match(s,i,d1):
+            if g.match(s,i,d1b):
+                result.append(s[:i] + s[i+n1b:])
+            elif g.match(s,i,d1):
                 result.append(s[:i] + s[i+n1:])
             else:
                 result.append(s)
     else:
         # Remove the block comment delimiters from each line.
-        d2,d3 = d2+' ',' '+d3
         n2,n3 = len(d2),len(d3)
         for s in lines:
-            s2 = s.rstrip()
             i = g.skip_ws(s,0)
-            if g.match(s,i,d2) and g.match(s2,len(s2)-n3,d3):
-                result.append(s[:i] + s[i+n2:-n3]+'\n')
+            j = s.find(d3,i+n2)
+            if g.match(s,i,d2) and j > -1:
+                first = i + n2
+                if g.match(s,first,' '): first += 1
+                last = j
+                if g.match(s,last-1,' '): last -= 1
+                result.append(s[:i] + s[first:last] + s[j+n3:])
             else:
                 result.append(s)
 
@@ -19583,6 +19588,123 @@ def scanOptions():
 
 The default, True, is the legacy operation, which I recommend.
 
+#@+node:ekr.20111115122621.9785: *4* Improved add/delete-comments
+@nocolor-node
+
+add-comments preserves trailing whitespace.
+delete-comments now works whether or not blanks surround comments delims.
+#@+node:ekr.20050312114529.1: *5* addComments
+def addComments (self,event=None):
+    
+    << addComments docstring >>
+
+    c = self ; p = c.p
+    d = c.scanAllDirectives(p)
+    d1,d2,d3 = d.get('delims') # d1 is the line delim.
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    if not lines:
+        g.es('no text selected',color='blue')
+        return
+
+    d2 = d2 or '' ; d3 = d3 or ''
+    if d1: openDelim,closeDelim = d1+' ',''
+    else:  openDelim,closeDelim = d2+' ',' '+d3
+
+    # Comment out non-blank lines.
+    indent = c.config.getBool('indent_added_comments',default=True)
+    result = []
+    for line in lines:
+        if line.strip():
+            i = g.skip_ws(line,0)
+            if indent:
+                result.append(line[0:i]+openDelim+line[i:].replace('\n','')+closeDelim+'\n')
+            else:
+                result.append(openDelim+line.replace('\n','')+closeDelim+'\n')
+        else:
+            result.append(line)
+
+    result = ''.join(result)
+    c.updateBodyPane(head,result,tail,undoType='Add Comments',oldSel=None,oldYview=oldYview)
+#@+node:ekr.20111115111842.9789: *6* << addComments docstring >>
+@pagewidth 50
+
+'''
+Converts all selected lines to comment lines using
+the comment delimiters given by the applicable
+ @language directive.
+
+Inserts single-line comments if possible; inserts
+block comments for languages like html that lack
+single-line comments.
+
+ @bool indent_added_comments
+
+If True (the default), inserts opening comment
+delimiters just before the first non-whitespace
+character of each line. Otherwise, inserts opening
+comment delimiters at the start of each line.
+
+*See also*: delete-comments.
+'''
+#@+node:ekr.20050312114529.2: *5* deleteComments
+def deleteComments (self,event=None):
+    
+    << deleteComments docstring >>
+
+    c = self ; p = c.p
+    d = c.scanAllDirectives(p)
+    # d1 is the line delim.
+    d1,d2,d3 = d.get('delims')
+
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    result = []
+    if not lines:
+        g.es('no text selected',color='blue')
+        return
+
+    if d1:
+        # Remove the single-line comment delim in front of each line
+        d1b = d1 + ' '
+        n1,n1b = len(d1),len(d1b)
+        for s in lines:
+            i = g.skip_ws(s,0)
+            if g.match(s,i,d1b):
+                result.append(s[:i] + s[i+n1b:])
+            elif g.match(s,i,d1):
+                result.append(s[:i] + s[i+n1:])
+            else:
+                result.append(s)
+    else:
+        # Remove the block comment delimiters from each line.
+        n2,n3 = len(d2),len(d3)
+        for s in lines:
+            i = g.skip_ws(s,0)
+            j = s.find(d3,i+n2)
+            if g.match(s,i,d2) and j > -1:
+                first = i + n2
+                if g.match(s,first,' '): first += 1
+                last = j
+                if g.match(s,last-1,' '): last -= 1
+                result.append(s[:i] + s[first:last] + s[j+n3:])
+            else:
+                result.append(s)
+
+    result = ''.join(result)
+    c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)
+#@+node:ekr.20111115111842.9790: *6* << deleteComments docstring >>
+@pagewidth 50
+
+'''
+Removes one level of comment delimiters from all
+selected lines.  The applicable @language directive
+determines the comment delimiters to be removed.
+
+Removes single-line comments if possible; removes
+block comments for languages like html that lack
+single-line comments.
+
+*See also*: add-comments.
+'''
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
@@ -23011,7 +23133,7 @@ def isValidLanguage (self,language):
     
     fn = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
     return g.os_path_exists(fn)
-#@+node:ekr.20111114085925.9932: *4* Why does the unittest/output folder contain empty files? 
+#@+node:ekr.20111114085925.9932: *4* Why does the unittest/output folder contain empty files?
 #@+node:ekr.20031218072017.1462: *5* ic.exportHeadlines
 def exportHeadlines (self,fileName):
 
