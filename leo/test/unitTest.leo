@@ -131,6 +131,7 @@
 </v>
 <v t="ville.20090312195309.2"><vh>@@@test find_h / find_b / filter_h / filter_b</vh></v>
 <v t="ekr.20100131171342.5478"><vh>@@@test that log and body implements high-level interface</vh></v>
+<v t="ekr.20111115071700.3870"><vh>@test settings when run externally</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -727,6 +728,7 @@ nodeB
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679">run-selected-unit-tests-externally = Alt-5</t>
+<t tx="ekr.20111115071700.3870">c.k.simulateCommand('print-settings')</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

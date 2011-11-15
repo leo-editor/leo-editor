@@ -18238,8 +18238,8 @@ def isUnitTestNode (self,p):
             return True
     else:
         return False
-#@+node:ekr.20070627140344.2: *6* runTests
-def runTests (self,trace=False):
+#@+node:ekr.20070627140344.2: *6* runTests (runTestExternallyHelperClass)
+def runTests (self):
     # 2010/09/09: removed the gui arg: there is no way to set it.
 
     '''
@@ -18247,7 +18247,7 @@ def runTests (self,trace=False):
     in a separate process.
     '''
 
-    trace = False or trace
+    trace = False
     import time
     c = self.c ; p = c.p
     t1 = time.time()
@@ -18268,7 +18268,8 @@ def runTests (self,trace=False):
             g.es('created %s unit tests' % (kind),color='blue')
         # 2010/09/09: allow a way to specify the gui.
         gui = g.app.unitTestGui or 'nullGui'
-        runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo',silent=True)
+        runUnitTestLeoFile(gui=gui,
+            path='dynamicUnitTest.leo',silent=True)
         c.selectPosition(p.copy())
     else:
         g.es_print('no %s@test or @suite nodes in %s outline' % (
@@ -18333,8 +18334,8 @@ def createFileFromOutline (self,c2):
     c2.mFileName = path
     c2.fileCommands.save(path,silent=True)
     c2.close()
-#@+node:ekr.20070627140344.2: *5* runTests
-def runTests (self,trace=False):
+#@+node:ekr.20070627140344.2: *5* runTests (runTestExternallyHelperClass)
+def runTests (self):
     # 2010/09/09: removed the gui arg: there is no way to set it.
 
     '''
@@ -18342,7 +18343,7 @@ def runTests (self,trace=False):
     in a separate process.
     '''
 
-    trace = False or trace
+    trace = False
     import time
     c = self.c ; p = c.p
     t1 = time.time()
@@ -18363,7 +18364,8 @@ def runTests (self,trace=False):
             g.es('created %s unit tests' % (kind),color='blue')
         # 2010/09/09: allow a way to specify the gui.
         gui = g.app.unitTestGui or 'nullGui'
-        runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo',silent=True)
+        runUnitTestLeoFile(gui=gui,
+            path='dynamicUnitTest.leo',silent=True)
         c.selectPosition(p.copy())
     else:
         g.es_print('no %s@test or @suite nodes in %s outline' % (

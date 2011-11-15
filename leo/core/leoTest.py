@@ -747,7 +747,7 @@ def runLeoTest(c,path,verbose=False,full=False):
             g.app.closeLeoWindow(frame)
         c.frame.update() # Restored in Leo 4.4.8.
 #@+node:ekr.20090514072254.5746: ** runUnitTestLeoFile
-def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
+def runUnitTestLeoFile (gui='qt',path='unitTest.leo',readSettings=True,silent=True):
 
     '''Run all unit tests in path (a .leo file) in a pristine environment.'''
 
@@ -763,6 +763,7 @@ def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
     guiArg = '--gui=%s' % gui
     pathArg = '--path=%s' % path
     args = [sys.executable,leo,path,guiArg,pathArg]
+    if readSettings: args.append('--read-settings')
     if silent: args.append('--silent')
     if trace: g.trace(args)
 
@@ -901,8 +902,8 @@ class runTestExternallyHelperClass:
                 return True
         else:
             return False
-    #@+node:ekr.20070627140344.2: *3* runTests
-    def runTests (self,trace=False):
+    #@+node:ekr.20070627140344.2: *3* runTests (runTestExternallyHelperClass)
+    def runTests (self):
         # 2010/09/09: removed the gui arg: there is no way to set it.
 
         '''
@@ -910,7 +911,7 @@ class runTestExternallyHelperClass:
         in a separate process.
         '''
 
-        trace = False or trace
+        trace = False
         import time
         c = self.c ; p = c.p
         t1 = time.time()
@@ -931,7 +932,8 @@ class runTestExternallyHelperClass:
                 g.es('created %s unit tests' % (kind),color='blue')
             # 2010/09/09: allow a way to specify the gui.
             gui = g.app.unitTestGui or 'nullGui'
-            runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo',silent=True)
+            runUnitTestLeoFile(gui=gui,
+                path='dynamicUnitTest.leo',silent=True)
             c.selectPosition(p.copy())
         else:
             g.es_print('no %s@test or @suite nodes in %s outline' % (

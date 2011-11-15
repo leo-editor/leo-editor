@@ -2244,7 +2244,10 @@ class configClass:
 
         # Use a single g.es statement.
         result.append('\n'+legend)
-        g.es('',''.join(result),tabName='Settings')
+        if g.unitTesting:
+            print(''.join(result))
+        else:
+            g.es('',''.join(result),tabName='Settings')
     #@-others
 #@+node:ekr.20041119203941.3: ** class settingsTreeParser (parserBaseClass)
 class settingsTreeParser (parserBaseClass):

@@ -33,13 +33,15 @@ def main ():
     if trace: t1 = time.time()
 
     # Setting verbose=True prints messages that would be sent to the log pane.
-    path,gui,silent = scanOptions()
+    path,gui,readSettigns,silent = scanOptions()
+    
+    # print('(leoDynamicTest.py:main)','readSettings',readSettings)
     # print('(leoDynamicTest.py:main)','silent',silent)
 
     # Not loading plugins and not reading settings speeds things up considerably.
     bridge = leoBridge.controller(gui=gui,
         loadPlugins=False, # Must be False: plugins will fail when run externally.
-        readSettings=False, # True adds about 0.3 seconds.  Is it useful?
+        readSettings=True, # True: adds about 0.3 seconds.  Very useful for some tests.
         silent=True,
         verbose=False)
 
@@ -72,6 +74,7 @@ def scanOptions():
     parser = optparse.OptionParser()
     parser.add_option('--path',dest='path')
     parser.add_option('--gui',dest="gui")
+    parser.add_option('--read-settings',action="store_true",dest="read_settings")
     parser.add_option('--silent',action="store_true",dest="silent")
 
     # Parse the options, and remove them from sys.argv.
@@ -87,11 +90,14 @@ def scanOptions():
     if gui: gui = gui.lower()
     if gui not in ('qttabs','qt'):
         gui = 'nullGui'
+        
+    # --read-settings
+    read_settings = options.read_settings
 
     # --silent
     silent = options.silent
 
-    return path,gui,silent
+    return path,gui,read_settings,silent
 #@-others
 
 if __name__ == '__main__':

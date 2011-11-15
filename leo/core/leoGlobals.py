@@ -3121,7 +3121,7 @@ def note (*args,**keys):
 
 def warning (*args,**keys):
     g.es_print('Warning:',color='blue',*args,**keys)
-#@+node:ekr.20070626132332: *3* g.es & minitest
+#@+node:ekr.20070626132332: *3* g.es
 def es(*args,**keys):
 
     '''Put all non-keyword args to the log pane.
@@ -3154,7 +3154,6 @@ def es(*args,**keys):
             app.log.put(s)
     elif g.unitTesting:
         if log and not log.isNull:
-            # New in Leo 4.5 b4: this is no longer needed.
             # This makes the output of unit tests match the output of scripts.
             # s = g.toEncodedString(s,'ascii')
             g.pr(s,newline=newline)

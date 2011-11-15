@@ -85,7 +85,7 @@ class bridgeController:
         '''Return a fully initialized leoGlobals module.'''
 
         return self.isOpen() and self.g
-    #@+node:ekr.20070227093530: *3* initLeo & helpers
+    #@+node:ekr.20070227093530: *3* initLeo & helpers (bridgeController)
     def initLeo (self):
 
         '''Init the Leo app to which this class gives access.

@@ -2508,9 +2508,8 @@ class nullLog (leoLog):
         g.trace("nullLog:", g.callers(4))
     #@+node:ekr.20041012083237.3: *3* put and putnl (nullLog)
     def put (self,s,color=None,tabName='Log'):
-        # print('(nullGui) print',s)
+        # print('(nullGui) print',repr(s))
         if self.enabled:
-            # g.rawPrint(s)
             try:
                 g.pr(s,newline=False)
             except UnicodeError:
@@ -2519,7 +2518,6 @@ class nullLog (leoLog):
 
     def putnl (self,tabName='Log'):
         if self.enabled:
-            # g.rawPrint("")
             g.pr('')
     #@+node:ekr.20060124085830: *3* tabs
     def clearTab        (self,tabName,wrap='none'):             pass
