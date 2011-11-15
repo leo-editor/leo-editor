@@ -3316,8 +3316,30 @@ class Commands (object):
     #@+node:ekr.20050312114529: *6* c.insert/removeComments
     #@+node:ekr.20050312114529.1: *7* addComments
     def addComments (self,event=None):
+        
+        #@+<< addComments docstring >>
+        #@+node:ekr.20111115111842.9789: *8* << addComments docstring >>
+        #@@pagewidth 50
 
-        '''Convert all selected lines in the body text to comment lines.'''
+        '''
+        Converts all selected lines to comment lines using
+        the comment delimiters given by the applicable
+         @language directive.
+
+        Inserts single-line comments if possible; inserts
+        block comments for languages like html that lack
+        single-line comments.
+
+         @bool indent_added_comments
+
+        If True (the default), inserts opening comment
+        delimiters just before the first non-whitespace
+        character of each line. Otherwise, inserts opening
+        comment delimiters at the start of each line.
+
+        *See also*: delete-comments.
+        '''
+        #@-<< addComments docstring >>
 
         c = self ; p = c.p
         d = c.scanAllDirectives(p)
@@ -3348,8 +3370,23 @@ class Commands (object):
         c.updateBodyPane(head,result,tail,undoType='Add Comments',oldSel=None,oldYview=oldYview)
     #@+node:ekr.20050312114529.2: *7* deleteComments
     def deleteComments (self,event=None):
+        
+        #@+<< deleteComments docstring >>
+        #@+node:ekr.20111115111842.9790: *8* << deleteComments docstring >>
+        #@@pagewidth 50
 
-        '''Remove one level of comment delimiters from all selected lines in the body text.'''
+        '''
+        Removes one level of comment delimiters from all
+        selected lines.  The applicable @language directive
+        determines the comment delimiters to be removed.
+
+        Removes single-line comments if possible; removes
+        block comments for languages like html that lack
+        single-line comments.
+
+        *See also*: add-comments.
+        '''
+        #@-<< deleteComments docstring >>
 
         c = self ; p = c.p
         d = c.scanAllDirectives(p)

@@ -5485,8 +5485,8 @@ either the old or new version of the add-comments command.
 #@+node:ekr.20050312114529: *5* c.insert/removeComments
 #@+node:ekr.20050312114529.1: *6* addComments
 def addComments (self,event=None):
-
-    '''Convert all selected lines in the body text to comment lines.'''
+    
+    << addComments docstring >>
 
     c = self ; p = c.p
     d = c.scanAllDirectives(p)
@@ -5515,10 +5515,31 @@ def addComments (self,event=None):
 
     result = ''.join(result)
     c.updateBodyPane(head,result,tail,undoType='Add Comments',oldSel=None,oldYview=oldYview)
+#@+node:ekr.20111115111842.9789: *7* << addComments docstring >>
+@pagewidth 50
+
+'''
+Converts all selected lines to comment lines using
+the comment delimiters given by the applicable
+ @language directive.
+
+Inserts single-line comments if possible; inserts
+block comments for languages like html that lack
+single-line comments.
+
+ @bool indent_added_comments
+
+If True (the default), inserts opening comment
+delimiters just before the first non-whitespace
+character of each line. Otherwise, inserts opening
+comment delimiters at the start of each line.
+
+*See also*: delete-comments.
+'''
 #@+node:ekr.20050312114529.2: *6* deleteComments
 def deleteComments (self,event=None):
-
-    '''Remove one level of comment delimiters from all selected lines in the body text.'''
+    
+    << deleteComments docstring >>
 
     c = self ; p = c.p
     d = c.scanAllDirectives(p)
@@ -5555,6 +5576,20 @@ def deleteComments (self,event=None):
 
     result = ''.join(result)
     c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)
+#@+node:ekr.20111115111842.9790: *7* << deleteComments docstring >>
+@pagewidth 50
+
+'''
+Removes one level of comment delimiters from all
+selected lines.  The applicable @language directive
+determines the comment delimiters to be removed.
+
+Removes single-line comments if possible; removes
+block comments for languages like html that lack
+single-line comments.
+
+*See also*: add-comments.
+'''
 #@+node:ekr.20111113141805.10062: *3* Code
 #@+node:ekr.20111109105907.9796: *4* Simplified g.pr
 #@+node:ekr.20111023164430.16771: *4* Removed unused color tags
@@ -22976,6 +23011,192 @@ def isValidLanguage (self,language):
     
     fn = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
     return g.os_path_exists(fn)
+#@+node:ekr.20111114085925.9932: *4* Why does the unittest/output folder contain empty files? 
+#@+node:ekr.20031218072017.1462: *5* ic.exportHeadlines
+def exportHeadlines (self,fileName):
+
+    c = self.c ; p = c.p
+    nl = g.u(self.output_newline)
+    
+    if not p: return
+    self.setEncoding()
+    firstLevel = p.level()
+
+    try:
+        theFile = open(fileName,'w')
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        leoTest.fail()
+        return
+    for p in p.self_and_subtree():
+        head = p.moreHead(firstLevel,useVerticalBar=True)
+        s = head + nl
+        if not g.isPython3: # 2010/08/27
+            s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
+        theFile.write(s)
+    theFile.close()
+#@+node:ekr.20051104075904.78: *5* makeImportExportSuite
+def makeImportExportSuite(c,parentHeadline,doImport):
+
+    """Create an Import/Export test for every descendant of testParentHeadline.."""
+
+    u = testUtils(c)
+    parent = u.findNodeAnywhere(parentHeadline)
+    assert parent,'node not found: %s' % (parentHeadline)
+    temp = u.findNodeInTree(parent,"tempNode")
+    assert temp,'node not found: tempNode'
+
+    # Create the suite and add all test cases.
+    suite = unittest.makeSuite(unittest.TestCase)
+
+    for p in parent.children():
+        if p != temp:
+            # 2009/10/02: avoid copy arg to iter
+            p2 = p.copy()
+            dialog = u.findNodeInTree(p2,"dialog")
+            assert(dialog)
+            test = importExportTestCase(c,p2,dialog,temp,doImport)
+            suite.addTest(test)
+
+    return suite
+#@+node:ekr.20051104075904.79: *5* class importExportTestCase
+class importExportTestCase(unittest.TestCase):
+
+    """Data-driven unit tests for Leo's edit body commands."""
+
+    @others
+#@+node:ekr.20051104075904.80: *6* __init__
+def __init__ (self,c,p,dialog,temp_p,doImport):
+
+    # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.dialog = dialog
+    self.p = p.copy()
+    self.temp_p = temp_p.copy()
+
+    self.gui = None
+    self.oldGui = None
+    self.wasChanged = c.changed
+    self.fileName = ""
+    self.doImport = doImport
+
+    self.old_p = c.p
+#@+node:ekr.20051104075904.81: *6*  fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+#@+node:ekr.20051104075904.82: *6* importExport
+def importExport (self):
+
+    c = self.c ; p = self.p
+
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    commandName = p.h
+    command = getattr(c,commandName) # Will fail if command does not exist.
+    command(event=None)
+
+    failedMethod = g.app.unitTestDict.get("fail")
+    self.failIf(failedMethod,failedMethod)
+#@+node:ekr.20051104075904.83: *6* runTest
+def runTest(self):
+
+    # """Import Export Test Case"""
+
+    self.importExport()
+#@+node:ekr.20051104075904.84: *6* setUp
+def setUp(self):
+
+    trace = False
+    c = self.c ; temp_p = self.temp_p
+    d = self.dialog
+
+    temp_p.setBodyString('')
+
+    # Create a node under temp_p.
+    child = temp_p.insertAsLastChild()
+    assert(child)
+    c.setHeadString(child,"import/export test: " + self.p.h)
+    c.selectPosition(child)
+
+    assert(d)
+    s = d.bodyString()
+    lines = s.split('\n')
+    name = lines[0]
+    fileName = lines[1]
+
+    # Replace '\\' by os.path.sep in fileName
+    try:
+        # os.path.sep does not exist in Python 2.2.x.
+        sep = os.path.sep
+        fileName = fileName.replace('\\',sep)
+    except AttributeError:
+        fileName = g.os_path_normpath(fileName)
+
+    self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
+    if trace: g.trace('(importExportTestCase',fileName)
+
+    if self.doImport:
+        theDict = {name: [fileName]}
+    else:
+        theDict = {name: fileName}
+
+    self.oldGui = g.app.gui
+    self.gui = leoGui.unitTestGui(theDict,trace=False)
+#@+node:ekr.20051104075904.85: *6* shortDescription
+def shortDescription (self):
+
+    try:
+        return "ImportExportTestCase: %s %s" % (self.p.h,self.fileName)
+    except Exception:
+        return "ImportExportTestCase"
+#@+node:ekr.20051104075904.86: *6* tearDown
+def tearDown (self):
+
+    c = self.c ; temp_p = self.temp_p
+
+    if self.gui:
+        self.gui.destroySelf()
+        self.gui = None
+
+    temp_p.setBodyString("")
+    temp_p.clearDirty()
+
+    if not self.wasChanged:
+        c.setChanged (False)
+
+    if 1: # Delete all children of temp node.
+        while temp_p.firstChild():
+            temp_p.firstChild().doDelete()
+
+    g.app.gui = self.oldGui
+    c.selectPosition(self.old_p)
+#@+node:ekr.20031218072017.2850: *5* c.exportHeadlines
+def exportHeadlines (self,event=None):
+
+    '''Export all headlines to an external file.'''
+
+    c = self
+
+    filetypes = [("Text files", "*.txt"),("All files", "*")]
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile="headlines.txt",
+        title="Export Headlines",
+        filetypes=filetypes,
+        defaultextension=".txt")
+    c.bringToFront()
+
+    if fileName and len(fileName) > 0:
+        g.setGlobalOpenDir(fileName)
+        g.chdir(fileName)
+        c.importCommands.exportHeadlines(fileName)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

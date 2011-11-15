@@ -4444,3 +4444,6 @@ outline_pane_scrolls_horizontally
 use_minibuffer
 Imo
 pyxides
+deleteComments
+d3
+addComments
