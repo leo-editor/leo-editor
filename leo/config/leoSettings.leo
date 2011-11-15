@@ -530,6 +530,7 @@
 </v>
 <v t="ekr.20110611092035.16471"></v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
+<v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
 <v t="ekr.20110611092035.16488"><vh>Bracket matching</vh>
 <v t="ekr.20060804095015.1"><vh>@string close_flash_brackets = )]}</vh></v>
@@ -9503,6 +9504,7 @@ var</t>
 True (Recommended): The contract-or-goto-parent (Alt-RtArrow) contracts all
 children of the to-be-selected parent.
 </t>
+<t tx="ekr.20111115083813.12518"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files

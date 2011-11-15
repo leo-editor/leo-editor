@@ -3332,12 +3332,15 @@ class Commands (object):
         else:  openDelim,closeDelim = d2+' ',' '+d3
 
         # Comment out non-blank lines.
+        indent = c.config.getBool('indent_added_comments',default=True)
         result = []
         for line in lines:
             if line.strip():
                 i = g.skip_ws(line,0)
-                # result.append(line[0:i]+openDelim+line[i:]+closeDelim)
-                result.append(openDelim+line.rstrip()+closeDelim+'\n')
+                if indent:
+                    result.append(line[0:i]+openDelim+line[i:].rstrip()+closeDelim+'\n')
+                else:
+                    result.append(openDelim+line.rstrip()+closeDelim+'\n')
             else:
                 result.append(line)
 
@@ -3380,29 +3383,6 @@ class Commands (object):
                     result.append(s[:i] + s[i+n2:-n3]+'\n')
                 else:
                     result.append(s)
-                        
-            # n = len(lines)
-            # for i in range(n):
-                # line = lines[i]
-                # if i not in (0,n-1):
-                    # result.append(line)
-                # if i == 0:
-                    # j = g.skip_ws(line,0)
-                    # if g.match(line,j,d2):
-                        # k = g.skip_ws(line,j + len(d2))
-                        # result.append(line[0:j] + line[k:])
-                    # else:
-                        # g.es('',"'%s'" % (d2),"not found",color='blue')
-                        # return
-                # if i == n-1:
-                    # if i == 0:
-                        # line = result[0] ; result = []
-                    # s = line.rstrip()
-                    # if s.endswith(d3):
-                        # result.append(s[:-len(d3)].rstrip())
-                    # else:
-                        # g.es('',"'%s'" % (d3),"not found",color='blue')
-                        # return
 
         result = ''.join(result)
         c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)

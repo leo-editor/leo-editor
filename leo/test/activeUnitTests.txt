@@ -4184,14 +4184,17 @@ w = c.frame.body.bodyCtrl
 p = g.findNodeInTree(c,p,'html')
 assert p,'no test node'
 s = p.b
-
+indent = c.config.getBool('indent_added_comments',default=True)
 try:
     i = p.b.find('text')
     assert i > -1,'fail1: %s' % (repr(p.b))
     c.selectPosition(p)
     w.setSelectionRange(i,i+4)
     c.addComments()
-    i = p.b.find('<!-- text')
+    if indent:
+        i = p.b.find('<!-- text')
+    else:
+        i = p.b.find('<!--     text')
     assert i > -1,'fail2: %s' % (repr(p.b))
     c.deleteComments()
     assert p.b == s,'fail3: %s' % (repr(p.b))
@@ -4201,7 +4204,7 @@ finally:
 #@+node:ekr.20111112171235.3855: *5* html
 @language html
 <html>
-text 
+    text 
 </html>
 #@+node:ekr.20111112171235.3858: *4* @test add/delete python comments
 # Can't be run externally.
@@ -4209,6 +4212,7 @@ w = c.frame.body.bodyCtrl
 p = g.findNodeInTree(c,p,'python')
 assert p,'no test node'
 s = p.b
+indent = c.config.getBool('indent_added_comments',default=True)
 
 try:
     i = p.b.find('pass')
@@ -4216,7 +4220,10 @@ try:
     c.selectPosition(p)
     w.setSelectionRange(i,i+4)
     c.addComments()
-    i = p.b.find('#     pass')
+    if indent:
+        i = p.b.find('# pass')
+    else:
+        i = p.b.find('#     pass')
     assert i > -1,'fail2: %s' % (repr(p.b))
     c.deleteComments()
     assert p.b == s,'fail3: %s' % (repr(p.b))
@@ -17541,13 +17548,7 @@ This eliminates references to nodes that no longer exist in the present outline.
 
 import leo.core.leoTest as leoTest
 
-g.app.enableUnitTest = True
-
-if g.app.isExternalUnitTest:
-    # Create a do-nothing suite.
-    suite = leoTest.generalTestCase(c,p)
-else:
-    suite = leoTest.makeEditBodySuite(c,p)
+suite = leoTest.makeEditBodySuite(c,p)
 
 g.app.scriptDict['suite'] = suite
 #@+node:ekr.20040712101754.38: *5* editBodyTests
@@ -17579,9 +17580,9 @@ def addCommentTest():
 
 def addCommentTest():
 
-#     if 1:
-#         a = 2
-#         b = 3
+    # if 1:
+        # a = 2
+        # b = 3
 
     pass
 #@+node:ekr.20050417202713.3: *7* selection
