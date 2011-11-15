@@ -1408,14 +1408,16 @@ class importExportTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.84: *5* setUp
     def setUp(self):
 
-        c = self.c ; temp_p = self.temp_p ; d = self.dialog
+        trace = False
+        c = self.c ; temp_p = self.temp_p
+        d = self.dialog
 
         temp_p.setBodyString('')
 
         # Create a node under temp_p.
         child = temp_p.insertAsLastChild()
         assert(child)
-        c.setHeadString(child,"import test: " + self.p.h)
+        c.setHeadString(child,"import/export test: " + self.p.h)
         c.selectPosition(child)
 
         assert(d)
@@ -1433,6 +1435,7 @@ class importExportTestCase(unittest.TestCase):
             fileName = g.os_path_normpath(fileName)
 
         self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
+        if trace: g.trace('(importExportTestCase',fileName)
 
         if self.doImport:
             theDict = {name: [fileName]}

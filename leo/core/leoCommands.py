@@ -1981,7 +1981,7 @@ class Commands (object):
         c.tangleCommands.untangle()
         c.undoer.clearUndoState()
     #@+node:ekr.20031218072017.2849: *5* Export submenu
-    #@+node:ekr.20031218072017.2850: *6* exportHeadlines
+    #@+node:ekr.20031218072017.2850: *6* c.exportHeadlines
     def exportHeadlines (self,event=None):
 
         '''Export all headlines to an external file.'''
@@ -2001,7 +2001,7 @@ class Commands (object):
             g.setGlobalOpenDir(fileName)
             g.chdir(fileName)
             c.importCommands.exportHeadlines(fileName)
-    #@+node:ekr.20031218072017.2851: *6* flattenOutline
+    #@+node:ekr.20031218072017.2851: *6* c.flattenOutline
     def flattenOutline (self,event=None):
 
         '''Export the selected outline to an external file.
@@ -2022,7 +2022,7 @@ class Commands (object):
             g.setGlobalOpenDir(fileName)
             g.chdir(fileName)
             c.importCommands.flattenOutline(fileName)
-    #@+node:ekr.20031218072017.2857: *6* outlineToCWEB
+    #@+node:ekr.20031218072017.2857: *6* c.outlineToCWEB
     def outlineToCWEB (self,event=None):
 
         '''Export the selected outline to an external file.
@@ -2046,7 +2046,7 @@ class Commands (object):
             g.setGlobalOpenDir(fileName)
             g.chdir(fileName)
             c.importCommands.outlineToWeb(fileName,"cweb")
-    #@+node:ekr.20031218072017.2858: *6* outlineToNoweb
+    #@+node:ekr.20031218072017.2858: *6* c.outlineToNoweb
     def outlineToNoweb (self,event=None):
 
         '''Export the selected outline to an external file.
@@ -2071,7 +2071,7 @@ class Commands (object):
             g.chdir(fileName)
             c.importCommands.outlineToWeb(fileName,"noweb")
             c.outlineToNowebDefaultFileName = fileName
-    #@+node:ekr.20031218072017.2859: *6* removeSentinels
+    #@+node:ekr.20031218072017.2859: *6* c.removeSentinels
     def removeSentinels (self,event=None):
 
         '''Import one or more files, removing any sentinels.'''

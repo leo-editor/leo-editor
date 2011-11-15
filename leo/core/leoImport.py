@@ -427,15 +427,14 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20031218072017.1462: *4* ic.exportHeadlines
     def exportHeadlines (self,fileName):
 
-        c = self.c ; nl = g.u(self.output_newline)
-        p = c.p
+        c = self.c ; p = c.p
+        nl = g.u(self.output_newline)
+        
         if not p: return
         self.setEncoding()
         firstLevel = p.level()
-        # mode = c.config.output_newline
-        # mode = g.choose(mode=="platform",'w','wb')
+
         try:
-            # theFile = open(fileName,mode)
             theFile = open(fileName,'w')
         except IOError:
             g.es("can not open",fileName,color="blue")

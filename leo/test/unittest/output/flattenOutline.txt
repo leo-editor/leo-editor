@@ -1,1 +1,1 @@
-- import test: flattenOutline
+- import/export test: flattenOutline
