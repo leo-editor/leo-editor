@@ -14,8 +14,6 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
-.. @+node:ekr.20111113191715.10085: *4* Make sure the "mustBeDefined" unit tests are fully functional
-.. @+node:ekr.20111113064104.9854: *4* why is w.setAllText(p.b) needed in some unit tests?
 .. @+node:ekr.20111112131605.9756: *4* Run unit tests should leave focus in body
 .. @+node:ekr.20111112105048.9755: *4* Get Linux machine working again
 .. @+node:ekr.20111109122014.9792: *4* Allow @all only in top-level @<file> nodes

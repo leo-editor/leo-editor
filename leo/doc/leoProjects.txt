@@ -19476,6 +19476,88 @@ def contractNodeOrGoToParent (self,event=None):
 @nocolor-node
 
 The error message is now part of the failed assert.  Very helpful.
+#@+node:ekr.20111115070256.9802: *4* External unit tests now always read config settings
+@nocolor-node
+
+The change was simply to set readSettings = True in
+leoDynamicTest.py.main.
+
+Experience show the extra time (0.3 sec) is very important
+for some unit tests.
+#@+node:ekr.20080730161153.6: *5* main & helpers (leoDynamicTest.py)
+def main ():
+
+    trace = False
+    readSettings = True 
+    tag = 'leoDynamicTests.leo'
+    if trace: t1 = time.time()
+
+    # Setting verbose=True prints messages that would be sent to the log pane.
+    path,gui,readSettigns,silent = scanOptions()
+    
+    # print('(leoDynamicTest.py:main)','readSettings',readSettings)
+    # print('(leoDynamicTest.py:main)','silent',silent)
+
+    # Not loading plugins and not reading settings speeds things up considerably.
+    bridge = leoBridge.controller(gui=gui,
+        loadPlugins=False, # Must be False: plugins will fail when run externally.
+        readSettings=True, # True: adds about 0.3 seconds.  Very useful for some tests.
+        silent=True,
+        verbose=False)
+
+    if trace:
+         t2 = time.time()
+         print('%s open bridge:  %0.2fsec' % (tag,t2-t1))
+
+    if bridge.isOpen():
+        g = bridge.globals()
+        g.app.silentMode = silent
+        g.app.isExternalUnitTest = True
+        path = g.os_path_finalize_join(g.app.loadDir,'..','test',path)
+        c = bridge.openLeoFile(path)
+        if trace:
+            t3 = time.time()
+            print('%s open file: %0.2fsec' % (tag,t3-t2))
+        runUnitTests(c,g)
+#@+node:ekr.20080730161153.7: *6* runUnitTests
+def runUnitTests (c,g):
+
+    p = c.rootPosition()
+    #g.es_print('running dynamic unit tests...')
+    c.selectPosition(p)
+    c.debugCommands.runAllUnitTestsLocally()
+#@+node:ekr.20090121164439.6176: *6* scanOptions
+def scanOptions():
+
+    '''Handle all options and remove them from sys.argv.'''
+
+    parser = optparse.OptionParser()
+    parser.add_option('--path',dest='path')
+    parser.add_option('--gui',dest="gui")
+    parser.add_option('--read-settings',action="store_true",dest="read_settings")
+    parser.add_option('--silent',action="store_true",dest="silent")
+
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+
+    # -- path
+    # We can't finalize the path here, because g does not exist ye.
+    path = options.path or 'dynamicUnitTest.leo'
+
+    # -- gui
+    gui = options.gui
+    if gui: gui = gui.lower()
+    if gui not in ('qttabs','qt'):
+        gui = 'nullGui'
+        
+    # --read-settings
+    read_settings = options.read_settings
+
+    # --silent
+    silent = options.silent
+
+    return path,gui,read_settings,silent
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>

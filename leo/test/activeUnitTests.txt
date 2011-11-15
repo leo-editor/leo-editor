@@ -555,32 +555,6 @@ def removeFile(path):
         if trace:
             print("@test batch mode: removeFile: not found:",test_file)
 #@+node:ekr.20100131171342.5472: *3* Check base classes & ivars
-#@+node:ekr.20100131171342.5478: *4* @@@test that log and body implements high-level interface
-logCtrl = c.frame.log.logCtrl
-
-table = (
-    ('mustBeDefinedInSubclasses',logCtrl.mustBeDefinedInSubclasses),
-    ('mustBeDefinedInBaseClass',logCtrl.mustBeDefinedOnlyInBaseClass),
-    ('mustBeDefined',logCtrl.mustBeDefined),
-)
-
-# Check existence.
-for tag,aList in table:
-    for z in aList:
-        assert hasattr(c.frame.log,z),'%s %s %s' % (tag,c.frame.log,z)
-        assert hasattr(c.frame.body,z),'%s %s %s' % (tag,c.frame.body,z)
-
-# Check signatures.
-import inspect
-for tag,aList in table:
-    for z in aList:
-        func = getattr(c.frame.body.bodyCtrl,z)
-        func2 = getattr(c.frame.log.logCtrl,z)
-        assert func,z
-        assert func2,z
-        d1 = inspect.getargspec(func)
-        d2 = inspect.getargspec(func2)
-        assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 #@+node:ekr.20100131171342.5479: *4* @test official commander ivars
 f = c.frame
 assert(f.c==c)
@@ -1188,6 +1162,7 @@ for ext in ext_d:
 These all call g.findNodeAnywhere for an @<file> node.
 We don't want to copy such nodes to dynamicUnitTest.leo
 #@+node:ekr.20090704085350.5044: *5* @test @asis: shape of tree
+# Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
 
     h = '@asis ../test/unittest/at-asis-test.py'
@@ -1205,6 +1180,7 @@ if not g.app.isExternalUnitTest:
         assert p2.h == h2
         assert len(p2.b) > 10
 #@+node:ekr.20090704085350.5052: *5* @test @auto: shape of tree
+# Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
 
     h = '@auto ../test/unittest/at-auto-test.py'
@@ -1222,6 +1198,7 @@ if not g.app.isExternalUnitTest:
         assert p2.h == h2
         assert len(p2.b) > 10
 #@+node:ekr.20090704085350.5018: *5* @test @shadow: shape of tree
+# Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
 
     h = '@shadow ../test/unittest/at-shadow-test.py'
@@ -1240,6 +1217,7 @@ if not g.app.isExternalUnitTest:
 #@+node:ekr.20100731163237.5778: *5* @test @thin: html section references
 @language python
 
+# Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
     
     # html uses block comments.  This is an important test.
@@ -1257,6 +1235,7 @@ if not g.app.isExternalUnitTest:
     
     assert p.b == s,'body failure'
 #@+node:ekr.20090704085350.5046: *5* @test @thin: shape of tree
+# Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
 
     h = '@thin ../test/unittest/at-thin-test.py'
@@ -1274,6 +1253,7 @@ if not g.app.isExternalUnitTest:
         assert p2.h == h2
         assert len(p2.b) > 10
 #@+node:ekr.20111021115306.3696: *5* @test @file: tex bug
+# Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
     
     p = g.findNodeAnywhere(c,"@file ../test/unittest/tex-error.tex")
@@ -1294,71 +1274,71 @@ if not g.app.isExternalUnitTest:
     # print(repr(p.b))
     assert p.b == s
 #@+node:ekr.20100802220019.5795: *5* @test at.deleteUnvistedNodes
-if not g.app.isExternalUnitTest:
-    def clone (p,parent,n):
-        p2 = p.clone()
-        p2.moveToNthChildOf(parent,n)
-        return p2
-    
-    def make (parent,n,h):
-        child = parent.insertAsNthChild(n)
-        child.h = h
-        return child
-    
-    def delete_r():
-        '''Delete all 'Resurrected Nodes' nodes.'''
-        while True:
-            r = g.findNodeAnywhere(c,'Resurrected Nodes')
-            if r: r.doDelete(newNode=p)
-            else: break
-    
-    def delete_children():
-        # Delete all children of p.
-        while p.hasChildren():
-            p.firstChild().doDelete(newNode=p)
-    
-    def test(p,h,tag):
-        assert p,'p'
-        assert p.h == 'From root','p.h %s' % tag
-        assert p.numberOfChildren() == 1,'number of children %s' % tag
-        assert p.firstChild().h == h,'child.h %s' % tag
-    
+def clone (p,parent,n):
+    p2 = p.clone()
+    p2.moveToNthChildOf(parent,n)
+    return p2
+
+def make (parent,n,h):
+    child = parent.insertAsNthChild(n)
+    child.h = h
+    return child
+
+def delete_r():
+    '''Delete all 'Resurrected Nodes' nodes.'''
+    while True:
+        r = g.findNodeAnywhere(c,'Resurrected Nodes')
+        if r: r.doDelete(newNode=p)
+        else: break
+
+def delete_children():
+    # Delete all children of p.
+    while p.hasChildren():
+        p.firstChild().doDelete(newNode=p)
+
+def test(p,h,tag):
+    assert p,'p'
+    assert p.h == 'From root','p.h %s' % tag
+    assert p.numberOfChildren() == 1,'number of children %s' % tag
+    assert p.firstChild().h == h,'child.h %s' % tag
+
+delete_r()
+delete_children()
+
+# Create some children.
+root = make(p,0,'root')
+child1 = make(root,0,'child1')
+child2 = make(root,1,'child2')
+child3 = make(root,2,'child3')
+child11 = make(child1,0,'child11')
+child21 = make(child2,0,'child21')
+child31 = make(child3,0,'child31')
+# Create some clones.
+child4 = clone(child31,root,3)
+
+for z in root.self_and_subtree():
+    z.setVisited()
+for z in child2,child31: # These should be moved.
+    z.clearVisited()
+
+c.atFileCommands.deleteUnvisitedNodes(root)
+
+if 1:
+    r = g.findNodeAnywhere(c,'Resurrected Nodes')
+    assert r,'r'
+    r1 = r.firstChild()
+    r2 = r1.next()
+    r3 = r2.next()
+    test(r1,'child2','r1')
+    test(r2,'child31','r2')
+    assert root.numberOfChildren() == 3,'root.n'
+if 1:
     delete_r()
     delete_children()
-    
-    # Create some children.
-    root = make(p,0,'root')
-    child1 = make(root,0,'child1')
-    child2 = make(root,1,'child2')
-    child3 = make(root,2,'child3')
-    child11 = make(child1,0,'child11')
-    child21 = make(child2,0,'child21')
-    child31 = make(child3,0,'child31')
-    # Create some clones.
-    child4 = clone(child31,root,3)
-    
-    for z in root.self_and_subtree():
-        z.setVisited()
-    for z in child2,child31: # These should be moved.
-        z.clearVisited()
-    
-    c.atFileCommands.deleteUnvisitedNodes(root)
-    
-    if 1:
-        r = g.findNodeAnywhere(c,'Resurrected Nodes')
-        assert r,'r'
-        r1 = r.firstChild()
-        r2 = r1.next()
-        r3 = r2.next()
-        test(r1,'child2','r1')
-        test(r2,'child31','r2')
-        assert root.numberOfChildren() == 3,'root.n'
-    if 1:
-        delete_r()
-        delete_children()
-    
-    c.redraw_now()
+
+c.redraw_now()
 #@+node:ekr.20110615130436.3319: *5* @test writing a .leo file retains orphan bits
+# Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
     
     # Writing a .leo file must retain orphan bits of erroneous external files.
@@ -1372,9 +1352,9 @@ if not g.app.isExternalUnitTest:
     c.atFileCommands.clearAllOrphanBits(p2)
     assert p2.isOrphan(),'not an orphan after calling at.clearAllOrphanBits'
 #@+node:ekr.20040707141957.12: *5* @test @thin: @last
+# Doesn't work when run externally because the copy operation changes the gnx.
 if not g.app.isExternalUnitTest:
-    
-    # Doesn't work when run externally because the copy operation changes the gnx.
+
     import leo.core.leoTest as leoTest
     leoTest.runAtFileTest(c,p)
 #@+node:ekr.20040707141957.13: *6* #@thin
@@ -4209,8 +4189,6 @@ try:
     i = p.b.find('text')
     assert i > -1,'fail1: %s' % (repr(p.b))
     c.selectPosition(p)
-    if g.app.isExternalUnitTest:
-        w.setAllText(p.b)
     w.setSelectionRange(i,i+4)
     c.addComments()
     i = p.b.find('<!-- text')
@@ -4236,8 +4214,6 @@ try:
     i = p.b.find('pass')
     assert i > -1,'fail1: %s' % (repr(p.b))
     c.selectPosition(p)
-    if g.app.isExternalUnitTest:
-        w.setAllText(p.b)
     w.setSelectionRange(i,i+4)
     c.addComments()
     i = p.b.find('#     pass')
@@ -4717,20 +4693,18 @@ w = g.app.config.get(None,'global_setting_for_unit_tests','int')
 
 assert w in (None,132) # Will be None when tests run dynamically.
 #@+node:ekr.20060325071703.1: *4* @test ifplatform
-if not g.app.isExternalUnitTest:
+import sys
 
-    import sys
-    
-    win32  = c.config.getBool('test_win32_setting')
-    darwin = c.config.getBool('test_darwin_setting')
-    
-    if sys.platform == 'win32':
-        assert(win32)
-        assert(not darwin)
-    
-    elif sys.platform== 'darwin':
-        assert(not win32)
-        assert(darwin)
+win32  = c.config.getBool('test_win32_setting')
+darwin = c.config.getBool('test_darwin_setting')
+
+if sys.platform == 'win32':
+    assert(win32)
+    assert(not darwin)
+
+elif sys.platform== 'darwin':
+    assert(not win32)
+    assert(darwin)
 
 #@+node:ekr.20050203001146: *4* @test local settings (c.page_width)
 # print(c.page_width)
@@ -4814,14 +4788,14 @@ first line
     line c
 last line
 #@+node:ekr.20071113145804.16: *5* @test apropos_bindings
+# vr plugin not loaded externally.
 if not g.app.isExternalUnitTest:
 
-    # vr plugin not loaded externally.
     c.helpCommands.aproposBindings()
 #@+node:ekr.20071113145804.17: *5* @test apropos_find_commands
+# vr plugin not loaded externally.
 if not g.app.isExternalUnitTest:
 
-    # vr plugin not loaded externally.
     c.helpCommands.aproposFindCommands()
 #@+node:ekr.20061101121602.86: *5* @test back-char
 import leo.core.leoTest as leoTest
@@ -6527,10 +6501,8 @@ p3 = c.p
 # print(p3)
 # assert p == p3
 #@+node:ekr.20100212104817.5351: *5* @test help-for-command
-if not g.app.isExternalUnitTest:
-
-    result = c.helpCommands.getBindingsForCommand('help-for-command')
-    assert result.strip().lower()=='f1'
+result = c.helpCommands.getBindingsForCommand('help-for-command')
+assert result.strip().lower()=='f1'
 #@+node:ekr.20061101121602.266: *5* @test indent-relative
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
@@ -7517,53 +7489,47 @@ A
 @first # -*- coding: utf-8 -*-
 @language python
 
-# Not valid for external test: uses create_key_event.
-if not g.app.isExternalUnitTest:
+try:
+    ec = c.editCommands ; w = c.frame.body.bodyCtrl
+    s = w.getAllText()
 
-    try:
-        ec = c.editCommands ; w = c.frame.body.bodyCtrl
-        s = w.getAllText()
-    
-        # This strings tests unicode, paren matching, and auto-indentation.
-        u = g.u('(a\u00c9\u03a9B\u3045\u4e7cz):\n') # '(aÉΩBぅ乼cz):\n'
-        u = g.u('(pdq):\n')
-        w.setInsertPoint(len(s))
-        for char in u:
-            stroke = g.choose(char=='\n','Return',char)
-            event = g.app.gui.create_key_event(c,char,stroke,w)
-            ec.selfInsertCommand(event)
-        result = w.getAllText()
-        #g.trace('result',repr(result))
-        assert result.endswith('    '),'result:\n%s' % result
-        # Test of autocompleter.
-    finally:
-        if 1:
-            w.setAllText(s)
-            p.setBodyString(s)
-            # g.trace(repr(s))
-            c.recolor()
+    # This strings tests unicode, paren matching, and auto-indentation.
+    u = g.u('(a\u00c9\u03a9B\u3045\u4e7cz):\n') # '(aÉΩBぅ乼cz):\n'
+    u = g.u('(pdq):\n')
+    w.setInsertPoint(len(s))
+    for char in u:
+        stroke = g.choose(char=='\n','Return',char)
+        event = g.app.gui.create_key_event(c,char,stroke,w)
+        ec.selfInsertCommand(event)
+    result = w.getAllText()
+    #g.trace('result',repr(result))
+    assert result.endswith('    '),'result:\n%s' % result
+    # Test of autocompleter.
+finally:
+    if 1:
+        w.setAllText(s)
+        p.setBodyString(s)
+        # g.trace(repr(s))
+        c.recolor()
 
 # end:
 #@+node:ekr.20071113145804.5: *5* @test selfInsertCommand-2 (replacing tabs)
 @language python
 @tabwidth -4
 
-# Not valid for external test: uses create_key_event.
-if not g.app.isExternalUnitTest:
-
-    try:
-        ec = c.editCommands ; w = c.frame.body.bodyCtrl
-        s = w.getAllText()
-        w.setSelectionRange(len(s)-9,len(s)-6)
-        event = g.app.gui.create_key_event(c,'\t','Tab',w)
-        ec.selfInsertCommand(event)
-        result = w.getAllText()
-        # print('result %s' % result)
-        assert result.endswith('\n    ###abcdef\n'),'result\n%s' % (repr(result))
-    finally:
-        w.setAllText(s)
-        p.setBodyString(s)
-        c.recolor_now()
+try:
+    ec = c.editCommands ; w = c.frame.body.bodyCtrl
+    s = w.getAllText()
+    w.setSelectionRange(len(s)-9,len(s)-6)
+    event = g.app.gui.create_key_event(c,'\t','Tab',w)
+    ec.selfInsertCommand(event)
+    result = w.getAllText()
+    # print('result %s' % result)
+    assert result.endswith('\n    ###abcdef\n'),'result\n%s' % (repr(result))
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    c.recolor_now()
     
 ###abcdef
 #@+node:ekr.20071007120750.6: *5* @test set-fill-prefix
@@ -7571,8 +7537,6 @@ if not g.app.isExternalUnitTest:
 
 s = p.b
 w = c.frame.body.bodyCtrl
-if g.app.isExternalUnitTest:
-    w.setAllText(s)
 w.setSelectionRange(2,11)
 c.editCommands.setFillPrefix(event=None)
 prefix = c.editCommands.fillPrefix
@@ -8471,9 +8435,6 @@ for name,s,expected in table:
 
 w = c.frame.body.bodyCtrl
 
-if g.app.isExternalUnitTest:
-    w.setAllText(p.b)
-
 for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWORD')):
     w.setInsertPoint(5)
     c.editCommands.capitalizeHelper(event=None,which=which,undoType=None)
@@ -8504,9 +8465,6 @@ e = c.editCommands
 k = c.k
 w = c.frame.body.bodyCtrl
 
-if g.app.isExternalUnitTest:
-    w.setAllText(p.b)
-
 w.setInsertPoint(0)
 k.arg = 't' # 'targetWord'
 k.setState('find-word',1)
@@ -8519,8 +8477,7 @@ assert i == 10, 'expected 15, got %s' % (i)
 
 e = c.editCommands
 k = c.k ; w = c.frame.body.bodyCtrl
-if g.app.isExternalUnitTest:
-    w.setAllText(p.b)
+
 w.setInsertPoint(0)
 k.arg = 't' # 'targetWord'
 k.setState('find-word',1)
@@ -8582,29 +8539,27 @@ for spot,result in (('1.0',0),(5,5)):
 #@+node:ekr.20051107115231: *4*  Typing
 # These are mysteriously fragile tests, so they go first
 #@+node:ekr.20060208072415: *5* @test Delete key sticks in body
-if not g.app.isExternalUnitTest:
-    
-    import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-    h = 'Test headline abc'
-    p = u.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+h = 'Test headline abc'
+p = u.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.selectPosition(p)
+s = 'ABC'
+c.setBodyString(p,s)
+try:
+    c.bodyWantsFocus()
+    w = c.frame.body.bodyCtrl
+    w.setInsertPoint(2)
+    c.outerUpdate() # This fixed the problem.
+    g.app.gui.event_generate(c,'Delete','Delete',w) # Calls c.outerUpdate()
+    assert p.b == s[:-1],'oops1: expected "AB", got %s' % p.b
+    c.selectPosition(p.threadBack())
     c.selectPosition(p)
-    s = 'ABC'
-    c.setBodyString(p,s)
-    try:
-        c.bodyWantsFocus()
-        w = c.frame.body.bodyCtrl
-        w.setInsertPoint(2)
-        c.outerUpdate() # This fixed the problem.
-        g.app.gui.event_generate(c,'Delete','Delete',w) # Calls c.outerUpdate()
-        assert p.b == s[:-1],'oops1: expected "AB", got %s' % p.b
-        c.selectPosition(p.threadBack())
-        c.selectPosition(p)
-        assert p.b == s[:-1],'oops2: expected "AB", got %s' % p.b
-    finally:
-        if 1:
-            c.setBodyString(p,'')
-            c.redraw(p)
+    assert p.b == s[:-1],'oops2: expected "AB", got %s' % p.b
+finally:
+    if 1:
+        c.setBodyString(p,'')
+        c.redraw(p)
 #@+node:ekr.20051125170139: *5* @test Delete key sticks in headline
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
@@ -8666,14 +8621,12 @@ if selectAll:
 else:
     assert i == len(s) and j == len(s),'oops2: i: %d, j: %d' % (i,j)
 #@+node:ekr.20051120110335: *5* @test inserting a new node can be undone and redone
-if not g.app.isExternalUnitTest:
-
-    u = c.undoer
-    assert u
-    c.insertHeadline()
-    assert u.undoMenuLabel == 'Undo Insert Node',repr(u.undoMenuLabel)
-    c.undoer.undo()
-    assert u.redoMenuLabel == 'Redo Insert Node',repr(u.undoMenuLabel)
+u = c.undoer
+assert u
+c.insertHeadline()
+assert u.undoMenuLabel == 'Undo Insert Node',repr(u.undoMenuLabel)
+c.undoer.undo()
+assert u.redoMenuLabel == 'Redo Insert Node',repr(u.undoMenuLabel)
 #@+node:ekr.20051125155134: *5* @test inserting a new node draws the screen exactly once
 n = c.frame.tree.redrawCount
 # print('before')
@@ -8690,154 +8643,130 @@ try:
 finally:
     c.undoer.undo()
 #@+node:ekr.20051107115231.18: *5* @test paste and undo in headline - at end
-if not g.app.isExternalUnitTest:
 
-    import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-    k = c.keyHandler
-    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-    h = 'Test headline abc'
-    p = u.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    c.redrawAndEdit(p) # To make node visible
-    w = c.edit_widget(p)
-    try:
-        assert w,'oops1'
-        w.setSelectionRange('end','end')
-        paste = 'ABC'
-        g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('end','end')
-        k.manufactureKeyPressForCommandName(w,'paste-text')
-        g.app.gui.event_generate(c,'\n','Return',w)
-        assert p.h == h + paste,'oops2 got: %s' % p.h
-        k.manufactureKeyPressForCommandName(w,'undo')
-        assert p.h == h,'oops3 got: %s' % p.h
-    finally:
-        if 1:
-            c.setHeadString(p,h) # Essential
-            c.redraw(p)
-#@+node:ekr.20051107115231.20: *5* @test paste and undo in headline - with selection
-if not g.app.isExternalUnitTest:
-    
-    import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-    k = c.keyHandler
-    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-    h = 'Test headline abc'
-    p = u.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    c.redraw(p) # To make node visible
-    tree.editLabel(p)
-    w = c.edit_widget(p)
-    try:
-        assert w, 'Null w'
-        paste = 'ABC'
-        g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('1.1','1.2')
-        k.manufactureKeyPressForCommandName(w,'paste-text')
-        g.app.gui.event_generate(c,'\n','Return',w)
-        assert p.h == h[0] + paste + h[2:]
-        k.manufactureKeyPressForCommandName(w,'undo')
-        assert p.h == h, 'head mismatch'
-    finally:
-        if 1:
-            c.setHeadString(p,h) # Essential
-            c.redraw(p)
-#@+node:ekr.20051107115231.16: *5* @test paste at end of headline
-if not g.app.isExternalUnitTest:
-    
-    trace = False ; verbose = False
-    import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-    k = c.keyHandler
-    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-    h = 'Test headline abc'
-    p = u.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    if trace: print('='*20)
-    c.redrawAndEdit(p) # To make node visible
-    w = c.edit_widget(p)
-    g.app.gui.set_focus(c,w)
-    w2 = g.app.gui.get_focus(c)
-    if trace: print('focus 1',w2)
-    if trace: print('*** w ***',w)
-    if 0: # The tkGui.set_focus now does an update to force the focus.
-        w2 = g.app.gui.get_focus(c)
-        if w != w2:
-            print('*** FAIL ***\nw: %s\nw2: %s' % (w,w2))
-        assert w == w2 or hasattr(w,'widget') and w.widget == w2,'w: %s\nw2: %s' % (w,w2)
-        if trace: print('focus',w2)
-    # For the qt gui w is a wrapper and w.widget is the actual widget.
-    
-    try:
-        assert w
-        paste = 'ABC'
-        g.app.gui.replaceClipboardWith(paste)
-        g.app.gui.set_focus(c,w)
-        w2 = g.app.gui.get_focus(c)
-        if trace: print('focus 1',w2)
-        w.setSelectionRange('end','end')
-        k.manufactureKeyPressForCommandName(w,'paste-text')
-        g.app.gui.event_generate(c,'\n','Return',w)
-        ### w.update()
-        if 1:
-            assert p.h == h + paste,'Expected: %s, got %s' % (
-                h + paste,p.h)
-    finally:
-        if trace: print('-'*20)
-        if 1:
-            c.setHeadString(p,h) # Essential
-            c.redraw(p)
-#@+node:ekr.20060208072307: *5* @test paste from menu into body sticks
-if not g.app.isExternalUnitTest:
-
-    import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-    
-    if c.k.defaultUnboundKeyAction == 'insert':
-        h = 'Test headline abc'
-        p = u.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
-        c.redraw(p)
-        c.bodyWantsFocus()
-        paste = 'ABC'
-        g.app.gui.replaceClipboardWith(paste)
-        event = g.app.gui.create_key_event(c,None,None,c.frame.body.bodyCtrl)
-        c.frame.pasteText(event)
-        
-        # Move around and and make sure it doesn't change.
-        try:
-            assert p.b == paste, 'paste1 failed'
-            c.selectPosition(p.threadBack())
-            assert p.b == paste, 'stick failed'
-            c.selectPosition(p)
-            assert p.b == paste, 'revisit failed'
-        finally:
-            if 1:
-                c.setBodyString(p,'')
-                c.redraw(p)
-#@+node:ekr.20060208072331: *5* @test paste from menu into headline sticks
-if not g.app.isExternalUnitTest:
-    
-    import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-    h = 'Test headline abc'
-    p = u.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    c.selectPosition(p)
-    c.frame.tree.editLabel(p)
-    w = c.edit_widget(p)
-    w.setSelectionRange('end','end',insert='end')
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+k = c.keyHandler
+frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+h = 'Test headline abc'
+p = u.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.redrawAndEdit(p) # To make node visible
+w = c.edit_widget(p)
+try:
+    assert w,'oops1'
+    w.setSelectionRange('end','end')
     paste = 'ABC'
     g.app.gui.replaceClipboardWith(paste)
-    event = g.app.gui.create_key_event(c,None,None,w)
+    w.setSelectionRange('end','end')
+    k.manufactureKeyPressForCommandName(w,'paste-text')
+    g.app.gui.event_generate(c,'\n','Return',w)
+    assert p.h == h + paste,'oops2 got: %s' % p.h
+    k.manufactureKeyPressForCommandName(w,'undo')
+    assert p.h == h,'oops3 got: %s' % p.h
+finally:
+    if 1:
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)
+#@+node:ekr.20051107115231.20: *5* @test paste and undo in headline - with selection
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+k = c.keyHandler
+frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+h = 'Test headline abc'
+p = u.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.redraw(p) # To make node visible
+tree.editLabel(p)
+w = c.edit_widget(p)
+try:
+    assert w, 'Null w'
+    paste = 'ABC'
+    g.app.gui.replaceClipboardWith(paste)
+    w.setSelectionRange('1.1','1.2')
+    k.manufactureKeyPressForCommandName(w,'paste-text')
+    g.app.gui.event_generate(c,'\n','Return',w)
+    assert p.h == h[0] + paste + h[2:]
+    k.manufactureKeyPressForCommandName(w,'undo')
+    assert p.h == h, 'head mismatch'
+finally:
+    if 1:
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)
+#@+node:ekr.20051107115231.16: *5* @test paste at end of headline
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+k = c.keyHandler
+frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+h = 'Test headline abc'
+p = u.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.redrawAndEdit(p) # To make node visible
+w = c.edit_widget(p)
+g.app.gui.set_focus(c,w)
+w2 = g.app.gui.get_focus(c)
+
+try:
+    assert w
+    paste = 'ABC'
+    g.app.gui.replaceClipboardWith(paste)
+    g.app.gui.set_focus(c,w)
+    w2 = g.app.gui.get_focus(c)
+    w.setSelectionRange('end','end')
+    k.manufactureKeyPressForCommandName(w,'paste-text')
+    g.app.gui.event_generate(c,'\n','Return',w)
+    assert p.h == h + paste,'Expected: %s, got %s' % (
+        h + paste,p.h)
+finally:
+    if 1:
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)
+#@+node:ekr.20060208072307: *5* @test paste from menu into body sticks
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+
+if c.k.defaultUnboundKeyAction == 'insert':
+    h = 'Test headline abc'
+    p = u.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.redraw(p)
+    c.bodyWantsFocus()
+    paste = 'ABC'
+    g.app.gui.replaceClipboardWith(paste)
+    event = g.app.gui.create_key_event(c,None,None,c.frame.body.bodyCtrl)
     c.frame.pasteText(event)
+    
     # Move around and and make sure it doesn't change.
     try:
-        # g.trace('before select',w,w.getAllText())
+        assert p.b == paste, 'paste1 failed'
         c.selectPosition(p.threadBack())
-        assert p.h == h + paste,'oops1: expected: %s, got %s' % (h + paste,p.h)
+        assert p.b == paste, 'stick failed'
         c.selectPosition(p)
-        assert p.h == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.h)
+        assert p.b == paste, 'revisit failed'
     finally:
         if 1:
-            c.setHeadString(p,h) # Essential
+            c.setBodyString(p,'')
             c.redraw(p)
+#@+node:ekr.20060208072331: *5* @test paste from menu into headline sticks
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+h = 'Test headline abc'
+p = u.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.selectPosition(p)
+c.frame.tree.editLabel(p)
+w = c.edit_widget(p)
+w.setSelectionRange('end','end',insert='end')
+paste = 'ABC'
+g.app.gui.replaceClipboardWith(paste)
+event = g.app.gui.create_key_event(c,None,None,w)
+c.frame.pasteText(event)
+# Move around and and make sure it doesn't change.
+try:
+    # g.trace('before select',w,w.getAllText())
+    c.selectPosition(p.threadBack())
+    assert p.h == h + paste,'oops1: expected: %s, got %s' % (h + paste,p.h)
+    c.selectPosition(p)
+    assert p.h == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.h)
+finally:
+    if 1:
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)
 #@+node:ekr.20051107115231.24: *5* @test paste from menu to body recolors the body
 # Should be a comment# Should be a comment# Should be a comment# Should be a comment
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
@@ -8879,10 +8808,36 @@ g.app.gui.event_generate(c,'\n','Return',w)
 c.outerUpdate()
 assert w != c.get_focus(),'oops2: focus in headline'
 #@+node:ekr.20051107115231.28: *5* @test selecting new node retains paste in headline
-if not g.app.isExternalUnitTest:
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+k = c.keyHandler
+frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+h = 'Test headline abc'
+p = u.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.redraw(p) # To make node visible
+tree.editLabel(p)
+w = c.edit_widget(p)
+try:
+    assert w,'oops1'
+    w.setSelectionRange('end','end')
+    paste = 'ABC'
+    g.app.gui.replaceClipboardWith(paste)
+    w.setSelectionRange('end','end')
+    k.manufactureKeyPressForCommandName(w,'paste-text')
+    c.selectPosition(p.visBack(c))
+    assert p.h == h + paste
+    k.manufactureKeyPressForCommandName(w,'undo')
+    assert p.h == h,'expected: %s, got: %s' % (
+        h,p.h)
+finally:
+    if 1:
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)
+#@+node:ekr.20051107115231.21: *5* @test selecting new node retains typing in headline
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+k = c.k
 
-    import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-    k = c.keyHandler
+if k.defaultUnboundKeyAction == 'insert':
     frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
     h = 'Test headline abc'
     p = u.findNodeAnywhere(h)
@@ -8891,87 +8846,55 @@ if not g.app.isExternalUnitTest:
     tree.editLabel(p)
     w = c.edit_widget(p)
     try:
-        assert w,'oops1'
+        assert w
         w.setSelectionRange('end','end')
-        paste = 'ABC'
-        g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('end','end')
-        k.manufactureKeyPressForCommandName(w,'paste-text')
-        c.selectPosition(p.visBack(c))
-        assert p.h == h + paste
+        g.app.gui.event_generate(c,'X','Shift+X',w)
+        g.app.gui.event_generate(c,'Y','Shift+Y',w)
+        g.app.gui.event_generate(c,'Z','Shift+Z',w)
+        g.app.gui.event_generate(c,'\n','Return',w)
+        assert p.h == h + 'XYZ'
         k.manufactureKeyPressForCommandName(w,'undo')
-        assert p.h == h,'expected: %s, got: %s' % (
-            h,p.h)
+        assert p.h == h
     finally:
         if 1:
             c.setHeadString(p,h) # Essential
             c.redraw(p)
-#@+node:ekr.20051107115231.21: *5* @test selecting new node retains typing in headline
-if not g.app.isExternalUnitTest:
-    
-    import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-    k = c.k
-    
-    if k.defaultUnboundKeyAction == 'insert':
-        frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-        h = 'Test headline abc'
-        p = u.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
-        c.redraw(p) # To make node visible
-        tree.editLabel(p)
-        w = c.edit_widget(p)
-        try:
-            assert w
-            w.setSelectionRange('end','end')
-            g.app.gui.event_generate(c,'X','Shift+X',w)
-            g.app.gui.event_generate(c,'Y','Shift+Y',w)
-            g.app.gui.event_generate(c,'Z','Shift+Z',w)
-            g.app.gui.event_generate(c,'\n','Return',w)
-            assert p.h == h + 'XYZ'
-            k.manufactureKeyPressForCommandName(w,'undo')
-            assert p.h == h
-        finally:
-            if 1:
-                c.setHeadString(p,h) # Essential
-                c.redraw(p)
 #@+node:ekr.20051107115231.17: *5* @test typing and undo in headline - at end
-if not g.app.isExternalUnitTest:
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+k = c.k
 
-    import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-    k = c.k
-    
-    if k.defaultUnboundKeyAction == 'insert':
-        frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-        h = 'Test headline abc'
-        p = u.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
-        c.redrawAndEdit(p) # To make the node visible.
-        w = c.edit_widget(p)
-        # print('guiName',g.app.gui.guiName())
-        try:
-            assert w, 'oops1'
-            wName = g.app.gui.widget_name(w)
-            assert wName.startswith('head'),'w.name:%s' % wName
-            w.setSelectionRange('end','end')
-            g.app.gui.event_generate(c,'X','Shift+X',w)
-            g.app.gui.event_generate(c,'Y','Shift+Y',w)
-            g.app.gui.event_generate(c,'Z','Shift+Z',w)
-            g.app.gui.event_generate(c,'\n','Return',w)
-            assert p.h == h + 'XYZ',(
-                'oops2: expected: %s, got: %s' % (
-                    h + 'XYZ',p.h))
-            if g.app.gui.guiName() != 'nullGui':
-                assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
-                    c.undoer.undoMenuLabel)
-            k.manufactureKeyPressForCommandName(w,'undo')
-            if g.app.gui.guiName() != 'nullGui':
-                assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
-            assert p.h == h,'oops5 got: %s, expected: %s' % (
-                p.h,h)
-        finally:
-            if 1:
-                c.setHeadString(p,h) # Essential
-                c.redraw(p)
+if k.defaultUnboundKeyAction == 'insert':
+    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+    h = 'Test headline abc'
+    p = u.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.redrawAndEdit(p) # To make the node visible.
+    w = c.edit_widget(p)
+    # print('guiName',g.app.gui.guiName())
+    try:
+        assert w, 'oops1'
+        wName = g.app.gui.widget_name(w)
+        assert wName.startswith('head'),'w.name:%s' % wName
+        w.setSelectionRange('end','end')
+        g.app.gui.event_generate(c,'X','Shift+X',w)
+        g.app.gui.event_generate(c,'Y','Shift+Y',w)
+        g.app.gui.event_generate(c,'Z','Shift+Z',w)
+        g.app.gui.event_generate(c,'\n','Return',w)
+        assert p.h == h + 'XYZ',(
+            'oops2: expected: %s, got: %s' % (
+                h + 'XYZ',p.h))
+        if g.app.gui.guiName() != 'nullGui':
+            assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
+                c.undoer.undoMenuLabel)
+        k.manufactureKeyPressForCommandName(w,'undo')
+        if g.app.gui.guiName() != 'nullGui':
+            assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
+        assert p.h == h,'oops5 got: %s, expected: %s' % (
+            p.h,h)
+    finally:
+        if 1:
+            c.setHeadString(p,h) # Essential
+            c.redraw(p)
 #@+node:ekr.20060208072358: *5* @test typing in empty body text redraws the screen (and icon)
 # This test is too flaky for Tk.
 if g.app.gui.guiName() != 'tkinter':
@@ -9593,47 +9516,41 @@ w.deleteTextSelection() ; check('xzAc')
 #@+node:ekr.20061104172236.22: *4* @test c.frame.pasteText
 # target.
 
-if g.app.isExternalUnitTest:
-    pass # uses create_key_event
-else:
-    try:
-        w = c.frame.body.bodyCtrl
-        s = w.getAllText()
-        w.setInsertPoint(len(s))
-        c.k.previousSelection = 2,8
-        event = g.app.gui.create_key_event(c,None,None,w)
-        c.frame.pasteText(event=event,middleButton=True)
-        s2 = w.getAllText()
-        assert len(s2) == len(s) + len('target')
-    finally:
-        w.setAllText(s)
-        p.setBodyString(s)
-        # g.trace(repr(s))
-        c.recolor()
+try:
+    w = c.frame.body.bodyCtrl
+    s = w.getAllText()
+    w.setInsertPoint(len(s))
+    c.k.previousSelection = 2,8
+    event = g.app.gui.create_key_event(c,None,None,w)
+    c.frame.pasteText(event=event,middleButton=True)
+    s2 = w.getAllText()
+    assert len(s2) == len(s) + len('target')
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    # g.trace(repr(s))
+    c.recolor()
 
 # end
 #@+node:ekr.20071113145804.33: *4* @test c.frame.pasteText 2
 # target
 
-if g.app.isExternalUnitTest:
-    pass # uses create_key_event
-else:
-    try:
-        w = c.frame.body.bodyCtrl
-        # print((w))
-        s2 = p.b
-        s = w.getAllText()
-        assert s == s2, 'w.getAllText() != p.b: len(w)=%d, len(p)=%d' % (len(s),len(s2))
-        w.setInsertPoint(len(s))
-        c.k.previousSelection = 2,8
-        event = g.app.gui.create_key_event(c,None,None,w)
-        c.frame.pasteText(event=event,middleButton=True)
-        s2 = w.getAllText()
-        assert len(s2) == len(s) + len('target')
-    finally:
-        w.setAllText(s)
-        p.setBodyString(s)
-        c.recolor()
+try:
+    w = c.frame.body.bodyCtrl
+    # print((w))
+    s2 = p.b
+    s = w.getAllText()
+    assert s == s2, 'w.getAllText() != p.b: len(w)=%d, len(p)=%d' % (len(s),len(s2))
+    w.setInsertPoint(len(s))
+    c.k.previousSelection = 2,8
+    event = g.app.gui.create_key_event(c,None,None,w)
+    c.frame.pasteText(event=event,middleButton=True)
+    s2 = w.getAllText()
+    assert len(s2) == len(s) + len('target')
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    c.recolor()
 
 # end5target
 #@+node:ekr.20061106201509.6: *4* @test leoBody.getInsertLines
@@ -9642,8 +9559,6 @@ else:
 # line 3
 
 w = c.frame.body.bodyCtrl
-if g.app.isExternalUnitTest:
-    w.setAllText(p.b)
 index = 11 # in the second line.
 w.setInsertPoint(index)
 before,ins,after = c.frame.body.getInsertLines()
@@ -10368,16 +10283,13 @@ g.app.unitTestDict['restoreSelectedNode']=False
 #@+node:ekr.20111003145300.3466: *4* @test illegal drag gives warning
 '''Test that dragging this node onto the child node generates a warning.'''
 
-if g.app.isExternalUnitTest:
-    pass # Not a valid test when run externally.
-else:
-    fn = '<file name>'
-    p2 = p.firstChild()
-    tree = c.frame.tree
-    if hasattr(tree,'treeWidget'):
-        for cloneDrag in (True,False):
-            tree.treeWidget.intraFileDrop(cloneDrag,fn,p,p2)
-            assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
+fn = '<file name>'
+p2 = p.firstChild()
+tree = c.frame.tree
+if hasattr(tree,'treeWidget'):
+    for cloneDrag in (True,False):
+        tree.treeWidget.intraFileDrop(cloneDrag,fn,p,p2)
+        assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
 #@+node:ekr.20111003145300.3467: *5* a
 #@+node:ekr.20100131171342.5602: *4* @test leoTextWidget
 if g.app.gui.guiName() == 'tkinter':
@@ -19256,6 +19168,8 @@ for s in table:
     g.pr ('g.pr(repr(s)) : %s' % repr(s))
     print('print(s)      : %s' % s)
     print('print(repr(s)): %s' % s)
+#@+node:ekr.20111115071700.3870: *3* @@test settings when run externally
+c.k.simulateCommand('print-settings')
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
