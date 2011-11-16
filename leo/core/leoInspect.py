@@ -95,6 +95,11 @@ class LeoCoreFiles:
     #@+node:ekr.20111116103733.10314: *3* get_source
     def get_source (self,fn):
         
+        if not g.os_path_exists(fn):
+            fn = g.os_path_finalize_join(g.app.loadDir,fn)
+        if not g.os_path_exists(fn):
+            fn = g.os_path_finalize_join(g.app.loadDir,'..','plugins',fn)
+        
         try:
             f = open(fn,'r')
             s = f.read()
@@ -111,7 +116,7 @@ class AstTraverser:
     '''The base class for AST traversal helpers.'''
 
     #@+others
-    #@+node:ekr.20111116103733.10279: *4*  Birth
+    #@+node:ekr.20111116103733.10279: *4*  Birth (AstTraverser)
     #@+node:ekr.20111116103733.10280: *5* ctor AstTraverser
     def __init__(self,fn,s):
 
@@ -251,7 +256,7 @@ class AstTraverser:
             # EmptyNode,  ExtSlice, Getattr,  GenExpr, IfExp, Index, Keyword, Lambda,
             # List,  ListComp, Module, Name, Slice, Subscript, UnaryOp, Tuple, Yield
             # )
-    #@+node:ekr.20111116103733.10283: *4*  Do-nothings
+    #@+node:ekr.20111116103733.10283: *4*  Do-nothings (AstTraverser)
     # Don't delete these. They might be useful in a subclass.
     if 0:
         def do_Add(self,tree,tag=''): pass
@@ -360,7 +365,7 @@ class AstTraverser:
     def pop_context (self):
 
         self.context_stack.pop()
-    #@+node:ekr.20111116103733.10286: *4*  run
+    #@+node:ekr.20111116103733.10286: *4*  run (AstTraverser)
     def run (self,s):
         
         tree = ast.parse(s,filename=self.fn,mode='exec')
@@ -3177,13 +3182,9 @@ class SemanticData:
             'attributes','ivars','names',
             'del_names','load_names','param_names','store_names',
         )
-        times = (
-            'parse_time','pass1_time','pass2_time','total_time',
-        )
+       
         max_n = 5
         for s in table:
-            max_n = max(max_n,len(s))
-        for x in times:
             max_n = max(max_n,len(s))
             
         print('\nDump of statistics...\n')
@@ -3192,6 +3193,19 @@ class SemanticData:
             pad = ' ' * (max_n - len(s))
             print('%s%s: %s' % (pad,s,getattr(sd,var)))
             
+    #@+node:ekr.20111116103733.10508: *4* sd.print_times
+    def print_times (self):
+        
+        sd = self
+
+        times = (
+            'parse_time','pass1_time','pass2_time','total_time',
+        )
+        
+        max_n = 5
+        for s in times:
+            max_n = max(max_n,len(s))
+        
         for s in times:
             pad = ' ' * (max_n - len(s))
             print('%s%s: %2.2f' % (pad,s,getattr(sd,s)))
@@ -3691,22 +3705,27 @@ if 1:
         #@-others
     #@-others
 #@+node:ekr.20111116103733.10450: ** test
-def test(c,files,dump=True,s=None):
+def test(c,files,dump=True,s=None,times=True):
    
     t1 = time.clock()
     sd = SemanticData(controller=None)
 
     if s: # Use test string.
-        n,fn = 1,'<test file>'
+        fn = '<test file>'
         InspectTraverser(c,fn,sd,s).check(s,dump)
     else:
         for fn in files:
             print(g.shortFileName(fn))
             s = LeoCoreFiles().get_source(fn)
-            InspectTraverser(c,fn,sd,s).check(s,dump)
+            if s:
+                InspectTraverser(c,fn,sd,s).check(s,dump)
+            else:
+                print('file not found: %s' % (fn))
            
     sd.total_time = time.clock()-t1
     if dump:
         sd.print_stats()
+    if times:
+        sd.print_times()
 #@-others
 #@-leo
