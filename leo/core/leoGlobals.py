@@ -4580,6 +4580,45 @@ def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
         c.change_text = change_text
     c.frame.findPanel.init(c)
     c.showFindPanel()
+#@+node:ekr.20111115155710.9859: ** Tokenizing & parsing
+#@+node:ekr.20111115155710.9814: *3* g.python_tokenize
+def python_tokenize (s,line_numbers=True):
+
+    '''Tokenize string s and return a list of tokens (kind,value,line_number)
+
+    where kind is in ('comment,'id','nl','other','string','ws').
+    '''
+
+    result,i,line_number = [],0,0
+    while i < len(s):
+        progress = j = i
+        ch = s[i]
+        if ch == '\n':
+            kind,i = 'nl',i+1
+        elif ch in ' \t':
+            kind = 'ws'
+            while i < len(s) and s[i] in ' \t':
+                i += 1
+        elif ch == '#':
+            kind,i = 'comment',g.skip_to_end_of_line(s,i)
+        elif ch in '"\'':
+            kind,i = 'string',g.skip_python_string(s,i,verbose=False)
+        elif ch == '_' or ch.isalpha():
+            kind,i = 'id',g.skip_id(s,i)
+        else:
+            kind,i = 'other',i+1
+            
+        assert progress < i and j == progress
+        val = s[j:i]
+        assert val
+        
+        if line_numbers:
+            line_number += val.count('\n') # A comment.
+            result.append((kind,val,line_number),)
+        else:
+            result.append((kind,val),)
+
+    return result
 #@+node:ekr.20031218072017.1498: ** Unicode utils...
 #@+node:ekr.20100125073206.8709: *3* g.getPythonEncodingFromString
 def getPythonEncodingFromString(s):

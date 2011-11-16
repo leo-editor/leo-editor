@@ -6020,5 +6020,1069 @@ def afterMark (self,p,command,bunch,dirtyVnodeList=[]):
 
 def afterMoveNode (self,p,command,bunch,dirtyVnodeList=[]):
     pass
+#@+node:ekr.20111115155710.9825: *3* class pythonScanner
+class pythonScanner (baseScannerClass):
+
+    @others
+#@+node:ekr.20111115155710.9826: *4*  __init__
+def __init__ (self,importCommands,atAuto):
+
+    # Init the base class.
+    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='python')
+
+    # Set the parser delims.
+    self.lineCommentDelim = '#'
+    self.classTags = ['class',]
+    self.functionTags = ['def',]
+    self.blockDelim1 = self.blockDelim2 = None
+        # Suppress the check for the block delim.
+        # The check is done in skipSigTail.
+    self.strict = True
+
+#@+node:ekr.20111115155710.9827: *4* adjustDefStart (python)
+def adjustDefStart (self,s,i):
+
+    '''A hook to allow the Python importer to adjust the 
+    start of a class or function to include decorators.'''
+
+    if i == 0 or s[i-1] != '\n':
+        return i
+
+    while i > 0:
+        progress = i
+
+        start = j = g.find_line_start(s,i-2)
+        j = g.skip_ws(s,j)
+        if not g.match(s,j,'@'):
+            return i
+
+        j += 1
+        k = g.skip_id(s,j)
+        word = s[j:k]
+
+        if word and word not in g.globalDirectiveList:
+            # g.trace(repr(word),repr(s[start:i]))
+            i = start
+            assert i < progress
+        else:
+            return i
+#@+node:ekr.20111115155710.9828: *4* extendSignature
+def extendSignature(self,s,i):
+
+    '''Extend the text to be added to the class node following the signature.
+
+    The text *must* end with a newline.'''
+
+    # Add a docstring to the class node,
+    # And everything on the line following it
+    j = g.skip_ws_and_nl(s,i)
+    if g.match(s,j,'"""') or g.match(s,j,"'''"):
+        j = g.skip_python_string(s,j)
+        if j < len(s): # No scanning error.
+            # Return the docstring only if nothing but whitespace follows.
+            j = g.skip_ws(s,j)
+            if g.is_nl(s,j):
+                return j + 1
+
+    return i
+#@+node:ekr.20111115155710.9829: *4* findClass (leoImport)
+def findClass(self,p):
+
+    '''Return the index end of the class or def in a node, or -1.'''
+
+    s,i = p.b,0
+    while i < len(s):
+        progress = i
+        if s[i] in (' ','\t','\n'):
+            i += 1
+        elif self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        elif self.startsString(s,i):
+            i = self.skipString(s,i)
+        elif self.startsClass(s,i):
+            return 'class',self.sigStart,self.codeEnd
+        elif self.startsFunction(s,i):
+            return 'def',self.sigStart,self.codeEnd
+        elif self.startsId(s,i):
+            i = self.skipId(s,i)
+        else:
+            i += 1
+        assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+
+    return None,-1,-1
+#@+node:ekr.20111115155710.9830: *4* skipCodeBlock (python) & helpers
+def skipCodeBlock (self,s,i,kind):
+
+    trace = False ; verbose = True
+    # if trace: g.trace('***',g.callers())
+    startIndent = self.startSigIndent
+    if trace: g.trace('startIndent',startIndent)
+    assert startIndent is not None
+    i = start = g.skip_ws_and_nl(s,i)
+    parenCount = 0
+    underIndentedStart = None # The start of trailing underindented blank or comment lines.
+    while i < len(s):
+        progress = i
+        ch = s[i]
+        if g.is_nl(s,i):
+            if trace and verbose: g.trace(g.get_line(s,i))
+            backslashNewline = (i > 0 and g.match(s,i-1,'\\\n'))
+            if backslashNewline:
+                # An underindented line, including docstring,
+                # does not end the code block.
+                i += 1 # 2010/11/01
+            else:
+                i = g.skip_nl(s,i)
+                j = g.skip_ws(s,i)
+                if g.is_nl(s,j):
+                    pass # We have already made progress.
+                else:
+                    i,underIndentedStart,breakFlag = self.pythonNewlineHelper(
+                        s,i,parenCount,startIndent,underIndentedStart)
+                    if breakFlag: break
+        elif ch == '#':
+            i = g.skip_to_end_of_line(s,i)
+        elif ch == '"' or ch == '\'':
+            i = g.skip_python_string(s,i)
+        elif ch in '[{(':
+            i += 1 ; parenCount += 1
+            # g.trace('ch',ch,parenCount)
+        elif ch in ']})':
+            i += 1 ; parenCount -= 1
+            # g.trace('ch',ch,parenCount)
+        else: i += 1
+        assert(progress < i)
+
+    # The actual end of the block.
+    if underIndentedStart is not None:
+        i = underIndentedStart
+        if trace: g.trace('***backtracking to underindent range')
+        if trace: g.trace(g.get_line(s,i))
+
+    if 0 < i < len(s) and not g.match(s,i-1,'\n'):
+        g.trace('Can not happen: Python block does not end in a newline.')
+        g.trace(g.get_line(s,i))
+        return i,False
+
+    # 2010/02/19: Include all following material
+    # until the next 'def' or 'class'
+    i = self.skipToTheNextClassOrFunction(s,i,startIndent)
+
+    if (trace or self.trace) and s[start:i].strip():
+        g.trace('%s returns\n' % (kind) + s[start:i])
+    return i,True
+#@+node:ekr.20111115155710.9831: *5* pythonNewlineHelper
+def pythonNewlineHelper (self,s,i,parenCount,startIndent,underIndentedStart):
+
+    trace = False
+    breakFlag = False
+    j, indent = g.skip_leading_ws_with_indent(s,i,self.tab_width)
+    if trace: g.trace(
+        'startIndent',startIndent,'indent',indent,'parenCount',parenCount,
+        'line',repr(g.get_line(s,j)))
+    if indent <= startIndent and parenCount == 0:
+        # An underindented line: it ends the block *unless*
+        # it is a blank or comment line or (2008/9/1) the end of a triple-quoted string.
+        if g.match(s,j,'#'):
+            if trace: g.trace('underindent: comment')
+            if underIndentedStart is None: underIndentedStart = i
+            i = j
+        elif g.match(s,j,'\n'):
+            if trace: g.trace('underindent: blank line')
+            # Blank lines never start the range of underindented lines.
+            i = j
+        else:
+            if trace: g.trace('underindent: end of block')
+            breakFlag = True # The actual end of the block.
+    else:
+        if underIndentedStart and g.match(s,j,'\n'):
+            # Add the blank line to the underindented range.
+            if trace: g.trace('properly indented blank line extends underindent range')
+        elif underIndentedStart and g.match(s,j,'#'):
+            # Add the (properly indented!) comment line to the underindented range.
+            if trace: g.trace('properly indented comment line extends underindent range')
+        elif underIndentedStart is None:
+            pass
+        else:
+            # A properly indented non-comment line.
+            # Give a message for all underindented comments in underindented range.
+            if trace: g.trace('properly indented line generates underindent errors')
+            s2 = s[underIndentedStart:i]
+            lines = g.splitlines(s2)
+            for line in lines:
+                if line.strip():
+                    junk, indent = g.skip_leading_ws_with_indent(line,0,self.tab_width)
+                    if indent <= startIndent:
+                        if j not in self.errorLines: # No error yet given.
+                            self.errorLines.append(j)
+                            self.underindentedComment(line)
+            underIndentedStart = None
+    if trace: g.trace('breakFlag',breakFlag,'returns',i,'underIndentedStart',underIndentedStart)
+    return i,underIndentedStart,breakFlag
+#@+node:ekr.20111115155710.9832: *5* skipToTheNextClassOrFunction (New in 4.8)
+def skipToTheNextClassOrFunction(self,s,i,lastIndent):
+
+    '''Skip to the next python def or class.
+    Return the original i if nothing more is found.
+    This allows the "if __name__ == '__main__' hack
+    to appear at the top level.'''
+
+    return i # A rewrite is needed.
+
+    # Comment this out to keep pylint happy.
+
+    # trace = False # and not g.unitTesting
+    # c,found,i1 = self.c,False,i
+    # at_line_start,last_comment,last_nl = True,None,-1
+    # while i < len(s):
+        # progress = i
+        # if self.startsComment(s,i):
+            # # Break at underindented comments.
+            # if at_line_start:
+                # if i == last_nl:
+                    # n = 0
+                # else:
+                    # ws = s[last_nl+1:i]
+                    # n = g.computeWidth (ws,c.tab_width)
+                # if n < lastIndent:
+                    # if trace: g.trace('underindented comment',
+                        # 'ws',repr(ws),'n',n,'lastIndent',lastIndent)
+                    # found = True ; break
+                # else:
+                    # # Remember the start of a range of comments and whitespace.
+                    # if last_comment is None:
+                        # last_comment = i
+                    # last_nl = i = self.skipComment(s,i)
+                    # at_line_start = True
+            # else:
+                # # An interior comment.
+                # assert last_comment is None
+                # last_nl = i = self.skipComment(s,i)
+                # at_line_start = True
+        # elif self.startsString(s,i):
+            # at_line_start = False
+            # last_comment = None
+            # i = self.skipString(s,i)
+        # elif at_line_start and (
+            # g.match_word(s,i,'def') or
+            # g.match_word(s,i,'class')
+        # ):
+            # # Do not break for over-indent matches.
+            # # This allows something reasonable to happen for::
+            # # if 0:
+            # #     def spam():
+            # #         pass
+            # ws = s[last_nl+1:i]
+            # # g.trace('ws',repr(ws))
+            # n = g.computeWidth (ws,c.tab_width)
+            # if (not ws or ws.isspace()) and n <= lastIndent:
+                # found = True ; break
+            # else: # Ignore the over-indented def.
+                # if trace: g.trace('overindented','ws',repr(ws),
+                    # 'n',n,'lastIndent',lastIndent)
+                # last_comment = None
+                # last_nl = i = g.skip_to_end_of_line(s,i)
+                # at_line_start = True
+        # elif s[i] == '@':
+            # # Leo directives will look like comments,
+            # # so we can safely assume we have a decorator
+            # if at_line_start and last_comment is None:
+                # last_comment = i
+            # last_nl = i = g.skip_to_end_of_line(s,i)
+            # at_line_start = True
+        # elif s[i] ==  '\n':
+            # at_line_start = True
+            # last_nl = i
+            # i += 1
+        # elif s[i].isspace():
+            # i += 1
+        # else:
+            # at_line_start = False
+            # last_comment = None
+            # i += 1
+        # assert progress < i
+
+    # if found:
+        # if last_comment is None:
+            # return i
+        # else:
+            # return last_comment
+    # else:
+        # return i1
+#@+node:ekr.20111115155710.9833: *4* skipSigTail
+# This must be overridden in order to handle newlines properly.
+
+def skipSigTail(self,s,i,kind):
+
+    '''Skip from the end of the arg list to the start of the block.'''
+
+    while i < len(s):
+        ch = s[i]
+        if ch == '\n':
+            break
+        elif ch in (' ','\t',):
+            i += 1
+        elif self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        else:
+            break
+
+    return i,g.match(s,i,':')
+#@+node:ekr.20111115155710.9834: *4* skipString
+def skipString (self,s,i):
+
+    # Returns len(s) on unterminated string.
+    return g.skip_python_string(s,i,verbose=False)
+#@+node:ekr.20111116103733.10439: *3* Unused from new_lint
+#@+node:ekr.20111116103733.10154: *4* class TypeInferenceEngine
+class TypeInferenceEngine:
+    
+    '''A class to infer types of variables throughout a program.'''
+
+    @others
+#@+node:ekr.20111116103733.10155: *5* x.ctor
+def __init__ (self):
+
+    self.sd = SemanticData(self)
+#@+node:ekr.20111116103733.10156: *5* x.do_files (main line)
+def do_files (self,aList,includes=False,trace=False):
+
+    trace = True
+    sd = self.sd
+    t1 = time.clock()
+    aList = aList
+    sd.files_list = aList[:]
+    sd.completed_files = []
+    
+    # **Warning**: len(sd.files_list) may change in this loop.
+    i = 0
+    while i < len(sd.files_list):
+        if not includes and i >= len(aList):
+            break
+        fn = sd.files_list[i]
+        sd.completed_files.append(fn)
+        i += 1
+        s = self.read_input_file(fn)
+    
+        # Create the tree.
+        tree = ast.parse(s,filename=fn,mode='exec')
+    
+        # Create semantics data
+        # ?? add imported files to sd.files_list ??
+        Pass1(fn,sd,s).visit(tree)
+        
+    sd.create_known_symbols()
+    sd.resolve_types()
+
+    t2 = time.clock()
+    if trace: print('\ndone: %2.2f sec.\n' % (t2-t1))
+#@+node:ekr.20111116103733.10157: *5* x.dump_data
+def dump_data (self,verbose=False):
+    
+    self.sd.dump(verbose)
+#@+node:ekr.20111116103733.10158: *5* x.error & internal_error
+def error (self,message):
+    g.es_print(message,color='red')
+    
+def internal_error(message):
+    self.error('internal error: %s' % message)
+#@+node:ekr.20111116103733.10159: *5* x.print_stats
+def print_stats (self):
+    
+    self.sd.print_stats()
+#@+node:ekr.20111116103733.10160: *5* x.read_input_file
+def read_input_file (self,fn):
+    
+    sd = self.sd
+
+    if g.os_path_exists(fn) and g.os_path_isfile(fn):
+        try:
+            return open(fn,'r').read()
+        except IOError:
+            pass
+        except UnicodeDecodeError:
+            g.trace('***** UnicodeDecodeError reading',fn)
+        except Exception:
+            g.trace('***** unexpected exception reading',fn)
+            g.es_exception()
+
+        if fn not in sd.failed_files:
+            sd.failed_files.append(fn)
+            self.error('can not open %s' % fn)
+
+    return ''
+#@+node:ekr.20111116103733.10149: *4* main & helpers (nl)
+def main ():
+
+    # Switches for setup, report.
+    big = True
+    small = not big
+    dump_data = False
+    dump_s = True
+    dump_stats = False or big
+    dump_source_flag = small
+    dump_tree_flag = True
+    clear = True and big
+    @others
+    
+    if clear: os.system('cls')
+  
+    x = TypeInferenceEngine()
+
+    if small:
+        aList = create_small_list()
+    else:
+        aList = create_leo_list()
+    
+    if dump_tree_flag or dump_source_flag:
+        dump(aList,brief=False)
+   
+    x.do_files(aList,includes=False)
+    report(x)
+#@+node:ekr.20111116103733.10150: *5* create_leo_test_list
+def create_leo_list():
+    
+    skipList = (
+        'leo_Debugger.py','leo_FileList.py',
+        'leo_RemoteDebugger.py','leo_run.py',
+        'leo_Shell.py',
+    )
+
+    if 1:
+        fn = g.os_path_finalize_join(
+            g.app.loadDir,'leoNodes.py')
+        return [fn]
+    else:
+        files = glob.glob(g.os_path_finalize_join(
+            g.app.loadDir,'*.py'))
+        aList = []
+        for fn in files:
+            for z in skipList:
+                if fn.endswith(z):
+                    # print('skipping %s' % fn)
+                    break
+            else: aList.append(fn)
+        return aList
+#@+node:ekr.20111116103733.10151: *5* create_small_list
+def create_small_list():
+    
+    base = r'c:\leo.repo\new-pylint'
+    names = (
+        'test1.py',
+        #'test2.py',
+        #'test3.py',
+    )
+    
+    return list(g.os_path_finalize_join(base,fn) for fn in names)
+    
+    
+    
+#@+node:ekr.20111116103733.10152: *5* dump
+def dump (aList,brief=False):
+    
+    fn = 'c:/leo.repo/new-pylint/outString.txt'
+    if small:
+        outStream = None
+    else:
+        if dump_tree_flag:
+            print('Tree dumped to %s' % (fn))
+            outStream = open(fn,'w')
+
+    if dump_tree_flag:
+        dumper = u.AstDumper(brief=brief)
+        
+    for fn in aList:
+        if dump_source_flag and small:
+            print('\nDump of sources for %s...\n' % (fn))
+            s = open(fn,'r').read()
+            print(s)
+        if dump_tree_flag:
+            s = '\nDump of tree for %s...\n' % (fn)
+            if not outStream:
+                print(s)
+            dumper.dumpFileAsString(
+                fn=fn,brief=brief,outStream=outStream)
+#@+node:ekr.20111116103733.10153: *5* report
+def report(x):
+    
+    if dump_data:
+        x.dump_data(verbose=False)
+
+    if dump_stats:
+        x.print_stats()
+        
+    if 0:
+        count = 0
+        for z in x.sd.all_contexts():
+            # g.trace(z)
+            count += 1
+        g.trace('all_contexts',count)
+#@+node:ekr.20111116103733.10161: *4* class Pass1 (u.AstTraverser) (nl)
+class Pass1 (u.AstTraverser):
+
+    '''Converting the parse tree to semantics data.
+    
+    This crosses the "great divide".'''
+
+    @others
+#@+node:ekr.20111116103733.10162: *5*  ctor (Pass1)
+def __init__(self,fn,sd,s):
+
+    # Init the base class.
+    u.AstTraverser.__init__(self,fn,s)
+    
+    # Ivars...
+    self.dumper = sd.dumper
+    self.fn = fn
+    self.sd = sd
+
+    # For code generation...
+    self.arg_list = []
+    self.in_arg_list = False
+    self.in_lhs = False
+    self.in_rhs = False
+    self.dependencies = []
+        # The dependencies (ast pointers) in the RHS.
+    self.target = None
+        # The id or id chain in the LHS.
+    self.target_ast = None # for debugging.
+#@+node:ekr.20111116103733.10163: *5* dump
+def dump (self,ast):
+    
+    self.dumper.dumpTreeAsString(ast,brief=False,outStream=None)
+#@+node:ekr.20111116103733.10164: *5* Pass1.ast_eval
+def ast_eval (self,ast):
+    
+    '''Evaluate the type of the subtree at ast after
+    the type of all identifiers and chains becomes known.
+    '''
+    
+    # A cute trick for prototyping: just return the dump.
+    
+    # Eventually, this code will recursively evaluate the type
+    # of the tree, as is done for constant folding in typical compilers.
+    
+    # The code will look something like the code in Pass1.attribute_to_string.
+    
+    s = self.sd.dumper._dumpTreeAsString(ast,brief=False)
+    return s
+   
+    
+#@+node:ekr.20111116103733.10165: *5* Pass1 Contexts...
+#@+node:ekr.20111116103733.10166: *6* Pass1 ClassDef
+# ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+
+def do_ClassDef (self,ast,tag=''):
+
+    '''Create a context for a class, and
+    define the class name in the present context.'''
+
+    trace = False
+    sd = self.sd
+    old_cx = self.get_context()
+    new_cx = old_cx.add_class(ast)
+    self.push_context(new_cx)
+
+    # Monkey-patch the context for the code generator.
+    # ast.patch_context = new_cx
+
+    # Add the name in the old context.
+    e = old_cx.st.add_name(ast.name)
+
+    if trace: g.trace(ast.name,old_cx)
+
+    # Give e a class type.
+    if new_cx not in e.vals:
+        e.vals.append(new_cx)
+
+    try:
+        self.visit(ast.name,'class name')
+        for z in ast.body:
+            self.visit(z,'body')
+    finally:
+        self.pop_context()
+#@+node:ekr.20111116103733.10167: *6* Pass1 FunctionDef
+# FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+
+def do_FunctionDef (self,ast,tag=''):
+
+    sd = self.sd
+    old_cx = self.get_context()
+    new_cx = old_cx.add_def(ast)
+    
+    # Add the function/method name to the old context.
+    old_cx.st.add_name(ast.name)
+    
+    # Monkey-patch the context for the code generator.
+    # ast.patch_context = new_cx
+    
+    self.push_context(new_cx)
+
+    try:
+        self.visit(ast.name,'function name')
+        for z in ast.body:
+            self.visit(z,'body')
+        self.def_args_helper(ast.args)
+    finally:
+        self.pop_context()
+#@+node:ekr.20111116103733.10168: *7* def_args_helper
+# arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+# -- keyword arguments supplied to call
+# keyword = (identifier arg, expr value)
+
+def def_args_helper (self,ast):
+    
+    assert self.kind(ast) == 'arguments'
+    self.dump(ast)
+    
+    # Handle args.
+    if self.in_arg_list:
+        return g.trace('can not happen: in arg list')
+
+    self.in_arg_list = True
+    try:
+        # Handle positional args.
+        self.arg_list = []
+        for z in ast.args:
+            self.visit(z,'arg')
+        for z in self.arg_list:
+            cx.add_arg(z,'arg')
+    
+        for tag in ('vararg','kwarg',):
+            arg = hasattr(ast,tag) and getattr(ast,tag)
+            if arg:
+                assert type(arg) == type('abc')
+                g.trace(tag,self.kind(arg),arg)
+                # cx.add_arg(arg,tag)
+            
+        ### Handle defaults.
+
+    finally:
+        self.in_arg_list = False
+#@+node:ekr.20111116103733.10169: *6* Pass1 Lambda (needed?)
+def gen_do_Lambda (self,ast,tag=''):
+
+    # ast.args is an 'arguments' object.
+    for z in ast.args:
+        self.visit(z,'lambda arg')
+
+    self.visit(ast.body,'lambda body')
+#@+node:ekr.20111116103733.10170: *6* Pass1 Module
+def do_Module (self,ast,tag=''):
+    
+    sd = self.sd
+    
+    # g.trace('self.fn',self.fn,'self',self)
+
+    # Get the module context from the global dict if possible.
+    new_cx = sd.modules_dict.get(self.fn)
+
+    if not new_cx:
+        new_cx = ModuleContext(ast,self.fn,sd)
+        sd.modules_dict[self.fn] = new_cx
+        
+    # g.trace(new_cx)
+    self.push_context(new_cx)
+
+    # Monkey-patch the context for the code generator.
+    # ast.patch_context = new_cx
+
+    try:
+        for z in ast.body:
+            self.visit(z,'module body')
+    finally:
+        self.pop_context()
+#@+node:ekr.20111116103733.10171: *6* Pass1 With
+def do_With (self,ast,tag=''):
+
+    if hasattr(ast,'context_expression'):
+        self.visit(ast.context_expresssion)
+
+    if hasattr(ast,'optional_vars'):
+        pass # May be a Name object.
+        # for z in ast.optional_vars:
+            # self.visit(z,'with vars')
+
+    for z in ast.body:
+        self.visit(z,'with body')
+#@+node:ekr.20111116103733.10172: *5* Pass1 Expressions...
+#@+node:ekr.20111116103733.10173: *6* Pass1 Attribute & attribute_to_string
+def do_Attribute(self,ast,tag=''):
+
+    trace = False
+    sd = self.sd
+    cx = self.get_context()
+
+    # Generate code.
+    s = self.attribute_to_string(ast)
+        # This traverses the Attribute tree.
+
+    # Create the chain, or merge ast to the existing chain.
+    chain = cx.st.add_chain(ast,s)
+    
+    if self.in_rhs:
+        if trace: g.trace('Adding chain to dependencies',chain)
+        self.dependencies.append((ast,chain),)
+        
+    if self.in_lhs and not self.target:
+        if trace: g.trace('Setting target to chain',s)
+        self.target = s,chain
+        self.target_ast = ast # for debugging.
+    
+    # Update stats.
+    sd.n_attributes += 1
+#@+node:ekr.20111116103733.10174: *7* Pass1.attribute_to_string
+def attribute_to_string (self,ast,level=0):
+    
+    '''Convert an Attributes nodes and its descendants to a string a.b.c.d...'''
+
+    trace = False ; verbose = True
+    if trace and verbose:
+        g.trace('level: %s, ast: %s' % (level,ast))
+        self.dump(ast)
+
+    # g.trace(self.kind(ast))
+    
+    kind = self.kind(ast)
+    
+    if kind == 'Attribute':
+        chain = self.attribute_helper(ast,level)
+    else:
+        chain = self.general_helper(ast,level)
+
+    if trace and level == 0:
+        g.trace('level: %s kind: %9s chain: %s' % (
+            level,kind,chain))
+
+    return chain
+#@+node:ekr.20111116103733.10175: *8* Pass1.attribute_helper
+def attribute_helper(self,ast,level):
+    
+    kind = self.kind(ast)
+    assert kind == 'Attribute',kind
+
+    val_kind = self.kind(ast.value)
+    assert self.kind(ast.ctx) in ('Del','Load','Store')
+    
+    if val_kind == 'Attribute':
+        s = self.attribute_to_string(ast.value,level+1)
+        chain = '%s.%s' % (s,ast.attr)
+    elif val_kind == 'Name':
+        chain = '%s.%s' % (ast.value.id,ast.attr)
+    elif val_kind == 'Call':
+        s = self.attribute_to_string(ast.value.func,level+1)
+        chain = '%s.%s' % (s,ast.attr)
+    elif val_kind == 'Subscript':
+        s = self.attribute_to_string(ast.value,level+1)
+        chain = '%s.%s' % (s,ast.attr)
+    elif val_kind == 'Str':
+        chain = '%s.%s' % (repr(ast.value.s),ast.attr)
+    else:
+        chain = '<Error: val_kind=%s>' % val_kind
+        
+    return chain
+#@+node:ekr.20111116103733.10176: *8* Pass1.general_helper
+def general_helper(self,ast,level):
+
+    kind = self.kind(ast)
+    if kind == 'Call':
+        s = self.attribute_to_string(ast.func,level+1)
+        chain = '%s()' % (s) # The "Great hack"
+    elif kind == 'Name':
+        chain = ast.id
+    elif kind == 'Str':
+        chain = '%s.%s' % (repr(ast.value.s),ast.attr)
+    elif kind == 'Subscript':
+        s = self.attribute_to_string(ast.value,level+1)
+        chain = '%s[]' % (s) # The "Great hack"
+    else:
+        chain = '<Error: kind=%s>' % kind
+        g.trace('Can not happen: kind:',kind)
+    
+    return chain
+#@+node:ekr.20111116103733.10177: *6* Pass1 Call
+def do_Call(self,ast,tag=''):
+    
+    sd = self.sd
+    cx = self.get_context()
+
+    # Patch the ast.Call node with the present context.
+    # ast.call_context = cx
+    
+    # Generate code
+    if self.in_rhs:
+        self.dependencies.append(ast)
+
+    self.visit(ast.func,'call func')
+    sd.n_calls += 1
+
+    for z in ast.args:
+        self.visit(z,'call arg')
+
+    for z in ast.keywords:
+        self.visit(z,'call keyword arg')
+
+    if hasattr(ast,'starargs') and ast.starargs:
+        pass
+        # for z in ast.starargs:
+            # self.visit(z,'*arg')
+
+    if hasattr(ast,'kwargs') and ast.kwargs:
+        pass
+        # for z in ast.kwargs:
+            # self.visit(z,'call *args')
+#@+node:ekr.20111116103733.10178: *6* Pass1 Name
+def do_Name(self,ast,tag=''):
+
+    trace = False
+    sd = self.sd
+    cx = self.get_context()
+
+    # Generate code.
+    name = ast.id
+    e = cx.st.add_name(name)
+    
+    if self.in_rhs:
+        if trace: g.trace('Setting dependency to name',name)
+        self.dependencies.append((ast,e),)
+
+    if self.in_lhs and not self.target:
+        if trace: g.trace('Setting target to name',name)
+        self.target = name,e
+        self.target_ast = ast # For debugging.
+
+    # Update stats.
+    sd.n_names += 1
+#@+node:ekr.20111116103733.10179: *5* Pass1 Statements...
+#@+node:ekr.20111116103733.10180: *6* Pass1 Assign
+def do_Assign(self,ast,tag=''):
+    
+    '''Assignments create names for the LHS.'''
+    
+    trace = False ; verbose = False
+    if trace and verbose:
+        g.trace('ast: %s' % (ast))
+        self.dump(ast)
+        
+    sd = self.sd # cx = self.get_context()
+    
+    assert not self.in_rhs
+        # There are no nested assignments in Python.
+    self.in_rhs = True
+    self.dependencies = []
+    try:
+        self.visit(ast.value,'assn value')
+    finally:
+        self.in_rhs = False
+        
+    for z in ast.targets:
+        assert not self.in_lhs
+        self.in_lhs = True
+        self.target = None
+        try:
+            self.visit(z,'assn target')
+        finally:
+            self.in_lhs = False
+        assert self.target
+        name,obj = self.target
+        if trace: g.trace('target',name,obj)
+        if self.dependencies:
+            dep = Dependency(self.sd,self.target,self.dependencies)
+            obj.add_dependency(dep)
+            
+        sd.n_assignments += 1
+#@+node:ekr.20111116103733.10181: *6* Pass1 AugAssign
+def do_AugAssign(self,ast,tag=''):
+    
+    '''Assignments create names for the LHS.'''
+
+    sd = self.sd
+    # cx = self.get_context()
+
+    self.visit(ast.op)
+    
+    assert not self.in_rhs
+        # There are no nested assignments in Python.
+    self.in_rhs = True
+    self.dependencies = []
+    
+    try:
+        self.visit(ast.value,'aug-assn value')
+    finally:
+        self.in_rhs = False
+        
+    # g.trace('dependencies',len(self.dependencies))
+    
+    ### To do: create a Dependency for the target.
+    self.visit(ast.target,'aut-assn target')
+    sd.n_assignments += 1
+#@+node:ekr.20111116103733.10182: *6* Pass1 Global
+def do_Global(self,ast,tag=''):
+
+    sd = self.sd
+    cx = self.get_context()
+    cx.add_global(ast)
+    sd.n_globals += 1
+#@+node:ekr.20111116103733.10183: *6* Pass1 Import & helpers
+def do_Import(self,ast,tag=''):
+
+    '''Add the imported file to the sd.files_list if needed
+    and create a context for the file.'''
+
+    trace = False ; verbose = False
+    if trace and verbose:
+        g.trace(self.dump(ast))
+    
+    sd = self.sd
+    cx = self.get_context()
+    aList = self.get_import_names(ast)
+
+    for fn,asname in aList:
+        fn2 = self.resolve_import_name(fn)
+        if fn2 and fn2 not in sd.files_list:
+            if trace: g.trace('(Pass1)',fn2)
+            sd.files_list.append(fn2)
+            cx.add_import(ast,fn2,asname,sd)
+            sd.n_imports += 1
+            
+#@+node:ekr.20111116103733.10184: *7* Pass1 get_import_names
+def get_import_names (self,ast):
+
+    '''Return a list of the the full file names in the import statement.'''
+
+    result = []
+
+    for ast2 in ast.names:
+
+        if self.kind(ast2) == 'alias':
+            data = ast2.name,ast2.asname
+            result.append(data)
+        else:
+            g.trace('unsupported kind in Import.names list',self.kind(ast2))
+
+    # g.trace(result)
+    return result
+#@+node:ekr.20111116103733.10185: *7* Pass1 resolve_import_name
+def resolve_import_name (self,spec):
+
+    '''Return the full path name corresponding to the import spec.'''
+
+    trace = False
+    ### This may not work for leading dots.
+
+    # Built-in modules...
+    table = (
+        '__main__',
+        '_io','_locale','_lsprof','_md5','_random',
+        '_sha1','_sha256','_sha512','_sre','_thread',
+        # These might be dubious.
+        'ctypes','email','encodings','logging','sax','urllib','xml',
+        # Probably built in.
+        'array','binascii','builtins',
+        'errno','gc','imp','itertools',
+        'marshal','math','msvcrt','nt',
+        'operator','parser','regex',
+        'signal','struct','sys','time',
+        'winreg','zlib',
+    )
+    
+    if not g.isPython3:
+        table.extend(('__builtin__',),)
+    if spec in table: return ''
+
+    aList,path,paths = spec.split('.'),None,None
+
+    for name in aList:
+        try:
+            f,path,description = imp.find_module(name,paths)
+            # g.trace('name',name,'path',repr(path),'f',f)
+            paths = [path]
+            if f: f.close()
+        except ImportError:
+            # Important: imports can fail due to Python version.
+            # Thus, such errors are not necessarily searious.
+            if trace: g.trace('failed',name,'paths',paths,'cx',self.get_context())
+            path = None
+            break
+
+    if path and path.endswith('.pyd'):
+        return ''
+    else:
+        return path
+#@+node:ekr.20111116103733.10186: *6* Pass1 ImportFrom
+def do_ImportFrom(self,ast,tag=''):
+
+    '''Add the imported file to the sd.files_list if needed
+    and add the imported symbols to the *present* context.'''
+
+    sd = self.sd
+    cx = self.get_context()
+    cx.add_import_from(ast)
+    sd.n_imports += 1
+#@+node:ekr.20111116103733.10198: *4* class Dependency
+class Dependency:
+    
+    '''A class representing a dependency of a symbol
+    on the LHS of an assignment upon a list of symols
+    on the RHS of an assignment.
+    
+    Dependency.remove_symbol is an important part of
+    the resolution algorithm.
+    '''
+    
+    @others
+#@+node:ekr.20111116103733.10199: *5* dep.ctor
+def __init__ (self,sd,target,aList):
+    
+    trace = False
+    if trace:
+        name,obj = target
+        deps = [b.short_description() for a,b in aList]
+        g.trace('(Dependency) lhs: %s, aList: %s' % (name,deps))
+    
+    self.deps = aList
+        # a list tuples (ast,s)
+        # describing the symbols on which the target depends.
+        # s is a string, either a plain id or an id chain.
+        
+    self.sd = sd
+
+    self.target = target
+        # A tuple (name,object) representing the target (LHS) of an assignment statement.
+        # name is the spelling (a string) of the plain id or id chain.
+        # object is a Chain for chains; a SymbolTableEntry for plain ids.
+        # Note: chain.e is the SymbolTableEntry for chains.
+        
+    sd.n_dependencies += 1
+        
+#@+node:ekr.20111116103733.10200: *5* dep.remove (To do)
+def remove (self):
+    
+    g.trace(self)
+#@+node:ekr.20111116103733.10201: *4* class Hint
+class Hint:
+    
+    '''A class representing a lint_hint statement in a particular context.
+    
+    Initially, the Hint contains text arguments.
+    The resolve_hints pass translates the argument to SymbolTableEntries and Contexts.
+    '''
+    
+    def __init__(self,context,name,value):
+
+        self.context = context
+        self.name = name
+        self.value = value
+#@+node:ekr.20111116103733.10240: *4* class Type_Class
+class Type_Class:
+    
+    def __init__ (self,kind):
+        self.kind = kind
+        
+    def __repr__ (self):
+        return '<Type: %s>' % (self.kind)
+
+    __str__ = __repr__
+
 #@-all
 #@-leo
