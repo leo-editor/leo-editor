@@ -89,9 +89,9 @@ def module (c,fn,print_stats=False,print_times=False):
            
     sd.total_time = time.clock()-t1
 
-    if print_stats: sd.print_stats()
     if print_times: sd.print_times()
-
+    if print_stats: sd.print_stats()
+    
     return module
 #@+node:ekr.20111116103733.10434: **  AST classes
 #@+<< define class AstTraverser >>
@@ -2718,27 +2718,41 @@ class SemanticData:
         
         sd = self
         table = (
-            'errors',
+            '*', 'errors',
 
-            'contexts','modules','resolved_contexts',
+            '*Contexts',
+            'classes','contexts','defs','modules',
             
-            'assignments','calls','classes','defs','fors',
-            'globals','imports','lambdas','list_comps','withs',
+            '*Statements',
+            'assignments','calls','fors','globals','imports',
+            'lambdas','list_comps','withs',
             
-            'attributes','ivars','names',
-            'del_names','load_names','param_names','store_names',
+            '*Names',
+            'attributes','del_names','load_names','names',
+            'param_names','store_names',
+            
+            # 'ivars',
+            # 'resolved_contexts',
         )
        
         max_n = 5
         for s in table:
             max_n = max(max_n,len(s))
             
-        print('\nDump of statistics...\n')
+        print('\nStatistics...\n')
         for s in table:
             var = 'n_%s' % s
             pad = ' ' * (max_n - len(s))
-            print('%s%s: %s' % (pad,s,getattr(sd,var)))
-            
+            if s.startswith('*'):
+                if s[1:].strip():
+                    print('\n%s\n' % s[1:])
+                else:
+                    pass # print('')
+            else:
+                pad = ' ' * (max_n - len(s))
+                print('%s%s: %s' % (pad,s,getattr(sd,var)))
+        print('')
+
     #@+node:ekr.20111116103733.10508: *3* sd.print_times
     def print_times (self):
         
@@ -2755,9 +2769,11 @@ class SemanticData:
         for s in times:
             max_n = max(max_n,len(s))
         
+        print('\nScan times...\n')
         for s in times:
             pad = ' ' * (max_n - len(s))
             print('%s%s: %2.2f' % (pad,s,getattr(sd,s)))
+        print('')
     #@+node:ekr.20111116103733.10388: *3* sd.resolve_types
     def resolve_types (self):
         
@@ -2942,7 +2958,7 @@ class SymbolTableEntry:
         return 'ste: %s' % self.name
     #@-others
 #@+node:ekr.20111116103733.10450: ** test
-def test(c,files,dump=True,s=None,print_times=True):
+def test(c,files,print_stats=True,s=None,print_times=True):
    
     t1 = time.clock()
     sd = SemanticData(controller=None)
@@ -2960,9 +2976,8 @@ def test(c,files,dump=True,s=None,print_times=True):
                 print('file not found: %s' % (fn))
            
     sd.total_time = time.clock()-t1
-    if dump:
-        sd.print_stats()
-    if print_times:
-        sd.print_times()
+    
+    if print_times: sd.print_times()
+    if print_stats: sd.print_stats()
 #@-others
 #@-leo

@@ -1954,18 +1954,20 @@ s = g.adjustTripleString(s,-4)
 import leo.core.leoInspect as inspect
 
 dump_modules = False
+print_functions = False
 
-if dump_modules:
-    g.cls()
+g.cls()
 
 m = inspect.module(c,'leoEditCommands.py',print_stats=True,print_times=True)
+
 for o in m.classes:
     if dump_modules:
         o.dump(verbose=False)
     else:
         print(o)
-        for f in o.functions:
-            print('  %s' % f)
+        if print_functions:
+            for f in o.functions:
+                print('  %s' % f)
 #@+node:ekr.20111116103733.10672: *3* @test leoInspect.test
 import leo.core.leoInspect as inspect
 
@@ -1980,7 +1982,7 @@ aList = (
     'leoAtFile.py',
     'leoEditCommands.py',
 )
-inspect.test(c,aList,dump=False,s=None,print_times=True)
+inspect.test(c,aList,print_stats=False,s=None,print_times=True)
 #@+node:ekr.20111116103733.10451: *4* << define old_s >>
 # import leo.core.leoGlobals
 # import leo.core.leoGlobals as g
