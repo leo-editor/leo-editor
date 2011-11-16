@@ -14,7 +14,385 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
-.. @+node:ekr.20111112131605.9756: *4* Run unit tests should leave focus in body
+.. @+node:ekr.20111115155710.9807: *4* Make sure external unit tests leave focus in body
+.. @+node:ekr.20111114151846.9856: *4* Create unit test that verifies class relationships
+.. @+node:ekr.20111114102224.9936: *5* << define class HighLevelInterface >>
+class HighLevelInterface:
+    
+    '''A class to specify Leo's high-level editing interface
+    used throughout Leo's core.
+    
+    The interface has two parts:
+        
+    1. Standard (immutable) methods that will never be overridden.
+    
+    2. Other (mutable) methods that subclasses may override.
+    '''
+    
+    @others
+.. @+node:ekr.20111114102224.9950: *6* ctor (HighLevelInterface)
+def __init__ (self,c):
+    
+    self.c = c
+    
+    self.mutable_methods = (
+        'flashCharacter',
+        'toPythonIndex',
+        'toPythonIndexRowCol',
+        # 'toGuiIndex', # A synonym.
+    )
+.. @+node:ekr.20111114102224.9935: *6* mutable methods (HighLevelInterface)
+.. @+node:ekr.20111114102224.9946: *7* flashCharacter
+def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+    pass
+    
+.. @+node:ekr.20111114102224.9943: *7* toPythonIndex (HighLevelInterface)
+def toPythonIndex (self,index):
+    
+    s = self.getAllText()
+    return g.toPythonIndex(s,index)
+
+toGuiIndex = toPythonIndex
+.. @+node:ekr.20111114102224.9945: *7* toPythonIndexRowCol (baseTextWidget)
+def toPythonIndexRowCol(self,index):
+    
+    # This works, but is much slower that the leoQTextEditWidget method.
+    s = self.getAllText()
+    i = self.toPythonIndex(index)
+    row,col = g.convertPythonIndexToRowCol(s,i)
+    return i,row,col
+.. @+node:ekr.20111114102224.9937: *6* immutable redirection methods (HighLevelInterface)
+def appendText(self,s):                         self.widget.appendText(s)
+def delete(self,i,j=None):                      self.widget.delete(i,j)
+def deleteTextSelection (self):                 self.widget.deleteTextSelection()
+def get(self,i,j):                              return self.widget.get(i,j)
+def getAllText(self):                           return self.widget.getAllText()
+def getInsertPoint(self):                       return self.widget.getInsertPoint()
+def getSelectedText(self):                      return self.widget.getSelectedText()
+def getSelectionRange (self):                   return self.widget.getSelectionRange()
+def getYScrollPosition (self):                  return self.widget.getYScrollPosition()
+def hasSelection(self):                         return self.widget.hasSelection()
+def insert(self,i,s):                           self.widget.insert(i,s)    
+def replace (self,i,j,s):                       self.widget.replace(i,j,s)
+def rowColToGuiIndex (self,s,row,col):          return self.widget.rowColToGuiIndex(s,row,col)
+def see(self,i):                                self.widget.see(i)
+def seeInsertPoint (self):                      self.widget.seeInsertPoint()
+def selectAllText (self,insert=None):           self.widget.selectAllText(insert)
+def setAllText (self,s):                        self.widget.setAllText(s)
+def setBackgroundColor(self,color):             self.widget.setBackgroundColor(color)
+def setFocus(self):                             self.widget.setFocus()
+def setForegroundColor(self,color):             self.widget.setForegroundColor(color)
+def setInsertPoint(self,pos):                   self.widget.setInsertPoint(pos)
+def setSelectionRange (self,i,j,insert=None):   self.widget.setSelectionRange(i,j,insert=insert)
+def setYScrollPosition (self,i):                self.widget.setYScrollPosition(i)
+def tag_configure (self,colorName,**keys):      self.widget.tag_configure(colorName,**keys)
+.. @+node:ekr.20111114102224.9940: *6* other immutable methods (HighLevelInterface)
+# The all use leoGlobals functions or leoGui methods.
+
+def clipboard_append(self,s):
+    s1 = g.app.gui.getTextFromClipboard()
+    g.app.gui.replaceClipboardWith(s1 + s)
+    
+def clipboard_clear (self):
+    g.app.gui.replaceClipboardWith('')
+    
+def getFocus(self):
+    return g.app.gui.get_focus(self.c)
+    
+def rowColToGuiIndex (self,s,row,col):
+    return g.convertRowColToPythonIndex(s,row,col)    
+
+set_focus = setFocus
+.. @+node:ekr.20111114102224.9950: *5* ctor (HighLevelInterface)
+def __init__ (self,c):
+    
+    self.c = c
+    
+    self.mutable_methods = (
+        'flashCharacter',
+        'toPythonIndex',
+        'toPythonIndexRowCol',
+        # 'toGuiIndex', # A synonym.
+    )
+.. @+node:ekr.20111114151846.9852: *5* mustBeDefined...
+.. @+node:ekr.20111114151846.9850: *6* From baseTextWidget
+.. @+node:ekr.20081031074455.3: *7* baseTextWidget.mustBeDefinedOnlyInBaseClass
+mustBeDefinedOnlyInBaseClass = (
+    'clipboard_append', # uses g.app.gui method.
+    'clipboard_clear', # usesg.app.gui method.
+)
+.. @+node:ekr.20081031074455.4: *7* baseTextWidget.mustBeDefinedInSubclasses
+mustBeDefinedInSubclasses = (
+    'appendText',
+    'delete',
+    'deleteTextSelection',
+    'get',
+    'getAllText',
+    'getFocus',
+    'getInsertPoint',
+    'getSelectedText',
+    'getSelectionRange',
+    'getYScrollPosition',
+    'insert',
+    'see',
+    'seeInsertPoint',
+    'setAllText',
+    'setBackgroundColor',
+    'setForegroundColor',
+    'setFocus',
+    'setInsertPoint',
+    'setSelectionRange',
+    'setYScrollPosition',
+)
+
+.. @+node:ekr.20081031074455.5: *7* baseTextWidget.mustBeDefined...
+# These can be do-nothings
+mustBeDefined = (
+    'flashCharacter',
+    'hasSelection',
+    'replace',
+    'rowColToGuiIndex',
+    'selectAllText',
+    'tag_configure',
+    'toGuiIndex',
+    'toPythonIndex',
+    'toPythonIndexRowCol',
+)
+.. @+node:ekr.20111114151846.9851: *6* From leoBody
+.. @+node:ekr.20081005065934.9: *7* leoBody.mustBeDefined
+# List of methods that must be defined either in the base class or a subclass.
+
+mustBeDefined = (
+    'after_idle',
+    'forceFullRecolor', # The base-class method is usually good enough.
+    'initAfterLoad',
+    'tag_configure', # used in qtGui.py.
+)
+.. @+node:ekr.20031218072017.3660: *7* leoBody.mustBeDefinedInSubclasses
+mustBeDefinedInSubclasses = (
+    # Birth, death & config.
+    '__init__',
+    'createBindings',
+    'createControl',
+    'setColorFromConfig',
+    'setFontFromConfig'
+    # Editors
+    'createEditorLabel',
+    'setEditorColors',
+    # Events...
+    'scheduleIdleTimeRoutine',
+    # Low-level gui...(May be deleted)
+    'getBodyPaneHeight',
+    'getBodyPaneWidth',
+    'hasFocus',
+    'setFocus',
+)
+.. @+node:ekr.20061109102912: *7* define leoBody.mustBeDefinedOnlyInBaseClass
+mustBeDefinedOnlyInBaseClass = (
+    'getAllText',
+    'getColorizer',
+    'getInsertLines',
+    'getInsertPoint',
+    'getSelectedText',
+    'getSelectionAreas',
+    'getSelectionLines',
+    'getYScrollPosition',
+    'hasSelection',
+    'oops',
+    'onBodyChanged',
+    'recolor',
+    'recolor_now',
+    'see',
+    'seeInsertPoint',
+    'selectAllText',
+    'setInsertPoint',
+    'setSelectionRange',
+    'setYScrollPosition',
+    'setSelectionAreas',
+    'setYScrollPosition',
+    'updateSyntaxColorer',
+)
+.. @+node:ekr.20111114151846.9853: *6* from leoFrame
+.. @+node:ekr.20080429051644.1: *7* leoFrame.mustBeDefined
+# List of methods that must be defined either in the base class or a subclass.
+
+mustBeDefined = (
+
+    # Icon bar convenience methods.    
+    'addIconButton',
+    'addIconRow',
+    'clearIconBar',
+    'createIconBar',
+    'getIconBar',
+    'getIconBarObject',
+    'getNewIconFrame',
+    'hideIconBar',
+    'initAfterLoad',
+    'initCompleteHint',
+    'showIconBar',
+)
+.. @+node:ekr.20061109120726: *7* leoFrame.mustBeDefinedOnlyInBaseClass
+mustBeDefinedOnlyInBaseClass = (
+
+    'createFirstTreeNode', # New in Leo 4.6: was defined in tkTree.
+    'initialRatios',
+    'longFileName',
+    'oops',
+    'promptForSave',
+    'scanForTabWidth',
+    'shortFileName',
+
+    # Headline editing.
+    'abortEditLabelCommand',
+    'endEditLabelCommand',
+    'insertHeadlineTime',
+
+    # Cut/Copy/Paste.
+    'OnPaste',
+    'OnPasteFromMenu',
+    'copyText',
+    'cutText',
+    'pasteText',
+
+    # Status line convenience methods.
+    'createStatusLine',
+    'clearStatusLine',
+    'disableStatusLine',
+    'enableStatusLine',
+    'getStatusLine',
+    'getStatusObject',
+    'putStatusLine',
+    'setFocusStatusLine',
+    'statusLineIsEnabled',
+    'updateStatusLine',
+)
+.. @+node:ekr.20061109120704: *7* leoFrame.mustBeDefinedInSubclasses
+mustBeDefinedInSubclasses = (
+    #Gui-dependent commands.
+    'cascade',
+    'contractBodyPane',
+    'contractLogPane',
+    'contractOutlinePane',
+    'contractPane',
+    'equalSizedPanes',
+    'expandLogPane',
+    'expandPane',
+    'fullyExpandBodyPane',
+    'fullyExpandLogPane',
+    'fullyExpandOutlinePane',
+    'fullyExpandPane',
+    'hideBodyPane',
+    'hideLogPane',
+    'hideLogWindow',
+    'hideOutlinePane',
+    'hidePane',
+    'leoHelp',
+    'minimizeAll',
+    'resizeToScreen',
+    'toggleActivePane',
+    'toggleSplitDirection',
+    # Windowutilities...
+    'bringToFront',
+    'deiconify',
+    'get_window_info',
+    'lift',
+    'update',
+    # Config...
+    'resizePanesToRatio',
+    'setInitialWindowGeometry',
+    'setTopGeometry',
+)
+.. @+node:ekr.20111114151846.9854: *6* from leoTree
+.. @+node:ekr.20081005065934.7: *7* leoTree.mustBeDefined
+# List of methods that must be defined either in the base class or a subclass.
+
+mustBeDefined = (
+    'initAfterLoad', # New in Leo 4.6.
+    'treeSelectHint', # New in Leo 4.6.
+)
+.. @+node:ekr.20061109164512: *7* leoTree.mustBeDefinedOnlyInBaseClass
+mustBeDefinedOnlyInBaseClass = (
+    # Getters & setters.
+    'editPosition',
+    'getEditTextDict',
+    'setEditPosition',
+    # Others.
+    'endEditLabel',
+    # 'expandAllAncestors', # Now defined in Commands class.
+    'injectCallbacks',
+    'OnIconDoubleClick',
+    'onHeadChanged',
+    'onHeadlineKey',
+    'updateHead',
+    'oops',
+)
+.. @+node:ekr.20061109164610: *7* leoTree.mustBeDefinedInSubclasses
+mustBeDefinedInSubclasses = (
+    # Colors & fonts.
+    'getFont',
+    'setFont',
+    'setFontFromConfig ',
+    # Drawing & scrolling.
+    'drawIcon',
+    'redraw_now',
+    'scrollTo',
+    # Headlines.
+    'editLabel',
+    # 'setEditLabelState',
+    # Selecting.
+    # 'select', # Defined in base class, may be overridden in do-nothing subclasses.
+)
+.. @+node:ekr.20111114151846.9855: *6* from leoGui
+.. @+node:ekr.20061109211054: *7* leoGui.mustBeDefinedOnlyInBaseClass
+mustBeDefinedOnlyInBaseClass = (
+    'guiName',
+    'oops',
+    'setScript',
+    'widget_name',
+)
+.. @+node:ekr.20061109211022: *7* leoGui.mustBeDefinedInSubclasses
+mustBeDefinedInSubclasses = (
+    # Startup & shutdown
+    'attachLeoIcon',
+    'center_dialog',
+    'color',
+    #'createComparePanel',          # optional
+    #'createFindPanel',             # optional
+    'createFindTab',
+    'createKeyHandlerClass',
+    'createLeoFrame',
+    'createRootWindow',
+    'create_labeled_frame',
+    'destroySelf',
+    #'eventChar',
+    #'eventKeysym',
+    'eventWidget',
+    # 'eventXY',
+    # 'finishCreate', # optional.
+    # 'getFontFromParams', # optional
+    # 'getFullVersion', # optional.
+    'getTextFromClipboard',
+    'get_focus',
+    'get_window_info',
+    'isTextWidget',
+    # 'keysym',
+    'killGui',
+    # 'makeScriptButton', # optional
+    'recreateRootWindow',
+    'replaceClipboardWith',
+    'runAboutLeoDialog',
+    'runAskLeoIDDialog',
+    'runAskOkCancelNumberDialog',
+    'runAskOkDialog',
+    'runAskYesNoCancelDialog',
+    'runAskYesNoDialog',
+    'runMainLoop',
+    'runOpenFileDialog',
+    'runSaveFileDialog',
+    'set_focus',
+    #'setIdleTimeHook',             # optional       
+    #'setIdleTimeHookAfterDelay',   # optional
+)
 .. @+node:ekr.20111112105048.9755: *4* Get Linux machine working again
 .. @+node:ekr.20111109122014.9792: *4* Allow @all only in top-level @<file> nodes
 .. @+node:ekr.20111108081936.12524: *4* Create unit tests illustrating path ops

@@ -10,7 +10,7 @@
 #@@pagewidth 60
 
 #@+<< imports >>
-#@+node:ekr.20111116103733.10440: ** << imports >>
+#@+node:ekr.20111116103733.10440: **   << imports >>
 import leo.core.leoGlobals as g
 
 # Used by ast-oriented code.
@@ -34,7 +34,7 @@ else:
     StringIO = cStringIO.StringIO
 #@-<< imports >>
 #@+<< naming conventions >>
-#@+node:ekr.20111116103733.10146: ** << naming conventions >>
+#@+node:ekr.20111116103733.10146: **   << naming conventions >>
 #@@nocolor-node
 #@+at
 # 
@@ -56,59 +56,44 @@ else:
 #@-<< naming conventions >>
 
 #@+others
-#@+node:ekr.20111116103733.10312: **  class LeoCoreFiles
-class LeoCoreFiles:
+#@+node:ekr.20111116103733.10539: **   Top-level functions
+#@+node:ekr.20111116103733.10337: *3* chain_base
+# This global function exists avoid duplicate code
+# in the Chain and SymbolTable classes.
+
+def chain_base (s):
     
-    '''A class representing Leo's core files, including qtGui.py'''
-    
-    def __init__ (self):
-        
-        self.files = self.create_core_list()
-            # The list of files in Leo's core.
+    '''Return the base of the id chain s, a plain string.'''
 
-    #@+others
-    #@+node:ekr.20111116103733.10313: *3* create_core_list
-    def create_core_list(self):
-        
-        skipList = (
-            'format-code.py',
-            'leo_Debugger.py','leo_FileList.py',
-            'leo_RemoteDebugger.py','leo_run.py',
-            'leo_Shell.py',
-            '__init__.py',
-        )
+    if s.find('.') == -1:
+        # The chain is empty.
+        g.trace('can not happen: empty base',s)
+        return None
+    else:
+        base = s.split('.')[0]
+        base = base.replace('()','').replace('[]','')
+        return base
+#@+node:ekr.20111116103733.10540: *3* module
+def module (c,fn,print_stats=False,print_times=False):
 
-        files = glob.glob(g.os_path_finalize_join(
-            g.app.loadDir,'*.py'))
-        aList = []
-        for fn in files:
-            for z in skipList:
-                if fn.endswith(z):
-                    # print('skipping %s' % fn)
-                    break
-            else: aList.append(fn)
-            
-        aList.append(g.os_path_finalize_join(
-            g.app.loadDir,'..','plugins','qtGui.py'))
+    s = LeoCoreFiles().get_source(fn)
+    if not s:
+        print('file not found: %s' % (fn))
+        return None
+        
+    t1 = time.clock()
 
-        return aList
-    #@+node:ekr.20111116103733.10314: *3* get_source
-    def get_source (self,fn):
-        
-        if not g.os_path_exists(fn):
-            fn = g.os_path_finalize_join(g.app.loadDir,fn)
-        if not g.os_path_exists(fn):
-            fn = g.os_path_finalize_join(g.app.loadDir,'..','plugins',fn)
-        
-        try:
-            f = open(fn,'r')
-            s = f.read()
-            f.close()
-            return s
-        except IOError:
-            return ''
-    #@-others
-#@+node:ekr.20111116103733.10434: ** AST classes
+    sd = SemanticData(controller=None)
+    InspectTraverser(c,fn,sd,s).traverse(s)
+    module = sd.modules_dict.get(fn)
+           
+    sd.total_time = time.clock()-t1
+
+    if print_stats: sd.print_stats()
+    if print_times: sd.print_times()
+
+    return module
+#@+node:ekr.20111116103733.10434: **  AST classes
 #@+<< define class AstTraverser >>
 #@+node:ekr.20111116103733.10278: *3* << define class AstTraverser >>
 class AstTraverser:
@@ -1515,23 +1500,6 @@ class InspectTraverser (AstTraverser):
             keys = list(self.objectDict.keys())
             keys.sort()
             g.trace(keys)
-    #@+node:ekr.20111116103733.10348: *4*  LLT.delete_contexts
-    def delete_contexts (self):
-        
-        sd = self.sd
-        
-        # First, compute the lists of contexts.
-        aList = [z for z in sd.all_contexts()]
-        
-        # Now, delete non-module contexts in sd.context_list.
-        d = sd.context_list
-        for key in list(d.keys()):
-            cx = d.get(key)
-            if cx.kind != 'module':
-                del d[key]
-        
-        for cx in aList:
-            cx.destroy_self()
     #@+node:ekr.20111116103733.10349: *4*  LLT.dump
     def dump (self,tree):
         
@@ -1547,8 +1515,8 @@ class InspectTraverser (AstTraverser):
             
         self.sd.n_errors += 1
     #@+node:ekr.20111116103733.10351: *4* LLT.checks
-    #@+node:ekr.20111116103733.10352: *5* LLT.check
-    def check (self,s,dump):
+    #@+node:ekr.20111116103733.10352: *5* LLT.traverse
+    def traverse (self,s):
         
         '''Perform all checks on the source in s.'''
         
@@ -1561,18 +1529,10 @@ class InspectTraverser (AstTraverser):
         self.visit(tree,tag='top')
         t3 = time.clock()
         sd.pass1_time += t3-t2
-        self.resolve_names()
+        # self.resolve_names()
         t4 = time.clock()
         sd.pass2_time += t4-t3
-        
-        if dump:
-            self.sd.dump(verbose=False)
-        self.delete_contexts()
-    #@+node:ekr.20111116103733.10353: *5* LLT.resolve_names
-    def resolve_names (self):
 
-        for cx in self.sd.all_contexts():
-            cx.resolve_names(self)
     #@+node:ekr.20111116103733.10354: *4* LLT.Contexts
     #@+node:ekr.20111116103733.10355: *5* LLT.ClassDef
     # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
@@ -2125,396 +2085,9 @@ class StatisticsTraverser (AstTraverser):
             print('%5s %s' % (key,d.get(key)))
     #@-others
 #@-others
-#@+node:ekr.20111116103733.10444: ** Chain classes & chain_base function
-#@+node:ekr.20111116103733.10337: *3* chain_base (ll and nl)
-# This global function exists avoid duplicate code
-# in the Chain and SymbolTable classes.
-
-def chain_base (s):
-    
-    '''Return the base of the id chain s, a plain string.'''
-
-    if s.find('.') == -1:
-        # The chain is empty.
-        g.trace('can not happen: empty base',s)
-        return None
-    else:
-        base = s.split('.')[0]
-        base = base.replace('()','').replace('[]','')
-        return base
-#@+node:ekr.20111116103733.10190: *3* class Chain (nl) REFERENCE
-if 0:
-    
-    class Chain:
-    
-        '''A class representing an identifier chain a.b.c.d.
-    
-        "a" is the **base** of the chain.
-        "d" is the **target** of the chain.
-        
-        The representation of the chain itelf is a string.
-        This representtion changes as the chain gets resolved.
-        
-        Chains also contain a list of ast nodes representing
-        identifiers to be patched when the chain is fully resolved.
-    
-        See Pass1.do_Attribute for the kinds of nodes that
-        may be patched.
-        '''
-        
-        #@+others
-        #@+node:ekr.20111116103733.10191: *4*  ctor, repr
-        def __init__ (self,ast,e,s):
-            
-            self.ast_list = [ast]
-                # A list of ast nodes to be patched.
-                # The merge method extends this list.
-            self.e = e # The symbol table entry for the base of the chain.
-            self.s = s # A string in a.b.c.d format, or ''
-
-        def __repr__ (self):
-            
-            return 'Chain(%s)' % self.s
-            
-        __str__ = __repr__
-
-        #@+node:ekr.20111116103733.10192: *4*  hash, eq and ne
-        if 0: # These methods allow Chain's to be members of sets.
-
-            def __eq__ (self,other):
-                
-                return self.s == other.s
-                
-            def __ne__ (self,other):
-                
-                return self.s != other.s
-                
-            # Valid and safe, but hurts performance:
-            # sets of Chains will perform much like lists of Chains.
-            # This will not likely matter much because
-            # sets of chains will usually have few members.
-            def __hash__ (self):
-            
-                return 0
-        #@+node:ekr.20111116103733.10193: *4* chain.add_dependency
-        def add_dependency (self,dep):
-            
-            self.e.add_dependency(dep)
-        #@+node:ekr.20111116103733.10194: *4* chain.base
-        def base (self):
-            
-            '''Return the base of this Chain.'''
-            
-            # Call the global function to ensure that
-            # Chain.base() matches the code in SymbolTable.add_chain().
-
-            return chain_base(self.s)
-        #@+node:ekr.20111116103733.10195: *4* chain.is_empty
-        def is_empty (self):
-            
-            '''Return True if this chain is empty.'''
-            
-            return self.s.find('.') == -1
-        #@+node:ekr.20111116103733.10196: *4* chain.remove_base
-        # print(repr('.'.join([]))) # An empty string.
-        # print("abc".split('.')) # A list with one element.
-
-        def remove_base (self):
-            
-            aList = self.s.split('.')
-                # A list with one element if there is not dot.
-
-            self.s = '.'.join(aList[1:])
-                # An empty string if aList[1:] is empty.
-        #@+node:ekr.20111116103733.10197: *4* chain.short_description
-        def short_description (self):
-            
-            return 'chain: %s' % self.s
-        #@-others
-#@+node:ekr.20111116103733.10338: *3* class Chain (ll)
-class Chain:
-    
-    '''A class representing an identifier chain a.b.c.d.
-
-    "a" is the **base** of the chain.
-    "d" is the **target** of the chain.
-    
-    The representation of the chain itelf is a string.
-    This representtion changes as the chain gets resolved.
-    
-    Chains also contain a list of ast nodes representing
-    identifiers to be patched when the chain is fully resolved.
-
-    See Pass1.do_Attribute for the kinds of nodes that
-    may be patched.
-    '''
-    
-    #@+others
-    #@+node:ekr.20111116103733.10339: *4*  ctor, repr
-    def __init__ (self,tree,e,s):
-
-        self.e = e # The symbol table entry for the base of the chain.
-        self.s = s # A string in a.b.c.d format, or ''
-        self.tree = tree
-
-    def __repr__ (self):
-        
-        return 'Chain(%s)' % self.s
-        
-    __str__ = __repr__
-
-    #@+node:ekr.20111116103733.10340: *4*  hash, eq and ne
-    if 0: # These methods allow Chain's to be members of sets.
-
-        def __eq__ (self,other):
-            
-            return self.s == other.s
-            
-        def __ne__ (self,other):
-            
-            return self.s != other.s
-            
-        # Valid and safe, but hurts performance:
-        # sets of Chains will perform much like lists of Chains.
-        # This will not likely matter much because
-        # sets of chains will usually have few members.
-        def __hash__ (self):
-        
-            return 0
-    #@+node:ekr.20111116103733.10341: *4* chain.base
-    def base (self):
-        
-        '''Return the base of this Chain.'''
-        
-        # Call the global function to ensure that
-        # Chain.base() matches the code in SymbolTable.add_chain().
-
-        return chain_base(self.s)
-    #@+node:ekr.20111116103733.10342: *4* chain.is_empty
-    def is_empty (self):
-        
-        '''Return True if this chain is empty.'''
-        
-        return self.s.find('.') == -1
-    #@+node:ekr.20111116103733.10343: *4* chain.defines_ivar & get_ivar
-    def defines_ivar (self):
-        
-        parts = self.s.split('.')
-        return len(parts) == 2 and parts[0] == 'self'
-        
-    def get_ivar (self):
-        
-        parts = self.s.split('.')
-        if len(parts) == 2 and parts[0] == 'self':
-            return parts[1]
-        else:
-            return None
-    #@+node:ekr.20111116103733.10344: *4* chain.short_description
-    def short_description (self):
-        
-        return 'chain: %s' % self.s
-    #@-others
-#@+node:ekr.20111116103733.10443: ** Context classes
-#@+node:ekr.20111116103733.10241: *3* Context classes (nl) REFERENCE
-if 0:
-    #@+others
-    #@+node:ekr.20111116103733.10242: *4* class Context
-    class Context:
-
-        '''The base class of all context-related semantic data.
-
-        All types ultimately resolve to a context.'''
-
-        def __repr__ (self):
-            return 'Context: %s' % (self.kind)
-
-        __str__ = __repr__
-
-        #@+others
-        #@+node:ekr.20111116103733.10243: *5* cx ctor
-        def __init__(self,ast,parent_context,sd,kind):
-
-            self.ast = ast
-            self.is_constant = False
-            self.kind = kind
-            self.parent_context = parent_context
-            self.sd = sd
-            self.st = SymbolTable(context=self)
-
-            # Semantic data
-            self.classes = [] # Classes defined in this context.
-            self.functions = [] # Functions defined in this context.
-            self.hint_dict = {}
-                # During pass1, keys and values are text.
-                # The resolve_hints pass rewrites the dicts so that
-                # keys are SymbolTableEntries and values are Contexts.
-            
-            sd.n_contexts += 1
-        #@+node:ekr.20111116103733.10244: *5* cx.add...
-        #@+at
-        # These methods create the initial version of all semantic
-        # data. The ctors may traverse the parse tree as a kind of
-        # pre-pass, but afterwards the semantic code uses only
-        # semantic data, not parse-tree data.
-        #@+node:ekr.20111116103733.10245: *6* cx.add_class
-        def add_class (self,ast):
-
-            '''Create a new context for an ast.ClassDef node.'''
-
-            trace = False
-
-            old_cx = self
-            sd = self.sd
-
-            if trace: g.trace('%25s name: %s' % (old_cx,ast.name))
-
-            new_cx = ClassContext(ast,old_cx,sd)
-
-            old_cx.st.add_name(ast.name)
-            old_cx.classes.append(new_cx)
-
-            return new_cx
-        #@+node:ekr.20111116103733.10246: *6* cx.add_def
-        def add_def (self,ast):
-
-            '''Create a new context for an ast.FunctionDef node.'''
-
-            trace = False
-
-            old_cx = self ; sd = self.sd
-
-            if trace: g.trace('%25s name: %s' % (old_cx,ast.name))
-
-            assert self.ast_kind(ast) == 'FunctionDef'
-
-            old_cx.st.add_name(ast.name)
-
-            new_cx = DefContext(ast,old_cx,sd)
-            old_cx.functions.append(new_cx)
-
-            return new_cx
-        #@+node:ekr.20111116103733.10247: *6* cx.add_global (to do)
-        def add_global (self,ast):
-
-            '''Create a symbol table entry for an ast.Global node.'''
-
-            trace = False
-
-            cx = self
-
-            if trace: g.trace('%s %s' % (self.ast_kind(ast),ast))
-
-            # cx.st.add_global(name)
-        #@+node:ekr.20111116103733.10248: *6* cx.add_import
-        def add_import (self,ast,fn,asname,sd):
-
-            '''Create a symbol table entry for an ast.Import node.
-
-            Important: the file name may not have been processed yet.
-            In that case, create a symbol table for that file.'''
-
-            trace = False
-            cx = self ; sd = self.sd
-
-            if trace: g.trace('(cx) %s %s as %s' % (
-                self.ast_kind(ast),repr(fn),repr(asname)))
-
-            # Get the module context from the global dict if possible.
-            cx = sd.modules_dict.get(fn)
-            if not cx:
-                cx = ModuleContext(ast,fn,sd)
-                sd.modules_dict[fn] = cx
-
-            cx.st.add_import(asname)
-        #@+node:ekr.20111116103733.10249: *6* cx.add_import_from (to do)
-        def add_import_from (self,ast):
-
-            '''Create a symbol table entry for an ast.ImportFrom node.'''
-
-            trace = False
-
-            cx = self
-
-            if trace: g.trace('%s' % (self.ast_kind(ast)))
-
-            # cx.st.add_import_from(module,name)
-        #@+node:ekr.20111116103733.10250: *5* cx.ast_kind
-        def ast_kind (self,ast):
-
-            return ast.__class__.__name__
-        #@+node:ekr.20111116103733.10251: *5* cx.description
-        def description (self):
-            
-            '''Return a description of this context and all parent contexts.'''
-            
-            if self.parent_context:
-                return  '%s:%s' % (
-                    self.parent_context.description(),repr(self))
-            else:
-                return repr(self)
-        #@+node:ekr.20111116103733.10252: *5* cx.dump
-        def dump (self,level=0,verbose=False):
-
-            if 0: # Just print the context
-                print(repr(self))
-            else:
-                self.st.dump(level=level)
-
-            if verbose:
-                for z in self.classes:
-                    z.dump(level+1)
-                for z in self.functions:
-                    z.dump(level+1)
-        #@-others
-    #@+node:ekr.20111116103733.10253: *4* class ClassContext (Context) (new_lint)
-    class ClassContext (Context):
-
-        '''A class to hold sementic data about a class.'''
-
-        def __init__(self,ast,context,sd):
-
-            Context.__init__(self,ast,context,sd,'class')
-            sd.n_classes += 1
-
-        def __repr__ (self):
-            
-            return 'class(%s)' % (self.ast.name)
-        
-        __str__ = __repr__
-    #@+node:ekr.20111116103733.10254: *4* class DefContext (Context)
-    class DefContext (Context):
-
-        '''A class to hold sementic data about a function/method.'''
-
-        def __init__(self,ast,context,sd):
-
-            Context.__init__(self,ast,context,sd,'def')
-            sd.n_defs += 1
-
-        def __repr__ (self):
-
-            return 'def(%s)' % (self.ast.name)
-            
-        __str__ = __repr__
-    #@+node:ekr.20111116103733.10255: *4* class ModuleContext (Context)
-    class ModuleContext (Context):
-
-        '''A class to hold sementic data about a module.'''
-
-        def __init__(self,ast,fn,sd):
-
-            Context.__init__(self,ast,None,sd,'module')
-            self.fn = fn
-            sd.n_modules += 1
-
-        def __repr__ (self):
-
-            return 'module(%s)' % g.shortFileName(self.fn)
-            
-        __str__ = __repr__
-    #@-others
-#@+node:ekr.20111116103733.10401: *3* Context classes (ll)
-#@+node:ekr.20111116103733.10402: *4*  class Context
+#@+node:ekr.20111116103733.10401: **  Context classes
+#@+<< define class Context >>
+#@+node:ekr.20111116103733.10402: *3* << define class Context >>
 class Context:
 
     '''The base class of all context-related semantic data.
@@ -2527,7 +2100,7 @@ class Context:
     __str__ = __repr__
 
     #@+others
-    #@+node:ekr.20111116103733.10403: *5* cx ctor
+    #@+node:ekr.20111116103733.10403: *4* cx ctor
     def __init__(self,tree,parent_context,sd,kind):
 
         self.tree = tree
@@ -2574,11 +2147,11 @@ class Context:
             self.module_context = self
         else:
             self.module_context = parent_context.module_context
-    #@+node:ekr.20111116103733.10404: *5* cx.ast_kind
+    #@+node:ekr.20111116103733.10404: *4* cx.ast_kind
     def ast_kind (self,tree):
 
         return tree.__class__.__name__
-    #@+node:ekr.20111116103733.10405: *5* cx.description & name
+    #@+node:ekr.20111116103733.10405: *4* cx.description & name
     def description (self):
         
         '''Return a description of this context and all parent contexts.'''
@@ -2591,7 +2164,7 @@ class Context:
 
     # All subclasses override name.
     name = description
-    #@+node:ekr.20111116103733.10406: *5* cx.destroy_self
+    #@+node:ekr.20111116103733.10406: *4* cx.destroy_self
     def destroy_self (self):
         
         cx = self
@@ -2610,7 +2183,7 @@ class Context:
         else:
             # Destroy the context completely.
             g.clearAllIvars(cx)
-    #@+node:ekr.20111116103733.10407: *5* cx.dump
+    #@+node:ekr.20111116103733.10407: *4* cx.dump
     def dump (self,level=0,verbose=False):
 
         if 0: # Just print the context
@@ -2625,27 +2198,7 @@ class Context:
                 z.dump(level+1)
             for z in self.temp_contexts:
                 z.dump(level+1)
-    #@+node:ekr.20111116103733.10408: *5* cx.resolve_names
-    def resolve_names (self,controller):
-        
-        '''Resolve all references to names in this context.'''
-        
-        cx = self
-        
-        if cx.kind == 'module':
-            local_names = [z for z in cx.st.d.keys()]
-            # g.trace('module locals',local_names)
-            cx.all_global_names = list(cx.global_names.union(
-                local_names,
-                cx.all_global_names))
-        else:
-            cx.all_global_names = list(cx.global_names.union(
-                cx.parent_context.all_global_names))
-        
-        cx.report_errors(controller)
-        
-        cx.sd.n_resolved_contexts += 1
-    #@+node:ekr.20111116103733.10409: *5* cx.report_errors & helpers
+    #@+node:ekr.20111116103733.10409: *4* cx.report_errors & helpers
     def report_errors(self,controller):
 
         cx = self
@@ -2663,7 +2216,7 @@ class Context:
         cx.check_names(controller,keys,table)
                     
         self.check_chains(controller,keys,table)
-    #@+node:ekr.20111116103733.10410: *6* cx.check_chains
+    #@+node:ekr.20111116103733.10410: *5* cx.check_chains
     def check_chains (self,controller,keys,table):
 
         check_message = False
@@ -2687,7 +2240,7 @@ class Context:
                                         controller.error(theChain.tree,message)
                     # Make one check for each key.
                     break
-    #@+node:ekr.20111116103733.10411: *6* cx.check_chain
+    #@+node:ekr.20111116103733.10411: *5* cx.check_chain
     def check_chain (self,cx,s):
         
         '''Use Leo-specific type knowledge to check for attribute errors.'''
@@ -2716,7 +2269,7 @@ class Context:
         except Exception:
             g.es_exception()
             return ''
-    #@+node:ekr.20111116103733.10412: *6* cx.check_names
+    #@+node:ekr.20111116103733.10412: *5* cx.check_names
     def check_names (self,controller,keys,table):
 
         check_message = False
@@ -2770,7 +2323,10 @@ class Context:
                     else:
                         controller.error(cx.tree,'Undefined: %s in %s' % (key,cx))
     #@-others
-#@+node:ekr.20111116103733.10413: *4* class ClassContext(Context) (leo_lint)
+#@-<< define class Context >>
+
+#@+others
+#@+node:ekr.20111116103733.10413: *3* class ClassContext(Context)
 class ClassContext (Context):
 
     '''A class to hold semantic data about a class.'''
@@ -2788,7 +2344,7 @@ class ClassContext (Context):
         return self.tree.name
     
     __str__ = __repr__
-#@+node:ekr.20111116103733.10414: *4* class ConprehensionContext(Context)
+#@+node:ekr.20111116103733.10414: *3* class ConprehensionContext(Context)
 class ComprehensionContext (Context):
 
     '''A class to represent the range of a list comprehension.'''
@@ -2806,7 +2362,7 @@ class ComprehensionContext (Context):
         return 'list comprehension context'
 
     __str__ = __repr__
-#@+node:ekr.20111116103733.10415: *4* class DefContext(Context)
+#@+node:ekr.20111116103733.10415: *3* class DefContext(Context)
 class DefContext (Context):
 
     '''A class to hold semantic data about a function/method.'''
@@ -2824,7 +2380,7 @@ class DefContext (Context):
         return '%s %s' % (kind,self.tree.name)
         
     __str__ = __repr__
-#@+node:ekr.20111116103733.10416: *4* class ForContext(Context)
+#@+node:ekr.20111116103733.10416: *3* class ForContext(Context)
 class ForContext (Context):
 
     '''A class to represent the range of a 'for' statement.'''
@@ -2853,7 +2409,7 @@ class ForContext (Context):
 #     for z in tree.elts:
 #         self.visit(z,'list elts')
 #     self.visit(tree.ctx,'list context')
-#@+node:ekr.20111116103733.10417: *4* class LambdaContext(Context)
+#@+node:ekr.20111116103733.10417: *3* class LambdaContext(Context)
 class LambdaContext (Context):
 
     '''A class to represent the range of a 'lambda' statement.'''
@@ -2870,7 +2426,7 @@ class LambdaContext (Context):
         return 'lambda statement context'
 
     __str__ = __repr__
-#@+node:ekr.20111116103733.10418: *4* class ModuleContext(Context)
+#@+node:ekr.20111116103733.10418: *3* class ModuleContext(Context)
 class ModuleContext (Context):
 
     '''A class to hold semantic data about a module.'''
@@ -2892,7 +2448,7 @@ class ModuleContext (Context):
         return g.shortFileName(self.fn)
         
     __str__ = __repr__
-#@+node:ekr.20111116103733.10419: *4* class WithContext(Context)
+#@+node:ekr.20111116103733.10419: *3* class WithContext(Context)
 class WithContext (Context):
 
     '''A class to represent the range of a 'with' statement.'''
@@ -2909,159 +2465,149 @@ class WithContext (Context):
         return 'with statement context'
         
     __str__ = __repr__
-#@+node:ekr.20111116103733.10438: ** Semantic data classes
-#@+node:ekr.20111116103733.10202: *3* class SemanticData (nl) REFERENCE
-if 0:
+#@-others
+#@+node:ekr.20111116103733.10338: ** class Chain
+class Chain:
     
-    class SemanticData:
+    '''A class representing an identifier chain a.b.c.d.
+
+    "a" is the **base** of the chain.
+    "d" is the **target** of the chain.
     
-        '''A class containing all global semantic data.'''
+    The representation of the chain itelf is a string.
+    This representtion changes as the chain gets resolved.
+    
+    Chains also contain a list of ast nodes representing
+    identifiers to be patched when the chain is fully resolved.
+
+    See Pass1.do_Attribute for the kinds of nodes that
+    may be patched.
+    '''
+    
+    #@+others
+    #@+node:ekr.20111116103733.10339: *3*  ctor, repr
+    def __init__ (self,tree,e,s):
+
+        self.e = e # The symbol table entry for the base of the chain.
+        self.s = s # A string in a.b.c.d format, or ''
+        self.tree = tree
+
+    def __repr__ (self):
         
-        #@+others
-        #@+node:ekr.20111116103733.10203: *4*  sd.ctor
-        def __init__ (self,controller):
-            
-            self.controller = controller
-            self.dumper = AstDumper()
-            
-            # Files...
-            self.completed_files = [] # Files handled by do_files.
-            self.failed_files = [] # Files that could not be opened.
-            self.files_list = [] # Files given by user or by import statements.
-            
-            # Contexts.
-            self.context_list = {}
-                # Keys are fully qualified context names; values are contexts.
-            self.modules_dict = {}
-                # Keys are full file names; values are ModuleContext's.
-                
-            # The resolution algorithm.
-            self.known_types = []
-                
-            # Representations of standard types...
-            self.bool_type   = Type_Class('bool')
-            self.dict_type   = Type_Class('dict')
-            self.int_type    = Type_Class('int')
-            self.list_type   = Type_Class('list')
-            self.number_type = Type_Class('number')
-            self.string_type = Type_Class('string')
-            self.tuple_type  = Type_Class('tuple')
-            
-            # Statistics...
-            self.n_args = 0
-            self.n_assignments = 0
-            self.n_attributes = 0
-            self.n_calls = 0
-            self.n_chains = 0
-            self.n_classes = 0
-            self.n_contexts = 0
-            self.n_defs = 0
-            self.n_dependencies = 0
-            self.n_globals = 0
-            self.n_imports = 0
-            self.n_ivars = 0
-            self.n_modules = 0
-            self.n_names = 0
-        #@+node:ekr.20111116103733.10204: *4* sd.all_contexts (generator)
-        def all_contexts (self,aList=None):
-            
-            '''An iterator returning all contexts.'''
-            
-            if not aList:
-                aList = list(self.modules_dict.values())
+        return 'Chain(%s)' % self.s
+        
+    __str__ = __repr__
 
-            for cx in aList:
-                yield cx
-                if cx.classes:
-                    for z in self.all_contexts(cx.classes):
-                        yield z
-                if cx.functions:
-                    for z in self.all_contexts(cx.functions):
-                        yield z
-        #@+node:ekr.20111116103733.10205: *4* sd.create_known_symbols
-        def create_known_symbols (self):
-            
-            '''Create the initial sd.known_symbols list.'''
-            
-            sd = self
+    #@+node:ekr.20111116103733.10340: *3*  hash, eq and ne
+    if 0: # These methods allow Chain's to be members of sets.
 
-            aList = []
-            for cx in sd.all_contexts():
-                cx.st.append_known_names(aList)
-                
-            sd.known_symbols = aList
+        def __eq__ (self,other):
             
-            # g.trace('%s known symbols' % len(aList))
-        #@+node:ekr.20111116103733.10206: *4* sd.dump
-        def dump (self,verbose=True):
+            return self.s == other.s
             
-            sd = self
-            print('Dump of modules...')
-            for cx in sd.all_contexts():
-                print('')
-                cx.dump(verbose=verbose)
-        #@+node:ekr.20111116103733.10207: *4* sd.dump_ast
-        def dump_ast (self,ast,brief=False):
+        def __ne__ (self,other):
             
-            '''Return the string, but don't write it.'''
+            return self.s != other.s
             
-            dumper = self.dumper
-            dumper.brief = brief
-            s = dumper._dumpTreeAsString(ast)
+        # Valid and safe, but hurts performance:
+        # sets of Chains will perform much like lists of Chains.
+        # This will not likely matter much because
+        # sets of chains will usually have few members.
+        def __hash__ (self):
+        
+            return 0
+    #@+node:ekr.20111116103733.10341: *3* chain.base
+    def base (self):
+        
+        '''Return the base of this Chain.'''
+        
+        # Call the global function to ensure that
+        # Chain.base() matches the code in SymbolTable.add_chain().
+
+        return chain_base(self.s)
+    #@+node:ekr.20111116103733.10342: *3* chain.is_empty
+    def is_empty (self):
+        
+        '''Return True if this chain is empty.'''
+        
+        return self.s.find('.') == -1
+    #@+node:ekr.20111116103733.10343: *3* chain.defines_ivar & get_ivar
+    def defines_ivar (self):
+        
+        parts = self.s.split('.')
+        return len(parts) == 2 and parts[0] == 'self'
+        
+    def get_ivar (self):
+        
+        parts = self.s.split('.')
+        if len(parts) == 2 and parts[0] == 'self':
+            return parts[1]
+        else:
+            return None
+    #@+node:ekr.20111116103733.10344: *3* chain.short_description
+    def short_description (self):
+        
+        return 'chain: %s' % self.s
+    #@-others
+#@+node:ekr.20111116103733.10312: ** class LeoCoreFiles
+class LeoCoreFiles:
+    
+    '''A class representing Leo's core files, including qtGui.py'''
+    
+    def __init__ (self):
+        
+        self.files = self.create_core_list()
+            # The list of files in Leo's core.
+
+    #@+others
+    #@+node:ekr.20111116103733.10313: *3* create_core_list
+    def create_core_list(self):
+        
+        skipList = (
+            'format-code.py',
+            'leo_Debugger.py','leo_FileList.py',
+            'leo_RemoteDebugger.py','leo_run.py',
+            'leo_Shell.py',
+            '__init__.py',
+        )
+
+        files = glob.glob(g.os_path_finalize_join(
+            g.app.loadDir,'*.py'))
+        aList = []
+        for fn in files:
+            for z in skipList:
+                if fn.endswith(z):
+                    # print('skipping %s' % fn)
+                    break
+            else: aList.append(fn)
+            
+        aList.append(g.os_path_finalize_join(
+            g.app.loadDir,'..','plugins','qtGui.py'))
+
+        return aList
+    #@+node:ekr.20111116103733.10314: *3* get_source
+    def get_source (self,fn):
+        
+        if not g.os_path_exists(fn):
+            fn = g.os_path_finalize_join(g.app.loadDir,fn)
+        if not g.os_path_exists(fn):
+            fn = g.os_path_finalize_join(g.app.loadDir,'..','plugins',fn)
+        
+        try:
+            f = open(fn,'r')
+            s = f.read()
+            f.close()
             return s
-        #@+node:ekr.20111116103733.10208: *4* sd.print_failed_files
-        def print_failed_files (self):
-            
-            sd = self
-
-            if sd.failed_files:
-                # g.trace('%s import failed' % (len(sd.failed_files)))
-                sd.failed_files.sort()
-                print(sd.failed_files)
-        #@+node:ekr.20111116103733.10209: *4* sd.print_stats
-        def print_stats (self):
-            
-            sd = self
-            table = (
-                'args','assignments','attributes',
-                'calls','classes','contexts',
-                'defs','dependencies','globals','imports',
-                'modules','names',
-            )
-            max_n = 5
-            for s in table:
-                max_n = max(max_n,len(s))
-                
-            print('\nDump of statistics...\n')
-            for s in table:
-                var = 'n_%s' % s
-                pad = ' ' * (max_n - len(s))
-                print('%s%s: %s' % (pad,s,getattr(sd,var)))
-        #@+node:ekr.20111116103733.10210: *4* sd.resolve_types
-        def resolve_types (self):
-            
-            '''The new resolution algorithm.
-            
-            Remove symbols from all Dependency objects containing them,
-            thereby possibly createing more known symbols.
-            '''
-            
-            sd = self
-            
-            g.trace(len(sd.known_types))
-
-            # Important: len(sd.known_type) may change in this loop.
-            while sd.known_types:
-                e = sd.known_types.pop()
-                e.become_known()
-        #@-others
-#@+node:ekr.20111116103733.10380: *3* class SemanticData (ll)
+        except IOError:
+            return ''
+    #@-others
+#@+node:ekr.20111116103733.10380: ** class SemanticData
 class SemanticData:
     
     '''A class containing all global semantic data.'''
     
     #@+others
-    #@+node:ekr.20111116103733.10381: *4*  sd.ctor
+    #@+node:ekr.20111116103733.10381: *3*  sd.ctor
     def __init__ (self,controller):
         
         self.controller = controller
@@ -3115,7 +2661,7 @@ class SemanticData:
         self.pass1_time = 0.0
         self.pass2_time = 0.0
         self.total_time = 0.0
-    #@+node:ekr.20111116103733.10382: *4* sd.all_contexts (generator)
+    #@+node:ekr.20111116103733.10382: *3* sd.all_contexts (generator)
     def all_contexts (self,aList=None):
         
         '''An iterator returning all contexts.'''
@@ -3134,7 +2680,7 @@ class SemanticData:
             if cx.temp_contexts:
                 for z in self.all_contexts(cx.temp_contexts):
                     yield z
-    #@+node:ekr.20111116103733.10383: *4* sd.dump
+    #@+node:ekr.20111116103733.10383: *3* sd.dump
     def dump (self,verbose=True):
         
         sd = self
@@ -3142,7 +2688,7 @@ class SemanticData:
         for cx in sd.all_contexts():
             print('')
             cx.dump(verbose=verbose)
-    #@+node:ekr.20111116103733.10384: *4* sd.dump_ast
+    #@+node:ekr.20111116103733.10384: *3* sd.dump_ast
     def dump_ast (self,tree,brief=False):
         
         '''Return the string, but don't write it.'''
@@ -3151,14 +2697,14 @@ class SemanticData:
         dumper.brief = brief
         s = dumper._dumpTreeAsString(tree)
         return s
-    #@+node:ekr.20111116103733.10385: *4* sd.module_name
+    #@+node:ekr.20111116103733.10385: *3* sd.module_name
     def module_name (self,fn):
         
         fn = g.shortFileName(fn)
         if fn.endswith('.py'):
             fn = fn[:-3]
         return fn
-    #@+node:ekr.20111116103733.10386: *4* sd.print_failed_files
+    #@+node:ekr.20111116103733.10386: *3* sd.print_failed_files
     def print_failed_files (self):
         
         sd = self
@@ -3167,7 +2713,7 @@ class SemanticData:
             # g.trace('%s import failed' % (len(sd.failed_files)))
             sd.failed_files.sort()
             print(sd.failed_files)
-    #@+node:ekr.20111116103733.10387: *4* sd.print_stats
+    #@+node:ekr.20111116103733.10387: *3* sd.print_stats
     def print_stats (self):
         
         sd = self
@@ -3193,13 +2739,16 @@ class SemanticData:
             pad = ' ' * (max_n - len(s))
             print('%s%s: %s' % (pad,s,getattr(sd,var)))
             
-    #@+node:ekr.20111116103733.10508: *4* sd.print_times
+    #@+node:ekr.20111116103733.10508: *3* sd.print_times
     def print_times (self):
         
         sd = self
 
         times = (
-            'parse_time','pass1_time','pass2_time','total_time',
+            'parse_time',
+            'pass1_time',
+            # 'pass2_time', # the resolve_names pass is no longer used.
+            'total_time',
         )
         
         max_n = 5
@@ -3209,7 +2758,7 @@ class SemanticData:
         for s in times:
             pad = ' ' * (max_n - len(s))
             print('%s%s: %2.2f' % (pad,s,getattr(sd,s)))
-    #@+node:ekr.20111116103733.10388: *4* sd.resolve_types
+    #@+node:ekr.20111116103733.10388: *3* sd.resolve_types
     def resolve_types (self):
         
         '''The new resolution algorithm.
@@ -3228,504 +2777,192 @@ class SemanticData:
             e.become_known()
     #@-others
     
-#@+node:ekr.20111116103733.10435: ** Symbol Table classes
-#@+node:ekr.20111116103733.10436: *3* Symbol table (nl) REFERENCE
-if 0:
+#@+node:ekr.20111116103733.10389: ** class SymbolTable
+class SymbolTable:
+
+    '''A base class for all symbol table info.'''
+    
     #@+others
-    #@+node:ekr.20111116103733.10211: *4* class SymbolTable (nl)
-    class SymbolTable:
+    #@+node:ekr.20111116103733.10390: *3*  st.ctor and repr
+    def __init__ (self,context):
 
-        '''A base class for all symbol table info.'''
+        self.context = context
+        self.d = {} # Keys are names, values are symbol table entries.
+        self.max_name_length = 1 # Minimum field width for dumps.
 
-        #@+others
-        #@+node:ekr.20111116103733.10212: *5*  st.ctor and repr
-        def __init__ (self,context):
+    def __repr__ (self):
+        return 'SymbolTable for %s...\n' % self.context.description()
 
-            self.context = context
-            self.d = {} # Keys are names, values are symbol table entries.
-            self.max_name_length = 10 # For dumps.
-
-        def __repr__ (self):
-            return 'SymbolTable for %s' % self.context.description()
-
-        __str__ = __repr__
-        #@+node:ekr.20111116103733.10213: *5* st.add_chain
-        def add_chain (self,ast,s):
-            
-            '''Add the chain described by (ast,s) to the symbol table
-            for the base of s, a plain string.
-            
-            Return the perhaps-newly-created Chain object for (ast,s).'''
-            
-            st = self
-            base = chain_base(s)
-            e = st.add_name(base)
-            chain = e.add_chain(base,ast,s)
-            return chain
-
-        #@+node:ekr.20111116103733.10214: *5* st.add_global
-        def add_global (self,name):
-
-            if 0:
-                g.trace(name)
-        #@+node:ekr.20111116103733.10215: *5* st.append_known_names
-        def append_known_names (self,aList):
-            
-            '''Append all known symbols of this table to aList.'''
-            
-            st = self
-
-            for e in self.d.values():
-                if e.is_known():
-                    aList.append(e)
-        #@+node:ekr.20111116103733.10216: *5* st.add_import
-        def add_import (self,name):
-
-            '''Add name as an import symbol.'''
-
-            # g.trace(name)
-
-            st = self
-            st.add_name(name)
-        #@+node:ekr.20111116103733.10217: *5* st.add_import_from (to do)
-        def add_import_from (self,module,name):
-
-            if 0:
-                g.trace(module,name)
-        #@+node:ekr.20111116103733.10218: *5* st.add_name
-        def add_name (self,name):
-
-            '''Add name to the symbol table.  Return the symbol table entry.'''
-            
-            st = self 
-
-            e = st.d.get(name)
-            if not e:
-                e = SymbolTableEntry(name,st)
-                st.d [name] = e
-
-            # g.trace('st: %s name: %s' % (self,name))
-            return e
-        #@+node:ekr.20111116103733.10219: *5* st.dump
-        def dump (self,level=0):
-
-            keys = list(self.d.keys())
-            keys.sort()
-            
-            print(self)
-            for key in keys:
-                print(self.d.get(key))
-        #@+node:ekr.20111116103733.10220: *5* st.get
-        def get (self,name):
-            
-            '''Return the symbol table entry for name.'''
-
-            return self.d.get(name)
-        #@-others
-    #@+node:ekr.20111116103733.10221: *4* class SymbolTableEntry (nl)
-    class SymbolTableEntry:
-
-        #@+others
-        #@+node:ekr.20111116103733.10222: *5*  e.ctor
-        def __init__ (self,name,st):
-
-            self.chains = {} # Keys are bases, values dicts of Chains.
-            self.dependencies = []
-            self.name = name
-            self.st = st
-            self.vals = [] # The "type" of this entry: a list of Contexts.
-
-            # Update the length field for dumps.
-            st.max_name_length = max(
-                st.max_name_length,
-                name and len(name) or 0)
-        #@+node:ekr.20111116103733.10223: *5* e.add_chain
-        def add_chain (self,base,ast,s):
-            
-            '''
-            If a Chain exists in e.chains[base], merge ast into its ast_list.
-
-            Otherwise, create a new Chain object and add it to e.chains[base].
-            
-            This is the *only* place where chains are created.
-            '''
-            
-            e = self
-            d = e.chains.get(base,{})
-            chain = d.get(s)
-            if chain:
-                pass
-                # chain.ast_list.append(ast)
-            else:
-                d [s] = chain = Chain(ast,e,s)
-                e.chains [base] = d
-            return chain
-        #@+node:ekr.20111116103733.10224: *5* e.add_dependency
-        def add_dependency (self,dep):
-            
-            self.dependencies.append(dep)
-        #@+node:ekr.20111116103733.10225: *5* e.add_type_def_def (To do)
-        def add_type_def (self,aType):
-            
-            '''The symbol has just been defined.
-            
-            - Update the list of types.
-            - Remove the dependency.
-            - If the type becomes known, and is valid, update all chains.
-            - If the type becomes invalid, kill all dependencies involving this symbol.
-            '''
-
-            if trace: g.trace(aType)
-        #@+node:ekr.20111116103733.10226: *5* e.is_known
-        def is_known (self):
-            
-            '''return True if this is a known symbol.'''
-            
-            return len(self.vals) == 1
-        #@+node:ekr.20111116103733.10227: *5* e.repr and e.dump
-        def __repr__ (self):
-
-            if self.name:
-                n = self.st.max_name_length - len(self.name)
-                pad = ' '*n
-                if self.chains:
-                    return '%s%s vals: %s chains: %s' % (
-                        pad,self.name,self.vals,self.show_chains())
-                else:
-                    return '%s%s vals: %s' % (pad,self.name,self.vals)
-            else:
-                return '<ste: no name!>'
-
-        def dump(self):
-            print(self)
-            
-        def show_chains(self):
-            if 1: # self.chains is a dict of dicts.
-                result = []
-                keys = list(self.chains.keys())
-                for key in keys:
-                    d = self.chains.get(key,{})
-                    for key2 in list(d.keys()):
-                        chain = d.get(key2)
-                        result.append(chain.s)
-                result.sort()
-                return ', '.join(result)
-            else: # self.chains is a dict of sets.
-                keys = list(self.chains.keys())
-                keys.sort()
-                for key in keys:
-                    aSet = self.chains.get(key,set())
-                    aList = list(aSet)
-                    aList = [z.s for z in aList]
-                    aList.sort()
-                    return ', '.join(aList)
-        #@+node:ekr.20111116103733.10228: *5* e.short_description
-        def short_description (self):
-            
-            return 'ste: %s' % self.name
-        #@+node:ekr.20111116103733.10229: *5* e.become_known (To do)
-        def remove_symbol (self,e):
-            
-            '''The type of this SymbolTableEntry has just become known.
-            
-            Remove e from this Dependency.
-            
-            If the Dependency becomes known, do the following:
-                
-            - Call eval_ast to evaluate the type.
-            - Assign the type to the Dependency's symbol.
-            - Add the symbol to sd.known_types.
-            '''
-          
-            e = self
-            
-            for dep in e.dependencies:
-                dep.remove(e) # May add entries to sd.known_types.
-            e.dependencies = []
-
-            g.trace(e)
-        #@-others
-    #@+node:ekr.20111116103733.10230: *4* class SymbolTable (nl)
-    class SymbolTable:
-
-        '''A base class for all symbol table info.'''
-
-        #@+others
-        #@+node:ekr.20111116103733.10231: *5*  st.ctor and repr
-        def __init__ (self,context):
-
-            self.context = context
-            self.d = {} # Keys are names, values are symbol table entries.
-            self.max_name_length = 10 # For dumps.
-
-        def __repr__ (self):
-            return 'SymbolTable for %s' % self.context.description()
-
-        __str__ = __repr__
-        #@+node:ekr.20111116103733.10232: *5* st.add_chain
-        def add_chain (self,ast,s):
-            
-            '''Add the chain described by (ast,s) to the symbol table
-            for the base of s, a plain string.
-            
-            Return the perhaps-newly-created Chain object for (ast,s).'''
-            
-            st = self
-            base = chain_base(s)
-            e = st.add_name(base)
-            chain = e.add_chain(base,ast,s)
-            return chain
-
-        #@+node:ekr.20111116103733.10233: *5* st.add_global
-        def add_global (self,name):
-
-            if 0:
-                g.trace(name)
-        #@+node:ekr.20111116103733.10234: *5* st.append_known_names
-        def append_known_names (self,aList):
-            
-            '''Append all known symbols of this table to aList.'''
-            
-            st = self
-
-            for e in self.d.values():
-                if e.is_known():
-                    aList.append(e)
-        #@+node:ekr.20111116103733.10235: *5* st.add_import
-        def add_import (self,name):
-
-            '''Add name as an import symbol.'''
-
-            # g.trace(name)
-
-            st = self
-            st.add_name(name)
-        #@+node:ekr.20111116103733.10236: *5* st.add_import_from (to do)
-        def add_import_from (self,module,name):
-
-            if 0:
-                g.trace(module,name)
-        #@+node:ekr.20111116103733.10237: *5* st.add_name
-        def add_name (self,name):
-
-            '''Add name to the symbol table.  Return the symbol table entry.'''
-            
-            st = self 
-
-            e = st.d.get(name)
-            if not e:
-                e = SymbolTableEntry(name,st)
-                st.d [name] = e
-
-            # g.trace('st: %s name: %s' % (self,name))
-            return e
-        #@+node:ekr.20111116103733.10238: *5* st.dump
-        def dump (self,level=0):
-
-            keys = list(self.d.keys())
-            keys.sort()
-            
-            print(self)
-            for key in keys:
-                print(self.d.get(key))
-        #@+node:ekr.20111116103733.10239: *5* st.get
-        def get (self,name):
-            
-            '''Return the symbol table entry for name.'''
-
-            return self.d.get(name)
-        #@-others
-    #@-others
-#@+node:ekr.20111116103733.10437: *3* Symbol table (ll)
-if 1:
-    #@+others
-    #@+node:ekr.20111116103733.10389: *4* class SymbolTable (ll)
-    class SymbolTable:
-
-        '''A base class for all symbol table info.'''
+    __str__ = __repr__
+    #@+node:ekr.20111116103733.10391: *3* st.add_chain
+    def add_chain (self,tree,s):
         
-        #@+others
-        #@+node:ekr.20111116103733.10390: *5*  st.ctor and repr
-        def __init__ (self,context):
+        '''Add the chain described by (tree,s) to the symbol table
+        for the base of s, a plain string.
+        
+        Return the perhaps-newly-created Chain object for (tree,s).'''
+        
+        st = self
+        # if s.find('.') == -1: g.trace(s,g.callers())
+        base = chain_base(s)
+        e = st.add_name(base,tree)
+        chain = e.add_chain(base,tree,s)
+        return chain
 
-            self.context = context
-            self.d = {} # Keys are names, values are symbol table entries.
-            self.max_name_length = 1 # Minimum field width for dumps.
+    #@+node:ekr.20111116103733.10392: *3* st.add_name
+    def add_name (self,name,tree):
 
-        def __repr__ (self):
-            return 'SymbolTable for %s...\n' % self.context.description()
+        '''Add name to the symbol table.  Return the symbol table entry.'''
+        
+        st = self
+        e = st.d.get(name)
+        if not e:
+            e = SymbolTableEntry(name,st,tree)
+            st.d [name] = e
+            st.context.sd.n_names += 1
+            # if name == 'self' and st.context.kind == 'class':
+                # g.trace('st: %s name: %s' % (self,name),g.callers())
 
-        __str__ = __repr__
-        #@+node:ekr.20111116103733.10391: *5* st.add_chain
-        def add_chain (self,tree,s):
+        return e
+    #@+node:ekr.20111116103733.10393: *3* st.dump
+    def dump (self,level=0):
+        
+        cx = self.context
+        
+        print(self)
+
+        # Print the table entries.
+        keys = list(self.d.keys())
+        keys.sort()
+        for key in keys:
+            print(self.d.get(key))
             
-            '''Add the chain described by (tree,s) to the symbol table
-            for the base of s, a plain string.
-            
-            Return the perhaps-newly-created Chain object for (tree,s).'''
-            
-            st = self
-            # if s.find('.') == -1: g.trace(s,g.callers())
-            base = chain_base(s)
-            e = st.add_name(base,tree)
-            chain = e.add_chain(base,tree,s)
-            return chain
+        # Print non-empty ctx lists.
+        table = (
+            (cx.del_names,'Del'),
+            (cx.load_names,'Load'),
+            (cx.param_names,'Param'),
+            (cx.store_names,'Store'),
+            (cx.global_names,'Globals'),
+            (cx.all_global_names,'all_glob'),
+        )
+        for aSet,kind in table:
+            if aSet:
+                print('%8s: %s' % (kind,list(aSet)))
 
-        #@+node:ekr.20111116103733.10392: *5* st.add_name
-        def add_name (self,name,tree):
+        
+    #@+node:ekr.20111116103733.10394: *3* st.get_name
+    def get_name (self,name):
+        
+        '''Return the symbol table entry for name.'''
 
-            '''Add name to the symbol table.  Return the symbol table entry.'''
-            
-            st = self
-            e = st.d.get(name)
-            if not e:
-                e = SymbolTableEntry(name,st,tree)
-                st.d [name] = e
-                st.context.sd.n_names += 1
-                # if name == 'self' and st.context.kind == 'class':
-                    # g.trace('st: %s name: %s' % (self,name),g.callers())
+        return self.d.get(name)
+    #@-others
+#@+node:ekr.20111116103733.10395: ** class SymbolTableEntry
+class SymbolTableEntry:
 
-            return e
-        #@+node:ekr.20111116103733.10393: *5* st.dump
-        def dump (self,level=0):
-            
-            cx = self.context
-            
-            print(self)
+    #@+others
+    #@+node:ekr.20111116103733.10396: *3*  e.ctor
+    def __init__ (self,name,st,tree):
 
-            # Print the table entries.
-            keys = list(self.d.keys())
-            keys.sort()
-            for key in keys:
-                print(self.d.get(key))
-                
-            # Print non-empty ctx lists.
-            table = (
-                (cx.del_names,'Del'),
-                (cx.load_names,'Load'),
-                (cx.param_names,'Param'),
-                (cx.store_names,'Store'),
-                (cx.global_names,'Globals'),
-                (cx.all_global_names,'all_glob'),
-            )
-            for aSet,kind in table:
-                if aSet:
-                    print('%8s: %s' % (kind,list(aSet)))
+        self.chains = {} # Keys are bases, values dicts of Chains.
+        self.defined = False
+        self.load_before_store_flag = False
+        self.name = name
+        self.st = st
+        self.tree = tree
 
-            
-        #@+node:ekr.20111116103733.10394: *5* st.get_name
-        def get_name (self,name):
-            
-            '''Return the symbol table entry for name.'''
+        # Update the length field for dumps.
+        st.max_name_length = max(
+            st.max_name_length,
+            name and len(name) or 0)
+    #@+node:ekr.20111116103733.10397: *3* e.add_chain
+    def add_chain (self,base,tree,s):
+        
+        '''
+        If a Chain exists in e.chains[base], merge tree into its ast_list.
 
-            return self.d.get(name)
-        #@-others
-    #@+node:ekr.20111116103733.10395: *4* class SymbolTableEntry (ll)
-    class SymbolTableEntry:
+        Otherwise, create a new Chain object and add it to e.chains[base].
+        
+        This is the *only* place where chains are created.
+        '''
+        
+        e = self
+        d = e.chains.get(base,{})
+        chain = d.get(s)
+        if chain:
+            pass
+            # chain.ast_list.append(tree)
+        else:
+            d [s] = chain = Chain(tree,e,s)
+            e.chains [base] = d
+        return chain
+    #@+node:ekr.20111116103733.10398: *3* e.repr and e.dump
+    def __repr__ (self):
 
-        #@+others
-        #@+node:ekr.20111116103733.10396: *5*  e.ctor
-        def __init__ (self,name,st,tree):
-
-            self.chains = {} # Keys are bases, values dicts of Chains.
-            self.defined = False
-            self.load_before_store_flag = False
-            self.name = name
-            self.st = st
-            self.tree = tree
-
-            # Update the length field for dumps.
-            st.max_name_length = max(
-                st.max_name_length,
-                name and len(name) or 0)
-        #@+node:ekr.20111116103733.10397: *5* e.add_chain
-        def add_chain (self,base,tree,s):
-            
-            '''
-            If a Chain exists in e.chains[base], merge tree into its ast_list.
-
-            Otherwise, create a new Chain object and add it to e.chains[base].
-            
-            This is the *only* place where chains are created.
-            '''
-            
-            e = self
-            d = e.chains.get(base,{})
-            chain = d.get(s)
-            if chain:
-                pass
-                # chain.ast_list.append(tree)
+        if self.name:
+            n = self.st.max_name_length - len(self.name)
+            pad = ' '*n
+            unbound = g.choose(self.load_before_store_flag,
+                ': <unbound>','')
+            if self.chains:
+                return '%s%s defined: %5s%s: %s' % (
+                    pad,self.name,self.defined,unbound,self.show_chains())
             else:
-                d [s] = chain = Chain(tree,e,s)
-                e.chains [base] = d
-            return chain
-        #@+node:ekr.20111116103733.10398: *5* e.repr and e.dump
-        def __repr__ (self):
+                return '%s%s defined: %5s%s' % (
+                    pad,self.name,self.defined,unbound)
+        else:
+            return '<ste: no name!>'
 
-            if self.name:
-                n = self.st.max_name_length - len(self.name)
-                pad = ' '*n
-                unbound = g.choose(self.load_before_store_flag,
-                    ': <unbound>','')
-                if self.chains:
-                    return '%s%s defined: %5s%s: %s' % (
-                        pad,self.name,self.defined,unbound,self.show_chains())
-                else:
-                    return '%s%s defined: %5s%s' % (
-                        pad,self.name,self.defined,unbound)
-            else:
-                return '<ste: no name!>'
+    def dump(self):
+        print(self)
+        
+    def show_chains(self):
+        # self.chains is a dict of dicts.
+        result = []
+        keys = list(self.chains.keys())
+        for key in keys:
+            d = self.chains.get(key,{})
+            for key2 in list(d.keys()):
+                chain = d.get(key2)
+                result.append(chain.s)
+        result.sort()
+        return ','.join(result)
+    #@+node:ekr.20111116103733.10399: *3* e.is_defined & set_defined
+    def is_defined (self):
+        
+        return self.defined
 
-        def dump(self):
-            print(self)
-            
-        def show_chains(self):
-            # self.chains is a dict of dicts.
-            result = []
-            keys = list(self.chains.keys())
-            for key in keys:
-                d = self.chains.get(key,{})
-                for key2 in list(d.keys()):
-                    chain = d.get(key2)
-                    result.append(chain.s)
-            result.sort()
-            return ','.join(result)
-        #@+node:ekr.20111116103733.10399: *5* e.is_defined & set_defined
-        def is_defined (self):
-            
-            return self.defined
-
-        def set_defined (self):
-            
-            self.defined = True
-        #@+node:ekr.20111116103733.10400: *5* e.short_description
-        def short_description (self):
-            
-            return 'ste: %s' % self.name
-        #@-others
+    def set_defined (self):
+        
+        self.defined = True
+    #@+node:ekr.20111116103733.10400: *3* e.short_description
+    def short_description (self):
+        
+        return 'ste: %s' % self.name
     #@-others
 #@+node:ekr.20111116103733.10450: ** test
-def test(c,files,dump=True,s=None,times=True):
+def test(c,files,dump=True,s=None,print_times=True):
    
     t1 = time.clock()
     sd = SemanticData(controller=None)
 
     if s: # Use test string.
         fn = '<test file>'
-        InspectTraverser(c,fn,sd,s).check(s,dump)
+        InspectTraverser(c,fn,sd,s).traverse(s)
     else:
         for fn in files:
             print(g.shortFileName(fn))
             s = LeoCoreFiles().get_source(fn)
             if s:
-                InspectTraverser(c,fn,sd,s).check(s,dump)
+                InspectTraverser(c,fn,sd,s).traverse(s)
             else:
                 print('file not found: %s' % (fn))
            
     sd.total_time = time.clock()-t1
     if dump:
         sd.print_stats()
-    if times:
+    if print_times:
         sd.print_times()
 #@-others
 #@-leo

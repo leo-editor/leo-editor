@@ -18,12 +18,13 @@
 <v t="ekr.20111026082728.16483"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20111031081007.9985"><vh>@shortcuts</vh></v>
 </v>
+<v t="ekr.20111103205308.9703"><vh>@command cls</vh></v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
 <v t="ekr.20031218072017.329"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
-<v t="ekr.20100120072650.6089" descendentVnodeUnknownAttributes="7d7100580c000000302e312e302e32352e302e3371017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file ../doc/leoProjects.txt</vh></v>
+<v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
@@ -50,7 +51,7 @@
 <v t="ekr.20041117062700"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@file leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31332e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31342e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
@@ -59,7 +60,6 @@
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
-<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@file leoTest.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui base classes</vh>
@@ -87,6 +87,9 @@
 <v t="ekr.20100221142603.5638"><vh>@file ../../pylint-leo.py</vh></v>
 <v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
+<v t="ekr.20111116103733.9817"
+expanded="ekr.20111116103733.10539,"><vh>@file leoInspect.py</vh></v>
+<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@file leoTest.py</vh></v>
 </v>
 </v>
 </vnodes>
@@ -247,6 +250,8 @@ row.  Similar remarks apply when going in the reverse direction.
 <t tx="ekr.20110607155823.16449"></t>
 <t tx="ekr.20111026082728.16483"></t>
 <t tx="ekr.20111031081007.9985">run-marked-unit-tests-externally = Alt-4
-run-all-unit-tests-externally = Alt-5</t>
+run-all-unit-tests-externally = Alt-5
+run-marked-unit-tests-locally = Alt-6</t>
+<t tx="ekr.20111103205308.9703">g.cls()</t>
 </tnodes>
 </leo_file>
