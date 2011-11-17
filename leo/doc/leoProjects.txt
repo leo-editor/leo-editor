@@ -1353,7 +1353,7 @@ s2 = '''
 t1 = 
 assert result == expected,'expected...\n%s\ngot...\n%s' % (
     repr(expected),repr(result))
-#@+node:ekr.20100907115157.5905: *3* @ignore
+#@+node:ekr.20100907115157.5905: *3* @ignore 1
 #@+node:ekr.20100208095423.5940: *4* @test leoCache
 import leo.core.leoCache as leoCache
 
@@ -1666,13 +1666,14 @@ def scanOptions():
     silent = options.silent
 
     return path,gui,silent
-#@+node:ekr.20111104132424.9909: *3* @test assert True
+#@+node:ekr.20111116161118.10248: *3* @ignore recent tests
+#@+node:ekr.20111104132424.9909: *4* @test assert True
 # It's useful to have this do-nothing test.
 
 assert True
-#@+node:ekr.20111107092526.9819: *3* @test cls
+#@+node:ekr.20111107092526.9819: *4* @test cls
 g.cls() # Clear the screen
-#@+node:ekr.20111110085739.10265: *3* @test html string
+#@+node:ekr.20111110085739.10265: *4* @test html string
 s = '''\
 <HTML>
 <head>
@@ -1703,7 +1704,7 @@ if showTree:
     for p in p.subtree():
         print('\n***** %s\n' %p.h)
         print(p.b)
-#@+node:ekr.20111109151106.9746: *3* @test htmlScanner.filterTokens
+#@+node:ekr.20111109151106.9746: *4* @test htmlScanner.filterTokens
 import leo.core.leoImport as leoImport
 ic = c.importCommands
 hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
@@ -1727,7 +1728,7 @@ assert strip(f1) == strip(f2),'f1...\n%s\nf2...\n%s' % (
     
 if 0:
     print(dump(f1))
-#@+node:ekr.20111110084957.10092: *3* @test import dataN.html
+#@+node:ekr.20111110084957.10092: *4* @test import dataN.html
 fn = r'c:\recent\data.html'
 
 # fn = r'c:\recent\data-smaller.html'
@@ -1752,7 +1753,7 @@ assert tags == html_tags,len(tags)
 g.cls()
 
 c.importCommands.importFilesCommand(files=[fn], treeType='@file')
-#@+node:ekr.20111109105907.9795: *3* @test unicode stuff
+#@+node:ekr.20111109105907.9795: *4* @test unicode stuff
 @first # -*- coding: utf-8 -*-
 
 table = (
@@ -1773,7 +1774,7 @@ for s in table:
     g.pr ('g.pr(repr(s)) : %s' % repr(s))
     print('print(s)      : %s' % s)
     print('print(repr(s)): %s' % s)
-#@+node:ekr.20111113064104.9841: *3* @test external text operations
+#@+node:ekr.20111113064104.9841: *4* @test external text operations
 assert g.app.isExternalUnitTest
 
 body = c.frame.body
@@ -1783,7 +1784,7 @@ assert body.widget == body.bodyCtrl
 w = body.bodyCtrl
 w.setAllText(p.b)
 assert p.b == w.getAllText()
-#@+node:ekr.20111112131605.9789: *3* @test nullBody text operations
+#@+node:ekr.20111112131605.9789: *4* @test nullBody text operations
 # print('isExternalUnitTest',g.app.isExternalUnitTest)
 
 if g.app.isExternalUnitTest:
@@ -1808,7 +1809,7 @@ w = body.bodyCtrl
 
 w.setAllText(p.b)
 assert p.b == w.getAllText()
-#@+node:ekr.20111115155710.9835: *3* @test g.python_tokenize
+#@+node:ekr.20111115155710.9835: *4* @test g.python_tokenize
 # h = 'g.python_tokenize'
 # p = p.firstChild()
 # assert p.h == h
@@ -1845,7 +1846,38 @@ if 1: # Print lines containing '='
         if z.find('=') > -1] # and not z.find('+=')>-1 and not z.find('-=')>-1]
     print(''.join(aList))
     
-#@+node:ekr.20111116103733.9818: *3* @ignore Testing LeoInspect
+#@+node:ekr.20111116161118.10247: *3* @ignore Old lint tests
+#@+node:ekr.20111116103733.9845: *4*  Naming tests
+# http://docs.python.org/reference/executionmodel.html#naming-and-binding
+
+if 0:
+    def test():
+        a = b
+        b = 1 # UnboundLocalError
+        
+print('***')
+          
+def test():
+    global g2
+    g2 = 4
+    def test2():
+        print(g2)
+    test2()
+    g2 = 3
+    print(g2)
+    
+g2 = 'g2'
+print(g2)
+
+test()
+#@+node:ekr.20111116103733.9846: *5* << define s>>
+s = '''
+
+
+
+'''
+
+s = g.adjustTripleString(s,-4)
 #@+node:ekr.20111116103733.9838: *4* @test AstTraverser
 import leo.core.leoGlobals as g
 import ast
@@ -1885,6 +1917,16 @@ for z in range(n):
 
 t2 = time.clock()
 print('Created %s dicts in %2.3f sec.' % (n,t2-t1))
+#@+node:ekr.20111116103733.9844: *4* @test dumper (to outNodes)
+import leo.core.leoGlobals as g
+import sys
+import lintutils as u
+
+fn = 'c:/leo.repo/trunk/leo/core/leoApp.py'
+out = 'c:/leo.repo/new-pylint/outNodes.txt'
+
+outStream = open(out,'w')
+u.AstDumper().dumpFileAsNodes(fn,outStream)
 #@+node:ekr.20111116103733.9840: *4* @test dumper (to outString)
 import leo.core.leoGlobals as g
 import sys
@@ -1909,66 +1951,8 @@ u.AstTraverser(fn,s).visit(tree)
 st = new_lint.StatisticsTraverser(fn,s)
 st.visit(tree)
 st.print_stats()
-#@+node:ekr.20111116103733.9844: *4* @test dumper (to outNodes)
-import leo.core.leoGlobals as g
-import sys
-import lintutils as u
-
-fn = 'c:/leo.repo/trunk/leo/core/leoApp.py'
-out = 'c:/leo.repo/new-pylint/outNodes.txt'
-
-outStream = open(out,'w')
-u.AstDumper().dumpFileAsNodes(fn,outStream)
-#@+node:ekr.20111116103733.9845: *4* Naming tests
-# http://docs.python.org/reference/executionmodel.html#naming-and-binding
-
-if 0:
-    def test():
-        a = b
-        b = 1 # UnboundLocalError
-        
-print('***')
-          
-def test():
-    global g2
-    g2 = 4
-    def test2():
-        print(g2)
-    test2()
-    g2 = 3
-    print(g2)
-    
-g2 = 'g2'
-print(g2)
-
-test()
-#@+node:ekr.20111116103733.9846: *5* << define s>>
-s = '''
-
-
-
-'''
-
-s = g.adjustTripleString(s,-4)
-#@+node:ekr.20111116103733.10449: *4* @test leoInspect.module
-import leo.core.leoInspect as inspect
-
-dump_modules = False
-print_functions = False
-
-g.cls()
-
-m = inspect.module(c,'leoEditCommands.py',print_stats=True,print_times=True)
-
-for o in m.classes:
-    if dump_modules:
-        o.dump(verbose=False)
-    else:
-        print(o)
-        if print_functions:
-            for f in o.functions:
-                print('  %s' % f)
-#@+node:ekr.20111116103733.10672: *3* @test leoInspect.test
+#@+node:ekr.20111116103733.9818: *3* LeoInspect tests
+#@+node:ekr.20111116103733.10672: *4* @test leoInspect with multiple files
 import leo.core.leoInspect as inspect
 
 import os
@@ -1983,7 +1967,7 @@ aList = (
     'leoEditCommands.py',
 )
 inspect.test(c,aList,print_stats=False,s=None,print_times=True)
-#@+node:ekr.20111116103733.10451: *4* << define old_s >>
+#@+node:ekr.20111116103733.10451: *5* << define old_s >>
 # import leo.core.leoGlobals
 # import leo.core.leoGlobals as g
 # from leo.core.leoGlobals import pr as pr2
@@ -2054,7 +2038,7 @@ def test():
 '''
 
 # import leo.core.leoCommands as leoCommands
-#@+node:ekr.20111116103733.10452: *4* << define s >>
+#@+node:ekr.20111116103733.10452: *5* << define s >>
 s = '''\
 
 import leo.core.leoGlobals as g
@@ -2068,6 +2052,81 @@ def test(c):
 
 s = g.adjustTripleString(s,-4)
 # print(s)
+#@+node:ekr.20111116103733.10450: *5* test
+def test(c,files,print_stats=True,s=None,print_times=True):
+   
+    t1 = time.clock()
+    sd = SemanticData(controller=None)
+
+    if s: # Use test string.
+        fn = '<test file>'
+        InspectTraverser(c,fn,sd,s).traverse(s)
+    else:
+        for fn in files:
+            print(g.shortFileName(fn))
+            s = LeoCoreFiles().get_source(fn)
+            if s:
+                InspectTraverser(c,fn,sd,s).traverse(s)
+            else:
+                print('file not found: %s' % (fn))
+           
+    sd.total_time = time.clock()-t1
+    
+    if print_times: sd.print_times()
+    if print_stats: sd.print_stats()
+#@+node:ekr.20111116103733.10449: *4* @test leoInspect.module.classes
+import leo.core.leoInspect as inspect
+
+dump_modules = False
+print_modules = True
+print_functions = False
+print_stats = False
+print_times = True
+
+if dump_modules or print_stats:
+    g.cls()
+
+m = inspect.module(c,'leoEditCommands.py',sd=None,
+    print_stats=print_stats,print_times=print_times)
+    
+for o in m.classes():
+    if dump_modules:
+        o.dump(verbose=False)
+    if print_modules:
+        print(o)
+    if print_functions:
+        for f in o.functions:
+            print('  %s' % f)
+#@+node:ekr.20111116161118.10212: *4* @test leoInspect.module.classes 2
+import leo.core.leoInspect as inspect
+
+g.cls()
+
+m = inspect.module(c,'leoEditCommands.py')
+    #,sd=None,print_stats=False,print_times=False)
+    
+for z in m.classes():
+    print(z)
+#@+node:ekr.20111116161118.10218: *4* @test leoInspect.module.defs
+import leo.core.leoInspect as inspect
+
+g.cls()
+
+m = inspect.module(c,'leoEditCommands.py')
+    #,sd=None,print_stats=False,print_times=False)
+    
+for z in m.defs():
+    print(z)
+#@+node:ekr.20111116161118.10181: *4* @test leoInspect.module.statements
+import leo.core.leoInspect as inspect
+
+g.cls()
+
+m = inspect.module(c,'leoEditCommands.py')
+    #,sd=None,print_stats=False,print_times=False)
+    
+for z in m.statements():
+    print(z)
 #@+node:ekr.20110621074459.14908: ** 4.9.1
 #@+node:ekr.20110730093802.15134: *3* Bugs
 #@+node:ekr.20110621074459.14904: *4* Fixed ancient hanger in paste-retaining-clones

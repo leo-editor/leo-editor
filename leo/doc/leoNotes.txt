@@ -5844,7 +5844,8 @@ def getExternalCompletions (self,s,p=None,language='python'):
     theObject,tabList = self.theObject,self.tabList
     self.exit() # Not called from the autocompleter itself.
     return theObject,tabList
-#@+node:ekr.20061031131434.155: *3* masterMenuHandler (No longer used)
+#@+node:ekr.20111116161118.10090: *3* Old menu stuff
+#@+node:ekr.20061031131434.155: *4* masterMenuHandler (No longer used)
 def masterMenuHandler (self,stroke,func,commandName):
 
     k = self ; c = k.c
@@ -5858,7 +5859,7 @@ def masterMenuHandler (self,stroke,func,commandName):
         return k.masterKeyHandler(event)
     else:
         return k.masterCommand(commandName=commandName,event=event,func=func,stroke=stroke)
-#@+node:ekr.20031218072017.1725: *3* << compute commandName & accel from label & command >> (No longer used)
+#@+node:ekr.20031218072017.1725: *4* << compute commandName & accel from label & command >> (No longer used)
 # New in 4.4b2: command can be a minibuffer-command name (a string)
 minibufferCommand = type(command) == type('')
 accel = None
@@ -5901,7 +5902,7 @@ else:
                     break
         elif not dynamicMenu:
             g.trace('No inverse for %s' % commandName)
-#@+node:ekr.20051021100806.1: *4* << compute emacs_name >>
+#@+node:ekr.20051021100806.1: *5* << compute emacs_name >>
 @ One not-so-horrible kludge remains.
 
 The cut/copy/paste commands in the menu tables are not the same as the methods
@@ -5917,7 +5918,7 @@ else:
         emacs_name = k.inverseCommandsDict.get(command.__name__)
     except Exception:
         emacs_name = None
-#@+node:ekr.20051021091958: *3* << get label & command or continue >> (No longer used)
+#@+node:ekr.20051021091958: *4* << get label & command or continue >> (No longer used)
 if g.isString(data):
     # New in Leo 4.4.2: Can use the same string for both the label and the command string.
     ok = True
@@ -5945,394 +5946,6 @@ else:
     else:
         g.trace('bad data in menu table: %s' % repr(data))
         continue # Ignore bad data
-#@+node:ekr.20031218072017.2243: *3* class nullUndoer (undoer)
-if 0: # To be removed.
-
-    class nullUndoer (undoer):
-    
-        def __init__ (self,c):
-    
-            undoer.__init__(self,c) # init the base class.
-    
-        @others
-#@+node:ekr.20050415165731: *4* other methods
-def clearUndoState (self):
-    pass
-
-def canRedo (self):
-    return False
-
-def canUndo (self):
-    return False
-
-def enableMenuItems (self):
-    pass
-    
-def onSelect(self,old_p,p):
-    pass
-
-def setUndoTypingParams (self,p,undo_type,oldText,newText,oldSel,newSel,oldYview=None):
-    pass
-
-def setUndoTypes (self):
-    pass
-#@+node:ekr.20050415165731.1: *4* before undo handlers...
-def beforeChangeNodeContents (self,p,oldBody=None,oldHead=None):
-    pass
-def beforeChangeTree (self,p):
-    pass
-def beforeChangeGroup (self,p,command):
-    pass
-def beforeClearRecentFiles (self):
-    pass
-def beforeCloneNode (self,p):
-    pass
-def beforeDeleteNode (self,p):
-    pass
-def beforeInsertNode (self,p,pasteAsClone=False,copiedBunchList=[]):
-    pass
-def beforeMark (self,p,command):
-    pass
-def beforeMoveNode (self,p):
-    pass
-#@+node:ekr.20050415170018: *4* after undo handlers...
-def afterChangeNodeContents (self,p,command,bunch,dirtyVnodeList=[]):
-    pass
-def afterChangeTree (self,p,command,bunch):
-    pass
-def afterChangeGroup (self,p,command,reportFlag=False,dirtyVnodeList=[]):
-    pass
-def afterClearRecentFiles (self,bunch):
-    pass
-def afterCloneNode (self,p,command,bunch,dirtyVnodeList=[]):
-    pass
-def afterDehoist (self,p,command):
-    pass
-def afterHoist (self,p,command):
-    pass
-def afterDeleteNode (self,p,command,bunch,dirtyVnodeList=[]):
-    pass
-def afterInsertNode (self,p,command,bunch,dirtyVnodeList=[]):
-    pass
-
-def afterMark (self,p,command,bunch,dirtyVnodeList=[]):
-    pass
-
-def afterMoveNode (self,p,command,bunch,dirtyVnodeList=[]):
-    pass
-#@+node:ekr.20111115155710.9825: *3* class pythonScanner
-class pythonScanner (baseScannerClass):
-
-    @others
-#@+node:ekr.20111115155710.9826: *4*  __init__
-def __init__ (self,importCommands,atAuto):
-
-    # Init the base class.
-    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='python')
-
-    # Set the parser delims.
-    self.lineCommentDelim = '#'
-    self.classTags = ['class',]
-    self.functionTags = ['def',]
-    self.blockDelim1 = self.blockDelim2 = None
-        # Suppress the check for the block delim.
-        # The check is done in skipSigTail.
-    self.strict = True
-
-#@+node:ekr.20111115155710.9827: *4* adjustDefStart (python)
-def adjustDefStart (self,s,i):
-
-    '''A hook to allow the Python importer to adjust the 
-    start of a class or function to include decorators.'''
-
-    if i == 0 or s[i-1] != '\n':
-        return i
-
-    while i > 0:
-        progress = i
-
-        start = j = g.find_line_start(s,i-2)
-        j = g.skip_ws(s,j)
-        if not g.match(s,j,'@'):
-            return i
-
-        j += 1
-        k = g.skip_id(s,j)
-        word = s[j:k]
-
-        if word and word not in g.globalDirectiveList:
-            # g.trace(repr(word),repr(s[start:i]))
-            i = start
-            assert i < progress
-        else:
-            return i
-#@+node:ekr.20111115155710.9828: *4* extendSignature
-def extendSignature(self,s,i):
-
-    '''Extend the text to be added to the class node following the signature.
-
-    The text *must* end with a newline.'''
-
-    # Add a docstring to the class node,
-    # And everything on the line following it
-    j = g.skip_ws_and_nl(s,i)
-    if g.match(s,j,'"""') or g.match(s,j,"'''"):
-        j = g.skip_python_string(s,j)
-        if j < len(s): # No scanning error.
-            # Return the docstring only if nothing but whitespace follows.
-            j = g.skip_ws(s,j)
-            if g.is_nl(s,j):
-                return j + 1
-
-    return i
-#@+node:ekr.20111115155710.9829: *4* findClass (leoImport)
-def findClass(self,p):
-
-    '''Return the index end of the class or def in a node, or -1.'''
-
-    s,i = p.b,0
-    while i < len(s):
-        progress = i
-        if s[i] in (' ','\t','\n'):
-            i += 1
-        elif self.startsComment(s,i):
-            i = self.skipComment(s,i)
-        elif self.startsString(s,i):
-            i = self.skipString(s,i)
-        elif self.startsClass(s,i):
-            return 'class',self.sigStart,self.codeEnd
-        elif self.startsFunction(s,i):
-            return 'def',self.sigStart,self.codeEnd
-        elif self.startsId(s,i):
-            i = self.skipId(s,i)
-        else:
-            i += 1
-        assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
-
-    return None,-1,-1
-#@+node:ekr.20111115155710.9830: *4* skipCodeBlock (python) & helpers
-def skipCodeBlock (self,s,i,kind):
-
-    trace = False ; verbose = True
-    # if trace: g.trace('***',g.callers())
-    startIndent = self.startSigIndent
-    if trace: g.trace('startIndent',startIndent)
-    assert startIndent is not None
-    i = start = g.skip_ws_and_nl(s,i)
-    parenCount = 0
-    underIndentedStart = None # The start of trailing underindented blank or comment lines.
-    while i < len(s):
-        progress = i
-        ch = s[i]
-        if g.is_nl(s,i):
-            if trace and verbose: g.trace(g.get_line(s,i))
-            backslashNewline = (i > 0 and g.match(s,i-1,'\\\n'))
-            if backslashNewline:
-                # An underindented line, including docstring,
-                # does not end the code block.
-                i += 1 # 2010/11/01
-            else:
-                i = g.skip_nl(s,i)
-                j = g.skip_ws(s,i)
-                if g.is_nl(s,j):
-                    pass # We have already made progress.
-                else:
-                    i,underIndentedStart,breakFlag = self.pythonNewlineHelper(
-                        s,i,parenCount,startIndent,underIndentedStart)
-                    if breakFlag: break
-        elif ch == '#':
-            i = g.skip_to_end_of_line(s,i)
-        elif ch == '"' or ch == '\'':
-            i = g.skip_python_string(s,i)
-        elif ch in '[{(':
-            i += 1 ; parenCount += 1
-            # g.trace('ch',ch,parenCount)
-        elif ch in ']})':
-            i += 1 ; parenCount -= 1
-            # g.trace('ch',ch,parenCount)
-        else: i += 1
-        assert(progress < i)
-
-    # The actual end of the block.
-    if underIndentedStart is not None:
-        i = underIndentedStart
-        if trace: g.trace('***backtracking to underindent range')
-        if trace: g.trace(g.get_line(s,i))
-
-    if 0 < i < len(s) and not g.match(s,i-1,'\n'):
-        g.trace('Can not happen: Python block does not end in a newline.')
-        g.trace(g.get_line(s,i))
-        return i,False
-
-    # 2010/02/19: Include all following material
-    # until the next 'def' or 'class'
-    i = self.skipToTheNextClassOrFunction(s,i,startIndent)
-
-    if (trace or self.trace) and s[start:i].strip():
-        g.trace('%s returns\n' % (kind) + s[start:i])
-    return i,True
-#@+node:ekr.20111115155710.9831: *5* pythonNewlineHelper
-def pythonNewlineHelper (self,s,i,parenCount,startIndent,underIndentedStart):
-
-    trace = False
-    breakFlag = False
-    j, indent = g.skip_leading_ws_with_indent(s,i,self.tab_width)
-    if trace: g.trace(
-        'startIndent',startIndent,'indent',indent,'parenCount',parenCount,
-        'line',repr(g.get_line(s,j)))
-    if indent <= startIndent and parenCount == 0:
-        # An underindented line: it ends the block *unless*
-        # it is a blank or comment line or (2008/9/1) the end of a triple-quoted string.
-        if g.match(s,j,'#'):
-            if trace: g.trace('underindent: comment')
-            if underIndentedStart is None: underIndentedStart = i
-            i = j
-        elif g.match(s,j,'\n'):
-            if trace: g.trace('underindent: blank line')
-            # Blank lines never start the range of underindented lines.
-            i = j
-        else:
-            if trace: g.trace('underindent: end of block')
-            breakFlag = True # The actual end of the block.
-    else:
-        if underIndentedStart and g.match(s,j,'\n'):
-            # Add the blank line to the underindented range.
-            if trace: g.trace('properly indented blank line extends underindent range')
-        elif underIndentedStart and g.match(s,j,'#'):
-            # Add the (properly indented!) comment line to the underindented range.
-            if trace: g.trace('properly indented comment line extends underindent range')
-        elif underIndentedStart is None:
-            pass
-        else:
-            # A properly indented non-comment line.
-            # Give a message for all underindented comments in underindented range.
-            if trace: g.trace('properly indented line generates underindent errors')
-            s2 = s[underIndentedStart:i]
-            lines = g.splitlines(s2)
-            for line in lines:
-                if line.strip():
-                    junk, indent = g.skip_leading_ws_with_indent(line,0,self.tab_width)
-                    if indent <= startIndent:
-                        if j not in self.errorLines: # No error yet given.
-                            self.errorLines.append(j)
-                            self.underindentedComment(line)
-            underIndentedStart = None
-    if trace: g.trace('breakFlag',breakFlag,'returns',i,'underIndentedStart',underIndentedStart)
-    return i,underIndentedStart,breakFlag
-#@+node:ekr.20111115155710.9832: *5* skipToTheNextClassOrFunction (New in 4.8)
-def skipToTheNextClassOrFunction(self,s,i,lastIndent):
-
-    '''Skip to the next python def or class.
-    Return the original i if nothing more is found.
-    This allows the "if __name__ == '__main__' hack
-    to appear at the top level.'''
-
-    return i # A rewrite is needed.
-
-    # Comment this out to keep pylint happy.
-
-    # trace = False # and not g.unitTesting
-    # c,found,i1 = self.c,False,i
-    # at_line_start,last_comment,last_nl = True,None,-1
-    # while i < len(s):
-        # progress = i
-        # if self.startsComment(s,i):
-            # # Break at underindented comments.
-            # if at_line_start:
-                # if i == last_nl:
-                    # n = 0
-                # else:
-                    # ws = s[last_nl+1:i]
-                    # n = g.computeWidth (ws,c.tab_width)
-                # if n < lastIndent:
-                    # if trace: g.trace('underindented comment',
-                        # 'ws',repr(ws),'n',n,'lastIndent',lastIndent)
-                    # found = True ; break
-                # else:
-                    # # Remember the start of a range of comments and whitespace.
-                    # if last_comment is None:
-                        # last_comment = i
-                    # last_nl = i = self.skipComment(s,i)
-                    # at_line_start = True
-            # else:
-                # # An interior comment.
-                # assert last_comment is None
-                # last_nl = i = self.skipComment(s,i)
-                # at_line_start = True
-        # elif self.startsString(s,i):
-            # at_line_start = False
-            # last_comment = None
-            # i = self.skipString(s,i)
-        # elif at_line_start and (
-            # g.match_word(s,i,'def') or
-            # g.match_word(s,i,'class')
-        # ):
-            # # Do not break for over-indent matches.
-            # # This allows something reasonable to happen for::
-            # # if 0:
-            # #     def spam():
-            # #         pass
-            # ws = s[last_nl+1:i]
-            # # g.trace('ws',repr(ws))
-            # n = g.computeWidth (ws,c.tab_width)
-            # if (not ws or ws.isspace()) and n <= lastIndent:
-                # found = True ; break
-            # else: # Ignore the over-indented def.
-                # if trace: g.trace('overindented','ws',repr(ws),
-                    # 'n',n,'lastIndent',lastIndent)
-                # last_comment = None
-                # last_nl = i = g.skip_to_end_of_line(s,i)
-                # at_line_start = True
-        # elif s[i] == '@':
-            # # Leo directives will look like comments,
-            # # so we can safely assume we have a decorator
-            # if at_line_start and last_comment is None:
-                # last_comment = i
-            # last_nl = i = g.skip_to_end_of_line(s,i)
-            # at_line_start = True
-        # elif s[i] ==  '\n':
-            # at_line_start = True
-            # last_nl = i
-            # i += 1
-        # elif s[i].isspace():
-            # i += 1
-        # else:
-            # at_line_start = False
-            # last_comment = None
-            # i += 1
-        # assert progress < i
-
-    # if found:
-        # if last_comment is None:
-            # return i
-        # else:
-            # return last_comment
-    # else:
-        # return i1
-#@+node:ekr.20111115155710.9833: *4* skipSigTail
-# This must be overridden in order to handle newlines properly.
-
-def skipSigTail(self,s,i,kind):
-
-    '''Skip from the end of the arg list to the start of the block.'''
-
-    while i < len(s):
-        ch = s[i]
-        if ch == '\n':
-            break
-        elif ch in (' ','\t',):
-            i += 1
-        elif self.startsComment(s,i):
-            i = self.skipComment(s,i)
-        else:
-            break
-
-    return i,g.match(s,i,':')
-#@+node:ekr.20111115155710.9834: *4* skipString
-def skipString (self,s,i):
-
-    # Returns len(s) on unterminated string.
-    return g.skip_python_string(s,i,verbose=False)
 #@+node:ekr.20111116103733.10439: *3* Unused from new_lint
 #@+node:ekr.20111116103733.10154: *4* class TypeInferenceEngine
 class TypeInferenceEngine:
@@ -7019,46 +6632,6 @@ def do_ImportFrom(self,ast,tag=''):
     cx = self.get_context()
     cx.add_import_from(ast)
     sd.n_imports += 1
-#@+node:ekr.20111116103733.10198: *4* class Dependency
-class Dependency:
-    
-    '''A class representing a dependency of a symbol
-    on the LHS of an assignment upon a list of symols
-    on the RHS of an assignment.
-    
-    Dependency.remove_symbol is an important part of
-    the resolution algorithm.
-    '''
-    
-    @others
-#@+node:ekr.20111116103733.10199: *5* dep.ctor
-def __init__ (self,sd,target,aList):
-    
-    trace = False
-    if trace:
-        name,obj = target
-        deps = [b.short_description() for a,b in aList]
-        g.trace('(Dependency) lhs: %s, aList: %s' % (name,deps))
-    
-    self.deps = aList
-        # a list tuples (ast,s)
-        # describing the symbols on which the target depends.
-        # s is a string, either a plain id or an id chain.
-        
-    self.sd = sd
-
-    self.target = target
-        # A tuple (name,object) representing the target (LHS) of an assignment statement.
-        # name is the spelling (a string) of the plain id or id chain.
-        # object is a Chain for chains; a SymbolTableEntry for plain ids.
-        # Note: chain.e is the SymbolTableEntry for chains.
-        
-    sd.n_dependencies += 1
-        
-#@+node:ekr.20111116103733.10200: *5* dep.remove (To do)
-def remove (self):
-    
-    g.trace(self)
 #@+node:ekr.20111116103733.10201: *4* class Hint
 class Hint:
     
@@ -7084,7 +6657,7 @@ class Type_Class:
 
     __str__ = __repr__
 
-#@+node:ekr.20111116103733.10348: *4*  LLT.delete_contexts
+#@+node:ekr.20111116103733.10348: *4* LLT.delete_contexts
 def delete_contexts (self):
     
     sd = self.sd
@@ -7101,31 +6674,6 @@ def delete_contexts (self):
     
     for cx in aList:
         cx.destroy_self()
-#@+node:ekr.20111116103733.10353: *4* LLT.resolve_names
-def resolve_names (self):
-
-    for cx in self.sd.all_contexts():
-        cx.resolve_names(self)
-#@+node:ekr.20111116103733.10408: *4* cx.resolve_names (ll)
-def resolve_names (self,controller):
-    
-    '''Resolve all references to names in this context.'''
-    
-    cx = self
-    
-    if cx.kind == 'module':
-        local_names = [z for z in cx.st.d.keys()]
-        # g.trace('module locals',local_names)
-        cx.all_global_names = list(cx.global_names.union(
-            local_names,
-            cx.all_global_names))
-    else:
-        cx.all_global_names = list(cx.global_names.union(
-            cx.parent_context.all_global_names))
-    
-    cx.report_errors(controller)
-    
-    cx.sd.n_resolved_contexts += 1
 #@+node:ekr.20111116103733.10190: *4* class Chain (nl) REFERENCE
 if 0:
     
@@ -7537,23 +7085,6 @@ def print_stats (self):
         var = 'n_%s' % s
         pad = ' ' * (max_n - len(s))
         print('%s%s: %s' % (pad,s,getattr(sd,var)))
-#@+node:ekr.20111116103733.10210: *5* sd.resolve_types
-def resolve_types (self):
-    
-    '''The new resolution algorithm.
-    
-    Remove symbols from all Dependency objects containing them,
-    thereby possibly createing more known symbols.
-    '''
-    
-    sd = self
-    
-    g.trace(len(sd.known_types))
-
-    # Important: len(sd.known_type) may change in this loop.
-    while sd.known_types:
-        e = sd.known_types.pop()
-        e.become_known()
 #@+node:ekr.20111116103733.10436: *4* Symbol table (nl) REFERENCE
 if 0:
     @others
@@ -7747,27 +7278,6 @@ def show_chains(self):
 def short_description (self):
     
     return 'ste: %s' % self.name
-#@+node:ekr.20111116103733.10229: *6* e.become_known (To do)
-def remove_symbol (self,e):
-    
-    '''The type of this SymbolTableEntry has just become known.
-    
-    Remove e from this Dependency.
-    
-    If the Dependency becomes known, do the following:
-        
-    - Call eval_ast to evaluate the type.
-    - Assign the type to the Dependency's symbol.
-    - Add the symbol to sd.known_types.
-    '''
-  
-    e = self
-    
-    for dep in e.dependencies:
-        dep.remove(e) # May add entries to sd.known_types.
-    e.dependencies = []
-
-    g.trace(e)
 #@+node:ekr.20111116103733.10230: *5* class SymbolTable (nl)
 class SymbolTable:
 
@@ -7857,5 +7367,299 @@ def get (self,name):
     '''Return the symbol table entry for name.'''
 
     return self.d.get(name)
+#@+node:ekr.20111116103733.10187: *4* class StatisticsTraverser (AstTraverser)
+class StatisticsTraverser (AstTraverser):
+    
+    '''A class to print statistics.'''
+
+    def __init__(self,fn,s):
+        AstTraverser.__init__(self,fn,s)
+            # sets self.fn, self.s
+        self.stats = {}
+
+    @others
+#@+node:ekr.20111116103733.10188: *5* visit
+def visit (self,ast,tag=None):
+
+    '''Visit the ast tree node, dispatched by node type.'''
+
+    kind = self.kind(ast)
+
+    self.stats[kind] = 1 + self.stats.get(kind,0)
+
+    AstTraverser.visit(self,self.fn,self.s)
+#@+node:ekr.20111116103733.10189: *5* print_stats
+def print_stats (self):
+
+    d = self.stats
+    keys = list(d.keys())
+    keys.sort()
+    for key in keys:
+        print('%5s %s' % (key,d.get(key)))
+#@+node:ekr.20111116161118.10091: *4* Resolution Algorithms
+if 0:
+    @others
+#@+node:ekr.20111116103733.10198: *5* class Dependency
+class Dependency:
+    
+    '''A class representing a dependency of a symbol
+    on the LHS of an assignment upon a list of symols
+    on the RHS of an assignment.
+    
+    Dependency.remove_symbol is an important part of
+    the resolution algorithm.
+    '''
+    
+    @others
+#@+node:ekr.20111116103733.10199: *6* dep.ctor
+def __init__ (self,sd,target,aList):
+    
+    trace = False
+    if trace:
+        name,obj = target
+        deps = [b.short_description() for a,b in aList]
+        g.trace('(Dependency) lhs: %s, aList: %s' % (name,deps))
+    
+    self.deps = aList
+        # a list tuples (ast,s)
+        # describing the symbols on which the target depends.
+        # s is a string, either a plain id or an id chain.
+        
+    self.sd = sd
+
+    self.target = target
+        # A tuple (name,object) representing the target (LHS) of an assignment statement.
+        # name is the spelling (a string) of the plain id or id chain.
+        # object is a Chain for chains; a SymbolTableEntry for plain ids.
+        # Note: chain.e is the SymbolTableEntry for chains.
+        
+    sd.n_dependencies += 1
+        
+#@+node:ekr.20111116103733.10200: *6* dep.remove (To do)
+def remove (self):
+    
+    g.trace(self)
+#@+node:ekr.20111116103733.10353: *5* LLT.resolve_names
+def resolve_names (self):
+
+    for cx in self.sd.all_contexts():
+        cx.resolve_names(self)
+#@+node:ekr.20111116103733.10210: *5* sd.resolve_types
+def resolve_types (self):
+    
+    '''The new resolution algorithm.
+    
+    Remove symbols from all Dependency objects containing them,
+    thereby possibly createing more known symbols.
+    '''
+    
+    sd = self
+    
+    g.trace(len(sd.known_types))
+
+    # Important: len(sd.known_type) may change in this loop.
+    while sd.known_types:
+        e = sd.known_types.pop()
+        e.become_known()
+#@+node:ekr.20111116103733.10229: *5* e.become_known (remove_symbol) 
+def remove_symbol (self,e):
+    
+    '''The type of this SymbolTableEntry has just become known.
+    
+    Remove e from this Dependency.
+    
+    If the Dependency becomes known, do the following:
+        
+    - Call eval_ast to evaluate the type.
+    - Assign the type to the Dependency's symbol.
+    - Add the symbol to sd.known_types.
+    '''
+  
+    e = self
+    
+    for dep in e.dependencies:
+        dep.remove(e) # May add entries to sd.known_types.
+    e.dependencies = []
+
+    g.trace(e)
+#@+node:ekr.20111116103733.10408: *5* cx.resolve_names (ll)
+def resolve_names (self,controller):
+    
+    '''Resolve all references to names in this context.'''
+    
+    cx = self
+    
+    if cx.kind == 'module':
+        local_names = [z for z in cx.st.d.keys()]
+        # g.trace('module locals',local_names)
+        cx.all_global_names = list(cx.global_names.union(
+            local_names,
+            cx.all_global_names))
+    else:
+        cx.all_global_names = list(cx.global_names.union(
+            cx.parent_context.all_global_names))
+    
+    cx.report_errors(controller)
+    
+    cx.sd.n_resolved_contexts += 1
+#@+node:ekr.20111116103733.10409: *5* cx.report_errors & helpers
+def report_errors(self,controller):
+
+    cx = self
+    
+    # Create the list of context to search, starting with cx.
+    table = [cx]
+    if cx.defining_context != cx:
+        table.append(cx.defining_context)
+
+    # Check only the names in the *current* context; not thos in the defining context.
+    keys = list(cx.st.d.keys())
+    keys = list(set(keys).union(set(cx.all_global_names)))
+    keys.sort()
+    
+    cx.check_names(controller,keys,table)
+                
+    self.check_chains(controller,keys,table)
+#@+node:ekr.20111116103733.10410: *6* cx.check_chains
+def check_chains (self,controller,keys,table):
+
+    check_message = False
+    trace = False ; verbose = False
+    for key in keys:
+        for cx in table:
+            e = cx.st.d.get(key)
+            if e and e.defined:
+                if trace and verbose: g.trace(e,cx)
+                d = e.chains
+                if d:
+                    for key in list(d.keys()):
+                        d2 = d.get(key)
+                        for chain in list(d2.keys()):
+                            aList = chain.split('.')
+                            if aList and aList[0] in ('c','g','p'):
+                                attr_s = cx.check_chain(cx,chain)
+                                if attr_s and check_message:
+                                    theChain = d2.get(chain)
+                                    message = 'AttributeError: %s in %s (%s)' % (attr_s,chain,cx)
+                                    controller.error(theChain.tree,message)
+                # Make one check for each key.
+                break
+#@+node:ekr.20111116103733.10411: *6* cx.check_chain
+def check_chain (self,cx,s):
+    
+    '''Use Leo-specific type knowledge to check for attribute errors.'''
+    
+    try:
+        eval(s)
+        return ''
+    except AttributeError:
+        aList = s.split('.')
+        for i in range(len(aList)):
+            s2 = '.'.join(aList[0:i+1])
+            try:
+                eval(s2)
+            except AttributeError:
+                # g.trace(s)
+                return aList[i]
+        return s
+    except SyntaxError:
+        # This can happen because of the 'excellent hack'
+        # For example: p.h[].strip()
+        return ''
+    except IndexError:
+        return ''
+    except TypeError:
+        return ''
+    except Exception:
+        g.es_exception()
+        return ''
+#@+node:ekr.20111116103733.10412: *6* cx.check_names
+def check_names (self,controller,keys,table):
+
+    check_message = False
+    trace = False ; verbose = True
+    cx = self # The original context.
+
+    if trace and verbose:
+        g.trace('***** Checking',keys,'in',cx)
+
+    for key in keys:
+        found,unbound,tag = False,False,''
+        for cx2 in table:
+            if found: break
+            # g.trace(key,'** all_global_names',cx2.all_global_names,cx2)
+            e = cx2.st.d.get(key)
+            if e:
+                assert e.name == key
+            elif key in cx2.all_global_names:
+                tag = 'global'
+                found = True ; break
+            else:
+                continue
+            
+            if key in cx2.param_names:
+                tag = 'param'
+                found = True ; break
+            elif key in cx2.all_global_names:
+                tag = 'global'
+                found = True ; break
+            elif e.defined:
+                # Only class, def, and import symbols are defined earlier.
+                tag = 'defined'
+                unbound = e.load_before_store_flag
+                found = True ; break
+            elif key in cx2.store_names:
+                tag = 'store'
+                unbound = e.load_before_store_flag
+                found = True ; break
+            else: pass
+                    
+        # Actually give the error.
+        if found:
+            if e: e.defined = True # A signal for check_chains.
+            if trace and verbose:
+                g.trace('found %s: %s in %s' % (key,tag,cx2))
+        else:
+            if check_message:
+                # Report cx, not cx2.
+                if unbound:
+                    controller.error(cx.tree,'UnboundLocalError: %s in %s' % (key,cx))
+                else:
+                    controller.error(cx.tree,'Undefined: %s in %s' % (key,cx))
+#@+node:ekr.20111116103733.10406: *4* cx.destroy_self
+def destroy_self (self):
+    
+    cx = self
+    
+    if cx.kind == 'module':
+        
+        # Clear the symbol table and all lists and sets.
+        self.st = SymbolTable(context=self)
+        aSet = set()
+        for z in dir(self):
+            obj = getattr(self,z)
+            if type(obj) == type([]):
+                setattr(self,z,[])
+            elif type(obj) == type(aSet):
+                setattr(self,z,aSet)
+    else:
+        # Destroy the context completely.
+        g.clearAllIvars(cx)
+#@+node:ekr.20111116103733.10359: *4* With (DUPLICATE) (InspectTraverser)
+# def do_With (self,tree,tag=''):
+    
+    # cx = self.get_context()
+    # ### cx.statements.append(StatementContext(...))
+
+    # if hasattr(tree,'context_expression'):
+        # self.visit(tree.context_expresssion)
+
+    # if hasattr(tree,'optional_vars'):
+        # pass # May be a Name object.
+        # # for z in tree.optional_vars:
+            # # self.visit(z,'with vars')
+
+    # for z in tree.body:
+        # self.visit(z,'with body')
 #@-all
 #@-leo

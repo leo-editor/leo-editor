@@ -10,7 +10,7 @@
 #@@pagewidth 60
 
 #@+<< imports >>
-#@+node:ekr.20111116103733.10440: **   << imports >>
+#@+node:ekr.20111116103733.10440: **  << imports >>
 import leo.core.leoGlobals as g
 
 # Used by ast-oriented code.
@@ -34,7 +34,7 @@ else:
     StringIO = cStringIO.StringIO
 #@-<< imports >>
 #@+<< naming conventions >>
-#@+node:ekr.20111116103733.10146: **   << naming conventions >>
+#@+node:ekr.20111116103733.10146: **  << naming conventions >>
 #@@nocolor-node
 #@+at
 # 
@@ -56,7 +56,7 @@ else:
 #@-<< naming conventions >>
 
 #@+others
-#@+node:ekr.20111116103733.10539: **   Top-level functions
+#@+node:ekr.20111116103733.10539: **  Top-level functions
 #@+node:ekr.20111116103733.10337: *3* chain_base
 # This global function exists avoid duplicate code
 # in the Chain and SymbolTable classes.
@@ -74,7 +74,7 @@ def chain_base (s):
         base = base.replace('()','').replace('[]','')
         return base
 #@+node:ekr.20111116103733.10540: *3* module
-def module (c,fn,print_stats=False,print_times=False):
+def module (c,fn,sd=None,print_stats=False,print_times=False):
 
     s = LeoCoreFiles().get_source(fn)
     if not s:
@@ -83,7 +83,8 @@ def module (c,fn,print_stats=False,print_times=False):
         
     t1 = time.clock()
 
-    sd = SemanticData(controller=None)
+    if not sd:
+        sd = SemanticData(controller=None)
     InspectTraverser(c,fn,sd,s).traverse(s)
     module = sd.modules_dict.get(fn)
            
@@ -93,10 +94,10 @@ def module (c,fn,print_stats=False,print_times=False):
     if print_stats: sd.print_stats()
     
     return module
-#@+node:ekr.20111116103733.10434: **  AST classes
+#@+node:ekr.20111116103733.10434: ** AST classes
 #@+<< define class AstTraverser >>
 #@+node:ekr.20111116103733.10278: *3* << define class AstTraverser >>
-class AstTraverser:
+class AstTraverser(object):
 
     '''The base class for AST traversal helpers.'''
 
@@ -1005,7 +1006,7 @@ class AstTraverser:
 
 #@+others
 #@+node:ekr.20111116103733.10257: *3* class AstDumper
-class AstDumper:
+class AstDumper(object):
 
     '''A class that dumps ast trees in various formats.'''
 
@@ -1428,7 +1429,7 @@ class InspectTraverser (AstTraverser):
     '''A class to create inpect semantic data structures.'''
 
     #@+others
-    #@+node:ekr.20111116103733.10346: *4*  LLT.ctor
+    #@+node:ekr.20111116103733.10346: *4*  ctor (InspectTraverser)
     def __init__(self,c,fn,sd,s):
 
         # Init the base class.
@@ -1500,11 +1501,11 @@ class InspectTraverser (AstTraverser):
             keys = list(self.objectDict.keys())
             keys.sort()
             g.trace(keys)
-    #@+node:ekr.20111116103733.10349: *4*  LLT.dump
+    #@+node:ekr.20111116103733.10349: *4* dump (InspectTraverser)
     def dump (self,tree):
         
         self.dumper.dumpTreeAsString(tree,brief=False,outStream=None)
-    #@+node:ekr.20111116103733.10350: *4*  LLT.error
+    #@+node:ekr.20111116103733.10350: *4* error (InspectTraverser)
     def error (self,tree,message):
         
         g.pr('Error: %s' % (message))
@@ -1514,27 +1515,23 @@ class InspectTraverser (AstTraverser):
             g.pr('line %4s: %s' % (tree.lineno,line.rstrip()))
             
         self.sd.n_errors += 1
-    #@+node:ekr.20111116103733.10351: *4* LLT.checks
-    #@+node:ekr.20111116103733.10352: *5* LLT.traverse
+    #@+node:ekr.20111116103733.10352: *4* traverse (InspectTraverser) 
     def traverse (self,s):
         
         '''Perform all checks on the source in s.'''
         
-        # This is akin to LintController.main.
         sd = self.sd
         t1 = time.clock()
+        
         tree = ast.parse(s,filename=self.fn,mode='exec')
         t2 = time.clock()
         sd.parse_time += t2-t1
+        
         self.visit(tree,tag='top')
         t3 = time.clock()
         sd.pass1_time += t3-t2
-        # self.resolve_names()
-        t4 = time.clock()
-        sd.pass2_time += t4-t3
-
-    #@+node:ekr.20111116103733.10354: *4* LLT.Contexts
-    #@+node:ekr.20111116103733.10355: *5* LLT.ClassDef
+    #@+node:ekr.20111116103733.10354: *4* Contexts (InspectTraverser) 
+    #@+node:ekr.20111116103733.10355: *5* ClassDef
     # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
     def do_ClassDef (self,tree,tag=''):
@@ -1549,7 +1546,7 @@ class InspectTraverser (AstTraverser):
         # Define the name in the old context.
         e = old_cx.st.add_name(tree.name,tree)
         e.set_defined()
-        old_cx.classes.append(new_cx)
+        old_cx._classes.append(new_cx)
         
         self.push_context(new_cx)
 
@@ -1561,7 +1558,7 @@ class InspectTraverser (AstTraverser):
         self.pop_context()
             
         self.sd.n_classes += 1
-    #@+node:ekr.20111116103733.10356: *5* LLT.FunctionDef
+    #@+node:ekr.20111116103733.10356: *5* FunctionDef
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
     def do_FunctionDef (self,tree,tag=''):
@@ -1572,11 +1569,10 @@ class InspectTraverser (AstTraverser):
         old_cx = self.get_context()
         new_cx = DefContext(tree,old_cx,self.sd)
         
-        
         # Define the function/method name in the old context.
         e = old_cx.st.add_name(tree.name,tree)
         e.set_defined()
-        old_cx.functions.append(new_cx)
+        old_cx._defs.append(new_cx)
         
         self.push_context(new_cx)
        
@@ -1616,7 +1612,7 @@ class InspectTraverser (AstTraverser):
                 e = cx.st.add_name(name,tree)
                 cx.param_names.add(name)
                 self.sd.n_param_names += 1
-    #@+node:ekr.20111116103733.10358: *5* LLT.Module
+    #@+node:ekr.20111116103733.10358: *5* Module
     def do_Module (self,tree,tag=''):
         
         sd = self.sd
@@ -1635,21 +1631,8 @@ class InspectTraverser (AstTraverser):
                 self.visit(z,'module body')
         finally:
             self.pop_context()
-    #@+node:ekr.20111116103733.10359: *5* LLT.With
-    def do_With (self,tree,tag=''):
-
-        if hasattr(tree,'context_expression'):
-            self.visit(tree.context_expresssion)
-
-        if hasattr(tree,'optional_vars'):
-            pass # May be a Name object.
-            # for z in tree.optional_vars:
-                # self.visit(z,'with vars')
-
-        for z in tree.body:
-            self.visit(z,'with body')
-    #@+node:ekr.20111116103733.10360: *4* LLT.Expressions...
-    #@+node:ekr.20111116103733.10361: *5* LLT.Attribute & attribute_to_string
+    #@+node:ekr.20111116103733.10360: *4* Expressions (InspectTraverser) 
+    #@+node:ekr.20111116103733.10361: *5* Attribute & attribute_to_string
     def do_Attribute(self,tree,tag=''):
 
         # Get the chain.
@@ -1743,28 +1726,7 @@ class InspectTraverser (AstTraverser):
             g.trace('Can not happen: kind:',kind)
         
         return chain
-    #@+node:ekr.20111116103733.10365: *5* LLT.Call
-    def do_Call(self,tree,tag=''):
-        
-        '''The only checks we may want to make are for undefined symbols.
-        The Python compiler will raise SyntaxErrors for other problems.'''
-        
-        self.sd.n_calls += 1
-        
-        self.visit(tree.func,'call func')
-        
-        for z in tree.args:
-            self.visit(z,'call args')
-
-        for z in tree.keywords:
-            self.visit(z,'call keyword args')
-
-        if hasattr(tree,'starargs') and tree.starargs:
-            self.visit(tree.starargs,'*arg')
-
-        if hasattr(tree,'kwargs') and tree.kwargs:
-            self.visit(tree.kwargs,'call *args')
-    #@+node:ekr.20111116103733.10366: *5* LLT.Name
+    #@+node:ekr.20111116103733.10366: *5* Name
     def do_Name(self,tree,tag=''):
 
         trace = True
@@ -1800,7 +1762,7 @@ class InspectTraverser (AstTraverser):
             assert ctx == 'Del',ctx
             cx.del_names.add(name)
             sd.n_del_names += 1
-    #@+node:ekr.20111116103733.10367: *5* LLT.ListComp & Comprehension
+    #@+node:ekr.20111116103733.10367: *5* ListComp & Comprehension
     def do_ListComp(self,tree,tag=''):
         
         # Define a context for the list comprehension variable.
@@ -1824,9 +1786,13 @@ class InspectTraverser (AstTraverser):
         self.visit(tree.iter,'comprehension iter (an Attribute)')
         for z in tree.ifs:
             self.visit(z,'comprehension if')
-    #@+node:ekr.20111116103733.10368: *4* LLT.Statements...
-    #@+node:ekr.20111116103733.10369: *5* LLT.Assign
+    #@+node:ekr.20111116103733.10368: *4* Statements (InspectTraverser) 
+    #@+node:ekr.20111116103733.10369: *5* Assign
     def do_Assign(self,tree,tag=''):
+        
+        sd = self.sd
+        cx = self.get_context()
+        cx._statements.append(StatementContext(tree,cx,sd,'assn'))
 
         self.visit(tree.value,'assn value')
             
@@ -1834,9 +1800,13 @@ class InspectTraverser (AstTraverser):
             
             self.visit(z,'assn target')
 
-            self.sd.n_assignments += 1
-    #@+node:ekr.20111116103733.10370: *5* LLT.AugAssign
+            sd.n_assignments += 1
+    #@+node:ekr.20111116103733.10370: *5* AugAssign
     def do_AugAssign(self,tree,tag=''):
+        
+        sd = self.sd
+        cx = self.get_context()
+        cx._statements.append(StatementContext(tree,cx,sd,'aug-assn'))
 
         self.visit(tree.op)
         
@@ -1846,13 +1816,36 @@ class InspectTraverser (AstTraverser):
         # Handle the LHS.
         self.visit(tree.target,'aut-assn target')
 
-        self.sd.n_assignments += 1
-    #@+node:ekr.20111116103733.10371: *5* LLT.For
+        sd.n_assignments += 1
+    #@+node:ekr.20111116103733.10365: *5* Call
+    def do_Call(self,tree,tag=''):
+        
+        sd = self.sd
+        cx = self.get_context()
+        cx._statements.append(StatementContext(tree,cx,sd,'call'))
+        
+        sd.n_calls += 1
+        
+        self.visit(tree.func,'call func')
+        
+        for z in tree.args:
+            self.visit(z,'call args')
+
+        for z in tree.keywords:
+            self.visit(z,'call keyword args')
+
+        if hasattr(tree,'starargs') and tree.starargs:
+            self.visit(tree.starargs,'*arg')
+
+        if hasattr(tree,'kwargs') and tree.kwargs:
+            self.visit(tree.kwargs,'call *args')
+    #@+node:ekr.20111116103733.10371: *5* For
     def do_For (self,tree,tag=''):
         
         # Define a namespace for the 'for' target.
         old_cx = self.get_context()
         new_cx = ForContext(tree,old_cx,self.sd)
+        old_cx._statements.append(new_cx)
         old_cx.temp_contexts.append(new_cx)
         
         self.push_context(new_cx)
@@ -1870,12 +1863,14 @@ class InspectTraverser (AstTraverser):
         self.pop_context()
         
         self.sd.n_fors += 1
-    #@+node:ekr.20111116103733.10372: *5* LLT.Global
+    #@+node:ekr.20111116103733.10372: *5* Global
     def do_Global(self,tree,tag=''):
 
         '''Enter the names in a 'global' statement into the *module* symbol table.'''
 
+        sd = self.sd
         cx = self.get_context()
+        cx._statements.append(StatementContext(tree,cx,sd,'global'))
 
         for name in tree.names:
             
@@ -1885,8 +1880,8 @@ class InspectTraverser (AstTraverser):
             # Create a symbol table entry for the name in the *module* context.
             cx.module_context.st.add_name(name,tree)
 
-            self.sd.n_globals += 1
-    #@+node:ekr.20111116103733.10373: *5* LLT.Import & helpers
+            sd.n_globals += 1
+    #@+node:ekr.20111116103733.10373: *5* Import & helpers
     def do_Import(self,tree,tag=''):
 
         '''Add the imported file to the sd.files_list if needed
@@ -1895,6 +1890,7 @@ class InspectTraverser (AstTraverser):
         trace = False
         sd = self.sd
         cx = self.get_context()
+        cx._statements.append(StatementContext(tree,cx,sd,'import'))
         aList = self.get_import_names(tree)
 
         for fn,asname in aList:
@@ -1955,7 +1951,7 @@ class InspectTraverser (AstTraverser):
             return ''
         else:
             return path
-    #@+node:ekr.20111116103733.10376: *5* LLT.ImportFrom
+    #@+node:ekr.20111116103733.10376: *5* ImportFrom
     def do_ImportFrom(self,tree,tag=''):
 
         '''Add the imported file to the sd.files_list if needed
@@ -1965,9 +1961,10 @@ class InspectTraverser (AstTraverser):
         if trace and dump:
             self.dump(tree)
             
-        cx = self.get_context()
         sd = self.sd
-        
+        cx = self.get_context()
+        cx._statements.append(StatementContext(tree,cx,sd,'import from'))
+
         m = self.resolve_import_name(tree.module)
         if m and m not in sd.files_list:
             if trace: g.trace('adding module',m)
@@ -1983,12 +1980,13 @@ class InspectTraverser (AstTraverser):
             if mname not in sd.module_names:
                 sd.module_names.append(mname)
             sd.n_imports += 1
-    #@+node:ekr.20111116103733.10377: *5* LLT.Lambda & helper
+    #@+node:ekr.20111116103733.10377: *5* Lambda & helper
     def do_Lambda (self,tree,tag=''):
         
         # Define a namespace for the 'lambda' variables.
         old_cx = self.get_context()
         new_cx = LambdaContext(tree,old_cx,self.sd)
+        old_cx._statements.append(new_cx)
         old_cx.temp_contexts.append(new_cx)
         
         self.push_context(new_cx)
@@ -2027,12 +2025,13 @@ class InspectTraverser (AstTraverser):
                 if trace: g.trace(tag,name)
                 e = cx.st.add_name(name,tree)
                 cx.param_names.add(name)
-    #@+node:ekr.20111116103733.10379: *5* LLT.With
+    #@+node:ekr.20111116103733.10379: *5* With
     def do_With (self,tree,tag=''):
         
         # Define a namespace for the 'with' statement.
         old_cx = self.get_context()
         new_cx = WithContext(tree,old_cx,self.sd)
+        old_cx._statements.append(new_cx)
         old_cx.temp_contexts.append(new_cx)
         
         self.push_context(new_cx)
@@ -2054,41 +2053,11 @@ class InspectTraverser (AstTraverser):
         
         self.sd.n_withs += 1
     #@-others
-#@+node:ekr.20111116103733.10187: *3* class StatisticsTraverser (AstTraverser)
-class StatisticsTraverser (AstTraverser):
-    
-    '''A class to print statistics.'''
-
-    def __init__(self,fn,s):
-        AstTraverser.__init__(self,fn,s)
-            # sets self.fn, self.s
-        self.stats = {}
-
-    #@+others
-    #@+node:ekr.20111116103733.10188: *4* visit
-    def visit (self,ast,tag=None):
-
-        '''Visit the ast tree node, dispatched by node type.'''
-
-        kind = self.kind(ast)
-
-        self.stats[kind] = 1 + self.stats.get(kind,0)
-
-        AstTraverser.visit(self,self.fn,self.s)
-    #@+node:ekr.20111116103733.10189: *4* print_stats
-    def print_stats (self):
-
-        d = self.stats
-        keys = list(d.keys())
-        keys.sort()
-        for key in keys:
-            print('%5s %s' % (key,d.get(key)))
-    #@-others
 #@-others
-#@+node:ekr.20111116103733.10401: **  Context classes
+#@+node:ekr.20111116103733.10401: ** Context classes
 #@+<< define class Context >>
 #@+node:ekr.20111116103733.10402: *3* << define class Context >>
-class Context:
+class Context(object):
 
     '''The base class of all context-related semantic data.
 
@@ -2103,19 +2072,22 @@ class Context:
     #@+node:ekr.20111116103733.10403: *4* cx ctor
     def __init__(self,tree,parent_context,sd,kind):
 
-        self.tree = tree
         self.is_temp_context = kind in ['comprehension','for','lambda','with']
         self.kind = kind
-        assert kind in ('class','comprehension','def','for','lambda','module','with'),kind
+        # assert kind in ('class','comprehension','def','for','lambda','module','with'),kind
         self.parent_context = parent_context
         self.sd = sd
         self.st = SymbolTable(context=self)
-        
+
         sd.n_contexts += 1
 
-        # Semantic data...
-        self.classes = [] # Classes defined in this context.
-        self.functions = [] # Functions defined in this context.
+        # Public semantic data: accessed via getters.
+        self._classes = [] # Classes defined in this context.
+        self._defs = [] # Functions defined in this context.
+        self._statements = [] # List of all statements in the context.
+        self._tree = tree
+        
+        # Private semantic data: no getters.
         self.global_names = set() # Names that appear in a global statement in this context.
         self.temp_contexts = [] # List of inner 'comprehension','for','lambda','with' contexts.
         
@@ -2164,25 +2136,6 @@ class Context:
 
     # All subclasses override name.
     name = description
-    #@+node:ekr.20111116103733.10406: *4* cx.destroy_self
-    def destroy_self (self):
-        
-        cx = self
-        
-        if cx.kind == 'module':
-            
-            # Clear the symbol table and all lists and sets.
-            self.st = SymbolTable(context=self)
-            aSet = set()
-            for z in dir(self):
-                obj = getattr(self,z)
-                if type(obj) == type([]):
-                    setattr(self,z,[])
-                elif type(obj) == type(aSet):
-                    setattr(self,z,aSet)
-        else:
-            # Destroy the context completely.
-            g.clearAllIvars(cx)
     #@+node:ekr.20111116103733.10407: *4* cx.dump
     def dump (self,level=0,verbose=False):
 
@@ -2192,141 +2145,165 @@ class Context:
             self.st.dump(level=level)
 
         if verbose:
-            for z in self.classes:
+            for z in self._classes:
                 z.dump(level+1)
-            for z in self.functions:
+            for z in self._defs:
                 z.dump(level+1)
             for z in self.temp_contexts:
                 z.dump(level+1)
-    #@+node:ekr.20111116103733.10409: *4* cx.report_errors & helpers
-    def report_errors(self,controller):
-
-        cx = self
+    #@+node:ekr.20111116161118.10113: *4* cx.getters
+    #@+node:ekr.20111116161118.10114: *5* assignments & helpers
+    def assignments (self,all=True):
         
-        # Create the list of context to search, starting with cx.
-        table = [cx]
-        if cx.defining_context != cx:
-            table.append(cx.defining_context)
+        if all:
+            return self.all_assignments(result=None)
+        else:
+            return self.filter_assignments(self._statements)
 
-        # Check only the names in the *current* context; not thos in the defining context.
-        keys = list(cx.st.d.keys())
-        keys = list(set(keys).union(set(cx.all_global_names)))
-        keys.sort()
+    def all_assignments(self,result):
+
+        if result is None:
+            result = []
+        result.extend(self.filter_assignments(self._statements))
+        for aList in (self._classes,self._defs):
+            for cx in aList:
+                cx.all_assignments(result)
+        return result
+    #@+node:ekr.20111116161118.10228: *6* filter_assignments & is_assignments
+    def filter_assignments(self,aList):
         
-        cx.check_names(controller,keys,table)
-                    
-        self.check_chains(controller,keys,table)
-    #@+node:ekr.20111116103733.10410: *5* cx.check_chains
-    def check_chains (self,controller,keys,table):
+        '''Return all the assignments in aList.'''
 
-        check_message = False
-        trace = False ; verbose = False
-        for key in keys:
-            for cx in table:
-                e = cx.st.d.get(key)
-                if e and e.defined:
-                    if trace and verbose: g.trace(e,cx)
-                    d = e.chains
-                    if d:
-                        for key in list(d.keys()):
-                            d2 = d.get(key)
-                            for chain in list(d2.keys()):
-                                aList = chain.split('.')
-                                if aList and aList[0] in ('c','g','p'):
-                                    attr_s = cx.check_chain(cx,chain)
-                                    if attr_s and check_message:
-                                        theChain = d2.get(chain)
-                                        message = 'AttributeError: %s in %s (%s)' % (attr_s,chain,cx)
-                                        controller.error(theChain.tree,message)
-                    # Make one check for each key.
-                    break
-    #@+node:ekr.20111116103733.10411: *5* cx.check_chain
-    def check_chain (self,cx,s):
+        return [z for z in aList
+            if z.kind in ('assn','aug-assn')]
+    #@+node:ekr.20111116161118.10115: *5* assignments_to TODO
+    def assignments_to (self,string_or_context,all=True):
         
-        '''Use Leo-specific type knowledge to check for attribute errors.'''
+        aList = self.assignments(all=all)
+        result = []
         
-        try:
-            eval(s)
-            return ''
-        except AttributeError:
-            aList = s.split('.')
-            for i in range(len(aList)):
-                s2 = '.'.join(aList[0:i+1])
-                try:
-                    eval(s2)
-                except AttributeError:
-                    # g.trace(s)
-                    return aList[i]
-            return s
-        except SyntaxError:
-            # This can happen because of the 'excellent hack'
-            # For example: p.h[].strip()
-            return ''
-        except IndexError:
-            return ''
-        except TypeError:
-            return ''
-        except Exception:
-            g.es_exception()
-            return ''
-    #@+node:ekr.20111116103733.10412: *5* cx.check_names
-    def check_names (self,controller,keys,table):
+        return result
+        
+        
+    #@+node:ekr.20111116161118.10116: *5* assignments_using TODO
+    def assignments_using (self,string_or_context,all=True):
+        
+        aList = self.assignments(all=all)
+        result = []
+        
+        return result
+    #@+node:ekr.20111116161118.10163: *5* classes
+    def classes (self,all=True):
+        
+        if all:
+            return self.all_classes(result=None)
+        else:
+            return self._classes
 
-        check_message = False
-        trace = False ; verbose = True
-        cx = self # The original context.
+    def all_classes(self,result):
 
-        if trace and verbose:
-            g.trace('***** Checking',keys,'in',cx)
+        if result is None:
+            result = []
+        result.extend(self._classes)
+        for aList in (self._classes,self._defs):
+            for cx in aList:
+                cx.all_classes(result)
+        return result
+    #@+node:ekr.20111116161118.10164: *5* defs
+    def defs (self,all=True):
+        
+        if all:
+            return self.all_defs(result=None)
+        else:
+            return self._defs
 
-        for key in keys:
-            found,unbound,tag = False,False,''
-            for cx2 in table:
-                if found: break
-                # g.trace(key,'** all_global_names',cx2.all_global_names,cx2)
-                e = cx2.st.d.get(key)
-                if e:
-                    assert e.name == key
-                elif key in cx2.all_global_names:
-                    tag = 'global'
-                    found = True ; break
-                else:
-                    continue
-                
-                if key in cx2.param_names:
-                    tag = 'param'
-                    found = True ; break
-                elif key in cx2.all_global_names:
-                    tag = 'global'
-                    found = True ; break
-                elif e.defined:
-                    # Only class, def, and import symbols are defined earlier.
-                    tag = 'defined'
-                    unbound = e.load_before_store_flag
-                    found = True ; break
-                elif key in cx2.store_names:
-                    tag = 'store'
-                    unbound = e.load_before_store_flag
-                    found = True ; break
-                else: pass
-                        
-            # Actually give the error.
-            if found:
-                if e: e.defined = True # A signal for check_chains.
-                if trace and verbose:
-                    g.trace('found %s: %s in %s' % (key,tag,cx2))
-            else:
-                if check_message:
-                    # Report cx, not cx2.
-                    if unbound:
-                        controller.error(cx.tree,'UnboundLocalError: %s in %s' % (key,cx))
-                    else:
-                        controller.error(cx.tree,'Undefined: %s in %s' % (key,cx))
+    def all_defs(self,result):
+
+        if result is None:
+            result = []
+        result.extend(self._defs)
+        for aList in (self._classes,self._defs):
+            for cx in aList:
+                cx.all_defs(result)
+        return result
+    #@+node:ekr.20111116161118.10152: *5* functions & helpers
+    def functions (self,all=True):
+        
+        if all:
+            return self.all_functions(result=None)
+        else:
+            return self.filter_functions(self._defs)
+
+    def all_functions(self,result):
+
+        if result is None:
+            result = []
+        result.extend(self.filter_functions(self._defs))
+        for aList in (self._classes,self._defs):
+            for cx in aList:
+                cx.all_functions(result)
+        return result
+    #@+node:ekr.20111116161118.10223: *6* filter_functions & is_function
+    def filter_functions(self,aList):
+        return [z for z in aList if self.is_function(z)]
+
+    def is_function(self,f):
+        '''Return True if f is a function, not a method.'''
+        return True
+    #@+node:ekr.20111116161118.10153: *5* methods & helpers
+    def methods (self,all=True):
+        
+        if all:
+            return self.all_methods(result=None)
+        else:
+            return self.filter_methods(self._defs)
+
+    def all_methods(self,result):
+
+        if result is None:
+            result = []
+        result.extend(self.filter_methods(self._defs))
+        for aList in (self._classes,self._defs):
+            for cx in aList:
+                cx.all_methods(result)
+        return result
+    #@+node:ekr.20111116161118.10225: *6* filter_functions & is_function
+    def filter_methods(self,aList):
+        return [z for z in aList if self.is_method(z)]
+
+    def is_method(self,f):
+        '''Return True if f is a method, not a function.'''
+        return True
+    #@+node:ekr.20111116161118.10165: *5* statements
+    def statements (self,all=True):
+        
+        if all:
+            return self.all_statements(result=None)
+        else:
+            return self._statements
+
+    def all_statements(self,result):
+
+        if result is None:
+            result = []
+        result.extend(self._statements)
+        for aList in (self._classes,self._defs):
+            for cx in aList:
+                cx.all_statements(result)
+        return result
+    #@+node:ekr.20111116161118.10166: *5* tree
+    def tree(self):
+        
+        '''Return the AST (Abstract Syntax Tree) associated with this query object
+        (Context Class).  This tree can be passed to the format method for printing.
+        '''
+        
+        return self._tree
     #@-others
 #@-<< define class Context >>
 
 #@+others
-#@+node:ekr.20111116103733.10413: *3* class ClassContext(Context)
+#@+node:ekr.20111116103733.10413: *3* class ClassContext
 class ClassContext (Context):
 
     '''A class to hold semantic data about a class.'''
@@ -2337,14 +2314,14 @@ class ClassContext (Context):
 
     def __repr__ (self):
         
-        return 'class(%s)' % (self.tree.name)
+        return 'class(%s)' % (self._tree.name)
         
     def name (self):
         
-        return self.tree.name
+        return self._tree.name
     
     __str__ = __repr__
-#@+node:ekr.20111116103733.10414: *3* class ConprehensionContext(Context)
+#@+node:ekr.20111116103733.10414: *3* class ConprehensionContext
 class ComprehensionContext (Context):
 
     '''A class to represent the range of a list comprehension.'''
@@ -2362,7 +2339,7 @@ class ComprehensionContext (Context):
         return 'list comprehension context'
 
     __str__ = __repr__
-#@+node:ekr.20111116103733.10415: *3* class DefContext(Context)
+#@+node:ekr.20111116103733.10415: *3* class DefContext
 class DefContext (Context):
 
     '''A class to hold semantic data about a function/method.'''
@@ -2373,14 +2350,14 @@ class DefContext (Context):
 
     def __repr__ (self):
 
-        return 'def(%s)' % (self.tree.name)
+        return 'def(%s)' % (self._tree.name)
         
     def name (self):
         kind = g.choose(self.class_context,'method','function')
-        return '%s %s' % (kind,self.tree.name)
+        return '%s %s' % (kind,self._tree.name)
         
     __str__ = __repr__
-#@+node:ekr.20111116103733.10416: *3* class ForContext(Context)
+#@+node:ekr.20111116103733.10416: *3* class ForContext
 class ForContext (Context):
 
     '''A class to represent the range of a 'for' statement.'''
@@ -2390,11 +2367,11 @@ class ForContext (Context):
         Context.__init__(self,tree,parent_context,sd,'for')
 
     def __repr__ (self):
-        kind = self.ast_kind(self.tree.target)
+        kind = self.ast_kind(self._tree.target)
         if kind == 'Name':
-            return 'for(%s)' % (self.tree.target.id)
+            return 'for(%s)' % (self._tree.target.id)
         elif kind == 'Tuple':
-            return 'for(%s)' % ','.join([z.id for z in self.tree.target.elts])
+            return 'for(%s)' % ','.join([z.id for z in self._tree.target.elts])
         else:
             return 'for(%s)' % (kind)
         
@@ -2409,7 +2386,7 @@ class ForContext (Context):
 #     for z in tree.elts:
 #         self.visit(z,'list elts')
 #     self.visit(tree.ctx,'list context')
-#@+node:ekr.20111116103733.10417: *3* class LambdaContext(Context)
+#@+node:ekr.20111116103733.10417: *3* class LambdaContext
 class LambdaContext (Context):
 
     '''A class to represent the range of a 'lambda' statement.'''
@@ -2426,7 +2403,7 @@ class LambdaContext (Context):
         return 'lambda statement context'
 
     __str__ = __repr__
-#@+node:ekr.20111116103733.10418: *3* class ModuleContext(Context)
+#@+node:ekr.20111116103733.10418: *3* class ModuleContext
 class ModuleContext (Context):
 
     '''A class to hold semantic data about a module.'''
@@ -2448,7 +2425,23 @@ class ModuleContext (Context):
         return g.shortFileName(self.fn)
         
     __str__ = __repr__
-#@+node:ekr.20111116103733.10419: *3* class WithContext(Context)
+#@+node:ekr.20111116161118.10170: *3* class StatementContext
+class StatementContext (Context):
+
+    '''A class to any statement.'''
+
+    def __init__(self,tree,parent_context,sd,kind):
+
+        Context.__init__(self,tree,parent_context,sd,kind)
+
+    def __repr__ (self):
+        return 'statement(%s)' % (self.kind)
+        
+    def name (self):
+        return '"%s" statement context' % (self.kind)
+        
+    __str__ = __repr__
+#@+node:ekr.20111116103733.10419: *3* class WithContext
 class WithContext (Context):
 
     '''A class to represent the range of a 'with' statement.'''
@@ -2467,7 +2460,7 @@ class WithContext (Context):
     __str__ = __repr__
 #@-others
 #@+node:ekr.20111116103733.10338: ** class Chain
-class Chain:
+class Chain(object):
     
     '''A class representing an identifier chain a.b.c.d.
 
@@ -2550,7 +2543,7 @@ class Chain:
         return 'chain: %s' % self.s
     #@-others
 #@+node:ekr.20111116103733.10312: ** class LeoCoreFiles
-class LeoCoreFiles:
+class LeoCoreFiles(object):
     
     '''A class representing Leo's core files, including qtGui.py'''
     
@@ -2602,13 +2595,13 @@ class LeoCoreFiles:
             return ''
     #@-others
 #@+node:ekr.20111116103733.10380: ** class SemanticData
-class SemanticData:
+class SemanticData(object):
     
     '''A class containing all global semantic data.'''
     
     #@+others
     #@+node:ekr.20111116103733.10381: *3*  sd.ctor
-    def __init__ (self,controller):
+    def __init__ (self,controller=None):
         
         self.controller = controller
         self.dumper = AstDumper()
@@ -2671,8 +2664,8 @@ class SemanticData:
 
         for cx in aList:
             yield cx
-            if cx.classes:
-                for z in self.all_contexts(cx.classes):
+            if cx._classes:
+                for z in self.all_contexts(cx._classes):
                     yield z
             if cx.functions:
                 for z in self.all_contexts(cx.functions):
@@ -2794,7 +2787,7 @@ class SemanticData:
     #@-others
     
 #@+node:ekr.20111116103733.10389: ** class SymbolTable
-class SymbolTable:
+class SymbolTable(object):
 
     '''A base class for all symbol table info.'''
     
@@ -2875,7 +2868,7 @@ class SymbolTable:
         return self.d.get(name)
     #@-others
 #@+node:ekr.20111116103733.10395: ** class SymbolTableEntry
-class SymbolTableEntry:
+class SymbolTableEntry(object):
 
     #@+others
     #@+node:ekr.20111116103733.10396: *3*  e.ctor
@@ -2957,27 +2950,5 @@ class SymbolTableEntry:
         
         return 'ste: %s' % self.name
     #@-others
-#@+node:ekr.20111116103733.10450: ** test
-def test(c,files,print_stats=True,s=None,print_times=True):
-   
-    t1 = time.clock()
-    sd = SemanticData(controller=None)
-
-    if s: # Use test string.
-        fn = '<test file>'
-        InspectTraverser(c,fn,sd,s).traverse(s)
-    else:
-        for fn in files:
-            print(g.shortFileName(fn))
-            s = LeoCoreFiles().get_source(fn)
-            if s:
-                InspectTraverser(c,fn,sd,s).traverse(s)
-            else:
-                print('file not found: %s' % (fn))
-           
-    sd.total_time = time.clock()-t1
-    
-    if print_times: sd.print_times()
-    if print_stats: sd.print_stats()
 #@-others
 #@-leo
