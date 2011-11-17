@@ -7461,7 +7461,7 @@ def resolve_types (self):
     while sd.known_types:
         e = sd.known_types.pop()
         e.become_known()
-#@+node:ekr.20111116103733.10229: *5* e.become_known (remove_symbol) 
+#@+node:ekr.20111116103733.10229: *5* e.become_known (remove_symbol)
 def remove_symbol (self,e):
     
     '''The type of this SymbolTableEntry has just become known.
@@ -7661,5 +7661,76 @@ def destroy_self (self):
 
     # for z in tree.body:
         # self.visit(z,'with body')
+#@+node:ekr.20111116103733.10347: *4* defineObjectDict (InspectTraverser)
+def defineObjectDict (self,table=None):
+
+    trace = False ; verbose = False
+    c = self.c ; k = c.k ; p = c.p
+
+    if table is None: table = [
+        # Python globals...
+        (['aList','bList'],     'python','list'),
+        (['cc'],                'object',c.chapterController),
+        (['c','old_c','new_c'], 'object',c),            
+        (['d','d1','d2'],       'python','dict'),
+        # (['f'],                 'object',c.frame), 
+        (['g'],                 'object',g),       
+        (['gui'],               'object',g.app.gui),
+        (['k'],                 'object',k),
+        (['p','p1','p2'],       'object',p.copy()),
+        (['s','s1','s2','ch'],  'object','aString'),
+        (['string'],            'object',string), # Python's string module. 
+        (['v','v1','v2'],       'object',p.v),
+        (['w'],                 'object',c.frame.body.bodyCtrl), # Dubious
+    ]
+
+    d = {'dict':{},'int':1,'list':[],'string':''}
+
+    for idList,kind,nameOrObject in table:
+        if kind == 'object':
+            # Works, but hard to generalize for settings.
+            obj = nameOrObject
+        elif kind == 'python':
+            className = nameOrObject
+            o = d.get(className)
+            obj = o is not None and o.__class__
+        else:
+            module = g.importModule (kind,verbose=True)
+            if not module:
+                g.trace('Can not import ',nameOrObject)
+                continue
+            self.appendToKnownObjects(module)
+            if nameOrObject:
+                className = nameOrObject
+                obj = hasattr(module,className) and getattr(module,className) or None
+                if not obj:
+                    g.trace('%s module has no class %s' % (kind,nameOrObject))
+                else:
+                    self.appendToKnownObjects(getattr(module,className))
+            else:
+                obj = module
+        for z in idList:
+            if trace and verbose: g.trace(z,obj)
+            if obj:
+                self.objectDict[z]=obj
+                
+    if trace:
+        keys = list(self.objectDict.keys())
+        keys.sort()
+        g.trace(keys)
+#@+node:ekr.20111116103733.10349: *3* dump (InspectTraverser)
+def dump (self,tree):
+    
+    return self.dumper.dumpTreeAsString(tree,brief=False,outStream=None)
+#@+node:ekr.20111116103733.10350: *3* error (InspectTraverser)
+def error (self,tree,message):
+    
+    g.pr('Error: %s' % (message))
+    
+    if isinstance(tree,ast.AST) and hasattr(tree,'lineno'):
+        line = self.lines[tree.lineno-1]
+        g.pr('line %4s: %s' % (tree.lineno,line.rstrip()))
+        
+    self.sd.n_errors += 1
 #@-all
 #@-leo
