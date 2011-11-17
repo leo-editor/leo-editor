@@ -1650,7 +1650,7 @@ class AstFormatter (AstTraverser):
                 level,kind,chain))
 
         return chain
-    #@+node:ekr.20111117031039.10201: *6* attribute_helper
+    #@+node:ekr.20111117031039.10201: *6* attribute_helper TODO
     def attribute_helper(self,tree,level):
         
         kind = self.kind(tree)
@@ -1699,29 +1699,21 @@ class AstFormatter (AstTraverser):
     #@+node:ekr.20111117031039.10203: *4* formatter.Name
     def do_Name(self,tree,tag=''):
 
-        self.append(tree.id+' ')
+        self.append(tree.id)
     #@+node:ekr.20111117031039.10204: *4* formatter.ListComp & Comprehension
     def do_ListComp(self,tree,tag=''):
-        
-        # Define a context for the list comprehension variable.
-        old_cx = self.get_context()
-        new_cx = ComprehensionContext(tree,old_cx,self.sd)
-        old_cx.temp_contexts.append(new_cx)
 
-        # Traverse the tree in the new context.
-        self.push_context(new_cx)
-        self.in_comprehension = True
         self.visit(tree.elt,'list comp elt')
-        self.in_comprehension = False
+
         for z in tree.generators:
             self.visit(z,'list comp generator')
-        self.pop_context()
-        self.sd.n_list_comps += 1
 
     def do_comprehension(self,tree,tag=''):
 
         self.visit(tree.target,'comprehension target (a Name)')
+        
         self.visit(tree.iter,'comprehension iter (an Attribute)')
+
         for z in tree.ifs:
             self.visit(z,'comprehension if')
     #@+node:ekr.20111117031039.10354: *4* formatter.Keywords
@@ -1747,74 +1739,91 @@ class AstFormatter (AstTraverser):
         
         self.append(repr(tree.s))
     #@+node:ekr.20111117031039.10421: *3* Operators (Formatter)
+
+
+    #@+others
+    #@+node:ekr.20111117031039.10487: *4* formatter.BinOp
     def do_BinOp (self,tree,tag=''):
         
-        self.visit(tree.op)
+        self.push()
+        self.visit(tree.op,'binop op')
+        op = self.pop()
+        
+        self.push()
         self.visit(tree.right,'binop right')
+        rt = self.pop()
+        
+        self.push()
         self.visit(tree.left,'binop left')
+        lt = self.pop()
 
+        self.append('%s%s%s' % (lt,op,rt))
+    #@+node:ekr.20111117031039.10488: *4* formatter.BoolOp
     def do_BoolOp (self,tree,tag=''):
         
         self.push()
         self.visit(tree.op,'bool op')
         op = self.pop()
+
         values = []
         for z in tree.values:
             self.push()
             self.visit(z,'boolop value')
             values.append(self.pop())
-        self.append(' %s ' % (op).join(values))
-        
 
+        self.append(op.join(values))
+        
+    #@+node:ekr.20111117031039.10489: *4* formatter.Compare
     def do_Compare(self,tree,tag=''):
-        self.trace(tree,tag)
+        
         self.visit(tree.left,'compare left')
+        
         for z in tree.ops:
             self.visit(z,'compare op')
+
         for z in tree.comparators:
             self.visit(z,'compare comparator')
-            
-    def do_And(self,tree,tag=''):
-        self.append('and ')
+    #@+node:ekr.20111117031039.10495: *4* formatter.UnaryOp
+    def do_UnaryOp (self,tree,tag=''):
         
-    def do_Or(self,tree,tag=''):
-        self.append('or ')
-
-    def do_op(self,tree,tag=''):
-        # This does nothing but specify the op type.
         self.trace(tree,tag)
-
+        self.visit(tree.operand,'unop operand')
+    #@+node:ekr.20111117031039.10491: *4* formatter.arithmetic operators
     # operator = Add | BitAnd | BitOr | BitXor | Div
     # FloorDiv | LShift | Mod | Mult | Pow | RShift | Sub | 
-    do_Add = do_op
-    do_BitAnd = do_op
-    do_BitOr = do_op
-    do_BitXor = do_op
-    do_Div = do_op
-    do_FloorDiv = do_op
-    do_LShift = do_op
-    do_Mod = do_op
-    do_Mult = do_op
-    do_Pow = do_op
-    do_RShift = do_op
-    do_Sub = do_op
 
+    def do_Add(self,tree,tag=''):       self.append('+')
+    def do_BitAnd(self,tree,tag=''):    self.append('&')
+    def do_BitOr(self,tree,tag=''):     self.append('|')
+    def do_BitXor(self,tree,tag=''):    self.append('^')
+    def do_Div(self,tree,tag=''):       self.append('/')
+    def do_FloorDiv(self,tree,tag=''):  self.append('//')
+    def do_LShift(self,tree,tag=''):    self.append('<<')
+    def do_Mod(self,tree,tag=''):       self.append('%')
+    def do_Mult(self,tree,tag=''):      self.append('*')
+    def do_Pow(self,tree,tag=''):       self.append('**')
+    def do_RShift(self,tree,tag=''):    self.append('>>')
+    def do_Sub(self,tree,tag=''):       self.append('-')
+    #@+node:ekr.20111117031039.10490: *4* formatter.boolean operators
     # boolop = And | Or
-    # do_And = do_op 
-    # do_Or = do_op
-
+    def do_And(self,tree,tag=''):   self.append(' and ')
+    def do_Or(self,tree,tag=''):    self.append(' or ')
+    #@+node:ekr.20111117031039.10492: *4* formatter.comparison operators
     # cmpop = Eq | Gt | GtE | In | Is | IsNot | Lt | LtE | NotEq | NotIn
-    do_Eq = do_op
-    do_Gt = do_op
-    do_GtE = do_op
-    do_In = do_op
-    do_Is = do_op
-    do_IsNot = do_op
-    do_Lt = do_op
-    do_LtE = do_op
-    do_NotEq = do_op
-    do_NotIn = do_op
-
+    def do_Eq(self,tree,tag=''):    self.append('==')
+    def do_Gt(self,tree,tag=''):    self.append('>')
+    def do_GtE(self,tree,tag=''):   self.append('>=')
+    def do_In(self,tree,tag=''):    self.append(' in ')
+    def do_Is(self,tree,tag=''):    self.append(' is ')
+    def do_IsNot(self,tree,tag=''): self.append(' is not ')
+    def do_Lt(self,tree,tag=''):    self.append('<')
+    def do_LtE(self,tree,tag=''):   self.append('<=')
+    def do_NotEq(self,tree,tag=''): self.append('!=')
+    def do_NotIn(self,tree,tag=''): self.append(' not in ')
+    #@+node:ekr.20111117031039.10493: *4* formatter.expression operators (do-nothings)
+    def do_op(self,tree,tag=''):
+        pass
+        
     # def do_expression_context(self,tree,tag=''):
         # self.trace(tree,tag)
 
@@ -1824,16 +1833,16 @@ class AstFormatter (AstTraverser):
     do_Load = do_op
     do_Param = do_op
     do_Store = do_op
-
-    def do_UnaryOp (self,tree,tag=''):
-        self.trace(tree,tag)
-        self.visit(tree.operand,'unop operand')
-
+    #@+node:ekr.20111117031039.10494: *4* formatter.unary opertors
     # unaryop = Invert | Not | UAdd | USub
-    do_Invert = do_UnaryOp
-    do_Not = do_UnaryOp
-    do_UAdd = do_UnaryOp
-    do_USub = do_UnaryOp
+
+    def do_Invert(self,tree,tag=''):    self.append('~')
+    def do_Not(self,tree,tag=''):       self.append(' not ')
+    def do_UAdd(self,tree,tag=''):      self.append('+')
+    def do_USub(self,tree,tag=''):      self.append('-')
+    #@-others
+
+
     #@+node:ekr.20111117031039.10205: *3* Statements (Formatter)
     #@+node:ekr.20111117031039.10206: *4* formatter.Assign
     def do_Assign(self,tree,tag=''):
@@ -1851,8 +1860,8 @@ class AstFormatter (AstTraverser):
         # g.trace('targets',repr(targets))
         # g.trace('val',repr(val))
 
-        targets = ' = '.join(targets)
-        self.append('%s = %s' % (targets,val))
+        targets = '='.join(targets)
+        self.append('%s=%s' % (targets,val))
     #@+node:ekr.20111117031039.10207: *4* formatter.AugAssign
     def do_AugAssign(self,tree,tag=''):
         
@@ -1870,7 +1879,7 @@ class AstFormatter (AstTraverser):
         self.visit(tree.target,'aut-assn target')
         lhs = self.pop()
 
-        self.append('%s %s %s\n' % (lhs,op,rhs))
+        self.append('%s%s%s\n' % (lhs,op,rhs))
     #@+node:ekr.20111117031039.10208: *4* formatter.Call
     def do_Call(self,tree,tag=''):
         
@@ -1902,7 +1911,7 @@ class AstFormatter (AstTraverser):
 
         if args:
             self.append(','.join(args))
-        self.append(')\n')
+        self.append(')')
     #@+node:ekr.20111117031039.10209: *4* formatter.For
     def do_For (self,tree,tag=''):
         
