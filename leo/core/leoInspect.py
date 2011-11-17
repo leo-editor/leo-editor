@@ -83,6 +83,8 @@ class AstTraverser(object):
             int: self.do_int,
             str: self.do_str,
             a.alias: self.do_alias,
+            a.arg: self.do_arg,
+            a.arguments: self.do_arguments,
             a.comprehension: self.do_comprehension,
             # a.id: self.do_id,
             # a.keywords: self.do_Keywords,
@@ -203,6 +205,8 @@ class AstTraverser(object):
     #@+node:ekr.20111116103733.10283: *3*  Do-nothings (AstTraverser)
     # Don't delete these. They might be useful in a subclass.
     if 0:
+        def do_arg(self,tree,tag=''): pass
+        def do_arguments(self,tree,tag=''): pass
         def do_Add(self,tree,tag=''): pass
         def do_And(self,tree,tag=''): pass
         def do_Assert(self,tree,tag=''): pass
@@ -556,6 +560,28 @@ class AstTraverser(object):
             self.visit(z,'list elts')
         self.visit(tree.ctx,'list context')
     #@+node:ekr.20111116103733.10295: *4* Operators
+    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+    # -- keyword arguments supplied to call
+    # keyword = (identifier arg, expr value)
+
+    def do_arguments(self,tree,tag=''):
+        
+        assert self.kind(tree) == 'arguments'
+        for z in tree.args:
+            self.visit(z,'arg')
+            
+        for z in tree.defaults:
+            self.visit(z,'default arg')
+            
+        name = hasattr(tree,'vararg') and tree.vararg
+        if name: pass
+        
+        name = hasattr(tree,'kwarg') and tree.kwarg
+        if name: pass
+        
+    def do_arg(self,tree,tag=''):
+        pass
+
     def do_BinOp (self,tree,tag=''):
         self.trace(tree,tag)
         self.visit(tree.op)
@@ -1522,11 +1548,10 @@ class AstFormatter (AstTraverser):
     #@+node:ekr.20111117031039.10260: *3* formatter.format
     def format (self,tree):
 
-        self.visit(tree)
-        return ''.join(self.result)
+        return self.visit(tree)
+        # return ''.join(self.result)
     #@+node:ekr.20111117031039.10221: *3* formatter: push, pop & peep
     def push (self):
-        
         self.stack.append(self.result)
         self.result = []
         
@@ -1546,26 +1571,24 @@ class AstFormatter (AstTraverser):
         kind = tree.__class__
         f = self.dispatch_table.get(kind)
         if f:
-            return f(tree,tag)
+            self.push()
+            f(tree,tag)
+            return self.pop()
         else:
-            if trace: g.trace('**** bad ast type',kind)
+            g.trace('**** bad ast type',kind)
             return None
-    #@+node:ekr.20111117031039.10193: *3* Contexts (Formatter)
+    #@+node:ekr.20111117031039.10193: *3* formatter.Contexts
     #@+node:ekr.20111117031039.10194: *4* formatter.ClassDef
     # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
     def do_ClassDef (self,tree,tag=''):
         
-        self.push()
-        self.visit(tree.name,'class name')
-        name = self.pop()
+        name = self.visit(tree.name,'class name')
         
         bases = []
         if tree.bases:
             for z in tree.bases:
-                self.push()
-                self.visit(z,'class base')
-                bases.append(self.pop())
+                bases.append(self.visit(z,'class base'))
                 
         if bases:
             self.append('class (%s):\n' % (','.join(bases)))
@@ -1573,57 +1596,64 @@ class AstFormatter (AstTraverser):
             self.append('class %s:\n' % name)
 
         for z in tree.body:
-            self.visit(z,'body')
+            self.append(self.visit(z,'body'))
+            self.append('\n')
     #@+node:ekr.20111117031039.10195: *4* formatter.FunctionDef
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
     def do_FunctionDef (self,tree,tag=''):
         
-        # g.trace(self.dump(tree))
-        
-        if tree.expr:
-            for z in tree.expr:
-                self.push()
-                self.visit(z,'decorator')
-                decorator = self.pop()
+        if tree.decorator_list:
+            for z in tree.decorator_list:
+                decorator = self.visit(z,'decorator')
                 self.append('@%s\n' % decorator)
         
-        self.push()
-        self.visit(tree.name,'function name')
-        def_name = self.pop()
+        def_name = self.visit(tree.name,'function name')
         
-        # Handle the args
-        args = []
-        
-        for z in tree.args:
-            self.push()
-            self.visit(z,'arg')
-            args.append(self.pop())
+        if tree.args:
+            args = self.visit(tree.args,'arg')
+        else:
+            args = ''
             
-        for z in tree.defaults:
-            self.push()
-            self.visit(z,'default arg')
-            args.append(self.pop())
+        self.append('def %s (%s):\n' % (def_name,args))
 
-        name = hasattr(tree,'vararg') and tree.vararg
-        if name:
-            args.append('*'+name)
-            
-        name = hasattr(tree,'kwarg') and tree.kwarg
-        if name:
-            args.append('**'+name)
-            
-        self.append('def %s (%s):\n' % (def_name,','.join(args)))
-
-        # Visit the body.
         for z in tree.body:
-            self.visit(z,'body')
+            self.append(self.visit(z,'body'))
+            self.append('\n')
     #@+node:ekr.20111117031039.10197: *4* formatter.Module
     def do_Module (self,tree,tag=''):
         
         for z in tree.body:
-            self.visit(z,'module body')
-    #@+node:ekr.20111117031039.10198: *3* Expressions (Formatter)
+            self.append(self.visit(z,'module body'))
+            sefl.append('\n')
+    #@+node:ekr.20111117031039.10198: *3* formatter.Expressions
+    #@+node:ekr.20111117031039.10683: *4* formatter.arguments
+    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+    # -- keyword arguments supplied to call
+    # keyword = (identifier arg, expr value)
+
+    def do_arguments(self,tree,tag=''):
+        
+        assert self.kind(tree) == 'arguments'
+        
+        args = []
+        for z in tree.args:
+            args.append(self.visit(z,'arg'))
+            
+        for z in tree.defaults:
+            args.append(self.visit(z,'default arg'))
+            
+        name = hasattr(tree,'vararg') and tree.vararg
+        if name: args.append('*'+name)
+        
+        name = hasattr(tree,'kwarg') and tree.kwarg
+        if name: args.append('**'+name)
+        
+        self.append(','.join(args))
+    #@+node:ekr.20111117031039.10696: *4* formatter.arg
+    def do_arg(self,tree,tag=''):
+        
+        self.append(self.visit(tree.arg))
     #@+node:ekr.20111117031039.10199: *4* formatter.Attribute & helper
     def do_Attribute(self,tree,tag=''):
 
@@ -1696,40 +1726,106 @@ class AstFormatter (AstTraverser):
             g.trace('Can not happen: kind:',kind)
         
         return s
-    #@+node:ekr.20111117031039.10203: *4* formatter.Name
-    def do_Name(self,tree,tag=''):
-
-        self.append(tree.id)
-    #@+node:ekr.20111117031039.10204: *4* formatter.ListComp & Comprehension
-    def do_ListComp(self,tree,tag=''):
-
-        self.visit(tree.elt,'list comp elt')
-
-        for z in tree.generators:
-            self.visit(z,'list comp generator')
-
-    def do_comprehension(self,tree,tag=''):
-
-        self.visit(tree.target,'comprehension target (a Name)')
+    #@+node:ekr.20111117031039.10558: *4* formatter.Dict
+    def do_Dict(self,tree,tag=''):
         
-        self.visit(tree.iter,'comprehension iter (an Attribute)')
-
-        for z in tree.ifs:
-            self.visit(z,'comprehension if')
+        keys = []
+        for z in tree.keys:
+            keys.append(self.visit(z,'dict keys'))
+            
+        values = []
+        for z in tree.values:
+            values.append(self.visit(z,'dict values'))
+            
+        if len(keys) == len(values):
+            self.append('{')
+            items = []
+            for i in range(len(keys)):
+                items.append('%s:%s' % (keys[i],values[i]))
+            self.append(','.join(items))
+            self.append('}')
+        else:
+            g.trace('*** Error *** keys: %s values: %s' % (
+                repr(keys),repr(values)))
+    #@+node:ekr.20111117031039.10559: *4* formatter.Elipsis
+    def do_Ellipsis(self,tree,tag=''):
+        
+        self.append('...')
+    #@+node:ekr.20111117031039.10572: *4* formatter.ExtSlice
+    def do_ExtSlice (self,tree,tag=''):
+        
+        dims = []
+        for z in tree.dims:
+            self.append(self.visit(z,'slice dimention'))
+            
+        self.append(':'.join(dims))
+    #@+node:ekr.20111117031039.10571: *4* formatter.Index
+    def do_Index (self,tree,tag=''):
+        
+        self.append(self.visit(tree.value,'index value'))
     #@+node:ekr.20111117031039.10354: *4* formatter.Keywords
     # keyword = (identifier arg, expr value)
 
     def do_Keyword(self,tree,tag=''):
 
         # tree.arg is a string.
-        # self.visit(tree.arg,'keyword arg')
-        
-        self.push()
-        self.visit(tree.value,'keyword value')
-        val = self.pop()
+        val = self.visit(tree.value,'keyword value')
 
-        s = '%s=%s' % (tree.arg,val)
-        self.append(s)
+        self.append('%s=%s' % (tree.arg,val))
+    #@+node:ekr.20111117031039.10567: *4* formatter.List
+    def do_List(self,tree,tag=''):
+        
+        elts = []
+        for z in tree.elts:
+            elts.append(self.visit(z,'list elts'))
+            
+        # self.visit(tree.ctx,'list context')
+        
+        self.append('(%s)' % ','.join(elts))
+    #@+node:ekr.20111117031039.10204: *4* formatter.ListComp & Comprehension TEST
+    def do_ListComp(self,tree,tag=''):
+
+        elt = self.visit(tree.elt,'list comp elt')
+
+        generators = []
+        for z in tree.generators:
+            generators.append(self.visit(z,'list comp generator'))
+            
+        self.append('[%s for %s in %s]' % (elt,elt,''.join(generators)))
+
+    def do_comprehension(self,tree,tag=''):
+
+        name = self.visit(tree.target,'comprehension target (a Name)')
+        
+        it = self.visit(tree.iter,'comprehension iter (an Attribute)')
+
+        ifs = []
+        for z in tree.ifs:
+            ifs.append(self.visit(z,'comprehension if'))
+            
+        self.append('**comprehension** name: %s ifs: %s' % (name,''.join(ifs)))
+    #@+node:ekr.20111117031039.10203: *4* formatter.Name
+    def do_Name(self,tree,tag=''):
+
+        self.append(tree.id)
+    #@+node:ekr.20111117031039.10573: *4* formatter.Slice
+    def do_Slice (self,tree,tag=''):
+        
+        lower,upper,step = '','',''
+        
+        if hasattr(tree,'lower') and tree.lower is not None:
+            lower = self.visit(tree.lower,'slice lower')
+            
+        if hasattr(tree,'upper') and tree.upper is not None:
+            upper = self.visit(tree.upper,'slice upper')
+            
+        if hasattr(tree,'step') and tree.step is not None:
+            step = self.visit(tree.step,'slice step')
+            
+        if step:
+            self.append('%s:%s:%s' % (lower,upper,step))
+        else:
+            self.append('%s:%s' % (lower,upper))
     #@+node:ekr.20111117031039.10455: *4* formatter.Str
     def do_str (self,s,tag=''):
 
@@ -1738,56 +1834,76 @@ class AstFormatter (AstTraverser):
     def do_Str (self,tree,tag=''):
         
         self.append(repr(tree.s))
-    #@+node:ekr.20111117031039.10421: *3* Operators (Formatter)
+    #@+node:ekr.20111117031039.10574: *4* formatter.Subscript
+    def do_Subscript(self,tree,tag=''):
+        
+        self.append(self.visit(tree.slice,'subscript slice'))
 
+        # self.visit(tree.ctx,'subscript context')
+    #@+node:ekr.20111117031039.10560: *4* formatter.Tuple
+    def do_Tuple(self,tree,tag=''):
+        
+        elts = []
+        for z in tree.elts:
+            elts.append(self.visit(z,'list elts'))
+            
+        self.append(','.join(elts))
 
-    #@+others
+        # self.visit(tree.ctx,'list context')
+    #@+node:ekr.20111117031039.10557: *4* formatter:simple operands
+    # Python 2.x only.
+    def do_bool(self,tree,tag=''):
+        g.trace(tree)
+
+    def do_int (self,s,tag=''):
+        self.append(s)
+
+    def do_Num(self,tree,tag=''):
+        self.append(repr(tree.n))
+    #@+node:ekr.20111117031039.10421: *3* formatter.Operators
     #@+node:ekr.20111117031039.10487: *4* formatter.BinOp
     def do_BinOp (self,tree,tag=''):
         
-        self.push()
-        self.visit(tree.op,'binop op')
-        op = self.pop()
-        
-        self.push()
-        self.visit(tree.right,'binop right')
-        rt = self.pop()
-        
-        self.push()
-        self.visit(tree.left,'binop left')
-        lt = self.pop()
+        op = self.visit(tree.op,'binop op')
+        rt = self.visit(tree.right,'binop right')
+        lt = self.visit(tree.left,'binop left')
 
         self.append('%s%s%s' % (lt,op,rt))
     #@+node:ekr.20111117031039.10488: *4* formatter.BoolOp
     def do_BoolOp (self,tree,tag=''):
         
-        self.push()
-        self.visit(tree.op,'bool op')
-        op = self.pop()
+        op = self.visit(tree.op,'bool op')
 
         values = []
         for z in tree.values:
-            self.push()
-            self.visit(z,'boolop value')
-            values.append(self.pop())
+            values.append(self.visit(z,'boolop value'))
 
         self.append(op.join(values))
         
     #@+node:ekr.20111117031039.10489: *4* formatter.Compare
     def do_Compare(self,tree,tag=''):
         
-        self.visit(tree.left,'compare left')
+        lt = self.visit(tree.left,'compare left')
         
+        ops = []
         for z in tree.ops:
-            self.visit(z,'compare op')
+            ops.append(self.visit(z,'compare op'))
 
+        comparators = []
         for z in tree.comparators:
-            self.visit(z,'compare comparator')
+            comparators.append(self.visit(z,'compare comparator'))
+            
+        self.append(lt)
+            
+        if len(ops) == len(comparators):
+            for i in range(len(ops)):
+                self.append('%s%s' % (ops[i],comparators[i]))
+        else:
+            g.trace('ops',repr(ops),'comparators',repr(comparators))
     #@+node:ekr.20111117031039.10495: *4* formatter.UnaryOp
     def do_UnaryOp (self,tree,tag=''):
         
-        self.trace(tree,tag)
-        self.visit(tree.operand,'unop operand')
+        self.append(self.visit(tree.operand,'unop operand'))
     #@+node:ekr.20111117031039.10491: *4* formatter.arithmetic operators
     # operator = Add | BitAnd | BitOr | BitXor | Div
     # FloorDiv | LShift | Mod | Mult | Pow | RShift | Sub | 
@@ -1820,19 +1936,19 @@ class AstFormatter (AstTraverser):
     def do_LtE(self,tree,tag=''):   self.append('<=')
     def do_NotEq(self,tree,tag=''): self.append('!=')
     def do_NotIn(self,tree,tag=''): self.append(' not in ')
-    #@+node:ekr.20111117031039.10493: *4* formatter.expression operators (do-nothings)
+    #@+node:ekr.20111117031039.10493: *4* formatter.expression operators
     def do_op(self,tree,tag=''):
         pass
         
     # def do_expression_context(self,tree,tag=''):
         # self.trace(tree,tag)
 
-    do_AugLoad = do_op
+    do_AugLoad  = do_op
     do_AugStore = do_op
-    do_Del = do_op
-    do_Load = do_op
-    do_Param = do_op
-    do_Store = do_op
+    do_Del      = do_op
+    do_Load     = do_op
+    do_Param    = do_op
+    do_Store    = do_op
     #@+node:ekr.20111117031039.10494: *4* formatter.unary opertors
     # unaryop = Invert | Not | UAdd | USub
 
@@ -1840,94 +1956,63 @@ class AstFormatter (AstTraverser):
     def do_Not(self,tree,tag=''):       self.append(' not ')
     def do_UAdd(self,tree,tag=''):      self.append('+')
     def do_USub(self,tree,tag=''):      self.append('-')
-    #@-others
-
-
-    #@+node:ekr.20111117031039.10205: *3* Statements (Formatter)
+    #@+node:ekr.20111117031039.10205: *3* formatter.Statements
     #@+node:ekr.20111117031039.10206: *4* formatter.Assign
     def do_Assign(self,tree,tag=''):
 
-        self.push()
-        self.visit(tree.value,'assn value')
-        val = self.pop()
+        val = self.visit(tree.value,'assn value')
             
         targets = []
         for z in tree.targets:
-            self.push()
-            self.visit(z,'assn target')
-            targets.append(self.pop())
-            
-        # g.trace('targets',repr(targets))
-        # g.trace('val',repr(val))
+            targets.append(self.visit(z,'assn target'))
 
         targets = '='.join(targets)
         self.append('%s=%s' % (targets,val))
     #@+node:ekr.20111117031039.10207: *4* formatter.AugAssign
     def do_AugAssign(self,tree,tag=''):
         
-        self.push()
-        self.visit(tree.op)
-        op = self.pop()
-        
-        # Handle the RHS.
-        self.push()
-        self.visit(tree.value,'aug-assn value')
-        rhs = self.pop()
-
-        # Handle the LHS.
-        self.push()
-        self.visit(tree.target,'aut-assn target')
-        lhs = self.pop()
+        op = self.visit(tree.op)
+        rhs = self.visit(tree.value,'aug-assn value')
+        lhs = self.visit(tree.target,'aut-assn target')
 
         self.append('%s%s%s\n' % (lhs,op,rhs))
     #@+node:ekr.20111117031039.10208: *4* formatter.Call
     def do_Call(self,tree,tag=''):
         
-        self.visit(tree.func,'call func')
-        
-        self.append('(')
-        
+        func = self.visit(tree.func,'call func')
+
         args = []
-        
         for z in tree.args:
-            self.push()
-            self.visit(z,'call args')
-            args.append(self.pop())
+            args.append(self.visit(z,'call args'))
 
         for z in tree.keywords:
-            self.push()
-            self.visit(z,'call keyword args')
-            args.append(self.pop())
+            args.append(self.visit(z,'call keyword args'))
 
         if hasattr(tree,'starargs') and tree.starargs:
-            self.push()
-            self.visit(tree.starargs,'*arg')
-            args.append('*'+self.pop())
+            args.append(self.visit(tree.starargs,'call *arg'))
 
         if hasattr(tree,'kwargs') and tree.kwargs:
-            self.push()
-            self.visit(tree.kwargs,'call *args')
-            args.append('**'+self.pop())
-
-        if args:
-            self.append(','.join(args))
-        self.append(')')
+            args.append(self.visit(tree.kwargs,'call **args'))
+            
+        self.append('%s(%s)' % (func,','.join(args)))
     #@+node:ekr.20111117031039.10209: *4* formatter.For
     def do_For (self,tree,tag=''):
         
         self.append('for ')
-
-        self.visit(tree.target,'for target')
-
-        self.visit(tree.iter,'for iter')
-        
+        self.append(self.visit(tree.target,'for target'))
+        self.append(' in ')
+        self.append(self.visit(tree.iter,'for iter'))
         self.append(':\n')
         
         for z in tree.body:
-            self.visit(z,'for body')
+            self.append(self.visit(z,'for body'))
+            self.append('\n')
 
-        for z in tree.orelse:
-            self.visit(z,'for else')
+        if tree.orelse:
+            self.append('else:')
+            for z in tree.orelse:
+                self.append(self.visit(z,'for else'))
+                self.append('\n')
     #@+node:ekr.20111117031039.10210: *4* formatter.Global
     def do_Global(self,tree,tag=''):
 
@@ -1981,53 +2066,34 @@ class AstFormatter (AstTraverser):
     def do_Lambda (self,tree,tag=''):
         
         self.append('lambda ')
-
-        # Enter the target names in the 'lambda' context.
-        self.def_lambda_args_helper(new_cx,tree.args)
-        
+        self.append(self.visit(tree.args,'lambda args'))
         self.append(':\n')
-
-        # Enter all other definitions in the defining_context.
-        self.visit(tree.body,'lambda body')
-    #@+node:ekr.20111117031039.10216: *5* def_lambda_args_helper
-    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
-    # -- keyword arguments supplied to call
-    # keyword = (identifier arg, expr value)
-
-    def def_lambda_args_helper (self,cx,tree):
         
-        assert self.kind(tree) == 'arguments'
-        
-        # Handle positional args.
-        for z in tree.args:
-            self.visit(z,'arg')
-            
-        for z in tree.defaults:
-            self.visit(z,'default arg')
-
-        for tag in ('vararg','kwarg',):
-            name = hasattr(tree,tag) and getattr(tree,tag)
-            self.append(name+' ')
+        for z in tree.body:
+            self.append(self.visit(z,'lambda body'))
+            self.append('\n')
     #@+node:ekr.20111117031039.10217: *4* formatter.With
     def do_With (self,tree,tag=''):
         
         self.append('with ')
         
         if hasattr(tree,'context_expression'):
-            self.visit(tree.context_expresssion)
+            result.append(self.visit(tree.context_expresssion,'context expr'))
 
+        vars_list = []
         if hasattr(tree,'optional_vars'):
             try:
                 for z in tree.optional_vars:
-                    self.visit(z,'with vars')
+                    vars_list.append(self.visit(z,'with vars'))
             except TypeError: # Not iterable.
-                self.visit(tree.optional_vars,'with var')
+                vars_list.append(self.visit(tree.optional_vars,'with var'))
                 
+        self.append(','.join(vars_list))
         self.append(':\n')
         
         for z in tree.body:
-            self.visit(z,'with body')
-
+            self.append(self.visit(z,'with body'))
+            self.append('\n')
     #@-others
 #@+node:ekr.20111116103733.10345: ** class InspectTraverser (AstTraverser)
 class InspectTraverser (AstTraverser):
