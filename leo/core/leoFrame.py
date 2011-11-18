@@ -90,30 +90,30 @@ class HighLevelInterface:
         row,col = g.convertPythonIndexToRowCol(s,i)
         return i,row,col
     #@+node:ekr.20111114102224.9937: *3* immutable redirection methods (HighLevelInterface)
-    def appendText(self,s):                         self.widget.appendText(s)
-    def delete(self,i,j=None):                      self.widget.delete(i,j)
-    def deleteTextSelection (self):                 self.widget.deleteTextSelection()
-    def get(self,i,j):                              return self.widget.get(i,j)
-    def getAllText(self):                           return self.widget.getAllText()
-    def getInsertPoint(self):                       return self.widget.getInsertPoint()
-    def getSelectedText(self):                      return self.widget.getSelectedText()
-    def getSelectionRange (self):                   return self.widget.getSelectionRange()
-    def getYScrollPosition (self):                  return self.widget.getYScrollPosition()
-    def hasSelection(self):                         return self.widget.hasSelection()
-    def insert(self,i,s):                           self.widget.insert(i,s)    
-    def replace (self,i,j,s):                       self.widget.replace(i,j,s)
-    def rowColToGuiIndex (self,s,row,col):          return self.widget.rowColToGuiIndex(s,row,col)
-    def see(self,i):                                self.widget.see(i)
-    def seeInsertPoint (self):                      self.widget.seeInsertPoint()
-    def selectAllText (self,insert=None):           self.widget.selectAllText(insert)
-    def setAllText (self,s):                        self.widget.setAllText(s)
-    def setBackgroundColor(self,color):             self.widget.setBackgroundColor(color)
-    def setFocus(self):                             self.widget.setFocus()
-    def setForegroundColor(self,color):             self.widget.setForegroundColor(color)
-    def setInsertPoint(self,pos):                   self.widget.setInsertPoint(pos)
-    def setSelectionRange (self,i,j,insert=None):   self.widget.setSelectionRange(i,j,insert=insert)
-    def setYScrollPosition (self,i):                self.widget.setYScrollPosition(i)
-    def tag_configure (self,colorName,**keys):      self.widget.tag_configure(colorName,**keys)
+    def appendText(self,s):                         self.widget and self.widget.appendText(s)
+    def delete(self,i,j=None):                      self.widget and self.widget.delete(i,j)
+    def deleteTextSelection (self):                 self.widget and self.widget.deleteTextSelection()
+    def get(self,i,j):                              return self.widget and self.widget.get(i,j) or ''
+    def getAllText(self):                           return self.widget and self.widget.getAllText() or ''
+    def getInsertPoint(self):                       return self.widget and self.widget.getInsertPoint() or 0
+    def getSelectedText(self):                      return self.widget and self.widget.getSelectedText() or ''
+    def getSelectionRange (self):                   return self.widget and self.widget.getSelectionRange() or (0,0)
+    def getYScrollPosition (self):                  return self.widget and self.widget.getYScrollPosition() or 0
+    def hasSelection(self):                         return self.widget and self.widget.hasSelection() or False
+    def insert(self,i,s):                           self.widget and self.widget.insert(i,s)    
+    def replace (self,i,j,s):                       self.widget and self.widget.replace(i,j,s)
+    def rowColToGuiIndex (self,s,row,col):          return self.widget and self.widget.rowColToGuiIndex(s,row,col) or 0
+    def see(self,i):                                self.widget and self.widget.see(i)
+    def seeInsertPoint (self):                      self.widget and self.widget.seeInsertPoint()
+    def selectAllText (self,insert=None):           self.widget and self.widget.selectAllText(insert)
+    def setAllText (self,s):                        self.widget and self.widget.setAllText(s)
+    def setBackgroundColor(self,color):             self.widget and self.widget.setBackgroundColor(color)
+    def setFocus(self):                             self.widget and self.widget.setFocus()
+    def setForegroundColor(self,color):             self.widget and self.widget.setForegroundColor(color)
+    def setInsertPoint(self,pos):                   self.widget and self.widget.setInsertPoint(pos)
+    def setSelectionRange (self,i,j,insert=None):   self.widget and self.widget.setSelectionRange(i,j,insert=insert)
+    def setYScrollPosition (self,i):                self.widget and self.widget.setYScrollPosition(i)
+    def tag_configure (self,colorName,**keys):      self.widget and self.widget.tag_configure(colorName,**keys)
     #@+node:ekr.20111114102224.9940: *3* other immutable methods (HighLevelInterface)
     # The all use leoGlobals functions or leoGui methods.
 
