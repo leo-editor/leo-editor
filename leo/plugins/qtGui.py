@@ -2964,7 +2964,7 @@ class leoQtBody (leoFrame.leoBody):
         self.selectEditor(wrapper)
         self.updateEditors()
         c.bodyWantsFocus()
-    #@+node:ekr.20110605121601.18196: *7* createEditor
+    #@+node:ekr.20110605121601.18196: *7* createEditor (qtBody)
     def createEditor (self,name):
 
         c = self.c ; p = c.p
@@ -5072,7 +5072,8 @@ class leoQtLog (leoFrame.leoLog):
         leoFrame.leoLog.__init__(self,frame,parentFrame)
 
         self.c = c = frame.c # Also set in the base constructor, but we need it here.
-        self.logCtrl = None # The text area for log messages.
+        # self.logCtrl = None # The text area for log messages.
+            # logCtrl is now a property of the base leoLog class.
 
         self.contentsDict = {} # Keys are tab names.  Values are widgets.
         self.eventFilters = [] # Apparently needed to make filters work!
@@ -5131,7 +5132,7 @@ class leoQtLog (leoFrame.leoLog):
     def getName (self):
         return 'log' # Required for proper pane bindings.
     #@+node:ekr.20110605121601.18317: *4* Do nothings (leoQtLog)
-    #@+node:ekr.20110605121601.18318: *5* Config (logCtrl)
+    #@+node:ekr.20110605121601.18318: *5* Config (leoQtLog)
     # These will probably be replaced by style sheets.
 
     def configureBorder(self,border):               pass
@@ -5141,7 +5142,7 @@ class leoQtLog (leoFrame.leoLog):
     def SetWidgetFontFromConfig (self,logCtrl=None): pass
     def saveAllState (self):                        pass
     def restoreAllState (self,d):                   pass
-    #@+node:ekr.20110605121601.18319: *5* Focus & update
+    #@+node:ekr.20110605121601.18319: *5* Focus & update (leoQtLog)
     def onActivateLog (self,event=None):    pass
     def hasFocus (self):                    return None
     def forceLogUpdate (self,s):            pass
@@ -5242,7 +5243,9 @@ class leoQtLog (leoFrame.leoLog):
             widget.setReadOnly(False) # Allow edits.
             self.logDict[tabName] = widget
             if tabName == 'Log':
-                self.logCtrl = contents
+                # self.logCtrl = contents
+                self.widget = contents
+                    # logCtrl is now a property of the base leoLog class.
                 widget.setObjectName('log-widget')
             if True: # 2011/05/28.
                 # Set binding on all text widgets.
@@ -5258,9 +5261,6 @@ class leoQtLog (leoFrame.leoLog):
             # if trace: g.trace('** using',tabName,contents)
             self.contentsDict[tabName] = contents
             w.addTab(contents,tabName)
-            
-        # 2011/11/18: Essential for log bindings.
-        self.widget = contents
 
         return contents
     #@+node:ekr.20110605121601.18327: *5* cycleTabFocus
@@ -5278,7 +5278,8 @@ class leoQtLog (leoFrame.leoLog):
         tabName = w.tabText(i)
         w.setCurrentIndex(i)
         log = self.logDict.get(tabName)
-        if log: self.logCtrl = log.leo_log_wrapper
+        if log: self.widget = log.leo_log_wrapper
+            # logCtrl is now a property of the base leoLog class.
 
     #@+node:ekr.20110605121601.18328: *5* deleteTab
     def deleteTab (self,tabName,force=False):
@@ -5324,7 +5325,11 @@ class leoQtLog (leoFrame.leoLog):
             if tabName == w.tabText(i):
                 w.setCurrentIndex(i)
                 if createText and tabName not in ('Spell','Find',):
-                    self.logCtrl = w.widget(i).leo_log_wrapper
+                    self.widget = w.widget(i).leo_log_wrapper
+                        # 2011/11/18: Setting self.widget issential for log bindings.
+                        # self.widget is now part of the high-level interface.
+                        # self.logCtrl is now a property of the base leoLog class.
+
                     # g.trace('**setting',self.logCtrl)
                 if tabName == 'Spell':
                     # the base class uses this as a flag to see if

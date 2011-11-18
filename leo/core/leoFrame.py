@@ -1054,7 +1054,7 @@ class leoBody (HighLevelInterface):
         self.widget = val
 
 
-    b = property(
+    bodyCtrl = property(
         __get_bodyCtrl,
         __set_bodyCtrl,
         doc = "body.bodyCtrl property"
@@ -1726,7 +1726,7 @@ class leoLog (HighLevelInterface):
         self.widget = val
 
 
-    b = property(
+    logCtrl = property(
         __get_logCtrl,
         __set_logCtrl,
         doc = "log.logCtrl property"
@@ -2562,7 +2562,7 @@ class nullIconBarClass:
 
     def setCommandForButton(self,b,command):b.command = command
     #@-others
-#@+node:ekr.20031218072017.2232: ** class nullLog
+#@+node:ekr.20031218072017.2232: ** class nullLog (leoLog)
 class nullLog (leoLog):
 
     #@+others
@@ -2575,7 +2575,8 @@ class nullLog (leoLog):
 
         self.isNull = True
         self.logNumber = 0
-        self.logCtrl = self.widget = self.createControl(parentFrame)
+        self.widget = self.createControl(parentFrame)
+            # self.logCtrl is now a property of the base leoLog class.
     #@+node:ekr.20041012083237.1: *4* createControl
     def createControl (self,parentFrame):
 

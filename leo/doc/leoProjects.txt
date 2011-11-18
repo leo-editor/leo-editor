@@ -4188,7 +4188,7 @@ if hasattr(w,'leo_selection') and w.leo_selection:
         pass
 
 # Don't restore the scrollbar here.
-#@+node:ekr.20110605121601.18196: *8* createEditor
+#@+node:ekr.20110605121601.18196: *8* createEditor (qtBody)
 def createEditor (self,name):
 
     c = self.c ; p = c.p
@@ -14599,7 +14599,7 @@ def addEditor (self,event=None):
     self.selectEditor(wrapper)
     self.updateEditors()
     c.bodyWantsFocus()
-#@+node:ekr.20110605121601.18196: *9* createEditor
+#@+node:ekr.20110605121601.18196: *9* createEditor (qtBody)
 def createEditor (self,name):
 
     c = self.c ; p = c.p

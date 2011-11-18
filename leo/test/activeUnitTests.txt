@@ -655,6 +655,10 @@ for ivar in (
     'root',
 ):
     assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar
+#@+node:ekr.20111118125141.3879: *4* @test logCtrl and bodyCtrl properties
+# These are now properties of the base leoBody and leoLog classes.
+assert hasattr(c.frame.body,'bodyCtrl')
+assert hasattr(c.frame.log,'logCtrl')
 #@+node:ekr.20100205223124.5377: ** Syntax checking
 #@+node:ekr.20040712101813: *3* @@test c.checkAllPythonCode
 result = c.checkAllPythonCode(unittest=True,ignoreAtIgnore=True)
