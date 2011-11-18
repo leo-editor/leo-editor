@@ -5056,7 +5056,7 @@ class leoQtFrame (leoFrame.leoFrame):
         # g.trace('(qtFrame)',x,y,w,h,self.top)
         self.top.setGeometry(QtCore.QRect(x,y,w,h))
     #@-others
-#@+node:ekr.20110605121601.18312: *3* class leoQtLog
+#@+node:ekr.20110605121601.18312: *3* class leoQtLog (leoLog)
 class leoQtLog (leoFrame.leoLog):
 
     """A class that represents the log pane of a Qt window."""
@@ -5130,7 +5130,7 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20110605121601.18316: *5* qtLog.getName
     def getName (self):
         return 'log' # Required for proper pane bindings.
-    #@+node:ekr.20110605121601.18317: *4* Do nothings (logCtrl)
+    #@+node:ekr.20110605121601.18317: *4* Do nothings (leoQtLog)
     #@+node:ekr.20110605121601.18318: *5* Config (logCtrl)
     # These will probably be replaced by style sheets.
 
@@ -5145,7 +5145,7 @@ class leoQtLog (leoFrame.leoLog):
     def onActivateLog (self,event=None):    pass
     def hasFocus (self):                    return None
     def forceLogUpdate (self,s):            pass
-    #@+node:ekr.20110605121601.18321: *4* put & putnl (qtLog)
+    #@+node:ekr.20110605121601.18321: *4* put & putnl (leoQtLog)
     #@+node:ekr.20110605121601.18322: *5* put (qtLog)
     # All output to the log stream eventually comes here.
     def put (self,s,color=None,tabName='Log'):
@@ -5205,14 +5205,14 @@ class leoQtLog (leoFrame.leoLog):
         else:
             # put s to logWaiting and print  a newline
             g.app.logWaiting.append(('\n','black'),)
-    #@+node:ekr.20110605121601.18324: *4* Tab (qtLog)
+    #@+node:ekr.20110605121601.18324: *4* Tab (leoQtLog)
     #@+node:ekr.20110605121601.18325: *5* clearTab
     def clearTab (self,tabName,wrap='none'):
 
         w = self.logDict.get(tabName)
         if w:
             w.clear() # w is a QTextBrowser.
-    #@+node:ekr.20110605121601.18326: *5* createTab
+    #@+node:ekr.20110605121601.18326: *5* createTab (leoQtLog)
     def createTab (self,tabName,widget=None,wrap='none'):
         """ Create a new tab in tab widget
 
@@ -5258,6 +5258,9 @@ class leoQtLog (leoFrame.leoLog):
             # if trace: g.trace('** using',tabName,contents)
             self.contentsDict[tabName] = contents
             w.addTab(contents,tabName)
+            
+        # 2011/11/18: Essential for log bindings.
+        self.widget = contents
 
         return contents
     #@+node:ekr.20110605121601.18327: *5* cycleTabFocus
@@ -5330,11 +5333,11 @@ class leoQtLog (leoFrame.leoLog):
                 return True
         else:
             return False
-    #@+node:ekr.20110605121601.18333: *4* qtLog color tab stuff
+    #@+node:ekr.20110605121601.18333: *4* leoQtLog color tab stuff
     def createColorPicker (self,tabName):
 
         g.es('color picker not ready for qt',color='blue')
-    #@+node:ekr.20110605121601.18334: *4* qtLog font tab stuff
+    #@+node:ekr.20110605121601.18334: *4* leoQtLog font tab stuff
     #@+node:ekr.20110605121601.18335: *5* createFontPicker
     def createFontPicker (self,tabName):
 

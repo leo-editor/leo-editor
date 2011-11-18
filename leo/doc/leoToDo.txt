@@ -14,24 +14,7 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
-.. @+node:ekr.20111118090912.12874: *4* Bindings don't exist in print-bindings tab
 .. @+node:ekr.20111115155710.9807: *4* Make sure external unit tests leave focus in body
-.. @+node:ekr.20111117031039.11000: *4* Alt-m loses focus and crashes
-@nocolor-node
-
-
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 8448, in eventFilter
-    ret = k.masterKeyHandler(event)
-  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2886, in masterKeyHandler
-    return k.masterCommand(commandName=b.commandName,event=event,func=b.func,stroke=b.stroke)
-  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2720, in masterCommand
-    expanded = c.abbrevCommands.expandAbbrev(event,stroke)
-  File "c:\leo.repo\trunk\leo\core\leoEditCommands.py", line 349, in expandAbbrev
-    if w.hasSelection(): return False
-  File "c:\leo.repo\trunk\leo\core\leoFrame.py", line 102, in hasSelection
-    def hasSelection(self):                         return self.widget.hasSelection()
-AttributeError: 'NoneType' object has no attribute 'hasSelection'
 .. @+node:ekr.20111114151846.9856: *4* Create unit test that verifies class relationships
 .. @+node:ekr.20111114102224.9936: *5* << define class HighLevelInterface >>
 class HighLevelInterface:
