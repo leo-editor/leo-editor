@@ -995,19 +995,22 @@ def chain_base (s):
         base = s.split('.')[0]
         base = base.replace('()','').replace('[]','')
         return base
-#@+node:ekr.20111116103733.10540: *3* module
-def module (c,fn,sd=None,print_stats=False,print_times=False):
+#@+node:ekr.20111116103733.10540: *3* inspect.module
+def module (fn=None,s=None,sd=None,print_stats=False,print_times=False):
 
-    s = LeoCoreFiles().get_source(fn)
-    if not s:
-        print('file not found: %s' % (fn))
-        return None
+    if s:
+        fn = '<string file>'
+    else:
+        s = LeoCoreFiles().get_source(fn)
+        if not s:
+            print('file not found: %s' % (fn))
+            return None
         
     t1 = time.clock()
 
     if not sd:
         sd = SemanticData(controller=None)
-    InspectTraverser(c,fn,sd).traverse(s)
+    InspectTraverser(fn,sd).traverse(s)
     module = sd.modules_dict.get(fn)
            
     sd.total_time = time.clock()-t1
@@ -1591,13 +1594,13 @@ class AstFormatter (AstTraverser):
                 bases.append(self.visit(z,'class base'))
                 
         if bases:
-            self.append('class (%s):\n' % (','.join(bases)))
+            self.append('class (%s):' % (','.join(bases)))
         else:
-            self.append('class %s:\n' % name)
+            self.append('class %s:' % name)
 
         for z in tree.body:
             self.append(self.visit(z,'body'))
-            self.append('\n')
+            # self.append('\n')
     #@+node:ekr.20111117031039.10195: *4* formatter.FunctionDef
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
@@ -1615,17 +1618,17 @@ class AstFormatter (AstTraverser):
         else:
             args = ''
             
-        self.append('def %s (%s):\n' % (def_name,args))
+        self.append('def %s(%s):' % (def_name,args))
 
         for z in tree.body:
             self.append(self.visit(z,'body'))
-            self.append('\n')
+            # self.append('\n')
     #@+node:ekr.20111117031039.10197: *4* formatter.Module
     def do_Module (self,tree,tag=''):
         
         for z in tree.body:
             self.append(self.visit(z,'module body'))
-            sefl.append('\n')
+            # sefl.append('\n')
     #@+node:ekr.20111117031039.10198: *3* formatter.Expressions
     #@+node:ekr.20111117031039.10683: *4* formatter.arguments
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
@@ -1640,92 +1643,40 @@ class AstFormatter (AstTraverser):
         for z in tree.args:
             args.append(self.visit(z,'arg'))
             
+        defaults = []
         for z in tree.defaults:
-            args.append(self.visit(z,'default arg'))
-            
+            defaults.append(self.visit(z,'default arg'))
+        
+        # Assign default values to the last args.
+        args2 = []
+        n_plain = len(args) - len(defaults)
+        for i in range(len(args)):
+            if i < n_plain:
+                args2.append(args[i])
+            else:
+                args2.append('%s=%s' % (args[i],defaults[i-n_plain]))
+                
+        # Now add the vararg and kwarg args.
         name = hasattr(tree,'vararg') and tree.vararg
-        if name: args.append('*'+name)
+        if name: args2.append('*'+name)
         
         name = hasattr(tree,'kwarg') and tree.kwarg
-        if name: args.append('**'+name)
+        if name: args2.append('**'+name)
         
-        self.append(','.join(args))
+        self.append(','.join(args2))
     #@+node:ekr.20111117031039.10696: *4* formatter.arg
     def do_arg(self,tree,tag=''):
         
         self.append(self.visit(tree.arg))
     #@+node:ekr.20111117031039.10199: *4* formatter.Attribute & helper
+    # Attribute(expr value, identifier attr, expr_context ctx)
+
     def do_Attribute(self,tree,tag=''):
-
-        self.append(self.attribute_to_string(tree))
-    #@+node:ekr.20111117031039.10200: *5* attribute_to_string
-    def attribute_to_string (self,tree,level=0):
         
-        '''Convert an Attributes nodes and its descendants to a string a.b.c.d...'''
-
-        trace = False ; verbose = True
-        if trace and verbose:
-            g.trace('level: %s, tree: %s' % (level,tree))
-            self.dump(tree)
-
-        kind = self.kind(tree)
+        name = tree.attr
+        expr = self.visit(tree.value,'attribute value')
         
-        if kind == 'Attribute':
-            chain = self.attribute_helper(tree,level)
-        else:
-            chain = self.general_helper(tree,level)
-
-        if trace and level == 0:
-            g.trace('level: %s kind: %9s chain: %s' % (
-                level,kind,chain))
-
-        return chain
-    #@+node:ekr.20111117031039.10201: *6* attribute_helper TODO
-    def attribute_helper(self,tree,level):
-        
-        kind = self.kind(tree)
-        assert kind == 'Attribute',kind
-
-        val_kind = self.kind(tree.value)
-        assert self.kind(tree.ctx) in ('Del','Load','Store')
-        
-        if val_kind == 'Attribute':
-            s = self.attribute_to_string(tree.value,level+1)
-            chain = '%s.%s' % (s,tree.attr)
-        elif val_kind == 'Name':
-            chain = '%s.%s' % (tree.value.id,tree.attr)
-        elif val_kind == 'Call':
-            s = self.attribute_to_string(tree.value.func,level+1)
-            chain = '%s().%s' % (s,tree.attr)
-        elif val_kind == 'Subscript':
-            s = self.attribute_to_string(tree.value,level+1)
-            chain = '%s[0].%s' % (s,tree.attr)
-        elif val_kind == 'Str':
-            chain = '%s.%s' % (repr(tree.value.s),tree.attr)
-        elif val_kind == 'Dict':
-            chain = '%s.%s' % (repr(tree.value),tree.attr)
-        else:
-            chain = '<Error: val_kind=%s>' % val_kind
-            
-        return chain
-    #@+node:ekr.20111117031039.10202: *6* general_helper
-    def general_helper(self,tree,level):
-
-        kind = self.kind(tree)
-
-        if kind == 'Call':
-            s = self.attribute_to_string(tree.func,level+1)
-        elif kind == 'Name':
-            s = tree.id
-        elif kind == 'Str':
-            s = '%s.%s' % (repr(tree.value.s),tree.attr)
-        elif kind == 'Subscript':
-            s = self.attribute_to_string(tree.value,level+1)
-        else:
-            s = '<Error: kind=%s>' % kind
-            g.trace('Can not happen: kind:',kind)
-        
-        return s
+        self.append('%s.%s' % (expr,name))
     #@+node:ekr.20111117031039.10558: *4* formatter.Dict
     def do_Dict(self,tree,tag=''):
         
@@ -2006,13 +1957,13 @@ class AstFormatter (AstTraverser):
         
         for z in tree.body:
             self.append(self.visit(z,'for body'))
-            self.append('\n')
+            # self.append('\n')
 
         if tree.orelse:
             self.append('else:')
             for z in tree.orelse:
                 self.append(self.visit(z,'for else'))
-                self.append('\n')
+                # self.append('\n')
     #@+node:ekr.20111117031039.10210: *4* formatter.Global
     def do_Global(self,tree,tag=''):
 
@@ -2071,7 +2022,11 @@ class AstFormatter (AstTraverser):
         
         for z in tree.body:
             self.append(self.visit(z,'lambda body'))
-            self.append('\n')
+            # self.append('\n')
+    #@+node:ekr.20111117031039.10972: *4* formatter.Pass
+    def do_Pass(self,tree,tag=''):
+        
+        self.append('pass')
     #@+node:ekr.20111117031039.10217: *4* formatter.With
     def do_With (self,tree,tag=''):
         
@@ -2093,7 +2048,7 @@ class AstFormatter (AstTraverser):
         
         for z in tree.body:
             self.append(self.visit(z,'with body'))
-            self.append('\n')
+            # self.append('\n')
     #@-others
 #@+node:ekr.20111116103733.10345: ** class InspectTraverser (AstTraverser)
 class InspectTraverser (AstTraverser):
@@ -2102,14 +2057,12 @@ class InspectTraverser (AstTraverser):
 
     #@+others
     #@+node:ekr.20111116103733.10346: *3*  ctor (InspectTraverser)
-    def __init__(self,c,fn,sd):
+    def __init__(self,fn,sd):
 
         # Init the base class.
         AstTraverser.__init__(self,fn)
         
         # Ivars...
-        self.c = c
-        # self.dumper = sd.dumper
         self.fn = fn
         self.sd = sd
     #@+node:ekr.20111116103733.10352: *3* traverse (InspectTraverser)
@@ -2232,8 +2185,10 @@ class InspectTraverser (AstTraverser):
         finally:
             self.pop_context()
     #@+node:ekr.20111116103733.10360: *3* Expressions (InspectTraverser)
-    #@+node:ekr.20111116103733.10361: *4* Attribute & attribute_to_string
+    #@+node:ekr.20111116103733.10361: *4* Attribute & attribute_to_string (InspectTraverser) (REVISE)
     def do_Attribute(self,tree,tag=''):
+        
+        assert self.kind(tree) == 'Attribute'
 
         # Get the chain.
         cx = self.get_context()
@@ -2242,18 +2197,13 @@ class InspectTraverser (AstTraverser):
         if s and s[0] in ('"',"'"):
             # g.trace('ignoring string',s)
             return
-        
-        # is_method = cx.kind != 'class' and cx.class_context
-        # is_ivar = s.startswith('self.')
-        # if is_method and is_ivar:
-            # cx = cx.class_context
 
         chain = cx.st.add_chain(tree,s)
             # Create a new Chain object, or merge with an existing chain.
 
         # Update stats.
         self.sd.n_attributes += 1
-    #@+node:ekr.20111116103733.10362: *5* attribute_to_string
+    #@+node:ekr.20111116103733.10362: *5* attribute_to_string (InspectTraverser)
     def attribute_to_string (self,tree,level=0):
         
         '''Convert an Attributes nodes and its descendants to a string a.b.c.d...'''
@@ -2275,7 +2225,7 @@ class InspectTraverser (AstTraverser):
                 level,kind,chain))
 
         return chain
-    #@+node:ekr.20111116103733.10363: *6* attribute_helper
+    #@+node:ekr.20111116103733.10363: *6* attribute_helper (InspectTraverser)
     def attribute_helper(self,tree,level):
         
         kind = self.kind(tree)
@@ -2305,7 +2255,7 @@ class InspectTraverser (AstTraverser):
             chain = '<Error: val_kind=%s>' % val_kind
             
         return chain
-    #@+node:ekr.20111116103733.10364: *6* general_helper
+    #@+node:ekr.20111116103733.10364: *6* general_helper (InspectTraverser)
     def general_helper(self,tree,level):
 
         kind = self.kind(tree)
