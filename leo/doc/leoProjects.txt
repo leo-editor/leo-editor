@@ -20026,6 +20026,17 @@ single-line comments.
 
 *See also*: add-comments.
 '''
+#@+node:ekr.20111118090912.12875: *4* Selected @test node always run
+@nocolor-node
+
+This is true regardless of command, marked status of the node, or @ignore nodes.  Doh!
+
+Added special-case code to findAllUnitTestNodes.
+#@+node:ekr.20111118093803.10159: *4* Improve print-bindings & print-commands.
+@nocolor-node
+
+print-bindings: Alt/Ctrl+Key+N now printed with plain Alt/Ctrl keys and shown as Alt/Ctrl+N.
+print-commands: Alt/Ctrl+Key+N now printed as Alt/Ctrl+N.
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
@@ -20424,8 +20435,8 @@ legend:
     result.append('\n'+legend)
     sep = '-' * n1
     for prefix in (
-        'Alt+Ctrl+Shift','Alt+Ctrl','Alt+Key','Alt+Shift','Alt',
-        'Ctrl+Meta+Shift','Ctrl+Meta','Ctrl+Shift','Ctrl',
+        'Alt+Ctrl+Shift','Alt+Ctrl','Alt+Shift','Alt', # 'Alt+Key': done by Alt.
+        'Ctrl+Meta+Shift','Ctrl+Meta','Ctrl+Shift','Ctrl', # Ctrl+Key: done by Ctrl.
         'Meta+Key','Meta+Shift','Meta',
         'Shift',
         # 2011/10/25: Careful: longer prefixes must come before shorter prefixes.
@@ -20457,8 +20468,16 @@ def printBindingsHelper (self,result,data,n1,n2,prefix):
 
     data1 = [z for z in data if z and z[1] and len(z[1][n:]) == 1]
         # The list of all items with only one character following the prefix.
+        
+    # Special case for Alt-Key and Ctrl-Key bindings.
+    if prefix in ('Alt','Ctrl'):
+        prefix2 = prefix+'+Key'
+        n2 = prefix2 and len(prefix2)+1 or 0
+        data2 = [z for z in data if z and z[1] and len(z[1][n2:]) == 1]
+    else:
+        data2 = []
 
-    data2 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
+    data3 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
         # The list of all other items.
 
     # This isn't perfect in variable-width fonts.
@@ -20466,6 +20485,9 @@ def printBindingsHelper (self,result,data,n1,n2,prefix):
         data.sort(key=lambda x: x[1])
             # key is a function that extracts args.
         for s1,s2,s3,s4 in data:
+            
+            if s2.find('+Key') > -1:
+                s2 = s2.replace('+Key','')
             
             # 2011/02/10: Print the source of the binding: s4 is the _hash.
             s4 = s4.lower()

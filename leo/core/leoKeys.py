@@ -2219,8 +2219,8 @@ class keyHandlerClass:
         result.append('\n'+legend)
         sep = '-' * n1
         for prefix in (
-            'Alt+Ctrl+Shift','Alt+Ctrl','Alt+Key','Alt+Shift','Alt',
-            'Ctrl+Meta+Shift','Ctrl+Meta','Ctrl+Shift','Ctrl',
+            'Alt+Ctrl+Shift','Alt+Ctrl','Alt+Shift','Alt', # 'Alt+Key': done by Alt.
+            'Ctrl+Meta+Shift','Ctrl+Meta','Ctrl+Shift','Ctrl', # Ctrl+Key: done by Ctrl.
             'Meta+Key','Meta+Shift','Meta',
             'Shift',
             # 2011/10/25: Careful: longer prefixes must come before shorter prefixes.
@@ -2252,8 +2252,16 @@ class keyHandlerClass:
 
         data1 = [z for z in data if z and z[1] and len(z[1][n:]) == 1]
             # The list of all items with only one character following the prefix.
+            
+        # Special case for Alt-Key and Ctrl-Key bindings.
+        if prefix in ('Alt','Ctrl'):
+            prefix2 = prefix+'+Key'
+            n2 = prefix2 and len(prefix2)+1 or 0
+            data2 = [z for z in data if z and z[1] and len(z[1][n2:]) == 1]
+        else:
+            data2 = []
 
-        data2 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
+        data3 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
             # The list of all other items.
 
         # This isn't perfect in variable-width fonts.
@@ -2261,6 +2269,9 @@ class keyHandlerClass:
             data.sort(key=lambda x: x[1])
                 # key is a function that extracts args.
             for s1,s2,s3,s4 in data:
+                
+                if s2.find('+Key') > -1:
+                    s2 = s2.replace('+Key','')
                 
                 # 2011/02/10: Print the source of the binding: s4 is the _hash.
                 s4 = s4.lower()
@@ -2277,7 +2288,7 @@ class keyHandlerClass:
                 
                 # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
                 result.append('%s %*s %*s %s\n' % (letter,-n1,s1,-(min(12,n2)),s2,s3))
-    #@+node:ekr.20061031131434.121: *4* printCommands
+    #@+node:ekr.20061031131434.121: *4* k.printCommands
     def printCommands (self,event=None):
 
         '''Print all the known commands and their bindings, if any.'''
@@ -2295,6 +2306,7 @@ class keyHandlerClass:
                 pane, key = z
                 s1 = pane
                 s2 = k.prettyPrintKey(key,brief=True)
+                if s2.find('+Key'): s2 = s2.replace('+Key','')
                 s3 = commandName
                 n1 = max(n1,len(s1))
                 n2 = max(n2,len(s2))
