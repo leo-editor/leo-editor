@@ -17,7 +17,7 @@ Top 10:
 .. @+node:ekr.20111115155710.9807: *4* Make sure external unit tests leave focus in body
 .. @+node:ekr.20111114151846.9856: *4* Create unit test that verifies class relationships
 .. @+node:ekr.20111114102224.9936: *5* << define class HighLevelInterface >>
-class HighLevelInterface:
+class HighLevelInterface(object):
     
     '''A class to specify Leo's high-level editing interface
     used throughout Leo's core.
