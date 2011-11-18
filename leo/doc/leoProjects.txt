@@ -5916,6 +5916,12 @@ single-line comments.
 
 *See also*: add-comments.
 '''
+#@+node:ekr.20111118090912.12874: *4* Fixed bug that prevented text bindings from working in log tabs
+@nocolor-node
+
+Example: ctrl-shift-home.
+
+The fix was to set self.widget = contents in leoQtLog.selectTab.
 #@+node:ekr.20111113141805.10062: *3* Code
 #@+node:ekr.20111109105907.9796: *4* Simplified g.pr
 #@+node:ekr.20111023164430.16771: *4* Removed unused color tags

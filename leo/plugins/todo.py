@@ -92,29 +92,8 @@ def popup_entry(c,p,menu):
 #@+node:tbrown.20090119215428.8: ** class todoQtUI
 if g.app.gui.guiName() == "qt":
     class cleoQtUI(QtGui.QWidget):
-
-        def make_func(self, edit, toggle, method, default):
-
-            def func(value, edit=edit, toggle=toggle, 
-                     method=method, default=default, self=self):
-                         
-                edit.blockSignals(True)
-                toggle.blockSignals(True)
-                
-                if value:
-                    getattr(edit, method)(value)
-                    edit.setEnabled(True)
-                    toggle.setChecked(Qt.Checked)
-                else:
-                    getattr(edit, method)(default)
-                    edit.setEnabled(False)
-                    toggle.setChecked(Qt.Unchecked)
-                    
-                edit.blockSignals(False)
-                toggle.blockSignals(False)
-                
-            return func
-            
+        #@+others
+        #@+node:ekr.20111118104929.10204: *3* ctor
         def __init__(self, owner, logTab=True):
 
             self.owner = owner
@@ -188,48 +167,30 @@ if g.app.gui.guiName() == "qt":
             self.setDueTime = self.make_func(self.UI.dueTimeEdit,
                 self.UI.dueTimeToggle, 'setTime',
                 datetime.datetime.now().time())
-            
-        def setProgress(self, prgr):
-            self.UI.spinProg.blockSignals(True)
-            self.UI.spinProg.setValue(prgr)
-            self.UI.spinProg.blockSignals(False)
-        def setTime(self, timeReq):
-            self.UI.spinTime.blockSignals(True)
-            self.UI.spinTime.setValue(timeReq)
-            self.UI.spinTime.blockSignals(False)
-            
+        #@+node:ekr.20111118104929.10203: *3* make_func
+        def make_func(self, edit, toggle, method, default):
 
-
-             
-        #X def setDueDate(self, date_):
-        #X     self.UI.dueDateEdit.blockSignals(True)
-        #X     self.UI.dueDateToggle.blockSignals(True)
-        #X     if date_:
-        #X         self.UI.dueDateEdit.setDate(date_)
-        #X         self.UI.dueDateEdit.setEnabled(True)
-        #X         self.UI.dueDateToggle.setChecked(Qt.Checked)
-        #X     else:
-        #X         self.UI.dueDateEdit.setDate(datetime.date.today() + 
-        #X             datetime.timedelta(7))
-        #X         self.UI.dueDateEdit.setEnabled(False)
-        #X         self.UI.dueDateToggle.setChecked(Qt.Unchecked)
-        #X     self.UI.dueDateEdit.blockSignals(False)
-        #X     self.UI.dueDateToggle.blockSignals(False)
-
-#X      #X    def setDueTime(self, time_):
-        #X     self.UI.dueTimeEdit.blockSignals(True)
-        #X     self.UI.dueTimeToggle.blockSignals(True)
-        #X     if time_:
-        #X         self.UI.dueTimeEdit.setTime(time_)
-        #X         self.UI.dueTimeToggle.setChecked(Qt.Checked)
-        #X     else:
-        #X         self.UI.dueTimeEdit.setTime(datetime.datetime.now().time())
-        #X         self.UI.dueTimeToggle.setChecked(Qt.Unchecked)
-        #X     self.UI.dueTimeEdit.blockSignals(False)
-        #X     self.UI.dueTimeToggle.blockSignals(False)
-
-
-
+            def func(value, edit=edit, toggle=toggle, 
+                     method=method, default=default, self=self):
+                         
+                edit.blockSignals(True)
+                toggle.blockSignals(True)
+                
+                if value:
+                    getattr(edit, method)(value)
+                    edit.setEnabled(True)
+                    toggle.setChecked(Qt.Checked)
+                else:
+                    getattr(edit, method)(default)
+                    edit.setEnabled(False)
+                    toggle.setChecked(Qt.Unchecked)
+                    
+                edit.blockSignals(False)
+                toggle.blockSignals(False)
+                
+            return func
+                    
+        #@+node:ekr.20111118104929.10205: *3* populateMenu
         @staticmethod
         def populateMenu(menu,o): 
             menu.addAction('Find next ToDo', o.find_todo)
@@ -250,6 +211,95 @@ if g.app.gui.guiName() == "qt":
             m.addAction('Delete Todo from node', o.clear_all)
             m.addAction('Delete Todo from subtree', lambda:o.clear_all(recurse=True))
             m.addAction('Delete Todo from all', lambda:o.clear_all(all=True))
+        #@+node:ekr.20111118104929.10209: *3* setDueDate
+        #X def setDueDate(self, date_):
+        #X     self.UI.dueDateEdit.blockSignals(True)
+        #X     self.UI.dueDateToggle.blockSignals(True)
+        #X     if date_:
+        #X         self.UI.dueDateEdit.setDate(date_)
+        #X         self.UI.dueDateEdit.setEnabled(True)
+        #X         self.UI.dueDateToggle.setChecked(Qt.Checked)
+        #X     else:
+        #X         self.UI.dueDateEdit.setDate(datetime.date.today() + 
+        #X             datetime.timedelta(7))
+        #X         self.UI.dueDateEdit.setEnabled(False)
+        #X         self.UI.dueDateToggle.setChecked(Qt.Unchecked)
+        #X     self.UI.dueDateEdit.blockSignals(False)
+        #X     self.UI.dueDateToggle.blockSignals(False)
+
+        #X    def setDueTime(self, time_):
+        #X     self.UI.dueTimeEdit.blockSignals(True)
+        #X     self.UI.dueTimeToggle.blockSignals(True)
+        #X     if time_:
+        #X         self.UI.dueTimeEdit.setTime(time_)
+        #X         self.UI.dueTimeToggle.setChecked(Qt.Checked)
+        #X     else:
+        #X         self.UI.dueTimeEdit.setTime(datetime.datetime.now().time())
+        #X         self.UI.dueTimeToggle.setChecked(Qt.Unchecked)
+        #X     self.UI.dueTimeEdit.blockSignals(False)
+        #X     self.UI.dueTimeToggle.blockSignals(False)
+        #@+node:ekr.20111118104929.10207: *3* setProgress
+        def setProgress(self, prgr):
+            self.UI.spinProg.blockSignals(True)
+            self.UI.spinProg.setValue(prgr)
+            self.UI.spinProg.blockSignals(False)
+        #@+node:ekr.20111118104929.10208: *3* setTime
+        def setTime(self, timeReq):
+            self.UI.spinTime.blockSignals(True)
+            self.UI.spinTime.setValue(timeReq)
+            self.UI.spinTime.blockSignals(False)
+        #@+node:ekr.20111118104929.10195: *3* Dummy HighLevelInterface
+        # Mutable methods.
+        def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+            pass
+
+        def toPythonIndex (self,index):             return 0
+        def toPythonIndexRowCol(self,index):        return 0,0,0
+
+        # Immutable redirection methods.
+        def appendText(self,s):                         pass
+        def delete(self,i,j=None):                      pass
+        def deleteTextSelection (self):                 pass
+        def get(self,i,j):                              return ''
+        def getAllText(self):                           return ''
+        def getInsertPoint(self):                       return 0
+        def getSelectedText(self):                      return ''
+        def getSelectionRange (self):                   return 0,0
+        def getYScrollPosition (self):                  return 0
+        def hasSelection(self):                         return False
+        def insert(self,i,s):                           pass    
+        def replace (self,i,j,s):                       pass
+        def rowColToGuiIndex (self,s,row,col):          return 0
+        def see(self,i):                                pass
+        def seeInsertPoint (self):                      pass
+        def selectAllText (self,insert=None):           pass
+        def setAllText (self,s):                        pass
+        def setBackgroundColor(self,color):             pass
+        def setFocus(self):                             pass
+        def setForegroundColor(self,color):             pass
+        def setInsertPoint(self,pos):                   pass
+        def setSelectionRange (self,i,j,insert=None):   pass
+        def setYScrollPosition (self,i):                pass
+        def tag_configure (self,colorName,**keys):      pass
+
+        # Other immutable methods.
+        # These all use leoGlobals functions or leoGui methods.
+        def clipboard_append(self,s):
+            s1 = g.app.gui.getTextFromClipboard()
+            g.app.gui.replaceClipboardWith(s1 + s)
+            
+        def clipboard_clear (self):
+            g.app.gui.replaceClipboardWith('')
+            
+        def getFocus(self):
+            return g.app.gui.get_focus(self.c)
+            
+        def rowColToGuiIndex (self,s,row,col):
+            return g.convertRowColToPythonIndex(s,row,col)    
+
+        set_focus = setFocus
+            
+        #@-others
 #@+node:tbrown.20090119215428.9: ** class todoController
 class todoController:
 
