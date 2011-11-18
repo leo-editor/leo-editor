@@ -4111,8 +4111,8 @@ run-all-unit-tests-externally       = None
 run-all-unit-tests-locally          = None
 run-marked-unit-tests-externally    = None
 run-marked-unit-tests-locally       = None
-run-selected-unit-tests-externally  = None
-run-selected-unit-tests-locally     = Alt-4
+run-selected-unit-tests-externally  = Alt-4 # The new standard.
+run-selected-unit-tests-locally     = None
 
 show-calltips               = parenleft
 show-calltips-force         = None # This command needs work before it is useful. Alt-parenleft

@@ -14,6 +14,7 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
+.. @+node:ekr.20111118090912.12874: *4* Bindings don't exist in print-bindings tab
 .. @+node:ekr.20111115155710.9807: *4* Make sure external unit tests leave focus in body
 .. @+node:ekr.20111117031039.11000: *4* Alt-m loses focus and crashes
 @nocolor-node

@@ -32,6 +32,7 @@
 </v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
 </v>
+<v t="ekr.20111112093605.4679"></v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -548,7 +549,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="5"></t>
+<t tx="ekr.20070417092935" str_leo_pos="6"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -861,7 +862,9 @@ nodeA
 nodeB
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
-<t tx="ekr.20111112093605.4679">run-selected-unit-tests-externally = Alt-5</t>
+<t tx="ekr.20111112093605.4679">run-selected-unit-tests-externally = Alt-4 # Same as the new standard.
+run-selected-unit-tests-locally = Alt-5
+</t>
 <t tx="ekr.20111115080347.3872"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly

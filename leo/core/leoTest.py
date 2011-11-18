@@ -674,6 +674,18 @@ def findAllUnitTestNodes(c,p,limit,all,marked,lookForMark,lookForNodes):
     markTag = '@mark-for-unit-tests'
     seen = set() # A set of vnodes.
     result = [] # A list of (copies of) positions.
+    
+    # An important special case.  If c.p is an @test or @suite node,
+    # Add it regard regardless of ancestor @ignore nodes.
+    if (p and p != limit and p == c.p and lookForNodes and
+        (p.isMarked() or not marked) and
+        isTestNode(p) or isSuiteNode(p)
+    ):
+        seen.add(p.v)
+        if trace: g.trace(message)
+        result.append(p.copy())
+        p.moveToNodeAfterTree()
+        
     while p and p != limit:
         # Run tests only once.
         if p.v in seen:
@@ -711,14 +723,11 @@ def findAllUnitTestNodes(c,p,limit,all,marked,lookForMark,lookForNodes):
                 else:
                     seen.add(p.v)
                     message = 'adding in marked tree: %s' % (p.h)
-                    if isTestNode(p): # @test
+                    if isTestNode(p) or isSuiteNode(p): # @test or @suite.
                         if trace: g.trace(message)
                         result.append(p.copy())
                         p.moveToNodeAfterTree()
-                    elif isSuiteNode(p): # @suite
-                        if trace: g.trace(message)
-                        result.append(p.copy())
-                        p.moveToNodeAfterTree()
+
                     else:
                         p.moveToThreadNext()
         else:
