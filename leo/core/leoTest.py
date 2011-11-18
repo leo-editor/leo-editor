@@ -675,10 +675,9 @@ def findAllUnitTestNodes(c,p,limit,all,marked,lookForMark,lookForNodes):
     seen = set() # A set of vnodes.
     result = [] # A list of (copies of) positions.
     
-    # An important special case.  If c.p is an @test or @suite node,
-    # Add it regard regardless of ancestor @ignore nodes.
+    # An important special case: add the *selected* @test or @suite node,
+    # regard regardless of all other considerations.
     if (p and p != limit and p == c.p and lookForNodes and
-        (p.isMarked() or not marked) and
         isTestNode(p) or isSuiteNode(p)
     ):
         seen.add(p.v)
