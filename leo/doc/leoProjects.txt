@@ -1353,7 +1353,7 @@ s2 = '''
 t1 = 
 assert result == expected,'expected...\n%s\ngot...\n%s' % (
     repr(expected),repr(result))
-#@+node:ekr.20100907115157.5905: *3* @ignore 1
+#@+node:ekr.20100907115157.5905: *3* @ignore Ancient tests
 #@+node:ekr.20100208095423.5940: *4* @test leoCache
 import leo.core.leoCache as leoCache
 
@@ -1666,7 +1666,7 @@ def scanOptions():
     silent = options.silent
 
     return path,gui,silent
-#@+node:ekr.20111116161118.10248: *3* @ignore recent tests
+#@+node:ekr.20111116161118.10248: *3* Recent tests
 #@+node:ekr.20111104132424.9909: *4* @test assert True
 # It's useful to have this do-nothing test.
 
@@ -1846,7 +1846,7 @@ if 1: # Print lines containing '='
         if z.find('=') > -1] # and not z.find('+=')>-1 and not z.find('-=')>-1]
     print(''.join(aList))
     
-#@+node:ekr.20111116161118.10247: *3* @ignore Old lint tests
+#@+node:ekr.20111116161118.10247: *3* Old lint tests
 #@+node:ekr.20111116103733.9845: *4*  Naming tests
 # http://docs.python.org/reference/executionmodel.html#naming-and-binding
 
