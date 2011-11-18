@@ -15,6 +15,10 @@ Top 10:
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
 .. @+node:ekr.20111115155710.9807: *4* Make sure external unit tests leave focus in body
+.. @+node:ekr.20111118104929.10186: *4* Create a way to select any log tab
+@nocolor-node
+
+cycle-all-focus doesn't do this.
 .. @+node:ekr.20111114151846.9856: *4* Create unit test that verifies class relationships
 .. @+node:ekr.20111114102224.9936: *5* << define class HighLevelInterface >>
 class HighLevelInterface(object):
@@ -71,7 +75,10 @@ def getInsertPoint(self):                       return self.widget and self.widg
 def getSelectedText(self):                      return self.widget and self.widget.getSelectedText() or ''
 def getSelectionRange (self):                   return self.widget and self.widget.getSelectionRange() or (0,0)
 def getYScrollPosition (self):                  return self.widget and self.widget.getYScrollPosition() or 0
-def hasSelection(self):                         return self.widget and self.widget.hasSelection() or False
+def hasSelection(self):                         # return self.widget and self.widget.hasSelection() or False
+    # Take special care with this, for the benefit of LeoQuickSearchWidget.
+    # This problem only happens with the qttabs gui.
+    return self.widget and hasattr(self.widget,'hasSelection') and self.widget.hasSelection() or False
 def insert(self,i,s):                           self.widget and self.widget.insert(i,s)    
 def replace (self,i,j,s):                       self.widget and self.widget.replace(i,j,s)
 def rowColToGuiIndex (self,s,row,col):          return self.widget and self.widget.rowColToGuiIndex(s,row,col) or 0

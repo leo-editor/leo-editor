@@ -156,7 +156,10 @@ class HighLevelInterface(object):
     def getSelectedText(self):                      return self.widget and self.widget.getSelectedText() or ''
     def getSelectionRange (self):                   return self.widget and self.widget.getSelectionRange() or (0,0)
     def getYScrollPosition (self):                  return self.widget and self.widget.getYScrollPosition() or 0
-    def hasSelection(self):                         return self.widget and self.widget.hasSelection() or False
+    def hasSelection(self):                         # return self.widget and self.widget.hasSelection() or False
+        # Take special care with this, for the benefit of LeoQuickSearchWidget.
+        # This problem only happens with the qttabs gui.
+        return self.widget and hasattr(self.widget,'hasSelection') and self.widget.hasSelection() or False
     def insert(self,i,s):                           self.widget and self.widget.insert(i,s)    
     def replace (self,i,j,s):                       self.widget and self.widget.replace(i,j,s)
     def rowColToGuiIndex (self,s,row,col):          return self.widget and self.widget.rowColToGuiIndex(s,row,col) or 0
