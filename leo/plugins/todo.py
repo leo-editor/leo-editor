@@ -248,57 +248,6 @@ if g.app.gui.guiName() == "qt":
             self.UI.spinTime.blockSignals(True)
             self.UI.spinTime.setValue(timeReq)
             self.UI.spinTime.blockSignals(False)
-        #@+node:ekr.20111118104929.10195: *3* Dummy HighLevelInterface
-        # Mutable methods.
-        def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
-            pass
-
-        def toPythonIndex (self,index):             return 0
-        def toPythonIndexRowCol(self,index):        return 0,0,0
-
-        # Immutable redirection methods.
-        def appendText(self,s):                         pass
-        def delete(self,i,j=None):                      pass
-        def deleteTextSelection (self):                 pass
-        def get(self,i,j):                              return ''
-        def getAllText(self):                           return ''
-        def getInsertPoint(self):                       return 0
-        def getSelectedText(self):                      return ''
-        def getSelectionRange (self):                   return 0,0
-        def getYScrollPosition (self):                  return 0
-        def hasSelection(self):                         return False
-        def insert(self,i,s):                           pass    
-        def replace (self,i,j,s):                       pass
-        def rowColToGuiIndex (self,s,row,col):          return 0
-        def see(self,i):                                pass
-        def seeInsertPoint (self):                      pass
-        def selectAllText (self,insert=None):           pass
-        def setAllText (self,s):                        pass
-        def setBackgroundColor(self,color):             pass
-        def setFocus(self):                             pass
-        def setForegroundColor(self,color):             pass
-        def setInsertPoint(self,pos):                   pass
-        def setSelectionRange (self,i,j,insert=None):   pass
-        def setYScrollPosition (self,i):                pass
-        def tag_configure (self,colorName,**keys):      pass
-
-        # Other immutable methods.
-        # These all use leoGlobals functions or leoGui methods.
-        def clipboard_append(self,s):
-            s1 = g.app.gui.getTextFromClipboard()
-            g.app.gui.replaceClipboardWith(s1 + s)
-            
-        def clipboard_clear (self):
-            g.app.gui.replaceClipboardWith('')
-            
-        def getFocus(self):
-            return g.app.gui.get_focus(self.c)
-            
-        def rowColToGuiIndex (self,s,row,col):
-            return g.convertRowColToPythonIndex(s,row,col)    
-
-        set_focus = setFocus
-            
         #@-others
 #@+node:tbrown.20090119215428.9: ** class todoController
 class todoController:
