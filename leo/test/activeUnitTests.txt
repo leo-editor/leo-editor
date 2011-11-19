@@ -656,8 +656,6 @@ for ivar in (
 ):
     assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar
 #@+node:ekr.20111118125141.3879: *4* @test bodyCtrl property
-# These are now properties of the base leoBody and leoLog classes.
-
 # Test that changing c.frame.body.bodyCtrl also changes c.frame.body.widget.
 body = c.frame.body
 old_w = body.widget
@@ -671,9 +669,7 @@ finally:
 assert hasattr(c.frame.body,'bodyCtrl')
 assert hasattr(c.frame.log,'logCtrl')
 #@+node:ekr.20111118183928.3881: *4* @test logCtrl property
-# These are now properties of the base leoBody and leoLog classes.
-
-# Test that changing c.frame.body.bodyCtrl also changes c.frame.body.widget.
+# Test that changing c.frame.log.logCtrl also changes c.frame.log.widget.
 log = c.frame.log
 old_w = log.widget
 assert old_w is not None

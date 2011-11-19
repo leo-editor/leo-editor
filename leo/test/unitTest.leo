@@ -130,7 +130,6 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e372e31362e3671017d71025808000000616e6e6f7461746571037d7104735805000000302e382e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e372e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31302e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ville.20090312195309.2"><vh>@@@test find_h / find_b / filter_h / filter_b</vh></v>
 <v t="ekr.20111115080347.3872"><vh>Tests of the high-level interface</vh>
 <v t="ekr.20100131171342.5478"><vh>@@@test that log and body implements high-level interface</vh></v>
 <v t="ekr.20100131171342.5473"><vh>Tk gui tests</vh>
@@ -140,8 +139,6 @@
 <v t="ekr.20100131171342.5477"><vh>@test leoTree is subset of leoTkTree</vh></v>
 </v>
 </v>
-<v t="ekr.20111118125141.3879"><vh>@test bodyCtrl property</vh></v>
-<v t="ekr.20111118183928.3881"><vh>@test logCtrl property</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -868,88 +865,5 @@ nodeB
 run-selected-unit-tests-locally = Alt-5
 </t>
 <t tx="ekr.20111115080347.3872"></t>
-<t tx="ekr.20111118125141.3879"># These are now properties of the base leoBody and leoLog classes.
-
-# Test that changing c.frame.body.bodyCtrl also changes c.frame.body.widget.
-body = c.frame.body
-old_w = body.widget
-assert old_w is not None
-try:
-    body.bodyCtrl = None
-    assert body.widget is None
-finally:
-    body.widget = old_w
-    
-assert hasattr(c.frame.body,'bodyCtrl')
-assert hasattr(c.frame.log,'logCtrl')
-</t>
-<t tx="ekr.20111118183928.3881"># These are now properties of the base leoBody and leoLog classes.
-
-# Test that changing c.frame.body.bodyCtrl also changes c.frame.body.widget.
-log = c.frame.log
-old_w = log.widget
-assert old_w is not None
-try:
-    log.logCtrl = None
-    assert log.widget is None
-finally:
-    log.widget = old_w
-</t>
-<t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
-# adjust accordingly
-
-# These seem to fail if various nodes are cloned.
-import random,fnmatch
-
-all_h = [z.copy().h for z in c.find_h('.')]
-
-assert len(all_h) &gt; 1000,'fail 1'
-
-sample = random.sample(all_h, 20)    
-
-# Test that all nodes are found at least once.
-for h in sample:
-    pat = fnmatch.translate(h)
-    pl = c.find_h(pat)
-    assert len(pl) &gt; 0 and len(pl) &lt; len(all_h),'fail 2'
-
-tests = c.find_h('@test(.*)')
-
-bm = tests.filter_b('(.*)all_positions')
-forloops = 0
-for node in bm:   
-    # many of these are for loops
-    for m in node.matchiter:
-        if 'for' in m.group(1):
-            forloops += 1
-
-assert forloops &gt; 10,'fail for'
-
-# all of these should also be found by find_b
-all_bm = c.find_b('(.*)all_positions')
-assert len(all_bm) &gt;= len(bm),'fail len'
-
-assert set(el.h for el in bm).issubset(set(el.h for el in all_bm)),'fail set'
-
-itertest = c.find_h('@test p.iters and v.iters')
-assert len(itertest) &gt;= 1,'fail 3'
-tn = itertest[0]
-assert tn.h == '@test p.iters and v.iters','fail h'
-assert len(itertest.filter_b('notfound, really')) == 0,'fail 4'
-assert len(itertest.filter_b('leoNodes')) == 1,'fail 5'
-chi = itertest.children().filter_h('child?')
-assert chi[0].h == 'child1','fail 6'
-assert chi[1].h == 'child2','fail 7'
-# twice, in clones
-chi_b = chi.children().filter_h('a').children().filter_h('b')
-
-if 0:
-    assert len(chi_b) == 2,'fail len 2: %s: %s' % (chi_b,len(chi_b))
-    assert chi_b[0].h == chi_b[1].h == 'b'
-    chi_e = chi.children().filter_h('d').children().filter_h('e')
-    assert len(chi_e) == 1,'fail 8'
-    assert chi_e[0].h == 'e','fail 9'
-
-</t>
 </tnodes>
 </leo_file>
