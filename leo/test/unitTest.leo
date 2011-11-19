@@ -140,6 +140,8 @@
 <v t="ekr.20100131171342.5477"><vh>@test leoTree is subset of leoTkTree</vh></v>
 </v>
 </v>
+<v t="ekr.20111118125141.3879"><vh>@test bodyCtrl property</vh></v>
+<v t="ekr.20111118183928.3881"><vh>@test logCtrl property</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -866,6 +868,33 @@ nodeB
 run-selected-unit-tests-locally = Alt-5
 </t>
 <t tx="ekr.20111115080347.3872"></t>
+<t tx="ekr.20111118125141.3879"># These are now properties of the base leoBody and leoLog classes.
+
+# Test that changing c.frame.body.bodyCtrl also changes c.frame.body.widget.
+body = c.frame.body
+old_w = body.widget
+assert old_w is not None
+try:
+    body.bodyCtrl = None
+    assert body.widget is None
+finally:
+    body.widget = old_w
+    
+assert hasattr(c.frame.body,'bodyCtrl')
+assert hasattr(c.frame.log,'logCtrl')
+</t>
+<t tx="ekr.20111118183928.3881"># These are now properties of the base leoBody and leoLog classes.
+
+# Test that changing c.frame.body.bodyCtrl also changes c.frame.body.widget.
+log = c.frame.log
+old_w = log.widget
+assert old_w is not None
+try:
+    log.logCtrl = None
+    assert log.widget is None
+finally:
+    log.widget = old_w
+</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
