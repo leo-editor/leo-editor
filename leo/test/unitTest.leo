@@ -185,14 +185,6 @@
 <v t="ekr.20100131171342.5477"><vh>@test leoTree is subset of leoTkTree</vh></v>
 </v>
 </v>
-<v t="ekr.20111121233230.3938"><vh>Resurrected Nodes</vh>
-<v t="ekr.20111121233230.3939"><vh>From @file activeUnitTests.txt</vh>
-<v t="ekr.20111121232908.3936"><vh>first-child</vh></v>
-</v>
-<v t="ekr.20111121233230.3940"><vh>From @file activeUnitTests.txt</vh>
-<v t="ekr.20111121232908.3937"><vh>newHeadline</vh></v>
-</v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1998,15 +1990,17 @@ c.frame.body.updateEditors()
 </t>
 <t tx="ekr.20111121164644.3928">'''Test that cycle-all-focus cycles through all tabs.'''
 
-# List the tabs in order.
-# The test will fail if this doesn't match the actual tabs.
-tabs = ('Find','Links','Graph','Nav','Task','Log')
-
 if g.app.isExternalUnitTest:
     # print('external test')
     pass
 else:
     log = c.frame.log
+    
+    # tabs = ('Find',(maybe 'Spell'),'Links','Graph','Nav','Task','Log')
+    tabs = log.orderedTabNames()[1:]
+    tabs.append('Log')
+    
+    # Set up the initial state.
     c.k.keyboardQuit()
     c.bodyWantsFocusNow()
     
@@ -2040,10 +2034,5 @@ else:
         # This throws exception: LeoQTextBrowser has no attribute logCtrl.
         c.k.handleDefaultChar(event, stroke='a')
 </t>
-<t tx="ekr.20111121232908.3936"></t>
-<t tx="ekr.20111121232908.3937"></t>
-<t tx="ekr.20111121233230.3938"></t>
-<t tx="ekr.20111121233230.3939"></t>
-<t tx="ekr.20111121233230.3940"></t>
 </tnodes>
 </leo_file>

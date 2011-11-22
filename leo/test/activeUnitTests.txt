@@ -19305,15 +19305,17 @@ else:
 #@+node:ekr.20111121164644.3928: *4* @test cycle-tab-focus
 '''Test that cycle-all-focus cycles through all tabs.'''
 
-# List the tabs in order.
-# The test will fail if this doesn't match the actual tabs.
-tabs = ('Find','Links','Graph','Nav','Task','Log')
-
 if g.app.isExternalUnitTest:
     # print('external test')
     pass
 else:
     log = c.frame.log
+    
+    # tabs = ('Find',(maybe 'Spell'),'Links','Graph','Nav','Task','Log')
+    tabs = log.orderedTabNames()[1:]
+    tabs.append('Log')
+    
+    # Set up the initial state.
     c.k.keyboardQuit()
     c.bodyWantsFocusNow()
     

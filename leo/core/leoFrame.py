@@ -1674,6 +1674,10 @@ class leoLog (HighLevelInterface):
 
         self.c.invalidateFocus()
         self.c.bodyWantsFocus()
+    #@+node:ekr.20111122080923.10184: *4* orderedTabNames (leoLog)
+    def orderedTabNames (leoLog):
+        
+        return list(self.frameDict.values())
     #@+node:ekr.20070302094848.9: *4* numberOfVisibleTabs (leoLog)
     def numberOfVisibleTabs (self):
 

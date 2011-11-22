@@ -5331,6 +5331,15 @@ class leoQtLog (leoFrame.leoLog):
     def hideTab (self,tabName):
 
         self.selectTab('Log')
+    #@+node:ekr.20111122080923.10185: *5* orderedTabNames (leoQtLog)
+    def orderedTabNames (self):
+        
+        '''Return a list of tab names in the order in which they appear in the QTabbedWidget.'''
+        
+        w = self.tabWidget
+
+        return [w.tabText(i) for i in range(w.count())]
+        i = w.currentIndex()
     #@+node:ekr.20110605121601.18330: *5* numberOfVisibleTabs (leoQtLog)
     def numberOfVisibleTabs (self):
 
