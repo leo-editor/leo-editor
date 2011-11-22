@@ -14,7 +14,6 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
-.. @+node:ekr.20111121084517.10187: *4* ***Fix appearance of headline widgets
 .. @+node:ekr.20111118104929.10185: *4* Recent leoInspect
 .. @+node:ekr.20111117031039.10977: *5*  To do
 @nocolor

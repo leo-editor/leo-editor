@@ -5575,6 +5575,7 @@ QTreeWidget {
     font-size: 12px;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
+    show-decoration-selected: 1 /* 1: select entire row */
  }
 
 /* Headline edit widgets */
