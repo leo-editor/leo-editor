@@ -138,7 +138,7 @@ class HighLevelInterface(object):
         return g.toPythonIndex(s,index)
 
     toGuiIndex = toPythonIndex
-    #@+node:ekr.20111114102224.9945: *4* toPythonIndexRowCol (baseTextWidget)
+    #@+node:ekr.20111114102224.9945: *4* toPythonIndexRowCol (BaseTextWidget)
     def toPythonIndexRowCol(self,index):
         
         # This works, but is much slower that the leoQTextEditWidget method.
@@ -1607,7 +1607,7 @@ class leoLog (HighLevelInterface):
         self.selectTab(tabName,wrap=wrap)
         w = self.logCtrl
         if w: w.delete(0,'end')
-    #@+node:ekr.20070302094848.2: *4* createTab
+    #@+node:ekr.20070302094848.2: *4* createTab (leoLog)
     def createTab (self,tabName,createText=True,widget=None,wrap='none'):
 
         # g.trace(tabName,wrap)
@@ -1624,8 +1624,8 @@ class leoLog (HighLevelInterface):
             self.frameDict [tabName] = tabName # tabFrame
 
 
-    #@+node:ekr.20070302094848.4: *4* cycleTabFocus
-    def cycleTabFocus (self,event=None,stop_w = None):
+    #@+node:ekr.20070302094848.4: *4* cycleTabFocus (leoLog)
+    def cycleTabFocus (self,event=None):
 
         '''Cycle keyboard focus between the tabs in the log pane.'''
 
@@ -1674,11 +1674,12 @@ class leoLog (HighLevelInterface):
 
         self.c.invalidateFocus()
         self.c.bodyWantsFocus()
-    #@+node:ekr.20070302094848.9: *4* numberOfVisibleTabs
+    #@+node:ekr.20070302094848.9: *4* numberOfVisibleTabs (leoLog)
     def numberOfVisibleTabs (self):
 
         return len([val for val in list(self.frameDict.values()) if val != None])
-    #@+node:ekr.20070302101304: *4* put & putnl
+
+    #@+node:ekr.20070302101304: *4* put & putnl (leoLog)
     # All output to the log stream eventually comes here.
 
     def put (self,s,color=None,tabName='Log'):
@@ -1689,7 +1690,7 @@ class leoLog (HighLevelInterface):
     #@+node:ekr.20070302094848.10: *4* renameTab
     def renameTab (self,oldName,newName):
         pass
-    #@+node:ekr.20070302094848.11: *4* selectTab
+    #@+node:ekr.20070302094848.11: *4* selectTab (leoLog)
     def selectTab (self,tabName,createText=True,wrap='none'):
 
         '''Create the tab if necessary and make it active.'''
@@ -2596,6 +2597,9 @@ class nullLog (leoLog):
         )
 
         return log
+    #@+node:ekr.20111119145033.10186: *3* isLogWidget (nullLog)
+    def isLogWidget(self,w):
+        return False
     #@+node:ekr.20041012083237.2: *3* oops
     def oops(self):
 

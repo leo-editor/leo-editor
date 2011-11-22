@@ -1487,6 +1487,7 @@ class editCommandsClass (baseEditCommandsClass):
             'cycle-focus':                          self.cycleFocus,
             'cycle-all-focus':                      self.cycleAllFocus,
             'cycle-editor-focus':                   c.frame.body.cycleEditorFocus,
+            'cycle-log-focus':                      c.frame.log.cycleTabFocus,
             # 'delete-all-icons':                   self.deleteAllIcons,
             'delete-char':                          self.deleteNextChar,
             'delete-editor':                        c.frame.body.deleteEditor,
@@ -1638,7 +1639,7 @@ class editCommandsClass (baseEditCommandsClass):
         # g.trace()
         pass
     #@+node:ekr.20110916215321.6709: *3* brackets (leoEditCommands)
-    #@+node:ekr.20110916215321.6708: *4* selectToMatchingBracket
+    #@+node:ekr.20110916215321.6708: *4* selectToMatchingBracket (leoEditCommands)
     def selectToMatchingBracket (self,event):
         
         c = self.c ; k = c.k ; w = self.editWidget(event)
@@ -1680,7 +1681,8 @@ class editCommandsClass (baseEditCommandsClass):
         if j not in (-1,i):
             if reverse:
                 i += 1; j += 1
-            w.setSelectionRange(i,j,ins=j)
+            w.setSelectionRange(i,j,insert=j)
+                # 2011/11/21: Bug fix: was ins=j.
             w.see(j)
     #@+node:ekr.20110916215321.8053: *3* c-to-py
     #@+node:ekr.20110916215321.8054: *4* cToPy (leoEditCommands)
@@ -3414,25 +3416,24 @@ class editCommandsClass (baseEditCommandsClass):
         c.widgetWantsFocusNow(pane)
         k.newMinibufferWidget = pane
         k.showStateAndMode()
-    #@+node:ekr.20060613090701: *4* cycleAllFocus
+    #@+node:ekr.20060613090701: *4* cycleAllFocus (editCommandsClass)
     editWidgetCount = 0
-    logWidgetCount = 0
+    ### logWidgetCount = 0
 
     def cycleAllFocus (self,event):
 
         '''Cycle the keyboard focus between Leo's outline,
         all body editors and all tabs in the log pane.'''
 
+        trace = False and not g.unitTesting
         c = self.c ; k = c.k
         w = event and event.widget # Does **not** require a text widget.
 
-        pane = None ; w_name = g.app.gui.widget_name
-        trace = False
-        if trace:
-            g.pr(
-                '---- w',w_name(w),id(w),
-                '#tabs',c.frame.log.numberOfVisibleTabs(),
-                'bodyCtrl',w_name(c.frame.body.bodyCtrl),id(c.frame.body.bodyCtrl))
+        pane = None # The widget that will get the new focus.
+        log = c.frame.log
+        w_name = g.app.gui.widget_name
+        
+        if trace: g.trace('**before',w_name(w),'isLog',log.isLogWidget(w))
 
         # w may not be the present body widget, so test its name, not its id.
         if w_name(w).startswith('body'):
@@ -3443,40 +3444,52 @@ class editCommandsClass (baseEditCommandsClass):
                 if self.editWidgetCount == 1:
                     pane = c.frame.body.bodyCtrl
                 elif self.editWidgetCount > n:
-                    self.editWidgetCount = 0 ; self.logWidgetCount = 1
+                    self.editWidgetCount = 0
+                    ### self.logWidgetCount = 1
                     c.frame.log.selectTab('Log')
                     pane = c.frame.log.logCtrl
                 else:
                     c.frame.body.cycleEditorFocus(event) ; pane = None
             else:
-                self.editWidgetCount = 0 ; self.logWidgetCount = 1
+                self.editWidgetCount = 0
+                ### self.logWidgetCount = 1
                 c.frame.log.selectTab('Log')
                 pane = c.frame.log.logCtrl
-        elif w_name(w).startswith('log'):
-            n = c.frame.log.numberOfVisibleTabs()
-            if n > 1:
-                self.logWidgetCount += 1
-                if self.logWidgetCount == 1:
-                    c.frame.log.selectTab('Log')
-                    pane = c.frame.log.logCtrl
-                elif self.logWidgetCount > n:
-                    self.logWidgetCount = 0
-                    pane = c.frame.tree.canvas
-                    # Use this to skip the tree pane.
-                    #pane = c.frame.body.bodyCtrl
-                else:
-                    c.frame.log.cycleTabFocus()
-                    pane = c.frame.log.logCtrl
-            else:
-                self.logWidgetCount = 0
+        elif log.isLogWidget(w):
+            log.cycleTabFocus()
+            if log.tabName == 'Log':
                 pane = c.frame.tree.canvas
+            else:
+                pane = log.logCtrl
+                if trace: g.trace('**after cycleTabFocus',w_name(pane),pane)
+                return ### Done.
+
+                ### w = log.frameDict.get(log.tabName)
+                ### pane = w 
+            
+            # n = c.frame.log.numberOfVisibleTabs()
+            # if n > 1:
+                # self.logWidgetCount += 1
+                # if self.logWidgetCount == 1:
+                    # c.frame.log.selectTab('Log')
+                    # pane = c.frame.log.logCtrl
+                # elif self.logWidgetCount > n:
+                    # self.logWidgetCount = 0
+                    # pane = c.frame.tree.canvas
+                # else:
+                    # c.frame.log.cycleTabFocus()
+                    # pane = c.frame.log.logCtrl
+            # else:
+                # self.logWidgetCount = 0
+                # pane = c.frame.tree.canvas
                 # Use this to skip the tree pane.
                 # pane = c.frame.body.bodyCtrl
         else:
             pane = c.frame.body.bodyCtrl
-            self.editWidgetCount = 1 ; self.logWidgetCount = 0
-
-        if trace: g.pr('old: %10s new: %10s' % (w_name(w),w_name(pane)))
+            self.editWidgetCount = 1
+            ### self.logWidgetCount = 0
+        
+        if trace: g.trace('**after',w_name(pane),pane)
 
         if pane:
             k.newMinibufferWidget = pane

@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.55" body_secondary_ratio="0.59">
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.59">
 	<global_window_position top="44" left="319" height="977" width="1446"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -130,7 +130,53 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e372e31362e3671017d71025808000000616e6e6f7461746571037d7104735805000000302e382e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e372e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31302e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20111115080347.3872"><vh>Tests of the high-level interface</vh>
+<v t="ekr.20111103213154.3822"><vh>Recent unit tests</vh>
+<v t="ekr.20111115071700.3870"><vh>mini-test: print-settings</vh></v>
+<v t="ekr.20111108170253.3968"><vh>mini-test: unicode stuff</vh></v>
+<v t="ekr.20111104171708.3843"><vh>@test CPrettyPrinter</vh>
+<v t="ekr.20111104171708.3844"><vh>c tokenize test</vh></v>
+</v>
+<v t="ekr.20111104171708.3847"><vh>@test cToPy</vh>
+<v t="ekr.20111104171708.3848"><vh>c tokenize test</vh></v>
+</v>
+<v t="ekr.20111105221757.3833"><vh>@test findAllUnitTestNodes</vh></v>
+<v t="ekr.20111105124216.3840"><vh>@test g.app.config.set with c==None</vh></v>
+<v t="ekr.20111107065245.3833"><vh>@test minimize-all</vh></v>
+<v t="ekr.20111107065530.3833"><vh>@test resize-to-screen</vh></v>
+<v t="ekr.20111103213154.3823"><vh>@test writeToDocutils: pdf</vh></v>
+<v t="ekr.20111121171738.3932"><vh>Import tests</vh>
+<v t="ekr.20111105221757.3831"><vh>@test createImportParent</vh></v>
+<v t="ekr.20111103213154.3824"><vh>@test g.importFromPath</vh></v>
+<v t="ekr.20111104112332.3953"><vh>@test g.os_path_finalize_join with thumb drive</vh></v>
+<v t="ekr.20111104112332.3954"><vh>@test htmlScanner.adjust_class_ref</vh></v>
+<v t="ekr.20111104112332.3955"><vh>@test ic.skip...Token (htmlScanner)</vh></v>
+<v t="ekr.20111104112332.3956"><vh>@test ic.skip...Token (pythonScanner)</vh></v>
+<v t="ekr.20111104114406.3833"><vh>@test ic.tokenize (htmlScanner)</vh>
+<v t="ekr.20111104114406.3834"><vh>&lt;&lt; define expected &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20111103213154.3825"><vh>@test imports needed for unit tests</vh></v>
+<v t="ekr.20111105065243.3837"><vh>@test removeBlankLinesTokens (rst)</vh></v>
+</v>
+<v t="ekr.20111121142012.4141"><vh>Tests of the new log code</vh>
+<v t="ekr.20111121142012.4030"><vh>@test relationships between log-related objects</vh></v>
+<v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh>
+<v t="ekr.20111121172139.5382"><vh>first-child</vh></v>
+<v t="ekr.20111121172139.5383"><vh>newHeadline</vh></v>
+</v>
+<v t="ekr.20111120124051.3994"><vh>@test cycle-all-focus</vh></v>
+<v t="ekr.20111121164644.3928"><vh>@test cycle-tab-focus</vh></v>
+<v t="ekr.20111121081052.3908"><vh>@test log.numberOfVisibleTabs</vh></v>
+<v t="ekr.20111121140833.3917"><vh>@test put &amp; putNl (leoQtLog)</vh></v>
+<v t="ekr.20111121113227.4035"><vh>mini-test: add-editor</vh></v>
+<v t="ekr.20111121081052.3909"><vh>mini-test: g.es leave focus unchanged</vh></v>
+<v t="ekr.20111121090700.3914"><vh>mini-test: print-bindings puts results in Bindings tab</vh></v>
+</v>
+<v t="ekr.20111121151031.3925"><vh>Fixed crashers in selectToMatchingBracket and updateEditor</vh>
+<v t="ekr.20111121140833.3916"><vh>@test selectToMatchingBracket (leoEditCommands)</vh></v>
+<v t="ekr.20111121152019.3929"><vh>@test updateEditors (leoQtBody)</vh></v>
+</v>
+</v>
+<v t="ekr.20111115080347.3872"><vh>To do: tests of the high-level interface</vh>
 <v t="ekr.20100131171342.5478"><vh>@@@test that log and body implements high-level interface</vh></v>
 <v t="ekr.20100131171342.5473"><vh>Tk gui tests</vh>
 <v t="ekr.20100131171342.5474"><vh>@test leoBody is subset of leoTkBody</vh></v>
@@ -860,10 +906,1094 @@ table
 nodeA
 nodeB
 </t>
+<t tx="ekr.20111103213154.3822"></t>
+<t tx="ekr.20111103213154.3823">@first # -*- coding: utf-8 -*-
+@encoding utf-8
+
+'''Test the interface between docutils and leo_pdf.py.
+No file is written.
+'''
+
+# g.cls()
+
+if g.isPython3:
+    
+    print('\n"%s": not tested' % (p.h))
+
+else:
+
+    path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
+    
+    module = g.importFromPath(name = 'leo_pdf.py',
+        path=path,
+        pluginName = 'leo_pdf',
+        verbose = False)
+
+    assert module
+    s = '''This is a test.'''
+    result = c.rstCommands.writeToDocutils(s,'.pdf')
+    # print(result)
+    assert result,result
+    
+</t>
+<t tx="ekr.20111103213154.3824">'''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
+
+path = g.os_path_finalize_join(g.app.loadDir,'does_not_exist')
+assert not g.os_path_exists(path)
+module = g.importFromPath ('xyz',path,pluginName='xyz',verbose=False)
+assert not module,repr(module)
+</t>
+<t tx="ekr.20111103213154.3825">import docutils
+</t>
+<t tx="ekr.20111104112332.3953">import os
+
+path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
+path2 = r'\N:Home\PTC_Creo\Creo.wmv'
+path3 = r'N:\Home\PTC_Creo\Creo.wmv'
+
+path12 = os.path.join(path1,path2)
+path13 = os.path.join(path1,path3)
+
+if 0:
+
+    print(path12,g.os.path.abspath(path12))
+    print(path13,g.os.path.abspath(path13))
+</t>
+<t tx="ekr.20111104112332.3954">import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+s = '''
+&lt;aTag&gt;  @others
+&lt;/aTag&gt;
+'''
+
+# Avoid probems with representation of @others in scripts.
+expected = '\n&lt;aTag&gt;\n@others\n&lt;/aTag&gt;\n'
+
+result = hs.adjust_class_ref(s)
+assert result == expected,'expected...\n%s\ngot...\n%s' % (
+    repr(expected),repr(result))
+</t>
+<t tx="ekr.20111104112332.3955">import leo.core.leoImport as leoImport
+ic = c.importCommands
+scanner = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+tails = (
+    '&lt;whatever&gt;',
+    '+ abc', # don't concatenate with id or whitespace.
+    '&lt;!-- tail comment --&gt;',
+    '"tail string"',
+)
+    
+table = (
+    (scanner.skipCommentToken,  '&lt;!-- Test --&gt;'),
+    (scanner.skipIdToken,       'a_b-c.d:e'), # Valid in xml ids:  ".-:"
+    # (scanner.skipNewlineToken,'\n'),
+        # xmlScanner.skipNewlineToken throws exception (on purpose).
+    (scanner.skipOtherToken,    '+'),
+    (scanner.skipOtherToken,    '#'),
+    (scanner.skipStringToken,   '"A string"'),
+    (scanner.skipWsToken,       ' '),
+)
+
+# Special test for whitespace: Converts all runs of whitespace to a single blank.
+if 0: # No longer does this.
+    s = ' \n\t\t \n'
+    i,result = scanner.skipWsToken(s+tails[0],0)
+    assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+    expected = ' '
+    assert result == expected,'expected...\n%s\ngot...\n%s' % (
+        repr(expected),repr(result))
+    
+for f,s in table:
+    for tail in tails:
+        i,result = f(s+tail,0)
+        expected = s
+        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+        assert result == expected,'expected...\n%s\ngot...\n%s' % (
+            repr(expected),repr(result))
+</t>
+<t tx="ekr.20111104112332.3956">import leo.core.leoImport as leoImport
+ic = c.importCommands
+scanner = leoImport.pythonScanner(importCommands=ic,atAuto=True)
+    
+tails = (
+    '+ abc', # don't concatenate with id or whitespace.
+    '# tail comment',
+    '"tail string"',
+    "'tail string'",
+)
+
+table = (
+    (scanner.skipCommentToken,  '# Test'),
+    (scanner.skipIdToken,       'ab_c'),
+    (scanner.skipNewlineToken,  '\n'),
+    (scanner.skipOtherToken,    '+'),
+    (scanner.skipOtherToken,    '#'),
+    (scanner.skipStringToken,   '"A string"'),
+    (scanner.skipWsToken,       ' '),
+    (scanner.skipWsToken,       '\t '),
+)
+    
+for f,s in table:
+    for tail in tails:
+        if f.__name__ == 'skipCommentToken':
+            i,result = f(s,0)
+        else:
+            i,result = f(s+tail,0)
+        expected = s
+        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+        assert result == expected,'expected...\n%s\ngot...\n%s' % (
+            repr(expected),repr(result))
+</t>
+<t tx="ekr.20111104114406.3833">import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+s = '''
+&lt;!-- a comment --&gt;
+&lt;html "string"&gt;
+Test.
+&lt;/html&gt;
+'''
+
+&lt;&lt; define expected &gt;&gt;
+
+result = hs.tokenize(s)
+
+if 1:
+    assert result == expected,'expected...\n%s\ngot...\n%s' % (
+        repr(expected),repr(result))
+else:
+    print(result)
+    
+@
+
+
+AssertionError: expected...
+[('ws', ' ', 0), ('comment', '&lt;!-- a comment --&gt;', 1), ('ws', ' ', 1), ('other', '&lt;', 2), ('id', 'html', 2), ('ws', ' ',
+ 2), ('string', '"string"', 2), ('other', '&gt;', 2), ('ws', ' ', 2), ('id', 'Test.', 3), ('ws', ' ', 3), ('other', '&lt;', 4)
+, ('other', '/', 4), ('id', 'html', 4), ('other', '&gt;', 4), ('ws', ' ', 4)]
+got...
+[('nl', '\n', 0), ('comment', '&lt;!-- a comment --&gt;', 1), ('nl', '\n', 1), ('other', '&lt;', 2), ('id', 'html', 2), ('ws', '
+', 2), ('string', '"string"', 2), ('other', '&gt;', 2), ('nl', '\n', 2), ('id', 'Test.', 3), ('nl', '\n', 3), ('other', '&lt;'
+, 4), ('other', '/', 4), ('id', 'html', 4), ('other', '&gt;', 4), ('nl', '\n', 4)]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.018s
+
+FAILED (failures=1)
+
+</t>
+<t tx="ekr.20111104114406.3834"># expected = [
+    # ('ws', ' ', 0),
+    # ('comment', '&lt;!-- a comment --&gt;', 1),
+    # ('ws', ' ', 1),
+    # ('other', '&lt;', 2), ('id', 'html', 2),
+    # ('ws', ' ',2), ('string', '"string"', 2),
+    # ('other', '&gt;', 2),
+    # ('ws', ' ', 2),
+    # ('id', 'Test.', 3),
+    # ('ws', ' ', 3),
+    # ('other', '&lt;', 4), ('other', '/', 4), ('id', 'html', 4), ('other', '&gt;', 4),
+    # ('ws', ' ', 4),
+# ]
+
+expected = [
+    ('nl', '\n', 0),
+    ('comment', '&lt;!-- a comment --&gt;', 1),
+    ('nl', '\n', 1),
+    ('other', '&lt;', 2),
+    ('id', 'html', 2),
+    ('ws', ' ', 2),
+    ('string', '"string"', 2),
+    ('other', '&gt;', 2),
+    ('nl', '\n', 2),
+    ('id', 'Test.', 3),
+    ('nl', '\n', 3),
+    ('other', '&lt;', 4),
+    ('other', '/', 4),
+    ('id', 'html', 4),
+    ('other', '&gt;', 4),
+    ('nl', '\n', 4),
+]
+</t>
+<t tx="ekr.20111104171708.3843">cpp = c.CPrettyPrinter(c)
+fn = 'c tokenize test'
+p2 = g.findNodeInTree(c,p,fn)
+assert p2,'not found: %s' % (fn)
+
+if 1: # test of indent.
+    # import os ; os.system('cls')
+    cpp.indent(p2)
+
+if 0: # test of tokenize.
+    aList = cpp.tokenize(p2.b)
+    assert(p2.b == ''.join(aList))
+    if 0:
+        import os ; os.system('cls')
+        print('*' * 40)
+        # print(''.join(aList))
+        for z in aList:
+            print(repr(z))
+</t>
+<t tx="ekr.20111104171708.3844">@language c
+
+static exit_values_ty indent_main_loop(void)
+{
+    codes_ty         hd_type         = code_eof;
+    char           * t_ptr           = NULL;
+    codes_ty         type_code       = start_token;
+    exit_values_ty   file_exit_value = total_success;
+    int              dec_ind         = 0; /* current indentation for declarations */
+
+    BOOLEAN          scase           = false; /* true when we've just see a "case";
+                                               * determines what to do with the
+                                               * following colon */
+    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
+                                               * a newline was passed over */
+    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
+                                               * while(...), etc. */
+    BOOLEAN          force_nl        = false;
+
+    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
+     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
+     * set to 2 in the middle of the main token reading loop and is decremented
+     * at the beginning of the loop, so it will reach zero when the second token
+     * after the ')' is read.
+     */
+
+    BOOLEAN          last_token_ends_sp = false;
+
+    BOOLEAN          last_else = false; /* true if last keyword was an else */
+
+    for (;;)
+    {
+        /* this is the main loop.  it will go until
+         * we reach eof */
+
+        BOOLEAN is_procname_definition;
+        bb_code_ty can_break;
+
+        if (type_code != newline)
+        {
+            can_break = parser_state_tos-&gt;can_break;
+        }
+
+        parser_state_tos-&gt;last_saw_nl = false;
+        parser_state_tos-&gt;can_break = bb_none;
+
+        type_code = lexi ();    /* lexi reads one token.  "token" points to
+                                 * the actual characters. lexi returns a code
+                                 * indicating the type of token */
+
+        /* If the last time around we output an identifier or
+         * a paren, then consider breaking the line here if it's
+         * too long.
+         *
+         * A similar check is performed at the end of the loop, after
+         * we've put the token on the line. */
+
+        if ((settings.max_col &gt; 0) &amp;&amp;
+            (buf_break != NULL) &amp;&amp;
+            ( ( (parser_state_tos-&gt;last_token == ident) &amp;&amp;
+                (type_code != comma) &amp;&amp;
+                (type_code != semicolon) &amp;&amp;
+                (type_code != newline) &amp;&amp;
+                (type_code != form_feed) &amp;&amp;
+                (type_code != rparen) &amp;&amp;
+                (type_code != struct_delim)) ||
+              ( (parser_state_tos-&gt;last_token == rparen) &amp;&amp;
+                (type_code != comma) &amp;&amp;
+                (type_code != rparen) ) ) &amp;&amp;
+            (output_line_length () &gt; settings.max_col))
+        {
+            break_line = 1;
+        }
+
+        if (last_token_ends_sp &gt; 0)
+        {
+            last_token_ends_sp--;
+        }
+
+        is_procname_definition =
+                (((parser_state_tos-&gt;procname[0] != '\0') &amp;&amp;
+                  parser_state_tos-&gt;in_parameter_declaration) ||
+                 (parser_state_tos-&gt;classname[0] != '\0'));
+
+        /* The following code moves everything following an if (), while (),
+         * else, etc. up to the start of the following stmt to a buffer. This
+         * allows proper handling of both kinds of brace placement.
+         */
+
+        flushed_nl = false;
+
+        if (!search_brace(&amp;type_code, &amp;force_nl, &amp;flushed_nl, &amp;last_else, &amp;is_procname_definition))
+        {
+            /* Hit EOF unexpectedly in comment. */
+            return indent_punt;
+        }
+        
+        if (type_code == code_eof)
+        {
+            /* we got eof */
+            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
+            {
+                dump_line(true, &amp;paren_target);
+            }
+
+            if (parser_state_tos-&gt;tos &gt; 1)      /* check for balanced braces */
+            {
+                ERROR (_("Unexpected end of file"), 0, 0);
+                file_exit_value = indent_error;
+            }
+
+            if (settings.verbose)
+            {
+                printf (_("There were %d non-blank output lines and %d comments\n"),
+                        (int) out_lines, (int) com_lines);
+                if (com_lines &gt; 0 &amp;&amp; code_lines &gt; 0)
+                {
+                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
+                            (1.0 * com_lines) / code_lines);
+                }
+            }
+            flush_output ();
+
+            return file_exit_value;                                              /* RETURN */
+        }
+
+        if ((type_code != comment) &amp;&amp;
+            (type_code != cplus_comment) &amp;&amp;
+            (type_code != newline) &amp;&amp;
+            (type_code != preesc) &amp;&amp;
+            (type_code != form_feed))
+        {
+            if (force_nl &amp;&amp;
+                (type_code != semicolon) &amp;&amp;
+                ( (type_code != lbrace) ||
+                  (!parser_state_tos-&gt;in_decl &amp;&amp; !settings.btype_2) ||
+                  (parser_state_tos-&gt;in_decl &amp;&amp; !settings.braces_on_struct_decl_line) ||
+                  (parser_state_tos-&gt;last_token == rbrace)))
+            {
+                if (settings.verbose &amp;&amp; !flushed_nl)
+                {
+                    WARNING (_("Line broken 2"), 0, 0);
+                }
+
+                flushed_nl = false;
+                dump_line(true, &amp;paren_target);
+                parser_state_tos-&gt;want_blank = false;
+                force_nl = false;
+            }
+
+            parser_state_tos-&gt;in_stmt = true;   /* turn on flag which causes
+                                                 * an extra level of
+                                                 * indentation. this is
+                                                 * turned off by a ; or } */
+            if (s_com != e_com)
+            {
+                /* the code has an embedded comment in the
+                 * line. Move it from the com buffer to the
+                 * code buffer.
+                 *
+                 * Do not add a space before the comment if it is the first
+                 * thing on the line.
+                 */
+
+                if (e_code != s_code)
+                {
+                    set_buf_break (bb_embedded_comment_start, paren_target);
+                    *e_code++ = ' ';
+                    embedded_comment_on_line = 2;
+                }
+                else
+                {
+                    embedded_comment_on_line = 1;
+                }
+
+                for (t_ptr = s_com; *t_ptr; ++t_ptr)
+                {
+                    check_code_size();
+                    *e_code++ = *t_ptr;
+                }
+
+                set_buf_break (bb_embedded_comment_end, paren_target);
+                *e_code++ = ' ';
+                *e_code = '\0'; /* null terminate code sect */
+                parser_state_tos-&gt;want_blank = false;
+                e_com = s_com;
+            }
+        }
+        else if ((type_code != comment) &amp;&amp;
+                 (type_code != cplus_comment) &amp;&amp;
+                 !(settings.break_function_decl_args &amp;&amp;
+                   (parser_state_tos-&gt;last_token == comma)) &amp;&amp;
+                 !( (parser_state_tos-&gt;last_token == comma) &amp;&amp;
+                    !settings.leave_comma))
+        {
+            /* preserve force_nl thru a comment but
+             * cancel forced newline after newline, form feed, etc.
+             * however, don't cancel if last thing seen was comma-newline
+             * and -bc flag is on. */
+
+            force_nl = false;
+        }
+
+        /* Main switch on type of token scanned */
+
+        check_code_size();
+        
+        /* now, decide what to do with the token */
+
+        handle_the_token(type_code, &amp;scase, &amp;force_nl, &amp;sp_sw, &amp;flushed_nl,
+                         &amp;hd_type, &amp;dec_ind, &amp;last_token_ends_sp, &amp;file_exit_value,
+                         can_break, &amp;last_else, is_procname_definition);
+        
+        *e_code = '\0';         /* make sure code section is null terminated */
+
+        if ((type_code != comment) &amp;&amp;
+            (type_code != cplus_comment) &amp;&amp;
+            (type_code != newline) &amp;&amp;
+            (type_code != preesc) &amp;&amp;
+            (type_code != form_feed))
+        {
+            parser_state_tos-&gt;last_token = type_code;
+        }
+
+        /* Now that we've put the token on the line (in most cases),
+         * consider breaking the line because it's too long.
+         *
+         * Don't consider the cases of `unary_op', newlines,
+         * declaration types (int, etc.), if, while, for,
+         * identifiers (handled at the beginning of the loop),
+         * periods, or preprocessor commands. */
+
+        if ((settings.max_col &gt; 0) &amp;&amp; (buf_break != NULL))
+        {
+            if ( ( (type_code == binary_op) ||
+                   (type_code == postop) ||
+                   (type_code == question) ||
+                   ((type_code == colon) &amp;&amp; (scase || (squest &lt;= 0))) ||
+                   (type_code == semicolon) ||
+                   (type_code == sp_nparen) ||
+                   (type_code == sp_else) ||
+                   ((type_code == ident) &amp;&amp; (*token == '\"')) ||
+                   (type_code == struct_delim) ||
+                   (type_code == comma)) &amp;&amp;
+                 (output_line_length () &gt; settings.max_col))
+            {
+                break_line = 1;
+            }
+        }
+    }                           /* end of main infinite loop */
+}
+</t>
+<t tx="ekr.20111104171708.3847">cpp = c.CPrettyPrinter(c)
+c2p = c.editCommands.C_to_python(c)
+fn = 'c tokenize test'
+p2 = g.findNodeInTree(c,p,fn)
+assert p2,'not found: %s' % (fn)
+aList = cpp.tokenize(p2.b)
+c2p.convertCodeList(aList)
+s = ''.join(aList)
+</t>
+<t tx="ekr.20111104171708.3848">@language c
+
+static exit_values_ty indent_main_loop(void)
+{
+    codes_ty         hd_type         = code_eof;
+    char           * t_ptr           = NULL;
+    codes_ty         type_code       = start_token;
+    exit_values_ty   file_exit_value = total_success;
+    int              dec_ind         = 0; /* current indentation for declarations */
+
+    BOOLEAN          scase           = false; /* true when we've just see a "case";
+                                               * determines what to do with the
+                                               * following colon */
+    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
+                                               * a newline was passed over */
+    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
+                                               * while(...), etc. */
+    BOOLEAN          force_nl        = false;
+
+    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
+     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
+     * set to 2 in the middle of the main token reading loop and is decremented
+     * at the beginning of the loop, so it will reach zero when the second token
+     * after the ')' is read.
+     */
+
+    BOOLEAN          last_token_ends_sp = false;
+
+    BOOLEAN          last_else = false; /* true if last keyword was an else */
+
+    for (;;)
+    {
+        /* this is the main loop.  it will go until
+         * we reach eof */
+
+        BOOLEAN is_procname_definition;
+        bb_code_ty can_break;
+
+        if (type_code != newline)
+        {
+            can_break = parser_state_tos-&gt;can_break;
+        }
+
+        parser_state_tos-&gt;last_saw_nl = false;
+        parser_state_tos-&gt;can_break = bb_none;
+
+        type_code = lexi ();    /* lexi reads one token.  "token" points to
+                                 * the actual characters. lexi returns a code
+                                 * indicating the type of token */
+
+        /* If the last time around we output an identifier or
+         * a paren, then consider breaking the line here if it's
+         * too long.
+         *
+         * A similar check is performed at the end of the loop, after
+         * we've put the token on the line. */
+
+        if ((settings.max_col &gt; 0) &amp;&amp;
+            (buf_break != NULL) &amp;&amp;
+            ( ( (parser_state_tos-&gt;last_token == ident) &amp;&amp;
+                (type_code != comma) &amp;&amp;
+                (type_code != semicolon) &amp;&amp;
+                (type_code != newline) &amp;&amp;
+                (type_code != form_feed) &amp;&amp;
+                (type_code != rparen) &amp;&amp;
+                (type_code != struct_delim)) ||
+              ( (parser_state_tos-&gt;last_token == rparen) &amp;&amp;
+                (type_code != comma) &amp;&amp;
+                (type_code != rparen) ) ) &amp;&amp;
+            (output_line_length () &gt; settings.max_col))
+        {
+            break_line = 1;
+        }
+
+        if (last_token_ends_sp &gt; 0)
+        {
+            last_token_ends_sp--;
+        }
+
+        is_procname_definition =
+                (((parser_state_tos-&gt;procname[0] != '\0') &amp;&amp;
+                  parser_state_tos-&gt;in_parameter_declaration) ||
+                 (parser_state_tos-&gt;classname[0] != '\0'));
+
+        /* The following code moves everything following an if (), while (),
+         * else, etc. up to the start of the following stmt to a buffer. This
+         * allows proper handling of both kinds of brace placement.
+         */
+
+        flushed_nl = false;
+
+        if (!search_brace(&amp;type_code, &amp;force_nl, &amp;flushed_nl, &amp;last_else, &amp;is_procname_definition))
+        {
+            /* Hit EOF unexpectedly in comment. */
+            return indent_punt;
+        }
+        
+        if (type_code == code_eof)
+        {
+            /* we got eof */
+            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
+            {
+                dump_line(true, &amp;paren_target);
+            }
+
+            if (parser_state_tos-&gt;tos &gt; 1)      /* check for balanced braces */
+            {
+                ERROR (_("Unexpected end of file"), 0, 0);
+                file_exit_value = indent_error;
+            }
+
+            if (settings.verbose)
+            {
+                printf (_("There were %d non-blank output lines and %d comments\n"),
+                        (int) out_lines, (int) com_lines);
+                if (com_lines &gt; 0 &amp;&amp; code_lines &gt; 0)
+                {
+                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
+                            (1.0 * com_lines) / code_lines);
+                }
+            }
+            flush_output ();
+
+            return file_exit_value;                                              /* RETURN */
+        }
+
+        if ((type_code != comment) &amp;&amp;
+            (type_code != cplus_comment) &amp;&amp;
+            (type_code != newline) &amp;&amp;
+            (type_code != preesc) &amp;&amp;
+            (type_code != form_feed))
+        {
+            if (force_nl &amp;&amp;
+                (type_code != semicolon) &amp;&amp;
+                ( (type_code != lbrace) ||
+                  (!parser_state_tos-&gt;in_decl &amp;&amp; !settings.btype_2) ||
+                  (parser_state_tos-&gt;in_decl &amp;&amp; !settings.braces_on_struct_decl_line) ||
+                  (parser_state_tos-&gt;last_token == rbrace)))
+            {
+                if (settings.verbose &amp;&amp; !flushed_nl)
+                {
+                    WARNING (_("Line broken 2"), 0, 0);
+                }
+
+                flushed_nl = false;
+                dump_line(true, &amp;paren_target);
+                parser_state_tos-&gt;want_blank = false;
+                force_nl = false;
+            }
+
+            parser_state_tos-&gt;in_stmt = true;   /* turn on flag which causes
+                                                 * an extra level of
+                                                 * indentation. this is
+                                                 * turned off by a ; or } */
+            if (s_com != e_com)
+            {
+                /* the code has an embedded comment in the
+                 * line. Move it from the com buffer to the
+                 * code buffer.
+                 *
+                 * Do not add a space before the comment if it is the first
+                 * thing on the line.
+                 */
+
+                if (e_code != s_code)
+                {
+                    set_buf_break (bb_embedded_comment_start, paren_target);
+                    *e_code++ = ' ';
+                    embedded_comment_on_line = 2;
+                }
+                else
+                {
+                    embedded_comment_on_line = 1;
+                }
+
+                for (t_ptr = s_com; *t_ptr; ++t_ptr)
+                {
+                    check_code_size();
+                    *e_code++ = *t_ptr;
+                }
+
+                set_buf_break (bb_embedded_comment_end, paren_target);
+                *e_code++ = ' ';
+                *e_code = '\0'; /* null terminate code sect */
+                parser_state_tos-&gt;want_blank = false;
+                e_com = s_com;
+            }
+        }
+        else if ((type_code != comment) &amp;&amp;
+                 (type_code != cplus_comment) &amp;&amp;
+                 !(settings.break_function_decl_args &amp;&amp;
+                   (parser_state_tos-&gt;last_token == comma)) &amp;&amp;
+                 !( (parser_state_tos-&gt;last_token == comma) &amp;&amp;
+                    !settings.leave_comma))
+        {
+            /* preserve force_nl thru a comment but
+             * cancel forced newline after newline, form feed, etc.
+             * however, don't cancel if last thing seen was comma-newline
+             * and -bc flag is on. */
+
+            force_nl = false;
+        }
+
+        /* Main switch on type of token scanned */
+
+        check_code_size();
+        
+        /* now, decide what to do with the token */
+
+        handle_the_token(type_code, &amp;scase, &amp;force_nl, &amp;sp_sw, &amp;flushed_nl,
+                         &amp;hd_type, &amp;dec_ind, &amp;last_token_ends_sp, &amp;file_exit_value,
+                         can_break, &amp;last_else, is_procname_definition);
+        
+        *e_code = '\0';         /* make sure code section is null terminated */
+
+        if ((type_code != comment) &amp;&amp;
+            (type_code != cplus_comment) &amp;&amp;
+            (type_code != newline) &amp;&amp;
+            (type_code != preesc) &amp;&amp;
+            (type_code != form_feed))
+        {
+            parser_state_tos-&gt;last_token = type_code;
+        }
+
+        /* Now that we've put the token on the line (in most cases),
+         * consider breaking the line because it's too long.
+         *
+         * Don't consider the cases of `unary_op', newlines,
+         * declaration types (int, etc.), if, while, for,
+         * identifiers (handled at the beginning of the loop),
+         * periods, or preprocessor commands. */
+
+        if ((settings.max_col &gt; 0) &amp;&amp; (buf_break != NULL))
+        {
+            if ( ( (type_code == binary_op) ||
+                   (type_code == postop) ||
+                   (type_code == question) ||
+                   ((type_code == colon) &amp;&amp; (scase || (squest &lt;= 0))) ||
+                   (type_code == semicolon) ||
+                   (type_code == sp_nparen) ||
+                   (type_code == sp_else) ||
+                   ((type_code == ident) &amp;&amp; (*token == '\"')) ||
+                   (type_code == struct_delim) ||
+                   (type_code == comma)) &amp;&amp;
+                 (output_line_length () &gt; settings.max_col))
+            {
+                break_line = 1;
+            }
+        }
+    }                           /* end of main infinite loop */
+}
+</t>
+<t tx="ekr.20111105065243.3837"># Important: at present only the rstScanner sets ignoreBlankLines == True
+import leo.core.leoImport as leoImport
+sc = leoImport.rstScanner(c.importCommands,atAuto=False)
+
+assert sc.ignoreBlankLines,'fail0'
+
+def strip(tokens):
+    '''Remove the line number item from all tokens.'''
+    return [(kind,val) for kind,val,n in tokens]
+    
+table = (
+    ('a\n\nb',          'a\nb'),
+    ('a\n \t\nb',       'a\nb'),
+    ('a\n \n\t\n\n\nb', 'a\nb'),
+    ('a\nb\n',          'a\nb\n'),
+)
+
+for s,expected in table:
+
+    tokens = sc.tokenize(s)
+    s2 = ''.join([val for (kind,val,n) in tokens])
+    assert s == s2,'fail1\nexpected:\n%s\ngot:\n%s' % (
+        repr(s),repr(s2))
+    
+    # A: Remove tokens for blank lines from tokens.
+    tokens2 = sc.removeBlankLinesTokens(tokens)
+    
+    # B: Remove blank lines first, then tokenize.
+    lines = g.splitLines(s)
+    lines2 = [z for z in lines if z.strip()]
+    s2 = ''.join(lines2)
+    tokens3 = sc.tokenize(s2)
+    
+    if 0:
+        for kind,val,n in tokens3:
+            print('%3s %7s %s' % (n,kind,repr(val)))
+    
+    # A and B should give the same result: just like abstract algebra diagrams.
+    if 0:
+        if strip(tokens2) != strip(tokens3):
+            sc.compareTokens(tokens2,tokens3,trace=True)
+    assert strip(tokens2) == strip(tokens3),'fail2\nexpected:\n%s\ngot:\n%s' % (
+        strip(tokens3),strip(tokens2))
+    
+    # C: Removing blank tokens from already-compressed tokens should have no effect.
+    tokens4 = sc.removeBlankLinesTokens(tokens3)
+    assert tokens4 == tokens3,'fail3'
+</t>
+<t tx="ekr.20111105124216.3840">setting = 'import_html_tags'
+html_tags = ('body','head','html','table','xxx')
+
+# When run externally, c.config.getData will return None.
+existing_tags = c.config.getData(setting)
+if not existing_tags:
+    g.app.config.set(None,setting,'data',html_tags)
+    tags = c.config.getData(setting)
+    assert c.config.getData(setting) == html_tags
+</t>
+<t tx="ekr.20111105221757.3831">files = ('x.h','x.cpp')
+
+while p.hasChildren():
+    p.firstChild().doDelete()
+
+try:
+    current = c.importCommands.createImportParent(c.p,files)
+    assert current
+    assert current.h == 'x'
+    assert p.firstChild() == current
+finally:
+    while p.hasChildren():
+        p.firstChild().doDelete()
+    c.redraw()
+</t>
+<t tx="ekr.20111105221757.3833">import leo.core.leoTest as leoTest
+
+p1 = p.copy()
+
+def found(p,result):
+    for p2 in result:
+        if p == p2: return True
+    else: return False
+
+table = (('all',None,True,False),('marked',None,False,True))
+
+try:
+    p.setMarked()
+    for kind,limit,all,marked in table:
+        result = leoTest.findAllUnitTestNodes(c,p,limit,all,marked,lookForMark=False,lookForNodes=True)
+        assert found(p,result)
+    assert p == p1
+finally:
+    p1.clearMarked()
+</t>
+<t tx="ekr.20111107065245.3833"># The actual code contains the unit test.
+# This test will have effect only when run locally.
+
+if not g.app.isExternalUnitTest:
+    d = g.app.unitTestDict
+    tag = 'minimize-all'
+    assert not d.get(tag)
+    c.frame.minimizeAll()
+    assert d.get(tag) is True
+</t>
+<t tx="ekr.20111107065530.3833"># The actual code contains the unit test.
+# This test will have effect only when run locally.
+
+if not g.app.isExternalUnitTest:
+
+    d = g.app.unitTestDict
+    tag = 'resize-to-screen'
+    assert not d.get(tag)
+    c.frame.resizeToScreen()
+    assert d.get(tag) is True
+</t>
+<t tx="ekr.20111108170253.3968">@first # -*- coding: utf-8 -*-
+
+table = (
+    'test',
+    'Ä 궯 奠',
+    'Ä 궯 奠 after', # fails with cp6501: after is duplicated.
+)
+
+print('*'*20)
+print('isPython3: %s' % g.isPython3)
+
+for s in table:
+    if g.isPython3:
+        s = s.encode('ascii','replace') # create bytes.
+    g.es(repr(s))
+    g.es(s)
+    g.pr ('g.pr(s)       : %s' % s)
+    g.pr ('g.pr(repr(s)) : %s' % repr(s))
+    print('print(s)      : %s' % s)
+    print('print(repr(s)): %s' % s)
+</t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679">run-selected-unit-tests-externally = Alt-4 # Same as the new standard.
 run-selected-unit-tests-locally = Alt-5
 </t>
+<t tx="ekr.20111115071700.3870">c.k.simulateCommand('print-settings')
+</t>
 <t tx="ekr.20111115080347.3872"></t>
+<t tx="ekr.20111120124051.3992">import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
+import leo.plugins.qtGui as leoQtGui
+
+if g.app.isExternalUnitTest:
+    pass
+else:
+    def setup(p):
+        delete_children(p)
+        p2 = p.insertAsLastChild()
+        c.selectPosition(p2)
+        p2.h = 'first-child'
+    
+    def delete_children(p):
+        while p.hasChildren():
+            p.firstChild().doDelete()
+    
+    app = g.app.gui.qtApp
+    assert issubclass(app.__class__,QtGui.QApplication)
+    
+    w = c.frame.body.bodyCtrl.widget
+    assert issubclass(w.__class__,QtGui.QTextEdit)
+    w_name = w.__class__.__name__
+    assert w_name == 'LeoQTextBrowser',w_name
+    
+    p1 = p.copy()
+    
+    filter_obj = leoQtGui.leoQtEventFilter(c,w=w)
+    g.app.unitTestDict[p.h] = filter_obj # preserve a pointer to the filter.
+    
+    try:
+        ev = QtCore.QEvent
+        table = (
+            ev.KeyPress,
+            # ev.KeyRelease, # Ignored except in QLineEdit's.
+            # ev.ShortcutOverride, # Ignored everywhere.
+        )
+        for theType in table:
+            # Create the event.
+            setup(p1)
+            e = QtGui.QKeyEvent(theType,ord('i'),QtCore.Qt.ControlModifier)
+            # Pass it to eventFilter.
+            filter_obj.eventFilter(w,e)
+            # Check the results.
+            c.redraw()
+            n = p1.numberOfChildren()
+            assert n==2,'%s children' % (n)
+            #delete_children(p1)
+    
+    finally:
+        # delete_children(p1)
+        c.redraw()
+</t>
+<t tx="ekr.20111120124051.3994">'''Test that cycle-all-focus cycles through all tabs.'''
+
+# List the tabs in order.
+# The test will fail if this doesn't match the actual tabs.
+tabs = ('Log','Find','Links','Graph','Nav','Task','Log')
+
+if g.app.isExternalUnitTest:
+    # print('external test')
+    pass
+else:
+    log = c.frame.log
+    c.bodyWantsFocusNow()
+    last_widget = c.frame.body
+    
+    for tab in tabs:
+        # A small hack: fudge up the widget to pass to the command.
+        event = g.bunch(widget=last_widget)
+        c.editCommands.cycleAllFocus(event=event)
+        assert log.tabName == tab,'expected %s, got %s' % (
+            tab,log.tabName)
+        last_widget = log.contentsDict.get(tab)
+        # print('pass',tab,last_widget)
+</t>
+<t tx="ekr.20111121081052.3908">if g.app.isExternalUnitTest:
+    print('external test')
+    pass
+else:
+    log = c.frame.log
+    d = log.contentsDict
+    keys = list(d.keys())
+    # print('logDict',log.logDict.keys())
+    
+    if 0:
+        for key in keys:
+            print('%6s %s' % (key,d.get(key)))
+    
+    n = len(keys)
+    n2 = log.numberOfVisibleTabs()
+        # The code no-longer uses numberOfVisibleTabs.
+
+    assert n == n2,'n: %s n2: %s' % (n,n2)
+    assert n &gt;= 6,n # Spell tab visible only in Python 2 on my system.
+</t>
+<t tx="ekr.20111121081052.3909">if g.app.isExternalUnitTest:
+    pass # Prints to console, which is annoying.
+else:
+    old_focus = c.get_focus()
+    
+    for flag in (False,True):
+        g.es('Hi')
+        
+    if flag:
+        c.outerUpdate() # Restores focus, especially when run from a script.
+    new_focus = c.get_focus()
+    
+    try:
+        assert old_focus == new_focus,'old focus: %s new focus: %s' % (
+            old_focus,new_focus)
+    except AssertionError:
+        c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20111121090700.3914">if g.app.isExternalUnitTest:
+    pass
+else:
+    c.k.simulateCommand('print-bindings')
+    log = c.frame.log
+    
+    # This works when run via execute-script.
+    assert log.tabName == 'Bindings',log.tabName
+    
+    # w = c.frame.log.contentsDict.get('Bindings')
+    # assert w,'no Bindings widget'
+    # wrapper = w.leo_log_wrapper
+    # s = wrapper.getAllText()
+    # assert s,wrapper
+</t>
+<t tx="ekr.20111121113227.4035">c.k.simulateCommand('add-editor')
+c.k.simulateCommand('delete-editor')
+</t>
+<t tx="ekr.20111121140833.3916">'''selectToMatchingBracket was crashing.'''
+
+ec = c.editCommands
+w = c.frame.body
+
+s = w.getAllText()
+i = s.find('(')
+w.setInsertPoint(i)
+ec.selectToMatchingBracket(event=None)
+i,j = w.getSelectionRange()
+assert i &lt; j,'i: %s j: %s' % (i,j)
+</t>
+<t tx="ekr.20111121140833.3917">'''These were changed, then reverted, but a unit test is important.'''
+
+if g.app.isExternalUnitTest:
+    pass # Prints to console, which is annoying.
+else:
+    log = c.frame.log
+    log.put(p.h)
+    log.putnl()
+</t>
+<t tx="ekr.20111121142012.4030">import PyQt4.QtGui as QtGui
+
+log = c.frame.log
+name = log.__class__.__name__
+
+if g.app.isExternalUnitTest:
+    assert name == 'nullLog',name
+else:
+    assert name == 'leoQtLog',name
+    assert log.widget.__class__.__name__ == 'leoQTextEditWidget' 
+    assert not issubclass(log.widget.__class__,QtGui.QWidget.__class__)
+        # leoQTextEditWidget us a poor name: it is not a Qt widget.
+    assert log.widget.widget.__class__.__name__ == 'LeoQTextBrowser'
+    assert hasattr(log.widget,'widget') and log.widget.widget
+    assert hasattr(log.widget.widget,'leo_log_wrapper')
+    wrapper = log.widget.widget.leo_log_wrapper
+    assert wrapper == log.widget
+
+</t>
+<t tx="ekr.20111121142012.4141"></t>
+<t tx="ekr.20111121151031.3925"></t>
+<t tx="ekr.20111121152019.3929">'''updateEditors was crashing due to calling setSelectionRange(ins=i).
+The proper keyword argument is insert=i.
+'''
+
+c.frame.body.updateEditors()
+</t>
+<t tx="ekr.20111121164644.3928">'''Test that cycle-all-focus cycles through all tabs.'''
+
+# List the tabs in order.
+# The test will fail if this doesn't match the actual tabs.
+tabs = ('Find','Links','Graph','Nav','Task','Log')
+
+if g.app.isExternalUnitTest:
+    # print('external test')
+    pass
+else:
+    log = c.frame.log
+    c.bodyWantsFocusNow()
+    
+    for tab in tabs:
+        log.cycleTabFocus(event=None)
+        assert log.tabName == tab,'expected %s, got %s' % (
+            tab,log.tabName)
+        # print('pass',tab)
+</t>
+<t tx="ekr.20111121171738.3932"></t>
+<t tx="ekr.20111121172139.5382"></t>
+<t tx="ekr.20111121172139.5383"></t>
 </tnodes>
 </leo_file>

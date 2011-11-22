@@ -2195,7 +2195,7 @@ class DynamicWindow(QtGui.QMainWindow):
         findTab = QtGui.QWidget()
         findTab.setObjectName('findTab')
         tabWidget.addTab(findScrollArea,'Find')
-        self.createFindTab(findTab)
+        self.createFindTab(findTab,findScrollArea)
         findScrollArea.setWidget(findTab)
 
         spellTab = QtGui.QWidget()
@@ -2452,66 +2452,6 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setName(w,name)
         return w
     #@+node:ekr.20110605121601.18165: *5* log tabs (DynamicWindow)
-    #@+node:ekr.20110605121601.18166: *6* createFindTab (DynamicWindow)
-    def createFindTab (self,parent):
-
-        grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
-        
-        # Row 0: heading.
-        lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
-        grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
-        
-        # Rows 1, 2: the find/change boxes, now disabled.
-        findPattern = self.createLineEdit(parent,'findPattern',disabled=True)
-        findChange  = self.createLineEdit(parent,'findChange',disabled=True)
-        lab2 = self.createLabel(parent,'findLabel','Find:')
-        lab3 = self.createLabel(parent,'changeLabel','Change:')
-        grid.addWidget(lab2,1,0)
-        grid.addWidget(lab3,2,0)
-        grid.addWidget(findPattern,1,1)
-        grid.addWidget(findChange,2,1)
-            
-        # Check boxes and radio buttons.
-        # Radio buttons are mutually exclusive because they have the same parent.
-        def mungeName(name):
-            # The value returned here is significant: it creates an ivar.
-            return 'checkBox%s' % label.replace(' ','').replace('&','')
-
-        # Rows 3 through 8...
-        table = (
-            ('box', 'Whole &Word',      2,0),
-            ('rb',  '&Entire Outline',  2,1),
-            ('box', '&Ignore Case',     3,0),
-            ('rb',  '&Suboutline Only', 3,1),
-            ('box', 'Wrap &Around',     4,0),
-            ('rb',  '&Node Only',       4,1),
-            # ('box', '&Reverse',       5,0),
-            ('box', 'Search &Headline', 5,1),
-            ('box', 'Rege&xp',          5,0), # was 6,0
-            ('box', 'Search &Body',     6,1),
-            ('box', 'Mark &Finds',      6,0), # was 7,0
-            ('box', 'Mark &Changes',    7,0)) # was 7,1
-            # a,b,c,e,f,h,i,n,rs,w
-
-        for kind,label,row,col in table:
-            name = mungeName(label)
-            func = g.choose(kind=='box',
-                self.createCheckBox,self.createRadioButton)
-            w = func(parent,name,label)
-            grid.addWidget(w,row+1,col)
-            setattr(self,name,w)
-
-        # Row 9: Widgets that take all additional vertical space.
-        w = QtGui.QWidget()
-        grid.addWidget(w,9,0)
-        grid.addWidget(w,9,1)
-        grid.setRowStretch(9,100)
-
-        # Official ivars (in addition to setattr ivars).
-        self.findPattern = findPattern
-        self.findChange = findChange
-        # self.findLab = lab2
-        # self.changeLab = lab3
     #@+node:ekr.20110605121601.18167: *6* createSpellTab
     def createSpellTab (self,parent):
 
@@ -2575,6 +2515,68 @@ class DynamicWindow(QtGui.QMainWindow):
         self.spellGrid = grid
         self.leo_spell_listBox = listBox # Must exist
         self.leo_spell_label = lab # Must exist (!!)
+    #@+node:ekr.20110605121601.18166: *6* createFindTab (DynamicWindow)
+    def createFindTab (self,parent,tab_widget):
+
+        c,dw = self.leo_c,self
+        grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
+        
+        # Row 0: heading.
+        lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
+        grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
+        
+        # Rows 1, 2: the find/change boxes, now disabled.
+        findPattern = self.createLineEdit(parent,'findPattern',disabled=True)
+        findChange  = self.createLineEdit(parent,'findChange',disabled=True)
+        lab2 = self.createLabel(parent,'findLabel','Find:')
+        lab3 = self.createLabel(parent,'changeLabel','Change:')
+        grid.addWidget(lab2,1,0)
+        grid.addWidget(lab3,2,0)
+        grid.addWidget(findPattern,1,1)
+        grid.addWidget(findChange,2,1)
+            
+        # Check boxes and radio buttons.
+        # Radio buttons are mutually exclusive because they have the same parent.
+        def mungeName(name):
+            # The value returned here is significant: it creates an ivar.
+            return 'checkBox%s' % label.replace(' ','').replace('&','')
+
+        # Rows 3 through 8...
+        table = (
+            ('box', 'Whole &Word',      2,0),
+            ('rb',  '&Entire Outline',  2,1),
+            ('box', '&Ignore Case',     3,0),
+            ('rb',  '&Suboutline Only', 3,1),
+            ('box', 'Wrap &Around',     4,0),
+            ('rb',  '&Node Only',       4,1),
+            # ('box', '&Reverse',       5,0),
+            ('box', 'Search &Headline', 5,1),
+            ('box', 'Rege&xp',          5,0), # was 6,0
+            ('box', 'Search &Body',     6,1),
+            ('box', 'Mark &Finds',      6,0), # was 7,0
+            ('box', 'Mark &Changes',    7,0)) # was 7,1
+            # a,b,c,e,f,h,i,n,rs,w
+
+        for kind,label,row,col in table:
+            name = mungeName(label)
+            func = g.choose(kind=='box',
+                self.createCheckBox,self.createRadioButton)
+            w = func(parent,name,label)
+            grid.addWidget(w,row+1,col)
+            setattr(self,name,w)
+
+        # Row 9: Widgets that take all additional vertical space.
+        w = QtGui.QWidget()
+        grid.addWidget(w,9,0)
+        grid.addWidget(w,9,1)
+        grid.setRowStretch(9,100)
+
+        # Official ivars (in addition to setattr ivars).
+        self.leo_find_widget = tab_widget # 2011/11/21: a scrollArea.
+        self.findPattern = findPattern
+        self.findChange = findChange
+        # self.findLab = lab2
+        # self.changeLab = lab3
     #@+node:ekr.20110605121601.18168: *5* utils
     #@+node:ekr.20110605121601.18169: *6* setName
     def setName (self,widget,name):
@@ -3212,7 +3214,7 @@ class leoQtBody (leoFrame.leoBody):
         # Don't restore the scrollbar here.
         #@-<< restore the selection, insertion point and the scrollbar >>
         c.bodyWantsFocus()
-    #@+node:ekr.20110605121601.18205: *6* updateEditors
+    #@+node:ekr.20110605121601.18205: *6* updateEditors (qtBody)
     # Called from addEditor and assignPositionToEditor
 
     def updateEditors (self):
@@ -3238,7 +3240,8 @@ class leoQtBody (leoFrame.leoBody):
                 sb.setSliderPosition(pos)
 
         c.bodyWantsFocus()
-        w0.setSelectionRange(i,j,ins=ins)
+        w0.setSelectionRange(i,j,insert=ins)
+            # 2011/11/21: bug fix: was ins=ins
         sb0.setSliderPosition(pos0)
     #@+node:ekr.20110605121601.18206: *5* utils
     #@+node:ekr.20110605121601.18207: *6* computeLabel (qtBody)
@@ -5062,8 +5065,8 @@ class leoQtLog (leoFrame.leoLog):
     """A class that represents the log pane of a Qt window."""
 
     #@+others
-    #@+node:ekr.20110605121601.18313: *4* qtLog Birth
-    #@+node:ekr.20110605121601.18314: *5* qtLog.__init__
+    #@+node:ekr.20110605121601.18313: *4* leoQtLog Birth
+    #@+node:ekr.20110605121601.18314: *5* leoQtLog.__init__
     def __init__ (self,frame,parentFrame):
 
         # g.trace("leoQtLog")
@@ -5093,7 +5096,7 @@ class leoQtLog (leoFrame.leoLog):
 
         self.setFontFromConfig()
         self.setColorFromConfig()
-    #@+node:ekr.20110605121601.18315: *5* qtLog.finishCreate
+    #@+node:ekr.20110605121601.18315: *5* leoQtLog.finishCreate
     def finishCreate (self):
 
         c = self.c ; log = self ; w = self.tabWidget
@@ -5128,7 +5131,7 @@ class leoQtLog (leoFrame.leoLog):
 
         c.searchCommands.openFindTab(show=False)
         c.spellCommands.openSpellTab()
-    #@+node:ekr.20110605121601.18316: *5* qtLog.getName
+    #@+node:ekr.20110605121601.18316: *5* leoQtLog.getName
     def getName (self):
         return 'log' # Required for proper pane bindings.
     #@+node:ekr.20110605121601.18317: *4* Do nothings (leoQtLog)
@@ -5146,8 +5149,14 @@ class leoQtLog (leoFrame.leoLog):
     def onActivateLog (self,event=None):    pass
     def hasFocus (self):                    return None
     def forceLogUpdate (self,s):            pass
+    #@+node:ekr.20111120124732.10184: *4* isLogWidget (leoQtLog)
+    def isLogWidget(self,w):
+        
+        val = w == self or w in list(self.contentsDict.values())
+        # g.trace(val,w)
+        return val
     #@+node:ekr.20110605121601.18321: *4* put & putnl (leoQtLog)
-    #@+node:ekr.20110605121601.18322: *5* put (qtLog)
+    #@+node:ekr.20110605121601.18322: *5* put (leoQtLog)
     # All output to the log stream eventually comes here.
     def put (self,s,color=None,tabName='Log'):
 
@@ -5164,7 +5173,8 @@ class leoQtLog (leoFrame.leoLog):
         self.selectTab(tabName or 'Log')
 
         # Note: this must be done after the call to selectTab.
-        w = self.logCtrl.widget # w is a QTextBrowser
+        w = self.logCtrl.widget
+            # w is a QTextBrowser
 
         if w:
             sb = w.horizontalScrollBar()
@@ -5184,7 +5194,7 @@ class leoQtLog (leoFrame.leoLog):
             if g.isUnicode(s):
                 s = g.toEncodedString(s,"ascii")
             print(s)
-    #@+node:ekr.20110605121601.18323: *5* putnl
+    #@+node:ekr.20110605121601.18323: *5* putnl (leoQtLog)
     def putnl (self,tabName='Log'):
 
         if g.app.quitting:
@@ -5194,6 +5204,7 @@ class leoQtLog (leoFrame.leoLog):
             self.selectTab(tabName)
 
         w = self.logCtrl.widget
+        
         if w:
             sb = w.horizontalScrollBar()
             pos = sb.sliderPosition()
@@ -5222,19 +5233,19 @@ class leoQtLog (leoFrame.leoLog):
         """
 
         trace = False and not g.unitTesting
-        if trace: g.trace(tabName,g.callers(4))
-
-        c = self.c ; w = self.tabWidget
-
-        # Important. Not called during startup.
+        c = self.c
 
         if widget is None:
-            # widget = QtGui.QTextBrowser()
+
             widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
+                # widget is subclass of QTextBrowser.
             contents = leoQTextEditWidget(widget=widget,name='log',c=c)
-            widget.leo_log_wrapper = contents # Inject an ivar.
-            if trace: g.trace('** creating',tabName,contents,widget,'\n',g.callers(9))
-            # widget.setWordWrapMode(QtGui.QTextOption.NoWrap)
+                # contents a wrapper.
+            widget.leo_log_wrapper = contents
+                # Inject an ivar into the QTextBrowser that points to the wrapper.
+                
+            if trace: g.trace('** creating',tabName,'self.widget',contents,'wrapper',widget)
+            
             widget.setWordWrapMode(
                 g.choose(self.wrap,
                     QtGui.QTextOption.WordWrap,
@@ -5243,32 +5254,54 @@ class leoQtLog (leoFrame.leoLog):
             widget.setReadOnly(False) # Allow edits.
             self.logDict[tabName] = widget
             if tabName == 'Log':
-                # self.logCtrl = contents
-                self.widget = contents
-                    # logCtrl is now a property of the base leoLog class.
+                self.widget = contents # widget is an alias for logCtrl.
                 widget.setObjectName('log-widget')
+
             if True: # 2011/05/28.
                 # Set binding on all text widgets.
                 theFilter = leoQtEventFilter(c,w=self,tag='log')
                 self.eventFilters.append(theFilter) # Needed!
                 widget.installEventFilter(theFilter)
+                
+            if True and tabName == 'Log':
+        
+                assert c.frame.top.__class__.__name__ == 'DynamicWindow'
+                find_widget = c.frame.top.leo_find_widget
+                
+                # 2011/11/21: A hack: add an event filter.
+                find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
+                find_widget.installEventFilter(find_widget.leo_event_filter)
+                if trace: g.trace('** Adding event filter for Find',find_widget)
+                
+                # 2011/11/21: A hack: make the find_widget an official log widget.
+                self.contentsDict['Find']=find_widget
+        
             self.contentsDict[tabName] = widget
-            w.addTab(widget,tabName)
+            self.tabWidget.addTab(widget,tabName)
         else:
             contents = widget
-            # Bug fix: 2009/10/06
-            widget.leo_log_wrapper = contents # Inject an ivar.
-            # if trace: g.trace('** using',tabName,contents)
+                # Unlike text widgets, contents is the actual widget.
+            widget.leo_log_wrapper = contents
+                # The leo_log_wrapper is the widget itself.
+            if trace: g.trace('** using',tabName,widget)
+            
+            if 1: # Now seems to work.
+                theFilter = leoQtEventFilter(c,w=contents,tag='tabWidget')
+                self.eventFilters.append(theFilter) # Needed!
+                widget.installEventFilter(theFilter)
+        
             self.contentsDict[tabName] = contents
-            w.addTab(contents,tabName)
+            self.tabWidget.addTab(contents,tabName)
 
         return contents
-    #@+node:ekr.20110605121601.18327: *5* cycleTabFocus
-    def cycleTabFocus (self,event=None,stop_w = None):
+    #@+node:ekr.20110605121601.18327: *5* cycleTabFocus (leoQtLog)
+    def cycleTabFocus (self,event=None):
 
         '''Cycle keyboard focus between the tabs in the log pane.'''
-
-        c = self.c ; w = self.tabWidget
+        
+        trace = False and not g.unitTesting
+        c = self.c
+        w = self.tabWidget
 
         i = w.currentIndex()
         i += 1
@@ -5276,10 +5309,9 @@ class leoQtLog (leoFrame.leoLog):
             i = 0
 
         tabName = w.tabText(i)
-        w.setCurrentIndex(i)
-        log = self.logDict.get(tabName)
-        if log: self.widget = log.leo_log_wrapper
-            # logCtrl is now a property of the base leoLog class.
+        
+        self.selectTab(tabName,createText=False)
+        if trace: g.trace(i,tabName)
 
     #@+node:ekr.20110605121601.18328: *5* deleteTab
     def deleteTab (self,tabName,force=False):
@@ -5299,44 +5331,60 @@ class leoQtLog (leoFrame.leoLog):
     def hideTab (self,tabName):
 
         self.selectTab('Log')
-    #@+node:ekr.20110605121601.18330: *5* numberOfVisibleTabs
+    #@+node:ekr.20110605121601.18330: *5* numberOfVisibleTabs (leoQtLog)
     def numberOfVisibleTabs (self):
 
-        return len([val for val in self.frameDict.values() if val != None])
-    #@+node:ekr.20110605121601.18331: *5* selectTab & helper
+        return len([val for val in self.contentsDict.values() if val != None])
+            # **Note**: the base-class version of this uses frameDict.
+    #@+node:ekr.20110605121601.18331: *5* selectTab & helper (leoQtLog)
     def selectTab (self,tabName,createText=True,widget=None,wrap='none'):
+        # createText is used by leoLog.selectTab.
 
         '''Create the tab if necessary and make it active.'''
 
-        c = self.c ; w = self.tabWidget ; trace = False
+        trace = False and not g.unitTesting
+        c = self.c ; w = self.tabWidget
+        
+        if trace: g.trace(tabName,g.callers())
 
-        ok = self.selectHelper(tabName,createText)
+        # Step 1: See if the tab exits.
+        ok = self.selectHelper(tabName)
         if ok: return
 
+        # Step 2: create tab if necessary.
         self.createTab(tabName,widget=widget,wrap=wrap)
-        self.selectHelper(tabName,createText)
+        self.selectHelper(tabName)
+    #@+node:ekr.20110605121601.18332: *6* selectHelper (leoQtLog)
+    def selectHelper (self,tabName):
 
-    #@+node:ekr.20110605121601.18332: *6* selectHelper
-    def selectHelper (self,tabName,createText):
-
-        w = self.tabWidget
+        trace = False and not g.unitTesting
+        c,w = self.c,self.tabWidget
 
         for i in range(w.count()):
             if tabName == w.tabText(i):
                 w.setCurrentIndex(i)
-                if createText and tabName not in ('Spell','Find',):
-                    self.widget = w.widget(i).leo_log_wrapper
-                        # 2011/11/18: Setting self.widget issential for log bindings.
-                        # self.widget is now part of the high-level interface.
-                        # self.logCtrl is now a property of the base leoLog class.
+                
+                widget = w.widget(i)
+                
+                # 2011/11/21: Set the .widget ivar only if there is a wrapper.
+                wrapper = hasattr(widget,'leo_log_wrapper') and widget.leo_log_wrapper
+                if wrapper:
+                    self.widget = wrapper
+                if trace: g.trace(tabName,'widget',widget,'wrapper',wrapper)
+                
+                # Do *not* set focus here!
+                    # c.widgetWantsFocus(tab_widget)
 
-                    # g.trace('**setting',self.logCtrl)
                 if tabName == 'Spell':
                     # the base class uses this as a flag to see if
                     # the spell system needs initing
-                    self.frameDict['Spell'] = w.widget(i)
+                    self.frameDict['Spell'] = widget
+                    
+                self.tabName = tabName # 2011/11/20
                 return True
         else:
+            self.tabName = None # 2011/11/20
+            if trace: g.trace('** not found',tabName)
             return False
     #@+node:ekr.20110605121601.18333: *4* leoQtLog color tab stuff
     def createColorPicker (self,tabName):
@@ -7132,7 +7180,12 @@ class TabbedFrameFactory:
         if tip: tabw.setTabToolTip(idx, tip)
 
         dw.construct(master=tabw)
-        tabw.setCurrentIndex(idx)            
+        tabw.setCurrentIndex(idx)
+        
+        if 0: # Possible, but it doesn't seem to help the cycle-tab-focus command.
+            # g.trace('(TabbedFrameFactor) adding bindings')
+            dw.ev_filter = leoQtEventFilter(c,w=dw,tag='sdi-frame')
+            dw.installEventFilter(dw.ev_filter)
 
         # Work around the problem with missing dirty indicator
         # by always showing the tab.
@@ -8386,10 +8439,10 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20110605121601.18540: *3* eventFilter
     def eventFilter(self, obj, event):
 
-        trace = (True or self.trace_masterKeyHandler) and not g.unitTesting
+        trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
         verbose = True
         traceEvent = False # True: call self.traceEvent.
-        traceKey = (False or self.trace_masterKeyHandler)
+        traceKey = (True or self.trace_masterKeyHandler)
         c = self.c ; k = c.k
         eventType = event.type()
         ev = QtCore.QEvent
@@ -8397,10 +8450,13 @@ class leoQtEventFilter(QtCore.QObject):
         aList = []
 
         kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
-        
+
         # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
         lineEditKeyKinds = [ev.KeyPress,ev.KeyRelease]
-            
+
+        # Important:
+        # QLineEdit: ignore all key events except keyRelease events.
+        # QTextEdit: ignore all key events except keyPress events.
         if eventType in lineEditKeyKinds:
             p = c.currentPosition()
             isEditWidget = obj == c.frame.tree.edit_widget(p)
@@ -8449,8 +8505,8 @@ class leoQtEventFilter(QtCore.QObject):
             stroke = self.toStroke(tkKey,ch)
 
             if override:
-                if trace and traceKey and not ignore:
-                    g.trace('bound',repr(stroke)) # repr(aList))
+                if trace and traceKey:
+                    g.trace('ignore',ignore,'bound',repr(stroke)) # repr(aList))
                 w = self.w # Pass the wrapper class, not the wrapped widget.
                 event = self.create_key_event(event,c,w,ch,tkKey,stroke)
                 ret = k.masterKeyHandler(event)
@@ -8459,7 +8515,7 @@ class leoQtEventFilter(QtCore.QObject):
                 if trace and traceKey and verbose:
                     g.trace(self.tag,'unbound',tkKey,stroke)
             
-            if trace and traceKey:
+            if trace and traceEvent:
                 # Trace key events.
                 self.traceEvent(obj,event,tkKey,override)
 

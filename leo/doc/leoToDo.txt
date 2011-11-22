@@ -14,6 +14,163 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
+.. @+node:ekr.20111121084517.10187: *4* ***Fix appearance of headline widgets
+.. @+node:ekr.20111118104929.10185: *4* Recent leoInspect
+.. @+node:ekr.20111117031039.10977: *5*  To do
+@nocolor
+
+** Rewrite the chain code so it is based on ASTs, not hacks.
+
+- Append *all* statements to statements list.
+    Including def, class, if, while, pass, with etc.
+- Clean up Attribute in InspectTraverser.
+- Add level ivar in AstFormatter?
+
+@color
+
+    is_method = cx.kind != 'class' and cx.class_context
+    is_ivar = s.startswith('self.')
+    if is_method and is_ivar:
+        cx = cx.class_context
+.. @+node:ekr.20111116103733.10361: *5* Attribute & attribute_to_string (InspectTraverser) (REVISE)
+def do_Attribute(self,tree,tag=''):
+    
+    assert self.kind(tree) == 'Attribute'
+
+    # Get the chain.
+    cx = self.get_context()
+    s = self.attribute_to_string(tree)
+    
+    if s and s[0] in ('"',"'"):
+        # g.trace('ignoring string',s)
+        return
+
+    chain = cx.st.add_chain(tree,s)
+        # Create a new Chain object, or merge with an existing chain.
+
+    # Update stats.
+    self.sd.n_attributes += 1
+.. @+node:ekr.20111116103733.10362: *6* attribute_to_string (InspectTraverser)
+def attribute_to_string (self,tree,level=0):
+    
+    '''Convert an Attributes nodes and its descendants to a string a.b.c.d...'''
+
+    trace = False ; verbose = True
+    if trace and verbose:
+        g.trace('level: %s, tree: %s' % (level,tree))
+        self.dump(tree)
+
+    kind = self.kind(tree)
+    
+    if kind == 'Attribute':
+        chain = self.attribute_helper(tree,level)
+    else:
+        chain = self.general_helper(tree,level)
+
+    if trace and level == 0:
+        g.trace('level: %s kind: %9s chain: %s' % (
+            level,kind,chain))
+
+    return chain
+.. @+node:ekr.20111116103733.10363: *7* attribute_helper (InspectTraverser)
+def attribute_helper(self,tree,level):
+    
+    kind = self.kind(tree)
+    assert kind == 'Attribute',kind
+
+    val_kind = self.kind(tree.value)
+    assert self.kind(tree.ctx) in ('Del','Load','Store')
+    
+    # g.trace(val_kind)
+    
+    if val_kind == 'Attribute':
+        s = self.attribute_to_string(tree.value,level+1)
+        chain = '%s.%s' % (s,tree.attr)
+    elif val_kind == 'Name':
+        chain = '%s.%s' % (tree.value.id,tree.attr)
+    elif val_kind == 'Call':
+        s = self.attribute_to_string(tree.value.func,level+1)
+        chain = '%s().%s' % (s,tree.attr)
+    elif val_kind == 'Subscript':
+        s = self.attribute_to_string(tree.value,level+1)
+        chain = '%s[0].%s' % (s,tree.attr)
+    elif val_kind == 'Str':
+        chain = '%s.%s' % (repr(tree.value.s),tree.attr)
+    elif val_kind == 'Dict':
+        chain = '%s.%s' % (repr(tree.value),tree.attr)
+    else:
+        chain = '<Error: val_kind=%s>' % val_kind
+        
+    return chain
+.. @+node:ekr.20111116103733.10364: *7* general_helper (InspectTraverser)
+def general_helper(self,tree,level):
+
+    kind = self.kind(tree)
+    if kind == 'Call':
+        s = self.attribute_to_string(tree.func,level+1)
+        ### chain = '%s()' % (s) # The "Great hack"
+        chain = s
+    elif kind == 'Name':
+        chain = tree.id
+    elif kind == 'Str':
+        chain = '%s.%s' % (repr(tree.value.s),tree.attr)
+    elif kind == 'Subscript':
+        s = self.attribute_to_string(tree.value,level+1)
+        ### chain = '%s[]' % (s) # The "Great hack"
+        chain = s
+    else:
+        chain = '<Error: kind=%s>' % kind
+        g.trace('Can not happen: kind:',kind)
+    
+    return chain
+.. @+node:ekr.20111117031039.10762: *5* @test leoInspect (string)
+import leo.core.leoInspect as inspect
+
+g.cls()
+
+<< define s >>
+# print('Input string...\n',s)
+
+def show(o,indent):
+    print('\n%s\n' % o.sd.dump_ast(o.tree()))
+    print('%s%s' % (' '*4*indent,o.format()))
+
+m = inspect.module(s=s)
+
+for s in m.statements():
+    show(s,0)
+
+for f in m.functions():
+    show(f,0)
+    for z in f.statements():
+        show(z,1)
+
+for cls in m.classes():
+    show(cls,0)
+    for d in cls.defs():
+        show(d,1)
+        for z in d.statements():
+            show(z,1)
+            
+.. @+node:ekr.20111117031039.10763: *6* << define s >>
+s = '''
+a = b.c.d
+'''
+
+
+# def outer_function(a,b=99,c=88,*args,**keys):
+    # print('hello')
+    
+# class myClass:
+    # def method():
+        # pass
+    
+.. @+node:ekr.20111120162254.10216: *4* Get rid of the trace settings
+@nocolor-node
+
+Like the one used in k.masterKeyHandler.
+.. @+node:ekr.20111121084517.10189: *4* *** Remove all calls to w.see
+.. @+node:ekr.20111118190243.10188: *4* Alt-x doesn't work in the find tab
 .. @+node:ekr.20111115155710.9807: *4* Make sure external unit tests leave focus in body
 .. @+node:ekr.20111118104929.10186: *4* Create a way to select any log tab
 @nocolor-node
@@ -57,7 +214,7 @@ def toPythonIndex (self,index):
     return g.toPythonIndex(s,index)
 
 toGuiIndex = toPythonIndex
-.. @+node:ekr.20111114102224.9945: *7* toPythonIndexRowCol (baseTextWidget)
+.. @+node:ekr.20111114102224.9945: *7* toPythonIndexRowCol (BaseTextWidget)
 def toPythonIndexRowCol(self,index):
     
     # This works, but is much slower that the leoQTextEditWidget method.
@@ -3953,10 +4110,10 @@ def enableSignalDebugging(self,**kwargs):
 .. @+node:ekr.20110605121601.18540: *6* eventFilter
 def eventFilter(self, obj, event):
 
-    trace = (True or self.trace_masterKeyHandler) and not g.unitTesting
+    trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
     verbose = True
     traceEvent = False # True: call self.traceEvent.
-    traceKey = (False or self.trace_masterKeyHandler)
+    traceKey = (True or self.trace_masterKeyHandler)
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
@@ -3964,10 +4121,13 @@ def eventFilter(self, obj, event):
     aList = []
 
     kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
-    
+
     # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
     lineEditKeyKinds = [ev.KeyPress,ev.KeyRelease]
-        
+
+    # Important:
+    # QLineEdit: ignore all key events except keyRelease events.
+    # QTextEdit: ignore all key events except keyPress events.
     if eventType in lineEditKeyKinds:
         p = c.currentPosition()
         isEditWidget = obj == c.frame.tree.edit_widget(p)
@@ -4016,8 +4176,8 @@ def eventFilter(self, obj, event):
         stroke = self.toStroke(tkKey,ch)
 
         if override:
-            if trace and traceKey and not ignore:
-                g.trace('bound',repr(stroke)) # repr(aList))
+            if trace and traceKey:
+                g.trace('ignore',ignore,'bound',repr(stroke)) # repr(aList))
             w = self.w # Pass the wrapper class, not the wrapped widget.
             event = self.create_key_event(event,c,w,ch,tkKey,stroke)
             ret = k.masterKeyHandler(event)
@@ -4026,7 +4186,7 @@ def eventFilter(self, obj, event):
             if trace and traceKey and verbose:
                 g.trace(self.tag,'unbound',tkKey,stroke)
         
-        if trace and traceKey:
+        if trace and traceEvent:
             # Trace key events.
             self.traceEvent(obj,event,tkKey,override)
 

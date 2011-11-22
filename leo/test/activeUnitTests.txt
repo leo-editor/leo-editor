@@ -18327,6 +18327,29 @@ if p:
 
 print('\nEnd of plugins unit tests')
 #@+node:ekr.20111103213154.3822: ** Recent unit tests
+#@+node:ekr.20111115071700.3870: *3* mini-test: print-settings
+c.k.simulateCommand('print-settings')
+#@+node:ekr.20111108170253.3968: *3* mini-test: unicode stuff
+@first # -*- coding: utf-8 -*-
+
+table = (
+    'test',
+    'Ä 궯 奠',
+    'Ä 궯 奠 after', # fails with cp6501: after is duplicated.
+)
+
+print('*'*20)
+print('isPython3: %s' % g.isPython3)
+
+for s in table:
+    if g.isPython3:
+        s = s.encode('ascii','replace') # create bytes.
+    g.es(repr(s))
+    g.es(s)
+    g.pr ('g.pr(s)       : %s' % s)
+    g.pr ('g.pr(repr(s)) : %s' % repr(s))
+    print('print(s)      : %s' % s)
+    print('print(repr(s)): %s' % s)
 #@+node:ekr.20111104171708.3843: *3* @test CPrettyPrinter
 cpp = c.CPrettyPrinter(c)
 fn = 'c tokenize test'
@@ -18598,21 +18621,6 @@ static exit_values_ty indent_main_loop(void)
         }
     }                           /* end of main infinite loop */
 }
-#@+node:ekr.20111105221757.3831: *3* @test createImportParent
-files = ('x.h','x.cpp')
-
-while p.hasChildren():
-    p.firstChild().doDelete()
-
-try:
-    current = c.importCommands.createImportParent(c.p,files)
-    assert current
-    assert current.h == 'x'
-    assert p.firstChild() == current
-finally:
-    while p.hasChildren():
-        p.firstChild().doDelete()
-    c.redraw()
 #@+node:ekr.20111104171708.3847: *3* @test cToPy
 cpp = c.CPrettyPrinter(c)
 c2p = c.editCommands.C_to_python(c)
@@ -18904,14 +18912,80 @@ if not existing_tags:
     g.app.config.set(None,setting,'data',html_tags)
     tags = c.config.getData(setting)
     assert c.config.getData(setting) == html_tags
-#@+node:ekr.20111103213154.3824: *3* @test g.importFromPath
+#@+node:ekr.20111107065245.3833: *3* @test minimize-all
+# The actual code contains the unit test.
+# This test will have effect only when run locally.
+
+if not g.app.isExternalUnitTest:
+    d = g.app.unitTestDict
+    tag = 'minimize-all'
+    assert not d.get(tag)
+    c.frame.minimizeAll()
+    assert d.get(tag) is True
+#@+node:ekr.20111107065530.3833: *3* @test resize-to-screen
+# The actual code contains the unit test.
+# This test will have effect only when run locally.
+
+if not g.app.isExternalUnitTest:
+
+    d = g.app.unitTestDict
+    tag = 'resize-to-screen'
+    assert not d.get(tag)
+    c.frame.resizeToScreen()
+    assert d.get(tag) is True
+#@+node:ekr.20111103213154.3823: *3* @test writeToDocutils: pdf
+@first # -*- coding: utf-8 -*-
+@encoding utf-8
+
+'''Test the interface between docutils and leo_pdf.py.
+No file is written.
+'''
+
+# g.cls()
+
+if g.isPython3:
+    
+    print('\n"%s": not tested' % (p.h))
+
+else:
+
+    path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
+    
+    module = g.importFromPath(name = 'leo_pdf.py',
+        path=path,
+        pluginName = 'leo_pdf',
+        verbose = False)
+
+    assert module
+    s = '''This is a test.'''
+    result = c.rstCommands.writeToDocutils(s,'.pdf')
+    # print(result)
+    assert result,result
+    
+#@+node:ekr.20111121171738.3932: *3* Import tests
+#@+node:ekr.20111105221757.3831: *4* @test createImportParent
+files = ('x.h','x.cpp')
+
+while p.hasChildren():
+    p.firstChild().doDelete()
+
+try:
+    current = c.importCommands.createImportParent(c.p,files)
+    assert current
+    assert current.h == 'x'
+    assert p.firstChild() == current
+finally:
+    while p.hasChildren():
+        p.firstChild().doDelete()
+    c.redraw()
+#@+node:ekr.20111103213154.3824: *4* @test g.importFromPath
 '''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
 
 path = g.os_path_finalize_join(g.app.loadDir,'does_not_exist')
 assert not g.os_path_exists(path)
 module = g.importFromPath ('xyz',path,pluginName='xyz',verbose=False)
 assert not module,repr(module)
-#@+node:ekr.20111104112332.3953: *3* @test g.os_path_finalize_join with thumb drive
+#@+node:ekr.20111104112332.3953: *4* @test g.os_path_finalize_join with thumb drive
 import os
 
 path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
@@ -18925,7 +18999,7 @@ if 0:
 
     print(path12,g.os.path.abspath(path12))
     print(path13,g.os.path.abspath(path13))
-#@+node:ekr.20111104112332.3954: *3* @test htmlScanner.adjust_class_ref
+#@+node:ekr.20111104112332.3954: *4* @test htmlScanner.adjust_class_ref
 import leo.core.leoImport as leoImport
 ic = c.importCommands
 hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
@@ -18941,7 +19015,7 @@ expected = '\n<aTag>\n@others\n</aTag>\n'
 result = hs.adjust_class_ref(s)
 assert result == expected,'expected...\n%s\ngot...\n%s' % (
     repr(expected),repr(result))
-#@+node:ekr.20111104112332.3955: *3* @test ic.skip...Token (htmlScanner)
+#@+node:ekr.20111104112332.3955: *4* @test ic.skip...Token (htmlScanner)
 import leo.core.leoImport as leoImport
 ic = c.importCommands
 scanner = leoImport.htmlScanner(importCommands=ic,atAuto=True)
@@ -18980,7 +19054,7 @@ for f,s in table:
         assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
         assert result == expected,'expected...\n%s\ngot...\n%s' % (
             repr(expected),repr(result))
-#@+node:ekr.20111104112332.3956: *3* @test ic.skip...Token (pythonScanner)
+#@+node:ekr.20111104112332.3956: *4* @test ic.skip...Token (pythonScanner)
 import leo.core.leoImport as leoImport
 ic = c.importCommands
 scanner = leoImport.pythonScanner(importCommands=ic,atAuto=True)
@@ -19013,7 +19087,7 @@ for f,s in table:
         assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
         assert result == expected,'expected...\n%s\ngot...\n%s' % (
             repr(expected),repr(result))
-#@+node:ekr.20111104114406.3833: *3* @test ic.tokenize (htmlScanner)
+#@+node:ekr.20111104114406.3833: *4* @test ic.tokenize (htmlScanner)
 import leo.core.leoImport as leoImport
 ic = c.importCommands
 hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
@@ -19052,7 +19126,7 @@ Ran 1 test in 0.018s
 
 FAILED (failures=1)
 
-#@+node:ekr.20111104114406.3834: *4* << define expected >>
+#@+node:ekr.20111104114406.3834: *5* << define expected >>
 # expected = [
     # ('ws', ' ', 0),
     # ('comment', '<!-- a comment -->', 1),
@@ -19085,19 +19159,9 @@ expected = [
     ('other', '>', 4),
     ('nl', '\n', 4),
 ]
-#@+node:ekr.20111103213154.3825: *3* @test imports needed for unit tests
+#@+node:ekr.20111103213154.3825: *4* @test imports needed for unit tests
 import docutils
-#@+node:ekr.20111107065245.3833: *3* @test minimize-all
-# The actual code contains the unit test.
-# This test will have effect only when run locally.
-
-if not g.app.isExternalUnitTest:
-    d = g.app.unitTestDict
-    tag = 'minimize-all'
-    assert not d.get(tag)
-    c.frame.minimizeAll()
-    assert d.get(tag) is True
-#@+node:ekr.20111105065243.3837: *3* @test removeBlankLinesTokens (rst)
+#@+node:ekr.20111105065243.3837: *4* @test removeBlankLinesTokens (rst)
 # Important: at present only the rstScanner sets ignoreBlankLines == True
 import leo.core.leoImport as leoImport
 sc = leoImport.rstScanner(c.importCommands,atAuto=False)
@@ -19145,69 +19209,207 @@ for s,expected in table:
     # C: Removing blank tokens from already-compressed tokens should have no effect.
     tokens4 = sc.removeBlankLinesTokens(tokens3)
     assert tokens4 == tokens3,'fail3'
-#@+node:ekr.20111107065530.3833: *3* @test resize-to-screen
-# The actual code contains the unit test.
-# This test will have effect only when run locally.
+#@+node:ekr.20111121142012.4141: *3* Tests of the new log code
+#@+node:ekr.20111121142012.4030: *4* @test relationships between log-related objects
+import PyQt4.QtGui as QtGui
 
-if not g.app.isExternalUnitTest:
+log = c.frame.log
+name = log.__class__.__name__
 
-    d = g.app.unitTestDict
-    tag = 'resize-to-screen'
-    assert not d.get(tag)
-    c.frame.resizeToScreen()
-    assert d.get(tag) is True
-#@+node:ekr.20111103213154.3823: *3* @test writeToDocutils: pdf
-@first # -*- coding: utf-8 -*-
-@encoding utf-8
+if g.app.isExternalUnitTest:
+    assert name == 'nullLog',name
+else:
+    assert name == 'leoQtLog',name
+    assert log.widget.__class__.__name__ == 'leoQTextEditWidget' 
+    assert not issubclass(log.widget.__class__,QtGui.QWidget.__class__)
+        # leoQTextEditWidget us a poor name: it is not a Qt widget.
+    assert log.widget.widget.__class__.__name__ == 'LeoQTextBrowser'
+    assert hasattr(log.widget,'widget') and log.widget.widget
+    assert hasattr(log.widget.widget,'leo_log_wrapper')
+    wrapper = log.widget.widget.leo_log_wrapper
+    assert wrapper == log.widget
 
-'''Test the interface between docutils and leo_pdf.py.
-No file is written.
+#@+node:ekr.20111120124051.3992: *4* @test Ctrl-I inserts only one headline
+import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
+import leo.plugins.qtGui as leoQtGui
+
+if g.app.isExternalUnitTest:
+    pass
+else:
+    def setup(p):
+        delete_children(p)
+        p2 = p.insertAsLastChild()
+        c.selectPosition(p2)
+        p2.h = 'first-child'
+    
+    def delete_children(p):
+        while p.hasChildren():
+            p.firstChild().doDelete()
+    
+    app = g.app.gui.qtApp
+    assert issubclass(app.__class__,QtGui.QApplication)
+    
+    w = c.frame.body.bodyCtrl.widget
+    assert issubclass(w.__class__,QtGui.QTextEdit)
+    w_name = w.__class__.__name__
+    assert w_name == 'LeoQTextBrowser',w_name
+    
+    p1 = p.copy()
+    
+    filter_obj = leoQtGui.leoQtEventFilter(c,w=w)
+    g.app.unitTestDict[p.h] = filter_obj # preserve a pointer to the filter.
+    
+    try:
+        ev = QtCore.QEvent
+        table = (
+            ev.KeyPress,
+            # ev.KeyRelease, # Ignored except in QLineEdit's.
+            # ev.ShortcutOverride, # Ignored everywhere.
+        )
+        for theType in table:
+            # Create the event.
+            setup(p1)
+            e = QtGui.QKeyEvent(theType,ord('i'),QtCore.Qt.ControlModifier)
+            # Pass it to eventFilter.
+            filter_obj.eventFilter(w,e)
+            # Check the results.
+            c.redraw()
+            n = p1.numberOfChildren()
+            assert n==2,'%s children' % (n)
+            #delete_children(p1)
+    
+    finally:
+        # delete_children(p1)
+        c.redraw()
+#@+node:ekr.20111121172139.5382: *5* first-child
+#@+node:ekr.20111121172139.5383: *5* newHeadline
+#@+node:ekr.20111120124051.3994: *4* @test cycle-all-focus
+'''Test that cycle-all-focus cycles through all tabs.'''
+
+# List the tabs in order.
+# The test will fail if this doesn't match the actual tabs.
+tabs = ('Log','Find','Links','Graph','Nav','Task','Log')
+
+if g.app.isExternalUnitTest:
+    # print('external test')
+    pass
+else:
+    log = c.frame.log
+    c.bodyWantsFocusNow()
+    last_widget = c.frame.body
+    
+    for tab in tabs:
+        # A small hack: fudge up the widget to pass to the command.
+        event = g.bunch(widget=last_widget)
+        c.editCommands.cycleAllFocus(event=event)
+        assert log.tabName == tab,'expected %s, got %s' % (
+            tab,log.tabName)
+        last_widget = log.contentsDict.get(tab)
+        # print('pass',tab,last_widget)
+#@+node:ekr.20111121164644.3928: *4* @test cycle-tab-focus
+'''Test that cycle-all-focus cycles through all tabs.'''
+
+# List the tabs in order.
+# The test will fail if this doesn't match the actual tabs.
+tabs = ('Find','Links','Graph','Nav','Task','Log')
+
+if g.app.isExternalUnitTest:
+    # print('external test')
+    pass
+else:
+    log = c.frame.log
+    c.bodyWantsFocusNow()
+    
+    for tab in tabs:
+        log.cycleTabFocus(event=None)
+        assert log.tabName == tab,'expected %s, got %s' % (
+            tab,log.tabName)
+        # print('pass',tab)
+#@+node:ekr.20111121081052.3908: *4* @test log.numberOfVisibleTabs
+if g.app.isExternalUnitTest:
+    print('external test')
+    pass
+else:
+    log = c.frame.log
+    d = log.contentsDict
+    keys = list(d.keys())
+    # print('logDict',log.logDict.keys())
+    
+    if 0:
+        for key in keys:
+            print('%6s %s' % (key,d.get(key)))
+    
+    n = len(keys)
+    n2 = log.numberOfVisibleTabs()
+        # The code no-longer uses numberOfVisibleTabs.
+
+    assert n == n2,'n: %s n2: %s' % (n,n2)
+    assert n >= 6,n # Spell tab visible only in Python 2 on my system.
+#@+node:ekr.20111121140833.3917: *4* @test put & putNl (leoQtLog)
+'''These were changed, then reverted, but a unit test is important.'''
+
+if g.app.isExternalUnitTest:
+    pass # Prints to console, which is annoying.
+else:
+    log = c.frame.log
+    log.put(p.h)
+    log.putnl()
+#@+node:ekr.20111121113227.4035: *4* mini-test: add-editor
+c.k.simulateCommand('add-editor')
+c.k.simulateCommand('delete-editor')
+#@+node:ekr.20111121081052.3909: *4* mini-test: g.es leave focus unchanged
+if g.app.isExternalUnitTest:
+    pass # Prints to console, which is annoying.
+else:
+    old_focus = c.get_focus()
+    
+    for flag in (False,True):
+        g.es('Hi')
+        
+    if flag:
+        c.outerUpdate() # Restores focus, especially when run from a script.
+    new_focus = c.get_focus()
+    
+    try:
+        assert old_focus == new_focus,'old focus: %s new focus: %s' % (
+            old_focus,new_focus)
+    except AssertionError:
+        c.bodyWantsFocusNow()
+#@+node:ekr.20111121090700.3914: *4* mini-test: print-bindings puts results in Bindings tab
+if g.app.isExternalUnitTest:
+    pass
+else:
+    c.k.simulateCommand('print-bindings')
+    log = c.frame.log
+    
+    # This works when run via execute-script.
+    assert log.tabName == 'Bindings',log.tabName
+    
+    # w = c.frame.log.contentsDict.get('Bindings')
+    # assert w,'no Bindings widget'
+    # wrapper = w.leo_log_wrapper
+    # s = wrapper.getAllText()
+    # assert s,wrapper
+#@+node:ekr.20111121151031.3925: *3* Fixed crashers in selectToMatchingBracket and updateEditor
+#@+node:ekr.20111121140833.3916: *4* @test selectToMatchingBracket (leoEditCommands)
+'''selectToMatchingBracket was crashing.'''
+
+ec = c.editCommands
+w = c.frame.body
+
+s = w.getAllText()
+i = s.find('(')
+w.setInsertPoint(i)
+ec.selectToMatchingBracket(event=None)
+i,j = w.getSelectionRange()
+assert i < j,'i: %s j: %s' % (i,j)
+#@+node:ekr.20111121152019.3929: *4* @test updateEditors (leoQtBody)
+'''updateEditors was crashing due to calling setSelectionRange(ins=i).
+The proper keyword argument is insert=i.
 '''
 
-# g.cls()
-
-if g.isPython3:
-    
-    print('\n"%s": not tested' % (p.h))
-
-else:
-
-    path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
-    
-    module = g.importFromPath(name = 'leo_pdf.py',
-        path=path,
-        pluginName = 'leo_pdf',
-        verbose = False)
-
-    assert module
-    s = '''This is a test.'''
-    result = c.rstCommands.writeToDocutils(s,'.pdf')
-    # print(result)
-    assert result,result
-    
-#@+node:ekr.20111108170253.3968: *3* @@test unicode stuff
-@first # -*- coding: utf-8 -*-
-
-table = (
-    'test',
-    'Ä 궯 奠',
-    'Ä 궯 奠 after', # fails with cp6501: after is duplicated.
-)
-
-print('*'*20)
-print('isPython3: %s' % g.isPython3)
-
-for s in table:
-    if g.isPython3:
-        s = s.encode('ascii','replace') # create bytes.
-    g.es(repr(s))
-    g.es(s)
-    g.pr ('g.pr(s)       : %s' % s)
-    g.pr ('g.pr(repr(s)) : %s' % repr(s))
-    print('print(s)      : %s' % s)
-    print('print(repr(s)): %s' % s)
-#@+node:ekr.20111115071700.3870: *3* @@test settings when run externally
-c.k.simulateCommand('print-settings')
+c.frame.body.updateEditors()
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
