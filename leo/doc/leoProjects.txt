@@ -6035,7 +6035,7 @@ def createFrame(self, leoFrame):
     dw.construct(master=tabw)
     tabw.setCurrentIndex(idx)
     
-    if 0: # Possible, but it doesn't seem to help the cycle-tab-focus command.
+    if 1:
         # g.trace('(TabbedFrameFactor) adding bindings')
         dw.ev_filter = leoQtEventFilter(c,w=dw,tag='sdi-frame')
         dw.installEventFilter(dw.ev_filter)
@@ -6164,6 +6164,10 @@ def cycleAllFocus (self,event):
                 pane = log.logCtrl
                 g.trace('**after cycleTabFocus',w_name(pane),pane)
             return
+
+    else:
+        # A safe default: go to the body.
+        pane = c.frame.body.bodyCtrl
     
     if trace: g.trace('**after',w_name(pane),pane)
 
@@ -6324,6 +6328,119 @@ def updateEditors (self):
     w0.setSelectionRange(i,j,insert=ins)
         # 2011/11/21: bug fix: was ins=ins
     sb0.setSliderPosition(pos0)
+#@+node:ekr.20111121222953.10973: *4* Fixed hang in cycleAllFocus
+@nocolor-node
+
+The safe default pane is the body pane.  It's also the simplest code.
+#@+node:ekr.20111121222953.10974: *4* Fixed crasher in k.handleDefaultChar
+@nocolor-node
+
+The code must be careful that the log widget supports the HighLevelInterface.
+#@+node:ekr.20111121210400.11142: *4* Fixed bug: Focus lost after opening or closing tab
+#@+node:ekr.20111121214837.10184: *5* Changed
+#@+node:ekr.20031218072017.2609: *6* app.closeLeoWindow
+def closeLeoWindow (self,frame):
+
+    """Attempt to close a Leo window.
+
+    Return False if the user veto's the close."""
+
+    c = frame.c
+
+    # g.trace('frame',frame,g.callers(4))
+
+    c.endEditing() # Commit any open edits.
+
+    if c.promptingForClose:
+        # There is already a dialog open asking what to do.
+        return False
+
+    g.app.config.writeRecentFilesFile(c)
+        # Make sure .leoRecentFiles.txt is written.
+
+    if c.changed:
+        c.promptingForClose = True
+        veto = frame.promptForSave()
+        c.promptingForClose = False
+        if veto: return False
+
+    g.app.setLog(None) # no log until we reactive a window.
+
+    g.doHook("close-frame",c=c)
+        # This may remove frame from the window list.
+
+    if frame in g.app.windowList:
+        g.app.destroyWindow(frame)
+
+    if g.app.windowList:
+        # Pick a window to activate so we can set the log.
+        frame = g.app.windowList[0]
+        frame.deiconify()
+        frame.lift()
+        frame.c.setLog()
+        master = hasattr(frame.top,'leo_master') and frame.top.leo_master
+        if master: # 2011/11/21: selecting the new tab ensures focus is set.
+            # frame.top.leo_master is a TabbedTopLevel.
+            master.select(frame.c)
+        frame.c.bodyWantsFocus()
+        frame.c.outerUpdate()
+    elif not g.app.unitTesting:
+        g.app.finishQuit()
+
+    return True # The window has been closed.
+#@+node:ekr.20110605121601.18456: *6* select (leoTabbedTopLevel)
+def select (self,c):
+
+    '''Select the tab for c.'''
+    
+    dw = c.frame.top # A DynamicWindow
+    i = self.indexOf(dw)
+    self.setCurrentIndex(i)
+    # g.trace(i,c)
+#@+node:ekr.20090520055433.5948: *6* g.findOpenFile
+def findOpenFile(fileName):
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    for frame in g.app.windowList:
+        c = frame.c
+        if g.os_path_realpath(munge(fileName)) == g.os_path_realpath(munge(c.mFileName)):
+            frame.bringToFront()
+            c.setLog()
+            # 2011/11/21: selecting the new tab ensures focus is set.
+            master = hasattr(frame.top,'leo_master') and frame.top.leo_master
+            if master: # frame.top.leo_master is a TabbedTopLevel.
+                master.select(frame.c)
+            c.outerUpdate()
+            return c
+    return None
+#@+node:ekr.20090520055433.5952: *6* g.finishOpen
+def finishOpen(c):
+
+    k = c.k
+    # New in Leo 4.6: provide an official way for very late initialization.
+
+    # # 2011/11/21: selecting the new tab ensures focus is set.
+    # master = hasattr(c.frame.top,'leo_master') and c.frame.top.leo_master
+    # if master: # frame.top.leo_master is a TabbedTopLevel.
+        # master.select(c)
+
+    c.frame.tree.initAfterLoad()
+    c.initAfterLoad()
+    c.redraw()
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.chapterController:
+        c.chapterController.finishCreate()
+    if k:
+        k.setDefaultInputState()
+    c.initialFocusHelper()
+    if k:
+        k.showStateAndMode()
+
+    c.frame.initCompleteHint()
+    return True
 #@+node:ekr.20111113141805.10062: *3* Code
 #@+node:ekr.20111109105907.9796: *4* Simplified g.pr
 #@+node:ekr.20111023164430.16771: *4* Removed unused color tags
@@ -10959,6 +11076,78 @@ toGuiIndex = toPythonIndex
 
 This is an important addition to reliability.
 It ensures that body/log.widget and body.bodyCtrl/log.logCtrl are always in synch.
+#@+node:ekr.20111118190243.10193: *4* Added eventFilters to top-level frames
+@nocolor-node
+
+Added eventFilter in createFrame in SDI/TabbedFrameFactory classes
+#@+node:ekr.20110605121601.18463: *5* createFrame (SDIFrameFactory)
+def createFrame(self, leoFrame):
+
+    c = leoFrame.c
+    dw = DynamicWindow(c)    
+    dw.construct()
+    g.app.gui.attachLeoIcon(dw)
+    dw.setWindowTitle(leoFrame.title)
+    
+    if 1:
+        # g.trace('(TabbedFrameFactor) adding bindings')
+        dw.ev_filter = leoQtEventFilter(c,w=dw,tag='sdi-frame')
+        dw.installEventFilter(dw.ev_filter)
+
+    if g.app.start_minimized:
+        dw.showMinimized()
+    elif g.app.start_maximized:
+        dw.showMaximized()
+    elif g.app.start_fullscreen:
+        dw.showFullScreen()
+    else:
+        dw.show()
+
+    return dw
+
+def deleteFrame(self, wdg):
+    pass
+
+#@+node:ekr.20110605121601.18466: *5* createFrame (TabbedFrameFactory)
+def createFrame(self, leoFrame):
+
+    # g.trace('(TabbedFrameFactory)')
+
+    c = leoFrame.c
+    if self.masterFrame is None:
+        self.createMaster()
+    tabw = self.masterFrame
+    dw = DynamicWindow(c,tabw)
+    self.leoFrames[dw] = leoFrame
+
+    # Shorten the title.
+    fname = c.mFileName
+    if fname:
+        title = os.path.basename(fname)
+    else:
+        title = leoFrame.title
+    tip = leoFrame.title
+
+    dw.setWindowTitle(tip) # 2010/1/1
+    idx = tabw.addTab(dw, title)
+    if tip: tabw.setTabToolTip(idx, tip)
+
+    dw.construct(master=tabw)
+    tabw.setCurrentIndex(idx)
+    
+    if 1:
+        # g.trace('(TabbedFrameFactor) adding bindings')
+        dw.ev_filter = leoQtEventFilter(c,w=dw,tag='sdi-frame')
+        dw.installEventFilter(dw.ev_filter)
+
+    # Work around the problem with missing dirty indicator
+    # by always showing the tab.
+    tabw.tabBar().setVisible(
+        self.alwaysShowTabs or tabw.count() > 1)
+
+    dw.show()
+    tabw.show()
+    return dw
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
@@ -14446,6 +14635,10 @@ def findOpenFile(fileName):
         if g.os_path_realpath(munge(fileName)) == g.os_path_realpath(munge(c.mFileName)):
             frame.bringToFront()
             c.setLog()
+            # 2011/11/21: selecting the new tab ensures focus is set.
+            master = hasattr(frame.top,'leo_master') and frame.top.leo_master
+            if master: # frame.top.leo_master is a TabbedTopLevel.
+                master.select(frame.c)
             c.outerUpdate()
             return c
     return None
@@ -14454,6 +14647,12 @@ def finishOpen(c):
 
     k = c.k
     # New in Leo 4.6: provide an official way for very late initialization.
+
+    # # 2011/11/21: selecting the new tab ensures focus is set.
+    # master = hasattr(c.frame.top,'leo_master') and c.frame.top.leo_master
+    # if master: # frame.top.leo_master is a TabbedTopLevel.
+        # master.select(c)
+
     c.frame.tree.initAfterLoad()
     c.initAfterLoad()
     c.redraw()
@@ -14466,6 +14665,7 @@ def finishOpen(c):
     c.initialFocusHelper()
     if k:
         k.showStateAndMode()
+
     c.frame.initCompleteHint()
     return True
 #@+node:ekr.20090520055433.5950: *8* g.handleOpenHooks
@@ -20450,7 +20650,7 @@ Added special-case code to findAllUnitTestNodes.
 
 print-bindings: Alt/Ctrl+Key+N now printed with plain Alt/Ctrl keys and shown as Alt/Ctrl+N.
 print-commands: Alt/Ctrl+Key+N now printed as Alt/Ctrl+N.
-#@+node:ekr.20111121084517.10187: *4* Added show-decoration-selected: 1 to 
+#@+node:ekr.20111121084517.10187: *4* Added show-decoration-selected: 1 to
 Added show-decoration-selected: 1 to QTreeWidget stylesheet.
 
 This causes the entire headline row to be shown when select, a big improvement, imo.

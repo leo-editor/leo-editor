@@ -19210,25 +19210,6 @@ for s,expected in table:
     tokens4 = sc.removeBlankLinesTokens(tokens3)
     assert tokens4 == tokens3,'fail3'
 #@+node:ekr.20111121142012.4141: *3* Tests of the new log code
-#@+node:ekr.20111121142012.4030: *4* @test relationships between log-related objects
-import PyQt4.QtGui as QtGui
-
-log = c.frame.log
-name = log.__class__.__name__
-
-if g.app.isExternalUnitTest:
-    assert name == 'nullLog',name
-else:
-    assert name == 'leoQtLog',name
-    assert log.widget.__class__.__name__ == 'leoQTextEditWidget' 
-    assert not issubclass(log.widget.__class__,QtGui.QWidget.__class__)
-        # leoQTextEditWidget us a poor name: it is not a Qt widget.
-    assert log.widget.widget.__class__.__name__ == 'LeoQTextBrowser'
-    assert hasattr(log.widget,'widget') and log.widget.widget
-    assert hasattr(log.widget.widget,'leo_log_wrapper')
-    wrapper = log.widget.widget.leo_log_wrapper
-    assert wrapper == log.widget
-
 #@+node:ekr.20111120124051.3992: *4* @test Ctrl-I inserts only one headline
 import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
@@ -19283,7 +19264,6 @@ else:
         # delete_children(p1)
         c.redraw()
 #@+node:ekr.20111121172139.5382: *5* first-child
-#@+node:ekr.20111121172139.5383: *5* newHeadline
 #@+node:ekr.20111120124051.3994: *4* @test cycle-all-focus
 '''Test that cycle-all-focus cycles through all tabs.'''
 
@@ -19307,6 +19287,21 @@ else:
             tab,log.tabName)
         last_widget = log.contentsDict.get(tab)
         # print('pass',tab,last_widget)
+        
+    # Test transfer into tree widget.
+    event = g.bunch(widget=last_widget)
+    c.editCommands.cycleAllFocus(event=event)
+    last_widget = w = g.app.gui.get_focus()
+    name = w.__class__.__name__
+    assert name == 'LeoQTreeWidget',name
+    
+    # Test transfer into body widget.
+    event = g.bunch(widget=last_widget)
+    c.editCommands.cycleAllFocus(event=event)
+    w = g.app.gui.get_focus()
+    w_name = g.app.gui.widget_name(w)
+    assert w_name == 'richTextEdit',w_name
+
 #@+node:ekr.20111121164644.3928: *4* @test cycle-tab-focus
 '''Test that cycle-all-focus cycles through all tabs.'''
 
@@ -19319,6 +19314,7 @@ if g.app.isExternalUnitTest:
     pass
 else:
     log = c.frame.log
+    c.k.keyboardQuit()
     c.bodyWantsFocusNow()
     
     for tab in tabs:
@@ -19326,6 +19322,28 @@ else:
         assert log.tabName == tab,'expected %s, got %s' % (
             tab,log.tabName)
         # print('pass',tab)
+#@+node:ekr.20111121224307.3934: *4* @test handleDefaultChar from log pane
+if g.app.isExternalUnitTest:
+    # print('external test')
+    pass
+else:
+    tabs = ('Log','Find')
+    log = c.frame.log
+    c.bodyWantsFocusNow()
+    last_widget = c.frame.body
+        
+    for tab in tabs:
+        # A small hack: fudge up the widget to pass to the command.
+        event = g.bunch(widget=last_widget)
+        c.editCommands.cycleAllFocus(event=event)
+        assert log.tabName == tab,'expected %s, got %s' % (
+            tab,log.tabName)
+        last_widget = log.contentsDict.get(tab)
+        # print('pass',tab,last_widget)
+        event = g.bunch(widget=last_widget)
+        
+        # This throws exception: LeoQTextBrowser has no attribute logCtrl.
+        c.k.handleDefaultChar(event, stroke='a')
 #@+node:ekr.20111121081052.3908: *4* @test log.numberOfVisibleTabs
 if g.app.isExternalUnitTest:
     print('external test')
@@ -19355,6 +19373,25 @@ else:
     log = c.frame.log
     log.put(p.h)
     log.putnl()
+#@+node:ekr.20111121142012.4030: *4* @test relationships between log-related objects
+import PyQt4.QtGui as QtGui
+
+log = c.frame.log
+name = log.__class__.__name__
+
+if g.app.isExternalUnitTest:
+    assert name == 'nullLog',name
+else:
+    assert name == 'leoQtLog',name
+    assert log.widget.__class__.__name__ == 'leoQTextEditWidget' 
+    assert not issubclass(log.widget.__class__,QtGui.QWidget.__class__)
+        # leoQTextEditWidget us a poor name: it is not a Qt widget.
+    assert log.widget.widget.__class__.__name__ == 'LeoQTextBrowser'
+    assert hasattr(log.widget,'widget') and log.widget.widget
+    assert hasattr(log.widget.widget,'leo_log_wrapper')
+    wrapper = log.widget.widget.leo_log_wrapper
+    assert wrapper == log.widget
+
 #@+node:ekr.20111121113227.4035: *4* mini-test: add-editor
 c.k.simulateCommand('add-editor')
 c.k.simulateCommand('delete-editor')

@@ -158,15 +158,15 @@
 <v t="ekr.20111105065243.3837"><vh>@test removeBlankLinesTokens (rst)</vh></v>
 </v>
 <v t="ekr.20111121142012.4141"><vh>Tests of the new log code</vh>
-<v t="ekr.20111121142012.4030"><vh>@test relationships between log-related objects</vh></v>
 <v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh>
 <v t="ekr.20111121172139.5382"><vh>first-child</vh></v>
-<v t="ekr.20111121172139.5383"><vh>newHeadline</vh></v>
 </v>
 <v t="ekr.20111120124051.3994"><vh>@test cycle-all-focus</vh></v>
 <v t="ekr.20111121164644.3928"><vh>@test cycle-tab-focus</vh></v>
+<v t="ekr.20111121224307.3934"><vh>@test handleDefaultChar from log pane</vh></v>
 <v t="ekr.20111121081052.3908"><vh>@test log.numberOfVisibleTabs</vh></v>
 <v t="ekr.20111121140833.3917"><vh>@test put &amp; putNl (leoQtLog)</vh></v>
+<v t="ekr.20111121142012.4030"><vh>@test relationships between log-related objects</vh></v>
 <v t="ekr.20111121113227.4035"><vh>mini-test: add-editor</vh></v>
 <v t="ekr.20111121081052.3909"><vh>mini-test: g.es leave focus unchanged</vh></v>
 <v t="ekr.20111121090700.3914"><vh>mini-test: print-bindings puts results in Bindings tab</vh></v>
@@ -183,6 +183,14 @@
 <v t="ekr.20100131171342.5475"><vh>@test leoFrame is subset of leoTkFrame</vh></v>
 <v t="ekr.20100131171342.5476"><vh>@test leoGui is subset of leoTkGui</vh></v>
 <v t="ekr.20100131171342.5477"><vh>@test leoTree is subset of leoTkTree</vh></v>
+</v>
+</v>
+<v t="ekr.20111121233230.3938"><vh>Resurrected Nodes</vh>
+<v t="ekr.20111121233230.3939"><vh>From @file activeUnitTests.txt</vh>
+<v t="ekr.20111121232908.3936"><vh>first-child</vh></v>
+</v>
+<v t="ekr.20111121233230.3940"><vh>From @file activeUnitTests.txt</vh>
+<v t="ekr.20111121232908.3937"><vh>newHeadline</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1868,6 +1876,21 @@ else:
             tab,log.tabName)
         last_widget = log.contentsDict.get(tab)
         # print('pass',tab,last_widget)
+        
+    # Test transfer into tree widget.
+    event = g.bunch(widget=last_widget)
+    c.editCommands.cycleAllFocus(event=event)
+    last_widget = w = g.app.gui.get_focus()
+    name = w.__class__.__name__
+    assert name == 'LeoQTreeWidget',name
+    
+    # Test transfer into body widget.
+    event = g.bunch(widget=last_widget)
+    c.editCommands.cycleAllFocus(event=event)
+    w = g.app.gui.get_focus()
+    w_name = g.app.gui.widget_name(w)
+    assert w_name == 'richTextEdit',w_name
+
 </t>
 <t tx="ekr.20111121081052.3908">if g.app.isExternalUnitTest:
     print('external test')
@@ -1984,6 +2007,7 @@ if g.app.isExternalUnitTest:
     pass
 else:
     log = c.frame.log
+    c.k.keyboardQuit()
     c.bodyWantsFocusNow()
     
     for tab in tabs:
@@ -1994,6 +2018,32 @@ else:
 </t>
 <t tx="ekr.20111121171738.3932"></t>
 <t tx="ekr.20111121172139.5382"></t>
-<t tx="ekr.20111121172139.5383"></t>
+<t tx="ekr.20111121224307.3934">if g.app.isExternalUnitTest:
+    # print('external test')
+    pass
+else:
+    tabs = ('Log','Find')
+    log = c.frame.log
+    c.bodyWantsFocusNow()
+    last_widget = c.frame.body
+        
+    for tab in tabs:
+        # A small hack: fudge up the widget to pass to the command.
+        event = g.bunch(widget=last_widget)
+        c.editCommands.cycleAllFocus(event=event)
+        assert log.tabName == tab,'expected %s, got %s' % (
+            tab,log.tabName)
+        last_widget = log.contentsDict.get(tab)
+        # print('pass',tab,last_widget)
+        event = g.bunch(widget=last_widget)
+        
+        # This throws exception: LeoQTextBrowser has no attribute logCtrl.
+        c.k.handleDefaultChar(event, stroke='a')
+</t>
+<t tx="ekr.20111121232908.3936"></t>
+<t tx="ekr.20111121232908.3937"></t>
+<t tx="ekr.20111121233230.3938"></t>
+<t tx="ekr.20111121233230.3939"></t>
+<t tx="ekr.20111121233230.3940"></t>
 </tnodes>
 </leo_file>

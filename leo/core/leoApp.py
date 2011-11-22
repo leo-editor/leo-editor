@@ -376,6 +376,10 @@ class LeoApp:
             frame.deiconify()
             frame.lift()
             frame.c.setLog()
+            master = hasattr(frame.top,'leo_master') and frame.top.leo_master
+            if master: # 2011/11/21: selecting the new tab ensures focus is set.
+                # frame.top.leo_master is a TabbedTopLevel.
+                master.select(frame.c)
             frame.c.bodyWantsFocus()
             frame.c.outerUpdate()
         elif not g.app.unitTesting:

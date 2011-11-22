@@ -2297,6 +2297,10 @@ def findOpenFile(fileName):
         if g.os_path_realpath(munge(fileName)) == g.os_path_realpath(munge(c.mFileName)):
             frame.bringToFront()
             c.setLog()
+            # 2011/11/21: selecting the new tab ensures focus is set.
+            master = hasattr(frame.top,'leo_master') and frame.top.leo_master
+            if master: # frame.top.leo_master is a TabbedTopLevel.
+                master.select(frame.c)
             c.outerUpdate()
             return c
     return None
@@ -2305,6 +2309,12 @@ def finishOpen(c):
 
     k = c.k
     # New in Leo 4.6: provide an official way for very late initialization.
+
+    # # 2011/11/21: selecting the new tab ensures focus is set.
+    # master = hasattr(c.frame.top,'leo_master') and c.frame.top.leo_master
+    # if master: # frame.top.leo_master is a TabbedTopLevel.
+        # master.select(c)
+
     c.frame.tree.initAfterLoad()
     c.initAfterLoad()
     c.redraw()
@@ -2317,6 +2327,7 @@ def finishOpen(c):
     c.initialFocusHelper()
     if k:
         k.showStateAndMode()
+
     c.frame.initCompleteHint()
     return True
 #@+node:ekr.20090520055433.5950: *4* g.handleOpenHooks

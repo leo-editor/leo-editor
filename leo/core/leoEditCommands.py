@@ -3462,6 +3462,10 @@ class editCommandsClass (baseEditCommandsClass):
                     pane = log.logCtrl
                     g.trace('**after cycleTabFocus',w_name(pane),pane)
                 return
+
+        else:
+            # A safe default: go to the body.
+            pane = c.frame.body.bodyCtrl
         
         if trace: g.trace('**after',w_name(pane),pane)
 

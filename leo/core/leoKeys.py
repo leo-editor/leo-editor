@@ -2809,14 +2809,19 @@ class keyHandlerClass:
                 c.onCanvasKey(event) # New in Leo 4.4.2
             return # (for Tk) 'break'
         elif name.startswith('log'):
-            i = w.logCtrl.getInsertPoint()
-            if not stroke:
-                stroke = event and event.stroke
-            if stroke in ('\n','Return'): stroke = '\n'
-            elif stroke in ('\t','Tab'): stroke = '\t'
-            elif stroke in ('\b','Backspace'): stroke = '\b'
-            elif stroke in ('.','Period','period'): stroke = '.'
-            w.logCtrl.insert(i,stroke)
+            # Bug fix: 2011/11/21: Because of universal bindings
+            # we may not be able to insert anything into w.
+            if issubclass(w.__class__,leoFrame.HighLevelInterface):
+                i = w.logCtrl.getInsertPoint()
+                if not stroke:
+                    stroke = event and event.stroke
+                if stroke in ('\n','Return'): stroke = '\n'
+                elif stroke in ('\t','Tab'): stroke = '\t'
+                elif stroke in ('\b','Backspace'): stroke = '\b'
+                elif stroke in ('.','Period','period'): stroke = '.'
+                w.logCtrl.insert(i,stroke)
+            else:
+                if trace: g.trace('Not a HighLevelInterface object',w)
             return # None
         else:
             # Let the widget handle the event.

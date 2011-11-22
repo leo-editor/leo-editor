@@ -7042,7 +7042,7 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         dw = c.frame.top # A DynamicWindow
         i = self.indexOf(dw)
         self.setCurrentIndex(i)
-        # g.trace(i,dw)
+        # g.trace(i,c)
     #@+node:ekr.20110605121601.18457: *4* setLeoWindowSize (LeoTabbedTopLevel)
     def setLeoWindowSize (self,rect):
         
@@ -7107,7 +7107,7 @@ class SDIFrameFactory:
     """
 
     #@+others
-    #@+node:ekr.20110605121601.18463: *4* frame creation & null deletion
+    #@+node:ekr.20110605121601.18463: *4* createFrame (SDIFrameFactory)
     def createFrame(self, leoFrame):
 
         c = leoFrame.c
@@ -7115,6 +7115,11 @@ class SDIFrameFactory:
         dw.construct()
         g.app.gui.attachLeoIcon(dw)
         dw.setWindowTitle(leoFrame.title)
+        
+        if 1:
+            # g.trace('(TabbedFrameFactor) adding bindings')
+            dw.ev_filter = leoQtEventFilter(c,w=dw,tag='sdi-frame')
+            dw.installEventFilter(dw.ev_filter)
 
         if g.app.start_minimized:
             dw.showMinimized()
@@ -7182,7 +7187,7 @@ class TabbedFrameFactory:
         dw.construct(master=tabw)
         tabw.setCurrentIndex(idx)
         
-        if 0: # Possible, but it doesn't seem to help the cycle-tab-focus command.
+        if 1:
             # g.trace('(TabbedFrameFactor) adding bindings')
             dw.ev_filter = leoQtEventFilter(c,w=dw,tag='sdi-frame')
             dw.installEventFilter(dw.ev_filter)
