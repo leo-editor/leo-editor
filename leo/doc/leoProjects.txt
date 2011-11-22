@@ -6120,7 +6120,6 @@ def createTab (self,tabName,widget=None,wrap='none'):
     return contents
 #@+node:ekr.20060613090701: *6* cycleAllFocus (editCommandsClass)
 editWidgetCount = 0
-### logWidgetCount = 0
 
 def cycleAllFocus (self,event):
 
@@ -6140,56 +6139,31 @@ def cycleAllFocus (self,event):
     # w may not be the present body widget, so test its name, not its id.
     if w_name(w).startswith('body'):
         n = c.frame.body.numberOfEditors
-        # g.trace(self.editWidgetCount,n)
         if n > 1:
             self.editWidgetCount += 1
             if self.editWidgetCount == 1:
                 pane = c.frame.body.bodyCtrl
             elif self.editWidgetCount > n:
                 self.editWidgetCount = 0
-                ### self.logWidgetCount = 1
                 c.frame.log.selectTab('Log')
                 pane = c.frame.log.logCtrl
             else:
-                c.frame.body.cycleEditorFocus(event) ; pane = None
+                c.frame.body.cycleEditorFocus(event)
+                pane = None
         else:
             self.editWidgetCount = 0
-            ### self.logWidgetCount = 1
             c.frame.log.selectTab('Log')
             pane = c.frame.log.logCtrl
+
     elif log.isLogWidget(w):
         log.cycleTabFocus()
         if log.tabName == 'Log':
             pane = c.frame.tree.canvas
         else:
-            pane = log.logCtrl
-            if trace: g.trace('**after cycleTabFocus',w_name(pane),pane)
-            return ### Done.
-
-            ### w = log.frameDict.get(log.tabName)
-            ### pane = w 
-        
-        # n = c.frame.log.numberOfVisibleTabs()
-        # if n > 1:
-            # self.logWidgetCount += 1
-            # if self.logWidgetCount == 1:
-                # c.frame.log.selectTab('Log')
-                # pane = c.frame.log.logCtrl
-            # elif self.logWidgetCount > n:
-                # self.logWidgetCount = 0
-                # pane = c.frame.tree.canvas
-            # else:
-                # c.frame.log.cycleTabFocus()
-                # pane = c.frame.log.logCtrl
-        # else:
-            # self.logWidgetCount = 0
-            # pane = c.frame.tree.canvas
-            # Use this to skip the tree pane.
-            # pane = c.frame.body.bodyCtrl
-    else:
-        pane = c.frame.body.bodyCtrl
-        self.editWidgetCount = 1
-        ### self.logWidgetCount = 0
+            if trace:
+                pane = log.logCtrl
+                g.trace('**after cycleTabFocus',w_name(pane),pane)
+            return
     
     if trace: g.trace('**after',w_name(pane),pane)
 
