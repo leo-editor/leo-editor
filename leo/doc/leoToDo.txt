@@ -14,6 +14,264 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
+.. @+node:ekr.20111123030145.10210: *4* Urgent
+.. @+node:ekr.20111122172039.10203: *5* ** Remove 4.9 link from Leo's home page
+@nocolor-node
+
+Leo is the leading edge, and that's all there is.
+.. @+node:ekr.20111115155710.9807: *5* * Make sure external unit tests leave focus in body
+.. @+node:ekr.20111122080923.10186: *5* Urgent: Fix bug 893223: Unpredictable slow operation state cured by writing
+@nocolor-node
+
+Leo-editor unpredictably gets into a state where Ctrl-V fails to paste
+and every Leo-editor operation takes much longer than usual.  This
+resulted in the following red message in the log pane:
+
+ignoring command: already executing a command.
+
+This bad state was ended by writing the .leo file so it was no longer
+dirty.  I've noticed this problem off and on for at least several weeks.
+
+Test Conditions:
+
+Leo-Editor Rev 4832
+Leo Log Window
+Leo 4.9.1 devel, build 4669, 4Q/2011
+Python 2.7.2, qt version 4.7.3
+linux2
+setting leoID from os.getenv('USER'): 'bob'
+load dir: /home/bob/bzrWork/pluginPath/leo/core
+global config dir: /home/bob/bzrWork/pluginPath/leo/config
+home dir: /home/bob
+reading settings in /home/bob/bzrWork/pluginPath/leo/config/leoSettings.leo
+reading settings in /home/bob/.leo/myLeoSettings.leo
+reading settings in /media/sda1/BobH/1/Leo/Leo.leo
+reading: /media/sda1/BobH/1/Leo/Leo.leo
+reading: @auto /home/bob/.leo/.leoRecentFiles.txt
+
+EKR =======================
+
+There is a blunder in c.executeScript.  It jams False into c.inCommand
+without saving and restoring the previous value.  This has to be
+wrong.  I'm not sure that this is the entire fix.  I'll put it on the
+urgent list.
+.. @+node:ekr.20111122080923.10188: *6* Found: inCommand
+.. @+node:ekr.20031218072017.2140: *7* c.executeScript & helpers
+def executeScript(self,event=None,args=None,p=None,script=None,
+    useSelectedText=True,define_g=True,define_name='__main__',silent=False,
+    namespace=None):
+
+    """This executes body text as a Python script.
+
+    We execute the selected text, or the entire body text if no text is selected."""
+
+    c = self ; script1 = script
+    if not script:
+        script = g.getScript(c,p,useSelectedText=useSelectedText)
+    self.redirectScriptOutput()
+    try:
+        oldLog = g.app.log # 2011/01/19
+        log = c.frame.log
+        g.app.log = log
+        if script.strip():
+            sys.path.insert(0,c.frame.openDirectory)
+            script += '\n' # Make sure we end the script properly.
+            try:
+                p = c.p
+                if p: c.setCurrentDirectoryFromContext(p)
+                d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
+                if define_name: d['__name__'] = define_name
+                d['script_args'] = args or []
+                if namespace: d.update(namespace)
+                # if args: sys.argv = args
+                # A kludge: reset c.inCommand here to handle the case where we *never* return.
+                # (This can happen when there are multiple event loops.)
+                # This does not prevent zombie windows if the script puts up a dialog...
+                c.inCommand = False
+                if c.write_script_file:
+                    scriptFile = self.writeScriptFile(script)
+                    
+                    # 2011/10/31: make g.inScript a synonym for g.app.inScript.
+                    g.inScript = g.app.inScript = True
+                    try:
+                        if g.isPython3:
+                            exec(compile(script,scriptFile,'exec'),d)
+                        else:
+                            execfile(scriptFile,d)
+                    finally:
+                        g.inScript = g.app.inScript = False
+                else:
+                    g.app.inScript = True
+                    try:
+                        exec(script,d)
+                    finally:
+                        g.app.inScript = False
+                if 0: # This message switches panes, and can be disruptive.
+                    if not script1 and not silent:
+                        # Careful: the script may have changed the log tab.
+                        tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+                        g.es("end of script",color="purple",tabName=tabName)
+            except Exception:
+                g.handleScriptException(c,p,script,script1)
+            del sys.path[0]
+        else:
+            tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+            g.es("no script selected",color="blue",tabName=tabName)
+    finally:
+        g.app.log = oldLog # 2011/01/19
+        self.unredirectScriptOutput()
+.. @+node:ekr.20031218072017.2143: *8* redirectScriptOutput
+def redirectScriptOutput (self):
+
+    c = self
+
+    # g.trace('original')
+
+    if c.config.redirect_execute_script_output_to_log_pane:
+
+        g.redirectStdout() # Redirect stdout
+        g.redirectStderr() # Redirect stderr
+.. @+node:ekr.20110522121957.18230: *8* setCurrentDirectoryFromContext
+def setCurrentDirectoryFromContext(self,p):
+    
+    trace = False and not g.unitTesting
+    c = self
+    
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    
+    curDir = g.os_path_abspath(os.getcwd())
+
+    # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
+    
+    if path and path != curDir:
+        if trace: g.trace('calling os.chdir(%s)' % (path))
+        try:
+            os.chdir(path)
+        except Exception:
+            pass
+.. @+node:EKR.20040627100424: *8* unredirectScriptOutput
+def unredirectScriptOutput (self):
+
+    c = self
+
+    # g.trace('original')
+
+    if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+
+        g.restoreStderr()
+        g.restoreStdout()
+.. @+node:ekr.20031218072017.2817: *7*  doCommand
+command_count = 0
+
+def doCommand (self,command,label,event=None):
+
+    """Execute the given command, invoking hooks and catching exceptions.
+
+    The code assumes that the "command1" hook has completely handled the command if
+    g.doHook("command1") returns False.
+    This provides a simple mechanism for overriding commands."""
+
+    c = self ; p = c.p
+    commandName = command and command.__name__
+    c.setLog()
+
+    self.command_count += 1
+    if not g.app.unitTesting and c.config.getBool('trace_doCommand'):
+        g.trace(commandName)
+
+    # The presence of this message disables all commands.
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+        return # (for Tk) 'break' # Inhibit all other handlers.
+
+    if c.exists and c.inCommand and not g.unitTesting:
+        # g.trace('inCommand',c)
+        g.app.commandInterruptFlag = True
+        g.es('ignoring command: already executing a command.',color='red')
+        return # (for Tk) 'break'
+
+    g.app.commandInterruptFlag = False
+
+    if label and event is None: # Do this only for legacy commands.
+        if label == "cantredo": label = "redo"
+        if label == "cantundo": label = "undo"
+        g.app.commandName = label
+
+    if not g.doHook("command1",c=c,p=p,v=p,label=label):
+        try:
+            c.inCommand = True
+            val = command(event)
+            if c and c.exists: # Be careful: the command could destroy c.
+                c.inCommand = False
+                c.k.funcReturn = val
+            # else: g.pr('c no longer exists',c)
+        except Exception:
+            c.inCommand = False
+            if g.app.unitTesting:
+                raise
+            else:
+                g.es_print("exception executing command")
+                g.es_exception(c=c)
+
+        if c and c.exists:
+            if c.requestCloseWindow:
+                g.trace('Closing window after command')
+                c.requestCloseWindow = False
+                g.app.closeLeoWindow(c.frame)
+            else:
+                c.outerUpdate()
+
+    # Be careful: the command could destroy c.
+    if c and c.exists:
+        p = c.p
+        g.doHook("command2",c=c,p=p,v=p,label=label)
+
+    return # (for Tk) "break" # Inhibit all other handlers.
+.. @+node:ekr.20061031131434.160: *7* enterNamedMode
+def enterNamedMode (self,event,commandName):
+
+    k = self ; c = k.c
+    modeName = commandName[6:]
+    c.inCommand = False # Allow inner commands in the mode.
+    k.generalModeHandler(event,modeName=modeName)
+.. @+node:ekr.20110605121601.18140: *7* closeEvent (DynanicWindow)
+def closeEvent (self,event):
+
+    trace = False and not g.unitTesting
+    c = self.leo_c
+
+    if not c.exists:
+        # Fixes double-prompt bug on Linux.
+        if trace: g.trace('destroyed')
+        event.accept()
+        return
+
+    if c.inCommand:
+        if trace: g.trace('in command')
+        c.requestCloseWindow = True
+    else:
+        if trace: g.trace('closing')
+        ok = g.app.closeLeoWindow(c.frame)
+        if ok:
+            event.accept()
+        else:
+            event.ignore()
+.. @+node:ekr.20110605121601.18286: *7* frame.OnCloseLeoEvent
+# Called from quit logic and when user closes the window.
+# Returns True if the close happened.
+
+def OnCloseLeoEvent(self):
+
+    f = self ; c = f.c
+
+    if c.inCommand:
+        # g.trace('requesting window close')
+        c.requestCloseWindow = True
+    else:
+        g.app.closeLeoWindow(self)
+.. @+node:ekr.20111122094453.10201: *5* Ignore unbound Alt/Ctrl keys, especially Alt/Ctrl-N
+.. @+node:ekr.20111118190243.10188: *5* Alt-x doesn't work in the find tab
 .. @+node:ekr.20111118104929.10185: *4* Recent leoInspect
 .. @+node:ekr.20111117031039.10977: *5*  To do
 @nocolor
@@ -168,9 +426,10 @@ a = b.c.d
 @nocolor-node
 
 Like the one used in k.masterKeyHandler.
-.. @+node:ekr.20111121084517.10189: *4* *** Remove all calls to w.see
-.. @+node:ekr.20111118190243.10188: *4* Alt-x doesn't work in the find tab
-.. @+node:ekr.20111115155710.9807: *4* Make sure external unit tests leave focus in body
+
+Bug not g.app.trace_scroll.
+.. @+node:ekr.20111121084517.10189: *4* Remove all calls to w.see, w.seeInsertPoint, w.setYScrollPosition
+This would be a major project: See "Scrolling bug" notes.
 .. @+node:ekr.20111118104929.10186: *4* Create a way to select any log tab
 @nocolor-node
 
