@@ -799,6 +799,8 @@ def runTestsExternally (c,all,marked):
 
     runner = runTestExternallyHelperClass(c,all,marked)
     runner.runTests()
+
+    c.bodyWantsFocusNow() # 2011/11/23.
 #@+node:ekr.20070627140344: ** class runTestExternallyHelperClass
 class runTestExternallyHelperClass:
 

@@ -1940,7 +1940,7 @@ class leoQtMinibuffer (leoQLineEditWidget):
 #@+others
 #@+node:ekr.20110605121601.18133: **  Module level
 
-#@+node:ekr.20110605121601.18134: *3* init
+#@+node:ekr.20110605121601.18134: *3* init (qtGui.py top level)
 def init():
 
     if g.app.unitTesting: # Not Ok for unit testing!
