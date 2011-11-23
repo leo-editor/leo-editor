@@ -3166,7 +3166,7 @@ class keyHandlerClass:
 
         # c = self.c
         # c.widgetWantsFocus(c.miniBufferWidget)
-    #@+node:ekr.20061031170011.5: *4* getLabel
+    #@+node:ekr.20061031170011.5: *4* k.getLabel
     def getLabel (self,ignorePrompt=False):
 
         k = self ; w = self.w
@@ -3192,7 +3192,7 @@ class keyHandlerClass:
 
         if protect:
             k.mb_prefix = s
-    #@+node:ekr.20061031170011.6: *4* protectLabel
+    #@+node:ekr.20061031170011.6: *4* k.protectLabel
     def protectLabel (self):
 
         k = self ; w = self.w
@@ -3200,7 +3200,7 @@ class keyHandlerClass:
 
         k.mb_prefix = w.getAllText()
 
-    #@+node:ekr.20061031170011.7: *4* resetLabel
+    #@+node:ekr.20061031170011.7: *4* k.resetLabel
     def resetLabel (self):
 
         k = self ; w = self.w
@@ -3211,7 +3211,7 @@ class keyHandlerClass:
             w.setSelectionRange(0,0,insert=0)
             state = k.unboundKeyAction
             k.setLabelBlue(label='%s State' % (state.capitalize()),protect=True)
-    #@+node:ekr.20061031170011.8: *4* setLabel
+    #@+node:ekr.20061031170011.8: *4* k.setLabel
     def setLabel (self,s,protect=False):
 
         trace = (False or self.trace_minibuffer) and not g.app.unitTesting
@@ -3230,7 +3230,7 @@ class keyHandlerClass:
 
         if protect:
             k.mb_prefix = s
-    #@+node:ekr.20061031170011.9: *4* extendLabel
+    #@+node:ekr.20061031170011.9: *4* k.extendLabel
     def extendLabel(self,s,select=False,protect=False):
         
         trace = False and not g.unitTesting
@@ -3250,7 +3250,7 @@ class keyHandlerClass:
 
         if protect:
             k.protectLabel()
-    #@+node:ekr.20080408060320.790: *4* selectAll
+    #@+node:ekr.20080408060320.790: *4* k.selectAll
     def selectAll (self):
 
         '''Select all the user-editable text of the minibuffer.'''
@@ -3260,7 +3260,7 @@ class keyHandlerClass:
         w.setSelectionRange(i,j,insert=j)
 
 
-    #@+node:ekr.20061031170011.10: *4* setLabelBlue
+    #@+node:ekr.20061031170011.10: *4* k.setLabelBlue
     def setLabelBlue (self,label=None,protect=False):
 
         k = self ; w = k.w
@@ -3270,7 +3270,7 @@ class keyHandlerClass:
 
         if label is not None:
             k.setLabel(label,protect)
-    #@+node:ekr.20061031170011.11: *4* setLabelGrey
+    #@+node:ekr.20061031170011.11: *4* k.setLabelGrey
     def setLabelGrey (self,label=None):
 
         k = self ; w = self.w
@@ -3282,7 +3282,7 @@ class keyHandlerClass:
             k.setLabel(label)
 
     setLabelGray = setLabelGrey
-    #@+node:ekr.20080510153327.2: *4* setLabelRed
+    #@+node:ekr.20080510153327.2: *4* k.setLabelRed
     def setLabelRed (self,label=None,protect=False):
 
         k = self ; w = self.w
@@ -3294,7 +3294,7 @@ class keyHandlerClass:
         
         if label is not None:
             k.setLabel(label,protect)
-    #@+node:ekr.20061031170011.12: *4* updateLabel
+    #@+node:ekr.20061031170011.12: *4* k.updateLabel
     def updateLabel (self,event):
 
         '''Mimic what would happen with the keyboard and a Text editor
@@ -3322,7 +3322,7 @@ class keyHandlerClass:
             else:
                 w.insert(ins,ch)
                 i = ins+1
-    #@+node:ekr.20061031170011.13: *4* getEditableTextRange
+    #@+node:ekr.20061031170011.13: *4* k.getEditableTextRange
     def getEditableTextRange (self):
 
         k = self ; w = self.w
@@ -4187,7 +4187,7 @@ class keyHandlerClass:
             k.clearState()
 
         # k.showStateAndMode()
-    #@+node:ekr.20061031131434.192: *4* showStateAndMode
+    #@+node:ekr.20061031131434.192: *4* k.showStateAndMode
     def showStateAndMode(self,w=None,prompt=None,setFocus=True):
 
         trace = False and not g.unitTesting

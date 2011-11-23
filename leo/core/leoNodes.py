@@ -2412,7 +2412,7 @@ class vnode (baseVnode):
     def setIcon (self):
 
         pass # Compatibility routine for old scripts
-    #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll (changed)
+    #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll
     # Called only by setBodyTextAfterSelect.
 
     def restoreCursorAndScroll (self,w):
