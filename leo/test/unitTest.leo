@@ -23,6 +23,7 @@
 <v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
 <v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
+<v t="ekr.20111123042627.6654"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20111112093605.4679"><vh>@shortcuts</vh></v>
 <v t="ekr.20050328101834"><vh>@page http plugin</vh>
 <v t="ekr.20050328101834.1"><vh>@bool http_active = False</vh></v>
@@ -32,6 +33,7 @@
 </v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
 </v>
+<v t="ekr.20111123042627.6654"></v>
 <v t="ekr.20111112093605.4679"></v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
@@ -159,7 +161,8 @@
 </v>
 <v t="ekr.20111121142012.4141"><vh>Tests of the new log code</vh>
 <v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh>
-<v t="ekr.20111121172139.5382"><vh>first-child</vh></v>
+<v t="ekr.20111123042806.3937"><vh>first-child</vh></v>
+<v t="ekr.20111123042806.3938"><vh>newHeadline</vh></v>
 </v>
 <v t="ekr.20111120124051.3994"><vh>@test cycle-all-focus</vh></v>
 <v t="ekr.20111121164644.3928"><vh>@test cycle-tab-focus</vh></v>
@@ -594,7 +597,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935" str_leo_pos="7"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1848,16 +1851,13 @@ else:
 </t>
 <t tx="ekr.20111120124051.3994">'''Test that cycle-all-focus cycles through all tabs.'''
 
-# List the tabs in order.
-# The test will fail if this doesn't match the actual tabs.
-tabs = ('Log','Find','Links','Graph','Nav','Task','Log')
-
 if g.app.isExternalUnitTest:
     # print('external test')
     pass
 else:
     log = c.frame.log
     c.bodyWantsFocusNow()
+    tabs = log.orderedTabNames()
     last_widget = c.frame.body
     
     for tab in tabs:
@@ -1891,18 +1891,14 @@ else:
     log = c.frame.log
     d = log.contentsDict
     keys = list(d.keys())
-    # print('logDict',log.logDict.keys())
-    
-    if 0:
-        for key in keys:
-            print('%6s %s' % (key,d.get(key)))
+    tabs = log.orderedTabNames()
     
     n = len(keys)
     n2 = log.numberOfVisibleTabs()
-        # The code no-longer uses numberOfVisibleTabs.
+    n3 = len(tabs)
 
     assert n == n2,'n: %s n2: %s' % (n,n2)
-    assert n &gt;= 6,n # Spell tab visible only in Python 2 on my system.
+    assert n == n3,'n: %s len(log.orederedTabNames()): %s' % (n,n3)
 </t>
 <t tx="ekr.20111121081052.3909">if g.app.isExternalUnitTest:
     pass # Prints to console, which is annoying.
@@ -1995,8 +1991,6 @@ if g.app.isExternalUnitTest:
     pass
 else:
     log = c.frame.log
-    
-    # tabs = ('Find',(maybe 'Spell'),'Links','Graph','Nav','Task','Log')
     tabs = log.orderedTabNames()[1:]
     tabs.append('Log')
     
@@ -2011,7 +2005,6 @@ else:
         # print('pass',tab)
 </t>
 <t tx="ekr.20111121171738.3932"></t>
-<t tx="ekr.20111121172139.5382"></t>
 <t tx="ekr.20111121224307.3934">if g.app.isExternalUnitTest:
     # print('external test')
     pass
@@ -2034,5 +2027,148 @@ else:
         # This throws exception: LeoQTextBrowser has no attribute logCtrl.
         c.k.handleDefaultChar(event, stroke='a')
 </t>
+<t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
+
+# **Important**: to change these defaults, put
+# an @enabled-plugins node in myLeoSettings.leo.
+
+# Highly-recommended plugins:
+
+plugins_menu.py
+free_layout.py # needs to be early
+viewrendered.py
+
+# Recommended plugins:
+
+# contextmenu.py
+# leo_to_html.py
+mod_scripting.py
+# nav_qt.py
+# quicksearch.py
+# stickynotes.py
+# todo.py
+
+
+# Alphabetical list of all Leo plugins.
+
+# active_path.py
+# add_directives.py
+# at_folder.py
+# at_produce.py
+# at_view.py
+# attrib_edit.py
+# backlink.py
+# baseNativeTree.py
+# bibtex.py
+# bookmarks.py
+# bzr_qcommands.py
+# chapter_hoist.py
+# codewisecompleter.py
+# colorize_headlines.py
+# contextmenu.py
+# ctagscompleter.py
+# cursesGui.py
+# datenodes.py
+# debugger_pudb.py
+# detect_urls.py
+# dragdropgoodies.py
+# dtest.py
+# dump_globals.py
+# empty_leo_file.py
+# enable_gc.py
+# expfolder.py
+# FileActions.py
+# free_layout.py
+# ftp.py
+# geotag.py
+# gitarchive.py
+# graphcanvas.py
+# gtkDialogs.py
+# gtkGui.py
+# import_cisco_config.py
+# initinclass.py
+# interact.py
+# ipython.py
+# ironPythonGui.py
+# jinjarender.py
+# leoOPML.py
+# leo_interface.py
+# leo_pdf.py
+# leo_to_html.py
+# leo_to_rtf.py
+# leocursor.py
+# leofeeds.py
+# leomail.py
+# leoremote.py
+# leoscreen.py
+# lineNumbers.py
+# macros.py
+# maximizeNewWindows.py
+# mime.py
+# mnplugins.py
+# mod_autosave.py
+# mod_framesize.py
+# mod_http.py
+# mod_leo2ascd.py
+# mod_read_dir_outline.py
+# mod_scripting.py
+# mod_speedups.py
+# mod_tempfname.py
+# mod_timestamp.py
+# multifile.py
+# nav_qt.py
+# nested_splitter.py
+# niceNosent.py
+# nodeActions.py
+# open_shell.py
+# outline_export.py
+# paste_as_headlines.py
+# pluginsTest.py
+# plugins_menu.py
+# pretty_print.py
+# projectwizard.py
+# qtGui.py
+# qt_main.py
+# qt_quicksearch.py
+# qtframecommands.py
+# quickMove.py
+# quicksearch.py
+# quit_leo.py
+# read_only_nodes.py
+# redirect_to_log.py
+# rst3.py
+# run_nodes.py
+# screenshots.py
+# script_io_to_body.py
+# scripts_menu.py
+# setHomeDirectory.py
+# slideshow.py
+# spydershell.py
+# startfile.py
+# stickynotes.py
+# stickynotes_plus.py
+# swing_gui.py
+# systray.py
+# testRegisterCommand.py
+# textnode.py
+# tkGui.py
+# todo.py
+# tomboy_import.py
+# trace_gc_plugin.py
+# trace_keys.py
+# trace_tags.py
+# valuespace.py
+# viewrendered.py
+# vim.py
+# word_count.py
+# word_export.py
+# wxGui.py
+# xemacs.py
+# xml_edit.py
+# xsltWithNodes.py
+# zenity_file_dialogs.py
+</t>
+<t tx="ekr.20111123042806.3937"></t>
+<t tx="ekr.20111123042806.3938"></t>
 </tnodes>
 </leo_file>

@@ -19263,13 +19263,10 @@ else:
     finally:
         # delete_children(p1)
         c.redraw()
-#@+node:ekr.20111121172139.5382: *5* first-child
+#@+node:ekr.20111123042806.3937: *5* first-child
+#@+node:ekr.20111123042806.3938: *5* newHeadline
 #@+node:ekr.20111120124051.3994: *4* @test cycle-all-focus
 '''Test that cycle-all-focus cycles through all tabs.'''
-
-# List the tabs in order.
-# The test will fail if this doesn't match the actual tabs.
-tabs = ('Log','Find','Links','Graph','Nav','Task','Log')
 
 if g.app.isExternalUnitTest:
     # print('external test')
@@ -19277,6 +19274,7 @@ if g.app.isExternalUnitTest:
 else:
     log = c.frame.log
     c.bodyWantsFocusNow()
+    tabs = log.orderedTabNames()
     last_widget = c.frame.body
     
     for tab in tabs:
@@ -19310,8 +19308,6 @@ if g.app.isExternalUnitTest:
     pass
 else:
     log = c.frame.log
-    
-    # tabs = ('Find',(maybe 'Spell'),'Links','Graph','Nav','Task','Log')
     tabs = log.orderedTabNames()[1:]
     tabs.append('Log')
     
@@ -19354,18 +19350,14 @@ else:
     log = c.frame.log
     d = log.contentsDict
     keys = list(d.keys())
-    # print('logDict',log.logDict.keys())
-    
-    if 0:
-        for key in keys:
-            print('%6s %s' % (key,d.get(key)))
+    tabs = log.orderedTabNames()
     
     n = len(keys)
     n2 = log.numberOfVisibleTabs()
-        # The code no-longer uses numberOfVisibleTabs.
+    n3 = len(tabs)
 
     assert n == n2,'n: %s n2: %s' % (n,n2)
-    assert n >= 6,n # Spell tab visible only in Python 2 on my system.
+    assert n == n3,'n: %s len(log.orederedTabNames()): %s' % (n,n3)
 #@+node:ekr.20111121140833.3917: *4* @test put & putNl (leoQtLog)
 '''These were changed, then reverted, but a unit test is important.'''
 
