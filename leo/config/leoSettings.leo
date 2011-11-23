@@ -5541,8 +5541,45 @@ QScrollArea {
     background-color: white;
 }
 
+/* Components of the Find Tab */
+
 QWidget#findTab {
     background-color: white;
+}
+
+QLabel#findHeading {
+    font-family: DejaVu Sans Mono;
+    font-size: 14px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLabel#findLabel {
+    font-family: DejaVu Sans Mono;
+    font-size: 14px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLabel#changeLabel {
+    font-family: DejaVu Sans Mono;
+    font-size: 14px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLineEdit#findPattern {
+    font-family: DejaVu Sans Mono;
+    font-size: 14px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLineEdit#findChange {
+    font-family: DejaVu Sans Mono;
+    font-size: 14px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
 }
 
 /* A QWidget: supports only background attributes.*/

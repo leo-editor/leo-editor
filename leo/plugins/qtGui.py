@@ -2520,6 +2520,8 @@ class DynamicWindow(QtGui.QMainWindow):
 
         c,dw = self.leo_c,self
         grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
+        grid.setColumnStretch(0,100)
+        grid.setColumnStretch(1,100)
         
         # Row 0: heading.
         lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
@@ -5234,6 +5236,8 @@ class leoQtLog (leoFrame.leoLog):
 
         trace = False and not g.unitTesting
         c = self.c
+        
+        if trace: g.trace(tabName,widget and g.app.gui.widget_name(widget) or '<no widget>')
 
         if widget is None:
 
