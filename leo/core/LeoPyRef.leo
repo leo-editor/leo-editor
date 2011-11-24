@@ -15,7 +15,7 @@
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
 <v t="ekr.20080412053100.4"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20100902154544.5872"><vh>@bool enable-abbreviations = True</vh></v>
-<v t="ekr.20111026082728.16483"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20111123042248.12701"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20111031081007.9985"><vh>@shortcuts</vh></v>
 </v>
 <v t="ekr.20111103205308.9703"><vh>@command cls</vh></v>
@@ -24,7 +24,8 @@
 <v t="ekr.20031218072017.329"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
-<v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
+<v t="ekr.20100120072650.6089"
+marks="ekr.20111110085739.10265,"><vh>@file ../doc/leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
@@ -33,6 +34,8 @@
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
+<v t="ekr.20111124095033.10203"><vh>@edit bzr_version.py</vh></v>
+<v t="ekr.20111124095033.10201"><vh>v.bat</vh></v>
 </v>
 <v t="ekr.20090802181029.5989"><vh>Startup &amp; external files</vh>
 <v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
@@ -53,7 +56,7 @@
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
 <v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31342e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
-<v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
+<v t="ekr.20111116103733.9817"><vh>@file leoInspect.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@file leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@file leoPymacs.py</vh></v>
@@ -68,6 +71,7 @@
 <v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
 <v t="ekr.20031218072017.3655"><vh>@file leoFrame.py</vh></v>
 <v t="ekr.20031218072017.3719"><vh>@file leoGui.py</vh></v>
+<v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
 </v>
 <v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
@@ -87,8 +91,6 @@
 <v t="ekr.20100221142603.5638"><vh>@file ../../pylint-leo.py</vh></v>
 <v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
-<v t="ekr.20111116103733.9817"
-expanded="ekr.20111116103733.10539,"><vh>@file leoInspect.py</vh></v>
 <v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@file leoTest.py</vh></v>
 </v>
 </v>
@@ -248,10 +250,23 @@ row.  Similar remarks apply when going in the reverse direction.
 <t tx="ekr.20110605121601.17862"># These files are true plugins, but it is more convenient to put them here.</t>
 <t tx="ekr.20110605121601.18695"></t>
 <t tx="ekr.20110607155823.16449"></t>
-<t tx="ekr.20111026082728.16483"></t>
-<t tx="ekr.20111031081007.9985">run-marked-unit-tests-externally = Alt-4
-run-all-unit-tests-externally = Alt-5
+<t tx="ekr.20111031081007.9985">run-selected-unit-tests-externally = Alt-4 # Standard binding, unchanged.
+run-marked-unit-tests-externally = Alt-5
 run-marked-unit-tests-locally = Alt-6</t>
 <t tx="ekr.20111103205308.9703">g.cls()</t>
+<t tx="ekr.20111123042248.12701"># Leo loads plugins in the order they appear here.
+
+# Highly-recommended plugins:
+
+plugins_menu.py
+free_layout.py # needs to be early
+viewrendered.py
+mod_scripting.py
+</t>
+<t tx="ekr.20111124095033.10201">rem A windows script to create and commit leo/core/bzr_version.py
+echo off
+call b.bat version-info --python &gt; leo\core\bzr_version.py
+call 2to3.bat --fix=print --fix=unicode --nobackups leo\core\bzr_version.py
+call b.bat commit -m "v.bat: update bzr_version.py" leo\core\bzr_version.py</t>
 </tnodes>
 </leo_file>
