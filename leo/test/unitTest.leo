@@ -25,6 +25,10 @@
 <v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
 <v t="ekr.20111123042627.6654"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20111112093605.4679"><vh>@shortcuts</vh></v>
+<v t="ekr.20111124094121.3941"><vh>Empty @buttons and @commands nodes</vh>
+<v t="ekr.20111124094121.3942"><vh>@buttons</vh></v>
+<v t="ekr.20111124094121.3943"><vh>@commands</vh></v>
+</v>
 <v t="ekr.20050328101834"><vh>@page http plugin</vh>
 <v t="ekr.20050328101834.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050328101834.2"><vh>@int  port = 8080</vh></v>
@@ -178,6 +182,7 @@
 <v t="ekr.20111121152019.3929"><vh>@test updateEditors (leoQtBody)</vh></v>
 </v>
 <v t="ekr.20111123214629.3941"><vh>@test unbound Alt-N key is completely ignored</vh></v>
+<v t="ekr.20111124090010.3939"><vh>@test @buttons and @commands logic</vh></v>
 </v>
 <v t="ekr.20111115080347.3872"><vh>To do: tests of the high-level interface</vh>
 <v t="ekr.20100131171342.5478"><vh>@@@test that log and body implements high-level interface</vh></v>
@@ -2191,5 +2196,32 @@ else:
     assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
 
 </t>
+<t tx="ekr.20111124090010.3939">'''Test that the config parser visits @buttons and @commands nodes for
+leoSettings.leo and unitTest.leo.
+
+If strict is True, also test that the config parser vists the nodes in
+myLeoSettings.leo. This may fail on machines without @buttons and @commands
+nodes in myLeoSettings.leo.
+'''
+
+strict = True # Set to False if you are not EKR.
+
+table = ['leoSettings.leo','unitTest.leo']
+if strict:
+    table.append('myLeoSettings.leo')
+
+keys = ('config.doButtons-file-names','config.doCommands-file-names')
+d = g.app.config.unitTestDict # Always created for this unit test.
+
+for key in keys:
+    aList = d.get(key,[])
+    for fn in table:
+        # print(fn)
+        # print(repr(aList))
+        assert fn in aList,'%s not in unitTestDict[%s]' % (fn,key)
+</t>
+<t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
+<t tx="ekr.20111124094121.3942"></t>
+<t tx="ekr.20111124094121.3943"></t>
 </tnodes>
 </leo_file>

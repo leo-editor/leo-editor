@@ -3764,6 +3764,20 @@ def finishOpen(c):
 @nocolor-node
 
 The bug was in k.handleDefaultChar.  No substantial change made to eventFilter.
+#@+node:ekr.20111124082644.10919: *4* Fixed bug: ensure global @buttons work
+@nocolor-node
+
+What I did:
+    
+1. Fixed major bug in settingsTreeParser.visitNode.
+   It now does p.copy() to protect the callers traverals.
+   This could have significant impacts on people's settings.
+   
+2. Added g.app.unitTestDict for unit testing.
+
+3. Leo now extends the list of @buttons and @commands, rather than replacing them.
+   This is reasonable only because leoSettings.leo should never define *active*
+   buttons or commands.
 #@+node:ekr.20111113141805.10062: *3* Code
 #@+node:ekr.20111109105907.9796: *4* Simplified g.pr
 #@+node:ekr.20111023164430.16771: *4* Removed unused color tags

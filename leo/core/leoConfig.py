@@ -160,16 +160,18 @@ class parserBaseClass:
 
         '''Handle an @buttons tree.'''
 
+        trace = False and not g.unitTesting
         aList = [] ; c = self.c ; tag = '@button'
-
+        seen = []
         after = p.nodeAfterTree()
-        # while p and p != after:
-        for p in p.unique_subtree():
-            if p == after:
-                break
-            if p.isAtIgnoreNode():
+        while p and p != after:
+            if p.v in seen:
+                p.moveToNodeAfterTree()
+            elif p.isAtIgnoreNode():
+                seen.append(p.v)
                 p.moveToNodeAfterTree()
             else:
+                seen.append(p.v)
                 if g.match_word(p.h,0,tag):
                     # We can not assume that p will be valid when it is used.
                     script = g.getScript(c,p,
@@ -181,21 +183,34 @@ class parserBaseClass:
 
         # This setting is handled differently from most other settings,
         # because the last setting must be retrieved before any commander exists.
-        g.app.config.atCommonButtonsList = aList
-        g.app.config.buttonsFileName = c and c.shortFileName() or '<no settings file>'
+        if aList:
+            g.app.config.atCommonButtonsList.extend(aList)
+                # Bug fix: 2011/11/24: Extend the list, don't replace it.
+            g.app.config.buttonsFileName = c and c.shortFileName() or '<no settings file>'
 
+        if trace: g.trace(len(aList),c.shortFileName())
+
+        d,key = g.app.config.unitTestDict,'config.doButtons-file-names'
+        aList = d.get(key,[])
+        aList.append(c.shortFileName())
+        d[key] = aList
     #@+node:ekr.20080312071248.6: *4* doCommands
     def doCommands (self,p,kind,name,val):
 
         '''Handle an @commands tree.'''
 
+        trace = False and not g.unitTesting
         aList = [] ; c = self.c ; tag = '@command'
-        
+        seen = []
         after = p.nodeAfterTree()
         while p and p != after:
-            if p.isAtIgnoreNode():
+            if p.v in seen:
+                p.moveToNodeAfterTree()
+            elif p.isAtIgnoreNode():
+                seen.append(p.v)
                 p.moveToNodeAfterTree()
             else:
+                seen.append(p.v)
                 if g.match_word(p.h,0,tag):
                     # We can not assume that p will be valid when it is used.
                     script = g.getScript(c,p,
@@ -207,9 +222,15 @@ class parserBaseClass:
 
         # This setting is handled differently from most other settings,
         # because the last setting must be retrieved before any commander exists.
-        g.app.config.atCommonCommandsList = aList
-
-
+        if aList:
+            g.app.config.atCommonCommandsList.extend(aList)
+                # Bug fix: 2011/11/24: Extend the list, don't replace it.
+        if trace: g.trace(len(aList),c.shortFileName())
+        
+        d,key = g.app.config.unitTestDict,'config.doCommands-file-names'
+        aList = d.get(key,[])
+        aList.append(c.shortFileName())
+        d[key] = aList
     #@+node:ekr.20041120094940.2: *4* doColor
     def doColor (self,p,kind,name,val):
 
@@ -1193,6 +1214,7 @@ class configClass:
         self.atCommonCommandsList = [] # List of info for common @commands nodes.
         self.buttonsFileName = ''
         self.configsExist = False # True when we successfully open a setting file.
+        self.unitTestDict = {} # For unit testing: *not* the same as g.app.unitTestDict.
         self.defaultFont = None # Set in gui.getDefaultConfigFont.
         self.defaultFontFamily = None # Set in gui.getDefaultConfigFont.
         self.enabledPluginsFileName = None
@@ -2268,6 +2290,10 @@ class settingsTreeParser (parserBaseClass):
         """Init any settings found in node p."""
 
         # g.trace(p.h)
+        
+        p = p.copy()
+            # Bug fix 2011/11/24
+            # Ensure inner traversals don't change callers's p.
 
         munge = g.app.config.munge
 

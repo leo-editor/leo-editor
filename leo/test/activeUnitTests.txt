@@ -19462,6 +19462,30 @@ else:
     # Assert that handleUnboundChar actually ignored it.
     assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
 
+#@+node:ekr.20111124090010.3939: *3* @test @buttons and @commands logic
+'''Test that the config parser visits @buttons and @commands nodes for
+leoSettings.leo and unitTest.leo.
+
+If strict is True, also test that the config parser vists the nodes in
+myLeoSettings.leo. This may fail on machines without @buttons and @commands
+nodes in myLeoSettings.leo.
+'''
+
+strict = True # Set to False if you are not EKR.
+
+table = ['leoSettings.leo','unitTest.leo']
+if strict:
+    table.append('myLeoSettings.leo')
+
+keys = ('config.doButtons-file-names','config.doCommands-file-names')
+d = g.app.config.unitTestDict # Always created for this unit test.
+
+for key in keys:
+    aList = d.get(key,[])
+    for fn in table:
+        # print(fn)
+        # print(repr(aList))
+        assert fn in aList,'%s not in unitTestDict[%s]' % (fn,key)
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):

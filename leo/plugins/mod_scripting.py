@@ -270,6 +270,8 @@ class scriptingController:
         trace = False and not g.app.unitTesting and not g.app.batchMode
         c = self.c
 
+        if trace: g.trace(c.shortFileName())
+
         buttons = c.config.getButtons()
         if buttons:
             for z in buttons:
