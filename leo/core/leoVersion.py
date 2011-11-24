@@ -11,8 +11,15 @@
 #@@language python
 #@@tabwidth -4
 
-build = 4669
-date = "4Q/2011"
+if 1: # Use bzr_version.py.
+    import leo.core.bzr_version as bzr_version
+    d = bzr_version.version_info
+    build = d.get('revno','<unknown revno>')
+    date  = d.get('build_date','<unknown build date>')
+else:
+    build = 4669
+    date = "4Q/2011"
+
 version = "4.9.1 devel"
 
 #@+at The following bzr command reports the build automatically.
