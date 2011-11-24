@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.59">
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.53">
 	<global_window_position top="39" left="644" height="977" width="1257"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -130,7 +130,7 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285508302e372e31362e3671017d71025808000000616e6e6f7461746571037d7104735505302e382e3671057d71065808000000616e6e6f7461746571077d7108735508302e372e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31302e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e372e31362e3671017d71025808000000616e6e6f7461746571037d7104735805000000302e382e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e372e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31302e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20111103213154.3822"><vh>Recent unit tests</vh>
 <v t="ekr.20111115071700.3870"><vh>mini-test: print-settings</vh></v>
@@ -162,7 +162,6 @@
 <v t="ekr.20111121142012.4141"><vh>Tests of the new log code</vh>
 <v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh>
 <v t="ekr.20111123042806.3937"><vh>first-child</vh></v>
-<v t="ekr.20111123042806.3938"><vh>newHeadline</vh></v>
 </v>
 <v t="ekr.20111120124051.3994"><vh>@test cycle-all-focus</vh></v>
 <v t="ekr.20111121164644.3928"><vh>@test cycle-tab-focus</vh></v>
@@ -178,6 +177,7 @@
 <v t="ekr.20111121140833.3916"><vh>@test selectToMatchingBracket (leoEditCommands)</vh></v>
 <v t="ekr.20111121152019.3929"><vh>@test updateEditors (leoQtBody)</vh></v>
 </v>
+<v t="ekr.20111123214629.3941"><vh>@test unbound Alt-N key is completely ignored</vh></v>
 </v>
 <v t="ekr.20111115080347.3872"><vh>To do: tests of the high-level interface</vh>
 <v t="ekr.20100131171342.5478"><vh>@@@test that log and body implements high-level interface</vh></v>
@@ -1843,10 +1843,10 @@ else:
             c.redraw()
             n = p1.numberOfChildren()
             assert n==2,'%s children' % (n)
-            #delete_children(p1)
+            delete_children(p1)
     
     finally:
-        # delete_children(p1)
+        delete_children(p1)
         c.redraw()
 </t>
 <t tx="ekr.20111120124051.3994">'''Test that cycle-all-focus cycles through all tabs.'''
@@ -2169,6 +2169,27 @@ mod_scripting.py
 # zenity_file_dialogs.py
 </t>
 <t tx="ekr.20111123042806.3937"></t>
-<t tx="ekr.20111123042806.3938"></t>
+<t tx="ekr.20111123214629.3941">import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
+import leo.plugins.qtGui as leoQtGui
+
+if g.app.isExternalUnitTest:
+    pass
+else:
+    w = c.frame.body.bodyCtrl.widget
+    assert issubclass(w.__class__,QtGui.QTextEdit)
+    
+    filter_obj = leoQtGui.leoQtEventFilter(c,w=w)
+    g.app.unitTestDict[p.h] = filter_obj # keep a pointer to the filter.
+
+    # Create an Alt-7 key event.
+    ev = QtCore.QEvent
+    e = QtGui.QKeyEvent(ev.KeyPress,ord('7'),QtCore.Qt.AltModifier)
+    filter_obj.eventFilter(w,e)
+
+    # Assert that handleUnboundChar actually ignored it.
+    assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
+
+</t>
 </tnodes>
 </leo_file>

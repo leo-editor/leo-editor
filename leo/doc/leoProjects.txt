@@ -3760,6 +3760,10 @@ def finishOpen(c):
 
     c.frame.initCompleteHint()
     return True
+#@+node:ekr.20111122094453.10201: *4* Ignore unbound Alt/Ctrl keys, especially Alt/Ctrl-N
+@nocolor-node
+
+The bug was in k.handleDefaultChar.  No substantial change made to eventFilter.
 #@+node:ekr.20111113141805.10062: *3* Code
 #@+node:ekr.20111109105907.9796: *4* Simplified g.pr
 #@+node:ekr.20111023164430.16771: *4* Removed unused color tags
@@ -15575,6 +15579,7 @@ def eventFilter(self, obj, event):
     elif eventType in kinds:
         tkKey,ch,ignore = self.toTkKey(event)
         aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+        # g.trace('instate',k.inState(),'tkKey',tkKey,'ignore',ignore,'len(aList)',len(aList))
         if ignore:
             override = False
         # This is extremely bad.
@@ -15604,15 +15609,30 @@ def eventFilter(self, obj, event):
         stroke = self.toStroke(tkKey,ch)
 
         if override:
+            # Essentially *all* keys get passed to masterKeyHandler.
             if trace and traceKey:
-                g.trace('ignore',ignore,'bound',repr(stroke)) # repr(aList))
+                g.trace('ignore',ignore,'bound',repr(stroke),repr(aList))
             w = self.w # Pass the wrapper class, not the wrapped widget.
             event = self.create_key_event(event,c,w,ch,tkKey,stroke)
             ret = k.masterKeyHandler(event)
             c.outerUpdate()
         else:
-            if trace and traceKey and verbose:
-                g.trace(self.tag,'unbound',tkKey,stroke)
+            if 1: # old code.  This is good enough.
+                if trace and traceKey and verbose:
+                    g.trace(self.tag,'unbound',tkKey,stroke)
+            # else:
+                # # 2011/11/23: Check for unbound Alt or Ctrl keys.
+                # if stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1:
+                    # if k.ignore_unbound_non_ascii_keys:
+                        # override = True
+                        # if trace and traceKey and verbose:
+                            # g.trace(self.tag,'ignoring unbound Alt/Ctrl key',tkKey,stroke)
+                    # else:
+                        # if trace and traceKey and verbose:
+                            # g.trace(self.tag,'allowing unbound Alt/Ctrl key',tkKey,stroke)
+                # else:
+                    # if trace and traceKey and verbose:
+                        # g.trace(self.tag,'unbound',tkKey,stroke)
         
         if trace and traceEvent:
             # Trace key events.
@@ -17974,6 +17994,7 @@ print-commands: Alt/Ctrl+Key+N now printed as Alt/Ctrl+N.
 Added show-decoration-selected: 1 to QTreeWidget stylesheet.
 
 This causes the entire headline row to be shown when select, a big improvement, imo.
+#@+node:ekr.20111123095018.12910: *4* Added stylesheets for Log & Find tabs
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
@@ -18280,7 +18301,7 @@ def isAutoCompleteChar (self,stroke):
 def handleUnboundKeys (self,event,char,stroke):
 
     trace = False and not g.unitTesting
-    verbose = False
+    verbose = True
     k = self ; c = k.c
     modesTuple = ('insert','overwrite')
     

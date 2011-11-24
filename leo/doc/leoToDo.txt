@@ -14,9 +14,14 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
-.. @+node:ekr.20111024170505.16459: *4* * Bug 879331: Redefining a key binding breaks menu items with same binding
-.. @+node:ekr.20111026091322.16501: *5* Probably same as key-binding bug
-.. @+node:ekr.20111026091322.16492: *6* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
+.. @+node:ekr.20111123095018.10190: *4* Create docs from recent posts
+@nocolor-node
+
+This will help reduce the inbox.
+.. @+node:ekr.20111123095018.13633: *4*  Fix bugs
+.. @+node:ekr.20111024170505.16459: *5* * Bug 879331: Redefining a key binding breaks menu items with same binding
+.. @+node:ekr.20111026091322.16501: *6* Probably same as key-binding bug
+.. @+node:ekr.20111026091322.16492: *7* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/815564
@@ -47,7 +52,7 @@ Leo Log Window
 Leo 4.9 final, build 4411, June 21, 2011
 Python 2.7.1, qt version 4.7.2
 linux2
-.. @+node:ekr.20111026091322.16500: *5* Report
+.. @+node:ekr.20111026091322.16500: *6* Report
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/879331
@@ -93,8 +98,8 @@ Leo Log Window
 Leo 4.9 final, build 4411, June 21, 2011
 Python 2.7.1, qt version 4.7.2
 linux2
-.. @+node:ekr.20111020144401.9584: *5* Changed
-.. @+node:ekr.20041117062717.2: *6* ctor (configClass)
+.. @+node:ekr.20111020144401.9584: *6* Changed
+.. @+node:ekr.20041117062717.2: *7* ctor (configClass)
 def __init__ (self):
 
     # g.trace('g.app.config')
@@ -139,7 +144,7 @@ def __init__ (self):
     self.initIvarsFromSettings()
     self.initSettingsFiles()
     self.initRecentFiles()
-.. @+node:ekr.20041120105609: *6* doShortcuts (ParserBaseClass)
+.. @+node:ekr.20041120105609: *7* doShortcuts (ParserBaseClass)
 def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
 
     trace = False and not g.unitTesting
@@ -163,7 +168,7 @@ def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
                     self.killOneShortcut(bunch,name,p)
                 else:
                     self.doOneShortcut(bunch,name,p)
-.. @+node:ekr.20111020144401.9585: *7* doOneShortcut (ParserBaseClass)
+.. @+node:ekr.20111020144401.9585: *8* doOneShortcut (ParserBaseClass)
 def doOneShortcut(self,bunch,name,p):
     
     '''Handle a regular shortcut.'''
@@ -191,12 +196,12 @@ def doOneShortcut(self,bunch,name,p):
         # bunchList = [z for z in bunchList
             # if munge(z.val) != munge(bunch.val)]
         # # g.trace(bunchList)
-.. @+node:ekr.20111020144401.9586: *7* killOneShortcut (ParserBaseClass) (Not ready yet)
+.. @+node:ekr.20111020144401.9586: *8* killOneShortcut (ParserBaseClass) (Not ready yet)
 def killOneShortcut (self,bunch,name,p):
     
     if 0:
         g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20061031131434.105: *6* masterCommand & helpers
+.. @+node:ekr.20061031131434.105: *7* masterCommand & helpers
 def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
 
     '''This is the central dispatching method.
@@ -293,7 +298,7 @@ def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
             c.frame.updateStatusLine()
         if traceGC: g.printNewObjects('masterCom 4')
         return val
-.. @+node:ekr.20061031131434.106: *7* << define specialKeysyms >>
+.. @+node:ekr.20061031131434.106: *8* << define specialKeysyms >>
 specialKeysyms = (
     'Alt_L','Alt_R',
     'Meta_L','Meta_R', # Meta support.
@@ -301,7 +306,7 @@ specialKeysyms = (
     'Num_Lock',
     'Shift_L','Shift_R',
 )
-.. @+node:ekr.20061031131434.109: *7* callKeystrokeFunction (not used)
+.. @+node:ekr.20061031131434.109: *8* callKeystrokeFunction (not used)
 def callKeystrokeFunction (self,event):
 
     '''Handle a quick keystroke function.
@@ -316,21 +321,25 @@ def callKeystrokeFunction (self,event):
         k.endCommand(commandName)
 
     return func
-.. @+node:ekr.20061031131434.110: *7* k.handleDefaultChar
+.. @+node:ekr.20061031131434.110: *8* k.handleDefaultChar
 def handleDefaultChar(self,event,stroke):
     k = self ; c = k.c
     w = event and event.widget
     name = c.widget_name(w)
     trace = False and not g.unitTesting
+    verbose = False
 
-    if trace: g.trace('widget_name',name,'stroke',stroke,'enable alt-ctrl',self.enable_alt_ctrl_bindings)
+    if trace and verbose:
+        g.trace('widget_name',name,'stroke',stroke,'enable alt-ctrl',self.enable_alt_ctrl_bindings)
 
     if (stroke and
         not stroke.startswith('Alt+Ctrl') and
-        not self.enable_alt_ctrl_bindings and
+        # not k.enable_alt_ctrl_bindings and # Old code: this isn't an alt-ctrl key!
+        k.ignore_unbound_non_ascii_keys and # Bug fix: 2011/11/23
         (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
     ):
         if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+        g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
         return # (for Tk) 'break'
 
     if name.startswith('body'):
@@ -365,7 +374,7 @@ def handleDefaultChar(self,event,stroke):
     else:
         # Let the widget handle the event.
         return # None
-.. @+node:ekr.20031218072017.1723: *6* createMenuEntries (leoMenu) & helpers
+.. @+node:ekr.20031218072017.1723: *7* createMenuEntries (leoMenu) & helpers
 def createMenuEntries (self,menu,table,dynamicMenu=False):
 
     '''Create a menu entry from the table.
@@ -416,7 +425,7 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
                 accelerator=accelerator,
                 command=masterMenuCallback,
                 underline=amp_index)
-.. @+node:ekr.20111102072143.10016: *7* createMasterMenuCallback
+.. @+node:ekr.20111102072143.10016: *8* createMasterMenuCallback
 def createMasterMenuCallback(self,dynamicMenu,command,commandName):
     
     c = self.c
@@ -439,7 +448,7 @@ def createMasterMenuCallback(self,dynamicMenu,command,commandName):
             event = g.app.gui.create_key_event(c,None,None,None)
             return c.k.masterCommand(commandName=commandName,event=event)
         return masterStaticMenuCallback
-.. @+node:ekr.20111028060955.16568: *7* getMenuEntryBindings
+.. @+node:ekr.20111028060955.16568: *8* getMenuEntryBindings
 def getMenuEntryBindings(self,command,dynamicMenu,label):
     
     '''Compute accel,commandName,done from command.'''
@@ -490,7 +499,7 @@ def getMenuEntryBindings(self,command,dynamicMenu,label):
                 if trace: g.trace('No inverse for %s' % commandName)
                 
     return accel,commandName,done
-.. @+node:ekr.20111028060955.16569: *8* << compute emacs_name >>
+.. @+node:ekr.20111028060955.16569: *9* << compute emacs_name >>
 @ One not-so-horrible kludge remains.
 
 The cut/copy/paste commands in the menu tables are not the same as the methods
@@ -506,7 +515,7 @@ else:
         emacs_name = k.inverseCommandsDict.get(command.__name__)
     except Exception:
         emacs_name = None
-.. @+node:ekr.20111028060955.16565: *7* getMenuEntryInfo
+.. @+node:ekr.20111028060955.16565: *8* getMenuEntryInfo
 def getMenuEntryInfo (self,data,menu):
     
     done = False
@@ -539,7 +548,7 @@ def getMenuEntryInfo (self,data,menu):
             done = True # Ignore bad data
             
     return label,command,done
-.. @+node:ekr.20111028060955.16563: *7* traceMenuTable
+.. @+node:ekr.20111028060955.16563: *8* traceMenuTable
 def traceMenuTable (self,table):
     
     trace = False and not g.unitTesting
@@ -557,8 +566,8 @@ def traceMenuTable (self,table):
                 print(format % (name,func and func.__name__ or '<NO FUNC>'))
         else:
             print(format % (data,''))
-.. @+node:ekr.20111028111441.16582: *5* Reference
-.. @+node:ekr.20060102103625.1: *6* doMode (ParserBaseClass)
+.. @+node:ekr.20111028111441.16582: *6* Reference
+.. @+node:ekr.20060102103625.1: *7* doMode (ParserBaseClass)
 def doMode(self,p,kind,name,val):
 
     '''Parse an @mode node and create the enter-<name>-mode command.'''
@@ -605,7 +614,7 @@ def doMode(self,p,kind,name,val):
 
     # Create the command, but not any bindings to it.
     self.createModeCommand(modeName,name1,d)
-.. @+node:ekr.20041227071423: *6* setShortcut (ParserBaseClass) (** can we delete this?? **)
+.. @+node:ekr.20041227071423: *7* setShortcut (ParserBaseClass) (** can we delete this?? **)
 def setShortcut (self,p,name,bunchList):
     
     trace = False and not g.unitTesting
@@ -620,7 +629,7 @@ def setShortcut (self,p,name,bunchList):
     if trace:
         for b in bunchList:
             g.trace('%20s %45s %s %s' % (b.val,rawKey,b.pane,b._hash))
-.. @+node:ekr.20041120094940.9: *6* set (parserBaseClass)
+.. @+node:ekr.20041120094940.9: *7* set (parserBaseClass)
 def set (self,p,kind,name,val):
 
     """Init the setting for name to val."""
@@ -647,7 +656,7 @@ def set (self,p,kind,name,val):
         # g.trace('id(d)',id(d),name)
 
     d [key] = g.Bunch(path=c.mFileName,kind=kind,val=val,tag='setting')
-.. @+node:ekr.20041117083141: *6* get & allies (g.app.config)
+.. @+node:ekr.20041117083141: *7* get & allies (g.app.config)
 def get (self,c,setting,kind):
 
     """Get the setting and make sure its type matches the expected type."""
@@ -698,7 +707,7 @@ def get (self,c,setting,kind):
         fn = c and c.shortFileName() or '<no file>'
         g.trace(setting,None,fn)
     return None
-.. @+node:ekr.20041121143823: *7* getValFromDict
+.. @+node:ekr.20041121143823: *8* getValFromDict
 def getValFromDict (self,d,setting,requestedType,warn=True):
 
     '''Look up the setting in d. If warn is True, warn if the requested type
@@ -736,7 +745,7 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
     else:
         # g.trace(setting,val)
         return val, True
-.. @+node:ekr.20051015093141: *7* typesMatch
+.. @+node:ekr.20051015093141: *8* typesMatch
 def typesMatch (self,type1,type2):
 
     '''
@@ -758,7 +767,7 @@ def typesMatch (self,type1,type2):
         (type1 in shortcuts and type2 in shortcuts) or
         type1 == type2
     )
-.. @+node:ekr.20041117062717.14: *6* getShortcut (g.app.config)
+.. @+node:ekr.20041117062717.14: *7* getShortcut (g.app.config)
 def getShortcut (self,c,commandName):
 
     '''Return rawKey,accel for shortcutName'''
@@ -780,7 +789,7 @@ def getShortcut (self,c,commandName):
         return key,bunchList
     else:
         return key,[]
-.. @+node:ekr.20110211041914.15415: *7* getShortcutHelper(g.app.config)
+.. @+node:ekr.20110211041914.15415: *8* getShortcutHelper(g.app.config)
 def getShortcutHelper (self,c,key):
     
     '''Like get, but return *all* the found bunchLists's.
@@ -814,7 +823,7 @@ def getShortcutHelper (self,c,key):
             if bunchList: self.mergeShortcuts(result,bunchList,key)
 
     return result
-.. @+node:ekr.20110211041914.15418: *7* mergeShortcuts
+.. @+node:ekr.20110211041914.15418: *8* mergeShortcuts
 def mergeShortcuts (self,result,aList,key):
         # key is for debugging.
         # key is a conical command name, *not* a keystroke.
@@ -832,8 +841,8 @@ def mergeShortcuts (self,result,aList,key):
 
     if trace and len(result) > 1:
         g.trace(key,['%s %s' % (z.val,z.pane) for z in result])
-.. @+node:ekr.20041120094940: *6* kind handlers (parserBaseClass)
-.. @+node:ekr.20060608221203: *7* doAbbrev
+.. @+node:ekr.20041120094940: *7* kind handlers (parserBaseClass)
+.. @+node:ekr.20060608221203: *8* doAbbrev
 def doAbbrev (self,p,kind,name,val):
 
     d = {}
@@ -846,7 +855,7 @@ def doAbbrev (self,p,kind,name,val):
             if name: d [val] = name
 
     self.set (p,'abbrev','abbrev',d)
-.. @+node:ekr.20041120094940.1: *7* doBool
+.. @+node:ekr.20041120094940.1: *8* doBool
 def doBool (self,p,kind,name,val):
 
     if val in ('True','true','1'):
@@ -855,7 +864,7 @@ def doBool (self,p,kind,name,val):
         self.set(p,kind,name,False)
     else:
         self.valueError(p,kind,name,val)
-.. @+node:ekr.20070925144337: *7* doButtons
+.. @+node:ekr.20070925144337: *8* doButtons
 def doButtons (self,p,kind,name,val):
 
     '''Handle an @buttons tree.'''
@@ -884,7 +893,7 @@ def doButtons (self,p,kind,name,val):
     g.app.config.atCommonButtonsList = aList
     g.app.config.buttonsFileName = c and c.shortFileName() or '<no settings file>'
 
-.. @+node:ekr.20080312071248.6: *7* doCommands
+.. @+node:ekr.20080312071248.6: *8* doCommands
 def doCommands (self,p,kind,name,val):
 
     '''Handle an @commands tree.'''
@@ -910,7 +919,7 @@ def doCommands (self,p,kind,name,val):
     g.app.config.atCommonCommandsList = aList
 
 
-.. @+node:ekr.20041120094940.2: *7* doColor
+.. @+node:ekr.20041120094940.2: *8* doColor
 def doColor (self,p,kind,name,val):
 
     # At present no checking is done.
@@ -918,7 +927,7 @@ def doColor (self,p,kind,name,val):
     val = val.lstrip("'").rstrip("'")
 
     self.set(p,kind,name,val)
-.. @+node:ekr.20071214140900: *7* doData
+.. @+node:ekr.20071214140900: *8* doData
 def doData (self,p,kind,name,val):
 
     s = p.b
@@ -926,14 +935,14 @@ def doData (self,p,kind,name,val):
     data = [z.strip() for z in lines if z.strip() and not z.startswith('#')]
 
     self.set(p,kind,name,data)
-.. @+node:ekr.20041120094940.3: *7* doDirectory & doPath
+.. @+node:ekr.20041120094940.3: *8* doDirectory & doPath
 def doDirectory (self,p,kind,name,val):
 
     # At present no checking is done.
     self.set(p,kind,name,val)
 
 doPath = doDirectory
-.. @+node:ekr.20070224075914: *7* doEnabledPlugins
+.. @+node:ekr.20070224075914: *8* doEnabledPlugins
 def doEnabledPlugins (self,p,kind,name,val):
 
     c = self.c
@@ -955,7 +964,7 @@ def doEnabledPlugins (self,p,kind,name,val):
     # Set the global config ivars.
     g.app.config.enabledPluginsString = s
     g.app.config.enabledPluginsFileName = c and c.shortFileName() or '<no settings file>'
-.. @+node:ekr.20041120094940.6: *7* doFloat
+.. @+node:ekr.20041120094940.6: *8* doFloat
 def doFloat (self,p,kind,name,val):
 
     try:
@@ -963,7 +972,7 @@ def doFloat (self,p,kind,name,val):
         self.set(p,kind,name,val)
     except ValueError:
         self.valueError(p,kind,name,val)
-.. @+node:ekr.20041120094940.4: *7* doFont
+.. @+node:ekr.20041120094940.4: *8* doFont
 def doFont (self,p,kind,name,val):
 
     trace = False
@@ -980,12 +989,12 @@ def doFont (self,p,kind,name,val):
             setKind = key
             self.set(p,setKind,name,val)
             if trace and val not in (None,'none','None'): g.trace(key,val)
-.. @+node:ekr.20041120103933: *7* doIf
+.. @+node:ekr.20041120103933: *8* doIf
 def doIf(self,p,kind,name,val):
 
     g.trace("'if' not supported yet")
     return None
-.. @+node:ekr.20041121125416: *7* doIfGui (can never work)
+.. @+node:ekr.20041121125416: *8* doIfGui (can never work)
 @
 Alas, @if-gui can't be made to work. The problem is that plugins can
 set g.app.gui, but plugins need settings so the leoSettings.leo files
@@ -1004,7 +1013,7 @@ if 0:
             return None
         else:
             return "skip"
-.. @+node:dan.20080410121257.2: *7* doIfHostname
+.. @+node:dan.20080410121257.2: *8* doIfHostname
 def doIfHostname (self,p,kind,name,val):
     """headline: @ifhostname bob,!harry,joe
 
@@ -1024,18 +1033,18 @@ def doIfHostname (self,p,kind,name,val):
 
     return None
 
-.. @+node:ekr.20041120104215: *7* doIfPlatform
+.. @+node:ekr.20041120104215: *8* doIfPlatform
 def doIfPlatform (self,p,kind,name,val):
 
     if sys.platform.lower() == name.lower():
         return None
     else:
         return "skip"
-.. @+node:ekr.20041120104215.1: *7* doIgnore
+.. @+node:ekr.20041120104215.1: *8* doIgnore
 def doIgnore(self,p,kind,name,val):
 
     return "skip"
-.. @+node:ekr.20041120094940.5: *7* doInt
+.. @+node:ekr.20041120094940.5: *8* doInt
 def doInt (self,p,kind,name,val):
 
     try:
@@ -1043,7 +1052,7 @@ def doInt (self,p,kind,name,val):
         self.set(p,kind,name,val)
     except ValueError:
         self.valueError(p,kind,name,val)
-.. @+node:ekr.20041217132253: *7* doInts
+.. @+node:ekr.20041217132253: *8* doInts
 def doInts (self,p,kind,name,val):
 
     '''We expect either:
@@ -1081,7 +1090,7 @@ def doInts (self,p,kind,name,val):
 
         # At present no checking is done.
         self.set(p,kind,name,val)
-.. @+node:ekr.20070925144337.2: *7* doMenus & helpers (ParserBaseClass)
+.. @+node:ekr.20070925144337.2: *8* doMenus & helpers (ParserBaseClass)
 def doMenus (self,p,kind,name,val):
 
     c = self.c ; aList = [] ; tag = '@menu' ; trace = False and g.isPython3
@@ -1117,7 +1126,7 @@ def doMenus (self,p,kind,name,val):
             g.es_print(s,color='blue')
         g.app.config.menusList = aList
         g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
-.. @+node:ekr.20070926141716: *8* doItems
+.. @+node:ekr.20070926141716: *9* doItems
 def doItems (self,p,aList):
 
     trace = False and g.isPython3
@@ -1158,7 +1167,7 @@ def doItems (self,p,aList):
         else:
             # g.trace('***skipping***',p.h)
             p.moveToThreadNext()
-.. @+node:ekr.20070926142312: *8* dumpMenuList
+.. @+node:ekr.20070926142312: *9* dumpMenuList
 def dumpMenuList (self,aList,level=0):
 
     for z in aList:
@@ -1169,7 +1178,7 @@ def dumpMenuList (self,aList,level=0):
             g.pr('')
             g.trace(level,kind,'...')
             self.dumpMenuList(val,level+1)
-.. @+node:ekr.20060102103625.1: *7* doMode (ParserBaseClass)
+.. @+node:ekr.20060102103625.1: *8* doMode (ParserBaseClass)
 def doMode(self,p,kind,name,val):
 
     '''Parse an @mode node and create the enter-<name>-mode command.'''
@@ -1216,7 +1225,7 @@ def doMode(self,p,kind,name,val):
 
     # Create the command, but not any bindings to it.
     self.createModeCommand(modeName,name1,d)
-.. @+node:ekr.20070411101643.1: *7* doOpenWith (ParserBaseClass)
+.. @+node:ekr.20070411101643.1: *8* doOpenWith (ParserBaseClass)
 def doOpenWith (self,p,kind,name,val):
 
     # g.trace('kind',kind,'name',name,'val',val,'c',self.c)
@@ -1227,11 +1236,11 @@ def doOpenWith (self,p,kind,name,val):
     name = kind = 'openwithtable'
     self.openWithList.append(d)
     self.set(p,kind,name,self.openWithList)
-.. @+node:ekr.20041120104215.2: *7* doPage
+.. @+node:ekr.20041120104215.2: *8* doPage
 def doPage(self,p,kind,name,val):
 
     pass # Ignore @page this while parsing settings.
-.. @+node:ekr.20041121125741: *7* doRatio
+.. @+node:ekr.20041121125741: *8* doRatio
 def doRatio (self,p,kind,name,val):
 
     try:
@@ -1242,7 +1251,7 @@ def doRatio (self,p,kind,name,val):
             self.valueError(p,kind,name,val)
     except ValueError:
         self.valueError(p,kind,name,val)
-.. @+node:ekr.20041120105609: *7* doShortcuts (ParserBaseClass)
+.. @+node:ekr.20041120105609: *8* doShortcuts (ParserBaseClass)
 def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
 
     trace = False and not g.unitTesting
@@ -1266,7 +1275,7 @@ def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
                     self.killOneShortcut(bunch,name,p)
                 else:
                     self.doOneShortcut(bunch,name,p)
-.. @+node:ekr.20111020144401.9585: *8* doOneShortcut (ParserBaseClass)
+.. @+node:ekr.20111020144401.9585: *9* doOneShortcut (ParserBaseClass)
 def doOneShortcut(self,bunch,name,p):
     
     '''Handle a regular shortcut.'''
@@ -1294,17 +1303,17 @@ def doOneShortcut(self,bunch,name,p):
         # bunchList = [z for z in bunchList
             # if munge(z.val) != munge(bunch.val)]
         # # g.trace(bunchList)
-.. @+node:ekr.20111020144401.9586: *8* killOneShortcut (ParserBaseClass) (Not ready yet)
+.. @+node:ekr.20111020144401.9586: *9* killOneShortcut (ParserBaseClass) (Not ready yet)
 def killOneShortcut (self,bunch,name,p):
     
     if 0:
         g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20041217132028: *7* doString
+.. @+node:ekr.20041217132028: *8* doString
 def doString (self,p,kind,name,val):
 
     # At present no checking is done.
     self.set(p,kind,name,val)
-.. @+node:ekr.20041120094940.8: *7* doStrings
+.. @+node:ekr.20041120094940.8: *8* doStrings
 def doStrings (self,p,kind,name,val):
 
     '''We expect one of the following:
@@ -1325,7 +1334,7 @@ def doStrings (self,p,kind,name,val):
 
         # At present no checking is done.
         self.set(p,kind,name,val)
-.. @+node:bobjack.20080324141020.4: *7* doPopup & helper
+.. @+node:bobjack.20080324141020.4: *8* doPopup & helper
 def doPopup (self,p,kind,name,val):
 
     """
@@ -1352,7 +1361,7 @@ def doPopup (self,p,kind,name,val):
 
 
     g.app.config.context_menus[popupName] = aList
-.. @+node:bobjack.20080324141020.5: *8* doPopupItems
+.. @+node:bobjack.20080324141020.5: *9* doPopupItems
 def doPopupItems (self,p,aList):
 
     p = p.copy() ; after = p.nodeAfterTree()
@@ -1381,7 +1390,7 @@ def doPopupItems (self,p,aList):
         else:
             # g.trace('***skipping***',p.h)
             p.moveToThreadNext()
-.. @+node:tbrown.20080514112857.124: *7* doMenuat
+.. @+node:tbrown.20080514112857.124: *8* doMenuat
 def doMenuat (self,p,kind,name,val):
 
     if g.app.config.menusList:
@@ -1441,14 +1450,14 @@ def doMenuat (self,p,kind,name,val):
 
     else:
         g.es_print("ERROR: @menuat found but no menu tree to patch")
-.. @+node:tbrown.20080514180046.9: *8* getName (ParserBaseClass)
+.. @+node:tbrown.20080514180046.9: *9* getName (ParserBaseClass)
 def getName(self, val, val2=None):
     if val2 and val2.strip(): val = val2
     val = val.split('\n',1)[0]
     for i in "*.-& \t\n":
         val = val.replace(i,'')
     return val.lower()
-.. @+node:tbrown.20080514180046.2: *8* dumpMenuTree
+.. @+node:tbrown.20080514180046.2: *9* dumpMenuTree
 def dumpMenuTree (self,aList,level=0,path=''):
 
     for z in aList:
@@ -1460,7 +1469,7 @@ def dumpMenuTree (self,aList,level=0,path=''):
             name = self.getName(kind.replace('@menu ',''))
             g.es_print('%s %s... [%s]' % ('    '*(level), kind, path+'/'+name))
             self.dumpMenuTree(val,level+1,path=path+'/'+name)
-.. @+node:tbrown.20080514180046.8: *8* patchMenuTree
+.. @+node:tbrown.20080514180046.8: *9* patchMenuTree
 def patchMenuTree(self, orig, targetPath, path=''):
 
     for n,z in enumerate(orig):
@@ -1482,7 +1491,7 @@ def patchMenuTree(self, orig, targetPath, path=''):
                 return ans
 
     return None
-.. @+node:ekr.20041120105609: *6* doShortcuts (ParserBaseClass)
+.. @+node:ekr.20041120105609: *7* doShortcuts (ParserBaseClass)
 def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
 
     trace = False and not g.unitTesting
@@ -1506,7 +1515,7 @@ def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
                     self.killOneShortcut(bunch,name,p)
                 else:
                     self.doOneShortcut(bunch,name,p)
-.. @+node:ekr.20111020144401.9585: *7* doOneShortcut (ParserBaseClass)
+.. @+node:ekr.20111020144401.9585: *8* doOneShortcut (ParserBaseClass)
 def doOneShortcut(self,bunch,name,p):
     
     '''Handle a regular shortcut.'''
@@ -1534,12 +1543,12 @@ def doOneShortcut(self,bunch,name,p):
         # bunchList = [z for z in bunchList
             # if munge(z.val) != munge(bunch.val)]
         # # g.trace(bunchList)
-.. @+node:ekr.20111020144401.9586: *7* killOneShortcut (ParserBaseClass) (Not ready yet)
+.. @+node:ekr.20111020144401.9586: *8* killOneShortcut (ParserBaseClass) (Not ready yet)
 def killOneShortcut (self,bunch,name,p):
     
     if 0:
         g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20111122080923.10186: *4* * Fix bug 893223: Unpredictable slow operation state cured by writing
+.. @+node:ekr.20111122080923.10186: *5* * Fix bug 893223: Unpredictable slow operation state cured by writing
 @nocolor-node
 
 Leo-editor unpredictably gets into a state where Ctrl-V fails to paste
@@ -1574,8 +1583,8 @@ There is a blunder in c.executeScript.  It jams False into c.inCommand
 without saving and restoring the previous value.  This has to be
 wrong.  I'm not sure that this is the entire fix.  I'll put it on the
 urgent list.
-.. @+node:ekr.20111122080923.10188: *5* Found: inCommand
-.. @+node:ekr.20031218072017.2140: *6* c.executeScript & helpers
+.. @+node:ekr.20111122080923.10188: *6* Found: inCommand
+.. @+node:ekr.20031218072017.2140: *7* c.executeScript & helpers
 def executeScript(self,event=None,args=None,p=None,script=None,
     useSelectedText=True,define_g=True,define_name='__main__',silent=False,
     namespace=None):
@@ -1639,7 +1648,7 @@ def executeScript(self,event=None,args=None,p=None,script=None,
     finally:
         g.app.log = oldLog # 2011/01/19
         self.unredirectScriptOutput()
-.. @+node:ekr.20031218072017.2143: *7* redirectScriptOutput
+.. @+node:ekr.20031218072017.2143: *8* redirectScriptOutput
 def redirectScriptOutput (self):
 
     c = self
@@ -1650,7 +1659,7 @@ def redirectScriptOutput (self):
 
         g.redirectStdout() # Redirect stdout
         g.redirectStderr() # Redirect stderr
-.. @+node:ekr.20110522121957.18230: *7* setCurrentDirectoryFromContext
+.. @+node:ekr.20110522121957.18230: *8* setCurrentDirectoryFromContext
 def setCurrentDirectoryFromContext(self,p):
     
     trace = False and not g.unitTesting
@@ -1669,7 +1678,7 @@ def setCurrentDirectoryFromContext(self,p):
             os.chdir(path)
         except Exception:
             pass
-.. @+node:EKR.20040627100424: *7* unredirectScriptOutput
+.. @+node:EKR.20040627100424: *8* unredirectScriptOutput
 def unredirectScriptOutput (self):
 
     c = self
@@ -1680,7 +1689,7 @@ def unredirectScriptOutput (self):
 
         g.restoreStderr()
         g.restoreStdout()
-.. @+node:ekr.20031218072017.2817: *6*  doCommand
+.. @+node:ekr.20031218072017.2817: *7*  doCommand
 command_count = 0
 
 def doCommand (self,command,label,event=None):
@@ -1747,14 +1756,14 @@ def doCommand (self,command,label,event=None):
         g.doHook("command2",c=c,p=p,v=p,label=label)
 
     return # (for Tk) "break" # Inhibit all other handlers.
-.. @+node:ekr.20061031131434.160: *6* enterNamedMode
+.. @+node:ekr.20061031131434.160: *7* enterNamedMode
 def enterNamedMode (self,event,commandName):
 
     k = self ; c = k.c
     modeName = commandName[6:]
     c.inCommand = False # Allow inner commands in the mode.
     k.generalModeHandler(event,modeName=modeName)
-.. @+node:ekr.20110605121601.18140: *6* closeEvent (DynanicWindow)
+.. @+node:ekr.20110605121601.18140: *7* closeEvent (DynanicWindow)
 def closeEvent (self,event):
 
     trace = False and not g.unitTesting
@@ -1776,7 +1785,7 @@ def closeEvent (self,event):
             event.accept()
         else:
             event.ignore()
-.. @+node:ekr.20110605121601.18286: *6* frame.OnCloseLeoEvent
+.. @+node:ekr.20110605121601.18286: *7* frame.OnCloseLeoEvent
 # Called from quit logic and when user closes the window.
 # Returns True if the close happened.
 
@@ -1789,8 +1798,8 @@ def OnCloseLeoEvent(self):
         c.requestCloseWindow = True
     else:
         g.app.closeLeoWindow(self)
-.. @+node:ekr.20111123043847.9981: *5* Found: set_trace
-.. @+node:ekr.20110310093050.14293: *6* pdb (codewise)
+.. @+node:ekr.20111123043847.9981: *6* Found: set_trace
+.. @+node:ekr.20110310093050.14293: *7* pdb (codewise)
 def pdb (message=''):
 
     """Fall into pdb."""
@@ -1800,7 +1809,7 @@ def pdb (message=''):
     if message:
         print(message)
     pdb.set_trace()
-.. @+node:ekr.20041105091148: *6* g.pdb
+.. @+node:ekr.20041105091148: *7* g.pdb
 def pdb (message=''):
 
     """Fall into pdb."""
@@ -1810,7 +1819,7 @@ def pdb (message=''):
     if message:
         print(message)
     pdb.set_trace()
-.. @+node:ekr.20110605121601.18134: *6* init (qtGui.py top level)
+.. @+node:ekr.20110605121601.18134: *7* init (qtGui.py top level)
 def init():
 
     if g.app.unitTesting: # Not Ok for unit testing!
@@ -1836,10 +1845,197 @@ def init():
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True
-.. @+node:ekr.20111109105907.9800: *4* * Find out (or create) a way to eliminate spellpyx.txt from bzr repo
-.. @+node:ekr.20111109122014.9792: *4* * Allow @all only in top-level @<file> nodes
-.. @+node:ekr.20111118190243.10188: *4* * Alt-x doesn't work in the find tab
-.. @+node:ekr.20111122094453.10201: *4* * Ignore unbound Alt/Ctrl keys, especially Alt/Ctrl-N
+.. @+node:ekr.20111109105907.9800: *5* * Find out (or create) a way to eliminate spellpyx.txt from bzr repo
+.. @+node:ekr.20111109122014.9792: *5* * Allow @all only in top-level @<file> nodes
+.. @+node:ekr.20111118190243.10188: *5* * Alt-x doesn't work in the find tab
+.. @+node:ekr.20111010162047.15678: *5* The @auto script *must* put @first nodes in root node
+@nocolor-node
+
+Also the import commands.
+
+Especially:
+    - Shebang line.
+    - Python encoding line.
+.. @+node:ekr.20111123095018.13632: *5* Fix bug: expand Find tab as needed for bigger fonts
+.. @+node:ekr.20110605121601.18326: *6* createTab (leoQtLog)
+def createTab (self,tabName,widget=None,wrap='none'):
+    """ Create a new tab in tab widget
+
+    if widget is None, Create a QTextBrowser,
+    suitable for log functionality.
+    """
+
+    trace = False and not g.unitTesting
+    c = self.c
+    
+    if trace: g.trace(tabName,widget and g.app.gui.widget_name(widget) or '<no widget>')
+
+    if widget is None:
+
+        widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
+            # widget is subclass of QTextBrowser.
+        contents = leoQTextEditWidget(widget=widget,name='log',c=c)
+            # contents a wrapper.
+        widget.leo_log_wrapper = contents
+            # Inject an ivar into the QTextBrowser that points to the wrapper.
+            
+        if trace: g.trace('** creating',tabName,'self.widget',contents,'wrapper',widget)
+        
+        widget.setWordWrapMode(
+            g.choose(self.wrap,
+                QtGui.QTextOption.WordWrap,
+                QtGui.QTextOption.NoWrap))
+
+        widget.setReadOnly(False) # Allow edits.
+        self.logDict[tabName] = widget
+        if tabName == 'Log':
+            self.widget = contents # widget is an alias for logCtrl.
+            widget.setObjectName('log-widget')
+
+        if True: # 2011/05/28.
+            # Set binding on all text widgets.
+            theFilter = leoQtEventFilter(c,w=self,tag='log')
+            self.eventFilters.append(theFilter) # Needed!
+            widget.installEventFilter(theFilter)
+            
+        if True and tabName == 'Log':
+    
+            assert c.frame.top.__class__.__name__ == 'DynamicWindow'
+            find_widget = c.frame.top.leo_find_widget
+            
+            # 2011/11/21: A hack: add an event filter.
+            find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
+            find_widget.installEventFilter(find_widget.leo_event_filter)
+            if trace: g.trace('** Adding event filter for Find',find_widget)
+            
+            # 2011/11/21: A hack: make the find_widget an official log widget.
+            self.contentsDict['Find']=find_widget
+    
+        self.contentsDict[tabName] = widget
+        self.tabWidget.addTab(widget,tabName)
+    else:
+        contents = widget
+            # Unlike text widgets, contents is the actual widget.
+        widget.leo_log_wrapper = contents
+            # The leo_log_wrapper is the widget itself.
+        if trace: g.trace('** using',tabName,widget)
+        
+        if 1: # Now seems to work.
+            theFilter = leoQtEventFilter(c,w=contents,tag='tabWidget')
+            self.eventFilters.append(theFilter) # Needed!
+            widget.installEventFilter(theFilter)
+    
+        self.contentsDict[tabName] = contents
+        self.tabWidget.addTab(contents,tabName)
+
+    return contents
+.. @+node:ekr.20110605121601.18166: *6* createFindTab (DynamicWindow)
+def createFindTab (self,parent,tab_widget):
+
+    c,dw = self.leo_c,self
+    grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
+    grid.setColumnStretch(0,100)
+    grid.setColumnStretch(1,100)
+    
+    # Row 0: heading.
+    lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
+    grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
+    
+    # Rows 1, 2: the find/change boxes, now disabled.
+    findPattern = self.createLineEdit(parent,'findPattern',disabled=True)
+    findChange  = self.createLineEdit(parent,'findChange',disabled=True)
+    lab2 = self.createLabel(parent,'findLabel','Find:')
+    lab3 = self.createLabel(parent,'changeLabel','Change:')
+    grid.addWidget(lab2,1,0)
+    grid.addWidget(lab3,2,0)
+    grid.addWidget(findPattern,1,1)
+    grid.addWidget(findChange,2,1)
+        
+    # Check boxes and radio buttons.
+    # Radio buttons are mutually exclusive because they have the same parent.
+    def mungeName(name):
+        # The value returned here is significant: it creates an ivar.
+        return 'checkBox%s' % label.replace(' ','').replace('&','')
+
+    # Rows 3 through 8...
+    table = (
+        ('box', 'Whole &Word',      2,0),
+        ('rb',  '&Entire Outline',  2,1),
+        ('box', '&Ignore Case',     3,0),
+        ('rb',  '&Suboutline Only', 3,1),
+        ('box', 'Wrap &Around',     4,0),
+        ('rb',  '&Node Only',       4,1),
+        # ('box', '&Reverse',       5,0),
+        ('box', 'Search &Headline', 5,1),
+        ('box', 'Rege&xp',          5,0), # was 6,0
+        ('box', 'Search &Body',     6,1),
+        ('box', 'Mark &Finds',      6,0), # was 7,0
+        ('box', 'Mark &Changes',    7,0)) # was 7,1
+        # a,b,c,e,f,h,i,n,rs,w
+
+    for kind,label,row,col in table:
+        name = mungeName(label)
+        func = g.choose(kind=='box',
+            self.createCheckBox,self.createRadioButton)
+        w = func(parent,name,label)
+        grid.addWidget(w,row+1,col)
+        setattr(self,name,w)
+
+    # Row 9: Widgets that take all additional vertical space.
+    w = QtGui.QWidget()
+    grid.addWidget(w,9,0)
+    grid.addWidget(w,9,1)
+    grid.setRowStretch(9,100)
+
+    # Official ivars (in addition to setattr ivars).
+    self.leo_find_widget = tab_widget # 2011/11/21: a scrollArea.
+    self.findPattern = findPattern
+    self.findChange = findChange
+    # self.findLab = lab2
+    # self.changeLab = lab3
+.. @+node:ekr.20110605121601.18156: *6* createGrid (DynamicWindow)
+def createGrid (self,parent,name,margin=0,spacing=0):
+
+    w = QtGui.QGridLayout(parent)
+    w.setMargin(margin)
+    w.setSpacing(spacing)
+    self.setName(w,name)
+    return w
+.. @+node:ekr.20110605121601.18145: *6* createLogPane
+def createLogPane (self,parent):
+
+    # Create widgets.
+    logFrame = self.createFrame(parent,'logFrame',
+        vPolicy = QtGui.QSizePolicy.Minimum)
+    innerFrame = self.createFrame(logFrame,'logInnerFrame',
+        hPolicy=QtGui.QSizePolicy.Preferred,
+        vPolicy=QtGui.QSizePolicy.Expanding)
+    tabWidget = self.createTabWidget(innerFrame,'logTabWidget')
+
+    # Pack.
+    innerGrid = self.createGrid(innerFrame,'logInnerGrid')
+    innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
+    outerGrid = self.createGrid(logFrame,'logGrid')
+    outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
+    
+    # 2011/10/01: Embed the Find tab in a QScrollArea.
+    findScrollArea = QtGui.QScrollArea()
+    findScrollArea.setObjectName('findScrollArea')
+    findTab = QtGui.QWidget()
+    findTab.setObjectName('findTab')
+    tabWidget.addTab(findScrollArea,'Find')
+    self.createFindTab(findTab,findScrollArea)
+    findScrollArea.setWidget(findTab)
+
+    spellTab = QtGui.QWidget()
+    spellTab.setObjectName('spellTab')
+    tabWidget.addTab(spellTab,'Spell')
+    self.createSpellTab(spellTab)
+
+    tabWidget.setCurrentIndex(1)
+
+    # Official ivars
+    self.tabWidget = tabWidget # Used by leoQtLog.
 .. @+node:ekr.20111122172039.10203: *4* Remove 4.9 link from Leo's home page?
 @nocolor-node
 
@@ -2298,14 +2494,6 @@ for func,h,expected in table:
         c.redraw()
 .. @+node:ekr.20111108081936.9768: *6* @path rel-path
 .. @+node:ekr.20111108081936.9751: *7* @@file fj-test-1
-.. @+node:ekr.20111010162047.15678: *4* The @auto script *must* put @first nodes in root node
-@nocolor-node
-
-Also the import commands.
-
-Especially:
-    - Shebang line.
-    - Python encoding line.
 .. @+node:ekr.20111123043847.13423: *4* Code changes
 .. @+node:ekr.20111121084517.10189: *5* Remove all calls to w.see, w.seeInsertPoint, w.setYScrollPosition
 This would be a major project: See "Scrolling bug" notes.
@@ -4133,6 +4321,7 @@ def eventFilter(self, obj, event):
     elif eventType in kinds:
         tkKey,ch,ignore = self.toTkKey(event)
         aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+        # g.trace('instate',k.inState(),'tkKey',tkKey,'ignore',ignore,'len(aList)',len(aList))
         if ignore:
             override = False
         # This is extremely bad.
@@ -4162,15 +4351,30 @@ def eventFilter(self, obj, event):
         stroke = self.toStroke(tkKey,ch)
 
         if override:
+            # Essentially *all* keys get passed to masterKeyHandler.
             if trace and traceKey:
-                g.trace('ignore',ignore,'bound',repr(stroke)) # repr(aList))
+                g.trace('ignore',ignore,'bound',repr(stroke),repr(aList))
             w = self.w # Pass the wrapper class, not the wrapped widget.
             event = self.create_key_event(event,c,w,ch,tkKey,stroke)
             ret = k.masterKeyHandler(event)
             c.outerUpdate()
         else:
-            if trace and traceKey and verbose:
-                g.trace(self.tag,'unbound',tkKey,stroke)
+            if 1: # old code.  This is good enough.
+                if trace and traceKey and verbose:
+                    g.trace(self.tag,'unbound',tkKey,stroke)
+            # else:
+                # # 2011/11/23: Check for unbound Alt or Ctrl keys.
+                # if stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1:
+                    # if k.ignore_unbound_non_ascii_keys:
+                        # override = True
+                        # if trace and traceKey and verbose:
+                            # g.trace(self.tag,'ignoring unbound Alt/Ctrl key',tkKey,stroke)
+                    # else:
+                        # if trace and traceKey and verbose:
+                            # g.trace(self.tag,'allowing unbound Alt/Ctrl key',tkKey,stroke)
+                # else:
+                    # if trace and traceKey and verbose:
+                        # g.trace(self.tag,'unbound',tkKey,stroke)
         
         if trace and traceEvent:
             # Trace key events.
@@ -5183,15 +5387,19 @@ def handleDefaultChar(self,event,stroke):
     w = event and event.widget
     name = c.widget_name(w)
     trace = False and not g.unitTesting
+    verbose = False
 
-    if trace: g.trace('widget_name',name,'stroke',stroke,'enable alt-ctrl',self.enable_alt_ctrl_bindings)
+    if trace and verbose:
+        g.trace('widget_name',name,'stroke',stroke,'enable alt-ctrl',self.enable_alt_ctrl_bindings)
 
     if (stroke and
         not stroke.startswith('Alt+Ctrl') and
-        not self.enable_alt_ctrl_bindings and
+        # not k.enable_alt_ctrl_bindings and # Old code: this isn't an alt-ctrl key!
+        k.ignore_unbound_non_ascii_keys and # Bug fix: 2011/11/23
         (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
     ):
         if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+        g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
         return # (for Tk) 'break'
 
     if name.startswith('body'):
@@ -8381,15 +8589,19 @@ def handleDefaultChar(self,event,stroke):
     w = event and event.widget
     name = c.widget_name(w)
     trace = False and not g.unitTesting
+    verbose = False
 
-    if trace: g.trace('widget_name',name,'stroke',stroke,'enable alt-ctrl',self.enable_alt_ctrl_bindings)
+    if trace and verbose:
+        g.trace('widget_name',name,'stroke',stroke,'enable alt-ctrl',self.enable_alt_ctrl_bindings)
 
     if (stroke and
         not stroke.startswith('Alt+Ctrl') and
-        not self.enable_alt_ctrl_bindings and
+        # not k.enable_alt_ctrl_bindings and # Old code: this isn't an alt-ctrl key!
+        k.ignore_unbound_non_ascii_keys and # Bug fix: 2011/11/23
         (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
     ):
         if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+        g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
         return # (for Tk) 'break'
 
     if name.startswith('body'):
@@ -8701,7 +8913,7 @@ def isAutoCompleteChar (self,stroke):
 def handleUnboundKeys (self,event,char,stroke):
 
     trace = False and not g.unitTesting
-    verbose = False
+    verbose = True
     k = self ; c = k.c
     modesTuple = ('insert','overwrite')
     

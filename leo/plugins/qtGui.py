@@ -8494,6 +8494,7 @@ class leoQtEventFilter(QtCore.QObject):
         elif eventType in kinds:
             tkKey,ch,ignore = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+            # g.trace('instate',k.inState(),'tkKey',tkKey,'ignore',ignore,'len(aList)',len(aList))
             if ignore:
                 override = False
             # This is extremely bad.
@@ -8523,15 +8524,30 @@ class leoQtEventFilter(QtCore.QObject):
             stroke = self.toStroke(tkKey,ch)
 
             if override:
+                # Essentially *all* keys get passed to masterKeyHandler.
                 if trace and traceKey:
-                    g.trace('ignore',ignore,'bound',repr(stroke)) # repr(aList))
+                    g.trace('ignore',ignore,'bound',repr(stroke),repr(aList))
                 w = self.w # Pass the wrapper class, not the wrapped widget.
                 event = self.create_key_event(event,c,w,ch,tkKey,stroke)
                 ret = k.masterKeyHandler(event)
                 c.outerUpdate()
             else:
-                if trace and traceKey and verbose:
-                    g.trace(self.tag,'unbound',tkKey,stroke)
+                if 1: # old code.  This is good enough.
+                    if trace and traceKey and verbose:
+                        g.trace(self.tag,'unbound',tkKey,stroke)
+                # else:
+                    # # 2011/11/23: Check for unbound Alt or Ctrl keys.
+                    # if stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1:
+                        # if k.ignore_unbound_non_ascii_keys:
+                            # override = True
+                            # if trace and traceKey and verbose:
+                                # g.trace(self.tag,'ignoring unbound Alt/Ctrl key',tkKey,stroke)
+                        # else:
+                            # if trace and traceKey and verbose:
+                                # g.trace(self.tag,'allowing unbound Alt/Ctrl key',tkKey,stroke)
+                    # else:
+                        # if trace and traceKey and verbose:
+                            # g.trace(self.tag,'unbound',tkKey,stroke)
             
             if trace and traceEvent:
                 # Trace key events.

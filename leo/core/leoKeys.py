@@ -2783,15 +2783,19 @@ class keyHandlerClass:
         w = event and event.widget
         name = c.widget_name(w)
         trace = False and not g.unitTesting
+        verbose = False
 
-        if trace: g.trace('widget_name',name,'stroke',stroke,'enable alt-ctrl',self.enable_alt_ctrl_bindings)
+        if trace and verbose:
+            g.trace('widget_name',name,'stroke',stroke,'enable alt-ctrl',self.enable_alt_ctrl_bindings)
 
         if (stroke and
             not stroke.startswith('Alt+Ctrl') and
-            not self.enable_alt_ctrl_bindings and
+            # not k.enable_alt_ctrl_bindings and # Old code: this isn't an alt-ctrl key!
+            k.ignore_unbound_non_ascii_keys and # Bug fix: 2011/11/23
             (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
         ):
             if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+            g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
             return # (for Tk) 'break'
 
         if name.startswith('body'):
@@ -3104,7 +3108,7 @@ class keyHandlerClass:
     def handleUnboundKeys (self,event,char,stroke):
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         k = self ; c = k.c
         modesTuple = ('insert','overwrite')
         
