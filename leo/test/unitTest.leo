@@ -2204,21 +2204,24 @@ myLeoSettings.leo. This may fail on machines without @buttons and @commands
 nodes in myLeoSettings.leo.
 '''
 
-strict = True # Set to False if you are not EKR.
-
-table = ['leoSettings.leo','unitTest.leo']
-if strict:
-    table.append('myLeoSettings.leo')
-
-keys = ('config.doButtons-file-names','config.doCommands-file-names')
-d = g.app.config.unitTestDict # Always created for this unit test.
-
-for key in keys:
-    aList = d.get(key,[])
-    for fn in table:
-        # print(fn)
-        # print(repr(aList))
-        assert fn in aList,'%s not in unitTestDict[%s]' % (fn,key)
+if g.app.isExternalUnitTest:
+    pass
+else:
+    strict = True # Set to False if you are not EKR.
+    
+    table = ['leoSettings.leo','unitTest.leo']
+    if strict:
+        table.append('myLeoSettings.leo')
+    
+    keys = ('config.doButtons-file-names','config.doCommands-file-names')
+    d = g.app.config.unitTestDict # Always created for this unit test.
+    
+    for key in keys:
+        aList = d.get(key,[])
+        for fn in table:
+            # print(fn)
+            # print(repr(aList))
+            assert fn in aList,'%s not in unitTestDict[%s]' % (fn,key)
 </t>
 <t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
 <t tx="ekr.20111124094121.3942"></t>

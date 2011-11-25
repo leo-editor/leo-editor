@@ -14,11 +14,660 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
+.. @+node:ekr.20111125072438.10202: *4* ** Fix clone bugs
+.. @+node:ekr.20111109122014.9792: *5* Fix bug: Allow @all only in top-level @<file> nodes (test2.leo)
+.. @+node:ekr.20111125072438.10203: *5* bug 804960: Refreshing unlinks clones, just reopening connects them again
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/804960
+
+When we clone a node inside an @shadow (containing @others) node and then
+refresh the @shadow node from file, the clone is unlinked and marked as changed.
+If we now save, close the .leo file and open it again, the nodes are linked
+again! (showing "cloned" symbol) User's thought: "How the heck can the file
+change _between save and re-open_ when I changed nothing?"
+
+I think what should be done about this is the check that Leo does when it opens
+the file again, and that check should be done immediately after the "refresh
+node from file" operation. Also, at this point, the "Recovered nodes" node
+should appear (if file and node have both changed), not only after the next .leo
+file close/reopen (as that happens quite infrequently, I guess, e.g. once a day
+for me). Otherwise, the user can easily lose data.
+.. @+node:ekr.20111125072438.10204: *5* bug 882243: Clones sometimes not saved
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/882243
+
+In Leo, I made this file:
+
+@file test.txt
+@others
+.....test1
+     test: these are clones
+.....test2
+     @others
+
+      what is going on...?
+..........test1 <--- this is cloned
+          test: these are clones
+
+The output file does not have the cloned node:
+
+#@+leo-ver=5-thin
+#@+node:bill.20111025150533.3528: * @thin test.txt
+#@+others
+#@+node:bill.20111025150533.3527: ** test1
+test: these are clones
+#@+node:bill.20111025150533.3529: ** test2
+#@+others
+#@-others
+
+what is going on...?
+#@-others
+#@-leo
+
+I don't think it is a conflict with @others; it is just that some files do not retain the clones that are displayed.
+
+Here is the copied node:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+<?xml-stylesheet ekr_test?>
+<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_header file_format="2"/>
+<vnodes>
+<v t="bill.20111025150533.3528" a="E"><vh>@thin test.txt</vh>
+<v t="bill.20111025150533.3527"><vh>test1</vh></v>
+<v t="bill.20111025150533.3529" a="E"><vh>test2</vh>
+<v t="bill.20111025150533.3527"></v>
+</v>
+</v>
+</vnodes>
+<tnodes>
+<t tx="bill.20111025150533.3527">test: these are clones
+</t>
+<t tx="bill.20111025150533.3528">@others
+</t>
+<t tx="bill.20111025150533.3529">@others
+
+what is going on...?</t>
+</tnodes>
+</leo_file>
+
+Here is the copied leo file:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+<?xml-stylesheet ekr_test?>
+<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+ <global_window_position top="50" left="50" height="500" width="700"/>
+ <global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="bill.20111025150533.3528" a="E"
+expanded="bill.20111025150533.3529,"><vh>@thin test.txt</vh></v>
+</vnodes>
+<tnodes>
+</tnodes>
+</leo_file>
+.. @+node:ekr.20111125072438.10208: *6* @@@@thin test.txt
+@others
+.. @+node:ekr.20111125072438.10211: *7* test1
+test: these are clones
+.. @+node:ekr.20111125072438.10210: *7* test2
+@others
+
+what is going on...?
+.. @+node:ekr.20111125072438.10211: *8* test1
+test: these are clones
+.. @+node:ekr.20111125072438.10213: *6* @@@@thin test.txt
+.. @+node:ekr.20111125072438.10214: *5* email: Another @shadow bug (test4.leo)
+@nocolor-node
+
+email:
+http://mail.google.com/mail/#label/Leo%2FBugs/133ac31add8b2c6c
+
+see attachment, shadow file won't get written correctly, and it won't reread
+correctly too. Using leo-editor-snapshot- 201111090253.
+
+Hopefully I will be able to look on some bugs myself, but don't know when. Needs
+a bit of time, I am not very familiar with python.
+
+===== EKR
+
+Leo doesn't understand .jsp.  @shadow should refuse to work for unknown languages.
+.. @+node:ekr.20031218072017.368: *6* << define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM_", # Use the REM hack.
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "cython"        : "#",
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "haskell"       : "--_ {-_ _-}",
+    "haxe"          : "//",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
+    "javaserverpage": "<%-- --%>", # EKR: 2011/11/25
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lisp"          : ";", # EKR: 2010/09/29
+    "lua"           : "--",  # ddm 13/02/06
+    "matlab"        : "%", # EKR: 2011/10/21
+    "nsi"           : ";", # EKR: 2010/10/27
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "rest"          : ".._",
+    "rst"           : ".._",
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "scala"         : "// /* */",
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--',
+        # For unknown extensions in @shadow files.
+    "vim"           : "\"",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
+}
+
+# Used only by c.getOpenWithExt.
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    #"cython"        : "pyd",
+    #"cython"        : "pyi",
+    "cython"        : "pyx", # Only one extension is valid at present.
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f90",
+    "haskell"       : "hs",
+    "haxe"          : "hx",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
+    "javaserverpage": "jsp", # EKR: 2011/11/25
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "matlab"        : "m", # EKR: 2011/10/21
+    "nsi"           : "nsi", # EKR: 2010/10/27
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    # "rst"           : "rst", # caught by pylint.
+    "rst"           : "rest",
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "scala"         : "scala",
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vim"           : "vim",
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+    "xslt"          : "xsl",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "hs"    : "haskell",
+    "ini"   : "ini",
+    "java"  : "java",
+    "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
+    "jsp"   : "javaserverpage", # EKR: 2011/11/25: For @shadow.
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "m"     : "matlab", # EKR 2011/10/21
+    "nsi"   : "nsi", # EKR: 2010/10/27
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "pyd"   : "cython",
+    "pyi"   : "cython",
+    "pyx"   : "cython",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "scala" : "scala",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+    "w"     : "cweb",
+    "xml"   : "xml",
+    "xsl"   : "xslt",
+    "hx"    : "haxe",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran90',
+    'hx'    : 'none',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nsi'   : 'none', # Leo 4.8.
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+
+self.global_commands_dict = {}
 .. @+node:ekr.20111123095018.10190: *4* Create docs from recent posts
 @nocolor-node
 
 This will help reduce the inbox.
+.. @+node:ekr.20111122172039.10203: *4* Create new download page
+.. @+node:ekr.20111108081936.12524: *4* Create unit tests illustrating path ops
+@nocolor-node
+
+viewrendered - file not found
+https://groups.google.com/forum/#!topic/leo-editor/kotyIs6_G3w
+
+This would be part of a redesign of Leo's path operations.
+.. @+node:ekr.20031218072017.2145: *5* os.path wrappers (leoGlobals.py)
+@ Note: all these methods return Unicode strings. It is up to the user to
+convert to an encoded string as needed, say when opening a file.
+.. @+node:ekr.20031218072017.2146: *6* os_path_abspath
+def os_path_abspath(path):
+
+    """Convert a path to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.abspath(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20031218072017.2147: *6* os_path_basename
+def os_path_basename(path):
+
+    """Return the second half of the pair returned by split(path)."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.basename(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20031218072017.2148: *6* os_path_dirname
+def os_path_dirname(path):
+
+    """Return the first half of the pair returned by split(path)."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.dirname(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20031218072017.2149: *6* os_path_exists
+def os_path_exists(path):
+
+    """Return True if path exists."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.exists(path)
+.. @+node:ekr.20080922124033.6: *6* os_path_expandExpression
+def os_path_expandExpression (s,**keys):
+
+    '''Expand {{anExpression}} in c's context.'''
+
+    trace = False
+    
+    s1 = s
+    c = keys.get('c')
+    if not c:
+        g.trace('can not happen: no c',g.callers())
+        return s
+
+    if not s:
+        if trace: g.trace('no s')
+        return ''
+
+    i = s.find('{{')
+    j = s.find('}}')
+    if -1 < i < j:
+        exp = s[i+2:j].strip()
+        if exp:
+            try:
+                import os
+                import sys
+                p = c.p
+                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
+                val = eval(exp,d)
+                s = s[:i] + str(val) + s[j+2:]
+                if trace: g.trace(s1,s)
+            except Exception:
+                g.trace(g.callers())
+                g.es_exception(full=True, c=c, color='red')
+
+    return s
+.. @+node:ekr.20080921060401.13: *6* os_path_expanduser
+def os_path_expanduser(path):
+
+    """wrap os.path.expanduser"""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    result = os.path.normpath(os.path.expanduser(path))
+
+    return result
+.. @+node:ekr.20080921060401.14: *6* g.os_path_finalize & os_path_finalize_join
+def os_path_finalize (path,**keys):
+
+    '''
+    Expand '~', then return os.path.normpath, os.path.abspath of the path.
+
+    There is no corresponding os.path method'''
+
+    c = keys.get('c')
+
+    if c: path = g.os_path_expandExpression(path,**keys)
+
+    path = g.os_path_expanduser(path)
+    path = os.path.abspath(path)
+    path = os.path.normpath(path)
+    return path
+
+def os_path_finalize_join (*args,**keys):
+
+    '''Do os.path.join(*args), then finalize the result.'''
+
+    c = keys.get('c')
+
+    if c:
+        args = [g.os_path_expandExpression(z,**keys)
+            for z in args if z]
+
+    return os.path.normpath(os.path.abspath(
+        g.os_path_join(*args,**keys))) # Handles expanduser
+.. @+node:ekr.20031218072017.2150: *6* os_path_getmtime
+def os_path_getmtime(path):
+
+    """Return the modification time of path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.getmtime(path)
+.. @+node:ekr.20080729142651.2: *6* os_path_getsize
+def os_path_getsize (path):
+
+    '''Return the size of path.'''
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.getsize(path)
+.. @+node:ekr.20031218072017.2151: *6* os_path_isabs
+def os_path_isabs(path):
+
+    """Return True if path is an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isabs(path)
+.. @+node:ekr.20031218072017.2152: *6* os_path_isdir
+def os_path_isdir(path):
+
+    """Return True if the path is a directory."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isdir(path)
+.. @+node:ekr.20031218072017.2153: *6* os_path_isfile
+def os_path_isfile(path):
+
+    """Return True if path is a file."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isfile(path)
+.. @+node:ekr.20031218072017.2154: *6* os_path_join
+def os_path_join(*args,**keys):
+
+    trace = False and not g.unitTesting
+    c = keys.get('c')
+
+    uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
+
+    if trace: g.trace('1',uargs)
+
+    # Note:  This is exactly the same convention as used by getBaseDirectory.
+    if uargs and uargs[0] == '!!':
+        uargs[0] = g.app.loadDir
+    elif uargs and uargs[0] == '.':
+        c = keys.get('c')
+        if c and c.openDirectory:
+            uargs[0] = c.openDirectory
+            # g.trace(c.openDirectory)
+
+    uargs = [g.os_path_expanduser(z) for z in uargs if z]
+
+    if trace: g.trace('2',uargs)
+
+    path = os.path.join(*uargs)
+
+    if trace: g.trace('3',path)
+
+    # May not be needed on some Pythons.
+    path = g.toUnicodeFileEncoding(path)
+    return path
+.. @+node:ekr.20031218072017.2156: *6* os_path_normcase
+def os_path_normcase(path):
+
+    """Normalize the path's case."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.normcase(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20031218072017.2157: *6* os_path_normpath
+def os_path_normpath(path):
+
+    """Normalize the path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.normpath(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20080605064555.2: *6* os_path_realpath
+def os_path_realpath(path):
+
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.realpath(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20031218072017.2158: *6* os_path_split
+def os_path_split(path):
+
+    path = g.toUnicodeFileEncoding(path)
+
+    head,tail = os.path.split(path)
+
+    head = g.toUnicodeFileEncoding(head)
+    tail = g.toUnicodeFileEncoding(tail)
+
+    return head,tail
+.. @+node:ekr.20031218072017.2159: *6* os_path_splitext
+def os_path_splitext(path):
+
+    path = g.toUnicodeFileEncoding(path)
+
+    head,tail = os.path.splitext(path)
+
+    head = g.toUnicodeFileEncoding(head)
+    tail = g.toUnicodeFileEncoding(tail)
+
+    return head,tail
+.. @+node:ekr.20090829140232.6036: *6* os_startfile
+def os_startfile(fname):
+    if sys.platform.startswith('win'):
+        os.startfile(fname)
+    elif sys.platform == 'darwin':
+        # From Marc-Antoine Parent.
+        try:
+            subprocess.call(['open', fname])
+        except OSError:
+            pass # There may be a spurious "Interrupted system call"
+        except ImportError:
+            os.system("open '%s'" % (fname,))
+    else:
+        os.system('xdg-open "%s"'%fname)
+.. @+node:ekr.20031218072017.2160: *6* toUnicodeFileEncoding
+def toUnicodeFileEncoding(path):
+
+    if path: path = path.replace('\\', os.sep)
+
+    # Yes, this is correct.  All os_path_x functions return Unicode strings.
+    return g.toUnicode(path)
+.. @+node:ekr.20111108081936.9750: *5* @test path computations
+fj = g.os_path_finalize_join
+f  = g.os_path_finalize
+eu = g.os_path_expanduser
+
+if g.app.isExternalUnitTest:
+    loadDir = fj(g.app.loadDir,'..','test')
+else:
+    loadDir = g.app.loadDir
+
+table = (
+    (fj,'@@file fj-test-1',fj(loadDir,'rel-path')),
+)
+
+for func,h,expected in table:
+    p = g.findNodeAnywhere(c,h)
+    assert p,'not found: "%s"' % (h)
+    assert p.h.startswith('@@')
+    p.h = p.h[1:] # Remove the first @ sign.
+    
+    try:
+        d = c.scanAllDirectives(p)
+        result = d.get('path')
+        assert result == expected,'expected "%s", got "%s"' % (
+            expected,result)
+    finally:
+        p.h = '@' + p.h
+        c.redraw()
+.. @+node:ekr.20111108081936.9768: *6* @path rel-path
+.. @+node:ekr.20111108081936.9751: *7* @@file fj-test-1
 .. @+node:ekr.20111123095018.13633: *4*  Fix bugs
+.. @+node:ekr.20111125072438.10216: *5* Regularize slashes and back-slashes
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/0d48b507bc8ffc05
+
+v4.9.1 build 4669
+WinXP
+
+If I 'Open' a file, I get the following node header:
+
+@edit E:/Documents/index.html
+
+If I 'Import' the same file, I get the following:
+
+@file E:\Documents\index.html
+
+Just wondering why the difference between
+
+E:/ and E:\
+
+This is probably trivial and of no consequence, but I thought it
+curious. 
 .. @+node:ekr.20111024170505.16459: *5* * Bug 879331: Redefining a key binding breaks menu items with same binding
 .. @+node:ekr.20111026091322.16501: *6* Probably same as key-binding bug
 .. @+node:ekr.20111026091322.16492: *7* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
@@ -1868,7 +2517,6 @@ def init():
         g.plugin_signon(__name__)
         return True
 .. @+node:ekr.20111109105907.9800: *5* * Find out (or create) a way to eliminate spellpyx.txt from bzr repo
-.. @+node:ekr.20111109122014.9792: *5* * Allow @all only in top-level @<file> nodes
 .. @+node:ekr.20111118190243.10188: *5* * Alt-x doesn't work in the find tab
 .. @+node:ekr.20111010162047.15678: *5* The @auto script *must* put @first nodes in root node
 @nocolor-node
@@ -2058,464 +2706,39 @@ def createLogPane (self,parent):
 
     # Official ivars
     self.tabWidget = tabWidget # Used by leoQtLog.
-.. @+node:ekr.20111122172039.10203: *4* Remove 4.9 link from Leo's home page?
+.. @+node:ekr.20111125072438.10215: *5* Traceback when pasting invalid Leo file
 @nocolor-node
 
-Leo is the leading edge, and that's all there is.
-.. @+node:ekr.20111123043847.9982: *5* How to put bzr rev in signon?
-.. @+node:ekr.20111118104929.10185: *4* Recent leoInspect
-.. @+node:ekr.20111117031039.10977: *5*  To do
-@nocolor
+error parsing <clipboard>
+Traceback (most recent call last):
+  File "c:\python32\lib\xml\sax\expatreader.py", line 207, in feed
+    self._parser.Parse(data, isFinal)
+xml.parsers.expat.ExpatError: junk after document element: line 25, column 0
 
-** Rewrite the chain code so it is based on ASTs, not hacks.
-
-- Append *all* statements to statements list.
-    Including def, class, if, while, pass, with etc.
-- Clean up Attribute in InspectTraverser.
-- Add level ivar in AstFormatter?
-
-@color
-
-    is_method = cx.kind != 'class' and cx.class_context
-    is_ivar = s.startswith('self.')
-    if is_method and is_ivar:
-        cx = cx.class_context
-.. @+node:ekr.20111116103733.10361: *5* Attribute & attribute_to_string (InspectTraverser) (REVISE)
-def do_Attribute(self,tree,tag=''):
-    
-    assert self.kind(tree) == 'Attribute'
-
-    # Get the chain.
-    cx = self.get_context()
-    s = self.attribute_to_string(tree)
-    
-    if s and s[0] in ('"',"'"):
-        # g.trace('ignoring string',s)
-        return
-
-    chain = cx.st.add_chain(tree,s)
-        # Create a new Chain object, or merge with an existing chain.
-
-    # Update stats.
-    self.sd.n_attributes += 1
-.. @+node:ekr.20111116103733.10362: *6* attribute_to_string (InspectTraverser)
-def attribute_to_string (self,tree,level=0):
-    
-    '''Convert an Attributes nodes and its descendants to a string a.b.c.d...'''
-
-    trace = False ; verbose = True
-    if trace and verbose:
-        g.trace('level: %s, tree: %s' % (level,tree))
-        self.dump(tree)
-
-    kind = self.kind(tree)
-    
-    if kind == 'Attribute':
-        chain = self.attribute_helper(tree,level)
-    else:
-        chain = self.general_helper(tree,level)
-
-    if trace and level == 0:
-        g.trace('level: %s kind: %9s chain: %s' % (
-            level,kind,chain))
-
-    return chain
-.. @+node:ekr.20111116103733.10363: *7* attribute_helper (InspectTraverser)
-def attribute_helper(self,tree,level):
-    
-    kind = self.kind(tree)
-    assert kind == 'Attribute',kind
-
-    val_kind = self.kind(tree.value)
-    assert self.kind(tree.ctx) in ('Del','Load','Store')
-    
-    # g.trace(val_kind)
-    
-    if val_kind == 'Attribute':
-        s = self.attribute_to_string(tree.value,level+1)
-        chain = '%s.%s' % (s,tree.attr)
-    elif val_kind == 'Name':
-        chain = '%s.%s' % (tree.value.id,tree.attr)
-    elif val_kind == 'Call':
-        s = self.attribute_to_string(tree.value.func,level+1)
-        chain = '%s().%s' % (s,tree.attr)
-    elif val_kind == 'Subscript':
-        s = self.attribute_to_string(tree.value,level+1)
-        chain = '%s[0].%s' % (s,tree.attr)
-    elif val_kind == 'Str':
-        chain = '%s.%s' % (repr(tree.value.s),tree.attr)
-    elif val_kind == 'Dict':
-        chain = '%s.%s' % (repr(tree.value),tree.attr)
-    else:
-        chain = '<Error: val_kind=%s>' % val_kind
-        
-    return chain
-.. @+node:ekr.20111116103733.10364: *7* general_helper (InspectTraverser)
-def general_helper(self,tree,level):
-
-    kind = self.kind(tree)
-    if kind == 'Call':
-        s = self.attribute_to_string(tree.func,level+1)
-        ### chain = '%s()' % (s) # The "Great hack"
-        chain = s
-    elif kind == 'Name':
-        chain = tree.id
-    elif kind == 'Str':
-        chain = '%s.%s' % (repr(tree.value.s),tree.attr)
-    elif kind == 'Subscript':
-        s = self.attribute_to_string(tree.value,level+1)
-        ### chain = '%s[]' % (s) # The "Great hack"
-        chain = s
-    else:
-        chain = '<Error: kind=%s>' % kind
-        g.trace('Can not happen: kind:',kind)
-    
-    return chain
-.. @+node:ekr.20111117031039.10762: *5* @test leoInspect (string)
-import leo.core.leoInspect as inspect
-
-g.cls()
-
-<< define s >>
-# print('Input string...\n',s)
-
-def show(o,indent):
-    print('\n%s\n' % o.sd.dump_ast(o.tree()))
-    print('%s%s' % (' '*4*indent,o.format()))
-
-m = inspect.module(s=s)
-
-for s in m.statements():
-    show(s,0)
-
-for f in m.functions():
-    show(f,0)
-    for z in f.statements():
-        show(z,1)
-
-for cls in m.classes():
-    show(cls,0)
-    for d in cls.defs():
-        show(d,1)
-        for z in d.statements():
-            show(z,1)
-            
-.. @+node:ekr.20111117031039.10763: *6* << define s >>
-s = '''
-a = b.c.d
-'''
-
-
-# def outer_function(a,b=99,c=88,*args,**keys):
-    # print('hello')
-    
-# class myClass:
-    # def method():
-        # pass
-    
-.. @+node:ekr.20111108081936.12524: *4* Create unit tests illustrating path ops
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 1303, in parse_leo_file
+    parser.parse(theFile) # expat does not support parseString
+  File "c:\python32\lib\xml\sax\expatreader.py", line 107, in parse
+    xmlreader.IncrementalParser.parse(self, source)
+  File "c:\python32\lib\xml\sax\xmlreader.py", line 123, in parse
+    self.feed(buffer)
+  File "c:\python32\lib\xml\sax\expatreader.py", line 211, in feed
+    self._err_handler.fatalError(exc)
+  File "c:\python32\lib\xml\sax\handler.py", line 38, in fatalError
+    raise exception
+xml.sax._exceptions.SAXParseException: <unknown>:25:0: junk after document element
+the clipboard is not valid 
+.. @+node:ekr.20111125072438.10217: *5* Bug: shell interprets characters in at-mime headings
 @nocolor-node
 
-This would be part of a redesign of Leo's path operations.
-.. @+node:ekr.20031218072017.2145: *5* os.path wrappers (leoGlobals.py)
-@ Note: all these methods return Unicode strings. It is up to the user to
-convert to an encoded string as needed, say when opening a file.
-.. @+node:ekr.20031218072017.2146: *6* os_path_abspath
-def os_path_abspath(path):
+http://groups.google.com/group/leo-editor/browse_thread/thread/07efd66847ac4a64
 
-    """Convert a path to an absolute path."""
+on linux, parenthesis or angled brackets in @mime headings prevent the file from
+being opened, probably because they are interpreted specially by the shell, e.g.
+they need to be escaped. Such characters should be escaped before passing the
+filename to the shell.
 
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.abspath(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2147: *6* os_path_basename
-def os_path_basename(path):
-
-    """Return the second half of the pair returned by split(path)."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.basename(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2148: *6* os_path_dirname
-def os_path_dirname(path):
-
-    """Return the first half of the pair returned by split(path)."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.dirname(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2149: *6* os_path_exists
-def os_path_exists(path):
-
-    """Return True if path exists."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.exists(path)
-.. @+node:ekr.20080922124033.6: *6* os_path_expandExpression
-def os_path_expandExpression (s,**keys):
-
-    '''Expand {{anExpression}} in c's context.'''
-
-    trace = False
-    
-    s1 = s
-    c = keys.get('c')
-    if not c:
-        g.trace('can not happen: no c',g.callers())
-        return s
-
-    if not s:
-        if trace: g.trace('no s')
-        return ''
-
-    i = s.find('{{')
-    j = s.find('}}')
-    if -1 < i < j:
-        exp = s[i+2:j].strip()
-        if exp:
-            try:
-                import os
-                import sys
-                p = c.p
-                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
-                val = eval(exp,d)
-                s = s[:i] + str(val) + s[j+2:]
-                if trace: g.trace(s1,s)
-            except Exception:
-                g.trace(g.callers())
-                g.es_exception(full=True, c=c, color='red')
-
-    return s
-.. @+node:ekr.20080921060401.13: *6* os_path_expanduser
-def os_path_expanduser(path):
-
-    """wrap os.path.expanduser"""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    result = os.path.normpath(os.path.expanduser(path))
-
-    return result
-.. @+node:ekr.20080921060401.14: *6* g.os_path_finalize & os_path_finalize_join
-def os_path_finalize (path,**keys):
-
-    '''
-    Expand '~', then return os.path.normpath, os.path.abspath of the path.
-
-    There is no corresponding os.path method'''
-
-    c = keys.get('c')
-
-    if c: path = g.os_path_expandExpression(path,**keys)
-
-    path = g.os_path_expanduser(path)
-    path = os.path.abspath(path)
-    path = os.path.normpath(path)
-    return path
-
-def os_path_finalize_join (*args,**keys):
-
-    '''Do os.path.join(*args), then finalize the result.'''
-
-    c = keys.get('c')
-
-    if c:
-        args = [g.os_path_expandExpression(z,**keys)
-            for z in args if z]
-
-    return os.path.normpath(os.path.abspath(
-        g.os_path_join(*args,**keys))) # Handles expanduser
-.. @+node:ekr.20031218072017.2150: *6* os_path_getmtime
-def os_path_getmtime(path):
-
-    """Return the modification time of path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.getmtime(path)
-.. @+node:ekr.20080729142651.2: *6* os_path_getsize
-def os_path_getsize (path):
-
-    '''Return the size of path.'''
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.getsize(path)
-.. @+node:ekr.20031218072017.2151: *6* os_path_isabs
-def os_path_isabs(path):
-
-    """Return True if path is an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isabs(path)
-.. @+node:ekr.20031218072017.2152: *6* os_path_isdir
-def os_path_isdir(path):
-
-    """Return True if the path is a directory."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isdir(path)
-.. @+node:ekr.20031218072017.2153: *6* os_path_isfile
-def os_path_isfile(path):
-
-    """Return True if path is a file."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isfile(path)
-.. @+node:ekr.20031218072017.2154: *6* os_path_join
-def os_path_join(*args,**keys):
-
-    trace = False and not g.unitTesting
-    c = keys.get('c')
-
-    uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
-
-    if trace: g.trace('1',uargs)
-
-    # Note:  This is exactly the same convention as used by getBaseDirectory.
-    if uargs and uargs[0] == '!!':
-        uargs[0] = g.app.loadDir
-    elif uargs and uargs[0] == '.':
-        c = keys.get('c')
-        if c and c.openDirectory:
-            uargs[0] = c.openDirectory
-            # g.trace(c.openDirectory)
-
-    uargs = [g.os_path_expanduser(z) for z in uargs if z]
-
-    if trace: g.trace('2',uargs)
-
-    path = os.path.join(*uargs)
-
-    if trace: g.trace('3',path)
-
-    # May not be needed on some Pythons.
-    path = g.toUnicodeFileEncoding(path)
-    return path
-.. @+node:ekr.20031218072017.2156: *6* os_path_normcase
-def os_path_normcase(path):
-
-    """Normalize the path's case."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.normcase(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2157: *6* os_path_normpath
-def os_path_normpath(path):
-
-    """Normalize the path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.normpath(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20080605064555.2: *6* os_path_realpath
-def os_path_realpath(path):
-
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.realpath(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2158: *6* os_path_split
-def os_path_split(path):
-
-    path = g.toUnicodeFileEncoding(path)
-
-    head,tail = os.path.split(path)
-
-    head = g.toUnicodeFileEncoding(head)
-    tail = g.toUnicodeFileEncoding(tail)
-
-    return head,tail
-.. @+node:ekr.20031218072017.2159: *6* os_path_splitext
-def os_path_splitext(path):
-
-    path = g.toUnicodeFileEncoding(path)
-
-    head,tail = os.path.splitext(path)
-
-    head = g.toUnicodeFileEncoding(head)
-    tail = g.toUnicodeFileEncoding(tail)
-
-    return head,tail
-.. @+node:ekr.20090829140232.6036: *6* os_startfile
-def os_startfile(fname):
-    if sys.platform.startswith('win'):
-        os.startfile(fname)
-    elif sys.platform == 'darwin':
-        # From Marc-Antoine Parent.
-        try:
-            subprocess.call(['open', fname])
-        except OSError:
-            pass # There may be a spurious "Interrupted system call"
-        except ImportError:
-            os.system("open '%s'" % (fname,))
-    else:
-        os.system('xdg-open "%s"'%fname)
-.. @+node:ekr.20031218072017.2160: *6* toUnicodeFileEncoding
-def toUnicodeFileEncoding(path):
-
-    if path: path = path.replace('\\', os.sep)
-
-    # Yes, this is correct.  All os_path_x functions return Unicode strings.
-    return g.toUnicode(path)
-.. @+node:ekr.20111108081936.9750: *5* @test path computations
-fj = g.os_path_finalize_join
-f  = g.os_path_finalize
-eu = g.os_path_expanduser
-
-if g.app.isExternalUnitTest:
-    loadDir = fj(g.app.loadDir,'..','test')
-else:
-    loadDir = g.app.loadDir
-
-table = (
-    (fj,'@@file fj-test-1',fj(loadDir,'rel-path')),
-)
-
-for func,h,expected in table:
-    p = g.findNodeAnywhere(c,h)
-    assert p,'not found: "%s"' % (h)
-    assert p.h.startswith('@@')
-    p.h = p.h[1:] # Remove the first @ sign.
-    
-    try:
-        d = c.scanAllDirectives(p)
-        result = d.get('path')
-        assert result == expected,'expected "%s", got "%s"' % (
-            expected,result)
-    finally:
-        p.h = '@' + p.h
-        c.redraw()
-.. @+node:ekr.20111108081936.9768: *6* @path rel-path
-.. @+node:ekr.20111108081936.9751: *7* @@file fj-test-1
 .. @+node:ekr.20111123043847.13423: *4* Code changes
 .. @+node:ekr.20111121084517.10189: *5* Remove all calls to w.see, w.seeInsertPoint, w.setYScrollPosition
 This would be a major project: See "Scrolling bug" notes.
@@ -2585,6 +2808,20 @@ def session_load_snapshot():
 @nocolor-node
 
 That is, make sure it works when called from within itself.
+.. @+node:ekr.20111125072438.10219: *5* Open file dialogs starting with @path directory
+@nocolor-node
+
+File 'Open' or 'Import File' command to follow @path directive
+http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
+
+Suppose my focus node is under a @path directive, say @path E:
+\Documents\Some Folder\
+
+Is there a setting that would cause the 'File>Open' or 'File>Import
+File' commands to begin the search dialog in the directory, E:
+\Documents\Some Folder\ instead of the last directory used?
+
+Would others find this a useful feature?
 .. @+node:ekr.20111109083738.9798: *4* Testing
 .. @+node:ekr.20110929165422.15449: *5* Test bug fix: noweb expansions in rst3 command
 @nocolor-node
@@ -5038,6 +5275,413 @@ mustBeDefinedInSubclasses = (
     #'setIdleTimeHook',             # optional       
     #'setIdleTimeHookAfterDelay',   # optional
 )
+.. @+node:ekr.20111118104929.10185: *4* Recent leoInspect
+.. @+node:ekr.20111117031039.10762: *5* @test leoInspect (parse s)
+import leo.core.leoInspect as inspect
+
+g.cls()
+
+<< define s >>
+print('Input string...\n',s.rstrip(),'\n')
+
+def show(o,indent):
+    # print('\n%s\n' % o.sd.dump_ast(o.tree()))
+    print('%s%s' % (' '*4*indent,o.format()))
+
+m = inspect.module(s=s)
+
+for s in m.statements():
+    show(s,0)
+
+for f in m.functions():
+    show(f,0)
+    for z in f.statements():
+        show(z,1)
+
+for cls in m.classes():
+    show(cls,0)
+    for d in cls.defs():
+        show(d,1)
+        for z in d.statements():
+            show(z,1)
+            
+.. @+node:ekr.20111117031039.10763: *6* << define s >>
+s = '''
+x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
+'''
+
+
+# def outer_function(a,b=99,c=88,*args,**keys):
+    # print('hello')
+    
+# class myClass:
+    # def method():
+        # pass
+    
+.. @+node:ekr.20111117031039.10977: *5*  To do
+@nocolor
+
+- Append *all* statements to statements list.
+    Including def, class, if, while, pass, with etc.
+
+- Improve AstFormatter
+    - Add level ivar?
+    - Add optional file names, line numbers.
+
+@color
+
+    is_method = cx.kind != 'class' and cx.class_context
+    is_ivar = s.startswith('self.')
+    if is_method and is_ivar:
+        cx = cx.class_context
+.. @+node:ekr.20111125131712.10401: *5*  What I did
+@nocolor-node
+
+2011/11/25:
+
+    - Fixed some bugs in f.Operands.
+    
+    - Use AstFormatter methods for all it.operands except it.do_Attribute and it.do_Name.
+      The chain code is now based on ASTs, not hacks.
+.. @+node:ekr.20111125131712.10223: *6* Rewrote it.Attribute and all it.Operand methods
+.. @+node:ekr.20111125131712.10356: *7* ctors...
+.. @+node:ekr.20111116103733.10280: *8* ctor AstTraverser
+def __init__(self,fn=None):
+
+    self.context_stack = []
+    self.fn = fn or '<AstTraverser>'
+    self.level = 0 # The indentation level (not the context level).
+        # The number of parents a node has.
+    self.parents = [None]
+
+    self.init_info()
+    self.init_dispatch_table()
+    self.init_tracing()
+.. @+node:ekr.20111125131712.10297: *8*  f.ctor
+def __init__ (self,fn=None,options=None):
+
+    AstTraverser.__init__(self,fn)
+        # Init the base class.
+        # Sets the dispatch table.
+        # Calls init_tracing.
+
+    self.fn = fn
+    self.options = options or {}
+    self.result = []
+    self.stack = []
+    self.trace = False # Subclasses may set this.
+.. @+node:ekr.20111116103733.10346: *8*  it.ctor
+def __init__(self,fn,sd):
+
+    # Init the base class.
+    AstTraverser.__init__(self,fn)
+        # Creates dispatch dict.
+        # Calls init_tracing.
+    
+    # Ivars...
+    self.fn = fn
+    self.sd = sd
+    self.trace = False
+    
+    # Create an instance of AstFormatter.
+    self.formatter = AstFormatter(fn)
+    self.formatter.trace = self.trace
+.. @+node:ekr.20111117031039.10395: *7* f.visit
+def visit (self,tree,tag=None):
+
+    '''Visit the ast tree node, dispatched by node type.'''
+
+    kind = tree.__class__
+    f = self.dispatch_table.get(kind)
+    if f:
+        self.push()
+        f(tree,tag)
+        val = self.pop()
+        if self.trace:
+            g.trace(f.__name__,val)
+        return val
+    else:
+        g.trace('**** bad ast type',kind)
+        return None
+.. @+node:ekr.20111125131712.10256: *7* it.Operands
+# Use the AstFormatter methods for all operands except do_Attribute and do_Name.
+
+# Note:  self.formatter is a delegate object: it would be bad style
+# to make InspectTraverser a subclass of AstFormatter.
+
+def format_tree(self,tree,tag=''):
+    val = self.formatter.visit(tree)
+    if self.trace: g.trace(tag,val)
+    return val
+    
+# do_Attribute
+do_bool         = format_tree
+do_Call         = format_tree
+do_comprehension= format_tree
+do_Dict         = format_tree
+do_Ellipsis     = format_tree
+do_ExtSlice     = format_tree
+do_Index        = format_tree
+do_int          = format_tree
+do_Keyword      = format_tree
+do_List         = format_tree
+do_ListComp     = format_tree
+# do_Name
+do_Num          = format_tree
+do_Slice        = format_tree
+do_str          = format_tree
+do_Str          = format_tree
+do_Subscript    = format_tree
+do_Tuple        = format_tree
+.. @+node:ekr.20111125131712.10277: *8* it.Attribute
+def do_Attribute(self,tree,tag=''):
+    
+    # assert self.kind(tree) == 'Attribute'
+    cx = self.get_context()    
+    name = tree.attr
+    
+    # Use the *formatter* to traverse tree.value.
+    expr = self.formatter.visit(tree.value,'attribute value')
+    s = '%s.%s' % (expr,name)
+    
+    if self.trace: g.trace(s)
+    
+    chain = cx.st.add_chain(tree,s)
+
+    self.formatter.append(s)
+        # For recursive calls.
+        
+    self.sd.n_attributes += 1
+.. @+node:ekr.20111125131712.10278: *8* it.Name
+def do_Name(self,tree,tag=''):
+
+    name = tree.id
+
+    if g.isPython3:
+        if name in self.sd.module_names:
+            return
+    else:
+        if name in dir(__builtin__) or name in self.sd.module_names:
+            return
+            
+    if self.trace: g.trace(name)
+        
+    cx = self.get_context()
+    ctx = self.kind(tree.ctx)
+    sd = self.sd
+    
+    # Important: symbol tables represent only static context.
+    # The resolution algorithm computes what names "really" mean.
+    e = cx.st.add_name(name,tree)
+   
+    if ctx == 'Load': # Most common.
+        cx.load_names.add(name)
+        sd.n_load_names += 1
+    elif ctx == 'Store': # Next most common.
+        cx.store_names.add(name)
+        if name in cx.load_names:
+            e.load_before_store_flag = True
+        sd.n_store_names += 1
+    elif ctx == 'Param':
+        cx.param_names.add(name)
+        sd.n_param_names += 1
+    else:
+        assert ctx == 'Del',ctx
+        cx.del_names.add(name)
+        sd.n_del_names += 1
+.. @+node:ekr.20111117031039.10198: *7* f.Operands
+.. @+node:ekr.20111117031039.10683: *8* f.arguments
+# arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+# -- keyword arguments supplied to call
+# keyword = (identifier arg, expr value)
+
+def do_arguments(self,tree,tag=''):
+    
+    assert self.kind(tree) == 'arguments'
+    
+    args = []
+    for z in tree.args:
+        args.append(self.visit(z,'arg'))
+        
+    defaults = []
+    for z in tree.defaults:
+        defaults.append(self.visit(z,'default arg'))
+    
+    # Assign default values to the last args.
+    args2 = []
+    n_plain = len(args) - len(defaults)
+    for i in range(len(args)):
+        if i < n_plain:
+            args2.append(args[i])
+        else:
+            args2.append('%s=%s' % (args[i],defaults[i-n_plain]))
+            
+    # Now add the vararg and kwarg args.
+    name = hasattr(tree,'vararg') and tree.vararg
+    if name: args2.append('*'+name)
+    
+    name = hasattr(tree,'kwarg') and tree.kwarg
+    if name: args2.append('**'+name)
+    
+    self.append(','.join(args2))
+.. @+node:ekr.20111117031039.10696: *8* f.arg
+def do_arg(self,tree,tag=''):
+    
+    self.append(self.visit(tree.arg))
+.. @+node:ekr.20111117031039.10199: *8* f.Attribute & helper
+# Attribute(expr value, identifier attr, expr_context ctx)
+
+def do_Attribute(self,tree,tag=''):
+    
+    name = tree.attr
+
+    expr = self.visit(tree.value,'attribute value')
+    
+    self.append('%s.%s' % (expr,name))
+.. @+node:ekr.20111117031039.10558: *8* f.Dict
+def do_Dict(self,tree,tag=''):
+    
+    keys = []
+    for z in tree.keys:
+        keys.append(self.visit(z,'dict keys'))
+        
+    values = []
+    for z in tree.values:
+        values.append(self.visit(z,'dict values'))
+        
+    if len(keys) == len(values):
+        self.append('{')
+        items = []
+        for i in range(len(keys)):
+            items.append('%s:%s' % (keys[i],values[i]))
+        self.append(','.join(items))
+        self.append('}')
+    else:
+        g.trace('*** Error *** keys: %s values: %s' % (
+            repr(keys),repr(values)))
+.. @+node:ekr.20111117031039.10559: *8* f.Elipsis
+def do_Ellipsis(self,tree,tag=''):
+    
+    self.append('...')
+.. @+node:ekr.20111117031039.10572: *8* f.ExtSlice
+def do_ExtSlice (self,tree,tag=''):
+    
+    dims = []
+    for z in tree.dims:
+        self.append(self.visit(z,'slice dimention'))
+        
+    # self.append('[%s]' % (':'.join(dims)))
+    self.append(':'.join(dims))
+.. @+node:ekr.20111117031039.10571: *8* f.Index
+def do_Index (self,tree,tag=''):
+    
+    self.append(self.visit(tree.value,'index value'))
+.. @+node:ekr.20111117031039.10354: *8* f.Keywords
+# keyword = (identifier arg, expr value)
+
+def do_Keyword(self,tree,tag=''):
+
+    # tree.arg is a string.
+    val = self.visit(tree.value,'keyword value')
+
+    self.append('%s=%s' % (tree.arg,val))
+.. @+node:ekr.20111117031039.10567: *8* f.List
+def do_List(self,tree,tag=''):
+    
+    elts = []
+    for z in tree.elts:
+        elts.append(self.visit(z,'list elts'))
+        
+    # self.visit(tree.ctx,'list context')
+    
+    self.append('(%s)' % ','.join(elts))
+.. @+node:ekr.20111117031039.10204: *8* f.ListComp & Comprehension TEST
+def do_ListComp(self,tree,tag=''):
+
+    elt = self.visit(tree.elt,'list comp elt')
+
+    generators = []
+    for z in tree.generators:
+        generators.append(self.visit(z,'list comp generator'))
+        
+    self.append('[%s for %s in %s]' % (elt,elt,''.join(generators)))
+
+def do_comprehension(self,tree,tag=''):
+
+    name = self.visit(tree.target,'comprehension target (a Name)')
+    
+    it = self.visit(tree.iter,'comprehension iter (an Attribute)')
+
+    ifs = []
+    for z in tree.ifs:
+        ifs.append(self.visit(z,'comprehension if'))
+        
+    self.append('**comprehension** name: %s ifs: %s' % (name,''.join(ifs)))
+.. @+node:ekr.20111117031039.10203: *8* f.Name
+def do_Name(self,tree,tag=''):
+
+    self.append(tree.id)
+.. @+node:ekr.20111117031039.10573: *8* f.Slice
+def do_Slice (self,tree,tag=''):
+    
+    lower,upper,step = '','',''
+    
+    if hasattr(tree,'lower') and tree.lower is not None:
+        lower = self.visit(tree.lower,'slice lower')
+        
+    if hasattr(tree,'upper') and tree.upper is not None:
+        upper = self.visit(tree.upper,'slice upper')
+        
+    if hasattr(tree,'step') and tree.step is not None:
+        step = self.visit(tree.step,'slice step')
+        
+    if step:
+        self.append('%s:%s:%s' % (lower,upper,step))
+    else:
+        self.append('%s:%s' % (lower,upper))
+.. @+node:ekr.20111117031039.10455: *8* f.Str
+def do_str (self,s,tag=''):
+
+    self.append(s)
+
+def do_Str (self,tree,tag=''):
+    
+    self.append(repr(tree.s))
+.. @+node:ekr.20111117031039.10574: *8* f.Subscript
+# Subscript(expr value, slice slice, expr_context ctx)
+
+def do_Subscript(self,tree,tag=''):
+    
+    value = self.visit(tree.value,'subscript value')
+    the_slice = self.visit(tree.slice,'subscript slice')
+    
+    self.append('%s[%s]' % (value,the_slice))
+    
+    
+    
+    # self.append(self.visit(tree.slice,'subscript slice'))
+
+    # self.visit(tree.ctx,'subscript context')
+.. @+node:ekr.20111117031039.10560: *8* f.Tuple
+def do_Tuple(self,tree,tag=''):
+    
+    elts = []
+    for z in tree.elts:
+        elts.append(self.visit(z,'list elts'))
+        
+    self.append(','.join(elts))
+
+    # self.visit(tree.ctx,'list context')
+.. @+node:ekr.20111117031039.10557: *8* formatter:simple operands
+# Python 2.x only.
+def do_bool(self,tree,tag=''):
+    g.trace(tree)
+
+def do_int (self,s,tag=''):
+    self.append(s)
+
+def do_Num(self,tree,tag=''):
+    self.append(repr(tree.n))
 .. @+node:ekr.20111019080436.15850: *3* Next: Fix all significant bugs
 .. @+node:ekr.20111026091322.16503: *4* Recent/Easy
 .. @+node:ekr.20110619173515.14895: *5* Fix bug: realpath in g.openWithFileName
@@ -11639,6 +12283,7 @@ self.language_delims_dict = {
     "ini"           : ";",
     "java"          : "// /* */",
     "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
+    "javaserverpage": "<%-- --%>", # EKR: 2011/11/25
     "kshell"        : "#", # Leo 4.5.1.
     "latex"         : "%",
     "lisp"          : ";", # EKR: 2010/09/29
@@ -11696,6 +12341,7 @@ self.language_extension_dict = {
     "ini"           : "ini",
     "java"          : "java",
     "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
+    "javaserverpage": "jsp", # EKR: 2011/11/25
     "kshell"        : "ksh", # Leo 4.5.1.
     "latex"         : "tex", # 1/8/04
     "lua"           : "lua",  # ddm 13/02/06
@@ -11747,6 +12393,7 @@ self.extension_dict = {
     "ini"   : "ini",
     "java"  : "java",
     "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
+    "jsp"   : "javaserverpage", # EKR: 2011/11/25: For @shadow.
     "ksh"   : "kshell", # Leo 4.5.1.
     "lua"   : "lua",  # ddm 13/02/06
     "m"     : "matlab", # EKR 2011/10/21

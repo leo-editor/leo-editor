@@ -291,7 +291,7 @@ Configuration files
 
 EKR:  do ed-bzr
 
-Windows: C:\Documents and Settings\HP_Administrator\Application Data\bazaar\2.0\.bazaar.conf
+Windows: c:\Users\AppData\Roaming\bazaar\2.0\.bazaar.conf
 
 Linux:  ~/.bazaar/bazaar.conf
 #@+node:ekr.20090713080429.6042: *3* Bzr workflow notes
@@ -7718,11 +7718,11 @@ def defineObjectDict (self,table=None):
         keys = list(self.objectDict.keys())
         keys.sort()
         g.trace(keys)
-#@+node:ekr.20111116103733.10349: *3* dump (InspectTraverser)
+#@+node:ekr.20111116103733.10349: *4* dump (InspectTraverser)
 def dump (self,tree):
     
     return self.dumper.dumpTreeAsString(tree,brief=False,outStream=None)
-#@+node:ekr.20111116103733.10350: *3* error (InspectTraverser)
+#@+node:ekr.20111116103733.10350: *4* error (InspectTraverser)
 def error (self,tree,message):
     
     g.pr('Error: %s' % (message))
@@ -7732,5 +7732,161 @@ def error (self,tree,message):
         g.pr('line %4s: %s' % (tree.lineno,line.rstrip()))
         
     self.sd.n_errors += 1
+#@+node:ekr.20111116103733.10360: *4* it.Expressions (0ld)
+#@+node:ekr.20111116103733.10361: *5* it.Attribute
+def do_Attribute(self,tree,tag=''):
+    
+    # assert self.kind(tree) == 'Attribute'
+    cx = self.get_context()    
+    name = tree.attr
+    expr = self.visit(tree.value,'attribute value')
+        # To make this work, all operands must return a value.
+        # Possible: return self.formatter.visit.
+    s = '%s.%s' % (expr,name)
+    g.trace(s)
+    chain = cx.st.add_chain(tree,s)
+
+    if 0: ### Old code
+        s = self.attribute_to_string(tree)
+        if s and s[0] in ('"',"'"): return
+        chain = cx.st.add_chain(tree,s)
+            # Create a new Chain object, or merge with an existing chain.
+
+    self.sd.n_attributes += 1
+    
+    return s # For recursive calls.
+#@+node:ekr.20111116103733.10362: *5* it.attribute_to_string & helpers
+def attribute_to_string (self,tree,level=0):
+    
+    '''Convert an Attributes nodes and its descendants to a string a.b.c.d...'''
+
+    trace = False ; verbose = True
+    if trace and verbose:
+        g.trace('level: %s, tree: %s' % (level,tree))
+        self.dump(tree)
+
+    kind = self.kind(tree)
+    
+    if kind == 'Attribute':
+        chain = self.attribute_helper(tree,level)
+    else:
+        chain = self.general_helper(tree,level)
+
+    if trace and level == 0:
+        g.trace('level: %s kind: %9s chain: %s' % (
+            level,kind,chain))
+
+    return chain
+#@+node:ekr.20111116103733.10363: *6* it.attribute_helper
+def attribute_helper(self,tree,level):
+    
+    kind = self.kind(tree)
+    assert kind == 'Attribute',kind
+
+    val_kind = self.kind(tree.value)
+    assert self.kind(tree.ctx) in ('Del','Load','Store')
+    
+    # g.trace(val_kind)
+    
+    if val_kind == 'Attribute':
+        s = self.attribute_to_string(tree.value,level+1)
+        chain = '%s.%s' % (s,tree.attr)
+    elif val_kind == 'Name':
+        chain = '%s.%s' % (tree.value.id,tree.attr)
+    elif val_kind == 'Call':
+        s = self.attribute_to_string(tree.value.func,level+1)
+        chain = '%s().%s' % (s,tree.attr)
+    elif val_kind == 'Subscript':
+        s = self.attribute_to_string(tree.value,level+1)
+        chain = '%s[0].%s' % (s,tree.attr)
+    elif val_kind == 'Str':
+        chain = '%s.%s' % (repr(tree.value.s),tree.attr)
+    elif val_kind == 'Dict':
+        chain = '%s.%s' % (repr(tree.value),tree.attr)
+    else:
+        chain = '<Error: val_kind=%s>' % val_kind
+        
+    return chain
+#@+node:ekr.20111116103733.10364: *6* it.general_helper
+def general_helper(self,tree,level):
+
+    kind = self.kind(tree)
+    if kind == 'Call':
+        s = self.attribute_to_string(tree.func,level+1)
+        ### chain = '%s()' % (s) # The "Great hack"
+        chain = s
+    elif kind == 'Name':
+        chain = tree.id
+    elif kind == 'Str':
+        chain = '%s.%s' % (repr(tree.value.s),tree.attr)
+    elif kind == 'Subscript':
+        s = self.attribute_to_string(tree.value,level+1)
+        ### chain = '%s[]' % (s) # The "Great hack"
+        chain = s
+    else:
+        chain = '<Error: kind=%s>' % kind
+        g.trace('Can not happen: kind:',kind)
+    
+    return chain
+#@+node:ekr.20111116103733.10366: *5* Name
+def do_Name(self,tree,tag=''):
+
+    trace = True
+    name = tree.id
+    
+    if g.isPython3:
+        if name in self.sd.module_names:
+            return
+    else:
+        if name in dir(__builtin__) or name in self.sd.module_names:
+            return
+        
+    cx = self.get_context()
+    ctx = self.kind(tree.ctx)
+    sd = self.sd
+    
+    # Important: symbol tables represent only static context.
+    # The resolution algorithm computes what names "really" mean.
+    e = cx.st.add_name(name,tree)
+   
+    if ctx == 'Load': # Most common.
+        cx.load_names.add(name)
+        sd.n_load_names += 1
+    elif ctx == 'Store': # Next most common.
+        cx.store_names.add(name)
+        if name in cx.load_names:
+            e.load_before_store_flag = True
+        sd.n_store_names += 1
+    elif ctx == 'Param':
+        cx.param_names.add(name)
+        sd.n_param_names += 1
+    else:
+        assert ctx == 'Del',ctx
+        cx.del_names.add(name)
+        sd.n_del_names += 1
+#@+node:ekr.20111116103733.10367: *5* ListComp & Comprehension
+def do_ListComp(self,tree,tag=''):
+    
+    # Define a context for the list comprehension variable.
+    old_cx = self.get_context()
+    new_cx = ComprehensionContext(tree,old_cx,self.sd)
+    old_cx.temp_contexts.append(new_cx)
+
+    # Traverse the tree in the new context.
+    self.push_context(new_cx)
+    self.in_comprehension = True
+    self.visit(tree.elt,'list comp elt')
+    self.in_comprehension = False
+    for z in tree.generators:
+        self.visit(z,'list comp generator')
+    self.pop_context()
+    self.sd.n_list_comps += 1
+
+def do_comprehension(self,tree,tag=''):
+
+    self.visit(tree.target,'comprehension target (a Name)')
+    self.visit(tree.iter,'comprehension iter (an Attribute)')
+    for z in tree.ifs:
+        self.visit(z,'comprehension if')
 #@-all
 #@-leo
