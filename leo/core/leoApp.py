@@ -169,6 +169,7 @@ class LeoApp:
             "ini"           : ";",
             "java"          : "// /* */",
             "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
+            "javaserverpage": "<%-- --%>", # EKR: 2011/11/25
             "kshell"        : "#", # Leo 4.5.1.
             "latex"         : "%",
             "lisp"          : ";", # EKR: 2010/09/29
@@ -226,6 +227,7 @@ class LeoApp:
             "ini"           : "ini",
             "java"          : "java",
             "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
+            "javaserverpage": "jsp", # EKR: 2011/11/25
             "kshell"        : "ksh", # Leo 4.5.1.
             "latex"         : "tex", # 1/8/04
             "lua"           : "lua",  # ddm 13/02/06
@@ -277,6 +279,7 @@ class LeoApp:
             "ini"   : "ini",
             "java"  : "java",
             "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
+            "jsp"   : "javaserverpage", # EKR: 2011/11/25: For @shadow.
             "ksh"   : "kshell", # Leo 4.5.1.
             "lua"   : "lua",  # ddm 13/02/06
             "m"     : "matlab", # EKR 2011/10/21
