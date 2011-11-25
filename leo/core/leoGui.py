@@ -493,7 +493,7 @@ class nullGui(leoGui):
     def runAskYesNoCancelDialog(self,c,title,
         message=None,yesMessage="Yes",noMessage="No",defaultButton="Yes"):
         return self.simulateDialog("yesNoCancelDialog","cancel")
-    #@+node:ekr.20100521090440.5893: *3* onActivate/DeactivateEvent
+    #@+node:ekr.20100521090440.5893: *3* onActivate/DeactivateEvent (leoGui)
     def onActivateEvent (self,*args,**keys):
         pass
 

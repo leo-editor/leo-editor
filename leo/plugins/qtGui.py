@@ -7908,8 +7908,9 @@ class leoQtGui(leoGui.leoGui):
 
         trace = False and not g.unitTesting
 
+        if trace: g.trace(tag)
+        
         if c.exists and tag == 'body':
-            if trace: g.trace()
             self.active = True
             c.bodyWantsFocusNow()
             g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
