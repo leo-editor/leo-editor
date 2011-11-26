@@ -842,6 +842,7 @@ class leoImportCommands (scanUtility):
 
         self.default_directory = g.setDefaultDirectory(c,parent,importing=False)
         fileName = c.os_path_finalize_join(self.default_directory,fileName)
+        fileName = fileName.replace('\\','/') # 2011/11/25
         junk,self.fileName = g.os_path_split(fileName)
         self.methodName,self.fileType = g.os_path_splitext(self.fileName)
         self.setEncoding(p=parent,atAuto=atAuto)
@@ -1012,7 +1013,7 @@ class leoImportCommands (scanUtility):
         c.validateOutline()
         current.expand()
         c.redraw(current)
-    #@+node:ekr.20031218072017.3213: *5* createImportParent
+    #@+node:ekr.20031218072017.3213: *5* createImportParent (importCommands)
     def createImportParent (self,current,files):
         
         '''Create a parent node for nodes with a common prefix: x.h & x.cpp.'''
@@ -1024,6 +1025,7 @@ class leoImportCommands (scanUtility):
         if prefix0 and prefix0 == prefix1:
             current = current.insertAsLastChild()
             name,junk = g.os_path_splitext(prefix1)
+            name = name.replace('\\','/') # 2011/11/25
             current.initHeadString(name)
 
         return current
