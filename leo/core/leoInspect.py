@@ -1643,7 +1643,8 @@ class AstFormatter (AstTraverser):
 
     def do_arguments(self,tree,tag=''):
         
-        assert self.kind(tree) == 'arguments'
+        kind = self.kind(tree)
+        assert kind == 'arguments',kind
         
         args = []
         for z in tree.args:
@@ -1722,7 +1723,7 @@ class AstFormatter (AstTraverser):
     def do_Index (self,tree,tag=''):
         
         self.append(self.visit(tree.value,'index value'))
-    #@+node:ekr.20111117031039.10354: *4* f.Keywords
+    #@+node:ekr.20111117031039.10354: *4* f.Keyword
     # keyword = (identifier arg, expr value)
 
     def do_Keyword(self,tree,tag=''):
@@ -1948,7 +1949,8 @@ class AstFormatter (AstTraverser):
     def do_Call(self,tree,tag=''):
         
         func = self.visit(tree.func,'call func')
-
+        
+        # Unlike 'ast.arguments, ast.Call has no defaults.
         args = []
         for z in tree.args:
             args.append(self.visit(z,'call args'))
@@ -2335,13 +2337,13 @@ class InspectTraverser (AstTraverser):
             self.visit(z,'call args')
 
         for z in tree.keywords:
-            self.visit(z,'call keyword args')
+            self.visit(z,'call keywords')
 
         if hasattr(tree,'starargs') and tree.starargs:
-            self.visit(tree.starargs,'*arg')
+            self.visit(tree.starargs,'call starags')
 
         if hasattr(tree,'kwargs') and tree.kwargs:
-            self.visit(tree.kwargs,'call *args')
+            self.visit(tree.kwargs,'call kwargs')
     #@+node:ekr.20111116103733.10371: *4* it.For
     def do_For (self,tree,tag=''):
         
@@ -3109,11 +3111,9 @@ class Context(object):
             for cx in aList:
                 cx.all_assignments(result)
         return result
-    #@+node:ekr.20111116161118.10228: *6* cx.filter_assignments
-    def filter_assignments(self,aList):
         
+    def filter_assignments(self,aList):
         '''Return all the assignments in aList.'''
-
         return [z for z in aList
             if z.context_kind in ('assn','aug-assn')]
     #@+node:ekr.20111116161118.10115: *5* cx.assignments_to
@@ -3135,7 +3135,6 @@ class Context(object):
                 lhs = format(tree.target)
                 if s == lhs:
                     result.append(assn)
-                    break
 
         return result
     #@+node:ekr.20111116161118.10116: *5* cx.assignments_using
@@ -3155,6 +3154,52 @@ class Context(object):
                     break
                 else:
                     i += len(s)
+
+        return result
+    #@+node:ekr.20111126074312.10386: *5* cx.calls & helpers
+    def calls (self,all=True):
+        
+        if all:
+            return self.all_calls(result=None)
+        else:
+            return self.filter_calls(self._statements)
+
+    def all_calls(self,result):
+
+        if result is None:
+            result = []
+        result.extend(self.filter_calls(self._statements))
+        for aList in (self._classes,self._defs):
+            for cx in aList:
+                cx.all_calls(result)
+        return result
+        
+    def filter_calls(self,aList):
+        '''Return all the calls in aList.'''
+        return [z for z in aList
+            if z.context_kind == 'call']
+    #@+node:ekr.20111126074312.10384: *5* cx.call_to
+    def calls_to (self,s,all=True):
+        
+        format,result = self.formatter.format,[]
+
+        for call in self.calls(all=all):
+            tree = call.tree()
+            func = format(tree.func)
+            if s == func:
+                result.append(call)
+
+        return result
+    #@+node:ekr.20111126074312.10400: *5* cx.call_args_of
+    def call_args_of (self,s,all=True):
+        
+        format,result = self.formatter.format,[]
+
+        for call in self.calls(all=all):
+            tree = call.tree()
+            func = format(tree.func)
+            if s == func:
+                result.append(call)
 
         return result
     #@+node:ekr.20111116161118.10163: *5* cx.classes
@@ -3215,6 +3260,10 @@ class Context(object):
     def is_function(self,f):
         '''Return True if f is a function, not a method.'''
         return True
+    #@+node:ekr.20111126074312.10449: *5* cx.line_number
+    def line_number (self):
+        
+        return self._tree.lineno
     #@+node:ekr.20111116161118.10153: *5* cx.methods & helpers
     def methods (self,all=True):
         
