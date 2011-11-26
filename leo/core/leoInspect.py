@@ -558,7 +558,7 @@ class AstTraverser(object):
         for z in tree.elts:
             self.visit(z,'list elts')
         self.visit(tree.ctx,'list context')
-    #@+node:ekr.20111116103733.10295: *4* Operators
+    #@+node:ekr.20111116103733.10295: *4* Operators (AstTraverser)
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
     # -- keyword arguments supplied to call
     # keyword = (identifier arg, expr value)
@@ -705,9 +705,7 @@ class AstTraverser(object):
 
     def do_Lambda (self,tree,tag=''):
         self.trace(tree,tag)
-        ### tree.args is an 'arguments' object.
-        # for z in tree.args:
-            # self.visit(z,'lambda arg')
+        self.visit(tree.args,'lambda args')
         self.visit(tree.body,'lambda body')
     #@+node:ekr.20111116103733.10300: *4* Statements (compound)
     def do_For (self,tree,tag=''):
@@ -926,7 +924,7 @@ class AstTraverser(object):
         '''May be over-ridden in subclasses.'''
 
         # May be over-ridden in subcalsses.
-        self.enable_trace = False # Master switch.
+        self.trace_flag = False # Master switch.
 
         # Names of AST Nodes to trace, or 'all'.
         self.trace_kinds = ('Import','ImportFrom','alias',) # 'all',
@@ -959,7 +957,7 @@ class AstTraverser(object):
             ('all' in trace_kinds or kind in trace_kinds or tag in trace_tags) and not
             (kind in suppress_kinds or tag in suppress_tags))
 
-        if self.enable_trace and doTrace:
+        if self.trace_flag and doTrace:
             indent = ' '*4*self.level
             if 'all' in quiet_tags or tag in quiet_tags:
                 tag = ''
@@ -1547,7 +1545,7 @@ class AstFormatter (AstTraverser):
         self.options = options or {}
         self.result = []
         self.stack = []
-        self.trace = False # Subclasses may set this.
+        self.trace_flag = False # Subclasses may set this.
     #@+node:ekr.20111117031039.10259: *3* f.append
     def append(self,s):
         
@@ -1582,7 +1580,7 @@ class AstFormatter (AstTraverser):
             self.push()
             f(tree,tag)
             val = self.pop()
-            if self.trace:
+            if self.trace_flag:
                 g.trace(f.__name__,val)
             return val
         else:
@@ -1911,7 +1909,7 @@ class AstFormatter (AstTraverser):
         pass
         
     # def do_expression_context(self,tree,tag=''):
-        # self.trace(tree,tag)
+        # self.trace_flag(tree,tag)
 
     do_AugLoad  = do_op
     do_AugStore = do_op
@@ -2038,10 +2036,8 @@ class AstFormatter (AstTraverser):
         self.append('lambda ')
         self.append(self.visit(tree.args,'lambda args'))
         self.append(':\n')
-        
-        for z in tree.body:
-            self.append(self.visit(z,'lambda body'))
-            # self.append('\n')
+        self.append(self.visit(tree.body,'lambda body'))
+        # self.append('\n')
     #@+node:ekr.20111117031039.10972: *4* f.Pass
     def do_Pass(self,tree,tag=''):
         
@@ -2086,11 +2082,11 @@ class InspectTraverser (AstTraverser):
         # Ivars...
         self.fn = fn
         self.sd = sd
-        self.trace = False
+        self.trace_flag = False
         
         # Create an instance of AstFormatter.
         self.formatter = AstFormatter(fn)
-        self.formatter.trace = self.trace
+        self.formatter.trace = self.trace_flag
     #@+node:ekr.20111116103733.10354: *3* it.Contexts
     #@+node:ekr.20111116103733.10355: *4* ClassDef
     # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
@@ -2219,7 +2215,7 @@ class InspectTraverser (AstTraverser):
 
     def format_tree(self,tree,tag=''):
         val = self.formatter.visit(tree)
-        if self.trace: g.trace(tag,val)
+        if self.trace_flag: g.trace(tag,val)
         return val
         
     # do_Attribute
@@ -2252,7 +2248,7 @@ class InspectTraverser (AstTraverser):
         expr = self.formatter.visit(tree.value,'attribute value')
         s = '%s.%s' % (expr,name)
         
-        if self.trace: g.trace(s)
+        if self.trace_flag: g.trace(s)
         
         chain = cx.st.add_chain(tree,s)
 
@@ -2272,7 +2268,7 @@ class InspectTraverser (AstTraverser):
             if name in dir(__builtin__) or name in self.sd.module_names:
                 return
                 
-        if self.trace: g.trace(name)
+        if self.trace_flag: g.trace(name)
             
         cx = self.get_context()
         ctx = self.kind(tree.ctx)
@@ -2298,37 +2294,33 @@ class InspectTraverser (AstTraverser):
             cx.del_names.add(name)
             sd.n_del_names += 1
     #@+node:ekr.20111116103733.10368: *3* it.Statements
-    #@+node:ekr.20111116103733.10369: *4* Assign
+    #@+node:ekr.20111116103733.10369: *4* it.Assign
     def do_Assign(self,tree,tag=''):
         
         sd = self.sd
+        
         cx = self.get_context()
         cx._statements.append(StatementContext(tree,cx,sd,'assn'))
 
-        self.visit(tree.value,'assn value')
-            
-        for z in tree.targets:
-            
+        self.visit(tree.value,'assn value')    
+        for z in tree.targets:    
             self.visit(z,'assn target')
 
-            sd.n_assignments += 1
-    #@+node:ekr.20111116103733.10370: *4* AugAssign
+        sd.n_assignments += 1
+    #@+node:ekr.20111116103733.10370: *4* it.AugAssign
     def do_AugAssign(self,tree,tag=''):
         
         sd = self.sd
+
         cx = self.get_context()
         cx._statements.append(StatementContext(tree,cx,sd,'aug-assn'))
 
         self.visit(tree.op)
-        
-        # Handle the RHS.
-        self.visit(tree.value,'aug-assn value')
-
-        # Handle the LHS.
-        self.visit(tree.target,'aut-assn target')
+        self.visit(tree.value,'aug-assn value') # The rhs.
+        self.visit(tree.target,'aut-assn target') # The lhs.
 
         sd.n_assignments += 1
-    #@+node:ekr.20111116103733.10365: *4* Call
+    #@+node:ekr.20111116103733.10365: *4* it.Call
     def do_Call(self,tree,tag=''):
         
         sd = self.sd
@@ -2350,7 +2342,7 @@ class InspectTraverser (AstTraverser):
 
         if hasattr(tree,'kwargs') and tree.kwargs:
             self.visit(tree.kwargs,'call *args')
-    #@+node:ekr.20111116103733.10371: *4* For
+    #@+node:ekr.20111116103733.10371: *4* it.For
     def do_For (self,tree,tag=''):
         
         # Define a namespace for the 'for' target.
@@ -2374,7 +2366,7 @@ class InspectTraverser (AstTraverser):
         self.pop_context()
         
         self.sd.n_fors += 1
-    #@+node:ekr.20111116103733.10372: *4* Global
+    #@+node:ekr.20111116103733.10372: *4* it.Global
     def do_Global(self,tree,tag=''):
 
         '''Enter the names in a 'global' statement into the *module* symbol table.'''
@@ -2392,7 +2384,7 @@ class InspectTraverser (AstTraverser):
             cx.module_context.st.add_name(name,tree)
 
             sd.n_globals += 1
-    #@+node:ekr.20111116103733.10373: *4* Import & helpers
+    #@+node:ekr.20111116103733.10373: *4* it.Import & helpers
     def do_Import(self,tree,tag=''):
 
         '''Add the imported file to the sd.files_list if needed
@@ -2462,7 +2454,7 @@ class InspectTraverser (AstTraverser):
             return ''
         else:
             return path
-    #@+node:ekr.20111116103733.10376: *4* ImportFrom
+    #@+node:ekr.20111116103733.10376: *4* it.ImportFrom
     def do_ImportFrom(self,tree,tag=''):
 
         '''Add the imported file to the sd.files_list if needed
@@ -2491,7 +2483,7 @@ class InspectTraverser (AstTraverser):
             if mname not in sd.module_names:
                 sd.module_names.append(mname)
             sd.n_imports += 1
-    #@+node:ekr.20111116103733.10377: *4* Lambda & helper
+    #@+node:ekr.20111116103733.10377: *4* it.Lambda & helper
     def do_Lambda (self,tree,tag=''):
         
         # Define a namespace for the 'lambda' variables.
@@ -2536,7 +2528,7 @@ class InspectTraverser (AstTraverser):
                 if trace: g.trace(tag,name)
                 e = cx.st.add_name(name,tree)
                 cx.param_names.add(name)
-    #@+node:ekr.20111116103733.10379: *4* With
+    #@+node:ekr.20111116103733.10379: *4* it.With
     def do_With (self,tree,tag=''):
         
         # Define a namespace for the 'with' statement.
@@ -2645,6 +2637,7 @@ class SemanticData(object):
         
         self.controller = controller
         self.dumper = AstDumper()
+        self.formatter = AstFormatter()
         
         # Files...
         self.completed_files = [] # Files handled by do_files.
@@ -3000,7 +2993,7 @@ class Context(object):
     All types ultimately resolve to a context.'''
 
     def __repr__ (self):
-        return 'Context: %s' % (self.kind)
+        return 'Context: %s' % (self.context_kind)
 
     __str__ = __repr__
 
@@ -3009,8 +3002,9 @@ class Context(object):
     def __init__(self,tree,parent_context,sd,kind):
 
         self.is_temp_context = kind in ['comprehension','for','lambda','with']
-        self.kind = kind
+        self.context_kind = kind
         # assert kind in ('class','comprehension','def','for','lambda','module','with'),kind
+        self.formatter = sd.formatter
         self.parent_context = parent_context
         self.sd = sd
         self.st = SymbolTable(context=self)
@@ -3037,9 +3031,9 @@ class Context(object):
         self.all_global_names = set() # Global names in all parent contexts.
         
         # Compute the class context.
-        if self.kind == 'module':
+        if self.context_kind == 'module':
             self.class_context = None
-        elif self.kind == 'class':
+        elif self.context_kind == 'class':
             self.class_context = self
         else:
             self.class_context = parent_context.class_context
@@ -3051,7 +3045,7 @@ class Context(object):
             self.defining_context = self
         
         # Compute the module context.
-        if self.kind == 'module':
+        if self.context_kind == 'module':
             self.module_context = self
         else:
             self.module_context = parent_context.module_context
@@ -3098,7 +3092,7 @@ class Context(object):
         
         return AstFormatter().format(cx._tree)
     #@+node:ekr.20111116161118.10113: *4* cx.getters
-    #@+node:ekr.20111116161118.10114: *5* assignments & helpers
+    #@+node:ekr.20111116161118.10114: *5* cx.assignments & helper
     def assignments (self,all=True):
         
         if all:
@@ -3115,30 +3109,55 @@ class Context(object):
             for cx in aList:
                 cx.all_assignments(result)
         return result
-    #@+node:ekr.20111116161118.10228: *6* filter_assignments
+    #@+node:ekr.20111116161118.10228: *6* cx.filter_assignments
     def filter_assignments(self,aList):
         
         '''Return all the assignments in aList.'''
 
         return [z for z in aList
-            if z.kind in ('assn','aug-assn')]
-    #@+node:ekr.20111116161118.10115: *5* assignments_to TODO
-    def assignments_to (self,string_or_context,all=True):
+            if z.context_kind in ('assn','aug-assn')]
+    #@+node:ekr.20111116161118.10115: *5* cx.assignments_to
+    def assignments_to (self,s,all=True):
         
-        aList = self.assignments(all=all)
-        result = []
-        
+        format,result = self.formatter.format,[]
+
+        for assn in self.assignments(all=all):
+            tree = assn.tree()
+            kind = self.ast_kind(tree)
+            if kind == 'Assign':
+                for target in tree.targets:
+                    lhs = format(target)
+                    if s == lhs:
+                        result.append(assn)
+                        break
+            else:
+                assert kind == 'AugAssign',kind
+                lhs = format(tree.target)
+                if s == lhs:
+                    result.append(assn)
+                    break
+
         return result
+    #@+node:ekr.20111116161118.10116: *5* cx.assignments_using
+    def assignments_using (self,s,all=True):
         
-        
-    #@+node:ekr.20111116161118.10116: *5* assignments_using TODO
-    def assignments_using (self,string_or_context,all=True):
-        
-        aList = self.assignments(all=all)
-        result = []
-        
+        format,result = self.formatter.format,[]
+
+        for assn in self.assignments(all=all):
+            tree = assn.tree()
+            kind = self.ast_kind(tree)
+            assert kind in ('Assign','AugAssign'),kind
+            rhs = format(tree.value)
+            i = rhs.find(s,0)
+            while -1 < i < len(rhs):
+                if g.match_word(rhs,i,s):
+                    result.append(assn)
+                    break
+                else:
+                    i += len(s)
+
         return result
-    #@+node:ekr.20111116161118.10163: *5* classes
+    #@+node:ekr.20111116161118.10163: *5* cx.classes
     def classes (self,all=True):
         
         if all:
@@ -3155,7 +3174,7 @@ class Context(object):
             for cx in aList:
                 cx.all_classes(result)
         return result
-    #@+node:ekr.20111116161118.10164: *5* defs
+    #@+node:ekr.20111116161118.10164: *5* cx.defs
     def defs (self,all=True):
         
         if all:
@@ -3172,7 +3191,7 @@ class Context(object):
             for cx in aList:
                 cx.all_defs(result)
         return result
-    #@+node:ekr.20111116161118.10152: *5* functions & helpers
+    #@+node:ekr.20111116161118.10152: *5* cx.functions & helpers
     def functions (self,all=True):
         
         if all:
@@ -3189,14 +3208,14 @@ class Context(object):
             for cx in aList:
                 cx.all_functions(result)
         return result
-    #@+node:ekr.20111116161118.10223: *6* filter_functions & is_function
+    #@+node:ekr.20111116161118.10223: *6* cx.filter_functions & is_function
     def filter_functions(self,aList):
         return [z for z in aList if self.is_function(z)]
 
     def is_function(self,f):
         '''Return True if f is a function, not a method.'''
         return True
-    #@+node:ekr.20111116161118.10153: *5* methods & helpers
+    #@+node:ekr.20111116161118.10153: *5* cx.methods & helpers
     def methods (self,all=True):
         
         if all:
@@ -3213,14 +3232,14 @@ class Context(object):
             for cx in aList:
                 cx.all_methods(result)
         return result
-    #@+node:ekr.20111116161118.10225: *6* filter_functions & is_function
+    #@+node:ekr.20111116161118.10225: *6* cx.filter_functions & is_function
     def filter_methods(self,aList):
         return [z for z in aList if self.is_method(z)]
 
     def is_method(self,f):
         '''Return True if f is a method, not a function.'''
         return True
-    #@+node:ekr.20111116161118.10165: *5* statements
+    #@+node:ekr.20111116161118.10165: *5* cx.statements
     def statements (self,all=True):
         
         if all:
@@ -3237,7 +3256,7 @@ class Context(object):
             for cx in aList:
                 cx.all_statements(result)
         return result
-    #@+node:ekr.20111116161118.10166: *5* tree
+    #@+node:ekr.20111116161118.10166: *5* cx.tree
     def tree(self):
         
         '''Return the AST (Abstract Syntax Tree) associated with this query object
@@ -3325,13 +3344,6 @@ class ForContext (Context):
         return '"for" statement context'
         
     __str__ = __repr__
-    
-#@+at
-# def do_Tuple(self,tree,tag=''):
-#     self.trace(tree,tag)
-#     for z in tree.elts:
-#         self.visit(z,'list elts')
-#     self.visit(tree.ctx,'list context')
 #@+node:ekr.20111116103733.10417: *3* class LambdaContext
 class LambdaContext (Context):
 
@@ -3381,10 +3393,10 @@ class StatementContext (Context):
         Context.__init__(self,tree,parent_context,sd,kind)
 
     def __repr__ (self):
-        return 'statement(%s)' % (self.kind)
+        return 'statement(%s)' % (self.context_kind)
         
     def name (self):
-        return '"%s" statement context' % (self.kind)
+        return '"%s" statement context' % (self.context_kind)
         
     __str__ = __repr__
 #@+node:ekr.20111116103733.10419: *3* class WithContext
