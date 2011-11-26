@@ -193,6 +193,8 @@
 <v t="ekr.20100131171342.5477"><vh>@test leoTree is subset of leoTkTree</vh></v>
 </v>
 </v>
+<v t="ekr.20111125182408.3947"><vh>@test ic.createImportParent changes back-slashes to slashes</vh></v>
+<v t="ekr.20111125183140.3952"><vh>@test ic.createOutline changes back-slashes to slashes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -602,7 +604,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7"></t>
+<t tx="ekr.20070417092935" str_leo_pos="11"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -2226,5 +2228,42 @@ else:
 <t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
 <t tx="ekr.20111124094121.3942"></t>
 <t tx="ekr.20111124094121.3943"></t>
+<t tx="ekr.20111125182408.3947">def setup():
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+setup()
+
+try:
+    files = (r'a\b.c',r'a\b.h',)
+    c.importCommands.createImportParent(p,files)
+    child = p.firstChild()
+    assert child
+    assert child.h == 'a/b',child.h
+finally:
+    setup()</t>
+<t tx="ekr.20111125183140.3952">child = p.firstChild()
+def setup():
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+setup()
+try:
+    c.importCommands.createOutline(
+        fileName=r'a\b\c.xyzzy',
+        parent=p,
+        atAuto=False,atShadow=False,
+        s='test body',
+        ext='xyzzy'
+    )
+    child = p.firstChild()
+    assert child
+    h = g.os_path_finalize_join(g.app.loadDir,'..','test','a','b','c.xyzzy')
+    h = h.replace('\\','/')
+    h = '@file ' + h
+    # C: vs c: is not relevant here.
+    assert child.h.lower() == h.lower(),child.h
+finally:
+    setup()</t>
 </tnodes>
 </leo_file>

@@ -7888,5 +7888,36 @@ def do_comprehension(self,tree,tag=''):
     self.visit(tree.iter,'comprehension iter (an Attribute)')
     for z in tree.ifs:
         self.visit(z,'comprehension if')
+#@+node:ekr.20111126074312.10345: *4* From cx.assignments_to
+
+           if 0:
+                while not found:
+                    progress = target
+                    kind = self.ast_kind(target)
+                    if kind == 'Name':
+                        if trace and verbose: g.trace(kind,target.id)
+                        if target.id == s:
+                            result.append(assn)
+                            found = True
+                        break
+                    elif kind == 'Attribute':
+                        if trace and verbose: g.trace(kind,target.value,target.attr)
+                        target = target.value
+                    # elif kind == 'Call':
+                        # s = self.attribute_to_string(tree.value.func,level+1)
+                        # chain = '%s().%s' % (s,tree.attr)
+                    elif kind == 'Subscript':
+                        if trace and verbose: g.trace(kind,target.value)
+                        target = target.value
+                    # elif kind == 'Str':
+                        # chain = '%s.%s' % (repr(tree.value.s),tree.attr)
+                    # elif kind == 'Dict':
+                        # chain = '%s.%s' % (repr(tree.value),tree.attr)
+                    else:
+                        if trace: g.trace(kind,'** no match',target)
+                        break # This target does not matche.
+                    assert found or progress != target
+                if found: break
+ 
 #@-all
 #@-leo

@@ -334,6 +334,189 @@ self.extra_extension_dict = {
 }
 
 self.global_commands_dict = {}
+.. @+node:ekr.20111125072438.10216: *4* Regularize slashes and back-slashes
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/0d48b507bc8ffc05
+
+v4.9.1 build 4669
+WinXP
+
+If I 'Open' a file, I get the following node header:
+
+@edit E:/Documents/index.html
+
+If I 'Import' the same file, I get the following:
+
+@file E:\Documents\index.html
+
+Just wondering why the difference between
+
+E:/ and E:\
+
+This is probably trivial and of no consequence, but I thought it
+curious. 
+.. @+node:ekr.20031218072017.3213: *5* createImportParent (importCommands)
+def createImportParent (self,current,files):
+    
+    '''Create a parent node for nodes with a common prefix: x.h & x.cpp.'''
+
+    name0,name1 = files
+    prefix0, junk = g.os_path_splitext(name0)
+    prefix1, junk = g.os_path_splitext(name1)
+    
+    if prefix0 and prefix0 == prefix1:
+        current = current.insertAsLastChild()
+        name,junk = g.os_path_splitext(prefix1)
+        name = name.replace('\\','/') # 2011/11/25
+        current.initHeadString(name)
+
+    return current
+.. @+node:ekr.20031218072017.3210: *5* createOutline (leoImport)
+def createOutline (self,fileName,parent,
+    atAuto=False,atShadow=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+    w = c.frame.body
+
+    self.default_directory = g.setDefaultDirectory(c,parent,importing=False)
+    fileName = c.os_path_finalize_join(self.default_directory,fileName)
+    fileName = fileName.replace('\\','/') # 2011/11/25
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        if atShadow: kind = '@shadow '
+        elif atAuto: kind = '@auto '
+        else: kind = ''
+        s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
+        if s is None: return None
+        if e: self.encoding = e
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        elif self.treeType is None:
+            # 2010/09/29: by convention, we use the short file name.
+            p.initHeadString(g.shortFileName(fileName))
+        else:
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    if self.treeType == '@root': # 2010/09/29.
+        self.rootLine = "@root-code "+self.fileName+'\n'
+    else:
+        self.rootLine = ''
+
+    if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
+        func = self.scanRstText
+    else:
+        func = self.importDispatchDict.get(ext)
+
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        s = s.replace('\r','')
+        func(s,p,atAuto=atAuto)
+    else:
+        # Just copy the file to the parent node.
+        s = s.replace('\r','')
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    if atAuto:
+        # Remember that we have read this file.
+        # Fixes bug 488894: unsettling dialog when saving Leo file
+        # after creating and populating an @auto node.
+        # Important: this often sets the bit in the wrong node:
+        # The caller may have to set the bit in the "real" root node.
+        p.v.at_read = True # Create the attribute
+
+    p.contract()
+    w.setInsertPoint(0)
+    w.seeInsertPoint()
+    return p
+.. @+node:ekr.20081001062423.9: *5* g.setDefaultDirectory & helper
+def setDefaultDirectory(c,p,importing=False):
+
+    ''' Return a default directory by scanning @path directives.'''
+
+    name = p.anyAtFileNodeName()
+    if name:
+        # An absolute path overrides everything.
+        d = g.os_path_dirname(name)
+        if d and g.os_path_isabs(d):
+            return d
+
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+        # Returns g.getBaseDirectory(c) by default.
+        # However, g.getBaseDirectory can return ''
+    if path:
+        path = g.os_path_finalize(path)
+    else:
+        g.checkOpenDirectory(c)
+        for d in (c.openDirectory,g.getBaseDirectory(c)):
+            # Errors may result in relative or invalid path.
+            if d and g.os_path_isabs(d):
+                path = d
+                break
+        else:
+            path = ''
+
+    if not importing and not path:
+        # This should never happen, but is not serious if it does.
+        g.warning("No absolute directory specified anywhere.")
+
+    return path
+.. @+node:ekr.20101022124309.6132: *6* g.checkOpenDirectory
+def checkOpenDirectory (c):
+
+    if c.openDirectory != c.frame.openDirectory:
+        g.error(
+            'c.openDirectory != c.frame.openDirectory\n'
+            'c.openDirectory: %s\n'
+            'c.frame.openDirectory: %s' % (
+                c.openDirectory,c.frame.openDirectory))
+
+    if not g.os_path_isabs(c.openDirectory):
+        g.error ('relative c.openDirectory: %s' % (
+            c.openDirectory))
+.. @+node:ekr.20080921060401.14: *5* g.os_path_finalize & os_path_finalize_join
+def os_path_finalize (path,**keys):
+
+    '''
+    Expand '~', then return os.path.normpath, os.path.abspath of the path.
+
+    There is no corresponding os.path method'''
+
+    c = keys.get('c')
+
+    if c: path = g.os_path_expandExpression(path,**keys)
+
+    path = g.os_path_expanduser(path)
+    path = os.path.abspath(path)
+    path = os.path.normpath(path)
+    return path
+
+def os_path_finalize_join (*args,**keys):
+
+    '''Do os.path.join(*args), then finalize the result.'''
+
+    c = keys.get('c')
+
+    if c:
+        args = [g.os_path_expandExpression(z,**keys)
+            for z in args if z]
+
+    return os.path.normpath(os.path.abspath(
+        g.os_path_join(*args,**keys))) # Handles expanduser
 .. @+node:ekr.20111123095018.10190: *4* Create docs from recent posts
 @nocolor-node
 
@@ -646,28 +829,6 @@ for func,h,expected in table:
 .. @+node:ekr.20111108081936.9768: *6* @path rel-path
 .. @+node:ekr.20111108081936.9751: *7* @@file fj-test-1
 .. @+node:ekr.20111123095018.13633: *4*  Fix bugs
-.. @+node:ekr.20111125072438.10216: *5* Regularize slashes and back-slashes
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/0d48b507bc8ffc05
-
-v4.9.1 build 4669
-WinXP
-
-If I 'Open' a file, I get the following node header:
-
-@edit E:/Documents/index.html
-
-If I 'Import' the same file, I get the following:
-
-@file E:\Documents\index.html
-
-Just wondering why the difference between
-
-E:/ and E:\
-
-This is probably trivial and of no consequence, but I thought it
-curious. 
 .. @+node:ekr.20111024170505.16459: *5* * Bug 879331: Redefining a key binding breaks menu items with same binding
 .. @+node:ekr.20111026091322.16501: *6* Probably same as key-binding bug
 .. @+node:ekr.20111026091322.16492: *7* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
@@ -5275,413 +5436,6 @@ mustBeDefinedInSubclasses = (
     #'setIdleTimeHook',             # optional       
     #'setIdleTimeHookAfterDelay',   # optional
 )
-.. @+node:ekr.20111118104929.10185: *4* Recent leoInspect
-.. @+node:ekr.20111117031039.10762: *5* @test leoInspect (parse s)
-import leo.core.leoInspect as inspect
-
-g.cls()
-
-<< define s >>
-print('Input string...\n',s.rstrip(),'\n')
-
-def show(o,indent):
-    # print('\n%s\n' % o.sd.dump_ast(o.tree()))
-    print('%s%s' % (' '*4*indent,o.format()))
-
-m = inspect.module(s=s)
-
-for s in m.statements():
-    show(s,0)
-
-for f in m.functions():
-    show(f,0)
-    for z in f.statements():
-        show(z,1)
-
-for cls in m.classes():
-    show(cls,0)
-    for d in cls.defs():
-        show(d,1)
-        for z in d.statements():
-            show(z,1)
-            
-.. @+node:ekr.20111117031039.10763: *6* << define s >>
-s = '''
-x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
-'''
-
-
-# def outer_function(a,b=99,c=88,*args,**keys):
-    # print('hello')
-    
-# class myClass:
-    # def method():
-        # pass
-    
-.. @+node:ekr.20111117031039.10977: *5*  To do
-@nocolor
-
-- Append *all* statements to statements list.
-    Including def, class, if, while, pass, with etc.
-
-- Improve AstFormatter
-    - Add level ivar?
-    - Add optional file names, line numbers.
-
-@color
-
-    is_method = cx.kind != 'class' and cx.class_context
-    is_ivar = s.startswith('self.')
-    if is_method and is_ivar:
-        cx = cx.class_context
-.. @+node:ekr.20111125131712.10401: *5*  What I did
-@nocolor-node
-
-2011/11/25:
-
-    - Fixed some bugs in f.Operands.
-    
-    - Use AstFormatter methods for all it.operands except it.do_Attribute and it.do_Name.
-      The chain code is now based on ASTs, not hacks.
-.. @+node:ekr.20111125131712.10223: *6* Rewrote it.Attribute and all it.Operand methods
-.. @+node:ekr.20111125131712.10356: *7* ctors...
-.. @+node:ekr.20111116103733.10280: *8* ctor AstTraverser
-def __init__(self,fn=None):
-
-    self.context_stack = []
-    self.fn = fn or '<AstTraverser>'
-    self.level = 0 # The indentation level (not the context level).
-        # The number of parents a node has.
-    self.parents = [None]
-
-    self.init_info()
-    self.init_dispatch_table()
-    self.init_tracing()
-.. @+node:ekr.20111125131712.10297: *8*  f.ctor
-def __init__ (self,fn=None,options=None):
-
-    AstTraverser.__init__(self,fn)
-        # Init the base class.
-        # Sets the dispatch table.
-        # Calls init_tracing.
-
-    self.fn = fn
-    self.options = options or {}
-    self.result = []
-    self.stack = []
-    self.trace = False # Subclasses may set this.
-.. @+node:ekr.20111116103733.10346: *8*  it.ctor
-def __init__(self,fn,sd):
-
-    # Init the base class.
-    AstTraverser.__init__(self,fn)
-        # Creates dispatch dict.
-        # Calls init_tracing.
-    
-    # Ivars...
-    self.fn = fn
-    self.sd = sd
-    self.trace = False
-    
-    # Create an instance of AstFormatter.
-    self.formatter = AstFormatter(fn)
-    self.formatter.trace = self.trace
-.. @+node:ekr.20111117031039.10395: *7* f.visit
-def visit (self,tree,tag=None):
-
-    '''Visit the ast tree node, dispatched by node type.'''
-
-    kind = tree.__class__
-    f = self.dispatch_table.get(kind)
-    if f:
-        self.push()
-        f(tree,tag)
-        val = self.pop()
-        if self.trace:
-            g.trace(f.__name__,val)
-        return val
-    else:
-        g.trace('**** bad ast type',kind)
-        return None
-.. @+node:ekr.20111125131712.10256: *7* it.Operands
-# Use the AstFormatter methods for all operands except do_Attribute and do_Name.
-
-# Note:  self.formatter is a delegate object: it would be bad style
-# to make InspectTraverser a subclass of AstFormatter.
-
-def format_tree(self,tree,tag=''):
-    val = self.formatter.visit(tree)
-    if self.trace: g.trace(tag,val)
-    return val
-    
-# do_Attribute
-do_bool         = format_tree
-do_Call         = format_tree
-do_comprehension= format_tree
-do_Dict         = format_tree
-do_Ellipsis     = format_tree
-do_ExtSlice     = format_tree
-do_Index        = format_tree
-do_int          = format_tree
-do_Keyword      = format_tree
-do_List         = format_tree
-do_ListComp     = format_tree
-# do_Name
-do_Num          = format_tree
-do_Slice        = format_tree
-do_str          = format_tree
-do_Str          = format_tree
-do_Subscript    = format_tree
-do_Tuple        = format_tree
-.. @+node:ekr.20111125131712.10277: *8* it.Attribute
-def do_Attribute(self,tree,tag=''):
-    
-    # assert self.kind(tree) == 'Attribute'
-    cx = self.get_context()    
-    name = tree.attr
-    
-    # Use the *formatter* to traverse tree.value.
-    expr = self.formatter.visit(tree.value,'attribute value')
-    s = '%s.%s' % (expr,name)
-    
-    if self.trace: g.trace(s)
-    
-    chain = cx.st.add_chain(tree,s)
-
-    self.formatter.append(s)
-        # For recursive calls.
-        
-    self.sd.n_attributes += 1
-.. @+node:ekr.20111125131712.10278: *8* it.Name
-def do_Name(self,tree,tag=''):
-
-    name = tree.id
-
-    if g.isPython3:
-        if name in self.sd.module_names:
-            return
-    else:
-        if name in dir(__builtin__) or name in self.sd.module_names:
-            return
-            
-    if self.trace: g.trace(name)
-        
-    cx = self.get_context()
-    ctx = self.kind(tree.ctx)
-    sd = self.sd
-    
-    # Important: symbol tables represent only static context.
-    # The resolution algorithm computes what names "really" mean.
-    e = cx.st.add_name(name,tree)
-   
-    if ctx == 'Load': # Most common.
-        cx.load_names.add(name)
-        sd.n_load_names += 1
-    elif ctx == 'Store': # Next most common.
-        cx.store_names.add(name)
-        if name in cx.load_names:
-            e.load_before_store_flag = True
-        sd.n_store_names += 1
-    elif ctx == 'Param':
-        cx.param_names.add(name)
-        sd.n_param_names += 1
-    else:
-        assert ctx == 'Del',ctx
-        cx.del_names.add(name)
-        sd.n_del_names += 1
-.. @+node:ekr.20111117031039.10198: *7* f.Operands
-.. @+node:ekr.20111117031039.10683: *8* f.arguments
-# arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
-# -- keyword arguments supplied to call
-# keyword = (identifier arg, expr value)
-
-def do_arguments(self,tree,tag=''):
-    
-    assert self.kind(tree) == 'arguments'
-    
-    args = []
-    for z in tree.args:
-        args.append(self.visit(z,'arg'))
-        
-    defaults = []
-    for z in tree.defaults:
-        defaults.append(self.visit(z,'default arg'))
-    
-    # Assign default values to the last args.
-    args2 = []
-    n_plain = len(args) - len(defaults)
-    for i in range(len(args)):
-        if i < n_plain:
-            args2.append(args[i])
-        else:
-            args2.append('%s=%s' % (args[i],defaults[i-n_plain]))
-            
-    # Now add the vararg and kwarg args.
-    name = hasattr(tree,'vararg') and tree.vararg
-    if name: args2.append('*'+name)
-    
-    name = hasattr(tree,'kwarg') and tree.kwarg
-    if name: args2.append('**'+name)
-    
-    self.append(','.join(args2))
-.. @+node:ekr.20111117031039.10696: *8* f.arg
-def do_arg(self,tree,tag=''):
-    
-    self.append(self.visit(tree.arg))
-.. @+node:ekr.20111117031039.10199: *8* f.Attribute & helper
-# Attribute(expr value, identifier attr, expr_context ctx)
-
-def do_Attribute(self,tree,tag=''):
-    
-    name = tree.attr
-
-    expr = self.visit(tree.value,'attribute value')
-    
-    self.append('%s.%s' % (expr,name))
-.. @+node:ekr.20111117031039.10558: *8* f.Dict
-def do_Dict(self,tree,tag=''):
-    
-    keys = []
-    for z in tree.keys:
-        keys.append(self.visit(z,'dict keys'))
-        
-    values = []
-    for z in tree.values:
-        values.append(self.visit(z,'dict values'))
-        
-    if len(keys) == len(values):
-        self.append('{')
-        items = []
-        for i in range(len(keys)):
-            items.append('%s:%s' % (keys[i],values[i]))
-        self.append(','.join(items))
-        self.append('}')
-    else:
-        g.trace('*** Error *** keys: %s values: %s' % (
-            repr(keys),repr(values)))
-.. @+node:ekr.20111117031039.10559: *8* f.Elipsis
-def do_Ellipsis(self,tree,tag=''):
-    
-    self.append('...')
-.. @+node:ekr.20111117031039.10572: *8* f.ExtSlice
-def do_ExtSlice (self,tree,tag=''):
-    
-    dims = []
-    for z in tree.dims:
-        self.append(self.visit(z,'slice dimention'))
-        
-    # self.append('[%s]' % (':'.join(dims)))
-    self.append(':'.join(dims))
-.. @+node:ekr.20111117031039.10571: *8* f.Index
-def do_Index (self,tree,tag=''):
-    
-    self.append(self.visit(tree.value,'index value'))
-.. @+node:ekr.20111117031039.10354: *8* f.Keywords
-# keyword = (identifier arg, expr value)
-
-def do_Keyword(self,tree,tag=''):
-
-    # tree.arg is a string.
-    val = self.visit(tree.value,'keyword value')
-
-    self.append('%s=%s' % (tree.arg,val))
-.. @+node:ekr.20111117031039.10567: *8* f.List
-def do_List(self,tree,tag=''):
-    
-    elts = []
-    for z in tree.elts:
-        elts.append(self.visit(z,'list elts'))
-        
-    # self.visit(tree.ctx,'list context')
-    
-    self.append('(%s)' % ','.join(elts))
-.. @+node:ekr.20111117031039.10204: *8* f.ListComp & Comprehension TEST
-def do_ListComp(self,tree,tag=''):
-
-    elt = self.visit(tree.elt,'list comp elt')
-
-    generators = []
-    for z in tree.generators:
-        generators.append(self.visit(z,'list comp generator'))
-        
-    self.append('[%s for %s in %s]' % (elt,elt,''.join(generators)))
-
-def do_comprehension(self,tree,tag=''):
-
-    name = self.visit(tree.target,'comprehension target (a Name)')
-    
-    it = self.visit(tree.iter,'comprehension iter (an Attribute)')
-
-    ifs = []
-    for z in tree.ifs:
-        ifs.append(self.visit(z,'comprehension if'))
-        
-    self.append('**comprehension** name: %s ifs: %s' % (name,''.join(ifs)))
-.. @+node:ekr.20111117031039.10203: *8* f.Name
-def do_Name(self,tree,tag=''):
-
-    self.append(tree.id)
-.. @+node:ekr.20111117031039.10573: *8* f.Slice
-def do_Slice (self,tree,tag=''):
-    
-    lower,upper,step = '','',''
-    
-    if hasattr(tree,'lower') and tree.lower is not None:
-        lower = self.visit(tree.lower,'slice lower')
-        
-    if hasattr(tree,'upper') and tree.upper is not None:
-        upper = self.visit(tree.upper,'slice upper')
-        
-    if hasattr(tree,'step') and tree.step is not None:
-        step = self.visit(tree.step,'slice step')
-        
-    if step:
-        self.append('%s:%s:%s' % (lower,upper,step))
-    else:
-        self.append('%s:%s' % (lower,upper))
-.. @+node:ekr.20111117031039.10455: *8* f.Str
-def do_str (self,s,tag=''):
-
-    self.append(s)
-
-def do_Str (self,tree,tag=''):
-    
-    self.append(repr(tree.s))
-.. @+node:ekr.20111117031039.10574: *8* f.Subscript
-# Subscript(expr value, slice slice, expr_context ctx)
-
-def do_Subscript(self,tree,tag=''):
-    
-    value = self.visit(tree.value,'subscript value')
-    the_slice = self.visit(tree.slice,'subscript slice')
-    
-    self.append('%s[%s]' % (value,the_slice))
-    
-    
-    
-    # self.append(self.visit(tree.slice,'subscript slice'))
-
-    # self.visit(tree.ctx,'subscript context')
-.. @+node:ekr.20111117031039.10560: *8* f.Tuple
-def do_Tuple(self,tree,tag=''):
-    
-    elts = []
-    for z in tree.elts:
-        elts.append(self.visit(z,'list elts'))
-        
-    self.append(','.join(elts))
-
-    # self.visit(tree.ctx,'list context')
-.. @+node:ekr.20111117031039.10557: *8* formatter:simple operands
-# Python 2.x only.
-def do_bool(self,tree,tag=''):
-    g.trace(tree)
-
-def do_int (self,s,tag=''):
-    self.append(s)
-
-def do_Num(self,tree,tag=''):
-    self.append(repr(tree.n))
 .. @+node:ekr.20111019080436.15850: *3* Next: Fix all significant bugs
 .. @+node:ekr.20111026091322.16503: *4* Recent/Easy
 .. @+node:ekr.20110619173515.14895: *5* Fix bug: realpath in g.openWithFileName
