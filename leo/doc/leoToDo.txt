@@ -14,30 +14,6 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
-.. @+node:ekr.20111122172039.10203: *4* * Create new download page
-.. @+node:ekr.20111118104929.10185: *4* * Finish and document leoInspect
-@nocolor
-
-To do:
-    
-- Allow "partial" matches in calls_to,assign_to.
-    - Use regex searches?
-    
-- Append *all* statements to statements list.
-    Including def, class, if, while, pass, with etc.
-
-What I did:
-
-- Fixed some bugs in f.Operands.
-    
-- Use AstFormatter methods for all it.operands except it.do_Attribute and
-  it.do_Name. The chain code is now based on ASTs, not hacks.
-
-- Use formatter in cx.assignments_to/using.  Elegant.
- This allows assignments_to/using(s) to work on any string s.
-
--Added calls_to and line_number getters.
-    
 .. @+node:ekr.20111125072438.10202: *4* ** Fix clone bugs
 .. @+node:ekr.20111109122014.9792: *5* Fix bug: Allow @all only in top-level @<file> nodes (test2.leo)
 .. @+node:ekr.20111125072438.10203: *5* bug 804960: Refreshing unlinks clones, just reopening connects them again
@@ -358,6 +334,7 @@ self.extra_extension_dict = {
 }
 
 self.global_commands_dict = {}
+.. @+node:ekr.20111127153202.10264: *4* * Document leoInspect
 .. @+node:ekr.20111125072438.10216: *4* Regularize slashes and back-slashes
 @nocolor-node
 

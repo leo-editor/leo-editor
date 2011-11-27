@@ -9,6 +9,16 @@
 #@@tabwidth -4
 #@@pagewidth 60
 
+#@+at To do
+# 
+# - Allow "partial" matches in calls_to,assign_to.
+#     - Use regex searches?
+#     
+# - Append *all* statements to statements list.
+#     Including def, class, if, while, pass, with etc.
+# 
+#@@c
+
 #@+<< imports >>
 #@+node:ekr.20111116103733.10440: **  << imports >>
 import leo.core.leoGlobals as g
