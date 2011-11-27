@@ -7919,5 +7919,24 @@ def do_comprehension(self,tree,tag=''):
                     assert found or progress != target
                 if found: break
  
+#@+node:ekr.20111125131712.10307: *4* it.init_tracing (not used)
+def init_tracing (self):
+
+    '''May be over-ridden in subclasses.'''
+
+    # Names of AST Nodes to trace, or 'all'.
+    self.trace_kinds = ('all',) # ('Import','ImportFrom','alias',) # 'all',
+
+    # Name of tags to trace.
+    self.trace_tags = ()
+
+    # Disable tracing for these kinds of trees.
+    self.suppress_kinds = () # ('Attribute',)
+
+    # Disable tracing for trees with these tags.
+    self.suppress_tags = () # ('name context',)
+
+    # Don't show these tags (but allow tracing if enabled).
+    self.quiet_tags = () # ('body','module body',)
 #@-all
 #@-leo

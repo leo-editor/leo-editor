@@ -2087,7 +2087,10 @@ class InspectTraverser (AstTraverser):
         self.trace_flag = False
         
         # Create an instance of AstFormatter.
-        self.formatter = AstFormatter(fn)
+        if 0: # A test of the overhead of string generation.
+            self.formatter = g.nullObject()
+        else:
+            self.formatter = AstFormatter(fn)
         self.formatter.trace = self.trace_flag
     #@+node:ekr.20111116103733.10354: *3* it.Contexts
     #@+node:ekr.20111116103733.10355: *4* ClassDef
@@ -2190,25 +2193,6 @@ class InspectTraverser (AstTraverser):
                 self.visit(z,'module body')
         finally:
             self.pop_context()
-    #@+node:ekr.20111125131712.10307: *3* it.init_tracing
-    def init_tracing (self):
-
-        '''May be over-ridden in subclasses.'''
-
-        # Names of AST Nodes to trace, or 'all'.
-        self.trace_kinds = ('all',) # ('Import','ImportFrom','alias',) # 'all',
-
-        # Name of tags to trace.
-        self.trace_tags = ()
-
-        # Disable tracing for these kinds of trees.
-        self.suppress_kinds = () # ('Attribute',)
-
-        # Disable tracing for trees with these tags.
-        self.suppress_tags = () # ('name context',)
-
-        # Don't show these tags (but allow tracing if enabled).
-        self.quiet_tags = () # ('body','module body',)
     #@+node:ekr.20111125131712.10256: *3* it.Operands
     # Use the AstFormatter methods for all operands except do_Attribute and do_Name.
 
