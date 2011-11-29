@@ -7938,5 +7938,26 @@ def init_tracing (self):
 
     # Don't show these tags (but allow tracing if enabled).
     self.quiet_tags = () # ('body','module body',)
+#@+node:ekr.20111116103733.10282: *4* a.init_info
+def init_info (self):
+
+    pass
+
+    # INFER_NEED_NAME_STMTS = (From, Import, Global, TryExcept)
+    # LOOP_SCOPES = (Comprehension, For,)
+
+
+    # STMT_NODES = (
+        # Assert, Assign, AugAssign, Break, Class, Continue, Delete, Discard,
+        # ExceptHandler, Exec, For, From, Function, Global, If, Import, Pass, Print,
+        # Raise, Return, TryExcept, TryFinally, While, With
+        # )
+
+    # ALL_NODES = STMT_NODES + (
+        # Arguments, AssAttr, AssName, BinOp, BoolOp, Backquote,  CallFunc, Compare,
+        # Comprehension, Const, Decorators, DelAttr, DelName, Dict, Ellipsis,
+        # EmptyNode,  ExtSlice, Getattr,  GenExpr, IfExp, Index, Keyword, Lambda,
+        # List,  ListComp, Module, Name, Slice, Subscript, UnaryOp, Tuple, Yield
+        # )
 #@-all
 #@-leo

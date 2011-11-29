@@ -50,18 +50,19 @@ else:
 # 
 # The following naming conventions are used throughout:
 # 
+# a:    the AstTraverer class.
 # cx:   a context.
 # d:    a dict.
-# dep:  a Dependency.
 # e:    a SymbolTableEntry object.
-# f:    an open file.
+# f:    the AstFormatter class.
 # fn:   a file name.
 # g:    the leo.core.leoGlobals module.
+# it:   the InspectTraverser class.
 # s:    a string.
-# sd:   (global) semantic data.
+# sd:   an instance of the SemanticData class.
 # st:   a symbol table (for a particular context).
-# tree: an ast (parse) tree, created by Python's ast module.
-# x:    a TypeInferenceEngine.
+# tree: an AST (Abstract Syntax Tree), aka a parse tree,
+#       ASTs are created by Python's ast module and modified by the AstTraverser.
 # z:    a local temp.
 #@-<< naming conventions >>
 #@+<< define class AstTraverser >>
@@ -71,8 +72,8 @@ class AstTraverser(object):
     '''The base class for AST traversal helpers.'''
 
     #@+others
-    #@+node:ekr.20111116103733.10279: *3*  Birth (AstTraverser)
-    #@+node:ekr.20111116103733.10280: *4* ctor AstTraverser
+    #@+node:ekr.20111116103733.10279: *3*  a.Birth
+    #@+node:ekr.20111116103733.10280: *4* a.ctor
     def __init__(self,fn=None):
 
         self.context_stack = []
@@ -81,10 +82,9 @@ class AstTraverser(object):
             # The number of parents a node has.
         self.parents = [None]
 
-        self.init_info()
         self.init_dispatch_table()
         self.init_tracing()
-    #@+node:ekr.20111116103733.10281: *4* init_dispatch_table
+    #@+node:ekr.20111116103733.10281: *4* a.init_dispatch_table
     def init_dispatch_table (self):
 
         a = ast
@@ -191,28 +191,7 @@ class AstTraverser(object):
             d [a.Exec] = self.do_Exec
             d [a.Print] = self.do_Print
             d [a.Repr] = self.do_Repr
-    #@+node:ekr.20111116103733.10282: *4* init_info
-    def init_info (self):
-
-        pass
-
-        # INFER_NEED_NAME_STMTS = (From, Import, Global, TryExcept)
-        # LOOP_SCOPES = (Comprehension, For,)
-
-
-        # STMT_NODES = (
-            # Assert, Assign, AugAssign, Break, Class, Continue, Delete, Discard,
-            # ExceptHandler, Exec, For, From, Function, Global, If, Import, Pass, Print,
-            # Raise, Return, TryExcept, TryFinally, While, With
-            # )
-
-        # ALL_NODES = STMT_NODES + (
-            # Arguments, AssAttr, AssName, BinOp, BoolOp, Backquote,  CallFunc, Compare,
-            # Comprehension, Const, Decorators, DelAttr, DelName, Dict, Ellipsis,
-            # EmptyNode,  ExtSlice, Getattr,  GenExpr, IfExp, Index, Keyword, Lambda,
-            # List,  ListComp, Module, Name, Slice, Subscript, UnaryOp, Tuple, Yield
-            # )
-    #@+node:ekr.20111116103733.10283: *3*  Do-nothings (AstTraverser)
+    #@+node:ekr.20111116103733.10283: *3*  a.Do-nothings
     # Don't delete these. They might be useful in a subclass.
     if 0:
         def do_arg(self,tree,tag=''): pass
@@ -302,7 +281,13 @@ class AstTraverser(object):
         def do_While(self,tree,tag=''): pass
         def do_With(self,tree,tag=''): pass
         def do_Yield(self,tree,tag=''): pass
-    #@+node:ekr.20111116103733.10284: *3*  error (AstTraverser)
+    #@+node:ekr.20111128103520.10427: *3*  a.do_default
+    def do_default (self,tree,tag=''):
+        
+        g.trace('**** bad ast type',kind)
+        return None
+        
+    #@+node:ekr.20111116103733.10284: *3*  a.error
     def error (self,tree,message):
         
         g.pr('Error: %s' % (message))
@@ -310,7 +295,7 @@ class AstTraverser(object):
         if isinstance(tree,ast.AST):
             line = self.lines[tree.lineno-1]
             g.pr(line.rstrip())
-    #@+node:ekr.20111116103733.10285: *3*  get/push/pop_context (AstTraverser)
+    #@+node:ekr.20111116103733.10285: *3*  a.get/push/pop_context
     def get_context (self):
 
         return self.context_stack[-1]
@@ -323,39 +308,38 @@ class AstTraverser(object):
     def pop_context (self):
 
         self.context_stack.pop()
-    #@+node:ekr.20111116103733.10286: *3*  run (AstTraverser)
+    #@+node:ekr.20111116103733.10286: *3*  a.run
     def run (self,s):
         
         tree = ast.parse(s,filename=self.fn,mode='exec')
 
         self.visit(tree,tag='top')
-    #@+node:ekr.20111116103733.10287: *3*  visit (AstTraverser)
+
+    #@+node:ekr.20111116103733.10287: *3*  a.visit
     def visit (self,tree,tag=None):
 
         '''Visit the ast tree node, dispatched by node type.'''
 
         trace = False
         kind = tree.__class__
-        f = self.dispatch_table.get(kind)
-        # if tag == 'top': g.trace(self.kind(tree),f.__name__)
-        if f:
-            self.level += 1
-            if isinstance(tree,ast.AST):
-                tree._parent = self.parents[-1]
-            self.parents.append(tree)
-            try:
-                # Return a value for use by subclases.
-                return f(tree,tag)
-            finally:
-                self.level -= 1
-                self.parents.pop()
-            # Never put a return instruction in a finally clause!
-            # It causes the exception to be lost!
-            return None
-        else:
-            if trace: g.trace('**** bad ast type',kind)
-            return None
-    #@+node:ekr.20111116103733.10288: *3* Dumps (AstTraverser)
+        
+        if isinstance(tree,ast.AST):
+            tree._parent = self.parents[-1]
+        
+        self.level += 1
+        self.parents.append(tree)
+        try:
+            # Return a value for use by subclases.
+            f = self.dispatch_table.get(kind,self.do_default)
+            return f(tree,tag)
+        finally:
+            self.level -= 1
+            self.parents.pop()
+        
+        # Never put a return instruction in a finally clause!
+        # It causes the exception to be lost!
+        return None
+    #@+node:ekr.20111116103733.10288: *3* a.Dumps
     #@+node:ekr.20111116103733.10289: *4* dump(AstTraverser)
     def dump (self,tree,asString=True,brief=False,outStream=None):
 
@@ -432,7 +416,7 @@ class AstTraverser(object):
             result.extend(lines[tree.lineno:])
             
         return ''.join(result)
-    #@+node:ekr.20111116103733.10292: *3* Expressions (AstTraverser)
+    #@+node:ekr.20111116103733.10292: *3* a.Expressions
     def do_Expr(self,tree,tag=''):
         self.trace(tree,tag)
         self.visit(tree.value,'expr-value')
@@ -446,7 +430,7 @@ class AstTraverser(object):
         self.visit(tree.elt,'generator elt')
         for z in tree.generators:
             self.visit(z,'generator generator')
-    #@+node:ekr.20111116103733.10293: *4* do_IfExp
+    #@+node:ekr.20111116103733.10293: *4* a.IfExp
     def do_IfExp (self,tree,tag=''):
         self.trace(tree,tag)
         self.visit(tree.test,'if-expr test')
@@ -454,7 +438,7 @@ class AstTraverser(object):
             self.visit(tree.body,'if-expr body')
         if tree.orelse:
             self.visit(tree.orelse,'if-expr orelse')
-    #@+node:ekr.20111116103733.10294: *4* Operands (AstTraverser)
+    #@+node:ekr.20111116103733.10294: *4* a.Operands
     def do_Attribute(self,tree,tag=''):
         self.trace(tree,tag)
         self.visit(tree.value,'attribute value')
@@ -568,7 +552,7 @@ class AstTraverser(object):
         for z in tree.elts:
             self.visit(z,'list elts')
         self.visit(tree.ctx,'list context')
-    #@+node:ekr.20111116103733.10295: *4* Operators (AstTraverser)
+    #@+node:ekr.20111116103733.10295: *4* a.Operators
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
     # -- keyword arguments supplied to call
     # keyword = (identifier arg, expr value)
@@ -665,7 +649,7 @@ class AstTraverser(object):
     do_Not = do_UnaryOp
     do_UAdd = do_UnaryOp
     do_USub = do_UnaryOp
-    #@+node:ekr.20111116103733.10296: *3* Interactive & Module & Suite (AstTraverer)
+    #@+node:ekr.20111116103733.10296: *3* a.Interactive & Module & Suite
     def do_Interactive(self,tree,tag=''):
         self.trace(tree,tag)
         for z in tree.body:
@@ -680,8 +664,8 @@ class AstTraverser(object):
         self.trace(tree,tag)
         for z in tree.body:
             self.visit(z,'suite body')
-    #@+node:ekr.20111116103733.10297: *3* Statements (AstTraverser)
-    #@+node:ekr.20111116103733.10298: *4* Statements (assignments)
+    #@+node:ekr.20111116103733.10297: *3* a.Statements
+    #@+node:ekr.20111116103733.10298: *4* a.Statements (assignments)
     def do_Assign(self,tree,tag=''):
 
         self.trace(tree,tag)
@@ -695,7 +679,7 @@ class AstTraverser(object):
         self.trace(tree.op)
         self.visit(tree.value,'aug-assn value')
         self.visit(tree.target,'aut-assn target')
-    #@+node:ekr.20111116103733.10299: *4* Statements (classes & functions)
+    #@+node:ekr.20111116103733.10299: *4* a.Statements (classes & functions)
        # identifier name,
         # expr* bases,
         # stmt* body,
@@ -717,7 +701,7 @@ class AstTraverser(object):
         self.trace(tree,tag)
         self.visit(tree.args,'lambda args')
         self.visit(tree.body,'lambda body')
-    #@+node:ekr.20111116103733.10300: *4* Statements (compound)
+    #@+node:ekr.20111116103733.10300: *4* a.Statements (compound)
     def do_For (self,tree,tag=''):
         self.trace(tree,tag)
         self.visit(tree.target,'for target')
@@ -753,7 +737,7 @@ class AstTraverser(object):
             self.visit(z,'while body')
         for z in tree.orelse:
             self.visit(z,'while orelse')
-    #@+node:ekr.20111116103733.10301: *4* Statements (exceptions)
+    #@+node:ekr.20111116103733.10301: *4* a.Statements (exceptions)
     def do_ExceptHandler(self,tree,tag=''):
         self.trace(tree,tag)
         if hasattr(tree,'type') and tree.type:
@@ -787,7 +771,7 @@ class AstTraverser(object):
             self.visit(z,'try finally body')
         for z in tree.finalbody:
             self.visit(z,'try finalbody')
-    #@+node:ekr.20111116103733.10302: *4* Statements (import) (AstTraverser)
+    #@+node:ekr.20111116103733.10302: *4* a.Statements (import) (AstTraverser)
     def do_Import(self,tree,tag=''):
         self.trace(tree,tag)
         for z in tree.names:
@@ -808,7 +792,7 @@ class AstTraverser(object):
         if hasattr(tree,'asname') and tree.asname is not None:
             self.visit(tree.asname,'import as name')
 
-    #@+node:ekr.20111116103733.10303: *4* Statements (simple)
+    #@+node:ekr.20111116103733.10303: *4* a.Statements (simple)
     def do_Assert(self,tree,tag=''):
         self.trace(tree,tag)
         self.visit(tree.test,'assert test')
@@ -866,19 +850,19 @@ class AstTraverser(object):
         self.trace(tree,tag)
         if hasattr(tree,'value') and tree.value:
             self.visit(tree.value,'yield value')
-    #@+node:ekr.20111116103733.10304: *3* Tools (AstTraverser)
+    #@+node:ekr.20111116103733.10304: *3* a.Tools
     #@+at
     # Useful tools for tree traversal and testing.
     # 
     # Something is seriously wrong if we have to worry
     # about the speed of these tools.
-    #@+node:ekr.20111116103733.10305: *4* isiterable
+    #@+node:ekr.20111116103733.10305: *4* a.isiterable
     def isiterable (self,anObject):
 
         '''Return True if a non-string is iterable.'''
 
         return getattr(anObject, '__iter__', False)
-    #@+node:ekr.20111116103733.10306: *4* op_spelling
+    #@+node:ekr.20111116103733.10306: *4* a.op_spelling
     def op_spelling (self,op):
 
         d = {
@@ -894,7 +878,7 @@ class AstTraverser(object):
         }
 
         return d.get(op,'<unknown op %s>' % (op))
-    #@+node:ekr.20111116103733.10307: *4* parents (not used)
+    #@+node:ekr.20111116103733.10307: *4* a.parents (not used)
     def parents (self,tree):
 
         '''A generator yielding all the parents of a node.'''
@@ -914,7 +898,7 @@ class AstTraverser(object):
         while n > 0:
             n -= 1
             yield self.parentsList[n]
-    #@+node:ekr.20111116103733.10308: *4* the_class, info & kind
+    #@+node:ekr.20111116103733.10308: *4* a.the_class, info & kind
     def the_class (self,tree):
 
         return tree.__class__
@@ -927,7 +911,7 @@ class AstTraverser(object):
 
         return tree.__class__.__name__
 
-    #@+node:ekr.20111116103733.10309: *3* Tracing (AstTraverser)
+    #@+node:ekr.20111116103733.10309: *3* a.Tracing
     #@+node:ekr.20111116103733.10310: *4* init_tracing (AstTraverser)
     def init_tracing (self):
 
@@ -1433,7 +1417,7 @@ class AstDumper(object):
             outStream.close()
         else:
             print(s)
-    #@+node:ekr.20111116103733.10276: *4* error
+    #@+node:ekr.20111116103733.10276: *4* error (AstDumper)
     def error (self,s):
 
         g.es_print(s,color='red')
@@ -3087,7 +3071,7 @@ class Context(object):
         # return ast.dump(cx._tree,annotate_fields=True,include_attributes=not brief)
         
         return AstFormatter().format(cx._tree)
-    #@+node:ekr.20111116161118.10113: *4* cx.getters
+    #@+node:ekr.20111116161118.10113: *4* cx.getters & setters
     #@+node:ekr.20111116161118.10114: *5* cx.assignments & helper
     def assignments (self,all=True):
         
@@ -3299,6 +3283,20 @@ class Context(object):
             for cx in aList:
                 cx.all_statements(result)
         return result
+    #@+node:ekr.20111128103520.10259: *5* cx.token_range
+    def token_range (self):
+        
+        tree = self._tree
+        
+        # return (
+            # g.toUnicode(self.byte_array[:tree.col_offset]),
+            # g.toUnicode(self.byte_array[:tree_end_col_offset]),
+        # )
+        
+        if hasattr(tree,'col_offset') and hasattr(tree,'end_col_offset'):
+            return tree.lineno,tree.col_offset,tree.end_lineno,tree.end_col_offset
+        else:
+            return -1,-1
     #@+node:ekr.20111116161118.10166: *5* cx.tree
     def tree(self):
         
