@@ -737,9 +737,16 @@ class NestedSplitter(QtGui.QSplitter):
          
         self.setOrientation(layout['orientation'])
         found = 0
+        
+        if level == 0:
+            for i in self.self_and_descendants():
+                for n in range(i.count()):
+                    i.widget(n)._in_layout = False
+        
         for i in layout['content']:
             if isinstance(i, dict):
                 new = NestedSplitter(root=self.root, parent=self)
+                new._in_layout = True
                 self.insert(found, new)
                 found += 1
                 new.load_layout(i, level+1)
@@ -747,11 +754,28 @@ class NestedSplitter(QtGui.QSplitter):
                 provided = self.get_provided(i)
                 if provided:
                     self.insert(found, provided)
+                    provided._in_layout = True
                     found += 1
                 else:
                     print('NO %s'%i)
                  
         self.prune_empty()
+        
+        if self.count() != len(layout['sizes']):
+            
+            not_in_layout = set()
+            
+            for i in self.self_and_descendants():
+                for n in range(i.count()):
+                    c = i.widget(n)
+                    if not (hasattr(c, '_in_layout') and c._in_layout):
+                        not_in_layout.add(c)
+                        
+            for i in not_in_layout:
+                self.close_or_keep(i)
+        
+            self.prune_empty()
+        
         if self.count() == len(layout['sizes']):
             self.setSizes(layout['sizes'])
         else:
