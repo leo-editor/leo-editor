@@ -1878,6 +1878,27 @@ s = '''
 '''
 
 s = g.adjustTripleString(s,-4)
+#@+node:ekr.20111116103733.9838: *4* @test AstTraverser
+import leo.core.leoGlobals as g
+import leo.core.leoInspect as leoInspect
+import ast
+import time
+
+fn = 'c:/leo.repo/trunk/leo/core/leoApp.py'
+    
+t1 = time.clock()
+s = open(fn,'r').read()
+t2 = time.clock()
+tree = ast.parse(s,filename=fn,mode='exec')
+t3 = time.clock()
+leoInspect.AstTraverser(fn).visit(tree)
+t4 = time.clock()
+
+if 1:
+    print('read:     %2.3f sec.' % (t2-t1))
+    print('parse:    %2.3f sec.' % (t3-t2))
+    print('traverse: %2.3f sec.' % (t4-t3))
+    print('total:    %2.3f sec.' % (t4-t1))
 #@+node:ekr.20111116103733.9839: *4* @test create lots of data structures
 # A simple prototype of data-centric design.
 # 0.023 sec to create 100,000 dicts.
@@ -1914,57 +1935,6 @@ out = 'c:/leo.repo/new-pylint/outString.txt'
 
 outStream = open(out,'w')
 u.AstDumper(brief=True).dumpFileAsString(fn,outStream)
-#@+node:ekr.20111128103520.10237: *3* Tests of @shadow from unitTest.leo
-#@+node:ekr.20111128103520.10238: *4* @@shadow ../test/unittest/at-shadow-test.py
-@language python
-@tabwidth -4
-@others
-#@+node:ekr.20111128103520.10239: *5* spam
-def spam():
-    pass
-#@+node:ekr.20111128103520.10240: *5* eggs
-def eggs():
-    pass
-#@+node:ekr.20111128103520.10241: *4* @@shadow unittest/at-shadow-line-number-test.py
-@language python
-@tabwidth -4
-@others
-#@+node:ekr.20111128103520.10242: *5* child
-def child():
-    pass
-#@+node:ekr.20111128103520.10243: *4* @test @shadow: shape of tree
-# Not valid for external tests: uses @<file> node.
-if not g.app.isExternalUnitTest:
-
-    h = '@shadow ../test/unittest/at-shadow-test.py'
-    p = g.findNodeAnywhere(c,h)
-    assert p
-    
-    table = (
-        (p.firstChild(),'spam'),
-        (p.firstChild().next(),'eggs')
-    )
-    
-    assert not p.isDirty(),p.h # Do not ignore this failure!
-    
-    for p2,h2 in table:
-        assert len(p2.h) == len(h2)
-#@+node:ekr.20111128103520.10244: *4* @test goto-global-line @shadow
-# Not valid for external tests: uses @<file> node.
-if not g.app.isExternalUnitTest:
-
-    h = '@shadow unittest/at-shadow-line-number-test.py'
-    root1 = g.findNodeAnywhere(c,h)
-    assert root1
-    assert root1.isAnyAtFileNode()
-    
-    fileName,lines,n,root2 = c.goToLineNumber(c).setup_file(n=6,p=root1)
-    assert fileName == h[8:],'fileName'
-    assert root2 == root1
-    
-    if 0:
-        print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
-            root and root.h,isRaw,n,len(lines)))
 #@+node:ekr.20111116103733.9818: *3* LeoInspect tests
 #@+node:ekr.20111116103733.10672: *4* @test leoInspect with multiple files
 import leo.core.leoInspect as inspect
@@ -2179,57 +2149,7 @@ if 0:
                 lines = g.splitLines(z.format())
                 for line in lines:
                     print('  %s' % (line))
-#@+node:ekr.20111127153202.10231: *4* @test speed of AstTraverser (all Leo core files)
-import leo.core.leoGlobals as g
-import leo.core.leoInspect as inspect
-import ast
-import time
-
-read_time,parse_time,traverse_time = 0.0,0.0,0.0
-t_start = time.clock()
-count = 0
-for fn in inspect.LeoCoreFiles().files:
-    count += 1
-    t2 = time.clock()
-    s = open(fn,'r').read()
-    t3 = time.clock()
-    tree = ast.parse(s,filename=fn,mode='exec')
-    t4 = time.clock()
-    inspect.AstTraverser(fn).visit(tree)
-    t5 = time.clock()
-    read_time += t3-t2
-    parse_time += t4-t3
-    traverse_time += t5-t4
-t_end = time.clock()
-total_time = t_end-t_start
-if 1:
-    print('files:    %s' % (count))
-    print('read:     %2.3f sec.' % (read_time))
-    print('parse:    %2.3f sec.' % (parse_time))
-    print('traverse: %2.3f sec.' % (traverse_time))
-    print('total:    %2.3f sec.' % (total_time))
-#@+node:ekr.20111127090852.10227: *4* @test leoInspect (all core files)
-import leo.core.leoInspect as inspect
-import time
-
-sd = inspect.SemanticData()
-start_time = time.clock()
-
-count = 0
-for fn in inspect.LeoCoreFiles().files:
-    # print(fn)
-    m = inspect.module(fn,sd=sd)
-    count += 1
-
-end_time = time.clock()
-total_time = end_time-start_time
-
-if 1:
-    print('files: %s' % (count))
-    print('total: %2.3f sec.' % (total_time))
-if 1:
-    sd.print_stats()
-#@+node:ekr.20111117031039.10762: *4* @test leoInspect.module (s)
+#@+node:ekr.20111117031039.10762: *4* @test leoInspect (string)
 import leo.core.leoInspect as inspect
 
 g.cls()
@@ -2288,7 +2208,7 @@ f(a=1,b=2,*args,**keys)
     # def method():
         # pass
     
-#@+node:ekr.20111116103733.9838: *4* @test speed of AstTraverser (one file)
+#@+node:ekr.20111116103733.9838: *4* @test AstTraverser
 import leo.core.leoGlobals as g
 import leo.core.leoInspect as leoInspect
 import ast
@@ -2309,6 +2229,107 @@ if 1:
     print('parse:    %2.3f sec.' % (t3-t2))
     print('traverse: %2.3f sec.' % (t4-t3))
     print('total:    %2.3f sec.' % (t4-t1))
+#@+node:ekr.20111127153202.10231: *4* @test speed of AstTraverser (all Leo core files)
+import leo.core.leoGlobals as g
+import leo.core.leoInspect as inspect
+import ast
+import time
+
+read_time,parse_time,traverse_time = 0.0,0.0,0.0
+t_start = time.clock()
+count = 0
+for fn in inspect.LeoCoreFiles().files:
+    count += 1
+    t2 = time.clock()
+    s = open(fn,'r').read()
+    t3 = time.clock()
+    tree = ast.parse(s,filename=fn,mode='exec')
+    t4 = time.clock()
+    inspect.AstTraverser(fn).visit(tree)
+    t5 = time.clock()
+    read_time += t3-t2
+    parse_time += t4-t3
+    traverse_time += t5-t4
+t_end = time.clock()
+total_time = t_end-t_start
+if 1:
+    print('files:    %s' % (count))
+    print('read:     %2.3f sec.' % (read_time))
+    print('parse:    %2.3f sec.' % (parse_time))
+    print('traverse: %2.3f sec.' % (traverse_time))
+    print('total:    %2.3f sec.' % (total_time))
+#@+node:ekr.20111127090852.10227: *4* @test leoInspect (all core files)
+import leo.core.leoInspect as inspect
+import time
+
+sd = inspect.SemanticData()
+start_time = time.clock()
+
+count = 0
+for fn in inspect.LeoCoreFiles().files:
+    # print(fn)
+    m = inspect.module(fn,sd=sd)
+    count += 1
+
+end_time = time.clock()
+total_time = end_time-start_time
+
+if 1:
+    print('files: %s' % (count))
+    print('total: %2.3f sec.' % (total_time))
+if 1:
+    sd.print_stats()
+#@+node:ekr.20111128103520.10237: *3* Tests of @shadow from unitTest.leo
+#@+node:ekr.20111128103520.10238: *4* @@shadow ../test/unittest/at-shadow-test.py
+@language python
+@tabwidth -4
+@others
+#@+node:ekr.20111128103520.10239: *5* spam
+def spam():
+    pass
+#@+node:ekr.20111128103520.10240: *5* eggs
+def eggs():
+    pass
+#@+node:ekr.20111128103520.10241: *4* @@shadow unittest/at-shadow-line-number-test.py
+@language python
+@tabwidth -4
+@others
+#@+node:ekr.20111128103520.10242: *5* child
+def child():
+    pass
+#@+node:ekr.20111128103520.10243: *4* @test @shadow: shape of tree
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+
+    h = '@shadow ../test/unittest/at-shadow-test.py'
+    p = g.findNodeAnywhere(c,h)
+    assert p
+    
+    table = (
+        (p.firstChild(),'spam'),
+        (p.firstChild().next(),'eggs')
+    )
+    
+    assert not p.isDirty(),p.h # Do not ignore this failure!
+    
+    for p2,h2 in table:
+        assert len(p2.h) == len(h2)
+#@+node:ekr.20111128103520.10244: *4* @test goto-global-line @shadow
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+
+    h = '@shadow unittest/at-shadow-line-number-test.py'
+    root1 = g.findNodeAnywhere(c,h)
+    assert root1
+    assert root1.isAnyAtFileNode()
+    
+    fileName,lines,n,root2 = c.goToLineNumber(c).setup_file(n=6,p=root1)
+    assert fileName == h[8:],'fileName'
+    assert root2 == root1
+    
+    if 0:
+        print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
+            root and root.h,isRaw,n,len(lines)))
 #@+node:ekr.20110621074459.14908: ** 4.9.1
 #@+node:ekr.20110730093802.15134: *3* Bugs
 #@+node:ekr.20110621074459.14904: *4* Fixed ancient hanger in paste-retaining-clones
@@ -18189,7 +18210,7 @@ Added show-decoration-selected: 1 to QTreeWidget stylesheet.
 
 This causes the entire headline row to be shown when select, a big improvement, imo.
 #@+node:ekr.20111123095018.12910: *4* Added stylesheets for Log & Find tabs
-#@+node:ekr.20111122172039.10203: *4* Created new download page
+#@+node:ekr.20111122172039.10203: *4* Remove 4.9 link from Leo's home page?
 @nocolor-node
 
 The front page links to this page, which explains the download options in more
