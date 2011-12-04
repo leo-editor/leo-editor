@@ -1846,6 +1846,16 @@ if 1: # Print lines containing '='
         if z.find('=') > -1] # and not z.find('+=')>-1 and not z.find('-=')>-1]
     print(''.join(aList))
     
+#@+node:ekr.20111204110514.10287: *4* @test p.moveToFirstChild
+p1 = p.copy()
+n = p.insertAfter()
+n.h = "test"
+try:
+    assert c.positionExists(p),p
+    p.moveToFirstChildOf(n)
+    assert c.positionExists(p),p
+finally:
+    c.redraw(p1)
 #@+node:ekr.20111116161118.10247: *3* Old lint tests
 #@+node:ekr.20111116103733.9845: *4*  Naming tests
 # http://docs.python.org/reference/executionmodel.html#naming-and-binding
@@ -2149,65 +2159,6 @@ if 0:
                 lines = g.splitLines(z.format())
                 for line in lines:
                     print('  %s' % (line))
-#@+node:ekr.20111117031039.10762: *4* @test leoInspect (string)
-import leo.core.leoInspect as inspect
-
-g.cls()
-
-def show(o,indent):
-    print('\n%s\n' % o.sd.dump_ast(o.tree()))
-    print('%s%s' % (' '*4*indent,o.format()))
-
-<< define s >>
-print('Input...\n%s\n' % (s.rstrip()))
-
-m = inspect.module(s=s)
-
-if 1:
-    print(show(m,0))
-
-print('\nAssignments to a...\n')
-for o in m.assignments_to('a'):
-    print(o.format())
-    
-print('\nAssignments using d...\n')
-for o in m.assignments_using('d'):
-    print(o.format())
-    
-print('\nCalls to f...\n')
-for o in m.calls_to('f'):
-    print(o.format())
-
-if 0:
-    for s in m.statements():
-        show(s,0)
-    
-    for f in m.functions():
-        show(f,0)
-        for z in f.statements():
-            show(z,1)
-    
-    for cls in m.classes():
-        show(cls,0)
-        for d in cls.defs():
-            show(d,1)
-            for z in d.statements():
-                show(z,1)
-#@+node:ekr.20111117031039.10763: *5* << define s >>
-s = '''
-x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
-a=b+c
-f(a=1,b=2,*args,**keys)
-'''
-
-
-# def outer_function(a,b=99,c=88,*args,**keys):
-    # print('hello')
-    
-# class myClass:
-    # def method():
-        # pass
-    
 #@+node:ekr.20111116103733.9838: *4* @test AstTraverser
 import leo.core.leoGlobals as g
 import leo.core.leoInspect as leoInspect
@@ -2279,6 +2230,65 @@ if 1:
     print('total: %2.3f sec.' % (total_time))
 if 1:
     sd.print_stats()
+#@+node:ekr.20111117031039.10762: *4* @test leoInspect (string)
+import leo.core.leoInspect as inspect
+
+g.cls()
+
+def show(o,indent):
+    # print('\n%s\n' % o.sd.dump_ast(o.tree()))
+    print('%s%s' % (' '*4*indent,o.format()))
+
+<< define s >>
+print('Input...\n%s\n' % (s.rstrip()))
+
+m = inspect.module(s=s)
+
+if 1:
+    print(show(m,0))
+
+print('\nAssignments to a...\n')
+for o in m.assignments_to('a'):
+    print(o.format())
+    
+print('\nAssignments using d...\n')
+for o in m.assignments_using('d'):
+    print(o.format())
+    
+print('\nCalls to f...\n')
+for o in m.calls_to('f'):
+    print(o.format())
+
+if 1:
+    for s in m.statements():
+        show(s,0)
+    
+    for f in m.functions():
+        show(f,0)
+        for z in f.statements():
+            show(z,1)
+    
+    for cls in m.classes():
+        show(cls,0)
+        for d in cls.defs():
+            show(d,1)
+            for z in d.statements():
+                show(z,1)
+#@+node:ekr.20111117031039.10763: *5* << define s >>
+s = '''
+x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
+a=b+c
+f(a=1,b=2,*args,**keys)
+'''
+
+
+# def outer_function(a,b=99,c=88,*args,**keys):
+    # print('hello')
+    
+# class myClass:
+    # def method():
+        # pass
+    
 #@+node:ekr.20111128103520.10237: *3* Tests of @shadow from unitTest.leo
 #@+node:ekr.20111128103520.10238: *4* @@shadow ../test/unittest/at-shadow-test.py
 @language python
@@ -3979,6 +3989,32 @@ What I did:
 3. Leo now extends the list of @buttons and @commands, rather than replacing them.
    This is reasonable only because leoSettings.leo should never define *active*
    buttons or commands.
+#@+node:ekr.20111204102027.10279: *4* Fixed bug in p.moveToFirstChild
+#@+node:ekr.20040303175026.11: *5* p.moveToNthChildOf
+def moveToNthChildOf (self,parent,n):
+
+    """Move a position to the nth child of parent."""
+
+    p = self # Do NOT copy the position!
+
+    parent._adjustPositionBeforeUnlink(p)
+    p._unlink()
+    p._linkAsNthChild(parent,n)
+
+    return p
+#@+node:ekr.20040306060312: *5* p.moveToFirst/LastChildOf
+def moveToFirstChildOf (self,parent):
+    """Move a position to the first child of parent."""
+    
+    p = self # Do NOT copy the position!
+    return p.moveToNthChildOf (parent,0)  # Major bug fix: 2011/12/04
+
+def moveToLastChildOf (self,parent):
+    """Move a position to the last child of parent."""
+    
+    p = self # Do NOT copy the position!
+    n = parent.numberOfChildren()
+    return p.moveToNthChildOf (parent,n) # Major bug fix: 2011/12/04
 #@+node:ekr.20111113141805.10062: *3* Code
 #@+node:ekr.20111109105907.9796: *4* Simplified g.pr
 #@+node:ekr.20111023164430.16771: *4* Removed unused color tags

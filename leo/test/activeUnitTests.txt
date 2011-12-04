@@ -18962,6 +18962,16 @@ else:
     # print(result)
     assert result,result
     
+#@+node:ekr.20111204110606.3952: *3* @test p.moveToFirstChild
+p1 = p.copy()
+n = p.insertAfter()
+n.h = "test"
+try:
+    assert c.positionExists(p),p
+    p.moveToFirstChildOf(n)
+    assert c.positionExists(p),p
+finally:
+    c.redraw(p1)
 #@+node:ekr.20111121171738.3932: *3* Import tests
 #@+node:ekr.20111105221757.3831: *4* @test createImportParent
 files = ('x.h','x.cpp')

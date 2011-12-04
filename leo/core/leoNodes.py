@@ -1261,24 +1261,17 @@ class position (object):
         return p
     #@+node:ekr.20040306060312: *4* p.moveToFirst/LastChildOf
     def moveToFirstChildOf (self,parent):
-
         """Move a position to the first child of parent."""
-
+        
         p = self # Do NOT copy the position!
-        p._unlink()
-        p._linkAsNthChild(parent,0)
-        return p
-
+        return p.moveToNthChildOf (parent,0)  # Major bug fix: 2011/12/04
 
     def moveToLastChildOf (self,parent):
-
         """Move a position to the last child of parent."""
-
+        
         p = self # Do NOT copy the position!
-        p._unlink()
         n = parent.numberOfChildren()
-        p._linkAsNthChild(parent,n)
-        return p
+        return p.moveToNthChildOf (parent,n) # Major bug fix: 2011/12/04
     #@+node:ekr.20040303175026.11: *4* p.moveToNthChildOf
     def moveToNthChildOf (self,parent,n):
 

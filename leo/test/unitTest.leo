@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.53">
-	<global_window_position top="39" left="644" height="977" width="1257"/>
+	<global_window_position top="30" left="512" height="750" width="839"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -150,6 +150,9 @@
 <v t="ekr.20111107065245.3833"><vh>@test minimize-all</vh></v>
 <v t="ekr.20111107065530.3833"><vh>@test resize-to-screen</vh></v>
 <v t="ekr.20111103213154.3823"><vh>@test writeToDocutils: pdf</vh></v>
+<v t="ekr.20111204110606.3953"><vh>test</vh>
+<v t="ekr.20111204110606.3952"><vh>@test p.moveToFirstChild</vh></v>
+</v>
 <v t="ekr.20111121171738.3932"><vh>Import tests</vh>
 <v t="ekr.20111105221757.3831"><vh>@test createImportParent</vh></v>
 <v t="ekr.20111103213154.3824"><vh>@test g.importFromPath</vh></v>
@@ -164,9 +167,7 @@
 <v t="ekr.20111105065243.3837"><vh>@test removeBlankLinesTokens (rst)</vh></v>
 </v>
 <v t="ekr.20111121142012.4141"><vh>Tests of the new log code</vh>
-<v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh>
-<v t="ekr.20111123042806.3937"><vh>first-child</vh></v>
-</v>
+<v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh></v>
 <v t="ekr.20111120124051.3994"><vh>@test cycle-all-focus</vh></v>
 <v t="ekr.20111121164644.3928"><vh>@test cycle-tab-focus</vh></v>
 <v t="ekr.20111121224307.3934"><vh>@test handleDefaultChar from log pane</vh></v>
@@ -604,7 +605,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="11"></t>
+<t tx="ekr.20070417092935" str_leo_pos="7"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -2175,7 +2176,6 @@ mod_scripting.py
 # xsltWithNodes.py
 # zenity_file_dialogs.py
 </t>
-<t tx="ekr.20111123042806.3937"></t>
 <t tx="ekr.20111123214629.3941">import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 import leo.plugins.qtGui as leoQtGui
@@ -2265,5 +2265,15 @@ try:
     assert child.h.lower() == h.lower(),child.h
 finally:
     setup()</t>
+<t tx="ekr.20111204110606.3952">p1 = p.copy()
+n = p.insertAfter()
+n.h = "test"
+try:
+    assert c.positionExists(p),p
+    p.moveToFirstChildOf(n)
+    assert c.positionExists(p),p
+finally:
+    c.redraw(p1)</t>
+<t tx="ekr.20111204110606.3953"></t>
 </tnodes>
 </leo_file>
