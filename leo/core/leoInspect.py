@@ -284,7 +284,7 @@ class AstTraverser(object):
     #@+node:ekr.20111128103520.10427: *3*  a.do_default
     def do_default (self,tree,tag=''):
         
-        g.trace('**** bad ast type',kind)
+        g.trace('**** bad ast type',tree.__class__.__name__)
         return None
         
     #@+node:ekr.20111116103733.10284: *3*  a.error
