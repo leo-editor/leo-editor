@@ -544,6 +544,18 @@ def cmd_ActOnNode(c, p=None, event=None):
         raise leoPlugins.TryNext
 
 active_path_act_on_node = cmd_ActOnNode
+#@+node:tbrown.20111207143354.19381: ** cmd_MakeDir
+def cmd_MakeDir(c):
+    
+    txt = g.app.gui.runAskOkCancelStringDialog(
+        c, 'Directory name' ,'Directory name')
+    if txt:
+        nd = c.p.insertAsNthChild(0)
+        nd.h = '/'+txt.strip('/')+'/'
+        nd.b = '@path %s\n' % txt
+        c.selectPosition(nd)
+        c.redraw()
+    g.es("Path will be created if a file is saved on it")
 #@+node:tbrown.20080616153649.2: ** cmd_ShowCurrentPath
 def cmd_ShowCurrentPath(c):
     """Just show the path to the current file/directory node in the log pane."""
