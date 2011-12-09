@@ -21874,6 +21874,7 @@ def exportHeadlines (self,event=None):
         g.setGlobalOpenDir(fileName)
         g.chdir(fileName)
         c.importCommands.exportHeadlines(fileName)
+#@+node:ekr.20111209101900.9953: ** Test of bzr push/pull
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
