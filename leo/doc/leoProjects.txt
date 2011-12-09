@@ -18246,11 +18246,6 @@ Added show-decoration-selected: 1 to QTreeWidget stylesheet.
 
 This causes the entire headline row to be shown when select, a big improvement, imo.
 #@+node:ekr.20111123095018.12910: *4* Added stylesheets for Log & Find tabs
-#@+node:ekr.20111122172039.10203: *4* Remove 4.9 link from Leo's home page?
-@nocolor-node
-
-The front page links to this page, which explains the download options in more
-detail than is possible on the front page.
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
