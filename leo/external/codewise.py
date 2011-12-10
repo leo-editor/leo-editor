@@ -675,8 +675,6 @@ class CodeWise:
         else:
             self.dbconn = c = sqlite3.connect(dbpath)
             self.create_caches()
-        
-
     #@+node:ekr.20110310091639.14258: *3* createdb
     def createdb(self, dbpath):
         self.dbconn = c = sqlite3.connect(dbpath)
@@ -712,7 +710,7 @@ class CodeWise:
 
     #@+node:ekr.20110310091639.14261: *3* cursor
     def cursor(self):
-        return self.dbconn.cursor()
+        return self.dbconn and self.dbconn.cursor()
         
     #@+node:ekr.20110310091639.14262: *3* class_id
     def class_id(self, classname):
