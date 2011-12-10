@@ -4109,9 +4109,9 @@ redo                        = Shift-Ctrl-Z
 
 run-all-unit-tests-externally       = None
 run-all-unit-tests-locally          = None
-run-marked-unit-tests-externally    = None
+run-marked-unit-tests-externally    = Alt-4 # The new standard
 run-marked-unit-tests-locally       = None
-run-selected-unit-tests-externally  = Alt-4 # The new standard.
+run-selected-unit-tests-externally  = Alt-5 # The new standard
 run-selected-unit-tests-locally     = None
 
 show-calltips               = parenleft

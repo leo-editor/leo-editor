@@ -1271,6 +1271,8 @@ class position (object):
         
         p = self # Do NOT copy the position!
         n = parent.numberOfChildren()
+        if p.parent() == parent:
+            n -= 1 # 2011/12/10: Another bug fix.
         return p.moveToNthChildOf (parent,n) # Major bug fix: 2011/12/04
     #@+node:ekr.20040303175026.11: *4* p.moveToNthChildOf
     def moveToNthChildOf (self,parent,n):

@@ -150,9 +150,6 @@
 <v t="ekr.20111107065245.3833"><vh>@test minimize-all</vh></v>
 <v t="ekr.20111107065530.3833"><vh>@test resize-to-screen</vh></v>
 <v t="ekr.20111103213154.3823"><vh>@test writeToDocutils: pdf</vh></v>
-<v t="ekr.20111204110606.3953"><vh>test</vh>
-<v t="ekr.20111204110606.3952"><vh>@test p.moveToFirstChild</vh></v>
-</v>
 <v t="ekr.20111121171738.3932"><vh>Import tests</vh>
 <v t="ekr.20111105221757.3831"><vh>@test createImportParent</vh></v>
 <v t="ekr.20111103213154.3824"><vh>@test g.importFromPath</vh></v>
@@ -167,7 +164,9 @@
 <v t="ekr.20111105065243.3837"><vh>@test removeBlankLinesTokens (rst)</vh></v>
 </v>
 <v t="ekr.20111121142012.4141"><vh>Tests of the new log code</vh>
-<v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh></v>
+<v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh>
+<v t="ekr.20111123042806.3937"><vh>first-child</vh></v>
+</v>
 <v t="ekr.20111120124051.3994"><vh>@test cycle-all-focus</vh></v>
 <v t="ekr.20111121164644.3928"><vh>@test cycle-tab-focus</vh></v>
 <v t="ekr.20111121224307.3934"><vh>@test handleDefaultChar from log pane</vh></v>
@@ -184,6 +183,9 @@
 </v>
 <v t="ekr.20111123214629.3941"><vh>@test unbound Alt-N key is completely ignored</vh></v>
 <v t="ekr.20111124090010.3939"><vh>@test @buttons and @commands logic</vh></v>
+<v t="ekr.20111210104652.3958"><vh>@test p.moveToFirst/LastChild</vh>
+<v t="ekr.20111210104652.3959"><vh>child</vh></v>
+</v>
 </v>
 <v t="ekr.20111115080347.3872"><vh>To do: tests of the high-level interface</vh>
 <v t="ekr.20100131171342.5478"><vh>@@@test that log and body implements high-level interface</vh></v>
@@ -1798,9 +1800,9 @@ for s in table:
     print('print(repr(s)): %s' % s)
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
-<t tx="ekr.20111112093605.4679">run-selected-unit-tests-externally = Alt-4 # Same as the new standard.
-run-selected-unit-tests-locally = Alt-5
-</t>
+<t tx="ekr.20111112093605.4679">run-marked-unit-tests-externally = Alt-4 # Standard binding, unchanged.
+run-selected-unit-tests-externally = Alt-5 # Standard binding, unchanged.
+run-selected-unit-tests-locally = Alt-6</t>
 <t tx="ekr.20111115071700.3870">c.k.simulateCommand('print-settings')
 </t>
 <t tx="ekr.20111115080347.3872"></t>
@@ -2176,6 +2178,7 @@ mod_scripting.py
 # xsltWithNodes.py
 # zenity_file_dialogs.py
 </t>
+<t tx="ekr.20111123042806.3937"></t>
 <t tx="ekr.20111123214629.3941">import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 import leo.plugins.qtGui as leoQtGui
@@ -2265,15 +2268,26 @@ try:
     assert child.h.lower() == h.lower(),child.h
 finally:
     setup()</t>
-<t tx="ekr.20111204110606.3952">p1 = p.copy()
-n = p.insertAfter()
-n.h = "test"
+<t tx="ekr.20111210104652.3958">def setup(p):
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+child = p.firstChild()
+assert child
+setup(child)
+p2 = child.insertAfter()
+p2.h = "test"
 try:
-    assert c.positionExists(p),p
-    p.moveToFirstChildOf(n)
-    assert c.positionExists(p),p
+    assert c.positionExists(p2),p2
+    p2.moveToFirstChildOf(child)
+    assert c.positionExists(p2),p2
+    p2.moveToLastChildOf(child)
+    assert c.positionExists(p2),p2
 finally:
-    c.redraw(p1)</t>
-<t tx="ekr.20111204110606.3953"></t>
+    if 1:
+        setup(child)
+    c.redraw(p)
+</t>
+<t tx="ekr.20111210104652.3959"></t>
 </tnodes>
 </leo_file>

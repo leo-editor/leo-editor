@@ -18962,16 +18962,6 @@ else:
     # print(result)
     assert result,result
     
-#@+node:ekr.20111204110606.3952: *3* @test p.moveToFirstChild
-p1 = p.copy()
-n = p.insertAfter()
-n.h = "test"
-try:
-    assert c.positionExists(p),p
-    p.moveToFirstChildOf(n)
-    assert c.positionExists(p),p
-finally:
-    c.redraw(p1)
 #@+node:ekr.20111121171738.3932: *3* Import tests
 #@+node:ekr.20111105221757.3831: *4* @test createImportParent
 files = ('x.h','x.cpp')
@@ -19499,6 +19489,27 @@ else:
             # print(fn)
             # print(repr(aList))
             assert fn in aList,'%s not in unitTestDict[%s]' % (fn,key)
+#@+node:ekr.20111210104652.3958: *3* @test p.moveToFirst/LastChild
+def setup(p):
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+child = p.firstChild()
+assert child
+setup(child)
+p2 = child.insertAfter()
+p2.h = "test"
+try:
+    assert c.positionExists(p2),p2
+    p2.moveToFirstChildOf(child)
+    assert c.positionExists(p2),p2
+    p2.moveToLastChildOf(child)
+    assert c.positionExists(p2),p2
+finally:
+    if 1:
+        setup(child)
+    c.redraw(p)
+#@+node:ekr.20111210104652.3959: *4* child
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
