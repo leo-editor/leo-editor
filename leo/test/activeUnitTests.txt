@@ -16767,25 +16767,6 @@ x.show_error(
     message = "Test of x.show_error",
     lines1_message = "lines1",
     lines2_message = "lines2")
-#@+node:ekr.20090529115704.4569: *4* @@test delete unittest shadow directory
-# This unit test should come last.
-
-import glob
-import os
-
-x = c.shadowController
-
-shadow_dir = x.shadowDirName('unittest/xyzzy')
-
-if g.os_path_exists(shadow_dir):
-    files = g.os_path_abspath(g.os_path_join(shadow_dir,"*.*"))
-    files = glob.glob(files)
-    for z in files:
-        if z != shadow_dir:
-            os.unlink(z)
-    os.rmdir(shadow_dir)
-    assert not os.path.exists(shadow_dir)
-    # g.es_print('deleted directory',shadow_dir,color='red')
 #@+node:ekr.20090529115704.4397: *4* @suite run @shadow-test nodes in the @shadow-tests tree
 import unittest
 
