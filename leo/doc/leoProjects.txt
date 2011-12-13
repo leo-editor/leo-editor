@@ -4028,6 +4028,187 @@ def moveToLastChildOf (self,parent):
     if p.parent() == parent:
         n -= 1 # 2011/12/10: Another bug fix.
     return p.moveToNthChildOf (parent,n) # Major bug fix: 2011/12/04
+#@+node:ekr.20111125072438.10203: *4* Fixed bug 804960: Refreshing unlinks clones, just reopening connects them again
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/804960
+
+When we clone a node inside an @shadow (containing @others) node and then
+refresh the @shadow node from file, the clone is unlinked and marked as changed.
+If we now save, close the .leo file and open it again, the nodes are linked
+again! (showing "cloned" symbol) User's thought: "How the heck can the file
+change _between save and re-open_ when I changed nothing?"
+
+I think what should be done about this is the check that Leo does when it opens
+the file again, and that check should be done immediately after the "refresh
+node from file" operation. Also, at this point, the "Recovered nodes" node
+should appear (if file and node have both changed), not only after the next .leo
+file close/reopen (as that happens quite infrequently, I guess, e.g. once a day
+for me). Otherwise, the user can easily lose data.
+#@+node:ekr.20111210131839.10311: *5* changed...
+#@+node:ekr.20090218115025.5: *6* fc.initIvars
+def initIvars(self):
+
+    # General
+    c = self.c
+    self.mFileName = ""
+    self.fileDate = -1
+    self.leo_file_encoding = c.config.new_leo_file_encoding
+
+    # The bin param doesn't exist in Python 2.3;
+    # the protocol param doesn't exist in earlier versions of Python.
+    version = '.'.join([str(sys.version_info[i]) for i in (0,1)])
+    # self.python23 = g.CheckVersion(version,'2.3')
+
+    # For reading
+    self.checking = False # True: checking only: do *not* alter the outline.
+    self.descendentExpandedList = []
+    self.descendentMarksList = []
+    self.forbiddenTnodes = []
+    self.descendentTnodeUaDictList = []
+    self.descendentVnodeUaDictList = []
+    self.ratio = 0.5
+
+    self.currentVnode = None
+    self.rootVnode = None
+
+    # For writing
+    self.read_only = False
+    self.rootPosition = None
+    self.outputFile = None
+    self.openDirectory = None
+    self.putCount = 0
+    # self.topVnode = None
+    self.toString = False
+    self.usingClipboard = False
+    self.currentPosition = None
+    # New in 3.12
+    self.copiedTree = None
+    self.gnxDict = {}
+        # keys are gnx strings as returned by canonicalTnodeIndex.
+        # Values are vnodes.
+        # 2011/12/10: This dict is never re-inited.
+    # g.trace('***clearing gnxDict',c)
+        
+    self.vnodesDict = {}
+        # keys are gnx strings; values are ignored
+#@+node:ekr.20031218072017.1559: *6* fc.getLeoOutlineFromClipboard & helpers
+def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
+
+    '''Read a Leo outline from string s in clipboard format.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; current = c.p ; check = not reassignIndices
+    checkAfterRead = False or c.config.getBool('check_outline_after_read')
+
+    self.initReadIvars() # 2010/02/05
+
+    # Save the hidden root's children.
+    children = c.hiddenRootNode.children
+
+    # 2011/12/10: never recreate the gnxDict.
+        # Always recreate the gnxDict
+        # self.gnxDict = {}
+    # g.trace('*** clearing gnxDict',g.callers())
+    
+    # 2011/12/12: save and clear gnxDict.
+    # This ensures that new indices will be used for all nodes.
+    if reassignIndices:
+        oldGnxDict = self.gnxDict
+        self.gnxDict = {}
+    else:
+        # Make sure all pasted nodes are entered into the gnxDict.
+        x = g.app.nodeIndices
+        for v in c.all_unique_nodes():
+            index = x.toString(v.fileIndex)
+            self.gnxDict[index] = v
+
+    self.usingClipboard = True
+    try:
+        # This encoding must match the encoding used in putLeoOutline.
+        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+        if trace: g.trace(s)
+
+        # readSaxFile modifies the hidden root.
+        v = self.readSaxFile(
+            theFile=None, fileName='<clipboard>',
+            silent=True, # don't tell about stylesheet elements.
+            inClipboard=True,reassignIndices=reassignIndices,s=s)
+        if not v:
+            return g.es("the clipboard is not valid ",color="blue")
+    finally:
+        self.usingClipboard = False
+
+    # Restore the hidden root's children
+    c.hiddenRootNode.children = children
+
+    # Unlink v from the hidden root.
+    v.parents.remove(c.hiddenRootNode)
+
+    p = leoNodes.position(v)
+
+    # Important: we must not adjust links when linking v
+    # into the outline.  The read code has already done that.
+    if current.hasChildren() and current.isExpanded():
+        if check and not self.checkPaste(current,p):
+            return None
+        p._linkAsNthChild(current,0,adjust=False)
+    else:
+        if check and not self.checkPaste(current.parent(),p):
+            return None
+        p._linkAfter(current,adjust=False)
+
+    if reassignIndices:
+        self.gnxDict = oldGnxDict
+            # 2011/12/12: restore gnxDict.
+        for p2 in p.self_and_subtree():
+            v = p2.v
+            v.fileIndex = index = g.app.nodeIndices.getNewIndex()
+            self.gnxDict[index] = v
+
+    if trace and verbose:
+        g.trace('**** dumping outline...')
+        c.dumpOutline()
+
+    if checkAfterRead:
+        g.trace('checking outline after paste',color='blue')
+        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+
+    c.selectPosition(p)
+    self.initReadIvars() # 2010/02/05
+    return p
+
+getLeoOutline = getLeoOutlineFromClipboard # for compatibility
+#@+node:ekr.20080410115129.1: *7* checkPaste
+def checkPaste (self,parent,p):
+
+    '''Return True if p may be pasted as a child of parent.'''
+
+    if not parent: return True
+
+    parents = [z.copy() for z in parent.self_and_parents()]
+
+    for p in p.self_and_subtree():
+        for z in parents:
+            # g.trace(p.h,id(p.v),id(z.v))
+            if p.v == z.v:
+                g.es('Invalid paste: nodes may not descend from themselves',color="blue")
+                return False
+
+    return True
+#@+node:ekr.20060919142200.1: *6* fc.initReadIvars
+def initReadIvars (self):
+
+    self.descendentTnodeUaDictList = []
+    self.descendentVnodeUaDictList = []
+    self.descendentExpandedList = []
+    self.descendentMarksList = []
+        # 2011/12/10: never re-init this dict.
+        # self.gnxDict = {}
+        # g.trace('*** clearing gnxDict',g.callers())
+    self.c.nodeConflictList = [] # 2010/01/05
+    self.c.nodeConflictFileName = None # 2010/01/05
 #@+node:ekr.20111113141805.10062: *3* Code
 #@+node:ekr.20111109105907.9796: *4* Simplified g.pr
 #@+node:ekr.20111023164430.16771: *4* Removed unused color tags

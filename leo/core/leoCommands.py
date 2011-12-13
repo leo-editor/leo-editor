@@ -3889,7 +3889,7 @@ class Commands (object):
         else:
             pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
 
-        if not pasted: return
+        if not pasted: return None
 
         copiedBunchList = []
         if pasteAsClone:
@@ -3934,6 +3934,8 @@ class Commands (object):
         u.afterInsertNode(pasted,undoType,undoData)
         c.redraw(pasted)
         c.recolor()
+        
+        return pasted # For unit testing.
     #@+node:EKR.20040610130943: *7* pasteOutlineRetainingClones
     def pasteOutlineRetainingClones (self,event=None):
 

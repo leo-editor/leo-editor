@@ -546,7 +546,7 @@ class baseFileCommands:
             'check_outline_before_save',default=False)
 
         self.initIvars()
-    #@+node:ekr.20090218115025.5: *3* initIvars
+    #@+node:ekr.20090218115025.5: *3* fc.initIvars
     def initIvars(self):
 
         # General
@@ -587,6 +587,9 @@ class baseFileCommands:
         self.gnxDict = {}
             # keys are gnx strings as returned by canonicalTnodeIndex.
             # Values are vnodes.
+            # 2011/12/10: This dict is never re-inited.
+        # g.trace('***clearing gnxDict',c)
+            
         self.vnodesDict = {}
             # keys are gnx strings; values are ignored
     #@+node:ekr.20031218072017.3020: ** Reading
@@ -621,7 +624,7 @@ class baseFileCommands:
         finally:
             self.checking = False
             c.loading = False # reenable c.changed
-    #@+node:ekr.20031218072017.1559: *4* getLeoOutlineFromClipboard & helpers
+    #@+node:ekr.20031218072017.1559: *4* fc.getLeoOutlineFromClipboard & helpers
     def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
 
         '''Read a Leo outline from string s in clipboard format.'''
@@ -636,9 +639,18 @@ class baseFileCommands:
         # Save the hidden root's children.
         children = c.hiddenRootNode.children
 
-        # Always recreate the gnxDict
-        self.gnxDict = {}
-        if not reassignIndices:
+        # 2011/12/10: never recreate the gnxDict.
+            # Always recreate the gnxDict
+            # self.gnxDict = {}
+        # g.trace('*** clearing gnxDict',g.callers())
+        
+        # 2011/12/12: save and clear gnxDict.
+        # This ensures that new indices will be used for all nodes.
+        if reassignIndices:
+            oldGnxDict = self.gnxDict
+            self.gnxDict = {}
+        else:
+            # Make sure all pasted nodes are entered into the gnxDict.
             x = g.app.nodeIndices
             for v in c.all_unique_nodes():
                 index = x.toString(v.fileIndex)
@@ -680,8 +692,12 @@ class baseFileCommands:
             p._linkAfter(current,adjust=False)
 
         if reassignIndices:
+            self.gnxDict = oldGnxDict
+                # 2011/12/12: restore gnxDict.
             for p2 in p.self_and_subtree():
-                p2.v.fileIndex = g.app.nodeIndices.getNewIndex()
+                v = p2.v
+                v.fileIndex = index = g.app.nodeIndices.getNewIndex()
+                self.gnxDict[index] = v
 
         if trace and verbose:
             g.trace('**** dumping outline...')
@@ -919,7 +935,7 @@ class baseFileCommands:
         return ok
     #@+node:ekr.20060919133249: *3* Common
     # Methods common to both the sax and non-sax code.
-    #@+node:ekr.20031218072017.2004: *4* canonicalTnodeIndex
+    #@+node:ekr.20031218072017.2004: *4* fc.canonicalTnodeIndex
     def canonicalTnodeIndex(self,index):
 
         """Convert Tnnn to nnn, leaving gnx's unchanged."""
@@ -935,7 +951,7 @@ class baseFileCommands:
                 index = index[1:]
 
         return index
-    #@+node:ekr.20040701065235.1: *4* getDescendentAttributes
+    #@+node:ekr.20040701065235.1: *4* fc.getDescendentAttributes
     def getDescendentAttributes (self,s,tag=""):
 
         '''s is a list of gnx's, separated by commas from a <v> or <t> element.
@@ -948,7 +964,7 @@ class baseFileCommands:
         result = [gnx for gnx in gnxs if len(gnx) > 0]
         # g.trace(tag,result)
         return result
-    #@+node:EKR.20040627114602: *4* getDescendentUnknownAttributes
+    #@+node:EKR.20040627114602: *4* fc.getDescendentUnknownAttributes
     # Pre Leo 4.5 Only @thin vnodes had the descendentTnodeUnknownAttributes field.
     # New in Leo 4.5: @thin & @shadow vnodes have descendentVnodeUnknownAttributes field.
 
@@ -967,17 +983,19 @@ class baseFileCommands:
             g.es_exception()
             g.trace('Can not unpickle',type(s),v and v.h,s[:40])
             return None
-    #@+node:ekr.20060919142200.1: *4* initReadIvars
+    #@+node:ekr.20060919142200.1: *4* fc.initReadIvars
     def initReadIvars (self):
 
         self.descendentTnodeUaDictList = []
         self.descendentVnodeUaDictList = []
         self.descendentExpandedList = []
         self.descendentMarksList = []
-        self.gnxDict = {}
+            # 2011/12/10: never re-init this dict.
+            # self.gnxDict = {}
+            # g.trace('*** clearing gnxDict',g.callers())
         self.c.nodeConflictList = [] # 2010/01/05
         self.c.nodeConflictFileName = None # 2010/01/05
-    #@+node:EKR.20040627120120: *4* restoreDescendentAttributes
+    #@+node:EKR.20040627120120: *4* fc.restoreDescendentAttributes
     def restoreDescendentAttributes (self):
 
         trace = False and not g.unitTesting

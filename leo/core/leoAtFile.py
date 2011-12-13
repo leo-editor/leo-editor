@@ -523,6 +523,7 @@ class atFile:
             return False
 
         fileName = at.openFileForReading(fromString=fromString)
+            # For @shadow files, calls x.updatePublicAndPrivateFiles.
         if fileName and at.inputFile:
             c.setFileTimeStamp(fileName)
         elif fromString: # 2010/09/02.
@@ -896,8 +897,9 @@ class atFile:
         if not changed: c.setChanged(False)
         g.doHook('after-edit',p=p)
     #@+node:ekr.20080711093251.7: *4* at.readOneAtShadowNode
-    def readOneAtShadowNode (self,fn,p):
+    def readOneAtShadowNode (self,fn,p,force=False):
 
+        trace = False and not g.unitTesting
         at = self ; c = at.c ; x = c.shadowController
 
         if not fn == p.atShadowFileNodeName():
@@ -915,9 +917,12 @@ class atFile:
         # Delete all children.
         while p.hasChildren():
             p.firstChild().doDelete()
+            
+        if trace:
+            g.trace('shadow_exists',shadow_exists,shadow_fn)
 
         if shadow_exists:
-            at.read(p,atShadow=True)
+            at.read(p,atShadow=True,force=force)
         else:
             if not g.unitTesting: g.es("reading:",p.h)
             ok = at.importAtShadowNode(fn,p)
@@ -4890,11 +4895,8 @@ class atFile:
         Return True if theFile was changed.
         '''
 
-        at = self ; testing = g.app.unitTesting
-
-        # g.trace('fn',fn,'s','\n',s)
-        # g.trace(g.callers())
-
+        trace = False and not g.unitTesting
+        at = self
         exists = g.os_path_exists(fn)
 
         if exists: # Read the file.  Return if it is the same.
@@ -4902,7 +4904,7 @@ class atFile:
             if s is None:
                 return False
             if s == s2:
-                if not testing: g.es('unchanged:',fn)
+                if not g.unitTesting: g.es('unchanged:',fn)
                 return False
 
         # Issue warning if directory does not exist.
@@ -4919,11 +4921,12 @@ class atFile:
                 s = g.toEncodedString(s,encoding=self.encoding)
             f.write(s)
             f.close()
-            if not testing:
+            if g.unitTesting:
+                if trace: g.trace('*****',fn)
+            else:
                 if exists:
                     g.es('wrote:    ',fn)
                 else:
-                    # g.trace('created:',fn,g.callers())
                     g.es('created:',fn)
             return True
         except IOError:

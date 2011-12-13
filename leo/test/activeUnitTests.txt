@@ -214,6 +214,7 @@ def tear_down(p,h=None):
     common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
     common.contract()
 
+    c.selectPosition(p)
     c.redraw()
 #@+node:ekr.20111006105711.3734: *4* delete_children
 def delete_children(p):
@@ -234,19 +235,14 @@ def test_children(p):
     
     child = child.next()
     assert child.h == 'a','child3: %s' % (child)
-#@+node:ekr.20111006072734.3643: *4* test_undo (not used)
-# def test_undo(p):
-    
-    # n = p.numberOfChildren()
-    # assert n == 4 ,'undo children: %s' % (n)
-#@+node:ekr.20111006072734.3592: *4* data
-#@+node:ekr.20111006072734.3600: *5* a
-#@+node:ekr.20111006072734.3601: *6* b
-#@+node:ekr.20111006072734.3597: *5* c
-#@+node:ekr.20111006072734.3598: *5* d
-#@+node:ekr.20111006072734.3599: *5* e
-#@+node:ekr.20111006072734.3600: *6* a
-#@+node:ekr.20111006072734.3601: *7* b
+#@+node:ekr.20111211094602.3972: *4* data
+#@+node:ekr.20111211094602.3978: *5* a
+#@+node:ekr.20111211094602.3979: *6* b
+#@+node:ekr.20111211094602.3975: *5* c
+#@+node:ekr.20111211094602.3976: *5* d
+#@+node:ekr.20111211094602.3977: *5* e
+#@+node:ekr.20111211094602.3978: *6* a
+#@+node:ekr.20111211094602.3979: *7* b
 #@+node:ekr.20100812172232.5800: *3* @common leoRst test code
 @others
 #@+node:ekr.20100812182942.5804: *4* class rst3Test
@@ -17384,8 +17380,8 @@ x = c.shadowController
 
 @others
 
-shadow_fn  = x.shadowPathName('unittest/xyzzy')
-shadow_dir = x.shadowDirName('unittest/xyzzy')
+shadow_fn  = x.shadowPathName('unittest/xyzzy/test.py')
+shadow_dir = x.shadowDirName('unittest/xyzzy/test.py')
 
 if g.os_path_exists(shadow_fn):
     g.utils_remove(shadow_fn,verbose=True)
@@ -17405,7 +17401,9 @@ def deleteShadowDir(shadowDir):
         files = glob.glob(files)
         for z in files:
             if z != shadow_dir:
+                # g.trace(z)
                 os.unlink(z)
+        # g.trace(shadow_dir)
         os.rmdir(shadow_dir)
         assert not os.path.exists(shadow_dir),'still exists: %s' % shadow_dir
 #@+node:ekr.20100131180007.5365: *4* @test x.markerFromFileLines
@@ -19263,7 +19261,6 @@ else:
     finally:
         delete_children(p1)
         c.redraw()
-#@+node:ekr.20111123042806.3937: *5* first-child
 #@+node:ekr.20111120124051.3994: *4* @test cycle-all-focus
 '''Test that cycle-all-focus cycles through all tabs.'''
 
@@ -19510,6 +19507,37 @@ finally:
         setup(child)
     c.redraw(p)
 #@+node:ekr.20111210104652.3959: *4* child
+#@+node:ekr.20111210175541.3957: *3* @test refresh @shadow links clones
+if not g.app.isExternalUnitTest:
+    # print('start',p.h)
+    h = '@shadow unittest/at-shadow-unlink-clones.py'
+    root = g.findNodeAnywhere(c,h)
+    assert root
+    assert root.h == h,repr(root.h)
+    child = p.firstChild()
+    assert child
+    assert child.isCloned(),'fail 1'
+    c.selectPosition(root)
+    fn = root.atShadowFileNodeName()
+    assert fn
+    c.atFileCommands.readOneAtShadowNode (fn,root,force=True)
+    assert child.isCloned(),'fail 2'
+    c.selectPosition(p)
+    c.redraw()
+#@+node:ekr.20111213122041.3931: *4* shadow node 1
+# node 1 text A.
+#@+node:ekr.20111212142649.3971: *3* @test paste outline does not clone top node
+c.selectPosition(p)
+c.copyOutline()
+try:
+    p2 = c.pasteOutline()
+    assert p2
+    assert not p2.isCloned()
+finally:
+    if p2: p2.doDelete()
+    c.redraw(p)
+#@+node:ekr.20111212142649.3972: *4* child
+# child text.
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):

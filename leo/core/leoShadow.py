@@ -24,7 +24,7 @@ sentinels, and put them into the file with sentinels.
 
 
 Settings:
-- @string shadow_subdir (default: LeoFolder): name of the shadow directory.
+- @string shadow_subdir (default: .leo_shadow): name of the shadow directory.
 
 - @string shadow_prefix (default: x): prefix of shadow files.
   This prefix allows the shadow file and the original file to have different names.
@@ -217,7 +217,7 @@ class shadowController:
         Give an error on failure.'''
 
         x = self
-
+        
         ok = g.utils_remove(filename,verbose=not silent)
         if not ok:
             x.error('can not delete %s' % (filename),silent=silent)
@@ -523,7 +523,8 @@ class shadowController:
         '''Propagate the changes from the public file (without_sentinels)
         to the private file (with_sentinels)'''
 
-        trace = False and not g.unitTesting ; verbose = False
+        trace = False and not g.unitTesting
+        verbose = False
         x = self ; at = self.c.atFileCommands
         at.errors = 0
         
@@ -531,11 +532,11 @@ class shadowController:
         f = open(old_private_file,'rb')
             # 2011/10/21: read in 'rb' mode.
         at.scanHeader(f,old_private_file) # sets at.encoding
-        if trace: g.trace('*** header scanned: encoding:',at.encoding)
+        if trace and verbose: g.trace('*** header scanned: encoding:',at.encoding)
         f.close()
 
         self.encoding = at.encoding
-        if trace: g.trace(self.encoding)
+        if trace and verbose: g.trace(self.encoding)
         
         if g.isPython3:
             try:
@@ -592,13 +593,17 @@ class shadowController:
 
         # Important bug fix: Never create the private file here!
         fn = old_private_file
-        copy = os.path.exists(fn) and new_private_lines != old_private_lines
+        exists = g.os_path_exists(fn)
+        different = new_private_lines != old_private_lines
+        copy = exists and different
+        
+        if trace: g.trace('\nexists',exists,fn,'different',different,'errors',x.errors,at.errors)
 
         # 2010/01/07: check at.errors also.
         if copy and x.errors == 0 and at.errors == 0:
             s = ''.join(new_private_lines)
             ok = x.replaceFileWithString(fn,s)
-            # g.trace('ok',ok,'writing private file',fn)
+            if trace: g.trace('ok',ok,'writing private file',fn,g.callers())
 
         return copy
     #@+node:ekr.20080708094444.34: *4* x.strip_sentinels_with_map
@@ -649,6 +654,7 @@ class shadowController:
             # Update the private shadow file from the public file.
             written = x.propagate_changes(fn,shadow_fn)
             if written: x.message("updated private %s from public %s" % (shadow_fn, fn))
+            elif trace: g.trace("\nno change to %s = %s" % (shadow_fn,fn))
         else:
             if trace: g.trace('not significant',fn)
             # Don't write *anything*.

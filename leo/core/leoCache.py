@@ -181,7 +181,7 @@ class cacher:
             else:
                 self.createOutlineFromCacheList(
                     child_v,z,fileName,top=False)
-    #@+node:ekr.20100208071151.5911: *5* fastAddLastChild
+    #@+node:ekr.20100208071151.5911: *5* fastAddLastChild (cacher)
     # Similar to createThinChild4
     def fastAddLastChild(self,parent_v,gnxString):
         '''Create new vnode as last child of the receiver.
@@ -199,6 +199,9 @@ class cacher:
         if gnxString is None: v = None
         else:                 v = gnxDict.get(gnxString)
         is_clone = v is not None
+        
+        # if is_clone or g.unitTesting:
+            # g.trace(gnxString,id(c),c.shortFileName(),v and v.h or 'None',len(list(gnxDict.keys())))
 
         if trace: g.trace(
             'clone','%-5s' % (is_clone),
@@ -211,7 +214,9 @@ class cacher:
             if gnxString:
                 gnx = indices.scanGnx(gnxString,0)
                 v.fileIndex = gnx
-            gnxDict[gnxString] = v
+                gnxDict[gnxString] = v
+            else:
+                g.trace('**** no gnx for',v)
 
         child_v = v
         child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
