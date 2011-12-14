@@ -19522,6 +19522,29 @@ finally:
     c.redraw(p)
 #@+node:ekr.20111212142649.3972: *4* child
 # child text.
+#@+node:ekr.20111214100515.3921: *3* @test at-auto with lines that look like section references
+ic = c.importCommands
+
+def setup(p):
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+fn = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','at-auto-section-ref-test.py')
+# fn = r'c:\Users\edreamleo\at-auto-test.py'
+assert g.os_path_exists(fn),fn
+
+try:
+    setup(p)
+    child = p.insertAsNthChild(0)
+    child.h = 'child'
+    assert child
+
+    ic.errors = 0
+    ic.createOutline (fn,parent=child,atAuto=True,atShadow=False,s=None,ext=None)
+    assert ic.errors == 0
+finally:
+    setup(p)
+    c.redraw(p)
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):

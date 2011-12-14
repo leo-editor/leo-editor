@@ -3576,11 +3576,14 @@ class atFile:
             if kind == at.noDirective:
                 if not oneNodeOnly:
                     if inCode:
-                        hasRef,n1,n2 = at.findSectionName(s,i)
-                        if hasRef and not at.raw:
-                            at.putRefLine(s,i,n1,n2,p)
-                        else:
+                        if at.raw or at.atAuto: # 2011/12/14: Ignore references in @auto.
                             at.putCodeLine(s,i)
+                        else:
+                            hasRef,n1,n2 = at.findSectionName(s,i)
+                            if hasRef:
+                                at.putRefLine(s,i,n1,n2,p)
+                            else:
+                                at.putCodeLine(s,i)
                     else:
                         at.putDocLine(s,i)
             elif at.raw:

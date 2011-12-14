@@ -2352,1869 +2352,6 @@ finally:
     c.redraw(p)
 #@+node:ekr.20111210100047.10306: *5* child
 #@+node:ekr.20110621074459.14908: ** 4.9.1
-#@+node:ekr.20110730093802.15134: *3* Bugs
-#@+node:ekr.20110621074459.14904: *4* Fixed ancient hanger in paste-retaining-clones
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/800157
-
-In a new file containing only a "NewHeadline" and that being selected, execute:
-
-copy-node
-insert-child
-<<enter>>
-undo
-paste-retaining-clones
-
-Leo's UI freezes and loops forever with 100% CPU.
-
-Note: If one does not undo, Leo prints "Invalid paste: nodes may not descend
-from themselves". I guess the undo circumvents such a check. However, that
-should not be the case, as paste-retaining-clones inserts the clones _after_ and
-not as children of the selected node "NewHeadline".
-
-I guess that the undo forgets to set the selection back to "NewHeadline", so
-that Leo tries to insert the clones after the undone child node - therefore as
-child of "NewHeadline".
-
-====================
-
-EKR: only getLeoOutlineFromClipboar calls checkPaste.
-#@+node:ekr.20110705101348.14898: *4* Fixed bug in p.setAllAncestorAtFileNodesDirty
-@nocolor-node
-
-
-The code that marks descendant @<file> nodes dirty now tests
-p2.isAnyAtFileNode().  The old code tested p2.isAtThinFileNode().
-#@+node:ekr.20110717110529.14970: *4* Removed timer hack from double-click code
-#@+node:ekr.20110726130504.15081: *4* Fixed double-click problem
-@nocolor-node
-
-CAUTION: new double click handling code
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/dbd63b9b38911906
-
-The problem isn't single/double, but double click not stopping the
-event processing.  It has the correct form:
-
-if g.doHook('doubleClick1') is None:
-   do-normal-double-click-stuff
-g.doHook('doubleClick2')
-
-but I think some other route through the code, or additional processing
-of the event means that even thought the handler registered on
-doubleClick1 returns non-None, the node goes into headline edit mode,
-with focus.
-
-This is bad, because the doubleClick1 on an @url node attempts to
-select and raise a different commander (tab), so now you're looking at
-one commander but focus is in another, so what you type trashes the
-headline in the original commander.
-
-The timer shouldn't be needed - a 'doubleClick1' hook which returns
-non-None should stop the headline going into edit mode.  If you can
-make that be the case, all is well.
-#@+node:ekr.20110728112148.6735: *4* Fixed url focus issues
-#@+node:ekr.20110728093358.6702: *4* Fixed p1 > p2
-#@+node:ekr.20110730091449.15132: *4* Fixed cacher problem
-@nocolor-node
-
-- leoCommands.__init__ now sets self.db = {}
-- initGlobalDB now returns {} instead of None if there is no cacher.
-#@+node:ekr.20110908155830.6875: *4* Fixed encoding problem with @shadow
-@nocolor-node
-
-Important notes:
-    
-readOpenFile reads the private shadow file, detecting the encoding.
-#@+node:ekr.20110917130105.6873: *4* Fixed a w.see botch.
-@nocolor-node
-
-The call to w.see(ins+5) in rp_reformat created a big problem.
-
-Replacing this with w.see(ins) is much better.
-#@+node:ekr.20111003135314.15480: *4* Fixed a major DnD bug
-#@+node:ekr.20111008073427.15594: *4* Fixed macro crash
-# A misspelling:
-    
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 409, in doCommand
-    val = command(event)
-  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 1967, in fullCommand
-    c.macroCommands.startrecordingMacro(event)
-AttributeError: macroCommandsClass instance has no attribute 'startrecordingMacro'
-#@+node:ekr.20111009162434.7206: *4* Regularized slashes in @edit/@file
-@nocolor-node
-
-Examples:
-    
-    @edit C:/leo.repo/ipython-0.12/IPython/frontend/qt/console/pygments_highlighter.py
-        # The filename comes from g.app.gui.runOpenFileDialog
-    
-    @file C:\leo.repo\ipython-0.12\IPython\frontend\qt\console\pygments_highlighter.py
-        # Created by import.
-        
-The problem was the call to g.os_path_normpath in importDerived files:
-    it converts slashes to backslashes on windows (!!)
-#@+node:ekr.20111010082822.15544: *4* Made sure Leo's write code auto-detects file extension
-@nocolor-node
-
-- Added getLanguageFromAncestorAtFileNode.
-
-- Revised code in at.scanAllDirectives & leoQtColorizer.scanColorDirectives.
-#@+node:ekr.20111010154337.15599: *4* Fixed k.setLabelRed
-#@+node:ekr.20111012162536.9380: *4* Fixed cycle-editor-focus bug
-qtBody can use the leoBody code.
-#@+node:ekr.20111012093116.9386: *4* Fix the body-text scrolling reversion
-@nocolor-node
-
-- Marked with ### 2011/09/30
-
-- Alt-x resets the scrollbar position!
-    The focus gets pulled away, but the scrollbar position does not get saved.
-#@+node:ekr.20111014074810.15650: *4* Fixed recent createFrame crash
-#@+node:ekr.20111015150822.9346: *4* Fixed Py3k crash in quicksearch.py
-@nocolor-node
- 
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\plugins\quicksearch.py", line 187, in returnPressed
-    self.scon.doSearch(t)
-  File "c:\leo.repo\trunk\leo\plugins\quicksearch.py", line 289, in doSearch
-    self.addBodyMatches(bm)
-  File "c:\leo.repo\trunk\leo\plugins\quicksearch.py", line 257, in addBodyMatches
-    self.its[it] = (p, None)
-TypeError: unhashable type: 'QListWidgetItem'
-#@+node:ekr.20111015150822.13125: *4* Removed all references to scrolledmessage plugin
-@nocolor-node
-
-The scrolledmessage plugin no longer exists.
-
-The runScrolledMessageDialog *does* still exist, but it now uses the
-viewrendered plugin.
-#@+node:ekr.20111016210000.15951: *4* Support @ignore when installing @command/@button nodes
-@nocolor-node
-
-Changed doButtons and doCommands kind handlers.
-
-This allows us to put example nodes in leoSettings.leo.
-#@+node:ekr.20111020113237.15895: *4* Fixed crasher in runScrolledMessageDialog
-#@+node:ekr.20111017132257.15885: *4* Macro expansion now forces a full recolor
-@nocolor-node
-
-Could this be done as part of abbreviation expansion?
-#@+node:ekr.20111021105253.9479: *4* Fixed serious atFile read bug
-@nocolor-node
-
-Changed at.readEndOthers and at.readEndRef so that they
-always set at.inCode = True
-#@+node:ekr.20111021105253.9480: *4* Fixed unicode bugs with @shadow
-@nocolor-node
-
-Fixed several encoding problems related to this thread: @shadow - @encoding windows-1250 - problem
-http://groups.google.com/group/leo-editor/browse_thread/thread/a4ba80559447218a/9a37a4ed6c44d452
-
-There were several real problems fixed.  The summary: @encoding directives were always required.
-
-In detail:
-
-1. at.initWriteIvars now checks for a Python # -*- coding: line.
-   If present, it must be the very first line.
-   If present, it will override any @encoding directives.
-
-2. g.getPythonEncodingFromString now can deal with either of the following lines:
-
-    @first # -*- coding: utf-8 -*-
-    # -*- coding: utf-8 -*-
-
-That is, g.getPythonEncodingFromString can strip the leading @first.
-
-3. g.readlineForceUnixNewline and x.propagate_changes now catch UnicodeDecodeError.
-   This is very important: previously decoding errors crashed Leo!.
-
-All unit tests pass with both Python 2.x and 3.x.
-
-#@+node:ekr.20111024091133.16699: *4* Recompute width of hard tabs depending on @tabwidth
-@nocolor-node
-
-Added configure_hard_tab_width method.
-#@+node:ekr.20111024170505.16464: *4* Applied patch for Bug 800311: Undo: Word granularity should recognize cursor movements
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/800311
-
-Having set undo to word granularity, I often change something, move to a
-different line and continue editing there. When I want to undo my last change,
-Leo also undoes the change in the other place, as word granularity currently
-only recognises a new undo step when a new word is started, no matter if we
-moved to a completely different position first.
-
-The attached patch fixes the issue by remembering the previous cursor position.
-
-Something else about the undo code:
-
-- oldSel and newSel are never set to None in the constructor -> it's quite hard
-  to know they are there without reading the whole code
-
-- It would be cool if there could be some more comments in that section; e.g. to
-  tell that oldSel and newSel from which old_row, old_col, new_row and new_col
-  actually mean: old = "the position right before doing the change" and new =
-  "the position right after doing the change" and that old != "the position
-  after the change before" (which I added as prevSel) - it took me ages to
-  discover this
-
-- There are duplicate "The new and old characters are not contiguous." checks.
-  Are they different/necessary?
-
-- The "We have just inserted a line." section is not only entered on a new line
-  (see other attached patch)
-#@+node:ekr.20111024170505.16460: *4* Applied patch for Bug 800312: Collapsing node moves should be optional
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/800312
-#@+node:ekr.20111025062953.16480: *4* Fixed Bug 880975: Binding Meta and print-bindings
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/880975
-
-Bug: The Meta+Ctrl section [of print-bindings] is always empty and this makes it
-misleading.
-
-Fix: the prefix list in k.printBindings must be sure that if two prefixes have a
-common leading part the longer prefix appears first in the lists.
-#@+node:ekr.20111026091322.16493: *4* Fixed bug 823601: cascade-windows fails
-exception executing command
-Traceback (most recent call last):
-  File "/home/bob/bzrWork/pluginPath/leo/core/leoCommands.py", line 408, in doCommand
-    val = command(event)
-  File "/home/bob/bzrWork/pluginPath/leo/plugins/qtGui.py", line 4965, in cascade
-    w.setGeometry(x,y,r.width(),r.height())
-TypeError: setGeometry() takes exactly 2 arguments (5 given)
-#@+node:ekr.20111026115337.16527: *4* Generalized stylesheet handling
-# A temporary fix while waiting for Terry's css work.
-#@+node:ekr.20111026115337.16529: *5* Notes
-@language rest
-
-Here's how it works:  code that wants to set a particular part of a
-widget's style sheet calls::
-
-   g.app.gui.update_style_sheet(w,key,value)
-
-where w is the widget whose stylesheet is to be changed, key is unique
-to the method (or group of methods), and value is the new version of
-the stylesheet **for the particular key** to be added.  Examples::
-
-   # In setEditorColors.
-   sheet = 'background-color: %s; color: %s' % (bg,fg)
-   g.app.gui.update_style_sheet(obj,'colors',sheet)
-
-   # In add_border.
-   sheet = "border: %spx solid %s" % (
-       c.focus_border_width,c.focus_border_color)
-   self.update_style_sheet(w,'border',sheet)
-
-   # In remove_border.
-   sheet = "border: %spx solid white" % (c.focus_border_width)
-   self.update_style_sheet(w,'border',sheet)
-
-So add_border and remove_border work together because they use the
-same 'border' key.
-
-g.app.gui.update_style_sheet is straightforward: it injects a Python
-dict called leo_stylesheet_dict into the widget, and computes the
-total stylesheet as follows::
-
-   # Step one: update the dict.
-   d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
-   d[key] = value
-   w.leo_styles_dict = d
-
-   # Step two: update the stylesheet.
-   aList = [d.get(key) for key in list(d.keys())]
-   s = ';'.join(aList)
-   w.setStyleSheet(s)
-#@+node:ekr.20111026231721.16616: *4* Scrolling bug
-@nocolor-node
-
-An attempt at fixing the scrolling bug
-http://groups.google.com/group/leo-editor/browse_thread/thread/de76f22b16ebc8f/7f6aa691002f1fca
-
-Private email from Viktor
-test-leo-rev-4506.leo
-
-It looks like I can reproduce the scrolling problem with your file as follows:
-
-- Select the last node: AM-Session
-- Manually scroll down to the last line.
-- Click at the end of text: the body pane scrolls.  Bug!
-
-
-Downloaded leo-editor-snapshot-201110240253.zip and tried it out. Noticed that
-when I added a dozen or so blank lines at the end of a body pane and moved the
-mouse cursor to the last line and left-clicked the body pane jumped backwards
-about 10 lines or so as though I had scrolled up. When I dragged the scroll
-button to the end of the pane, the insertion point was still at the end of the
-pane. This does not happen for all panes.
-#@+node:ekr.20111123030145.10211: *5* Notes
-@nocolor-node
-
-Methods relating to this problem:
-
-g.app.trace_scroll
-w.see
-w.seeInsertPoint
-w.get/setYScrollPosition
-p.restoreCursorAndScroll
-v.restoreCursorAndScroll
-
-leoKeyHandler:
-    k.keykBoardQuit
-    k.showStateAndMode
-    k.setLabel
-        ***** calls w.widget.ensureCursorVisible
-
-leoQtBody:
-    onFocusColorHelper
-        ***** calls w.widget.ensureCursorVisible
-        
-leoQtBaseTextWidget:
-    mouseReleaseEvent
-        Added code that didn't work: now commented out.
-        
-leoEditCommands:
-    updateAutoIndent
-        ***** calls w.seeInsertPoint
-        
-    
-#@+node:ekr.20111001155050.15480: *6* First attempt
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/de76f22b16ebc8f
-
-As explained in detail in the thread, "dangerous" code is no longer executed immediately,
-but instead executed at idle time using g.app.gui.runAtIdle.
-#@+node:ekr.20111025062953.16477: *6* Added global tracing of scrolling-related code
-g.app.trace_scroll
-#@+node:ekr.20110930174206.15471: *5* Second attempt
-@nocolor-node
-
-The last time it happened:
-    
-- Search for something.
-- Manually scroll the pane.
-- Click scrolls the pane again.
-#@+node:ekr.20110930174206.15474: *6* Changed
-#@+node:ekr.20110605121601.18209: *7* deactivateEditors (qtBody)
-def deactivateEditors(self,wrapper):
-
-    '''Deactivate all editors except wrapper's editor.'''
-
-    trace = False and not g.unitTesting
-    d = self.editorWidgets
-
-    # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
-    for key in d:
-        wrapper2 = d.get(key)
-        w2 = wrapper2.widget
-        if hasattr(w2,'leo_active'):
-            active = w2.leo_active
-        else:
-            active = True
-        if wrapper2 != wrapper and active:
-            w2.leo_active = False
-            self.unselectLabel(wrapper2)
-            w2.leo_scrollBarSpot = wrapper2.getYScrollPosition()
-            w2.leo_insertSpot = wrapper2.getInsertPoint()
-            w2.leo_selection = wrapper2.getSelectionRange()
-            if trace: g.trace('**deactivate wrapper %s w %s' % (
-                id(wrapper2),id(w2)))
-            self.onFocusOut(w2)
-#@+node:ekr.20070424080640: *7* deactivateActiveEditor (leoBody)
-def deactivateActiveEditor(self,w):
-
-    '''Inactivate the previously active editor.'''
-
-    d = self.editorWidgets
-
-    # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
-    for key in d:
-        w2 = d.get(key)
-        if w2 != w and w2.leo_active:
-            w2.leo_active = False
-            self.unselectLabel(w2)
-            w2.leo_scrollBarSpot = w2.getYScrollPosition()
-            w2.leo_insertSpot = w2.getInsertPoint()
-            w2.leo_selection = w2.getSelectionRange()
-            return
-#@+node:ekr.20110605121601.18027: *7* injectIvars (leoQtBaseTextWidget)
-def injectIvars (self,name='1',parentFrame=None):
-
-    w = self ; p = self.c.currentPosition()
-
-    if name == '1':
-        w.leo_p = None # Will be set when the second editor is created.
-    else:
-        w.leo_p = p.copy()
-
-    w.leo_active = True
-
-    # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
-    w.leo_bodyBar = None
-    w.leo_bodyXBar = None
-    w.leo_chapter = None
-    w.leo_frame = None
-    w.leo_name = name
-    w.leo_label = None
-    w.leo_scrollBarSpot = None
-    w.leo_insertSpot = None
-    w.leo_selection = None
-
-    return w
-#@+node:ekr.20110605121601.18211: *7* injectIvars (qtBody)
-def injectIvars (self,parentFrame,name,p,wrapper):
-
-    trace = False and not g.unitTesting
-
-    w = wrapper.widget
-    assert isinstance(wrapper,leoQTextEditWidget),wrapper
-    assert isinstance(w,QtGui.QTextEdit),w
-
-    if trace: g.trace(w)
-
-    # Inject ivars
-    if name == '1':
-        w.leo_p = None # Will be set when the second editor is created.
-    else:
-        w.leo_p = p.copy()
-
-    w.leo_active = True
-    w.leo_bodyBar = None
-    w.leo_bodyXBar = None
-    w.leo_chapter = None
-    # w.leo_colorizer = None # Set in leoQtColorizer ctor.
-    w.leo_frame = parentFrame
-    w.leo_insertSpot = None
-    # w.leo_label = None # Injected by packLabel.
-    w.leo_name = name
-    # w.leo_on_focus_in = onFocusInCallback
-    w.leo_scrollBarSpot = None
-    w.leo_selection = None
-    w.leo_wrapper = wrapper
-#@+node:ekr.20070423102603: *7* selectEditorHelper (leoBody)
-def selectEditorHelper (self,w):
-
-    c = self.c ; cc = c.chapterController ; d = self.editorWidgets
-
-    trace = False
-
-    if not w.leo_p:
-        g.trace('no w.leo_p') 
-        return # (for Tk) 'break'
-
-    if trace:
-        g.trace('==1',id(w),
-            hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
-            hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
-
-    self.deactivateActiveEditor(w)
-
-    # The actual switch.
-    c.frame.body.bodyCtrl = w
-    w.leo_active = True
-
-    self.switchToChapter(w)
-    self.selectLabel(w)
-
-    if not self.ensurePositionExists(w):
-        g.trace('***** no position editor!')
-        return # (for Tk) 'break'
-
-    if trace:
-        g.trace('==2',id(w),
-            hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
-            hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
-
-    # g.trace('expanding ancestors of ',w.leo_p.h,g.callers())
-    c.redraw(w.leo_p)
-    c.recolor()
-    << restore the selection, insertion point and the scrollbar >>
-    c.bodyWantsFocus()
-    return # (for Tk) 'break'
-#@+node:ekr.20061017083312.1: *8* << restore the selection, insertion point and the scrollbar >> selectEditorHelper leoBody.selectEditorBody
-spot = hasattr(w,'leo_insertSpot') and w.leo_insertSpot or 0
-w.setInsertPoint(0)
-    
-if hasattr(w,'leo_selection') and w.leo_selection:
-    try:
-        start,end = w.leo_selection
-        w.setSelectionRange(start,end)
-    except Exception:
-        pass
-
-# Don't restore the scrollbar here.
-#@+node:ekr.20110605121601.18203: *7* selectEditorHelper (qtBody)
-def selectEditorHelper (self,wrapper):
-
-    trace = False and not g.unitTesting
-    c = self.c ; cc = c.chapterController
-    d = self.editorWidgets
-    assert isinstance(wrapper,leoQTextEditWidget),wrapper
-    w = wrapper.widget
-    assert isinstance(w,QtGui.QTextEdit),w
-
-    if not w.leo_p:
-        g.trace('no w.leo_p') 
-        return 'break'
-
-    # The actual switch.
-    self.deactivateEditors(wrapper)
-    self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
-    # g.trace('c.frame.body',c.frame.body)
-    # g.trace('c.frame.body.bodyCtrl',c.frame.body.bodyCtrl)
-    # g.trace('wrapper',wrapper)
-    c.frame.body.bodyCtrl = wrapper
-    c.frame.body.widget = wrapper # Major bug fix: 2011/04/06
-    w.leo_active = True
-
-    self.switchToChapter(wrapper)
-    self.selectLabel(wrapper)
-
-    if not self.ensurePositionExists(w):
-        return g.trace('***** no position editor!')
-    if not (hasattr(w,'leo_p') and w.leo_p):
-        return g.trace('***** no w.leo_p',w)
-        
-    # if not (hasattr(w,'leo_chapter') and w.leo_chapter):
-        # return g.trace('***** no w.leo_chapter',w)
-
-    p = w.leo_p
-    assert p,p
-
-    if trace: g.trace('wrapper %s chapter %s old %s p %s' % (
-        id(wrapper),w.leo_chapter,c.p.h,p.h))
-
-    c.expandAllAncestors(p)
-    c.selectPosition(p) # Calls assignPositionToEditor.
-    c.redraw()
-    c.recolor_now()
-    << restore the selection, insertion point and the scrollbar >>
-    c.bodyWantsFocus()
-#@+node:ekr.20110605121601.18204: *8* << restore the selection, insertion point and the scrollbar >> qtBody.selectEditorHelper
-spot = hasattr(w,'leo_insertSpot') and w.leo_insertSpot or 0
-wrapper.setInsertPoint(spot)
-
-if hasattr(w,'leo_selection') and w.leo_selection:
-    try:
-        start,end = w.leo_selection
-        wrapper.setSelectionRange(start,end)
-    except Exception:
-        pass
-
-# Don't restore the scrollbar here.
-#@+node:ekr.20070423101911: *7* selectHelper (leoTree)
-# Do **not** try to "optimize" this by returning if p==c.p.
-# 2011/11/06: *event handlers* are called only if p != c.p.
-
-def selectHelper (self,p,scroll):
-
-    trace = False and not g.unitTesting
-    verbose = False
-    c = self.c ; frame = c.frame
-    body = w = frame.body.bodyCtrl
-    if not w: return # Defensive.
-
-    old_p = c.p
-    
-    call_event_handlers = p != old_p
-
-    if p:
-        # 2009/10/10: selecting a foreign position
-        # will not be pretty.
-        assert p.v.context == c
-    else:
-        # Do *not* test c.positionExists(p) here.
-        # We may be in the process of changing roots.
-        return None # Not an error.
-
-    if trace and (verbose or call_event_handlers):
-        g.trace(p and p.h)
-        # if old_p:
-            # g.trace('old: %s %s new: %s %s' % (
-                # len(old_p.b),old_p.h,len(p.b),p.h))
-        # else:
-            # g.trace('old: <none> new: %s %s' % (len(p.b),p.h))
-            
-            
-    if 1: # 2011/11/06
-        if call_event_handlers:
-            unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-        else:
-            unselect = True
-        if unselect:
-            << unselect the old node >>
-        
-    else: # Old code
-        if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-            if old_p:
-                << unselect the old node >>
-    
-    if call_event_handlers: # 2011/11/06
-        g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-        
-    if call_event_handlers: # 2011/11/06
-        if call_event_handlers:
-            select = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-        else:
-            select = True
-        if select:
-            << select the new node >>
-            c.nodeHistory.update(p) # Remember this position.
-    else: # old code
-        if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-            << select the new node >>
-            c.nodeHistory.update(p) # Remember this position.
-        
-    c.setCurrentPosition(p)
-    << set the current node >>
-    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
-    c.frame.updateStatusLine() # New in Leo 4.4.1.
-
-    # if trace and (verbose or call_event_handlers):
-        # g.trace('**** after old: %s new %s' % (
-            # old_p and len(old_p.b),len(p.b)))
-
-    # what UNL.py used to do
-    c.frame.clearStatusLine()
-    c.frame.putStatusLine(p.get_UNL())
-
-    if call_event_handlers: # 2011/11/06
-        g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-        g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-
-    return # (for Tk) 'break' # Supresses unwanted selection.
-#@+node:ekr.20040803072955.129: *8* << unselect the old node >>
-# Remember the position of the scrollbar before making any changes.
-if body:
-    yview = body.getYScrollPosition()
-    insertSpot = c.frame.body.getInsertPoint()
-    
-    # g.trace('set insert spot',insertSpot)
-else:
-    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
-    yview,insertSpot = None,0
-
-if old_p != p:
-    self.endEditLabel() # sets editPosition = None
-    self.setUnselectedLabelState(old_p)
-
-if old_p and old_p != p:
-    # 2010/02/11: Don't change the *new* node's insert point!
-    old_p.v.scrollBarSpot = yview
-    old_p.v.insertSpot = insertSpot
-    if g.app.trace_scroll: g.trace('old scroll: %s insert: %s' % (
-        yview,insertSpot))
-#@+node:ekr.20040803072955.130: *8* << select the new node >>
-# Bug fix: we must always set this, even if we never edit the node.
-self.revertHeadline = p.h
-frame.setWrap(p)
-self.setBodyTextAfterSelect(p,old_p)
-#@+node:ekr.20040803072955.133: *8* << set the current node >>
-self.setSelectedLabelState(p)
-
-frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
-
-if self.use_chapters:
-    cc = c.chapterController
-    theChapter = cc and cc.getSelectedChapter()
-    if theChapter:
-        theChapter.p = p.copy()
-        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
-
-c.treeFocusHelper() # 2010/12/14
-c.undoer.onSelect(old_p,p)
-#@+node:ekr.20031218072017.3344: *7* v.__init
-# To support ZODB, the code must set v._p_changed = 1 whenever
-# v.unknownAttributes or any mutable vnode object changes.
-
-def __init__ (self,context):
-
-    # The primary data: headline and body text.
-    self._headString = g.u('newHeadline')
-    self._bodyString = g.u('')
-
-    # Structure data...
-    self.children = [] # Ordered list of all children of this node.
-    self.parents = [] # Unordered list of all parents of this node.
-
-    # Other essential data...
-    self.fileIndex = g.app.nodeIndices.getNewIndex()
-        # The immutable file index for this vnode.
-        # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
-    self.iconVal = 0 # The present value of the node's icon.
-    self.statusBits = 0 # status bits
-
-    # v.t no longer exists.  All code must now be aware of the one-node world.
-    # self.t = self # For compatibility with scripts and plugins.
-
-    # Information that is never written to any file...
-    self.context = context # The context containing context.hiddenRootNode.
-        # Required so we can compute top-level siblings.
-        # It is named .context rather than .c to emphasize its limited usage.
-    self.insertSpot = None # Location of previous insert point.
-    self.scrollBarSpot = None # Previous value of scrollbar position.
-    self.selectionLength = 0 # The length of the selected body text.
-    self.selectionStart = 0 # The start of the selected body text.
-#@+node:ekr.20100303074003.5636: *7* v.restoreCursorAndScroll
-# Called only by setBodyTextAfterSelect.
-
-def restoreCursorAndScroll (self,w):
-
-    v = self
-    spot = v and v.insertSpot or 0
-    w.setInsertPoint(spot)
-        
-    # 2011/10/26: *only* restore the scrollbar setting.  Do not call see.
-    if v and v.scrollBarSpot != None:
-        pos = v.scrollBarSpot
-        if g.app.trace_scroll: g.trace('(vnode)',pos)
-        w.setYScrollPosition(pos)
-        
-    # Never call w.see here.
-
-#@+node:ekr.20100303074003.5638: *7* v.saveCursorAndScroll(w)
-def saveCursorAndScroll(self,w):
-
-    v = self
-    if not w: return
-    
-    try:
-        v.scrollBarSpot = w.getYScrollPosition()
-        v.insertSpot = w.getInsertPoint()
-    except AttributeError:
-        # 2011/03/21: w may not support the high-level interface.
-        pass
-#@+node:ekr.20111026231721.16619: *5* Third attempt, apparently successful
-#@+node:ekr.20111026231721.16620: *6* Changed
-#@+node:ekr.20100303074003.5636: *7* v.restoreCursorAndScroll
-# Called only by setBodyTextAfterSelect.
-
-def restoreCursorAndScroll (self,w):
-
-    v = self
-    spot = v and v.insertSpot or 0
-    w.setInsertPoint(spot)
-        
-    # 2011/10/26: *only* restore the scrollbar setting.  Do not call see.
-    if v and v.scrollBarSpot != None:
-        pos = v.scrollBarSpot
-        if g.app.trace_scroll: g.trace('(vnode)',pos)
-        w.setYScrollPosition(pos)
-        
-    # Never call w.see here.
-
-#@+node:ekr.20110605121601.18084: *7* getYScrollPosition (leoQTextEditWidget)
-def getYScrollPosition(self):
-    
-    # **Important**: There is a Qt bug here: the scrollbar position
-    # is valid only if cursor is visible.  Otherwise the *reported*
-    # scrollbar position will be such that the cursor *is* visible.
-
-    w = self.widget
-    sb = w.verticalScrollBar()
-    i = sb.sliderPosition()
-    if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',i)
-    return i
-#@+node:ekr.20110605121601.18098: *7* setYScrollPosition (leoQTextEditWidget)
-def setYScrollPosition(self,pos):
-
-    w = self.widget
-    sb = w.verticalScrollBar()
-    if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
-    sb.setSliderPosition(pos)
-#@+node:ekr.20061017083312.1: *7* << restore the selection, insertion point and the scrollbar >> selectEditorHelper leoBody.selectEditorBody
-spot = hasattr(w,'leo_insertSpot') and w.leo_insertSpot or 0
-w.setInsertPoint(0)
-    
-if hasattr(w,'leo_selection') and w.leo_selection:
-    try:
-        start,end = w.leo_selection
-        w.setSelectionRange(start,end)
-    except Exception:
-        pass
-
-# Don't restore the scrollbar here.
-#@+node:ekr.20110605121601.18204: *7* << restore the selection, insertion point and the scrollbar >> qtBody.selectEditorHelper
-spot = hasattr(w,'leo_insertSpot') and w.leo_insertSpot or 0
-wrapper.setInsertPoint(spot)
-
-if hasattr(w,'leo_selection') and w.leo_selection:
-    try:
-        start,end = w.leo_selection
-        wrapper.setSelectionRange(start,end)
-    except Exception:
-        pass
-
-# Don't restore the scrollbar here.
-#@+node:ekr.20070424080640: *7* deactivateActiveEditor (leoBody)
-def deactivateActiveEditor(self,w):
-
-    '''Inactivate the previously active editor.'''
-
-    d = self.editorWidgets
-
-    # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
-    for key in d:
-        w2 = d.get(key)
-        if w2 != w and w2.leo_active:
-            w2.leo_active = False
-            self.unselectLabel(w2)
-            w2.leo_scrollBarSpot = w2.getYScrollPosition()
-            w2.leo_insertSpot = w2.getInsertPoint()
-            w2.leo_selection = w2.getSelectionRange()
-            return
-#@+node:ekr.20111028111441.16588: *4* Fixed html colorizing by fixing a bad bug in g.importFromPath
-@nocolor-node
-    
-g.importFromPath ('html','C:/leo.repo/trunk/leo/modes/html.py')
-returned the standard Python html module!
-
-#@+node:ekr.20111029055127.16635: *4* Allow lower case keywords in colorizer
-# The fix was to use lowercase versions of docPart,leoKeyword,nameBrackets.
-#@+node:ekr.20111102072143.10017: *4* Fixed recent problem in createMenuEntries
-#@+node:ekr.20111103102153.9716: *4* Fixed rst3 pdf problem
-@nocolor-node
-
-Worked around docutils problem in writeToDocutils.
-#@+node:ekr.20111104104831.9823: *4* Added unit test that all plugins have an init method
-@nocolor-node
-
-- The tests should not register the plugin.
-
-- There should be a test that top-level code does not register the plugin.
-
-Top-level calls to registerHandler:
-    
-    Fixed:
-        examples/__overrideClasses.py
-        examples/override_commands.py
-        examples/redefine_put.py  (Tk)
-        examples/chinese_menu.py
-        examples/french_fm.py
-    
-        at_view.py
-        test/failed_import.py
-        scripts_menu.py
-#@+node:ekr.20111105054152.9949: *4* Removed traceback when cancelling a write
-not written: c:\recent\data3.html
-exception removing: 
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 5280, in remove
-    os.remove(fileName)
-WindowsError: [Error 3] The system cannot find the path specified: ''
-#@+node:ekr.20111105055134.9769: *4* Fixed removeBlankLinesTokens
-@nocolor-node
-
-There were two bugs:
-    
-- baseScannerClass.skipWsToken must not skip newlines!
-- tokenize must add any remaining whitespace at the end of the loop.
-#@+node:ekr.20111105110308.9717: *4* Fixed crasher in config.set
-# The code didn't work for c == None.
-#@+node:ekr.20111107055809.9704: *4* Fixed resize-to-screen and minimize-all
-#@+node:ekr.20111029055127.16609: *4* Fixed html import problems
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/3c319daba37cd0ef
-
-- Created a separate html importer, a very simple subclass of the xml scanner
-  whose only difference is that it uses @data import_html_tags instead of @data
-  import_xml_tags.
-
-- The case of tags in @data import_html_tags and @data import_xml_tags no longer matters.
-
-- checkTrialWrite now writes a file *with* sentinels, to handle @others correctly.
-  It then removes the sentinels.
-  
-  This means that the import tests must use the correct @language directives.
-  
-- The import check now uses a token-based comparison.  
-#@+node:ekr.20111109151106.9906: *4* Removed extra newlines in g.trace
-@nocolor-node
-
-The fix was in g.pr:
-    
-Restored the call to sys.stdout.write(s2) (instead of print)
-
-sys.stdout.write(s2) writes no additional newline at the end of s2.
-
-Aha!  At last I know how to unit test g.pr, g.trace, etc.: redirect stdout!  Doh!
-#@+node:ekr.20111110091847.10070: *4* Fixed crash in compareTokens
-@nocolor-node
-
-
- File "/usr/fetching/leo-editor/leo/core/leoImport.py", line 2074, in
-scanAndCompare
-   n1,n2,ok = self.compareTokens(tokens1,tokens2)
- File "/usr/fetching/leo-editor/leo/core/leoImport.py", line 2094, in
-compareTokens
-   else:      kind1,val1 = 'eof','',n1
-ValueError: too many values to unpack
-#@+node:ekr.20111109151106.9745: *4* Finished import work
-@nocolor-node
-
-
-- Created stand-alone unit tests from @test import dataN.html.
-- All leoImport unit tests may now be run externally.
-    The Python unit tests were failing because of intermixed tabs and blanks.
-    This was fixed by putting @tabwidth -4 in all @test nodes for Python.
-- Made sure lines are printed when unit tests fail unexpectedly.
-- Added .js & javascript entries to global data structures for javascript unit tests.
-- Completed xmlScanner.filterTokens.
-- Don't create declaration nodes for html.
-- Make sure html tags are as expected.
-- Ignore case of html/xml tags.
-#@+node:ekr.20111112064924.9777: *5* What I did
-@language rest
-
-Rev 4774.1.1:
-=============
-
-Fixed all known html-import problems in a clean way. Unit tests exists, but they
-use external files. They will be converted soon.
-
-Important changes:
-
-1. Added hasNestedClasses ivar in the baseScannerClass, True only for xml/html scanners.
-
-When True, scanHelper and skipDecls allocate a substring to be used for all further scanning.
-This is the *only* way to limit Leo's scanners properly.
-
-This was, in essence, the fix for duplicate code generation arising from unbalanced tags:
-skipToEndOfTag and skipToMatchingTag can't match outside the present tag because
-the 's' argument passed to those methods has already been truncated.
-
-This is a simple, elegant solution, and in essence the *only* proper solution.
-For example, it would not work to past an 'end' argument to skipToEndOfTag and skipToMatchingTag
-because the scanners inside those methods do not understand an 'end' argument.
-
-Thus, the simplest, most efficient solution is for scanHelper and skipDecls to truncate the
-string to be scanned. That way, the truncation happens at most once per "class".
-
-2. Added hasDecls in the baseScannerClass, False only for xml/html scanners.
-
-Various methods call skipDecls only if this ivar is True.
-
-Rev 4773:
-=========
-
-Fixed recent botch: both single and double quotes are allowed in html. 
-
-Rev 4772:
-=========
-
-Solved "between element" problem by extending classes up to the next class.
-data.html imports "correctly", but not perfectly due to tag mismatches in
-skipToMatchingTag.
-#@+node:ekr.20111112193858.9831: *4* Fixed hard crash when deleting body editor 3 times
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/421ebf4c3f2d5f59
-
-Adding/deleting body editor 3 times hard-crashed Python
-
-The changes were straightforward:
-    
-- set w.leo_label to None when calling unpackWidget.
-
-- Test for w.leo_label before using it.
-
-Added a minitest.  To test by hand, add the following @button nodes:
-    
-    @button add-ed
-    w = c.frame.body.addEditor()
-    
-    @button del-ed
-    w = c.frame.body.deleteEditor()
-    
-Click away in any order...
-
-#@+node:ekr.20111111065410.12913: *4* Fixed add/delete html comments
-@nocolor-node
-
-The new add-comments command adds the comment character at the leftmost column.
-
-The new delete-comments command will remove the comment characters inserted by
-either the old or new version of the add-comments command.
-#@+node:ekr.20050312114529: *5* c.insert/removeComments
-#@+node:ekr.20050312114529.1: *6* addComments
-def addComments (self,event=None):
-    
-    << addComments docstring >>
-
-    c = self ; p = c.p
-    d = c.scanAllDirectives(p)
-    d1,d2,d3 = d.get('delims') # d1 is the line delim.
-    head,lines,tail,oldSel,oldYview = self.getBodyLines()
-    if not lines:
-        g.es('no text selected',color='blue')
-        return
-
-    d2 = d2 or '' ; d3 = d3 or ''
-    if d1: openDelim,closeDelim = d1+' ',''
-    else:  openDelim,closeDelim = d2+' ',' '+d3
-
-    # Comment out non-blank lines.
-    indent = c.config.getBool('indent_added_comments',default=True)
-    result = []
-    for line in lines:
-        if line.strip():
-            i = g.skip_ws(line,0)
-            if indent:
-                result.append(line[0:i]+openDelim+line[i:].replace('\n','')+closeDelim+'\n')
-            else:
-                result.append(openDelim+line.replace('\n','')+closeDelim+'\n')
-        else:
-            result.append(line)
-
-    result = ''.join(result)
-    c.updateBodyPane(head,result,tail,undoType='Add Comments',oldSel=None,oldYview=oldYview)
-#@+node:ekr.20111115111842.9789: *7* << addComments docstring >>
-@pagewidth 50
-
-'''
-Converts all selected lines to comment lines using
-the comment delimiters given by the applicable
- @language directive.
-
-Inserts single-line comments if possible; inserts
-block comments for languages like html that lack
-single-line comments.
-
- @bool indent_added_comments
-
-If True (the default), inserts opening comment
-delimiters just before the first non-whitespace
-character of each line. Otherwise, inserts opening
-comment delimiters at the start of each line.
-
-*See also*: delete-comments.
-'''
-#@+node:ekr.20050312114529.2: *6* deleteComments
-def deleteComments (self,event=None):
-    
-    << deleteComments docstring >>
-
-    c = self ; p = c.p
-    d = c.scanAllDirectives(p)
-    # d1 is the line delim.
-    d1,d2,d3 = d.get('delims')
-
-    head,lines,tail,oldSel,oldYview = self.getBodyLines()
-    result = []
-    if not lines:
-        g.es('no text selected',color='blue')
-        return
-
-    if d1:
-        # Remove the single-line comment delim in front of each line
-        d1b = d1 + ' '
-        n1,n1b = len(d1),len(d1b)
-        for s in lines:
-            i = g.skip_ws(s,0)
-            if g.match(s,i,d1b):
-                result.append(s[:i] + s[i+n1b:])
-            elif g.match(s,i,d1):
-                result.append(s[:i] + s[i+n1:])
-            else:
-                result.append(s)
-    else:
-        # Remove the block comment delimiters from each line.
-        n2,n3 = len(d2),len(d3)
-        for s in lines:
-            i = g.skip_ws(s,0)
-            j = s.find(d3,i+n2)
-            if g.match(s,i,d2) and j > -1:
-                first = i + n2
-                if g.match(s,first,' '): first += 1
-                last = j
-                if g.match(s,last-1,' '): last -= 1
-                result.append(s[:i] + s[first:last] + s[j+n3:])
-            else:
-                result.append(s)
-
-    result = ''.join(result)
-    c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)
-#@+node:ekr.20111115111842.9790: *7* << deleteComments docstring >>
-@pagewidth 50
-
-'''
-Removes one level of comment delimiters from all
-selected lines.  The applicable @language directive
-determines the comment delimiters to be removed.
-
-Removes single-line comments if possible; removes
-block comments for languages like html that lack
-single-line comments.
-
-*See also*: add-comments.
-'''
-#@+node:ekr.20111118090912.12874: *4* Fixed bug that prevented text bindings from working in log tabs
-@nocolor-node
-
-Example: ctrl-shift-home.
-
-The fix was to set self.widget = contents in leoQtLog.selectTab.
-#@+node:ekr.20111118190243.10170: *4* Fixed cycle-all-focus command
-@nocolor-node
-
-What I did:
-    
-- Added disabled code to inject event filter in TabbedFrameFactory.createFrame.
-
-- Added cycle-tab-focus command.
-
-- cycle-all-focus command uses cycleTabFocus as a helper: this greatly simplifies the code.
-    
-- Added binding for "Find" tab in leoQtLog.createTab.
-
-- DynamicWindow.createFindTab injects leo_find_widget ivar for leoQtLog.createTab.
-
-- Added isLogWidget to leoQtLog and nullLog classes.  They are helpers for cycleAllFocus.
-
-- Revised leoQtLog.selectHelper: selecting a new tab does *not* change logCtrl (log.widget).
-#@+node:ekr.20111120162254.10217: *5* Added bindings to Find tab
-#@+node:ekr.20111121071940.10275: *5* Changed
-#@+node:ekr.20110605121601.18166: *6* createFindTab (DynamicWindow)
-def createFindTab (self,parent,tab_widget):
-
-    c,dw = self.leo_c,self
-    grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
-    grid.setColumnStretch(0,100)
-    grid.setColumnStretch(1,100)
-    
-    # Row 0: heading.
-    lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
-    grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
-    
-    # Rows 1, 2: the find/change boxes, now disabled.
-    findPattern = self.createLineEdit(parent,'findPattern',disabled=True)
-    findChange  = self.createLineEdit(parent,'findChange',disabled=True)
-    lab2 = self.createLabel(parent,'findLabel','Find:')
-    lab3 = self.createLabel(parent,'changeLabel','Change:')
-    grid.addWidget(lab2,1,0)
-    grid.addWidget(lab3,2,0)
-    grid.addWidget(findPattern,1,1)
-    grid.addWidget(findChange,2,1)
-        
-    # Check boxes and radio buttons.
-    # Radio buttons are mutually exclusive because they have the same parent.
-    def mungeName(name):
-        # The value returned here is significant: it creates an ivar.
-        return 'checkBox%s' % label.replace(' ','').replace('&','')
-
-    # Rows 3 through 8...
-    table = (
-        ('box', 'Whole &Word',      2,0),
-        ('rb',  '&Entire Outline',  2,1),
-        ('box', '&Ignore Case',     3,0),
-        ('rb',  '&Suboutline Only', 3,1),
-        ('box', 'Wrap &Around',     4,0),
-        ('rb',  '&Node Only',       4,1),
-        # ('box', '&Reverse',       5,0),
-        ('box', 'Search &Headline', 5,1),
-        ('box', 'Rege&xp',          5,0), # was 6,0
-        ('box', 'Search &Body',     6,1),
-        ('box', 'Mark &Finds',      6,0), # was 7,0
-        ('box', 'Mark &Changes',    7,0)) # was 7,1
-        # a,b,c,e,f,h,i,n,rs,w
-
-    for kind,label,row,col in table:
-        name = mungeName(label)
-        func = g.choose(kind=='box',
-            self.createCheckBox,self.createRadioButton)
-        w = func(parent,name,label)
-        grid.addWidget(w,row+1,col)
-        setattr(self,name,w)
-
-    # Row 9: Widgets that take all additional vertical space.
-    w = QtGui.QWidget()
-    grid.addWidget(w,9,0)
-    grid.addWidget(w,9,1)
-    grid.setRowStretch(9,100)
-
-    # Official ivars (in addition to setattr ivars).
-    self.leo_find_widget = tab_widget # 2011/11/21: a scrollArea.
-    self.findPattern = findPattern
-    self.findChange = findChange
-    # self.findLab = lab2
-    # self.changeLab = lab3
-#@+node:ekr.20110605121601.18466: *6* createFrame (TabbedFrameFactory)
-def createFrame(self, leoFrame):
-
-    # g.trace('(TabbedFrameFactory)')
-
-    c = leoFrame.c
-    if self.masterFrame is None:
-        self.createMaster()
-    tabw = self.masterFrame
-    dw = DynamicWindow(c,tabw)
-    self.leoFrames[dw] = leoFrame
-
-    # Shorten the title.
-    fname = c.mFileName
-    if fname:
-        title = os.path.basename(fname)
-    else:
-        title = leoFrame.title
-    tip = leoFrame.title
-
-    dw.setWindowTitle(tip) # 2010/1/1
-    idx = tabw.addTab(dw, title)
-    if tip: tabw.setTabToolTip(idx, tip)
-
-    dw.construct(master=tabw)
-    tabw.setCurrentIndex(idx)
-    
-    if 1:
-        # g.trace('(TabbedFrameFactor) adding bindings')
-        dw.ev_filter = leoQtEventFilter(c,w=dw,tag='sdi-frame')
-        dw.installEventFilter(dw.ev_filter)
-
-    # Work around the problem with missing dirty indicator
-    # by always showing the tab.
-    tabw.tabBar().setVisible(
-        self.alwaysShowTabs or tabw.count() > 1)
-
-    dw.show()
-    tabw.show()
-    return dw
-#@+node:ekr.20110605121601.18326: *6* createTab (leoQtLog)
-def createTab (self,tabName,widget=None,wrap='none'):
-    """ Create a new tab in tab widget
-
-    if widget is None, Create a QTextBrowser,
-    suitable for log functionality.
-    """
-
-    trace = False and not g.unitTesting
-    c = self.c
-    
-    if trace: g.trace(tabName,widget and g.app.gui.widget_name(widget) or '<no widget>')
-
-    if widget is None:
-
-        widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
-            # widget is subclass of QTextBrowser.
-        contents = leoQTextEditWidget(widget=widget,name='log',c=c)
-            # contents a wrapper.
-        widget.leo_log_wrapper = contents
-            # Inject an ivar into the QTextBrowser that points to the wrapper.
-            
-        if trace: g.trace('** creating',tabName,'self.widget',contents,'wrapper',widget)
-        
-        widget.setWordWrapMode(
-            g.choose(self.wrap,
-                QtGui.QTextOption.WordWrap,
-                QtGui.QTextOption.NoWrap))
-
-        widget.setReadOnly(False) # Allow edits.
-        self.logDict[tabName] = widget
-        if tabName == 'Log':
-            self.widget = contents # widget is an alias for logCtrl.
-            widget.setObjectName('log-widget')
-
-        if True: # 2011/05/28.
-            # Set binding on all text widgets.
-            theFilter = leoQtEventFilter(c,w=self,tag='log')
-            self.eventFilters.append(theFilter) # Needed!
-            widget.installEventFilter(theFilter)
-            
-        if True and tabName == 'Log':
-    
-            assert c.frame.top.__class__.__name__ == 'DynamicWindow'
-            find_widget = c.frame.top.leo_find_widget
-            
-            # 2011/11/21: A hack: add an event filter.
-            find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
-            find_widget.installEventFilter(find_widget.leo_event_filter)
-            if trace: g.trace('** Adding event filter for Find',find_widget)
-            
-            # 2011/11/21: A hack: make the find_widget an official log widget.
-            self.contentsDict['Find']=find_widget
-    
-        self.contentsDict[tabName] = widget
-        self.tabWidget.addTab(widget,tabName)
-    else:
-        contents = widget
-            # Unlike text widgets, contents is the actual widget.
-        widget.leo_log_wrapper = contents
-            # The leo_log_wrapper is the widget itself.
-        if trace: g.trace('** using',tabName,widget)
-        
-        if 1: # Now seems to work.
-            theFilter = leoQtEventFilter(c,w=contents,tag='tabWidget')
-            self.eventFilters.append(theFilter) # Needed!
-            widget.installEventFilter(theFilter)
-    
-        self.contentsDict[tabName] = contents
-        self.tabWidget.addTab(contents,tabName)
-
-    return contents
-#@+node:ekr.20060613090701: *6* cycleAllFocus (editCommandsClass)
-editWidgetCount = 0
-
-def cycleAllFocus (self,event):
-
-    '''Cycle the keyboard focus between Leo's outline,
-    all body editors and all tabs in the log pane.'''
-
-    trace = False and not g.unitTesting
-    c = self.c ; k = c.k
-    w = event and event.widget # Does **not** require a text widget.
-
-    pane = None # The widget that will get the new focus.
-    log = c.frame.log
-    w_name = g.app.gui.widget_name
-    
-    if trace: g.trace('**before',w_name(w),'isLog',log.isLogWidget(w))
-
-    # w may not be the present body widget, so test its name, not its id.
-    if w_name(w).startswith('body'):
-        n = c.frame.body.numberOfEditors
-        if n > 1:
-            self.editWidgetCount += 1
-            if self.editWidgetCount == 1:
-                pane = c.frame.body.bodyCtrl
-            elif self.editWidgetCount > n:
-                self.editWidgetCount = 0
-                c.frame.log.selectTab('Log')
-                pane = c.frame.log.logCtrl
-            else:
-                c.frame.body.cycleEditorFocus(event)
-                pane = None
-        else:
-            self.editWidgetCount = 0
-            c.frame.log.selectTab('Log')
-            pane = c.frame.log.logCtrl
-
-    elif log.isLogWidget(w):
-        log.cycleTabFocus()
-        if log.tabName == 'Log':
-            pane = c.frame.tree.canvas
-        else:
-            if trace:
-                pane = log.logCtrl
-                g.trace('**after cycleTabFocus',w_name(pane),pane)
-            return
-
-    else:
-        # A safe default: go to the body.
-        pane = c.frame.body.bodyCtrl
-    
-    if trace: g.trace('**after',w_name(pane),pane)
-
-    if pane:
-        k.newMinibufferWidget = pane
-        c.widgetWantsFocusNow(pane)
-        k.showStateAndMode()
-#@+node:ekr.20110605121601.18327: *6* cycleTabFocus (leoQtLog)
-def cycleTabFocus (self,event=None):
-
-    '''Cycle keyboard focus between the tabs in the log pane.'''
-    
-    trace = False and not g.unitTesting
-    c = self.c
-    w = self.tabWidget
-
-    i = w.currentIndex()
-    i += 1
-    if i >= w.count():
-        i = 0
-
-    tabName = w.tabText(i)
-    
-    self.selectTab(tabName,createText=False)
-    if trace: g.trace(i,tabName)
-
-#@+node:ekr.20111120124732.10184: *6* isLogWidget (leoQtLog)
-def isLogWidget(self,w):
-    
-    val = w == self or w in list(self.contentsDict.values())
-    # g.trace(val,w)
-    return val
-#@+node:ekr.20111119145033.10186: *6* isLogWidget (nullLog)
-def isLogWidget(self,w):
-    return False
-#@+node:ekr.20110605121601.18331: *6* selectTab & helper (leoQtLog)
-def selectTab (self,tabName,createText=True,widget=None,wrap='none'):
-    # createText is used by leoLog.selectTab.
-
-    '''Create the tab if necessary and make it active.'''
-
-    trace = False and not g.unitTesting
-    c = self.c ; w = self.tabWidget
-    
-    if trace: g.trace(tabName,g.callers())
-
-    # Step 1: See if the tab exits.
-    ok = self.selectHelper(tabName)
-    if ok: return
-
-    # Step 2: create tab if necessary.
-    self.createTab(tabName,widget=widget,wrap=wrap)
-    self.selectHelper(tabName)
-#@+node:ekr.20110605121601.18332: *7* selectHelper (leoQtLog)
-def selectHelper (self,tabName):
-
-    trace = False and not g.unitTesting
-    c,w = self.c,self.tabWidget
-
-    for i in range(w.count()):
-        if tabName == w.tabText(i):
-            w.setCurrentIndex(i)
-            
-            widget = w.widget(i)
-            
-            # 2011/11/21: Set the .widget ivar only if there is a wrapper.
-            wrapper = hasattr(widget,'leo_log_wrapper') and widget.leo_log_wrapper
-            if wrapper:
-                self.widget = wrapper
-            if trace: g.trace(tabName,'widget',widget,'wrapper',wrapper)
-            
-            # Do *not* set focus here!
-                # c.widgetWantsFocus(tab_widget)
-
-            if tabName == 'Spell':
-                # the base class uses this as a flag to see if
-                # the spell system needs initing
-                self.frameDict['Spell'] = widget
-                
-            self.tabName = tabName # 2011/11/20
-            return True
-    else:
-        self.tabName = None # 2011/11/20
-        if trace: g.trace('** not found',tabName)
-        return False
-#@+node:ekr.20111121084517.10188: *4* Fixed crashers involving calls to w.setSelectionRange
-#@+node:ekr.20110916215321.6708: *5* selectToMatchingBracket (leoEditCommands)
-def selectToMatchingBracket (self,event):
-    
-    c = self.c ; k = c.k ; w = self.editWidget(event)
-    if not w: return
-    
-    i = w.getInsertPoint()
-    s = w.getAllText()
-    
-    allBrackets = self.openBracketsList + self.closeBracketsList
-    
-    if i < len(s) and s[i] in allBrackets:
-        ch = s[i]
-    elif i > 0 and s[i-1] in allBrackets:
-        i -= 1
-        ch = s[i]
-    else:
-        g.es('no bracket selected')
-        return
-
-    d = {}
-    if ch in self.openBracketsList:
-        for z in range(len(self.openBracketsList)):
-            d [self.openBracketsList[z]] = self.closeBracketsList[z]
-        reverse = False # Search forward
-    else:
-        for z in range(len(self.openBracketsList)):
-            d [self.closeBracketsList[z]] = self.openBracketsList[z]
-        reverse = True # Search backward
-
-    delim2 = d.get(ch)
-    
-    # This should be generalized...
-    language = g.findLanguageDirectives(c,c.p)
-    if language in ('c','cpp','csharp'):
-        j = g.skip_matching_c_delims(s,i,ch,delim2,reverse=reverse)
-    else:
-        j = g.skip_matching_python_delims(s,i,ch,delim2,reverse=reverse)
-    # g.trace(i,j,ch,delim2,reverse,language)
-    if j not in (-1,i):
-        if reverse:
-            i += 1; j += 1
-        w.setSelectionRange(i,j,insert=j)
-            # 2011/11/21: Bug fix: was ins=j.
-        w.see(j)
-#@+node:ekr.20110605121601.18205: *5* updateEditors (qtBody)
-# Called from addEditor and assignPositionToEditor
-
-def updateEditors (self):
-
-    c = self.c ; p = c.p ; body = p.b
-    d = self.editorWidgets
-    if len(list(d.keys())) < 2: return # There is only the main widget
-
-    w0 = c.frame.body.bodyCtrl
-    i,j = w0.getSelectionRange()
-    ins = w0.getInsertPoint()
-    sb0 = w0.widget.verticalScrollBar()
-    pos0 = sb0.sliderPosition()
-    for key in d:
-        wrapper = d.get(key)
-        w = wrapper.widget
-        v = hasattr(w,'leo_p') and w.leo_p.v
-        if v and v == p.v and w != w0:
-            sb = w.verticalScrollBar()
-            pos = sb.sliderPosition()
-            wrapper.setAllText(body)
-            self.recolorWidget(p,wrapper)
-            sb.setSliderPosition(pos)
-
-    c.bodyWantsFocus()
-    w0.setSelectionRange(i,j,insert=ins)
-        # 2011/11/21: bug fix: was ins=ins
-    sb0.setSliderPosition(pos0)
-#@+node:ekr.20111121222953.10973: *4* Fixed hang in cycleAllFocus
-@nocolor-node
-
-The safe default pane is the body pane.  It's also the simplest code.
-#@+node:ekr.20111121222953.10974: *4* Fixed crasher in k.handleDefaultChar
-@nocolor-node
-
-The code must be careful that the log widget supports the HighLevelInterface.
-#@+node:ekr.20111121210400.11142: *4* Fixed bug: Focus lost after opening or closing tab
-#@+node:ekr.20111121214837.10184: *5* Changed
-#@+node:ekr.20031218072017.2609: *6* app.closeLeoWindow
-def closeLeoWindow (self,frame):
-
-    """Attempt to close a Leo window.
-
-    Return False if the user veto's the close."""
-
-    c = frame.c
-
-    # g.trace('frame',frame,g.callers(4))
-
-    c.endEditing() # Commit any open edits.
-
-    if c.promptingForClose:
-        # There is already a dialog open asking what to do.
-        return False
-
-    g.app.config.writeRecentFilesFile(c)
-        # Make sure .leoRecentFiles.txt is written.
-
-    if c.changed:
-        c.promptingForClose = True
-        veto = frame.promptForSave()
-        c.promptingForClose = False
-        if veto: return False
-
-    g.app.setLog(None) # no log until we reactive a window.
-
-    g.doHook("close-frame",c=c)
-        # This may remove frame from the window list.
-
-    if frame in g.app.windowList:
-        g.app.destroyWindow(frame)
-
-    if g.app.windowList:
-        # Pick a window to activate so we can set the log.
-        frame = g.app.windowList[0]
-        frame.deiconify()
-        frame.lift()
-        frame.c.setLog()
-        master = hasattr(frame.top,'leo_master') and frame.top.leo_master
-        if master: # 2011/11/21: selecting the new tab ensures focus is set.
-            # frame.top.leo_master is a TabbedTopLevel.
-            master.select(frame.c)
-        frame.c.bodyWantsFocus()
-        frame.c.outerUpdate()
-    elif not g.app.unitTesting:
-        g.app.finishQuit()
-
-    return True # The window has been closed.
-#@+node:ekr.20110605121601.18456: *6* select (leoTabbedTopLevel)
-def select (self,c):
-
-    '''Select the tab for c.'''
-    
-    dw = c.frame.top # A DynamicWindow
-    i = self.indexOf(dw)
-    self.setCurrentIndex(i)
-    # g.trace(i,c)
-#@+node:ekr.20090520055433.5948: *6* g.findOpenFile
-def findOpenFile(fileName):
-
-    def munge(name):
-        return g.os_path_normpath(name or '').lower()
-
-    for frame in g.app.windowList:
-        c = frame.c
-        if g.os_path_realpath(munge(fileName)) == g.os_path_realpath(munge(c.mFileName)):
-            frame.bringToFront()
-            c.setLog()
-            # 2011/11/21: selecting the new tab ensures focus is set.
-            master = hasattr(frame.top,'leo_master') and frame.top.leo_master
-            if master: # frame.top.leo_master is a TabbedTopLevel.
-                master.select(frame.c)
-            c.outerUpdate()
-            return c
-    return None
-#@+node:ekr.20090520055433.5952: *6* g.finishOpen
-def finishOpen(c):
-
-    k = c.k
-    # New in Leo 4.6: provide an official way for very late initialization.
-
-    # # 2011/11/21: selecting the new tab ensures focus is set.
-    # master = hasattr(c.frame.top,'leo_master') and c.frame.top.leo_master
-    # if master: # frame.top.leo_master is a TabbedTopLevel.
-        # master.select(c)
-
-    c.frame.tree.initAfterLoad()
-    c.initAfterLoad()
-    c.redraw()
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.chapterController:
-        c.chapterController.finishCreate()
-    if k:
-        k.setDefaultInputState()
-    c.initialFocusHelper()
-    if k:
-        k.showStateAndMode()
-
-    c.frame.initCompleteHint()
-    return True
-#@+node:ekr.20111122094453.10201: *4* Ignore unbound Alt/Ctrl keys, especially Alt/Ctrl-N
-@nocolor-node
-
-The bug was in k.handleDefaultChar.  No substantial change made to eventFilter.
-#@+node:ekr.20111124082644.10919: *4* Fixed bug: ensure global @buttons work
-@nocolor-node
-
-What I did:
-    
-1. Fixed major bug in settingsTreeParser.visitNode.
-   It now does p.copy() to protect the callers traverals.
-   This could have significant impacts on people's settings.
-   
-2. Added g.app.unitTestDict for unit testing.
-
-3. Leo now extends the list of @buttons and @commands, rather than replacing them.
-   This is reasonable only because leoSettings.leo should never define *active*
-   buttons or commands.
-#@+node:ekr.20111204102027.10279: *4* Fixed bug in p.moveToFirstChild
-#@+node:ekr.20040303175026.11: *5* p.moveToNthChildOf
-def moveToNthChildOf (self,parent,n):
-
-    """Move a position to the nth child of parent."""
-
-    p = self # Do NOT copy the position!
-
-    parent._adjustPositionBeforeUnlink(p)
-    p._unlink()
-    p._linkAsNthChild(parent,n)
-
-    return p
-#@+node:ekr.20040306060312: *5* p.moveToFirst/LastChildOf
-def moveToFirstChildOf (self,parent):
-    """Move a position to the first child of parent."""
-    
-    p = self # Do NOT copy the position!
-    return p.moveToNthChildOf (parent,0)  # Major bug fix: 2011/12/04
-
-def moveToLastChildOf (self,parent):
-    """Move a position to the last child of parent."""
-    
-    p = self # Do NOT copy the position!
-    n = parent.numberOfChildren()
-    if p.parent() == parent:
-        n -= 1 # 2011/12/10: Another bug fix.
-    return p.moveToNthChildOf (parent,n) # Major bug fix: 2011/12/04
-#@+node:ekr.20111125072438.10203: *4* Fixed bug 804960: Refreshing unlinks clones, just reopening connects them again
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/804960
-
-When we clone a node inside an @shadow (containing @others) node and then
-refresh the @shadow node from file, the clone is unlinked and marked as changed.
-If we now save, close the .leo file and open it again, the nodes are linked
-again! (showing "cloned" symbol) User's thought: "How the heck can the file
-change _between save and re-open_ when I changed nothing?"
-
-I think what should be done about this is the check that Leo does when it opens
-the file again, and that check should be done immediately after the "refresh
-node from file" operation. Also, at this point, the "Recovered nodes" node
-should appear (if file and node have both changed), not only after the next .leo
-file close/reopen (as that happens quite infrequently, I guess, e.g. once a day
-for me). Otherwise, the user can easily lose data.
-#@+node:ekr.20111210131839.10311: *5* changed...
-#@+node:ekr.20090218115025.5: *6* fc.initIvars
-def initIvars(self):
-
-    # General
-    c = self.c
-    self.mFileName = ""
-    self.fileDate = -1
-    self.leo_file_encoding = c.config.new_leo_file_encoding
-
-    # The bin param doesn't exist in Python 2.3;
-    # the protocol param doesn't exist in earlier versions of Python.
-    version = '.'.join([str(sys.version_info[i]) for i in (0,1)])
-    # self.python23 = g.CheckVersion(version,'2.3')
-
-    # For reading
-    self.checking = False # True: checking only: do *not* alter the outline.
-    self.descendentExpandedList = []
-    self.descendentMarksList = []
-    self.forbiddenTnodes = []
-    self.descendentTnodeUaDictList = []
-    self.descendentVnodeUaDictList = []
-    self.ratio = 0.5
-
-    self.currentVnode = None
-    self.rootVnode = None
-
-    # For writing
-    self.read_only = False
-    self.rootPosition = None
-    self.outputFile = None
-    self.openDirectory = None
-    self.putCount = 0
-    # self.topVnode = None
-    self.toString = False
-    self.usingClipboard = False
-    self.currentPosition = None
-    # New in 3.12
-    self.copiedTree = None
-    self.gnxDict = {}
-        # keys are gnx strings as returned by canonicalTnodeIndex.
-        # Values are vnodes.
-        # 2011/12/10: This dict is never re-inited.
-    # g.trace('***clearing gnxDict',c)
-        
-    self.vnodesDict = {}
-        # keys are gnx strings; values are ignored
-#@+node:ekr.20031218072017.1559: *6* fc.getLeoOutlineFromClipboard & helpers
-def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
-
-    '''Read a Leo outline from string s in clipboard format.'''
-
-    trace = False and not g.unitTesting
-    verbose = False
-    c = self.c ; current = c.p ; check = not reassignIndices
-    checkAfterRead = False or c.config.getBool('check_outline_after_read')
-
-    self.initReadIvars() # 2010/02/05
-
-    # Save the hidden root's children.
-    children = c.hiddenRootNode.children
-
-    # 2011/12/10: never recreate the gnxDict.
-        # Always recreate the gnxDict
-        # self.gnxDict = {}
-    # g.trace('*** clearing gnxDict',g.callers())
-    
-    # 2011/12/12: save and clear gnxDict.
-    # This ensures that new indices will be used for all nodes.
-    if reassignIndices:
-        oldGnxDict = self.gnxDict
-        self.gnxDict = {}
-    else:
-        # Make sure all pasted nodes are entered into the gnxDict.
-        x = g.app.nodeIndices
-        for v in c.all_unique_nodes():
-            index = x.toString(v.fileIndex)
-            self.gnxDict[index] = v
-
-    self.usingClipboard = True
-    try:
-        # This encoding must match the encoding used in putLeoOutline.
-        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
-        if trace: g.trace(s)
-
-        # readSaxFile modifies the hidden root.
-        v = self.readSaxFile(
-            theFile=None, fileName='<clipboard>',
-            silent=True, # don't tell about stylesheet elements.
-            inClipboard=True,reassignIndices=reassignIndices,s=s)
-        if not v:
-            return g.es("the clipboard is not valid ",color="blue")
-    finally:
-        self.usingClipboard = False
-
-    # Restore the hidden root's children
-    c.hiddenRootNode.children = children
-
-    # Unlink v from the hidden root.
-    v.parents.remove(c.hiddenRootNode)
-
-    p = leoNodes.position(v)
-
-    # Important: we must not adjust links when linking v
-    # into the outline.  The read code has already done that.
-    if current.hasChildren() and current.isExpanded():
-        if check and not self.checkPaste(current,p):
-            return None
-        p._linkAsNthChild(current,0,adjust=False)
-    else:
-        if check and not self.checkPaste(current.parent(),p):
-            return None
-        p._linkAfter(current,adjust=False)
-
-    if reassignIndices:
-        self.gnxDict = oldGnxDict
-            # 2011/12/12: restore gnxDict.
-        for p2 in p.self_and_subtree():
-            v = p2.v
-            v.fileIndex = index = g.app.nodeIndices.getNewIndex()
-            self.gnxDict[index] = v
-
-    if trace and verbose:
-        g.trace('**** dumping outline...')
-        c.dumpOutline()
-
-    if checkAfterRead:
-        g.trace('checking outline after paste',color='blue')
-        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-
-    c.selectPosition(p)
-    self.initReadIvars() # 2010/02/05
-    return p
-
-getLeoOutline = getLeoOutlineFromClipboard # for compatibility
-#@+node:ekr.20080410115129.1: *7* checkPaste
-def checkPaste (self,parent,p):
-
-    '''Return True if p may be pasted as a child of parent.'''
-
-    if not parent: return True
-
-    parents = [z.copy() for z in parent.self_and_parents()]
-
-    for p in p.self_and_subtree():
-        for z in parents:
-            # g.trace(p.h,id(p.v),id(z.v))
-            if p.v == z.v:
-                g.es('Invalid paste: nodes may not descend from themselves',color="blue")
-                return False
-
-    return True
-#@+node:ekr.20060919142200.1: *6* fc.initReadIvars
-def initReadIvars (self):
-
-    self.descendentTnodeUaDictList = []
-    self.descendentVnodeUaDictList = []
-    self.descendentExpandedList = []
-    self.descendentMarksList = []
-        # 2011/12/10: never re-init this dict.
-        # self.gnxDict = {}
-        # g.trace('*** clearing gnxDict',g.callers())
-    self.c.nodeConflictList = [] # 2010/01/05
-    self.c.nodeConflictFileName = None # 2010/01/05
-#@+node:ekr.20111213092149.10324: *4* Fixed crasher in reportMismatch
-@nocolor-node
-
->  File "/path/to/leo/core/leoImport.py", line 2070, in reportMismatch
->    line = repr(lines2[i])
-> IndexError: list index out of range
 #@+node:ekr.20111113141805.10062: *3* Code
 #@+node:ekr.20111109105907.9796: *4* Simplified g.pr
 #@+node:ekr.20111023164430.16771: *4* Removed unused color tags
@@ -22074,7 +20211,2193 @@ def exportHeadlines (self,event=None):
         g.setGlobalOpenDir(fileName)
         g.chdir(fileName)
         c.importCommands.exportHeadlines(fileName)
-#@+node:ekr.20111209101900.9953: ** Test of bzr push/pull
+#@+node:ekr.20110730093802.15134: *3* Bugs
+#@+node:ekr.20110621074459.14904: *4* Fixed ancient hanger in paste-retaining-clones
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/800157
+
+In a new file containing only a "NewHeadline" and that being selected, execute:
+
+copy-node
+insert-child
+<<enter>>
+undo
+paste-retaining-clones
+
+Leo's UI freezes and loops forever with 100% CPU.
+
+Note: If one does not undo, Leo prints "Invalid paste: nodes may not descend
+from themselves". I guess the undo circumvents such a check. However, that
+should not be the case, as paste-retaining-clones inserts the clones _after_ and
+not as children of the selected node "NewHeadline".
+
+I guess that the undo forgets to set the selection back to "NewHeadline", so
+that Leo tries to insert the clones after the undone child node - therefore as
+child of "NewHeadline".
+
+====================
+
+EKR: only getLeoOutlineFromClipboar calls checkPaste.
+#@+node:ekr.20110705101348.14898: *4* Fixed bug in p.setAllAncestorAtFileNodesDirty
+@nocolor-node
+
+
+The code that marks descendant @<file> nodes dirty now tests
+p2.isAnyAtFileNode().  The old code tested p2.isAtThinFileNode().
+#@+node:ekr.20110717110529.14970: *4* Removed timer hack from double-click code
+#@+node:ekr.20110726130504.15081: *4* Fixed double-click problem
+@nocolor-node
+
+CAUTION: new double click handling code
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dbd63b9b38911906
+
+The problem isn't single/double, but double click not stopping the
+event processing.  It has the correct form:
+
+if g.doHook('doubleClick1') is None:
+   do-normal-double-click-stuff
+g.doHook('doubleClick2')
+
+but I think some other route through the code, or additional processing
+of the event means that even thought the handler registered on
+doubleClick1 returns non-None, the node goes into headline edit mode,
+with focus.
+
+This is bad, because the doubleClick1 on an @url node attempts to
+select and raise a different commander (tab), so now you're looking at
+one commander but focus is in another, so what you type trashes the
+headline in the original commander.
+
+The timer shouldn't be needed - a 'doubleClick1' hook which returns
+non-None should stop the headline going into edit mode.  If you can
+make that be the case, all is well.
+#@+node:ekr.20110728112148.6735: *4* Fixed url focus issues
+#@+node:ekr.20110728093358.6702: *4* Fixed p1 > p2
+#@+node:ekr.20110730091449.15132: *4* Fixed cacher problem
+@nocolor-node
+
+- leoCommands.__init__ now sets self.db = {}
+- initGlobalDB now returns {} instead of None if there is no cacher.
+#@+node:ekr.20110908155830.6875: *4* Fixed encoding problem with @shadow
+@nocolor-node
+
+Important notes:
+    
+readOpenFile reads the private shadow file, detecting the encoding.
+#@+node:ekr.20110917130105.6873: *4* Fixed a w.see botch.
+@nocolor-node
+
+The call to w.see(ins+5) in rp_reformat created a big problem.
+
+Replacing this with w.see(ins) is much better.
+#@+node:ekr.20111003135314.15480: *4* Fixed a major DnD bug
+#@+node:ekr.20111008073427.15594: *4* Fixed macro crash
+# A misspelling:
+    
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 409, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 1967, in fullCommand
+    c.macroCommands.startrecordingMacro(event)
+AttributeError: macroCommandsClass instance has no attribute 'startrecordingMacro'
+#@+node:ekr.20111009162434.7206: *4* Regularized slashes in @edit/@file
+@nocolor-node
+
+Examples:
+    
+    @edit C:/leo.repo/ipython-0.12/IPython/frontend/qt/console/pygments_highlighter.py
+        # The filename comes from g.app.gui.runOpenFileDialog
+    
+    @file C:\leo.repo\ipython-0.12\IPython\frontend\qt\console\pygments_highlighter.py
+        # Created by import.
+        
+The problem was the call to g.os_path_normpath in importDerived files:
+    it converts slashes to backslashes on windows (!!)
+#@+node:ekr.20111010082822.15544: *4* Made sure Leo's write code auto-detects file extension
+@nocolor-node
+
+- Added getLanguageFromAncestorAtFileNode.
+
+- Revised code in at.scanAllDirectives & leoQtColorizer.scanColorDirectives.
+#@+node:ekr.20111010154337.15599: *4* Fixed k.setLabelRed
+#@+node:ekr.20111012162536.9380: *4* Fixed cycle-editor-focus bug
+qtBody can use the leoBody code.
+#@+node:ekr.20111012093116.9386: *4* Fix the body-text scrolling reversion
+@nocolor-node
+
+- Marked with ### 2011/09/30
+
+- Alt-x resets the scrollbar position!
+    The focus gets pulled away, but the scrollbar position does not get saved.
+#@+node:ekr.20111014074810.15650: *4* Fixed recent createFrame crash
+#@+node:ekr.20111015150822.9346: *4* Fixed Py3k crash in quicksearch.py
+@nocolor-node
+ 
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\plugins\quicksearch.py", line 187, in returnPressed
+    self.scon.doSearch(t)
+  File "c:\leo.repo\trunk\leo\plugins\quicksearch.py", line 289, in doSearch
+    self.addBodyMatches(bm)
+  File "c:\leo.repo\trunk\leo\plugins\quicksearch.py", line 257, in addBodyMatches
+    self.its[it] = (p, None)
+TypeError: unhashable type: 'QListWidgetItem'
+#@+node:ekr.20111015150822.13125: *4* Removed all references to scrolledmessage plugin
+@nocolor-node
+
+The scrolledmessage plugin no longer exists.
+
+The runScrolledMessageDialog *does* still exist, but it now uses the
+viewrendered plugin.
+#@+node:ekr.20111016210000.15951: *4* Support @ignore when installing @command/@button nodes
+@nocolor-node
+
+Changed doButtons and doCommands kind handlers.
+
+This allows us to put example nodes in leoSettings.leo.
+#@+node:ekr.20111020113237.15895: *4* Fixed crasher in runScrolledMessageDialog
+#@+node:ekr.20111017132257.15885: *4* Macro expansion now forces a full recolor
+@nocolor-node
+
+Could this be done as part of abbreviation expansion?
+#@+node:ekr.20111021105253.9479: *4* Fixed serious atFile read bug
+@nocolor-node
+
+Changed at.readEndOthers and at.readEndRef so that they
+always set at.inCode = True
+#@+node:ekr.20111021105253.9480: *4* Fixed unicode bugs with @shadow
+@nocolor-node
+
+Fixed several encoding problems related to this thread: @shadow - @encoding windows-1250 - problem
+http://groups.google.com/group/leo-editor/browse_thread/thread/a4ba80559447218a/9a37a4ed6c44d452
+
+There were several real problems fixed.  The summary: @encoding directives were always required.
+
+In detail:
+
+1. at.initWriteIvars now checks for a Python # -*- coding: line.
+   If present, it must be the very first line.
+   If present, it will override any @encoding directives.
+
+2. g.getPythonEncodingFromString now can deal with either of the following lines:
+
+    @first # -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
+
+That is, g.getPythonEncodingFromString can strip the leading @first.
+
+3. g.readlineForceUnixNewline and x.propagate_changes now catch UnicodeDecodeError.
+   This is very important: previously decoding errors crashed Leo!.
+
+All unit tests pass with both Python 2.x and 3.x.
+
+#@+node:ekr.20111024091133.16699: *4* Recompute width of hard tabs depending on @tabwidth
+@nocolor-node
+
+Added configure_hard_tab_width method.
+#@+node:ekr.20111024170505.16464: *4* Applied patch for Bug 800311: Undo: Word granularity should recognize cursor movements
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/800311
+
+Having set undo to word granularity, I often change something, move to a
+different line and continue editing there. When I want to undo my last change,
+Leo also undoes the change in the other place, as word granularity currently
+only recognises a new undo step when a new word is started, no matter if we
+moved to a completely different position first.
+
+The attached patch fixes the issue by remembering the previous cursor position.
+
+Something else about the undo code:
+
+- oldSel and newSel are never set to None in the constructor -> it's quite hard
+  to know they are there without reading the whole code
+
+- It would be cool if there could be some more comments in that section; e.g. to
+  tell that oldSel and newSel from which old_row, old_col, new_row and new_col
+  actually mean: old = "the position right before doing the change" and new =
+  "the position right after doing the change" and that old != "the position
+  after the change before" (which I added as prevSel) - it took me ages to
+  discover this
+
+- There are duplicate "The new and old characters are not contiguous." checks.
+  Are they different/necessary?
+
+- The "We have just inserted a line." section is not only entered on a new line
+  (see other attached patch)
+#@+node:ekr.20111024170505.16460: *4* Applied patch for Bug 800312: Collapsing node moves should be optional
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/800312
+#@+node:ekr.20111025062953.16480: *4* Fixed Bug 880975: Binding Meta and print-bindings
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/880975
+
+Bug: The Meta+Ctrl section [of print-bindings] is always empty and this makes it
+misleading.
+
+Fix: the prefix list in k.printBindings must be sure that if two prefixes have a
+common leading part the longer prefix appears first in the lists.
+#@+node:ekr.20111026091322.16493: *4* Fixed bug 823601: cascade-windows fails
+exception executing command
+Traceback (most recent call last):
+  File "/home/bob/bzrWork/pluginPath/leo/core/leoCommands.py", line 408, in doCommand
+    val = command(event)
+  File "/home/bob/bzrWork/pluginPath/leo/plugins/qtGui.py", line 4965, in cascade
+    w.setGeometry(x,y,r.width(),r.height())
+TypeError: setGeometry() takes exactly 2 arguments (5 given)
+#@+node:ekr.20111026115337.16527: *4* Generalized stylesheet handling
+# A temporary fix while waiting for Terry's css work.
+#@+node:ekr.20111026115337.16529: *5* Notes
+@language rest
+
+Here's how it works:  code that wants to set a particular part of a
+widget's style sheet calls::
+
+   g.app.gui.update_style_sheet(w,key,value)
+
+where w is the widget whose stylesheet is to be changed, key is unique
+to the method (or group of methods), and value is the new version of
+the stylesheet **for the particular key** to be added.  Examples::
+
+   # In setEditorColors.
+   sheet = 'background-color: %s; color: %s' % (bg,fg)
+   g.app.gui.update_style_sheet(obj,'colors',sheet)
+
+   # In add_border.
+   sheet = "border: %spx solid %s" % (
+       c.focus_border_width,c.focus_border_color)
+   self.update_style_sheet(w,'border',sheet)
+
+   # In remove_border.
+   sheet = "border: %spx solid white" % (c.focus_border_width)
+   self.update_style_sheet(w,'border',sheet)
+
+So add_border and remove_border work together because they use the
+same 'border' key.
+
+g.app.gui.update_style_sheet is straightforward: it injects a Python
+dict called leo_stylesheet_dict into the widget, and computes the
+total stylesheet as follows::
+
+   # Step one: update the dict.
+   d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
+   d[key] = value
+   w.leo_styles_dict = d
+
+   # Step two: update the stylesheet.
+   aList = [d.get(key) for key in list(d.keys())]
+   s = ';'.join(aList)
+   w.setStyleSheet(s)
+#@+node:ekr.20111026231721.16616: *4* Scrolling bug
+@nocolor-node
+
+An attempt at fixing the scrolling bug
+http://groups.google.com/group/leo-editor/browse_thread/thread/de76f22b16ebc8f/7f6aa691002f1fca
+
+Private email from Viktor
+test-leo-rev-4506.leo
+
+It looks like I can reproduce the scrolling problem with your file as follows:
+
+- Select the last node: AM-Session
+- Manually scroll down to the last line.
+- Click at the end of text: the body pane scrolls.  Bug!
+
+
+Downloaded leo-editor-snapshot-201110240253.zip and tried it out. Noticed that
+when I added a dozen or so blank lines at the end of a body pane and moved the
+mouse cursor to the last line and left-clicked the body pane jumped backwards
+about 10 lines or so as though I had scrolled up. When I dragged the scroll
+button to the end of the pane, the insertion point was still at the end of the
+pane. This does not happen for all panes.
+#@+node:ekr.20111123030145.10211: *5* Notes
+@nocolor-node
+
+Methods relating to this problem:
+
+g.app.trace_scroll
+w.see
+w.seeInsertPoint
+w.get/setYScrollPosition
+p.restoreCursorAndScroll
+v.restoreCursorAndScroll
+
+leoKeyHandler:
+    k.keykBoardQuit
+    k.showStateAndMode
+    k.setLabel
+        ***** calls w.widget.ensureCursorVisible
+
+leoQtBody:
+    onFocusColorHelper
+        ***** calls w.widget.ensureCursorVisible
+        
+leoQtBaseTextWidget:
+    mouseReleaseEvent
+        Added code that didn't work: now commented out.
+        
+leoEditCommands:
+    updateAutoIndent
+        ***** calls w.seeInsertPoint
+        
+    
+#@+node:ekr.20111001155050.15480: *6* First attempt
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/de76f22b16ebc8f
+
+As explained in detail in the thread, "dangerous" code is no longer executed immediately,
+but instead executed at idle time using g.app.gui.runAtIdle.
+#@+node:ekr.20111025062953.16477: *6* Added global tracing of scrolling-related code
+g.app.trace_scroll
+#@+node:ekr.20110930174206.15471: *5* Second attempt
+@nocolor-node
+
+The last time it happened:
+    
+- Search for something.
+- Manually scroll the pane.
+- Click scrolls the pane again.
+#@+node:ekr.20110930174206.15474: *6* Changed
+#@+node:ekr.20110605121601.18209: *7* deactivateEditors (qtBody)
+def deactivateEditors(self,wrapper):
+
+    '''Deactivate all editors except wrapper's editor.'''
+
+    trace = False and not g.unitTesting
+    d = self.editorWidgets
+
+    # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
+    for key in d:
+        wrapper2 = d.get(key)
+        w2 = wrapper2.widget
+        if hasattr(w2,'leo_active'):
+            active = w2.leo_active
+        else:
+            active = True
+        if wrapper2 != wrapper and active:
+            w2.leo_active = False
+            self.unselectLabel(wrapper2)
+            w2.leo_scrollBarSpot = wrapper2.getYScrollPosition()
+            w2.leo_insertSpot = wrapper2.getInsertPoint()
+            w2.leo_selection = wrapper2.getSelectionRange()
+            if trace: g.trace('**deactivate wrapper %s w %s' % (
+                id(wrapper2),id(w2)))
+            self.onFocusOut(w2)
+#@+node:ekr.20070424080640: *7* deactivateActiveEditor (leoBody)
+def deactivateActiveEditor(self,w):
+
+    '''Inactivate the previously active editor.'''
+
+    d = self.editorWidgets
+
+    # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
+    for key in d:
+        w2 = d.get(key)
+        if w2 != w and w2.leo_active:
+            w2.leo_active = False
+            self.unselectLabel(w2)
+            w2.leo_scrollBarSpot = w2.getYScrollPosition()
+            w2.leo_insertSpot = w2.getInsertPoint()
+            w2.leo_selection = w2.getSelectionRange()
+            return
+#@+node:ekr.20110605121601.18027: *7* injectIvars (leoQtBaseTextWidget)
+def injectIvars (self,name='1',parentFrame=None):
+
+    w = self ; p = self.c.currentPosition()
+
+    if name == '1':
+        w.leo_p = None # Will be set when the second editor is created.
+    else:
+        w.leo_p = p.copy()
+
+    w.leo_active = True
+
+    # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
+    w.leo_bodyBar = None
+    w.leo_bodyXBar = None
+    w.leo_chapter = None
+    w.leo_frame = None
+    w.leo_name = name
+    w.leo_label = None
+    w.leo_scrollBarSpot = None
+    w.leo_insertSpot = None
+    w.leo_selection = None
+
+    return w
+#@+node:ekr.20110605121601.18211: *7* injectIvars (qtBody)
+def injectIvars (self,parentFrame,name,p,wrapper):
+
+    trace = False and not g.unitTesting
+
+    w = wrapper.widget
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    if trace: g.trace(w)
+
+    # Inject ivars
+    if name == '1':
+        w.leo_p = None # Will be set when the second editor is created.
+    else:
+        w.leo_p = p.copy()
+
+    w.leo_active = True
+    w.leo_bodyBar = None
+    w.leo_bodyXBar = None
+    w.leo_chapter = None
+    # w.leo_colorizer = None # Set in leoQtColorizer ctor.
+    w.leo_frame = parentFrame
+    w.leo_insertSpot = None
+    # w.leo_label = None # Injected by packLabel.
+    w.leo_name = name
+    # w.leo_on_focus_in = onFocusInCallback
+    w.leo_scrollBarSpot = None
+    w.leo_selection = None
+    w.leo_wrapper = wrapper
+#@+node:ekr.20070423102603: *7* selectEditorHelper (leoBody)
+def selectEditorHelper (self,w):
+
+    c = self.c ; cc = c.chapterController ; d = self.editorWidgets
+
+    trace = False
+
+    if not w.leo_p:
+        g.trace('no w.leo_p') 
+        return # (for Tk) 'break'
+
+    if trace:
+        g.trace('==1',id(w),
+            hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
+            hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
+
+    self.deactivateActiveEditor(w)
+
+    # The actual switch.
+    c.frame.body.bodyCtrl = w
+    w.leo_active = True
+
+    self.switchToChapter(w)
+    self.selectLabel(w)
+
+    if not self.ensurePositionExists(w):
+        g.trace('***** no position editor!')
+        return # (for Tk) 'break'
+
+    if trace:
+        g.trace('==2',id(w),
+            hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
+            hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
+
+    # g.trace('expanding ancestors of ',w.leo_p.h,g.callers())
+    c.redraw(w.leo_p)
+    c.recolor()
+    << restore the selection, insertion point and the scrollbar >>
+    c.bodyWantsFocus()
+    return # (for Tk) 'break'
+#@+node:ekr.20061017083312.1: *8* << restore the selection, insertion point and the scrollbar >> selectEditorHelper leoBody.selectEditorBody
+spot = hasattr(w,'leo_insertSpot') and w.leo_insertSpot or 0
+w.setInsertPoint(0)
+    
+if hasattr(w,'leo_selection') and w.leo_selection:
+    try:
+        start,end = w.leo_selection
+        w.setSelectionRange(start,end)
+    except Exception:
+        pass
+
+# Don't restore the scrollbar here.
+#@+node:ekr.20110605121601.18203: *7* selectEditorHelper (qtBody)
+def selectEditorHelper (self,wrapper):
+
+    trace = False and not g.unitTesting
+    c = self.c ; cc = c.chapterController
+    d = self.editorWidgets
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    w = wrapper.widget
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    if not w.leo_p:
+        g.trace('no w.leo_p') 
+        return 'break'
+
+    # The actual switch.
+    self.deactivateEditors(wrapper)
+    self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
+    # g.trace('c.frame.body',c.frame.body)
+    # g.trace('c.frame.body.bodyCtrl',c.frame.body.bodyCtrl)
+    # g.trace('wrapper',wrapper)
+    c.frame.body.bodyCtrl = wrapper
+    c.frame.body.widget = wrapper # Major bug fix: 2011/04/06
+    w.leo_active = True
+
+    self.switchToChapter(wrapper)
+    self.selectLabel(wrapper)
+
+    if not self.ensurePositionExists(w):
+        return g.trace('***** no position editor!')
+    if not (hasattr(w,'leo_p') and w.leo_p):
+        return g.trace('***** no w.leo_p',w)
+        
+    # if not (hasattr(w,'leo_chapter') and w.leo_chapter):
+        # return g.trace('***** no w.leo_chapter',w)
+
+    p = w.leo_p
+    assert p,p
+
+    if trace: g.trace('wrapper %s chapter %s old %s p %s' % (
+        id(wrapper),w.leo_chapter,c.p.h,p.h))
+
+    c.expandAllAncestors(p)
+    c.selectPosition(p) # Calls assignPositionToEditor.
+    c.redraw()
+    c.recolor_now()
+    << restore the selection, insertion point and the scrollbar >>
+    c.bodyWantsFocus()
+#@+node:ekr.20110605121601.18204: *8* << restore the selection, insertion point and the scrollbar >> qtBody.selectEditorHelper
+spot = hasattr(w,'leo_insertSpot') and w.leo_insertSpot or 0
+wrapper.setInsertPoint(spot)
+
+if hasattr(w,'leo_selection') and w.leo_selection:
+    try:
+        start,end = w.leo_selection
+        wrapper.setSelectionRange(start,end)
+    except Exception:
+        pass
+
+# Don't restore the scrollbar here.
+#@+node:ekr.20070423101911: *7* selectHelper (leoTree)
+# Do **not** try to "optimize" this by returning if p==c.p.
+# 2011/11/06: *event handlers* are called only if p != c.p.
+
+def selectHelper (self,p,scroll):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.p
+    
+    call_event_handlers = p != old_p
+
+    if p:
+        # 2009/10/10: selecting a foreign position
+        # will not be pretty.
+        assert p.v.context == c
+    else:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    if trace and (verbose or call_event_handlers):
+        g.trace(p and p.h)
+        # if old_p:
+            # g.trace('old: %s %s new: %s %s' % (
+                # len(old_p.b),old_p.h,len(p.b),p.h))
+        # else:
+            # g.trace('old: <none> new: %s %s' % (len(p.b),p.h))
+            
+            
+    if 1: # 2011/11/06
+        if call_event_handlers:
+            unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        else:
+            unselect = True
+        if unselect:
+            << unselect the old node >>
+        
+    else: # Old code
+        if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+            if old_p:
+                << unselect the old node >>
+    
+    if call_event_handlers: # 2011/11/06
+        g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        
+    if call_event_handlers: # 2011/11/06
+        if call_event_handlers:
+            select = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        else:
+            select = True
+        if select:
+            << select the new node >>
+            c.nodeHistory.update(p) # Remember this position.
+    else: # old code
+        if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+            << select the new node >>
+            c.nodeHistory.update(p) # Remember this position.
+        
+    c.setCurrentPosition(p)
+    << set the current node >>
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    # if trace and (verbose or call_event_handlers):
+        # g.trace('**** after old: %s new %s' % (
+            # old_p and len(old_p.b),len(p.b)))
+
+    # what UNL.py used to do
+    c.frame.clearStatusLine()
+    c.frame.putStatusLine(p.get_UNL())
+
+    if call_event_handlers: # 2011/11/06
+        g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    return # (for Tk) 'break' # Supresses unwanted selection.
+#@+node:ekr.20040803072955.129: *8* << unselect the old node >>
+# Remember the position of the scrollbar before making any changes.
+if body:
+    yview = body.getYScrollPosition()
+    insertSpot = c.frame.body.getInsertPoint()
+    
+    # g.trace('set insert spot',insertSpot)
+else:
+    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+    yview,insertSpot = None,0
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+
+if old_p and old_p != p:
+    # 2010/02/11: Don't change the *new* node's insert point!
+    old_p.v.scrollBarSpot = yview
+    old_p.v.insertSpot = insertSpot
+    if g.app.trace_scroll: g.trace('old scroll: %s insert: %s' % (
+        yview,insertSpot))
+#@+node:ekr.20040803072955.130: *8* << select the new node >>
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.h
+frame.setWrap(p)
+self.setBodyTextAfterSelect(p,old_p)
+#@+node:ekr.20040803072955.133: *8* << set the current node >>
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+if self.use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
+
+c.treeFocusHelper() # 2010/12/14
+c.undoer.onSelect(old_p,p)
+#@+node:ekr.20031218072017.3344: *7* v.__init
+# To support ZODB, the code must set v._p_changed = 1 whenever
+# v.unknownAttributes or any mutable vnode object changes.
+
+def __init__ (self,context):
+
+    # The primary data: headline and body text.
+    self._headString = g.u('newHeadline')
+    self._bodyString = g.u('')
+
+    # Structure data...
+    self.children = [] # Ordered list of all children of this node.
+    self.parents = [] # Unordered list of all parents of this node.
+
+    # Other essential data...
+    self.fileIndex = g.app.nodeIndices.getNewIndex()
+        # The immutable file index for this vnode.
+        # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
+    self.iconVal = 0 # The present value of the node's icon.
+    self.statusBits = 0 # status bits
+
+    # v.t no longer exists.  All code must now be aware of the one-node world.
+    # self.t = self # For compatibility with scripts and plugins.
+
+    # Information that is never written to any file...
+    self.context = context # The context containing context.hiddenRootNode.
+        # Required so we can compute top-level siblings.
+        # It is named .context rather than .c to emphasize its limited usage.
+    self.insertSpot = None # Location of previous insert point.
+    self.scrollBarSpot = None # Previous value of scrollbar position.
+    self.selectionLength = 0 # The length of the selected body text.
+    self.selectionStart = 0 # The start of the selected body text.
+#@+node:ekr.20100303074003.5636: *7* v.restoreCursorAndScroll
+# Called only by setBodyTextAfterSelect.
+
+def restoreCursorAndScroll (self,w):
+
+    v = self
+    spot = v and v.insertSpot or 0
+    w.setInsertPoint(spot)
+        
+    # 2011/10/26: *only* restore the scrollbar setting.  Do not call see.
+    if v and v.scrollBarSpot != None:
+        pos = v.scrollBarSpot
+        if g.app.trace_scroll: g.trace('(vnode)',pos)
+        w.setYScrollPosition(pos)
+        
+    # Never call w.see here.
+
+#@+node:ekr.20100303074003.5638: *7* v.saveCursorAndScroll(w)
+def saveCursorAndScroll(self,w):
+
+    v = self
+    if not w: return
+    
+    try:
+        v.scrollBarSpot = w.getYScrollPosition()
+        v.insertSpot = w.getInsertPoint()
+    except AttributeError:
+        # 2011/03/21: w may not support the high-level interface.
+        pass
+#@+node:ekr.20111026231721.16619: *5* Third attempt, apparently successful
+#@+node:ekr.20111026231721.16620: *6* Changed
+#@+node:ekr.20100303074003.5636: *7* v.restoreCursorAndScroll
+# Called only by setBodyTextAfterSelect.
+
+def restoreCursorAndScroll (self,w):
+
+    v = self
+    spot = v and v.insertSpot or 0
+    w.setInsertPoint(spot)
+        
+    # 2011/10/26: *only* restore the scrollbar setting.  Do not call see.
+    if v and v.scrollBarSpot != None:
+        pos = v.scrollBarSpot
+        if g.app.trace_scroll: g.trace('(vnode)',pos)
+        w.setYScrollPosition(pos)
+        
+    # Never call w.see here.
+
+#@+node:ekr.20110605121601.18084: *7* getYScrollPosition (leoQTextEditWidget)
+def getYScrollPosition(self):
+    
+    # **Important**: There is a Qt bug here: the scrollbar position
+    # is valid only if cursor is visible.  Otherwise the *reported*
+    # scrollbar position will be such that the cursor *is* visible.
+
+    w = self.widget
+    sb = w.verticalScrollBar()
+    i = sb.sliderPosition()
+    if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',i)
+    return i
+#@+node:ekr.20110605121601.18098: *7* setYScrollPosition (leoQTextEditWidget)
+def setYScrollPosition(self,pos):
+
+    w = self.widget
+    sb = w.verticalScrollBar()
+    if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
+    sb.setSliderPosition(pos)
+#@+node:ekr.20061017083312.1: *7* << restore the selection, insertion point and the scrollbar >> selectEditorHelper leoBody.selectEditorBody
+spot = hasattr(w,'leo_insertSpot') and w.leo_insertSpot or 0
+w.setInsertPoint(0)
+    
+if hasattr(w,'leo_selection') and w.leo_selection:
+    try:
+        start,end = w.leo_selection
+        w.setSelectionRange(start,end)
+    except Exception:
+        pass
+
+# Don't restore the scrollbar here.
+#@+node:ekr.20110605121601.18204: *7* << restore the selection, insertion point and the scrollbar >> qtBody.selectEditorHelper
+spot = hasattr(w,'leo_insertSpot') and w.leo_insertSpot or 0
+wrapper.setInsertPoint(spot)
+
+if hasattr(w,'leo_selection') and w.leo_selection:
+    try:
+        start,end = w.leo_selection
+        wrapper.setSelectionRange(start,end)
+    except Exception:
+        pass
+
+# Don't restore the scrollbar here.
+#@+node:ekr.20070424080640: *7* deactivateActiveEditor (leoBody)
+def deactivateActiveEditor(self,w):
+
+    '''Inactivate the previously active editor.'''
+
+    d = self.editorWidgets
+
+    # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
+    for key in d:
+        w2 = d.get(key)
+        if w2 != w and w2.leo_active:
+            w2.leo_active = False
+            self.unselectLabel(w2)
+            w2.leo_scrollBarSpot = w2.getYScrollPosition()
+            w2.leo_insertSpot = w2.getInsertPoint()
+            w2.leo_selection = w2.getSelectionRange()
+            return
+#@+node:ekr.20111028111441.16588: *4* Fixed html colorizing by fixing a bad bug in g.importFromPath
+@nocolor-node
+    
+g.importFromPath ('html','C:/leo.repo/trunk/leo/modes/html.py')
+returned the standard Python html module!
+
+#@+node:ekr.20111029055127.16635: *4* Allow lower case keywords in colorizer
+# The fix was to use lowercase versions of docPart,leoKeyword,nameBrackets.
+#@+node:ekr.20111102072143.10017: *4* Fixed recent problem in createMenuEntries
+#@+node:ekr.20111103102153.9716: *4* Fixed rst3 pdf problem
+@nocolor-node
+
+Worked around docutils problem in writeToDocutils.
+#@+node:ekr.20111104104831.9823: *4* Added unit test that all plugins have an init method
+@nocolor-node
+
+- The tests should not register the plugin.
+
+- There should be a test that top-level code does not register the plugin.
+
+Top-level calls to registerHandler:
+    
+    Fixed:
+        examples/__overrideClasses.py
+        examples/override_commands.py
+        examples/redefine_put.py  (Tk)
+        examples/chinese_menu.py
+        examples/french_fm.py
+    
+        at_view.py
+        test/failed_import.py
+        scripts_menu.py
+#@+node:ekr.20111105054152.9949: *4* Removed traceback when cancelling a write
+not written: c:\recent\data3.html
+exception removing: 
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 5280, in remove
+    os.remove(fileName)
+WindowsError: [Error 3] The system cannot find the path specified: ''
+#@+node:ekr.20111105055134.9769: *4* Fixed removeBlankLinesTokens
+@nocolor-node
+
+There were two bugs:
+    
+- baseScannerClass.skipWsToken must not skip newlines!
+- tokenize must add any remaining whitespace at the end of the loop.
+#@+node:ekr.20111105110308.9717: *4* Fixed crasher in config.set
+# The code didn't work for c == None.
+#@+node:ekr.20111107055809.9704: *4* Fixed resize-to-screen and minimize-all
+#@+node:ekr.20111029055127.16609: *4* Fixed html import problems
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3c319daba37cd0ef
+
+- Created a separate html importer, a very simple subclass of the xml scanner
+  whose only difference is that it uses @data import_html_tags instead of @data
+  import_xml_tags.
+
+- The case of tags in @data import_html_tags and @data import_xml_tags no longer matters.
+
+- checkTrialWrite now writes a file *with* sentinels, to handle @others correctly.
+  It then removes the sentinels.
+  
+  This means that the import tests must use the correct @language directives.
+  
+- The import check now uses a token-based comparison.  
+#@+node:ekr.20111109151106.9906: *4* Removed extra newlines in g.trace
+@nocolor-node
+
+The fix was in g.pr:
+    
+Restored the call to sys.stdout.write(s2) (instead of print)
+
+sys.stdout.write(s2) writes no additional newline at the end of s2.
+
+Aha!  At last I know how to unit test g.pr, g.trace, etc.: redirect stdout!  Doh!
+#@+node:ekr.20111110091847.10070: *4* Fixed crash in compareTokens
+@nocolor-node
+
+
+ File "/usr/fetching/leo-editor/leo/core/leoImport.py", line 2074, in
+scanAndCompare
+   n1,n2,ok = self.compareTokens(tokens1,tokens2)
+ File "/usr/fetching/leo-editor/leo/core/leoImport.py", line 2094, in
+compareTokens
+   else:      kind1,val1 = 'eof','',n1
+ValueError: too many values to unpack
+#@+node:ekr.20111109151106.9745: *4* Finished import work
+@nocolor-node
+
+
+- Created stand-alone unit tests from @test import dataN.html.
+- All leoImport unit tests may now be run externally.
+    The Python unit tests were failing because of intermixed tabs and blanks.
+    This was fixed by putting @tabwidth -4 in all @test nodes for Python.
+- Made sure lines are printed when unit tests fail unexpectedly.
+- Added .js & javascript entries to global data structures for javascript unit tests.
+- Completed xmlScanner.filterTokens.
+- Don't create declaration nodes for html.
+- Make sure html tags are as expected.
+- Ignore case of html/xml tags.
+#@+node:ekr.20111112064924.9777: *5* What I did
+@language rest
+
+Rev 4774.1.1:
+=============
+
+Fixed all known html-import problems in a clean way. Unit tests exists, but they
+use external files. They will be converted soon.
+
+Important changes:
+
+1. Added hasNestedClasses ivar in the baseScannerClass, True only for xml/html scanners.
+
+When True, scanHelper and skipDecls allocate a substring to be used for all further scanning.
+This is the *only* way to limit Leo's scanners properly.
+
+This was, in essence, the fix for duplicate code generation arising from unbalanced tags:
+skipToEndOfTag and skipToMatchingTag can't match outside the present tag because
+the 's' argument passed to those methods has already been truncated.
+
+This is a simple, elegant solution, and in essence the *only* proper solution.
+For example, it would not work to past an 'end' argument to skipToEndOfTag and skipToMatchingTag
+because the scanners inside those methods do not understand an 'end' argument.
+
+Thus, the simplest, most efficient solution is for scanHelper and skipDecls to truncate the
+string to be scanned. That way, the truncation happens at most once per "class".
+
+2. Added hasDecls in the baseScannerClass, False only for xml/html scanners.
+
+Various methods call skipDecls only if this ivar is True.
+
+Rev 4773:
+=========
+
+Fixed recent botch: both single and double quotes are allowed in html. 
+
+Rev 4772:
+=========
+
+Solved "between element" problem by extending classes up to the next class.
+data.html imports "correctly", but not perfectly due to tag mismatches in
+skipToMatchingTag.
+#@+node:ekr.20111112193858.9831: *4* Fixed hard crash when deleting body editor 3 times
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/421ebf4c3f2d5f59
+
+Adding/deleting body editor 3 times hard-crashed Python
+
+The changes were straightforward:
+    
+- set w.leo_label to None when calling unpackWidget.
+
+- Test for w.leo_label before using it.
+
+Added a minitest.  To test by hand, add the following @button nodes:
+    
+    @button add-ed
+    w = c.frame.body.addEditor()
+    
+    @button del-ed
+    w = c.frame.body.deleteEditor()
+    
+Click away in any order...
+
+#@+node:ekr.20111111065410.12913: *4* Fixed add/delete html comments
+@nocolor-node
+
+The new add-comments command adds the comment character at the leftmost column.
+
+The new delete-comments command will remove the comment characters inserted by
+either the old or new version of the add-comments command.
+#@+node:ekr.20050312114529: *5* c.insert/removeComments
+#@+node:ekr.20050312114529.1: *6* addComments
+def addComments (self,event=None):
+    
+    << addComments docstring >>
+
+    c = self ; p = c.p
+    d = c.scanAllDirectives(p)
+    d1,d2,d3 = d.get('delims') # d1 is the line delim.
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    if not lines:
+        g.es('no text selected',color='blue')
+        return
+
+    d2 = d2 or '' ; d3 = d3 or ''
+    if d1: openDelim,closeDelim = d1+' ',''
+    else:  openDelim,closeDelim = d2+' ',' '+d3
+
+    # Comment out non-blank lines.
+    indent = c.config.getBool('indent_added_comments',default=True)
+    result = []
+    for line in lines:
+        if line.strip():
+            i = g.skip_ws(line,0)
+            if indent:
+                result.append(line[0:i]+openDelim+line[i:].replace('\n','')+closeDelim+'\n')
+            else:
+                result.append(openDelim+line.replace('\n','')+closeDelim+'\n')
+        else:
+            result.append(line)
+
+    result = ''.join(result)
+    c.updateBodyPane(head,result,tail,undoType='Add Comments',oldSel=None,oldYview=oldYview)
+#@+node:ekr.20111115111842.9789: *7* << addComments docstring >>
+@pagewidth 50
+
+'''
+Converts all selected lines to comment lines using
+the comment delimiters given by the applicable
+ @language directive.
+
+Inserts single-line comments if possible; inserts
+block comments for languages like html that lack
+single-line comments.
+
+ @bool indent_added_comments
+
+If True (the default), inserts opening comment
+delimiters just before the first non-whitespace
+character of each line. Otherwise, inserts opening
+comment delimiters at the start of each line.
+
+*See also*: delete-comments.
+'''
+#@+node:ekr.20050312114529.2: *6* deleteComments
+def deleteComments (self,event=None):
+    
+    << deleteComments docstring >>
+
+    c = self ; p = c.p
+    d = c.scanAllDirectives(p)
+    # d1 is the line delim.
+    d1,d2,d3 = d.get('delims')
+
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    result = []
+    if not lines:
+        g.es('no text selected',color='blue')
+        return
+
+    if d1:
+        # Remove the single-line comment delim in front of each line
+        d1b = d1 + ' '
+        n1,n1b = len(d1),len(d1b)
+        for s in lines:
+            i = g.skip_ws(s,0)
+            if g.match(s,i,d1b):
+                result.append(s[:i] + s[i+n1b:])
+            elif g.match(s,i,d1):
+                result.append(s[:i] + s[i+n1:])
+            else:
+                result.append(s)
+    else:
+        # Remove the block comment delimiters from each line.
+        n2,n3 = len(d2),len(d3)
+        for s in lines:
+            i = g.skip_ws(s,0)
+            j = s.find(d3,i+n2)
+            if g.match(s,i,d2) and j > -1:
+                first = i + n2
+                if g.match(s,first,' '): first += 1
+                last = j
+                if g.match(s,last-1,' '): last -= 1
+                result.append(s[:i] + s[first:last] + s[j+n3:])
+            else:
+                result.append(s)
+
+    result = ''.join(result)
+    c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)
+#@+node:ekr.20111115111842.9790: *7* << deleteComments docstring >>
+@pagewidth 50
+
+'''
+Removes one level of comment delimiters from all
+selected lines.  The applicable @language directive
+determines the comment delimiters to be removed.
+
+Removes single-line comments if possible; removes
+block comments for languages like html that lack
+single-line comments.
+
+*See also*: add-comments.
+'''
+#@+node:ekr.20111118090912.12874: *4* Fixed bug that prevented text bindings from working in log tabs
+@nocolor-node
+
+Example: ctrl-shift-home.
+
+The fix was to set self.widget = contents in leoQtLog.selectTab.
+#@+node:ekr.20111118190243.10170: *4* Fixed cycle-all-focus command
+@nocolor-node
+
+What I did:
+    
+- Added disabled code to inject event filter in TabbedFrameFactory.createFrame.
+
+- Added cycle-tab-focus command.
+
+- cycle-all-focus command uses cycleTabFocus as a helper: this greatly simplifies the code.
+    
+- Added binding for "Find" tab in leoQtLog.createTab.
+
+- DynamicWindow.createFindTab injects leo_find_widget ivar for leoQtLog.createTab.
+
+- Added isLogWidget to leoQtLog and nullLog classes.  They are helpers for cycleAllFocus.
+
+- Revised leoQtLog.selectHelper: selecting a new tab does *not* change logCtrl (log.widget).
+#@+node:ekr.20111120162254.10217: *5* Added bindings to Find tab
+#@+node:ekr.20111121071940.10275: *5* Changed
+#@+node:ekr.20110605121601.18166: *6* createFindTab (DynamicWindow)
+def createFindTab (self,parent,tab_widget):
+
+    c,dw = self.leo_c,self
+    grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
+    grid.setColumnStretch(0,100)
+    grid.setColumnStretch(1,100)
+    
+    # Row 0: heading.
+    lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
+    grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
+    
+    # Rows 1, 2: the find/change boxes, now disabled.
+    findPattern = self.createLineEdit(parent,'findPattern',disabled=True)
+    findChange  = self.createLineEdit(parent,'findChange',disabled=True)
+    lab2 = self.createLabel(parent,'findLabel','Find:')
+    lab3 = self.createLabel(parent,'changeLabel','Change:')
+    grid.addWidget(lab2,1,0)
+    grid.addWidget(lab3,2,0)
+    grid.addWidget(findPattern,1,1)
+    grid.addWidget(findChange,2,1)
+        
+    # Check boxes and radio buttons.
+    # Radio buttons are mutually exclusive because they have the same parent.
+    def mungeName(name):
+        # The value returned here is significant: it creates an ivar.
+        return 'checkBox%s' % label.replace(' ','').replace('&','')
+
+    # Rows 3 through 8...
+    table = (
+        ('box', 'Whole &Word',      2,0),
+        ('rb',  '&Entire Outline',  2,1),
+        ('box', '&Ignore Case',     3,0),
+        ('rb',  '&Suboutline Only', 3,1),
+        ('box', 'Wrap &Around',     4,0),
+        ('rb',  '&Node Only',       4,1),
+        # ('box', '&Reverse',       5,0),
+        ('box', 'Search &Headline', 5,1),
+        ('box', 'Rege&xp',          5,0), # was 6,0
+        ('box', 'Search &Body',     6,1),
+        ('box', 'Mark &Finds',      6,0), # was 7,0
+        ('box', 'Mark &Changes',    7,0)) # was 7,1
+        # a,b,c,e,f,h,i,n,rs,w
+
+    for kind,label,row,col in table:
+        name = mungeName(label)
+        func = g.choose(kind=='box',
+            self.createCheckBox,self.createRadioButton)
+        w = func(parent,name,label)
+        grid.addWidget(w,row+1,col)
+        setattr(self,name,w)
+
+    # Row 9: Widgets that take all additional vertical space.
+    w = QtGui.QWidget()
+    grid.addWidget(w,9,0)
+    grid.addWidget(w,9,1)
+    grid.setRowStretch(9,100)
+
+    # Official ivars (in addition to setattr ivars).
+    self.leo_find_widget = tab_widget # 2011/11/21: a scrollArea.
+    self.findPattern = findPattern
+    self.findChange = findChange
+    # self.findLab = lab2
+    # self.changeLab = lab3
+#@+node:ekr.20110605121601.18466: *6* createFrame (TabbedFrameFactory)
+def createFrame(self, leoFrame):
+
+    # g.trace('(TabbedFrameFactory)')
+
+    c = leoFrame.c
+    if self.masterFrame is None:
+        self.createMaster()
+    tabw = self.masterFrame
+    dw = DynamicWindow(c,tabw)
+    self.leoFrames[dw] = leoFrame
+
+    # Shorten the title.
+    fname = c.mFileName
+    if fname:
+        title = os.path.basename(fname)
+    else:
+        title = leoFrame.title
+    tip = leoFrame.title
+
+    dw.setWindowTitle(tip) # 2010/1/1
+    idx = tabw.addTab(dw, title)
+    if tip: tabw.setTabToolTip(idx, tip)
+
+    dw.construct(master=tabw)
+    tabw.setCurrentIndex(idx)
+    
+    if 1:
+        # g.trace('(TabbedFrameFactor) adding bindings')
+        dw.ev_filter = leoQtEventFilter(c,w=dw,tag='sdi-frame')
+        dw.installEventFilter(dw.ev_filter)
+
+    # Work around the problem with missing dirty indicator
+    # by always showing the tab.
+    tabw.tabBar().setVisible(
+        self.alwaysShowTabs or tabw.count() > 1)
+
+    dw.show()
+    tabw.show()
+    return dw
+#@+node:ekr.20110605121601.18326: *6* createTab (leoQtLog)
+def createTab (self,tabName,widget=None,wrap='none'):
+    """ Create a new tab in tab widget
+
+    if widget is None, Create a QTextBrowser,
+    suitable for log functionality.
+    """
+
+    trace = False and not g.unitTesting
+    c = self.c
+    
+    if trace: g.trace(tabName,widget and g.app.gui.widget_name(widget) or '<no widget>')
+
+    if widget is None:
+
+        widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
+            # widget is subclass of QTextBrowser.
+        contents = leoQTextEditWidget(widget=widget,name='log',c=c)
+            # contents a wrapper.
+        widget.leo_log_wrapper = contents
+            # Inject an ivar into the QTextBrowser that points to the wrapper.
+            
+        if trace: g.trace('** creating',tabName,'self.widget',contents,'wrapper',widget)
+        
+        widget.setWordWrapMode(
+            g.choose(self.wrap,
+                QtGui.QTextOption.WordWrap,
+                QtGui.QTextOption.NoWrap))
+
+        widget.setReadOnly(False) # Allow edits.
+        self.logDict[tabName] = widget
+        if tabName == 'Log':
+            self.widget = contents # widget is an alias for logCtrl.
+            widget.setObjectName('log-widget')
+
+        if True: # 2011/05/28.
+            # Set binding on all text widgets.
+            theFilter = leoQtEventFilter(c,w=self,tag='log')
+            self.eventFilters.append(theFilter) # Needed!
+            widget.installEventFilter(theFilter)
+            
+        if True and tabName == 'Log':
+    
+            assert c.frame.top.__class__.__name__ == 'DynamicWindow'
+            find_widget = c.frame.top.leo_find_widget
+            
+            # 2011/11/21: A hack: add an event filter.
+            find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
+            find_widget.installEventFilter(find_widget.leo_event_filter)
+            if trace: g.trace('** Adding event filter for Find',find_widget)
+            
+            # 2011/11/21: A hack: make the find_widget an official log widget.
+            self.contentsDict['Find']=find_widget
+    
+        self.contentsDict[tabName] = widget
+        self.tabWidget.addTab(widget,tabName)
+    else:
+        contents = widget
+            # Unlike text widgets, contents is the actual widget.
+        widget.leo_log_wrapper = contents
+            # The leo_log_wrapper is the widget itself.
+        if trace: g.trace('** using',tabName,widget)
+        
+        if 1: # Now seems to work.
+            theFilter = leoQtEventFilter(c,w=contents,tag='tabWidget')
+            self.eventFilters.append(theFilter) # Needed!
+            widget.installEventFilter(theFilter)
+    
+        self.contentsDict[tabName] = contents
+        self.tabWidget.addTab(contents,tabName)
+
+    return contents
+#@+node:ekr.20060613090701: *6* cycleAllFocus (editCommandsClass)
+editWidgetCount = 0
+
+def cycleAllFocus (self,event):
+
+    '''Cycle the keyboard focus between Leo's outline,
+    all body editors and all tabs in the log pane.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; k = c.k
+    w = event and event.widget # Does **not** require a text widget.
+
+    pane = None # The widget that will get the new focus.
+    log = c.frame.log
+    w_name = g.app.gui.widget_name
+    
+    if trace: g.trace('**before',w_name(w),'isLog',log.isLogWidget(w))
+
+    # w may not be the present body widget, so test its name, not its id.
+    if w_name(w).startswith('body'):
+        n = c.frame.body.numberOfEditors
+        if n > 1:
+            self.editWidgetCount += 1
+            if self.editWidgetCount == 1:
+                pane = c.frame.body.bodyCtrl
+            elif self.editWidgetCount > n:
+                self.editWidgetCount = 0
+                c.frame.log.selectTab('Log')
+                pane = c.frame.log.logCtrl
+            else:
+                c.frame.body.cycleEditorFocus(event)
+                pane = None
+        else:
+            self.editWidgetCount = 0
+            c.frame.log.selectTab('Log')
+            pane = c.frame.log.logCtrl
+
+    elif log.isLogWidget(w):
+        log.cycleTabFocus()
+        if log.tabName == 'Log':
+            pane = c.frame.tree.canvas
+        else:
+            if trace:
+                pane = log.logCtrl
+                g.trace('**after cycleTabFocus',w_name(pane),pane)
+            return
+
+    else:
+        # A safe default: go to the body.
+        pane = c.frame.body.bodyCtrl
+    
+    if trace: g.trace('**after',w_name(pane),pane)
+
+    if pane:
+        k.newMinibufferWidget = pane
+        c.widgetWantsFocusNow(pane)
+        k.showStateAndMode()
+#@+node:ekr.20110605121601.18327: *6* cycleTabFocus (leoQtLog)
+def cycleTabFocus (self,event=None):
+
+    '''Cycle keyboard focus between the tabs in the log pane.'''
+    
+    trace = False and not g.unitTesting
+    c = self.c
+    w = self.tabWidget
+
+    i = w.currentIndex()
+    i += 1
+    if i >= w.count():
+        i = 0
+
+    tabName = w.tabText(i)
+    
+    self.selectTab(tabName,createText=False)
+    if trace: g.trace(i,tabName)
+
+#@+node:ekr.20111120124732.10184: *6* isLogWidget (leoQtLog)
+def isLogWidget(self,w):
+    
+    val = w == self or w in list(self.contentsDict.values())
+    # g.trace(val,w)
+    return val
+#@+node:ekr.20111119145033.10186: *6* isLogWidget (nullLog)
+def isLogWidget(self,w):
+    return False
+#@+node:ekr.20110605121601.18331: *6* selectTab & helper (leoQtLog)
+def selectTab (self,tabName,createText=True,widget=None,wrap='none'):
+    # createText is used by leoLog.selectTab.
+
+    '''Create the tab if necessary and make it active.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; w = self.tabWidget
+    
+    if trace: g.trace(tabName,g.callers())
+
+    # Step 1: See if the tab exits.
+    ok = self.selectHelper(tabName)
+    if ok: return
+
+    # Step 2: create tab if necessary.
+    self.createTab(tabName,widget=widget,wrap=wrap)
+    self.selectHelper(tabName)
+#@+node:ekr.20110605121601.18332: *7* selectHelper (leoQtLog)
+def selectHelper (self,tabName):
+
+    trace = False and not g.unitTesting
+    c,w = self.c,self.tabWidget
+
+    for i in range(w.count()):
+        if tabName == w.tabText(i):
+            w.setCurrentIndex(i)
+            
+            widget = w.widget(i)
+            
+            # 2011/11/21: Set the .widget ivar only if there is a wrapper.
+            wrapper = hasattr(widget,'leo_log_wrapper') and widget.leo_log_wrapper
+            if wrapper:
+                self.widget = wrapper
+            if trace: g.trace(tabName,'widget',widget,'wrapper',wrapper)
+            
+            # Do *not* set focus here!
+                # c.widgetWantsFocus(tab_widget)
+
+            if tabName == 'Spell':
+                # the base class uses this as a flag to see if
+                # the spell system needs initing
+                self.frameDict['Spell'] = widget
+                
+            self.tabName = tabName # 2011/11/20
+            return True
+    else:
+        self.tabName = None # 2011/11/20
+        if trace: g.trace('** not found',tabName)
+        return False
+#@+node:ekr.20111121084517.10188: *4* Fixed crashers involving calls to w.setSelectionRange
+#@+node:ekr.20110916215321.6708: *5* selectToMatchingBracket (leoEditCommands)
+def selectToMatchingBracket (self,event):
+    
+    c = self.c ; k = c.k ; w = self.editWidget(event)
+    if not w: return
+    
+    i = w.getInsertPoint()
+    s = w.getAllText()
+    
+    allBrackets = self.openBracketsList + self.closeBracketsList
+    
+    if i < len(s) and s[i] in allBrackets:
+        ch = s[i]
+    elif i > 0 and s[i-1] in allBrackets:
+        i -= 1
+        ch = s[i]
+    else:
+        g.es('no bracket selected')
+        return
+
+    d = {}
+    if ch in self.openBracketsList:
+        for z in range(len(self.openBracketsList)):
+            d [self.openBracketsList[z]] = self.closeBracketsList[z]
+        reverse = False # Search forward
+    else:
+        for z in range(len(self.openBracketsList)):
+            d [self.closeBracketsList[z]] = self.openBracketsList[z]
+        reverse = True # Search backward
+
+    delim2 = d.get(ch)
+    
+    # This should be generalized...
+    language = g.findLanguageDirectives(c,c.p)
+    if language in ('c','cpp','csharp'):
+        j = g.skip_matching_c_delims(s,i,ch,delim2,reverse=reverse)
+    else:
+        j = g.skip_matching_python_delims(s,i,ch,delim2,reverse=reverse)
+    # g.trace(i,j,ch,delim2,reverse,language)
+    if j not in (-1,i):
+        if reverse:
+            i += 1; j += 1
+        w.setSelectionRange(i,j,insert=j)
+            # 2011/11/21: Bug fix: was ins=j.
+        w.see(j)
+#@+node:ekr.20110605121601.18205: *5* updateEditors (qtBody)
+# Called from addEditor and assignPositionToEditor
+
+def updateEditors (self):
+
+    c = self.c ; p = c.p ; body = p.b
+    d = self.editorWidgets
+    if len(list(d.keys())) < 2: return # There is only the main widget
+
+    w0 = c.frame.body.bodyCtrl
+    i,j = w0.getSelectionRange()
+    ins = w0.getInsertPoint()
+    sb0 = w0.widget.verticalScrollBar()
+    pos0 = sb0.sliderPosition()
+    for key in d:
+        wrapper = d.get(key)
+        w = wrapper.widget
+        v = hasattr(w,'leo_p') and w.leo_p.v
+        if v and v == p.v and w != w0:
+            sb = w.verticalScrollBar()
+            pos = sb.sliderPosition()
+            wrapper.setAllText(body)
+            self.recolorWidget(p,wrapper)
+            sb.setSliderPosition(pos)
+
+    c.bodyWantsFocus()
+    w0.setSelectionRange(i,j,insert=ins)
+        # 2011/11/21: bug fix: was ins=ins
+    sb0.setSliderPosition(pos0)
+#@+node:ekr.20111121222953.10973: *4* Fixed hang in cycleAllFocus
+@nocolor-node
+
+The safe default pane is the body pane.  It's also the simplest code.
+#@+node:ekr.20111121222953.10974: *4* Fixed crasher in k.handleDefaultChar
+@nocolor-node
+
+The code must be careful that the log widget supports the HighLevelInterface.
+#@+node:ekr.20111121210400.11142: *4* Fixed bug: Focus lost after opening or closing tab
+#@+node:ekr.20111121214837.10184: *5* Changed
+#@+node:ekr.20031218072017.2609: *6* app.closeLeoWindow
+def closeLeoWindow (self,frame):
+
+    """Attempt to close a Leo window.
+
+    Return False if the user veto's the close."""
+
+    c = frame.c
+
+    # g.trace('frame',frame,g.callers(4))
+
+    c.endEditing() # Commit any open edits.
+
+    if c.promptingForClose:
+        # There is already a dialog open asking what to do.
+        return False
+
+    g.app.config.writeRecentFilesFile(c)
+        # Make sure .leoRecentFiles.txt is written.
+
+    if c.changed:
+        c.promptingForClose = True
+        veto = frame.promptForSave()
+        c.promptingForClose = False
+        if veto: return False
+
+    g.app.setLog(None) # no log until we reactive a window.
+
+    g.doHook("close-frame",c=c)
+        # This may remove frame from the window list.
+
+    if frame in g.app.windowList:
+        g.app.destroyWindow(frame)
+
+    if g.app.windowList:
+        # Pick a window to activate so we can set the log.
+        frame = g.app.windowList[0]
+        frame.deiconify()
+        frame.lift()
+        frame.c.setLog()
+        master = hasattr(frame.top,'leo_master') and frame.top.leo_master
+        if master: # 2011/11/21: selecting the new tab ensures focus is set.
+            # frame.top.leo_master is a TabbedTopLevel.
+            master.select(frame.c)
+        frame.c.bodyWantsFocus()
+        frame.c.outerUpdate()
+    elif not g.app.unitTesting:
+        g.app.finishQuit()
+
+    return True # The window has been closed.
+#@+node:ekr.20110605121601.18456: *6* select (leoTabbedTopLevel)
+def select (self,c):
+
+    '''Select the tab for c.'''
+    
+    dw = c.frame.top # A DynamicWindow
+    i = self.indexOf(dw)
+    self.setCurrentIndex(i)
+    # g.trace(i,c)
+#@+node:ekr.20090520055433.5948: *6* g.findOpenFile
+def findOpenFile(fileName):
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    for frame in g.app.windowList:
+        c = frame.c
+        if g.os_path_realpath(munge(fileName)) == g.os_path_realpath(munge(c.mFileName)):
+            frame.bringToFront()
+            c.setLog()
+            # 2011/11/21: selecting the new tab ensures focus is set.
+            master = hasattr(frame.top,'leo_master') and frame.top.leo_master
+            if master: # frame.top.leo_master is a TabbedTopLevel.
+                master.select(frame.c)
+            c.outerUpdate()
+            return c
+    return None
+#@+node:ekr.20090520055433.5952: *6* g.finishOpen
+def finishOpen(c):
+
+    k = c.k
+    # New in Leo 4.6: provide an official way for very late initialization.
+
+    # # 2011/11/21: selecting the new tab ensures focus is set.
+    # master = hasattr(c.frame.top,'leo_master') and c.frame.top.leo_master
+    # if master: # frame.top.leo_master is a TabbedTopLevel.
+        # master.select(c)
+
+    c.frame.tree.initAfterLoad()
+    c.initAfterLoad()
+    c.redraw()
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.chapterController:
+        c.chapterController.finishCreate()
+    if k:
+        k.setDefaultInputState()
+    c.initialFocusHelper()
+    if k:
+        k.showStateAndMode()
+
+    c.frame.initCompleteHint()
+    return True
+#@+node:ekr.20111122094453.10201: *4* Ignore unbound Alt/Ctrl keys, especially Alt/Ctrl-N
+@nocolor-node
+
+The bug was in k.handleDefaultChar.  No substantial change made to eventFilter.
+#@+node:ekr.20111124082644.10919: *4* Fixed bug: ensure global @buttons work
+@nocolor-node
+
+What I did:
+    
+1. Fixed major bug in settingsTreeParser.visitNode.
+   It now does p.copy() to protect the callers traverals.
+   This could have significant impacts on people's settings.
+   
+2. Added g.app.unitTestDict for unit testing.
+
+3. Leo now extends the list of @buttons and @commands, rather than replacing them.
+   This is reasonable only because leoSettings.leo should never define *active*
+   buttons or commands.
+#@+node:ekr.20111204102027.10279: *4* Fixed bug in p.moveToFirstChild
+#@+node:ekr.20040303175026.11: *5* p.moveToNthChildOf
+def moveToNthChildOf (self,parent,n):
+
+    """Move a position to the nth child of parent."""
+
+    p = self # Do NOT copy the position!
+
+    parent._adjustPositionBeforeUnlink(p)
+    p._unlink()
+    p._linkAsNthChild(parent,n)
+
+    return p
+#@+node:ekr.20040306060312: *5* p.moveToFirst/LastChildOf
+def moveToFirstChildOf (self,parent):
+    """Move a position to the first child of parent."""
+    
+    p = self # Do NOT copy the position!
+    return p.moveToNthChildOf (parent,0)  # Major bug fix: 2011/12/04
+
+def moveToLastChildOf (self,parent):
+    """Move a position to the last child of parent."""
+    
+    p = self # Do NOT copy the position!
+    n = parent.numberOfChildren()
+    if p.parent() == parent:
+        n -= 1 # 2011/12/10: Another bug fix.
+    return p.moveToNthChildOf (parent,n) # Major bug fix: 2011/12/04
+#@+node:ekr.20111125072438.10203: *4* Fixed bug 804960: Refreshing unlinks clones, just reopening connects them again
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/804960
+
+When we clone a node inside an @shadow (containing @others) node and then
+refresh the @shadow node from file, the clone is unlinked and marked as changed.
+If we now save, close the .leo file and open it again, the nodes are linked
+again! (showing "cloned" symbol) User's thought: "How the heck can the file
+change _between save and re-open_ when I changed nothing?"
+
+I think what should be done about this is the check that Leo does when it opens
+the file again, and that check should be done immediately after the "refresh
+node from file" operation. Also, at this point, the "Recovered nodes" node
+should appear (if file and node have both changed), not only after the next .leo
+file close/reopen (as that happens quite infrequently, I guess, e.g. once a day
+for me). Otherwise, the user can easily lose data.
+#@+node:ekr.20111210131839.10311: *5* changed...
+#@+node:ekr.20090218115025.5: *6* fc.initIvars
+def initIvars(self):
+
+    # General
+    c = self.c
+    self.mFileName = ""
+    self.fileDate = -1
+    self.leo_file_encoding = c.config.new_leo_file_encoding
+
+    # The bin param doesn't exist in Python 2.3;
+    # the protocol param doesn't exist in earlier versions of Python.
+    version = '.'.join([str(sys.version_info[i]) for i in (0,1)])
+    # self.python23 = g.CheckVersion(version,'2.3')
+
+    # For reading
+    self.checking = False # True: checking only: do *not* alter the outline.
+    self.descendentExpandedList = []
+    self.descendentMarksList = []
+    self.forbiddenTnodes = []
+    self.descendentTnodeUaDictList = []
+    self.descendentVnodeUaDictList = []
+    self.ratio = 0.5
+
+    self.currentVnode = None
+    self.rootVnode = None
+
+    # For writing
+    self.read_only = False
+    self.rootPosition = None
+    self.outputFile = None
+    self.openDirectory = None
+    self.putCount = 0
+    # self.topVnode = None
+    self.toString = False
+    self.usingClipboard = False
+    self.currentPosition = None
+    # New in 3.12
+    self.copiedTree = None
+    self.gnxDict = {}
+        # keys are gnx strings as returned by canonicalTnodeIndex.
+        # Values are vnodes.
+        # 2011/12/10: This dict is never re-inited.
+    # g.trace('***clearing gnxDict',c)
+        
+    self.vnodesDict = {}
+        # keys are gnx strings; values are ignored
+#@+node:ekr.20031218072017.1559: *6* fc.getLeoOutlineFromClipboard & helpers
+def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
+
+    '''Read a Leo outline from string s in clipboard format.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; current = c.p ; check = not reassignIndices
+    checkAfterRead = False or c.config.getBool('check_outline_after_read')
+
+    self.initReadIvars() # 2010/02/05
+
+    # Save the hidden root's children.
+    children = c.hiddenRootNode.children
+
+    # 2011/12/10: never recreate the gnxDict.
+        # Always recreate the gnxDict
+        # self.gnxDict = {}
+    # g.trace('*** clearing gnxDict',g.callers())
+    
+    # 2011/12/12: save and clear gnxDict.
+    # This ensures that new indices will be used for all nodes.
+    if reassignIndices:
+        oldGnxDict = self.gnxDict
+        self.gnxDict = {}
+    else:
+        # Make sure all pasted nodes are entered into the gnxDict.
+        x = g.app.nodeIndices
+        for v in c.all_unique_nodes():
+            index = x.toString(v.fileIndex)
+            self.gnxDict[index] = v
+
+    self.usingClipboard = True
+    try:
+        # This encoding must match the encoding used in putLeoOutline.
+        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+        if trace: g.trace(s)
+
+        # readSaxFile modifies the hidden root.
+        v = self.readSaxFile(
+            theFile=None, fileName='<clipboard>',
+            silent=True, # don't tell about stylesheet elements.
+            inClipboard=True,reassignIndices=reassignIndices,s=s)
+        if not v:
+            return g.es("the clipboard is not valid ",color="blue")
+    finally:
+        self.usingClipboard = False
+
+    # Restore the hidden root's children
+    c.hiddenRootNode.children = children
+
+    # Unlink v from the hidden root.
+    v.parents.remove(c.hiddenRootNode)
+
+    p = leoNodes.position(v)
+
+    # Important: we must not adjust links when linking v
+    # into the outline.  The read code has already done that.
+    if current.hasChildren() and current.isExpanded():
+        if check and not self.checkPaste(current,p):
+            return None
+        p._linkAsNthChild(current,0,adjust=False)
+    else:
+        if check and not self.checkPaste(current.parent(),p):
+            return None
+        p._linkAfter(current,adjust=False)
+
+    if reassignIndices:
+        self.gnxDict = oldGnxDict
+            # 2011/12/12: restore gnxDict.
+        for p2 in p.self_and_subtree():
+            v = p2.v
+            v.fileIndex = index = g.app.nodeIndices.getNewIndex()
+            self.gnxDict[index] = v
+
+    if trace and verbose:
+        g.trace('**** dumping outline...')
+        c.dumpOutline()
+
+    if checkAfterRead:
+        g.trace('checking outline after paste',color='blue')
+        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+
+    c.selectPosition(p)
+    self.initReadIvars() # 2010/02/05
+    return p
+
+getLeoOutline = getLeoOutlineFromClipboard # for compatibility
+#@+node:ekr.20080410115129.1: *7* checkPaste
+def checkPaste (self,parent,p):
+
+    '''Return True if p may be pasted as a child of parent.'''
+
+    if not parent: return True
+
+    parents = [z.copy() for z in parent.self_and_parents()]
+
+    for p in p.self_and_subtree():
+        for z in parents:
+            # g.trace(p.h,id(p.v),id(z.v))
+            if p.v == z.v:
+                g.es('Invalid paste: nodes may not descend from themselves',color="blue")
+                return False
+
+    return True
+#@+node:ekr.20060919142200.1: *6* fc.initReadIvars
+def initReadIvars (self):
+
+    self.descendentTnodeUaDictList = []
+    self.descendentVnodeUaDictList = []
+    self.descendentExpandedList = []
+    self.descendentMarksList = []
+        # 2011/12/10: never re-init this dict.
+        # self.gnxDict = {}
+        # g.trace('*** clearing gnxDict',g.callers())
+    self.c.nodeConflictList = [] # 2010/01/05
+    self.c.nodeConflictFileName = None # 2010/01/05
+#@+node:ekr.20111213092149.10324: *4* Fixed crasher in reportMismatch
+@nocolor-node
+
+>  File "/path/to/leo/core/leoImport.py", line 2070, in reportMismatch
+>    line = repr(lines2[i])
+> IndexError: list index out of range
+#@+node:ekr.20111214093735.10286: *4* Disabled section-reference handling in @auto files
+#@+node:ekr.20111214093735.10298: *5* Changed
+#@+node:ekr.20070703122141.104: *6* checkTrialWrite
+def checkTrialWrite (self,s1=None,s2=None):
+
+    '''Return True if a trial write produces the original file.'''
+
+    # s1 and s2 are for unit testing.
+    trace = False
+    c = self.c ; at = c.atFileCommands
+
+    if s1 is None and s2 is None:
+        if self.isRst:
+            outputFile = StringIO()
+            c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
+            s1,s2 = self.file_s,outputFile.getvalue()
+        elif self.atAuto: # 2011/12/14: Special case for @auto.
+            at.writeOneAtAutoNode(self.root,toString=True,force=True)
+            s1,s2 = self.file_s,at.stringOutput
+        else:
+            # 2011/11/09: We must write sentinels in s2 to handle @others correctly.
+            at.write(self.root,
+                # nosentinels=True,thinFile=False,
+                nosentinels=False,thinFile=True,
+                scriptWrite=False,toString=True,
+            )
+            s1,s2 = self.file_s, at.stringOutput
+            
+            # Now remove sentinels from s2.
+            line_delim = self.lineCommentDelim or self.lineCommentDelim2 or ''
+            start_delim = self.blockCommentDelim1 or self.blockCommentDelim2 or ''
+            # g.trace(self.language,line_delim,start_delim)
+            assert line_delim or start_delim
+            s2 = self.importCommands.removeSentinelLines(s2,
+                line_delim,start_delim,unused_end_delim=None)
+
+    s1 = g.toUnicode(s1,self.encoding)
+    s2 = g.toUnicode(s2,self.encoding)
+
+    # Make sure we have a trailing newline in both strings.
+    s1 = s1.replace('\r','')
+    s2 = s2.replace('\r','')
+    if not s1.endswith('\n'): s1 = s1 + '\n'
+    if not s2.endswith('\n'): s2 = s2 + '\n'
+
+    if s1 == s2: return True
+    
+    if self.ignoreBlankLines or self.ignoreLeadingWs:
+        lines1 = g.splitLines(s1)
+        lines2 = g.splitLines(s2)
+        lines1 = self.adjustTestLines(lines1)
+        lines2 = self.adjustTestLines(lines2)
+        s1 = ''.join(lines1)
+        s2 = ''.join(lines2)
+        
+    if 1: # Token-based comparison.
+        bad_i1,bad_i2,ok = self.scanAndCompare(s1,s2)
+        if ok: return ok
+        
+    else: # Line-based comparison: can not possibly work for html.
+        n1,n2 = len(lines1), len(lines2)
+        ok = True ; bad_i = 0
+        for i in range(max(n1,n2)):
+            ok = self.compareHelper(lines1,lines2,i,self.strict)
+            if not ok:
+                bad_i = i
+                break
+
+    # Unit tests do not generate errors unless the mismatch line does not match.
+    if g.app.unitTesting:
+        d = g.app.unitTestDict
+        ok = d.get('expectedMismatchLine') == bad_i1
+            # was d.get('actualMismatchLine')
+        if not ok: d['fail'] = g.callers()
+
+    if trace or not ok:
+        lines1 = g.splitLines(s1)
+        lines2 = g.splitLines(s2)
+        self.reportMismatch(lines1,lines2,bad_i1,bad_i2)
+
+    return ok
+#@+node:ekr.20070707072749: *6* run (baseScannerClass)
+def run (self,s,parent):
+
+    c = self.c
+    self.root = root = parent.copy()
+    self.file_s = s
+    self.tab_width = self.importCommands.getTabWidth(p=root)
+    # g.trace('tab_width',self.tab_width)
+    # Create the ws equivalent to one tab.
+    if self.tab_width < 0:
+        self.tab_ws = ' '*abs(self.tab_width)
+    else:
+        self.tab_ws = '\t'
+
+    # Init the error/status info.
+    self.errors = 0
+    self.errorLines = []
+    self.mismatchWarningGiven = False
+    changed = c.isChanged()
+
+    # Use @verbatim to escape section references.
+    # 2011/12/14: @auto never supports section references.
+    if self.escapeSectionRefs and not self.atAuto: 
+        s = self.escapeFalseSectionReferences(s)
+
+    # Check for intermixed blanks and tabs.
+    if self.strict or self.atAutoWarnsAboutLeadingWhitespace:
+        if not self.isRst:
+            self.checkBlanksAndTabs(s)
+
+    # Regularize leading whitespace for strict languages only.
+    if self.strict: s = self.regularizeWhitespace(s) 
+
+    # Generate the nodes, including directive and section references.
+    self.scan(s,parent)
+
+    # Check the generated nodes.
+    # Return True if the result is equivalent to the original file.
+    ok = self.errors == 0 and self.check(s,parent)
+    g.app.unitTestDict ['result'] = ok
+
+    # Insert an @ignore directive if there were any serious problems.
+    if not ok: self.insertIgnoreDirective(parent)
+
+    if self.atAuto and ok:
+        for p in root.self_and_subtree():
+            p.clearDirty()
+        c.setChanged(changed)
+    else:
+        root.setDirty(setDescendentsDirty=False)
+        c.setChanged(True)
+#@+node:ekr.20071110105107: *7* checkBlanksAndTabs
+def checkBlanksAndTabs(self,s):
+
+    '''Check for intermixed blank & tabs.'''
+
+    # Do a quick check for mixed leading tabs/blanks.
+    blanks = tabs = 0
+
+    for line in g.splitLines(s):
+        lws = line[0:g.skip_ws(line,0)]
+        blanks += lws.count(' ')
+        tabs += lws.count('\t')
+
+    ok = blanks == 0 or tabs == 0
+
+    if not ok:
+        self.report('intermixed blanks and tabs')
+
+    return ok
+#@+node:ekr.20070808115837.1: *7* regularizeWhitespace
+def regularizeWhitespace (self,s):
+
+    '''Regularize leading whitespace in s:
+    Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
+    This is only called for strict languages.'''
+
+    changed = False ; lines = g.splitLines(s) ; result = [] ; tab_width = self.tab_width
+
+    if tab_width < 0: # Convert tabs to blanks.
+        for line in lines:
+            i, w = g.skip_leading_ws_with_indent(line,0,tab_width)
+            s = g.computeLeadingWhitespace(w,-abs(tab_width)) + line [i:] # Use negative width.
+            if s != line: changed = True
+            result.append(s)
+    elif tab_width > 0: # Convert blanks to tabs.
+        for line in lines:
+            s = g.optimizeLeadingWhitespace(line,abs(tab_width)) # Use positive width.
+            if s != line: changed = True
+            result.append(s)
+
+    if changed:
+        action = g.choose(self.tab_width < 0,'tabs converted to blanks','blanks converted to tabs')
+        message = 'inconsistent leading whitespace. %s' % action
+        self.report(message)
+
+    return ''.join(result)
+#@+node:ekr.20041005105605.161: *6* at.putBody
+# oneNodeOnly is no longer used, but it might be used in the future?
+
+def putBody(self,p,oneNodeOnly=False,fromString=''):
+
+    """ Generate the body enclosed in sentinel lines."""
+
+    trace = False and not g.unitTesting
+    at = self
+    at_comment_seen,at_delims_seen,at_warning_given=False,False,False
+        # 2011/05/25: warn if a node contains both @comment and @delims.
+
+    # New in 4.3 b2: get s from fromString if possible.
+    s = g.choose(fromString,fromString,p.b)
+
+    p.v.setVisited()
+    if trace: g.trace('visit',p.h)
+        # Make sure v is never expanded again.
+        # Suppress orphans check.
+    if not at.thinFile:
+        p.v.setWriteBit() # Mark the vnode to be written.
+    if not at.thinFile and not s: return
+
+    inCode = True
+    << Make sure all lines end in a newline >>
+    at.raw = False # 2007/07/04: Bug fix exposed by new sentinels.
+    i = 0
+    while i < len(s):
+        next_i = g.skip_line(s,i)
+        assert next_i > i,'putBody'
+        kind = at.directiveKind4(s,i)
+        << handle line at s[i] >>
+        i = next_i
+    if not inCode:
+        at.putEndDocLine()
+
+    if not trailingNewlineFlag:
+        if at.writeVersion5:
+            if at.sentinels:
+                pass # Never write @nonl
+            elif at.atAuto and not at.atEdit:
+                at.onl() # 2010/08/01: bug fix: ensure newline here.
+        else:
+            if at.sentinels:
+                at.putSentinel("@nonl")
+            elif at.atAuto and not at.atEdit:
+                # Ensure all @auto nodes end in a newline!
+                at.onl()
+#@+node:ekr.20041005105605.162: *7* << Make sure all lines end in a newline >>
+@ If we add a trailing newline, we'll generate an @nonl sentinel below.
+
+- We always ensure a newline in @file and @thin trees.
+- This code is not used used in @asis trees.
+- New in Leo 4.4.3 b1: We add a newline in @nosent trees unless
+  @bool force_newlines_in_at_nosent_bodies = False
+@c
+
+if s:
+    trailingNewlineFlag = s[-1] == '\n'
+    if not trailingNewlineFlag:
+        if (at.sentinels or 
+            (not at.atAuto and at.force_newlines_in_at_nosent_bodies)
+        ):
+            # g.trace('Added newline',repr(s))
+            s = s + '\n'
+else:
+    trailingNewlineFlag = True # don't need to generate an @nonl
+#@+node:ekr.20041005105605.163: *7* << handle line at s[i] >> (putBody)
+if trace: g.trace(repr(s[i:next_i]))
+
+if kind == at.noDirective:
+    if not oneNodeOnly:
+        if inCode:
+            if at.raw or at.atAuto: # 2011/12/14: Ignore references in @auto.
+                at.putCodeLine(s,i)
+            else:
+                hasRef,n1,n2 = at.findSectionName(s,i)
+                if hasRef:
+                    at.putRefLine(s,i,n1,n2,p)
+                else:
+                    at.putCodeLine(s,i)
+        else:
+            at.putDocLine(s,i)
+elif at.raw:
+    if kind == at.endRawDirective:
+        at.raw = False
+        at.putSentinel("@@end_raw")
+        i = g.skip_line(s,i)
+    else:
+        # Fix bug 784920: @raw mode does not ignore directives 
+        at.putCodeLine(s,i)
+elif kind in (at.docDirective,at.atDirective):
+    assert not at.pending,'putBody at.pending'
+    if not inCode: # Bug fix 12/31/04: handle adjacent doc parts.
+        at.putEndDocLine() 
+    at.putStartDocLine(s,i,kind)
+    inCode = False
+elif kind in (at.cDirective,at.codeDirective):
+    # Only @c and @code end a doc part.
+    if not inCode:
+        at.putEndDocLine() 
+    at.putDirective(s,i)
+    inCode = True
+elif kind == at.allDirective:
+    if not oneNodeOnly:
+        if inCode: at.putAtAllLine(s,i,p)
+        else: at.putDocLine(s,i)
+elif kind == at.othersDirective:
+    if not oneNodeOnly:
+        if inCode: at.putAtOthersLine(s,i,p)
+        else: at.putDocLine(s,i)
+elif kind == at.rawDirective:
+    at.raw = True
+    at.putSentinel("@@raw")
+elif kind == at.endRawDirective:
+    # Fix bug 784920: @raw mode does not ignore directives 
+    at.error('unmatched @end_raw directive: %s' % p.h)
+    # at.raw = False
+    # at.putSentinel("@@end_raw")
+    # i = g.skip_line(s,i)
+elif kind == at.startVerbatim:
+    # Fix bug 778204: @verbatim not a valid Leo directive.
+    if g.unitTesting:
+        # A hack: unit tests for @shadow use @verbatim as a kind of directive.
+        pass
+    else:
+        g.trace(at.atShadow)
+        at.error('@verbatim is not a Leo directive: %s' % p.h)
+    if 0: # Old code.  This is wrong: @verbatim is not a directive!
+        at.putSentinel("@verbatim")
+        at.putIndent(at.indent)
+        i = next_i
+        next_i = g.skip_line(s,i)
+        at.os(s[i:next_i])
+elif kind == at.miscDirective:
+    # Fix bug 583878: Leo should warn about @comment/@delims clashes.
+    if g.match_word(s,i,'@comment'):
+        at_comment_seen = True
+    elif g.match_word(s,i,'@delims'):
+        at_delims_seen = True
+    if at_comment_seen and at_delims_seen and not at_warning_given:
+        at_warning_given = True
+        at.error('@comment and @delims in node %s' % p.h)
+    at.putDirective(s,i)
+else:
+    at.error('putBody: can not happen: unknown directive kind: %s' % kind)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

@@ -1865,6 +1865,9 @@ class baseScannerClass (scanUtility):
                 outputFile = StringIO()
                 c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
                 s1,s2 = self.file_s,outputFile.getvalue()
+            elif self.atAuto: # 2011/12/14: Special case for @auto.
+                at.writeOneAtAutoNode(self.root,toString=True,force=True)
+                s1,s2 = self.file_s,at.stringOutput
             else:
                 # 2011/11/09: We must write sentinels in s2 to handle @others correctly.
                 at.write(self.root,
@@ -3307,8 +3310,9 @@ class baseScannerClass (scanUtility):
         self.mismatchWarningGiven = False
         changed = c.isChanged()
 
-        # Use @verbatim to escape section references
-        if self.escapeSectionRefs: # 2009/12/27
+        # Use @verbatim to escape section references.
+        # 2011/12/14: @auto never supports section references.
+        if self.escapeSectionRefs and not self.atAuto: 
             s = self.escapeFalseSectionReferences(s)
 
         # Check for intermixed blanks and tabs.
