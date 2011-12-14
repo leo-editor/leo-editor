@@ -14,6 +14,23 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
+.. @+node:ekr.20111214071412.10285: *4* Update download page
+http://groups.google.com/group/leo-editor/browse_thread/thread/9f62aa1461249f21
+
+The core Leo code is always being improved and developed, and unit-testing
+ensures that the daily commits are as bug-free as possible. In fact (insert #%
+or qualifier) of the time, downloading the most recent "nightly snapshot" of the
+development code from our version control system Bazaar (link to here
+http://www.greygreen.org/leo/) is going to give you code that is just as stable
+and much more up-to-date than the most recent "release" available here (link to
+http://sourceforge.net/projects/leo/files/OldFiles/), which most Leonistas would
+at this point consider already outdated.
+
+If you are just checking Leo out, feel free to use the latter release download
+if it makes you feel more secure, but once you've decided to work with Leo on a
+regular basis, we highly recommend regularly keeping your installation up to
+date with the most recent snapshot.
+
 .. @+node:ekr.20111125072438.10202: *4* ** Fix clone bugs
 .. @+node:ekr.20111109122014.9792: *5* * Allow @all only in top-level @<file> nodes
 .. @+node:ekr.20111125072438.10204: *5* bug 882243: Clones sometimes not saved

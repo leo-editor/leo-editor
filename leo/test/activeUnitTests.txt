@@ -12137,12 +12137,15 @@ import leo.core.leoImport as leoImport
 ic = c.importCommands
 scanner = leoImport.rstScanner(importCommands=ic,atAuto=True)
 scanner.root = p
-s1 = ["abc",]
+s1 = ["abc","xyz",]
 s2 = ["xyz",]
 
 scanner.reportMismatch(s1,s2,1,1)
 
-# Why is leoSettings.leo scanned twice in dynamicUnitTest.leo?
+s1 = ["xyz",]
+s2 = ["abc","xyz",]
+
+scanner.reportMismatch(s1,s2,1,1)
 #@+node:ekr.20111111074026.3972: *4* @test htmlScanner.skipComment/Id/String
 import leo.core.leoImport as leoImport
 ic = c.importCommands

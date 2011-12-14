@@ -2066,7 +2066,7 @@ class baseScannerClass (scanUtility):
             aList.append('%4d %s' % (i,line))
             
         aList.append('\nImported file...\n')
-        for i in range(max(0,bad_i2-2),min(bad_i2+3,n1)):
+        for i in range(max(0,bad_i2-2),min(bad_i2+3,n2)):
             line = repr(lines2[i])
             aList.append('%4d %s' % (i,line))
 

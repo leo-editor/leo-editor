@@ -4209,6 +4209,12 @@ def initReadIvars (self):
         # g.trace('*** clearing gnxDict',g.callers())
     self.c.nodeConflictList = [] # 2010/01/05
     self.c.nodeConflictFileName = None # 2010/01/05
+#@+node:ekr.20111213092149.10324: *4* Fixed crasher in reportMismatch
+@nocolor-node
+
+>  File "/path/to/leo/core/leoImport.py", line 2070, in reportMismatch
+>    line = repr(lines2[i])
+> IndexError: list index out of range
 #@+node:ekr.20111113141805.10062: *3* Code
 #@+node:ekr.20111109105907.9796: *4* Simplified g.pr
 #@+node:ekr.20111023164430.16771: *4* Removed unused color tags
