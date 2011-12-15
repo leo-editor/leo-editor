@@ -113,8 +113,6 @@
 <v t="ekr.20041119034357.50"><vh>@color body_insertion_cursor_color = None</vh></v>
 <v t="ekr.20041119034357.49"><vh>@color body_text_background_color = None</vh></v>
 <v t="ekr.20041119034357.48"><vh>@color body_text_foreground_color = None</vh></v>
-<v t="ekr.20051006200015"><vh>@color body_text_selection_background_color = Gray80</vh></v>
-<v t="ekr.20051006200015.1"><vh>@color body_text_selection_foreground_color = white</vh></v>
 <v t="ekr.20060605081712"><vh>@color command_mode_bg_color = #f2fdff</vh></v>
 <v t="ekr.20060822101942.1"><vh>@color command_mode_fg_color = None</vh></v>
 <v t="ekr.20080514082950.2"><vh>@color insert_mode_bg_color = #fdf5f5</vh></v>
@@ -1720,10 +1718,10 @@ False: use local time.</t>
 <t tx="ekr.20041119034357.44">True:  auto-indent aligns with open ({[ brackets
 
 False: auto-indent increases indentation by one tab for Python only.</t>
-<t tx="ekr.20041119034357.48">Foreground color of body text.
+<t tx="ekr.20041119034357.48">Foreground color of body text.  This setting *is* used in the QtGui.
 
 Note: this setting can be overridden by the x_mode_fg_color settings.</t>
-<t tx="ekr.20041119034357.49">Background color of body text.
+<t tx="ekr.20041119034357.49">Background color of body text.  This setting *is* used in the QtGui.
 
 #ffecea
 
@@ -2209,11 +2207,6 @@ Please do not change this; it would make a unit test fail.</t>
 
 Doing so would make unit tests fail.
 </t>
-<t tx="ekr.20051006200015">Use a light selectbackground value so syntax coloring looks good.
-
-Default is Gray80.
-CadetBlue3 has been suggested.</t>
-<t tx="ekr.20051006200015.1">Default is white.</t>
 <t tx="ekr.20051007193321">abbrev-list                         = None
 abbrev-read                         = None
 abbrev-write                        = None
