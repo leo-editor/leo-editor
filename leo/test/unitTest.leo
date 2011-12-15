@@ -102,32 +102,10 @@
 <v t="ekr.20090704085350.5029"><vh>spam</vh></v>
 <v t="ekr.20090704085350.5030"><vh>eggs</vh></v>
 </v>
-<v t="ekr.20110610122533.3407"><vh>@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20111214102637.1952"><vh>class child1</vh>
-<v t="ekr.20111214102637.1953"><vh>child1_method1</vh></v>
-<v t="ekr.20111214102637.1954"><vh>child1_method2</vh></v>
-</v>
-<v t="ekr.20111214102637.1955"><vh>class child2</vh>
-<v t="ekr.20111214102637.1956"><vh>child2_method1</vh></v>
-<v t="ekr.20111214102637.1957"><vh>child2_method2</vh></v>
-</v>
-<v t="ekr.20111214102637.1958"><vh>class child1</vh>
-<v t="ekr.20111214102637.1959"><vh>child1_method1</vh></v>
-<v t="ekr.20111214102637.1960"><vh>child1_method2</vh></v>
-</v>
-<v t="ekr.20111214102637.1961"><vh>class child2</vh>
-<v t="ekr.20111214102637.1962"><vh>child2_method1</vh></v>
-<v t="ekr.20111214102637.1963"><vh>child2_method2</vh></v>
-</v>
-</v>
-<v t="ekr.20090704085350.5056"><vh>@auto ../test/unittest/at-auto-test.py</vh>
-<v t="ekr.20111214102637.1964"><vh>spam</vh></v>
-<v t="ekr.20111214102637.1965"><vh>eggs</vh></v>
-</v>
+<v t="ekr.20110610122533.3407"><vh>@auto ../test/at-auto-unit-test.py</vh></v>
+<v t="ekr.20090704085350.5056"><vh>@auto ../test/unittest/at-auto-test.py</vh></v>
 <v t="ekr.20111214104615.3942"><vh>@auto ../test/unittest/at-auto-section-ref-test.py</vh></v>
-<v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh>
-<v t="ekr.20111214102637.1966"><vh>at_auto_child</vh></v>
-</v>
+<v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
 <v t="ekr.20111021115306.3697"><vh>@file ../test/unittest/tex-error.tex</vh></v>
 <v t="ekr.20110615130436.3317" a="O"><vh>@file nonexistent-directory/orphan-bit-test.txt</vh>
 <v t="ekr.20110615130436.3318"><vh>Child goes here.</vh></v>
@@ -613,10 +591,6 @@ for h in d2.keys():
 
 Important: this may cause crashes on some platforms.
 </t>
-<t tx="ekr.20080904084223.1">@language python
-@tabwidth -4
-@others
-@ignore</t>
 <t tx="ekr.20080907123324.2">@language python
 @tabwidth -4
 @others
@@ -643,10 +617,6 @@ Important: this may cause crashes on some platforms.
     pass</t>
 <t tx="ekr.20090704085350.5036">def eggs():
     pass</t>
-<t tx="ekr.20090704085350.5056">@language python
-@tabwidth -4
-@others
-@ignore</t>
 <t tx="ekr.20091206090247.5060"># Use these with caution.</t>
 <t tx="ekr.20091206090247.5061">count = 0
 for p in c.all_unique_positions():
@@ -871,11 +841,6 @@ False:
 </t>
 <t tx="ekr.20110521073115.3496">cython keywords
 </t>
-<t tx="ekr.20110610122533.3407">@language python
-@tabwidth -4
-@others
-# last line
-@ignore</t>
 <t tx="ekr.20110615130436.3317">@language rest
 
 This file is part of a unit test that ensures that orphan bits are retained when
@@ -1081,53 +1046,5 @@ try:
 finally:
     setup()</t>
 <t tx="ekr.20111211094936.3970"></t>
-<t tx="ekr.20111214102637.1952">class child1:
-    @others
-    # After @others in child1.
-</t>
-<t tx="ekr.20111214102637.1953">def child1_method1():
-    pass
-</t>
-<t tx="ekr.20111214102637.1954">def child1_method2():
-    pass
-</t>
-<t tx="ekr.20111214102637.1955">class child2:
-    @others
-</t>
-<t tx="ekr.20111214102637.1956">def child2_method1():
-    pass
-</t>
-<t tx="ekr.20111214102637.1957">def child2_method2():
-    pass
-</t>
-<t tx="ekr.20111214102637.1958">class child1:
-    @others
-    # After @others in child1.
-</t>
-<t tx="ekr.20111214102637.1959">def child1_method1():
-    pass
-</t>
-<t tx="ekr.20111214102637.1960">def child1_method2():
-    pass
-</t>
-<t tx="ekr.20111214102637.1961">class child2:
-    @others
-</t>
-<t tx="ekr.20111214102637.1962">def child2_method1():
-    pass
-</t>
-<t tx="ekr.20111214102637.1963">def child2_method2():
-    pass
-</t>
-<t tx="ekr.20111214102637.1964">def spam():
-    pass
-</t>
-<t tx="ekr.20111214102637.1965">def eggs():
-    pass
-
-</t>
-<t tx="ekr.20111214102637.1966">def at_auto_child():
-    pass
-</t>
 </tnodes>
 </leo_file>
