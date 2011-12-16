@@ -3617,7 +3617,11 @@ class atFile:
                 inCode = True
             elif kind == at.allDirective:
                 if not oneNodeOnly:
-                    if inCode: at.putAtAllLine(s,i,p)
+                    if inCode:
+                        if p == self.root:
+                            at.putAtAllLine(s,i,p)
+                        else:
+                            at.error('@all not valid in: %s' % (p.h))
                     else: at.putDocLine(s,i)
             elif kind == at.othersDirective:
                 if not oneNodeOnly:
