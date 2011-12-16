@@ -16583,6 +16583,276 @@ Added show-decoration-selected: 1 to QTreeWidget stylesheet.
 
 This causes the entire headline row to be shown when select, a big improvement, imo.
 #@+node:ekr.20111123095018.12910: *4* Added stylesheets for Log & Find tabs
+#@+node:ekr.20111215193352.10219: *4* Warn when importing/reading/writing @ignored nodes
+#@+node:ekr.20110605121601.18495: *5* runAskOkDialog
+def runAskOkDialog(self,c,title,message=None,text="Ok"):
+
+    """Create and run a qt an askOK dialog ."""
+
+    if g.unitTesting: return None
+
+    b = QtGui.QMessageBox
+    d = b(c.frame.top)
+
+    d.setWindowTitle(title)
+    if message: d.setText(message)
+    d.setIcon(b.Information)
+    yes = d.addButton(text,b.YesRole)
+    c.in_qt_dialog = True
+    d.exec_()
+    c.in_qt_dialog = False
+
+#@+node:ekr.20111215193352.10220: *5* Splash Screen (qtGui)
+#@+node:ekr.20110605121601.18479: *6* createSplashScreen (qtGui)
+def createSplashScreen (self):
+    
+    for name in (
+        'SplashScreen.jpg',
+        'SplashScreen.png',
+        'SplashScreen.ico',
+    ):
+        fn = g.os_path_finalize_join(g.app.loadDir,'..','Icons',name)
+            
+        if g.os_path_exists(fn):
+            qt = QtCore.Qt
+            pm = QtGui.QPixmap(fn)
+            splash = QtGui.QSplashScreen(pm,(qt.SplashScreen | qt.WindowStaysOnTopHint))
+            splash.show()
+            # g.trace('found',fn)
+            break
+        else:
+            # g.trace('not found',fn)
+            splash = None
+    
+    return splash
+#@+node:ekr.20110613103140.16424: *6* dismiss_splash_screen (qtGui)
+def dismiss_splash_screen (self):
+    
+    # g.trace(g.callers())
+    
+    gui = self
+    
+    # Warning: closing the splash screen must be done in the main thread!
+    if g.unitTesting:
+        return
+    
+    if gui.splashScreen:
+        gui.splashScreen.hide()
+        # gui.splashScreen.deleteLater()
+        gui.splashScreen = None
+#@+node:ekr.20070705085335: *5* insertIgnoreDirective
+def insertIgnoreDirective (self,parent):
+
+    self.appendStringToBody(parent,'@ignore')
+
+    if g.unitTesting:
+        g.app.unitTestDict['fail'] = g.callers()
+    else:
+        g.es_print('inserting @ignore',color='blue')
+        if p.isAnyAtFileNode() :
+            g.app.gui.runAskOkDialog(self.c,
+                title='Inserting @ignore',
+                message='Inserting @ignore in %s' % (parent.h))
+#@+node:ekr.20041005105605.26: *5* at.readAll
+def readAll(self,root,partialFlag=False):
+
+    """Scan vnodes, looking for @<file> nodes to read."""
+
+    use_tracer = False
+    if use_tracer: tt = g.startTracer()
+
+    at = self ; c = at.c
+    force = partialFlag
+    if partialFlag:
+        # Capture the current headline only if
+        # we aren't doing the initial read.
+        c.endEditing() 
+    anyRead = False
+    p = root.copy()
+
+    scanned_tnodes = set()
+
+    if partialFlag: after = p.nodeAfterTree()    
+    else: after = c.nullPosition()
+
+    while p and p != after:
+        gnx = p.gnx
+        #skip clones
+        if gnx in scanned_tnodes:
+            p.moveToNodeAfterTree()
+            continue
+        scanned_tnodes.add(gnx)
+
+        if not p.h.startswith('@'):
+            p.moveToThreadNext()
+        elif p.isAtIgnoreNode():
+            if p.isAnyAtFileNode() :
+                g.app.gui.dismiss_splash_screen()
+                g.app.gui.runAskOkDialog(c,
+                    title='@ignore',
+                    message='%s will not be read\nbecause it contains @ignore' % (p.h))
+            p.moveToNodeAfterTree()
+        elif p.isAtThinFileNode():
+            anyRead = True
+            at.read(p,force=force)
+            p.moveToNodeAfterTree()
+        elif p.isAtAutoNode():
+            fileName = p.atAutoNodeName()
+            at.readOneAtAutoNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtEditNode():
+            fileName = p.atEditNodeName()
+            at.readOneAtEditNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtShadowFileNode():
+            fileName = p.atShadowFileNodeName()
+            at.readOneAtShadowNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtFileNode():
+            anyRead = True
+            wasOrphan = p.isOrphan()
+            ok = at.read(p,force=force)
+            if wasOrphan and not partialFlag and not ok:
+                # Remind the user to fix the problem.
+                # However, the dirty bit gets cleared.
+                # p.setDirty() # 2011/06/17: won't be preserved anyway.
+                    # Expensive, but it can't be helped.
+                p.setOrphan() # 2010/10/22: the dirty bit gets cleared.
+                # c.setChanged(True) # 2011/06/17
+            p.moveToNodeAfterTree()
+        else:
+            # 2010/7/28: set v.at_read bit if the @asis or @nosent
+            # **node** exists.  We'll prompt for dangerous writes
+            # if a) this bit is clear and b) the file exists.
+            if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+                p.v.at_read = True # Remember that we have seen this node.
+            p.moveToThreadNext()
+
+    # 2010/10/22: Preserve the orphan bits: the dirty bits will be cleared!
+    #for v in c.all_unique_nodes():
+    #    v.clearOrphan()
+
+    if partialFlag and not anyRead:
+        g.es("no @<file> nodes in the selected tree")
+
+    if use_tracer: tt.stop()
+#@+node:ekr.20041005105605.147: *5* at.writeAll & helper
+def writeAll(self,
+    writeAtFileNodesFlag=False,
+    writeDirtyAtFileNodesFlag=False,
+    toString=False
+):
+
+    """Write @file nodes in all or part of the outline"""
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c
+    if trace: scanAtPathDirectivesCount = c.scanAtPathDirectivesCount
+    writtenFiles = [] # Files that might be written again.
+    force = writeAtFileNodesFlag
+
+    if writeAtFileNodesFlag:
+        # The Write @<file> Nodes command.
+        # Write all nodes in the selected tree.
+        p = c.p
+        after = p.nodeAfterTree()
+    else:
+        # Write dirty nodes in the entire outline.
+        p =  c.rootPosition()
+        after = c.nullPosition()
+
+    at.clearAllOrphanBits(p)
+    while p and p != after:
+        if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
+            if p.isAnyAtFileNode() :
+                g.app.gui.runAskOkDialog(c,
+                    title='@ignore',
+                    message='%s will not be written\nbecause it contains @ignore' % (p.h))
+            # Note: @ignore not honored in @asis nodes.
+            p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
+        elif p.isAnyAtFileNode():
+            self.writeAllHelper(p,force,toString,writeAtFileNodesFlag,writtenFiles)
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+
+    << say the command is finished >>
+    if trace: g.trace('%s calls to c.scanAtPathDirectives()' % (
+        c.scanAtPathDirectivesCount-scanAtPathDirectivesCount))
+#@+node:ekr.20041005105605.150: *6* << say the command is finished >>
+if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
+    if len(writtenFiles) > 0:
+        g.es("finished")
+    elif writeAtFileNodesFlag:
+        g.es("no @<file> nodes in the selected tree")
+    else:
+        g.es("no dirty @<file> nodes")
+#@+node:ekr.20041005105605.148: *6* at.clearAllOrphanBits
+def clearAllOrphanBits (self,p):
+    
+    '''Clear orphan bits for all nodes *except* orphan @file nodes.'''
+    
+    # 2011/06/15: Important bug fix: retain orphan bits for @file nodes.
+    for p2 in p.self_and_subtree():
+        if p2.isOrphan():
+            if p2.isAnyAtFileNode():
+                # g.trace('*** retaining orphan bit',p2.h)
+                pass
+            else:
+                p2.clearOrphan()
+#@+node:ekr.20041005105605.149: *6* at.writeAllHelper
+def writeAllHelper (self,p,
+    force,toString,writeAtFileNodesFlag,writtenFiles
+):
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c
+
+    if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
+        pathChanged = False
+    else:
+        oldPath = at.getPathUa(p).lower()
+        newPath = at.fullPath(p).lower()
+        pathChanged = oldPath and oldPath != newPath
+        # 2010/01/27: suppress this message during save-as and save-to commands.
+        if pathChanged and not c.ignoreChangedPaths:
+            at.setPathUa(p,newPath) # Remember that we have changed paths.
+            g.es_print('path changed for',p.h,color='blue')
+            if trace: g.trace('p %s\noldPath %s\nnewPath %s' % (
+                p.h,repr(oldPath),repr(newPath)))
+
+    if (p.v.isDirty() or
+        # p.v.isOrphan() or # 2011/06/17.
+        pathChanged or
+        writeAtFileNodesFlag or
+        p.v in writtenFiles
+    ):
+
+        # Tricky: @ignore not recognised in @asis nodes.
+        if p.isAtAsisFileNode():
+            at.asisWrite(p,toString=toString)
+            writtenFiles.append(p.v)
+        elif p.isAtIgnoreNode():
+            pass # Handled in caller.
+        elif p.isAtAutoNode():
+            at.writeOneAtAutoNode(p,toString=toString,force=force)
+            writtenFiles.append(p.v)
+        elif p.isAtEditNode():
+            at.writeOneAtEditNode(p,toString=toString)
+            writtenFiles.append(p.v)
+        elif p.isAtNoSentFileNode():
+            at.write(p,kind='@nosent',nosentinels=True,toString=toString)
+            writtenFiles.append(p.v)
+        elif p.isAtShadowFileNode():
+            at.writeOneAtShadowNode(p,toString=toString,force=force or pathChanged)
+            writtenFiles.append(p.v)
+        elif p.isAtThinFileNode():
+            at.write(p,kind='@thin',thinFile=True,toString=toString)
+            writtenFiles.append(p.v)
+        elif p.isAtFileNode():
+            # Write old @file nodes using @thin format.
+            at.write(p,kind='@file',thinFile=True,toString=toString)
+            writtenFiles.append(p.v)
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
