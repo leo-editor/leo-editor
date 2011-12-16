@@ -18,7 +18,7 @@ Top 10:
 .. @+node:ekr.20111216163700.10212: *5* Urgent bugs
 .. @+node:ekr.20111026091322.16496: *6* Bug 844953: copy-clone-pasted node appears in other tab
 https://bugs.launchpad.net/leo-editor/+bug/844953
-.. @+node:ekr.20111024170505.16459: *6* * Bug 879331: Redefining a key binding breaks menu items with same binding
+.. @+node:ekr.20111024170505.16459: *6* Bug 879331: Redefining a key binding breaks menu items with same binding
 .. @+node:ekr.20111026091322.16501: *7* Probably same as key-binding bug
 .. @+node:ekr.20111026091322.16492: *8* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
 @nocolor-node
@@ -1569,7 +1569,8 @@ def killOneShortcut (self,bunch,name,p):
     
     if 0:
         g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20111122080923.10186: *6* * Fix bug 893223: Unpredictable slow operation state cured by writing
+.. @+node:ekr.20111216163700.10213: *5* Important bugs
+.. @+node:ekr.20111122080923.10186: *6* Fix bug 893223: Unpredictable slow operation state cured by writing
 @nocolor-node
 
 Leo-editor unpredictably gets into a state where Ctrl-V fails to paste
@@ -1866,9 +1867,7 @@ def init():
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True
-.. @+node:ekr.20111109105907.9800: *6* * Find out (or create) a way to eliminate spellpyx.txt from bzr repo
-.. @+node:ekr.20111216163700.10213: *5* Important bugs
-.. @+node:ekr.20111118190243.10188: *6* * Alt-x doesn't work in the find tab
+.. @+node:ekr.20111109105907.9800: *6* Find out (or create) a way to eliminate spellpyx.txt from bzr repo
 .. @+node:ekr.20111125072438.10214: *6* email: Another @shadow bug (test4.leo)
 @nocolor-node
 
