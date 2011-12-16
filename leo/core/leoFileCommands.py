@@ -1321,12 +1321,8 @@ class baseFileCommands:
             parser.parse(theFile) # expat does not support parseString
             # g.trace('parsing done')
             sax_node = handler.getRootNode()
-        except xml.sax.SAXParseException:
-            g.es_print('error parsing',inputFileName,color='red')
-            g.es_exception()
-            sax_node = None
         except Exception:
-            g.es_print('unexpected exception parsing',inputFileName,color='red')
+            g.es_print('error parsing',inputFileName,color='red')
             g.es_exception()
             sax_node = None
 
