@@ -2365,6 +2365,10 @@ class baseScannerClass (scanUtility):
             g.app.unitTestDict['fail'] = g.callers()
         else:
             g.es_print('inserting @ignore',color='blue')
+            if p.isAnyAtFileNode() :
+                g.app.gui.runAskOkDialog(self.c,
+                    title='Inserting @ignore',
+                    message='Inserting @ignore in %s' % (parent.h))
     #@+node:ekr.20070707113832.1: *4* putClass & helpers
     def putClass (self,s,i,sigEnd,codeEnd,start,parent):
 

@@ -758,6 +758,11 @@ class atFile:
             if not p.h.startswith('@'):
                 p.moveToThreadNext()
             elif p.isAtIgnoreNode():
+                if p.isAnyAtFileNode() :
+                    g.app.gui.dismiss_splash_screen()
+                    g.app.gui.runAskOkDialog(c,
+                        title='@ignore',
+                        message='%s will not be read\nbecause it contains @ignore' % (p.h))
                 p.moveToNodeAfterTree()
             elif p.isAtThinFileNode():
                 anyRead = True
@@ -3014,6 +3019,10 @@ class atFile:
         at.clearAllOrphanBits(p)
         while p and p != after:
             if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
+                if p.isAnyAtFileNode() :
+                    g.app.gui.runAskOkDialog(c,
+                        title='@ignore',
+                        message='%s will not be written\nbecause it contains @ignore' % (p.h))
                 # Note: @ignore not honored in @asis nodes.
                 p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
             elif p.isAnyAtFileNode():
@@ -3080,7 +3089,7 @@ class atFile:
                 at.asisWrite(p,toString=toString)
                 writtenFiles.append(p.v)
             elif p.isAtIgnoreNode():
-                pass
+                pass # Handled in caller.
             elif p.isAtAutoNode():
                 at.writeOneAtAutoNode(p,toString=toString,force=force)
                 writtenFiles.append(p.v)

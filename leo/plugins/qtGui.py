@@ -7391,28 +7391,6 @@ class leoQtGui(leoGui.leoGui):
 
         # Use the base class
         return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
-    #@+node:ekr.20110605121601.18479: *5* createSplashScreen (qtGui)
-    def createSplashScreen (self):
-        
-        for name in (
-            'SplashScreen.jpg',
-            'SplashScreen.png',
-            'SplashScreen.ico',
-        ):
-            fn = g.os_path_finalize_join(g.app.loadDir,'..','Icons',name)
-                
-            if g.os_path_exists(fn):
-                qt = QtCore.Qt
-                pm = QtGui.QPixmap(fn)
-                splash = QtGui.QSplashScreen(pm,(qt.SplashScreen | qt.WindowStaysOnTopHint))
-                splash.show()
-                # g.trace('found',fn)
-                break
-            else:
-                # g.trace('not found',fn)
-                splash = None
-        
-        return splash
     #@+node:ekr.20110605121601.18482: *5* IPython embedding & mainloop
     def embed_ipython(self):
         
@@ -8219,16 +8197,43 @@ class leoQtGui(leoGui.leoGui):
         # This will use any shortcut defined in an @shortcuts node.
         k.registerCommand(buttonCommandName,None,executeScriptCallback,pane='button',verbose=False)
         #@-<< create press-buttonText-button command >>
-    #@+node:ekr.20110613103140.16424: *4* Splash Screen (qtGui)
+    #@+node:ekr.20111215193352.10220: *4* Splash Screen (qtGui)
+    #@+node:ekr.20110605121601.18479: *5* createSplashScreen (qtGui)
+    def createSplashScreen (self):
+        
+        for name in (
+            'SplashScreen.jpg',
+            'SplashScreen.png',
+            'SplashScreen.ico',
+        ):
+            fn = g.os_path_finalize_join(g.app.loadDir,'..','Icons',name)
+                
+            if g.os_path_exists(fn):
+                qt = QtCore.Qt
+                pm = QtGui.QPixmap(fn)
+                splash = QtGui.QSplashScreen(pm,(qt.SplashScreen | qt.WindowStaysOnTopHint))
+                splash.show()
+                # g.trace('found',fn)
+                break
+            else:
+                # g.trace('not found',fn)
+                splash = None
+        
+        return splash
+    #@+node:ekr.20110613103140.16424: *5* dismiss_splash_screen (qtGui)
     def dismiss_splash_screen (self):
         
         # g.trace(g.callers())
         
         gui = self
         
+        # Warning: closing the splash screen must be done in the main thread!
+        if g.unitTesting:
+            return
+        
         if gui.splashScreen:
             gui.splashScreen.hide()
-            gui.splashScreen.deleteLater()
+            # gui.splashScreen.deleteLater()
             gui.splashScreen = None
     #@+node:ekr.20110605121601.18523: *4* Style Sheets
     #@+node:ekr.20110605121601.18524: *5* setStyleSetting (qtGui)
