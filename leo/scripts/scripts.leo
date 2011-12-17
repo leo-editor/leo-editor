@@ -117,6 +117,8 @@ else:
         c.contractAllHeadlines()
         c.selectPosition(root)
         root.expand()
+        for p in root.subtree():
+            p.clearDirty() # Important: don't write automatically.
         c.redraw()
     except Exception:
         g.es("exception in importFiles script")
