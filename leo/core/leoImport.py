@@ -2366,6 +2366,7 @@ class baseScannerClass (scanUtility):
         else:
             g.es_print('inserting @ignore',color='blue')
             if parent.isAnyAtFileNode() :
+                g.app.gui.dismiss_splash_screen()
                 g.app.gui.runAskOkDialog(self.c,
                     title='Inserting @ignore',
                     message='Inserting @ignore in %s' % (parent.h))

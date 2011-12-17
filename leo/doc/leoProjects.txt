@@ -16584,6 +16584,18 @@ Added show-decoration-selected: 1 to QTreeWidget stylesheet.
 This causes the entire headline row to be shown when select, a big improvement, imo.
 #@+node:ekr.20111123095018.12910: *4* Added stylesheets for Log & Find tabs
 #@+node:ekr.20111215193352.10219: *4* Warn when importing/reading/writing @ignored nodes
+#@+node:ekr.20110605121601.18490: *5* runAskOkCancelStringDialog
+def runAskOkCancelStringDialog(self,c,title,message):
+
+    """Create and run askOkCancelString dialog ."""
+
+    if g.unitTesting: return None
+
+    txt,ok = QtGui.QInputDialog.getText(None, title, message)
+    if not ok:
+        return None
+
+    return str(txt)  # 2011-06-28 TNB return string not QString
 #@+node:ekr.20110605121601.18495: *5* runAskOkDialog
 def runAskOkDialog(self,c,title,message=None,text="Ok"):
 
@@ -16650,6 +16662,7 @@ def insertIgnoreDirective (self,parent):
     else:
         g.es_print('inserting @ignore',color='blue')
         if parent.isAnyAtFileNode() :
+            g.app.gui.dismiss_splash_screen()
             g.app.gui.runAskOkDialog(self.c,
                 title='Inserting @ignore',
                 message='Inserting @ignore in %s' % (parent.h))
