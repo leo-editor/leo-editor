@@ -12560,7 +12560,7 @@ import os
 @others
 
 types = ('.py',)
-theDir =  r'c:\leo.repo\trunk\leo'
+theDir =  r'c:\leo.repo\trunk\leo\core'
 
 if  g.os_path_exists(theDir):
     importFiles(theDir,types,recursive=True)

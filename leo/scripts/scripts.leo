@@ -99,13 +99,14 @@
 @others
 
 types = ('.py',)
-theDir =  r'c:\leo.repo\trunk\leo'
+theDir =  r'c:\leo.repo\trunk\leo\core'
 
 if  g.os_path_exists(theDir):
     importFiles(theDir,types,recursive=True)
     g.es("done",color="blue")
 else:
-    g.es("directory does not exist: " + theDir)</t>
+    g.es("directory does not exist: " + theDir)
+</t>
 <t tx="ekr.20110916103731.2460">def importFiles (theDir,type=None,recursive=False):
     
     root = c.p.insertAfter()
@@ -120,7 +121,8 @@ else:
     except Exception:
         g.es("exception in importFiles script")
         g.es_exception()
-    </t>
+    
+</t>
 <t tx="ekr.20110916103731.2461">def importDir (theDir,types,recursive,root,level=0):
 
     # g.es("theDir: " + theDir,color="blue")
@@ -138,7 +140,8 @@ else:
             
     # dirs.sort()
     for theDir in sorted(dirs):
-        importDir(theDir,types,recursive,root,level+1)</t>
+        importDir(theDir,types,recursive,root,level+1)
+</t>
 <t tx="ekr.20110916103731.2462">def createLastChildOf (p,headline):
 
     child = p.insertAsLastChild()
@@ -1268,13 +1271,15 @@ Especially:
         elif recursive:
             dirs.append(path)
         
-    return dirs,files</t>
+    return dirs,files
+</t>
 <t tx="ekr.20111217090057.13163">def isEmpty(p):
     
     for p in p.subtree():
         if p.h.startswith('@auto'):
             return False
     else:
-        return True</t>
+        return True
+</t>
 </tnodes>
 </leo_file>
