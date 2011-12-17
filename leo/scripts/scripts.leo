@@ -79,11 +79,72 @@
 <v t="ekr.20111004214045.2482"><vh>@path C:\Users\edreamleo\Latex</vh>
 <v t="ekr.20111004185540.15541"><vh>@@auto sample.tex</vh></v>
 </v>
+<v t="ekr.20111217090057.11168"><vh>The @auto script *must* put @first nodes in root node</vh></v>
+<v t="ekr.20110916103731.2459"><vh>Recursive create @auto nodes</vh>
+<v t="ekr.20111217090057.12360"><vh>cleanEmptyDirs &amp; helper</vh>
+<v t="ekr.20111217090057.13163"><vh>isEmpty</vh></v>
+</v>
+<v t="ekr.20111217090057.12361"><vh>computeFiles</vh></v>
+<v t="ekr.20110916103731.2462"><vh>createLastChildOf</vh></v>
+<v t="ekr.20110916103731.2461"><vh>importDir</vh></v>
+<v t="ekr.20110916103731.2460"><vh>importFiles (top-level)</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
 <t tx="ekr.20070615131954"></t>
+<t tx="ekr.20110916103731.2459">import os
+
+@others
+
+types = ('.py',)
+theDir =  r'c:\leo.repo\trunk\leo'
+
+if  g.os_path_exists(theDir):
+    importFiles(theDir,types,recursive=True)
+    g.es("done",color="blue")
+else:
+    g.es("directory does not exist: " + theDir)</t>
+<t tx="ekr.20110916103731.2460">def importFiles (theDir,type=None,recursive=False):
+    
+    root = c.p.insertAfter()
+    root.h = "imported files"
+    try:
+        importDir (theDir,type,recursive,root)
+        cleanEmptyDirs(root)
+        c.contractAllHeadlines()
+        c.selectPosition(root)
+        root.expand()
+        c.redraw()
+    except Exception:
+        g.es("exception in importFiles script")
+        g.es_exception()
+    </t>
+<t tx="ekr.20110916103731.2461">def importDir (theDir,types,recursive,root,level=0):
+
+    # g.es("theDir: " + theDir,color="blue")
+
+    dirs,files = computeFiles(theDir,recursive)
+    if not dirs and not files: return
+    
+    path_part = g.choose(level==0,theDir,g.os_path_basename(theDir))
+    root = createLastChildOf(root,'@path %s' % (path_part))
+    c.selectPosition(root)
+    
+    for fn in files:
+        p2 = createLastChildOf(root,'@auto %s' % (
+            g.shortFileName(fn)))
+            
+    # dirs.sort()
+    for theDir in sorted(dirs):
+        importDir(theDir,types,recursive,root,level+1)</t>
+<t tx="ekr.20110916103731.2462">def createLastChildOf (p,headline):
+
+    child = p.insertAsLastChild()
+    child.h = headline.replace('\\','/')
+    return child
+</t>
 <t tx="ekr.20111004185540.15541">@language tex
 \documentclass[12pt]{article}
 
@@ -1173,5 +1234,47 @@ result = '\n'.join(result) + '\n'
 w = c.frame.body.bodyCtrl
 w.clipboard_clear()
 w.clipboard_append(result)</t>
+<t tx="ekr.20111217090057.11168">@nocolor-node
+
+Also the import commands.
+
+Especially:
+    - Shebang line.
+    - Python encoding line.
+</t>
+<t tx="ekr.20111217090057.12360">def cleanEmptyDirs(root):
+    
+    '''Remove all @path nodes not containing any @auto nodes.'''
+    p = root.copy()
+    while p:
+        if p.h.startswith('@path') and isEmpty(p):
+            next = p.nodeAfterTree()
+            p.doDelete()
+            p = next
+        else:
+            p.moveToThreadNext()
+</t>
+<t tx="ekr.20111217090057.12361">def computeFiles (theDir,recursive):
+    
+    '''Compute the lists of all directories and files to be added.'''
+    
+    dirs,files = [],[]
+    for f in os.listdir(theDir):
+        path = g.os_path_join(theDir,f)
+        if g.os_path_isfile(path):
+            name, ext = g.os_path_splitext(f)
+            if not types or ext in types:
+                files.append(path)
+        elif recursive:
+            dirs.append(path)
+        
+    return dirs,files</t>
+<t tx="ekr.20111217090057.13163">def isEmpty(p):
+    
+    for p in p.subtree():
+        if p.h.startswith('@auto'):
+            return False
+    else:
+        return True</t>
 </tnodes>
 </leo_file>

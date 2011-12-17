@@ -4832,30 +4832,6 @@ def setNode (p,data):
         p.initHeadString('@item ' + head.strip())
     if body and body.strip():
         p.setTnodeText(body.strip())
-#@+node:ekr.20080401065127.4: *3* create-at-auto-nodes
-# A script to create @auto nodes from all .py files in a directory.
-
-import glob,os
-
-reallyCreate = False
-
-baseDir = r'c:\Python25\Lib\distutils'
-
-dirs = ('','command',) # '' represents the base dir.
-print '-' * 40
-
-for theDir in dirs:
-    pattern = g.os_path_join(baseDir,theDir,'*.py')
-    files = glob.glob(pattern)
-    print ; print 'pattern:', pattern ; print
-    # print g.listToString(files)
-    for name in files:
-        h = '@auto %s' % (name[len(baseDir) + 1:].strip())
-        print 'creating',h
-        if reallyCreate:
-            child = p.insertAsLastChild()
-            child.initHeadString(h)
-c.redraw()
 #@+node:ekr.20051103072643: *3* Export to treepad
 # simple script to export current node and children as a treepad document
 # the file format for treepad 2.x is simple.
@@ -12583,142 +12559,91 @@ import os
 
 @others
 
-types = ('.py','.c',)
+types = ('.py',)
+theDir =  r'c:\leo.repo\trunk\leo'
 
-theDir = r'C:\apps\swigwin-2.0.4\Source'
-importFiles(theDir,types,recursive=True)
-c.redraw()
+if  g.os_path_exists(theDir):
+    importFiles(theDir,types,recursive=True)
+    g.es("done",color="blue")
+else:
+    g.es("directory does not exist: " + theDir)
+#@+node:ekr.20111217090057.12360: *4* cleanEmptyDirs & helper
+def cleanEmptyDirs(root):
+    
+    '''Remove all @path nodes not containing any @auto nodes.'''
+    p = root.copy()
+    while p:
+        if p.h.startswith('@path') and isEmpty(p):
+            next = p.nodeAfterTree()
+            p.doDelete()
+            p = next
+        else:
+            p.moveToThreadNext()
+#@+node:ekr.20111217090057.13163: *5* isEmpty
+def isEmpty(p):
+    
+    for p in p.subtree():
+        if p.h.startswith('@auto'):
+            return False
+    else:
+        return True
+#@+node:ekr.20111217090057.12361: *4* computeFiles
+def computeFiles (theDir,recursive):
+    
+    '''Compute the lists of all directories and files to be added.'''
+    
+    dirs,files = [],[]
+    for f in os.listdir(theDir):
+        path = g.os_path_join(theDir,f)
+        if g.os_path_isfile(path):
+            name, ext = g.os_path_splitext(f)
+            if not types or ext in types:
+                files.append(path)
+        elif recursive:
+            dirs.append(path)
+        
+    return dirs,files
+#@+node:ekr.20110916103731.2462: *4* createLastChildOf
+def createLastChildOf (p,headline):
 
-g.es("done",color="blue")
-#@+node:ekr.20110916103731.2460: *4* importFiles (top-level)
-def importFiles (theDir,type=None,recursive=False):
-
-    v = c.currentVnode()
-
-    if not g.os_path_exists(theDir):
-        g.es("directory does not exist: " + theDir)
-        return
-
-    root = createLastChildOf(v,"imported files")
-    try:
-        importDir (theDir,type,recursive,root)
-        root.contract()
-    except:
-        g.es_exception()
-    c.redraw()
+    child = p.insertAsLastChild()
+    child.h = headline.replace('\\','/')
+    return child
 #@+node:ekr.20110916103731.2461: *4* importDir
 def importDir (theDir,types,recursive,root,level=0):
 
-    g.es("theDir: " + theDir,color="blue")
+    # g.es("theDir: " + theDir,color="blue")
 
+    dirs,files = computeFiles(theDir,recursive)
+    if not dirs and not files: return
+    
+    path_part = g.choose(level==0,theDir,g.os_path_basename(theDir))
+    root = createLastChildOf(root,'@path %s' % (path_part))
+    c.selectPosition(root)
+    
+    for fn in files:
+        p2 = createLastChildOf(root,'@auto %s' % (
+            g.shortFileName(fn)))
+            
+    # dirs.sort()
+    for theDir in sorted(dirs):
+        importDir(theDir,types,recursive,root,level+1)
+#@+node:ekr.20110916103731.2460: *4* importFiles (top-level)
+def importFiles (theDir,type=None,recursive=False):
+    
+    root = c.p.insertAfter()
+    root.h = "imported files"
     try:
-        files = os.listdir(theDir)
-        files2 = [] ; dirs =[]
-        for f in files:
-            path = g.os_path_join(theDir,f)
-            if g.os_path_isfile(path):
-                name, ext = g.os_path_splitext(f)
-                if not types or ext in types:
-                    files2.append(path)
-            elif recursive:
-                dirs.append(path)
-        if len(files2) > 0 or len(dirs) > 0:
-            path_part = g.choose(level==0,theDir,g.os_path_basename(theDir))
-            import_root = createLastChildOf(root,'@path %s' % (path_part))
-        else:
-            import_root = root
-        
-        c.selectVnode(import_root)
-        
-        if len(files2) > 0:
-            for fn in files2:
-                p2 = createLastChildOf(import_root,'@auto %s' % (
-                    g.shortFileName(fn)))
-                
-        if len(dirs) > 0:
-            dirs.sort()
-            for theDir in dirs:
-                importDir(theDir,types,recursive,import_root,level+1)
-    except:
+        importDir (theDir,type,recursive,root)
+        cleanEmptyDirs(root)
+        c.contractAllHeadlines()
+        c.selectPosition(root)
+        root.expand()
+        c.redraw()
+    except Exception:
         g.es("exception in importFiles script")
         g.es_exception()
-#@+node:ekr.20110916103731.2462: *4* createLastChildOf
-def createLastChildOf (v,headline):
-
-    child = v.insertAsLastChild()
-    child.initHeadString(headline.replace('\\','/'))
-    return child
-#@+node:ekr.20051110105027.166: *3* Recursive import script
-# An example of running this script:
-
-import os
-
-@others
-
-types = (".py",) #,".c",".html",".txt")
-
-dir = "c:/Zope-2.6.2-src/lib/python"
-dir = "c:/Zope-2.6.2-src/lib/Components"
-
-importFiles(dir,types,recursive=True)
-c.redraw()
-
-g.es("done",color="blue")
-#@+node:ekr.20051110105027.167: *4* importFiles
-def importFiles (dir,type=None,kind="@file",recursive=False):
-
-    v = c.currentVnode()
-
-    # Check the params.
-    if kind != "@file" and kind != "@root":
-        g.es("kind must be @file or @root: " + kind)
-        return
-
-    if not g.os_path_exists(dir):
-        g.es("directory does not exist: " + dir)
-        return
-
-    root = createLastChildOf(v,"imported files")
-    try:
-        importDir (dir,type,kind,recursive,root)
-        root.contract()
-    except:
-        g.es_exception()
-    c.redraw()
-#@+node:ekr.20051110105027.168: *4* importDir
-def importDir (dir,types,kind,recursive,root):
-
-    g.es("dir: " + dir,color="blue")
-
-    try:
-        files = os.listdir(dir)
-        files2 = [] ; dirs =[]
-        for f in files:
-            path = g.os_path_join(dir,f)
-            if g.os_path_isfile(path):
-                name, ext = g.os_path_splitext(f)
-                if not types or ext in types:
-                    files2.append(path)
-            elif recursive:
-                dirs.append(path)
-        if len(files2) > 0 or len(dirs) > 0:
-            child = createLastChildOf(root,dir)
-            c.selectVnode(child)
-        if len(files2) > 0:
-            c.importCommands.importFilesCommand(files2,kind)
-        if len(dirs) > 0:
-            dirs.sort()
-            for dir in dirs:
-                importDir(dir,types,kind,recursive,child)
-    except:
-        g.es("exception in importFiles script")
-        g.es_exception()
-#@+node:ekr.20051110105027.169: *4* createLastChildOf
-def createLastChildOf (v,headline):
-
-    child = v.insertAsLastChild()
-    child.initHeadString(headline)
-    return child
+    
 #@+node:ekr.20060209173725: *3* rst-to-leo
 '''A script to import rst files into Leo.
 
