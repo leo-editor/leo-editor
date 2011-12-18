@@ -14,6 +14,8 @@ Adds the following (``Alt-X``) commands:
   pop out current node as an encrypted note
 ``stickynoteenckey``
   enter a new en/decryption key
+``stickynoterekey``
+  enter the old key for the node, followed by the new, to change keys
 ``tabula``
   add the current node to the stickynotes in the `Tabula`
   sticky note dock window, and show the window
@@ -39,6 +41,14 @@ Also, you must not edit the text in the Leo node.
 When **creating an encrypted note**, you should **start with an empty node**.
 If you want to encrypt text that already exists in a node, select-all cut it to
 empty the node, then paste it into the note.
+
+If your data doesn't decode, you may need to upgrade your key.  Use the
+``Alt-X`` ``stickynoterekey`` command on the encryted node in Leo.  Prefix
+the old key with "v0:" (vee zero colon without the quotes).  Enter whatever
+you want for the new key, even the old key again without the "v0:".
+The decoded data should appear in the popoup window, if not, close the Leo
+file **without saving**.  If you have multiple encoded nodes, repeat this
+process for each one.
 
 '''
 #@-<< docstring >>
@@ -67,7 +77,7 @@ try:
 except ImportError:
     pass
 
-from PyQt4.QtCore import (QSize, QVariant, Qt, SIGNAL, QTimer)
+from PyQt4.QtCore import (QSize, QVariant, Qt, SIGNAL, QTimer, QString)
 from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
         QFontMetrics, QIcon, QKeySequence, QMenu, QPixmap, QTextCursor,
         QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,
@@ -285,16 +295,20 @@ def stickynoter_f(event):
 
     g.app.stickynotes[p.gnx] = nf
 #@+node:tbrown.20100120100336.7829: ** g.command('stickynoteenc')
-if encOK:
+if encOK:    
+    @g.command('stickynoterekey')
+    def stickynoteenc_rk(event):
+        stickynoteenc_f(event, rekey=True)
+
     @g.command('stickynoteenc')
-    def stickynoteenc_f(event):
+    def stickynoteenc_f(event, rekey=False):
         """ Launch editable 'sticky note' for the encrypted node """
 
         if not encOK:
             g.es('no en/decryption - need python-crypto module')
             return
 
-        if not __ENCKEY[0]:
+        if not __ENCKEY[0] or rekey:
             sn_getenckey()
 
         c= event['c']
@@ -320,12 +334,22 @@ if encOK:
             if p.v is v:
                 c.selectPosition(c.p)
 
+        if rekey:
+            unsecret = sn_decode(v.b)
+            sn_getenckey()
+            secret = sn_encode(unsecret)
+            v.b = secret
+            
         c = event['c']
         p = c.p
         nf = mknote(c,p)
         nf.focusout = focusout
         nf.focusin = focusin
+        
         nf.setPlainText(sn_decode(v.b))
+        
+        if rekey:
+            g.es("Key updated, data decoded with new key shown in window")
 #@+node:tbrown.20100120100336.7830: ** sn_de/encode
 if encOK:
     def sn_decode(s):
@@ -340,9 +364,15 @@ if encOK:
 
     @g.command('stickynoteenckey')
     def sn_getenckey(dummy=None):
-        txt,ok = QInputDialog.getText(None, 'Enter key', 'Enter key.\nData lost if key is lost.')
+        txt,ok = QInputDialog.getText(None, 'Enter key', 'Enter key.\nData lost if key is lost.\nSee docs. for key upgrade notes.')
         if not ok:
             return
+        
+        if str(txt).startswith('v0:'):
+            txt = QString(txt[3:])
+        else:
+            txt = unicode(txt)
+
         # arbitrary kludge to convert string to 256 bits - don't change
         sha = SHA.new()
         md5 = MD5.new()
