@@ -6041,6 +6041,8 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         '''
 
         c = self.c ; d = c.importCommands.importDispatchDict
+        
+        c.init_error_dialogs()
         if self.isThinFile(fn,s):
             self.createAtFileTree(fn,p,s)
         elif self.isAutoFile(fn,s):
@@ -6048,6 +6050,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         else:
             self.createAtEditNode(fn,p,s)
         self.warnIfNodeExists(p)
+        c.raise_error_dialogs(kind='read')
     #@+node:ekr.20110605121601.18373: *10* createAtAutoTree
     def createAtAutoTree (self,fn,p,s):
 

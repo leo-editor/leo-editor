@@ -743,6 +743,7 @@ class atFile:
         p = root.copy()
 
         scanned_tnodes = set()
+        c.init_error_dialogs()
 
         if partialFlag: after = p.nodeAfterTree()    
         else: after = c.nullPosition()
@@ -759,10 +760,7 @@ class atFile:
                 p.moveToThreadNext()
             elif p.isAtIgnoreNode():
                 if p.isAnyAtFileNode() :
-                    g.app.gui.dismiss_splash_screen()
-                    g.app.gui.runAskOkDialog(c,
-                        title='@ignore',
-                        message='%s will not be read\nbecause it contains @ignore' % (p.h))
+                    c.ignored_at_file_nodes.append(p.h)
                 p.moveToNodeAfterTree()
             elif p.isAtThinFileNode():
                 anyRead = True
@@ -808,14 +806,18 @@ class atFile:
             g.es("no @<file> nodes in the selected tree")
 
         if use_tracer: tt.stop()
+        
+        c.raise_error_dialogs()  # 2011/12/17
+        
     #@+node:ekr.20080801071227.7: *4* at.readAtShadowNodes
     def readAtShadowNodes (self,p):
 
         '''Read all @shadow nodes in the p's tree.'''
 
-        at = self ; after = p.nodeAfterTree()
-        p = p.copy() # Don't change p in the caller.
+        at = self ; c = at.c
 
+        after = p.nodeAfterTree()
+        p = p.copy() # Don't change p in the caller.
         while p and p != after: # Don't use iterator.
             if p.isAtShadowFileNode():
                 fileName = p.atShadowFileNodeName()
@@ -865,6 +867,7 @@ class atFile:
     def readOneAtEditNode (self,fn,p):
 
         at = self ; c = at.c ; ic = c.importCommands
+
         oldChanged = c.isChanged()
 
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
@@ -2727,7 +2730,7 @@ class atFile:
 
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
-
+        c.init_error_dialogs()
         try:
             # Note: @asis always writes all nodes,
             # so there can be no orphan or ignored nodes.
@@ -2749,6 +2752,7 @@ class atFile:
             if not at.openFileForWriting(root,targetFileName,toString):
                 # openFileForWriting calls root.setDirty() if there are errors.
                 return
+
             for p in root.self_and_subtree():
                 #@+<< Write p's headline if it starts with @@ >>
                 #@+node:ekr.20041005105605.155: *5* << Write p's headline if it starts with @@ >>
@@ -2771,6 +2775,7 @@ class atFile:
                 #@-<< Write p's body >>
             at.closeWriteFile()
             at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+            
         except Exception:
             at.writeException(root) # Sets dirty and orphan bits.
 
@@ -2955,6 +2960,7 @@ class atFile:
             return
 
         try:
+            c.init_error_dialogs()
             at.writeOpenFile(root,nosentinels=nosentinels,toString=toString)
             assert root==at.root,'write'
             if toString:
@@ -2982,6 +2988,7 @@ class atFile:
                     root.v.at_read = True # 2011/05/24.
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
+            c.raise_error_dialogs(kind='write')
 
         except Exception:
             if hasattr(self.root.v,'tnodeList'):
@@ -3004,6 +3011,7 @@ class atFile:
         at = self ; c = at.c
         if trace: scanAtPathDirectivesCount = c.scanAtPathDirectivesCount
         writtenFiles = [] # Files that might be written again.
+        c.init_error_dialogs()
         force = writeAtFileNodesFlag
 
         if writeAtFileNodesFlag:
@@ -3020,9 +3028,7 @@ class atFile:
         while p and p != after:
             if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
                 if p.isAnyAtFileNode() :
-                    g.app.gui.runAskOkDialog(c,
-                        title='@ignore',
-                        message='%s will not be written\nbecause it contains @ignore' % (p.h))
+                    c.ignored_at_file_nodes.append(p.h)
                 # Note: @ignore not honored in @asis nodes.
                 p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
             elif p.isAnyAtFileNode():
@@ -3043,6 +3049,8 @@ class atFile:
         #@-<< say the command is finished >>
         if trace: g.trace('%s calls to c.scanAtPathDirectives()' % (
             c.scanAtPathDirectivesCount-scanAtPathDirectivesCount))
+            
+        c.raise_error_dialogs(kind='write')
     #@+node:ekr.20041005105605.148: *5* at.clearAllOrphanBits
     def clearAllOrphanBits (self,p):
         
@@ -3114,15 +3122,19 @@ class atFile:
 
         '''Write all @auto nodes in the selected outline.'''
 
-        at = self
+        at = self ; c = at.c
+        c.init_error_dialogs()
         at.writeAtAutoNodesHelper(writeDirtyOnly=False)
+        c.raise_error_dialogs(kind='write')
 
     def writeDirtyAtAutoNodes (self,event=None):
 
         '''Write all dirty @auto nodes in the selected outline.'''
 
-        at = self
+        at = self ; c = at.c
+        c.init_error_dialogs()
         at.writeAtAutoNodesHelper(writeDirtyOnly=True)
+        c.raise_error_dialogs(kind='write')
     #@+node:ekr.20070806140208: *5* at.writeAtAutoNodesHelper
     def writeAtAutoNodesHelper(self,toString=False,writeDirtyOnly=True):
 
@@ -3214,14 +3226,20 @@ class atFile:
         '''Write all @shadow nodes in the selected outline.'''
 
         at = self
-        return at.writeAtShadowNodesHelper(writeDirtyOnly=False)
+        c.init_error_dialogs()
+        val = at.writeAtShadowNodesHelper(writeDirtyOnly=False)
+        c.raise_error_dialogs(kind='write')
+        return val
 
     def writeDirtyAtShadowNodes (self,event=None):
 
         '''Write all dirty @shadow nodes in the selected outline.'''
 
         at = self
-        return at.writeAtShadowNodesHelper(writeDirtyOnly=True)
+        c.init_error_dialogs()
+        val =  at.writeAtShadowNodesHelper(writeDirtyOnly=True)
+        c.raise_error_dialogs(kind='write')
+        return val
     #@+node:ekr.20080711093251.4: *5* at.writeAtShadowNodesHelper
     def writeAtShadowNodesHelper(self,toString=False,writeDirtyOnly=True):
 
@@ -3408,7 +3426,7 @@ class atFile:
 
         at = self ; c = at.c
         writtenFiles = False
-
+        c.init_error_dialogs()
         p = p.copy()
         after = p.nodeAfterTree()
         while p and p != after: # Don't use iterator.
@@ -3444,6 +3462,8 @@ class atFile:
             g.es("finished")
         else:
             g.es("no @file node in the selected tree")
+            
+        c.raise_error_dialogs(kind='write')
     #@+node:ekr.20090225080846.5: *4* at.writeOneAtEditNode
     def writeOneAtEditNode(self,p,toString,force=False):
 
@@ -3451,6 +3471,7 @@ class atFile:
 
         at = self ; c = at.c ; root = p.copy()
         c.endEditing()
+        c.init_error_dialogs()
 
         fn = p.atEditNodeName()
         if not fn and not toString: return False
@@ -3497,6 +3518,8 @@ class atFile:
             g.es("not written:",at.targetFileName) # 2010/10/22
             root.setDirty()
             root.setOrphan() # 2010/10/22
+            
+        c.raise_error_dialogs(kind='write')
 
         return ok
     #@+node:ekr.20041005105605.157: *4* at.writeOpenFile

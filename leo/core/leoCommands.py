@@ -89,6 +89,8 @@ class Commands (object):
         self.hiddenRootNode = leoNodes.vnode(context=c)
         self.hiddenRootNode.setHeadString('<hidden root vnode>')
         self.idle_callback = None # For c.idle_focus_helper.
+        self.ignored_at_file_nodes = [] # List of nodes for error dialog.
+        self.import_error_nodes = []
         self.in_qt_dialog = False # True when in a qt dialog.
         self.isZipped = False # May be set to True by g.openWithFileName.
         self.mFileName = fileName
@@ -1804,7 +1806,7 @@ class Commands (object):
         g.app.config.appendToRecentFiles(c.recentFiles)
         g.app.config.recentFileMessageWritten = False # Force the write message.
         g.app.config.writeRecentFilesFile(c)
-    #@+node:ekr.20031218072017.2838: *5* Read/Write submenu
+    #@+node:ekr.20031218072017.2838: *5* Read/Write submenu (leoCommands)
     #@+node:ekr.20031218072017.2839: *6* readOutlineOnly
     def readOutlineOnly (self,event=None):
 
@@ -1860,12 +1862,14 @@ class Commands (object):
         '''Read all @auto nodes in the presently selected outline.'''
 
         c = self ; u = c.undoer ; p = c.p
+        
         c.endEditing()
-
+        c.init_error_dialogs()
         undoData = u.beforeChangeTree(p)
         c.importCommands.readAtAutoNodes()
         u.afterChangeTree(p,'Read @auto Nodes',undoData)
         c.redraw()
+        c.raise_error_dialogs(kind='read')
     #@+node:ekr.20031218072017.1839: *6* readAtFileNodes (commands)
     def readAtFileNodes (self,event=None):
 
@@ -1874,10 +1878,12 @@ class Commands (object):
         c = self ; u = c.undoer ; p = c.p
 
         c.endEditing()
+        c.init_error_dialogs()
         undoData = u.beforeChangeTree(p)
         c.fileCommands.readAtFileNodes()
         u.afterChangeTree(p,'Read @file Nodes',undoData)
         c.redraw()
+        c.raise_error_dialogs(kind='read')
     #@+node:ekr.20080801071227.4: *6* readAtShadowNodes (commands)
     def readAtShadowNodes (self,event=None):
 
@@ -1886,10 +1892,12 @@ class Commands (object):
         c = self ; u = c.undoer ; p = c.p
 
         c.endEditing()
+        c.init_error_dialogs()
         undoData = u.beforeChangeTree(p)
         c.atFileCommands.readAtShadowNodes(p)
         u.afterChangeTree(p,'Read @shadow Nodes',undoData)
-        c.redraw() 
+        c.redraw()
+        c.raise_error_dialogs(kind='read')
     #@+node:ekr.20070915142635: *6* writeFileFromNode (changed)
     def writeFileFromNode (self,event=None):
 
@@ -7444,6 +7452,38 @@ class Commands (object):
                 return True
 
         return False
+    #@+node:ekr.20111217154130.10286: *3* Error dialogs (commands)
+    #@+node:ekr.20111217154130.10284: *4* c.init_error_dialogs
+    def init_error_dialogs(self):
+        
+        c = self
+        c.import_error_nodes = []
+        c.ignored_at_file_nodes = []
+    #@+node:ekr.20111217154130.10285: *4* c.raise_error_dialogs
+    def raise_error_dialogs(self,kind='read'):
+        
+        c = self
+        
+        if not g.unitTesting:
+        
+            # 2011/12/17: Issue one or two dialogs.
+            if c.import_error_nodes or c.ignored_at_file_nodes:
+                 g.app.gui.dismiss_splash_screen()
+            
+            if c.import_error_nodes:
+                files = '\n'.join(sorted(c.import_error_nodes))
+                g.app.gui.runAskOkDialog(c,
+                    title='Import errors',
+                    message='The following were not imported properly.  @ignore was inserted:\n%s' % (files))
+            
+            if c.ignored_at_file_nodes:
+                files = '\n'.join(sorted(c.ignored_at_file_nodes))
+                kind = g.choose(kind.startswith('read'),'read','written')
+                g.app.gui.runAskOkDialog(c,
+                    title='Not read',
+                    message='The following were not %s because they contain @ignore:\n%s' % (kind,files))
+                
+        c.init_error_dialogs()
     #@+node:ekr.20031218072017.2982: *3* Getters & Setters
     #@+node:ekr.20060906211747: *4* Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition (changed)

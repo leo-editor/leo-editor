@@ -2356,7 +2356,7 @@ class baseScannerClass (scanUtility):
 
         result = ''.join(result)
         return result
-    #@+node:ekr.20070705085335: *4* insertIgnoreDirective
+    #@+node:ekr.20070705085335: *4* insertIgnoreDirective (leoImport)
     def insertIgnoreDirective (self,parent):
 
         self.appendStringToBody(parent,'@ignore')
@@ -2366,10 +2366,7 @@ class baseScannerClass (scanUtility):
         else:
             g.es_print('inserting @ignore',color='blue')
             if parent.isAnyAtFileNode() :
-                g.app.gui.dismiss_splash_screen()
-                g.app.gui.runAskOkDialog(self.c,
-                    title='Inserting @ignore',
-                    message='Inserting @ignore in %s' % (parent.h))
+                c.import_error_nodes.append(parent.h)
     #@+node:ekr.20070707113832.1: *4* putClass & helpers
     def putClass (self,s,i,sigEnd,codeEnd,start,parent):
 
