@@ -2179,20 +2179,32 @@ class baseFileCommands:
     def writeAtFileNodes (self,event=None):
 
         '''Write all @file nodes in the selected outline.'''
+        
+        c = self.c
 
-        self.c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
+        c.init_error_dialogs()
+        c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
+        c.raise_error_dialogs(kind='write')
     #@+node:ekr.20080801071227.5: *3* writeAtShadowNodes (fileCommands)
     def writeAtShadowNodes (self,event=None):
 
         '''Write all @file nodes in the selected outline.'''
 
-        self.c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
+        c = self.c
+
+        c.init_error_dialogs()
+        c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
+        c.raise_error_dialogs(kind='write')
     #@+node:ekr.20031218072017.1666: *3* writeDirtyAtFileNodes (fileCommands)
     def writeDirtyAtFileNodes (self,event=None):
 
         '''Write all changed @file Nodes.'''
+        
+        c = self.c
 
-        self.c.atFileCommands.writeAll(writeDirtyAtFileNodesFlag=True)
+        c.init_error_dialogs()
+        c.atFileCommands.writeAll(writeDirtyAtFileNodesFlag=True)
+        c.raise_error_dialogs(kind='write')
     #@+node:ekr.20080801071227.6: *3* writeDirtyAtShadowNodes (fileCommands)
     def writeDirtyAtShadowNodes (self,event=None):
 

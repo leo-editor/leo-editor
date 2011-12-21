@@ -978,13 +978,24 @@ class Commands (object):
             defaultextension=".py",
             multiple=True)
         c.bringToFront()
+        
+        if names:
+            g.chdir(names[0])
+        else:
+            names = []
 
         if not names:
+            if g.unitTesting:
+                # a kludge for unit testing.
+                c.init_error_dialogs()
+                c.raise_error_dialogs(kind='read')
             return
             
-        g.chdir(names[0])
+        
         
         # New in Leo 4.9: choose the type of import based on the extension.
+        
+        c.init_error_dialogs()
         
         derived = [z for z in names if c.looksLikeDerivedFile(z)]
         others = [ z for z in names if not z in derived]
@@ -1007,6 +1018,8 @@ class Commands (object):
                 
             # No longer supported.
             # c.importCommands.importFilesCommand (names,"@root")
+            
+        c.raise_error_dialogs(kind='read')
             
     # Compatibility
     importAtFile = importAnyFile
@@ -1088,6 +1101,8 @@ class Commands (object):
         fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
             title = "Open",filetypes = table,defaultextension = ".leo")
         c.bringToFront()
+        
+        c.init_error_dialogs()
 
         ok = False
         if fileName:
@@ -1106,6 +1121,8 @@ class Commands (object):
             else:
                 # otherwise, create an @edit node.
                 ok = c.createNodeFromExternalFile(fileName)
+                
+        c.raise_error_dialogs(kind='write')
 
         # openWithFileName sets focus if ok.
         if not ok:
@@ -1447,10 +1464,20 @@ class Commands (object):
         w = g.app.gui.get_focus(c)
         inBody = g.app.gui.widget_name(w).startswith('body')
         if inBody: p.saveCursorAndScroll(w)
-
+        
+        if g.unitTesting and g.app.unitTestDict.get('init_error_dialogs') is not None:
+            # A kludge for unit testing:
+            # indicated that c.init_error_dialogs and c.raise_error_dialogs
+            # will be called below, *without* actually saving the .leo file.
+            c.init_error_dialogs()
+            c.raise_error_dialogs(kind='write')
+            return
+        
         if g.app.disableSave:
             g.es("save commands disabled",color="purple")
             return
+            
+        c.init_error_dialogs()
 
         # Make sure we never pass None to the ctor.
         if not c.mFileName:
@@ -1496,6 +1523,8 @@ class Commands (object):
 
         # Done in fileCommands.save.
         # c.redraw_after_icons_changed()
+        
+        c.raise_error_dialogs(kind='write')
 
         # *Safely* restore focus, without using the old w directly.
         if inBody:
@@ -1531,6 +1560,8 @@ class Commands (object):
         if g.app.disableSave:
             g.es("save commands disabled",color="purple")
             return
+            
+        c.init_error_dialogs()
 
         # Make sure we never pass None to the ctor.
         if not c.mFileName:
@@ -1559,6 +1590,8 @@ class Commands (object):
 
         # Done in fileCommands.saveAs.
         # c.redraw_after_icons_changed()
+        
+        c.raise_error_dialogs(kind='write')
 
         # *Safely* restore focus, without using the old w directly.
         if inBody:
@@ -1580,6 +1613,8 @@ class Commands (object):
         if g.app.disableSave:
             g.es("save commands disabled",color="purple")
             return
+            
+        c.init_error_dialogs()
 
         # Make sure we never pass None to the ctor.
         if not c.mFileName:
@@ -1601,6 +1636,8 @@ class Commands (object):
 
         # Does not change icons status.
         # c.redraw_after_icons_changed()
+        
+        c.raise_error_dialogs(kind='write')
 
         # *Safely* restore focus, without using the old w directly.
         if inBody:
@@ -1856,7 +1893,7 @@ class Commands (object):
         p.setBodyString(s)
         w.setAllText(s)
         c.redraw(p)
-    #@+node:ekr.20070806105721.1: *6* readAtAutoNodes (commands)
+    #@+node:ekr.20070806105721.1: *6* c.readAtAutoNodes
     def readAtAutoNodes (self,event=None):
 
         '''Read all @auto nodes in the presently selected outline.'''
@@ -1870,7 +1907,7 @@ class Commands (object):
         u.afterChangeTree(p,'Read @auto Nodes',undoData)
         c.redraw()
         c.raise_error_dialogs(kind='read')
-    #@+node:ekr.20031218072017.1839: *6* readAtFileNodes (commands)
+    #@+node:ekr.20031218072017.1839: *6* c.readAtFileNodes
     def readAtFileNodes (self,event=None):
 
         '''Read all @file nodes in the presently selected outline.'''
@@ -1878,12 +1915,12 @@ class Commands (object):
         c = self ; u = c.undoer ; p = c.p
 
         c.endEditing()
-        c.init_error_dialogs()
+        # c.init_error_dialogs() # Done in at.readAll.
         undoData = u.beforeChangeTree(p)
         c.fileCommands.readAtFileNodes()
         u.afterChangeTree(p,'Read @file Nodes',undoData)
         c.redraw()
-        c.raise_error_dialogs(kind='read')
+        # c.raise_error_dialogs(kind='read') # Done in at.readAll.
     #@+node:ekr.20080801071227.4: *6* readAtShadowNodes (commands)
     def readAtShadowNodes (self,event=None):
 
@@ -7459,16 +7496,27 @@ class Commands (object):
         c = self
         c.import_error_nodes = []
         c.ignored_at_file_nodes = []
+
+        if g.unitTesting:
+            d = g.app.unitTestDict
+            tag = 'init_error_dialogs'
+            d[tag] = 1 + d.get(tag,0)
     #@+node:ekr.20111217154130.10285: *4* c.raise_error_dialogs
     def raise_error_dialogs(self,kind='read'):
         
         c = self
         
-        if not g.unitTesting:
-        
+        if g.unitTesting:
+            d = g.app.unitTestDict
+            tag = 'raise_error_dialogs'
+            d[tag] = 1 + d.get(tag,0)
+            # This trace catches all too-many-calls failures.
+            # g.trace(g.callers())
+        else:
             # 2011/12/17: Issue one or two dialogs.
             if c.import_error_nodes or c.ignored_at_file_nodes:
                  g.app.gui.dismiss_splash_screen()
+                 g.trace(g.callers())
             
             if c.import_error_nodes:
                 files = '\n'.join(sorted(c.import_error_nodes))

@@ -921,8 +921,10 @@ class leoImportCommands (scanUtility):
                     p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        message = g.choose(found,'finished','no @auto nodes in the selected tree')
-        g.es(message,color='blue')
+                
+        if not g.unitTesting:
+            message = g.choose(found,'finished','no @auto nodes in the selected tree')
+            g.es(message,color='blue')
         c.redraw()
 
     #@+node:ekr.20070807084545: *5* readOneAtAutoNode (leoImport)

@@ -7763,19 +7763,22 @@ class leoQtGui(leoGui.leoGui):
     def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False, startpath = None):
 
         """Create and run an Qt open file dialog ."""
-
-        if startpath is None:
-            startpath = os.curdir
-            
-        parent = None
-        filter = self.makeFilter(filetypes)
-
-        if multiple:
-            lst = QtGui.QFileDialog.getOpenFileNames(parent,title,startpath,filter)
-            return [g.u(s) for s in lst]
+        
+        if g.unitTesting:
+            return ''
         else:
-            s = QtGui.QFileDialog.getOpenFileName(parent,title,startpath,filter)
-            return g.u(s)
+            if startpath is None:
+                startpath = os.curdir
+                
+            parent = None
+            filter = self.makeFilter(filetypes)
+        
+            if multiple:
+                lst = QtGui.QFileDialog.getOpenFileNames(parent,title,startpath,filter)
+                return [g.u(s) for s in lst]
+            else:
+                s = QtGui.QFileDialog.getOpenFileName(parent,title,startpath,filter)
+                return g.u(s)
     #@+node:ekr.20110605121601.18501: *5* runPropertiesDialog (qtGui)
     def runPropertiesDialog(self,
         title='Properties',data={}, callback=None, buttons=None):
@@ -7786,15 +7789,18 @@ class leoQtGui(leoGui.leoGui):
         g.es_print('Properties menu not supported for Qt gui',color='blue')
         result = 'Cancel'
         return result,data
-    #@+node:ekr.20110605121601.18502: *5* runSaveFileDialog
+    #@+node:ekr.20110605121601.18502: *5* runSaveFileDialog (qtGui)
     def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultextension=''):
 
         """Create and run an Qt save file dialog ."""
-
-        parent = None
-        filter_ = self.makeFilter(filetypes)
-        s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter_)
-        return g.u(s)
+        
+        if g.unitTesting:
+            return ''
+        else:
+            parent = None
+            filter_ = self.makeFilter(filetypes)
+            s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter_)
+            return g.u(s)
     #@+node:ekr.20110605121601.18503: *5* runScrolledMessageDialog
     def runScrolledMessageDialog (self,
         short_title= '',

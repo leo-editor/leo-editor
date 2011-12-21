@@ -802,13 +802,12 @@ class atFile:
         #for v in c.all_unique_nodes():
         #    v.clearOrphan()
 
-        if partialFlag and not anyRead:
+        if partialFlag and not anyRead and not g.unitTesting:
             g.es("no @<file> nodes in the selected tree")
 
         if use_tracer: tt.stop()
         
         c.raise_error_dialogs()  # 2011/12/17
-        
     #@+node:ekr.20080801071227.7: *4* at.readAtShadowNodes
     def readAtShadowNodes (self,p):
 
@@ -2960,7 +2959,6 @@ class atFile:
             return
 
         try:
-            c.init_error_dialogs()
             at.writeOpenFile(root,nosentinels=nosentinels,toString=toString)
             assert root==at.root,'write'
             if toString:
@@ -2988,7 +2986,6 @@ class atFile:
                     root.v.at_read = True # 2011/05/24.
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
-            c.raise_error_dialogs(kind='write')
 
         except Exception:
             if hasattr(self.root.v,'tnodeList'):
@@ -3011,7 +3008,6 @@ class atFile:
         at = self ; c = at.c
         if trace: scanAtPathDirectivesCount = c.scanAtPathDirectivesCount
         writtenFiles = [] # Files that might be written again.
-        c.init_error_dialogs()
         force = writeAtFileNodesFlag
 
         if writeAtFileNodesFlag:
@@ -3039,18 +3035,18 @@ class atFile:
 
         #@+<< say the command is finished >>
         #@+node:ekr.20041005105605.150: *5* << say the command is finished >>
-        if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
-            if len(writtenFiles) > 0:
-                g.es("finished")
-            elif writeAtFileNodesFlag:
-                g.es("no @<file> nodes in the selected tree")
-            else:
-                g.es("no dirty @<file> nodes")
+        if not g.unitTesting:
+            if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
+                if len(writtenFiles) > 0:
+                    g.es("finished")
+                elif writeAtFileNodesFlag:
+                    g.es("no @<file> nodes in the selected tree")
+                else:
+                    g.es("no dirty @<file> nodes")
         #@-<< say the command is finished >>
         if trace: g.trace('%s calls to c.scanAtPathDirectives()' % (
             c.scanAtPathDirectivesCount-scanAtPathDirectivesCount))
-            
-        c.raise_error_dialogs(kind='write')
+
     #@+node:ekr.20041005105605.148: *5* at.clearAllOrphanBits
     def clearAllOrphanBits (self,p):
         
@@ -3155,12 +3151,13 @@ class atFile:
             else:
                 p.moveToThreadNext()
 
-        if found:
-            g.es("finished")
-        elif writeDirtyOnly:
-            g.es("no dirty @auto nodes in the selected tree")
-        else:
-            g.es("no @auto nodes in the selected tree")
+        if not g.unitTesting:
+            if found:
+                g.es("finished")
+            elif writeDirtyOnly:
+                    g.es("no dirty @auto nodes in the selected tree")
+            else:
+                g.es("no @auto nodes in the selected tree")
     #@+node:ekr.20070806141607: *5* at.writeOneAtAutoNode
     def writeOneAtAutoNode(self,p,toString,force):
 
@@ -3225,7 +3222,7 @@ class atFile:
 
         '''Write all @shadow nodes in the selected outline.'''
 
-        at = self
+        at = self ; c = at.c
         c.init_error_dialogs()
         val = at.writeAtShadowNodesHelper(writeDirtyOnly=False)
         c.raise_error_dialogs(kind='write')
@@ -3235,7 +3232,7 @@ class atFile:
 
         '''Write all dirty @shadow nodes in the selected outline.'''
 
-        at = self
+        at = self ; c = at.c
         c.init_error_dialogs()
         val =  at.writeAtShadowNodesHelper(writeDirtyOnly=True)
         c.raise_error_dialogs(kind='write')
@@ -3261,12 +3258,13 @@ class atFile:
             else:
                 p.moveToThreadNext()
 
-        if found:
-            g.es("finished")
-        elif writeDirtyOnly:
-            g.es("no dirty @shadow nodes in the selected tree")
-        else:
-            g.es("no @shadow nodes in the selected tree")
+        if not g.unitTesting:
+            if found:
+                g.es("finished")
+            elif writeDirtyOnly:
+                g.es("no dirty @shadow nodes in the selected tree")
+            else:
+                g.es("no @shadow nodes in the selected tree")
 
         return found
     #@+node:ekr.20080711093251.5: *5* at.writeOneAtShadowNode & helpers
@@ -3458,10 +3456,11 @@ class atFile:
             else:
                 p.moveToThreadNext()
 
-        if writtenFiles > 0:
-            g.es("finished")
-        else:
-            g.es("no @file node in the selected tree")
+        if not g.unitTesting:
+            if writtenFiles > 0:
+                g.es("finished")
+            else:
+                g.es("no @file node in the selected tree")
             
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20090225080846.5: *4* at.writeOneAtEditNode
