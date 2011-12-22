@@ -21029,11 +21029,14 @@ def getYScrollPosition(self):
     return i
 #@+node:ekr.20110605121601.18098: *7* setYScrollPosition (leoQTextEditWidget)
 def setYScrollPosition(self,pos):
-
-    w = self.widget
-    sb = w.verticalScrollBar()
-    if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
-    sb.setSliderPosition(pos)
+    
+    # g.trace(pos)
+    
+    if 0: # 2011/12/21
+        w = self.widget
+        sb = w.verticalScrollBar()
+        if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
+        sb.setSliderPosition(pos)
 #@+node:ekr.20061017083312.1: *7* << restore the selection, insertion point and the scrollbar >> selectEditorHelper leoBody.selectEditorBody
 spot = hasattr(w,'leo_insertSpot') and w.leo_insertSpot or 0
 w.setInsertPoint(0)

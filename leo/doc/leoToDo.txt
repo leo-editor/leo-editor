@@ -14,1855 +14,6 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20111026091322.16502: *3* First
-.. @+node:ekr.20111010162047.15678: *4* The @auto imports *must* put @first/@last directives in root node
-@nocolor-node
-
-Especially:
-    - Shebang line.
-    - Python encoding line.
-.. @+node:ekr.20070703122141.65: *5* << class baseScannerClass >>
-class baseScannerClass (scanUtility):
-
-    '''The base class for all import scanner classes.
-    This class contains common utility methods.'''
-
-    @others
-.. @+node:ekr.20070703122141.66: *6*  ctor (baseScannerClass)
-def __init__ (self,importCommands,atAuto,language):
-
-    ic = importCommands
-
-    self.atAuto = atAuto
-    self.c = c = ic.c
-
-    self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool('at_auto_warns_about_leading_whitespace')
-    self.atAutoSeparateNonDefNodes = c.config.getBool('at_auto_separate_non_def_nodes',default=False)
-    self.classId = None # The identifier containing the class tag: 'class', 'interface', 'namespace', etc.
-    self.codeEnd = None
-        # The character after the last character of the class, method or function.
-        # An error will be given if this is not a newline.
-    self.encoding = ic.encoding
-    self.errors = 0
-    ic.errors = 0
-    self.errorLines = []
-    self.escapeSectionRefs = True
-    self.extraIdChars = ''
-    self.fileName = ic.fileName # The original filename.
-    self.fileType = ic.fileType # The extension,  '.py', '.c', etc.
-    self.file_s = '' # The complete text to be parsed.
-    self.fullChecks = c.config.getBool('full_import_checks')
-    self.functionSpelling = 'function' # for error message.
-    self.importCommands = ic
-    self.indentRefFlag = None # None, True or False.
-    self.isRst = False
-    self.language = language
-    self.lastParent = None # The last generated parent node (used only by rstScanner).
-    self.methodName = ic.methodName # x, as in < < x methods > > =
-    self.methodsSeen = False
-    self.mismatchWarningGiven = False
-    self.output_newline = ic.output_newline # = c.config.getBool('output_newline')
-    self.output_indent = 0 # The minimum indentation presently in effect.
-    self.root = None # The top-level node of the generated tree.
-    self.rootLine = ic.rootLine # '' or @root + self.fileName
-    self.sigEnd = None # The index of the end of the signature.
-    self.sigId = None # The identifier contained in the signature, i.e., the function or method name.
-    self.sigStart = None
-        # The start of the line containing the signature.
-        # An error will be given if something other than whitespace precedes the signature.
-    self.startSigIndent = None
-    self.tab_width = None # Set in run: the tab width in effect in the c.currentPosition.
-    self.tab_ws = '' # Set in run: the whitespace equivalent to one tab.
-    self.trace = False or ic.trace # = c.config.getBool('trace_import')
-    self.treeType = ic.treeType # '@root' or '@file'
-    self.webType = ic.webType # 'cweb' or 'noweb'
-
-    # Compute language ivars.
-    delim1,junk,junk = g.set_delims_from_language(language)
-    self.comment_delim = delim1
-
-    # May be overridden in subclasses.
-    self.anonymousClasses = [] # For Delphi Pascal interfaces.
-    self.blockCommentDelim1 = None
-    self.blockCommentDelim2 = None
-    self.blockCommentDelim1_2 = None
-    self.blockCommentDelim2_2 = None
-    self.blockDelim1 = '{'
-    self.blockDelim2 = '}'
-    self.blockDelim2Cruft = [] # Stuff that can follow .blockDelim2.
-    self.caseInsensitive = False
-    self.classTags = ['class',] # tags that start a tag.
-    self.functionTags = []
-    self.hasClasses = True
-    self.hasDecls = True
-    self.hasFunctions = True
-    self.hasNestedClasses = False
-    self.ignoreBlankLines = False
-    self.ignoreLeadingWs = False
-    self.lineCommentDelim = None
-    self.lineCommentDelim2 = None
-    self.outerBlockDelim1 = None
-    self.outerBlockDelim2 = None
-    self.outerBlockEndsDecls = True
-    self.sigHeadExtraTokens = [] # Extra tokens valid in head of signature.
-    self.sigFailTokens = []
-        # A list of strings that abort a signature when seen in a tail.
-        # For example, ';' and '=' in C.
-    self.strict = False # True if leading whitespace is very significant.
-    self.warnAboutUnderindentedLines = True
-.. @+node:ekr.20070808115837: *6* Checking
-.. @+node:ekr.20070703122141.102: *7* check
-def check (self,unused_s,unused_parent):
-
-    '''Make sure the generated nodes are equivalent to the original file.
-
-    1. Regularize and check leading whitespace.
-    2. Check that a trial write produces the original file.
-
-    Return True if the nodes are equivalent to the original file.
-    '''
-
-    # Note: running full checks on all unit tests is slow.
-    if (g.unitTesting or self.fullChecks) and self.treeType in (None,'@file'):
-        return self.checkTrialWrite()
-    else:
-        return True
-.. @+node:ekr.20071110144948: *7* checkLeadingWhitespace
-def checkLeadingWhitespace (self,line):
-
-    tab_width = self.tab_width
-    lws = line[0:g.skip_ws(line,0)]
-    w = g.computeWidth(lws,tab_width)
-    ok = (w % abs(tab_width)) == 0
-
-    if not ok:
-        self.report('leading whitespace not consistent with @tabwidth %d' % tab_width)
-        g.es_print('line:',repr(line),color='red')
-
-    return ok
-.. @+node:ekr.20070703122141.104: *7* checkTrialWrite
-def checkTrialWrite (self,s1=None,s2=None):
-
-    '''Return True if a trial write produces the original file.'''
-
-    # s1 and s2 are for unit testing.
-    trace = False
-    c = self.c ; at = c.atFileCommands
-
-    if s1 is None and s2 is None:
-        if self.isRst:
-            outputFile = StringIO()
-            c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
-            s1,s2 = self.file_s,outputFile.getvalue()
-        elif self.atAuto: # 2011/12/14: Special case for @auto.
-            at.writeOneAtAutoNode(self.root,toString=True,force=True)
-            s1,s2 = self.file_s,at.stringOutput
-        else:
-            # 2011/11/09: We must write sentinels in s2 to handle @others correctly.
-            at.write(self.root,
-                # nosentinels=True,thinFile=False,
-                nosentinels=False,thinFile=True,
-                scriptWrite=False,toString=True,
-            )
-            s1,s2 = self.file_s, at.stringOutput
-            
-            # Now remove sentinels from s2.
-            line_delim = self.lineCommentDelim or self.lineCommentDelim2 or ''
-            start_delim = self.blockCommentDelim1 or self.blockCommentDelim2 or ''
-            # g.trace(self.language,line_delim,start_delim)
-            assert line_delim or start_delim
-            s2 = self.importCommands.removeSentinelLines(s2,
-                line_delim,start_delim,unused_end_delim=None)
-
-    s1 = g.toUnicode(s1,self.encoding)
-    s2 = g.toUnicode(s2,self.encoding)
-
-    # Make sure we have a trailing newline in both strings.
-    s1 = s1.replace('\r','')
-    s2 = s2.replace('\r','')
-    if not s1.endswith('\n'): s1 = s1 + '\n'
-    if not s2.endswith('\n'): s2 = s2 + '\n'
-
-    if s1 == s2: return True
-    
-    if self.ignoreBlankLines or self.ignoreLeadingWs:
-        lines1 = g.splitLines(s1)
-        lines2 = g.splitLines(s2)
-        lines1 = self.adjustTestLines(lines1)
-        lines2 = self.adjustTestLines(lines2)
-        s1 = ''.join(lines1)
-        s2 = ''.join(lines2)
-        
-    if 1: # Token-based comparison.
-        bad_i1,bad_i2,ok = self.scanAndCompare(s1,s2)
-        if ok: return ok
-        
-    else: # Line-based comparison: can not possibly work for html.
-        n1,n2 = len(lines1), len(lines2)
-        ok = True ; bad_i = 0
-        for i in range(max(n1,n2)):
-            ok = self.compareHelper(lines1,lines2,i,self.strict)
-            if not ok:
-                bad_i = i
-                break
-
-    # Unit tests do not generate errors unless the mismatch line does not match.
-    if g.app.unitTesting:
-        d = g.app.unitTestDict
-        ok = d.get('expectedMismatchLine') == bad_i1
-            # was d.get('actualMismatchLine')
-        if not ok: d['fail'] = g.callers()
-
-    if trace or not ok:
-        lines1 = g.splitLines(s1)
-        lines2 = g.splitLines(s2)
-        self.reportMismatch(lines1,lines2,bad_i1,bad_i2)
-
-    return ok
-.. @+node:ekr.20070730093735: *7* compareHelper & helpers
-def compareHelper (self,lines1,lines2,i,strict):
-
-    '''Compare lines1[i] and lines2[i].
-    strict is True if leading whitespace is very significant.'''
-
-    def pr(*args,**keys): #compareHelper
-        g.es_print(color='blue',*args,**keys)
-
-    def pr_mismatch(i,line1,line2):
-        g.es_print('first mismatched line at line',str(i+1))
-        g.es_print('original line: ',line1)
-        g.es_print('generated line:',line2)
-
-    d = g.app.unitTestDict
-    expectedMismatch = g.app.unitTesting and d.get('expectedMismatchLine')
-    enableWarning = not self.mismatchWarningGiven and self.atAutoWarnsAboutLeadingWhitespace
-    messageKind = None
-
-    if i >= len(lines1):
-        if i != expectedMismatch or not g.unitTesting:
-            pr('extra lines')
-            for line in lines2[i:]:
-                pr(repr(line))
-        d ['actualMismatchLine'] = i
-        return False
-
-    if i >= len(lines2):
-        if i != expectedMismatch or not g.unitTesting:
-            g.es_print('missing lines')
-            for line in lines2[i:]:
-                g.es_print('',repr(line))
-        d ['actualMismatchLine'] = i
-        return False
-
-    line1,line2 = lines1[i],lines2[i]
-
-    if line1 == line2:
-        return True # An exact match.
-    elif not line1.strip() and not line2.strip():
-        return True # Blank lines compare equal.
-    elif self.isRst and self.compareRstUnderlines(line1,line2):
-        return True
-    elif strict:
-        s1,s2 = line1.lstrip(),line2.lstrip()
-        messageKind = g.choose(
-            s1 == s2 and self.startsComment(s1,0) and self.startsComment(s2,0),
-            'comment','error')
-    else:
-        s1,s2 = line1.lstrip(),line2.lstrip()
-        messageKind = g.choose(s1==s2,'warning','error')
-
-    if g.unitTesting:
-        d ['actualMismatchLine'] = i+1
-        ok = i+1 == expectedMismatch
-        if not ok:  pr_mismatch(i,line1,line2)
-        return ok
-    elif strict:
-        if enableWarning:
-            self.mismatchWarningGiven = True
-            if messageKind == 'comment':
-                self.warning('mismatch in leading whitespace before comment')
-            else:
-                self.error('mismatch in leading whitespace')
-            pr_mismatch(i,line1,line2)
-        return messageKind == 'comment' # Only mismatched comment lines are valid.
-    else:
-        if enableWarning:
-            self.mismatchWarningGiven = True
-            self.checkLeadingWhitespace(line1)
-            self.warning('mismatch in leading whitespace')
-            pr_mismatch(i,line1,line2)
-        return messageKind in ('comment','warning') # Only errors are invalid.
-.. @+node:ekr.20091227115606.6468: *8* adjustTestLines
-def adjustTestLines(self,lines):
-
-    '''Ignore newlines.
-
-    This fudge allows the rst code generators to insert needed newlines freely.'''
-    
-    if self.ignoreBlankLines:
-        lines = [z for z in lines if z.strip()]
-        
-    if self.ignoreLeadingWs:
-        lines = [z.lstrip() for z in lines]
-    
-    return lines
-.. @+node:ekr.20090513073632.5735: *8* compareRstUnderlines
-def compareRstUnderlines(self,s1,s2):
-
-    s1,s2 = s1.rstrip(),s2.rstrip()
-    if s1 == s2:
-        return True # Don't worry about trailing whitespace.
-
-    n1, n2 = len(s1),len(s2)
-    ch1 = n1 and s1[0] or ''
-    ch2 = n2 and s2[0] or ''
-
-    val = (
-        n1 >= 2 and n2 >= 2 and # Underlinings must be at least 2 long.
-        ch1 == ch2 and # The underlining characters must match.
-        s1 == ch1 * n1 and # The line must consist only of underlining characters.
-        s2 == ch2 * n2)
-
-    return val
-.. @+node:ekr.20111109151106.9782: *7* formatTokens (baseScannerClass)
-def formatTokens(self,tokens):
-    
-    '''Format tokens for printing or dumping.'''
-    
-    i,result = 0,[]
-    for kind,val,line_number in tokens:
-        s = '%3s %3s %6s %s' % (i,line_number,kind,repr(val))
-        result.append(s)
-        i += 1
-        
-    return '\n'.join(result)
-.. @+node:ekr.20070911110507: *7* reportMismatch
-def reportMismatch (self,lines1,lines2,bad_i1,bad_i2):
-
-    trace = False # This causes traces for *non-failing* unit tests.
-    kind = g.choose(self.atAuto,'@auto','import command')
-    n1,n2 = len(lines1),len(lines2)
-    s1 = '%s did not import %s perfectly\n' % (
-        kind,self.root.h)
-    s2 = 'first mismatched line: %s (original) = %s (imported)' % (
-        bad_i1,bad_i2)
-    s = s1 + s2
-    
-    if trace: g.trace(s)
-    else:     self.error(s)
-
-    aList = []
-    aList.append('Original file...\n')
-    for i in range(max(0,bad_i1-2),min(bad_i1+3,n1)):
-        line = repr(lines1[i])
-        aList.append('%4d %s' % (i,line))
-        
-    aList.append('\nImported file...\n')
-    for i in range(max(0,bad_i2-2),min(bad_i2+3,n2)):
-        line = repr(lines2[i])
-        aList.append('%4d %s' % (i,line))
-
-    if trace or not g.unitTesting:
-        g.es_print('\n'.join(aList),color='blue')
-
-    return False
-.. @+node:ekr.20111101052702.16721: *7* scanAndCompare & helpers
-def scanAndCompare (self,s1,s2):
-    
-    '''Tokenize both s1 and s2, then perform a token-based comparison.
-    
-    Blank lines and leading whitespace has already been stripped
-    according to the ignoreBlankLines and ignoreLeadingWs ivars.
-    
-    Return (n,ok), where n is the first mismatched line in s1.
-    '''
-    
-    tokens1 = self.tokenize(s1)
-    tokens2 = self.tokenize(s2)
-    
-    tokens1 = self.filterTokens(tokens1)
-    tokens2 = self.filterTokens(tokens2)
-
-    if self.stripTokens(tokens1) == self.stripTokens(tokens2):
-        # g.trace('stripped tokens are equal')
-        return -1,-1,True
-    else:
-        n1,n2 = self.compareTokens(tokens1,tokens2)
-        return n1,n2,False
-.. @+node:ekr.20111101092301.16729: *8* compareTokens
-def compareTokens(self,tokens1,tokens2):
-        
-    trace = False # and not g.unitTesting
-    verbose = True
-    i,n1,n2 = 0,len(tokens1),len(tokens2)
-    fail_n1,fail_n2 = -1,-1
-    while i < max(n1,n2):
-        if trace and verbose:
-            for n,tokens in ((n1,tokens1),(n2,tokens2),):
-                if i < n: kind,val,line_number = tokens[i]
-                else:     kind,val,line_number = 'eof','',''
-                try:
-                    print('%3s %3s %7s' % (i,line_number,kind),repr(val))
-                except UnicodeEncodeError:
-                    print('%3s %3s %7s' % (i,line_number,kind),'unicode error!')
-                    # print(val)
-
-        if i < n1: kind1,val1,tok_n1 = tokens1[i]
-        else:      kind1,val1,tok_n1 = 'eof','',n1
-
-        if i < n2: kind2,val2,tok_n2 = tokens2[i]
-        else:      kind2,val2,tok_n2 = 'eof','',n2
-
-        if fail_n1 == -1 and fail_n2 == -1 and (kind1 != kind2 or val1 != val2):
-            if trace: g.trace('fail at lines: %s,%s' % (tok_n1,tok_n2))
-            fail_n1,fail_n2 = tok_n1,tok_n1
-            if trace and verbose:
-                n3 = 0
-                i += 1
-                while n3 < 10 and i < max(n1,n2):
-                    for n,tokens in ((n1,tokens1),(n2,tokens2),):
-                        if i < n: kind,val,junk_n = tokens[i]
-                        else:     kind,val = 'eof',''
-                        print('%3s %7s %s' % (i,kind,repr(val)))
-                    n3 += 1
-                    i += 1
-            break
-        i += 1
-    
-    if fail_n1 > -1 or fail_n2 > -1:
-        if trace: g.trace('fail',n1,n2)
-        return fail_n1,fail_n2
-    elif n1 == n2:
-        if trace: g.trace('equal')
-        return -1,-1
-    else:
-        n = min(len(tokens1),len(tokens2))
-        if trace: g.trace('fail 2 at line: %s' % (n))
-        return n,n
-.. @+node:ekr.20111101052702.16722: *8* filterTokens & helpers
-def filterTokens (self,tokens):
-    
-    '''Filter tokens as needed for correct comparisons.
-    
-    May be overridden in subclasses.'''
-    
-    return tokens
-.. @+node:ekr.20111101092301.16727: *9* removeLeadingWsTokens
-def removeLeadingWsTokens (self,tokens):
-    
-    '''Remove tokens representing leading whitespace.'''
-    
-    i,last,result = 0,'nl',[]
-    while i < len(tokens):
-        progress = i
-        kind,val,n = tok = tokens[i]
-        if kind == 'ws' and last == 'nl':
-            pass
-        else:
-            result.append(tok)
-        i += 1
-        last = kind
-        assert progress + 1 == i
-    
-    return result
-.. @+node:ekr.20111101092301.16728: *9* removeBlankLinesTokens
-def removeBlankLinesTokens(self,tokens):
-    
-    '''Remove all tokens representing blank lines.'''
-    
-    trace = False
-    if trace: g.trace('\nbefore:',tokens)
-
-    i,last,lws,result = 0,'nl',[],[]
-    while i < len(tokens):
-        progress = i
-        kind,val,n = tok = tokens[i]
-        if kind == 'ws':
-            if last in ('nl','ws'):
-                # Continue to append leading whitespace.
-                # Wrong, if ws tok ends in newline.
-                lws.append(tok)
-            else:
-                # Not leading whitespace: add it.
-                if lws: result.extend(lws)
-                lws = []
-                result.append(tok)
-        elif kind == 'nl':
-            # Ignore any previous blank line and remember *this* newline.
-            lws = [tok]
-        else:
-            # A non-blank line: append the leading whitespace.
-            if lws: result.extend(lws)
-            lws = []
-            result.append(tok)
-        last = kind
-        i += 1
-        assert i == progress+1
-    # Add any remaining ws.
-    if lws: result.extend(lws)
-        
-    if trace: g.trace('\nafter: ',result)
-    return result
-.. @+node:ekr.20111109151106.9781: *7* stripTokens (baseScannerClass)
-def stripTokens(self,tokens):
-    
-    '''Remove the line_number from all tokens.'''
-
-    return [(kind,val) for (kind,val,line_number) in tokens]
-.. @+node:ekr.20070706084535: *6* Code generation
-@ None of these methods should ever need to be overridden in subclasses.
-
-.. @+node:ekr.20090512080015.5800: *7* adjustParent
-def adjustParent (self,parent,headline):
-
-    '''Return the effective parent.
-
-    This is overridden by the rstScanner class.'''
-
-    return parent
-.. @+node:ekr.20070707073044.1: *7* addRef
-def addRef (self,parent):
-
-    '''Create an unindented @others or section reference in the parent node.'''
-
-    c = self.c
-
-    if self.isRst and not self.atAuto:
-        return
-
-    if self.treeType in ('@file',None):
-        self.appendStringToBody(parent,'@others\n')
-
-    if self.treeType == '@root' and self.methodsSeen:
-        self.appendStringToBody(parent,
-            g.angleBrackets(' ' + self.methodName + ' methods ') + '\n\n')
-.. @+node:ekr.20090122201952.6: *7* appendStringToBody & setBodyString (baseScannerClass)
-def appendStringToBody (self,p,s):
-
-    '''Similar to c.appendStringToBody,
-    but does not recolor the text or redraw the screen.'''
-
-    return self.importCommands.appendStringToBody(p,s)
-
-def setBodyString (self,p,s):
-
-    '''Similar to c.setBodyString,
-    but does not recolor the text or redraw the screen.'''
-
-    return self.importCommands.setBodyString(p,s)
-.. @+node:ekr.20090512153903.5806: *7* computeBody (baseScannerClass)
-def computeBody (self,s,start,sigStart,codeEnd):
-
-    trace = False
-
-    body1 = s[start:sigStart]
-    # Adjust start backwards to get a better undent.
-    if body1.strip():
-        while start > 0 and s[start-1] in (' ','\t'):
-            start -= 1
-
-    # g.trace(repr(s[sigStart:codeEnd]))
-
-    body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
-    body2 = self.undentBody(s[sigStart:codeEnd])
-    body = body1 + body2
-
-    if trace: g.trace('body: %s' % repr(body))
-
-    tail = body[len(body.rstrip()):]
-    if not '\n' in tail:
-        self.warning(
-            '%s %s does not end with a newline; one will be added\n%s' % (
-            self.functionSpelling,self.sigId,g.get_line(s,codeEnd)))
-
-    return body1,body2
-.. @+node:ekr.20090513073632.5737: *7* createDeclsNode
-def createDeclsNode (self,parent,s):
-
-    '''Create a child node of parent containing s.'''
-
-    # Create the node for the decls.
-    headline = '%s declarations' % self.methodName
-    body = self.undentBody(s)
-    self.createHeadline(parent,body,headline)
-.. @+node:ekr.20070707085612: *7* createFunctionNode
-def createFunctionNode (self,headline,body,parent):
-
-    # Create the prefix line for @root trees.
-    if self.treeType == '@root':
-        prefix = g.angleBrackets(' ' + headline + ' methods ') + '=\n\n'
-        self.methodsSeen = True
-    else:
-        prefix = ''
-
-    # Create the node.
-    return self.createHeadline(parent,prefix + body,headline)
-
-.. @+node:ekr.20070703122141.77: *7* createHeadline (baseScannerClass)
-def createHeadline (self,parent,body,headline):
-
-    return self.importCommands.createHeadline(parent,body,headline)
-.. @+node:ekr.20090502071837.1: *7* endGen
-def endGen (self,s):
-
-    '''Do any language-specific post-processing.'''
-    pass
-.. @+node:ekr.20070703122141.79: *7* getLeadingIndent
-def getLeadingIndent (self,s,i,ignoreComments=True):
-
-    '''Return the leading whitespace of a line.
-    Ignore blank and comment lines if ignoreComments is True'''
-
-    width = 0
-    i = g.find_line_start(s,i)
-    if ignoreComments:
-        while i < len(s):
-            # g.trace(g.get_line(s,i))
-            j = g.skip_ws(s,i)
-            if g.is_nl(s,j) or g.match(s,j,self.comment_delim):
-                i = g.skip_line(s,i) # ignore blank lines and comment lines.
-            else:
-                i, width = g.skip_leading_ws_with_indent(s,i,self.tab_width)
-                break      
-    else:
-        i, width = g.skip_leading_ws_with_indent(s,i,self.tab_width)
-
-    # g.trace('returns:',width)
-    return width
-.. @+node:ekr.20070709094002: *7* indentBody
-def indentBody (self,s,lws=None):
-
-    '''Add whitespace equivalent to one tab for all non-blank lines of s.'''
-
-    result = []
-    if not lws: lws = self.tab_ws
-
-    for line in g.splitLines(s):
-        if line.strip():
-            result.append(lws + line)
-        elif line.endswith('\n'):
-            result.append('\n')
-
-    result = ''.join(result)
-    return result
-.. @+node:ekr.20070705085335: *7* insertIgnoreDirective (leoImport)
-def insertIgnoreDirective (self,parent):
-
-    self.appendStringToBody(parent,'@ignore')
-
-    if g.unitTesting:
-        g.app.unitTestDict['fail'] = g.callers()
-    else:
-        g.es_print('inserting @ignore',color='blue')
-        if parent.isAnyAtFileNode() :
-            c.import_error_nodes.append(parent.h)
-.. @+node:ekr.20070707113832.1: *7* putClass & helpers
-def putClass (self,s,i,sigEnd,codeEnd,start,parent):
-
-    '''Creates a child node c of parent for the class,
-    and a child of c for each def in the class.'''
-
-    trace = False
-    if trace:
-        # g.trace('tab_width',self.tab_width)
-        g.trace('sig',repr(s[i:sigEnd]))
-
-    # Enter a new class 1: save the old class info.
-    oldMethodName = self.methodName
-    oldStartSigIndent = self.startSigIndent
-
-    # Enter a new class 2: init the new class info.
-    self.indentRefFlag = None
-
-    class_kind = self.classId
-    class_name = self.sigId
-    headline = '%s %s' % (class_kind,class_name)
-    headline = headline.strip()
-    self.methodName = headline
-
-    # Compute the starting lines of the class.
-    prefix = self.createClassNodePrefix()
-    if not self.sigId:
-        g.trace('Can not happen: no sigId')
-        self.sigId = 'Unknown class name'
-    classHead = s[start:sigEnd]
-    i = self.extendSignature(s,sigEnd)
-    extend = s[sigEnd:i]
-    if extend:
-        classHead = classHead + extend
-
-    # Create the class node.
-    class_node = self.createHeadline(parent,'',headline)
-
-    # Remember the indentation of the class line.
-    undentVal = self.getLeadingIndent(classHead,0)
-
-    # Call the helper to parse the inner part of the class.
-    putRef,bodyIndent,classDelim,decls,trailing = self.putClassHelper(
-        s,i,codeEnd,class_node)
-    # g.trace('bodyIndent',bodyIndent,'undentVal',undentVal)
-
-    # Set the body of the class node.
-    ref = putRef and self.getClassNodeRef(class_name) or ''
-
-    if trace: g.trace('undentVal',undentVal,'bodyIndent',bodyIndent)
-
-    # Give ref the same indentation as the body of the class.
-    if ref:
-        bodyWs = g.computeLeadingWhitespace (bodyIndent,self.tab_width)
-        ref = '%s%s' % (bodyWs,ref)
-
-    # Remove the leading whitespace.
-    result = (
-        prefix +
-        self.undentBy(classHead,undentVal) +
-        self.undentBy(classDelim,undentVal) +
-        self.undentBy(decls,undentVal) +
-        self.undentBy(ref,undentVal) +
-        self.undentBy(trailing,undentVal))
-        
-    result = self.adjust_class_ref(result)
-
-    # Append the result to the class node.
-    self.appendTextToClassNode(class_node,result)
-
-    # Exit the new class: restore the previous class info.
-    self.methodName = oldMethodName
-    self.startSigIndent = oldStartSigIndent
-.. @+node:ekr.20111029153537.16647: *8* adjust_class_ref
-def adjust_class_ref(self,s):
-    
-    '''Over-ridden by xml and html scanners.'''
-
-    return s
-.. @+node:ekr.20070707190351: *8* appendTextToClassNode
-def appendTextToClassNode (self,class_node,s):
-
-    c = self.c
-
-    self.appendStringToBody(class_node,s) 
-.. @+node:ekr.20070703122141.105: *8* createClassNodePrefix
-def createClassNodePrefix (self):
-
-    '''Create the class node prefix.'''
-
-    if  self.treeType == '@root':
-        prefix = g.angleBrackets(' ' + self.methodName + ' methods ') + '=\n\n'
-        self.methodsSeen = True
-    else:
-        prefix = ''
-
-    return prefix
-.. @+node:ekr.20070703122141.106: *8* getClassNodeRef
-def getClassNodeRef (self,class_name):
-
-    '''Insert the proper body text in the class_vnode.'''
-
-    if self.treeType in ('@file',None):
-        s = '@others'
-    else:
-        s = g.angleBrackets(' class %s methods ' % (class_name))
-
-    return '%s\n' % (s)
-.. @+node:ekr.20070707171329: *8* putClassHelper
-def putClassHelper(self,s,i,end,class_node):
-
-    '''s contains the body of a class, not including the signature.
-
-    Parse s for inner methods and classes, and create nodes.'''
-
-    trace = False and not g.unitTesting
-
-    # Increase the output indentation (used only in startsHelper).
-    # This allows us to detect over-indented classes and functions.
-    old_output_indent = self.output_indent
-    self.output_indent += abs(self.tab_width)
-
-    # Parse the decls.
-    if self.hasDecls: # 2011/11/11
-        j = i ; i = self.skipDecls(s,i,end,inClass=True)
-        decls = s[j:i]
-    else:
-        decls = ''
-
-    # Set the body indent if there are real decls.
-    bodyIndent = decls.strip() and self.getIndent(s,i) or None
-    if trace: g.trace('bodyIndent',bodyIndent)
-
-    # Parse the rest of the class.
-    delim1, delim2 = self.outerBlockDelim1, self.outerBlockDelim2
-    if g.match(s,i,delim1):
-        # Do *not* use g.skip_ws_and_nl here!
-        j = g.skip_ws(s,i + len(delim1))
-        if g.is_nl(s,j): j = g.skip_nl(s,j)
-        classDelim = s[i:j]
-        end2 = self.skipBlock(s,i,delim1=delim1,delim2=delim2)
-        start,putRef,bodyIndent2 = self.scanHelper(s,j,end=end2,parent=class_node,kind='class')
-    else:
-        classDelim = ''
-        start,putRef,bodyIndent2 = self.scanHelper(s,i,end=end,parent=class_node,kind='class')
-
-    if bodyIndent is None: bodyIndent = bodyIndent2
-
-    # Restore the output indentation.
-    self.output_indent = old_output_indent
-
-    # Return the results.
-    trailing = s[start:end]
-    return putRef,bodyIndent,classDelim,decls,trailing
-.. @+node:ekr.20070707082432: *7* putFunction (baseScannerClass)
-def putFunction (self,s,sigStart,codeEnd,start,parent):
-
-    '''Create a node of parent for a function defintion.'''
-
-    trace = False and not g.unitTesting
-    verbose = True
-
-    # if trace: g.trace(start,sigStart,self.sigEnd,codeEnd)
-
-    # Enter a new function: save the old function info.
-    oldStartSigIndent = self.startSigIndent
-
-    if self.sigId:
-        headline = self.sigId
-    else:
-        g.trace('Can not happen: no sigId')
-        headline = 'unknown function'
-
-    body1,body2 = self.computeBody(s,start,sigStart,codeEnd)
-    body = body1 + body2
-    parent = self.adjustParent(parent,headline)
-
-    if trace:
-        g.trace('parent',parent)
-        if verbose:
-            g.trace('**body1...\n',body1)
-            g.trace('**body2...\n',body2)
-
-    # 2010/11/04: Fix wishlist bug 670744.
-    if self.atAutoSeparateNonDefNodes:
-        if body1.strip():
-            if trace: g.trace('head',body1)
-            line1 = g.splitLines(body1.lstrip())[0]
-            line1 = line1.strip() or 'non-def code'
-            self.createFunctionNode(line1,body1,parent)
-            body = body2
-
-    self.lastParent = self.createFunctionNode(headline,body,parent)
-
-    # Exit the function: restore the function info.
-    self.startSigIndent = oldStartSigIndent
-.. @+node:ekr.20070705094630: *7* putRootText
-def putRootText (self,p):
-
-    c = self.c
-
-    self.appendStringToBody(p,'%s@language %s\n@tabwidth %d\n' % (
-        self.rootLine,self.language,self.tab_width))
-.. @+node:ekr.20070703122141.88: *7* undentBody
-def undentBody (self,s,ignoreComments=True):
-
-    '''Remove the first line's leading indentation from all lines of s.'''
-
-    trace = False
-    if trace: g.trace('before...\n',g.listToString(g.splitLines(s)))
-
-    if self.isRst:
-        return s # Never unindent rst code.
-
-    # Calculate the amount to be removed from each line.
-    undentVal = self.getLeadingIndent(s,0,ignoreComments=ignoreComments)
-    if undentVal == 0:
-        return s
-    else:
-        result = self.undentBy(s,undentVal)
-        if trace: g.trace('after...\n',g.listToString(g.splitLines(result)))
-        return result
-.. @+node:ekr.20081216090156.1: *7* undentBy
-def undentBy (self,s,undentVal):
-
-    '''Remove leading whitespace equivalent to undentVal from each line.
-    For strict languages, add an underindentEscapeString for underindented line.'''
-
-    trace = False and not g.app.unitTesting
-
-    if self.isRst:
-        return s # Never unindent rst code.
-
-    tag = self.c.atFileCommands.underindentEscapeString
-    result = [] ; tab_width = self.tab_width
-    for line in g.splitlines(s):
-        lws_s = g.get_leading_ws(line)
-        lws = g.computeWidth(lws_s,tab_width)
-        s = g.removeLeadingWhitespace(line,undentVal,tab_width)
-        n = lws - undentVal
-        # 2011/10/29: Add underindentEscapeString only for strict languages.
-        if self.strict and s.strip() and lws < undentVal:
-            if trace: g.trace('undentVal: %s, lws: %s, %s' % (
-                undentVal,lws,repr(line)))
-            result.append("%s%s%s" % (tag,undentVal-lws,s.lstrip()))
-        else:
-            if trace: g.trace(repr(s))
-            result.append(s)
-
-    return ''.join(result)
-
-.. @+node:ekr.20070801074524: *7* underindentedComment & underindentedLine
-def underindentedComment (self,line):
-
-    if self.atAutoWarnsAboutLeadingWhitespace:
-        self.warning(
-            'underindented python comments.\nExtra leading whitespace will be added\n' + line)
-
-def underindentedLine (self,line):
-
-    if self.warnAboutUnderindentedLines:
-        self.error(
-            'underindented line.\n' +
-            'Extra leading whitespace will be added\n' + line)
-.. @+node:ekr.20070703122141.78: *6* error, oops, report and warning
-def error (self,s):
-    self.errors += 1
-    self.importCommands.errors += 1
-    if g.unitTesting:
-        if self.errors == 1:
-            g.app.unitTestDict ['actualErrorMessage'] = s
-        g.app.unitTestDict ['actualErrors'] = self.errors
-        if 0: # For debugging unit tests.
-            g.trace(g.callers())
-            g.es_print('',s,color='red')
-    else:
-        g.es_print('error:',s,color='red')
-
-def oops (self):
-    g.pr('baseScannerClass oops: %s must be overridden in subclass' % g.callers())
-
-def report (self,message):
-    if self.strict: self.error(message)
-    else:           self.warning(message)
-
-def warning (self,s):
-    if not g.unitTesting:
-        g.es_print('warning:',s,color='red')
-.. @+node:ekr.20070706084535.1: *6* Parsing
-@ Scan and skipDecls would typically not be overridden.
-.. @+node:ekr.20071201072917: *7* adjustDefStart
-def adjustDefStart (self,unused_s,i):
-
-    '''A hook to allow the Python importer to adjust the 
-    start of a class or function to include decorators.'''
-
-    return i
-.. @+node:ekr.20070707150022: *7* extendSignature
-def extendSignature(self,unused_s,i):
-
-    '''Extend the signature line if appropriate.
-    The text *must* end with a newline.
-
-    For example, the Python scanner appends docstrings if they exist.'''
-
-    return i
-.. @+node:ekr.20071017132056: *7* getIndent
-def getIndent (self,s,i):
-
-    j,junk = g.getLine(s,i)
-    junk,indent = g.skip_leading_ws_with_indent(s,j,self.tab_width)
-    return indent
-.. @+node:ekr.20070706101600: *7* scan & scanHelper
-def scan (self,s,parent):
-
-    '''A language independent scanner: it uses language-specific helpers.
-
-    Create a child of self.root for:
-    - Leading outer-level declarations.
-    - Outer-level classes.
-    - Outer-level functions.
-    '''
-
-    # Init the parser status ivars.
-    self.methodsSeen = False
-
-    # Create the initial body text in the root.
-    self.putRootText(parent)
-
-    # Parse the decls.
-    if self.hasDecls:
-        i = self.skipDecls(s,0,len(s),inClass=False)
-        decls = s[:i]
-    else:
-        i,decls = 0,''
-
-    # Create the decls node.
-    if decls: self.createDeclsNode(parent,decls)
-
-    # Scan the rest of the file.
-    start,junk,junk = self.scanHelper(s,i,end=len(s),parent=parent,kind='outer')
-
-    # Finish adding to the parent's body text.
-    self.addRef(parent)
-    if start < len(s):
-        self.appendStringToBody(parent,s[start:])
-
-    # Do any language-specific post-processing.
-    self.endGen(s)
-.. @+node:ekr.20071018084830: *8* scanHelper (baseScannerClass)
-def scanHelper(self,s,i,end,parent,kind):
-
-    '''Common scanning code used by both scan and putClassHelper.'''
-
-    # g.trace(g.callers())
-    # g.trace('i',i,g.get_line(s,i))
-    assert kind in ('class','outer')
-    start = i ; putRef = False ; bodyIndent = None
-    # Major change: 2011/11/11: prevent scanners from going beyond end.
-    if self.hasNestedClasses and end < len(s):
-        s = s[:end] # Potentially expensive, but unavoidable.
-    while i < end:
-        progress = i
-        if s[i] in (' ','\t','\n'):
-            i += 1 # Prevent lookahead below, and speed up the scan.
-        elif self.startsComment(s,i):
-            i = self.skipComment(s,i)
-        elif self.startsString(s,i):
-            i = self.skipString(s,i)
-        elif self.startsClass(s,i):  # Sets sigStart,sigEnd & codeEnd ivars.
-            putRef = True
-            if bodyIndent is None: bodyIndent = self.getIndent(s,i)
-            end2 = self.codeEnd # putClass may change codeEnd ivar.
-            self.putClass(s,i,self.sigEnd,self.codeEnd,start,parent)
-            i = start = end2
-        elif self.startsFunction(s,i): # Sets sigStart,sigEnd & codeEnd ivars.
-            putRef = True
-            if bodyIndent is None: bodyIndent = self.getIndent(s,i)
-            self.putFunction(s,self.sigStart,self.codeEnd,start,parent)
-            i = start = self.codeEnd
-        elif self.startsId(s,i):
-            i = self.skipId(s,i)
-        elif kind == 'outer' and g.match(s,i,self.outerBlockDelim1): # Do this after testing for classes.
-            i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
-            # Bug fix: 2007/11/8: do *not* set start: we are just skipping the block.
-        else: i += 1
-        assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
-
-    return start,putRef,bodyIndent
-.. @+node:ekr.20111108111156.9785: *7* Parser skip methods (baseScannerClass)
-.. @+node:ekr.20111103073536.16599: *8* isSpace
-def isSpace(self,s,i):
-    
-    '''Return true if s[i] is a tokenizer space.'''
-    
-    # g.trace(repr(s[i]),i < len(s) and s[i] != '\n' and s[i].isspace())
-
-    return i < len(s) and s[i] != '\n' and s[i].isspace()
-.. @+node:ekr.20070712075148: *8* skipArgs
-def skipArgs (self,s,i,kind):
-
-    '''Skip the argument or class list.  Return i, ok
-
-    kind is in ('class','function')'''
-
-    start = i
-    i = g.skip_ws_and_nl(s,i)
-    if not g.match(s,i,'('):
-        return start,kind == 'class'
-
-    i = self.skipParens(s,i)
-    # skipParens skips the ')'
-    if i >= len(s):
-        return start,False
-    else:
-        return i,True 
-.. @+node:ekr.20070707073859: *8* skipBlock
-def skipBlock(self,s,i,delim1=None,delim2=None):
-
-    '''Skip from the opening delim to *past* the matching closing delim.
-
-    If no matching is found i is set to len(s)'''
-
-    trace = False and not g.unitTesting
-    verbose = False
-    start = i
-    if delim1 is None: delim1 = self.blockDelim1
-    if delim2 is None: delim2 = self.blockDelim2
-    match1 = g.choose(len(delim1)==1,g.match,g.match_word)
-    match2 = g.choose(len(delim2)==1,g.match,g.match_word)
-    assert match1(s,i,delim1)
-    level = 0 ; start = i
-    startIndent = self.startSigIndent
-    if trace and verbose:
-        g.trace('***','startIndent',startIndent,g.callers())
-    while i < len(s):
-        progress = i
-        if g.is_nl(s,i):
-            backslashNewline = i > 0 and g.match(s,i-1,'\\\n')
-            i = g.skip_nl(s,i)
-            if not backslashNewline and not g.is_nl(s,i):
-                j, indent = g.skip_leading_ws_with_indent(s,i,self.tab_width)
-                line = g.get_line(s,j)
-                if trace and verbose: g.trace('indent',indent,line)
-                if indent < startIndent and line.strip():
-                    # An non-empty underindented line.
-                    # Issue an error unless it contains just the closing bracket.
-                    if level == 1 and match2(s,j,delim2):
-                        pass
-                    else:
-                        if j not in self.errorLines: # No error yet given.
-                            self.errorLines.append(j)
-                            self.underindentedLine(line)
-        elif s[i] in (' ','\t',):
-            i += 1 # speed up the scan.
-        elif self.startsComment(s,i):
-            i = self.skipComment(s,i)
-        elif self.startsString(s,i):
-            i = self.skipString(s,i)
-        elif match1(s,i,delim1):
-            level += 1 ; i += len(delim1)
-        elif match2(s,i,delim2):
-            level -= 1 ; i += len(delim2)
-            # Skip junk following Pascal 'end'
-            for z in self.blockDelim2Cruft:
-                i2 = self.skipWs(s,i)
-                if g.match(s,i2,z):
-                    i = i2 + len(z)
-                    break
-            if level <= 0:
-                # 2010/09/20
-                # Skip a single-line comment if it exists.
-                j = self.skipWs(s,i)
-                if (g.match(s,j,self.lineCommentDelim) or
-                    g.match(s,j,self.lineCommentDelim2)
-                ):
-                    i = g.skip_to_end_of_line(s,i)
-                if trace: g.trace('returns:',repr(s[start:i]))
-                return i
-
-        else: i += 1
-        assert progress < i
-
-    self.error('no block: %s' % self.root.h)
-    if 1:
-        i,j = g.getLine(s,start)
-        g.trace(i,s[i:j])
-    else:
-        if trace: g.trace('** no block')
-    return start
-.. @+node:ekr.20070712091019: *8* skipCodeBlock
-def skipCodeBlock (self,s,i,kind):
-
-    '''Skip the code block in a function or class definition.'''
-
-    trace = False
-    start = i
-    i = self.skipBlock(s,i,delim1=None,delim2=None)
-
-    if self.sigFailTokens:
-        i = self.skipWs(s,i)
-        for z in self.sigFailTokens:
-            if g.match(s,i,z):
-                if trace: g.trace('failtoken',z)
-                return start,False
-
-    if i > start:
-        i = self.skipNewline(s,i,kind)
-
-    if trace:
-        g.trace(g.callers())
-        g.trace('returns...\n',g.listToString(g.splitLines(s[start:i])))
-
-    return i,True
-.. @+node:ekr.20070711104014: *8* skipComment & helper
-def skipComment (self,s,i):
-
-    '''Skip a comment and return the index of the following character.'''
-
-    if g.match(s,i,self.lineCommentDelim) or g.match(s,i,self.lineCommentDelim2):
-        return g.skip_to_end_of_line(s,i)
-    else:
-        return self.skipBlockComment(s,i)
-.. @+node:ekr.20070707074541: *9* skipBlockComment
-def skipBlockComment (self,s,i):
-
-    '''Skip past a block comment.'''
-
-    start = i
-
-    # Skip the opening delim.
-    if g.match(s,i,self.blockCommentDelim1):
-        delim2 = self.blockCommentDelim2
-        i += len(self.blockCommentDelim1)
-    elif g.match(s,i,self.blockCommentDelim1_2):
-        i += len(self.blockCommentDelim1_2)
-        delim2 = self.blockCommentDelim2_2
-    else:
-        assert False
-
-    # Find the closing delim.
-    k = s.find(delim2,i)
-    if k == -1:
-        self.error('Run on block comment: ' + s[start:i])
-        return len(s)
-    else:
-        return k + len(delim2)
-.. @+node:ekr.20070707080042: *8* skipDecls (baseScannerClass)
-def skipDecls (self,s,i,end,inClass):
-
-    '''Skip everything until the start of the next class or function.
-
-    The decls *must* end in a newline.'''
-
-    trace = False or self.trace
-    start = i ; prefix = None
-    classOrFunc = False
-    if trace: g.trace(g.callers())
-    # Major change: 2011/11/11: prevent scanners from going beyond end.
-    if self.hasNestedClasses and end < len(s):
-        s = s[:end] # Potentially expensive, but unavoidable.
-    while i < end:
-        progress = i
-        if s[i] in (' ','\t','\n'):
-            i += 1 # Prevent lookahead below, and speed up the scan.
-        elif self.startsComment(s,i):
-            # Add the comment to the decl if it *doesn't* start the line.
-            i2,junk = g.getLine(s,i)
-            i2 = self.skipWs(s,i2)
-            if i2 == i and prefix is None:
-                prefix = i2 # Bug fix: must include leading whitespace in the comment.
-            i = self.skipComment(s,i)
-        elif self.startsString(s,i):
-            i = self.skipString(s,i)
-            prefix = None
-        elif self.startsClass(s,i):
-            # Important: do not include leading ws in the decls.
-            classOrFunc = True
-            i = g.find_line_start(s,i)
-            i = self.adjustDefStart(s,i)
-            break
-        elif self.startsFunction(s,i):
-            # Important: do not include leading ws in the decls.
-            classOrFunc = True
-            i = g.find_line_start(s,i)
-            i = self.adjustDefStart(s,i)
-            break
-        elif self.startsId(s,i):
-            i = self.skipId(s,i)
-            prefix = None
-        # Don't skip outer blocks: they may contain classes.
-        elif g.match(s,i,self.outerBlockDelim1):
-            if self.outerBlockEndsDecls:
-                break
-            else:
-                i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
-        else:
-            i += 1 ;  prefix = None
-        assert(progress < i)
-
-    if prefix is not None:
-        i = g.find_line_start(s,prefix) # i = prefix
-    decls = s[start:i]
-    if inClass and not classOrFunc:
-        # Don't return decls if a class contains nothing but decls.
-        if trace and decls.strip(): g.trace('**class is all decls...\n',decls)
-        return start
-    elif decls.strip(): 
-        if trace or self.trace: g.trace('\n'+decls)
-        return i
-    else: # Ignore empty decls.
-        return start
-.. @+node:ekr.20070707094858.1: *8* skipId
-def skipId (self,s,i):
-
-    return g.skip_id(s,i,chars=self.extraIdChars)
-.. @+node:ekr.20070730134936: *8* skipNewline
-def skipNewline(self,s,i,kind):
-
-    '''Skip whitespace and comments up to a newline, then skip the newline.
-    Issue an error if no newline is found.'''
-
-    while i < len(s):
-        i = self.skipWs(s,i)
-        if self.startsComment(s,i):
-            i = self.skipComment(s,i)
-        else: break
-
-    if i >= len(s):
-        return len(s)
-
-    if g.match(s,i,'\n'):
-        i += 1
-    else:
-        self.error(
-            '%s %s does not end in a newline; one will be added\n%s' % (
-                kind,self.sigId,g.get_line(s,i)))
-        # g.trace(g.callers())
-
-    return i
-.. @+node:ekr.20070712081451: *8* skipParens
-def skipParens (self,s,i):
-
-    '''Skip a parenthisized list, that might contain strings or comments.'''
-
-    return self.skipBlock(s,i,delim1='(',delim2=')')
-.. @+node:ekr.20070707073627.2: *8* skipString
-def skipString (self,s,i):
-
-    # Returns len(s) on unterminated string.
-    return g.skip_string(s,i,verbose=False)
-.. @+node:ekr.20111101052702.16720: *8* skipWs
-def skipWs (self,s,i):
-    
-    return g.skip_ws(s,i)
-.. @+node:ekr.20070711132314: *7* startsClass/Function (baseClass) & helpers
-# We don't expect to override this code, but subclasses may override the helpers.
-
-def startsClass (self,s,i):
-    '''Return True if s[i:] starts a class definition.
-    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
-    val = self.hasClasses and self.startsHelper(s,i,kind='class',tags=self.classTags)
-    return val
-
-def startsFunction (self,s,i):
-    '''Return True if s[i:] starts a function.
-    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
-    val = self.hasFunctions and self.startsHelper(s,i,kind='function',tags=self.functionTags)
-    return val
-.. @+node:ekr.20070711134534: *8* getSigId
-def getSigId (self,ids):
-
-    '''Return the signature's id.
-
-    By default, this is the last id in the ids list.'''
-
-    return ids and ids[-1]
-.. @+node:ekr.20070711140703: *8* skipSigStart
-def skipSigStart (self,s,i,kind,tags):
-
-    '''Skip over the start of a function/class signature.
-
-    tags is in (self.classTags,self.functionTags).
-
-    Return (i,ids) where ids is list of all ids found, in order.'''
-
-    trace = False and self.trace # or kind =='function'
-    ids = [] ; classId = None
-    if trace: g.trace('*entry',kind,i,s[i:i+20])
-    start = i
-    while i < len(s):
-        j = g.skip_ws_and_nl(s,i)
-        for z in self.sigFailTokens:
-            if g.match(s,j,z):
-                if trace: g.trace('failtoken',z,'ids',ids)
-                return start, [], None
-        for z in self.sigHeadExtraTokens:
-            if g.match(s,j,z):
-                i += len(z) ; break
-        else:
-            i = self.skipId(s,j)
-            theId = s[j:i]
-            if theId and theId in tags: classId = theId
-            if theId: ids.append(theId)
-            else: break
-
-    if trace: g.trace('*exit ',kind,i,i < len(s) and s[i],ids,classId)
-    return i, ids, classId
-.. @+node:ekr.20070712082913: *8* skipSigTail
-def skipSigTail(self,s,i,kind):
-
-    '''Skip from the end of the arg list to the start of the block.'''
-
-    trace = False and self.trace
-    start = i
-    i = self.skipWs(s,i)
-    for z in self.sigFailTokens:
-        if g.match(s,i,z):
-            if trace: g.trace('failToken',z,'line',g.skip_line(s,i))
-            return i,False
-    while i < len(s):
-        if self.startsComment(s,i):
-            i = self.skipComment(s,i)
-        elif g.match(s,i,self.blockDelim1):
-            if trace: g.trace(repr(s[start:i]))
-            return i,True
-        else:
-            i += 1
-    if trace: g.trace('no block delim')
-    return i,False
-.. @+node:ekr.20070712112008: *8* startsHelper (baseScannerClass)
-def startsHelper(self,s,i,kind,tags,tag=None):
-    '''
-    tags is a list of id's.  tag is a debugging tag.
-    return True if s[i:] starts a class or function.
-    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
-
-    # if not tags: return False
-
-    trace = False or self.trace
-    verbose = False # kind=='function'
-    self.codeEnd = self.sigEnd = self.sigId = None
-    self.sigStart = i
-
-    # Underindented lines can happen in any language, not just Python.
-    # The skipBlock method of the base class checks for such lines.
-    self.startSigIndent = self.getLeadingIndent(s,i)
-
-    # Get the tag that starts the class or function.
-    j = g.skip_ws_and_nl(s,i)
-    i = self.skipId(s,j)
-    self.sigId = theId = s[j:i] # Set sigId ivar 'early' for error messages.
-    if not theId: return False
-
-    if tags:
-        if self.caseInsensitive:
-            theId = theId.lower()
-        if theId not in tags:
-            if trace and verbose: g.trace('**** %s theId: %s not in tags: %s' % (kind,theId,tags))
-            return False
-
-    if trace and verbose: g.trace('kind',kind,'id',theId)
-
-    # Get the class/function id.
-    if kind == 'class' and self.sigId in self.anonymousClasses:
-        # A hack for Delphi Pascal: interfaces have no id's.
-        # g.trace('anonymous',self.sigId)
-        classId = theId
-        sigId = ''
-    else:
-        i, ids, classId = self.skipSigStart(s,j,kind,tags) # Rescan the first id.
-        sigId = self.getSigId(ids)
-        if not sigId:
-            if trace and verbose: g.trace('**no sigId',g.get_line(s,i))
-            return False
-
-    if self.output_indent < self.startSigIndent:
-        if trace: g.trace('**over-indent',sigId)
-            #,'output_indent',self.output_indent,'startSigIndent',self.startSigIndent)
-        return False
-
-    # Skip the argument list.
-    i, ok = self.skipArgs(s,i,kind)
-    if not ok:
-        if trace and verbose: g.trace('no args',g.get_line(s,i))
-        return False
-    i = g.skip_ws_and_nl(s,i)
-
-    # Skip the tail of the signature
-    i, ok = self.skipSigTail(s,i,kind)
-    if not ok:
-        if trace and verbose: g.trace('no tail',g.get_line(s,i))
-        return False
-    sigEnd = i
-
-    # A trick: make sure the signature ends in a newline,
-    # even if it overlaps the start of the block.
-    if not g.match(s,sigEnd,'\n') and not g.match(s,sigEnd-1,'\n'):
-        if trace and verbose: g.trace('extending sigEnd')
-        sigEnd = g.skip_line(s,sigEnd)
-
-    if self.blockDelim1:
-        i = g.skip_ws_and_nl(s,i)
-        if kind == 'class' and self.sigId in self.anonymousClasses:
-            pass # Allow weird Pascal unit's.
-        elif not g.match(s,i,self.blockDelim1):
-            if trace and verbose: g.trace('no block',g.get_line(s,i))
-            return False
-
-    i,ok = self.skipCodeBlock(s,i,kind)
-    if not ok: return False
-        # skipCodeBlock skips the trailing delim.
-
-    # Success: set the ivars.
-    self.sigStart = self.adjustDefStart(s,self.sigStart)
-    self.codeEnd = i
-    self.sigEnd = sigEnd
-    self.sigId = sigId
-    self.classId = classId
-
-    # Note: backing up here is safe because
-    # we won't back up past scan's 'start' point.
-    # Thus, characters will never be output twice.
-    k = self.sigStart
-    if not g.match(s,k,'\n'):
-        self.sigStart = g.find_line_start(s,k)
-
-    # Issue this warning only if we have a real class or function.
-    if 0: # wrong.
-        if s[self.sigStart:k].strip():
-            self.error('%s definition does not start a line\n%s' % (
-                kind,g.get_line(s,k)))
-
-    if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
-    return True
-.. @+node:ekr.20070711104014.1: *7* startsComment
-def startsComment (self,s,i):
-
-    return (
-        g.match(s,i,self.lineCommentDelim) or
-        g.match(s,i,self.lineCommentDelim2) or
-        g.match(s,i,self.blockCommentDelim1) or
-        g.match(s,i,self.blockCommentDelim1_2)
-    )
-.. @+node:ekr.20070707094858.2: *7* startsId
-def startsId(self,s,i):
-
-    return g.is_c_id(s[i:i+1])
-.. @+node:ekr.20070707172732.1: *7* startsString
-def startsString(self,s,i):
-
-    return g.match(s,i,'"') or g.match(s,i,"'")
-.. @+node:ekr.20111103073536.16583: *6* Tokenizing (baseScannerClass)
-.. @+node:ekr.20111103073536.16586: *7* skip...Token (baseScannerClass)
-def skipCommentToken (self,s,i):
-    
-    j = self.skipComment(s,i)
-    return j,s[i:j]
-    
-def skipIdToken (self,s,i):
-    j = self.skipId(s,i)
-    return j,s[i:j]
-    
-def skipNewlineToken (self,s,i):
-    
-    return i+1,'\n'
-    
-def skipOtherToken (self,s,i):
-    
-    return i+1,s[i]
-    
-def skipStringToken(self,s,i):
-
-    j = self.skipString(s,i)
-    return j,s[i:j]
-    
-def skipWsToken(self,s,i):
-    j = i
-    while i < len(s) and s[i] != '\n' and s[i].isspace():
-        i += 1
-    return i,s[j:i]
-    
-.. @+node:ekr.20111030155153.16703: *7* tokenize
-def tokenize (self,s):
-
-    '''Tokenize string s and return a list of tokens (kind,value,line_number)
-
-    where kind is in ('comment,'id','nl','other','string','ws').
-    
-    This is used only to verify the imported text.
-    '''
-
-    result,i,line_number = [],0,0
-    while i < len(s):
-        progress = j = i
-        ch = s[i]
-        if ch == '\n':
-            kind = 'nl'
-            i,val = self.skipNewlineToken(s,i)
-        elif ch in ' \t': # self.isSpace(s,i):
-            kind = 'ws'
-            i,val = self.skipWsToken(s,i)
-        elif self.startsComment(s,i):
-            kind = 'comment'
-            i,val = self.skipCommentToken(s,i)
-        elif self.startsString(s,i):
-            kind = 'string'
-            i,val = self.skipStringToken(s,i)
-        elif self.startsId(s,i):
-            kind = 'id'
-            i,val = self.skipIdToken(s,i)
-        else:
-            kind = 'other'
-            i,val = self.skipOtherToken(s,i)
-            
-        assert progress < i and j == progress
-        if val:
-            result.append((kind,val,line_number),)
-        # Use the raw token, s[j:i] to count newlines, not the munged val.
-        line_number += s[j:i].count('\n')
-        # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
-        
-    # g.trace(result)
-        
-    return result
-.. @+node:ekr.20070707072749: *6* run (baseScannerClass)
-def run (self,s,parent):
-
-    c = self.c
-    self.root = root = parent.copy()
-    self.file_s = s
-    self.tab_width = self.importCommands.getTabWidth(p=root)
-    # g.trace('tab_width',self.tab_width)
-    # Create the ws equivalent to one tab.
-    if self.tab_width < 0:
-        self.tab_ws = ' '*abs(self.tab_width)
-    else:
-        self.tab_ws = '\t'
-
-    # Init the error/status info.
-    self.errors = 0
-    self.errorLines = []
-    self.mismatchWarningGiven = False
-    changed = c.isChanged()
-
-    # Use @verbatim to escape section references.
-    # 2011/12/14: @auto never supports section references.
-    if self.escapeSectionRefs and not self.atAuto: 
-        s = self.escapeFalseSectionReferences(s)
-
-    # Check for intermixed blanks and tabs.
-    if self.strict or self.atAutoWarnsAboutLeadingWhitespace:
-        if not self.isRst:
-            self.checkBlanksAndTabs(s)
-
-    # Regularize leading whitespace for strict languages only.
-    if self.strict: s = self.regularizeWhitespace(s) 
-
-    # Generate the nodes, including directive and section references.
-    self.scan(s,parent)
-
-    # Check the generated nodes.
-    # Return True if the result is equivalent to the original file.
-    ok = self.errors == 0 and self.check(s,parent)
-    g.app.unitTestDict ['result'] = ok
-
-    # Insert an @ignore directive if there were any serious problems.
-    if not ok: self.insertIgnoreDirective(parent)
-
-    if self.atAuto and ok:
-        for p in root.self_and_subtree():
-            p.clearDirty()
-        c.setChanged(changed)
-    else:
-        root.setDirty(setDescendentsDirty=False)
-        c.setChanged(True)
-.. @+node:ekr.20071110105107: *7* checkBlanksAndTabs
-def checkBlanksAndTabs(self,s):
-
-    '''Check for intermixed blank & tabs.'''
-
-    # Do a quick check for mixed leading tabs/blanks.
-    blanks = tabs = 0
-
-    for line in g.splitLines(s):
-        lws = line[0:g.skip_ws(line,0)]
-        blanks += lws.count(' ')
-        tabs += lws.count('\t')
-
-    ok = blanks == 0 or tabs == 0
-
-    if not ok:
-        self.report('intermixed blanks and tabs')
-
-    return ok
-.. @+node:ekr.20070808115837.1: *7* regularizeWhitespace
-def regularizeWhitespace (self,s):
-
-    '''Regularize leading whitespace in s:
-    Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
-    This is only called for strict languages.'''
-
-    changed = False ; lines = g.splitLines(s) ; result = [] ; tab_width = self.tab_width
-
-    if tab_width < 0: # Convert tabs to blanks.
-        for line in lines:
-            i, w = g.skip_leading_ws_with_indent(line,0,tab_width)
-            s = g.computeLeadingWhitespace(w,-abs(tab_width)) + line [i:] # Use negative width.
-            if s != line: changed = True
-            result.append(s)
-    elif tab_width > 0: # Convert blanks to tabs.
-        for line in lines:
-            s = g.optimizeLeadingWhitespace(line,abs(tab_width)) # Use positive width.
-            if s != line: changed = True
-            result.append(s)
-
-    if changed:
-        action = g.choose(self.tab_width < 0,'tabs converted to blanks','blanks converted to tabs')
-        message = 'inconsistent leading whitespace. %s' % action
-        self.report(message)
-
-    return ''.join(result)
-.. @+node:ekr.20050920084036.189: *5* << define dictionary d of names and Leo commands >>
-c = self.c ; f = c.frame
-
-d = {
-    'abort-edit-headline':          f.abortEditLabelCommand,
-    'about-leo':                    c.about,
-    'add-comments':                 c.addComments,     
-    'beautify':                     c.beautifyPythonCode,
-    'beautify-c':                   c.beautifyCCode,
-    'beautify-all':                 c.beautifyAllPythonCode,
-    'beautify-tree':                c.beautifyPythonTree,
-    'cascade-windows':              f.cascade,
-    # 'check-all-python-code':      c.checkAllPythonCode,
-    'check-derived-file':           c.atFileCommands.checkDerivedFile,
-    'check-leo-file':               c.fileCommands.checkLeoFile,
-    'check-outline':                c.checkOutline,
-    # 'check-python-code':          c.checkPythonCode,
-    'clean-recent-files':           c.cleanRecentFiles,
-    'clear-recent-files':           c.clearRecentFiles,
-    'clone-node':                   c.clone,
-    'close-window':                 c.close,
-    'contract-all':                 c.contractAllHeadlines,
-    'contract-all-other-nodes':     c.contractAllOtherNodes,
-    'contract-node':                c.contractNode,
-    'contract-or-go-left':          c.contractNodeOrGoToParent,
-    'contract-parent':              c.contractParent,
-    'convert-all-blanks':           c.convertAllBlanks,
-    'convert-all-tabs':             c.convertAllTabs,
-    'convert-blanks':               c.convertBlanks,
-    'convert-tabs':                 c.convertTabs,
-    'copy-node':                    c.copyOutline,
-    'copy-text':                    f.copyText,
-    'cut-node':                     c.cutOutline,
-    'cut-text':                     f.cutText,
-    'de-hoist':                     c.dehoist,
-    'delete-comments':              c.deleteComments,
-    'delete-node':                  c.deleteOutline,
-    'demote':                       c.demote,
-    'dump-outline':                 c.dumpOutline,
-    'edit-headline':                c.editHeadline,
-    'end-edit-headline':            f.endEditLabelCommand,
-    'equal-sized-panes':            f.equalSizedPanes,
-    'execute-script':               c.executeScript,
-    'exit-leo':                     g.app.onQuit,
-    'expand-all':                   c.expandAllHeadlines,
-    'expand-all-subheads':          c.expandAllSubheads,
-        # Fixes bug 604037 Status of expandAllSubheads
-    'expand-ancestors-only':        c.expandOnlyAncestorsOfNode,
-    'expand-and-go-right':          c.expandNodeAndGoToFirstChild,
-    'expand-next-level':            c.expandNextLevel,
-    'expand-node':                  c.expandNode,
-    'expand-or-go-right':           c.expandNodeOrGoToFirstChild,
-    'expand-prev-level':            c.expandPrevLevel,
-    'expand-to-level-1':            c.expandLevel1,
-    'expand-to-level-2':            c.expandLevel2,
-    'expand-to-level-3':            c.expandLevel3,
-    'expand-to-level-4':            c.expandLevel4,
-    'expand-to-level-5':            c.expandLevel5,
-    'expand-to-level-6':            c.expandLevel6,
-    'expand-to-level-7':            c.expandLevel7,
-    'expand-to-level-8':            c.expandLevel8,
-    'expand-to-level-9':            c.expandLevel9,
-    'export-headlines':             c.exportHeadlines,
-    'extract':                      c.extract,
-    'extract-names':                c.extractSectionNames,
-    # 'extract-python-method':        c.extractPythonMethod,
-    # 'extract-section':              c.extractSection,
-    'find-next-clone':              c.findNextClone,
-    'flatten-outline':              c.flattenOutline,
-    'go-back':                      c.goPrevVisitedNode,
-    'go-forward':                   c.goNextVisitedNode,
-    'goto-first-node':              c.goToFirstNode,
-    'goto-first-sibling':           c.goToFirstSibling,
-    'goto-first-visible-node':      c.goToFirstVisibleNode,
-    'goto-last-node':               c.goToLastNode,
-    'goto-last-sibling':            c.goToLastSibling,
-    'goto-last-visible-node':       c.goToLastVisibleNode,
-    'goto-next-changed':            c.goToNextDirtyHeadline,
-    'goto-next-clone':              c.goToNextClone,
-    'goto-next-history-node':       c.goToNextHistory,
-    'goto-next-marked':             c.goToNextMarkedHeadline,
-    'goto-next-node':               c.selectThreadNext,
-    'goto-next-sibling':            c.goToNextSibling,
-    'goto-next-visible':            c.selectVisNext,
-    'goto-parent':                  c.goToParent,
-    'goto-prev-history-node':       c.goToPrevHistory,
-    'goto-prev-node':               c.selectThreadBack,
-    'goto-prev-sibling':            c.goToPrevSibling,
-    'goto-prev-visible':            c.selectVisBack,
-    'hide-invisibles':              c.hideInvisibles,
-    'hoist':                        c.hoist,
-    'import-file':                  c.importAnyFile,
-    # 'import-at-file':               c.importAtFile,
-    # 'import-at-root':               c.importAtRoot,
-    # 'import-cweb-files':            c.importCWEBFiles,
-    # 'import-derived-file':          c.importDerivedFile,
-    # 'import-flattened-outline':     c.importFlattenedOutline,
-    # 'import-noweb-files':           c.importNowebFiles,
-    'indent-region':                c.indentBody,
-    'insert-body-time':             c.insertBodyTime,
-    'insert-child':                 c.insertChild,
-    'insert-headline-time':         f.insertHeadlineTime,
-    'insert-node':                  c.insertHeadline,
-    'mark':                         c.markHeadline,
-    'mark-changed-items':           c.markChangedHeadlines,
-    # 'mark-changed-roots':           c.markChangedRoots,
-    # 'mark-clones':                c.markClones,
-    'mark-subheads':                c.markSubheads,
-    'match-brackets':               c.findMatchingBracket,
-    'minimize-all':                 f.minimizeAll,
-    'move-outline-down':            c.moveOutlineDown,
-    'move-outline-left':            c.moveOutlineLeft,
-    'move-outline-right':           c.moveOutlineRight,
-    'move-outline-up':              c.moveOutlineUp,
-    'new':                          c.new,
-    # 'open-compare-window':          c.openCompareWindow,
-    'open-find-dialog':             c.showFindPanel, # Deprecated.
-    'open-leoDocs-leo':             c.leoDocumentation,
-    'open-leoPlugins-leo':          c.openLeoPlugins,
-    'open-leoSettings-leo':         c.openLeoSettings,
-    'open-myLeoSettings-leo':       c.openMyLeoSettings,
-    'open-offline-tutorial':        f.leoHelp,
-    'open-online-home':             c.leoHome,
-    'open-online-tutorial':         c.leoTutorial,
-    'open-outline':                 c.open,
-    'open-python-window':           c.openPythonWindow,
-    'open-quickstart-leo':          c.leoQuickStart,
-    'open-scripts-leo':             c.openLeoScripts,
-    'open-users-guide':             c.leoUsersGuide,
-    'open-with':                    c.openWith,
-    'outline-to-cweb':              c.outlineToCWEB,
-    'outline-to-noweb':             c.outlineToNoweb,
-    'paste-node':                   c.pasteOutline,
-    'paste-retaining-clones':       c.pasteOutlineRetainingClones,
-    'paste-text':                   f.pasteText,
-    'pretty-print-all-python-code': c.prettyPrintAllPythonCode,
-    'pretty-print-python-code':     c.prettyPrintPythonCode,
-    'promote':                      c.promote,
-    'read-at-auto-nodes':           c.readAtAutoNodes,
-    'read-at-file-nodes':           c.readAtFileNodes,
-    'read-at-shadow-nodes':         c.readAtShadowNodes,
-    'read-file-into-node':          c.readFileIntoNode,
-    'read-outline-only':            c.readOutlineOnly,
-    'redo':                         c.undoer.redo,
-    'reformat-paragraph':           c.reformatParagraph,
-    'remove-sentinels':             c.removeSentinels,
-    'resize-to-screen':             f.resizeToScreen,
-    'revert':                       c.revert,
-    'save-all':                     c.saveAll,
-    'save-file':                    c.save,
-    'save-file-as':                 c.saveAs,
-    'save-file-as-unzipped':        c.saveAsUnzipped,
-    'save-file-as-zipped':          c.saveAsZipped,
-    'save-file-to':                 c.saveTo,
-    'set-colors':                   c.colorPanel,
-    'set-font':                     c.fontPanel,
-    'settings':                     c.preferences,
-    'show-invisibles':              c.showInvisibles,
-    'sort-children':                c.sortChildren,
-    'sort-recent-files':            c.sortRecentFiles,
-    'sort-siblings':                c.sortSiblings,
-    'tangle':                       c.tangle,
-    'tangle-all':                   c.tangleAll,
-    'tangle-marked':                c.tangleMarked,
-    'toggle-active-pane':           f.toggleActivePane,
-    'toggle-angle-brackets':        c.toggleAngleBrackets,
-    'toggle-invisibles':            c.toggleShowInvisibles,
-    'toggle-sparse-move':           c.toggleSparseMove,
-    'toggle-split-direction':       f.toggleSplitDirection,
-    'undo':                         c.undoer.undo,
-    'unindent-region':              c.dedentBody,
-    'unmark-all':                   c.unmarkAll,
-    'untangle':                     c.untangle,
-    'untangle-all':                 c.untangleAll,
-    'untangle-marked':              c.untangleMarked,
-    'weave':                        c.weave,
-    'write-at-auto-nodes':          c.atFileCommands.writeAtAutoNodes,
-    'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
-    'write-at-shadow-nodes':        c.fileCommands.writeAtShadowNodes,
-    'write-dirty-at-auto-nodes':    c.atFileCommands.writeDirtyAtAutoNodes,
-    'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,
-    'write-dirty-at-shadow-nodes':  c.fileCommands.writeDirtyAtShadowNodes,
-    'write-file-from-node':         c.writeFileFromNode,
-    'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
-    'write-outline-only':           c.fileCommands.writeOutlineOnly,
-}
 .. @+node:ekr.20111216163700.10214: *4* Bugs
 .. @+node:ekr.20111216163700.10212: *5* Urgent bugs (2)
 .. @+node:ekr.20111026091322.16496: *6* Bug 844953: copy-clone-pasted node appears in other tab
@@ -3418,7 +1569,7 @@ def killOneShortcut (self,bunch,name,p):
     
     if 0:
         g.trace(bunch,name,p and p.h)
-.. @+node:ekr.20111216165611.10212: *5* In progress bugs (3)
+.. @+node:ekr.20111216165611.10212: *5* In progress bugs (4)
 .. @+node:ekr.20111125072438.10214: *6* email: Another @shadow bug (test4.leo)
 @nocolor-node
 
@@ -3926,6 +2077,50 @@ def init():
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True
+.. @+node:ekr.20111010162047.15678: *6* Imports to @file should put @first/@last directives in root node
+@nocolor-node
+
+Especially:
+    - Shebang line.
+    - Python encoding line.
+    
+- @auto correctly works for all Python files.
+.. @+node:ekr.20111221102703.10288: *7* @test imported shbang line
+def setup(p):
+    while p.hasChildren():
+        p.firstChild().doDelete()
+        
+setup(p)
+child = p.insertAsNthChild(0)
+child.h = 'import'
+child = p.firstChild()
+assert child
+assert child.h == 'import'
+child.b = ''
+c.selectPosition(child)
+
+fn = g.os_path_finalize_join(g.app.loadDir,'..','test','at-auto-at-first-test.py')
+assert g.os_path_exists(fn),fn
+
+try:
+    c.importCommands.createOutline(fn,parent=child.copy(),atAuto=False,ext='.py')
+    s = '#!/usr/bin/env python\n# -*- coding: utf-8 -*-'
+    root = child.firstChild()
+    assert root
+    assert root.h.startswith('@file'),root.h
+    assert root.h.endswith('at-auto-at-first-test.py')
+    assert root.b.startswith(s),'root.b:...\n\n%s' % (root.b)
+finally:
+    if not g.app.isExternalUnitTest:
+        setup(p)
+.. @+node:ekr.20111221102703.10289: *7* @@@nosent ../test/at-auto-at-first-test.py
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+def spam():
+    pass
+    
+# This is the last line.
 .. @+node:ekr.20111216163700.10213: *5* Important bugs (3)
 .. @+node:ekr.20111123095018.13632: *6* Fix bug: expand Find tab as needed for bigger fonts
 .. @+node:ekr.20110605121601.18326: *7* createTab (leoQtLog)
@@ -4212,9 +2407,1018 @@ File' commands to begin the search dialog in the directory, E:
 \Documents\Some Folder\ instead of the last directory used?
 
 Would others find this a useful feature?
+.. @+node:ekr.20111221114145.10217: *6* Found: runOpenFileDialog
+# Important: many plugins use g.app.gui.openFileDialog.
+.. @+node:ekr.20031218072017.2821: *7* c.open & helper
+def open (self,event=None):
+
+    '''Open a Leo window containing the contents of a .leo file.'''
+
+    c = self
+    << Set closeFlag if the only open window is empty >>
+    table = [
+        # 2010/10/09: Fix an interface blunder. Show all files by default.
+        ("All files","*"),
+        ("Leo files","*.leo"),
+        ("Python files","*.py"),]
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+        title = "Open",filetypes = table,defaultextension = ".leo")
+    c.bringToFront()
+    
+    c.init_error_dialogs()
+
+    ok = False
+    if fileName:
+        if fileName.endswith('.leo'):
+            ok, frame = g.openWithFileName(fileName,c)
+            if ok:
+                g.chdir(fileName)
+                g.setGlobalOpenDir(fileName)
+            if ok and closeFlag:
+                g.app.destroyWindow(c.frame)
+        elif c.looksLikeDerivedFile(fileName):
+            # 2011/10/09: A smart open makes Leo lighter:
+            # Create an @file node for files containing Leo sentinels.
+            ok = c.importCommands.importDerivedFiles(parent=c.p,
+                paths=[fileName],command='Open')
+        else:
+            # otherwise, create an @edit node.
+            ok = c.createNodeFromExternalFile(fileName)
+            
+    c.raise_error_dialogs(kind='write')
+
+    # openWithFileName sets focus if ok.
+    if not ok:
+        c.initialFocusHelper()
+.. @+node:ekr.20031218072017.2822: *8* << Set closeFlag if the only open window is empty >>
+@
+If this is the only open window was opened when the app started, and
+the window has never been written to or saved, then we will
+automatically close that window if this open command completes
+successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+.. @+node:ekr.20090212054250.9: *8* c.createNodeFromExternalFile
+def createNodeFromExternalFile(self,fn):
+
+    '''Read the file into a node.
+    Return None, indicating that c.open should set focus.'''
+
+    c = self
+
+    s,e = g.readFileIntoString(fn)
+    if s is None: return
+    head,ext = g.os_path_splitext(fn)
+    if ext.startswith('.'): ext = ext[1:]
+    language = g.app.extension_dict.get(ext)
+    if language:
+        prefix = '@color\n@language %s\n\n' % language
+    else:
+        prefix = '@killcolor\n\n'
+    p2 = c.insertHeadline(op_name='Open File', as_child=False)
+    p2.h = '@edit %s' % fn # g.shortFileName(fn)
+    p2.b = prefix + s
+    w = c.frame.body.bodyCtrl
+    if w: w.setInsertPoint(0)
+    c.redraw()
+    c.recolor()
+.. @+node:ekr.20111009162434.7206: *7* Regularized slashes in @edit/@file
+@nocolor-node
+
+Examples:
+    
+    @edit C:/leo.repo/ipython-0.12/IPython/frontend/qt/console/pygments_highlighter.py
+        # The filename comes from g.app.gui.runOpenFileDialog
+    
+    @file C:\leo.repo\ipython-0.12\IPython\frontend\qt\console\pygments_highlighter.py
+        # Created by import.
+        
+The problem was the call to g.os_path_normpath in importDerived files:
+    it converts slashes to backslashes on windows (!!)
+.. @+node:ekr.20110530124245.18245: *7* c.importAnyFile & helper
+def importAnyFile (self,event=None):
+
+    '''Import one or more files.'''
+
+    c = self ; ic = c.importCommands
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import File",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+    
+    if names:
+        g.chdir(names[0])
+    else:
+        names = []
+
+    if not names:
+        if g.unitTesting:
+            # a kludge for unit testing.
+            c.init_error_dialogs()
+            c.raise_error_dialogs(kind='read')
+        return
+        
+    
+    
+    # New in Leo 4.9: choose the type of import based on the extension.
+    
+    c.init_error_dialogs()
+    
+    derived = [z for z in names if c.looksLikeDerivedFile(z)]
+    others = [ z for z in names if not z in derived]
+    
+    if derived:
+        ic.importDerivedFiles(parent=c.p,paths=derived)
+    
+    for fn in others:
+        junk,ext = g.os_path_splitext(fn)
+        if ext.startswith('.'): ext = ext[1:]
+    
+        if ext in ('cw','cweb'):
+            ic.importWebCommand([fn],"cweb")
+        elif ext in ('nw','noweb'):
+            ic.importWebCommand([fn],"noweb")
+        elif ext == 'txt':
+            ic.importFlattenedOutline([fn])
+        else:
+            ic.importFilesCommand([fn],"@file")
+            
+        # No longer supported.
+        # c.importCommands.importFilesCommand (names,"@root")
+        
+    c.raise_error_dialogs(kind='read')
+        
+# Compatibility
+importAtFile = importAnyFile
+importAtRoot = importAnyFile
+importCWEBFiles = importAnyFile
+importDerivedFile = importAnyFile
+importFlattenedOutline = importAnyFile
+importNowebFiles = importAnyFile
+.. @+node:ekr.20110530124245.18248: *8* c.looksLikeDerivedFile
+def looksLikeDerivedFile (self,fn):
+    
+    '''Return True if fn names a file that looks like an
+    external file written by Leo.'''
+    
+    c = self
+    
+    try:
+        f = open(fn,'r')
+    except IOError:
+        return False
+        
+    s = f.read()
+    f.close()
+    
+    val = s.find('@+leo-ver=') > -1
+    # g.trace(val,fn)
+    return val
+.. @+node:ekr.20031218072017.2839: *7* readOutlineOnly
+def readOutlineOnly (self,event=None):
+
+    '''Open a Leo outline from a .leo file, but do not read any derived files.'''
+
+    c = self
+    c.endEditing()
+
+    fileName = g.app.gui.runOpenFileDialog(
+        title="Read Outline Only",
+        filetypes=[("Leo files", "*.leo"), ("All files", "*")],
+        defaultextension=".leo")
+
+    if not fileName:
+        return
+
+    try:
+        theFile = open(fileName,'r')
+        g.chdir(fileName)
+        c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
+        frame.deiconify()
+        frame.lift()
+        g.app.root.update() # Force a screen redraw immediately.
+        c.fileCommands.readOutlineOnly(theFile,fileName) # closes file.
+    except:
+        g.es("can not open:",fileName)
+.. @+node:ekr.20070915134101: *7* readFileIntoNode
+def readFileIntoNode (self,event=None):
+
+    '''Read a file into a single node.'''
+
+    c = self ; undoType = 'Read File Into Node'
+    c.endEditing()
+
+    filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
+    fileName = g.app.gui.runOpenFileDialog(
+        title="Read File Into Node",filetypes=filetypes,defaultextension=None)
+    if not fileName:return
+    s,e = g.readFileIntoString(fileName)
+    if s is None: return
+
+    g.chdir(fileName)
+    s = '@nocolor\n' + s
+    w = c.frame.body.bodyCtrl
+    p = c.insertHeadline(op_name=undoType)
+    p.setHeadString('@read-file-into-node ' + fileName)
+    p.setBodyString(s)
+    w.setAllText(s)
+    c.redraw(p)
+.. @+node:ekr.20031218072017.2859: *7* c.removeSentinels
+def removeSentinels (self,event=None):
+
+    '''Import one or more files, removing any sentinels.'''
+
+    c = self
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Remove Sentinels",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.removeSentinelsCommand (names)
+.. @+node:ekr.20050920084036.20: *7* readAbbreviations & helper
+def readAbbreviations (self,event=None):
+
+    '''Read abbreviations from a file.'''
+
+    fileName = g.app.gui.runOpenFileDialog(
+        title = 'Open Abbreviation File',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    if fileName:
+        self.readAbbreviationsFromFile(fileName)
+.. @+node:ekr.20100901080826.6156: *8* readAbbreviationsFromFile
+def readAbbreviationsFromFile(self,fileName):
+
+    k = self.c.k
+
+    try:
+        f = open(fileName)
+        for s in f:
+            self.addAbbrevHelper(s,'file')
+        f.close()
+        k.abbrevOn = True
+        g.es("Abbreviations on")
+        # self.listAbbrevs()
+    except IOError:
+        g.es('can not open',fileName)
+.. @+node:ekr.20071114081313.1: *7* insertIcon
+def insertIcon (self,event=None):
+    
+    '''Prompt for an icon, and insert it into the node's icon list.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = c.p
+
+    iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
+    os.chdir(iconDir)
+
+    paths = g.app.gui.runOpenFileDialog(
+        title='Get Icons',
+        filetypes=[('All files','*'),('Gif','*.gif'), ('Bitmap','*.bmp'),('Icon','*.ico'),],
+        defaultextension=None,
+        multiple=True)
+
+    if not paths: return
+
+    aList = [] ; xoffset = 2
+    for path in paths:
+        xoffset = self.appendImageDictToList(aList,iconDir,path,xoffset)
+
+    aList2 = self.getIconList(p)
+    aList2.extend(aList)
+    self.setIconList(p, aList2)
+    c.setChanged(True)
+    c.redraw_after_icons_changed()
+.. @+node:ekr.20070920104110: *7* compareLeoFiles
+def compareLeoFiles (self,event):
+    
+    '''Compare two .leo files.'''
+
+    c = c1 = self.c ; w = c.frame.body.bodyCtrl
+
+    # Prompt for the file to be compared with the present outline.
+    filetypes = [("Leo files", "*.leo"),("All files", "*"),]
+    fileName = g.app.gui.runOpenFileDialog(
+        title="Compare .leo Files",filetypes=filetypes,defaultextension='.leo')
+    if not fileName: return
+
+    # Read the file into the hidden commander.
+    c2 = self.createHiddenCommander(fileName)
+    if not c2: return
+
+    # Compute the inserted, deleted and changed dicts.
+    d1 = self.createFileDict(c1)
+    d2 = self.createFileDict(c2)  
+    inserted, deleted, changed = self.computeChangeDicts(d1,d2)
+    self.dumpCompareNodes(fileName,c1.mFileName,inserted,deleted,changed)
+
+    # Create clones of all inserted, deleted and changed dicts.
+    self.createAllCompareClones(inserted,deleted,changed)
+    c2.frame.destroySelf()
+    g.app.gui.set_focus(c,w)
+
+
+.. @+node:ekr.20070921072608: *8* computeChangeDicts
+def computeChangeDicts (self,d1,d2):
+
+    '''Compute inserted, deleted, changed dictionaries.'''
+
+    inserted = {}
+    for key in d2:
+        if not d1.get(key):
+            inserted[key] = d2.get(key)
+
+    deleted = {}
+    for key in d1:
+        if not d2.get(key):
+            deleted[key] = d1.get(key)
+
+    changed = {}
+    for key in d1:
+        if d2.get(key):
+            p1 = d1.get(key)
+            p2 = d2.get(key)
+            if p1.h != p2.h or p1.b != p2.b:
+                changed[key] = p1
+
+    return inserted, deleted, changed
+.. @+node:ekr.20070921072910: *8* createAllCompareClones & helper
+def createAllCompareClones(self,inserted,deleted,changed):
+
+    c = self.c # Always use the visible commander
+    # Create parent node at the start of the outline.
+    u = c.undoer ; undoType = 'Compare .leo Files'
+    u.beforeChangeGroup(c.p,undoType)
+    undoData = u.beforeInsertNode(c.p)
+    parent = c.p.insertAfter()
+    parent.setHeadString(undoType)
+    u.afterInsertNode(parent,undoType,undoData,dirtyVnodeList=[])
+    for d,kind in (
+        (deleted,'deleted'),(inserted,'inserted'),(changed,'changed')
+    ):
+        self.createCompareClones(d,kind,parent)
+    c.selectPosition(parent)
+    u.afterChangeGroup(parent,undoType,reportFlag=True) 
+    c.redraw()
+.. @+node:ekr.20070921074410: *9* createCompareClones
+def createCompareClones (self,d,kind,parent):
+
+    c = self.c # Always use the visible commander.
+
+    if d:
+        parent = parent.insertAsLastChild()
+        parent.setHeadString(kind)
+
+        for key in d:
+            p = d.get(key)
+            clone = p.clone()
+            clone.moveToLastChildOf(parent)
+.. @+node:ekr.20070921070101: *8* createHiddenCommander (editFileCommandsClass)
+def createHiddenCommander(self,fileName):
+
+    # Read the file into a hidden commander (Similar to g.openWithFileName).
+    import leo.core.leoGui as leoGui
+    import leo.core.leoFrame as leoFrame
+    import leo.core.leoCommands as leoCommands
+
+    nullGui = leoGui.nullGui('nullGui')
+    frame = leoFrame.nullFrame('nullFrame',nullGui)
+    c2 = leoCommands.Commands(frame,fileName)
+    frame.c = c2
+    frame.tree.c = c2
+    theFile,c2.isZipped = g.openLeoOrZipFile(fileName)
+    if theFile:
+        c2.fileCommands.open(theFile,fileName,readAtFileNodesFlag=True,silent=True)
+        return c2
+    else:
+        return None
+.. @+node:ekr.20070921070101.1: *8* createFileDict
+def createFileDict (self,c):
+
+    '''Create a dictionary of all relevant positions in commander c.'''
+
+    d = {}
+    for p in c.all_positions():
+        try:
+            # fileIndices for pre-4.x versions of .leo files have a different format.
+            i,j,k = p.v.fileIndex
+            d[str(i),str(j),str(k)] = p.copy()
+        except Exception:
+            pass
+    return d
+.. @+node:ekr.20070921072608.1: *8* dumpCompareNodes
+def dumpCompareNodes (self,fileName1,fileName2,inserted,deleted,changed):
+
+    for d,kind in (
+        (inserted,'inserted (only in %s)' % (fileName1)),
+        (deleted, 'deleted  (only in %s)' % (fileName2)),
+        (changed, 'changed'),
+    ):
+        g.pr('\n',kind)
+        for key in d:
+            p = d.get(key)
+            if g.isPython3:
+                g.pr('%-32s %s' % (key,p.h))
+            else:
+                g.pr('%-32s %s' % (key,g.toEncodedString(p.h,'ascii')))
+.. @+node:ekr.20050920084036.166: *7* getReadableTextFile
+def getReadableTextFile (self):
+
+    fn = g.app.gui.runOpenFileDialog(
+        title = 'Open Text File',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    return fn
+.. @+node:ekr.20031218072017.3731: *7* app.gui file dialogs
+def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
+
+    """Create and run an open file dialog ."""
+
+    self.oops()
+
+def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
+
+    """Create and run a save file dialog ."""
+
+    self.oops()
+.. @+node:ekr.20031218072017.3744: *7* dialogs (nullGui)
+def runAboutLeoDialog(self,c,version,theCopyright,url,email):
+    return self.simulateDialog("aboutLeoDialog")
+
+def runAskLeoIDDialog(self):
+    return self.simulateDialog("leoIDDialog")
+
+def runAskOkDialog(self,c,title,message=None,text="Ok"):
+    return self.simulateDialog("okDialog","Ok")
+
+def runAskOkCancelNumberDialog(self,c,title,message):
+    return self.simulateDialog("numberDialog",-1)
+
+def runAskOkCancelStringDialog(self,c,title,message):
+    return self.simulateDialog("stringDialog",'')
+
+def runCompareDialog(self,c):
+    return self.simulateDialog("compareDialog",'')
+
+def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
+    return self.simulateDialog("openFileDialog")
+
+def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
+    return self.simulateDialog("saveFileDialog")
+
+def runAskYesNoDialog(self,c,title,message=None):
+    return self.simulateDialog("yesNoDialog","no")
+
+def runAskYesNoCancelDialog(self,c,title,
+    message=None,yesMessage="Yes",noMessage="No",defaultButton="Yes"):
+    return self.simulateDialog("yesNoCancelDialog","cancel")
+.. @+node:ekr.20110605121601.18500: *7* runOpenFileDialog (qtGui)
+def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,startpath=None):
+
+    """Create and run an Qt open file dialog ."""
+    
+    if g.unitTesting:
+        return ''
+    else:
+        if startpath is None:
+            startpath = os.curdir
+            
+        parent = None
+        filter = self.makeFilter(filetypes)
+    
+        if multiple:
+            lst = QtGui.QFileDialog.getOpenFileNames(parent,title,startpath,filter)
+            return [g.u(s) for s in lst]
+        else:
+            s = QtGui.QFileDialog.getOpenFileName(parent,title,startpath,filter)
+            return g.u(s)
+.. @+node:ekr.20111125072438.10216: *5* Regularize slashes and back-slashes
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/0d48b507bc8ffc05
+
+v4.9.1 build 4669
+WinXP
+
+If I 'Open' a file, I get the following node header:
+
+@edit E:/Documents/index.html
+
+If I 'Import' the same file, I get the following:
+
+@file E:\Documents\index.html
+
+Just wondering why the difference between
+
+E:/ and E:\
+
+This is probably trivial and of no consequence, but I thought it
+curious. 
+.. @+node:ekr.20111108081936.12524: *6* Create unit tests illustrating path ops
+@nocolor-node
+
+viewrendered - file not found
+https://groups.google.com/forum/#!topic/leo-editor/kotyIs6_G3w
+
+This would be part of a redesign of Leo's path operations.
+.. @+node:ekr.20031218072017.2145: *7* os.path wrappers (leoGlobals.py)
+@ Note: all these methods return Unicode strings. It is up to the user to
+convert to an encoded string as needed, say when opening a file.
+.. @+node:ekr.20031218072017.2146: *8* os_path_abspath
+def os_path_abspath(path):
+
+    """Convert a path to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.abspath(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20031218072017.2147: *8* os_path_basename
+def os_path_basename(path):
+
+    """Return the second half of the pair returned by split(path)."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.basename(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20031218072017.2148: *8* os_path_dirname
+def os_path_dirname(path):
+
+    """Return the first half of the pair returned by split(path)."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.dirname(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20031218072017.2149: *8* os_path_exists
+def os_path_exists(path):
+
+    """Return True if path exists."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.exists(path)
+.. @+node:ekr.20080922124033.6: *8* os_path_expandExpression
+def os_path_expandExpression (s,**keys):
+
+    '''Expand {{anExpression}} in c's context.'''
+
+    trace = False
+    
+    s1 = s
+    c = keys.get('c')
+    if not c:
+        g.trace('can not happen: no c',g.callers())
+        return s
+
+    if not s:
+        if trace: g.trace('no s')
+        return ''
+
+    i = s.find('{{')
+    j = s.find('}}')
+    if -1 < i < j:
+        exp = s[i+2:j].strip()
+        if exp:
+            try:
+                import os
+                import sys
+                p = c.p
+                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
+                val = eval(exp,d)
+                s = s[:i] + str(val) + s[j+2:]
+                if trace: g.trace(s1,s)
+            except Exception:
+                g.trace(g.callers())
+                g.es_exception(full=True, c=c, color='red')
+
+    return s
+.. @+node:ekr.20080921060401.13: *8* os_path_expanduser
+def os_path_expanduser(path):
+
+    """wrap os.path.expanduser"""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    result = os.path.normpath(os.path.expanduser(path))
+
+    return result
+.. @+node:ekr.20080921060401.14: *8* g.os_path_finalize & os_path_finalize_join
+def os_path_finalize (path,**keys):
+
+    '''
+    Expand '~', then return os.path.normpath, os.path.abspath of the path.
+
+    There is no corresponding os.path method'''
+
+    c = keys.get('c')
+
+    if c: path = g.os_path_expandExpression(path,**keys)
+
+    path = g.os_path_expanduser(path)
+    path = os.path.abspath(path)
+    path = os.path.normpath(path)
+    return path
+
+def os_path_finalize_join (*args,**keys):
+
+    '''Do os.path.join(*args), then finalize the result.'''
+
+    c = keys.get('c')
+
+    if c:
+        args = [g.os_path_expandExpression(z,**keys)
+            for z in args if z]
+
+    return os.path.normpath(os.path.abspath(
+        g.os_path_join(*args,**keys))) # Handles expanduser
+.. @+node:ekr.20031218072017.2150: *8* os_path_getmtime
+def os_path_getmtime(path):
+
+    """Return the modification time of path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.getmtime(path)
+.. @+node:ekr.20080729142651.2: *8* os_path_getsize
+def os_path_getsize (path):
+
+    '''Return the size of path.'''
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.getsize(path)
+.. @+node:ekr.20031218072017.2151: *8* os_path_isabs
+def os_path_isabs(path):
+
+    """Return True if path is an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isabs(path)
+.. @+node:ekr.20031218072017.2152: *8* os_path_isdir
+def os_path_isdir(path):
+
+    """Return True if the path is a directory."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isdir(path)
+.. @+node:ekr.20031218072017.2153: *8* os_path_isfile
+def os_path_isfile(path):
+
+    """Return True if path is a file."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isfile(path)
+.. @+node:ekr.20031218072017.2154: *8* os_path_join
+def os_path_join(*args,**keys):
+
+    trace = False and not g.unitTesting
+    c = keys.get('c')
+
+    uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
+
+    if trace: g.trace('1',uargs)
+
+    # Note:  This is exactly the same convention as used by getBaseDirectory.
+    if uargs and uargs[0] == '!!':
+        uargs[0] = g.app.loadDir
+    elif uargs and uargs[0] == '.':
+        c = keys.get('c')
+        if c and c.openDirectory:
+            uargs[0] = c.openDirectory
+            # g.trace(c.openDirectory)
+
+    uargs = [g.os_path_expanduser(z) for z in uargs if z]
+
+    if trace: g.trace('2',uargs)
+
+    path = os.path.join(*uargs)
+
+    if trace: g.trace('3',path)
+
+    # May not be needed on some Pythons.
+    path = g.toUnicodeFileEncoding(path)
+    return path
+.. @+node:ekr.20031218072017.2156: *8* os_path_normcase
+def os_path_normcase(path):
+
+    """Normalize the path's case."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.normcase(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20031218072017.2157: *8* os_path_normpath
+def os_path_normpath(path):
+
+    """Normalize the path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.normpath(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20080605064555.2: *8* os_path_realpath
+def os_path_realpath(path):
+
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.realpath(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+.. @+node:ekr.20031218072017.2158: *8* os_path_split
+def os_path_split(path):
+
+    path = g.toUnicodeFileEncoding(path)
+
+    head,tail = os.path.split(path)
+
+    head = g.toUnicodeFileEncoding(head)
+    tail = g.toUnicodeFileEncoding(tail)
+
+    return head,tail
+.. @+node:ekr.20031218072017.2159: *8* os_path_splitext
+def os_path_splitext(path):
+
+    path = g.toUnicodeFileEncoding(path)
+
+    head,tail = os.path.splitext(path)
+
+    head = g.toUnicodeFileEncoding(head)
+    tail = g.toUnicodeFileEncoding(tail)
+
+    return head,tail
+.. @+node:ekr.20090829140232.6036: *8* os_startfile
+def os_startfile(fname):
+    if sys.platform.startswith('win'):
+        os.startfile(fname)
+    elif sys.platform == 'darwin':
+        # From Marc-Antoine Parent.
+        try:
+            subprocess.call(['open', fname])
+        except OSError:
+            pass # There may be a spurious "Interrupted system call"
+        except ImportError:
+            os.system("open '%s'" % (fname,))
+    else:
+        os.system('xdg-open "%s"'%fname)
+.. @+node:ekr.20031218072017.2160: *8* toUnicodeFileEncoding
+def toUnicodeFileEncoding(path):
+
+    if path: path = path.replace('\\', os.sep)
+
+    # Yes, this is correct.  All os_path_x functions return Unicode strings.
+    return g.toUnicode(path)
+.. @+node:ekr.20111108081936.9750: *7* @test path computations
+fj = g.os_path_finalize_join
+f  = g.os_path_finalize
+eu = g.os_path_expanduser
+
+if g.app.isExternalUnitTest:
+    loadDir = fj(g.app.loadDir,'..','test')
+else:
+    loadDir = g.app.loadDir
+
+table = (
+    (fj,'@@file fj-test-1',fj(loadDir,'rel-path')),
+)
+
+for func,h,expected in table:
+    p = g.findNodeAnywhere(c,h)
+    assert p,'not found: "%s"' % (h)
+    assert p.h.startswith('@@')
+    p.h = p.h[1:] # Remove the first @ sign.
+    
+    try:
+        d = c.scanAllDirectives(p)
+        result = d.get('path')
+        assert result == expected,'expected "%s", got "%s"' % (
+            expected,result)
+    finally:
+        p.h = '@' + p.h
+        c.redraw()
+.. @+node:ekr.20111108081936.9768: *8* @path rel-path
+.. @+node:ekr.20111108081936.9751: *9* @@file fj-test-1
+.. @+node:ekr.20031218072017.3213: *6* createImportParent (importCommands)
+def createImportParent (self,current,files):
+    
+    '''Create a parent node for nodes with a common prefix: x.h & x.cpp.'''
+
+    name0,name1 = files
+    prefix0, junk = g.os_path_splitext(name0)
+    prefix1, junk = g.os_path_splitext(name1)
+    
+    if prefix0 and prefix0 == prefix1:
+        current = current.insertAsLastChild()
+        name,junk = g.os_path_splitext(prefix1)
+        name = name.replace('\\','/') # 2011/11/25
+        current.initHeadString(name)
+
+    return current
+.. @+node:ekr.20031218072017.3210: *6* createOutline (leoImport)
+def createOutline (self,fileName,parent,
+    atAuto=False,atShadow=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+    w = c.frame.body
+
+    self.default_directory = g.setDefaultDirectory(c,parent,importing=False)
+    fileName = c.os_path_finalize_join(self.default_directory,fileName)
+    fileName = fileName.replace('\\','/') # 2011/11/25
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        if atShadow: kind = '@shadow '
+        elif atAuto: kind = '@auto '
+        else: kind = ''
+        s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
+        if s is None: return None
+        if e: self.encoding = e
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        elif self.treeType is None:
+            # 2010/09/29: by convention, we use the short file name.
+            p.initHeadString(g.shortFileName(fileName))
+        else:
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    if self.treeType == '@root': # 2010/09/29.
+        self.rootLine = "@root-code "+self.fileName+'\n'
+    else:
+        self.rootLine = ''
+
+    if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
+        func = self.scanRstText
+    else:
+        func = self.importDispatchDict.get(ext)
+
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        s = s.replace('\r','')
+        func(s,p,atAuto=atAuto)
+    else:
+        # Just copy the file to the parent node.
+        s = s.replace('\r','')
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    if atAuto:
+        # Remember that we have read this file.
+        # Fixes bug 488894: unsettling dialog when saving Leo file
+        # after creating and populating an @auto node.
+        # Important: this often sets the bit in the wrong node:
+        # The caller may have to set the bit in the "real" root node.
+        p.v.at_read = True # Create the attribute
+
+    p.contract()
+    w.setInsertPoint(0)
+    w.seeInsertPoint()
+    return p
+.. @+node:ekr.20081001062423.9: *6* g.setDefaultDirectory & helper
+def setDefaultDirectory(c,p,importing=False):
+
+    ''' Return a default directory by scanning @path directives.'''
+
+    name = p.anyAtFileNodeName()
+    if name:
+        # An absolute path overrides everything.
+        d = g.os_path_dirname(name)
+        if d and g.os_path_isabs(d):
+            return d
+
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+        # Returns g.getBaseDirectory(c) by default.
+        # However, g.getBaseDirectory can return ''
+    if path:
+        path = g.os_path_finalize(path)
+    else:
+        g.checkOpenDirectory(c)
+        for d in (c.openDirectory,g.getBaseDirectory(c)):
+            # Errors may result in relative or invalid path.
+            if d and g.os_path_isabs(d):
+                path = d
+                break
+        else:
+            path = ''
+
+    if not importing and not path:
+        # This should never happen, but is not serious if it does.
+        g.warning("No absolute directory specified anywhere.")
+
+    return path
+.. @+node:ekr.20101022124309.6132: *7* g.checkOpenDirectory
+def checkOpenDirectory (c):
+
+    if c.openDirectory != c.frame.openDirectory:
+        g.error(
+            'c.openDirectory != c.frame.openDirectory\n'
+            'c.openDirectory: %s\n'
+            'c.frame.openDirectory: %s' % (
+                c.openDirectory,c.frame.openDirectory))
+
+    if not g.os_path_isabs(c.openDirectory):
+        g.error ('relative c.openDirectory: %s' % (
+            c.openDirectory))
+.. @+node:ekr.20080921060401.14: *6* g.os_path_finalize & os_path_finalize_join
+def os_path_finalize (path,**keys):
+
+    '''
+    Expand '~', then return os.path.normpath, os.path.abspath of the path.
+
+    There is no corresponding os.path method'''
+
+    c = keys.get('c')
+
+    if c: path = g.os_path_expandExpression(path,**keys)
+
+    path = g.os_path_expanduser(path)
+    path = os.path.abspath(path)
+    path = os.path.normpath(path)
+    return path
+
+def os_path_finalize_join (*args,**keys):
+
+    '''Do os.path.join(*args), then finalize the result.'''
+
+    c = keys.get('c')
+
+    if c:
+        args = [g.os_path_expandExpression(z,**keys)
+            for z in args if z]
+
+    return os.path.normpath(os.path.abspath(
+        g.os_path_join(*args,**keys))) # Handles expanduser
 .. @+node:ekr.20111123043847.13423: *4* Code changes
-.. @+node:ekr.20111121084517.10189: *5* Remove all calls to w.see, w.seeInsertPoint, w.setYScrollPosition
-This would be a major project: See "Scrolling bug" notes.
 .. @+node:ekr.20111120162254.10216: *5* Get rid of the trace settings
 @nocolor-node
 
@@ -6674,495 +5878,6 @@ mustBeDefinedInSubclasses = (
     #'setIdleTimeHook',             # optional       
     #'setIdleTimeHookAfterDelay',   # optional
 )
-.. @+node:ekr.20111125072438.10216: *4* Regularize slashes and back-slashes
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/0d48b507bc8ffc05
-
-v4.9.1 build 4669
-WinXP
-
-If I 'Open' a file, I get the following node header:
-
-@edit E:/Documents/index.html
-
-If I 'Import' the same file, I get the following:
-
-@file E:\Documents\index.html
-
-Just wondering why the difference between
-
-E:/ and E:\
-
-This is probably trivial and of no consequence, but I thought it
-curious. 
-.. @+node:ekr.20111108081936.12524: *5* Create unit tests illustrating path ops
-@nocolor-node
-
-viewrendered - file not found
-https://groups.google.com/forum/#!topic/leo-editor/kotyIs6_G3w
-
-This would be part of a redesign of Leo's path operations.
-.. @+node:ekr.20031218072017.2145: *6* os.path wrappers (leoGlobals.py)
-@ Note: all these methods return Unicode strings. It is up to the user to
-convert to an encoded string as needed, say when opening a file.
-.. @+node:ekr.20031218072017.2146: *7* os_path_abspath
-def os_path_abspath(path):
-
-    """Convert a path to an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.abspath(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2147: *7* os_path_basename
-def os_path_basename(path):
-
-    """Return the second half of the pair returned by split(path)."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.basename(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2148: *7* os_path_dirname
-def os_path_dirname(path):
-
-    """Return the first half of the pair returned by split(path)."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.dirname(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2149: *7* os_path_exists
-def os_path_exists(path):
-
-    """Return True if path exists."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.exists(path)
-.. @+node:ekr.20080922124033.6: *7* os_path_expandExpression
-def os_path_expandExpression (s,**keys):
-
-    '''Expand {{anExpression}} in c's context.'''
-
-    trace = False
-    
-    s1 = s
-    c = keys.get('c')
-    if not c:
-        g.trace('can not happen: no c',g.callers())
-        return s
-
-    if not s:
-        if trace: g.trace('no s')
-        return ''
-
-    i = s.find('{{')
-    j = s.find('}}')
-    if -1 < i < j:
-        exp = s[i+2:j].strip()
-        if exp:
-            try:
-                import os
-                import sys
-                p = c.p
-                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
-                val = eval(exp,d)
-                s = s[:i] + str(val) + s[j+2:]
-                if trace: g.trace(s1,s)
-            except Exception:
-                g.trace(g.callers())
-                g.es_exception(full=True, c=c, color='red')
-
-    return s
-.. @+node:ekr.20080921060401.13: *7* os_path_expanduser
-def os_path_expanduser(path):
-
-    """wrap os.path.expanduser"""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    result = os.path.normpath(os.path.expanduser(path))
-
-    return result
-.. @+node:ekr.20080921060401.14: *7* g.os_path_finalize & os_path_finalize_join
-def os_path_finalize (path,**keys):
-
-    '''
-    Expand '~', then return os.path.normpath, os.path.abspath of the path.
-
-    There is no corresponding os.path method'''
-
-    c = keys.get('c')
-
-    if c: path = g.os_path_expandExpression(path,**keys)
-
-    path = g.os_path_expanduser(path)
-    path = os.path.abspath(path)
-    path = os.path.normpath(path)
-    return path
-
-def os_path_finalize_join (*args,**keys):
-
-    '''Do os.path.join(*args), then finalize the result.'''
-
-    c = keys.get('c')
-
-    if c:
-        args = [g.os_path_expandExpression(z,**keys)
-            for z in args if z]
-
-    return os.path.normpath(os.path.abspath(
-        g.os_path_join(*args,**keys))) # Handles expanduser
-.. @+node:ekr.20031218072017.2150: *7* os_path_getmtime
-def os_path_getmtime(path):
-
-    """Return the modification time of path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.getmtime(path)
-.. @+node:ekr.20080729142651.2: *7* os_path_getsize
-def os_path_getsize (path):
-
-    '''Return the size of path.'''
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.getsize(path)
-.. @+node:ekr.20031218072017.2151: *7* os_path_isabs
-def os_path_isabs(path):
-
-    """Return True if path is an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isabs(path)
-.. @+node:ekr.20031218072017.2152: *7* os_path_isdir
-def os_path_isdir(path):
-
-    """Return True if the path is a directory."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isdir(path)
-.. @+node:ekr.20031218072017.2153: *7* os_path_isfile
-def os_path_isfile(path):
-
-    """Return True if path is a file."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isfile(path)
-.. @+node:ekr.20031218072017.2154: *7* os_path_join
-def os_path_join(*args,**keys):
-
-    trace = False and not g.unitTesting
-    c = keys.get('c')
-
-    uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
-
-    if trace: g.trace('1',uargs)
-
-    # Note:  This is exactly the same convention as used by getBaseDirectory.
-    if uargs and uargs[0] == '!!':
-        uargs[0] = g.app.loadDir
-    elif uargs and uargs[0] == '.':
-        c = keys.get('c')
-        if c and c.openDirectory:
-            uargs[0] = c.openDirectory
-            # g.trace(c.openDirectory)
-
-    uargs = [g.os_path_expanduser(z) for z in uargs if z]
-
-    if trace: g.trace('2',uargs)
-
-    path = os.path.join(*uargs)
-
-    if trace: g.trace('3',path)
-
-    # May not be needed on some Pythons.
-    path = g.toUnicodeFileEncoding(path)
-    return path
-.. @+node:ekr.20031218072017.2156: *7* os_path_normcase
-def os_path_normcase(path):
-
-    """Normalize the path's case."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.normcase(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2157: *7* os_path_normpath
-def os_path_normpath(path):
-
-    """Normalize the path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.normpath(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20080605064555.2: *7* os_path_realpath
-def os_path_realpath(path):
-
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.realpath(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2158: *7* os_path_split
-def os_path_split(path):
-
-    path = g.toUnicodeFileEncoding(path)
-
-    head,tail = os.path.split(path)
-
-    head = g.toUnicodeFileEncoding(head)
-    tail = g.toUnicodeFileEncoding(tail)
-
-    return head,tail
-.. @+node:ekr.20031218072017.2159: *7* os_path_splitext
-def os_path_splitext(path):
-
-    path = g.toUnicodeFileEncoding(path)
-
-    head,tail = os.path.splitext(path)
-
-    head = g.toUnicodeFileEncoding(head)
-    tail = g.toUnicodeFileEncoding(tail)
-
-    return head,tail
-.. @+node:ekr.20090829140232.6036: *7* os_startfile
-def os_startfile(fname):
-    if sys.platform.startswith('win'):
-        os.startfile(fname)
-    elif sys.platform == 'darwin':
-        # From Marc-Antoine Parent.
-        try:
-            subprocess.call(['open', fname])
-        except OSError:
-            pass # There may be a spurious "Interrupted system call"
-        except ImportError:
-            os.system("open '%s'" % (fname,))
-    else:
-        os.system('xdg-open "%s"'%fname)
-.. @+node:ekr.20031218072017.2160: *7* toUnicodeFileEncoding
-def toUnicodeFileEncoding(path):
-
-    if path: path = path.replace('\\', os.sep)
-
-    # Yes, this is correct.  All os_path_x functions return Unicode strings.
-    return g.toUnicode(path)
-.. @+node:ekr.20111108081936.9750: *6* @test path computations
-fj = g.os_path_finalize_join
-f  = g.os_path_finalize
-eu = g.os_path_expanduser
-
-if g.app.isExternalUnitTest:
-    loadDir = fj(g.app.loadDir,'..','test')
-else:
-    loadDir = g.app.loadDir
-
-table = (
-    (fj,'@@file fj-test-1',fj(loadDir,'rel-path')),
-)
-
-for func,h,expected in table:
-    p = g.findNodeAnywhere(c,h)
-    assert p,'not found: "%s"' % (h)
-    assert p.h.startswith('@@')
-    p.h = p.h[1:] # Remove the first @ sign.
-    
-    try:
-        d = c.scanAllDirectives(p)
-        result = d.get('path')
-        assert result == expected,'expected "%s", got "%s"' % (
-            expected,result)
-    finally:
-        p.h = '@' + p.h
-        c.redraw()
-.. @+node:ekr.20111108081936.9768: *7* @path rel-path
-.. @+node:ekr.20111108081936.9751: *8* @@file fj-test-1
-.. @+node:ekr.20031218072017.3213: *5* createImportParent (importCommands)
-def createImportParent (self,current,files):
-    
-    '''Create a parent node for nodes with a common prefix: x.h & x.cpp.'''
-
-    name0,name1 = files
-    prefix0, junk = g.os_path_splitext(name0)
-    prefix1, junk = g.os_path_splitext(name1)
-    
-    if prefix0 and prefix0 == prefix1:
-        current = current.insertAsLastChild()
-        name,junk = g.os_path_splitext(prefix1)
-        name = name.replace('\\','/') # 2011/11/25
-        current.initHeadString(name)
-
-    return current
-.. @+node:ekr.20031218072017.3210: *5* createOutline (leoImport)
-def createOutline (self,fileName,parent,
-    atAuto=False,atShadow=False,s=None,ext=None):
-
-    c = self.c ; u = c.undoer ; s1 = s
-    w = c.frame.body
-
-    self.default_directory = g.setDefaultDirectory(c,parent,importing=False)
-    fileName = c.os_path_finalize_join(self.default_directory,fileName)
-    fileName = fileName.replace('\\','/') # 2011/11/25
-    junk,self.fileName = g.os_path_split(fileName)
-    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
-    self.setEncoding(p=parent,atAuto=atAuto)
-    if not ext: ext = self.fileType
-    ext = ext.lower()
-    if not s:
-        if atShadow: kind = '@shadow '
-        elif atAuto: kind = '@auto '
-        else: kind = ''
-        s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
-        if s is None: return None
-        if e: self.encoding = e
-
-    # Create the top-level headline.
-    if atAuto:
-        p = parent.copy()
-        p.setBodyString('')
-    else:
-        undoData = u.beforeInsertNode(parent)
-        p = parent.insertAsLastChild()
-
-        if self.treeType == "@file":
-            p.initHeadString("@file " + fileName)
-        elif self.treeType is None:
-            # 2010/09/29: by convention, we use the short file name.
-            p.initHeadString(g.shortFileName(fileName))
-        else:
-            p.initHeadString(fileName)
-        u.afterInsertNode(p,'Import',undoData)
-
-    if self.treeType == '@root': # 2010/09/29.
-        self.rootLine = "@root-code "+self.fileName+'\n'
-    else:
-        self.rootLine = ''
-
-    if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
-        func = self.scanRstText
-    else:
-        func = self.importDispatchDict.get(ext)
-
-    if func and not c.config.getBool('suppress_import_parsing',default=False):
-        s = s.replace('\r','')
-        func(s,p,atAuto=atAuto)
-    else:
-        # Just copy the file to the parent node.
-        s = s.replace('\r','')
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-
-    if atAuto:
-        # Remember that we have read this file.
-        # Fixes bug 488894: unsettling dialog when saving Leo file
-        # after creating and populating an @auto node.
-        # Important: this often sets the bit in the wrong node:
-        # The caller may have to set the bit in the "real" root node.
-        p.v.at_read = True # Create the attribute
-
-    p.contract()
-    w.setInsertPoint(0)
-    w.seeInsertPoint()
-    return p
-.. @+node:ekr.20081001062423.9: *5* g.setDefaultDirectory & helper
-def setDefaultDirectory(c,p,importing=False):
-
-    ''' Return a default directory by scanning @path directives.'''
-
-    name = p.anyAtFileNodeName()
-    if name:
-        # An absolute path overrides everything.
-        d = g.os_path_dirname(name)
-        if d and g.os_path_isabs(d):
-            return d
-
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList)
-        # Returns g.getBaseDirectory(c) by default.
-        # However, g.getBaseDirectory can return ''
-    if path:
-        path = g.os_path_finalize(path)
-    else:
-        g.checkOpenDirectory(c)
-        for d in (c.openDirectory,g.getBaseDirectory(c)):
-            # Errors may result in relative or invalid path.
-            if d and g.os_path_isabs(d):
-                path = d
-                break
-        else:
-            path = ''
-
-    if not importing and not path:
-        # This should never happen, but is not serious if it does.
-        g.warning("No absolute directory specified anywhere.")
-
-    return path
-.. @+node:ekr.20101022124309.6132: *6* g.checkOpenDirectory
-def checkOpenDirectory (c):
-
-    if c.openDirectory != c.frame.openDirectory:
-        g.error(
-            'c.openDirectory != c.frame.openDirectory\n'
-            'c.openDirectory: %s\n'
-            'c.frame.openDirectory: %s' % (
-                c.openDirectory,c.frame.openDirectory))
-
-    if not g.os_path_isabs(c.openDirectory):
-        g.error ('relative c.openDirectory: %s' % (
-            c.openDirectory))
-.. @+node:ekr.20080921060401.14: *5* g.os_path_finalize & os_path_finalize_join
-def os_path_finalize (path,**keys):
-
-    '''
-    Expand '~', then return os.path.normpath, os.path.abspath of the path.
-
-    There is no corresponding os.path method'''
-
-    c = keys.get('c')
-
-    if c: path = g.os_path_expandExpression(path,**keys)
-
-    path = g.os_path_expanduser(path)
-    path = os.path.abspath(path)
-    path = os.path.normpath(path)
-    return path
-
-def os_path_finalize_join (*args,**keys):
-
-    '''Do os.path.join(*args), then finalize the result.'''
-
-    c = keys.get('c')
-
-    if c:
-        args = [g.os_path_expandExpression(z,**keys)
-            for z in args if z]
-
-    return os.path.normpath(os.path.abspath(
-        g.os_path_join(*args,**keys))) # Handles expanduser
 .. @+node:ekr.20111128103520.10245: *4* leoInspect: create o.token_range getter
 .. @+node:ekr.20111128103520.10257: *5* @test leoInspect.token_range (s)
 import leo.core.leoInspect as inspect

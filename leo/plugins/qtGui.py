@@ -401,11 +401,12 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
     def setYScrollPosition(self,pos):
 
-        w = self
-        sb = w.verticalScrollBar()
-        if pos is None: pos = 0
-        if g.app.trace_scroll: g.trace('(LeoQTextBrowser)',pos)
-        sb.setSliderPosition(pos)
+        if 0: # 2011/12/21
+            w = self
+            sb = w.verticalScrollBar()
+            if pos is None: pos = 0
+            if g.app.trace_scroll: g.trace('(LeoQTextBrowser)',pos)
+            sb.setSliderPosition(pos)
     #@-others
 #@-<< define LeoQTextBrowser >>
 #@+<< define leoQtBaseTextWidget class >>
@@ -1225,14 +1226,16 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             w.setTextCursor(cursor) # Bug fix: 2010/01/27
         finally:
             self.changingText = False
-    #@+node:ekr.20110605121601.18090: *5* see (leoQTextEditWidget)
+    #@+node:ekr.20110605121601.18090: *5* see & seeInsertPoint (leoQTextEditWidget)
     def see(self,i):
 
-        self.widget.ensureCursorVisible()
-    #@+node:ekr.20110605121601.18091: *5* seeInsertPoint (leoQTextEditWidget)
+        if 0: # 2011/12/21
+            self.widget.ensureCursorVisible()
+
     def seeInsertPoint (self):
 
-        self.widget.ensureCursorVisible()
+        if 0: # 2011/12/21
+            self.widget.ensureCursorVisible()
     #@+node:ekr.20110605121601.18092: *5* setAllText (leoQTextEditWidget) & helper
     def setAllText(self,s,insert=None,new_p=None):
 
@@ -1482,11 +1485,14 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
     #@+node:ekr.20110605121601.18098: *5* setYScrollPosition (leoQTextEditWidget)
     def setYScrollPosition(self,pos):
-
-        w = self.widget
-        sb = w.verticalScrollBar()
-        if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
-        sb.setSliderPosition(pos)
+        
+        # g.trace(pos)
+        
+        if 0: # 2011/12/21
+            w = self.widget
+            sb = w.verticalScrollBar()
+            if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
+            sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18099: *5*  PythonIndex
     #@+node:ekr.20110605121601.18100: *6* toPythonIndex (leoQTextEditWidget) (Fast)
     def toPythonIndex (self,index):
@@ -7760,7 +7766,7 @@ class leoQtGui(leoGui.leoGui):
         s = QtGui.QFileDialog.getExistingDirectory (parent,title,startdir)
         return g.u(s)
     #@+node:ekr.20110605121601.18500: *5* runOpenFileDialog (qtGui)
-    def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False, startpath = None):
+    def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,startpath=None):
 
         """Create and run an Qt open file dialog ."""
         
