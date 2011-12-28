@@ -2360,6 +2360,8 @@ class baseScannerClass (scanUtility):
         return result
     #@+node:ekr.20070705085335: *4* insertIgnoreDirective (leoImport)
     def insertIgnoreDirective (self,parent):
+        
+        c = self.c
 
         self.appendStringToBody(parent,'@ignore')
 
