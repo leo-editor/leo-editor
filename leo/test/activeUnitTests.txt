@@ -19583,6 +19583,25 @@ for commandName in table:
     for tag,n in tags:
         assert d.get(tag) == n,'commandName: %s,tag: %s, n: %s' % (commandName,tag,d.get(tag))
 #@+node:ekr.20111221062755.3910: *4* child
+#@+node:ekr.20111228125719.3909: *3* @test insertIgnoreDirective
+import leo.core.leoImport as leoImport
+
+def setup(p):
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+importCommands = c.importCommands
+bic = leoImport.baseScannerClass(importCommands,atAuto=False,language='python')
+
+try:
+    setup(p)
+    child = p.insertAsLastChild()
+    child.h = 'child'
+    bic.insertIgnoreDirective(parent=child)
+    assert child.b.find('@ignore') == 0
+finally:
+    if 1:
+        setup(p)
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):

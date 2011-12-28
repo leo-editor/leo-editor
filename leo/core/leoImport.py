@@ -2362,7 +2362,7 @@ class baseScannerClass (scanUtility):
     def insertIgnoreDirective (self,parent):
         
         c = self.c
-
+        
         self.appendStringToBody(parent,'@ignore')
 
         if g.unitTesting:
@@ -2371,6 +2371,7 @@ class baseScannerClass (scanUtility):
             g.es_print('inserting @ignore',color='blue')
             if parent.isAnyAtFileNode() :
                 c.import_error_nodes.append(parent.h)
+
     #@+node:ekr.20070707113832.1: *4* putClass & helpers
     def putClass (self,s,i,sigEnd,codeEnd,start,parent):
 
