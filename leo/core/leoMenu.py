@@ -1399,7 +1399,7 @@ class leoMenu:
         
         if not trace: return
         format = '%40s %s'
-        g.trace('*'*40)
+        g.trace('*'*40,g.callers())
         for data in table:
             if type(data) in (type(()), type([])):
                 n = len(data)

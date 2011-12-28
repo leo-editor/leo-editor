@@ -1283,14 +1283,14 @@ class leoFrame:
     def updateStatusLine(self):
         if self.statusLine: self.statusLine.update()
     #@+node:ekr.20070130115927.4: *4* Cut/Copy/Paste (leoFrame)
-    #@+node:ekr.20070130115927.5: *5* copyText
+    #@+node:ekr.20070130115927.5: *5* copyText (leoFrame)
     def copyText (self,event=None):
 
         '''Copy the selected text from the widget to the clipboard.'''
 
         f = self ; c = f.c ; w = event and event.widget
         
-        # g.trace(w,g.app.gui.isTextWidget(w),g.callers())
+        # g.trace(g.app.gui.isTextWidget(w),w)
 
         if not w or not g.app.gui.isTextWidget(w): return
 

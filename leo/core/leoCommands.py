@@ -7516,7 +7516,7 @@ class Commands (object):
             # 2011/12/17: Issue one or two dialogs.
             if c.import_error_nodes or c.ignored_at_file_nodes:
                  g.app.gui.dismiss_splash_screen()
-                 g.trace(g.callers())
+                 # g.trace(g.callers())
             
             if c.import_error_nodes:
                 files = '\n'.join(sorted(c.import_error_nodes))

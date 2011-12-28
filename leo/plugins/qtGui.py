@@ -618,7 +618,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             s = self.getAllText()
             # g.trace(repr(s[i:j]))
             return s[i:j]
-    #@+node:ekr.20110605121601.18042: *6* get
+    #@+node:ekr.20110605121601.18042: *6* get (leoQtBaseTextWidget)
     def get(self,i,j=None):
         """ Slow implementation of get() - ok for QLineEdit """
         #g.trace('Slow get', g.callers(5))
@@ -1541,35 +1541,42 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         col = i - bl.position()
 
         return i,row,col
-    #@+node:ekr.20110605121601.18102: *5* get
+    #@+node:ekr.20110605121601.18102: *5* get (leoQTextEditWidget)
     def get(self,i,j=None):
-        i = self.toGuiIndex(i)
-        if j is None: 
-            j = i+1
-        else:
+        
+        if 0:
+            s = self.getAllText()
+            i = self.toGuiIndex(i)
             j = self.toGuiIndex(j)
-        te = self.widget
-        doc = te.document()
-        bl = doc.findBlock(i)
-        #row = bl.blockNumber()
-        #col = index - bl.position()
-
-        # common case, e.g. one character    
-        if bl.contains(j):
-            s = g.u(bl.text())
-            offset = i - bl.position()
-            ret = s[ offset : offset + (j-i)]
-            #print "fastget",ret
-            return ret
-
-        # the next implementation is much slower, but will have to do        
-
-        #g.trace('Slow get()', g.callers(5))
-        s = self.getAllText()
-        i = self.toGuiIndex(i)
-
-        j = self.toGuiIndex(j)
-        return s[i:j]
+            return s[i:j]
+        else:
+            i = self.toGuiIndex(i)
+            if j is None: 
+                j = i+1
+            else:
+                j = self.toGuiIndex(j)
+            te = self.widget
+            doc = te.document()
+            bl = doc.findBlock(i)
+            #row = bl.blockNumber()
+            #col = index - bl.position()
+        
+            # common case, e.g. one character    
+            if bl.contains(j):
+                s = g.u(bl.text())
+                offset = i - bl.position()
+                ret = s[ offset : offset + (j-i)]
+                #print "fastget",ret
+                return ret
+        
+            # the next implementation is much slower, but will have to do        
+        
+            #g.trace('Slow get()', g.callers(5))
+            s = self.getAllText()
+            i = self.toGuiIndex(i)
+        
+            j = self.toGuiIndex(j)
+            return s[i:j]
     #@-others
 #@-<< define leoQTextEditWidget class >>
 

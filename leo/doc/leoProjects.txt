@@ -22601,6 +22601,45 @@ elif kind == at.miscDirective:
     at.putDirective(s,i)
 else:
     at.error('putBody: can not happen: unknown directive kind: %s' % kind)
+#@+node:ekr.20111121084517.10189: *4* Disabled w.see, w.seeInsertPoint, w.setYScrollPosition
+# See "Scrolling bug" notes.
+#@+node:ekr.20110605121601.18090: *5* see & seeInsertPoint (leoQTextEditWidget)
+def see(self,i):
+
+    if 0: # 2011/12/21
+        self.widget.ensureCursorVisible()
+
+def seeInsertPoint (self):
+
+    if 0: # 2011/12/21
+        self.widget.ensureCursorVisible()
+#@+node:ekr.20111002125540.7021: *5* get/setYScrollPosition (LeoQTextBrowser)
+def getYScrollPosition(self):
+
+    w = self
+    sb = w.verticalScrollBar()
+    i = sb.sliderPosition()
+    if g.app.trace_scroll: g.trace('(LeoQTextBrowser)',i)
+    return i
+
+def setYScrollPosition(self,pos):
+
+    if 0: # 2011/12/21
+        w = self
+        sb = w.verticalScrollBar()
+        if pos is None: pos = 0
+        if g.app.trace_scroll: g.trace('(LeoQTextBrowser)',pos)
+        sb.setSliderPosition(pos)
+#@+node:ekr.20110605121601.18098: *5* setYScrollPosition (leoQTextEditWidget)
+def setYScrollPosition(self,pos):
+    
+    # g.trace(pos)
+    
+    if 0: # 2011/12/21
+        w = self.widget
+        sb = w.verticalScrollBar()
+        if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
+        sb.setSliderPosition(pos)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
