@@ -277,6 +277,12 @@ def deletenodes_rclick(c,p, menu):
     u = c.undoer
 
     def deletenodes_rclick_cb():
+        
+        if len(pl) == 1:
+            # sometimes this may leave the selected node in a more
+            # convenient place than the generalized case below
+            c.deleteOutline()  # handles undo, redraw, etc.
+            return
 
         c.endEditing()
         cull = []
