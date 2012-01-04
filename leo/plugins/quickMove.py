@@ -17,6 +17,10 @@ Outline menu, and each node's context menu, if the `contextmenu` plugin is enabl
 Also adds a `Copy/Move to` menu item to copy/move nodes to other currently
 open outlines, currently to the top of the other outline only.
 
+Adds a `Bookmark to` menu item to bookmark nodes to other currently
+open outlines.  Bookmark will be either at the top of the other
+outline, or the first child in any top-level `@bookmarks` node.
+
 Select a node ``Foo`` and then use the `Move To Last Child Button` command.
 This adds a 'to Foo' button to the button bar. Now select another node and click
 the 'to Foo' button. The selected node will be moved to the last child
@@ -385,16 +389,23 @@ class quickMove(object):
 
         pathmenu = menu.addMenu("Move")
         
+        # copy / cut to other outline
         for txt, cut in ("Copy to...", False), ("Move to...", True):
-        
             sub = pathmenu.addMenu(txt)
-        
             for c2 in g.app.commanders():
                 a = sub.addAction("Top of " +
                     g.os_path_basename(c2.fileName()))
                 a.connect(a, QtCore.SIGNAL("triggered()"), 
                     lambda c2=c2, p=p, cut=cut: self.to_other(c2, p, cut=cut))
+                    
+        # bookmark to other outline 
+        sub = pathmenu.addMenu("Bookmark to...")
+        for c2 in g.app.commanders():
+            a = sub.addAction(g.os_path_basename(c2.fileName()))
+            a.connect(a, QtCore.SIGNAL("triggered()"), 
+                lambda c2=c2, p=p: self.bookmark_other(c2, p))
 
+        # actions within this outline
         for name,dummy,command in self.local_imps:
             a = pathmenu.addAction(name)
             a.connect(a, QtCore.SIGNAL("triggered()"), command)
@@ -469,6 +480,28 @@ class quickMove(object):
             nxt = p.copy().visNext(self.c).v
             self.c.deleteOutline(p)
             self.c.selectPosition(self.c.vnode2position(nxt))
+        
+        c2.redraw()
+        self.c.redraw()  # must come second to keep focus
+    #@+node:tbrown.20120104084659.21948: *3* bookmark_other
+    def bookmark_other(self, c2, p, op=None):
+        """Bookmark p from self.c to c2 at quickmove node op,
+        or top of outline if op == None.  c2 may be self.c.
+        """
+        
+        for nd in c2.rootPosition().self_and_siblings():
+            if '@bookmarks' in nd.h:
+                nd.expand()
+                nd = nd.insertAsNthChild(0)
+                nd.h = p.h
+                break
+        else:    
+            nd = c2.rootPosition().insertAfter()
+            nd.copy().back().moveAfter(nd)
+            nd.h = "@url %s"%p.h
+        
+        nd.b = p.get_UNL()
+        nd.v.u = dict(p.v.u)
         
         c2.redraw()
         self.c.redraw()  # must come second to keep focus
