@@ -220,13 +220,11 @@
 </v>
 </v>
 </v>
-<v t="ekr.20111024091133.16686"><vh>Fonts</vh>
-<v t="ekr.20111024091133.16692"><vh>@font body text font</vh></v>
-<v t="ekr.20111024091133.16693"><vh>@font button font</vh></v>
-<v t="ekr.20111024091133.16694"><vh>@font log font</vh></v>
-<v t="ekr.20111024091133.16695"><vh>@font menu text font</vh></v>
-<v t="ekr.20111024091133.16696"><vh>@font outline font</vh></v>
-<v t="ekr.20111024091133.16698"><vh>@font url font</vh></v>
+<v t="ekr.20111023095357.16693"><vh>Focus border settings</vh>
+<v t="ekr.20111023095357.16694"><vh>@bool use_focus_border = True</vh></v>
+<v t="ekr.20111103073536.16580"><vh>@bool use_body_focus_border = True</vh></v>
+<v t="ekr.20111023095357.16695"><vh>@int focus_border_width = 1</vh></v>
+<v t="ekr.20111023095357.16696"><vh>@color focus_border_color = red</vh></v>
 </v>
 <v t="ekr.20110611092035.16490"><vh>Windows</vh>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
@@ -511,6 +509,16 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
+<v t="ekr.20120106115914.12688"><vh>No longer used</vh>
+<v t="ekr.20111024091133.16686"><vh>Fonts</vh>
+<v t="ekr.20111024091133.16692"><vh>@@@font body text font</vh></v>
+<v t="ekr.20111024091133.16693"><vh>@@@font button font</vh></v>
+<v t="ekr.20111024091133.16694"><vh>@@@font log font</vh></v>
+<v t="ekr.20111024091133.16695"><vh>@@@font menu text font</vh></v>
+<v t="ekr.20111024091133.16696"><vh>@@@font outline font</vh></v>
+<v t="ekr.20111024091133.16698"><vh>@@@font url font</vh></v>
+</v>
+</v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
@@ -745,7 +753,6 @@
 </v>
 </v>
 <v t="ekr.20041119034357.20"></v>
-<v t="ekr.20111024091133.16686"></v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
 <v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
@@ -1573,12 +1580,7 @@
 <v t="ekr.20041119034357.42"><vh>@string body_time_format_string = %m/%d/%Y %H:%M:%S</vh></v>
 <v t="ekr.20060620085654"><vh>@string editor_orientation = horizontal</vh></v>
 </v>
-<v t="ekr.20111023095357.16693"><vh>Focus border settings</vh>
-<v t="ekr.20111023095357.16694"><vh>@bool use_focus_border = True</vh></v>
-<v t="ekr.20111103073536.16580"><vh>@bool use_body_focus_border = True</vh></v>
-<v t="ekr.20111023095357.16695"><vh>@int focus_border_width = 1</vh></v>
-<v t="ekr.20111023095357.16696"><vh>@color focus_border_color = red</vh></v>
-</v>
+<v t="ekr.20111023095357.16693"></v>
 <v t="ekr.20080930072519.3"><vh>Icon bar options</vh></v>
 <v t="ekr.20080930072519.4"><vh>@int icon_bar_widgets_per_row = 20</vh></v>
 <v t="ekr.20041213105954.1"><vh>Log pane options</vh>
@@ -9536,6 +9538,7 @@ True (Recommended): The contract-or-goto-parent (Alt-RtArrow) contracts all
 children of the to-be-selected parent.
 </t>
 <t tx="ekr.20111115083813.12518"></t>
+<t tx="ekr.20120106115914.12688"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
