@@ -77,7 +77,14 @@ try:
 except ImportError:
     pass
 
-from PyQt4.QtCore import (QSize, QVariant, Qt, SIGNAL, QTimer, QString)
+from PyQt4.QtCore import (QSize, QVariant, Qt, SIGNAL, QTimer)
+
+try:
+   from PyQt4.QtCore import QString
+except ImportError:
+   QString = str
+
+
 from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
         QFontMetrics, QIcon, QKeySequence, QMenu, QPixmap, QTextCursor,
         QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,
