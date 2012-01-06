@@ -509,16 +509,6 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20120106115914.12688"><vh>No longer used</vh>
-<v t="ekr.20111024091133.16686"><vh>Fonts</vh>
-<v t="ekr.20111024091133.16692"><vh>@@@font body text font</vh></v>
-<v t="ekr.20111024091133.16693"><vh>@@@font button font</vh></v>
-<v t="ekr.20111024091133.16694"><vh>@@@font log font</vh></v>
-<v t="ekr.20111024091133.16695"><vh>@@@font menu text font</vh></v>
-<v t="ekr.20111024091133.16696"><vh>@@@font outline font</vh></v>
-<v t="ekr.20111024091133.16698"><vh>@@@font url font</vh></v>
-</v>
-</v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
@@ -9346,74 +9336,6 @@ Light comments  base1 comments
 <t tx="ekr.20111024091133.16650"></t>
 <t tx="ekr.20111024091133.16651"></t>
 <t tx="ekr.20111024091133.16671"></t>
-<t tx="ekr.20111024091133.16686">@nocolor
-@
-
-Valid values:
-
-weight: bold, normal, None
-slant: roman, italic, None
-
-Use the show-fonts command to pick fonts, then copy the values shown by the show-fonts command to the values here.
-
-@c
-
-import sys ; print sys.platform
-</t>
-<t tx="ekr.20111024091133.16692">body_text_font_family = DejaVu Sans Mono
-body_text_font_size = 12
-    # 14 &amp; 16 look great
-body_text_font_slant = None
-body_text_font_weight = None
-</t>
-<t tx="ekr.20111024091133.16693">button_text_font_family = verdana
-button_text_font_size = 9
-    # was 7
-button_text_font_slant = roman
-button_text_font_weight = bold
-</t>
-<t tx="ekr.20111024091133.16694"># The font for the log pane. Default is default font for Tk.Text widgets.
-# Tk translates invalid font names to another font in a system-dependent way.
-# 
-# Default size is 12 for Linux, 9 otherwise.
-
-log_text_font_family = Courier
-    # Courier looks ok, but DejaVu Sans Mono is more consistent.
-    
-log_text_font_size = 10
-    # Use Courier 10 to make it obvious that we are using tk.
-    # For DejaVu Sans Mono: use 12 for consistency with body pane.
-    # For Courier: 16 is a bit big
-
-log_text_font_slant = roman
-log_text_font_weight = normal
-</t>
-<t tx="ekr.20111024091133.16695">menu_text_font_family = None
-menu_text_font_size = 10
-menu_text_font_slant = None
-menu_text_font_weight = None</t>
-<t tx="ekr.20111024091133.16696">headline_text_font_family = DejaVu Sans Mono
-    # DejaVu Sans Mono looks ok, better maybe than Verdana.
-    # None looks bad
-    # Verdana looks ok, not great
-headline_text_font_size = 12
-    # Courier 12 looks bad.
-    # For Verdana
-        # 12 looks good.
-        # 14 looks too big
-    # For DejaVu Sans Mono...
-        # 10 is too small, and looks bad.
-        # 12 looks good, but the inter-line spacing is too big.
-        # 14 and 16 look a bit too big
-headline_text_font_slant = roman
-headline_text_font_weight = normal
-</t>
-<t tx="ekr.20111024091133.16698">url_font_family = DejaVu Sans Mono
-url_font_size = 12
-    # 14 &amp; 16 look great
-url_font_slant = None
-url_font_weight = bold
-</t>
 <t tx="ekr.20111024091133.16701">No longer used.
 
 configure_hard_tab_width now does a good, but not great,
@@ -9538,7 +9460,6 @@ True (Recommended): The contract-or-goto-parent (Alt-RtArrow) contracts all
 children of the to-be-selected parent.
 </t>
 <t tx="ekr.20111115083813.12518"></t>
-<t tx="ekr.20120106115914.12688"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
