@@ -430,13 +430,17 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
 .. @+node:ekr.20111102072143.10016: *9* createMasterMenuCallback
 def createMasterMenuCallback(self,dynamicMenu,command,commandName):
     
+    trace = False
+    
     c = self.c
     
     if dynamicMenu:
         if command:
             def masterDynamicMenuCallback (c=c,command=command):
-                # g.trace(command.__name__)
-                event = g.app.gui.create_key_event(c,None,None,None)
+                if trace: g.trace(command.__name__)
+                # 2012/01/07: set w here.
+                w = c.frame.getFocus()
+                event = g.app.gui.create_key_event(c,None,None,w)
                 return c.k.masterCommand(func=command,event=event)
             return masterDynamicMenuCallback
         else:
@@ -446,8 +450,11 @@ def createMasterMenuCallback(self,dynamicMenu,command,commandName):
             return dummyMasterMenuCallback
     else:
         def masterStaticMenuCallback (c=c,commandName=commandName):
+            if trace: g.trace(commandName)
             # 2011/10/28: Use only the command name to dispatch the command.
-            event = g.app.gui.create_key_event(c,None,None,None)
+            # 2012/01/07: Bug fix: set w here.
+            w = c.frame.getFocus()
+            event = g.app.gui.create_key_event(c,None,None,w)
             return c.k.masterCommand(commandName=commandName,event=event)
         return masterStaticMenuCallback
 .. @+node:ekr.20111028060955.16568: *9* getMenuEntryBindings
@@ -904,13 +911,17 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
 .. @+node:ekr.20111102072143.10016: *9* createMasterMenuCallback
 def createMasterMenuCallback(self,dynamicMenu,command,commandName):
     
+    trace = False
+    
     c = self.c
     
     if dynamicMenu:
         if command:
             def masterDynamicMenuCallback (c=c,command=command):
-                # g.trace(command.__name__)
-                event = g.app.gui.create_key_event(c,None,None,None)
+                if trace: g.trace(command.__name__)
+                # 2012/01/07: set w here.
+                w = c.frame.getFocus()
+                event = g.app.gui.create_key_event(c,None,None,w)
                 return c.k.masterCommand(func=command,event=event)
             return masterDynamicMenuCallback
         else:
@@ -920,8 +931,11 @@ def createMasterMenuCallback(self,dynamicMenu,command,commandName):
             return dummyMasterMenuCallback
     else:
         def masterStaticMenuCallback (c=c,commandName=commandName):
+            if trace: g.trace(commandName)
             # 2011/10/28: Use only the command name to dispatch the command.
-            event = g.app.gui.create_key_event(c,None,None,None)
+            # 2012/01/07: Bug fix: set w here.
+            w = c.frame.getFocus()
+            event = g.app.gui.create_key_event(c,None,None,w)
             return c.k.masterCommand(commandName=commandName,event=event)
         return masterStaticMenuCallback
 .. @+node:ekr.20111028060955.16568: *9* getMenuEntryBindings
@@ -7092,9 +7106,9 @@ def traceEvent (self,obj,event,tkKey,override):
     if g.unitTesting: return
     
     traceFocus = False
-    traceKey   = False
+    traceKey   = True
     traceLayout = False
-    traceMouse = True
+    traceMouse = False
     
     c,e = self.c,QtCore.QEvent
     eventType = event.type()
@@ -7131,7 +7145,8 @@ def traceEvent (self,obj,event,tkKey,override):
     )
     layout_events = (
         (e.ChildPolished,'child-polished'), # 69
-        (e.CloseSoftwareInputPanel,'close-sip'), # 200
+        #(e.CloseSoftwareInputPanel,'close-sip'), # 200
+            # Event does not exist on MacOS.
         (e.ChildAdded,'child-added'), # 68
         (e.DynamicPropertyChange,'dynamic-property-change'), # 170
         (e.FontChange,'font-change'),# 97
@@ -7142,7 +7157,8 @@ def traceEvent (self,obj,event,tkKey,override):
         (e.Paint,'paint'), # 12
         (e.Polish,'polish'), # 75
         (e.PolishRequest,'polish-request'), # 74
-        (e.RequestSoftwareInputPanel,'sip'), # 199
+        # (e.RequestSoftwareInputPanel,'sip'), # 199
+            # Event does not exist on MacOS.
         (e.Resize,'resize'), # 14
         (e.StyleChange,'style-change'), # 100
         (e.ZOrderChange,'z-order-change'), # 126

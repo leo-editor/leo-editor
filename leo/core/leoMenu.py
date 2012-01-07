@@ -1271,13 +1271,17 @@ class leoMenu:
     #@+node:ekr.20111102072143.10016: *5* createMasterMenuCallback
     def createMasterMenuCallback(self,dynamicMenu,command,commandName):
         
+        trace = False
+        
         c = self.c
         
         if dynamicMenu:
             if command:
                 def masterDynamicMenuCallback (c=c,command=command):
-                    # g.trace(command.__name__)
-                    event = g.app.gui.create_key_event(c,None,None,None)
+                    if trace: g.trace(command.__name__)
+                    # 2012/01/07: set w here.
+                    w = c.frame.getFocus()
+                    event = g.app.gui.create_key_event(c,None,None,w)
                     return c.k.masterCommand(func=command,event=event)
                 return masterDynamicMenuCallback
             else:
@@ -1287,8 +1291,11 @@ class leoMenu:
                 return dummyMasterMenuCallback
         else:
             def masterStaticMenuCallback (c=c,commandName=commandName):
+                if trace: g.trace(commandName)
                 # 2011/10/28: Use only the command name to dispatch the command.
-                event = g.app.gui.create_key_event(c,None,None,None)
+                # 2012/01/07: Bug fix: set w here.
+                w = c.frame.getFocus()
+                event = g.app.gui.create_key_event(c,None,None,w)
                 return c.k.masterCommand(commandName=commandName,event=event)
             return masterStaticMenuCallback
     #@+node:ekr.20111028060955.16568: *5* getMenuEntryBindings

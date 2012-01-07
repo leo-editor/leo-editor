@@ -1290,7 +1290,7 @@ class leoFrame:
 
         f = self ; c = f.c ; w = event and event.widget
         
-        # g.trace(g.app.gui.isTextWidget(w),w)
+        # g.trace(g.app.gui.isTextWidget(w),event,w)
 
         if not w or not g.app.gui.isTextWidget(w): return
 
