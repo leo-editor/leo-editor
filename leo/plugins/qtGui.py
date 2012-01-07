@@ -2863,7 +2863,9 @@ class leoQtBody (leoFrame.leoBody):
 
         def check(color,kind,default):
             if not QtGui.QColor(color).isValid():
-                if color not in self.badFocusColors:
+                if color in ( 'none','None',None):
+                    pass
+                elif color not in self.badFocusColors:
                     self.badFocusColors.append(color)
                     g.es_print('invalid body %s color: %s' % (
                         kind,color),color='blue')
@@ -7469,6 +7471,7 @@ class leoQtGui(leoGui.leoGui):
         if c.use_focus_border:
             if hasattr(w,'viewport'):
                 w = w.viewport()
+
             sheet = "border: %spx solid %s" % (
                 c.focus_border_width,c.focus_border_color)
             self.update_style_sheet(w,'border',sheet)
@@ -7981,6 +7984,8 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20110605121601.18509: *4* Font
     #@+node:ekr.20110605121601.18510: *5* qtGui.getFontFromParams
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
+        
+        trace = False and not g.unitTesting
 
         try: size = int(size)
         except Exception: size = 0
@@ -8000,10 +8005,12 @@ class leoQtGui(leoGui.leoGui):
             family = g.app.config.defaultFontFamily
         if not family:
             family = 'DejaVu Sans Mono'
+            
+        
 
         try:
             font = QtGui.QFont(family,size,weight_val,italic)
-            # g.trace(family,size,slant,weight,'returns',font)
+            if trace: g.trace(family,size,g.callers())
             return font
         except:
             g.es("exception setting font",g.callers(4))
@@ -8902,9 +8909,9 @@ class leoQtEventFilter(QtCore.QObject):
         if g.unitTesting: return
         
         traceFocus = False
-        traceKey   = False
+        traceKey   = True
         traceLayout = False
-        traceMouse = True
+        traceMouse = False
         
         c,e = self.c,QtCore.QEvent
         eventType = event.type()
@@ -8941,7 +8948,8 @@ class leoQtEventFilter(QtCore.QObject):
         )
         layout_events = (
             (e.ChildPolished,'child-polished'), # 69
-            (e.CloseSoftwareInputPanel,'close-sip'), # 200
+            #(e.CloseSoftwareInputPanel,'close-sip'), # 200
+                # Event does not exist on MacOS.
             (e.ChildAdded,'child-added'), # 68
             (e.DynamicPropertyChange,'dynamic-property-change'), # 170
             (e.FontChange,'font-change'),# 97
@@ -8952,7 +8960,8 @@ class leoQtEventFilter(QtCore.QObject):
             (e.Paint,'paint'), # 12
             (e.Polish,'polish'), # 75
             (e.PolishRequest,'polish-request'), # 74
-            (e.RequestSoftwareInputPanel,'sip'), # 199
+            # (e.RequestSoftwareInputPanel,'sip'), # 199
+                # Event does not exist on MacOS.
             (e.Resize,'resize'), # 14
             (e.StyleChange,'style-change'), # 100
             (e.ZOrderChange,'z-order-change'), # 126
