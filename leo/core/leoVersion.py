@@ -25,13 +25,11 @@ if 1:
     path = os.path.abspath(path)
     if os.path.exists(path):
         s = open(path,'r').read()
-        # print('leoVersion.py: %s: %s' % (path,s))
-        secs = os.path.getmtime(path)
-        t = time.localtime(secs)
-        # date = time.asctime(t)
-        date = time.strftime('%Y-%m-%d %H:%M:%S',t)
         i = s.find(' ')
         build = static_version if i == -1 else s[:i]
+        secs = os.path.getmtime(path)
+        t = time.localtime(secs)
+        date = time.strftime('%Y-%m-%d %H:%M:%S',t)
     else:
         print('leoVersion.py: %s does not exist' % (path))
         build = static_version
