@@ -3468,7 +3468,8 @@ class atFile:
 
         '''Write one @edit node.'''
 
-        at = self ; c = at.c ; root = p.copy()
+        at = self ; c = at.c
+        root = p.copy()
         c.endEditing()
         c.init_error_dialogs()
 
@@ -5056,6 +5057,8 @@ class atFile:
             if ok:
                 c.setFileTimeStamp(self.targetFileName)
                 g.es('created:',self.targetFileName)
+                if root:
+                    root.v.at_read = True # 2012/01/09
             else:
                 # self.rename gives the error.
                 if root:

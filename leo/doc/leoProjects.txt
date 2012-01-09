@@ -10134,7 +10134,8 @@ def writeOneAtEditNode(self,p,toString,force=False):
 
     '''Write one @edit node.'''
 
-    at = self ; c = at.c ; root = p.copy()
+    at = self ; c = at.c
+    root = p.copy()
     c.endEditing()
     c.init_error_dialogs()
 
@@ -22646,6 +22647,24 @@ def setYScrollPosition(self,pos):
         sb = w.verticalScrollBar()
         if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
         sb.setSliderPosition(pos)
+#@+node:ekr.20120109111947.9962: *4* Fixed erroneous "file changed" message 
+@nocolor-node
+
+has been modified outside of Leo. Overwrite this file?
+http://groups.google.com/group/leo-editor/browse_thread/thread/daf581ace0de871e
+
+Steps to reproduce:
+
+- Create a node "@edit ~/aaa.txt" assuming aaa.txt does not exist
+- Ctrl-S save outline, log reports creating ~/aaa.txt
+- Edit text in body
+- Ctrl-S save outline, pop-up pops-up erroneously.
+
+The problem was that replaceTargetFileIfDifferent should set root.v.at_read.
+Now it does.
+
+Note: both replaceFileWithString methods are part of the @shadow logic,
+so there is no need to set any at_read bit in those methods.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
