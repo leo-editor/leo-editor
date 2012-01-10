@@ -22647,7 +22647,7 @@ def setYScrollPosition(self,pos):
         sb = w.verticalScrollBar()
         if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
         sb.setSliderPosition(pos)
-#@+node:ekr.20120109111947.9962: *4* Fixed erroneous "file changed" message 
+#@+node:ekr.20120109111947.9962: *4* Fixed erroneous "file changed" message
 @nocolor-node
 
 has been modified outside of Leo. Overwrite this file?
