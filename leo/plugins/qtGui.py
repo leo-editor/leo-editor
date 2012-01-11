@@ -6729,8 +6729,10 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         '''Return the edit widget if it exists.
         Do *not* create one if it does not exist.'''
 
+        trace = False and not g.unitTesting
         w = self.treeWidget
         e = w.itemWidget(item,0)
+        if trace and e: g.trace(e.__class__.__name__)
         return e
     #@+node:ekr.20110605121601.18428: *6* getWrapper (leoQtTree)
     def getWrapper (self,e,item):
@@ -6738,7 +6740,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         '''Return headlineWrapper that wraps e (a QLineEdit).'''
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         c = self.c
         
         if e:
@@ -8144,7 +8146,7 @@ class leoQtGui(leoGui.leoGui):
 
         # To make your application perform idle processing, use a QTimer with 0 timeout.
         timer.start(0)
-    #@+node:ekr.20110605121601.18522: *4* isTextWidget
+    #@+node:ekr.20110605121601.18522: *4* isTextWidget (qtGui)
     def isTextWidget (self,w):
 
         '''Return True if w is a Text widget suitable for text-oriented commands.'''

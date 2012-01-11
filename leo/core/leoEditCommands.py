@@ -136,15 +136,19 @@ class baseEditCommandsClass:
     #@+node:ekr.20061007105001: *3* editWidget (baseEditCommandsClass)
     def editWidget (self,event,forceFocus=True):
 
-        c = self.c ; w = event and event.widget
-
-        # g.trace(w,g.app.gui.isTextWidget(w))
-
+        trace = False and not g.unitTesting
+        c = self.c
+        w = event and event.widget
+        wname = (w and c.widget_name(w)) or '<no widget>'
+        isTextWidget = g.app.gui.isTextWidget(w)
+        
         # New in Leo 4.5: single-line editing commands apply to minibuffer widget.
-        if w and g.app.gui.isTextWidget(w):
+        if w and isTextWidget:
             self.w = w
         else:
             self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
+            
+        if trace: g.trace(isTextWidget,wname,w)
 
         if self.w and forceFocus:
             c.widgetWantsFocusNow(self.w)
@@ -5742,9 +5746,12 @@ class editCommandsClass (baseEditCommandsClass):
         '''Select all text.'''
 
         c = self.c 
-
         w = self.editWidget(event)
-        if w:
+        isTextWidget = w and g.app.gui.isTextWidget(w)
+        if 0:
+            wname = (w and c.widget_name(w)) or '<no widget>'
+            g.trace(isTextWidget,wname,w)
+        if w and isTextWidget:
             return w.selectAllText()
     #@+node:ekr.20050920084036.131: *4* sentences & helpers
     def backSentence (self,event):

@@ -1288,10 +1288,11 @@ class leoFrame:
 
         '''Copy the selected text from the widget to the clipboard.'''
 
-        f = self ; c = f.c ; w = event and event.widget
-        
-        # g.trace(g.app.gui.isTextWidget(w),event,w)
-
+        trace = False and not g.unitTesting
+        f = self ; c = f.c
+        w = event and event.widget
+        wname = (w and c.widget_name(w)) or '<no widget>'
+        if trace: g.trace(g.app.gui.isTextWidget(w),wname,w)
         if not w or not g.app.gui.isTextWidget(w): return
 
         # Set the clipboard text.
@@ -1339,12 +1340,13 @@ class leoFrame:
         '''Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.'''
 
-        trace = False
-        f = self ; c = f.c ; w = event and event.widget
-        if trace: g.trace(w)
+        trace = False and not g.unitTesting
+        f = self ; c = f.c
+        w = event and event.widget
+        wname = (w and c.widget_name(w)) or '<no widget>'
+        if trace: g.trace(g.app.gui.isTextWidget(w),w)
         if not w or not g.app.gui.isTextWidget(w): return
 
-        wname = c.widget_name(w)
         i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
         oldText = w.getAllText()
 

@@ -779,7 +779,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         """Returns the edit widget for position p."""
 
         trace = False and not g.unitTesting
-        verbose = True
+        verbose = False
 
         c = self.c
         item = self.position2item(p)
@@ -788,7 +788,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if e:
                 # Create a wrapper widget for Leo's core.
                 w = self.getWrapper(e,item)
-                if trace: g.trace('objectName',repr(e.objectName()),e,p and p.h,g.callers())
+                if trace: g.trace(w,p and p.h)
                 return w
             else:
                 # This is not an error

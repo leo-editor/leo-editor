@@ -1271,16 +1271,24 @@ class leoMenu:
     #@+node:ekr.20111102072143.10016: *5* createMasterMenuCallback
     def createMasterMenuCallback(self,dynamicMenu,command,commandName):
         
-        trace = False
-        
+        trace = False and not g.unitTesting
         c = self.c
         
+        def setWidget():
+            w = c.frame.getFocus()
+            if w and sys.platform.startswith('darwin'):
+                 # 2012/01/11: redirect (MacOS only).
+                wname = c.widget_name(w) or ''
+                if wname.startswith('head'):
+                    w = c.frame.tree.edit_widget(c.p)
+            return w
+
         if dynamicMenu:
             if command:
                 def masterDynamicMenuCallback (c=c,command=command):
-                    if trace: g.trace(command.__name__)
                     # 2012/01/07: set w here.
-                    w = c.frame.getFocus()
+                    w = setWidget()
+                    if trace: g.trace(command.__name__,w) 
                     event = g.app.gui.create_key_event(c,None,None,w)
                     return c.k.masterCommand(func=command,event=event)
                 return masterDynamicMenuCallback
@@ -1291,10 +1299,10 @@ class leoMenu:
                 return dummyMasterMenuCallback
         else:
             def masterStaticMenuCallback (c=c,commandName=commandName):
-                if trace: g.trace(commandName)
                 # 2011/10/28: Use only the command name to dispatch the command.
                 # 2012/01/07: Bug fix: set w here.
-                w = c.frame.getFocus()
+                w = setWidget()
+                if trace: g.trace(commandName,w)
                 event = g.app.gui.create_key_event(c,None,None,w)
                 return c.k.masterCommand(commandName=commandName,event=event)
             return masterStaticMenuCallback
