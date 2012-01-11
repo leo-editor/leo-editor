@@ -110,7 +110,11 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     if not isValidPython(): return
 
     files,options = doPrePluginsInit(fileName,pymacs)
-    if options.get('exit'): return
+    if options.get('version'):
+        print(g.app.signon)
+        return
+    if options.get('exit'):
+        return
 
     # Phase 2: load plugins: the gui has already been set.
     g.doHook("start1")
@@ -134,6 +138,9 @@ def doPrePluginsInit(fileName,pymacs):
     
     # Scan the options as early as possible.
     options = scanOptions()
+    if options.get('version'):
+        g.app.computeSignon()
+        return [],options
 
     # Post-process the options.
     fileName2 = options.get('fileName')
@@ -449,7 +456,7 @@ def scanOptions():
 
     # Compute the return values.
     windowFlag = script and script_path_w
-    return {
+    d = {
         'fileName':fileName,
         'gui':gui,
         'screenshot_fn':screenshot_fn,
@@ -459,6 +466,7 @@ def scanOptions():
         'windowFlag':windowFlag,
         'windowSize':windowSize,
     }
+    return d
 #@+node:ekr.20090519143741.5917: *3* doPostPluginsInit & helpers (runLeo.py)
 def doPostPluginsInit(args,files,options):
 
