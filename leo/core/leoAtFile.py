@@ -507,7 +507,9 @@ class atFile:
             at.error("Missing file name.  Restoring @file tree from .leo file.")
             return False
         # Fix bug 760531: always mark the root as read, even if there was an error.
-        root.v.at_read = True
+        # Fix bug 889175: Remember the full fileName.
+        root.v.at_read = at.fullPath(root)
+
         # Bug fix 2011/05/23: Restore orphan trees from the outline.
         if root.isOrphan():
             g.es("reading:",root.h)
@@ -835,7 +837,8 @@ class atFile:
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
         # 2010/7/28: Remember that we have seen the @auto node.
-        p.v.at_read = True # Create the attribute
+        # Fix bug 889175: Remember the full fileName.
+        p.v.at_read = fileName # Create the attribute
 
         s,ok,fileKey = c.cacher.readFile(fileName,p)
         if ok:
@@ -874,7 +877,8 @@ class atFile:
         junk,ext = g.os_path_splitext(fn)
 
         # 2010/7/28: Remember that we have seen the @edit node.
-        p.v.at_read = True # Create the attribute
+        # Fix bug 889175: Remember the full fileName.
+        p.v.at_read = fn # Create the attribute
 
         if not g.unitTesting:
             g.es("reading @edit:", g.shortFileName(fn))
@@ -914,7 +918,8 @@ class atFile:
                 fn, p.atShadowFileNodeName()))
 
         # Remember that we have seen the @shadow node.
-        p.v.at_read = True # Create the attribute
+        # Fix bug 889175: Remember the full fileName.
+        p.v.at_read = fn # Create the attribute
 
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
         fn = c.os_path_finalize_join(at.default_directory,fn)
@@ -975,7 +980,8 @@ class atFile:
             # 2010/01/22: use *only* the header to set self.thinFile.
 
         if deleteNodes and at.shouldDeleteChildren(root,thinFile):
-            root.v.at_read = True # Create the attribute for all clones.
+            # Fix bug 889175: Remember the full fileName.
+            root.v.at_read = fileName # Create the attribute for all clones.
             while root.hasChildren():
                 root.firstChild().doDelete()
 
@@ -2738,12 +2744,14 @@ class atFile:
             # "look ahead" computation of eventual fileName.
             eventualFileName = c.os_path_finalize_join(
                 at.default_directory,at.targetFileName)
-            exists = g.os_path_exists(eventualFileName)
-            if not hasattr(root.v,'at_read') and exists:
+            ### exists = g.os_path_exists(eventualFileName)
+            ### if not hasattr(root.v,'at_read') and exists:
+            if at.shouldPromptForDangerousWrite(eventualFileName,root):
                 # Prompt if writing a new @asis node would overwrite the existing file.
                 ok = self.promptForDangerousWrite(eventualFileName,kind='@asis')
                 if ok:
-                    root.v.at_read = True # Create the attribute for all clones.
+                    # Fix bug 889175: Remember the full fileName.
+                    root.v.at_read = eventualFileName # Create the attribute for all clones.
                 else:
                     g.es("not written:",eventualFileName)
                     return
@@ -2920,23 +2928,22 @@ class atFile:
         # "look ahead" computation of eventual fileName.
         eventualFileName = c.os_path_finalize_join(
             at.default_directory,at.targetFileName)
-        exists = g.os_path_exists(eventualFileName)
+        ### exists = g.os_path_exists(eventualFileName)
 
         if trace:
             g.trace('default_dir',
                 g.os_path_exists(at.default_directory),
                 at.default_directory)
-            g.trace('eventual_fn',exists,eventualFileName)
+            g.trace('eventual_fn',eventualFileName)
 
         if not scriptWrite and not toString:
-            # 2010/7/28: The read logic now sets the at_read bit for @nosent nodes,
-            # so we can just use promptForDangerousWrite.
-            if not hasattr(root.v,'at_read') and exists:
+            ### if not hasattr(root.v,'at_read') and exists:
+            if at.shouldPromptForDangerousWrite(eventualFileName,root):
                 # Prompt if writing a new @file or @thin node would
                 # overwrite an existing file.
                 ok = self.promptForDangerousWrite(eventualFileName,kind)
                 if ok:
-                    root.v.at_read = True # Create the attribute for all clones.
+                    root.v.at_read = eventualFileName # Create the attribute for all clones.
                 else:
                     g.es("not written:",eventualFileName)
                     #@+<< set dirty and orphan bits >>
@@ -2983,7 +2990,8 @@ class atFile:
                     #@-<< set dirty and orphan bits >>
                     g.es("not written:",at.outputFileName)
                 else:
-                    root.v.at_read = True # 2011/05/24.
+                    # Fix bug 889175: Remember the full fileName.
+                    root.v.at_read = eventualFileName
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
 
@@ -3172,8 +3180,9 @@ class atFile:
 
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
-        exists = g.os_path_exists(fileName)
-        if not toString and exists and not hasattr(root.v,'at_read') and exists:
+        ### exists = g.os_path_exists(fileName)
+        ### if not toString and exists and not hasattr(root.v,'at_read') and exists:
+        if not toString and at.shouldPromptForDangerousWrite(fileName,root):
             # Prompt if writing a new @auto node would overwrite the existing file.
             ok = self.promptForDangerousWrite(fileName,kind='@auto')
             if not ok:
@@ -3181,7 +3190,8 @@ class atFile:
                 return
                 
         # Create the attribute for all clones.
-        root.v.at_read = True
+        # Fix bug 889175: Remember the full fileName.
+        root.v.at_read = fileName
         
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
@@ -3289,19 +3299,21 @@ class atFile:
 
         fn = at.fullPath(p)
         at.default_directory = g.os_path_dirname(fn)
-        exists = g.os_path_exists(fn)
-        if trace: g.trace('exists %s fn %s' % (exists,fn))
+        ### exists = g.os_path_exists(fn)
+        ### if trace: g.trace('exists %s fn %s' % (exists,fn))
 
         # Bug fix 2010/01/18: Make sure we can compute the shadow directory.
         private_fn = x.shadowPathName(fn)
         if not private_fn:
             return False
 
-        if not toString and not hasattr(root.v,'at_read') and exists:
+        ### if not toString and not hasattr(root.v,'at_read') and exists:
+        if not toString and at.shouldPromptForDangerousWrite(fn,root):
             # Prompt if writing a new @shadow node would overwrite the existing public file.
             ok = self.promptForDangerousWrite(fn,kind='@shadow')
             if ok:
-                root.v.at_read = True # Create the attribute for all clones.
+                # Fix bug 889175: Remember the full fileName.
+                root.v.at_read = fn # Create the attribute for all clones.
             else:
                 g.es("not written:",fn)
                 return
@@ -3483,12 +3495,15 @@ class atFile:
 
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
         fn = c.os_path_finalize_join(at.default_directory,fn)
-        exists = g.os_path_exists(fn)
-        if not force and not hasattr(root.v,'at_read') and exists:
+        ### exists = g.os_path_exists(fn)
+        ### if not force and not hasattr(root.v,'at_read') and exists:
+        if not force and at.shouldPromptForDangerousWrite(fn,root):
             # Prompt if writing a new @edit node would overwrite the existing file.
             ok = self.promptForDangerousWrite(fn,kind='@edit')
             if ok:
-                root.v.at_read = True # Create the attribute for all clones.
+                # Fix bug 889175: Remember the full fileName.
+                root.v.at_read = fn
+                # Create the attribute for all clones.
             else:
                 g.es("not written:",fn)
                 return False
@@ -5058,7 +5073,8 @@ class atFile:
                 c.setFileTimeStamp(self.targetFileName)
                 g.es('created:',self.targetFileName)
                 if root:
-                    root.v.at_read = True # 2012/01/09
+                    # Fix bug 889175: Remember the full fileName.
+                    root.v.at_read = self.targetFileName # 2012/01/09
             else:
                 # self.rename gives the error.
                 if root:
@@ -5132,21 +5148,165 @@ class atFile:
             root.setOrphan()
             root.setDirty()
     #@+node:ekr.20041005105605.219: ** at.Utilites
-    #@+node:ekr.20041005105605.220: *3* atFile.error & printError
-    def error(self,*args):
+    #@+node:ekr.20041005105605.221: *3* at.exception
+    def exception (self,message):
 
-        at = self
-        if True: # args:
-            at.printError(*args)
-        at.errors += 1
+        self.error(message)
+        g.es_exception()
+    #@+node:ekr.20050104131929: *3* at.file operations...
+    #@+at The difference, if any, between these methods and the corresponding g.utils_x
+    # functions is that these methods may call self.error.
+    #@+node:ekr.20050104131820: *4* chmod
+    def chmod (self,fileName,mode):
 
-    def printError (self,*args):
+        # Do _not_ call self.error here.
+        return g.utils_chmod(fileName,mode)
+    #@+node:ekr.20050104131929.1: *4* atFile.rename
+    #@+<< about os.rename >>
+    #@+node:ekr.20050104131929.2: *5* << about os.rename >>
+    #@+at Here is the Python 2.4 documentation for rename (same as Python 2.3)
+    # 
+    # Rename the file or directory src to dst.  If dst is a directory, OSError will be raised.
+    # 
+    # On Unix, if dst exists and is a file, it will be removed silently if the user
+    # has permission. The operation may fail on some Unix flavors if src and dst are
+    # on different filesystems. If successful, the renaming will be an atomic
+    # operation (this is a POSIX requirement).
+    # 
+    # On Windows, if dst already exists, OSError will be raised even if it is a file;
+    # there may be no way to implement an atomic rename when dst names an existing
+    # file.
+    #@-<< about os.rename >>
 
-        '''Print an error message that may contain non-ascii characters.'''
+    def rename (self,src,dst,mode=None,verbose=True):
 
-        at = self
-        keys = {'color': g.choose(at.errors,'blue','red')}
-        g.es_print_error(*args,**keys)
+        '''remove dst if it exists, then rename src to dst.
+
+        Change the mode of the renamed file if mode is given.
+
+        Return True if all went well.'''
+
+        c = self.c
+        head,junk=g.os_path_split(dst)
+        if head and len(head) > 0:
+            g.makeAllNonExistentDirectories(head,c=c)
+
+        if g.os_path_exists(dst):
+            if not self.remove(dst,verbose=verbose):
+                return False
+
+        try:
+            os.rename(src,dst)
+            if mode != None:
+                self.chmod(dst,mode)
+            return True
+        except Exception:
+            if verbose:
+                self.error("exception renaming: %s to: %s" % (
+                    self.outputFileName,self.targetFileName))
+                g.es_exception()
+            return False
+    #@+node:ekr.20050104132018: *4* atFile.remove
+    def remove (self,fileName,verbose=True):
+        
+        if not fileName:
+            g.trace('No file name',g.callers())
+            return False
+
+        try:
+            os.remove(fileName)
+            return True
+        except Exception:
+            if verbose:
+                self.error("exception removing: %s" % fileName)
+                g.es_exception()
+                g.trace(g.callers(5))
+            return False
+    #@+node:ekr.20050104132026: *4* stat
+    def stat (self,fileName):
+
+        '''Return the access mode of named file, removing any setuid, setgid, and sticky bits.'''
+
+        # Do _not_ call self.error here.
+        return g.utils_stat(fileName)
+    #@+node:ekr.20090530055015.6050: *3* at.fullPath
+    def fullPath (self,p,simulate=False):
+
+        '''Return the full path (including fileName) in effect at p.
+
+        Neither the path nor the fileName will be created if it does not exist.
+        '''
+
+        at = self ; c = at.c
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        if simulate: # for unit tests.
+            fn = p.h
+        else:
+            fn = p.anyAtFileNodeName()
+        if fn:
+            path = g.os_path_finalize_join(path,fn)
+        else:
+            g.trace('can not happen: not an @<file> node:',g.callers(4))
+            for p2 in p.self_and_parents():
+                g.trace(p2.h)
+            path = ''
+
+        # g.trace(p.h,repr(path))
+        return path
+    #@+node:ekr.20090530055015.6023: *3* at.get/setPathUa
+    def getPathUa (self,p):
+
+        if hasattr(p.v,'tempAttributes'):
+            d = p.v.tempAttributes.get('read-path',{})
+            return d.get('path')
+        else:
+            return ''
+
+    def setPathUa (self,p,path):
+
+        if not hasattr(p.v,'tempAttributes'):
+            p.v.tempAttributes = {}
+
+        d = p.v.tempAttributes.get('read-path',{})
+        d['path'] = path
+        p.v.tempAttributes ['read-path'] = d
+    #@+node:ekr.20081216090156.4: *3* at.parseUnderindentTag
+    def parseUnderindentTag (self,s):
+
+        tag = self.underindentEscapeString
+        s2 = s[len(tag):]
+
+        # To be valid, the escape must be followed by at least one digit.
+        i = 0
+        while i < len(s2) and s2[i].isdigit():
+            i += 1
+
+        if i > 0:
+            n = int(s2[:i])
+            return n,s2[i:]
+        else:
+            return 0,s
+    #@+node:ekr.20090712050729.6017: *3* at.promptForDangerousWrite
+    def promptForDangerousWrite (self,fileName,kind):
+
+        c = self.c
+
+        if g.app.unitTesting:
+            val = g.app.unitTestDict.get('promptForDangerousWrite')
+            return val in (None,True)
+
+        # g.trace(timeStamp, timeStamp2)
+        message = '%s %s\n%s\n%s' % (
+            kind, fileName,
+            g.tr('already exists.'),
+            g.tr('Overwrite this file?'))
+
+        ok = g.app.gui.runAskYesNoCancelDialog(c,
+            title = 'Overwrite existing file?',
+            message = message)
+
+        return ok == 'yes'
     #@+node:ekr.20080923070954.4: *3* at.scanAllDirectives
     def scanAllDirectives(self,p,
         scripting=False,importing=False,
@@ -5263,166 +5423,7 @@ class atFile:
         }
         if trace: g.trace(d)
         return d
-    #@+node:ekr.20041005105605.221: *3* exception
-    def exception (self,message):
-
-        self.error(message)
-        g.es_exception()
-    #@+node:ekr.20050104131929: *3* file operations...
-    #@+at The difference, if any, between these methods and the corresponding g.utils_x
-    # functions is that these methods may call self.error.
-    #@+node:ekr.20050104131820: *4* chmod
-    def chmod (self,fileName,mode):
-
-        # Do _not_ call self.error here.
-        return g.utils_chmod(fileName,mode)
-    #@+node:ekr.20050104131929.1: *4* atFile.rename
-    #@+<< about os.rename >>
-    #@+node:ekr.20050104131929.2: *5* << about os.rename >>
-    #@+at Here is the Python 2.4 documentation for rename (same as Python 2.3)
-    # 
-    # Rename the file or directory src to dst.  If dst is a directory, OSError will be raised.
-    # 
-    # On Unix, if dst exists and is a file, it will be removed silently if the user
-    # has permission. The operation may fail on some Unix flavors if src and dst are
-    # on different filesystems. If successful, the renaming will be an atomic
-    # operation (this is a POSIX requirement).
-    # 
-    # On Windows, if dst already exists, OSError will be raised even if it is a file;
-    # there may be no way to implement an atomic rename when dst names an existing
-    # file.
-    #@-<< about os.rename >>
-
-    def rename (self,src,dst,mode=None,verbose=True):
-
-        '''remove dst if it exists, then rename src to dst.
-
-        Change the mode of the renamed file if mode is given.
-
-        Return True if all went well.'''
-
-        c = self.c
-        head,junk=g.os_path_split(dst)
-        if head and len(head) > 0:
-            g.makeAllNonExistentDirectories(head,c=c)
-
-        if g.os_path_exists(dst):
-            if not self.remove(dst,verbose=verbose):
-                return False
-
-        try:
-            os.rename(src,dst)
-            if mode != None:
-                self.chmod(dst,mode)
-            return True
-        except Exception:
-            if verbose:
-                self.error("exception renaming: %s to: %s" % (
-                    self.outputFileName,self.targetFileName))
-                g.es_exception()
-            return False
-    #@+node:ekr.20050104132018: *4* atFile.remove
-    def remove (self,fileName,verbose=True):
-        
-        if not fileName:
-            g.trace('No file name',g.callers())
-            return False
-
-        try:
-            os.remove(fileName)
-            return True
-        except Exception:
-            if verbose:
-                self.error("exception removing: %s" % fileName)
-                g.es_exception()
-                g.trace(g.callers(5))
-            return False
-    #@+node:ekr.20050104132026: *4* stat
-    def stat (self,fileName):
-
-        '''Return the access mode of named file, removing any setuid, setgid, and sticky bits.'''
-
-        # Do _not_ call self.error here.
-        return g.utils_stat(fileName)
-    #@+node:ekr.20090530055015.6050: *3* at.fullPath
-    def fullPath (self,p,simulate=False):
-
-        '''Return the full path (including fileName) in effect at p.
-
-        Neither the path nor the fileName will be created if it does not exist.
-        '''
-
-        at = self ; c = at.c
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        if simulate: # for unit tests.
-            fn = p.h
-        else:
-            fn = p.anyAtFileNodeName()
-        if fn:
-            path = g.os_path_finalize_join(path,fn)
-        else:
-            g.trace('can not happen: not an @<file> node:',g.callers(4))
-            for p2 in p.self_and_parents():
-                g.trace(p2.h)
-            path = ''
-
-        # g.trace(p.h,repr(path))
-        return path
-    #@+node:ekr.20090530055015.6023: *3* get/setPathUa (leoAtFile)
-    def getPathUa (self,p):
-
-        if hasattr(p.v,'tempAttributes'):
-            d = p.v.tempAttributes.get('read-path',{})
-            return d.get('path')
-        else:
-            return ''
-
-    def setPathUa (self,p,path):
-
-        if not hasattr(p.v,'tempAttributes'):
-            p.v.tempAttributes = {}
-
-        d = p.v.tempAttributes.get('read-path',{})
-        d['path'] = path
-        p.v.tempAttributes ['read-path'] = d
-    #@+node:ekr.20081216090156.4: *3* parseUnderindentTag
-    def parseUnderindentTag (self,s):
-
-        tag = self.underindentEscapeString
-        s2 = s[len(tag):]
-
-        # To be valid, the escape must be followed by at least one digit.
-        i = 0
-        while i < len(s2) and s2[i].isdigit():
-            i += 1
-
-        if i > 0:
-            n = int(s2[:i])
-            return n,s2[i:]
-        else:
-            return 0,s
-    #@+node:ekr.20090712050729.6017: *3* promptForDangerousWrite
-    def promptForDangerousWrite (self,fileName,kind):
-
-        c = self.c
-
-        if g.app.unitTesting:
-            val = g.app.unitTestDict.get('promptForDangerousWrite')
-            return val in (None,True)
-
-        # g.trace(timeStamp, timeStamp2)
-        message = '%s %s\n%s\n%s' % (
-            kind, fileName,
-            g.tr('already exists.'),
-            g.tr('Overwrite this file?'))
-
-        ok = g.app.gui.runAskYesNoCancelDialog(c,
-            title = 'Overwrite existing file?',
-            message = message)
-
-        return ok == 'yes'
-    #@+node:ekr.20041005105605.242: *3* scanForClonedSibs (reading & writing)
+    #@+node:ekr.20041005105605.242: *3* at.scanForClonedSibs (reading & writing)
     def scanForClonedSibs (self,parent_v,v):
 
         """Scan the siblings of vnode v looking for clones of v.
@@ -5439,7 +5440,7 @@ class atFile:
                         thisClonedSibIndex = clonedSibs
 
         return clonedSibs,thisClonedSibIndex
-    #@+node:ekr.20041005105605.243: *3* sentinelName
+    #@+node:ekr.20041005105605.243: *3* at.sentinelName
     # Returns the name of the sentinel for warnings.
 
     def sentinelName(self, kind):
@@ -5478,7 +5479,27 @@ class atFile:
         } 
 
         return sentinelNameDict.get(kind,"<unknown sentinel: %s>" % kind)
-    #@+node:ekr.20041005105605.20: *3* warnOnReadOnlyFile
+    #@+node:ekr.20120110174009.9965: *3* at.shouldPromptForDangerousWrite
+    def shouldPromptForDangerousWrite(self,fn,p):
+        
+        '''Return True if a prompt should be issued
+        when writing p (an @<file> node) to fn.
+        '''
+        
+        if not g.os_path_exists(fn):
+            # No danger of overwriting fn.
+            return False
+        elif hasattr(p.v,'at_read'):
+            if p.v.at_read == True:
+                # A flag: suppress the prompt.
+                return False
+            else:
+                # Warn if the saved path doesn't match fn.
+                # g.trace(p.v.at_read,fn)
+                return p.v.at_read != fn
+        else:
+            return True
+    #@+node:ekr.20041005105605.20: *3* at.warnOnReadOnlyFile
     def warnOnReadOnlyFile (self,fn):
 
         # os.access() may not exist on all platforms.
@@ -5489,5 +5510,20 @@ class atFile:
 
         if read_only:
             g.es("read only:",fn,color="red")
+    #@+node:ekr.20041005105605.220: *3* atFile.error & printError
+    def error(self,*args):
+
+        at = self
+        if True: # args:
+            at.printError(*args)
+        at.errors += 1
+
+    def printError (self,*args):
+
+        '''Print an error message that may contain non-ascii characters.'''
+
+        at = self
+        keys = {'color': g.choose(at.errors,'blue','red')}
+        g.es_print_error(*args,**keys)
     #@-others
 #@-leo

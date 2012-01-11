@@ -10149,12 +10149,15 @@ def writeOneAtEditNode(self,p,toString,force=False):
 
     at.default_directory = g.setDefaultDirectory(c,p,importing=True)
     fn = c.os_path_finalize_join(at.default_directory,fn)
-    exists = g.os_path_exists(fn)
-    if not force and not hasattr(root.v,'at_read') and exists:
+    ### exists = g.os_path_exists(fn)
+    ### if not force and not hasattr(root.v,'at_read') and exists:
+    if not force and at.shouldPromptForDangerousWrite(fn,root):
         # Prompt if writing a new @edit node would overwrite the existing file.
         ok = self.promptForDangerousWrite(fn,kind='@edit')
         if ok:
-            root.v.at_read = True # Create the attribute for all clones.
+            # Fix bug 889175: Remember the full fileName.
+            root.v.at_read = fn
+            # Create the attribute for all clones.
         else:
             g.es("not written:",fn)
             return False

@@ -5190,7 +5190,9 @@ def createOutline (self,fileName,parent,
         # after creating and populating an @auto node.
         # Important: this often sets the bit in the wrong node:
         # The caller may have to set the bit in the "real" root node.
-        p.v.at_read = True # Create the attribute
+        
+        # Fix bug 889175: Remember the full fileName.
+        p.v.at_read = fileName # Create the attribute
 
     p.contract()
     w.setInsertPoint(0)

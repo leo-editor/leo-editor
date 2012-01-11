@@ -897,7 +897,9 @@ class leoImportCommands (scanUtility):
             # after creating and populating an @auto node.
             # Important: this often sets the bit in the wrong node:
             # The caller may have to set the bit in the "real" root node.
-            p.v.at_read = True # Create the attribute
+            
+            # Fix bug 889175: Remember the full fileName.
+            p.v.at_read = fileName # Create the attribute
 
         p.contract()
         w.setInsertPoint(0)
@@ -946,7 +948,9 @@ class leoImportCommands (scanUtility):
         # 2010/01/15: Remember that we have read this file.
         # http://groups.google.com/group/leo-editor/browse_thread/thread/b77b5260854ffbf6
         # Important: createOutline usually sets the bit in the wrong node.
-        p.v.at_read = True # Create the attribute
+        
+        # Fix bug 889175: Remember the full fileName.
+        p.v.at_read = fileName # Create the attribute
 
         # Force an update of the body pane.
         self.setBodyString(p,p.b)
