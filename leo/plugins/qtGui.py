@@ -6996,6 +6996,10 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
             if self.count() > 1:
                 a = menu.addAction("Detach")
                 a.connect(a, QtCore.SIGNAL("triggered()"), lambda: self.detach(index))
+                a = menu.addAction("Horizontal tile")
+                a.connect(a, QtCore.SIGNAL("triggered()"), lambda: self.tile(index, orientation='H'))
+                a = menu.addAction("Vertical tile")
+                a.connect(a, QtCore.SIGNAL("triggered()"), lambda: self.tile(index, orientation='V'))
             if self.detached:
                 a = menu.addAction("Re-attach All")
                 a.connect(a, QtCore.SIGNAL("triggered()"), self.reattach_all)
@@ -7011,6 +7015,39 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         w = self.widget(index)
         self.detached.append((self.tabText(index), w))
         self.factory.detachTab(w)
+    #@+node:tbrown.20120112093714.27963: *4* tile
+    def tile(self, index, orientation='V'):
+        """detach tab and tile with parent window"""
+        w = self.widget(index)
+        
+        window = w.window()
+        
+        # window.showMaximized()
+        # this doesn't happen until we've returned to main even loop
+        # user needs to do it before using this function
+        
+        fg = window.frameGeometry()
+        g = window.geometry()
+        x, y, fw, fh = fg.x(), fg.y(), fg.width(), fg.height()
+        ww, wh = g.width(), g.height()
+
+        if window.isMaximized():
+            window.showNormal()
+        
+        self.detached.append((self.tabText(index), w))
+        self.factory.detachTab(w)
+
+        if orientation == 'V':
+            # follow MS Windows convention for which way is horizontal/vertical
+            window.resize(ww/2, wh)
+            window.move(x, y)
+            w.resize(ww/2, wh)
+            w.move(x+fw/2, y)
+        else:
+            window.resize(ww, wh/2)
+            window.move(x, y)
+            w.resize(ww, wh/2)
+            w.move(x, y+fh/2)
     #@+node:ekr.20110605121601.18451: *4* reattach_all
     def reattach_all(self):
         """reattach all detached tabs"""
