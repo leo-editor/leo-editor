@@ -799,7 +799,8 @@ class atFile:
                 # if a) this bit is clear and b) the file exists.
                 if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
                     ### p.v.at_read = True # Remember that we have seen this node.
-                    at.rememberReadPath(True,p)
+                    ### at.rememberReadPath(True,p)
+                    at.rememberReadPath(at.fullPath(p),p)
                 p.moveToThreadNext()
 
         # 2010/10/22: Preserve the orphan bits: the dirty bits will be cleared!
@@ -5517,28 +5518,11 @@ class atFile:
             return False
                 # No danger of overwriting fn.
         elif hasattr(p.v,'at_read'):
-            aList = p.v.at_read
-            return True not in aList and fn not in aList
-                # The path has been changed.
+            return fn not in p.v.at_read
+                # The path is new.
         else:
             return True
                 # The file was never read.
-
-        
-        if 0: # old code
-            if not g.os_path_exists(fn):
-                # No danger of overwriting fn.
-                return False
-            elif hasattr(p.v,'at_read'):
-                if p.v.at_read == True:
-                    # A flag: suppress the prompt.
-                    return False
-                else:
-                    # Warn if the saved path doesn't match fn.
-                    # g.trace(p.v.at_read,fn)
-                    return p.v.at_read != fn
-            else:
-                return True
     #@+node:ekr.20041005105605.20: *3* at.warnOnReadOnlyFile
     def warnOnReadOnlyFile (self,fn):
 
