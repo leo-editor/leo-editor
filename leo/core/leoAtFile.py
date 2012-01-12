@@ -508,7 +508,8 @@ class atFile:
             return False
         # Fix bug 760531: always mark the root as read, even if there was an error.
         # Fix bug 889175: Remember the full fileName.
-        root.v.at_read = at.fullPath(root)
+        ### root.v.at_read = at.fullPath(root)
+        at.rememberReadPath(at.fullPath(root),root)
 
         # Bug fix 2011/05/23: Restore orphan trees from the outline.
         if root.isOrphan():
@@ -797,7 +798,8 @@ class atFile:
                 # **node** exists.  We'll prompt for dangerous writes
                 # if a) this bit is clear and b) the file exists.
                 if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-                    p.v.at_read = True # Remember that we have seen this node.
+                    ### p.v.at_read = True # Remember that we have seen this node.
+                    at.rememberReadPath(True,p)
                 p.moveToThreadNext()
 
         # 2010/10/22: Preserve the orphan bits: the dirty bits will be cleared!
@@ -838,7 +840,8 @@ class atFile:
 
         # 2010/7/28: Remember that we have seen the @auto node.
         # Fix bug 889175: Remember the full fileName.
-        p.v.at_read = fileName # Create the attribute
+        ### p.v.at_read = fileName # Create the attribute
+        at.rememberReadPath(fileName,p)
 
         s,ok,fileKey = c.cacher.readFile(fileName,p)
         if ok:
@@ -878,7 +881,8 @@ class atFile:
 
         # 2010/7/28: Remember that we have seen the @edit node.
         # Fix bug 889175: Remember the full fileName.
-        p.v.at_read = fn # Create the attribute
+        ### p.v.at_read = fn # Create the attribute
+        at.rememberReadPath(fn,p)
 
         if not g.unitTesting:
             g.es("reading @edit:", g.shortFileName(fn))
@@ -919,7 +923,8 @@ class atFile:
 
         # Remember that we have seen the @shadow node.
         # Fix bug 889175: Remember the full fileName.
-        p.v.at_read = fn # Create the attribute
+        ### p.v.at_read = fn # Create the attribute
+        at.rememberReadPath(fn,p)
 
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
         fn = c.os_path_finalize_join(at.default_directory,fn)
@@ -981,7 +986,8 @@ class atFile:
 
         if deleteNodes and at.shouldDeleteChildren(root,thinFile):
             # Fix bug 889175: Remember the full fileName.
-            root.v.at_read = fileName # Create the attribute for all clones.
+            ### root.v.at_read = fileName # Create the attribute for all clones.
+            at.rememberReadPath(fileName,root)
             while root.hasChildren():
                 root.firstChild().doDelete()
 
@@ -2744,14 +2750,13 @@ class atFile:
             # "look ahead" computation of eventual fileName.
             eventualFileName = c.os_path_finalize_join(
                 at.default_directory,at.targetFileName)
-            ### exists = g.os_path_exists(eventualFileName)
-            ### if not hasattr(root.v,'at_read') and exists:
             if at.shouldPromptForDangerousWrite(eventualFileName,root):
                 # Prompt if writing a new @asis node would overwrite the existing file.
                 ok = self.promptForDangerousWrite(eventualFileName,kind='@asis')
                 if ok:
                     # Fix bug 889175: Remember the full fileName.
-                    root.v.at_read = eventualFileName # Create the attribute for all clones.
+                    ### root.v.at_read = eventualFileName # Create the attribute for all clones.
+                    at.rememberReadPath(eventualFileName,root)
                 else:
                     g.es("not written:",eventualFileName)
                     return
@@ -2928,7 +2933,6 @@ class atFile:
         # "look ahead" computation of eventual fileName.
         eventualFileName = c.os_path_finalize_join(
             at.default_directory,at.targetFileName)
-        ### exists = g.os_path_exists(eventualFileName)
 
         if trace:
             g.trace('default_dir',
@@ -2937,13 +2941,13 @@ class atFile:
             g.trace('eventual_fn',eventualFileName)
 
         if not scriptWrite and not toString:
-            ### if not hasattr(root.v,'at_read') and exists:
             if at.shouldPromptForDangerousWrite(eventualFileName,root):
                 # Prompt if writing a new @file or @thin node would
                 # overwrite an existing file.
                 ok = self.promptForDangerousWrite(eventualFileName,kind)
                 if ok:
-                    root.v.at_read = eventualFileName # Create the attribute for all clones.
+                    ### root.v.at_read = eventualFileName # Create the attribute for all clones.
+                    at.rememberReadPath(eventualFileName,root)
                 else:
                     g.es("not written:",eventualFileName)
                     #@+<< set dirty and orphan bits >>
@@ -2991,7 +2995,8 @@ class atFile:
                     g.es("not written:",at.outputFileName)
                 else:
                     # Fix bug 889175: Remember the full fileName.
-                    root.v.at_read = eventualFileName
+                    ### root.v.at_read = eventualFileName
+                    at.rememberReadPath(eventualFileName,root)
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
 
@@ -3180,8 +3185,6 @@ class atFile:
 
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
-        ### exists = g.os_path_exists(fileName)
-        ### if not toString and exists and not hasattr(root.v,'at_read') and exists:
         if not toString and at.shouldPromptForDangerousWrite(fileName,root):
             # Prompt if writing a new @auto node would overwrite the existing file.
             ok = self.promptForDangerousWrite(fileName,kind='@auto')
@@ -3191,7 +3194,8 @@ class atFile:
                 
         # Create the attribute for all clones.
         # Fix bug 889175: Remember the full fileName.
-        root.v.at_read = fileName
+        ### root.v.at_read = fileName
+        at.rememberReadPath(fileName,root)
         
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
@@ -3299,21 +3303,19 @@ class atFile:
 
         fn = at.fullPath(p)
         at.default_directory = g.os_path_dirname(fn)
-        ### exists = g.os_path_exists(fn)
-        ### if trace: g.trace('exists %s fn %s' % (exists,fn))
 
         # Bug fix 2010/01/18: Make sure we can compute the shadow directory.
         private_fn = x.shadowPathName(fn)
         if not private_fn:
             return False
 
-        ### if not toString and not hasattr(root.v,'at_read') and exists:
         if not toString and at.shouldPromptForDangerousWrite(fn,root):
             # Prompt if writing a new @shadow node would overwrite the existing public file.
             ok = self.promptForDangerousWrite(fn,kind='@shadow')
             if ok:
                 # Fix bug 889175: Remember the full fileName.
-                root.v.at_read = fn # Create the attribute for all clones.
+                ### root.v.at_read = fn # Create the attribute for all clones.
+                at.rememberReadPath(fn,root)
             else:
                 g.es("not written:",fn)
                 return
@@ -3495,14 +3497,13 @@ class atFile:
 
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
         fn = c.os_path_finalize_join(at.default_directory,fn)
-        ### exists = g.os_path_exists(fn)
-        ### if not force and not hasattr(root.v,'at_read') and exists:
         if not force and at.shouldPromptForDangerousWrite(fn,root):
             # Prompt if writing a new @edit node would overwrite the existing file.
             ok = self.promptForDangerousWrite(fn,kind='@edit')
             if ok:
                 # Fix bug 889175: Remember the full fileName.
-                root.v.at_read = fn
+                ### root.v.at_read = fn
+                at.rememberReadPath(fn,root)
                 # Create the attribute for all clones.
             else:
                 g.es("not written:",fn)
@@ -5000,7 +5001,7 @@ class atFile:
         '''
 
         trace = False and not g.unitTesting
-        c = self.c
+        c = self.c ; at = c.atFileCommands
 
         assert(self.outputFile is None)
 
@@ -5074,7 +5075,8 @@ class atFile:
                 g.es('created:',self.targetFileName)
                 if root:
                     # Fix bug 889175: Remember the full fileName.
-                    root.v.at_read = self.targetFileName # 2012/01/09
+                    ### root.v.at_read = self.targetFileName # 2012/01/09
+                    at.rememberReadPath(self.targetFileName,root)
             else:
                 # self.rename gives the error.
                 if root:
@@ -5148,6 +5150,21 @@ class atFile:
             root.setOrphan()
             root.setDirty()
     #@+node:ekr.20041005105605.219: ** at.Utilites
+    #@+node:ekr.20041005105605.220: *3* at.error & printError
+    def error(self,*args):
+
+        at = self
+        if True: # args:
+            at.printError(*args)
+        at.errors += 1
+
+    def printError (self,*args):
+
+        '''Print an error message that may contain non-ascii characters.'''
+
+        at = self
+        keys = {'color': g.choose(at.errors,'blue','red')}
+        g.es_print_error(*args,**keys)
     #@+node:ekr.20041005105605.221: *3* at.exception
     def exception (self,message):
 
@@ -5307,6 +5324,16 @@ class atFile:
             message = message)
 
         return ok == 'yes'
+    #@+node:ekr.20120112084820.10001: *3* at.rememberReadPath
+    def rememberReadPath(self,fn,p):
+        
+        v = p.v
+        
+        if not hasattr(v,'at_read'):
+            v.at_read = []
+            
+        if not fn in v.at_read:
+            v.at_read.append(fn)
     #@+node:ekr.20080923070954.4: *3* at.scanAllDirectives
     def scanAllDirectives(self,p,
         scripting=False,importing=False,
@@ -5487,18 +5514,31 @@ class atFile:
         '''
         
         if not g.os_path_exists(fn):
-            # No danger of overwriting fn.
             return False
+                # No danger of overwriting fn.
         elif hasattr(p.v,'at_read'):
-            if p.v.at_read == True:
-                # A flag: suppress the prompt.
-                return False
-            else:
-                # Warn if the saved path doesn't match fn.
-                # g.trace(p.v.at_read,fn)
-                return p.v.at_read != fn
+            aList = p.v.at_read
+            return True not in aList and fn not in aList
+                # The path has been changed.
         else:
             return True
+                # The file was never read.
+
+        
+        if 0: # old code
+            if not g.os_path_exists(fn):
+                # No danger of overwriting fn.
+                return False
+            elif hasattr(p.v,'at_read'):
+                if p.v.at_read == True:
+                    # A flag: suppress the prompt.
+                    return False
+                else:
+                    # Warn if the saved path doesn't match fn.
+                    # g.trace(p.v.at_read,fn)
+                    return p.v.at_read != fn
+            else:
+                return True
     #@+node:ekr.20041005105605.20: *3* at.warnOnReadOnlyFile
     def warnOnReadOnlyFile (self,fn):
 
@@ -5510,20 +5550,5 @@ class atFile:
 
         if read_only:
             g.es("read only:",fn,color="red")
-    #@+node:ekr.20041005105605.220: *3* atFile.error & printError
-    def error(self,*args):
-
-        at = self
-        if True: # args:
-            at.printError(*args)
-        at.errors += 1
-
-    def printError (self,*args):
-
-        '''Print an error message that may contain non-ascii characters.'''
-
-        at = self
-        keys = {'color': g.choose(at.errors,'blue','red')}
-        g.es_print_error(*args,**keys)
     #@-others
 #@-leo

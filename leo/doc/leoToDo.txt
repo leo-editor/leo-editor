@@ -5148,6 +5148,7 @@ def createOutline (self,fileName,parent,
 
     c = self.c ; u = c.undoer ; s1 = s
     w = c.frame.body
+    at = c.atFileCommands
 
     self.default_directory = g.setDefaultDirectory(c,parent,importing=False)
     fileName = c.os_path_finalize_join(self.default_directory,fileName)
@@ -5208,7 +5209,8 @@ def createOutline (self,fileName,parent,
         # The caller may have to set the bit in the "real" root node.
         
         # Fix bug 889175: Remember the full fileName.
-        p.v.at_read = fileName # Create the attribute
+        ### p.v.at_read = fileName # Create the attribute
+        at.rememberReadPath(fileName,p)
 
     p.contract()
     w.setInsertPoint(0)

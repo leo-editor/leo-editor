@@ -839,6 +839,7 @@ class leoImportCommands (scanUtility):
 
         c = self.c ; u = c.undoer ; s1 = s
         w = c.frame.body
+        at = c.atFileCommands
 
         self.default_directory = g.setDefaultDirectory(c,parent,importing=False)
         fileName = c.os_path_finalize_join(self.default_directory,fileName)
@@ -899,7 +900,8 @@ class leoImportCommands (scanUtility):
             # The caller may have to set the bit in the "real" root node.
             
             # Fix bug 889175: Remember the full fileName.
-            p.v.at_read = fileName # Create the attribute
+            ### p.v.at_read = fileName # Create the attribute
+            at.rememberReadPath(fileName,p)
 
         p.contract()
         w.setInsertPoint(0)
@@ -950,7 +952,8 @@ class leoImportCommands (scanUtility):
         # Important: createOutline usually sets the bit in the wrong node.
         
         # Fix bug 889175: Remember the full fileName.
-        p.v.at_read = fileName # Create the attribute
+        ### p.v.at_read = fileName # Create the attribute
+        at.rememberReadPath(fileName,p)
 
         # Force an update of the body pane.
         self.setBodyString(p,p.b)
