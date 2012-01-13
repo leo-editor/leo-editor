@@ -893,14 +893,8 @@ class leoImportCommands (scanUtility):
             self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
         if atAuto:
-            # Remember that we have read this file.
-            # Fixes bug 488894: unsettling dialog when saving Leo file
-            # after creating and populating an @auto node.
-            # Important: this often sets the bit in the wrong node:
-            # The caller may have to set the bit in the "real" root node.
-            
+            # Fix bug 488894: unsettling dialog when saving Leo file
             # Fix bug 889175: Remember the full fileName.
-            ### p.v.at_read = fileName # Create the attribute
             at.rememberReadPath(fileName,p)
 
         p.contract()
@@ -952,7 +946,6 @@ class leoImportCommands (scanUtility):
         # Important: createOutline usually sets the bit in the wrong node.
         
         # Fix bug 889175: Remember the full fileName.
-        ### p.v.at_read = fileName # Create the attribute
         at.rememberReadPath(fileName,p)
 
         # Force an update of the body pane.
