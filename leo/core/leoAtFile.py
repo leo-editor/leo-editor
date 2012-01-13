@@ -508,7 +508,6 @@ class atFile:
             return False
         # Fix bug 760531: always mark the root as read, even if there was an error.
         # Fix bug 889175: Remember the full fileName.
-        ### root.v.at_read = at.fullPath(root)
         at.rememberReadPath(at.fullPath(root),root)
 
         # Bug fix 2011/05/23: Restore orphan trees from the outline.
@@ -794,12 +793,7 @@ class atFile:
                     # c.setChanged(True) # 2011/06/17
                 p.moveToNodeAfterTree()
             else:
-                # 2010/7/28: set v.at_read bit if the @asis or @nosent
-                # **node** exists.  We'll prompt for dangerous writes
-                # if a) this bit is clear and b) the file exists.
                 if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-                    ### p.v.at_read = True # Remember that we have seen this node.
-                    ### at.rememberReadPath(True,p)
                     at.rememberReadPath(at.fullPath(p),p)
                 p.moveToThreadNext()
 
@@ -841,7 +835,6 @@ class atFile:
 
         # 2010/7/28: Remember that we have seen the @auto node.
         # Fix bug 889175: Remember the full fileName.
-        ### p.v.at_read = fileName # Create the attribute
         at.rememberReadPath(fileName,p)
 
         s,ok,fileKey = c.cacher.readFile(fileName,p)
@@ -880,9 +873,7 @@ class atFile:
         fn = c.os_path_finalize_join(at.default_directory,fn)
         junk,ext = g.os_path_splitext(fn)
 
-        # 2010/7/28: Remember that we have seen the @edit node.
         # Fix bug 889175: Remember the full fileName.
-        ### p.v.at_read = fn # Create the attribute
         at.rememberReadPath(fn,p)
 
         if not g.unitTesting:
@@ -922,9 +913,7 @@ class atFile:
             return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
                 fn, p.atShadowFileNodeName()))
 
-        # Remember that we have seen the @shadow node.
         # Fix bug 889175: Remember the full fileName.
-        ### p.v.at_read = fn # Create the attribute
         at.rememberReadPath(fn,p)
 
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
@@ -987,7 +976,6 @@ class atFile:
 
         if deleteNodes and at.shouldDeleteChildren(root,thinFile):
             # Fix bug 889175: Remember the full fileName.
-            ### root.v.at_read = fileName # Create the attribute for all clones.
             at.rememberReadPath(fileName,root)
             while root.hasChildren():
                 root.firstChild().doDelete()
@@ -2756,7 +2744,6 @@ class atFile:
                 ok = self.promptForDangerousWrite(eventualFileName,kind='@asis')
                 if ok:
                     # Fix bug 889175: Remember the full fileName.
-                    ### root.v.at_read = eventualFileName # Create the attribute for all clones.
                     at.rememberReadPath(eventualFileName,root)
                 else:
                     g.es("not written:",eventualFileName)
@@ -2947,7 +2934,6 @@ class atFile:
                 # overwrite an existing file.
                 ok = self.promptForDangerousWrite(eventualFileName,kind)
                 if ok:
-                    ### root.v.at_read = eventualFileName # Create the attribute for all clones.
                     at.rememberReadPath(eventualFileName,root)
                 else:
                     g.es("not written:",eventualFileName)
@@ -2996,7 +2982,6 @@ class atFile:
                     g.es("not written:",at.outputFileName)
                 else:
                     # Fix bug 889175: Remember the full fileName.
-                    ### root.v.at_read = eventualFileName
                     at.rememberReadPath(eventualFileName,root)
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
@@ -3192,10 +3177,8 @@ class atFile:
             if not ok:
                 g.es("not written:",fileName)
                 return
-                
-        # Create the attribute for all clones.
+
         # Fix bug 889175: Remember the full fileName.
-        ### root.v.at_read = fileName
         at.rememberReadPath(fileName,root)
         
         # This code is similar to code in at.write.
@@ -3315,7 +3298,6 @@ class atFile:
             ok = self.promptForDangerousWrite(fn,kind='@shadow')
             if ok:
                 # Fix bug 889175: Remember the full fileName.
-                ### root.v.at_read = fn # Create the attribute for all clones.
                 at.rememberReadPath(fn,root)
             else:
                 g.es("not written:",fn)
@@ -3503,9 +3485,7 @@ class atFile:
             ok = self.promptForDangerousWrite(fn,kind='@edit')
             if ok:
                 # Fix bug 889175: Remember the full fileName.
-                ### root.v.at_read = fn
                 at.rememberReadPath(fn,root)
-                # Create the attribute for all clones.
             else:
                 g.es("not written:",fn)
                 return False
@@ -5076,7 +5056,6 @@ class atFile:
                 g.es('created:',self.targetFileName)
                 if root:
                     # Fix bug 889175: Remember the full fileName.
-                    ### root.v.at_read = self.targetFileName # 2012/01/09
                     at.rememberReadPath(self.targetFileName,root)
             else:
                 # self.rename gives the error.
