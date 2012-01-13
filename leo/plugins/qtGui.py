@@ -7013,8 +7013,22 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     def detach(self, index):
         """detach tab (from tab's context menu)"""
         w = self.widget(index)
-        self.detached.append((self.tabText(index), w))
+        name = self.tabText(index)
+        self.detached.append((name, w))
         self.factory.detachTab(w)
+
+        def reattach(event, w=w, name=name, tabManager=self):
+            tabManager.detached = [i for i in tabManager.detached
+                                   if i[1] != w]
+            w.closeEvent = w.defaultClose
+            tabManager.addTab(w, name)
+            tabManager.factory.leoFrames[w] = w.leo_c.frame
+            event.ignore()
+            
+        w.defaultClose = w.closeEvent
+        w.closeEvent = reattach
+
+        return w
     #@+node:tbrown.20120112093714.27963: *4* tile
     def tile(self, index, orientation='V'):
         """detach tab and tile with parent window"""
@@ -7031,11 +7045,10 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         x, y, fw, fh = fg.x(), fg.y(), fg.width(), fg.height()
         ww, wh = g.width(), g.height()
 
+        w = self.detach(index)
+        
         if window.isMaximized():
             window.showNormal()
-        
-        self.detached.append((self.tabText(index), w))
-        self.factory.detachTab(w)
 
         if orientation == 'V':
             # follow MS Windows convention for which way is horizontal/vertical
