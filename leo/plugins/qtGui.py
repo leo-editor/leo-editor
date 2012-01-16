@@ -2715,12 +2715,13 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     #@+node:ekr.20110605121601.18178: *4* setGeometry (DynamicWindow)
     def setGeometry (self,rect):
-        
+
         # g.trace('(DynamicWindow)',rect)
             
         if hasattr(self,'leo_master') and self.leo_master:
             # master is a LeoTabbedTopLevel
-            self.leo_master.setLeoWindowSize(rect)
+            self.leo_master.setGeometry(rect)
+                # 2012/01/16: always call this.
         
         # Always the base-class method.
         QtGui.QMainWindow.setGeometry(self,rect)
@@ -5073,7 +5074,7 @@ class leoQtFrame (leoFrame.leoFrame):
         self.top.setWindowTitle(s)
     def setTopGeometry(self,w,h,x,y,adjustSize=True):
         # self.top is a DynamicWindow.
-        # g.trace('(qtFrame)',x,y,w,h,self.top)
+        # g.trace('(qtFrame)',x,y,w,h,self.top,g.callers())
         self.top.setGeometry(QtCore.QRect(x,y,w,h))
     #@-others
 #@+node:ekr.20110605121601.18312: *3* class leoQtLog (leoLog)
@@ -7126,13 +7127,6 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         i = self.indexOf(dw)
         self.setCurrentIndex(i)
         # g.trace(i,c)
-    #@+node:ekr.20110605121601.18457: *4* setLeoWindowSize (LeoTabbedTopLevel)
-    def setLeoWindowSize (self,rect):
-        
-        if not hasattr(self,'leo_inited'):
-            # g.trace('(LeoTabbedTopLevel)',rect)
-            self.leo_inited = True
-            self.setGeometry(rect)
     #@-others
 #@+node:ekr.20110605121601.18458: *3* class qtMenuWrapper (QMenu,leoQtMenu)
 class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
