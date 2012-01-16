@@ -7959,5 +7959,10 @@ def init_info (self):
         # EmptyNode,  ExtSlice, Getattr,  GenExpr, IfExp, Index, Keyword, Lambda,
         # List,  ListComp, Module, Name, Slice, Subscript, UnaryOp, Tuple, Yield
         # )
+#@+node:ekr.20110605121601.18457: *3* setLeoWindowSize (LeoTabbedTopLevel)
+def setLeoWindowSize (self,rect):
+    
+    self.setGeometry(rect)
+        # Bug fix: 2012/01/16: always call this.
 #@-all
 #@-leo

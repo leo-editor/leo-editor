@@ -23900,6 +23900,8 @@ if (
         ignoreLineEndings=True)):
 
     g.es("correcting line endings in:",self.targetFileName,color="blue")
+#@+node:ekr.20120116060011.13558: *4* Fixed bug in DynamicWindow.setGeometry
+# The old code did nothing if the leo_inited ivar was true.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

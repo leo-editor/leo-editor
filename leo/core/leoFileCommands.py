@@ -594,7 +594,7 @@ class baseFileCommands:
             # keys are gnx strings; values are ignored
     #@+node:ekr.20031218072017.3020: ** Reading
     #@+node:ekr.20060919104836: *3*  Top-level
-    #@+node:ekr.20070919133659.1: *4* checkLeoFile (fileCommands)
+    #@+node:ekr.20070919133659.1: *4* fc.checkLeoFile
     def checkLeoFile (self,event=None):
 
         '''The check-leo-file command.'''
@@ -876,7 +876,7 @@ class baseFileCommands:
 
         if self.read_only and not g.unitTesting:
             g.es("read only:",fileName,color="red")
-    #@+node:ekr.20031218072017.3029: *4* readAtFileNodes (fileCommands)
+    #@+node:ekr.20031218072017.3029: *4* fc.readAtFileNodes
     def readAtFileNodes (self):
 
         c = self.c ; p = c.p
@@ -888,7 +888,7 @@ class baseFileCommands:
         # Force an update of the body pane.
         c.setBodyString(p,p.b)
         c.frame.body.onBodyChanged(undoType=None)
-    #@+node:ekr.20031218072017.2297: *4* open (leoFileCommands)
+    #@+node:ekr.20031218072017.2297: *4* fc.open
     def open(self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
 
         c = self.c ; frame = c.frame

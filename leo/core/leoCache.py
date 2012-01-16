@@ -181,7 +181,7 @@ class cacher:
             else:
                 self.createOutlineFromCacheList(
                     child_v,z,fileName,top=False)
-    #@+node:ekr.20100208071151.5911: *5* fastAddLastChild (cacher)
+    #@+node:ekr.20100208071151.5911: *5* casher.fastAddLastChild
     # Similar to createThinChild4
     def fastAddLastChild(self,parent_v,gnxString):
         '''Create new vnode as last child of the receiver.
@@ -223,7 +223,7 @@ class cacher:
         child_v.setVisited() # Supress warning/deletion of unvisited nodes.
 
         return is_clone,child_v
-    #@+node:ekr.20100705083838.5740: *5* reportChangedClone
+    #@+node:ekr.20100705083838.5740: *5* casher.reportChangedClone
     def reportChangedClone (self,child_v,b,h,gnx):
 
         trace = False and not g.unitTesting
