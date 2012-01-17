@@ -1723,7 +1723,10 @@ Note: this setting can be overridden by the x_mode_bg_color settings.</t>
 
 </t>
 <t tx="ekr.20041119034357.53">Additional border in body text pane, in pixels.</t>
-<t tx="ekr.20041119034357.56">These options apply only to windows opened with the New command.</t>
+<t tx="ekr.20041119034357.56">These options apply only to windows opened with the New command.
+
+**Important**: When using the qttabs gui, these options have no effect.
+That is, opening a new "window" means opening a new tab.</t>
 <t tx="ekr.20041119034357.57">The ratio of tree pane size to body pane size when splitting primary panes horizontally.
 
 Valid values: 0.0 to 1.0.

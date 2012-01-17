@@ -23901,7 +23901,29 @@ if (
 
     g.es("correcting line endings in:",self.targetFileName,color="blue")
 #@+node:ekr.20120116060011.13558: *4* Fixed bug in DynamicWindow.setGeometry
-# The old code did nothing if the leo_inited ivar was true.
+@nocolor-node
+
+DynamicWindow.setGeometry now does *not* change the window size when using the qttabs gui.
+
+Added a comment to this effect in leoSettings.leo.
+#@+node:ekr.20110605121601.18178: *5* setGeometry (DynamicWindow)
+def setGeometry (self,rect):
+    
+    '''Set the window geometry, but only once when using the qttabs gui.'''
+
+    # g.trace('(DynamicWindow)',rect,g.callers())
+    
+    if g.app.qt_use_tabs:
+        m = self.leo_master
+        assert self.leo_master
+    
+        # Only set the geometry once, even for new files.
+        if not hasattr(m,'leo_geom_inited'):
+            m.leo_geom_inited = True
+            self.leo_master.setGeometry(rect)
+            QtGui.QMainWindow.setGeometry(self,rect)
+    else:
+        QtGui.QMainWindow.setGeometry(self,rect)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

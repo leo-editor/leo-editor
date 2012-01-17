@@ -2715,16 +2715,22 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     #@+node:ekr.20110605121601.18178: *4* setGeometry (DynamicWindow)
     def setGeometry (self,rect):
-
-        # g.trace('(DynamicWindow)',rect)
-            
-        if hasattr(self,'leo_master') and self.leo_master:
-            # master is a LeoTabbedTopLevel
-            self.leo_master.setGeometry(rect)
-                # 2012/01/16: always call this.
         
-        # Always the base-class method.
-        QtGui.QMainWindow.setGeometry(self,rect)
+        '''Set the window geometry, but only once when using the qttabs gui.'''
+
+        # g.trace('(DynamicWindow)',rect,g.callers())
+        
+        if g.app.qt_use_tabs:
+            m = self.leo_master
+            assert self.leo_master
+        
+            # Only set the geometry once, even for new files.
+            if not hasattr(m,'leo_geom_inited'):
+                m.leo_geom_inited = True
+                self.leo_master.setGeometry(rect)
+                QtGui.QMainWindow.setGeometry(self,rect)
+        else:
+            QtGui.QMainWindow.setGeometry(self,rect)
     #@+node:ekr.20110605121601.18179: *4* splitter event handlers
     def onSplitter1Moved (self,pos,index):
 
