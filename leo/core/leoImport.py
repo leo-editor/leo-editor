@@ -930,14 +930,16 @@ class leoImportCommands (scanUtility):
 
         '''Read the @auto node at p'''
 
-        c = self.c
+        c = self.c ; at = c.atFileCommands
+        
+        fileName=p.atAutoNodeName()
 
         # Delete all children.
         while p.hasChildren():
             p.firstChild().doDelete()
 
         self.createOutline(
-            fileName=p.atAutoNodeName(),
+            fileName=fileName,
             parent=p.copy(),
             atAuto=True)
 

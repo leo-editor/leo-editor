@@ -75,7 +75,7 @@ class parserBaseClass:
             'float':        self.doFloat,
             'menus':        self.doMenus, # New in 4.4.4
             'menuat':       self.doMenuat,
-            'popup': self.doPopup, # New in 4.4.8
+            'popup':        self.doPopup, # New in 4.4.8
 
             'mode':         self.doMode, # New in 4.4b1.
             'openwith':     self.doOpenWith, # New in 4.4.3 b1.
