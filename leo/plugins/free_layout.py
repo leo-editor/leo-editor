@@ -19,6 +19,8 @@ g.assertUi('qt')
 from PyQt4 import QtCore, QtGui, Qt
 
 from leo.plugins.nested_splitter import NestedSplitter
+
+import json
 #@-<< imports >>
 
 controllers = {}  # Keys are c.hash(), values are PluginControllers.
@@ -54,13 +56,24 @@ def loadLayouts(tag, keys):
     c = keys.get('c')
     if c:
 
+        layout = c.config.getData("free-layout-layout")
+        
+        if layout:
+            layout = json.loads('\n'.join(layout))
+            
         if '_ns_layout' in c.db:
             name = c.db['_ns_layout']
+            if layout:
+                g.es("NOTE: embedded layout in @settings/@data free-layout-layout " \
+                    "overrides saved layout "+name)
+            else:
+                layout = g.app.db['ns_layouts'][name]
+    
+        if layout:
             # Careful: we could be unit testing.
             splitter = c.free_layout.get_top_splitter()
             if splitter:
-                splitter.load_layout(
-                    g.app.db['ns_layouts'][name])
+                splitter.load_layout(layout)
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
     
@@ -108,6 +121,7 @@ class FreeLayoutController:
         # Register menu callbacks with the NestedSplitter.
         splitter.register(self.offer_tabs)
         splitter.register(self.from_g)
+        splitter.register(self.embed)
 
         # when NestedSplitter disposes of children, it will either close
         # them, or move them to another designated widget.  Here we set
@@ -187,10 +201,41 @@ class FreeLayoutController:
                 splitter.replace_widget(splitter.widget(index), w)
 
             self.add_item(wrapper,menu,"Add "+logTabWidget.tabText(n),splitter)
+    #@+node:tbrown.20120119080604.22982: *4* embed
+    def embed(self, menu, splitter, index, button_mode):
+        """embed layout in outline"""
+        
+        if button_mode:
+            return
+        # Careful: we could be unit testing.
+        top_splitter = self.get_top_splitter()
+        if not top_splitter: return
+
+        def make_settings(c=self.c, layout=top_splitter.get_saveable_layout()):
+            
+            nd = g.findNodeAnywhere(c, "@data free-layout-layout")
+            if not nd:
+                settings = g.findNodeAnywhere(c, "@settings")
+                if not settings:
+                    settings = c.rootPosition().insertAfter()
+                    settings.h = "@settings"
+                nd = settings.insertAsNthChild(0)
+            
+            nd.h = "@data free-layout-layout"
+            nd.b = json.dumps(layout, indent=4)
+            
+            nd = nd.parent()
+            if not nd or nd.h != "@settings":
+                g.es("WARNING: @data free-layout-layout node is not " \
+                    "under an active @settings node")
+            
+            c.redraw()
+
+        self.add_item(make_settings,menu,"Embed layout",splitter)
     #@+node:ekr.20110316100442.14372: *4* offer_viewrendered
     def offer_viewrendered(self, menu, splitter, index, button_mode):
         
-        return
+        return  # done from viewrendered.py
         
         pc = self ; c = pc.c
         
@@ -279,6 +324,11 @@ class FreeLayoutController:
     def ns_do_context(self, id_, splitter, index):
         
         if id_ == '_fl_save_layout':
+            
+            if self.c.config.getData("free-layout-layout"):
+                g.es("WARNING: embedded layout in @settings/@data free-layout-layout " \
+                        "will override saved layout")
+            
             layout = self.get_top_splitter().get_saveable_layout()
             name = g.app.gui.runAskOkCancelStringDialog(self.c, "Save layout",
                 "Name for layout?")
@@ -292,6 +342,11 @@ class FreeLayoutController:
             return True
         
         if id_.startswith('_fl_load_layout:'):
+
+            if self.c.config.getData("free-layout-layout"):
+                g.es("WARNING: embedded layout in @settings/@data free-layout-layout " \
+                        "will override saved layout")
+            
             name = id_.split(':', 1)[1]
             self.c.db['_ns_layout'] = name
             layout = g.app.db['ns_layouts'][name]
