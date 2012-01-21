@@ -565,6 +565,8 @@ class parserBaseClass:
             self.valueError(p,kind,name,val)
     #@+node:ekr.20041120105609: *4* doShortcuts (ParserBaseClass)
     def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
+        
+        '''Handle an @shortcut or @shortcuts node.'''
 
         trace = False and not g.unitTesting
         c = self.c ; k = c.k
@@ -573,9 +575,6 @@ class parserBaseClass:
 
         theHash = d.get('_hash')
         theHash = g.choose(theHash,g.shortFileName(theHash),'<no hash>')
-
-        if trace: g.trace('localFlag: %s d._hash: %s node: %s' % (
-            self.localFlag,theHash,junk_name))
 
         for line in g.splitLines(s):
             line = line.strip()
@@ -587,19 +586,27 @@ class parserBaseClass:
                         self.killOneShortcut(bunch,name,p)
                     else:
                         self.doOneShortcut(bunch,name,p)
+                        
+        if trace:
+            g.trace('%4d' % (len(list(self.shortcutsDict.keys()))),c.shortFileName(),p.h)
+            # g.trace('localFlag: %s d._hash: %s node: %s' % (
+                # self.localFlag,theHash,p.h))
+            # g.trace('s...\n\n',s)
     #@+node:ekr.20111020144401.9585: *5* doOneShortcut (ParserBaseClass)
     def doOneShortcut(self,bunch,name,p):
         
         '''Handle a regular shortcut.'''
         
-        trace = False and name == 'sort-siblings' and not g.unitTesting
-        
-        if trace: g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
-            
-        d = self.shortcutsDict
+        trace = False and not g.unitTesting
+      
+        d = self.shortcutsDict #######################
         bunchList = d.get(name,[])
         bunchList.append(bunch)
         d [name] = bunchList
+        
+        if trace:
+            g.trace(len(bunchList),name)
+            # g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
 
         self.set(p,"shortcut",name,bunchList)
             # Essential.
@@ -934,6 +941,7 @@ class parserBaseClass:
         command-name -> same = binding
         '''
 
+        trace = False and not g.unitTesting
         name = val = nextMode = None ; nextMode = 'none'
         i = g.skip_ws(s,0)
 
@@ -941,12 +949,15 @@ class parserBaseClass:
             j = g.skip_ws(s,i+3)
             i = g.skip_id(s,j,'-')
             entryCommandName = s[j:i]
+            if trace: g.trace('-->',entryCommandName)
             return None,g.Bunch(entryCommandName=entryCommandName)
 
         j = i
         i = g.skip_id(s,j,'-') # New in 4.4: allow Emacs-style shortcut names.
         name = s[j:i]
-        if not name: return None,None
+        if not name:
+            if trace: g.trace('no name',repr(s))
+            return None,None
 
         # New in Leo 4.4b2.
         i = g.skip_ws(s,i)
@@ -977,8 +988,9 @@ class parserBaseClass:
                 # comment = val[i:].strip()
                 val = val[:i].strip()
 
-        # if True and name == 'full-command': g.trace(pane,name,val,s)
-        return name,g.bunch(nextMode=nextMode,pane=pane,val=val)
+        b = g.bunch(nextMode=nextMode,pane=pane,val=val)
+        if trace: g.trace(b)
+        return name,b
     #@+node:ekr.20060608222828: *4* parseAbbrevLine (g.app.config)
     def parseAbbrevLine (self,s):
 
@@ -1704,18 +1716,42 @@ class configClass:
         key = c.frame.menu.canonicalizeMenuName(commandName)
         key = key.replace('&','') # Allow '&' in names.
         
-        if c.k.new_bindings:
-            bunchList = self.getShortcutHelper(c,key) # 2011/02/11
-        else:
-            bunchList = self.get(c,key,'shortcut')
+        if 1: # New code
+        
+            # Step 1: find all strokes that are bound somewhere to commandName.
+            strokes = []
+            bunchList = self.get(c,key,'shortcut') or []
+            
+            if trace:
+                print()
+                g.trace('**',key)
+                g.trace(bunchList)
 
-        if bunchList:
-            bunchList = [bunch for bunch in bunchList
-                if bunch.val and bunch.val.lower() != 'none']
-            if trace: g.trace(key,bunchList)
+            for b in bunchList:
+                stroke = b.val
+                if stroke not in strokes:
+                    strokes.append(strokes)
+                    
+            # Step 2: retain only those strokes actually bound to commandName.
+                
+            
+            
             return key,bunchList
+        
         else:
-            return key,[]
+        
+            if c.k.new_bindings:
+                bunchList = self.getShortcutHelper(c,key) # 2011/02/11
+            else:
+                bunchList = self.get(c,key,'shortcut')
+        
+            if bunchList:
+                bunchList = [bunch for bunch in bunchList
+                    if bunch.val and bunch.val.lower() != 'none']
+                if trace: g.trace(key,bunchList)
+                return key,bunchList
+            else:
+                return key,[]
     #@+node:ekr.20110211041914.15415: *5* getShortcutHelper(g.app.config)
     def getShortcutHelper (self,c,key):
         

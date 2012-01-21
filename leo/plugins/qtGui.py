@@ -4077,7 +4077,7 @@ class leoQtFrame (leoFrame.leoFrame):
                 cc.tt = leoQtTreeTab(c,f.iconBar)
         f.createStatusLine() # A base class method.
         f.createFirstTreeNode() # Call the base-class method.
-        f.menu = leoQtMenu(f)
+        f.menu = leoQtMenu(f,label='top-level-menu')
         g.app.windowList.append(f)
         f.miniBufferWidget = leoQtMinibuffer(c)
         c.bodyWantsFocus()
@@ -5490,20 +5490,21 @@ class leoQtMenu (leoMenu.leoMenu):
 
     #@+others
     #@+node:ekr.20110605121601.18341: *4* leoQtMenu.__init__
-    def __init__ (self,frame):
+    def __init__ (self,frame,label):
 
         assert frame
         assert frame.c
 
         # Init the base class.
         leoMenu.leoMenu.__init__(self,frame)
+        
+        self.leo_menu_label = label.replace('&','').lower()
 
         # called from createMenuFromConfigList,createNewMenu,new_menu,qtMenuWrapper.ctor.
-        # g.pr('leoQtMenu.__init__',g.callers(4))
+        # g.trace('(leoQtMenu) %s' % (self.leo_menu_label or '<no label!>'))
 
         self.frame = frame
         self.c = c = frame.c
-        self.leo_label = '<no leo_label>'
 
         self.menuBar = c.frame.top.menuBar()
         assert self.menuBar is not None
@@ -5528,7 +5529,7 @@ class leoQtMenu (leoMenu.leoMenu):
         Adds a submenu to the parent menu, or the menubar."""
         
         # menu and parent are a qtMenuWrappers.
-        # g.trace(label,parent)
+        trace = True and not g.unitTesting
 
         c = self.c ; leoFrame = c.frame
         n = underline
@@ -5536,15 +5537,17 @@ class leoQtMenu (leoMenu.leoMenu):
             label = label[:n] + '&' + label[n:]
 
         menu.setTitle(label)
-        menu.leo_label = label
 
         if parent:
             parent.addMenu(menu) # QMenu.addMenu.
         else:
             self.menuBar.addMenu(menu)
+            
+        label = label.replace('&','').lower()
+        menu.leo_menu_label = label ### was leo_label.
 
         return menu
-    #@+node:ekr.20110605121601.18345: *6* add_command (leoQtMenu)
+    #@+node:ekr.20110605121601.18345: *6* add_command (leoQtMenu) (Called by createMenuEntries)
     def add_command (self,**keys):
 
         """Wrapper for the Tkinter add_command menu method."""
@@ -5554,6 +5557,7 @@ class leoQtMenu (leoMenu.leoMenu):
         c = self.c
         accel = keys.get('accelerator') or ''
         command = keys.get('command')
+        commandName = keys.get('commandName')
         label = keys.get('label')
         n = keys.get('underline')
         menu = keys.get('menu') or self
@@ -5568,9 +5572,11 @@ class leoQtMenu (leoMenu.leoMenu):
         if accel:
             label = '%s\t%s' % (label,accel)
 
-        if menu.leo_label == 'File': g.trace(label,g.callers(4))
-
         action = menu.addAction(label)
+        
+        # 2012/01/20: Inject the command name into the action
+        # so that it can be enabled/disabled dynamically.
+        action.leo_command_name = commandName
 
         if command:
             def qt_add_command_callback(label=label,command=command):
@@ -5585,7 +5591,8 @@ class leoQtMenu (leoMenu.leoMenu):
         """Wrapper for the Tkinter add_separator menu method."""
 
         if menu:
-            menu.addSeparator()
+            action = menu.addSeparator()
+            action.leo_menu_label = '*seperator*'
     #@+node:ekr.20110605121601.18347: *6* delete (leoQtMenu)
     def delete (self,menu,realItemName='<no name>'):
 
@@ -5623,9 +5630,10 @@ class leoQtMenu (leoMenu.leoMenu):
     #@+node:ekr.20110605121601.18351: *6* insert
     def insert (self,menuName,position,label,command,underline=None):
 
-        # g.trace(menuName,position,label,command,underline)
+        g.trace(menuName,position,label,command,underline)
 
         menu = self.getMenu(menuName)
+
         if menu and label:
             n = underline or 0
             if -1 > n > len(label):
@@ -5641,18 +5649,26 @@ class leoQtMenu (leoMenu.leoMenu):
 
         """Wrapper for the Tkinter insert_cascade menu method."""
 
-        # g.trace(label,menu)
+        g.trace(label,menu)
 
         menu.setTitle(label)
-        menu.leo_label = label
+        
+        label.replace('&','').lower()
+        menu.leo_menu_label = label # was leo_label
 
         if parent:
             parent.addMenu(menu)
         else:
             self.menuBar.addMenu(menu)
+            
+        action = menu.menuAction()
+        if action:
+            action.leo_menu_label = label
+        else:
+            g.trace('no action for menu',label)
 
         return menu
-    #@+node:ekr.20110605121601.18353: *6* new_menu (qt)
+    #@+node:ekr.20110605121601.18353: *6* new_menu (leoQtMenu)
     def new_menu(self,parent,tearoff=False,label=''): # label is for debugging.
 
         """Wrapper for the Tkinter new_menu menu method."""
@@ -5662,7 +5678,7 @@ class leoQtMenu (leoMenu.leoMenu):
         # g.trace(parent,label)
 
         # Parent can be None, in which case it will be added to the menuBar.
-        menu = qtMenuWrapper(c,leoFrame,parent)
+        menu = qtMenuWrapper(c,leoFrame,parent,label)
 
         return menu
     #@+node:ekr.20110605121601.18354: *5* Methods with other spellings (Qtmenu)
@@ -7139,29 +7155,62 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
         
     #@+others
     #@+node:ekr.20110605121601.18459: *4* ctor and __repr__(QtMenuWrapper)
-    def __init__ (self,c,frame,parent):
+    def __init__ (self,c,frame,parent,label):
 
         assert c
         assert frame
-        QtGui.QMenu.__init__(self,parent)
-        leoQtMenu.__init__(self,frame)
-        # g.trace(self)
         
-        if not parent:
+        QtGui.QMenu.__init__(self,parent)
+        leoQtMenu.__init__(self,frame,label)
+        
+        label = label.replace('&','').lower()
+        self.leo_menu_label = label
+        
+        action = self.menuAction()
+        if action:
+            action.leo_menu_label = label
+        
+        # g.trace('(qtMenuWrappter)',label)
+        
+        if leoMenu.dynamic_menus or not parent:
             self.connect(self,QtCore.SIGNAL(
                 "aboutToShow ()"),self.onAboutToShow)
 
     def __repr__(self):
 
-        return '<qtMenuWrapper %s>' % self.leo_label or 'unlabeled'
-    #@+node:ekr.20110605121601.18460: *4* onAboutToShow
+        return '<qtMenuWrapper %s>' % self.leo_menu_label
+    #@+node:ekr.20110605121601.18460: *4* onAboutToShow & helpers
     def onAboutToShow(self,*args,**keys):
         
-        name = self.leo_label
-        if name:
-            name = name.replace('&','').lower()
-            # g.trace(name)
-            
+        trace = False and not g.unitTesting
+        verbose = False
+        
+        name = self.leo_menu_label
+        if not name: return
+       
+        # if False and trace:
+            # g.trace('top: ',name)
+            # for action in self.actions():
+                # if hasattr(action,'leo_command_name'):
+                    # g.trace('cmnd:',action.leo_command_name)
+                # elif verbose:
+                    # if hasattr(action,'leo_menu_label'):
+                        # g.trace(action.leo_menu_label) # A separator.
+                    # else:
+                        # menu = action.menu()
+                        # if hasattr(menu,'leo_menu_label'):
+                            # g.trace('menu:',menu.leo_menu_label)
+                        # else:
+                            # g.trace('oops:',menu) # Should not happen.
+                            
+        if leoMenu.dynamic_menus:
+            for action in self.actions():
+                commandName = hasattr(action,'leo_command_name') and action.leo_command_name
+                if commandName:
+                    if trace: g.trace(commandName)
+                    self.leo_update_shortcut(action,commandName)
+                    self.leo_enable_menu_item(action,commandName)
+        else:
             # Call the base-class updaters in leoMenu.py.
             if name == 'file':
                 self.updateFileMenu()
@@ -7169,6 +7218,35 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
                 self.updateEditMenu()
             elif name == 'outline':
                 self.updateOutlineMenu()
+    #@+node:ekr.20120120095156.10260: *5* leo_update_shortcut
+    def leo_update_shortcut(self,action,commandName):
+        
+        trace = True and not g.unitTesting
+        c = self.c
+        
+        if action:
+            s = action.text()
+            parts = s.split('\t')
+            if len(parts) >= 2: s = parts[0]
+            key,bunchList = c.config.getShortcut(commandName)
+            if bunchList:
+                if trace: g.trace(bunchList)
+                b = bunchList[0] ### Wrong.
+                shortcut = b.val
+                action.setText('%s\t%s' % (s,shortcut))
+            else:
+                action.setText(s)
+        else:
+            g.trace('can not happen: no action for %s' % (commandName))
+    #@+node:ekr.20120120095156.10261: *5* leo_enable_menu_item
+    def leo_enable_menu_item (self,action,commandName):
+        
+        if action:
+            menu = action.menu()
+            
+            
+        else:
+            g.trace('can not happen: no action for %s' % (commandName))
     #@-others
 #@+node:ekr.20110605121601.18461: *3* class qtSearchWidget
 class qtSearchWidget:

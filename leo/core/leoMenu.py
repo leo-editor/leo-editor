@@ -10,6 +10,10 @@ import leo.core.leoGlobals as g
 import string
 import sys
 
+dynamic_menus = True
+    # True: shortcuts computed and menu items enabled/disabled
+    # each time the menu is invoked.
+
 #@+others
 #@+node:ekr.20031218072017.3750: ** class leoMenu
 class leoMenu:
@@ -1236,8 +1240,13 @@ class leoMenu:
             if done: continue
 
             # Use canonical stroke.
-            accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
-            stroke = k.shortcutFromSetting(accel,addKey=True) or ''
+            if dynamic_menus:
+                accelerator = None
+                stroke = None
+            else:
+                accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
+                stroke = k.shortcutFromSetting(accel,addKey=True) or ''
+
             if accelerator:
                 accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
                 
@@ -1267,6 +1276,7 @@ class leoMenu:
                 c.add_command(menu,label=realLabel,
                     accelerator=accelerator,
                     command=masterMenuCallback,
+                    commandName=commandName, # 2012/01/20
                     underline=amp_index)
     #@+node:ekr.20111102072143.10016: *5* createMasterMenuCallback
     def createMasterMenuCallback(self,dynamicMenu,command,commandName):
