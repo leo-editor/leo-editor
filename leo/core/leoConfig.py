@@ -592,10 +592,10 @@ class parserBaseClass:
             # g.trace('localFlag: %s d._hash: %s node: %s' % (
                 # self.localFlag,theHash,p.h))
             # g.trace('s...\n\n',s)
-    #@+node:ekr.20111020144401.9585: *5* doOneShortcut (ParserBaseClass)
+    #@+node:ekr.20111020144401.9585: *5* doOneShortcut (ParserBaseClass) TODO
     def doOneShortcut(self,bunch,name,p):
         
-        '''Handle a regular shortcut.'''
+        '''Handle a regular shortcut: name is a command name..'''
         
         trace = False and not g.unitTesting
       
@@ -607,6 +607,8 @@ class parserBaseClass:
         if trace:
             g.trace(len(bunchList),name)
             # g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
+
+        ########## To do: update c.stroke_to_command_dict and c.command_to_stroke_dict
 
         self.set(p,"shortcut",name,bunchList)
             # Essential.
@@ -1057,7 +1059,7 @@ class parserBaseClass:
         if trace:
             for b in bunchList:
                 g.trace('%20s %45s %s %s' % (b.val,rawKey,b.pane,b._hash))
-    #@+node:ekr.20041119204700.1: *3* traverse (parserBaseClass)
+    #@+node:ekr.20041119204700.1: *3* traverse (parserBaseClass) TODO
     def traverse (self):
 
         c = self.c
@@ -1069,6 +1071,12 @@ class parserBaseClass:
 
         self.settingsDict = {}
         self.shortcutsDict = {'_hash': c.hash()} # 2011/02/10
+        c.stroke_to_command_dict = {}
+            # Keys are strokes, values are lists of bunches.
+        c.command_to_stroke_dict = {}
+            # Keys are command names, values are lists of bunches.
+            
+        ########### To do: init c.stroke_to_command_dict and c.command_to_stroke_dict
         after = p.nodeAfterTree()
         while p and p != after:
             result = self.visitNode(p)

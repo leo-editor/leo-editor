@@ -7154,7 +7154,7 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
 class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
         
     #@+others
-    #@+node:ekr.20110605121601.18459: *4* ctor and __repr__(QtMenuWrapper)
+    #@+node:ekr.20110605121601.18459: *4* ctor and __repr__(qtMenuWrapper)
     def __init__ (self,c,frame,parent,label):
 
         assert c
@@ -7179,7 +7179,7 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
     def __repr__(self):
 
         return '<qtMenuWrapper %s>' % self.leo_menu_label
-    #@+node:ekr.20110605121601.18460: *4* onAboutToShow & helpers
+    #@+node:ekr.20110605121601.18460: *4* onAboutToShow & helpers (qtMenuWrapper)
     def onAboutToShow(self,*args,**keys):
         
         trace = False and not g.unitTesting
@@ -7221,7 +7221,7 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
     #@+node:ekr.20120120095156.10260: *5* leo_update_shortcut
     def leo_update_shortcut(self,action,commandName):
         
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         
         if action:

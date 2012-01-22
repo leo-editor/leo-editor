@@ -324,6 +324,12 @@ class Commands (object):
         self.promptingForClose = False # To lock out additional closing dialogs.
         self.timeStampDict = {} # New in Leo 4.6.
 
+        # Key-binding related info: inited by config.traverse.
+        self.stroke_to_command_dict = {}
+            # Keys are strokes, values are lists of bunches.
+        self.command_to_stroke_dict = {}
+            # Keys are command names, values are lists of bunches.
+
         # For tangle/untangle
         self.tangle_errors = 0
 
