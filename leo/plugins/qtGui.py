@@ -5521,7 +5521,7 @@ class leoQtMenu (leoMenu.leoMenu):
     #@+node:ekr.20110605121601.18342: *4* Tkinter menu bindings
     # See the Tk docs for what these routines are to do
     #@+node:ekr.20110605121601.18343: *5* Methods with Tk spellings
-    #@+node:ekr.20110605121601.18344: *6* add_cascade
+    #@+node:ekr.20110605121601.18344: *6* add_cascade (leoQtMenu)
     def add_cascade (self,parent,label,menu,underline):
 
         """Wrapper for the Tkinter add_cascade menu method.
@@ -5585,7 +5585,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
             QtCore.QObject.connect(action,
                 QtCore.SIGNAL("triggered()"),qt_add_command_callback)
-    #@+node:ekr.20110605121601.18346: *6* add_separator
+    #@+node:ekr.20110605121601.18346: *6* add_separator (leoQtMenu)
     def add_separator(self,menu):
 
         """Wrapper for the Tkinter add_separator menu method."""
@@ -5613,7 +5613,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         for z in menu.actions()[n1:n2]:
             menu.removeAction(z)
-    #@+node:ekr.20110605121601.18349: *6* destroy
+    #@+node:ekr.20110605121601.18349: *6* destroy (leoQtMenu)
     def destroy (self,menu):
 
         """Wrapper for the Tkinter destroy menu method."""
@@ -5627,10 +5627,10 @@ class leoQtMenu (leoMenu.leoMenu):
         # g.trace(label)
 
         return 0
-    #@+node:ekr.20110605121601.18351: *6* insert
+    #@+node:ekr.20110605121601.18351: *6* insert (leoQtMenu)
     def insert (self,menuName,position,label,command,underline=None):
 
-        g.trace(menuName,position,label,command,underline)
+        # g.trace(menuName,position,label,command,underline)
 
         menu = self.getMenu(menuName)
 
@@ -5644,12 +5644,12 @@ class leoQtMenu (leoMenu.leoMenu):
                     command()
                 QtCore.QObject.connect(
                     action,QtCore.SIGNAL("triggered()"),insert_callback)
-    #@+node:ekr.20110605121601.18352: *6* insert_cascade
+    #@+node:ekr.20110605121601.18352: *6* insert_cascade (leoQtMenu)
     def insert_cascade (self,parent,index,label,menu,underline):
 
         """Wrapper for the Tkinter insert_cascade menu method."""
 
-        g.trace(label,menu)
+        # g.trace(label,menu)
 
         menu.setTitle(label)
         
