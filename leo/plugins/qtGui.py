@@ -7222,7 +7222,7 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
     def leo_update_shortcut(self,action,commandName):
         
         trace = False and not g.unitTesting
-        c = self.c
+        c = self.c ; k = c.k
         
         if action:
             s = action.text()
@@ -7231,9 +7231,10 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
             key,bunchList = c.config.getShortcut(commandName)
             if bunchList:
                 if trace: g.trace(bunchList)
-                b = bunchList[0] ### Wrong.
-                shortcut = b.val
-                action.setText('%s\t%s' % (s,shortcut))
+                b = bunchList[0] ##### Wrong.
+                accel = k.shortcutFromSetting(b.val,addKey=False) or ''
+                accel = g.stripBrackets(k.prettyPrintKey(accel))
+                action.setText('%s\t%s' % (s,accel))
             else:
                 action.setText(s)
         else:
