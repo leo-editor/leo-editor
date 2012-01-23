@@ -324,12 +324,6 @@ class Commands (object):
         self.promptingForClose = False # To lock out additional closing dialogs.
         self.timeStampDict = {} # New in Leo 4.6.
 
-        # Key-binding related info: inited by config.traverse.
-        self.stroke_to_command_dict = {}
-            # Keys are strokes, values are lists of bunches.
-        self.command_to_stroke_dict = {}
-            # Keys are command names, values are lists of bunches.
-
         # For tangle/untangle
         self.tangle_errors = 0
 
@@ -8261,7 +8255,7 @@ class configSettings:
     """A class to hold config settings for commanders."""
 
     #@+others
-    #@+node:ekr.20041118104831.2: *3* configSettings.__init__ (c.configSettings)
+    #@+node:ekr.20041118104831.2: *3* ctor (c.configSettings)
     def __init__ (self,c):
 
         trace = False and not g.unitTesting
@@ -8279,6 +8273,11 @@ class configSettings:
         self.defaultLogFontSize  = g.app.config.defaultLogFontSize
         self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
         self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
+        
+        # New in Leo 4.10
+        self.shortcuts_dict = {}
+            # The present shortcuts in effect for c.
+            # Keys are command names, values are lists of bunches.
 
         for key in g.app.config.encodingIvarsDict:
             if key != '_hash':
@@ -8422,6 +8421,92 @@ class configSettings:
         '''Update the recent files list.'''
 
         g.app.config.appendToRecentFiles(files)
+    #@+node:ekr.20120122070219.10162: *3* make_shortcuts_dict (c.configSettings) & helper
+    def make_shortcuts_dict (self,d,localFlag):
+        
+        '''Make all settings dicts related to c and d.'''
+        
+        trace = False and not g.unitTesting
+        c = self.c
+        fn = c.shortFileName().lower()
+        if trace: g.trace('local',localFlag,'%3d' % (len(list(d.keys()))),fn)
+        
+        # if localFlag: assert d == self.settingsDict
+        
+        if fn == 'leosettings.leo':
+            assert not g.app.config.immutable_leo_settings_shortcuts_dict
+            g.app.config.immutable_leo_settings_shortcuts_dict = d
+        elif fn == 'myleosettings.leo':
+            assert not g.app.config.immutable_my_leo_settings_shortcuts_dict
+            g.app.config.immutable_my_leo_settings_shortcuts_dict = d
+            if localFlag:
+                d1 = g.app.config.immutable_leo_settings_shortcuts_dict
+                d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
+                self.settingsDict = self.merge_settings_dicts(d1,d2)
+        else:
+            assert localFlag
+            d1 = g.app.config.immutable_leo_settings_shortcuts_dict
+            d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
+            d3 = self.merge_settings_dicts(d1,d2)
+            self.settingsDict = self.merge_settings_dicts(d3,d)
+            
+    #@+node:ekr.20120122070219.10163: *4* merge_settings_dicts (c.configSettings)
+    def merge_settings_dicts (self,d1,d2):
+        
+        '''Create a new dict by overriding all settings in d1 by setting in d2.
+        
+        Neither d1 nor d2 is ever changed.'''
+        
+        trace = False and not g.unitTesting
+        
+        if not d1: return d2
+        if not d2: return d1
+        
+        #### Temp:
+            
+        # d1 and d2: keys are command names, values are lists of
+        # g.bunch(_hash,nextMode,pane,val)
+        keys1,keys2 = list(sorted(d1.keys())),list(sorted(d2.keys()))
+        if '_hash' in keys1: keys1.remove('_hash')
+        if '_hash' in keys2: keys2.remove('_hash')
+        n1,n2 = len(keys1),len(keys2)
+        
+        # Step 1: create helper dict: Keys are strokes, values are lists of bunches.
+        strokes1 = {}
+        for command in keys1:
+            aList = d1.get(command,[])
+            for b in aList:
+                stroke = b.val
+                aList2 = strokes1.get(stroke,[])
+                if b not in aList2:
+                    aList2.append((command,b),)
+                    strokes1[stroke] = aList2
+                    
+        if trace: g.trace(len(strokes1))
+                    
+        # Step 2: for every redefined stroke in d2,
+        # remove all corresponding bunches in d1 by clearing non-mode entries in strokes1.
+        for command in keys2:
+            aList = d2.get(command,[])
+            for b in aList:
+                stroke = b.val
+                aList2 = strokes1.get(stroke,[])
+                for command2,b2 in aList2:
+                    assert b2.val == stroke
+                aList3 = [z for z in aList2 if z[1].pane.startswith('mode')]
+                if trace and aList2 != aList3:
+                    g.trace('before',stroke,aList2)
+                    g.trace('after ',stroke,aList3)
+                strokes1 [stroke] = aList3
+
+        if trace: g.trace(len(strokes1))
+
+        # Step 3: create result using strokes1 and d2.
+        result = {}
+
+        result = d2 ###################
+        
+        return result
     #@-others
 #@+node:ekr.20070615131604: ** class nodeHistory
 class nodeHistory:

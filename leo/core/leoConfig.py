@@ -592,14 +592,14 @@ class parserBaseClass:
             # g.trace('localFlag: %s d._hash: %s node: %s' % (
                 # self.localFlag,theHash,p.h))
             # g.trace('s...\n\n',s)
-    #@+node:ekr.20111020144401.9585: *5* doOneShortcut (ParserBaseClass) TODO
+    #@+node:ekr.20111020144401.9585: *5* doOneShortcut (ParserBaseClass)
     def doOneShortcut(self,bunch,name,p):
         
         '''Handle a regular shortcut: name is a command name..'''
         
         trace = False and not g.unitTesting
       
-        d = self.shortcutsDict #######################
+        d = self.shortcutsDict
         bunchList = d.get(name,[])
         bunchList.append(bunch)
         d [name] = bunchList
@@ -607,8 +607,6 @@ class parserBaseClass:
         if trace:
             g.trace(len(bunchList),name)
             # g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
-
-        ########## To do: update c.stroke_to_command_dict and c.command_to_stroke_dict
 
         self.set(p,"shortcut",name,bunchList)
             # Essential.
@@ -1059,7 +1057,7 @@ class parserBaseClass:
         if trace:
             for b in bunchList:
                 g.trace('%20s %45s %s %s' % (b.val,rawKey,b.pane,b._hash))
-    #@+node:ekr.20041119204700.1: *3* traverse (parserBaseClass) TODO
+    #@+node:ekr.20041119204700.1: *3* traverse (parserBaseClass)
     def traverse (self):
 
         c = self.c
@@ -1071,12 +1069,7 @@ class parserBaseClass:
 
         self.settingsDict = {}
         self.shortcutsDict = {'_hash': c.hash()} # 2011/02/10
-        c.stroke_to_command_dict = {}
-            # Keys are strokes, values are lists of bunches.
-        c.command_to_stroke_dict = {}
-            # Keys are command names, values are lists of bunches.
             
-        ########### To do: init c.stroke_to_command_dict and c.command_to_stroke_dict
         after = p.nodeAfterTree()
         while p and p != after:
             result = self.visitNode(p)
@@ -1085,6 +1078,9 @@ class parserBaseClass:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
+
+        self.shortcutsDict = c.config.make_shortcuts_dict(self.shortcutsDict,self.localFlag)
+            # Creates c.config.
 
         return self.settingsDict
     #@+node:ekr.20041120094940.10: *3* valueError
@@ -1104,8 +1100,8 @@ class parserBaseClass:
 #@+node:ekr.20041119203941: ** class configClass
 class configClass:
     """A class to manage configuration settings."""
-    #@+<< class data >>
-    #@+node:ekr.20041122094813: *3* <<  class data >> (g.app.config)
+    #@+<< configClass class data >>
+    #@+node:ekr.20041122094813: *3* << configClass class data >> (g.app.config)
     #@+others
     #@+node:ekr.20041117062717.1: *4* defaultsDict
     #@+at This contains only the "interesting" defaults.
@@ -1216,6 +1212,12 @@ class configClass:
     # List of dictionaries to search.  Order not too important.
     dictList = [ivarsDict,encodingIvarsDict,defaultsDict]
 
+    # New in Leo 4.10: immutable dicts used to init c.config.shortcuts_dict.
+    immutable_leo_settings_shortcuts_dict = {}
+        # The initial shortcut settings in leoSettings.leo.
+    immutable_my_leo_settings_shortcuts_dict = {}
+        # The initial shortcut settings in myLeoSettings.leo.
+
     # Keys are commanders.  Values are optionsDicts.
     localOptionsDict = {}
 
@@ -1223,7 +1225,7 @@ class configClass:
 
     # Keys are setting names, values are type names.
     warningsDict = {} # Used by get() or allies.
-    #@-<< class data >>
+    #@-<< configClass class data >>
     #@+others
     #@+node:ekr.20041117083202: *3* Birth... (g.app.config)
     #@+node:ekr.20041117062717.2: *4* ctor (configClass)
@@ -1714,7 +1716,7 @@ class configClass:
                     return bunch.path,bunch.val
         else:
             return 'unknown setting',None
-    #@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config)
+    #@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config) (The Big Switch)
     def getShortcut (self,c,commandName):
 
         '''Return rawKey,accel for shortcutName'''
@@ -1724,7 +1726,7 @@ class configClass:
         key = c.frame.menu.canonicalizeMenuName(commandName)
         key = key.replace('&','') # Allow '&' in names.
         
-        if 1: # New code
+        if 0: # New code
         
             # Step 1: find all strokes that are bound somewhere to commandName.
             strokes = []
@@ -1741,9 +1743,6 @@ class configClass:
                     strokes.append(strokes)
                     
             # Step 2: retain only those strokes actually bound to commandName.
-                
-            
-            
             return key,bunchList
         
         else:
