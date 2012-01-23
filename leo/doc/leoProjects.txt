@@ -24065,6 +24065,46 @@ of shortcut settings. This is tricky, but the details can be handled by a single
 new method: merge_settings_dicts Testing this new method is the job of the @test
 node I am now writing.
 
+#@+node:ekr.20120123053750.10183: *3*  Update Rules
+@nocolor-node
+
+Here are the rules as I understand them at present:
+
+Rule 1: Key settings are handled separately from mode settings.
+
+Rule 2: Deleting a setting deletes the corresponding setting for all other files.
+
+2a: New non-mode settings for stroke S delete all previous non-mode settings for
+    S in *other* files.
+
+2b: New mode settings for mode M delete all previous mode settings for M in
+    *other* files.
+
+**Note**: the g.bunches describing settings have a _hash field that is the filename
+from which the setting came from.
+
+Rule 3: Deleting and adding a setting for stroke S updates the following dicts:
+    
+- k.bindingsDict:
+  Keys are shortcuts; values are *lists* of g.bunch(func,name,warningGiven)
+
+- k.masterBindingsDict:
+  Keys are scope names: 'all','text',etc. or mode names.
+  Values are dicts: keys are strokes, values are g.Bunch(commandName,func,pane,stroke)
+        
+**Note**: k.inverseBindingDict does *not* needed to be updated because it is not an ivar.
+It is computed by k.computeInverseBindingDict.
+        
+Rule 4: Within the *same* file, all non-mode settings for stroke S are valid, regardless of pane P.
+k.masterKeyHandler resolves all potential conflicts.
+  
+The above rules suggest two helpers:
+    
+- config.delete_shortcut
+    Deletes shortcut S from config.shortcutsDict, k.bindingsDict and k.masterBindingsDict
+    
+- config.add_shortcut
+    Adds shortcut S to config.shortcutsDict, k.bindingsDict and k.masterBindingsDict.
 #@+node:ekr.20120120095156.10259: *3* Dynamic menu entries
 #@+node:ekr.20031218072017.1723: *4* createMenuEntries (leoMenu) & helpers
 def createMenuEntries (self,menu,table,dynamicMenu=False):
@@ -24986,11 +25026,11 @@ def make_shortcuts_dict (self,d,localFlag):
     # if localFlag: assert d == self.settingsDict
     
     if fn == 'leosettings.leo':
-        assert not g.app.config.immutable_leo_settings_shortcuts_dict
-        g.app.config.immutable_leo_settings_shortcuts_dict = d
+        if not g.app.config.immutable_leo_settings_shortcuts_dict:
+            g.app.config.immutable_leo_settings_shortcuts_dict = d
     elif fn == 'myleosettings.leo':
-        assert not g.app.config.immutable_my_leo_settings_shortcuts_dict
-        g.app.config.immutable_my_leo_settings_shortcuts_dict = d
+        if not g.app.config.immutable_my_leo_settings_shortcuts_dict:
+            g.app.config.immutable_my_leo_settings_shortcuts_dict = d
         if localFlag:
             d1 = g.app.config.immutable_leo_settings_shortcuts_dict
             d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
@@ -25097,39 +25137,6 @@ of shortcut settings. This is tricky, but the details can be handled by a single
 new method: merge_settings_dicts Testing this new method is the job of the @test
 node I am now writing.
 
-#@+node:ekr.20120123053750.10183: *4*  Update Rules
-@nocolor-node
-
-- Normal key settings are separate from mode settings.
-
-- Non-mode settings for stroke S in a file delete shortcuts for S in all other files.
-
-- Mode settings for mode M delete all settings for M in all other files.
-
-- Deleting a setting for stroke S updates the following dicts:
-    
-    k.bindingsDict:
-        Keys are shortcuts; values are *lists* of g.bunch(func,name,warningGiven)
-
-    k.masterBindingsDict:
-        Keys are scope names: 'all','text',etc. or mode names.
-        Values are dicts: keys are strokes, values are g.Bunch(commandName,func,pane,stroke)
-        
-    inverseBindingDict does *not* needed to be updated because it is not an ivar.
-        It is computed by k.computeInverseBindingDict.
-        
-- Within the *same* file, all non-mode settings for stroke S are valid,
-  regardless of pane P. k.masterKeyHandler resolves all potential conflicts.
-  
-To make this work, we need two helpers:
-    
-- config.delete_shortcut
-
-    Deletes shortcut S from config.shortcutsDict, k.bindingsDict and k.masterBindingsDict
-    
-- config.add_shortcut
-
-    Adds shortcut S to config.shortcutsDict, k.bindingsDict and k.masterBindingsDict.
 #@+node:ekr.20061031131434.3: *4* << about key dicts >>
 @nocolor
 @
@@ -25557,11 +25564,11 @@ def make_shortcuts_dict (self,d,localFlag):
     # if localFlag: assert d == self.settingsDict
     
     if fn == 'leosettings.leo':
-        assert not g.app.config.immutable_leo_settings_shortcuts_dict
-        g.app.config.immutable_leo_settings_shortcuts_dict = d
+        if not g.app.config.immutable_leo_settings_shortcuts_dict:
+            g.app.config.immutable_leo_settings_shortcuts_dict = d
     elif fn == 'myleosettings.leo':
-        assert not g.app.config.immutable_my_leo_settings_shortcuts_dict
-        g.app.config.immutable_my_leo_settings_shortcuts_dict = d
+        if not g.app.config.immutable_my_leo_settings_shortcuts_dict:
+            g.app.config.immutable_my_leo_settings_shortcuts_dict = d
         if localFlag:
             d1 = g.app.config.immutable_leo_settings_shortcuts_dict
             d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
@@ -25718,64 +25725,6 @@ def traverse (self):
         # Creates c.config.
 
     return self.settingsDict
-#@+node:ekr.20120122070219.10164: *3* Merging shortcuts
-#@+node:ekr.20120122070219.10163: *4* merge_settings_dicts (c.configSettings)
-def merge_settings_dicts (self,d1,d2):
-    
-    '''Create a new dict by overriding all settings in d1 by setting in d2.
-    
-    Neither d1 nor d2 is ever changed.'''
-    
-    trace = False and not g.unitTesting
-    
-    if not d1: return d2
-    if not d2: return d1
-    
-    #### Temp:
-        
-    # d1 and d2: keys are command names, values are lists of
-    # g.bunch(_hash,nextMode,pane,val)
-    keys1,keys2 = list(sorted(d1.keys())),list(sorted(d2.keys()))
-    if '_hash' in keys1: keys1.remove('_hash')
-    if '_hash' in keys2: keys2.remove('_hash')
-    n1,n2 = len(keys1),len(keys2)
-    
-    # Step 1: create helper dict: Keys are strokes, values are lists of bunches.
-    strokes1 = {}
-    for command in keys1:
-        aList = d1.get(command,[])
-        for b in aList:
-            stroke = b.val
-            aList2 = strokes1.get(stroke,[])
-            if b not in aList2:
-                aList2.append((command,b),)
-                strokes1[stroke] = aList2
-                
-    if trace: g.trace(len(strokes1))
-                
-    # Step 2: for every redefined stroke in d2,
-    # remove all corresponding bunches in d1 by clearing non-mode entries in strokes1.
-    for command in keys2:
-        aList = d2.get(command,[])
-        for b in aList:
-            stroke = b.val
-            aList2 = strokes1.get(stroke,[])
-            for command2,b2 in aList2:
-                assert b2.val == stroke
-            aList3 = [z for z in aList2 if z[1].pane.startswith('mode')]
-            if trace and aList2 != aList3:
-                g.trace('before',stroke,aList2)
-                g.trace('after ',stroke,aList3)
-            strokes1 [stroke] = aList3
-
-    if trace: g.trace(len(strokes1))
-
-    # Step 3: create result using strokes1 and d2.
-    result = {}
-
-    result = d2 ###################
-    
-    return result
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

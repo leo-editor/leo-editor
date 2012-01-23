@@ -8434,11 +8434,11 @@ class configSettings:
         # if localFlag: assert d == self.settingsDict
         
         if fn == 'leosettings.leo':
-            assert not g.app.config.immutable_leo_settings_shortcuts_dict
-            g.app.config.immutable_leo_settings_shortcuts_dict = d
+            if not g.app.config.immutable_leo_settings_shortcuts_dict:
+                g.app.config.immutable_leo_settings_shortcuts_dict = d
         elif fn == 'myleosettings.leo':
-            assert not g.app.config.immutable_my_leo_settings_shortcuts_dict
-            g.app.config.immutable_my_leo_settings_shortcuts_dict = d
+            if not g.app.config.immutable_my_leo_settings_shortcuts_dict:
+                g.app.config.immutable_my_leo_settings_shortcuts_dict = d
             if localFlag:
                 d1 = g.app.config.immutable_leo_settings_shortcuts_dict
                 d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
