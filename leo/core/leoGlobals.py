@@ -3176,6 +3176,8 @@ def es(*args,**keys):
                 else: log.newlines = 0
             if newline:
                 g.ecnl(tabName=tabName) # only valid here
+        elif app.logInited:
+            print(s.rstrip()) # Happens only rarely.
         elif newline:
             app.logWaiting.append((s+'\n',color),)
         else:
