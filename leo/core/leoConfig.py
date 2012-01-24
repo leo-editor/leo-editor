@@ -509,28 +509,32 @@ class parserBaseClass:
         for line in lines:
             line = line.strip()
             if line and not g.match(line,0,'#'):
-                name,bunch = self.parseShortcutLine('*mode-setting*',line)
-                # bunch is a ShortcutInfo object.
+                name,si = self.parseShortcutLine('*mode-setting*',line)
+                assert isinstance(si,ShortcutInfo)
                 if not name:
                     # An entry command: put it in the special *entry-commands* key.
-                    aList = d.get('*entry-commands*',[])
-                    aList.append(bunch.commandName)
-                    d ['*entry-commands*'] = aList
-                elif bunch is not None:
+                    aList0 = d.get('*entry-commands*',[])
+                    aList0.append(si.commandName)
+                    d ['*entry-commands*'] = aList0
+                elif si is not None:
                     # A regular shortcut.
-                    bunch.val = k.strokeFromSetting(bunch.val)
-                    bunch.pane = modeName
-                    bunchList = d.get(name,[])
+                    si.val = k.strokeFromSetting(si.val)
+                    si.pane = modeName
+                    aList = d.get(name,[])
+                    for z in aList:
+                        assert isinstance(z,ShortcutInfo)
                     # Important: use previous bindings if possible.
-                    key2,bunchList2 = c.config.getShortcut(name)
-                    bunchList3 = [b for b in bunchList2 if b.pane != modeName]
-                    if bunchList3:
-                        # g.trace('inheriting',[b.val for b in bunchList3])
-                        bunchList.extend(bunchList3)
-                    bunchList.append(bunch)
-                    d [name] = bunchList
-                    self.set(p,"shortcut",name,bunchList)
-                    self.setShortcut(p,name,bunchList)
+                    key2,aList2 = c.config.getShortcut(name)
+                    for z in aList2:
+                        assert isinstance(z,ShortcutInfo)
+                    aList3 = [z for z in aList2 if z.pane != modeName]
+                    if aList3:
+                        # g.trace('inheriting',[b.val for b in aList3])
+                        aList.extend(aList3)
+                    aList.append(si)
+                    d [name] = aList
+                    self.set(p,"shortcut",name,aList)
+                    self.setShortcut(p,name,aList)
                         # Can we delete this??
 
         # Restore the global shortcutsDict.
@@ -580,53 +584,43 @@ class parserBaseClass:
         for line in g.splitLines(s):
             line = line.strip()
             if line and not g.match(line,0,'#'):
-                name,bunch = self.parseShortcutLine(theHash,line)
-                if bunch:
-                    if bunch.val in (None,'none','None'):
-                        self.killOneShortcut(bunch,name,p)
+                name,si = self.parseShortcutLine(theHash,line)
+                assert isinstance(si,ShortcutInfo)
+                if si:
+                    if si.val in (None,'none','None'):
+                        self.killOneShortcut(si,name,p)
                     else:
-                        self.doOneShortcut(bunch,name,p)
+                        self.doOneShortcut(si,name,p)
                         
         if trace:
             g.trace('%4d' % (len(list(self.shortcutsDict.keys()))),c.shortFileName(),p.h)
-            # g.trace('localFlag: %s d._hash: %s node: %s' % (
-                # self.localFlag,theHash,p.h))
-            # g.trace('s...\n\n',s)
     #@+node:ekr.20111020144401.9585: *5* doOneShortcut (ParserBaseClass)
-    def doOneShortcut(self,bunch,name,p):
+    def doOneShortcut(self,si,name,p):
         
         '''Handle a regular shortcut: name is a command name..'''
         
         trace = False and not g.unitTesting
       
         d = self.shortcutsDict
-        bunchList = d.get(name,[])
-        bunchList.append(bunch)
-        d [name] = bunchList
+        aList = d.get(name,[])
+        aList.append(si)
+        d [name] = aList
         
         if trace:
-            g.trace(len(bunchList),name)
-            # g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
+            g.trace(len(aList),name)
+            # g.trace('%6s %20s %s' % (si.pane,si.val,name))
 
-        self.set(p,"shortcut",name,bunchList)
+        self.set(p,"shortcut",name,aList)
             # Essential.
             
         # 2011/10/28 Apparently not used!
-        self.setShortcut(p,name,bunchList)
+        self.setShortcut(p,name,aList)
             # Can we delete this?
-        
-        # if bunch.pane in ('kill','Kill'):
-            # munge = k.shortcutFromSetting
-            # if trace: g.trace('****** killing binding:',
-                # bunch.val,'to',name)
-            # bunchList = [z for z in bunchList
-                # if munge(z.val) != munge(bunch.val)]
-            # # g.trace(bunchList)
     #@+node:ekr.20111020144401.9586: *5* killOneShortcut (ParserBaseClass) (Not ready yet)
-    def killOneShortcut (self,bunch,name,p):
+    def killOneShortcut (self,si,name,p):
         
         if 0:
-            g.trace(bunch,name,p and p.h)
+            g.trace(si,name,p and p.h)
     #@+node:ekr.20041217132028: *4* doString
     def doString (self,p,kind,name,val):
 
@@ -988,9 +982,9 @@ class parserBaseClass:
                 # comment = val[i:].strip()
                 val = val[:i].strip()
 
-        b = ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,val=val)
-        if trace: g.trace(b)
-        return name,b
+        si = ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,val=val)
+        if trace: g.trace(si)
+        return name,si
     #@+node:ekr.20060608222828: *4* parseAbbrevLine (g.app.config)
     def parseAbbrevLine (self,s):
 
@@ -1027,17 +1021,17 @@ class parserBaseClass:
 
         # if kind and kind.startswith('setting'): g.trace("settingsParser %10s %15s %s" %(kind,val,name))
         d = self.settingsDict
-        bunch = d.get(key)
-        if bunch:
-            # g.trace(key,bunch.val,bunch.path)
-            path = bunch.path
+        gs = d.get(key)
+        if gs:
+            assert isinstance(gs,GeneralSetting),gs
+            path = gs.path
             if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                 g.es("over-riding setting:",name,"from",path)
 
         # Important: we can't use c here: it may be destroyed!
         d [key] = GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
     #@+node:ekr.20041227071423: *3* setShortcut (ParserBaseClass) (** can we delete this?? **)
-    def setShortcut (self,p,name,bunchList):
+    def setShortcut (self,p,name,aList):
         
         trace = False and not g.unitTesting
 
@@ -1046,10 +1040,10 @@ class parserBaseClass:
         # None is a valid value for val.
         key = c.frame.menu.canonicalizeMenuName(name)
         rawKey = key.replace('&','')
-        self.set(p,rawKey,"shortcut",bunchList)
+        self.set(p,rawKey,"shortcut",aList)
 
         if trace:
-            for b in bunchList:
+            for b in aList:
                 g.trace('%20s %45s %s %s' % (b.val,rawKey,b.pane,b._hash))
     #@+node:ekr.20041119204700.1: *3* traverse (parserBaseClass)
     def traverse (self):
@@ -1483,28 +1477,28 @@ class configClass:
         does not (loosely) match the actual type.
         returns (val,exists)'''
 
-        bunch = d.get(self.munge(setting))
-        if not bunch: return None,False
-
-        # g.trace(setting,requestedType,bunch.toString())
-        val = bunch.val
+        gs = d.get(self.munge(setting))
+        if not gs: return None,False
+        assert isinstance(gs,GeneralSetting)
+        
+        # g.trace(setting,requestedType,gs.toString())
+        val = gs.val
 
         # 2011/10/24: test for an explicit None.
         if g.isPython3:
             isNone = val in ('None','none','') # ,None)
-                
         else:
             isNone = val in (
                 unicode('None'),unicode('none'),unicode(''),
                 'None','none','') #,None)
 
-        if not self.typesMatch(bunch.kind,requestedType):
+        if not self.typesMatch(gs.kind,requestedType):
             # New in 4.4: make sure the types match.
             # A serious warning: one setting may have destroyed another!
             # Important: this is not a complete test of conflicting settings:
             # The warning is given only if the code tries to access the setting.
             if warn:
-                g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
+                g.es_print('warning: ignoring',gs.kind,'',setting,'is not',requestedType,color='red')
                 g.es_print('there may be conflicting settings!',color='red')
             return None, False
         # elif val in (u'None',u'none','None','none','',None):
@@ -1721,33 +1715,33 @@ class configClass:
         
             # Step 1: find all strokes that are bound somewhere to commandName.
             strokes = []
-            bunchList = self.get(c,key,'shortcut') or []
+            aList = self.get(c,key,'shortcut') or []
             
             if trace:
                 print()
                 g.trace('**',key)
-                g.trace(bunchList)
+                g.trace(aList)
 
-            for b in bunchList:
+            for b in aList:
                 stroke = b.val
                 if stroke not in strokes:
                     strokes.append(strokes)
                     
             # Step 2: retain only those strokes actually bound to commandName.
-            return key,bunchList
+            return key,aList
         
         else:
         
             if c.k.new_bindings:
-                bunchList = self.getShortcutHelper(c,key) # 2011/02/11
+                aList = self.getShortcutHelper(c,key) # 2011/02/11
             else:
-                bunchList = self.get(c,key,'shortcut')
+                aList = self.get(c,key,'shortcut')
         
-            if bunchList:
-                bunchList = [bunch for bunch in bunchList
+            if aList:
+                aList = [bunch for bunch in aList
                     if bunch.val and bunch.val.lower() != 'none']
-                if trace: g.trace(key,bunchList)
-                return key,bunchList
+                if trace: g.trace(key,aList)
+                return key,aList
             else:
                 return key,[]
     #@+node:ekr.20110211041914.15415: *5* getShortcutHelper(g.app.config)
@@ -1765,23 +1759,23 @@ class configClass:
         if c and not isLeoSettings:
             d = self.localOptionsDict.get(c.hash())
             if d:
-                bunchList,junk = self.getValFromDict(d,key,kind)
-                if bunchList: self.mergeShortcuts(result,bunchList,key)
+                aList,junk = self.getValFromDict(d,key,kind)
+                if aList: self.mergeShortcuts(result,aList,key)
 
         for d in self.localOptionsList:
-            bunchList,junk = self.getValFromDict(d,key,kind)
-            if bunchList: self.mergeShortcuts(result,bunchList,key)
+            aList,junk = self.getValFromDict(d,key,kind)
+            if aList: self.mergeShortcuts(result,aList,key)
 
         for d in self.dictList:
-            bunchList,junk = self.getValFromDict(d,key,kind)
-            if bunchList: self.mergeShortcuts(result,bunchList,key)
+            aList,junk = self.getValFromDict(d,key,kind)
+            if aList: self.mergeShortcuts(result,aList,key)
 
         # Use settings in leoSettings.leo *last*.
         if c and isLeoSettings:
             d = self.localOptionsDict.get(c.hash())
             if d:
-                bunchList,junk = self.getValFromDict(d,key,kind)
-                if bunchList: self.mergeShortcuts(result,bunchList,key)
+                aList,junk = self.getValFromDict(d,key,kind)
+                if aList: self.mergeShortcuts(result,aList,key)
 
         return result
     #@+node:ekr.20110211041914.15418: *5* mergeShortcuts
@@ -2412,7 +2406,9 @@ class GeneralSetting:
         ivars = ('ivar','path','setting','val','tag')
         for ivar in ivars:
             if hasattr(self,ivar):
-                result.append('%s: %s' % (ivar,self.ivar))
+                val =  getattr(self,ivar)
+                if val is not None:
+                    result.append('%s: %s' % (ivar,val))
         return ','.join(result)
 #@-others
 #@-leo

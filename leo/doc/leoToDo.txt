@@ -3938,28 +3938,28 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
     does not (loosely) match the actual type.
     returns (val,exists)'''
 
-    bunch = d.get(self.munge(setting))
-    if not bunch: return None,False
-
-    # g.trace(setting,requestedType,bunch.toString())
-    val = bunch.val
+    gs = d.get(self.munge(setting))
+    if not gs: return None,False
+    assert isinstance(gs,GeneralSetting)
+    
+    # g.trace(setting,requestedType,gs.toString())
+    val = gs.val
 
     # 2011/10/24: test for an explicit None.
     if g.isPython3:
         isNone = val in ('None','none','') # ,None)
-            
     else:
         isNone = val in (
             unicode('None'),unicode('none'),unicode(''),
             'None','none','') #,None)
 
-    if not self.typesMatch(bunch.kind,requestedType):
+    if not self.typesMatch(gs.kind,requestedType):
         # New in 4.4: make sure the types match.
         # A serious warning: one setting may have destroyed another!
         # Important: this is not a complete test of conflicting settings:
         # The warning is given only if the code tries to access the setting.
         if warn:
-            g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
+            g.es_print('warning: ignoring',gs.kind,'',setting,'is not',requestedType,color='red')
             g.es_print('there may be conflicting settings!',color='red')
         return None, False
     # elif val in (u'None',u'none','None','none','',None):

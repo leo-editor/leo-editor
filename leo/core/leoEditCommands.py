@@ -7275,15 +7275,17 @@ class helpCommandsClass (baseEditCommandsClass):
     def getBindingsForCommand(self,commandName):
 
         c = self.c ; k = c.k ; d = k.bindingsDict
+        import leo.core.leoConfig as leoConfig
         data = [] ; n1 = 4 ; n2 = 20
         for key in sorted(d):
-            bunchList = d.get(key,[])
-            for b in bunchList:
-                if b.commandName == commandName:
-                    pane = g.choose(b.pane=='all','',' %s:' % (b.pane))
+            aList = d.get(key,[])
+            for si in aList:
+                assert isinstance(si,leoConfig.ShortcutInfo)
+                if si.commandName == commandName:
+                    pane = g.choose(si.pane=='all','',' %s:' % (si.pane))
                     s1 = pane
                     s2 = k.prettyPrintKey(key,brief=True)
-                    s3 = b.commandName
+                    s3 = si.commandName
                     n1 = max(n1,len(s1))
                     n2 = max(n2,len(s2))
                     data.append((s1,s2,s3),)
