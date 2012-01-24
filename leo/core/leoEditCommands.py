@@ -10,6 +10,7 @@ Modelled after Emacs and Vim commands.'''
 #@+<< imports >>
 #@+node:ekr.20050710151017: ** << imports >>
 import leo.core.leoGlobals as g
+import leo.core.leoConfig as leoConfig
 import leo.core.leoFind as leoFind
 import leo.core.leoKeys as leoKeys
 import leo.core.leoTest as leoTest
@@ -7275,7 +7276,6 @@ class helpCommandsClass (baseEditCommandsClass):
     def getBindingsForCommand(self,commandName):
 
         c = self.c ; k = c.k ; d = k.bindingsDict
-        import leo.core.leoConfig as leoConfig
         data = [] ; n1 = 4 ; n2 = 20
         for key in sorted(d):
             aList = d.get(key,[])

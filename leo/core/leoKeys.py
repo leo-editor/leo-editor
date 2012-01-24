@@ -1659,7 +1659,6 @@ class keyHandlerClass:
             g.es_print('%30s in %5s from %s' % (commandName,pane,kind))
 
         if trace:
-            import leo.core.leoConfig as leoConfig
             for si in aList:
                 assert isinstance(si,leoConfig.ShortcutInfo)
                 pr(si.commandName,si.pane,si.kind)
@@ -1809,7 +1808,6 @@ class keyHandlerClass:
             aList = aList or [] ; found = False
             for pane in ('text','all'):
                 for si in aList:
-                    import leo.core.leoConfig as leoConfig
                     assert isinstance(si,leoConfig.ShortcutInfo)
                     if si.pane == pane:
                         stroke = k.strokeFromSetting(si.val)
@@ -1844,7 +1842,7 @@ class keyHandlerClass:
 
         trace = False and not g.unitTesting
         k = self ; c = k.c
-        import leo.core.leoConfig as leoConfig
+
         # Step 1: Create d2.
         # Keys are strokes. Values are lists of bunches b with b.val equal to the stroke.
         d = c.commandsDict ; d2 = {} 
@@ -1893,12 +1891,9 @@ class keyHandlerClass:
         Return a new list consisting only of bindings from the highest priority .leo file.'''
         
         # Find the higest priority hash.
-        trace = False and not g.unitTesting
-        verbose = False
+        trace = False and not g.unitTesting ; verbose = False
         k = self.c.k
         sList,mList,fList = [],[],[]
-        import leo.core.leoConfig as leoConfig
-        
         for si in aList:
             assert isinstance(si,leoConfig.ShortcutInfo)
             _hash = si.kind # 2012/01/23
@@ -2204,7 +2199,6 @@ class keyHandlerClass:
         '''Print all the bindings presently in effect.'''
 
         k = self ; c = k.c
-        import leo.core.leoConfig as leoConfig
         d = k.bindingsDict ; tabName = 'Bindings'
         c.frame.log.clearTab(tabName)
         legend = '''\
@@ -2579,7 +2573,6 @@ class keyHandlerClass:
         '''
 
         trace = False and not g.unitTesting
-        import leo.core.leoConfig as leoConfig
         k = self ; c = k.c
 
         if wrap:
@@ -3371,7 +3364,6 @@ class keyHandlerClass:
 
         trace = False and not g.unitTesting
         k = self ; c = k.c
-        import leo.core.leoConfig as leoConfig
         for commandName in d:
             if commandName in ('*entry-commands*','*command-prompt*','_hash'):
                 # These are special-purpose dictionary entries.
@@ -3583,7 +3575,6 @@ class keyHandlerClass:
     def modeHelpHelper (self,d):
 
         k = self ; c = k.c ; tabName = 'Mode'
-        import leo.core.leoConfig as leoConfig
         c.frame.log.clearTab(tabName)
         data = [] ; n = 20
         for key in sorted(d):
@@ -3647,7 +3638,6 @@ class keyHandlerClass:
     def computeInverseBindingDict (self):
 
         k = self ; d = {}
-        import leo.core.leoConfig as leoConfig
 
         # keys are minibuffer command names, values are shortcuts.
         for shortcut in k.bindingsDict:
@@ -3851,7 +3841,6 @@ class keyHandlerClass:
     def getShortcutForCommandName (self,commandName):
 
         k = self ; c = k.c
-        import leo.core.leoConfig as leoConfig
         command = c.commandsDict.get(commandName)
         if command:
             for key in k.bindingsDict:
@@ -3865,7 +3854,6 @@ class keyHandlerClass:
     def getShortcutForCommand (self,command):
 
         k = self ; c = k.c
-        import leo.core.leoConfig as leoConfig
         if command:
             for key in k.bindingsDict:
                 aList = k.bindingsDict.get(key,[])

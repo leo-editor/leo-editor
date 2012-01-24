@@ -21,6 +21,7 @@ useUI = False # True: use qt_main.ui. False: use DynamicWindow.createMainWindow.
 import leo.core.leoGlobals as g
 
 import leo.core.leoChapters as leoChapters
+import leo.core.leoConfig as leoConfig
 import leo.core.leoColor as leoColor
 import leo.core.leoFrame as leoFrame
 import leo.core.leoFind as leoFind
@@ -7206,7 +7207,6 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
             if aList:
                 si = aList[0] ### Wrong.
                 if trace: g.trace(si)
-                import leo.core.leoConfig as leoConfig
                 assert isinstance(si,leoConfig.ShortcutInfo)
                 accel = k.shortcutFromSetting(si.val,addKey=False) or ''
                 accel = g.stripBrackets(k.prettyPrintKey(accel))

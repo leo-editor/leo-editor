@@ -13,6 +13,7 @@ import leo.core.leoGlobals as g
     # try: from psyco.classes import *
     # except ImportError: pass
 
+import leo.core.leoConfig as leoConfig
 import leo.core.leoNodes as leoNodes
 
 import binascii
@@ -2397,7 +2398,6 @@ class baseFileCommands:
         c = self.c
         p = g.app.config.findSettingsPosition(c,'@bool fixedWindow')
         if p:
-            import leo.core.leoConfig as leoConfig
             parser = leoConfig.settingsTreeParser(c)
             kind,name,val = parser.parseHeadline(p.h)
             if val and val.lower() in ('true','1'):
