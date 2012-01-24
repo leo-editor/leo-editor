@@ -7329,7 +7329,8 @@ class Commands (object):
         c1 = 0 <= ins   < len(s) and s[ins] or ''
         c2 = 0 <= ins-1 < len(s) and s[ins-1] or ''
 
-        return (c1 and c1 in brackets) or (c2 and c2 in brackets)
+        val = (c1 and c1 in brackets) or (c2 and c2 in brackets)
+        return bool(val)
     #@+node:ekr.20040303165342: *4* canHoist & canDehoist
     def canDehoist(self):
 
@@ -7429,15 +7430,6 @@ class Commands (object):
 
         c = self ; v = c.currentVnode()
         return v and v.hasChildren()
-    #@+node:ekr.20031218072017.2976: *4* canRevert
-    def canRevert (self):
-        
-        # 2011/10/18: Allow revert, regardless of change status.
-        return True
-
-        # c.mFileName will be "untitled" for unsaved files.
-        # c = self
-        # return (c.frame and c.mFileName and c.isChanged())
     #@+node:ekr.20031218072017.2977: *4* canSelect....
     def canSelectThreadBack (self):
         c = self ; p = c.p
@@ -8450,7 +8442,7 @@ class configSettings:
             d3 = self.merge_settings_dicts(d1,d2)
             self.settingsDict = self.merge_settings_dicts(d3,d)
             
-    #@+node:ekr.20120122070219.10163: *4* merge_settings_dicts (c.configSettings)
+    #@+node:ekr.20120122070219.10163: *4* merge_settings_dicts (c.configSettings) TODO
     def merge_settings_dicts (self,d1,d2):
         
         '''Create a new dict by overriding all settings in d1 by setting in d2.

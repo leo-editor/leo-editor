@@ -56,13 +56,12 @@ class leoMenu:
         c = self.c
         
         if not c.commandsDict:
-            # g.trace('empty c.commandsDict',c)
-            return
+            return # This is not an error: it happens during init.
 
         self.enable_dict = d = {
         
             # File menu...
-            'revert':               c.canRevert,
+                # 'revert':         lambda: True, # Revert is always enabled.               
             'open-with':            lambda: g.app.hasOpenWithMenu,
             
             # Edit menu...
@@ -116,8 +115,6 @@ class leoMenu:
             'goto-next-sibling':        lambda: c.p.hasNext(),
             
             # Outline:Mark menu...
-            ### label = g.choose(isMarked,"Unmark","Mark")
-            ### frame.menu.setMenuLabel(menu,0,label)
             'mark-subheads':            lambda: c.p.hasChildren(),
             # too slow...
                 # 'mark-changed-items':   c.canMarkChangedHeadlines,
@@ -131,7 +128,6 @@ class leoMenu:
             for key in sorted(d.keys()):
                 if key not in commandKeys:
                     g.trace('*** bad entry for %s' % (key))
-
     #@+node:ekr.20120124042346.12939: *4* finishCreate
     def finishCreate (self):
         

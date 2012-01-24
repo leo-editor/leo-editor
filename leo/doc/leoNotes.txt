@@ -8205,5 +8205,14 @@ def getMenuEntryBindings(self,command,dynamicMenu,label):
                 
     ### return accel,commandName,done
     return commandName,done
+#@+node:ekr.20031218072017.2976: *3* canRevert
+def canRevert (self):
+    
+    # 2011/10/18: Allow revert, regardless of change status.
+    return True
+
+    # c.mFileName will be "untitled" for unsaved files.
+    # c = self
+    # return (c.frame and c.mFileName and c.isChanged())
 #@-all
 #@-leo

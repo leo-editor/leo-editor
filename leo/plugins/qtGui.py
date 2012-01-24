@@ -7192,8 +7192,28 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
                 if trace: g.trace(commandName)
                 self.leo_update_shortcut(action,commandName)
                 self.leo_enable_menu_item(action,commandName)
+                self.leo_update_menu_label(action,commandName)
        
-    #@+node:ekr.20120120095156.10260: *5* leo_update_shortcut
+    #@+node:ekr.20120120095156.10261: *5* leo_enable_menu_item
+    def leo_enable_menu_item (self,action,commandName):
+
+        func = self.c.frame.menu.enable_dict.get(commandName)
+
+        if action and func:
+            val = func()
+            # g.trace('%5s %20s %s' % (val,commandName,val))
+            action.setEnabled(bool(val))
+            
+    #@+node:ekr.20120124115444.10190: *5* leo_update_menu_label
+    def leo_update_menu_label(self,action,commandName):
+        
+        c = self.c
+        
+        if action and commandName == 'mark':
+            action.setText('UnMark' if c.p.isMarked() else 'Mark')
+            self.leo_update_shortcut(action,commandName)
+                # Set the proper shortcut.
+    #@+node:ekr.20120120095156.10260: *5* leo_update_shortcut (Maybe: show best accel, or more accels)
     def leo_update_shortcut(self,action,commandName):
         
         trace = False and not g.unitTesting
@@ -7205,8 +7225,12 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
             if len(parts) >= 2: s = parts[0]
             key,aList = c.config.getShortcut(commandName)
             if aList:
-                si = aList[0] ### Wrong.
-                if trace: g.trace(si)
+                if trace and len(aList) > 1:
+                    for z in aList:
+                        accel = k.shortcutFromSetting(z.val,addKey=False) or ''
+                        accel = g.stripBrackets(k.prettyPrintKey(accel))
+                        g.trace('%10s %20s %s' % (z.pane,accel,z.commandName))
+                si = aList[0] ### We could do some AI here, or show them all...
                 assert isinstance(si,leoConfig.ShortcutInfo)
                 accel = k.shortcutFromSetting(si.val,addKey=False) or ''
                 accel = g.stripBrackets(k.prettyPrintKey(accel))
@@ -7215,16 +7239,6 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
                 action.setText(s)
         else:
             g.trace('can not happen: no action for %s' % (commandName))
-    #@+node:ekr.20120120095156.10261: *5* leo_enable_menu_item
-    def leo_enable_menu_item (self,action,commandName):
-
-        func = self.c.frame.menu.enable_dict.get(commandName)
-
-        if action and func:
-            val = func()
-            # g.trace('%5s %20s %s' % (val,commandName,val))
-            action.setEnabled(bool(val))
-            
     #@-others
 #@+node:ekr.20110605121601.18461: *3* class qtSearchWidget
 class qtSearchWidget:

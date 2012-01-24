@@ -24466,13 +24466,12 @@ def define_enable_dict (self):
     c = self.c
     
     if not c.commandsDict:
-        # g.trace('empty c.commandsDict',c)
-        return
+        return # This is not an error: it happens during init.
 
     self.enable_dict = d = {
     
         # File menu...
-        'revert':               c.canRevert,
+            # 'revert':         lambda: True, # Revert is always enabled.               
         'open-with':            lambda: g.app.hasOpenWithMenu,
         
         # Edit menu...
@@ -24526,8 +24525,6 @@ def define_enable_dict (self):
         'goto-next-sibling':        lambda: c.p.hasNext(),
         
         # Outline:Mark menu...
-        ### label = g.choose(isMarked,"Unmark","Mark")
-        ### frame.menu.setMenuLabel(menu,0,label)
         'mark-subheads':            lambda: c.p.hasChildren(),
         # too slow...
             # 'mark-changed-items':   c.canMarkChangedHeadlines,
@@ -24541,7 +24538,6 @@ def define_enable_dict (self):
         for key in sorted(d.keys()):
             if key not in commandKeys:
                 g.trace('*** bad entry for %s' % (key))
-
 #@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config) (The Big Switch)
 def getShortcut (self,c,commandName):
 
@@ -24681,63 +24677,7 @@ def make_shortcuts_dict (self,d,localFlag):
         d3 = self.merge_settings_dicts(d1,d2)
         self.settingsDict = self.merge_settings_dicts(d3,d)
         
-#@+node:ekr.20120122070219.10163: *5* merge_settings_dicts (c.configSettings)
-def merge_settings_dicts (self,d1,d2):
-    
-    '''Create a new dict by overriding all settings in d1 by setting in d2.
-    
-    Neither d1 nor d2 is ever changed.'''
-    
-    trace = False and not g.unitTesting
-    
-    if not d1: return d2
-    if not d2: return d1
-    
-    ### Temp:
-        
-    # d1 and d2: keys are command names, values are lists of ShortcutInfo objects.
-    keys1,keys2 = list(sorted(d1.keys())),list(sorted(d2.keys()))
-    if '_hash' in keys1: keys1.remove('_hash')
-    if '_hash' in keys2: keys2.remove('_hash')
-    n1,n2 = len(keys1),len(keys2)
-    
-    # Step 1: create helper dict: Keys are strokes, values are lists of bunches.
-    strokes1 = {}
-    for command in keys1:
-        aList = d1.get(command,[])
-        for b in aList:
-            stroke = b.val
-            aList2 = strokes1.get(stroke,[])
-            if b not in aList2:
-                aList2.append((command,b),)
-                strokes1[stroke] = aList2
-                
-    if trace: g.trace(len(strokes1))
-                
-    # Step 2: for every redefined stroke in d2,
-    # remove all corresponding bunches in d1 by clearing non-mode entries in strokes1.
-    for command in keys2:
-        aList = d2.get(command,[])
-        for b in aList:
-            stroke = b.val
-            aList2 = strokes1.get(stroke,[])
-            for command2,b2 in aList2:
-                assert b2.val == stroke
-            aList3 = [z for z in aList2 if z[1].pane.startswith('mode')]
-            if trace and aList2 != aList3:
-                g.trace('before',stroke,aList2)
-                g.trace('after ',stroke,aList3)
-            strokes1 [stroke] = aList3
-
-    if trace: g.trace(len(strokes1))
-
-    # Step 3: create result using strokes1 and d2.
-    result = {}
-
-    result = d2 ###
-    
-    return result
-#@+node:ekr.20120122070219.10163: *4* merge_settings_dicts (c.configSettings)
+#@+node:ekr.20120122070219.10163: *5* merge_settings_dicts (c.configSettings) TODO
 def merge_settings_dicts (self,d1,d2):
     
     '''Create a new dict by overriding all settings in d1 by setting in d2.
@@ -24806,8 +24746,28 @@ def onAboutToShow(self,*args,**keys):
             if trace: g.trace(commandName)
             self.leo_update_shortcut(action,commandName)
             self.leo_enable_menu_item(action,commandName)
+            self.leo_update_menu_label(action,commandName)
    
-#@+node:ekr.20120120095156.10260: *5* leo_update_shortcut
+#@+node:ekr.20120120095156.10261: *5* leo_enable_menu_item
+def leo_enable_menu_item (self,action,commandName):
+
+    func = self.c.frame.menu.enable_dict.get(commandName)
+
+    if action and func:
+        val = func()
+        # g.trace('%5s %20s %s' % (val,commandName,val))
+        action.setEnabled(bool(val))
+        
+#@+node:ekr.20120124115444.10190: *5* leo_update_menu_label
+def leo_update_menu_label(self,action,commandName):
+    
+    c = self.c
+    
+    if action and commandName == 'mark':
+        action.setText('UnMark' if c.p.isMarked() else 'Mark')
+        self.leo_update_shortcut(action,commandName)
+            # Set the proper shortcut.
+#@+node:ekr.20120120095156.10260: *5* leo_update_shortcut (Maybe: show best accel, or more accels)
 def leo_update_shortcut(self,action,commandName):
     
     trace = False and not g.unitTesting
@@ -24819,8 +24779,12 @@ def leo_update_shortcut(self,action,commandName):
         if len(parts) >= 2: s = parts[0]
         key,aList = c.config.getShortcut(commandName)
         if aList:
-            si = aList[0] ### Wrong.
-            if trace: g.trace(si)
+            if trace and len(aList) > 1:
+                for z in aList:
+                    accel = k.shortcutFromSetting(z.val,addKey=False) or ''
+                    accel = g.stripBrackets(k.prettyPrintKey(accel))
+                    g.trace('%10s %20s %s' % (z.pane,accel,z.commandName))
+            si = aList[0] ### We could do some AI here, or show them all...
             assert isinstance(si,leoConfig.ShortcutInfo)
             accel = k.shortcutFromSetting(si.val,addKey=False) or ''
             accel = g.stripBrackets(k.prettyPrintKey(accel))
@@ -24829,16 +24793,6 @@ def leo_update_shortcut(self,action,commandName):
             action.setText(s)
     else:
         g.trace('can not happen: no action for %s' % (commandName))
-#@+node:ekr.20120120095156.10261: *5* leo_enable_menu_item
-def leo_enable_menu_item (self,action,commandName):
-
-    func = self.c.frame.menu.enable_dict.get(commandName)
-
-    if action and func:
-        val = func()
-        # g.trace('%5s %20s %s' % (val,commandName,val))
-        action.setEnabled(bool(val))
-        
 #@+node:ekr.20041120112043: *4* parseShortcutLine (g.app.config)
 def parseShortcutLine (self,kind,s):
 
