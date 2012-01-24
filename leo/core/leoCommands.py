@@ -175,6 +175,8 @@ class Commands (object):
             
         if g.app.gui.guiName().lower().startswith('qt'):
             g.registerHandler('idle',c.idle_focus_helper)
+            
+        c.frame.menu.finishCreate()
 
         c.frame.log.finishCreate()
         c.bodyWantsFocus()

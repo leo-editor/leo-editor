@@ -13948,6 +13948,8 @@ def finishCreate (self,initEditCommanders=True):  # New in 4.4.
         
     if g.app.gui.guiName().lower().startswith('qt'):
         g.registerHandler('idle',c.idle_focus_helper)
+        
+    c.frame.menu.finishCreate()
 
     c.frame.log.finishCreate()
     c.bodyWantsFocus()
@@ -24231,21 +24233,24 @@ def getMenuEntryBindings(self,command,dynamicMenu,label):
     
     '''Compute accel,commandName,done from command.'''
 
-    trace = False and not g.unitTesting
+    trace = False and not g.unitTesting ; verbose = True
     c = self.c ; f = c.frame
     minibufferCommand = type(command) == type('')
     accel,commandName,done = None,None,False
+    import leo.core.leoConfig as leoConfig
 
     if minibufferCommand:
         commandName = command 
         command = c.commandsDict.get(commandName)
         if command:
-            rawKey,bunchList = c.config.getShortcut(commandName)
+            rawKey,aList = c.config.getShortcut(commandName)
             # Pick the first entry that is not a mode.
-            for bunch in bunchList:
-                if not bunch.pane.endswith('-mode'):
-                    accel = bunch and bunch.val
-                    if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+            for si in aList:
+                assert isinstance(si,leoConfig.ShortcutInfo)
+                if trace and verbose: g.trace(si)
+                if not si.pane.endswith('-mode'):
+                    accel = si.val
+                    if si.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
         else:
             if not g.app.unitTesting and not dynamicMenu:
                 # Don't warn during unit testing.
@@ -24255,23 +24260,27 @@ def getMenuEntryBindings(self,command,dynamicMenu,label):
     else:
         # First, get the old-style name.
         commandName = self.computeOldStyleShortcutKey(label)
-        rawKey,bunchList = c.config.getShortcut(commandName)
-        for bunch in bunchList:
-            if not bunch.pane.endswith('-mode'):
-                if trace: g.trace('2','%20s' % (bunch.val),commandName)
-                accel = bunch and bunch.val ; break
+        rawKey,aList = c.config.getShortcut(commandName)
+        for si in aList:
+            assert isinstance(si,leoConfig.ShortcutInfo)
+            if trace and verbose: g.trace(si)
+            if not si.pane.endswith('-mode'):
+                if trace: g.trace('2','%20s' % (si.val),commandName)
+                accel = si.val ; break
         # Second, get new-style name.
         if not accel:
             << compute emacs_name >>
                 # Contains the not-so-horrible kludge.
             if emacs_name:
                 commandName = emacs_name
-                rawKey,bunchList = c.config.getShortcut(emacs_name)
+                rawKey,aList = c.config.getShortcut(emacs_name)
                 # Pick the first entry that is not a mode.
-                for bunch in bunchList:
-                    if not bunch.pane.endswith('-mode'):
-                        accel = bunch.val
-                        if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                for si in aList:
+                    assert isinstance(si,leoConfig.ShortcutInfo)
+                    if trace and verbose: g.trace(si)
+                    if not si.pane.endswith('-mode'):
+                        accel = si.val
+                        if trace: g.trace('3','%20s' % (si.val),commandName)
                         break
             elif not dynamicMenu:
                 if trace: g.trace('No inverse for %s' % commandName)
@@ -24360,9 +24369,7 @@ def new_menu(self,parent,tearoff=False,label=''): # label is for debugging.
 #@+node:ekr.20110605121601.18460: *4* onAboutToShow & helpers (qtMenuWrapper)
 def onAboutToShow(self,*args,**keys):
     
-    trace = False and not g.unitTesting
-    verbose = False
-    
+    trace = False and not g.unitTesting ; verbose = True
     name = self.leo_menu_label
     if not name: return
    
@@ -24406,11 +24413,13 @@ def leo_update_shortcut(self,action,commandName):
         s = action.text()
         parts = s.split('\t')
         if len(parts) >= 2: s = parts[0]
-        key,bunchList = c.config.getShortcut(commandName)
-        if bunchList:
-            if trace: g.trace(bunchList)
-            b = bunchList[0] ##### Wrong.
-            accel = k.shortcutFromSetting(b.val,addKey=False) or ''
+        key,aList = c.config.getShortcut(commandName)
+        if aList:
+            si = aList[0] ##### Wrong.
+            if trace: g.trace(si)
+            import leo.core.leoConfig as leoConfig
+            assert isinstance(si,leoConfig.ShortcutInfo)
+            accel = k.shortcutFromSetting(si.val,addKey=False) or ''
             accel = g.stripBrackets(k.prettyPrintKey(accel))
             action.setText('%s\t%s' % (s,accel))
         else:
@@ -24419,13 +24428,14 @@ def leo_update_shortcut(self,action,commandName):
         g.trace('can not happen: no action for %s' % (commandName))
 #@+node:ekr.20120120095156.10261: *5* leo_enable_menu_item
 def leo_enable_menu_item (self,action,commandName):
-    
-    if action:
-        menu = action.menu()
+
+    func = self.c.frame.menu.enable_dict.get(commandName)
+
+    if action and func:
+        val = func()
+        # g.trace('%5s %20s %s' % (val,commandName,val))
+        action.setEnabled(bool(val))
         
-        
-    else:
-        g.trace('can not happen: no action for %s' % (commandName))
 #@+node:ekr.20120120095156.10265: *3* Getting shortcuts
 #@+node:ekr.20041117062717.2: *4* ctor (configClass)
 def __init__ (self):
@@ -25803,17 +25813,18 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
     if pane.endswith('-mode'):
         g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
         return False
-    bunchList = k.bindingsDict.get(shortcut,[])
+    aList = k.bindingsDict.get(shortcut,[])
     if trace: #  or shortcut == 'Ctrl+q':
         g.trace('%7s %20s %17s %s' % (pane,shortcut,_hash,commandName))
     try:
         k.bindKeyToDict(pane,shortcut,callback,commandName,_hash)
-        b = leoConfig.ShortcutInfo(kind=_hash,pane=pane,func=callback,commandName=commandName)
-        << remove previous conflicting definitions from bunchList >>
-        bunchList.append(b)
+        si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,func=callback,commandName=commandName)
+        if not modeFlag:
+            k.remove_conflicting_definitions(aList,commandName,pane,_hash)
+        aList.append(si)
         shortcut = g.stripBrackets(shortcut.strip())
-        k.bindingsDict [shortcut] = bunchList
-        if trace: g.trace(shortcut,bunchList)
+        k.bindingsDict [shortcut] = aList
+        if trace: g.trace(shortcut,aList)
         return True
     except Exception: # Could be a user error.
         if not g.app.menuWarningsGiven:
@@ -25830,30 +25841,36 @@ if shortcut:
             g.es_print('ignoring invalid key binding:','%s = %s' % (
                 commandName,shortcut),color='blue')
             return
-#@+node:ekr.20061031131434.92: *6* << remove previous conflicting definitions from bunchList >>
-# b is the bunch for the new binding.
-
-# This warning should never happen with the new code in makeBindingsFromCommandsDict.
-
-if not modeFlag and self.warn_about_redefined_shortcuts:
+#@+node:ekr.20061031131434.92: *6* k.remove_conflicting_definitions
+def remove_conflicting_definitions (self,aList,commandName,pane,theHash):
     
-    redefs = [b2 for b2 in bunchList
-        if b2.commandName != commandName and
-            # pane != b2.pane and # 2011/02/11: don't give warning for straight substitution.
-            pane in ('button','all',b2.pane)
-            and not b2.pane.endswith('-mode')]
-
-    if redefs:
-        def pr(commandName,pane,theHash):
-            g.es_print('%30s in %5s from %s' % (commandName,pane,theHash))
+    trace = False and not g.unitTesting
     
-        g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
-        pr(commandName,pane,_hash)
-        for z in redefs:
-            pr(z.commandName,z.pane,z._hash)
+    def pr(commandName,pane,kind):
+        g.es_print('%30s in %5s from %s' % (commandName,pane,kind))
 
-if not modeFlag:
-    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
+    if trace:
+        import leo.core.leoConfig as leoConfig
+        for si in aList:
+            assert isinstance(si,leoConfig.ShortcutInfo)
+            pr(si.commandName,si.pane,si.kind)
+
+    # This warning should never happen with the new code in makeBindingsFromCommandsDict.
+    if self.warn_about_redefined_shortcuts:
+        
+        redefs = [si for si in aList
+            if si.commandName != commandName and
+                # 2011/02/11: don't give warning for straight substitution.
+                pane in ('button','all',si.pane) and
+                not si.pane.endswith('-mode')]
+    
+        if redefs:
+            g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
+            pr(commandName,pane,theHash)
+            for z in redefs:
+                pr(z.commandName,z.pane,z.kind)
+    
+    aList = [si for si in aList if pane not in ('button','all',si.pane)]
 #@+node:ekr.20061031131434.96: *5* k.completeAllBindingsForWidget
 def completeAllBindingsForWidget (self,w):
 
@@ -26320,17 +26337,18 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
     if pane.endswith('-mode'):
         g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
         return False
-    bunchList = k.bindingsDict.get(shortcut,[])
+    aList = k.bindingsDict.get(shortcut,[])
     if trace: #  or shortcut == 'Ctrl+q':
         g.trace('%7s %20s %17s %s' % (pane,shortcut,_hash,commandName))
     try:
         k.bindKeyToDict(pane,shortcut,callback,commandName,_hash)
-        b = leoConfig.ShortcutInfo(kind=_hash,pane=pane,func=callback,commandName=commandName)
-        << remove previous conflicting definitions from bunchList >>
-        bunchList.append(b)
+        si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,func=callback,commandName=commandName)
+        if not modeFlag:
+            k.remove_conflicting_definitions(aList,commandName,pane,_hash)
+        aList.append(si)
         shortcut = g.stripBrackets(shortcut.strip())
-        k.bindingsDict [shortcut] = bunchList
-        if trace: g.trace(shortcut,bunchList)
+        k.bindingsDict [shortcut] = aList
+        if trace: g.trace(shortcut,aList)
         return True
     except Exception: # Could be a user error.
         if not g.app.menuWarningsGiven:
@@ -26347,30 +26365,36 @@ if shortcut:
             g.es_print('ignoring invalid key binding:','%s = %s' % (
                 commandName,shortcut),color='blue')
             return
-#@+node:ekr.20061031131434.92: *6* << remove previous conflicting definitions from bunchList >>
-# b is the bunch for the new binding.
-
-# This warning should never happen with the new code in makeBindingsFromCommandsDict.
-
-if not modeFlag and self.warn_about_redefined_shortcuts:
+#@+node:ekr.20061031131434.92: *6* k.remove_conflicting_definitions
+def remove_conflicting_definitions (self,aList,commandName,pane,theHash):
     
-    redefs = [b2 for b2 in bunchList
-        if b2.commandName != commandName and
-            # pane != b2.pane and # 2011/02/11: don't give warning for straight substitution.
-            pane in ('button','all',b2.pane)
-            and not b2.pane.endswith('-mode')]
-
-    if redefs:
-        def pr(commandName,pane,theHash):
-            g.es_print('%30s in %5s from %s' % (commandName,pane,theHash))
+    trace = False and not g.unitTesting
     
-        g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
-        pr(commandName,pane,_hash)
-        for z in redefs:
-            pr(z.commandName,z.pane,z._hash)
+    def pr(commandName,pane,kind):
+        g.es_print('%30s in %5s from %s' % (commandName,pane,kind))
 
-if not modeFlag:
-    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
+    if trace:
+        import leo.core.leoConfig as leoConfig
+        for si in aList:
+            assert isinstance(si,leoConfig.ShortcutInfo)
+            pr(si.commandName,si.pane,si.kind)
+
+    # This warning should never happen with the new code in makeBindingsFromCommandsDict.
+    if self.warn_about_redefined_shortcuts:
+        
+        redefs = [si for si in aList
+            if si.commandName != commandName and
+                # 2011/02/11: don't give warning for straight substitution.
+                pane in ('button','all',si.pane) and
+                not si.pane.endswith('-mode')]
+    
+        if redefs:
+            g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
+            pr(commandName,pane,theHash)
+            for z in redefs:
+                pr(z.commandName,z.pane,z.kind)
+    
+    aList = [si for si in aList if pane not in ('button','all',si.pane)]
 #@+node:ekr.20061031131434.93: *5* k.bindKeyToDict
 def bindKeyToDict (self,pane,stroke,func,commandName,_hash):
 
@@ -26553,7 +26577,6 @@ def doMode(self,p,kind,name,val):
             if not name:
                 # An entry command: put it in the special *entry-commands* key.
                 aList = d.get('*entry-commands*',[])
-                ### aList.append(bunch.entryCommandName)
                 aList.append(bunch.commandName)
                 d ['*entry-commands*'] = aList
             elif bunch is not None:
@@ -26780,7 +26803,6 @@ def doMode(self,p,kind,name,val):
             if not name:
                 # An entry command: put it in the special *entry-commands* key.
                 aList = d.get('*entry-commands*',[])
-                ### aList.append(bunch.entryCommandName)
                 aList.append(bunch.commandName)
                 d ['*entry-commands*'] = aList
             elif bunch is not None:
@@ -27028,10 +27050,10 @@ class ShortcutInfo:
     def __repr__ (self):
         si = self
         if si.kind.startswith('mode'):
-            return 'ShortcutInfo: %6s %s' % (si.kind,si.nextMode)
+            return 'ShortcutInfo: %20s %s' % (si.kind,si.nextMode)
         else:
             name = si.commandName or si.func and si.func.__name__ or ''
-            return 'ShortcutInfo: %6s %20s %s' % (si.pane,si.kind,name)
+            return 'ShortcutInfo: %20s %20s %s' % (si.pane,si.kind,name)
 #@+node:ekr.20061031131434.89: *5* k.bindKey
 def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
 
@@ -27053,17 +27075,18 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
     if pane.endswith('-mode'):
         g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
         return False
-    bunchList = k.bindingsDict.get(shortcut,[])
+    aList = k.bindingsDict.get(shortcut,[])
     if trace: #  or shortcut == 'Ctrl+q':
         g.trace('%7s %20s %17s %s' % (pane,shortcut,_hash,commandName))
     try:
         k.bindKeyToDict(pane,shortcut,callback,commandName,_hash)
-        b = leoConfig.ShortcutInfo(kind=_hash,pane=pane,func=callback,commandName=commandName)
-        << remove previous conflicting definitions from bunchList >>
-        bunchList.append(b)
+        si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,func=callback,commandName=commandName)
+        if not modeFlag:
+            k.remove_conflicting_definitions(aList,commandName,pane,_hash)
+        aList.append(si)
         shortcut = g.stripBrackets(shortcut.strip())
-        k.bindingsDict [shortcut] = bunchList
-        if trace: g.trace(shortcut,bunchList)
+        k.bindingsDict [shortcut] = aList
+        if trace: g.trace(shortcut,aList)
         return True
     except Exception: # Could be a user error.
         if not g.app.menuWarningsGiven:
@@ -27080,30 +27103,36 @@ if shortcut:
             g.es_print('ignoring invalid key binding:','%s = %s' % (
                 commandName,shortcut),color='blue')
             return
-#@+node:ekr.20061031131434.92: *6* << remove previous conflicting definitions from bunchList >>
-# b is the bunch for the new binding.
-
-# This warning should never happen with the new code in makeBindingsFromCommandsDict.
-
-if not modeFlag and self.warn_about_redefined_shortcuts:
+#@+node:ekr.20061031131434.92: *6* k.remove_conflicting_definitions
+def remove_conflicting_definitions (self,aList,commandName,pane,theHash):
     
-    redefs = [b2 for b2 in bunchList
-        if b2.commandName != commandName and
-            # pane != b2.pane and # 2011/02/11: don't give warning for straight substitution.
-            pane in ('button','all',b2.pane)
-            and not b2.pane.endswith('-mode')]
-
-    if redefs:
-        def pr(commandName,pane,theHash):
-            g.es_print('%30s in %5s from %s' % (commandName,pane,theHash))
+    trace = False and not g.unitTesting
     
-        g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
-        pr(commandName,pane,_hash)
-        for z in redefs:
-            pr(z.commandName,z.pane,z._hash)
+    def pr(commandName,pane,kind):
+        g.es_print('%30s in %5s from %s' % (commandName,pane,kind))
 
-if not modeFlag:
-    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
+    if trace:
+        import leo.core.leoConfig as leoConfig
+        for si in aList:
+            assert isinstance(si,leoConfig.ShortcutInfo)
+            pr(si.commandName,si.pane,si.kind)
+
+    # This warning should never happen with the new code in makeBindingsFromCommandsDict.
+    if self.warn_about_redefined_shortcuts:
+        
+        redefs = [si for si in aList
+            if si.commandName != commandName and
+                # 2011/02/11: don't give warning for straight substitution.
+                pane in ('button','all',si.pane) and
+                not si.pane.endswith('-mode')]
+    
+        if redefs:
+            g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
+            pr(commandName,pane,theHash)
+            for z in redefs:
+                pr(z.commandName,z.pane,z.kind)
+    
+    aList = [si for si in aList if pane not in ('button','all',si.pane)]
 #@+node:ekr.20061031131434.93: *5* k.bindKeyToDict
 def bindKeyToDict (self,pane,stroke,func,commandName,_hash):
 
@@ -27215,10 +27244,10 @@ class ShortcutInfo:
     def __repr__ (self):
         si = self
         if si.kind.startswith('mode'):
-            return 'ShortcutInfo: %6s %s' % (si.kind,si.nextMode)
+            return 'ShortcutInfo: %20s %s' % (si.kind,si.nextMode)
         else:
             name = si.commandName or si.func and si.func.__name__ or ''
-            return 'ShortcutInfo: %6s %20s %s' % (si.pane,si.kind,name)
+            return 'ShortcutInfo: %20s %20s %s' % (si.pane,si.kind,name)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

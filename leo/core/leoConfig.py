@@ -514,7 +514,6 @@ class parserBaseClass:
                 if not name:
                     # An entry command: put it in the special *entry-commands* key.
                     aList = d.get('*entry-commands*',[])
-                    ### aList.append(bunch.entryCommandName)
                     aList.append(bunch.commandName)
                     d ['*entry-commands*'] = aList
                 elif bunch is not None:
@@ -2413,10 +2412,10 @@ class ShortcutInfo:
     def __repr__ (self):
         si = self
         if si.kind.startswith('mode'):
-            return 'ShortcutInfo: %6s %s' % (si.kind,si.nextMode)
+            return 'ShortcutInfo: %20s %s' % (si.kind,si.nextMode)
         else:
             name = si.commandName or si.func and si.func.__name__ or ''
-            return 'ShortcutInfo: %6s %20s %s' % (si.pane,si.kind,name)
+            return 'ShortcutInfo: %20s %20s %s' % (si.pane,si.kind,name)
 #@+node:ekr.20120123143207.10223: ** class GeneralSetting
 class GeneralSetting:
     

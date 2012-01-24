@@ -7,6 +7,7 @@
 #@@pagewidth 70
 
 import leo.core.leoGlobals as g
+
 import string
 import sys
 
@@ -21,13 +22,18 @@ class leoMenu:
     """The base class for all Leo menus."""
 
     #@+others
-    #@+node:ekr.20031218072017.3751: *3*  leoMenu.__init__
+    #@+node:ekr.20120124042346.12938: *3* leoMenu.Birth
+    #@+node:ekr.20031218072017.3751: *4*  leoMenu.__init__
     def __init__ (self,frame):
 
         # g.trace('leoMenu',g.callers())
 
+        # Copy args...
         self.c = c = frame.c
         self.frame = frame
+        
+        # Data...
+        self.enable_dict = {} # Created by finishCreate.
         self.menus = {} # Menu dictionary.
         self.menuShortcuts = {}
 
@@ -48,6 +54,92 @@ class leoMenu:
 
         if 0: # Must be done much later.
             self.defineMenuTables()
+    #@+node:ekr.20120124042346.12937: *4* define_enable_table
+    def define_enable_dict (self):
+        
+        c = self.c
+        
+        if not c.commandsDict:
+            # g.trace('empty c.commandsDict',c)
+            return
+
+        self.enable_dict = d = {
+        
+            # File menu...
+            'revert':               c.canRevert,
+            'open-with':            lambda: g.app.hasOpenWithMenu,
+            
+            # Edit menu...
+            'undo':                 c.undoer.canUndo,
+            'redo':                 c.undoer.canRedo,
+            'extract-names':        c.canExtractSectionNames,
+            'extract':              c.canExtract,
+            'match-brackets':       c.canFindMatchingBracket,
+            
+            # Top-level Outline menu...
+            'cut-node':             c.canCutOutline,
+            'delete-node':          c.canDeleteHeadline,
+            'paste-node':           c.canPasteOutline,
+            'paste-retaining-clones':   c.canPasteOutline,
+            'clone-node':           c.canClone,
+            'sort-siblings':        c.canSortSiblings,
+            'hoist':                c.canHoist,
+            'de-hoist':             c.canDehoist,
+            
+            # Outline:Expand/Contract menu...
+            'contract-parent':      c.canContractParent,
+            'contract-node':        lambda: c.p.hasChildren() and c.p.isExpanded(),
+            'contract-or-go-left':  lambda: c.p.hasChildren() and c.p.isExpanded() or c.p.hasParent(),
+            'expand-node':          lambda: c.p.hasChildren() and not c.p.isExpanded(),
+            'expand-prev-level':    lambda: c.p.hasChildren() and c.p.isExpanded(),
+            'expand-next-level':    lambda: c.p.hasChildren(),
+            'expand-to-level-1':    lambda: c.p.hasChildren() and c.p.isExpanded(),
+            'expand-or-go-right':   lambda: c.p.hasChildren(),
+            
+            # Outline:Move menu...
+            'move-outline-down':    c.canMoveOutlineDown,
+            'move-outline-left':    c.canMoveOutlineLeft,
+            'move-outline-right':   c.canMoveOutlineRight,
+            'move-outline-up':      c.canMoveOutlineUp,
+            'promote':              c.canPromote,
+            'demote':               c.canDemote,
+            
+            # Outline:Go To menu...
+            'goto-prev-history-node':   c.nodeHistory.canGoToPrevVisited,
+            'goto-next-history-node':   c.nodeHistory.canGoToNextVisited,
+            'goto-prev-visible':        c.canSelectVisBack,
+            'goto-next-visible':        c.canSelectVisNext,
+            # These are too slow...
+                # 'go-to-next-marked':  c.canGoToNextMarkedHeadline,
+                # 'go-to-next-changed': c.canGoToNextDirtyHeadline,
+            'goto-next-clone':          lambda: c.p.isCloned(),
+            'goto-prev-node':           c.canSelectThreadBack,
+            'goto-next-node':           c.canSelectThreadNext,
+            'goto-parent':              lambda: c.p.hasParent(),
+            'goto-prev-sibling':        lambda: c.p.hasBack(),
+            'goto-next-sibling':        lambda: c.p.hasNext(),
+            
+            # Outline:Mark menu...
+            ### label = g.choose(isMarked,"Unmark","Mark")
+            ### frame.menu.setMenuLabel(menu,0,label)
+            'mark-subheads':            lambda: c.p.hasChildren(),
+            # too slow...
+                # 'mark-changed-items':   c.canMarkChangedHeadlines,
+        }
+        
+        for i in range(1,9):
+            d ['expand-to-level-%s' % (i)] = lambda: c.p.hasChildren()
+
+        if 0: # Initial testing.
+            commandKeys = list(c.commandsDict.keys())
+            for key in sorted(d.keys()):
+                if key not in commandKeys:
+                    g.trace('*** bad entry for %s' % (key))
+
+    #@+node:ekr.20120124042346.12939: *4* finishCreate
+    def finishCreate (self):
+        
+        self.define_enable_dict()
     #@+node:ekr.20031218072017.3775: *3* error and oops
     def oops (self):
 
@@ -1321,21 +1413,24 @@ class leoMenu:
         
         '''Compute accel,commandName,done from command.'''
 
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting ; verbose = True
         c = self.c ; f = c.frame
         minibufferCommand = type(command) == type('')
         accel,commandName,done = None,None,False
+        import leo.core.leoConfig as leoConfig
 
         if minibufferCommand:
             commandName = command 
             command = c.commandsDict.get(commandName)
             if command:
-                rawKey,bunchList = c.config.getShortcut(commandName)
+                rawKey,aList = c.config.getShortcut(commandName)
                 # Pick the first entry that is not a mode.
-                for bunch in bunchList:
-                    if not bunch.pane.endswith('-mode'):
-                        accel = bunch and bunch.val
-                        if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+                for si in aList:
+                    assert isinstance(si,leoConfig.ShortcutInfo)
+                    if trace and verbose: g.trace(si)
+                    if not si.pane.endswith('-mode'):
+                        accel = si.val
+                        if si.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
             else:
                 if not g.app.unitTesting and not dynamicMenu:
                     # Don't warn during unit testing.
@@ -1345,11 +1440,13 @@ class leoMenu:
         else:
             # First, get the old-style name.
             commandName = self.computeOldStyleShortcutKey(label)
-            rawKey,bunchList = c.config.getShortcut(commandName)
-            for bunch in bunchList:
-                if not bunch.pane.endswith('-mode'):
-                    if trace: g.trace('2','%20s' % (bunch.val),commandName)
-                    accel = bunch and bunch.val ; break
+            rawKey,aList = c.config.getShortcut(commandName)
+            for si in aList:
+                assert isinstance(si,leoConfig.ShortcutInfo)
+                if trace and verbose: g.trace(si)
+                if not si.pane.endswith('-mode'):
+                    if trace: g.trace('2','%20s' % (si.val),commandName)
+                    accel = si.val ; break
             # Second, get new-style name.
             if not accel:
                 #@+<< compute emacs_name >>
@@ -1373,12 +1470,14 @@ class leoMenu:
                     # Contains the not-so-horrible kludge.
                 if emacs_name:
                     commandName = emacs_name
-                    rawKey,bunchList = c.config.getShortcut(emacs_name)
+                    rawKey,aList = c.config.getShortcut(emacs_name)
                     # Pick the first entry that is not a mode.
-                    for bunch in bunchList:
-                        if not bunch.pane.endswith('-mode'):
-                            accel = bunch.val
-                            if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    for si in aList:
+                        assert isinstance(si,leoConfig.ShortcutInfo)
+                        if trace and verbose: g.trace(si)
+                        if not si.pane.endswith('-mode'):
+                            accel = si.val
+                            if trace: g.trace('3','%20s' % (si.val),commandName)
                             break
                 elif not dynamicMenu:
                     if trace: g.trace('No inverse for %s' % commandName)

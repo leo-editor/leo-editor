@@ -5717,7 +5717,7 @@ class leoQtMenu (leoMenu.leoMenu):
                 label,menu,underline=amp_index)
 
         return menu
-    #@+node:ekr.20110605121601.18358: *6* disable/enableMenu (leoQtMenu)
+    #@+node:ekr.20110605121601.18358: *6* disable/enableMenu (leoQtMenu) (not used)
     def disableMenu (self,menu,name):
         self.enableMenu(menu,name,False)
 
@@ -7182,9 +7182,7 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
     #@+node:ekr.20110605121601.18460: *4* onAboutToShow & helpers (qtMenuWrapper)
     def onAboutToShow(self,*args,**keys):
         
-        trace = False and not g.unitTesting
-        verbose = False
-        
+        trace = False and not g.unitTesting ; verbose = True
         name = self.leo_menu_label
         if not name: return
        
@@ -7228,11 +7226,13 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
             s = action.text()
             parts = s.split('\t')
             if len(parts) >= 2: s = parts[0]
-            key,bunchList = c.config.getShortcut(commandName)
-            if bunchList:
-                if trace: g.trace(bunchList)
-                b = bunchList[0] ##### Wrong.
-                accel = k.shortcutFromSetting(b.val,addKey=False) or ''
+            key,aList = c.config.getShortcut(commandName)
+            if aList:
+                si = aList[0] ##### Wrong.
+                if trace: g.trace(si)
+                import leo.core.leoConfig as leoConfig
+                assert isinstance(si,leoConfig.ShortcutInfo)
+                accel = k.shortcutFromSetting(si.val,addKey=False) or ''
                 accel = g.stripBrackets(k.prettyPrintKey(accel))
                 action.setText('%s\t%s' % (s,accel))
             else:
@@ -7241,13 +7241,14 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
             g.trace('can not happen: no action for %s' % (commandName))
     #@+node:ekr.20120120095156.10261: *5* leo_enable_menu_item
     def leo_enable_menu_item (self,action,commandName):
-        
-        if action:
-            menu = action.menu()
+
+        func = self.c.frame.menu.enable_dict.get(commandName)
+
+        if action and func:
+            val = func()
+            # g.trace('%5s %20s %s' % (val,commandName,val))
+            action.setEnabled(bool(val))
             
-            
-        else:
-            g.trace('can not happen: no action for %s' % (commandName))
     #@-others
 #@+node:ekr.20110605121601.18461: *3* class qtSearchWidget
 class qtSearchWidget:

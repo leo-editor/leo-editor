@@ -1629,42 +1629,18 @@ class keyHandlerClass:
         if pane.endswith('-mode'):
             g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
             return False
-        bunchList = k.bindingsDict.get(shortcut,[])
+        aList = k.bindingsDict.get(shortcut,[])
         if trace: #  or shortcut == 'Ctrl+q':
             g.trace('%7s %20s %17s %s' % (pane,shortcut,_hash,commandName))
         try:
             k.bindKeyToDict(pane,shortcut,callback,commandName,_hash)
-            b = leoConfig.ShortcutInfo(kind=_hash,pane=pane,func=callback,commandName=commandName)
-            #@+<< remove previous conflicting definitions from bunchList >>
-            #@+node:ekr.20061031131434.92: *5* << remove previous conflicting definitions from bunchList >>
-            # b is the bunch for the new binding.
-
-            # This warning should never happen with the new code in makeBindingsFromCommandsDict.
-
-            if not modeFlag and self.warn_about_redefined_shortcuts:
-                
-                redefs = [b2 for b2 in bunchList
-                    if b2.commandName != commandName and
-                        # pane != b2.pane and # 2011/02/11: don't give warning for straight substitution.
-                        pane in ('button','all',b2.pane)
-                        and not b2.pane.endswith('-mode')]
-
-                if redefs:
-                    def pr(commandName,pane,theHash):
-                        g.es_print('%30s in %5s from %s' % (commandName,pane,theHash))
-                
-                    g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
-                    pr(commandName,pane,_hash)
-                    for z in redefs:
-                        pr(z.commandName,z.pane,z._hash)
-
+            si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,func=callback,commandName=commandName)
             if not modeFlag:
-                bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
-            #@-<< remove previous conflicting definitions from bunchList >>
-            bunchList.append(b)
+                k.remove_conflicting_definitions(aList,commandName,pane,_hash)
+            aList.append(si)
             shortcut = g.stripBrackets(shortcut.strip())
-            k.bindingsDict [shortcut] = bunchList
-            if trace: g.trace(shortcut,bunchList)
+            k.bindingsDict [shortcut] = aList
+            if trace: g.trace(shortcut,aList)
             return True
         except Exception: # Could be a user error.
             if not g.app.menuWarningsGiven:
@@ -1674,6 +1650,36 @@ class keyHandlerClass:
             return False
 
     bindShortcut = bindKey # For compatibility
+    #@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
+    def remove_conflicting_definitions (self,aList,commandName,pane,theHash):
+        
+        trace = False and not g.unitTesting
+        
+        def pr(commandName,pane,kind):
+            g.es_print('%30s in %5s from %s' % (commandName,pane,kind))
+
+        if trace:
+            import leo.core.leoConfig as leoConfig
+            for si in aList:
+                assert isinstance(si,leoConfig.ShortcutInfo)
+                pr(si.commandName,si.pane,si.kind)
+
+        # This warning should never happen with the new code in makeBindingsFromCommandsDict.
+        if self.warn_about_redefined_shortcuts:
+            
+            redefs = [si for si in aList
+                if si.commandName != commandName and
+                    # 2011/02/11: don't give warning for straight substitution.
+                    pane in ('button','all',si.pane) and
+                    not si.pane.endswith('-mode')]
+        
+            if redefs:
+                g.warning('shortcut conflict for %s' % c.k.prettyPrintKey(shortcut))
+                pr(commandName,pane,theHash)
+                for z in redefs:
+                    pr(z.commandName,z.pane,z.kind)
+        
+        aList = [si for si in aList if pane not in ('button','all',si.pane)]
     #@+node:ekr.20061031131434.93: *4* k.bindKeyToDict
     def bindKeyToDict (self,pane,stroke,func,commandName,_hash):
 
