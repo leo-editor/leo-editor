@@ -1034,14 +1034,7 @@ class parserBaseClass:
             if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                 g.es("over-riding setting:",name,"from",path)
 
-        # N.B.  We can't use c here: it may be destroyed!
-        # if key == 'shortcut':
-            # g.trace('*****',key,val)
-            
-        # if name == 'full-command':
-            # g.trace('id(d)',id(d),name)
-
-        # d [key] = g.Bunch(path=c.mFileName,kind=kind,val=val,tag='setting')
+        # Important: we can't use c here: it may be destroyed!
         d [key] = GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
     #@+node:ekr.20041227071423: *3* setShortcut (ParserBaseClass) (** can we delete this?? **)
     def setShortcut (self,p,name,bunchList):
@@ -1284,17 +1277,14 @@ class configClass:
         for key,kind,val in self.defaultsData:
             self.defaultsDict[self.munge(key)] = GeneralSetting(
                 kind,setting=key,val=val,tag='defaults')
-            # g.Bunch(setting=key,kind=kind,val=val,tag='defaults')
 
         for key,kind,val in self.ivarsData:
             self.ivarsDict[self.munge(key)] = GeneralSetting(
                 kind,ivar=key,val=val,tag='ivars')
-            # g.Bunch(ivar=key,kind=kind,val=val,tag='ivars')
 
         for key,kind,val in self.encodingIvarsData:
             self.encodingIvarsDict[self.munge(key)] = GeneralSetting(
                 kind,encoding=val,ivar=key,tag='encoding')
-            # g.Bunch(ivar=key,kind=kind,encoding=val,tag='encodings')
     #@+node:ekr.20041117065611.2: *4* initIvarsFromSettings & helpers
     def initIvarsFromSettings (self):
 
