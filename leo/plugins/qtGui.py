@@ -7172,9 +7172,8 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
         
         # g.trace('(qtMenuWrappter)',label)
         
-        if leoMenu.dynamic_menus or not parent:
-            self.connect(self,QtCore.SIGNAL(
-                "aboutToShow ()"),self.onAboutToShow)
+        self.connect(self,QtCore.SIGNAL(
+            "aboutToShow ()"),self.onAboutToShow)
 
     def __repr__(self):
 
@@ -7185,37 +7184,14 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
         trace = False and not g.unitTesting ; verbose = True
         name = self.leo_menu_label
         if not name: return
+
+        for action in self.actions():
+            commandName = hasattr(action,'leo_command_name') and action.leo_command_name
+            if commandName:
+                if trace: g.trace(commandName)
+                self.leo_update_shortcut(action,commandName)
+                self.leo_enable_menu_item(action,commandName)
        
-        # if False and trace:
-            # g.trace('top: ',name)
-            # for action in self.actions():
-                # if hasattr(action,'leo_command_name'):
-                    # g.trace('cmnd:',action.leo_command_name)
-                # elif verbose:
-                    # if hasattr(action,'leo_menu_label'):
-                        # g.trace(action.leo_menu_label) # A separator.
-                    # else:
-                        # menu = action.menu()
-                        # if hasattr(menu,'leo_menu_label'):
-                            # g.trace('menu:',menu.leo_menu_label)
-                        # else:
-                            # g.trace('oops:',menu) # Should not happen.
-                            
-        if leoMenu.dynamic_menus:
-            for action in self.actions():
-                commandName = hasattr(action,'leo_command_name') and action.leo_command_name
-                if commandName:
-                    if trace: g.trace(commandName)
-                    self.leo_update_shortcut(action,commandName)
-                    self.leo_enable_menu_item(action,commandName)
-        else:
-            # Call the base-class updaters in leoMenu.py.
-            if name == 'file':
-                self.updateFileMenu()
-            elif name == 'edit':
-                self.updateEditMenu()
-            elif name == 'outline':
-                self.updateOutlineMenu()
     #@+node:ekr.20120120095156.10260: *5* leo_update_shortcut
     def leo_update_shortcut(self,action,commandName):
         
