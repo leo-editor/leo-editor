@@ -249,7 +249,7 @@ def doCommand (self,command,label,event=None):
         g.doHook("command2",c=c,p=p,v=p,label=label)
 
     return # (for Tk) "break" # Inhibit all other handlers.
-.. @+node:ekr.20061031131434.160: *8* enterNamedMode
+.. @+node:ekr.20061031131434.160: *8* k.enterNamedMode
 def enterNamedMode (self,event,commandName):
 
     k = self ; c = k.c
@@ -3874,11 +3874,13 @@ def set (self,c,setting,kind,val):
     if c:
         h = c.hash()
         d = self.localOptionsDict.get(h,{})
-        d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+        ### d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+        d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
         self.localOptionsDict[h] = d
     else:
         d = self.dictList [0]
-        d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+        ### d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+        d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
         self.dictList[0] = d
 .. @+node:ekr.20041117083141: *6* get & allies (g.app.config)
 def get (self,c,setting,kind):

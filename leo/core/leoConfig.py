@@ -509,11 +509,13 @@ class parserBaseClass:
         for line in lines:
             line = line.strip()
             if line and not g.match(line,0,'#'):
-                name,bunch = self.parseShortcutLine(line)
+                name,bunch = self.parseShortcutLine('*mode-setting*',line)
+                # bunch is a ShortcutInfo object.
                 if not name:
                     # An entry command: put it in the special *entry-commands* key.
                     aList = d.get('*entry-commands*',[])
-                    aList.append(bunch.entryCommandName)
+                    ### aList.append(bunch.entryCommandName)
+                    aList.append(bunch.commandName)
                     d ['*entry-commands*'] = aList
                 elif bunch is not None:
                     # A regular shortcut.
@@ -579,9 +581,9 @@ class parserBaseClass:
         for line in g.splitLines(s):
             line = line.strip()
             if line and not g.match(line,0,'#'):
-                name,bunch = self.parseShortcutLine(line)
+                name,bunch = self.parseShortcutLine(theHash,line)
                 if bunch:
-                    bunch._hash = theHash
+                    ##### bunch._hash = theHash
                     if bunch.val in (None,'none','None'):
                         self.killOneShortcut(bunch,name,p)
                     else:
@@ -930,15 +932,15 @@ class parserBaseClass:
         if not g.match(s,0,'#'):
             d['command'] = s
     #@+node:ekr.20041120112043: *4* parseShortcutLine (g.app.config)
-    def parseShortcutLine (self,s):
+    def parseShortcutLine (self,kind,s):
 
         '''Parse a shortcut line.  Valid forms:
 
         --> entry-command
         settingName = shortcut
         settingName ! paneName = shortcut
-        command-name -> mode-name = binding
-        command-name -> same = binding
+        command-name --> mode-name = binding
+        command-name --> same = binding
         '''
 
         trace = False and not g.unitTesting
@@ -950,7 +952,8 @@ class parserBaseClass:
             i = g.skip_id(s,j,'-')
             entryCommandName = s[j:i]
             if trace: g.trace('-->',entryCommandName)
-            return None,g.Bunch(entryCommandName=entryCommandName)
+            ### return None,g.Bunch(entryCommandName=entryCommandName)
+            return None,ShortcutInfo('*entry-command*',commandName=entryCommandName)
 
         j = i
         i = g.skip_id(s,j,'-') # New in 4.4: allow Emacs-style shortcut names.
@@ -988,7 +991,8 @@ class parserBaseClass:
                 # comment = val[i:].strip()
                 val = val[:i].strip()
 
-        b = g.bunch(nextMode=nextMode,pane=pane,val=val)
+        ### b = g.bunch(nextMode=nextMode,pane=pane,val=val)
+        b = ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,val=val)
         if trace: g.trace(b)
         return name,b
     #@+node:ekr.20060608222828: *4* parseAbbrevLine (g.app.config)
@@ -1041,7 +1045,8 @@ class parserBaseClass:
         # if name == 'full-command':
             # g.trace('id(d)',id(d),name)
 
-        d [key] = g.Bunch(path=c.mFileName,kind=kind,val=val,tag='setting')
+        # d [key] = g.Bunch(path=c.mFileName,kind=kind,val=val,tag='setting')
+        d [key] = GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
     #@+node:ekr.20041227071423: *3* setShortcut (ParserBaseClass) (** can we delete this?? **)
     def setShortcut (self,p,name,bunchList):
         
@@ -1281,16 +1286,19 @@ class configClass:
         self.dictList = [self.defaultsDict]
 
         for key,kind,val in self.defaultsData:
-            self.defaultsDict[self.munge(key)] = g.Bunch(
-                setting=key,kind=kind,val=val,tag='defaults')
+            self.defaultsDict[self.munge(key)] = GeneralSetting(
+                kind,setting=key,val=val,tag='defaults')
+            # g.Bunch(setting=key,kind=kind,val=val,tag='defaults')
 
         for key,kind,val in self.ivarsData:
-            self.ivarsDict[self.munge(key)] = g.Bunch(
-                ivar=key,kind=kind,val=val,tag='ivars')
+            self.ivarsDict[self.munge(key)] = GeneralSetting(
+                kind,ivar=key,val=val,tag='ivars')
+            # g.Bunch(ivar=key,kind=kind,val=val,tag='ivars')
 
         for key,kind,val in self.encodingIvarsData:
-            self.encodingIvarsDict[self.munge(key)] = g.Bunch(
-                ivar=key,kind=kind,encoding=val,tag='encodings')
+            self.encodingIvarsDict[self.munge(key)] = GeneralSetting(
+                kind,encoding=val,ivar=key,tag='encoding')
+            # g.Bunch(ivar=key,kind=kind,encoding=val,tag='encodings')
     #@+node:ekr.20041117065611.2: *4* initIvarsFromSettings & helpers
     def initIvarsFromSettings (self):
 
@@ -1309,15 +1317,18 @@ class configClass:
 
         '''Init g.app.config encoding ivars during initialization.'''
 
-        # N.B. The key is munged.
-        bunch = self.encodingIvarsDict.get(key)
-        encoding = bunch.encoding
-        ivar = bunch.ivar
-        # g.trace('g.app.config',ivar,encoding)
-        setattr(self,ivar,encoding)
-
-        if encoding and not g.isValidEncoding(encoding):
-            g.es("g.app.config: bad encoding:","%s: %s" % (ivar,encoding))
+        # Important: The key is munged.
+        gs = self.encodingIvarsDict.get(key)
+        
+        ### ivar = bunch.ivar
+        ### encoding = bunch.encoding
+        ### setattr(self,ivar,encoding)
+        ### g.trace('g.app.config',ivar,encoding)
+        
+        setattr(self,gs.ivar,gs.encoding)
+        # g.trace(gs.ivar,gs.encoding)
+        if gs.encoding and not g.isValidEncoding(gs.encoding):
+            g.es("g.app.config: bad encoding:","%s: %s" % (gs.ivar,gs.encoding))
     #@+node:ekr.20041117065611: *5* initIvar
     def initIvar(self,key):
 
@@ -1330,12 +1341,13 @@ class configClass:
         trace = False and not g.unitTesting
 
         # N.B. The key is munged.
-        bunch = self.ivarsDict.get(key)
-        ivar = bunch.ivar # The actual name of the ivar.
-        val = bunch.val
-
-        if trace: g.trace('g.app.config',ivar,key,val)
-        setattr(self,ivar,val)
+        ### bunch = self.ivarsDict.get(key)
+        ### ivar = bunch.ivar # The actual name of the ivar.
+        ### val = bunch.val
+        
+        gs = self.ivarsDict.get(key)
+        if trace: g.trace('g.app.config',gs.ivar,key,gs.val)
+        setattr(self,gs.ivar,gs.val)
     #@+node:ekr.20041117083202.2: *4* initRecentFiles
     def initRecentFiles (self):
 
@@ -1900,11 +1912,13 @@ class configClass:
         if c:
             h = c.hash()
             d = self.localOptionsDict.get(h,{})
-            d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+            ### d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+            d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
             self.localOptionsDict[h] = d
         else:
             d = self.dictList [0]
-            d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+            ### d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+            d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
             self.dictList[0] = d
     #@+node:ekr.20041118084241: *4* setString
     def setString (self,c,setting,val):
@@ -1919,7 +1933,7 @@ class configClass:
         - Called from c.__init__ to init corresponding commmander ivars.'''
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
 
         if not self.inited: return
 
@@ -1927,17 +1941,21 @@ class configClass:
         if trace and verbose: g.trace('*' * 10)
         if trace: g.trace(
             'inited',self.inited,
-            c and c.shortFileName() or '<no c>',g.callers(2))
+            c and c.shortFileName() or '<no c>')
 
         d = self.ivarsDict
         keys = list(d.keys())
         keys.sort()
         for key in keys:
             if key != '_hash':
-                bunch = d.get(key)
-                if bunch:
-                    ivar = bunch.ivar # The actual name of the ivar.
-                    kind = bunch.kind
+                ### bunch = d.get(key)
+                ### if bunch:
+                gs = d.get(key) # gs is a GeneralSetting.
+                if gs:
+                    ### ivar = bunch.ivar # The actual name of the ivar.
+                    ### kind = bunch.kind
+                    ivar = gs.ivar # The actual name of the ivar.
+                    kind = gs.kind
                     val = self.get(c,key,kind) # Don't use bunch.val!
                     if c:
                         if trace and verbose: g.trace("%20s %s = %s" % (
@@ -2370,5 +2388,57 @@ class settingsTreeParser (parserBaseClass):
 
         return None
     #@-others
+#@+node:ekr.20120123115816.10209: ** class ShortcutInfo
+# bindKey:            ShortcutInfo(kind,commandName,func,pane)
+# bindKeyToDict:      ShortcutInfo(kind,commandName,func,pane,stroke)
+# createModeBindings: ShortcutInfo(kind,commandName,func,nextMode,stroke)
+
+class ShortcutInfo:
+    
+    '''A class representing any kind of key binding line.'''
+    
+    def __init__ (self,kind,
+        commandName='',func=None,nextMode=None,pane=None,
+        stroke=None,val=None,tag='shortcut-info'
+    ):
+        self.kind = kind
+        self.commandName = commandName
+        self.func = func
+        self.nextMode = nextMode
+        self.pane = pane
+        self.stroke = stroke
+        self.val = val
+        self.tag = tag
+        
+    def __repr__ (self):
+        si = self
+        if si.kind.startswith('mode'):
+            return 'ShortcutInfo: %6s %s' % (si.kind,si.nextMode)
+        else:
+            name = si.commandName or si.func and si.func.__name__ or ''
+            return 'ShortcutInfo: %6s %20s %s' % (si.pane,si.kind,name)
+#@+node:ekr.20120123143207.10223: ** class GeneralSetting
+class GeneralSetting:
+    
+    '''A class representing any kind of setting except shortcuts.'''
+    
+    def __init__ (self,kind,encoding=None,ivar=None,setting=None,val=None,path=None,tag='setting'):
+    
+        self.encoding = encoding
+        self.ivar = ivar
+        self.kind = kind
+        self.path = path
+        self.setting = setting
+        self.val = val
+        self.tag = tag
+        
+    def __repr__ (self):
+        
+        result = ['GeneralSetting kind: %s' % (self.kind)]
+        ivars = ('ivar','path','setting','val','tag')
+        for ivar in ivars:
+            if hasattr(self,ivar):
+                result.append('%s: %s' % (ivar,self.ivar))
+        return ','.join(result)
 #@-others
 #@-leo

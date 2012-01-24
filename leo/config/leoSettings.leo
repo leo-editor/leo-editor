@@ -5227,6 +5227,7 @@ scroll-up-page          ! tree = PageUp
 
 keyboard-quit           = Ctrl-g # not needed, but a good reminder
 keyboard-quit           = Return
+keyboard-quit           = Escape
 
 rectangle-close         = c
 convert-blanks          = b

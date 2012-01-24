@@ -8293,21 +8293,27 @@ class configSettings:
         c = self.c
 
         # N.B. The key is munged.
-        bunch = g.app.config.ivarsDict.get(key)
-        ivarName = bunch.ivar
+        ### bunch = g.app.config.ivarsDict.get(key)
+        ### ivarName = bunch.ivar
+        
+        gs = g.app.config.ivarsDict.get(key)
+        ivarName = gs.ivar
         val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
 
         if val or not hasattr(self,ivarName):
             if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
             setattr(self,ivarName,val)
-    #@+node:ekr.20041118104414: *3* initEncoding
+    #@+node:ekr.20041118104414: *3* initEncoding (c.configSettings)
     def initEncoding (self,key):
 
         c = self.c
 
         # N.B. The key is munged.
-        bunch = g.app.config.encodingIvarsDict.get(key)
-        encodingName = bunch.ivar
+        ### bunch = g.app.config.encodingIvarsDict.get(key)
+        ### encodingName = bunch.ivar
+        
+        gs = g.app.config.encodingIvarsDict.get(key)
+        encodingName = gs.ivar
         encoding = g.app.config.get(c,encodingName,kind='string')
 
         # New in 4.4b3: use the global setting as a last resort.
@@ -8431,8 +8437,6 @@ class configSettings:
         fn = c.shortFileName().lower()
         if trace: g.trace('local',localFlag,'%3d' % (len(list(d.keys()))),fn)
         
-        # if localFlag: assert d == self.settingsDict
-        
         if fn == 'leosettings.leo':
             if not g.app.config.immutable_leo_settings_shortcuts_dict:
                 g.app.config.immutable_leo_settings_shortcuts_dict = d
@@ -8444,7 +8448,7 @@ class configSettings:
                 d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
                 self.settingsDict = self.merge_settings_dicts(d1,d2)
         else:
-            assert localFlag
+            # assert localFlag
             d1 = g.app.config.immutable_leo_settings_shortcuts_dict
             d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
             d3 = self.merge_settings_dicts(d1,d2)
@@ -8464,8 +8468,7 @@ class configSettings:
         
         #### Temp:
             
-        # d1 and d2: keys are command names, values are lists of
-        # g.bunch(_hash,nextMode,pane,val)
+        # d1 and d2: keys are command names, values are lists of ShortcutInfo objects.
         keys1,keys2 = list(sorted(d1.keys())),list(sorted(d2.keys()))
         if '_hash' in keys1: keys1.remove('_hash')
         if '_hash' in keys2: keys2.remove('_hash')
