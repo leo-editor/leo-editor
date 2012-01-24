@@ -8124,5 +8124,21 @@ if menu:
         enable(menu,"Mark Changed Items",c.canMarkChangedHeadlines())
         enable(menu,"Mark Changed Roots",c.canMarkChangedRoots())
     enable(menu,"Mark Clones",isCloned)
+#@+node:ekr.20111028060955.16569: *3* << compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
 #@-all
 #@-leo
