@@ -1152,15 +1152,15 @@ class leoMenu:
 
         c = self.c ; k = c.k
         if g.app.unitTesting: return
+        if not menu: return
         
         self.traceMenuTable(table)
 
         for data in table:
             label,command,done = self.getMenuEntryInfo(data,menu)
             if done: continue
-            ### junk_accel,commandName,done = self.getMenuEntryBindings(command,dynamicMenu,label)
-            commandName,done = self.getMenuEntryBindings(command,dynamicMenu,label)
-            if done: continue
+            commandName = self.getMenuEntryBindings(command,dynamicMenu,label)
+            if not commandName: continue
                 
             masterMenuCallback = self.createMasterMenuCallback(
                 dynamicMenu,command,commandName)
@@ -1170,12 +1170,11 @@ class leoMenu:
             realLabel = realLabel.replace("&","")
 
             # c.add_command ensures that c.outerUpdate is called.
-            if menu:
-                c.add_command(menu,label=realLabel,
-                    accelerator='', # The accelerator is now computed dynamically.
-                    command=masterMenuCallback,
-                    commandName=commandName,
-                    underline=amp_index)
+            c.add_command(menu,label=realLabel,
+                accelerator='', # The accelerator is now computed dynamically.
+                command=masterMenuCallback,
+                commandName=commandName,
+                underline=amp_index)
     #@+node:ekr.20111102072143.10016: *5* createMasterMenuCallback
     def createMasterMenuCallback(self,dynamicMenu,command,commandName):
         
@@ -1217,68 +1216,25 @@ class leoMenu:
     #@+node:ekr.20111028060955.16568: *5* getMenuEntryBindings
     def getMenuEntryBindings(self,command,dynamicMenu,label):
         
-        '''Compute accel,commandName,done from command.'''
+        '''Compute commandName from command.'''
 
-        trace = False and not g.unitTesting ; verbose = True
-        c = self.c ; f = c.frame
-        minibufferCommand = type(command) == type('')
-        accel,commandName,done = None,None,False
-        import leo.core.leoConfig as leoConfig
+        trace = False and not g.unitTesting
+        c = self.c
 
-        if minibufferCommand:
+        if type(command) == type(''):
+            # Command is really a command name.
             commandName = command 
-            command = c.commandsDict.get(commandName)
-            if command:
-                ### accel no longer used.
-                pass
-                # rawKey,aList = c.config.getShortcut(commandName)
-                # # Pick the first entry that is not a mode.
-                # for si in aList:
-                    # assert isinstance(si,leoConfig.ShortcutInfo)
-                    # if trace and verbose: g.trace(si)
-                    # if not si.pane.endswith('-mode'):
-                        # accel = si.val
-                        # if si.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
-            else:
-                if not g.app.unitTesting and not dynamicMenu:
-                    # Don't warn during unit testing.
-                    # This may come from a plugin that normally isn't enabled.
-                    if trace: g.trace('No inverse for %s' % commandName)
-                done = True # There is no way to make this menu entry.
         else:
             # First, get the old-style name.
             commandName = self.computeOldStyleShortcutKey(label)
             
-            ### Accel no longer used.
-            # rawKey,aList = c.config.getShortcut(commandName)
-            # for si in aList:
-                # assert isinstance(si,leoConfig.ShortcutInfo)
-                # if trace and verbose: g.trace(si)
-                # if not si.pane.endswith('-mode'):
-                    # if trace: g.trace('2','%20s' % (si.val),commandName)
-                    # accel = si.val ; break
-
-            # # Second, get new-style name.
-            # if not accel:
-                ###
-                # < < compute emacs_name > >
-                    # # Contains the not-so-horrible kludge.
-                # if emacs_name:
-                    # commandName = emacs_name
-                    # rawKey,aList = c.config.getShortcut(emacs_name)
-                    # # Pick the first entry that is not a mode.
-                    # for si in aList:
-                        # assert isinstance(si,leoConfig.ShortcutInfo)
-                        # if trace and verbose: g.trace(si)
-                        # if not si.pane.endswith('-mode'):
-                            # accel = si.val
-                            # if trace: g.trace('3','%20s' % (si.val),commandName)
-                            # break
-                # elif not dynamicMenu:
-                    # if trace: g.trace('No inverse for %s' % commandName)
-                    
-        ### return accel,commandName,done
-        return commandName,done
+        command = c.commandsDict.get(commandName)
+            
+        if trace and not command and not dynamicMenu:
+            # This may come from a plugin that normally isn't enabled.
+            g.trace('No inverse for %s' % commandName)
+            
+        return commandName
     #@+node:ekr.20111028060955.16565: *5* getMenuEntryInfo
     def getMenuEntryInfo (self,data,menu):
         

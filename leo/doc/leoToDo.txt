@@ -3874,12 +3874,10 @@ def set (self,c,setting,kind,val):
     if c:
         h = c.hash()
         d = self.localOptionsDict.get(h,{})
-        ### d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
         d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
         self.localOptionsDict[h] = d
     else:
         d = self.dictList [0]
-        ### d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
         d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
         self.dictList[0] = d
 .. @+node:ekr.20041117083141: *6* get & allies (g.app.config)

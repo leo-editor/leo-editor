@@ -24142,15 +24142,15 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
 
     c = self.c ; k = c.k
     if g.app.unitTesting: return
+    if not menu: return
     
     self.traceMenuTable(table)
 
     for data in table:
         label,command,done = self.getMenuEntryInfo(data,menu)
         if done: continue
-        ### junk_accel,commandName,done = self.getMenuEntryBindings(command,dynamicMenu,label)
-        commandName,done = self.getMenuEntryBindings(command,dynamicMenu,label)
-        if done: continue
+        commandName = self.getMenuEntryBindings(command,dynamicMenu,label)
+        if not commandName: continue
             
         masterMenuCallback = self.createMasterMenuCallback(
             dynamicMenu,command,commandName)
@@ -24160,12 +24160,11 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
         realLabel = realLabel.replace("&","")
 
         # c.add_command ensures that c.outerUpdate is called.
-        if menu:
-            c.add_command(menu,label=realLabel,
-                accelerator='', # The accelerator is now computed dynamically.
-                command=masterMenuCallback,
-                commandName=commandName,
-                underline=amp_index)
+        c.add_command(menu,label=realLabel,
+            accelerator='', # The accelerator is now computed dynamically.
+            command=masterMenuCallback,
+            commandName=commandName,
+            underline=amp_index)
 #@+node:ekr.20111102072143.10016: *5* createMasterMenuCallback
 def createMasterMenuCallback(self,dynamicMenu,command,commandName):
     
@@ -24207,68 +24206,25 @@ def createMasterMenuCallback(self,dynamicMenu,command,commandName):
 #@+node:ekr.20111028060955.16568: *5* getMenuEntryBindings
 def getMenuEntryBindings(self,command,dynamicMenu,label):
     
-    '''Compute accel,commandName,done from command.'''
+    '''Compute commandName from command.'''
 
-    trace = False and not g.unitTesting ; verbose = True
-    c = self.c ; f = c.frame
-    minibufferCommand = type(command) == type('')
-    accel,commandName,done = None,None,False
-    import leo.core.leoConfig as leoConfig
+    trace = False and not g.unitTesting
+    c = self.c
 
-    if minibufferCommand:
+    if type(command) == type(''):
+        # Command is really a command name.
         commandName = command 
-        command = c.commandsDict.get(commandName)
-        if command:
-            ### accel no longer used.
-            pass
-            # rawKey,aList = c.config.getShortcut(commandName)
-            # # Pick the first entry that is not a mode.
-            # for si in aList:
-                # assert isinstance(si,leoConfig.ShortcutInfo)
-                # if trace and verbose: g.trace(si)
-                # if not si.pane.endswith('-mode'):
-                    # accel = si.val
-                    # if si.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
-        else:
-            if not g.app.unitTesting and not dynamicMenu:
-                # Don't warn during unit testing.
-                # This may come from a plugin that normally isn't enabled.
-                if trace: g.trace('No inverse for %s' % commandName)
-            done = True # There is no way to make this menu entry.
     else:
         # First, get the old-style name.
         commandName = self.computeOldStyleShortcutKey(label)
         
-        ### Accel no longer used.
-        # rawKey,aList = c.config.getShortcut(commandName)
-        # for si in aList:
-            # assert isinstance(si,leoConfig.ShortcutInfo)
-            # if trace and verbose: g.trace(si)
-            # if not si.pane.endswith('-mode'):
-                # if trace: g.trace('2','%20s' % (si.val),commandName)
-                # accel = si.val ; break
-
-        # # Second, get new-style name.
-        # if not accel:
-            ###
-            # < < compute emacs_name > >
-                # # Contains the not-so-horrible kludge.
-            # if emacs_name:
-                # commandName = emacs_name
-                # rawKey,aList = c.config.getShortcut(emacs_name)
-                # # Pick the first entry that is not a mode.
-                # for si in aList:
-                    # assert isinstance(si,leoConfig.ShortcutInfo)
-                    # if trace and verbose: g.trace(si)
-                    # if not si.pane.endswith('-mode'):
-                        # accel = si.val
-                        # if trace: g.trace('3','%20s' % (si.val),commandName)
-                        # break
-            # elif not dynamicMenu:
-                # if trace: g.trace('No inverse for %s' % commandName)
-                
-    ### return accel,commandName,done
-    return commandName,done
+    command = c.commandsDict.get(commandName)
+        
+    if trace and not command and not dynamicMenu:
+        # This may come from a plugin that normally isn't enabled.
+        g.trace('No inverse for %s' % commandName)
+        
+    return commandName
 #@+node:ekr.20111028060955.16565: *5* getMenuEntryInfo
 def getMenuEntryInfo (self,data,menu):
     
@@ -24359,7 +24315,7 @@ def leo_update_shortcut(self,action,commandName):
         if len(parts) >= 2: s = parts[0]
         key,aList = c.config.getShortcut(commandName)
         if aList:
-            si = aList[0] ##### Wrong.
+            si = aList[0] ### Wrong.
             if trace: g.trace(si)
             import leo.core.leoConfig as leoConfig
             assert isinstance(si,leoConfig.ShortcutInfo)
@@ -24676,10 +24632,7 @@ def initIvar(self,key):
     trace = False and not g.unitTesting
     c = self.c
 
-    # N.B. The key is munged.
-    ### bunch = g.app.config.ivarsDict.get(key)
-    ### ivarName = bunch.ivar
-    
+    # Important: the key is munged.
     gs = g.app.config.ivarsDict.get(key)
     ivarName = gs.ivar
     val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
@@ -24692,10 +24645,7 @@ def initEncoding (self,key):
 
     c = self.c
 
-    # N.B. The key is munged.
-    ### bunch = g.app.config.encodingIvarsDict.get(key)
-    ### encodingName = bunch.ivar
-    
+    # Important: the key is munged.
     gs = g.app.config.encodingIvarsDict.get(key)
     encodingName = gs.ivar
     encoding = g.app.config.get(c,encodingName,kind='string')
@@ -24850,7 +24800,7 @@ def merge_settings_dicts (self,d1,d2):
     if not d1: return d2
     if not d2: return d1
     
-    #### Temp:
+    ### Temp:
         
     # d1 and d2: keys are command names, values are lists of ShortcutInfo objects.
     keys1,keys2 = list(sorted(d1.keys())),list(sorted(d2.keys()))
@@ -24891,7 +24841,7 @@ def merge_settings_dicts (self,d1,d2):
     # Step 3: create result using strokes1 and d2.
     result = {}
 
-    result = d2 ###################
+    result = d2 ###
     
     return result
 #@+node:ekr.20120120095156.10264: *3* Parsing shortcuts
@@ -25300,7 +25250,6 @@ def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
         if line and not g.match(line,0,'#'):
             name,bunch = self.parseShortcutLine(theHash,line)
             if bunch:
-                ##### bunch._hash = theHash
                 if bunch.val in (None,'none','None'):
                     self.killOneShortcut(bunch,name,p)
                 else:
@@ -25385,7 +25334,7 @@ def merge_settings_dicts (self,d1,d2):
     if not d1: return d2
     if not d2: return d1
     
-    #### Temp:
+    ### Temp:
         
     # d1 and d2: keys are command names, values are lists of ShortcutInfo objects.
     keys1,keys2 = list(sorted(d1.keys())),list(sorted(d2.keys()))
@@ -25426,7 +25375,7 @@ def merge_settings_dicts (self,d1,d2):
     # Step 3: create result using strokes1 and d2.
     result = {}
 
-    result = d2 ###################
+    result = d2 ###
     
     return result
 #@+node:ekr.20041120112043: *4* parseShortcutLine (g.app.config)
@@ -25450,7 +25399,6 @@ def parseShortcutLine (self,kind,s):
         i = g.skip_id(s,j,'-')
         entryCommandName = s[j:i]
         if trace: g.trace('-->',entryCommandName)
-        ### return None,g.Bunch(entryCommandName=entryCommandName)
         return None,ShortcutInfo('*entry-command*',commandName=entryCommandName)
 
     j = i
@@ -25489,7 +25437,6 @@ def parseShortcutLine (self,kind,s):
             # comment = val[i:].strip()
             val = val[:i].strip()
 
-    ### b = g.bunch(nextMode=nextMode,pane=pane,val=val)
     b = ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,val=val)
     if trace: g.trace(b)
     return name,b
@@ -25532,7 +25479,7 @@ def merge_settings_dicts (self,d1,d2):
     if not d1: return d2
     if not d2: return d1
     
-    #### Temp:
+    ### Temp:
         
     # d1 and d2: keys are command names, values are lists of ShortcutInfo objects.
     keys1,keys2 = list(sorted(d1.keys())),list(sorted(d2.keys()))
@@ -25573,7 +25520,7 @@ def merge_settings_dicts (self,d1,d2):
     # Step 3: create result using strokes1 and d2.
     result = {}
 
-    result = d2 ###################
+    result = d2 ###
     
     return result
 #@+node:ekr.20120123143207.10222: *3* Found...
@@ -25895,7 +25842,6 @@ def makeBindingsFromCommandsDict (self):
         for bunch in aList:
             commandName = bunch.commandName
             command = c.commandsDict.get(commandName)
-            ### _hash = bunch.get('_hash') # 2011/02/10
             _hash = bunch.kind # 2012/01/23
             pane = bunch.pane
             if trace and not _hash:
@@ -25919,7 +25865,6 @@ def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
     sList,mList,fList = [],[],[]
     # if stroke == 'Alt-F4': g.pdb()
     for b in aList:
-        ### _hash = b.get('_hash','<no hash>')
         _hash = b.kind # 2012/01/23
         if _hash.endswith('myleosettings.leo'):
             mList.append(b)
@@ -26563,7 +26508,6 @@ def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
         if line and not g.match(line,0,'#'):
             name,bunch = self.parseShortcutLine(theHash,line)
             if bunch:
-                ##### bunch._hash = theHash
                 if bunch.val in (None,'none','None'):
                     self.killOneShortcut(bunch,name,p)
                 else:
@@ -26630,7 +26574,6 @@ def parseShortcutLine (self,kind,s):
         i = g.skip_id(s,j,'-')
         entryCommandName = s[j:i]
         if trace: g.trace('-->',entryCommandName)
-        ### return None,g.Bunch(entryCommandName=entryCommandName)
         return None,ShortcutInfo('*entry-command*',commandName=entryCommandName)
 
     j = i
@@ -26669,7 +26612,6 @@ def parseShortcutLine (self,kind,s):
             # comment = val[i:].strip()
             val = val[:i].strip()
 
-    ### b = g.bunch(nextMode=nextMode,pane=pane,val=val)
     b = ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,val=val)
     if trace: g.trace(b)
     return name,b
@@ -26789,7 +26731,6 @@ def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
         if line and not g.match(line,0,'#'):
             name,bunch = self.parseShortcutLine(theHash,line)
             if bunch:
-                ##### bunch._hash = theHash
                 if bunch.val in (None,'none','None'):
                     self.killOneShortcut(bunch,name,p)
                 else:

@@ -8140,5 +8140,70 @@ else:
         emacs_name = k.inverseCommandsDict.get(command.__name__)
     except Exception:
         emacs_name = None
+#@+node:ekr.20120124100133.10251: *3* getMenuEntryBindings (OLD)
+def getMenuEntryBindings(self,command,dynamicMenu,label):
+    
+    '''Compute commandName,done from command.'''
+
+    trace = False and not g.unitTesting ; verbose = True
+    c = self.c ; f = c.frame
+    minibufferCommand = type(command) == type('')
+    accel,commandName,done = None,None,False
+    import leo.core.leoConfig as leoConfig
+
+    if minibufferCommand:
+        commandName = command 
+        command = c.commandsDict.get(commandName)
+        if command:
+            ### accel no longer used.
+            pass
+            # rawKey,aList = c.config.getShortcut(commandName)
+            # # Pick the first entry that is not a mode.
+            # for si in aList:
+                # assert isinstance(si,leoConfig.ShortcutInfo)
+                # if trace and verbose: g.trace(si)
+                # if not si.pane.endswith('-mode'):
+                    # accel = si.val
+                    # if si.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+        else:
+            if not g.app.unitTesting and not dynamicMenu:
+                # Don't warn during unit testing.
+                # This may come from a plugin that normally isn't enabled.
+                if trace: g.trace('No inverse for %s' % commandName)
+            done = True # There is no way to make this menu entry.
+    else:
+        # First, get the old-style name.
+        commandName = self.computeOldStyleShortcutKey(label)
+        
+        ### Accel no longer used.
+        # rawKey,aList = c.config.getShortcut(commandName)
+        # for si in aList:
+            # assert isinstance(si,leoConfig.ShortcutInfo)
+            # if trace and verbose: g.trace(si)
+            # if not si.pane.endswith('-mode'):
+                # if trace: g.trace('2','%20s' % (si.val),commandName)
+                # accel = si.val ; break
+
+        # # Second, get new-style name.
+        # if not accel:
+            ###
+            # < < compute emacs_name > >
+                # # Contains the not-so-horrible kludge.
+            # if emacs_name:
+                # commandName = emacs_name
+                # rawKey,aList = c.config.getShortcut(emacs_name)
+                # # Pick the first entry that is not a mode.
+                # for si in aList:
+                    # assert isinstance(si,leoConfig.ShortcutInfo)
+                    # if trace and verbose: g.trace(si)
+                    # if not si.pane.endswith('-mode'):
+                        # accel = si.val
+                        # if trace: g.trace('3','%20s' % (si.val),commandName)
+                        # break
+            # elif not dynamicMenu:
+                # if trace: g.trace('No inverse for %s' % commandName)
+                
+    ### return accel,commandName,done
+    return commandName,done
 #@-all
 #@-leo

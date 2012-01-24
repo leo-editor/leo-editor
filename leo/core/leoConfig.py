@@ -582,7 +582,6 @@ class parserBaseClass:
             if line and not g.match(line,0,'#'):
                 name,bunch = self.parseShortcutLine(theHash,line)
                 if bunch:
-                    ##### bunch._hash = theHash
                     if bunch.val in (None,'none','None'):
                         self.killOneShortcut(bunch,name,p)
                     else:
@@ -951,7 +950,6 @@ class parserBaseClass:
             i = g.skip_id(s,j,'-')
             entryCommandName = s[j:i]
             if trace: g.trace('-->',entryCommandName)
-            ### return None,g.Bunch(entryCommandName=entryCommandName)
             return None,ShortcutInfo('*entry-command*',commandName=entryCommandName)
 
         j = i
@@ -990,7 +988,6 @@ class parserBaseClass:
                 # comment = val[i:].strip()
                 val = val[:i].strip()
 
-        ### b = g.bunch(nextMode=nextMode,pane=pane,val=val)
         b = ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,val=val)
         if trace: g.trace(b)
         return name,b
@@ -1319,13 +1316,10 @@ class configClass:
         # Important: The key is munged.
         gs = self.encodingIvarsDict.get(key)
         
-        ### ivar = bunch.ivar
-        ### encoding = bunch.encoding
-        ### setattr(self,ivar,encoding)
-        ### g.trace('g.app.config',ivar,encoding)
-        
         setattr(self,gs.ivar,gs.encoding)
+        
         # g.trace(gs.ivar,gs.encoding)
+
         if gs.encoding and not g.isValidEncoding(gs.encoding):
             g.es("g.app.config: bad encoding:","%s: %s" % (gs.ivar,gs.encoding))
     #@+node:ekr.20041117065611: *5* initIvar
@@ -1339,11 +1333,7 @@ class configClass:
 
         trace = False and not g.unitTesting
 
-        # N.B. The key is munged.
-        ### bunch = self.ivarsDict.get(key)
-        ### ivar = bunch.ivar # The actual name of the ivar.
-        ### val = bunch.val
-        
+        # Important: the key is munged.
         gs = self.ivarsDict.get(key)
         if trace: g.trace('g.app.config',gs.ivar,key,gs.val)
         setattr(self,gs.ivar,gs.val)
@@ -1911,12 +1901,10 @@ class configClass:
         if c:
             h = c.hash()
             d = self.localOptionsDict.get(h,{})
-            ### d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
             d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
             self.localOptionsDict[h] = d
         else:
             d = self.dictList [0]
-            ### d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
             d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
             self.dictList[0] = d
     #@+node:ekr.20041118084241: *4* setString
@@ -1947,12 +1935,9 @@ class configClass:
         keys.sort()
         for key in keys:
             if key != '_hash':
-                ### bunch = d.get(key)
-                ### if bunch:
-                gs = d.get(key) # gs is a GeneralSetting.
+                gs = d.get(key)
+                assert isinstance(gs,GeneralSetting)
                 if gs:
-                    ### ivar = bunch.ivar # The actual name of the ivar.
-                    ### kind = bunch.kind
                     ivar = gs.ivar # The actual name of the ivar.
                     kind = gs.kind
                     val = self.get(c,key,kind) # Don't use bunch.val!

@@ -1873,7 +1873,6 @@ class keyHandlerClass:
             for bunch in aList:
                 commandName = bunch.commandName
                 command = c.commandsDict.get(commandName)
-                ### _hash = bunch.get('_hash') # 2011/02/10
                 _hash = bunch.kind # 2012/01/23
                 pane = bunch.pane
                 if trace and not _hash:
@@ -1897,7 +1896,6 @@ class keyHandlerClass:
         sList,mList,fList = [],[],[]
         # if stroke == 'Alt-F4': g.pdb()
         for b in aList:
-            ### _hash = b.get('_hash','<no hash>')
             _hash = b.kind # 2012/01/23
             if _hash.endswith('myleosettings.leo'):
                 mList.append(b)

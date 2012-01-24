@@ -8294,10 +8294,7 @@ class configSettings:
         trace = False and not g.unitTesting
         c = self.c
 
-        # N.B. The key is munged.
-        ### bunch = g.app.config.ivarsDict.get(key)
-        ### ivarName = bunch.ivar
-        
+        # Important: the key is munged.
         gs = g.app.config.ivarsDict.get(key)
         ivarName = gs.ivar
         val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
@@ -8310,10 +8307,7 @@ class configSettings:
 
         c = self.c
 
-        # N.B. The key is munged.
-        ### bunch = g.app.config.encodingIvarsDict.get(key)
-        ### encodingName = bunch.ivar
-        
+        # Important: the key is munged.
         gs = g.app.config.encodingIvarsDict.get(key)
         encodingName = gs.ivar
         encoding = g.app.config.get(c,encodingName,kind='string')
@@ -8468,7 +8462,7 @@ class configSettings:
         if not d1: return d2
         if not d2: return d1
         
-        #### Temp:
+        ### Temp:
             
         # d1 and d2: keys are command names, values are lists of ShortcutInfo objects.
         keys1,keys2 = list(sorted(d1.keys())),list(sorted(d2.keys()))
@@ -8509,7 +8503,7 @@ class configSettings:
         # Step 3: create result using strokes1 and d2.
         result = {}
 
-        result = d2 ###################
+        result = d2 ###
         
         return result
     #@-others

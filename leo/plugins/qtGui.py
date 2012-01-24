@@ -5544,7 +5544,7 @@ class leoQtMenu (leoMenu.leoMenu):
             self.menuBar.addMenu(menu)
             
         label = label.replace('&','').lower()
-        menu.leo_menu_label = label ### was leo_label.
+        menu.leo_menu_label = label
 
         return menu
     #@+node:ekr.20110605121601.18345: *6* add_command (leoQtMenu) (Called by createMenuEntries)
@@ -7204,7 +7204,7 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
             if len(parts) >= 2: s = parts[0]
             key,aList = c.config.getShortcut(commandName)
             if aList:
-                si = aList[0] ##### Wrong.
+                si = aList[0] ### Wrong.
                 if trace: g.trace(si)
                 import leo.core.leoConfig as leoConfig
                 assert isinstance(si,leoConfig.ShortcutInfo)
