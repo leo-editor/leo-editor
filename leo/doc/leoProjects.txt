@@ -17026,6 +17026,170 @@ fc.writeDirtyAtFileNodes
 2. Disabled log messages in several of the above methods during unit testing.
 
 3. Disabled runOpenFileDialog and runSaveFileDialog during unit testing.
+#@+node:ekr.20120130101219.10180: *4* Improved presentation of bindings
+@nocolor-node
+
+What I did:
+ 
+- Improved autocompletion list:
+    don't print 'all' in bindings.
+    print bindings first
+    pad bindings properly, as is done in print-commands/bindings.
+    
+- Improved print-commands & print-bindings: don't print 'all'
+
+- Simplfied the code in various ways.
+#@+node:ekr.20061031131434.119: *5* k.printBindings & helper
+def printBindings (self,event=None):
+
+    '''Print all the bindings presently in effect.'''
+
+    k = self ; c = k.c
+    d = k.bindingsDict ; tabName = 'Bindings'
+    c.frame.log.clearTab(tabName)
+    legend = '''\
+legend:
+[S] leoSettings.leo
+[ ] default binding
+[F] loaded .leo File
+[M] myLeoSettings.leo
+[@] mode
+
+'''
+
+    if not d: return g.es('no bindings')
+    legend = g.adjustTripleString(legend,c.tab_width)
+    data = []
+    for key in sorted(d):
+        aList = d.get(key,[])
+        for si in aList:
+            assert isinstance(si,leoConfig.ShortcutInfo),si
+            s1 = '' if si.pane=='all' else si.pane
+            s2 = k.prettyPrintKey(key,brief=True)
+            s3 = si.commandName
+            s4 = si.kind or '<no hash>'
+            data.append((s1,s2,s3,s4),)
+
+    # Print keys by type:
+    result = []
+    result.append('\n'+legend)
+    for prefix in (
+        'Alt+Ctrl+Shift','Alt+Ctrl','Alt+Shift','Alt', # 'Alt+Key': done by Alt.
+        'Ctrl+Meta+Shift','Ctrl+Meta','Ctrl+Shift','Ctrl', # Ctrl+Key: done by Ctrl.
+        'Meta+Key','Meta+Shift','Meta',
+        'Shift',
+        # Careful: longer prefixes must come before shorter prefixes.
+    ):
+        data2 = []
+        for item in data:
+            s1,s2,s3,s4 = item
+            if s2.startswith(prefix):
+                data2.append(item)
+        result.append('***** %s...\n' % prefix)
+        self.printBindingsHelper(result,data2,prefix=prefix)
+        # Remove all the items in data2 from data.
+        # This must be done outside the iterator on data.
+        for item in data2:
+            data.remove(item)
+    # Print all plain bindings.
+    result.append('***** Plain Keys...\n')
+    self.printBindingsHelper(result,data,prefix=None)
+    if not g.unitTesting:
+        g.es('',''.join(result),tabName=tabName)
+    state = k.unboundKeyAction 
+    k.showStateAndMode()
+    return result # for unit test.
+#@+node:ekr.20061031131434.120: *6* printBindingsHelper
+def printBindingsHelper (self,result,data,prefix):
+ 
+    data.sort(key=lambda x: x[1])
+
+    data2,n = [],0
+    for pane,key,commandName,kind in data:
+        key = key.replace('+Key','')
+        letter = self.computeBindingLetter(kind)
+        pane = '%s: ' % (pane) if pane else ''
+        left = pane+key # pane and shortcut fields
+        n = max(n,len(left))
+        data2.append((letter,left,commandName),)
+        
+    for z in data2:
+        letter,left,commandName = z
+        result.append('%s %*s %s\n' % (letter,-n,left,commandName))
+
+    if data:
+        result.append('\n')
+#@+node:ekr.20120130101219.10182: *6* k.computeBindingLetter
+def computeBindingLetter(self,kind):
+    
+    table = (
+        ('M','myLeoSettings.leo'),
+        ('S','leoSettings.leo'),
+        ('F','.leo'),
+    )
+    
+    for letter,kind2 in table:
+        if kind.lower() == kind2.lower():
+            return letter
+    else:
+        return ' ' if kind2.find('mode') == -1 else '@'
+#@+node:ekr.20061031131434.121: *5* k.printCommands
+def printCommands (self,event=None):
+
+    '''Print all the known commands and their bindings, if any.'''
+
+    k = self ; c = k.c ; tabName = 'Commands'
+
+    c.frame.log.clearTab(tabName)
+
+    inverseBindingDict = k.computeInverseBindingDict()
+    data,n = [],0
+    for commandName in sorted(c.commandsDict):
+        dataList = inverseBindingDict.get(commandName,[('',''),])
+        for z in dataList:
+            pane, key = z
+            pane = '%s ' % (pane) if pane != 'all:' else ''
+            key = k.prettyPrintKey(key,brief=True).replace('+Key','')
+            s1 = pane + key
+            s2 = commandName
+            n = max(n,len(s1))
+            data.append((s1,s2),)
+
+    # This isn't perfect in variable-width fonts.
+    lines = ['%*s %s\n' % (-n,s1,s2) for s1,s2 in data]
+    g.es('',''.join(lines),tabName=tabName)
+#@+node:ekr.20061031131434.175: *5* k.computeCompletionList
+# Important: this code must not change mb_tabListPrefix.  Only doBackSpace should do that.
+
+def computeCompletionList (self,defaultTabList,backspace):
+
+    k = self ; c = k.c ; s = k.getLabel() ; tabName = 'Completion'
+    command = s [len(k.mb_prompt):]
+        # s always includes prefix, so command is well defined.
+
+    k.mb_tabList,common_prefix = g.itemsMatchingPrefixInList(command,defaultTabList)
+    c.frame.log.clearTab(tabName)
+
+    if k.mb_tabList:
+        k.mb_tabListIndex = -1 # The next item will be item 0.
+        if not backspace:
+            k.setLabel(k.mb_prompt + common_prefix)
+
+        inverseBindingDict = k.computeInverseBindingDict()
+        data,n = [],0
+        for commandName in k.mb_tabList:
+            dataList = inverseBindingDict.get(commandName,[('',''),])
+            for z in dataList:
+                pane,key = z
+                s1a = '%s ' % (pane) if pane != 'all:' else ''
+                s1b = k.prettyPrintKey(key,brief=True)
+                s1 = s1a + s1b
+                s2 = commandName
+                data.append((s1,s2),)
+                n = max(n,len(s1))
+        aList = ['%*s %s' % (-n,s1,s2) for s1,s2 in data]
+        g.es('','\n'.join(aList),tabName=tabName)
+    c.bodyWantsFocus()
 #@+node:ekr.20110730093802.15135: *3* Investigations
 #@+node:ekr.20110728093358.6703: *4* Over-riding bindings
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
@@ -17457,18 +17621,23 @@ def printBindingsHelper (self,result,data,prefix):
  
     data.sort(key=lambda x: x[1])
 
-    for s1,s2,s3,s4 in data:
-        if s2.find('+Key') > -1:
-            s2 = s2.replace('+Key','')
-        # Print the source of the binding: s4 is the _hash.
-        letter = self.computeBindingLetter(s4)
-        s1 = '%s: ' % (s1) if s1 else ''
-        result.append('%s %-18s %s\n' % (letter,('%s%s' % (s1,s2)),s3))
+    data2,n = [],0
+    for pane,key,commandName,kind in data:
+        key = key.replace('+Key','')
+        letter = self.computeBindingLetter(kind)
+        pane = '%s: ' % (pane) if pane else ''
+        left = pane+key # pane and shortcut fields
+        n = max(n,len(left))
+        data2.append((letter,left,commandName),)
+        
+    for z in data2:
+        letter,left,commandName = z
+        result.append('%s %*s %s\n' % (letter,-n,left,commandName))
 
     if data:
         result.append('\n')
 #@+node:ekr.20120130101219.10182: *6* k.computeBindingLetter
-def computeBindingLetter(self,fn):
+def computeBindingLetter(self,kind):
     
     table = (
         ('M','myLeoSettings.leo'),
@@ -17476,11 +17645,11 @@ def computeBindingLetter(self,fn):
         ('F','.leo'),
     )
     
-    for letter,fn2 in table:
-        if fn.lower() == fn2.lower():
+    for letter,kind2 in table:
+        if kind.lower() == kind2.lower():
             return letter
     else:
-        return ' ' if fn.find('mode') == -1 else '@'
+        return ' ' if kind2.find('mode') == -1 else '@'
 #@+node:ekr.20041117062717.14: *5* getShortcut (g.app.config)
 def getShortcut (self,c,commandName):
 

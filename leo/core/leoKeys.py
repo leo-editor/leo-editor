@@ -2228,18 +2228,23 @@ class keyHandlerClass:
      
         data.sort(key=lambda x: x[1])
 
-        for s1,s2,s3,s4 in data:
-            if s2.find('+Key') > -1:
-                s2 = s2.replace('+Key','')
-            # Print the source of the binding: s4 is the _hash.
-            letter = self.computeBindingLetter(s4)
-            s1 = '%s: ' % (s1) if s1 else ''
-            result.append('%s %-18s %s\n' % (letter,('%s%s' % (s1,s2)),s3))
+        data2,n = [],0
+        for pane,key,commandName,kind in data:
+            key = key.replace('+Key','')
+            letter = self.computeBindingLetter(kind)
+            pane = '%s: ' % (pane) if pane else ''
+            left = pane+key # pane and shortcut fields
+            n = max(n,len(left))
+            data2.append((letter,left,commandName),)
+            
+        for z in data2:
+            letter,left,commandName = z
+            result.append('%s %*s %s\n' % (letter,-n,left,commandName))
 
         if data:
             result.append('\n')
     #@+node:ekr.20120130101219.10182: *5* k.computeBindingLetter
-    def computeBindingLetter(self,fn):
+    def computeBindingLetter(self,kind):
         
         table = (
             ('M','myLeoSettings.leo'),
@@ -2247,11 +2252,11 @@ class keyHandlerClass:
             ('F','.leo'),
         )
         
-        for letter,fn2 in table:
-            if fn.lower() == fn2.lower():
+        for letter,kind2 in table:
+            if kind.lower() == kind2.lower():
                 return letter
         else:
-            return ' ' if fn.find('mode') == -1 else '@'
+            return ' ' if kind2.find('mode') == -1 else '@'
     #@+node:ekr.20061031131434.121: *4* k.printCommands
     def printCommands (self,event=None):
 
@@ -2262,20 +2267,20 @@ class keyHandlerClass:
         c.frame.log.clearTab(tabName)
 
         inverseBindingDict = k.computeInverseBindingDict()
-        data,n = [],4
+        data,n = [],0
         for commandName in sorted(c.commandsDict):
             dataList = inverseBindingDict.get(commandName,[('',''),])
             for z in dataList:
                 pane, key = z
-                s1 = '%s ' % (pane) if pane != 'all:' else ''
-                s2 = k.prettyPrintKey(key,brief=True)
-                if s2.find('+Key'): s2 = s2.replace('+Key','')
-                s3 = commandName
-                n = max(n,len(s1)+len(s2))
-                data.append((s1,s2,s3),)
+                pane = '%s ' % (pane) if pane != 'all:' else ''
+                key = k.prettyPrintKey(key,brief=True).replace('+Key','')
+                s1 = pane + key
+                s2 = commandName
+                n = max(n,len(s1))
+                data.append((s1,s2),)
 
         # This isn't perfect in variable-width fonts.
-        lines = ['%*s %s\n' % (-n-1,'%s%s' % (s1,s2),s3) for s1,s2,s3 in data]
+        lines = ['%*s %s\n' % (-n,s1,s2) for s1,s2 in data]
         g.es('',''.join(lines),tabName=tabName)
     #@+node:ekr.20061031131434.122: *4* repeatComplexCommand & helper
     def repeatComplexCommand (self,event):
