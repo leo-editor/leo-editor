@@ -1391,8 +1391,8 @@ class leoMenu:
         if g.app.unitTesting: return
 
         for data in table:
-            #@+<< get label, accelerator & command or continue >>
-            #@+node:ekr.20051022043713.1: *6* << get label, accelerator & command or continue >>
+            #@+<< get label, accel & command or continue >>
+            #@+node:ekr.20051022043713.1: *6* << get label, accel & command or continue >>
             ok = (
                 type(data) in (type(()), type([])) and
                 len(data) in (2,3)
@@ -1400,23 +1400,23 @@ class leoMenu:
 
             if ok:
                 if len(data) == 2:
-                    label,openWithData = data ; accelerator = None
+                    label,openWithData = data ; accel = None
                 else:
-                    label,accelerator,openWithData = data
-                    accelerator = k.shortcutFromSetting(accelerator)
-                    accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
+                    label,accel,openWithData = data
+                    accel = k.shortcutFromSetting(accel)
+                    if accel: accel = k.prettyPrintKey(accel)
             else:
                 g.trace('bad data in Open With table: %s' % repr(data))
                 continue # Ignore bad data
-            #@-<< get label, accelerator & command or continue >>
-            # g.trace(label,accelerator)
+            #@-<< get label, accel & command or continue >>
+            # g.trace(label,accel)
             realLabel = self.getRealMenuName(label)
             underline=realLabel.find("&")
             realLabel = realLabel.replace("&","")
             callback = self.defineOpenWithMenuCallback(openWithData)
 
             c.add_command(menu,label=realLabel,
-                accelerator=accelerator or '',
+                accel=accel or '',
                 command=callback,underline=underline)
     #@+node:ekr.20031218072017.2078: *4* createRecentFilesMenuItems (leoMenu)
     def createRecentFilesMenuItems (self):

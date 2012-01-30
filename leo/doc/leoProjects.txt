@@ -7449,6 +7449,8 @@ def createFrame(self, leoFrame):
     tabw.show()
     return dw
 #@+node:ekr.20111122080923.10183: *4* added log.orderedTabNames
+#@+node:ekr.20120130131703.10187: *4* Remove new_bindings constand and k.mergeShortcutList
+#@+node:ekr.20120130135119.10212: *4* Always use brief=True in k.prettyPrintKey
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
@@ -17065,7 +17067,7 @@ legend:
         for si in aList:
             assert isinstance(si,leoConfig.ShortcutInfo),si
             s1 = '' if si.pane=='all' else si.pane
-            s2 = k.prettyPrintKey(key,brief=True)
+            s2 = k.prettyPrintKey(key)
             s3 = si.commandName
             s4 = si.kind or '<no hash>'
             data.append((s1,s2,s3,s4),)
@@ -17149,7 +17151,7 @@ def printCommands (self,event=None):
         for z in dataList:
             pane, key = z
             pane = '%s ' % (pane) if pane != 'all:' else ''
-            key = k.prettyPrintKey(key,brief=True).replace('+Key','')
+            key = k.prettyPrintKey(key).replace('+Key','')
             s1 = pane + key
             s2 = commandName
             n = max(n,len(s1))
@@ -17182,7 +17184,7 @@ def computeCompletionList (self,defaultTabList,backspace):
             for z in dataList:
                 pane,key = z
                 s1a = '%s ' % (pane) if pane != 'all:' else ''
-                s1b = k.prettyPrintKey(key,brief=True)
+                s1b = k.prettyPrintKey(key)
                 s1 = s1a + s1b
                 s2 = commandName
                 data.append((s1,s2),)
@@ -17582,7 +17584,7 @@ legend:
         for si in aList:
             assert isinstance(si,leoConfig.ShortcutInfo),si
             s1 = '' if si.pane=='all' else si.pane
-            s2 = k.prettyPrintKey(key,brief=True)
+            s2 = k.prettyPrintKey(key)
             s3 = si.commandName
             s4 = si.kind or '<no hash>'
             data.append((s1,s2,s3,s4),)
@@ -25306,7 +25308,7 @@ def leo_update_shortcut(self,action,commandName):
                 assert isinstance(si,leoConfig.ShortcutInfo)
                 # Don't show mode-related bindings.
                 if not si.isModeBinding():
-                    accel = g.stripBrackets(k.prettyPrintKey(si.stroke))
+                    accel = k.prettyPrintKey(si.stroke)
                     if trace: g.trace('%20s %s' % (accel,si.dump()))
                     result.append(accel)
                     # Break here if we want to show only one accerator.
@@ -25315,47 +25317,6 @@ def leo_update_shortcut(self,action,commandName):
             action.setText(s)
     else:
         g.trace('can not happen: no action for %s' % (commandName))
-#@+node:ekr.20110211094454.15414: *6* mergeShortcutList
-def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
-
-    '''aList is a list of binding bunches for stroke.
-    
-    Return a new list consisting only of bindings from the highest priority .leo file.'''
-    
-    # Find the higest priority hash.
-    trace = False and not g.unitTesting ; verbose = False
-    k = self.c.k
-    sList,mList,fList = [],[],[]
-    for si in aList:
-        assert isinstance(si,leoConfig.ShortcutInfo),si
-        _hash = si.kind # 2012/01/23
-        if _hash.endswith('myleosettings.leo'):
-            mList.append(si)
-        elif _hash.endswith('leosettings.leo'):
-            sList.append(si)
-        elif _hash.endswith('.leo'):
-            fList.append(si)
-
-    result = fList or mList or sList or aList
-            
-    if trace:
-        def pr(stroke,message,aList):
-            print('mergeShortcutList: %15s %s %s' % (stroke,message,
-                '...\n'.join(['%15s %5s %s' % (
-                    k.shortcutFromSetting(z.val),z.pane,z.commandName)
-                        for z in aList])))
-        if fList and mList:
-            pr(stroke,'ignoring  mList',mList)
-            pr(stroke,'retaining fList',fList)
-        if fList and sList:
-            pr(stroke,'ignoring  sList',sList)
-            pr(stroke,'retaining fList',fList)
-        elif mList and sList:
-            pr(stroke,'ignoring  sList',sList)
-            pr(stroke,'retaining mList',mList)
-
-    if trace and verbose and len(result) > 1: g.trace(stroke,result)
-    return result
 #@+node:ekr.20110605121601.18460: *6* onAboutToShow & helpers (qtMenuWrapper)
 def onAboutToShow(self,*args,**keys):
     
@@ -25407,7 +25368,7 @@ def leo_update_shortcut(self,action,commandName):
                 assert isinstance(si,leoConfig.ShortcutInfo)
                 # Don't show mode-related bindings.
                 if not si.isModeBinding():
-                    accel = g.stripBrackets(k.prettyPrintKey(si.stroke))
+                    accel = k.prettyPrintKey(si.stroke)
                     if trace: g.trace('%20s %s' % (accel,si.dump()))
                     result.append(accel)
                     # Break here if we want to show only one accerator.

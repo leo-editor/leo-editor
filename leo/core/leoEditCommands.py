@@ -7286,7 +7286,7 @@ class helpCommandsClass (baseEditCommandsClass):
                 if si.commandName == commandName:
                     pane = g.choose(si.pane=='all','',' %s:' % (si.pane))
                     s1 = pane
-                    s2 = k.prettyPrintKey(key,brief=True)
+                    s2 = k.prettyPrintKey(key)
                     s3 = si.commandName
                     n1 = max(n1,len(s1))
                     n2 = max(n2,len(s2))

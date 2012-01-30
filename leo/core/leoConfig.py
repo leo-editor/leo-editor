@@ -2640,7 +2640,7 @@ class ShortcutName:
             # g.trace(isPlain,repr(shortcut))
             return isPlain and not self.isFKey(s)
     #@+node:ekr.20120127084215.10230: *3* sn.prettyPrint (based on k.prettyPrintKey)
-    def prettyPrint (self,brief=False):
+    def prettyPrint (self):
 
         trace = False and not g.unitTesting
         cm,s = self.cm,self.s
@@ -2661,7 +2661,7 @@ class ShortcutName:
                     if not shift:
                         s = prev + 'Shift+' + last
                 elif last.islower():
-                    if not prev and not brief:
+                    if not prev:
                         s = 'Key+' + last.upper()
                     else:
                         s = prev + last.upper()
@@ -2674,7 +2674,7 @@ class ShortcutName:
         if s.endswith(' '):
             s = s[:-1]+'Space'
 
-        return s if brief else '<%s>' % (s)
+        return s
     #@+node:ekr.20120127084215.10232: *3* sn.toChar (based on k.stroke2char)
     def toChar (self):
         

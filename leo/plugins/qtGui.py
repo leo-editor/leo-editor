@@ -7230,7 +7230,7 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
                     assert isinstance(si,leoConfig.ShortcutInfo)
                     # Don't show mode-related bindings.
                     if not si.isModeBinding():
-                        accel = g.stripBrackets(k.prettyPrintKey(si.stroke))
+                        accel = k.prettyPrintKey(si.stroke)
                         if trace: g.trace('%20s %s' % (accel,si.dump()))
                         result.append(accel)
                         # Break here if we want to show only one accerator.

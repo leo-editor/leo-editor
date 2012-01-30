@@ -8294,24 +8294,6 @@ def getShortcutHelper (self,c,key):
             if aList: self.mergeShortcuts(result,aList,key,tag='local leoSettigns')
 
     return result
-#@+node:ekr.20120129121306.10263: *5* mergeShortcuts (g.app.config)
-def mergeShortcuts (self,result,aList,key,tag):
-        # key and tag are for debugging.
-        # key is a conical command name, *not* a keystroke.
-    
-    '''Append all non-conflicting entries of aList to result.'''
-    
-    trace = True and key == 'new' and not g.unitTesting
-
-    # If there is a real override, **earlier** entries take precedence.
-    # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
-    
-    vals = [z.val for z in result]
-    aList = [z for z in aList if z.val not in vals]
-    result.extend(aList)
-
-    if trace and result:
-        g.trace(tag,key,['%s %s' % (z.val,z.pane) for z in result])
 #@+node:ekr.20120129121306.10264: *4* killShortcut (g.app.config) NOT USED YET
 def killShortcut (self,c,commandName,shortcut):
     
@@ -8404,5 +8386,64 @@ def tkbindingFromStroke (self,stroke):
 
     data3 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
         # The list of all other items.
+#@+node:ekr.20120129121306.10263: *3* mergeShortcuts (g.app.config)
+def mergeShortcuts (self,result,aList,key,tag):
+        # key and tag are for debugging.
+        # key is a conical command name, *not* a keystroke.
+    
+    '''Append all non-conflicting entries of aList to result.'''
+    
+    trace = True and key == 'new' and not g.unitTesting
+
+    # If there is a real override, **earlier** entries take precedence.
+    # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
+    
+    vals = [z.val for z in result]
+    aList = [z for z in aList if z.val not in vals]
+    result.extend(aList)
+
+    if trace and result:
+        g.trace(tag,key,['%s %s' % (z.val,z.pane) for z in result])
+#@+node:ekr.20110211094454.15414: *3* k.mergeShortcutList
+def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
+
+    '''aList is a list of binding bunches for stroke.
+    
+    Return a new list consisting only of bindings from the highest priority .leo file.'''
+    
+    # Find the higest priority hash.
+    trace = False and not g.unitTesting ; verbose = False
+    k = self.c.k
+    sList,mList,fList = [],[],[]
+    for si in aList:
+        assert isinstance(si,leoConfig.ShortcutInfo),si
+        _hash = si.kind # 2012/01/23
+        if _hash.endswith('myleosettings.leo'):
+            mList.append(si)
+        elif _hash.endswith('leosettings.leo'):
+            sList.append(si)
+        elif _hash.endswith('.leo'):
+            fList.append(si)
+
+    result = fList or mList or sList or aList
+            
+    if trace:
+        def pr(stroke,message,aList):
+            print('mergeShortcutList: %15s %s %s' % (stroke,message,
+                '...\n'.join(['%15s %5s %s' % (
+                    k.shortcutFromSetting(z.val),z.pane,z.commandName)
+                        for z in aList])))
+        if fList and mList:
+            pr(stroke,'ignoring  mList',mList)
+            pr(stroke,'retaining fList',fList)
+        if fList and sList:
+            pr(stroke,'ignoring  sList',sList)
+            pr(stroke,'retaining fList',fList)
+        elif mList and sList:
+            pr(stroke,'ignoring  sList',sList)
+            pr(stroke,'retaining mList',mList)
+
+    if trace and verbose and len(result) > 1: g.trace(stroke,result)
+    return result
 #@-all
 #@-leo

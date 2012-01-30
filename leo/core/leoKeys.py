@@ -1857,47 +1857,6 @@ class keyHandlerClass:
 
         # g.trace(g.listToString(sorted(k.bindingsDict))
         # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
-    #@+node:ekr.20110211094454.15414: *5* mergeShortcutList
-    def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
-
-        '''aList is a list of binding bunches for stroke.
-        
-        Return a new list consisting only of bindings from the highest priority .leo file.'''
-        
-        # Find the higest priority hash.
-        trace = False and not g.unitTesting ; verbose = False
-        k = self.c.k
-        sList,mList,fList = [],[],[]
-        for si in aList:
-            assert isinstance(si,leoConfig.ShortcutInfo),si
-            _hash = si.kind # 2012/01/23
-            if _hash.endswith('myleosettings.leo'):
-                mList.append(si)
-            elif _hash.endswith('leosettings.leo'):
-                sList.append(si)
-            elif _hash.endswith('.leo'):
-                fList.append(si)
-
-        result = fList or mList or sList or aList
-                
-        if trace:
-            def pr(stroke,message,aList):
-                print('mergeShortcutList: %15s %s %s' % (stroke,message,
-                    '...\n'.join(['%15s %5s %s' % (
-                        k.shortcutFromSetting(z.val),z.pane,z.commandName)
-                            for z in aList])))
-            if fList and mList:
-                pr(stroke,'ignoring  mList',mList)
-                pr(stroke,'retaining fList',fList)
-            if fList and sList:
-                pr(stroke,'ignoring  sList',sList)
-                pr(stroke,'retaining fList',fList)
-            elif mList and sList:
-                pr(stroke,'ignoring  sList',sList)
-                pr(stroke,'retaining mList',mList)
-
-        if trace and verbose and len(result) > 1: g.trace(stroke,result)
-        return result
     #@+node:ekr.20061031131434.103: *4* k.makeMasterGuiBinding
     def makeMasterGuiBinding (self,stroke,w=None):
 
@@ -2190,7 +2149,7 @@ class keyHandlerClass:
             for si in aList:
                 assert isinstance(si,leoConfig.ShortcutInfo),si
                 s1 = '' if si.pane=='all' else si.pane
-                s2 = k.prettyPrintKey(key,brief=True)
+                s2 = k.prettyPrintKey(key)
                 s3 = si.commandName
                 s4 = si.kind or '<no hash>'
                 data.append((s1,s2,s3,s4),)
@@ -2274,7 +2233,7 @@ class keyHandlerClass:
             for z in dataList:
                 pane, key = z
                 pane = '%s ' % (pane) if pane != 'all:' else ''
-                key = k.prettyPrintKey(key,brief=True).replace('+Key','')
+                key = k.prettyPrintKey(key).replace('+Key','')
                 s1 = pane + key
                 s2 = commandName
                 n = max(n,len(s1))
@@ -3551,7 +3510,7 @@ class keyHandlerClass:
                     stroke = si.stroke
                     if stroke not in (None,'None'):
                         s1 = key
-                        s2 = k.prettyPrintKey(stroke,brief=True)
+                        s2 = k.prettyPrintKey(stroke)
                         # g.trace(stroke,s2)
                         n = max(n,len(s1))
                         data.append((s1,s2),)
@@ -3591,7 +3550,7 @@ class keyHandlerClass:
                 for z in dataList:
                     pane,key = z
                     s1a = '%s ' % (pane) if pane != 'all:' else ''
-                    s1b = k.prettyPrintKey(key,brief=True)
+                    s1b = k.prettyPrintKey(key)
                     s1 = s1a + s1b
                     s2 = commandName
                     data.append((s1,s2),)
@@ -3894,8 +3853,9 @@ class keyHandlerClass:
             # g.trace(isPlain,repr(shortcut))
             return isPlain and not self.isFKey(shortcut)
     #@+node:ekr.20061031131434.191: *4* k.prettyPrintKey
-    def prettyPrintKey (self,stroke,brief=False,trace=False):
+    def prettyPrintKey (self,stroke,brief=False):
 
+        trace = False and not g.unitTesting
         k = self
         s = stroke and g.stripBrackets(stroke.strip())
         if not s: return ''
@@ -3927,9 +3887,8 @@ class keyHandlerClass:
                 s = last
         if s.endswith(' '):
             s = s[:-1]+'Space' # 2010/11/06
-
-        # g.trace(stroke,s)
-        return g.choose(brief,s,'<%s>' % s)
+            
+        return s
     #@+node:ekr.20061031131434.184: *4* k.shortcutFromSetting (uses.guiBindNamesDict)
     def shortcutFromSetting (self,setting,addKey=True):
 
