@@ -8389,5 +8389,20 @@ def tkbindingFromStroke (self,stroke):
 
     # g.trace('<%s>' % stroke)
     return stroke
+#@+node:ekr.20120130101219.10181: *3* Unused from printBindingsHelper
+
+    data1 = [z for z in data if z and z[1] and len(z[1][n:]) == 1]
+        # The list of all items with only one character following the prefix.
+        
+    # Special case for Alt-Key and Ctrl-Key bindings.
+    if prefix in ('Alt','Ctrl'):
+        prefix2 = prefix+'+Key'
+        n2 = prefix2 and len(prefix2)+1 or 0
+        data2 = [z for z in data if z and z[1] and len(z[1][n2:]) == 1]
+    else:
+        data2 = []
+
+    data3 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
+        # The list of all other items.
 #@-all
 #@-leo

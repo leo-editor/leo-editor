@@ -2178,97 +2178,80 @@ class keyHandlerClass:
     [F] loaded .leo File
     [M] myLeoSettings.leo
     [@] mode
+
     '''
-        legend = g.adjustTripleString(legend,c.tab_width)
-        data = [] ; n1 = 4 ; n2 = 20
+
         if not d: return g.es('no bindings')
+        legend = g.adjustTripleString(legend,c.tab_width)
+        data = []
         for key in sorted(d):
             aList = d.get(key,[])
             for si in aList:
                 assert isinstance(si,leoConfig.ShortcutInfo),si
-                pane = g.choose(si.pane=='all','',' %s:' % (si.pane))
-                s1 = pane
+                s1 = '' if si.pane=='all' else si.pane
                 s2 = k.prettyPrintKey(key,brief=True)
                 s3 = si.commandName
-                s4 = si.kind or '<no hash>' # was si.get('_hash))
-                n1 = max(n1,len(s1))
-                n2 = max(n2,len(s2))
+                s4 = si.kind or '<no hash>'
                 data.append((s1,s2,s3,s4),)
 
         # Print keys by type:
         result = []
         result.append('\n'+legend)
-        sep = '-' * n1
         for prefix in (
             'Alt+Ctrl+Shift','Alt+Ctrl','Alt+Shift','Alt', # 'Alt+Key': done by Alt.
             'Ctrl+Meta+Shift','Ctrl+Meta','Ctrl+Shift','Ctrl', # Ctrl+Key: done by Ctrl.
             'Meta+Key','Meta+Shift','Meta',
             'Shift',
-            # 2011/10/25: Careful: longer prefixes must come before shorter prefixes.
+            # Careful: longer prefixes must come before shorter prefixes.
         ):
             data2 = []
             for item in data:
                 s1,s2,s3,s4 = item
                 if s2.startswith(prefix):
                     data2.append(item)
-            # g.es('','%s %s' % (sep, prefix),tabName=tabName)
-            result.append('%s %s\n' % (sep, prefix))
-            self.printBindingsHelper(result,data2,n1,n2,prefix=prefix)
+            result.append('***** %s...\n' % prefix)
+            self.printBindingsHelper(result,data2,prefix=prefix)
             # Remove all the items in data2 from data.
             # This must be done outside the iterator on data.
             for item in data2:
                 data.remove(item)
         # Print all plain bindings.
-        result.append('%s %s\n' % (sep, 'Plain Keys'))
-        self.printBindingsHelper(result,data,n1,n2,prefix=None)
+        result.append('***** Plain Keys...\n')
+        self.printBindingsHelper(result,data,prefix=None)
         if not g.unitTesting:
             g.es('',''.join(result),tabName=tabName)
         state = k.unboundKeyAction 
         k.showStateAndMode()
         return result # for unit test.
     #@+node:ekr.20061031131434.120: *5* printBindingsHelper
-    def printBindingsHelper (self,result,data,n1,n2,prefix):
+    def printBindingsHelper (self,result,data,prefix):
+     
+        data.sort(key=lambda x: x[1])
 
-        n = prefix and len(prefix)+1 or 0 # Add 1 for the '+' after the prefix.
+        for s1,s2,s3,s4 in data:
+            if s2.find('+Key') > -1:
+                s2 = s2.replace('+Key','')
+            # Print the source of the binding: s4 is the _hash.
+            letter = self.computeBindingLetter(s4)
+            s1 = '%s: ' % (s1) if s1 else ''
+            result.append('%s %-18s %s\n' % (letter,('%s%s' % (s1,s2)),s3))
 
-        data1 = [z for z in data if z and z[1] and len(z[1][n:]) == 1]
-            # The list of all items with only one character following the prefix.
-            
-        # Special case for Alt-Key and Ctrl-Key bindings.
-        if prefix in ('Alt','Ctrl'):
-            prefix2 = prefix+'+Key'
-            n2 = prefix2 and len(prefix2)+1 or 0
-            data2 = [z for z in data if z and z[1] and len(z[1][n2:]) == 1]
+        if data:
+            result.append('\n')
+    #@+node:ekr.20120130101219.10182: *5* k.computeBindingLetter
+    def computeBindingLetter(self,fn):
+        
+        table = (
+            ('M','myLeoSettings.leo'),
+            ('S','leoSettings.leo'),
+            ('F','.leo'),
+        )
+        
+        for letter,fn2 in table:
+            if fn.lower() == fn2.lower():
+                return letter
         else:
-            data2 = []
-
-        data3 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
-            # The list of all other items.
-
-        # This isn't perfect in variable-width fonts.
-        for data in (data1,data2):
-            data.sort(key=lambda x: x[1])
-                # key is a function that extracts args.
-            for s1,s2,s3,s4 in data:
-                
-                if s2.find('+Key') > -1:
-                    s2 = s2.replace('+Key','')
-                
-                # 2011/02/10: Print the source of the binding: s4 is the _hash.
-                s4 = s4.lower()
-                if s4.endswith('myleosettings.leo'):
-                    letter = 'M'
-                elif s4.endswith('leosettings.leo'):
-                    letter = 'S'
-                elif s4.endswith('.leo'):
-                    letter = 'F'
-                elif s4.find('mode') != -1:
-                    letter = '@' # the full mode.
-                else:
-                    letter = ' '
-                
-                # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
-                result.append('%s %*s %*s %s\n' % (letter,-n1,s1,-(min(12,n2)),s2,s3))
+            return ' ' if fn.find('mode') == -1 else '@'
     #@+node:ekr.20061031131434.121: *4* k.printCommands
     def printCommands (self,event=None):
 
@@ -2279,22 +2262,20 @@ class keyHandlerClass:
         c.frame.log.clearTab(tabName)
 
         inverseBindingDict = k.computeInverseBindingDict()
-
-        data = [] ; n1 = 4 ; n2 = 20
+        data,n = [],4
         for commandName in sorted(c.commandsDict):
             dataList = inverseBindingDict.get(commandName,[('',''),])
             for z in dataList:
                 pane, key = z
-                s1 = pane
+                s1 = '%s ' % (pane) if pane != 'all:' else ''
                 s2 = k.prettyPrintKey(key,brief=True)
                 if s2.find('+Key'): s2 = s2.replace('+Key','')
                 s3 = commandName
-                n1 = max(n1,len(s1))
-                n2 = max(n2,len(s2))
+                n = max(n,len(s1)+len(s2))
                 data.append((s1,s2,s3),)
 
         # This isn't perfect in variable-width fonts.
-        lines = ['%*s %*s %s\n' % (-n1,s1,-(min(12,n2)),s2,s3) for s1,s2,s3 in data]
+        lines = ['%*s %s\n' % (-n-1,'%s%s' % (s1,s2),s3) for s1,s2,s3 in data]
         g.es('',''.join(lines),tabName=tabName)
     #@+node:ekr.20061031131434.122: *4* repeatComplexCommand & helper
     def repeatComplexCommand (self,event):
@@ -3594,26 +3575,23 @@ class keyHandlerClass:
 
         if k.mb_tabList:
             k.mb_tabListIndex = -1 # The next item will be item 0.
-
             if not backspace:
                 k.setLabel(k.mb_prompt + common_prefix)
 
             inverseBindingDict = k.computeInverseBindingDict()
-            data = [] ; n1 = 20; n2 = 4
+            data,n = [],0
             for commandName in k.mb_tabList:
                 dataList = inverseBindingDict.get(commandName,[('',''),])
                 for z in dataList:
                     pane,key = z
-                    s1 = commandName
-                    s2 = pane
-                    s3 = k.prettyPrintKey(key)
-                    n1 = max(n1,len(s1))
-                    n2 = max(n2,len(s2))
+                    s1 = '%s ' % (pane) if pane != 'all:' else ''
+                    s2 = k.prettyPrintKey(key,brief=True)
+                    s3 = commandName
                     data.append((s1,s2,s3),)
-            aList = '\n'.join(
-                ['%*s %*s %s' % (-(min(20,n1)),s1,n2,s2,s3)
-                    for s1,s2,s3 in data])
-            g.es('',aList,tabName=tabName)
+                    n = max(n,len(s1)+len(s2))
+            # Maybe .format would be easier ;-)
+            aList = ['%*s %s' % (-n,('%s%s' % (s1,s2)),s3) for s1,s2,s3 in data]
+            g.es('','\n'.join(aList),tabName=tabName)
         c.bodyWantsFocus()
     #@+node:ekr.20061031131434.177: *4* k.doBackSpace
     # Used by getArg and fullCommand.
