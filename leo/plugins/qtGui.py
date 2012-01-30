@@ -989,6 +989,41 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         # tab stop in pixels - no config for this (yet)        
         w.setTabStopWidth(24)
     #@+node:ekr.20110605121601.18077: *4* leoMoveCursorHelper (leoTextEditWidget)
+    def cursorLineOnScreen(self):
+        
+        '''Line number of the cursor relative to the top visble
+           line.  Assumes all lines are the same size as each other.'''
+        
+        rect = self.widget.cursorRect()
+        return rect.y() / rect.height()
+
+    def moveCursorByPage(self, op, mode):
+        # Capture the current cursor line
+        l = self.cursorLineOnScreen()
+        
+        # Down is positive and up is negative
+        if (op == QtGui.QTextCursor.Down):
+            dir = 1
+        else:
+            dir = -1
+        
+        # Move the scrollbar up one page (does not affect cursor position)
+        w = self.widget
+        sb = w.verticalScrollBar()
+        sbPos = sb.sliderPosition()
+        sb.setSliderPosition(sbPos + dir*sb.pageStep())
+
+        cursor = w.textCursor()    
+        if (sbPos != sb.sliderPosition()):
+            # Move the cursor to the same line relative to the screen
+            # as it was before
+            cursor.movePosition(op, mode, dir * (l - self.cursorLineOnScreen()))
+        else:
+            # First or last page: move cursor a screenful worth of lines
+            # to ensure getting curos to top or bottom.
+            cursor.movePosition(op, mode, w.height() / w.cursorRect().height())
+        w.setTextCursor(cursor)
+
     def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
 
         '''Move the cursor in a QTextEdit.'''
@@ -1017,9 +1052,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             return g.trace('can not happen: bad kind: %s' % kind)
 
         if kind in ('page-down','page-up'):
-            cursor = w.textCursor()
-            cursor.movePosition(op,mode,linesPerPage)
-            w.setTextCursor(cursor)
+            self.moveCursorByPage(op, mode)
         elif kind == 'exchange': # exchange-point-and-mark
             cursor = w.textCursor()
             anchor = cursor.anchor()
