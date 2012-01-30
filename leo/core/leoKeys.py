@@ -3584,13 +3584,13 @@ class keyHandlerClass:
                 dataList = inverseBindingDict.get(commandName,[('',''),])
                 for z in dataList:
                     pane,key = z
-                    s1 = '%s ' % (pane) if pane != 'all:' else ''
-                    s2 = k.prettyPrintKey(key,brief=True)
-                    s3 = commandName
-                    data.append((s1,s2,s3),)
-                    n = max(n,len(s1)+len(s2))
-            # Maybe .format would be easier ;-)
-            aList = ['%*s %s' % (-n,('%s%s' % (s1,s2)),s3) for s1,s2,s3 in data]
+                    s1a = '%s ' % (pane) if pane != 'all:' else ''
+                    s1b = k.prettyPrintKey(key,brief=True)
+                    s1 = s1a + s1b
+                    s2 = commandName
+                    data.append((s1,s2),)
+                    n = max(n,len(s1))
+            aList = ['%*s %s' % (-n,s1,s2) for s1,s2 in data]
             g.es('','\n'.join(aList),tabName=tabName)
         c.bodyWantsFocus()
     #@+node:ekr.20061031131434.177: *4* k.doBackSpace
