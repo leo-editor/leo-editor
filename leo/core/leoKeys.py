@@ -1060,7 +1060,7 @@ class keyHandlerClass:
         self.dispatchEvent = None
         self.inited = False # Set at end of finishCreate.
         self.w = c.frame.miniBufferWidget
-        self.new_bindings = True
+        ### self.new_bindings = True
         self.useGlobalKillbuffer = useGlobalKillbuffer
         self.useGlobalRegisters = useGlobalRegisters
 
@@ -1834,11 +1834,12 @@ class keyHandlerClass:
         # g.trace(list(d2.keys()))
         
         # Step 2: Remove overridden entries from aList for each stroke.
-        if self.new_bindings:
-            for stroke in sorted(d2):
-                aList2 = d2.get(stroke)
-                aList2 = self.mergeShortcutList(aList2,stroke)
-                d2 [stroke] = aList2
+        ###
+        # if self.new_bindings:
+            # for stroke in sorted(d2):
+                # aList2 = d2.get(stroke)
+                # aList2 = self.mergeShortcutList(aList2,stroke)
+                # d2 [stroke] = aList2
 
         # Step 3: make the bindings.
         for stroke in sorted(d2):
