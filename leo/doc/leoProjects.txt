@@ -2369,6 +2369,377 @@ if 1:
     print('parse:    %2.3f sec.' % (t3-t2))
     print('traverse: %2.3f sec.' % (t4-t3))
     print('total:    %2.3f sec.' % (t4-t1))
+#@+node:ekr.20120116073928.10114: *3* Unit tests for settings
+#@+node:ekr.20120126050844.10386: *4* @ignore print dicts unit tests
+#@+node:ekr.20120117095916.10124: *5* @test printMenusList
+def printMenusList(aList,level=0):
+    
+    for z in aList:
+        a,b,c = z
+        print('*** kind',a)
+        if type(b) in (type(()),type([])):
+            for z2 in b:
+                a1,b1,c1 = z2
+                if a1.startswith('@menu') and type(b1) in (type(()),type([])):
+                    print()
+                    print('*** inner menu: %s' % (level+1))
+                    print(a1)
+                    for z3 in b1:
+                        print(z3)
+                    if c1: print(c1)
+                else:
+                    print(z2)
+            if c: print(c)
+        else:
+            print(b)
+        print()
+        break #
+        
+printMenusList(c.config.getMenusList())
+       
+#@+node:ekr.20120117095916.10140: *5* @test printInverseBindingDict
+print('\ninverseBindingDict...\n')
+
+d = c.k.computeInverseBindingDict()
+
+for key in sorted(list(d.keys())):
+
+    if 1 == len(d.get(key)):
+        print(key,d.get(key))
+    else:
+        print()
+        print(key)
+        print(d.get(key))
+        print()
+#@+node:ekr.20120123113111.10925: *5* @test printBindingsDict
+import leo.core.leoConfig as leoConfig # for ShortcutInfo
+    
+partial = True
+
+d = c.k.bindingsDict
+    # Keys are shortcuts; values are *lists* leoConfig.ShortcutInfo objects.
+    
+print('\nk.bindingsDict%s...\n' % ' (partial)' if partial else '')
+    
+for key in list(sorted(d.keys())):
+    aList = d.get(key,[])
+    for b in aList:
+        assert isinstance(b,leoConfig.ShortcutInfo)
+        if not partial or b.kind != 'leosettings.leo':
+            print(b)
+#@+node:ekr.20120117095916.10141: *5* @test printMasterBindingsDict
+partial = True
+
+panes = ('all','body','button','log','tree','text',
+    'command','insert','overwrite',)
+
+d = c.k.masterBindingsDict
+    # Keys are scope names (in panes) or mode names.
+    # Values are dicts:
+        # keys are strokes; values are leoConfig.ShortcutInfo objects.
+        
+print('\nk.masterBindingsDict%s...\n' % ' (partial)' if partial else '')
+
+for pane in sorted(list(d.keys())):
+    kind = 'pane' if pane in panes else 'mode'
+    print('%s: %s...' % (kind,pane))
+    d2 = d.get(pane)
+    for stroke in sorted(list(d2.keys())):
+        b = d2.get(stroke)
+        if not partial or b.kind != 'leosettings.leo':
+            print('%6s %25s %17s %s' % (b.pane,stroke,b.kind,b.commandName))
+            assert b.pane == pane
+            assert b.stroke == stroke
+    print()
+#@+node:ekr.20120119051917.10263: *5* @test printConfigDicts
+# These dicts will only exist when unit tests run locally.
+
+d = g.app.config.localOptionsDict.get(c.hash())
+if d:
+    fn = d.get('_hash')
+    keys = list(d.keys())
+    print('***** localOptionsDict...')
+    for key in keys:
+        if key != '_hash':
+            b = d.get(key)
+            assert b.tag == 'setting'
+            if b.kind == 'shortcut':
+                print() ; print(key) ; print(b)
+                    
+aList = g.app.config.localOptionsList
+if aList:
+    print() ; print('***** localOptionsList...')
+    for d in aList:
+        fn = d.get('_hash')
+        print()
+        print('local shortcuts for %s...' % fn)
+        keys = sorted(list(d.keys()))
+        for key in keys:
+            if key != '_hash' and key.startswith('run'):
+                b = d.get(key)
+                if b.kind == 'shortcut':
+                    print() ; print(key) ; print(b)
+#@+node:ekr.20120126080450.10187: *4* @ignore passed
+#@+node:ekr.20120120095156.10263: *5* @test findDictForFile
+def findDictForFile(fn):
+    
+    '''Find the configuration dict correspoinding to fn.'''
+    
+    short_fn = g.shortFileName(fn).lower()
+
+    for d in g.app.config.localOptionsList:
+        h = g.shortFileName(d.get('_hash')).lower()
+        if short_fn == h:
+            return d
+    else:
+        g.trace('no options dict for: %s' % (fn))
+        return {}
+        
+table = (c.fileName(),'myLeoSettings.leo','leoSettings.leo')
+
+for fn in table:
+    d = findDictForFile(fn)
+    print('%20s %s' % (g.shortFileName(fn),d and len(list(d.keys())) or 0))
+#@+node:ekr.20120126080450.10189: *5* @test mode-related info
+@
+
+g.app.config.modeCommandsDict
+    Keys are command names: enter-x-mode.
+    Values are inner dictionaries:
+        Keys are command names, values are lists of ShortcutInfo nodes.
+@c
+
+d = g.app.config.modeCommandsDict
+    
+for key in sorted(d.keys()):
+    print('*** mode ***',key)
+    d2 = d.get(key)
+    for key2 in sorted(d2.keys()):
+        if key2 == '_hash':
+            pass # print('_hash',d2.get(key2))
+        else:
+            aList = d2.get(key2)
+            print(key2)
+            for si in aList:
+                print('   ',si)
+#@+node:ekr.20120120095156.10262: *5* @test types of contents of settings dicts
+@
+ivar                    Keys                Values
+----                    ----                ------
+c.commandsDict          command names (1)   functions
+k.inverseCommandsDict   func.__name__       command names
+k.bindingsDict          shortcuts           list of ShortcutInfo objects
+k.masterBindingsDict    scope names (2)     inner masterBindingDicts (3)
+k.masterGuiBindingsDict strokes             list of widgets in which stoke is bound
+k.settingsNameDict (4)  settings.lower()    "Real" Tk specifiers
+inverseBindingDict (5)  command names       lists of tuples (pane,key)
+modeCommandsDict (6)    command name (7)    inner modeCommandsDicts (8)
+
+Notes:
+(1) Command names are minibuffer names (strings)
+(2) Scope names are 'all','text',etc.
+(3) inner masterBindingDicts: Keys are strokes; values are ShortcutInfo objects.
+(4) k.settingsNameDict has no inverse.
+(5) inverseBindingDict is **not** an ivar: it is computed by k.computeInverseBindingDict.
+(6) A global dict: g.app.gui.modeCommandsDict
+(7) enter-x-command
+(8) Keys are command names, values are lists of ShortcutInfo objects.
+@c
+
+import leo.core.leoConfig as leoConfig
+si_type = leoConfig.ShortcutInfo
+disabled_func_type = None # Should be any bound method.
+k = c.k
+
+@others
+
+test_dict_of_objects(c.commandsDict,type('s'),disabled_func_type,'commandsDict')
+test_dict_of_objects(k.inverseCommandsDict,type('s'),type('s'),'inverseCommandsDict')
+test_dict_of_lists(k.bindingsDict,si_type,'bindingsDict')
+test_dict_of_dicts(k.masterBindingsDict,si_type,'masterBindingsDict')
+test_dict_of_lists(k.masterGuiBindingsDict,None,'masterGuiBindingsDict')
+test_dict_of_objects(k.settingsNameDict,type('s'),type('s'),'settingsNameDict')
+test_dict_of_lists(k.computeInverseBindingDict(),type(tuple()),'inverseBindingDict')
+
+# Test individual dicts separately.
+d = g.app.config.modeCommandsDict
+test_dict_of_dicts(d,None,'modeCommandsDict')
+for key in sorted(d.keys()):
+    if key != '_hash':
+        d2 = d.get(key)
+        test_dict_of_lists(d2,si_type,'inner modeCommandsDict')
+            # This requires a hack to special-case the
+            # '*entry-commands*' and '*command-prompt*' keys.
+#@+node:ekr.20120126080450.10193: *6* test_dict_of_dicts
+def test_dict_of_dicts(d,theType,tag):
+
+    assert d,tag
+
+    for key in d.keys():
+        d2 = d.get(key)
+        if key == '_hash':
+            assert type(d2) == type('s')
+        else:
+            assert type(d2) == type({})
+            for key in d2.keys():
+                obj = d2.get(key)
+                if theType:
+                    assert type(obj) == theType,repr(obj)
+#@+node:ekr.20120126080450.10191: *6* test_dict_of_lists
+def test_dict_of_lists(d,theType,tag):
+
+    assert d,tag
+
+    for key in d.keys():
+        obj = d.get(key)
+        if key == '_hash':
+            assert type(obj)==type('s'),repr(obj)
+        elif key in ('*entry-commands*','*command-prompt*'):
+            # Special case for g.app.config.modeCommandsDict
+            assert type(obj)==type([]),repr(obj)
+        else:
+            assert type(obj) == type([])
+            # Don't check types of list elements if theType is None.
+            if theType:
+                for z in obj:
+                    assert type(z)==theType,'key: %s obj: %s' % (key,repr(obj))
+#@+node:ekr.20120126080450.10195: *6* test_dict_of_objects
+def test_dict_of_objects(d,keyType,valueType,tag):
+
+    assert d,tag
+
+    for key in d.keys():
+        assert type(key) == keyType,repr(key)
+        obj = d.get(key)
+        # Don't check type of obj if valueType is None.
+        if valueType:
+            assert type(obj) == valueType,'\nobj: %s\nvalueType: %s' % (repr(obj),valueType)
+#@+node:ekr.20120126080450.10194: *6* Unused
+# import types
+# types.ListType does not exist in Python 3.x.
+# assert isinstance(aList,list().__class__)
+#@+node:ekr.20120127084215.10238: *5* @test make_settings_dicts
+@others
+
+# import os ; os.system('cls')
+    
+d1 = g.app.config.immutable_leo_settings_shortcuts_dict
+d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
+d3 = g.app.config.merge_settings_dicts(d1,d2)
+
+if False:
+    patterns = (
+        'backward-find-character-extend-selection',
+    )
+    for pattern in patterns:
+        print(dump_dict(d1,pattern,tag='d1'))
+        print(dump_dict(d2,pattern,tag='d2'))
+        print(dump_dict(d3,pattern,tag='d3'))
+
+test(d1,d2,d3)
+#@+node:ekr.20120127145909.10227: *6* dump & dump_dict
+def dump(aList,pattern=None,tag=None):
+    
+    return '\n'.join([repr(z) for z in aList])
+    
+
+def dump_dict(d,pattern=None,tag=None):
+    
+    result = [] # '\ndump of %s...' % (tag)
+    
+    for key in d.keys():
+        if key != '_hash' and pattern in (key,None):
+            result.append(key)
+            aList = d.get(key)
+            for z in aList:
+                result.append('    %s' % (z))
+                
+    return '\n'.join(result)
+#@+node:ekr.20120127084215.10239: *6* test
+def test(old_d,new_d,result_d):
+    
+    '''Test that result_d is the result of upating old_d with new_d.
+    
+    This test is tricky: only inverted dicts have ShortcutInfo nodes as keys.'''
+    
+    invert,uninvert = g.app.config.invert,g.app.config.uninvert
+
+    # Compute the inversions of all the dicts.
+    inv_old,inv_new,inv_res = invert(old_d),invert(new_d),invert(result_d)
+    
+    # Part 1: Ensure we test all keys.
+    keys = list(inv_old.keys())
+    keys.extend(list(inv_new.keys()))
+    keys.extend(list(inv_res.keys()))
+    keys = sorted(list(set(keys)))
+    assert None not in keys
+    for key in inv_old.keys(): assert key in keys,key
+    for key in inv_new.keys(): assert key in keys,key
+    for key in inv_res.keys(): assert key in keys,key
+    
+    # Part 2: Carefully test the inverted result.
+    def si_name_key(si): return si.commandName or ''
+
+    for key in keys:
+        if key != '_hash':
+            # Compute the *sorted* list of 
+            res_list = sorted(inv_res.get(key,[]),key=si_name_key)
+            old_list = sorted(inv_old.get(key,[]),key=si_name_key)
+            new_list = sorted(inv_new.get(key,[]),key=si_name_key)
+            assert res_list,'no res_list.get(%s)' % (key)
+            # if new_list: print(key,dump(new_list))
+            if new_list:
+                assert new_list == res_list,'key %s\nnew:\n%s\nres:\n%s' % (
+                    key,dump(new_list),dump(res_list))
+            else:
+                assert old_list == res_list,'key %s\nold:\n%s\nres:\n%s' % (
+                    key,dump(old_list),dump(res_list))
+    
+    # Part 3: Test that result_d == uninvert(invert(result_d)).
+    # A.  They must have the same keys.
+    unv_res = uninvert(inv_res)
+    assert sorted(list(result_d.keys())) == sorted(list(unv_res.keys()))
+
+    # B. The values of for each key must match after being sorted.
+    def si_val_key(si): return si.val or ''
+        
+    for key in sorted(result_d.keys()):
+        if key != '_hash':
+            res_list = sorted(result_d.get(key,[]),key=si_val_key)
+            unv_list = sorted( unv_res.get(key,[]),key=si_val_key)
+            assert res_list == unv_list,'key %s\nres:\n%s\nunv:\n%s' % (
+                key,dump(res_list),dump(unv_list))
+   
+#@+node:ekr.20120126080450.10188: *4* @ignore to do
+#@+node:ekr.20120129121306.10267: *5* @test g.app.canonicalize_shortcut (Doesn't work)
+# This can't work without completely redefining shortcutFromSetting.
+# The problem is that canonicalizing a setting twice is wrong at present.
+# For example, Shift-a gets translated to A, and A gets translated to a.
+
+import string
+table = []
+
+for ch in string.digits:
+    table.append((ch,ch),)
+    
+for ch in string.ascii_lowercase:
+    table.append((ch,ch),)
+    
+for ch in string.ascii_uppercase:
+    for ch2 in ('shift+%s' % (ch),'Shift+%s' % (ch),'shift-%s' % (ch),'Shift-%s' % (ch)):
+        table.append((ch2,ch2),)
+        
+table2 = ('Tab','tab','Shift+tab','Ctrl-tab')
+
+for ch in table2:
+    table.append((ch,ch),)
+    
+for kind,ch in table:
+    c_ch = g.app.canonicalize_shortcut(ch)
+    # print(ch,c_ch)
+    c_ch2 = g.app.canonicalize_shortcut(c_ch)
+    if c_ch != c_ch2:
+        print(ch,c_ch,c_ch2)
 #@+node:ekr.20110621074459.14908: ** 4.9.1
 #@+node:ekr.20111113141805.10062: *3* Code
 #@+node:ekr.20111109105907.9796: *4* Simplified g.pr
@@ -16660,30 +17031,28 @@ fc.writeDirtyAtFileNodes
 #@+node:ekr.20061031131434.3: *5* << about key dicts >>
 @nocolor
 @
-ivars:
 
-c.commandsDict:
-    Keys are emacs command names; values are functions f.
+ivar                    Keys                Values
+----                    ----                ------
+c.commandsDict          command names (1)   functions
+k.inverseCommandsDict   func.__name__       command names
+k.bindingsDict          shortcuts           lists of ShortcutInfo objects
+k.masterBindingsDict    scope names (2)     Interior masterBindingDicts (3)
+k.masterGuiBindingsDict strokes             list of widgets in which stoke is bound
+k.settingsNameDict (4)  settings.lower()    "Real" Tk specifiers
+inverseBindingDict (5)  command names       lists of tuples (pane,key)
+modeCommandsDict (6)    command name (7)    inner modeCommandsDicts (8)
 
-k.inverseCommandsDict:
-    Keys are f.__name__; values are emacs command names.
+Notes:
 
-k.bindingsDict:
-    Keys are shortcuts; values are *lists* of ShortcutInfo objects.
-
-k.masterBindingsDict:
-    Keys are scope names: 'all','text',etc. or mode names.
-    Values are dicts:  keys are strokes, values are ShortcutInfo objects.
-
-k.masterGuiBindingsDict:
-    Keys are strokes; value is a list of widgets for which stroke is bound.
-
-k.settingsNameDict:
-    Keys are lowercase settings; values are 'real' Tk key specifiers.
-    Important: this table has no inverse.
-
-inverseBindingDict: not an ivar (computed by k.computeInverseBindingDict):
-    Keys are emacs command names; values are *lists* tuples (pane, key)
+(1) Command names are minibuffer names (strings)
+(2) Scope names are 'all','text',etc.
+(3) Interior masterBindingDicts: Keys are strokes; values are ShortcutInfo objects.
+(4) k.settingsNameDict has no inverse.
+(5) inverseBindingDict is **not** an ivar: it is computed by k.computeInverseBindingDict.
+(6) A global dict: g.app.gui.modeCommandsDict
+(7) enter-x-command
+(8) Keys are command names, values are lists of ShortcutInfo objects.
 #@+node:ekr.20061031131434.146: *5* masterKeyHandler & helpers
 master_key_count = 0
 
@@ -16734,11 +17103,13 @@ def masterKeyHandler (self,event):
             return k.handleUnboundKeys(event,char,stroke)
 
     # 2011/02/08: Use getPandBindings for *all* keys.
-    b = k.getPaneBinding(stroke,w)
-    if b:
+    si = k.getPaneBinding(stroke,w)
+    if si:
+        assert isinstance(si,leoConfig.ShortcutInfo),si
         if traceGC: g.printNewObjects('masterKey 3')
-        if trace: g.trace('   bound',stroke,b.func.__name__)
-        return k.masterCommand(commandName=b.commandName,event=event,func=b.func,stroke=b.stroke)
+        if trace: g.trace('   bound',stroke,si.func.__name__)
+        return k.masterCommand(event=event,
+            commandName=si.commandName,func=si.func,stroke=si.stroke)
     else:
         if traceGC: g.printNewObjects('masterKey 4')
         if trace: g.trace(' unbound',stroke)
@@ -16825,12 +17196,13 @@ def doMode (self,event,state,stroke):
     # Third, pass keys to user modes.
     d =  k.masterBindingsDict.get(state)
     if d:
-        b = d.get(stroke)
-        if b:
+        si = d.get(stroke)
+        if si:
+            assert isinstance(si,leoConfig.ShortcutInfo),si
             if trace: g.trace('calling generalModeHandler',stroke)
             k.generalModeHandler (event,
-                commandName=b.commandName,func=b.func,
-                modeName=state,nextMode=b.nextMode)
+                commandName=si.commandName,func=si.func,
+                modeName=state,nextMode=si.nextMode)
             return True,'break'
         else:
             # New in Leo 4.5: unbound keys end mode.
@@ -16888,16 +17260,17 @@ def getPaneBinding (self,stroke,w):
                     (key,name,stroke,stroke in d))
                 # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
             if d:
-                b = d.get(stroke)
-                if b:
+                si = d.get(stroke)
+                if si:
+                    assert isinstance(si,leoConfig.ShortcutInfo),si
                     table = ('previous-line','next-line',)
-                    if key == 'text' and name == 'head' and b.commandName in table:
-                        if trace: g.trace('***** special case',b.commandName)
+                    if key == 'text' and name == 'head' and si.commandName in table:
+                        if trace: g.trace('***** special case',si.commandName)
                         pass
                     else:
                         if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
-                            key,name,repr(b.stroke),b.commandName))
-                        return b
+                            key,name,repr(si.stroke),si.commandName))
+                        return si
 #@+node:ekr.20061031131434.152: *6* handleMiniBindings
 def handleMiniBindings (self,event,state,stroke):
 
@@ -16921,20 +17294,21 @@ def handleMiniBindings (self,event,state,stroke):
         for pane in ('mini','all','text'):
             d = k.masterBindingsDict.get(pane)
             if d:
-                b = d.get(stroke)
-                if b:
-                    if b.commandName == 'replace-string' and state == 'getArg':
+                si = d.get(stroke)
+                if si:
+                    assert isinstance(si,leoConfig.ShortcutInfo),si
+                    if si.commandName == 'replace-string' and state == 'getArg':
                         if trace: g.trace('%s binding for replace-string' % (pane),stroke)
                         return False # Let getArg handle it.
-                    elif b.commandName not in k.singleLineCommandList:
+                    elif si.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (
-                            pane),b.commandName,stroke)
+                            pane),si.commandName,stroke)
                         k.keyboardQuit()
                     else:
-                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        if trace: g.trace(repr(stroke),'mini binding',si.commandName)
                         c.minibufferWantsFocus() # New in Leo 4.5.
                     # Pass this on for macro recording.
-                    k.masterCommand(commandName=b.commandName,event=event,func=b.func,stroke=stroke)
+                    k.masterCommand(commandName=si.commandName,event=event,func=si.func,stroke=stroke)
                     # Careful: the command could exit.
                     if c.exists and not k.silentMode:
                         c.minibufferWantsFocus()
@@ -16953,9 +17327,11 @@ def isAutoCompleteChar (self,stroke):
         for key in (state,'body','log','text','all'):
             d = k.masterBindingsDict.get(key,{})
             if d:
-                b = d.get(stroke)
-                if b and b.commandName == 'auto-complete':
-                    return True
+                si = d.get(stroke)
+                if si:
+                    assert isinstance(si,leoConfig.ShortcutInfo),si
+                    if si.commandName == 'auto-complete':
+                        return True
     return False
 #@+node:ekr.20080510095819.1: *6* k.handleUnboundKeys
 def handleUnboundKeys (self,event,char,stroke):
@@ -17122,101 +17498,37 @@ def printBindingsHelper (self,result,data,n1,n2,prefix):
             
             # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
             result.append('%s %*s %*s %s\n' % (letter,-n1,s1,-(min(12,n2)),s2,s3))
-#@+node:ekr.20041117062717.14: *5* getShortcut (g.app.config) (The Big Switch)
+#@+node:ekr.20041117062717.14: *5* getShortcut (g.app.config) (Rewritten)
 def getShortcut (self,c,commandName):
 
     '''Return rawKey,accel for shortcutName'''
     
-    trace = False and commandName == 'sort-siblings' and not g.unitTesting
+    trace = False and commandName in ('new','print-bindings') and not g.unitTesting
 
     key = c.frame.menu.canonicalizeMenuName(commandName)
     key = key.replace('&','') # Allow '&' in names.
-    
-    if 0: # New code
-    
-        # Step 1: find all strokes that are bound somewhere to commandName.
-        strokes = []
-        aList = self.get(c,key,'shortcut') or []
-        
-        if trace:
-            print()
-            g.trace('**',key)
-            g.trace(aList)
 
-        for b in aList:
-            stroke = b.val
-            if stroke not in strokes:
-                strokes.append(strokes)
-                
-        # Step 2: retain only those strokes actually bound to commandName.
-        return key,aList
-    
-    else:
-    
-        if c.k.new_bindings:
-            aList = self.getShortcutHelper(c,key) # 2011/02/11
-        else:
-            aList = self.get(c,key,'shortcut')
-    
-        if aList:
-            aList = [bunch for bunch in aList
-                if bunch.val and bunch.val.lower() != 'none']
-            if trace: g.trace(key,aList)
-            return key,aList
-        else:
-            return key,[]
-#@+node:ekr.20110211041914.15415: *6* getShortcutHelper(g.app.config)
-def getShortcutHelper (self,c,key):
-    
-    '''Like get, but return *all* the found bunchLists's.
-    
-    'key' is actually a commandname.'''
-
-    trace = False and not g.unitTesting
-    kind = 'shortcut'
-    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
-    result = []
-
-    if c and not isLeoSettings:
-        d = self.localOptionsDict.get(c.hash())
+    # New code: use the dicts created by make_settings_dict.
+    table = (
+        ('local',            c and c.config.master_shortcuts_dict),
+        ('myLeoSettings.leo',g.app.config.immutable_my_leo_settings_shortcuts_dict),
+        ('leoSettings.leo',  g.app.config.immutable_leo_settings_shortcuts_dict),
+    )
+    aList = []
+    # if trace: g.trace('c',c,'c.config',c.config)
+    for tag,d in table:
         if d:
-            aList,junk = self.getValFromDict(d,key,kind)
-            if aList: self.mergeShortcuts(result,aList,key)
+            if trace: g.trace(tag,len(list(d.keys())))
+            aList = d.get(commandName,[])
+            for si in aList:
+                assert isinstance(si,ShortcutInfo),si
+            break
+    aList = [si for si in aList
+        if si.stroke and si.stroke.lower() != 'none']
+    if trace: g.trace('getShortcut',tag,aList)
 
-    for d in self.localOptionsList:
-        aList,junk = self.getValFromDict(d,key,kind)
-        if aList: self.mergeShortcuts(result,aList,key)
-
-    for d in self.dictList:
-        aList,junk = self.getValFromDict(d,key,kind)
-        if aList: self.mergeShortcuts(result,aList,key)
-
-    # Use settings in leoSettings.leo *last*.
-    if c and isLeoSettings:
-        d = self.localOptionsDict.get(c.hash())
-        if d:
-            aList,junk = self.getValFromDict(d,key,kind)
-            if aList: self.mergeShortcuts(result,aList,key)
-
-    return result
-#@+node:ekr.20110211041914.15418: *6* mergeShortcuts
-def mergeShortcuts (self,result,aList,key):
-        # key is for debugging.
-        # key is a conical command name, *not* a keystroke.
+    return key,aList
     
-    '''Append all non-conflicting entries of aList to result.'''
-    
-    trace = False and not g.unitTesting
-
-    # If there is a real override, **earlier** entries take precedence.
-    # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
-    
-    vals = [z.val for z in result]
-    aList = [z for z in aList if z.val not in vals]
-    result.extend(aList)
-
-    if trace and len(result) > 1:
-        g.trace(key,['%s %s' % (z.val,z.pane) for z in result])
 #@+node:ekr.20041117083141: *5* get & allies (g.app.config)
 def get (self,c,setting,kind):
 
@@ -17228,6 +17540,7 @@ def get (self,c,setting,kind):
 
     # New in Leo 4.6. Use settings in leoSettings.leo *last*.
     if c and not isLeoSettings:
+        # For the local .leo file.
         d = self.localOptionsDict.get(c.hash())
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
@@ -17238,6 +17551,7 @@ def get (self,c,setting,kind):
                 return val
 
     for d in self.localOptionsList:
+        # For myLeoSettings.leo and leoSettings.leo.
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
             if trace:
@@ -17246,6 +17560,7 @@ def get (self,c,setting,kind):
             return val
 
     for d in self.dictList:
+        # For hard-coded options...
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
             if trace:
@@ -17255,6 +17570,7 @@ def get (self,c,setting,kind):
 
     # New in Leo 4.6. Use settings in leoSettings.leo *last*.
     if c and isLeoSettings:
+        # For when leoSettings.leo is the local file.
         d = self.localOptionsDict.get(c.hash())
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
@@ -23949,16 +24265,35 @@ def setGeometry (self,rect):
             QtGui.QMainWindow.setGeometry(self,rect)
     else:
         QtGui.QMainWindow.setGeometry(self,rect)
-#@+node:ekr.20111024170505.16459: ** Fix key-redefinition bug
-#@+node:ekr.20120124103240.10251: *3*   Notes
+#@+node:ekr.20111024170505.16459: ** Fixed bug 87933: Redefining a key binding breaks menu items with same binding
 @nocolor-node
+
+Before the initial push:
+    
+* Make sure that k.registerCommand properly overrides shortcuts.
+
+After the initial push.
+
+* Clean up the code
+    - Remove all unused code.
+        - Remove call to killOneShortcut.
+    - Remove duplicate code and methods.
+* Start using ShortcutsDict class.
+    - Remove the _hash hack.
 
 What I did:
     
+- Fixed the Shift-Tab buglet by adding lower-case entries in app.tkNamesList
+    This matches what is done in k.settingsNameDict.
+- Created << define global key dicts >> in leoApp.py.
+- Changed si.val to si.stroke.
 - Replaced g.bunch by GeneralSetting & ShortcutInfo.
 - Replaced bunchList by aList.
 - Removed dynamic_menus "compile-time" constant.
-#@+node:ekr.20111026091322.16500: *4*  Report
+- onAboutToShow now recomputes the contents of menus whenever menus are invoked.
+- leo_update_shortcut now shows all shortcuts for a command.
+- Wrote and tested make_settings_dict
+#@+node:ekr.20120128103510.13674: *3*  Report
 @nocolor-node
 
 Bug 879331: Redefining a key binding breaks menu items with same binding
@@ -24006,8 +24341,7 @@ Leo Log Window
 Leo 4.9 final, build 4411, June 21, 2011
 Python 2.7.1, qt version 4.7.2
 linux2
-#@+node:ekr.20111026091322.16501: *5*  Probably same as key-binding bug
-#@+node:ekr.20111026091322.16492: *6* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
+#@+node:ekr.20120128103510.13676: *4* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/815564
@@ -24038,231 +24372,168 @@ Leo Log Window
 Leo 4.9 final, build 4411, June 21, 2011
 Python 2.7.1, qt version 4.7.2
 linux2
-#@+node:ekr.20120120095156.10267: *4*  Design
-@nocolor-node
+#@+node:ekr.20120129174505.10242: *3* New
+#@+node:ekr.20120129040823.10241: *4* << define global key dicts >> (leoApp.py)
+# Important: these dicts must not depend on settings.
+# They are used by g.app.canonicalize_shortcut
 
-Yesterday I added a long-overdue and fundamental improvement to the entire
-key-binding scheme: per-app and per-commander dicts. These dicts will allow Leo
-to compute which key bindings are actually in effect.
+# These are defined at http://tcl.activestate.com/man/tcl8.4/TkCmd/keysyms.htm.
+# Important: only the inverse dict is actually used in the new key binding scheme.
+# Tk may return the *values* of this dict in event.keysym fields.
+# Leo will warn if it gets a event whose keysym not in values of this table.
+self.guiBindNamesDict = {
+    "&" : "ampersand",
+    "^" : "asciicircum",
+    "~" : "asciitilde",
+    "*" : "asterisk",
+    "@" : "at",
+    "\\": "backslash",
+    "|" : "bar",
+    "{" : "braceleft",
+    "}" : "braceright",
+    "[" : "bracketleft",
+    "]" : "bracketright",
+    ":" : "colon",      # removed from code.
+    "," : "comma",
+    "$" : "dollar",
+    "=" : "equal",
+    "!" : "exclam",     # removed from code.
+    ">" : "greater",
+    "<" : "less",
+    "-" : "minus",
+    "#" : "numbersign",
+    '"' : "quotedbl",
+    "'" : "quoteright",
+    "(" : "parenleft",
+    ")" : "parenright", # removed from code.
+    "%" : "percent",
+    "." : "period",     # removed from code.
+    "+" : "plus",
+    "?" : "question",
+    "`" : "quoteleft",
+    ";" : "semicolon",
+    "/" : "slash",
+    " " : "space",      # removed from code.
+    "_" : "underscore",
+}
 
-Per-app dicts:
+# Keys are lowercase, so that case is not significant *for these items only* in leoSettings.leo.
+self.settingsNameDict = {
+    'bksp'    : 'BackSpace', # Dubious: should be '\b'
+    'dnarrow' : 'Down',
+    'esc'     : 'Escape',
+    'ltarrow' : 'Left',
+    'pageup'  : 'Prior',
+    'pagedn'  : 'Next',
+    'rtarrow' : 'Right',
+    'uparrow' : 'Up',
+}
 
-- g.app.config.immutable_leo_settings_shortcuts_dict
-- g.app.config.immutable_my_leo_settings_shortcuts_dict
-
-As the names imply, Leo creates these dicts when reading @shortcuts nodes
-leoSettings.leo and myLeoSettings.leo. These dicts never change. They are class
-vars of the configClass class, so there is only one copy of each.
-
-**Important**: these dicts must be immutable because they are used (as described
-below) as the basis for the calculation of c.config.shortcutsDict for *every*
-commander.
-
-Per-commander dict:
- 
-- c.config.shortcutsDict
-
-This is an ivar of the configClass class: there is a separate such dict for each
-commander (Leo outline). This ivar already exists: what will change is how it is
-inited and updated.
-
-Leo will create c.config.shortcutsDict by **updating** the initial settings in
-leoSettings.leo with the settings in myLeoSettings.leo, and finally by updating
-this intermediate result by the shortcuts in x.leo.
-
-Thus, we only need to understand how to update a shortcutsDict given an new set
-of shortcut settings. This is tricky, but the details can be handled by a single
-new method: merge_settings_dicts Testing this new method is the job of the @test
-node I am now writing.
-
-#@+node:ekr.20120123053750.10183: *4*  Update Rules
-@nocolor-node
-
-Here are the rules as I understand them at present:
-
-Rule 1: Key settings are handled separately from mode settings.
-
-Rule 2: Deleting a setting deletes the corresponding setting for all other files.
-
-2a: New non-mode settings for stroke S delete all previous non-mode settings for
-    S in *other* files.
-
-2b: New mode settings for mode M delete all previous mode settings for M in
-    *other* files.
-
-Rule 3: Deleting and adding a setting for stroke S updates the following dicts:
-    
-- k.bindingsDict:
-  Keys are shortcuts; values are *lists* of ShortcutInfo objects.
-
-- k.masterBindingsDict:
-  Keys are pane names: 'all','text',etc. or mode names.
-  Values are dicts: keys are strokes, values are ShortcutInfo objects.
-        
-**Note**: k.inverseBindingDict does *not* needed to be updated because it is not an ivar.
-It is computed by k.computeInverseBindingDict.
-        
-Rule 4: Within the *same* file, all non-mode settings for stroke S are valid, regardless of pane P.
-k.masterKeyHandler resolves all potential conflicts.
-  
-The above rules suggest two helpers:
-    
-- config.delete_shortcut
-    Deletes shortcut S from config.shortcutsDict, k.bindingsDict and k.masterBindingsDict
-    
-- config.add_shortcut
-    Adds shortcut S to config.shortcutsDict, k.bindingsDict and k.masterBindingsDict.
-#@+node:ekr.20061031131434.3: *4* << about key dicts >>
-@nocolor
-@
-ivars:
-
-c.commandsDict:
-    Keys are emacs command names; values are functions f.
-
-k.inverseCommandsDict:
-    Keys are f.__name__; values are emacs command names.
-
-k.bindingsDict:
-    Keys are shortcuts; values are *lists* of ShortcutInfo objects.
-
-k.masterBindingsDict:
-    Keys are scope names: 'all','text',etc. or mode names.
-    Values are dicts:  keys are strokes, values are ShortcutInfo objects.
-
-k.masterGuiBindingsDict:
-    Keys are strokes; value is a list of widgets for which stroke is bound.
-
-k.settingsNameDict:
-    Keys are lowercase settings; values are 'real' Tk key specifiers.
-    Important: this table has no inverse.
-
-inverseBindingDict: not an ivar (computed by k.computeInverseBindingDict):
-    Keys are emacs command names; values are *lists* tuples (pane, key)
-#@+node:ekr.20041122094813: *4* << configClass class data >> (g.app.config)
-@others
-
-# List of dictionaries to search.  Order not too important.
-dictList = [ivarsDict,encodingIvarsDict,defaultsDict]
-
-# New in Leo 4.10: immutable dicts used to init c.config.shortcuts_dict.
-immutable_leo_settings_shortcuts_dict = {}
-    # The initial shortcut settings in leoSettings.leo.
-immutable_my_leo_settings_shortcuts_dict = {}
-    # The initial shortcut settings in myLeoSettings.leo.
-
-# Keys are commanders.  Values are optionsDicts.
-localOptionsDict = {}
-
-localOptionsList = []
-
-# Keys are setting names, values are type names.
-warningsDict = {} # Used by get() or allies.
-#@+node:ekr.20041117062717.1: *5* defaultsDict
-@ This contains only the "interesting" defaults.
-Ints and bools default to 0, floats to 0.0 and strings to "".
-@c
-
-defaultBodyFontSize = g.choose(sys.platform=="win32",9,12)
-defaultLogFontSize  = g.choose(sys.platform=="win32",8,12)
-defaultMenuFontSize = g.choose(sys.platform=="win32",9,12)
-defaultTreeFontSize = g.choose(sys.platform=="win32",9,12)
-
-defaultsDict = {'_hash':'defaultsDict'}
-
-defaultsData = (
-    # compare options...
-    ("ignore_blank_lines","bool",True),
-    ("limit_count","int",9),
-    ("print_mismatching_lines","bool",True),
-    ("print_trailing_lines","bool",True),
-    # find/change options...
-    ("search_body","bool",True),
-    ("whole_word","bool",True),
-    # Prefs panel.
-    # ("default_target_language","language","python"),
-    ("target_language","language","python"), # Bug fix: 6/20,2005.
-    ("tab_width","int",-4),
-    ("page_width","int",132),
-    ("output_doc_chunks","bool",True),
-    ("tangle_outputs_header","bool",True),
-    # Syntax coloring options...
-    # Defaults for colors are handled by leoColor.py.
-    ("color_directives_in_plain_text","bool",True),
-    ("underline_undefined_section_names","bool",True),
-    # Window options...
-    ("allow_clone_drags","bool",True),
-    ("body_pane_wraps","bool",True),
-    ("body_text_font_family","family","Courier"),
-    ("body_text_font_size","size",defaultBodyFontSize),
-    ("body_text_font_slant","slant","roman"),
-    ("body_text_font_weight","weight","normal"),
-    ("enable_drag_messages","bool",True),
-    ("headline_text_font_family","string",None),
-    ("headline_text_font_size","size",defaultLogFontSize),
-    ("headline_text_font_slant","slant","roman"),
-    ("headline_text_font_weight","weight","normal"),
-    ("log_text_font_family","string",None),
-    ("log_text_font_size","size",defaultLogFontSize),
-    ("log_text_font_slant","slant","roman"),
-    ("log_text_font_weight","weight","normal"),
-    ("initial_window_height","int",600),
-    ("initial_window_width","int",800),
-    ("initial_window_left","int",10),
-    ("initial_window_top","int",10),
-    ("initial_splitter_orientation","string","vertical"),
-    ("initial_vertical_ratio","ratio",0.5),
-    ("initial_horizontal_ratio","ratio",0.3),
-    ("initial_horizontal_secondary_ratio","ratio",0.5),
-    ("initial_vertical_secondary_ratio","ratio",0.7),
-    # ("outline_pane_scrolls_horizontally","bool",False),
-    ("split_bar_color","color","LightSteelBlue2"),
-    ("split_bar_relief","relief","groove"),
-    ("split_bar_width","int",7),
+self.tkNamesList = (
+    # Arrow keys.
+    'Left','Right','Up','Down',
+    # Page up/down keys.
+    'Next','Prior',
+    # Home end keys.
+    'Home','End'
+    # Modifier keys.
+    'Caps_Lock','Num_Lock',
+    # F-keys.
+    'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
+    # All others.
+    'Begin','Break','Clear','Delete','Escape',
+    # Dubious: these are ascii characters!
+    # But there is no harm in retaining these in Leo's core.
+    'BackSpace','Linefeed','Return','Tab',
 )
-#@+node:ekr.20041118062709: *5* define encodingIvarsDict
-encodingIvarsDict = {'_hash':'encodingIvarsDict'}
 
-encodingIvarsData = (
-    ("default_at_auto_file_encoding","string","utf-8"),
-    ("default_derived_file_encoding","string","utf-8"),
-    ("new_leo_file_encoding","string","UTF-8"),
-        # Upper case for compatibility with previous versions.
-    ("defaultEncoding","string",None),
-        # Defaults to None so it doesn't override better defaults.
-)
-#@+node:ekr.20041117072055: *5* ivarsDict
-# Each of these settings sets the corresponding ivar.
-# Also, the c.configSettings settings class inits the corresponding commander ivar.
-ivarsDict = {'_hash':'ivarsDict'}
+# Add lowercase version of special keys.
+for s in self.tkNamesList:
+    self.settingsNameDict [s.lower()] = s
+#@+node:ekr.20120129040823.10248: *4* app.canonicalize_shortcut (NEW. uses g.app.guiBindNamesDict)
+def canonicalize_shortcut (self,setting,addKey=True):
 
-ivarsData = (
-    ("at_root_bodies_start_in_doc_mode","bool",True),
-        # For compatibility with previous versions.
-    ("create_nonexistent_directories","bool",False),
-    ("output_initial_comment","string",""),
-        # "" for compatibility with previous versions.
-    ("output_newline","string","nl"),
-    ("page_width","int","132"),
-    ("read_only","bool",True),
-        # Make sure we don't alter an illegal leoConfig.txt file!
-    ("redirect_execute_script_output_to_log_pane","bool",False),
-    ("relative_path_base_directory","string","!"),
-    ("remove_sentinels_extension","string",".txt"),
-    ("save_clears_undo_buffer","bool",False),
-    ("stylesheet","string",None),
-    ("tab_width","int",-4),
-    ("target_language","language","python"), # Bug fix: added: 6/20/2005.
-    ("trailing_body_newlines","string","asis"),
-    ("use_plugins","bool",True),
-        # New in 4.3: use_plugins = True by default.
-    # use_pysco can not be set by 4.3:  config processing happens too late.
-        # ("use_psyco","bool",False),
-    ("undo_granularity","string","word"),
-        # "char","word","line","node"
-    ("write_strips_blank_lines","bool",False),
+    k = self
+
+    trace = False and not g.unitTesting
+        # and setting.lower().find('tab') != -1 
+    if not setting:return None
+
+    s = g.stripBrackets(setting.strip())
+    << define cmd, ctrl, alt, shift >>
+    if 0: # This must be independent of settings!
+        if k.swap_mac_keys and sys.platform == "darwin":
+            << swap cmd and ctrl keys >>
+    << convert minus signs to plus signs >>
+    << compute the last field >>
+    << compute shortcut >>
+    if trace: g.trace('%20s %s' % (setting,shortcut))
+    return shortcut
+#@+node:ekr.20120129040823.10249: *5* << define cmd, ctrl, alt, shift >>
+s2 = s.lower()
+
+cmd   = s2.find("cmd") >= 0     or s2.find("command") >= 0
+ctrl  = s2.find("control") >= 0 or s2.find("ctrl") >= 0
+alt   = s2.find("alt") >= 0
+shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
+meta  = s2.find("meta") >= 0
+#@+node:ekr.20120129040823.10250: *5* << swap cmd and ctrl keys >>
+# if ctrl and not cmd:
+    # cmd = True ; ctrl = False
+
+# if alt and not ctrl:
+    # ctrl = True ; alt = False
+    
+pass
+#@+node:ekr.20120129040823.10251: *5* << convert minus signs to plus signs >>
+# Replace all minus signs by plus signs, except a trailing minus:
+if s.endswith('-'):
+    s = s[:-1].replace('-','+') + '-'
+else:
+    s = s.replace('-','+')
+#@+node:ekr.20120129040823.10252: *5* << compute the last field >>
+if s.endswith('+'):
+    last = '+'
+else:
+    fields = s.split('+') # Don't lower this field.
+    last = fields and fields[-1]
+    if not last:
+        if not g.app.menuWarningsGiven:
+            g.pr("bad shortcut specifier:", repr(s),repr(setting))
+            g.trace(g.callers())
+        return None
+
+if len(last) == 1:
+    last2 = g.app.guiBindNamesDict.get(last)
+    if last2:
+        last = last2
+    else:
+        if last.isalpha():
+            if shift:
+                last = last.upper()
+                shift = False # It is Ctrl-A, not Ctrl-Shift-A.
+            else:
+                last = last.lower()
+        # New in Leo 4.4.2: Alt-2 is not a key event!
+        if addKey and last.isdigit():
+            last = 'Key-' + last
+else:
+    # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
+    # This is a *one-way* translation, done only here.
+    d = g.app.settingsNameDict
+    last = d.get(last.lower(),last)
+#@+node:ekr.20120129040823.10253: *5* << compute shortcut >>
+table = (
+    (alt, 'Alt+'),
+    (ctrl,'Ctrl+'),
+    (cmd, 'Command+'),
+    (meta,'Meta+'),
+    (shift,'Shift+'),
+    (True, last),
 )
-#@+node:ekr.20120124103240.10250: *3* Changed & new
+
+# new in 4.4b3: convert all characters to unicode first.
+shortcut = ''.join([g.toUnicode(val) for flag,val in table if flag])
 #@+node:ekr.20120123143207.10223: *4* class GeneralSetting
 class GeneralSetting:
     
@@ -24296,27 +24567,287 @@ class GeneralSetting:
 class ShortcutInfo:
     
     '''A class representing any kind of key binding line.'''
-    
-    def __init__ (self,kind,
-        commandName='',func=None,nextMode=None,pane=None,
-        stroke=None,val=None,tag='shortcut-info'
-    ):
-        self.kind = kind
-        self.commandName = commandName
-        self.func = func
-        self.nextMode = nextMode
-        self.pane = pane
-        self.stroke = stroke
-        self.val = val
-        self.tag = tag
         
-    def __repr__ (self):
-        si = self
-        if si.kind.startswith('mode'):
-            return 'ShortcutInfo: %20s %s' % (si.kind,si.nextMode)
+    @others
+#@+node:ekr.20120129040823.10254: *5*  ctor (ShortcutInfo)
+def __init__ (self,kind,commandName='',func=None,nextMode=None,pane=None,stroke=None):
+
+    self.kind = kind
+    self.commandName = commandName
+    self.func = func
+    self.nextMode = nextMode
+    self.pane = pane
+    self.stroke = g.app.canonicalize_shortcut(stroke) if stroke else ''
+        # Always canonicalize the shortcut.
+#@+node:ekr.20120125045244.10188: *5* __repr__ & ___str_& dump
+def __repr__ (self):
+    
+    return self.dump()
+
+__str__ = __repr__
+
+def dump (self):
+    si = self    
+    result = ['ShortcutInfo %17s ' % (si.kind)]
+    table = ('commandName','func','nextMode','pane','stroke')
+    for ivar in table:
+        if hasattr(si,ivar):
+            val =  getattr(si,ivar)
+            if val not in (None,'none','None'):
+                if ivar == 'func': val = val.__name__
+                s = '%s %s ' % (ivar,val)
+                result.append(s)
+    return ''.join(result)
+#@+node:ekr.20120128051055.10234: *5* rich comparisons
+# def __cmp__ (self,other):
+    
+    # n1,n2 = self.commandName,other.commandName
+    
+    # if   n1 < n2:   return -1
+    # elif n1 == n2:  return 0
+    # else:           return 1
+
+# def __lt__(self, other): return self.commandName <  other.commandName
+# def __le__(self, other): return self.commandName <= other.commandName
+# def __eq__(self, other): return self.commandName == other.commandName
+# def __ne__(self, other): return self.commandName != other.commandName
+# def __gt__(self, other): return self.commandName >  other.commandName
+# def __ge__(self, other): return self.commandName >= other.commandName
+#@+node:ekr.20120129040823.10226: *5* isModeBinding
+def isModeBinding (self):
+    
+    return self.kind.startswith('*mode')
+#@+node:ekr.20120124042346.12937: *4* define_enable_table
+def define_enable_dict (self):
+    
+    c = self.c
+    
+    if not c.commandsDict:
+        return # This is not an error: it happens during init.
+
+    self.enable_dict = d = {
+    
+        # File menu...
+            # 'revert':         lambda: True, # Revert is always enabled.               
+        'open-with':            lambda: g.app.hasOpenWithMenu,
+        
+        # Edit menu...
+        'undo':                 c.undoer.canUndo,
+        'redo':                 c.undoer.canRedo,
+        'extract-names':        c.canExtractSectionNames,
+        'extract':              c.canExtract,
+        'match-brackets':       c.canFindMatchingBracket,
+        
+        # Top-level Outline menu...
+        'cut-node':             c.canCutOutline,
+        'delete-node':          c.canDeleteHeadline,
+        'paste-node':           c.canPasteOutline,
+        'paste-retaining-clones':   c.canPasteOutline,
+        'clone-node':           c.canClone,
+        'sort-siblings':        c.canSortSiblings,
+        'hoist':                c.canHoist,
+        'de-hoist':             c.canDehoist,
+        
+        # Outline:Expand/Contract menu...
+        'contract-parent':      c.canContractParent,
+        'contract-node':        lambda: c.p.hasChildren() and c.p.isExpanded(),
+        'contract-or-go-left':  lambda: c.p.hasChildren() and c.p.isExpanded() or c.p.hasParent(),
+        'expand-node':          lambda: c.p.hasChildren() and not c.p.isExpanded(),
+        'expand-prev-level':    lambda: c.p.hasChildren() and c.p.isExpanded(),
+        'expand-next-level':    lambda: c.p.hasChildren(),
+        'expand-to-level-1':    lambda: c.p.hasChildren() and c.p.isExpanded(),
+        'expand-or-go-right':   lambda: c.p.hasChildren(),
+        
+        # Outline:Move menu...
+        'move-outline-down':    c.canMoveOutlineDown,
+        'move-outline-left':    c.canMoveOutlineLeft,
+        'move-outline-right':   c.canMoveOutlineRight,
+        'move-outline-up':      c.canMoveOutlineUp,
+        'promote':              c.canPromote,
+        'demote':               c.canDemote,
+        
+        # Outline:Go To menu...
+        'goto-prev-history-node':   c.nodeHistory.canGoToPrevVisited,
+        'goto-next-history-node':   c.nodeHistory.canGoToNextVisited,
+        'goto-prev-visible':        c.canSelectVisBack,
+        'goto-next-visible':        c.canSelectVisNext,
+        # These are too slow...
+            # 'go-to-next-marked':  c.canGoToNextMarkedHeadline,
+            # 'go-to-next-changed': c.canGoToNextDirtyHeadline,
+        'goto-next-clone':          lambda: c.p.isCloned(),
+        'goto-prev-node':           c.canSelectThreadBack,
+        'goto-next-node':           c.canSelectThreadNext,
+        'goto-parent':              lambda: c.p.hasParent(),
+        'goto-prev-sibling':        lambda: c.p.hasBack(),
+        'goto-next-sibling':        lambda: c.p.hasNext(),
+        
+        # Outline:Mark menu...
+        'mark-subheads':            lambda: c.p.hasChildren(),
+        # too slow...
+            # 'mark-changed-items':   c.canMarkChangedHeadlines,
+    }
+    
+    for i in range(1,9):
+        d ['expand-to-level-%s' % (i)] = lambda: c.p.hasChildren()
+
+    if 0: # Initial testing.
+        commandKeys = list(c.commandsDict.keys())
+        for key in sorted(d.keys()):
+            if key not in commandKeys:
+                g.trace('*** bad entry for %s' % (key))
+#@+node:ekr.20120122070219.10162: *4* make_shortcuts_dicts (g.app.config) & helpers
+def make_shortcuts_dicts (self,c,d,localFlag):
+    
+    '''Make all settings dicts related to c and d.'''
+    
+    trace = False and not g.unitTesting
+    fn = c.shortFileName().lower()
+    test_result = [] # For unit tests.
+    
+    def message(d,name):
+        return '%4s keys %s' % (len(list(d.keys())),name)
+        
+    # g.trace('self',self)
+    # g.trace('c',c)
+    # g.trace('c.config',c.config)
+    # g.trace('make_shortcuts_dict',len(list(d.keys())),g.callers())
+
+    if fn == 'leosettings.leo':
+        if not g.app.config.immutable_leo_settings_shortcuts_dict:
+            if trace: g.trace(message(d,'immutable_leo_settings_shortcuts_dict'))
+            g.app.config.immutable_leo_settings_shortcuts_dict = d
+    elif fn == 'myleosettings.leo':
+        if not g.app.config.immutable_my_leo_settings_shortcuts_dict:
+            if trace: g.trace(message(d,'immutable_my_leo_settings_shortcuts_dict'))
+            g.app.config.immutable_my_leo_settings_shortcuts_dict = d
+        if localFlag:
+            if trace: message(d,'settingsDict: %s' % (fn))
+            d1 = g.app.config.immutable_leo_settings_shortcuts_dict
+            d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
+            self.settingsDict = d3 = self.merge_settings_dicts(d1,d2)
+            g.app.config.master_shortcuts_dict = d3 # Remember the merged settings.
+            if trace: g.trace(message(d3,'master_shortcuts_dict: %s' % (fn)))
+            test_result = (d1,d2,d3,'myLeoSettings.leo')
+    else:
+        if trace: g.trace(message(d,'settingsDict: %s' % (fn)))
+        d1 = g.app.config.immutable_leo_settings_shortcuts_dict
+        d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
+        d3 = self.merge_settings_dicts(d1,d2)
+        self.settingsDict = d4 = self.merge_settings_dicts(d3,d)
+        g.app.config.master_shortcuts_dict = d4 # # Remember the merged settings.
+        if trace: g.trace(message(d4,'master_shortcuts_dict: %s' % (fn)))
+        test_result = (
+            (d1,d2,d3,'local 1'),
+            (d3,d,d4,'local 2'))
+        
+    g.app.unitTestDict['make_shortcuts_dicts'] = test_result
+#@+node:ekr.20120122070219.10163: *5* merge_settings_dicts (g.app.config)
+def merge_settings_dicts (self,old_d,new_d):
+    
+    '''Create a new dict by overriding all settings in old_d by setting in new_d.
+    
+    Both old_d and new_d remain unchanged.'''
+    
+    trace = False and not g.unitTesting
+    
+    if not old_d: return new_d
+    if not new_d: return old_d
+    
+    if trace:
+        new_n,old_n = len(list(new_d.keys())),len(list(old_d.keys()))
+        g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.get('_hash')))
+        g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.get('_hash')))
+
+    inverted_old_d = self.invert(old_d)
+    inverted_new_d = self.invert(new_d)
+    inverted_old_d.update(inverted_new_d) # Updates inverted_old_d in place.
+    result = self.uninvert(inverted_old_d)
+    return result
+#@+node:ekr.20120125045244.10186: *5* invert (g.app.config)
+def invert (self,d):
+    
+    '''Invert a shortcut dict whose keys are command names,
+    returning a dict whose keys are strokes.'''
+    
+    trace = False and not g.unitTesting ; verbose = True
+    if trace: g.trace('*'*40,d.get('_hash'))
+    result = {}
+    for commandName in d.keys():
+        if commandName == '_hash':
+            result['_hash'] = 'inverted %s' % d.get('_hash')
         else:
-            name = si.commandName or si.func and si.func.__name__ or ''
-            return 'ShortcutInfo: %20s %20s %s' % (si.pane,si.kind,name)
+            for si in d.get(commandName,[]):
+                try:
+                    assert isinstance(si,ShortcutInfo),'commandName %s si %s' % (
+                        commandName,si)
+                except AssertionError:
+                    g.pdb()
+                stroke = si.stroke # This is canonicalized.
+                assert stroke
+                if trace and verbose:
+                    g.trace('%40s %s' % (commandName,stroke))
+                si.commandName = commandName # Add info.
+                aList = result.get(stroke,[])
+                if si not in aList:
+                    aList.append(si)
+                    result[stroke] = aList
+
+    if trace: g.trace('returns  %4s %s %s' % (
+        len(list(result.keys())),id(d),result.get('_hash')))
+    return result
+#@+node:ekr.20120125045244.10187: *5* uninvert (g.app.config)
+def uninvert (self,d):
+    
+    '''Uninvert an inverted shortcut dict whose keys are strokes,
+    returning a dict whose keys are command names.'''
+    
+    trace = False and not g.unitTesting ; verbose = True
+    if trace and verbose: g.trace('*'*40)
+    result = {}
+    for stroke in d.keys():
+        if stroke == '_hash':
+            result['_hash'] = 'uninverted %s' % d.get('_hash')
+        else:
+            for si in d.get(stroke,[]):
+                assert isinstance(si,ShortcutInfo),si
+                commandName = si.commandName
+                if trace and verbose:
+                    g.trace('uninvert %20s %s' % (stroke,commandName))
+                assert commandName
+                aList = result.get(commandName,[])
+                if si not in aList:
+                    aList.append(si)
+                    result[commandName] = aList
+
+    if trace: g.trace('returns %4s %s %s' % (
+        len(list(result.keys())),id(d),result.get('_hash')))
+    return result
+#@+node:ekr.20120124103240.10250: *3* Changed
+#@+node:ekr.20061031131434.3: *4* << about key dicts >>
+@nocolor
+@
+
+ivar                    Keys                Values
+----                    ----                ------
+c.commandsDict          command names (1)   functions
+k.inverseCommandsDict   func.__name__       command names
+k.bindingsDict          shortcuts           lists of ShortcutInfo objects
+k.masterBindingsDict    scope names (2)     Interior masterBindingDicts (3)
+k.masterGuiBindingsDict strokes             list of widgets in which stoke is bound
+k.settingsNameDict (4)  settings.lower()    "Real" Tk specifiers
+inverseBindingDict (5)  command names       lists of tuples (pane,key)
+modeCommandsDict (6)    command name (7)    inner modeCommandsDicts (8)
+
+Notes:
+
+(1) Command names are minibuffer names (strings)
+(2) Scope names are 'all','text',etc.
+(3) Interior masterBindingDicts: Keys are strokes; values are ShortcutInfo objects.
+(4) k.settingsNameDict has no inverse.
+(5) inverseBindingDict is **not** an ivar: it is computed by k.computeInverseBindingDict.
+(6) A global dict: g.app.gui.modeCommandsDict
+(7) enter-x-command
+(8) Keys are command names, values are lists of ShortcutInfo objects.
 #@+node:ekr.20031218072017.1723: *4* createMenuEntries (leoMenu) & helpers
 def createMenuEntries (self,menu,table,dynamicMenu=False):
 
@@ -24460,179 +24991,37 @@ def traceMenuTable (self,table):
                 print(format % (name,func and func.__name__ or '<NO FUNC>'))
         else:
             print(format % (data,''))
-#@+node:ekr.20120124042346.12937: *4* define_enable_table
-def define_enable_dict (self):
-    
-    c = self.c
-    
-    if not c.commandsDict:
-        return # This is not an error: it happens during init.
-
-    self.enable_dict = d = {
-    
-        # File menu...
-            # 'revert':         lambda: True, # Revert is always enabled.               
-        'open-with':            lambda: g.app.hasOpenWithMenu,
-        
-        # Edit menu...
-        'undo':                 c.undoer.canUndo,
-        'redo':                 c.undoer.canRedo,
-        'extract-names':        c.canExtractSectionNames,
-        'extract':              c.canExtract,
-        'match-brackets':       c.canFindMatchingBracket,
-        
-        # Top-level Outline menu...
-        'cut-node':             c.canCutOutline,
-        'delete-node':          c.canDeleteHeadline,
-        'paste-node':           c.canPasteOutline,
-        'paste-retaining-clones':   c.canPasteOutline,
-        'clone-node':           c.canClone,
-        'sort-siblings':        c.canSortSiblings,
-        'hoist':                c.canHoist,
-        'de-hoist':             c.canDehoist,
-        
-        # Outline:Expand/Contract menu...
-        'contract-parent':      c.canContractParent,
-        'contract-node':        lambda: c.p.hasChildren() and c.p.isExpanded(),
-        'contract-or-go-left':  lambda: c.p.hasChildren() and c.p.isExpanded() or c.p.hasParent(),
-        'expand-node':          lambda: c.p.hasChildren() and not c.p.isExpanded(),
-        'expand-prev-level':    lambda: c.p.hasChildren() and c.p.isExpanded(),
-        'expand-next-level':    lambda: c.p.hasChildren(),
-        'expand-to-level-1':    lambda: c.p.hasChildren() and c.p.isExpanded(),
-        'expand-or-go-right':   lambda: c.p.hasChildren(),
-        
-        # Outline:Move menu...
-        'move-outline-down':    c.canMoveOutlineDown,
-        'move-outline-left':    c.canMoveOutlineLeft,
-        'move-outline-right':   c.canMoveOutlineRight,
-        'move-outline-up':      c.canMoveOutlineUp,
-        'promote':              c.canPromote,
-        'demote':               c.canDemote,
-        
-        # Outline:Go To menu...
-        'goto-prev-history-node':   c.nodeHistory.canGoToPrevVisited,
-        'goto-next-history-node':   c.nodeHistory.canGoToNextVisited,
-        'goto-prev-visible':        c.canSelectVisBack,
-        'goto-next-visible':        c.canSelectVisNext,
-        # These are too slow...
-            # 'go-to-next-marked':  c.canGoToNextMarkedHeadline,
-            # 'go-to-next-changed': c.canGoToNextDirtyHeadline,
-        'goto-next-clone':          lambda: c.p.isCloned(),
-        'goto-prev-node':           c.canSelectThreadBack,
-        'goto-next-node':           c.canSelectThreadNext,
-        'goto-parent':              lambda: c.p.hasParent(),
-        'goto-prev-sibling':        lambda: c.p.hasBack(),
-        'goto-next-sibling':        lambda: c.p.hasNext(),
-        
-        # Outline:Mark menu...
-        'mark-subheads':            lambda: c.p.hasChildren(),
-        # too slow...
-            # 'mark-changed-items':   c.canMarkChangedHeadlines,
-    }
-    
-    for i in range(1,9):
-        d ['expand-to-level-%s' % (i)] = lambda: c.p.hasChildren()
-
-    if 0: # Initial testing.
-        commandKeys = list(c.commandsDict.keys())
-        for key in sorted(d.keys()):
-            if key not in commandKeys:
-                g.trace('*** bad entry for %s' % (key))
-#@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config) (The Big Switch)
+#@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config) (Rewritten)
 def getShortcut (self,c,commandName):
 
     '''Return rawKey,accel for shortcutName'''
     
-    trace = False and commandName == 'sort-siblings' and not g.unitTesting
+    trace = False and commandName in ('new','print-bindings') and not g.unitTesting
 
     key = c.frame.menu.canonicalizeMenuName(commandName)
     key = key.replace('&','') # Allow '&' in names.
-    
-    if 0: # New code
-    
-        # Step 1: find all strokes that are bound somewhere to commandName.
-        strokes = []
-        aList = self.get(c,key,'shortcut') or []
-        
-        if trace:
-            print()
-            g.trace('**',key)
-            g.trace(aList)
 
-        for b in aList:
-            stroke = b.val
-            if stroke not in strokes:
-                strokes.append(strokes)
-                
-        # Step 2: retain only those strokes actually bound to commandName.
-        return key,aList
-    
-    else:
-    
-        if c.k.new_bindings:
-            aList = self.getShortcutHelper(c,key) # 2011/02/11
-        else:
-            aList = self.get(c,key,'shortcut')
-    
-        if aList:
-            aList = [bunch for bunch in aList
-                if bunch.val and bunch.val.lower() != 'none']
-            if trace: g.trace(key,aList)
-            return key,aList
-        else:
-            return key,[]
-#@+node:ekr.20110211041914.15415: *5* getShortcutHelper(g.app.config)
-def getShortcutHelper (self,c,key):
-    
-    '''Like get, but return *all* the found bunchLists's.
-    
-    'key' is actually a commandname.'''
-
-    trace = False and not g.unitTesting
-    kind = 'shortcut'
-    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
-    result = []
-
-    if c and not isLeoSettings:
-        d = self.localOptionsDict.get(c.hash())
+    # New code: use the dicts created by make_settings_dict.
+    table = (
+        ('local',            c and c.config.master_shortcuts_dict),
+        ('myLeoSettings.leo',g.app.config.immutable_my_leo_settings_shortcuts_dict),
+        ('leoSettings.leo',  g.app.config.immutable_leo_settings_shortcuts_dict),
+    )
+    aList = []
+    # if trace: g.trace('c',c,'c.config',c.config)
+    for tag,d in table:
         if d:
-            aList,junk = self.getValFromDict(d,key,kind)
-            if aList: self.mergeShortcuts(result,aList,key)
+            if trace: g.trace(tag,len(list(d.keys())))
+            aList = d.get(commandName,[])
+            for si in aList:
+                assert isinstance(si,ShortcutInfo),si
+            break
+    aList = [si for si in aList
+        if si.stroke and si.stroke.lower() != 'none']
+    if trace: g.trace('getShortcut',tag,aList)
 
-    for d in self.localOptionsList:
-        aList,junk = self.getValFromDict(d,key,kind)
-        if aList: self.mergeShortcuts(result,aList,key)
-
-    for d in self.dictList:
-        aList,junk = self.getValFromDict(d,key,kind)
-        if aList: self.mergeShortcuts(result,aList,key)
-
-    # Use settings in leoSettings.leo *last*.
-    if c and isLeoSettings:
-        d = self.localOptionsDict.get(c.hash())
-        if d:
-            aList,junk = self.getValFromDict(d,key,kind)
-            if aList: self.mergeShortcuts(result,aList,key)
-
-    return result
-#@+node:ekr.20110211041914.15418: *5* mergeShortcuts
-def mergeShortcuts (self,result,aList,key):
-        # key is for debugging.
-        # key is a conical command name, *not* a keystroke.
+    return key,aList
     
-    '''Append all non-conflicting entries of aList to result.'''
-    
-    trace = False and not g.unitTesting
-
-    # If there is a real override, **earlier** entries take precedence.
-    # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
-    
-    vals = [z.val for z in result]
-    aList = [z for z in aList if z.val not in vals]
-    result.extend(aList)
-
-    if trace and len(result) > 1:
-        g.trace(key,['%s %s' % (z.val,z.pane) for z in result])
 #@+node:ekr.20041227063801.2: *4* initDicts
 def initDicts (self):
 
@@ -24650,88 +25039,174 @@ def initDicts (self):
     for key,kind,val in self.encodingIvarsData:
         self.encodingIvarsDict[self.munge(key)] = GeneralSetting(
             kind,encoding=val,ivar=key,tag='encoding')
-#@+node:ekr.20120122070219.10162: *4* make_shortcuts_dict (c.configSettings) & helper
-def make_shortcuts_dict (self,d,localFlag):
+#@+node:ekr.20061031131434.89: *4* k.bindKey & helpers
+def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
+
+    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
+
+    No actual gui bindings are made: only entries in k.masterBindingsDict.
     
-    '''Make all settings dicts related to c and d.'''
+    _hash gives the source of the binding.
+    
+    '''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+
+    if not shortcut:
+        # g.trace('No shortcut for %s' % commandName)
+        return False
+    << give warning and return if we try to bind to Enter or Leave >>
+    if pane.endswith('-mode'):
+        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
+        return False
+    aList = k.bindingsDict.get(shortcut,[])
+    if trace: #  or shortcut == 'Ctrl+q':
+        g.trace('%7s %20s %17s %s' % (pane,shortcut,_hash,commandName))
+    try:
+        k.bindKeyToDict(pane,shortcut,callback,commandName,_hash)
+        si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,func=callback,commandName=commandName)
+        if not modeFlag:
+            k.remove_conflicting_definitions(aList,commandName,pane,shortcut,_hash)
+        aList.append(si)
+        shortcut = g.stripBrackets(shortcut.strip())
+        k.bindingsDict [shortcut] = aList
+        if trace: g.trace(shortcut,aList)
+        return True
+    except Exception: # Could be a user error.
+        if not g.app.menuWarningsGiven:
+            g.es_print('exception binding',shortcut,'to',commandName)
+            g.es_exception()
+            g.app.menuWarningsGiven = True
+        return False
+
+bindShortcut = bindKey # For compatibility
+#@+node:ekr.20061031131434.90: *5* << give warning and return if we try to bind to Enter or Leave >>
+if shortcut:
+    for s in ('enter','leave'):
+        if -1 != shortcut.lower().find(s):
+            g.es_print('ignoring invalid key binding:','%s = %s' % (
+                commandName,shortcut),color='blue')
+            return
+#@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
+def remove_conflicting_definitions (self,aList,commandName,pane,shortcut,theHash):
+    
+    trace = True and not g.unitTesting
+    c,k = self.c,self
+    
+    def warn(commandName,pane,kind):
+        g.es_print('%30s in %5s from %s' % (commandName,pane,kind))
+
+    for si in aList:
+        assert isinstance(si,leoConfig.ShortcutInfo)
+
+    # This warning should never happen with the new code in makeBindingsFromCommandsDict.
+    if False: #### self.warn_about_redefined_shortcuts:
+        
+        redefs = [si for si in aList
+            if si.commandName != commandName and
+                # 2011/02/11: don't give warning for straight substitution.
+                pane in ('button','all',si.pane) and
+                not si.pane.endswith('-mode')]
+    
+        if redefs:
+            g.warning('shortcut conflict for %s' % k.prettyPrintKey(shortcut))
+            warn(commandName,pane,theHash)
+            for z in redefs:
+                warn(z.commandName,z.pane,z.kind)
+                g.app.config.killShortcut(c,z.commandName,shortcut)
+                
+            if trace:
+                g.trace('redefs...')
+                for si in redefs:
+                    g.trace(si.dump())
+
+    # Update aList.
+    aList = [si for si in aList if pane not in ('button','all',si.pane)]
+#@+node:ekr.20061031131434.93: *5* k.bindKeyToDict
+def bindKeyToDict (self,pane,stroke,func,commandName,_hash):
+    
+    '''Update k.masterBindingsDict for the stroke.'''
+
+    trace = False and not g.unitTesting
+        # and stroke.lower().find('tab') != -1 
+    k = self
+    d = k.masterBindingsDict.get(pane,{})
+
+    stroke = g.stripBrackets(stroke)
+    if trace: g.trace(pane,stroke,commandName,g.callers())
+
+    # New in Leo 4.4.1: Allow redefintions.
+    d [stroke] = leoConfig.ShortcutInfo(
+        kind=_hash,commandName=commandName,func=func,pane=pane,stroke=stroke)
+
+    k.masterBindingsDict [pane] = d
+#@+node:ekr.20120120095156.10260: *4* leo_update_shortcut
+def leo_update_shortcut(self,action,commandName):
     
     trace = False and not g.unitTesting
-    c = self.c
-    fn = c.shortFileName().lower()
-    if trace: g.trace('local',localFlag,'%3d' % (len(list(d.keys()))),fn)
+    c = self.c ; k = c.k
     
-    if fn == 'leosettings.leo':
-        if not g.app.config.immutable_leo_settings_shortcuts_dict:
-            g.app.config.immutable_leo_settings_shortcuts_dict = d
-    elif fn == 'myleosettings.leo':
-        if not g.app.config.immutable_my_leo_settings_shortcuts_dict:
-            g.app.config.immutable_my_leo_settings_shortcuts_dict = d
-        if localFlag:
-            d1 = g.app.config.immutable_leo_settings_shortcuts_dict
-            d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
-            self.settingsDict = self.merge_settings_dicts(d1,d2)
+    if action:
+        s = action.text()
+        parts = s.split('\t')
+        if len(parts) >= 2: s = parts[0]
+        key,aList = c.config.getShortcut(commandName)
+        if aList:
+            result = []
+            for si in aList:
+                assert isinstance(si,leoConfig.ShortcutInfo)
+                # Don't show mode-related bindings.
+                if not si.isModeBinding():
+                    accel = g.stripBrackets(k.prettyPrintKey(si.stroke))
+                    if trace: g.trace('%20s %s' % (accel,si.dump()))
+                    result.append(accel)
+                    # Break here if we want to show only one accerator.
+            action.setText('%s\t%s' % (s,', '.join(result)))
+        else:
+            action.setText(s)
     else:
-        # assert localFlag
-        d1 = g.app.config.immutable_leo_settings_shortcuts_dict
-        d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
-        d3 = self.merge_settings_dicts(d1,d2)
-        self.settingsDict = self.merge_settings_dicts(d3,d)
-        
-#@+node:ekr.20120122070219.10163: *5* merge_settings_dicts (c.configSettings) TODO
-def merge_settings_dicts (self,d1,d2):
-    
-    '''Create a new dict by overriding all settings in d1 by setting in d2.
-    
-    Neither d1 nor d2 is ever changed.'''
-    
-    trace = False and not g.unitTesting
-    
-    if not d1: return d2
-    if not d2: return d1
-    
-    ### Temp:
-        
-    # d1 and d2: keys are command names, values are lists of ShortcutInfo objects.
-    keys1,keys2 = list(sorted(d1.keys())),list(sorted(d2.keys()))
-    if '_hash' in keys1: keys1.remove('_hash')
-    if '_hash' in keys2: keys2.remove('_hash')
-    n1,n2 = len(keys1),len(keys2)
-    
-    # Step 1: create helper dict: Keys are strokes, values are lists of bunches.
-    strokes1 = {}
-    for command in keys1:
-        aList = d1.get(command,[])
-        for b in aList:
-            stroke = b.val
-            aList2 = strokes1.get(stroke,[])
-            if b not in aList2:
-                aList2.append((command,b),)
-                strokes1[stroke] = aList2
-                
-    if trace: g.trace(len(strokes1))
-                
-    # Step 2: for every redefined stroke in d2,
-    # remove all corresponding bunches in d1 by clearing non-mode entries in strokes1.
-    for command in keys2:
-        aList = d2.get(command,[])
-        for b in aList:
-            stroke = b.val
-            aList2 = strokes1.get(stroke,[])
-            for command2,b2 in aList2:
-                assert b2.val == stroke
-            aList3 = [z for z in aList2 if z[1].pane.startswith('mode')]
-            if trace and aList2 != aList3:
-                g.trace('before',stroke,aList2)
-                g.trace('after ',stroke,aList3)
-            strokes1 [stroke] = aList3
+        g.trace('can not happen: no action for %s' % (commandName))
+#@+node:ekr.20110211094454.15414: *4* mergeShortcutList
+def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
 
-    if trace: g.trace(len(strokes1))
-
-    # Step 3: create result using strokes1 and d2.
-    result = {}
-
-    result = d2 ###
+    '''aList is a list of binding bunches for stroke.
     
+    Return a new list consisting only of bindings from the highest priority .leo file.'''
+    
+    # Find the higest priority hash.
+    trace = False and not g.unitTesting ; verbose = False
+    k = self.c.k
+    sList,mList,fList = [],[],[]
+    for si in aList:
+        assert isinstance(si,leoConfig.ShortcutInfo),si
+        _hash = si.kind # 2012/01/23
+        if _hash.endswith('myleosettings.leo'):
+            mList.append(si)
+        elif _hash.endswith('leosettings.leo'):
+            sList.append(si)
+        elif _hash.endswith('.leo'):
+            fList.append(si)
+
+    result = fList or mList or sList or aList
+            
+    if trace:
+        def pr(stroke,message,aList):
+            print('mergeShortcutList: %15s %s %s' % (stroke,message,
+                '...\n'.join(['%15s %5s %s' % (
+                    k.shortcutFromSetting(z.val),z.pane,z.commandName)
+                        for z in aList])))
+        if fList and mList:
+            pr(stroke,'ignoring  mList',mList)
+            pr(stroke,'retaining fList',fList)
+        if fList and sList:
+            pr(stroke,'ignoring  sList',sList)
+            pr(stroke,'retaining fList',fList)
+        elif mList and sList:
+            pr(stroke,'ignoring  sList',sList)
+            pr(stroke,'retaining mList',mList)
+
+    if trace and verbose and len(result) > 1: g.trace(stroke,result)
     return result
 #@+node:ekr.20110605121601.18460: *4* onAboutToShow & helpers (qtMenuWrapper)
 def onAboutToShow(self,*args,**keys):
@@ -24767,7 +25242,7 @@ def leo_update_menu_label(self,action,commandName):
         action.setText('UnMark' if c.p.isMarked() else 'Mark')
         self.leo_update_shortcut(action,commandName)
             # Set the proper shortcut.
-#@+node:ekr.20120120095156.10260: *5* leo_update_shortcut (Maybe: show best accel, or more accels)
+#@+node:ekr.20120120095156.10260: *5* leo_update_shortcut
 def leo_update_shortcut(self,action,commandName):
     
     trace = False and not g.unitTesting
@@ -24779,16 +25254,16 @@ def leo_update_shortcut(self,action,commandName):
         if len(parts) >= 2: s = parts[0]
         key,aList = c.config.getShortcut(commandName)
         if aList:
-            if trace and len(aList) > 1:
-                for z in aList:
-                    accel = k.shortcutFromSetting(z.val,addKey=False) or ''
-                    accel = g.stripBrackets(k.prettyPrintKey(accel))
-                    g.trace('%10s %20s %s' % (z.pane,accel,z.commandName))
-            si = aList[0] ### We could do some AI here, or show them all...
-            assert isinstance(si,leoConfig.ShortcutInfo)
-            accel = k.shortcutFromSetting(si.val,addKey=False) or ''
-            accel = g.stripBrackets(k.prettyPrintKey(accel))
-            action.setText('%s\t%s' % (s,accel))
+            result = []
+            for si in aList:
+                assert isinstance(si,leoConfig.ShortcutInfo)
+                # Don't show mode-related bindings.
+                if not si.isModeBinding():
+                    accel = g.stripBrackets(k.prettyPrintKey(si.stroke))
+                    if trace: g.trace('%20s %s' % (accel,si.dump()))
+                    result.append(accel)
+                    # Break here if we want to show only one accerator.
+            action.setText('%s\t%s' % (s,', '.join(result)))
         else:
             action.setText(s)
     else:
@@ -24852,7 +25327,8 @@ def parseShortcutLine (self,kind,s):
             # comment = val[i:].strip()
             val = val[:i].strip()
 
-    si = ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,val=val)
+    # Important: ShortcutInfo canonicalizes val.
+    si = ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=val)
     if trace: g.trace(si)
     return name,si
 #@+node:ekr.20041120094940.9: *4* set (parserBaseClass)
@@ -24863,7 +25339,10 @@ def set (self,p,kind,name,val):
     trace = False and not g.unitTesting
     if trace: g.trace(kind,name,val)
 
-    c = self.c ; key = self.munge(name)
+    c = self.c
+
+    # Note: when kind is 'shortcut', name is a command name.
+    key = self.munge(name)
 
     # if kind and kind.startswith('setting'): g.trace("settingsParser %10s %15s %s" %(kind,val,name))
     d = self.settingsDict
@@ -24876,6 +25355,239 @@ def set (self,p,kind,name,val):
 
     # Important: we can't use c here: it may be destroyed!
     d [key] = GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
+#@+node:ekr.20120128103510.13670: *3* Updating dependent dicts
+@nocolor-node
+
+
+k.computeInversBinding() called by print-commands and for auto-completion.
+
+k.bindKey sets k.bindingsDict.
+
+k.bindKeyToDict sets k.masterBindingDict.
+#@+node:ekr.20061031131434.98: *4* k.makeAllBindings
+def makeAllBindings (self):
+
+    k = self ; c = k.c
+
+    # g.trace(c.fileName(),g.callers())
+
+    k.bindingsDict = {}
+    k.addModeCommands() 
+    k.makeBindingsFromCommandsDict()
+    k.initSpecialIvars()
+    k.initAbbrev()
+    c.frame.body.createBindings()
+    c.frame.log.setTabBindings('Log')
+    if c.frame.statusLine: c.frame.statusLine.setBindings()
+    c.frame.tree.setBindings()
+    c.frame.setMinibufferBindings()
+    k.completeAllBindings()
+    k.checkBindings()
+#@+node:ekr.20061031131434.93: *4* k.bindKeyToDict
+def bindKeyToDict (self,pane,stroke,func,commandName,_hash):
+    
+    '''Update k.masterBindingsDict for the stroke.'''
+
+    trace = False and not g.unitTesting
+        # and stroke.lower().find('tab') != -1 
+    k = self
+    d = k.masterBindingsDict.get(pane,{})
+
+    stroke = g.stripBrackets(stroke)
+    if trace: g.trace(pane,stroke,commandName,g.callers())
+
+    # New in Leo 4.4.1: Allow redefintions.
+    d [stroke] = leoConfig.ShortcutInfo(
+        kind=_hash,commandName=commandName,func=func,pane=pane,stroke=stroke)
+
+    k.masterBindingsDict [pane] = d
+#@+node:ekr.20050922104731: *4* finishCreateEditCommanders (leoEditCommands module)
+def finishCreateEditCommanders (c):
+
+    '''Finish creating edit classes in the commander.
+
+    Return the commands dictionary for all the classes.'''
+    
+    # g.trace(c,g.callers())
+
+    global classesList
+
+    d = {}
+
+    for name, theClass in classesList:
+        theInstance = getattr(c,name)
+        theInstance.finishCreate()
+        theInstance.init()
+        d2 = theInstance.getPublicCommands()
+        if d2:
+            d.update(d2)
+            if 0:
+                g.pr('----- %s' % name)
+                for key in sorted(d2): g.pr(key)
+
+    return d
+#@+node:ekr.20061031131434.176: *4* k.computeInverseBindingDict
+def computeInverseBindingDict (self):
+
+    k = self ; d = {}
+
+    # keys are minibuffer command names, values are shortcuts.
+    for shortcut in k.bindingsDict:
+        aList = k.bindingsDict.get(shortcut,[])
+        for si in aList:
+            assert isinstance(si,leoConfig.ShortcutInfo),si
+            shortcutList = d.get(si.commandName,[])
+            
+            # The shortcutList consists of tuples (pane,shortcut).
+            # k.inverseBindingDict has values consisting of these tuples.
+            aList = k.bindingsDict.get(shortcut,
+                [g.Bunch(pane='all')])
+                    # Important: only si.pane is required below.
+                
+            for si in aList:
+                assert isinstance(si,leoConfig.ShortcutInfo),si
+                #pane = g.choose(si.pane=='all','','%s:' % (si.pane))
+                pane = '%s:' % (si.pane)
+                data = (pane,shortcut)
+                if data not in shortcutList:
+                    shortcutList.append(data)
+
+            d [si.commandName] = shortcutList
+
+    return d
+#@+node:ekr.20061031131434.80: *4* k.finishCreate & helpers
+def finishCreate (self):
+
+    '''Complete the construction of the keyHandler class.
+    c.commandsDict has been created when this is called.'''
+    
+    # g.trace('(leoKeys)',g.callers())
+
+    k = self ; c = k.c
+    # g.trace('keyHandler')
+    k.createInverseCommandsDict()
+
+    # Important: bindings exist even if c.showMiniBuffer is False.
+    k.makeAllBindings()
+
+    # Set mode colors used by k.setInputState.
+    bg = c.config.getColor('body_text_background_color') or 'white'
+    fg = c.config.getColor('body_text_foreground_color') or 'black'
+
+    k.command_mode_bg_color = c.config.getColor('command_mode_bg_color') or bg
+    k.command_mode_fg_color = c.config.getColor('command_mode_fg_color') or fg
+    k.insert_mode_bg_color = c.config.getColor('insert_mode_bg_color') or bg
+    k.insert_mode_fg_color = c.config.getColor('insert_mode_fg_color') or fg
+    k.overwrite_mode_bg_color = c.config.getColor('overwrite_mode_bg_color') or bg
+    k.overwrite_mode_fg_color = c.config.getColor('overwrite_mode_fg_color') or fg
+    k.unselected_body_bg_color = c.config.getColor('unselected_body_bg_color') or bg
+    k.unselected_body_fg_color = c.config.getColor('unselected_body_fg_color') or bg    
+
+    # g.trace(k.insert_mode_bg_color,k.insert_mode_fg_color)
+
+    self.inited = True
+
+    k.setDefaultInputState()
+    k.resetLabel()
+#@+node:ekr.20061031131434.81: *5* createInverseCommandsDict
+def createInverseCommandsDict (self):
+
+    '''Add entries to k.inverseCommandsDict using c.commandDict.
+
+    c.commandsDict:        keys are command names, values are funcions f.
+    k.inverseCommandsDict: keys are f.__name__, values are minibuffer command names.
+    '''
+
+    k = self ; c = k.c
+
+    for name in c.commandsDict:
+        f = c.commandsDict.get(name)
+        try:
+            k.inverseCommandsDict [f.__name__] = name
+            # g.trace('%24s = %s' % (f.__name__,name))
+
+        except Exception:
+            g.es_exception()
+            g.trace(repr(name),repr(f),g.callers())
+#@+node:ekr.20061031131434.131: *4* k.registerCommand
+def registerCommand (self,commandName,shortcut,func,
+    pane='all',verbose=False, wrap=True):
+
+    '''Make the function available as a minibuffer command,
+    and optionally attempt to bind a shortcut.
+
+    You can wrap any method in a callback function, so the
+    restriction to functions is not significant.
+
+    If wrap is True then func will be wrapped with c.universalCallback.
+
+    '''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+
+    if wrap:
+        func = c.universalCallback(func)
+    f = c.commandsDict.get(commandName)
+    verbose = (False or verbose) and not g.app.unitTesting
+    if f and f.__name__ != 'dummyCallback' and verbose:
+        g.es_print('redefining',commandName, color='red')
+
+    c.commandsDict [commandName] = func
+    k.inverseCommandsDict [func.__name__] = commandName
+    if trace: g.trace('leoCommands %24s = %s' % (func.__name__,commandName))
+
+    if shortcut:
+        stroke = k.shortcutFromSetting(shortcut)
+    elif commandName.lower() == 'shortcut': # Causes problems.
+        stroke = None
+    else:
+        # Try to get a shortcut from leoSettings.leo.
+        junk,aList = c.config.getShortcut(commandName)
+        for si in aList:
+            assert isinstance(si,leoConfig.ShortcutInfo),si
+            accel2 = si.stroke
+            pane2 = si.pane
+            if accel2 and not pane2.endswith('-mode'):
+                shortcut2 = accel2
+                stroke = k.shortcutFromSetting(shortcut2)
+                if stroke: break
+        else: stroke = None
+
+    if stroke:
+        if trace: g.trace('stroke',stroke,'pane',pane,commandName,g.callers(4))
+        ok = k.bindKey (pane,stroke,func,commandName,_hash='register-command') # Must be a stroke.
+        k.makeMasterGuiBinding(stroke) # Must be a stroke.
+        if verbose and ok and not g.app.silentMode:
+            # g.trace(g.callers())
+            g.es_print('','@command: %s = %s' % (
+                commandName,k.prettyPrintKey(stroke)),color='blue')
+            if 0:
+                d = k.masterBindingsDict.get('button',{})
+                g.print_dict(d)
+        c.frame.tree.setBindings()
+    elif trace and verbose and not g.app.silentMode:
+        g.trace(g.callers())
+        g.es_print('','@command: %s' % (commandName),color='blue')
+
+    # Fixup any previous abbreviation to press-x-button commands.
+    if commandName.startswith('press-') and commandName.endswith('-button'):
+        d = c.config.getAbbrevDict()
+            # Keys are full command names, values are abbreviations.
+        if commandName in list(d.values()):
+            for key in d:
+                if d.get(key) == commandName:
+                    c.commandsDict [key] = c.commandsDict.get(commandName)
+                    break
+#@+node:ekr.20120129174505.10243: *3* The missing settings bug (c.hash)
+#@+node:ekr.20041130173135: *4* c.hash
+def hash (self):
+
+    c = self
+    if c.mFileName:
+        return c.os_path_finalize(c.mFileName).lower()
+    else:
+        return 0
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

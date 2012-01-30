@@ -241,6 +241,8 @@ def finishCreateEditCommanders (c):
     '''Finish creating edit classes in the commander.
 
     Return the commands dictionary for all the classes.'''
+    
+    # g.trace(c,g.callers())
 
     global classesList
 

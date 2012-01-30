@@ -8214,5 +8214,140 @@ def canRevert (self):
     # c.mFileName will be "untitled" for unsaved files.
     # c = self
     # return (c.frame and c.mFileName and c.isChanged())
+#@+node:ekr.20120129121306.10261: *3* getShortcut (g.app.config) & helpers (NO LONGER USED)
+def getShortcut (self,c,commandName):
+
+    '''Return rawKey,accel for shortcutName'''
+    
+    trace = False and commandName in ('new','print-bindings') and not g.unitTesting
+
+    key = c.frame.menu.canonicalizeMenuName(commandName)
+    key = key.replace('&','') # Allow '&' in names.
+
+    if 1: # New code: use the dicts created by make_settings_dict.
+    
+        # To do: c.config here is different from c.config in make_shortcuts_dict.
+        table = (
+            ('local',            c and c.config.master_shortcuts_dict),
+            ('myLeoSettings.leo',g.app.config.immutable_my_leo_settings_shortcuts_dict),
+            ('leoSettings.leo',  g.app.config.immutable_leo_settings_shortcuts_dict),
+        )
+        aList = []
+        # if trace: g.trace('c',c,'c.config',c.config)
+        for tag,d in table:
+            if d:
+                if trace: g.trace(tag,len(list(d.keys())))
+                aList = d.get(commandName,[])
+                for si in aList:
+                    assert isinstance(si,ShortcutInfo),si
+                break
+        aList = [si for si in aList
+            if si.stroke and si.stroke.lower() != 'none']
+        if trace: g.trace('getShortcut',tag,aList)
+        return key,aList
+    else:
+        if c.k.new_bindings:
+            aList = self.getShortcutHelper(c,key) # 2011/02/11
+        else:
+            aList = self.get(c,key,'shortcut')
+    
+        if aList:
+            aList = [bunch for bunch in aList
+                if bunch.val and bunch.val.lower() != 'none']
+            if trace: g.trace(key,aList)
+            return key,aList
+        else:
+            return key,[]
+#@+node:ekr.20120129121306.10262: *4* getShortcutHelper(g.app.config) & helper
+def getShortcutHelper (self,c,key):
+    
+    '''Like get, but return *all* the found bunchLists's.
+    
+    'key' is actually a commandname.'''
+
+    trace = True and key == 'new' and not g.unitTesting
+    kind = 'shortcut'
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+    result = []
+
+    if c and not isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            aList,junk = self.getValFromDict(d,key,kind)
+            if aList: self.mergeShortcuts(result,aList,key,tag='localDict')
+
+    for d in self.localOptionsList:
+        # For myLeoSettings.leo and leoSettings.leo.
+        aList,junk = self.getValFromDict(d,key,kind)
+        if aList: self.mergeShortcuts(result,aList,key,tag='localList')
+
+    for d in self.dictList:
+        # For hard-coded values of settings.
+        aList,junk = self.getValFromDict(d,key,kind)
+        if aList: self.mergeShortcuts(result,aList,key,tag='dictList')
+
+    # Use settings in leoSettings.leo *last*.
+    if c and isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            aList,junk = self.getValFromDict(d,key,kind)
+            if aList: self.mergeShortcuts(result,aList,key,tag='local leoSettigns')
+
+    return result
+#@+node:ekr.20120129121306.10263: *5* mergeShortcuts (g.app.config)
+def mergeShortcuts (self,result,aList,key,tag):
+        # key and tag are for debugging.
+        # key is a conical command name, *not* a keystroke.
+    
+    '''Append all non-conflicting entries of aList to result.'''
+    
+    trace = True and key == 'new' and not g.unitTesting
+
+    # If there is a real override, **earlier** entries take precedence.
+    # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
+    
+    vals = [z.val for z in result]
+    aList = [z for z in aList if z.val not in vals]
+    result.extend(aList)
+
+    if trace and result:
+        g.trace(tag,key,['%s %s' % (z.val,z.pane) for z in result])
+#@+node:ekr.20120129121306.10264: *4* killShortcut (g.app.config) NOT USED YET
+def killShortcut (self,c,commandName,shortcut):
+    
+    '''Kill all bindings to key in c.'''
+
+    trace = True and not g.unitTesting
+
+    if c and not c.shortFileName().endswith('leoSettings.leo'):
+        
+        def munge(s):
+            c.k.shortcutFromSetting(s)
+    
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            gs = d.get('shortcut')
+            if trace: g.trace('gs',gs)
+            # Remove all entries that for the shortcut.
+            result = []
+            for si in gs.val:
+                assert isinstance(si,ShortcutInfo),si
+                if trace: g.trace('commandName',commandName,'shortcut',shortcut,'si.stroke',si.stroke)
+                if munge(si.stroke) == munge(shortcut):
+                    if trace: g.trace('removing',si)
+                else:
+                    if trace: g.trace('keeping',si)
+                    result.append(si)
+            gs.val = result
+        
+            # aList,exists = self.getValFromDict(d,commandName,requestedType='shortcut')
+            # g.trace('commandName %s shortcut %s aList...\n%s' % (
+                # commandName,shortcut,aList))
+            # if aList and exists:
+                # key = self.munge(key)
+                # g.trace('kill %s' % (key))
+                # del d[key]
+
+        
 #@-all
 #@-leo

@@ -5236,7 +5236,7 @@ execute-script          = e
 rectangle-open          = o
 repeat-complex-command  = a
 reformat-paragraph      = r
-remove-blank-lines      = b
+remove-blank-lines      = Shift-B
 sort-lines              = l
 sort-siblings           = s
 

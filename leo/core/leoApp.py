@@ -339,6 +339,174 @@ class LeoApp:
 
         self.global_commands_dict = {}
         #@-<< Define global data structures >>
+        #@+<< Define global key dicts >>
+        #@+node:ekr.20120129040823.10241: *3* << define global key dicts >> (leoApp.py)
+        # Important: these dicts must not depend on settings.
+        # They are used by g.app.canonicalize_shortcut
+
+        # These are defined at http://tcl.activestate.com/man/tcl8.4/TkCmd/keysyms.htm.
+        # Important: only the inverse dict is actually used in the new key binding scheme.
+        # Tk may return the *values* of this dict in event.keysym fields.
+        # Leo will warn if it gets a event whose keysym not in values of this table.
+        self.guiBindNamesDict = {
+            "&" : "ampersand",
+            "^" : "asciicircum",
+            "~" : "asciitilde",
+            "*" : "asterisk",
+            "@" : "at",
+            "\\": "backslash",
+            "|" : "bar",
+            "{" : "braceleft",
+            "}" : "braceright",
+            "[" : "bracketleft",
+            "]" : "bracketright",
+            ":" : "colon",      # removed from code.
+            "," : "comma",
+            "$" : "dollar",
+            "=" : "equal",
+            "!" : "exclam",     # removed from code.
+            ">" : "greater",
+            "<" : "less",
+            "-" : "minus",
+            "#" : "numbersign",
+            '"' : "quotedbl",
+            "'" : "quoteright",
+            "(" : "parenleft",
+            ")" : "parenright", # removed from code.
+            "%" : "percent",
+            "." : "period",     # removed from code.
+            "+" : "plus",
+            "?" : "question",
+            "`" : "quoteleft",
+            ";" : "semicolon",
+            "/" : "slash",
+            " " : "space",      # removed from code.
+            "_" : "underscore",
+        }
+
+        # Keys are lowercase, so that case is not significant *for these items only* in leoSettings.leo.
+        self.settingsNameDict = {
+            'bksp'    : 'BackSpace', # Dubious: should be '\b'
+            'dnarrow' : 'Down',
+            'esc'     : 'Escape',
+            'ltarrow' : 'Left',
+            'pageup'  : 'Prior',
+            'pagedn'  : 'Next',
+            'rtarrow' : 'Right',
+            'uparrow' : 'Up',
+        }
+
+        self.tkNamesList = (
+            # Arrow keys.
+            'Left','Right','Up','Down',
+            # Page up/down keys.
+            'Next','Prior',
+            # Home end keys.
+            'Home','End'
+            # Modifier keys.
+            'Caps_Lock','Num_Lock',
+            # F-keys.
+            'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
+            # All others.
+            'Begin','Break','Clear','Delete','Escape',
+            # Dubious: these are ascii characters!
+            # But there is no harm in retaining these in Leo's core.
+            'BackSpace','Linefeed','Return','Tab',
+        )
+
+        # Add lowercase version of special keys.
+        for s in self.tkNamesList:
+            self.settingsNameDict [s.lower()] = s
+        #@-<< Define global key dicts >>
+    #@+node:ekr.20120129040823.10248: ** app.canonicalize_shortcut (NEW. uses g.app.guiBindNamesDict)
+    def canonicalize_shortcut (self,setting,addKey=True):
+
+        k = self
+
+        trace = False and not g.unitTesting
+            # and setting.lower().find('tab') != -1 
+        if not setting:return None
+
+        s = g.stripBrackets(setting.strip())
+        #@+<< define cmd, ctrl, alt, shift >>
+        #@+node:ekr.20120129040823.10249: *3* << define cmd, ctrl, alt, shift >>
+        s2 = s.lower()
+
+        cmd   = s2.find("cmd") >= 0     or s2.find("command") >= 0
+        ctrl  = s2.find("control") >= 0 or s2.find("ctrl") >= 0
+        alt   = s2.find("alt") >= 0
+        shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
+        meta  = s2.find("meta") >= 0
+        #@-<< define cmd, ctrl, alt, shift >>
+        if 0: # This must be independent of settings!
+            if k.swap_mac_keys and sys.platform == "darwin":
+                #@+<< swap cmd and ctrl keys >>
+                #@+node:ekr.20120129040823.10250: *3* << swap cmd and ctrl keys >>
+                # if ctrl and not cmd:
+                    # cmd = True ; ctrl = False
+
+                # if alt and not ctrl:
+                    # ctrl = True ; alt = False
+                    
+                pass
+                #@-<< swap cmd and ctrl keys >>
+        #@+<< convert minus signs to plus signs >>
+        #@+node:ekr.20120129040823.10251: *3* << convert minus signs to plus signs >>
+        # Replace all minus signs by plus signs, except a trailing minus:
+        if s.endswith('-'):
+            s = s[:-1].replace('-','+') + '-'
+        else:
+            s = s.replace('-','+')
+        #@-<< convert minus signs to plus signs >>
+        #@+<< compute the last field >>
+        #@+node:ekr.20120129040823.10252: *3* << compute the last field >>
+        if s.endswith('+'):
+            last = '+'
+        else:
+            fields = s.split('+') # Don't lower this field.
+            last = fields and fields[-1]
+            if not last:
+                if not g.app.menuWarningsGiven:
+                    g.pr("bad shortcut specifier:", repr(s),repr(setting))
+                    g.trace(g.callers())
+                return None
+
+        if len(last) == 1:
+            last2 = g.app.guiBindNamesDict.get(last)
+            if last2:
+                last = last2
+            else:
+                if last.isalpha():
+                    if shift:
+                        last = last.upper()
+                        shift = False # It is Ctrl-A, not Ctrl-Shift-A.
+                    else:
+                        last = last.lower()
+                # New in Leo 4.4.2: Alt-2 is not a key event!
+                if addKey and last.isdigit():
+                    last = 'Key-' + last
+        else:
+            # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
+            # This is a *one-way* translation, done only here.
+            d = g.app.settingsNameDict
+            last = d.get(last.lower(),last)
+        #@-<< compute the last field >>
+        #@+<< compute shortcut >>
+        #@+node:ekr.20120129040823.10253: *3* << compute shortcut >>
+        table = (
+            (alt, 'Alt+'),
+            (ctrl,'Ctrl+'),
+            (cmd, 'Command+'),
+            (meta,'Meta+'),
+            (shift,'Shift+'),
+            (True, last),
+        )
+
+        # new in 4.4b3: convert all characters to unicode first.
+        shortcut = ''.join([g.toUnicode(val) for flag,val in table if flag])
+        #@-<< compute shortcut >>
+        if trace: g.trace('%20s %s' % (setting,shortcut))
+        return shortcut
     #@+node:ekr.20031218072017.2609: ** app.closeLeoWindow
     def closeLeoWindow (self,frame):
 
@@ -389,6 +557,34 @@ class LeoApp:
             g.app.finishQuit()
 
         return True # The window has been closed.
+    #@+node:ville.20090602181814.6219: ** app.commanders
+    def commanders(self):
+        """ Return list of currently active controllers """
+
+        return [f.c for f in g.app.windowList]    
+    #@+node:ekr.20090717112235.6007: ** app.computeSignon
+    def computeSignon (self):
+
+        app = self
+        build,date  = leoVersion.build,leoVersion.date
+        guiVersion  = app.gui and app.gui.getFullVersion() or 'no gui!'
+        leoVer      = leoVersion.version
+        n1,n2,n3,junk,junk=sys.version_info
+
+        if sys.platform.startswith('win'):
+            sysVersion = 'Windows '
+            try:
+                v = os.sys.getwindowsversion()
+                sysVersion += ', '.join([str(z) for z in v])
+            except Exception:
+                pass
+
+        else: sysVersion = sys.platform
+
+        app.signon = 'Leo %s, build %s, %s' % (
+            leoVer,build,date)
+        app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
+            n1,n2,n3,guiVersion,sysVersion)
     #@+node:ekr.20100831090251.5838: ** app.createXGui
     #@+node:ekr.20100831090251.5840: *3* app.createCursesGui
     def createCursesGui (self,fileName='',verbose=False):
@@ -645,6 +841,19 @@ class LeoApp:
 
         if g.app.windowList:
             g.app.quitting = False # If we get here the quit has been disabled.
+    #@+node:ville.20090620122043.6275: ** app.setGlobalDb
+    def setGlobalDb(self):
+        """ Create global pickleshare db
+
+        Usable by::
+
+            g.app.db['hello'] = [1,2,5]
+
+        """
+
+
+        # Fixes bug 670108.
+        g.app.db = leoCache.cacher().initGlobalDB()
     #@+node:ekr.20031218072017.1978: ** app.setLeoID
     def setLeoID (self,verbose=True):
 
@@ -769,19 +978,6 @@ class LeoApp:
 
                 g.es('can not create',tag,'in',theDir,color='red')
         #@-<< attempt to create leoID.txt >>
-    #@+node:ville.20090620122043.6275: ** app.setGlobalDb
-    def setGlobalDb(self):
-        """ Create global pickleshare db
-
-        Usable by::
-
-            g.app.db['hello'] = [1,2,5]
-
-        """
-
-
-        # Fixes bug 670108.
-        g.app.db = leoCache.cacher().initGlobalDB()
     #@+node:ekr.20031218072017.1847: ** app.setLog, lockLog, unlocklog
     def setLog (self,log):
 
@@ -798,29 +994,6 @@ class LeoApp:
     def unlockLog(self):
         """Enable changes to the log"""
         self.logIsLocked = False
-    #@+node:ekr.20090717112235.6007: ** app.computeSignon
-    def computeSignon (self):
-
-        app = self
-        build,date  = leoVersion.build,leoVersion.date
-        guiVersion  = app.gui and app.gui.getFullVersion() or 'no gui!'
-        leoVer      = leoVersion.version
-        n1,n2,n3,junk,junk=sys.version_info
-
-        if sys.platform.startswith('win'):
-            sysVersion = 'Windows '
-            try:
-                v = os.sys.getwindowsversion()
-                sysVersion += ', '.join([str(z) for z in v])
-            except Exception:
-                pass
-
-        else: sysVersion = sys.platform
-
-        app.signon = 'Leo %s, build %s, %s' % (
-            leoVer,build,date)
-        app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
-            n1,n2,n3,guiVersion,sysVersion)
     #@+node:ekr.20031218072017.2619: ** app.writeWaitingLog
     def writeWaitingLog (self,c):
 
@@ -877,10 +1050,5 @@ class LeoApp:
         # Essential when opening multiple files...
         
         g.app.setLog(None) 
-    #@+node:ville.20090602181814.6219: ** app.commanders
-    def commanders(self):
-        """ Return list of currently active controllers """
-
-        return [f.c for f in g.app.windowList]    
     #@-others
 #@-leo

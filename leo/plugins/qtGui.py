@@ -7213,7 +7213,7 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
             action.setText('UnMark' if c.p.isMarked() else 'Mark')
             self.leo_update_shortcut(action,commandName)
                 # Set the proper shortcut.
-    #@+node:ekr.20120120095156.10260: *5* leo_update_shortcut (Maybe: show best accel, or more accels)
+    #@+node:ekr.20120120095156.10260: *5* leo_update_shortcut
     def leo_update_shortcut(self,action,commandName):
         
         trace = False and not g.unitTesting
@@ -7225,16 +7225,16 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
             if len(parts) >= 2: s = parts[0]
             key,aList = c.config.getShortcut(commandName)
             if aList:
-                if trace and len(aList) > 1:
-                    for z in aList:
-                        accel = k.shortcutFromSetting(z.val,addKey=False) or ''
-                        accel = g.stripBrackets(k.prettyPrintKey(accel))
-                        g.trace('%10s %20s %s' % (z.pane,accel,z.commandName))
-                si = aList[0] ### We could do some AI here, or show them all...
-                assert isinstance(si,leoConfig.ShortcutInfo)
-                accel = k.shortcutFromSetting(si.val,addKey=False) or ''
-                accel = g.stripBrackets(k.prettyPrintKey(accel))
-                action.setText('%s\t%s' % (s,accel))
+                result = []
+                for si in aList:
+                    assert isinstance(si,leoConfig.ShortcutInfo)
+                    # Don't show mode-related bindings.
+                    if not si.isModeBinding():
+                        accel = g.stripBrackets(k.prettyPrintKey(si.stroke))
+                        if trace: g.trace('%20s %s' % (accel,si.dump()))
+                        result.append(accel)
+                        # Break here if we want to show only one accerator.
+                action.setText('%s\t%s' % (s,', '.join(result)))
             else:
                 action.setText(s)
         else:
@@ -8961,7 +8961,7 @@ class leoQtEventFilter(QtCore.QObject):
         return tkKey,ch,ignore
     #@+node:ekr.20110605121601.18547: *5* char2tkName
     char2tkNameDict = {
-        # Part 1: same as k.guiBindNamesDict
+        # Part 1: same as g.app.guiBindNamesDict
         "&" : "ampersand",
         "^" : "asciicircum",
         "~" : "asciitilde",
