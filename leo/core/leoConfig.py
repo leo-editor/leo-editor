@@ -518,8 +518,6 @@ class parserBaseClass:
                     d ['*entry-commands*'] = aList0
                 elif si is not None:
                     # A regular shortcut.
-                    ### si.stroke = k.strokeFromSetting(si.stroke)
-                        ### Not needed: the stroke is already canonicalized.
                     si.pane = modeName
                     aList = d.get(name,[])
                     for z in aList:

@@ -1602,7 +1602,7 @@ class keyHandlerClass:
             k.bindKeyToDict(pane,shortcut,callback,commandName,_hash)
             si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,func=callback,commandName=commandName)
             if not modeFlag:
-                k.remove_conflicting_definitions(aList,commandName,pane,shortcut,_hash)
+                k.remove_conflicting_definitions(aList,pane)
             aList.append(si)
             shortcut = g.stripBrackets(shortcut.strip())
             k.bindingsDict [shortcut] = aList
@@ -1617,37 +1617,10 @@ class keyHandlerClass:
 
     bindShortcut = bindKey # For compatibility
     #@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
-    def remove_conflicting_definitions (self,aList,commandName,pane,shortcut,theHash):
-        
-        trace = True and not g.unitTesting
-        c,k = self.c,self
-        
-        def warn(commandName,pane,kind):
-            g.es_print('%30s in %5s from %s' % (commandName,pane,kind))
+    def remove_conflicting_definitions (self,aList,pane):
 
         for si in aList:
-            assert isinstance(si,leoConfig.ShortcutInfo)
-
-        # This warning should never happen with the new code in makeBindingsFromCommandsDict.
-        if False: #### self.warn_about_redefined_shortcuts:
-            
-            redefs = [si for si in aList
-                if si.commandName != commandName and
-                    # 2011/02/11: don't give warning for straight substitution.
-                    pane in ('button','all',si.pane) and
-                    not si.pane.endswith('-mode')]
-        
-            if redefs:
-                g.warning('shortcut conflict for %s' % k.prettyPrintKey(shortcut))
-                warn(commandName,pane,theHash)
-                for z in redefs:
-                    warn(z.commandName,z.pane,z.kind)
-                    g.app.config.killShortcut(c,z.commandName,shortcut)
-                    
-                if trace:
-                    g.trace('redefs...')
-                    for si in redefs:
-                        g.trace(si.dump())
+            assert isinstance(si,leoConfig.ShortcutInfo),si
 
         # Update aList.
         aList = [si for si in aList if pane not in ('button','all',si.pane)]
@@ -1778,16 +1751,14 @@ class keyHandlerClass:
             ('autoCompleteForceKey','auto-complete-force'),
         ):
             junk, aList = c.config.getShortcut(commandName)
-            aList = aList or [] ; found = False
+            aList,found = aList or [], False
             for pane in ('text','all'):
                 for si in aList:
                     assert isinstance(si,leoConfig.ShortcutInfo)
                     if si.pane == pane:
-                        ### stroke = k.strokeFromSetting(si.val)
-                        stroke = si.stroke
-                        if trace: g.trace(commandName,stroke)
-                        setattr(k,ivar,stroke)
-                        found = True ;break
+                        if trace: g.trace(commandName,si.stroke)
+                        setattr(k,ivar,si.stroke)
+                        found = True; break
             if not found and warn:
                 g.trace('no setting for %s' % commandName)
     #@+node:ekr.20061031131434.98: *4* k.makeAllBindings
@@ -3935,9 +3906,7 @@ class keyHandlerClass:
                     if not shift:
                         s = prev + 'Shift+' + last
                 elif last.islower():
-                    if not prev: ### and not brief:
-                        # g.trace('*'*10,s,g.callers())
-                        ### s = 'Key+' + last.upper()
+                    if not prev:
                         s = last.upper()
                     else:
                         s = prev + last.upper()

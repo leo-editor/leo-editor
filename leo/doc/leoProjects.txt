@@ -24268,12 +24268,9 @@ def setGeometry (self,rect):
 #@+node:ekr.20111024170505.16459: ** Fixed bug 87933: Redefining a key binding breaks menu items with same binding
 @nocolor-node
 
-Before the initial push:
+To do:
     
 * Make sure that k.registerCommand properly overrides shortcuts.
-
-After the initial push.
-
 * Clean up the code
     - Remove all unused code.
         - Remove call to killOneShortcut.
@@ -25067,7 +25064,7 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
         k.bindKeyToDict(pane,shortcut,callback,commandName,_hash)
         si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,func=callback,commandName=commandName)
         if not modeFlag:
-            k.remove_conflicting_definitions(aList,commandName,pane,shortcut,_hash)
+            k.remove_conflicting_definitions(aList,pane)
         aList.append(si)
         shortcut = g.stripBrackets(shortcut.strip())
         k.bindingsDict [shortcut] = aList
@@ -25089,37 +25086,10 @@ if shortcut:
                 commandName,shortcut),color='blue')
             return
 #@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
-def remove_conflicting_definitions (self,aList,commandName,pane,shortcut,theHash):
-    
-    trace = True and not g.unitTesting
-    c,k = self.c,self
-    
-    def warn(commandName,pane,kind):
-        g.es_print('%30s in %5s from %s' % (commandName,pane,kind))
+def remove_conflicting_definitions (self,aList,pane):
 
     for si in aList:
-        assert isinstance(si,leoConfig.ShortcutInfo)
-
-    # This warning should never happen with the new code in makeBindingsFromCommandsDict.
-    if False: #### self.warn_about_redefined_shortcuts:
-        
-        redefs = [si for si in aList
-            if si.commandName != commandName and
-                # 2011/02/11: don't give warning for straight substitution.
-                pane in ('button','all',si.pane) and
-                not si.pane.endswith('-mode')]
-    
-        if redefs:
-            g.warning('shortcut conflict for %s' % k.prettyPrintKey(shortcut))
-            warn(commandName,pane,theHash)
-            for z in redefs:
-                warn(z.commandName,z.pane,z.kind)
-                g.app.config.killShortcut(c,z.commandName,shortcut)
-                
-            if trace:
-                g.trace('redefs...')
-                for si in redefs:
-                    g.trace(si.dump())
+        assert isinstance(si,leoConfig.ShortcutInfo),si
 
     # Update aList.
     aList = [si for si in aList if pane not in ('button','all',si.pane)]
