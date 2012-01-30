@@ -533,8 +533,6 @@ class parserBaseClass:
                     aList.append(si)
                     d [name] = aList
                     self.set(p,"shortcut",name,aList)
-                    self.setShortcut(p,name,aList)
-                        # Can we delete this??
 
         # Restore the global shortcutsDict.
         self.shortcutsDict = old_d
@@ -585,11 +583,8 @@ class parserBaseClass:
             if line and not g.match(line,0,'#'):
                 name,si = self.parseShortcutLine(theHash,line)
                 assert isinstance(si,ShortcutInfo),si
-                if si:
-                    if si.stroke in (None,'none','None'):
-                        self.killOneShortcut(si,name,p)
-                    else:
-                        self.doOneShortcut(si,name,p)
+                if si and si.stroke not in (None,'none','None'):
+                    self.doOneShortcut(si,name,p)
                         
         if trace:
             g.trace('%4d' % (len(list(self.shortcutsDict.keys()))),c.shortFileName(),p.h)
@@ -605,21 +600,11 @@ class parserBaseClass:
         aList.append(si)
         d [name] = aList
         
-        if trace:
-            g.trace(len(aList),name)
-            # g.trace('%6s %20s %s' % (si.pane,si.stroke,name))
+        if trace: g.trace(name,si)
 
-        self.set(p,"shortcut",name,aList)
+        ### The shortcut-binding logic is now completely separate from set.
+        ### self.set(p,"shortcut",name,aList)
             # Essential.
-            
-        # 2011/10/28 Apparently not used!
-        self.setShortcut(p,name,aList)
-            # Can we delete this?
-    #@+node:ekr.20111020144401.9586: *5* killOneShortcut (ParserBaseClass) (Not ready yet)
-    def killOneShortcut (self,si,name,p):
-        
-        if 0:
-            g.trace(si,name,p and p.h)
     #@+node:ekr.20041217132028: *4* doString
     def doString (self,p,kind,name,val):
 
@@ -1033,21 +1018,6 @@ class parserBaseClass:
 
         # Important: we can't use c here: it may be destroyed!
         d [key] = GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
-    #@+node:ekr.20041227071423: *3* setShortcut (ParserBaseClass) (** can we delete this?? **)
-    def setShortcut (self,p,name,aList):
-        
-        trace = False and not g.unitTesting
-
-        c = self.c
-
-        # None is a valid value for val.
-        key = c.frame.menu.canonicalizeMenuName(name)
-        rawKey = key.replace('&','')
-        self.set(p,rawKey,"shortcut",aList)
-
-        if trace:
-            for b in aList:
-                g.trace('%20s %45s %s %s' % (b.val,rawKey,b.pane,b._hash))
     #@+node:ekr.20041119204700.1: *3* traverse (parserBaseClass)
     def traverse (self):
 
@@ -1656,7 +1626,10 @@ class configClass:
         - Shortcut matches shortcuts.
         '''
 
+        # The shortcuts logic no longer uses the get/set code.
         shortcuts = ('shortcut','shortcuts',)
+        if type1 in shortcuts or type2 in shortcuts:
+            g.trace('oops: type in shortcuts')
 
         return (
             type1 == None or type2 == None or
@@ -1836,7 +1809,7 @@ class configClass:
                     return bunch.path,bunch.val
         else:
             return 'unknown setting',None
-    #@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config) (Rewritten)
+    #@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config)
     def getShortcut (self,c,commandName):
 
         '''Return rawKey,accel for shortcutName'''
@@ -2439,6 +2412,8 @@ class ShortcutInfo:
     #@+others
     #@+node:ekr.20120129040823.10254: *3*  ctor (ShortcutInfo)
     def __init__ (self,kind,commandName='',func=None,nextMode=None,pane=None,stroke=None):
+        
+        trace = False and commandName=='new' and not g.unitTesting
 
         self.kind = kind
         self.commandName = commandName
@@ -2447,6 +2422,8 @@ class ShortcutInfo:
         self.pane = pane
         self.stroke = g.app.canonicalize_shortcut(stroke) if stroke else ''
             # Always canonicalize the shortcut.
+
+        if trace: g.trace(commandName,stroke,g.callers())
     #@+node:ekr.20120125045244.10188: *3* __repr__ & ___str_& dump
     def __repr__ (self):
         
@@ -2456,16 +2433,16 @@ class ShortcutInfo:
 
     def dump (self):
         si = self    
-        result = ['ShortcutInfo %17s ' % (si.kind)]
+        result = ['ShortcutInfo %17s' % (si.kind)]
         table = ('commandName','func','nextMode','pane','stroke')
         for ivar in table:
             if hasattr(si,ivar):
                 val =  getattr(si,ivar)
-                if val not in (None,'none','None'):
+                if val not in (None,'none','None',''):
                     if ivar == 'func': val = val.__name__
-                    s = '%s %s ' % (ivar,val)
+                    s = '%s %s' % (ivar,val)
                     result.append(s)
-        return ''.join(result)
+        return '[%s]' % ' '.join(result).strip()
     #@+node:ekr.20120128051055.10234: *3* rich comparisons
     # def __cmp__ (self,other):
         
@@ -2753,31 +2730,6 @@ class ShortcutName:
 
         if trace: g.trace(repr(s1),repr(val))
         return val
-    #@+node:ekr.20120127084215.10226: *3* sn.toGuiStroke (based on k.tkbindingFromStroke)
-    def toGuiStroke (self,stroke):
-
-        '''Convert a stroke (key to cm.bindingsDict) to an actual Tk binding.'''
-        
-        # Based on k.tkbindingFromStroke
-
-        stroke = g.stripBrackets(stroke)
-
-        for a,b in (
-            ('Alt+','Alt-'),
-            ('Ctrl-','Control-'),
-            ('Ctrl+','Control-'),   # New in Leo 4.5.
-            ('Meta+','Meta-'),      # New in Leo 4.6
-            ('Shift+','Shift-'),
-            ('Command+','Command-'),
-            ('DnArrow','Down'), # New in Leo 4.5.
-            ('LtArrow','Left'), # New in Leo 4.5.
-            ('RtArrow','Right'),# New in Leo 4.5.
-            ('UpArrow','Up'),   # New in Leo 4.5.
-        ):
-            stroke = stroke.replace(a,b)
-
-        # g.trace('<%s>' % stroke)
-        return '<%s>' % stroke
     #@+node:ekr.20120127084215.10211: *3* sn.toHash
     def toHash(self):
         

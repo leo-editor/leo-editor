@@ -3,7 +3,7 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
+.. @+node:ekr.20110609102702.16471: ** To do: 4.10
 Top 10:
 
 * Fix all significant bugs.
@@ -3989,7 +3989,10 @@ def typesMatch (self,type1,type2):
     - Shortcut matches shortcuts.
     '''
 
+    # The shortcuts logic no longer uses the get/set code.
     shortcuts = ('shortcut','shortcuts',)
+    if type1 in shortcuts or type2 in shortcuts:
+        g.trace('oops: type in shortcuts')
 
     return (
         type1 == None or type2 == None or
@@ -9138,7 +9141,7 @@ Just noticed the autocompleter pop-up is modal globally, not just for
 the Leo windows.  Probably should only block the Leo windows.
 .. @+node:ekr.20110620083705.14901: *4* Fix or disable curses gui
 leoBridge.py requires the nullGui.
-.. @+node:ekr.20110921094450.6956: ** To do: 4.10
+.. @+node:ekr.20110921094450.6956: ** To do: 4.10.1
 3. Bridges
 
 

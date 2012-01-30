@@ -17498,7 +17498,7 @@ def printBindingsHelper (self,result,data,n1,n2,prefix):
             
             # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
             result.append('%s %*s %*s %s\n' % (letter,-n1,s1,-(min(12,n2)),s2,s3))
-#@+node:ekr.20041117062717.14: *5* getShortcut (g.app.config) (Rewritten)
+#@+node:ekr.20041117062717.14: *5* getShortcut (g.app.config)
 def getShortcut (self,c,commandName):
 
     '''Return rawKey,accel for shortcutName'''
@@ -17635,7 +17635,10 @@ def typesMatch (self,type1,type2):
     - Shortcut matches shortcuts.
     '''
 
+    # The shortcuts logic no longer uses the get/set code.
     shortcuts = ('shortcut','shortcuts',)
+    if type1 in shortcuts or type2 in shortcuts:
+        g.trace('oops: type in shortcuts')
 
     return (
         type1 == None or type2 == None or
@@ -24265,18 +24268,8 @@ def setGeometry (self,rect):
             QtGui.QMainWindow.setGeometry(self,rect)
     else:
         QtGui.QMainWindow.setGeometry(self,rect)
-#@+node:ekr.20111024170505.16459: ** Fixed bug 87933: Redefining a key binding breaks menu items with same binding
+#@+node:ekr.20111024170505.16459: *4* Fixed bug 87933: Redefining a key binding breaks menu items with same binding
 @nocolor-node
-
-To do:
-    
-* Make sure that k.registerCommand properly overrides shortcuts.
-* Clean up the code
-    - Remove all unused code.
-        - Remove call to killOneShortcut.
-    - Remove duplicate code and methods.
-* Start using ShortcutsDict class.
-    - Remove the _hash hack.
 
 What I did:
     
@@ -24290,7 +24283,7 @@ What I did:
 - onAboutToShow now recomputes the contents of menus whenever menus are invoked.
 - leo_update_shortcut now shows all shortcuts for a command.
 - Wrote and tested make_settings_dict
-#@+node:ekr.20120128103510.13674: *3*  Report
+#@+node:ekr.20120128103510.13674: *5*  Report
 @nocolor-node
 
 Bug 879331: Redefining a key binding breaks menu items with same binding
@@ -24338,7 +24331,7 @@ Leo Log Window
 Leo 4.9 final, build 4411, June 21, 2011
 Python 2.7.1, qt version 4.7.2
 linux2
-#@+node:ekr.20120128103510.13676: *4* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
+#@+node:ekr.20120128103510.13676: *6* Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/815564
@@ -24369,8 +24362,8 @@ Leo Log Window
 Leo 4.9 final, build 4411, June 21, 2011
 Python 2.7.1, qt version 4.7.2
 linux2
-#@+node:ekr.20120129174505.10242: *3* New
-#@+node:ekr.20120129040823.10241: *4* << define global key dicts >> (leoApp.py)
+#@+node:ekr.20120129174505.10242: *5* New
+#@+node:ekr.20120129040823.10241: *6* << define global key dicts >> (leoApp.py)
 # Important: these dicts must not depend on settings.
 # They are used by g.app.canonicalize_shortcut
 
@@ -24447,7 +24440,7 @@ self.tkNamesList = (
 # Add lowercase version of special keys.
 for s in self.tkNamesList:
     self.settingsNameDict [s.lower()] = s
-#@+node:ekr.20120129040823.10248: *4* app.canonicalize_shortcut (NEW. uses g.app.guiBindNamesDict)
+#@+node:ekr.20120129040823.10248: *6* app.canonicalize_shortcut (NEW. uses g.app.guiBindNamesDict)
 def canonicalize_shortcut (self,setting,addKey=True):
 
     k = self
@@ -24466,7 +24459,7 @@ def canonicalize_shortcut (self,setting,addKey=True):
     << compute shortcut >>
     if trace: g.trace('%20s %s' % (setting,shortcut))
     return shortcut
-#@+node:ekr.20120129040823.10249: *5* << define cmd, ctrl, alt, shift >>
+#@+node:ekr.20120129040823.10249: *7* << define cmd, ctrl, alt, shift >>
 s2 = s.lower()
 
 cmd   = s2.find("cmd") >= 0     or s2.find("command") >= 0
@@ -24474,7 +24467,7 @@ ctrl  = s2.find("control") >= 0 or s2.find("ctrl") >= 0
 alt   = s2.find("alt") >= 0
 shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
 meta  = s2.find("meta") >= 0
-#@+node:ekr.20120129040823.10250: *5* << swap cmd and ctrl keys >>
+#@+node:ekr.20120129040823.10250: *7* << swap cmd and ctrl keys >>
 # if ctrl and not cmd:
     # cmd = True ; ctrl = False
 
@@ -24482,13 +24475,13 @@ meta  = s2.find("meta") >= 0
     # ctrl = True ; alt = False
     
 pass
-#@+node:ekr.20120129040823.10251: *5* << convert minus signs to plus signs >>
+#@+node:ekr.20120129040823.10251: *7* << convert minus signs to plus signs >>
 # Replace all minus signs by plus signs, except a trailing minus:
 if s.endswith('-'):
     s = s[:-1].replace('-','+') + '-'
 else:
     s = s.replace('-','+')
-#@+node:ekr.20120129040823.10252: *5* << compute the last field >>
+#@+node:ekr.20120129040823.10252: *7* << compute the last field >>
 if s.endswith('+'):
     last = '+'
 else:
@@ -24519,7 +24512,7 @@ else:
     # This is a *one-way* translation, done only here.
     d = g.app.settingsNameDict
     last = d.get(last.lower(),last)
-#@+node:ekr.20120129040823.10253: *5* << compute shortcut >>
+#@+node:ekr.20120129040823.10253: *7* << compute shortcut >>
 table = (
     (alt, 'Alt+'),
     (ctrl,'Ctrl+'),
@@ -24531,7 +24524,7 @@ table = (
 
 # new in 4.4b3: convert all characters to unicode first.
 shortcut = ''.join([g.toUnicode(val) for flag,val in table if flag])
-#@+node:ekr.20120123143207.10223: *4* class GeneralSetting
+#@+node:ekr.20120123143207.10223: *6* class GeneralSetting
 class GeneralSetting:
     
     '''A class representing any kind of setting except shortcuts.'''
@@ -24556,7 +24549,7 @@ class GeneralSetting:
                 if val is not None:
                     result.append('%s: %s' % (ivar,val))
         return ','.join(result)
-#@+node:ekr.20120123115816.10209: *4* class ShortcutInfo
+#@+node:ekr.20120123115816.10209: *6* class ShortcutInfo
 # bindKey:            ShortcutInfo(kind,commandName,func,pane)
 # bindKeyToDict:      ShortcutInfo(kind,commandName,func,pane,stroke)
 # createModeBindings: ShortcutInfo(kind,commandName,func,nextMode,stroke)
@@ -24566,8 +24559,10 @@ class ShortcutInfo:
     '''A class representing any kind of key binding line.'''
         
     @others
-#@+node:ekr.20120129040823.10254: *5*  ctor (ShortcutInfo)
+#@+node:ekr.20120129040823.10254: *7*  ctor (ShortcutInfo)
 def __init__ (self,kind,commandName='',func=None,nextMode=None,pane=None,stroke=None):
+    
+    trace = False and commandName=='new' and not g.unitTesting
 
     self.kind = kind
     self.commandName = commandName
@@ -24576,7 +24571,9 @@ def __init__ (self,kind,commandName='',func=None,nextMode=None,pane=None,stroke=
     self.pane = pane
     self.stroke = g.app.canonicalize_shortcut(stroke) if stroke else ''
         # Always canonicalize the shortcut.
-#@+node:ekr.20120125045244.10188: *5* __repr__ & ___str_& dump
+
+    if trace: g.trace(commandName,stroke,g.callers())
+#@+node:ekr.20120125045244.10188: *7* __repr__ & ___str_& dump
 def __repr__ (self):
     
     return self.dump()
@@ -24585,17 +24582,17 @@ __str__ = __repr__
 
 def dump (self):
     si = self    
-    result = ['ShortcutInfo %17s ' % (si.kind)]
+    result = ['ShortcutInfo %17s' % (si.kind)]
     table = ('commandName','func','nextMode','pane','stroke')
     for ivar in table:
         if hasattr(si,ivar):
             val =  getattr(si,ivar)
-            if val not in (None,'none','None'):
+            if val not in (None,'none','None',''):
                 if ivar == 'func': val = val.__name__
-                s = '%s %s ' % (ivar,val)
+                s = '%s %s' % (ivar,val)
                 result.append(s)
-    return ''.join(result)
-#@+node:ekr.20120128051055.10234: *5* rich comparisons
+    return '[%s]' % ' '.join(result).strip()
+#@+node:ekr.20120128051055.10234: *7* rich comparisons
 # def __cmp__ (self,other):
     
     # n1,n2 = self.commandName,other.commandName
@@ -24610,11 +24607,11 @@ def dump (self):
 # def __ne__(self, other): return self.commandName != other.commandName
 # def __gt__(self, other): return self.commandName >  other.commandName
 # def __ge__(self, other): return self.commandName >= other.commandName
-#@+node:ekr.20120129040823.10226: *5* isModeBinding
+#@+node:ekr.20120129040823.10226: *7* isModeBinding
 def isModeBinding (self):
     
     return self.kind.startswith('*mode')
-#@+node:ekr.20120124042346.12937: *4* define_enable_table
+#@+node:ekr.20120124042346.12937: *6* define_enable_table
 def define_enable_dict (self):
     
     c = self.c
@@ -24692,7 +24689,7 @@ def define_enable_dict (self):
         for key in sorted(d.keys()):
             if key not in commandKeys:
                 g.trace('*** bad entry for %s' % (key))
-#@+node:ekr.20120122070219.10162: *4* make_shortcuts_dicts (g.app.config) & helpers
+#@+node:ekr.20120122070219.10162: *6* make_shortcuts_dicts (g.app.config) & helpers
 def make_shortcuts_dicts (self,c,d,localFlag):
     
     '''Make all settings dicts related to c and d.'''
@@ -24738,7 +24735,7 @@ def make_shortcuts_dicts (self,c,d,localFlag):
             (d3,d,d4,'local 2'))
         
     g.app.unitTestDict['make_shortcuts_dicts'] = test_result
-#@+node:ekr.20120122070219.10163: *5* merge_settings_dicts (g.app.config)
+#@+node:ekr.20120122070219.10163: *7* merge_settings_dicts (g.app.config)
 def merge_settings_dicts (self,old_d,new_d):
     
     '''Create a new dict by overriding all settings in old_d by setting in new_d.
@@ -24760,7 +24757,7 @@ def merge_settings_dicts (self,old_d,new_d):
     inverted_old_d.update(inverted_new_d) # Updates inverted_old_d in place.
     result = self.uninvert(inverted_old_d)
     return result
-#@+node:ekr.20120125045244.10186: *5* invert (g.app.config)
+#@+node:ekr.20120125045244.10186: *7* invert (g.app.config)
 def invert (self,d):
     
     '''Invert a shortcut dict whose keys are command names,
@@ -24792,7 +24789,7 @@ def invert (self,d):
     if trace: g.trace('returns  %4s %s %s' % (
         len(list(result.keys())),id(d),result.get('_hash')))
     return result
-#@+node:ekr.20120125045244.10187: *5* uninvert (g.app.config)
+#@+node:ekr.20120125045244.10187: *7* uninvert (g.app.config)
 def uninvert (self,d):
     
     '''Uninvert an inverted shortcut dict whose keys are strokes,
@@ -24819,8 +24816,8 @@ def uninvert (self,d):
     if trace: g.trace('returns %4s %s %s' % (
         len(list(result.keys())),id(d),result.get('_hash')))
     return result
-#@+node:ekr.20120124103240.10250: *3* Changed
-#@+node:ekr.20061031131434.3: *4* << about key dicts >>
+#@+node:ekr.20120124103240.10250: *5* Changed
+#@+node:ekr.20061031131434.3: *6* << about key dicts >>
 @nocolor
 @
 
@@ -24845,7 +24842,7 @@ Notes:
 (6) A global dict: g.app.gui.modeCommandsDict
 (7) enter-x-command
 (8) Keys are command names, values are lists of ShortcutInfo objects.
-#@+node:ekr.20031218072017.1723: *4* createMenuEntries (leoMenu) & helpers
+#@+node:ekr.20031218072017.1723: *6* createMenuEntries (leoMenu) & helpers
 def createMenuEntries (self,menu,table,dynamicMenu=False):
 
     '''Create a menu entry from the table.
@@ -24877,7 +24874,7 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
             command=masterMenuCallback,
             commandName=commandName,
             underline=amp_index)
-#@+node:ekr.20111102072143.10016: *5* createMasterMenuCallback
+#@+node:ekr.20111102072143.10016: *7* createMasterMenuCallback
 def createMasterMenuCallback(self,dynamicMenu,command,commandName):
     
     trace = False and not g.unitTesting
@@ -24915,7 +24912,7 @@ def createMasterMenuCallback(self,dynamicMenu,command,commandName):
             event = g.app.gui.create_key_event(c,None,None,w)
             return c.k.masterCommand(commandName=commandName,event=event)
         return masterStaticMenuCallback
-#@+node:ekr.20111028060955.16568: *5* getMenuEntryBindings
+#@+node:ekr.20111028060955.16568: *7* getMenuEntryBindings
 def getMenuEntryBindings(self,command,dynamicMenu,label):
     
     '''Compute commandName from command.'''
@@ -24937,7 +24934,7 @@ def getMenuEntryBindings(self,command,dynamicMenu,label):
         g.trace('No inverse for %s' % commandName)
         
     return commandName
-#@+node:ekr.20111028060955.16565: *5* getMenuEntryInfo
+#@+node:ekr.20111028060955.16565: *7* getMenuEntryInfo
 def getMenuEntryInfo (self,data,menu):
     
     done = False
@@ -24970,7 +24967,7 @@ def getMenuEntryInfo (self,data,menu):
             done = True # Ignore bad data
             
     return label,command,done
-#@+node:ekr.20111028060955.16563: *5* traceMenuTable
+#@+node:ekr.20111028060955.16563: *7* traceMenuTable
 def traceMenuTable (self,table):
     
     trace = False and not g.unitTesting
@@ -24988,7 +24985,7 @@ def traceMenuTable (self,table):
                 print(format % (name,func and func.__name__ or '<NO FUNC>'))
         else:
             print(format % (data,''))
-#@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config) (Rewritten)
+#@+node:ekr.20041117062717.14: *6* getShortcut (g.app.config)
 def getShortcut (self,c,commandName):
 
     '''Return rawKey,accel for shortcutName'''
@@ -25019,7 +25016,7 @@ def getShortcut (self,c,commandName):
 
     return key,aList
     
-#@+node:ekr.20041227063801.2: *4* initDicts
+#@+node:ekr.20041227063801.2: *6* initDicts
 def initDicts (self):
 
     # Only the settings parser needs to search all dicts.
@@ -25036,7 +25033,7 @@ def initDicts (self):
     for key,kind,val in self.encodingIvarsData:
         self.encodingIvarsDict[self.munge(key)] = GeneralSetting(
             kind,encoding=val,ivar=key,tag='encoding')
-#@+node:ekr.20061031131434.89: *4* k.bindKey & helpers
+#@+node:ekr.20061031131434.89: *6* k.bindKey & helpers
 def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
 
     '''Bind the indicated shortcut (a Tk keystroke) to the callback.
@@ -25049,22 +25046,17 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
 
     trace = False and not g.unitTesting
     k = self ; c = k.c
-
-    if not shortcut:
-        # g.trace('No shortcut for %s' % commandName)
-        return False
-    << give warning and return if we try to bind to Enter or Leave >>
-    if pane.endswith('-mode'):
-        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
+    if not k.check_bind_key(pane,shortcut):
         return False
     aList = k.bindingsDict.get(shortcut,[])
     if trace: #  or shortcut == 'Ctrl+q':
         g.trace('%7s %20s %17s %s' % (pane,shortcut,_hash,commandName))
     try:
         k.bindKeyToDict(pane,shortcut,callback,commandName,_hash)
-        si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,func=callback,commandName=commandName)
+        si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,
+            func=callback,commandName=commandName)
         if not modeFlag:
-            k.remove_conflicting_definitions(aList,pane)
+            k.remove_conflicting_definitions(aList,pane,shortcut)
         aList.append(si)
         shortcut = g.stripBrackets(shortcut.strip())
         k.bindingsDict [shortcut] = aList
@@ -25078,22 +25070,56 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
         return False
 
 bindShortcut = bindKey # For compatibility
-#@+node:ekr.20061031131434.90: *5* << give warning and return if we try to bind to Enter or Leave >>
-if shortcut:
+#@+node:ekr.20120130074511.10228: *7* check_bind_key
+def check_bind_key(self,pane,shortcut):
+    
+    if not shortcut:
+        return False
+
+    # Give warning and return if we try to bind to Enter or Leave.
     for s in ('enter','leave'):
-        if -1 != shortcut.lower().find(s):
+        if shortcut.lower().find(s) > -1:
             g.es_print('ignoring invalid key binding:','%s = %s' % (
                 commandName,shortcut),color='blue')
-            return
-#@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
-def remove_conflicting_definitions (self,aList,pane):
+            return False
 
+    if pane.endswith('-mode'):
+        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
+        return False
+    else:
+        return True
+#@+node:ekr.20120130074511.10227: *7* k.kill_one_shortcut
+def kill_one_shortcut (self,stroke):
+    
+    '''Update the dicts so that c.config.getShortcut(name) will return None
+    for all names *presently* bound to the stroke.'''
+    
+    k = self ; c = k.c
+    d = c.config.master_shortcuts_dict
+        # Keys are command names, values are lists of bindings.
+    
+    inv_d = g.app.config.invert(d)
+    aList = inv_d.get(stroke,[])
+    # g.trace(stroke,aList)
+    inv_d[stroke] = []
+    c.config.master_shortcuts_dict = g.app.config.uninvert(inv_d)
+#@+node:ekr.20061031131434.92: *7* k.remove_conflicting_definitions
+def remove_conflicting_definitions (self,aList,pane,shortcut):
+    
+    trace = False and not g.unitTesting
+    k = self
+    result = []
     for si in aList:
         assert isinstance(si,leoConfig.ShortcutInfo),si
-
-    # Update aList.
-    aList = [si for si in aList if pane not in ('button','all',si.pane)]
-#@+node:ekr.20061031131434.93: *5* k.bindKeyToDict
+        if pane in ('button','all',si.pane):
+            if trace: g.trace('removing %s' % (si.dump()))
+            k.kill_one_shortcut(shortcut)
+        else:
+            result.append(si)
+    aList = result
+    
+    # aList = [si for si in aList if pane not in ('button','all',si.pane)]
+#@+node:ekr.20061031131434.93: *7* k.bindKeyToDict
 def bindKeyToDict (self,pane,stroke,func,commandName,_hash):
     
     '''Update k.masterBindingsDict for the stroke.'''
@@ -25104,14 +25130,14 @@ def bindKeyToDict (self,pane,stroke,func,commandName,_hash):
     d = k.masterBindingsDict.get(pane,{})
 
     stroke = g.stripBrackets(stroke)
-    if trace: g.trace(pane,stroke,commandName,g.callers())
+    if trace: g.trace(pane,stroke,commandName)
 
     # New in Leo 4.4.1: Allow redefintions.
     d [stroke] = leoConfig.ShortcutInfo(
         kind=_hash,commandName=commandName,func=func,pane=pane,stroke=stroke)
 
     k.masterBindingsDict [pane] = d
-#@+node:ekr.20120120095156.10260: *4* leo_update_shortcut
+#@+node:ekr.20120120095156.10260: *6* leo_update_shortcut
 def leo_update_shortcut(self,action,commandName):
     
     trace = False and not g.unitTesting
@@ -25137,7 +25163,7 @@ def leo_update_shortcut(self,action,commandName):
             action.setText(s)
     else:
         g.trace('can not happen: no action for %s' % (commandName))
-#@+node:ekr.20110211094454.15414: *4* mergeShortcutList
+#@+node:ekr.20110211094454.15414: *6* mergeShortcutList
 def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
 
     '''aList is a list of binding bunches for stroke.
@@ -25178,7 +25204,7 @@ def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
 
     if trace and verbose and len(result) > 1: g.trace(stroke,result)
     return result
-#@+node:ekr.20110605121601.18460: *4* onAboutToShow & helpers (qtMenuWrapper)
+#@+node:ekr.20110605121601.18460: *6* onAboutToShow & helpers (qtMenuWrapper)
 def onAboutToShow(self,*args,**keys):
     
     trace = False and not g.unitTesting ; verbose = True
@@ -25193,7 +25219,7 @@ def onAboutToShow(self,*args,**keys):
             self.leo_enable_menu_item(action,commandName)
             self.leo_update_menu_label(action,commandName)
    
-#@+node:ekr.20120120095156.10261: *5* leo_enable_menu_item
+#@+node:ekr.20120120095156.10261: *7* leo_enable_menu_item
 def leo_enable_menu_item (self,action,commandName):
 
     func = self.c.frame.menu.enable_dict.get(commandName)
@@ -25203,7 +25229,7 @@ def leo_enable_menu_item (self,action,commandName):
         # g.trace('%5s %20s %s' % (val,commandName,val))
         action.setEnabled(bool(val))
         
-#@+node:ekr.20120124115444.10190: *5* leo_update_menu_label
+#@+node:ekr.20120124115444.10190: *7* leo_update_menu_label
 def leo_update_menu_label(self,action,commandName):
     
     c = self.c
@@ -25212,7 +25238,7 @@ def leo_update_menu_label(self,action,commandName):
         action.setText('UnMark' if c.p.isMarked() else 'Mark')
         self.leo_update_shortcut(action,commandName)
             # Set the proper shortcut.
-#@+node:ekr.20120120095156.10260: *5* leo_update_shortcut
+#@+node:ekr.20120120095156.10260: *7* leo_update_shortcut
 def leo_update_shortcut(self,action,commandName):
     
     trace = False and not g.unitTesting
@@ -25238,7 +25264,7 @@ def leo_update_shortcut(self,action,commandName):
             action.setText(s)
     else:
         g.trace('can not happen: no action for %s' % (commandName))
-#@+node:ekr.20041120112043: *4* parseShortcutLine (g.app.config)
+#@+node:ekr.20041120112043: *6* parseShortcutLine (g.app.config)
 def parseShortcutLine (self,kind,s):
 
     '''Parse a shortcut line.  Valid forms:
@@ -25301,7 +25327,7 @@ def parseShortcutLine (self,kind,s):
     si = ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=val)
     if trace: g.trace(si)
     return name,si
-#@+node:ekr.20041120094940.9: *4* set (parserBaseClass)
+#@+node:ekr.20041120094940.9: *6* set (parserBaseClass)
 def set (self,p,kind,name,val):
 
     """Init the setting for name to val."""
@@ -25325,7 +25351,7 @@ def set (self,p,kind,name,val):
 
     # Important: we can't use c here: it may be destroyed!
     d [key] = GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
-#@+node:ekr.20120128103510.13670: *3* Updating dependent dicts
+#@+node:ekr.20120128103510.13670: *5* Updating dependent dicts
 @nocolor-node
 
 
@@ -25334,7 +25360,7 @@ k.computeInversBinding() called by print-commands and for auto-completion.
 k.bindKey sets k.bindingsDict.
 
 k.bindKeyToDict sets k.masterBindingDict.
-#@+node:ekr.20061031131434.98: *4* k.makeAllBindings
+#@+node:ekr.20061031131434.98: *6* k.makeAllBindings
 def makeAllBindings (self):
 
     k = self ; c = k.c
@@ -25353,7 +25379,7 @@ def makeAllBindings (self):
     c.frame.setMinibufferBindings()
     k.completeAllBindings()
     k.checkBindings()
-#@+node:ekr.20061031131434.93: *4* k.bindKeyToDict
+#@+node:ekr.20061031131434.93: *6* k.bindKeyToDict
 def bindKeyToDict (self,pane,stroke,func,commandName,_hash):
     
     '''Update k.masterBindingsDict for the stroke.'''
@@ -25364,14 +25390,14 @@ def bindKeyToDict (self,pane,stroke,func,commandName,_hash):
     d = k.masterBindingsDict.get(pane,{})
 
     stroke = g.stripBrackets(stroke)
-    if trace: g.trace(pane,stroke,commandName,g.callers())
+    if trace: g.trace(pane,stroke,commandName)
 
     # New in Leo 4.4.1: Allow redefintions.
     d [stroke] = leoConfig.ShortcutInfo(
         kind=_hash,commandName=commandName,func=func,pane=pane,stroke=stroke)
 
     k.masterBindingsDict [pane] = d
-#@+node:ekr.20050922104731: *4* finishCreateEditCommanders (leoEditCommands module)
+#@+node:ekr.20050922104731: *6* finishCreateEditCommanders (leoEditCommands module)
 def finishCreateEditCommanders (c):
 
     '''Finish creating edit classes in the commander.
@@ -25396,7 +25422,7 @@ def finishCreateEditCommanders (c):
                 for key in sorted(d2): g.pr(key)
 
     return d
-#@+node:ekr.20061031131434.176: *4* k.computeInverseBindingDict
+#@+node:ekr.20061031131434.176: *6* k.computeInverseBindingDict
 def computeInverseBindingDict (self):
 
     k = self ; d = {}
@@ -25425,7 +25451,7 @@ def computeInverseBindingDict (self):
             d [si.commandName] = shortcutList
 
     return d
-#@+node:ekr.20061031131434.80: *4* k.finishCreate & helpers
+#@+node:ekr.20061031131434.80: *6* k.finishCreate & helpers
 def finishCreate (self):
 
     '''Complete the construction of the keyHandler class.
@@ -25459,7 +25485,7 @@ def finishCreate (self):
 
     k.setDefaultInputState()
     k.resetLabel()
-#@+node:ekr.20061031131434.81: *5* createInverseCommandsDict
+#@+node:ekr.20061031131434.81: *7* createInverseCommandsDict
 def createInverseCommandsDict (self):
 
     '''Add entries to k.inverseCommandsDict using c.commandDict.
@@ -25479,7 +25505,7 @@ def createInverseCommandsDict (self):
         except Exception:
             g.es_exception()
             g.trace(repr(name),repr(f),g.callers())
-#@+node:ekr.20061031131434.131: *4* k.registerCommand
+#@+node:ekr.20061031131434.131: *6* k.registerCommand
 def registerCommand (self,commandName,shortcut,func,
     pane='all',verbose=False, wrap=True):
 
@@ -25499,13 +25525,15 @@ def registerCommand (self,commandName,shortcut,func,
     if wrap:
         func = c.universalCallback(func)
     f = c.commandsDict.get(commandName)
-    verbose = (False or verbose) and not g.app.unitTesting
-    if f and f.__name__ != 'dummyCallback' and verbose:
+
+    if f and f.__name__ != 'dummyCallback' and trace and verbose:
         g.es_print('redefining',commandName, color='red')
 
     c.commandsDict [commandName] = func
-    k.inverseCommandsDict [func.__name__] = commandName
-    if trace: g.trace('leoCommands %24s = %s' % (func.__name__,commandName))
+    fname = func.__name__
+    k.inverseCommandsDict [fname] = commandName
+    if trace and fname != 'minibufferCallback':
+        g.trace('leoCommands %24s = %s' % (fname,commandName))
 
     if shortcut:
         stroke = k.shortcutFromSetting(shortcut)
@@ -25525,10 +25553,10 @@ def registerCommand (self,commandName,shortcut,func,
         else: stroke = None
 
     if stroke:
-        if trace: g.trace('stroke',stroke,'pane',pane,commandName,g.callers(4))
+        if trace: g.trace('stroke',stroke,'pane',pane,commandName)
         ok = k.bindKey (pane,stroke,func,commandName,_hash='register-command') # Must be a stroke.
         k.makeMasterGuiBinding(stroke) # Must be a stroke.
-        if verbose and ok and not g.app.silentMode:
+        if trace and verbose and ok and not g.app.silentMode:
             # g.trace(g.callers())
             g.es_print('','@command: %s = %s' % (
                 commandName,k.prettyPrintKey(stroke)),color='blue')
@@ -25549,8 +25577,8 @@ def registerCommand (self,commandName,shortcut,func,
                 if d.get(key) == commandName:
                     c.commandsDict [key] = c.commandsDict.get(commandName)
                     break
-#@+node:ekr.20120129174505.10243: *3* The missing settings bug (c.hash)
-#@+node:ekr.20041130173135: *4* c.hash
+#@+node:ekr.20120129174505.10243: *5* The missing settings bug (c.hash)
+#@+node:ekr.20041130173135: *6* c.hash
 def hash (self):
 
     c = self
@@ -25558,6 +25586,114 @@ def hash (self):
         return c.os_path_finalize(c.mFileName).lower()
     else:
         return 0
+#@+node:ekr.20120130074511.10226: *4* Fixed bug: @button @key=x does not override x 
+@nocolor-node
+
+Created k.kill_one_shortcut, called from k.remove_conflicting_definitions.
+#@+node:ekr.20061031131434.89: *5* k.bindKey & helpers
+def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
+
+    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
+
+    No actual gui bindings are made: only entries in k.masterBindingsDict.
+    
+    _hash gives the source of the binding.
+    
+    '''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    if not k.check_bind_key(pane,shortcut):
+        return False
+    aList = k.bindingsDict.get(shortcut,[])
+    if trace: #  or shortcut == 'Ctrl+q':
+        g.trace('%7s %20s %17s %s' % (pane,shortcut,_hash,commandName))
+    try:
+        k.bindKeyToDict(pane,shortcut,callback,commandName,_hash)
+        si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,
+            func=callback,commandName=commandName)
+        if not modeFlag:
+            k.remove_conflicting_definitions(aList,pane,shortcut)
+        aList.append(si)
+        shortcut = g.stripBrackets(shortcut.strip())
+        k.bindingsDict [shortcut] = aList
+        if trace: g.trace(shortcut,aList)
+        return True
+    except Exception: # Could be a user error.
+        if not g.app.menuWarningsGiven:
+            g.es_print('exception binding',shortcut,'to',commandName)
+            g.es_exception()
+            g.app.menuWarningsGiven = True
+        return False
+
+bindShortcut = bindKey # For compatibility
+#@+node:ekr.20120130074511.10228: *6* check_bind_key
+def check_bind_key(self,pane,shortcut):
+    
+    if not shortcut:
+        return False
+
+    # Give warning and return if we try to bind to Enter or Leave.
+    for s in ('enter','leave'):
+        if shortcut.lower().find(s) > -1:
+            g.es_print('ignoring invalid key binding:','%s = %s' % (
+                commandName,shortcut),color='blue')
+            return False
+
+    if pane.endswith('-mode'):
+        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
+        return False
+    else:
+        return True
+#@+node:ekr.20120130074511.10227: *6* k.kill_one_shortcut
+def kill_one_shortcut (self,stroke):
+    
+    '''Update the dicts so that c.config.getShortcut(name) will return None
+    for all names *presently* bound to the stroke.'''
+    
+    k = self ; c = k.c
+    d = c.config.master_shortcuts_dict
+        # Keys are command names, values are lists of bindings.
+    
+    inv_d = g.app.config.invert(d)
+    aList = inv_d.get(stroke,[])
+    # g.trace(stroke,aList)
+    inv_d[stroke] = []
+    c.config.master_shortcuts_dict = g.app.config.uninvert(inv_d)
+#@+node:ekr.20061031131434.92: *6* k.remove_conflicting_definitions
+def remove_conflicting_definitions (self,aList,pane,shortcut):
+    
+    trace = False and not g.unitTesting
+    k = self
+    result = []
+    for si in aList:
+        assert isinstance(si,leoConfig.ShortcutInfo),si
+        if pane in ('button','all',si.pane):
+            if trace: g.trace('removing %s' % (si.dump()))
+            k.kill_one_shortcut(shortcut)
+        else:
+            result.append(si)
+    aList = result
+    
+    # aList = [si for si in aList if pane not in ('button','all',si.pane)]
+#@+node:ekr.20061031131434.93: *6* k.bindKeyToDict
+def bindKeyToDict (self,pane,stroke,func,commandName,_hash):
+    
+    '''Update k.masterBindingsDict for the stroke.'''
+
+    trace = False and not g.unitTesting
+        # and stroke.lower().find('tab') != -1 
+    k = self
+    d = k.masterBindingsDict.get(pane,{})
+
+    stroke = g.stripBrackets(stroke)
+    if trace: g.trace(pane,stroke,commandName)
+
+    # New in Leo 4.4.1: Allow redefintions.
+    d [stroke] = leoConfig.ShortcutInfo(
+        kind=_hash,commandName=commandName,func=func,pane=pane,stroke=stroke)
+
+    k.masterBindingsDict [pane] = d
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

@@ -8349,5 +8349,45 @@ def killShortcut (self,c,commandName,shortcut):
                 # del d[key]
 
         
+#@+node:ekr.20041227071423: *3* setShortcut (ParserBaseClass) (NO LONGER USED)
+def setShortcut (self,p,name,aList):
+    
+    trace = False and not g.unitTesting
+
+    c = self.c
+
+    # None is a valid value for val.
+    key = c.frame.menu.canonicalizeMenuName(name)
+    rawKey = key.replace('&','')
+    self.set(p,rawKey,"shortcut",aList)
+
+    if trace:
+        for b in aList:
+            g.trace('%20s %45s %s %s' % (b.val,rawKey,b.pane,b._hash))
+#@+node:ekr.20061031131434.190: *3* k.tkbindingFromStroke
+def tkbindingFromStroke (self,stroke):
+
+    '''Convert a stroke (key to k.bindingsDict) to an actual Tk binding.'''
+    
+    return stroke #####
+
+    stroke = g.stripBrackets(stroke)
+
+    for a,b in (
+        ('Alt+','Alt-'),
+        ('Ctrl-','Control-'),
+        ('Ctrl+','Control-'), # New in Leo 4.5.
+        ('Meta+','Meta-'), # New in Leo 4.6
+        ('Shift+','Shift-'),
+        ('Command+','Command-'),
+        ('DnArrow','Down'), # New in Leo 4.5.
+        ('LtArrow','Left'), # New in Leo 4.5.
+        ('RtArrow','Right'),# New in Leo 4.5.
+        ('UpArrow','Up'),   # New in Leo 4.5.
+    ):
+        stroke = stroke.replace(a,b)
+
+    # g.trace('<%s>' % stroke)
+    return stroke
 #@-all
 #@-leo
