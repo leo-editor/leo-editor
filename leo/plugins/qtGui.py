@@ -988,42 +988,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         # tab stop in pixels - no config for this (yet)        
         w.setTabStopWidth(24)
-    #@+node:ekr.20110605121601.18077: *4* leoMoveCursorHelper (leoTextEditWidget)
-    def cursorLineOnScreen(self):
-        
-        '''Line number of the cursor relative to the top visble
-           line.  Assumes all lines are the same size as each other.'''
-        
-        rect = self.widget.cursorRect()
-        return rect.y() / rect.height()
-
-    def moveCursorByPage(self, op, mode):
-        # Capture the current cursor line
-        l = self.cursorLineOnScreen()
-        
-        # Down is positive and up is negative
-        if (op == QtGui.QTextCursor.Down):
-            dir = 1
-        else:
-            dir = -1
-        
-        # Move the scrollbar up one page (does not affect cursor position)
-        w = self.widget
-        sb = w.verticalScrollBar()
-        sbPos = sb.sliderPosition()
-        sb.setSliderPosition(sbPos + dir*sb.pageStep())
-
-        cursor = w.textCursor()    
-        if (sbPos != sb.sliderPosition()):
-            # Move the cursor to the same line relative to the screen
-            # as it was before
-            cursor.movePosition(op, mode, dir * (l - self.cursorLineOnScreen()))
-        else:
-            # First or last page: move cursor a screenful worth of lines
-            # to ensure getting curos to top or bottom.
-            cursor.movePosition(op, mode, w.height() / w.cursorRect().height())
-        w.setTextCursor(cursor)
-
+    #@+node:ekr.20110605121601.18077: *4* leoMoveCursorHelper & helpers (leoTextEditWidget)
     def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
 
         '''Move the cursor in a QTextEdit.'''
@@ -1067,6 +1032,46 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 cursor.clearSelection()
                 w.setTextCursor(cursor)
             w.moveCursor(op,mode)
+    #@+node:btheado.20120129145543.8174: *5* cursorLineOnScreen
+    def cursorLineOnScreen(self):
+        
+        '''Line number of the cursor relative to the top visble
+           line.  Assumes all lines are the same size as each other.'''
+        
+        rect = self.widget.cursorRect()
+        return rect.y() / rect.height()
+    #@+node:btheado.20120129145543.8175: *5* moveCursorByPage
+    def moveCursorByPage(self, op, mode):
+        
+        '''The QTextEdit PageUp/PageDown functionality seems to be "baked-in"
+           and not externally accessible.  Since Leo has its own keyhandling
+           functionality, this code emulates the QTextEdit paging.'''
+        
+        # Capture the current cursor line
+        l = self.cursorLineOnScreen()
+        
+        # Down is positive and up is negative
+        if (op == QtGui.QTextCursor.Down):
+            dir = 1
+        else:
+            dir = -1
+        
+        # Move the scrollbar up one page (does not affect cursor position)
+        w = self.widget
+        sb = w.verticalScrollBar()
+        sbPos = sb.sliderPosition()
+        sb.setSliderPosition(sbPos + dir*sb.pageStep())
+
+        cursor = w.textCursor()    
+        if (sbPos != sb.sliderPosition()):
+            # Move the cursor to the same line relative to the screen
+            # as it was before
+            cursor.movePosition(op, mode, dir * (l - self.cursorLineOnScreen()))
+        else:
+            # First or last page: move cursor a screenful worth of lines
+            # to ensure getting curos to top or bottom.
+            cursor.movePosition(op, mode, w.height() / w.cursorRect().height())
+        w.setTextCursor(cursor)
     #@+node:ekr.20110605121601.18078: *4* Widget-specific overrides (leoQTextEditWidget)
     #@+node:ekr.20110605121601.18079: *5* delete (avoid call to setAllText) (leoQTextEditWidget)
     def delete(self,i,j=None):
