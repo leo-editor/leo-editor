@@ -175,6 +175,8 @@ class Commands (object):
             
         if g.app.gui.guiName().lower().startswith('qt'):
             g.registerHandler('idle',c.idle_focus_helper)
+            
+        c.frame.menu.finishCreate()
 
         c.frame.log.finishCreate()
         c.bodyWantsFocus()
@@ -323,12 +325,6 @@ class Commands (object):
         self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
         self.promptingForClose = False # To lock out additional closing dialogs.
         self.timeStampDict = {} # New in Leo 4.6.
-
-        # Key-binding related info: inited by config.traverse.
-        self.stroke_to_command_dict = {}
-            # Keys are strokes, values are lists of bunches.
-        self.command_to_stroke_dict = {}
-            # Keys are command names, values are lists of bunches.
 
         # For tangle/untangle
         self.tangle_errors = 0
@@ -7333,7 +7329,8 @@ class Commands (object):
         c1 = 0 <= ins   < len(s) and s[ins] or ''
         c2 = 0 <= ins-1 < len(s) and s[ins-1] or ''
 
-        return (c1 and c1 in brackets) or (c2 and c2 in brackets)
+        val = (c1 and c1 in brackets) or (c2 and c2 in brackets)
+        return bool(val)
     #@+node:ekr.20040303165342: *4* canHoist & canDehoist
     def canDehoist(self):
 
@@ -7433,15 +7430,6 @@ class Commands (object):
 
         c = self ; v = c.currentVnode()
         return v and v.hasChildren()
-    #@+node:ekr.20031218072017.2976: *4* canRevert
-    def canRevert (self):
-        
-        # 2011/10/18: Allow revert, regardless of change status.
-        return True
-
-        # c.mFileName will be "untitled" for unsaved files.
-        # c = self
-        # return (c.frame and c.mFileName and c.isChanged())
     #@+node:ekr.20031218072017.2977: *4* canSelect....
     def canSelectThreadBack (self):
         c = self ; p = c.p
@@ -8261,14 +8249,16 @@ class configSettings:
     """A class to hold config settings for commanders."""
 
     #@+others
-    #@+node:ekr.20041118104831.2: *3* configSettings.__init__ (c.configSettings)
+    #@+node:ekr.20041118104831.2: *3* ctor (c.configSettings)
     def __init__ (self,c):
 
         trace = False and not g.unitTesting
         self.c = c
 
         if trace: g.trace('+' * 20,'(c.configSettings)',
-            c and c.shortFileName(),g.callers(5))
+            c and c.shortFileName(),
+            'g.app.config.master_shortcuts_dict',
+            len(list(g.app.config.master_shortcuts_dict.keys())))
 
         # Init these here to keep pylint happy.
         self.default_derived_file_encoding = None
@@ -8279,6 +8269,12 @@ class configSettings:
         self.defaultLogFontSize  = g.app.config.defaultLogFontSize
         self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
         self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
+        
+        # New in Leo 4.10
+        self.master_shortcuts_dict = g.app.config.master_shortcuts_dict
+            # The present shortcuts in effect for c.
+            # Keys are command names, values are lists of bunches.
+            # This is set by g.app.config.make_shortcuts_dicts,
 
         for key in g.app.config.encodingIvarsDict:
             if key != '_hash':
@@ -8293,22 +8289,22 @@ class configSettings:
         trace = False and not g.unitTesting
         c = self.c
 
-        # N.B. The key is munged.
-        bunch = g.app.config.ivarsDict.get(key)
-        ivarName = bunch.ivar
+        # Important: the key is munged.
+        gs = g.app.config.ivarsDict.get(key)
+        ivarName = gs.ivar
         val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
 
         if val or not hasattr(self,ivarName):
             if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
             setattr(self,ivarName,val)
-    #@+node:ekr.20041118104414: *3* initEncoding
+    #@+node:ekr.20041118104414: *3* initEncoding (c.configSettings)
     def initEncoding (self,key):
 
         c = self.c
 
-        # N.B. The key is munged.
-        bunch = g.app.config.encodingIvarsDict.get(key)
-        encodingName = bunch.ivar
+        # Important: the key is munged.
+        gs = g.app.config.encodingIvarsDict.get(key)
+        encodingName = gs.ivar
         encoding = g.app.config.get(c,encodingName,kind='string')
 
         # New in 4.4b3: use the global setting as a last resort.
@@ -8414,14 +8410,17 @@ class configSettings:
         
         '''Not used during startup: useful for unit tests.'''
 
-        c = self.c
-        g.app.config.set(c,setting,kind,val)
+        g.app.config.set(self.c,setting,kind,val)
 
     def setRecentFiles (self,files):
         
         '''Update the recent files list.'''
 
         g.app.config.appendToRecentFiles(files)
+        
+    def make_shortcuts_dicts (self,d,localFlag):
+        
+        g.app.config.make_shortcuts_dicts(self.c,d,localFlag)
     #@-others
 #@+node:ekr.20070615131604: ** class nodeHistory
 class nodeHistory:

@@ -7,12 +7,9 @@
 #@@pagewidth 70
 
 import leo.core.leoGlobals as g
+
 import string
 import sys
-
-dynamic_menus = True
-    # True: shortcuts computed and menu items enabled/disabled
-    # each time the menu is invoked.
 
 #@+others
 #@+node:ekr.20031218072017.3750: ** class leoMenu
@@ -21,13 +18,18 @@ class leoMenu:
     """The base class for all Leo menus."""
 
     #@+others
-    #@+node:ekr.20031218072017.3751: *3*  leoMenu.__init__
+    #@+node:ekr.20120124042346.12938: *3* leoMenu.Birth
+    #@+node:ekr.20031218072017.3751: *4*  leoMenu.__init__
     def __init__ (self,frame):
 
         # g.trace('leoMenu',g.callers())
 
+        # Copy args...
         self.c = c = frame.c
         self.frame = frame
+        
+        # Data...
+        self.enable_dict = {} # Created by finishCreate.
         self.menus = {} # Menu dictionary.
         self.menuShortcuts = {}
 
@@ -48,6 +50,88 @@ class leoMenu:
 
         if 0: # Must be done much later.
             self.defineMenuTables()
+    #@+node:ekr.20120124042346.12937: *4* define_enable_table
+    def define_enable_dict (self):
+        
+        c = self.c
+        
+        if not c.commandsDict:
+            return # This is not an error: it happens during init.
+
+        self.enable_dict = d = {
+        
+            # File menu...
+                # 'revert':         lambda: True, # Revert is always enabled.               
+            'open-with':            lambda: g.app.hasOpenWithMenu,
+            
+            # Edit menu...
+            'undo':                 c.undoer.canUndo,
+            'redo':                 c.undoer.canRedo,
+            'extract-names':        c.canExtractSectionNames,
+            'extract':              c.canExtract,
+            'match-brackets':       c.canFindMatchingBracket,
+            
+            # Top-level Outline menu...
+            'cut-node':             c.canCutOutline,
+            'delete-node':          c.canDeleteHeadline,
+            'paste-node':           c.canPasteOutline,
+            'paste-retaining-clones':   c.canPasteOutline,
+            'clone-node':           c.canClone,
+            'sort-siblings':        c.canSortSiblings,
+            'hoist':                c.canHoist,
+            'de-hoist':             c.canDehoist,
+            
+            # Outline:Expand/Contract menu...
+            'contract-parent':      c.canContractParent,
+            'contract-node':        lambda: c.p.hasChildren() and c.p.isExpanded(),
+            'contract-or-go-left':  lambda: c.p.hasChildren() and c.p.isExpanded() or c.p.hasParent(),
+            'expand-node':          lambda: c.p.hasChildren() and not c.p.isExpanded(),
+            'expand-prev-level':    lambda: c.p.hasChildren() and c.p.isExpanded(),
+            'expand-next-level':    lambda: c.p.hasChildren(),
+            'expand-to-level-1':    lambda: c.p.hasChildren() and c.p.isExpanded(),
+            'expand-or-go-right':   lambda: c.p.hasChildren(),
+            
+            # Outline:Move menu...
+            'move-outline-down':    c.canMoveOutlineDown,
+            'move-outline-left':    c.canMoveOutlineLeft,
+            'move-outline-right':   c.canMoveOutlineRight,
+            'move-outline-up':      c.canMoveOutlineUp,
+            'promote':              c.canPromote,
+            'demote':               c.canDemote,
+            
+            # Outline:Go To menu...
+            'goto-prev-history-node':   c.nodeHistory.canGoToPrevVisited,
+            'goto-next-history-node':   c.nodeHistory.canGoToNextVisited,
+            'goto-prev-visible':        c.canSelectVisBack,
+            'goto-next-visible':        c.canSelectVisNext,
+            # These are too slow...
+                # 'go-to-next-marked':  c.canGoToNextMarkedHeadline,
+                # 'go-to-next-changed': c.canGoToNextDirtyHeadline,
+            'goto-next-clone':          lambda: c.p.isCloned(),
+            'goto-prev-node':           c.canSelectThreadBack,
+            'goto-next-node':           c.canSelectThreadNext,
+            'goto-parent':              lambda: c.p.hasParent(),
+            'goto-prev-sibling':        lambda: c.p.hasBack(),
+            'goto-next-sibling':        lambda: c.p.hasNext(),
+            
+            # Outline:Mark menu...
+            'mark-subheads':            lambda: c.p.hasChildren(),
+            # too slow...
+                # 'mark-changed-items':   c.canMarkChangedHeadlines,
+        }
+        
+        for i in range(1,9):
+            d ['expand-to-level-%s' % (i)] = lambda: c.p.hasChildren()
+
+        if 0: # Initial testing.
+            commandKeys = list(c.commandsDict.keys())
+            for key in sorted(d.keys()):
+                if key not in commandKeys:
+                    g.trace('*** bad entry for %s' % (key))
+    #@+node:ekr.20120124042346.12939: *4* finishCreate
+    def finishCreate (self):
+        
+        self.define_enable_dict()
     #@+node:ekr.20031218072017.3775: *3* error and oops
     def oops (self):
 
@@ -56,184 +140,6 @@ class leoMenu:
     def error (self,s):
 
         g.es_print('',s,color='red')
-    #@+node:ekr.20031218072017.3776: *3* Gui-independent menu enablers
-    #@+node:ekr.20031218072017.3777: *4* updateAllMenus
-    def updateAllMenus (self):
-
-        """A callback called when a click happens in any menu.
-
-        Updates (enables or disables) all menu items."""
-
-        # Allow the user first crack at updating menus.
-        c = self.c
-
-        if c and c.exists:
-            c.setLog()
-            p = c.p
-
-            if not g.doHook("menu-update",c=c,p=p,v=p):
-                self.updateFileMenu()
-                self.updateEditMenu()
-                self.updateOutlineMenu()
-    #@+node:ekr.20031218072017.3778: *4* updateFileMenu
-    def updateFileMenu (self):
-
-        c = self.c ; frame = c.frame
-        if not c: return
-
-        try:
-            enable = frame.menu.enableMenu
-            menu = frame.menu.getMenu("File")
-            if menu:
-                enable(menu,"Revert To Saved", c.canRevert())
-                enable(menu,"Open With...", g.app.hasOpenWithMenu)
-        except:
-            g.es("exception updating File menu")
-            g.es_exception()
-    #@+node:ekr.20031218072017.836: *4* updateEditMenu
-    def updateEditMenu (self):
-
-        c = self.c ; frame = c.frame
-        w = c.frame.body.bodyCtrl
-        if not c: return
-        try:
-            # Top level Edit menu...
-            enable = frame.menu.enableMenu
-            menu = frame.menu.getMenu("Edit")
-            c.undoer.enableMenuItems()
-            #@+<< enable cut/paste >>
-            #@+node:ekr.20040130164211: *5* << enable cut/paste >>
-            if frame.body.hasFocus():
-                data = w.getSelectedText()
-                canCut = data and len(data) > 0
-            else:
-                # This isn't strictly correct, but we can't get the Tk headline selection.
-                canCut = True
-
-            enable(menu,"Cut",canCut)
-            enable(menu,"Copy",canCut)
-
-            data = g.app.gui.getTextFromClipboard()
-            canPaste = data and len(data) > 0
-            enable(menu,"Paste",canPaste)
-            #@-<< enable cut/paste >>
-            if 0: # Always on for now.
-                menu = frame.menu.getMenu("Find...")
-                enable(menu,"Find Next",c.canFind())
-                flag = c.canReplace()
-                enable(menu,"Replace",flag)
-                enable(menu,"Replace, Then Find",flag)
-            # Edit Body submenu...
-            menu = frame.menu.getMenu("Edit Body...")
-            if menu:
-                enable(menu,"Extract Section",c.canExtractSection())
-                enable(menu,"Extract Names",c.canExtractSectionNames())
-                enable(menu,"Extract",c.canExtract())
-                enable(menu,"Match Brackets",c.canFindMatchingBracket())
-        except:
-            g.es("exception updating Edit menu")
-            g.es_exception()
-    #@+node:ekr.20031218072017.3779: *4* updateOutlineMenu
-    def updateOutlineMenu (self):
-
-        c = self.c ; frame = c.frame
-        if not c: return
-
-        p = c.p
-        hasParent = p.hasParent()
-        hasBack = p.hasBack()
-        hasNext = p.hasNext()
-        hasChildren = p.hasChildren()
-        isExpanded = p.isExpanded()
-        isCloned = p.isCloned()
-        isMarked = p.isMarked()
-
-        try:
-            enable = frame.menu.enableMenu
-            #@+<< enable top level outline menu >>
-            #@+node:ekr.20040131171020: *5* << enable top level outline menu >>
-            menu = frame.menu.getMenu("Outline")
-            if menu:
-                enable(menu,"Cut Node",c.canCutOutline())
-                enable(menu,"Delete Node",c.canDeleteHeadline())
-                enable(menu,"Paste Node",c.canPasteOutline())
-                enable(menu,"Paste Node As Clone",c.canPasteOutline())
-                enable(menu,"Clone Node",c.canClone()) # 1/31/04
-                enable(menu,"Sort Siblings",c.canSortSiblings())
-                enable(menu,"Hoist",c.canHoist())
-                enable(menu,"De-Hoist",c.canDehoist())
-            #@-<< enable top level outline menu >>
-            #@+<< enable expand/contract submenu >>
-            #@+node:ekr.20040131171020.1: *5* << enable expand/Contract submenu >>
-            menu = frame.menu.getMenu("Expand/Contract...")
-            if menu:
-                enable(menu,"Contract Parent",c.canContractParent())
-                enable(menu,"Contract Node",hasChildren and isExpanded)
-                enable(menu,"Contract Or Go Left",(hasChildren and isExpanded) or hasParent)
-                enable(menu,"Expand Node",hasChildren and not isExpanded)
-                enable(menu,"Expand Prev Level",hasChildren and isExpanded)
-                enable(menu,"Expand Next Level",hasChildren)
-                enable(menu,"Expand To Level 1",hasChildren and isExpanded)
-                enable(menu,"Expand Or Go Right",hasChildren)
-                for i in range(2,9):
-                    frame.menu.enableMenu(menu,"Expand To Level " + str(i), hasChildren)
-            #@-<< enable expand/contract submenu >>
-            #@+<< enable move submenu >>
-            #@+node:ekr.20040131171020.2: *5* << enable move submenu >>
-            menu = frame.menu.getMenu("Move...")
-            if menu:
-                enable(menu,"Move Down",c.canMoveOutlineDown())
-                enable(menu,"Move Left",c.canMoveOutlineLeft())
-                enable(menu,"Move Right",c.canMoveOutlineRight())
-                enable(menu,"Move Up",c.canMoveOutlineUp())
-                enable(menu,"Promote",c.canPromote())
-                enable(menu,"Demote",c.canDemote())
-            #@-<< enable move submenu >>
-            #@+<< enable go to submenu >>
-            #@+node:ekr.20040131171020.3: *5* << enable go to submenu >>
-            menu = frame.menu.getMenu("Go To...")
-            if menu:
-                enable(menu,"Go To Prev Visited",c.nodeHistory.canGoToPrevVisited())
-                enable(menu,"Go To Next Visited",c.nodeHistory.canGoToNextVisited())
-                enable(menu,"Go To Prev Visible",c.canSelectVisBack())
-                enable(menu,"Go To Next Visible",c.canSelectVisNext())
-                if 0: # These are too slow.
-                    enable(menu,"Go To Next Marked",c.canGoToNextMarkedHeadline())
-                    enable(menu,"Go To Next Changed",c.canGoToNextDirtyHeadline())
-                enable(menu,"Go To Next Clone",isCloned)
-                enable(menu,"Go To Prev Node",c.canSelectThreadBack())
-                enable(menu,"Go To Next Node",c.canSelectThreadNext())
-                enable(menu,"Go To Parent",hasParent)
-                enable(menu,"Go To Prev Sibling",hasBack)
-                enable(menu,"Go To Next Sibling",hasNext)
-            #@-<< enable go to submenu >>
-            #@+<< enable mark submenu >>
-            #@+node:ekr.20040131171020.4: *5* << enable mark submenu >>
-            menu = frame.menu.getMenu("Mark/Unmark...")
-            if menu:
-                label = g.choose(isMarked,"Unmark","Mark")
-                frame.menu.setMenuLabel(menu,0,label)
-                enable(menu,"Mark Subheads",hasChildren)
-                if 0: # These are too slow.
-                    enable(menu,"Mark Changed Items",c.canMarkChangedHeadlines())
-                    enable(menu,"Mark Changed Roots",c.canMarkChangedRoots())
-                enable(menu,"Mark Clones",isCloned)
-            #@-<< enable mark submenu >>
-        except:
-            g.es("exception updating Outline menu")
-            g.es_exception()
-    #@+node:ekr.20031218072017.3780: *4* hasSelection
-    # Returns True if text in the outline or body text is selected.
-
-    def hasSelection (self):
-
-        c = self.c ; w = c.frame.body.bodyCtrl
-
-        if c.frame.body:
-            first,last = w.getSelectionRange()
-            return first != last
-        else:
-            return False
     #@+node:ekr.20031218072017.3781: *3* Gui-independent menu routines
     #@+node:ekr.20060926213642: *4* capitalizeMinibufferMenuName
     def capitalizeMinibufferMenuName (self,s,removeHyphens):
@@ -1206,6 +1112,18 @@ class leoMenu:
             '*pri&nt-bindings',
             '*print-c&ommands',
         ]
+    #@+node:ekr.20031218072017.3780: *4* hasSelection
+    # Returns True if text in the outline or body text is selected.
+
+    def hasSelection (self):
+
+        c = self.c ; w = c.frame.body.bodyCtrl
+
+        if c.frame.body:
+            first,last = w.getSelectionRange()
+            return first != last
+        else:
+            return False
     #@+node:ekr.20051022053758.1: *3* Helpers
     #@+node:ekr.20031218072017.3783: *4* canonicalizeMenuName & cononicalizeTranslatedMenuName
     def canonicalizeMenuName (self,name):
@@ -1230,32 +1148,15 @@ class leoMenu:
 
         c = self.c ; k = c.k
         if g.app.unitTesting: return
+        if not menu: return
         
         self.traceMenuTable(table)
 
         for data in table:
             label,command,done = self.getMenuEntryInfo(data,menu)
             if done: continue
-            accel,commandName,done = self.getMenuEntryBindings(command,dynamicMenu,label)
-            if done: continue
-
-            # Use canonical stroke.
-            if dynamic_menus:
-                accelerator = None
-                stroke = None
-            else:
-                accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
-                stroke = k.shortcutFromSetting(accel,addKey=True) or ''
-
-            if accelerator:
-                accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
-                
-            # Add an entry for unit testing.
-            if stroke:
-                d = g.app.unitTestMenusDict
-                aSet = d.get(commandName,set())
-                aSet.add(stroke)
-                d[commandName] = aSet
+            commandName = self.getMenuEntryBindings(command,dynamicMenu,label)
+            if not commandName: continue
                 
             masterMenuCallback = self.createMasterMenuCallback(
                 dynamicMenu,command,commandName)
@@ -1263,21 +1164,13 @@ class leoMenu:
             realLabel = self.getRealMenuName(label)
             amp_index = realLabel.find("&")
             realLabel = realLabel.replace("&","")
-            if sys.platform == 'darwin':
-                # clear accelerator if it is a plain key
-                for z in ('Alt','Ctrl','Command','Meta',):
-                    if accelerator.find(z) != -1:
-                        break # Found.
-                else:
-                    accelerator = ''
 
             # c.add_command ensures that c.outerUpdate is called.
-            if menu:
-                c.add_command(menu,label=realLabel,
-                    accelerator=accelerator,
-                    command=masterMenuCallback,
-                    commandName=commandName, # 2012/01/20
-                    underline=amp_index)
+            c.add_command(menu,label=realLabel,
+                accelerator='', # The accelerator is now computed dynamically.
+                command=masterMenuCallback,
+                commandName=commandName,
+                underline=amp_index)
     #@+node:ekr.20111102072143.10016: *5* createMasterMenuCallback
     def createMasterMenuCallback(self,dynamicMenu,command,commandName):
         
@@ -1319,71 +1212,25 @@ class leoMenu:
     #@+node:ekr.20111028060955.16568: *5* getMenuEntryBindings
     def getMenuEntryBindings(self,command,dynamicMenu,label):
         
-        '''Compute accel,commandName,done from command.'''
+        '''Compute commandName from command.'''
 
         trace = False and not g.unitTesting
-        c = self.c ; f = c.frame
-        minibufferCommand = type(command) == type('')
-        accel,commandName,done = None,None,False
+        c = self.c
 
-        if minibufferCommand:
+        if type(command) == type(''):
+            # Command is really a command name.
             commandName = command 
-            command = c.commandsDict.get(commandName)
-            if command:
-                rawKey,bunchList = c.config.getShortcut(commandName)
-                # Pick the first entry that is not a mode.
-                for bunch in bunchList:
-                    if not bunch.pane.endswith('-mode'):
-                        accel = bunch and bunch.val
-                        if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
-            else:
-                if not g.app.unitTesting and not dynamicMenu:
-                    # Don't warn during unit testing.
-                    # This may come from a plugin that normally isn't enabled.
-                    if trace: g.trace('No inverse for %s' % commandName)
-                done = True # There is no way to make this menu entry.
         else:
             # First, get the old-style name.
             commandName = self.computeOldStyleShortcutKey(label)
-            rawKey,bunchList = c.config.getShortcut(commandName)
-            for bunch in bunchList:
-                if not bunch.pane.endswith('-mode'):
-                    if trace: g.trace('2','%20s' % (bunch.val),commandName)
-                    accel = bunch and bunch.val ; break
-            # Second, get new-style name.
-            if not accel:
-                #@+<< compute emacs_name >>
-                #@+node:ekr.20111028060955.16569: *6* << compute emacs_name >>
-                #@+at One not-so-horrible kludge remains.
-                # 
-                # The cut/copy/paste commands in the menu tables are not the same as the methods
-                # actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
-                # of extra translation to discover whether the user has overridden their
-                # bindings.
-                #@@c
-
-                if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
-                    emacs_name = '%s-text' % commandName
-                else:
-                    try: # User errors in the table can cause this.
-                        emacs_name = k.inverseCommandsDict.get(command.__name__)
-                    except Exception:
-                        emacs_name = None
-                #@-<< compute emacs_name >>
-                    # Contains the not-so-horrible kludge.
-                if emacs_name:
-                    commandName = emacs_name
-                    rawKey,bunchList = c.config.getShortcut(emacs_name)
-                    # Pick the first entry that is not a mode.
-                    for bunch in bunchList:
-                        if not bunch.pane.endswith('-mode'):
-                            accel = bunch.val
-                            if trace: g.trace('3','%20s' % (bunch.val),commandName)
-                            break
-                elif not dynamicMenu:
-                    if trace: g.trace('No inverse for %s' % commandName)
-                    
-        return accel,commandName,done
+            
+        command = c.commandsDict.get(commandName)
+            
+        if trace and not command and not dynamicMenu:
+            # This may come from a plugin that normally isn't enabled.
+            g.trace('No inverse for %s' % commandName)
+            
+        return commandName
     #@+node:ekr.20111028060955.16565: *5* getMenuEntryInfo
     def getMenuEntryInfo (self,data,menu):
         
@@ -1544,8 +1391,8 @@ class leoMenu:
         if g.app.unitTesting: return
 
         for data in table:
-            #@+<< get label, accelerator & command or continue >>
-            #@+node:ekr.20051022043713.1: *6* << get label, accelerator & command or continue >>
+            #@+<< get label, accel & command or continue >>
+            #@+node:ekr.20051022043713.1: *6* << get label, accel & command or continue >>
             ok = (
                 type(data) in (type(()), type([])) and
                 len(data) in (2,3)
@@ -1553,23 +1400,23 @@ class leoMenu:
 
             if ok:
                 if len(data) == 2:
-                    label,openWithData = data ; accelerator = None
+                    label,openWithData = data ; accel = None
                 else:
-                    label,accelerator,openWithData = data
-                    accelerator = k.shortcutFromSetting(accelerator)
-                    accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
+                    label,accel,openWithData = data
+                    accel = k.shortcutFromSetting(accel)
+                    if accel: accel = k.prettyPrintKey(accel)
             else:
                 g.trace('bad data in Open With table: %s' % repr(data))
                 continue # Ignore bad data
-            #@-<< get label, accelerator & command or continue >>
-            # g.trace(label,accelerator)
+            #@-<< get label, accel & command or continue >>
+            # g.trace(label,accel)
             realLabel = self.getRealMenuName(label)
             underline=realLabel.find("&")
             realLabel = realLabel.replace("&","")
             callback = self.defineOpenWithMenuCallback(openWithData)
 
             c.add_command(menu,label=realLabel,
-                accelerator=accelerator or '',
+                accel=accel or '',
                 command=callback,underline=underline)
     #@+node:ekr.20031218072017.2078: *4* createRecentFilesMenuItems (leoMenu)
     def createRecentFilesMenuItems (self):

@@ -3,7 +3,7 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20110609102702.16471: ** To do: 4.9.1
+.. @+node:ekr.20110609102702.16471: ** To do: 4.10
 Top 10:
 
 * Fix all significant bugs.
@@ -249,7 +249,7 @@ def doCommand (self,command,label,event=None):
         g.doHook("command2",c=c,p=p,v=p,label=label)
 
     return # (for Tk) "break" # Inhibit all other handlers.
-.. @+node:ekr.20061031131434.160: *8* enterNamedMode
+.. @+node:ekr.20061031131434.160: *8* k.enterNamedMode
 def enterNamedMode (self,event,commandName):
 
     k = self ; c = k.c
@@ -3853,14 +3853,17 @@ def set (self,setting,kind,val):
     
     '''Not used during startup: useful for unit tests.'''
 
-    c = self.c
-    g.app.config.set(c,setting,kind,val)
+    g.app.config.set(self.c,setting,kind,val)
 
 def setRecentFiles (self,files):
     
     '''Update the recent files list.'''
 
     g.app.config.appendToRecentFiles(files)
+    
+def make_shortcuts_dicts (self,d,localFlag):
+    
+    g.app.config.make_shortcuts_dicts(self.c,d,localFlag)
 .. @+node:ekr.20041118084146.1: *6* set (g.app.config)
 def set (self,c,setting,kind,val):
 
@@ -3874,11 +3877,11 @@ def set (self,c,setting,kind,val):
     if c:
         h = c.hash()
         d = self.localOptionsDict.get(h,{})
-        d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+        d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
         self.localOptionsDict[h] = d
     else:
         d = self.dictList [0]
-        d[key] = g.Bunch(setting=key,kind=kind,val=val,tag='setting')
+        d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
         self.dictList[0] = d
 .. @+node:ekr.20041117083141: *6* get & allies (g.app.config)
 def get (self,c,setting,kind):
@@ -3891,6 +3894,7 @@ def get (self,c,setting,kind):
 
     # New in Leo 4.6. Use settings in leoSettings.leo *last*.
     if c and not isLeoSettings:
+        # For the local .leo file.
         d = self.localOptionsDict.get(c.hash())
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
@@ -3901,6 +3905,7 @@ def get (self,c,setting,kind):
                 return val
 
     for d in self.localOptionsList:
+        # For myLeoSettings.leo and leoSettings.leo.
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
             if trace:
@@ -3909,6 +3914,7 @@ def get (self,c,setting,kind):
             return val
 
     for d in self.dictList:
+        # For hard-coded options...
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
             if trace:
@@ -3918,6 +3924,7 @@ def get (self,c,setting,kind):
 
     # New in Leo 4.6. Use settings in leoSettings.leo *last*.
     if c and isLeoSettings:
+        # For when leoSettings.leo is the local file.
         d = self.localOptionsDict.get(c.hash())
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
@@ -3938,28 +3945,28 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
     does not (loosely) match the actual type.
     returns (val,exists)'''
 
-    bunch = d.get(self.munge(setting))
-    if not bunch: return None,False
-
-    # g.trace(setting,requestedType,bunch.toString())
-    val = bunch.val
+    gs = d.get(self.munge(setting))
+    if not gs: return None,False
+    assert isinstance(gs,GeneralSetting)
+    
+    # g.trace(setting,requestedType,gs.toString())
+    val = gs.val
 
     # 2011/10/24: test for an explicit None.
     if g.isPython3:
         isNone = val in ('None','none','') # ,None)
-            
     else:
         isNone = val in (
             unicode('None'),unicode('none'),unicode(''),
             'None','none','') #,None)
 
-    if not self.typesMatch(bunch.kind,requestedType):
+    if not self.typesMatch(gs.kind,requestedType):
         # New in 4.4: make sure the types match.
         # A serious warning: one setting may have destroyed another!
         # Important: this is not a complete test of conflicting settings:
         # The warning is given only if the code tries to access the setting.
         if warn:
-            g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
+            g.es_print('warning: ignoring',gs.kind,'',setting,'is not',requestedType,color='red')
             g.es_print('there may be conflicting settings!',color='red')
         return None, False
     # elif val in (u'None',u'none','None','none','',None):
@@ -3982,7 +3989,10 @@ def typesMatch (self,type1,type2):
     - Shortcut matches shortcuts.
     '''
 
+    # The shortcuts logic no longer uses the get/set code.
     shortcuts = ('shortcut','shortcuts',)
+    if type1 in shortcuts or type2 in shortcuts:
+        g.trace('oops: type in shortcuts')
 
     return (
         type1 == None or type2 == None or
@@ -7380,11 +7390,13 @@ def masterKeyHandler (self,event):
             return k.handleUnboundKeys(event,char,stroke)
 
     # 2011/02/08: Use getPandBindings for *all* keys.
-    b = k.getPaneBinding(stroke,w)
-    if b:
+    si = k.getPaneBinding(stroke,w)
+    if si:
+        assert isinstance(si,leoConfig.ShortcutInfo),si
         if traceGC: g.printNewObjects('masterKey 3')
-        if trace: g.trace('   bound',stroke,b.func.__name__)
-        return k.masterCommand(commandName=b.commandName,event=event,func=b.func,stroke=b.stroke)
+        if trace: g.trace('   bound',stroke,si.func.__name__)
+        return k.masterCommand(event=event,
+            commandName=si.commandName,func=si.func,stroke=si.stroke)
     else:
         if traceGC: g.printNewObjects('masterKey 4')
         if trace: g.trace(' unbound',stroke)
@@ -7471,12 +7483,13 @@ def doMode (self,event,state,stroke):
     # Third, pass keys to user modes.
     d =  k.masterBindingsDict.get(state)
     if d:
-        b = d.get(stroke)
-        if b:
+        si = d.get(stroke)
+        if si:
+            assert isinstance(si,leoConfig.ShortcutInfo),si
             if trace: g.trace('calling generalModeHandler',stroke)
             k.generalModeHandler (event,
-                commandName=b.commandName,func=b.func,
-                modeName=state,nextMode=b.nextMode)
+                commandName=si.commandName,func=si.func,
+                modeName=state,nextMode=si.nextMode)
             return True,'break'
         else:
             # New in Leo 4.5: unbound keys end mode.
@@ -7534,16 +7547,17 @@ def getPaneBinding (self,stroke,w):
                     (key,name,stroke,stroke in d))
                 # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
             if d:
-                b = d.get(stroke)
-                if b:
+                si = d.get(stroke)
+                if si:
+                    assert isinstance(si,leoConfig.ShortcutInfo),si
                     table = ('previous-line','next-line',)
-                    if key == 'text' and name == 'head' and b.commandName in table:
-                        if trace: g.trace('***** special case',b.commandName)
+                    if key == 'text' and name == 'head' and si.commandName in table:
+                        if trace: g.trace('***** special case',si.commandName)
                         pass
                     else:
                         if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
-                            key,name,repr(b.stroke),b.commandName))
-                        return b
+                            key,name,repr(si.stroke),si.commandName))
+                        return si
 .. @+node:ekr.20061031131434.152: *7* handleMiniBindings
 def handleMiniBindings (self,event,state,stroke):
 
@@ -7567,20 +7581,21 @@ def handleMiniBindings (self,event,state,stroke):
         for pane in ('mini','all','text'):
             d = k.masterBindingsDict.get(pane)
             if d:
-                b = d.get(stroke)
-                if b:
-                    if b.commandName == 'replace-string' and state == 'getArg':
+                si = d.get(stroke)
+                if si:
+                    assert isinstance(si,leoConfig.ShortcutInfo),si
+                    if si.commandName == 'replace-string' and state == 'getArg':
                         if trace: g.trace('%s binding for replace-string' % (pane),stroke)
                         return False # Let getArg handle it.
-                    elif b.commandName not in k.singleLineCommandList:
+                    elif si.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (
-                            pane),b.commandName,stroke)
+                            pane),si.commandName,stroke)
                         k.keyboardQuit()
                     else:
-                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        if trace: g.trace(repr(stroke),'mini binding',si.commandName)
                         c.minibufferWantsFocus() # New in Leo 4.5.
                     # Pass this on for macro recording.
-                    k.masterCommand(commandName=b.commandName,event=event,func=b.func,stroke=stroke)
+                    k.masterCommand(commandName=si.commandName,event=event,func=si.func,stroke=stroke)
                     # Careful: the command could exit.
                     if c.exists and not k.silentMode:
                         c.minibufferWantsFocus()
@@ -7599,9 +7614,11 @@ def isAutoCompleteChar (self,stroke):
         for key in (state,'body','log','text','all'):
             d = k.masterBindingsDict.get(key,{})
             if d:
-                b = d.get(stroke)
-                if b and b.commandName == 'auto-complete':
-                    return True
+                si = d.get(stroke)
+                if si:
+                    assert isinstance(si,leoConfig.ShortcutInfo),si
+                    if si.commandName == 'auto-complete':
+                        return True
     return False
 .. @+node:ekr.20080510095819.1: *7* k.handleUnboundKeys
 def handleUnboundKeys (self,event,char,stroke):
@@ -9124,7 +9141,7 @@ Just noticed the autocompleter pop-up is modal globally, not just for
 the Leo windows.  Probably should only block the Leo windows.
 .. @+node:ekr.20110620083705.14901: *4* Fix or disable curses gui
 leoBridge.py requires the nullGui.
-.. @+node:ekr.20110921094450.6956: ** To do: 4.10
+.. @+node:ekr.20110921094450.6956: ** To do: 4.10.1
 3. Bridges
 
 

@@ -21,6 +21,7 @@ useUI = False # True: use qt_main.ui. False: use DynamicWindow.createMainWindow.
 import leo.core.leoGlobals as g
 
 import leo.core.leoChapters as leoChapters
+import leo.core.leoConfig as leoConfig
 import leo.core.leoColor as leoColor
 import leo.core.leoFrame as leoFrame
 import leo.core.leoFind as leoFind
@@ -5574,7 +5575,7 @@ class leoQtMenu (leoMenu.leoMenu):
             self.menuBar.addMenu(menu)
             
         label = label.replace('&','').lower()
-        menu.leo_menu_label = label ### was leo_label.
+        menu.leo_menu_label = label
 
         return menu
     #@+node:ekr.20110605121601.18345: *6* add_command (leoQtMenu) (Called by createMenuEntries)
@@ -5747,7 +5748,7 @@ class leoQtMenu (leoMenu.leoMenu):
                 label,menu,underline=amp_index)
 
         return menu
-    #@+node:ekr.20110605121601.18358: *6* disable/enableMenu (leoQtMenu)
+    #@+node:ekr.20110605121601.18358: *6* disable/enableMenu (leoQtMenu) (not used)
     def disableMenu (self,menu,name):
         self.enableMenu(menu,name,False)
 
@@ -7202,9 +7203,8 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
         
         # g.trace('(qtMenuWrappter)',label)
         
-        if leoMenu.dynamic_menus or not parent:
-            self.connect(self,QtCore.SIGNAL(
-                "aboutToShow ()"),self.onAboutToShow)
+        self.connect(self,QtCore.SIGNAL(
+            "aboutToShow ()"),self.onAboutToShow)
 
     def __repr__(self):
 
@@ -7212,69 +7212,61 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
     #@+node:ekr.20110605121601.18460: *4* onAboutToShow & helpers (qtMenuWrapper)
     def onAboutToShow(self,*args,**keys):
         
-        trace = False and not g.unitTesting
-        verbose = False
-        
+        trace = False and not g.unitTesting ; verbose = True
         name = self.leo_menu_label
         if not name: return
+
+        for action in self.actions():
+            commandName = hasattr(action,'leo_command_name') and action.leo_command_name
+            if commandName:
+                if trace: g.trace(commandName)
+                self.leo_update_shortcut(action,commandName)
+                self.leo_enable_menu_item(action,commandName)
+                self.leo_update_menu_label(action,commandName)
        
-        # if False and trace:
-            # g.trace('top: ',name)
-            # for action in self.actions():
-                # if hasattr(action,'leo_command_name'):
-                    # g.trace('cmnd:',action.leo_command_name)
-                # elif verbose:
-                    # if hasattr(action,'leo_menu_label'):
-                        # g.trace(action.leo_menu_label) # A separator.
-                    # else:
-                        # menu = action.menu()
-                        # if hasattr(menu,'leo_menu_label'):
-                            # g.trace('menu:',menu.leo_menu_label)
-                        # else:
-                            # g.trace('oops:',menu) # Should not happen.
-                            
-        if leoMenu.dynamic_menus:
-            for action in self.actions():
-                commandName = hasattr(action,'leo_command_name') and action.leo_command_name
-                if commandName:
-                    if trace: g.trace(commandName)
-                    self.leo_update_shortcut(action,commandName)
-                    self.leo_enable_menu_item(action,commandName)
-        else:
-            # Call the base-class updaters in leoMenu.py.
-            if name == 'file':
-                self.updateFileMenu()
-            elif name == 'edit':
-                self.updateEditMenu()
-            elif name == 'outline':
-                self.updateOutlineMenu()
+    #@+node:ekr.20120120095156.10261: *5* leo_enable_menu_item
+    def leo_enable_menu_item (self,action,commandName):
+
+        func = self.c.frame.menu.enable_dict.get(commandName)
+
+        if action and func:
+            val = func()
+            # g.trace('%5s %20s %s' % (val,commandName,val))
+            action.setEnabled(bool(val))
+            
+    #@+node:ekr.20120124115444.10190: *5* leo_update_menu_label
+    def leo_update_menu_label(self,action,commandName):
+        
+        c = self.c
+        
+        if action and commandName == 'mark':
+            action.setText('UnMark' if c.p.isMarked() else 'Mark')
+            self.leo_update_shortcut(action,commandName)
+                # Set the proper shortcut.
     #@+node:ekr.20120120095156.10260: *5* leo_update_shortcut
     def leo_update_shortcut(self,action,commandName):
         
         trace = False and not g.unitTesting
-        c = self.c
+        c = self.c ; k = c.k
         
         if action:
             s = action.text()
             parts = s.split('\t')
             if len(parts) >= 2: s = parts[0]
-            key,bunchList = c.config.getShortcut(commandName)
-            if bunchList:
-                if trace: g.trace(bunchList)
-                b = bunchList[0] ### Wrong.
-                shortcut = b.val
-                action.setText('%s\t%s' % (s,shortcut))
+            key,aList = c.config.getShortcut(commandName)
+            if aList:
+                result = []
+                for si in aList:
+                    assert isinstance(si,leoConfig.ShortcutInfo)
+                    # Don't show mode-related bindings.
+                    if not si.isModeBinding():
+                        accel = k.prettyPrintKey(si.stroke)
+                        if trace: g.trace('%20s %s' % (accel,si.dump()))
+                        result.append(accel)
+                        # Break here if we want to show only one accerator.
+                action.setText('%s\t%s' % (s,', '.join(result)))
             else:
                 action.setText(s)
-        else:
-            g.trace('can not happen: no action for %s' % (commandName))
-    #@+node:ekr.20120120095156.10261: *5* leo_enable_menu_item
-    def leo_enable_menu_item (self,action,commandName):
-        
-        if action:
-            menu = action.menu()
-            
-            
         else:
             g.trace('can not happen: no action for %s' % (commandName))
     #@-others
@@ -8999,7 +8991,7 @@ class leoQtEventFilter(QtCore.QObject):
         return tkKey,ch,ignore
     #@+node:ekr.20110605121601.18547: *5* char2tkName
     char2tkNameDict = {
-        # Part 1: same as k.guiBindNamesDict
+        # Part 1: same as g.app.guiBindNamesDict
         "&" : "ampersand",
         "^" : "asciicircum",
         "~" : "asciitilde",

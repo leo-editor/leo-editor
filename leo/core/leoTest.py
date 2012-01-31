@@ -693,7 +693,7 @@ def findAllUnitTestNodes(c,p,limit,all,marked,lookForMark,lookForNodes):
             continue
         seen.add(p.v)
         if g.match_word(p.h,0,'@ignore'):
-            if trace and verbose: g.trace('ignoring seen tree',p.h)
+            if trace and verbose: g.trace('ignoring @ignore tree',p.h)
             p.moveToNodeAfterTree()
         elif marked and not p.isMarked():
             if trace and verbose: g.trace('ignoring unmarked node',p.h)
@@ -718,6 +718,11 @@ def findAllUnitTestNodes(c,p,limit,all,marked,lookForMark,lookForNodes):
             while p and p != after2:
                 if p.v in seen:
                     if trace: g.trace('ignoring unmarked tree',p.h)
+                    p.moveToNodeAfterTree()
+                elif g.match_word(p.h,0,'@ignore'):
+                    # 2012/01/26: support @ignore here.
+                    if trace and verbose:
+                        g.trace('ignoring @ignore tree in marked tree',p.h)
                     p.moveToNodeAfterTree()
                 else:
                     seen.add(p.v)

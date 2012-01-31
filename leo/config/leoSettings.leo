@@ -5227,6 +5227,7 @@ scroll-up-page          ! tree = PageUp
 
 keyboard-quit           = Ctrl-g # not needed, but a good reminder
 keyboard-quit           = Return
+keyboard-quit           = Escape
 
 rectangle-close         = c
 convert-blanks          = b
@@ -5235,7 +5236,7 @@ execute-script          = e
 rectangle-open          = o
 repeat-complex-command  = a
 reformat-paragraph      = r
-remove-blank-lines      = b
+remove-blank-lines      = Shift-B
 sort-lines              = l
 sort-siblings           = s
 

@@ -10,6 +10,7 @@ Modelled after Emacs and Vim commands.'''
 #@+<< imports >>
 #@+node:ekr.20050710151017: ** << imports >>
 import leo.core.leoGlobals as g
+import leo.core.leoConfig as leoConfig
 import leo.core.leoFind as leoFind
 import leo.core.leoKeys as leoKeys
 import leo.core.leoTest as leoTest
@@ -240,6 +241,8 @@ def finishCreateEditCommanders (c):
     '''Finish creating edit classes in the commander.
 
     Return the commands dictionary for all the classes.'''
+    
+    # g.trace(c,g.callers())
 
     global classesList
 
@@ -7277,13 +7280,14 @@ class helpCommandsClass (baseEditCommandsClass):
         c = self.c ; k = c.k ; d = k.bindingsDict
         data = [] ; n1 = 4 ; n2 = 20
         for key in sorted(d):
-            bunchList = d.get(key,[])
-            for b in bunchList:
-                if b.commandName == commandName:
-                    pane = g.choose(b.pane=='all','',' %s:' % (b.pane))
+            aList = d.get(key,[])
+            for si in aList:
+                assert isinstance(si,leoConfig.ShortcutInfo)
+                if si.commandName == commandName:
+                    pane = g.choose(si.pane=='all','',' %s:' % (si.pane))
                     s1 = pane
-                    s2 = k.prettyPrintKey(key,brief=True)
-                    s3 = b.commandName
+                    s2 = k.prettyPrintKey(key)
+                    s3 = si.commandName
                     n1 = max(n1,len(s1))
                     n2 = max(n2,len(s2))
                     data.append((s1,s2,s3),)

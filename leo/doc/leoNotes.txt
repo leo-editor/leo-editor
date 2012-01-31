@@ -7964,5 +7964,486 @@ def setLeoWindowSize (self,rect):
     
     self.setGeometry(rect)
         # Bug fix: 2012/01/16: always call this.
+#@+node:ekr.20031218072017.3776: *3* Gui-independent menu enablers
+#@+node:ekr.20031218072017.3777: *4* updateAllMenus
+def updateAllMenus (self):
+
+    """A callback called when a click happens in any menu.
+
+    Updates (enables or disables) all menu items."""
+
+    # Allow the user first crack at updating menus.
+    c = self.c
+
+    if c and c.exists:
+        c.setLog()
+        p = c.p
+
+        if not g.doHook("menu-update",c=c,p=p,v=p):
+            self.updateFileMenu()
+            self.updateEditMenu()
+            self.updateOutlineMenu()
+#@+node:ekr.20031218072017.3778: *4* updateFileMenu
+def updateFileMenu (self):
+
+    c = self.c ; frame = c.frame
+    if not c: return
+
+    try:
+        enable = frame.menu.enableMenu
+        menu = frame.menu.getMenu("File")
+        if menu:
+            enable(menu,"Revert To Saved", c.canRevert())
+            enable(menu,"Open With...", g.app.hasOpenWithMenu)
+    except:
+        g.es("exception updating File menu")
+        g.es_exception()
+#@+node:ekr.20031218072017.836: *4* updateEditMenu
+def updateEditMenu (self):
+
+    c = self.c ; frame = c.frame
+    w = c.frame.body.bodyCtrl
+    if not c: return
+    try:
+        # Top level Edit menu...
+        enable = frame.menu.enableMenu
+        menu = frame.menu.getMenu("Edit")
+        c.undoer.enableMenuItems()
+        << enable cut/paste >>
+        if 0: # Always on for now.
+            menu = frame.menu.getMenu("Find...")
+            enable(menu,"Find Next",c.canFind())
+            flag = c.canReplace()
+            enable(menu,"Replace",flag)
+            enable(menu,"Replace, Then Find",flag)
+        # Edit Body submenu...
+        menu = frame.menu.getMenu("Edit Body...")
+        if menu:
+            enable(menu,"Extract Section",c.canExtractSection())
+            enable(menu,"Extract Names",c.canExtractSectionNames())
+            enable(menu,"Extract",c.canExtract())
+            enable(menu,"Match Brackets",c.canFindMatchingBracket())
+    except:
+        g.es("exception updating Edit menu")
+        g.es_exception()
+#@+node:ekr.20040130164211: *5* << enable cut/paste >>
+if frame.body.hasFocus():
+    data = w.getSelectedText()
+    canCut = data and len(data) > 0
+else:
+    # This isn't strictly correct, but we can't get the Tk headline selection.
+    canCut = True
+
+enable(menu,"Cut",canCut)
+enable(menu,"Copy",canCut)
+
+data = g.app.gui.getTextFromClipboard()
+canPaste = data and len(data) > 0
+enable(menu,"Paste",canPaste)
+#@+node:ekr.20031218072017.3779: *4* updateOutlineMenu
+def updateOutlineMenu (self):
+
+    c = self.c ; frame = c.frame
+    if not c: return
+
+    p = c.p
+    hasParent = p.hasParent()
+    hasBack = p.hasBack()
+    hasNext = p.hasNext()
+    hasChildren = p.hasChildren()
+    isExpanded = p.isExpanded()
+    isCloned = p.isCloned()
+    isMarked = p.isMarked()
+
+    try:
+        enable = frame.menu.enableMenu
+        << enable top level outline menu >>
+        << enable expand/contract submenu >>
+        << enable move submenu >>
+        << enable go to submenu >>
+        << enable mark submenu >>
+    except:
+        g.es("exception updating Outline menu")
+        g.es_exception()
+#@+node:ekr.20040131171020: *5* << enable top level outline menu >>
+menu = frame.menu.getMenu("Outline")
+if menu:
+    enable(menu,"Cut Node",c.canCutOutline())
+    enable(menu,"Delete Node",c.canDeleteHeadline())
+    enable(menu,"Paste Node",c.canPasteOutline())
+    enable(menu,"Paste Node As Clone",c.canPasteOutline())
+    enable(menu,"Clone Node",c.canClone()) # 1/31/04
+    enable(menu,"Sort Siblings",c.canSortSiblings())
+    enable(menu,"Hoist",c.canHoist())
+    enable(menu,"De-Hoist",c.canDehoist())
+#@+node:ekr.20040131171020.1: *5* << enable expand/Contract submenu >>
+menu = frame.menu.getMenu("Expand/Contract...")
+if menu:
+    enable(menu,"Contract Parent",c.canContractParent())
+    enable(menu,"Contract Node",hasChildren and isExpanded)
+    enable(menu,"Contract Or Go Left",(hasChildren and isExpanded) or hasParent)
+    enable(menu,"Expand Node",hasChildren and not isExpanded)
+    enable(menu,"Expand Prev Level",hasChildren and isExpanded)
+    enable(menu,"Expand Next Level",hasChildren)
+    enable(menu,"Expand To Level 1",hasChildren and isExpanded)
+    enable(menu,"Expand Or Go Right",hasChildren)
+    for i in range(2,9):
+        frame.menu.enableMenu(menu,"Expand To Level " + str(i), hasChildren)
+#@+node:ekr.20040131171020.2: *5* << enable move submenu >>
+menu = frame.menu.getMenu("Move...")
+if menu:
+    enable(menu,"Move Down",c.canMoveOutlineDown())
+    enable(menu,"Move Left",c.canMoveOutlineLeft())
+    enable(menu,"Move Right",c.canMoveOutlineRight())
+    enable(menu,"Move Up",c.canMoveOutlineUp())
+    enable(menu,"Promote",c.canPromote())
+    enable(menu,"Demote",c.canDemote())
+#@+node:ekr.20040131171020.3: *5* << enable go to submenu >>
+menu = frame.menu.getMenu("Go To...")
+if menu:
+    enable(menu,"Go To Prev Visited",c.nodeHistory.canGoToPrevVisited())
+    enable(menu,"Go To Next Visited",c.nodeHistory.canGoToNextVisited())
+    enable(menu,"Go To Prev Visible",c.canSelectVisBack())
+    enable(menu,"Go To Next Visible",c.canSelectVisNext())
+    if 0: # These are too slow.
+        enable(menu,"Go To Next Marked",c.canGoToNextMarkedHeadline())
+        enable(menu,"Go To Next Changed",c.canGoToNextDirtyHeadline())
+    enable(menu,"Go To Next Clone",isCloned)
+    enable(menu,"Go To Prev Node",c.canSelectThreadBack())
+    enable(menu,"Go To Next Node",c.canSelectThreadNext())
+    enable(menu,"Go To Parent",hasParent)
+    enable(menu,"Go To Prev Sibling",hasBack)
+    enable(menu,"Go To Next Sibling",hasNext)
+#@+node:ekr.20040131171020.4: *5* << enable mark submenu >>
+menu = frame.menu.getMenu("Mark/Unmark...")
+if menu:
+    label = g.choose(isMarked,"Unmark","Mark")
+    frame.menu.setMenuLabel(menu,0,label)
+    enable(menu,"Mark Subheads",hasChildren)
+    if 0: # These are too slow.
+        enable(menu,"Mark Changed Items",c.canMarkChangedHeadlines())
+        enable(menu,"Mark Changed Roots",c.canMarkChangedRoots())
+    enable(menu,"Mark Clones",isCloned)
+#@+node:ekr.20111028060955.16569: *3* << compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+#@+node:ekr.20120124100133.10251: *3* getMenuEntryBindings (OLD)
+def getMenuEntryBindings(self,command,dynamicMenu,label):
+    
+    '''Compute commandName,done from command.'''
+
+    trace = False and not g.unitTesting ; verbose = True
+    c = self.c ; f = c.frame
+    minibufferCommand = type(command) == type('')
+    accel,commandName,done = None,None,False
+    import leo.core.leoConfig as leoConfig
+
+    if minibufferCommand:
+        commandName = command 
+        command = c.commandsDict.get(commandName)
+        if command:
+            ### accel no longer used.
+            pass
+            # rawKey,aList = c.config.getShortcut(commandName)
+            # # Pick the first entry that is not a mode.
+            # for si in aList:
+                # assert isinstance(si,leoConfig.ShortcutInfo)
+                # if trace and verbose: g.trace(si)
+                # if not si.pane.endswith('-mode'):
+                    # accel = si.val
+                    # if si.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+        else:
+            if not g.app.unitTesting and not dynamicMenu:
+                # Don't warn during unit testing.
+                # This may come from a plugin that normally isn't enabled.
+                if trace: g.trace('No inverse for %s' % commandName)
+            done = True # There is no way to make this menu entry.
+    else:
+        # First, get the old-style name.
+        commandName = self.computeOldStyleShortcutKey(label)
+        
+        ### Accel no longer used.
+        # rawKey,aList = c.config.getShortcut(commandName)
+        # for si in aList:
+            # assert isinstance(si,leoConfig.ShortcutInfo)
+            # if trace and verbose: g.trace(si)
+            # if not si.pane.endswith('-mode'):
+                # if trace: g.trace('2','%20s' % (si.val),commandName)
+                # accel = si.val ; break
+
+        # # Second, get new-style name.
+        # if not accel:
+            ###
+            # < < compute emacs_name > >
+                # # Contains the not-so-horrible kludge.
+            # if emacs_name:
+                # commandName = emacs_name
+                # rawKey,aList = c.config.getShortcut(emacs_name)
+                # # Pick the first entry that is not a mode.
+                # for si in aList:
+                    # assert isinstance(si,leoConfig.ShortcutInfo)
+                    # if trace and verbose: g.trace(si)
+                    # if not si.pane.endswith('-mode'):
+                        # accel = si.val
+                        # if trace: g.trace('3','%20s' % (si.val),commandName)
+                        # break
+            # elif not dynamicMenu:
+                # if trace: g.trace('No inverse for %s' % commandName)
+                
+    ### return accel,commandName,done
+    return commandName,done
+#@+node:ekr.20031218072017.2976: *3* canRevert
+def canRevert (self):
+    
+    # 2011/10/18: Allow revert, regardless of change status.
+    return True
+
+    # c.mFileName will be "untitled" for unsaved files.
+    # c = self
+    # return (c.frame and c.mFileName and c.isChanged())
+#@+node:ekr.20120129121306.10261: *3* getShortcut (g.app.config) & helpers (NO LONGER USED)
+def getShortcut (self,c,commandName):
+
+    '''Return rawKey,accel for shortcutName'''
+    
+    trace = False and commandName in ('new','print-bindings') and not g.unitTesting
+
+    key = c.frame.menu.canonicalizeMenuName(commandName)
+    key = key.replace('&','') # Allow '&' in names.
+
+    if 1: # New code: use the dicts created by make_settings_dict.
+    
+        # To do: c.config here is different from c.config in make_shortcuts_dict.
+        table = (
+            ('local',            c and c.config.master_shortcuts_dict),
+            ('myLeoSettings.leo',g.app.config.immutable_my_leo_settings_shortcuts_dict),
+            ('leoSettings.leo',  g.app.config.immutable_leo_settings_shortcuts_dict),
+        )
+        aList = []
+        # if trace: g.trace('c',c,'c.config',c.config)
+        for tag,d in table:
+            if d:
+                if trace: g.trace(tag,len(list(d.keys())))
+                aList = d.get(commandName,[])
+                for si in aList:
+                    assert isinstance(si,ShortcutInfo),si
+                break
+        aList = [si for si in aList
+            if si.stroke and si.stroke.lower() != 'none']
+        if trace: g.trace('getShortcut',tag,aList)
+        return key,aList
+    else:
+        if c.k.new_bindings:
+            aList = self.getShortcutHelper(c,key) # 2011/02/11
+        else:
+            aList = self.get(c,key,'shortcut')
+    
+        if aList:
+            aList = [bunch for bunch in aList
+                if bunch.val and bunch.val.lower() != 'none']
+            if trace: g.trace(key,aList)
+            return key,aList
+        else:
+            return key,[]
+#@+node:ekr.20120129121306.10262: *4* getShortcutHelper(g.app.config) & helper
+def getShortcutHelper (self,c,key):
+    
+    '''Like get, but return *all* the found bunchLists's.
+    
+    'key' is actually a commandname.'''
+
+    trace = True and key == 'new' and not g.unitTesting
+    kind = 'shortcut'
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+    result = []
+
+    if c and not isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            aList,junk = self.getValFromDict(d,key,kind)
+            if aList: self.mergeShortcuts(result,aList,key,tag='localDict')
+
+    for d in self.localOptionsList:
+        # For myLeoSettings.leo and leoSettings.leo.
+        aList,junk = self.getValFromDict(d,key,kind)
+        if aList: self.mergeShortcuts(result,aList,key,tag='localList')
+
+    for d in self.dictList:
+        # For hard-coded values of settings.
+        aList,junk = self.getValFromDict(d,key,kind)
+        if aList: self.mergeShortcuts(result,aList,key,tag='dictList')
+
+    # Use settings in leoSettings.leo *last*.
+    if c and isLeoSettings:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            aList,junk = self.getValFromDict(d,key,kind)
+            if aList: self.mergeShortcuts(result,aList,key,tag='local leoSettigns')
+
+    return result
+#@+node:ekr.20120129121306.10264: *4* killShortcut (g.app.config) NOT USED YET
+def killShortcut (self,c,commandName,shortcut):
+    
+    '''Kill all bindings to key in c.'''
+
+    trace = True and not g.unitTesting
+
+    if c and not c.shortFileName().endswith('leoSettings.leo'):
+        
+        def munge(s):
+            c.k.shortcutFromSetting(s)
+    
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            gs = d.get('shortcut')
+            if trace: g.trace('gs',gs)
+            # Remove all entries that for the shortcut.
+            result = []
+            for si in gs.val:
+                assert isinstance(si,ShortcutInfo),si
+                if trace: g.trace('commandName',commandName,'shortcut',shortcut,'si.stroke',si.stroke)
+                if munge(si.stroke) == munge(shortcut):
+                    if trace: g.trace('removing',si)
+                else:
+                    if trace: g.trace('keeping',si)
+                    result.append(si)
+            gs.val = result
+        
+            # aList,exists = self.getValFromDict(d,commandName,requestedType='shortcut')
+            # g.trace('commandName %s shortcut %s aList...\n%s' % (
+                # commandName,shortcut,aList))
+            # if aList and exists:
+                # key = self.munge(key)
+                # g.trace('kill %s' % (key))
+                # del d[key]
+
+        
+#@+node:ekr.20041227071423: *3* setShortcut (ParserBaseClass) (NO LONGER USED)
+def setShortcut (self,p,name,aList):
+    
+    trace = False and not g.unitTesting
+
+    c = self.c
+
+    # None is a valid value for val.
+    key = c.frame.menu.canonicalizeMenuName(name)
+    rawKey = key.replace('&','')
+    self.set(p,rawKey,"shortcut",aList)
+
+    if trace:
+        for b in aList:
+            g.trace('%20s %45s %s %s' % (b.val,rawKey,b.pane,b._hash))
+#@+node:ekr.20061031131434.190: *3* k.tkbindingFromStroke
+def tkbindingFromStroke (self,stroke):
+
+    '''Convert a stroke (key to k.bindingsDict) to an actual Tk binding.'''
+    
+    return stroke #####
+
+    stroke = g.stripBrackets(stroke)
+
+    for a,b in (
+        ('Alt+','Alt-'),
+        ('Ctrl-','Control-'),
+        ('Ctrl+','Control-'), # New in Leo 4.5.
+        ('Meta+','Meta-'), # New in Leo 4.6
+        ('Shift+','Shift-'),
+        ('Command+','Command-'),
+        ('DnArrow','Down'), # New in Leo 4.5.
+        ('LtArrow','Left'), # New in Leo 4.5.
+        ('RtArrow','Right'),# New in Leo 4.5.
+        ('UpArrow','Up'),   # New in Leo 4.5.
+    ):
+        stroke = stroke.replace(a,b)
+
+    # g.trace('<%s>' % stroke)
+    return stroke
+#@+node:ekr.20120130101219.10181: *3* Unused from printBindingsHelper
+
+    data1 = [z for z in data if z and z[1] and len(z[1][n:]) == 1]
+        # The list of all items with only one character following the prefix.
+        
+    # Special case for Alt-Key and Ctrl-Key bindings.
+    if prefix in ('Alt','Ctrl'):
+        prefix2 = prefix+'+Key'
+        n2 = prefix2 and len(prefix2)+1 or 0
+        data2 = [z for z in data if z and z[1] and len(z[1][n2:]) == 1]
+    else:
+        data2 = []
+
+    data3 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
+        # The list of all other items.
+#@+node:ekr.20120129121306.10263: *3* mergeShortcuts (g.app.config)
+def mergeShortcuts (self,result,aList,key,tag):
+        # key and tag are for debugging.
+        # key is a conical command name, *not* a keystroke.
+    
+    '''Append all non-conflicting entries of aList to result.'''
+    
+    trace = True and key == 'new' and not g.unitTesting
+
+    # If there is a real override, **earlier** entries take precedence.
+    # Don't add a bunch if it conflicts with a previous val, **regardless** of pane.
+    
+    vals = [z.val for z in result]
+    aList = [z for z in aList if z.val not in vals]
+    result.extend(aList)
+
+    if trace and result:
+        g.trace(tag,key,['%s %s' % (z.val,z.pane) for z in result])
+#@+node:ekr.20110211094454.15414: *3* k.mergeShortcutList
+def mergeShortcutList (self,aList,stroke): # stroke is for debugging.
+
+    '''aList is a list of binding bunches for stroke.
+    
+    Return a new list consisting only of bindings from the highest priority .leo file.'''
+    
+    # Find the higest priority hash.
+    trace = False and not g.unitTesting ; verbose = False
+    k = self.c.k
+    sList,mList,fList = [],[],[]
+    for si in aList:
+        assert isinstance(si,leoConfig.ShortcutInfo),si
+        _hash = si.kind # 2012/01/23
+        if _hash.endswith('myleosettings.leo'):
+            mList.append(si)
+        elif _hash.endswith('leosettings.leo'):
+            sList.append(si)
+        elif _hash.endswith('.leo'):
+            fList.append(si)
+
+    result = fList or mList or sList or aList
+            
+    if trace:
+        def pr(stroke,message,aList):
+            print('mergeShortcutList: %15s %s %s' % (stroke,message,
+                '...\n'.join(['%15s %5s %s' % (
+                    k.shortcutFromSetting(z.val),z.pane,z.commandName)
+                        for z in aList])))
+        if fList and mList:
+            pr(stroke,'ignoring  mList',mList)
+            pr(stroke,'retaining fList',fList)
+        if fList and sList:
+            pr(stroke,'ignoring  sList',sList)
+            pr(stroke,'retaining fList',fList)
+        elif mList and sList:
+            pr(stroke,'ignoring  sList',sList)
+            pr(stroke,'retaining mList',mList)
+
+    if trace and verbose and len(result) > 1: g.trace(stroke,result)
+    return result
 #@-all
 #@-leo
