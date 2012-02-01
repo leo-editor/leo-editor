@@ -25805,6 +25805,481 @@ def bindKeyToDict (self,pane,stroke,func,commandName,_hash):
         kind=_hash,commandName=commandName,func=func,pane=pane,stroke=stroke)
 
     k.masterBindingsDict [pane] = d
+#@+node:ekr.20120201084932.10043: ** Properly link shortcuts nodes
+#@+node:ekr.20041122094813: *3* << configClass class data >> (g.app.config)
+@others
+
+dictList = [ivarsDict,encodingIvarsDict,defaultsDict]
+    # List of dictionaries to search for hard-coded values.
+    # Order not too important.
+immutable_leo_settings_shortcuts_dict = {}
+    # The initial shortcut settings in leoSettings.leo.
+    # New in Leo 4.10.
+immutable_my_leo_settings_shortcuts_dict = {}
+    # The initial shortcut settings in myLeoSettings.leo.
+    # New in Leo 4.10.
+localOptionsDict = {}
+    # Keys are commanders.  Values are optionsDicts.
+localShortcutsDict = {}
+    # Keys are commanders.  Values are settings dicts created by make_shortcuts_dicts.
+    # New in Leo 4.10.
+localOptionsList = []
+
+warningsDict = {}
+    # Keys are setting names, values are type names.
+    # Used by get() or allies.
+#@+node:ekr.20041117062717.1: *4* defaultsDict
+@ This contains only the "interesting" defaults.
+Ints and bools default to 0, floats to 0.0 and strings to "".
+@c
+
+defaultBodyFontSize = g.choose(sys.platform=="win32",9,12)
+defaultLogFontSize  = g.choose(sys.platform=="win32",8,12)
+defaultMenuFontSize = g.choose(sys.platform=="win32",9,12)
+defaultTreeFontSize = g.choose(sys.platform=="win32",9,12)
+
+defaultsDict = {'_hash':'defaultsDict'}
+
+defaultsData = (
+    # compare options...
+    ("ignore_blank_lines","bool",True),
+    ("limit_count","int",9),
+    ("print_mismatching_lines","bool",True),
+    ("print_trailing_lines","bool",True),
+    # find/change options...
+    ("search_body","bool",True),
+    ("whole_word","bool",True),
+    # Prefs panel.
+    # ("default_target_language","language","python"),
+    ("target_language","language","python"), # Bug fix: 6/20,2005.
+    ("tab_width","int",-4),
+    ("page_width","int",132),
+    ("output_doc_chunks","bool",True),
+    ("tangle_outputs_header","bool",True),
+    # Syntax coloring options...
+    # Defaults for colors are handled by leoColor.py.
+    ("color_directives_in_plain_text","bool",True),
+    ("underline_undefined_section_names","bool",True),
+    # Window options...
+    ("allow_clone_drags","bool",True),
+    ("body_pane_wraps","bool",True),
+    ("body_text_font_family","family","Courier"),
+    ("body_text_font_size","size",defaultBodyFontSize),
+    ("body_text_font_slant","slant","roman"),
+    ("body_text_font_weight","weight","normal"),
+    ("enable_drag_messages","bool",True),
+    ("headline_text_font_family","string",None),
+    ("headline_text_font_size","size",defaultLogFontSize),
+    ("headline_text_font_slant","slant","roman"),
+    ("headline_text_font_weight","weight","normal"),
+    ("log_text_font_family","string",None),
+    ("log_text_font_size","size",defaultLogFontSize),
+    ("log_text_font_slant","slant","roman"),
+    ("log_text_font_weight","weight","normal"),
+    ("initial_window_height","int",600),
+    ("initial_window_width","int",800),
+    ("initial_window_left","int",10),
+    ("initial_window_top","int",10),
+    ("initial_splitter_orientation","string","vertical"),
+    ("initial_vertical_ratio","ratio",0.5),
+    ("initial_horizontal_ratio","ratio",0.3),
+    ("initial_horizontal_secondary_ratio","ratio",0.5),
+    ("initial_vertical_secondary_ratio","ratio",0.7),
+    # ("outline_pane_scrolls_horizontally","bool",False),
+    ("split_bar_color","color","LightSteelBlue2"),
+    ("split_bar_relief","relief","groove"),
+    ("split_bar_width","int",7),
+)
+#@+node:ekr.20041118062709: *4* define encodingIvarsDict
+encodingIvarsDict = {'_hash':'encodingIvarsDict'}
+
+encodingIvarsData = (
+    ("default_at_auto_file_encoding","string","utf-8"),
+    ("default_derived_file_encoding","string","utf-8"),
+    ("new_leo_file_encoding","string","UTF-8"),
+        # Upper case for compatibility with previous versions.
+    ("defaultEncoding","string",None),
+        # Defaults to None so it doesn't override better defaults.
+)
+#@+node:ekr.20041117072055: *4* ivarsDict
+# Each of these settings sets the corresponding ivar.
+# Also, the c.configSettings settings class inits the corresponding commander ivar.
+ivarsDict = {'_hash':'ivarsDict'}
+
+ivarsData = (
+    ("at_root_bodies_start_in_doc_mode","bool",True),
+        # For compatibility with previous versions.
+    ("create_nonexistent_directories","bool",False),
+    ("output_initial_comment","string",""),
+        # "" for compatibility with previous versions.
+    ("output_newline","string","nl"),
+    ("page_width","int","132"),
+    ("read_only","bool",True),
+        # Make sure we don't alter an illegal leoConfig.txt file!
+    ("redirect_execute_script_output_to_log_pane","bool",False),
+    ("relative_path_base_directory","string","!"),
+    ("remove_sentinels_extension","string",".txt"),
+    ("save_clears_undo_buffer","bool",False),
+    ("stylesheet","string",None),
+    ("tab_width","int",-4),
+    ("target_language","language","python"), # Bug fix: added: 6/20/2005.
+    ("trailing_body_newlines","string","asis"),
+    ("use_plugins","bool",True),
+        # New in 4.3: use_plugins = True by default.
+    # use_pysco can not be set by 4.3:  config processing happens too late.
+        # ("use_psyco","bool",False),
+    ("undo_granularity","string","word"),
+        # "char","word","line","node"
+    ("write_strips_blank_lines","bool",False),
+)
+#@+node:ekr.20041118195812: *3* Setters... (c.configSettings)
+def set (self,setting,kind,val):
+    
+    '''Not used during startup: useful for unit tests.'''
+
+    g.app.config.set(self.c,setting,kind,val)
+
+def setRecentFiles (self,files):
+    
+    '''Update the recent files list.'''
+
+    g.app.config.appendToRecentFiles(files)
+    
+def make_shortcuts_dicts (self,d,localFlag):
+    
+    return g.app.config.make_shortcuts_dicts(self.c,d,localFlag)
+#@+node:ekr.20120122070219.10162: *3* make_shortcuts_dicts (g.app.config) & helpers
+def make_shortcuts_dicts (self,c,d,localFlag):
+    
+    '''Make all settings dicts related to c and d.
+    
+    return the newly-made local dict or None.'''
+    
+    trace = False and not g.unitTesting
+    fn = c.shortFileName().lower()
+    result = None # The newly-made local dict, or None for non-local files.
+    test_result = [] # For unit tests.
+    
+    def message(d,name):
+        return '%4s keys %s' % (len(list(d.keys())),name)
+        
+    # g.trace('self',self)
+    # g.trace('c',c)
+    # g.trace('c.config',c.config)
+    # g.trace('make_shortcuts_dict',len(list(d.keys())),g.callers())
+
+    
+    if fn == 'leosettings.leo':
+        if not g.app.config.immutable_leo_settings_shortcuts_dict:
+            if trace: g.trace(message(d,'immutable_leo_settings_shortcuts_dict'))
+            g.app.config.immutable_leo_settings_shortcuts_dict = d
+    elif fn == 'myleosettings.leo':
+        if not g.app.config.immutable_my_leo_settings_shortcuts_dict:
+            if trace: g.trace(message(d,'immutable_my_leo_settings_shortcuts_dict'))
+            g.app.config.immutable_my_leo_settings_shortcuts_dict = d
+        if localFlag:
+            if trace: message(d,'settingsDict: %s' % (fn))
+            d1 = g.app.config.immutable_leo_settings_shortcuts_dict
+            d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
+            d3 = self.settingsDict = self.merge_settings_dicts(d1,d2)
+            result = d3
+            if trace: g.trace(message(d3,'result: %s' % (fn)))
+            test_result = (d1,d2,d3,'myLeoSettings.leo')
+    else:
+        if trace: g.trace(message(d,'settingsDict: %s' % (fn)))
+        d1 = g.app.config.immutable_leo_settings_shortcuts_dict
+        d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
+        d3 = self.merge_settings_dicts(d1,d2)
+        d4 = self.settingsDict = self.merge_settings_dicts(d3,d)
+        result = d4
+        test_result = ((d1,d2,d3,'local 1'),(d3,d,d4,'local 2'),)
+        
+    g.app.unitTestDict['make_shortcuts_dicts'] = test_result
+    return result
+#@+node:ekr.20120122070219.10163: *4* merge_settings_dicts (g.app.config)
+def merge_settings_dicts (self,old_d,new_d):
+    
+    '''Create a new dict by overriding all settings in old_d by setting in new_d.
+    
+    Both old_d and new_d remain unchanged.'''
+    
+    trace = False and not g.unitTesting
+    
+    if not old_d: return new_d
+    if not new_d: return old_d
+    
+    if trace:
+        new_n,old_n = len(list(new_d.keys())),len(list(old_d.keys()))
+        g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.get('_hash')))
+        g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.get('_hash')))
+
+    inverted_old_d = self.invert(old_d)
+    inverted_new_d = self.invert(new_d)
+    inverted_old_d.update(inverted_new_d) # Updates inverted_old_d in place.
+    result = self.uninvert(inverted_old_d)
+    return result
+#@+node:ekr.20120125045244.10186: *4* invert (g.app.config)
+def invert (self,d):
+    
+    '''Invert a shortcut dict whose keys are command names,
+    returning a dict whose keys are strokes.'''
+    
+    trace = False and not g.unitTesting ; verbose = True
+    if trace: g.trace('*'*40,d.get('_hash'))
+    result = {}
+    for commandName in d.keys():
+        if commandName == '_hash':
+            result['_hash'] = 'inverted %s' % d.get('_hash')
+        else:
+            for si in d.get(commandName,[]):
+                try:
+                    assert isinstance(si,ShortcutInfo),'commandName %s si %s' % (
+                        commandName,si)
+                except AssertionError:
+                    g.pdb()
+                stroke = si.stroke # This is canonicalized.
+                assert stroke
+                if trace and verbose:
+                    g.trace('%40s %s' % (commandName,stroke))
+                si.commandName = commandName # Add info.
+                aList = result.get(stroke,[])
+                if si not in aList:
+                    aList.append(si)
+                    result[stroke] = aList
+
+    if trace: g.trace('returns  %4s %s %s' % (
+        len(list(result.keys())),id(d),result.get('_hash')))
+    return result
+#@+node:ekr.20120125045244.10187: *4* uninvert (g.app.config)
+def uninvert (self,d):
+    
+    '''Uninvert an inverted shortcut dict whose keys are strokes,
+    returning a dict whose keys are command names.'''
+    
+    trace = False and not g.unitTesting ; verbose = True
+    if trace and verbose: g.trace('*'*40)
+    result = {}
+    for stroke in d.keys():
+        if stroke == '_hash':
+            result['_hash'] = 'uninverted %s' % d.get('_hash')
+        else:
+            for si in d.get(stroke,[]):
+                assert isinstance(si,ShortcutInfo),si
+                commandName = si.commandName
+                if trace and verbose:
+                    g.trace('uninvert %20s %s' % (stroke,commandName))
+                assert commandName
+                aList = result.get(commandName,[])
+                if si not in aList:
+                    aList.append(si)
+                    result[commandName] = aList
+
+    if trace: g.trace('returns %4s %s %s' % (
+        len(list(result.keys())),id(d),result.get('_hash')))
+    return result
+#@+node:ekr.20041117062717.14: *3* getShortcut (g.app.config)
+def getShortcut (self,c,commandName):
+
+    '''Return rawKey,accel for shortcutName'''
+    
+    trace = False and commandName in ('new','print-bindings') and not g.unitTesting
+
+    key = c.frame.menu.canonicalizeMenuName(commandName)
+    key = key.replace('&','') # Allow '&' in names.
+
+    # New code: use the dicts created by make_settings_dict.
+    table = (
+        ('local',            c and self.localShortcutsDict.get(c.hash(),{})),
+        ('myLeoSettings.leo',g.app.config.immutable_my_leo_settings_shortcuts_dict),
+        ('leoSettings.leo',  g.app.config.immutable_leo_settings_shortcuts_dict),
+    )
+    aList = []
+    # if trace: g.trace('c',c,'c.config',c.config)
+    for tag,d in table:
+        if d:
+            if trace: g.trace(tag,len(list(d.keys())))
+            aList = d.get(commandName,[])
+            for si in aList:
+                assert isinstance(si,ShortcutInfo),si
+            break
+    aList = [si for si in aList
+        if si.stroke and si.stroke.lower() != 'none']
+    if trace: g.trace('getShortcut',tag,aList)
+
+    return key,aList
+    
+#@+node:ekr.20041117083141: *3* get & allies (g.app.config)
+def get (self,c,setting,kind):
+
+    """Get the setting and make sure its type matches the expected type."""
+    
+    trace = False and not g.unitTesting
+
+    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+
+    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+    if c and not isLeoSettings:
+        # For the local .leo file.
+        d = self.localOptionsDict.get(c.hash(),{})
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                if trace:
+                    kind = d.get('_hash','<no hash>')
+                    g.trace('**1',setting,val,kind)
+                return val
+
+    for d in self.localOptionsList:
+        # For myLeoSettings.leo and leoSettings.leo.
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            if trace:
+                kind = d.get('_hash','<no hash>')
+                g.trace('**2',setting,val,kind)
+            return val
+
+    for d in self.dictList:
+        # For hard-coded options...
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            if trace:
+                kind = d.get('_hash','<no hash>')
+                g.trace('**3',setting,val,kind)
+            return val
+
+    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+    if c and isLeoSettings:
+        # For when leoSettings.leo is the local file.
+        d = self.localOptionsDict.get(c.hash(),{})
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                if trace:
+                    kind = d.get('_hash','<no hash>')
+                    g.trace('**4',setting,val,kind)
+                return val
+
+    if trace:
+        fn = c and c.shortFileName() or '<no file>'
+        g.trace(setting,None,fn)
+    return None
+#@+node:ekr.20041121143823: *4* getValFromDict
+def getValFromDict (self,d,setting,requestedType,warn=True):
+
+    '''Look up the setting in d. If warn is True, warn if the requested type
+    does not (loosely) match the actual type.
+    returns (val,exists)'''
+
+    gs = d.get(self.munge(setting))
+    if not gs: return None,False
+    assert isinstance(gs,GeneralSetting)
+    
+    # g.trace(setting,requestedType,gs.toString())
+    val = gs.val
+
+    # 2011/10/24: test for an explicit None.
+    if g.isPython3:
+        isNone = val in ('None','none','') # ,None)
+    else:
+        isNone = val in (
+            unicode('None'),unicode('none'),unicode(''),
+            'None','none','') #,None)
+
+    if not self.typesMatch(gs.kind,requestedType):
+        # New in 4.4: make sure the types match.
+        # A serious warning: one setting may have destroyed another!
+        # Important: this is not a complete test of conflicting settings:
+        # The warning is given only if the code tries to access the setting.
+        if warn:
+            g.es_print('warning: ignoring',gs.kind,'',setting,'is not',requestedType,color='red')
+            g.es_print('there may be conflicting settings!',color='red')
+        return None, False
+    # elif val in (u'None',u'none','None','none','',None):
+    elif isNone:
+        return '', True
+            # 2011/10/24: Exists, a *user-defined* empty value.
+    else:
+        # g.trace(setting,val)
+        return val, True
+#@+node:ekr.20051015093141: *4* typesMatch
+def typesMatch (self,type1,type2):
+
+    '''
+    Return True if type1, the actual type, matches type2, the requeseted type.
+
+    The following equivalences are allowed:
+
+    - None matches anything.
+    - An actual type of string or strings matches anything *except* shortcuts.
+    - Shortcut matches shortcuts.
+    '''
+
+    # The shortcuts logic no longer uses the get/set code.
+    shortcuts = ('shortcut','shortcuts',)
+    if type1 in shortcuts or type2 in shortcuts:
+        g.trace('oops: type in shortcuts')
+
+    return (
+        type1 == None or type2 == None or
+        type1.startswith('string') and type2 not in shortcuts or
+        type1 == 'int' and type2 == 'size' or
+        (type1 in shortcuts and type2 in shortcuts) or
+        type1 == type2
+    )
+#@+node:ekr.20041119204700.1: *3* traverse (parserBaseClass)
+def traverse (self):
+
+    c = self.c
+
+    p = g.app.config.settingsRoot(c)
+    if not p:
+        # g.trace('no settings tree for %s' % c)
+        return None
+
+    self.settingsDict = {}
+    self.shortcutsDict = {'_hash': c.hash()} # 2011/02/10
+        
+    after = p.nodeAfterTree()
+    while p and p != after:
+        result = self.visitNode(p)
+        if result == "skip":
+            # g.es_print('skipping settings in',p.h,color='blue')
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+
+    shortcutsDict = c.config.make_shortcuts_dicts(self.shortcutsDict,self.localFlag)
+
+    return shortcutsDict,self.settingsDict
+#@+node:ekr.20051013161232: *3* updateSettings (g.app.config)
+def updateSettings (self,c,localFlag):
+
+    parser = settingsTreeParser(c,localFlag)
+    shortcutsDict,settingsDict = parser.traverse()
+
+    if settingsDict:
+        d = settingsDict
+        d['_hash'] = c.hash()
+        if localFlag:
+            self.localOptionsDict[c.hash()] = d
+        else:
+            self.localOptionsList.insert(0,d)
+            
+    if shortcutsDict and localFlag:
+        self.localShortcutsDict[c.hash()] = shortcutsDict
+#@+node:ekr.20120130074511.10227: *3* k.kill_one_shortcut
+def kill_one_shortcut (self,stroke):
+    
+    '''Update the dicts so that c.config.getShortcut(name) will return None
+    for all names *presently* bound to the stroke.'''
+    
+    k = self ; c = k.c
+    d = g.app.config.localShortcutsDict.get(c.hash(),{})
+        # Keys are command names, values are lists of bindings.
+    inv_d = g.app.config.invert(d)
+    aList = inv_d.get(stroke,[])
+    inv_d[stroke] = []
+    g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
