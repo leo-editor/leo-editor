@@ -1026,7 +1026,7 @@ class parserBaseClass:
         p = g.app.config.settingsRoot(c)
         if not p:
             # g.trace('no settings tree for %s' % c)
-            return None
+            return {},{}
 
         self.settingsDict = {}
         self.shortcutsDict = {'_hash': c.hash()} # 2011/02/10
@@ -1041,6 +1041,8 @@ class parserBaseClass:
                 p.moveToThreadNext()
 
         shortcutsDict = c.config.make_shortcuts_dicts(self.shortcutsDict,self.localFlag)
+        
+        # g.trace(type(shortcutsDict),type(self.settingsDict))
 
         return shortcutsDict,self.settingsDict
     #@+node:ekr.20041120094940.10: *3* valueError
@@ -1337,18 +1339,17 @@ class configClass:
         
         trace = False and not g.unitTesting
         fn = c.shortFileName().lower()
-        result = None # The newly-made local dict, or None for non-local files.
+        result = {} # The newly-made local dict, or {} for non-local files.
         test_result = [] # For unit tests.
         
         def message(d,name):
             return '%4s keys %s' % (len(list(d.keys())),name)
-            
+
         # g.trace('self',self)
         # g.trace('c',c)
         # g.trace('c.config',c.config)
         # g.trace('make_shortcuts_dict',len(list(d.keys())),g.callers())
 
-        
         if fn == 'leosettings.leo':
             if not g.app.config.immutable_leo_settings_shortcuts_dict:
                 if trace: g.trace(message(d,'immutable_leo_settings_shortcuts_dict'))
