@@ -159,7 +159,12 @@ def init ():
         getGlobalConfiguration()
         if config.http_active:
             
-            s=Server('',config.http_port,RequestHandler)
+            try:
+                s=Server('',config.http_port,RequestHandler)
+            except socket.error:
+                g.es("mod_http port already in use")
+                return False
+                    
             asyncore.read = a_read
             g.registerHandler("idle", plugin_wrapper)
     
