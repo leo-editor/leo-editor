@@ -989,7 +989,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         # tab stop in pixels - no config for this (yet)        
         w.setTabStopWidth(24)
-    #@+node:ekr.20110605121601.18077: *4* leoMoveCursorHelper (leoTextEditWidget)
+    #@+node:ekr.20110605121601.18077: *4* leoMoveCursorHelper & helper (leoTextEditWidget)
     def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
 
         '''Move the cursor in a QTextEdit.'''
@@ -1018,9 +1018,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             return g.trace('can not happen: bad kind: %s' % kind)
 
         if kind in ('page-down','page-up'):
-            cursor = w.textCursor()
-            cursor.movePosition(op,mode,linesPerPage)
-            w.setTextCursor(cursor)
+            self.pageUpDown(op, mode)
         elif kind == 'exchange': # exchange-point-and-mark
             cursor = w.textCursor()
             anchor = cursor.anchor()
@@ -1035,6 +1033,38 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 cursor.clearSelection()
                 w.setTextCursor(cursor)
             w.moveCursor(op,mode)
+    #@+node:btheado.20120129145543.8180: *5* pageUpDown
+    def pageUpDown (self, op, moveMode):
+
+        '''The QTextEdit PageUp/PageDown functionality seems to be "baked-in"
+           and not externally accessible.  Since Leo has its own keyhandling
+           functionality, this code emulates the QTextEdit paging.  This is
+           a straight port of the C++ code found in the pageUpDown method
+           of gui/widgets/qtextedit.cpp'''
+
+        control = self.widget
+        cursor = control.textCursor()
+        moved = False
+        lastY = control.cursorRect(cursor).top()
+        distance = 0
+        # move using movePosition to keep the cursor's x
+        while True:
+            y = control.cursorRect(cursor).top()
+            distance += abs(y - lastY)
+            lastY = y
+            moved = cursor.movePosition(op, moveMode)
+            if (not moved or distance >= control.height()):
+                break
+        tc = QtGui.QTextCursor
+        sb = control.verticalScrollBar()
+        if moved:
+            if (op == tc.Up):
+                cursor.movePosition(tc.Down, moveMode)
+                sb.triggerAction(QtGui.QAbstractSlider.SliderPageStepSub)
+            else:
+                cursor.movePosition(tc.Up, moveMode)
+                sb.triggerAction(QtGui.QAbstractSlider.SliderPageStepAdd)
+        control.setTextCursor(cursor)
     #@+node:ekr.20110605121601.18078: *4* Widget-specific overrides (leoQTextEditWidget)
     #@+node:ekr.20110605121601.18079: *5* delete (avoid call to setAllText) (leoQTextEditWidget)
     def delete(self,i,j=None):
