@@ -19602,6 +19602,21 @@ try:
 finally:
     if 1:
         setup(p)
+#@+node:ekr.20120201101804.3907: *3* @test config.updateSetting with no @settings node
+import leo.core.leoConfig as leoConfig
+
+p = g.app.config.settingsRoot(c)
+assert c
+h = p.h
+try:
+    p.h = '@@' + h
+    parser = leoConfig.settingsTreeParser(c,localFlag=True)
+    d1,d2 = parser.traverse()
+    assert d1=={},d1
+    assert d2=={},d2
+finally:
+    p.h = h
+    c.redraw()
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
