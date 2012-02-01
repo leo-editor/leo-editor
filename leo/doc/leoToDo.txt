@@ -3863,7 +3863,7 @@ def setRecentFiles (self,files):
     
 def make_shortcuts_dicts (self,d,localFlag):
     
-    g.app.config.make_shortcuts_dicts(self.c,d,localFlag)
+    return g.app.config.make_shortcuts_dicts(self.c,d,localFlag)
 .. @+node:ekr.20041118084146.1: *6* set (g.app.config)
 def set (self,c,setting,kind,val):
 
@@ -3875,10 +3875,9 @@ def set (self,c,setting,kind,val):
 
     # 2011/11/07: Multiple bug fixes.
     if c:
-        h = c.hash()
-        d = self.localOptionsDict.get(h,{})
+        d = self.localOptionsDict.get(c.hash(),{})
         d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
-        self.localOptionsDict[h] = d
+        self.localOptionsDict[c.hash()] = d
     else:
         d = self.dictList [0]
         d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
@@ -3895,7 +3894,7 @@ def get (self,c,setting,kind):
     # New in Leo 4.6. Use settings in leoSettings.leo *last*.
     if c and not isLeoSettings:
         # For the local .leo file.
-        d = self.localOptionsDict.get(c.hash())
+        d = self.localOptionsDict.get(c.hash(),{})
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
@@ -3925,7 +3924,7 @@ def get (self,c,setting,kind):
     # New in Leo 4.6. Use settings in leoSettings.leo *last*.
     if c and isLeoSettings:
         # For when leoSettings.leo is the local file.
-        d = self.localOptionsDict.get(c.hash())
+        d = self.localOptionsDict.get(c.hash(),{})
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
