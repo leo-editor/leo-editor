@@ -1809,7 +1809,7 @@ class configClass:
 
         '''Return rawKey,accel for shortcutName'''
         
-        trace = False and commandName in ('new','print-bindings') and not g.unitTesting
+        trace = False and not g.unitTesting # and commandName in ('new','print-bindings')
 
         key = c.frame.menu.canonicalizeMenuName(commandName)
         key = key.replace('&','') # Allow '&' in names.
@@ -1821,16 +1821,18 @@ class configClass:
             ('leoSettings.leo',  g.app.config.immutable_leo_settings_shortcuts_dict),
         )
         aList = []
-        # if trace: g.trace('c',c,'c.config',c.config)
         for tag,d in table:
             if d:
                 if trace: g.trace(tag,len(list(d.keys())))
                 aList = d.get(commandName,[])
-                for si in aList:
-                    assert isinstance(si,ShortcutInfo),si
-                break
+                if aList:
+                    for si in aList:
+                        assert isinstance(si,ShortcutInfo),si
+                    break
+
         aList = [si for si in aList
             if si.stroke and si.stroke.lower() != 'none']
+
         if trace: g.trace('getShortcut',tag,aList)
 
         return key,aList

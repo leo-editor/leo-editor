@@ -19617,6 +19617,16 @@ try:
 finally:
     p.h = h
     c.redraw()
+#@+node:ekr.20120201125738.3958: *3* @test config.getShortcuts works when no local shortcuts
+sd = g.app.config.localShortcutsDict
+d = sd.get(c.hash(),{})
+try:
+    sd[c.hash()] = {}
+    key,aList = g.app.config.getShortcut(c,'new')
+    print(key,aList)
+    assert aList,'key: %s' % (key)
+finally:
+    sd[c.hash()] = d
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
