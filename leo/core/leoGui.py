@@ -83,7 +83,8 @@ class leoGui:
     #@+node:ekr.20110605121601.18847: *4* create_key_event (leoGui)
     def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None):
         
-        # 2011/06/13: Do not call shortcutFromSetting here!
+        # Do not call shortcutFromSetting here!
+
         # For example, this would wrongly convert Ctrl-C to Ctrl-c,
         # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
 

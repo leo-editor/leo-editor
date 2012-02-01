@@ -125,7 +125,7 @@ class parserBaseClass:
 
         # New in 4.4.1 b2: silently allow redefinitions of modes.
         d [modeName] = modeDict
-    #@+node:ekr.20041120103012: *3* error
+    #@+node:ekr.20041120103012: *3* error (parserBaseClass)
     def error (self,s):
 
         g.pr(s)
@@ -792,12 +792,12 @@ class parserBaseClass:
     def munge(self,s):
 
         return g.app.config.canonicalizeSettingName(s)
-    #@+node:ekr.20041119204700.2: *3* oops
+    #@+node:ekr.20041119204700.2: *3* oops (parserBaseClass)
     def oops (self):
         g.pr("parserBaseClass oops:",
             g.callers(),
             "must be overridden in subclass")
-    #@+node:ekr.20041213082558: *3* parsers
+    #@+node:ekr.20041213082558: *3* parsers (ParserBaseClass)
     #@+node:ekr.20041213083651: *4* fontSettingNameToFontKind
     def fontSettingNameToFontKind (self,name):
 
@@ -907,7 +907,7 @@ class parserBaseClass:
 
         if not g.match(s,0,'#'):
             d['command'] = s
-    #@+node:ekr.20041120112043: *4* parseShortcutLine (g.app.config)
+    #@+node:ekr.20041120112043: *4* parseShortcutLine (parserBaseClass)
     def parseShortcutLine (self,kind,s):
 
         '''Parse a shortcut line.  Valid forms:
@@ -920,6 +920,8 @@ class parserBaseClass:
         '''
 
         trace = False and not g.unitTesting
+        c = self.c
+        assert c
         name = val = nextMode = None ; nextMode = 'none'
         i = g.skip_ws(s,0)
 
@@ -966,11 +968,12 @@ class parserBaseClass:
                 # comment = val[i:].strip()
                 val = val[:i].strip()
 
-        # Important: ShortcutInfo canonicalizes val.
-        si = ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=val)
+        stroke = c.k.shortcutFromSetting(val)
+        # g.trace('stroke',stroke)
+        si = ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
         if trace: g.trace(si)
         return name,si
-    #@+node:ekr.20060608222828: *4* parseAbbrevLine (g.app.config)
+    #@+node:ekr.20060608222828: *4* parseAbbrevLine (parserBaseClass)
     def parseAbbrevLine (self,s):
 
         '''Parse an abbreviation line:
@@ -1417,7 +1420,7 @@ class configClass:
                         assert isinstance(si,ShortcutInfo),'commandName %s si %s' % (
                             commandName,si)
                     except AssertionError:
-                        g.pdb()
+                        g.trace('***** ooops',si)
                     stroke = si.stroke # This is canonicalized.
                     assert stroke
                     if trace and verbose:
@@ -2387,13 +2390,16 @@ class ShortcutInfo:
     def __init__ (self,kind,commandName='',func=None,nextMode=None,pane=None,stroke=None):
         
         trace = False and commandName=='new' and not g.unitTesting
+        
+        if type(stroke) not in (type(None),type('s')):
+            g.trace('***** oops',repr(stroke))
 
         self.kind = kind
         self.commandName = commandName
         self.func = func
         self.nextMode = nextMode
         self.pane = pane
-        self.stroke = g.app.canonicalize_shortcut(stroke) if stroke else ''
+        self.stroke = stroke
             # Always canonicalize the shortcut.
 
         if trace: g.trace(commandName,stroke,g.callers())
@@ -2461,255 +2467,6 @@ class GeneralSetting:
                 if val is not None:
                     result.append('%s: %s' % (ivar,val))
         return ','.join(result)
-#@+node:ekr.20120127084215.10209: ** class ShortcutName (Not used yet)
-class ShortcutName:
-    
-    '''A class representing the text of a shortcut-specifier and its various external forms.'''
-    
-    def __init__ (self,cm,s):
-        
-        self.cm = c # Needed to access cm.swap_mac_keys.
-        self.s = self._canonicalize(s)
-
-        assert s == g.stripBrackets(s.strip())
-
-    #@+others
-    #@+node:ekr.20120127084215.10212: *3* sn.__eq__, __ne__ & __hash__
-    def __eq__(self,other):
-        
-        return self.s == other.s
-        
-    def __ne__(self,other):
-        
-        return self.s != other.s
-        
-    def __hash__(self):
-        
-        return self.s
-    #@+node:ekr.20120127084215.10210: *3* sn._canonicalize (based on k.shortcutFromSetting)
-    def _canonicalize (self,s):
-        
-        '''Return the immuatable internal form of s.'''
-        
-        # Based on k.shortcutFromSetting.
-
-        trace = False and not g.unitTesting
-        cm,s,s1 = self.cm,self.s,self.s
-        if not s: return None
-        s = g.stripBrackets(s.strip())
-        #@+<< define cmd, ctrl, alt, shift >>
-        #@+node:ekr.20120127084215.10220: *4* << define cmd, ctrl, alt, shift >>
-        s2 = s.lower()
-
-        cmd   = s2.find("cmd") >= 0     or s2.find("command") >= 0
-        ctrl  = s2.find("control") >= 0 or s2.find("ctrl") >= 0
-        alt   = s2.find("alt") >= 0
-        shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
-        meta  = s2.find("meta") >= 0
-        #@-<< define cmd, ctrl, alt, shift >>
-        if cm.swap_mac_keys:
-            #@+<< swap cmd and ctrl keys >>
-            #@+node:ekr.20120127084215.10221: *4* << swap cmd and ctrl keys >>
-            if ctrl and not cmd:
-                cmd = True ; ctrl = False
-            if alt and not ctrl:
-                ctrl = True ; alt = False
-            #@-<< swap cmd and ctrl keys >>
-        #@+<< convert minus signs to plus signs >>
-        #@+node:ekr.20120127084215.10222: *4* << convert minus signs to plus signs >>
-        # Replace all minus signs by plus signs, except a trailing minus:
-        if s.endswith('-'):
-            s = s[:-1].replace('-','+') + '-'
-        else:
-            s = s.replace('-','+')
-        #@-<< convert minus signs to plus signs >>
-        #@+<< compute the last field >>
-        #@+node:ekr.20120127084215.10223: *4* << compute the last field >>
-        if s.endswith('+'):
-            last = '+'
-        else:
-            fields = s.split('+') # Don't lower this field.
-            last = fields and fields[-1]
-            if not last:
-                if not g.app.menuWarningsGiven:
-                    g.pr("bad shortcut specifier:", repr(s),repr(setting))
-                    g.trace(g.callers())
-                return None
-
-        if len(last) == 1:
-            last2 = cm.guiBindNamesDict.get(last) # Fix new bug introduced in 4.4b2.
-            if last2:
-                last = last2
-            else:
-                if last.isalpha():
-                    if shift:
-                        last = last.upper()
-                        shift = False # It is Ctrl-A, not Ctrl-Shift-A.
-                    else:
-                        last = last.lower()
-                # New in Leo 4.4.2: Alt-2 is not a key event!
-                if addKey and last.isdigit():
-                    last = 'Key-' + last
-        else:
-            # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
-            # This is a *one-way* translation, done only here.
-            d = cm.settingsNameDict
-            last = d.get(last.lower(),last)
-        #@-<< compute the last field >>
-        #@+<< compute result >>
-        #@+node:ekr.20120127084215.10224: *4* << compute result >>
-        table = (
-            (alt, 'Alt+'),
-            (ctrl,'Ctrl+'),
-            (cmd, 'Command+'),
-            (meta,'Meta+'),
-            (shift,'Shift+'),
-            (True, last),
-        )
-
-        # new in 4.4b3: convert all characters to unicode first.
-        result = ''.join([g.toUnicode(val) for flag,val in table if flag])
-        #@-<< compute result >>
-        if trace: g.trace('%20s %s' % (s1,result))
-        return result
-
-        
-    #@+node:ekr.20120127084215.10237: *3* sn.isFKey
-    def isFKey (self):
-        
-        s = self.s
-
-        if s:
-            s = s.lower()
-            return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
-        else:
-            return False
-    #@+node:ekr.20120127084215.10235: *3* sn.isPlainKey
-    def isPlainKey (self):
-
-        '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
-
-        cm,s = self.cm,self.s
-
-        # altgr combos (Alt+Ctrl) are always plain keys
-        if s.startswith('Alt+Ctrl+') and not cm.enable_alt_ctrl_bindings:
-            return True
-
-        for s in ('Alt','Ctrl','Command','Meta'):
-            if shortcut.find(s) != -1:            
-                return False
-        else:
-            # Careful, allow bare angle brackets for unit tests.
-            if s.startswith('<') and s.endswith('>'):
-                s = s[1:-1]
-
-            isPlain = (
-                len(s) == 1 or
-                len(cm.guiBindNamesInverseDict.get(s,'')) == 1 or
-                # A hack: allow Return to be bound to command.
-                s in ('Tab','\t')
-            )
-
-            # g.trace(isPlain,repr(shortcut))
-            return isPlain and not self.isFKey(s)
-    #@+node:ekr.20120127084215.10230: *3* sn.prettyPrint (based on k.prettyPrintKey)
-    def prettyPrint (self):
-
-        trace = False and not g.unitTesting
-        cm,s = self.cm,self.s
-        if not s: return ''
-
-        shift = s.find("shift") >= 0 or s.find("shft") >= 0
-
-        # Replace all minus signs by plus signs, except a trailing minus:
-        if s.endswith('-'): s = s[:-1].replace('-','+') + '-'
-        else:               s = s.replace('-','+')
-        fields = s.split('+')
-        last = fields and fields[-1]
-        if trace: g.trace('fields',fields)
-        if last and len(last) == 1:
-            prev = s[:-1]
-            if last.isalpha():
-                if last.isupper():
-                    if not shift:
-                        s = prev + 'Shift+' + last
-                elif last.islower():
-                    if not prev:
-                        s = 'Key+' + last.upper()
-                    else:
-                        s = prev + last.upper()
-        else:
-            last = cm.guiBindNamesInverseDict.get(last,last)
-            if fields and fields[:-1]:
-                s = '%s+%s' % ('+'.join(fields[:-1]),last)
-            else:
-                s = last
-        if s.endswith(' '):
-            s = s[:-1]+'Space'
-
-        return s
-    #@+node:ekr.20120127084215.10232: *3* sn.toChar (based on k.stroke2char)
-    def toChar (self):
-        
-        '''Convert self to an (insertable) char.
-        
-        This method allows Leo to use strokes everywhere.'''
-        
-        trace = False and not g.unitTesting
-        cm,s,s1 = self.cm,self.s,self.s
-        if not s: return ''
-
-        if len(s) == 1:
-            return s
-            
-        ### To do: check for alt_ctrl settings.
-            
-        for z in ('Alt','Ctrl','Command','Meta'):
-            if s.find(z) != -1:            
-                return ''
-                # This is not accurate: leoQtEventFilter retains
-                # the spelling of Alt-Ctrl keys because of the
-                # @bool enable_alt_ctrl_bindings setting.
-                
-        # First, handle the gang of four, plus 'Escape',
-        d = {
-            'BackSpace':'\b',
-            'Escape':'Escape',
-            'Linefeed':'\r',
-            'Return':'\n',
-            'Tab':'\t',
-        }
-        ch = d.get(s)
-        if ch: return ch
-                
-        # Second, do the common translations.
-        ch = cm.guiBindNamesInverseDict.get(s)
-        if ch:
-            if trace: g.trace(repr(stroke),repr(ch))
-            return ch
-
-        # A much-simplified form of the code in canonicalize.
-        shift = s.find('Shift+') > -1 or s.find('Shift-') > -1
-        s = s.replace('Shift+','').replace('Shift-','')
-        
-        if len(s) == 1:
-            if s.isalpha():
-                val = s.upper() if shift else s.lower()
-            else:
-                val = s
-        else:
-            # Map all non-plain keys to empty.
-            val = ''
-
-        if trace: g.trace(repr(s1),repr(val))
-        return val
-    #@+node:ekr.20120127084215.10211: *3* sn.toHash
-    def toHash(self):
-        
-        '''Return a hash suitable for use as a dictionary key.'''
-
-        return self.s
-    #@-others
 #@+node:ekr.20120129181245.10220: ** class ShortcutsDict (Not used yet)
 class ShortcutsDict:
     

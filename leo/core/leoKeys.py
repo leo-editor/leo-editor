@@ -1518,7 +1518,7 @@ class keyHandlerClass:
             'find-next',
             'find-prev',
         ]
-    #@+node:ekr.20070123085931: *4* k.defineSpecialKeys (now uses tables in leoApp.py)
+    #@+node:ekr.20070123085931: *4* k.defineSpecialKeys
     def defineSpecialKeys (self):
 
         '''Define k.guiBindNamesDict and k.guiBindNamesInverseDict.
@@ -1527,13 +1527,47 @@ class keyHandlerClass:
         leoSettings.leo use these representations.'''
 
         k = self
-
-        # g.trace('base keyHandler')
         
-        # Create a copy based on g.app.k.guiBindNamesDict
-        k.guiBindNamesDict = {}
-        k.guiBindNamesDict.update(g.app.guiBindNamesDict)
-
+        # These are defined at http://tcl.activestate.com/man/tcl8.4/TkCmd/keysyms.htm.
+        # Important: only the inverse dict is actually used in the new key binding scheme.
+        # Tk may return the *values* of this dict in event.keysym fields.
+        # Leo will warn if it gets a event whose keysym not in values of this table.
+        k.guiBindNamesDict = {
+            "&" : "ampersand",
+            "^" : "asciicircum",
+            "~" : "asciitilde",
+            "*" : "asterisk",
+            "@" : "at",
+            "\\": "backslash",
+            "|" : "bar",
+            "{" : "braceleft",
+            "}" : "braceright",
+            "[" : "bracketleft",
+            "]" : "bracketright",
+            ":" : "colon",      # removed from code.
+            "," : "comma",
+            "$" : "dollar",
+            "=" : "equal",
+            "!" : "exclam",     # removed from code.
+            ">" : "greater",
+            "<" : "less",
+            "-" : "minus",
+            "#" : "numbersign",
+            '"' : "quotedbl",
+            "'" : "quoteright",
+            "(" : "parenleft",
+            ")" : "parenright", # removed from code.
+            "%" : "percent",
+            "." : "period",     # removed from code.
+            "+" : "plus",
+            "?" : "question",
+            "`" : "quoteleft",
+            ";" : "semicolon",
+            "/" : "slash",
+            " " : "space",      # removed from code.
+            "_" : "underscore",
+        }
+        
         # No translation.
         for s in k.tkNamesList:
             k.guiBindNamesDict[s] = s
@@ -1585,9 +1619,14 @@ class keyHandlerClass:
         if trace: #  or shortcut == 'Ctrl+q':
             g.trace('%7s %20s %17s %s' % (pane,shortcut,_hash,commandName))
         try:
-            k.bindKeyToDict(pane,shortcut,callback,commandName,_hash)
+            assert type(shortcut) in (type(None),type('s'))
+            stroke = k.shortcutFromSetting(shortcut) if shortcut else None
             si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,
-                func=callback,commandName=commandName)
+                func=callback,commandName=commandName,stroke=stroke)
+            k.bindKeyToDict(pane,shortcut,si)
+            ####k.bindKeyToDict(pane,shortcut,callback,commandName,_hash)
+            #### si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,
+                # func=callback,commandName=commandName)
             if not modeFlag:
                 k.remove_conflicting_definitions(aList,pane,shortcut)
             aList.append(si)
@@ -1651,7 +1690,7 @@ class keyHandlerClass:
         
         # aList = [si for si in aList if pane not in ('button','all',si.pane)]
     #@+node:ekr.20061031131434.93: *5* k.bindKeyToDict
-    def bindKeyToDict (self,pane,stroke,func,commandName,_hash):
+    def bindKeyToDict (self,pane,stroke,si): ### func,commandName,_hash):
         
         '''Update k.masterBindingsDict for the stroke.'''
 
@@ -1664,8 +1703,13 @@ class keyHandlerClass:
         if trace: g.trace(pane,stroke,commandName)
 
         # New in Leo 4.4.1: Allow redefintions.
-        d [stroke] = leoConfig.ShortcutInfo(
-            kind=_hash,commandName=commandName,func=func,pane=pane,stroke=stroke)
+        
+        #### d [stroke] = leoConfig.ShortcutInfo(
+        ####    kind=_hash,commandName=commandName,func=func,pane=pane,stroke=stroke)
+        
+        d[stroke] = si
+        
+        
 
         k.masterBindingsDict [pane] = d
     #@+node:ekr.20061031131434.94: *4* k.bindOpenWith
@@ -3887,7 +3931,7 @@ class keyHandlerClass:
             s = s[:-1]+'Space' # 2010/11/06
             
         return s
-    #@+node:ekr.20061031131434.184: *4* k.shortcutFromSetting (uses.guiBindNamesDict)
+    #@+node:ekr.20061031131434.184: *4* k.shortcutFromSetting
     def shortcutFromSetting (self,setting,addKey=True):
 
         k = self
