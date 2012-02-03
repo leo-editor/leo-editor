@@ -533,8 +533,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20110605121601.18030: *5* onCursorPositionChanged (leoQtBaseTextWidget)
     def onCursorPositionChanged(self,event=None):
 
-        trace = True and not g.unitTesting
-
         c = self.c
         name = c.widget_name(self)
             
@@ -5560,8 +5558,6 @@ class leoQtMenu (leoMenu.leoMenu):
         Adds a submenu to the parent menu, or the menubar."""
         
         # menu and parent are a qtMenuWrappers.
-        trace = True and not g.unitTesting
-
         c = self.c ; leoFrame = c.frame
         n = underline
         if -1 < n < len(label):

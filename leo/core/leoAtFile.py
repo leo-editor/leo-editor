@@ -2857,7 +2857,7 @@ class atFile:
 
         '''Open a file for writes, handling shadow files.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         at = self ; c = at.c ; x = c.shadowController
 
         try:

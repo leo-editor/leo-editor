@@ -174,7 +174,7 @@ class LProtoClient:
         
         '''Connect to the server.  Return True if the connection was established.'''
         
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         
         if trace: g.trace(fname,socket)
        

@@ -10626,7 +10626,7 @@ def openForWrite (self, filename, wb='wb'):
 
     '''Open a file for writes, handling shadow files.'''
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     at = self ; c = at.c ; x = c.shadowController
 
     try:
@@ -24562,8 +24562,8 @@ def __init__ (self,kind,commandName='',func=None,nextMode=None,pane=None,stroke=
     
     trace = False and commandName=='new' and not g.unitTesting
     
-    if type(stroke) not in (type(None),type('s')):
-        g.trace('***** oops',repr(stroke))
+    if not (stroke is None or g.isString(stroke)):
+        g.trace('***** (ShortcutInfo) oops',repr(stroke))
 
     self.kind = kind
     self.commandName = commandName
@@ -24571,9 +24571,10 @@ def __init__ (self,kind,commandName='',func=None,nextMode=None,pane=None,stroke=
     self.nextMode = nextMode
     self.pane = pane
     self.stroke = stroke
-        # Always canonicalize the shortcut.
+        # The *caller* must canonicalize the shortcut.
+        # Eventually, we might assert stroke is None or isinstance(stroke,KeyStroke)
 
-    if trace: g.trace(commandName,stroke,g.callers())
+    if trace: g.trace('(ShortcutInfo)',commandName,stroke,g.callers())
 #@+node:ekr.20120125045244.10188: *7* __repr__ & ___str_& dump
 def __repr__ (self):
     
@@ -24777,7 +24778,7 @@ def invert (self,d):
                     assert isinstance(si,ShortcutInfo),'commandName %s si %s' % (
                         commandName,si)
                 except AssertionError:
-                    g.trace('***** ooops',si)
+                    print('invert ***** ooops',si)
                 stroke = si.stroke # This is canonicalized.
                 assert stroke
                 if trace and verbose:
@@ -25056,7 +25057,8 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
     if trace: #  or shortcut == 'Ctrl+q':
         g.trace('%7s %20s %17s %s' % (pane,shortcut,_hash,commandName))
     try:
-        assert type(shortcut) in (type(None),type('s'))
+        ### assert type(shortcut) in (type(None),type('s'))
+        assert not shortcut or g.isString(shortcut)
         stroke = k.shortcutFromSetting(shortcut) if shortcut else None
         si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,
             func=callback,commandName=commandName,stroke=stroke)
@@ -25588,7 +25590,8 @@ def bindKey (self,pane,shortcut,callback,commandName,_hash=None,modeFlag=False):
     if trace: #  or shortcut == 'Ctrl+q':
         g.trace('%7s %20s %17s %s' % (pane,shortcut,_hash,commandName))
     try:
-        assert type(shortcut) in (type(None),type('s'))
+        ### assert type(shortcut) in (type(None),type('s'))
+        assert not shortcut or g.isString(shortcut)
         stroke = k.shortcutFromSetting(shortcut) if shortcut else None
         si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,
             func=callback,commandName=commandName,stroke=stroke)
@@ -25911,7 +25914,7 @@ def invert (self,d):
                     assert isinstance(si,ShortcutInfo),'commandName %s si %s' % (
                         commandName,si)
                 except AssertionError:
-                    g.trace('***** ooops',si)
+                    print('invert ***** ooops',si)
                 stroke = si.stroke # This is canonicalized.
                 assert stroke
                 if trace and verbose:

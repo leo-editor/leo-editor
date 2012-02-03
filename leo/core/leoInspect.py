@@ -351,7 +351,7 @@ class AstTraverser(object):
 
     def node_after_tree (self,tree):
         
-        trace = True
+        trace = False and not g.unitTesting
         tree1 = tree # For tracing
         
         def children(tree):

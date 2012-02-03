@@ -984,7 +984,7 @@ class chapter:
 
         '''Return a valid position p such that p.v == v.'''
 
-        trace = True and not g.unitTesting ; verbose = False
+        trace = False and not g.unitTesting ; verbose = False
 
         c,cc = self.c,self.cc
         

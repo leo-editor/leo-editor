@@ -1420,7 +1420,7 @@ class configClass:
                         assert isinstance(si,ShortcutInfo),'commandName %s si %s' % (
                             commandName,si)
                     except AssertionError:
-                        g.trace('***** ooops',si)
+                        print('invert ***** ooops',si)
                     stroke = si.stroke # This is canonicalized.
                     assert stroke
                     if trace and verbose:
@@ -2376,6 +2376,21 @@ class settingsTreeParser (parserBaseClass):
 
         return None
     #@-others
+#@+node:ekr.20120201164453.10090: ** class KeyStroke
+class KeyStroke:
+    
+    '''A class that announces that its contents has been canonicalized by k.shortcutFromSetting.
+    
+    This allows type-checking assertions in the code.'''
+    
+    def __init__ (self,s):
+        assert g.isString(s) # type('s') does not work in Python 3.x.
+        self.s = s
+        
+    def __str__ (self):
+        return '<KeyStroke: %s>' % (self.s)
+        
+    __repr__ = __str__
 #@+node:ekr.20120123115816.10209: ** class ShortcutInfo
 # bindKey:            ShortcutInfo(kind,commandName,func,pane)
 # bindKeyToDict:      ShortcutInfo(kind,commandName,func,pane,stroke)
@@ -2391,8 +2406,8 @@ class ShortcutInfo:
         
         trace = False and commandName=='new' and not g.unitTesting
         
-        if type(stroke) not in (type(None),type('s')):
-            g.trace('***** oops',repr(stroke))
+        if not (stroke is None or g.isString(stroke)):
+            g.trace('***** (ShortcutInfo) oops',repr(stroke))
 
         self.kind = kind
         self.commandName = commandName
@@ -2400,9 +2415,10 @@ class ShortcutInfo:
         self.nextMode = nextMode
         self.pane = pane
         self.stroke = stroke
-            # Always canonicalize the shortcut.
+            # The *caller* must canonicalize the shortcut.
+            # Eventually, we might assert stroke is None or isinstance(stroke,KeyStroke)
 
-        if trace: g.trace(commandName,stroke,g.callers())
+        if trace: g.trace('(ShortcutInfo)',commandName,stroke,g.callers())
     #@+node:ekr.20120125045244.10188: *3* __repr__ & ___str_& dump
     def __repr__ (self):
         

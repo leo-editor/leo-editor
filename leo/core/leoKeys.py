@@ -1619,7 +1619,8 @@ class keyHandlerClass:
         if trace: #  or shortcut == 'Ctrl+q':
             g.trace('%7s %20s %17s %s' % (pane,shortcut,_hash,commandName))
         try:
-            assert type(shortcut) in (type(None),type('s'))
+            ### assert type(shortcut) in (type(None),type('s'))
+            assert not shortcut or g.isString(shortcut)
             stroke = k.shortcutFromSetting(shortcut) if shortcut else None
             si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,
                 func=callback,commandName=commandName,stroke=stroke)
@@ -1904,7 +1905,6 @@ class keyHandlerClass:
 
         '''Make a master gui binding for stroke in pane w, or in all the standard widgets.'''
 
-        trace = True and not g.unitTesting
         k = self ; c = k.c ; f = c.frame
 
         if w:
@@ -4205,7 +4205,7 @@ class keyHandlerClass:
     #@+node:ekr.20080512115455.1: *4* showStateColors
     def showStateColors (self,inOutline,w):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         k = self ; c = k.c ; state = k.unboundKeyAction
 
         # body = c.frame.body ; bodyCtrl = body.bodyCtrl
