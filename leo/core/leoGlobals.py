@@ -117,7 +117,21 @@ inScript = False # A synonym for app.inScript
 unitTesting = False # A synonym for app.unitTesting.
 unified_nodes = True # For compatibility with old scripts.
 
-
+new_strokes = False # True: use the KeyStroke class to hold canonicalized strokes.
+if new_strokes:
+    def isStroke(obj):
+        import leo.core.leoConfig as leoConfig
+        return isinstance(obj,leoConfig.KeyStroke)
+    def isStrokeOrNone(obj):
+        import leo.core.leoConfig as leoConfig
+        return obj is None or isinstance(obj,leoConfig.KeyStroke)
+else:
+    def isStroke(obj):
+        import leo.core.leoConfig as leoConfig
+        return g.isString(obj)
+    def isStrokeOrNone(obj):
+        import leo.core.leoConfig as leoConfig
+        return obj is None or g.isString(obj)
 
 enableDB = True
     # Don't even think about eliminating this constant:

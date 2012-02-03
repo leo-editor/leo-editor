@@ -361,7 +361,12 @@ class AutoCompleterClass:
         tag = 'auto-complete' ; state = k.getState(tag)
         
         ch = char = event and event.char or ''
-        stroke = event and event.stroke or ''
+        
+        if g.new_strokes:
+            stroke = event and event.stroke or None
+        else:
+            stroke = event and event.stroke or ''
+
         is_plain = k.isPlainKey(stroke)
 
         if trace: g.trace('state: %s, char: %s, stroke: %s' % (
@@ -1619,9 +1624,8 @@ class keyHandlerClass:
         if trace: #  or shortcut == 'Ctrl+q':
             g.trace('%7s %20s %17s %s' % (pane,shortcut,_hash,commandName))
         try:
-            ### assert type(shortcut) in (type(None),type('s'))
             assert not shortcut or g.isString(shortcut)
-            stroke = k.shortcutFromSetting(shortcut) if shortcut else None
+            stroke = k.strokeFromSetting(shortcut) if shortcut else None
             si = leoConfig.ShortcutInfo(kind=_hash,pane=pane,
                 func=callback,commandName=commandName,stroke=stroke)
             k.bindKeyToDict(pane,shortcut,si)
@@ -1713,7 +1717,7 @@ class keyHandlerClass:
         
 
         k.masterBindingsDict [pane] = d
-    #@+node:ekr.20061031131434.94: *4* k.bindOpenWith
+    #@+node:ekr.20061031131434.94: *5* k.bindOpenWith
     def bindOpenWith (self,shortcut,name,data):
 
         '''Register an open-with command.'''
@@ -1874,17 +1878,7 @@ class keyHandlerClass:
                 aList2.append(si)
                 d2[stroke] = aList2
 
-        # g.trace(list(d2.keys()))
-        
-        # Step 2: Remove overridden entries from aList for each stroke.
-        ###
-        # if self.new_bindings:
-            # for stroke in sorted(d2):
-                # aList2 = d2.get(stroke)
-                # aList2 = self.mergeShortcutList(aList2,stroke)
-                # d2 [stroke] = aList2
-
-        # Step 3: make the bindings.
+        # Step 2: make the bindings.
         for stroke in sorted(d2):
             aList2 = d2.get(stroke)
             for si in aList2:
@@ -1944,7 +1938,12 @@ class keyHandlerClass:
         helpPrompt = 'Help for command: '
         c.check_event(event)
         ch = char = event and event.char or ''
-        stroke = event and event.stroke or ''
+        
+        if g.new_strokes:
+            stroke = event and event.stroke or None
+        else:
+            stroke = event and event.stroke or ''
+
         if trace: g.trace('recording',recording,'state',state,char)
         
         # 2011/06/06: remember these events also.
@@ -2417,7 +2416,8 @@ class keyHandlerClass:
         elif char == 'Escape':
             k.keyboardQuit()
         elif char in ('\n','Return',) or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
-            if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
+            if stroke and stroke in k.getArgEscapes:
+                k.getArgEscape = stroke
             if k.oneCharacterArg:
                 k.arg = char ##
             else:
@@ -2489,7 +2489,9 @@ class keyHandlerClass:
         k = self ; c = k.c
 
         setting = k.getShortcutForCommandName(commandName)
-        stroke = k.shortcutFromSetting(setting) # 2011/06/13
+        stroke = k.strokeFromSetting(setting) # 2011/06/13
+        
+        assert g.isStrokeOrNone(stroke)
 
         # g.trace('stroke',repr(stroke),'commandName',commandName,'w',w,g.callers())
 
@@ -2547,7 +2549,7 @@ class keyHandlerClass:
             g.trace('leoCommands %24s = %s' % (fname,commandName))
 
         if shortcut:
-            stroke = k.shortcutFromSetting(shortcut)
+            stroke = k.strokeFromSetting(shortcut)
         elif commandName.lower() == 'shortcut': # Causes problems.
             stroke = None
         else:
@@ -2559,7 +2561,7 @@ class keyHandlerClass:
                 pane2 = si.pane
                 if accel2 and not pane2.endswith('-mode'):
                     shortcut2 = accel2
-                    stroke = k.shortcutFromSetting(shortcut2)
+                    stroke = k.strokeFromSetting(shortcut2)
                     if stroke: break
             else: stroke = None
 
@@ -2625,7 +2627,7 @@ class keyHandlerClass:
                 g.trace('no command for %s' % (commandName),color='red')
                 return None
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
-    #@+node:ekr.20061031131434.105: *4* masterCommand & helpers
+    #@+node:ekr.20061031131434.105: *4* k.masterCommand & helpers
     def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
 
         '''This is the central dispatching method.
@@ -2788,18 +2790,22 @@ class keyHandlerClass:
                 i = w.logCtrl.getInsertPoint()
                 if not stroke:
                     stroke = event and event.stroke
-                if stroke in ('\n','Return'): stroke = '\n'
-                elif stroke in ('\t','Tab'): stroke = '\t'
-                elif stroke in ('\b','Backspace'): stroke = '\b'
-                elif stroke in ('.','Period','period'): stroke = '.'
-                w.logCtrl.insert(i,stroke)
+                if g.new_strokes:
+                    s = stroke.toGuiChar()
+                    w.logCtrl.insert(i,s)
+                else:
+                    if stroke in ('\n','Return'): stroke = '\n'
+                    elif stroke in ('\t','Tab'): stroke = '\t'
+                    elif stroke in ('\b','Backspace'): stroke = '\b'
+                    elif stroke in ('.','Period','period'): stroke = '.'
+                    w.logCtrl.insert(i,stroke)
             else:
                 if trace: g.trace('Not a HighLevelInterface object',w)
             return # None
         else:
             # Let the widget handle the event.
             return # None
-    #@+node:ekr.20061031131434.146: *4* masterKeyHandler & helpers
+    #@+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers
     master_key_count = 0
 
     def masterKeyHandler (self,event):
@@ -2816,7 +2822,12 @@ class keyHandlerClass:
         #@+node:ekr.20061031131434.147: *5* << define vars >>
         w = event and event.widget
         char = event and event.char or ''
-        stroke = event and event.stroke or ''
+
+        if g.new_strokes:
+            stroke = event and event.stroke or None
+        else:
+            stroke = event and event.stroke or ''
+
         w_name = c.widget_name(w)
         state = k.state.kind
 
@@ -2833,6 +2844,8 @@ class keyHandlerClass:
 
         isPlain =  k.isPlainKey(stroke)
         #@-<< define vars >>
+        
+        assert g.isStrokeOrNone(stroke) # g.new_strokes.
 
         if char in special_keys:
             if trace and verbose: g.trace('char',char)
@@ -2970,10 +2983,12 @@ class keyHandlerClass:
     def getPaneBinding (self,stroke,w):
 
         trace = False and not g.unitTesting
-        verbose = True
+        verbose = False
         k = self ; w_name = k.c.widget_name(w)
         # keyStatesTuple = ('command','insert','overwrite')
         state = k.unboundKeyAction
+        
+        assert g.isStroke(stroke) # g.new_strokes.
 
         if trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
             'isTextWidget(w)',g.app.gui.isTextWidget(w))
@@ -3009,6 +3024,9 @@ class keyHandlerClass:
                 if d:
                     si = d.get(stroke)
                     if si:
+                        if g.new_strokes:
+                            assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
+                                # masterBindingsDict: keys are KeyStrokes
                         assert isinstance(si,leoConfig.ShortcutInfo),si
                         table = ('previous-line','next-line',)
                         if key == 'text' and name == 'head' and si.commandName in table:
@@ -3018,6 +3036,8 @@ class keyHandlerClass:
                             if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
                                 key,name,repr(si.stroke),si.commandName))
                             return si
+
+        return None
     #@+node:ekr.20061031131434.152: *5* handleMiniBindings
     def handleMiniBindings (self,event,state,stroke):
 
@@ -3025,17 +3045,32 @@ class keyHandlerClass:
         trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
 
         # Special case for bindings handled in k.getArg:
+            
+        assert g.isStroke(stroke)
+
         if state in ('getArg','full-command'):
-            if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
-                return False
-            if k.isFKey(stroke):
-                return False
+            if g.new_strokes:
+                if stroke.s in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
+                    return False
+                if stroke.isFKey():
+                    return False
+            else:
+                if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
+                    return False
+                if k.isFKey(stroke):
+                    return False
 
         if not state.startswith('auto-'):
             # New in Leo 4.5: ignore plain key binding in the minibuffer.
-            if not stroke or k.isPlainKey(stroke):
-                if trace: g.trace('plain key',stroke)
-                return False
+            if g.new_strokes:
+                # Note: we use k.isPlainKey because it depends on settings.
+                if not stroke or k.isPlainKey(stroke.s):
+                    if trace: g.trace('plain key',stroke)
+                    return False
+            else:
+                if not stroke or k.isPlainKey(stroke):
+                    if trace: g.trace('plain key',stroke)
+                    return False
             # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
             # for all single-line editing commands.
             for pane in ('mini','all','text'):
@@ -3043,6 +3078,9 @@ class keyHandlerClass:
                 if d:
                     si = d.get(stroke)
                     if si:
+                        if g.new_strokes:
+                            assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
+                                # masterBindingsDict: keys are KeyStrokes
                         assert isinstance(si,leoConfig.ShortcutInfo),si
                         if si.commandName == 'replace-string' and state == 'getArg':
                             if trace: g.trace('%s binding for replace-string' % (pane),stroke)
@@ -3076,6 +3114,9 @@ class keyHandlerClass:
                 if d:
                     si = d.get(stroke)
                     if si:
+                        if g.new_bindings:
+                            assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
+                                # masterBindingsDict: keys are KeyStrokes
                         assert isinstance(si,leoConfig.ShortcutInfo),si
                         if si.commandName == 'auto-complete':
                             return True
@@ -3089,6 +3130,8 @@ class keyHandlerClass:
         modesTuple = ('insert','overwrite')
         
         # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
+        
+        assert g.isStroke(stroke) # g.new_strokes.
 
         if trace and verbose: g.trace('ch: %s, stroke %s' % (
             repr(event and event.char),repr(stroke)))
@@ -3101,11 +3144,14 @@ class keyHandlerClass:
             if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
                 c.onCanvasKey(event)
             if trace: g.trace('ignoring unbound character in command mode',stroke)
-            return # (for Tk) 'break'
-
-        elif k.isFKey(stroke):
+            return None
+            
+        elif (
+            g.new_strokes and stroke.isFKey() or
+            not g.new_strokes and k.isFKey(stroke)
+        ):
             if trace: g.trace('ignoring F-key',stroke)
-            return # (for Tk) 'break'
+            return None
 
         elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
             # insert/overwrite normal character.  <Return> is *not* a normal character.
@@ -3118,7 +3164,7 @@ class keyHandlerClass:
             # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
             if trace: g.trace('ignoring unbound Alt/Ctrl key',
                 repr(char),repr(stroke))
-            return # (for Tk) 'break'
+            return None
 
         elif k.ignore_unbound_non_ascii_keys and (
             len(char) > 1 or
@@ -3126,7 +3172,7 @@ class keyHandlerClass:
         ):
             if trace: g.trace('ignoring unbound non-ascii key',
                 repr(char),repr(stroke))
-            return # (for Tk) 'break'
+            return None
 
         elif (
             stroke and stroke.find('Escape') != -1 or
@@ -3134,7 +3180,7 @@ class keyHandlerClass:
         ):
             # Never insert escape or insert characters.
             if trace: g.trace('ignore Escape/Ignore',stroke)
-            return # (for Tk) 'break'
+            return None
 
         else:
             if trace: g.trace('no func',repr(char),repr(stroke))
@@ -3352,6 +3398,8 @@ class keyHandlerClass:
                             '%10s' % (stroke),
                             '%20s' % (commandName),
                             si.nextMode)
+                            
+                    assert g.isStroke(stroke) # g.new_strokes.
 
                     k.makeMasterGuiBinding(stroke)
 
@@ -3858,27 +3906,41 @@ class keyHandlerClass:
                          return key
         return ''
     #@+node:ekr.20090518072506.8494: *4* k.isFKey
-    def isFKey (self,shortcut):
+    def isFKey (self,shortcut_or_stroke):
+        
+        if not shortcut_or_stroke: return False
+        
+        if g.new_strokes:
+            assert g.isStroke(shortcut_or_stroke)
+            s = shortcut_or_stroke.s
+        else:
+            assert g.isString(shortcut_or_stroke)
+            s = shortcut_or_stroke
 
-
-        if not shortcut: return False
-
-        s = shortcut.lower()
+        s = s.lower()
 
         return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
     #@+node:ekr.20061031131434.182: *4* k.isPlainKey
-    def isPlainKey (self,shortcut):
+    def isPlainKey (self,stroke):
 
         '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
 
-        k = self ; shortcut = shortcut or ''
+        k = self
+        
+        if g.new_strokes:
+            if stroke is None:
+                return False
+            assert g.isStroke(stroke)
+            shortcut = stroke.s
+        else:
+            shortcut = stroke or ''
 
         # altgr combos (Alt+Ctrl) are always plain keys
         if shortcut.startswith('Alt+Ctrl+') and not self.enable_alt_ctrl_bindings:
             return True
 
-        for s in ('Alt','Ctrl','Command','Meta'):
-            if shortcut.find(s) != -1:            
+        for z in ('Alt','Ctrl','Command','Meta'):
+            if shortcut.find(z) != -1:            
                 return False
         else:
             # Careful, allow bare angle brackets for unit tests.
@@ -3899,7 +3961,10 @@ class keyHandlerClass:
 
         trace = False and not g.unitTesting
         k = self
-        s = stroke and g.stripBrackets(stroke.strip())
+        if g.new_strokes:
+            s = stroke.s
+        else:
+            s = stroke and g.stripBrackets(stroke.strip())
         if not s: return ''
 
         shift = s.find("shift") >= 0 or s.find("shft") >= 0
@@ -3931,8 +3996,8 @@ class keyHandlerClass:
             s = s[:-1]+'Space' # 2010/11/06
             
         return s
-    #@+node:ekr.20061031131434.184: *4* k.shortcutFromSetting
-    def shortcutFromSetting (self,setting,addKey=True):
+    #@+node:ekr.20061031131434.184: *4* k.strokeFromSetting
+    def strokeFromSetting (self,setting,addKey=True):
 
         k = self
 
@@ -4014,10 +4079,14 @@ class keyHandlerClass:
         shortcut = ''.join([g.toUnicode(val) for flag,val in table if flag])
         #@-<< compute shortcut >>
         if trace: g.trace('%20s %s' % (setting,shortcut))
-        return shortcut
+        
+        if g.new_strokes:
+            return leoConfig.KeyStroke(shortcut)
+        else:
+            return shortcut
 
-    canonicalizeShortcut = shortcutFromSetting # For compatibility.
-    strokeFromSetting = shortcutFromSetting
+    canonicalizeShortcut = strokeFromSetting # For compatibility.
+    ### strokeFromSetting = shortcutFromSetting
     #@+node:ekr.20110606004638.16929: *4* k.stroke2char
     def stroke2char (self,stroke):
         
@@ -4026,10 +4095,14 @@ class keyHandlerClass:
         This method allows Leo to use strokes everywhere.'''
         
         trace = False and not g.unitTesting
-        k = self ; s = stroke
+        k = self
         
-        if not s:
-            return ''
+        if g.new_strokes:
+            if not stroke: return
+            s = stroke.s
+        else:
+            s = stroke
+            if not s: return ''
         
         # Allow bare angle brackets for unit tests.
         if s.startswith('<') and s.endswith('>'):
@@ -4065,7 +4138,7 @@ class keyHandlerClass:
             if trace: g.trace(repr(stroke),repr(ch))
             return ch
         
-        # A much-simplified form of code in k.shortcutFromSetting.
+        # A much-simplified form of code in k.strokeFromSetting.
         shift = s.find('Shift+') > -1 or s.find('Shift-') > -1
         s = s.replace('Shift+','').replace('Shift-','')
         
@@ -4361,27 +4434,36 @@ class keyHandlerClass:
             k.doControlU(event,stroke)
 
         return # (for Tk) 'break'
-    #@+node:ekr.20061031131434.202: *4* executeNTimes
+    #@+node:ekr.20061031131434.202: *4* k.executeNTimes
     def executeNTimes (self,event,n):
 
         trace = False and not g.unitTesting
         c,k = self.c,self
         
         w = event and event.widget
-        stroke = event and event.stroke or ''
+        
+        if g.new_strokes:
+            event and event.stroke or None
+            if not stroke: return
+        else:
+            stroke = event and event.stroke or ''
 
         if stroke == k.fullCommandKey:
             for z in range(n):
                 k.fullCommand()
         else:
-            stroke = g.stripBrackets(stroke)
-            b = k.getPaneBinding(stroke,event and event.widget)
-            if b:
-                if trace: g.trace('repeat',n,'method',b.func.__name__,
+            if g.new_strokes:
+                pass
+            else:
+                stroke = g.stripBrackets(stroke)
+            si = k.getPaneBinding(stroke,event and event.widget)
+            if si:
+                assert isinstance(si,leoConfig.ShortcutInfo)
+                if trace: g.trace('repeat',n,'method',si.func.__name__,
                     'stroke',stroke,'widget',w)
                 for z in range(n):
                     event = g.app.gui.create_key_event(c,None,stroke,w)
-                    k.masterCommand(commandName=None,event=event,func=b.func,stroke=stroke)
+                    k.masterCommand(commandName=None,event=event,func=si.func,stroke=stroke)
             else:
                 for z in range(n):
                     k.masterKeyHandler(event)

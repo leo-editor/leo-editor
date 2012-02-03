@@ -28,6 +28,8 @@ class leoKeyEvent:
     #@+node:ekr.20110605121601.18846: *3* ctor (leoKeyEvent)
     def __init__ (self,c,char,stroke,w,x,y,x_root,y_root):
         
+        assert g.isStrokeOrNone(stroke),stroke # g.new_strokes.
+        
         self.c = c
         self.char = char or ''
         self.stroke = stroke or ''
@@ -83,10 +85,21 @@ class leoGui:
     #@+node:ekr.20110605121601.18847: *4* create_key_event (leoGui)
     def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None):
         
-        # Do not call shortcutFromSetting here!
-
-        # For example, this would wrongly convert Ctrl-C to Ctrl-c,
-        # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
+        if g.new_strokes:
+            if stroke:
+                if g.isStroke():
+                    # A surprise, but perhaps not an error.
+                    g.trace('***** already a KeyStroke',stroke) # Already converted
+                else:
+                    assert g.isString(stroke),stroke
+                    # Convert the string to a KeyStroke.
+                    stroke = k.strokeFromSetting(stroke)
+                    assert g.isStroke(stroke),stroke
+        else:
+            # Do not call strokeFromSetting here!
+            # For example, this would wrongly convert Ctrl-C to Ctrl-c,
+            # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
+            pass
 
         return leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
     #@+node:ekr.20031218072017.3740: *4* guiName

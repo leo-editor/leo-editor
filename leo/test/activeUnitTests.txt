@@ -19623,7 +19623,7 @@ d = sd.get(c.hash(),{})
 try:
     sd[c.hash()] = {}
     key,aList = g.app.config.getShortcut(c,'new')
-    print(key,aList)
+    # print(key,aList)
     assert aList,'key: %s' % (key)
 finally:
     sd[c.hash()] = d

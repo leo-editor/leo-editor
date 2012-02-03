@@ -4626,7 +4626,7 @@ class xmlScanner (baseScannerClass):
         '''Ensure that @others appears at the start of a line.'''
         
 
-        trace = False
+        trace = False and not g.unitTesting
         if trace: g.trace('old',repr(s))
 
         i = s.find('@others')

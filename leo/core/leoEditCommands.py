@@ -354,10 +354,22 @@ class abbrevCommandsClass (baseEditCommandsClass):
         w = self.editWidget(event,forceFocus=False)
         if not w: return False
         if w.hasSelection(): return False
-        if stroke in ('\b','BackSpace'): return False
+        
+        assert g.isStrokeOrNone(stroke)
+
+        if g.new_strokes:
+            if not stroke or stroke.s in ('\b','BackSpace'):
+                return False
+        else:
+            if stroke in ('\b','BackSpace'):
+                return False
+
         d = {'Return':'\n','Tab':'\t','space':' ','underscore':'_'}
         if stroke:
-            ch = d.get(stroke,stroke)
+            if g.new_strokes:
+                ch = d.get(stroke.s,stroke.s)
+            else:
+                ch = d.get(stroke,stroke)
             if len(ch) > 1:
                 if (stroke.find('Ctrl+') > -1 or
                     stroke.find('Alt+') > -1 or
@@ -3308,26 +3320,26 @@ class editCommandsClass (baseEditCommandsClass):
         '''Convert all characters of the word at the cursor to UPPER CASE.'''
         self.capitalizeHelper(event,'up','upcase-word')
     #@+node:ekr.20050920084036.145: *4* changePreviousWord (not used)
-    def changePreviousWord (self,event):
+    # def changePreviousWord (self,event):
 
-        k = self.k ; stroke = k.stroke
-        w = self.editWidget(event)
-        if not w: return
+        # k = self.k ; stroke = k.stroke
+        # w = self.editWidget(event)
+        # if not w: return
 
-        i = w.getInsertPoint()
-        self.beginCommand(undoType='change-previous-word')
-        self.moveWordHelper(event,extend=False,forward=False)
+        # i = w.getInsertPoint()
+        # self.beginCommand(undoType='change-previous-word')
+        # self.moveWordHelper(event,extend=False,forward=False)
 
-        if stroke == '<Alt-c>':
-            self.capitalizeWord(event)
-        elif stroke == '<Alt-u>':
-            self.upCaseWord(event)
-        elif stroke == '<Alt-l>':
-            self.downCaseWord(event)
+        # if stroke == '<Alt-c>':
+            # self.capitalizeWord(event)
+        # elif stroke == '<Alt-u>':
+            # self.upCaseWord(event)
+        # elif stroke == '<Alt-l>':
+            # self.downCaseWord(event)
 
-        w.setInsertPoint(i)
+        # w.setInsertPoint(i)
 
-        self.endCommand(changed=True,setLabel=True)
+        # self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20051015114221.1: *4* capitalizeHelper
     def capitalizeHelper (self,event,which,undoType):
 
@@ -4760,7 +4772,12 @@ class editCommandsClass (baseEditCommandsClass):
         #@+node:ekr.20061103114242: *5* << set local vars >>
         p = c.p
         gui = g.app.gui
-        stroke = event and event.stroke or ''
+
+        if g.new_strokes:
+            stroke = event and event.stroke or None
+        else:
+            stroke = event and event.stroke or ''
+
         ch = event and event.char or ''
 
         if ch == 'Return':
@@ -4776,6 +4793,9 @@ class editCommandsClass (baseEditCommandsClass):
         inBrackets = ch and g.toUnicode(ch) in brackets
         # if trace: g.trace(name,repr(ch),ch and ch in brackets)
         #@-<< set local vars >>
+        
+        assert g.isStrokeOrNone(stroke)
+
         if trace: g.trace('ch',repr(ch),'stroke',stroke)
         if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
             return # (for Tk) "break" # The hook claims to have handled the event.
@@ -5056,7 +5076,7 @@ class editCommandsClass (baseEditCommandsClass):
         k.setLabelGrey(
             'char: %s row: %d col: %d pos: %d (%d%% of %d)' % (
                 repr(s[i]),row,col,i,percent,len(s)))
-    #@+node:ekr.20050920084036.83: *4* viewLossage
+    #@+node:ekr.20050920084036.83: *4* k.viewLossage
     def viewLossage (self,event):
 
         '''Put the Emacs-lossage in the minibuffer label.'''
@@ -5068,8 +5088,12 @@ class editCommandsClass (baseEditCommandsClass):
         aList.reverse()
         for data in aList:
             ch,stroke = data
-            d = {' ':'Space','\t':'Tab','\b':'Backspace','\n':'Return','\r':'Linefeed'}
-            g.es('',stroke or d.get(ch) or ch or 'None')
+            if g.new_strokes:
+                g.es('',k.prettyPrintKey(stroke.s))
+            else:
+                # d = {' ':'Space','\t':'Tab','\b':'Backspace','\n':'Return','\r':'Linefeed'}
+                # g.es('',stroke or d.get(ch) or ch or 'None')
+                g.es('',k.prettyPrintKey(stroke))
     #@+node:ekr.20050920084036.84: *4* whatLine
     def whatLine (self,event):
 
@@ -8627,8 +8651,7 @@ class macroCommandsClass (baseEditCommandsClass):
         if trace:
             g.trace('macro::%s' % (name))
             for event in macro:
-                print(event.stroke)
-            print()
+                g.trace(event.stroke)
 
         def func (event,macro=macro):
             return self.executeMacro(macro)
@@ -9453,7 +9476,7 @@ class minibufferFind (baseEditCommandsClass):
         commandName = 'replace-string'
         s = k.getShortcutForCommandName(commandName)
         s = k.prettyPrintKey(s)
-        s = k.shortcutFromSetting(s)
+        s = k.strokeFromSetting(s)
         # g.trace('replaceStringShortcut',s)
         self.replaceStringShortcut = s
     #@+node:ekr.20090126063121.1: *4* editWidget (minibufferFind)
@@ -10283,21 +10306,30 @@ class searchCommandsClass (baseEditCommandsClass):
 
         trace = False and not g.unitTesting
         c = self.c ; k = self.k
-        stroke = event and event.stroke or ''
-        if trace: g.trace('stroke',repr(stroke))
+        
+        if g.new_strokes:
+            stroke = event and event.stroke or None
+            if stroke:
+                s = stroke.s
+            else:
+                s = ''
+        else:
+            stroke = s = event and event.stroke or '' ####
+            
+        if trace: g.trace('s',repr(s))
 
         # No need to recognize ctrl-z.
-        if stroke in ('Escape','\n','Return'):
+        if s in ('Escape','\n','Return'):
             self.endSearch()
         elif stroke in self.iSearchStrokes:
             self.iSearch(again=True)
-        elif stroke in ('\b','BackSpace'):
+        elif s in ('\b','BackSpace'):
             k.updateLabel(event)
             self.iSearchBackspace()
         elif (
-            stroke.startswith('Ctrl+') or
-            stroke.startswith('Alt+') or
-            k.isFKey(stroke) # 2011/06/13.
+            s.startswith('Ctrl+') or
+            s.startswith('Alt+') or
+            k.isFKey(s) # 2011/06/13.
         ):
             # End the search.
             self.endSearch()

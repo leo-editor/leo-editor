@@ -1403,7 +1403,7 @@ class leoMenu:
                     label,openWithData = data ; accel = None
                 else:
                     label,accel,openWithData = data
-                    accel = k.shortcutFromSetting(accel)
+                    accel = k.strokeFromSetting(accel)
                     if accel: accel = k.prettyPrintKey(accel)
             else:
                 g.trace('bad data in Open With table: %s' % repr(data))

@@ -8704,33 +8704,22 @@ class leoQtEventFilter(QtCore.QObject):
                     g.app.gui.remove_border(c,obj)
 
         if self.keyIsActive:
-            stroke = self.toStroke(tkKey,ch)
+            if g.new_strokes:
+                pass # There is no need for further adjustments: any setting will do.
+            else:
+                shortcut = self.toStroke(tkKey,ch)
 
             if override:
                 # Essentially *all* keys get passed to masterKeyHandler.
                 if trace and traceKey:
-                    g.trace('ignore',ignore,'bound',repr(stroke),repr(aList))
+                    g.trace('ignore',ignore,'bound',repr(shortcut),repr(aList))
                 w = self.w # Pass the wrapper class, not the wrapped widget.
-                event = self.create_key_event(event,c,w,ch,tkKey,stroke)
+                event = self.create_key_event(event,c,w,ch,tkKey,shortcut)
                 ret = k.masterKeyHandler(event)
                 c.outerUpdate()
             else:
-                if 1: # old code.  This is good enough.
-                    if trace and traceKey and verbose:
-                        g.trace(self.tag,'unbound',tkKey,stroke)
-                # else:
-                    # # 2011/11/23: Check for unbound Alt or Ctrl keys.
-                    # if stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1:
-                        # if k.ignore_unbound_non_ascii_keys:
-                            # override = True
-                            # if trace and traceKey and verbose:
-                                # g.trace(self.tag,'ignoring unbound Alt/Ctrl key',tkKey,stroke)
-                        # else:
-                            # if trace and traceKey and verbose:
-                                # g.trace(self.tag,'allowing unbound Alt/Ctrl key',tkKey,stroke)
-                    # else:
-                        # if trace and traceKey and verbose:
-                            # g.trace(self.tag,'unbound',tkKey,stroke)
+                if trace and traceKey and verbose:
+                    g.trace(self.tag,'unbound',tkKey,shortcut)
             
             if trace and traceEvent:
                 # Trace key events.
@@ -8741,25 +8730,25 @@ class leoQtEventFilter(QtCore.QObject):
             self.traceEvent(obj,event,tkKey,override)
 
         return override
-    #@+node:ekr.20110605195119.16937: *3* create_key_event (leoQtEventFilter)
-    def create_key_event (self,event,c,w,ch,tkKey,stroke):
+    #@+node:ekr.20110605195119.16937: *3* create_key_event (leoQtEventFilter) (Calls base class)
+    def create_key_event (self,event,c,w,ch,tkKey,shortcut):
 
         trace = False and not g.unitTesting ; verbose = False
         
-        if trace and verbose: g.trace('ch: %s, tkKey: %s, stroke: %s' % (
-            repr(ch),repr(tkKey),repr(stroke)))
+        if trace and verbose: g.trace('ch: %s, tkKey: %s, shortcut: %s' % (
+            repr(ch),repr(tkKey),repr(shortcut)))
             
         # Last-minute adjustments...
-        if stroke == 'Return':
+        if shortcut == 'Return':
             ch = '\n' # Somehow Qt wants to return '\r'.
-        elif stroke == 'Escape':
+        elif shortcut == 'Escape':
             ch = 'Escape'
 
         # Switch the Shift modifier to handle the cap-lock key.
-        if len(ch) == 1 and len(stroke) == 1 and ch.isalpha() and stroke.isalpha():
-            if ch != stroke:
+        if len(ch) == 1 and len(shortcut) == 1 and ch.isalpha() and shortcut.isalpha():
+            if ch != shortcut:
                 if trace: g.trace('caps-lock')
-                stroke = ch
+                shortcut = ch
 
         # Patch provided by resi147.
         # See the thread: special characters in MacOSX, like '@'.
@@ -8775,7 +8764,7 @@ class leoQtEventFilter(QtCore.QObject):
                 'Alt-l': '@',
             }
             if tkKey in darwinmap:
-                stroke = darwinmap[tkKey]
+                shortcut = darwinmap[tkKey]
                 
         char = ch
         # Auxiliary info.
@@ -8785,10 +8774,12 @@ class leoQtEventFilter(QtCore.QObject):
         x_root = hasattr(event,'x_root') and event.x_root or 0
         y_root = hasattr(event,'y_root') and event.y_root or 0
         
-        if trace: g.trace('ch: %s, stroke: %s printable: %s' % (
-            repr(ch),repr(stroke),ch in string.printable))
+        if trace: g.trace('ch: %s, shortcut: %s printable: %s' % (
+            repr(ch),repr(shortcut),ch in string.printable))
 
-        return leoGui.leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
+        # Create the actual key event.
+        # Important: 
+        return leoGui.leoKeyEvent(c,char,shortcut,w,x,y,x_root,y_root)
     #@+node:ekr.20110605121601.18541: *3* isSpecialOverride
     def isSpecialOverride (self,tkKey,ch):
 
@@ -8796,7 +8787,7 @@ class leoQtEventFilter(QtCore.QObject):
         '''
 
         return tkKey or ch in self.flashers
-    #@+node:ekr.20110605121601.18542: *3* toStroke
+    #@+node:ekr.20110605121601.18542: *3* toStroke (leoQtEventFilter) (Not used if g.new_strokes)
     def toStroke (self,tkKey,ch):
         
         '''Convert the official tkKey name to a stroke.'''
@@ -8852,7 +8843,7 @@ class leoQtEventFilter(QtCore.QObject):
         keynum: event.key()
         ch:     g.u(chr(keynum)) or '' if there is an exception.
         toString:
-            For special keys: made-up spelling that become part of the stroke.
+            For special keys: made-up spelling that become part of the setting.
             For all others:   QtGui.QKeySequence(keynum).toString()
         text:   event.text()
         '''

@@ -968,7 +968,7 @@ class parserBaseClass:
                 # comment = val[i:].strip()
                 val = val[:i].strip()
 
-        stroke = c.k.shortcutFromSetting(val)
+        stroke = c.k.strokeFromSetting(val)
         # g.trace('stroke',stroke)
         si = ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
         if trace: g.trace(si)
@@ -1416,6 +1416,7 @@ class configClass:
                 result['_hash'] = 'inverted %s' % d.get('_hash')
             else:
                 for si in d.get(commandName,[]):
+                    # This assert can fail if there is an exception in the ShortcutInfo ctor.
                     try:
                         assert isinstance(si,ShortcutInfo),'commandName %s si %s' % (
                             commandName,si)
@@ -1832,14 +1833,16 @@ class configClass:
                     for si in aList:
                         assert isinstance(si,ShortcutInfo),si
                     break
-
-        aList = [si for si in aList
-            if si.stroke and si.stroke.lower() != 'none']
+                    
+        if g.new_strokes:
+            aList = [si for si in aList if si.stroke]
+        else:
+            aList = [si for si in aList
+                if si.stroke and si.stroke.lower() != 'none']
 
         if trace: g.trace('getShortcut',tag,aList)
 
         return key,aList
-        
     #@+node:ekr.20041117081009.4: *4* getString
     def getString (self,c,setting):
 
@@ -2316,7 +2319,7 @@ class configClass:
         # Use a single g.es statement.
         result.append('\n'+legend)
         if g.unitTesting:
-            print(''.join(result))
+            pass # print(''.join(result))
         else:
             g.es('',''.join(result),tabName='Settings')
     #@-others
@@ -2379,18 +2382,63 @@ class settingsTreeParser (parserBaseClass):
 #@+node:ekr.20120201164453.10090: ** class KeyStroke
 class KeyStroke:
     
-    '''A class that announces that its contents has been canonicalized by k.shortcutFromSetting.
+    '''A class that announces that its contents has been canonicalized by k.strokeFromSetting.
     
     This allows type-checking assertions in the code.'''
     
     def __init__ (self,s):
-        assert g.isString(s) # type('s') does not work in Python 3.x.
+        assert s,repr(s)
+        assert g.isString(s)
+            # type('s') does not work in Python 3.x.
         self.s = s
         
     def __str__ (self):
         return '<KeyStroke: %s>' % (self.s)
         
     __repr__ = __str__
+    
+    #@+others
+    #@+node:ekr.20120203053243.10117: *3* ks.__eq__ & __ne__
+    # Only equality testing is allowed.
+    def __eq__ (self,other):
+        return self.s == other.s
+        
+    def __ne__ (self,other):
+        return self.s != other.s
+    #@+node:ekr.20120203053243.10118: *3* ks.__hash__
+    # KeyStroke classes must be hashable:
+    # The keys of interior masterBindingsDict dicts are KeyStroke objects.
+
+    def __hash__ (self):
+        return self.s
+    #@+node:ekr.20120203053243.10121: *3* ks.isFKey
+    def isFKey (self):
+
+        s = self.s.lower()
+
+        return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
+    #@+node:ekr.20120203053243.10124: *3* ks.find & startswith
+    # These may go away later, but for now they make conversion of string strokes easier.
+
+    def find (self,pattern):
+        
+        return self.s.find(pattern)
+
+    def startswith(self,s):
+        
+        return self.s.startswith(s)
+    #@+node:ekr.20120203053243.10125: *3* ks.toGuiChar
+    def toGuiChar (self):
+        
+        '''Replace special chars by the actual gui char.'''
+        
+        s = self.s.lower()
+        if s in ('\n','return'):        s = '\n'
+        elif s in ('\t','rab'):         s = '\t'
+        elif s in ('\b','backspace'):   s = '\b'
+        elif s in ('.','period'):       s = '.'
+        return s
+    #@-others
 #@+node:ekr.20120123115816.10209: ** class ShortcutInfo
 # bindKey:            ShortcutInfo(kind,commandName,func,pane)
 # bindKeyToDict:      ShortcutInfo(kind,commandName,func,pane,stroke)
@@ -2398,7 +2446,9 @@ class KeyStroke:
 
 class ShortcutInfo:
     
-    '''A class representing any kind of key binding line.'''
+    '''A class representing any kind of key binding line.
+    
+    This includes other information besides just the KeyStroke.'''
         
     #@+others
     #@+node:ekr.20120129040823.10254: *3*  ctor (ShortcutInfo)
@@ -2406,8 +2456,12 @@ class ShortcutInfo:
         
         trace = False and commandName=='new' and not g.unitTesting
         
-        if not (stroke is None or g.isString(stroke)):
-            g.trace('***** (ShortcutInfo) oops',repr(stroke))
+        if g.new_strokes:
+            if not (stroke is None or isinstance(stroke,KeyStroke)):
+                g.trace('***** (ShortcutInfo) oops',repr(stroke))
+        else:
+            if not (stroke is None or g.isString(stroke)):
+                g.trace('***** (ShortcutInfo) oops',repr(stroke))
 
         self.kind = kind
         self.commandName = commandName
@@ -2510,7 +2564,7 @@ class ShortcutsDict:
         return '\n'.join(result)
         
     __repr__ = __str__
-    #@+node:ekr.20120129181245.10222: *3* get, get_fn & get_kind
+    #@+node:ekr.20120129181245.10222: *3* get, get_fn & get_kind (shortcutsDict)
     def get (self,stroke):
         
         return self.d.get(stroke,[])
