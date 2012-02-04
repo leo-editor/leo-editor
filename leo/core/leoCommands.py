@@ -483,7 +483,7 @@ class Commands (object):
         if g.unitTesting:
             expected = k.stroke2char(stroke)
                 # Be strict for unit testing.
-        elif stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1:
+        elif stroke and (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1):
             expected = event.char
                 # Alas, Alt and Ctrl bindings must *retain* the char field,
                 # so there is no way to know what char field to expect.

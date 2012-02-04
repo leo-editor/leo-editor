@@ -3702,10 +3702,7 @@ def eventFilter(self, obj, event):
                 g.app.gui.remove_border(c,obj)
 
     if self.keyIsActive:
-        if g.new_strokes:
-            pass # There is no need for further adjustments: any setting will do.
-        else:
-            shortcut = self.toStroke(tkKey,ch)
+        shortcut = self.toStroke(tkKey,ch) #### ch is unused.
 
         if override:
             # Essentially *all* keys get passed to masterKeyHandler.
@@ -7347,7 +7344,7 @@ def masterKeyHandler (self,event):
     c.check_event(event)
     << define vars >>
     
-    assert g.isStrokeOrNone(stroke) # g.new_strokes.
+    assert g.isStrokeOrNone(stroke)
 
     if char in special_keys:
         if trace and verbose: g.trace('char',char)
@@ -7482,6 +7479,7 @@ def doMode (self,event,state,stroke):
     # Third, pass keys to user modes.
     d =  k.masterBindingsDict.get(state)
     if d:
+        assert g.isStrokeOrNone(stroke)
         si = d.get(stroke)
         if si:
             assert isinstance(si,leoConfig.ShortcutInfo),si
@@ -7514,7 +7512,7 @@ def getPaneBinding (self,stroke,w):
     # keyStatesTuple = ('command','insert','overwrite')
     state = k.unboundKeyAction
     
-    assert g.isStroke(stroke) # g.new_strokes.
+    assert g.isStroke(stroke)
 
     if trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
         'isTextWidget(w)',g.app.gui.isTextWidget(w))
@@ -7550,9 +7548,8 @@ def getPaneBinding (self,stroke,w):
             if d:
                 si = d.get(stroke)
                 if si:
-                    if g.new_strokes:
-                        assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
-                            # masterBindingsDict: keys are KeyStrokes
+                    assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
+                        # masterBindingsDict: keys are KeyStrokes
                     assert isinstance(si,leoConfig.ShortcutInfo),si
                     table = ('previous-line','next-line',)
                     if key == 'text' and name == 'head' and si.commandName in table:
@@ -7575,28 +7572,16 @@ def handleMiniBindings (self,event,state,stroke):
     assert g.isStroke(stroke)
 
     if state in ('getArg','full-command'):
-        if g.new_strokes:
-            if stroke.s in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
-                return False
-            if stroke.isFKey():
-                return False
-        else:
-            if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
-                return False
-            if k.isFKey(stroke):
-                return False
+        if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
+            return False
+        if k.isFKey(stroke):
+            return False
 
     if not state.startswith('auto-'):
         # New in Leo 4.5: ignore plain key binding in the minibuffer.
-        if g.new_strokes:
-            # Note: we use k.isPlainKey because it depends on settings.
-            if not stroke or k.isPlainKey(stroke.s):
-                if trace: g.trace('plain key',stroke)
-                return False
-        else:
-            if not stroke or k.isPlainKey(stroke):
-                if trace: g.trace('plain key',stroke)
-                return False
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
         # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
         # for all single-line editing commands.
         for pane in ('mini','all','text'):
@@ -7604,9 +7589,8 @@ def handleMiniBindings (self,event,state,stroke):
             if d:
                 si = d.get(stroke)
                 if si:
-                    if g.new_strokes:
-                        assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
-                            # masterBindingsDict: keys are KeyStrokes
+                    assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
+                        # masterBindingsDict: keys are KeyStrokes
                     assert isinstance(si,leoConfig.ShortcutInfo),si
                     if si.commandName == 'replace-string' and state == 'getArg':
                         if trace: g.trace('%s binding for replace-string' % (pane),stroke)
@@ -7634,15 +7618,15 @@ def isAutoCompleteChar (self,stroke):
 
     k = self ; state = k.unboundKeyAction
     
+    assert g.isStrokeOrNone(stroke)
+    
     if stroke and state in ('insert','overwrite'):
         for key in (state,'body','log','text','all'):
             d = k.masterBindingsDict.get(key,{})
             if d:
                 si = d.get(stroke)
                 if si:
-                    if g.new_bindings:
-                        assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
-                            # masterBindingsDict: keys are KeyStrokes
+                    assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
                     assert isinstance(si,leoConfig.ShortcutInfo),si
                     if si.commandName == 'auto-complete':
                         return True
@@ -7657,7 +7641,7 @@ def handleUnboundKeys (self,event,char,stroke):
     
     # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
     
-    assert g.isStroke(stroke) # g.new_strokes.
+    assert g.isStroke(stroke)
 
     if trace and verbose: g.trace('ch: %s, stroke %s' % (
         repr(event and event.char),repr(stroke)))

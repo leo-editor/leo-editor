@@ -357,16 +357,12 @@ class abbrevCommandsClass (baseEditCommandsClass):
         
         assert g.isStrokeOrNone(stroke)
 
-        if g.new_strokes:
-            if not stroke or stroke.s in ('\b','BackSpace'):
-                return False
-        else:
-            if stroke in ('\b','BackSpace'):
-                return False
+        if stroke in ('\b','BackSpace'):
+            return False
 
         d = {'Return':'\n','Tab':'\t','space':' ','underscore':'_'}
         if stroke:
-            if g.new_strokes:
+            if True and g.new_strokes: #### To do...
                 ch = d.get(stroke.s,stroke.s)
             else:
                 ch = d.get(stroke,stroke)
@@ -5088,12 +5084,7 @@ class editCommandsClass (baseEditCommandsClass):
         aList.reverse()
         for data in aList:
             ch,stroke = data
-            if g.new_strokes:
-                g.es('',k.prettyPrintKey(stroke.s))
-            else:
-                # d = {' ':'Space','\t':'Tab','\b':'Backspace','\n':'Return','\r':'Linefeed'}
-                # g.es('',stroke or d.get(ch) or ch or 'None')
-                g.es('',k.prettyPrintKey(stroke))
+            g.es('',k.prettyPrintKey(stroke))
     #@+node:ekr.20050920084036.84: *4* whatLine
     def whatLine (self,event):
 
@@ -7301,24 +7292,24 @@ class helpCommandsClass (baseEditCommandsClass):
 
     def getBindingsForCommand(self,commandName):
 
-        c = self.c ; k = c.k ; d = k.bindingsDict
+        c = self.c ; k = c.k ; 
         data = [] ; n1 = 4 ; n2 = 20
-        for key in sorted(d):
-            aList = d.get(key,[])
+        d = k.bindingsDict
+        for stroke in sorted(d):
+            assert g.isStroke(stroke),repr(stroke)
+            aList = d.get(stroke,[])
             for si in aList:
                 assert isinstance(si,leoConfig.ShortcutInfo)
                 if si.commandName == commandName:
                     pane = g.choose(si.pane=='all','',' %s:' % (si.pane))
                     s1 = pane
-                    s2 = k.prettyPrintKey(key)
+                    s2 = k.prettyPrintKey(stroke)
                     s3 = si.commandName
                     n1 = max(n1,len(s1))
                     n2 = max(n2,len(s2))
                     data.append((s1,s2,s3),)
 
         data.sort(key=lambda x: x[1])
-            # key is a function that extracts args.
-
         return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data])
     #@+node:ekr.20100901080826.5850: *3* aproposAbbreviations
     def aproposAbbreviations (self,event=None):

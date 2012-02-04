@@ -26,13 +26,28 @@ class leoKeyEvent:
     
     #@+others
     #@+node:ekr.20110605121601.18846: *3* ctor (leoKeyEvent)
-    def __init__ (self,c,char,stroke,w,x,y,x_root,y_root):
+    def __init__ (self,c,char,shortcut,w,x,y,x_root,y_root):
         
-        assert g.isStrokeOrNone(stroke),stroke # g.new_strokes.
+        trace = False and not g.unitTesting
+        
+        if g.new_strokes:
+            if g.isStroke(shortcut):
+                g.trace('***** (leoKeyEvent) oops: already a stroke',shortcut,g.callers())
+                stroke = shortcut
+            else:
+                import leo.core.leoConfig as leoConfig
+                stroke = leoConfig.KeyStroke(shortcut) if shortcut else None
+        else:
+            stroke = shortcut or ''
+
+        assert g.isStrokeOrNone(stroke),'(leoKeyEvent) %s %s' % (
+            repr(stroke),g.callers())
+            
+        if trace: g.trace('(leoKeyEvent) stroke',stroke)
         
         self.c = c
         self.char = char or ''
-        self.stroke = stroke or ''
+        self.stroke = stroke #### shortcut or ''
         self.w = self.widget = w
         
         # Optional ivars
@@ -85,21 +100,9 @@ class leoGui:
     #@+node:ekr.20110605121601.18847: *4* create_key_event (leoGui)
     def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None):
         
-        if g.new_strokes:
-            if stroke:
-                if g.isStroke():
-                    # A surprise, but perhaps not an error.
-                    g.trace('***** already a KeyStroke',stroke) # Already converted
-                else:
-                    assert g.isString(stroke),stroke
-                    # Convert the string to a KeyStroke.
-                    stroke = k.strokeFromSetting(stroke)
-                    assert g.isStroke(stroke),stroke
-        else:
-            # Do not call strokeFromSetting here!
-            # For example, this would wrongly convert Ctrl-C to Ctrl-c,
-            # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
-            pass
+        # Do not call strokeFromSetting here!
+        # For example, this would wrongly convert Ctrl-C to Ctrl-c,
+        # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
 
         return leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
     #@+node:ekr.20031218072017.3740: *4* guiName
@@ -115,9 +118,9 @@ class leoGui:
         self.script = script
         self.scriptFileName = scriptFileName
     #@+node:ekr.20110605121601.18845: *4* event_generate (leoGui)
-    def event_generate(self,c,char,stroke,w):
-
-        event = self.create_key_event(c,char,stroke,w)
+    def event_generate(self,c,char,shortcut,w):
+        
+        event = self.create_key_event(c,char,shortcut,w)
         c.k.masterKeyHandler(event)
         c.outerUpdate()
     #@+node:ekr.20061109212618: *3* Must be defined in subclasses

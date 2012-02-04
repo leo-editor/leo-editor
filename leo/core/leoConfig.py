@@ -1445,6 +1445,10 @@ class configClass:
         if trace and verbose: g.trace('*'*40)
         result = {}
         for stroke in d.keys():
+            # if g.new_strokes and not g.isStroke(stroke) and stroke == '_hash':
+                # result['_hash'] = 'uninverted %s' % d.get('_hash')
+            # elif not g.new_strokes and stroke == '_hash':
+                # result['_hash'] = 'uninverted %s' % d.get('_hash')
             if stroke == '_hash':
                 result['_hash'] = 'uninverted %s' % d.get('_hash')
             else:
@@ -1834,11 +1838,9 @@ class configClass:
                         assert isinstance(si,ShortcutInfo),si
                     break
                     
-        if g.new_strokes:
-            aList = [si for si in aList if si.stroke]
-        else:
-            aList = [si for si in aList
-                if si.stroke and si.stroke.lower() != 'none']
+        # It's very important to filter empty strokes here.
+        aList = [si for si in aList
+            if si.stroke and si.stroke.lower() != 'none']
 
         if trace: g.trace('getShortcut',tag,aList)
 
@@ -2386,47 +2388,69 @@ class KeyStroke:
     
     This allows type-checking assertions in the code.'''
     
+    #@+others
+    #@+node:ekr.20120204061120.10066: *3*  ks.ctor
     def __init__ (self,s):
+        
+        # g.trace('(KeyStroke)',s)
+
         assert s,repr(s)
         assert g.isString(s)
             # type('s') does not work in Python 3.x.
         self.s = s
-        
+    #@+node:ekr.20120204061120.10068: *3*  Special methods
+    #@+node:ekr.20120203053243.10118: *4* ks.__hash__
+    # Allow KeyStroke objects to be keys in dictionaries.
+
+    def __hash__ (self):
+
+        return self.s.__hash__() if self.s else 0
+    #@+node:ekr.20120204061120.10067: *4* ks.__repr___ & __str__
     def __str__ (self):
+
         return '<KeyStroke: %s>' % (self.s)
         
     __repr__ = __str__
-    
-    #@+others
-    #@+node:ekr.20120203053243.10117: *3* ks.__eq__ & __ne__
-    # Only equality testing is allowed.
-    def __eq__ (self,other):
-        return self.s == other.s
-        
-    def __ne__ (self,other):
-        return self.s != other.s
-    #@+node:ekr.20120203053243.10118: *3* ks.__hash__
-    # KeyStroke classes must be hashable:
-    # The keys of interior masterBindingsDict dicts are KeyStroke objects.
+    #@+node:ekr.20120203053243.10117: *4* ks.rich comparisons
+    #@+at All these must be defined in order to say, for example:
+    #     for key in sorted(d)
+    # where the keys of d are KeyStroke objects.
+    #@@c
 
-    def __hash__ (self):
-        return self.s
+    def __eq__ (self,other): 
+        if not other:               return False
+        elif hasattr(other,'s'):    return self.s == other.s
+        else:                       return self.s == other
+        
+    def __lt__ (self,other):
+        if not other:               return False
+        elif hasattr(other,'s'):    return self.s < other.s
+        else:                       return self.s < other
+            
+    def __le__ (self,other): return self.__lt__(other) or self.__eq__(other)    
+    def __ne__ (self,other): return not self.__eq__(other)
+    def __gt__ (self,other): return not self.__lt__(other) and not self.__eq__(other)  
+    def __ge__ (self,other): return not lsef.__lt__(other)
+    #@+node:ekr.20120203053243.10124: *3* ks.find, lower & startswith
+    # These may go away later, but for now they make conversion of string strokes easier.
+
+    def find (self,pattern):
+        
+        return self.s.find(pattern)
+        
+    def lower (self):
+
+        return self.s.lower()
+
+    def startswith(self,s):
+        
+        return self.s.startswith(s)
     #@+node:ekr.20120203053243.10121: *3* ks.isFKey
     def isFKey (self):
 
         s = self.s.lower()
 
         return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
-    #@+node:ekr.20120203053243.10124: *3* ks.find & startswith
-    # These may go away later, but for now they make conversion of string strokes easier.
-
-    def find (self,pattern):
-        
-        return self.s.find(pattern)
-
-    def startswith(self,s):
-        
-        return self.s.startswith(s)
     #@+node:ekr.20120203053243.10125: *3* ks.toGuiChar
     def toGuiChar (self):
         
@@ -2434,7 +2458,7 @@ class KeyStroke:
         
         s = self.s.lower()
         if s in ('\n','return'):        s = '\n'
-        elif s in ('\t','rab'):         s = '\t'
+        elif s in ('\t','tab'):         s = '\t'
         elif s in ('\b','backspace'):   s = '\b'
         elif s in ('.','period'):       s = '.'
         return s
@@ -2457,7 +2481,7 @@ class ShortcutInfo:
         trace = False and commandName=='new' and not g.unitTesting
         
         if g.new_strokes:
-            if not (stroke is None or isinstance(stroke,KeyStroke)):
+            if not g.isStrokeOrNone(stroke):
                 g.trace('***** (ShortcutInfo) oops',repr(stroke))
         else:
             if not (stroke is None or g.isString(stroke)):
@@ -2473,6 +2497,10 @@ class ShortcutInfo:
             # Eventually, we might assert stroke is None or isinstance(stroke,KeyStroke)
 
         if trace: g.trace('(ShortcutInfo)',commandName,stroke,g.callers())
+    #@+node:ekr.20120203153754.10031: *3* __hash__
+    def __hash__ (self):
+        
+        return self.stroke.__hash__() if self.stroke else 0
     #@+node:ekr.20120125045244.10188: *3* __repr__ & ___str_& dump
     def __repr__ (self):
         
@@ -2487,7 +2515,10 @@ class ShortcutInfo:
         for ivar in table:
             if hasattr(si,ivar):
                 val =  getattr(si,ivar)
-                if val not in (None,'none','None',''):
+                if False: #### g.isStroke(val): g.new_strokes.
+                    s = '%s %s' % (ivar,val)
+                    result.append(s)
+                elif val not in (None,'none','None',''):
                     if ivar == 'func': val = val.__name__
                     s = '%s %s' % (ivar,val)
                     result.append(s)

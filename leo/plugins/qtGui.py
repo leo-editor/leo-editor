@@ -8704,10 +8704,7 @@ class leoQtEventFilter(QtCore.QObject):
                     g.app.gui.remove_border(c,obj)
 
         if self.keyIsActive:
-            if g.new_strokes:
-                pass # There is no need for further adjustments: any setting will do.
-            else:
-                shortcut = self.toStroke(tkKey,ch)
+            shortcut = self.toStroke(tkKey,ch) #### ch is unused.
 
             if override:
                 # Essentially *all* keys get passed to masterKeyHandler.
@@ -8730,10 +8727,10 @@ class leoQtEventFilter(QtCore.QObject):
             self.traceEvent(obj,event,tkKey,override)
 
         return override
-    #@+node:ekr.20110605195119.16937: *3* create_key_event (leoQtEventFilter) (Calls base class)
+    #@+node:ekr.20110605195119.16937: *3* create_key_event (leoQtEventFilter)
     def create_key_event (self,event,c,w,ch,tkKey,shortcut):
 
-        trace = False and not g.unitTesting ; verbose = False
+        trace = True and not g.unitTesting ; verbose = False
         
         if trace and verbose: g.trace('ch: %s, tkKey: %s, shortcut: %s' % (
             repr(ch),repr(tkKey),repr(shortcut)))
@@ -8747,7 +8744,7 @@ class leoQtEventFilter(QtCore.QObject):
         # Switch the Shift modifier to handle the cap-lock key.
         if len(ch) == 1 and len(shortcut) == 1 and ch.isalpha() and shortcut.isalpha():
             if ch != shortcut:
-                if trace: g.trace('caps-lock')
+                if trace and verbose: g.trace('caps-lock')
                 shortcut = ch
 
         # Patch provided by resi147.
@@ -8774,41 +8771,12 @@ class leoQtEventFilter(QtCore.QObject):
         x_root = hasattr(event,'x_root') and event.x_root or 0
         y_root = hasattr(event,'y_root') and event.y_root or 0
         
-        if trace: g.trace('ch: %s, shortcut: %s printable: %s' % (
+        if trace and verbose: g.trace('ch: %s, shortcut: %s printable: %s' % (
             repr(ch),repr(shortcut),ch in string.printable))
-
-        # Create the actual key event.
-        # Important: 
+                    
         return leoGui.leoKeyEvent(c,char,shortcut,w,x,y,x_root,y_root)
-    #@+node:ekr.20110605121601.18541: *3* isSpecialOverride
-    def isSpecialOverride (self,tkKey,ch):
-
-        '''Return True if tkKey is a special Tk key name.
-        '''
-
-        return tkKey or ch in self.flashers
-    #@+node:ekr.20110605121601.18542: *3* toStroke (leoQtEventFilter) (Not used if g.new_strokes)
-    def toStroke (self,tkKey,ch):
-        
-        '''Convert the official tkKey name to a stroke.'''
-
-        trace = False and not g.unitTesting
-        k = self.c.k ; s = tkKey
-
-        table = (
-            ('Alt-','Alt+'),
-            ('Ctrl-','Ctrl+'),
-            ('Control-','Ctrl+'),
-            # Use Alt+Key-1, etc.  Sheesh.
-            # ('Key-','Key+'),
-            ('Shift-','Shift+')
-        )
-        for a,b in table:
-            s = s.replace(a,b)
-
-        if trace: g.trace('tkKey',tkKey,'-->',s)
-        return s
-    #@+node:ekr.20110605121601.18543: *3* toTkKey & helpers (must not change!)
+    #@+node:ekr.20120204061120.10088: *3* Key construction...
+    #@+node:ekr.20110605121601.18543: *4* toTkKey & helpers (must not change!)
     def toTkKey (self,event):
         
         '''Return tkKey,ch,ignore:
@@ -8831,99 +8799,7 @@ class leoQtEventFilter(QtCore.QObject):
             event,mods,keynum,text,toString,ch)
 
         return tkKey,ch,ignore
-    #@+node:ekr.20110605121601.18544: *4* qtKey
-    def qtKey (self,event):
-
-        '''Return the components of a Qt key event.
-
-        Modifiers are handled separately.
-        
-        Return keynum,text,toString,ch
-        
-        keynum: event.key()
-        ch:     g.u(chr(keynum)) or '' if there is an exception.
-        toString:
-            For special keys: made-up spelling that become part of the setting.
-            For all others:   QtGui.QKeySequence(keynum).toString()
-        text:   event.text()
-        '''
-
-        trace = False and not g.unitTesting
-        keynum = event.key()
-        text   = event.text() # This is the unicode text.
-
-        qt = QtCore.Qt
-        d = {
-            qt.Key_Shift:   'Key_Shift',
-            qt.Key_Control: 'Key_Control',  # MacOS: Command key
-            qt.Key_Meta:	'Key_Meta',     # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
-            qt.Key_Alt:	    'Key_Alt',	 
-            qt.Key_AltGr:	'Key_AltGr',
-                # On Windows, when the KeyDown event for this key is sent,
-                # the Ctrl+Alt modifiers are also set.
-        }
-
-        if d.get(keynum):
-            toString = d.get(keynum)
-        else:
-            toString = QtGui.QKeySequence(keynum).toString()
-
-        try:
-            ch1 = chr(keynum)
-        except ValueError:
-            ch1 = ''
-
-        try:
-            ch = g.u(ch1)
-        except UnicodeError:
-            ch = ch1
-
-        text     = g.u(text)
-        toString = g.u(toString)
-
-        if trace and self.keyIsActive:
-            mods = '+'.join(self.qtMods(event))
-            g.trace(
-                'keynum %7x ch %3s toString %s %s' % (
-                keynum,repr(ch),mods,repr(toString)))
-
-        return keynum,text,toString,ch
-    #@+node:ekr.20110605121601.18545: *4* qtMods
-    def qtMods (self,event):
-
-        '''Return the text version of the modifiers of the key event.'''
-
-        modifiers = event.modifiers()
-
-        # The order of this table is significant.
-        # It must the order of modifiers in bindings
-        # in k.masterGuiBindingsDict
-
-        qt = QtCore.Qt
-        
-        if sys.platform.startswith('darwin'):
-            # Yet another MacOS hack:
-            table = (
-                (qt.AltModifier,     'Alt'), # For Apple keyboard.
-                (qt.MetaModifier,    'Alt'), # For Microsoft keyboard.
-                (qt.ControlModifier, 'Control'),
-                # No way to generate Meta.
-                (qt.ShiftModifier,   'Shift'),
-            )
-            
-        else:
-            table = (
-                (qt.AltModifier,     'Alt'),
-                (qt.ControlModifier, 'Control'),
-                (qt.MetaModifier,    'Meta'),
-                (qt.ShiftModifier,   'Shift'),
-            )
-
-        mods = [b for a,b in table if (modifiers & a)]
-        #g.trace(mods)
-
-        return mods
-    #@+node:ekr.20110605121601.18546: *4* tkKey & helper
+    #@+node:ekr.20110605121601.18546: *5* tkKey & helper
     def tkKey (self,event,mods,keynum,text,toString,ch):
 
         '''Carefully convert the Qt key to a 
@@ -8976,7 +8852,7 @@ class leoQtEventFilter(QtCore.QObject):
         ignore = not ch # Essential
         ch = text or toString
         return tkKey,ch,ignore
-    #@+node:ekr.20110605121601.18547: *5* char2tkName
+    #@+node:ekr.20110605121601.18547: *6* char2tkName
     char2tkNameDict = {
         # Part 1: same as g.app.guiBindNamesDict
         "&" : "ampersand",
@@ -9042,6 +8918,124 @@ class leoQtEventFilter(QtCore.QObject):
         val = self.char2tkNameDict.get(ch)
         # g.trace(repr(ch),repr(val))
         return val
+    #@+node:ekr.20120204061120.10087: *4* Common key construction helpers
+    #@+node:ekr.20110605121601.18541: *5* isSpecialOverride
+    def isSpecialOverride (self,tkKey,ch):
+
+        '''Return True if tkKey is a special Tk key name.
+        '''
+
+        return tkKey or ch in self.flashers
+    #@+node:ekr.20110605121601.18542: *5* toStroke (leoQtEventFilter)
+    def toStroke (self,tkKey,ch):  #### ch is unused
+        
+        '''Convert the official tkKey name to a stroke.'''
+
+        trace = False and not g.unitTesting
+        k = self.c.k ; s = tkKey
+
+        table = (
+            ('Alt-','Alt+'),
+            ('Ctrl-','Ctrl+'),
+            ('Control-','Ctrl+'),
+            # Use Alt+Key-1, etc.  Sheesh.
+            # ('Key-','Key+'),
+            ('Shift-','Shift+')
+        )
+        for a,b in table:
+            s = s.replace(a,b)
+
+        if trace: g.trace('tkKey',tkKey,'-->',s)
+        return s
+    #@+node:ekr.20110605121601.18544: *5* qtKey
+    def qtKey (self,event):
+
+        '''Return the components of a Qt key event.
+
+        Modifiers are handled separately.
+        
+        Return keynum,text,toString,ch
+        
+        keynum: event.key()
+        ch:     g.u(chr(keynum)) or '' if there is an exception.
+        toString:
+            For special keys: made-up spelling that become part of the setting.
+            For all others:   QtGui.QKeySequence(keynum).toString()
+        text:   event.text()
+        '''
+
+        trace = False and not g.unitTesting
+        keynum = event.key()
+        text   = event.text() # This is the unicode text.
+
+        qt = QtCore.Qt
+        d = {
+            qt.Key_Shift:   'Key_Shift',
+            qt.Key_Control: 'Key_Control',  # MacOS: Command key
+            qt.Key_Meta:	'Key_Meta',     # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
+            qt.Key_Alt:	    'Key_Alt',	 
+            qt.Key_AltGr:	'Key_AltGr',
+                # On Windows, when the KeyDown event for this key is sent,
+                # the Ctrl+Alt modifiers are also set.
+        }
+
+        if d.get(keynum):
+            toString = d.get(keynum)
+        else:
+            toString = QtGui.QKeySequence(keynum).toString()
+
+        try:
+            ch1 = chr(keynum)
+        except ValueError:
+            ch1 = ''
+
+        try:
+            ch = g.u(ch1)
+        except UnicodeError:
+            ch = ch1
+
+        text     = g.u(text)
+        toString = g.u(toString)
+
+        if trace and self.keyIsActive:
+            mods = '+'.join(self.qtMods(event))
+            g.trace(
+                'keynum %7x ch %3s toString %s %s' % (
+                keynum,repr(ch),mods,repr(toString)))
+
+        return keynum,text,toString,ch
+    #@+node:ekr.20120204061120.10084: *5* qtMods
+    def qtMods (self,event):
+
+        '''Return the text version of the modifiers of the key event.'''
+
+        modifiers = event.modifiers()
+
+        # The order of this table must match the order created by k.strokeFromSetting.
+        # When g.new_keys is True, k.strokeFromSetting will canonicalize the setting.
+
+        qt = QtCore.Qt
+        
+        if sys.platform.startswith('darwin'):
+            # Yet another MacOS hack:
+            table = (
+                (qt.AltModifier,     'Alt'), # For Apple keyboard.
+                (qt.MetaModifier,    'Alt'), # For Microsoft keyboard.
+                (qt.ControlModifier, 'Control'),
+                # No way to generate Meta.
+                (qt.ShiftModifier,   'Shift'),
+            )
+            
+        else:
+            table = (
+                (qt.AltModifier,     'Alt'),
+                (qt.ControlModifier, 'Control'),
+                (qt.MetaModifier,    'Meta'),
+                (qt.ShiftModifier,   'Shift'),
+            )
+
+        mods = [b for a,b in table if (modifiers & a)]
+        return mods
     #@+node:ekr.20110605121601.18548: *3* traceEvent
     def traceEvent (self,obj,event,tkKey,override):
 

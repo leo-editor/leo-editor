@@ -115,10 +115,15 @@ app = None # The singleton app object.
 debug = False # Set early in startup by the --debug command-line option.
 inScript = False # A synonym for app.inScript
 unitTesting = False # A synonym for app.unitTesting.
-unified_nodes = True # For compatibility with old scripts.
+unified_nodes = False # For compatibility with old scripts.
 
-new_strokes = False # True: use the KeyStroke class to hold canonicalized strokes.
+# new_keys = False # True: Qt input methods produce a **user setting**, not a stroke.
+# if new_keys:
+    # print('***** new_keys')
+
+new_strokes = True # True: use the KeyStroke class to hold canonicalized strokes.
 if new_strokes:
+    print('***** new_strokes')
     def isStroke(obj):
         import leo.core.leoConfig as leoConfig
         return isinstance(obj,leoConfig.KeyStroke)
