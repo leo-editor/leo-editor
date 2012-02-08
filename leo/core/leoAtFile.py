@@ -3154,7 +3154,7 @@ class atFile:
             if found:
                 g.es("finished")
             elif writeDirtyOnly:
-                    g.es("no dirty @auto nodes in the selected tree")
+                g.es("no dirty @auto nodes in the selected tree")
             else:
                 g.es("no @auto nodes in the selected tree")
     #@+node:ekr.20070806141607: *5* at.writeOneAtAutoNode

@@ -9,10 +9,11 @@ These classes should be overridden to create frames for a particular gui."""
 #@@pagewidth 70
 
 import leo.core.leoGlobals as g
-import leo.core.leoColor as leoColor
 import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
-import leo.core.leoUndo as leoUndo
+
+# import leo.core.leoColor as leoColor
+# import leo.core.leoUndo as leoUndo
 
 #@+<< About handling events >>
 #@+node:ekr.20031218072017.2410: ** << About handling events >>
@@ -48,6 +49,9 @@ import leo.core.leoUndo as leoUndo
 class DummyHighLevelInterface (object):
     
     '''A class to support a do-nothing HighLevelInterface.'''
+    
+    def __init__(self,c):
+        self.c = c
 
     # Mutable methods.
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
@@ -69,7 +73,6 @@ class DummyHighLevelInterface (object):
     def hasSelection(self):                         return False
     def insert(self,i,s):                           pass    
     def replace (self,i,j,s):                       pass
-    def rowColToGuiIndex (self,s,row,col):          return 0
     def see(self,i):                                pass
     def seeInsertPoint (self):                      pass
     def selectAllText (self,insert=None):           pass
@@ -120,6 +123,8 @@ class HighLevelInterface(object):
         
         self.c = c
         
+        self.widget = None
+        
         self.mutable_methods = (
             'flashCharacter',
             'toPythonIndex',
@@ -147,35 +152,56 @@ class HighLevelInterface(object):
         row,col = g.convertPythonIndexToRowCol(s,i)
         return i,row,col
     #@+node:ekr.20111114102224.9937: *3* immutable redirection methods (HighLevelInterface)
-    def appendText(self,s):                         self.widget and self.widget.appendText(s)
-    def delete(self,i,j=None):                      self.widget and self.widget.delete(i,j)
-    def deleteTextSelection (self):                 self.widget and self.widget.deleteTextSelection()
-    def get(self,i,j):                              return self.widget and self.widget.get(i,j) or ''
-    def getAllText(self):                           return self.widget and self.widget.getAllText() or ''
-    def getInsertPoint(self):                       return self.widget and self.widget.getInsertPoint() or 0
-    def getSelectedText(self):                      return self.widget and self.widget.getSelectedText() or ''
-    def getSelectionRange (self):                   return self.widget and self.widget.getSelectionRange() or (0,0)
-    def getYScrollPosition (self):                  return self.widget and self.widget.getYScrollPosition() or 0
-    def hasSelection(self):                         # return self.widget and self.widget.hasSelection() or False
+    def appendText(self,s):
+        if self.widget: self.widget.appendText(s)
+    def delete(self,i,j=None):
+        if self.widget: self.widget.delete(i,j)
+    def deleteTextSelection (self):
+        if self.widget: self.widget.deleteTextSelection()
+    def get(self,i,j):
+        return self.widget and self.widget.get(i,j) or ''
+    def getAllText(self):
+        return self.widget and self.widget.getAllText() or ''
+    def getInsertPoint(self):
+        return self.widget and self.widget.getInsertPoint() or 0
+    def getSelectedText(self):
+        return self.widget and self.widget.getSelectedText() or ''
+    def getSelectionRange (self):
+        return self.widget and self.widget.getSelectionRange() or (0,0)
+    def getYScrollPosition (self):
+        return self.widget and self.widget.getYScrollPosition() or 0
+    def hasSelection(self):
         # Take special care with this, for the benefit of LeoQuickSearchWidget.
         # This problem only happens with the qttabs gui.
         return self.widget and hasattr(self.widget,'hasSelection') and self.widget.hasSelection() or False
-    def insert(self,i,s):                           self.widget and self.widget.insert(i,s)    
-    def replace (self,i,j,s):                       self.widget and self.widget.replace(i,j,s)
-    def rowColToGuiIndex (self,s,row,col):          return self.widget and self.widget.rowColToGuiIndex(s,row,col) or 0
-    def see(self,i):                                self.widget and self.widget.see(i)
-    def seeInsertPoint (self):                      self.widget and self.widget.seeInsertPoint()
-    def selectAllText (self,insert=None):           self.widget and self.widget.selectAllText(insert)
-    def setAllText (self,s):                        self.widget and self.widget.setAllText(s)
-    def setBackgroundColor(self,color):             self.widget and self.widget.setBackgroundColor(color)
-    def setFocus(self):                             self.widget and self.widget.setFocus()
-    def setForegroundColor(self,color):             self.widget and self.widget.setForegroundColor(color)
-    def setInsertPoint(self,pos):                   self.widget and self.widget.setInsertPoint(pos)
-    def setSelectionRange (self,i,j,insert=None):   self.widget and self.widget.setSelectionRange(i,j,insert=insert)
-    def setYScrollPosition (self,i):                self.widget and self.widget.setYScrollPosition(i)
-    def tag_configure (self,colorName,**keys):      self.widget and self.widget.tag_configure(colorName,**keys)
+    def insert(self,i,s):
+        if self.widget: self.widget.insert(i,s)    
+    def replace (self,i,j,s):
+        if self.widget: self.widget.replace(i,j,s)
+    def see(self,i):
+        if self.widget: self.widget.see(i)
+    def seeInsertPoint (self):
+        if self.widget: self.widget.seeInsertPoint()
+    def selectAllText (self,insert=None):
+        if self.widget: self.widget.selectAllText(insert)
+    def setAllText (self,s):
+        if self.widget: self.widget.setAllText(s)
+    def setBackgroundColor(self,color):
+        if self.widget: self.widget.setBackgroundColor(color)
+    def setFocus(self):
+        if self.widget: self.widget.setFocus()
+    def setForegroundColor(self,color):
+        if self.widget: self.widget.setForegroundColor(color)
+    def setInsertPoint(self,pos):
+        if self.widget: self.widget.setInsertPoint(pos)
+    def setSelectionRange (self,i,j,insert=None):
+        if self.widget: self.widget.setSelectionRange(i,j,insert=insert)
+    def setYScrollPosition (self,i):
+        if self.widget: self.widget.setYScrollPosition(i)
+    def tag_configure (self,colorName,**keys):
+        if self.widget: self.widget.tag_configure(colorName,**keys)
     #@+node:ekr.20111114102224.9940: *3* other immutable methods (HighLevelInterface)
-    # The all use leoGlobals functions or leoGui methods.
+    # These all use leoGlobals functions or leoGui methods.
 
     def clipboard_append(self,s):
         s1 = g.app.gui.getTextFromClipboard()
@@ -188,7 +214,10 @@ class HighLevelInterface(object):
         return g.app.gui.get_focus(self.c)
         
     def rowColToGuiIndex (self,s,row,col):
-        return g.convertRowColToPythonIndex(s,row,col)    
+        return g.convertRowColToPythonIndex(s,row,col)   
+        
+    # def rowColToGuiIndex (self,s,row,col):
+        # return self.widget and self.widget.rowColToGuiIndex(s,row,col) or 0 
 
     set_focus = setFocus
     #@-others
@@ -1677,7 +1706,7 @@ class leoLog (HighLevelInterface):
         self.c.invalidateFocus()
         self.c.bodyWantsFocus()
     #@+node:ekr.20111122080923.10184: *4* orderedTabNames (leoLog)
-    def orderedTabNames (leoLog):
+    def orderedTabNames (self,leoLog):
         
         return list(self.frameDict.values())
     #@+node:ekr.20070302094848.9: *4* numberOfVisibleTabs (leoLog)
@@ -2556,18 +2585,25 @@ class nullIconBarClass:
         b = nullButtonWidget(self.c,command,name,text)
         return b
     #@+node:ekr.20070301165343: *3* do nothing
-    def addRow(self,height=None):           pass
-    def addWidget (self,w):                 pass
-
+    def addRow(self,height=None):
+        pass
+    def addWidget (self,w):
+        pass
     def clear(self):
         g.app.iconWidgetCount = 0
         g.app.iconImageRefs = []
-
-    def deleteButton (self,w):              pass
-    def getFrame (self):                    return None
-    def getNewFrame (self):                 return None
-
-    def setCommandForButton(self,b,command):b.command = command
+    def deleteButton (self,w):
+        pass
+    def getFrame (self):
+        return None
+    def getNewFrame (self):
+        return None
+    def hide(self):
+        pass
+    def setCommandForButton(self,b,command):
+        b.command = command
+    def show(self):
+        pass
     #@-others
 #@+node:ekr.20031218072017.2232: ** class nullLog (leoLog)
 class nullLog (leoLog):
@@ -2672,6 +2708,7 @@ class nullStatusLineClass:
     def onActivate (self,event=None):   pass 
     def put(self,s,color=None):         self.textWidget.insert('end',s)
     def setFocus (self):                pass
+    def update(self):                   pass
     #@-others
 #@+node:ekr.20031218072017.2233: ** class nullTree
 class nullTree (leoTree):

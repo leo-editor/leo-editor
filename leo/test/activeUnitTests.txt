@@ -18309,8 +18309,6 @@ if p:
 
 print('\nEnd of plugins unit tests')
 #@+node:ekr.20111103213154.3822: ** Recent unit tests
-#@+node:ekr.20111115071700.3870: *3* mini-test: print-settings
-c.k.simulateCommand('print-settings')
 #@+node:ekr.20111108170253.3968: *3* mini-test: unicode stuff
 @first # -*- coding: utf-8 -*-
 
@@ -19610,7 +19608,7 @@ assert c
 h = p.h
 try:
     p.h = '@@' + h
-    parser = leoConfig.settingsTreeParser(c,localFlag=True)
+    parser = leoConfig.SettingsTreeParser(c,localFlag=True)
     d1,d2 = parser.traverse()
     assert d1=={},d1
     assert d2=={},d2
@@ -19627,6 +19625,12 @@ try:
     assert aList,'key: %s' % (key)
 finally:
     sd[c.hash()] = d
+#@+node:ekr.20111115071700.3870: *3* @test printSettings
+# c.k.simulateCommand('print-settings')
+
+g.app.config.printSettings(c)
+
+#@+node:ekr.20120207151139.3911: *3* newHeadline
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):

@@ -2398,7 +2398,7 @@ class baseFileCommands:
         c = self.c
         p = g.app.config.findSettingsPosition(c,'@bool fixedWindow')
         if p:
-            parser = leoConfig.settingsTreeParser(c)
+            parser = leoConfig.SettingsTreeParser(c)
             kind,name,val = parser.parseHeadline(p.h)
             if val and val.lower() in ('true','1'):
                 val = True

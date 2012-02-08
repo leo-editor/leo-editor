@@ -1754,7 +1754,7 @@ class undoer:
         u.p = self.undoRedoTree(u.p,u.oldTree,u.newTree)
         c.selectPosition(u.p) # Does full recolor.
         if u.newSel:
-            i,j = newSel
+            i,j = u.newSel
             c.frame.body.setSelectionRange(i,j)
     #@+node:EKR.20040526075238.5: *4* redoTyping
     def redoTyping (self):
@@ -1856,7 +1856,7 @@ class undoer:
         u = self
         
         next = u.p.next()
-        assert next.h == 'Clones of marked nodes',repr(u.p,h)
+        assert next.h == 'Clones of marked nodes',repr(u.p,next.h)
         next.doDelete()
 
         u.p.setAllAncestorAtFileNodesDirty()

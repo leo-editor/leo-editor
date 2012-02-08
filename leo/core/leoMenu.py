@@ -61,8 +61,8 @@ class leoMenu:
         self.enable_dict = d = {
         
             # File menu...
-                # 'revert':         lambda: True, # Revert is always enabled.               
-            'open-with':            lambda: g.app.hasOpenWithMenu,
+                # 'revert':         True, # Revert is always enabled.               
+            'open-with':            g.app.hasOpenWithMenu,
             
             # Edit menu...
             'undo':                 c.undoer.canUndo,
@@ -92,24 +92,24 @@ class leoMenu:
             'expand-or-go-right':   lambda: c.p.hasChildren(),
             
             # Outline:Move menu...
-            'move-outline-down':    c.canMoveOutlineDown,
-            'move-outline-left':    c.canMoveOutlineLeft,
-            'move-outline-right':   c.canMoveOutlineRight,
-            'move-outline-up':      c.canMoveOutlineUp,
-            'promote':              c.canPromote,
-            'demote':               c.canDemote,
+            'move-outline-down':    lambda: c.canMoveOutlineDown(),
+            'move-outline-left':    lambda: c.canMoveOutlineLeft(),
+            'move-outline-right':   lambda: c.canMoveOutlineRight(),
+            'move-outline-up':      lambda: c.canMoveOutlineUp(),
+            'promote':              lambda: c.canPromote(),
+            'demote':               lambda: c.canDemote(),
             
             # Outline:Go To menu...
-            'goto-prev-history-node':   c.nodeHistory.canGoToPrevVisited,
-            'goto-next-history-node':   c.nodeHistory.canGoToNextVisited,
-            'goto-prev-visible':        c.canSelectVisBack,
-            'goto-next-visible':        c.canSelectVisNext,
+            'goto-prev-history-node':   lambda: c.nodeHistory.canGoToPrevVisited(),
+            'goto-next-history-node':   lambda: c.nodeHistory.canGoToNextVisited(),
+            'goto-prev-visible':        lambda: c.canSelectVisBack(),
+            'goto-next-visible':        lambda: c.canSelectVisNext(),
             # These are too slow...
                 # 'go-to-next-marked':  c.canGoToNextMarkedHeadline,
                 # 'go-to-next-changed': c.canGoToNextDirtyHeadline,
             'goto-next-clone':          lambda: c.p.isCloned(),
-            'goto-prev-node':           c.canSelectThreadBack,
-            'goto-next-node':           c.canSelectThreadNext,
+            'goto-prev-node':           lambda: c.canSelectThreadBack(),
+            'goto-next-node':           lambda: c.canSelectThreadNext(),
             'goto-parent':              lambda: c.p.hasParent(),
             'goto-prev-sibling':        lambda: c.p.hasBack(),
             'goto-next-sibling':        lambda: c.p.hasNext(),
@@ -165,8 +165,6 @@ class leoMenu:
     def createMenusFromTables (self):
 
         c = self.c
-        
-        # g.trace(g.callers())
 
         aList = c.config.getMenusList()
         if aList:
@@ -355,12 +353,14 @@ class leoMenu:
         else:
             helpMenu = self.createNewMenu("&Help")
             self.createMenuEntries(helpMenu,self.helpMenuTable)
-    #@+node:ekr.20070926135612: *5* createMenusFromConfigList & helpers
+    #@+node:ekr.20070926135612: *5* createMenusFromConfigList & helpers (leoMenu)
     def createMenusFromConfigList (self,aList):
 
         '''Create menus from aList instead of 'hard coded' menus.
         The 'top' menu has already been created.'''
 
+        trace = False and not g.unitTesting
+        c = self.c
         tag = '@menu'
         for z in aList:
             kind,val,val2 = z
@@ -371,6 +371,14 @@ class leoMenu:
                     self.createMenuFromConfigList(name,val,level=0)
             else:
                 self.error('%s %s not valid outside @menu tree' % (kind,val))
+
+        table = c.config.getOpenWith() 
+        if table:
+            if trace:
+                for z in table:
+                    g.trace(z)
+            self.createOpenWithMenuFromTable(table)
+        
     #@+node:ekr.20070927082205: *6* createMenuFromConfigList
     def createMenuFromConfigList (self,parentName,aList,level=0):
 
@@ -1371,15 +1379,19 @@ class leoMenu:
             return
         self.setMenu("Open With...",openWithMenu)
         # Create the menu items in of the Open With menu.
-        for entry in table:
-            if len(entry) != 3: # 6/22/03
-                g.es('','createOpenWithMenuFromTable:','invalid data',color="red")
-                return
+        
+        #### Each item is a dict.
+        # for entry in table:
+            # if len(entry) != 3: # 6/22/03
+                # g.es('','createOpenWithMenuFromTable:','invalid data',color="red")
+                # return
+
         self.createOpenWithMenuItemsFromTable(openWithMenu,table)
+        
         for entry in table:
             name,shortcut,data = entry
             c.k.bindOpenWith (shortcut,name,data)
-    #@+node:ekr.20051022043608.1: *5* createOpenWithMenuItemsFromTable
+    #@+node:ekr.20051022043608.1: *5* createOpenWithMenuItemsFromTable (leoMenu)
     def createOpenWithMenuItemsFromTable (self,menu,table):
 
         '''Create an entry in the Open with Menu from the table.
@@ -1390,34 +1402,19 @@ class leoMenu:
 
         if g.app.unitTesting: return
 
-        for data in table:
-            #@+<< get label, accel & command or continue >>
-            #@+node:ekr.20051022043713.1: *6* << get label, accel & command or continue >>
-            ok = (
-                type(data) in (type(()), type([])) and
-                len(data) in (2,3)
-            )
-
-            if ok:
-                if len(data) == 2:
-                    label,openWithData = data ; accel = None
-                else:
-                    label,accel,openWithData = data
-                    accel = k.strokeFromSetting(accel)
-                    if accel: accel = k.prettyPrintKey(accel)
-            else:
-                g.trace('bad data in Open With table: %s' % repr(data))
-                continue # Ignore bad data
-            #@-<< get label, accel & command or continue >>
-            # g.trace(label,accel)
-            realLabel = self.getRealMenuName(label)
-            underline=realLabel.find("&")
-            realLabel = realLabel.replace("&","")
-            callback = self.defineOpenWithMenuCallback(openWithData)
-
-            c.add_command(menu,label=realLabel,
-                accel=accel or '',
-                command=callback,underline=underline)
+        for d in table:
+            label = d.get('name')
+            command = d.get('command')
+            if command: command = command.split(',')
+            # g.trace('command',type(command),command)
+            accel = d.get('shortcut') or ''
+            if label and command:
+                realLabel = self.getRealMenuName(label)
+                underline=realLabel.find("&")
+                realLabel = realLabel.replace("&","")
+                callback = self.defineOpenWithMenuCallback(command) #### openWithData)
+                c.add_command(menu,label=realLabel,accel=accel,
+                    command=callback,underline=underline)
     #@+node:ekr.20031218072017.2078: *4* createRecentFilesMenuItems (leoMenu)
     def createRecentFilesMenuItems (self):
 
@@ -1520,7 +1517,7 @@ class leoMenu:
                 return c.doCommand(command,label)
 
             return legacyMenuCallback
-    #@+node:ekr.20031218072017.4118: *4* defineOpenWithMenuCallback
+    #@+node:ekr.20031218072017.4118: *4* defineOpenWithMenuCallback (leoMenu)
     def defineOpenWithMenuCallback(self,data):
 
         # The first parameter must be event, and it must default to None.

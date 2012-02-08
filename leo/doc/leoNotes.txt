@@ -5844,169 +5844,6 @@ def getExternalCompletions (self,s,p=None,language='python'):
     theObject,tabList = self.theObject,self.tabList
     self.exit() # Not called from the autocompleter itself.
     return theObject,tabList
-#@+node:ekr.20120129040823.10248: *3* app.canonicalize_shortcut (NEW. uses g.app.guiBindNamesDict)
-if 0:
-
-    def canonicalize_shortcut (self,setting,addKey=True):
-    
-        k = self
-    
-        trace = False and not g.unitTesting
-            # and setting.lower().find('tab') != -1 
-        if not setting:return None
-    
-        s = g.stripBrackets(setting.strip())
-        << define cmd, ctrl, alt, shift >>
-        if 0: # This must be independent of settings!
-            if k.swap_mac_keys and sys.platform == "darwin":
-                << swap cmd and ctrl keys >>
-        << convert minus signs to plus signs >>
-        << compute the last field >>
-        << compute shortcut >>
-        if trace: g.trace('%20s %s' % (setting,shortcut))
-        return shortcut
-#@+node:ekr.20120129040823.10249: *4* << define cmd, ctrl, alt, shift >>
-s2 = s.lower()
-
-cmd   = s2.find("cmd") >= 0     or s2.find("command") >= 0
-ctrl  = s2.find("control") >= 0 or s2.find("ctrl") >= 0
-alt   = s2.find("alt") >= 0
-shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
-meta  = s2.find("meta") >= 0
-#@+node:ekr.20120129040823.10250: *4* << swap cmd and ctrl keys >>
-# if ctrl and not cmd:
-    # cmd = True ; ctrl = False
-
-# if alt and not ctrl:
-    # ctrl = True ; alt = False
-    
-pass
-#@+node:ekr.20120129040823.10251: *4* << convert minus signs to plus signs >>
-# Replace all minus signs by plus signs, except a trailing minus:
-if s.endswith('-'):
-    s = s[:-1].replace('-','+') + '-'
-else:
-    s = s.replace('-','+')
-#@+node:ekr.20120129040823.10252: *4* << compute the last field >>
-if s.endswith('+'):
-    last = '+'
-else:
-    fields = s.split('+') # Don't lower this field.
-    last = fields and fields[-1]
-    if not last:
-        if not g.app.menuWarningsGiven:
-            g.pr("bad shortcut specifier:", repr(s),repr(setting))
-            g.trace(g.callers())
-        return None
-
-if len(last) == 1:
-    last2 = g.app.guiBindNamesDict.get(last)
-    if last2:
-        last = last2
-    else:
-        if last.isalpha():
-            if shift:
-                last = last.upper()
-                shift = False # It is Ctrl-A, not Ctrl-Shift-A.
-            else:
-                last = last.lower()
-        # New in Leo 4.4.2: Alt-2 is not a key event!
-        if addKey and last.isdigit():
-            last = 'Key-' + last
-else:
-    # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
-    # This is a *one-way* translation, done only here.
-    d = g.app.settingsNameDict
-    last = d.get(last.lower(),last)
-#@+node:ekr.20120129040823.10253: *4* << compute shortcut >>
-table = (
-    (alt, 'Alt+'),
-    (ctrl,'Ctrl+'),
-    (cmd, 'Command+'),
-    (meta,'Meta+'),
-    (shift,'Shift+'),
-    (True, last),
-)
-
-# new in 4.4b3: convert all characters to unicode first.
-shortcut = ''.join([g.toUnicode(val) for flag,val in table if flag])
-#@+node:ekr.20120129040823.10241: *3* << define global key dicts >> (leoApp.py)
-# Important: these dicts must not depend on settings.
-# They are used by g.app.canonicalize_shortcut
-
-# These are defined at http://tcl.activestate.com/man/tcl8.4/TkCmd/keysyms.htm.
-# Important: only the inverse dict is actually used in the new key binding scheme.
-# Tk may return the *values* of this dict in event.keysym fields.
-# Leo will warn if it gets a event whose keysym not in values of this table.
-self.guiBindNamesDict = {
-    "&" : "ampersand",
-    "^" : "asciicircum",
-    "~" : "asciitilde",
-    "*" : "asterisk",
-    "@" : "at",
-    "\\": "backslash",
-    "|" : "bar",
-    "{" : "braceleft",
-    "}" : "braceright",
-    "[" : "bracketleft",
-    "]" : "bracketright",
-    ":" : "colon",      # removed from code.
-    "," : "comma",
-    "$" : "dollar",
-    "=" : "equal",
-    "!" : "exclam",     # removed from code.
-    ">" : "greater",
-    "<" : "less",
-    "-" : "minus",
-    "#" : "numbersign",
-    '"' : "quotedbl",
-    "'" : "quoteright",
-    "(" : "parenleft",
-    ")" : "parenright", # removed from code.
-    "%" : "percent",
-    "." : "period",     # removed from code.
-    "+" : "plus",
-    "?" : "question",
-    "`" : "quoteleft",
-    ";" : "semicolon",
-    "/" : "slash",
-    " " : "space",      # removed from code.
-    "_" : "underscore",
-}
-
-# Keys are lowercase, so that case is not significant *for these items only* in leoSettings.leo.
-self.settingsNameDict = {
-    'bksp'    : 'BackSpace', # Dubious: should be '\b'
-    'dnarrow' : 'Down',
-    'esc'     : 'Escape',
-    'ltarrow' : 'Left',
-    'pageup'  : 'Prior',
-    'pagedn'  : 'Next',
-    'rtarrow' : 'Right',
-    'uparrow' : 'Up',
-}
-
-self.tkNamesList = (
-    # Arrow keys.
-    'Left','Right','Up','Down',
-    # Page up/down keys.
-    'Next','Prior',
-    # Home end keys.
-    'Home','End'
-    # Modifier keys.
-    'Caps_Lock','Num_Lock',
-    # F-keys.
-    'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
-    # All others.
-    'Begin','Break','Clear','Delete','Escape',
-    # Dubious: these are ascii characters!
-    # But there is no harm in retaining these in Leo's core.
-    'BackSpace','Linefeed','Return','Tab',
-)
-
-# Add lowercase version of special keys.
-for s in self.tkNamesList:
-    self.settingsNameDict [s.lower()] = s
 #@+node:ekr.20120127084215.10209: *3* class ShortcutName (Not used yet)
 class ShortcutName:
     
@@ -6394,5 +6231,483 @@ def char2tkName (self,ch):
     val = self.char2tkNameDict.get(ch)
     # g.trace(repr(ch),repr(val))
     return val
+#@+node:ekr.20051022043713.1: *3* << get label, accel & command or continue >> (from createOpenWithMenuItemsFromTable)
+ok = (
+    type(data) in (type(()), type([])) and
+    len(data) in (2,3)
+)
+
+if ok:
+    if len(data) == 2:
+        label,openWithData = data ; accel = None
+    else:
+        label,accel,openWithData = data
+        accel = k.strokeFromSetting(accel)
+        if accel: accel = k.prettyPrintKey(accel)
+else:
+    g.trace('bad data in Open With table: %s' % repr(data))
+    continue # Ignore bad data
+#@+node:ekr.20110916215321.8056: *3* Unused (C_to_python)
+# These caused lots of pylint errors.
+if 0:
+    @others
+#@+node:ekr.20110917104720.6871: *4* Drivers & helpers
+#@+node:ekr.20110916215321.7989: *5* convertLeo1to2 & helper
+def convertLeo1to2 (self):
+
+    for p in self.p.self_and_subtree():
+        g.es("converting:",p.h)
+        s=convertStringLeo1to2(p.b)
+        p.b = s
+
+    g.es("done")
+#@+node:ekr.20110916215321.7990: *6* convertStringLeo1to2
+def convertStringLeo1to2 (self,s):
+    
+    aList = [z for z in s]
+    outputList = []
+    i = 0
+    while i < len(aList):
+        j = skipCodePart(aList,i)
+        if j > i:
+            code = aList[i:j]
+            convertCodeList1to2(code)
+            i = j
+            #print "-----code:", listToString(code)
+            for item in code:
+                outputList.append(item)
+        j = skipDocPart(aList,i)
+        if j > i:
+            doc = aList[i:j]
+            convertDocList(doc) # same as in c2py
+            #print "-----doc:", listToString(doc)
+            i = j
+            for item in doc:
+                outputList.append(item)
+
+    result = listToString(outputList)
+    global printFlag
+    if printFlag: print("-----:\n", result)
+    return result
+#@+node:ekr.20110916215321.7994: *5* convertLeoTree
+def convertLeoTree (self):
+
+    for p2 in self.p.self_and_subtree():
+        print("converting:",v.h)
+        s = convertCStringToPython(p2.b,leoFlag=True)
+        p2.b = s
+
+    g.es('done')
+#@+node:ekr.20110916215321.7995: *5* convertCFileToPython
+def convertCFileToPython(fn):
+
+    f=open(fn, 'r')
+    if not f: return
+    s = f.read()
+    f.close()
+
+    f=open(fn + ".py", 'w')
+    if not f: return
+    s = convertCStringToPython(s,leoFlag=False)
+    f.write(s)
+    f.close()
+#@+node:ekr.20110916215321.7991: *5* convertCodeList1to2
+@ We do _not_ replace @root by @file or insert @others as needed.
+Inserting @others can be done easily enough by hand,
+and may take more global knowledge than we can reasonably expect to have.
+@c
+
+def convertCodeList1to2 (self,aList):
+
+    if 0: # There isn't much reason to do this.
+        removeAtRoot(aList)
+
+    self.safeReplace(aList,"@code","@c")
+    self.replaceSectionDefs(aList)
+    self.removeLeadingAtCode(aList)
+#@+node:ekr.20110916215321.7996: *5* convertCStringToPython
+def convertCStringToPython (self,s,leoFlag):
+
+    # print "convertCStringToPython:start\n", s
+    firstPart = True
+    aList = [z for z in s]
+
+    if not leoFlag:
+        self.convertCodeList(aList,firstPart,dontDoLeoTranslations)
+        return ''.join(aList)
+
+    outputList = []
+    i = 0
+    while i < len(aList):
+        j = skipCodePart(aList,i)
+        if j > i:
+            code = aList [i: j]
+            convertCodeList(code,firstPart,doLeoTranslations)
+            i = j
+            #print "-----code:", ''.join(code)
+            for item in code:
+                outputList.append(item)
+        firstPart = False # don't remove @c from here on.
+        j = skipDocPart(aList,i)
+        if j > i:
+            doc = aList [i: j]
+            convertDocList(doc)
+            #print "-----doc:", ''.join(doc)
+            i = j
+            for item in doc:
+                outputList.append(item)
+
+    result = ''.join(outputList)
+    global printFlag
+    if printFlag: print("-----:\n",result)
+    return result
+#@+node:ekr.20110917104720.6876: *5* get_default_user_types
+def get_default_user_types (self):
+    
+    '''Return default user types.'''
+    
+    self.class_list = [
+        # "vnode", "tnode", "Commands",
+        # "wxString", "wxTreeCtrl", "wxTextCtrl", "wxSplitterWindow",
+    ]
+
+    self.ivars_dict = {
+        # "atFile": [
+            # "mCommands", "mErrors", "mStructureErrors",
+            # "mTargetFileName", "mOutputFileName", "mOutputStream",
+            # "mStartSentinelComment", "mEndSentinelComment", "mRoot",
+        # ],
+        # "vnode": [
+            # "mCommands", "mJoinList", "mIconVal", "mTreeID", "mT", "mStatusBits",
+        # ],
+        # "tnode": [
+            # "mBodyString", "mBodyRTF", "mJoinHead", "mStatusBits", "mFileIndex",
+            # "mSelectionStart", "mSelectionLength", "mCloneIndex",
+        # ],
+        # "LeoFrame": [
+            # "mNextFrame", "mPrevFrame", "mCommands",
+        # ],
+        # "Commands": [
+            # # public
+            # "mCurrentVnode", "mLeoFrame", "mInhibitOnTreeChanged", "mMaxTnodeIndex",
+            # "mTreeCtrl", "mBodyCtrl", "mFirstWindowAndNeverSaved",
+            # #private
+            # "mTabWidth", "mChanged", "mOutlineExpansionLevel", "mUsingClipboard",
+            # "mFileName", "mMemoryInputStream", "mMemoryOutputStream", "mFileInputStream",
+            # "mInputFile", "mFileOutputStream", "mFileSize", "mTopVnode", "mTagList",
+            # "mMaxVnodeTag",
+            # "mUndoType", "mUndoVnode", "mUndoParent", "mUndoBack", "mUndoN",
+            # "mUndoDVnodes", "mUndoLastChild", "mUndoablyDeletedVnode",
+        # ],
+    }
+#@+node:ekr.20110919211949.6921: *4* Multi-character code
+# This is all fairly horrible code...
+
+# None of it has been tested...
+#@+node:ekr.20110919211949.6922: *5* match
+def match (self,s,i,pat):
+    
+    '''Return True if s[i:] matches the pat string.
+    
+    We can't use g.match because s is usually a list.
+    '''
+    
+    assert pat
+    
+    aList,i,n = [],0,0
+    while n < len(pat) and i < len(s):
+        token = s[i]
+        n += len(token)
+        aList.append(token)
+    
+    return pat.startswith(''.join(aList))
+#@+node:ekr.20110919211949.6923: *5* match_word
+def match_word (self,s,i,pat):
+    
+    '''Return True if s[i:] word matches the pat string.'''
+    
+    aList,i,n = [],0,0
+    while i < len(s) and n < len(pat):
+        token = s[i]
+        i += 1
+        n += len(token)
+        aList.append(token)
+    if n == len(pat):
+        return pat == ''.join(aList)
+    elif n > len(pat):
+        s2 = ''.join(aList)
+        if pat.startswith(s2):
+            ch = s2[len(pat)]
+            return not ch.isalnum() and not ch == '_'
+        else:
+            return False
+    else: # n < len(pat)
+        assert i == len(s)
+        return False
+#@+node:ekr.20110917104720.6873: *4* Scanning
+#@+node:ekr.20110916215321.8002: *5* convertLeadingBlanks
+def convertLeadingBlanks(self,aList):
+
+    w = self.tab_width
+    if w < 2: return
+
+    i = 0
+    while i < len(aList):
+        n = 0
+        while i < len(aList) and aList[i] == ' ':
+            n += 1 ; i += 1
+            if n == w:
+                aList[i-w:i] = ['\t']
+                i = i - w + 1
+                n = 0
+        i = self.skip_past_line(aList, i)
+#@+node:ekr.20110916215321.7998: *5* convertDocList
+def convertDocList (self,docList):
+
+    # print "convertDocList:", docList
+    if self.match_word(docList,0,"@doc"):
+        i = self.skip_ws(docList,4)
+        if self.match(docList,i,"\n"):
+            i += 1
+        docList [0: i] = [z for z in ("@ ")]
+#@+node:ekr.20110916215321.8000: *5* skipCodePart
+def skipCodePart (self,aList,i):
+
+    # print "skipCodePart", i
+    if self.match_word(aList,i,"@doc") or self.match_word(aList,i,"@"):
+        return i
+    while i < len(aList):
+        if self.match(aList,i,"//"):
+            i = skipPastLine(aList,i)
+        elif self.match(aList,i,"/*"):
+            i = skipCBlockComment(aList,i)
+        elif self.match(aList,i,'"') or self.match(aList,i,"'"):
+            i = skipString(aList,i)
+        elif self.match(aList,i,"\n"):
+            i += 1
+            if self.match_word(aList,i,"@doc") or self.match_word(aList,i,"@"):
+                break
+        else: i += 1
+    return i
+#@+node:ekr.20110916215321.7999: *5* skipDocPart
+def skipDocPart (self,aList,i):
+
+    # print "skipDocPart", i
+    while i < len(aList):
+        if self.match_word(aList,i,"@code") or self.match_word(aList,i,"@c"):
+            break
+        elif isSectionDef(aList,i):
+            break
+        else: i = skipPastLine(aList,i)
+    return i
+#@+node:ekr.20110917104720.6872: *4* Utils
+#@+node:ekr.20110916215321.8018: *5* findInCode
+def findInCode (self,aList,i,findString):
+
+    while i < len(aList):
+        if self.is_string_or_comment(aList,i):
+            i = self.skip_string_or_comment(aList,i)
+        elif self.match(aList,i,findString):
+            return i
+        else:
+            i += 1
+
+    return -1
+#@+node:ekr.20110916215321.8019: *5* findInList
+def findInList (self,aList,i,findString):
+
+    while i < len(aList):
+        if self.match(aList,i,findString):
+            return i
+        else:
+            i += 1
+
+    return-1
+#@+node:ekr.20110916215321.7986: *4* speedTest
+def speedTest (self,passes):
+
+    import time
+    fn = r"c:\prog\LeoPy\LeoPy.leo"
+    f=open(fn)
+    if not f:
+        print("not found: ",fn)
+        return
+    s=f.read()
+    f.close()
+    print("file:", fn, " size:", len(s), " passes:", passes)
+    print("speedTest start")
+    time1 = time.clock()
+    p = passes
+    while p > 0:
+        n = len(s) ; i = 0 ; lines = 0
+        while -1 < i < n:
+            if s[i] == '\n':
+                lines += 1 ; i += 1
+            else:
+                i = s.find('\n',i) # _much_ faster than list-based-find.
+            continue
+            # match is about 9 times slower than simple test.
+            if s[i]=='\n': # match(s,i,'\n'): # 
+                i += 1
+            else:
+                i += 1
+        p -= 1
+    time2 = time.clock()
+    print("lines:", lines)
+    print("speedTest done:")
+    print("elapsed time:", time2-time1)
+    print("time/pass:", (time2-time1)/passes)
+#@+node:ekr.20110916215321.7981: *4* test
+def test(self):
+    
+    << define test data >>
+    
+    self.print_flag = True
+    for s in testData:
+        self.convertCStringToPython(s,leoFlag=True)
+#@+node:ekr.20110917104720.6875: *5* << define test data >>
+testData = [
+"\n@doc\n\
+This is a doc part: format, whilest, {};->.\n\
+<<\
+section def>>=\n\
+LeoFrame::LeoFrame(vnode *v, char *s, int i)\n\
+{\n\
+    // test ; {} /* */.\n\
+    #if 0 //comment\n\
+        if(gLeoFrameList)gLeoFrameList -> mPrevFrame = this ;\n\
+        else\n\
+            this -> mNextFrame = gLeoFrameList ;\n\
+    #else\n\
+        \n\
+        vnode *v = new vnode(a,b);\n\
+        Commands *commander = (Commands) NULL ; // after cast\n\
+        this -> mPrevFrame = NULL ;\n\
+    #endif\n\
+    if (a==b)\n\
+        a = 2;\n\
+    else if (a ==c)\n\
+        a = 3;\n\
+    else return; \n\
+    /* Block comment test:\n\
+        if(2):while(1): end.*/\n\
+    for(int i = 1; i < limit; ++i){\n\
+        mVisible = FALSE ;\n\
+        mOnTop = TRUE ;\n\
+    }\n\
+    // trailing ws.	 \n\
+    mCommands = new Commands(this, mTreeCtrl, mTextCtrl) ;\n\
+    gActiveFrame = this ;\n\
+}\n\
+    ", "<<" +
+"vnode methods >>=\n\
+\n\
+void vnode::OnCopyNode(wxCommandEvent& WXUNUSED(event))\n\
+{\n\
+    mCommands -> copyOutline();\n\
+}\n\
+\n@doc\n\
+another doc part if, then, else, -> \n<<" +
+"vnode methods >>=\n\
+void vnode::OnPasteNode(wxCommandEvent& WXUNUSED(event))\n\
+{\n\
+    mCommands -> pasteOutline();\n\
+}\n" ]
+#@+node:ekr.20110919113533.6821: *3* Not used C_to_python
+if 0:
+    @others
+#@+node:ekr.20110916215321.8023: *4* removeAllCComments (Not used)
+def removeAllCComments (self,aList,delim):
+
+    i = 0
+    while i < len(aList):
+        progress = i
+        if self.match(aList,i,"'") or self.match(aList,i,'"'):
+            i = self.skip_string(aList,i)
+        elif self.match(aList,i,"//"):
+            j = self.skip_to_end_of_line(aList,i)
+            print("deleting single line comment:", ''.join(aList[i:j]))
+            del aList[i:j]
+        elif self.match(aList,i,"/*"):
+            j = self.skip_c_block_comment(aList,i)
+            print("deleting block comment:", ''.join(aList[i:j]))
+            del aList[i:j]
+        else:
+            i += 1
+        assert i > progress
+#@+node:ekr.20110916215321.8024: *4* removeAllCSentinels
+def removeAllCSentinels (self,aList,delim):
+
+    i = 0
+    while i < len(aList):
+        if self.match(aList,i,"'") or self.match(aList,i,'"'):
+            # string starts a line.
+            i = self.skip_string(aList,i)
+            i = self.skip_past_line(aList,i)
+        elif self.match(aList,i,"/*"):
+            # block comment starts a line
+            i = self.skip_c_block_comment(aList,i)
+            i = self.skip_past_line(line,i)
+        elif self.match(aList,i,"//@"):
+            j = self.skip_past_line(aList,i)
+            print("deleting sentinel:", ''.join(aList[i:j]))
+            del aList[i:j]
+        else:
+            i = self.skip_past_line(aList,i)
+#@+node:ekr.20110916215321.8025: *4* removeAllPythonComments
+def removeAllPythonComments (self,aList,delim):
+
+    i = 0
+    while i < len(aList):
+        if self.match(aList,i,"'") or self.match(aList,i,'"'):
+            i = self.skip_string(aList,i)
+        elif self.match(aList,i,"#"):
+            j = self.skip_past_line(aList,i)
+            print("deleting comment:", ''.join(aList[i:j]))
+            del aList[i:j]
+        else:
+            i += 1
+#@+node:ekr.20110916215321.8026: *4* removeAllPythonSentinels
+def removeAllPythonSentinels (self,aList,delim):
+
+    i = 0
+    while i < len(aList):
+        if self.match(aList,i,"'") or self.match(aList,i,'"'):
+            # string starts a line.
+            i = self.skip_string(aList,i)
+            i = self.skip_past_line(aList,i)
+        elif self.match(aList,i,"#@"):
+            j = self.skip_past_line(aList,i)
+            print("deleting sentinel:", ''.join(aList[i:j]))
+            del aList[i:j]
+        else:
+            i = self.skip_past_line(aList,i)
+#@+node:ekr.20110916215321.8027: *4* removeAtRoot
+def removeAtRoot (self,aList):
+
+    i = self.skip_ws(aList, 0)
+    if self.match_word(aList,i,"@root"):
+        j = self.skip_past_line(aList,i)
+        del aList[i:j]
+
+    while i < len(aList):
+        if self.is_string_or_comment(aList,i):
+            i = self.skip_string_or_comment(aList,i)
+        elif self.match(aList,i,"\n"):
+            i = self.skip_ws(aList, i+1)
+            if self.match_word (aList,i,"@root"):
+                j = self.skip_past_line(aList,i)
+                del aList[i:j]
+        else: i += 1
+#@+node:ekr.20110916215321.8031: *4* removeLeadingAtCode
+def removeLeadingAtCode (self,aList):
+
+    i = self.skip_ws_and_nl(aList,0)
+    if self.match_word(aList,i,"@code"):
+        i = self.skip_ws_and_nl(aList,5)
+        del aList[0:i]
+    elif self.match_word(aList,i,"@c"):
+        i = self.skip_ws_and_nl(aList,2)
+        del aList[0:i]
 #@-all
 #@-leo

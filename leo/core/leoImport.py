@@ -4818,7 +4818,7 @@ class xmlScanner (baseScannerClass):
         # This is not correct.
         return ch and (ch.isalnum() or ch == '_')
     #@+node:ekr.20071214072924.4: *5* startsHelper & helpers (xmlScanner)
-    def startsHelper(self,s,i,kind,tags):
+    def startsHelper(self,s,i,kind,tags,tag=None):
         '''return True if s[i:] starts a class or function.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
 

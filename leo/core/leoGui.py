@@ -29,25 +29,25 @@ class leoKeyEvent:
     def __init__ (self,c,char,shortcut,w,x,y,x_root,y_root):
         
         trace = False and not g.unitTesting
+        k = c.k
         
         if g.new_strokes:
-            if g.isStroke(shortcut):
+            if k.isStroke(shortcut):
                 g.trace('***** (leoKeyEvent) oops: already a stroke',shortcut,g.callers())
                 stroke = shortcut
             else:
-                import leo.core.leoConfig as leoConfig
-                stroke = leoConfig.KeyStroke(shortcut) if shortcut else None
+                stroke = k.KeyStroke(shortcut) if shortcut else None
         else:
             stroke = shortcut or ''
 
-        assert g.isStrokeOrNone(stroke),'(leoKeyEvent) %s %s' % (
+        assert k.isStrokeOrNone(stroke),'(leoKeyEvent) %s %s' % (
             repr(stroke),g.callers())
             
         if trace: g.trace('(leoKeyEvent) stroke',stroke)
         
         self.c = c
         self.char = char or ''
-        self.stroke = stroke #### shortcut or ''
+        self.stroke = stroke
         self.w = self.widget = w
         
         # Optional ivars

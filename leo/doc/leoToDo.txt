@@ -3885,7 +3885,10 @@ def get (self,c,setting,kind):
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
                 if trace:
-                    kind = d.get('_hash','<no hash>')
+                    if g.new_dicts:
+                        kind = d.name()
+                    else:
+                        kind = d.get('_hash','<no hash>')
                     g.trace('**1',setting,val,kind)
                 return val
 
@@ -3894,7 +3897,10 @@ def get (self,c,setting,kind):
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
             if trace:
-                kind = d.get('_hash','<no hash>')
+                if g.new_dicts:
+                    kind = d.name()
+                else:
+                    kind = d.get('_hash','<no hash>')
                 g.trace('**2',setting,val,kind)
             return val
 
@@ -3903,7 +3909,10 @@ def get (self,c,setting,kind):
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
             if trace:
-                kind = d.get('_hash','<no hash>')
+                if g.new_dicts:
+                    kind = d.name()
+                else:
+                    kind = d.get('_hash','<no hash>')
                 g.trace('**3',setting,val,kind)
             return val
 
@@ -3915,7 +3924,10 @@ def get (self,c,setting,kind):
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
                 if trace:
-                    kind = d.get('_hash','<no hash>')
+                    if g.new_dicts:
+                        kind = d.name()
+                    else:
+                        kind = d.get('_hash','<no hash>')
                     g.trace('**4',setting,val,kind)
                 return val
 
@@ -4006,6 +4018,8 @@ def __init__ (self,c):
     
     self.c = c
     
+    self.widget = None
+    
     self.mutable_methods = (
         'flashCharacter',
         'toPythonIndex',
@@ -4033,35 +4047,56 @@ def toPythonIndexRowCol(self,index):
     row,col = g.convertPythonIndexToRowCol(s,i)
     return i,row,col
 .. @+node:ekr.20111114102224.9937: *7* immutable redirection methods (HighLevelInterface)
-def appendText(self,s):                         self.widget and self.widget.appendText(s)
-def delete(self,i,j=None):                      self.widget and self.widget.delete(i,j)
-def deleteTextSelection (self):                 self.widget and self.widget.deleteTextSelection()
-def get(self,i,j):                              return self.widget and self.widget.get(i,j) or ''
-def getAllText(self):                           return self.widget and self.widget.getAllText() or ''
-def getInsertPoint(self):                       return self.widget and self.widget.getInsertPoint() or 0
-def getSelectedText(self):                      return self.widget and self.widget.getSelectedText() or ''
-def getSelectionRange (self):                   return self.widget and self.widget.getSelectionRange() or (0,0)
-def getYScrollPosition (self):                  return self.widget and self.widget.getYScrollPosition() or 0
-def hasSelection(self):                         # return self.widget and self.widget.hasSelection() or False
+def appendText(self,s):
+    if self.widget: self.widget.appendText(s)
+def delete(self,i,j=None):
+    if self.widget: self.widget.delete(i,j)
+def deleteTextSelection (self):
+    if self.widget: self.widget.deleteTextSelection()
+def get(self,i,j):
+    return self.widget and self.widget.get(i,j) or ''
+def getAllText(self):
+    return self.widget and self.widget.getAllText() or ''
+def getInsertPoint(self):
+    return self.widget and self.widget.getInsertPoint() or 0
+def getSelectedText(self):
+    return self.widget and self.widget.getSelectedText() or ''
+def getSelectionRange (self):
+    return self.widget and self.widget.getSelectionRange() or (0,0)
+def getYScrollPosition (self):
+    return self.widget and self.widget.getYScrollPosition() or 0
+def hasSelection(self):
     # Take special care with this, for the benefit of LeoQuickSearchWidget.
     # This problem only happens with the qttabs gui.
     return self.widget and hasattr(self.widget,'hasSelection') and self.widget.hasSelection() or False
-def insert(self,i,s):                           self.widget and self.widget.insert(i,s)    
-def replace (self,i,j,s):                       self.widget and self.widget.replace(i,j,s)
-def rowColToGuiIndex (self,s,row,col):          return self.widget and self.widget.rowColToGuiIndex(s,row,col) or 0
-def see(self,i):                                self.widget and self.widget.see(i)
-def seeInsertPoint (self):                      self.widget and self.widget.seeInsertPoint()
-def selectAllText (self,insert=None):           self.widget and self.widget.selectAllText(insert)
-def setAllText (self,s):                        self.widget and self.widget.setAllText(s)
-def setBackgroundColor(self,color):             self.widget and self.widget.setBackgroundColor(color)
-def setFocus(self):                             self.widget and self.widget.setFocus()
-def setForegroundColor(self,color):             self.widget and self.widget.setForegroundColor(color)
-def setInsertPoint(self,pos):                   self.widget and self.widget.setInsertPoint(pos)
-def setSelectionRange (self,i,j,insert=None):   self.widget and self.widget.setSelectionRange(i,j,insert=insert)
-def setYScrollPosition (self,i):                self.widget and self.widget.setYScrollPosition(i)
-def tag_configure (self,colorName,**keys):      self.widget and self.widget.tag_configure(colorName,**keys)
+def insert(self,i,s):
+    if self.widget: self.widget.insert(i,s)    
+def replace (self,i,j,s):
+    if self.widget: self.widget.replace(i,j,s)
+def see(self,i):
+    if self.widget: self.widget.see(i)
+def seeInsertPoint (self):
+    if self.widget: self.widget.seeInsertPoint()
+def selectAllText (self,insert=None):
+    if self.widget: self.widget.selectAllText(insert)
+def setAllText (self,s):
+    if self.widget: self.widget.setAllText(s)
+def setBackgroundColor(self,color):
+    if self.widget: self.widget.setBackgroundColor(color)
+def setFocus(self):
+    if self.widget: self.widget.setFocus()
+def setForegroundColor(self,color):
+    if self.widget: self.widget.setForegroundColor(color)
+def setInsertPoint(self,pos):
+    if self.widget: self.widget.setInsertPoint(pos)
+def setSelectionRange (self,i,j,insert=None):
+    if self.widget: self.widget.setSelectionRange(i,j,insert=insert)
+def setYScrollPosition (self,i):
+    if self.widget: self.widget.setYScrollPosition(i)
+def tag_configure (self,colorName,**keys):
+    if self.widget: self.widget.tag_configure(colorName,**keys)
 .. @+node:ekr.20111114102224.9940: *7* other immutable methods (HighLevelInterface)
-# The all use leoGlobals functions or leoGui methods.
+# These all use leoGlobals functions or leoGui methods.
 
 def clipboard_append(self,s):
     s1 = g.app.gui.getTextFromClipboard()
@@ -4074,13 +4109,18 @@ def getFocus(self):
     return g.app.gui.get_focus(self.c)
     
 def rowColToGuiIndex (self,s,row,col):
-    return g.convertRowColToPythonIndex(s,row,col)    
+    return g.convertRowColToPythonIndex(s,row,col)   
+    
+# def rowColToGuiIndex (self,s,row,col):
+    # return self.widget and self.widget.rowColToGuiIndex(s,row,col) or 0 
 
 set_focus = setFocus
 .. @+node:ekr.20111114102224.9950: *6* ctor (HighLevelInterface)
 def __init__ (self,c):
     
     self.c = c
+    
+    self.widget = None
     
     self.mutable_methods = (
         'flashCharacter',
@@ -7344,7 +7384,7 @@ def masterKeyHandler (self,event):
     c.check_event(event)
     << define vars >>
     
-    assert g.isStrokeOrNone(stroke)
+    assert k.isStrokeOrNone(stroke)
 
     if char in special_keys:
         if trace and verbose: g.trace('char',char)
@@ -7383,7 +7423,7 @@ def masterKeyHandler (self,event):
     # 2011/02/08: Use getPandBindings for *all* keys.
     si = k.getPaneBinding(stroke,w)
     if si:
-        assert isinstance(si,leoConfig.ShortcutInfo),si
+        assert k.isShortcutInfo(si),si
         if traceGC: g.printNewObjects('masterKey 3')
         if trace: g.trace('   bound',stroke,si.func.__name__)
         return k.masterCommand(event=event,
@@ -7479,10 +7519,10 @@ def doMode (self,event,state,stroke):
     # Third, pass keys to user modes.
     d =  k.masterBindingsDict.get(state)
     if d:
-        assert g.isStrokeOrNone(stroke)
+        assert k.isStrokeOrNone(stroke)
         si = d.get(stroke)
         if si:
-            assert isinstance(si,leoConfig.ShortcutInfo),si
+            assert k.isShortcutInfo(si),si
             if trace: g.trace('calling generalModeHandler',stroke)
             k.generalModeHandler (event,
                 commandName=si.commandName,func=si.func,
@@ -7512,7 +7552,7 @@ def getPaneBinding (self,stroke,w):
     # keyStatesTuple = ('command','insert','overwrite')
     state = k.unboundKeyAction
     
-    assert g.isStroke(stroke)
+    assert k.isStroke(stroke)
 
     if trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
         'isTextWidget(w)',g.app.gui.isTextWidget(w))
@@ -7550,7 +7590,7 @@ def getPaneBinding (self,stroke,w):
                 if si:
                     assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
                         # masterBindingsDict: keys are KeyStrokes
-                    assert isinstance(si,leoConfig.ShortcutInfo),si
+                    assert k.isShortcutInfo(si),si
                     table = ('previous-line','next-line',)
                     if key == 'text' and name == 'head' and si.commandName in table:
                         if trace: g.trace('***** special case',si.commandName)
@@ -7569,7 +7609,7 @@ def handleMiniBindings (self,event,state,stroke):
 
     # Special case for bindings handled in k.getArg:
         
-    assert g.isStroke(stroke)
+    assert k.isStroke(stroke)
 
     if state in ('getArg','full-command'):
         if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
@@ -7591,7 +7631,7 @@ def handleMiniBindings (self,event,state,stroke):
                 if si:
                     assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
                         # masterBindingsDict: keys are KeyStrokes
-                    assert isinstance(si,leoConfig.ShortcutInfo),si
+                    assert k.isShortcutInfo(si),si
                     if si.commandName == 'replace-string' and state == 'getArg':
                         if trace: g.trace('%s binding for replace-string' % (pane),stroke)
                         return False # Let getArg handle it.
@@ -7618,7 +7658,7 @@ def isAutoCompleteChar (self,stroke):
 
     k = self ; state = k.unboundKeyAction
     
-    assert g.isStrokeOrNone(stroke)
+    assert k.isStrokeOrNone(stroke)
     
     if stroke and state in ('insert','overwrite'):
         for key in (state,'body','log','text','all'):
@@ -7627,7 +7667,7 @@ def isAutoCompleteChar (self,stroke):
                 si = d.get(stroke)
                 if si:
                     assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
-                    assert isinstance(si,leoConfig.ShortcutInfo),si
+                    assert k.isShortcutInfo(si),si
                     if si.commandName == 'auto-complete':
                         return True
     return False
@@ -7641,7 +7681,7 @@ def handleUnboundKeys (self,event,char,stroke):
     
     # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
     
-    assert g.isStroke(stroke)
+    assert k.isStroke(stroke)
 
     if trace and verbose: g.trace('ch: %s, stroke %s' % (
         repr(event and event.char),repr(stroke)))

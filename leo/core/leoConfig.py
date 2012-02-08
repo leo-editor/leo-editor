@@ -8,20 +8,48 @@
 #@+node:ekr.20041227063801: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
+import leo.core.leoKeys as leoKeys
 
 # import copy
 import sys
 import zipfile
 #@-<< imports >>
 
-#@+<< class parserBaseClass >>
-#@+node:ekr.20041119203941.2: ** << class parserBaseClass >>
-class parserBaseClass:
+#@+<< GeneralSetting >>
+#@+node:ekr.20120123143207.10223: ** << GeneralSetting >>
+class GeneralSetting:
+    
+    '''A class representing any kind of setting except shortcuts.'''
+    
+    def __init__ (self,kind,encoding=None,ivar=None,setting=None,val=None,path=None,tag='setting'):
+    
+        self.encoding = encoding
+        self.ivar = ivar
+        self.kind = kind
+        self.path = path
+        self.setting = setting
+        self.val = val
+        self.tag = tag
+        
+    def __repr__ (self):
+        
+        result = ['GeneralSetting kind: %s' % (self.kind)]
+        ivars = ('ivar','path','setting','val','tag')
+        for ivar in ivars:
+            if hasattr(self,ivar):
+                val =  getattr(self,ivar)
+                if val is not None:
+                    result.append('%s: %s' % (ivar,val))
+        return ','.join(result)
+#@-<< GeneralSetting >>
+#@+<< class ParserBaseClass >>
+#@+node:ekr.20041119203941.2: ** << class ParserBaseClass >>
+class ParserBaseClass:
 
     """The base class for settings parsers."""
 
-    #@+<< parserBaseClass data >>
-    #@+node:ekr.20041121130043: *3* << parserBaseClass data >>
+    #@+<< ParserBaseClass data >>
+    #@+node:ekr.20041121130043: *3* << ParserBaseClass data >>
     # These are the canonicalized names.  Case is ignored, as are '_' and '-' characters.
 
     basic_types = [
@@ -39,10 +67,10 @@ class parserBaseClass:
 
     # Keys are settings names, values are (type,value) tuples.
     settingsDict = {}
-    #@-<< parserBaseClass data >>
+    #@-<< ParserBaseClass data >>
 
     #@+others
-    #@+node:ekr.20041119204700: *3*  ctor (parserBaseClass)
+    #@+node:ekr.20041119204700: *3*  ctor (ParserBaseClass)
     def __init__ (self,c,localFlag):
 
         self.c = c
@@ -50,7 +78,11 @@ class parserBaseClass:
             # True if this is the .leo file being opened,
             # as opposed to myLeoSettings.leo or leoSettings.leo.
         self.recentFiles = [] # List of recent files.
-        self.shortcutsDict = {}
+        if g.new_dicts:
+            self.shortcutsDict = g.TypedDictOfLists('parser.shortcutsDict',
+                keyType=type('shortcutName'),valType=leoKeys.ShortcutInfo)
+        else:
+            self.shortcutsDict = {}
             # Keys are cononicalized shortcut names, values are lists of ShortcutInfo objects.
         self.openWithList = []
             # A list of dicts containing 'name','shortcut','command' keys.
@@ -89,7 +121,7 @@ class parserBaseClass:
         }
 
         self.debug_count = 0
-    #@+node:ekr.20080514084054.4: *3* computeModeName (parserBaseClass)
+    #@+node:ekr.20080514084054.4: *3* computeModeName (ParserBaseClass)
     def computeModeName (self,name):
 
         s = name.strip().lower()
@@ -108,8 +140,10 @@ class parserBaseClass:
 
         modeName = s + '-mode'
         return modeName
-    #@+node:ekr.20060102103625: *3* createModeCommand (parserBaseClass)
+    #@+node:ekr.20060102103625: *3* createModeCommand (ParserBaseClass)
     def createModeCommand (self,modeName,name,modeDict):
+        
+        k = self.c.k
 
         modeName = 'enter-' + modeName.replace(' ','-')
 
@@ -117,22 +151,21 @@ class parserBaseClass:
         if i > -1:
             # The prompt is everything after the '::'
             prompt = name[i+2:].strip()
-            modeDict ['*command-prompt*'] = prompt
-            # g.trace('modeName',modeName,'*command-prompt*',prompt)
+            modeDict ['*command-prompt*'] = k.ShortcutInfo(kind=prompt)
 
         # Save the info for k.finishCreate and k.makeAllBindings.
         d = g.app.config.modeCommandsDict
 
         # New in 4.4.1 b2: silently allow redefinitions of modes.
         d [modeName] = modeDict
-    #@+node:ekr.20041120103012: *3* error (parserBaseClass)
+    #@+node:ekr.20041120103012: *3* error (ParserBaseClass)
     def error (self,s):
 
         g.pr(s)
 
         # Does not work at present because we are using a null Gui.
         g.es(s,color="blue")
-    #@+node:ekr.20041120094940: *3* kind handlers (parserBaseClass)
+    #@+node:ekr.20041120094940: *3* kind handlers (ParserBaseClass)
     #@+node:ekr.20060608221203: *4* doAbbrev
     def doAbbrev (self,p,kind,name,val):
 
@@ -495,6 +528,7 @@ class parserBaseClass:
 
         '''Parse an @mode node and create the enter-<name>-mode command.'''
 
+        trace = False and not g.unitTesting
         c = self.c ; k = c.k ; name1 = name
 
         # g.trace('%20s' % (name),c.fileName())
@@ -502,7 +536,14 @@ class parserBaseClass:
 
         # Create a local shortcutsDict.
         old_d = self.shortcutsDict
-        d = self.shortcutsDict = {'_hash':modeName,} # 2011/02/10
+        
+        if g.new_dicts:
+            d = g.TypedDictOfLists(name='modeDict for %s' % (modeName),
+                keyType=type('commandName'),valType=k.ShortcutInfo)
+        else:
+            d = {'_hash':modeName,}
+
+        self.shortcutsDict = d
 
         s = p.b
         lines = g.splitLines(s)
@@ -510,39 +551,48 @@ class parserBaseClass:
             line = line.strip()
             if line and not g.match(line,0,'#'):
                 name,si = self.parseShortcutLine('*mode-setting*',line)
-                assert isinstance(si,ShortcutInfo),si
+                assert k.isShortcutInfo(si),si
                 if not name:
                     # An entry command: put it in the special *entry-commands* key.
-                    aList0 = d.get('*entry-commands*',[])
-                    aList0.append(si.commandName)
-                    d ['*entry-commands*'] = aList0
+                    if g.new_dicts:
+                        d.add('*entry-commands*',si)
+                    else:
+                        aList0 = d.get('*entry-commands*',[])
+                        aList0.append(si)
+                        d ['*entry-commands*'] = aList0
                 elif si is not None:
                     # A regular shortcut.
                     si.pane = modeName
                     aList = d.get(name,[])
                     for z in aList:
-                        assert isinstance(z,ShortcutInfo),si
+                        assert k.isShortcutInfo(z),z
                     # Important: use previous bindings if possible.
                     key2,aList2 = c.config.getShortcut(name)
                     for z in aList2:
-                        assert isinstance(z,ShortcutInfo),si
+                        assert k.isShortcutInfo(z),z
                     aList3 = [z for z in aList2 if z.pane != modeName]
                     if aList3:
                         # g.trace('inheriting',[b.val for b in aList3])
                         aList.extend(aList3)
                     aList.append(si)
-                    d [name] = aList
+                    if g.new_dicts:
+                        d.replace(name,aList)
+                    else:
+                        d [name] = aList
                     self.set(p,"shortcut",name,aList)
 
         # Restore the global shortcutsDict.
         self.shortcutsDict = old_d
+        
+        if trace and g.new_dicts:
+            g.trace(d.dump())
 
         # Create the command, but not any bindings to it.
         self.createModeCommand(modeName,name1,d)
     #@+node:ekr.20070411101643.1: *4* doOpenWith (ParserBaseClass)
     def doOpenWith (self,p,kind,name,val):
 
-        # g.trace('kind',kind,'name',name,'val',val,'c',self.c)
+        # g.trace(self.c.shortFileName(),'kind',kind,'name',name,'val',val)
 
         d = self.parseOpenWith(p)
         d['name']=name
@@ -574,15 +624,18 @@ class parserBaseClass:
         c = self.c ; k = c.k
         d = self.shortcutsDict
         if s is None: s = p.b
-
-        theHash = d.get('_hash')
-        theHash = g.choose(theHash,g.shortFileName(theHash),'<no hash>')
+        
+        if g.new_dicts:
+            fn = d.name()
+        else:
+            fn = d.get('_hash')
+            fn = g.shortFileName(fn) if fn else '<no hash>'
 
         for line in g.splitLines(s):
             line = line.strip()
             if line and not g.match(line,0,'#'):
-                name,si = self.parseShortcutLine(theHash,line)
-                assert isinstance(si,ShortcutInfo),si
+                name,si = self.parseShortcutLine(fn,line)
+                assert k.isShortcutInfo(si),si
                 if si and si.stroke not in (None,'none','None'):
                     self.doOneShortcut(si,name,p)
                         
@@ -792,9 +845,9 @@ class parserBaseClass:
     def munge(self,s):
 
         return g.app.config.canonicalizeSettingName(s)
-    #@+node:ekr.20041119204700.2: *3* oops (parserBaseClass)
+    #@+node:ekr.20041119204700.2: *3* oops (ParserBaseClass)
     def oops (self):
-        g.pr("parserBaseClass oops:",
+        g.pr("ParserBaseClass oops:",
             g.callers(),
             "must be overridden in subclass")
     #@+node:ekr.20041213082558: *3* parsers (ParserBaseClass)
@@ -907,7 +960,7 @@ class parserBaseClass:
 
         if not g.match(s,0,'#'):
             d['command'] = s
-    #@+node:ekr.20041120112043: *4* parseShortcutLine (parserBaseClass)
+    #@+node:ekr.20041120112043: *4* parseShortcutLine (ParserBaseClass)
     def parseShortcutLine (self,kind,s):
 
         '''Parse a shortcut line.  Valid forms:
@@ -920,7 +973,7 @@ class parserBaseClass:
         '''
 
         trace = False and not g.unitTesting
-        c = self.c
+        c,k = self.c,self.c.k
         assert c
         name = val = nextMode = None ; nextMode = 'none'
         i = g.skip_ws(s,0)
@@ -930,7 +983,7 @@ class parserBaseClass:
             i = g.skip_id(s,j,'-')
             entryCommandName = s[j:i]
             if trace: g.trace('-->',entryCommandName)
-            return None,ShortcutInfo('*entry-command*',commandName=entryCommandName)
+            return None,k.ShortcutInfo('*entry-command*',commandName=entryCommandName)
 
         j = i
         i = g.skip_id(s,j,'-') # New in 4.4: allow Emacs-style shortcut names.
@@ -968,12 +1021,13 @@ class parserBaseClass:
                 # comment = val[i:].strip()
                 val = val[:i].strip()
 
-        stroke = c.k.strokeFromSetting(val)
+        stroke = k.strokeFromSetting(val)
+        assert k.isStrokeOrNone(stroke),stroke
         # g.trace('stroke',stroke)
-        si = ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
+        si = k.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
         if trace: g.trace(si)
         return name,si
-    #@+node:ekr.20060608222828: *4* parseAbbrevLine (parserBaseClass)
+    #@+node:ekr.20060608222828: *4* parseAbbrevLine (ParserBaseClass)
     def parseAbbrevLine (self,s):
 
         '''Parse an abbreviation line:
@@ -997,7 +1051,7 @@ class parserBaseClass:
 
         if val: return name,val
         else:   return None,None
-    #@+node:ekr.20041120094940.9: *3* set (parserBaseClass)
+    #@+node:ekr.20041120094940.9: *3* set (ParserBaseClass)
     def set (self,p,kind,name,val):
 
         """Init the setting for name to val."""
@@ -1021,18 +1075,31 @@ class parserBaseClass:
 
         # Important: we can't use c here: it may be destroyed!
         d [key] = GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
-    #@+node:ekr.20041119204700.1: *3* traverse (parserBaseClass)
+    #@+node:ekr.20041119204700.1: *3* traverse (ParserBaseClass)
     def traverse (self):
 
-        c = self.c
+        c,k = self.c,self.c.k
 
         p = g.app.config.settingsRoot(c)
         if not p:
             # g.trace('no settings tree for %s' % c)
             return {},{}
 
-        self.settingsDict = {}
-        self.shortcutsDict = {'_hash': c.hash()} # 2011/02/10
+        if g.new_dicts:
+            self.settingsDict = g.TypedDict(name='settingsDict for %s' % (c.shortFileName()),
+                keyType=type('settingName'),valType=GeneralSetting)
+        else:
+            self.settingsDict = {}
+            d['_hash'] = 'settingsDict for %s' % c.shortFileName()
+                ####  c.hash() # Was done in updateSettings.
+        
+        if g.new_dicts:
+            self.shortcutsDict = g.TypedDictOfLists(
+                name='shortcutsDict for %s' % (c.shortFileName()),
+                keyType=type('s'), # keyType=KeyStroke,
+                valType=k.ShortcutInfo)
+        else:
+            self.shortcutsDict = {'_hash': c.hash()} # 2011/02/10
             
         after = p.nodeAfterTree()
         while p and p != after:
@@ -1059,7 +1126,7 @@ class parserBaseClass:
 
         self.oops()
     #@-others
-#@-<< class parserBaseClass >>
+#@-<< class ParserBaseClass >>
 
 #@+others
 #@+node:ekr.20041119203941: ** class configClass
@@ -1068,7 +1135,7 @@ class configClass:
     #@+<< configClass class data >>
     #@+node:ekr.20041122094813: *3* << configClass class data >> (g.app.config)
     #@+others
-    #@+node:ekr.20041117062717.1: *4* defaultsDict
+    #@+node:ekr.20041117062717.1: *4* defaultsDict (g.app.config)
     #@+at This contains only the "interesting" defaults.
     # Ints and bools default to 0, floats to 0.0 and strings to "".
     #@@c
@@ -1078,7 +1145,11 @@ class configClass:
     defaultMenuFontSize = g.choose(sys.platform=="win32",9,12)
     defaultTreeFontSize = g.choose(sys.platform=="win32",9,12)
 
-    defaultsDict = {'_hash':'defaultsDict'}
+    if g.new_dicts:
+        defaultsDict = g.TypedDict(name='g.app.config.defaultsDict',
+            keyType=type('key'),valType=GeneralSetting)
+    else:
+        defaultsDict = {'_hash':'defaultsDict'}
 
     defaultsData = (
         # compare options...
@@ -1130,8 +1201,12 @@ class configClass:
         ("split_bar_relief","relief","groove"),
         ("split_bar_width","int",7),
     )
-    #@+node:ekr.20041118062709: *4* define encodingIvarsDict
-    encodingIvarsDict = {'_hash':'encodingIvarsDict'}
+    #@+node:ekr.20041118062709: *4* define encodingIvarsDict (g.app.config)
+    if g.new_dicts:
+        encodingIvarsDict = g.TypedDict(name='g.app.config.encodingIvarsDict',
+            keyType=type('key'),valType=GeneralSetting)
+    else:
+        encodingIvarsDict = {'_hash':'encodingIvarsDict'}
 
     encodingIvarsData = (
         ("default_at_auto_file_encoding","string","utf-8"),
@@ -1141,10 +1216,15 @@ class configClass:
         ("defaultEncoding","string",None),
             # Defaults to None so it doesn't override better defaults.
     )
-    #@+node:ekr.20041117072055: *4* ivarsDict
+    #@+node:ekr.20041117072055: *4* ivarsDict (g.app.config)
     # Each of these settings sets the corresponding ivar.
     # Also, the c.configSettings settings class inits the corresponding commander ivar.
-    ivarsDict = {'_hash':'ivarsDict'}
+
+    if g.new_dicts:
+        ivarsDict = g.TypedDict(name='g.app.config.ivarsDict',
+            keyType=type('key'),valType=GeneralSetting)
+    else:
+        ivarsDict = {'_hash':'ivarsDict'}
 
     ivarsData = (
         ("at_root_bodies_start_in_doc_mode","bool",True),
@@ -1214,9 +1294,11 @@ class configClass:
         self.inited = False
         self.menusList = []
         self.menusFileName = ''
-        self.modeCommandsDict = {}
-            # For use by @mode logic. Keys are command names, values are g.Bunches.
-            # A special key: *mode-prompt* it the prompt to be given.
+        if g.new_dicts:
+            self.modeCommandsDict = g.TypedDict(name = 'modeCommandsDict',
+                keyType = type('commandName'),valType = g.TypedDictOfLists)
+        else:
+            self.modeCommandsDict = {}
         self.myGlobalConfigFile = None
         self.myHomeConfigFile = None
         self.machineConfigFile = None
@@ -1254,15 +1336,25 @@ class configClass:
     def initIvarsFromSettings (self):
 
         trace = False and not g.unitTesting
-        if trace: g.trace('-' * 20,g.callers())
+        if trace:
+            g.trace(self.ivarsDict)
+            # print('initIvarsFromSettings','-' * 20)
+            # print('initIvarsFromSettings: ivarsDict',self.ivarsDict)
+            # print('initIvarsFromSettings: ivarsDict.keys()',list(self.ivarsDict.keys()))
 
-        for ivar in self.encodingIvarsDict:
-            if ivar != '_hash':
+        for ivar in self.encodingIvarsDict.keys():
+            if g.new_dicts:
                 self.initEncoding(ivar)
+            else:
+                if ivar != '_hash':
+                    self.initEncoding(ivar)
 
-        for ivar in self.ivarsDict:
-            if ivar != '_hash':
+        for ivar in self.ivarsDict.keys():
+            if g.new_dicts:
                 self.initIvar(ivar)
+            else:
+                if ivar != '_hash':
+                    self.initIvar(ivar)
     #@+node:ekr.20041117065611.1: *5* initEncoding
     def initEncoding (self,key):
 
@@ -1286,11 +1378,15 @@ class configClass:
 
         Such initing must be done in setIvarsFromSettings.'''
 
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting # and key == 'outputnewline'
 
         # Important: the key is munged.
-        gs = self.ivarsDict.get(key)
-        if trace: g.trace('g.app.config',gs.ivar,key,gs.val)
+        d = self.ivarsDict
+        gs = d.get(key)
+        if trace:
+            g.trace('g.app.config',gs.ivar,gs.val)
+            # print('initIvar',self,gs.ivar,gs.val)
+
         setattr(self,gs.ivar,gs.val)
     #@+node:ekr.20041117083202.2: *4* initRecentFiles
     def initRecentFiles (self):
@@ -1394,8 +1490,12 @@ class configClass:
         
         if trace:
             new_n,old_n = len(list(new_d.keys())),len(list(old_d.keys()))
-            g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.get('_hash')))
-            g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.get('_hash')))
+            if g.new_dicts:
+                g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.name()))
+                g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.name()))
+            else:
+                g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.get('_hash')))
+                g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.get('_hash')))
 
         inverted_old_d = self.invert(old_d)
         inverted_new_d = self.invert(new_d)
@@ -1409,28 +1509,40 @@ class configClass:
         returning a dict whose keys are strokes.'''
         
         trace = False and not g.unitTesting ; verbose = True
-        if trace: g.trace('*'*40,d.get('_hash'))
-        result = {}
+        if trace:
+            if g.new_dicts:
+                g.trace('*'*40,d.name())
+            else:
+                g.trace('*'*40,d.get('_hash'))
+        
+        if g.new_dicts:
+            result = g.TypedDictOfLists(name='inverted %s' % d.name(),
+                keyType = leoKeys.KeyStroke,valType = leoKeys.ShortcutInfo)
+        else:
+            result = {}
         for commandName in d.keys():
-            if commandName == '_hash':
+            if not g.new_dicts and commandName == '_hash':
                 result['_hash'] = 'inverted %s' % d.get('_hash')
             else:
                 for si in d.get(commandName,[]):
                     # This assert can fail if there is an exception in the ShortcutInfo ctor.
                     try:
-                        assert isinstance(si,ShortcutInfo),'commandName %s si %s' % (
+                        assert isinstance(si,leoKeys.ShortcutInfo),'commandName %s si %s' % (
                             commandName,si)
                     except AssertionError:
                         print('invert ***** ooops',si)
                     stroke = si.stroke # This is canonicalized.
+                    si.commandName = commandName # Add info.
                     assert stroke
                     if trace and verbose:
                         g.trace('%40s %s' % (commandName,stroke))
-                    si.commandName = commandName # Add info.
-                    aList = result.get(stroke,[])
-                    if si not in aList:
-                        aList.append(si)
-                        result[stroke] = aList
+                    if g.new_dicts:
+                        result.add(stroke,si)
+                    else:
+                        aList = result.get(stroke,[])
+                        if si not in aList:
+                            aList.append(si)
+                            result[stroke] = aList
 
         if trace: g.trace('returns  %4s %s %s' % (
             len(list(result.keys())),id(d),result.get('_hash')))
@@ -1443,25 +1555,30 @@ class configClass:
         
         trace = False and not g.unitTesting ; verbose = True
         if trace and verbose: g.trace('*'*40)
-        result = {}
+
+        if g.new_dicts:
+            assert d.keyType == leoKeys.KeyStroke,d.keyType
+            result = g.TypedDictOfLists(name='uninverted %s' % d.name(),
+                keyType = type('commandName'),valType = leoKeys.ShortcutInfo)
+        else:
+            result = {}
         for stroke in d.keys():
-            # if g.new_strokes and not g.isStroke(stroke) and stroke == '_hash':
-                # result['_hash'] = 'uninverted %s' % d.get('_hash')
-            # elif not g.new_strokes and stroke == '_hash':
-                # result['_hash'] = 'uninverted %s' % d.get('_hash')
-            if stroke == '_hash':
+            if not g.new_dicts and stroke == '_hash':
                 result['_hash'] = 'uninverted %s' % d.get('_hash')
             else:
                 for si in d.get(stroke,[]):
-                    assert isinstance(si,ShortcutInfo),si
+                    assert isinstance(si,leoKeys.ShortcutInfo),si
                     commandName = si.commandName
                     if trace and verbose:
                         g.trace('uninvert %20s %s' % (stroke,commandName))
                     assert commandName
-                    aList = result.get(commandName,[])
-                    if si not in aList:
-                        aList.append(si)
-                        result[commandName] = aList
+                    if g.new_dicts:
+                        result.add(commandName,si)
+                    else:
+                        aList = result.get(commandName,[])
+                        if si not in aList:
+                            aList.append(si)
+                            result[commandName] = aList
 
         if trace: g.trace('returns %4s %s %s' % (
             len(list(result.keys())),id(d),result.get('_hash')))
@@ -1540,7 +1657,10 @@ class configClass:
                 val,junk = self.getValFromDict(d,setting,kind)
                 if val is not None:
                     if trace:
-                        kind = d.get('_hash','<no hash>')
+                        if g.new_dicts:
+                            kind = d.name()
+                        else:
+                            kind = d.get('_hash','<no hash>')
                         g.trace('**1',setting,val,kind)
                     return val
 
@@ -1549,7 +1669,10 @@ class configClass:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
                 if trace:
-                    kind = d.get('_hash','<no hash>')
+                    if g.new_dicts:
+                        kind = d.name()
+                    else:
+                        kind = d.get('_hash','<no hash>')
                     g.trace('**2',setting,val,kind)
                 return val
 
@@ -1558,7 +1681,10 @@ class configClass:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
                 if trace:
-                    kind = d.get('_hash','<no hash>')
+                    if g.new_dicts:
+                        kind = d.name()
+                    else:
+                        kind = d.get('_hash','<no hash>')
                     g.trace('**3',setting,val,kind)
                 return val
 
@@ -1570,7 +1696,10 @@ class configClass:
                 val,junk = self.getValFromDict(d,setting,kind)
                 if val is not None:
                     if trace:
-                        kind = d.get('_hash','<no hash>')
+                        if g.new_dicts:
+                            kind = d.name()
+                        else:
+                            kind = d.get('_hash','<no hash>')
                         g.trace('**4',setting,val,kind)
                     return val
 
@@ -1835,7 +1964,7 @@ class configClass:
                 aList = d.get(commandName,[])
                 if aList:
                     for si in aList:
-                        assert isinstance(si,ShortcutInfo),si
+                        assert isinstance(si,leoKeys.ShortcutInfo),si
                     break
                     
         # It's very important to filter empty strokes here.
@@ -1879,15 +2008,15 @@ class configClass:
 
         if c:
             d = self.localOptionsDict.get(c.hash(),{})
-            for name,val,letter in self.config_iter_helper(d,names):
+            for name,val,letter in self.config_iter_helper(d,names,'localOptionsDict.get(c.hash)'):
                 result.append((name,val,c,'F'),)
 
         for d in self.localOptionsList:
-            for name,val,letter in self.config_iter_helper(d,names):
+            for name,val,letter in self.config_iter_helper(d,names,'localOptionsList'):
                 result.append((name,val,None,letter),)
 
         for d in self.dictList:
-            for name,val,letter in self.config_iter_helper(d,names):
+            for name,val,letter in self.config_iter_helper(d,names,'dictList'):
                 result.append((name,val,None,letter),)
 
         result.sort()
@@ -1896,23 +2025,32 @@ class configClass:
 
         raise StopIteration
     #@+node:ekr.20100616083554.5923: *5* config_iter_helper
-    def config_iter_helper (self,d,names):
+    def config_iter_helper (self,d,names,tag):
 
         if not d: return []
+        
+        assert isinstance(d,g.TypedDict),d
 
         result = []
         suppressKind = ('shortcut','shortcuts','openwithtable')
-        suppressKeys = (None,'_hash','shortcut')
-        theHash = d.get('_hash').lower()
+        
+        if g.new_dicts:
+            suppressKeys = (None,'shortcut')
+            name = d.name().lower()
+        else:
+            suppressKeys = (None,'_hash','shortcut')
+            name = d.get('_hash').lower() or ''
+            
+        # g.trace(tag,name)
 
-        if theHash.endswith('myleosettings.leo'):
+        if name.endswith('myleosettings.leo'):
             letter = 'M'
-        elif theHash.endswith('leosettings.leo'):
+        elif name.endswith('leosettings.leo'):
             letter = ' '
         else:
             letter = 'D' # Default setting.
 
-        for key in d:
+        for key in d.keys():
             if key not in suppressKeys and key not in names:
                 bunch = d.get(key)
                 if bunch and bunch.kind not in suppressKind:
@@ -1966,7 +2104,7 @@ class configClass:
         keys = list(d.keys())
         keys.sort()
         for key in keys:
-            if key != '_hash':
+            if g.new_dicts or key != '_hash':
                 gs = d.get(key)
                 assert isinstance(gs,GeneralSetting)
                 if gs:
@@ -2129,12 +2267,14 @@ class configClass:
     #@+node:ekr.20051013161232: *5* updateSettings (g.app.config)
     def updateSettings (self,c,localFlag):
 
-        parser = settingsTreeParser(c,localFlag)
+        parser = SettingsTreeParser(c,localFlag)
         shortcutsDict,settingsDict = parser.traverse()
-
-        if settingsDict:
-            d = settingsDict
-            d['_hash'] = c.hash()
+        
+        d = settingsDict
+        if d:
+            # _hash now set when settingsDict is created.
+            #### if not g.new_dicts:
+            ####    d['_hash'] = c.hash() #### ????
             if localFlag:
                 self.localOptionsDict[c.hash()] = d
             else:
@@ -2292,7 +2432,7 @@ class configClass:
             return True
         else:
             return False
-    #@+node:ekr.20070418073400: *3* g.app.config.printSettings
+    #@+node:ekr.20070418073400: *3* printSettings (g.app.config)
     def printSettings (self,c):
 
         '''Prints the value of every setting, except key bindings and commands and open-with tables.
@@ -2321,12 +2461,12 @@ class configClass:
         # Use a single g.es statement.
         result.append('\n'+legend)
         if g.unitTesting:
-            pass # print(''.join(result))
+           pass # print(''.join(result))
         else:
             g.es('',''.join(result),tabName='Settings')
     #@-others
-#@+node:ekr.20041119203941.3: ** class settingsTreeParser (parserBaseClass)
-class settingsTreeParser (parserBaseClass):
+#@+node:ekr.20041119203941.3: ** class SettingsTreeParser (ParserBaseClass)
+class SettingsTreeParser (ParserBaseClass):
 
     '''A class that inits settings found in an @settings tree.
 
@@ -2337,8 +2477,8 @@ class settingsTreeParser (parserBaseClass):
     def __init__ (self,c,localFlag=True):
 
         # Init the base class.
-        parserBaseClass.__init__(self,c,localFlag)
-    #@+node:ekr.20041119204714: *3* visitNode (settingsTreeParser)
+        ParserBaseClass.__init__(self,c,localFlag)
+    #@+node:ekr.20041119204714: *3* visitNode (SettingsTreeParser)
     def visitNode (self,p):
 
         """Init any settings found in node p."""
@@ -2380,244 +2520,6 @@ class settingsTreeParser (parserBaseClass):
                 g.pr("*** no handler",kind)
 
         return None
-    #@-others
-#@+node:ekr.20120201164453.10090: ** class KeyStroke
-class KeyStroke:
-    
-    '''A class that announces that its contents has been canonicalized by k.strokeFromSetting.
-    
-    This allows type-checking assertions in the code.'''
-    
-    #@+others
-    #@+node:ekr.20120204061120.10066: *3*  ks.ctor
-    def __init__ (self,s):
-        
-        # g.trace('(KeyStroke)',s)
-
-        assert s,repr(s)
-        assert g.isString(s)
-            # type('s') does not work in Python 3.x.
-        self.s = s
-    #@+node:ekr.20120204061120.10068: *3*  Special methods
-    #@+node:ekr.20120203053243.10118: *4* ks.__hash__
-    # Allow KeyStroke objects to be keys in dictionaries.
-
-    def __hash__ (self):
-
-        return self.s.__hash__() if self.s else 0
-    #@+node:ekr.20120204061120.10067: *4* ks.__repr___ & __str__
-    def __str__ (self):
-
-        return '<KeyStroke: %s>' % (self.s)
-        
-    __repr__ = __str__
-    #@+node:ekr.20120203053243.10117: *4* ks.rich comparisons
-    #@+at All these must be defined in order to say, for example:
-    #     for key in sorted(d)
-    # where the keys of d are KeyStroke objects.
-    #@@c
-
-    def __eq__ (self,other): 
-        if not other:               return False
-        elif hasattr(other,'s'):    return self.s == other.s
-        else:                       return self.s == other
-        
-    def __lt__ (self,other):
-        if not other:               return False
-        elif hasattr(other,'s'):    return self.s < other.s
-        else:                       return self.s < other
-            
-    def __le__ (self,other): return self.__lt__(other) or self.__eq__(other)    
-    def __ne__ (self,other): return not self.__eq__(other)
-    def __gt__ (self,other): return not self.__lt__(other) and not self.__eq__(other)  
-    def __ge__ (self,other): return not lsef.__lt__(other)
-    #@+node:ekr.20120203053243.10124: *3* ks.find, lower & startswith
-    # These may go away later, but for now they make conversion of string strokes easier.
-
-    def find (self,pattern):
-        
-        return self.s.find(pattern)
-        
-    def lower (self):
-
-        return self.s.lower()
-
-    def startswith(self,s):
-        
-        return self.s.startswith(s)
-    #@+node:ekr.20120203053243.10121: *3* ks.isFKey
-    def isFKey (self):
-
-        s = self.s.lower()
-
-        return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
-    #@+node:ekr.20120203053243.10125: *3* ks.toGuiChar
-    def toGuiChar (self):
-        
-        '''Replace special chars by the actual gui char.'''
-        
-        s = self.s.lower()
-        if s in ('\n','return'):        s = '\n'
-        elif s in ('\t','tab'):         s = '\t'
-        elif s in ('\b','backspace'):   s = '\b'
-        elif s in ('.','period'):       s = '.'
-        return s
-    #@-others
-#@+node:ekr.20120123115816.10209: ** class ShortcutInfo
-# bindKey:            ShortcutInfo(kind,commandName,func,pane)
-# bindKeyToDict:      ShortcutInfo(kind,commandName,func,pane,stroke)
-# createModeBindings: ShortcutInfo(kind,commandName,func,nextMode,stroke)
-
-class ShortcutInfo:
-    
-    '''A class representing any kind of key binding line.
-    
-    This includes other information besides just the KeyStroke.'''
-        
-    #@+others
-    #@+node:ekr.20120129040823.10254: *3*  ctor (ShortcutInfo)
-    def __init__ (self,kind,commandName='',func=None,nextMode=None,pane=None,stroke=None):
-        
-        trace = False and commandName=='new' and not g.unitTesting
-        
-        if g.new_strokes:
-            if not g.isStrokeOrNone(stroke):
-                g.trace('***** (ShortcutInfo) oops',repr(stroke))
-        else:
-            if not (stroke is None or g.isString(stroke)):
-                g.trace('***** (ShortcutInfo) oops',repr(stroke))
-
-        self.kind = kind
-        self.commandName = commandName
-        self.func = func
-        self.nextMode = nextMode
-        self.pane = pane
-        self.stroke = stroke
-            # The *caller* must canonicalize the shortcut.
-            # Eventually, we might assert stroke is None or isinstance(stroke,KeyStroke)
-
-        if trace: g.trace('(ShortcutInfo)',commandName,stroke,g.callers())
-    #@+node:ekr.20120203153754.10031: *3* __hash__
-    def __hash__ (self):
-        
-        return self.stroke.__hash__() if self.stroke else 0
-    #@+node:ekr.20120125045244.10188: *3* __repr__ & ___str_& dump
-    def __repr__ (self):
-        
-        return self.dump()
-
-    __str__ = __repr__
-
-    def dump (self):
-        si = self    
-        result = ['ShortcutInfo %17s' % (si.kind)]
-        table = ('commandName','func','nextMode','pane','stroke')
-        for ivar in table:
-            if hasattr(si,ivar):
-                val =  getattr(si,ivar)
-                if False: #### g.isStroke(val): g.new_strokes.
-                    s = '%s %s' % (ivar,val)
-                    result.append(s)
-                elif val not in (None,'none','None',''):
-                    if ivar == 'func': val = val.__name__
-                    s = '%s %s' % (ivar,val)
-                    result.append(s)
-        return '[%s]' % ' '.join(result).strip()
-    #@+node:ekr.20120128051055.10234: *3* rich comparisons
-    # def __cmp__ (self,other):
-        
-        # n1,n2 = self.commandName,other.commandName
-        
-        # if   n1 < n2:   return -1
-        # elif n1 == n2:  return 0
-        # else:           return 1
-
-    # def __lt__(self, other): return self.commandName <  other.commandName
-    # def __le__(self, other): return self.commandName <= other.commandName
-    # def __eq__(self, other): return self.commandName == other.commandName
-    # def __ne__(self, other): return self.commandName != other.commandName
-    # def __gt__(self, other): return self.commandName >  other.commandName
-    # def __ge__(self, other): return self.commandName >= other.commandName
-    #@+node:ekr.20120129040823.10226: *3* isModeBinding
-    def isModeBinding (self):
-        
-        return self.kind.startswith('*mode')
-    #@-others
-#@+node:ekr.20120123143207.10223: ** class GeneralSetting
-class GeneralSetting:
-    
-    '''A class representing any kind of setting except shortcuts.'''
-    
-    def __init__ (self,kind,encoding=None,ivar=None,setting=None,val=None,path=None,tag='setting'):
-    
-        self.encoding = encoding
-        self.ivar = ivar
-        self.kind = kind
-        self.path = path
-        self.setting = setting
-        self.val = val
-        self.tag = tag
-        
-    def __repr__ (self):
-        
-        result = ['GeneralSetting kind: %s' % (self.kind)]
-        ivars = ('ivar','path','setting','val','tag')
-        for ivar in ivars:
-            if hasattr(self,ivar):
-                val =  getattr(self,ivar)
-                if val is not None:
-                    result.append('%s: %s' % (ivar,val))
-        return ','.join(result)
-#@+node:ekr.20120129181245.10220: ** class ShortcutsDict (Not used yet)
-class ShortcutsDict:
-    
-    '''A class encapsulating a collection of ShortcutInfo nodes.'''
-    
-    #@+others
-    #@+node:ekr.20120129181245.10221: *3* ctor (ShortcutsDict)
-    def __init__ (self,fn,kind):
-        
-        self.d = {} # Keys are strokes, values are lists of ShortcutInfo objects.
-        
-        # The fn and kind fields replace the infamous _hash key.
-        self.fn = fn
-        self.kind = kind
-    #@+node:ekr.20120129181245.10224: *3* __str__ & __repr
-    def __str__ (self):
-        
-        d = self.d
-        result = ['<ShortcutDict %s %s>' % (self.kind,self.fn)]
-        for key in d.keys():
-            aList = d.get(key,[])
-            for si in aList:
-                assert isinstance(si,ShortcutInfo),si
-                result.append(si)
-        return '\n'.join(result)
-        
-    __repr__ = __str__
-    #@+node:ekr.20120129181245.10222: *3* get, get_fn & get_kind (shortcutsDict)
-    def get (self,stroke):
-        
-        return self.d.get(stroke,[])
-        
-    def get_fn (self):
-        
-        return self.fn
-        
-    def get_kind (self):
-        
-        return self.kind
-    #@+node:ekr.20120129181245.10223: *3* add
-    def add (self,key,si):
-        
-        assert isinstance(si,ShortcutInfo)
-        
-        aList = self.d.get(key,[])
-        if si not in aList:
-            aList.append(si)
-            self.d[key] = aList
-
-        # Maybe: invert self.d and remove conflicting entries.
     #@-others
 #@-others
 #@-leo

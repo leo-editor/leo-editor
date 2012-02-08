@@ -96,6 +96,25 @@ class Commands (object):
         self.mFileName = fileName
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mRelativeFileName = relativeFileName
+        
+        # These ivars are set later by leoEditCommaands.createEditCommanders
+        self.abbrevCommands  = None
+        self.bufferCommands  = None
+        self.editCommands    = None
+        self.chapterCommands = None
+        self.controlCommands = None
+        self.debugCommands   = None
+        self.editFileCommands = None
+        self.helpCommands = None
+        self.keyHandlerCommands = None
+        self.killBufferCommands = None
+        self.leoCommands = None
+        self.macroCommands = None
+        self.queryReplaceCommands = None
+        self.rectangleCommands = None
+        self.registerCommands = None
+        self.searchCommands = None
+        self.spellCommands = None
 
         self.initIvars()
         self.nodeHistory = nodeHistory(c)
@@ -1167,6 +1186,7 @@ class Commands (object):
         openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
         '''
 
+        # g.trace('data',data)
         c = self ; p = c.p
         n = data and len(data) or 0
         if n != 3:
@@ -2904,7 +2924,7 @@ class Commands (object):
 
             w.setInsertPoint(ins)
             c.bodyWantsFocus()
-            if g.app.trace_scroll: g.trace('seeInsertPoint',spot)
+            if g.app.trace_scroll: g.trace('seeInsertPoint',ins)
             w.seeInsertPoint()
         #@-others
     #@+node:ekr.20031218072017.2884: *5* Edit Body submenu
@@ -4854,7 +4874,7 @@ class Commands (object):
 
             j = s.find("*/",i)
             if j == -1:
-                return n
+                return len(s)
             else:
                 return j + 2
         #@-others
@@ -7509,8 +7529,8 @@ class Commands (object):
         else:
             # 2011/12/17: Issue one or two dialogs.
             if c.import_error_nodes or c.ignored_at_file_nodes:
-                 g.app.gui.dismiss_splash_screen()
-                 # g.trace(g.callers())
+                g.app.gui.dismiss_splash_screen()
+                # g.trace(g.callers())
             
             if c.import_error_nodes:
                 files = '\n'.join(sorted(c.import_error_nodes))
@@ -8267,12 +8287,12 @@ class configSettings:
         self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
         self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
 
-        for key in g.app.config.encodingIvarsDict:
-            if key != '_hash':
+        for key in g.app.config.encodingIvarsDict.keys():
+            if g.new_dicts or key != '_hash':
                 self.initEncoding(key)
 
-        for key in g.app.config.ivarsDict:
-            if key != '_hash':
+        for key in g.app.config.ivarsDict.keys():
+            if g.new_dicts or key != '_hash':
                 self.initIvar(key)
     #@+node:ekr.20041118104240: *3* initIvar (c.configSettings)
     def initIvar(self,key):

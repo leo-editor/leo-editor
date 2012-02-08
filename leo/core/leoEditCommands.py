@@ -10,7 +10,7 @@ Modelled after Emacs and Vim commands.'''
 #@+<< imports >>
 #@+node:ekr.20050710151017: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoConfig as leoConfig
+##### import leo.core.leoConfig as leoConfig
 import leo.core.leoFind as leoFind
 import leo.core.leoKeys as leoKeys
 import leo.core.leoTest as leoTest
@@ -28,10 +28,10 @@ import string
 import subprocess # Always exists in Python 2.6 and above.
 import sys
 
-if g.isPython3:
-    import pickle # Only pickle exists in Python 3.x.
-else:
-    import cPickle as pickle 
+# if g.isPython3:
+    # import pickle # Only pickle exists in Python 3.x.
+# else:
+    # import cPickle as pickle 
 
 if g.isPython3:
     from functools import reduce
@@ -355,7 +355,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if not w: return False
         if w.hasSelection(): return False
         
-        assert g.isStrokeOrNone(stroke)
+        assert k.isStrokeOrNone(stroke)
 
         if stroke in ('\b','BackSpace'):
             return False
@@ -726,7 +726,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             'buffer-append-to':             self.appendToBuffer,
             'buffer-kill' :                 self.killBuffer,
             'buffer-prepend-to':            self.prependToBuffer,
-            'buffer-rename':                self.renameBuffer,
+            # 'buffer-rename':              self.renameBuffer,
             'buffer-switch-to':             self.switchToBuffer,
             'buffers-list' :                self.listBuffers,
             'buffers-list-alphabetically':  self.listBuffersAlphabetically,
@@ -769,7 +769,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         self.k.setLabelBlue('Copy to buffer: ')
         self.getBufferName(event,self.copyToBufferFinisher)
 
-    def copyToBufferFinisher (self,event,name):
+    def copyToBufferFinisher (self,name):
 
         c = self.c ; k = self.k ; w = self.w
         s = w.getSelectedText()
@@ -793,7 +793,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         self.k.setLabelBlue('Insert to buffer: ')
         self.getBufferName(event,self.insertToBufferFinisher)
 
-    def insertToBufferFinisher (self,event,name):
+    def insertToBufferFinisher (self,name):
 
         c = self.c ; k = self.k ; w = self.w
         s = w.getSelectedText()
@@ -862,7 +862,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         self.k.setLabelBlue('Prepend to buffer: ')
         self.getBufferName(event,self.prependToBufferFinisher)
 
-    def prependToBufferFinisher (self,event,name):
+    def prependToBufferFinisher (self,name):
 
         c = self.c ; k = self.k ; w = self.w
         s = w.getSelectedText()
@@ -878,16 +878,19 @@ class bufferCommandsClass (baseEditCommandsClass):
             c.recolor()
     #@+node:ekr.20050920084036.43: *4* renameBuffer
     def renameBuffer (self,event):
-
+        
         '''Rename a buffer, i.e., change a node's headline.'''
-
-        self.k.setLabelBlue('Rename buffer from: ')
-        self.getBufferName(event,self.renameBufferFinisher1)
+        
+        g.es('rename-buffer not ready yet')
+        if 0:
+            self.k.setLabelBlue('Rename buffer from: ')
+            self.getBufferName(event,self.renameBufferFinisher1)
 
     def renameBufferFinisher1 (self,name):
 
         self.fromName = name
         self.k.setLabelBlue('Rename buffer from: %s to: ' % (name))
+        event = None
         self.getBufferName(event,self.renameBufferFinisher2)
 
     def renameBufferFinisher2 (self,name):
@@ -1731,373 +1734,6 @@ class editCommandsClass (baseEditCommandsClass):
         #@-<< docstring: theory of operation >>
         #@+others
         #@+node:ekr.20110918184425.6914: *5* class C_to_python
-        #@+node:ekr.20110916215321.8056: *6* Unused
-        if 0:
-            #@+others
-            #@+node:ekr.20110917104720.6871: *7* Drivers & helpers
-            #@+node:ekr.20110916215321.7989: *8* convertLeo1to2 & helper
-            def convertLeo1to2 (self):
-
-                for p in self.p.self_and_subtree():
-                    g.es("converting:",p.h)
-                    s=convertStringLeo1to2(p.b)
-                    p.b = s
-
-                g.es("done")
-            #@+node:ekr.20110916215321.7990: *9* convertStringLeo1to2
-            def convertStringLeo1to2 (self,s):
-                
-                aList = [z for z in s]
-                outputList = []
-                i = 0
-                while i < len(aList):
-                    j = skipCodePart(aList,i)
-                    if j > i:
-                        code = aList[i:j]
-                        convertCodeList1to2(code)
-                        i = j
-                        #print "-----code:", listToString(code)
-                        for item in code:
-                            outputList.append(item)
-                    j = skipDocPart(aList,i)
-                    if j > i:
-                        doc = aList[i:j]
-                        convertDocList(doc) # same as in c2py
-                        #print "-----doc:", listToString(doc)
-                        i = j
-                        for item in doc:
-                            outputList.append(item)
-
-                result = listToString(outputList)
-                global printFlag
-                if printFlag: print("-----:\n", result)
-                return result
-            #@+node:ekr.20110916215321.7994: *8* convertLeoTree
-            def convertLeoTree (self):
-
-                for p2 in self.p.self_and_subtree():
-                    print("converting:",v.h)
-                    s = convertCStringToPython(p2.b,leoFlag=True)
-                    p2.b = s
-
-                g.es('done')
-            #@+node:ekr.20110916215321.7995: *8* convertCFileToPython
-            def convertCFileToPython(fn):
-
-                f=open(fn, 'r')
-                if not f: return
-                s = f.read()
-                f.close()
-
-                f=open(fn + ".py", 'w')
-                if not f: return
-                s = convertCStringToPython(s,leoFlag=False)
-                f.write(s)
-                f.close()
-            #@+node:ekr.20110916215321.7991: *8* convertCodeList1to2
-            #@+at We do _not_ replace @root by @file or insert @others as needed.
-            # Inserting @others can be done easily enough by hand,
-            # and may take more global knowledge than we can reasonably expect to have.
-            #@@c
-
-            def convertCodeList1to2 (self,aList):
-
-                if 0: # There isn't much reason to do this.
-                    removeAtRoot(aList)
-
-                self.safeReplace(aList,"@code","@c")
-                self.replaceSectionDefs(aList)
-                self.removeLeadingAtCode(aList)
-            #@+node:ekr.20110916215321.7996: *8* convertCStringToPython
-            def convertCStringToPython (self,s,leoFlag):
-
-                # print "convertCStringToPython:start\n", s
-                firstPart = True
-                aList = [z for z in s]
-
-                if not leoFlag:
-                    self.convertCodeList(aList,firstPart,dontDoLeoTranslations)
-                    return ''.join(aList)
-
-                outputList = []
-                i = 0
-                while i < len(aList):
-                    j = skipCodePart(aList,i)
-                    if j > i:
-                        code = aList [i: j]
-                        convertCodeList(code,firstPart,doLeoTranslations)
-                        i = j
-                        #print "-----code:", ''.join(code)
-                        for item in code:
-                            outputList.append(item)
-                    firstPart = False # don't remove @c from here on.
-                    j = skipDocPart(aList,i)
-                    if j > i:
-                        doc = aList [i: j]
-                        convertDocList(doc)
-                        #print "-----doc:", ''.join(doc)
-                        i = j
-                        for item in doc:
-                            outputList.append(item)
-
-                result = ''.join(outputList)
-                global printFlag
-                if printFlag: print("-----:\n",result)
-                return result
-            #@+node:ekr.20110917104720.6876: *8* get_default_user_types
-            def get_default_user_types (self):
-                
-                '''Return default user types.'''
-                
-                self.class_list = [
-                    # "vnode", "tnode", "Commands",
-                    # "wxString", "wxTreeCtrl", "wxTextCtrl", "wxSplitterWindow",
-                ]
-
-                self.ivars_dict = {
-                    # "atFile": [
-                        # "mCommands", "mErrors", "mStructureErrors",
-                        # "mTargetFileName", "mOutputFileName", "mOutputStream",
-                        # "mStartSentinelComment", "mEndSentinelComment", "mRoot",
-                    # ],
-                    # "vnode": [
-                        # "mCommands", "mJoinList", "mIconVal", "mTreeID", "mT", "mStatusBits",
-                    # ],
-                    # "tnode": [
-                        # "mBodyString", "mBodyRTF", "mJoinHead", "mStatusBits", "mFileIndex",
-                        # "mSelectionStart", "mSelectionLength", "mCloneIndex",
-                    # ],
-                    # "LeoFrame": [
-                        # "mNextFrame", "mPrevFrame", "mCommands",
-                    # ],
-                    # "Commands": [
-                        # # public
-                        # "mCurrentVnode", "mLeoFrame", "mInhibitOnTreeChanged", "mMaxTnodeIndex",
-                        # "mTreeCtrl", "mBodyCtrl", "mFirstWindowAndNeverSaved",
-                        # #private
-                        # "mTabWidth", "mChanged", "mOutlineExpansionLevel", "mUsingClipboard",
-                        # "mFileName", "mMemoryInputStream", "mMemoryOutputStream", "mFileInputStream",
-                        # "mInputFile", "mFileOutputStream", "mFileSize", "mTopVnode", "mTagList",
-                        # "mMaxVnodeTag",
-                        # "mUndoType", "mUndoVnode", "mUndoParent", "mUndoBack", "mUndoN",
-                        # "mUndoDVnodes", "mUndoLastChild", "mUndoablyDeletedVnode",
-                    # ],
-                }
-            #@+node:ekr.20110919211949.6921: *7* Multi-character code
-            # This is all fairly horrible code...
-
-            # None of it has been tested...
-            #@+node:ekr.20110919211949.6922: *8* match
-            def match (self,s,i,pat):
-                
-                '''Return True if s[i:] matches the pat string.
-                
-                We can't use g.match because s is usually a list.
-                '''
-                
-                assert pat
-                
-                aList,i,n = [],0,0
-                while n < len(pat) and i < len(s):
-                    token = s[i]
-                    n += len(token)
-                    aList.append(token)
-                
-                return pat.startswith(''.join(aList))
-            #@+node:ekr.20110919211949.6923: *8* match_word
-            def match_word (self,s,i,pat):
-                
-                '''Return True if s[i:] word matches the pat string.'''
-                
-                aList,i,n = [],0,0
-                while i < len(s) and n < len(pat):
-                    token = s[i]
-                    i += 1
-                    n += len(token)
-                    aList.append(token)
-                if n == len(pat):
-                    return pat == ''.join(aList)
-                elif n > len(pat):
-                    s2 = ''.join(aList)
-                    if pat.startswith(s2):
-                        ch = s2[len(pat)]
-                        return not ch.isalnum() and not ch == '_'
-                    else:
-                        return False
-                else: # n < len(pat)
-                    assert i == len(s)
-                    return False
-            #@+node:ekr.20110917104720.6873: *7* Scanning
-            #@+node:ekr.20110916215321.8002: *8* convertLeadingBlanks
-            def convertLeadingBlanks(self,aList):
-
-                w = self.tab_width
-                if w < 2: return
-
-                i = 0
-                while i < len(aList):
-                    n = 0
-                    while i < len(aList) and aList[i] == ' ':
-                        n += 1 ; i += 1
-                        if n == w:
-                            aList[i-w:i] = ['\t']
-                            i = i - w + 1
-                            n = 0
-                    i = self.skip_past_line(aList, i)
-            #@+node:ekr.20110916215321.7998: *8* convertDocList
-            def convertDocList (self,docList):
-
-                # print "convertDocList:", docList
-                if self.match_word(docList,0,"@doc"):
-                    i = self.skip_ws(docList,4)
-                    if self.match(docList,i,"\n"):
-                        i += 1
-                    docList [0: i] = [z for z in ("@ ")]
-            #@+node:ekr.20110916215321.8000: *8* skipCodePart
-            def skipCodePart (self,aList,i):
-
-                # print "skipCodePart", i
-                if self.match_word(aList,i,"@doc") or self.match_word(aList,i,"@"):
-                    return i
-                while i < len(aList):
-                    if self.match(aList,i,"//"):
-                        i = skipPastLine(aList,i)
-                    elif self.match(aList,i,"/*"):
-                        i = skipCBlockComment(aList,i)
-                    elif self.match(aList,i,'"') or self.match(aList,i,"'"):
-                        i = skipString(aList,i)
-                    elif self.match(aList,i,"\n"):
-                        i += 1
-                        if self.match_word(aList,i,"@doc") or self.match_word(aList,i,"@"):
-                            break
-                    else: i += 1
-                return i
-            #@+node:ekr.20110916215321.7999: *8* skipDocPart
-            def skipDocPart (self,aList,i):
-
-                # print "skipDocPart", i
-                while i < len(aList):
-                    if self.match_word(aList,i,"@code") or self.match_word(aList,i,"@c"):
-                        break
-                    elif isSectionDef(aList,i):
-                        break
-                    else: i = skipPastLine(aList,i)
-                return i
-            #@+node:ekr.20110917104720.6872: *7* Utils
-            #@+node:ekr.20110916215321.8018: *8* findInCode
-            def findInCode (self,aList,i,findString):
-
-                while i < len(aList):
-                    if self.is_string_or_comment(aList,i):
-                        i = self.skip_string_or_comment(aList,i)
-                    elif self.match(aList,i,findString):
-                        return i
-                    else:
-                        i += 1
-
-                return -1
-            #@+node:ekr.20110916215321.8019: *8* findInList
-            def findInList (self,aList,i,findString):
-
-                while i < len(aList):
-                    if self.match(aList,i,findString):
-                        return i
-                    else:
-                        i += 1
-
-                return-1
-            #@+node:ekr.20110916215321.7986: *7* speedTest
-            def speedTest (self,passes):
-
-                import time
-                fn = r"c:\prog\LeoPy\LeoPy.leo"
-                f=open(fn)
-                if not f:
-                    print("not found: ",fn)
-                    return
-                s=f.read()
-                f.close()
-                print("file:", fn, " size:", len(s), " passes:", passes)
-                print("speedTest start")
-                time1 = time.clock()
-                p = passes
-                while p > 0:
-                    n = len(s) ; i = 0 ; lines = 0
-                    while -1 < i < n:
-                        if s[i] == '\n':
-                            lines += 1 ; i += 1
-                        else:
-                            i = s.find('\n',i) # _much_ faster than list-based-find.
-                        continue
-                        # match is about 9 times slower than simple test.
-                        if s[i]=='\n': # match(s,i,'\n'): # 
-                            i += 1
-                        else:
-                            i += 1
-                    p -= 1
-                time2 = time.clock()
-                print("lines:", lines)
-                print("speedTest done:")
-                print("elapsed time:", time2-time1)
-                print("time/pass:", (time2-time1)/passes)
-            #@+node:ekr.20110916215321.7981: *7* test
-            def test(self):
-                
-                #@+<< define test data >>
-                #@+node:ekr.20110917104720.6875: *8* << define test data >>
-                testData = [
-                "\n@doc\n\
-                This is a doc part: format, whilest, {};->.\n\
-                <<\
-                section def>>=\n\
-                LeoFrame::LeoFrame(vnode *v, char *s, int i)\n\
-                {\n\
-                    // test ; {} /* */.\n\
-                    #if 0 //comment\n\
-                        if(gLeoFrameList)gLeoFrameList -> mPrevFrame = this ;\n\
-                        else\n\
-                            this -> mNextFrame = gLeoFrameList ;\n\
-                    #else\n\
-                        \n\
-                        vnode *v = new vnode(a,b);\n\
-                        Commands *commander = (Commands) NULL ; // after cast\n\
-                        this -> mPrevFrame = NULL ;\n\
-                    #endif\n\
-                    if (a==b)\n\
-                        a = 2;\n\
-                    else if (a ==c)\n\
-                        a = 3;\n\
-                    else return; \n\
-                    /* Block comment test:\n\
-                        if(2):while(1): end.*/\n\
-                    for(int i = 1; i < limit; ++i){\n\
-                        mVisible = FALSE ;\n\
-                        mOnTop = TRUE ;\n\
-                    }\n\
-                    // trailing ws.	 \n\
-                    mCommands = new Commands(this, mTreeCtrl, mTextCtrl) ;\n\
-                    gActiveFrame = this ;\n\
-                }\n\
-                    ", "<<" +
-                "vnode methods >>=\n\
-                \n\
-                void vnode::OnCopyNode(wxCommandEvent& WXUNUSED(event))\n\
-                {\n\
-                    mCommands -> copyOutline();\n\
-                }\n\
-                \n@doc\n\
-                another doc part if, then, else, -> \n<<" +
-                "vnode methods >>=\n\
-                void vnode::OnPasteNode(wxCommandEvent& WXUNUSED(event))\n\
-                {\n\
-                    mCommands -> pasteOutline();\n\
-                }\n" ]
-                #@-<< define test data >>
-                
-                self.print_flag = True
-                for s in testData:
-                    self.convertCStringToPython(s,leoFlag=True)
-            #@-others
         #@+node:ekr.20110916215321.8057: *6* ctor & helpers
         def __init__ (self,c):
             
@@ -2759,103 +2395,6 @@ class editCommandsClass (baseEditCommandsClass):
                 i -= 1
             return i
         #@+node:ekr.20110916215321.8022: *7* remove...
-        #@+node:ekr.20110919113533.6821: *8* Not used
-        if 0:
-            #@+others
-            #@+node:ekr.20110916215321.8023: *9* removeAllCComments (Not used)
-            def removeAllCComments (self,aList,delim):
-
-                i = 0
-                while i < len(aList):
-                    progress = i
-                    if self.match(aList,i,"'") or self.match(aList,i,'"'):
-                        i = self.skip_string(aList,i)
-                    elif self.match(aList,i,"//"):
-                        j = self.skip_to_end_of_line(aList,i)
-                        print("deleting single line comment:", ''.join(aList[i:j]))
-                        del aList[i:j]
-                    elif self.match(aList,i,"/*"):
-                        j = self.skip_c_block_comment(aList,i)
-                        print("deleting block comment:", ''.join(aList[i:j]))
-                        del aList[i:j]
-                    else:
-                        i += 1
-                    assert i > progress
-            #@+node:ekr.20110916215321.8024: *9* removeAllCSentinels
-            def removeAllCSentinels (self,aList,delim):
-
-                i = 0
-                while i < len(aList):
-                    if self.match(aList,i,"'") or self.match(aList,i,'"'):
-                        # string starts a line.
-                        i = self.skip_string(aList,i)
-                        i = self.skip_past_line(aList,i)
-                    elif self.match(aList,i,"/*"):
-                        # block comment starts a line
-                        i = self.skip_c_block_comment(aList,i)
-                        i = self.skip_past_line(line,i)
-                    elif self.match(aList,i,"//@"):
-                        j = self.skip_past_line(aList,i)
-                        print("deleting sentinel:", ''.join(aList[i:j]))
-                        del aList[i:j]
-                    else:
-                        i = self.skip_past_line(aList,i)
-            #@+node:ekr.20110916215321.8025: *9* removeAllPythonComments
-            def removeAllPythonComments (self,aList,delim):
-
-                i = 0
-                while i < len(aList):
-                    if self.match(aList,i,"'") or self.match(aList,i,'"'):
-                        i = self.skip_string(aList,i)
-                    elif self.match(aList,i,"#"):
-                        j = self.skip_past_line(aList,i)
-                        print("deleting comment:", ''.join(aList[i:j]))
-                        del aList[i:j]
-                    else:
-                        i += 1
-            #@+node:ekr.20110916215321.8026: *9* removeAllPythonSentinels
-            def removeAllPythonSentinels (self,aList,delim):
-
-                i = 0
-                while i < len(aList):
-                    if self.match(aList,i,"'") or self.match(aList,i,'"'):
-                        # string starts a line.
-                        i = self.skip_string(aList,i)
-                        i = self.skip_past_line(aList,i)
-                    elif self.match(aList,i,"#@"):
-                        j = self.skip_past_line(aList,i)
-                        print("deleting sentinel:", ''.join(aList[i:j]))
-                        del aList[i:j]
-                    else:
-                        i = self.skip_past_line(aList,i)
-            #@+node:ekr.20110916215321.8027: *9* removeAtRoot
-            def removeAtRoot (self,aList):
-
-                i = self.skip_ws(aList, 0)
-                if self.match_word(aList,i,"@root"):
-                    j = self.skip_past_line(aList,i)
-                    del aList[i:j]
-
-                while i < len(aList):
-                    if self.is_string_or_comment(aList,i):
-                        i = self.skip_string_or_comment(aList,i)
-                    elif self.match(aList,i,"\n"):
-                        i = self.skip_ws(aList, i+1)
-                        if self.match_word (aList,i,"@root"):
-                            j = self.skip_past_line(aList,i)
-                            del aList[i:j]
-                    else: i += 1
-            #@+node:ekr.20110916215321.8031: *9* removeLeadingAtCode
-            def removeLeadingAtCode (self,aList):
-
-                i = self.skip_ws_and_nl(aList,0)
-                if self.match_word(aList,i,"@code"):
-                    i = self.skip_ws_and_nl(aList,5)
-                    del aList[0:i]
-                elif self.match_word(aList,i,"@c"):
-                    i = self.skip_ws_and_nl(aList,2)
-                    del aList[0:i]
-            #@-others
         #@+node:ekr.20110916215321.8028: *8* removeBlankLines
         def removeBlankLines (self,aList):
 
@@ -4790,7 +4329,7 @@ class editCommandsClass (baseEditCommandsClass):
         # if trace: g.trace(name,repr(ch),ch and ch in brackets)
         #@-<< set local vars >>
         
-        assert g.isStrokeOrNone(stroke)
+        assert k.isStrokeOrNone(stroke)
 
         if trace: g.trace('ch',repr(ch),'stroke',stroke)
         if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
@@ -6030,7 +5569,7 @@ class editCommandsClass (baseEditCommandsClass):
                         i = seek_special_end(i)
                         i = seek_simple_whitespace_end(i)
                     else:
-                       i += 1  # e.g. for newlines
+                        i += 1  # e.g. for newlines
             else:
                 i -= 1  # Shift cursor temporarily by -1 to get easy read access to the prev. char
                 if 0 <= i < n:
@@ -6043,7 +5582,7 @@ class editCommandsClass (baseEditCommandsClass):
                         i = seek_special_start(i)
                         # Do not seek further whitespace here
                     else:
-                       i -= 1  # e.g. for newlines
+                        i -= 1  # e.g. for newlines
                 i += 1
         else:
             if forward:
@@ -7292,14 +6831,14 @@ class helpCommandsClass (baseEditCommandsClass):
 
     def getBindingsForCommand(self,commandName):
 
-        c = self.c ; k = c.k ; 
+        c = self.c ; k = c.k
         data = [] ; n1 = 4 ; n2 = 20
         d = k.bindingsDict
         for stroke in sorted(d):
-            assert g.isStroke(stroke),repr(stroke)
+            assert k.isStroke(stroke),repr(stroke)
             aList = d.get(stroke,[])
             for si in aList:
-                assert isinstance(si,leoConfig.ShortcutInfo)
+                assert k.isShortcutInfo(si),si
                 if si.commandName == commandName:
                     pane = g.choose(si.pane=='all','',' %s:' % (si.pane))
                     s1 = pane
@@ -10305,7 +9844,7 @@ class searchCommandsClass (baseEditCommandsClass):
             else:
                 s = ''
         else:
-            stroke = s = event and event.stroke or '' ####
+            stroke = s = event and event.stroke or ''
             
         if trace: g.trace('s',repr(s))
 

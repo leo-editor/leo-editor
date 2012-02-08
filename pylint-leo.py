@@ -20,22 +20,26 @@ def getCoreList():
         ('leoChapters',     ''),
         ('leoCommands',     ''),
         ('leoEditCommands', ''),
-        ('leoFileCommands', 'E1120'),
+        ('leoFileCommands', 'E1120,E1101'),
             # E1120: no value passed for param.
             # E1101: (dangerous) Class 'str' has no 'maketrans' member
         ('leoFind',         ''),
-        ('leoFrame',        ''),
-        ('leoGlobals',      ''), 
+        ('leoFrame',        'R0923'),
+            # R0923: Interface not implemented.
+        ('leoGlobals',      'E0611,E1103'), 
+            # E0611: no name 'parse' in urllib.
             # E1103: (dangerous) Instance of 'ParseResult' has no 'xxx' member,
             # (but some types could not be inferred)
         ('leoGui',          ''),
         ('leoImport',       ''),
-        ('leoMenu',         ''),
+        ('leoMenu',         'W0108'),
+            # W0108: Lambda may not be necessary (it is).
         ('leoNodes',        ''),
         ('leoPlugins',      ''),
         ('leoShadow',       ''),
         ('leoTangle',       ''),
-        ('leoUndo',         ''),
+        ('leoUndo',         'W0511'),
+            # WO511: TODO 
     )
 #@+node:ekr.20100221142603.5641: ** getPassList
 def getPassList():
@@ -144,20 +148,40 @@ W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111'
 no_suppressions = ''
 
 recentCoreList = (
-    # ('leoAtFile',no_suppressions),
-    # ('leoEditCommands',no_suppressions),
-    ('leoFileCommands','E1120,E1101'),
-        # E1120: no value passed for param.
-        # #1101: (dangerous) Class 'str' has no 'maketrans' member
-    ('leoGlobals','E0611'),
-        # E0611: no name 'parse' in urllib.
+    # Passed 02/07/2012
+        # ('leoApp',       no_suppressions),
+        # ('leoAtFile',    no_suppressions),
+        # ('leoCache',     no_suppressions),
+        # ('leoChapters',  no_suppressions),
+        # ('leoCommands',  no_suppressions),
+        # ('leoEditCommands', no_suppressions),
+        # ('leoFind',      no_suppressions),
+        # ('leoFrame','R0923'),
+            # R0923: Interface not implemented.
+        # ('leoGlobals','E0611,E1103'),
+            # E0611: no name 'parse' in urllib.
+            # E1103: Instance of 'ParseResult' has no 'xxx' member (but some types could not be inferred)
+        # ('leoGui',       no_suppressions),
+        # ('leoImport',    no_suppressions),
+        # ('leoNodes',     no_suppressions),
+        # ('leoPlugins',   no_suppressions),
+        # ('leoFileCommands','E1120,E1101'),
+            # E1120: no value passed for param.
+            # E1101: (dangerous) Class 'str' has no 'maketrans' member
+        # ('leoMenu', 'W0108'),
+            # W0108: Lambda may not be necessary (it is).
+        # ('leoShadow',       no_suppressions),
+        # ('leoTangle',    no_suppressions),
+        # ('leoUndo', 'W0511'),
+            # WO511: TODO 
 )
 
 guiPluginsTable = (
-    ('qtGui','E0611,W0221,W0233'),
+    ('qtGui','E0611,E1101,R0923,W0221,W0233'),
+        # E1101:7584:leoQtGui.embed_ipython: Module 'IPython' has no 'ipapi' member
         # E0611: No name 'xxx' in module 'urllib'
         # W0233: __init__ method from a non direct base class 'QDateTimeEdit' is called
-    # ('tkGui','W0221,W0222'),
+        # R0923: Interface not implemented
 )
 
 recentPluginsList = (

@@ -744,7 +744,9 @@
 </v>
 <v t="ekr.20041119034357.20"></v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
+<v t="ekr.20120205022040.15410"><vh>@bool enable_alt_ctrl_bindings = True</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
+<v t="ekr.20120205022040.15411"><vh>@bool swap_mac_keys = False</vh></v>
 <v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
 <v t="ekr.20060926161207.1"><vh>@bool warn_about_redefined_shortcuts = True</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
@@ -9464,6 +9466,10 @@ True (Recommended): The contract-or-goto-parent (Alt-RtArrow) contracts all
 children of the to-be-selected parent.
 </t>
 <t tx="ekr.20111115083813.12518"></t>
+<t tx="ekr.20120205022040.15410">These are needed to handle shortcuts for the find panel!</t>
+<t tx="ekr.20120205022040.15411">This setting has effect only on MacOS.
+
+When True, bindings that appear to specify the control key actually specify the command (clover) key.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files

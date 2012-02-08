@@ -120,23 +120,13 @@ unified_nodes = False # For compatibility with old scripts.
 # new_keys = False # True: Qt input methods produce a **user setting**, not a stroke.
 # if new_keys:
     # print('***** new_keys')
+    
+new_dicts = True # True: use TypedDict objects for Leo's important key dicts.
+if new_dicts: print('***** new_dicts')
 
 new_strokes = True # True: use the KeyStroke class to hold canonicalized strokes.
 if new_strokes:
     print('***** new_strokes')
-    def isStroke(obj):
-        import leo.core.leoConfig as leoConfig
-        return isinstance(obj,leoConfig.KeyStroke)
-    def isStrokeOrNone(obj):
-        import leo.core.leoConfig as leoConfig
-        return obj is None or isinstance(obj,leoConfig.KeyStroke)
-else:
-    def isStroke(obj):
-        import leo.core.leoConfig as leoConfig
-        return g.isString(obj)
-    def isStrokeOrNone(obj):
-        import leo.core.leoConfig as leoConfig
-        return obj is None or g.isString(obj)
 
 enableDB = True
     # Don't even think about eliminating this constant:
@@ -5570,6 +5560,122 @@ def toPythonIndex (s,index):
             return 0
 
 toGuiIndex = toPythonIndex
+#@+node:ekr.20120129181245.10220: *3* g.TypedDict & TypedDictOfLists
+class TypedDict:
+    
+    '''A class containing a name and enforcing type checking.'''
+    
+    #@+others
+    #@+node:ekr.20120205022040.17769: *4* td.ctor
+    def __init__(self,name,keyType,valType):
+
+        trace = False and not g.unitTesting and name == 'g.app.config.defaultsDict'
+        self.d = {}
+        self.isList = False
+        self._name = name # name is a method.
+        self.keyType = keyType
+        self.valType = valType
+
+        if trace:
+            print(self)
+            # g.trace(self)
+    #@+node:ekr.20120205022040.17770: *4* td.__repr__ & __str__
+    def __repr__(self):
+
+        return '<TypedDict name:%s keys:%s values:%s' % (
+            self._name,self.keyType.__name__,self.valType.__name__)
+            
+    __str__ = __repr__
+        
+    #@+node:ekr.20120206134955.10150: *4* td._checkKey/ValType
+    def _checkKeyType(self,key):
+        
+        # These fail on Python 2.x for strings.
+        if g.isPython3:
+            assert key.__class__ == self.keyType,self._reportTypeError(key,self.keyType)
+
+    def _checkValType(self,val):
+
+        # This doesn't fail, either on Python 2.x or 3.x.
+        assert val.__class__ == self.valType,self._reportTypeError(val,self.valType)
+            
+    def _reportTypeError(self,obj,objType):
+        
+        print('obj',obj,'obj.__class__',obj.__class__,'objType',objType)
+        
+        return 'dict: %s expected %s got %s' % (
+            self._name,obj.__class__.__name__,objType.__name__)
+    #@+node:ekr.20120205022040.17774: *4* td.add & td.replace
+    def add(self,key,val):
+        self._checkKeyType(key)
+        self._checkValType(val)
+        if self.isList:
+            aList = self.d.get(key,[])
+            if val not in aList:
+                aList.append(val)
+                self.d[key] = aList
+        else:
+            self.d[key] = val
+
+    def replace(self,key,val):
+        self._checkKeyType(key)
+        if self.isList:
+            for z in val:
+                self._checkValType(z)
+            self.d[key] = val
+        else:
+            self._checkValType(val)
+            self.d[key] = val
+            
+    __setitem__ = replace # allow d[key] = val.
+    #@+node:ekr.20120206134955.10151: *4* td.dump
+    def dump (self):
+        
+        result = ['Dump of %s' % (self)]
+        
+        for key in sorted(self.d.keys()):
+            if self.isList:
+                result.append(key)
+                aList = self.d.get(key,[])
+                for z in aList:
+                    result.append('  '+repr(z))
+            else:
+                result.append(key,self.d.get(key))
+                
+        return '\n'.join(result)
+    #@+node:ekr.20120205022040.17771: *4* td getters
+    def get(self,key,default=None):
+        self._checkKeyType(key)
+        if default is None and self.isList:
+            default = []
+        return self.d.get(key,default)
+            
+    def keys(self):
+        return self.d.keys()
+        
+    def name(self):
+        return self._name
+    #@+node:ekr.20120205022040.17807: *4* td.update
+    def update(self,d):
+        
+        if isinstance(d,TypedDict):
+            self.d.update(d.d)
+        else:
+            self.d.update(d)
+    #@-others
+    
+class TypedDictOfLists (TypedDict):
+    
+    '''A class whose values are lists of typed values.'''
+    
+    def __init__(self,name,keyType,valType):
+        TypedDict.__init__(self,name,keyType,valType) # Init the base class
+        self.isList = True
+        
+    def __repr__(self):
+        return '<TypedDictOfLists name:%s keys:%s values:%s' % (
+            self._name,self.keyType.__name__,self.valType.__name__)    
+    __str__ = __repr__
 #@+node:ekr.20041219095213: *3* import wrappers
 #@+node:ekr.20040917061619: *4* g.cantImport
 def cantImport (moduleName,pluginName=None,verbose=True):

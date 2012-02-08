@@ -547,7 +547,7 @@ class shadowController:
             try:
                 old_private_lines = open(old_private_file,encoding=self.encoding).readlines()
             except UnicodeDecodeError:
-                at.error('UnicodeDecodeError reading %s', new_public_file)
+                at.error('UnicodeDecodeError reading %s', old_private_file)
                 return None
         else:
             try:
@@ -558,7 +558,7 @@ class shadowController:
             try:
                 old_private_lines = open(old_private_file).readlines()
             except UnicodeDecodeError:
-                at.error('UnicodeDecodeError reading %s', new_public_file)
+                at.error('UnicodeDecodeError reading %s', old_private_file)
                 return None
         
             # 2011/09/09: convert each line to unicode.

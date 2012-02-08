@@ -21,7 +21,7 @@ useUI = False # True: use qt_main.ui. False: use DynamicWindow.createMainWindow.
 import leo.core.leoGlobals as g
 
 import leo.core.leoChapters as leoChapters
-import leo.core.leoConfig as leoConfig
+# import leo.core.leoConfig as leoConfig
 import leo.core.leoColor as leoColor
 import leo.core.leoFrame as leoFrame
 import leo.core.leoFind as leoFind
@@ -235,7 +235,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             i = j = w.getInsertPoint()
             text = w.getAllText()
             while (i and text[i] != '.'):
-                    i -= 1
+                i -= 1
             i += 1
 
             if j > i:
@@ -2815,7 +2815,7 @@ class leoQtBody (leoFrame.leoBody):
                 c.frame.top.textEdit,
                 name='body',c=c)
             self.bodyCtrl = w # The widget as seen from Leo's core.
-            self.colorizer = nullColorizer(c)
+            self.colorizer = leoFrame.nullColorizer(c) # 2011/02/07
         else:
             top = c.frame.top
             sw = top.leo_ui.stackedWidget
@@ -5394,7 +5394,7 @@ class leoQtLog (leoFrame.leoLog):
         w = self.tabWidget
 
         return [w.tabText(i) for i in range(w.count())]
-        i = w.currentIndex()
+
     #@+node:ekr.20110605121601.18330: *5* numberOfVisibleTabs (leoQtLog)
     def numberOfVisibleTabs (self):
 
@@ -5736,6 +5736,8 @@ class leoQtMenu (leoMenu.leoMenu):
         This is called from leoMenu.createOpenWithMenuFromTable.'''
 
         # Use the existing Open With menu if possible.
+        # g.trace(parent,label,index)
+
         menu = self.getMenu('openwith')
 
         if not menu:
@@ -7253,7 +7255,7 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
             if aList:
                 result = []
                 for si in aList:
-                    assert isinstance(si,leoConfig.ShortcutInfo)
+                    assert k.isShortcutInfo(si),si
                     # Don't show mode-related bindings.
                     if not si.isModeBinding():
                         accel = k.prettyPrintKey(si.stroke)
