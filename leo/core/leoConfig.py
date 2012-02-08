@@ -78,12 +78,9 @@ class ParserBaseClass:
             # True if this is the .leo file being opened,
             # as opposed to myLeoSettings.leo or leoSettings.leo.
         self.recentFiles = [] # List of recent files.
-        if g.new_dicts:
-            self.shortcutsDict = g.TypedDictOfLists('parser.shortcutsDict',
-                keyType=type('shortcutName'),valType=leoKeys.ShortcutInfo)
-        else:
-            self.shortcutsDict = {}
-            # Keys are cononicalized shortcut names, values are lists of ShortcutInfo objects.
+        self.shortcutsDict = g.TypedDictOfLists(
+            name='parser.shortcutsDict',
+            keyType=type('shortcutName'),valType=leoKeys.ShortcutInfo)
         self.openWithList = []
             # A list of dicts containing 'name','shortcut','command' keys.
 
@@ -537,13 +534,9 @@ class ParserBaseClass:
         # Create a local shortcutsDict.
         old_d = self.shortcutsDict
         
-        if g.new_dicts:
-            d = g.TypedDictOfLists(name='modeDict for %s' % (modeName),
-                keyType=type('commandName'),valType=k.ShortcutInfo)
-        else:
-            d = {'_hash':modeName,}
-
-        self.shortcutsDict = d
+        self.shortcutsDict = d = g.TypedDictOfLists(
+            name='modeDict for %s' % (modeName),
+            keyType=type('commandName'),valType=k.ShortcutInfo)
 
         s = p.b
         lines = g.splitLines(s)
@@ -554,12 +547,7 @@ class ParserBaseClass:
                 assert k.isShortcutInfo(si),si
                 if not name:
                     # An entry command: put it in the special *entry-commands* key.
-                    if g.new_dicts:
-                        d.add('*entry-commands*',si)
-                    else:
-                        aList0 = d.get('*entry-commands*',[])
-                        aList0.append(si)
-                        d ['*entry-commands*'] = aList0
+                    d.add('*entry-commands*',si)
                 elif si is not None:
                     # A regular shortcut.
                     si.pane = modeName
@@ -575,17 +563,13 @@ class ParserBaseClass:
                         # g.trace('inheriting',[b.val for b in aList3])
                         aList.extend(aList3)
                     aList.append(si)
-                    if g.new_dicts:
-                        d.replace(name,aList)
-                    else:
-                        d [name] = aList
+                    d.replace(name,aList)
                     self.set(p,"shortcut",name,aList)
 
         # Restore the global shortcutsDict.
         self.shortcutsDict = old_d
         
-        if trace and g.new_dicts:
-            g.trace(d.dump())
+        if trace: g.trace(d.dump())
 
         # Create the command, but not any bindings to it.
         self.createModeCommand(modeName,name1,d)
@@ -625,12 +609,7 @@ class ParserBaseClass:
         d = self.shortcutsDict
         if s is None: s = p.b
         
-        if g.new_dicts:
-            fn = d.name()
-        else:
-            fn = d.get('_hash')
-            fn = g.shortFileName(fn) if fn else '<no hash>'
-
+        fn = d.name()
         for line in g.splitLines(s):
             line = line.strip()
             if line and not g.match(line,0,'#'):
@@ -1085,21 +1064,13 @@ class ParserBaseClass:
             # g.trace('no settings tree for %s' % c)
             return {},{}
 
-        if g.new_dicts:
-            self.settingsDict = g.TypedDict(name='settingsDict for %s' % (c.shortFileName()),
-                keyType=type('settingName'),valType=GeneralSetting)
-        else:
-            self.settingsDict = {}
-            d['_hash'] = 'settingsDict for %s' % c.shortFileName()
-                ####  c.hash() # Was done in updateSettings.
+        self.settingsDict = g.TypedDict(
+            name='settingsDict for %s' % (c.shortFileName()),
+            keyType=type('settingName'),valType=GeneralSetting)
         
-        if g.new_dicts:
-            self.shortcutsDict = g.TypedDictOfLists(
-                name='shortcutsDict for %s' % (c.shortFileName()),
-                keyType=type('s'), # keyType=KeyStroke,
-                valType=k.ShortcutInfo)
-        else:
-            self.shortcutsDict = {'_hash': c.hash()} # 2011/02/10
+        self.shortcutsDict = g.TypedDictOfLists(
+            name='shortcutsDict for %s' % (c.shortFileName()),
+            keyType=type('s'), valType=k.ShortcutInfo)
             
         after = p.nodeAfterTree()
         while p and p != after:
@@ -1111,8 +1082,6 @@ class ParserBaseClass:
                 p.moveToThreadNext()
 
         shortcutsDict = c.config.make_shortcuts_dicts(self.shortcutsDict,self.localFlag)
-        
-        # g.trace(type(shortcutsDict),type(self.settingsDict))
 
         return shortcutsDict,self.settingsDict
     #@+node:ekr.20041120094940.10: *3* valueError
@@ -1145,11 +1114,9 @@ class configClass:
     defaultMenuFontSize = g.choose(sys.platform=="win32",9,12)
     defaultTreeFontSize = g.choose(sys.platform=="win32",9,12)
 
-    if g.new_dicts:
-        defaultsDict = g.TypedDict(name='g.app.config.defaultsDict',
-            keyType=type('key'),valType=GeneralSetting)
-    else:
-        defaultsDict = {'_hash':'defaultsDict'}
+    defaultsDict = g.TypedDict(
+        name='g.app.config.defaultsDict',
+        keyType=type('key'),valType=GeneralSetting)
 
     defaultsData = (
         # compare options...
@@ -1202,11 +1169,9 @@ class configClass:
         ("split_bar_width","int",7),
     )
     #@+node:ekr.20041118062709: *4* define encodingIvarsDict (g.app.config)
-    if g.new_dicts:
-        encodingIvarsDict = g.TypedDict(name='g.app.config.encodingIvarsDict',
-            keyType=type('key'),valType=GeneralSetting)
-    else:
-        encodingIvarsDict = {'_hash':'encodingIvarsDict'}
+    encodingIvarsDict = g.TypedDict(
+        name='g.app.config.encodingIvarsDict',
+        keyType=type('key'),valType=GeneralSetting)
 
     encodingIvarsData = (
         ("default_at_auto_file_encoding","string","utf-8"),
@@ -1220,11 +1185,9 @@ class configClass:
     # Each of these settings sets the corresponding ivar.
     # Also, the c.configSettings settings class inits the corresponding commander ivar.
 
-    if g.new_dicts:
-        ivarsDict = g.TypedDict(name='g.app.config.ivarsDict',
-            keyType=type('key'),valType=GeneralSetting)
-    else:
-        ivarsDict = {'_hash':'ivarsDict'}
+    ivarsDict = g.TypedDict(
+        name='g.app.config.ivarsDict',
+        keyType=type('key'),valType=GeneralSetting)
 
     ivarsData = (
         ("at_root_bodies_start_in_doc_mode","bool",True),
@@ -1294,11 +1257,9 @@ class configClass:
         self.inited = False
         self.menusList = []
         self.menusFileName = ''
-        if g.new_dicts:
-            self.modeCommandsDict = g.TypedDict(name = 'modeCommandsDict',
-                keyType = type('commandName'),valType = g.TypedDictOfLists)
-        else:
-            self.modeCommandsDict = {}
+        self.modeCommandsDict = g.TypedDict(
+            name = 'modeCommandsDict',
+            keyType = type('commandName'),valType = g.TypedDictOfLists)
         self.myGlobalConfigFile = None
         self.myHomeConfigFile = None
         self.machineConfigFile = None
@@ -1335,26 +1296,11 @@ class configClass:
     #@+node:ekr.20041117065611.2: *4* initIvarsFromSettings & helpers
     def initIvarsFromSettings (self):
 
-        trace = False and not g.unitTesting
-        if trace:
-            g.trace(self.ivarsDict)
-            # print('initIvarsFromSettings','-' * 20)
-            # print('initIvarsFromSettings: ivarsDict',self.ivarsDict)
-            # print('initIvarsFromSettings: ivarsDict.keys()',list(self.ivarsDict.keys()))
-
         for ivar in self.encodingIvarsDict.keys():
-            if g.new_dicts:
-                self.initEncoding(ivar)
-            else:
-                if ivar != '_hash':
-                    self.initEncoding(ivar)
+            self.initEncoding(ivar)
 
         for ivar in self.ivarsDict.keys():
-            if g.new_dicts:
-                self.initIvar(ivar)
-            else:
-                if ivar != '_hash':
-                    self.initIvar(ivar)
+            self.initIvar(ivar)
     #@+node:ekr.20041117065611.1: *5* initEncoding
     def initEncoding (self,key):
 
@@ -1490,12 +1436,8 @@ class configClass:
         
         if trace:
             new_n,old_n = len(list(new_d.keys())),len(list(old_d.keys()))
-            if g.new_dicts:
-                g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.name()))
-                g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.name()))
-            else:
-                g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.get('_hash')))
-                g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.get('_hash')))
+            g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.name()))
+            g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.name()))
 
         inverted_old_d = self.invert(old_d)
         inverted_new_d = self.invert(new_d)
@@ -1509,43 +1451,27 @@ class configClass:
         returning a dict whose keys are strokes.'''
         
         trace = False and not g.unitTesting ; verbose = True
-        if trace:
-            if g.new_dicts:
-                g.trace('*'*40,d.name())
-            else:
-                g.trace('*'*40,d.get('_hash'))
+        if trace: g.trace('*'*40,d.name())
         
-        if g.new_dicts:
-            result = g.TypedDictOfLists(name='inverted %s' % d.name(),
-                keyType = leoKeys.KeyStroke,valType = leoKeys.ShortcutInfo)
-        else:
-            result = {}
+        result = g.TypedDictOfLists(
+            name='inverted %s' % d.name(),
+            keyType = leoKeys.KeyStroke,
+            valType = leoKeys.ShortcutInfo)
+
         for commandName in d.keys():
-            if not g.new_dicts and commandName == '_hash':
-                result['_hash'] = 'inverted %s' % d.get('_hash')
-            else:
-                for si in d.get(commandName,[]):
-                    # This assert can fail if there is an exception in the ShortcutInfo ctor.
-                    try:
-                        assert isinstance(si,leoKeys.ShortcutInfo),'commandName %s si %s' % (
-                            commandName,si)
-                    except AssertionError:
-                        print('invert ***** ooops',si)
-                    stroke = si.stroke # This is canonicalized.
-                    si.commandName = commandName # Add info.
-                    assert stroke
-                    if trace and verbose:
-                        g.trace('%40s %s' % (commandName,stroke))
-                    if g.new_dicts:
-                        result.add(stroke,si)
-                    else:
-                        aList = result.get(stroke,[])
-                        if si not in aList:
-                            aList.append(si)
-                            result[stroke] = aList
+            for si in d.get(commandName,[]):
+                # This assert can fail if there is an exception in the ShortcutInfo ctor.
+                assert isinstance(si,leoKeys.ShortcutInfo),si
+
+                stroke = si.stroke # This is canonicalized.
+                si.commandName = commandName # Add info.
+                assert stroke
+                if trace and verbose:
+                    g.trace('%40s %s' % (commandName,stroke))
+                result.add(stroke,si)
 
         if trace: g.trace('returns  %4s %s %s' % (
-            len(list(result.keys())),id(d),result.get('_hash')))
+            len(list(result.keys())),id(d),result.name()))
         return result
     #@+node:ekr.20120125045244.10187: *5* uninvert (g.app.config)
     def uninvert (self,d):
@@ -1556,32 +1482,23 @@ class configClass:
         trace = False and not g.unitTesting ; verbose = True
         if trace and verbose: g.trace('*'*40)
 
-        if g.new_dicts:
-            assert d.keyType == leoKeys.KeyStroke,d.keyType
-            result = g.TypedDictOfLists(name='uninverted %s' % d.name(),
-                keyType = type('commandName'),valType = leoKeys.ShortcutInfo)
-        else:
-            result = {}
+        assert d.keyType == leoKeys.KeyStroke,d.keyType
+        result = g.TypedDictOfLists(
+            name='uninverted %s' % d.name(),
+            keyType = type('commandName'),
+            valType = leoKeys.ShortcutInfo)
+        
         for stroke in d.keys():
-            if not g.new_dicts and stroke == '_hash':
-                result['_hash'] = 'uninverted %s' % d.get('_hash')
-            else:
-                for si in d.get(stroke,[]):
-                    assert isinstance(si,leoKeys.ShortcutInfo),si
-                    commandName = si.commandName
-                    if trace and verbose:
-                        g.trace('uninvert %20s %s' % (stroke,commandName))
-                    assert commandName
-                    if g.new_dicts:
-                        result.add(commandName,si)
-                    else:
-                        aList = result.get(commandName,[])
-                        if si not in aList:
-                            aList.append(si)
-                            result[commandName] = aList
+            for si in d.get(stroke,[]):
+                assert isinstance(si,leoKeys.ShortcutInfo),si
+                commandName = si.commandName
+                if trace and verbose:
+                    g.trace('uninvert %20s %s' % (stroke,commandName))
+                assert commandName
+                result.add(commandName,si)
 
         if trace: g.trace('returns %4s %s %s' % (
-            len(list(result.keys())),id(d),result.get('_hash')))
+            len(list(result.keys())),id(d),result.name()))
         return result
     #@+node:ekr.20041117081009: *3* Getters... (g.app.config)
     #@+node:ekr.20041123070429: *4* canonicalizeSettingName (munge)
@@ -1656,36 +1573,21 @@ class configClass:
             if d:
                 val,junk = self.getValFromDict(d,setting,kind)
                 if val is not None:
-                    if trace:
-                        if g.new_dicts:
-                            kind = d.name()
-                        else:
-                            kind = d.get('_hash','<no hash>')
-                        g.trace('**1',setting,val,kind)
+                    if trace: g.trace('**1',setting,val,d.name())
                     return val
 
         for d in self.localOptionsList:
             # For myLeoSettings.leo and leoSettings.leo.
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                if trace:
-                    if g.new_dicts:
-                        kind = d.name()
-                    else:
-                        kind = d.get('_hash','<no hash>')
-                    g.trace('**2',setting,val,kind)
+                if trace: g.trace('**2',setting,val,d.name())
                 return val
 
         for d in self.dictList:
             # For hard-coded options...
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                if trace:
-                    if g.new_dicts:
-                        kind = d.name()
-                    else:
-                        kind = d.get('_hash','<no hash>')
-                    g.trace('**3',setting,val,kind)
+                if trace: g.trace('**3',setting,val,d.name())
                 return val
 
         # New in Leo 4.6. Use settings in leoSettings.leo *last*.
@@ -1695,12 +1597,7 @@ class configClass:
             if d:
                 val,junk = self.getValFromDict(d,setting,kind)
                 if val is not None:
-                    if trace:
-                        if g.new_dicts:
-                            kind = d.name()
-                        else:
-                            kind = d.get('_hash','<no hash>')
-                        g.trace('**4',setting,val,kind)
+                    if trace: g.trace('**4',setting,val,d.name())
                     return val
 
         if trace:
@@ -2034,13 +1931,8 @@ class configClass:
         result = []
         suppressKind = ('shortcut','shortcuts','openwithtable')
         
-        if g.new_dicts:
-            suppressKeys = (None,'shortcut')
-            name = d.name().lower()
-        else:
-            suppressKeys = (None,'_hash','shortcut')
-            name = d.get('_hash').lower() or ''
-            
+        suppressKeys = (None,'shortcut')
+        name = d.name().lower()
         # g.trace(tag,name)
 
         if name.endswith('myleosettings.leo'):
@@ -2097,28 +1989,26 @@ class configClass:
         # Ignore temporary commanders created by readSettingsFiles.
         if trace and verbose: g.trace('*' * 10)
         if trace: g.trace(
-            'inited',self.inited,
-            c and c.shortFileName() or '<no c>')
+            'inited',self.inited,c and c.shortFileName() or '<no c>')
 
         d = self.ivarsDict
         keys = list(d.keys())
         keys.sort()
         for key in keys:
-            if g.new_dicts or key != '_hash':
-                gs = d.get(key)
+            gs = d.get(key)
+            if gs:
                 assert isinstance(gs,GeneralSetting)
-                if gs:
-                    ivar = gs.ivar # The actual name of the ivar.
-                    kind = gs.kind
-                    val = self.get(c,key,kind) # Don't use bunch.val!
-                    if c:
-                        if trace and verbose: g.trace("%20s %s = %s" % (
-                            g.shortFileName(c.mFileName),ivar,val))
-                        setattr(c,ivar,val)
-                    else:
-                        if trace and verbose: g.trace("%20s %s = %s" % (
-                            'g.app.config',ivar,val))
-                        setattr(self,ivar,val)
+                ivar = gs.ivar # The actual name of the ivar.
+                kind = gs.kind
+                val = self.get(c,key,kind) # Don't use bunch.val!
+                if c:
+                    if trace and verbose: g.trace("%20s %s = %s" % (
+                        g.shortFileName(c.mFileName),ivar,val))
+                    setattr(c,ivar,val)
+                else:
+                    if trace and verbose: g.trace("%20s %s = %s" % (
+                        'g.app.config',ivar,val))
+                    setattr(self,ivar,val)
     #@+node:ekr.20041201080436: *4* appendToRecentFiles (g.app.config)
     def appendToRecentFiles (self,files):
 
@@ -2272,9 +2162,6 @@ class configClass:
         
         d = settingsDict
         if d:
-            # _hash now set when settingsDict is created.
-            #### if not g.new_dicts:
-            ####    d['_hash'] = c.hash() #### ????
             if localFlag:
                 self.localOptionsDict[c.hash()] = d
             else:

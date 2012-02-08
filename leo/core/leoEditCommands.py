@@ -362,10 +362,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         d = {'Return':'\n','Tab':'\t','space':' ','underscore':'_'}
         if stroke:
-            if True and g.new_strokes: #### To do...
-                ch = d.get(stroke.s,stroke.s)
-            else:
-                ch = d.get(stroke,stroke)
+            ch = d.get(stroke.s,stroke.s) #### To do.
             if len(ch) > 1:
                 if (stroke.find('Ctrl+') > -1 or
                     stroke.find('Alt+') > -1 or
@@ -4308,11 +4305,7 @@ class editCommandsClass (baseEditCommandsClass):
         p = c.p
         gui = g.app.gui
 
-        if g.new_strokes:
-            stroke = event and event.stroke or None
-        else:
-            stroke = event and event.stroke or ''
-
+        stroke = event and event.stroke or None
         ch = event and event.char or ''
 
         if ch == 'Return':
@@ -9837,14 +9830,8 @@ class searchCommandsClass (baseEditCommandsClass):
         trace = False and not g.unitTesting
         c = self.c ; k = self.k
         
-        if g.new_strokes:
-            stroke = event and event.stroke or None
-            if stroke:
-                s = stroke.s
-            else:
-                s = ''
-        else:
-            stroke = s = event and event.stroke or ''
+        stroke = event and event.stroke or None
+        s = stroke.s if stroke else ''
             
         if trace: g.trace('s',repr(s))
 

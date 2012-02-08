@@ -3884,36 +3884,21 @@ def get (self,c,setting,kind):
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                if trace:
-                    if g.new_dicts:
-                        kind = d.name()
-                    else:
-                        kind = d.get('_hash','<no hash>')
-                    g.trace('**1',setting,val,kind)
+                if trace: g.trace('**1',setting,val,d.name())
                 return val
 
     for d in self.localOptionsList:
         # For myLeoSettings.leo and leoSettings.leo.
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
-            if trace:
-                if g.new_dicts:
-                    kind = d.name()
-                else:
-                    kind = d.get('_hash','<no hash>')
-                g.trace('**2',setting,val,kind)
+            if trace: g.trace('**2',setting,val,d.name())
             return val
 
     for d in self.dictList:
         # For hard-coded options...
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
-            if trace:
-                if g.new_dicts:
-                    kind = d.name()
-                else:
-                    kind = d.get('_hash','<no hash>')
-                g.trace('**3',setting,val,kind)
+            if trace: g.trace('**3',setting,val,d.name())
             return val
 
     # New in Leo 4.6. Use settings in leoSettings.leo *last*.
@@ -3923,12 +3908,7 @@ def get (self,c,setting,kind):
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                if trace:
-                    if g.new_dicts:
-                        kind = d.name()
-                    else:
-                        kind = d.get('_hash','<no hash>')
-                    g.trace('**4',setting,val,kind)
+                if trace: g.trace('**4',setting,val,d.name())
                 return val
 
     if trace:
@@ -7354,15 +7334,9 @@ def handleDefaultChar(self,event,stroke):
             i = w.logCtrl.getInsertPoint()
             if not stroke:
                 stroke = event and event.stroke
-            if g.new_strokes:
+            if stroke:
                 s = stroke.toGuiChar()
                 w.logCtrl.insert(i,s)
-            else:
-                if stroke in ('\n','Return'): stroke = '\n'
-                elif stroke in ('\t','Tab'): stroke = '\t'
-                elif stroke in ('\b','Backspace'): stroke = '\b'
-                elif stroke in ('.','Period','period'): stroke = '.'
-                w.logCtrl.insert(i,stroke)
         else:
             if trace: g.trace('Not a HighLevelInterface object',w)
         return # None
@@ -7435,12 +7409,7 @@ def masterKeyHandler (self,event):
 .. @+node:ekr.20061031131434.147: *7* << define vars >>
 w = event and event.widget
 char = event and event.char or ''
-
-if g.new_strokes:
-    stroke = event and event.stroke or None
-else:
-    stroke = event and event.stroke or ''
-
+stroke = event and event.stroke or None
 w_name = c.widget_name(w)
 state = k.state.kind
 
@@ -7696,10 +7665,7 @@ def handleUnboundKeys (self,event,char,stroke):
         if trace: g.trace('ignoring unbound character in command mode',stroke)
         return None
         
-    elif (
-        g.new_strokes and stroke.isFKey() or
-        not g.new_strokes and k.isFKey(stroke)
-    ):
+    elif stroke.isFKey():
         if trace: g.trace('ignoring F-key',stroke)
         return None
 

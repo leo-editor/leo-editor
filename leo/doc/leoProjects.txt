@@ -2492,29 +2492,28 @@ for pane in sorted(list(d.keys())):
 
 d = g.app.config.localOptionsDict.get(c.hash())
 if d:
-    fn = d.get('_hash')
+    fn = d.name()
     keys = list(d.keys())
     print('***** localOptionsDict...')
     for key in keys:
-        if key != '_hash':
-            b = d.get(key)
-            assert b.tag == 'setting'
-            if b.kind == 'shortcut':
-                print() ; print(key) ; print(b)
+        si = d.get(key)
+        assert si.tag == 'setting'
+        if si.kind == 'shortcut':
+            print() ; print(key) ; print(si)
                     
 aList = g.app.config.localOptionsList
 if aList:
     print() ; print('***** localOptionsList...')
     for d in aList:
-        fn = d.get('_hash')
+        fn = d.name()
         print()
         print('local shortcuts for %s...' % fn)
         keys = sorted(list(d.keys()))
         for key in keys:
-            if key != '_hash' and key.startswith('run'):
-                b = d.get(key)
-                if b.kind == 'shortcut':
-                    print() ; print(key) ; print(b)
+            if key.startswith('run'):
+                si = d.get(key)
+                if si.kind == 'shortcut':
+                    print() ; print(key) ; print(si)
 #@+node:ekr.20120126080450.10187: *4* @ignore passed
 #@+node:ekr.20120120095156.10263: *5* @test findDictForFile
 def findDictForFile(fn):
@@ -2524,7 +2523,7 @@ def findDictForFile(fn):
     short_fn = g.shortFileName(fn).lower()
 
     for d in g.app.config.localOptionsList:
-        h = g.shortFileName(d.get('_hash')).lower()
+        h = g.shortFileName(d.name()).lower()
         if short_fn == h:
             return d
     else:
@@ -2551,13 +2550,10 @@ for key in sorted(d.keys()):
     print('*** mode ***',key)
     d2 = d.get(key)
     for key2 in sorted(d2.keys()):
-        if key2 == '_hash':
-            pass # print('_hash',d2.get(key2))
-        else:
-            aList = d2.get(key2)
-            print(key2)
-            for si in aList:
-                print('   ',si)
+        aList = d2.get(key2)
+        print(key2)
+        for si in aList:
+            print('   ',si)
 #@+node:ekr.20120120095156.10262: *5* @test types of contents of settings dicts
 @
 ivar                    Keys                Values
@@ -2582,8 +2578,7 @@ Notes:
 (8) Keys are command names, values are lists of ShortcutInfo objects.
 @c
 
-import leo.core.leoConfig as leoConfig
-si_type = leoConfig.ShortcutInfo
+si_type = c.k.ShortcutInfo
 disabled_func_type = None # Should be any bound method.
 k = c.k
 
@@ -2601,11 +2596,10 @@ test_dict_of_lists(k.computeInverseBindingDict(),type(tuple()),'inverseBindingDi
 d = g.app.config.modeCommandsDict
 test_dict_of_dicts(d,None,'modeCommandsDict')
 for key in sorted(d.keys()):
-    if key != '_hash':
-        d2 = d.get(key)
-        test_dict_of_lists(d2,si_type,'inner modeCommandsDict')
-            # This requires a hack to special-case the
-            # '*entry-commands*' and '*command-prompt*' keys.
+    d2 = d.get(key)
+    test_dict_of_lists(d2,si_type,'inner modeCommandsDict')
+        # This requires a hack to special-case the
+        # '*entry-commands*' and '*command-prompt*' keys.
 #@+node:ekr.20120126080450.10193: *6* test_dict_of_dicts
 def test_dict_of_dicts(d,theType,tag):
 
@@ -2613,14 +2607,11 @@ def test_dict_of_dicts(d,theType,tag):
 
     for key in d.keys():
         d2 = d.get(key)
-        if key == '_hash':
-            assert type(d2) == type('s')
-        else:
-            assert type(d2) == type({})
-            for key in d2.keys():
-                obj = d2.get(key)
-                if theType:
-                    assert type(obj) == theType,repr(obj)
+        assert type(d2) == type({})
+        for key in d2.keys():
+            obj = d2.get(key)
+            if theType:
+                assert type(obj) == theType,repr(obj)
 #@+node:ekr.20120126080450.10191: *6* test_dict_of_lists
 def test_dict_of_lists(d,theType,tag):
 
@@ -2628,9 +2619,7 @@ def test_dict_of_lists(d,theType,tag):
 
     for key in d.keys():
         obj = d.get(key)
-        if key == '_hash':
-            assert type(obj)==type('s'),repr(obj)
-        elif key in ('*entry-commands*','*command-prompt*'):
+        if key in ('*entry-commands*','*command-prompt*'):
             # Special case for g.app.config.modeCommandsDict
             assert type(obj)==type([]),repr(obj)
         else:
@@ -2684,7 +2673,7 @@ def dump_dict(d,pattern=None,tag=None):
     result = [] # '\ndump of %s...' % (tag)
     
     for key in d.keys():
-        if key != '_hash' and pattern in (key,None):
+        if pattern in (key,None):
             result.append(key)
             aList = d.get(key)
             for z in aList:
@@ -2717,19 +2706,18 @@ def test(old_d,new_d,result_d):
     def si_name_key(si): return si.commandName or ''
 
     for key in keys:
-        if key != '_hash':
-            # Compute the *sorted* list of 
-            res_list = sorted(inv_res.get(key,[]),key=si_name_key)
-            old_list = sorted(inv_old.get(key,[]),key=si_name_key)
-            new_list = sorted(inv_new.get(key,[]),key=si_name_key)
-            assert res_list,'no res_list.get(%s)' % (key)
-            # if new_list: print(key,dump(new_list))
-            if new_list:
-                assert new_list == res_list,'key %s\nnew:\n%s\nres:\n%s' % (
-                    key,dump(new_list),dump(res_list))
-            else:
-                assert old_list == res_list,'key %s\nold:\n%s\nres:\n%s' % (
-                    key,dump(old_list),dump(res_list))
+        # Compute the *sorted* list of 
+        res_list = sorted(inv_res.get(key,[]),key=si_name_key)
+        old_list = sorted(inv_old.get(key,[]),key=si_name_key)
+        new_list = sorted(inv_new.get(key,[]),key=si_name_key)
+        assert res_list,'no res_list.get(%s)' % (key)
+        # if new_list: print(key,dump(new_list))
+        if new_list:
+            assert new_list == res_list,'key %s\nnew:\n%s\nres:\n%s' % (
+                key,dump(new_list),dump(res_list))
+        else:
+            assert old_list == res_list,'key %s\nold:\n%s\nres:\n%s' % (
+                key,dump(old_list),dump(res_list))
     
     # Part 3: Test that result_d == uninvert(invert(result_d)).
     # A.  They must have the same keys.
@@ -2737,18 +2725,16 @@ def test(old_d,new_d,result_d):
     assert sorted(list(result_d.keys())) == sorted(list(unv_res.keys()))
 
     # B. The values of for each key must match after being sorted.
-    def si_val_key(si): return si.val or ''
+    def si_stroke_key(si): return si.stroke or ''
         
     for key in sorted(result_d.keys()):
-        if key != '_hash':
-            res_list = sorted(result_d.get(key,[]),key=si_val_key)
-            unv_list = sorted( unv_res.get(key,[]),key=si_val_key)
-            assert res_list == unv_list,'key %s\nres:\n%s\nunv:\n%s' % (
-                key,dump(res_list),dump(unv_list))
+        res_list = sorted(result_d.get(key,[]),key=si_stroke_key)
+        unv_list = sorted( unv_res.get(key,[]),key=si_stroke_key)
+        assert res_list == unv_list,'key %s\nres:\n%s\nunv:\n%s' % (
+            key,dump(res_list),dump(unv_list))
    
 #@+node:ekr.20120203153754.10032: *5* @test KeyStroke
-import leo.core.leoConfig as leoConfig
-ks = leoConfig.KeyStroke
+ks = c.k.KeyStroke
 
 @others
 
@@ -17361,12 +17347,7 @@ def masterKeyHandler (self,event):
 #@+node:ekr.20061031131434.147: *6* << define vars >>
 w = event and event.widget
 char = event and event.char or ''
-
-if g.new_strokes:
-    stroke = event and event.stroke or None
-else:
-    stroke = event and event.stroke or ''
-
+stroke = event and event.stroke or None
 w_name = c.widget_name(w)
 state = k.state.kind
 
@@ -17622,10 +17603,7 @@ def handleUnboundKeys (self,event,char,stroke):
         if trace: g.trace('ignoring unbound character in command mode',stroke)
         return None
         
-    elif (
-        g.new_strokes and stroke.isFKey() or
-        not g.new_strokes and k.isFKey(stroke)
-    ):
+    elif stroke.isFKey():
         if trace: g.trace('ignoring F-key',stroke)
         return None
 
@@ -17805,36 +17783,21 @@ def get (self,c,setting,kind):
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                if trace:
-                    if g.new_dicts:
-                        kind = d.name()
-                    else:
-                        kind = d.get('_hash','<no hash>')
-                    g.trace('**1',setting,val,kind)
+                if trace: g.trace('**1',setting,val,d.name())
                 return val
 
     for d in self.localOptionsList:
         # For myLeoSettings.leo and leoSettings.leo.
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
-            if trace:
-                if g.new_dicts:
-                    kind = d.name()
-                else:
-                    kind = d.get('_hash','<no hash>')
-                g.trace('**2',setting,val,kind)
+            if trace: g.trace('**2',setting,val,d.name())
             return val
 
     for d in self.dictList:
         # For hard-coded options...
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
-            if trace:
-                if g.new_dicts:
-                    kind = d.name()
-                else:
-                    kind = d.get('_hash','<no hash>')
-                g.trace('**3',setting,val,kind)
+            if trace: g.trace('**3',setting,val,d.name())
             return val
 
     # New in Leo 4.6. Use settings in leoSettings.leo *last*.
@@ -17844,12 +17807,7 @@ def get (self,c,setting,kind):
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                if trace:
-                    if g.new_dicts:
-                        kind = d.name()
-                    else:
-                        kind = d.get('_hash','<no hash>')
-                    g.trace('**4',setting,val,kind)
+                if trace: g.trace('**4',setting,val,d.name())
                 return val
 
     if trace:
@@ -24857,12 +24815,8 @@ def merge_settings_dicts (self,old_d,new_d):
     
     if trace:
         new_n,old_n = len(list(new_d.keys())),len(list(old_d.keys()))
-        if g.new_dicts:
-            g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.name()))
-            g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.name()))
-        else:
-            g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.get('_hash')))
-            g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.get('_hash')))
+        g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.name()))
+        g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.name()))
 
     inverted_old_d = self.invert(old_d)
     inverted_new_d = self.invert(new_d)
@@ -24876,43 +24830,27 @@ def invert (self,d):
     returning a dict whose keys are strokes.'''
     
     trace = False and not g.unitTesting ; verbose = True
-    if trace:
-        if g.new_dicts:
-            g.trace('*'*40,d.name())
-        else:
-            g.trace('*'*40,d.get('_hash'))
+    if trace: g.trace('*'*40,d.name())
     
-    if g.new_dicts:
-        result = g.TypedDictOfLists(name='inverted %s' % d.name(),
-            keyType = leoKeys.KeyStroke,valType = leoKeys.ShortcutInfo)
-    else:
-        result = {}
+    result = g.TypedDictOfLists(
+        name='inverted %s' % d.name(),
+        keyType = leoKeys.KeyStroke,
+        valType = leoKeys.ShortcutInfo)
+
     for commandName in d.keys():
-        if not g.new_dicts and commandName == '_hash':
-            result['_hash'] = 'inverted %s' % d.get('_hash')
-        else:
-            for si in d.get(commandName,[]):
-                # This assert can fail if there is an exception in the ShortcutInfo ctor.
-                try:
-                    assert isinstance(si,leoKeys.ShortcutInfo),'commandName %s si %s' % (
-                        commandName,si)
-                except AssertionError:
-                    print('invert ***** ooops',si)
-                stroke = si.stroke # This is canonicalized.
-                si.commandName = commandName # Add info.
-                assert stroke
-                if trace and verbose:
-                    g.trace('%40s %s' % (commandName,stroke))
-                if g.new_dicts:
-                    result.add(stroke,si)
-                else:
-                    aList = result.get(stroke,[])
-                    if si not in aList:
-                        aList.append(si)
-                        result[stroke] = aList
+        for si in d.get(commandName,[]):
+            # This assert can fail if there is an exception in the ShortcutInfo ctor.
+            assert isinstance(si,leoKeys.ShortcutInfo),si
+
+            stroke = si.stroke # This is canonicalized.
+            si.commandName = commandName # Add info.
+            assert stroke
+            if trace and verbose:
+                g.trace('%40s %s' % (commandName,stroke))
+            result.add(stroke,si)
 
     if trace: g.trace('returns  %4s %s %s' % (
-        len(list(result.keys())),id(d),result.get('_hash')))
+        len(list(result.keys())),id(d),result.name()))
     return result
 #@+node:ekr.20120125045244.10187: *7* uninvert (g.app.config)
 def uninvert (self,d):
@@ -24923,32 +24861,23 @@ def uninvert (self,d):
     trace = False and not g.unitTesting ; verbose = True
     if trace and verbose: g.trace('*'*40)
 
-    if g.new_dicts:
-        assert d.keyType == leoKeys.KeyStroke,d.keyType
-        result = g.TypedDictOfLists(name='uninverted %s' % d.name(),
-            keyType = type('commandName'),valType = leoKeys.ShortcutInfo)
-    else:
-        result = {}
+    assert d.keyType == leoKeys.KeyStroke,d.keyType
+    result = g.TypedDictOfLists(
+        name='uninverted %s' % d.name(),
+        keyType = type('commandName'),
+        valType = leoKeys.ShortcutInfo)
+    
     for stroke in d.keys():
-        if not g.new_dicts and stroke == '_hash':
-            result['_hash'] = 'uninverted %s' % d.get('_hash')
-        else:
-            for si in d.get(stroke,[]):
-                assert isinstance(si,leoKeys.ShortcutInfo),si
-                commandName = si.commandName
-                if trace and verbose:
-                    g.trace('uninvert %20s %s' % (stroke,commandName))
-                assert commandName
-                if g.new_dicts:
-                    result.add(commandName,si)
-                else:
-                    aList = result.get(commandName,[])
-                    if si not in aList:
-                        aList.append(si)
-                        result[commandName] = aList
+        for si in d.get(stroke,[]):
+            assert isinstance(si,leoKeys.ShortcutInfo),si
+            commandName = si.commandName
+            if trace and verbose:
+                g.trace('uninvert %20s %s' % (stroke,commandName))
+            assert commandName
+            result.add(commandName,si)
 
     if trace: g.trace('returns %4s %s %s' % (
-        len(list(result.keys())),id(d),result.get('_hash')))
+        len(list(result.keys())),id(d),result.name()))
     return result
 #@+node:ekr.20120124103240.10250: *5* Changed
 #@+node:ekr.20061031131434.3: *6* << about key dicts >>
@@ -25189,17 +25118,13 @@ def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False,tag=None):
     if trace: #  or shortcut == 'Ctrl+q':
         g.trace('%7s %20s %17s %s' % (pane,shortcut,tag,commandName))
     try:
-        if g.new_strokes:
-            if not shortcut:
-                stroke = None
-            elif k.isStroke(shortcut):
-                stroke = shortcut
-                assert stroke.s,stroke
-            else:
-                stroke = k.strokeFromSetting(shortcut)
+        if not shortcut:
+            stroke = None
+        elif k.isStroke(shortcut):
+            stroke = shortcut
+            assert stroke.s,stroke
         else:
-            assert not shortcut or g.isString(shortcut)
-            stroke = k.strokeFromSetting(shortcut) if shortcut else None
+            stroke = k.strokeFromSetting(shortcut)
 
         si = k.ShortcutInfo(kind=tag,pane=pane,
             func=callback,commandName=commandName,stroke=stroke)
@@ -25210,15 +25135,9 @@ def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False,tag=None):
             if shortcut:
                 k.remove_conflicting_definitions(aList,pane,shortcut)
         aList.append(si)
-        if not g.new_strokes:
-            shortcut = g.stripBrackets(shortcut.strip())
         if shortcut:
-            if g.new_strokes:
-                #### The keys are now KeyStrokes, not shortcuts.
-                assert stroke
-                k.bindingsDict [stroke] = aList
-            else:
-                k.bindingsDict [shortcut] = aList
+            assert stroke
+            k.bindingsDict [stroke] = aList
             if trace: g.trace(shortcut,aList)
         return True
     except Exception: # Could be a user error.
@@ -25268,14 +25187,11 @@ def kill_one_shortcut (self,stroke):
     # g.trace(stroke)
 
     d = g.app.config.localShortcutsDict.get(c.hash())
-        # Keys are command names, values are lists of bindings.
-        
     if d is None:
-        if g.new_dicts:
-            d = g.TypedDictOfLists(name='empty shortcuts dict',
-            keyType=type('commandName'),valType=k.ShortcutInfo)
-        else:
-            d = {}
+        d = g.TypedDictOfLists(
+            name='empty shortcuts dict',
+            keyType=type('commandName'),
+            valType=k.ShortcutInfo)
 
     inv_d = g.app.config.invert(d)
     aList = inv_d.get(stroke,[])
@@ -25310,8 +25226,6 @@ def bindKeyToDict (self,pane,stroke,si):
     
     # New in Leo 4.4.1: Allow redefintions.
     d = k.masterBindingsDict.get(pane,{})
-    if not g.new_strokes:
-        stroke = g.stripBrackets(stroke)
     d[stroke] = si
     k.masterBindingsDict [pane] = d
     
@@ -25550,8 +25464,6 @@ def bindKeyToDict (self,pane,stroke,si):
     
     # New in Leo 4.4.1: Allow redefintions.
     d = k.masterBindingsDict.get(pane,{})
-    if not g.new_strokes:
-        stroke = g.stripBrackets(stroke)
     d[stroke] = si
     k.masterBindingsDict [pane] = d
     
@@ -25767,17 +25679,13 @@ def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False,tag=None):
     if trace: #  or shortcut == 'Ctrl+q':
         g.trace('%7s %20s %17s %s' % (pane,shortcut,tag,commandName))
     try:
-        if g.new_strokes:
-            if not shortcut:
-                stroke = None
-            elif k.isStroke(shortcut):
-                stroke = shortcut
-                assert stroke.s,stroke
-            else:
-                stroke = k.strokeFromSetting(shortcut)
+        if not shortcut:
+            stroke = None
+        elif k.isStroke(shortcut):
+            stroke = shortcut
+            assert stroke.s,stroke
         else:
-            assert not shortcut or g.isString(shortcut)
-            stroke = k.strokeFromSetting(shortcut) if shortcut else None
+            stroke = k.strokeFromSetting(shortcut)
 
         si = k.ShortcutInfo(kind=tag,pane=pane,
             func=callback,commandName=commandName,stroke=stroke)
@@ -25788,15 +25696,9 @@ def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False,tag=None):
             if shortcut:
                 k.remove_conflicting_definitions(aList,pane,shortcut)
         aList.append(si)
-        if not g.new_strokes:
-            shortcut = g.stripBrackets(shortcut.strip())
         if shortcut:
-            if g.new_strokes:
-                #### The keys are now KeyStrokes, not shortcuts.
-                assert stroke
-                k.bindingsDict [stroke] = aList
-            else:
-                k.bindingsDict [shortcut] = aList
+            assert stroke
+            k.bindingsDict [stroke] = aList
             if trace: g.trace(shortcut,aList)
         return True
     except Exception: # Could be a user error.
@@ -25846,14 +25748,11 @@ def kill_one_shortcut (self,stroke):
     # g.trace(stroke)
 
     d = g.app.config.localShortcutsDict.get(c.hash())
-        # Keys are command names, values are lists of bindings.
-        
     if d is None:
-        if g.new_dicts:
-            d = g.TypedDictOfLists(name='empty shortcuts dict',
-            keyType=type('commandName'),valType=k.ShortcutInfo)
-        else:
-            d = {}
+        d = g.TypedDictOfLists(
+            name='empty shortcuts dict',
+            keyType=type('commandName'),
+            valType=k.ShortcutInfo)
 
     inv_d = g.app.config.invert(d)
     aList = inv_d.get(stroke,[])
@@ -25888,8 +25787,6 @@ def bindKeyToDict (self,pane,stroke,si):
     
     # New in Leo 4.4.1: Allow redefintions.
     d = k.masterBindingsDict.get(pane,{})
-    if not g.new_strokes:
-        stroke = g.stripBrackets(stroke)
     d[stroke] = si
     k.masterBindingsDict [pane] = d
     
@@ -25943,11 +25840,9 @@ defaultLogFontSize  = g.choose(sys.platform=="win32",8,12)
 defaultMenuFontSize = g.choose(sys.platform=="win32",9,12)
 defaultTreeFontSize = g.choose(sys.platform=="win32",9,12)
 
-if g.new_dicts:
-    defaultsDict = g.TypedDict(name='g.app.config.defaultsDict',
-        keyType=type('key'),valType=GeneralSetting)
-else:
-    defaultsDict = {'_hash':'defaultsDict'}
+defaultsDict = g.TypedDict(
+    name='g.app.config.defaultsDict',
+    keyType=type('key'),valType=GeneralSetting)
 
 defaultsData = (
     # compare options...
@@ -26000,11 +25895,9 @@ defaultsData = (
     ("split_bar_width","int",7),
 )
 #@+node:ekr.20041118062709: *4* define encodingIvarsDict (g.app.config)
-if g.new_dicts:
-    encodingIvarsDict = g.TypedDict(name='g.app.config.encodingIvarsDict',
-        keyType=type('key'),valType=GeneralSetting)
-else:
-    encodingIvarsDict = {'_hash':'encodingIvarsDict'}
+encodingIvarsDict = g.TypedDict(
+    name='g.app.config.encodingIvarsDict',
+    keyType=type('key'),valType=GeneralSetting)
 
 encodingIvarsData = (
     ("default_at_auto_file_encoding","string","utf-8"),
@@ -26018,11 +25911,9 @@ encodingIvarsData = (
 # Each of these settings sets the corresponding ivar.
 # Also, the c.configSettings settings class inits the corresponding commander ivar.
 
-if g.new_dicts:
-    ivarsDict = g.TypedDict(name='g.app.config.ivarsDict',
-        keyType=type('key'),valType=GeneralSetting)
-else:
-    ivarsDict = {'_hash':'ivarsDict'}
+ivarsDict = g.TypedDict(
+    name='g.app.config.ivarsDict',
+    keyType=type('key'),valType=GeneralSetting)
 
 ivarsData = (
     ("at_root_bodies_start_in_doc_mode","bool",True),
@@ -26127,12 +26018,8 @@ def merge_settings_dicts (self,old_d,new_d):
     
     if trace:
         new_n,old_n = len(list(new_d.keys())),len(list(old_d.keys()))
-        if g.new_dicts:
-            g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.name()))
-            g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.name()))
-        else:
-            g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.get('_hash')))
-            g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.get('_hash')))
+        g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.name()))
+        g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.name()))
 
     inverted_old_d = self.invert(old_d)
     inverted_new_d = self.invert(new_d)
@@ -26146,43 +26033,27 @@ def invert (self,d):
     returning a dict whose keys are strokes.'''
     
     trace = False and not g.unitTesting ; verbose = True
-    if trace:
-        if g.new_dicts:
-            g.trace('*'*40,d.name())
-        else:
-            g.trace('*'*40,d.get('_hash'))
+    if trace: g.trace('*'*40,d.name())
     
-    if g.new_dicts:
-        result = g.TypedDictOfLists(name='inverted %s' % d.name(),
-            keyType = leoKeys.KeyStroke,valType = leoKeys.ShortcutInfo)
-    else:
-        result = {}
+    result = g.TypedDictOfLists(
+        name='inverted %s' % d.name(),
+        keyType = leoKeys.KeyStroke,
+        valType = leoKeys.ShortcutInfo)
+
     for commandName in d.keys():
-        if not g.new_dicts and commandName == '_hash':
-            result['_hash'] = 'inverted %s' % d.get('_hash')
-        else:
-            for si in d.get(commandName,[]):
-                # This assert can fail if there is an exception in the ShortcutInfo ctor.
-                try:
-                    assert isinstance(si,leoKeys.ShortcutInfo),'commandName %s si %s' % (
-                        commandName,si)
-                except AssertionError:
-                    print('invert ***** ooops',si)
-                stroke = si.stroke # This is canonicalized.
-                si.commandName = commandName # Add info.
-                assert stroke
-                if trace and verbose:
-                    g.trace('%40s %s' % (commandName,stroke))
-                if g.new_dicts:
-                    result.add(stroke,si)
-                else:
-                    aList = result.get(stroke,[])
-                    if si not in aList:
-                        aList.append(si)
-                        result[stroke] = aList
+        for si in d.get(commandName,[]):
+            # This assert can fail if there is an exception in the ShortcutInfo ctor.
+            assert isinstance(si,leoKeys.ShortcutInfo),si
+
+            stroke = si.stroke # This is canonicalized.
+            si.commandName = commandName # Add info.
+            assert stroke
+            if trace and verbose:
+                g.trace('%40s %s' % (commandName,stroke))
+            result.add(stroke,si)
 
     if trace: g.trace('returns  %4s %s %s' % (
-        len(list(result.keys())),id(d),result.get('_hash')))
+        len(list(result.keys())),id(d),result.name()))
     return result
 #@+node:ekr.20120125045244.10187: *4* uninvert (g.app.config)
 def uninvert (self,d):
@@ -26193,32 +26064,23 @@ def uninvert (self,d):
     trace = False and not g.unitTesting ; verbose = True
     if trace and verbose: g.trace('*'*40)
 
-    if g.new_dicts:
-        assert d.keyType == leoKeys.KeyStroke,d.keyType
-        result = g.TypedDictOfLists(name='uninverted %s' % d.name(),
-            keyType = type('commandName'),valType = leoKeys.ShortcutInfo)
-    else:
-        result = {}
+    assert d.keyType == leoKeys.KeyStroke,d.keyType
+    result = g.TypedDictOfLists(
+        name='uninverted %s' % d.name(),
+        keyType = type('commandName'),
+        valType = leoKeys.ShortcutInfo)
+    
     for stroke in d.keys():
-        if not g.new_dicts and stroke == '_hash':
-            result['_hash'] = 'uninverted %s' % d.get('_hash')
-        else:
-            for si in d.get(stroke,[]):
-                assert isinstance(si,leoKeys.ShortcutInfo),si
-                commandName = si.commandName
-                if trace and verbose:
-                    g.trace('uninvert %20s %s' % (stroke,commandName))
-                assert commandName
-                if g.new_dicts:
-                    result.add(commandName,si)
-                else:
-                    aList = result.get(commandName,[])
-                    if si not in aList:
-                        aList.append(si)
-                        result[commandName] = aList
+        for si in d.get(stroke,[]):
+            assert isinstance(si,leoKeys.ShortcutInfo),si
+            commandName = si.commandName
+            if trace and verbose:
+                g.trace('uninvert %20s %s' % (stroke,commandName))
+            assert commandName
+            result.add(commandName,si)
 
     if trace: g.trace('returns %4s %s %s' % (
-        len(list(result.keys())),id(d),result.get('_hash')))
+        len(list(result.keys())),id(d),result.name()))
     return result
 #@+node:ekr.20041117062717.14: *3* getShortcut (g.app.config)
 def getShortcut (self,c,commandName):
@@ -26269,36 +26131,21 @@ def get (self,c,setting,kind):
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                if trace:
-                    if g.new_dicts:
-                        kind = d.name()
-                    else:
-                        kind = d.get('_hash','<no hash>')
-                    g.trace('**1',setting,val,kind)
+                if trace: g.trace('**1',setting,val,d.name())
                 return val
 
     for d in self.localOptionsList:
         # For myLeoSettings.leo and leoSettings.leo.
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
-            if trace:
-                if g.new_dicts:
-                    kind = d.name()
-                else:
-                    kind = d.get('_hash','<no hash>')
-                g.trace('**2',setting,val,kind)
+            if trace: g.trace('**2',setting,val,d.name())
             return val
 
     for d in self.dictList:
         # For hard-coded options...
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
-            if trace:
-                if g.new_dicts:
-                    kind = d.name()
-                else:
-                    kind = d.get('_hash','<no hash>')
-                g.trace('**3',setting,val,kind)
+            if trace: g.trace('**3',setting,val,d.name())
             return val
 
     # New in Leo 4.6. Use settings in leoSettings.leo *last*.
@@ -26308,12 +26155,7 @@ def get (self,c,setting,kind):
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                if trace:
-                    if g.new_dicts:
-                        kind = d.name()
-                    else:
-                        kind = d.get('_hash','<no hash>')
-                    g.trace('**4',setting,val,kind)
+                if trace: g.trace('**4',setting,val,d.name())
                 return val
 
     if trace:
@@ -26393,21 +26235,13 @@ def traverse (self):
         # g.trace('no settings tree for %s' % c)
         return {},{}
 
-    if g.new_dicts:
-        self.settingsDict = g.TypedDict(name='settingsDict for %s' % (c.shortFileName()),
-            keyType=type('settingName'),valType=GeneralSetting)
-    else:
-        self.settingsDict = {}
-        d['_hash'] = 'settingsDict for %s' % c.shortFileName()
-            ####  c.hash() # Was done in updateSettings.
+    self.settingsDict = g.TypedDict(
+        name='settingsDict for %s' % (c.shortFileName()),
+        keyType=type('settingName'),valType=GeneralSetting)
     
-    if g.new_dicts:
-        self.shortcutsDict = g.TypedDictOfLists(
-            name='shortcutsDict for %s' % (c.shortFileName()),
-            keyType=type('s'), # keyType=KeyStroke,
-            valType=k.ShortcutInfo)
-    else:
-        self.shortcutsDict = {'_hash': c.hash()} # 2011/02/10
+    self.shortcutsDict = g.TypedDictOfLists(
+        name='shortcutsDict for %s' % (c.shortFileName()),
+        keyType=type('s'), valType=k.ShortcutInfo)
         
     after = p.nodeAfterTree()
     while p and p != after:
@@ -26419,8 +26253,6 @@ def traverse (self):
             p.moveToThreadNext()
 
     shortcutsDict = c.config.make_shortcuts_dicts(self.shortcutsDict,self.localFlag)
-    
-    # g.trace(type(shortcutsDict),type(self.settingsDict))
 
     return shortcutsDict,self.settingsDict
 #@+node:ekr.20051013161232: *3* updateSettings (g.app.config)
@@ -26431,9 +26263,6 @@ def updateSettings (self,c,localFlag):
     
     d = settingsDict
     if d:
-        # _hash now set when settingsDict is created.
-        #### if not g.new_dicts:
-        ####    d['_hash'] = c.hash() #### ????
         if localFlag:
             self.localOptionsDict[c.hash()] = d
         else:
@@ -26459,14 +26288,11 @@ def kill_one_shortcut (self,stroke):
     # g.trace(stroke)
 
     d = g.app.config.localShortcutsDict.get(c.hash())
-        # Keys are command names, values are lists of bindings.
-        
     if d is None:
-        if g.new_dicts:
-            d = g.TypedDictOfLists(name='empty shortcuts dict',
-            keyType=type('commandName'),valType=k.ShortcutInfo)
-        else:
-            d = {}
+        d = g.TypedDictOfLists(
+            name='empty shortcuts dict',
+            keyType=type('commandName'),
+            valType=k.ShortcutInfo)
 
     inv_d = g.app.config.invert(d)
     aList = inv_d.get(stroke,[])

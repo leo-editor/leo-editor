@@ -31,14 +31,11 @@ class leoKeyEvent:
         trace = False and not g.unitTesting
         k = c.k
         
-        if g.new_strokes:
-            if k.isStroke(shortcut):
-                g.trace('***** (leoKeyEvent) oops: already a stroke',shortcut,g.callers())
-                stroke = shortcut
-            else:
-                stroke = k.KeyStroke(shortcut) if shortcut else None
+        if k.isStroke(shortcut):
+            g.trace('***** (leoKeyEvent) oops: already a stroke',shortcut,g.callers())
+            stroke = shortcut
         else:
-            stroke = shortcut or ''
+            stroke = k.KeyStroke(shortcut) if shortcut else None
 
         assert k.isStrokeOrNone(stroke),'(leoKeyEvent) %s %s' % (
             repr(stroke),g.callers())

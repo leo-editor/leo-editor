@@ -120,13 +120,6 @@ unified_nodes = False # For compatibility with old scripts.
 # new_keys = False # True: Qt input methods produce a **user setting**, not a stroke.
 # if new_keys:
     # print('***** new_keys')
-    
-new_dicts = True # True: use TypedDict objects for Leo's important key dicts.
-if new_dicts: print('***** new_dicts')
-
-new_strokes = True # True: use the KeyStroke class to hold canonicalized strokes.
-if new_strokes:
-    print('***** new_strokes')
 
 enableDB = True
     # Don't even think about eliminating this constant:

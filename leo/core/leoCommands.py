@@ -8288,12 +8288,10 @@ class configSettings:
         self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
 
         for key in g.app.config.encodingIvarsDict.keys():
-            if g.new_dicts or key != '_hash':
-                self.initEncoding(key)
+            self.initEncoding(key)
 
         for key in g.app.config.ivarsDict.keys():
-            if g.new_dicts or key != '_hash':
-                self.initIvar(key)
+            self.initIvar(key)
     #@+node:ekr.20041118104240: *3* initIvar (c.configSettings)
     def initIvar(self,key):
 
