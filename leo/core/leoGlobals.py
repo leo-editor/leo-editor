@@ -123,9 +123,6 @@ unified_nodes = False # For compatibility with old scripts.
 # new_keys = False # True: Qt input methods produce a **user setting**, not a stroke.
 # if new_keys: print('***** new_keys')
 
-new_imports = True
-if new_imports: print('***** new_imports')
-
 new_load = False # True: .leo files are loaded at most once.
 if new_load: print('***** new_load')
     

@@ -146,12 +146,10 @@ class Commands (object):
         self.importCommands = leoImport.leoImportCommands(c)
         self.rstCommands    = leoRst.rstCommands(c)
         self.tangleCommands = leoTangle.tangleCommands(c)
-        
-        if g.new_imports:
-            self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
-            self.editCommandsManager.createEditCommanders()
-        else:
-            leoEditCommands.createEditCommanders(c)
+
+        # Init all the edit commands.
+        self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
+        self.editCommandsManager.createEditCommanders()
 
         self.rstCommands = leoRst.rstCommands(c)
 
@@ -186,19 +184,13 @@ class Commands (object):
 
         if initEditCommanders:
             # A 'real' .leo file.
-            
-            if g.new_imports:
-                c.commandsDict = c.editCommandsManager.finishCreateEditCommanders()
-            else:
-                import leo.core.leoEditCommands as leoEditCommands
-                c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
-
+            c.commandsDict = c.editCommandsManager.finishCreateEditCommanders()
             self.rstCommands.finishCreate()
 
             # copy global commands to this controller    
-
             for name,f in g.app.global_commands_dict.items():
-                k.registerCommand(name,shortcut = None, func = f, pane='all',verbose=False)        
+                k.registerCommand(name,
+                    shortcut=None,func=f,pane='all',verbose=False)        
 
             k.finishCreate()
         else:

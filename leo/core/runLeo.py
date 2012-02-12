@@ -107,9 +107,8 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     # Phase 1: before loading plugins.
     # Scan options, set directories and read settings.
     if g.new_load:
-        if g.new_load:
-            g.app.loadManager = leoApp.LoadManager(args,fileName,pymacs)
-            ok = g.app.loadManager.start()
+        g.app.loadManager = leoApp.LoadManager(args,fileName,pymacs)
+        ok = g.app.loadManager.start()
     else:
         if not isValidPython(): return
         files,options = doPrePluginsInit(fileName,pymacs)

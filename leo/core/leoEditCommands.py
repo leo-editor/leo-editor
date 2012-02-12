@@ -39,7 +39,6 @@ if g.isPython3:
 # subprocess = g.importExtension('subprocess',pluginName=None,verbose=False)
 #@-<< imports >>
 
-
 #@+<< define class baseEditCommandsClass >>
 #@+node:ekr.20050920084036.1: ** << define class baseEditCommandsClass >>
 class baseEditCommandsClass:
@@ -10403,30 +10402,4 @@ class EnchantClass:
     #@-others
 #@-others
 #@-others
-
-if g.new_imports:
-    pass
-else:
-    #@+<< define classesList >>
-    #@+node:ekr.20050922104213: ** << define classesList >> (leoEditCommands)
-    classesList = [
-        ('abbrevCommands',      abbrevCommandsClass),
-        ('bufferCommands',      bufferCommandsClass),
-        ('editCommands',        editCommandsClass),
-        ('chapterCommands',     chapterCommandsClass),
-        ('controlCommands',     controlCommandsClass),
-        ('debugCommands',       debugCommandsClass),
-        ('editFileCommands',    editFileCommandsClass),
-        ('helpCommands',        helpCommandsClass),
-        ('keyHandlerCommands',  keyHandlerCommandsClass),
-        ('killBufferCommands',  killBufferCommandsClass),
-        ('leoCommands',         leoCommandsClass),
-        ('macroCommands',       macroCommandsClass),
-        # ('queryReplaceCommands',queryReplaceCommandsClass),
-        ('rectangleCommands',   rectangleCommandsClass),
-        ('registerCommands',    registerCommandsClass),
-        ('searchCommands',      searchCommandsClass),
-        ('spellCommands',       spellCommandsClass),
-    ]
-    #@-<< define classesList >>
 #@-leo

@@ -2128,18 +2128,8 @@ class keyHandlerClass:
             bodyCtrl = c.frame.body.bodyCtrl
             if not k.inState():
                 k.commandName = None
-
-                # Do the import here to break a circular dependency at the top level.
-                if g.new_imports:
-                    c.editCommandsManager.initAllEditCommanders()
-                else:
-                    import leo.core.leoEditCommands as leoEditCommands
-                    leoEditCommands.initAllEditCommanders(c)
-    #             try:
-    #                 bodyCtrl.tag_delete('color')
-    #                 bodyCtrl.tag_delete('color1')
-    #             except Exception:
-    #                 pass
+                c.editCommandsManager.initAllEditCommanders()
+                
             if 0: # Do *not* call this by default.  It interferes with undo.
                 c.frame.body.onBodyChanged(undoType='Typing')
             if k.newMinibufferWidget:
