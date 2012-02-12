@@ -39,6 +39,7 @@ import re # For colorizer
 import string
 import sys
 import tempfile
+import platform
 
 if g.isPython3:
     import urllib.request as urllib
@@ -7079,6 +7080,8 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
             
         w.defaultClose = w.closeEvent
         w.closeEvent = reattach
+        if platform.system() == 'Windows':
+           w.move(20, 20)  # Windows (XP and 7) conspire to place the windows title bar off screen
 
         return w
     #@+node:tbrown.20120112093714.27963: *4* tile
@@ -8390,7 +8393,7 @@ class leoQtGui(leoGui.leoGui):
             if g.os_path_exists(fn):
                 qt = QtCore.Qt
                 pm = QtGui.QPixmap(fn)
-                splash = QtGui.QSplashScreen(pm,(qt.SplashScreen | qt.WindowStaysOnTopHint))
+                splash = QtGui.QSplashScreen(pm,(qt.SplashScreen))
                 splash.show()
                 # g.trace('found',fn)
                 break
