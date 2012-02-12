@@ -4988,7 +4988,7 @@ def moveWithinLineHelper (self,event,spot,extend):
     if hasattr(w,'leoMoveCursorHelper'):
         extend = extend or self.extendMode
         w.leoMoveCursorHelper(kind=spot,extend=extend)
-        if g.app.trace_scroll: g.trace('seeInsertPoint',spot)
+        if g.trace_scroll: g.trace('seeInsertPoint',spot)
         w.seeInsertPoint()
         c.frame.updateStatusLine()
     else:
@@ -16691,7 +16691,7 @@ if old_p and old_p != p:
     # 2010/02/11: Don't change the *new* node's insert point!
     old_p.v.scrollBarSpot = yview
     old_p.v.insertSpot = insertSpot
-    if g.app.trace_scroll: g.trace('old scroll: %s insert: %s' % (
+    if g.trace_scroll: g.trace('old scroll: %s insert: %s' % (
         yview,insertSpot))
 #@+node:ekr.20040803072955.130: *6* << select the new node >>
 # Bug fix: we must always set this, even if we never edit the node.
@@ -21163,7 +21163,7 @@ pane. This does not happen for all panes.
 
 Methods relating to this problem:
 
-g.app.trace_scroll
+g.trace_scroll
 w.see
 w.seeInsertPoint
 w.get/setYScrollPosition
@@ -21196,8 +21196,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/de76f22b16ebc8f
 
 As explained in detail in the thread, "dangerous" code is no longer executed immediately,
 but instead executed at idle time using g.app.gui.runAtIdle.
-#@+node:ekr.20111025062953.16477: *6* Added global tracing of scrolling-related code
-g.app.trace_scroll
 #@+node:ekr.20110930174206.15471: *5* Second attempt
 @nocolor-node
 
@@ -21514,7 +21512,7 @@ if old_p and old_p != p:
     # 2010/02/11: Don't change the *new* node's insert point!
     old_p.v.scrollBarSpot = yview
     old_p.v.insertSpot = insertSpot
-    if g.app.trace_scroll: g.trace('old scroll: %s insert: %s' % (
+    if g.trace_scroll: g.trace('old scroll: %s insert: %s' % (
         yview,insertSpot))
 #@+node:ekr.20040803072955.130: *8* << select the new node >>
 # Bug fix: we must always set this, even if we never edit the node.
@@ -21579,7 +21577,7 @@ def restoreCursorAndScroll (self,w):
     # 2011/10/26: *only* restore the scrollbar setting.  Do not call see.
     if v and v.scrollBarSpot != None:
         pos = v.scrollBarSpot
-        if g.app.trace_scroll: g.trace('(vnode)',pos)
+        if g.trace_scroll: g.trace('(vnode)',pos)
         w.setYScrollPosition(pos)
         
     # Never call w.see here.
@@ -21610,7 +21608,7 @@ def restoreCursorAndScroll (self,w):
     # 2011/10/26: *only* restore the scrollbar setting.  Do not call see.
     if v and v.scrollBarSpot != None:
         pos = v.scrollBarSpot
-        if g.app.trace_scroll: g.trace('(vnode)',pos)
+        if g.trace_scroll: g.trace('(vnode)',pos)
         w.setYScrollPosition(pos)
         
     # Never call w.see here.
@@ -21625,7 +21623,7 @@ def getYScrollPosition(self):
     w = self.widget
     sb = w.verticalScrollBar()
     i = sb.sliderPosition()
-    if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',i)
+    if g.trace_scroll: g.trace('(LeoQTextEditWidget)',i)
     return i
 #@+node:ekr.20110605121601.18098: *7* setYScrollPosition (leoQTextEditWidget)
 def setYScrollPosition(self,pos):
@@ -21635,7 +21633,7 @@ def setYScrollPosition(self,pos):
     if 0: # 2011/12/21
         w = self.widget
         sb = w.verticalScrollBar()
-        if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
+        if g.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
         sb.setSliderPosition(pos)
 #@+node:ekr.20061017083312.1: *7* << restore the selection, insertion point and the scrollbar >> selectEditorHelper leoBody.selectEditorBody
 spot = hasattr(w,'leo_insertSpot') and w.leo_insertSpot or 0
@@ -23219,7 +23217,7 @@ def getYScrollPosition(self):
     w = self
     sb = w.verticalScrollBar()
     i = sb.sliderPosition()
-    if g.app.trace_scroll: g.trace('(LeoQTextBrowser)',i)
+    if g.trace_scroll: g.trace('(LeoQTextBrowser)',i)
     return i
 
 def setYScrollPosition(self,pos):
@@ -23228,7 +23226,7 @@ def setYScrollPosition(self,pos):
         w = self
         sb = w.verticalScrollBar()
         if pos is None: pos = 0
-        if g.app.trace_scroll: g.trace('(LeoQTextBrowser)',pos)
+        if g.trace_scroll: g.trace('(LeoQTextBrowser)',pos)
         sb.setSliderPosition(pos)
 #@+node:ekr.20110605121601.18098: *5* setYScrollPosition (leoQTextEditWidget)
 def setYScrollPosition(self,pos):
@@ -23238,7 +23236,7 @@ def setYScrollPosition(self,pos):
     if 0: # 2011/12/21
         w = self.widget
         sb = w.verticalScrollBar()
-        if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
+        if g.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
         sb.setSliderPosition(pos)
 #@+node:ekr.20120109111947.9962: *4* Fixed erroneous "file changed" message
 @nocolor-node

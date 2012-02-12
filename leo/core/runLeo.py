@@ -11,10 +11,9 @@
 #@+<< imports and inits >>
 #@+node:ekr.20080921091311.1: ** << imports and inits >>
 # import pdb ; pdb = pdb.set_trace
-import optparse
+
 import os
 import sys
-import traceback
 
 path = os.getcwd()
 if path not in sys.path:
@@ -23,16 +22,6 @@ if path not in sys.path:
 
 # Import leoGlobals, but do NOT set g.
 import leo.core.leoGlobals as leoGlobals
-
-try:
-    # This will fail if True/False are not defined.
-    import leo.core.leoGlobals as g
-except ImportError:
-    print("runLeo.py: can not import leo.core.leoGlobals")
-    raise
-except Exception:
-    print("runLeo.py: unexpected exception: import leo.core.leoGlobals")
-    raise
 
 # Set leoGlobals.g here, rather than in leoGlobals.py.
 leoGlobals.g = leoGlobals
@@ -46,21 +35,31 @@ leoGlobals.app = leoApp.LeoApp()
 g = leoGlobals
 assert(g.app)
 
-# Do early inits
-import leo.core.leoNodes as leoNodes
-import leo.core.leoConfig as leoConfig
+if g.new_load:
+    # Make sure we call the new leoPlugins.init top-level function.
+    # This prevents a crash when run is called repeatedly from
+    # IPython's lleo extension.
+    import leo.core.leoPlugins as leoPlugins
+    leoPlugins.init()
+else:
+    import optparse
+    import traceback
 
-# There is a circular dependency between leoCommands and leoEditCommands.
-import leo.core.leoCommands as leoCommands
-
-# Make sure we call the new leoPlugins.init top-level function.
-# This prevents a crash when run is called repeatedly from
-# IPython's lleo extension.
-import leo.core.leoPlugins as leoPlugins
-leoPlugins.init()
-
-# Do all other imports.
-import leo.core.leoGui as leoGui
+    # Do early inits.
+    import leo.core.leoNodes as leoNodes
+    import leo.core.leoConfig as leoConfig
+    
+    # There is a circular dependency between leoCommands and leoEditCommands.
+    import leo.core.leoCommands as leoCommands
+    
+    # Make sure we call the new leoPlugins.init top-level function.
+    # This prevents a crash when run is called repeatedly from
+    # IPython's lleo extension.
+    import leo.core.leoPlugins as leoPlugins
+    leoPlugins.init()
+    
+    # Do all other imports.
+    import leo.core.leoGui as leoGui
 #@-<< imports and inits >>
 
 #@+others
@@ -104,12 +103,12 @@ def run(fileName=None,pymacs=None,*args,**keywords):
 
     # print('runLeo.run: sys.argv %s' % sys.argv)
 
-    # Phase 1: before loading plugins.
-    # Scan options, set directories and read settings.
     if g.new_load:
         g.app.loadManager = leoApp.LoadManager(args,fileName,pymacs)
         ok = g.app.loadManager.start()
     else:
+        # Phase 1: before loading plugins.
+        # Scan options, set directories and read settings.
         if not isValidPython(): return
         files,options = doPrePluginsInit(fileName,pymacs)
         if options.get('version'):
@@ -298,7 +297,7 @@ def reportDirectories(verbose):
             ("home",g.app.homeDir),
         ):
             g.es("%s dir:" % (kind),theDir,color="blue")
-#@+node:ekr.20091007103358.6061: *4* scanOptions
+#@+node:ekr.20091007103358.6061: *4* scanOptions (runLeo.py)
 def scanOptions():
 
     '''Handle all options and remove them from sys.argv.'''
@@ -617,9 +616,9 @@ def findNode (c,s):
 #@+node:ekr.20080921060401.5: *4* finishInitApp (runLeo.py)
 def finishInitApp(c):
 
-    g.app.trace_gc          = c.config.getBool('trace_gc')
-    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
-    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+    g.trace_gc          = c.config.getBool('trace_gc')
+    g.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
 
     if g.app.disableSave:
         g.es("disabling save commands",color="red")

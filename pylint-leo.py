@@ -151,8 +151,8 @@ no_suppressions = ''
 
 recentCoreList = (
     # Passed 02/07/2012
-        ('runLeo',      no_suppressions),
-        # ('leoApp',       no_suppressions),
+        # ('runLeo',      no_suppressions),
+        ('leoApp',       no_suppressions),
         # ('leoAtFile',    no_suppressions),
         # ('leoCache',     no_suppressions),
         # ('leoChapters',  no_suppressions),
@@ -201,10 +201,10 @@ recentPluginsList = (
 
 tables_table = (
     # (rpythonList,'core'),
-    # (recentCoreList,'core'),
+    (recentCoreList,'core'),
     # (recentPluginsList,'plugins'),
-    (coreList,'core'),
-    (guiPluginsTable,'plugins'),
+    # (coreList,'core'),
+    # (guiPluginsTable,'plugins'),
     # (passList,'plugins'),
     # (externalList,'external'),
     # (pluginsTable,'plugins'),

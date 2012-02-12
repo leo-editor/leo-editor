@@ -305,53 +305,6 @@ class EditCommandsManager:
             theInstance = getattr(c,name)
             theInstance.init()
     #@-others
-#@+node:ekr.20050924100713: **  Module level... (leoEditCommands)
-#@+node:ekr.20050920084720: *3* createEditCommanders (leoEditCommands module)
-def createEditCommanders (c):
-
-    '''Create edit classes in the commander.'''
-
-    global classesList
-
-    for name, theClass in classesList:
-        theInstance = theClass(c)# Create the class.
-        setattr(c,name,theInstance)
-        # g.trace(name,theInstance)
-#@+node:ekr.20050922104731: *3* finishCreateEditCommanders (leoEditCommands module)
-def finishCreateEditCommanders (c):
-
-    '''Finish creating edit classes in the commander.
-
-    Return the commands dictionary for all the classes.'''
-    
-    # g.trace(c,g.callers())
-
-    global classesList
-
-    d = {}
-
-    for name, theClass in classesList:
-        theInstance = getattr(c,name)
-        theInstance.finishCreate()
-        theInstance.init()
-        d2 = theInstance.getPublicCommands()
-        if d2:
-            d.update(d2)
-            if 0:
-                g.pr('----- %s' % name)
-                for key in sorted(d2): g.pr(key)
-
-    return d
-#@+node:ekr.20050924100713.1: *3* initAllEditCommanders (leoEditCommand module
-def initAllEditCommanders (c):
-
-    '''Re-init classes in the commander.'''
-
-    global classesList
-
-    for name, theClass in classesList:
-        theInstance = getattr(c,name)
-        theInstance.init()
 #@+node:ekr.20050920084036.13: ** abbrevCommandsClass
 class abbrevCommandsClass (baseEditCommandsClass):
 
@@ -1359,45 +1312,45 @@ class debugCommandsClass (baseEditCommandsClass):
 
         '''Print a summary of all existing Python objects.'''
 
-        old = g.app.trace_gc
-        g.app.trace_gc = True
+        old = g.trace_gc
+        g.trace_gc = True
         g.printGcAll()
-        g.app.trace_gc = old
+        g.trace_gc = old
 
     def dumpNewObjects (self,event=None):
 
         '''Print a summary of all Python objects created
         since the last time Python's Garbage collector was run.'''
 
-        old = g.app.trace_gc
-        g.app.trace_gc = True
+        old = g.trace_gc
+        g.trace_gc = True
         g.printGcObjects()
-        g.app.trace_gc = old
+        g.trace_gc = old
 
     def verboseDumpObjects (self,event=None):
 
         '''Print a more verbose listing of all existing Python objects.'''
 
-        old = g.app.trace_gc
-        g.app.trace_gc = True
+        old = g.trace_gc
+        g.trace_gc = True
         g.printGcVerbose()
-        g.app.trace_gc = old
+        g.trace_gc = old
     #@+node:ekr.20060127163325.1: *3* enable/disableGcTrace
     def disableGcTrace (self,event=None):
 
         '''Enable tracing of Python's Garbage Collector.'''
 
-        g.app.trace_gc = False
+        g.trace_gc = False
 
 
     def enableGcTrace (self,event=None):
 
         '''Disable tracing of Python's Garbage Collector.'''
 
-        g.app.trace_gc = True
+        g.trace_gc = True
         g.enable_gc_debug()
 
-        if g.app.trace_gc_verbose:
+        if g.trace_gc_verbose:
             g.es('enabled verbose gc stats',color='blue')
         else:
             g.es('enabled brief gc stats',color='blue')
@@ -4574,7 +4527,7 @@ class editCommandsClass (baseEditCommandsClass):
             i = w.getInsertPoint()
             w.insert(i,ws)
             w.setInsertPoint(i+len(ws))
-            if g.app.trace_scroll: g.trace('seeInsertPoint',i)
+            if g.trace_scroll: g.trace('seeInsertPoint',i)
             w.seeInsertPoint()
                 # 2011/10/02: Fix cursor-movement bug.
     #@+node:ekr.20051027172949: *5* updateAutomatchBracket
@@ -5240,7 +5193,7 @@ class editCommandsClass (baseEditCommandsClass):
         if hasattr(w,'leoMoveCursorHelper'):
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=spot,extend=extend)
-            if g.app.trace_scroll: g.trace('seeInsertPoint',spot)
+            if g.trace_scroll: g.trace('seeInsertPoint',spot)
             w.seeInsertPoint()
             c.frame.updateStatusLine()
         else:

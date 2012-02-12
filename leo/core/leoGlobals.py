@@ -14,6 +14,43 @@ Important: This module imports no other Leo module.
 
 import sys
 isPython3 = sys.version_info >= (3,0,0)
+#@+<< global switches >>
+#@+node:ekr.20120212060348.10374: ** << global switches >>
+# new_keys = False # True: Qt input methods produce a **user setting**, not a stroke.
+# if new_keys: print('***** new_keys')
+
+new_load = False # True: .leo files are loaded at most once.
+if new_load: print('***** new_load')
+    
+new_modes = False # True: use ModeController and ModeInfo classes.
+if new_modes: print('***** new_modes')
+
+
+# Switches to trace the garbage collector.
+trace_gc = False           
+trace_gc_calls = False    
+trace_gc_calls = False 
+trace_gc_verbose = False
+trace_gc_inited = False
+
+# Traces of scrolling problems.
+trace_scroll = False
+
+enableDB = True
+    # Don't even think about eliminating this constant:
+    # it is needed for debugging.
+
+# No longer used...
+    # debug = False         # Set by the --debug command-line option.
+    # unified_nodes = False # For compatibility with old scripts.
+    
+# 2011/11/02: These print statements have been moved to writeWaitingLog.
+# This allows for better --silent operation.
+if 0:
+    print('*** isPython3: %s' % isPython3)
+    if not enableDB:
+        print('** leoGlobals.py: caching disabled')
+#@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >>
 if 0:
@@ -115,30 +152,11 @@ class nullObject:
 tree_popup_handlers = [] # Set later.
 g = nullObject() # Set early in startup logic to this module.
 app = None # The singleton app object.
-debug = False # Set early in startup by the --debug command-line option.
+
+# Global status vars.
 inScript = False # A synonym for app.inScript
 unitTesting = False # A synonym for app.unitTesting.
-unified_nodes = False # For compatibility with old scripts.
 
-# new_keys = False # True: Qt input methods produce a **user setting**, not a stroke.
-# if new_keys: print('***** new_keys')
-
-new_load = False # True: .leo files are loaded at most once.
-if new_load: print('***** new_load')
-    
-new_modes = False # True: use ModeController and ModeInfo classes.
-if new_modes: print('***** new_modes')
-
-enableDB = True
-    # Don't even think about eliminating this constant:
-    # it is needed for debugging.
-    
-# 2011/11/02: The print statements have been moved to writeWaitingLog.
-# This allows for better --silent operation.
-if 0:
-    print('*** isPython3: %s' % isPython3)
-    if not enableDB:
-        print('** leoGlobals.py: caching disabled')
 
 #@+others
 #@+node:ekr.20031218072017.3095: ** Checking Leo Files...
@@ -2672,10 +2690,10 @@ def clearAllIvars (o):
 def collectGarbage():
 
     try:
-        if not g.app.trace_gc_inited:
+        if not g.trace_gc_inited:
             g.enable_gc_debug()
 
-        if g.app.trace_gc_verbose or g.app.trace_gc_calls:
+        if g.trace_gc_verbose or g.trace_gc_calls:
             g.pr('collectGarbage:')
 
         gc.collect()
@@ -2683,14 +2701,14 @@ def collectGarbage():
         pass
 
     # Only init once, regardless of what happens.
-    g.app.trace_gc_inited = True
+    g.trace_gc_inited = True
 #@+node:ekr.20060127162818: *3* enable_gc_debug
 no_gc_message = False
 
 def enable_gc_debug(event=None):
 
     if gc:
-        if g.app.trace_gc_verbose:
+        if g.trace_gc_verbose:
             gc.set_debug(
                 gc.DEBUG_STATS | # prints statistics.
                 gc.DEBUG_LEAK | # Same as all below.
@@ -2710,14 +2728,14 @@ def enable_gc_debug(event=None):
 
 def printGc(tag=None):
 
-    if not g.app.trace_gc: return None
+    if not g.trace_gc: return None
 
     tag = tag or g._callerName(n=2)
 
     printGcObjects(tag=tag)
     printGcRefs(tag=tag)
 
-    if g.app.trace_gc_verbose:
+    if g.trace_gc_verbose:
         printGcVerbose(tag=tag)
 #@+node:ekr.20031218072017.1593: *4* printGcRefs
 def printGcRefs (tag=''):
@@ -2725,7 +2743,7 @@ def printGcRefs (tag=''):
     refs = gc.get_referrers(app.windowList[0])
     g.pr('-' * 30,tag)
 
-    if g.app.trace_gc_verbose:
+    if g.trace_gc_verbose:
         g.pr("refs of", app.windowList[0])
         for ref in refs:
             g.pr(type(ref))
@@ -6178,5 +6196,4 @@ def init_zodb (pathToZodbStorage,verbose=True):
         init_zodb_failed [pathToZodbStorage] = True
         return None
 #@-others
-
 #@-leo

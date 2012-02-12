@@ -1056,12 +1056,12 @@ class leoBody (HighLevelInterface):
     def getYScrollPosition (self):
 
         i = self.bodyCtrl.getYScrollPosition()
-        if g.app.trace_scroll: g.trace('(leoBody)',i)
+        if g.trace_scroll: g.trace('(leoBody)',i)
         return i
 
     def setYScrollPosition (self,i):
         
-        if g.app.trace_scroll: g.trace('(leoBody) setYPos',i)
+        if g.trace_scroll: g.trace('(leoBody) setYPos',i)
         self.bodyCtrl.setYScrollPosition(i)
     #@+node:ekr.20081005065934.6: *3* leoBody: may be defined in subclasses
     # These are optional.
@@ -2159,7 +2159,7 @@ class leoTree:
                     # 2010/02/11: Don't change the *new* node's insert point!
                     old_p.v.scrollBarSpot = yview
                     old_p.v.insertSpot = insertSpot
-                    if g.app.trace_scroll: g.trace('old scroll: %s insert: %s' % (
+                    if g.trace_scroll: g.trace('old scroll: %s insert: %s' % (
                         yview,insertSpot))
                 #@-<< unselect the old node >>
             
@@ -2186,7 +2186,7 @@ class leoTree:
                         # 2010/02/11: Don't change the *new* node's insert point!
                         old_p.v.scrollBarSpot = yview
                         old_p.v.insertSpot = insertSpot
-                        if g.app.trace_scroll: g.trace('old scroll: %s insert: %s' % (
+                        if g.trace_scroll: g.trace('old scroll: %s insert: %s' % (
                             yview,insertSpot))
                     #@-<< unselect the old node >>
         

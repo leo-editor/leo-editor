@@ -6709,5 +6709,52 @@ def removeLeadingAtCode (self,aList):
     elif self.match_word(aList,i,"@c"):
         i = self.skip_ws_and_nl(aList,2)
         del aList[0:i]
+#@+node:ekr.20050924100713: *3*  Module level... (leoEditCommands)
+#@+node:ekr.20050920084720: *4* createEditCommanders (leoEditCommands module)
+def createEditCommanders (c):
+
+    '''Create edit classes in the commander.'''
+
+    global classesList
+
+    for name, theClass in classesList:
+        theInstance = theClass(c)# Create the class.
+        setattr(c,name,theInstance)
+        # g.trace(name,theInstance)
+#@+node:ekr.20050922104731: *4* finishCreateEditCommanders (leoEditCommands module)
+def finishCreateEditCommanders (c):
+
+    '''Finish creating edit classes in the commander.
+
+    Return the commands dictionary for all the classes.'''
+    
+    # g.trace(c,g.callers())
+
+    global classesList
+
+    d = {}
+
+    for name, theClass in classesList:
+        theInstance = getattr(c,name)
+        theInstance.finishCreate()
+        theInstance.init()
+        d2 = theInstance.getPublicCommands()
+        if d2:
+            d.update(d2)
+            if 0:
+                g.pr('----- %s' % name)
+                for key in sorted(d2): g.pr(key)
+
+    return d
+#@+node:ekr.20050924100713.1: *4* initAllEditCommanders (leoEditCommand module
+def initAllEditCommanders (c):
+
+    '''Re-init classes in the commander.'''
+
+    global classesList
+
+    for name, theClass in classesList:
+        theInstance = getattr(c,name)
+        theInstance.init()
 #@-all
 #@-leo

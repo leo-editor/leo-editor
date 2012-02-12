@@ -397,7 +397,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         w = self
         sb = w.verticalScrollBar()
         i = sb.sliderPosition()
-        if g.app.trace_scroll: g.trace('(LeoQTextBrowser)',i)
+        if g.trace_scroll: g.trace('(LeoQTextBrowser)',i)
         return i
 
     def setYScrollPosition(self,pos):
@@ -406,7 +406,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             w = self
             sb = w.verticalScrollBar()
             if pos is None: pos = 0
-            if g.app.trace_scroll: g.trace('(LeoQTextBrowser)',pos)
+            if g.trace_scroll: g.trace('(LeoQTextBrowser)',pos)
             sb.setSliderPosition(pos)
     #@-others
 #@-<< define LeoQTextBrowser >>
@@ -1194,7 +1194,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w = self.widget
         sb = w.verticalScrollBar()
         i = sb.sliderPosition()
-        if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',i)
+        if g.trace_scroll: g.trace('(LeoQTextEditWidget)',i)
         return i
     #@+node:ekr.20110605121601.18085: *5* hasSelection (leoQTextEditWidget)
     def hasSelection(self):
@@ -1520,7 +1520,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         if 0: # 2011/12/21
             w = self.widget
             sb = w.verticalScrollBar()
-            if g.app.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
+            if g.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
             sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18099: *5*  PythonIndex
     #@+node:ekr.20110605121601.18100: *6* toPythonIndex (leoQTextEditWidget) (Fast)

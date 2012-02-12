@@ -629,7 +629,7 @@ ivars = (
     'leoID','log','logIsLocked','logWaiting',
     'nodeIndices','numberOfUntitledWindows',
     'quitting','realMenuNameDict','searchDict','scriptDict',
-    'trace','tracePositions','trace_list',
+    # trace_ switches are now defined in leoGlobals.py.
     'unitTestDict','unitTesting','use_psyco','windowList',
 )
 

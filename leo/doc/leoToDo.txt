@@ -1915,8 +1915,6 @@ def os_path_finalize_join (*args,**keys):
 @nocolor-node
 
 Like the one used in k.masterKeyHandler.
-
-Bug not g.app.trace_scroll.
 .. @+node:ekr.20111109083738.9798: *4* Testing
 .. @+node:ekr.20110929165422.15449: *5* Test bug fix: noweb expansions in rst3 command
 @nocolor-node

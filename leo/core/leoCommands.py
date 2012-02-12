@@ -2929,7 +2929,7 @@ class Commands (object):
 
             w.setInsertPoint(ins)
             c.bodyWantsFocus()
-            if g.app.trace_scroll: g.trace('seeInsertPoint',ins)
+            if g.trace_scroll: g.trace('seeInsertPoint',ins)
             w.seeInsertPoint()
         #@-others
     #@+node:ekr.20031218072017.2884: *5* Edit Body submenu
@@ -3714,7 +3714,7 @@ class Commands (object):
         w.setSelectionRange(ins,ins,insert=ins)
         
         # 2011/10/26: Calling see does more harm than good.
-            # if g.app.trace_scroll: g.trace('see',ins)
+            # if g.trace_scroll: g.trace('see',ins)
             # w.see(ins)
     #@+node:ekr.20101118113953.5843: *7* rp_wrap_all_lines
     def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):

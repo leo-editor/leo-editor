@@ -189,8 +189,6 @@ class position (object):
 
         g.app.positions += 1
 
-        # if g.app.tracePositions and trace: g.trace(g.callers())
-
         self.txtOffset = None # see self.textOffset()
     #@+node:ekr.20080920052058.3: *4* p.__eq__ & __ne__
     def __eq__(self,p2):
@@ -290,10 +288,6 @@ class position (object):
 
             """Return True if a position is valid."""
 
-            # if g.app.trace: "__nonzero__",self.v
-
-            # g.trace(repr(self))
-
             return self.v is not None
     #@+node:ekr.20040301205720: *4* p.__str__ and p.__repr__
     def __str__ (self):
@@ -336,8 +330,6 @@ class position (object):
     def copy (self):
 
         """"Return an independent copy of a position."""
-
-        # if g.app.tracePositions: g.trace(g.callers())
 
         return position(self.v,self._childIndex,self.stack,trace=False)
     #@+node:ekr.20040310153624: *4* p.dump
@@ -2419,7 +2411,7 @@ class vnode (baseVnode):
         # 2011/10/26: *only* restore the scrollbar setting.  Do not call see.
         if v and v.scrollBarSpot != None:
             pos = v.scrollBarSpot
-            if g.app.trace_scroll: g.trace('(vnode)',pos)
+            if g.trace_scroll: g.trace('(vnode)',pos)
             w.setYScrollPosition(pos)
             
         # Never call w.see here.
