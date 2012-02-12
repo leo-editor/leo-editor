@@ -1253,7 +1253,7 @@ class editBodyTestCase(unittest.TestCase):
 
         c = self.c ; u = self.u
 
-        if not g.app.enableUnitTest: return
+        #### if not g.app.enableUnitTest: return
 
         # Blank stops the command name.
         commandName = self.parent.h
@@ -1288,7 +1288,7 @@ class editBodyTestCase(unittest.TestCase):
 
         c = self.c ; tempNode = self.tempNode
 
-        if not g.app.enableUnitTest: return
+        #### if not g.app.enableUnitTest: return
 
         # self.undoMark = c.undoer.getMark()
         c.undoer.clearUndoState()

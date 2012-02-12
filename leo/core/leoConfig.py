@@ -1390,9 +1390,9 @@ class configClass:
             ('homeFile',            g.app.homeLeoDir,       settingsFile),
             ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
             #non-prefixed names take priority over prefixed names
-            ('myHomeConfigFile',    g.app.homeLeoDir,   g.app.homeSettingsPrefix + mySettingsFile),
+            #### ('myHomeConfigFile',    g.app.homeLeoDir,   g.app.homeSettingsPrefix + mySettingsFile),
             ('myHomeConfigFile',    g.app.homeLeoDir,   mySettingsFile),
-            ('machineConfigFile',   g.app.homeLeoDir,   g.app.homeSettingsPrefix + machineConfigFile),
+            #### ('machineConfigFile',   g.app.homeLeoDir,   g.app.homeSettingsPrefix + machineConfigFile),
             ('machineConfigFile',   g.app.homeLeoDir,   machineConfigFile),
         ):
             # The same file may be assigned to multiple ivars:
@@ -2264,9 +2264,9 @@ class configClass:
             ('homeFile',            g.app.homeLeoDir,       settingsFile),
             ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
             #non-prefixed names take priority over prefixed names
-            ('myHomeConfigFile',    g.app.homeLeoDir,   g.app.homeSettingsPrefix + mySettingsFile),
+            #### ('myHomeConfigFile',    g.app.homeLeoDir,   g.app.homeSettingsPrefix + mySettingsFile),
             ('myHomeConfigFile',    g.app.homeLeoDir,   mySettingsFile),
-            ('machineConfigFile',   g.app.homeLeoDir,   g.app.homeSettingsPrefix + machineConfigFile),
+            #### ('machineConfigFile',   g.app.homeLeoDir,   g.app.homeSettingsPrefix + machineConfigFile),
             ('machineConfigFile',   g.app.homeLeoDir,   machineConfigFile),
         ):
             # The same file may be assigned to multiple ivars:
@@ -2279,14 +2279,12 @@ class configClass:
                 #dan: IMO, it's better to set the defaults to None in configClass.__init__().
                 #     This avoids the creation of ivars in odd (non __init__) places.
                 #setattr(self,ivar, getattr(self,ivar,None))
+
         if trace:
             g.trace('global file:  ',self.globalConfigFile)
             g.trace('home file:    ',self.homeFile)
             g.trace('myGlobal file:',self.myGlobalConfigFile)
             g.trace('myHome file:  ',self.myHomeConfigFile)
-
-        
-        
         
         #############
         
@@ -2335,37 +2333,6 @@ class configClass:
                     table.append((path,localFlag),)
         if trace: g.trace(repr(fileName),'table:',g.listToString(table))
         return table
-
-        
-        trace = False and not g.unitTesting
-        verbose = verbose
-        giveMessage = (verbose and not g.app.unitTesting and
-            not self.silent and not g.app.batchMode)
-        def message(s):
-            # This occurs early in startup, so use the following.
-            if not g.isPython3:
-                s = g.toEncodedString(s,'ascii')
-            g.es_print(s,color='blue')
-        self.write_recent_files_as_needed = False # Will be set later.
-        localConfigFile = self.getLocalConfigFile(fileName)
-        if trace: g.trace(fileName,localConfigFile)
-        table = self.defineSettingsTable(fileName,localConfigFile)
-        for path,localFlag in table:
-            assert path and g.os_path_exists(path)
-            isZipped = path and zipfile.is_zipfile(path)
-            isLeo = isZipped or path.endswith('.leo')
-            if isLeo:
-                c = self.openSettingsFile(path)
-                if c:
-                    if giveMessage:
-                        message('reading settings in %s' % path)
-                    self.updateSettings(c,localFlag)
-                    g.app.destroyWindow(c.frame)
-                    self.write_recent_files_as_needed = c.config.getBool(
-                        'write_recent_files_as_needed')
-                else:
-                    if giveMessage:
-                        message('error reading settings in %s' % path)
     #@+node:ekr.20120211052437.10737: *5* readMyLeoSettingsFile
     def readMyLeoSettingsFile (self,giveMessage):
         

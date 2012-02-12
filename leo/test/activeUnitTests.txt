@@ -9,6 +9,7 @@
 All support code should be placed as a child of this @mark-for-unit-test node
 so that it will be copied to dynamicUnitTest.leo when running tests externally.
 #@+node:ekr.20111113102936.4600: *3* Test headline abc
+#@+node:ekr.20120212130242.3980: *3* newHeadline
 #@+node:ekr.20090529141856.4700: *3* importTests
 @language plain
 #@+node:ekr.20090529141856.4701: *4* tempNode
@@ -621,7 +622,8 @@ assert hasattr(g.app,'homeDir') # May well be None.
 ivars = (
     # These are non-official and might be removed...
     'batchMode','config',
-    'debug','debugSwitch','disableSave',
+    # 'debug',
+    'debugSwitch','disableSave',
     'gui','hasOpenWithMenu','hookError',
     'hookFunction',
     'idle_imported','idleTimeDelay','idleTimeHook',
@@ -5525,6 +5527,14 @@ if not g.app.isExternalUnitTest:
         test(p)
     finally:
         tear_down(p,'Clones of marked nodes')
+#@+node:ekr.20120212130242.3942: *5* data
+#@+node:ekr.20120212130242.3948: *6* a
+#@+node:ekr.20120212130242.3949: *7* b
+#@+node:ekr.20120212130242.3945: *6* c
+#@+node:ekr.20120212130242.3946: *6* d
+#@+node:ekr.20120212130242.3947: *6* e
+#@+node:ekr.20120212130242.3948: *7* a
+#@+node:ekr.20120212130242.3949: *8* b
 #@+node:ekr.20061101121602.162: *5* @test count-region
 import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
@@ -12418,6 +12428,7 @@ child = c.rootPosition().insertAfter()
 assert c.positionExists(child)
 child.doDelete()
 assert not c.positionExists(child)
+#@+node:ekr.20120212130242.4704: *5* newHeadline
 #@+node:ekr.20090102062037.2: *4* @test c.positionExists for all nodes
 root = c.rootPosition()
 
@@ -19489,6 +19500,7 @@ finally:
         setup(child)
     c.redraw(p)
 #@+node:ekr.20111210104652.3959: *4* child
+#@+node:ekr.20120212130242.4755: *4* test
 #@+node:ekr.20111210175541.3957: *3* @test refresh @shadow links clones
 if not g.app.isExternalUnitTest:
     # print('start',p.h)

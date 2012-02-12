@@ -202,8 +202,9 @@ def computeStandardDirectories():
     g.app.testDir = g.os_path_finalize(
         g.os_path_join(g.app.loadDir,'..','test'))
 
-    g.app.user_xresources_path = g.os_path_join(
-        g.app.homeDir,'.leo_xresources')
+    ####
+    # g.app.user_xresources_path = g.os_path_join(
+        # g.app.homeDir,'.leo_xresources')
 #@+node:ekr.20041117155521: *5* g.computeGlobalConfigDir
 def computeGlobalConfigDir():
 
@@ -1568,120 +1569,6 @@ def print_stack():
     traceback.print_stack()
 
 printStack = print_stack
-#@+node:ekr.20031218072017.3129: *3* Sherlock... (trace)
-#@+at
-# Starting with this release, you will see trace statements throughout the code.
-# The trace function is defined in leoGlobals.py; trace implements much of the
-# functionality of my Sherlock tracing package. Traces are more convenient than
-# print statements for two reasons: 1) you don't need explicit trace names and 2)
-# you can disable them without recompiling.
-# 
-# In the following examples, suppose that the call to trace appears in function f.
-# 
-# g.trace(string) prints string if tracing for f has been enabled. For example,
-# the following statment prints from s[i] to the end of the line if tracing for f
-# has been enabled.
-# 
-#   j = g.skip_line(s,i) ; g.trace(s[i:j])
-# 
-# g.trace(function) exectutes the function if tracing for f has been enabled. For
-# example,
-# 
-#   g.trace(self.f2)
-# 
-# You enable and disable tracing by calling g.init_trace(args). Examples:
-# 
-#   g.init_trace("+*")         # enable all traces
-#   g.init_trace("+a","+b")    # enable traces for a and b
-#   g.init_trace(("+a","+b"))  # enable traces for a and b
-#   g.init_trace("-a")         # disable tracing for a
-#   traces = g.init_trace("?") # return the list of enabled traces
-# 
-# If two arguments are supplied to trace, the first argument is the "tracepoint
-# name" and the second argument is the "tracepoint action" as shown in the
-# examples above. If tracing for the tracepoint name is enabled, the tracepoint
-# action is printed (if it is a string) or exectuted (if it is a function name).
-# 
-# "*" will not match an explicit tracepoint name that starts with a minus sign.
-# For example,
-# 
-#   g.trace_tag("-nocolor", self.disable_color)
-#@+node:ekr.20031218072017.3130: *4* init_sherlock
-# Called by startup code.
-# Args are all the arguments on the command line.
-
-def init_sherlock (args):
-
-    g.init_trace(args,echo=0)
-    # g.trace("sys.argv:",sys.argv)
-#@+node:ekr.20031218072017.3131: *4* get_Sherlock_args
-#@+at
-# If no args are given we attempt to get them from the "SherlockArgs"
-# file. If there are still no arguments we trace everything. This
-# default makes tracing much more useful in Python.
-#@@c
-
-def get_Sherlock_args (args):
-
-    if not args or len(args)==0:
-        try:
-            fn = g.os_path_join(app.loadDir,"SherlockArgs")
-            f = open(fn)
-            args = f.readlines()
-            f.close()
-        except Exception: pass
-    elif type(args[0]) == type(("1","2")):
-        args = args[0] # strip away the outer tuple.
-
-    # No args means trace everything.
-    if not args or len(args)==0: args = ["+*"] 
-    # g.pr("get_Sherlock_args:", args)
-    return args
-#@+node:ekr.20031218072017.3132: *4* init_trace
-def init_trace(args,echo=1):
-
-    t = app.trace_list
-    args = g.get_Sherlock_args(args)
-
-    for arg in args:
-        if arg[0] in string.ascii_letters: prefix = '+'
-        else: prefix = arg[0] ; arg = arg[1:]
-
-        if prefix == '?':
-            g.pr("trace list:", t)
-        elif prefix == '+' and not arg in t:
-            t.append(arg.lower())
-            if echo:
-                g.pr("enabling:", arg)
-        elif prefix == '-' and arg in t:
-            t.remove(arg.lower())
-            if echo:
-                g.pr("disabling:", arg)
-        else:
-            g.pr("ignoring:", prefix + arg)
-#@+node:ekr.20031218072017.2318: *4* trace_tag
-# Convert all args to strings.
-# Print if tracing for name has been enabled.
-
-def trace_tag (name, *args):
-
-    s = ""
-    for arg in args:
-        if type(arg) != type(""):
-            arg = repr(arg)
-        if len(s) > 0:
-            s = s + ", " + arg
-        else:
-            s = arg
-    message = s
-
-    t = app.trace_list
-    # tracepoint names starting with '-' must match exactly.
-    minus = len(name) > 0 and name[0] == '-'
-    if minus: name = name[1:]
-    if (not minus and '*' in t) or name.lower() in t:
-        s = name + ": " + message
-        g.es(s) # Traces _always_ get printed.
 #@+node:ekr.20031218072017.3133: *3* Statistics
 #@+node:ekr.20031218072017.3134: *4* clear_stats
 def clear_stats():

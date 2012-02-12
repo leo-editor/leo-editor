@@ -15,6 +15,7 @@ import leo.core.leoVersion as leoVersion
 import os
 import optparse
 import sys
+import traceback
 
 #@+others
 #@+node:ekr.20120209051836.10241: ** class leoApp
@@ -28,27 +29,8 @@ class LeoApp:
     #@+node:ekr.20031218072017.1416: *3* app.__init__
     def __init__(self):
 
-        # These ivars are the global vars of this program.
-        
-        #### To be removed.
-        if 1:
-            self.disableSave = False # Never set to True.
-            self.enableUnitTest = True # Huh?
-            self.homeSettingsPrefix = '.'
-                # prepend to "myLeoSettings.leo" and <machineName>LeoSettings.leo
-            # Global panels.  Destroyed when Leo ends.
-            #### self.pythonFrame = None
-            self.oneConfigFilename = ''
-                # If non-empty, the name of a single configuration file.
-            self.commandName = None
-                # Why isn't this a commander ivar?
-                # The name of the command being executed.
-            self.commandInterruptFlag = False
-                # Why isn't this a commander ivar?
-                # True: command within a command.
-            #### self.root = None # The hidden main window. Set later.
-            self.trace_list = [] # "Sherlock" argument list for tracing().
-            self.user_xresources_path = None # Resource file for Tk/tcl.
+        # These ivars are Leo's global vars.
+        # leoGlobals.py contains global switches to be set by hand.
         
         # Command-line arguments...
         self.batchMode = False          # True: run in batch mode.
@@ -64,28 +46,19 @@ class LeoApp:
         self.use_psyco = False          # True: use psyco optimization.
         self.use_splash_screen = True   # True: put up a splash screen.
 
-        # Debugging & statistics.
-        self.count = 0
-            # General purpose debugging count.
-        self.debug = False
-            # True: enable extra debugging tests (not used at present).
-            # WARNING: this could greatly slow things down.
-        self.debugSwitch = 0
-            # 0: default behavior
-            # 1: full traces in g.es_exception.
-            # 2: call pdb.set_trace in g.es_exception, etc.
-        self.positions = 0
-            # Count of the number of positions generated.
-        self.scanErrors = 0 # The number of errors seen by g.scanError.
-        self.statsDict = {}
-            # Statistics dict used by g.stat, g.clear_stats, g.print_stats.
+        # Debugging & statistics...
+        self.count = 0                  # General purpose debugging count.
+        self.debug = False              # Enable debugging. (Can be slow.)
+        self.debugSwitch = 0            # 0: Brief; 1: Full.
+        self.disableSave = False        # May be set by plugins.
+        self.positions = 0              # The number of positions generated.
+        self.scanErrors = 0             # The number of errors seen by g.scanError.
+        self.statsDict = {}             # dict used by g.stat, g.clear_stats, g.print_stats.
         
         # Error messages...
-        self.atPathInBodyWarning = None # Set by get_directives_dict
-            # The headline of the @<file> node containing
-            # an @path directive in the body.
+        self.atPathInBodyWarning = None # Set by get_directives_dict.
         self.menuWarningsGiven = False  # True: supress warnings in menu code.
-        self.unicodeErrorGiven = True # True: suppres unicode tracebacks.
+        self.unicodeErrorGiven = True   # True: suppres unicode tracebacks.
         
         # Global directories...
         self.extensionsDir = None   # The leo/extensions directory
@@ -97,13 +70,11 @@ class LeoApp:
         self.machineDir = None      # The machine-specific directory.
         
         # Global data...
-        self.leoID = None # The id part of gnx's.
-        self.lossage = [] # List of last 100 keystrokes.
-        self.numberOfUntitledWindows = 0 # Number of opened untitled windows.
-        self.windowList = []
-            # Global list of all frames.
-        self.realMenuNameDict = {}
-            # Contains translations of menu names and menu item names.
+        self.leoID = None               # The id part of gnx's.
+        self.lossage = []               # List of last 100 keystrokes.
+        self.numberOfUntitledWindows=0  # Number of opened untitled windows.
+        self.windowList = []            # Global list of all frames.
+        self.realMenuNameDict = {}      # Translations of menu names.
         
         # Global controller/manager objects...
         self.config = None              # The singleton leoConfig instance.
@@ -115,6 +86,11 @@ class LeoApp:
         self.pluginsController = None   # The singleton PluginsManager instance.
         
         # Global status vars...
+        
+        if 1: #### To be moved to the Commands class...
+            self.commandName = None         # The name of the command being executed.
+            self.commandInterruptFlag=False # True: command within a command.
+                
         self.dragging = False           # True: dragging.
         self.inBridge = False           # True: running from leoBridge module.
         self.inScript = False           # True: executing a script.
@@ -123,25 +99,26 @@ class LeoApp:
         self.quitting = False           # True: quitting.  Locks out some events.
         
         #### To be moved to the LogManager.
+
         # The global log...
-        self.log = None             # The LeoFrame containing the present log.
-        self.logInited = False      # False: all log message go to logWaiting list.
-        self.logIsLocked = False    # True: no changes to log are allowed.
-        self.logWaiting = []        # List of messages waiting to go to a log.
-        self.printWaiting = []      # Queue of messages to be sent to the printer.
+        self.log = None                 # The LeoFrame containing the present log.
+        self.logInited = False          # False: all log message go to logWaiting list.
+        self.logIsLocked = False        # True: no changes to log are allowed.
+        self.logWaiting = []            # List of messages waiting to go to a log.
+        self.printWaiting = []          # Queue of messages to be sent to the printer.
         self.signon_printed = False
         
         #### To be moved to OpenWithManager.
-        # Open with data.
-        self.hasOpenWithMenu = False # True: open with plugin has been loaded.
-        self.openWithFiles = [] # List of data used by Open With command.
-        self.openWithFileNum = 0
-            # Used to generate temp file names for Open With command.
-        self.openWithTable = None
-            # The table passed to createOpenWithMenuFromTable.
+        
+        # Open with data...
+        self.hasOpenWithMenu = False    # True: open with plugin has been loaded.
+        self.openWithFiles = []         # List of data used by Open With command.
+        self.openWithFileNum = 0        # Number of Open-With temp file names.
+        self.openWithTable = None       # Passed to createOpenWithMenuFromTable.
         
         #### To be moved to to the pluginsController.
-        # Plugins and event handlers.
+
+        # Plugins and event handlers...
         self.afterHandler = None
         self.hookError = False      # True: suppress further calls to hooks.
         self.hookFunction = None    # Application wide hook function.
@@ -150,14 +127,14 @@ class LeoApp:
         self.idleTimeHook = False   # True: the global idleTimeHookHandler will reshedule itself.
         
         # Support for scripting...
-        self.searchDict = {} # For communication between find/change scripts.
-        self.scriptDict = {} # For use by scripts.
+        self.searchDict = {}    # For communication between find/change scripts.
+        self.scriptDict = {}    # For use by scripts.
 
         # Unit testing...
         self.isExternalUnitTest = False # True: we are running a unit test externally.
-        self.unitTestDict = {} # For communication between unit tests and code.
-        self.unitTestGui = None # A way to override the gui in external unit tests.
-        self.unitTesting = False # True if unit testing.
+        self.unitTestDict = {}          # For communication between unit tests and code.
+        self.unitTestGui = None         # A way to override the gui in external unit tests.
+        self.unitTesting = False        # True if unit testing.
         self.unitTestMenusDict = {}
             # Created in leoMenu.createMenuEntries for a unit test.
             # keys are command names. values are sets of strokes.
@@ -1012,14 +989,15 @@ class LoadManager:
         files = [lm.completeFileName(z) for z in files]
         return files
     #@+node:ekr.20120209051836.10372: *4* lm.computeLeoSettingsPath (New)
-    def computeLeoSettingsPath (self,files):
+    def computeLeoSettingsPath (self):
         
         '''Return the full path to leoSettings.leo.'''
         
-        trace = True
+        trace = True ; verbose = True
+        lm = self
 
         # Use leoSettings.leo if it appears explicitly in the list of files.
-        for fn in files:
+        for fn in lm.files:
             base_fn = g.os_path_basename(fn)
             if base_fn.lower() == 'leosettings.leo':
                 path = g.os_path_finalize(fileName)
@@ -1027,15 +1005,18 @@ class LoadManager:
                     if trace: g.trace(path)
                     return path
 
+        seen,table = [],[]
         for path,localFlag in lm.configPlacesTable():
-            if trace and verbose: g.trace('exists',g.os_path_exists(path),path)
+            if trace and verbose:
+                g.trace('exists',g.os_path_exists(path),path)
             if path and g.os_path_exists(path):
                 # Make sure we mark files seen no matter how they are specified.
                 path = g.os_path_realpath(g.os_path_finalize(path))
                 if path.lower() not in seen:
                     seen.append(path.lower())
                     table.append((path,localFlag),)
-        if trace: g.trace(repr(fileName),'table:',g.listToString(table))
+
+        if trace: print(repr(fileName),'table:',g.listToString(table))
         return table
 
 
@@ -1451,10 +1432,11 @@ class LoadManager:
     def createGui(self):
 
         lm = self
+        script = lm.script
         
         if lm.pymacs:
             g.app.createNullGuiWithScript(script=None)
-        elif lm.script:
+        elif script:
             if lm.windowFlag:
                 g.app.createDefaultGui()
                 g.app.gui.setScript(script=script)
@@ -1617,15 +1599,12 @@ class LoadManager:
         print('doPostPluginsInit not ready yet')
         return False ##################
 
-        g.init_sherlock(lm.args)  # Init tracing and statistics.
-        # if g.app and g.app.use_psyco: startPsyco()
-
         # Clear g.app.initing _before_ creating the frame.
         g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
 
         # Create the main frame.  Show it and all queued messages.
         c,c1,fileName = None,None,None
-        for fileName in lf.files:
+        for fileName in lm.files:
             c,frame = lm.createFrame(fileName,options)
             if frame:
                 if not c1: c1 = c
@@ -1653,13 +1632,12 @@ class LoadManager:
         # Do the final inits.
         c.setLog() # 2010/10/20
         g.app.logInited = True # 2010/10/20
-        finishInitApp(c)
         p = c.p
         g.app.initComplete = True
         g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
         g.enableIdleTimeHook(idleTimeDelay=500)
             # 2011/05/10: always enable this.
-        initFocusAndDraw(c,fileName)
+        lm.initFocusAndDraw(c,fileName)
 
         screenshot_fn = options.get('screenshot_fn')
         if screenshot_fn:
@@ -1760,31 +1738,18 @@ class LoadManager:
                 return p
 
         return None
-    #@+node:ekr.20120211121736.10790: *5* lm.finishInitApp (just sets g.trace vars)
-    def finishInitApp(self,c):
-
-        lm = self
-        g.trace_gc          = c.config.getBool('trace_gc')
-        g.trace_gc_calls    = c.config.getBool('trace_gc_calls')
-        g.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
-
-        if g.app.disableSave:
-            g.es("disabling save commands",color="red")
-    #@+node:ekr.20120211121736.10791: *5* initFocusAndDraw
-    def initFocusAndDraw(c,fileName):
-
-        w = g.app.gui.get_focus(c)
-
-        if not fileName:
-            c.redraw()
+    #@+node:ekr.20120211121736.10791: *5* lm.initFocusAndDraw
+    def initFocusAndDraw(self,c):
 
         # Respect c's focus wishes if posssible.
+        w = g.app.gui.get_focus(c)
         if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
             c.bodyWantsFocus()
             c.k.showStateAndMode(w)
-
-        c.outerUpdate()
-    #@+node:ekr.20120211121736.10792: *5* make_screen_shot
+            
+        # There is no more fileName arg, so we *always* redraw.
+        c.redraw_now()
+    #@+node:ekr.20120211121736.10792: *5* lm.make_screen_shot
     def make_screen_shot(fn):
 
         '''Create a screenshot of the present Leo outline and save it to path.'''
