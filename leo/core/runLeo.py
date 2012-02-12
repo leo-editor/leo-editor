@@ -308,12 +308,14 @@ def scanOptions():
     # Note: this automatically implements the --help option.
     parser = optparse.OptionParser()
     add = parser.add_option
-    add('-c', '--config', dest="one_config_path",
-        help = 'use a single configuration file')
-    add('--debug',        action="store_true",dest="debug",
-        help = 'enable debugging support')
-    add('-f', '--file',   dest="fileName",
-        help = 'load a file at startup')
+    
+    #### To be removed.
+    # add('-c', '--config', dest="one_config_path",
+        # help = 'use a single configuration file')
+    # add('--debug',        action="store_true",dest="debug",
+        # help = 'enable debugging support')
+    # add('-f', '--file',   dest="fileName",
+        # help = 'load a file at startup')
     add('--gui',
         help = 'gui to use (qt/qttabs)')
     add('--minimized',    action="store_true",
@@ -351,24 +353,28 @@ def scanOptions():
     # Handle the args...
 
     # -c or --config
-    path = options.one_config_path
-    if path:
-        path = g.os_path_finalize_join(os.getcwd(),path)
-        if g.os_path_exists(path):
-            g.app.oneConfigFilename = path
-        else:
-            g.es_print('Invalid -c option: file not found:',path,color='red')
+    
+    ####
+    # path = options.one_config_path
+    # if path:
+        # path = g.os_path_finalize_join(os.getcwd(),path)
+        # if g.os_path_exists(path):
+            # g.app.oneConfigFilename = path
+        # else:
+            # g.es_print('Invalid -c option: file not found:',path,color='red')
 
     # --debug
-    if options.debug:
-        g.debug = True
-        print('scanOptions: *** debug mode on')
+    ####
+    # if options.debug:
+        # g.debug = True
+        # print('scanOptions: *** debug mode on')
 
     # -f or --file
-    fileName = options.fileName
-    if fileName:
-        fileName = fileName.strip('"')
-        if trace: print('scanOptions:',fileName)
+    ####
+    # fileName = options.fileName
+    # if fileName:
+        # fileName = fileName.strip('"')
+        # if trace: print('scanOptions:',fileName)
 
     # --gui
     gui = options.gui
@@ -459,7 +465,7 @@ def scanOptions():
     # Compute the return values.
     windowFlag = script and script_path_w
     d = {
-        'fileName':fileName,
+        'fileName': None, #### fileName,
         'gui':gui,
         'screenshot_fn':screenshot_fn,
         'script':script,
@@ -473,9 +479,6 @@ def scanOptions():
 def doPostPluginsInit(args,files,options):
 
     '''Return True if the frame was created properly.'''
-
-    g.init_sherlock(args)  # Init tracing and statistics.
-    # if g.app and g.app.use_psyco: startPsyco()
 
     # Clear g.app.initing _before_ creating the frame.
     g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
@@ -508,9 +511,8 @@ def doPostPluginsInit(args,files,options):
             factory.setTabForCommander(c)
 
     # Do the final inits.
-    c.setLog() # 2010/10/20
-    g.app.logInited = True # 2010/10/20
-    finishInitApp(c)
+    c.setLog()
+    g.app.logInited = True
     p = c.p
     g.app.initComplete = True
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
@@ -613,15 +615,6 @@ def findNode (c,s):
             return p
 
     return None
-#@+node:ekr.20080921060401.5: *4* finishInitApp (runLeo.py)
-def finishInitApp(c):
-
-    g.trace_gc          = c.config.getBool('trace_gc')
-    g.trace_gc_calls    = c.config.getBool('trace_gc_calls')
-    g.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
-
-    if g.app.disableSave:
-        g.es("disabling save commands",color="red")
 #@+node:ekr.20080921060401.6: *4* initFocusAndDraw
 def initFocusAndDraw(c,fileName):
 
