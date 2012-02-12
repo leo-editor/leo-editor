@@ -16,7 +16,7 @@ import zipfile
 #@-<< imports >>
 
 #@+<< GeneralSetting >>
-#@+node:ekr.20120123143207.10223: ** << GeneralSetting >>
+#@+node:ekr.20120123143207.10223: ** << GeneralSetting >> & isGeneralSetting
 class GeneralSetting:
     
     '''A class representing any kind of setting except shortcuts.'''
@@ -41,6 +41,9 @@ class GeneralSetting:
                 if val is not None:
                     result.append('%s: %s' % (ivar,val))
         return ','.join(result)
+        
+def isGeneralSetting(obj):
+    return isinstance(obj,GeneralSetting)
 #@-<< GeneralSetting >>
 #@+<< class ParserBaseClass >>
 #@+node:ekr.20041119203941.2: ** << class ParserBaseClass >>
@@ -526,53 +529,82 @@ class ParserBaseClass:
         '''Parse an @mode node and create the enter-<name>-mode command.'''
 
         trace = False and not g.unitTesting
-        c = self.c ; k = c.k ; name1 = name
-
-        # g.trace('%20s' % (name),c.fileName())
-        modeName = self.computeModeName(name)
-
-        # Create a local shortcutsDict.
-        old_d = self.shortcutsDict
+        c = self.c ; k = c.k ; 
         
-        self.shortcutsDict = d = g.TypedDictOfLists(
-            name='modeDict for %s' % (modeName),
-            keyType=type('commandName'),valType=k.ShortcutInfo)
+        if g.new_modes:
+            aList = []
+            for line in g.splitLines(p.b):
+                line = line.strip()
+                if line and not g.match(line,0,'#'):
+                    name2,si = self.parseShortcutLine('*mode-setting*',line)
+                    aList.append((name2,si),)
+            k.modeController.makeMode(name,aList)
+        else:
+            name1 = name
 
-        s = p.b
-        lines = g.splitLines(s)
-        for line in lines:
-            line = line.strip()
-            if line and not g.match(line,0,'#'):
-                name,si = self.parseShortcutLine('*mode-setting*',line)
-                assert k.isShortcutInfo(si),si
-                if not name:
-                    # An entry command: put it in the special *entry-commands* key.
-                    d.add('*entry-commands*',si)
-                elif si is not None:
-                    # A regular shortcut.
-                    si.pane = modeName
-                    aList = d.get(name,[])
-                    for z in aList:
-                        assert k.isShortcutInfo(z),z
-                    # Important: use previous bindings if possible.
-                    key2,aList2 = c.config.getShortcut(name)
-                    for z in aList2:
-                        assert k.isShortcutInfo(z),z
-                    aList3 = [z for z in aList2 if z.pane != modeName]
-                    if aList3:
-                        # g.trace('inheriting',[b.val for b in aList3])
-                        aList.extend(aList3)
-                    aList.append(si)
-                    d.replace(name,aList)
-                    self.set(p,"shortcut",name,aList)
-
-        # Restore the global shortcutsDict.
-        self.shortcutsDict = old_d
+            # g.trace('%20s' % (name),c.fileName())
+            modeName = self.computeModeName(name)
         
-        if trace: g.trace(d.dump())
-
-        # Create the command, but not any bindings to it.
-        self.createModeCommand(modeName,name1,d)
+            # Create a local shortcutsDict.
+            ##### old_d = self.shortcutsDict
+                # We create a new shortcutsDict so that self.set will change the correct dict.
+                # This is very bad style.
+        
+            d = g.TypedDictOfLists(
+                name='modeDict for %s' % (modeName),
+                keyType=type('commandName'),valType=k.ShortcutInfo)
+                
+            ##### self.shortcutsDict = d
+        
+            s = p.b
+            lines = g.splitLines(s)
+            for line in lines:
+                line = line.strip()
+                if line and not g.match(line,0,'#'):
+                    name,si = self.parseShortcutLine('*mode-setting*',line)
+                    assert k.isShortcutInfo(si),si
+                    if not name:
+                        # An entry command: put it in the special *entry-commands* key.
+                        d.add('*entry-commands*',si)
+                    elif si is not None:
+                        # A regular shortcut.
+                        si.pane = modeName
+                        aList = d.get(name,[])
+                        for z in aList:
+                            assert k.isShortcutInfo(z),z
+                        # Important: use previous bindings if possible.
+                        key2,aList2 = c.config.getShortcut(name)
+                        for z in aList2:
+                            assert k.isShortcutInfo(z),z
+                        aList3 = [z for z in aList2 if z.pane != modeName]
+                        if aList3:
+                            # g.trace('inheriting',[b.val for b in aList3])
+                            aList.extend(aList3)
+                        aList.append(si)
+                        d.replace(name,aList)
+                        
+                        if 0: #### Why would we want to do this????
+                            #### Old code: we have to save/restore self.shortcutsDict.
+                                #### self.set(p,"shortcut",name,aList)
+                            # Set the entry directly.
+                            d2 = self.shortcutsDict
+                            gs = d2.get(key)
+                            if gs:
+                                assert isGeneralSetting(gs)
+                                path = gs.path
+                                if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
+                                    g.es("over-riding setting:",name,"from",path)
+            
+                            # Important: we can't use c here: it may be destroyed!
+                            d2 [key] = GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
+        
+                # Restore the global shortcutsDict.
+                ##### self.shortcutsDict = old_d
+                
+                if trace: g.trace(d.dump())
+            
+                # Create the command, but not any bindings to it.
+                self.createModeCommand(modeName,name1,d)
     #@+node:ekr.20070411101643.1: *4* doOpenWith (ParserBaseClass)
     def doOpenWith (self,p,kind,name,val):
 
@@ -951,7 +983,7 @@ class ParserBaseClass:
         command-name --> same = binding
         '''
 
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting # and kind == '*mode-setting*'
         c,k = self.c,self.c.k
         assert c
         name = val = nextMode = None ; nextMode = 'none'
@@ -1004,7 +1036,7 @@ class ParserBaseClass:
         assert k.isStrokeOrNone(stroke),stroke
         # g.trace('stroke',stroke)
         si = k.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
-        if trace: g.trace(si)
+        if trace: g.trace('%25s %s' % (name,si))
         return name,si
     #@+node:ekr.20060608222828: *4* parseAbbrevLine (ParserBaseClass)
     def parseAbbrevLine (self,s):
@@ -1257,9 +1289,12 @@ class configClass:
         self.inited = False
         self.menusList = []
         self.menusFileName = ''
-        self.modeCommandsDict = g.TypedDict(
-            name = 'modeCommandsDict',
-            keyType = type('commandName'),valType = g.TypedDictOfLists)
+        if g.new_modes:
+            pass # Use k.ModeController instead.
+        else:
+            self.modeCommandsDict = g.TypedDict(
+                name = 'modeCommandsDict',
+                keyType = type('commandName'),valType = g.TypedDictOfLists)
         self.myGlobalConfigFile = None
         self.myHomeConfigFile = None
         self.machineConfigFile = None
@@ -2032,9 +2067,9 @@ class configClass:
     def readSettingsFiles (self,fileName,verbose=True):
 
         '''Read settings from one file of the standard settings files.'''
-
-        trace = False and not g.unitTesting
-        verbose = verbose
+        
+        trace = True and not g.unitTesting
+        verbose = True
         giveMessage = (verbose and not g.app.unitTesting and
             not self.silent and not g.app.batchMode)
         def message(s):
@@ -2097,7 +2132,7 @@ class configClass:
             (self.machineConfigFile,False),
             # (myLocalConfigFile,False),
             # New in Leo 4.6: the -c file is in *addition* to other config files.
-            (g.app.oneConfigFilename,False),
+            #### (g.app.oneConfigFilename,False),
         )
 
         if fileName:
@@ -2169,6 +2204,198 @@ class configClass:
                 
         if shortcutsDict and localFlag:
             self.localShortcutsDict[c.hash()] = shortcutsDict
+    #@+node:ekr.20120211052437.10734: *4* readGlobalSettingsFiles & helpers (g.app.config)
+    def readGlobalSettingsFiles (self):
+        
+       
+        self.readLeoSettingsFile(giveMessage)
+        self.readMyLeoSettingsFile(giveMessage)
+        self.readRecentFiles(localConfigFile)
+        self.inited = True
+        #### self.setIvarsFromSettings(None)
+        
+        return ####
+        
+
+        self.write_recent_files_as_needed = False # Will be set later.
+        localConfigFile = self.getLocalConfigFile(fileName)
+        if trace: g.trace(fileName,localConfigFile)
+        table = self.defineSettingsTable(fileName,localConfigFile)
+        for path,localFlag in table:
+            assert path and g.os_path_exists(path)
+            isZipped = path and zipfile.is_zipfile(path)
+            isLeo = isZipped or path.endswith('.leo')
+            if isLeo:
+                c = self.openSettingsFile(path)
+                if c:
+                    if giveMessage:
+                        message('reading settings in %s' % path)
+                    self.updateSettings(c,localFlag)
+                    g.app.destroyWindow(c.frame)
+                    self.write_recent_files_as_needed = c.config.getBool(
+                        'write_recent_files_as_needed')
+                else:
+                    if giveMessage:
+                        message('error reading settings in %s' % path)
+    #@+node:ekr.20120211052437.10738: *5* giveReadSettingsMessage
+    def giveReadSettingsMessage (self,s):
+        
+        if (
+            not g.app.unitTesting and
+            not self.silent and
+            not g.app.batchMode
+        ):
+            # This occurs early in startup, so use g.es_print.
+            if not g.isPython3:
+                s = g.toEncodedString(s,'ascii')
+            g.es_print(s,color='blue')
+        
+    #@+node:ekr.20120211052437.10736: *5* readLeoSettingsFile
+    def readLeoSettingsFile(self):
+        
+        trace = False and not g.unitTesting
+        settingsFile = 'leoSettings.leo'
+        mySettingsFile = 'myLeoSettings.leo'
+        machineConfigFile = g.computeMachineName() + 'LeoSettings.leo'
+
+        # New in Leo 4.5 b4: change homeDir to homeLeoDir
+        for ivar,theDir,fileName in (
+            ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
+            ('homeFile',            g.app.homeLeoDir,       settingsFile),
+            ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
+            #non-prefixed names take priority over prefixed names
+            ('myHomeConfigFile',    g.app.homeLeoDir,   g.app.homeSettingsPrefix + mySettingsFile),
+            ('myHomeConfigFile',    g.app.homeLeoDir,   mySettingsFile),
+            ('machineConfigFile',   g.app.homeLeoDir,   g.app.homeSettingsPrefix + machineConfigFile),
+            ('machineConfigFile',   g.app.homeLeoDir,   machineConfigFile),
+        ):
+            # The same file may be assigned to multiple ivars:
+            # readSettingsFiles checks for such duplications.
+            path = g.os_path_join(theDir,fileName)
+            if g.os_path_exists(path):
+                setattr(self,ivar,path)
+            #else:
+                #if the path does not exist, only set to None if the ivar isn't already set.
+                #dan: IMO, it's better to set the defaults to None in configClass.__init__().
+                #     This avoids the creation of ivars in odd (non __init__) places.
+                #setattr(self,ivar, getattr(self,ivar,None))
+        if trace:
+            g.trace('global file:  ',self.globalConfigFile)
+            g.trace('home file:    ',self.homeFile)
+            g.trace('myGlobal file:',self.myGlobalConfigFile)
+            g.trace('myHome file:  ',self.myHomeConfigFile)
+
+        
+        
+        
+        #############
+        
+        dirs_table = (
+            (self.globalConfigFile,False),
+            (self.homeFile,False),
+            # (localConfigFile,False),
+            (self.myGlobalConfigFile,False),
+            (self.myHomeConfigFile,False),
+            (self.machineConfigFile,False),
+            # (myLocalConfigFile,False),
+            # New in Leo 4.6: the -c file is in *addition* to other config files.
+            #### (g.app.oneConfigFilename,False),
+        )
+
+        if fileName:
+            if fileName.lower().endswith('leosettings.leo'):
+                # 2011/02/28: don't read leoSettings.leo or myLeoSetings.leo twice.
+                # This allows myLeoSettings.leo to take precedence.
+                table1 = []
+            else:
+                path = g.os_path_finalize(fileName)
+                theDir = g.os_path_dirname(fileName)
+                myLocalConfigFile = g.os_path_join(theDir,'myLeoSettings.leo')
+                local_table = (
+                    (localConfigFile,False),
+                    (myLocalConfigFile,False),
+                )
+                if trace and verbose:
+                    g.trace('localConfigFile:  ',localConfigFile)
+                    g.trace('myLocalConfigFile:',myLocalConfigFile)
+        
+                table1 = [z for z in local_table if z not in global_table]
+                table1.append((path,True),)
+        else:
+            table1 = global_table
+
+        seen = [] ; table = []
+        for path,localFlag in table1:
+            if trace and verbose: g.trace('exists',g.os_path_exists(path),path)
+            if path and g.os_path_exists(path):
+                # Make sure we mark files seen no matter how they are specified.
+                path = g.os_path_realpath(g.os_path_finalize(path))
+                if path.lower() not in seen:
+                    seen.append(path.lower())
+                    table.append((path,localFlag),)
+        if trace: g.trace(repr(fileName),'table:',g.listToString(table))
+        return table
+
+        
+        trace = False and not g.unitTesting
+        verbose = verbose
+        giveMessage = (verbose and not g.app.unitTesting and
+            not self.silent and not g.app.batchMode)
+        def message(s):
+            # This occurs early in startup, so use the following.
+            if not g.isPython3:
+                s = g.toEncodedString(s,'ascii')
+            g.es_print(s,color='blue')
+        self.write_recent_files_as_needed = False # Will be set later.
+        localConfigFile = self.getLocalConfigFile(fileName)
+        if trace: g.trace(fileName,localConfigFile)
+        table = self.defineSettingsTable(fileName,localConfigFile)
+        for path,localFlag in table:
+            assert path and g.os_path_exists(path)
+            isZipped = path and zipfile.is_zipfile(path)
+            isLeo = isZipped or path.endswith('.leo')
+            if isLeo:
+                c = self.openSettingsFile(path)
+                if c:
+                    if giveMessage:
+                        message('reading settings in %s' % path)
+                    self.updateSettings(c,localFlag)
+                    g.app.destroyWindow(c.frame)
+                    self.write_recent_files_as_needed = c.config.getBool(
+                        'write_recent_files_as_needed')
+                else:
+                    if giveMessage:
+                        message('error reading settings in %s' % path)
+    #@+node:ekr.20120211052437.10737: *5* readMyLeoSettingsFile
+    def readMyLeoSettingsFile (self,giveMessage):
+        
+        trace = False and not g.unitTesting
+        
+        def message(s):
+            # This occurs early in startup, so use the following.
+            if not g.isPython3:
+                s = g.toEncodedString(s,'ascii')
+            g.es_print(s,color='blue')
+        self.write_recent_files_as_needed = False # Will be set later.
+        localConfigFile = self.getLocalConfigFile(fileName)
+        if trace: g.trace(fileName,localConfigFile)
+        table = self.defineSettingsTable(fileName,localConfigFile)
+        for path,localFlag in table:
+            assert path and g.os_path_exists(path)
+            isZipped = path and zipfile.is_zipfile(path)
+            isLeo = isZipped or path.endswith('.leo')
+            if isLeo:
+                c = self.openSettingsFile(path)
+                if c:
+                    if giveMessage:
+                        message('reading settings in %s' % path)
+                    self.updateSettings(c,localFlag)
+                    g.app.destroyWindow(c.frame)
+                    self.write_recent_files_as_needed = c.config.getBool(
+                        'write_recent_files_as_needed')
+                else:
+                    if giveMessage:
+                        message('error reading settings in %s' % path)
     #@+node:ekr.20050424114937.1: *3* Reading and writing .leoRecentFiles.txt (g.app.config)
     #@+node:ekr.20070224115832: *4* readRecentFiles & helpers
     def readRecentFiles (self,localConfigFile):
@@ -2197,7 +2424,7 @@ class configClass:
         - the users home directory first,
         - Leo's config directory second.'''
 
-        for theDir in (g.app.homeLeoDir,g.app.globalConfigDir): # homeLeoDir was g.app.homeDir.
+        for theDir in (g.app.homeLeoDir,g.app.globalConfigDir):
             if theDir:
                 try:
                     fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')

@@ -16,14 +16,16 @@ import leo.core.leoGlobals as g
     # # g.pr("enabled psyco classes",__file__)
     # try: from psyco.classes import *
     # except ImportError: pass
-
-# These imports are now done in the ctor and c.finishCreate.
+    
+# The leoCommands ctor now does these imports.
+# This breaks circular dependencies.
     # import leo.core.leoAtFile as leoAtFile
-    # import leo.core.leoCache as leoCashe
+    # import leo.core.leoCache as leoCache
     # import leo.core.leoEditCommands as leoEditCommands
     # import leo.core.leoFileCommands as leoFileCommands
     # import leo.core.leoImport as leoImport
     # import leo.core.leoRst as leoRst
+    # import leo.core.leoShadow as leoShadow
     # import leo.core.leoTangle as leoTangle
     # import leo.core.leoUndo as leoUndo
 
@@ -144,7 +146,13 @@ class Commands (object):
         self.importCommands = leoImport.leoImportCommands(c)
         self.rstCommands    = leoRst.rstCommands(c)
         self.tangleCommands = leoTangle.tangleCommands(c)
-        leoEditCommands.createEditCommanders(c)
+        
+        if g.new_imports:
+            self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
+            self.editCommandsManager.createEditCommanders()
+        else:
+            leoEditCommands.createEditCommanders(c)
+
         self.rstCommands = leoRst.rstCommands(c)
 
         c.cacher = leoCache.cacher(c)
@@ -178,8 +186,13 @@ class Commands (object):
 
         if initEditCommanders:
             # A 'real' .leo file.
-            import leo.core.leoEditCommands as leoEditCommands
-            c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
+            
+            if g.new_imports:
+                c.commandsDict = c.editCommandsManager.finishCreateEditCommanders()
+            else:
+                import leo.core.leoEditCommands as leoEditCommands
+                c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
+
             self.rstCommands.finishCreate()
 
             # copy global commands to this controller    
@@ -397,7 +410,7 @@ class Commands (object):
                     repr(self.fixedWindowPosition),color='red')
         else:
             c.windowPosition = 500,700,50,50 # width,height,left,top.
-    #@+node:ekr.20031218072017.2817: *3*  doCommand
+    #@+node:ekr.20031218072017.2817: *3*  c.doCommand
     command_count = 0
 
     def doCommand (self,command,label,event=None):
@@ -1111,7 +1124,7 @@ class Commands (object):
         closeFlag = (
             c.frame.startupWindow and # The window was open on startup
             not c.changed and not c.frame.saved and # The window has never been changed
-            g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+            g.app.numberOfUntitledWindows == 1) # Only one untitled window has ever been opened
         #@-<< Set closeFlag if the only open window is empty >>
         table = [
             # 2010/10/09: Fix an interface blunder. Show all files by default.
@@ -1762,7 +1775,7 @@ class Commands (object):
         closeFlag = (
             c.frame.startupWindow and # The window was open on startup
             not c.changed and not c.frame.saved and # The window has never been changed
-            g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+            g.app.numberOfUntitledWindows == 1) # Only one untitled window has ever been opened
         #@-<< Set closeFlag if the only open window is empty >>
 
         fileName = name
@@ -1888,7 +1901,7 @@ class Commands (object):
             c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
             frame.deiconify()
             frame.lift()
-            g.app.root.update() # Force a screen redraw immediately.
+            #### g.app.root.update() # Force a screen redraw immediately.
             c.fileCommands.readOutlineOnly(theFile,fileName) # closes file.
         except:
             g.es("can not open:",fileName)
@@ -6596,7 +6609,7 @@ class Commands (object):
 
     def openSettingsHelper(self,name):
         c = self
-        homeLeoDir = g.app.homeLeoDir # was homeDir
+        homeLeoDir = g.app.homeLeoDir
         loadDir = g.app.loadDir
         configDir = g.app.globalConfigDir
 

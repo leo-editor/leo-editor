@@ -3,7 +3,10 @@
 #@+node:ekr.20031218072017.3093: * @file leoGlobals.py
 #@@first
 
-"""Global constants, variables and utility functions used throughout Leo."""
+'''Global constants, variables and utility functions used throughout Leo.
+
+Important: This module imports no other Leo module.
+'''
 
 #@@language python
 #@@tabwidth -4
@@ -118,8 +121,16 @@ unitTesting = False # A synonym for app.unitTesting.
 unified_nodes = False # For compatibility with old scripts.
 
 # new_keys = False # True: Qt input methods produce a **user setting**, not a stroke.
-# if new_keys:
-    # print('***** new_keys')
+# if new_keys: print('***** new_keys')
+
+new_imports = True
+if new_imports: print('***** new_imports')
+
+new_load = False # True: .leo files are loaded at most once.
+if new_load: print('***** new_load')
+    
+new_modes = False # True: use ModeController and ModeInfo classes.
+if new_modes: print('***** new_modes')
 
 enableDB = True
     # Don't even think about eliminating this constant:
@@ -157,10 +168,11 @@ def computeStandardDirectories():
 
     '''Set g.app.loadDir, g.app.homeDir, g.app.homeLeoDir and g.app.globalConfigDir.'''
 
-    g.app.loadDir = g.computeLoadDir()
-    g.app.leoDir = g.computeLeoDir()
-    g.app.homeDir = g.computeHomeDir()
-
+    g.app.loadDir   = g.computeLoadDir()
+    g.app.leoDir    = g.computeLeoDir()
+    g.app.homeDir   = g.computeHomeDir()
+    # g.app.machineDir= g.computeMachineDir() # Does not exist.
+    
     g.app.homeLeoDir = homeLeoDir = g.os_path_finalize(
         g.os_path_join(g.app.homeDir,'.leo'))
 
@@ -177,7 +189,7 @@ def computeStandardDirectories():
 
     g.app.user_xresources_path = g.os_path_join(
         g.app.homeDir,'.leo_xresources')
-#@+node:ekr.20041117155521: *5* computeGlobalConfigDir
+#@+node:ekr.20041117155521: *5* g.computeGlobalConfigDir
 def computeGlobalConfigDir():
 
     import leo.core.leoGlobals as g
@@ -203,7 +215,7 @@ def computeGlobalConfigDir():
         theDir = None
 
     return theDir
-#@+node:ekr.20041117151301: *5* computeHomeDir
+#@+node:ekr.20041117151301: *5* g.computeHomeDir
 def computeHomeDir():
 
     """Returns the user's home directory."""
@@ -228,7 +240,7 @@ def computeHomeDir():
             home = None
 
     return home
-#@+node:ekr.20060416113431: *5* computeLeoDir
+#@+node:ekr.20060416113431: *5* g.computeLeoDir
 def computeLeoDir ():
 
     loadDir = g.app.loadDir
@@ -239,7 +251,7 @@ def computeLeoDir ():
         sys.path.append(theDir)
 
     return theDir
-#@+node:ekr.20031218072017.1937: *5* computeLoadDir
+#@+node:ekr.20031218072017.1937: *5* g.computeLoadDir
 def computeLoadDir():
 
     """Returns the directory containing leo.py."""
@@ -290,7 +302,7 @@ def computeLoadDir():
     except:
         g.pr("Exception getting load directory")
         raise
-#@+node:dan.20080410121257.1: *5* computeMachineName
+#@+node:dan.20080410121257.1: *5* g.computeMachineName
 def computeMachineName():
     """Returns the name of the current machine, i.e, HOSTNAME"""
     try:

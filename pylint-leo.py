@@ -111,6 +111,7 @@ def getTkPass():
 # Important: I changed lint.py:Run.__init__ so pylint can handle more than one file.
 # From: sys.exit(self.linter.msg_status)
 # To:   print('EKR: exit status',self.linter.msg_status)
+
 def run(theDir,fn,suppress,rpython=False):
     fn = os.path.join('leo',theDir,fn)
     rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
@@ -119,6 +120,7 @@ def run(theDir,fn,suppress,rpython=False):
     if suppress: args.append('--disable=%s' % (suppress))
     # if rpython: args.append('--rpython-mode') # Probably does not exist.
     fn = os.path.abspath(fn)
+    # print('run: theDir',theDir,'fn',fn)
     if not fn.endswith('.py'): fn = fn+'.py'
     args.append(fn)
     if os.path.exists(fn):
@@ -149,6 +151,7 @@ no_suppressions = ''
 
 recentCoreList = (
     # Passed 02/07/2012
+        ('runLeo',      no_suppressions),
         # ('leoApp',       no_suppressions),
         # ('leoAtFile',    no_suppressions),
         # ('leoCache',     no_suppressions),

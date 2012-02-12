@@ -39,6 +39,7 @@ if g.isPython3:
 # subprocess = g.importExtension('subprocess',pluginName=None,verbose=False)
 #@-<< imports >>
 
+
 #@+<< define class baseEditCommandsClass >>
 #@+node:ekr.20050920084036.1: ** << define class baseEditCommandsClass >>
 class baseEditCommandsClass:
@@ -223,6 +224,88 @@ class baseEditCommandsClass:
 #@-<< define class baseEditCommandsClass >>
 
 #@+others
+#@+node:ekr.20120211121736.10817: ** class EditCommandsManager
+class EditCommandsManager:
+    
+    '''A class to init all edit commands properly.
+    
+    This class eliminates the circular dependencies that otherwise
+    would arise from the module-level classesList.
+    '''
+
+    
+    #@+others
+    #@+node:ekr.20120211121736.10830: *3*  ecm.ctor
+    def __init__ (self,c):
+        
+        self.c = c
+        
+        self.classesList = (
+            ('abbrevCommands',      abbrevCommandsClass),
+            ('bufferCommands',      bufferCommandsClass),
+            ('editCommands',        editCommandsClass),
+            ('chapterCommands',     chapterCommandsClass),
+            ('controlCommands',     controlCommandsClass),
+            ('debugCommands',       debugCommandsClass),
+            ('editFileCommands',    editFileCommandsClass),
+            ('helpCommands',        helpCommandsClass),
+            ('keyHandlerCommands',  keyHandlerCommandsClass),
+            ('killBufferCommands',  killBufferCommandsClass),
+            ('leoCommands',         leoCommandsClass),
+            ('macroCommands',       macroCommandsClass),
+            # ('queryReplaceCommands',queryReplaceCommandsClass),
+            ('rectangleCommands',   rectangleCommandsClass),
+            ('registerCommands',    registerCommandsClass),
+            ('searchCommands',      searchCommandsClass),
+            ('spellCommands',       spellCommandsClass),
+        )
+
+        
+    #@+node:ekr.20120211121736.10827: *3* ecm.createEditCommanders
+    def createEditCommanders (self):
+
+        '''Create edit classes in the commander.'''
+        
+        c = self.c
+
+        for name, theClass in self.classesList:
+            theInstance = theClass(c)# Create the class.
+            setattr(c,name,theInstance)
+            # g.trace(name,theInstance)
+    #@+node:ekr.20120211121736.10828: *3* ecm.finishCreateEditCommanders
+    def finishCreateEditCommanders (self):
+
+        '''Finish creating edit classes in the commander.
+
+        Return the commands dictionary for all the classes.'''
+        
+        # g.trace(c,g.callers())
+
+        c,d = self.c,{}
+
+        for name, theClass in self.classesList:
+            theInstance = getattr(c,name)
+            theInstance.finishCreate()
+            theInstance.init()
+            d2 = theInstance.getPublicCommands()
+            if d2:
+                d.update(d2)
+                if 0:
+                    g.pr('----- %s' % name)
+                    for key in sorted(d2): g.pr(key)
+
+        return d
+    #@+node:ekr.20120211121736.10829: *3* ecm.initAllEditCommanders
+    def initAllEditCommanders (self):
+
+        '''Re-init classes in the commander.'''
+
+        c = self.c
+
+        for name, theClass in self.classesList:
+            theInstance = getattr(c,name)
+            theInstance.init()
+    #@-others
 #@+node:ekr.20050924100713: **  Module level... (leoEditCommands)
 #@+node:ekr.20050920084720: *3* createEditCommanders (leoEditCommands module)
 def createEditCommanders (c):
@@ -260,7 +343,7 @@ def finishCreateEditCommanders (c):
                 for key in sorted(d2): g.pr(key)
 
     return d
-#@+node:ekr.20050924100713.1: *3* initAllEditCommanders
+#@+node:ekr.20050924100713.1: *3* initAllEditCommanders (leoEditCommand module
 def initAllEditCommanders (c):
 
     '''Re-init classes in the commander.'''
@@ -10321,26 +10404,29 @@ class EnchantClass:
 #@-others
 #@-others
 
-#@+<< define classesList >>
-#@+node:ekr.20050922104213: ** << define classesList >>
-classesList = [
-    ('abbrevCommands',      abbrevCommandsClass),
-    ('bufferCommands',      bufferCommandsClass),
-    ('editCommands',        editCommandsClass),
-    ('chapterCommands',     chapterCommandsClass),
-    ('controlCommands',     controlCommandsClass),
-    ('debugCommands',       debugCommandsClass),
-    ('editFileCommands',    editFileCommandsClass),
-    ('helpCommands',        helpCommandsClass),
-    ('keyHandlerCommands',  keyHandlerCommandsClass),
-    ('killBufferCommands',  killBufferCommandsClass),
-    ('leoCommands',         leoCommandsClass),
-    ('macroCommands',       macroCommandsClass),
-    # ('queryReplaceCommands',queryReplaceCommandsClass),
-    ('rectangleCommands',   rectangleCommandsClass),
-    ('registerCommands',    registerCommandsClass),
-    ('searchCommands',      searchCommandsClass),
-    ('spellCommands',       spellCommandsClass),
-]
-#@-<< define classesList >>
+if g.new_imports:
+    pass
+else:
+    #@+<< define classesList >>
+    #@+node:ekr.20050922104213: ** << define classesList >> (leoEditCommands)
+    classesList = [
+        ('abbrevCommands',      abbrevCommandsClass),
+        ('bufferCommands',      bufferCommandsClass),
+        ('editCommands',        editCommandsClass),
+        ('chapterCommands',     chapterCommandsClass),
+        ('controlCommands',     controlCommandsClass),
+        ('debugCommands',       debugCommandsClass),
+        ('editFileCommands',    editFileCommandsClass),
+        ('helpCommands',        helpCommandsClass),
+        ('keyHandlerCommands',  keyHandlerCommandsClass),
+        ('killBufferCommands',  killBufferCommandsClass),
+        ('leoCommands',         leoCommandsClass),
+        ('macroCommands',       macroCommandsClass),
+        # ('queryReplaceCommands',queryReplaceCommandsClass),
+        ('rectangleCommands',   rectangleCommandsClass),
+        ('registerCommands',    registerCommandsClass),
+        ('searchCommands',      searchCommandsClass),
+        ('spellCommands',       spellCommandsClass),
+    ]
+    #@-<< define classesList >>
 #@-leo

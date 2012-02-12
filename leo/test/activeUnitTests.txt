@@ -627,7 +627,7 @@ ivars = (
     'idle_imported','idleTimeDelay','idleTimeHook',
     'initing','killed',
     'leoID','log','logIsLocked','logWaiting',
-    'nodeIndices','numberOfWindows',
+    'nodeIndices','numberOfUntitledWindows',
     'quitting','realMenuNameDict','searchDict','scriptDict',
     'trace','tracePositions','trace_list',
     'unitTestDict','unitTesting','use_psyco','windowList',
@@ -648,7 +648,7 @@ for ivar in ivars:
 for ivar in (
     'commandName',
     'openWithFiles','openWithFileNum','openWithTable',
-    'root',
+    # 'root',
 ):
     assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar
 #@+node:ekr.20111118125141.3879: *4* @test bodyCtrl property

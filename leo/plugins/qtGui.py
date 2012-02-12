@@ -4945,7 +4945,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         '''Minimize all Leo's windows.'''
 
-        self.minimize(g.app.pythonFrame)
+        #### self.minimize(g.app.pythonFrame)
         
         for frame in g.app.windowList:
             self.minimize(frame)

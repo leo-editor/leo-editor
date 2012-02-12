@@ -10303,7 +10303,7 @@ successfully.
 closeFlag = (
     c.frame.startupWindow and # The window was open on startup
     not c.changed and not c.frame.saved and # The window has never been changed
-    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+    g.app.numberOfUntitledWindows == 1) # Only one untitled window has ever been opened
 #@+node:ekr.20090212054250.9: *6* c.createNodeFromExternalFile
 def createNodeFromExternalFile(self,fn):
 
@@ -14313,7 +14313,13 @@ def __init__(self,frame,fileName,relativeFileName=None):
     self.importCommands = leoImport.leoImportCommands(c)
     self.rstCommands    = leoRst.rstCommands(c)
     self.tangleCommands = leoTangle.tangleCommands(c)
-    leoEditCommands.createEditCommanders(c)
+    
+    if g.new_imports:
+        self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
+        self.editCommandsManager.createEditCommanders()
+    else:
+        leoEditCommands.createEditCommanders(c)
+
     self.rstCommands = leoRst.rstCommands(c)
 
     c.cacher = leoCache.cacher(c)
@@ -14347,8 +14353,13 @@ def finishCreate (self,initEditCommanders=True):  # New in 4.4.
 
     if initEditCommanders:
         # A 'real' .leo file.
-        import leo.core.leoEditCommands as leoEditCommands
-        c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
+        
+        if g.new_imports:
+            c.commandsDict = c.editCommandsManager.finishCreateEditCommanders()
+        else:
+            import leo.core.leoEditCommands as leoEditCommands
+            c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
+
         self.rstCommands.finishCreate()
 
         # copy global commands to this controller    
@@ -24593,7 +24604,7 @@ Leo 4.9 final, build 4411, June 21, 2011
 Python 2.7.1, qt version 4.7.2
 linux2
 #@+node:ekr.20120129174505.10242: *5* New
-#@+node:ekr.20120123143207.10223: *6* << GeneralSetting >>
+#@+node:ekr.20120123143207.10223: *6* << GeneralSetting >> & isGeneralSetting
 class GeneralSetting:
     
     '''A class representing any kind of setting except shortcuts.'''
@@ -24618,6 +24629,9 @@ class GeneralSetting:
                 if val is not None:
                     result.append('%s: %s' % (ivar,val))
         return ','.join(result)
+        
+def isGeneralSetting(obj):
+    return isinstance(obj,GeneralSetting)
 #@+node:ekr.20120123115816.10209: *6* class ShortcutInfo
 # bindKey:            ShortcutInfo(kind,commandName,func,pane)
 # bindKeyToDict:      ShortcutInfo(kind,commandName,func,pane,stroke)
@@ -25344,7 +25358,7 @@ def parseShortcutLine (self,kind,s):
     command-name --> same = binding
     '''
 
-    trace = False and not g.unitTesting
+    trace = False and not g.unitTesting # and kind == '*mode-setting*'
     c,k = self.c,self.c.k
     assert c
     name = val = nextMode = None ; nextMode = 'none'
@@ -25397,7 +25411,7 @@ def parseShortcutLine (self,kind,s):
     assert k.isStrokeOrNone(stroke),stroke
     # g.trace('stroke',stroke)
     si = k.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
-    if trace: g.trace(si)
+    if trace: g.trace('%25s %s' % (name,si))
     return name,si
 #@+node:ekr.20041120094940.9: *6* set (ParserBaseClass)
 def set (self,p,kind,name,val):
@@ -25437,10 +25451,13 @@ def makeAllBindings (self):
 
     k = self ; c = k.c
 
-    # g.trace(c.fileName(),g.callers())
+    # g.trace(c.shortFileName())
 
     k.bindingsDict = {}
-    k.addModeCommands() 
+    if g.new_modes:
+        k.modeController.addModeCommands()
+    else:
+        k.addModeCommands() 
     k.makeBindingsFromCommandsDict()
     k.initSpecialIvars()
     k.initAbbrev()

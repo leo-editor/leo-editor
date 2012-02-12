@@ -182,7 +182,7 @@ def unredirectScriptOutput (self):
 
         g.restoreStderr()
         g.restoreStdout()
-.. @+node:ekr.20031218072017.2817: *8*  doCommand
+.. @+node:ekr.20031218072017.2817: *8*  c.doCommand
 command_count = 0
 
 def doCommand (self,command,label,event=None):
@@ -956,7 +956,7 @@ successfully.
 closeFlag = (
     c.frame.startupWindow and # The window was open on startup
     not c.changed and not c.frame.saved and # The window has never been changed
-    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+    g.app.numberOfUntitledWindows == 1) # Only one untitled window has ever been opened
 .. @+node:ekr.20090212054250.9: *8* c.createNodeFromExternalFile
 def createNodeFromExternalFile(self,fn):
 
@@ -1109,7 +1109,7 @@ def readOutlineOnly (self,event=None):
         c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
         frame.deiconify()
         frame.lift()
-        g.app.root.update() # Force a screen redraw immediately.
+        #### g.app.root.update() # Force a screen redraw immediately.
         c.fileCommands.readOutlineOnly(theFile,fileName) # closes file.
     except:
         g.es("can not open:",fileName)

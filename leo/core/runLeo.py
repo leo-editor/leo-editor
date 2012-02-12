@@ -102,26 +102,30 @@ def run(fileName=None,pymacs=None,*args,**keywords):
 
     """Initialize and run Leo"""
 
-    trace = False # and not g.unitTesting
-    if trace: print('runLeo.run: sys.argv %s' % sys.argv)
+    # print('runLeo.run: sys.argv %s' % sys.argv)
 
     # Phase 1: before loading plugins.
     # Scan options, set directories and read settings.
-    if not isValidPython(): return
-
-    files,options = doPrePluginsInit(fileName,pymacs)
-    if options.get('version'):
-        print(g.app.signon)
-        return
-    if options.get('exit'):
-        return
-
-    # Phase 2: load plugins: the gui has already been set.
-    g.doHook("start1")
-    if g.app.killed: return
-
-    # Phase 3: after loading plugins. Create one or more frames.
-    ok = doPostPluginsInit(args,files,options)
+    if g.new_load:
+        if g.new_load:
+            g.app.loadManager = leoApp.LoadManager(args,fileName,pymacs)
+            ok = g.app.loadManager.start()
+    else:
+        if not isValidPython(): return
+        files,options = doPrePluginsInit(fileName,pymacs)
+        if options.get('version'):
+            print(g.app.signon)
+            return
+        if options.get('exit'):
+            return
+    
+        # Phase 2: load plugins: the gui has already been set.
+        g.doHook("start1")
+        if g.app.killed: return
+    
+        # Phase 3: after loading plugins. Create one or more frames.
+        ok = doPostPluginsInit(args,files,options)
+        
     if ok:
         g.es('') # Clears horizontal scrolling in the log pane.
         g.app.gui.runMainLoop()
@@ -285,7 +289,7 @@ def initApp (verbose):
     g.app.config = leoConfig.configClass()
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.pluginsController.finishCreate() # 2010/09/09
-#@+node:ekr.20041130093254: *4* reportDirectories
+#@+node:ekr.20041130093254: *4* reportDirectories (runLeo.py)
 def reportDirectories(verbose):
 
     if verbose:
@@ -644,6 +648,8 @@ def make_screen_shot(fn):
     if g.app.gui.guiName() == 'qt':
         m = g.loadOnePlugin('screenshots')
         m.make_screen_shot(fn)
+#@+node:ekr.20120208064440.14030: *3* Common helpers
+# Helpers used regardless of new_load switch
 #@+node:ekr.20031218072017.1936: *3* isValidPython & emergency (Tk) dialog class
 def isValidPython():
 
