@@ -924,7 +924,7 @@ class LoadManager:
         
         # Copy the args.
         self.args = args
-        self.fileName = fileName
+        self.fn = fileName
         self.pymacs = pymacs
 
         # The loaded commanders...
@@ -958,27 +958,27 @@ class LoadManager:
         self.script_path = None
         self.script_path_w = None
         self.screenshot_fn = None
-        self.selectFlag = None
+        self.selectHeadline = None
         self.versionFlag = False
         self.windowFlag = False
-        self.windowSize = 0
+        self.windowSize = None
         
     #@+node:ekr.20120211121736.10812: *3* File & directory utils
     #@+node:ekr.20120211121736.10771: *4* lm.completeFileName
-    def completeFileName (self,fileName):
+    def completeFileName (self,fn):
 
-        fileName = g.toUnicode(fileName)
-        fileName = g.os_path_finalize(fileName)
+        fn = g.toUnicode(fn)
+        fn = g.os_path_finalize(fn)
 
         # 2011/10/12: don't add .leo to *any* file.
-        return fileName
+        return fn
     #@+node:ekr.20120211121736.10773: *4* lm.computeFilesList
     def computeFilesList(self):
         
         lm = self
 
         files = []
-        fn = lm.fileName
+        fn = lm.fn
         if fn and fn not in files:
             files.append(fn)
 
@@ -1000,7 +1000,7 @@ class LoadManager:
         for fn in lm.files:
             base_fn = g.os_path_basename(fn)
             if base_fn.lower() == 'leosettings.leo':
-                path = g.os_path_finalize(fileName)
+                path = g.os_path_finalize(lm.fn)
                 if g.os_path_exists(path):
                     if trace: g.trace(path)
                     return path
@@ -1016,7 +1016,7 @@ class LoadManager:
                     seen.append(path.lower())
                     table.append((path,localFlag),)
 
-        if trace: print(repr(fileName),'table:',g.listToString(table))
+        if trace: print(repr(lm.fn),'table:',g.listToString(table))
         return table
 
 
@@ -1062,10 +1062,13 @@ class LoadManager:
         
         '''Return the full path to myLeoSettings.leo.'''
         
-        for fn in files:
+        trace = False
+        lm = self
+        
+        for fn in lm.files:
             base_fn = g.os_path_basename(fn)
             if base_fn.lower() == 'leosettings.leo':
-                path = g.os_path_finalize(fileName)
+                path = g.os_path_finalize(lm.fn)
                 if g.os_path_exists(path):
                     if trace: g.trace(path)
                     return path
@@ -1225,80 +1228,29 @@ class LoadManager:
         
         All entries in the table are unique, and each entry exists.'''
         
-        lm = self
+        # trace = False ; verbose = True
+        # lm = self
         
-        table = (
-            (lm.globalConfigFile),
-            (lm.homeFile),
-            (lm.myGlobalConfigFile),
-            (lm.myHomeConfigFile),
-            (lm.machineConfigFile),
-            # (myLocalConfigFile,False),
-        )
+        # table = [
+            # (lm.globalConfigFile),
+            # (lm.homeFile),
+            # (lm.myGlobalConfigFile),
+            # (lm.myHomeConfigFile),
+            # (lm.machineConfigFile),
+            # # (myLocalConfigFile,False),
+        # ]
         
-        seen = []
-        for path in table:
-            if trace and verbose: g.trace('exists',g.os_path_exists(path),path)
-            if path and g.os_path_exists(path):
-                # Make sure we mark files seen no matter how they are specified.
-                path = g.os_path_realpath(g.os_path_finalize(path))
-                if path.lower() not in seen:
-                    seen.append(path.lower())
-                    table.append((path,localFlag),)
-        if trace: g.trace(repr(fileName),'table:',g.listToString(table))
-        return table
-        
-        
-    #@+node:ekr.20120209051836.10387: *5* defineSettingsTable
-    def defineSettingsTable (self,fileName,localConfigFile):
-
-        trace = False and not g.unitTesting
-        verbose = False
-
-        global_table = (
-            (self.globalConfigFile,False),
-            (self.homeFile,False),
-            # (localConfigFile,False),
-            (self.myGlobalConfigFile,False),
-            (self.myHomeConfigFile,False),
-            (self.machineConfigFile,False),
-            # (myLocalConfigFile,False),
-            # New in Leo 4.6: the -c file is in *addition* to other config files.
-        )
-
-        if fileName:
-            if fileName.lower().endswith('leosettings.leo'):
-                # 2011/02/28: don't read leoSettings.leo or myLeoSetings.leo twice.
-                # This allows myLeoSettings.leo to take precedence.
-                table1 = []
-            else:
-                path = g.os_path_finalize(fileName)
-                theDir = g.os_path_dirname(fileName)
-                myLocalConfigFile = g.os_path_join(theDir,'myLeoSettings.leo')
-                local_table = (
-                    (localConfigFile,False),
-                    (myLocalConfigFile,False),
-                )
-                if trace and verbose:
-                    g.trace('localConfigFile:  ',localConfigFile)
-                    g.trace('myLocalConfigFile:',myLocalConfigFile)
-        
-                table1 = [z for z in local_table if z not in global_table]
-                table1.append((path,True),)
-        else:
-            table1 = global_table
-
-        seen = [] ; table = []
-        for path,localFlag in table1:
-            if trace and verbose: g.trace('exists',g.os_path_exists(path),path)
-            if path and g.os_path_exists(path):
-                # Make sure we mark files seen no matter how they are specified.
-                path = g.os_path_realpath(g.os_path_finalize(path))
-                if path.lower() not in seen:
-                    seen.append(path.lower())
-                    table.append((path,localFlag),)
-        if trace: g.trace(repr(fileName),'table:',g.listToString(table))
-        return table
+        # seen = []
+        # for path in table:
+            # if trace and verbose: g.trace('exists',g.os_path_exists(path),path)
+            # if path and g.os_path_exists(path):
+                # # Make sure we mark files seen no matter how they are specified.
+                # path = g.os_path_realpath(g.os_path_finalize(path))
+                # if path.lower() not in seen:
+                    # seen.append(path.lower())
+                    # table.append(path)
+        # if trace: g.trace(repr(lm.fn),'table:',g.listToString(table))
+        # return table
     #@+node:ekr.20120211121736.10772: *4* lm.computeWorkbookFileName
     def computeWorkbookFileName (self):
         
@@ -1597,79 +1549,76 @@ class LoadManager:
         lm = self
         
         print('doPostPluginsInit not ready yet')
-        return False ####
+        
+        if 0:
 
-        # Clear g.app.initing _before_ creating the frame.
-        g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
-
-        # Create the main frame.  Show it and all queued messages.
-        c,c1,fileName = None,None,None
-        for fileName in lm.files:
-            c,frame = lm.createFrame(fileName,options)
-            if frame:
-                if not c1: c1 = c
-            else:
-                g.trace('createFrame failed',repr(fileName))
-                return False
-              
-        # Put the focus in the first-opened file.  
-        if not c:
-            c,frame = createFrame(None,options)
-            c1 = c
-            if c and frame:
-                fileName = c.fileName()
-            else:
-                g.trace('createFrame failed 2')
-                return False
-                
-        # For qttabs gui, select the first-loaded tab.
-        if hasattr(g.app.gui,'frameFactory'):
-            factory = g.app.gui.frameFactory
-            if factory and hasattr(factory,'setTabForCommander'):
-                c = c1
-                factory.setTabForCommander(c)
-
-        # Do the final inits.
-        c.setLog() # 2010/10/20
-        g.app.logInited = True # 2010/10/20
-        p = c.p
-        g.app.initComplete = True
-        g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
-        g.enableIdleTimeHook(idleTimeDelay=500)
-            # 2011/05/10: always enable this.
-        lm.initFocusAndDraw(c,fileName)
-
-        screenshot_fn = options.get('screenshot_fn')
-        if screenshot_fn:
-            make_screen_shot(screenshot_fn)
-            return False # Force an immediate exit.
-
-        return True
+            # Clear g.app.initing _before_ creating the frame.
+            g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+        
+            # Create the main frame.  Show it and all queued messages.
+            c,c1,fn = None,None,None
+            for fn in lm.files:
+                c,frame = lm.createFrame(fn)
+                if frame:
+                    if not c1: c1 = c
+                else:
+                    g.trace('createFrame failed',repr(fn))
+                    return False
+                  
+            # Put the focus in the first-opened file.  
+            if not c:
+                c,frame = lm.createFrame(None)
+                c1 = c
+                if c and frame:
+                    fn = c.fileName()
+                else:
+                    g.trace('createFrame failed 2')
+                    return False
+                    
+            # For qttabs gui, select the first-loaded tab.
+            if hasattr(g.app.gui,'frameFactory'):
+                factory = g.app.gui.frameFactory
+                if factory and hasattr(factory,'setTabForCommander'):
+                    c = c1
+                    factory.setTabForCommander(c)
+        
+            # Do the final inits.
+            c.setLog() # 2010/10/20
+            g.app.logInited = True # 2010/10/20
+            p = c.p
+            g.app.initComplete = True
+            g.doHook("start2",c=c,p=p,v=p,fileName=fn)
+            g.enableIdleTimeHook(idleTimeDelay=500)
+                # 2011/05/10: always enable this.
+            lm.initFocusAndDraw(c)
+        
+            if lm.screenshot_fn:
+                lm.make_screen_shot(lm.screenshot_fn)
+                return False # Force an immediate exit.
+        
+            return True
     #@+node:ekr.20120211121736.10786: *5* lm.createFrame & helpers
-    def createFrame (self,fileName,options):
+    def createFrame (self,fn):
 
         """Create a LeoFrame during Leo's startup process."""
         
-        # g.trace('(runLeo.py)',fileName)
+        # g.trace('(runLeo.py)',fn)
 
         lm = self
-        script = options.get('script')
+        script = lm.script
 
         # Try to create a frame for the file.
-        if fileName:
-            ok, frame = g.openWithFileName(fileName,None)
+        if fn:
+            ok, frame = g.openWithFileName(fn,None)
             if ok and frame:
                 c2 = frame.c
-                select = options.get('select')
-                windowSize = options.get('windowSize')
-                if select: lm.doSelect(c2,select)
-                if windowSize: lm.doWindowSize(c2,windowSize)
+                if lm.selectHeadline: lm.doSelect(c2)
+                if lm.windowSize: lm.doWindowSize(c2)
                 return c2,frame
 
         # Create a _new_ frame & indicate it is the startup window.
         c,frame = g.app.newLeoCommanderAndFrame(
-            fileName=fileName,
-            initEditCommanders=True)
+            fileName=fn,initEditCommanders=True)
 
         if not script:
             g.app.writeWaitingLog(c) # 2009/12/22: fixes bug 448886
@@ -1685,39 +1634,40 @@ class LoadManager:
         # Call the 'new' hook for compatibility with plugins.
         g.doHook("new",old_c=None,c=c,new_c=c)
 
-        g.createMenu(c,fileName)
+        g.createMenu(c,fn)
         g.finishOpen(c) # Calls c.redraw.
 
         # Report the failure to open the file.
-        if fileName:
-            g.es_print("file not found:",fileName,color='red')
+        if fn: g.es_print("file not found:",fn,color='red')
 
         return c,frame
     #@+node:ekr.20120211121736.10787: *6* lm.doSelect
-    def doSelect (self,c,s):
+    def doSelect (self,c):
 
-        '''Select the node with key s.'''
+        '''Select the node with key lm.selectHeadline.'''
 
         lm = self
-        p = findNode(c,s)
+        s = lm.selectHeadline
+        p = lm.findNode(c,s)
 
         if p:
             c.selectPosition(p)
         else:
             g.es_print('--select: not found:',s)
     #@+node:ekr.20120211121736.10788: *6* lm.doWindowSize
-    def doWindowSize (self,c,windowSize):
+    def doWindowSize (self,c):
 
         lm = self
         w = c.frame.top
 
         try:
-            h,w2 = windowSize.split('x')
+            h,w2 = lm.windowSize.split('x')
             h,w2 = int(h.strip()),int(w2.strip())
             w.resize(w2,h) # 2010/10/08.
             c.k.simulateCommand('equal-sized-panes')
             c.redraw()
             w.repaint() # Essential
+
         except Exception:
             print('doWindowSize:unexpected exception')
             g.es_exception()
@@ -1750,7 +1700,7 @@ class LoadManager:
         # There is no more fileName arg, so we *always* redraw.
         c.redraw_now()
     #@+node:ekr.20120211121736.10792: *5* lm.make_screen_shot
-    def make_screen_shot(fn):
+    def make_screen_shot(self,fn):
 
         '''Create a screenshot of the present Leo outline and save it to path.'''
 
@@ -1867,15 +1817,15 @@ class LoadManager:
 
         lm.script_name = lm.script_path or lm.script_path_w
         if lm.script_name:
-            lm.script_name = g.os_path_finalize_join(lm.loadDir,script_name)
-            lm.script,e = g.readFileIntoString(script_name,kind='script:')
+            lm.script_name = g.os_path_finalize_join(g.app.loadDir,lm.script_name)
+            lm.script,e = g.readFileIntoString(lm.script_name,kind='script:')
         else:
             lm.script = None
 
         # --select
-        lm.selectFlag = options.select
-        if lm.selectFlag:
-            lm.selectFlag = lm.select.strip('"')
+        lm.selectHeadline = options.select
+        if lm.selectHeadline:
+            lm.selectHeadline = lm.selectHeadline.strip('"')
 
         # --silent
         g.app.silentMode = options.silent
@@ -1890,7 +1840,7 @@ class LoadManager:
                 h,w = lm.windowSize.split('x')
             except ValueError:
                 lm.windowSize = None
-                g.trace('bad --window-size:',size)
+                g.trace('bad --window-size:',lm.windowSize)
                 
         # Post process the options.
         if lm.pymacs:
@@ -1915,7 +1865,7 @@ class LoadManager:
         )
         lm_table = ( 
             'script', 'script_name','script_path','script_path_w',
-            'screenshot_fn','selectFlag','versionFlag','windowFlag','windowSize',
+            'screenshot_fn','selectHeadline','versionFlag','windowFlag','windowSize',
             'files',
         )
         for ivar in app_table:
@@ -1927,129 +1877,6 @@ class LoadManager:
         for ivar in lm_table:
             print('%25s %s' % (('lm.%s' % (ivar)),getattr(lm,ivar)))
         
-    #@+node:ekr.20120209051836.10380: *3* readSettingsFiles (COPY)
-    def readSettingsFiles (self,fileName,verbose=True):
-
-        '''Read settings from one file of the standard settings files.'''
-
-        trace = False and not g.unitTesting
-        verbose = verbose
-        giveMessage = (verbose and not g.app.unitTesting and
-            not self.silent and not g.app.batchMode)
-        def message(s):
-            # This occurs early in startup, so use the following.
-            if not g.isPython3:
-                s = g.toEncodedString(s,'ascii')
-            g.es_print(s,color='blue')
-        self.write_recent_files_as_needed = False # Will be set later.
-
-        localConfigFile = self.getLocalConfigFile(fileName)
-        if trace: g.trace(fileName,localConfigFile)
-
-        table = self.defineSettingsTable(fileName,localConfigFile)
-        for path,localFlag in table:
-            assert path and g.os_path_exists(path)
-            isZipped = path and zipfile.is_zipfile(path)
-            isLeo = isZipped or path.endswith('.leo')
-            if isLeo:
-                c = self.openSettingsFile(path)
-                if c:
-                    if giveMessage:
-                        message('reading settings in %s' % path)
-                    self.updateSettings(c,localFlag)
-                    g.app.destroyWindow(c.frame)
-                    self.write_recent_files_as_needed = c.config.getBool(
-                        'write_recent_files_as_needed')
-                else:
-                    if giveMessage:
-                        message('error reading settings in %s' % path)
-
-        self.readRecentFiles(localConfigFile)
-        self.inited = True
-        self.setIvarsFromSettings(None)
-    #@+node:ekr.20120209051836.10382: *4* defineSettingsTable (COPY)
-    def defineSettingsTable (self,fileName,localConfigFile):
-
-        trace = False and not g.unitTesting
-        verbose = False
-
-        global_table = (
-            (self.globalConfigFile,False),
-            (self.homeFile,False),
-            (self.myGlobalConfigFile,False),
-            (self.myHomeConfigFile,False),
-            (self.machineConfigFile,False),
-        )
-
-        if fileName:
-            if fileName.lower().endswith('leosettings.leo'):
-                # 2011/02/28: don't read leoSettings.leo or myLeoSetings.leo twice.
-                # This allows myLeoSettings.leo to take precedence.
-                table1 = []
-            else:
-                path = g.os_path_finalize(fileName)
-                theDir = g.os_path_dirname(fileName)
-                myLocalConfigFile = g.os_path_join(theDir,'myLeoSettings.leo')
-                local_table = (
-                    (localConfigFile,False),
-                    (myLocalConfigFile,False),
-                )
-                if trace and verbose:
-                    g.trace('localConfigFile:  ',localConfigFile)
-                    g.trace('myLocalConfigFile:',myLocalConfigFile)
-        
-                table1 = [z for z in local_table if z not in global_table]
-                table1.append((path,True),)
-        else:
-            table1 = global_table
-
-        seen = [] ; table = []
-        for path,localFlag in table1:
-            if trace and verbose: g.trace('exists',g.os_path_exists(path),path)
-            if path and g.os_path_exists(path):
-                # Make sure we mark files seen no matter how they are specified.
-                path = g.os_path_realpath(g.os_path_finalize(path))
-                if path.lower() not in seen:
-                    seen.append(path.lower())
-                    table.append((path,localFlag),)
-        if trace: g.trace(repr(fileName),'table:',g.listToString(table))
-        return table
-    #@+node:ekr.20120209051836.10383: *4* openSettingsFile  (COPY)
-    def openSettingsFile (self,path):
-
-        theFile,isZipped = g.openLeoOrZipFile(path)
-        if not theFile: return None
-
-        # Similar to g.openWithFileName except it uses a null gui.
-        # Changing g.app.gui here is a major hack.
-        oldGui = g.app.gui
-        g.app.gui = leoGui.nullGui("nullGui")
-        c,frame = g.app.newLeoCommanderAndFrame(
-            fileName=path,relativeFileName=None,
-            initEditCommanders=False,updateRecentFiles=False)
-        frame.log.enable(False)
-        g.app.lockLog()
-        ok = frame.c.fileCommands.open(
-            theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
-        g.app.unlockLog()
-        c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
-        g.app.gui = oldGui
-        return ok and c
-    #@+node:ekr.20120209051836.10384: *4* updateSettings (COPY)
-    def updateSettings (self,c,localFlag):
-
-        parser = SettingsTreeParser(c,localFlag)
-        shortcutsDict,settingsDict = parser.traverse()
-        
-        d = settingsDict
-        if d:
-            if localFlag:
-                self.localOptionsDict[c.hash()] = d
-            else:
-                self.localOptionsList.insert(0,d)
-                
-        if shortcutsDict and localFlag:
-            self.localShortcutsDict[c.hash()] = shortcutsDict
     #@-others
     
 #@+node:ekr.20120211121736.10831: ** class LogManager

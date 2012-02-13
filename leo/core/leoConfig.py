@@ -2175,7 +2175,8 @@ class configClass:
         if not theFile: return None
 
         # Similar to g.openWithFileName except it uses a null gui.
-        # Changing g.app.gui here is a major hack.
+        
+        # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = leoGui.nullGui("nullGui")
         c,frame = g.app.newLeoCommanderAndFrame(

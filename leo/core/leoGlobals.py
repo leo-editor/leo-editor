@@ -2168,14 +2168,16 @@ def openWithFileName(fileName,old_c,
     if c: return True,c.frame
 
     # Open the file.
-    app.setLog(None) # 2010/10/20
-    app.lockLog()# 2010/10/20
+    app.setLog(None)
+    app.lockLog()
+    
+    # Both of these helpers call g.app.newLeoCommanderAndFrame.
     if isLeo:
         c,f = g.openWithFileNameHelper(old_c,gui,fn,relFn)
     else:
         c,f = g.openWrapperLeoFile(old_c,fn,gui),None
 
-    app.unlockLog()# 2010/10/20
+    app.unlockLog()
     if not c: return False,None
 
     # Init the open file.
@@ -2185,7 +2187,7 @@ def openWithFileName(fileName,old_c,
     ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
     if not ok: return False,None
     g.app.writeWaitingLog(c)
-    c.setLog() # 2010/10/20
+    c.setLog()
     g.createMenu(c,fn)
     g.finishOpen(c)
     return True,c.frame
@@ -2224,7 +2226,7 @@ def finishOpen(c):
     k = c.k
     # New in Leo 4.6: provide an official way for very late initialization.
 
-    # # 2011/11/21: selecting the new tab ensures focus is set.
+    # Selecting the new tab ensures focus is set.
     # master = hasattr(c.frame.top,'leo_master') and c.frame.top.leo_master
     # if master: # frame.top.leo_master is a TabbedTopLevel.
         # master.select(c)
@@ -2232,6 +2234,7 @@ def finishOpen(c):
     c.frame.tree.initAfterLoad()
     c.initAfterLoad()
     c.redraw()
+
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
     if c.chapterController:
@@ -2279,7 +2282,9 @@ def mungeFileName(fileName):
 #@+node:ekr.20090520055433.5946: *4* g.openWithFileNameHelper
 def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
 
+    # Read the file the first time to get the settings.
     if old_c: g.preRead(fileName)
+    
     g.doHook('open0')
 
     # Open the file in binary mode to allow 0x1a in bodies & headlines.
