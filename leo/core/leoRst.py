@@ -129,7 +129,7 @@ class rstCommands:
     '''A class to write rst markup in Leo outlines.'''
 
     #@+others
-    #@+node:ekr.20090502071837.34: *3*  Birth & init
+    #@+node:ekr.20090502071837.34: *3*  Birth & init (rstCommands)
     #@+node:ekr.20090502071837.35: *4*  ctor (rstClass)
     def __init__ (self,c):
 

@@ -526,7 +526,7 @@ if sys.platform != 'cli':
 class baseFileCommands:
     """A base class for the fileCommands subcommander."""
     #@+others
-    #@+node:ekr.20090218115025.4: ** Birth
+    #@+node:ekr.20090218115025.4: ** Birth (leoFileCommands)
     #@+node:ekr.20031218072017.3019: *3* leoFileCommands._init_
     def __init__(self,c):
 

@@ -14229,8 +14229,8 @@ Done: Made this optional, and configurable.
 #@+node:ekr.20031218072017.2812: *6* c.__init__
 def __init__(self,frame,fileName,relativeFileName=None):
 
-    trace = False
-    c = self ; tag = 'Commands.__init__'
+    trace = False ; tag = 'Commands.__init__'
+    c = self
 
     self.requestBringToFront = False
     self.requestedFocusWidget = None
@@ -14253,15 +14253,15 @@ def __init__(self,frame,fileName,relativeFileName=None):
 
     # Data.
     self.chapterController = None
-    self.db = {} # 2011/07/30: May be changed to a PickleShare instance later.
-    self.frame = frame
+    self.db = {}                    # May be set to a PickleShare instance later.
+    self.frame = frame              # The may be None.
     self.hiddenRootNode = leoNodes.vnode(context=c)
     self.hiddenRootNode.setHeadString('<hidden root vnode>')
-    self.idle_callback = None # For c.idle_focus_helper.
+    self.idle_callback = None       # For c.idle_focus_helper.
     self.ignored_at_file_nodes = [] # List of nodes for error dialog.
     self.import_error_nodes = []
-    self.in_qt_dialog = False # True when in a qt dialog.
-    self.isZipped = False # May be set to True by g.openWithFileName.
+    self.in_qt_dialog = False       # True when in a qt dialog.
+    self.isZipped = False           # May be set to True by g.openWithFileName.
     self.mFileName = fileName
         # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
     self.mRelativeFileName = relativeFileName
@@ -14285,8 +14285,14 @@ def __init__(self,frame,fileName,relativeFileName=None):
     self.searchCommands = None
     self.spellCommands = None
 
+    # Complete the init of all ivars.
     self.initIvars()
+    
+    self.config = configSettings(c)
+    g.app.config.setIvarsFromSettings(c)
     self.nodeHistory = nodeHistory(c)
+    
+    #### This requires all settings files to be loaded.
     self.initConfigSettings()
     c.setWindowPosition() # Do this after initing settings.
 
@@ -14318,7 +14324,8 @@ def __init__(self,frame,fileName,relativeFileName=None):
     self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
     self.editCommandsManager.createEditCommanders()
 
-    self.rstCommands = leoRst.rstCommands(c)
+    #### Duplicate
+    #### self.rstCommands = leoRst.rstCommands(c)
 
     c.cacher = leoCache.cacher(c)
     c.cacher.initFileDB(self.mFileName)
@@ -14474,84 +14481,80 @@ def initConfigSettings (self):
 def initIvars(self):
 
     c = self
-    << initialize ivars >>
-
-    self.config = configSettings(c)
-    g.app.config.setIvarsFromSettings(c)
-#@+node:ekr.20031218072017.2813: *7* << initialize ivars >> (commands)
-self._currentPosition = self.nullPosition()
-# self._rootPosition    = self.nullPosition()
-self._topPosition     = self.nullPosition()
-
-# Delayed focus.
-self.doubleClickFlag = False
-self.hasFocusWidget = None
-self.requestedFocusWidget = None
-
-# Official ivars.
-self.gui = g.app.gui
-self.ipythonController = None # Set only by the ipython plugin.
-
-# Interlock to prevent setting c.changed when switching chapters.
-c.suppressHeadChanged = False
-
-# Interlocks to prevent premature closing of a window.
-self.inCommand = False
-self.requestCloseWindow = False
-
-# For emacs/vim key handling.
-self.commandsDict = None
-self.keyHandler = self.k = None
-self.miniBufferWidget = None
-
-# per-document info...
-self.changed = False # True if any data has been changed since the last save.
-self.disableCommandsMessage = ''
-    # The presence of this message disables all commands.
-self.expansionLevel = 0  # The expansion level of this outline.
-self.expansionNode = None # The last node we expanded or contracted.
-self.hookFunction = None
-self.ignoreChangedPaths = False # True: disable path changed message in at.WriteAllHelper.
-self.loading = False # True if we are loading a file: disables c.setChanged()
-self.nodeConflictList = [] # List of nodes with conflicting read-time data.
-self.nodeConflictFileName = None # The fileName for c.nodeConflictList.
-self.openDirectory = None
-self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
-self.promptingForClose = False # To lock out additional closing dialogs.
-self.timeStampDict = {} # New in Leo 4.6.
-
-# For tangle/untangle
-self.tangle_errors = 0
-
-# Global options: set later in initConfigSettings
-self.fixed = False
-self.page_width = 132
-self.sparse_find = True # 2010/02/02: created ivar.
-self.sparse_move = True # 2010/02/02: created ivar.
-self.sparse_spell = True # 2010/02/02: created ivar.
-self.tab_width = -4
-self.tangle_batch_flag = False
-self.untangle_batch_flag = False
-self.use_focus_border = False
-self.focus_border_color = 'white'
-self.focus_border_width = 1 # pixels
-
-# Default Tangle options
-self.use_header_flag = False
-self.output_doc_flag = False
-
-# Default Target Language
-self.target_language = "python" # Required if leoConfig.txt does not exist.
-
-# For hoist/dehoist commands.
-self.hoistStack = []
-    # Stack of nodes to be root of drawn tree.
-    # Affects drawing routines and find commands.
-self.recentFiles = [] # List of recent files
-
-# For outline navigation.
-self.navPrefix = g.u('') # Must always be a string.
-self.navTime = None
+    
+    self._currentPosition = self.nullPosition()
+    # self._rootPosition    = self.nullPosition()
+    self._topPosition     = self.nullPosition()
+    
+    # Delayed focus.
+    self.doubleClickFlag = False
+    self.hasFocusWidget = None
+    self.requestedFocusWidget = None
+    
+    # Official ivars.
+    self.gui = g.app.gui
+    self.ipythonController = None # Set only by the ipython plugin.
+    
+    # Interlock to prevent setting c.changed when switching chapters.
+    c.suppressHeadChanged = False
+    
+    # Interlocks to prevent premature closing of a window.
+    self.inCommand = False
+    self.requestCloseWindow = False
+    
+    # For emacs/vim key handling.
+    self.commandsDict = None
+    self.keyHandler = self.k = None
+    self.miniBufferWidget = None
+    
+    # per-document info...
+    self.changed = False # True if any data has been changed since the last save.
+    self.disableCommandsMessage = ''
+        # The presence of this message disables all commands.
+    self.expansionLevel = 0  # The expansion level of this outline.
+    self.expansionNode = None # The last node we expanded or contracted.
+    self.hookFunction = None
+    self.ignoreChangedPaths = False # True: disable path changed message in at.WriteAllHelper.
+    self.loading = False # True if we are loading a file: disables c.setChanged()
+    self.nodeConflictList = [] # List of nodes with conflicting read-time data.
+    self.nodeConflictFileName = None # The fileName for c.nodeConflictList.
+    self.openDirectory = None
+    self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
+    self.promptingForClose = False # To lock out additional closing dialogs.
+    self.timeStampDict = {} # New in Leo 4.6.
+    
+    # For tangle/untangle
+    self.tangle_errors = 0
+    
+    # Global options: set later in initConfigSettings
+    self.fixed = False
+    self.page_width = 132
+    self.sparse_find = True     # 2010/02/02: created ivar.
+    self.sparse_move = True     # 2010/02/02: created ivar.
+    self.sparse_spell = True    # 2010/02/02: created ivar.
+    self.tab_width = -4
+    self.tangle_batch_flag = False
+    self.untangle_batch_flag = False
+    self.use_focus_border = False
+    self.focus_border_color = 'white'
+    self.focus_border_width = 1 # pixels
+    
+    # Default Tangle options
+    self.use_header_flag = False
+    self.output_doc_flag = False
+    
+    # Default Target Language
+    self.target_language = "python" # Required if leoConfig.txt does not exist.
+    
+    # For hoist/dehoist commands.
+    self.hoistStack = []
+        # Stack of nodes to be root of drawn tree.
+        # Affects drawing routines and find commands.
+    self.recentFiles = [] # List of recent files
+    
+    # For outline navigation.
+    self.navPrefix = g.u('') # Must always be a string.
+    self.navTime = None
 #@+node:ekr.20090213065933.7: *6* c.setWindowPosition
 def setWindowPosition (self):
 

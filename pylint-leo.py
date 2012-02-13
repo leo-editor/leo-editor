@@ -201,10 +201,10 @@ recentPluginsList = (
 
 tables_table = (
     # (rpythonList,'core'),
-    (recentCoreList,'core'),
+    # (recentCoreList,'core'),
     # (recentPluginsList,'plugins'),
-    # (coreList,'core'),
-    # (guiPluginsTable,'plugins'),
+    (coreList,'core'),
+    (guiPluginsTable,'plugins'),
     # (passList,'plugins'),
     # (externalList,'external'),
     # (pluginsTable,'plugins'),

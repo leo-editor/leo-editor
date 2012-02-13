@@ -46,7 +46,7 @@ class cacher:
     '''A class that encapsulates all aspects of Leo's file caching.'''
 
     #@+others
-    #@+node:ekr.20100208082353.5919: *3*  Birth
+    #@+node:ekr.20100208082353.5919: *3*  Birth (cacher)
     #@+node:ekr.20100208062523.5886: *4*  ctor (cacher)
     def __init__ (self,c=None):
 

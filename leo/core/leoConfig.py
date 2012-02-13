@@ -2068,7 +2068,7 @@ class configClass:
 
         '''Read settings from one file of the standard settings files.'''
         
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = True
         giveMessage = (verbose and not g.app.unitTesting and
             not self.silent and not g.app.batchMode)
