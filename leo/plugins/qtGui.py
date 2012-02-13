@@ -21,7 +21,6 @@ useUI = False # True: use qt_main.ui. False: use DynamicWindow.createMainWindow.
 import leo.core.leoGlobals as g
 
 import leo.core.leoChapters as leoChapters
-# import leo.core.leoConfig as leoConfig
 import leo.core.leoColor as leoColor
 import leo.core.leoFrame as leoFrame
 import leo.core.leoFind as leoFind
@@ -4945,8 +4944,6 @@ class leoQtFrame (leoFrame.leoFrame):
     def minimizeAll (self,event=None):
 
         '''Minimize all Leo's windows.'''
-
-        #### self.minimize(g.app.pythonFrame)
         
         for frame in g.app.windowList:
             self.minimize(frame)

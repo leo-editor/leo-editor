@@ -14324,9 +14324,6 @@ def __init__(self,frame,fileName,relativeFileName=None):
     self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
     self.editCommandsManager.createEditCommanders()
 
-    #### Duplicate
-    #### self.rstCommands = leoRst.rstCommands(c)
-
     c.cacher = leoCache.cacher(c)
     c.cacher.initFileDB(self.mFileName)
 

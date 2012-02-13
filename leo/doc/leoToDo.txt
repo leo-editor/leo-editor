@@ -1109,7 +1109,6 @@ def readOutlineOnly (self,event=None):
         c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
         frame.deiconify()
         frame.lift()
-        #### g.app.root.update() # Force a screen redraw immediately.
         c.fileCommands.readOutlineOnly(theFile,fileName) # closes file.
     except:
         g.es("can not open:",fileName)

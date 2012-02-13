@@ -201,10 +201,6 @@ def computeStandardDirectories():
 
     g.app.testDir = g.os_path_finalize(
         g.os_path_join(g.app.loadDir,'..','test'))
-
-    ####
-    # g.app.user_xresources_path = g.os_path_join(
-        # g.app.homeDir,'.leo_xresources')
 #@+node:ekr.20041117155521: *5* g.computeGlobalConfigDir
 def computeGlobalConfigDir():
 

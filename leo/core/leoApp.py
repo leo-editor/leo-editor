@@ -1087,8 +1087,8 @@ class LoadManager:
         g.app.testDir       = g.os_path_finalize_join(g.app.loadDir,'..','test')
             
         # Full path to settings files.
-        ##### lm.leoSettingsName   = lm.computeLeoSettingsPath()
-        ##### lm.myLeoSettingsName = lm.computeMyLeoSettingsPath()
+        #### lm.leoSettingsName   = lm.computeLeoSettingsPath()
+        #### lm.myLeoSettingsName = lm.computeMyLeoSettingsPath()
     #@+node:ekr.20120209051836.10253: *5* lm.computeGlobalConfigDir
     def computeGlobalConfigDir(self):
         
@@ -1590,14 +1590,14 @@ class LoadManager:
         
         print('lm.loadFile',fn)
     #@+node:ekr.20120211121736.10785: *4* lm.doPostPluginsInit & helpers
-    def doPostPluginsInit(self): #### ,args,files,options):
+    def doPostPluginsInit(self):
 
         '''Return True if the frame was created properly.'''
         
         lm = self
         
         print('doPostPluginsInit not ready yet')
-        return False ##################
+        return False ####
 
         # Clear g.app.initing _before_ creating the frame.
         g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
@@ -1967,7 +1967,7 @@ class LoadManager:
         self.readRecentFiles(localConfigFile)
         self.inited = True
         self.setIvarsFromSettings(None)
-    #@+node:ekr.20120209051836.10382: *4* defineSettingsTable (g.app.config)
+    #@+node:ekr.20120209051836.10382: *4* defineSettingsTable (COPY)
     def defineSettingsTable (self,fileName,localConfigFile):
 
         trace = False and not g.unitTesting
@@ -1976,13 +1976,9 @@ class LoadManager:
         global_table = (
             (self.globalConfigFile,False),
             (self.homeFile,False),
-            # (localConfigFile,False),
             (self.myGlobalConfigFile,False),
             (self.myHomeConfigFile,False),
             (self.machineConfigFile,False),
-            # (myLocalConfigFile,False),
-            # New in Leo 4.6: the -c file is in *addition* to other config files.
-            #### (g.app.oneConfigFilename,False),
         )
 
         if fileName:
@@ -2018,7 +2014,7 @@ class LoadManager:
                     table.append((path,localFlag),)
         if trace: g.trace(repr(fileName),'table:',g.listToString(table))
         return table
-    #@+node:ekr.20120209051836.10383: *4* openSettingsFile  (g.app.config)
+    #@+node:ekr.20120209051836.10383: *4* openSettingsFile  (COPY)
     def openSettingsFile (self,path):
 
         theFile,isZipped = g.openLeoOrZipFile(path)
@@ -2039,7 +2035,7 @@ class LoadManager:
         c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
         g.app.gui = oldGui
         return ok and c
-    #@+node:ekr.20120209051836.10384: *4* updateSettings (g.app.config)
+    #@+node:ekr.20120209051836.10384: *4* updateSettings (COPY)
     def updateSettings (self,c,localFlag):
 
         parser = SettingsTreeParser(c,localFlag)

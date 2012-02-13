@@ -157,9 +157,6 @@ class Commands (object):
         self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
         self.editCommandsManager.createEditCommanders()
 
-        #### Duplicate
-        #### self.rstCommands = leoRst.rstCommands(c)
-
         c.cacher = leoCache.cacher(c)
         c.cacher.initFileDB(self.mFileName)
 
@@ -1895,7 +1892,6 @@ class Commands (object):
             c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
             frame.deiconify()
             frame.lift()
-            #### g.app.root.update() # Force a screen redraw immediately.
             c.fileCommands.readOutlineOnly(theFile,fileName) # closes file.
         except:
             g.es("can not open:",fileName)

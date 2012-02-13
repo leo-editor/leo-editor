@@ -10,7 +10,6 @@ Modelled after Emacs and Vim commands.'''
 #@+<< imports >>
 #@+node:ekr.20050710151017: ** << imports >>
 import leo.core.leoGlobals as g
-##### import leo.core.leoConfig as leoConfig
 import leo.core.leoFind as leoFind
 import leo.core.leoKeys as leoKeys
 import leo.core.leoTest as leoTest
