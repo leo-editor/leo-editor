@@ -194,7 +194,7 @@ class LeoNode(object, UserDict.DictMixin):
 
     """
     #@+others
-    #@+node:ekr.20100120092047.6098: *3* __init__
+    #@+node:ekr.20100120092047.6098: *3* __init__ (LeoNode)
     def __init__(self,p):
         self.p = p.copy()
 

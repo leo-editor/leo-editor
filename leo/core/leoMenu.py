@@ -128,7 +128,7 @@ class leoMenu:
             for key in sorted(d.keys()):
                 if key not in commandKeys:
                     g.trace('*** bad entry for %s' % (key))
-    #@+node:ekr.20120124042346.12939: *4* finishCreate
+    #@+node:ekr.20120124042346.12939: *4* finishCreate (leoMenu)
     def finishCreate (self):
         
         self.define_enable_dict()
@@ -1655,7 +1655,7 @@ class nullMenu(leoMenu):
     """A null menu class for testing and batch execution."""
 
     #@+others
-    #@+node:ekr.20050104094308: *3* ctor
+    #@+node:ekr.20050104094308: *3* ctor (nullMenu)
     def __init__ (self,frame):
 
         # Init the base class.

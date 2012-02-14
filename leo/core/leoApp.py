@@ -79,7 +79,7 @@ class LeoApp:
         # Global controller/manager objects...
         self.config = None              # The singleton leoConfig instance.
         self.db = None                  # The singleton leoCacher instance.
-        # self.loadManager = None       # The singleton LoadManager instance.
+        self.loadManager = None         # The singleton LoadManager instance.
         # self.logManager = None        # The singleton LogManager instance.
         # self.openWithManager = None   # The singleton OpenWithManager instance.
         self.nodeIndices = None         # The singleton nodeIndices instance.
@@ -616,6 +616,8 @@ class LeoApp:
     #@+node:ekr.20120211121736.10809: *3* app.init (NEW)
     def init (self):
         
+        assert g.new_load   #### not used in old load.
+        
         import leo.core.leoCache as leoCache
         import leo.core.leoConfig as leoConfig
         import leo.core.leoNodes as leoNodes
@@ -918,13 +920,12 @@ class LoadManager:
     
     #@+others
     #@+node:ekr.20120209051836.10285: *3*  lm.ctor
-    def __init__ (self,args,fileName,pymacs):
+    def __init__ (self,fileName=None,pymacs=None):
         
         # Important: it is valid to use g here.
         
         # Copy the args.
-        self.args = args
-        self.fn = fileName
+        self.fileName = fileName # An extra file name that can be passed to runLeo.py.run.
         self.pymacs = pymacs
 
         # The loaded commanders...
@@ -963,115 +964,15 @@ class LoadManager:
         self.windowFlag = False
         self.windowSize = None
         
-    #@+node:ekr.20120211121736.10812: *3* File & directory utils
+    #@+node:ekr.20120211121736.10812: *3* lm.Directory & file utils
     #@+node:ekr.20120211121736.10771: *4* lm.completeFileName
     def completeFileName (self,fn):
-
-        fn = g.toUnicode(fn)
-        fn = g.os_path_finalize(fn)
-
-        # 2011/10/12: don't add .leo to *any* file.
-        return fn
-    #@+node:ekr.20120211121736.10773: *4* lm.computeFilesList
-    def computeFilesList(self):
         
-        lm = self
-
-        files = []
-        fn = lm.fn
-        if fn and fn not in files:
-            files.append(fn)
-
-        for arg in sys.argv[1:]:
-            if not arg.startswith('-') and arg not in files:
-                files.append(arg)
-
-        files = [lm.completeFileName(z) for z in files]
-        return files
-    #@+node:ekr.20120209051836.10372: *4* lm.computeLeoSettingsPath (New)
-    def computeLeoSettingsPath (self):
+        '''Convert fn to unicode and convert to an absolute path.'''
         
-        '''Return the full path to leoSettings.leo.'''
-        
-        trace = True ; verbose = True
-        lm = self
+        # Don't add .leo to *any* file.
 
-        # Use leoSettings.leo if it appears explicitly in the list of files.
-        for fn in lm.files:
-            base_fn = g.os_path_basename(fn)
-            if base_fn.lower() == 'leosettings.leo':
-                path = g.os_path_finalize(lm.fn)
-                if g.os_path_exists(path):
-                    if trace: g.trace(path)
-                    return path
-
-        seen,table = [],[]
-        for path,localFlag in lm.configPlacesTable():
-            if trace and verbose:
-                g.trace('exists',g.os_path_exists(path),path)
-            if path and g.os_path_exists(path):
-                # Make sure we mark files seen no matter how they are specified.
-                path = g.os_path_realpath(g.os_path_finalize(path))
-                if path.lower() not in seen:
-                    seen.append(path.lower())
-                    table.append((path,localFlag),)
-
-        if trace: print(repr(lm.fn),'table:',g.listToString(table))
-        return table
-
-
-        
-        
-
-        # if fileName:
-            # if fileName.lower().endswith('leosettings.leo'):
-                # # 2011/02/28: don't read leoSettings.leo or myLeoSetings.leo twice.
-                # # This allows myLeoSettings.leo to take precedence.
-                # table1 = []
-            # else:
-                # path = g.os_path_finalize(fileName)
-                # theDir = g.os_path_dirname(fileName)
-                # myLocalConfigFile = g.os_path_join(theDir,'myLeoSettings.leo')
-                # local_table = (
-                    # (localConfigFile,False),
-                    # (myLocalConfigFile,False),
-                # )
-                # if trace and verbose:
-                    # g.trace('localConfigFile:  ',localConfigFile)
-                    # g.trace('myLocalConfigFile:',myLocalConfigFile)
-        
-                # table1 = [z for z in local_table if z not in global_table]
-                # table1.append((path,True),)
-        # else:
-            # table1 = global_table
-
-        # seen = [] ; table = []
-        # for path,localFlag in table1:
-            # if trace and verbose: g.trace('exists',g.os_path_exists(path),path)
-            # if path and g.os_path_exists(path):
-                # # Make sure we mark files seen no matter how they are specified.
-                # path = g.os_path_realpath(g.os_path_finalize(path))
-                # if path.lower() not in seen:
-                    # seen.append(path.lower())
-                    # table.append((path,localFlag),)
-        # if trace: g.trace(repr(fileName),'table:',g.listToString(table))
-        # return table
-
-    #@+node:ekr.20120209051836.10373: *4* lm.computeMyLeoSettingsPath (New)
-    def computeMyLeoSettingsPath (self):
-        
-        '''Return the full path to myLeoSettings.leo.'''
-        
-        trace = False
-        lm = self
-        
-        for fn in lm.files:
-            base_fn = g.os_path_basename(fn)
-            if base_fn.lower() == 'leosettings.leo':
-                path = g.os_path_finalize(lm.fn)
-                if g.os_path_exists(path):
-                    if trace: g.trace(path)
-                    return path
+        return g.os_path_finalize(g.toUnicode(fn))
     #@+node:ekr.20120209051836.10252: *4* lm.computeStandardDirectories & helpers
     def computeStandardDirectories(self):
 
@@ -1088,6 +989,8 @@ class LoadManager:
         
         g.app.extensionsDir = g.os_path_finalize_join(g.app.loadDir,'..','extensions')
         g.app.testDir       = g.os_path_finalize_join(g.app.loadDir,'..','test')
+        
+        lm.machineDir       = lm.computeMachineName()
             
         # Full path to settings files.
         #### lm.leoSettingsName   = lm.computeLeoSettingsPath()
@@ -1220,37 +1123,29 @@ class LoadManager:
         except:
             print("Exception getting load directory")
             raise
-    #@+node:ekr.20120209051836.10385: *5* lm.configPlacesTable (REWRITE)
-    def configPlacesTable(self):
+    #@+node:ekr.20120213164030.10697: *5* lm.computeMachineName (not used)
+    def computeMachineName(self):
         
-        '''Return a list of location to be used to search for
-        leoSettings.leo and myLeoSettings.leo.
+        '''Return the name of the current machine, i.e, HOSTNAME.'''
         
-        All entries in the table are unique, and each entry exists.'''
+        # This is prepended to leoSettings.leo or myLeoSettings.leo
+        # to give the machine-specific setting name.
+        # ??? How can this be worth doing???
         
-        # trace = False ; verbose = True
-        # lm = self
-        
-        # table = [
-            # (lm.globalConfigFile),
-            # (lm.homeFile),
-            # (lm.myGlobalConfigFile),
-            # (lm.myHomeConfigFile),
-            # (lm.machineConfigFile),
-            # # (myLocalConfigFile,False),
-        # ]
-        
-        # seen = []
-        # for path in table:
-            # if trace and verbose: g.trace('exists',g.os_path_exists(path),path)
-            # if path and g.os_path_exists(path):
-                # # Make sure we mark files seen no matter how they are specified.
-                # path = g.os_path_realpath(g.os_path_finalize(path))
-                # if path.lower() not in seen:
-                    # seen.append(path.lower())
-                    # table.append(path)
-        # if trace: g.trace(repr(lm.fn),'table:',g.listToString(table))
-        # return table
+        try:
+            import os
+            name = os.getenv('HOSTNAME')
+            if not name:
+                name = os.getenv('COMPUTERNAME')
+            if not name:
+                import socket
+                name = socket.gethostname()
+        except Exception:
+            name = ''
+
+        # g.trace(name)
+
+        return name
     #@+node:ekr.20120211121736.10772: *4* lm.computeWorkbookFileName
     def computeWorkbookFileName (self):
         
@@ -1277,11 +1172,116 @@ class LoadManager:
         
         lm = self
         
-        aList = ('homeDir','homeLeoDir','leoDir','loadDir','extensionsDir','globalConfigDir')
+        aList = (
+            'homeDir','homeLeoDir','leoDir','loadDir','extensionsDir','globalConfigDir')
 
         for ivar in aList:
-            val = getattr(self,ivar)
+            val = getattr(g.app,ivar)
             g.trace('%20s' % (ivar),val)
+    #@+node:ekr.20120213081706.10381: *3* lm.Settings files
+    #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles & helpers (New,Unfinished)
+    def readGlobalSettingsFiles (self):
+        
+        trace = True
+        lm = self
+        import leo.core.leoGui as leoGui
+        nullGui = leoGui.nullGui('nullGui')
+        
+        # Always use nullGui here,
+        # even if we are going to show the file later.
+        def openSettingsFile(path):
+            ok,frame = g.openWithFileName(path,
+                old_c=None,enableLog=False,
+                gui=nullGui,readAtFileNodesFlag=False)
+            return frame.c if ok else None
+        
+        path = lm.computeLeoSettingsPath()
+        if path:
+            lm.leoSettings_c = openSettingsFile(path)
+            
+        path = lm.computeMyLeoSettingsPath()
+        if path:
+            lm.myLeoSettings_c = openSettingsFile(path)
+            
+        if trace:
+            g.trace('leoSettings_c  ',lm.leoSettings_c)
+            g.trace('myLeoSettings_c',lm.myLeoSettings_c)
+                
+        #### To do: compute settings.
+    #@+node:ekr.20120209051836.10372: *5* lm.computeLeoSettingsPath
+    def computeLeoSettingsPath (self):
+        
+        '''Return the full path to leoSettings.leo.'''
+        
+        trace = False
+        lm = self
+        join = g.os_path_finalize_join
+        settings_fn = 'leoSettings.leo'
+        
+        # machine_fn = lm.computeMachineName() + settings_fn
+        
+        table = (
+            # First, leoSettings.leo in the home directories.
+            join(g.app.homeDir,     settings_fn),
+            join(g.app.homeLeoDir,  settings_fn),
+
+            # Next, <machine-name>leoSettings.leo in the home directories.
+            # join(g.app.homeDir,     machine_fn),
+            # join(g.app.homeLeoDir,  machine_fn),
+
+            # Last, leoSettings.leo in leo/config directory.
+            join(g.app.globalConfigDir, settings_fn)
+        )
+
+        for path in table:
+            if trace: print('computeLeoSettingsPath',g.os_path_exists(path),repr(path))
+            if g.os_path_exists(path):
+                break
+        else:
+            path = None
+
+        return path
+    #@+node:ekr.20120209051836.10373: *5* lm.computeMyLeoSettingsPath
+    def computeMyLeoSettingsPath (self):
+        
+        '''Return the full path to myLeoSettings.leo.'''
+        
+        trace = False
+        lm = self
+        join = g.os_path_finalize_join
+        settings_fn = 'myLeoSettings.leo'
+        
+        # This seems utterly pointless: we need a machine *directory*.
+            # machine_fn = lm.computeMachineName() + settings_fn
+        
+        # First, compute the directory of the first loaded file.
+        # All entries in lm.files are full, absolute paths.
+        localDir = g.os_path_dirname(lm.files[0]) if lm.files else None
+        
+        table = (
+            # First, myLeoSettings.leo in the local directory
+            join(localDir,          settings_fn),
+
+            # Next, myLeoSettings.leo in the home directories.
+            join(g.app.homeDir,     settings_fn),
+            join(g.app.homeLeoDir,  settings_fn),
+        
+            # Next, <machine-name>myLeoSettings.leo in the home directories.
+                # join(g.app.homeDir,     machine_fn),
+                # join(g.app.homeLeoDir,  machine_fn),
+
+            # Last, leoSettings.leo in leo/config directory.
+            join(g.app.globalConfigDir, settings_fn),
+        )
+
+        for path in table:
+            if trace: print('computeMyLeoSettingsPath',g.os_path_exists(path),repr(path))
+            if g.os_path_exists(path):
+                break
+        else:
+            path = None
+
+        return path
     #@+node:ekr.20120211121736.10756: *3* lm.start & helpers
     def start(self):
         
@@ -1337,10 +1337,7 @@ class LoadManager:
         # Init the app.
         g.app.init()
         
-        # Compute the list of absolute file names.
-        lm.computeFilesList()
-        
-        lm.loadGlobalSettingsFiles()
+        lm.readGlobalSettingsFiles()
         
         # Load all files and create commanders.
         for fn in lm.files:
@@ -1541,6 +1538,178 @@ class LoadManager:
     def loadFile (self,fn):
         
         print('lm.loadFile',fn)
+    #@+node:ekr.20120211121736.10776: *5* lm.scanOptions & lm.printOptions
+    def scanOptions(self):
+
+        '''Handle all options and remove them from sys.argv.'''
+        trace = True
+        lm = self
+
+        # Note: this automatically implements the --help option.
+        parser = optparse.OptionParser()
+        add = parser.add_option
+        # add('-c', '--config', dest="one_config_path",
+            # help = 'use a single configuration file')
+        # add('--debug',        action="store_true",dest="debug",
+            # help = 'enable debugging support')
+        # add('-f', '--file',   dest="fileName",
+            # help = 'load a file at startup')
+        add('--gui',
+            help = 'gui to use (qt/qttabs)')
+        add('--minimized',    action="store_true",
+            help = 'start minimized')
+        add('--maximized',    action="store_true",
+            help = 'start maximized (Qt only)')
+        add('--fullscreen',   action="store_true",
+            help = 'start fullscreen (Qt only)')
+        add('--ipython',      action="store_true",dest="use_ipython",
+            help = 'enable ipython support')
+        add('--no-cache',     action="store_true",dest='no_cache',
+            help = 'disable reading of cached files')
+        add('--no-splash',    action="store_true",dest='no_splash_screen',
+            help = 'disable the splash screen')
+        add('--silent',       action="store_true",dest="silent",
+            help = 'disable all log messages')
+        add('--screen-shot',  dest='screenshot_fn',
+            help = 'take a screen shot and then exit')
+        add('--script',       dest="script",
+            help = 'execute a script and then exit')
+        add('--script-window',dest="script_window",
+            help = 'open a window for scripts')
+        add('--select',       dest='select',
+            help='headline or gnx of node to select')
+        add('--version',      action="store_true",dest="version",
+            help='print version number and exit')
+        add('--window-size',  dest='window_size',
+            help='initial window size in height x width format')
+
+        # Parse the options, and remove them from sys.argv.
+        options, args = parser.parse_args()
+        sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+        # if trace: print('scanOptions:',sys.argv)
+
+        # Handle the args...
+
+        # --debug
+        # if options.debug:
+            # g.debug = True ; print('*** debug mode on')
+
+        # --gui
+        gui = options.gui
+        if gui:
+            gui = gui.lower()
+            if gui == 'qttabs':
+                g.app.qt_use_tabs = True
+            elif gui in ('curses','qt','null'):
+                g.app.qt_use_tabs = False
+            else:
+                print('scanOptions: unknown gui: %s.  Using qt gui' % gui)
+                gui = 'qt'
+                g.app.qt_use_tabs = False
+        elif sys.platform == 'darwin':
+            gui = 'qt'
+            g.app.qt_use_tabs = False
+        else:
+            gui = 'qttabs'
+            g.app.qt_use_tabs = True
+
+        assert gui
+        g.app.guiArgName = gui
+
+        # --minimized
+        # --maximized
+        # --fullscreen
+        g.app.start_minimized = options.minimized
+        g.app.start_maximized = options.maximized
+        g.app.start_fullscreen = options.fullscreen
+
+        # --ipython
+        g.app.useIpython = options.use_ipython
+
+        # --no-cache
+        if options.no_cache:
+            g.enableDB = False
+            
+        # --no-splash
+        g.app.use_splash_screen = not options.no_splash_screen
+
+        # --screen-shot=fn
+        lm.screenshot_fn = options.screenshot_fn
+        if lm.screenshot_fn:
+            lm.screenshot_fn = lm.screenshot_fn.strip('"')
+
+        # --script
+        lm.script_path = options.script
+        lm.script_path_w = options.script_window
+        if lm.script_path and lm.script_path_w:
+            parser.error("--script and script-window are mutually exclusive")
+
+        lm.script_name = lm.script_path or lm.script_path_w
+        if lm.script_name:
+            lm.script_name = g.os_path_finalize_join(g.app.loadDir,lm.script_name)
+            lm.script,e = g.readFileIntoString(lm.script_name,kind='script:')
+        else:
+            lm.script = None
+
+        # --select
+        lm.selectHeadline = options.select
+        if lm.selectHeadline:
+            lm.selectHeadline = lm.selectHeadline.strip('"')
+
+        # --silent
+        g.app.silentMode = options.silent
+
+        # --version: print the version and exit.
+        lm.versionFlag = options.version
+
+        # --window-size
+        lm.windowSize = options.window_size
+        if lm.windowSize:
+            try:
+                h,w = lm.windowSize.split('x')
+            except ValueError:
+                lm.windowSize = None
+                g.trace('bad --window-size:',lm.windowSize)
+                
+        # Post process the options.
+        if lm.pymacs:
+            lm.script,lm.windowFlag = None,None
+
+        lm.windowFlag = lm.script and lm.script_path_w
+
+        aList = [lm.completeFileName(z) for z in sys.argv[1:]
+            if not z.startswith('-')]
+        if lm.fileName:
+            aList.append(lm.completeFileName(lm.fileName))
+        lm.files = list(set(aList))
+        
+        if trace: lm.printOptions()
+    #@+node:ekr.20120211204052.10831: *6* printOptions
+    def printOptions(self):
+        
+        lm = self
+        app_table = (
+            'batchMode','gui','guiArgName','qt_use_tabs',            
+            'silentMode','start_fullscreen','start_maximized','start_minimized',
+            'useIpython','use_splash_screen',
+        )
+        g_table = (
+            'enableDB',
+        )
+        lm_table = ( 
+            'script', 'script_name','script_path','script_path_w',
+            'screenshot_fn','selectHeadline','versionFlag','windowFlag','windowSize',
+            'files',
+        )
+        for ivar in app_table:
+            print('%25s %s' % (('g.app.%s' % (ivar)),getattr(g.app,ivar)))
+            
+        for ivar in g_table:
+            print('%25s %s' % (('g.%s' % (ivar)),getattr(g,ivar)))
+            
+        for ivar in lm_table:
+            print('%25s %s' % (('lm.%s' % (ivar)),getattr(lm,ivar)))
+        
     #@+node:ekr.20120211121736.10785: *4* lm.doPostPluginsInit & helpers
     def doPostPluginsInit(self):
 
@@ -1709,174 +1878,6 @@ class LoadManager:
         if g.app.gui.guiName() == 'qt':
             m = g.loadOnePlugin('screenshots')
             m.make_screen_shot(fn)
-    #@+node:ekr.20120211121736.10776: *4* lm.scanOptions & lm.printOptions
-    def scanOptions(self):
-
-        '''Handle all options and remove them from sys.argv.'''
-        trace = False
-        lm = self
-
-        # Note: this automatically implements the --help option.
-        parser = optparse.OptionParser()
-        add = parser.add_option
-        # add('-c', '--config', dest="one_config_path",
-            # help = 'use a single configuration file')
-        # add('--debug',        action="store_true",dest="debug",
-            # help = 'enable debugging support')
-        # add('-f', '--file',   dest="fileName",
-            # help = 'load a file at startup')
-        add('--gui',
-            help = 'gui to use (qt/qttabs)')
-        add('--minimized',    action="store_true",
-            help = 'start minimized')
-        add('--maximized',    action="store_true",
-            help = 'start maximized (Qt only)')
-        add('--fullscreen',   action="store_true",
-            help = 'start fullscreen (Qt only)')
-        add('--ipython',      action="store_true",dest="use_ipython",
-            help = 'enable ipython support')
-        add('--no-cache',     action="store_true",dest='no_cache',
-            help = 'disable reading of cached files')
-        add('--no-splash',    action="store_true",dest='no_splash_screen',
-            help = 'disable the splash screen')
-        add('--silent',       action="store_true",dest="silent",
-            help = 'disable all log messages')
-        add('--screen-shot',  dest='screenshot_fn',
-            help = 'take a screen shot and then exit')
-        add('--script',       dest="script",
-            help = 'execute a script and then exit')
-        add('--script-window',dest="script_window",
-            help = 'open a window for scripts')
-        add('--select',       dest='select',
-            help='headline or gnx of node to select')
-        add('--version',      action="store_true",dest="version",
-            help='print version number and exit')
-        add('--window-size',  dest='window_size',
-            help='initial window size in height x width format')
-
-        # Parse the options, and remove them from sys.argv.
-        options, args = parser.parse_args()
-        sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
-        # if trace: print('scanOptions:',sys.argv)
-
-        # Handle the args...
-
-        # --debug
-        # if options.debug:
-            # g.debug = True ; print('*** debug mode on')
-
-        # --gui
-        gui = options.gui
-        if gui:
-            gui = gui.lower()
-            if gui == 'qttabs':
-                g.app.qt_use_tabs = True
-            elif gui in ('curses','qt','null'):
-                g.app.qt_use_tabs = False
-            else:
-                print('scanOptions: unknown gui: %s.  Using qt gui' % gui)
-                gui = 'qt'
-                g.app.qt_use_tabs = False
-        elif sys.platform == 'darwin':
-            gui = 'qt'
-            g.app.qt_use_tabs = False
-        else:
-            gui = 'qttabs'
-            g.app.qt_use_tabs = True
-
-        assert gui
-        g.app.guiArgName = gui
-
-        # --minimized
-        # --maximized
-        # --fullscreen
-        g.app.start_minimized = options.minimized
-        g.app.start_maximized = options.maximized
-        g.app.start_fullscreen = options.fullscreen
-
-        # --ipython
-        g.app.useIpython = options.use_ipython
-
-        # --no-cache
-        if options.no_cache:
-            g.enableDB = False
-            
-        # --no-splash
-        g.app.use_splash_screen = not options.no_splash_screen
-
-        # --screen-shot=fn
-        lm.screenshot_fn = options.screenshot_fn
-        if lm.screenshot_fn:
-            lm.screenshot_fn = lm.screenshot_fn.strip('"')
-
-        # --script
-        lm.script_path = options.script
-        lm.script_path_w = options.script_window
-        if lm.script_path and lm.script_path_w:
-            parser.error("--script and script-window are mutually exclusive")
-
-        lm.script_name = lm.script_path or lm.script_path_w
-        if lm.script_name:
-            lm.script_name = g.os_path_finalize_join(g.app.loadDir,lm.script_name)
-            lm.script,e = g.readFileIntoString(lm.script_name,kind='script:')
-        else:
-            lm.script = None
-
-        # --select
-        lm.selectHeadline = options.select
-        if lm.selectHeadline:
-            lm.selectHeadline = lm.selectHeadline.strip('"')
-
-        # --silent
-        g.app.silentMode = options.silent
-
-        # --version: print the version and exit.
-        lm.versionFlag = options.version
-
-        # --window-size
-        lm.windowSize = options.window_size
-        if lm.windowSize:
-            try:
-                h,w = lm.windowSize.split('x')
-            except ValueError:
-                lm.windowSize = None
-                g.trace('bad --window-size:',lm.windowSize)
-                
-        # Post process the options.
-        if lm.pymacs:
-            lm.script,lm.windowFlag = None,None
-
-        lm.windowFlag = lm.script and lm.script_path_w
-
-        lm.files = [z for z in sys.argv[1:] if not z.startswith('-')]
-        
-        if trace: lm.printOptions()
-    #@+node:ekr.20120211204052.10831: *5* printOptions
-    def printOptions(self):
-        
-        lm = self
-        app_table = (
-            'batchMode','gui','guiArgName','qt_use_tabs',            
-            'silentMode','start_fullscreen','start_maximized','start_minimized',
-            'useIpython','use_splash_screen',
-        )
-        g_table = (
-            'enableDB',
-        )
-        lm_table = ( 
-            'script', 'script_name','script_path','script_path_w',
-            'screenshot_fn','selectHeadline','versionFlag','windowFlag','windowSize',
-            'files',
-        )
-        for ivar in app_table:
-            print('%25s %s' % (('g.app.%s' % (ivar)),getattr(g.app,ivar)))
-            
-        for ivar in g_table:
-            print('%25s %s' % (('g.%s' % (ivar)),getattr(g,ivar)))
-            
-        for ivar in lm_table:
-            print('%25s %s' % (('lm.%s' % (ivar)),getattr(lm,ivar)))
-        
     #@-others
     
 #@+node:ekr.20120211121736.10831: ** class LogManager

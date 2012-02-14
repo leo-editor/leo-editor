@@ -140,7 +140,7 @@ class generalTestCase(unittest.TestCase):
     """Create a unit test from a snippet of code."""
 
     #@+others
-    #@+node:ekr.20051104075904.6: *5* __init__
+    #@+node:ekr.20051104075904.6: *5* __init__ (generalTestCase)
     def __init__ (self,c,p):
 
          # Init the base class.
@@ -1220,7 +1220,7 @@ class editBodyTestCase(unittest.TestCase):
     """Data-driven unit tests for Leo's edit body commands."""
 
     #@+others
-    #@+node:ekr.20051104075904.71: *5*  __init__
+    #@+node:ekr.20051104075904.71: *5*  __init__(editBodyTestCase)
     def __init__ (self,c,parent,before,after,sel,ins,tempNode):
 
         # Init the base class.
@@ -1371,7 +1371,7 @@ class importExportTestCase(unittest.TestCase):
     """Data-driven unit tests for Leo's edit body commands."""
 
     #@+others
-    #@+node:ekr.20051104075904.80: *5* __init__
+    #@+node:ekr.20051104075904.80: *5* __init__ (importExportTestCase)
     def __init__ (self,c,p,dialog,temp_p,doImport):
 
         # Init the base class.

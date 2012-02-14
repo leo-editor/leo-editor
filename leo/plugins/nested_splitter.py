@@ -28,7 +28,7 @@ class DemoWidget(QtGui.QWidget):
     count = 0
 
     #@+others
-    #@+node:ekr.20110605121601.17958: *3* __init__
+    #@+node:ekr.20110605121601.17958: *3* __init__(DemoWidget)
     def __init__(self, parent=None, color=None):
 
         QtGui.QWidget.__init__(self, parent)
@@ -56,7 +56,7 @@ class DemoWidget(QtGui.QWidget):
 #@+node:ekr.20110605121601.17959: ** class NestedSplitterChoice (QWidget)
 class NestedSplitterChoice(QtGui.QWidget):
     #@+others
-    #@+node:ekr.20110605121601.17960: *3* __init__
+    #@+node:ekr.20110605121601.17960: *3* __init__ (NestedSplitterChoice)
     def __init__(self,parent=None):
 
         QtGui.QWidget.__init__(self, parent)
@@ -81,7 +81,7 @@ class NestedSplitterChoice(QtGui.QWidget):
 class NestedSplitterHandle(QtGui.QSplitterHandle):
 
     #@+others
-    #@+node:ekr.20110605121601.17962: *3* __init__
+    #@+node:ekr.20110605121601.17962: *3* __init__ (NestedSplitterHandle)
     def __init__(self, owner):
         
         QtGui.QSplitterHandle.__init__(self, owner.orientation(), owner)
@@ -252,7 +252,7 @@ class NestedSplitter(QtGui.QSplitter):
     }
 
     #@+others
-    #@+node:ekr.20110605121601.17967: *3* __init__
+    #@+node:ekr.20110605121601.17967: *3* __init__ (NestedSplitter)
     def __init__(self,parent=None,orientation=QtConst.Horizontal,root=None):
         
         QtGui.QSplitter.__init__(self,orientation,parent)

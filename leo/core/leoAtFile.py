@@ -10,7 +10,8 @@
 #@@tabwidth -4
 #@@pagewidth 60
 
-new_write = True
+####
+#### new_write = True
     # True: write simplified thin sentinels, except for private @shadow files.
     # False: write traditional thin sentinels.
 
@@ -30,10 +31,6 @@ import sys
 import time
 
 #@-<< imports >>
-
-if False and new_write:
-    fill = '=' * 10
-    g.es_print('\n==== leoAtFile.py: new_write on ====\n',color='red')
 
 class atFile:
 
@@ -130,7 +127,7 @@ class atFile:
 
     #@+others
     #@+node:ekr.20041005105605.7: ** at.Birth & init
-    #@+node:ekr.20041005105605.8: *3* atFile.__init__
+    #@+node:ekr.20041005105605.8: *3*  atFile.__init__
     def __init__(self,c):
 
         # **Warning**: all these ivars must **also** be inited in initCommonIvars.
@@ -140,16 +137,25 @@ class atFile:
         self.errors = 0 # Make sure at.error() works even when not inited.
 
         # User options.
-        self.checkPythonCodeOnWrite = c.config.getBool(
-            'check-python-code-on-write',default=True)
-        self.underindentEscapeString = c.config.getString(
-            'underindent-escape-string') or '\\-'
-        self.new_write = new_write and c.config.getBool(
-            'simplified-sentinels-4-8',default=True)
+        if g.new_load:
+            # Will be set in at.finishCreate.
+            # We can delay setting these because the read logic doesn't use them.
+            self.checkPythonCodeOnWrite = None
+            self.underindentEscapeString = None
+        else:
+            self.checkPythonCodeOnWrite = c.config.getBool(
+                'check-python-code-on-write',default=True)
+            self.underindentEscapeString = c.config.getString(
+                'underindent-escape-string') or '\\-'
+                
+        self.dispatch_dict = self.defineDispatchDict()
+            # Define the dispatch dictionary used by scanText4.
+    #@+node:ekr.20041005105605.9: *3* at.defineDispatchDict
+    def defineDispatchDict(self):
+        
+        '''Return the dispatch dictionary used by scanText4.'''
 
-        #@+<< define the dispatch dictionary used by scanText4 >>
-        #@+node:ekr.20041005105605.9: *4* << define the dispatch dictionary used by scanText4 >>
-        self.dispatch_dict = {
+        return  {
             # Plain line.
             self.noSentinel: self.readNormalLine,
             # Starting sentinels...
@@ -185,7 +191,17 @@ class atFile:
             # New 4.8 sentinels
             self.endRef: self.readEndRef,
         }
-        #@-<< define the dispatch dictionary used by scanText4 >>
+    #@+node:ekr.20120212220616.10538: *3* at.finishCreate (g.new_load only)
+    def finishCreate (self):
+        
+        c = self.c
+        
+        assert g.new_load
+        
+        self.checkPythonCodeOnWrite = c.config.getBool(
+            'check-python-code-on-write',default=True)
+        self.underindentEscapeString = c.config.getString(
+            'underindent-escape-string') or '\\-'
     #@+node:ekr.20041005105605.10: *3* at.initCommonIvars
     def initCommonIvars (self):
 
@@ -282,11 +298,15 @@ class atFile:
         scriptWrite=False,toString=False,
         forcePythonSentinels=None,
     ):
-        at = self ; c = at.c
-
+        at,c = self,self.c
         assert root
         self.initCommonIvars()
-
+        
+        # Make sure that these have been inited from settings.
+        # When new_load is True, this will be done in at.finishCreate.
+        assert at.checkPythonCodeOnWrite is not None
+        assert at.underindentEscapeString is not None
+        
         at.atAuto = atAuto
         at.atEdit = atEdit
         at.atShadow = atShadow
@@ -322,7 +342,10 @@ class atFile:
             # Must be None for @shadow.
         at.thinFile = thinFile
         at.toString = toString
-        at.writeVersion5 = at.new_write and not atShadow
+        
+        ####
+        #### at.writeVersion5 = at.new_write and not atShadow
+        at.writeVersion5 = not atShadow
 
         at.scanAllDirectives(root,
             scripting=scriptWrite,
@@ -3536,6 +3559,8 @@ class atFile:
         at.putAtFirstLines(s)
         at.putOpenLeoSentinel("@+leo-ver=%s" % (
             g.choose(at.writeVersion5,5,4)))
+                # Use version 4 for @shadow, verion 5 otherwise.
+            
         at.putInitialComment()
         at.putOpenNodeSentinel(root)
         at.putBody(root,fromString=fromString)
@@ -5269,6 +5294,9 @@ class atFile:
         d['path'] = path
         p.v.tempAttributes ['read-path'] = d
     #@+node:ekr.20081216090156.4: *3* at.parseUnderindentTag
+    # Important: this is part of the *write* logic.
+    # It is called from at.os and at.putIndent.
+
     def parseUnderindentTag (self,s):
 
         tag = self.underindentEscapeString

@@ -3736,7 +3736,7 @@ class pascalScanner (baseScannerClass):
             return start,False
         else:
             return i,True 
-    #@+node:ekr.20080211065906: *4* ctor
+    #@+node:ekr.20080211065906: *4* ctor (pascalScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -3900,7 +3900,7 @@ class pascalScanner (baseScannerClass):
 class phpScanner (baseScannerClass):
 
     #@+others
-    #@+node:ekr.20100219075946.5743: *4*  __init__
+    #@+node:ekr.20100219075946.5743: *4*  __init__(phpScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -3961,7 +3961,7 @@ class phpScanner (baseScannerClass):
 class pythonScanner (baseScannerClass):
 
     #@+others
-    #@+node:ekr.20070703122141.101: *4*  __init__
+    #@+node:ekr.20070703122141.101: *4*  __init__ (pythonScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -3976,7 +3976,7 @@ class pythonScanner (baseScannerClass):
             # The check is done in skipSigTail.
         self.strict = True
 
-    #@+node:ekr.20071201073102.1: *4* adjustDefStart (python)
+    #@+node:ekr.20071201073102.1: *4* adjustDefStart (pythonScanner)
     def adjustDefStart (self,s,i):
 
         '''A hook to allow the Python importer to adjust the 
@@ -4022,7 +4022,7 @@ class pythonScanner (baseScannerClass):
                     return j + 1
 
         return i
-    #@+node:ekr.20101103093942.5935: *4* findClass (leoImport)
+    #@+node:ekr.20101103093942.5935: *4* findClass (pythonScanner)
     def findClass(self,p):
 
         '''Return the index end of the class or def in a node, or -1.'''
@@ -4047,7 +4047,7 @@ class pythonScanner (baseScannerClass):
             assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
 
         return None,-1,-1
-    #@+node:ekr.20070712090019.1: *4* skipCodeBlock (python) & helpers
+    #@+node:ekr.20070712090019.1: *4* skipCodeBlock (pythonScanner) & helpers
     def skipCodeBlock (self,s,i,kind):
 
         trace = False ; verbose = True
@@ -4275,7 +4275,7 @@ class pythonScanner (baseScannerClass):
 class rstScanner (baseScannerClass):
 
     #@+others
-    #@+node:ekr.20090501095634.42: *4*  __init__
+    #@+node:ekr.20090501095634.42: *4*  __init__ (rstScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.

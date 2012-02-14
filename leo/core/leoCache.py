@@ -468,7 +468,7 @@ class PickleShareDB:
 
     #@+others
     #@+node:ekr.20100208223942.5968: *3*  Birth & special methods
-    #@+node:ekr.20100208223942.5969: *4*  __init__
+    #@+node:ekr.20100208223942.5969: *4*  __init__ (PickleShareDb)
     def __init__(self,root):
 
         """

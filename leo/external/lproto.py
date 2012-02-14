@@ -81,7 +81,7 @@ class LProtoBuf:
 class LProtoServer:
     
     #@+others
-    #@+node:ekr.20111012070545.7254: *3* __init__
+    #@+node:ekr.20111012070545.7254: *3* __init__ (LProtoServer)
     def __init__(self):
 
         self.srv = QtNetwork.QLocalServer()
@@ -146,7 +146,7 @@ class LProtoServer:
 if 0:
     class LProtoObsoleteClient:
         #@+others
-        #@+node:ville.20091010205847.1361: *3* initialization
+        #@+node:ville.20091010205847.1361: *3* initialization (LProtoObsoleteClient)
         def __init__(self):
             self.cl = QtNetwork.QLocalSocket()
 
@@ -158,7 +158,7 @@ if 0:
 class LProtoClient:
     
     #@+others
-    #@+node:ekr.20111012070545.7210: *3* ctor
+    #@+node:ekr.20111012070545.7210: *3* ctor (LProtoClient)
     def __init__(self,fname=standard_leo_socket_name):
 
         self.socket_name = fname

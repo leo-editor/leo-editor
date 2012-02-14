@@ -200,7 +200,7 @@ class baseLeoPlugin(object):
     #@-<<docstring>>
     import leo.core.leoGlobals as g
     #@+others
-    #@+node:ekr.20100908125007.6012: *3* __init__
+    #@+node:ekr.20100908125007.6012: *3* __init__ (baseLeoPlugin)
     def __init__(self, tag, keywords):
 
         """Set self.c to be the ``commander`` of the active node

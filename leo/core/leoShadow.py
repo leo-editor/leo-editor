@@ -833,7 +833,7 @@ class shadowController:
         '''
 
         #@+others
-        #@+node:ekr.20080709062932.6: *4* __init__
+        #@+node:ekr.20080709062932.6: *4* __init__ (atShadowTestCase)
         def __init__ (self,c,p,shadowController,lax,trace=False):
 
              # Init the base class.
@@ -1040,7 +1040,7 @@ class shadowController:
         The line numbering starts from 0.
         """
         #@+others
-        #@+node:ekr.20080708094444.13: *4* __init__
+        #@+node:ekr.20080708094444.13: *4* __init__ (sourcereader)
         def __init__ (self,shadowController,lines):
 
             self.lines = lines 
@@ -1101,7 +1101,7 @@ class shadowController:
         Similar to class sourcereader.
         """
         #@+others
-        #@+node:ekr.20080708094444.22: *4* __init__
+        #@+node:ekr.20080708094444.22: *4* __init__ (sourcewriter)
         def __init__ (self,shadowController):
 
             self.i = 0

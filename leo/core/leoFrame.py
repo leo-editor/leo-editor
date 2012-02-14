@@ -437,7 +437,7 @@ class stringTextWidget (baseTextWidget):
     '''A class that represents text as a Python string.'''
 
     #@+others
-    #@+node:ekr.20070228074228.2: *3* ctor
+    #@+node:ekr.20070228074228.2: *3* ctor (stringTextWidget)
     def __init__ (self,c,name):
 
         # Init the base class
@@ -448,7 +448,7 @@ class stringTextWidget (baseTextWidget):
         self.sel = 0,0
         self.s = ''
         self.trace = False
-    #@+node:ekr.20070228111853: *3* setSelectionRange (stringText)
+    #@+node:ekr.20070228111853: *3* setSelectionRange (stringTextWidget)
     def setSelectionRange (self,i,j,insert=None):
 
         i1, j1, insert1 = i,j,insert
@@ -1621,7 +1621,7 @@ class leoLog (HighLevelInterface):
 
         self.enabled = enabled
 
-    #@+node:ekr.20070302101023: *3* May be overridden
+    #@+node:ekr.20070302101023: *3* May be overridden (HighLevelInterface)
     # def configure (self,*args,**keys):              pass
     def configureBorder(self,border):               pass
     def createControl (self,parentFrame):           pass
@@ -2407,7 +2407,7 @@ class nullColorizer:
     """A do-nothing colorer class"""
 
     #@+others
-    #@+node:ekr.20031218072017.2219: *3* __init__
+    #@+node:ekr.20031218072017.2219: *3* __init__ (nullColorizer)
     def __init__ (self,c):
 
         self.c = c
@@ -2448,7 +2448,7 @@ class nullFrame (leoFrame):
     """A null frame class for tests and batch execution."""
 
     #@+others
-    #@+node:ekr.20040327105706: *3*  ctor
+    #@+node:ekr.20040327105706: *3*  ctor (nullFrame)
     def __init__ (self,title,gui):
 
         # g.trace('nullFrame')
@@ -2474,7 +2474,7 @@ class nullFrame (leoFrame):
     def destroySelf (self):
 
         pass
-    #@+node:ekr.20040327105706.2: *3* finishCreate  (Removed nullFrame.bodyCtrl)
+    #@+node:ekr.20040327105706.2: *3* finishCreate (nullFrame)
     def finishCreate(self,c):
 
         self.c = c
@@ -2549,7 +2549,7 @@ class nullIconBarClass:
     '''A class representing the singleton Icon bar'''
 
     #@+others
-    #@+node:ekr.20070301164543.1: *3*  ctor
+    #@+node:ekr.20070301164543.1: *3*  ctor (nullIconBarClass)
     def __init__ (self,c,parentFrame):
 
         self.c = c

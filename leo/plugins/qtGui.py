@@ -76,7 +76,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
     '''A subclass of QTextBrowser that overrides the mouse event handlers.'''
         
     #@+others
-    #@+node:ekr.20110605121601.18006: *4*   ctor
+    #@+node:ekr.20110605121601.18006: *4*   ctor (LeoQTextBrowser)
     def __init__(self,parent,c,wrapper):
         
         for attr in ('leo_c','leo_wrapper',):
@@ -824,7 +824,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
 
     #@+others
     #@+node:ekr.20110605121601.18059: *4* Birth
-    #@+node:ekr.20110605121601.18060: *5* ctor
+    #@+node:ekr.20110605121601.18060: *5* ctor (leoQLineEditWidget)
     def __init__ (self,widget,name,c=None):
 
         # Init the base class.
@@ -934,7 +934,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
     #@+others
     #@+node:ekr.20110605121601.18072: *4* Birth
-    #@+node:ekr.20110605121601.18073: *5* ctor
+    #@+node:ekr.20110605121601.18073: *5* ctor (leoQTextEditWidget)
     def __init__ (self,widget,name,c=None):
 
         # widget is a QTextEdit (or QTextBrowser).
@@ -1617,7 +1617,7 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
 
     #@+others
     #@+node:ekr.20110605121601.18104: *4* Birth
-    #@+node:ekr.20110605121601.18105: *5* ctor
+    #@+node:ekr.20110605121601.18105: *5* ctor (leoQScintilla)
     def __init__ (self,widget,name,c=None):
 
         # Init the base class.
@@ -1769,7 +1769,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
     '''
 
     #@+others
-    #@+node:ekr.20110605121601.18117: *4* Birth
+    #@+node:ekr.20110605121601.18117: *4* Birth (leoQtHeadlineWidget)
     def __init__ (self,c,item,name,widget):
 
         # g.trace('(leoQtHeadlineWidget)',item,widget)
@@ -4197,7 +4197,7 @@ class leoQtFrame (leoFrame.leoFrame):
         '''A class representing the status line.'''
 
         #@+others
-        #@+node:ekr.20110605121601.18258: *5* ctor
+        #@+node:ekr.20110605121601.18258: *5* ctor (qtFrame)
         def __init__ (self,c,parentFrame):
 
             self.c = c
@@ -4278,7 +4278,7 @@ class leoQtFrame (leoFrame.leoFrame):
         '''A class representing the singleton Icon bar'''
 
         #@+others
-        #@+node:ekr.20110605121601.18263: *5*  ctor
+        #@+node:ekr.20110605121601.18263: *5*  ctor (qtIconBarClass)
         def __init__ (self,c,parentFrame):
 
             # g.trace('(qtIconBarClass)')
@@ -6457,7 +6457,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
     #@+others
     #@+node:ekr.20110605121601.18404: *4*  Birth (leoQtTree)
-    #@+node:ekr.20110605121601.18405: *5* ctor
+    #@+node:ekr.20110605121601.18405: *5* ctor (leoQtTree)
     def __init__(self,c,frame):
 
         # Init the base class.
@@ -7026,7 +7026,7 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     """ Toplevel frame for tabbed ui """
 
     #@+others
-    #@+node:ekr.20110605121601.18449: *4* __init__
+    #@+node:ekr.20110605121601.18449: *4* __init__ (LeoTabbedTopLevel)
     def __init__(self, *args, **kwargs):
         
         self.factory = kwargs['factory']
@@ -7078,7 +7078,7 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         w.defaultClose = w.closeEvent
         w.closeEvent = reattach
         if platform.system() == 'Windows':
-           w.move(20, 20)  # Windows (XP and 7) conspire to place the windows title bar off screen
+            w.move(20, 20)  # Windows (XP and 7) conspire to place the windows title bar off screen
 
         return w
     #@+node:tbrown.20120112093714.27963: *4* tile

@@ -735,72 +735,66 @@ class baseFileCommands:
 
     def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
 
-        c = self.c
+        # g.trace('*****',fileName)
+        fc,c = self,self.c
         c.setChanged(False) # May be set when reading @file nodes.
-        self.warnOnReadOnlyFiles(fileName)
-        self.checking = False
-        self.mFileName = c.mFileName
-        self.initReadIvars()
-        recoveryNode = None # Position of recovery node, if present.
+        fc.warnOnReadOnlyFiles(fileName)
+        fc.checking = False
+        fc.mFileName = c.mFileName
+        fc.initReadIvars()
 
         try:
             c.loading = True # disable c.changed
-            ok = self.getLeoFileHelper(theFile,fileName,silent)
-
-            # Do this before reading derived files.
-            self.resolveTnodeLists()
-
-            if ok and readAtFileNodesFlag:
-                # Redraw before reading the @file nodes so the screen isn't blank.
-                # This is important for big files like LeoPy.leo.
-                c.redraw()
+            ok = fc.getLeoFileHelper(theFile,fileName,silent)
+                # Read the .leo file and create the outline.
+            if ok:
+                fc.resolveTnodeLists()
+                    # Do this before reading external files.
                 c.setFileTimeStamp(fileName)
-                c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
-                recoveryNode = self.handleNodeConflicts()
-
-            # Do this after reading derived files.
-            if readAtFileNodesFlag:
-                # The descendent nodes won't exist unless we have read the @thin nodes!
-                self.restoreDescendentAttributes()
-
-            self.setPositionsFromVnodes()
-            c.selectVnode(recoveryNode or c.p) # load body pane
-            if c.config.getBool('check_outline_after_read'):
-                c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+                if readAtFileNodesFlag:
+                    # Redraw before reading the @file nodes so the screen isn't blank.
+                    # This is important for big files like LeoPy.leo.
+                    c.redraw()
+                    fc.readExternalFiles(fileName)
+                
+                if g.new_load:
+                    pass
+                else:
+                    if c.config.getBool('check_outline_after_read'):
+                        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
         finally:
             c.loading = False # reenable c.changed
 
         if c.changed:
-            self.propegateDirtyNodes()
+            fc.propegateDirtyNodes()
         c.setChanged(c.changed) # Refresh the changed marker.
-        self.initReadIvars()
+        fc.initReadIvars()
         return ok, c.frame.ratio
     #@+node:ekr.20090526081836.5841: *5* fc.getLeoFileHelper
     def getLeoFileHelper(self,theFile,fileName,silent):
 
         '''Read the .leo file and create the outline.'''
 
-        c = self.c
-
+        c,fc = self.c,self
         try:
             ok = True
-            v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
+            v = fc.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
             if v: # v is None for minimal .leo files.
                 c.setRootVnode(v)
-                self.rootVnode = v
+                fc.rootVnode = v
             else:
                 v = leoNodes.vnode(context=c)
                 v.setHeadString('created root node')
                 p = leoNodes.position(v)
                 p._linkAsRoot(oldRoot=None)
-                self.rootVnode = v
+                fc.rootVnode = v
                 # c.setRootPosition()
                 c.changed = False
         except BadLeoFile:
             junk, message, junk = sys.exc_info()
             if not silent:
                 g.es_exception()
-                c.alert(self.mFileName + " is not a valid Leo file: " + str(message))
+                c.alert(fc.mFileName + " is not a valid Leo file: " + str(message))
             ok = False
 
         return ok
@@ -863,6 +857,20 @@ class baseFileCommands:
         aList = [z.copy() for z in c.all_positions() if z.isDirty()]
         for p in aList:
             p.setAllAncestorAtFileNodesDirty()
+    #@+node:ekr.20120212220616.10537: *5* fc.readExternalFiles
+    def readExternalFiles(self,fileName):
+
+        c,fc = self.c,self
+        
+        c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+        recoveryNode = fc.handleNodeConflicts()
+
+        # Do this after reading external files.
+        # The descendent nodes won't exist unless we have read the @thin nodes!
+        fc.restoreDescendentAttributes()
+
+        fc.setPositionsFromVnodes()
+        c.selectVnode(recoveryNode or c.p) # load body pane
     #@+node:ekr.20031218072017.1554: *5* fc.warnOnReadOnlyFiles
     def warnOnReadOnlyFiles (self,fileName):
 
@@ -889,8 +897,8 @@ class baseFileCommands:
         # Force an update of the body pane.
         c.setBodyString(p,p.b)
         c.frame.body.onBodyChanged(undoType=None)
-    #@+node:ekr.20031218072017.2297: *4* fc.open
-    def open(self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
+    #@+node:ekr.20031218072017.2297: *4* fc.openLeoFile
+    def openLeoFile(self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
 
         c = self.c ; frame = c.frame
 

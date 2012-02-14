@@ -659,7 +659,7 @@ def test (self):
 #@+node:ekr.20110310091639.14256: ** class CodeWise
 class CodeWise:
     #@+others
-    #@+node:ekr.20110310091639.14257: *3* __init__
+    #@+node:ekr.20110310091639.14257: *3* __init__(CodeWise)
     def __init__(self, dbpath = None):
 
         if dbpath is None:
@@ -919,13 +919,10 @@ class ContextSniffer:
     
     """
     #@+others
-    #@+node:ekr.20110310091639.14276: *3* __init__
-
+    #@+node:ekr.20110310091639.14276: *3* __init__ (ContextSniffer)
     def __init__(self):
         # var name => list of classes
         self.vars = {}
-        
-
     #@+node:ekr.20110310091639.14277: *3* declare
     def declare(self, var, klass):
         # print("declare",var,klass)

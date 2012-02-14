@@ -1631,7 +1631,7 @@ class Tracer:
     '''
 
     #@+others
-    #@+node:ekr.20080531075119.2: *4*  __init__
+    #@+node:ekr.20080531075119.2: *4*  __init__ (Tracer)
     def __init__(self):
 
         self.callDict = {}
@@ -2252,7 +2252,7 @@ def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
 
     if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
         if theFile:
-            ok = c.fileCommands.open(
+            ok = c.fileCommands.openLeoFile(
                 theFile,fileName,
                 readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
             if not ok:
@@ -2281,6 +2281,8 @@ def mungeFileName(fileName):
     return isLeo,fn,relFn
 #@+node:ekr.20090520055433.5946: *4* g.openWithFileNameHelper
 def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
+    
+    # g.trace('old_c',old_c,fileName)
 
     # Read the file the first time to get the settings.
     if old_c: g.preRead(fileName)
@@ -2301,12 +2303,14 @@ def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
 
     c.isZipped = isZipped
     return c,theFile
-#@+node:ekr.20090520055433.5949: *5* preRead
+#@+node:ekr.20090520055433.5949: *5* preRead (NOT USED????)
 def preRead(fileName):
 
     '''Read the file for the first time,
     setting the setting for a later call to finishCreate.
     '''
+    
+    g.trace('****',fileName)
 
     c = g.app.config.openSettingsFile(fileName)
     if c:
@@ -5168,7 +5172,7 @@ class fileLikeObject:
     The caller is responsible for handling newlines correctly."""
 
     #@+others
-    #@+node:ekr.20050404151753: *4*  ctor
+    #@+node:ekr.20050404151753: *4*  ctor (g.fileLikeObject)
     def __init__(self,encoding='utf-8',fromString=None):
 
         # g.trace('g.fileLikeObject:__init__','fromString',fromString)

@@ -319,9 +319,10 @@ class leoGui:
     def dismiss_splash_screen (self):
         
         pass # May be overridden in subclasses.
-    #@+node:ekr.20070219084912: *4* finishCreate (may be overridden in subclasses)
+    #@+node:ekr.20070219084912: *4* finishCreate (leoGui)
     def finishCreate (self):
-
+        
+        # This may be overridden in subclasses.
         pass
     #@+node:ekr.20101028131948.5861: *4* killPopupMenu & postPopupMenu
     # These definitions keeps pylint happy.
@@ -361,7 +362,7 @@ class nullGui(leoGui):
     """Null gui class."""
 
     #@+others
-    #@+node:ekr.20031218072017.2224: *3* Birth & death
+    #@+node:ekr.20031218072017.2224: *3* Birth & death (nullGui)
     #@+node:ekr.20031218072017.2225: *4*  nullGui.__init__
     def __init__ (self,guiName):
 
@@ -395,13 +396,13 @@ class nullGui(leoGui):
             # g.es("\nend of batch script")
 
         # Getting here will terminate Leo.
-    #@+node:ekr.20070228155807: *3* isTextWidget
+    #@+node:ekr.20070228155807: *3* isTextWidget (nullGui)
     def isTextWidget (self,w):
 
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
 
         return w and isinstance(w,leoFrame.baseTextWidget)
-    #@+node:ekr.20031218072017.2230: *3* oops
+    #@+node:ekr.20031218072017.2230: *3* oops (nullGui)
     def oops(self):
 
         """Default do-nothing method for nullGui class.
@@ -412,53 +413,39 @@ class nullGui(leoGui):
         # However, this message is useful when writing gui plugins.
         if 1:
             g.trace("nullGui",g.callers(4))
-    #@+node:ekr.20070301171901: *3* do nothings (leoGui)
+    #@+node:ekr.20070301171901: *3* do nothings (nullGui)
     def add_border(self,c,w):
         pass
-
     def alert (self,message):
         pass
-
     def attachLeoIcon (self,w):
         pass
-
     def createRootWindow(self):
         pass
-
     def destroySelf (self):
         pass
-
     def finishCreate (self):
         pass
-
     def getIconImage (self, name):
         return None
-
     def getTreeImage(self,c,path):
         return None
-
     def getTextFromClipboard (self):
         return self.clipboardContents
-
     def get_focus(self,frame=None):
         if not frame: return None
         return self.focusWidget or (hasattr(frame,'body') and frame.body.bodyCtrl) or None 
-
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
         return g.app.config.defaultFont
-
     def get_window_info (self,window):
         return 0,0,0,0
-        
     def remove_border (self,c,w):
         pass
-
     def replaceClipboardWith (self,s):
         self.clipboardContents = s
-
     def set_focus(self,commander,widget):
         self.focusWidget = widget
-    #@+node:ekr.20070301172456: *3* app.gui panels
+    #@+node:ekr.20070301172456: *3* app.gui panels (nullGui)
     def createComparePanel(self,c):
         """Create Compare panel."""
         self.oops()
@@ -507,7 +494,7 @@ class nullGui(leoGui):
     def runAskYesNoCancelDialog(self,c,title,
         message=None,yesMessage="Yes",noMessage="No",defaultButton="Yes"):
         return self.simulateDialog("yesNoCancelDialog","cancel")
-    #@+node:ekr.20100521090440.5893: *3* onActivate/DeactivateEvent (leoGui)
+    #@+node:ekr.20100521090440.5893: *3* onActivate/DeactivateEvent (nullGui)
     def onActivateEvent (self,*args,**keys):
         pass
 

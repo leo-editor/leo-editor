@@ -73,7 +73,7 @@ class AstTraverser(object):
 
     #@+others
     #@+node:ekr.20111116103733.10279: *3*  a.Birth
-    #@+node:ekr.20111116103733.10280: *4* a.ctor
+    #@+node:ekr.20111116103733.10280: *4* a.ctor (AstTraverser)
     def __init__(self,fn=None):
 
         self.context_stack = []
@@ -1452,7 +1452,7 @@ class Chain(object):
     '''
     
     #@+others
-    #@+node:ekr.20111116103733.10339: *3*  ctor, repr
+    #@+node:ekr.20111116103733.10339: *3*  ctor, repr (Chain)
     def __init__ (self,tree,e,s):
 
         self.e = e # The symbol table entry for the base of the chain.

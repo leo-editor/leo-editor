@@ -1478,7 +1478,7 @@ class generalTestCase(unittest.TestCase):
     """Create a unit test from a snippet of code."""
 
     @others
-#@+node:ekr.20111107092526.9802: *7* __init__
+#@+node:ekr.20111107092526.9802: *7* __init__ (generalTestCase)
 def __init__ (self,c,p):
 
      # Init the base class.
@@ -10852,8 +10852,7 @@ def createFrame (fileName,options):
 
     # Create a _new_ frame & indicate it is the startup window.
     c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=fileName,
-        initEditCommanders=True)
+        fileName=fileName,initEditCommanders=True)
 
     if not script:
         g.app.writeWaitingLog(c) # 2009/12/22: fixes bug 448886
@@ -11022,7 +11021,7 @@ def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
 
     if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
         if theFile:
-            ok = c.fileCommands.open(
+            ok = c.fileCommands.openLeoFile(
                 theFile,fileName,
                 readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
             if not ok:
@@ -11051,6 +11050,8 @@ def mungeFileName(fileName):
     return isLeo,fn,relFn
 #@+node:ekr.20090520055433.5946: *8* g.openWithFileNameHelper
 def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
+    
+    # g.trace('old_c',old_c,fileName)
 
     # Read the file the first time to get the settings.
     if old_c: g.preRead(fileName)
@@ -11071,12 +11072,14 @@ def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
 
     c.isZipped = isZipped
     return c,theFile
-#@+node:ekr.20090520055433.5949: *9* preRead
+#@+node:ekr.20090520055433.5949: *9* preRead (NOT USED????)
 def preRead(fileName):
 
     '''Read the file for the first time,
     setting the setting for a later call to finishCreate.
     '''
+    
+    g.trace('****',fileName)
 
     c = g.app.config.openSettingsFile(fileName)
     if c:
@@ -15351,7 +15354,7 @@ class generalTestCase(unittest.TestCase):
     """Create a unit test from a snippet of code."""
 
     @others
-#@+node:ekr.20051104075904.6: *7* __init__
+#@+node:ekr.20051104075904.6: *7* __init__ (generalTestCase)
 def __init__ (self,c,p):
 
      # Init the base class.
@@ -16017,7 +16020,7 @@ class generalTestCase(unittest.TestCase):
     """Create a unit test from a snippet of code."""
 
     @others
-#@+node:ekr.20051104075904.6: *7* __init__
+#@+node:ekr.20051104075904.6: *7* __init__ (generalTestCase)
 def __init__ (self,c,p):
 
      # Init the base class.
@@ -16370,7 +16373,7 @@ class generalTestCase(unittest.TestCase):
     """Create a unit test from a snippet of code."""
 
     @others
-#@+node:ekr.20051104075904.6: *7* __init__
+#@+node:ekr.20051104075904.6: *7* __init__ (generalTestCase)
 def __init__ (self,c,p):
 
      # Init the base class.
@@ -20729,7 +20732,7 @@ class importExportTestCase(unittest.TestCase):
     """Data-driven unit tests for Leo's edit body commands."""
 
     @others
-#@+node:ekr.20051104075904.80: *6* __init__
+#@+node:ekr.20051104075904.80: *6* __init__ (importExportTestCase)
 def __init__ (self,c,p,dialog,temp_p,doImport):
 
     # Init the base class.
@@ -24801,6 +24804,7 @@ def make_shortcuts_dicts (self,c,d,localFlag):
             if trace: g.trace(message(d3,'result: %s' % (fn)))
             test_result = (d1,d2,d3,'myLeoSettings.leo')
     else:
+        # No change for new_load, but this method is called at a later time.
         if trace: g.trace(message(d,'settingsDict: %s' % (fn)))
         d1 = g.app.config.immutable_leo_settings_shortcuts_dict
         d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
@@ -26007,6 +26011,7 @@ def make_shortcuts_dicts (self,c,d,localFlag):
             if trace: g.trace(message(d3,'result: %s' % (fn)))
             test_result = (d1,d2,d3,'myLeoSettings.leo')
     else:
+        # No change for new_load, but this method is called at a later time.
         if trace: g.trace(message(d,'settingsDict: %s' % (fn)))
         d1 = g.app.config.immutable_leo_settings_shortcuts_dict
         d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict

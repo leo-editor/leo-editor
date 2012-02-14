@@ -104,7 +104,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     # print('runLeo.run: sys.argv %s' % sys.argv)
 
     if g.new_load:
-        g.app.loadManager = leoApp.LoadManager(args,fileName,pymacs)
+        g.app.loadManager = leoApp.LoadManager(fileName,pymacs)
         ok = g.app.loadManager.start()
     else:
         # Phase 1: before loading plugins.
@@ -122,7 +122,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
         if g.app.killed: return
     
         # Phase 3: after loading plugins. Create one or more frames.
-        ok = doPostPluginsInit(args,files,options)
+        ok = doPostPluginsInit(files,options)
         
     if ok:
         g.es('') # Clears horizontal scrolling in the log pane.
@@ -277,14 +277,17 @@ def getFiles(fileName):
 
     files = [completeFileName(z) for z in files]
     return files
-#@+node:ekr.20080921091311.2: *4* initApp
+#@+node:ekr.20080921091311.2: *4* initApp (runLeo.py)
 def initApp (verbose):
 
     # assert g.app.guiArgName
+    
+    # print('***** initApp (runLeo.py)')
 
     # Force the user to set g.app.leoID.
     g.app.setLeoID(verbose=verbose)
     g.app.config = leoConfig.configClass()
+    g.app.loadManager = leoApp.LoadManager()
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.pluginsController.finishCreate() # 2010/09/09
 #@+node:ekr.20041130093254: *4* reportDirectories (runLeo.py)
@@ -476,7 +479,7 @@ def scanOptions():
     }
     return d
 #@+node:ekr.20090519143741.5917: *3* doPostPluginsInit & helpers (runLeo.py)
-def doPostPluginsInit(args,files,options):
+def doPostPluginsInit(files,options):
 
     '''Return True if the frame was created properly.'''
 
@@ -548,8 +551,7 @@ def createFrame (fileName,options):
 
     # Create a _new_ frame & indicate it is the startup window.
     c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=fileName,
-        initEditCommanders=True)
+        fileName=fileName,initEditCommanders=True)
 
     if not script:
         g.app.writeWaitingLog(c) # 2009/12/22: fixes bug 448886

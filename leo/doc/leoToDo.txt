@@ -1317,7 +1317,7 @@ def createHiddenCommander(self,fileName):
     frame.tree.c = c2
     theFile,c2.isZipped = g.openLeoOrZipFile(fileName)
     if theFile:
-        c2.fileCommands.open(theFile,fileName,readAtFileNodesFlag=True,silent=True)
+        c2.fileCommands.openLeoFile(theFile,fileName,readAtFileNodesFlag=True,silent=True)
         return c2
     else:
         return None
@@ -9945,7 +9945,7 @@ END_RE = re.compile(r'^<end node> ([^ ]+)$')
 .. @+node:ekr.20101004092958.5941: *6* class Node
 class Node:
     @others
-.. @+node:ekr.20101004092958.5942: *7* __init__
+.. @+node:ekr.20101004092958.5942: *7* __init__ (Node/treepad)
 def __init__(self):
     self.title    = ""
     self.level    = 0
@@ -9983,7 +9983,7 @@ def writetree(self, fp):
 .. @+node:ekr.20101004092958.5948: *6* class NodeReader
 class NodeReader:
     @others
-.. @+node:ekr.20101004092958.5949: *7* __init__
+.. @+node:ekr.20101004092958.5949: *7* __init__ (NodeReader)
 def __init__(self, fname, fp):
     self.fname    = fname
     self.fp       = fp
@@ -10020,7 +10020,7 @@ def readnode(self):
 .. @+node:ekr.20101004092958.5953: *6* class TreeReader
 class TreeReader:
     @others
-.. @+node:ekr.20101004092958.5954: *7* __init__
+.. @+node:ekr.20101004092958.5954: *7* __init__(TreeReader)
 def __init__(self, fname, fp=None):
     if fp is None: fp = open(fname, 'r')
     self.nodereader = NodeReader(fname, fp)
@@ -10048,7 +10048,7 @@ def read(self):
 .. @+node:ekr.20101004092958.5957: *6* class TreeWriter
 class TreeWriter:
     @others
-.. @+node:ekr.20101004092958.5958: *7* __init__
+.. @+node:ekr.20101004092958.5958: *7* __init__ (TreeWriter)
 def __init__(self, fname, fp=None):
     if fp is None: fp = open(fname, 'w')
     self.fname = fname
@@ -10061,7 +10061,7 @@ def write(self, root):
 .. @+node:ekr.20101004092958.5960: *6* class Main
 class Main:
     @others
-.. @+node:ekr.20101004092958.5961: *7* __init__
+.. @+node:ekr.20101004092958.5961: *7* __init__ (Main)
 def __init__(self):
     self.infile  = sys.argv[1]
     self.outfile = sys.argv[2]

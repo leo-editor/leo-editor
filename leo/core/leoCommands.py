@@ -4575,7 +4575,7 @@ class Commands (object):
     class CPrettyPrinter:
         
         #@+others
-        #@+node:ekr.20110917174948.6904: *8* __init__
+        #@+node:ekr.20110917174948.6904: *8* __init__ (CPrettyPrinter)
         def __init__ (self,c):
             
             self.c = c
@@ -4885,7 +4885,7 @@ class Commands (object):
     class PythonPrettyPrinter:
 
         #@+others
-        #@+node:ekr.20040711135244.6: *8* __init__
+        #@+node:ekr.20040711135244.6: *8* __init__ (PythonPrettyPrinter)
         def __init__ (self,c):
 
             self.array = []

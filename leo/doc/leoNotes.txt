@@ -1364,7 +1364,7 @@ def pymacs_load_hook():
 #@+node:ekr.20071103093725.5: *7* class Emacs_Rebox
 class Emacs_Rebox:
     @others
-#@+node:ekr.20071103093725.6: *8* __init__
+#@+node:ekr.20071103093725.6: *8* __init__ (Emacs_Rebox)
 
 def __init__(self):
     self.default_style = None
@@ -1824,7 +1824,7 @@ If LATEST is true, return the biggest possible value instead of the smallest.
 
 class Template:
     @others
-#@+node:ekr.20071103093725.27: *8* __init__
+#@+node:ekr.20071103093725.27: *8* __init_ (Template)_
 
 def __init__(self, style, weight, lines):
     """\
@@ -5362,7 +5362,7 @@ class queryReplaceCommandsClass (baseEditCommandsClass):
     '''A class to handle query replace commands.'''
 
     @others
-#@+node:ekr.20050920084036.208: *4*  ctor & init
+#@+node:ekr.20050920084036.208: *4*  ctor & init (queryReplaceCommandsClass)
 def __init__ (self,c):
 
     baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -5665,7 +5665,7 @@ class classScannerClass:
     '''A class to find class definitions in a node or its parents.'''
 
     @others
-#@+node:ekr.20061031131434.67: *5* ctor
+#@+node:ekr.20061031131434.67: *5* ctor (classScannerClass)
 def __init__ (self,c):
 
     self.c = c

@@ -313,7 +313,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
     #@+others
     #@+node:ekr.20100901080826.6002: *3*  Birth
-    #@+node:ekr.20100901080826.6003: *4* ctor
+    #@+node:ekr.20100901080826.6003: *4* ctor (abbrevCommandsClass
     def __init__ (self,c):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -1004,7 +1004,7 @@ class bufferCommandsClass (baseEditCommandsClass):
 class chapterCommandsClass (baseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20070522085340: *3*  ctor
+    #@+node:ekr.20070522085340: *3*  ctor (chapterCommandsClass)
     def __init__ (self,c):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -1034,7 +1034,7 @@ class chapterCommandsClass (baseEditCommandsClass):
 class controlCommandsClass (baseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20050920084036.151: *3*  ctor
+    #@+node:ekr.20050920084036.151: *3*  ctor (controlCommandsClass)
     def __init__ (self,c):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -1198,7 +1198,7 @@ class controlCommandsClass (baseEditCommandsClass):
 class debugCommandsClass (baseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20060127162921: *3*  ctor
+    #@+node:ekr.20060127162921: *3*  ctor (debugCommandsClass)
     def __init__ (self,c):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -1765,7 +1765,7 @@ class editCommandsClass (baseEditCommandsClass):
         #@-<< docstring: theory of operation >>
         #@+others
         #@+node:ekr.20110918184425.6914: *5* class C_to_python
-        #@+node:ekr.20110916215321.8057: *6* ctor & helpers
+        #@+node:ekr.20110916215321.8057: *6* ctor & helpers (C_to_python)
         def __init__ (self,c):
             
             self.c = c
@@ -6468,7 +6468,7 @@ class editFileCommandsClass (baseEditCommandsClass):
     '''A class to load files into buffers and save buffers to files.'''
 
     #@+others
-    #@+node:ekr.20050920084036.162: *3*  ctor
+    #@+node:ekr.20050920084036.162: *3*  ctor (editFileCommandsClass)
     def __init__ (self,c):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -6584,7 +6584,7 @@ class editFileCommandsClass (baseEditCommandsClass):
         frame.tree.c = c2
         theFile,c2.isZipped = g.openLeoOrZipFile(fileName)
         if theFile:
-            c2.fileCommands.open(theFile,fileName,readAtFileNodesFlag=True,silent=True)
+            c2.fileCommands.openLeoFile(theFile,fileName,readAtFileNodesFlag=True,silent=True)
             return c2
         else:
             return None
@@ -7518,11 +7518,11 @@ class keyHandlerCommandsClass (baseEditCommandsClass):
     '''User commands to access the keyHandler class.'''
 
     #@+others
-    #@+node:ekr.20050920084036.172: *3*  ctor
+    #@+node:ekr.20050920084036.172: *3*  ctor (keyHandlerCommandsClass)
     def __init__ (self,c):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.
-    #@+node:ekr.20050920084036.173: *3* getPublicCommands (keyHandler)
+    #@+node:ekr.20050920084036.173: *3* getPublicCommands (keyHandlerCommandsClass)
     def getPublicCommands (self):
 
         k = self.k
@@ -7578,7 +7578,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
     '''A class to manage the kill buffer.'''
 
     #@+others
-    #@+node:ekr.20050920084036.175: *3*  ctor & finishCreate
+    #@+node:ekr.20050920084036.175: *3*  ctor & finishCreate (killBufferCommandsClass)
     def __init__ (self,c):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -7696,7 +7696,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
         """Returns a list of positions in a subtree, possibly including the root of the subtree."""
 
         #@+others
-        #@+node:ekr.20071003160252.1: *4* __init__ & __iter__
+        #@+node:ekr.20071003160252.1: *4* __init__ & __iter__ (iterateKillBuffer)
         def __init__(self,c):
 
             # g.trace('iterateKillBuffer.__init')
@@ -7918,7 +7918,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
 class leoCommandsClass (baseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20050920084036.187: *3*  ctor
+    #@+node:ekr.20050920084036.187: *3*  ctor (leoCommandsClass)
     def __init__ (self,c):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -8134,7 +8134,7 @@ class macroCommandsClass (baseEditCommandsClass):
     '''
 
     #@+others
-    #@+node:ekr.20050920084036.191: *3*  ctor
+    #@+node:ekr.20050920084036.191: *3*  ctor (macroCommandsClass)
     def __init__ (self,c):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -8418,7 +8418,7 @@ class macroCommandsClass (baseEditCommandsClass):
 class rectangleCommandsClass (baseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20050920084036.222: *3*  ctor & finishCreate
+    #@+node:ekr.20050920084036.222: *3*  ctor & finishCreate (rectangleCommandsClass)
     def __init__ (self,c):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -8657,7 +8657,7 @@ class registerCommandsClass (baseEditCommandsClass):
 
     #@+others
     #@+node:ekr.20051004095209: *3* Birth
-    #@+node:ekr.20050920084036.235: *4*  ctor, finishCreate & init
+    #@+node:ekr.20050920084036.235: *4*  ctor, finishCreate & init (registerCommandsClass)
     def __init__ (self,c):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -10012,7 +10012,7 @@ class spellCommandsClass (baseEditCommandsClass):
     '''Commands to support the Spell Tab.'''
 
     #@+others
-    #@+node:ekr.20051025080056: *4* ctor
+    #@+node:ekr.20051025080056: *4* ctor (spellCommandsClass)
     def __init__ (self,c):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.

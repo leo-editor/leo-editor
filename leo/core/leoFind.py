@@ -67,7 +67,7 @@ class searchWidget:
         return 'searchWidget id: %s' % (id(self))
 
     #@+others
-    #@+node:ekr.20070105092438: *3* ctor
+    #@+node:ekr.20070105092438: *3* ctor (searchWidget)
     def __init__ (self,*args,**keys):
 
         # g.trace ('searchWidget',g.callers())

@@ -1447,6 +1447,7 @@ class configClass:
                 if trace: g.trace(message(d3,'result: %s' % (fn)))
                 test_result = (d1,d2,d3,'myLeoSettings.leo')
         else:
+            # No change for new_load, but this method is called at a later time.
             if trace: g.trace(message(d,'settingsDict: %s' % (fn)))
             d1 = g.app.config.immutable_leo_settings_shortcuts_dict
             d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
@@ -2068,35 +2069,40 @@ class configClass:
 
         '''Read settings from one file of the standard settings files.'''
         
-        trace = False and not g.unitTesting
-        verbose = True
+        trace = False and not g.unitTesting ; verbose = True
         giveMessage = (verbose and not g.app.unitTesting and
             not self.silent and not g.app.batchMode)
         def message(s):
             # This occurs early in startup, so use the following.
-            if not g.isPython3:
+            if giveMessage and not g.isPython3:
                 s = g.toEncodedString(s,'ascii')
             g.es_print(s,color='blue')
         self.write_recent_files_as_needed = False # Will be set later.
+        
         localConfigFile = self.getLocalConfigFile(fileName)
-        if trace: g.trace(fileName,localConfigFile)
+        if trace:
+            message('readSettingsFiles: fileName %s localConfigFile %s' % (
+                fileName,localConfigFile))
+        
         table = self.defineSettingsTable(fileName,localConfigFile)
         for path,localFlag in table:
+            
+            if g.new_load and localFlag: ####
+                continue #### Only load the global settings files.
+
             assert path and g.os_path_exists(path)
             isZipped = path and zipfile.is_zipfile(path)
             isLeo = isZipped or path.endswith('.leo')
             if isLeo:
                 c = self.openSettingsFile(path)
                 if c:
-                    if giveMessage:
-                        message('reading settings in %s' % path)
+                    message('reading settings in %s' % path)
                     self.updateSettings(c,localFlag)
-                    g.app.destroyWindow(c.frame)
                     self.write_recent_files_as_needed = c.config.getBool(
                         'write_recent_files_as_needed')
+                    g.app.destroyWindow(c.frame)
                 else:
-                    if giveMessage:
-                        message('error reading settings in %s' % path)
+                    message('error reading settings in %s' % path)
 
         self.readRecentFiles(localConfigFile)
         self.inited = True
@@ -2182,9 +2188,10 @@ class configClass:
         c,frame = g.app.newLeoCommanderAndFrame(
             fileName=path,relativeFileName=None,
             initEditCommanders=False,updateRecentFiles=False)
+        assert frame.c == c
         frame.log.enable(False)
         g.app.lockLog()
-        ok = frame.c.fileCommands.open(
+        ok = c.fileCommands.openLeoFile(
             theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
         g.app.unlockLog()
         c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
@@ -2396,7 +2403,7 @@ class SettingsTreeParser (ParserBaseClass):
     Used by read settings logic.'''
 
     #@+others
-    #@+node:ekr.20041119204103: *3* ctor
+    #@+node:ekr.20041119204103: *3* ctor (SettingsTreeParser)
     def __init__ (self,c,localFlag=True):
 
         # Init the base class.
