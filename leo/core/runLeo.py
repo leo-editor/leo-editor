@@ -103,10 +103,16 @@ def run(fileName=None,pymacs=None,*args,**keywords):
 
     # print('runLeo.run: sys.argv %s' % sys.argv)
 
-    if g.new_load:
+    if 1: #### g.new_load
+        #### Always create the load manager.
+        # We'll compute the standard directories later,
+        # (in doPrePlusingsInit) once we can know lm.files.
         g.app.loadManager = leoApp.LoadManager(fileName,pymacs)
-        ok = g.app.loadManager.start()
-    else:
+        #### Not yet.
+        #### ok = g.app.loadManager.start()
+            
+    if 1: # At present, execute this code regardless of g.new_load.
+    
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
         if not isValidPython(): return
@@ -162,9 +168,18 @@ def doPrePluginsInit(fileName,pymacs):
 
     # Read settings *after* setting g.app.config and *before* opening plugins.
     # This means if-gui has effect only in per-file settings.
-    g.app.config.readSettingsFiles(None,verbose)
-    for fn in files:
-        g.app.config.readSettingsFiles(fn,verbose)
+    
+    if g.new_config:
+        lm = g.app.loadManager
+        lm.init(files) #### Temporary: set lm.files
+        lm.readGlobalSettingsFiles()
+            # reads only standard settings files, using a null gui.
+            # uses lm.files[0] to compute the local directory
+            # that might contain myLeoSettings.leo.
+    else:
+        g.app.config.readSettingsFiles(None,verbose)
+        for fn in files:
+            g.app.config.readSettingsFiles(fn,verbose)
 
     if not files and not script:
         # This must be done *after* the standard settings have been read.

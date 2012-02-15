@@ -42,6 +42,8 @@ class GeneralSetting:
                     result.append('%s: %s' % (ivar,val))
         return ','.join(result)
         
+    dump = __repr__
+        
 def isGeneralSetting(obj):
     return isinstance(obj,GeneralSetting)
 #@-<< GeneralSetting >>
@@ -1113,9 +1115,11 @@ class ParserBaseClass:
             else:
                 p.moveToThreadNext()
 
-        shortcutsDict = c.config.make_shortcuts_dicts(self.shortcutsDict,self.localFlag)
-
-        return shortcutsDict,self.settingsDict
+        if g.new_config:
+            return self.shortcutsDict,self.settingsDict
+        else:
+            shortcutsDict = c.config.make_shortcuts_dicts(self.shortcutsDict,self.localFlag)
+            return shortcutsDict,self.settingsDict
     #@+node:ekr.20041120094940.10: *3* valueError
     def valueError (self,p,kind,name,val):
 
@@ -1442,7 +1446,7 @@ class configClass:
                 if trace: message(d,'settingsDict: %s' % (fn))
                 d1 = g.app.config.immutable_leo_settings_shortcuts_dict
                 d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
-                d3 = self.settingsDict = self.merge_settings_dicts(d1,d2)
+                d3 = self.settingsDict = self.merge_shortcuts_dicts(d1,d2)
                 result = d3
                 if trace: g.trace(message(d3,'result: %s' % (fn)))
                 test_result = (d1,d2,d3,'myLeoSettings.leo')
@@ -1451,17 +1455,17 @@ class configClass:
             if trace: g.trace(message(d,'settingsDict: %s' % (fn)))
             d1 = g.app.config.immutable_leo_settings_shortcuts_dict
             d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
-            d3 = self.merge_settings_dicts(d1,d2)
-            d4 = self.settingsDict = self.merge_settings_dicts(d3,d)
+            d3 = self.merge_shortcuts_dicts(d1,d2)
+            d4 = self.settingsDict = self.merge_shortcuts_dicts(d3,d)
             result = d4
             test_result = ((d1,d2,d3,'local 1'),(d3,d,d4,'local 2'),)
             
         g.app.unitTestDict['make_shortcuts_dicts'] = test_result
         return result
-    #@+node:ekr.20120122070219.10163: *5* merge_settings_dicts (g.app.config)
-    def merge_settings_dicts (self,old_d,new_d):
+    #@+node:ekr.20120122070219.10163: *5* merge_shortcuts_dicts (g.app.config)
+    def merge_shortcuts_dicts (self,old_d,new_d):
         
-        '''Create a new dict by overriding all settings in old_d by setting in new_d.
+        '''Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
         
         Both old_d and new_d remain unchanged.'''
         
@@ -2086,9 +2090,6 @@ class configClass:
         
         table = self.defineSettingsTable(fileName,localConfigFile)
         for path,localFlag in table:
-            
-            if g.new_load and localFlag: ####
-                continue #### Only load the global settings files.
 
             assert path and g.os_path_exists(path)
             isZipped = path and zipfile.is_zipfile(path)

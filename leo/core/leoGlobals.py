@@ -19,7 +19,15 @@ isPython3 = sys.version_info >= (3,0,0)
 # new_keys = False # True: Qt input methods produce a **user setting**, not a stroke.
 # if new_keys: print('***** new_keys')
 
-new_load = False # True: .leo files are loaded at most once.
+new_config = False  # Unit test set this to True, then restore it.
+    # True: Create finalized settings & shortcuts dicts for each commander.
+    # g.app.config only parses settings: rename it g.app.configParser??
+    # c.config.getX become much simpler.
+if new_config: print('***** new_config')
+
+new_load = False
+    # True: .leo files are loaded at most once,
+    # except the standard settings files appearing in the load list.
 if new_load: print('***** new_load')
     
 new_modes = False # True: use ModeController and ModeInfo classes.
@@ -5567,6 +5575,9 @@ class TypedDict:
         
     def name(self):
         return self._name
+    #@+node:ekr.20120214165710.10728: *4* td.setName
+    def setName (self,name):
+        self._name =  name
     #@+node:ekr.20120205022040.17807: *4* td.update
     def update(self,d):
         
