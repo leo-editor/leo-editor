@@ -156,12 +156,12 @@ recentCoreList = (
         # ('leoAtFile',    no_suppressions),
         # ('leoCache',     no_suppressions),
         # ('leoChapters',  no_suppressions),
-        # ('leoCommands',  no_suppressions),
+        ('leoCommands',  no_suppressions),
         # ('leoEditCommands', no_suppressions),
         # ('leoFind',      no_suppressions),
         # ('leoFrame','R0923'),
             # R0923: Interface not implemented.
-        # ('leoGlobals','E0611,E1103'),
+        ('leoGlobals','E0611,E1103'),
             # E0611: no name 'parse' in urllib.
             # E1103: Instance of 'ParseResult' has no 'xxx' member (but some types could not be inferred)
         # ('leoGui',       no_suppressions),
@@ -201,10 +201,10 @@ recentPluginsList = (
 
 tables_table = (
     # (rpythonList,'core'),
-    (recentCoreList,'core'),
+    # (recentCoreList,'core'),
     # (recentPluginsList,'plugins'),
-    # (coreList,'core'),
-    # (guiPluginsTable,'plugins'),
+    (coreList,'core'),
+    (guiPluginsTable,'plugins'),
     # (passList,'plugins'),
     # (externalList,'external'),
     # (pluginsTable,'plugins'),

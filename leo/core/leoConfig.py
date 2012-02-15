@@ -1116,6 +1116,7 @@ class ParserBaseClass:
                 p.moveToThreadNext()
 
         if g.new_config:
+            # Return the raw dict, unmerged.
             return self.shortcutsDict,self.settingsDict
         else:
             shortcutsDict = c.config.make_shortcuts_dicts(self.shortcutsDict,self.localFlag)
@@ -1134,7 +1135,7 @@ class ParserBaseClass:
 #@-<< class ParserBaseClass >>
 
 #@+others
-#@+node:ekr.20041119203941: ** class configClass
+#@+node:ekr.20041119203941: ** class configClass (g.app.config)
 class configClass:
     """A class to manage configuration settings."""
     #@+<< configClass class data >>

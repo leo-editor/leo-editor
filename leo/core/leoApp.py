@@ -929,11 +929,11 @@ class LoadManager:
         
         # Global settings & shortcuts dicts.
         # The are the defaults for computing settings and shortcuts for all loaded files.
-        self.globalSettingsDict = {}
-            # The dictionary representing the merger of default settings,
+        self.globalSettingsDict = None
+            # The g.TypedDict representing the merger of default settings,
             # settings in leoSettings.leo and settings in myLeoSettings.leo
-        self.globalShortcutsDict = {}
-            # The dictionary representing the merger shortcuts in
+        self.globalShortcutsDict = None
+            # The g.TypedDictOfLists representing the merger shortcuts in
             # leoSettings.leo and settings in myLeoSettings.leo.
 
         # LoadManager ivars corresponding to user options....
@@ -1176,14 +1176,13 @@ class LoadManager:
         for ivar in aList:
             val = getattr(g.app,ivar)
             g.trace('%20s' % (ivar),val)
-    #@+node:ekr.20120213081706.10381: *3* lm.Settings files
+    #@+node:ekr.20120215062153.10740: *3* lm.Settings
     #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles & helpers (new_config only)
     def readGlobalSettingsFiles (self):
         
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
         
-        trace = True
-        tag = 'lm.readGlobalSettingsFiles'
+        trace = True ; verbose = False ; tag = 'lm.readGlobalSettingsFiles'
         lm = self
         
         assert g.new_config
@@ -1209,7 +1208,7 @@ class LoadManager:
 
         for c in (c1,c2):
             if c:
-                shortcuts_d2,settings_d2 = lm.createSettingsDicts(c)
+                shortcuts_d2,settings_d2 = lm.createSettingsDicts(c,localFlag=False)
                 if settings_d2:
                     settings_d.update(settings_d2)
                 if shortcuts_d2:
@@ -1219,10 +1218,11 @@ class LoadManager:
         shortcuts_d.setName('lm.globalShortcuts')
         if trace:
             print('%s...' % tag)
-            print('c1 (leoSettings)   %s' % c1)
-            print('c2 (myLeoSettings) %s' % c2)
-            lm.traceSettingsDict(settings_d)
-            lm.traceShortcutsDict(shortcuts_d)
+            if verbose:
+                print('c1 (leoSettings)   %s' % c1)
+                print('c2 (myLeoSettings) %s' % c2)
+            lm.traceSettingsDict(settings_d,verbose)
+            lm.traceShortcutsDict(shortcuts_d,verbose)
                 
         lm.globalSettingsDict = settings_d
         lm.globalShortcutsDict = shortcuts_d
@@ -1303,21 +1303,6 @@ class LoadManager:
             path = None
 
         return path
-    #@+node:ekr.20120214165710.10726: *5* lm.createSettingsDicts (new_config only)
-    def createSettingsDicts(self,c):
-        
-        #### Should the SettingsTreeParser class be defined in leoApp?
-        import leo.core.leoConfig as leoConfig
-
-        assert g.new_config
-
-        # Important: when new_config is True,
-        # the parser returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
-
-        parser = leoConfig.SettingsTreeParser(c,localFlag=False)
-        shortcutsDict,settingsDict = parser.traverse()
-        return shortcutsDict,settingsDict
-        
     #@+node:ekr.20120214132927.10723: *5* lm.mergeShortcutsDicts & helpers (new_config only)
     def mergeShortcutsDicts (self,old_d,new_d):
         
@@ -1423,34 +1408,97 @@ class LoadManager:
             gui=nullGui,readAtFileNodesFlag=False)
 
         return frame.c if ok else None
-    #@+node:ekr.20120214165710.10838: *5* lm.traceSettingsDict
-    def traceSettingsDict (self,d):
+    #@+node:ekr.20120215062153.10738: *4* lm.readLocalSettings (new_config only)
+    def readLocalSettings (self,c):
         
-        verbose = False
+        '''Create c.config.settingsDict & c.config.shortcutsDict.'''
+        
+        trace = True ; verbose = True ; tag = 'lm.readLocalSettings'
+        lm = self
+        
+        assert g.new_config
+        assert c
+        assert c.config
+        
+        # Create c.config.settingsDict & c.config.shortcutsDict.
+        settings_d = lm.globalSettingsDict
+        assert isinstance(settings_d,g.TypedDict),settings_d
+
+        shortcuts_d = lm.globalShortcutsDict
+        assert isinstance(shortcuts_d,g.TypedDictOfLists)
+        
+        shortcuts_d2,settings_d2 = lm.createSettingsDicts(c,localFlag=True)
+        assert settings_d2  != settings_d
+        assert shortcuts_d2 != shortcuts_d
+        
+        # Adjust the names.
+        fn = c.shortFileName()
+        settings_d.setName('settingsDict for %s' % fn)
+        shortcuts_d.setName('shortcutsDict for %s' % fn)
+        
+        # Trace the raw values
+        if trace:
+            print('%s (before)...' % tag)
+            lm.traceSettingsDict(settings_d2,verbose)
+            lm.traceShortcutsDict(shortcuts_d2,verbose)
+
+        if settings_d2:
+            settings_d.update(settings_d2)
+        if shortcuts_d2:
+            shortcuts_d = lm.mergeShortcutsDicts(shortcuts_d,shortcuts_d2)
+                    
+        # Adjust the names.
+        fn = c.shortFileName()
+       
+        # Trace the merged dicts.
+        if False and trace:
+            print('%s (after)...' % tag)
+            lm.traceSettingsDict(settings_d,verbose)
+            lm.traceShortcutsDict(shortcuts_d,verbose)
+                
+        # Set the c.conf ivars
+        c.config.settings_d = settings_d
+        c.config.shortcuts_d = shortcuts_d
+    #@+node:ekr.20120215062153.10741: *4* lm.Common settings helpers
+    #@+node:ekr.20120214165710.10726: *5* lm.createSettingsDicts (new_config only)
+    def createSettingsDicts(self,c,localFlag):
+        
+        #### Should the SettingsTreeParser class be defined in leoApp?
+        import leo.core.leoConfig as leoConfig
+
+        assert g.new_config
+
+        # Important: when new_config is True,
+        # the parser returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
+
+        parser = leoConfig.SettingsTreeParser(c,localFlag)
+        shortcutsDict,settingsDict = parser.traverse()
+        return shortcutsDict,settingsDict
+        
+    #@+node:ekr.20120214165710.10838: *5* lm.traceSettingsDict
+    def traceSettingsDict (self,d,verbose=False):
 
         if verbose:
             print(d)
             for key in sorted(list(d.keys())):
                 gs = d.get(key)
                 print('%35s %17s %s' % (key,g.shortFileName(gs.path),gs.val))
-            print('')
+            if d: print('')
         else:
-            print(len(list(d.keys())),d)
+            print(d)
     #@+node:ekr.20120214165710.10822: *5* lm.traceShortcutsDict
-    def traceShortcutsDict (self,d):
-        
-        verbose = False
-        
+    def traceShortcutsDict (self,d,verbose=False):
+
         if verbose:
             print(d)
             for key in sorted(list(d.keys())):
                 val = d.get(key)
                 # print('%20s %s' % (key,val.dump()))
                 print('%35s %s' % (key,[z.stroke for z in val]))
-            print('')
+            if d: print('')
         else:
-            print(len(list(d.keys())),d)
-    #@+node:ekr.20120211121736.10756: *3* lm.start & helpers
+            print(d)
+    #@+node:ekr.20120211121736.10756: *3* lm.start & helpers (new_load only)
     def start(self):
         
         '''Start Leo, except for invoking the gui's main loop:
@@ -1461,6 +1509,8 @@ class LoadManager:
         
         trace = True
         lm = self
+        
+        assert g.new_load
         
         # Phase 1.  Load all files, create commanders, and read settings.
         ok = lm.doPrePluginsInit()

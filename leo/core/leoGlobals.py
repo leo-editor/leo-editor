@@ -2187,10 +2187,14 @@ def openWithFileName(fileName,old_c,
 
     app.unlockLog()
     if not c: return False,None
+    
+    if g.new_load:
+        c.loadManager.readLocalSettings(c)
 
     # Init the open file.
     assert c.frame and c.frame.c == c
     c.frame.log.enable(enableLog)
+    
     # Handle the open hooks and open the log for c.
     ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
     if not ok: return False,None
@@ -2293,7 +2297,10 @@ def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
     # g.trace('old_c',old_c,fileName)
 
     # Read the file the first time to get the settings.
-    if old_c: g.preRead(fileName)
+    if g.new_config:
+        pass
+    else:
+        if old_c: g.preRead(fileName)
     
     g.doHook('open0')
 
@@ -5502,8 +5509,8 @@ class TypedDict:
     #@+node:ekr.20120205022040.17770: *4* td.__repr__ & __str__
     def __repr__(self):
 
-        return '<TypedDict name:%s keys:%s values:%s' % (
-            self._name,self.keyType.__name__,self.valType.__name__)
+        return '<TypedDict name:%s keys:%s values:%s len(keys): %s' % (
+            self._name,self.keyType.__name__,self.valType.__name__,len(list(self.keys())))
             
     __str__ = __repr__
         
@@ -5596,8 +5603,8 @@ class TypedDictOfLists (TypedDict):
         self.isList = True
         
     def __repr__(self):
-        return '<TypedDictOfLists name:%s keys:%s values:%s' % (
-            self._name,self.keyType.__name__,self.valType.__name__)    
+        return '<TypedDictOfLists name:%s keys:%s values:%s len(keys): %s' % (
+            self._name,self.keyType.__name__,self.valType.__name__,len(list(self.keys())))   
     __str__ = __repr__
 #@+node:ekr.20041219095213: *3* import wrappers
 #@+node:ekr.20040917061619: *4* g.cantImport

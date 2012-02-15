@@ -10948,10 +10948,14 @@ def openWithFileName(fileName,old_c,
 
     app.unlockLog()
     if not c: return False,None
+    
+    if g.new_load:
+        c.loadManager.readLocalSettings(c)
 
     # Init the open file.
     assert c.frame and c.frame.c == c
     c.frame.log.enable(enableLog)
+    
     # Handle the open hooks and open the log for c.
     ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
     if not ok: return False,None
@@ -11054,7 +11058,10 @@ def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
     # g.trace('old_c',old_c,fileName)
 
     # Read the file the first time to get the settings.
-    if old_c: g.preRead(fileName)
+    if g.new_config:
+        pass
+    else:
+        if old_c: g.preRead(fileName)
     
     g.doHook('open0')
 
@@ -25960,22 +25967,62 @@ ivarsData = (
         # "char","word","line","node"
     ("write_strips_blank_lines","bool",False),
 )
-#@+node:ekr.20041118195812: *3* Setters... (c.configSettings)
+#@+node:ekr.20041118195812: *3* c.config.Setters
+if g.new_config:
+    # make_shortcuts_dict does not exits in new_config.
+    @others
+else:
+    << OLD c.config.setters >>
+#@+node:ekr.20120215072959.12476: *4* << OLD c.config.setters >>
 def set (self,setting,kind,val):
-    
     '''Not used during startup: useful for unit tests.'''
-
     g.app.config.set(self.c,setting,kind,val)
 
 def setRecentFiles (self,files):
+    '''Update the recent files list.'''
+    g.app.config.appendToRecentFiles(files)
+
+def make_shortcuts_dicts (self,d,localFlag):
+    return g.app.config.make_shortcuts_dicts(self.c,d,localFlag)
+#@+node:ekr.20120215072959.12475: *4* c.config.set (new_config)
+def set (self,p,kind,name,val):
+
+    """Init the setting for name to val."""
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(kind,name,val)
+    
+    import leo.core.leoConfig as leoConfig
+    
+    assert g.new_config
+
+    c = self.c
+
+    # Note: when kind is 'shortcut', name is a command name.
+    key = g.app.config.munge(name)
+
+    # if kind and kind.startswith('setting'): g.trace("c.config %10s %15s %s" %(kind,val,name))
+    d = self.settingsDict
+    assert isinstance(d,g.TypedDict),d
+
+    gs = d.get(key)
+    if gs:
+        assert isinstance(gs,leoConfig.GeneralSetting),gs
+        path = gs.path
+        if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
+            g.es("over-riding setting:",name,"from",path)
+
+    ####
+    # old config: we can't use c here: it may be destroyed!
+    # new config: we *can* user c here. it persists.
+    gs = leoConfig.GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
+    d.replace(key,gs)
+#@+node:ekr.20120215072959.12478: *4* c.config.setRecentFiles (new_config)
+def setRecentFiles (self,files):
     
     '''Update the recent files list.'''
-
+    
     g.app.config.appendToRecentFiles(files)
-    
-def make_shortcuts_dicts (self,d,localFlag):
-    
-    return g.app.config.make_shortcuts_dicts(self.c,d,localFlag)
 #@+node:ekr.20120122070219.10162: *3* make_shortcuts_dicts (g.app.config) & helpers
 def make_shortcuts_dicts (self,c,d,localFlag):
     
@@ -26273,6 +26320,7 @@ def traverse (self):
             p.moveToThreadNext()
 
     if g.new_config:
+        # Return the raw dict, unmerged.
         return self.shortcutsDict,self.settingsDict
     else:
         shortcutsDict = c.config.make_shortcuts_dicts(self.shortcutsDict,self.localFlag)

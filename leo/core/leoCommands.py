@@ -8272,13 +8272,18 @@ class configSettings:
     """A class to hold config settings for commanders."""
 
     #@+others
-    #@+node:ekr.20041118104831.2: *3* ctor (c.configSettings)
+    #@+node:ekr.20120215072959.12472: *3* c.config.Birth
+    #@+node:ekr.20041118104831.2: *4* c.config.ctor
     def __init__ (self,c):
 
-        trace = False and not g.unitTesting
+        trace = True and g.new_config and not g.unitTesting
         self.c = c
 
         if trace: g.trace('+' * 20,'(c.configSettings)',c and c.shortFileName())
+        
+        # The shortcuts and settings dicts.
+        self.settingsDict = None    # Set to a g.TypedDict.
+        self.shortcutsDict = None   # Set to a g.TypedDictOfLists.
 
         # Init these here to keep pylint happy.
         self.default_derived_file_encoding = None
@@ -8295,21 +8300,7 @@ class configSettings:
 
         for key in g.app.config.ivarsDict.keys():
             self.initIvar(key)
-    #@+node:ekr.20041118104240: *3* initIvar (c.configSettings)
-    def initIvar(self,key):
-
-        trace = False and not g.unitTesting
-        c = self.c
-
-        # Important: the key is munged.
-        gs = g.app.config.ivarsDict.get(key)
-        ivarName = gs.ivar
-        val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
-
-        if val or not hasattr(self,ivarName):
-            if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
-            setattr(self,ivarName,val)
-    #@+node:ekr.20041118104414: *3* initEncoding (c.configSettings)
+    #@+node:ekr.20041118104414: *4* c.config.initEncoding
     def initEncoding (self,key):
 
         c = self.c
@@ -8330,109 +8321,472 @@ class configSettings:
 
         if encoding and not g.isValidEncoding(encoding):
             g.es("bad", "%s: %s" % (encodingName,encoding))
-    #@+node:ekr.20041118053731: *3* Getters (c.configSettings)
-    def get (self,setting,theType):
-        '''A helper function: return the commander's setting, checking the type.'''
-        return g.app.config.get(self.c,setting,theType)
+    #@+node:ekr.20041118104240: *4* c.config.initIvar
+    def initIvar(self,key):
 
-    def getAbbrevDict (self):
-        '''return the commander's abbreviation dictionary.'''
-        return g.app.config.getAbbrevDict(self.c)
+        trace = False and not g.unitTesting
+        c = self.c
 
-    def getBool (self,setting,default=None):
-        '''Return the value of @bool setting, or the default if the setting is not found.'''
-        return g.app.config.getBool(self.c,setting,default=default)
+        # Important: the key is munged.
+        gs = g.app.config.ivarsDict.get(key)
+        ivarName = gs.ivar
+        val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
 
-    def getButtons (self):
-        '''Return a list of tuples (x,y) for common @button nodes.'''
-        return g.app.config.atCommonButtonsList # unusual.
+        if val or not hasattr(self,ivarName):
+            if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
+            setattr(self,ivarName,val)
+    #@+node:ekr.20120215072959.12471: *3* c.config.Getters (new_config)
+    if g.new_config:
+        #@+others
+        #@+node:ekr.20120215072959.12543: *4* NEW c.config.Getters: redirect to g.app.config
+        def getButtons (self):
+            '''Return a list of tuples (x,y) for common @button nodes.'''
+            return g.app.config.atCommonButtonsList # unusual.
 
-    def getColor (self,setting):
-        '''Return the value of @color setting.'''
-        return g.app.config.getColor(self.c,setting)
+        def getCommands (self):
+            '''Return the list of tuples (headline,script) for common @command nodes.'''
+            return g.app.config.atCommonCommandsList # unusual.
+            
+        def getEnabledPlugins (self):
+            '''Return the body text of the @enabled-plugins node.'''
+            return g.app.config.enabledPluginsString # unusual.
+            
+        def getRecentFiles (self):
+            '''Return the list of recently opened files.'''
+            return g.app.config.getRecentFiles() # unusual
+        #@+node:ekr.20120215072959.12515: *4* NEW c.config.Getters (new_config)
+        #@@nocolor-node
 
-    def getCommands (self):
-        '''Return the list of tuples (headline,script) for common @command nodes.'''
-        return g.app.config.atCommonCommandsList # unusual.
+        #@+at Only the following need to be defined.
+        # 
+        #     get (self,setting,theType)
+        #     getAbbrevDict (self)
+        #     getBool (self,setting,default=None)
+        #     getButtons (self)
+        #     getColor (self,setting)
+        #     getData (self,setting)
+        #     getDirectory (self,setting)
+        #     getFloat (self,setting)
+        #     getFontFromParams (self,family,size,slant,weight,defaultSize=12)
+        #     getInt (self,setting)
+        #     getLanguage (self,setting)
+        #     getMenusList (self)
+        #     getOpenWith (self):
+        #     getRatio (self,setting)
+        #     getSettingSource(self,setting)
+        #     getShortcut (self,commandName)
+        #     getString (self,setting)
+        #@+node:ekr.20120215072959.12519: *5* get & allies (new_config)
+        def get (self,setting,kind):
 
-    def getData (self,setting):
-        '''Return a list of non-comment strings in the body text of @data setting.'''
-        return g.app.config.getData(self.c,setting)
+            """Get the setting and make sure its type matches the expected type."""
+            
+            trace = False and not g.unitTesting
+            
+            assert g.new_config
+            
+            c = self.c
+            d = self.settingsDict
+            assert isinstance(d,g.TypedDict)
 
-    def getDirectory (self,setting):
-        '''Return the value of @directory setting, or None if the directory does not exist.'''
-        return g.app.config.getDirectory(self.c,setting)
+            val,junk = self.getValFromDict(d,setting,kind)
 
-    def getFloat (self,setting):
-        '''Return the value of @float setting.'''
-        return g.app.config.getFloat(self.c,setting)
+            if trace and val is not None:
+                g.trace(setting,val,d.name())
 
-    def getFontFromParams (self,family,size,slant,weight,defaultSize=12):
+            return val
+        #@+node:ekr.20120215072959.12520: *6* getValFromDict
+        def getValFromDict (self,d,setting,requestedType,warn=True):
 
-        '''Compute a font from font parameters.
+            '''Look up the setting in d. If warn is True, warn if the requested type
+            does not (loosely) match the actual type.
+            returns (val,exists)'''
 
-        Arguments are the names of settings to be use.
-        Default to size=12, slant="roman", weight="normal".
+            c = self.c
+            gs = d.get(g.app.config.munge(setting))
+            if not gs: return None,False
 
-        Return None if there is no family setting so we can use system default fonts.'''
+            assert isinstance(gs,c.k.GeneralSetting)
+            
+            # g.trace(setting,requestedType,gs.toString())
+            val = gs.val
 
-        return g.app.config.getFontFromParams(self.c,
-            family, size, slant, weight, defaultSize = defaultSize)
+            # 2011/10/24: test for an explicit None.
+            if g.isPython3:
+                isNone = val in ('None','none','') # ,None)
+            else:
+                isNone = val in (
+                    unicode('None'),unicode('none'),unicode(''),
+                    'None','none','') #,None)
 
-    def getInt (self,setting):
-        '''Return the value of @int setting.'''
-        return g.app.config.getInt(self.c,setting)
+            if not self.typesMatch(gs.kind,requestedType):
+                # New in 4.4: make sure the types match.
+                # A serious warning: one setting may have destroyed another!
+                # Important: this is not a complete test of conflicting settings:
+                # The warning is given only if the code tries to access the setting.
+                if warn:
+                    g.es_print('warning: ignoring',gs.kind,'',setting,'is not',requestedType,color='red')
+                    g.es_print('there may be conflicting settings!',color='red')
+                return None, False
+            # elif val in (u'None',u'none','None','none','',None):
+            elif isNone:
+                return '', True
+                    # 2011/10/24: Exists, a *user-defined* empty value.
+            else:
+                # g.trace(setting,val)
+                return val, True
+        #@+node:ekr.20120215072959.12521: *6* typesMatch
+        def typesMatch (self,type1,type2):
 
-    def getLanguage (self,setting):
-        '''Return the value of @string setting.
+            '''
+            Return True if type1, the actual type, matches type2, the requeseted type.
 
-        The value of this setting should be a language known to Leo.'''
-        return g.app.config.getLanguage(self.c,setting)
+            The following equivalences are allowed:
 
-    def getMenusList (self):
-        '''Return the list of entries for the @menus tree.'''
-        return g.app.config.getMenusList(self.c) # Changed in Leo 4.5.
+            - None matches anything.
+            - An actual type of string or strings matches anything *except* shortcuts.
+            - Shortcut matches shortcuts.
+            '''
 
-    def getOpenWith (self):
-        '''Return a list of dictionaries corresponding to @openwith nodes.'''
-        return g.app.config.getOpenWith(self.c)
+            # The shortcuts logic no longer uses the get/set code.
+            shortcuts = ('shortcut','shortcuts',)
+            if type1 in shortcuts or type2 in shortcuts:
+                g.trace('oops: type in shortcuts')
 
-    def getRatio (self,setting):
-        '''Return the value of @float setting.
-        Warn if the value is less than 0.0 or greater than 1.0.'''
-        return g.app.config.getRatio(self.c,setting)
+            return (
+                type1 == None or type2 == None or
+                type1.startswith('string') and type2 not in shortcuts or
+                type1 == 'int' and type2 == 'size' or
+                (type1 in shortcuts and type2 in shortcuts) or
+                type1 == type2
+            )
+        #@+node:ekr.20120215072959.12522: *5* getAbbrevDict
+        def getAbbrevDict (self):
 
-    def getRecentFiles (self):
-        '''Return the list of recently opened files.'''
-        return g.app.config.getRecentFiles()
+            """Search all dictionaries for the setting & check it's type"""
 
-    def getShortcut (self,commandName):
-        '''Return the tuple (rawKey,accel) for shortcutName in @shortcuts tree.'''
-        return g.app.config.getShortcut(self.c,commandName)
+            d = self.get('abbrev','abbrev')
+            return d or {}
+        #@+node:ekr.20120215072959.12523: *5* getBool
+        def getBool (self,setting,default=None):
 
-    def getSettingSource(self,setting):
-        '''return the name of the file responsible for setting.'''
-        return g.app.config.getSettingSource(self.c,setting)
+            '''Return the value of @bool setting, or the default if the setting is not found.'''
 
-    def getString (self,setting):
-        '''Return the value of @string setting.'''
-        return g.app.config.getString(self.c,setting)
-    #@+node:ekr.20041118195812: *3* Setters... (c.configSettings)
-    def set (self,setting,kind,val):
+            val = self.get(setting,"bool")
+
+            if val in (True,False):
+                return val
+            else:
+                return default
+        #@+node:ekr.20120215072959.12525: *5* getColor
+        def getColor (self,setting):
+
+            '''Return the value of @color setting.'''
+
+            return self.get(setting,"color")
+        #@+node:ekr.20120215072959.12527: *5* getData
+        def getData (self,setting):
+
+            '''Return a list of non-comment strings in the body text of @data setting.'''
+
+            return self.get(setting,"data")
+        #@+node:ekr.20120215072959.12528: *5* getDirectory
+        def getDirectory (self,setting):
+
+            '''Return the value of @directory setting, or None if the directory does not exist.'''
+
+            theDir = self.getString(setting)
+
+            if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
+                return theDir
+            else:
+                return None
+        #@+node:ekr.20120215072959.12530: *5* getFloat
+        def getFloat (self,setting):
+
+            '''Return the value of @float setting.'''
+
+            val = self.get(setting,"float")
+            try:
+                val = float(val)
+                return val
+            except TypeError:
+                return None
+        #@+node:ekr.20120215072959.12531: *5* getFontFromParams
+        def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
+
+            """Compute a font from font parameters.
+
+            Arguments are the names of settings to be use.
+            Default to size=12, slant="roman", weight="normal".
+
+            Return None if there is no family setting so we can use system default fonts."""
+
+            family = self.get(family,"family")
+            if family in (None,""): family = g.app.config.defaultFontFamily
+
+            size = self.get(size,"size")
+            if size in (None,0): size = defaultSize
+
+            slant = self.get(slant,"slant")
+            if slant in (None,""): slant = "roman"
+
+            weight = self.get(weight,"weight")
+            if weight in (None,""): weight = "normal"
+
+            # g.trace(family,size,slant,weight,g.shortFileName(self.c.mFileName))
+            return g.app.gui.getFontFromParams(family,size,slant,weight)
+        #@+node:ekr.20120215072959.12532: *5* getInt
+        def getInt (self,setting):
+
+            '''Return the value of @int setting.'''
+
+            val = self.get(setting,"int")
+            try:
+                val = int(val)
+                return val
+            except TypeError:
+                return None
+        #@+node:ekr.20120215072959.12533: *5* getLanguage
+        def getLanguage (self,setting):
+
+            '''Return the setting whose value should be a language known to Leo.'''
+
+            language = self.getString(setting)
+            # g.trace(setting,language)
+
+            return language
+        #@+node:ekr.20120215072959.12534: *5* getMenusList
+        def getMenusList (self):
+
+            '''Return the list of entries for the @menus tree.'''
+
+            aList = self.get('menus','menus')
+            # g.trace(aList and len(aList) or 0)
+
+            return aList or g.app.config.menusList
+        #@+node:ekr.20120215072959.12535: *5* getOpenWith
+        def getOpenWith (self):
+
+            '''Return a list of dictionaries corresponding to @openwith nodes.'''
+
+            val = self.get('openwithtable','openwithtable')
+
+            return val
+        #@+node:ekr.20120215072959.12536: *5* getRatio
+        def getRatio (self,setting):
+
+            '''Return the value of @float setting.
+
+            Warn if the value is less than 0.0 or greater than 1.0.'''
+
+            val = self.get(setting,"ratio")
+            try:
+                val = float(val)
+                if 0.0 <= val <= 1.0:
+                    return val
+                else:
+                    return None
+            except TypeError:
+                return None
+        #@+node:ekr.20120215072959.12538: *5* getSettingSource (Test)
+        def getSettingSource (self,setting):
+
+            '''return the name of the file responsible for setting.'''
+            
+            c = self.c
+            d = self.settingsDict
+            assert isinstance(d,g.TypedDict),d
+
+            si = d.get(setting)
+            if si is None:
+                return 'unknown setting',None
+            else:
+                assert c.k.isShortcutInfo(si)
+                return si.path,si.val
+        #@+node:ekr.20120215072959.12539: *5* getShortcut (Test)
+        def getShortcut (self,commandName):
+
+            '''Return rawKey,accel for shortcutName'''
+            
+            trace = False and not g.unitTesting
+                # and commandName in ('new','print-bindings')
+
+            c = self.c
+            key = c.frame.menu.canonicalizeMenuName(commandName)
+            key = key.replace('&','') # Allow '&' in names.
+            
+            assert g.new_config
+            
+            d = self.shortcutsDict
+            assert isinstance(d,g.TypedDictOfLists)
+            
+            aList = d.get(commandName,[])
+            if aList:
+                for si in aList: assert isinstance(si,c.k.ShortcutInfo),si
+                        
+                # It's very important to filter empty strokes here.
+                aList = [si for si in aList
+                    if si.stroke and si.stroke.lower() != 'none']
+
+            if trace: g.trace(d,'\n',aList)
+            return key,aList
+        #@+node:ekr.20120215072959.12540: *5* getString
+        def getString (self,setting):
+
+            '''Return the value of @string setting.'''
+
+            return self.get(setting,"string")
+        #@-others
+    else:
+        #@+<< OLD c.config.Getters >>
+        #@+node:ekr.20041118053731: *4* << OLD c.config.getters >>
+        def get (self,setting,theType):
+            '''A helper function: return the commander's setting, checking the type.'''
+            return g.app.config.get(self.c,setting,theType)
+
+        def getAbbrevDict (self):
+            '''return the commander's abbreviation dictionary.'''
+            return g.app.config.getAbbrevDict(self.c)
+
+        def getBool (self,setting,default=None):
+            '''Return the value of @bool setting, or the default if the setting is not found.'''
+            return g.app.config.getBool(self.c,setting,default=default)
+
+        def getButtons (self):
+            '''Return a list of tuples (x,y) for common @button nodes.'''
+            return g.app.config.atCommonButtonsList # unusual.
+
+        def getColor (self,setting):
+            '''Return the value of @color setting.'''
+            return g.app.config.getColor(self.c,setting)
+
+        def getCommands (self):
+            '''Return the list of tuples (headline,script) for common @command nodes.'''
+            return g.app.config.atCommonCommandsList # unusual.
+
+        def getData (self,setting):
+            '''Return a list of non-comment strings in the body text of @data setting.'''
+            return g.app.config.getData(self.c,setting)
+
+        def getDirectory (self,setting):
+            '''Return the value of @directory setting, or None if the directory does not exist.'''
+            return g.app.config.getDirectory(self.c,setting)
+
+        def getFloat (self,setting):
+            '''Return the value of @float setting.'''
+            return g.app.config.getFloat(self.c,setting)
+
+        def getFontFromParams (self,family,size,slant,weight,defaultSize=12):
+
+            '''Compute a font from font parameters.
+
+            Arguments are the names of settings to be use.
+            Default to size=12, slant="roman", weight="normal".
+
+            Return None if there is no family setting so we can use system default fonts.'''
+
+            return g.app.config.getFontFromParams(self.c,
+                family, size, slant, weight, defaultSize = defaultSize)
+
+        def getInt (self,setting):
+            '''Return the value of @int setting.'''
+            return g.app.config.getInt(self.c,setting)
+
+        def getLanguage (self,setting):
+            '''Return the value of @string setting.
+
+            The value of this setting should be a language known to Leo.'''
+            return g.app.config.getLanguage(self.c,setting)
+
+        def getMenusList (self):
+            '''Return the list of entries for the @menus tree.'''
+            return g.app.config.getMenusList(self.c) # Changed in Leo 4.5.
+
+        def getOpenWith (self):
+            '''Return a list of dictionaries corresponding to @openwith nodes.'''
+            return g.app.config.getOpenWith(self.c)
+
+        def getRatio (self,setting):
+            '''Return the value of @float setting.
+            Warn if the value is less than 0.0 or greater than 1.0.'''
+            return g.app.config.getRatio(self.c,setting)
+
+        def getRecentFiles (self):
+            '''Return the list of recently opened files.'''
+            return g.app.config.getRecentFiles()
+
+        def getShortcut (self,commandName):
+            '''Return the tuple (rawKey,accel) for shortcutName in @shortcuts tree.'''
+            return g.app.config.getShortcut(self.c,commandName)
+
+        def getSettingSource(self,setting):
+            '''return the name of the file responsible for setting.'''
+            return g.app.config.getSettingSource(self.c,setting)
+
+        def getString (self,setting):
+            '''Return the value of @string setting.'''
+            return g.app.config.getString(self.c,setting)
+        #@-<< OLD c.config.Getters >>
         
-        '''Not used during startup: useful for unit tests.'''
+    #@+node:ekr.20041118195812: *3* c.config.Setters
+    if g.new_config:
+        # make_shortcuts_dict does not exits in new_config.
+        #@+others
+        #@+node:ekr.20120215072959.12475: *4* c.config.set (new_config)
+        def set (self,p,kind,name,val):
 
-        g.app.config.set(self.c,setting,kind,val)
+            """Init the setting for name to val."""
 
-    def setRecentFiles (self,files):
-        
-        '''Update the recent files list.'''
+            trace = False and not g.unitTesting
+            if trace: g.trace(kind,name,val)
+            
+            import leo.core.leoConfig as leoConfig
+            
+            assert g.new_config
 
-        g.app.config.appendToRecentFiles(files)
-        
-    def make_shortcuts_dicts (self,d,localFlag):
-        
-        return g.app.config.make_shortcuts_dicts(self.c,d,localFlag)
+            c = self.c
+
+            # Note: when kind is 'shortcut', name is a command name.
+            key = g.app.config.munge(name)
+
+            # if kind and kind.startswith('setting'): g.trace("c.config %10s %15s %s" %(kind,val,name))
+            d = self.settingsDict
+            assert isinstance(d,g.TypedDict),d
+
+            gs = d.get(key)
+            if gs:
+                assert isinstance(gs,leoConfig.GeneralSetting),gs
+                path = gs.path
+                if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
+                    g.es("over-riding setting:",name,"from",path)
+
+            ####
+            # old config: we can't use c here: it may be destroyed!
+            # new config: we *can* user c here. it persists.
+            gs = leoConfig.GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
+            d.replace(key,gs)
+        #@+node:ekr.20120215072959.12478: *4* c.config.setRecentFiles (new_config)
+        def setRecentFiles (self,files):
+            
+            '''Update the recent files list.'''
+            
+            g.app.config.appendToRecentFiles(files)
+        #@-others
+    else:
+        #@+<< OLD c.config.setters >>
+        #@+node:ekr.20120215072959.12476: *4* << OLD c.config.setters >>
+        def set (self,setting,kind,val):
+            '''Not used during startup: useful for unit tests.'''
+            g.app.config.set(self.c,setting,kind,val)
+
+        def setRecentFiles (self,files):
+            '''Update the recent files list.'''
+            g.app.config.appendToRecentFiles(files)
+
+        def make_shortcuts_dicts (self,d,localFlag):
+            return g.app.config.make_shortcuts_dicts(self.c,d,localFlag)
+        #@-<< OLD c.config.setters >>
     #@-others
 #@+node:ekr.20070615131604: ** class nodeHistory
 class nodeHistory:
