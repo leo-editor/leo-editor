@@ -28,6 +28,9 @@ class LeoApp:
     #@+others
     #@+node:ekr.20031218072017.1416: *3* app.__init__
     def __init__(self):
+        
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('leoApp.__init__')
 
         # These ivars are Leo's global vars.
         # leoGlobals.py contains global switches to be set by hand.
@@ -106,6 +109,8 @@ class LeoApp:
         self.logIsLocked = False        # True: no changes to log are allowed.
         self.logWaiting = []            # List of messages waiting to go to a log.
         self.printWaiting = []          # Queue of messages to be sent to the printer.
+        self.signon = ''
+        self.signon2 = ''
         self.signon_printed = False
         
         #### To be moved to OpenWithManager.
@@ -453,12 +458,16 @@ class LeoApp:
 
         # Don't import this at the top level:
         # it might interfere with Leo's startup logic.
+        
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('********** leoApp.createNullGui')
 
         app = self
 
         try:
             import leo.core.leoGui as leoGui
         except ImportError:
+            g.trace('can not import leo.core.leoGui')
             leoGui = None
 
         if leoGui:
@@ -640,6 +649,9 @@ class LeoApp:
         gui=None,initEditCommanders=True,updateRecentFiles=True):
 
         """Create a commander and its view frame for the Leo main window."""
+        
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('g.app.newLeoCommanderAndFrame: %s' % repr(fileName))
 
         app = self
 
@@ -922,6 +934,9 @@ class LoadManager:
     #@+node:ekr.20120209051836.10285: *3*  lm.Birth
     #@+node:ekr.20120214060149.15851: *4* lm.ctor
     def __init__ (self,fileName=None,pymacs=None):
+        
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('LoadManager.__init__')
      
         # Copy the args.
         self.fileName = fileName # An extra file name that can be passed to runLeo.py.run.
@@ -1182,12 +1197,18 @@ class LoadManager:
         
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
         
-        trace = True ; verbose = False ; tag = 'lm.readGlobalSettingsFiles'
+        trace = (False or g.trace_startup) and not g.unitTesting
+        verbose = False
+        tag = 'lm.readGlobalSettingsFiles'
+
+        if trace and g.trace_startup:
+            print('\n<<<<< %s' % tag)
+        
         lm = self
         
         assert g.new_config
         
-        import leo.core.leoKeys as leoKeys # For ShortcutInfo class.
+        #### import leo.core.leoKeys as leoKeys # For ShortcutInfo class.
         
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
@@ -1204,7 +1225,7 @@ class LoadManager:
 
         shortcuts_d = g.TypedDictOfLists(
             name='lm.globalShortcutsDict',
-            keyType=type('s'), valType=leoKeys.ShortcutInfo)
+            keyType=type('s'), valType=g.ShortcutInfo)
 
         for c in (c1,c2):
             if c:
@@ -1217,7 +1238,7 @@ class LoadManager:
         # Adjust the name.
         shortcuts_d.setName('lm.globalShortcuts')
         if trace:
-            print('%s...' % tag)
+            print('\n>>>>>%s...' % tag)
             if verbose:
                 print('c1 (leoSettings)   %s' % c1)
                 print('c2 (myLeoSettings) %s' % c2)
@@ -1338,17 +1359,17 @@ class LoadManager:
         trace = False and not g.unitTesting ; verbose = True
         if trace: g.trace('*'*40,d.name())
         
-        import leo.core.leoKeys as leoKeys # For ShortcutInfo class.
+        #### import leo.core.leoKeys as leoKeys # For KeyStroke class.
         
         result = g.TypedDictOfLists(
             name='inverted %s' % d.name(),
-            keyType = leoKeys.KeyStroke,
-            valType = leoKeys.ShortcutInfo)
+            keyType = g.KeyStroke,
+            valType = g.ShortcutInfo)
 
         for commandName in d.keys():
             for si in d.get(commandName,[]):
                 # This assert can fail if there is an exception in the ShortcutInfo ctor.
-                assert isinstance(si,leoKeys.ShortcutInfo),si
+                assert isinstance(si,g.ShortcutInfo),si
 
                 stroke = si.stroke # This is canonicalized.
                 si.commandName = commandName # Add info.
@@ -1369,17 +1390,17 @@ class LoadManager:
         trace = False and not g.unitTesting ; verbose = True
         if trace and verbose: g.trace('*'*40)
         
-        import leo.core.leoKeys as leoKeys # For ShortcutInfo class.
+        #### import leo.core.leoKeys as leoKeys # For ShortcutInfo class.
 
-        assert d.keyType == leoKeys.KeyStroke,d.keyType
+        assert d.keyType == g.KeyStroke,d.keyType
         result = g.TypedDictOfLists(
             name='uninverted %s' % d.name(),
             keyType = type('commandName'),
-            valType = leoKeys.ShortcutInfo)
+            valType = g.ShortcutInfo)
         
         for stroke in d.keys():
             for si in d.get(stroke,[]):
-                assert isinstance(si,leoKeys.ShortcutInfo),si
+                assert isinstance(si,g.ShortcutInfo),si
                 commandName = si.commandName
                 if trace and verbose:
                     g.trace('uninvert %20s %s' % (stroke,commandName))
@@ -1394,6 +1415,9 @@ class LoadManager:
         
         '''Open a standard settings file in a null gui.'''
         
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('***** lm.openSettingsFile: setting g.app.gui to nullGui')
+        
         lm = self
         
         assert g.new_config
@@ -1401,25 +1425,38 @@ class LoadManager:
          # Always use a nullGui here,
          # even if we are going to show the file later.
         import leo.core.leoGui as leoGui
-        nullGui = leoGui.nullGui('nullGui')
+        g.app.gui = nullGui = leoGui.nullGui('nullGui')
 
         ok,frame = g.openWithFileName(path,
             old_c=None,enableLog=False,
             gui=nullGui,readAtFileNodesFlag=False)
 
         return frame.c if ok else None
-    #@+node:ekr.20120215062153.10738: *4* lm.readLocalSettings (new_config only)
-    def readLocalSettings (self,c):
+    #@+node:ekr.20120215062153.10738: *4* lm.initLocalSettings (new_config only)
+    def initLocalSettings (self,c):
         
-        '''Create c.config.settingsDict & c.config.shortcutsDict.'''
+        '''Init c.config.settingsDict & c.config.shortcutsDict.'''
         
-        trace = True ; verbose = True ; tag = 'lm.readLocalSettings'
+        trace = (False or g.trace_startup) and not g.unitTesting
+        verbose = False
+        tag = 'lm.initLocalSettings'
         lm = self
-        
         assert g.new_config
         assert c
         assert c.config
         
+        fn = c.shortFileName()
+        if trace and g.trace_startup:
+            if lm.globalSettingsDict:
+                print('\n==========%s %s' % (tag,fn))
+            else:
+                print('\n==========%s %s (ignoring global settings file)' % (tag,fn))
+            # print(g.callers())
+
+        if not lm.globalSettingsDict:
+            # This is not an error: we are initing a global setting.
+            return
+
         # Create c.config.settingsDict & c.config.shortcutsDict.
         settings_d = lm.globalSettingsDict
         assert isinstance(settings_d,g.TypedDict),settings_d
@@ -1432,7 +1469,6 @@ class LoadManager:
         assert shortcuts_d2 != shortcuts_d
         
         # Adjust the names.
-        fn = c.shortFileName()
         settings_d.setName('settingsDict for %s' % fn)
         shortcuts_d.setName('shortcutsDict for %s' % fn)
         
@@ -1451,14 +1487,26 @@ class LoadManager:
         fn = c.shortFileName()
        
         # Trace the merged dicts.
-        if False and trace:
+        if trace:
             print('%s (after)...' % tag)
             lm.traceSettingsDict(settings_d,verbose)
             lm.traceShortcutsDict(shortcuts_d,verbose)
-                
+
         # Set the c.conf ivars
         c.config.settings_d = settings_d
         c.config.shortcuts_d = shortcuts_d
+    #@+node:ekr.20120215085903.10842: *4* lm.findSettingsRoot
+    def findSettingsRoot(self,c):
+
+        '''Return the position of the @settings tree.'''
+
+        g.trace(c,c.rootPosition())
+
+        for p in c.all_unique_positions():
+            if p.h.rstrip() == "@settings":
+                return p.copy()
+        else:
+            return c.nullPosition()
     #@+node:ekr.20120215062153.10741: *4* lm.Common settings helpers
     #@+node:ekr.20120214165710.10726: *5* lm.createSettingsDicts (new_config only)
     def createSettingsDicts(self,c,localFlag):
@@ -2105,6 +2153,9 @@ class LogManager:
     switching the log from commander to commander.'''
     
     def __init__ (self):
+        
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('LogManager.__init__',g.callers())
     
         self.log = None             # The LeoFrame containing the present log.
         self.logInited = False      # False: all log message go to logWaiting list.

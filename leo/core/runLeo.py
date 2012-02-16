@@ -103,11 +103,10 @@ def run(fileName=None,pymacs=None,*args,**keywords):
 
     # print('runLeo.run: sys.argv %s' % sys.argv)
 
-    if 1: #### g.new_load
-        #### Always create the load manager.
-        # We'll compute the standard directories later,
-        # (in doPrePlusingsInit) once we can know lm.files.
-        g.app.loadManager = leoApp.LoadManager(fileName,pymacs)
+    #### Always create the load manager.
+    # (in doPrePlusingsInit) once we can know lm.files.
+    assert g.app
+    g.app.loadManager = leoApp.LoadManager(fileName,pymacs)
         #### Not yet.
         #### ok = g.app.loadManager.start()
             
@@ -202,28 +201,33 @@ def doPrePluginsInit(fileName,pymacs):
         options['exit'] = True
 
     return files,options
-#@+node:ekr.20100914142850.5892: *4* createGui & helper
+#@+node:ekr.20100914142850.5892: *4* createGui (runLeo.py)
 def createGui(pymacs,options):
+    
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace: print('\n==================== runLeo.py.createGui')
 
-    gui = options.get('gui')
+    gui_option = options.get('gui')
     windowFlag = options.get('windowFlag')
     script = options.get('script')
 
     if g.app.gui:
-        pass # initApp (setLeoID) created the gui.
-    # elif True:
-        # import leo.plugins.tkGui as tkGui
-        # tkGui.init()
-    elif gui is None:
+        if g.new_config:
+            import leo.core.leoGui as leoGui
+            assert isinstance(g.app.gui,leoGui.nullGui)
+            g.app.gui = None # Enable g.app.createDefaultGui 
+            g.app.createDefaultGui(__file__)
+        else:
+            pass # setLeoID created the gui.
+            
+    elif gui_option is None:
         if script and not windowFlag:
             # Always use null gui for scripts.
             g.app.createNullGuiWithScript(script)
         else:
             g.app.createDefaultGui(__file__)
     else:
-        createSpecialGui(gui,pymacs,script,windowFlag)
-
-
+        createSpecialGui(gui_option,pymacs,script,windowFlag)
 #@+node:ekr.20080921060401.4: *4* createSpecialGui
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
@@ -302,7 +306,8 @@ def initApp (verbose):
     # Force the user to set g.app.leoID.
     g.app.setLeoID(verbose=verbose)
     g.app.config = leoConfig.configClass()
-    g.app.loadManager = leoApp.LoadManager()
+    assert g.app.loadManager
+    #### g.app.loadManager = leoApp.LoadManager()
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.pluginsController.finishCreate() # 2010/09/09
 #@+node:ekr.20041130093254: *4* reportDirectories (runLeo.py)

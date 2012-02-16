@@ -15,38 +15,6 @@ import sys
 import zipfile
 #@-<< imports >>
 
-#@+<< GeneralSetting >>
-#@+node:ekr.20120123143207.10223: ** << GeneralSetting >> & isGeneralSetting
-class GeneralSetting:
-    
-    '''A class representing any kind of setting except shortcuts.'''
-    
-    def __init__ (self,kind,encoding=None,ivar=None,setting=None,val=None,path=None,tag='setting'):
-    
-        self.encoding = encoding
-        self.ivar = ivar
-        self.kind = kind
-        self.path = path
-        self.setting = setting
-        self.val = val
-        self.tag = tag
-        
-    def __repr__ (self):
-        
-        result = ['GeneralSetting kind: %s' % (self.kind)]
-        ivars = ('ivar','path','setting','val','tag')
-        for ivar in ivars:
-            if hasattr(self,ivar):
-                val =  getattr(self,ivar)
-                if val is not None:
-                    result.append('%s: %s' % (ivar,val))
-        return ','.join(result)
-        
-    dump = __repr__
-        
-def isGeneralSetting(obj):
-    return isinstance(obj,GeneralSetting)
-#@-<< GeneralSetting >>
 #@+<< class ParserBaseClass >>
 #@+node:ekr.20041119203941.2: ** << class ParserBaseClass >>
 class ParserBaseClass:
@@ -85,7 +53,7 @@ class ParserBaseClass:
         self.recentFiles = [] # List of recent files.
         self.shortcutsDict = g.TypedDictOfLists(
             name='parser.shortcutsDict',
-            keyType=type('shortcutName'),valType=leoKeys.ShortcutInfo)
+            keyType=type('shortcutName'),valType=g.ShortcutInfo)
         self.openWithList = []
             # A list of dicts containing 'name','shortcut','command' keys.
 
@@ -145,7 +113,7 @@ class ParserBaseClass:
     #@+node:ekr.20060102103625: *3* createModeCommand (ParserBaseClass)
     def createModeCommand (self,modeName,name,modeDict):
         
-        k = self.c.k
+        #### k = self.c.k
 
         modeName = 'enter-' + modeName.replace(' ','-')
 
@@ -153,7 +121,7 @@ class ParserBaseClass:
         if i > -1:
             # The prompt is everything after the '::'
             prompt = name[i+2:].strip()
-            modeDict ['*command-prompt*'] = k.ShortcutInfo(kind=prompt)
+            modeDict ['*command-prompt*'] = g.ShortcutInfo(kind=prompt)
 
         # Save the info for k.finishCreate and k.makeAllBindings.
         d = g.app.config.modeCommandsDict
@@ -554,7 +522,7 @@ class ParserBaseClass:
         
             d = g.TypedDictOfLists(
                 name='modeDict for %s' % (modeName),
-                keyType=type('commandName'),valType=k.ShortcutInfo)
+                keyType=type('commandName'),valType=g.ShortcutInfo)
                 
             ##### self.shortcutsDict = d
         
@@ -564,7 +532,7 @@ class ParserBaseClass:
                 line = line.strip()
                 if line and not g.match(line,0,'#'):
                     name,si = self.parseShortcutLine('*mode-setting*',line)
-                    assert k.isShortcutInfo(si),si
+                    assert g.isShortcutInfo(si),si
                     if not name:
                         # An entry command: put it in the special *entry-commands* key.
                         d.add('*entry-commands*',si)
@@ -573,11 +541,11 @@ class ParserBaseClass:
                         si.pane = modeName
                         aList = d.get(name,[])
                         for z in aList:
-                            assert k.isShortcutInfo(z),z
+                            assert g.isShortcutInfo(z),z
                         # Important: use previous bindings if possible.
                         key2,aList2 = c.config.getShortcut(name)
                         for z in aList2:
-                            assert k.isShortcutInfo(z),z
+                            assert g.isShortcutInfo(z),z
                         aList3 = [z for z in aList2 if z.pane != modeName]
                         if aList3:
                             # g.trace('inheriting',[b.val for b in aList3])
@@ -598,7 +566,8 @@ class ParserBaseClass:
                                     g.es("over-riding setting:",name,"from",path)
             
                             # Important: we can't use c here: it may be destroyed!
-                            d2 [key] = GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
+                            d2 [key] = g.GeneralSetting(
+                                kind,path=c.mFileName,val=val,tag='setting')
         
                 # Restore the global shortcutsDict.
                 ##### self.shortcutsDict = old_d
@@ -648,7 +617,7 @@ class ParserBaseClass:
             line = line.strip()
             if line and not g.match(line,0,'#'):
                 name,si = self.parseShortcutLine(fn,line)
-                assert k.isShortcutInfo(si),si
+                assert g.isShortcutInfo(si),si
                 if si and si.stroke not in (None,'none','None'):
                     self.doOneShortcut(si,name,p)
                         
@@ -996,7 +965,7 @@ class ParserBaseClass:
             i = g.skip_id(s,j,'-')
             entryCommandName = s[j:i]
             if trace: g.trace('-->',entryCommandName)
-            return None,k.ShortcutInfo('*entry-command*',commandName=entryCommandName)
+            return None,g.ShortcutInfo('*entry-command*',commandName=entryCommandName)
 
         j = i
         i = g.skip_id(s,j,'-') # New in 4.4: allow Emacs-style shortcut names.
@@ -1035,9 +1004,9 @@ class ParserBaseClass:
                 val = val[:i].strip()
 
         stroke = k.strokeFromSetting(val)
-        assert k.isStrokeOrNone(stroke),stroke
+        assert g.isStrokeOrNone(stroke),stroke
         # g.trace('stroke',stroke)
-        si = k.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
+        si = g.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
         if trace: g.trace('%25s %s' % (name,si))
         return name,si
     #@+node:ekr.20060608222828: *4* parseAbbrevLine (ParserBaseClass)
@@ -1081,30 +1050,32 @@ class ParserBaseClass:
         d = self.settingsDict
         gs = d.get(key)
         if gs:
-            assert isinstance(gs,GeneralSetting),gs
+            assert isinstance(gs,g.GeneralSetting),gs
             path = gs.path
             if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                 g.es("over-riding setting:",name,"from",path)
 
         # Important: we can't use c here: it may be destroyed!
-        d [key] = GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
+        d [key] = g.GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
     #@+node:ekr.20041119204700.1: *3* traverse (ParserBaseClass)
     def traverse (self):
 
         c,k = self.c,self.c.k
-
+        
+        #### This must be called after the outline has been inited.
         p = g.app.config.settingsRoot(c)
         if not p:
-            # g.trace('no settings tree for %s' % c)
+            # c.rootPosition() doesn't exist yet.
+            print('**************** ParserBaseClass.traverse: no settings tree for %s' % c.shortFileName())
             return {},{}
 
         self.settingsDict = g.TypedDict(
             name='settingsDict for %s' % (c.shortFileName()),
-            keyType=type('settingName'),valType=GeneralSetting)
+            keyType=type('settingName'),valType=g.GeneralSetting)
         
         self.shortcutsDict = g.TypedDictOfLists(
             name='shortcutsDict for %s' % (c.shortFileName()),
-            keyType=type('s'), valType=k.ShortcutInfo)
+            keyType=type('s'), valType=g.ShortcutInfo)
             
         after = p.nodeAfterTree()
         while p and p != after:
@@ -1153,7 +1124,7 @@ class configClass:
 
     defaultsDict = g.TypedDict(
         name='g.app.config.defaultsDict',
-        keyType=type('key'),valType=GeneralSetting)
+        keyType=type('key'),valType=g.GeneralSetting)
 
     defaultsData = (
         # compare options...
@@ -1208,7 +1179,7 @@ class configClass:
     #@+node:ekr.20041118062709: *4* define encodingIvarsDict (g.app.config)
     encodingIvarsDict = g.TypedDict(
         name='g.app.config.encodingIvarsDict',
-        keyType=type('key'),valType=GeneralSetting)
+        keyType=type('key'),valType=g.GeneralSetting)
 
     encodingIvarsData = (
         ("default_at_auto_file_encoding","string","utf-8"),
@@ -1224,7 +1195,7 @@ class configClass:
 
     ivarsDict = g.TypedDict(
         name='g.app.config.ivarsDict',
-        keyType=type('key'),valType=GeneralSetting)
+        keyType=type('key'),valType=g.GeneralSetting)
 
     ivarsData = (
         ("at_root_bodies_start_in_doc_mode","bool",True),
@@ -1278,8 +1249,10 @@ class configClass:
     #@+node:ekr.20041117083202: *3* Birth... (g.app.config)
     #@+node:ekr.20041117062717.2: *4* ctor (configClass)
     def __init__ (self):
+        
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('g.app.config.__init__')
 
-        # g.trace('g.app.config')
         self.atCommonButtonsList = [] # List of info for common @buttons nodes.
         self.atCommonCommandsList = [] # List of info for common @commands nodes.
         self.buttonsFileName = ''
@@ -1323,15 +1296,15 @@ class configClass:
         self.dictList = [self.defaultsDict]
 
         for key,kind,val in self.defaultsData:
-            self.defaultsDict[self.munge(key)] = GeneralSetting(
+            self.defaultsDict[self.munge(key)] = g.GeneralSetting(
                 kind,setting=key,val=val,tag='defaults')
 
         for key,kind,val in self.ivarsData:
-            self.ivarsDict[self.munge(key)] = GeneralSetting(
+            self.ivarsDict[self.munge(key)] = g.GeneralSetting(
                 kind,ivar=key,val=val,tag='ivars')
 
         for key,kind,val in self.encodingIvarsData:
-            self.encodingIvarsDict[self.munge(key)] = GeneralSetting(
+            self.encodingIvarsDict[self.munge(key)] = g.GeneralSetting(
                 kind,encoding=val,ivar=key,tag='encoding')
     #@+node:ekr.20041117065611.2: *4* initIvarsFromSettings & helpers
     def initIvarsFromSettings (self):
@@ -1496,13 +1469,13 @@ class configClass:
         
         result = g.TypedDictOfLists(
             name='inverted %s' % d.name(),
-            keyType = leoKeys.KeyStroke,
-            valType = leoKeys.ShortcutInfo)
+            keyType = g.KeyStroke,
+            valType = g.ShortcutInfo)
 
         for commandName in d.keys():
             for si in d.get(commandName,[]):
                 # This assert can fail if there is an exception in the ShortcutInfo ctor.
-                assert isinstance(si,leoKeys.ShortcutInfo),si
+                assert isinstance(si,g.ShortcutInfo),si
 
                 stroke = si.stroke # This is canonicalized.
                 si.commandName = commandName # Add info.
@@ -1523,15 +1496,15 @@ class configClass:
         trace = False and not g.unitTesting ; verbose = True
         if trace and verbose: g.trace('*'*40)
 
-        assert d.keyType == leoKeys.KeyStroke,d.keyType
+        assert d.keyType == g.KeyStroke,d.keyType
         result = g.TypedDictOfLists(
             name='uninverted %s' % d.name(),
             keyType = type('commandName'),
-            valType = leoKeys.ShortcutInfo)
+            valType = g.ShortcutInfo)
         
         for stroke in d.keys():
             for si in d.get(stroke,[]):
-                assert isinstance(si,leoKeys.ShortcutInfo),si
+                assert isinstance(si,g.ShortcutInfo),si
                 commandName = si.commandName
                 if trace and verbose:
                     g.trace('uninvert %20s %s' % (stroke,commandName))
@@ -1654,7 +1627,7 @@ class configClass:
 
         gs = d.get(self.munge(setting))
         if not gs: return None,False
-        assert isinstance(gs,GeneralSetting)
+        assert isinstance(gs,g.GeneralSetting)
         
         # g.trace(setting,requestedType,gs.toString())
         val = gs.val
@@ -1902,7 +1875,7 @@ class configClass:
                 aList = d.get(commandName,[])
                 if aList:
                     for si in aList:
-                        assert isinstance(si,leoKeys.ShortcutInfo),si
+                        assert isinstance(si,g.ShortcutInfo),si
                     break
                     
         # It's very important to filter empty strokes here.
@@ -1918,7 +1891,7 @@ class configClass:
         '''Return the value of @string setting.'''
 
         return self.get(c,setting,"string")
-    #@+node:ekr.20041120074536: *4* settingsRoot
+    #@+node:ekr.20041120074536: *4* settingsRoot (g.app.config)
     def settingsRoot (self,c):
 
         '''Return the position of the @settings tree.'''
@@ -2004,11 +1977,11 @@ class configClass:
         # 2011/11/07: Multiple bug fixes.
         if c:
             d = self.localOptionsDict.get(c.hash(),{})
-            d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
+            d[key] = g.GeneralSetting(kind,setting=key,val=val,tag='setting')
             self.localOptionsDict[c.hash()] = d
         else:
             d = self.dictList [0]
-            d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
+            d[key] = g.GeneralSetting(kind,setting=key,val=val,tag='setting')
             self.dictList[0] = d
     #@+node:ekr.20041118084241: *4* setString
     def setString (self,c,setting,val):
@@ -2038,7 +2011,7 @@ class configClass:
         for key in keys:
             gs = d.get(key)
             if gs:
-                assert isinstance(gs,GeneralSetting)
+                assert isinstance(gs,g.GeneralSetting)
                 ivar = gs.ivar # The actual name of the ivar.
                 kind = gs.kind
                 val = self.get(c,key,kind) # Don't use bunch.val!
@@ -2069,12 +2042,16 @@ class configClass:
 
             self.recentFiles.append(name)
     #@+node:ekr.20041117093246: *3* Scanning @settings (g.app.config)
-    #@+node:ekr.20041120064303: *4* readSettingsFiles & helpers (g.app.config)
+    #@+node:ekr.20041120064303: *4* readSettingsFiles & helpers (g.app.config) (old_config)
     def readSettingsFiles (self,fileName,verbose=True):
 
         '''Read settings from one file of the standard settings files.'''
         
-        trace = False and not g.unitTesting ; verbose = True
+        trace = (False or g.trace_startup) and not g.unitTesting
+        verbose = False
+        
+        if trace: print('===== g.app.config.readSettingsFiles')
+        
         giveMessage = (verbose and not g.app.unitTesting and
             not self.silent and not g.app.batchMode)
         def message(s):
@@ -2082,10 +2059,12 @@ class configClass:
             if giveMessage and not g.isPython3:
                 s = g.toEncodedString(s,'ascii')
             g.es_print(s,color='blue')
+
         self.write_recent_files_as_needed = False # Will be set later.
         
         localConfigFile = self.getLocalConfigFile(fileName)
-        if trace:
+
+        if trace and verbose:
             message('readSettingsFiles: fileName %s localConfigFile %s' % (
                 fileName,localConfigFile))
         
@@ -2178,6 +2157,8 @@ class configClass:
         return table
     #@+node:ekr.20041117085625: *5* openSettingsFile  (g.app.config)
     def openSettingsFile (self,path):
+        
+        trace = (False or g.trace_startup) and not g.unitTesting
 
         theFile,isZipped = g.openLeoOrZipFile(path)
         if not theFile: return None
@@ -2187,10 +2168,14 @@ class configClass:
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = leoGui.nullGui("nullGui")
+        if trace and g.trace_startup:
+            print('g.app.config.openSettingsFile: g.app.gui: %s' % (g.app.gui.guiName()))
+        
         c,frame = g.app.newLeoCommanderAndFrame(
             fileName=path,relativeFileName=None,
             initEditCommanders=False,updateRecentFiles=False)
         assert frame.c == c
+        
         frame.log.enable(False)
         g.app.lockLog()
         ok = c.fileCommands.openLeoFile(

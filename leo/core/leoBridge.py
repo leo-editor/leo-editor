@@ -174,7 +174,7 @@ class bridgeController:
             path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
             if path not in sys.path:
                 sys.path.append(path)
-    #@+node:ekr.20070227095743: *4* createGui
+    #@+node:ekr.20070227095743: *4* createGui (bridgeController)
     def createGui (self):
 
         g = self.g

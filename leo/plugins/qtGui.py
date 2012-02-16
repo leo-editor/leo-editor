@@ -1984,6 +1984,9 @@ class leoQtMinibuffer (leoQLineEditWidget):
 
 #@+node:ekr.20110605121601.18134: *3* init (qtGui.py top level)
 def init():
+    
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace and g.trace_startup: print('qtGui.__init__')
 
     if g.app.unitTesting: # Not Ok for unit testing!
         return False
@@ -7255,7 +7258,7 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
             if aList:
                 result = []
                 for si in aList:
-                    assert k.isShortcutInfo(si),si
+                    assert g.isShortcutInfo(si),si
                     # Don't show mode-related bindings.
                     if not si.isModeBinding():
                         accel = k.prettyPrintKey(si.stroke)

@@ -19,6 +19,10 @@ isPython3 = sys.version_info >= (3,0,0)
 # new_keys = False # True: Qt input methods produce a **user setting**, not a stroke.
 # if new_keys: print('***** new_keys')
 
+trace_startup = False
+    # These traces use print instead of g.trace so that
+    # the traces can add class info the method name.
+
 new_config = False  # Unit test set this to True, then restore it.
     # True: Create finalized settings & shortcuts dicts for each commander.
     # g.app.config only parses settings: rename it g.app.configParser??
@@ -32,7 +36,6 @@ if new_load: print('***** new_load')
     
 new_modes = False # True: use ModeController and ModeInfo classes.
 if new_modes: print('***** new_modes')
-
 
 # Switches to trace the garbage collector.
 trace_gc = False           
@@ -2167,6 +2170,9 @@ def openWithFileName(fileName,old_c,
 
     where frame.c is the commander of the newly-opened outline.
     """
+
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace: print('g.openWithFileName:%s' % repr(fileName))
     
     if not fileName: return False, None
     isLeo,fn,relFn = g.mungeFileName(fileName)
@@ -2179,30 +2185,50 @@ def openWithFileName(fileName,old_c,
     app.setLog(None)
     app.lockLog()
     
-    # Both of these helpers call g.app.newLeoCommanderAndFrame.
     if isLeo:
-        c,f = g.openWithFileNameHelper(old_c,gui,fn,relFn)
+        # (old_config only): Read the file the first time to get the settings.
+        if not g.new_config and old_c:
+            g.preRead(fileName)
+                # Call g.app.config.openSettingsFile
+                # Call g.app.config.updateSettings
+        g.doHook('open0')
+        c,theFile = g.openFileCommanderAndFrame(old_c,gui,fn,relFn)
+            # Call openLeoOrZipFile  
+            # Call g.app.newLeoCommanderAndFrame.
     else:
-        c,f = g.openWrapperLeoFile(old_c,fn,gui),None
+        c,theFile = g.openWrapperLeoFile(old_c,fn,gui),None
+            # Call g.app.newLeoCommanderAndFrame, creating an @<file> node.
+            # Complex init of the wrapper .leo file.
 
     app.unlockLog()
     if not c: return False,None
     
-    if g.new_load:
-        c.loadManager.readLocalSettings(c)
-
     # Init the open file.
     assert c.frame and c.frame.c == c
     c.frame.log.enable(enableLog)
     
     # Handle the open hooks and open the log for c.
-    ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
-    if not ok: return False,None
+    if theFile:
+        g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        ok = g.readOpenedLeoFile(c,old_c,gui,fn,theFile,readAtFileNodesFlag)
+            # Call c.fileCommands.openLeoFile to read the .leo file.
+            # Call c.config.setRecentFiles for all items in g.app.windowList.
+            # Set c.openDirectory.
+        if not ok: return False,None
+        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        
     g.app.writeWaitingLog(c)
     c.setLog()
     g.createMenu(c,fn)
     g.finishOpen(c)
+        # c.frame.tree.initAfterLoad()
+        # c.redraw()
+        # chapterController.finishCreate()
+            # Must be done after first redraw.
+        # sets focus & calls k.showStateAndMode.
+        # c.frame.initCompleteHint()
     return True,c.frame
+    
 #@+node:ekr.20090520055433.5951: *4* g.createMenu
 def createMenu(c,fileName=None):
 
@@ -2259,26 +2285,29 @@ def finishOpen(c):
 
     c.frame.initCompleteHint()
     return True
-#@+node:ekr.20090520055433.5950: *4* g.handleOpenHooks
-def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
+#@+node:ekr.20090520055433.5950: *4* g.readOpenedLeoFile
+def readOpenedLeoFile(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
+    
+    # New in Leo 4.10.  The open1 event does not allow an override of the init logic.
+    assert theFile
 
-    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
-        if theFile:
-            ok = c.fileCommands.openLeoFile(
-                theFile,fileName,
-                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-            if not ok:
-                g.app.closeLeoWindow(c.frame)
-                return False
-            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
-                # The recent files list has been updated by c.updateRecentFiles.
-                z.c.config.setRecentFiles(g.app.config.recentFiles)
+    ok = c.fileCommands.openLeoFile(
+        theFile,fileName,
+        readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
 
-    # Bug fix in 4.4.
-    if not c.openDirectory:
-        c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
-    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-    return True
+    if ok:
+        for z in g.app.windowList:
+            # Bug fix: 2007/12/07: don't change frame var.
+            # The recent files list has been updated by c.updateRecentFiles.
+            z.c.config.setRecentFiles(g.app.config.recentFiles)
+            
+        # Bug fix in 4.4.
+        if not c.openDirectory:
+            c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
+    else:
+        g.app.closeLeoWindow(c.frame)
+    
+    return ok
 #@+node:ekr.20090520055433.5954: *4* g.mungeFileName
 def mungeFileName(fileName):
 
@@ -2291,19 +2320,9 @@ def mungeFileName(fileName):
     isLeo = isZipped or fn.endswith('.leo')
 
     return isLeo,fn,relFn
-#@+node:ekr.20090520055433.5946: *4* g.openWithFileNameHelper
-def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
+#@+node:ekr.20090520055433.5946: *4* g.openFileCommanderAndFrame
+def openFileCommanderAndFrame(old_c,gui,fileName,relativeFileName):
     
-    # g.trace('old_c',old_c,fileName)
-
-    # Read the file the first time to get the settings.
-    if g.new_config:
-        pass
-    else:
-        if old_c: g.preRead(fileName)
-    
-    g.doHook('open0')
-
     # Open the file in binary mode to allow 0x1a in bodies & headlines.
     theFile,isZipped = g.openLeoOrZipFile(fileName)
     if not theFile:
@@ -2318,18 +2337,6 @@ def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
 
     c.isZipped = isZipped
     return c,theFile
-#@+node:ekr.20090520055433.5949: *5* preRead (NOT USED????)
-def preRead(fileName):
-
-    '''Read the file for the first time,
-    setting the setting for a later call to finishCreate.
-    '''
-    
-    g.trace('****',fileName)
-
-    c = g.app.config.openSettingsFile(fileName)
-    if c:
-        g.app.config.updateSettings(c,localFlag=True)
 #@+node:ekr.20080921154026.1: *4* g.openWrapperLeoFile
 def openWrapperLeoFile (old_c,fileName,gui):
 
@@ -2387,6 +2394,18 @@ def openWrapperLeoFile (old_c,fileName,gui):
         # Mark the outline clean.
         # This makes it easy to open non-Leo files for quick study.
     return c
+#@+node:ekr.20090520055433.5949: *4* g.preRead
+def preRead(fileName):
+
+    '''Read the file for the first time,
+    setting the setting for a later call to finishCreate.
+    '''
+
+    #### g.trace('****',fileName)
+
+    c = g.app.config.openSettingsFile(fileName)
+    if c:
+        g.app.config.updateSettings(c,localFlag=True)
 #@+node:ekr.20100125073206.8710: *3* g.readFileIntoString (Leo 4.7)
 def readFileIntoString (fn,
     encoding='utf-8',
@@ -3243,7 +3262,9 @@ def pr(*args,**keys):
         encoding = 'utf-8'
 
     s = g.translateArgs(args,d) # Translates everything to unicode.
-    if app.logInited:
+
+    #### if app.logInited:
+    if newline:
         s = s + '\n'
 
     if g.isPython3:
@@ -3255,23 +3276,23 @@ def pr(*args,**keys):
             s2 = g.toUnicode(s3,encoding=encoding,reportErrors=False)
     else:
         s2 = g.toEncodedString(s,encoding,reportErrors=False)
-
-    if app.logInited:
-        # Print s2 *without* an additional trailing newline.
-        sys.stdout.write(s2)
-    else:
-        app.printWaiting.append(s2)
+        
+    # New in Leo 4.10: always print the result immediately.
+    sys.stdout.write(s2)
+        
+    # if app.logInited:
+        # # Print s2 *without* an additional trailing newline.
+        # sys.stdout.write(s2)
+    # else:
+        # app.printWaiting.append(s2)
 #@+node:ekr.20031218072017.2317: *3* g.trace
-# Convert all args to strings.
-
 def trace (*args,**keys):
 
     # Compute the effective args.
     d = {'align':0,'newline':True}
     d = g.doKeywordArgs(keys,d)
-    newline = d.get('newline',None)
+    newline = d.get('newline')
     align = d.get('align',0)
-    # if not align: align = 0
 
     # Compute the caller name.
     try: # get the function name from the call stack.
@@ -3304,9 +3325,10 @@ def trace (*args,**keys):
             result.append(" " + arg)
         else:
             result.append(arg)
+            
     s = ''.join(result)
-
-    # 'print s,' is not valid syntax in Python 3.x.
+    
+    # Print the result immediately.
     g.pr(s,newline=newline)
 #@+node:ekr.20080220111323: *3* g.translateArgs
 def translateArgs(args,d):
@@ -5262,6 +5284,38 @@ def funcToMethod(f,theClass,name=None):
 
     setattr(theClass,name or f.__name__,f)
     # g.trace(name)
+#@+node:ekr.20120123143207.10223: *3* g.GeneralSetting & isGeneralSetting
+# Important: The startup code uses this class,
+# so it is convenient to define it in leoGlobals.py.
+class GeneralSetting:
+    
+    '''A class representing any kind of setting except shortcuts.'''
+    
+    def __init__ (self,kind,encoding=None,ivar=None,setting=None,val=None,path=None,tag='setting'):
+    
+        self.encoding = encoding
+        self.ivar = ivar
+        self.kind = kind
+        self.path = path
+        self.setting = setting
+        self.val = val
+        self.tag = tag
+        
+    def __repr__ (self):
+        
+        result = ['GeneralSetting kind: %s' % (self.kind)]
+        ivars = ('ivar','path','setting','val','tag')
+        for ivar in ivars:
+            if hasattr(self,ivar):
+                val =  getattr(self,ivar)
+                if val is not None:
+                    result.append('%s: %s' % (ivar,val))
+        return ','.join(result)
+        
+    dump = __repr__
+        
+def isGeneralSetting(obj):
+    return isinstance(obj,GeneralSetting)
 #@+node:ekr.20111017204736.15898: *3* g.getDocString
 def getDocString(s):
     
@@ -5449,6 +5503,69 @@ def removeTrailing (s,chars):
         i -= 1
     i += 1
     return s[:i]
+#@+node:ekr.20120123115816.10209: *3* g.ShortcutInfo & isShortcutInfo
+# bindKey:            ShortcutInfo(kind,commandName,func,pane)
+# bindKeyToDict:      ShortcutInfo(kind,commandName,func,pane,stroke)
+# createModeBindings: ShortcutInfo(kind,commandName,func,nextMode,stroke)
+
+# Important: The startup code uses this class,
+# so it is convenient to define it in leoGlobals.py.
+class ShortcutInfo:
+    
+    '''A class representing any kind of key binding line.
+    
+    This includes other information besides just the KeyStroke.'''
+        
+    #@+others
+    #@+node:ekr.20120129040823.10254: *4*  ctor (ShortcutInfo)
+    def __init__ (self,kind,commandName='',func=None,nextMode=None,pane=None,stroke=None):
+        
+        trace = False and commandName=='new' and not g.unitTesting
+
+        if not (stroke is None or g.isStroke(stroke)):
+            g.trace('***** (ShortcutInfo) oops',repr(stroke))
+
+        self.kind = kind
+        self.commandName = commandName
+        self.func = func
+        self.nextMode = nextMode
+        self.pane = pane
+        self.stroke = stroke
+            # The *caller* must canonicalize the shortcut.
+
+        if trace: g.trace('(ShortcutInfo)',commandName,stroke,g.callers())
+    #@+node:ekr.20120203153754.10031: *4* __hash__ (ShortcutInfo)
+    def __hash__ (self):
+        
+        return self.stroke.__hash__() if self.stroke else 0
+    #@+node:ekr.20120125045244.10188: *4* __repr__ & ___str_& dump (ShortcutInfo)
+    def __repr__ (self):
+        
+        return self.dump()
+
+    __str__ = __repr__
+
+    def dump (self):
+        si = self    
+        result = ['ShortcutInfo %17s' % (si.kind)]
+        # Print all existing ivars.
+        table = ('commandName','func','nextMode','pane','stroke')
+        for ivar in table:
+            if hasattr(si,ivar):
+                val =  getattr(si,ivar)
+                if val not in (None,'none','None',''):
+                    if ivar == 'func': val = val.__name__
+                    s = '%s %s' % (ivar,val)
+                    result.append(s)
+        return '[%s]' % ' '.join(result).strip()
+    #@+node:ekr.20120129040823.10226: *4* isModeBinding
+    def isModeBinding (self):
+        
+        return self.kind.startswith('*mode')
+    #@-others
+
+def isShortcutInfo(obj):
+    return isinstance(obj,ShortcutInfo)
 #@+node:ekr.20060410112600: *3* g.stripBrackets
 def stripBrackets (s):
 
@@ -5774,6 +5891,95 @@ class readLinesClass:
         return line
 
     __next__ = next
+#@+node:ekr.20120201164453.10090: *3* g.KeyStroke & isStroke/OrNone
+class KeyStroke:
+    
+    '''A class that announces that its contents has been canonicalized by k.strokeFromSetting.
+    
+    This allows type-checking assertions in the code.'''
+    
+    #@+others
+    #@+node:ekr.20120204061120.10066: *4*  ks.ctor
+    def __init__ (self,s):
+        
+        trace = False and not g.unitTesting and s == 'name'
+        if trace: g.trace('(KeyStroke)',s,g.callers())
+
+        assert s,repr(s)
+        assert g.isString(s)
+            # type('s') does not work in Python 3.x.
+        self.s = s
+    #@+node:ekr.20120204061120.10068: *4*  Special methods
+    #@+node:ekr.20120203053243.10118: *5* ks.__hash__
+    # Allow KeyStroke objects to be keys in dictionaries.
+
+    def __hash__ (self):
+
+        return self.s.__hash__() if self.s else 0
+    #@+node:ekr.20120204061120.10067: *5* ks.__repr___ & __str__
+    def __str__ (self):
+
+        return '<KeyStroke: %s>' % (self.s)
+        
+    __repr__ = __str__
+    #@+node:ekr.20120203053243.10117: *5* ks.rich comparisons
+    #@+at All these must be defined in order to say, for example:
+    #     for key in sorted(d)
+    # where the keys of d are KeyStroke objects.
+    #@@c
+
+    def __eq__ (self,other): 
+        if not other:               return False
+        elif hasattr(other,'s'):    return self.s == other.s
+        else:                       return self.s == other
+        
+    def __lt__ (self,other):
+        if not other:               return False
+        elif hasattr(other,'s'):    return self.s < other.s
+        else:                       return self.s < other
+            
+    def __le__ (self,other): return self.__lt__(other) or self.__eq__(other)    
+    def __ne__ (self,other): return not self.__eq__(other)
+    def __gt__ (self,other): return not self.__lt__(other) and not self.__eq__(other)  
+    def __ge__ (self,other): return not lsef.__lt__(other)
+    #@+node:ekr.20120203053243.10124: *4* ks.find, lower & startswith
+    # These may go away later, but for now they make conversion of string strokes easier.
+
+    def find (self,pattern):
+        
+        return self.s.find(pattern)
+        
+    def lower (self):
+
+        return self.s.lower()
+
+    def startswith(self,s):
+        
+        return self.s.startswith(s)
+    #@+node:ekr.20120203053243.10121: *4* ks.isFKey
+    def isFKey (self):
+
+        s = self.s.lower()
+
+        return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
+    #@+node:ekr.20120203053243.10125: *4* ks.toGuiChar
+    def toGuiChar (self):
+        
+        '''Replace special chars by the actual gui char.'''
+        
+        s = self.s.lower()
+        if s in ('\n','return'):        s = '\n'
+        elif s in ('\t','tab'):         s = '\t'
+        elif s in ('\b','backspace'):   s = '\b'
+        elif s in ('.','period'):       s = '.'
+        return s
+    #@-others
+
+def isStroke(obj):
+    return isinstance(obj,KeyStroke)
+    
+def isStrokeOrNone(obj):
+    return obj is None or isinstance(obj,KeyStroke)
 #@+node:ekr.20031218072017.3197: ** Whitespace...
 #@+node:ekr.20031218072017.3198: *3* computeLeadingWhitespace
 # Returns optimized whitespace corresponding to width with the indicated tab_width.

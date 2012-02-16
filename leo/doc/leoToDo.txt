@@ -314,6 +314,9 @@ def pdb (message=''):
     pdb.set_trace()
 .. @+node:ekr.20110605121601.18134: *8* init (qtGui.py top level)
 def init():
+    
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace and g.trace_startup: print('qtGui.__init__')
 
     if g.app.unitTesting: # Not Ok for unit testing!
         return False
@@ -3856,7 +3859,7 @@ def set (self,p,kind,name,val):
     trace = False and not g.unitTesting
     if trace: g.trace(kind,name,val)
     
-    import leo.core.leoConfig as leoConfig
+    #### import leo.core.leoConfig as leoConfig
     
     assert g.new_config
 
@@ -3871,7 +3874,7 @@ def set (self,p,kind,name,val):
 
     gs = d.get(key)
     if gs:
-        assert isinstance(gs,leoConfig.GeneralSetting),gs
+        assert isinstance(gs,g.GeneralSetting),gs
         path = gs.path
         if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
             g.es("over-riding setting:",name,"from",path)
@@ -3879,7 +3882,7 @@ def set (self,p,kind,name,val):
     ####
     # old config: we can't use c here: it may be destroyed!
     # new config: we *can* user c here. it persists.
-    gs = leoConfig.GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
+    gs = g.GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
     d.replace(key,gs)
 .. @+node:ekr.20120215072959.12478: *7* c.config.setRecentFiles (new_config)
 def setRecentFiles (self,files):
@@ -3899,11 +3902,11 @@ def set (self,c,setting,kind,val):
     # 2011/11/07: Multiple bug fixes.
     if c:
         d = self.localOptionsDict.get(c.hash(),{})
-        d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
+        d[key] = g.GeneralSetting(kind,setting=key,val=val,tag='setting')
         self.localOptionsDict[c.hash()] = d
     else:
         d = self.dictList [0]
-        d[key] = GeneralSetting(kind,setting=key,val=val,tag='setting')
+        d[key] = g.GeneralSetting(kind,setting=key,val=val,tag='setting')
         self.dictList[0] = d
 .. @+node:ekr.20041117083141: *6* get & allies (g.app.config)
 def get (self,c,setting,kind):
@@ -3961,7 +3964,7 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
 
     gs = d.get(self.munge(setting))
     if not gs: return None,False
-    assert isinstance(gs,GeneralSetting)
+    assert isinstance(gs,g.GeneralSetting)
     
     # g.trace(setting,requestedType,gs.toString())
     val = gs.val
@@ -7395,7 +7398,7 @@ def masterKeyHandler (self,event):
     c.check_event(event)
     << define vars >>
     
-    assert k.isStrokeOrNone(stroke)
+    assert g.isStrokeOrNone(stroke)
 
     if char in special_keys:
         if trace and verbose: g.trace('char',char)
@@ -7434,7 +7437,7 @@ def masterKeyHandler (self,event):
     # 2011/02/08: Use getPandBindings for *all* keys.
     si = k.getPaneBinding(stroke,w)
     if si:
-        assert k.isShortcutInfo(si),si
+        assert g.isShortcutInfo(si),si
         if traceGC: g.printNewObjects('masterKey 3')
         if trace: g.trace('   bound',stroke,si.func.__name__)
         return k.masterCommand(event=event,
@@ -7525,10 +7528,10 @@ def doMode (self,event,state,stroke):
     # Third, pass keys to user modes.
     d =  k.masterBindingsDict.get(state)
     if d:
-        assert k.isStrokeOrNone(stroke)
+        assert g.isStrokeOrNone(stroke)
         si = d.get(stroke)
         if si:
-            assert k.isShortcutInfo(si),si
+            assert g.isShortcutInfo(si),si
             if trace: g.trace('calling generalModeHandler',stroke)
             k.generalModeHandler (event,
                 commandName=si.commandName,func=si.func,
@@ -7558,7 +7561,7 @@ def getPaneBinding (self,stroke,w):
     # keyStatesTuple = ('command','insert','overwrite')
     state = k.unboundKeyAction
     
-    assert k.isStroke(stroke)
+    assert g.isStroke(stroke)
 
     if trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
         'isTextWidget(w)',g.app.gui.isTextWidget(w))
@@ -7596,7 +7599,7 @@ def getPaneBinding (self,stroke,w):
                 if si:
                     assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
                         # masterBindingsDict: keys are KeyStrokes
-                    assert k.isShortcutInfo(si),si
+                    assert g.isShortcutInfo(si),si
                     table = ('previous-line','next-line',)
                     if key == 'text' and name == 'head' and si.commandName in table:
                         if trace: g.trace('***** special case',si.commandName)
@@ -7615,7 +7618,7 @@ def handleMiniBindings (self,event,state,stroke):
 
     # Special case for bindings handled in k.getArg:
         
-    assert k.isStroke(stroke)
+    assert g.isStroke(stroke)
 
     if state in ('getArg','full-command'):
         if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
@@ -7637,7 +7640,7 @@ def handleMiniBindings (self,event,state,stroke):
                 if si:
                     assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
                         # masterBindingsDict: keys are KeyStrokes
-                    assert k.isShortcutInfo(si),si
+                    assert g.isShortcutInfo(si),si
                     if si.commandName == 'replace-string' and state == 'getArg':
                         if trace: g.trace('%s binding for replace-string' % (pane),stroke)
                         return False # Let getArg handle it.
@@ -7664,7 +7667,7 @@ def isAutoCompleteChar (self,stroke):
 
     k = self ; state = k.unboundKeyAction
     
-    assert k.isStrokeOrNone(stroke)
+    assert g.isStrokeOrNone(stroke)
     
     if stroke and state in ('insert','overwrite'):
         for key in (state,'body','log','text','all'):
@@ -7673,7 +7676,7 @@ def isAutoCompleteChar (self,stroke):
                 si = d.get(stroke)
                 if si:
                     assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
-                    assert k.isShortcutInfo(si),si
+                    assert g.isShortcutInfo(si),si
                     if si.commandName == 'auto-complete':
                         return True
     return False
@@ -7687,7 +7690,7 @@ def handleUnboundKeys (self,event,char,stroke):
     
     # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
     
-    assert k.isStroke(stroke)
+    assert g.isStroke(stroke)
 
     if trace and verbose: g.trace('ch: %s, stroke %s' % (
         repr(event and event.char),repr(stroke)))

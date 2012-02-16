@@ -62,17 +62,19 @@ class Commands (object):
     #@+node:ekr.20031218072017.2812: *4* c.__init__
     def __init__(self,frame,fileName,relativeFileName=None):
 
-        trace = False ; tag = 'Commands.__init__'
-        c = self
+        trace = (False or g.trace_startup) and not g.unitTesting
+        tag = 'Commands.__init__ %s' % (g.shortFileName(fileName))
+        if trace and g.trace_startup: print('\n%s %s' % (tag,g.callers()))
+            # Called from readSettingsFiles & openSettingsFiles logic.
 
+        c = self
         self.requestBringToFront = False
         self.requestedFocusWidget = None
         self.requestRedrawFlag = False
         self.requestedIconify = '' # 'iconify','deiconify'
         self.requestRecolorFlag = False
 
-        if trace:
-            print(tag)
+        if trace and not g.trace_startup:
             import time ; t1 = time.clock()
         self.exists = True # Indicate that this class exists and has not been destroyed.
             # Do this early in the startup process so we can call hooks.
@@ -122,11 +124,17 @@ class Commands (object):
         self.initIvars()
         
         self.config = configSettings(c)
+        if g.new_config:
+            # We *must init the settings here!
+            lm = g.app.loadManager
+            assert lm
+            lm.initLocalSettings(c)
+
         g.app.config.setIvarsFromSettings(c)
         self.nodeHistory = nodeHistory(c)
         
-        #### This requires all settings files to be loaded.
         self.initConfigSettings()
+
         c.setWindowPosition() # Do this after initing settings.
 
         # initialize the sub-commanders.
@@ -144,7 +152,8 @@ class Commands (object):
         import leo.core.leoTangle as leoTangle
         import leo.core.leoUndo as leoUndo
 
-        if trace: t2 = g.printDiffTime('%s: after imports' % (tag),t1)
+        if trace and not g.trace_startup:
+             t2 = g.printDiffTime('%s: after imports' % (tag),t1)
 
         self.shadowController = leoShadow.shadowController(c)
         self.fileCommands   = leoFileCommands.fileCommands(c)
@@ -160,7 +169,8 @@ class Commands (object):
         c.cacher = leoCache.cacher(c)
         c.cacher.initFileDB(self.mFileName)
 
-        if trace: t3 = g.printDiffTime('%s: after controllers created' % (tag),t2)
+        if trace and not g.trace_startup:
+            t3 = g.printDiffTime('%s: after controllers created' % (tag),t2)
 
         self.undoer = leoUndo.undoer(self)
             
@@ -176,10 +186,15 @@ class Commands (object):
         '''Finish creating the commander after frame.finishCreate.
 
         Important: this is the last step in the startup process.'''
-
+        
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('c.finishCreate')
+        
         c = self ; p = c.p
         c.miniBufferWidget = c.frame.miniBufferWidget
         # print('Commands.finishCreate',c.fileName())
+        
+        assert g.app.gui
 
         # Create a keyHandler even if there is no miniBuffer.
         c.keyHandler = c.k = k = g.app.gui.createKeyHandlerClass(c,
@@ -276,6 +291,11 @@ class Commands (object):
     def initConfigSettings (self):
 
         '''Init all cached commander config settings.'''
+        
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace:
+            print('c.initConfigSettings: %s' % g.app.gui.guiName())
+            # print('c.initConfigSettings:', g.callers())
 
         c = self
         c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
@@ -5194,7 +5214,7 @@ class Commands (object):
         def oops(self):
 
             g.pr("unknown PrettyPrinting code: %s" % (self.name))
-        #@+node:ekr.20041021101911.2: *9* trace
+        #@+node:ekr.20041021101911.2: *9* trace (PrettyPrint)
         def trace(self):
 
             if self.tracing:
@@ -8275,11 +8295,10 @@ class configSettings:
     #@+node:ekr.20120215072959.12472: *3* c.config.Birth
     #@+node:ekr.20041118104831.2: *4* c.config.ctor
     def __init__ (self,c):
-
-        trace = True and g.new_config and not g.unitTesting
+     
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('c.config.__init__ %s' % (c and c.shortFileName()))
         self.c = c
-
-        if trace: g.trace('+' * 20,'(c.configSettings)',c and c.shortFileName())
         
         # The shortcuts and settings dicts.
         self.settingsDict = None    # Set to a g.TypedDict.
@@ -8376,25 +8395,39 @@ class configSettings:
         #     getSettingSource(self,setting)
         #     getShortcut (self,commandName)
         #     getString (self,setting)
-        #@+node:ekr.20120215072959.12519: *5* get & allies (new_config)
+        #@+node:ekr.20120215072959.12519: *5* c.config.get & allies (new_config)
+        get_trace_given = False
+
         def get (self,setting,kind):
 
             """Get the setting and make sure its type matches the expected type."""
-            
-            trace = False and not g.unitTesting
-            
-            assert g.new_config
-            
+
+            trace = (False or g.trace_startup) and not g.unitTesting and not self.get_trace_given
             c = self.c
             d = self.settingsDict
-            assert isinstance(d,g.TypedDict)
+            lm = g.app.loadManager
+            assert g.new_config
+            assert lm
+            
+            if trace:
+                print('***** c.config.get',bool(self.settingsDict),bool(lm.globalSettingsDict))
+                self.get_trace_given = True
+            
+            if d: #### lm.globalSettingsDict:
+                assert isinstance(d,g.TypedDict),d
+                val,junk = self.getValFromDict(d,setting,kind)
+                if trace and val is not None:
+                    g.trace(setting,val,d.name())
+                return val
+            else:
+                # lm.readGlobalSettingsFiles is opening a settings file.
+                # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDic
+                return None
+                
+            
+            
 
-            val,junk = self.getValFromDict(d,setting,kind)
-
-            if trace and val is not None:
-                g.trace(setting,val,d.name())
-
-            return val
+            
         #@+node:ekr.20120215072959.12520: *6* getValFromDict
         def getValFromDict (self,d,setting,requestedType,warn=True):
 
@@ -8406,7 +8439,7 @@ class configSettings:
             gs = d.get(g.app.config.munge(setting))
             if not gs: return None,False
 
-            assert isinstance(gs,c.k.GeneralSetting)
+            assert isinstance(gs,g.GeneralSetting)
             
             # g.trace(setting,requestedType,gs.toString())
             val = gs.val
@@ -8460,14 +8493,14 @@ class configSettings:
                 (type1 in shortcuts and type2 in shortcuts) or
                 type1 == type2
             )
-        #@+node:ekr.20120215072959.12522: *5* getAbbrevDict
+        #@+node:ekr.20120215072959.12522: *5* c.config.getAbbrevDict
         def getAbbrevDict (self):
 
             """Search all dictionaries for the setting & check it's type"""
 
             d = self.get('abbrev','abbrev')
             return d or {}
-        #@+node:ekr.20120215072959.12523: *5* getBool
+        #@+node:ekr.20120215072959.12523: *5* c.config.getBool
         def getBool (self,setting,default=None):
 
             '''Return the value of @bool setting, or the default if the setting is not found.'''
@@ -8478,19 +8511,19 @@ class configSettings:
                 return val
             else:
                 return default
-        #@+node:ekr.20120215072959.12525: *5* getColor
+        #@+node:ekr.20120215072959.12525: *5* c.config.getColor
         def getColor (self,setting):
 
             '''Return the value of @color setting.'''
 
             return self.get(setting,"color")
-        #@+node:ekr.20120215072959.12527: *5* getData
+        #@+node:ekr.20120215072959.12527: *5* c.config.getData
         def getData (self,setting):
 
             '''Return a list of non-comment strings in the body text of @data setting.'''
 
             return self.get(setting,"data")
-        #@+node:ekr.20120215072959.12528: *5* getDirectory
+        #@+node:ekr.20120215072959.12528: *5* c.config.getDirectory
         def getDirectory (self,setting):
 
             '''Return the value of @directory setting, or None if the directory does not exist.'''
@@ -8501,7 +8534,7 @@ class configSettings:
                 return theDir
             else:
                 return None
-        #@+node:ekr.20120215072959.12530: *5* getFloat
+        #@+node:ekr.20120215072959.12530: *5* c.config.getFloat
         def getFloat (self,setting):
 
             '''Return the value of @float setting.'''
@@ -8512,7 +8545,7 @@ class configSettings:
                 return val
             except TypeError:
                 return None
-        #@+node:ekr.20120215072959.12531: *5* getFontFromParams
+        #@+node:ekr.20120215072959.12531: *5* c.config.getFontFromParams
         def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
 
             """Compute a font from font parameters.
@@ -8536,7 +8569,7 @@ class configSettings:
 
             # g.trace(family,size,slant,weight,g.shortFileName(self.c.mFileName))
             return g.app.gui.getFontFromParams(family,size,slant,weight)
-        #@+node:ekr.20120215072959.12532: *5* getInt
+        #@+node:ekr.20120215072959.12532: *5* c.config.getInt
         def getInt (self,setting):
 
             '''Return the value of @int setting.'''
@@ -8547,7 +8580,7 @@ class configSettings:
                 return val
             except TypeError:
                 return None
-        #@+node:ekr.20120215072959.12533: *5* getLanguage
+        #@+node:ekr.20120215072959.12533: *5* c.config.getLanguage
         def getLanguage (self,setting):
 
             '''Return the setting whose value should be a language known to Leo.'''
@@ -8556,7 +8589,7 @@ class configSettings:
             # g.trace(setting,language)
 
             return language
-        #@+node:ekr.20120215072959.12534: *5* getMenusList
+        #@+node:ekr.20120215072959.12534: *5* c.config.getMenusList
         def getMenusList (self):
 
             '''Return the list of entries for the @menus tree.'''
@@ -8565,7 +8598,7 @@ class configSettings:
             # g.trace(aList and len(aList) or 0)
 
             return aList or g.app.config.menusList
-        #@+node:ekr.20120215072959.12535: *5* getOpenWith
+        #@+node:ekr.20120215072959.12535: *5* c.config.getOpenWith
         def getOpenWith (self):
 
             '''Return a list of dictionaries corresponding to @openwith nodes.'''
@@ -8573,7 +8606,7 @@ class configSettings:
             val = self.get('openwithtable','openwithtable')
 
             return val
-        #@+node:ekr.20120215072959.12536: *5* getRatio
+        #@+node:ekr.20120215072959.12536: *5* c.config.getRatio
         def getRatio (self,setting):
 
             '''Return the value of @float setting.
@@ -8589,49 +8622,60 @@ class configSettings:
                     return None
             except TypeError:
                 return None
-        #@+node:ekr.20120215072959.12538: *5* getSettingSource (Test)
+        #@+node:ekr.20120215072959.12538: *5* c.config.getSettingSource (new_config)
         def getSettingSource (self,setting):
 
             '''return the name of the file responsible for setting.'''
             
+            trace = False and not g.unitTesting
             c = self.c
             d = self.settingsDict
-            assert isinstance(d,g.TypedDict),d
-
-            si = d.get(setting)
-            if si is None:
-                return 'unknown setting',None
+            lm = g.app.loadManager
+            assert g.new_config
+            assert lm
+            
+            if d: #### lm.globalSettingsDict:
+                assert isinstance(d,g.TypedDict),d
+                si = d.get(setting)
+                if si is None:
+                    return 'unknown setting',None
+                else:
+                    assert g.isShortcutInfo(si)
+                    return si.path,si.val
             else:
-                assert c.k.isShortcutInfo(si)
-                return si.path,si.val
-        #@+node:ekr.20120215072959.12539: *5* getShortcut (Test)
+                # lm.readGlobalSettingsFiles is opening a settings file.
+                # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
+                assert d is None
+                return None
+        #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut (new_config)
         def getShortcut (self,commandName):
 
             '''Return rawKey,accel for shortcutName'''
             
             trace = False and not g.unitTesting
-                # and commandName in ('new','print-bindings')
-
             c = self.c
-            key = c.frame.menu.canonicalizeMenuName(commandName)
-            key = key.replace('&','') # Allow '&' in names.
-            
-            assert g.new_config
-            
             d = self.shortcutsDict
-            assert isinstance(d,g.TypedDictOfLists)
-            
-            aList = d.get(commandName,[])
-            if aList:
-                for si in aList: assert isinstance(si,c.k.ShortcutInfo),si
-                        
-                # It's very important to filter empty strokes here.
-                aList = [si for si in aList
-                    if si.stroke and si.stroke.lower() != 'none']
+            lm = g.app.loadManager
+            assert g.new_config
+            assert lm
 
-            if trace: g.trace(d,'\n',aList)
-            return key,aList
-        #@+node:ekr.20120215072959.12540: *5* getString
+            if d: #### lm.globalShortcutsDict:
+                assert isinstance(d,g.TypedDictOfLists),d
+                key = c.frame.menu.canonicalizeMenuName(commandName)
+                key = key.replace('&','') # Allow '&' in names.
+                aList = d.get(commandName,[])
+                if aList:
+                    for si in aList: assert isinstance(si,g.ShortcutInfo),si 
+                    # It's very important to filter empty strokes here.
+                    aList = [si for si in aList
+                        if si.stroke and si.stroke.lower() != 'none']
+                if trace: g.trace(d,'\n',aList)
+                return key,aList
+            else:
+                # lm.readGlobalSettingsFiles is opening a settings file.
+                # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
+                return None,[]
+        #@+node:ekr.20120215072959.12540: *5* c.config.getString
         def getString (self,setting):
 
             '''Return the value of @string setting.'''
@@ -8741,7 +8785,7 @@ class configSettings:
             trace = False and not g.unitTesting
             if trace: g.trace(kind,name,val)
             
-            import leo.core.leoConfig as leoConfig
+            #### import leo.core.leoConfig as leoConfig
             
             assert g.new_config
 
@@ -8756,7 +8800,7 @@ class configSettings:
 
             gs = d.get(key)
             if gs:
-                assert isinstance(gs,leoConfig.GeneralSetting),gs
+                assert isinstance(gs,g.GeneralSetting),gs
                 path = gs.path
                 if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                     g.es("over-riding setting:",name,"from",path)
@@ -8764,7 +8808,7 @@ class configSettings:
             ####
             # old config: we can't use c here: it may be destroyed!
             # new config: we *can* user c here. it persists.
-            gs = leoConfig.GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
+            gs = g.GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
             d.replace(key,gs)
         #@+node:ekr.20120215072959.12478: *4* c.config.setRecentFiles (new_config)
         def setRecentFiles (self,files):

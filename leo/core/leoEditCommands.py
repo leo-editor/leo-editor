@@ -389,7 +389,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if not w: return False
         if w.hasSelection(): return False
         
-        assert k.isStrokeOrNone(stroke)
+        assert g.isStrokeOrNone(stroke)
 
         if stroke in ('\b','BackSpace'):
             return False
@@ -4356,7 +4356,7 @@ class editCommandsClass (baseEditCommandsClass):
         # if trace: g.trace(name,repr(ch),ch and ch in brackets)
         #@-<< set local vars >>
         
-        assert k.isStrokeOrNone(stroke)
+        assert g.isStrokeOrNone(stroke)
 
         if trace: g.trace('ch',repr(ch),'stroke',stroke)
         if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
@@ -6862,10 +6862,10 @@ class helpCommandsClass (baseEditCommandsClass):
         data = [] ; n1 = 4 ; n2 = 20
         d = k.bindingsDict
         for stroke in sorted(d):
-            assert k.isStroke(stroke),repr(stroke)
+            assert g.isStroke(stroke),repr(stroke)
             aList = d.get(stroke,[])
             for si in aList:
-                assert k.isShortcutInfo(si),si
+                assert g.isShortcutInfo(si),si
                 if si.commandName == commandName:
                     pane = g.choose(si.pane=='all','',' %s:' % (si.pane))
                     s1 = pane

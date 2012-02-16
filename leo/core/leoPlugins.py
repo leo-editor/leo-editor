@@ -334,7 +334,7 @@ class LeoPluginsController:
         self.loadingModuleNameStack.append(moduleName)
         try:
             result = handler(tag,keywords)
-        except:
+        except Exception:
             g.es("hook failed: %s, %s, %s" % (tag, handler, moduleName))
             g.es_exception()
             result = None

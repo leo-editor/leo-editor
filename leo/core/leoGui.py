@@ -31,13 +31,13 @@ class leoKeyEvent:
         trace = False and not g.unitTesting
         k = c.k
         
-        if k.isStroke(shortcut):
+        if g.isStroke(shortcut):
             g.trace('***** (leoKeyEvent) oops: already a stroke',shortcut,g.callers())
             stroke = shortcut
         else:
-            stroke = k.KeyStroke(shortcut) if shortcut else None
+            stroke = g.KeyStroke(shortcut) if shortcut else None
 
-        assert k.isStrokeOrNone(stroke),'(leoKeyEvent) %s %s' % (
+        assert g.isStrokeOrNone(stroke),'(leoKeyEvent) %s %s' % (
             repr(stroke),g.callers())
             
         if trace: g.trace('(leoKeyEvent) stroke',stroke)
@@ -383,7 +383,7 @@ class nullGui(leoGui):
         import leo.core.leoKeys as leoKeys # Do this here to break a circular dependency.
 
         return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
-    #@+node:ekr.20031218072017.2229: *4* runMainLoop
+    #@+node:ekr.20031218072017.2229: *4* nullGui.runMainLoop
     def runMainLoop(self):
 
         """Run the gui's main loop."""
@@ -394,7 +394,9 @@ class nullGui(leoGui):
             # g.es("start of batch script...\n")
             self.lastFrame.c.executeScript(script=self.script)
             # g.es("\nend of batch script")
-
+        else:
+            print('**** nullGui.runMainLoop: terminating Leo.')
+            
         # Getting here will terminate Leo.
     #@+node:ekr.20070228155807: *3* isTextWidget (nullGui)
     def isTextWidget (self,w):
