@@ -4081,10 +4081,13 @@ class leoQtFrame (leoFrame.leoFrame):
         return "<leoQtFrame: %s>" % self.title
     #@+node:ekr.20110605121601.18250: *5* qtFrame.finishCreate & helpers
     # Called from newLeoCommanderAndFrame
-
     def finishCreate (self,c):
+        
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('qtFrame.finishCreate')
 
-        f = self ; f.c = c
+        f = self
+        self.c = c
 
         # g.trace('(qtFrame)')
 
@@ -4094,6 +4097,7 @@ class leoQtFrame (leoFrame.leoFrame):
         self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
 
         # returns DynamicWindow
+       
         f.top = g.app.gui.frameFactory.createFrame(f)
         # g.trace('(leoQtFrame)',f.top)
 
@@ -4102,15 +4106,11 @@ class leoQtFrame (leoFrame.leoFrame):
 
         f.createIconBar() # A base class method.
         f.createSplitterComponents()
-        cc = c.chapterController
-        # g.trace(cc,cc.findChaptersNode())
-        if 0: # 2010/06/17: Now done in cc.createChaptersNode.
-            if f.use_chapters and f.use_chapter_tabs: # and cc and cc.findChaptersNode():
-                cc.tt = leoQtTreeTab(c,f.iconBar)
         f.createStatusLine() # A base class method.
         f.createFirstTreeNode() # Call the base-class method.
+
         f.menu = leoQtMenu(f,label='top-level-menu')
-        g.app.windowList.append(f)
+        g.app.windowList.append(f) #### Might be ok to delay this.
         f.miniBufferWidget = leoQtMinibuffer(c)
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18251: *6* createSplitterComponents (qtFrame)
@@ -8632,7 +8632,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         # Debugging.
         self.keyIsActive = False
-        self.trace_masterKeyHandler = c.config.getBool('trace_masterKeyHandler')
+        #### self.trace_masterKeyHandler = c.config.getBool('trace_masterKeyHandler')
 
         # Pretend there is a binding for these characters.
         close_flashers = c.config.getString('close_flash_brackets') or ''
@@ -8645,10 +8645,10 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20110605121601.18540: *3* eventFilter
     def eventFilter(self, obj, event):
 
-        trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
+        trace = (False or g.trace_masterKeyHandler) and not g.unitTesting
         verbose = True
         traceEvent = False # True: call self.traceEvent.
-        traceKey = (True or self.trace_masterKeyHandler)
+        traceKey = (True or g.trace_masterKeyHandler)
         c = self.c ; k = c.k
         eventType = event.type()
         ev = QtCore.QEvent

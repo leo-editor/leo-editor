@@ -1138,8 +1138,8 @@ class keyHandlerClass:
         self.swap_mac_keys                  = getBool('swap_mac_keys')
         self.trace_bind_key_exceptions      = getBool('trace_bind_key_exceptions')
         self.traceMasterCommand             = getBool('trace_masterCommand')
-        self.trace_masterKeyHandler         = getBool('trace_masterKeyHandler')
-        self.trace_masterKeyHandlerGC       = getBool('trace_masterKeyHandlerGC')
+        #### self.trace_masterKeyHandler         = getBool('trace_masterKeyHandler')
+        #### self.trace_masterKeyHandlerGC       = getBool('trace_masterKeyHandlerGC')
         self.trace_key_event                = getBool('trace_key_event')
         self.trace_minibuffer               = getBool('trace_minibuffer')
         self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
@@ -1555,6 +1555,7 @@ class keyHandlerClass:
         if trace: print('k.finishCreate')
 
         k = self ; c = k.c
+        
         k.createInverseCommandsDict()
 
         # Important: bindings exist even if c.showMiniBuffer is False.
@@ -2878,8 +2879,8 @@ class keyHandlerClass:
 
         '''This is the handler for almost all key bindings.'''
         
-        trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
-        traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+        trace = (False or g.trace_masterKeyHandler) and not g.app.unitTesting
+        traceGC = g.trace_masterKeyHandlerGC and not g.app.unitTesting
         verbose = True
         
         k,c = self,self.c ; gui = g.app.gui
@@ -3103,7 +3104,7 @@ class keyHandlerClass:
     def handleMiniBindings (self,event,state,stroke):
 
         k = self ; c = k.c
-        trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+        trace = (False or g.trace_masterKeyHandler) and not g.app.unitTesting
 
         # Special case for bindings handled in k.getArg:
             

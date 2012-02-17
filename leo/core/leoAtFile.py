@@ -127,7 +127,9 @@ class atFile:
 
     #@+others
     #@+node:ekr.20041005105605.7: ** at.Birth & init
-    #@+node:ekr.20041005105605.8: *3*  atFile.__init__
+    #@+node:ekr.20041005105605.8: *3*  atFile.Birth
+    # Note: g.getScript also call the at.__init__ and at.finishCreate().
+
     def __init__(self,c):
 
         # **Warning**: all these ivars must **also** be inited in initCommonIvars.
@@ -137,19 +139,22 @@ class atFile:
         self.errors = 0 # Make sure at.error() works even when not inited.
 
         # User options.
-        if g.new_load:
-            # Will be set in at.finishCreate.
-            # We can delay setting these because the read logic doesn't use them.
-            self.checkPythonCodeOnWrite = None
-            self.underindentEscapeString = None
-        else:
-            self.checkPythonCodeOnWrite = c.config.getBool(
-                'check-python-code-on-write',default=True)
-            self.underindentEscapeString = c.config.getString(
-                'underindent-escape-string') or '\\-'
+        self.checkPythonCodeOnWrite = None
+        self.underindentEscapeString = None
                 
         self.dispatch_dict = self.defineDispatchDict()
             # Define the dispatch dictionary used by scanText4.
+            
+    def finishCreate(self):
+        
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('at.finishCreate')
+        
+        c = self.c
+        self.checkPythonCodeOnWrite = c.config.getBool(
+            'check-python-code-on-write',default=True)
+        self.underindentEscapeString = c.config.getString(
+            'underindent-escape-string') or '\\-'
     #@+node:ekr.20041005105605.9: *3* at.defineDispatchDict
     def defineDispatchDict(self):
         
@@ -191,17 +196,6 @@ class atFile:
             # New 4.8 sentinels
             self.endRef: self.readEndRef,
         }
-    #@+node:ekr.20120212220616.10538: *3* at.finishCreate (g.new_load only)
-    def finishCreate (self):
-        
-        c = self.c
-        
-        assert g.new_load
-        
-        self.checkPythonCodeOnWrite = c.config.getBool(
-            'check-python-code-on-write',default=True)
-        self.underindentEscapeString = c.config.getString(
-            'underindent-escape-string') or '\\-'
     #@+node:ekr.20041005105605.10: *3* at.initCommonIvars
     def initCommonIvars (self):
 
@@ -302,6 +296,7 @@ class atFile:
         assert root
         self.initCommonIvars()
         
+        ####
         # Make sure that these have been inited from settings.
         # When new_load is True, this will be done in at.finishCreate.
         assert at.checkPythonCodeOnWrite is not None
@@ -4713,7 +4708,8 @@ class atFile:
         All output produced by leoAtFile module goes here."""
 
         trace = False and not g.unitTesting
-        at = self ; tag = self.underindentEscapeString
+        at = self
+        tag = self.underindentEscapeString
         f = at.outputFile
 
         if s and f:

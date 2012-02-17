@@ -751,11 +751,17 @@ class baseFileCommands:
                 fc.resolveTnodeLists()
                     # Do this before reading external files.
                 c.setFileTimeStamp(fileName)
-                if readAtFileNodesFlag:
-                    # Redraw before reading the @file nodes so the screen isn't blank.
-                    # This is important for big files like LeoPy.leo.
-                    c.redraw()
-                    fc.readExternalFiles(fileName)
+                
+                if g.new_load:
+                    # We can't do a redraw until init is complete.
+                    # Thus, we'll call fc.readExternalFiles in g.openWithFileName.
+                    pass
+                else:
+                    if readAtFileNodesFlag:
+                        # Redraw before reading the @file nodes so the screen isn't blank.
+                        # This is important for big files like LeoPy.leo.
+                        c.redraw()
+                        fc.readExternalFiles(fileName)
                 
                 if g.new_load:
                     pass

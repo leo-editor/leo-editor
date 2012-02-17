@@ -493,7 +493,9 @@ class leoBody (HighLevelInterface):
         self.numberOfEditors = 1
         self.pb = None # paned body widget.
 
-        self.use_chapters = c.config.getBool('use_chapters')
+        ####
+        # self.use_chapters = c.config.getBool('use_chapters')
+        self.use_chapters = None
 
         # Must be overridden in subclasses...
         self.colorizer = None
@@ -802,9 +804,12 @@ class leoBody (HighLevelInterface):
     def createChapterIvar (self,w):
 
         c = self.c ; cc = c.chapterController
+        
+        #### Was in ctor.
+        use_chapters = c.config.getBool('use_chapters')
 
         if not hasattr(w,'leo_chapter') or not w.leo_chapter:
-            if cc and self.use_chapters:
+            if cc and use_chapters:
                 w.leo_chapter = cc.getSelectedChapter()
             else:
                 w.leo_chapter = None
@@ -879,8 +884,11 @@ class leoBody (HighLevelInterface):
     def updateInjectedIvars (self,w,p):
 
         c = self.c ; cc = c.chapterController
+        
+        # Was in ctor.
+        use_chapters = c.config.getBool('use_chapters')
 
-        if cc and self.use_chapters:
+        if cc and use_chapters:
             w.leo_chapter = cc.getSelectedChapter()
         else:
             w.leo_chapter = None
@@ -1781,6 +1789,7 @@ class leoTree:
     def __init__ (self,frame):
 
         self.frame = frame
+        
         self.c = frame.c
 
         self.edit_text_dict = {}
@@ -2225,7 +2234,10 @@ class leoTree:
 
         frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
 
-        if self.use_chapters:
+        # Was in ctor.
+        use_chapters = c.config.getBool('use_chapters')
+
+        if use_chapters:
             cc = c.chapterController
             theChapter = cc and cc.getSelectedChapter()
             if theChapter:
@@ -2454,16 +2466,21 @@ class nullFrame (leoFrame):
         # g.trace('nullFrame')
 
         leoFrame.__init__(self,gui) # Init the base class.
+
         assert(self.c is None)
 
-        self.body = None
         self.bodyCtrl = None
         self.iconBar = nullIconBarClass(self.c,self)
         self.isNullFrame = True
         self.outerFrame = None
         self.statusLineClass = nullStatusLineClass
         self.title = title
-        self.tree = nullTree(frame=self) # New in Leo 4.4.4 b3.
+        
+        # Create the component objects.
+        self.body = nullBody(frame=self,parentFrame=None)
+        self.log  = nullLog (frame=self,parentFrame=None)
+        self.menu = leoMenu.nullMenu(frame=self)
+        self.tree = nullTree(frame=self)
 
         # Default window position.
         self.w = 600
@@ -2477,18 +2494,24 @@ class nullFrame (leoFrame):
     #@+node:ekr.20040327105706.2: *3* finishCreate (nullFrame)
     def finishCreate(self,c):
 
+        #### The new ctor rule should make this unnecessary.
         self.c = c
+        assert c
 
         # g.trace('(nullFrame)')
+        
+        #### This might go away once c is set properly in leoFrame ctor.
+        self.body.c = c
+        self.log.c = c
+        self.menu.c = c
+        self.tree.c = c
 
-        # Create do-nothing component objects.
-        self.tree = nullTree(frame=self)
-        self.body = nullBody(frame=self,parentFrame=None)
-        self.log  = nullLog (frame=self,parentFrame=None)
-        self.menu = leoMenu.nullMenu(frame=self)
-
-        # 2010/10/20: The log will be created later.
-        # c.setLog()
+        #### Now done in ctor.
+            # Create do-nothing component objects.
+            # self.tree = nullTree(frame=self)
+            # self.body = nullBody(frame=self,parentFrame=None)
+            # self.log  = nullLog (frame=self,parentFrame=None)
+            # self.menu = leoMenu.nullMenu(frame=self)
 
         assert(c.undoer)
     #@+node:ekr.20061109124552: *3* Overrides
@@ -2620,6 +2643,9 @@ class nullLog (leoLog):
         self.logNumber = 0
         self.widget = self.createControl(parentFrame)
             # self.logCtrl is now a property of the base leoLog class.
+    #@+node:ekr.20120216123546.10951: *4* finishCreate (nullLog)
+    def finishCreate(self):
+        pass
     #@+node:ekr.20041012083237.1: *4* createControl
     def createControl (self,parentFrame):
 

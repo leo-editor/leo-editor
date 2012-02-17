@@ -146,6 +146,11 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e372e31362e3671017d71025808000000616e6e6f7461746571037d7104735805000000302e382e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e372e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31302e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20120217052728.3921"><vh>Failing unit tests</vh>
+<v t="ekr.20111210175541.3957"><vh>@test refresh @shadow links clones</vh>
+<v t="ekr.20111213122041.3931"><vh>shadow node 1</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1045,6 +1050,26 @@ try:
     assert child.h.lower() == h.lower(),child.h
 finally:
     setup()</t>
+<t tx="ekr.20111210175541.3957">if not g.app.isExternalUnitTest:
+    # print('start',p.h)
+    h = '@shadow unittest/at-shadow-unlink-clones.py'
+    root = g.findNodeAnywhere(c,h)
+    assert root
+    assert root.h == h,repr(root.h)
+    child = p.firstChild()
+    assert child
+    assert child.isCloned(),'fail 1'
+    c.selectPosition(root)
+    fn = root.atShadowFileNodeName()
+    assert fn
+    c.atFileCommands.readOneAtShadowNode (fn,root,force=True)
+    assert child.isCloned(),'fail 2'
+    c.selectPosition(p)
+    c.redraw()
+</t>
 <t tx="ekr.20111211094936.3970"></t>
+<t tx="ekr.20111213122041.3931"># node 1 text A.
+</t>
+<t tx="ekr.20120217052728.3921"></t>
 </tnodes>
 </leo_file>

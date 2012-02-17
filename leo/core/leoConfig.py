@@ -1066,7 +1066,10 @@ class ParserBaseClass:
         p = g.app.config.settingsRoot(c)
         if not p:
             # c.rootPosition() doesn't exist yet.
-            print('**************** ParserBaseClass.traverse: no settings tree for %s' % c.shortFileName())
+            if not g.unitTesting:
+                print('****************'
+                    'ParserBaseClass.traverse: no settings tree for %s' % (
+                        c.shortFileName()))
             return {},{}
 
         self.settingsDict = g.TypedDict(
@@ -1577,6 +1580,7 @@ class configClass:
         """Get the setting and make sure its type matches the expected type."""
         
         trace = False and not g.unitTesting
+        verbose = False
 
         isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
 
@@ -1587,21 +1591,24 @@ class configClass:
             if d:
                 val,junk = self.getValFromDict(d,setting,kind)
                 if val is not None:
-                    if trace: g.trace('**1',setting,val,d.name())
+                    if trace: g.trace('**%-7s %45s %s' % ('local',setting,val))
                     return val
 
         for d in self.localOptionsList:
             # For myLeoSettings.leo and leoSettings.leo.
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                if trace: g.trace('**2',setting,val,d.name())
+                if trace: g.trace('%-7s %45s %s' % ('global',setting,val))
                 return val
 
         for d in self.dictList:
             # For hard-coded options...
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                if trace: g.trace('**3',setting,val,d.name())
+                if trace:
+                    g.trace('%-7s %45s %s' % ('default',setting,val))
+                    #### Weird:
+                    g.trace(g.callers(6))
                 return val
 
         # New in Leo 4.6. Use settings in leoSettings.leo *last*.
@@ -1611,10 +1618,10 @@ class configClass:
             if d:
                 val,junk = self.getValFromDict(d,setting,kind)
                 if val is not None:
-                    if trace: g.trace('**4',setting,val,d.name())
+                    if trace: g.trace('%-7s %45s %s' % ('last',setting,val))
                     return val
 
-        if trace:
+        if trace and verbose:
             fn = c and c.shortFileName() or '<no file>'
             g.trace(setting,None,fn)
         return None

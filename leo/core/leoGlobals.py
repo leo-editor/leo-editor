@@ -44,6 +44,9 @@ trace_gc_calls = False
 trace_gc_verbose = False
 trace_gc_inited = False
 
+trace_masterKeyHandler = False
+trace_masterKeyHandlerGC = False
+
 # Traces of scrolling problems.
 trace_scroll = False
 
@@ -2131,35 +2134,6 @@ def makePathRelativeTo (fullPath,basePath):
         return s
     else:
         return fullPath
-#@+node:ekr.20070412082527: *3* g.openLeoOrZipFile
-# This is used in several places besides g.openWithFileName.
-
-def openLeoOrZipFile (fileName):
-
-    try:
-        isZipped = zipfile.is_zipfile(fileName)
-        if isZipped:
-            theFile = zipfile.ZipFile(fileName,'r')
-            if not theFile: return None,False
-            # Read the file into an StringIO file.
-            aList = theFile.namelist()
-            name = aList and len(aList) == 1 and aList[0]
-            if not name: return None,False
-            s = theFile.read(name)
-            if g.isPython3:
-                theStringFile = StringIO(g.ue(s,'utf-8'))
-            else:
-                theStringFile =  StringIO(s)
-            return theStringFile,True
-        else:
-            mode = 'rb'
-            theFile = open(fileName,mode)
-        return theFile,isZipped
-    except IOError:
-        # Do not use string + here: it will fail for non-ascii strings!
-        if not g.unitTesting:
-            g.es_print("can not open:",fileName,color="blue")
-        return None,False
 #@+node:ekr.20090520055433.5945: *3* g.openWithFileName & helpers
 def openWithFileName(fileName,old_c,
     enableLog=True,gui=None,readAtFileNodesFlag=True):
@@ -2174,6 +2148,7 @@ def openWithFileName(fileName,old_c,
     trace = (False or g.trace_startup) and not g.unitTesting
     if trace: print('g.openWithFileName:%s' % repr(fileName))
     
+    lm = g.app.loadManager
     if not fileName: return False, None
     isLeo,fn,relFn = g.mungeFileName(fileName)
     
@@ -2181,9 +2156,13 @@ def openWithFileName(fileName,old_c,
     c = g.findOpenFile(fn)
     if c: return True,c.frame
 
-    # Open the file.
+    # Disable the log.
     app.setLog(None)
     app.lockLog()
+    
+    # Phase 1: Start the init process.
+    # A: Open the file **if** the file is a .leo file.
+    # B: Call app.newLeoCommanderAndFrame.
     
     if isLeo:
         # (old_config only): Read the file the first time to get the settings.
@@ -2192,24 +2171,33 @@ def openWithFileName(fileName,old_c,
                 # Call g.app.config.openSettingsFile
                 # Call g.app.config.updateSettings
         g.doHook('open0')
+        
+        #### To do: Never fail.  Create an empty .leo file if no file.
         c,theFile = g.openFileCommanderAndFrame(old_c,gui,fn,relFn)
             # Call openLeoOrZipFile  
             # Call g.app.newLeoCommanderAndFrame.
+            #### (new_config) We can not create a real gui frame here!!!
     else:
         c,theFile = g.openWrapperLeoFile(old_c,fn,gui),None
             # Call g.app.newLeoCommanderAndFrame, creating an @<file> node.
             # Complex init of the wrapper .leo file.
 
-    app.unlockLog()
-    if not c: return False,None
+    # Enable the log.
+    if g.new_config:
+        #### We can not use the new log here!
+        if not c:
+            app.unlockLog() # Restore the old log.
+            return False,None
+    else:
+        app.unlockLog()
+        if not c: return False,None
+        assert c.frame and c.frame.c == c
+        c.frame.log.enable(enableLog)
     
-    # Init the open file.
-    assert c.frame and c.frame.c == c
-    c.frame.log.enable(enableLog)
-    
-    # Handle the open hooks and open the log for c.
+    # Phase 2: Create the outline from the .leo file.
     if theFile:
         g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        #### We could remove the readAtFileNodes flag.
         ok = g.readOpenedLeoFile(c,old_c,gui,fn,theFile,readAtFileNodesFlag)
             # Call c.fileCommands.openLeoFile to read the .leo file.
             # Call c.config.setRecentFiles for all items in g.app.windowList.
@@ -2217,6 +2205,31 @@ def openWithFileName(fileName,old_c,
         if not ok: return False,None
         g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
         
+    # Phase 3: (new_config only): Update the local settings.
+    # No calls should to c.config.getX should happen before this phase is complete.
+    assert c.rootPosition()
+    if g.new_config:
+        # c.configInited will be False for global settings.
+        # This is not an error.
+        c.configInited = lm.initLocalSettings(c)
+
+    # Phase 4: (new_config only): call all finishCreate methods.
+    if g.new_config:
+        c.initConfigSettings()
+        #### From newLeoCommanderAndFrame.
+        #### Do a complete init of the Commander,frame, and all other classes.
+        #### This works even if c.config.get always returns None
+        c.frame.finishCreate(c)
+        c.finishCreate(initEditCommanders=c.configInited)
+        # Finish initing the subcommanders.
+        c.undoer.clearUndoState() # Menus must exist at this point.
+        
+        #### From fc.getLeoFile.
+        if readAtFileNodesFlag:
+            c.redraw()
+            c.fileCommands.readExternalFiles(fileName)
+    
+    # Phase 5: Complete the initialization.
     g.app.writeWaitingLog(c)
     c.setLog()
     g.createMenu(c,fn)
@@ -2228,7 +2241,6 @@ def openWithFileName(fileName,old_c,
         # sets focus & calls k.showStateAndMode.
         # c.frame.initCompleteHint()
     return True,c.frame
-    
 #@+node:ekr.20090520055433.5951: *4* g.createMenu
 def createMenu(c,fileName=None):
 
@@ -2285,29 +2297,6 @@ def finishOpen(c):
 
     c.frame.initCompleteHint()
     return True
-#@+node:ekr.20090520055433.5950: *4* g.readOpenedLeoFile
-def readOpenedLeoFile(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
-    
-    # New in Leo 4.10.  The open1 event does not allow an override of the init logic.
-    assert theFile
-
-    ok = c.fileCommands.openLeoFile(
-        theFile,fileName,
-        readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-
-    if ok:
-        for z in g.app.windowList:
-            # Bug fix: 2007/12/07: don't change frame var.
-            # The recent files list has been updated by c.updateRecentFiles.
-            z.c.config.setRecentFiles(g.app.config.recentFiles)
-            
-        # Bug fix in 4.4.
-        if not c.openDirectory:
-            c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
-    else:
-        g.app.closeLeoWindow(c.frame)
-    
-    return ok
 #@+node:ekr.20090520055433.5954: *4* g.mungeFileName
 def mungeFileName(fileName):
 
@@ -2337,6 +2326,37 @@ def openFileCommanderAndFrame(old_c,gui,fileName,relativeFileName):
 
     c.isZipped = isZipped
     return c,theFile
+#@+node:ekr.20070412082527: *4* g.openLeoOrZipFile
+# Strictly speaking, this is not a helper of g.openWithFileName because
+# This is used in several places besides g.openWithFileName.
+# However, it's convenient to pretend that it is a helper.
+
+def openLeoOrZipFile (fileName):
+
+    try:
+        isZipped = zipfile.is_zipfile(fileName)
+        if isZipped:
+            theFile = zipfile.ZipFile(fileName,'r')
+            if not theFile: return None,False
+            # Read the file into an StringIO file.
+            aList = theFile.namelist()
+            name = aList and len(aList) == 1 and aList[0]
+            if not name: return None,False
+            s = theFile.read(name)
+            if g.isPython3:
+                theStringFile = StringIO(g.ue(s,'utf-8'))
+            else:
+                theStringFile =  StringIO(s)
+            return theStringFile,True
+        else:
+            mode = 'rb'
+            theFile = open(fileName,mode)
+        return theFile,isZipped
+    except IOError:
+        # Do not use string + here: it will fail for non-ascii strings!
+        if not g.unitTesting:
+            g.es_print("can not open:",fileName,color="blue")
+        return None,False
 #@+node:ekr.20080921154026.1: *4* g.openWrapperLeoFile
 def openWrapperLeoFile (old_c,fileName,gui):
 
@@ -2387,8 +2407,11 @@ def openWrapperLeoFile (old_c,fileName,gui):
 
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
+    if g.new_config:
+        pass
+    else:
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
 
     frame.c.setChanged(False)
         # Mark the outline clean.
@@ -2406,6 +2429,29 @@ def preRead(fileName):
     c = g.app.config.openSettingsFile(fileName)
     if c:
         g.app.config.updateSettings(c,localFlag=True)
+#@+node:ekr.20090520055433.5950: *4* g.readOpenedLeoFile
+def readOpenedLeoFile(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
+    
+    # New in Leo 4.10.  The open1 event does not allow an override of the init logic.
+    assert theFile
+
+    ok = c.fileCommands.openLeoFile(
+        theFile,fileName,
+        readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+
+    if ok:
+        for z in g.app.windowList:
+            # Bug fix: 2007/12/07: don't change frame var.
+            # The recent files list has been updated by c.updateRecentFiles.
+            z.c.config.setRecentFiles(g.app.config.recentFiles)
+            
+        # Bug fix in 4.4.
+        if not c.openDirectory:
+            c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
+    else:
+        g.app.closeLeoWindow(c.frame)
+    
+    return ok
 #@+node:ekr.20100125073206.8710: *3* g.readFileIntoString (Leo 4.7)
 def readFileIntoString (fn,
     encoding='utf-8',
@@ -4445,6 +4491,7 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
     # at = c.atFileCommands
     import leo.core.leoAtFile as leoAtFile
     at = leoAtFile.atFile(c)
+    at.finishCreate()
 
     w = c.frame.body.bodyCtrl
     p1 = p and p.copy()
@@ -5941,7 +5988,7 @@ class KeyStroke:
     def __le__ (self,other): return self.__lt__(other) or self.__eq__(other)    
     def __ne__ (self,other): return not self.__eq__(other)
     def __gt__ (self,other): return not self.__lt__(other) and not self.__eq__(other)  
-    def __ge__ (self,other): return not lsef.__lt__(other)
+    def __ge__ (self,other): return not self.__lt__(other)
     #@+node:ekr.20120203053243.10124: *4* ks.find, lower & startswith
     # These may go away later, but for now they make conversion of string strokes easier.
 

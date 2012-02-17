@@ -676,12 +676,17 @@ class LeoApp:
         if not app.initing:
             g.doHook("before-create-leo-frame",c=c)
                 # Was 'onCreate': too confusing.
-
+                
         frame.finishCreate(c)
         c.finishCreate(initEditCommanders)
-
+        
         # Finish initing the subcommanders.
         c.undoer.clearUndoState() # Menus must exist at this point.
+            
+        ####  ????? has this already been done???
+        if g.new_config:
+            if c.config.getBool('use_chapters') and c.chapterController:
+                c.chapterController.finishCreate()
 
         return c,frame
     #@+node:ekr.20031218072017.2189: *4* app.computeWindowTitle
@@ -1455,7 +1460,7 @@ class LoadManager:
 
         if not lm.globalSettingsDict:
             # This is not an error: we are initing a global setting.
-            return
+            return False
 
         # Create c.config.settingsDict & c.config.shortcutsDict.
         settings_d = lm.globalSettingsDict
@@ -1493,8 +1498,9 @@ class LoadManager:
             lm.traceShortcutsDict(shortcuts_d,verbose)
 
         # Set the c.conf ivars
-        c.config.settings_d = settings_d
-        c.config.shortcuts_d = shortcuts_d
+        c.config.settingsDict = settings_d
+        c.config.shortcutsDict = shortcuts_d
+        return True
     #@+node:ekr.20120215085903.10842: *4* lm.findSettingsRoot
     def findSettingsRoot(self,c):
 

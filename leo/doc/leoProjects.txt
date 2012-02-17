@@ -10866,8 +10866,11 @@ def openWrapperLeoFile (old_c,fileName,gui):
 
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
+    if g.new_config:
+        pass
+    else:
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
 
     frame.c.setChanged(False)
         # Mark the outline clean.
@@ -10901,6 +10904,10 @@ def createFrame (fileName,options):
             if select: doSelect(c2,select)
             if windowSize: doWindowSize(c2,windowSize)
             return c2,frame
+
+    # The file does not exist.
+        #### Can we call g.openWithFileName with an empty file???
+        #### Can g.openWithFileName *always* return a new window???
 
     # Create a _new_ frame & indicate it is the startup window.
     c,frame = g.app.newLeoCommanderAndFrame(
@@ -10984,6 +10991,7 @@ def openWithFileName(fileName,old_c,
     trace = (False or g.trace_startup) and not g.unitTesting
     if trace: print('g.openWithFileName:%s' % repr(fileName))
     
+    lm = g.app.loadManager
     if not fileName: return False, None
     isLeo,fn,relFn = g.mungeFileName(fileName)
     
@@ -10991,9 +10999,13 @@ def openWithFileName(fileName,old_c,
     c = g.findOpenFile(fn)
     if c: return True,c.frame
 
-    # Open the file.
+    # Disable the log.
     app.setLog(None)
     app.lockLog()
+    
+    # Phase 1: Start the init process.
+    # A: Open the file **if** the file is a .leo file.
+    # B: Call app.newLeoCommanderAndFrame.
     
     if isLeo:
         # (old_config only): Read the file the first time to get the settings.
@@ -11002,24 +11014,33 @@ def openWithFileName(fileName,old_c,
                 # Call g.app.config.openSettingsFile
                 # Call g.app.config.updateSettings
         g.doHook('open0')
+        
+        #### To do: Never fail.  Create an empty .leo file if no file.
         c,theFile = g.openFileCommanderAndFrame(old_c,gui,fn,relFn)
             # Call openLeoOrZipFile  
             # Call g.app.newLeoCommanderAndFrame.
+            #### (new_config) We can not create a real gui frame here!!!
     else:
         c,theFile = g.openWrapperLeoFile(old_c,fn,gui),None
             # Call g.app.newLeoCommanderAndFrame, creating an @<file> node.
             # Complex init of the wrapper .leo file.
 
-    app.unlockLog()
-    if not c: return False,None
+    # Enable the log.
+    if g.new_config:
+        #### We can not use the new log here!
+        if not c:
+            app.unlockLog() # Restore the old log.
+            return False,None
+    else:
+        app.unlockLog()
+        if not c: return False,None
+        assert c.frame and c.frame.c == c
+        c.frame.log.enable(enableLog)
     
-    # Init the open file.
-    assert c.frame and c.frame.c == c
-    c.frame.log.enable(enableLog)
-    
-    # Handle the open hooks and open the log for c.
+    # Phase 2: Create the outline from the .leo file.
     if theFile:
         g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        #### We could remove the readAtFileNodes flag.
         ok = g.readOpenedLeoFile(c,old_c,gui,fn,theFile,readAtFileNodesFlag)
             # Call c.fileCommands.openLeoFile to read the .leo file.
             # Call c.config.setRecentFiles for all items in g.app.windowList.
@@ -11027,6 +11048,31 @@ def openWithFileName(fileName,old_c,
         if not ok: return False,None
         g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
         
+    # Phase 3: (new_config only): Update the local settings.
+    # No calls should to c.config.getX should happen before this phase is complete.
+    assert c.rootPosition()
+    if g.new_config:
+        # c.configInited will be False for global settings.
+        # This is not an error.
+        c.configInited = lm.initLocalSettings(c)
+
+    # Phase 4: (new_config only): call all finishCreate methods.
+    if g.new_config:
+        c.initConfigSettings()
+        #### From newLeoCommanderAndFrame.
+        #### Do a complete init of the Commander,frame, and all other classes.
+        #### This works even if c.config.get always returns None
+        c.frame.finishCreate(c)
+        c.finishCreate(initEditCommanders=c.configInited)
+        # Finish initing the subcommanders.
+        c.undoer.clearUndoState() # Menus must exist at this point.
+        
+        #### From fc.getLeoFile.
+        if readAtFileNodesFlag:
+            c.redraw()
+            c.fileCommands.readExternalFiles(fileName)
+    
+    # Phase 5: Complete the initialization.
     g.app.writeWaitingLog(c)
     c.setLog()
     g.createMenu(c,fn)
@@ -11038,7 +11084,6 @@ def openWithFileName(fileName,old_c,
         # sets focus & calls k.showStateAndMode.
         # c.frame.initCompleteHint()
     return True,c.frame
-    
 #@+node:ekr.20090520055433.5951: *8* g.createMenu
 def createMenu(c,fileName=None):
 
@@ -11095,29 +11140,6 @@ def finishOpen(c):
 
     c.frame.initCompleteHint()
     return True
-#@+node:ekr.20090520055433.5950: *8* g.readOpenedLeoFile
-def readOpenedLeoFile(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
-    
-    # New in Leo 4.10.  The open1 event does not allow an override of the init logic.
-    assert theFile
-
-    ok = c.fileCommands.openLeoFile(
-        theFile,fileName,
-        readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-
-    if ok:
-        for z in g.app.windowList:
-            # Bug fix: 2007/12/07: don't change frame var.
-            # The recent files list has been updated by c.updateRecentFiles.
-            z.c.config.setRecentFiles(g.app.config.recentFiles)
-            
-        # Bug fix in 4.4.
-        if not c.openDirectory:
-            c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
-    else:
-        g.app.closeLeoWindow(c.frame)
-    
-    return ok
 #@+node:ekr.20090520055433.5954: *8* g.mungeFileName
 def mungeFileName(fileName):
 
@@ -11147,6 +11169,37 @@ def openFileCommanderAndFrame(old_c,gui,fileName,relativeFileName):
 
     c.isZipped = isZipped
     return c,theFile
+#@+node:ekr.20070412082527: *8* g.openLeoOrZipFile
+# Strictly speaking, this is not a helper of g.openWithFileName because
+# This is used in several places besides g.openWithFileName.
+# However, it's convenient to pretend that it is a helper.
+
+def openLeoOrZipFile (fileName):
+
+    try:
+        isZipped = zipfile.is_zipfile(fileName)
+        if isZipped:
+            theFile = zipfile.ZipFile(fileName,'r')
+            if not theFile: return None,False
+            # Read the file into an StringIO file.
+            aList = theFile.namelist()
+            name = aList and len(aList) == 1 and aList[0]
+            if not name: return None,False
+            s = theFile.read(name)
+            if g.isPython3:
+                theStringFile = StringIO(g.ue(s,'utf-8'))
+            else:
+                theStringFile =  StringIO(s)
+            return theStringFile,True
+        else:
+            mode = 'rb'
+            theFile = open(fileName,mode)
+        return theFile,isZipped
+    except IOError:
+        # Do not use string + here: it will fail for non-ascii strings!
+        if not g.unitTesting:
+            g.es_print("can not open:",fileName,color="blue")
+        return None,False
 #@+node:ekr.20080921154026.1: *8* g.openWrapperLeoFile
 def openWrapperLeoFile (old_c,fileName,gui):
 
@@ -11197,8 +11250,11 @@ def openWrapperLeoFile (old_c,fileName,gui):
 
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
+    if g.new_config:
+        pass
+    else:
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
 
     frame.c.setChanged(False)
         # Mark the outline clean.
@@ -11216,6 +11272,29 @@ def preRead(fileName):
     c = g.app.config.openSettingsFile(fileName)
     if c:
         g.app.config.updateSettings(c,localFlag=True)
+#@+node:ekr.20090520055433.5950: *8* g.readOpenedLeoFile
+def readOpenedLeoFile(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
+    
+    # New in Leo 4.10.  The open1 event does not allow an override of the init logic.
+    assert theFile
+
+    ok = c.fileCommands.openLeoFile(
+        theFile,fileName,
+        readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+
+    if ok:
+        for z in g.app.windowList:
+            # Bug fix: 2007/12/07: don't change frame var.
+            # The recent files list has been updated by c.updateRecentFiles.
+            z.c.config.setRecentFiles(g.app.config.recentFiles)
+            
+        # Bug fix in 4.4.
+        if not c.openDirectory:
+            c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
+    else:
+        g.app.closeLeoWindow(c.frame)
+    
+    return ok
 #@+node:ekr.20111011165246.15707: *4* Searches from Leo's web pages now work
 Updating Sphinx and using new .js files did the trick.
 #@+node:ekr.20110919113533.6818: *4* Added @button split-defs
@@ -14318,6 +14397,11 @@ def __init__(self,frame,fileName,relativeFileName=None):
         # Called from readSettingsFiles & openSettingsFiles logic.
 
     c = self
+    
+    # Configuration init flag.
+    self.configInited = False
+    
+    # Event flags...
     self.requestBringToFront = False
     self.requestedFocusWidget = None
     self.requestRedrawFlag = False
@@ -14374,16 +14458,17 @@ def __init__(self,frame,fileName,relativeFileName=None):
     self.initIvars()
     
     self.config = configSettings(c)
-    if g.new_config:
-        # We *must init the settings here!
-        lm = g.app.loadManager
-        assert lm
-        lm.initLocalSettings(c)
-
     g.app.config.setIvarsFromSettings(c)
     self.nodeHistory = nodeHistory(c)
     
-    self.initConfigSettings()
+    if g.new_config:
+        #### We'll have to deal with these later.
+        c.fixedWindowPosition = False
+        c.stayInTreeAfterSelect = False
+        c.use_body_focus_border = True
+        c.outlineHasInitialFocus = False
+    else:
+        self.initConfigSettings()
 
     c.setWindowPosition() # Do this after initing settings.
 
@@ -14403,7 +14488,7 @@ def __init__(self,frame,fileName,relativeFileName=None):
     import leo.core.leoUndo as leoUndo
 
     if trace and not g.trace_startup:
-         t2 = g.printDiffTime('%s: after imports' % (tag),t1)
+        t2 = g.printDiffTime('%s: after imports' % (tag),t1)
 
     self.shadowController = leoShadow.shadowController(c)
     self.fileCommands   = leoFileCommands.fileCommands(c)
@@ -14440,7 +14525,7 @@ def finishCreate (self,initEditCommanders=True):  # New in 4.4.
     trace = (False or g.trace_startup) and not g.unitTesting
     if trace: print('c.finishCreate')
     
-    c = self ; p = c.p
+    c = self ;  p = c.p
     c.miniBufferWidget = c.frame.miniBufferWidget
     # print('Commands.finishCreate',c.fileName())
     
@@ -14450,9 +14535,13 @@ def finishCreate (self,initEditCommanders=True):  # New in 4.4.
     c.keyHandler = c.k = k = g.app.gui.createKeyHandlerClass(c,
         useGlobalKillbuffer=True,
         useGlobalRegisters=True)
+        
+    #### A new call.
+    c.atFileCommands.finishCreate()
 
     if initEditCommanders:
         # A 'real' .leo file.
+        
         c.commandsDict = c.editCommandsManager.finishCreateEditCommanders()
         self.rstCommands.finishCreate()
 
@@ -14470,7 +14559,6 @@ def finishCreate (self,initEditCommanders=True):  # New in 4.4.
         g.registerHandler('idle',c.idle_focus_helper)
         
     c.frame.menu.finishCreate()
-
     c.frame.log.finishCreate()
     c.bodyWantsFocus()
 #@+node:ekr.20051007143620: *7* printCommandsDict
@@ -14546,8 +14634,14 @@ def initConfigSettings (self):
     if trace:
         print('c.initConfigSettings: %s' % g.app.gui.guiName())
         # print('c.initConfigSettings:', g.callers())
-
+        
     c = self
+        
+    if g.new_config:
+        if not c.configInited:
+            g.trace('********** c.configInited is False')
+            return
+
     c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
     c.collapse_nodes_after_move = c.config.getBool('collapse_nodes_after_move')
         # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
@@ -14698,10 +14792,10 @@ def remove_border(self,c,w):
 #@+node:ekr.20110605121601.18540: *5* eventFilter
 def eventFilter(self, obj, event):
 
-    trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
+    trace = (False or g.trace_masterKeyHandler) and not g.unitTesting
     verbose = True
     traceEvent = False # True: call self.traceEvent.
-    traceKey = (True or self.trace_masterKeyHandler)
+    traceKey = (True or g.trace_masterKeyHandler)
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
@@ -16806,7 +16900,10 @@ self.setSelectedLabelState(p)
 
 frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
 
-if self.use_chapters:
+# Was in ctor.
+use_chapters = c.config.getBool('use_chapters')
+
+if use_chapters:
     cc = c.chapterController
     theChapter = cc and cc.getSelectedChapter()
     if theChapter:
@@ -16855,8 +16952,14 @@ def initConfigSettings (self):
     if trace:
         print('c.initConfigSettings: %s' % g.app.gui.guiName())
         # print('c.initConfigSettings:', g.callers())
-
+        
     c = self
+        
+    if g.new_config:
+        if not c.configInited:
+            g.trace('********** c.configInited is False')
+            return
+
     c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
     c.collapse_nodes_after_move = c.config.getBool('collapse_nodes_after_move')
         # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
@@ -17399,8 +17502,8 @@ def masterKeyHandler (self,event):
 
     '''This is the handler for almost all key bindings.'''
     
-    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
-    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+    trace = (False or g.trace_masterKeyHandler) and not g.app.unitTesting
+    traceGC = g.trace_masterKeyHandlerGC and not g.app.unitTesting
     verbose = True
     
     k,c = self,self.c ; gui = g.app.gui
@@ -17623,7 +17726,7 @@ def getPaneBinding (self,stroke,w):
 def handleMiniBindings (self,event,state,stroke):
 
     k = self ; c = k.c
-    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    trace = (False or g.trace_masterKeyHandler) and not g.app.unitTesting
 
     # Special case for bindings handled in k.getArg:
         
@@ -17884,6 +17987,7 @@ def get (self,c,setting,kind):
     """Get the setting and make sure its type matches the expected type."""
     
     trace = False and not g.unitTesting
+    verbose = False
 
     isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
 
@@ -17894,21 +17998,24 @@ def get (self,c,setting,kind):
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                if trace: g.trace('**1',setting,val,d.name())
+                if trace: g.trace('**%-7s %45s %s' % ('local',setting,val))
                 return val
 
     for d in self.localOptionsList:
         # For myLeoSettings.leo and leoSettings.leo.
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
-            if trace: g.trace('**2',setting,val,d.name())
+            if trace: g.trace('%-7s %45s %s' % ('global',setting,val))
             return val
 
     for d in self.dictList:
         # For hard-coded options...
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
-            if trace: g.trace('**3',setting,val,d.name())
+            if trace:
+                g.trace('%-7s %45s %s' % ('default',setting,val))
+                #### Weird:
+                g.trace(g.callers(6))
             return val
 
     # New in Leo 4.6. Use settings in leoSettings.leo *last*.
@@ -17918,10 +18025,10 @@ def get (self,c,setting,kind):
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                if trace: g.trace('**4',setting,val,d.name())
+                if trace: g.trace('%-7s %45s %s' % ('last',setting,val))
                 return val
 
-    if trace:
+    if trace and verbose:
         fn = c and c.shortFileName() or '<no file>'
         g.trace(setting,None,fn)
     return None
@@ -21632,7 +21739,10 @@ self.setSelectedLabelState(p)
 
 frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
 
-if self.use_chapters:
+# Was in ctor.
+use_chapters = c.config.getBool('use_chapters')
+
+if use_chapters:
     cc = c.chapterController
     theChapter = cc and cc.getSelectedChapter()
     if theChapter:
@@ -25655,6 +25765,7 @@ def finishCreate (self):
     if trace: print('k.finishCreate')
 
     k = self ; c = k.c
+    
     k.createInverseCommandsDict()
 
     # Important: bindings exist even if c.showMiniBuffer is False.
@@ -25932,543 +26043,304 @@ def bindOpenWith (self,shortcut,name,data):
     # Use k.registerCommand to set the shortcuts in the various binding dicts.
     commandName = 'open-with-%s' % name.lower()
     k.registerCommand(commandName,shortcut,openWithCallback,pane='all',verbose=False)
-#@+node:ekr.20120201084932.10043: ** Properly link shortcuts nodes
-#@+node:ekr.20041122094813: *3* << configClass class data >> (g.app.config)
-@others
+#@+node:ekr.20120214165710.10725: **  new_config notes (Do not delete)
+#@+node:ekr.20120211052437.10731: *3* Notes about loading
+@nocolor-node
 
-dictList = [ivarsDict,encodingIvarsDict,defaultsDict]
-    # List of dictionaries to search for hard-coded values.
-    # Order not too important.
-immutable_leo_settings_shortcuts_dict = {}
-    # The initial shortcut settings in leoSettings.leo.
-    # New in Leo 4.10.
-immutable_my_leo_settings_shortcuts_dict = {}
-    # The initial shortcut settings in myLeoSettings.leo.
-    # New in Leo 4.10.
-localOptionsDict = {}
-    # Keys are commanders.  Values are optionsDicts.
-localShortcutsDict = {}
-    # Keys are commanders.  Values are settings dicts created by make_shortcuts_dicts.
-    # New in Leo 4.10.
-localOptionsList = []
-
-warningsDict = {}
-    # Keys are setting names, values are type names.
-    # Used by get() or allies.
-#@+node:ekr.20041117062717.1: *4* defaultsDict (g.app.config)
-@ This contains only the "interesting" defaults.
-Ints and bools default to 0, floats to 0.0 and strings to "".
-@c
-
-defaultBodyFontSize = g.choose(sys.platform=="win32",9,12)
-defaultLogFontSize  = g.choose(sys.platform=="win32",8,12)
-defaultMenuFontSize = g.choose(sys.platform=="win32",9,12)
-defaultTreeFontSize = g.choose(sys.platform=="win32",9,12)
-
-defaultsDict = g.TypedDict(
-    name='g.app.config.defaultsDict',
-    keyType=type('key'),valType=g.GeneralSetting)
-
-defaultsData = (
-    # compare options...
-    ("ignore_blank_lines","bool",True),
-    ("limit_count","int",9),
-    ("print_mismatching_lines","bool",True),
-    ("print_trailing_lines","bool",True),
-    # find/change options...
-    ("search_body","bool",True),
-    ("whole_word","bool",True),
-    # Prefs panel.
-    # ("default_target_language","language","python"),
-    ("target_language","language","python"), # Bug fix: 6/20,2005.
-    ("tab_width","int",-4),
-    ("page_width","int",132),
-    ("output_doc_chunks","bool",True),
-    ("tangle_outputs_header","bool",True),
-    # Syntax coloring options...
-    # Defaults for colors are handled by leoColor.py.
-    ("color_directives_in_plain_text","bool",True),
-    ("underline_undefined_section_names","bool",True),
-    # Window options...
-    ("allow_clone_drags","bool",True),
-    ("body_pane_wraps","bool",True),
-    ("body_text_font_family","family","Courier"),
-    ("body_text_font_size","size",defaultBodyFontSize),
-    ("body_text_font_slant","slant","roman"),
-    ("body_text_font_weight","weight","normal"),
-    ("enable_drag_messages","bool",True),
-    ("headline_text_font_family","string",None),
-    ("headline_text_font_size","size",defaultLogFontSize),
-    ("headline_text_font_slant","slant","roman"),
-    ("headline_text_font_weight","weight","normal"),
-    ("log_text_font_family","string",None),
-    ("log_text_font_size","size",defaultLogFontSize),
-    ("log_text_font_slant","slant","roman"),
-    ("log_text_font_weight","weight","normal"),
-    ("initial_window_height","int",600),
-    ("initial_window_width","int",800),
-    ("initial_window_left","int",10),
-    ("initial_window_top","int",10),
-    ("initial_splitter_orientation","string","vertical"),
-    ("initial_vertical_ratio","ratio",0.5),
-    ("initial_horizontal_ratio","ratio",0.3),
-    ("initial_horizontal_secondary_ratio","ratio",0.5),
-    ("initial_vertical_secondary_ratio","ratio",0.7),
-    # ("outline_pane_scrolls_horizontally","bool",False),
-    ("split_bar_color","color","LightSteelBlue2"),
-    ("split_bar_relief","relief","groove"),
-    ("split_bar_width","int",7),
-)
-#@+node:ekr.20041118062709: *4* define encodingIvarsDict (g.app.config)
-encodingIvarsDict = g.TypedDict(
-    name='g.app.config.encodingIvarsDict',
-    keyType=type('key'),valType=g.GeneralSetting)
-
-encodingIvarsData = (
-    ("default_at_auto_file_encoding","string","utf-8"),
-    ("default_derived_file_encoding","string","utf-8"),
-    ("new_leo_file_encoding","string","UTF-8"),
-        # Upper case for compatibility with previous versions.
-    ("defaultEncoding","string",None),
-        # Defaults to None so it doesn't override better defaults.
-)
-#@+node:ekr.20041117072055: *4* ivarsDict (g.app.config)
-# Each of these settings sets the corresponding ivar.
-# Also, the c.configSettings settings class inits the corresponding commander ivar.
-
-ivarsDict = g.TypedDict(
-    name='g.app.config.ivarsDict',
-    keyType=type('key'),valType=g.GeneralSetting)
-
-ivarsData = (
-    ("at_root_bodies_start_in_doc_mode","bool",True),
-        # For compatibility with previous versions.
-    ("create_nonexistent_directories","bool",False),
-    ("output_initial_comment","string",""),
-        # "" for compatibility with previous versions.
-    ("output_newline","string","nl"),
-    ("page_width","int","132"),
-    ("read_only","bool",True),
-        # Make sure we don't alter an illegal leoConfig.txt file!
-    ("redirect_execute_script_output_to_log_pane","bool",False),
-    ("relative_path_base_directory","string","!"),
-    ("remove_sentinels_extension","string",".txt"),
-    ("save_clears_undo_buffer","bool",False),
-    ("stylesheet","string",None),
-    ("tab_width","int",-4),
-    ("target_language","language","python"), # Bug fix: added: 6/20/2005.
-    ("trailing_body_newlines","string","asis"),
-    ("use_plugins","bool",True),
-        # New in 4.3: use_plugins = True by default.
-    # use_pysco can not be set by 4.3:  config processing happens too late.
-        # ("use_psyco","bool",False),
-    ("undo_granularity","string","word"),
-        # "char","word","line","node"
-    ("write_strips_blank_lines","bool",False),
-)
-#@+node:ekr.20041118195812: *3* c.config.Setters
-if g.new_config:
-    # make_shortcuts_dict does not exits in new_config.
-    @others
-else:
-    << OLD c.config.setters >>
-#@+node:ekr.20120215072959.12476: *4* << OLD c.config.setters >>
-def set (self,setting,kind,val):
-    '''Not used during startup: useful for unit tests.'''
-    g.app.config.set(self.c,setting,kind,val)
-
-def setRecentFiles (self,files):
-    '''Update the recent files list.'''
-    g.app.config.appendToRecentFiles(files)
-
-def make_shortcuts_dicts (self,d,localFlag):
-    return g.app.config.make_shortcuts_dicts(self.c,d,localFlag)
-#@+node:ekr.20120215072959.12475: *4* c.config.set (new_config)
-def set (self,p,kind,name,val):
-
-    """Init the setting for name to val."""
-
-    trace = False and not g.unitTesting
-    if trace: g.trace(kind,name,val)
+Reading any file (including settings files) will be done as follows:
     
-    #### import leo.core.leoConfig as leoConfig
-    
-    assert g.new_config
+1. Create a commander for the file.
 
-    c = self.c
+    **Important**: The gui is known, so we can create a frame.
+    However, we don't want to *draw* the frame without knowing all settings.
 
-    # Note: when kind is 'shortcut', name is a command name.
-    key = g.app.config.munge(name)
+    To do: Can we create a frame without drawing it??
+    
+2. Physically read the .leo file using the sax parser.
 
-    # if kind and kind.startswith('setting'): g.trace("c.config %10s %15s %s" %(kind,val,name))
-    d = self.settingsDict
-    assert isinstance(d,g.TypedDict),d
+    To do: Can be done at all?? That is, can it be done using only partially inited commander?
+    To do: try an experiment!
+    
+    To do: Can this be done *without* knowing any settings??
+    It would seem essential, but I'm not entirely clear about this.
+    
+3. Handle the settings in the file.
 
-    gs = d.get(key)
-    if gs:
-        assert isinstance(gs,g.GeneralSetting),gs
-        path = gs.path
-        if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
-            g.es("over-riding setting:",name,"from",path)
+    A. Parse the @settings tree in the file.
+    B. Merge the settings with previous settings.
+       Note: this may set LoadManager ivars.
+    C. (New) create a *single* config dict, so that c.config.get is very fast.
+    
+4. Enable plugins after *all* settings have been read?
 
-    ####
-    # old config: we can't use c here: it may be destroyed!
-    # new config: we *can* user c here. it persists.
-    gs = g.GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
-    d.replace(key,gs)
-#@+node:ekr.20120215072959.12478: *4* c.config.setRecentFiles (new_config)
-def setRecentFiles (self,files):
+    To do: do we have to enable plugins all at once, or can we do that for each file??
     
-    '''Update the recent files list.'''
-    
-    g.app.config.appendToRecentFiles(files)
-#@+node:ekr.20120122070219.10162: *3* make_shortcuts_dicts (g.app.config) & helpers
-def make_shortcuts_dicts (self,c,d,localFlag):
-    
-    '''Make all settings dicts related to c and d.
-    
-    return the newly-made local dict or None.'''
-    
-    trace = False and not g.unitTesting
-    fn = c.shortFileName().lower()
-    result = {} # The newly-made local dict, or {} for non-local files.
-    test_result = [] # For unit tests.
-    
-    def message(d,name):
-        return '%4s keys %s' % (len(list(d.keys())),name)
+5. Draw the frame, thereby generating events to be handled by plugins.
+#@+node:ekr.20120214060149.15849: *3* We *will* read leoSettings/myLeoSettings twice
+@nocolor-node
 
-    # g.trace('self',self)
-    # g.trace('c',c)
-    # g.trace('c.config',c.config)
-    # g.trace('make_shortcuts_dict',len(list(d.keys())),g.callers())
+The simplest thing that could possibly work is to *reread* leoSettings.leo or
+myLeoSettings.leo if they appear on the command line, that is, if Leo is going
+to create a window for these files. Leo will load files in two phases:
 
-    if fn == 'leosettings.leo':
-        if not g.app.config.immutable_leo_settings_shortcuts_dict:
-            if trace: g.trace(message(d,'immutable_leo_settings_shortcuts_dict'))
-            g.app.config.immutable_leo_settings_shortcuts_dict = d
-    elif fn == 'myleosettings.leo':
-        if not g.app.config.immutable_my_leo_settings_shortcuts_dict:
-            if trace: g.trace(message(d,'immutable_my_leo_settings_shortcuts_dict'))
-            g.app.config.immutable_my_leo_settings_shortcuts_dict = d
-        if localFlag:
-            if trace: message(d,'settingsDict: %s' % (fn))
-            d1 = g.app.config.immutable_leo_settings_shortcuts_dict
-            d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
-            d3 = self.settingsDict = self.merge_shortcuts_dicts(d1,d2)
-            result = d3
-            if trace: g.trace(message(d3,'result: %s' % (fn)))
-            test_result = (d1,d2,d3,'myLeoSettings.leo')
-    else:
-        # No change for new_load, but this method is called at a later time.
-        if trace: g.trace(message(d,'settingsDict: %s' % (fn)))
-        d1 = g.app.config.immutable_leo_settings_shortcuts_dict
-        d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
-        d3 = self.merge_shortcuts_dicts(d1,d2)
-        d4 = self.settingsDict = self.merge_shortcuts_dicts(d3,d)
-        result = d4
-        test_result = ((d1,d2,d3,'local 1'),(d3,d,d4,'local 2'),)
+Phase 1: Load the standard settings files (using a nullGui).
+
+The LoadManager will remember the created commander and the resulting settings
+dictionaries.
+
+Phase 2: Load all files on the command line (using the Qt Gui).
+
+For each file on the command line (*including* standard settings files if they
+appear there) the LoadManager will merge the global settings computed in Phase 1
+with the local settings.
+
+To make this work, we need only ensure that calls to config.getX happen after
+local settings have been computed. To do this, we'll enforce the rule that all
+calls to config.getX happen in the finishCreate method or at some later time,
+not in any ctor.
+
+This scheme opens the way for a major simplification of c.config.getX. Rather
+than the baroque code in g.app.config.getX, each c.config class will contain two
+"finalized" settings dicts, one for shortcuts and one for all other settings. To
+get a setting, the c.config.getX methods will simply look up the setting in the
+appropriate dictionary.
+
+Note that this scheme will produce the proper results for standard settings
+files themselves if they appear on the command line.
+#@+node:ekr.20120216051410.10854: *3* Understanding the open process
+1. g.openWithFileName calls g.app.newLeoCommanderAndFrame.
+
+2. g.app.newLeoCommanderAndFrame *starts* initing:
+    A. Creates an *unfinished* frame: gui.createLeoFrame(title) 
+    B. Creates the commander by calling the ctor.
+    C. *Starts* the initing:
+        # if not app.initing: g.doHook("before-create-leo-frame",c=c)
+        # frame.finishCreate(c)
+        # c.finishCreate(initEditCommanders)
+        # c.undoer.clearUndoState()
         
-    g.app.unitTestDict['make_shortcuts_dicts'] = test_result
-    return result
-#@+node:ekr.20120122070219.10163: *4* merge_shortcuts_dicts (g.app.config)
-def merge_shortcuts_dicts (self,old_d,new_d):
-    
-    '''Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
-    
-    Both old_d and new_d remain unchanged.'''
-    
-    trace = False and not g.unitTesting
-    
-    if not old_d: return new_d
-    if not new_d: return old_d
-    
-    if trace:
-        new_n,old_n = len(list(new_d.keys())),len(list(old_d.keys()))
-        g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.name()))
-        g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.name()))
+3. g.openWithFileName *completes* initing:.
+    g.readOpenedLeoFile(c,old_c,gui,fn,theFile,readAtFileNodesFlag)
+        # calls c.fileCommands.openLeoFile to read the .leo file.
+        # calls c.config.setRecentFiles for all items in g.app.windowList.
+        # sets c.openDirectory.
+    g.app.writeWaitingLog(c)
+    c.setLog()
+    g.createMenu(c,fn)
+    g.finishOpen(c)
+        # c.frame.tree.initAfterLoad()
+        # c.redraw()
+        # chapterController.finishCreate() # Must be done after first redraw.
+        # sets focus & calls k.showStateAndMode.
+        # c.frame.initCompleteHint()
+#@+node:ekr.20120214165710.16786: *3* Notes about old code (Important)
+OLD code: all setting files read during startup.
 
-    inverted_old_d = self.invert(old_d)
-    inverted_new_d = self.invert(new_d)
-    inverted_old_d.update(inverted_new_d) # Updates inverted_old_d in place.
-    result = self.uninvert(inverted_old_d)
-    return result
-#@+node:ekr.20120125045244.10186: *4* invert (g.app.config)
-def invert (self,d):
-    
-    '''Invert a shortcut dict whose keys are command names,
-    returning a dict whose keys are strokes.'''
-    
-    trace = False and not g.unitTesting ; verbose = True
-    if trace: g.trace('*'*40,d.name())
-    
-    result = g.TypedDictOfLists(
-        name='inverted %s' % d.name(),
-        keyType = g.KeyStroke,
-        valType = g.ShortcutInfo)
-
-    for commandName in d.keys():
-        for si in d.get(commandName,[]):
-            # This assert can fail if there is an exception in the ShortcutInfo ctor.
-            assert isinstance(si,g.ShortcutInfo),si
-
-            stroke = si.stroke # This is canonicalized.
-            si.commandName = commandName # Add info.
-            assert stroke
-            if trace and verbose:
-                g.trace('%40s %s' % (commandName,stroke))
-            result.add(stroke,si)
-
-    if trace: g.trace('returns  %4s %s %s' % (
-        len(list(result.keys())),id(d),result.name()))
-    return result
-#@+node:ekr.20120125045244.10187: *4* uninvert (g.app.config)
-def uninvert (self,d):
-    
-    '''Uninvert an inverted shortcut dict whose keys are strokes,
-    returning a dict whose keys are command names.'''
-    
-    trace = False and not g.unitTesting ; verbose = True
-    if trace and verbose: g.trace('*'*40)
-
-    assert d.keyType == g.KeyStroke,d.keyType
-    result = g.TypedDictOfLists(
-        name='uninverted %s' % d.name(),
-        keyType = type('commandName'),
-        valType = g.ShortcutInfo)
-    
-    for stroke in d.keys():
-        for si in d.get(stroke,[]):
-            assert isinstance(si,g.ShortcutInfo),si
-            commandName = si.commandName
-            if trace and verbose:
-                g.trace('uninvert %20s %s' % (stroke,commandName))
-            assert commandName
-            result.add(commandName,si)
-
-    if trace: g.trace('returns %4s %s %s' % (
-        len(list(result.keys())),id(d),result.name()))
-    return result
-#@+node:ekr.20041117062717.14: *3* getShortcut (g.app.config)
-def getShortcut (self,c,commandName):
-
-    '''Return rawKey,accel for shortcutName'''
-    
-    trace = False and not g.unitTesting # and commandName in ('new','print-bindings')
-
-    key = c.frame.menu.canonicalizeMenuName(commandName)
-    key = key.replace('&','') # Allow '&' in names.
-
-    # New code: use the dicts created by make_settings_dict.
-    table = (
-        ('local',            c and self.localShortcutsDict.get(c.hash(),{})),
-        ('myLeoSettings.leo',g.app.config.immutable_my_leo_settings_shortcuts_dict),
-        ('leoSettings.leo',  g.app.config.immutable_leo_settings_shortcuts_dict),
-    )
-    aList = []
-    for tag,d in table:
-        if d:
-            if trace: g.trace(tag,len(list(d.keys())))
-            aList = d.get(commandName,[])
-            if aList:
-                for si in aList:
-                    assert isinstance(si,g.ShortcutInfo),si
-                break
+doPrePluginsInit
+    readSettingsFiles
+        openSettingsFile
+        updateSettings
+            parser.traverse
+                make_shortcuts_dicts
                 
-    # It's very important to filter empty strokes here.
-    aList = [si for si in aList
-        if si.stroke and si.stroke.lower() != 'none']
+NEW code: only global settings files read during startup.
 
-    if trace: g.trace('getShortcut',tag,aList)
-
-    return key,aList
-#@+node:ekr.20041117083141: *3* get & allies (g.app.config)
-def get (self,c,setting,kind):
-
-    """Get the setting and make sure its type matches the expected type."""
+1. Startup:
+    doPrePluginsInit
+        readSettingsFiles
+            openSettingsFile
+            updateSettings
+                parser.traverse
+                    make_shortcuts_dicts
+                    
+2. When loading local files:
     
-    trace = False and not g.unitTesting
+    g.openWithFileName
+        (the file is opened normally)
+        updateSettings
+#@+node:ekr.20120214102737.10711: *3* Notes for new config code
+@nocolor-node
 
-    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+At present, Leo's configuration code is a wretched mess. You can see several
+aspects of this mess by looking at g.app.config.get:
 
-    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-    if c and not isLeoSettings:
-        # For the local .leo file.
-        d = self.localOptionsDict.get(c.hash(),{})
-        if d:
-            val,junk = self.getValFromDict(d,setting,kind)
-            if val is not None:
-                if trace: g.trace('**1',setting,val,d.name())
-                return val
+1. This g.app.config.get searches several "weird and wonderful" dictionaries,
+accessed by name or by list, to get the value of a single setting.
 
-    for d in self.localOptionsList:
-        # For myLeoSettings.leo and leoSettings.leo.
-        val,junk = self.getValFromDict(d,setting,kind)
-        if val is not None:
-            if trace: g.trace('**2',setting,val,d.name())
-            return val
+2. You would think that the code would be in c.config.get, but no, it's not: The
+configSettings class in leoCommands.py simply calls g.app.gui.config to do all
+the work.
 
-    for d in self.dictList:
-        # For hard-coded options...
-        val,junk = self.getValFromDict(d,setting,kind)
-        if val is not None:
-            if trace: g.trace('**3',setting,val,d.name())
-            return val
+In another thread, I summarized the planned new process as follows:
 
-    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-    if c and isLeoSettings:
-        # For when leoSettings.leo is the local file.
-        d = self.localOptionsDict.get(c.hash(),{})
-        if d:
-            val,junk = self.getValFromDict(d,setting,kind)
-            if val is not None:
-                if trace: g.trace('**4',setting,val,d.name())
-                return val
+QQQ
+Rather than the baroque code in g.app.config.getX, each c.config [object]
+will contain two "finalized" settings dicts, one for shortcuts and one for all
+other settings. To get a setting, the c.config.getX methods will simply look up
+the setting in the appropriate dictionary.
+QQQ
 
-    if trace:
-        fn = c and c.shortFileName() or '<no file>'
-        g.trace(setting,None,fn)
-    return None
-#@+node:ekr.20041121143823: *4* getValFromDict
-def getValFromDict (self,d,setting,requestedType,warn=True):
+Here are the details:
 
-    '''Look up the setting in d. If warn is True, warn if the requested type
-    does not (loosely) match the actual type.
-    returns (val,exists)'''
+1. To compute the "finalized" version of the *shortcuts* dict, the init code
+will start with the hard-coded settings, then merge the settings from
+leoSettings.leo and myLeoSettings.leo (if they exist), and then merge the
+settings from the local file being loaded. Merging dicts is tricky, but
+merge_shortcuts_dicts handles the details.
 
-    gs = d.get(self.munge(setting))
-    if not gs: return None,False
-    assert isinstance(gs,g.GeneralSetting)
-    
-    # g.trace(setting,requestedType,gs.toString())
-    val = gs.val
+2. We compute the "finalized" version of the *settings* dict in a similar way,
+but merging dicts is much easier: we can simply use d.extend(d2)
 
-    # 2011/10/24: test for an explicit None.
-    if g.isPython3:
-        isNone = val in ('None','none','') # ,None)
-    else:
-        isNone = val in (
-            unicode('None'),unicode('none'),unicode(''),
-            'None','none','') #,None)
+3. Initing setting will be a two-stage process. The first stage merges the
+hard-coded settings and the settings from leoSettings.leo and myLeoSettings.leo.
+This first stage only happens once.
 
-    if not self.typesMatch(gs.kind,requestedType):
-        # New in 4.4: make sure the types match.
-        # A serious warning: one setting may have destroyed another!
-        # Important: this is not a complete test of conflicting settings:
-        # The warning is given only if the code tries to access the setting.
-        if warn:
-            g.es_print('warning: ignoring',gs.kind,'',setting,'is not',requestedType,color='red')
-            g.es_print('there may be conflicting settings!',color='red')
-        return None, False
-    # elif val in (u'None',u'none','None','none','',None):
-    elif isNone:
-        return '', True
-            # 2011/10/24: Exists, a *user-defined* empty value.
-    else:
-        # g.trace(setting,val)
-        return val, True
-#@+node:ekr.20051015093141: *4* typesMatch
-def typesMatch (self,type1,type2):
+The second stage will happen for each loaded .leo file. The second stage merges
+the result of the first stage with the settings from the file being loaded.
 
-    '''
-    Return True if type1, the actual type, matches type2, the requeseted type.
+**Important**: In this second stage, leoSettings.leo and myLeoSettings.leo will
+be treated just the same as any other .leo file if they happen to appear in the
+load list. In particular, this means that settings from myLeoSettings.leo will
+apply to leoSettings.leo if leoSettings.leo is in the list of loaded files!
 
-    The following equivalences are allowed:
+4. At present, the config_iter code computes knows the "source" of each setting
+because it knows which of the various weird and wonderful settings dictionaries
+actually contain the effective value of the setting. We must preserve this
+source information for the print-settings command, so the process of merging
+information must *add* the source information to the finalized dictionary
+entries.
 
-    - None matches anything.
-    - An actual type of string or strings matches anything *except* shortcuts.
-    - Shortcut matches shortcuts.
-    '''
+5. Given the per-commander finalized setting information, retrieving that
+information becomes much easier. c.config.get will simply return something like
+c.config.finalized_d.get(setting_name).
 
-    # The shortcuts logic no longer uses the get/set code.
-    shortcuts = ('shortcut','shortcuts',)
-    if type1 in shortcuts or type2 in shortcuts:
-        g.trace('oops: type in shortcuts')
+6. Overriding settings will happen much as it does at present, but the changes
+will be to c.config.finalized_d instead of wherever it happens now.
 
-    return (
-        type1 == None or type2 == None or
-        type1.startswith('string') and type2 not in shortcuts or
-        type1 == 'int' and type2 == 'size' or
-        (type1 in shortcuts and type2 in shortcuts) or
-        type1 == type2
-    )
-#@+node:ekr.20041119204700.1: *3* traverse (ParserBaseClass)
-def traverse (self):
+7. The g.app.config class will do nothing but create settings initially; the
+c.config class will handle almost all aspects of getting and overriding
+settings.
 
-    c,k = self.c,self.c.k
-    
-    #### This must be called after the outline has been inited.
-    p = g.app.config.settingsRoot(c)
-    if not p:
-        # c.rootPosition() doesn't exist yet.
-        print('**************** ParserBaseClass.traverse: no settings tree for %s' % c.shortFileName())
-        return {},{}
+8. During development, the g.new_config switch will control whether the old or
+new config code is in effect. I'll probably set the new_config switch only after
+the new_load code is nearly complete.
 
-    self.settingsDict = g.TypedDict(
-        name='settingsDict for %s' % (c.shortFileName()),
-        keyType=type('settingName'),valType=g.GeneralSetting)
-    
-    self.shortcutsDict = g.TypedDictOfLists(
-        name='shortcutsDict for %s' % (c.shortFileName()),
-        keyType=type('s'), valType=g.ShortcutInfo)
+9. **Important**: The new scheme will eliminate the wretched dict that presently
+associates commanders with settings. Bugs accessing this dict are the reason for
+bug 568452: local @settings ignored if file opened from command line with
+absolute path. Although standard settings files *will* be read twice if they
+appear in the load list, the only remembered information will be the finalized
+settings dicts. Thus, we can eliminate c.hash rather than fix it.
+#@+node:ekr.20120216094008.10860: *3* To do: only one call to newLeoCommanderAndFrame!
+@nocolor-node
+
+===== Unify complex code
+
+There should be one and *only* one version of the complex open code. Indeed, the
+init code is so complicated that it would be hopeless to attempt to keep
+different versions in sync.
+
+Happily, there is an easy way to do this: g.openWithFileName should create *all*
+outlines! That is, g.openWithFileName should never "fail": it will create an
+empty outline if no file name is given, or if the file does not exist. This is a
+big collapse in complexity.
+
+With this rule in place, the *only* calls to newLeoCommanderAndFrame will be
+from g.openWithFileName. This is another significant collapse in complexity.
+
+===== Init discipline
+
+To make the 5-phase load process work, newLeoCommanderAndFrame must ensure
+that no c.config.getX method is called from any of the methods invoked from
+newLeoCommanderAndFrame.
+
+At present, there are few exceptions to this rule. I'll handle this by splitting
+several finishCreate methods into "init" and "finishCreate" parts. Phase 1, that
+is, newLeoCommanderAndFrame will call only the "init" parts. Phase 4 will call
+the corresponding "finishCreate" parts.
+
+It will be easy to ensure that no calls to c.config.getX happen before Phase 4.
+The Commander class will contain a new ivar, say c.configInited, initially
+False. c.config.get will issue a warning if c.configInited is False, and the end
+of Phase 4 will set c.configInited. This a ever-present embedded unit test.
+#@+node:ekr.20120217042801.10784: *3* Notes about finishCreate (Do not delete)
+@nocolor-node
+
+** Important** The only problematic calls to finishCreate are in newLeoCommanderAndFrame.
+
+g.app.newLeoCommanderAndFrame calls the following.
+
+    frame.finishCreate(c)
+        # That is, qtFrame.finishCreate or nullFrame.finishCreate.
         
-    after = p.nodeAfterTree()
-    while p and p != after:
-        result = self.visitNode(p)
-        if result == "skip":
-            # g.es_print('skipping settings in',p.h,color='blue')
-            p.moveToNodeAfterTree()
-        else:
-            p.moveToThreadNext()
+    c.finishCreate(initEditCommanders)
+        # Calls c.editCommandsManager.finishCreateEditCommanders
+            killBufferCommandsClass.finishCreate calls c.config.getBool
+        # Calls c.rstCommands.finishCreate
+        # Calls k.finishCreate
+        # Calls c.frame.menu.finishCreate
+        # Calls c.frame.log.finishCreate
 
-    if g.new_config:
-        # Return the raw dict, unmerged.
-        return self.shortcutsDict,self.settingsDict
-    else:
-        shortcutsDict = c.config.make_shortcuts_dicts(self.shortcutsDict,self.localFlag)
-        return shortcutsDict,self.settingsDict
-#@+node:ekr.20051013161232: *3* updateSettings (g.app.config)
-def updateSettings (self,c,localFlag):
-
-    parser = SettingsTreeParser(c,localFlag)
-    shortcutsDict,settingsDict = parser.traverse()
-    
-    d = settingsDict
-    if d:
-        if localFlag:
-            self.localOptionsDict[c.hash()] = d
-        else:
-            self.localOptionsList.insert(0,d)
-            
-    if shortcutsDict and localFlag:
-        self.localShortcutsDict[c.hash()] = shortcutsDict
-#@+node:ekr.20120130074511.10227: *3* k.kill_one_shortcut
-def kill_one_shortcut (self,stroke):
-    
-    '''Update the dicts so that c.config.getShortcut(name) will return None
-    for all names *presently* bound to the stroke.'''
-    
-    k = self ; c = k.c
-    
-    # A crucial shortcut: inverting and uninverting dictionaries is slow.
-    # Important: the comparison is valid regardless of the type of stroke.
-    if stroke in (None,'None','none'):
-        return
+    # c.undoer.clearUndoState()
+        # No calls to other methods.
         
-    assert g.isStroke(stroke),stroke
+To do: The following finishCreate methods call c.config.get (directly *or* indirectly)
+
+Indirect calls to c.config.get:
+    - c.finishCreate
+Direct calls to c.config.get:
+    - abbrevClass.finishCreate
+    - at.finishCreate (already split)
+    - k.finishCreate.
+    - killBufferCommandsClass.finishCreate
+    - nullFrame.finishCreate (just create do-nothing init)
+    - pc.finishCreate.
+    - qtFrame.finishCreate
+#@+node:ekr.20120212220616.10368: *3* Notes about startup logic (do not delete)
+@nocolor-node
+
+g.preRead does:
+
+    c = g.app.config.openSettingsFile(fileName)
+    if c:
+        g.app.config.updateSettings(c,localFlag=True)
     
-    # g.trace(stroke)
+** Proposed change:
+    
+    c = g.app.config.openSettingsFile(fileName)
+        # Calls newLeoCommanderAndFrame & fc.open
+    if c:
+        parser = SettingsTreeParser(c,localFlag=True)
+        shortcutsDict,settingsDict = parser.traverse()
+        return c,shortcutsDict,settingsDict
+    else:
+        return None,None,None
+        
+** How can we use shortcutsDict and settingsDict ?????
 
-    d = g.app.config.localShortcutsDict.get(c.hash())
-    if d is None:
-        d = g.TypedDictOfLists(
-            name='empty shortcuts dict',
-            keyType=type('commandName'),
-            valType=g.ShortcutInfo)
+        
+config.openSettingsFile calls:
+    
+    c,frame = g.app.newLeoCommanderAndFrame(fileName=path,
+        initEditCommanders=False,
+        updateRecentFiles=False)
+   
+    ok = c.fileCommands.openLeoFile(theFile,path,
+        readAtFileNodesFlag=False,silent=True)
+        
+    return ok and c
 
-    inv_d = g.app.config.invert(d)
-    aList = inv_d.get(stroke,[])
-    inv_d[stroke] = []
-    g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
+fc.getLeoFile contains (near the end):
+    
+    if c.config.getBool('check_outline_after_read'):
+        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+    
+** This could be done in openWithFileName instead.
+
+g.openWrapperLeoFile contains:
+
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

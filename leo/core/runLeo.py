@@ -569,6 +569,10 @@ def createFrame (fileName,options):
             if windowSize: doWindowSize(c2,windowSize)
             return c2,frame
 
+    # The file does not exist.
+        #### Can we call g.openWithFileName with an empty file???
+        #### Can g.openWithFileName *always* return a new window???
+
     # Create a _new_ frame & indicate it is the startup window.
     c,frame = g.app.newLeoCommanderAndFrame(
         fileName=fileName,initEditCommanders=True)

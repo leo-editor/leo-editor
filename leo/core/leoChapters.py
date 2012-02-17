@@ -36,6 +36,9 @@ class chapterController:
     def finishCreate (self):
 
         '''Find or make the @chapters and @chapter trash nodes.'''
+        
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('cc.finishCreate')
 
         # This must be called late in the init process:
         # at present, called by g.openWithFileName and c.new.

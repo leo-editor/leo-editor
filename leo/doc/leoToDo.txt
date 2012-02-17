@@ -3638,10 +3638,10 @@ def enableSignalDebugging(self,**kwargs):
 .. @+node:ekr.20110605121601.18540: *6* eventFilter
 def eventFilter(self, obj, event):
 
-    trace = (False or self.trace_masterKeyHandler) and not g.unitTesting
+    trace = (False or g.trace_masterKeyHandler) and not g.unitTesting
     verbose = True
     traceEvent = False # True: call self.traceEvent.
-    traceKey = (True or self.trace_masterKeyHandler)
+    traceKey = (True or g.trace_masterKeyHandler)
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
@@ -3914,6 +3914,7 @@ def get (self,c,setting,kind):
     """Get the setting and make sure its type matches the expected type."""
     
     trace = False and not g.unitTesting
+    verbose = False
 
     isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
 
@@ -3924,21 +3925,24 @@ def get (self,c,setting,kind):
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                if trace: g.trace('**1',setting,val,d.name())
+                if trace: g.trace('**%-7s %45s %s' % ('local',setting,val))
                 return val
 
     for d in self.localOptionsList:
         # For myLeoSettings.leo and leoSettings.leo.
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
-            if trace: g.trace('**2',setting,val,d.name())
+            if trace: g.trace('%-7s %45s %s' % ('global',setting,val))
             return val
 
     for d in self.dictList:
         # For hard-coded options...
         val,junk = self.getValFromDict(d,setting,kind)
         if val is not None:
-            if trace: g.trace('**3',setting,val,d.name())
+            if trace:
+                g.trace('%-7s %45s %s' % ('default',setting,val))
+                #### Weird:
+                g.trace(g.callers(6))
             return val
 
     # New in Leo 4.6. Use settings in leoSettings.leo *last*.
@@ -3948,10 +3952,10 @@ def get (self,c,setting,kind):
         if d:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                if trace: g.trace('**4',setting,val,d.name())
+                if trace: g.trace('%-7s %45s %s' % ('last',setting,val))
                 return val
 
-    if trace:
+    if trace and verbose:
         fn = c and c.shortFileName() or '<no file>'
         g.trace(setting,None,fn)
     return None
@@ -7390,8 +7394,8 @@ def masterKeyHandler (self,event):
 
     '''This is the handler for almost all key bindings.'''
     
-    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
-    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+    trace = (False or g.trace_masterKeyHandler) and not g.app.unitTesting
+    traceGC = g.trace_masterKeyHandlerGC and not g.app.unitTesting
     verbose = True
     
     k,c = self,self.c ; gui = g.app.gui
@@ -7614,7 +7618,7 @@ def getPaneBinding (self,stroke,w):
 def handleMiniBindings (self,event,state,stroke):
 
     k = self ; c = k.c
-    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    trace = (False or g.trace_masterKeyHandler) and not g.app.unitTesting
 
     # Special case for bindings handled in k.getArg:
         

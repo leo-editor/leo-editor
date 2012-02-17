@@ -19257,7 +19257,7 @@ else:
 #@+node:ekr.20111120124051.3994: *4* @test cycle-all-focus
 '''Test that cycle-all-focus cycles through all tabs.'''
 
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or not g.isPython3:
     # print('external test')
     pass
 else:
@@ -19332,7 +19332,7 @@ else:
         # This throws exception: LeoQTextBrowser has no attribute logCtrl.
         c.k.handleDefaultChar(event, stroke='a')
 #@+node:ekr.20111121081052.3908: *4* @test log.numberOfVisibleTabs
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or not g.isPython3:
     print('external test')
     pass
 else:
@@ -19501,25 +19501,6 @@ finally:
     c.redraw(p)
 #@+node:ekr.20111210104652.3959: *4* child
 #@+node:ekr.20120212130242.4755: *4* test
-#@+node:ekr.20111210175541.3957: *3* @test refresh @shadow links clones
-if not g.app.isExternalUnitTest:
-    # print('start',p.h)
-    h = '@shadow unittest/at-shadow-unlink-clones.py'
-    root = g.findNodeAnywhere(c,h)
-    assert root
-    assert root.h == h,repr(root.h)
-    child = p.firstChild()
-    assert child
-    assert child.isCloned(),'fail 1'
-    c.selectPosition(root)
-    fn = root.atShadowFileNodeName()
-    assert fn
-    c.atFileCommands.readOneAtShadowNode (fn,root,force=True)
-    assert child.isCloned(),'fail 2'
-    c.selectPosition(p)
-    c.redraw()
-#@+node:ekr.20111213122041.3931: *4* shadow node 1
-# node 1 text A.
 #@+node:ekr.20111212142649.3971: *3* @test paste outline does not clone top node
 c.selectPosition(p)
 c.copyOutline()

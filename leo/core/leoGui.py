@@ -321,7 +321,6 @@ class leoGui:
         pass # May be overridden in subclasses.
     #@+node:ekr.20070219084912: *4* finishCreate (leoGui)
     def finishCreate (self):
-        
         # This may be overridden in subclasses.
         pass
     #@+node:ekr.20101028131948.5861: *4* killPopupMenu & postPopupMenu

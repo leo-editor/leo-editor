@@ -68,6 +68,11 @@ class Commands (object):
             # Called from readSettingsFiles & openSettingsFiles logic.
 
         c = self
+        
+        # Configuration init flag.
+        self.configInited = False
+        
+        # Event flags...
         self.requestBringToFront = False
         self.requestedFocusWidget = None
         self.requestRedrawFlag = False
@@ -124,16 +129,17 @@ class Commands (object):
         self.initIvars()
         
         self.config = configSettings(c)
-        if g.new_config:
-            # We *must init the settings here!
-            lm = g.app.loadManager
-            assert lm
-            lm.initLocalSettings(c)
-
         g.app.config.setIvarsFromSettings(c)
         self.nodeHistory = nodeHistory(c)
         
-        self.initConfigSettings()
+        if g.new_config:
+            #### We'll have to deal with these later.
+            c.fixedWindowPosition = False
+            c.stayInTreeAfterSelect = False
+            c.use_body_focus_border = True
+            c.outlineHasInitialFocus = False
+        else:
+            self.initConfigSettings()
 
         c.setWindowPosition() # Do this after initing settings.
 
@@ -153,7 +159,7 @@ class Commands (object):
         import leo.core.leoUndo as leoUndo
 
         if trace and not g.trace_startup:
-             t2 = g.printDiffTime('%s: after imports' % (tag),t1)
+            t2 = g.printDiffTime('%s: after imports' % (tag),t1)
 
         self.shadowController = leoShadow.shadowController(c)
         self.fileCommands   = leoFileCommands.fileCommands(c)
@@ -190,7 +196,7 @@ class Commands (object):
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('c.finishCreate')
         
-        c = self ; p = c.p
+        c = self ;  p = c.p
         c.miniBufferWidget = c.frame.miniBufferWidget
         # print('Commands.finishCreate',c.fileName())
         
@@ -200,9 +206,13 @@ class Commands (object):
         c.keyHandler = c.k = k = g.app.gui.createKeyHandlerClass(c,
             useGlobalKillbuffer=True,
             useGlobalRegisters=True)
+            
+        #### A new call.
+        c.atFileCommands.finishCreate()
 
         if initEditCommanders:
             # A 'real' .leo file.
+            
             c.commandsDict = c.editCommandsManager.finishCreateEditCommanders()
             self.rstCommands.finishCreate()
 
@@ -220,7 +230,6 @@ class Commands (object):
             g.registerHandler('idle',c.idle_focus_helper)
             
         c.frame.menu.finishCreate()
-
         c.frame.log.finishCreate()
         c.bodyWantsFocus()
     #@+node:ekr.20051007143620: *5* printCommandsDict
@@ -296,8 +305,14 @@ class Commands (object):
         if trace:
             print('c.initConfigSettings: %s' % g.app.gui.guiName())
             # print('c.initConfigSettings:', g.callers())
-
+            
         c = self
+            
+        if g.new_config:
+            if not c.configInited:
+                g.trace('********** c.configInited is False')
+                return
+
         c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
         c.collapse_nodes_after_move = c.config.getBool('collapse_nodes_after_move')
             # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
@@ -7918,6 +7933,12 @@ class Commands (object):
             for v in c.all_unique_nodes():
                 if v.isDirty():
                     v.clearDirty()
+        
+        #### This kind of hack is hopeless.
+        #### We have to init at least part of the frame,
+        #### including frame.top and frame.tree.         
+        # if not hasattr(c.frame,'top') or not c.frame.top:
+            # return #### new_config
 
         if (g.app.gui and g.app.gui.guiName().startswith('qt') and
             g.app.qt_use_tabs and hasattr(c.frame,'top')
@@ -8300,7 +8321,7 @@ class configSettings:
         if trace: print('c.config.__init__ %s' % (c and c.shortFileName()))
         self.c = c
         
-        # The shortcuts and settings dicts.
+        # The shortcuts and settings dicts, set by lm.initLocalSettings set
         self.settingsDict = None    # Set to a g.TypedDict.
         self.shortcutsDict = None   # Set to a g.TypedDictOfLists.
 
@@ -8396,38 +8417,32 @@ class configSettings:
         #     getShortcut (self,commandName)
         #     getString (self,setting)
         #@+node:ekr.20120215072959.12519: *5* c.config.get & allies (new_config)
-        get_trace_given = False
-
         def get (self,setting,kind):
 
             """Get the setting and make sure its type matches the expected type."""
 
-            trace = (False or g.trace_startup) and not g.unitTesting and not self.get_trace_given
+            # trace = (False or g.trace_startup) and not g.unitTesting
+            trace = False and not g.unitTesting
+            verbose = True
             c = self.c
             d = self.settingsDict
             lm = g.app.loadManager
             assert g.new_config
             assert lm
-            
-            if trace:
-                print('***** c.config.get',bool(self.settingsDict),bool(lm.globalSettingsDict))
-                self.get_trace_given = True
-            
-            if d: #### lm.globalSettingsDict:
+
+            if d:
                 assert isinstance(d,g.TypedDict),d
                 val,junk = self.getValFromDict(d,setting,kind)
-                if trace and val is not None:
-                    g.trace(setting,val,d.name())
+                if trace and verbose and val is not None:
+                    # g.trace('%35s %20s %s' % (setting,val,g.callers(3)))
+                    g.trace('%40s %s' % (setting,val))
+                    
                 return val
             else:
-                # lm.readGlobalSettingsFiles is opening a settings file.
-                # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDic
+                if trace and lm.globalSettingsDict:
+                    g.trace('ignore: %40s %s' % (
+                        setting,g.callers(2)))
                 return None
-                
-            
-            
-
-            
         #@+node:ekr.20120215072959.12520: *6* getValFromDict
         def getValFromDict (self,d,setting,requestedType,warn=True):
 

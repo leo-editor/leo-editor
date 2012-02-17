@@ -45,27 +45,25 @@ class baseEditCommandsClass:
     '''The base class for all edit command classes'''
 
     #@+others
-    #@+node:ekr.20050920084036.2: *3*  ctor, finishCreate, init (baseEditCommandsClass)
+    #@+node:ekr.20050920084036.2: *3*  Birth (baseEditCommandsClass)
     def __init__ (self,c):
 
         self.c = c
-        self.k = self.k = None
+        self.k = None
         self.registers = {} # To keep pychecker happy.
         self.undoData = None
-
+        self.w = None
+        
     def finishCreate(self):
 
-        # Class delegators.
-        self.k = self.k = self.c.k
+        self.k = self.c.k
         try:
             self.w = self.c.frame.body.bodyCtrl # New in 4.4a4.
         except AttributeError:
             self.w = None
 
     def init (self):
-
         '''Called from k.keyboardQuit to init all classes.'''
-
         pass
     #@+node:ekr.20051214132256: *3* begin/endCommand (baseEditCommands)
     #@+node:ekr.20051214133130: *4* beginCommand  & beginCommandWithEvent
@@ -274,23 +272,24 @@ class EditCommandsManager:
     def finishCreateEditCommanders (self):
 
         '''Finish creating edit classes in the commander.
-
         Return the commands dictionary for all the classes.'''
         
-        # g.trace(c,g.callers())
-
         c,d = self.c,{}
-
         for name, theClass in self.classesList:
             theInstance = getattr(c,name)
             theInstance.finishCreate()
-            theInstance.init()
-            d2 = theInstance.getPublicCommands()
-            if d2:
-                d.update(d2)
-                if 0:
-                    g.pr('----- %s' % name)
-                    for key in sorted(d2): g.pr(key)
+            
+            #### The instance vars should be set in the ctor.
+            if g.new_config:
+                pass
+            else:
+                theInstance.init()
+                d2 = theInstance.getPublicCommands()
+                if d2:
+                    d.update(d2)
+                    if 0:
+                        g.pr('----- %s' % name)
+                        for key in sorted(d2): g.pr(key)
 
         return d
     #@+node:ekr.20120211121736.10829: *3* ecm.initAllEditCommanders
@@ -349,8 +348,10 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 self.listAbbrevs()
 
         k.abbrevOn = c.config.getBool('enable-abbreviations',default=False)
+
         if k.abbrevOn and not g.unitTesting and not g.app.batchMode:
             g.es('Abbreviations are on',color='red')
+            
     #@+node:ekr.20050920084036.15: *4* getPublicCommands & getStateCommands
     def getPublicCommands (self):
 
@@ -4327,7 +4328,7 @@ class editCommandsClass (baseEditCommandsClass):
         '''Insert a character in the body pane.
         This is the default binding for all keys in the body pane.'''
 
-        trace = False and not g.unitTesting # or c.config.getBool('trace_masterCommand')
+        trace = False and not g.unitTesting
         
         c,k = self.c,self.k
        
@@ -7583,13 +7584,15 @@ class killBufferCommandsClass (baseEditCommandsClass):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.
 
-        self.addWsToKillRing = c.config.getBool('add-ws-to-kill-ring')
-        self.killBuffer = [] # May be changed in finishCreate.
+        self.addWsToKillRing = None 
+        self.k = None
+        self.killBuffer = []
         self.kbiterator = self.iterateKillBuffer()
-        self.last_clipboard = None # For interacting with system clipboard.
-        self.lastYankP = None # The position of the last item returned by iterateKillBuffer.
+        self.last_clipboard = None  # For interacting with system clipboard.
+        self.lastYankP = None
+            # Position of the last item returned by iterateKillBuffer.
         self.reset = None
-            # None, or the index of the next item to be returned in killBuffer by iterateKillBuffer.
+            # The index of the next item to be returned in killBuffer by iterateKillBuffer.
 
     def finishCreate (self):
 
@@ -7597,6 +7600,8 @@ class killBufferCommandsClass (baseEditCommandsClass):
             # Call the base finishCreate.
             # This sets self.k
 
+        self.addWsToKillRing = self.c.config.getBool('add-ws-to-kill-ring')
+            
         if self.k and self.k.useGlobalKillbuffer:
             self.killBuffer = leoKeys.keyHandlerClass.global_killbuffer
     #@+node:ekr.20050920084036.176: *3*  getPublicCommands
@@ -8418,7 +8423,7 @@ class macroCommandsClass (baseEditCommandsClass):
 class rectangleCommandsClass (baseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20050920084036.222: *3*  ctor & finishCreate (rectangleCommandsClass)
+    #@+node:ekr.20050920084036.222: *3*  Birth (rectangleCommandsClass)
     def __init__ (self,c):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -8657,27 +8662,31 @@ class registerCommandsClass (baseEditCommandsClass):
 
     #@+others
     #@+node:ekr.20051004095209: *3* Birth
-    #@+node:ekr.20050920084036.235: *4*  ctor, finishCreate & init (registerCommandsClass)
+    #@+node:ekr.20050920084036.235: *4*  Birth (registerCommandsClass)
     def __init__ (self,c):
-
+        
         baseEditCommandsClass.__init__(self,c) # init the base class.
-
         self.methodDict, self.helpDict = self.addRegisterItems()
-        self.init()
+        
+        # Init these here to keep pylint happy.
+        self.method = None 
+        self.registerMode = 0 # Must be an int.
+        self.registers = {}
+
 
     def finishCreate (self):
 
         baseEditCommandsClass.finishCreate(self) # finish the base class.
-
         if self.k.useGlobalRegisters:
             self.registers = leoKeys.keyHandlerClass.global_registers
         else:
             self.registers = {}
 
     def init (self):
-
         self.method = None 
         self.registerMode = 0 # Must be an int.
+        self.registers = {}
+        
     #@+node:ekr.20050920084036.247: *4*  getPublicCommands
     def getPublicCommands (self):
 
