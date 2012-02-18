@@ -278,18 +278,13 @@ class EditCommandsManager:
         for name, theClass in self.classesList:
             theInstance = getattr(c,name)
             theInstance.finishCreate()
-            
-            #### The instance vars should be set in the ctor.
-            if g.new_config:
-                pass
-            else:
-                theInstance.init()
-                d2 = theInstance.getPublicCommands()
-                if d2:
-                    d.update(d2)
-                    if 0:
-                        g.pr('----- %s' % name)
-                        for key in sorted(d2): g.pr(key)
+            theInstance.init()
+            d2 = theInstance.getPublicCommands()
+            if d2:
+                d.update(d2)
+                if 0:
+                    g.pr('----- %s' % name)
+                    for key in sorted(d2): g.pr(key)
 
         return d
     #@+node:ekr.20120211121736.10829: *3* ecm.initAllEditCommanders
@@ -349,9 +344,10 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         k.abbrevOn = c.config.getBool('enable-abbreviations',default=False)
 
-        if k.abbrevOn and not g.unitTesting and not g.app.batchMode:
+        if (k.abbrevOn and not g.app.initing and
+            not g.unitTesting and not g.app.batchMode
+        ):
             g.es('Abbreviations are on',color='red')
-            
     #@+node:ekr.20050920084036.15: *4* getPublicCommands & getStateCommands
     def getPublicCommands (self):
 
@@ -6578,10 +6574,8 @@ class editFileCommandsClass (baseEditCommandsClass):
         import leo.core.leoFrame as leoFrame
         import leo.core.leoCommands as leoCommands
 
-        nullGui = leoGui.nullGui('nullGui')
-        frame = leoFrame.nullFrame('nullFrame',nullGui)
-        c2 = leoCommands.Commands(frame,fileName)
-        frame.c = c2
+        c2 = leoCommands.Commands(fileName,gui=leoGui.nullGui())
+        frame = c2.frame
         frame.tree.c = c2
         theFile,c2.isZipped = g.openLeoOrZipFile(fileName)
         if theFile:
@@ -7584,7 +7578,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
 
         baseEditCommandsClass.__init__(self,c) # init the base class.
 
-        self.addWsToKillRing = None 
+        self.addWsToKillRing = c.config.getBool('add-ws-to-kill-ring')
         self.k = None
         self.killBuffer = []
         self.kbiterator = self.iterateKillBuffer()
@@ -7600,9 +7594,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
             # Call the base finishCreate.
             # This sets self.k
 
-        self.addWsToKillRing = self.c.config.getBool('add-ws-to-kill-ring')
-            
-        if self.k and self.k.useGlobalKillbuffer:
+        if self.k:
             self.killBuffer = leoKeys.keyHandlerClass.global_killbuffer
     #@+node:ekr.20050920084036.176: *3*  getPublicCommands
     def getPublicCommands (self):
@@ -8671,16 +8663,12 @@ class registerCommandsClass (baseEditCommandsClass):
         # Init these here to keep pylint happy.
         self.method = None 
         self.registerMode = 0 # Must be an int.
-        self.registers = {}
-
+        self.registers = leoKeys.keyHandlerClass.global_registers
 
     def finishCreate (self):
 
-        baseEditCommandsClass.finishCreate(self) # finish the base class.
-        if self.k.useGlobalRegisters:
-            self.registers = leoKeys.keyHandlerClass.global_registers
-        else:
-            self.registers = {}
+        baseEditCommandsClass.finishCreate(self)
+            # finish the base class.
 
     def init (self):
         self.method = None 

@@ -10,11 +10,6 @@
 #@@tabwidth -4
 #@@pagewidth 60
 
-####
-#### new_write = True
-    # True: write simplified thin sentinels, except for private @shadow files.
-    # False: write traditional thin sentinels.
-
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >>
 import leo.core.leoGlobals as g
@@ -127,7 +122,7 @@ class atFile:
 
     #@+others
     #@+node:ekr.20041005105605.7: ** at.Birth & init
-    #@+node:ekr.20041005105605.8: *3*  atFile.Birth
+    #@+node:ekr.20041005105605.8: *3*  atFile.ctor
     # Note: g.getScript also call the at.__init__ and at.finishCreate().
 
     def __init__(self,c):
@@ -139,22 +134,13 @@ class atFile:
         self.errors = 0 # Make sure at.error() works even when not inited.
 
         # User options.
-        self.checkPythonCodeOnWrite = None
-        self.underindentEscapeString = None
-                
-        self.dispatch_dict = self.defineDispatchDict()
-            # Define the dispatch dictionary used by scanText4.
-            
-    def finishCreate(self):
-        
-        # trace = (False or g.trace_startup) and not g.unitTesting
-        # if trace: print('at.finishCreate')
-        
-        c = self.c
         self.checkPythonCodeOnWrite = c.config.getBool(
             'check-python-code-on-write',default=True)
         self.underindentEscapeString = c.config.getString(
             'underindent-escape-string') or '\\-'
+                
+        self.dispatch_dict = self.defineDispatchDict()
+            # Define the dispatch dictionary used by scanText4.
     #@+node:ekr.20041005105605.9: *3* at.defineDispatchDict
     def defineDispatchDict(self):
         
@@ -295,10 +281,7 @@ class atFile:
         at,c = self,self.c
         assert root
         self.initCommonIvars()
-        
-        ####
-        # Make sure that these have been inited from settings.
-        # When new_load is True, this will be done in at.finishCreate.
+
         assert at.checkPythonCodeOnWrite is not None
         assert at.underindentEscapeString is not None
         
@@ -337,9 +320,6 @@ class atFile:
             # Must be None for @shadow.
         at.thinFile = thinFile
         at.toString = toString
-        
-        ####
-        #### at.writeVersion5 = at.new_write and not atShadow
         at.writeVersion5 = not atShadow
 
         at.scanAllDirectives(root,

@@ -112,8 +112,6 @@ class ParserBaseClass:
         return modeName
     #@+node:ekr.20060102103625: *3* createModeCommand (ParserBaseClass)
     def createModeCommand (self,modeName,name,modeDict):
-        
-        #### k = self.c.k
 
         modeName = 'enter-' + modeName.replace(' ','-')
 
@@ -515,16 +513,9 @@ class ParserBaseClass:
             # g.trace('%20s' % (name),c.fileName())
             modeName = self.computeModeName(name)
         
-            # Create a local shortcutsDict.
-            ##### old_d = self.shortcutsDict
-                # We create a new shortcutsDict so that self.set will change the correct dict.
-                # This is very bad style.
-        
             d = g.TypedDictOfLists(
                 name='modeDict for %s' % (modeName),
                 keyType=type('commandName'),valType=g.ShortcutInfo)
-                
-            ##### self.shortcutsDict = d
         
             s = p.b
             lines = g.splitLines(s)
@@ -1607,8 +1598,6 @@ class configClass:
             if val is not None:
                 if trace:
                     g.trace('%-7s %45s %s' % ('default',setting,val))
-                    #### Weird:
-                    g.trace(g.callers(6))
                 return val
 
         # New in Leo 4.6. Use settings in leoSettings.leo *last*.
@@ -2180,19 +2169,16 @@ class configClass:
         
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
-        g.app.gui = leoGui.nullGui("nullGui")
+        g.app.gui = leoGui.nullGui()
         if trace and g.trace_startup:
             print('g.app.config.openSettingsFile: g.app.gui: %s' % (g.app.gui.guiName()))
         
-        c,frame = g.app.newLeoCommanderAndFrame(
-            fileName=path,relativeFileName=None,
-            initEditCommanders=False,updateRecentFiles=False)
-        assert frame.c == c
-        
+        c = g.app.newCommander(path)
+        frame = c.frame
         frame.log.enable(False)
         g.app.lockLog()
-        ok = c.fileCommands.openLeoFile(
-            theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+        ok = c.fileCommands.openLeoFile(theFile,path,
+            readAtFileNodesFlag=False,silent=True) # closes theFile.
         g.app.unlockLog()
         c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
         g.app.gui = oldGui

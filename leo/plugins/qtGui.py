@@ -20,7 +20,7 @@ useUI = False # True: use qt_main.ui. False: use DynamicWindow.createMainWindow.
 #@+node:ekr.20110605121601.18003: **  << qt imports >>
 import leo.core.leoGlobals as g
 
-import leo.core.leoChapters as leoChapters
+# import leo.core.leoChapters as leoChapters
 import leo.core.leoColor as leoColor
 import leo.core.leoFrame as leoFrame
 import leo.core.leoFind as leoFind
@@ -4027,24 +4027,33 @@ class leoQtFrame (leoFrame.leoFrame):
     #@+others
     #@+node:ekr.20110605121601.18246: *4*  Birth & Death (qtFrame)
     #@+node:ekr.20110605121601.18247: *5* __init__ (qtFrame)
-    def __init__(self,title,gui):
+    def __init__(self,c,title,gui):
+        
 
         # Init the base class.
-        leoFrame.leoFrame.__init__(self,gui)
-
-        self.title = title
-        self.initComplete = False # Set by initCompleteHint().
+        leoFrame.leoFrame.__init__(self,c,gui)
+        
+        assert self.c == c
         leoFrame.leoFrame.instances += 1 # Increment the class var.
 
-        self.c = None # Set in finishCreate.
-        self.iconBarClass = self.qtIconBarClass
-        self.statusLineClass = self.qtStatusLineClass
+        # Official ivars...
         self.iconBar = None
+        self.iconBarClass = self.qtIconBarClass
+        self.initComplete = False # Set by initCompleteHint().
+        self.minibufferVisible = True
+        self.statusLineClass = self.qtStatusLineClass
+        self.title = title
+        
+        # Config settings.
+        self.trace_status_line = c.config.getBool('trace_status_line')
+        self.use_chapters      = c.config.getBool('use_chapters')
+        self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
 
-        self.trace_status_line = None # Set in finishCreate.
+        self.setIvars()
 
-        #@+<< set the leoQtFrame ivars >>
-        #@+node:ekr.20110605121601.18248: *6* << set the leoQtFrame ivars >> (removed frame.bodyCtrl ivar)
+    #@+node:ekr.20110605121601.18248: *6* setIvars (qtFrame)
+    def setIvars(self):
+
         # "Official ivars created in createLeoFrame and its allies.
         self.bar1 = None
         self.bar2 = None
@@ -4062,46 +4071,30 @@ class leoQtFrame (leoFrame.leoFrame):
         self.statusLabel = None 
         self.top = None # This will be a class Window object.
         self.tree = None
-        # self.treeBar = None # Replaced by injected frame.canvas.leo_treeBar.
-
+        
         # Used by event handlers...
         self.controlKeyIsDown = False # For control-drags
-        # self.draggedItem = None
         self.isActive = True
         self.redrawCount = 0
         self.wantedWidget = None
         self.wantedCallbackScheduled = False
         self.scrollWay = None
-        #@-<< set the leoQtFrame ivars >>
-
-        self.minibufferVisible = True
     #@+node:ekr.20110605121601.18249: *5* __repr__ (qtFrame)
     def __repr__ (self):
 
         return "<leoQtFrame: %s>" % self.title
     #@+node:ekr.20110605121601.18250: *5* qtFrame.finishCreate & helpers
-    # Called from newLeoCommanderAndFrame
-    def finishCreate (self,c):
+    def finishCreate (self):
         
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('qtFrame.finishCreate')
 
         f = self
-        self.c = c
-        
-        # g.trace('(qtFrame)')
-
-        # self.bigTree         = c.config.getBool('big_outline_pane')
-        self.trace_status_line = c.config.getBool('trace_status_line')
-        self.use_chapters      = c.config.getBool('use_chapters')
-        self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
+        c = self.c
+        assert c
 
         # returns DynamicWindow
         f.top = g.app.gui.frameFactory.createFrame(f)
-        # g.trace('(leoQtFrame)',f.top)
-
-        # hiding would remove flicker, but doesn't work with all
-        # window managers
 
         f.createIconBar() # A base class method.
         f.createSplitterComponents()
@@ -4109,7 +4102,7 @@ class leoQtFrame (leoFrame.leoFrame):
         f.createFirstTreeNode() # Call the base-class method.
 
         f.menu = leoQtMenu(f,label='top-level-menu')
-        g.app.windowList.append(f) #### Might be ok to delay this.
+        g.app.windowList.append(f)
         f.miniBufferWidget = leoQtMinibuffer(c)
 
         c.bodyWantsFocus()
@@ -4122,13 +4115,8 @@ class leoQtFrame (leoFrame.leoFrame):
         f.log   = leoQtLog(f,None)
         f.body  = leoQtBody(f,None)
 
-        if f.use_chapters:
-            c.chapterController = cc = leoChapters.chapterController(c)
-
         f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
         f.resizePanesToRatio(f.ratio,f.secondary_ratio)
-
-        # g.trace(f.ratio,f.secondary_ratio)
     #@+node:ekr.20110605121601.18252: *5* initCompleteHint
     def initCompleteHint (self):
 
@@ -7562,10 +7550,10 @@ class leoQtGui(leoGui.leoGui):
         else:
             self.frameFactory = SDIFrameFactory()
     #@+node:ekr.20110605121601.18478: *5* createKeyHandlerClass (qtGui)
-    def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
+    def createKeyHandlerClass (self,c):
 
         # Use the base class
-        return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
+        return leoKeys.keyHandlerClass(c)
     #@+node:ekr.20110605121601.18482: *5* IPython embedding & mainloop
     def embed_ipython(self):
         
@@ -7732,10 +7720,10 @@ class leoQtGui(leoGui.leoGui):
         """Create a qt find tab in the indicated frame."""
         return leoQtFindTab(c,parentFrame)
 
-    def createLeoFrame(self,title):
+    def createLeoFrame(self,c,title):
         """Create a new Leo frame."""
         gui = self
-        return leoQtFrame(title,gui)
+        return leoQtFrame(c,title,gui)
 
     def createSpellTab(self,c,spellHandler,tabName):
         return leoQtSpellTab(c,spellHandler,tabName)
@@ -8636,7 +8624,6 @@ class leoQtEventFilter(QtCore.QObject):
 
         # Debugging.
         self.keyIsActive = False
-        #### self.trace_masterKeyHandler = c.config.getBool('trace_masterKeyHandler')
 
         # Pretend there is a binding for these characters.
         close_flashers = c.config.getString('close_flash_brackets') or ''
@@ -8713,7 +8700,7 @@ class leoQtEventFilter(QtCore.QObject):
                     g.app.gui.remove_border(c,obj)
 
         if self.keyIsActive:
-            shortcut = self.toStroke(tkKey,ch) #### ch is unused.
+            shortcut = self.toStroke(tkKey,ch) # ch is unused.
 
             if override:
                 # Essentially *all* keys get passed to masterKeyHandler.
@@ -8936,7 +8923,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         return tkKey or ch in self.flashers
     #@+node:ekr.20110605121601.18542: *5* toStroke (leoQtEventFilter)
-    def toStroke (self,tkKey,ch):  #### ch is unused
+    def toStroke (self,tkKey,ch):  # ch is unused
         
         '''Convert the official tkKey name to a stroke.'''
 

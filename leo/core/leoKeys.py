@@ -1087,24 +1087,15 @@ class keyHandlerClass:
     '''A class to support emacs-style commands.'''
 
     # Gui-independent class vars.
-
     global_killbuffer = []
-        # Used only if useGlobalKillbuffer arg to Emacs ctor is True.
-        # Otherwise, each Emacs instance has its own local kill buffer.
-
     global_registers = {}
-        # Used only if useGlobalRegisters arg to Emacs ctor is True.
-        # Otherwise each Emacs instance has its own set of registers.
 
     #@+others
     #@+node:ekr.20061031131434.75: *3*  k.Birth
     #@+node:ekr.20061031131434.76: *4* k.__init__
-    def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
+    def __init__ (self,c):
 
-        '''Create a key handler for c.
-
-        useGlobalRegisters and useGlobalKillbuffer indicate whether to use
-        global (class vars) or per-instance (ivars) for kill buffers and registers.'''
+        '''Create a key handler for c.'''
         
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('k.__init__')
@@ -1113,13 +1104,7 @@ class keyHandlerClass:
         self.dispatchEvent = None
         self.inited = False         # Set at end of finishCreate.
         self.swap_mac_keys = False  #### How to init this ????
-        self.useGlobalKillbuffer = useGlobalKillbuffer
-        self.useGlobalRegisters = useGlobalRegisters
-        if g.new_init:
-            self.w = None
-        else:
-            # c.frame has already been inited.
-            self.w = c.frame.miniBufferWidget
+        self.w = None
                 # Note: will be None for nullGui.
 
         # Generalize...
@@ -1129,12 +1114,8 @@ class keyHandlerClass:
         
         # Access to data types defined in leoKeys.py
         self.KeyStroke = g.KeyStroke
-        #### self.ShortcutInfo = ShortcutInfo
         
-        if g.new_init:
-            pass # Defined in k.finishCreate
-        else:
-            self.defineSettingsIvars()
+        self.defineSettingsIvars()
         
         #@+<< define externally visible ivars >>
         #@+node:ekr.20061031131434.78: *5* << define externally visible ivars >>
@@ -1225,7 +1206,6 @@ class keyHandlerClass:
         self.defineSpecialKeys()
         self.defineSingleLineCommands()
         self.defineMultiLineCommands()
-        #### fn = c.shortFileName()
         self.autoCompleter = AutoCompleterClass(self)
         self.qcompleter = None # Set by AutoCompleter.start.
         self.setDefaultUnboundKeyAction()
@@ -1580,19 +1560,11 @@ class keyHandlerClass:
         if trace: print('k.finishCreate')
 
         k = self ; c = k.c
+        self.w = c.frame.miniBufferWidget
+            # Will be None for nullGui.
 
-        if g.new_init:
-            pass # Defined in k.finishCreate
-        else:
-            k.defineSettingsIvars()
-        
         k.createInverseCommandsDict()
-
-        # Important: bindings exist even if c.showMiniBuffer is False.
         k.makeAllBindings()
-
-        # g.trace(k.insert_mode_bg_color,k.insert_mode_fg_color)
-
         self.inited = True
 
         k.setDefaultInputState()

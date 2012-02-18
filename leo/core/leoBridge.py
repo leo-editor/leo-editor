@@ -182,7 +182,7 @@ class bridgeController:
         if self.guiName == 'nullGui':
             import leo.core.leoGui as leoGui
             import leo.core.leoFrame as leoFrame
-            g.app.gui = leoGui.nullGui("nullGui")
+            g.app.gui = leoGui.nullGui()
             g.app.log = g.app.gui.log = log = leoFrame.nullLog()
             log.isNull = False
             log.enabled = True # Allow prints from nullLog.
@@ -370,7 +370,8 @@ class bridgeController:
             else:
                 g.es_print('file not found', fileName,'creating new window')
         # Create a new frame. Unlike leo.run, this is not a startup window.
-        c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
+        c = g.app.newCommander(fileName)
+        frame = c.frame
         frame.setInitialWindowGeometry()
         frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
         # Call the 'new' hook for compatibility with plugins.

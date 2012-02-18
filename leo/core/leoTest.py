@@ -932,7 +932,7 @@ class runTestExternallyHelperClass:
         t1 = time.time()
         found = self.searchOutline(p.copy())
         if found:
-            theGui = leoGui.nullGui("nullGui")
+            theGui = leoGui.nullGui()
             old_silent_mode = g.app.silentMode
             g.app.silentMode = True
             c2 = c.new(gui=theGui)

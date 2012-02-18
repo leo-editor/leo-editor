@@ -6879,19 +6879,8 @@ def finishInitApp(c):
 
     if g.app.disableSave:
         g.es("disabling save commands",color="red")
-#@+node:ekr.20120212095313.10378: *3* from leoApp.ctor
-
-   #### To be removed.
-        #### self.disableSave = False
-        #### self.enableUnitTest = True
-        #### self.homeSettingsPrefix = '.'
-        #### self.oneConfigFilename = '' # The name of a single configuration file.
-        #### self.root = None # The hidden main window. Set later.
-        #### self.trace_list = [] # "Sherlock" argument list for tracing().
-        #### self.user_xresources_path = None # Resource file for Tk/tcl.
 #@+node:ekr.20120211052437.10734: *3* readGlobalSettingsFiles & helpers (g.app.config) (NEW)
 def readGlobalSettingsFiles (self):
-    
    
     self.readLeoSettingsFile(giveMessage)
     self.readMyLeoSettingsFile(giveMessage)
@@ -6971,7 +6960,7 @@ def readLeoSettingsFile(self):
         g.trace('myGlobal file:',self.myGlobalConfigFile)
         g.trace('myHome file:  ',self.myHomeConfigFile)
     
-    #############
+    ####
     
     dirs_table = (
         (self.globalConfigFile,False),
@@ -7048,5 +7037,23 @@ def readMyLeoSettingsFile (self,giveMessage):
             else:
                 if giveMessage:
                     message('error reading settings in %s' % path)
+#@+node:ekr.20031218072017.2189: *3* app.computeWindowTitle
+if 0: # Not used.  c.computeWindowTitle used instead.
+    
+    def computeWindowTitle(self,fileName):
+        
+        '''Set the window title and fileName.'''
+    
+        if fileName:
+            title = g.computeWindowTitle(fileName)
+        else:
+            s = "untitled"
+            n = g.app.numberOfUntitledWindows
+            if n > 0:
+                s += str(n)
+            title = g.computeWindowTitle(s)
+            g.app.numberOfUntitledWindows = n+1
+    
+        return title
 #@-all
 #@-leo

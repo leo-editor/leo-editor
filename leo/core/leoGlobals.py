@@ -16,29 +16,25 @@ import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >>
-# new_keys = False # True: Qt input methods produce a **user setting**, not a stroke.
-# if new_keys: print('***** new_keys')
-
 trace_startup = False
     # These traces use print instead of g.trace so that
     # the traces can add class info the method name.
-    
-new_init = False # Simplify/eliminate newLeoCommanderAndFrame
-if new_init: print('***** new_init')
 
-new_config = False  # Unit test set this to True, then restore it.
+new_config = False
     # True: Create finalized settings & shortcuts dicts for each commander.
     # g.app.config only parses settings: rename it g.app.configParser??
     # c.config.getX become much simpler.
 if new_config: print('***** new_config')
 
 new_load = False
-    # True: .leo files are loaded at most once,
-    # except the standard settings files appearing in the load list.
+    # True: use the load manager for most load-related matters.
 if new_load: print('***** new_load')
     
 new_modes = False # True: use ModeController and ModeInfo classes.
 if new_modes: print('***** new_modes')
+
+new_keys = False # True: Qt input methods produce a **user setting**, not a stroke.
+if new_keys: print('***** new_keys')
 
 # Switches to trace the garbage collector.
 trace_gc = False           
@@ -2141,7 +2137,8 @@ def makePathRelativeTo (fullPath,basePath):
         return fullPath
 #@+node:ekr.20090520055433.5945: *3* g.openWithFileName & helpers
 def openWithFileName(fileName,old_c,
-    enableLog=True,gui=None,readAtFileNodesFlag=True):
+    enableLog=True,gui=None,readAtFileNodesFlag=True
+):
 
     """Create a Leo Frame for the indicated fileName if the file exists.
 
@@ -2167,10 +2164,9 @@ def openWithFileName(fileName,old_c,
     app.setLog(None)
     app.lockLog()
     
-    # Phase 1: Start the init process.
+    # Phase 1: Create the commander and all objects.
     # A: Open the file **if** the file is a .leo file.
-    # B: Call app.newLeoCommanderAndFrame.
-    
+    # B: Call g.app.newCommander.
     if isLeo:
         # (old_config only): Read the file the first time to get the settings.
         if not g.new_config and old_c:
@@ -2182,72 +2178,32 @@ def openWithFileName(fileName,old_c,
         #### To do: Never fail.  Create an empty .leo file if no file.
         c,theFile = g.openFileCommanderAndFrame(old_c,gui,fn,relFn)
             # Call openLeoOrZipFile  
-            # Call g.app.newLeoCommanderAndFrame.
-            #### (new_config) We can not create a real gui frame here!!!
+            # Call g.app.newCommander.
     else:
-        c,theFile = g.openWrapperLeoFile(old_c,fn,gui),None
-            # Call g.app.newLeoCommanderAndFrame, creating an @<file> node.
+        c,theFile = g.openWrapperLeoFile(old_c,fn),None
+            # Call g.app.newCommander, creating an @<file> node.
             # Complex init of the wrapper .leo file.
 
     # Enable the log.
-    if g.new_config:
-        #### We can not use the new log here!
-        if not c:
-            app.unlockLog() # Restore the old log.
-            return False,None
-    else:
-        app.unlockLog()
-        if not c: return False,None
-        assert c.frame and c.frame.c == c
-        if g.new_init:
-            pass # The log is not ready.
-        else:
-            c.frame.log.enable(enableLog)
+    app.unlockLog()
+    if not c: return False,None
+    assert c.frame and c.frame.c == c
+    c.frame.log.enable(enableLog)
     
     # Phase 2: Create the outline from the .leo file.
     if trace: print('g.openWithFileName: Phase 2: create outline')
     
     if theFile:
-        #### Hard to open hooks without settings!
-        # g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName)
-        #### We could remove the readAtFileNodes flag.
+        g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName)
         ok = g.readOpenedLeoFile(c,old_c,gui,fn,theFile,readAtFileNodesFlag)
             # Call c.fileCommands.openLeoFile to read the .leo file.
             # Call c.config.setRecentFiles for all items in g.app.windowList.
             # Set c.openDirectory.
         if not ok: return False,None
-        # g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-        
-    # Phase 3: (new_config only): Update the local settings.
-    # No calls should to c.config.getX should happen before this phase is complete.
-    if trace: print('g.openWithFileName: Phase 3: read settings')
-    assert c.rootPosition()
-    if g.new_config:
-        # c.configInited will be False for global settings.
-        # This is not an error.
-        c.configInited = lm.initLocalSettings(c)
+        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
 
-    # Phase 4: (new_config only): call all finishCreate methods.
-    if trace: print('g.openWithFileName: Phase 4: finishCreate')
-        
-    if g.new_init:
-        
-        c.finishCreate(initEditCommanders=True)
-        frame = c.frame
-        assert frame
-        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
-
-        #### From fc.getLeoFile.
-        if readAtFileNodesFlag:
-            c.redraw()
-            c.fileCommands.readExternalFiles(fileName)
-            if c.config.getBool('check_outline_after_read'):
-                c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-    
-    # Phase 5: Complete the initialization.
-    if trace: print('g.openWithFileName: Phase 5: final inits')
-    if g.new_init:
-        c.frame.log.enable(enableLog)
+    # Phase 3: Complete the initialization.
+    if trace: print('g.openWithFileName: Phase 3: final inits')
     g.app.writeWaitingLog(c)
     c.setLog()
     g.createMenu(c,fn)
@@ -2337,10 +2293,7 @@ def openFileCommanderAndFrame(old_c,gui,fileName,relativeFileName):
 
     # This call will take 3/4 sec. to open a file from the leoBridge.
     # This is due to imports in c.__init__
-    c,frame = app.newLeoCommanderAndFrame(
-        fileName=fileName,
-        relativeFileName=relativeFileName,
-        gui=gui)
+    c = app.newCommander(fileName,relativeFileName)
 
     c.isZipped = isZipped
     return c,theFile
@@ -2376,7 +2329,7 @@ def openLeoOrZipFile (fileName):
             g.es_print("can not open:",fileName,color="blue")
         return None,False
 #@+node:ekr.20080921154026.1: *4* g.openWrapperLeoFile
-def openWrapperLeoFile (old_c,fileName,gui):
+def openWrapperLeoFile (old_c,fileName):
 
     '''Open a wrapper .leo file for the given file,
     and import the file into .leo file.'''
@@ -2387,8 +2340,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
     
     # 2011/10/12: support quick edit-save mode.
     # We will create an @edit node below for non-existent files.
-    c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=None,relativeFileName=None,gui=gui)
+    c = g.app.newCommander(fileName=None)
     assert c.rootPosition()
 
     # Needed for plugins.
@@ -2396,6 +2348,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
         g.doHook("new",old_c=old_c,c=c,new_c=c)
 
     # Use the config params to set the size and location of the window.
+    frame = c.frame
     frame.setInitialWindowGeometry()
     frame.deiconify()
     frame.lift()
@@ -2425,11 +2378,8 @@ def openWrapperLeoFile (old_c,fileName,gui):
 
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
-    if g.new_config:
-        pass
-    else:
-        if c.config.getBool('use_chapters') and c.chapterController:
-            c.chapterController.finishCreate()
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
 
     frame.c.setChanged(False)
         # Mark the outline clean.
@@ -2441,8 +2391,6 @@ def preRead(fileName):
     '''Read the file for the first time,
     setting the setting for a later call to finishCreate.
     '''
-
-    #### g.trace('****',fileName)
 
     c = g.app.config.openSettingsFile(fileName)
     if c:
@@ -4509,7 +4457,6 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
     # at = c.atFileCommands
     import leo.core.leoAtFile as leoAtFile
     at = leoAtFile.atFile(c)
-    at.finishCreate()
 
     w = c.frame.body.bodyCtrl
     p1 = p and p.copy()

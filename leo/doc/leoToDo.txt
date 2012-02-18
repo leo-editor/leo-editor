@@ -1109,7 +1109,8 @@ def readOutlineOnly (self,event=None):
     try:
         theFile = open(fileName,'r')
         g.chdir(fileName)
-        c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
+        c = g.app.newCommander(fileName)
+        frame = c.frame
         frame.deiconify()
         frame.lift()
         c.fileCommands.readOutlineOnly(theFile,fileName) # closes file.
@@ -1313,10 +1314,8 @@ def createHiddenCommander(self,fileName):
     import leo.core.leoFrame as leoFrame
     import leo.core.leoCommands as leoCommands
 
-    nullGui = leoGui.nullGui('nullGui')
-    frame = leoFrame.nullFrame('nullFrame',nullGui)
-    c2 = leoCommands.Commands(frame,fileName)
-    frame.c = c2
+    c2 = leoCommands.Commands(fileName,gui=leoGui.nullGui())
+    frame = c2.frame
     frame.tree.c = c2
     theFile,c2.isZipped = g.openLeoOrZipFile(fileName)
     if theFile:
@@ -3702,7 +3701,7 @@ def eventFilter(self, obj, event):
                 g.app.gui.remove_border(c,obj)
 
     if self.keyIsActive:
-        shortcut = self.toStroke(tkKey,ch) #### ch is unused.
+        shortcut = self.toStroke(tkKey,ch) # ch is unused.
 
         if override:
             # Essentially *all* keys get passed to masterKeyHandler.
@@ -3833,195 +3832,6 @@ Create a "registry" of unit tests.  Verify that unitTest.leo contains them all.
 @nocolor-node
 
 Menu and plugin registry methods can fail if that *particular* unit test is running.
-.. @+node:ekr.20111107092526.9783: *5* Test g.app.config get/set
-.. @+node:ekr.20041118195812: *6* c.config.Setters
-if g.new_config:
-    # make_shortcuts_dict does not exits in new_config.
-    @others
-else:
-    << OLD c.config.setters >>
-.. @+node:ekr.20120215072959.12476: *7* << OLD c.config.setters >>
-def set (self,setting,kind,val):
-    '''Not used during startup: useful for unit tests.'''
-    g.app.config.set(self.c,setting,kind,val)
-
-def setRecentFiles (self,files):
-    '''Update the recent files list.'''
-    g.app.config.appendToRecentFiles(files)
-
-def make_shortcuts_dicts (self,d,localFlag):
-    return g.app.config.make_shortcuts_dicts(self.c,d,localFlag)
-.. @+node:ekr.20120215072959.12475: *7* c.config.set (new_config)
-def set (self,p,kind,name,val):
-
-    """Init the setting for name to val."""
-
-    trace = False and not g.unitTesting
-    if trace: g.trace(kind,name,val)
-    
-    #### import leo.core.leoConfig as leoConfig
-    
-    assert g.new_config
-
-    c = self.c
-
-    # Note: when kind is 'shortcut', name is a command name.
-    key = g.app.config.munge(name)
-
-    # if kind and kind.startswith('setting'): g.trace("c.config %10s %15s %s" %(kind,val,name))
-    d = self.settingsDict
-    assert isinstance(d,g.TypedDict),d
-
-    gs = d.get(key)
-    if gs:
-        assert isinstance(gs,g.GeneralSetting),gs
-        path = gs.path
-        if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
-            g.es("over-riding setting:",name,"from",path)
-
-    ####
-    # old config: we can't use c here: it may be destroyed!
-    # new config: we *can* user c here. it persists.
-    gs = g.GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
-    d.replace(key,gs)
-.. @+node:ekr.20120215072959.12478: *7* c.config.setRecentFiles (new_config)
-def setRecentFiles (self,files):
-    
-    '''Update the recent files list.'''
-    
-    g.app.config.appendToRecentFiles(files)
-.. @+node:ekr.20041118084146.1: *6* set (g.app.config)
-def set (self,c,setting,kind,val):
-
-    '''Set the setting.  Not called during initialization.'''
-
-    key = self.munge(setting)
-
-    # g.trace('(g.app.config)',setting,kind,val,c)
-
-    # 2011/11/07: Multiple bug fixes.
-    if c:
-        d = self.localOptionsDict.get(c.hash(),{})
-        d[key] = g.GeneralSetting(kind,setting=key,val=val,tag='setting')
-        self.localOptionsDict[c.hash()] = d
-    else:
-        d = self.dictList [0]
-        d[key] = g.GeneralSetting(kind,setting=key,val=val,tag='setting')
-        self.dictList[0] = d
-.. @+node:ekr.20041117083141: *6* get & allies (g.app.config)
-def get (self,c,setting,kind):
-
-    """Get the setting and make sure its type matches the expected type."""
-    
-    trace = False and not g.unitTesting
-    verbose = False
-
-    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
-
-    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-    if c and not isLeoSettings:
-        # For the local .leo file.
-        d = self.localOptionsDict.get(c.hash(),{})
-        if d:
-            val,junk = self.getValFromDict(d,setting,kind)
-            if val is not None:
-                if trace: g.trace('**%-7s %45s %s' % ('local',setting,val))
-                return val
-
-    for d in self.localOptionsList:
-        # For myLeoSettings.leo and leoSettings.leo.
-        val,junk = self.getValFromDict(d,setting,kind)
-        if val is not None:
-            if trace: g.trace('%-7s %45s %s' % ('global',setting,val))
-            return val
-
-    for d in self.dictList:
-        # For hard-coded options...
-        val,junk = self.getValFromDict(d,setting,kind)
-        if val is not None:
-            if trace:
-                g.trace('%-7s %45s %s' % ('default',setting,val))
-                #### Weird:
-                g.trace(g.callers(6))
-            return val
-
-    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-    if c and isLeoSettings:
-        # For when leoSettings.leo is the local file.
-        d = self.localOptionsDict.get(c.hash(),{})
-        if d:
-            val,junk = self.getValFromDict(d,setting,kind)
-            if val is not None:
-                if trace: g.trace('%-7s %45s %s' % ('last',setting,val))
-                return val
-
-    if trace and verbose:
-        fn = c and c.shortFileName() or '<no file>'
-        g.trace(setting,None,fn)
-    return None
-.. @+node:ekr.20041121143823: *7* getValFromDict
-def getValFromDict (self,d,setting,requestedType,warn=True):
-
-    '''Look up the setting in d. If warn is True, warn if the requested type
-    does not (loosely) match the actual type.
-    returns (val,exists)'''
-
-    gs = d.get(self.munge(setting))
-    if not gs: return None,False
-    assert isinstance(gs,g.GeneralSetting)
-    
-    # g.trace(setting,requestedType,gs.toString())
-    val = gs.val
-
-    # 2011/10/24: test for an explicit None.
-    if g.isPython3:
-        isNone = val in ('None','none','') # ,None)
-    else:
-        isNone = val in (
-            unicode('None'),unicode('none'),unicode(''),
-            'None','none','') #,None)
-
-    if not self.typesMatch(gs.kind,requestedType):
-        # New in 4.4: make sure the types match.
-        # A serious warning: one setting may have destroyed another!
-        # Important: this is not a complete test of conflicting settings:
-        # The warning is given only if the code tries to access the setting.
-        if warn:
-            g.es_print('warning: ignoring',gs.kind,'',setting,'is not',requestedType,color='red')
-            g.es_print('there may be conflicting settings!',color='red')
-        return None, False
-    # elif val in (u'None',u'none','None','none','',None):
-    elif isNone:
-        return '', True
-            # 2011/10/24: Exists, a *user-defined* empty value.
-    else:
-        # g.trace(setting,val)
-        return val, True
-.. @+node:ekr.20051015093141: *7* typesMatch
-def typesMatch (self,type1,type2):
-
-    '''
-    Return True if type1, the actual type, matches type2, the requeseted type.
-
-    The following equivalences are allowed:
-
-    - None matches anything.
-    - An actual type of string or strings matches anything *except* shortcuts.
-    - Shortcut matches shortcuts.
-    '''
-
-    # The shortcuts logic no longer uses the get/set code.
-    shortcuts = ('shortcut','shortcuts',)
-    if type1 in shortcuts or type2 in shortcuts:
-        g.trace('oops: type in shortcuts')
-
-    return (
-        type1 == None or type2 == None or
-        type1.startswith('string') and type2 not in shortcuts or
-        type1 == 'int' and type2 == 'size' or
-        (type1 in shortcuts and type2 in shortcuts) or
-        type1 == type2
-    )
 .. @+node:ekr.20111114151846.9856: *5* Create unit test that verifies class relationships
 .. @+node:ekr.20111114102224.9936: *6* << define class HighLevelInterface >>
 class HighLevelInterface(object):

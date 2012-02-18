@@ -103,31 +103,27 @@ def run(fileName=None,pymacs=None,*args,**keywords):
 
     # print('runLeo.run: sys.argv %s' % sys.argv)
 
-    #### Always create the load manager.
+    # Always create the load manager.
     # (in doPrePlusingsInit) once we can know lm.files.
     assert g.app
     g.app.loadManager = leoApp.LoadManager(fileName,pymacs)
-        #### Not yet.
-        #### ok = g.app.loadManager.start()
-            
-    if 1: # At present, execute this code regardless of g.new_load.
     
-        # Phase 1: before loading plugins.
-        # Scan options, set directories and read settings.
-        if not isValidPython(): return
-        files,options = doPrePluginsInit(fileName,pymacs)
-        if options.get('version'):
-            print(g.app.signon)
-            return
-        if options.get('exit'):
-            return
-    
-        # Phase 2: load plugins: the gui has already been set.
-        g.doHook("start1")
-        if g.app.killed: return
-    
-        # Phase 3: after loading plugins. Create one or more frames.
-        ok = doPostPluginsInit(files,options)
+    # Phase 1: before loading plugins.
+    # Scan options, set directories and read settings.
+    if not isValidPython(): return
+    files,options = doPrePluginsInit(fileName,pymacs)
+    if options.get('version'):
+        print(g.app.signon)
+        return
+    if options.get('exit'):
+        return
+
+    # Phase 2: load plugins: the gui has already been set.
+    g.doHook("start1")
+    if g.app.killed: return
+
+    # Phase 3: after loading plugins. Create one or more frames.
+    ok = doPostPluginsInit(files,options)
         
     if ok:
         g.es('') # Clears horizontal scrolling in the log pane.
@@ -570,17 +566,15 @@ def createFrame (fileName,options):
             return c2,frame
 
     # The file does not exist.
-        #### Can we call g.openWithFileName with an empty file???
-        #### Can g.openWithFileName *always* return a new window???
+        #### g.openWithFileName should *always* return a new window.
 
     # Create a _new_ frame & indicate it is the startup window.
-    c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=fileName,initEditCommanders=True)
+    c = g.app.newCommander(fileName)
 
     if not script:
         g.app.writeWaitingLog(c) # 2009/12/22: fixes bug 448886
 
-    assert frame.c == c and c.frame == frame
+    frame = c.frame
     frame.setInitialWindowGeometry()
     frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
     frame.startupWindow = True
@@ -666,7 +660,6 @@ def make_screen_shot(fn):
         m = g.loadOnePlugin('screenshots')
         m.make_screen_shot(fn)
 #@+node:ekr.20120208064440.14030: *3* Common helpers
-# Helpers used regardless of new_load switch
 #@+node:ekr.20031218072017.1936: *3* isValidPython & emergency (Tk) dialog class
 def isValidPython():
 

@@ -492,10 +492,7 @@ class leoBody (HighLevelInterface):
         self.widget = None # self.bodyCtrl is now a property.
         self.numberOfEditors = 1
         self.pb = None # paned body widget.
-
-        ####
-        # self.use_chapters = c.config.getBool('use_chapters')
-        self.use_chapters = None
+        self.use_chapters = c.config.getBool('use_chapters')
 
         # Must be overridden in subclasses...
         self.colorizer = None
@@ -804,12 +801,9 @@ class leoBody (HighLevelInterface):
     def createChapterIvar (self,w):
 
         c = self.c ; cc = c.chapterController
-        
-        #### Was in ctor.
-        use_chapters = c.config.getBool('use_chapters')
 
         if not hasattr(w,'leo_chapter') or not w.leo_chapter:
-            if cc and use_chapters:
+            if cc and self.use_chapters:
                 w.leo_chapter = cc.getSelectedChapter()
             else:
                 w.leo_chapter = None
@@ -1106,9 +1100,9 @@ class leoFrame:
 
     #@+others
     #@+node:ekr.20031218072017.3679: *3*   leoFrame.__init__
-    def __init__ (self,gui):
+    def __init__ (self,c,gui):
 
-        self.c = None # Must be created by subclasses.
+        self.c = c
         self.gui = gui
         self.iconBarClass = nullIconBarClass
         self.statusLineClass = nullStatusLineClass
@@ -2461,13 +2455,13 @@ class nullFrame (leoFrame):
 
     #@+others
     #@+node:ekr.20040327105706: *3*  ctor (nullFrame)
-    def __init__ (self,title,gui):
+    def __init__ (self,c,title,gui):
 
         # g.trace('nullFrame')
 
-        leoFrame.__init__(self,gui) # Init the base class.
+        leoFrame.__init__(self,c,gui) # Init the base class.
 
-        assert(self.c is None)
+        assert self.c
 
         self.bodyCtrl = None
         self.iconBar = nullIconBarClass(self.c,self)
@@ -2493,28 +2487,9 @@ class nullFrame (leoFrame):
 
         pass
     #@+node:ekr.20040327105706.2: *3* finishCreate (nullFrame)
-    def finishCreate(self,c):
-
-        #### The new ctor rule should make this unnecessary.
-        self.c = c
-        assert c
-
-        # g.trace('(nullFrame)')
-        
-        #### This might go away once c is set properly in leoFrame ctor.
-        self.body.c = c
-        self.log.c = c
-        self.menu.c = c
-        self.tree.c = c
-
-        #### Now done in ctor.
-            # Create do-nothing component objects.
-            # self.tree = nullTree(frame=self)
-            # self.body = nullBody(frame=self,parentFrame=None)
-            # self.log  = nullLog (frame=self,parentFrame=None)
-            # self.menu = leoMenu.nullMenu(frame=self)
-
-        assert(c.undoer)
+    def finishCreate(self):
+        # This may be overridden in subclasses.
+        pass
     #@+node:ekr.20061109124552: *3* Overrides
     #@+node:ekr.20061109123828: *4* Config...
     def resizePanesToRatio (self,ratio,secondary_ratio):    pass

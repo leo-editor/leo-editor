@@ -10817,7 +10817,7 @@ def promptForSave (self):
 #@+node:ekr.20111012172344.9384: *5* Read logic...
 #@+node:ekr.20111012172344.9385: *6* Changed
 #@+node:ekr.20080921154026.1: *7* g.openWrapperLeoFile
-def openWrapperLeoFile (old_c,fileName,gui):
+def openWrapperLeoFile (old_c,fileName):
 
     '''Open a wrapper .leo file for the given file,
     and import the file into .leo file.'''
@@ -10828,8 +10828,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
     
     # 2011/10/12: support quick edit-save mode.
     # We will create an @edit node below for non-existent files.
-    c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=None,relativeFileName=None,gui=gui)
+    c = g.app.newCommander(fileName=None)
     assert c.rootPosition()
 
     # Needed for plugins.
@@ -10837,6 +10836,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
         g.doHook("new",old_c=old_c,c=c,new_c=c)
 
     # Use the config params to set the size and location of the window.
+    frame = c.frame
     frame.setInitialWindowGeometry()
     frame.deiconify()
     frame.lift()
@@ -10866,11 +10866,8 @@ def openWrapperLeoFile (old_c,fileName,gui):
 
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
-    if g.new_config:
-        pass
-    else:
-        if c.config.getBool('use_chapters') and c.chapterController:
-            c.chapterController.finishCreate()
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
 
     frame.c.setChanged(False)
         # Mark the outline clean.
@@ -10906,17 +10903,15 @@ def createFrame (fileName,options):
             return c2,frame
 
     # The file does not exist.
-        #### Can we call g.openWithFileName with an empty file???
-        #### Can g.openWithFileName *always* return a new window???
+        #### g.openWithFileName should *always* return a new window.
 
     # Create a _new_ frame & indicate it is the startup window.
-    c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=fileName,initEditCommanders=True)
+    c = g.app.newCommander(fileName)
 
     if not script:
         g.app.writeWaitingLog(c) # 2009/12/22: fixes bug 448886
 
-    assert frame.c == c and c.frame == frame
+    frame = c.frame
     frame.setInitialWindowGeometry()
     frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
     frame.startupWindow = True
@@ -10979,7 +10974,8 @@ def findNode (c,s):
     return None
 #@+node:ekr.20090520055433.5945: *7* g.openWithFileName & helpers
 def openWithFileName(fileName,old_c,
-    enableLog=True,gui=None,readAtFileNodesFlag=True):
+    enableLog=True,gui=None,readAtFileNodesFlag=True
+):
 
     """Create a Leo Frame for the indicated fileName if the file exists.
 
@@ -11005,10 +11001,9 @@ def openWithFileName(fileName,old_c,
     app.setLog(None)
     app.lockLog()
     
-    # Phase 1: Start the init process.
+    # Phase 1: Create the commander and all objects.
     # A: Open the file **if** the file is a .leo file.
-    # B: Call app.newLeoCommanderAndFrame.
-    
+    # B: Call g.app.newCommander.
     if isLeo:
         # (old_config only): Read the file the first time to get the settings.
         if not g.new_config and old_c:
@@ -11020,72 +11015,32 @@ def openWithFileName(fileName,old_c,
         #### To do: Never fail.  Create an empty .leo file if no file.
         c,theFile = g.openFileCommanderAndFrame(old_c,gui,fn,relFn)
             # Call openLeoOrZipFile  
-            # Call g.app.newLeoCommanderAndFrame.
-            #### (new_config) We can not create a real gui frame here!!!
+            # Call g.app.newCommander.
     else:
-        c,theFile = g.openWrapperLeoFile(old_c,fn,gui),None
-            # Call g.app.newLeoCommanderAndFrame, creating an @<file> node.
+        c,theFile = g.openWrapperLeoFile(old_c,fn),None
+            # Call g.app.newCommander, creating an @<file> node.
             # Complex init of the wrapper .leo file.
 
     # Enable the log.
-    if g.new_config:
-        #### We can not use the new log here!
-        if not c:
-            app.unlockLog() # Restore the old log.
-            return False,None
-    else:
-        app.unlockLog()
-        if not c: return False,None
-        assert c.frame and c.frame.c == c
-        if g.new_init:
-            pass # The log is not ready.
-        else:
-            c.frame.log.enable(enableLog)
+    app.unlockLog()
+    if not c: return False,None
+    assert c.frame and c.frame.c == c
+    c.frame.log.enable(enableLog)
     
     # Phase 2: Create the outline from the .leo file.
     if trace: print('g.openWithFileName: Phase 2: create outline')
     
     if theFile:
-        #### Hard to open hooks without settings!
-        # g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName)
-        #### We could remove the readAtFileNodes flag.
+        g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName)
         ok = g.readOpenedLeoFile(c,old_c,gui,fn,theFile,readAtFileNodesFlag)
             # Call c.fileCommands.openLeoFile to read the .leo file.
             # Call c.config.setRecentFiles for all items in g.app.windowList.
             # Set c.openDirectory.
         if not ok: return False,None
-        # g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-        
-    # Phase 3: (new_config only): Update the local settings.
-    # No calls should to c.config.getX should happen before this phase is complete.
-    if trace: print('g.openWithFileName: Phase 3: read settings')
-    assert c.rootPosition()
-    if g.new_config:
-        # c.configInited will be False for global settings.
-        # This is not an error.
-        c.configInited = lm.initLocalSettings(c)
+        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
 
-    # Phase 4: (new_config only): call all finishCreate methods.
-    if trace: print('g.openWithFileName: Phase 4: finishCreate')
-        
-    if g.new_init:
-        
-        c.finishCreate(initEditCommanders=True)
-        frame = c.frame
-        assert frame
-        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
-
-        #### From fc.getLeoFile.
-        if readAtFileNodesFlag:
-            c.redraw()
-            c.fileCommands.readExternalFiles(fileName)
-            if c.config.getBool('check_outline_after_read'):
-                c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-    
-    # Phase 5: Complete the initialization.
-    if trace: print('g.openWithFileName: Phase 5: final inits')
-    if g.new_init:
-        c.frame.log.enable(enableLog)
+    # Phase 3: Complete the initialization.
+    if trace: print('g.openWithFileName: Phase 3: final inits')
     g.app.writeWaitingLog(c)
     c.setLog()
     g.createMenu(c,fn)
@@ -11175,10 +11130,7 @@ def openFileCommanderAndFrame(old_c,gui,fileName,relativeFileName):
 
     # This call will take 3/4 sec. to open a file from the leoBridge.
     # This is due to imports in c.__init__
-    c,frame = app.newLeoCommanderAndFrame(
-        fileName=fileName,
-        relativeFileName=relativeFileName,
-        gui=gui)
+    c = app.newCommander(fileName,relativeFileName)
 
     c.isZipped = isZipped
     return c,theFile
@@ -11214,7 +11166,7 @@ def openLeoOrZipFile (fileName):
             g.es_print("can not open:",fileName,color="blue")
         return None,False
 #@+node:ekr.20080921154026.1: *8* g.openWrapperLeoFile
-def openWrapperLeoFile (old_c,fileName,gui):
+def openWrapperLeoFile (old_c,fileName):
 
     '''Open a wrapper .leo file for the given file,
     and import the file into .leo file.'''
@@ -11225,8 +11177,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
     
     # 2011/10/12: support quick edit-save mode.
     # We will create an @edit node below for non-existent files.
-    c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=None,relativeFileName=None,gui=gui)
+    c = g.app.newCommander(fileName=None)
     assert c.rootPosition()
 
     # Needed for plugins.
@@ -11234,6 +11185,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
         g.doHook("new",old_c=old_c,c=c,new_c=c)
 
     # Use the config params to set the size and location of the window.
+    frame = c.frame
     frame.setInitialWindowGeometry()
     frame.deiconify()
     frame.lift()
@@ -11263,11 +11215,8 @@ def openWrapperLeoFile (old_c,fileName,gui):
 
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
-    if g.new_config:
-        pass
-    else:
-        if c.config.getBool('use_chapters') and c.chapterController:
-            c.chapterController.finishCreate()
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
 
     frame.c.setChanged(False)
         # Mark the outline clean.
@@ -11279,8 +11228,6 @@ def preRead(fileName):
     '''Read the file for the first time,
     setting the setting for a later call to finishCreate.
     '''
-
-    #### g.trace('****',fileName)
 
     c = g.app.config.openSettingsFile(fileName)
     if c:
@@ -14402,12 +14349,11 @@ def setEditorColors (self,bg,fg):
 Done: Made this optional, and configurable.
 #@+node:ekr.20031218072017.2811: *5*  c.Birth & death
 #@+node:ekr.20031218072017.2812: *6* c.__init__ & helpers
-def __init__(self,frame,fileName,relativeFileName=None):
+def __init__(self,fileName,relativeFileName=None,gui=None):
 
     trace = (False or g.trace_startup) and not g.unitTesting
     tag = 'Commands.__init__ %s' % (g.shortFileName(fileName))
     if trace and g.trace_startup: print('\n%s %s' % (tag,g.callers()))
-        # Called from readSettingsFiles & openSettingsFiles logic.
 
     c = self
     
@@ -14417,28 +14363,38 @@ def __init__(self,frame,fileName,relativeFileName=None):
     # Official ivars.
     self._currentPosition = self.nullPosition()
     self._topPosition     = self.nullPosition()
+    self.frame = None
     self.gui = g.app.gui
     self.ipythonController = None
         # Set only by the ipython plugin.
-    if g.new_init:
-        assert frame is None
-    else:
-        self.frame = frame
     
     # The order of these calls does not matter.
-    self.initCommandIvars()
-    self.initDebugIvars()
-    self.initDocumentIvars()
-    self.initEventIvars()
-    self.initFileIvars(fileName,relativeFileName)
-    self.initOptionsIvars()
-    self.initObjectIvars()
+    c.initCommandIvars()
+    c.initDebugIvars()
+    c.initDocumentIvars()
+    c.initEventIvars()
+    c.initFileIvars(fileName,relativeFileName)
+    c.initOptionsIvars()
+    c.initObjectIvars()
+
+    # Init the settings before initing the objects.
+    self.config = configSettings(c)
+    g.app.config.setIvarsFromSettings(c)
 
     # Initialize all subsidiary objects, including subcommanders.
-    self.initObjects()
+    c.initObjects(gui or g.app.gui)
+    
+    assert c.frame
+    assert c.frame.c
 
     if trace and not g.trace_startup:
         t2 = g.printDiffTime('%s: after controllers created' % (tag),t1)
+    
+    # Complete the init!
+    c.finishCreate()
+        
+    if trace and not g.trace_startup:
+        t2 = g.printDiffTime('%s: after c.finishCreate' % (tag),t1)
 #@+node:ekr.20120217070122.10475: *7* c.computeWindowTitle
 def computeWindowTitle(self,fileName):
     
@@ -14601,36 +14557,35 @@ def initObjectIvars (self):
     self.spellCommands = None
     
 #@+node:ekr.20120217070122.10470: *7* c.initObjects
-def initObjects(self):
+def initObjects(self,gui):
     
     c = self
 
     self.hiddenRootNode = leoNodes.vnode(context=c)
     self.hiddenRootNode.setHeadString('<hidden root vnode>')
     
-    if g.new_init:
-        title = c.computeWindowTitle(c.mFileName)
-        self.frame = g.app.gui.createLeoFrame(title)
-        assert self.frame
-        self.frame.c = c #### could be done in gui.createLeoFrame.
+    # Create the gui frame.
+    title = c.computeWindowTitle(c.mFileName)
     
-    if g.new_config:
-        pass # Now called in c.finishCreate.
-    else:
-        self.config = configSettings(c)
-        g.app.config.setIvarsFromSettings(c)
-        self.nodeHistory = nodeHistory(c)
-        self.initConfigSettings()
-        c.setWindowPosition() # Do this after initing settings.
+    if not g.app.initing:
+        g.doHook("before-create-leo-frame",c=c)
+
+    self.frame = gui.createLeoFrame(c,title)
+
+    assert self.frame
+    assert self.frame.c == c
+    
+    self.nodeHistory = nodeHistory(c)
+    self.initConfigSettings()
+    c.setWindowPosition() # Do this after initing settings.
 
     # Break circular import dependencies by importing here.
     # These imports take almost 3/4 sec in the leoBridge.
     import leo.core.leoAtFile as leoAtFile
     import leo.core.leoCache as leoCache
+    import leo.core.leoChapters as leoChapters
     import leo.core.leoEditCommands as leoEditCommands
-    
-    if g.new_init:
-        import leo.core.leoKeys as leoKeys      ####
+    import leo.core.leoKeys as leoKeys
     import leo.core.leoFileCommands as leoFileCommands
     import leo.core.leoImport as leoImport
     import leo.core.leoRst as leoRst
@@ -14638,12 +14593,8 @@ def initObjects(self):
     import leo.core.leoTangle as leoTangle
     import leo.core.leoUndo as leoUndo
     
-    if g.new_init:
-        self.keyHandler = self.k = leoKeys.keyHandlerClass(c,
-            useGlobalKillbuffer=True,
-            useGlobalRegisters=True)
-    
-    self.chapterController = None ####
+    self.keyHandler = self.k = leoKeys.keyHandlerClass(c)
+    self.chapterController = leoChapters.chapterController(c)
     self.shadowController = leoShadow.shadowController(c)
     self.fileCommands   = leoFileCommands.fileCommands(c)
     self.atFileCommands = leoAtFile.atFile(c)
@@ -14664,69 +14615,46 @@ def __repr__ (self):
 
 __str__ = __repr__
 #@+node:ekr.20050920093543: *6* c.finishCreate & helper
-def finishCreate (self,initEditCommanders=True):  # New in 4.4.
+def finishCreate (self):
 
-    '''Finish creating the commander after frame.finishCreate.
+    '''Finish creating the commander and all sub-objects.
 
-    Important: this is the last step in the startup process.'''
+    This is the last step in the startup process.'''
     
     trace = (False or g.trace_startup) and not g.unitTesting
     if trace: print('c.finishCreate')
     
-    c = self ; p = c.p
-
-    c.initConfigSettings()
+    c = self ; k = c.k ; p = c.p
     
-    if g.new_init:
-        #### These were done in newLeoCommanderAndFrame.
-        c.frame.finishCreate(c)
-        
-        if c.config.getBool('use_chapters') and c.chapterController:
-            c.chapterController.finishCreate()
-        
-        # Finish initing the subcommanders.
-        c.undoer.clearUndoState() # Menus must exist at this point.
+    assert g.app.gui
+    assert k
+
+    c.frame.finishCreate()
         
     c.miniBufferWidget = w = c.frame.miniBufferWidget
         # Will be None for nullGui.
-    
-    assert g.app.gui
-
-    # Create a keyHandler even if there is no miniBuffer.
-    if g.new_init:
-        k = c.k # Now done in ctor.
-    else:
-        c.keyHandler = c.k = k = g.app.gui.createKeyHandlerClass(c,
-            useGlobalKillbuffer=True,
-            useGlobalRegisters=True)
-            
-    #### A new call.
-    c.atFileCommands.finishCreate()
-
-    if initEditCommanders:
-        # A 'real' .leo file.
         
-        c.commandsDict = c.editCommandsManager.finishCreateEditCommanders()
-        self.rstCommands.finishCreate()
+    # Important: it costs almost nothing to init commanders for settings files
+    c.commandsDict = c.editCommandsManager.finishCreateEditCommanders()
+    self.rstCommands.finishCreate()
 
-        # copy global commands to this controller    
-        for name,f in g.app.global_commands_dict.items():
-            k.registerCommand(name,
-                shortcut=None,func=f,pane='all',verbose=False)        
+    # copy global commands to this controller    
+    for name,f in g.app.global_commands_dict.items():
+        k.registerCommand(name,
+            shortcut=None,func=f,pane='all',verbose=False)        
 
-        k.finishCreate()
-    else:
-        # A leoSettings.leo file.
-        c.commandsDict = {}
+    k.finishCreate()
         
     if g.app.gui.guiName().lower().startswith('qt'):
         g.registerHandler('idle',c.idle_focus_helper)
         
-    if g.new_config:
-        c.setWindowPosition() # Do this after initing settings.
-        
     c.frame.menu.finishCreate()
     c.frame.log.finishCreate()
+    c.undoer.clearUndoState()
+        # Menus must exist at this point.
+        
+    # Do not call chapterController.finishCreate here:
+    # It must be called after the first real redraw.
     c.bodyWantsFocus()
 #@+node:ekr.20051007143620: *7* printCommandsDict
 def printCommandsDict (self):
@@ -14943,7 +14871,7 @@ def eventFilter(self, obj, event):
                 g.app.gui.remove_border(c,obj)
 
     if self.keyIsActive:
-        shortcut = self.toStroke(tkKey,ch) #### ch is unused.
+        shortcut = self.toStroke(tkKey,ch) # ch is unused.
 
         if override:
             # Essentially *all* keys get passed to masterKeyHandler.
@@ -15875,7 +15803,7 @@ def runTests (self):
     t1 = time.time()
     found = self.searchOutline(p.copy())
     if found:
-        theGui = leoGui.nullGui("nullGui")
+        theGui = leoGui.nullGui()
         old_silent_mode = g.app.silentMode
         g.app.silentMode = True
         c2 = c.new(gui=theGui)
@@ -15971,7 +15899,7 @@ def runTests (self):
     t1 = time.time()
     found = self.searchOutline(p.copy())
     if found:
-        theGui = leoGui.nullGui("nullGui")
+        theGui = leoGui.nullGui()
         old_silent_mode = g.app.silentMode
         g.app.silentMode = True
         c2 = c.new(gui=theGui)
@@ -18105,8 +18033,6 @@ def get (self,c,setting,kind):
         if val is not None:
             if trace:
                 g.trace('%-7s %45s %s' % ('default',setting,val))
-                #### Weird:
-                g.trace(g.callers(6))
             return val
 
     # New in Leo 4.6. Use settings in leoSettings.leo *last*.
@@ -25862,19 +25788,11 @@ def finishCreate (self):
     if trace: print('k.finishCreate')
 
     k = self ; c = k.c
+    self.w = c.frame.miniBufferWidget
+        # Will be None for nullGui.
 
-    if g.new_init:
-        pass # Defined in k.finishCreate
-    else:
-        k.defineSettingsIvars()
-    
     k.createInverseCommandsDict()
-
-    # Important: bindings exist even if c.showMiniBuffer is False.
     k.makeAllBindings()
-
-    # g.trace(k.insert_mode_bg_color,k.insert_mode_fg_color)
-
     self.inited = True
 
     k.setDefaultInputState()
@@ -26132,7 +26050,7 @@ def bindOpenWith (self,shortcut,name,data):
     # Use k.registerCommand to set the shortcuts in the various binding dicts.
     commandName = 'open-with-%s' % name.lower()
     k.registerCommand(commandName,shortcut,openWithCallback,pane='all',verbose=False)
-#@+node:ekr.20120214165710.10725: **  new_config notes (Do not delete)
+#@+node:ekr.20120214165710.10725: ** Notes (Do not delete)
 #@+node:ekr.20120211052437.10731: *3* Notes about loading
 @nocolor-node
 
@@ -26196,32 +26114,6 @@ appropriate dictionary.
 
 Note that this scheme will produce the proper results for standard settings
 files themselves if they appear on the command line.
-#@+node:ekr.20120216051410.10854: *3* Understanding the open process
-1. g.openWithFileName calls g.app.newLeoCommanderAndFrame.
-
-2. g.app.newLeoCommanderAndFrame *starts* initing:
-    A. Creates an *unfinished* frame: gui.createLeoFrame(title) 
-    B. Creates the commander by calling the ctor.
-    C. *Starts* the initing:
-        # if not app.initing: g.doHook("before-create-leo-frame",c=c)
-        # frame.finishCreate(c)
-        # c.finishCreate(initEditCommanders)
-        # c.undoer.clearUndoState()
-        
-3. g.openWithFileName *completes* initing:.
-    g.readOpenedLeoFile(c,old_c,gui,fn,theFile,readAtFileNodesFlag)
-        # calls c.fileCommands.openLeoFile to read the .leo file.
-        # calls c.config.setRecentFiles for all items in g.app.windowList.
-        # sets c.openDirectory.
-    g.app.writeWaitingLog(c)
-    c.setLog()
-    g.createMenu(c,fn)
-    g.finishOpen(c)
-        # c.frame.tree.initAfterLoad()
-        # c.redraw()
-        # chapterController.finishCreate() # Must be done after first redraw.
-        # sets focus & calls k.showStateAndMode.
-        # c.frame.initCompleteHint()
 #@+node:ekr.20120214165710.16786: *3* Notes about old code (Important)
 OLD code: all setting files read during startup.
 
@@ -26247,144 +26139,6 @@ NEW code: only global settings files read during startup.
     g.openWithFileName
         (the file is opened normally)
         updateSettings
-#@+node:ekr.20120214102737.10711: *3* Notes for new config code
-@nocolor-node
-
-At present, Leo's configuration code is a wretched mess. You can see several
-aspects of this mess by looking at g.app.config.get:
-
-1. This g.app.config.get searches several "weird and wonderful" dictionaries,
-accessed by name or by list, to get the value of a single setting.
-
-2. You would think that the code would be in c.config.get, but no, it's not: The
-configSettings class in leoCommands.py simply calls g.app.gui.config to do all
-the work.
-
-In another thread, I summarized the planned new process as follows:
-
-QQQ
-Rather than the baroque code in g.app.config.getX, each c.config [object]
-will contain two "finalized" settings dicts, one for shortcuts and one for all
-other settings. To get a setting, the c.config.getX methods will simply look up
-the setting in the appropriate dictionary.
-QQQ
-
-Here are the details:
-
-1. To compute the "finalized" version of the *shortcuts* dict, the init code
-will start with the hard-coded settings, then merge the settings from
-leoSettings.leo and myLeoSettings.leo (if they exist), and then merge the
-settings from the local file being loaded. Merging dicts is tricky, but
-merge_shortcuts_dicts handles the details.
-
-2. We compute the "finalized" version of the *settings* dict in a similar way,
-but merging dicts is much easier: we can simply use d.extend(d2)
-
-3. Initing setting will be a two-stage process. The first stage merges the
-hard-coded settings and the settings from leoSettings.leo and myLeoSettings.leo.
-This first stage only happens once.
-
-The second stage will happen for each loaded .leo file. The second stage merges
-the result of the first stage with the settings from the file being loaded.
-
-**Important**: In this second stage, leoSettings.leo and myLeoSettings.leo will
-be treated just the same as any other .leo file if they happen to appear in the
-load list. In particular, this means that settings from myLeoSettings.leo will
-apply to leoSettings.leo if leoSettings.leo is in the list of loaded files!
-
-4. At present, the config_iter code computes knows the "source" of each setting
-because it knows which of the various weird and wonderful settings dictionaries
-actually contain the effective value of the setting. We must preserve this
-source information for the print-settings command, so the process of merging
-information must *add* the source information to the finalized dictionary
-entries.
-
-5. Given the per-commander finalized setting information, retrieving that
-information becomes much easier. c.config.get will simply return something like
-c.config.finalized_d.get(setting_name).
-
-6. Overriding settings will happen much as it does at present, but the changes
-will be to c.config.finalized_d instead of wherever it happens now.
-
-7. The g.app.config class will do nothing but create settings initially; the
-c.config class will handle almost all aspects of getting and overriding
-settings.
-
-8. During development, the g.new_config switch will control whether the old or
-new config code is in effect. I'll probably set the new_config switch only after
-the new_load code is nearly complete.
-
-9. **Important**: The new scheme will eliminate the wretched dict that presently
-associates commanders with settings. Bugs accessing this dict are the reason for
-bug 568452: local @settings ignored if file opened from command line with
-absolute path. Although standard settings files *will* be read twice if they
-appear in the load list, the only remembered information will be the finalized
-settings dicts. Thus, we can eliminate c.hash rather than fix it.
-#@+node:ekr.20120216094008.10860: *3* To do: only one call to newLeoCommanderAndFrame!
-@nocolor-node
-
-===== Unify complex code
-
-There should be one and *only* one version of the complex open code. Indeed, the
-init code is so complicated that it would be hopeless to attempt to keep
-different versions in sync.
-
-Happily, there is an easy way to do this: g.openWithFileName should create *all*
-outlines! That is, g.openWithFileName should never "fail": it will create an
-empty outline if no file name is given, or if the file does not exist. This is a
-big collapse in complexity.
-
-With this rule in place, the *only* calls to newLeoCommanderAndFrame will be
-from g.openWithFileName. This is another significant collapse in complexity.
-
-===== Init discipline
-
-To make the 5-phase load process work, newLeoCommanderAndFrame must ensure
-that no c.config.getX method is called from any of the methods invoked from
-newLeoCommanderAndFrame.
-
-At present, there are few exceptions to this rule. I'll handle this by splitting
-several finishCreate methods into "init" and "finishCreate" parts. Phase 1, that
-is, newLeoCommanderAndFrame will call only the "init" parts. Phase 4 will call
-the corresponding "finishCreate" parts.
-
-It will be easy to ensure that no calls to c.config.getX happen before Phase 4.
-The Commander class will contain a new ivar, say c.configInited, initially
-False. c.config.get will issue a warning if c.configInited is False, and the end
-of Phase 4 will set c.configInited. This a ever-present embedded unit test.
-#@+node:ekr.20120217042801.10784: *3* Notes about finishCreate (Do not delete)
-@nocolor-node
-
-** Important** The only problematic calls to finishCreate are in newLeoCommanderAndFrame.
-
-g.app.newLeoCommanderAndFrame calls the following.
-
-    frame.finishCreate(c)
-        # That is, qtFrame.finishCreate or nullFrame.finishCreate.
-        
-    c.finishCreate(initEditCommanders)
-        # Calls c.editCommandsManager.finishCreateEditCommanders
-            killBufferCommandsClass.finishCreate calls c.config.getBool
-        # Calls c.rstCommands.finishCreate
-        # Calls k.finishCreate
-        # Calls c.frame.menu.finishCreate
-        # Calls c.frame.log.finishCreate
-
-    # c.undoer.clearUndoState()
-        # No calls to other methods.
-        
-To do: The following finishCreate methods call c.config.get (directly *or* indirectly)
-
-Indirect calls to c.config.get:
-    - c.finishCreate
-Direct calls to c.config.get:
-    - abbrevClass.finishCreate
-    - at.finishCreate (already split)
-    - k.finishCreate.
-    - killBufferCommandsClass.finishCreate
-    - nullFrame.finishCreate (just create do-nothing init)
-    - pc.finishCreate.
-    - qtFrame.finishCreate
 #@+node:ekr.20120212220616.10368: *3* Notes about startup logic (do not delete)
 @nocolor-node
 
@@ -26397,7 +26151,7 @@ g.preRead does:
 ** Proposed change:
     
     c = g.app.config.openSettingsFile(fileName)
-        # Calls newLeoCommanderAndFrame & fc.open
+        # Calls newCommander & fc.open
     if c:
         parser = SettingsTreeParser(c,localFlag=True)
         shortcutsDict,settingsDict = parser.traverse()
@@ -26410,9 +26164,7 @@ g.preRead does:
         
 config.openSettingsFile calls:
     
-    c,frame = g.app.newLeoCommanderAndFrame(fileName=path,
-        initEditCommanders=False,
-        updateRecentFiles=False)
+    c,frame = g.app.newCommander(fileName)
    
     ok = c.fileCommands.openLeoFile(theFile,path,
         readAtFileNodesFlag=False,silent=True)

@@ -33,17 +33,14 @@ class chapterController:
 
         # g.trace('chapterController',g.callers())
     #@+node:ekr.20070325104904: *4* cc.finishCreate
+    # This must be called late in the init process, after the first redraw.
+
     def finishCreate (self):
 
         '''Find or make the @chapters and @chapter trash nodes.'''
         
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('cc.finishCreate')
-
-        # This must be called late in the init process:
-        # at present, called by g.openWithFileName and c.new.
-
-        # g.trace('(chapterController)',g.callers(4))
+        if trace: print('cc.finishCreate',g.callers())
 
         cc = self ; c = cc.c
 

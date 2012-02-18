@@ -19,32 +19,26 @@ class leoMenu:
 
     #@+others
     #@+node:ekr.20120124042346.12938: *3* leoMenu.Birth
-    #@+node:ekr.20031218072017.3751: *4*  leoMenu.__init__
     def __init__ (self,frame):
 
-        # g.trace('leoMenu',g.callers())
-
-        # Copy args...
-        #### self.c = c = frame.c
-        self.c = None #### now set in finishCreate.
+        self.c = c = frame.c
+        self.enable_dict = {}       # Created by finishCreate.
         self.frame = frame
-        
-        # Data...
-        self.enable_dict = {} # Created by finishCreate.
-        self.menus = {} # Menu dictionary.
+        self.menus = {}             # Menu dictionary.
         self.menuShortcuts = {}
-        
         self.recentFilesStatic = () # Set in finishCreate.
+            
+    def finishCreate (self):
 
-        # To aid transition to emacs-style key handling.
-        self.useCmdMenu = False
-
-        self.newBinding = True
-            # True if using new binding scheme.
-            # You can set this to False in an emergency to revert to the old way.
-
-        if 0: # Must be done much later.
-            self.defineMenuTables()
+        c = self.c
+        # static part of recent files menu
+        self.recentFilesStatic = (
+            ("Clear Recent Files",None,c.clearRecentFiles),
+            ("Clean Recent Files",None,c.cleanRecentFiles),
+            ("Sort Recent Files",None,c.sortRecentFiles),
+            # ("-",None,None),
+        )
+        self.define_enable_dict()
     #@+node:ekr.20120124042346.12937: *4* define_enable_table
     def define_enable_dict (self):
         
@@ -123,24 +117,6 @@ class leoMenu:
             for key in sorted(d.keys()):
                 if key not in commandKeys:
                     g.trace('*** bad entry for %s' % (key))
-    #@+node:ekr.20120124042346.12939: *4* finishCreate (leoMenu)
-    def finishCreate (self):
-
-        #### The new ctor rule should make this unnecessary.
-        self.c = c = self.frame.c
-        assert self.c
-        
-        # static part of recent files menu
-        self.recentFilesStatic = (
-            ("Clear Recent Files",None,c.clearRecentFiles),
-            ("Clean Recent Files",None,c.cleanRecentFiles),
-            ("Sort Recent Files",None,c.sortRecentFiles),
-            # ("-",None,None),
-        )
-            
-        self.useCmdMenu = c.config.getBool('useCmdMenu')
-
-        self.define_enable_dict()
     #@+node:ekr.20031218072017.3775: *3* error and oops
     def oops (self):
 
@@ -187,9 +163,7 @@ class leoMenu:
 
             g.doHook("create-optional-menus",c=c)
 
-            if self.useCmdMenu:
-                self.createCmndsMenuFromTable()
-
+            self.createCmndsMenuFromTable()
             self.createWindowMenuFromTable()
             self.createHelpMenuFromTable()
     #@+node:ekr.20031218072017.3790: *5* createFileMenuFromTable
@@ -447,10 +421,7 @@ class leoMenu:
         self.defineFileMenuTables()
         self.defineOutlineMenuTables()
         self.defineWindowMenuTables()
-
-        if self.useCmdMenu:
-            self.defineCmdsMenuTables()
-
+        self.defineCmdsMenuTables()
         self.defineHelpMenuTables()
 
     #@+node:ekr.20031218072017.3753: *5* defineEditMenuTables & helpers

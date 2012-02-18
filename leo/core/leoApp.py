@@ -471,7 +471,7 @@ class LeoApp:
             leoGui = None
 
         if leoGui:
-            app.gui = leoGui.nullGui("nullGui")
+            app.gui = leoGui.nullGui()
     #@+node:ekr.20031218072017.1938: *4* app.createNullGuiWithScript
     def createNullGuiWithScript (self,script=None):
 
@@ -484,7 +484,7 @@ class LeoApp:
 
         if leoGui:
             app.batchMode = True
-            app.gui = leoGui.nullGui("nullGui")
+            app.gui = leoGui.nullGui()
             app.gui.setScript(script)
     #@+node:ekr.20090202191501.1: *4* app.createQtGui
     def createQtGui (self,fileName='',verbose=False):
@@ -625,8 +625,6 @@ class LeoApp:
     #@+node:ekr.20120211121736.10809: *3* app.init (NEW)
     def init (self):
         
-        assert g.new_load   #### not used in old load.
-        
         import leo.core.leoCache as leoCache
         import leo.core.leoConfig as leoConfig
         import leo.core.leoNodes as leoNodes
@@ -642,82 +640,19 @@ class LeoApp:
         #### Do this early.  We no longer read files twice.
         # Fixes bug 670108.
         app.db = leoCache.cacher().initGlobalDB()
-    #@+node:ekr.20031218072017.2188: *3* app.newLeoCommanderAndFrame & helper
-    def newLeoCommanderAndFrame(self,
-        fileName=None,
-        relativeFileName=None,
-        gui=None,initEditCommanders=True,updateRecentFiles=True):
+    #@+node:ekr.20031218072017.2188: *3* app.newCommander & helper
+    def newCommander(self,fileName,relativeFileName=None,gui=None):
 
         """Create a commander and its view frame for the Leo main window."""
         
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('g.app.newLeoCommanderAndFrame: %s' % repr(fileName))
-
-        app = self
-
-        import leo.core.leoCommands as leoCommands
-        
-        if g.new_init:
-            pass # Done in c.ctor, etc.
-        else:
-            if not fileName: fileName = ''
-            if not relativeFileName: relativeFileName = ''
-            if not gui: gui = g.app.gui
-        
-            title = app.computeWindowTitle(fileName)
-
-        # g.trace(fileName,relativeFileName)
-
-        # Create an unfinished frame to pass to the commanders.
-        if g.new_init:
-            frame = None # Done in c.__init__
-        else:
-            frame = gui.createLeoFrame(title)
+        if trace: print('g.app.newCommander: %s' % repr(fileName))
 
         # Create the commander and its subcommanders.
         # This takes about 3/4 sec when called by the leoBridge module.
-        c = leoCommands.Commands(frame,fileName,
-            relativeFileName=relativeFileName)
-            
-        if g.new_init:
-            frame = c.frame
-            assert frame
+        import leo.core.leoCommands as leoCommands
 
-        if not app.initing:
-            g.doHook("before-create-leo-frame",c=c)
-                # Was 'onCreate': too confusing.
-
-        if g.new_init:
-            pass # Done in c.finishCreate.
-        else:
-            frame.finishCreate(c)
-            c.finishCreate(initEditCommanders)
-            
-            # Finish initing the subcommanders.
-            c.undoer.clearUndoState() # Menus must exist at this point.
-                
-            ####  ????? has this already been done???
-            if True: #### g.new_config:
-                if c.config.getBool('use_chapters') and c.chapterController:
-                    c.chapterController.finishCreate()
-
-        return c,frame
-    #@+node:ekr.20031218072017.2189: *4* app.computeWindowTitle
-    def computeWindowTitle(self,fileName):
-        
-        '''Set the window title and fileName.'''
-
-        if fileName:
-            title = g.computeWindowTitle(fileName)
-        else:
-            s = "untitled"
-            n = g.app.numberOfUntitledWindows
-            if n > 0:
-                s += str(n)
-            title = g.computeWindowTitle(s)
-            g.app.numberOfUntitledWindows = n+1
-
-        return title
+        return leoCommands.Commands(fileName,relativeFileName,gui)
     #@+node:ekr.20031218072017.2617: *3* app.onQuit
     def onQuit (self,event=None):
 
@@ -1226,8 +1161,6 @@ class LoadManager:
         
         assert g.new_config
         
-        #### import leo.core.leoKeys as leoKeys # For ShortcutInfo class.
-        
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
         path = lm.computeLeoSettingsPath()
@@ -1377,8 +1310,6 @@ class LoadManager:
         trace = False and not g.unitTesting ; verbose = True
         if trace: g.trace('*'*40,d.name())
         
-        #### import leo.core.leoKeys as leoKeys # For KeyStroke class.
-        
         result = g.TypedDictOfLists(
             name='inverted %s' % d.name(),
             keyType = g.KeyStroke,
@@ -1407,8 +1338,6 @@ class LoadManager:
         
         trace = False and not g.unitTesting ; verbose = True
         if trace and verbose: g.trace('*'*40)
-        
-        #### import leo.core.leoKeys as leoKeys # For ShortcutInfo class.
 
         assert d.keyType == g.KeyStroke,d.keyType
         result = g.TypedDictOfLists(
@@ -1443,11 +1372,13 @@ class LoadManager:
          # Always use a nullGui here,
          # even if we are going to show the file later.
         import leo.core.leoGui as leoGui
-        g.app.gui = nullGui = leoGui.nullGui('nullGui')
+        g.app.gui = nullGui = leoGui.nullGui()
 
         ok,frame = g.openWithFileName(path,
-            old_c=None,enableLog=False,
-            gui=nullGui,readAtFileNodesFlag=False)
+            old_c=None,
+            enableLog=False,
+            gui=nullGui,
+            readAtFileNodesFlag=False)
 
         return frame.c if ok else None
     #@+node:ekr.20120215062153.10738: *4* lm.initLocalSettings (new_config only)
@@ -1565,7 +1496,7 @@ class LoadManager:
             if d: print('')
         else:
             print(d)
-    #@+node:ekr.20120211121736.10756: *3* lm.start & helpers (new_load only)
+    #@+node:ekr.20120211121736.10756: *3* lm.start & helpers (Not used yet)
     def start(self):
         
         '''Start Leo, except for invoking the gui's main loop:
@@ -1576,8 +1507,6 @@ class LoadManager:
         
         trace = True
         lm = self
-        
-        assert g.new_load
         
         # Phase 1.  Load all files, create commanders, and read settings.
         ok = lm.doPrePluginsInit()
@@ -2071,13 +2000,12 @@ class LoadManager:
                 return c2,frame
 
         # Create a _new_ frame & indicate it is the startup window.
-        c,frame = g.app.newLeoCommanderAndFrame(
-            fileName=fn,initEditCommanders=True)
+        c = g.app.newCommander(fn)
 
         if not script:
             g.app.writeWaitingLog(c) # 2009/12/22: fixes bug 448886
 
-        assert frame.c == c and c.frame == frame
+        frame = c.frame
         frame.setInitialWindowGeometry()
         frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
         frame.startupWindow = True

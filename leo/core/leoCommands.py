@@ -60,12 +60,11 @@ class Commands (object):
     #@+others
     #@+node:ekr.20031218072017.2811: *3*  c.Birth & death
     #@+node:ekr.20031218072017.2812: *4* c.__init__ & helpers
-    def __init__(self,frame,fileName,relativeFileName=None):
+    def __init__(self,fileName,relativeFileName=None,gui=None):
 
         trace = (False or g.trace_startup) and not g.unitTesting
         tag = 'Commands.__init__ %s' % (g.shortFileName(fileName))
         if trace and g.trace_startup: print('\n%s %s' % (tag,g.callers()))
-            # Called from readSettingsFiles & openSettingsFiles logic.
 
         c = self
         
@@ -75,28 +74,38 @@ class Commands (object):
         # Official ivars.
         self._currentPosition = self.nullPosition()
         self._topPosition     = self.nullPosition()
+        self.frame = None
         self.gui = g.app.gui
         self.ipythonController = None
             # Set only by the ipython plugin.
-        if g.new_init:
-            assert frame is None
-        else:
-            self.frame = frame
         
         # The order of these calls does not matter.
-        self.initCommandIvars()
-        self.initDebugIvars()
-        self.initDocumentIvars()
-        self.initEventIvars()
-        self.initFileIvars(fileName,relativeFileName)
-        self.initOptionsIvars()
-        self.initObjectIvars()
+        c.initCommandIvars()
+        c.initDebugIvars()
+        c.initDocumentIvars()
+        c.initEventIvars()
+        c.initFileIvars(fileName,relativeFileName)
+        c.initOptionsIvars()
+        c.initObjectIvars()
+
+        # Init the settings before initing the objects.
+        self.config = configSettings(c)
+        g.app.config.setIvarsFromSettings(c)
 
         # Initialize all subsidiary objects, including subcommanders.
-        self.initObjects()
+        c.initObjects(gui or g.app.gui)
+        
+        assert c.frame
+        assert c.frame.c
 
         if trace and not g.trace_startup:
             t2 = g.printDiffTime('%s: after controllers created' % (tag),t1)
+        
+        # Complete the init!
+        c.finishCreate()
+            
+        if trace and not g.trace_startup:
+            t2 = g.printDiffTime('%s: after c.finishCreate' % (tag),t1)
     #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
     def computeWindowTitle(self,fileName):
         
@@ -259,36 +268,35 @@ class Commands (object):
         self.spellCommands = None
         
     #@+node:ekr.20120217070122.10470: *5* c.initObjects
-    def initObjects(self):
+    def initObjects(self,gui):
         
         c = self
 
         self.hiddenRootNode = leoNodes.vnode(context=c)
         self.hiddenRootNode.setHeadString('<hidden root vnode>')
         
-        if g.new_init:
-            title = c.computeWindowTitle(c.mFileName)
-            self.frame = g.app.gui.createLeoFrame(title)
-            assert self.frame
-            self.frame.c = c #### could be done in gui.createLeoFrame.
+        # Create the gui frame.
+        title = c.computeWindowTitle(c.mFileName)
         
-        if g.new_config:
-            pass # Now called in c.finishCreate.
-        else:
-            self.config = configSettings(c)
-            g.app.config.setIvarsFromSettings(c)
-            self.nodeHistory = nodeHistory(c)
-            self.initConfigSettings()
-            c.setWindowPosition() # Do this after initing settings.
+        if not g.app.initing:
+            g.doHook("before-create-leo-frame",c=c)
+
+        self.frame = gui.createLeoFrame(c,title)
+
+        assert self.frame
+        assert self.frame.c == c
+        
+        self.nodeHistory = nodeHistory(c)
+        self.initConfigSettings()
+        c.setWindowPosition() # Do this after initing settings.
 
         # Break circular import dependencies by importing here.
         # These imports take almost 3/4 sec in the leoBridge.
         import leo.core.leoAtFile as leoAtFile
         import leo.core.leoCache as leoCache
+        import leo.core.leoChapters as leoChapters
         import leo.core.leoEditCommands as leoEditCommands
-        
-        if g.new_init:
-            import leo.core.leoKeys as leoKeys      ####
+        import leo.core.leoKeys as leoKeys
         import leo.core.leoFileCommands as leoFileCommands
         import leo.core.leoImport as leoImport
         import leo.core.leoRst as leoRst
@@ -296,12 +304,8 @@ class Commands (object):
         import leo.core.leoTangle as leoTangle
         import leo.core.leoUndo as leoUndo
         
-        if g.new_init:
-            self.keyHandler = self.k = leoKeys.keyHandlerClass(c,
-                useGlobalKillbuffer=True,
-                useGlobalRegisters=True)
-        
-        self.chapterController = None ####
+        self.keyHandler = self.k = leoKeys.keyHandlerClass(c)
+        self.chapterController = leoChapters.chapterController(c)
         self.shadowController = leoShadow.shadowController(c)
         self.fileCommands   = leoFileCommands.fileCommands(c)
         self.atFileCommands = leoAtFile.atFile(c)
@@ -322,69 +326,46 @@ class Commands (object):
 
     __str__ = __repr__
     #@+node:ekr.20050920093543: *4* c.finishCreate & helper
-    def finishCreate (self,initEditCommanders=True):  # New in 4.4.
+    def finishCreate (self):
 
-        '''Finish creating the commander after frame.finishCreate.
+        '''Finish creating the commander and all sub-objects.
 
-        Important: this is the last step in the startup process.'''
+        This is the last step in the startup process.'''
         
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('c.finishCreate')
         
-        c = self ; p = c.p
-
-        c.initConfigSettings()
+        c = self ; k = c.k ; p = c.p
         
-        if g.new_init:
-            #### These were done in newLeoCommanderAndFrame.
-            c.frame.finishCreate(c)
-            
-            if c.config.getBool('use_chapters') and c.chapterController:
-                c.chapterController.finishCreate()
-            
-            # Finish initing the subcommanders.
-            c.undoer.clearUndoState() # Menus must exist at this point.
+        assert g.app.gui
+        assert k
+
+        c.frame.finishCreate()
             
         c.miniBufferWidget = w = c.frame.miniBufferWidget
             # Will be None for nullGui.
-        
-        assert g.app.gui
-
-        # Create a keyHandler even if there is no miniBuffer.
-        if g.new_init:
-            k = c.k # Now done in ctor.
-        else:
-            c.keyHandler = c.k = k = g.app.gui.createKeyHandlerClass(c,
-                useGlobalKillbuffer=True,
-                useGlobalRegisters=True)
-                
-        #### A new call.
-        c.atFileCommands.finishCreate()
-
-        if initEditCommanders:
-            # A 'real' .leo file.
             
-            c.commandsDict = c.editCommandsManager.finishCreateEditCommanders()
-            self.rstCommands.finishCreate()
+        # Important: it costs almost nothing to init commanders for settings files
+        c.commandsDict = c.editCommandsManager.finishCreateEditCommanders()
+        self.rstCommands.finishCreate()
 
-            # copy global commands to this controller    
-            for name,f in g.app.global_commands_dict.items():
-                k.registerCommand(name,
-                    shortcut=None,func=f,pane='all',verbose=False)        
+        # copy global commands to this controller    
+        for name,f in g.app.global_commands_dict.items():
+            k.registerCommand(name,
+                shortcut=None,func=f,pane='all',verbose=False)        
 
-            k.finishCreate()
-        else:
-            # A leoSettings.leo file.
-            c.commandsDict = {}
+        k.finishCreate()
             
         if g.app.gui.guiName().lower().startswith('qt'):
             g.registerHandler('idle',c.idle_focus_helper)
             
-        if g.new_config:
-            c.setWindowPosition() # Do this after initing settings.
-            
         c.frame.menu.finishCreate()
         c.frame.log.finishCreate()
+        c.undoer.clearUndoState()
+            # Menus must exist at this point.
+            
+        # Do not call chapterController.finishCreate here:
+        # It must be called after the first real redraw.
         c.bodyWantsFocus()
     #@+node:ekr.20051007143620: *5* printCommandsDict
     def printCommandsDict (self):
@@ -1182,15 +1163,15 @@ class Commands (object):
         # g.trace(val,fn)
         return val
     #@+node:ekr.20031218072017.1623: *6* c.new
-    def new (self,event=None,gui=None):
+    def new (self,event=None):
 
         '''Create a new Leo window.'''
 
         # Send all log messages to the new frame.
         g.app.setLog(None)
         g.app.lockLog()
-        c,frame = g.app.newLeoCommanderAndFrame(
-            fileName=None,relativeFileName=None,gui=gui)
+        c = g.app.newCommander(fileName=None)
+        frame = c.frame
         g.doHook("new",old_c=self,c=c,new_c=c)
         g.app.unlockLog()
 
@@ -1998,7 +1979,8 @@ class Commands (object):
         try:
             theFile = open(fileName,'r')
             g.chdir(fileName)
-            c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
+            c = g.app.newCommander(fileName)
+            frame = c.frame
             frame.deiconify()
             frame.lift()
             c.fileCommands.readOutlineOnly(theFile,fileName) # closes file.
@@ -8735,7 +8717,7 @@ class configSettings:
             assert g.new_config
             assert lm
             
-            if d: #### lm.globalSettingsDict:
+            if d:
                 assert isinstance(d,g.TypedDict),d
                 si = d.get(setting)
                 if si is None:
@@ -8764,7 +8746,7 @@ class configSettings:
                 g.trace('no menu: %s' % (commandName))
                 return None,[]
 
-            if d: #### lm.globalShortcutsDict:
+            if d:
                 assert isinstance(d,g.TypedDictOfLists),d
                 key = c.frame.menu.canonicalizeMenuName(commandName)
                 key = key.replace('&','') # Allow '&' in names.
@@ -8889,8 +8871,6 @@ class configSettings:
 
             trace = False and not g.unitTesting
             if trace: g.trace(kind,name,val)
-            
-            #### import leo.core.leoConfig as leoConfig
             
             assert g.new_config
 

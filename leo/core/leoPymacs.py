@@ -144,7 +144,7 @@ def run_script(c,script,p=None):
     init()
 
     if c is None:
-        c,frame = g.app.newLeoCommanderAndFrame(fileName='dummy script file')
+        c = g.app.newCommander(fileName='dummy script file')
 
     g.app.scriptResult = None
 

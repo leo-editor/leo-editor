@@ -189,13 +189,9 @@ class leoGui:
         """Dispay a modal TkPropertiesDialog"""
         self.oops()
     #@+node:ekr.20061031173016: *4* app.gui.createKeyHandlerClass
-    def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
+    def createKeyHandlerClass (self,c):
 
         self.oops()
-
-        # import leo.core.leoKeys as leoKeys # Do this here to break a circular dependency.
-
-        # return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
     #@+node:ekr.20031218072017.3731: *4* app.gui file dialogs
     def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
 
@@ -229,7 +225,7 @@ class leoGui:
         """Create a hidden Font panel."""
         self.oops()
 
-    def createLeoFrame(self,title):
+    def createLeoFrame(self,c,title):
         """Create a new Leo frame."""
         self.oops()
     #@+node:ekr.20031218072017.3733: *4* app.gui utils
@@ -363,7 +359,7 @@ class nullGui(leoGui):
     #@+others
     #@+node:ekr.20031218072017.2224: *3* Birth & death (nullGui)
     #@+node:ekr.20031218072017.2225: *4*  nullGui.__init__
-    def __init__ (self,guiName):
+    def __init__ (self,guiName='nullGui'):
 
         leoGui.__init__ (self,guiName) # init the base class.
 
@@ -377,11 +373,11 @@ class nullGui(leoGui):
         self.bodyTextWidget  = leoFrame.stringTextWidget
         self.plainTextWidget = leoFrame.stringTextWidget
     #@+node:ekr.20070123092623: *4* nullGui.createKeyHandlerClass
-    def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
+    def createKeyHandlerClass (self,c):
 
         import leo.core.leoKeys as leoKeys # Do this here to break a circular dependency.
 
-        return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
+        return leoKeys.keyHandlerClass(c)
     #@+node:ekr.20031218072017.2229: *4* nullGui.runMainLoop
     def runMainLoop(self):
 
@@ -459,10 +455,10 @@ class nullGui(leoGui):
         """Create a find tab in the indicated frame."""
         return leoFind.nullFindTab(c,parentFrame)
 
-    def createLeoFrame(self,title):
+    def createLeoFrame(self,c,title):
         """Create a null Leo Frame."""
         gui = self
-        self.lastFrame = leoFrame.nullFrame(title,gui)
+        self.lastFrame = leoFrame.nullFrame(c,title,gui)
         return self.lastFrame
     #@+node:ekr.20031218072017.3744: *3* dialogs (nullGui)
     def runAboutLeoDialog(self,c,version,theCopyright,url,email):
