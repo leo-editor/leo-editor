@@ -15,13 +15,16 @@ Important: This module imports no other Leo module.
 import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
-#@+node:ekr.20120212060348.10374: ** << global switches >>
+#@+node:ekr.20120212060348.10374: **  << global switches >>
 # new_keys = False # True: Qt input methods produce a **user setting**, not a stroke.
 # if new_keys: print('***** new_keys')
 
 trace_startup = False
     # These traces use print instead of g.trace so that
     # the traces can add class info the method name.
+    
+new_init = False # Simplify/eliminate newLeoCommanderAndFrame
+if new_init: print('***** new_init')
 
 new_config = False  # Unit test set this to True, then restore it.
     # True: Create finalized settings & shortcuts dicts for each commander.
@@ -44,8 +47,10 @@ trace_gc_calls = False
 trace_gc_verbose = False
 trace_gc_inited = False
 
+trace_masterCommand = False
 trace_masterKeyHandler = False
 trace_masterKeyHandlerGC = False
+trace_minibuffer = False
 
 # Traces of scrolling problems.
 trace_scroll = False
@@ -1162,7 +1167,7 @@ def es_exception (full=True,c=None,color="red"):
         lines = traceback.format_exception_only(typ,val)
 
     for line in lines:
-        g.es_error(line,color=color)
+        g.es_print_error(line,color=color)
 
     # if g.app.debugSwitch > 1:
         # import pdb # Be careful: g.pdb may or may not have been defined.
@@ -2146,7 +2151,9 @@ def openWithFileName(fileName,old_c,
     """
 
     trace = (False or g.trace_startup) and not g.unitTesting
-    if trace: print('g.openWithFileName:%s' % repr(fileName))
+    if trace:
+        print('g.openWithFileName: Phase 1: open: %s' % (
+            repr(g.shortFileName(fileName))))
     
     lm = g.app.loadManager
     if not fileName: return False, None
@@ -2192,21 +2199,28 @@ def openWithFileName(fileName,old_c,
         app.unlockLog()
         if not c: return False,None
         assert c.frame and c.frame.c == c
-        c.frame.log.enable(enableLog)
+        if g.new_init:
+            pass # The log is not ready.
+        else:
+            c.frame.log.enable(enableLog)
     
     # Phase 2: Create the outline from the .leo file.
+    if trace: print('g.openWithFileName: Phase 2: create outline')
+    
     if theFile:
-        g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        #### Hard to open hooks without settings!
+        # g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName)
         #### We could remove the readAtFileNodes flag.
         ok = g.readOpenedLeoFile(c,old_c,gui,fn,theFile,readAtFileNodesFlag)
             # Call c.fileCommands.openLeoFile to read the .leo file.
             # Call c.config.setRecentFiles for all items in g.app.windowList.
             # Set c.openDirectory.
         if not ok: return False,None
-        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        # g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
         
     # Phase 3: (new_config only): Update the local settings.
     # No calls should to c.config.getX should happen before this phase is complete.
+    if trace: print('g.openWithFileName: Phase 3: read settings')
     assert c.rootPosition()
     if g.new_config:
         # c.configInited will be False for global settings.
@@ -2214,22 +2228,26 @@ def openWithFileName(fileName,old_c,
         c.configInited = lm.initLocalSettings(c)
 
     # Phase 4: (new_config only): call all finishCreate methods.
-    if g.new_config:
-        c.initConfigSettings()
-        #### From newLeoCommanderAndFrame.
-        #### Do a complete init of the Commander,frame, and all other classes.
-        #### This works even if c.config.get always returns None
-        c.frame.finishCreate(c)
-        c.finishCreate(initEditCommanders=c.configInited)
-        # Finish initing the subcommanders.
-        c.undoer.clearUndoState() # Menus must exist at this point.
+    if trace: print('g.openWithFileName: Phase 4: finishCreate')
         
+    if g.new_init:
+        
+        c.finishCreate(initEditCommanders=True)
+        frame = c.frame
+        assert frame
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+
         #### From fc.getLeoFile.
         if readAtFileNodesFlag:
             c.redraw()
             c.fileCommands.readExternalFiles(fileName)
+            if c.config.getBool('check_outline_after_read'):
+                c.checkOutline(event=None,verbose=True,unittest=False,full=True)
     
     # Phase 5: Complete the initialization.
+    if trace: print('g.openWithFileName: Phase 5: final inits')
+    if g.new_init:
+        c.frame.log.enable(enableLog)
     g.app.writeWaitingLog(c)
     c.setLog()
     g.createMenu(c,fn)

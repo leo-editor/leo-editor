@@ -1111,10 +1111,16 @@ class keyHandlerClass:
 
         self.c = c
         self.dispatchEvent = None
-        self.inited = False # Set at end of finishCreate.
-        self.w = c.frame.miniBufferWidget
+        self.inited = False         # Set at end of finishCreate.
+        self.swap_mac_keys = False  #### How to init this ????
         self.useGlobalKillbuffer = useGlobalKillbuffer
         self.useGlobalRegisters = useGlobalRegisters
+        if g.new_init:
+            self.w = None
+        else:
+            # c.frame has already been inited.
+            self.w = c.frame.miniBufferWidget
+                # Note: will be None for nullGui.
 
         # Generalize...
         self.x_hasNumeric = ['sort-lines','sort-fields']
@@ -1125,26 +1131,11 @@ class keyHandlerClass:
         self.KeyStroke = g.KeyStroke
         #### self.ShortcutInfo = ShortcutInfo
         
-        # These must be defined here to avoid memory leaks.
-        getBool = c.config.getBool
-        getColor = c.config.getColor
-        self.enable_autocompleter           = getBool('enable_autocompleter_initially')
-        self.enable_calltips                = getBool('enable_calltips_initially')
-        self.ignore_caps_lock               = getBool('ignore_caps_lock')
-        self.ignore_unbound_non_ascii_keys  = getBool('ignore_unbound_non_ascii_keys')
-        self.minibuffer_background_color    = getColor('minibuffer_background_color') or 'lightblue'
-        self.minibuffer_warning_color       = getColor('minibuffer_warning_color') or 'lightgrey'
-        self.minibuffer_error_color         = getColor('minibuffer_error_color') or 'red'
-        self.swap_mac_keys                  = getBool('swap_mac_keys')
-        self.trace_bind_key_exceptions      = getBool('trace_bind_key_exceptions')
-        self.traceMasterCommand             = getBool('trace_masterCommand')
-        #### self.trace_masterKeyHandler         = getBool('trace_masterKeyHandler')
-        #### self.trace_masterKeyHandlerGC       = getBool('trace_masterKeyHandlerGC')
-        self.trace_key_event                = getBool('trace_key_event')
-        self.trace_minibuffer               = getBool('trace_minibuffer')
-        self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
-        # Has to be disabled (default) for AltGr support on Windows
-        self.enable_alt_ctrl_bindings       = c.config.getBool('enable_alt_ctrl_bindings')
+        if g.new_init:
+            pass # Defined in k.finishCreate
+        else:
+            self.defineSettingsIvars()
+        
         #@+<< define externally visible ivars >>
         #@+node:ekr.20061031131434.78: *5* << define externally visible ivars >>
         self.abbrevOn = False # True: abbreviations are on.
@@ -1234,7 +1225,7 @@ class keyHandlerClass:
         self.defineSpecialKeys()
         self.defineSingleLineCommands()
         self.defineMultiLineCommands()
-        fn = c.shortFileName()
+        #### fn = c.shortFileName()
         self.autoCompleter = AutoCompleterClass(self)
         self.qcompleter = None # Set by AutoCompleter.start.
         self.setDefaultUnboundKeyAction()
@@ -1335,6 +1326,40 @@ class keyHandlerClass:
             'find-next',
             'find-prev',
         ]
+    #@+node:ekr.20120217070122.10479: *4* k.defineSettingIvars
+    def defineSettingsIvars(self):
+        
+        # Part 1: These were in the ctor.
+        c = self.c
+        getBool  = c.config.getBool
+        getColor = c.config.getColor
+        self.enable_autocompleter           = getBool('enable_autocompleter_initially')
+        self.enable_calltips                = getBool('enable_calltips_initially')
+        self.ignore_caps_lock               = getBool('ignore_caps_lock')
+        self.ignore_unbound_non_ascii_keys  = getBool('ignore_unbound_non_ascii_keys')
+        self.minibuffer_background_color    = getColor('minibuffer_background_color') or 'lightblue'
+        self.minibuffer_warning_color       = getColor('minibuffer_warning_color') or 'lightgrey'
+        self.minibuffer_error_color         = getColor('minibuffer_error_color') or 'red'
+        self.swap_mac_keys                  = getBool('swap_mac_keys')
+        
+        self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
+        # Has to be disabled (default) for AltGr support on Windows
+        self.enable_alt_ctrl_bindings       = c.config.getBool('enable_alt_ctrl_bindings')
+        
+        # Part 2: These were in finishCreate.
+        
+        # Set mode colors used by k.setInputState.
+        bg = c.config.getColor('body_text_background_color') or 'white'
+        fg = c.config.getColor('body_text_foreground_color') or 'black'
+
+        self.command_mode_bg_color    = getColor('command_mode_bg_color') or bg
+        self.command_mode_fg_color    = getColor('command_mode_fg_color') or fg
+        self.insert_mode_bg_color     = getColor('insert_mode_bg_color') or bg
+        self.insert_mode_fg_color     = getColor('insert_mode_fg_color') or fg
+        self.overwrite_mode_bg_color  = getColor('overwrite_mode_bg_color') or bg
+        self.overwrite_mode_fg_color  = getColor('overwrite_mode_fg_color') or fg
+        self.unselected_body_bg_color = getColor('unselected_body_bg_color') or bg
+        self.unselected_body_fg_color = getColor('unselected_body_fg_color') or bg
     #@+node:ekr.20080509064108.6: *4* k.defineSingleLineCommands
     def defineSingleLineCommands (self):
 
@@ -1555,24 +1580,16 @@ class keyHandlerClass:
         if trace: print('k.finishCreate')
 
         k = self ; c = k.c
+
+        if g.new_init:
+            pass # Defined in k.finishCreate
+        else:
+            k.defineSettingsIvars()
         
         k.createInverseCommandsDict()
 
         # Important: bindings exist even if c.showMiniBuffer is False.
         k.makeAllBindings()
-
-        # Set mode colors used by k.setInputState.
-        bg = c.config.getColor('body_text_background_color') or 'white'
-        fg = c.config.getColor('body_text_foreground_color') or 'black'
-
-        k.command_mode_bg_color = c.config.getColor('command_mode_bg_color') or bg
-        k.command_mode_fg_color = c.config.getColor('command_mode_fg_color') or fg
-        k.insert_mode_bg_color = c.config.getColor('insert_mode_bg_color') or bg
-        k.insert_mode_fg_color = c.config.getColor('insert_mode_fg_color') or fg
-        k.overwrite_mode_bg_color = c.config.getColor('overwrite_mode_bg_color') or bg
-        k.overwrite_mode_fg_color = c.config.getColor('overwrite_mode_fg_color') or fg
-        k.unselected_body_bg_color = c.config.getColor('unselected_body_bg_color') or bg
-        k.unselected_body_fg_color = c.config.getColor('unselected_body_fg_color') or bg    
 
         # g.trace(k.insert_mode_bg_color,k.insert_mode_fg_color)
 
@@ -2707,7 +2724,7 @@ class keyHandlerClass:
         All commands and keystrokes pass through here.'''
 
         k = self ; c = k.c ; gui = g.app.gui
-        trace = (False or k.traceMasterCommand) and not g.unitTesting
+        trace = (False or g.trace_masterCommand) and not g.unitTesting
         verbose = True
         traceGC = False
         if traceGC: g.printNewObjects('masterCom 1')
@@ -3286,7 +3303,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031170011.8: *4* k.setLabel
     def setLabel (self,s,protect=False):
 
-        trace = (False or self.trace_minibuffer) and not g.app.unitTesting
+        trace = (False or g.trace_minibuffer) and not g.app.unitTesting
         k = self ; c = k.c ; w = self.w
         if not w: return
 
@@ -3372,7 +3389,7 @@ class keyHandlerClass:
         '''Mimic what would happen with the keyboard and a Text editor
         instead of plain accumalation.'''
 
-        trace = False or self.trace_minibuffer and not g.app.unitTesting
+        trace = False or g.trace_minibuffer and not g.app.unitTesting
         k = self ; c = k.c ; w = self.w
         
         ch = char = (event and event.char) or ''
@@ -3398,7 +3415,7 @@ class keyHandlerClass:
     def getEditableTextRange (self):
 
         k = self ; w = self.w
-        trace = self.trace_minibuffer and not g.app.unitTesting
+        trace = g.trace_minibuffer and not g.app.unitTesting
 
         s = w.getAllText()
         # g.trace(len(s),repr(s))

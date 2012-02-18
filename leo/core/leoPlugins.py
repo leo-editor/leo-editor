@@ -378,6 +378,8 @@ class LeoPluginsController:
 
         if g.app.killed:
             return
+            
+        # g.trace(tag,g.callers())
 
         if tag in ('start1','open0'):
             self.loadHandlers(tag,keywords)

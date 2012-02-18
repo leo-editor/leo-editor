@@ -310,7 +310,7 @@ class bridgeController:
         g = self.g
 
         return g and g.app and g.app.gui
-    #@+node:ekr.20070227092442.5: *3* openLeoFile & helpers
+    #@+node:ekr.20070227092442.5: *3* openLeoFile & helpers (bridgeController)
     def openLeoFile (self,fileName):
 
         '''Open a .leo file, or create a new Leo frame if no fileName is given.'''

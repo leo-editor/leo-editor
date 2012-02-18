@@ -6590,10 +6590,10 @@ for ivar in (
         svar.set(True)
         # w = self.widgetsDict.get(ivar)
         # if w: w.set(True)
-#@+node:ekr.20070302090616.15: *9* createBindings
+#@+node:ekr.20070302090616.15: *9* createBindings (nullFindTab)
 def createBindings (self):
     pass
-#@+node:ekr.20070302090616.9: *9* createFrame
+#@+node:ekr.20070302090616.9: *9* createFrame (nullFindTab)
 def createFrame (self,parentFrame):
 
     self.parentFrame = self.top = parentFrame
@@ -10989,7 +10989,9 @@ def openWithFileName(fileName,old_c,
     """
 
     trace = (False or g.trace_startup) and not g.unitTesting
-    if trace: print('g.openWithFileName:%s' % repr(fileName))
+    if trace:
+        print('g.openWithFileName: Phase 1: open: %s' % (
+            repr(g.shortFileName(fileName))))
     
     lm = g.app.loadManager
     if not fileName: return False, None
@@ -11035,21 +11037,28 @@ def openWithFileName(fileName,old_c,
         app.unlockLog()
         if not c: return False,None
         assert c.frame and c.frame.c == c
-        c.frame.log.enable(enableLog)
+        if g.new_init:
+            pass # The log is not ready.
+        else:
+            c.frame.log.enable(enableLog)
     
     # Phase 2: Create the outline from the .leo file.
+    if trace: print('g.openWithFileName: Phase 2: create outline')
+    
     if theFile:
-        g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        #### Hard to open hooks without settings!
+        # g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName)
         #### We could remove the readAtFileNodes flag.
         ok = g.readOpenedLeoFile(c,old_c,gui,fn,theFile,readAtFileNodesFlag)
             # Call c.fileCommands.openLeoFile to read the .leo file.
             # Call c.config.setRecentFiles for all items in g.app.windowList.
             # Set c.openDirectory.
         if not ok: return False,None
-        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        # g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
         
     # Phase 3: (new_config only): Update the local settings.
     # No calls should to c.config.getX should happen before this phase is complete.
+    if trace: print('g.openWithFileName: Phase 3: read settings')
     assert c.rootPosition()
     if g.new_config:
         # c.configInited will be False for global settings.
@@ -11057,22 +11066,26 @@ def openWithFileName(fileName,old_c,
         c.configInited = lm.initLocalSettings(c)
 
     # Phase 4: (new_config only): call all finishCreate methods.
-    if g.new_config:
-        c.initConfigSettings()
-        #### From newLeoCommanderAndFrame.
-        #### Do a complete init of the Commander,frame, and all other classes.
-        #### This works even if c.config.get always returns None
-        c.frame.finishCreate(c)
-        c.finishCreate(initEditCommanders=c.configInited)
-        # Finish initing the subcommanders.
-        c.undoer.clearUndoState() # Menus must exist at this point.
+    if trace: print('g.openWithFileName: Phase 4: finishCreate')
         
+    if g.new_init:
+        
+        c.finishCreate(initEditCommanders=True)
+        frame = c.frame
+        assert frame
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+
         #### From fc.getLeoFile.
         if readAtFileNodesFlag:
             c.redraw()
             c.fileCommands.readExternalFiles(fileName)
+            if c.config.getBool('check_outline_after_read'):
+                c.checkOutline(event=None,verbose=True,unittest=False,full=True)
     
     # Phase 5: Complete the initialization.
+    if trace: print('g.openWithFileName: Phase 5: final inits')
+    if g.new_init:
+        c.frame.log.enable(enableLog)
     g.app.writeWaitingLog(c)
     c.setLog()
     g.createMenu(c,fn)
@@ -14388,7 +14401,7 @@ def setEditorColors (self,bg,fg):
 
 Done: Made this optional, and configurable.
 #@+node:ekr.20031218072017.2811: *5*  c.Birth & death
-#@+node:ekr.20031218072017.2812: *6* c.__init__
+#@+node:ekr.20031218072017.2812: *6* c.__init__ & helpers
 def __init__(self,frame,fileName,relativeFileName=None):
 
     trace = (False or g.trace_startup) and not g.unitTesting
@@ -14398,117 +14411,252 @@ def __init__(self,frame,fileName,relativeFileName=None):
 
     c = self
     
-    # Configuration init flag.
-    self.configInited = False
+    if trace and not g.trace_startup:
+        import time ; t1 = time.clock()
     
-    # Event flags...
+    # Official ivars.
+    self._currentPosition = self.nullPosition()
+    self._topPosition     = self.nullPosition()
+    self.gui = g.app.gui
+    self.ipythonController = None
+        # Set only by the ipython plugin.
+    if g.new_init:
+        assert frame is None
+    else:
+        self.frame = frame
+    
+    # The order of these calls does not matter.
+    self.initCommandIvars()
+    self.initDebugIvars()
+    self.initDocumentIvars()
+    self.initEventIvars()
+    self.initFileIvars(fileName,relativeFileName)
+    self.initOptionsIvars()
+    self.initObjectIvars()
+
+    # Initialize all subsidiary objects, including subcommanders.
+    self.initObjects()
+
+    if trace and not g.trace_startup:
+        t2 = g.printDiffTime('%s: after controllers created' % (tag),t1)
+#@+node:ekr.20120217070122.10475: *7* c.computeWindowTitle
+def computeWindowTitle(self,fileName):
+    
+    '''Set the window title and fileName.'''
+
+    if fileName:
+        title = g.computeWindowTitle(fileName)
+    else:
+        s = "untitled"
+        n = g.app.numberOfUntitledWindows
+        if n > 0:
+            s += str(n)
+        title = g.computeWindowTitle(s)
+        g.app.numberOfUntitledWindows = n+1
+
+    return title
+#@+node:ekr.20120217070122.10473: *7* c.initCommandIvars
+def initCommandIvars(self):
+    
+    '''Init ivars used while executing a command.'''
+    
+    self.commandsDict = {}
+    self.disableCommandsMessage = ''
+        # The presence of this message disables all commands.
+    self.hookFunction = None
+        #
+    self.ignoreChangedPaths = False
+        # True: disable path changed message in at.WriteAllHelper.
+    self.inCommand = False
+        # Interlocks to prevent premature closing of a window.
+    self.isZipped = False
+        # Set by g.openWithFileName.
+    self.outlineToNowebDefaultFileName = "noweb.nw"
+        # For Outline To Noweb dialog.
+    
+    # For tangle/untangle
+    self.tangle_errors = 0
+    
+    
+    # Default Tangle options
+    self.use_header_flag = False
+    self.output_doc_flag = False
+    
+    
+    # For hoist/dehoist commands.
+    self.hoistStack = []
+        # Stack of nodes to be root of drawn tree.
+        # Affects drawing routines and find commands.
+    self.recentFiles = [] # List of recent files
+    
+    # For outline navigation.
+    self.navPrefix = g.u('') # Must always be a string.
+    self.navTime = None
+#@+node:ekr.20120217070122.10466: *7* c.initDebugIvars
+def initDebugIvars (self):
+
+    self.command_count = 0
+    self.scanAtPathDirectivesCount = 0
+    self.trace_focus_count = 0
+#@+node:ekr.20120217070122.10471: *7* c.initDocumentIvars
+def initDocumentIvars(self):
+    
+    '''Init per-document ivars.'''
+    
+    self.expansionLevel = 0
+        # The expansion level of this outline.
+    self.expansionNode = None
+        # The last node we expanded or contracted.
+    self.nodeConflictList = []
+        # List of nodes with conflicting read-time data.
+    self.nodeConflictFileName = None
+        # The fileName for c.nodeConflictList.
+    self.timeStampDict = {}
+#@+node:ekr.20120217070122.10467: *7* c.initEventIvars
+def initEventIvars(self):
+    
+    self.configInited = False
+    self.doubleClickFlag = False
+    self.exists = True
+        # Indicate that this class exists and has not been destroyed.
+        # Do this early in the startup process so we can call hooks.
+    self.hasFocusWidget = None
+    self.idle_callback = None
+        # For c.idle_focus_helper.
+    self.in_qt_dialog = False
+        # True: in a qt dialog.
+    self.loading = False
+        # True: we are loading a file: disables c.setChanged()
+    self.promptingForClose = False
+        # True: lock out additional closing dialogs.
+    self.suppressHeadChanged = False
+        # True: prevent setting c.changed when switching chapters.
+        
+    # Flags for c.outerUpdate...
     self.requestBringToFront = False
+    self.requestCloseWindow = False
     self.requestedFocusWidget = None
     self.requestRedrawFlag = False
     self.requestedIconify = '' # 'iconify','deiconify'
     self.requestRecolorFlag = False
-
-    if trace and not g.trace_startup:
-        import time ; t1 = time.clock()
-    self.exists = True # Indicate that this class exists and has not been destroyed.
-        # Do this early in the startup process so we can call hooks.
-
-    # Init ivars with self.x instead of c.x to keep pylint happy
-
-    # Debugging.
-    self.command_count = 0
-    self.scanAtPathDirectivesCount = 0
-    self.trace_focus_count = 0
-
-    # Data.
-    self.chapterController = None
-    self.db = {}                    # May be set to a PickleShare instance later.
-    self.frame = frame              # The may be None.
-    self.hiddenRootNode = leoNodes.vnode(context=c)
-    self.hiddenRootNode.setHeadString('<hidden root vnode>')
-    self.idle_callback = None       # For c.idle_focus_helper.
-    self.ignored_at_file_nodes = [] # List of nodes for error dialog.
-    self.import_error_nodes = []
-    self.in_qt_dialog = False       # True when in a qt dialog.
-    self.isZipped = False           # May be set to True by g.openWithFileName.
-    self.mFileName = fileName
-        # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
-    self.mRelativeFileName = relativeFileName
+#@+node:ekr.20120217070122.10472: *7* c.initFileIvars
+def initFileIvars(self,fileName,relativeFileName):
     
-    # These ivars are set later by leoEditCommaands.createEditCommanders
+    # if not fileName: fileName = ''
+    # if not relativeFileName: relativeFileName = ''
+    
+    self.changed = False
+        # True: the ouline has changed since the last save.
+    self.ignored_at_file_nodes = []
+        # List of nodes for error dialog.
+    self.import_error_nodes = []
+        #
+    self.mFileName = fileName or ''
+        # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
+    self.mRelativeFileName = relativeFileName or ''
+        #
+    self.openDirectory = None
+#@+node:ekr.20120217070122.10469: *7* c.initOptionsIvars
+def initOptionsIvars(self):
+
+    self.fixed = False
+    self.fixedWindowPosition = False
+    self.focus_border_color = 'white'
+    self.focus_border_width = 1 # pixels
+    self.outlineHasInitialFocus = False
+    self.page_width = 132
+    self.sparse_find = True     
+    self.sparse_move = True    
+    self.sparse_spell = True   
+    self.stayInTreeAfterSelect = False
+    self.tab_width = -4
+    self.tangle_batch_flag = False
+    self.target_language = "python"
+    self.untangle_batch_flag = False
+    self.use_body_focus_border = True
+    self.use_focus_border = False
+#@+node:ekr.20120217070122.10468: *7* c.initObjectIvars
+def initObjectIvars (self):
+    
+    # These ivars are set later by leoEditCommands.createEditCommanders
     self.abbrevCommands  = None
     self.bufferCommands  = None
     self.editCommands    = None
+    self.db = {} # May be set to a PickleShare instance later.
     self.chapterCommands = None
     self.controlCommands = None
     self.debugCommands   = None
     self.editFileCommands = None
     self.helpCommands = None
+    self.keyHandler = self.k = None
     self.keyHandlerCommands = None
     self.killBufferCommands = None
     self.leoCommands = None
     self.macroCommands = None
+    self.miniBufferWidget = None
     self.queryReplaceCommands = None
     self.rectangleCommands = None
     self.registerCommands = None
     self.searchCommands = None
     self.spellCommands = None
-
-    # Complete the init of all ivars.
-    self.initIvars()
     
-    self.config = configSettings(c)
-    g.app.config.setIvarsFromSettings(c)
-    self.nodeHistory = nodeHistory(c)
+#@+node:ekr.20120217070122.10470: *7* c.initObjects
+def initObjects(self):
+    
+    c = self
+
+    self.hiddenRootNode = leoNodes.vnode(context=c)
+    self.hiddenRootNode.setHeadString('<hidden root vnode>')
+    
+    if g.new_init:
+        title = c.computeWindowTitle(c.mFileName)
+        self.frame = g.app.gui.createLeoFrame(title)
+        assert self.frame
+        self.frame.c = c #### could be done in gui.createLeoFrame.
     
     if g.new_config:
-        #### We'll have to deal with these later.
-        c.fixedWindowPosition = False
-        c.stayInTreeAfterSelect = False
-        c.use_body_focus_border = True
-        c.outlineHasInitialFocus = False
+        pass # Now called in c.finishCreate.
     else:
+        self.config = configSettings(c)
+        g.app.config.setIvarsFromSettings(c)
+        self.nodeHistory = nodeHistory(c)
         self.initConfigSettings()
-
-    c.setWindowPosition() # Do this after initing settings.
-
-    # initialize the sub-commanders.
-    # c.finishCreate creates the sub-commanders for edit commands.
+        c.setWindowPosition() # Do this after initing settings.
 
     # Break circular import dependencies by importing here.
     # These imports take almost 3/4 sec in the leoBridge.
     import leo.core.leoAtFile as leoAtFile
     import leo.core.leoCache as leoCache
     import leo.core.leoEditCommands as leoEditCommands
+    
+    if g.new_init:
+        import leo.core.leoKeys as leoKeys      ####
     import leo.core.leoFileCommands as leoFileCommands
     import leo.core.leoImport as leoImport
     import leo.core.leoRst as leoRst
     import leo.core.leoShadow as leoShadow
     import leo.core.leoTangle as leoTangle
     import leo.core.leoUndo as leoUndo
-
-    if trace and not g.trace_startup:
-        t2 = g.printDiffTime('%s: after imports' % (tag),t1)
-
+    
+    if g.new_init:
+        self.keyHandler = self.k = leoKeys.keyHandlerClass(c,
+            useGlobalKillbuffer=True,
+            useGlobalRegisters=True)
+    
+    self.chapterController = None ####
     self.shadowController = leoShadow.shadowController(c)
     self.fileCommands   = leoFileCommands.fileCommands(c)
     self.atFileCommands = leoAtFile.atFile(c)
     self.importCommands = leoImport.leoImportCommands(c)
     self.rstCommands    = leoRst.rstCommands(c)
     self.tangleCommands = leoTangle.tangleCommands(c)
-
-    # Init all the edit commands.
+    
     self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
     self.editCommandsManager.createEditCommanders()
 
     c.cacher = leoCache.cacher(c)
     c.cacher.initFileDB(self.mFileName)
-
-    if trace and not g.trace_startup:
-        t3 = g.printDiffTime('%s: after controllers created' % (tag),t2)
-
     self.undoer = leoUndo.undoer(self)
-        
 #@+node:ekr.20031218072017.2814: *6* c.__repr__ & __str__
 def __repr__ (self):
 
@@ -14525,17 +14673,33 @@ def finishCreate (self,initEditCommanders=True):  # New in 4.4.
     trace = (False or g.trace_startup) and not g.unitTesting
     if trace: print('c.finishCreate')
     
-    c = self ;  p = c.p
-    c.miniBufferWidget = c.frame.miniBufferWidget
-    # print('Commands.finishCreate',c.fileName())
+    c = self ; p = c.p
+
+    c.initConfigSettings()
+    
+    if g.new_init:
+        #### These were done in newLeoCommanderAndFrame.
+        c.frame.finishCreate(c)
+        
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+        
+        # Finish initing the subcommanders.
+        c.undoer.clearUndoState() # Menus must exist at this point.
+        
+    c.miniBufferWidget = w = c.frame.miniBufferWidget
+        # Will be None for nullGui.
     
     assert g.app.gui
 
     # Create a keyHandler even if there is no miniBuffer.
-    c.keyHandler = c.k = k = g.app.gui.createKeyHandlerClass(c,
-        useGlobalKillbuffer=True,
-        useGlobalRegisters=True)
-        
+    if g.new_init:
+        k = c.k # Now done in ctor.
+    else:
+        c.keyHandler = c.k = k = g.app.gui.createKeyHandlerClass(c,
+            useGlobalKillbuffer=True,
+            useGlobalRegisters=True)
+            
     #### A new call.
     c.atFileCommands.finishCreate()
 
@@ -14557,6 +14721,9 @@ def finishCreate (self,initEditCommanders=True):  # New in 4.4.
         
     if g.app.gui.guiName().lower().startswith('qt'):
         g.registerHandler('idle',c.idle_focus_helper)
+        
+    if g.new_config:
+        c.setWindowPosition() # Do this after initing settings.
         
     c.frame.menu.finishCreate()
     c.frame.log.finishCreate()
@@ -14631,9 +14798,7 @@ def initConfigSettings (self):
     '''Init all cached commander config settings.'''
     
     trace = (False or g.trace_startup) and not g.unitTesting
-    if trace:
-        print('c.initConfigSettings: %s' % g.app.gui.guiName())
-        # print('c.initConfigSettings:', g.callers())
+    if trace: print('c.initConfigSettings')
         
     c = self
         
@@ -14671,84 +14836,6 @@ def initConfigSettings (self):
 
     # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
     # g.trace(c.sparse_move)
-#@+node:ekr.20040731071037: *6* c.initIvars
-def initIvars(self):
-
-    c = self
-    
-    self._currentPosition = self.nullPosition()
-    # self._rootPosition    = self.nullPosition()
-    self._topPosition     = self.nullPosition()
-    
-    # Delayed focus.
-    self.doubleClickFlag = False
-    self.hasFocusWidget = None
-    self.requestedFocusWidget = None
-    
-    # Official ivars.
-    self.gui = g.app.gui
-    self.ipythonController = None # Set only by the ipython plugin.
-    
-    # Interlock to prevent setting c.changed when switching chapters.
-    c.suppressHeadChanged = False
-    
-    # Interlocks to prevent premature closing of a window.
-    self.inCommand = False
-    self.requestCloseWindow = False
-    
-    # For emacs/vim key handling.
-    self.commandsDict = None
-    self.keyHandler = self.k = None
-    self.miniBufferWidget = None
-    
-    # per-document info...
-    self.changed = False # True if any data has been changed since the last save.
-    self.disableCommandsMessage = ''
-        # The presence of this message disables all commands.
-    self.expansionLevel = 0  # The expansion level of this outline.
-    self.expansionNode = None # The last node we expanded or contracted.
-    self.hookFunction = None
-    self.ignoreChangedPaths = False # True: disable path changed message in at.WriteAllHelper.
-    self.loading = False # True if we are loading a file: disables c.setChanged()
-    self.nodeConflictList = [] # List of nodes with conflicting read-time data.
-    self.nodeConflictFileName = None # The fileName for c.nodeConflictList.
-    self.openDirectory = None
-    self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
-    self.promptingForClose = False # To lock out additional closing dialogs.
-    self.timeStampDict = {} # New in Leo 4.6.
-    
-    # For tangle/untangle
-    self.tangle_errors = 0
-    
-    # Global options: set later in initConfigSettings
-    self.fixed = False
-    self.page_width = 132
-    self.sparse_find = True     # 2010/02/02: created ivar.
-    self.sparse_move = True     # 2010/02/02: created ivar.
-    self.sparse_spell = True    # 2010/02/02: created ivar.
-    self.tab_width = -4
-    self.tangle_batch_flag = False
-    self.untangle_batch_flag = False
-    self.use_focus_border = False
-    self.focus_border_color = 'white'
-    self.focus_border_width = 1 # pixels
-    
-    # Default Tangle options
-    self.use_header_flag = False
-    self.output_doc_flag = False
-    
-    # Default Target Language
-    self.target_language = "python" # Required if leoConfig.txt does not exist.
-    
-    # For hoist/dehoist commands.
-    self.hoistStack = []
-        # Stack of nodes to be root of drawn tree.
-        # Affects drawing routines and find commands.
-    self.recentFiles = [] # List of recent files
-    
-    # For outline navigation.
-    self.navPrefix = g.u('') # Must always be a string.
-    self.navTime = None
 #@+node:ekr.20090213065933.7: *6* c.setWindowPosition
 def setWindowPosition (self):
 
@@ -16949,9 +17036,7 @@ def initConfigSettings (self):
     '''Init all cached commander config settings.'''
     
     trace = (False or g.trace_startup) and not g.unitTesting
-    if trace:
-        print('c.initConfigSettings: %s' % g.app.gui.guiName())
-        # print('c.initConfigSettings:', g.callers())
+    if trace: print('c.initConfigSettings')
         
     c = self
         
@@ -17953,7 +18038,13 @@ def getShortcut (self,c,commandName):
 
     '''Return rawKey,accel for shortcutName'''
     
-    trace = False and not g.unitTesting # and commandName in ('new','print-bindings')
+    trace = False and not g.unitTesting # commandName in ('new','print-bindings')
+    
+    if not c.frame.menu:
+        # Called from doPlugins.
+        g.trace('no menu: %32s' % (commandName))
+            #,'\n',g.callers(8))
+        return None,[]
 
     key = c.frame.menu.canonicalizeMenuName(commandName)
     key = key.replace('&','') # Allow '&' in names.
@@ -25285,7 +25376,13 @@ def getShortcut (self,c,commandName):
 
     '''Return rawKey,accel for shortcutName'''
     
-    trace = False and not g.unitTesting # and commandName in ('new','print-bindings')
+    trace = False and not g.unitTesting # commandName in ('new','print-bindings')
+    
+    if not c.frame.menu:
+        # Called from doPlugins.
+        g.trace('no menu: %32s' % (commandName))
+            #,'\n',g.callers(8))
+        return None,[]
 
     key = c.frame.menu.canonicalizeMenuName(commandName)
     key = key.replace('&','') # Allow '&' in names.
@@ -25765,24 +25862,16 @@ def finishCreate (self):
     if trace: print('k.finishCreate')
 
     k = self ; c = k.c
+
+    if g.new_init:
+        pass # Defined in k.finishCreate
+    else:
+        k.defineSettingsIvars()
     
     k.createInverseCommandsDict()
 
     # Important: bindings exist even if c.showMiniBuffer is False.
     k.makeAllBindings()
-
-    # Set mode colors used by k.setInputState.
-    bg = c.config.getColor('body_text_background_color') or 'white'
-    fg = c.config.getColor('body_text_foreground_color') or 'black'
-
-    k.command_mode_bg_color = c.config.getColor('command_mode_bg_color') or bg
-    k.command_mode_fg_color = c.config.getColor('command_mode_fg_color') or fg
-    k.insert_mode_bg_color = c.config.getColor('insert_mode_bg_color') or bg
-    k.insert_mode_fg_color = c.config.getColor('insert_mode_fg_color') or fg
-    k.overwrite_mode_bg_color = c.config.getColor('overwrite_mode_bg_color') or bg
-    k.overwrite_mode_fg_color = c.config.getColor('overwrite_mode_fg_color') or fg
-    k.unselected_body_bg_color = c.config.getColor('unselected_body_bg_color') or bg
-    k.unselected_body_fg_color = c.config.getColor('unselected_body_fg_color') or bg    
 
     # g.trace(k.insert_mode_bg_color,k.insert_mode_fg_color)
 

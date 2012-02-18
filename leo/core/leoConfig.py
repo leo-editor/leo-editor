@@ -1864,7 +1864,13 @@ class configClass:
 
         '''Return rawKey,accel for shortcutName'''
         
-        trace = False and not g.unitTesting # and commandName in ('new','print-bindings')
+        trace = False and not g.unitTesting # commandName in ('new','print-bindings')
+        
+        if not c.frame.menu:
+            # Called from doPlugins.
+            g.trace('no menu: %32s' % (commandName))
+                #,'\n',g.callers(8))
+            return None,[]
 
         key = c.frame.menu.canonicalizeMenuName(commandName)
         key = key.replace('&','') # Allow '&' in names.

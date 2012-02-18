@@ -656,37 +656,50 @@ class LeoApp:
         app = self
 
         import leo.core.leoCommands as leoCommands
-
-        if not fileName: fileName = ''
-        if not relativeFileName: relativeFileName = ''
-        if not gui: gui = g.app.gui
         
-        title = app.computeWindowTitle(fileName)
+        if g.new_init:
+            pass # Done in c.ctor, etc.
+        else:
+            if not fileName: fileName = ''
+            if not relativeFileName: relativeFileName = ''
+            if not gui: gui = g.app.gui
+        
+            title = app.computeWindowTitle(fileName)
 
         # g.trace(fileName,relativeFileName)
 
         # Create an unfinished frame to pass to the commanders.
-        frame = gui.createLeoFrame(title)
+        if g.new_init:
+            frame = None # Done in c.__init__
+        else:
+            frame = gui.createLeoFrame(title)
 
         # Create the commander and its subcommanders.
         # This takes about 3/4 sec when called by the leoBridge module.
         c = leoCommands.Commands(frame,fileName,
             relativeFileName=relativeFileName)
+            
+        if g.new_init:
+            frame = c.frame
+            assert frame
 
         if not app.initing:
             g.doHook("before-create-leo-frame",c=c)
                 # Was 'onCreate': too confusing.
-                
-        frame.finishCreate(c)
-        c.finishCreate(initEditCommanders)
-        
-        # Finish initing the subcommanders.
-        c.undoer.clearUndoState() # Menus must exist at this point.
+
+        if g.new_init:
+            pass # Done in c.finishCreate.
+        else:
+            frame.finishCreate(c)
+            c.finishCreate(initEditCommanders)
             
-        ####  ????? has this already been done???
-        if g.new_config:
-            if c.config.getBool('use_chapters') and c.chapterController:
-                c.chapterController.finishCreate()
+            # Finish initing the subcommanders.
+            c.undoer.clearUndoState() # Menus must exist at this point.
+                
+            ####  ????? has this already been done???
+            if True: #### g.new_config:
+                if c.config.getBool('use_chapters') and c.chapterController:
+                    c.chapterController.finishCreate()
 
         return c,frame
     #@+node:ekr.20031218072017.2189: *4* app.computeWindowTitle

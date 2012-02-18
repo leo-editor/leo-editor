@@ -1615,10 +1615,10 @@ class nullFindTab (findTab):
                 # w = self.widgetsDict.get(ivar)
                 # if w: w.set(True)
         #@-<< set checkboxes from ivars >>
-    #@+node:ekr.20070302090616.15: *4* createBindings
+    #@+node:ekr.20070302090616.15: *4* createBindings (nullFindTab)
     def createBindings (self):
         pass
-    #@+node:ekr.20070302090616.9: *4* createFrame
+    #@+node:ekr.20070302090616.9: *4* createFrame (nullFindTab)
     def createFrame (self,parentFrame):
 
         self.parentFrame = self.top = parentFrame

@@ -4088,7 +4088,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         f = self
         self.c = c
-
+        
         # g.trace('(qtFrame)')
 
         # self.bigTree         = c.config.getBool('big_outline_pane')
@@ -4097,7 +4097,6 @@ class leoQtFrame (leoFrame.leoFrame):
         self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
 
         # returns DynamicWindow
-       
         f.top = g.app.gui.frameFactory.createFrame(f)
         # g.trace('(leoQtFrame)',f.top)
 
@@ -4112,6 +4111,7 @@ class leoQtFrame (leoFrame.leoFrame):
         f.menu = leoQtMenu(f,label='top-level-menu')
         g.app.windowList.append(f) #### Might be ok to delay this.
         f.miniBufferWidget = leoQtMinibuffer(c)
+
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18251: *6* createSplitterComponents (qtFrame)
     def createSplitterComponents (self):
@@ -4291,6 +4291,7 @@ class leoQtFrame (leoFrame.leoFrame):
             self.parentFrame = parentFrame
             self.toolbar = self
             self.w = c.frame.top.iconBar # A QToolBar.
+
             self.actions = []
 
             # Options
@@ -4301,13 +4302,14 @@ class leoQtFrame (leoFrame.leoFrame):
         def addRow(self,height=None):   pass
         def getFrame (self):            return None
         def getNewFrame (self):         return None
-        #@+node:ekr.20110605121601.18265: *5* add
+        #@+node:ekr.20110605121601.18265: *5* add (qtIconBarClass)
         def add(self,*args,**keys):
 
             '''Add a button to the icon bar.'''
 
             trace = False and not g.unitTesting
             c = self.c
+            if not self.w: return ####
             command = keys.get('command')
             text = keys.get('text')
             # able to specify low-level QAction directly (QPushButton not forced)
@@ -5078,7 +5080,7 @@ class leoQtFrame (leoFrame.leoFrame):
     def bringToFront (self):
         self.lift()
     def deiconify (self):
-        if self.top.isMinimized(): # Bug fix: 400739.
+        if self.top and self.top.isMinimized(): # Bug fix: 400739.
             self.lift()
     def getFocus(self):
         return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
@@ -5094,9 +5096,10 @@ class leoQtFrame (leoFrame.leoFrame):
         # g.trace(w,h,x,y)
         return w,h,x,y
     def iconify(self):
-        self.top.showMinimized()
+        if self.top: self.top.showMinimized()
     def lift (self):
         # g.trace(self.c,'\n',g.callers(9))
+        if not self.top: return ####
         if self.top.isMinimized(): # Bug 379141
             self.top.showNormal()
         self.top.activateWindow()
@@ -5107,11 +5110,12 @@ class leoQtFrame (leoFrame.leoFrame):
         return s
     def setTitle (self,s):
         # g.trace('(qtFrame)',repr(s))
-        self.top.setWindowTitle(s)
+        if self.top: self.top.setWindowTitle(s)
     def setTopGeometry(self,w,h,x,y,adjustSize=True):
         # self.top is a DynamicWindow.
         # g.trace('(qtFrame)',x,y,w,h,self.top,g.callers())
-        self.top.setGeometry(QtCore.QRect(x,y,w,h))
+        if self.top:
+            self.top.setGeometry(QtCore.QRect(x,y,w,h))
     #@-others
 #@+node:ekr.20110605121601.18312: *3* class leoQtLog (leoLog)
 class leoQtLog (leoFrame.leoLog):

@@ -7223,7 +7223,7 @@ def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
     All commands and keystrokes pass through here.'''
 
     k = self ; c = k.c ; gui = g.app.gui
-    trace = (False or k.traceMasterCommand) and not g.unitTesting
+    trace = (False or g.trace_masterCommand) and not g.unitTesting
     verbose = True
     traceGC = False
     if traceGC: g.printNewObjects('masterCom 1')

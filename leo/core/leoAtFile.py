@@ -147,8 +147,8 @@ class atFile:
             
     def finishCreate(self):
         
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('at.finishCreate')
+        # trace = (False or g.trace_startup) and not g.unitTesting
+        # if trace: print('at.finishCreate')
         
         c = self.c
         self.checkPythonCodeOnWrite = c.config.getBool(

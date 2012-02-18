@@ -2475,6 +2475,7 @@ class nullFrame (leoFrame):
         self.outerFrame = None
         self.statusLineClass = nullStatusLineClass
         self.title = title
+        self.top = None # Always None.
         
         # Create the component objects.
         self.body = nullBody(frame=self,parentFrame=None)

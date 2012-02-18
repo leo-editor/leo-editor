@@ -401,7 +401,9 @@ if sys.platform != 'cli':
 
             # Causes window to appear.
             # g.trace('ratio',c.frame.ratio,c)
-            c.frame.resizePanesToRatio(c.frame.ratio,c.frame.secondary_ratio)
+            if c.frame.top: ####
+                c.frame.resizePanesToRatio(
+                c.frame.ratio,c.frame.secondary_ratio)
             if not self.silent and not g.unitTesting:
                 g.es("reading:",self.fileName)
         #@+node:ekr.20060919110638.41: *5* startTnode
@@ -752,7 +754,7 @@ class baseFileCommands:
                     # Do this before reading external files.
                 c.setFileTimeStamp(fileName)
                 
-                if g.new_load:
+                if g.new_load or g.new_init:
                     # We can't do a redraw until init is complete.
                     # Thus, we'll call fc.readExternalFiles in g.openWithFileName.
                     pass
@@ -763,7 +765,7 @@ class baseFileCommands:
                         c.redraw()
                         fc.readExternalFiles(fileName)
                 
-                if g.new_load:
+                if g.new_load or g.new_init:
                     pass
                 else:
                     if c.config.getBool('check_outline_after_read'):
@@ -919,7 +921,11 @@ class baseFileCommands:
             silent=silent)
 
         if ok:
-            frame.resizePanesToRatio(ratio,frame.secondary_ratio)
+            if g.new_init:
+                frame.ratio = ratio
+                    # The frame can't be fully inited until settings have been read.
+            else:
+                frame.resizePanesToRatio(ratio,frame.secondary_ratio)
 
         return ok
     #@+node:ekr.20031218072017.3030: *4* readOutlineOnly

@@ -289,12 +289,15 @@ elif g.app.gui.guiName() == "qt":
             self.UI.deleteBtn.setEnabled(enable)
 #@+node:ekr.20090616105756.3940: ** init
 def init ():
+    
+    ok = g.app.gui.guiName() != 'nullGui'
 
-    g.registerHandler('after-create-leo-frame',onCreate)
-    # can't use before-create-leo-frame because Qt dock's not ready
-    g.plugin_signon(__name__)
-
-    return True
+    if ok:
+        g.registerHandler('after-create-leo-frame',onCreate)
+        # can't use before-create-leo-frame because Qt dock's not ready
+        g.plugin_signon(__name__)
+        
+    return ok
 #@+node:ekr.20090616105756.3941: ** onCreate
 def onCreate (tag, keys):
 
