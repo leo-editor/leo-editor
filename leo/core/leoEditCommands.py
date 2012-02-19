@@ -345,7 +345,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
         k.abbrevOn = c.config.getBool('enable-abbreviations',default=False)
 
         if (k.abbrevOn and not g.app.initing and
-            not g.unitTesting and not g.app.batchMode
+            not g.unitTesting and not g.app.batchMode and
+            not c.gui.isNullGui
         ):
             g.es('Abbreviations are on',color='red')
     #@+node:ekr.20050920084036.15: *4* getPublicCommands & getStateCommands
@@ -6571,12 +6572,9 @@ class editFileCommandsClass (baseEditCommandsClass):
 
         # Read the file into a hidden commander (Similar to g.openWithFileName).
         import leo.core.leoGui as leoGui
-        import leo.core.leoFrame as leoFrame
         import leo.core.leoCommands as leoCommands
 
         c2 = leoCommands.Commands(fileName,gui=leoGui.nullGui())
-        frame = c2.frame
-        frame.tree.c = c2
         theFile,c2.isZipped = g.openLeoOrZipFile(fileName)
         if theFile:
             c2.fileCommands.openLeoFile(theFile,fileName,readAtFileNodesFlag=True,silent=True)
@@ -6710,7 +6708,7 @@ class editFileCommandsClass (baseEditCommandsClass):
         c = self.c ; k = self.k ; fileName = ''.join(k.givenArgs)
 
         if fileName:
-            g.openWithFileName(fileName,c)
+            g.openWithFileName(fileName,old_c=c)
         else:
             k.setLabelBlue('Open Leo Outline: ',protect=True)
             k.getFileName(event,handler=self.openOutlineByNameFinisher)
@@ -6721,7 +6719,7 @@ class editFileCommandsClass (baseEditCommandsClass):
 
         k.resetLabel()
         if fileName and g.os_path_exists(fileName) and not g.os_path_isdir(fileName):
-            g.openWithFileName(fileName,c)
+            g.openWithFileName(fileName,old_c=c)
     #@+node:ekr.20050920084036.169: *3* removeDirectory
     def removeDirectory (self,event):
 

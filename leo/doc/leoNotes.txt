@@ -7055,5 +7055,110 @@ if 0: # Not used.  c.computeWindowTitle used instead.
             g.app.numberOfUntitledWindows = n+1
     
         return title
+#@+node:ekr.20031218072017.1624: *3* createFrame & helpers (runLeo.py)
+def createFrame (fileName,options):
+
+    """Open a local .leo File during Leo's startup process."""
+    
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace:
+        print('########## runLeo.createFrame: %s' % (
+            repr(g.shortFileName(fileName))))
+            
+    # Note: g.openWithFileName *always* writes the waiting log.
+    # The code below suppresses the log if script is True.
+    # Delete workbook.leo, Leo launches without log messages
+    # @url https://bugs.launchpad.net/leo-editor/+bug/448886
+
+    #### script = options.get('script')
+    
+    c = g.openWithFileName(fileName,old_c=None,force=True)
+        # The following get handled somehow,
+        # so they are not needed here:
+            # windowSize = options.get('windowSize')
+            # if select: doSelect(c2,select)
+            # if windowSize: doWindowSize(c2,windowSize)
+    return c
+    
+    #### old code, without force option.
+    
+
+    # # Try to create a frame for the file.
+    # if fileName:
+        # c = g.openWithFileName(fileName,None)
+        # if c:
+            # select = options.get('select')
+            # windowSize = options.get('windowSize')
+            # if select: doSelect(c2,select)
+            # if windowSize: doWindowSize(c2,windowSize)
+            # return c
+
+    # # Create a _new_ frame & indicate it is the startup window.
+    # c = g.app.newCommander(fileName)
+
+    # if not script:
+        # g.app.writeWaitingLog(c) # 2009/12/22: fixes bug 448886
+
+    # frame = c.frame
+    # frame.setInitialWindowGeometry()
+    # frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+    # frame.startupWindow = True
+    # if c.chapterController:
+        # c.chapterController.finishCreate()
+        # c.setChanged(False)
+            # # Clear the changed flag set when creating the @chapters node.
+    # # Call the 'new' hook for compatibility with plugins.
+    # g.doHook("new",old_c=None,c=c,new_c=c)
+
+    # g.createMenu(c,fileName)
+    # g.finishOpen(c) # Calls c.redraw.
+
+    # # Report the failure to open the file.
+    # if fileName:
+        # g.es_print("file not found:",fileName,color='red')
+
+    # return c
+#@+node:ekr.20100913171604.5888: *4* doSelect
+def doSelect (c,s):
+
+    '''Select the node with key s.'''
+
+    p = findNode(c,s)
+
+    if p:
+        c.selectPosition(p)
+    else:
+        g.es_print('--select: not found:',s)
+#@+node:ekr.20100913171604.5885: *4* doWindowSize
+def doWindowSize (c,windowSize):
+
+    w = c.frame.top
+
+    try:
+        h,w2 = windowSize.split('x')
+        h,w2 = int(h.strip()),int(w2.strip())
+        w.resize(w2,h) # 2010/10/08.
+        c.k.simulateCommand('equal-sized-panes')
+        c.redraw()
+        w.repaint() # Essential
+    except Exception:
+        print('doWindowSize:unexpected exception')
+        g.es_exception()
+#@+node:ekr.20100913171604.5889: *4* findNode
+def findNode (c,s):
+
+    s = s.strip()
+
+    # First, assume s is a gnx.
+    for p in c.all_unique_positions():
+        if p.gnx.strip() == s:
+            return p
+
+    for p in c.all_unique_positions():
+        # g.trace(p.h.strip())
+        if p.h.strip() == s:
+            return p
+
+    return None
 #@-all
 #@-leo

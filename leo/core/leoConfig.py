@@ -1207,12 +1207,14 @@ class configClass:
         ("save_clears_undo_buffer","bool",False),
         ("stylesheet","string",None),
         ("tab_width","int",-4),
-        ("target_language","language","python"), # Bug fix: added: 6/20/2005.
+        ("target_language","language","python"),
+            # Bug fix: added: 6/20/2005.
         ("trailing_body_newlines","string","asis"),
         ("use_plugins","bool",True),
             # New in 4.3: use_plugins = True by default.
-        # use_pysco can not be set by 4.3:  config processing happens too late.
-            # ("use_psyco","bool",False),
+        # ("use_psyco","bool",False),
+            # use_pysco can not be set by config code:
+            # config processing happens too late.
         ("undo_granularity","string","word"),
             # "char","word","line","node"
         ("write_strips_blank_lines","bool",False),
@@ -1246,6 +1248,11 @@ class configClass:
         
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('g.app.config.__init__')
+        
+        # Set later.  To keep pylint happy.
+        self.output_newline = 'nl'
+        self.at_root_bodies_start_in_doc_mode = True
+        self.relative_path_base_directory = '!'
 
         self.atCommonButtonsList = [] # List of info for common @buttons nodes.
         self.atCommonCommandsList = [] # List of info for common @commands nodes.
@@ -2182,7 +2189,7 @@ class configClass:
         g.app.unlockLog()
         c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
         g.app.gui = oldGui
-        return ok and c
+        return ok and c or None
     #@+node:ekr.20051013161232: *5* updateSettings (g.app.config)
     def updateSettings (self,c,localFlag):
 

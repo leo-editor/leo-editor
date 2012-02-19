@@ -941,8 +941,14 @@ at.printError('test of at.printError:',s)
 
 old_c = c
 filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
-ok,frame = g.openWithFileName(filename,old_c)
-assert(not ok)
+try:
+    c2 = g.openWithFileName(filename,old_c)
+    assert not c2
+finally:
+    if c2:
+        g.app.destroyWindow(c2.frame)
+    c.setLog()
+    c.bodyWantsFocus()
 #@+node:ekr.20050208111037: *3* @test failure to convert unicode characters to ascii
 @first # -*- coding: utf-8 -*-
 
@@ -1064,9 +1070,14 @@ else:
 path = g.os_path_join('Ỗ','Ỗ')
 # print(g.toEncodedString(theFile,'utf-8'))
 
-ok,frame = g.openWithFileName(path,c)
-
-assert not ok and not frame
+try:
+    c2 = g.openWithFileName(path,c)
+    assert not c2
+finally:
+    if c2:
+        g.app.destroyWindow(c2.frame)
+    c.setLog()
+    c.bodyWantsFocus()
 #@+node:ekr.20071113145804.24: *3* @test round trip toUnicode toEncodedString
 @first # -*- coding: utf-8 -*-
 
@@ -2073,7 +2084,7 @@ if 0: # This can not be run locally: it contains another Tk event loop.
 #@+node:ekr.20110608162543.3363: *4* @test chapter-create/remove & undo
 # cc will be None when unit tests run dynamically.
 cc = c.chapterController
-if cc:
+if cc and not g.app.isExternalUnitTest:
     chaptersNode = cc.findChaptersNode()
     assert chaptersNode
     
@@ -2089,7 +2100,7 @@ if cc:
 #@+node:ekr.20110608162543.3365: *4* @test chapter-rename & undo
 # cc will be None when unit tests run dynamically.
 cc = c.chapterController
-if cc:
+if cc and not g.app.isExternalUnitTest:
     chaptersNode = cc.findChaptersNode()
     assert chaptersNode
     
@@ -2108,7 +2119,7 @@ if cc:
 #@+node:ekr.20110608181936.3368: *4* @test chapter-move/clone/copy-node-to
 # cc will be None when unit tests run dynamically.
 cc = c.chapterController
-if cc:
+if cc and not g.app.isExternalUnitTest:
     chaptersNode = cc.findChaptersNode()
     assert chaptersNode,'fail 0'
     
@@ -2158,7 +2169,7 @@ if cc:
 #@+node:ekr.20080503132221.1: *4* @test chapter-create-from-node
 # cc will be None when unit tests run dynamically.
 cc = c.chapterController
-if cc:
+if cc and not g.app.isExternalUnitTest:
     root = p.copy()
     
     # Init the children

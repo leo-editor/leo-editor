@@ -75,7 +75,7 @@ class Commands (object):
         self._currentPosition = self.nullPosition()
         self._topPosition     = self.nullPosition()
         self.frame = None
-        self.gui = g.app.gui
+        self.gui = gui or g.app.gui ###
         self.ipythonController = None
             # Set only by the ipython plugin.
         
@@ -337,7 +337,7 @@ class Commands (object):
         
         c = self ; k = c.k ; p = c.p
         
-        assert g.app.gui
+        assert self.gui
         assert k
 
         c.frame.finishCreate()
@@ -345,7 +345,7 @@ class Commands (object):
         c.miniBufferWidget = w = c.frame.miniBufferWidget
             # Will be None for nullGui.
             
-        # Important: it costs almost nothing to init commanders for settings files
+        # This costs little.
         c.commandsDict = c.editCommandsManager.finishCreateEditCommanders()
         self.rstCommands.finishCreate()
 
@@ -355,8 +355,8 @@ class Commands (object):
                 shortcut=None,func=f,pane='all',verbose=False)        
 
         k.finishCreate()
-            
-        if g.app.gui.guiName().lower().startswith('qt'):
+        
+        if not g.app.gui.isNullGui:
             g.registerHandler('idle',c.idle_focus_helper)
             
         c.frame.menu.finishCreate()
@@ -1163,14 +1163,14 @@ class Commands (object):
         # g.trace(val,fn)
         return val
     #@+node:ekr.20031218072017.1623: *6* c.new
-    def new (self,event=None):
+    def new (self,event=None,gui=None):
 
         '''Create a new Leo window.'''
 
         # Send all log messages to the new frame.
         g.app.setLog(None)
         g.app.lockLog()
-        c = g.app.newCommander(fileName=None)
+        c = g.app.newCommander(fileName=None,gui=gui)
         frame = c.frame
         g.doHook("new",old_c=self,c=c,new_c=c)
         g.app.unlockLog()
@@ -1222,11 +1222,11 @@ class Commands (object):
         ok = False
         if fileName:
             if fileName.endswith('.leo'):
-                ok, frame = g.openWithFileName(fileName,c)
-                if ok:
+                c2 = g.openWithFileName(fileName,old_c=c)
+                if c2:
                     g.chdir(fileName)
                     g.setGlobalOpenDir(fileName)
-                if ok and closeFlag:
+                if c2 and closeFlag:
                     g.app.destroyWindow(c.frame)
             elif c.looksLikeDerivedFile(fileName):
                 # 2011/10/09: A smart open makes Leo lighter:
@@ -1783,9 +1783,9 @@ class Commands (object):
         fileName = c.mFileName ; c.mFileName = ""
 
         # Create a new frame before deleting this frame.
-        ok, frame = g.openWithFileName(fileName,c)
-        if ok:
-            frame.deiconify()
+        c2 = g.openWithFileName(fileName,old_c=c)
+        if c2:
+            c2.frame.deiconify()
             g.doHook("close-frame",c=c)
             g.app.destroyWindow(c.frame)
         else:
@@ -1844,7 +1844,7 @@ class Commands (object):
 
         if not name: return
 
-        c = self ; v = c.currentVnode()
+        c = self ; v = c.currentPosition()
         #@+<< Set closeFlag if the only open window is empty >>
         #@+node:ekr.20031218072017.2082: *7* << Set closeFlag if the only open window is empty >>
         #@+at
@@ -1860,14 +1860,13 @@ class Commands (object):
         #@-<< Set closeFlag if the only open window is empty >>
 
         fileName = name
-        if not g.doHook("recentfiles1",c=c,p=v,v=v,fileName=fileName,closeFlag=closeFlag):
-            ok, frame = g.openWithFileName(fileName,c)
-            if ok and closeFlag and frame != c.frame:
+        if not g.doHook("recentfiles1",c=c,p=c.p,v=c.p,fileName=fileName,closeFlag=closeFlag):
+            c2 = g.openWithFileName(fileName,old_c=c)
+            if c2 and closeFlag and c2 != c:
                 g.app.destroyWindow(c.frame) # 12/12/03
-                c = frame.c # Switch to the new commander so the "recentfiles2" hook doesn't crash.
-                c.setLog() # Sets the log stream for g.es
-
-        g.doHook("recentfiles2",c=c,p=v,v=v,fileName=fileName,closeFlag=closeFlag)
+                c2.setLog() # Sets the log stream for g.es
+                g.doHook("recentfiles2",
+                    c=c2,p=c2.p,v=c2.p,fileName=fileName,closeFlag=closeFlag)
     #@+node:ekr.20031218072017.2083: *6* c.updateRecentFiles
     def updateRecentFiles (self,fileName):
 
@@ -6698,8 +6697,8 @@ class Commands (object):
         fileName = g.os_path_join(configDir,name)
         ok = g.os_path_exists(fileName)
         if ok:
-            ok, frame = g.openWithFileName(fileName,c)
-            if ok: return
+            c2 = g.openWithFileName(fileName,old_c=c)
+            if c2: return
 
         # Look in homeLeoDir second.
         if configDir == loadDir:
@@ -6708,7 +6707,8 @@ class Commands (object):
             fileName = g.os_path_join(homeLeoDir,name)
             ok = g.os_path_exists(fileName)
             if ok:
-                ok, frame = g.openWithFileName(fileName,c)
+                c2 = g.openWithFileName(fileName,old_c=c)
+                ok = bool(c2)
             if not ok:
                 g.es('',name,"not found in",configDir,"\nor",homeLeoDir)
     #@+node:ekr.20061018094539: *5* openLeoScripts
@@ -6719,8 +6719,8 @@ class Commands (object):
         c = self
         fileName = g.os_path_join(g.app.loadDir,'..','scripts','scripts.leo')
 
-        ok, frame = g.openWithFileName(fileName,c)
-        if not ok:
+        c2 = g.openWithFileName(fileName,old_c=c)
+        if not c2:
             g.es('not found:',fileName)
     #@+node:ekr.20031218072017.2940: *5* leoDocumentation
     def leoDocumentation (self,event=None):
@@ -6730,8 +6730,8 @@ class Commands (object):
         c = self ; name = "LeoDocs.leo"
 
         fileName = g.os_path_join(g.app.loadDir,"..","doc",name)
-        ok,frame = g.openWithFileName(fileName,c)
-        if not ok:
+        c2 = g.openWithFileName(fileName,old_c=c)
+        if not c2:
             g.es("not found:",name)
     #@+node:ekr.20031218072017.2941: *5* leoHome
     def leoHome (self,event=None):
@@ -6756,8 +6756,8 @@ class Commands (object):
 
         for name in names:
             fileName = g.os_path_join(g.app.loadDir,"..","plugins",name)
-            ok,frame = g.openWithFileName(fileName,c)
-            if ok: return
+            c2 = g.openWithFileName(fileName,old_c=c)
+            if c2: return
 
         g.es('not found:', ', '.join(names))
     #@+node:ekr.20090628075121.5994: *5* leoQuickStart
@@ -6768,8 +6768,8 @@ class Commands (object):
         c = self ; name = "quickstart.leo"
 
         fileName = g.os_path_join(g.app.loadDir,"..","doc",name)
-        ok,frame = g.openWithFileName(fileName,c)
-        if not ok:
+        c2 = g.openWithFileName(fileName,old_c=c)
+        if not c2:
             g.es("not found:",name)
     #@+node:ekr.20031218072017.2942: *5* leoTutorial (version number)
     def leoTutorial (self,event=None):
@@ -8890,9 +8890,6 @@ class configSettings:
                 if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                     g.es("over-riding setting:",name,"from",path)
 
-            ####
-            # old config: we can't use c here: it may be destroyed!
-            # new config: we *can* user c here. it persists.
             gs = g.GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
             d.replace(key,gs)
         #@+node:ekr.20120215072959.12478: *4* c.config.setRecentFiles (new_config)

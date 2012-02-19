@@ -6102,11 +6102,10 @@ assert i==expected,'expected %s, got %s %s' % (
 # test/at-file-test.py contains file-like sentinels.
 g.app.unitTestDict={}
 fn = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','at-file-test.leo')
-ok,frame = g.openWithFileName(fn,c)
-assert frame,'no frame'
+
 try:
-    ok = False
-    c2 = frame.c
+    c2 = g.openWithFileName(fn,c)
+    assert c2
     assert c2.changed,'not changed'
     p2 = g.findNodeAnywhere(c2,'@file at-file-test.py')
     assert p2,'no p2'
@@ -6116,7 +6115,7 @@ try:
 finally:
     if True: # and ok:
         # Close the frame without prompt.
-        g.app.destroyWindow(frame)
+        g.app.destroyWindow(c2.frame)
         c.setLog()
         c.bodyWantsFocus()
 #@+node:ekr.20061008162912: *3* @@test write .leo file with @ignore node

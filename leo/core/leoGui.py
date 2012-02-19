@@ -78,19 +78,19 @@ class leoGui:
 
         # g.trace("leoGui",guiName,g.callers())
 
+        self.active = None # Used only by qtGui.
+        self.bodyTextWidget = None
+        self.isNullGui = False
         self.lastFrame = None
         self.leoIcon = None
         self.mGuiName = guiName
         self.mainLoop = None
+        self.plainTextWidget = None
         self.root = None
         self.script = None
         self.splashScreen = None
-        self.utils = None
-        self.isNullGui = False
-        self.bodyTextWidget = None
-        self.plainTextWidget = None
         self.trace = False
-
+        self.utils = None
         # To keep pylint happy.
         self.ScriptingControllerClass = nullScriptingControllerClass
     #@+node:ekr.20061109212618.1: *3* Must be defined only in base class

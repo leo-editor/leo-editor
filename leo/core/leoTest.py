@@ -64,8 +64,14 @@ def isTestNode (p):
 # def isTestCaseNode (p):
     # h = p.h.lower()
     # return g.match_word(h,0,"@testcase") or g.match_word(h,0,"@test-case")
-#@+node:ekr.20051104075904.4: *3* doTests & helpers
+#@+node:ekr.20051104075904.4: *3* doTests & helpers (entry point for local tests)
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
+    
+    '''Run any kind of local unit test.
+    
+    Important: this is also called from dynamicUnitTest.leo
+    to run external tests "locally" from dynamicUnitTest.leo
+    '''
 
     trace = False ; verbose = False
     if all:
@@ -77,7 +83,7 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
     # This seems a bit risky when run in unitTest.leo.
     # c.save() # Eliminate the need for ctrl-s.
     
-    if trace: g.trace('marked',marked,'c',c)
+    if trace: g.trace('marked',marked,'c',c,g.callers())
 
     try:
         g.unitTesting = g.app.unitTesting = True
@@ -695,13 +701,14 @@ def findAllUnitTestNodes(c,p,limit,all,marked,lookForMark,lookForNodes):
         if g.match_word(p.h,0,'@ignore'):
             if trace and verbose: g.trace('ignoring @ignore tree',p.h)
             p.moveToNodeAfterTree()
-        elif marked and not p.isMarked():
-            if trace and verbose: g.trace('ignoring unmarked node',p.h)
-            p.moveToThreadNext()
         elif lookForMark and p.h.startswith(markTag):
+            # 2012/02/18: Always add these trees, regardless of marked status.
             if trace: g.trace('add mark tree',p.h)
             result.append(p.copy())
             p.moveToNodeAfterTree()
+        elif marked and not p.isMarked():
+            if trace and verbose: g.trace('ignoring unmarked node',p.h)
+            p.moveToThreadNext()
         elif lookForNodes and isTestNode(p): # @test
             if trace: g.trace('adding',p.h)
             result.append(p.copy())
@@ -737,7 +744,12 @@ def findAllUnitTestNodes(c,p,limit,all,marked,lookForMark,lookForNodes):
         else:
             if trace and verbose: g.trace('skipping:',p.h)
             p.moveToThreadNext()
-    return result
+            
+    # Return the result only if it contains actual @test or @suite nodes.
+    for p in result:
+        if isTestNode(p) or isSuiteNode(p):
+            return result
+    return []
 #@+node:ekr.20051104075904.42: ** runLeoTest
 def runLeoTest(c,path,verbose=False,full=False):
 
@@ -748,16 +760,16 @@ def runLeoTest(c,path,verbose=False,full=False):
     assert g.app.unitTesting
 
     try:
-        ok, frame = g.openWithFileName(path,c,enableLog=False)
-        assert(ok and frame)
-        errors = frame.c.checkOutline(verbose=verbose,unittest=True,full=full)
+        c2 = g.openWithFileName(path,old_c=c,enableLog=False)
+        assert(c2)
+        errors = c2.checkOutline(verbose=verbose,unittest=True,full=full)
         assert(errors == 0)
         ok = True
     finally:
         g.app.gui = old_gui
-        if frame and frame.c != c:
-            frame.c.setChanged(False)
-            g.app.closeLeoWindow(frame)
+        if c2 != c:
+            c2.setChanged(False)
+            g.app.closeLeoWindow(c2.frame)
         c.frame.update() # Restored in Leo 4.4.8.
 #@+node:ekr.20090514072254.5746: ** runUnitTestLeoFile
 def runUnitTestLeoFile (gui='qt',path='unitTest.leo',readSettings=True,silent=True):
@@ -796,11 +808,15 @@ def runUnitTestLeoFile (gui='qt',path='unitTest.leo',readSettings=True,silent=Tr
 
     if trace: g.trace('*** spawning test process',path)
     os.spawnve(os.P_NOWAIT,sys.executable,args,env)
-#@+node:ekr.20070627135407: ** runTestsExternally
+#@+node:ekr.20070627135407: ** runTestsExternally (entry point for external tests)
 def runTestsExternally (c,all,marked):
+    
+    '''Run any kind of external unit test.'''
     
     if c.isChanged():
         c.save() # Eliminate the need for ctrl-s.
+        
+    # g.trace('all',all,'marked',marked)
 
     runner = runTestExternallyHelperClass(c,all,marked)
     runner.runTests()
@@ -822,8 +838,45 @@ class runTestExternallyHelperClass:
         self.copyRoot = None # The root of copied tree.
         self.fileName = 'dynamicUnitTest.leo'
         self.root = None # The root of the tree to copy when self.all is False.
+        self.seen = [] # The list of nodes to be added to the outline.
         self.tags = ('@test','@suite','@unittests','@unit-tests')
-    #@+node:ekr.20070627135336.10: *3* createFileFromOutline
+    #@+node:ekr.20070627140344.2: *3* runTests & helpers
+    def runTests (self):
+        # 2010/09/09: removed the gui arg: there is no way to set it.
+
+        '''
+        Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
+        in a separate process.
+        '''
+
+        trace = False
+        import time
+        c = self.c ; p = c.p
+        t1 = time.time()
+
+        old_silent_mode = g.app.silentMode
+        g.app.silentMode = True
+        c2 = c.new(gui=leoGui.nullGui())
+        g.app.silentMode = old_silent_mode
+        found = self.createOutline(c2)
+        if found:
+            self.createFileFromOutline(c2)
+            t2 = time.time()
+            if trace:
+                kind = g.choose(self.all,'all','selected')
+                print('created %s unit tests in %0.2fsec in %s' % (
+                    kind,t2-t1,self.fileName))
+                g.es('created %s unit tests' % (kind),color='blue')
+            # 2010/09/09: allow a way to specify the gui.
+            gui = g.app.unitTestGui or 'nullGui'
+            runUnitTestLeoFile(gui=gui,
+                path='dynamicUnitTest.leo',silent=True)
+            c.selectPosition(p.copy())
+        else:
+            g.es_print('no %s@test or @suite nodes in %s outline' % (
+                g.choose(self.marked,'marked ',''),
+                g.choose(self.all,'entire','selected')))
+    #@+node:ekr.20070627135336.10: *4* createFileFromOutline
     def createFileFromOutline (self,c2):
 
         '''Write c's outline to test/dynamicUnitTest.leo.'''
@@ -834,7 +887,7 @@ class runTestExternallyHelperClass:
         c2.mFileName = path
         c2.fileCommands.save(path,silent=True)
         c2.close()
-    #@+node:ekr.20070627135336.9: *3* createOutline & helpers
+    #@+node:ekr.20070627135336.9: *4* createOutline & helpers
     def createOutline (self,c2):
 
         '''Create a unit test ouline containing
@@ -842,14 +895,14 @@ class runTestExternallyHelperClass:
         - all children of any @mark-for-unit-tests node anywhere in the outline.
         - all @test and @suite nodes in p's outline.'''
 
-        trace = False ; verbose = False
+        trace = False ; verbose = True
         c = self.c ; markTag = '@mark-for-unit-tests'
         self.copyRoot = c2.rootPosition()
         self.copyRoot.initHeadString('All unit tests')
         c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
         self.seen = []
         #@+<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
-        #@+node:ekr.20070705065154: *4* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+        #@+node:ekr.20070705065154: *5* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
         if self.all:
             # A single pass looks for all tags everywhere.
             p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,True
@@ -868,6 +921,7 @@ class runTestExternallyHelperClass:
 
         if trace: g.trace('all',self.all)
         self.copyRoot.expand()
+        found = False
         for n,p,limit,lookForMark,lookForNodes in (
             (1,p1,limit1,lookForMark1,lookForNodes1),
             (2,p2,limit2,lookForMark2,lookForNodes2),
@@ -880,15 +934,17 @@ class runTestExternallyHelperClass:
                     limit and limit.h or '<none>'))
                     
             aList = findAllUnitTestNodes(c,p,limit,self.all,self.marked,lookForMark,lookForNodes)
+            if aList: found = True
             for p2 in aList:
                 self.addNode(p2)
+        return found
             
-    #@+node:ekr.20070705080413: *4* addMarkTree
+    #@+node:ekr.20070705080413: *5* addMarkTree
     def addMarkTree (self,p):
 
         # Add the entire @mark-for-unit-tests tree.
         self.addNode(p)
-    #@+node:ekr.20070705065154.1: *4* addNode
+    #@+node:ekr.20070705065154.1: *5* addNode
     def addNode(self,p):
 
         '''
@@ -900,7 +956,7 @@ class runTestExternallyHelperClass:
 
         for p2 in p.self_and_subtree():
             self.seen.append(p2.v)
-    #@+node:ekr.20070705075604.3: *4* isUnitTestNode
+    #@+node:ekr.20070705075604.3: *5* isUnitTestNode
     def isUnitTestNode (self,p):
         
         h = p.h.lower()
@@ -917,44 +973,7 @@ class runTestExternallyHelperClass:
                 return True
         else:
             return False
-    #@+node:ekr.20070627140344.2: *3* runTests (runTestExternallyHelperClass)
-    def runTests (self):
-        # 2010/09/09: removed the gui arg: there is no way to set it.
-
-        '''
-        Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
-        in a separate process.
-        '''
-
-        trace = False
-        import time
-        c = self.c ; p = c.p
-        t1 = time.time()
-        found = self.searchOutline(p.copy())
-        if found:
-            theGui = leoGui.nullGui()
-            old_silent_mode = g.app.silentMode
-            g.app.silentMode = True
-            c2 = c.new(gui=theGui)
-            g.app.silentMode = old_silent_mode
-            self.createOutline(c2)
-            self.createFileFromOutline(c2)
-            t2 = time.time()
-            if trace:
-                kind = g.choose(self.all,'all','selected')
-                print('created %s unit tests in %0.2fsec in %s' % (
-                    kind,t2-t1,self.fileName))
-                g.es('created %s unit tests' % (kind),color='blue')
-            # 2010/09/09: allow a way to specify the gui.
-            gui = g.app.unitTestGui or 'nullGui'
-            runUnitTestLeoFile(gui=gui,
-                path='dynamicUnitTest.leo',silent=True)
-            c.selectPosition(p.copy())
-        else:
-            g.es_print('no %s@test or @suite nodes in %s outline' % (
-                g.choose(self.marked,'marked',''),
-                g.choose(self.all,'entire','selected')))
-    #@+node:ekr.20070627135336.8: *3* searchOutline
+    #@+node:ekr.20070627135336.8: *4* searchOutline (not used)
     def searchOutline (self,p):
 
         c = self.c ; p = c.p

@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.62" body_secondary_ratio="0.60">
+<globals body_outline_ratio="0.41" body_secondary_ratio="0.53">
 	<global_window_position top="58" left="221" height="987" width="1134"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -151,6 +151,8 @@
 <v t="ekr.20111213122041.3931"><vh>shadow node 1</vh></v>
 </v>
 </v>
+<v t="ekr.20120218165008.3925"><vh>print hi (not a test)</vh></v>
+<v t="ekr.20120218173952.3932"><vh>@test print hi</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -564,33 +566,31 @@ else:
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
-<t tx="ekr.20071113140035">fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src','leoPy.leo'))
-flag,frame2 = g.openWithFileName(fileName,old_c=None,enableLog=False)
+<t tx="ekr.20071113140035">fn = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
+assert g.os_path_exists(fn),fn
+c1 = c
+c2 = g.openWithFileName(fn,old_c=None,enableLog=False)
+assert c2
 c.frame.bringToFront()
 g.app.setLog(c.frame.log)
-c2 = frame2.c
-c1 = c
 
 d1 = {} ; d2 = {}
 for c,d in ( (c1,d1),(c2,d2)):
-    for t in c.all_unique_tnodes_iter():
-        h = t.h
-        if h.startswith('@test'):
-            d[h]=h
-
-d1.keys().sort() ; d2.keys().sort()
+    for p in c.all_unique_positions():
+        if p.h.startswith('@test'):
+            d[p.h]=p.h
 
 if 0: # not important
     g.pr()
     g.pr('----- Only in unitTest.leo')
-    for h in d1.keys():
+    for h in sorted(d1.keys()):
         if not d2.get(h):
-            g.pr(h)
+            print(h)
 
-g.pr('\n----- Only in leoPy.leo')
-for h in d2.keys():
+print('\n----- Only in leoPy.leo')
+for h in sorted(d2.keys()):
     if not d1.get(h):
-        g.pr(h)</t>
+        print(h)</t>
 <t tx="ekr.20071113203234"></t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
@@ -1071,5 +1071,7 @@ finally:
 <t tx="ekr.20111213122041.3931"># node 1 text A.
 </t>
 <t tx="ekr.20120217052728.3921"></t>
+<t tx="ekr.20120218165008.3925">print('hi')</t>
+<t tx="ekr.20120218173952.3932">print('hi')</t>
 </tnodes>
 </leo_file>

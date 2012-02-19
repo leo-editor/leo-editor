@@ -14,6 +14,7 @@ from pylint import lint
 def getCoreList():
 
     return (
+        ('runLeo',          ''),
         ('leoApp',          ''),
         ('leoAtFile',       ''),
         ('leoCache',        ''),
@@ -150,9 +151,8 @@ W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111'
 no_suppressions = ''
 
 recentCoreList = (
-    # Passed 02/07/2012
-        # ('runLeo',      no_suppressions),
-        ('leoApp',       no_suppressions),
+        ('runLeo',      no_suppressions),
+        #('leoApp',       no_suppressions),
         # ('leoAtFile',    no_suppressions),
         # ('leoCache',     no_suppressions),
         # ('leoChapters',  no_suppressions),

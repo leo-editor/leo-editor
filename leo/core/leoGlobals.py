@@ -1937,14 +1937,13 @@ def handleUrlInUrlNode(url, c=None, p=None):
                 # typing in the new window works properly.
                 c.endEditing()
                 c.redraw_now()
-                ok,frame = g.openWithFileName(leo_path, c)
+                c2 = g.openWithFileName(leo_path,old_c=c)
                 
                 # with UNL after path
-                if ok and parsed.fragment:
-                    g.recursiveUNLSearch(parsed.fragment.split("-->"), frame.c)
-                    
-                if ok:
-                    frame.c.bringToFront()
+                if c2 and parsed.fragment:
+                    g.recursiveUNLSearch(parsed.fragment.split("-->"),c2)
+                if c2:
+                    c2.bringToFront()
                     return
                     
         if parsed.scheme in ('', 'file'):
@@ -2136,8 +2135,8 @@ def makePathRelativeTo (fullPath,basePath):
     else:
         return fullPath
 #@+node:ekr.20090520055433.5945: *3* g.openWithFileName & helpers
-def openWithFileName(fileName,old_c,
-    enableLog=True,gui=None,readAtFileNodesFlag=True
+def openWithFileName(fileName,old_c=None,
+    enableLog=True,force=False,gui=None,readAtFileNodesFlag=True
 ):
 
     """Create a Leo Frame for the indicated fileName if the file exists.
@@ -2153,12 +2152,12 @@ def openWithFileName(fileName,old_c,
             repr(g.shortFileName(fileName))))
     
     lm = g.app.loadManager
-    if not fileName: return False, None
+    if not fileName and not force: return None
     isLeo,fn,relFn = g.mungeFileName(fileName)
     
     # Return if the file is already open.
     c = g.findOpenFile(fn)
-    if c: return True,c.frame
+    if c: return c
 
     # Disable the log.
     app.setLog(None)
@@ -2174,19 +2173,22 @@ def openWithFileName(fileName,old_c,
                 # Call g.app.config.openSettingsFile
                 # Call g.app.config.updateSettings
         g.doHook('open0')
-        
-        #### To do: Never fail.  Create an empty .leo file if no file.
-        c,theFile = g.openFileCommanderAndFrame(old_c,gui,fn,relFn)
-            # Call openLeoOrZipFile  
-            # Call g.app.newCommander.
+        theFile,isZipped = g.openLeoOrZipFile(fileName)
+        if theFile or force:
+            c = app.newCommander(fileName)
+            c.isZipped = isZipped
     else:
-        c,theFile = g.openWrapperLeoFile(old_c,fn),None
-            # Call g.app.newCommander, creating an @<file> node.
-            # Complex init of the wrapper .leo file.
-
+        theFile = None
+        # Never open a non-existent file during unit testing.
+        if (force and not g.unitTesting) or g.os_path_exists(fn):
+            c = g.app.newCommander(fileName=None)
+            assert c
+            g.initWrapperLeoFile(c,fn)
+            # Note: c.rootPosition() may not exist yet.
+    
     # Enable the log.
     app.unlockLog()
-    if not c: return False,None
+    if not c: return None
     assert c.frame and c.frame.c == c
     c.frame.log.enable(enableLog)
     
@@ -2199,7 +2201,7 @@ def openWithFileName(fileName,old_c,
             # Call c.fileCommands.openLeoFile to read the .leo file.
             # Call c.config.setRecentFiles for all items in g.app.windowList.
             # Set c.openDirectory.
-        if not ok: return False,None
+        if not ok: return None
         g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
 
     # Phase 3: Complete the initialization.
@@ -2214,7 +2216,7 @@ def openWithFileName(fileName,old_c,
             # Must be done after first redraw.
         # sets focus & calls k.showStateAndMode.
         # c.frame.initCompleteHint()
-    return True,c.frame
+    return c
 #@+node:ekr.20090520055433.5951: *4* g.createMenu
 def createMenu(c,fileName=None):
 
@@ -2271,6 +2273,54 @@ def finishOpen(c):
 
     c.frame.initCompleteHint()
     return True
+#@+node:ekr.20080921154026.1: *4* g.initWrapperLeoFile
+def initWrapperLeoFile (c,fileName):
+
+    '''Open a wrapper .leo file for the given file,
+    and import the file into .leo file.'''
+    
+    # 2011/10/12: support quick edit-save mode.
+    # We will create an @edit node below for non-existent files.
+
+    # Use the config params to set the size and location of the window.
+    frame = c.frame
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+
+    fileName = g.os_path_finalize(fileName)
+
+    if not g.os_path_exists(fileName):
+        # 2011/10/12: Create an empty @edit node.
+        p = c.rootPosition()
+        p.setHeadString('@edit %s' % fileName)
+        c.selectPosition(p)
+    elif c.looksLikeDerivedFile(fileName):
+        # 2011/10/10: Create an @file node.
+        p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
+            paths=[fileName],command=None) # Not undoable.
+        if not p: return None
+    else:
+        # Create an @edit node.
+        s,e = g.readFileIntoString(fileName)
+        if s is None: return None
+        p = c.rootPosition()
+        g.trace(p)
+        if p:
+            p.setHeadString('@edit %s' % fileName)
+            p.setBodyString(s)
+            c.selectPosition(p)
+
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+
+    frame.c.setChanged(False)
+        # Mark the outline clean.
+        # This makes it easy to open non-Leo files for quick study.
+    return c
 #@+node:ekr.20090520055433.5954: *4* g.mungeFileName
 def mungeFileName(fileName):
 
@@ -2283,25 +2333,23 @@ def mungeFileName(fileName):
     isLeo = isZipped or fn.endswith('.leo')
 
     return isLeo,fn,relFn
-#@+node:ekr.20090520055433.5946: *4* g.openFileCommanderAndFrame
-def openFileCommanderAndFrame(old_c,gui,fileName,relativeFileName):
+#@+node:ekr.20090520055433.5946: *4* g.openFileCommanderAndFrame (no longer used)
+if 0:
+    def openFileCommanderAndFrame(old_c,gui,fileName,relativeFileName):
     
-    # Open the file in binary mode to allow 0x1a in bodies & headlines.
-    theFile,isZipped = g.openLeoOrZipFile(fileName)
-    if not theFile:
-        return None,None
-
-    # This call will take 3/4 sec. to open a file from the leoBridge.
-    # This is due to imports in c.__init__
-    c = app.newCommander(fileName,relativeFileName)
-
-    c.isZipped = isZipped
-    return c,theFile
+        # Open the file in binary mode to allow 0x1a in bodies & headlines.
+        theFile,isZipped = g.openLeoOrZipFile(fileName)
+        
+        if not theFile:
+            return None,None
+    
+        # This call will take 3/4 sec. to open a file from the leoBridge.
+        # This is due to imports in c.__init__
+        c = app.newCommander(fileName,relativeFileName)
+    
+        c.isZipped = isZipped
+        return c,theFile
 #@+node:ekr.20070412082527: *4* g.openLeoOrZipFile
-# Strictly speaking, this is not a helper of g.openWithFileName because
-# This is used in several places besides g.openWithFileName.
-# However, it's convenient to pretend that it is a helper.
-
 def openLeoOrZipFile (fileName):
 
     try:
@@ -2328,63 +2376,6 @@ def openLeoOrZipFile (fileName):
         if not g.unitTesting:
             g.es_print("can not open:",fileName,color="blue")
         return None,False
-#@+node:ekr.20080921154026.1: *4* g.openWrapperLeoFile
-def openWrapperLeoFile (old_c,fileName):
-
-    '''Open a wrapper .leo file for the given file,
-    and import the file into .leo file.'''
-    
-    # Never open a non-existent file during unit testing.
-    if g.unitTesting and not g.os_path_exists(fileName):
-        return None
-    
-    # 2011/10/12: support quick edit-save mode.
-    # We will create an @edit node below for non-existent files.
-    c = g.app.newCommander(fileName=None)
-    assert c.rootPosition()
-
-    # Needed for plugins.
-    if 0: # This causes duplicate common buttons.
-        g.doHook("new",old_c=old_c,c=c,new_c=c)
-
-    # Use the config params to set the size and location of the window.
-    frame = c.frame
-    frame.setInitialWindowGeometry()
-    frame.deiconify()
-    frame.lift()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-
-    fileName = g.os_path_finalize(fileName)
-
-    if not g.os_path_exists(fileName):
-        # 2011/10/12: Create an empty @edit node.
-        p = c.rootPosition()
-        p.setHeadString('@edit %s' % fileName)
-        c.selectPosition(p)
-    elif c.looksLikeDerivedFile(fileName):
-        # 2011/10/10: Create an @file node.
-        p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
-            paths=[fileName],command=None) # Not undoable.
-        if not p: return None
-    else:
-        # Create an @edit node.
-        s,e = g.readFileIntoString(fileName)
-        if s is None: return None
-        p = c.rootPosition()
-        if p:
-            p.setHeadString('@edit %s' % fileName)
-            p.setBodyString(s)
-            c.selectPosition(p)
-
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
-
-    frame.c.setChanged(False)
-        # Mark the outline clean.
-        # This makes it easy to open non-Leo files for quick study.
-    return c
 #@+node:ekr.20090520055433.5949: *4* g.preRead
 def preRead(fileName):
 

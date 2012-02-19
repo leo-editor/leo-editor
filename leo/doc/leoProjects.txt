@@ -10324,11 +10324,11 @@ def open (self,event=None):
     ok = False
     if fileName:
         if fileName.endswith('.leo'):
-            ok, frame = g.openWithFileName(fileName,c)
-            if ok:
+            c2 = g.openWithFileName(fileName,old_c=c)
+            if c2:
                 g.chdir(fileName)
                 g.setGlobalOpenDir(fileName)
-            if ok and closeFlag:
+            if c2 and closeFlag:
                 g.app.destroyWindow(c.frame)
         elif c.looksLikeDerivedFile(fileName):
             # 2011/10/09: A smart open makes Leo lighter:
@@ -10816,24 +10816,14 @@ def promptForSave (self):
             return True # Veto.
 #@+node:ekr.20111012172344.9384: *5* Read logic...
 #@+node:ekr.20111012172344.9385: *6* Changed
-#@+node:ekr.20080921154026.1: *7* g.openWrapperLeoFile
-def openWrapperLeoFile (old_c,fileName):
+#@+node:ekr.20080921154026.1: *7* g.initWrapperLeoFile
+def initWrapperLeoFile (c,fileName):
 
     '''Open a wrapper .leo file for the given file,
     and import the file into .leo file.'''
     
-    # Never open a non-existent file during unit testing.
-    if g.unitTesting and not g.os_path_exists(fileName):
-        return None
-    
     # 2011/10/12: support quick edit-save mode.
     # We will create an @edit node below for non-existent files.
-    c = g.app.newCommander(fileName=None)
-    assert c.rootPosition()
-
-    # Needed for plugins.
-    if 0: # This causes duplicate common buttons.
-        g.doHook("new",old_c=old_c,c=c,new_c=c)
 
     # Use the config params to set the size and location of the window.
     frame = c.frame
@@ -10859,6 +10849,7 @@ def openWrapperLeoFile (old_c,fileName):
         s,e = g.readFileIntoString(fileName)
         if s is None: return None
         p = c.rootPosition()
+        g.trace(p)
         if p:
             p.setHeadString('@edit %s' % fileName)
             p.setBodyString(s)
@@ -10881,380 +10872,6 @@ def completeFileName (fileName):
 
     # 2011/10/12: don't add .leo to *any* file.
     return fileName
-#@+node:ekr.20111012172344.9386: *6* Reference
-#@+node:ekr.20031218072017.1624: *7* createFrame & helpers (runLeo.py)
-def createFrame (fileName,options):
-
-    """Create a LeoFrame during Leo's startup process."""
-    
-    # g.trace('(runLeo.py)',fileName)
-
-    script = options.get('script')
-
-    # Try to create a frame for the file.
-    if fileName:
-        ok, frame = g.openWithFileName(fileName,None)
-        if ok and frame:
-            c2 = frame.c
-            select = options.get('select')
-            windowSize = options.get('windowSize')
-            if select: doSelect(c2,select)
-            if windowSize: doWindowSize(c2,windowSize)
-            return c2,frame
-
-    # The file does not exist.
-        #### g.openWithFileName should *always* return a new window.
-
-    # Create a _new_ frame & indicate it is the startup window.
-    c = g.app.newCommander(fileName)
-
-    if not script:
-        g.app.writeWaitingLog(c) # 2009/12/22: fixes bug 448886
-
-    frame = c.frame
-    frame.setInitialWindowGeometry()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
-    frame.startupWindow = True
-    if c.chapterController:
-        c.chapterController.finishCreate()
-        c.setChanged(False)
-            # Clear the changed flag set when creating the @chapters node.
-    # Call the 'new' hook for compatibility with plugins.
-    g.doHook("new",old_c=None,c=c,new_c=c)
-
-    g.createMenu(c,fileName)
-    g.finishOpen(c) # Calls c.redraw.
-
-    # Report the failure to open the file.
-    if fileName:
-        g.es_print("file not found:",fileName,color='red')
-
-    return c,frame
-#@+node:ekr.20100913171604.5888: *8* doSelect
-def doSelect (c,s):
-
-    '''Select the node with key s.'''
-
-    p = findNode(c,s)
-
-    if p:
-        c.selectPosition(p)
-    else:
-        g.es_print('--select: not found:',s)
-#@+node:ekr.20100913171604.5885: *8* doWindowSize
-def doWindowSize (c,windowSize):
-
-    w = c.frame.top
-
-    try:
-        h,w2 = windowSize.split('x')
-        h,w2 = int(h.strip()),int(w2.strip())
-        w.resize(w2,h) # 2010/10/08.
-        c.k.simulateCommand('equal-sized-panes')
-        c.redraw()
-        w.repaint() # Essential
-    except Exception:
-        print('doWindowSize:unexpected exception')
-        g.es_exception()
-#@+node:ekr.20100913171604.5889: *8* findNode
-def findNode (c,s):
-
-    s = s.strip()
-
-    # First, assume s is a gnx.
-    for p in c.all_unique_positions():
-        if p.gnx.strip() == s:
-            return p
-
-    for p in c.all_unique_positions():
-        # g.trace(p.h.strip())
-        if p.h.strip() == s:
-            return p
-
-    return None
-#@+node:ekr.20090520055433.5945: *7* g.openWithFileName & helpers
-def openWithFileName(fileName,old_c,
-    enableLog=True,gui=None,readAtFileNodesFlag=True
-):
-
-    """Create a Leo Frame for the indicated fileName if the file exists.
-
-    returns ok,frame
-
-    where frame.c is the commander of the newly-opened outline.
-    """
-
-    trace = (False or g.trace_startup) and not g.unitTesting
-    if trace:
-        print('g.openWithFileName: Phase 1: open: %s' % (
-            repr(g.shortFileName(fileName))))
-    
-    lm = g.app.loadManager
-    if not fileName: return False, None
-    isLeo,fn,relFn = g.mungeFileName(fileName)
-    
-    # Return if the file is already open.
-    c = g.findOpenFile(fn)
-    if c: return True,c.frame
-
-    # Disable the log.
-    app.setLog(None)
-    app.lockLog()
-    
-    # Phase 1: Create the commander and all objects.
-    # A: Open the file **if** the file is a .leo file.
-    # B: Call g.app.newCommander.
-    if isLeo:
-        # (old_config only): Read the file the first time to get the settings.
-        if not g.new_config and old_c:
-            g.preRead(fileName)
-                # Call g.app.config.openSettingsFile
-                # Call g.app.config.updateSettings
-        g.doHook('open0')
-        
-        #### To do: Never fail.  Create an empty .leo file if no file.
-        c,theFile = g.openFileCommanderAndFrame(old_c,gui,fn,relFn)
-            # Call openLeoOrZipFile  
-            # Call g.app.newCommander.
-    else:
-        c,theFile = g.openWrapperLeoFile(old_c,fn),None
-            # Call g.app.newCommander, creating an @<file> node.
-            # Complex init of the wrapper .leo file.
-
-    # Enable the log.
-    app.unlockLog()
-    if not c: return False,None
-    assert c.frame and c.frame.c == c
-    c.frame.log.enable(enableLog)
-    
-    # Phase 2: Create the outline from the .leo file.
-    if trace: print('g.openWithFileName: Phase 2: create outline')
-    
-    if theFile:
-        g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName)
-        ok = g.readOpenedLeoFile(c,old_c,gui,fn,theFile,readAtFileNodesFlag)
-            # Call c.fileCommands.openLeoFile to read the .leo file.
-            # Call c.config.setRecentFiles for all items in g.app.windowList.
-            # Set c.openDirectory.
-        if not ok: return False,None
-        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-
-    # Phase 3: Complete the initialization.
-    if trace: print('g.openWithFileName: Phase 3: final inits')
-    g.app.writeWaitingLog(c)
-    c.setLog()
-    g.createMenu(c,fn)
-    g.finishOpen(c)
-        # c.frame.tree.initAfterLoad()
-        # c.redraw()
-        # chapterController.finishCreate()
-            # Must be done after first redraw.
-        # sets focus & calls k.showStateAndMode.
-        # c.frame.initCompleteHint()
-    return True,c.frame
-#@+node:ekr.20090520055433.5951: *8* g.createMenu
-def createMenu(c,fileName=None):
-
-    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-
-    if not g.doHook("menu1",c=c,p=c.p,v=c.p):
-        c.frame.menu.createMenuBar(c.frame)
-        c.updateRecentFiles(fileName)
-        g.doHook("menu2",c=c,p=c.p,v=c.p)
-        g.doHook("after-create-leo-frame",c=c)
-        g.doHook("after-create-leo-frame2",c=c)
-#@+node:ekr.20090520055433.5948: *8* g.findOpenFile
-def findOpenFile(fileName):
-
-    def munge(name):
-        return g.os_path_normpath(name or '').lower()
-
-    for frame in g.app.windowList:
-        c = frame.c
-        if g.os_path_realpath(munge(fileName)) == g.os_path_realpath(munge(c.mFileName)):
-            frame.bringToFront()
-            c.setLog()
-            # 2011/11/21: selecting the new tab ensures focus is set.
-            master = hasattr(frame.top,'leo_master') and frame.top.leo_master
-            if master: # frame.top.leo_master is a TabbedTopLevel.
-                master.select(frame.c)
-            c.outerUpdate()
-            return c
-    return None
-#@+node:ekr.20090520055433.5952: *8* g.finishOpen
-def finishOpen(c):
-
-    k = c.k
-    # New in Leo 4.6: provide an official way for very late initialization.
-
-    # Selecting the new tab ensures focus is set.
-    # master = hasattr(c.frame.top,'leo_master') and c.frame.top.leo_master
-    # if master: # frame.top.leo_master is a TabbedTopLevel.
-        # master.select(c)
-
-    c.frame.tree.initAfterLoad()
-    c.initAfterLoad()
-    c.redraw()
-
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.chapterController:
-        c.chapterController.finishCreate()
-    if k:
-        k.setDefaultInputState()
-    c.initialFocusHelper()
-    if k:
-        k.showStateAndMode()
-
-    c.frame.initCompleteHint()
-    return True
-#@+node:ekr.20090520055433.5954: *8* g.mungeFileName
-def mungeFileName(fileName):
-
-    '''Create a full, normalized, Unicode path name, preserving case.'''
-
-    relFn = g.os_path_normpath(fileName)
-    fn = g.os_path_finalize(fileName)
-
-    isZipped = fn and zipfile.is_zipfile(fn)
-    isLeo = isZipped or fn.endswith('.leo')
-
-    return isLeo,fn,relFn
-#@+node:ekr.20090520055433.5946: *8* g.openFileCommanderAndFrame
-def openFileCommanderAndFrame(old_c,gui,fileName,relativeFileName):
-    
-    # Open the file in binary mode to allow 0x1a in bodies & headlines.
-    theFile,isZipped = g.openLeoOrZipFile(fileName)
-    if not theFile:
-        return None,None
-
-    # This call will take 3/4 sec. to open a file from the leoBridge.
-    # This is due to imports in c.__init__
-    c = app.newCommander(fileName,relativeFileName)
-
-    c.isZipped = isZipped
-    return c,theFile
-#@+node:ekr.20070412082527: *8* g.openLeoOrZipFile
-# Strictly speaking, this is not a helper of g.openWithFileName because
-# This is used in several places besides g.openWithFileName.
-# However, it's convenient to pretend that it is a helper.
-
-def openLeoOrZipFile (fileName):
-
-    try:
-        isZipped = zipfile.is_zipfile(fileName)
-        if isZipped:
-            theFile = zipfile.ZipFile(fileName,'r')
-            if not theFile: return None,False
-            # Read the file into an StringIO file.
-            aList = theFile.namelist()
-            name = aList and len(aList) == 1 and aList[0]
-            if not name: return None,False
-            s = theFile.read(name)
-            if g.isPython3:
-                theStringFile = StringIO(g.ue(s,'utf-8'))
-            else:
-                theStringFile =  StringIO(s)
-            return theStringFile,True
-        else:
-            mode = 'rb'
-            theFile = open(fileName,mode)
-        return theFile,isZipped
-    except IOError:
-        # Do not use string + here: it will fail for non-ascii strings!
-        if not g.unitTesting:
-            g.es_print("can not open:",fileName,color="blue")
-        return None,False
-#@+node:ekr.20080921154026.1: *8* g.openWrapperLeoFile
-def openWrapperLeoFile (old_c,fileName):
-
-    '''Open a wrapper .leo file for the given file,
-    and import the file into .leo file.'''
-    
-    # Never open a non-existent file during unit testing.
-    if g.unitTesting and not g.os_path_exists(fileName):
-        return None
-    
-    # 2011/10/12: support quick edit-save mode.
-    # We will create an @edit node below for non-existent files.
-    c = g.app.newCommander(fileName=None)
-    assert c.rootPosition()
-
-    # Needed for plugins.
-    if 0: # This causes duplicate common buttons.
-        g.doHook("new",old_c=old_c,c=c,new_c=c)
-
-    # Use the config params to set the size and location of the window.
-    frame = c.frame
-    frame.setInitialWindowGeometry()
-    frame.deiconify()
-    frame.lift()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-
-    fileName = g.os_path_finalize(fileName)
-
-    if not g.os_path_exists(fileName):
-        # 2011/10/12: Create an empty @edit node.
-        p = c.rootPosition()
-        p.setHeadString('@edit %s' % fileName)
-        c.selectPosition(p)
-    elif c.looksLikeDerivedFile(fileName):
-        # 2011/10/10: Create an @file node.
-        p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
-            paths=[fileName],command=None) # Not undoable.
-        if not p: return None
-    else:
-        # Create an @edit node.
-        s,e = g.readFileIntoString(fileName)
-        if s is None: return None
-        p = c.rootPosition()
-        if p:
-            p.setHeadString('@edit %s' % fileName)
-            p.setBodyString(s)
-            c.selectPosition(p)
-
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
-
-    frame.c.setChanged(False)
-        # Mark the outline clean.
-        # This makes it easy to open non-Leo files for quick study.
-    return c
-#@+node:ekr.20090520055433.5949: *8* g.preRead
-def preRead(fileName):
-
-    '''Read the file for the first time,
-    setting the setting for a later call to finishCreate.
-    '''
-
-    c = g.app.config.openSettingsFile(fileName)
-    if c:
-        g.app.config.updateSettings(c,localFlag=True)
-#@+node:ekr.20090520055433.5950: *8* g.readOpenedLeoFile
-def readOpenedLeoFile(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
-    
-    # New in Leo 4.10.  The open1 event does not allow an override of the init logic.
-    assert theFile
-
-    ok = c.fileCommands.openLeoFile(
-        theFile,fileName,
-        readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-
-    if ok:
-        for z in g.app.windowList:
-            # Bug fix: 2007/12/07: don't change frame var.
-            # The recent files list has been updated by c.updateRecentFiles.
-            z.c.config.setRecentFiles(g.app.config.recentFiles)
-            
-        # Bug fix in 4.4.
-        if not c.openDirectory:
-            c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
-    else:
-        g.app.closeLeoWindow(c.frame)
-    
-    return ok
 #@+node:ekr.20111011165246.15707: *4* Searches from Leo's web pages now work
 Updating Sphinx and using new .js files did the trick.
 #@+node:ekr.20110919113533.6818: *4* Added @button split-defs
@@ -14364,7 +13981,7 @@ def __init__(self,fileName,relativeFileName=None,gui=None):
     self._currentPosition = self.nullPosition()
     self._topPosition     = self.nullPosition()
     self.frame = None
-    self.gui = g.app.gui
+    self.gui = gui or g.app.gui ###
     self.ipythonController = None
         # Set only by the ipython plugin.
     
@@ -14626,7 +14243,7 @@ def finishCreate (self):
     
     c = self ; k = c.k ; p = c.p
     
-    assert g.app.gui
+    assert self.gui
     assert k
 
     c.frame.finishCreate()
@@ -14634,7 +14251,7 @@ def finishCreate (self):
     c.miniBufferWidget = w = c.frame.miniBufferWidget
         # Will be None for nullGui.
         
-    # Important: it costs almost nothing to init commanders for settings files
+    # This costs little.
     c.commandsDict = c.editCommandsManager.finishCreateEditCommanders()
     self.rstCommands.finishCreate()
 
@@ -14644,8 +14261,8 @@ def finishCreate (self):
             shortcut=None,func=f,pane='all',verbose=False)        
 
     k.finishCreate()
-        
-    if g.app.gui.guiName().lower().startswith('qt'):
+    
+    if not g.app.gui.isNullGui:
         g.registerHandler('idle',c.idle_focus_helper)
         
     c.frame.menu.finishCreate()
@@ -15482,8 +15099,14 @@ def runSelectedUnitTestsExternally(self,event=None):
     Tests are run in an external process, so tests *cannot* change the outline.'''
     c = self.c
     leoTest.runTestsExternally(c,all=False,marked=False)
-#@+node:ekr.20051104075904.4: *5* doTests & helpers
+#@+node:ekr.20051104075904.4: *5* doTests & helpers (entry point for local tests)
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
+    
+    '''Run any kind of local unit test.
+    
+    Important: this is also called from dynamicUnitTest.leo
+    to run external tests "locally" from dynamicUnitTest.leo
+    '''
 
     trace = False ; verbose = False
     if all:
@@ -15495,7 +15118,7 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
     # This seems a bit risky when run in unitTest.leo.
     # c.save() # Eliminate the need for ctrl-s.
     
-    if trace: g.trace('marked',marked,'c',c)
+    if trace: g.trace('marked',marked,'c',c,g.callers())
 
     try:
         g.unitTesting = g.app.unitTesting = True
@@ -15694,8 +15317,45 @@ def __init__(self,c,all,marked):
     self.copyRoot = None # The root of copied tree.
     self.fileName = 'dynamicUnitTest.leo'
     self.root = None # The root of the tree to copy when self.all is False.
+    self.seen = [] # The list of nodes to be added to the outline.
     self.tags = ('@test','@suite','@unittests','@unit-tests')
-#@+node:ekr.20070627135336.10: *6* createFileFromOutline
+#@+node:ekr.20070627140344.2: *6* runTests & helpers
+def runTests (self):
+    # 2010/09/09: removed the gui arg: there is no way to set it.
+
+    '''
+    Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
+    in a separate process.
+    '''
+
+    trace = False
+    import time
+    c = self.c ; p = c.p
+    t1 = time.time()
+
+    old_silent_mode = g.app.silentMode
+    g.app.silentMode = True
+    c2 = c.new(gui=leoGui.nullGui())
+    g.app.silentMode = old_silent_mode
+    found = self.createOutline(c2)
+    if found:
+        self.createFileFromOutline(c2)
+        t2 = time.time()
+        if trace:
+            kind = g.choose(self.all,'all','selected')
+            print('created %s unit tests in %0.2fsec in %s' % (
+                kind,t2-t1,self.fileName))
+            g.es('created %s unit tests' % (kind),color='blue')
+        # 2010/09/09: allow a way to specify the gui.
+        gui = g.app.unitTestGui or 'nullGui'
+        runUnitTestLeoFile(gui=gui,
+            path='dynamicUnitTest.leo',silent=True)
+        c.selectPosition(p.copy())
+    else:
+        g.es_print('no %s@test or @suite nodes in %s outline' % (
+            g.choose(self.marked,'marked ',''),
+            g.choose(self.all,'entire','selected')))
+#@+node:ekr.20070627135336.10: *7* createFileFromOutline
 def createFileFromOutline (self,c2):
 
     '''Write c's outline to test/dynamicUnitTest.leo.'''
@@ -15706,7 +15366,7 @@ def createFileFromOutline (self,c2):
     c2.mFileName = path
     c2.fileCommands.save(path,silent=True)
     c2.close()
-#@+node:ekr.20070627135336.9: *6* createOutline & helpers
+#@+node:ekr.20070627135336.9: *7* createOutline & helpers
 def createOutline (self,c2):
 
     '''Create a unit test ouline containing
@@ -15714,7 +15374,7 @@ def createOutline (self,c2):
     - all children of any @mark-for-unit-tests node anywhere in the outline.
     - all @test and @suite nodes in p's outline.'''
 
-    trace = False ; verbose = False
+    trace = False ; verbose = True
     c = self.c ; markTag = '@mark-for-unit-tests'
     self.copyRoot = c2.rootPosition()
     self.copyRoot.initHeadString('All unit tests')
@@ -15724,6 +15384,7 @@ def createOutline (self,c2):
 
     if trace: g.trace('all',self.all)
     self.copyRoot.expand()
+    found = False
     for n,p,limit,lookForMark,lookForNodes in (
         (1,p1,limit1,lookForMark1,lookForNodes1),
         (2,p2,limit2,lookForMark2,lookForNodes2),
@@ -15736,10 +15397,12 @@ def createOutline (self,c2):
                 limit and limit.h or '<none>'))
                 
         aList = findAllUnitTestNodes(c,p,limit,self.all,self.marked,lookForMark,lookForNodes)
+        if aList: found = True
         for p2 in aList:
             self.addNode(p2)
+    return found
         
-#@+node:ekr.20070705065154: *7* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+#@+node:ekr.20070705065154: *8* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
 if self.all:
     # A single pass looks for all tags everywhere.
     p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,True
@@ -15754,12 +15417,12 @@ else:
         p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
     else:
         p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
-#@+node:ekr.20070705080413: *7* addMarkTree
+#@+node:ekr.20070705080413: *8* addMarkTree
 def addMarkTree (self,p):
 
     # Add the entire @mark-for-unit-tests tree.
     self.addNode(p)
-#@+node:ekr.20070705065154.1: *7* addNode
+#@+node:ekr.20070705065154.1: *8* addNode
 def addNode(self,p):
 
     '''
@@ -15771,7 +15434,7 @@ def addNode(self,p):
 
     for p2 in p.self_and_subtree():
         self.seen.append(p2.v)
-#@+node:ekr.20070705075604.3: *7* isUnitTestNode
+#@+node:ekr.20070705075604.3: *8* isUnitTestNode
 def isUnitTestNode (self,p):
     
     h = p.h.lower()
@@ -15788,44 +15451,7 @@ def isUnitTestNode (self,p):
             return True
     else:
         return False
-#@+node:ekr.20070627140344.2: *6* runTests (runTestExternallyHelperClass)
-def runTests (self):
-    # 2010/09/09: removed the gui arg: there is no way to set it.
-
-    '''
-    Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
-    in a separate process.
-    '''
-
-    trace = False
-    import time
-    c = self.c ; p = c.p
-    t1 = time.time()
-    found = self.searchOutline(p.copy())
-    if found:
-        theGui = leoGui.nullGui()
-        old_silent_mode = g.app.silentMode
-        g.app.silentMode = True
-        c2 = c.new(gui=theGui)
-        g.app.silentMode = old_silent_mode
-        self.createOutline(c2)
-        self.createFileFromOutline(c2)
-        t2 = time.time()
-        if trace:
-            kind = g.choose(self.all,'all','selected')
-            print('created %s unit tests in %0.2fsec in %s' % (
-                kind,t2-t1,self.fileName))
-            g.es('created %s unit tests' % (kind),color='blue')
-        # 2010/09/09: allow a way to specify the gui.
-        gui = g.app.unitTestGui or 'nullGui'
-        runUnitTestLeoFile(gui=gui,
-            path='dynamicUnitTest.leo',silent=True)
-        c.selectPosition(p.copy())
-    else:
-        g.es_print('no %s@test or @suite nodes in %s outline' % (
-            g.choose(self.marked,'marked',''),
-            g.choose(self.all,'entire','selected')))
-#@+node:ekr.20070627135336.8: *6* searchOutline
+#@+node:ekr.20070627135336.8: *7* searchOutline (not used)
 def searchOutline (self,p):
 
     c = self.c ; p = c.p
@@ -15884,7 +15510,7 @@ def createFileFromOutline (self,c2):
     c2.mFileName = path
     c2.fileCommands.save(path,silent=True)
     c2.close()
-#@+node:ekr.20070627140344.2: *5* runTests (runTestExternallyHelperClass)
+#@+node:ekr.20070627140344.2: *5* runTests & helpers
 def runTests (self):
     # 2010/09/09: removed the gui arg: there is no way to set it.
 
@@ -15897,14 +15523,13 @@ def runTests (self):
     import time
     c = self.c ; p = c.p
     t1 = time.time()
-    found = self.searchOutline(p.copy())
+
+    old_silent_mode = g.app.silentMode
+    g.app.silentMode = True
+    c2 = c.new(gui=leoGui.nullGui())
+    g.app.silentMode = old_silent_mode
+    found = self.createOutline(c2)
     if found:
-        theGui = leoGui.nullGui()
-        old_silent_mode = g.app.silentMode
-        g.app.silentMode = True
-        c2 = c.new(gui=theGui)
-        g.app.silentMode = old_silent_mode
-        self.createOutline(c2)
         self.createFileFromOutline(c2)
         t2 = time.time()
         if trace:
@@ -15919,8 +15544,132 @@ def runTests (self):
         c.selectPosition(p.copy())
     else:
         g.es_print('no %s@test or @suite nodes in %s outline' % (
-            g.choose(self.marked,'marked',''),
+            g.choose(self.marked,'marked ',''),
             g.choose(self.all,'entire','selected')))
+#@+node:ekr.20070627135336.10: *6* createFileFromOutline
+def createFileFromOutline (self,c2):
+
+    '''Write c's outline to test/dynamicUnitTest.leo.'''
+
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test', self.fileName)
+
+    c2.selectPosition(c2.rootPosition())
+    c2.mFileName = path
+    c2.fileCommands.save(path,silent=True)
+    c2.close()
+#@+node:ekr.20070627135336.9: *6* createOutline & helpers
+def createOutline (self,c2):
+
+    '''Create a unit test ouline containing
+
+    - all children of any @mark-for-unit-tests node anywhere in the outline.
+    - all @test and @suite nodes in p's outline.'''
+
+    trace = False ; verbose = True
+    c = self.c ; markTag = '@mark-for-unit-tests'
+    self.copyRoot = c2.rootPosition()
+    self.copyRoot.initHeadString('All unit tests')
+    c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
+    self.seen = []
+    << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+
+    if trace: g.trace('all',self.all)
+    self.copyRoot.expand()
+    found = False
+    for n,p,limit,lookForMark,lookForNodes in (
+        (1,p1,limit1,lookForMark1,lookForNodes1),
+        (2,p2,limit2,lookForMark2,lookForNodes2),
+    ):
+        if n == 2 and self.all: return
+        if trace and verbose: g.trace(
+            'pass %s: mark %s nodes %s root %s limit %s' % (
+                n,lookForMark,lookForNodes,
+                p and p.h or '<none>',
+                limit and limit.h or '<none>'))
+                
+        aList = findAllUnitTestNodes(c,p,limit,self.all,self.marked,lookForMark,lookForNodes)
+        if aList: found = True
+        for p2 in aList:
+            self.addNode(p2)
+    return found
+        
+#@+node:ekr.20070705065154: *7* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+if self.all:
+    # A single pass looks for all tags everywhere.
+    p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,True
+    p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
+else:
+    # The first pass looks everywhere for only for @mark-for-unit-tests,
+    p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,False
+    # The second pass looks in the selected tree for everything except @mark-for-unit-tests.
+    # There is no second pass if the present node is an @mark-for-unit-test node.
+    p = c.p
+    if p.h.startswith(markTag):
+        p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
+    else:
+        p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
+#@+node:ekr.20070705080413: *7* addMarkTree
+def addMarkTree (self,p):
+
+    # Add the entire @mark-for-unit-tests tree.
+    self.addNode(p)
+#@+node:ekr.20070705065154.1: *7* addNode
+def addNode(self,p):
+
+    '''
+    Add an @test, @suite or an @unit-tests tree as the last child of self.copyRoot.
+    '''
+
+    p2 = p.copyTreeAfter()
+    p2.moveToLastChildOf(self.copyRoot)
+
+    for p2 in p.self_and_subtree():
+        self.seen.append(p2.v)
+#@+node:ekr.20070705075604.3: *7* isUnitTestNode
+def isUnitTestNode (self,p):
+    
+    h = p.h.lower()
+    
+    # Hidden tests nodes are an anti-pattern.
+
+        # hidden = not h.startswith('<<') and test_pat.search(p.b)
+        # if hidden:
+            # print('Adding hidden test: %s' % (p.h))
+            # return True
+
+    for tag in self.tags:
+        if h.startswith(tag):
+            return True
+    else:
+        return False
+#@+node:ekr.20070627135336.8: *6* searchOutline (not used)
+def searchOutline (self,p):
+
+    c = self.c ; p = c.p
+    iter = g.choose(self.all,c.all_unique_positions,p.self_and_subtree)
+
+    # First, look down the tree.
+    for p in iter():
+        for s in self.tags:
+            if p.h.startswith(s):
+                self.root = c.p
+                return True
+
+    # Next, look up the tree.
+    if not self.all:   
+        for p in c.p.parents():
+            for s in self.tags:
+                if p.h.startswith(s):
+                    c.selectPosition(p)
+                    self.root = p.copy()
+                    return True
+
+    # Finally, look for all @mark-for-unit-test nodes.
+    for p in c.all_unique_positions():
+        if p.h.startswith('@mark-for-unit-test'):
+            return True
+
+    return False
 #@+node:ekr.20031218072017.2619: *5* app.writeWaitingLog
 def writeWaitingLog (self,c):
 
@@ -16148,8 +15897,14 @@ def writeScriptFile (self,script):
         path = None
 
     return path
-#@+node:ekr.20051104075904.4: *5* doTests & helpers
+#@+node:ekr.20051104075904.4: *5* doTests & helpers (entry point for local tests)
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
+    
+    '''Run any kind of local unit test.
+    
+    Important: this is also called from dynamicUnitTest.leo
+    to run external tests "locally" from dynamicUnitTest.leo
+    '''
 
     trace = False ; verbose = False
     if all:
@@ -16161,7 +15916,7 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
     # This seems a bit risky when run in unitTest.leo.
     # c.save() # Eliminate the need for ctrl-s.
     
-    if trace: g.trace('marked',marked,'c',c)
+    if trace: g.trace('marked',marked,'c',c,g.callers())
 
     try:
         g.unitTesting = g.app.unitTesting = True
@@ -16427,7 +16182,7 @@ def createOutline (self,c2):
     - all children of any @mark-for-unit-tests node anywhere in the outline.
     - all @test and @suite nodes in p's outline.'''
 
-    trace = False ; verbose = False
+    trace = False ; verbose = True
     c = self.c ; markTag = '@mark-for-unit-tests'
     self.copyRoot = c2.rootPosition()
     self.copyRoot.initHeadString('All unit tests')
@@ -16437,6 +16192,7 @@ def createOutline (self,c2):
 
     if trace: g.trace('all',self.all)
     self.copyRoot.expand()
+    found = False
     for n,p,limit,lookForMark,lookForNodes in (
         (1,p1,limit1,lookForMark1,lookForNodes1),
         (2,p2,limit2,lookForMark2,lookForNodes2),
@@ -16449,8 +16205,10 @@ def createOutline (self,c2):
                 limit and limit.h or '<none>'))
                 
         aList = findAllUnitTestNodes(c,p,limit,self.all,self.marked,lookForMark,lookForNodes)
+        if aList: found = True
         for p2 in aList:
             self.addNode(p2)
+    return found
         
 #@+node:ekr.20070705065154: *6* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
 if self.all:
@@ -16501,8 +16259,14 @@ def isUnitTestNode (self,p):
             return True
     else:
         return False
-#@+node:ekr.20051104075904.4: *5* doTests & helpers
+#@+node:ekr.20051104075904.4: *5* doTests & helpers (entry point for local tests)
 def doTests(c,all=None,marked=None,p=None,verbosity=1):
+    
+    '''Run any kind of local unit test.
+    
+    Important: this is also called from dynamicUnitTest.leo
+    to run external tests "locally" from dynamicUnitTest.leo
+    '''
 
     trace = False ; verbose = False
     if all:
@@ -16514,7 +16278,7 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
     # This seems a bit risky when run in unitTest.leo.
     # c.save() # Eliminate the need for ctrl-s.
     
-    if trace: g.trace('marked',marked,'c',c)
+    if trace: g.trace('marked',marked,'c',c,g.callers())
 
     try:
         g.unitTesting = g.app.unitTesting = True
@@ -26051,38 +25815,6 @@ def bindOpenWith (self,shortcut,name,data):
     commandName = 'open-with-%s' % name.lower()
     k.registerCommand(commandName,shortcut,openWithCallback,pane='all',verbose=False)
 #@+node:ekr.20120214165710.10725: ** Notes (Do not delete)
-#@+node:ekr.20120211052437.10731: *3* Notes about loading
-@nocolor-node
-
-Reading any file (including settings files) will be done as follows:
-    
-1. Create a commander for the file.
-
-    **Important**: The gui is known, so we can create a frame.
-    However, we don't want to *draw* the frame without knowing all settings.
-
-    To do: Can we create a frame without drawing it??
-    
-2. Physically read the .leo file using the sax parser.
-
-    To do: Can be done at all?? That is, can it be done using only partially inited commander?
-    To do: try an experiment!
-    
-    To do: Can this be done *without* knowing any settings??
-    It would seem essential, but I'm not entirely clear about this.
-    
-3. Handle the settings in the file.
-
-    A. Parse the @settings tree in the file.
-    B. Merge the settings with previous settings.
-       Note: this may set LoadManager ivars.
-    C. (New) create a *single* config dict, so that c.config.get is very fast.
-    
-4. Enable plugins after *all* settings have been read?
-
-    To do: do we have to enable plugins all at once, or can we do that for each file??
-    
-5. Draw the frame, thereby generating events to be handled by plugins.
 #@+node:ekr.20120214060149.15849: *3* We *will* read leoSettings/myLeoSettings twice
 @nocolor-node
 
@@ -26145,8 +25877,7 @@ NEW code: only global settings files read during startup.
 g.preRead does:
 
     c = g.app.config.openSettingsFile(fileName)
-    if c:
-        g.app.config.updateSettings(c,localFlag=True)
+    if c: g.app.config.updateSettings(c,localFlag=True)
     
 ** Proposed change:
     
@@ -26159,9 +25890,8 @@ g.preRead does:
     else:
         return None,None,None
         
-** How can we use shortcutsDict and settingsDict ?????
+** How can we use shortcutsDict and settingsDict ??
 
-        
 config.openSettingsFile calls:
     
     c,frame = g.app.newCommander(fileName)
@@ -26177,11 +25907,6 @@ fc.getLeoFile contains (near the end):
         c.checkOutline(event=None,verbose=True,unittest=False,full=True)
     
 ** This could be done in openWithFileName instead.
-
-g.openWrapperLeoFile contains:
-
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

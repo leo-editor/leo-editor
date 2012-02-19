@@ -1972,8 +1972,7 @@ class ScreenShotController(object):
 
         sc = self ; fn = sc.finalize('screenshot-setup.leo')
 
-        c,frame = g.app.newLeoCommanderAndFrame(
-            fileName=fn,relativeFileName=None) # ,gui=gui)
+        c = g.app.newCommander(fn)
 
         def isSlide(p):
             return g.match_word(p.h,0,'@slide') or g.match_word(p.h,0,'@slideshow')

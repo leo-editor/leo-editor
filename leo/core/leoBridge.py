@@ -353,31 +353,35 @@ class bridgeController:
         '''Create a commander and frame for the given file.
         Create a new frame if the fileName is empty or non-exisent.'''
 
+        trace = True
         g = self.g
-
-        trace = False
-
-        if fileName.strip():
-            if g.os_path_exists(fileName):
-                if trace:
-                    import time ; t1 = time.time()
-                # This takes a long time due to imports in c.__init__
-                ok, frame = g.openWithFileName(fileName,None)
-                if trace:
-                    t2 = time.time()
-                    g.trace('g.openWithFileName: %0.2fsec' % (t2-t1))
-                if ok: return frame.c
-            else:
-                g.es_print('file not found', fileName,'creating new window')
-        # Create a new frame. Unlike leo.run, this is not a startup window.
-        c = g.app.newCommander(fileName)
-        frame = c.frame
-        frame.setInitialWindowGeometry()
-        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
-        # Call the 'new' hook for compatibility with plugins.
-        # 2011/11/07: Do this only if plugins have been loaded.
-        g.doHook("new",old_c=None,c=c,new_c=c)
-        return c
+        
+        if 0:
+            c = g.openWithFileName(fileName,force=True)
+            return c
+            
+        else:
+            if fileName.strip():
+                if g.os_path_exists(fileName):
+                    if trace:
+                        import time ; t1 = time.time()
+                    # This takes a long time due to imports in c.__init__
+                    c = g.openWithFileName(fileName)
+                    if trace:
+                        t2 = time.time()
+                        g.trace('g.openWithFileName: %0.2fsec' % (t2-t1))
+                    if c: return c
+                else:
+                    g.es_print('file not found', fileName,'creating new window')
+            # Create a new frame. Unlike leo.run, this is not a startup window.
+            c = g.app.newCommander(fileName)
+            frame = c.frame
+            frame.setInitialWindowGeometry()
+            frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+            # Call the 'new' hook for compatibility with plugins.
+            # 2011/11/07: Do this only if plugins have been loaded.
+            g.doHook("new",old_c=None,c=c,new_c=c)
+            return c
     #@-others
 #@-others
 #@-leo

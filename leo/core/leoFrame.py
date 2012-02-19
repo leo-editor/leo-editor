@@ -2626,16 +2626,16 @@ class nullLog (leoLog):
     def createControl (self,parentFrame):
 
         return self.createTextWidget(parentFrame)
-    #@+node:ekr.20070302095121: *4* createTextWidget
+    #@+node:ekr.20070302095121: *4* createTextWidget (nullLog)
     def createTextWidget (self,parentFrame):
 
         self.logNumber += 1
 
         c = self.c
 
-        gui = c and c.frame and c.frame.gui or g.app.gui
+        #### gui = c and c.frame and c.frame.gui or g.app.gui
 
-        log = gui.plainTextWidget(
+        log = stringTextWidget(
             c = self.c,
             name="log-%d" % self.logNumber,
         )
@@ -2686,9 +2686,10 @@ class nullStatusLineClass:
         self.enabled = False
         self.parentFrame = parentFrame
 
-        gui = c and c.frame and c.frame.gui or g.app.gui
+        # gui = c and c.frame and c.frame.gui or g.app.gui
 
-        self.textWidget = w = gui.plainTextWidget(c,name='status-line')
+        #### self.textWidget = w = gui.plainTextWidget(c,name='status-line')
+        self.textWidget = w = stringTextWidget(c,name='status-line')
 
         # Set the official ivars.
         c.frame.statusFrame = None

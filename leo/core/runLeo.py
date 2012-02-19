@@ -13,7 +13,9 @@
 # import pdb ; pdb = pdb.set_trace
 
 import os
+import optparse
 import sys
+import traceback
 
 path = os.getcwd()
 if path not in sys.path:
@@ -23,43 +25,18 @@ if path not in sys.path:
 # Import leoGlobals, but do NOT set g.
 import leo.core.leoGlobals as leoGlobals
 
-# Set leoGlobals.g here, rather than in leoGlobals.py.
+# Set leoGlobals.g here, not in leoGlobals.py.
 leoGlobals.g = leoGlobals
 
+# Create g.app.
 import leo.core.leoApp as leoApp
-
-# Create the app.
 leoGlobals.app = leoApp.LeoApp()
 
 # **now** we can set g.
 g = leoGlobals
 assert(g.app)
 
-if g.new_load:
-    # Make sure we call the new leoPlugins.init top-level function.
-    # This prevents a crash when run is called repeatedly from
-    # IPython's lleo extension.
-    import leo.core.leoPlugins as leoPlugins
-    leoPlugins.init()
-else:
-    import optparse
-    import traceback
-
-    # Do early inits.
-    import leo.core.leoNodes as leoNodes
-    import leo.core.leoConfig as leoConfig
-    
-    # There is a circular dependency between leoCommands and leoEditCommands.
-    import leo.core.leoCommands as leoCommands
-    
-    # Make sure we call the new leoPlugins.init top-level function.
-    # This prevents a crash when run is called repeatedly from
-    # IPython's lleo extension.
-    import leo.core.leoPlugins as leoPlugins
-    leoPlugins.init()
-    
-    # Do all other imports.
-    import leo.core.leoGui as leoGui
+# initApp does other imports...
 #@-<< imports and inits >>
 
 #@+others
@@ -104,7 +81,6 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     # print('runLeo.run: sys.argv %s' % sys.argv)
 
     # Always create the load manager.
-    # (in doPrePlusingsInit) once we can know lm.files.
     assert g.app
     g.app.loadManager = leoApp.LoadManager(fileName,pymacs)
     
@@ -123,7 +99,8 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     if g.app.killed: return
 
     # Phase 3: after loading plugins. Create one or more frames.
-    ok = doPostPluginsInit(files,options)
+    screenshot_fn = options.get('screenshot_fn')
+    ok = doPostPluginsInit(files,screenshot_fn)
         
     if ok:
         g.es('') # Clears horizontal scrolling in the log pane.
@@ -294,18 +271,27 @@ def getFiles(fileName):
     return files
 #@+node:ekr.20080921091311.2: *4* initApp (runLeo.py)
 def initApp (verbose):
-
-    # assert g.app.guiArgName
     
-    # print('***** initApp (runLeo.py)')
-
+    assert g.app.loadManager
+    
+    import leo.core.leoConfig as leoConfig
+    import leo.core.leoNodes as leoNodes
+    import leo.core.leoPlugins as leoPlugins
+    
+    # Make sure we call the new leoPlugins.init top-level function.
+    # This prevents a crash when run is called repeatedly from
+    # IPython's lleo extension.
+    leoPlugins.init()
+    
     # Force the user to set g.app.leoID.
     g.app.setLeoID(verbose=verbose)
+    
+    # Create early classes *after* doing plugins.init()
     g.app.config = leoConfig.configClass()
-    assert g.app.loadManager
-    #### g.app.loadManager = leoApp.LoadManager()
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
-    g.app.pluginsController.finishCreate() # 2010/09/09
+
+    # Complete the plugins class last.
+    g.app.pluginsController.finishCreate()
 #@+node:ekr.20041130093254: *4* reportDirectories (runLeo.py)
 def reportDirectories(verbose):
 
@@ -479,7 +465,7 @@ def scanOptions():
             h,w = windowSize.split('x')
         except ValueError:
             windowSize = None
-            g.trace('bad --window-size:',size)
+            g.trace('bad --window-size:',windowSize)
 
     # Compute the return values.
     windowFlag = script and script_path_w
@@ -495,146 +481,49 @@ def scanOptions():
     }
     return d
 #@+node:ekr.20090519143741.5917: *3* doPostPluginsInit & helpers (runLeo.py)
-def doPostPluginsInit(files,options):
+def doPostPluginsInit(files,screenshot_fn):
 
-    '''Return True if the frame was created properly.'''
+    '''Create a Leo window for each file in the files list.'''
 
-    # Clear g.app.initing _before_ creating the frame.
+    # Clear g.app.initing _before_ creating commanders.
     g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
 
     # Create the main frame.  Show it and all queued messages.
-    c,c1,fileName = None,None,None
-    for fileName in files:
-        c,frame = createFrame(fileName,options)
-        if frame:
+    
+    if files:
+        c1 = None
+        for fn in files:
+            c = g.openWithFileName(fn,old_c=None,force=True)
+                # Will give a "not found" message.
+            assert c
             if not c1: c1 = c
-        else:
-            g.trace('createFrame failed',repr(fileName))
-            return False
-          
-    # Put the focus in the first-opened file.  
-    if not c:
-        c,frame = createFrame(None,options)
-        c1 = c
-        if c and frame:
-            fileName = c.fileName()
-        else:
-            g.trace('createFrame failed 2')
-            return False
+    else:
+        # Create an empty frame.
+        c1 = g.openWithFileName(None,old_c=None,force=True)
+            
+    # Put the focus in the first-opened file.
+    fileName = files[0] if files else None
+    c = c1
             
     # For qttabs gui, select the first-loaded tab.
     if hasattr(g.app.gui,'frameFactory'):
         factory = g.app.gui.frameFactory
         if factory and hasattr(factory,'setTabForCommander'):
-            c = c1
             factory.setTabForCommander(c)
 
     # Do the final inits.
-    c.setLog()
     g.app.logInited = True
-    p = c.p
     g.app.initComplete = True
-    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    c.setLog()
+    g.doHook("start2",c=c,p=c.p,v=c.p,fileName=fileName)
     g.enableIdleTimeHook(idleTimeDelay=500)
-        # 2011/05/10: always enable this.
     initFocusAndDraw(c,fileName)
 
-    screenshot_fn = options.get('screenshot_fn')
     if screenshot_fn:
         make_screen_shot(screenshot_fn)
         return False # Force an immediate exit.
 
     return True
-#@+node:ekr.20031218072017.1624: *4* createFrame & helpers (runLeo.py)
-def createFrame (fileName,options):
-
-    """Create a LeoFrame during Leo's startup process."""
-    
-    # g.trace('(runLeo.py)',fileName)
-
-    script = options.get('script')
-
-    # Try to create a frame for the file.
-    if fileName:
-        ok, frame = g.openWithFileName(fileName,None)
-        if ok and frame:
-            c2 = frame.c
-            select = options.get('select')
-            windowSize = options.get('windowSize')
-            if select: doSelect(c2,select)
-            if windowSize: doWindowSize(c2,windowSize)
-            return c2,frame
-
-    # The file does not exist.
-        #### g.openWithFileName should *always* return a new window.
-
-    # Create a _new_ frame & indicate it is the startup window.
-    c = g.app.newCommander(fileName)
-
-    if not script:
-        g.app.writeWaitingLog(c) # 2009/12/22: fixes bug 448886
-
-    frame = c.frame
-    frame.setInitialWindowGeometry()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
-    frame.startupWindow = True
-    if c.chapterController:
-        c.chapterController.finishCreate()
-        c.setChanged(False)
-            # Clear the changed flag set when creating the @chapters node.
-    # Call the 'new' hook for compatibility with plugins.
-    g.doHook("new",old_c=None,c=c,new_c=c)
-
-    g.createMenu(c,fileName)
-    g.finishOpen(c) # Calls c.redraw.
-
-    # Report the failure to open the file.
-    if fileName:
-        g.es_print("file not found:",fileName,color='red')
-
-    return c,frame
-#@+node:ekr.20100913171604.5888: *5* doSelect
-def doSelect (c,s):
-
-    '''Select the node with key s.'''
-
-    p = findNode(c,s)
-
-    if p:
-        c.selectPosition(p)
-    else:
-        g.es_print('--select: not found:',s)
-#@+node:ekr.20100913171604.5885: *5* doWindowSize
-def doWindowSize (c,windowSize):
-
-    w = c.frame.top
-
-    try:
-        h,w2 = windowSize.split('x')
-        h,w2 = int(h.strip()),int(w2.strip())
-        w.resize(w2,h) # 2010/10/08.
-        c.k.simulateCommand('equal-sized-panes')
-        c.redraw()
-        w.repaint() # Essential
-    except Exception:
-        print('doWindowSize:unexpected exception')
-        g.es_exception()
-#@+node:ekr.20100913171604.5889: *5* findNode
-def findNode (c,s):
-
-    s = s.strip()
-
-    # First, assume s is a gnx.
-    for p in c.all_unique_positions():
-        if p.gnx.strip() == s:
-            return p
-
-    for p in c.all_unique_positions():
-        # g.trace(p.h.strip())
-        if p.h.strip() == s:
-            return p
-
-    return None
 #@+node:ekr.20080921060401.6: *4* initFocusAndDraw
 def initFocusAndDraw(c,fileName):
 

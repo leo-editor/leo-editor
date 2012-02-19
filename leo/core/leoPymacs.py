@@ -106,7 +106,7 @@ def init ():
     if 1: # These traces show up in the pymacs buffer.
         g.trace('app',g.app)
         g.trace('gui',g.app.gui)
-#@+node:ekr.20061024075542.1: ** open
+#@+node:ekr.20061024075542.1: ** open (pymacs)
 def open (fileName=None):
 
     global g
@@ -121,13 +121,9 @@ def open (fileName=None):
         return None
 
     # openWithFileName checks to see if the file is already open.
-    ok, frame = g.openWithFileName(
-        fileName,
-        old_c=None,
-        enableLog=False,
-        readAtFileNodesFlag=True)
+    c = g.openWithFileName(fileName,
+        enableLog=False,readAtFileNodesFlag=True)
 
-    c = ok and frame.c or None
     if c:
         g.es_print('','leoPymacs.open:',c)
     else:

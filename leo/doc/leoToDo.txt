@@ -853,13 +853,12 @@ def load_session(c, UNLs):
    """
    for UNL in UNLs:
        fname, unl = UNL.split("#")
-       ok, frame = g.openWithFileName(fname, c)
-       if ok:
-           this_c = frame.c
-           for pos in this_c.all_positions():
-               if pos.get_UNL() == unl:
-                   this_c.setCurrentPosition(pos)
-                   this_c.redraw()
+       c2 = g.openWithFileName(fname,c)
+       if c2:
+           for p in c2.all_positions():
+               if p.get_UNL() == unl:
+                   c2.setCurrentPosition(p)
+                   c2.redraw()
                    break
 
 def clear_session(c):
@@ -928,11 +927,11 @@ def open (self,event=None):
     ok = False
     if fileName:
         if fileName.endswith('.leo'):
-            ok, frame = g.openWithFileName(fileName,c)
-            if ok:
+            c2 = g.openWithFileName(fileName,old_c=c)
+            if c2:
                 g.chdir(fileName)
                 g.setGlobalOpenDir(fileName)
-            if ok and closeFlag:
+            if c2 and closeFlag:
                 g.app.destroyWindow(c.frame)
         elif c.looksLikeDerivedFile(fileName):
             # 2011/10/09: A smart open makes Leo lighter:
@@ -1311,12 +1310,9 @@ def createHiddenCommander(self,fileName):
 
     # Read the file into a hidden commander (Similar to g.openWithFileName).
     import leo.core.leoGui as leoGui
-    import leo.core.leoFrame as leoFrame
     import leo.core.leoCommands as leoCommands
 
     c2 = leoCommands.Commands(fileName,gui=leoGui.nullGui())
-    frame = c2.frame
-    frame.tree.c = c2
     theFile,c2.isZipped = g.openLeoOrZipFile(fileName)
     if theFile:
         c2.fileCommands.openLeoFile(theFile,fileName,readAtFileNodesFlag=True,silent=True)
@@ -7659,14 +7655,13 @@ try:
             # typing in the new window works properly.
             c.endEditing()
             c.redraw_now()
-            ok,frame = g.openWithFileName(leo_path, c)
+            c2 = g.openWithFileName(leo_path,old_c=c)
             
             # with UNL after path
-            if ok and parsed.fragment:
-                g.recursiveUNLSearch(parsed.fragment.split("-->"), frame.c)
-                
-            if ok:
-                frame.c.bringToFront()
+            if c2 and parsed.fragment:
+                g.recursiveUNLSearch(parsed.fragment.split("-->"),c2)
+            if c2:
+                c2.bringToFront()
                 return
                 
     if parsed.scheme in ('', 'file'):

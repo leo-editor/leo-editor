@@ -1366,21 +1366,18 @@ class LoadManager:
         if trace: print('***** lm.openSettingsFile: setting g.app.gui to nullGui')
         
         lm = self
-        
         assert g.new_config
         
          # Always use a nullGui here,
          # even if we are going to show the file later.
         import leo.core.leoGui as leoGui
-        g.app.gui = nullGui = leoGui.nullGui()
 
-        ok,frame = g.openWithFileName(path,
-            old_c=None,
+        c = g.openWithFileName(path,
             enableLog=False,
-            gui=nullGui,
+            gui=leoGui.nullGui(),
             readAtFileNodesFlag=False)
 
-        return frame.c if ok else None
+        return c
     #@+node:ekr.20120215062153.10738: *4* lm.initLocalSettings (new_config only)
     def initLocalSettings (self,c):
         
@@ -1933,143 +1930,6 @@ class LoadManager:
         
         print('doPostPluginsInit not ready yet')
         
-        if 0:
-
-            # Clear g.app.initing _before_ creating the frame.
-            g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
-        
-            # Create the main frame.  Show it and all queued messages.
-            c,c1,fn = None,None,None
-            for fn in lm.files:
-                c,frame = lm.createFrame(fn)
-                if frame:
-                    if not c1: c1 = c
-                else:
-                    g.trace('createFrame failed',repr(fn))
-                    return False
-                  
-            # Put the focus in the first-opened file.  
-            if not c:
-                c,frame = lm.createFrame(None)
-                c1 = c
-                if c and frame:
-                    fn = c.fileName()
-                else:
-                    g.trace('createFrame failed 2')
-                    return False
-                    
-            # For qttabs gui, select the first-loaded tab.
-            if hasattr(g.app.gui,'frameFactory'):
-                factory = g.app.gui.frameFactory
-                if factory and hasattr(factory,'setTabForCommander'):
-                    c = c1
-                    factory.setTabForCommander(c)
-        
-            # Do the final inits.
-            c.setLog() # 2010/10/20
-            g.app.logInited = True # 2010/10/20
-            p = c.p
-            g.app.initComplete = True
-            g.doHook("start2",c=c,p=p,v=p,fileName=fn)
-            g.enableIdleTimeHook(idleTimeDelay=500)
-                # 2011/05/10: always enable this.
-            lm.initFocusAndDraw(c)
-        
-            if lm.screenshot_fn:
-                lm.make_screen_shot(lm.screenshot_fn)
-                return False # Force an immediate exit.
-        
-            return True
-    #@+node:ekr.20120211121736.10786: *5* lm.createFrame & helpers
-    def createFrame (self,fn):
-
-        """Create a LeoFrame during Leo's startup process."""
-        
-        # g.trace('(runLeo.py)',fn)
-
-        lm = self
-        script = lm.script
-
-        # Try to create a frame for the file.
-        if fn:
-            ok, frame = g.openWithFileName(fn,None)
-            if ok and frame:
-                c2 = frame.c
-                if lm.selectHeadline: lm.doSelect(c2)
-                if lm.windowSize: lm.doWindowSize(c2)
-                return c2,frame
-
-        # Create a _new_ frame & indicate it is the startup window.
-        c = g.app.newCommander(fn)
-
-        if not script:
-            g.app.writeWaitingLog(c) # 2009/12/22: fixes bug 448886
-
-        frame = c.frame
-        frame.setInitialWindowGeometry()
-        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
-        frame.startupWindow = True
-        if c.chapterController:
-            c.chapterController.finishCreate()
-            c.setChanged(False)
-                # Clear the changed flag set when creating the @chapters node.
-        # Call the 'new' hook for compatibility with plugins.
-        g.doHook("new",old_c=None,c=c,new_c=c)
-
-        g.createMenu(c,fn)
-        g.finishOpen(c) # Calls c.redraw.
-
-        # Report the failure to open the file.
-        if fn: g.es_print("file not found:",fn,color='red')
-
-        return c,frame
-    #@+node:ekr.20120211121736.10787: *6* lm.doSelect
-    def doSelect (self,c):
-
-        '''Select the node with key lm.selectHeadline.'''
-
-        lm = self
-        s = lm.selectHeadline
-        p = lm.findNode(c,s)
-
-        if p:
-            c.selectPosition(p)
-        else:
-            g.es_print('--select: not found:',s)
-    #@+node:ekr.20120211121736.10788: *6* lm.doWindowSize
-    def doWindowSize (self,c):
-
-        lm = self
-        w = c.frame.top
-
-        try:
-            h,w2 = lm.windowSize.split('x')
-            h,w2 = int(h.strip()),int(w2.strip())
-            w.resize(w2,h) # 2010/10/08.
-            c.k.simulateCommand('equal-sized-panes')
-            c.redraw()
-            w.repaint() # Essential
-
-        except Exception:
-            print('doWindowSize:unexpected exception')
-            g.es_exception()
-    #@+node:ekr.20120211121736.10789: *6* lm.findNode
-    def findNode (self,c,s):
-
-        lm = self
-        s = s.strip()
-
-        # First, assume s is a gnx.
-        for p in c.all_unique_positions():
-            if p.gnx.strip() == s:
-                return p
-
-        for p in c.all_unique_positions():
-            # g.trace(p.h.strip())
-            if p.h.strip() == s:
-                return p
-
-        return None
     #@+node:ekr.20120211121736.10791: *5* lm.initFocusAndDraw
     def initFocusAndDraw(self,c):
 
