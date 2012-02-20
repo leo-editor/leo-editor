@@ -37,6 +37,10 @@ This plugin defines the following commands that can be bound to keys:
 - find-quick-test-failures:
   Lists nodes in c.db.get('unittest/cur/fail')
 
+- find-quick-timeline:
+  Lists all nodes in reversed gnx order, basically newest to oldest, creation wise,
+  not modification wise.
+
 - history:
   Lists nodes from c.nodeHistory.
     
