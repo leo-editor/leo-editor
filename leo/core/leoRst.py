@@ -18,8 +18,6 @@ if 0:
 #@+<< imports >>
 #@+node:ekr.20100908120927.5971: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoTest as leoTest
-import leo.core.leoCommands as commands
 
 verbose = False
 
@@ -36,9 +34,13 @@ except ImportError:
     docutils = None
 except Exception:
     docutils = None
+    
+if g.isPython3:
+    import html.parser as HTMLParser
+else:
+    import HTMLParser
 
-import os
-
+# import os
 import pprint
 import re
 
@@ -49,9 +51,8 @@ else:
     import StringIO
     StringIO = StringIO.StringIO
 
-import tempfile
-
-import sys
+# import sys
+# import tempfile
 
 try:
     import leo.plugins.mod_http as mod_http
@@ -351,7 +352,7 @@ class rstCommands:
                     part_lines.append(s) # still in code mode.
             elif g.match_word(s,0,'@c') and kind != 'code':
                 if kind == '@doc' and not showDocsAsParagraphs:
-                        part_lines.append(s) # Show the @c as code.
+                    part_lines.append(s) # Show the @c as code.
                 parts.append((kind,part_lines[:]),)
                 kind,part_lines = 'code',[]
             else:
@@ -1284,7 +1285,7 @@ class rstCommands:
         # g.trace(name,self.optionsDict.get(self.munge(name)))
         return self.optionsDict.get(self.munge(name))
 
-    def setOption (self,name,val,tag):
+    def setOption (self,name,val,tag=None):
 
         self.optionsDict [self.munge(name)] = val
     #@+node:ekr.20090502071837.45: *4* initCodeBlockString
@@ -1741,7 +1742,7 @@ class rstCommands:
         if callDocutils and ext in ('.htm','.html','.tex','.pdf','.s5','.odt'):
             self.stringOutput = s = self.writeToDocutils(self.source,ext)
             if s and isHtml:
-                 self.stringOutput = s = self.addTitleToHtml(s)
+                self.stringOutput = s = self.addTitleToHtml(s)
             if not s: return
 
             if not toString:
@@ -2061,6 +2062,292 @@ class rstCommands:
             # return '%s\n%s\n\n' % (p.h.strip(),ch*n)
             return '%s\n%s\n\n' % (s.strip(),ch*n)
                 # Fixes bug 618570:
+    #@-others
+#@+node:ekr.20120219194520.10444: ** html parser classes
+#@+at
+# Code from rst3.py plugin.
+# 
+# The parser classes are used to construct the html code for nodes. The algorithm has two phases:
+#     1. In the first phase, the html code for each node is identified.
+#     2. The second phase identifies all links and checks if these links need to be modified.
+# The first phase of scanning is done by the anchor_hmlParserClass. The second phase of this algorithm is
+# done with the link_htmlParserClass.
+#@@c
+
+#@+<< class linkAnchorParserClass >>
+#@+node:ekr.20120219194520.10445: *3*  << class linkAnchorParserClass >>
+class linkAnchorParserClass (HTMLParser.HTMLParser):
+
+    '''
+    A class to recognize anchors and links in HTML documents.
+    A special marker is the "node_marker" which demarkates the border between 
+    node and the next.
+    '''
+
+    #@+others
+    #@+node:ekr.20120219194520.10446: *4* __init__
+    def __init__(self,rst):
+
+        HTMLParser.HTMLParser.__init__(self) # Init the base class.
+
+        self.rst = rst
+
+        # Set ivars from options.  This works only if we don't change nodes!
+        self.node_begin_marker      = rst.getOption('node_begin_marker')
+        self.clear_http_attributes  = rst.getOption('clear_http_attributes')
+
+        self.current_file = rst.outputFileName
+    #@+node:ekr.20120219194520.10447: *4* is_anchor
+    def is_anchor(self, tag, attrs):
+        """
+        Check if the current tag is an anchor.
+        Returns *all* anchors.
+        Works with docutils 0.4
+        """
+
+        if tag == 'a':
+            return True
+
+        if self.is_node_marker(attrs):
+            return True
+        return tag == "span"
+    #@+node:ekr.20120219194520.10448: *4* is_link
+    def is_link(self, tag, attrs):
+        '''
+        Return True if tag, attrs is represents a link.
+        '''
+
+        if tag != 'a':
+            return False
+
+        result = 'href' in dict(attrs)
+        return result
+    #@+node:ekr.20120219194520.10449: *4* is_node_marker
+    def is_node_marker (self,attrs):
+        '''
+        Return the name of the anchor, if this is an anchor for the beginning of a node,
+        False otherwise.
+        '''
+
+        d = dict(attrs)
+        result = 'id' in d and d['id'].startswith(self.node_begin_marker)
+        if result:
+            return d['id']
+        return result
+    #@-others
+#@-<< class linkAnchorParserClass >>
+#@+node:ekr.20120219194520.10450: *3* class htmlParserClass (linkAnchorParserClass)
+class htmlParserClass (linkAnchorParserClass):
+
+    '''
+    The responsibility of the html parser is:
+        1. Find out which html code belongs to which node.
+        2. Keep a stack of open tags which apply to the current node.
+        3. Keep a list of tags which should be included in the nodes, even
+           though they might be closed.
+           The <style> tag is one example of that.
+
+    Later, we have to relocate inter-file links: if a reference to another location
+    is in a file, we must change the link.
+
+    '''
+
+    #@+others
+    #@+node:ekr.20120219194520.10451: *4* __init__
+    def __init__ (self,rst):
+
+        linkAnchorParserClass.__init__(self,rst) # Init the base class.
+
+        self.stack = None
+        # The stack contains lists of the form:
+            # [text1, text2, previous].
+            # text1 is the opening tag
+            # text2 is the closing tag
+            # previous points to the previous stack element
+
+        self.node_marker_stack = []
+        # self.node_marker_stack.pop() returns True for a closing
+        # tag if the opening tag identified an anchor belonging to a vnode.
+
+        self.node_code = []
+            # Accumulated html code.
+            # Once the hmtl code is assigned a vnode, it is deleted here.
+
+        self.deleted_lines = 0 # Number of lines deleted in self.node_code
+
+        self.endpos_pending = False
+        # Do not include self.node_code[0:self.endpos_pending] in the html code.
+
+        self.last_position = None
+        # Last position; we must attach html code to this node.
+
+        self.last_marker = None
+    #@+node:ekr.20120219194520.10452: *4* handle_starttag
+    def handle_starttag (self,tag,attrs):
+        '''
+        1. Find out if the current tag is an achor.
+        2. If it is an anchor, we check if this anchor marks the beginning of a new 
+           node
+        3. If a new node begins, then we might have to store html code for the previous
+           node.
+        4. In any case, put the new tag on the stack.
+        '''
+        is_node_marker = False
+        if self.is_anchor(tag,attrs) and self.is_node_marker(attrs):
+            is_node_marker = self.is_node_marker(attrs)
+            # g.trace(tag,attrs)
+            line, column = self.getpos()
+            if self.last_position:
+                lines = self.node_code [:]
+                lines [0] = lines [0] [self.startpos:]
+                del lines [line-self.deleted_lines-1:]
+                # g.trace('Storing in %s...\n%s' % self.last_position, lines)
+                mod_http.get_http_attribute(self.last_position).extend(lines)
+                #@+<< trace the unknownAttribute >>
+                #@+node:ekr.20120219194520.10453: *5* << trace the unknownAttribute >>
+                if 0:
+                    g.pr("rst3: unknownAttributes[self.http_attributename]")
+                    g.pr("For:", self.last_position)
+                    pprint.pprint(mod_http.get_http_attribute(self.last_position))
+                #@-<< trace the unknownAttribute >>
+            if self.deleted_lines < line-1:
+                del self.node_code [: line-1-self.deleted_lines]
+                self.deleted_lines = line-1
+                self.endpos_pending = True
+        # g.trace("rst2: handle_starttag:", tag, attrs, is_node_marker)
+        starttag = self.get_starttag_text()
+        self.stack = [starttag, None, self.stack]
+        self.node_marker_stack.append(is_node_marker)
+    #@+node:ekr.20120219194520.10454: *4* handle_endtag
+    def handle_endtag(self, tag):
+        '''
+        1. Set the second element of the current top of stack.
+        2. If this is the end tag for an anchor for a node,
+           store the current stack for that node.
+        '''
+        self.stack[1] = "</" + tag + ">"
+
+        # g.trace(tag,g.listToString(self.stack))
+        if self.endpos_pending:
+            line, column = self.getpos()
+            self.startpos = self.node_code[0].find(">", column) + 1
+            self.endpos_pending = False
+
+        is_node_marker = self.node_marker_stack.pop()
+
+        if is_node_marker and not self.clear_http_attributes:
+            self.last_position = self.rst.http_map[is_node_marker]
+            if is_node_marker != self.last_marker:
+                if bwm_file: print >> bwm_file, "Handle endtag:", is_node_marker, self.stack
+                mod_http.set_http_attribute(self.rst.http_map[is_node_marker], self.stack)
+                self.last_marker = is_node_marker
+                #bwm: last_marker is not needed?
+
+        self.stack = self.stack[2]
+    #@+node:ekr.20120219194520.10455: *4* feed
+    def feed(self, line):
+
+        # g.trace(repr(line))
+
+        self.node_code.append(line)
+
+        HTMLParser.HTMLParser.feed(self, line) # Call the base class's feed().
+    #@-others
+#@+node:ekr.20120219194520.10456: *3* class anchor_htmlParserClass (linkAnchorParserClass)
+class anchor_htmlParserClass (linkAnchorParserClass):
+
+    '''
+    This htmlparser does the first step of relocating: finding all the anchors within the html nodes.
+
+    Each anchor is mapped to a tuple:
+        (current_file, position).
+
+    Filters out markers which mark the beginning of the html code for a node.
+    '''
+
+    #@+others
+    #@+node:ekr.20120219194520.10457: *4*  __init__
+    def __init__ (self,rst,p):
+
+        linkAnchorParserClass.__init__(self,rst)
+
+        self.p = p.copy()
+        self.anchor_map = rst.anchor_map
+    #@+node:ekr.20120219194520.10458: *4* handle_starttag
+    def handle_starttag(self, tag, attrs):
+        '''
+        1. Find out if the current tag is an achor.
+        2. If the current tag is an anchor, update the mapping;
+             anchor -> (filename, p)
+        '''
+        if not self.is_anchor(tag, attrs):
+            return
+
+        if self.current_file not in self.anchor_map:
+            self.anchor_map[self.current_file] = (self.current_file, self.p)
+            simple_name = g.os_path_split(self.current_file)[1]
+            self.anchor_map[simple_name] = self.anchor_map[self.current_file]
+            if bwm_file: print >> bwm_file, "anchor(1): current_file:", self.current_file, "position:", self.p, "Simple name:", simple_name
+            # Not sure what to do here, exactly. Do I need to manipulate
+            # the pathname?
+
+        for name, value in attrs:
+            if name == 'name' or tag == 'span' and name == 'id':
+                if not value.startswith(self.node_begin_marker):
+                    if bwm_file: print >> bwm_file, "anchor(2):", value, self.p
+                    self.anchor_map[value] = (self.current_file, self.p.copy())
+    #@-others
+#@+node:ekr.20120219194520.10459: *3* class link_htmlParserClass (linkAnchorParserClass)
+class link_htmlparserClass (linkAnchorParserClass):
+
+    '''This html parser does the second step of relocating links:
+    1. It scans the html code for links.
+    2. If there is a link which links to a previously processed file
+       then this link is changed so that it now refers to the node.
+    '''
+
+    #@+others
+    #@+node:ekr.20120219194520.10460: *4* __init__
+    def __init__ (self,rst,p):
+
+        linkAnchorParserClass.__init__(self,rst)
+
+        self.p = p.copy()
+        self.anchor_map = rst.anchor_map
+        self.replacements = []
+    #@+node:ekr.20120219194520.10461: *4* handle_starttag
+    def handle_starttag(self, tag, attrs):
+        '''
+        1. Find out if the current tag is an achor.
+        2. If the current tag is an anchor, update the mapping;
+             anchor -> p
+            Update the list of replacements for the document.
+        '''
+        if bwm_file: print >> bwm_file, "Is link?", tag, attrs
+        if not self.is_link(tag, attrs):
+            return
+
+        marker = self.node_begin_marker
+        for name, value in attrs:
+            if name == 'href':
+                href = value
+                href_parts = href.split("#")
+                if len(href_parts) == 1:
+                    href_a = href_parts[0]
+                else:
+                    href_a = href_parts[1]
+                if bwm_file: print >> bwm_file, "link(1):", name, value, href_a
+                if not href_a.startswith(marker):
+                    if href_a in self.anchor_map:
+                        href_file, href_node = self.anchor_map[href_a]
+                        http_node_ref = mod_http.node_reference(href_node)
+                        line, column = self.getpos()
+                        if bwm_file: print >> bwm_file, "link(2):", line, column, href, href_file, http_node_ref
+                        self.replacements.append((line, column, href, href_file, http_node_ref))
+    #@+node:ekr.20120219194520.10462: *4* get_replacements
+    def get_replacements(self):
+
+        return self.replacements
     #@-others
 #@-others
 #@-leo
